@@ -63,7 +63,6 @@ class PlayWidgetLargeGlobalAnalytic @AssistedInject constructor(
         config: PlayWidgetConfigUiModel,
         channelPositionInList: Int,
         verticalWidgetPosition: Int,
-        businessWidgetPosition: Int
     ) {
         val trackerMap = BaseTrackerBuilder().constructBasicPromotionView(
             event = PROMO_VIEW,
@@ -75,7 +74,7 @@ class PlayWidgetLargeGlobalAnalytic @AssistedInject constructor(
                 item.partner.id, /** partnerID **/
                 item.channelId, /** channelID **/
                 channelPositionInList + 1, /** position **/
-                businessWidgetPosition, /** businessPosition **/
+                config.businessWidgetPosition, /** businessPosition **/
                 "is autoplay ${config.autoPlay}", /** isAutoPlay **/
                 config.maxAutoPlayCellularDuration, /** duration **/
                 item.promoType.toTrackingString(), /** promoType **/
@@ -106,7 +105,6 @@ class PlayWidgetLargeGlobalAnalytic @AssistedInject constructor(
         config: PlayWidgetConfigUiModel,
         channelPositionInList: Int,
         verticalWidgetPosition: Int,
-        businessWidgetPosition: Int
     ) {
         val trackerMap = BaseTrackerBuilder().constructBasicPromotionClick(
             event = PROMO_CLICK,
@@ -118,7 +116,7 @@ class PlayWidgetLargeGlobalAnalytic @AssistedInject constructor(
                 item.partner.id, /** partnerID **/
                 item.channelId, /** channelID **/
                 channelPositionInList + 1, /** position **/
-                businessWidgetPosition, /** businessPosition **/
+                config.businessWidgetPosition, /** businessPosition **/
                 "is autoplay ${config.autoPlay}", /** isAutoPlay **/
                 config.maxAutoPlayCellularDuration, /** duration **/
                 item.promoType.toTrackingString(), /** promoType **/
@@ -148,7 +146,6 @@ class PlayWidgetLargeGlobalAnalytic @AssistedInject constructor(
         item: PlayWidgetBannerUiModel,
         channelPositionInList: Int,
         verticalWidgetPosition: Int,
-        businessWidgetPosition: Int
     ) {
         TrackApp.getInstance().gtm
             .sendGeneralEvent(
@@ -173,7 +170,6 @@ class PlayWidgetLargeGlobalAnalytic @AssistedInject constructor(
         item: PlayWidgetBannerUiModel,
         channelPositionInList: Int,
         verticalWidgetPosition: Int,
-        businessWidgetPosition: Int
     ) {
         TrackApp.getInstance().gtm
             .sendGeneralEvent(
@@ -199,7 +195,6 @@ class PlayWidgetLargeGlobalAnalytic @AssistedInject constructor(
         channelPositionInList: Int,
         isRemindMe: Boolean,
         verticalWidgetPosition: Int,
-        businessWidgetPosition: Int
     ) {
         TrackApp.getInstance().gtm
             .sendGeneralEvent(
@@ -230,7 +225,6 @@ class PlayWidgetLargeGlobalAnalytic @AssistedInject constructor(
         channelPositionInList: Int,
         isRemindMe: Boolean,
         verticalWidgetPosition: Int,
-        businessWidgetPosition: Int
     ) {
         TrackApp.getInstance().gtm
             .sendGeneralEvent(

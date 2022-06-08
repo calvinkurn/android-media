@@ -16,7 +16,6 @@ class DefaultPlayWidgetInListAnalyticListener(
     private val analytic: PlayWidgetInListAnalyticListener
 ) : PlayWidgetAnalyticListener {
 
-    private var businessWidgetPosition = 0
     private var verticalWidgetPosition = RecyclerView.NO_POSITION
 
     override fun onImpressPlayWidget(
@@ -25,20 +24,19 @@ class DefaultPlayWidgetInListAnalyticListener(
         widgetPositionInList: Int
     ) {
         verticalWidgetPosition = widgetPositionInList
-        businessWidgetPosition = item.config.businessWidgetPosition
-        analytic.onImpressPlayWidget(view, item, widgetPositionInList, businessWidgetPosition)
+        analytic.onImpressPlayWidget(view, item, widgetPositionInList, item.config.businessWidgetPosition)
     }
 
     override fun onClickViewAll(view: PlayWidgetSmallView) {
-        analytic.onClickViewAll(view, verticalWidgetPosition, businessWidgetPosition)
+        analytic.onClickViewAll(view, verticalWidgetPosition)
     }
 
     override fun onImpressViewAll(view: PlayWidgetMediumView) {
-        analytic.onImpressViewAll(view, verticalWidgetPosition, businessWidgetPosition)
+        analytic.onImpressViewAll(view, verticalWidgetPosition)
     }
 
     override fun onClickViewAll(view: PlayWidgetMediumView) {
-        analytic.onClickViewAll(view, verticalWidgetPosition, businessWidgetPosition)
+        analytic.onClickViewAll(view, verticalWidgetPosition)
     }
 
     override fun onClickChannelCard(
@@ -53,12 +51,11 @@ class DefaultPlayWidgetInListAnalyticListener(
             config,
             channelPositionInList,
             verticalWidgetPosition,
-            businessWidgetPosition
         )
     }
 
     override fun onClickBannerCard(view: PlayWidgetSmallView) {
-        analytic.onClickBannerCard(view, verticalWidgetPosition, businessWidgetPosition)
+        analytic.onClickBannerCard(view, verticalWidgetPosition)
     }
 
     override fun onImpressChannelCard(
@@ -73,16 +70,15 @@ class DefaultPlayWidgetInListAnalyticListener(
             config,
             channelPositionInList,
             verticalWidgetPosition,
-            businessWidgetPosition
         )
     }
 
     override fun onImpressOverlayCard(view: PlayWidgetMediumView, item: PlayWidgetBackgroundUiModel, channelPositionInList: Int) {
-        analytic.onImpressOverlayCard(view, item, channelPositionInList, verticalWidgetPosition, businessWidgetPosition)
+        analytic.onImpressOverlayCard(view, item, channelPositionInList, verticalWidgetPosition)
     }
 
     override fun onClickOverlayCard(view: PlayWidgetMediumView, item: PlayWidgetBackgroundUiModel, channelPositionInList: Int) {
-        analytic.onClickOverlayCard(view, item, channelPositionInList, verticalWidgetPosition, businessWidgetPosition)
+        analytic.onClickOverlayCard(view, item, channelPositionInList, verticalWidgetPosition)
     }
 
     override fun onClickChannelCard(
@@ -97,7 +93,6 @@ class DefaultPlayWidgetInListAnalyticListener(
             config,
             channelPositionInList,
             verticalWidgetPosition,
-            businessWidgetPosition
         )
     }
 
@@ -107,19 +102,19 @@ class DefaultPlayWidgetInListAnalyticListener(
         channelPositionInList: Int,
         isReminded: Boolean
     ) {
-        analytic.onImpressReminderIcon(view, item, channelPositionInList, isReminded, verticalWidgetPosition, businessWidgetPosition)
+        analytic.onImpressReminderIcon(view, item, channelPositionInList, isReminded, verticalWidgetPosition)
     }
 
     override fun onClickToggleReminderChannel(view: PlayWidgetMediumView, item: PlayWidgetChannelUiModel, channelPositionInList: Int, isRemindMe: Boolean) {
-        analytic.onClickToggleReminderChannel(view, item, channelPositionInList, isRemindMe, verticalWidgetPosition, businessWidgetPosition)
+        analytic.onClickToggleReminderChannel(view, item, channelPositionInList, isRemindMe, verticalWidgetPosition)
     }
 
     override fun onClickMenuActionChannel(view: PlayWidgetMediumView, item: PlayWidgetChannelUiModel, channelPositionInList: Int) {
-        analytic.onClickMoreActionChannel(view, item, channelPositionInList, verticalWidgetPosition, businessWidgetPosition)
+        analytic.onClickMoreActionChannel(view, item, channelPositionInList, verticalWidgetPosition)
     }
 
     override fun onClickDeleteChannel(view: PlayWidgetMediumView, item: PlayWidgetChannelUiModel, channelPositionInList: Int) {
-        analytic.onClickDeleteChannel(view, item, channelPositionInList, verticalWidgetPosition, businessWidgetPosition)
+        analytic.onClickDeleteChannel(view, item, channelPositionInList, verticalWidgetPosition)
     }
 
     override fun onImpressChannelCard(
@@ -134,7 +129,6 @@ class DefaultPlayWidgetInListAnalyticListener(
             config,
             channelPositionInList,
             verticalWidgetPosition,
-            businessWidgetPosition
         )
     }
 
@@ -143,11 +137,11 @@ class DefaultPlayWidgetInListAnalyticListener(
         item: PlayWidgetBannerUiModel,
         channelPositionInList: Int
     ) {
-        analytic.onImpressBannerCard(view, item, channelPositionInList, verticalWidgetPosition, businessWidgetPosition)
+        analytic.onImpressBannerCard(view, item, channelPositionInList, verticalWidgetPosition)
     }
 
     override fun onClickBannerCard(view: PlayWidgetMediumView, item: PlayWidgetBannerUiModel, channelPositionInList: Int) {
-        analytic.onClickBannerCard(view, item, channelPositionInList, verticalWidgetPosition, businessWidgetPosition)
+        analytic.onClickBannerCard(view, item, channelPositionInList, verticalWidgetPosition)
     }
 
     override fun onClickBannerCard(
@@ -160,7 +154,6 @@ class DefaultPlayWidgetInListAnalyticListener(
             item,
             channelPositionInList,
             verticalWidgetPosition,
-            businessWidgetPosition,
         )
     }
 
@@ -176,7 +169,6 @@ class DefaultPlayWidgetInListAnalyticListener(
             config,
             channelPositionInList,
             verticalWidgetPosition,
-            businessWidgetPosition,
         )
     }
 
@@ -190,7 +182,6 @@ class DefaultPlayWidgetInListAnalyticListener(
             item,
             channelPositionInList,
             verticalWidgetPosition,
-            businessWidgetPosition
         )
     }
 
@@ -206,7 +197,6 @@ class DefaultPlayWidgetInListAnalyticListener(
             config,
             channelPositionInList,
             verticalWidgetPosition,
-            businessWidgetPosition,
         )
     }
 
@@ -222,7 +212,6 @@ class DefaultPlayWidgetInListAnalyticListener(
             channelPositionInList,
             isRemindMe,
             verticalWidgetPosition,
-            businessWidgetPosition,
         )
     }
 
@@ -238,7 +227,6 @@ class DefaultPlayWidgetInListAnalyticListener(
             config,
             channelPositionInList,
             verticalWidgetPosition,
-            businessWidgetPosition,
         )
     }
 
@@ -254,7 +242,6 @@ class DefaultPlayWidgetInListAnalyticListener(
             channelPositionInList,
             isRemindMe,
             verticalWidgetPosition,
-            businessWidgetPosition,
         )
     }
 
@@ -270,15 +257,14 @@ class DefaultPlayWidgetInListAnalyticListener(
             config,
             channelPositionInList,
             verticalWidgetPosition,
-            businessWidgetPosition,
         )
     }
 
     override fun onImpressViewAll(view: PlayWidgetSmallView) {
-        analytic.onImpressViewAll(view, verticalWidgetPosition, businessWidgetPosition)
+        analytic.onImpressViewAll(view, verticalWidgetPosition)
     }
 
     override fun onImpressBannerCard(view: PlayWidgetSmallView) {
-        analytic.onImpressBannerCard(view, verticalWidgetPosition, businessWidgetPosition)
+        analytic.onImpressBannerCard(view, verticalWidgetPosition)
     }
 }

@@ -62,7 +62,6 @@ class PlayWidgetJumboGlobalAnalytic @AssistedInject constructor(
         config: PlayWidgetConfigUiModel,
         channelPositionInList: Int,
         verticalWidgetPosition: Int,
-        businessWidgetPosition: Int
     ) {
         val trackerMap = BaseTrackerBuilder().constructBasicPromotionView(
             event = PROMO_VIEW,
@@ -74,7 +73,7 @@ class PlayWidgetJumboGlobalAnalytic @AssistedInject constructor(
                 item.partner.id, /** partnerID **/
                 item.channelId, /** channelID **/
                 channelPositionInList + 1, /** position **/
-                businessWidgetPosition, /** businessPosition **/
+                config.businessWidgetPosition, /** businessPosition **/
                 "is autoplay ${config.autoPlay}", /** isAutoPlay **/
                 config.maxAutoPlayCellularDuration, /** duration **/
                 item.promoType.toTrackingString(), /** promoType **/
@@ -105,7 +104,6 @@ class PlayWidgetJumboGlobalAnalytic @AssistedInject constructor(
         config: PlayWidgetConfigUiModel,
         channelPositionInList: Int,
         verticalWidgetPosition: Int,
-        businessWidgetPosition: Int
     ) {
         val trackerMap = BaseTrackerBuilder().constructBasicPromotionClick(
             event = PROMO_CLICK,
@@ -117,7 +115,7 @@ class PlayWidgetJumboGlobalAnalytic @AssistedInject constructor(
                 item.partner.id, /** partnerID **/
                 item.channelId, /** channelID **/
                 channelPositionInList + 1, /** position **/
-                businessWidgetPosition, /** businessPosition **/
+                config.businessWidgetPosition, /** businessPosition **/
                 "is autoplay ${config.autoPlay}", /** isAutoPlay **/
                 config.maxAutoPlayCellularDuration, /** duration **/
                 item.promoType.toTrackingString(), /** promoType **/
@@ -148,7 +146,6 @@ class PlayWidgetJumboGlobalAnalytic @AssistedInject constructor(
         channelPositionInList: Int,
         isRemindMe: Boolean,
         verticalWidgetPosition: Int,
-        businessWidgetPosition: Int
     ) {
         TrackApp.getInstance().gtm
             .sendGeneralEvent(
@@ -179,7 +176,6 @@ class PlayWidgetJumboGlobalAnalytic @AssistedInject constructor(
         channelPositionInList: Int,
         isRemindMe: Boolean,
         verticalWidgetPosition: Int,
-        businessWidgetPosition: Int
     ) {
         TrackApp.getInstance().gtm
             .sendGeneralEvent(

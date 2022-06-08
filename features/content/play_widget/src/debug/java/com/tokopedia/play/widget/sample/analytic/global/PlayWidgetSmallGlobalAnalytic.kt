@@ -62,7 +62,6 @@ class PlayWidgetSmallGlobalAnalytic @AssistedInject constructor(
         config: PlayWidgetConfigUiModel,
         channelPositionInList: Int,
         verticalWidgetPosition: Int,
-        businessWidgetPosition: Int,
     ) {
         val trackerMap = BaseTrackerBuilder().constructBasicPromotionView(
             event = PROMO_VIEW,
@@ -74,7 +73,7 @@ class PlayWidgetSmallGlobalAnalytic @AssistedInject constructor(
                 item.partner.id, /** partnerID **/
                 item.channelId, /** channelID **/
                 channelPositionInList + 1, /** position **/
-                businessWidgetPosition, /** businessPosition **/
+                config.businessWidgetPosition, /** businessPosition **/
                 "is autoplay ${config.autoPlay}", /** isAutoPlay **/
                 config.maxAutoPlayCellularDuration, /** duration **/
                 item.promoType.toTrackingString(), /** promoType **/
@@ -105,7 +104,6 @@ class PlayWidgetSmallGlobalAnalytic @AssistedInject constructor(
         config: PlayWidgetConfigUiModel,
         channelPositionInList: Int,
         verticalWidgetPosition: Int,
-        businessWidgetPosition: Int,
     ) {
         val trackerMap = BaseTrackerBuilder().constructBasicPromotionClick(
             event = PROMO_CLICK,
@@ -117,7 +115,7 @@ class PlayWidgetSmallGlobalAnalytic @AssistedInject constructor(
                 item.partner.id, /** partnerID **/
                 item.channelId, /** channelID **/
                 channelPositionInList + 1, /** position **/
-                businessWidgetPosition, /** businessPosition **/
+                config.businessWidgetPosition, /** businessPosition **/
                 "is autoplay ${config.autoPlay}", /** isAutoPlay **/
                 config.maxAutoPlayCellularDuration, /** duration **/
                 item.promoType.toTrackingString(), /** promoType **/
@@ -148,7 +146,6 @@ class PlayWidgetSmallGlobalAnalytic @AssistedInject constructor(
     override fun onImpressViewAll(
         view: PlayWidgetSmallView,
         verticalWidgetPosition: Int,
-        businessWidgetPosition: Int,
     ) {
         TrackApp.getInstance().gtm
             .sendGeneralEvent(
@@ -171,7 +168,6 @@ class PlayWidgetSmallGlobalAnalytic @AssistedInject constructor(
     override fun onClickViewAll(
         view: PlayWidgetSmallView,
         verticalWidgetPosition: Int,
-        businessWidgetPosition: Int,
     ) {
         TrackApp.getInstance().gtm
             .sendGeneralEvent(
@@ -194,7 +190,6 @@ class PlayWidgetSmallGlobalAnalytic @AssistedInject constructor(
     override fun onImpressBannerCard(
         view: PlayWidgetSmallView,
         verticalWidgetPosition: Int,
-        businessWidgetPosition: Int,
     ) {
         TrackApp.getInstance().gtm
             .sendGeneralEvent(
@@ -217,7 +212,6 @@ class PlayWidgetSmallGlobalAnalytic @AssistedInject constructor(
     override fun onClickBannerCard(
         view: PlayWidgetSmallView,
         verticalWidgetPosition: Int,
-        businessWidgetPosition: Int,
     ) {
         TrackApp.getInstance().gtm
             .sendGeneralEvent(

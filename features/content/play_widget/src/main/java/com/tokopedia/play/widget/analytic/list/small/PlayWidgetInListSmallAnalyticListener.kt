@@ -18,7 +18,6 @@ interface PlayWidgetInListSmallAnalyticListener {
         config: PlayWidgetConfigUiModel,
         channelPositionInList: Int,
         verticalWidgetPosition: Int,
-        businessWidgetPosition: Int,
     ) {}
 
     fun onClickChannelCard(
@@ -27,7 +26,6 @@ interface PlayWidgetInListSmallAnalyticListener {
         config: PlayWidgetConfigUiModel,
         channelPositionInList: Int,
         verticalWidgetPosition: Int,
-        businessWidgetPosition: Int,
     ) {}
 
     /**
@@ -36,13 +34,11 @@ interface PlayWidgetInListSmallAnalyticListener {
     fun onImpressViewAll(
         view: PlayWidgetSmallView,
         verticalWidgetPosition: Int,
-        businessWidgetPosition: Int,
     ) {}
 
     fun onClickViewAll(
         view: PlayWidgetSmallView,
         verticalWidgetPosition: Int,
-        businessWidgetPosition: Int,
     ) {}
 
     /**
@@ -51,12 +47,10 @@ interface PlayWidgetInListSmallAnalyticListener {
     fun onImpressBannerCard(
         view: PlayWidgetSmallView,
         verticalWidgetPosition: Int,
-        businessWidgetPosition: Int,
     ) {}
 
     fun onClickBannerCard(
         view: PlayWidgetSmallView,
         verticalWidgetPosition: Int,
-        businessWidgetPosition: Int,
     ) {}
 }

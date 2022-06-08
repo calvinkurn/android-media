@@ -18,7 +18,6 @@ interface PlayWidgetInListJumboAnalyticListener {
         config: PlayWidgetConfigUiModel,
         channelPositionInList: Int,
         verticalWidgetPosition: Int,
-        businessWidgetPosition: Int,
     ) {}
 
     fun onClickChannelCard(
@@ -27,7 +26,6 @@ interface PlayWidgetInListJumboAnalyticListener {
         config: PlayWidgetConfigUiModel,
         channelPositionInList: Int,
         verticalWidgetPosition: Int,
-        businessWidgetPosition: Int,
     ) {}
 
     /**
@@ -39,7 +37,6 @@ interface PlayWidgetInListJumboAnalyticListener {
         channelPositionInList: Int,
         isRemindMe: Boolean,
         verticalWidgetPosition: Int,
-        businessWidgetPosition: Int,
     ) {}
 
     fun onClickToggleReminderChannel(
@@ -48,6 +45,5 @@ interface PlayWidgetInListJumboAnalyticListener {
         channelPositionInList: Int,
         isRemindMe: Boolean,
         verticalWidgetPosition: Int,
-        businessWidgetPosition: Int,
     ) {}
 }

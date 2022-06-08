@@ -17,13 +17,11 @@ interface PlayWidgetInListMediumAnalyticListener {
     fun onImpressViewAll(
         view: PlayWidgetMediumView,
         verticalWidgetPosition: Int,
-        businessWidgetPosition: Int,
     ) {}
 
     fun onClickViewAll(
         view: PlayWidgetMediumView,
         verticalWidgetPosition: Int,
-        businessWidgetPosition: Int,
     ) {}
 
     /**
@@ -34,7 +32,6 @@ interface PlayWidgetInListMediumAnalyticListener {
         item: PlayWidgetBannerUiModel,
         channelPositionInList: Int,
         verticalWidgetPosition: Int,
-        businessWidgetPosition: Int,
     ) {}
 
     fun onClickBannerCard(
@@ -42,7 +39,6 @@ interface PlayWidgetInListMediumAnalyticListener {
         item: PlayWidgetBannerUiModel,
         channelPositionInList: Int,
         verticalWidgetPosition: Int,
-        businessWidgetPosition: Int,
     ) {}
 
     /**
@@ -53,16 +49,13 @@ interface PlayWidgetInListMediumAnalyticListener {
         item: PlayWidgetBackgroundUiModel,
         channelPositionInList: Int,
         verticalWidgetPosition: Int,
-        businessWidgetPosition: Int,
-    ) {
-    }
+    ) {}
 
     fun onClickOverlayCard(
         view: PlayWidgetMediumView,
         item: PlayWidgetBackgroundUiModel,
         channelPositionInList: Int,
         verticalWidgetPosition: Int,
-        businessWidgetPosition: Int,
     ) {}
 
     /**
@@ -74,7 +67,6 @@ interface PlayWidgetInListMediumAnalyticListener {
         channelPositionInList: Int,
         isRemindMe: Boolean,
         verticalWidgetPosition: Int,
-        businessWidgetPosition: Int,
     ) {}
 
     fun onClickToggleReminderChannel(
@@ -83,7 +75,6 @@ interface PlayWidgetInListMediumAnalyticListener {
         channelPositionInList: Int,
         isRemindMe: Boolean,
         verticalWidgetPosition: Int,
-        businessWidgetPosition: Int,
     ) {}
 
     /**
@@ -95,7 +86,6 @@ interface PlayWidgetInListMediumAnalyticListener {
         config: PlayWidgetConfigUiModel,
         channelPositionInList: Int,
         verticalWidgetPosition: Int,
-        businessWidgetPosition: Int,
     ) {}
 
     fun onClickChannelCard(
@@ -104,7 +94,6 @@ interface PlayWidgetInListMediumAnalyticListener {
         config: PlayWidgetConfigUiModel,
         channelPositionInList: Int,
         verticalWidgetPosition: Int,
-        businessWidgetPosition: Int,
     ) {}
 
     /**
@@ -115,7 +104,6 @@ interface PlayWidgetInListMediumAnalyticListener {
         item: PlayWidgetChannelUiModel,
         channelPositionInList: Int,
         verticalWidgetPosition: Int,
-        businessWidgetPosition: Int,
     ) {}
 
     fun onClickDeleteChannel(
@@ -123,6 +111,5 @@ interface PlayWidgetInListMediumAnalyticListener {
         item: PlayWidgetChannelUiModel,
         channelPositionInList: Int,
         verticalWidgetPosition: Int,
-        businessWidgetPosition: Int,
     ) {}
 }

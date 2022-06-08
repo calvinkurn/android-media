@@ -19,7 +19,6 @@ interface PlayWidgetInListLargeAnalyticListener {
         config: PlayWidgetConfigUiModel,
         channelPositionInList: Int,
         verticalWidgetPosition: Int,
-        businessWidgetPosition: Int,
     ) {}
 
     fun onClickChannelCard(
@@ -28,7 +27,6 @@ interface PlayWidgetInListLargeAnalyticListener {
         config: PlayWidgetConfigUiModel,
         channelPositionInList: Int,
         verticalWidgetPosition: Int,
-        businessWidgetPosition: Int,
     ) {}
 
     /**
@@ -40,7 +38,6 @@ interface PlayWidgetInListLargeAnalyticListener {
         channelPositionInList: Int,
         isRemindMe: Boolean,
         verticalWidgetPosition: Int,
-        businessWidgetPosition: Int,
     ) {}
 
     fun onClickToggleReminderChannel(
@@ -49,7 +46,6 @@ interface PlayWidgetInListLargeAnalyticListener {
         channelPositionInList: Int,
         isRemindMe: Boolean,
         verticalWidgetPosition: Int,
-        businessWidgetPosition: Int,
     ) {}
 
     /**
@@ -60,7 +56,6 @@ interface PlayWidgetInListLargeAnalyticListener {
         item: PlayWidgetBannerUiModel,
         channelPositionInList: Int,
         verticalWidgetPosition: Int,
-        businessWidgetPosition: Int,
     ) {}
 
     fun onClickBannerCard(
@@ -68,6 +63,5 @@ interface PlayWidgetInListLargeAnalyticListener {
         item: PlayWidgetBannerUiModel,
         channelPositionInList: Int,
         verticalWidgetPosition: Int,
-        businessWidgetPosition: Int,
     ) {}
 }
