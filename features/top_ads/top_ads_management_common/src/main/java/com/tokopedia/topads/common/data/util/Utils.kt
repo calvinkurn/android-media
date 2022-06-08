@@ -11,6 +11,7 @@ import com.tokopedia.kotlin.extensions.view.toDoubleOrZero
 import com.tokopedia.topads.common.R
 import com.tokopedia.topads.common.constant.Constants
 import com.tokopedia.topads.common.constant.TopAdsCommonConstant
+import com.tokopedia.topads.common.constant.TopAdsCommonConstant.BUDGET_MULTIPLE_FACTOR
 import com.tokopedia.unifycomponents.SearchBarUnify
 import com.tokopedia.unifycomponents.TextFieldUnify
 import com.tokopedia.utils.text.currency.NumberTextWatcher
@@ -27,7 +28,7 @@ import kotlin.jvm.Throws
 object Utils {
 
     var locale = Locale("in", "ID")
-    const val KALI = " kali"
+    private const val KALI = " kali"
 
     fun <T> fastLazy(initializer: () -> T): Lazy<T> = lazy(LazyThreadSafetyMode.NONE, initializer)
 
@@ -63,7 +64,7 @@ object Utils {
                             ))
                             block?.invoke(true)
                         }
-                        result % 50 != 0 -> {
+                        result % BUDGET_MULTIPLE_FACTOR != 0 -> {
                             textField.setMessage(String.format(
                                 resources.getString(R.string.topads_common_error_multiple_50), "50"
                             ))

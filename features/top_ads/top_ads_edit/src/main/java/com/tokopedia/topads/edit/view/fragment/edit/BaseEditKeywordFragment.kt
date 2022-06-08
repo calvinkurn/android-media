@@ -82,7 +82,7 @@ class BaseEditKeywordFragment : BaseDaggerFragment(), EditKeywordsFragment.Butto
         savedInstanceState: Bundle?,
     ): View? {
         val view = inflater.inflate(
-            resources.getLayout(R.layout.topads_edit_keyword_base_layout),
+            context?.resources?.getLayout(R.layout.topads_edit_keyword_base_layout),
             container,
             false
         )
@@ -102,7 +102,7 @@ class BaseEditKeywordFragment : BaseDaggerFragment(), EditKeywordsFragment.Butto
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        autoBidTicker?.setHtmlDescription(resources.getString(R.string.topads_edit_auto_bid_ticker_title))
+        context?.resources?.getString(R.string.topads_edit_auto_bid_ticker_title)?.let { autoBidTicker?.setHtmlDescription(it) }
 
         initListeners()
         renderViewPager()
@@ -278,7 +278,7 @@ class BaseEditKeywordFragment : BaseDaggerFragment(), EditKeywordsFragment.Butto
             ?: return mutableListOf()
 
         val items: MutableList<Map<String, Any>> = mutableListOf()
-        if (fragments.size > 0 && fragments.get(0) is EditKeywordsFragment) {
+        if (fragments.size > 0 && fragments[0] is EditKeywordsFragment) {
             positivekeywordsAll?.forEachIndexed { _, it ->
                 val map = mapOf(
                     "name" to it.name, "id" to it.id, "type" to "positif"
@@ -286,7 +286,7 @@ class BaseEditKeywordFragment : BaseDaggerFragment(), EditKeywordsFragment.Butto
                 items.add(map)
             }
         }
-        if (fragments.size > 1 && fragments.get(1) is EditNegativeKeywordsFragment) {
+        if (fragments.size > 1 && fragments[1] is EditNegativeKeywordsFragment) {
             negativekeywordsAll?.forEach {
                 val map = mapOf(
                     "name" to it.tag, "id" to it.keywordId, "type" to "negatif"
