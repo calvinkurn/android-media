@@ -9,6 +9,7 @@
     <string name="sfs_apply">Terapkan</string>
     <string name="sfs_back">Balik</string>
     <string name="sfs_close">Tutup</string>
+    <string name="sfs_yes">Ya</string>
     <string name="sfs_no">Tidak</string>
     <string name="sfs_save_as_draft">Simpan Sebagai Draft</string>
 
@@ -116,11 +117,19 @@
     <string name="forbidden_words_info_content">Nama campaign tidak boleh mengandung kata-kata Kejar Diskon, Flash Sale, FlashSale, Toped, Tokopedia, Tkpd, Shopee, Bukalapak, BL, Lazada, kata-kata kasar, atau unsur SARA.</string>
 
     <!--payment method bottom sheet-->
+    <string name="payment_method_title">Metode Pembayaran</string>
+    <string name="payment_method_content">Jenis metode pembayaran akan memengaruhi batas maksimal waktu pembayaran pesanan di campaign serta batas waktu stok produk ditahan oleh pembeli.</string>
+
+    <!--choose payment method bottom sheet-->
     <string name="choose_payment_method_title">Pilih Metode Pembayaran</string>
-    <string name="payment_method_point_1">Campaign ini hanya menggunakan metode pembayaran VA, kartu kredit, kartu debit, GoPay, dan pembayaran instan lainnya.</string>
-    <string name="payment_method_point_2">Batas Bayar Cepat: Pembeli harus melakukan pembayaran di bawah 5 menit.</string>
-    <string name="payment_method_point_3">Batas Bayar Reguler: Pembeli harus melakukan pembayaran di bawah 30 menit.</string>
-    <string name="payment_method_point_4">Jika pembeli gagal melakukan pembayaran dalam waktu yang ditentukan, stok produk otomatis dikembalikan dan dapat dibeli pembeli lain.</string>
+    <string name="choose_payment_method_point_1">Campaign ini hanya menggunakan metode pembayaran VA, kartu kredit, kartu debit, GoPay, dan pembayaran instan lainnya.</string>
+    <string name="choose_payment_method_point_2">Batas Bayar Cepat: Pembeli harus melakukan pembayaran di bawah 5 menit.</string>
+    <string name="choose_payment_method_point_3">Batas Bayar Reguler: Pembeli harus melakukan pembayaran di bawah 30 menit.</string>
+    <string name="choose_payment_method_point_4">Jika pembeli gagal melakukan pembayaran dalam waktu yang ditentukan, stok produk otomatis dikembalikan dan dapat dibeli pembeli lain.</string>
+
+    <!--buyer setting bottom sheet -->
+    <string name="buyer_setting_title">Pengaturan Pembeli</string>
+    <string name="buyer_setting_content">Sistem Tokopedia dapat mengidentifikasi hubungan antar pembeli (tidak terbatas dengan satu akun yang sama), sehingga produkmu dapat terdistribusi merata ke banyak pembeli yang berbeda.</string>
 
     <!--Manage highligh product Bottom Sheet-->
     <string name="manage_highlight_product_title">Atur Highlight</string>
@@ -167,4 +176,16 @@
     <string name="cancelcampaign_title_stop_question">Kenapa kamu ingin menghentikan campaign ini?</string>
     <string name="cancelcampaign_message_success">%s berhasil dihentikan.</string>
 
+    <!--Campaign Rule -->
+    <string name="campaign_rule">Pengaturan Campaign</string>
+    <string name="campaign_rule_payment_method">Metode pembayaran</string>
+    <string name="campaign_rule_choose_payment_method">Pilih metode pembayaran</string>
+    <string name="campaign_rule_instant_payment_method">Batas Bayar Cepat</string>
+    <string name="campaign_rule_reguler_payment_method">Batas Bayar Reguler</string>
+    <string name="campaign_rule_create_campaign_button_label">Buat Campaign</string>
+    <string name="campaign_rule_buyer_setting">Pengaturan pembeli</string>
+    <string name="campaign_rule_unique_account">Apakah pembeli yang sama boleh membeli produk di campaign ini dengan akses akun yang berbeda?</string>
+    <string name="campaign_rule_unique_account_tips_point_1">Pembeli yang sama hanya dapat melakukan transaksi dengan <b>satu akun.</b></string>
+    <string name="campaign_rule_unique_account_tips_point_2">Pembeli hanya dapat menggunakan <b>satu kali transaksi</b> dengan campaign ini.</string>
+    <string name="campaign_rule_campaign_relation">Apakah pembeli dari campaign sebelumnya dapat mengikuti campaign ini?</string>
 </resources>

@@ -4,12 +4,13 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
-import com.tokopedia.shop.flashsale.presentation.creation.rule.bottomsheet.MerchantCampaignTNCViewModel
 import com.tokopedia.shop.flashsale.di.scope.ShopFlashSaleScope
+import com.tokopedia.shop.flashsale.presentation.creation.information.bottomsheet.CampaignDataPickerViewModel
+import com.tokopedia.shop.flashsale.presentation.creation.rule.CampaignRuleViewModel
+import com.tokopedia.shop.flashsale.presentation.creation.rule.bottomsheet.MerchantCampaignTNCViewModel
+import com.tokopedia.shop.flashsale.presentation.draft.viewmodel.DraftDeleteViewModel
 import com.tokopedia.shop.flashsale.presentation.list.container.CampaignListContainerViewModel
 import com.tokopedia.shop.flashsale.presentation.list.list.CampaignListViewModel
-import com.tokopedia.shop.flashsale.presentation.creation.information.bottomsheet.CampaignDataPickerViewModel
-import com.tokopedia.shop.flashsale.presentation.draft.viewmodel.DraftDeleteViewModel
 import dagger.Binds
 import dagger.multibindings.IntoMap
 
@@ -44,4 +45,9 @@ abstract class ShopFlashSaleViewModelModule {
     @IntoMap
     @ViewModelKey(CampaignDataPickerViewModel::class)
     internal abstract fun provideCampaignDatePickerBottomSheet(viewModel: CampaignDataPickerViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(CampaignRuleViewModel::class)
+    internal abstract fun provideCampaignRuleViewModel(viewModel: CampaignRuleViewModel): ViewModel
 }

@@ -4,14 +4,16 @@ import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.shop.flashsale.di.module.ShopFlashSaleModule
 import com.tokopedia.shop.flashsale.di.module.ShopFlashSaleViewModelModule
 import com.tokopedia.shop.flashsale.di.scope.ShopFlashSaleScope
-import com.tokopedia.shop.flashsale.presentation.list.container.CampaignListActivity
-import com.tokopedia.shop.flashsale.presentation.list.container.CampaignListContainerFragment
-import com.tokopedia.shop.flashsale.presentation.list.list.CampaignListFragment
 import com.tokopedia.shop.flashsale.presentation.creation.information.CampaignInformationActivity
 import com.tokopedia.shop.flashsale.presentation.creation.information.CampaignInformationFragment
 import com.tokopedia.shop.flashsale.presentation.creation.information.bottomsheet.CampaignDatePickerBottomSheet
+import com.tokopedia.shop.flashsale.presentation.creation.rule.CampaignRuleActivity
+import com.tokopedia.shop.flashsale.presentation.creation.rule.CampaignRuleFragment
 import com.tokopedia.shop.flashsale.presentation.creation.rule.bottomsheet.MerchantCampaignTNCBottomSheet
 import com.tokopedia.shop.flashsale.presentation.draft.bottomsheet.DraftDeleteBottomSheet
+import com.tokopedia.shop.flashsale.presentation.list.container.CampaignListActivity
+import com.tokopedia.shop.flashsale.presentation.list.container.CampaignListContainerFragment
+import com.tokopedia.shop.flashsale.presentation.list.list.CampaignListFragment
 import dagger.Component
 
 @ShopFlashSaleScope
@@ -30,4 +32,7 @@ interface ShopFlashSaleComponent {
     fun inject(bottomSheet: DraftDeleteBottomSheet)
     fun inject(bottomSheet: CampaignDatePickerBottomSheet)
     fun inject(fragment: MerchantCampaignTNCBottomSheet)
+
+    fun inject(activity: CampaignRuleActivity)
+    fun inject(fragment: CampaignRuleFragment)
 }
