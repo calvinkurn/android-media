@@ -7,8 +7,6 @@ import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.power_merchant.subscribe.R
 import com.tokopedia.power_merchant.subscribe.analytics.tracking.PowerMerchantTracking
 import com.tokopedia.power_merchant.subscribe.databinding.ItemFeeServiceBinding
-import com.tokopedia.power_merchant.subscribe.databinding.WidgetUpgradePmProBinding
-import com.tokopedia.power_merchant.subscribe.view.model.WidgetDividerUiModel
 import com.tokopedia.power_merchant.subscribe.view.model.WidgetFeeServiceUiModel
 import com.tokopedia.utils.view.binding.viewBinding
 
@@ -18,10 +16,9 @@ import com.tokopedia.utils.view.binding.viewBinding
 
 class FeeServiceWidget(
     itemView: View,
-    private val listener: PotentialWidget.Listener,
+    private val listener: Listener,
     private val powerMerchantTracking: PowerMerchantTracking
-) :
-    AbstractViewHolder<WidgetFeeServiceUiModel>(itemView) {
+) : AbstractViewHolder<WidgetFeeServiceUiModel>(itemView) {
 
     companion object {
         val RES_LAYOUT = R.layout.item_fee_service
@@ -39,6 +36,7 @@ class FeeServiceWidget(
                 onLearnFeeClicked(element)
             }
             root.addOnImpressionListener(element.impressHolder){
+                listener.setOnServiceFeeViewBind(itemView)
                 powerMerchantTracking.sendEventImpressFeeService(element.shopScore.toString())
             }
         }
@@ -47,5 +45,10 @@ class FeeServiceWidget(
     private fun onLearnFeeClicked(element: WidgetFeeServiceUiModel) {
         listener.showServiceFeeByCategory()
         powerMerchantTracking.sendEventClickFeeService(element.shopScore.orZero().toString())
+    }
+
+    interface Listener {
+        fun showServiceFeeByCategory()
+        fun setOnServiceFeeViewBind(view: View)
     }
 }
