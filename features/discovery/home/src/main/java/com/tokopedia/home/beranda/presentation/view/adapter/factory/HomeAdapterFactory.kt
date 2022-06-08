@@ -72,7 +72,8 @@ class HomeAdapterFactory(private val listener: HomeCategoryListener, private val
                          private val homePayLaterWidgetListener: HomePayLaterWidgetListener,
                          private val specialReleaseComponentListener: SpecialReleaseComponentListener,
                          private val merchantVoucherComponentListener: MerchantVoucherComponentListener,
-                         private val cueWidgetCategoryListener: CueWidgetCategoryListener
+                         private val cueWidgetCategoryListener: CueWidgetCategoryListener,
+                         private val missionWidgetComponentListener: MissionWidgetComponentListener
                          ) :
         BaseAdapterTypeFactory(),
         HomeTypeFactory, HomeComponentTypeFactory, RecommendationTypeFactory,
