@@ -1,14 +1,12 @@
 package com.tokopedia.tokofood.feature.merchant.presentation.viewmodel
 
 import androidx.lifecycle.ViewModel
+import com.tokopedia.kotlin.extensions.view.getCurrencyFormatted
 import com.tokopedia.tokofood.common.presentation.uimodel.UpdateParam
-import com.tokopedia.tokofood.common.util.CurrencyFormatter
 import com.tokopedia.tokofood.feature.merchant.presentation.mapper.TokoFoodMerchantUiModelMapper
 import com.tokopedia.tokofood.feature.merchant.presentation.model.AddOnUiModel
 import com.tokopedia.tokofood.feature.merchant.presentation.model.CustomListItem
 import com.tokopedia.tokofood.feature.merchant.presentation.model.ProductUiModel
-import java.text.NumberFormat
-import java.util.*
 import javax.inject.Inject
 
 class OrderCustomizationViewModel @Inject constructor(
@@ -29,7 +27,7 @@ class OrderCustomizationViewModel @Inject constructor(
     }
 
     fun formatSubtotalPrice(subTotalPrice: Double): String {
-        return CurrencyFormatter.formatToRupiahFormat(subTotalPrice)
+        return subTotalPrice.getCurrencyFormatted()
     }
 
     fun getCustomListItems(cartId: String, productUiModel: ProductUiModel): List<CustomListItem> {

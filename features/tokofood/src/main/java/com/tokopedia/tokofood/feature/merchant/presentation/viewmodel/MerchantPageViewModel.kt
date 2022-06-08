@@ -4,11 +4,11 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.ZERO
+import com.tokopedia.kotlin.extensions.view.getCurrencyFormatted
 import com.tokopedia.tokofood.common.domain.response.CartTokoFood
 import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFoodProduct
 import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFoodProductVariant
 import com.tokopedia.tokofood.common.presentation.uimodel.UpdateParam
-import com.tokopedia.tokofood.common.util.CurrencyFormatter
 import com.tokopedia.tokofood.common.util.ResourceProvider
 import com.tokopedia.tokofood.feature.merchant.domain.model.response.*
 import com.tokopedia.tokofood.feature.merchant.domain.usecase.GetMerchantDataUseCase
@@ -249,7 +249,7 @@ class MerchantPageViewModel @Inject constructor(
             CustomOrderDetail(
                     cartId = product.cartId,
                     subTotal = subtotal,
-                    subTotalFmt = CurrencyFormatter.formatToRupiahFormat(subtotal),
+                    subTotalFmt = subtotal.getCurrencyFormatted(),
                     qty = product.quantity,
                     customListItems = mapTokoFoodVariantsToCustomListItems(
                             variants = product.variants,

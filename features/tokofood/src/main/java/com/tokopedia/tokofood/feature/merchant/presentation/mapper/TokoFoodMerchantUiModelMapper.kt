@@ -2,13 +2,13 @@ package com.tokopedia.tokofood.feature.merchant.presentation.mapper
 
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.UriUtil
+import com.tokopedia.kotlin.extensions.view.getCurrencyFormatted
 import com.tokopedia.tokofood.common.constants.ShareComponentConstants
 import com.tokopedia.tokofood.common.domain.metadata.CartMetadataVariantTokoFood
 import com.tokopedia.tokofood.common.domain.response.CartTokoFood
 import com.tokopedia.tokofood.common.presentation.uimodel.UpdateParam
 import com.tokopedia.tokofood.common.presentation.uimodel.UpdateProductParam
 import com.tokopedia.tokofood.common.presentation.uimodel.UpdateProductVariantParam
-import com.tokopedia.tokofood.common.util.CurrencyFormatter
 import com.tokopedia.tokofood.feature.merchant.domain.model.response.TokoFoodCategoryFilter
 import com.tokopedia.tokofood.feature.merchant.presentation.model.*
 
@@ -77,7 +77,7 @@ object TokoFoodMerchantUiModelMapper {
 
     fun mapCartTokoFoodToCustomOrderDetails(cartTokoFood: CartTokoFood, productUiModel: ProductUiModel): CustomOrderDetail {
         val selectedCustomListItems = mapCartTokoFoodVariantsToSelectedCustomListItems(
-                orderNote = cartTokoFood.getMetadata()?.notes ?: "",
+                orderNote = cartTokoFood.getMetadata()?.notes.orEmpty(),
                 masterData = productUiModel.customListItems,
                 selectedVariants = cartTokoFood.getMetadata()?.variants ?: listOf()
         )
@@ -86,7 +86,7 @@ object TokoFoodMerchantUiModelMapper {
                 quantity = productUiModel.orderQty,
                 addOnUiModels = selectedCustomListItems.map { it.addOnUiModel }
         )
-        val subTotalFmt = CurrencyFormatter.formatToRupiahFormat(subTotal)
+        val subTotalFmt = subTotal.getCurrencyFormatted()
         return CustomOrderDetail(
                 cartId = cartTokoFood.cartId,
                 subTotal = subTotal,
