@@ -57,19 +57,19 @@ class ChoosePaymentMethodBottomSheet : BottomSheetUnify() {
     private fun setupContent() {
         paymentMethodPoint1?.apply {
             text =
-                SpannableString(getString(R.string.payment_method_point_1)).toBulletSpan()
+                SpannableString(getString(R.string.choose_payment_method_point_1)).toBulletSpan()
         }
         paymentMethodPoint2?.apply {
             text =
-                SpannableString(getString(R.string.payment_method_point_2)).toBulletSpan()
+                SpannableString(getString(R.string.choose_payment_method_point_2)).toBulletSpan()
         }
         paymentMethodPoint3?.apply {
             text =
-                SpannableString(getString(R.string.payment_method_point_3)).toBulletSpan()
+                SpannableString(getString(R.string.choose_payment_method_point_3)).toBulletSpan()
         }
         paymentMethodPoint4?.run {
             text =
-                SpannableString(getString(R.string.payment_method_point_4)).toBulletSpan()
+                SpannableString(getString(R.string.choose_payment_method_point_4)).toBulletSpan()
         }
     }
 }
