@@ -675,8 +675,8 @@ class PlayBottomSheetFragment @Inject constructor(
 
         val warehouseId = userLocalData.warehouses.find {
             it.service_type == userLocalData.service_type
-        }?.warehouse_id.toString()
+        }?.warehouse_id ?: 0
 
-        playViewModel.submitAction(SendWarehouseId(isOOC = userLocalData.isOutOfCoverage(), id = warehouseId))
+        playViewModel.submitAction(SendWarehouseId(isOOC = userLocalData.isOutOfCoverage(), id = warehouseId.toString()))
     }
 }
