@@ -157,18 +157,20 @@
       "categoryId" : ".*"
     },
     {
-      "eventCategory": ".*",
+      "eventCategory": "os microsite",
       "event": "view_item",
-      "eventAction": "impression banner dynamic channel left carousel",
+      "eventAction": "impression banner - dynamic channel left carousel",
       "sessionIris" : ".*",
       "promotions": [{
-        "item_id": ".*",
+        "item_id": ".*_.*",
         "creative_slot": ".*",
         "creative_name": ".*",
-        "creative_url": ".*",
-        "item_name": ".*"
+        "item_name": "/official-store/.* - dynamic channel left carousel - .* - .*"
       }],
-      "eventLabel": ".*"
+      "eventLabel": "dynamic channel left carousel - .* - .* - .*",
+      "businessUnit" : "home & browse",
+      "userId" : ".*",
+      "currentSite" : "tokopediamarketplace"
     },
     {
       "eventCategory": ".*",
