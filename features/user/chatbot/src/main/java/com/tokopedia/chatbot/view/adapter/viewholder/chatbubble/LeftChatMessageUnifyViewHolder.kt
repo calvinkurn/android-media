@@ -52,6 +52,7 @@ class LeftChatMessageUnifyViewHolder(
 
         if (message.parentReply != null) {
             val senderName = mapSenderName(message.parentReply!!)
+            customChatLayout?.fxChat?.background = bg
             customChatLayout?.fxChat?.bringToFront()
             setupReplyBubble(senderName,message)
         } else {
