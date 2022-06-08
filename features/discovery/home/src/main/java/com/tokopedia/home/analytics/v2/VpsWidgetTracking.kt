@@ -32,8 +32,7 @@ object VpsWidgetTracking : BaseTrackerConst() {
                         ),
                         creative = grid.attribution,
                         name = Ecommerce.PROMOTION_NAME.format(position, VPS_NAME, channel.channelHeader.name),
-                        position = (index + 1).toString(),
-                        creativeUrl = channel.channelBanner.applink
+                        position = (index + 1).toString()
                 )})
                 .appendBusinessUnit(TrackingConst.DEFAULT_BUSINESS_UNIT)
                 .appendCurrentSite(TrackingConst.DEFAULT_CURRENT_SITE)
