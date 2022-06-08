@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.tokofood.databinding.BottomsheetOrderInfoLayoutBinding
 import com.tokopedia.tokofood.feature.merchant.presentation.adapter.OrderDetailAdapter
 import com.tokopedia.tokofood.feature.merchant.presentation.model.CustomOrderDetail
@@ -19,14 +20,25 @@ class CustomOrderDetailBottomSheet(private val clickListener: OnCustomOrderDetai
     interface OnCustomOrderDetailClickListener {
         fun onDeleteCustomOrderButtonClicked(cartId: String, productId: String)
         fun onUpdateCustomOrderQtyButtonClicked(productId: String, quantity: Int, customOrderDetail: CustomOrderDetail)
-        fun onNavigateToOrderCustomizationPage(cartId: String, productUiModel: ProductUiModel)
+        fun onNavigateToOrderCustomizationPage(cartId: String, productUiModel: ProductUiModel, productPosition: Int)
     }
 
     companion object {
+
+        const val BUNDLE_KEY_PRODUCT_POSITION = "PRODUCT_POSITION"
         @JvmStatic
         fun createInstance(clickListener: OnCustomOrderDetailClickListener): CustomOrderDetailBottomSheet {
-            return CustomOrderDetailBottomSheet(clickListener)
+            return CustomOrderDetailBottomSheet(clickListener).apply {
+                arguments = Bundle().apply {
+                    putInt(BUNDLE_KEY_PRODUCT_POSITION, productPosition)
+                }
+            }
         }
+    }
+
+
+    private val productPosition by lazy {
+        arguments?.getInt(BUNDLE_KEY_PRODUCT_POSITION).orZero()
     }
 
     private var binding: BottomsheetOrderInfoLayoutBinding? = null
@@ -81,7 +93,7 @@ class CustomOrderDetailBottomSheet(private val clickListener: OnCustomOrderDetai
 
     override fun onEditButtonClicked(cartId: String) {
         productUiModel?.run {
-            clickListener.onNavigateToOrderCustomizationPage(cartId = cartId, productUiModel = this)
+            clickListener.onNavigateToOrderCustomizationPage(cartId = cartId, productUiModel = this, productPosition)
         }
     }
 

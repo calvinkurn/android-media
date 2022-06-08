@@ -4,26 +4,50 @@ import android.content.Context
 import android.graphics.Paint
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.kotlin.extensions.view.ViewHintListener
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
+import com.tokopedia.kotlin.extensions.view.isMoreThanZero
+import com.tokopedia.kotlin.extensions.view.isVisible
+import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.tokofood.R
 import com.tokopedia.tokofood.databinding.TokofoodProductCardLayoutBinding
+import com.tokopedia.tokofood.feature.merchant.presentation.model.ProductListItem
 import com.tokopedia.tokofood.feature.merchant.presentation.model.ProductUiModel
 
 class ProductCardViewHolder(
-        private val binding: TokofoodProductCardLayoutBinding,
-        private val clickListener: OnProductCardItemClickListener
+    private val binding: TokofoodProductCardLayoutBinding,
+    private val clickListener: OnProductCardItemClickListener
 ) : RecyclerView.ViewHolder(binding.root) {
 
     interface OnProductCardItemClickListener {
-        fun onProductCardClicked(productUiModel: ProductUiModel, cardPositions: Pair<Int, Int>)
-        fun onAtcButtonClicked(productUiModel: ProductUiModel, cardPositions: Pair<Int, Int>)
-        fun onAddNoteButtonClicked(productId: String, orderNote: String, cardPositions: Pair<Int, Int>)
+        fun onProductCardClicked(productListItem: ProductListItem, cardPositions: Pair<Int, Int>)
+        fun onAtcButtonClicked(productListItem: ProductListItem, cardPositions: Pair<Int, Int>)
+        fun onAddNoteButtonClicked(
+            productId: String,
+            orderNote: String,
+            cardPositions: Pair<Int, Int>
+        )
+
         fun onDeleteButtonClicked(cartId: String, productId: String, cardPositions: Pair<Int, Int>)
-        fun onIncreaseQtyButtonClicked(productId: String, quantity: Int, cardPositions: Pair<Int, Int>)
-        fun onDecreaseQtyButtonClicked(productId: String, quantity: Int, cardPositions: Pair<Int, Int>)
+        fun onIncreaseQtyButtonClicked(
+            productId: String,
+            quantity: Int,
+            cardPositions: Pair<Int, Int>
+        )
+
+        fun onDecreaseQtyButtonClicked(
+            productId: String,
+            quantity: Int,
+            cardPositions: Pair<Int, Int>
+        )
+
+        fun onImpressProductCard(productListItem: ProductListItem, position: Int)
     }
 
     private var context: Context? = null
+
+    private var productListItem: ProductListItem? = null
 
     init {
         context = binding.root.context
@@ -31,35 +55,38 @@ class ProductCardViewHolder(
             // open product bottom sheet
             val dataSetPosition = binding.root.getTag(R.id.dataset_position) as Int
             val productUiModel = binding.root.getTag(R.id.product_ui_model) as ProductUiModel
-            clickListener.onProductCardClicked(
-                    productUiModel = productUiModel,
+            productListItem?.let { productListItem ->
+                clickListener.onProductCardClicked(
+                    productListItem,
                     cardPositions = Pair(dataSetPosition, adapterPosition)
-            )
+                )
+            }
         }
         binding.atcButton.setOnClickListener {
-            val productUiModel = binding.root.getTag(R.id.product_ui_model) as ProductUiModel
             val dataSetPosition = binding.root.getTag(R.id.dataset_position) as Int
-            clickListener.onAtcButtonClicked(
-                    productUiModel = productUiModel,
+            productListItem?.let { productListItem ->
+                clickListener.onAtcButtonClicked(
+                    productListItem,
                     cardPositions = Pair(dataSetPosition, adapterPosition)
-            )
+                )
+            }
         }
         binding.addCatatanButton.setOnClickListener {
             val productUiModel = binding.root.getTag(R.id.product_ui_model) as ProductUiModel
             val dataSetPosition = binding.root.getTag(R.id.dataset_position) as Int
             clickListener.onAddNoteButtonClicked(
-                    productId = productUiModel.id,
-                    orderNote = productUiModel.orderNote,
-                    cardPositions = Pair(dataSetPosition, adapterPosition)
+                productId = productUiModel.id,
+                orderNote = productUiModel.orderNote,
+                cardPositions = Pair(dataSetPosition, adapterPosition)
             )
         }
         binding.removeProductFromCartButton.setOnClickListener {
             val productUiModel = binding.root.getTag(R.id.product_ui_model) as ProductUiModel
             val dataSetPosition = binding.root.getTag(R.id.dataset_position) as Int
             clickListener.onDeleteButtonClicked(
-                    cartId = productUiModel.cartId,
-                    productId = productUiModel.id,
-                    cardPositions = Pair(dataSetPosition, adapterPosition)
+                cartId = productUiModel.cartId,
+                productId = productUiModel.id,
+                cardPositions = Pair(dataSetPosition, adapterPosition)
             )
         }
         binding.qeuProductQtyEditor.setAddClickListener {
@@ -67,9 +94,9 @@ class ProductCardViewHolder(
             val dataSetPosition = binding.root.getTag(R.id.dataset_position) as Int
             val quantity = binding.qeuProductQtyEditor.getValue()
             clickListener.onIncreaseQtyButtonClicked(
-                    productId = productUiModel.id,
-                    quantity = quantity,
-                    cardPositions = Pair(dataSetPosition, adapterPosition)
+                productId = productUiModel.id,
+                quantity = quantity,
+                cardPositions = Pair(dataSetPosition, adapterPosition)
             )
         }
         binding.qeuProductQtyEditor.setSubstractListener {
@@ -78,22 +105,28 @@ class ProductCardViewHolder(
             val quantity = binding.qeuProductQtyEditor.getValue()
             if (quantity.isZero()) {
                 clickListener.onDeleteButtonClicked(
-                        cartId = productUiModel.cartId,
-                        productId = productUiModel.id,
-                        cardPositions = Pair(dataSetPosition, adapterPosition)
+                    cartId = productUiModel.cartId,
+                    productId = productUiModel.id,
+                    cardPositions = Pair(dataSetPosition, adapterPosition)
                 )
             } else {
                 clickListener.onDecreaseQtyButtonClicked(
-                        productId = productUiModel.id,
-                        quantity = quantity,
-                        cardPositions = Pair(dataSetPosition, adapterPosition)
+                    productId = productUiModel.id,
+                    quantity = quantity,
+                    cardPositions = Pair(dataSetPosition, adapterPosition)
                 )
             }
         }
     }
 
-    fun bindData(productUiModel: ProductUiModel, dataSetPosition: Int) {
+    fun bindData(
+        productListItem: ProductListItem,
+        productUiModel: ProductUiModel,
+        dataSetPosition: Int
+    ) {
         // bind product ui model and data set position
+        this.productListItem = productListItem
+        bindImpressionProductListener(productListItem, dataSetPosition)
         binding.root.setTag(R.id.product_ui_model, productUiModel)
         binding.root.setTag(R.id.dataset_position, dataSetPosition)
 
@@ -103,7 +136,8 @@ class ProductCardViewHolder(
         context?.run {
             // disabled condition
             if (productUiModel.isShopClosed) {
-                val greyColor = ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_NN400)
+                val greyColor =
+                    ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_NN400)
                 binding.productName.setTextColor(greyColor)
                 binding.productSummary.setTextColor(greyColor)
                 binding.productPrice.setTextColor(greyColor)
@@ -112,10 +146,14 @@ class ProductCardViewHolder(
             }
             // product is already added to cart
             if (productUiModel.isAtc) {
-                val greenColor = ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_GN50)
+                val greenColor =
+                    ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_GN50)
                 binding.productCell.setCardBackgroundColor(greenColor)
             } else {
-                val whiteColor = ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_Static_White)
+                val whiteColor = ContextCompat.getColor(
+                    this,
+                    com.tokopedia.unifyprinciples.R.color.Unify_Static_White
+                )
                 binding.productCell.setCardBackgroundColor(whiteColor)
             }
         }
@@ -160,7 +198,29 @@ class ProductCardViewHolder(
             val orderCount = customOrderCount.toString()
             binding.atcButton.text = context?.run { this.getString(com.tokopedia.tokofood.R.string.text_orders, orderCount) }
         } else {
-            binding.atcButton.text = context?.run { getString(com.tokopedia.tokofood.R.string.action_order) }
+            binding.atcButton.text =
+                context?.run { getString(com.tokopedia.tokofood.R.string.action_order) }
+        }
+    }
+
+    private fun bindImpressionProductListener(
+        productListItem: ProductListItem,
+        dataSetPosition: Int
+    ) {
+        binding.root.addOnImpressionListener(
+            productListItem,
+            createViewHintListener(productListItem, dataSetPosition)
+        )
+    }
+
+    private fun createViewHintListener(
+        productListItem: ProductListItem,
+        dataSetPosition: Int
+    ): ViewHintListener {
+        return object : ViewHintListener {
+            override fun onViewHint() {
+                clickListener.onImpressProductCard(productListItem, dataSetPosition)
+            }
         }
     }
 }

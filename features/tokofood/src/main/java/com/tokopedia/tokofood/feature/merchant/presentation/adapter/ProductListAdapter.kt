@@ -57,7 +57,8 @@ class ProductListAdapter(private val clickListener: OnProductCardItemClickListen
             PRODUCT_CARD.type -> {
                 val viewHolder = holder as ProductCardViewHolder
                 val productUiModel = productListItems[position].productUiModel
-                viewHolder.bindData(productUiModel, position)
+                val productListItem = productListItems[position]
+                viewHolder.bindData(productListItem, productUiModel, position)
             }
         }
     }

@@ -8,13 +8,14 @@ import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.tokofood.databinding.BottomsheetProductDetailLayoutBinding
+import com.tokopedia.tokofood.feature.merchant.presentation.model.ProductListItem
 import com.tokopedia.tokofood.feature.merchant.presentation.model.ProductUiModel
 import com.tokopedia.unifycomponents.BottomSheetUnify
 
 class ProductDetailBottomSheet(private val clickListener: OnProductDetailClickListener) : BottomSheetUnify() {
 
     interface OnProductDetailClickListener {
-        fun onAtcButtonClicked(productUiModel: ProductUiModel, cardPositions: Pair<Int, Int>)
+        fun onAtcButtonClicked(productListItem: ProductListItem, cardPositions: Pair<Int, Int>)
         fun onIncreaseQtyButtonClicked(productId: String, quantity: Int, cardPositions: Pair<Int, Int>)
         fun onNavigateToOrderCustomizationPage(cartId: String, productUiModel: ProductUiModel)
     }
@@ -42,7 +43,11 @@ class ProductDetailBottomSheet(private val clickListener: OnProductDetailClickLi
         arguments?.getParcelable(BUNDLE_KEY_PRODUCT_UI_MODEL) ?: ProductUiModel()
     }
 
+    private var sentMerchantTracker: (() -> Unit)? = null
+
     private var cardPositions: Pair<Int, Int>? = null
+
+    private var productListItem: ProductListItem? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val viewBinding = BottomsheetProductDetailLayoutBinding.inflate(inflater, container, false)
@@ -65,15 +70,19 @@ class ProductDetailBottomSheet(private val clickListener: OnProductDetailClickLi
 
     private fun setupView(productUiModel: ProductUiModel, binding: BottomsheetProductDetailLayoutBinding?) {
         binding?.atcButton?.setOnClickListener {
+            sentMerchantTracker?.invoke()
+
             this.cardPositions?.run {
                 if (productUiModel.isCustomizable) {
                     clickListener.onNavigateToOrderCustomizationPage(cartId = "", productUiModel = productUiModel)
                 }
                 if (!productUiModel.isAtc) {
-                    clickListener.onAtcButtonClicked(
-                            productUiModel = productUiModel,
+                    productListItem?.let { productListItem ->
+                        clickListener.onAtcButtonClicked(
+                            productListItem = productListItem,
                             cardPositions = this
-                    )
+                        )
+                    }
                 } else {
                     clickListener.onIncreaseQtyButtonClicked(
                             productId = productUiModel.id,
@@ -110,12 +119,20 @@ class ProductDetailBottomSheet(private val clickListener: OnProductDetailClickLi
         this.cardPositions = cardPositions
     }
 
+    fun setProductListItem(productListItem: ProductListItem) {
+        this.productListItem = productListItem
+    }
+
     fun show(fragmentManager: FragmentManager) {
         showNow(fragmentManager, this::class.java.simpleName)
     }
 
     fun setListener(listener: Listener) {
         this.listener = listener
+    }
+
+    fun sendTrackerInMerchantPage(sentMerchantTracker: () -> Unit) {
+        this.sentMerchantTracker = sentMerchantTracker
     }
 
     interface Listener {

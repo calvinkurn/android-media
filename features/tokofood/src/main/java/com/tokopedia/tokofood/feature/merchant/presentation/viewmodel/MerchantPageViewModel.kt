@@ -138,6 +138,7 @@ class MerchantPageViewModel @Inject constructor(
             val categoryHeader = ProductListItem(
                     listItemType = ProductListItemType.CATEGORY_HEADER,
                     productCategory = CategoryUiModel(
+                            id = category.id,
                             key = category.key,
                             title = category.categoryName
                     )
