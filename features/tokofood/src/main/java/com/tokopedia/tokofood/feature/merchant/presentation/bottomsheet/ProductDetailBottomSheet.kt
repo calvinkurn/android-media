@@ -103,6 +103,7 @@ class ProductDetailBottomSheet(private val clickListener: OnProductDetailClickLi
                 text = productUiModel.slashPriceFmt
             }
         }
+        if (productUiModel.isShopClosed || productUiModel.isOutOfStock) binding?.atcButton?.isEnabled = false
     }
 
     fun setSelectedCardPositions(cardPositions: Pair<Int, Int>) {

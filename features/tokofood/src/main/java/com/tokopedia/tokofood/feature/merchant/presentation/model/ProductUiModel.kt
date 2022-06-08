@@ -29,10 +29,6 @@ data class ProductUiModel(
 ) : Parcelable {
     @IgnoredOnParcel
     val isSlashPriceVisible = slashPriceFmt.isNotBlank()
-
     @IgnoredOnParcel
     val isCustomizable = customListItems.isNotEmpty()
-
-    @IgnoredOnParcel
-    val customOrderCount = customOrderDetails.size
 }

@@ -12,8 +12,10 @@ import com.tokopedia.tokofood.feature.merchant.presentation.model.CustomListItem
 import com.tokopedia.tokofood.feature.merchant.presentation.viewholder.OrderNoteInputViewHolder
 import com.tokopedia.tokofood.feature.merchant.presentation.viewholder.ProductAddOnViewHolder
 
-class CustomListAdapter(private val selectListener: ProductAddOnViewHolder.OnAddOnSelectListener)
-    : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class CustomListAdapter(
+        private val selectListener: ProductAddOnViewHolder.OnAddOnSelectListener,
+        private val textChangeListener: OrderNoteInputViewHolder.OnNoteTextChangeListener
+) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private var customListItems: MutableList<CustomListItem> = mutableListOf()
 
@@ -34,7 +36,7 @@ class CustomListAdapter(private val selectListener: ProductAddOnViewHolder.OnAdd
             else -> {
                 val binding = TokofoodItemOrderNoteLayoutBinding
                         .inflate(LayoutInflater.from(parent.context), parent, false)
-                OrderNoteInputViewHolder(binding)
+                OrderNoteInputViewHolder(binding, textChangeListener)
             }
         }
     }
@@ -48,7 +50,7 @@ class CustomListAdapter(private val selectListener: ProductAddOnViewHolder.OnAdd
             }
             ORDER_NOTE_INPUT.type -> {
                 val viewHolder = holder as OrderNoteInputViewHolder
-                viewHolder.bindData(customListItems[position].orderNote)
+                viewHolder.bindData(customListItems[position].orderNote, position)
             }
         }
     }
@@ -77,5 +79,9 @@ class CustomListAdapter(private val selectListener: ProductAddOnViewHolder.OnAdd
             }
             this.isSelected = isSelected
         }
+    }
+
+    fun updateOrderNote(orderNote:String, dataSetPosition: Int) {
+        customListItems.getOrNull(dataSetPosition)?.orderNote = orderNote
     }
 }

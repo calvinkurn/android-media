@@ -21,6 +21,7 @@ import com.tokopedia.tokofood.feature.merchant.presentation.adapter.CustomListAd
 import com.tokopedia.tokofood.feature.merchant.presentation.model.AddOnUiModel
 import com.tokopedia.tokofood.feature.merchant.presentation.model.CustomListItem
 import com.tokopedia.tokofood.feature.merchant.presentation.model.ProductUiModel
+import com.tokopedia.tokofood.feature.merchant.presentation.viewholder.OrderNoteInputViewHolder
 import com.tokopedia.tokofood.feature.merchant.presentation.viewholder.ProductAddOnViewHolder
 import com.tokopedia.tokofood.feature.merchant.presentation.viewmodel.OrderCustomizationViewModel
 import com.tokopedia.user.session.UserSessionInterface
@@ -30,7 +31,9 @@ import javax.inject.Inject
 
 @FlowPreview
 @ExperimentalCoroutinesApi
-class OrderCustomizationFragment : BaseMultiFragment(), ProductAddOnViewHolder.OnAddOnSelectListener {
+class OrderCustomizationFragment : BaseMultiFragment(),
+        ProductAddOnViewHolder.OnAddOnSelectListener,
+        OrderNoteInputViewHolder.OnNoteTextChangeListener {
 
     companion object {
 
@@ -121,17 +124,46 @@ class OrderCustomizationFragment : BaseMultiFragment(), ProductAddOnViewHolder.O
         val cartId = arguments?.getString(BUNDLE_KEY_CART_ID) ?: ""
         val merchantId = arguments?.getString(BUNDLE_KEY_MERCHANT_ID) ?: ""
 
+        context?.run {
+            if (cartId.isNotBlank()) binding?.atcButton?.text = getString(com.tokopedia.tokofood.R.string.action_update)
+        }
+
         productUiModel?.run {
+
+            binding?.tpgProductName?.text = productUiModel.name
+            binding?.qeuProductQtyEditor?.setValue(orderQty)
+
             val customListItems = viewModel.getCustomListItems(cartId, productUiModel)
             customListItems.run { setupCustomList(this) }
 
-            binding?.qeuProductQtyEditor?.setValue(orderQty)
+            viewModel.baseProductPrice = productUiModel.price
 
-            // set subtotal price if product is already added to cart
+            // no selections
             if (!isAtc) {
                 binding?.subtotalProductPriceLabel?.text = priceFmt
-                viewModel.subTotalPrice = productUiModel.price
             } else binding?.subtotalProductPriceLabel?.text = subTotalFmt
+
+            // setup quantity editor
+            binding?.qeuProductQtyEditor?.setAddClickListener {
+                val addOnUiModels = customListAdapter?.getCustomListItems()?.map { it.addOnUiModel }
+                val quantity = binding?.qeuProductQtyEditor?.getValue() ?: Int.ONE
+                val subTotalPrice = viewModel.calculateSubtotalPrice(
+                        baseProductPrice = viewModel.baseProductPrice,
+                        quantity = quantity,
+                        addOnUiModels = addOnUiModels?: listOf()
+                )
+                binding?.subtotalProductPriceLabel?.text = viewModel.formatSubtotalPrice(subTotalPrice)
+            }
+            binding?.qeuProductQtyEditor?.setSubstractListener {
+                val addOnUiModels = customListAdapter?.getCustomListItems()?.map { it.addOnUiModel }
+                val quantity = binding?.qeuProductQtyEditor?.getValue() ?: Int.ONE
+                val subTotalPrice = viewModel.calculateSubtotalPrice(
+                        baseProductPrice = viewModel.baseProductPrice,
+                        quantity = quantity,
+                        addOnUiModels = addOnUiModels?: listOf()
+                )
+                binding?.subtotalProductPriceLabel?.text = viewModel.formatSubtotalPrice(subTotalPrice)
+            }
 
             // setup atc button click listener
             binding?.atcButton?.setOnClickListener {
@@ -156,7 +188,6 @@ class OrderCustomizationFragment : BaseMultiFragment(), ProductAddOnViewHolder.O
                     )
                     if (viewModel.isEditingCustomOrder(cartId)) activityViewModel?.updateCart(updateParam = updateParam, source = SOURCE)
                     else activityViewModel?.addToCart(updateParam = updateParam, source = SOURCE)
-                    // TODO: implement callback
                     parentFragmentManager.popBackStack()
                 }
             }
@@ -164,7 +195,7 @@ class OrderCustomizationFragment : BaseMultiFragment(), ProductAddOnViewHolder.O
     }
 
     private fun setupCustomList(customListItems: List<CustomListItem>) {
-        customListAdapter = CustomListAdapter(this)
+        customListAdapter = CustomListAdapter(this, this)
         binding?.rvCustomList?.let {
             it.adapter = customListAdapter
             it.layoutManager = LinearLayoutManager(
@@ -177,9 +208,18 @@ class OrderCustomizationFragment : BaseMultiFragment(), ProductAddOnViewHolder.O
     }
 
     override fun onAddOnSelected(isSelected: Boolean, addOnPrice: Double, addOnPositions: Pair<Int, Int>) {
-        if (isSelected) viewModel.addSubTotalPrice(addOnPrice)
-        else viewModel.subtractSubTotalPrice(addOnPrice)
-        binding?.subtotalProductPriceLabel?.text = viewModel.subTotalPrice.toString()
         customListAdapter?.updateAddOnSelection(isSelected, addOnPositions)
+        val addOnUiModels = customListAdapter?.getCustomListItems()?.map { it.addOnUiModel }
+        val quantity = binding?.qeuProductQtyEditor?.getValue() ?: Int.ONE
+        val subTotalPrice = viewModel.calculateSubtotalPrice(
+                baseProductPrice = viewModel.baseProductPrice,
+                quantity = quantity,
+                addOnUiModels = addOnUiModels?: listOf()
+        )
+        binding?.subtotalProductPriceLabel?.text = viewModel.formatSubtotalPrice(subTotalPrice)
+    }
+
+    override fun onNoteTextChanged(orderNote: String, dataSetPosition: Int) {
+        customListAdapter?.updateOrderNote(orderNote, dataSetPosition)
     }
 }
