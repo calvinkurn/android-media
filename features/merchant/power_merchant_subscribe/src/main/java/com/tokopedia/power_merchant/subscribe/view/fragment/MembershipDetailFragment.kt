@@ -76,6 +76,15 @@ class MembershipDetailFragment : BaseDaggerFragment() {
     private var binding: FragmentMembershipDetailBinding? = null
     private val pagerAdapter by lazy { MembershipViewPagerAdapter() }
     private var data: MembershipDetailUiModel? = null
+    private val tabSelectedListener = object : TabLayout.OnTabSelectedListener {
+        override fun onTabSelected(tab: TabLayout.Tab?) {
+            setOnTabSelected()
+            sendTrackerOnTabClicked()
+        }
+
+        override fun onTabUnselected(tab: TabLayout.Tab?) {}
+        override fun onTabReselected(tab: TabLayout.Tab?) {}
+    }
 
     override fun getScreenName(): String = String.EMPTY
 
@@ -245,18 +254,11 @@ class MembershipDetailFragment : BaseDaggerFragment() {
 
             tabLayout.tabRippleColor = ColorStateList.valueOf(Color.TRANSPARENT)
             post {
+                tabLayout.addOnTabSelectedListener(tabSelectedListener)
+
                 if (activeTabIndex != RecyclerView.NO_POSITION) {
                     tabLayout.getTabAt(activeTabIndex)?.select()
                 }
-                tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
-                    override fun onTabSelected(tab: TabLayout.Tab?) {
-                        setOnTabSelected()
-                        sendTrackerOnTabClicked()
-                    }
-
-                    override fun onTabUnselected(tab: TabLayout.Tab?) {}
-                    override fun onTabReselected(tab: TabLayout.Tab?) {}
-                })
             }
         }
     }
