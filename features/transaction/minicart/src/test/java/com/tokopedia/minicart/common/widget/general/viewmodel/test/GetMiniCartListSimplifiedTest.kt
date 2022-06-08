@@ -343,4 +343,42 @@ class GetMiniCartListSimplifiedTest {
         //then
         assert(viewModel.miniCartSimplifiedData.value?.isShowMiniCartWidget == true)
     }
+
+    @Test
+    fun `WHEN total product count is more than zero THEN isShowMiniCartWidget should be true`() {
+        //given
+        val shopId = listOf("123")
+
+        val mockResponse = DataProvider.provideGetMiniCartSimplifiedSuccessAllAvailable()
+        coEvery { getMiniCartListSimplifiedUseCase.setParams(any(), any()) } just Runs
+        coEvery { getMiniCartListSimplifiedUseCase.execute(any(), any()) } answers {
+            firstArg<(MiniCartSimplifiedData) -> Unit>().invoke(mockResponse)
+        }
+
+        //when
+        viewModel.getLatestWidgetState(shopId)
+
+        //then
+        assert(viewModel.miniCartSimplifiedData.value?.miniCartWidgetData?.totalProductCount ?: 0 > 0)
+        assert(viewModel.miniCartSimplifiedData.value?.isShowMiniCartWidget == true)
+    }
+
+    @Test
+    fun `WHEN total product count is zero THEN isShowMiniCartWidget should be false`() {
+        //given
+        val shopId = listOf("123")
+
+        val mockResponse = DataProvider.provideGetMiniCartSimplifiedSuccessEmpty()
+        coEvery { getMiniCartListSimplifiedUseCase.setParams(any(), any()) } just Runs
+        coEvery { getMiniCartListSimplifiedUseCase.execute(any(), any()) } answers {
+            firstArg<(MiniCartSimplifiedData) -> Unit>().invoke(mockResponse)
+        }
+
+        //when
+        viewModel.getLatestWidgetState(shopId)
+
+        //then
+        assert(viewModel.miniCartSimplifiedData.value?.miniCartWidgetData?.totalProductCount ?: 0 == 0)
+        assert(viewModel.miniCartSimplifiedData.value?.isShowMiniCartWidget == false)
+    }
 }
