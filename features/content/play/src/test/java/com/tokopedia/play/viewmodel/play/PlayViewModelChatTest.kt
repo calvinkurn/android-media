@@ -1,6 +1,7 @@
 package com.tokopedia.play.viewmodel.play
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import androidx.lifecycle.viewModelScope
 import com.tokopedia.play.helper.ClassBuilder
 import com.tokopedia.play.helper.NoValueException
 import com.tokopedia.play.helper.getOrAwaitValue
@@ -79,6 +80,7 @@ class PlayViewModelChatTest {
         }
 
         dispatchers.coroutineDispatcher.cancel()
+        robot.viewModel.viewModelScope.cancel()
 
         robot.viewModel.chats.value.last()
             .assertEqualTo(
@@ -116,6 +118,7 @@ class PlayViewModelChatTest {
         }
 
         dispatchers.coroutineDispatcher.cancel()
+        robot.viewModel.viewModelScope.cancel()
 
         robot.viewModel.chats.value.assertEmpty()
     }
