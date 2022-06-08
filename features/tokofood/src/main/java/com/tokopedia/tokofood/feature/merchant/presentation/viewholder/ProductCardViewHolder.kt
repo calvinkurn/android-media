@@ -9,6 +9,7 @@ import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.isZero
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.tokofood.R
 import com.tokopedia.tokofood.databinding.TokofoodProductCardLayoutBinding
 import com.tokopedia.tokofood.feature.merchant.presentation.model.ProductListItem
@@ -128,6 +129,10 @@ class ProductCardViewHolder(
         bindImpressionProductListener(productListItem, dataSetPosition)
         binding.root.setTag(R.id.product_ui_model, productUiModel)
         binding.root.setTag(R.id.dataset_position, dataSetPosition)
+
+        // disable atc button if product is out of stock
+        binding.atcButton.isEnabled = !productUiModel.isOutOfStock
+
         context?.run {
             // disabled condition
             if (productUiModel.isShopClosed) {
@@ -167,10 +172,13 @@ class ProductCardViewHolder(
                 text = productUiModel.slashPriceFmt
             }
         }
-
-        binding.orderDetailLayout.isVisible = productUiModel.isAtc
-        binding.atcButton.isVisible = !productUiModel.isAtc
-
+        if (productUiModel.isCustomizable) {
+            binding.orderDetailLayout.hide()
+            binding.atcButton.show()
+        } else {
+            binding.orderDetailLayout.isVisible = productUiModel.isAtc
+            binding.atcButton.isVisible = !productUiModel.isAtc
+        }
         if (binding.orderDetailLayout.isVisible) {
             context?.run {
                 if (productUiModel.orderNote.isBlank()) {
@@ -184,16 +192,11 @@ class ProductCardViewHolder(
             // set order detail quantity
             binding.qeuProductQtyEditor.setValue(productUiModel.orderQty)
         }
-
         // atc button wording e.g. Pesan or 2 Pesanan
-        if (productUiModel.customOrderCount.isMoreThanZero()) {
-            val orderCount = productUiModel.customOrderCount.toString()
-            binding.atcButton.text = context?.run {
-                this.getString(
-                    com.tokopedia.tokofood.R.string.text_orders,
-                    orderCount
-                )
-            }
+        val customOrderCount = productUiModel.customOrderDetails.size
+        if (customOrderCount.isMoreThanZero() && productUiModel.isCustomizable) {
+            val orderCount = customOrderCount.toString()
+            binding.atcButton.text = context?.run { this.getString(com.tokopedia.tokofood.R.string.text_orders, orderCount) }
         } else {
             binding.atcButton.text =
                 context?.run { getString(com.tokopedia.tokofood.R.string.action_order) }

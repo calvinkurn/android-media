@@ -1,44 +1,29 @@
 package com.tokopedia.tokofood.feature.merchant.presentation.viewmodel
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.ZERO
+import com.tokopedia.kotlin.extensions.view.getCurrencyFormatted
+import com.tokopedia.tokofood.common.domain.response.CartTokoFood
 import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFoodProduct
 import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFoodProductVariant
 import com.tokopedia.tokofood.common.presentation.uimodel.UpdateParam
 import com.tokopedia.tokofood.common.util.ResourceProvider
-import com.tokopedia.tokofood.feature.merchant.domain.model.response.GetMerchantDataResponse
-import com.tokopedia.tokofood.feature.merchant.domain.model.response.TokoFoodCatalogVariantDetail
-import com.tokopedia.tokofood.feature.merchant.domain.model.response.TokoFoodCatalogVariantOptionDetail
-import com.tokopedia.tokofood.feature.merchant.domain.model.response.TokoFoodCategoryCatalog
-import com.tokopedia.tokofood.feature.merchant.domain.model.response.TokoFoodCategoryFilter
-import com.tokopedia.tokofood.feature.merchant.domain.model.response.TokoFoodMerchantOpsHour
-import com.tokopedia.tokofood.feature.merchant.domain.model.response.TokoFoodMerchantProfile
-import com.tokopedia.tokofood.feature.merchant.domain.model.response.TokoFoodTickerDetail
+import com.tokopedia.tokofood.feature.merchant.domain.model.response.*
 import com.tokopedia.tokofood.feature.merchant.domain.usecase.GetMerchantDataUseCase
 import com.tokopedia.tokofood.feature.merchant.presentation.enums.CarouselDataType
 import com.tokopedia.tokofood.feature.merchant.presentation.enums.CustomListItemType
 import com.tokopedia.tokofood.feature.merchant.presentation.enums.ProductListItemType
-import com.tokopedia.tokofood.feature.merchant.presentation.enums.SelectionControlType
 import com.tokopedia.tokofood.feature.merchant.presentation.enums.SelectionControlType.MULTIPLE_SELECTION
 import com.tokopedia.tokofood.feature.merchant.presentation.enums.SelectionControlType.SINGLE_SELECTION
 import com.tokopedia.tokofood.feature.merchant.presentation.mapper.TokoFoodMerchantUiModelMapper
-import com.tokopedia.tokofood.feature.merchant.presentation.model.AddOnUiModel
-import com.tokopedia.tokofood.feature.merchant.presentation.model.CarouselData
-import com.tokopedia.tokofood.feature.merchant.presentation.model.CategoryUiModel
-import com.tokopedia.tokofood.feature.merchant.presentation.model.CustomListItem
-import com.tokopedia.tokofood.feature.merchant.presentation.model.CustomOrderDetail
-import com.tokopedia.tokofood.feature.merchant.presentation.model.MerchantOpsHour
-import com.tokopedia.tokofood.feature.merchant.presentation.model.OptionUiModel
-import com.tokopedia.tokofood.feature.merchant.presentation.model.ProductListItem
-import com.tokopedia.tokofood.feature.merchant.presentation.model.ProductUiModel
+import com.tokopedia.tokofood.feature.merchant.presentation.model.*
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
+import com.tokopedia.utils.lifecycle.SingleLiveEvent
 import kotlinx.coroutines.withContext
 import java.util.*
 import javax.inject.Inject
@@ -49,11 +34,13 @@ class MerchantPageViewModel @Inject constructor(
         private val getMerchantDataUseCase: GetMerchantDataUseCase
 ) : BaseViewModel(dispatchers.main) {
 
-    private val getMerchantDataResultLiveData = MutableLiveData<Result<GetMerchantDataResponse>>()
-    val getMerchantDataResult: LiveData<Result<GetMerchantDataResponse>> get() = getMerchantDataResultLiveData
+    private val getMerchantDataResultLiveData = SingleLiveEvent<Result<GetMerchantDataResponse>>()
+    val getMerchantDataResult: SingleLiveEvent<Result<GetMerchantDataResponse>> get() = getMerchantDataResultLiveData
 
     // map of productId to card positions info <dataset,adapter>
     val productMap: HashMap<String, Pair<Int, Int>> = hashMapOf()
+
+    var productListItems: MutableList<ProductListItem> = mutableListOf()
 
     var selectedProducts: List<CheckoutTokoFoodProduct> = listOf()
 
@@ -232,7 +219,7 @@ class MerchantPageViewModel @Inject constructor(
         val mutableProductListItems = productListItems.toMutableList()
         val selectedProductMap = selectedProducts.groupBy { it.productId }
         selectedProductMap.forEach { entry ->
-            if (entry.value.size > Int.ONE) {
+            if (entry.value.first().variants.isNotEmpty()) {
                 val selectedProductListItem = mutableProductListItems.firstOrNull() { productListItem ->
                     productListItem.productUiModel.id == entry.key
                 }
@@ -259,10 +246,11 @@ class MerchantPageViewModel @Inject constructor(
 
     private fun mapTokoFoodProductsToCustomOrderDetails(tokoFoodProducts: List<CheckoutTokoFoodProduct>): MutableList<CustomOrderDetail> {
         return tokoFoodProducts.map { product ->
+            val subtotal = calculateSubtotalPrice(product)
             CustomOrderDetail(
                     cartId = product.cartId,
-                    subTotal = 0.0,
-                    subTotalFmt = "0",
+                    subTotal = subtotal,
+                    subTotalFmt = subtotal.getCurrencyFormatted(),
                     qty = product.quantity,
                     customListItems = mapTokoFoodVariantsToCustomListItems(
                             variants = product.variants,
@@ -272,9 +260,31 @@ class MerchantPageViewModel @Inject constructor(
         }.toMutableList()
     }
 
+    private fun calculateSubtotalPrice(product: CheckoutTokoFoodProduct): Double {
+        val quantity = product.quantity
+        val baseProductPrice = product.price
+        var subTotalPrice = baseProductPrice
+        product.variants.forEach { variant ->
+            val selectedOptions = variant.options.filter { it.isSelected }
+            val subTotalOptionPrice = selectedOptions.sumOf { it.price }
+            subTotalPrice += subTotalOptionPrice
+        }
+        return subTotalPrice * quantity
+    }
+
     private fun mapTokoFoodVariantsToCustomListItems(variants: List<CheckoutTokoFoodProductVariant>, orderNote: String): List<CustomListItem> {
         val customListItems = mutableListOf<CustomListItem>()
         val addOns = variants.map { variant ->
+            val options = variant.options.map { option ->
+                OptionUiModel(
+                        isSelected = option.isSelected,
+                        id = option.optionId,
+                        name = option.name,
+                        price = option.price,
+                        priceFmt = option.priceFmt,
+                        selectionControlType = if (variant.rules.selectionRules.maxQuantity > Int.ONE) MULTIPLE_SELECTION else SINGLE_SELECTION
+                )
+            }
             CustomListItem(
                     listItemType = CustomListItemType.PRODUCT_ADD_ON,
                     addOnUiModel = AddOnUiModel(
@@ -284,16 +294,8 @@ class MerchantPageViewModel @Inject constructor(
                             isSelected = variant.options.count { it.isSelected } != Int.ZERO,
                             maxQty = variant.rules.selectionRules.maxQuantity,
                             minQty = variant.rules.selectionRules.minQuantity,
-                            options = variant.options.map { option ->
-                                OptionUiModel(
-                                        isSelected = option.isSelected,
-                                        id = option.optionId,
-                                        name = option.name,
-                                        price = option.price,
-                                        priceFmt = option.priceFmt,
-                                        selectionControlType = SelectionControlType.valueOf(variant.rules.selectionRules.type.toString())
-                                )
-                            }
+                            options = options,
+                            selectedAddOns = options.filter { it.isSelected }.map { it.name }
                     )
             )
         }
@@ -317,6 +319,13 @@ class MerchantPageViewModel @Inject constructor(
                 cartId = customOrderDetail.cartId,
                 productId = productId,
                 customOrderDetails = listOf(customOrderDetail)
+        )
+    }
+
+    fun mapCartTokoFoodToCustomOrderDetail(cartTokoFood: CartTokoFood, productUiModel: ProductUiModel): CustomOrderDetail {
+        return TokoFoodMerchantUiModelMapper.mapCartTokoFoodToCustomOrderDetails(
+                cartTokoFood = cartTokoFood,
+                productUiModel = productUiModel
         )
     }
 

@@ -25,48 +25,41 @@ class CustomOrderDetailBottomSheet(private val clickListener: OnCustomOrderDetai
 
     companion object {
 
-        const val BUNDLE_KEY_PRODUCT_UI_MODEL = "PRODUCT_UI_MODEL"
         const val BUNDLE_KEY_PRODUCT_POSITION = "PRODUCT_POSITION"
-
         @JvmStatic
-        fun createInstance(productUiModel: ProductUiModel,
-                           clickListener: OnCustomOrderDetailClickListener,
-                           productPosition: Int
-        ): CustomOrderDetailBottomSheet {
+        fun createInstance(clickListener: OnCustomOrderDetailClickListener): CustomOrderDetailBottomSheet {
             return CustomOrderDetailBottomSheet(clickListener).apply {
                 arguments = Bundle().apply {
-                    putParcelable(BUNDLE_KEY_PRODUCT_UI_MODEL, productUiModel)
                     putInt(BUNDLE_KEY_PRODUCT_POSITION, productPosition)
                 }
             }
         }
     }
 
-    private var binding: BottomsheetOrderInfoLayoutBinding? = null
-
-    private var adapter: OrderDetailAdapter = OrderDetailAdapter(this)
 
     private val productPosition by lazy {
         arguments?.getInt(BUNDLE_KEY_PRODUCT_POSITION).orZero()
     }
 
-    private val productUiModel: ProductUiModel by lazy {
-        arguments?.getParcelable(BUNDLE_KEY_PRODUCT_UI_MODEL) ?: ProductUiModel()
-    }
+    private var binding: BottomsheetOrderInfoLayoutBinding? = null
+
+    private var adapter: OrderDetailAdapter = OrderDetailAdapter(this)
+
+    private var productUiModel: ProductUiModel? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val viewBinding = BottomsheetOrderInfoLayoutBinding.inflate(inflater, container, false)
         binding = viewBinding
         setChild(viewBinding.root)
         clearContentPadding = true
-        setTitle(productUiModel.name)
+        productUiModel?.run { setTitle(this.name) }
         return super.onCreateView(inflater, container, savedInstanceState)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupView(binding)
-        renderData(productUiModel.customOrderDetails)
+        productUiModel?.run { renderData(this.customOrderDetails) }
     }
 
     override fun onDestroyView() {
@@ -76,7 +69,9 @@ class CustomOrderDetailBottomSheet(private val clickListener: OnCustomOrderDetai
 
     private fun setupView(binding: BottomsheetOrderInfoLayoutBinding?) {
         binding?.buttonAddCustom?.setOnClickListener {
-            clickListener.onNavigateToOrderCustomizationPage(cartId = "", productUiModel = productUiModel, productPosition)
+            productUiModel?.run {
+                clickListener.onNavigateToOrderCustomizationPage(cartId = "", productUiModel = this)
+            }
         }
         binding?.rvOrderInfo?.let {
             it.adapter = adapter
@@ -88,31 +83,45 @@ class CustomOrderDetailBottomSheet(private val clickListener: OnCustomOrderDetai
         adapter.setCustomOrderDetails(customOrderDetails)
     }
 
+    fun setProductUiModel(productUiModel: ProductUiModel) {
+        this.productUiModel = productUiModel
+    }
+
     fun show(fragmentManager: FragmentManager) {
         showNow(fragmentManager, this::class.java.simpleName)
     }
 
     override fun onEditButtonClicked(cartId: String) {
-        clickListener.onNavigateToOrderCustomizationPage(cartId = cartId, productUiModel = productUiModel, productPosition)
+        productUiModel?.run {
+            clickListener.onNavigateToOrderCustomizationPage(cartId = cartId, productUiModel = this, productPosition)
+        }
     }
 
-    override fun onDeleteButtonClicked(cartId: String) {
-        clickListener.onDeleteCustomOrderButtonClicked(cartId, productUiModel.id)
+    override fun onDeleteButtonClicked(dataSetPosition: Int, adapterPosition: Int, cartId: String) {
+        productUiModel?.run {
+            adapter.removeCustomProduct(dataSetPosition, adapterPosition)
+            clickListener.onDeleteCustomOrderButtonClicked(cartId, this.id)
+            if (adapter.getCustomOrderDetails().isEmpty()) dismiss()
+        }
     }
 
     override fun onIncreaseQtyButtonClicked(quantity: Int, customOrderDetail: CustomOrderDetail) {
-        clickListener.onUpdateCustomOrderQtyButtonClicked(
-                customOrderDetail = customOrderDetail,
-                quantity = quantity,
-                productId = productUiModel.id
-        )
+        productUiModel?.run {
+            clickListener.onUpdateCustomOrderQtyButtonClicked(
+                    customOrderDetail = customOrderDetail,
+                    quantity = quantity,
+                    productId = this.id
+            )
+        }
     }
 
     override fun onDecreaseQtyButtonClicked(quantity: Int, customOrderDetail: CustomOrderDetail) {
-        clickListener.onUpdateCustomOrderQtyButtonClicked(
-                customOrderDetail = customOrderDetail,
-                quantity = quantity,
-                productId = productUiModel.id
-        )
+        productUiModel?.run {
+            clickListener.onUpdateCustomOrderQtyButtonClicked(
+                    customOrderDetail = customOrderDetail,
+                    quantity = quantity,
+                    productId = this.id
+            )
+        }
     }
 }

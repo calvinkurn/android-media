@@ -17,7 +17,7 @@ class OrderDetailViewHolder(
 
     interface OnOrderDetailItemClickListener {
         fun onEditButtonClicked(cartId: String)
-        fun onDeleteButtonClicked(cartId: String)
+        fun onDeleteButtonClicked(dataSetPosition: Int, adapterPosition: Int, cartId: String)
         fun onIncreaseQtyButtonClicked(quantity: Int, customOrderDetail: CustomOrderDetail)
         fun onDecreaseQtyButtonClicked(quantity: Int, customOrderDetail: CustomOrderDetail)
     }
@@ -37,8 +37,9 @@ class OrderDetailViewHolder(
             clickListener.onEditButtonClicked(cartId = customOrderDetail.cartId)
         }
         binding.removeFromCartButton.setOnClickListener {
+            val dataSetPosition = binding.root.getTag(R.id.dataset_position) as Int
             val customOrderDetail = binding.root.getTag(R.id.custom_order_detail) as CustomOrderDetail
-            clickListener.onDeleteButtonClicked(customOrderDetail.cartId)
+            clickListener.onDeleteButtonClicked(dataSetPosition = dataSetPosition, adapterPosition =  adapterPosition, cartId = customOrderDetail.cartId)
         }
         binding.qeuProductQtyEditor.setAddClickListener {
             val quantity = binding.qeuProductQtyEditor.getValue()
@@ -59,6 +60,7 @@ class OrderDetailViewHolder(
         binding.customProductPrice.text = customOrderDetail.subTotalFmt
         binding.notesLabel.isVisible = customOrderDetail.orderNote.isNotBlank()
         binding.tpgOrderNote.text = customOrderDetail.orderNote
+        binding.qeuProductQtyEditor.setValue(customOrderDetail.qty)
         addOnInfoAdapter.setCustomListItems(customOrderDetail.customListItems)
     }
 }
