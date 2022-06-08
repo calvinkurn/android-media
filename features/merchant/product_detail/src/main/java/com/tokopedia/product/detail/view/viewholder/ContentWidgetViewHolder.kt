@@ -4,11 +4,9 @@ import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.play.widget.PlayWidgetViewHolder
 import com.tokopedia.play.widget.sample.analytic.global.model.PlayWidgetPDPAnalyticModel
-import com.tokopedia.play.widget.ui.model.PlayWidgetUiModel
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.data.model.datamodel.ContentWidgetDataModel
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
-import com.tokopedia.product.detail.view.listener.PdpPlayWidgetAnalyticListener
 
 class ContentWidgetViewHolder(
     view: View,
@@ -23,11 +21,9 @@ class ContentWidgetViewHolder(
     }
 
     private val container: View? = view.findViewById(R.id.pdp_play_widget_container)
-    private val playWidgetAnalyticListener = PdpPlayWidgetAnalyticListener(listener)
 
     init {
         playWidgetViewHolder.coordinator.setAnalyticModel(PlayWidgetPDPAnalyticModel())
-//        playWidgetViewHolder.coordinator.setAnalyticListener(playWidgetAnalyticListener)
     }
 
     override fun bind(element: ContentWidgetDataModel) {

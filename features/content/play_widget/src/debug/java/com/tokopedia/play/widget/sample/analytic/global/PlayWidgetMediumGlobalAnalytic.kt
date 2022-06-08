@@ -203,7 +203,7 @@ class PlayWidgetMediumGlobalAnalytic @AssistedInject constructor(
             eventAction = "impression on play sgc banner",
             eventLabel = eventLabel(
                 model.prefix, /** prefix **/
-                verticalWidgetPosition, /** widgetPosition **/
+                verticalWidgetPosition + 1, /** widgetPosition **/
                 "", /** recommendationType **/
             ),
             promotions = listOf(
@@ -235,7 +235,7 @@ class PlayWidgetMediumGlobalAnalytic @AssistedInject constructor(
             eventAction = "click on play sgc banner",
             eventLabel = eventLabel(
                 model.prefix, /** prefix **/
-                verticalWidgetPosition, /** widgetPosition **/
+                verticalWidgetPosition + 1, /** widgetPosition **/
                 "", /** recommendationType **/
             ),
             promotions = listOf(

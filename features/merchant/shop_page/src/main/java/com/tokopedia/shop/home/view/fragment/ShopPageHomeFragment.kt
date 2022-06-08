@@ -3336,7 +3336,6 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                     isOwnShop = shopId == viewModel?.userSessionShopId
                 )
             )
-//            setAnalyticListener(DefaultPlayWidgetInListAnalyticListener(shopPlayWidgetAnalytic))
         }
     }
 
