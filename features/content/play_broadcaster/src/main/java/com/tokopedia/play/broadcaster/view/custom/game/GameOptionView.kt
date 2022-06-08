@@ -111,6 +111,10 @@ class GameOptionView : ConstraintLayout {
                 override fun onQuizOptionClicked(item: QuizChoicesUiModel) {
                     mListener?.invoke()
                 }
+
+                override fun onQuizImpressed() {
+                    //TODO("Not yet implemented")
+                }
             })
         }
     }

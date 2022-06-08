@@ -5,7 +5,8 @@ import android.graphics.drawable.Drawable
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.widget.LinearLayout
-import com.tokopedia.play_common.databinding.ViewGameResultBinding
+import com.tokopedia.play_common.databinding.ViewGameInteractiveBinding
+import com.tokopedia.play_common.databinding.ViewGameInteractiveResultBinding
 
 class GameResultWidgetView : LinearLayout {
     constructor(context: Context) : super(context)
@@ -16,7 +17,7 @@ class GameResultWidgetView : LinearLayout {
         defStyleAttr
     )
 
-    private val binding = ViewGameResultBinding.inflate(
+    private val binding = ViewGameInteractiveResultBinding.inflate(
         LayoutInflater.from(context),
         this,
         true

@@ -182,19 +182,6 @@
         app:layout_constraintVertical_bias="0.3"
         />
 
-    <include
-        android:id="@+id/view_interactive_winner_badge"
-        layout="@layout/view_interactive_winner_badge"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/spacing_lvl4"
-        android:layout_marginBottom="@dimen/spacing_lvl3"
-        android:visibility="gone"
-        app:layout_constraintBottom_toTopOf="@id/view_interactive"
-        app:layout_constraintStart_toStartOf="@id/view_size"
-        tools:visibility="visible"
-        />
-
     <com.tokopedia.play.view.custom.video.PlayVideoControlView
         android:id="@+id/pcv_video"
         android:layout_width="0dp"
@@ -326,8 +313,8 @@
         />
 
     <include
-        android:id="@+id/view_game_result"
-        layout="@layout/view_game_result"
+        android:id="@+id/view_game_interactive_result"
+        layout="@layout/view_game_interactive_result"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/spacing_lvl3"

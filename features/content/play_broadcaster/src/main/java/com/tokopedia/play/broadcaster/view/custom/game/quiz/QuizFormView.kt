@@ -174,7 +174,14 @@ class QuizFormView : ConstraintLayout {
         }
 
         /** Validate Form */
-        binding.tvBroQuizFormNext.isEnabled = quizFormData.isFormValid()
+        setEnabledContinue(quizFormData.isFormValid())
+    }
+
+    private fun setEnabledContinue(shouldEnable: Boolean) {
+        binding.tvBroQuizFormNext.isClickable = shouldEnable
+        binding.tvBroQuizFormNext.alpha =
+            if (shouldEnable) CONTINUE_ENABLED_ALPHA
+            else CONTINUE_DISABLED_ALPHA
     }
 
     fun setFormState(quizFormState: QuizFormStateUiModel) {
@@ -293,5 +300,7 @@ class QuizFormView : ConstraintLayout {
 
     companion object {
         private const val SHOW_KEYBOARD_DELAY = 500L
+        private const val CONTINUE_DISABLED_ALPHA = 0.5f
+        private const val CONTINUE_ENABLED_ALPHA = 1f
     }
 }

@@ -1,5 +1,7 @@
 package com.tokopedia.play_common.model.ui
 
+import com.tokopedia.kotlin.model.ImpressHolder
+
 
 /**
  * Created by mzennis on 30/06/21.
@@ -27,7 +29,9 @@ data class PlayLeaderboardUiModel(
     val reward: String = "",
     val endsIn: Int = 0,
     val leaderBoardType: LeadeboardType = LeadeboardType.Unknown,
-)
+    val id: String,
+    val impressHolder: ImpressHolder = ImpressHolder(),
+    )
 
 /***
  * For inside leaderboard view type; winner

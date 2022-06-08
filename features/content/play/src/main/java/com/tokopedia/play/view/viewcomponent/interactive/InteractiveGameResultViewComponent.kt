@@ -16,7 +16,7 @@ import com.tokopedia.play.R
  */
 class InteractiveGameResultViewComponent (container: ViewGroup,
                                           listener: Listener,
-) : ViewComponent(container, R.id.view_game_result) {
+) : ViewComponent(container, R.id.view_game_interactive_result) {
 
     private val vAnchorBottom = findViewById<View>(com.tokopedia.play_common.R.id.v_anchor_bottom)
     private val coachMark: CoachMark2 = CoachMark2(container.context)

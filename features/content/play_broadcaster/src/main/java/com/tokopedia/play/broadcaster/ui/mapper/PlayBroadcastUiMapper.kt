@@ -37,18 +37,18 @@ import com.tokopedia.play.broadcaster.view.state.CoverSetupState
 import com.tokopedia.play.broadcaster.view.state.SelectableState
 import com.tokopedia.play.broadcaster.view.state.SetupDataState
 import com.tokopedia.play_common.model.ui.*
-import com.tokopedia.play_common.transformer.DefaultHtmlTextTransformer
 import com.tokopedia.play_common.transformer.HtmlTextTransformer
 import com.tokopedia.play_common.types.PlayChannelStatusType
 import com.tokopedia.play_common.view.game.quiz.PlayQuizOptionState
 import com.tokopedia.shop.common.graphql.data.shopetalase.ShopEtalaseModel
 import java.util.*
 import java.util.concurrent.TimeUnit
+import javax.inject.Inject
 
 /**
  * Created by jegul on 02/06/20
  */
-class PlayBroadcastUiMapper(
+class PlayBroadcastUiMapper @Inject constructor(
     private val textTransformer: HtmlTextTransformer
 ) : PlayBroadcastMapper {
 
@@ -440,7 +440,7 @@ class PlayBroadcastUiMapper(
                         isCorrectAnswer = it.isCorrectAnswer,
                         participantCount = it.participantCount
                     )
-                }
+                },
             )
         }
     }
@@ -466,7 +466,8 @@ class PlayBroadcastUiMapper(
             otherParticipant = 0,
             otherParticipantText = "",
             winners = emptyList(),
-            leaderBoardType = LeadeboardType.Quiz
+            leaderBoardType = LeadeboardType.Quiz,
+            id = "", //TODO() please add Id
         )
     }
 
@@ -489,17 +490,17 @@ class PlayBroadcastUiMapper(
                 ),
                 cursor = cursor,
                 winners = winners.map {
-                                      GameParticipantUiModel(
-                                          id = it.id,
-                                          name =  it.firstName,
-                                          imageUrl = it.imageURL,
-                                          isWinner = true
-                                      )
+                    GameParticipantUiModel(
+                        id = it.id,
+                        name = it.firstName,
+                        imageUrl = it.imageURL,
+                        isWinner = true
+                    )
                 },
                 participants = participants.map {
                     GameParticipantUiModel(
                         id = it.id,
-                        name =  it.firstName,
+                        name = it.firstName,
                         imageUrl = it.imageURL,
                         isWinner = false
                     )
@@ -508,38 +509,51 @@ class PlayBroadcastUiMapper(
         }
     }
 
-    override fun mapLeaderBoardWithSlot(response: GetSellerLeaderboardSlotResponse): List<PlayLeaderboardUiModel> {
+    override fun mapLeaderBoardWithSlot(
+        response: GetSellerLeaderboardSlotResponse,
+        allowChat: Boolean
+    ): List<PlayLeaderboardUiModel> {
         return response.data.slots.map { slot ->
             PlayLeaderboardUiModel(
-                title = if (getLeaderboardType(slot.type) == LeadeboardType.Giveaway) slot.title else textTransformer.transform(slot.question),
+                title =
+                if (getLeaderboardType(slot.type) == LeadeboardType.Giveaway)
+                    slot.title
+                else textTransformer.transform(
+                    slot.question
+                ),
                 winners = slot.winner.mapIndexed { index, winner ->
                     PlayWinnerUiModel(
-                        rank = index+1,
+                        rank = index + 1,
                         id = winner.userID,
                         name = winner.userName,
                         imageUrl = winner.imageUrl,
-                        allowChat = { false },
-                        topChatMessage = ""
+                        allowChat = { allowChat },
+                        topChatMessage =
+                        if (getLeaderboardType(slot.type) == LeadeboardType.Giveaway)
+                            response.data.config.topchatMessage
+                        else
+                            response.data.config.topchatMessageQuiz,
                     )
                 },
                 choices = slot.choices.mapIndexed { index, choice ->
-                QuizChoicesUiModel(
-                    index = index,
-                    id = choice.id,
-                    text = textTransformer.transform(choice.text),
-                    type = PlayQuizOptionState.Participant(
-                        alphabet = generateAlphabetChoices(index),
-                        isCorrect = choice.isCorrectAnswer,
-                        count = choice.participantCount.toString(),
-                        showArrow = true
+                    QuizChoicesUiModel(
+                        index = index,
+                        id = choice.id,
+                        text = textTransformer.transform(choice.text),
+                        type = PlayQuizOptionState.Participant(
+                            alphabet = generateAlphabetChoices(index),
+                            isCorrect = choice.isCorrectAnswer,
+                            count = choice.participantCount.toString(),
+                            showArrow = true
+                        )
                     )
-                )
-            },
+                },
                 otherParticipantText = slot.otherParticipantCountText,
                 otherParticipant = slot.otherParticipantCount.toLong(),
                 reward = textTransformer.transform(slot.reward),
-                leaderBoardType = getLeaderboardType(slot.type)
-                )
+                leaderBoardType = getLeaderboardType(slot.type),
+                id = "", //TODO() please add id
+            )
         }
     }
 
@@ -550,7 +564,7 @@ class PlayBroadcastUiMapper(
      * Change to typename to make sure
      */
     private fun getLeaderboardType(leaderboardsResponse: String): LeadeboardType {
-        return when(leaderboardsResponse){
+        return when (leaderboardsResponse) {
             "PlayInteractiveSellerLeaderboardGiveaway" -> LeadeboardType.Giveaway
             "PlayInteractiveSellerLeaderboardQuiz" -> LeadeboardType.Quiz
             else -> LeadeboardType.Unknown

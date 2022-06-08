@@ -15,10 +15,9 @@ import com.tokopedia.play_common.domain.model.interactive.GiveawayResponse
 import com.tokopedia.play_common.domain.model.interactive.GetCurrentInteractiveResponse
 import com.tokopedia.play_common.domain.model.interactive.QuizResponse
 import com.tokopedia.play_common.model.dto.interactive.InteractiveUiModel
-import com.tokopedia.play_common.model.dto.interactive.PlayCurrentInteractiveModel
-import com.tokopedia.play_common.model.mapper.PlayChannelInteractiveMapper
 import com.tokopedia.play_common.model.mapper.PlayInteractiveMapper
 import com.tokopedia.play_common.model.ui.PlayChatUiModel
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 /**
@@ -30,7 +29,6 @@ class PlaySocketToModelMapper @Inject constructor(
     private val merchantVoucherMapper: PlayMerchantVoucherUiMapper,
     private val chatMapper: PlayChatUiMapper,
     private val channelStatusMapper: PlayChannelStatusMapper,
-    private val channelInteractiveMapper: PlayChannelInteractiveMapper,
     private val interactiveMapper: PlayInteractiveMapper,
     private val realTimeNotificationMapper: PlayRealTimeNotificationMapper,
     private val multipleLikesMapper: PlayMultipleLikesMapper,
@@ -78,7 +76,8 @@ class PlaySocketToModelMapper @Inject constructor(
     }
 
     fun mapInteractive(input: GiveawayResponse): InteractiveUiModel.Giveaway {
-        return interactiveMapper.mapGiveaway(input, input.waitingDuration.toLong())
+        val waitingDurationInMillis = TimeUnit.SECONDS.toMillis(input.waitingDuration.toLong())
+        return interactiveMapper.mapGiveaway(input, waitingDurationInMillis)
     }
 
     fun mapInteractive(input: GetCurrentInteractiveResponse.Data): InteractiveUiModel {
@@ -100,7 +99,8 @@ class PlaySocketToModelMapper @Inject constructor(
     }
 
     fun mapQuizFromSocket(response: QuizResponse): InteractiveUiModel {
-        return interactiveMapper.mapQuiz(response, response.waitingDuration)
+        val waitingDurationInMillis = TimeUnit.SECONDS.toMillis(response.waitingDuration)
+        return interactiveMapper.mapQuiz(response, waitingDurationInMillis)
     }
 
     /**

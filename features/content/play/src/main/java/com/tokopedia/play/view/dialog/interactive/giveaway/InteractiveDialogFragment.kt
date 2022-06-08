@@ -15,8 +15,8 @@ import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
-import com.tokopedia.kotlin.extensions.view.getScreenWidth
 import com.tokopedia.network.utils.ErrorHandler
+import com.tokopedia.play.analytic.PlayAnalytic
 import com.tokopedia.play.util.withCache
 import com.tokopedia.play.view.custom.interactive.follow.InteractiveFollowView
 import com.tokopedia.play.view.uimodel.action.PlayViewerNewAction
@@ -28,6 +28,7 @@ import com.tokopedia.play.view.viewmodel.PlayViewModel
 import com.tokopedia.play_common.model.dto.interactive.InteractiveUiModel
 import com.tokopedia.play_common.model.ui.QuizChoicesUiModel
 import com.tokopedia.play_common.view.game.giveaway.GiveawayWidgetView
+import com.tokopedia.play_common.view.game.quiz.PlayQuizOptionState
 import com.tokopedia.play_common.view.game.quiz.QuizWidgetView
 import com.tokopedia.play_common.view.game.setupGiveaway
 import com.tokopedia.play_common.view.game.setupQuiz
@@ -42,6 +43,7 @@ import javax.inject.Inject
  */
 class InteractiveDialogFragment @Inject constructor(
     private val userSession: UserSessionInterface,
+    private val analytic: PlayAnalytic,
 ) : DialogFragment() {
 
     private var mDataSource: DataSource? = null
@@ -49,14 +51,26 @@ class InteractiveDialogFragment @Inject constructor(
     private lateinit var viewModel: PlayViewModel
 
     private val followViewListener = object : InteractiveFollowView.Listener {
+        override fun onFollowImpressed(view: InteractiveFollowView) {
+            analytic.impressFollowShopInteractive(shopId = viewModel.partnerId.toString(), interactiveType = viewModel.interactiveData)
+        }
+
         override fun onFollowClicked(view: InteractiveFollowView) {
             viewModel.submitAction(PlayViewerNewAction.FollowInteractive)
+            analytic.clickFollowShopInteractive(
+                interactiveId = viewModel.interactiveData.id,
+                shopId = viewModel.partnerId.toString(),
+                interactiveType = viewModel.interactiveData
+            )
         }
     }
 
     private val giveawayViewListener = object : GiveawayWidgetView.Listener {
         override fun onTapTapClicked(view: GiveawayWidgetView) {
             viewModel.submitAction(PlayViewerNewAction.TapGiveaway)
+            analytic.clickTapTap(
+                interactiveId = viewModel.interactiveData.id,
+            )
         }
     }
 
@@ -219,6 +233,12 @@ class InteractiveDialogFragment @Inject constructor(
                     setListener(object : QuizWidgetView.Listener{
                         override fun onQuizOptionClicked(item: QuizChoicesUiModel) {
                             viewModel.submitAction(PlayViewerNewAction.ClickQuizOptionAction(item))
+                            analytic.clickQuizOption(interactiveId = viewModel.interactiveData.id, shopId = viewModel.partnerId.toString(),
+                            choiceAlphabet = if(item.type is PlayQuizOptionState.Default) (item.type as PlayQuizOptionState.Default).alphabet.toString() else "")
+                        }
+
+                        override fun onQuizImpressed() {
+                            analytic.impressQuizOptions(shopId = viewModel.partnerId.toString(), interactiveId = viewModel.interactiveData.id)
                         }
                     })
                     getHeader().isEditable = false
@@ -250,7 +270,7 @@ class InteractiveDialogFragment @Inject constructor(
             parent.removeAllViews()
             val view = viewCreator(parent.context)
             val lParams = FrameLayout.LayoutParams(
-                (WIDTH_PERCENTAGE * getScreenWidth()).toInt(),
+                FrameLayout.LayoutParams.MATCH_PARENT,
                 FrameLayout.LayoutParams.WRAP_CONTENT
             )
             lParams.gravity = Gravity.CENTER

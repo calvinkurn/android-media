@@ -123,5 +123,5 @@ interface PlayBroadcastMapper {
         choiceIndex: Int
     ): QuizChoiceDetailUiModel
 
-    fun mapLeaderBoardWithSlot(response: GetSellerLeaderboardSlotResponse): List<PlayLeaderboardUiModel>
+    fun mapLeaderBoardWithSlot(response: GetSellerLeaderboardSlotResponse, allowChat: Boolean): List<PlayLeaderboardUiModel>
 }

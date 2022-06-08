@@ -4,13 +4,14 @@ import android.content.Context
 import android.graphics.Rect
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.play_common.R
 
 /**
  * @author by astidhiyaa on 11/04/22
  */
 class QuizOptionItemDecoration(context: Context) : RecyclerView.ItemDecoration() {
     private val topOffset =
-        context.resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl2)
+        context.resources.getDimensionPixelOffset(R.dimen.play_dp_12)
 
     override fun getItemOffsets(
         outRect: Rect,

@@ -4,13 +4,14 @@ import com.tokopedia.play_common.domain.model.interactive.GetInteractiveLeaderbo
 import com.tokopedia.play_common.domain.model.interactive.QuizResponse
 import com.tokopedia.play_common.domain.usecase.interactive.GetLeaderboardSlotResponse
 import com.tokopedia.play_common.model.ui.*
+import com.tokopedia.play_common.transformer.HtmlTextTransformer
 import com.tokopedia.play_common.view.game.quiz.PlayQuizOptionState
 import javax.inject.Inject
 
 /**
  * Created by jegul on 02/07/21
  */
-class PlayInteractiveLeaderboardMapper @Inject constructor() {
+class PlayInteractiveLeaderboardMapper @Inject constructor(private val decodeHtml : HtmlTextTransformer) {
 
     /***
      * New leaderboard
@@ -25,7 +26,7 @@ class PlayInteractiveLeaderboardMapper @Inject constructor() {
         isChatAllowed: () -> Boolean
     ): List<PlayLeaderboardUiModel> = leaderboardsResponse.map {
         PlayLeaderboardUiModel(
-            title = if (getLeaderboardType(it) == LeadeboardType.Quiz) it.question else it.title,
+            title = if (getLeaderboardType(it) == LeadeboardType.Quiz) decodeHtml.transform(it.question) else it.title,
             winners = mapInteractiveWinner(
                 title = it.title,
                 winnersResponse = it.winner,
@@ -36,7 +37,8 @@ class PlayInteractiveLeaderboardMapper @Inject constructor() {
             choices = mapChoices(it.choices, it.userChoice),
             leaderBoardType = getLeaderboardType(it),
             emptyLeaderBoardCopyText = it.emptyLeaderboardCopyText,
-            reward = it.reward
+            reward = decodeHtml.transform(it.reward),
+            id = it.interactiveId
         )
     }
 
@@ -56,7 +58,7 @@ class PlayInteractiveLeaderboardMapper @Inject constructor() {
             QuizChoicesUiModel(
                 index,
                 item.id,
-                item.text,
+                decodeHtml.transform(item.text),
                 if(item.id == userPicksId)
                     PlayQuizOptionState.Answered(isCorrect = item.isCorrect ?: false)
                 else
@@ -88,7 +90,8 @@ class PlayInteractiveLeaderboardMapper @Inject constructor() {
             title = it.title,
             winners = mapInteractiveWinner(it.title, it.winner, topChatResponseRaw, isChatAllowed),
             otherParticipantText = it.otherParticipantCountText,
-            otherParticipant = it.otherParticipantCount.toLong()
+            otherParticipant = it.otherParticipantCount.toLong(),
+            id = "" //temp for old leaderboard, removed if bro doesnt use it anymore
         )
     }
 

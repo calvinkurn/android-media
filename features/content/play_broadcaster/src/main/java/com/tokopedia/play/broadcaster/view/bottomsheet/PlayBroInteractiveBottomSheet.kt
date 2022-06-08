@@ -91,6 +91,7 @@ class PlayBroInteractiveBottomSheet @Inject constructor(
             when (sheetType) {
                 Type.QUIZ_DETAIL.toString() -> setupQuizDetail()
                 Type.LEADERBOARD.toString() -> setupLeaderBoard()
+                Type.REPORT.toString() -> setupReport()
             }
             observeQuizDetail()
         }
@@ -104,6 +105,11 @@ class PlayBroInteractiveBottomSheet @Inject constructor(
     private fun setupLeaderBoard() {
         leaderboardSheetView.setTitle(getString(commonR.string.play_interactive_leaderboard_title))
         parentViewModel.getLeaderboardWithSlots()
+    }
+
+    private fun setupReport() {
+        leaderboardSheetView.setTitle(getString(commonR.string.play_interactive_leaderboard_title))
+        parentViewModel.getLeaderboardWithSlots(true)
     }
 
     override fun onDestroyView() {
@@ -204,6 +210,17 @@ class PlayBroInteractiveBottomSheet @Inject constructor(
         parentViewModel.submitAction(PlayBroadcastAction.ClickQuizChoiceOption(item))
     }
 
+    override fun onRefreshButtonImpressed(view: PlayInteractiveLeaderboardViewComponent) {
+        //TODO("Not yet implemented")
+    }
+
+    override fun onLeaderBoardImpressed(
+        view: PlayInteractiveLeaderboardViewComponent,
+        leaderboard: PlayLeaderboardUiModel
+    ) {
+        //TODO("Not yet implemented")
+    }
+
     override fun onBackButtonClicked(view: QuizOptionDetailViewComponent) {
         parentViewModel.submitAction(PlayBroadcastAction.ClickBackOnChoiceDetail)
     }
@@ -264,7 +281,7 @@ class PlayBroInteractiveBottomSheet @Inject constructor(
             fragmentManager: FragmentManager,
             classLoader: ClassLoader,
         ): PlayBroInteractiveBottomSheet {
-            return getFragment(fragmentManager, classLoader, Type.LEADERBOARD, Size.FULL)
+            return getFragment(fragmentManager, classLoader, Type.REPORT, Size.FULL)
         }
     }
 
@@ -272,7 +289,8 @@ class PlayBroInteractiveBottomSheet @Inject constructor(
 
     enum class Type {
         LEADERBOARD,
-        QUIZ_DETAIL
+        QUIZ_DETAIL,
+        REPORT,
     }
 
     enum class Size {

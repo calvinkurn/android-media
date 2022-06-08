@@ -12,7 +12,9 @@ data class GetSellerLeaderboardSlotResponse (
 ){
     data class Data(
         @SerializedName("slots")
-        val slots: List<SlotData> = emptyList()
+        val slots: List<SlotData> = emptyList(),
+        @SerializedName("config")
+        val config: Config = Config(),
     )
 
     data class SlotData(
@@ -54,7 +56,14 @@ data class GetSellerLeaderboardSlotResponse (
         @SerializedName("userName")
         val userName: String = "",
 
-        @SerializedName("imageUrl")
-        val imageUrl: String = ""
+        @SerializedName("imageURL")
+        val imageUrl: String = "",
+    )
+
+    data class Config(
+        @SerializedName("topchatMessage")
+        val topchatMessage: String = "",
+        @SerializedName("topchatMessageQuiz")
+        val topchatMessageQuiz: String = "",
     )
 }

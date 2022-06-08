@@ -122,12 +122,12 @@ class PlayBroadcastInteractiveRepositoryImpl @Inject constructor(
         }
 
     override suspend fun getSellerLeaderboardWithSlot(
-        channelId: String
+        channelId: String, allowChat: Boolean
     ): List<PlayLeaderboardUiModel> = withContext(dispatchers.io) {
         val response = getSellerLeaderboardUseCase.apply {
             setRequestParams(GetSellerLeaderboardUseCase.createParams(channelId))
         }.executeOnBackground()
 
-        return@withContext mapper.mapLeaderBoardWithSlot(response)
+        return@withContext mapper.mapLeaderBoardWithSlot(response, allowChat)
     }
 }
