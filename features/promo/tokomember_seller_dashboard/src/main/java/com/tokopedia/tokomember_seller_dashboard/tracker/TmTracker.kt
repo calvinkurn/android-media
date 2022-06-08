@@ -32,8 +32,8 @@ class TmTracker {
         trackerImpl.clickBackHomeBSNoAccess(shopId)
     }
 
-    fun clickBsNonOsBack(shopId: String) {
-        trackerImpl.viewIntroPage(shopId)
+    fun clickCardCreationBack(shopId: String) {
+        trackerImpl.clickCardCreationBack(shopId)
     }
 
     fun clickCardCreationButton(shopId: String) {
@@ -54,30 +54,6 @@ class TmTracker {
 
     fun clickPopupCancelSecondary(shopId: String) {
         trackerImpl.clickPopupCancelSecondary(shopId)
-    }
-
-    fun clickProgramCreationBack(shopId: String) {
-        trackerImpl.clickProgramCreationBack(shopId)
-    }
-
-    fun clickProgramCreationButton(shopId: String, programId: String) {
-        trackerImpl.clickProgramCreationButton(shopId, programId)
-    }
-
-    fun clickProgramExtensionBack(shopId: String, programId: String) {
-        trackerImpl.clickProgramExtensionBack(shopId, programId)
-    }
-
-    fun clickProgramExtensionButton(shopId: String, programId: String) {
-        trackerImpl.clickProgramExtensionButton(shopId, programId)
-    }
-
-    fun clickProgramExtensionPopUpPrimary(shopId: String, programId: String) {
-        trackerImpl.clickProgramExtensionPopUpPrimary(shopId, programId)
-    }
-
-    fun clickProgramExtensionPopUpSecondary(shopId: String, programId: String) {
-        trackerImpl.clickProgramExtensionPopUpSecondary(shopId, programId)
     }
 
     fun clickCouponCreationBack(shopId: String) {
@@ -112,7 +88,7 @@ class TmTracker {
         trackerImpl.viewProgramListTabSection(shopId)
     }
 
-    fun viewProgramListButton(shopId: String) {
+    fun clickProgramListButton(shopId: String) {
         trackerImpl.clickProgramListButton(shopId)
     }
 
@@ -136,8 +112,8 @@ class TmTracker {
         trackerImpl.clickCouponCreationFromProgramList(shopId)
     }
 
-    fun clickBackCouponCreationFromProgramList(shopId: String) {
-        trackerImpl.clickBackCouponCreationFromProgramList(shopId)
+    fun clickCouponCreationBackFromProgramList(shopId: String) {
+        trackerImpl.clickCouponCreationBackFromProgramList(shopId)
     }
 
     fun clickSummaryButtonFromProgramList(shopId: String, programId: String) {
@@ -148,32 +124,32 @@ class TmTracker {
         trackerImpl.clickSummaryBackFromProgramList(shopId)
     }
 
-    fun clickProgramThreeDot(shopId: String) {
-        trackerImpl.clickProgramThreeDot(shopId)
+    fun clickProgramThreeDot(shopId: String, programId: String) {
+        trackerImpl.clickProgramActiveThreeDot(shopId, programId)
     }
 
-    fun clickProgramBsOption(shopId: String) {
-        trackerImpl.clickProgramBsOption(shopId)
+    fun clickProgramBsOption(shopId: String, programId: String) {
+        trackerImpl.clickProgramBsExtension(shopId, programId)
     }
 
-    fun clickProgramItemButton(shopId: String) {
-        trackerImpl.clickProgramItemButton(shopId)
+    fun clickProgramEdit(shopId: String, programId: String) {
+        trackerImpl.clickProgramEdit(shopId, programId)
     }
 
-    fun clickProgramChangeButton(shopId: String, programId: String) {
-        trackerImpl.clickProgramChangeButton(shopId, programId)
+    fun clickProgramEditButton(shopId: String, programId: String) {
+        trackerImpl.clickProgramEditButton(shopId, programId)
     }
 
-    fun clickProgramChangeBack(shopId: String, programId: String) {
-        trackerImpl.clickProgramChangeBack(shopId, programId)
+    fun clickProgramEditBack(shopId: String, programId: String) {
+        trackerImpl.clickProgramEditBack(shopId, programId)
     }
 
-    fun clickProgramChangePopUpPrimary(shopId: String, programId: String) {
-        trackerImpl.clickProgramChangePopUpPrimary(shopId, programId)
+    fun clickProgramEditPopUpPrimary(shopId: String, programId: String) {
+        trackerImpl.clickProgramEditPopUpPrimary(shopId, programId)
     }
 
-    fun clickProgramChangePopUpSecondary(shopId: String, programId: String) {
-        trackerImpl.clickProgramChangePopUpSecondary(shopId, programId)
+    fun clickProgramEditPopUpSecondary(shopId: String, programId: String) {
+        trackerImpl.clickProgramEditPopUpSecondary(shopId, programId)
     }
 
     fun clickCouponChangeBack(shopId: String) {
@@ -189,31 +165,55 @@ class TmTracker {
     }
 
     fun clickCouponListBack(shopId: String) {
-        trackerImpl.clickCouponListBack(shopId)
+        trackerImpl.clickBackCouponList(shopId)
     }
 
     fun clickCouponOptionBsQuota(shopId: String) {
         trackerImpl.clickCouponOptionBsQuota(shopId)
     }
 
-    fun clickCouponItemButton(shopId: String) {
-        trackerImpl.clickCouponItemButton(shopId)
+    fun clickProgramItemButton(shopId: String, programId: String) {
+        trackerImpl.clickProgramItemButton(shopId, programId)
     }
 
     fun clickBsAddQuotaButton(shopId: String) {
-        trackerImpl.clickBsAddQuotaButton(shopId)
+        trackerImpl.clickAddQuotaButton(shopId)
     }
 
     fun clickCouponCancelPopUpPrimary(shopId: String) {
         trackerImpl.clickCouponCancelPopUpPrimary(shopId)
     }
 
+    fun clickProgramCreationButton(shopId: String, programId: String) {
+        trackerImpl.clickProgramCreationButton(shopId, programId)
+    }
+
+    fun clickProgramCreationBack(shopId: String) {
+        trackerImpl.clickProgramCreationBack(shopId)
+    }
+
+    fun clickProgramExtensionBack(shopId: String, programId: String) {
+        trackerImpl.clickProgramExtensionBack(shopId, programId)
+    }
+
+    fun clickProgramExtensionButton(shopId: String, programId: String) {
+        trackerImpl.clickProgramExtensionButton(shopId, programId)
+    }
+
+    fun clickProgramExtensionPopUpPrimary(shopId: String, programId: String) {
+        trackerImpl.clickProgramExtensionPopUpPrimary(shopId, programId)
+    }
+
+    fun clickProgramExtensionPopUpSecondary(shopId: String, programId: String) {
+        trackerImpl.clickProgramExtensionPopUpSecondary(shopId, programId)
+    }
+
     fun clickCouponCancelPopUpSecondary(shopId: String) {
         trackerImpl.clickCouponCancelPopUpSecondary(shopId)
     }
 
-    fun viewProgramDetail(shopId: String) {
-        trackerImpl.viewProgramDetail(shopId)
+    fun viewProgramDetail(shopId: String, programId: String) {
+        trackerImpl.viewProgramDetail(shopId, programId)
     }
 
 }

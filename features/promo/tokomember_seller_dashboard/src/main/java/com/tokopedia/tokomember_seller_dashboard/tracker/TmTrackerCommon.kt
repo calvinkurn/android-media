@@ -31,7 +31,7 @@ object Tracker {
         const val TM_DASHBOARD_HOME = "tokomember dashboard - homepage"
         const val TM_DASHBOARD_DETAIL_PROGRAM = "tokomember dashboard - detail program"
         const val TM_DASHBOARD_CREATE_PROGRAM = "tokomember dashboard - buat program"
-        const val TM_DASHBOARD_CHANGE_PROGRAM = "tokomember dashboard - ubah program"
+        const val TM_DASHBOARD_EDIT_PROGRAM = "tokomember dashboard - ubah program"
         const val TM_DASHBOARD_EXTEND_PROGRAM = "tokomember dashboard - perpanjang program"
         const val TM_DASHBOARD_CREATE_COUPON = "tokomember dashboard - buat kupon"
         const val TM_DASHBOARD_DAFTAR = "tokomember dashboard - daftar tokomember"
@@ -66,13 +66,13 @@ object Tracker {
         const val CLICK_PROGRAM_CREATION_CANCEL_POPUP_PRIMARY = "popup_cancel_program_creation - click lanjut"
         const val CLICK_PROGRAM_CREATION_CANCEL_POPUP_SECONDARY = "popup_cancel_program_creation - click batal"
 
-        //PROGRAM + EXtension
+        //PROGRAM + Extension
         const val CLICK_PROGRAM_CREATION_EXTENSION_BUTTON = "program_extension - click buat program"
+        const val CLICK_PROGRAM_CREATION_EXTENSION_BS = "bottomsheet_active_program - click perpanjang program"
+        const val CLICK_PROGRAM_EXTENSION_BUTTON = "program_tab - click perpanjang program (active program)"
         const val CLICK_PROGRAM_CREATION_EXTENSION_BACK = "program_extension - click back"
-        const val CLICK_PROGRAM_POP_UP_CANCEL_EXTENSION_PRIMARY =
-            "popup_cancel_program_extension - click lanjut"
-        const val CLICK_PROGRAM_POP_UP_CANCEL_EXTENSION_SECONDARY =
-            "popup_cancel_program_extension - click batalkan perpanjangan"
+        const val CLICK_PROGRAM_POP_UP_CANCEL_EXTENSION_PRIMARY = "popup_cancel_program_extension - click lanjut"
+        const val CLICK_PROGRAM_POP_UP_CANCEL_EXTENSION_SECONDARY = "popup_cancel_program_extension - click batalkan perpanjangan"
 
         //COUPON
         const val CLICK_COUPON_CREATION_BACK = "coupon_creation - click back"
@@ -90,14 +90,23 @@ object Tracker {
         //Program List
         const val VIEW_PROGRAM_LIST_TAB_SECTION = "program_tab - view section"
         const val CLICK_PROGRAM_LIST_BUTTON = "program_tab - click buat program"
-        const val CLICK_PROGRAM_THREE_DOT = "program_tab - click 3 dots (active program)"
-        const val CLICK_PROGRAM_BS_OPTION = "bottomsheet_active_program - click perpanjang program"
-        const val CLICK_PROGRAM_ITEM_BUTTON =
-            "program_tab - click perpanjang program (active program)"
+        const val CLICK_PROGRAM_ACTIVE_THREE_DOT = "program_tab - click 3 dots (active program)"
+        const val CLICK_PROGRAM_WAITING_THREE_DOT = "program_tab - click 3 dots (active program)"
+
+        //Program Edit
+        const val CLICK_PROGRAM_EDIT = "program_tab - click ubah program (waiting program)"
+        const val CLICK_PROGRAM_EDIT_BUTTON = "program_edit - click simpan"
+        const val CLICK_PROGRAM_EDIT_BACK = "program_edit - click back"
+        const val CLICK_PROGRAM_EDIT_POPUP_CANCEL_PRIMARY = "popup_cancel_program_edit - click lanjut"
+        const val CLICK_PROGRAM_EDIT_POPUP_CANCEL_SECONDARY = "popup_cancel_program_edit - click batalkan ubah program"
+
+        //Program Cancel
+        const val CLICK_PROGRAM_BS_CANCEL = "bottomsheet_waiting_program - click batalkan program"
+        const val CLICK_PROGRAM_BS_CANCEL_POPUP_PRIMARY = "popup_cancel_program_termination - click lanjutkan program"
+        const val CLICK_PROGRAM_BS_CANCEL_POPUP_SECONDARY = "popup_cancel_program_termination - click batalkan program"
 
         //Program List + Program Creation
-        const val CLICK_BUTTON_PROGRAM_CREATION_FROM_P_LIST =
-            "program_creation - click buat program"
+        const val CLICK_BUTTON_PROGRAM_CREATION_FROM_P_LIST = "program_creation - click buat program"
         const val CLICK_BACK_PROGRAM_CREATION_FROM_P_LIST = "program_creation - click back"
         const val CLICK_PROGRAM_POPUP_PRIMARY = "popup_cancel_program_creation - click lanjut"
         const val CLICK_PROGRAM_POPUP_SECONDARY = "popup_cancel_program_creation - click bata"
@@ -108,16 +117,19 @@ object Tracker {
 
         //Coupon List
         const val VIEW_COUPON_LIST_TAB_SECTION = "coupon_tab - view section"
-        const val CLICK_BACK_COUPON_LIST = "coupon_tab - click buat kupon"
+        const val CLICK_BUTTON_COUPON_LIST = "coupon_tab - click buat kupon"
+        const val CLICK_COUPON_LIST_THREE_DOTS = "coupon_tab - click 3 dots (kupon aktif)"
         const val CLICK_OPTION_BS_QUOTA = "bottomsheet_active_coupon - click tambah kuota"
         const val CLICK_COUPON_ITEM_BUTTON = "coupon_tab - click tambah kuota (kuota habis)"
-        const val CLICK_BS_ADD_QUOTA_BUTTON = "bottomsheet_add_coupon_quota - click simpan"
+        const val CLICK_COUPON_ADD_QUOTA_BUTTON = "coupon_tab - click tambah kuota (kuota habis)"
+        const val CLICK_ADD_QUOTA_CTA = "bottomsheet_add_coupon_quota - click simpan"
 
         //Coupon List + Single Coupon creation
         const val CLICK_COUPON_CANCEL_POP_UP_PRIMARY = "popup_cancel_coupon - click lanjut buat"
         const val CLICK_COUPON_CANCEL_POP_UP_SECONDARY = "popup_cancel_coupon - click batal"
 
         //Program Detail
+        const val CLICK_PROGRAM_ITEM = "program_tab - click specific program"
         const val VIEW_PROGRAM_DETAIL = "detail_program_page - view page"
 
     }

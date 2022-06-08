@@ -12,13 +12,22 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.carousel.CarouselUnify
 import com.tokopedia.tokomember_common_widget.TokomemberShopView
 import com.tokopedia.tokomember_common_widget.model.TokomemberShopCardModel
+import com.tokopedia.tokomember_common_widget.util.CreateScreenType
 import com.tokopedia.tokomember_seller_dashboard.R
 import com.tokopedia.tokomember_seller_dashboard.di.component.DaggerTokomemberDashComponent
 import com.tokopedia.tokomember_seller_dashboard.domain.requestparam.ProgramUpdateDataInput
 import com.tokopedia.tokomember_seller_dashboard.domain.requestparam.TmMerchantCouponUnifyRequest
 import com.tokopedia.tokomember_seller_dashboard.model.CardDataTemplate
 import com.tokopedia.tokomember_seller_dashboard.model.TmCouponPreviewData
-import com.tokopedia.tokomember_seller_dashboard.util.*
+import com.tokopedia.tokomember_seller_dashboard.tracker.TmTracker
+import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_CARD_DATA
+import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_CARD_ID
+import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_COUPON_CREATE_DATA
+import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_COUPON_PREVIEW_DATA
+import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_CREATE_SCREEN_TYPE
+import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_PROGRAM_DATA
+import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_PROGRAM_ID
+import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_SHOP_ID
 import com.tokopedia.tokomember_seller_dashboard.util.TmDateUtil.setDate
 import com.tokopedia.tokomember_seller_dashboard.view.adapter.TmCouponPreviewAdapter
 import com.tokopedia.tokomember_seller_dashboard.view.viewmodel.TmDashCreateViewModel
@@ -27,10 +36,11 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.text.currency.CurrencyFormatHelper
 import kotlinx.android.synthetic.main.tm_dash_preview.*
-import kotlinx.android.synthetic.main.tm_dash_preview.containerViewFlipper
 import javax.inject.Inject
 
 class TmDashPreviewFragment : BaseDaggerFragment() {
+
+    private var tmTracker: TmTracker? = null
     var shopViewPremium: TokomemberShopView? = null
     var shopViewVip: TokomemberShopView? = null
     private var tmShopCardModel = TokomemberShopCardModel()
@@ -59,6 +69,7 @@ class TmDashPreviewFragment : BaseDaggerFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        tmTracker = TmTracker()
         tmCouponPreviewData =
             arguments?.getParcelable(BUNDLE_COUPON_PREVIEW_DATA) ?: TmCouponPreviewData()
         tmCouponCreateUnifyRequest =
@@ -110,6 +121,12 @@ class TmDashPreviewFragment : BaseDaggerFragment() {
             subtitle = "Langkah 4 dari 4"
             isShowBackButton = true
             setNavigationOnClickListener {
+                if(arguments?.getInt(BUNDLE_CREATE_SCREEN_TYPE) == CreateScreenType.PREVIEW_BUAT){
+                    tmTracker?.clickSummaryBackFromProgramList(arguments?.getInt(BUNDLE_SHOP_ID).toString())
+                }
+                else {
+                    tmTracker?.clickSummaryBack(arguments?.getInt(BUNDLE_SHOP_ID).toString())
+                }
                 activity?.onBackPressed()
             }
         }
@@ -121,7 +138,19 @@ class TmDashPreviewFragment : BaseDaggerFragment() {
     }
 
     private fun renderButton(){
-        btnPreview.apply {
+        btnPreview.setOnClickListener {
+            if(arguments?.getInt(BUNDLE_CREATE_SCREEN_TYPE) == CreateScreenType.PREVIEW_BUAT){
+                tmTracker?.clickSummaryButtonFromProgramList(
+                    arguments?.getInt(BUNDLE_SHOP_ID).toString(),
+                    arguments?.getInt(BUNDLE_PROGRAM_ID).toString()
+                )
+            }
+            else {
+                tmTracker?.clickSummaryButton(
+                    arguments?.getInt(BUNDLE_SHOP_ID).toString(),
+                    arguments?.getInt(BUNDLE_PROGRAM_ID).toString()
+                )
+            }
             tmDashCreateViewModel.createCoupon(tmCouponCreateUnifyRequest)
         }
     }

@@ -12,11 +12,14 @@ import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.tokomember_seller_dashboard.R
 import com.tokopedia.tokomember_seller_dashboard.di.component.DaggerTokomemberDashComponent
 import com.tokopedia.tokomember_seller_dashboard.model.CheckEligibility
+import com.tokopedia.tokomember_seller_dashboard.tracker.TmTracker
 import com.tokopedia.tokomember_seller_dashboard.view.activity.TokomemberDashHomeActivity
 import com.tokopedia.tokomember_seller_dashboard.view.activity.TokomemberDashIntroActivity
 import com.tokopedia.tokomember_seller_dashboard.view.viewmodel.TmEligibilityViewModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import kotlinx.android.synthetic.main.tm_dash_intro_container.*
+import kotlinx.android.synthetic.main.tm_layout_no_access.*
 import javax.inject.Inject
 
 class TokomemberMainFragment : BaseDaggerFragment() {
@@ -24,6 +27,7 @@ class TokomemberMainFragment : BaseDaggerFragment() {
     private var shopId = 0
     private var shopName = ""
     private var shopAvatar = ""
+    private var tmTracker: TmTracker? = null
 
     @Inject
     lateinit var viewModelFactory: dagger.Lazy<ViewModelProvider.Factory>
@@ -44,6 +48,11 @@ class TokomemberMainFragment : BaseDaggerFragment() {
 
         observeViewModel()
         tmEligibilityViewModel.getSellerInfo()
+        tmTracker = TmTracker()
+        btn_no_access.setOnClickListener {
+            Toast.makeText(context, "Not allowed", Toast.LENGTH_SHORT).show()
+            tmTracker?.clickBackHomeBSNoAccess(shopId.toString())
+        }
     }
 
     private fun observeViewModel() {
@@ -68,6 +77,8 @@ class TokomemberMainFragment : BaseDaggerFragment() {
                         tmEligibilityViewModel.checkEligibility(shopId, true)
                     }
                     else{
+                        viewFlipperIntro?.displayedChild = 2
+                        tmTracker?.viewBSNoAccess(shopId.toString())
                         Toast.makeText(context, it.data.rbacAuthorizeAccess?.error, Toast.LENGTH_SHORT).show()
                     }
                 }

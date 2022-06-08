@@ -12,13 +12,14 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.dialog.DialogUnify
-import com.tokopedia.tokomember_common_widget.util.ProgramActionType
 import com.tokopedia.tokomember_common_widget.util.CreateScreenType
+import com.tokopedia.tokomember_common_widget.util.ProgramActionType
 import com.tokopedia.tokomember_seller_dashboard.R
 import com.tokopedia.tokomember_seller_dashboard.callbacks.ProgramActions
 import com.tokopedia.tokomember_seller_dashboard.callbacks.TmProgramDetailCallback
 import com.tokopedia.tokomember_seller_dashboard.di.component.DaggerTokomemberDashComponent
 import com.tokopedia.tokomember_seller_dashboard.model.ProgramSellerListItem
+import com.tokopedia.tokomember_seller_dashboard.tracker.TmTracker
 import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_EDIT_PROGRAM
 import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_PROGRAM_ID
 import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_SHOP_ID
@@ -37,6 +38,7 @@ import javax.inject.Inject
 
 class TokomemberDashProgramListFragment : BaseDaggerFragment(), ProgramActions {
 
+    private var tmTracker: TmTracker? = null
     private var shopId = 0
     private var cardId = 3668
     private lateinit var homeFragmentCallback: TmProgramDetailCallback
@@ -76,6 +78,8 @@ class TokomemberDashProgramListFragment : BaseDaggerFragment(), ProgramActions {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        tmTracker = TmTracker()
+
         var rvProgram = view.findViewById<RecyclerView>(R.id.rv_program)
         rvProgram.apply {
             layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
@@ -83,6 +87,13 @@ class TokomemberDashProgramListFragment : BaseDaggerFragment(), ProgramActions {
         }
         observeViewModel()
         tmProgramListViewModel?.getProgramList(arguments?.getInt(BUNDLE_SHOP_ID)?:0, cardId)
+        tmTracker?.viewProgramListTabSection(arguments?.getInt(BUNDLE_SHOP_ID).toString())
+
+        btnCreateProgram.setOnClickListener {
+            //TODO
+            TmDashCreateActivity.openActivity(shopId, activity, CreateScreenType.PROGRAM, ProgramActionType.CREATE_BUAT, null, null, )
+            tmTracker?.clickProgramListButton(shopId.toString())
+        }
     }
 
     private fun observeViewModel() {

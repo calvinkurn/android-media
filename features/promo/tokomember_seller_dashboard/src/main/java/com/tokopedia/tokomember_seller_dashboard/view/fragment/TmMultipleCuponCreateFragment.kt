@@ -4,7 +4,11 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Color
 import android.os.Bundle
-import android.text.*
+import android.text.Html
+import android.text.InputType
+import android.text.SpannableString
+import android.text.Spanned
+import android.text.TextPaint
 import android.text.method.LinkMovementMethod
 import android.text.style.ClickableSpan
 import android.view.LayoutInflater
@@ -35,9 +39,48 @@ import com.tokopedia.tokomember_seller_dashboard.model.TmIntroBottomsheetModel
 import com.tokopedia.tokomember_seller_dashboard.model.TmSingleCouponData
 import com.tokopedia.tokomember_seller_dashboard.model.ValidationError
 import com.tokopedia.tokomember_seller_dashboard.model.mapper.TmCouponCreateMapper
-import com.tokopedia.tokomember_seller_dashboard.util.*
+import com.tokopedia.tokomember_seller_dashboard.tracker.TmTracker
+import com.tokopedia.tokomember_seller_dashboard.util.ANDROID
+import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_CARD_DATA
+import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_CARD_ID
+import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_COUPON_CREATE_DATA
+import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_COUPON_PREVIEW_DATA
+import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_CREATE_SCREEN_TYPE
+import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_PROGRAM_DATA
+import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_PROGRAM_ID
+import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_SHOP_AVATAR
+import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_SHOP_ID
+import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_SHOP_NAME
+import com.tokopedia.tokomember_seller_dashboard.util.COUPON_HEADER_SUBTITLE
+import com.tokopedia.tokomember_seller_dashboard.util.COUPON_HEADER_TITLE
+import com.tokopedia.tokomember_seller_dashboard.util.COUPON_TERMS_CONDITION
+import com.tokopedia.tokomember_seller_dashboard.util.CREATE
+import com.tokopedia.tokomember_seller_dashboard.util.DATE_DESC
+import com.tokopedia.tokomember_seller_dashboard.util.DATE_TITLE
+import com.tokopedia.tokomember_seller_dashboard.util.ERROR_CREATING_CTA
+import com.tokopedia.tokomember_seller_dashboard.util.ERROR_CREATING_CTA_RETRY
+import com.tokopedia.tokomember_seller_dashboard.util.ERROR_CREATING_DESC
+import com.tokopedia.tokomember_seller_dashboard.util.ERROR_CREATING_TITLE
+import com.tokopedia.tokomember_seller_dashboard.util.ERROR_CREATING_TITLE_RETRY
+import com.tokopedia.tokomember_seller_dashboard.util.ErrorState
+import com.tokopedia.tokomember_seller_dashboard.util.IDR
+import com.tokopedia.tokomember_seller_dashboard.util.LOADING_TEXT
+import com.tokopedia.tokomember_seller_dashboard.util.PREMIUM
+import com.tokopedia.tokomember_seller_dashboard.util.PROGRAM_TYPE_AUTO
+import com.tokopedia.tokomember_seller_dashboard.util.PROGRAM_TYPE_MANUAL
+import com.tokopedia.tokomember_seller_dashboard.util.PROGRAM_VALIDATION_CTA_TEXT
+import com.tokopedia.tokomember_seller_dashboard.util.PROGRAM_VALIDATION_ERROR_DESC
+import com.tokopedia.tokomember_seller_dashboard.util.PROGRAM_VALIDATION_ERROR_TITLE
+import com.tokopedia.tokomember_seller_dashboard.util.RETRY
+import com.tokopedia.tokomember_seller_dashboard.util.TERMS
+import com.tokopedia.tokomember_seller_dashboard.util.TERNS_AND_CONDITION
+import com.tokopedia.tokomember_seller_dashboard.util.TIME_DESC
+import com.tokopedia.tokomember_seller_dashboard.util.TIME_TITLE
 import com.tokopedia.tokomember_seller_dashboard.util.TmDateUtil.setDate
 import com.tokopedia.tokomember_seller_dashboard.util.TmDateUtil.setTime
+import com.tokopedia.tokomember_seller_dashboard.util.TmFileUtil
+import com.tokopedia.tokomember_seller_dashboard.util.TokoLiveDataResult
+import com.tokopedia.tokomember_seller_dashboard.util.VIP
 import com.tokopedia.tokomember_seller_dashboard.view.activity.TokomemberDashIntroActivity
 import com.tokopedia.tokomember_seller_dashboard.view.adapter.model.TmCouponListItemPreview
 import com.tokopedia.tokomember_seller_dashboard.view.animation.TmExpandView.collapse
@@ -63,6 +106,7 @@ import javax.inject.Inject
 
 class TmMultipleCuponCreateFragment : BaseDaggerFragment() {
 
+    private var tmTracker: TmTracker? = null
     private var selectedChipPositionDate: Int = 0
     private var selectedCalendar: Calendar? = null
     private var selectedTime = ""
@@ -120,6 +164,7 @@ class TmMultipleCuponCreateFragment : BaseDaggerFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        tmTracker = TmTracker()
         renderHeader()
         renderButton()
         observeViewModel()
@@ -479,6 +524,8 @@ class TmMultipleCuponCreateFragment : BaseDaggerFragment() {
 
         val bundle = Bundle()
         bundle.putInt(BUNDLE_CARD_ID, arguments?.getInt(BUNDLE_CARD_ID)?:0)
+        bundle.putInt(BUNDLE_SHOP_ID, arguments?.getInt(BUNDLE_SHOP_ID)?:0)
+        bundle.putInt(BUNDLE_PROGRAM_ID, arguments?.getInt(BUNDLE_PROGRAM_ID)?:0)
         bundle.putParcelable(BUNDLE_CARD_DATA, arguments?.getParcelable(BUNDLE_CARD_DATA))
         bundle.putParcelable(BUNDLE_PROGRAM_DATA, arguments?.getParcelable(BUNDLE_PROGRAM_DATA))
         bundle.putParcelable(BUNDLE_COUPON_PREVIEW_DATA, tmCouponPreviewData)
@@ -519,6 +566,12 @@ class TmMultipleCuponCreateFragment : BaseDaggerFragment() {
             subtitle = COUPON_HEADER_SUBTITLE
             isShowBackButton = true
             setNavigationOnClickListener {
+                if(arguments?.getInt(BUNDLE_CREATE_SCREEN_TYPE) == CreateScreenType.COUPON_MULTIPLE_BUAT){
+                    tmTracker?.clickCouponCreationBackFromProgramList(arguments?.getInt(BUNDLE_SHOP_ID).toString())
+                }
+                else{
+                    tmTracker?.clickCouponCreationBack(arguments?.getInt(BUNDLE_SHOP_ID).toString())
+                }
                 activity?.onBackPressed()
             }
         }
@@ -568,6 +621,12 @@ class TmMultipleCuponCreateFragment : BaseDaggerFragment() {
         tvTermsAndCondition.movementMethod = LinkMovementMethod.getInstance()
         tvTermsAndCondition.highlightColor = Color.TRANSPARENT
         btnContinue.setOnClickListener {
+            if(arguments?.getInt(BUNDLE_CREATE_SCREEN_TYPE) == CreateScreenType.COUPON_MULTIPLE_BUAT) {
+                tmTracker?.clickCouponCreationFromProgramList(arguments?.getInt(BUNDLE_SHOP_ID).toString())
+            }
+            else {
+                tmTracker?.clickCouponCreationButton(arguments?.getInt(BUNDLE_SHOP_ID).toString())
+            }
             it.isEnabled = false
             it.isClickable = false
             couponPremiumData = tmPremiumCoupon?.getSingleCouponData()

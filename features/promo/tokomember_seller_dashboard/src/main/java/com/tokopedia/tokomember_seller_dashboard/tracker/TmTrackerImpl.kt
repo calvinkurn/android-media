@@ -19,11 +19,6 @@ interface TmTrackerImpl {
     fun clickPopupCancelPrimary(shopId: String)
     fun clickPopupCancelSecondary(shopId: String)
 
-    fun clickProgramExtensionBack(shopId: String , programId:String)
-    fun clickProgramExtensionButton(shopId: String, programId: String)
-    fun clickProgramExtensionPopUpPrimary(shopId: String,programId: String)
-    fun clickProgramExtensionPopUpSecondary(shopId: String, programId: String)
-
     fun clickProgramCreationButton(shopId: String, programId: String)
     fun clickProgramCreationBack(shopId: String)
 
@@ -44,31 +39,57 @@ interface TmTrackerImpl {
     fun clickProgramCreationCancelPopupPrimary(shopId: String)
     fun clickProgramCreationCancelPopupSecondary(shopId: String)
     fun clickCouponCreationFromProgramList(shopId: String)
-    fun clickBackCouponCreationFromProgramList(shopId: String)
+    fun clickCouponCreationBackFromProgramList(shopId: String)
     fun clickSummaryButtonFromProgramList(shopId: String, programId: String)
     fun clickSummaryBackFromProgramList(shopId: String)
-
-    fun clickProgramThreeDot(shopId: String)
-    fun clickProgramBsOption(shopId: String)
-    fun clickProgramItemButton(shopId: String)
-
-    fun clickProgramChangeButton(shopId: String,programId: String)
-    fun clickProgramChangeBack(shopId: String,programId: String)
-    fun clickProgramChangePopUpPrimary(shopId: String,programId: String)
-    fun clickProgramChangePopUpSecondary(shopId: String,programId: String)
 
     fun clickCouponChangeBack(shopId: String)
     fun clickCouponChangeButton(shopId: String)
 
     fun viewCouponListTabSection(shopId: String)
-    fun clickCouponListBack(shopId: String)
-    fun clickCouponOptionBsQuota(shopId: String)
-    fun clickCouponItemButton(shopId: String)
-    fun clickBsAddQuotaButton(shopId: String)
-
+    fun clickButtonCouponList(shopId: String)
+    fun clickCreateCouponList(shopId: String)
+    fun clickBackCouponList(shopId: String)
     fun clickCouponCancelPopUpPrimary(shopId: String)
     fun clickCouponCancelPopUpSecondary(shopId: String)
 
-    fun viewProgramDetail(shopId: String)
+    fun clickProgramActiveThreeDot(shopId: String, programId: String)
+
+    //Program Extension
+    fun clickProgramBsExtension(shopId: String, programId: String)
+    fun clickProgramExtensionButton(shopId: String, programId: String)
+    fun clickProgramExtensionCreateButton(shopId: String, programId: String)
+    fun clickProgramExtensionBack(shopId: String , programId:String)
+    fun clickProgramExtensionPopUpPrimary(shopId: String,programId: String)
+    fun clickProgramExtensionPopUpSecondary(shopId: String, programId: String)
+    fun clickProgramExtensionCouponCreation(shopId: String, programId: String)
+    fun clickProgramExtensionCouponBack(shopId: String, programId: String)
+    fun clickProgramExtensionSummaryButton(shopId: String, programId: String)
+    fun clickProgramExtensionSummaryBack(shopId: String, programId: String)
+
+    //Program Edit
+    fun clickProgramEdit(shopId: String, programId: String)
+    fun clickProgramEditButton(shopId: String, programId: String)
+    fun clickProgramEditBack(shopId: String, programId: String)
+    fun clickProgramEditPopUpPrimary(shopId: String, programId: String)
+    fun clickProgramEditPopUpSecondary(shopId: String, programId: String)
+
+    fun clickProgramWaitingThreeDot(shopId: String, programId: String)
+
+    //Program Cancel
+    fun clickProgramBsCancel(shopId: String, programId: String)
+    fun clickProgramCancelPopUpPrimary(shopId: String, programId: String)
+    fun clickProgramCancelPopUpSecondary(shopId: String, programId: String)
+
+    fun clickCouponListThreeDot(shopId: String)
+
+    //Coupon Quota
+    fun clickCouponOptionBsQuota(shopId: String)
+    fun clickAddQuotaButton(shopId: String)
+    fun clickAddQuotaCTA(shopId: String)
+
+    //Program Detail
+    fun clickProgramItemButton(shopId: String, programId: String)
+    fun viewProgramDetail(shopId: String, programId: String)
 
 }

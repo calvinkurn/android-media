@@ -10,13 +10,16 @@ import com.tokopedia.tokomember_common_widget.util.CouponType.Companion.DISCOUNT
 import com.tokopedia.tokomember_common_widget.util.CouponType.Companion.SHIPPING
 import com.tokopedia.tokomember_common_widget.util.CreateScreenType.Companion.CARD
 import com.tokopedia.tokomember_common_widget.util.CreateScreenType.Companion.COUPON_MULTIPLE
+import com.tokopedia.tokomember_common_widget.util.CreateScreenType.Companion.COUPON_MULTIPLE_BUAT
 import com.tokopedia.tokomember_common_widget.util.CreateScreenType.Companion.COUPON_SINGLE
 import com.tokopedia.tokomember_common_widget.util.CreateScreenType.Companion.PREVIEW
+import com.tokopedia.tokomember_common_widget.util.CreateScreenType.Companion.PREVIEW_BUAT
 import com.tokopedia.tokomember_common_widget.util.CreateScreenType.Companion.PROGRAM
 import com.tokopedia.tokomember_common_widget.util.MemberType.Companion.PREMIUM
 import com.tokopedia.tokomember_common_widget.util.MemberType.Companion.VIP
 import com.tokopedia.tokomember_common_widget.util.ProgramActionType.Companion.CANCEL
 import com.tokopedia.tokomember_common_widget.util.ProgramActionType.Companion.CREATE
+import com.tokopedia.tokomember_common_widget.util.ProgramActionType.Companion.CREATE_BUAT
 import com.tokopedia.tokomember_common_widget.util.ProgramActionType.Companion.DETAIL
 import com.tokopedia.tokomember_common_widget.util.ProgramActionType.Companion.EDIT
 import com.tokopedia.tokomember_common_widget.util.ProgramActionType.Companion.EXTEND
@@ -42,26 +45,29 @@ annotation class AnimationType {
 }
 
 @Retention(AnnotationRetention.SOURCE)
-@IntDef(CREATE, DETAIL, EXTEND, EDIT, CANCEL)
+@IntDef(CREATE, CREATE_BUAT, DETAIL, EXTEND, EDIT, CANCEL)
 annotation class ProgramActionType {
     companion object {
         const val CREATE = 0
-        const val DETAIL = 1
-        const val EXTEND = 2
-        const val EDIT = 3
-        const val CANCEL = 4
+        const val CREATE_BUAT = 1
+        const val DETAIL = 2
+        const val EXTEND = 3
+        const val EDIT = 4
+        const val CANCEL = 5
     }
 }
 
 @Retention(AnnotationRetention.SOURCE)
-@IntDef(CARD, PROGRAM, COUPON_SINGLE, COUPON_MULTIPLE, PREVIEW)
+@IntDef(CARD, PROGRAM, COUPON_SINGLE, COUPON_MULTIPLE, COUPON_MULTIPLE_BUAT, PREVIEW, PREVIEW_BUAT)
 annotation class CreateScreenType {
     companion object {
         const val CARD = 0
         const val PROGRAM = 1
         const val COUPON_SINGLE = 2
         const val COUPON_MULTIPLE = 3
-        const val PREVIEW = 4
+        const val COUPON_MULTIPLE_BUAT = 4
+        const val PREVIEW = 5
+        const val PREVIEW_BUAT = 6
     }
 }
 

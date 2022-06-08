@@ -17,6 +17,7 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.carousel.CarouselUnify
+import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.loaderdialog.LoaderDialog
 import com.tokopedia.promoui.common.dpToPx
@@ -33,6 +34,7 @@ import com.tokopedia.tokomember_seller_dashboard.domain.requestparam.TmCardModif
 import com.tokopedia.tokomember_seller_dashboard.model.CardDataTemplate
 import com.tokopedia.tokomember_seller_dashboard.model.CardTemplateImageListItem
 import com.tokopedia.tokomember_seller_dashboard.model.TmIntroBottomsheetModel
+import com.tokopedia.tokomember_seller_dashboard.tracker.TmTracker
 import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_CARD_DATA
 import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_CARD_ID
 import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_PROGRAM_TYPE
@@ -47,7 +49,10 @@ import com.tokopedia.tokomember_seller_dashboard.util.ERROR_CREATING_TITLE_RETRY
 import com.tokopedia.tokomember_seller_dashboard.util.LOADING_TEXT
 import com.tokopedia.tokomember_seller_dashboard.util.TokoLiveDataResult
 import com.tokopedia.tokomember_seller_dashboard.view.activity.TokomemberDashIntroActivity
-import com.tokopedia.tokomember_seller_dashboard.view.adapter.*
+import com.tokopedia.tokomember_seller_dashboard.view.adapter.TmCardBgAdapter
+import com.tokopedia.tokomember_seller_dashboard.view.adapter.TmCardColorAdapter
+import com.tokopedia.tokomember_seller_dashboard.view.adapter.TokomemberCardBgAdapterListener
+import com.tokopedia.tokomember_seller_dashboard.view.adapter.TokomemberCardColorAdapterListener
 import com.tokopedia.tokomember_seller_dashboard.view.adapter.decoration.TokomemberDashColorItemDecoration
 import com.tokopedia.tokomember_seller_dashboard.view.adapter.factory.TmCardBgFactory
 import com.tokopedia.tokomember_seller_dashboard.view.adapter.factory.TmCardColorFactory
@@ -70,6 +75,8 @@ import javax.inject.Inject
 class TmCreateCardFragment : BaseDaggerFragment(), TokomemberCardColorAdapterListener,
     TokomemberCardBgAdapterListener, BottomSheetClickListener {
 
+
+    private var tmTracker: TmTracker? = null
     private lateinit var tmOpenFragmentCallback: TmOpenFragmentCallback
     @Inject
     lateinit var viewModelFactory: dagger.Lazy<ViewModelProvider.Factory>
@@ -115,6 +122,7 @@ class TmCreateCardFragment : BaseDaggerFragment(), TokomemberCardColorAdapterLis
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        tmTracker = TmTracker()
         observeViewModel()
         tmDashCreateViewModel.getCardInfo(arguments?.getInt(BUNDLE_CARD_ID)?:0)
         renderHeader()
@@ -240,6 +248,7 @@ class TmCreateCardFragment : BaseDaggerFragment(), TokomemberCardColorAdapterLis
     }
 
     private fun renderCardUi(data: CardDataTemplate) {
+        tmTracker?.clickCardCreationButton(shopID.toString())
         containerViewFlipper.displayedChild = DATA
         shopID = data.card?.shopID?:0
         renderCardCarousel(data)
@@ -295,7 +304,21 @@ class TmCreateCardFragment : BaseDaggerFragment(), TokomemberCardColorAdapterLis
             subtitle = HEADER_DESC
             isShowBackButton = true
             setNavigationOnClickListener {
-                activity?.onBackPressed()
+                tmTracker?.clickCardCreationBack(shopID.toString())
+                val dialog = context?.let { DialogUnify(it, DialogUnify.VERTICAL_ACTION, DialogUnify.NO_IMAGE) }
+                dialog?.setTitle("Yakin batalkan pengaturan?")
+                dialog?.setDescription("Pengaturan yang dibuat akan hilang kalau kamu batalkan proses pembuatan TokoMember, lho.")
+                dialog?.setPrimaryCTAText("Lanjut")
+                dialog?.setSecondaryCTAText("Batalkan Pengaturan")
+                dialog?.setPrimaryCTAClickListener {
+                    tmTracker?.clickCardCancelPrimary(shopID.toString())
+                    dialog.dismiss()
+                }
+                dialog?.setSecondaryCTAClickListener {
+                    tmTracker?.clickCardCancelSecondary(shopID.toString())
+                    activity?.onBackPressed()
+                }
+                dialog?.show()
             }
         }
         progressCard?.apply {

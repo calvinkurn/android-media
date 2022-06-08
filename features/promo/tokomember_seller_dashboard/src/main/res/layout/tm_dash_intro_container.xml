@@ -16,4 +16,6 @@
 
     <include layout="@layout/tm_dash_intro"/>
 
+    <include layout="@layout/tm_layout_no_access"/>
+
 </ViewFlipper>

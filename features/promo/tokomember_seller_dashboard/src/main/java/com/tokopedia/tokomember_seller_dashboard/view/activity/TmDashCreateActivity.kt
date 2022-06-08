@@ -9,8 +9,10 @@ import androidx.fragment.app.Fragment
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.tokomember_common_widget.util.CreateScreenType.Companion.CARD
 import com.tokopedia.tokomember_common_widget.util.CreateScreenType.Companion.COUPON_MULTIPLE
+import com.tokopedia.tokomember_common_widget.util.CreateScreenType.Companion.COUPON_MULTIPLE_BUAT
 import com.tokopedia.tokomember_common_widget.util.CreateScreenType.Companion.COUPON_SINGLE
 import com.tokopedia.tokomember_common_widget.util.CreateScreenType.Companion.PREVIEW
+import com.tokopedia.tokomember_common_widget.util.CreateScreenType.Companion.PREVIEW_BUAT
 import com.tokopedia.tokomember_common_widget.util.CreateScreenType.Companion.PROGRAM
 import com.tokopedia.tokomember_common_widget.util.ProgramActionType
 import com.tokopedia.tokomember_seller_dashboard.R
@@ -112,7 +114,7 @@ class TmDashCreateActivity : AppCompatActivity(), TmOpenFragmentCallback {
             screenType: Int,
             programActionType: Int = ProgramActionType.CREATE,
             requestCode: Int?,
-            programId: Int
+            programId: Int?
         ){
             activity?.let {
                 val intent = Intent(it, TmDashCreateActivity::class.java)
@@ -157,7 +159,15 @@ class TmDashCreateActivity : AppCompatActivity(), TmOpenFragmentCallback {
             COUPON_MULTIPLE ->{
                 bundle.let { TmMultipleCuponCreateFragment.newInstance(it) }.let { addFragment(it, "") }
             }
+            COUPON_MULTIPLE_BUAT ->{
+                bundle.putInt(BUNDLE_CREATE_SCREEN_TYPE, COUPON_MULTIPLE_BUAT)
+                bundle.let { TmMultipleCuponCreateFragment.newInstance(it) }.let { addFragment(it, "") }
+            }
             PREVIEW ->{
+                bundle.let { TmDashPreviewFragment.newInstance(it) }.let { addFragment(it, "") }
+            }
+            PREVIEW_BUAT->{
+                bundle.putInt(BUNDLE_CREATE_SCREEN_TYPE, PREVIEW_BUAT)
                 bundle.let { TmDashPreviewFragment.newInstance(it) }.let { addFragment(it, "") }
             }
         }

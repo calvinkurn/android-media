@@ -26,7 +26,15 @@ import com.tokopedia.tokomember_seller_dashboard.R
 import com.tokopedia.tokomember_seller_dashboard.di.component.DaggerTokomemberDashComponent
 import com.tokopedia.tokomember_seller_dashboard.model.MembershipData
 import com.tokopedia.tokomember_seller_dashboard.model.TmIntroBottomsheetModel
-import com.tokopedia.tokomember_seller_dashboard.util.*
+import com.tokopedia.tokomember_seller_dashboard.tracker.TmTracker
+import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_CARD_ID
+import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_OPEN_BS
+import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_SHOP_AVATAR
+import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_SHOP_ID
+import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_SHOP_NAME
+import com.tokopedia.tokomember_seller_dashboard.util.TM_NOT_ELIGIBLE_CTA
+import com.tokopedia.tokomember_seller_dashboard.util.TM_NOT_ELIGIBLE_DESC
+import com.tokopedia.tokomember_seller_dashboard.util.TM_NOT_ELIGIBLE_TITLE
 import com.tokopedia.tokomember_seller_dashboard.view.activity.TmDashCreateActivity
 import com.tokopedia.tokomember_seller_dashboard.view.adapter.TmIntroAdapter
 import com.tokopedia.tokomember_seller_dashboard.view.adapter.factory.TokomemberIntroFactory
@@ -48,6 +56,7 @@ class TmIntroFragment : BaseDaggerFragment(),
     private var openBS: Boolean = false
     private var videoUrl:String? =null
     private var cardID:Int?=null
+    private var tmTracker: TmTracker? = null
 
     @Inject
     lateinit var viewModelFactory: dagger.Lazy<ViewModelProvider.Factory>
@@ -82,7 +91,13 @@ class TmIntroFragment : BaseDaggerFragment(),
         hideStatusBar()
         observeViewModel()
         renderHeader()
-        arguments?.getInt(BUNDLE_SHOP_ID, 0)?.let { tmIntroViewModel.getIntroInfo(it) }
+        arguments?.getInt(BUNDLE_SHOP_ID, 0)?.let {
+            tmTracker?.viewIntroPage(it.toString())
+            tmIntroViewModel.getIntroInfo(it)
+            btnWebview.setOnClickListener { _ ->
+                tmTracker?.clickIntroLanjut(it.toString())
+            }
+        }
     }
 
     override fun getScreenName() = ""
@@ -130,9 +145,18 @@ class TmIntroFragment : BaseDaggerFragment(),
             val bottomSheet = TokomemberBottomsheet.createInstance(bundle)
             bottomSheet.setUpBottomSheetListener(object : BottomSheetClickListener{
                 override fun onButtonClick(errorCount: Int) {
+                    arguments?.getInt(BUNDLE_SHOP_ID, 0)?.let {
+                        tmTracker?.clickButtonBsNonOs(it.toString())
+                    }
                     bottomSheet.dismiss()
                 }
             })
+            bottomSheet.setOnDismissListener {
+                arguments?.getInt(BUNDLE_SHOP_ID, 0)?.let {
+                    tmTracker?.clickDismissBsNonOs(it.toString())
+                }
+                bottomSheet.dismiss()
+            }
             bottomSheet.show( childFragmentManager,"")
         }
         animateViews()
@@ -177,6 +201,9 @@ class TmIntroFragment : BaseDaggerFragment(),
     }
 
     override fun onButtonItemClick(position: Int) {
+        arguments?.getInt(BUNDLE_SHOP_ID, 0)?.let {
+            tmTracker?.clickIntroDaftar(it.toString())
+        }
         val intent = Intent(this.context, TmDashCreateActivity::class.java)
         intent.putExtra(BUNDLE_CARD_ID,cardID?:0)
         intent.putExtra(BUNDLE_SHOP_AVATAR, arguments?.getString(BUNDLE_SHOP_AVATAR))

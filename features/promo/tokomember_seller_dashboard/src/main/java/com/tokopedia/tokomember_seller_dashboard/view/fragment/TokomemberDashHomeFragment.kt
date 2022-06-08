@@ -9,6 +9,7 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.tokomember_seller_dashboard.R
 import com.tokopedia.tokomember_seller_dashboard.di.component.DaggerTokomemberDashComponent
+import com.tokopedia.tokomember_seller_dashboard.tracker.TmTracker
 import com.tokopedia.tokomember_seller_dashboard.view.viewmodel.TokomemberDashHomeViewmodel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -16,6 +17,7 @@ import javax.inject.Inject
 
 class TokomemberDashHomeFragment : BaseDaggerFragment() {
 
+    private var tmTracker: TmTracker? = null
     private var shopId = 0
 
     @Inject
@@ -34,6 +36,9 @@ class TokomemberDashHomeFragment : BaseDaggerFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        tmTracker = TmTracker()
+        tmTracker?.viewHomeTabsSection(shopId.toString())
 
         observeViewModel()
         tokomemberDashHomeViewmodel.getHomePageData(6553698, 3827)

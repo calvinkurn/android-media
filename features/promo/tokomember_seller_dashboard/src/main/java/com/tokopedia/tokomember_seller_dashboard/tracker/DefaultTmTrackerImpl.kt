@@ -1,5 +1,9 @@
 package com.tokopedia.tokomember_seller_dashboard.tracker
 
+import com.tokopedia.tokomember_seller_dashboard.tracker.Tracker.Category.TM_DASHBOARD_CREATE_COUPON
+import com.tokopedia.tokomember_seller_dashboard.tracker.Tracker.Category.TM_DASHBOARD_DETAIL_PROGRAM
+import com.tokopedia.tokomember_seller_dashboard.tracker.Tracker.Category.TM_DASHBOARD_EDIT_PROGRAM
+import com.tokopedia.tokomember_seller_dashboard.tracker.Tracker.Category.TM_DASHBOARD_EXTEND_PROGRAM
 import com.tokopedia.tokomember_seller_dashboard.tracker.Tracker.Category.TM_DASHBOARD_HOME
 import com.tokopedia.tokomember_seller_dashboard.tracker.Tracker.Event.EVENT_CLICK_BGP_IRIS
 import com.tokopedia.tokomember_seller_dashboard.tracker.Tracker.Event.EVENT_VIEW_BGP_IRIS
@@ -296,7 +300,7 @@ open class DefaultTmTrackerImpl : TmTrackerImpl {
         Tracker.getTracker().sendGeneralEvent(map)
     }
 
-    override fun clickBackCouponCreationFromProgramList(shopId: String) {
+    override fun clickCouponCreationBackFromProgramList(shopId: String) {
         val map = mutableMapOf<String, Any>()
         map[Tracker.Constants.EVENT] = EVENT_CLICK_BGP_IRIS
         map[Tracker.Constants.EVENT_CATEGORY] = Tracker.Category.TM_DASHBOARD_CREATE_PROGRAM
@@ -326,120 +330,6 @@ open class DefaultTmTrackerImpl : TmTrackerImpl {
         Tracker.getTracker().sendGeneralEvent(map)
     }
 
-
-
-
-
-    override fun clickProgramThreeDot(shopId: String) {
-        val map = mutableMapOf<String, Any>()
-        map[Tracker.Constants.EVENT] = ""
-        map[Tracker.Constants.EVENT_CATEGORY] = ""
-        map[Tracker.Constants.EVENT_ACTION] = ""
-        map[Tracker.Constants.EVENT_LABEL] = ""
-        Tracker.fillCommonItems(map)
-        Tracker.getTracker().sendGeneralEvent(map)
-    }
-
-    override fun clickProgramBsOption(shopId: String) {
-        val map = mutableMapOf<String, Any>()
-        map[Tracker.Constants.EVENT] = ""
-        map[Tracker.Constants.EVENT_CATEGORY] = ""
-        map[Tracker.Constants.EVENT_ACTION] = ""
-        map[Tracker.Constants.EVENT_LABEL] = ""
-        Tracker.fillCommonItems(map)
-        Tracker.getTracker().sendGeneralEvent(map)
-    }
-
-    override fun clickProgramExtensionBack(shopId: String, programId: String) {
-        val map = mutableMapOf<String, Any>()
-        map[Tracker.Constants.EVENT] = EVENT_CLICK_BGP_IRIS
-        map[Tracker.Constants.EVENT_CATEGORY] = ""
-        map[Tracker.Constants.EVENT_ACTION] = ""
-        map[Tracker.Constants.EVENT_LABEL] = ""
-        Tracker.fillCommonItems(map)
-        Tracker.getTracker().sendGeneralEvent(map)
-    }
-
-    override fun clickProgramExtensionButton(shopId: String, programId: String) {
-        val map = mutableMapOf<String, Any>()
-        map[Tracker.Constants.EVENT] = EVENT_CLICK_BGP_IRIS
-        map[Tracker.Constants.EVENT_CATEGORY] = ""
-        map[Tracker.Constants.EVENT_ACTION] = ""
-        map[Tracker.Constants.EVENT_LABEL] = ""
-        Tracker.fillCommonItems(map)
-        Tracker.getTracker().sendGeneralEvent(map)
-    }
-
-    override fun clickProgramExtensionPopUpPrimary(shopId: String, programId: String) {
-        val map = mutableMapOf<String, Any>()
-        map[Tracker.Constants.EVENT] = EVENT_CLICK_BGP_IRIS
-        map[Tracker.Constants.EVENT_CATEGORY] = ""
-        map[Tracker.Constants.EVENT_ACTION] = ""
-        map[Tracker.Constants.EVENT_LABEL] = ""
-        Tracker.fillCommonItems(map)
-        Tracker.getTracker().sendGeneralEvent(map)
-    }
-
-    override fun clickProgramExtensionPopUpSecondary(shopId: String, programId: String) {
-        val map = mutableMapOf<String, Any>()
-        map[Tracker.Constants.EVENT] = EVENT_CLICK_BGP_IRIS
-        map[Tracker.Constants.EVENT_CATEGORY] = ""
-        map[Tracker.Constants.EVENT_ACTION] = ""
-        map[Tracker.Constants.EVENT_LABEL] = ""
-        Tracker.fillCommonItems(map)
-        Tracker.getTracker().sendGeneralEvent(map)
-    }
-
-    override fun clickProgramItemButton(shopId: String) {
-        val map = mutableMapOf<String, Any>()
-        map[Tracker.Constants.EVENT] = ""
-        map[Tracker.Constants.EVENT_CATEGORY] = ""
-        map[Tracker.Constants.EVENT_ACTION] = ""
-        map[Tracker.Constants.EVENT_LABEL] = ""
-        Tracker.fillCommonItems(map)
-        Tracker.getTracker().sendGeneralEvent(map)
-    }
-
-    override fun clickProgramChangeButton(shopId: String, programId: String) {
-        val map = mutableMapOf<String, Any>()
-        map[Tracker.Constants.EVENT] = ""
-        map[Tracker.Constants.EVENT_CATEGORY] = ""
-        map[Tracker.Constants.EVENT_ACTION] = ""
-        map[Tracker.Constants.EVENT_LABEL] = ""
-        Tracker.fillCommonItems(map)
-        Tracker.getTracker().sendGeneralEvent(map)
-    }
-
-    override fun clickProgramChangeBack(shopId: String, programId: String) {
-        val map = mutableMapOf<String, Any>()
-        map[Tracker.Constants.EVENT] = ""
-        map[Tracker.Constants.EVENT_CATEGORY] = ""
-        map[Tracker.Constants.EVENT_ACTION] = ""
-        map[Tracker.Constants.EVENT_LABEL] = ""
-        Tracker.fillCommonItems(map)
-        Tracker.getTracker().sendGeneralEvent(map)
-    }
-
-    override fun clickProgramChangePopUpPrimary(shopId: String, programId: String) {
-        val map = mutableMapOf<String, Any>()
-        map[Tracker.Constants.EVENT] = ""
-        map[Tracker.Constants.EVENT_CATEGORY] = ""
-        map[Tracker.Constants.EVENT_ACTION] = ""
-        map[Tracker.Constants.EVENT_LABEL] = ""
-        Tracker.fillCommonItems(map)
-        Tracker.getTracker().sendGeneralEvent(map)
-    }
-
-    override fun clickProgramChangePopUpSecondary(shopId: String, programId: String) {
-        val map = mutableMapOf<String, Any>()
-        map[Tracker.Constants.EVENT] = ""
-        map[Tracker.Constants.EVENT_CATEGORY] = ""
-        map[Tracker.Constants.EVENT_ACTION] = ""
-        map[Tracker.Constants.EVENT_LABEL] = ""
-        Tracker.fillCommonItems(map)
-        Tracker.getTracker().sendGeneralEvent(map)
-    }
-
     override fun clickCouponChangeBack(shopId: String) {
         val map = mutableMapOf<String, Any>()
         map[Tracker.Constants.EVENT] = ""
@@ -462,80 +352,320 @@ open class DefaultTmTrackerImpl : TmTrackerImpl {
 
     override fun viewCouponListTabSection(shopId: String) {
         val map = mutableMapOf<String, Any>()
-        map[Tracker.Constants.EVENT] = ""
-        map[Tracker.Constants.EVENT_CATEGORY] = ""
-        map[Tracker.Constants.EVENT_ACTION] = ""
-        map[Tracker.Constants.EVENT_LABEL] = ""
+        map[Tracker.Constants.EVENT] = EVENT_VIEW_BGP_IRIS
+        map[Tracker.Constants.EVENT_CATEGORY] = TM_DASHBOARD_HOME
+        map[Tracker.Constants.EVENT_ACTION] = Tracker.Action.VIEW_COUPON_LIST_TAB_SECTION
+        map[Tracker.Constants.EVENT_LABEL] = shopId
         Tracker.fillCommonItems(map)
         Tracker.getTracker().sendGeneralEvent(map)
     }
 
-    override fun clickCouponListBack(shopId: String) {
+    override fun clickButtonCouponList(shopId: String) {
         val map = mutableMapOf<String, Any>()
-        map[Tracker.Constants.EVENT] = ""
-        map[Tracker.Constants.EVENT_CATEGORY] = ""
-        map[Tracker.Constants.EVENT_ACTION] = ""
-        map[Tracker.Constants.EVENT_LABEL] = ""
+        map[Tracker.Constants.EVENT] = EVENT_CLICK_BGP_IRIS
+        map[Tracker.Constants.EVENT_CATEGORY] = TM_DASHBOARD_HOME
+        map[Tracker.Constants.EVENT_ACTION] = Tracker.Action.CLICK_BUTTON_COUPON_LIST
+        map[Tracker.Constants.EVENT_LABEL] = shopId
         Tracker.fillCommonItems(map)
         Tracker.getTracker().sendGeneralEvent(map)
     }
 
-    override fun clickCouponOptionBsQuota(shopId: String) {
+    override fun clickCreateCouponList(shopId: String) {
         val map = mutableMapOf<String, Any>()
-        map[Tracker.Constants.EVENT] = ""
-        map[Tracker.Constants.EVENT_CATEGORY] = ""
-        map[Tracker.Constants.EVENT_ACTION] = ""
-        map[Tracker.Constants.EVENT_LABEL] = ""
+        map[Tracker.Constants.EVENT] = EVENT_CLICK_BGP_IRIS
+        map[Tracker.Constants.EVENT_CATEGORY] = TM_DASHBOARD_CREATE_COUPON
+        map[Tracker.Constants.EVENT_ACTION] = Tracker.Action.CLICK_BUTTON_COUPON_LIST
+        map[Tracker.Constants.EVENT_LABEL] = shopId
         Tracker.fillCommonItems(map)
         Tracker.getTracker().sendGeneralEvent(map)
     }
 
-    override fun clickCouponItemButton(shopId: String) {
+    override fun clickBackCouponList(shopId: String) {
         val map = mutableMapOf<String, Any>()
-        map[Tracker.Constants.EVENT] = ""
-        map[Tracker.Constants.EVENT_CATEGORY] = ""
-        map[Tracker.Constants.EVENT_ACTION] = ""
-        map[Tracker.Constants.EVENT_LABEL] = ""
-        Tracker.fillCommonItems(map)
-        Tracker.getTracker().sendGeneralEvent(map)
-    }
-
-    override fun clickBsAddQuotaButton(shopId: String) {
-        val map = mutableMapOf<String, Any>()
-        map[Tracker.Constants.EVENT] = ""
-        map[Tracker.Constants.EVENT_CATEGORY] = ""
-        map[Tracker.Constants.EVENT_ACTION] = ""
-        map[Tracker.Constants.EVENT_LABEL] = ""
+        map[Tracker.Constants.EVENT] = EVENT_CLICK_BGP_IRIS
+        map[Tracker.Constants.EVENT_CATEGORY] = TM_DASHBOARD_CREATE_COUPON
+        map[Tracker.Constants.EVENT_ACTION] = Tracker.Action.CLICK_COUPON_CREATION_BACK_FROM_P_LIST
+        map[Tracker.Constants.EVENT_LABEL] = shopId
         Tracker.fillCommonItems(map)
         Tracker.getTracker().sendGeneralEvent(map)
     }
 
     override fun clickCouponCancelPopUpPrimary(shopId: String) {
         val map = mutableMapOf<String, Any>()
-        map[Tracker.Constants.EVENT] = ""
-        map[Tracker.Constants.EVENT_CATEGORY] = ""
-        map[Tracker.Constants.EVENT_ACTION] = ""
-        map[Tracker.Constants.EVENT_LABEL] = ""
+        map[Tracker.Constants.EVENT] = EVENT_CLICK_BGP_IRIS
+        map[Tracker.Constants.EVENT_CATEGORY] = TM_DASHBOARD_CREATE_COUPON
+        map[Tracker.Constants.EVENT_ACTION] = Tracker.Action.CLICK_COUPON_CANCEL_POP_UP_PRIMARY
+        map[Tracker.Constants.EVENT_LABEL] = shopId
         Tracker.fillCommonItems(map)
         Tracker.getTracker().sendGeneralEvent(map)
     }
 
     override fun clickCouponCancelPopUpSecondary(shopId: String) {
         val map = mutableMapOf<String, Any>()
-        map[Tracker.Constants.EVENT] = ""
-        map[Tracker.Constants.EVENT_CATEGORY] = ""
-        map[Tracker.Constants.EVENT_ACTION] = ""
-        map[Tracker.Constants.EVENT_LABEL] = ""
+        map[Tracker.Constants.EVENT] = EVENT_CLICK_BGP_IRIS
+        map[Tracker.Constants.EVENT_CATEGORY] = TM_DASHBOARD_CREATE_COUPON
+        map[Tracker.Constants.EVENT_ACTION] = Tracker.Action.CLICK_COUPON_CANCEL_POP_UP_SECONDARY
+        map[Tracker.Constants.EVENT_LABEL] = shopId
         Tracker.fillCommonItems(map)
         Tracker.getTracker().sendGeneralEvent(map)
     }
 
-    override fun viewProgramDetail(shopId: String) {
+    override fun clickProgramActiveThreeDot(shopId: String, programId: String) {
         val map = mutableMapOf<String, Any>()
-        map[Tracker.Constants.EVENT] = ""
-        map[Tracker.Constants.EVENT_CATEGORY] = ""
-        map[Tracker.Constants.EVENT_ACTION] = ""
-        map[Tracker.Constants.EVENT_LABEL] = ""
+        map[Tracker.Constants.EVENT] = EVENT_CLICK_BGP_IRIS
+        map[Tracker.Constants.EVENT_CATEGORY] = TM_DASHBOARD_HOME
+        map[Tracker.Constants.EVENT_ACTION] = Tracker.Action.CLICK_PROGRAM_ACTIVE_THREE_DOT
+        map[Tracker.Constants.EVENT_LABEL] = "$shopId - $programId"
+        Tracker.fillCommonItems(map)
+        Tracker.getTracker().sendGeneralEvent(map)
+    }
+
+    override fun clickProgramBsExtension(shopId: String, programId: String) {
+        val map = mutableMapOf<String, Any>()
+        map[Tracker.Constants.EVENT] = EVENT_CLICK_BGP_IRIS
+        map[Tracker.Constants.EVENT_CATEGORY] = TM_DASHBOARD_HOME
+        map[Tracker.Constants.EVENT_ACTION] = Tracker.Action.CLICK_PROGRAM_CREATION_EXTENSION_BS
+        map[Tracker.Constants.EVENT_LABEL] = "$shopId - $programId"
+        Tracker.fillCommonItems(map)
+        Tracker.getTracker().sendGeneralEvent(map)
+    }
+
+    override fun clickProgramExtensionButton(shopId: String, programId: String) {
+        val map = mutableMapOf<String, Any>()
+        map[Tracker.Constants.EVENT] = EVENT_CLICK_BGP_IRIS
+        map[Tracker.Constants.EVENT_CATEGORY] = TM_DASHBOARD_HOME
+        map[Tracker.Constants.EVENT_ACTION] = Tracker.Action.CLICK_PROGRAM_EXTENSION_BUTTON
+        map[Tracker.Constants.EVENT_LABEL] = "$shopId - $programId"
+        Tracker.fillCommonItems(map)
+        Tracker.getTracker().sendGeneralEvent(map)
+    }
+
+    override fun clickProgramExtensionCreateButton(shopId: String, programId: String) {
+        val map = mutableMapOf<String, Any>()
+        map[Tracker.Constants.EVENT] = EVENT_CLICK_BGP_IRIS
+        map[Tracker.Constants.EVENT_CATEGORY] = TM_DASHBOARD_EXTEND_PROGRAM
+        map[Tracker.Constants.EVENT_ACTION] = Tracker.Action.CLICK_PROGRAM_CREATION_EXTENSION_BUTTON
+        map[Tracker.Constants.EVENT_LABEL] = "$shopId - $programId"
+        Tracker.fillCommonItems(map)
+        Tracker.getTracker().sendGeneralEvent(map)
+    }
+
+    override fun clickProgramExtensionBack(shopId: String, programId: String) {
+        val map = mutableMapOf<String, Any>()
+        map[Tracker.Constants.EVENT] = EVENT_CLICK_BGP_IRIS
+        map[Tracker.Constants.EVENT_CATEGORY] = TM_DASHBOARD_EXTEND_PROGRAM
+        map[Tracker.Constants.EVENT_ACTION] = Tracker.Action.CLICK_PROGRAM_CREATION_EXTENSION_BACK
+        map[Tracker.Constants.EVENT_LABEL] = "$shopId - $programId"
+        Tracker.fillCommonItems(map)
+        Tracker.getTracker().sendGeneralEvent(map)
+    }
+
+    override fun clickProgramExtensionPopUpPrimary(shopId: String, programId: String) {
+        val map = mutableMapOf<String, Any>()
+        map[Tracker.Constants.EVENT] = EVENT_CLICK_BGP_IRIS
+        map[Tracker.Constants.EVENT_CATEGORY] = TM_DASHBOARD_EXTEND_PROGRAM
+        map[Tracker.Constants.EVENT_ACTION] = Tracker.Action.CLICK_PROGRAM_POP_UP_CANCEL_EXTENSION_PRIMARY
+        map[Tracker.Constants.EVENT_LABEL] = "$shopId - $programId"
+        Tracker.fillCommonItems(map)
+        Tracker.getTracker().sendGeneralEvent(map)
+    }
+
+    override fun clickProgramExtensionPopUpSecondary(shopId: String, programId: String) {
+        val map = mutableMapOf<String, Any>()
+        map[Tracker.Constants.EVENT] = EVENT_CLICK_BGP_IRIS
+        map[Tracker.Constants.EVENT_CATEGORY] = TM_DASHBOARD_EXTEND_PROGRAM
+        map[Tracker.Constants.EVENT_ACTION] = Tracker.Action.CLICK_PROGRAM_POP_UP_CANCEL_EXTENSION_SECONDARY
+        map[Tracker.Constants.EVENT_LABEL] = "$shopId - $programId"
+        Tracker.fillCommonItems(map)
+        Tracker.getTracker().sendGeneralEvent(map)
+    }
+
+    override fun clickProgramExtensionCouponCreation(shopId: String, programId: String) {
+        val map = mutableMapOf<String, Any>()
+        map[Tracker.Constants.EVENT] = EVENT_CLICK_BGP_IRIS
+        map[Tracker.Constants.EVENT_CATEGORY] = TM_DASHBOARD_EXTEND_PROGRAM
+        map[Tracker.Constants.EVENT_ACTION] = Tracker.Action.CLICK_COUPON_CREATION_BUTTON_FROM_P_LIST
+        map[Tracker.Constants.EVENT_LABEL] = "$shopId - $programId"
+        Tracker.fillCommonItems(map)
+        Tracker.getTracker().sendGeneralEvent(map)
+    }
+
+    override fun clickProgramExtensionCouponBack(shopId: String, programId: String) {
+        val map = mutableMapOf<String, Any>()
+        map[Tracker.Constants.EVENT] = EVENT_CLICK_BGP_IRIS
+        map[Tracker.Constants.EVENT_CATEGORY] = TM_DASHBOARD_EXTEND_PROGRAM
+        map[Tracker.Constants.EVENT_ACTION] = Tracker.Action.CLICK_COUPON_CREATION_BACK_FROM_P_LIST
+        map[Tracker.Constants.EVENT_LABEL] = "$shopId - $programId"
+        Tracker.fillCommonItems(map)
+        Tracker.getTracker().sendGeneralEvent(map)
+    }
+
+    override fun clickProgramExtensionSummaryButton(shopId: String, programId: String) {
+        val map = mutableMapOf<String, Any>()
+        map[Tracker.Constants.EVENT] = EVENT_CLICK_BGP_IRIS
+        map[Tracker.Constants.EVENT_CATEGORY] = TM_DASHBOARD_EXTEND_PROGRAM
+        map[Tracker.Constants.EVENT_ACTION] = Tracker.Action.CLICK_SUMMARY_BUTTON
+        map[Tracker.Constants.EVENT_LABEL] = "$shopId - $programId"
+        Tracker.fillCommonItems(map)
+        Tracker.getTracker().sendGeneralEvent(map)
+    }
+
+    override fun clickProgramExtensionSummaryBack(shopId: String, programId: String) {
+        val map = mutableMapOf<String, Any>()
+        map[Tracker.Constants.EVENT] = EVENT_CLICK_BGP_IRIS
+        map[Tracker.Constants.EVENT_CATEGORY] = TM_DASHBOARD_EXTEND_PROGRAM
+        map[Tracker.Constants.EVENT_ACTION] = Tracker.Action.CLICK_SUMMARY_BACK
+        map[Tracker.Constants.EVENT_LABEL] = "$shopId - $programId"
+        Tracker.fillCommonItems(map)
+        Tracker.getTracker().sendGeneralEvent(map)
+    }
+
+    override fun clickProgramEdit(shopId: String, programId: String) {
+        val map = mutableMapOf<String, Any>()
+        map[Tracker.Constants.EVENT] = EVENT_CLICK_BGP_IRIS
+        map[Tracker.Constants.EVENT_CATEGORY] = TM_DASHBOARD_EDIT_PROGRAM
+        map[Tracker.Constants.EVENT_ACTION] = Tracker.Action.CLICK_PROGRAM_EDIT
+        map[Tracker.Constants.EVENT_LABEL] = "$shopId - $programId"
+        Tracker.fillCommonItems(map)
+        Tracker.getTracker().sendGeneralEvent(map)
+    }
+
+    override fun clickProgramEditButton(shopId: String, programId: String) {
+        val map = mutableMapOf<String, Any>()
+        map[Tracker.Constants.EVENT] = EVENT_CLICK_BGP_IRIS
+        map[Tracker.Constants.EVENT_CATEGORY] = TM_DASHBOARD_EDIT_PROGRAM
+        map[Tracker.Constants.EVENT_ACTION] = Tracker.Action.CLICK_PROGRAM_EDIT_BUTTON
+        map[Tracker.Constants.EVENT_LABEL] = "$shopId - $programId"
+        Tracker.fillCommonItems(map)
+        Tracker.getTracker().sendGeneralEvent(map)
+    }
+
+    override fun clickProgramEditBack(shopId: String, programId: String) {
+        val map = mutableMapOf<String, Any>()
+        map[Tracker.Constants.EVENT] = EVENT_CLICK_BGP_IRIS
+        map[Tracker.Constants.EVENT_CATEGORY] = TM_DASHBOARD_EDIT_PROGRAM
+        map[Tracker.Constants.EVENT_ACTION] = Tracker.Action.CLICK_PROGRAM_EDIT_BACK
+        map[Tracker.Constants.EVENT_LABEL] = "$shopId - $programId"
+        Tracker.fillCommonItems(map)
+        Tracker.getTracker().sendGeneralEvent(map)
+    }
+
+    override fun clickProgramEditPopUpPrimary(shopId: String, programId: String) {
+        val map = mutableMapOf<String, Any>()
+        map[Tracker.Constants.EVENT] = EVENT_CLICK_BGP_IRIS
+        map[Tracker.Constants.EVENT_CATEGORY] = TM_DASHBOARD_EDIT_PROGRAM
+        map[Tracker.Constants.EVENT_ACTION] = Tracker.Action.CLICK_PROGRAM_EDIT_POPUP_CANCEL_PRIMARY
+        map[Tracker.Constants.EVENT_LABEL] = "$shopId - $programId"
+        Tracker.fillCommonItems(map)
+        Tracker.getTracker().sendGeneralEvent(map)
+    }
+
+    override fun clickProgramEditPopUpSecondary(shopId: String, programId: String) {
+        val map = mutableMapOf<String, Any>()
+        map[Tracker.Constants.EVENT] = EVENT_CLICK_BGP_IRIS
+        map[Tracker.Constants.EVENT_CATEGORY] = TM_DASHBOARD_EDIT_PROGRAM
+        map[Tracker.Constants.EVENT_ACTION] = Tracker.Action.CLICK_PROGRAM_EDIT_POPUP_CANCEL_SECONDARY
+        map[Tracker.Constants.EVENT_LABEL] = "$shopId - $programId"
+        Tracker.fillCommonItems(map)
+        Tracker.getTracker().sendGeneralEvent(map)
+    }
+
+    override fun clickProgramWaitingThreeDot(shopId: String, programId: String) {
+        val map = mutableMapOf<String, Any>()
+        map[Tracker.Constants.EVENT] = EVENT_CLICK_BGP_IRIS
+        map[Tracker.Constants.EVENT_CATEGORY] = TM_DASHBOARD_HOME
+        map[Tracker.Constants.EVENT_ACTION] = Tracker.Action.CLICK_PROGRAM_WAITING_THREE_DOT
+        map[Tracker.Constants.EVENT_LABEL] = "$shopId - $programId"
+        Tracker.fillCommonItems(map)
+        Tracker.getTracker().sendGeneralEvent(map)
+    }
+
+    override fun clickProgramBsCancel(shopId: String, programId: String) {
+        val map = mutableMapOf<String, Any>()
+        map[Tracker.Constants.EVENT] = EVENT_CLICK_BGP_IRIS
+        map[Tracker.Constants.EVENT_CATEGORY] = TM_DASHBOARD_HOME
+        map[Tracker.Constants.EVENT_ACTION] = Tracker.Action.CLICK_PROGRAM_BS_CANCEL
+        map[Tracker.Constants.EVENT_LABEL] = "$shopId - $programId"
+        Tracker.fillCommonItems(map)
+        Tracker.getTracker().sendGeneralEvent(map)
+    }
+
+    override fun clickProgramCancelPopUpPrimary(shopId: String, programId: String) {
+        val map = mutableMapOf<String, Any>()
+        map[Tracker.Constants.EVENT] = EVENT_CLICK_BGP_IRIS
+        map[Tracker.Constants.EVENT_CATEGORY] = TM_DASHBOARD_HOME
+        map[Tracker.Constants.EVENT_ACTION] = Tracker.Action.CLICK_PROGRAM_BS_CANCEL_POPUP_PRIMARY
+        map[Tracker.Constants.EVENT_LABEL] = "$shopId - $programId"
+        Tracker.fillCommonItems(map)
+        Tracker.getTracker().sendGeneralEvent(map)
+    }
+
+    override fun clickProgramCancelPopUpSecondary(shopId: String, programId: String) {
+        val map = mutableMapOf<String, Any>()
+        map[Tracker.Constants.EVENT] = EVENT_CLICK_BGP_IRIS
+        map[Tracker.Constants.EVENT_CATEGORY] = TM_DASHBOARD_HOME
+        map[Tracker.Constants.EVENT_ACTION] = Tracker.Action.CLICK_PROGRAM_BS_CANCEL_POPUP_SECONDARY
+        map[Tracker.Constants.EVENT_LABEL] = "$shopId - $programId"
+        Tracker.fillCommonItems(map)
+        Tracker.getTracker().sendGeneralEvent(map)
+    }
+
+    override fun clickCouponListThreeDot(shopId: String) {
+        val map = mutableMapOf<String, Any>()
+        map[Tracker.Constants.EVENT] = EVENT_CLICK_BGP_IRIS
+        map[Tracker.Constants.EVENT_CATEGORY] = TM_DASHBOARD_HOME
+        map[Tracker.Constants.EVENT_ACTION] = Tracker.Action.CLICK_COUPON_LIST_THREE_DOTS
+        map[Tracker.Constants.EVENT_LABEL] = shopId
+        Tracker.fillCommonItems(map)
+        Tracker.getTracker().sendGeneralEvent(map)
+    }
+
+    override fun clickCouponOptionBsQuota(shopId: String) {
+        val map = mutableMapOf<String, Any>()
+        map[Tracker.Constants.EVENT] = EVENT_CLICK_BGP_IRIS
+        map[Tracker.Constants.EVENT_CATEGORY] = TM_DASHBOARD_HOME
+        map[Tracker.Constants.EVENT_ACTION] = Tracker.Action.CLICK_OPTION_BS_QUOTA
+        map[Tracker.Constants.EVENT_LABEL] = shopId
+        Tracker.fillCommonItems(map)
+        Tracker.getTracker().sendGeneralEvent(map)
+    }
+
+    override fun clickAddQuotaButton(shopId: String) {
+        val map = mutableMapOf<String, Any>()
+        map[Tracker.Constants.EVENT] = EVENT_CLICK_BGP_IRIS
+        map[Tracker.Constants.EVENT_CATEGORY] = TM_DASHBOARD_HOME
+        map[Tracker.Constants.EVENT_ACTION] = Tracker.Action.CLICK_COUPON_ADD_QUOTA_BUTTON
+        map[Tracker.Constants.EVENT_LABEL] = shopId
+        Tracker.fillCommonItems(map)
+        Tracker.getTracker().sendGeneralEvent(map)
+    }
+
+    override fun clickAddQuotaCTA(shopId: String) {
+        val map = mutableMapOf<String, Any>()
+        map[Tracker.Constants.EVENT] = EVENT_CLICK_BGP_IRIS
+        map[Tracker.Constants.EVENT_CATEGORY] = TM_DASHBOARD_HOME
+        map[Tracker.Constants.EVENT_ACTION] = Tracker.Action.CLICK_ADD_QUOTA_CTA
+        map[Tracker.Constants.EVENT_LABEL] = shopId
+        Tracker.fillCommonItems(map)
+        Tracker.getTracker().sendGeneralEvent(map)
+    }
+
+    override fun clickProgramItemButton(shopId: String, programId: String) {
+        val map = mutableMapOf<String, Any>()
+        map[Tracker.Constants.EVENT] = EVENT_CLICK_BGP_IRIS
+        map[Tracker.Constants.EVENT_CATEGORY] = TM_DASHBOARD_HOME
+        map[Tracker.Constants.EVENT_ACTION] = Tracker.Action.CLICK_PROGRAM_ITEM
+        map[Tracker.Constants.EVENT_LABEL] = "$shopId - $programId"
+        Tracker.fillCommonItems(map)
+        Tracker.getTracker().sendGeneralEvent(map)
+    }
+
+    override fun viewProgramDetail(shopId: String, programId: String) {
+        val map = mutableMapOf<String, Any>()
+        map[Tracker.Constants.EVENT] = EVENT_VIEW_BGP_IRIS
+        map[Tracker.Constants.EVENT_CATEGORY] = TM_DASHBOARD_DETAIL_PROGRAM
+        map[Tracker.Constants.EVENT_ACTION] = Tracker.Action.VIEW_PROGRAM_DETAIL
+        map[Tracker.Constants.EVENT_LABEL] = "$shopId - $programId"
         Tracker.fillCommonItems(map)
         Tracker.getTracker().sendGeneralEvent(map)
     }

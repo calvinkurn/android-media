@@ -14,6 +14,7 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.datepicker.LocaleUtils
 import com.tokopedia.datepicker.datetimepicker.DateTimePickerUnify
+import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
@@ -29,6 +30,7 @@ import com.tokopedia.tokomember_seller_dashboard.domain.requestparam.ProgramUpda
 import com.tokopedia.tokomember_seller_dashboard.model.MembershipGetProgramForm
 import com.tokopedia.tokomember_seller_dashboard.model.ProgramThreshold
 import com.tokopedia.tokomember_seller_dashboard.model.TmIntroBottomsheetModel
+import com.tokopedia.tokomember_seller_dashboard.tracker.TmTracker
 import com.tokopedia.tokomember_seller_dashboard.util.ACTION_CREATE
 import com.tokopedia.tokomember_seller_dashboard.util.ACTION_DETAIL
 import com.tokopedia.tokomember_seller_dashboard.util.ACTION_EDIT
@@ -80,6 +82,7 @@ class TmProgramFragment : BaseDaggerFragment(), ChipGroupCallback ,
     private var selectedChipPosition = 0
     private var errorCount = 0
     private var programUpdateResponse = ProgramUpdateDataInput()
+    private var tmTracker: TmTracker? = null
 
     @Inject
     lateinit var viewModelFactory: dagger.Lazy<ViewModelProvider.Factory>
@@ -117,6 +120,7 @@ class TmProgramFragment : BaseDaggerFragment(), ChipGroupCallback ,
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        tmTracker = TmTracker()
         renderHeader()
         observeViewModel()
         callGQL(programActionType,arguments?.getInt(BUNDLE_SHOP_ID)?:0, arguments?.getInt(BUNDLE_PROGRAM_ID)?:0  )
@@ -234,14 +238,37 @@ class TmProgramFragment : BaseDaggerFragment(), ChipGroupCallback ,
                 activity?.setResult(RESULT_OK, intent)
                 activity?.finish()
             }
+            ProgramActionType.CREATE_BUAT ->{
+                tmOpenFragmentCallback.openFragment(CreateScreenType.COUPON_MULTIPLE_BUAT, bundle)
+            }
         }
     }
 
     private fun renderHeader() {
 
         headerProgram.setNavigationOnClickListener {
+            if(programActionType == ProgramActionType.CREATE) {
+                tmTracker?.clickProgramCreationBack(arguments?.getInt(BUNDLE_SHOP_ID).toString())
+            }
+            if(programActionType == ProgramActionType.CREATE_BUAT) {
+                tmTracker?.clickProgramCreationBackFromProgramList(arguments?.getInt(BUNDLE_SHOP_ID).toString())
+            }
+
+            val dialog = context?.let { DialogUnify(it, DialogUnify.VERTICAL_ACTION, DialogUnify.NO_IMAGE) }
+            dialog?.setTitle("Yakin batalkan program?")
+            dialog?.setDescription("Pengaturan yang dibuat akan hilang kalau kamu batalkan proses pengaturan TokoMember, lho.")
+            dialog?.setPrimaryCTAText("Lanjut")
+            dialog?.setSecondaryCTAText("Batalkan Program")
+            dialog?.setPrimaryCTAClickListener {
+                tmTracker?.clickProgramCreationCancelPopupPrimary(arguments?.getInt(BUNDLE_SHOP_ID).toString())
+                dialog.dismiss()
+            }
+            dialog?.setSecondaryCTAClickListener {
+                tmTracker?.clickProgramCreationCancelPopupSecondary(arguments?.getInt(BUNDLE_SHOP_ID).toString())
                 activity?.onBackPressed()
             }
+            dialog?.show()
+        }
 
         when(programActionType){
             ProgramActionType.CREATE ->{
@@ -326,7 +353,20 @@ class TmProgramFragment : BaseDaggerFragment(), ChipGroupCallback ,
             clickDatePicker(DATE_TITLE,DATE_DESC)
         }
         btnCreateProgram?.setOnClickListener {
-            initCreateProgram(membershipGetProgramForm)
+            if(programActionType == ProgramActionType.CREATE) {
+                tmTracker?.clickProgramCreationButton(
+                    arguments?.getInt(BUNDLE_SHOP_ID).toString(),
+                    arguments?.getInt(BUNDLE_PROGRAM_ID).toString()
+                )
+            }
+            if(programActionType == ProgramActionType.CREATE_BUAT) {
+                tmTracker?.clickProgramCreationButtonFromProgramList(
+                    arguments?.getInt(BUNDLE_SHOP_ID).toString(),
+                    arguments?.getInt(BUNDLE_PROGRAM_ID).toString()
+                )
+            }
+
+                initCreateProgram(membershipGetProgramForm)
         }
     }
 
