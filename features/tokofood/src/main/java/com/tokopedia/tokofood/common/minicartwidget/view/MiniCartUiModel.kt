@@ -10,6 +10,5 @@ data class MiniCartUiModel(
         var shopName: String = "",
         var totalPrice: Double = 0.0,
         var totalPriceFmt: String = "",
-        var totalProduct: Int = 0,
         var totalProductQuantity: Int = 0
 ): Parcelable

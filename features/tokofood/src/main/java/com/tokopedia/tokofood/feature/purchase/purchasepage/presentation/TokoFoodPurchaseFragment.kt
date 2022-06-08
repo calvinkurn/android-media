@@ -11,6 +11,7 @@ import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
+import androidx.core.net.toUri
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
@@ -41,11 +42,10 @@ import com.tokopedia.localizationchooseaddress.domain.model.ChosenAddressModel
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.logisticCommon.data.constant.LogisticConstant
 import com.tokopedia.logisticCommon.data.entity.geolocation.autocomplete.LocationPass
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.purchase_platform.common.constant.CheckoutConstant
 import com.tokopedia.tokofood.R
-import com.tokopedia.tokofood.common.domain.param.CartItemTokoFoodParam
-import com.tokopedia.tokofood.common.domain.param.CartTokoFoodParam
 import com.tokopedia.tokofood.common.domain.response.CartTokoFoodData
 import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFood
 import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFoodConsentBottomSheet
@@ -326,7 +326,7 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
                     hideLoading()
                     renderNoPinpoint()
                 }
-                PurchaseUiEvent.EVENT_FAILED_LOAD_PURCHASE_PAGE -> {
+                PurchaseUiEvent.EVENT_FAILED_LOAD_PURCHASE_PAGE_PARTIAL -> {
                     hideLoading()
                     renderRecyclerView()
                     it.throwable?.let { throwable ->
@@ -343,7 +343,7 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
                         )
                     }
                 }
-                PurchaseUiEvent.EVENT_FAILED_LOAD_FIRST_TIME_PURCHASE_PAGE -> {
+                PurchaseUiEvent.EVENT_FAILED_LOAD_PURCHASE_PAGE -> {
                     hideLoading()
                     renderRecyclerView()
                     it.throwable?.let { throwable ->
@@ -360,15 +360,23 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
                         )
                     }
                 }
-                PurchaseUiEvent.EVENT_REMOVE_ALL_PRODUCT -> navigateToMerchantPage(shopId)
+                PurchaseUiEvent.EVENT_EMPTY_PRODUCTS -> {
+                    val emptyProductShopId = (it.data as? String).orEmpty()
+                    if (emptyProductShopId.isBlank()) {
+                        navigateToHomePage()
+                    } else {
+                        navigateToMerchantPage(emptyProductShopId)
+                    }
+                }
                 PurchaseUiEvent.EVENT_SUCCESS_REMOVE_PRODUCT -> onSuccessRemoveProduct(it.data as Int)
                 PurchaseUiEvent.EVENT_SCROLL_TO_UNAVAILABLE_ITEMS -> scrollToIndex(it.data as Int)
                 PurchaseUiEvent.EVENT_SHOW_BULK_DELETE_CONFIRMATION_DIALOG -> showBulkDeleteConfirmationDialog(it.data as Int)
                 PurchaseUiEvent.EVENT_NAVIGATE_TO_SET_PINPOINT -> navigateToSetPinpoint(it.data as LocationPass)
-                PurchaseUiEvent.EVENT_SUCCESS_EDIT_PINPOINT -> viewModel.loadData()
+                PurchaseUiEvent.EVENT_SUCCESS_EDIT_PINPOINT -> {
+                    loadData()
+                }
                 PurchaseUiEvent.EVENT_FAILED_EDIT_PINPOINT -> {
-                    // TODO: Show error
-                    viewModel.loadData()
+
                 }
                 PurchaseUiEvent.EVENT_SUCCESS_GET_CONSENT -> {
                     (it.data as? CheckoutTokoFoodConsentBottomSheet)?.let { data ->
@@ -597,7 +605,6 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
             it.layoutGlobalErrorPurchase.show()
             it.noPinpointPurchase.gone()
             it.recyclerViewPurchase.gone()
-            // TODO: Move to viewmodel for testability
             val errorType = getGlobalErrorType(throwable)
             it.layoutGlobalErrorPurchase.setType(errorType)
             it.layoutGlobalErrorPurchase.setActionClickListener {
@@ -613,7 +620,7 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
         }
         viewBinding?.noPinpointPurchase?.run {
             setType(GlobalError.PAGE_NOT_FOUND)
-            // TODO: Set image url
+            errorIllustration.loadImage(NO_PINPOINT_URL)
             errorTitle.text = context?.getString(R.string.text_purchase_no_pinpoint).orEmpty()
             errorDescription.text = context?.getString(R.string.text_purchase_pinpoint_benefit).orEmpty()
             errorAction.text = context?.getString(R.string.text_purchase_set_pinpoint).orEmpty()
@@ -667,7 +674,15 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
         )
     }
 
+    private fun navigateToHomePage() {
+        parentFragmentManager.popBackStack()
+        TokofoodRouteManager.mapUriToFragment(ApplinkConstInternalTokoFood.HOME.toUri())?.let { homeFragment ->
+            navigateToNewFragment(homeFragment)
+        }
+    }
+
     private fun navigateToMerchantPage(merchantId: String) {
+        parentFragmentManager.popBackStack()
         val merchantPageUri = Uri.parse(ApplinkConstInternalTokoFood.MERCHANT)
             .buildUpon()
             .appendQueryParameter(DeeplinkMapperTokoFood.PARAM_MERCHANT_ID, merchantId)
@@ -731,16 +746,15 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
             context?.getString(R.string.text_purchase_success_edit_address).orEmpty(),
             getOkayMessage()
         )
-        loadData()
         intent?.getParcelableExtra<ChosenAddressModel>(CheckoutConstant.EXTRA_SELECTED_ADDRESS_DATA)?.let { chosenAddressModel ->
             val hasPinpoint = chosenAddressModel.latitude.isNotBlank() && chosenAddressModel.longitude.isNotBlank()
             viewModel.setIsHasPinpoint(chosenAddressModel.addressId.toString(), hasPinpoint)
         }
+        loadData()
     }
 
     private fun onResultFromPaymentSuccess() {
-        // TODO: Go to home, but elegantly
-        navigateToNewFragment(TokoFoodHomeFragment.createInstance())
+        navigateToHomePage()
     }
 
     private fun showLoadingDialog() {
@@ -755,18 +769,6 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
 
     private fun hideLoadingDialog() {
         if (loaderDialog?.dialog?.isShowing == true) loaderDialog?.dialog?.dismiss()
-    }
-
-    private fun convertProductListToUpdateParam(productList: List<TokoFoodPurchaseProductTokoFoodPurchaseUiModel>): CartTokoFoodParam {
-        val cartList = productList.map {
-            CartItemTokoFoodParam(
-                productId = it.id,
-                quantity = it.quantity
-            )
-        }
-        return CartTokoFoodParam(
-            carts = cartList
-        )
     }
 
     private fun showConsentBottomSheet(data: CheckoutTokoFoodConsentBottomSheet) {
@@ -937,7 +939,14 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
         startActivityForResult(intent, REQUEST_CODE_CHANGE_ADDRESS)
     }
 
-    override fun onTextSetPinpointClicked() {}
+    override fun onTextSetPinpointClicked() {
+        val locationPass =
+            LocationPass().apply {
+                latitude = TokoFoodPurchaseViewModel.TOTO_LATITUDE
+                longitude = TokoFoodPurchaseViewModel.TOTO_LONGITUDE
+            }
+        navigateToSetPinpoint(locationPass)
+    }
 
     override fun onTextAddItemClicked() {
         navigateToMerchantPage(shopId)
@@ -1025,6 +1034,8 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
 
         private const val SOURCE = "checkout_page"
         private const val PAGE_NAME = "checkout_page"
+
+        private const val NO_PINPOINT_URL = "https://images.tokopedia.net/img/ic-tokofood_home_no_pin_poin.png"
 
         fun createInstance(): TokoFoodPurchaseFragment {
             return TokoFoodPurchaseFragment()
