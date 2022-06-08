@@ -71,7 +71,7 @@ class ChooseAddressViewComponent(
     fun getWareHouseId() : String {
     //userLocalData.isOutOfCoverage()
         return userLocalData.warehouses.find {
-            it.service_type == "2h"
+            it.service_type == userLocalData.service_type
         }?.warehouse_id.toString()
     }
 
