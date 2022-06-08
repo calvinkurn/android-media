@@ -28,6 +28,8 @@ import com.tokopedia.user.session.UserSessionInterface;
 import com.tokopedia.wishlist.common.domain.interactor.GetProductIsWishlistedUseCase;
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase;
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase;
+import com.tokopedia.wishlistcommon.domain.AddToWishlistV2UseCase;
+import com.tokopedia.wishlistcommon.domain.DeleteWishlistV2UseCase;
 
 import java.util.concurrent.TimeUnit;
 
@@ -159,9 +161,21 @@ public class KolModule {
 
     @KolScope
     @Provides
+    public AddToWishlistV2UseCase provideAddToWishlistV2UseCase(GraphqlRepository graphqlRepository){
+        return new AddToWishlistV2UseCase(graphqlRepository);
+    }
+
+    @KolScope
+    @Provides
+    public DeleteWishlistV2UseCase provideDeleteWishlistV2UseCase(GraphqlRepository graphqlRepository){
+        return new DeleteWishlistV2UseCase(graphqlRepository);
+    }
+
+    @KolScope
+    @Provides
     @Named(KolConstant.KEY_QUERY_IS_WISHLISTED)
     public String getQueryProductIsWishlisted(@ApplicationContext Context context){
-        return GraphqlHelper.loadRawString(context.getResources(), com.tokopedia.wishlist.common.R.raw.gql_get_is_wishlisted);
+        return GraphqlHelper.loadRawString(context.getResources(), com.tokopedia.wishlist_common.R.raw.gql_get_is_wishlisted);
     }
 
     @KolScope
