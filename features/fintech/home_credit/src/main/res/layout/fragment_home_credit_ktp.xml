@@ -15,7 +15,8 @@
         android:layout_above="@+id/camera_controls">
         <com.tokopedia.unifycomponents.CardUnify
             android:layout_width="wrap_content"
-             app:card_type="border"
+            app:card_type="border"
+          android:id="@+id/cardBorderCamera"
             android:layout_gravity="center"
             android:layout_marginLeft="@dimen/unify_space_16"
             android:layout_marginRight="@dimen/unify_space_16"
@@ -25,7 +26,7 @@
             <com.otaliastudios.cameraview.CameraView
                 android:id="@+id/camera"
                 android:layout_width="match_parent"
-                android:layout_height="325dp"
+                android:layout_height="wrap_content"
                 android:keepScreenOn="true"
                 app:cameraAudio="off"
                 app:cameraFlash="off"
