@@ -29,4 +29,6 @@ interface PlayBroadcastInteractiveAnalytic {
     fun onClickBackGiveaway(channelId: String, channelTitle: String)
 
     fun clickGameResult(channelId: String, channelTitle: String)
+
+    fun clickCloseGameResultBottomsheet(channelId: String, channelTitle: String)
 }
