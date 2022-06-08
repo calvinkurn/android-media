@@ -6,9 +6,12 @@ import android.os.Bundle
 import com.newrelic.agent.android.NewRelic
 import com.tokopedia.user.session.UserSessionInterface
 
-class NewRelicInteractionActCall(private val userSession: UserSessionInterface) : Application.ActivityLifecycleCallbacks {
+class NewRelicInteractionActCall(private val userSession: UserSessionInterface?) : Application.ActivityLifecycleCallbacks {
+
     override fun onActivityCreated(activity: Activity, savedInstanceState: Bundle?) {
-        NewRelic.setUserId(userSession.userId)
+        if (userSession?.isLoggedIn == true) {
+            NewRelic.setUserId(userSession.userId)
+        }
         NewRelic.startInteraction(activity.localClassName)
         NewRelic.setInteractionName(activity.localClassName)
     }
