@@ -168,6 +168,7 @@ class GiveawayFormView : ConstraintLayout {
     private fun setupView() {
         timePickerBinding.puTimer.infiniteMode = false
         timePickerBinding.btnApply.setOnClickListener { next() }
+        timePickerBinding.tvSheetTitle.text = context.getString(R.string.play_bro_interactive_set_start_duration)
 
         binding.viewGiveaway.showTimer(false)
         binding.tvBroGiveawayFormNext.setOnClickListener { next() }
