@@ -264,12 +264,12 @@ class TokoFoodOrderTrackingViewModelTest : TokoFoodOrderTrackingViewModelTestFix
             viewModel.updateOrderId(ORDER_ID_DUMMY)
             delay(5000L)
 
+            val actualResult = (viewModel.orderCompletedLiveTracking.observeAwaitValue() as Fail)
+            assertEquals(errorException::class.java, actualResult.throwable::class.java)
+
             coVerify {
                 getTokoFoodOrderStatusUseCase.get().execute(ORDER_ID_DUMMY)
             }
-
-            val actualResult = (viewModel.orderCompletedLiveTracking.observeAwaitValue() as Fail)
-            assertEquals(errorException::class.java, actualResult.throwable::class.java)
 
             viewModel.viewModelScope.coroutineContext.cancelChildren()
         }
