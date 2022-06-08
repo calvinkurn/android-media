@@ -22,7 +22,7 @@ class ReviewUiModel private constructor(
 
     val isReviewed: Boolean get() = reviewCard.isReviewed
     val allowReview: Boolean get() = reviewCard.allowReview
-    val reputationId: Long get() = reviewCard.reputationId
+    val reputationId: String get() = reviewCard.reputationId
     val ratingInt: Int
         get() {
             var rate = reviewCard.rating.toInt()

@@ -11,7 +11,6 @@ import com.tokopedia.chat_common.domain.pojo.productattachment.ProductAttachment
 import com.tokopedia.chat_common.domain.pojo.productattachment.ProductProfile
 import com.tokopedia.chat_common.domain.pojo.roommetadata.RoomMetaData
 import com.tokopedia.common.network.util.CommonUtil
-import com.tokopedia.topchat.chatlist.data.ChatWebSocketConstant
 import com.tokopedia.topchat.chatroom.domain.mapper.TopChatRoomGetExistingChatMapper
 import com.tokopedia.topchat.chatroom.domain.pojo.sticker.attr.StickerAttributesResponse
 import com.tokopedia.topchat.chatroom.domain.pojo.sticker.attr.StickerProfile
@@ -174,7 +173,7 @@ class FakeTopchatWebSocket @Inject constructor(
         )
         val chatElement = gson.toJsonTree(chat)
         val response = WebSocketResponse(
-            "", ChatWebSocketConstant.EVENT_TOPCHAT_REPLY_MESSAGE, chatElement
+            "", EVENT_TOPCHAT_REPLY_MESSAGE, chatElement
         )
         simulateResponse(response)
     }
@@ -229,7 +228,7 @@ class FakeTopchatWebSocket @Inject constructor(
     }
 
     private fun isReplyMessage(requestObj: WebSocketResponse): Boolean {
-        return requestObj.code == ChatWebSocketConstant.EVENT_TOPCHAT_REPLY_MESSAGE
+        return requestObj.code == EVENT_TOPCHAT_REPLY_MESSAGE
     }
 
     fun simulateResponse(wsResponseText: WebSocketResponse) {
@@ -255,5 +254,7 @@ class FakeTopchatWebSocket @Inject constructor(
         private val from_uid = "from_uid"
         private val to_uid = "to_uid"
         private val is_opposite = "is_opposite"
+
+        private const val EVENT_TOPCHAT_REPLY_MESSAGE = 103
     }
 }
