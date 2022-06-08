@@ -46,16 +46,8 @@ class VideoTabAdapter(
         return oldItem == newItem
     }
 
-    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        super.onBindViewHolder(holder, position)
-    }
-
     fun setCurrentHeader(currentHeader: Pair<Int, RecyclerView.ViewHolder>?) {
         mCurrentHeader = currentHeader
-    }
-
-    override fun getItemViewType(position: Int): Int {
-        return super.getItemViewType(position)
     }
 
     fun getCurrentHeader() = mCurrentHeader
@@ -135,25 +127,19 @@ class VideoTabAdapter(
     ) {
         if(position == -1) return
 
-        val list = mutableListOf<PlayFeedUiModel>()
-        itemList.forEachIndexed { index, playFeedUiModel ->
-            if (playFeedUiModel is PlayWidgetMediumUiModel && index == position) {
-                val model = (itemList[position] as PlayWidgetMediumUiModel)
-                val updatedItem = model.copy(model = updateChannelInfo(model.model, channelId, totalView, isReminderSet))
-                list.add(updatedItem)
-            } else if (playFeedUiModel is PlayWidgetJumboUiModel && index == position){
-                val model = (itemList[position] as PlayWidgetJumboUiModel)
-                val updatedItem = model.copy(model = updateChannelInfo(model.model, channelId, totalView, isReminderSet) )
-                list.add(updatedItem)
-            } else if (playFeedUiModel is PlayWidgetLargeUiModel && index == position) {
-                val model = (itemList[position] as PlayWidgetLargeUiModel)
-                val updatedItem = model.copy(model = updateChannelInfo(model.model, channelId, totalView, isReminderSet))
-                list.add(updatedItem)
-            } else {
-                list.add(playFeedUiModel)
+        setItems(
+            itemList.mapIndexed { index, playFeedUiModel ->
+                if (playFeedUiModel is PlayWidgetMediumUiModel && index == position) {
+                    playFeedUiModel.copy(model = updateChannelInfo(playFeedUiModel.model, channelId, totalView, isReminderSet))
+                } else if (playFeedUiModel is PlayWidgetJumboUiModel && index == position){
+                    playFeedUiModel.copy(model = updateChannelInfo(playFeedUiModel.model, channelId, totalView, isReminderSet) )
+                } else if (playFeedUiModel is PlayWidgetLargeUiModel && index == position) {
+                    playFeedUiModel.copy(model = updateChannelInfo(playFeedUiModel.model, channelId, totalView, isReminderSet))
+                } else {
+                    playFeedUiModel
+                }
             }
-        }
-        setItems(list)
+        )
         notifyItemChanged(position)
     }
 
@@ -198,6 +184,5 @@ class VideoTabAdapter(
         }
 
         return false
-
     }
 }

@@ -18,10 +18,10 @@ class PlaySeeMoreAdapter(
     coordinator: PlayWidgetCoordinatorVideoTab,
     clickListener: PlayWidgetCardClickListener
 ) : BaseDiffUtilAdapter<PlayFeedUiModel>(isFlexibleType = true) {
+
     init {
         delegatesManager
                 .addDelegate(PlayWidgetViewAdapterDelegate.Large(coordinator, clickListener))
-
     }
 
     override fun areItemsTheSame(oldItem: PlayFeedUiModel, newItem: PlayFeedUiModel): Boolean {
@@ -32,9 +32,6 @@ class PlaySeeMoreAdapter(
         return oldItem == newItem
     }
 
-    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        super.onBindViewHolder(holder, position)
-    }
     fun getPositionInList(channelId: String, positionOfItem: Int): Int {
         if(positionOfItem == -1) return -1
 
@@ -58,17 +55,15 @@ class PlaySeeMoreAdapter(
     ) {
         if(position == -1) return
 
-        val list = mutableListOf<PlayFeedUiModel>()
-        itemList.forEachIndexed { index, playFeedUiModel ->
-            if (playFeedUiModel is PlayWidgetLargeUiModel && index == position) {
-                val model = (itemList[position] as PlayWidgetLargeUiModel)
-                val updatedItem = model.copy(model = updateChannelInfo(model.model, channelId, totalView, isReminderSet))
-                list.add(updatedItem)
-            } else {
-                list.add(playFeedUiModel)
+        setItems(
+            itemList.mapIndexed { index, playFeedUiModel ->
+                if (playFeedUiModel is PlayWidgetLargeUiModel && index == position) {
+                    playFeedUiModel.copy(model = updateChannelInfo(playFeedUiModel.model, channelId, totalView, isReminderSet))
+                } else {
+                    playFeedUiModel
+                }
             }
-        }
-        setItems(list)
+        )
         notifyItemChanged(position)
     }
 
