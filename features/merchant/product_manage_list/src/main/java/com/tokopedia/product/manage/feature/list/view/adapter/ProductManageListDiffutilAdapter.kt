@@ -1,6 +1,7 @@
 package com.tokopedia.product.manage.feature.list.view.adapter
 
 import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel
 import com.tokopedia.kotlin.extensions.view.ZERO
@@ -173,7 +174,7 @@ class ProductManageListDiffutilAdapter(
     override fun deleteProduct(productId: String) {
         logUpdate(ProductManageAdapterLogger.MethodName.DELETE_PRODUCT)
         val items = data.filterIsInstance<ProductUiModel>().toMutableList()
-        items.findIndex(productId)?.let { index ->
+        items.findIndex(productId)?.takeIf { it > RecyclerView.NO_POSITION }?.let { index ->
             items.removeAt(index)
             submitList(items)
         }
@@ -183,7 +184,7 @@ class ProductManageListDiffutilAdapter(
         logUpdate(ProductManageAdapterLogger.MethodName.DELETE_PRODUCTS)
         val items = data.filterIsInstance<ProductUiModel>().toMutableList()
         productIds.forEach { id ->
-            items.findIndex(id)?.let { index ->
+            items.findIndex(id)?.takeIf { it > RecyclerView.NO_POSITION }?.let { index ->
                 items.removeAt(index)
             }
         }

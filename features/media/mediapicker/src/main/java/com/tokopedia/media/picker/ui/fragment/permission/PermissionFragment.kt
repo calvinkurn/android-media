@@ -27,7 +27,7 @@ open class PermissionFragment : BaseDaggerFragment() {
 
     @Inject lateinit var factory: ViewModelProvider.Factory
 
-    private val binding by viewBinding<FragmentPermissionBinding>()
+    private val binding: FragmentPermissionBinding? by viewBinding()
     private var listener: Listener? = null
 
     private val viewModel by lazy {
@@ -89,6 +89,9 @@ open class PermissionFragment : BaseDaggerFragment() {
 
         viewModel.permissionCodeName.observe(viewLifecycleOwner) {
             onPrepareShowPermissionDialog(it)
+
+            // we only need to call once, so remove the observers after get the data
+            viewModel.permissionCodeName.removeObservers(this)
         }
     }
 
@@ -142,19 +145,31 @@ open class PermissionFragment : BaseDaggerFragment() {
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
         val deniedPermissions = mutableListOf<String>()
+        val deniedNeedToShowRationalePermissions = mutableListOf<String>()
+
         if (requestCode == PERMISSION_REQUEST_CODE) {
             for (i in permissions.indices) {
                 val permission = permissions[i]
 
                 if (grantResults.isNotEmpty() && grantResults[i] == PERMISSION_DENIED) {
-                    deniedPermissions.add(permission)
+                    if (shouldShowRequestPermissionRationale(permission)) {
+                        deniedNeedToShowRationalePermissions.add(permission)
+                    } else {
+                        deniedPermissions.add(permission)
+                    }
+
+                    // denied (either denied directly or rationale)
                     mAdapter.updateState(permission, false)
                 } else {
+                    // granted
                     mAdapter.updateState(permission, true)
                 }
             }
 
-            if (permissions.isNotEmpty() && deniedPermissions.isEmpty()) {
+            if (permissions.isNotEmpty()
+                && deniedPermissions.isEmpty()
+                && deniedNeedToShowRationalePermissions.isEmpty()
+            ) {
                 listener?.onPermissionGranted()
             } else {
                 binding?.permissionPage?.show()

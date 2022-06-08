@@ -1,6 +1,7 @@
 package com.tokopedia.product.addedit.variant.presentation.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import com.tokopedia.product.addedit.common.util.IMSResourceProvider
 import com.tokopedia.product.addedit.common.util.ResourceProvider
 import com.tokopedia.product.addedit.detail.presentation.model.DetailInputModel
 import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
@@ -26,7 +27,7 @@ abstract class AddEditProductVariantDetailViewModelTestFixture {
     val instantTaskExcecutorRule = InstantTaskExecutorRule()
 
     @RelaxedMockK
-    lateinit var resourceProvider: ResourceProvider
+    lateinit var imsResourceProvider: IMSResourceProvider
 
     @RelaxedMockK
     lateinit var userSession: UserSessionInterface
@@ -61,7 +62,7 @@ abstract class AddEditProductVariantDetailViewModelTestFixture {
 
     protected val viewModel: AddEditProductVariantDetailViewModel by lazy {
         spyk(AddEditProductVariantDetailViewModel(
-                resourceProvider,
+                imsResourceProvider,
                 userSession,
                 testCoroutineDispatcher
         ))

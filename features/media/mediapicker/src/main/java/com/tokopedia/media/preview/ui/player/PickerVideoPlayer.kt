@@ -5,6 +5,7 @@ import android.net.Uri
 import com.google.android.exoplayer2.C
 import com.google.android.exoplayer2.Player
 import com.google.android.exoplayer2.SimpleExoPlayer
+import com.google.android.exoplayer2.source.LoopingMediaSource
 import com.google.android.exoplayer2.source.MediaSource
 import com.google.android.exoplayer2.source.MediaSourceFactory
 import com.google.android.exoplayer2.source.ProgressiveMediaSource
@@ -27,20 +28,13 @@ class PickerVideoPlayer constructor(
         .Builder(context)
         .build()
 
+    private var loopingMediaSource: LoopingMediaSource? = null
+
     init {
         exoPlayer.addListener(object : Player.EventListener {
-            override fun onPlayerStateChanged(playWhenReady: Boolean, playbackState: Int) {
-                when (playbackState) {
-                    Player.STATE_READY -> {
-                        listener?.onPlayStateChanged(true)
-                    }
-                    Player.STATE_ENDED -> {
-                        start()
-                    }
-                    else -> {
-                        listener?.onPlayStateChanged(false)
-                    }
-                }
+            override fun onIsPlayingChanged(isPlaying: Boolean) {
+                super.onIsPlayingChanged(isPlaying)
+                listener?.isPlayingOnChanged(isPlaying)
             }
         })
     }
@@ -50,10 +44,14 @@ class PickerVideoPlayer constructor(
     fun start() {
         if (videoUrl.isEmpty()) return
 
-        val mediaSource = getOrCreateMediaSource(Uri.parse(videoUrl))
+        if (loopingMediaSource == null) {
+            loopingMediaSource = LoopingMediaSource(getOrCreateMediaSource(Uri.parse(videoUrl)))
+        }
 
-        exoPlayer.playWhenReady = true
-        exoPlayer.prepare(mediaSource, true, false)
+        loopingMediaSource?.let {
+            exoPlayer.playWhenReady = true
+            exoPlayer.prepare(it, true, false)
+        }
     }
 
     fun stop() {
@@ -61,10 +59,19 @@ class PickerVideoPlayer constructor(
         exoPlayer.stop()
     }
 
+    fun pause() {
+        exoPlayer.playWhenReady = false
+    }
+
+    fun resume() {
+        exoPlayer.playWhenReady = true
+    }
+
     fun release() {
         try {
             exoPlayer.release()
-        } catch (ignored: Throwable) {}
+        } catch (ignored: Throwable) {
+        }
     }
 
     private fun getOrCreateMediaSource(uri: Uri): MediaSource {
@@ -74,8 +81,11 @@ class PickerVideoPlayer constructor(
         return mediaSourceFactory.createMediaSource(uri)
     }
 
-    private fun generateMediaSourceFactory(uri: Uri, dsFactory: DataSource.Factory): MediaSourceFactory {
-        return when(val type = Util.inferContentType(uri)) {
+    private fun generateMediaSourceFactory(
+        uri: Uri,
+        dsFactory: DataSource.Factory
+    ): MediaSourceFactory {
+        return when (val type = Util.inferContentType(uri)) {
             C.TYPE_SS -> SsMediaSource.Factory(dsFactory)
             C.TYPE_DASH -> DashMediaSource.Factory(dsFactory)
             C.TYPE_HLS -> HlsMediaSource.Factory(dsFactory)
@@ -85,7 +95,7 @@ class PickerVideoPlayer constructor(
     }
 
     interface Listener {
-        fun onPlayStateChanged(isPlaying: Boolean)
+        fun isPlayingOnChanged(isPlaying: Boolean)
     }
 
 }
