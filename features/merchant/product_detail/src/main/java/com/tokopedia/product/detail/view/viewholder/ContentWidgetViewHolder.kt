@@ -6,11 +6,9 @@ import com.tokopedia.play.widget.PlayWidgetViewHolder
 import com.tokopedia.play.widget.sample.analytic.global.model.PlayWidgetPDPAnalyticModel
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.data.model.datamodel.ContentWidgetDataModel
-import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
 
 class ContentWidgetViewHolder(
     view: View,
-    listener: DynamicProductDetailListener,
     private val playWidgetViewHolder: PlayWidgetViewHolder
 ) : ProductDetailPageViewHolder<ContentWidgetDataModel>(view) {
 
@@ -31,7 +29,6 @@ class ContentWidgetViewHolder(
         if (playWidgetState.model.items.size < MINIMUM_ITEMS) {
             hideComponent()
         } else showComponent()
-        playWidgetAnalyticListener.componentTrackDataModel = getComponentTrackData(element)
         playWidgetViewHolder.bind(element.playWidgetState, this)
     }
 
