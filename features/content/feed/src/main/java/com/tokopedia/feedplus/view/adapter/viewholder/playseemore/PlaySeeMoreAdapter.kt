@@ -8,9 +8,7 @@ import com.tokopedia.play.widget.ui.model.PlayWidgetUiModel
 import com.tokopedia.videoTabComponent.callback.PlayWidgetCardClickListener
 import com.tokopedia.videoTabComponent.domain.delegate.PlayWidgetViewAdapterDelegate
 import com.tokopedia.videoTabComponent.domain.model.data.PlayFeedUiModel
-import com.tokopedia.videoTabComponent.domain.model.data.PlayWidgetJumboUiModel
 import com.tokopedia.videoTabComponent.domain.model.data.PlayWidgetLargeUiModel
-import com.tokopedia.videoTabComponent.domain.model.data.PlayWidgetMediumUiModel
 import com.tokopedia.videoTabComponent.view.coordinator.PlayWidgetCoordinatorVideoTab
 
 /**
