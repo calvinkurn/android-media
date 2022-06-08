@@ -20,7 +20,7 @@ import com.tokopedia.search.analytics.SearchEventTracking.ECommerce.Companion.ID
 import com.tokopedia.search.analytics.SearchEventTracking.ECommerce.Companion.IMPRESSIONS
 import com.tokopedia.search.analytics.SearchEventTracking.ECommerce.Companion.LIST
 import com.tokopedia.search.analytics.SearchEventTracking.ECommerce.Companion.PRODUCTS
-import com.tokopedia.search.utils.toDropdownQuickFilterEventLabel
+import com.tokopedia.search.utils.joinActiveOptionsToString
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
 import com.tokopedia.trackingoptimizer.TrackingQueue
@@ -956,7 +956,7 @@ object SearchTracking {
                 SearchTrackingConstant.EVENT, SearchEventTracking.Event.CLICK_SEARCH,
                 SearchTrackingConstant.EVENT_CATEGORY, SearchEventTracking.Category.SEARCH_RESULT_PAGE,
                 SearchTrackingConstant.EVENT_ACTION, SearchEventTracking.Action.APPLY_DROPDOWN_QUICK_FILTER,
-                SearchTrackingConstant.EVENT_LABEL, optionList?.toDropdownQuickFilterEventLabel(),
+                SearchTrackingConstant.EVENT_LABEL, optionList?.joinActiveOptionsToString(),
                 SearchEventTracking.CURRENT_SITE, SearchEventTracking.TOKOPEDIA_MARKETPLACE,
                 SearchEventTracking.BUSINESS_UNIT, SearchEventTracking.SEARCH,
             )

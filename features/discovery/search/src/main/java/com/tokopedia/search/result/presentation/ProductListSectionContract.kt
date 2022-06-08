@@ -137,7 +137,7 @@ interface ProductListSectionContract {
         fun handleWishlistAction(productCardOptionsModel: ProductCardOptionsModel?)
         fun onProductImpressed(item: ProductItemDataView?, adapterPosition: Int)
         fun onProductClick(item: ProductItemDataView?, adapterPosition: Int)
-        val quickFilterOptionList: List<Option>
+        val quickFilterList: List<Filter>
         fun getProductCount(mapParameter: Map<String, String>?)
         fun openFilterPage(searchParameter: Map<String, Any>?)
         val isBottomSheetFilterEnabled: Boolean
@@ -165,7 +165,6 @@ interface ProductListSectionContract {
         )
         fun closeLastFilter(searchParameter: Map<String, Any>)
         fun shopAdsImpressionCount(impressionCount: Int)
-        fun onDropDownQuickFilterClick(filter: Filter)
         fun onApplyDropdownQuickFilter(optionList: List<Option>?)
     }
 }

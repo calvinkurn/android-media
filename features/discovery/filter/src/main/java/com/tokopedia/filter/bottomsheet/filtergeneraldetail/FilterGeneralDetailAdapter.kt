@@ -39,7 +39,7 @@ internal class FilterGeneralDetailAdapter(
 
     override fun onBindViewHolder(holder: FilterGeneralDetailViewHolder, position: Int, payloads: MutableList<Any>) {
         if (payloads.isNotEmpty()) {
-            holder.bind(optionList[position], true)
+            holder.bind(optionList[position], payloads)
         } else {
             super.onBindViewHolder(holder, position, payloads)
         }
@@ -48,8 +48,8 @@ internal class FilterGeneralDetailAdapter(
     inner class FilterGeneralDetailViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
         private var binding: FilterGeneralDetailItemViewHolderBinding? by viewBinding()
 
-        fun bind(option: Option, bindInputStateOnly: Boolean = false) {
-            if (!bindInputStateOnly) {
+        fun bind(option: Option, payload: List<Any>? = null) {
+            if (!isBindInputStateOnly(payload)) {
                 bindOnClickListener(option)
                 bindColorSample(option)
                 bindIconOption(option)
@@ -119,10 +119,17 @@ internal class FilterGeneralDetailAdapter(
             }
         }
 
+        private fun isBindInputStateOnly(payload: List<Any>?): Boolean =
+            payload?.contains(Payload.BIND_INPUT_STATE_ONLY) ?: false
+
         private fun Option.isSelected() = inputState.toBoolean()
     }
 
     interface Callback {
         fun onOptionClick(option: Option, isChecked: Boolean, position: Int)
+    }
+
+    private enum class Payload {
+        BIND_INPUT_STATE_ONLY
     }
 }

@@ -47,13 +47,16 @@ class FilterGeneralDetailBottomSheet: BottomSheetUnify(), FilterGeneralDetailAda
 
     private var binding: FilterGeneralDetailBottomSheetBinding? = null
 
-    fun show(fragmentManager: FragmentManager, filter: Filter, callback: Callback, buttonApplyFilterDetailText: String? = null) {
-        this.filter = filter.copyParcelable()
-        this.originalSelectedOptionList.addAll(filter.getSelectedOptions())
-        this.callback = callback
-        this.buttonApplyFilterDetailText = buttonApplyFilterDetailText
+    fun show(
+        fragmentManager: FragmentManager,
+        filter: Filter, callback: Callback,
+        buttonApplyFilterDetailText: String? = null) {
+            this.filter = filter.copyParcelable()
+            this.originalSelectedOptionList.addAll(filter.getSelectedOptions())
+            this.callback = callback
+            this.buttonApplyFilterDetailText = buttonApplyFilterDetailText
 
-        show(fragmentManager, FILTER_GENERAL_DETAIL_BOTTOM_SHEET_TAG)
+            show(fragmentManager, FILTER_GENERAL_DETAIL_BOTTOM_SHEET_TAG)
     }
 
     private fun Filter?.getSelectedOptions(): List<Option> {
@@ -220,14 +223,13 @@ class FilterGeneralDetailBottomSheet: BottomSheetUnify(), FilterGeneralDetailAda
     }
 
     private fun initButtonApplyDetailFilter() {
-        binding?.buttonApplyFilterDetail?.apply {
-            buttonApplyFilterDetailText?.let {
-                text = it
-            }
-            setOnClickListener {
-                callback?.onApplyButtonClicked(filter?.options)
-                dismiss()
-            }
+        binding?.buttonApplyFilterDetail?.setOnClickListener {
+            callback?.onApplyButtonClicked(filter?.options)
+            dismiss()
+        }
+
+        buttonApplyFilterDetailText?.let {
+            binding?.buttonApplyFilterDetail?.text = it
         }
     }
 

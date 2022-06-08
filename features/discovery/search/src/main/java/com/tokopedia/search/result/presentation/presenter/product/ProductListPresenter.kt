@@ -196,7 +196,7 @@ class ProductListPresenter @Inject constructor(
     private var topAdsImageViewModelList = mutableListOf<TopAdsImageViewModel>()
     private var suggestionDataView: SuggestionDataView? = null
     private var relatedDataView: RelatedDataView? = null
-    override val quickFilterOptionList = mutableListOf<Option>()
+    override val quickFilterList = mutableListOf<Filter>()
     override var dynamicFilterModel: DynamicFilterModel? = null
         private set
     private var threeDotsProductItem: ProductItemDataView? = null
@@ -1559,11 +1559,11 @@ class ProductListPresenter @Inject constructor(
 
     private fun processQuickFilter(quickFilterData: DataValue) {
         val sortFilterItems = mutableListOf<SortFilterItem>()
-        quickFilterOptionList.clear()
+        quickFilterList.clear()
+        quickFilterList.addAll(quickFilterData.filter)
 
         quickFilterData.filter.forEach { filter ->
             val options = filter.options
-            quickFilterOptionList.addAll(options)
             sortFilterItems.add(createSortFilterItem(filter, options))
         }
 
@@ -1628,7 +1628,7 @@ class ProductListPresenter @Inject constructor(
         }
     }
 
-    override fun onDropDownQuickFilterClick(filter: Filter) {
+    private fun onDropDownQuickFilterClick(filter: Filter) {
         view.openBottomsheetMultipleOptionsQuickFilter(filter)
         view.trackEventClickDropdownQuickFilter(filter.title)
     }

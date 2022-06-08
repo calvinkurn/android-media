@@ -1090,15 +1090,17 @@ class ProductListFragment: BaseDaggerFragment(),
     }
 
     private fun setSortFilterNewNotification(items: List<SortFilterItem>) {
-        val quickFilterOptionList = presenter?.quickFilterOptionList ?: listOf()
+        val quickFilterList = presenter?.quickFilterList ?: listOf()
         for (i in items.indices) {
-            if (i >= quickFilterOptionList.size) break
+            if (i >= quickFilterList.size) break
             val item = items[i]
-            val quickFilterOption = quickFilterOptionList[i]
+            val quickFilter = quickFilterList[i]
 
-            sortFilterItemShowNew(item, quickFilterOption.isNew)
+            sortFilterItemShowNew(item, isFilterHasNewOption(quickFilter))
         }
     }
+
+    private fun isFilterHasNewOption(filter: Filter): Boolean = filter.options.any { it.isNew }
 
     private fun sortFilterItemShowNew(item: SortFilterItem, isNew: Boolean) {
         item.refChipUnify.showNewNotification = isNew
@@ -2032,9 +2034,7 @@ class ProductListFragment: BaseDaggerFragment(),
     }
 
     override fun applyDropdownQuickFilter(optionList: List<Option>?) {
-        optionList?.forEach {
-            setFilterToQuickFilterController(it, it.inputState.toBoolean())
-        }
+        filterController.setFilter(optionList)
 
         val queryParams = filterController.getParameter().addFilterOrigin()
         refreshSearchParameter(queryParams)

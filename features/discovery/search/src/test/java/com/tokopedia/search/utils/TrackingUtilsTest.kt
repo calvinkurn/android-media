@@ -8,7 +8,7 @@ internal class TrackingUtilsTest {
     fun `Generate Event Label with Empty Active Options`() {
         val optionList = listOf<Option>()
 
-        assert(optionList.toDropdownQuickFilterEventLabel().isEmpty())
+        assert(optionList.joinActiveOptionsToString().isEmpty())
     }
 
     @Test
@@ -19,7 +19,7 @@ internal class TrackingUtilsTest {
 
         val expectedLabel = "cashbackm=true"
 
-        assert(optionList.toDropdownQuickFilterEventLabel() == expectedLabel)
+        assert(optionList.joinActiveOptionsToString() == expectedLabel)
     }
 
     @Test
@@ -30,9 +30,9 @@ internal class TrackingUtilsTest {
             Option(key = "cashbackm", value = "true", inputState = "false")
         )
 
-        val expectedLabel = "cashbackm=true&is_discount=true"
+        val expectedLabel = "is_discount=true&cashbackm=true"
 
-        assert(optionList.toDropdownQuickFilterEventLabel() == expectedLabel)
+        assert(optionList.joinActiveOptionsToString() == expectedLabel)
     }
 
     @Test
@@ -47,6 +47,6 @@ internal class TrackingUtilsTest {
 
         val expectedLabel = "cashbackm=true&fcity=1,3"
 
-        assert(optionList.toDropdownQuickFilterEventLabel() == expectedLabel)
+        assert(optionList.joinActiveOptionsToString() == expectedLabel)
     }
 }
