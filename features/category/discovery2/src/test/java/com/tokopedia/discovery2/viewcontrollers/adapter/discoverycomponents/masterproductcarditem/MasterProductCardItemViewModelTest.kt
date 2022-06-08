@@ -387,19 +387,23 @@ class MasterProductCardItemViewModelTest {
         TestCase.assertEquals(tempViewModel.getTemplateType(), GRID)
     }
 
+    fun initLoggedInCallback(){
+        viewModel.campaignNotifyUserCase = campaignNotifyUserCase
+        viewModel.productCardItemUseCase = productCardItemUseCase
+        val resource: Resources = mockk(relaxed = true)
+        every { application.resources } returns resource
+        every { application.applicationContext.resources } returns resource
+    }
+
     /**************************** test for loggedInCallback() *******************************************/
     @Test
     fun `test for loggedInCallback when campaignResponse success is true`() {
-        viewModel.campaignNotifyUserCase = campaignNotifyUserCase
-        viewModel.productCardItemUseCase = productCardItemUseCase
+        initLoggedInCallback()
         val list = ArrayList<DataItem>()
         val item = DataItem(notifyMe = true)
         list.add(item)
         every { componentsItem.data } returns list
         every { constructedWith<UserSession>(OfTypeMatcher<Context>(Context::class)).isLoggedIn } returns true
-        val resource: Resources = mockk(relaxed = true)
-        every { application.resources } returns resource
-        every { application.applicationContext.resources } returns resource
         val checkCampaignNotifyMeResponse = CampaignNotifyMeResponse.CheckCampaignNotifyMeResponse(success = true)
         val campaignNotifyMeResponse = CampaignNotifyMeResponse(checkCampaignNotifyMeResponse = checkCampaignNotifyMeResponse)
         coEvery {
@@ -417,16 +421,12 @@ class MasterProductCardItemViewModelTest {
 
     @Test
     fun `test for loggedInCallback when campaignResponse success is false`() {
-        viewModel.campaignNotifyUserCase = campaignNotifyUserCase
-        viewModel.productCardItemUseCase = productCardItemUseCase
+        initLoggedInCallback()
         val list = ArrayList<DataItem>()
         val item = DataItem(notifyMe = true)
         list.add(item)
         every { componentsItem.data } returns list
         every { constructedWith<UserSession>(OfTypeMatcher<Context>(Context::class)).isLoggedIn } returns true
-        val resource: Resources = mockk(relaxed = true)
-        every { application.resources } returns resource
-        every { application.applicationContext.resources } returns resource
         val checkCampaignNotifyMeResponse = CampaignNotifyMeResponse.CheckCampaignNotifyMeResponse(success = false)
         val campaignNotifyMeResponse = CampaignNotifyMeResponse(checkCampaignNotifyMeResponse = checkCampaignNotifyMeResponse)
         coEvery {
@@ -444,16 +444,12 @@ class MasterProductCardItemViewModelTest {
 
     @Test
     fun `test for loggedInCallback when dataItem's notifyMe is false`() {
-        viewModel.campaignNotifyUserCase = campaignNotifyUserCase
-        viewModel.productCardItemUseCase = productCardItemUseCase
+        initLoggedInCallback()
         val list = ArrayList<DataItem>()
         val item = DataItem(notifyMe = false)
         list.add(item)
         every { componentsItem.data } returns list
         every { constructedWith<UserSession>(OfTypeMatcher<Context>(Context::class)).isLoggedIn } returns true
-        val resource: Resources = mockk(relaxed = true)
-        every { application.resources } returns resource
-        every { application.applicationContext.resources } returns resource
         val checkCampaignNotifyMeResponse = CampaignNotifyMeResponse.CheckCampaignNotifyMeResponse(success = true)
         val campaignNotifyMeResponse = CampaignNotifyMeResponse(checkCampaignNotifyMeResponse = checkCampaignNotifyMeResponse)
         coEvery {
@@ -471,16 +467,12 @@ class MasterProductCardItemViewModelTest {
 
     @Test
     fun `test for loggedInCallback when isLoggedIn is false`() {
-        viewModel.campaignNotifyUserCase = campaignNotifyUserCase
-        viewModel.productCardItemUseCase = productCardItemUseCase
+        initLoggedInCallback()
         val list = ArrayList<DataItem>()
         val item = DataItem(notifyMe = true)
         list.add(item)
         every { componentsItem.data } returns list
         every { constructedWith<UserSession>(OfTypeMatcher<Context>(Context::class)).isLoggedIn } returns false
-        val resource: Resources = mockk(relaxed = true)
-        every { application.resources } returns resource
-        every { application.applicationContext.resources } returns resource
 
         viewModel.onAttachToViewHolder()
         viewModel.loggedInCallback()
