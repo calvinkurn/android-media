@@ -62,19 +62,32 @@ class TopAdsViewViewHolder(
                 }
             }
         })
+        addImpression(topAdsUIModel)
+
+        topAdsImageView.loadImage(topAdsUIModel.topAdsImageViewModel, 8.toPx(), onLoadFailed = {
+            topAdsImageView.gone()
+        })
+    }
+
+    /*
+    * Problem : Since impression is sent on onResourcesReady from glide which incase of
+    * horizontal RV is called for items that are not visible(2, 3rd item)
+    * Hence we added a scroll change listener (see addOnImpressionListener) to hit impression
+    * if after scroll change view is visible.
+    * But for first item there is no scroll hence its impression needs to be explicitely fired
+    * via itemView.scrollTo(itemView.scrollX + Int.ONE, itemView.scrollY)
+    * */
+    private fun addImpression(topAdsUIModel: TopAdsUIModel) {
         topAdsImageView.setTopAdsImageViewImpression(object : TopAdsImageViewImpressionListener {
             override fun onTopAdsImageViewImpression(viewUrl: String) {
                 itemView.addOnImpressionListener(topAdsUIModel.impressHolder) {
-                        hitTopAdsImpression(viewUrl)
-                        topAdsUIModel.impressHolder.invoke()
-                    }
+                    hitTopAdsImpression(viewUrl)
+                    topAdsUIModel.impressHolder.invoke()
+                }
                 // for first item impression scroll callback invoke
                 itemView.scrollTo(itemView.scrollX + Int.ONE, itemView.scrollY)
             }
 
-        })
-        topAdsImageView.loadImage(topAdsUIModel.topAdsImageViewModel, 8.toPx(), onLoadFailed = {
-            topAdsImageView.gone()
         })
     }
 
