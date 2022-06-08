@@ -1061,12 +1061,17 @@ class OfficialStoreTracking(context: Context) {
             DynamicChannelLayout.LAYOUT_MIX_LEFT -> VALUE_DYNAMIC_MIX_LEFT_CAROUSEL
             else -> ""
         }
+        val eventLabel = when(channel.layout){
+            DynamicChannelLayout.LAYOUT_MIX_TOP -> channel.id + " - " + categoryName
+            DynamicChannelLayout.LAYOUT_MIX_LEFT -> "${channel.id} - ${channel.channelHeader.name} - $categoryName"
+            else -> ""
+        }
         val eventActionValue = "click view all on $valueDynamicMix"
         tracker.sendGeneralEvent(DataLayer.mapOf(
                 EVENT, CLICK_OS_MICROSITE,
                 EVENT_CATEGORY, OS_MICROSITE_SINGLE,
                 EVENT_ACTION, eventActionValue,
-                EVENT_LABEL, channel.id + " - " + categoryName,
+                EVENT_LABEL, eventLabel,
                 EVENT_ATTRIBUTION, channel.channelBanner.attribution,
                 FIELD_BUSINESS_UNIT, VALUE_BUSINESS_UNIT_DEFAULT,
                 FIELD_CURRENT_SITE, VALUE_CURRENT_SITE_DEFAULT
