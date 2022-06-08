@@ -1,4 +1,4 @@
-package com.tokopedia.ovop2p.model
+package com.tokopedia.ovop2p.domain.model
 
 class ContactsResult {
     var phoneNum: String = ""
