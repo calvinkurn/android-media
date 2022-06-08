@@ -160,7 +160,6 @@ class PlayWidgetLargeGlobalAnalytic @AssistedInject constructor(
                     KEY_EVENT_CATEGORY to model.category,
                     KEY_EVENT_LABEL to trackerMultiFields(
                         model.prefix, /** prefix **/
-                        "", /** partnerId **/ //TODO("Ask")
                     ),
                     KEY_BUSINESS_UNIT to VAL_BUSINESS_UNIT,
                     KEY_CURRENT_SITE to VAL_CURRENT_SITE,
@@ -184,7 +183,6 @@ class PlayWidgetLargeGlobalAnalytic @AssistedInject constructor(
                     KEY_EVENT_CATEGORY to model.category,
                     KEY_EVENT_LABEL to trackerMultiFields(
                         model.prefix, /** prefix **/
-                        "", /** partnerId **/ //TODO("Ask")
                     ),
                     KEY_BUSINESS_UNIT to VAL_BUSINESS_UNIT,
                     KEY_CURRENT_SITE to VAL_CURRENT_SITE,
