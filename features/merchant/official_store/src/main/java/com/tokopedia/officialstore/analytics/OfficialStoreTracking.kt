@@ -857,12 +857,13 @@ class OfficialStoreTracking(context: Context) {
             DynamicChannelLayout.LAYOUT_MIX_LEFT -> VALUE_DYNAMIC_MIX_LEFT_CAROUSEL
             else -> ""
         }
-        val eventAction = "$IMPRESSION on product $valueDynamicMix"
+        val eventAction = "$IMPRESSION product - $valueDynamicMix"
+        val eventLabel = "$valueDynamicMix - ${channel.id} - ${channel.channelHeader.name} - $categoryName"
         val data = DataLayer.mapOf(
                 EVENT, EVENT_PRODUCT_VIEW,
                 EVENT_CATEGORY, OS_MICROSITE_SINGLE,
                 EVENT_ACTION, eventAction,
-                EVENT_LABEL, channel.id + " - " + categoryName,
+                EVENT_LABEL, eventLabel,
                 FIELD_BUSINESS_UNIT, VALUE_BUSINESS_UNIT_DEFAULT,
                 FIELD_CURRENT_SITE, VALUE_CURRENT_SITE_DEFAULT,
                 USER_ID, userId,
@@ -874,7 +875,8 @@ class OfficialStoreTracking(context: Context) {
                                     productItem,
                                     productPosition,
                                     isLogin,
-                                    valueDynamicMix
+                                    valueDynamicMix,
+                                    "$SLASH_OFFICIAL_STORE/$categoryName - $valueDynamicMix - ${channel.channelHeader.name}"
                         )
                     )
                 )
@@ -911,14 +913,17 @@ class OfficialStoreTracking(context: Context) {
             gridData: ChannelGrid,
             position: String,
             isLogin: Boolean,
-            valueDynamicMix: String
+            valueDynamicMix: String,
+            itemList: String = "",
     ): MutableMap<String, Any> {
-        val list = mutableListOf(SLASH_OFFICIAL_STORE)
-        if (!isLogin)
-            list.add(VALUE_NON_LOGIN)
-        if (valueDynamicMix.isNotEmpty())
-            list.add(valueDynamicMix)
-        val listKeyValue = TextUtils.join(" - ", list)
+        val listKeyValue = itemList.ifEmpty {
+            val list = mutableListOf(SLASH_OFFICIAL_STORE)
+            if (!isLogin)
+                list.add(VALUE_NON_LOGIN)
+            if (valueDynamicMix.isNotEmpty())
+                list.add(valueDynamicMix)
+            TextUtils.join(" - ", list)
+        }
         return DataLayer.mapOf(
                 FIELD_PRODUCT_NAME, gridData.name,
                 FIELD_PRODUCT_ID, gridData.id.toString(),
