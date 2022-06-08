@@ -6,15 +6,24 @@ object TokoFoodAnalyticsConstants {
     const val CURRENT_SITE = "currentSite"
     const val USER_ID = "userId"
     const val SHOP_ID = "shopId"
+    const val DESTINATION_ID = "destinationId"
     const val PRODUCT_ID = "productId"
     const val IS_LOGGED_IN_STATUS = "isLoggedInStatus"
     const val SCREEN_NAME = "screenName"
+    const val GOFOOD_PAGENAME = "gofood"
 
     const val TOKOPEDIA_MARKETPLACE = "tokopediamarketplace"
     const val OPEN_SCREEN = "openScreen"
     const val CLICK_PG = "clickPG"
     const val PHYSICAL_GOODS = "Physical Goods"
     const val ADD_TO_CART = "add_to_cart"
+    const val VIEW_ITEM = "view_item"
+
+    //home
+    const val EMPTY_DATA = "null"
+    const val HOME_PAGE = "Tokofood Homepage"
+    const val OUT_OF_COVERAGE = "Error State Out of Coverage"
+    const val NO_PIN_POIN = "Error State No Pinpoint"
 
     //post purchase
     const val ORDER_DETAIL_PAGE = "Order detail page"

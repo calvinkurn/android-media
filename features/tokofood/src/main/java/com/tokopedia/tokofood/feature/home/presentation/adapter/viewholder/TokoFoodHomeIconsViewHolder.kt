@@ -7,6 +7,7 @@ import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.tokofood.R
 import com.tokopedia.tokofood.databinding.ItemTokofoodIconBinding
@@ -42,14 +43,24 @@ class TokoFoodHomeIconsViewHolder(
         val icons = element.listIcons
         iconRecyclerView = binding?.tokofoodIconRecyclerView
         if (!icons.isNullOrEmpty()){
-            adapter.submitList(element.listIcons)
+            adapter.submitList(element.listIcons, element.verticalPosition)
         }
         iconRecyclerView?.adapter = adapter
         iconRecyclerView?.layoutManager = GridLayoutManager(itemView.context, GRID_ITEM, GridLayoutManager.VERTICAL, false)
+        setItemViewImpression(element)
+    }
+
+    private fun setItemViewImpression(element: TokoFoodHomeIconsUiModel) {
+        itemView.addOnImpressionListener(element) {
+            element.listIcons?.let {
+                homeIconsListener?.onImpressHomeIcon(it.take(MAX_ICON_ITEM), verticalPosition = element.verticalPosition)
+            }
+        }
     }
 
     internal inner class TokoFoodIconAdapter: RecyclerView.Adapter<TokoFoodIconViewHolder>() {
         private val iconList = mutableListOf<DynamicIcon>()
+        private var verticalPosition : Int = -1
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TokoFoodIconViewHolder {
             val bindingIcon = ItemTokofoodIconBinding.inflate(
@@ -62,7 +73,7 @@ class TokoFoodHomeIconsViewHolder(
 
         override fun onBindViewHolder(holder: TokoFoodIconViewHolder, position: Int) {
             iconList.getOrNull(position)?.let {
-                holder.bind(it)
+                holder.bind(it, verticalPosition)
             }
         }
 
@@ -70,11 +81,12 @@ class TokoFoodHomeIconsViewHolder(
             return iconList.size
         }
 
-        fun submitList(list: List<DynamicIcon>) {
+        fun submitList(list: List<DynamicIcon>, verticalPosition: Int) {
             list?.let {
                 iconList.clear()
                 iconList.addAll(it.take(MAX_ICON_ITEM))
             }
+            this.verticalPosition = verticalPosition
         }
     }
 
@@ -83,7 +95,7 @@ class TokoFoodHomeIconsViewHolder(
         var imgIcon : ImageUnify? = null
         var tgIcon : Typography? = null
 
-        fun bind(item: DynamicIcon){
+        fun bind(item: DynamicIcon, verticalPosition: Int){
             imgIcon = bindingIcon.imgIconTokofoodHome
             tgIcon = bindingIcon.tgIconTokofoodHome
 
@@ -91,12 +103,14 @@ class TokoFoodHomeIconsViewHolder(
             tgIcon?.text = item.name
 
             bindingIcon.root.setOnClickListener {
-                homeIconsListener?.onClickHomeIcon(item.applinks)
+                homeIconsListener?.onClickHomeIcon(item.applinks, listOf(item), horizontalPosition = adapterPosition,
+                    verticalPosition = verticalPosition)
             }
         }
     }
 
     interface TokoFoodHomeIconsListener {
-        fun onClickHomeIcon(applink: String)
+        fun onClickHomeIcon(applink: String, data: List<DynamicIcon>, horizontalPosition: Int, verticalPosition: Int)
+        fun onImpressHomeIcon(data: List<DynamicIcon>, verticalPosition: Int)
     }
 }

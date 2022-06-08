@@ -4,8 +4,14 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.home_component.listener.DynamicLegoBannerListener
 import com.tokopedia.home_component.model.ChannelGrid
 import com.tokopedia.home_component.model.ChannelModel
+import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
+import com.tokopedia.tokofood.feature.home.analytics.TokoFoodHomeAnalytics
+import com.tokopedia.user.session.UserSessionInterface
 
-class TokoFoodHomeLegoComponentCallback(private val view: TokoFoodView): DynamicLegoBannerListener {
+class TokoFoodHomeLegoComponentCallback(private val view: TokoFoodView,
+                                        private val userSession: UserSessionInterface,
+                                        private val analytics: TokoFoodHomeAnalytics,
+): DynamicLegoBannerListener {
 
     private val context by lazy { view.getFragmentPage().context }
 
@@ -15,6 +21,10 @@ class TokoFoodHomeLegoComponentCallback(private val view: TokoFoodView): Dynamic
         position: Int,
         parentPosition: Int
     ) {
+        context?.let {
+            val destinationId = ChooseAddressUtils.getLocalizingAddressData(it).district_id
+            analytics.clickLego(userSession.userId, destinationId, channelModel, channelGrid, position)
+        }
         RouteManager.route(context, channelGrid.applink)
     }
 
@@ -24,6 +34,10 @@ class TokoFoodHomeLegoComponentCallback(private val view: TokoFoodView): Dynamic
         position: Int,
         parentPosition: Int
     ) {
+        context?.let {
+            val destinationId = ChooseAddressUtils.getLocalizingAddressData(it).district_id
+            analytics.clickBannerWidget(userSession.userId, destinationId, channelModel, channelGrid, position)
+        }
         RouteManager.route(context, channelGrid.applink)
     }
 
@@ -35,9 +49,19 @@ class TokoFoodHomeLegoComponentCallback(private val view: TokoFoodView): Dynamic
         RouteManager.route(context, channelModel.channelHeader.applink)
     }
 
-    override fun onChannelImpressionSixImage(channelModel: ChannelModel, parentPosition: Int) {} //TODO Impress
+    override fun onChannelImpressionSixImage(channelModel: ChannelModel, parentPosition: Int) {
+        context?.let {
+            val destinationId = ChooseAddressUtils.getLocalizingAddressData(it).district_id
+            analytics.impressLego(userSession.userId, destinationId, channelModel)
+        }
+    }
 
-    override fun onChannelImpressionThreeImage(channelModel: ChannelModel, parentPosition: Int) {} //TODO Impress
+    override fun onChannelImpressionThreeImage(channelModel: ChannelModel, parentPosition: Int) {
+        context?.let {
+            val destinationId = ChooseAddressUtils.getLocalizingAddressData(it).district_id
+            analytics.impressLego(userSession.userId, destinationId, channelModel)
+        }
+    }
 
     override fun getDynamicLegoBannerData(channelModel: ChannelModel) {}
 

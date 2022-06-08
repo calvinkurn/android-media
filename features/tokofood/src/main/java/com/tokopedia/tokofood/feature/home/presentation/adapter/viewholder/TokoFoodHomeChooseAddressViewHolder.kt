@@ -52,11 +52,17 @@ class TokoFoodHomeChooseAddressViewHolder(
                     return SOURCE
                 }
 
+                override fun onClickChooseAddressTokoNowTracker() {
+                    tokoFoodChooseAddressWidgetListener?.onClickChooseAddressWidgetTracker()
+                }
+
                 override fun onLocalizingAddressLoginSuccess() {}
 
                 override fun onLocalizingAddressRollOutUser(isRollOutUser: Boolean) {}
 
                 override fun onLocalizingAddressUpdatedFromBackground() {}
+
+                override fun needToTrackTokoNow(): Boolean =  true
             })
         }
     }

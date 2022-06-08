@@ -238,6 +238,12 @@ class TokoFoodHomeViewModel @Inject constructor(
         }
     }
 
+    fun isShownEmptyState(): Boolean {
+        val layoutList = homeLayoutItemList.toMutableList()
+        val isEmptyStateShown = layoutList.firstOrNull { it.layout is TokoFoodHomeEmptyStateLocationUiModel } != null
+        return isEmptyStateShown
+    }
+
     private fun getMerchantList(localCacheModel: LocalCacheModel) {
         launchCatchError(block = {
             val categoryResponse = withContext(dispatchers.io) {

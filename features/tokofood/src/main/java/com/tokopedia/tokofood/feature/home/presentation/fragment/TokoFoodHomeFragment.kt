@@ -17,6 +17,7 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseMultiFragActivity
+import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.fragment.IBaseMultiFragment
 import com.tokopedia.applink.ApplinkConst
@@ -56,8 +57,10 @@ import com.tokopedia.tokofood.common.presentation.listener.HasViewModel
 import com.tokopedia.tokofood.common.presentation.viewmodel.MultipleFragmentsViewModel
 import com.tokopedia.tokofood.common.util.TokofoodErrorLogger
 import com.tokopedia.tokofood.databinding.FragmentTokofoodHomeBinding
+import com.tokopedia.tokofood.feature.home.analytics.TokoFoodHomeAnalytics
 import com.tokopedia.tokofood.feature.home.di.DaggerTokoFoodHomeComponent
 import com.tokopedia.tokofood.feature.home.domain.constanta.TokoFoodLayoutState
+import com.tokopedia.tokofood.feature.home.domain.data.DynamicIcon
 import com.tokopedia.tokofood.feature.home.domain.data.Merchant
 import com.tokopedia.tokofood.feature.home.domain.data.USPResponse
 import com.tokopedia.tokofood.feature.home.presentation.adapter.CustomLinearLayoutManager
@@ -75,6 +78,7 @@ import com.tokopedia.tokofood.feature.home.presentation.bottomsheet.TokoFoodUSPB
 import com.tokopedia.tokofood.feature.home.presentation.share.TokoFoodHomeShare
 import com.tokopedia.tokofood.feature.home.presentation.share.TokoFoodUniversalShareUtil.shareOptionRequest
 import com.tokopedia.tokofood.feature.home.presentation.share.TokoFoodUniversalShareUtil.shareRequest
+import com.tokopedia.tokofood.feature.home.presentation.uimodel.TokoFoodHomeEmptyStateLocationUiModel
 import com.tokopedia.tokofood.feature.home.presentation.uimodel.TokoFoodListUiModel
 import com.tokopedia.tokofood.feature.home.presentation.view.listener.TokoFoodHomeBannerComponentCallback
 import com.tokopedia.tokofood.feature.home.presentation.view.listener.TokoFoodHomeCategoryWidgetV2ComponentCallback
@@ -111,6 +115,9 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
 
     @Inject
     lateinit var userSession: UserSessionInterface
+
+    @Inject
+    lateinit var analytics: TokoFoodHomeAnalytics
 
     private var binding by autoClearedNullable<FragmentTokofoodHomeBinding>()
     private val viewModel by lazy {
@@ -250,10 +257,11 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
     }
 
     override fun onClickChooseAddressWidgetTracker() {
-        //TODO Widget address tracker
+        analytics.clickLCAWidget(userSession.userId, localCacheModel?.district_id)
     }
 
-    override fun onClickSetPinPoin() {
+    override fun onClickSetPinPoin(errorState: String, title: String, desc: String) {
+        onShowEmptyState(errorState, title, desc)
         navigateToSetPinpoint()
     }
 
@@ -261,11 +269,13 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
         RouteManager.route(context, ApplinkConst.HOME)
     }
 
-    override fun onClickSetAddress() {
+    override fun onClickSetAddress(errorState: String, title: String, desc: String) {
+        onShowEmptyState(errorState, title, desc)
         checkUserEligibilityForAnaRevamp()
     }
 
-    override fun onClickSetAddressInCoverage() {
+    override fun onClickSetAddressInCoverage(errorState: String, title: String, desc: String) {
+        onShowEmptyState(errorState, title, desc)
         showChooseAddressBottomSheet()
     }
 
@@ -283,13 +293,23 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
 
     override fun onLocalizingAddressServerDown() {}
 
-    override fun onClickHomeIcon(applink: String) {
+    override fun onClickHomeIcon(applink: String, data: List<DynamicIcon>, horizontalPosition: Int, verticalPosition: Int) {
+        analytics.clickIconWidget(userSession.userId, localCacheModel?.district_id, data, horizontalPosition, verticalPosition)
         RouteManager.route(context, applink)
     }
 
-    override fun onClickMerchant(merchant: Merchant) {
+    override fun onImpressHomeIcon(data: List<DynamicIcon>, verticalPosition: Int) {
+        analytics.impressionIconWidget(userSession.userId, localCacheModel?.district_id, data, verticalPosition)
+    }
+
+    override fun onClickMerchant(merchant: Merchant, horizontalPosition: Int) {
+        analytics.clickMerchant(userSession.userId, localCacheModel?.district_id, merchant, horizontalPosition)
         val merchantApplink = UriUtil.buildUri(ApplinkConst.TokoFood.MERCHANT, merchant.id, "")
         RouteManager.route(context, merchantApplink)
+    }
+
+    override fun onImpressMerchant(merchant: Merchant, horizontalPosition: Int) {
+        analytics.impressMerchant(userSession.userId, localCacheModel?.district_id, merchant, horizontalPosition)
     }
 
     override fun onTickerDismissed(id: String) {
@@ -324,16 +344,24 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
         )
     }
 
+    override fun viewNoPinPoin() {
+        onShowNoPinPoin()
+    }
+
+    override fun viewOutOfCoverage() {
+        onShowOutOfCoverage()
+    }
+
     private fun createLegoBannerCallback(): TokoFoodHomeLegoComponentCallback {
-        return TokoFoodHomeLegoComponentCallback(this)
+        return TokoFoodHomeLegoComponentCallback(this, userSession, analytics)
     }
 
     private fun createBannerCallback(): TokoFoodHomeBannerComponentCallback {
-        return TokoFoodHomeBannerComponentCallback(this)
+        return TokoFoodHomeBannerComponentCallback(this, userSession, analytics)
     }
 
     private fun createCategoryWidgetCallback(): TokoFoodHomeCategoryWidgetV2ComponentCallback {
-        return TokoFoodHomeCategoryWidgetV2ComponentCallback(this)
+        return TokoFoodHomeCategoryWidgetV2ComponentCallback(this, userSession, analytics)
     }
 
     private fun showLayout() {
@@ -503,7 +531,7 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
                 when(uiEvent.state) {
                     UiEvent.EVENT_SUCCESS_VALIDATE_CHECKOUT -> {
                         (uiEvent.data as? CheckoutTokoFoodData)?.let {
-                            // TODO: Hit Tracker
+                            analytics.clickAtc(userSession.userId, localCacheModel?.district_id, it)
                         }
                         goToPurchasePage()
                     }
@@ -537,6 +565,7 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
     }
 
     private fun onShowHomeLayout(data: TokoFoodListUiModel) {
+        onOpenHomepage()
         showHomeLayout(data)
         getLayoutComponentData()
         initializeMiniCartHome()
@@ -828,4 +857,32 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
         )
     }
 
+    private fun onOpenHomepage(){
+        if (!viewModel.isShownEmptyState()) {
+            localCacheModel?.let {
+                analytics.openScreenHomePage(
+                    userSession.userId, localCacheModel?.district_id,
+                    userSession.isLoggedIn
+                )
+            }
+        }
+    }
+
+    private fun onShowOutOfCoverage(){
+        localCacheModel?.let {
+            analytics.openScreenOutOfCoverage(userSession.userId, localCacheModel?.district_id,
+                userSession.isLoggedIn)
+        }
+    }
+
+    private fun onShowNoPinPoin(){
+        localCacheModel?.let {
+            analytics.openScreenNoPinPoin(userSession.userId, localCacheModel?.district_id,
+                userSession.isLoggedIn)
+        }
+    }
+
+    private fun onShowEmptyState(errorState: String, title: String, desc: String){
+        analytics.clickEmptyState(userSession.userId, localCacheModel?.district_id, errorState, title, desc)
+    }
 }

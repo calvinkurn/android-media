@@ -29,6 +29,9 @@ class TokoFoodHomeEmptyStateLocationViewHolder (
         const val IMG_STATIC_URI_NO_PIN_POIN = "https://images.tokopedia.net/img/ic-tokofood_home_no_pin_poin.png"
         const val IMG_STATIC_URI_NO_ADDRESS = "https://images.tokopedia.net/img/ic_tokofood_home_no_address.png"
         const val IMG_STATIC_URI_OUT_OF_COVERAGE = "https://images.tokopedia.net/img/ic_tokofood_home_out_of_coverage.png"
+        private const val ERROR_STATE_OUT_OF_COVERAGE = "error state out of coverage"
+        private const val ERROR_STATE_NO_PIN_POIN = "error state no pinpoint"
+        private const val ERROR_STATE_NO_ADDRESS = "error state no address"
     }
 
     private var binding: ItemTokofoodEmptyStateLocationBinding? by viewBinding()
@@ -56,24 +59,31 @@ class TokoFoodHomeEmptyStateLocationViewHolder (
     }
 
     private fun bindNoPinPoin() {
+        val title = itemView.resources.getString(R.string.home_no_pin_poin_title)
+        val desc = itemView.resources.getString(R.string.home_no_pin_poin_desc)
+
         tgToHomeEmptyStateLocation?.hide()
+        tokoFoodEmptyStateListener?.viewNoPinPoin()
         imgEmptyStateLocation?.loadImage(IMG_STATIC_URI_NO_PIN_POIN)
-        tgTitleEmptyStateLocation?.text = itemView.resources.getString(R.string.home_no_pin_poin_title)
-        tgDescEmptyStateLocation?.text = itemView.resources.getString(R.string.home_no_pin_poin_desc)
+        tgTitleEmptyStateLocation?.text = title
+        tgDescEmptyStateLocation?.text = desc
         btnEmptyStateLocation?.text = itemView.resources.getString(R.string.home_no_pin_poin_button)
         btnEmptyStateLocation?.setOnClickListener {
-            tokoFoodEmptyStateListener?.onClickSetPinPoin()
+            tokoFoodEmptyStateListener?.onClickSetPinPoin(ERROR_STATE_NO_PIN_POIN, title, desc)
         }
     }
 
     private fun bindNoAddress() {
+        val title = itemView.resources.getString(R.string.home_no_address_title)
+        val desc = itemView.resources.getString(R.string.home_no_address_desc)
+
         tgToHomeEmptyStateLocation?.show()
         imgEmptyStateLocation?.loadImage(IMG_STATIC_URI_NO_ADDRESS)
-        tgTitleEmptyStateLocation?.text = itemView.resources.getString(R.string.home_no_address_title)
-        tgDescEmptyStateLocation?.text = itemView.resources.getString(R.string.home_no_address_desc)
+        tgTitleEmptyStateLocation?.text = title
+        tgDescEmptyStateLocation?.text = desc
         btnEmptyStateLocation?.text = itemView.resources.getString(R.string.home_no_address_button)
         btnEmptyStateLocation?.setOnClickListener {
-            tokoFoodEmptyStateListener?.onClickSetAddress()
+            tokoFoodEmptyStateListener?.onClickSetAddress(ERROR_STATE_NO_ADDRESS, title, desc)
         }
         tgToHomeEmptyStateLocation?.setOnClickListener {
             tokoFoodEmptyStateListener?.onClickBackToHome()
@@ -81,13 +91,17 @@ class TokoFoodHomeEmptyStateLocationViewHolder (
     }
 
     private fun bindOutOfCoverage() {
+        val title = itemView.resources.getString(R.string.home_out_of_coverage_title)
+        val desc = itemView.resources.getString(R.string.home_out_of_coverage_desc)
+
         tgToHomeEmptyStateLocation?.show()
+        tokoFoodEmptyStateListener?.viewOutOfCoverage()
         imgEmptyStateLocation?.loadImage(IMG_STATIC_URI_OUT_OF_COVERAGE)
-        tgTitleEmptyStateLocation?.text = itemView.resources.getString(R.string.home_out_of_coverage_title)
-        tgDescEmptyStateLocation?.text = itemView.resources.getString(R.string.home_out_of_coverage_desc)
+        tgTitleEmptyStateLocation?.text = title
+        tgDescEmptyStateLocation?.text = desc
         btnEmptyStateLocation?.text = itemView.resources.getString(R.string.home_out_of_coverafe_button)
         btnEmptyStateLocation?.setOnClickListener {
-            tokoFoodEmptyStateListener?.onClickSetAddressInCoverage()
+            tokoFoodEmptyStateListener?.onClickSetAddressInCoverage(ERROR_STATE_OUT_OF_COVERAGE, title, desc)
         }
         tgToHomeEmptyStateLocation?.setOnClickListener {
             tokoFoodEmptyStateListener?.onClickBackToHome()
@@ -95,9 +109,11 @@ class TokoFoodHomeEmptyStateLocationViewHolder (
     }
 
     interface TokoFoodHomeEmptyStateLocationListener {
-        fun onClickSetPinPoin()
-        fun onClickSetAddress()
-        fun onClickSetAddressInCoverage()
+        fun onClickSetPinPoin(errorState: String, title: String, desc: String)
+        fun onClickSetAddress(errorState: String, title: String, desc: String)
+        fun onClickSetAddressInCoverage(errorState: String, title: String, desc: String)
         fun onClickBackToHome()
+        fun viewOutOfCoverage()
+        fun viewNoPinPoin()
     }
 }

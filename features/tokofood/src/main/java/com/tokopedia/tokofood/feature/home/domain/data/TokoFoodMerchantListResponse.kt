@@ -1,6 +1,7 @@
 package com.tokopedia.tokofood.feature.home.domain.data
 
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.kotlin.model.ImpressHolder
 
 data class TokoFoodMerchantListResponse (
     @SerializedName("tokofoodGetMerchantList")
@@ -43,7 +44,7 @@ data class Merchant (
     val hasBranch: Boolean = false,
     @SerializedName("isClosed")
     val isClosed: Boolean = false,
-)
+): ImpressHolder()
 
 data class PriceLevel(
     @SerializedName("icon")

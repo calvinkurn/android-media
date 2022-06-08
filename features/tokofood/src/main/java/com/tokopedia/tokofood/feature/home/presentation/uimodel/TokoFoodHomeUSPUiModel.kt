@@ -7,7 +7,8 @@ import com.tokopedia.tokofood.feature.home.presentation.adapter.TokoFoodHomeType
 data class TokoFoodHomeUSPUiModel(
     val id: String,
     val uspModel: TokoFoodHomeUSPResponse?,
-    @TokoFoodLayoutState val state: Int
+    @TokoFoodLayoutState val state: Int,
+    val verticalPosition: Int,
 ): TokoFoodHomeLayoutUiModel(id) {
     override fun type(typeFactory: TokoFoodHomeTypeFactory): Int {
         return typeFactory.type(this)
