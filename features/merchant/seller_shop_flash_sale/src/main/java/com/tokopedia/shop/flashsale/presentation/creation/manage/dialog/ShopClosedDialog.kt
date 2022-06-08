@@ -16,6 +16,7 @@ class ShopClosedDialog(
 
     companion object {
         const val TAG = "ShopClosedDialog"
+        const val CUSTOM_MODAL_WIDTH_RATIO = 0.9
         private const val SHOP_CLOSED_IMAGE_URL =
             "https://images.tokopedia.net/img/android/campaign/flash-sale-toko/creation_2_shop_close_illustration.png"
     }
@@ -52,7 +53,7 @@ class ShopClosedDialog(
 
     private fun initContent() {
         overlayClickDismiss = true
-        MODAL_WIDTH_RATIO = 0.9
+        modalWidthRatio = CUSTOM_MODAL_WIDTH_RATIO
         showCloseIcon = false
         binding?.run {
             iuShopCloseIllustration.setImageUrl(SHOP_CLOSED_IMAGE_URL)
