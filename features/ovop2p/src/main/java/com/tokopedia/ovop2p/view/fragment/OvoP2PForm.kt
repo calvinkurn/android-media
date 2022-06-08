@@ -427,10 +427,10 @@ class OvoP2PForm : BaseDaggerFragment(), View.OnClickListener, SearchView.OnQuer
         if (!TextUtils.isEmpty(enteredAmtStr)) {
             var enteredAmt = OvoP2pUtil.extractNumbersFromString(enteredAmtStr).toLong()
             if (enteredAmt < Constants.Thresholds.MIN_TRANSFER_LIMIT) {
-                amtErrorTxtv.text = resources.getString(R.string.minimal_trnsfr)
+                amtErrorTxtv.text = context?.resources?.getString(R.string.minimal_trnsfr)?:""
                 amtErrorTxtv.visibility = View.VISIBLE
             } else if (enteredAmt > sndrAmt) {
-                amtErrorTxtv.text = resources.getString(R.string.amt_more_thn_bal)
+                amtErrorTxtv.text = context?.resources?.getString(R.string.amt_more_thn_bal)?:""
                 amtErrorTxtv.visibility = View.VISIBLE
             } else {
                 amtErrorTxtv.visibility = View.GONE
