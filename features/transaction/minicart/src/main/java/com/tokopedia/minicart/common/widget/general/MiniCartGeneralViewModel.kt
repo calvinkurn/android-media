@@ -28,7 +28,7 @@ class MiniCartGeneralViewModel @Inject constructor(
         get() = _currentShopIds
     var isShopDirectPurchase = false
 
-    var currentSource: MiniCartSource = MiniCartSource.TokonowHome
+    var currentSource: MiniCartSource = MiniCartSource.ShopPage
 
     // Widget Data
     private val _globalEvent = MutableLiveData<GlobalEvent>()
@@ -90,7 +90,7 @@ class MiniCartGeneralViewModel @Inject constructor(
         }
         getMiniCartListSimplifiedUseCase.execute(
             onSuccess = {
-                it.isShowMiniCartWidget = it.miniCartWidgetData.totalProductCount > 0 && it.miniCartWidgetData.isShopActive
+                it.isShowMiniCartWidget = it.miniCartWidgetData.totalProductCount > 0
                 _miniCartSimplifiedData.value = it
             },
             onError = {
