@@ -64,6 +64,10 @@ class GetSellerLeaderboardUseCase @Inject constructor(
                     otherParticipantCount
                   }
                 }
+                config {
+                  topchatMessage
+                  topchatMessageQuiz
+                }
               }
             }
         """

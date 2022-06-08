@@ -515,12 +515,7 @@ class PlayBroadcastUiMapper @Inject constructor(
     ): List<PlayLeaderboardUiModel> {
         return response.data.slots.map { slot ->
             PlayLeaderboardUiModel(
-                title =
-                if (getLeaderboardType(slot.type) == LeadeboardType.Giveaway)
-                    slot.title
-                else textTransformer.transform(
-                    slot.question
-                ),
+                title = slot.getSlotTitle(),
                 winners = slot.winner.mapIndexed { index, winner ->
                     PlayWinnerUiModel(
                         rank = index + 1,
@@ -531,8 +526,13 @@ class PlayBroadcastUiMapper @Inject constructor(
                         topChatMessage =
                         if (getLeaderboardType(slot.type) == LeadeboardType.Giveaway)
                             response.data.config.topchatMessage
+                                .replace(FORMAT_FIRST_NAME, winner.userName)
+                                .replace(FORMAT_TITLE, slot.getSlotTitle())
                         else
-                            response.data.config.topchatMessageQuiz,
+                            response.data.config.topchatMessageQuiz
+                                .replace(FORMAT_FIRST_NAME, winner.userName)
+                                .replace(FORMAT_TITLE, slot.getSlotTitle())
+                        ,
                     )
                 },
                 choices = slot.choices.mapIndexed { index, choice ->
@@ -557,6 +557,14 @@ class PlayBroadcastUiMapper @Inject constructor(
         }
     }
 
+    private fun GetSellerLeaderboardSlotResponse.SlotData.getSlotTitle() : String {
+        return if (getLeaderboardType(this.type) == LeadeboardType.Giveaway)
+            this.title
+        else textTransformer.transform(
+            this.question
+        )
+    }
+
     private fun generateAlphabetChoices(index: Int): Char = arrayOfChoices[index]
     private val arrayOfChoices = ('A'..'D').toList()
 
@@ -573,7 +581,8 @@ class PlayBroadcastUiMapper @Inject constructor(
 
     companion object {
         private const val FORMAT_INTERACTIVE_DURATION = "${'$'}{second}"
-
+        private const val FORMAT_FIRST_NAME = "{{first_name}}"
+        private const val FORMAT_TITLE = "{{title}}"
         private const val TOTAL_FOLLOWERS = 3
     }
 

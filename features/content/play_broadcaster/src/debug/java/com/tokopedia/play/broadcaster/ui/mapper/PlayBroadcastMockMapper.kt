@@ -420,8 +420,13 @@ class PlayBroadcastMockMapper : PlayBroadcastMapper {
                         topChatMessage =
                         if (getLeaderboardType(slot.type) == LeadeboardType.Giveaway)
                             response.data.config.topchatMessage
+                            .replace(FORMAT_FIRST_NAME, winner.userName)
+                            .replace(FORMAT_TITLE, if (getLeaderboardType(slot.type) == LeadeboardType.Giveaway) slot.title else slot.question)
                         else
-                            response.data.config.topchatMessageQuiz,
+                            response.data.config.topchatMessageQuiz
+                                .replace(FORMAT_FIRST_NAME, winner.userName)
+                                .replace(FORMAT_TITLE, if (getLeaderboardType(slot.type) == LeadeboardType.Giveaway) slot.title else slot.question)
+                        ,
                     )
                 },
                 choices = slot.choices.mapIndexed { index, choice ->
@@ -460,7 +465,15 @@ class PlayBroadcastMockMapper : PlayBroadcastMapper {
     private fun generateAlphabetChoices(index: Int): Char = arrayOfChoices[index]
     private val arrayOfChoices = ('A'..'D').toList()
 
+    fun GetSellerLeaderboardSlotResponse.SlotData.getTitle() : String {
+        return if (getLeaderboardType(this.type) == LeadeboardType.Giveaway)
+            this.title
+        else
+            this.question
+    }
     companion object {
         const val LOCAL_RTMP_URL: String = "rtmp://192.168.0.110:1935/stream/"
+        private const val FORMAT_FIRST_NAME = "{{first_name}}"
+        private const val FORMAT_TITLE = "{{title}}"
     }
 }
