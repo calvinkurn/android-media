@@ -24,9 +24,8 @@ import org.junit.Test
 
 @ExperimentalCoroutinesApi
 class AffiliateRecommendedProductViewModelTest{
-    private val userSessionInterface: UserSessionInterface = mockk()
     private val affiliateRecommendedProductUseCase: AffiliateRecommendedProductUseCase = mockk()
-    var affiliateRecommendedProductViewModel = spyk(AffiliateRecommendedProductViewModel(userSessionInterface, affiliateRecommendedProductUseCase))
+    var affiliateRecommendedProductViewModel = spyk(AffiliateRecommendedProductViewModel(affiliateRecommendedProductUseCase))
 
     @get:Rule
     var rule = InstantTaskExecutorRule()
@@ -34,9 +33,6 @@ class AffiliateRecommendedProductViewModelTest{
     @Before
     @Throws(Exception::class)
     fun setUp() {
-
-        coEvery { userSessionInterface.userId } returns ""
-        coEvery { userSessionInterface.email } returns ""
 
         MockKAnnotations.init(this)
         Dispatchers.setMain(TestCoroutineDispatcher())
