@@ -320,7 +320,7 @@ class MerchantPageAnalytics @Inject constructor(private val userSession: UserSes
             )
             putString(
                 TrackAppUtils.EVENT_LABEL,
-                "$merchantId - ${foodItem.name} - ${foodItem?.price?.toInt().orZero()} - $position"
+                "$merchantId - ${foodItem?.name.orEmpty()} - ${foodItem?.price?.toInt().orZero()} - $position"
             )
             putString(
                 TokoFoodAnalyticsConstants.BUSSINESS_UNIT,
@@ -452,7 +452,7 @@ class MerchantPageAnalytics @Inject constructor(private val userSession: UserSes
         return Bundle().apply {
             putString(
                 AddToCartExternalAnalytics.EE_PARAM_CATEGORY_ID,
-                ""
+                categoryItem.id
             )
             putString(
                 AddToCartExternalAnalytics.EE_PARAM_ITEM_BRAND,

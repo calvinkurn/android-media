@@ -26,11 +26,11 @@ import com.tokopedia.tokofood.feature.merchant.presentation.enums.SelectionContr
 import com.tokopedia.tokofood.feature.merchant.presentation.enums.SelectionControlType.MULTIPLE_SELECTION
 import com.tokopedia.tokofood.feature.merchant.presentation.enums.SelectionControlType.SINGLE_SELECTION
 import com.tokopedia.tokofood.feature.merchant.presentation.mapper.TokoFoodMerchantUiModelMapper
-import com.tokopedia.tokofood.feature.merchant.presentation.model.*
 import com.tokopedia.tokofood.feature.merchant.presentation.model.AddOnUiModel
 import com.tokopedia.tokofood.feature.merchant.presentation.model.CarouselData
 import com.tokopedia.tokofood.feature.merchant.presentation.model.CategoryUiModel
 import com.tokopedia.tokofood.feature.merchant.presentation.model.CustomListItem
+import com.tokopedia.tokofood.feature.merchant.presentation.model.CustomOrderDetail
 import com.tokopedia.tokofood.feature.merchant.presentation.model.MerchantOpsHour
 import com.tokopedia.tokofood.feature.merchant.presentation.model.OptionUiModel
 import com.tokopedia.tokofood.feature.merchant.presentation.model.ProductListItem
@@ -151,6 +151,7 @@ class MerchantPageViewModel @Inject constructor(
             val categoryHeader = ProductListItem(
                     listItemType = ProductListItemType.CATEGORY_HEADER,
                     productCategory = CategoryUiModel(
+                            id = category.id,
                             key = category.key,
                             title = category.categoryName
                     )

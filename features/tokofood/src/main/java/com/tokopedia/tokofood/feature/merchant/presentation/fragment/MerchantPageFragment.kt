@@ -32,6 +32,7 @@ import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.tokofood.R
 import com.tokopedia.tokofood.common.constants.ShareComponentConstants
 import com.tokopedia.tokofood.common.domain.response.CartTokoFoodData
+import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFoodData
 import com.tokopedia.tokofood.common.presentation.UiEvent
 import com.tokopedia.tokofood.common.presentation.listener.HasViewModel
 import com.tokopedia.tokofood.common.presentation.uimodel.UpdateParam
@@ -118,7 +119,7 @@ class MerchantPageFragment : BaseMultiFragment(),
 
     private var productId: String = ""
 
-    private val merchantShareComponentUtil: MerchantShareComponentUtil? by lazy {
+    private val merchantShareComponentUtil: MerchantShareComponentUtil? by lazy(LazyThreadSafetyMode.NONE) {
         context?.let { MerchantShareComponentUtil(it) }
     }
 
@@ -205,6 +206,7 @@ class MerchantPageFragment : BaseMultiFragment(),
 
     override fun onResume() {
         super.onResume()
+        initializeMiniCartWidget()
         merchantPageAnalytics.openMerchantPage(merchantId)
     }
 
@@ -566,6 +568,14 @@ class MerchantPageFragment : BaseMultiFragment(),
                         }
                     }
                     UiEvent.EVENT_SUCCESS_VALIDATE_CHECKOUT -> {
+                       (it.data as? CheckoutTokoFoodData)?.let { checkOutTokoFoodData ->
+                           val purchaseAmount =  checkOutTokoFoodData.summaryDetail.totalPrice
+
+                            merchantPageAnalytics.clickCheckoutOnMiniCart(
+                                purchaseAmount,
+                                merchantId
+                            )
+                        }
                         navigateToNewFragment(TokoFoodPurchaseFragment.createInstance())
                     }
                 }
@@ -575,15 +585,7 @@ class MerchantPageFragment : BaseMultiFragment(),
 
     private fun initializeMiniCartWidget() {
         activityViewModel?.let {
-            binding?.miniCartWidget?.run {
-                initialize(it, viewLifecycleOwner.lifecycleScope, SOURCE)
-                setOnATCClickListener {
-                    merchantPageAnalytics.clickCheckoutOnMiniCart(
-                        getTotalAmount(),
-                        merchantId
-                    )
-                }
-            }
+            binding?.miniCartWidget?.initialize(it, viewLifecycleOwner.lifecycleScope, SOURCE)
         }
     }
 
@@ -694,6 +696,7 @@ class MerchantPageFragment : BaseMultiFragment(),
             }
         }
         bottomSheet.setSelectedCardPositions(cardPositions)
+        bottomSheet.setProductListItem(productListItem)
         bottomSheet.show(childFragmentManager)
 
         viewModel.merchantData?.let {
@@ -717,8 +720,7 @@ class MerchantPageFragment : BaseMultiFragment(),
                 productUiModel = productUiModel,
                 this,
                 cardPositions.first
-            )
-                .show(childFragmentManager)
+            ).show(childFragmentManager)
         } else if (productUiModel.isCustomizable) {
             navigateToOrderCustomizationPage(
                 cartId = "",
@@ -798,6 +800,13 @@ class MerchantPageFragment : BaseMultiFragment(),
             )
             activityViewModel?.updateQuantity(updateParam, SOURCE)
         }
+    }
+
+    override fun onNavigateToOrderCustomizationPage(
+        cartId: String,
+        productUiModel: ProductUiModel
+    ) {
+        TODO("Not yet implemented")
     }
 
     override fun onNavigateToOrderCustomizationPage(
