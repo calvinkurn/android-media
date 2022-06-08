@@ -90,10 +90,10 @@ class GetProductTagItemSectionUseCase @Inject constructor(
             }
         """
 
-        fun createParam(channelId: String): RequestParams {
+        fun createParam(channelId: String, warehouseId: String): RequestParams {
             val params = mapOf(
                 CHANNEL_ID to channelId,
-                WAREHOUSE_ID to "" //TODO() please add warehouse Id later
+                WAREHOUSE_ID to warehouseId
             )
             return RequestParams.create().apply {
                 putObject(REQUEST_PARAM, params)

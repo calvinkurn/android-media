@@ -183,6 +183,7 @@ class PlayViewModel @AssistedInject constructor(
         NetworkResult.Loading
     )
     private val _loadingBuy = MutableStateFlow(false)
+    private val _warehouseInfo = MutableStateFlow(WarehouseInfoUiModel.Empty)
 
     private val _interactiveUiState = combine(
         _interactive, _bottomInsets, _status
@@ -904,6 +905,7 @@ class PlayViewModel @AssistedInject constructor(
             is AtcProductAction -> handleBuyProduct(action.sectionInfo, action.product, ProductAction.AddToCart)
             is AtcProductVariantAction -> handleBuyProductVariant(action.id, ProductAction.AddToCart)
             is SelectVariantOptionAction -> handleSelectVariantOption(action.option)
+            is SendWarehouseId -> handleWarehouse(action.id, action.isOOC)
         }
     }
 
@@ -1084,7 +1086,8 @@ class PlayViewModel @AssistedInject constructor(
         }
         _tagItems.update { it.copy(resultState = ResultState.Loading) }
         viewModelScope.launchCatchError(dispatchers.io, block = {
-            val tagItem = repo.getTagItem(channelId)
+            val warehouseId = _warehouseInfo.value.warehouseId
+            val tagItem = repo.getTagItem(channelId, warehouseId)
             _tagItems.value = tagItem
 
             checkReminderStatus()
@@ -2345,6 +2348,12 @@ class PlayViewModel @AssistedInject constructor(
         }) {
             _selectedVariant.value = NetworkResult.Fail(it)
         }
+    }
+
+    private fun handleWarehouse(id: String, isOOC: Boolean) {
+        viewModelScope.launchCatchError(dispatchers.io, block = {
+            _warehouseInfo.value = WarehouseInfoUiModel(id, isOOC)
+        }) {}
     }
 
     companion object {
