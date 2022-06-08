@@ -39,9 +39,8 @@ class VpsWidgetComponentCallback(val context: Context?, val homeCategoryListener
     }
 
     override fun onChannelImpressed(channelModel: ChannelModel, parentPosition: Int) {
-        val a = VpsWidgetTracking.getVpsImpression(channelModel, parentPosition, homeCategoryListener.userId)
         homeCategoryListener.sendEETracking(
-            a
+            VpsWidgetTracking.getVpsImpression(channelModel, parentPosition, homeCategoryListener.userId)
         )
     }
 }
