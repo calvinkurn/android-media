@@ -22,7 +22,7 @@ import com.tokopedia.universal_sharing.view.bottomsheet.SharingUtil
 import com.tokopedia.universal_sharing.view.model.ShareModel
 
 class MerchantShareComponentUtil(
-    val context: Context
+    val context: Context?
 ) {
 
     private fun getLinkerDataMapper(merchantShareComponent: MerchantShareComponent): LinkerShareData {
@@ -90,10 +90,10 @@ class MerchantShareComponentUtil(
             pageName = ShareComponentConstants.TOKOFOOD,
             previewTitle = tokoFoodMerchantProfile?.name.orEmpty(),
             previewThumbnail = tokoFoodMerchantProfile?.imageURL.orEmpty(),
-            txtDesc = context.getString(
+            txtDesc = context?.getString(
                 com.tokopedia.tokofood.R.string.desc_merchant_page_share,
                 tokoFoodMerchantProfile?.name.orEmpty()
-            ),
+            ).orEmpty(),
             shareLinkUrl = ShareComponentConstants.Merchant.MERCHANT_URL,
             shareLinkDeepLink = UriUtil.buildUri(
                 ApplinkConst.TokoFood.MERCHANT, mapOf(
@@ -101,10 +101,10 @@ class MerchantShareComponentUtil(
                 )
             ),
             ogTitle = "${tokoFoodMerchantProfile?.name.orEmpty()}, ${tokoFoodMerchantProfile?.address.orEmpty()} | ${ShareComponentConstants.TOKOPEDIA}",
-            ogDesc = context.getString(
+            ogDesc = context?.getString(
                 com.tokopedia.tokofood.R.string.og_desc_merchant_page_share,
                 tokoFoodMerchantProfile?.name.orEmpty()
-            )
+            ).orEmpty()
         )
     }
 
@@ -118,23 +118,23 @@ class MerchantShareComponentUtil(
             pageName = ShareComponentConstants.TOKOFOOD,
             previewTitle = productUiModel.name,
             previewThumbnail = productUiModel.imageURL,
-            txtDesc = context.getString(
+            txtDesc = context?.getString(
                 com.tokopedia.tokofood.R.string.desc_merchant_food_share,
                 productUiModel.name,
                 tokoFoodMerchantProfile?.name.orEmpty(),
                 productUiModel.priceFmt
-            ),
+            ).orEmpty(),
             shareLinkUrl = ShareComponentConstants.Merchant.MERCHANT_URL,
-            shareLinkDeepLink = TokoFoodMerchantUiModelMapper.gerMerchantFoodAppLink(
+            shareLinkDeepLink = TokoFoodMerchantUiModelMapper.getMerchantFoodAppLink(
                 merchantId,
                 productUiModel.id
             ),
             ogTitle = """"${productUiModel.name}" ${tokoFoodMerchantProfile?.name.orEmpty()} | ${ShareComponentConstants.TOKOPEDIA}""",
-            ogDesc = context.getString(
+            ogDesc = context?.getString(
                 com.tokopedia.tokofood.R.string.og_desc_merchant_food_share,
                 productUiModel.name,
                 tokoFoodMerchantProfile?.name.orEmpty()
-            )
+            ).orEmpty()
         )
     }
 }
