@@ -11,6 +11,8 @@ import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.kotlin.extensions.view.ONE
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.topads.common.CustomViewPager
 import com.tokopedia.topads.common.analytics.TopAdsCreateAnalytics
 import com.tokopedia.topads.common.data.internal.ParamObject
@@ -278,7 +280,7 @@ class BaseEditKeywordFragment : BaseDaggerFragment(), EditKeywordsFragment.Butto
             ?: return mutableListOf()
 
         val items: MutableList<Map<String, Any>> = mutableListOf()
-        if (fragments.size > 0 && fragments[0] is EditKeywordsFragment) {
+        if (fragments.size > Int.ZERO && fragments[Int.ZERO] is EditKeywordsFragment) {
             positivekeywordsAll?.forEachIndexed { _, it ->
                 val map = mapOf(
                     "name" to it.name, "id" to it.id, "type" to "positif"
@@ -286,7 +288,7 @@ class BaseEditKeywordFragment : BaseDaggerFragment(), EditKeywordsFragment.Butto
                 items.add(map)
             }
         }
-        if (fragments.size > 1 && fragments[1] is EditNegativeKeywordsFragment) {
+        if (fragments.size > 1 && fragments[Int.ONE] is EditNegativeKeywordsFragment) {
             negativekeywordsAll?.forEach {
                 val map = mapOf(
                     "name" to it.tag, "id" to it.keywordId, "type" to "negatif"

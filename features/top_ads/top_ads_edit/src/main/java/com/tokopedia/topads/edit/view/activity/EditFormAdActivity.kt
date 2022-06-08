@@ -83,9 +83,9 @@ class EditFormAdActivity : BaseActivity(), HasComponent<TopAdsEditComponent>,
     private var dataGroup = HashMap<String, Any?>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        component
         super.onCreate(savedInstanceState)
         setContentView(R.layout.topads_base_edit_activity_layout)
+        initInject()
         initView()
         loadGroupInfo()
 
@@ -238,11 +238,14 @@ class EditFormAdActivity : BaseActivity(), HasComponent<TopAdsEditComponent>,
         return adapter
     }
 
+    private fun initInject() {
+        component.inject(this)
+    }
+
     override fun getComponent(): TopAdsEditComponent {
         val toAdsEditComponent = DaggerTopAdsEditComponent.builder().baseAppComponent(
             (application as BaseMainApplication).baseAppComponent)
             .topAdEditModule(TopAdEditModule(this)).build()
-        toAdsEditComponent.inject(this)
         return toAdsEditComponent
     }
 
