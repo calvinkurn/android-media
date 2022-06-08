@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel
@@ -45,6 +46,10 @@ import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.lifecycle.autoClearedNullable
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import java.lang.ref.WeakReference
 import javax.inject.Inject
 
@@ -73,15 +78,17 @@ class BaseTokoFoodOrderTrackingFragment :
         OrderTrackingNavigator(this, tracking)
     }
 
+    private val orderId: String by lazy(LazyThreadSafetyMode.NONE) {
+        arguments?.getString(DeeplinkMapperTokoFood.PATH_ORDER_ID).orEmpty()
+    }
+
     private var toolbarHandler: OrderTrackingToolbarHandler? = null
 
     private var binding by autoClearedNullable<FragmentTokofoodOrderTrackingBinding>()
 
     private var orderLiveTrackingFragment: TokoFoodOrderLiveTrackingFragment? = null
 
-    private val orderId: String by lazy(LazyThreadSafetyMode.NONE) {
-        arguments?.getString(DeeplinkMapperTokoFood.PATH_ORDER_ID).orEmpty()
-    }
+    private var delayAutoRefreshFinishOrderTempJob: Job? = null
 
     override fun getScreenName(): String = ""
 
@@ -119,6 +126,7 @@ class BaseTokoFoodOrderTrackingFragment :
         orderLiveTrackingFragment?.let {
             lifecycle.removeObserver(it)
         }
+        delayAutoRefreshFinishOrderTempJob?.cancel()
         super.onDestroy()
     }
 
@@ -144,13 +152,17 @@ class BaseTokoFoodOrderTrackingFragment :
     }
 
     override fun onAutoRefreshTempFinishOrder(orderDetailResultUiModel: OrderDetailResultUiModel) {
-        with(orderDetailResultUiModel) {
-            orderTrackingAdapter.removeOrderTrackingData()
-            orderTrackingAdapter.updateOrderTracking(orderDetailList)
-            updateViewsOrderCompleted(
-                actionButtonsUiModel, toolbarLiveTrackingUiModel, orderStatusKey,
-                orderDetailResultUiModel.merchantData
-            )
+        delayAutoRefreshFinishOrderTempJob?.cancel()
+        delayAutoRefreshFinishOrderTempJob = viewLifecycleOwner.lifecycleScope.launch(Dispatchers.Main) {
+            delay(TWO_SECONDS)
+            with(orderDetailResultUiModel) {
+                orderTrackingAdapter.removeOrderTrackingData()
+                orderTrackingAdapter.updateOrderTracking(orderDetailList)
+                updateViewsOrderCompleted(
+                    actionButtonsUiModel, toolbarLiveTrackingUiModel, orderStatusKey,
+                    orderDetailResultUiModel.merchantData
+                )
+            }
         }
     }
 
@@ -425,6 +437,8 @@ class BaseTokoFoodOrderTrackingFragment :
     }
 
     companion object {
+
+        const val TWO_SECONDS = 2000L
 
         fun newInstance(bundle: Bundle?): BaseTokoFoodOrderTrackingFragment {
             return if (bundle == null) {
