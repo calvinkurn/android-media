@@ -6,6 +6,7 @@ import com.tokopedia.oneclickcheckout.common.DEFAULT_LOCAL_ERROR_MESSAGE
 import com.tokopedia.oneclickcheckout.common.STATUS_OK
 import com.tokopedia.oneclickcheckout.common.view.model.OccGlobalEvent
 import com.tokopedia.oneclickcheckout.order.analytics.OrderSummaryPageEnhanceECommerce
+import com.tokopedia.oneclickcheckout.order.data.checkout.OrderMetadata
 import com.tokopedia.oneclickcheckout.order.view.OrderSummaryPageViewModel.Companion.ERROR_CODE_PRICE_CHANGE
 import com.tokopedia.oneclickcheckout.order.view.OrderSummaryPageViewModel.Companion.PRICE_CHANGE_ACTION_MESSAGE
 import com.tokopedia.oneclickcheckout.order.view.OrderSummaryPageViewModel.Companion.PRICE_CHANGE_ERROR_MESSAGE
@@ -839,7 +840,7 @@ class OrderSummaryPageViewModelCheckoutTest : BaseOrderSummaryPageViewModelTest(
         }, false)
 
         // Then
-        coVerify(exactly = 1) { checkoutOccUseCase.executeSuspend(match { it.carts.data[0].shopProducts[0].orderMetadata == "{}" }) }
+        coVerify(exactly = 1) { checkoutOccUseCase.executeSuspend(match { it.carts.data[0].shopProducts[0].orderMetadata.isEmpty() }) }
     }
 
     @Test
@@ -863,6 +864,6 @@ class OrderSummaryPageViewModelCheckoutTest : BaseOrderSummaryPageViewModelTest(
         }, false)
 
         // Then
-        coVerify(exactly = 1) { checkoutOccUseCase.executeSuspend(match { it.carts.data[0].shopProducts[0].orderMetadata == """{"free_shipping_metadata":"{\"sent_shipper_partner\":true}"}""" }) }
+        coVerify(exactly = 1) { checkoutOccUseCase.executeSuspend(match { it.carts.data[0].shopProducts[0].orderMetadata.contains(OrderMetadata("free_shipping_metadata", "{\"sent_shipper_partner\":true}")) }) }
     }
 }

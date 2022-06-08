@@ -117,6 +117,6 @@ data class OrderMetadata(
 ) {
     companion object {
         // sample key
-        const val KEY = "key"
+        const val FREE_SHIPPING_METADATA = "free_shipping_metadata"
     }
 }

@@ -1,8 +1,8 @@
 package com.tokopedia.checkout.data.model.request.checkout
 
 import android.annotation.SuppressLint
-import com.google.gson.JsonObject
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.checkout.data.model.request.checkout.OrderMetadata.Companion.FREE_SHIPPING_METADATA
 import com.tokopedia.checkout.data.model.request.checkout.cross_sell.CrossSellRequest
 import com.tokopedia.checkout.data.model.request.checkout.old.AddOnGiftingRequest
 import com.tokopedia.checkout.data.model.request.checkout.old.CheckoutRequest
@@ -190,7 +190,7 @@ data class OrderMetadata(
 ) {
     companion object {
         // sample key
-        const val KEY = "key"
+        const val FREE_SHIPPING_METADATA = "free_shipping_metadata"
     }
 }
 
@@ -266,11 +266,7 @@ object CheckoutRequestMapper {
                 promos = mapPromos(it.promos)
                 bundle = mapBundle(it.productData)
                 checkoutGiftingOrderLevel = mapGiftingAddOn(it.giftingAddOnOrderLevel)
-                orderMetadata = JsonObject().apply {
-                    if (it.freeShippingMetadata.isNotBlank()) {
-                        addProperty("free_shipping_metadata", it.freeShippingMetadata)
-                    }
-                }.toString()
+                orderMetadata = mapOrderMetadata(it)
             })
         }
 
@@ -361,5 +357,13 @@ object CheckoutRequestMapper {
             listCheckoutGiftingAddOn.add(addOnRequest)
         }
         return listCheckoutGiftingAddOn.toList()
+    }
+
+    private fun mapOrderMetadata(shopProductCheckoutRequest: ShopProductCheckoutRequest): List<OrderMetadata> {
+        val orderMetadata = arrayListOf<OrderMetadata>()
+        if (shopProductCheckoutRequest.freeShippingMetadata.isNotBlank()) {
+            orderMetadata.add(OrderMetadata(FREE_SHIPPING_METADATA, shopProductCheckoutRequest.freeShippingMetadata))
+        }
+        return orderMetadata
     }
 }

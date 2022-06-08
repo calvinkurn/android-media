@@ -1,7 +1,6 @@
 package com.tokopedia.oneclickcheckout.order.view.processor
 
 import com.google.gson.Gson
-import com.google.gson.JsonObject
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.oneclickcheckout.common.DEFAULT_ERROR_MESSAGE
 import com.tokopedia.oneclickcheckout.common.STATUS_OK
@@ -11,6 +10,8 @@ import com.tokopedia.oneclickcheckout.order.analytics.OrderSummaryAnalytics
 import com.tokopedia.oneclickcheckout.order.analytics.OrderSummaryPageEnhanceECommerce
 import com.tokopedia.oneclickcheckout.order.data.checkout.AddOnItem
 import com.tokopedia.oneclickcheckout.order.data.checkout.CheckoutOccRequest
+import com.tokopedia.oneclickcheckout.order.data.checkout.OrderMetadata
+import com.tokopedia.oneclickcheckout.order.data.checkout.OrderMetadata.Companion.FREE_SHIPPING_METADATA
 import com.tokopedia.oneclickcheckout.order.data.checkout.ParamCart
 import com.tokopedia.oneclickcheckout.order.data.checkout.ParamData
 import com.tokopedia.oneclickcheckout.order.data.checkout.ProductData
@@ -115,6 +116,11 @@ class OrderSummaryPageCheckoutProcessor @Inject constructor(private val checkout
                 ))
             }
 
+            val orderMetadata = arrayListOf<OrderMetadata>()
+            val logisticPromoUiModel = orderShipment.logisticPromoViewModel
+            if (orderShipment.isApplyLogisticPromo && orderShipment.logisticPromoShipping != null && logisticPromoUiModel != null && logisticPromoUiModel.freeShippingMetadata.isNotBlank()) {
+                orderMetadata.add(OrderMetadata(FREE_SHIPPING_METADATA, logisticPromoUiModel.freeShippingMetadata))
+            }
             val param = CheckoutOccRequest(Profile(profile.profileId), ParamCart(data = listOf(ParamData(
                     profile.address.addressId,
                     listOf(
@@ -133,12 +139,7 @@ class OrderSummaryPageCheckoutProcessor @Inject constructor(private val checkout
                                     ),
                                     promos = shopPromos,
                                     items = addOnShopLevelItems,
-                                    orderMetadata = JsonObject().apply {
-                                        val logisticPromoUiModel = orderShipment.logisticPromoViewModel
-                                        if (orderShipment.isApplyLogisticPromo && orderShipment.logisticPromoShipping != null && logisticPromoUiModel != null && logisticPromoUiModel.freeShippingMetadata.isNotBlank()) {
-                                            addProperty("free_shipping_metadata", logisticPromoUiModel.freeShippingMetadata)
-                                        }
-                                    }.toString()
+                                    orderMetadata = orderMetadata
                             )
                     )
             )), promos = checkoutPromos, mode = if (orderTotal.isButtonPay) 0 else 1, featureType = if (shop.isTokoNow) ParamCart.FEATURE_TYPE_TOKONOW else ParamCart.FEATURE_TYPE_OCC_MULTI_NON_TOKONOW))
