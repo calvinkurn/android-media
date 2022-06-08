@@ -86,9 +86,9 @@
 
     <com.tokopedia.iconunify.IconUnify
         android:id="@+id/btn_information"
-        android:layout_width="@dimen/layout_lvl2"
-        android:layout_height="@dimen/layout_lvl2"
-        android:layout_marginStart="@dimen/spacing_lvl3"
+        android:layout_width="@dimen/play_offset_18"
+        android:layout_height="@dimen/play_offset_18"
+        android:layout_marginStart="@dimen/play_offset_6"
         android:visibility="gone"
         app:icon_name="INFORMATION"
         app:layout_constraintBottom_toBottomOf="@+id/tv_header_title"

@@ -602,7 +602,7 @@ class PlayBottomSheetFragment @Inject constructor(
         view: ProductSheetViewComponent,
         productSectionUiModel: ProductSectionUiModel.Section
     ) {
-        //TODO("Not yet implemented")
+        openPageByApplink("tokopedia://now", pipMode = false)
     }
 
     /**
