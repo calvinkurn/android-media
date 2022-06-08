@@ -243,11 +243,9 @@ class OvoP2PForm : BaseDaggerFragment(), View.OnClickListener, SearchView.OnQuer
         createOvoP2pTransferReqMap(Constants.Keys.NAME, rcvrName)
         createOvoP2pTransferReqMap(
             Constants.Keys.FORMATTED_AMOUNT,
-            CurrencyFormatUtil.getThousandSeparatorString(
-                rcvrAmt.toDouble(),
+            com.tokopedia.utils.currency.CurrencyFormatUtil.getThousandSeparatorString(rcvrAmt.toDouble(),
                 false,
-                0
-            ).formattedString
+                0).formattedString
         )
         createOvoP2pTransferReqMap(Constants.Keys.TO_PHN_NO, rcvrPhnNo)
         createOvoP2pTransferReqMap(Constants.Keys.MESSAGE, rcvrMsg)
