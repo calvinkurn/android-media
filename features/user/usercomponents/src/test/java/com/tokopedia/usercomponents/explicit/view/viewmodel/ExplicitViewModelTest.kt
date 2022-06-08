@@ -53,6 +53,86 @@ class ExplicitViewModelTest {
     }
 
     @Test
+    fun `get question - success - options is empty`() {
+        val templateName = "food_preference"
+        val data = QuestionDataModel(
+            ExplicitprofileGetQuestion(
+                ActiveConfig(value = true),
+                template = Template(
+                    sections = listOf(
+                        SectionsItem(
+                            questions = listOf(
+                                QuestionsItem(
+                                    property = Property(
+                                        options = emptyList()
+                                    )
+                                )
+                            )
+                        )
+                    )
+                )
+            )
+        )
+        val expected = Pair(false, null)
+
+        coEvery {
+            getQuestionUseCase(templateName)
+        } returns data
+        viewModel.getExplicitContent(templateName)
+
+        val result = viewModel.explicitContent.value
+        assertEquals(Success(expected), result)
+    }
+
+    @Test
+    fun `get question - success - sections is empty`() {
+        val templateName = "food_preference"
+        val data = QuestionDataModel(
+            ExplicitprofileGetQuestion(
+                ActiveConfig(value = true),
+                template = Template(
+                    sections = listOf(
+                        SectionsItem(
+                            questions = emptyList()
+                        )
+                    )
+                )
+            )
+        )
+        val expected = Pair(false, null)
+
+        coEvery {
+            getQuestionUseCase(templateName)
+        } returns data
+        viewModel.getExplicitContent(templateName)
+
+        val result = viewModel.explicitContent.value
+        assertEquals(Success(expected), result)
+    }
+
+    @Test
+    fun `get question - success - questions is empty`() {
+        val templateName = "food_preference"
+        val data = QuestionDataModel(
+            ExplicitprofileGetQuestion(
+                ActiveConfig(value = true),
+                template = Template(
+                    sections = emptyList()
+                )
+            )
+        )
+        val expected = Pair(false, null)
+
+        coEvery {
+            getQuestionUseCase(templateName)
+        } returns data
+        viewModel.getExplicitContent(templateName)
+
+        val result = viewModel.explicitContent.value
+        assertEquals(Success(expected), result)
+    }
+
+    @Test
     fun `get question - success - widget active`() {
         val templateName = "food_preference"
         val data = QuestionDataModel(
@@ -167,6 +247,22 @@ class ExplicitViewModelTest {
     @Test
     fun `update state just call once`()  {
         val preferenceUpdateState = UpdateStateParam()
+
+        viewModel.updateState()
+
+        coVerify (exactly = 1) {
+            updateStateUseCase(preferenceUpdateState)
+        }
+    }
+
+    @Test
+    fun `update state just call once - error`()  {
+        val preferenceUpdateState = UpdateStateParam()
+        val data = Throwable()
+
+        coEvery {
+            updateStateUseCase(preferenceUpdateState)
+        } throws data
 
         viewModel.updateState()
 

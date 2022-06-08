@@ -45,9 +45,9 @@ class ExplicitViewModel @Inject constructor(
             val activeConfig = response.explicitprofileGetQuestion.activeConfig.value
             val sections = response.explicitprofileGetQuestion.template.sections
 
-            if (activeConfig && sections.isNotEmpty() && sections.first().questions.isNotEmpty()) {
+            if (activeConfig && sections.isNotEmpty() && sections.first().questions.isNotEmpty() && sections.first().questions.first().property.options.size == 2) {
                 val property = sections.first().questions.first().property
-                _explicitContent.value = Success(Pair(activeConfig, property))
+                _explicitContent.value = Success(Pair(true, property))
                 setPreferenceAnswer(response.explicitprofileGetQuestion.template)
             } else {
                 _explicitContent.value = Success(Pair(false, null))
@@ -70,16 +70,12 @@ class ExplicitViewModel @Inject constructor(
 
         val options = template.sections.first().questions.first().property.options
 
-        if (options.isNotEmpty()) {
-            preferenceOptions.first().apply {
-                value = options.first().value
-            }
+        preferenceOptions.first().apply {
+            value = options.first().value
         }
 
-        if (options.size > 1) {
-            preferenceOptions[1].apply {
-                value = options[1].value
-            }
+        preferenceOptions[1].apply {
+            value = options[1].value
         }
     }
 
