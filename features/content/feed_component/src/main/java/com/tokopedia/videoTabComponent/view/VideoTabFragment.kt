@@ -43,7 +43,6 @@ import com.tokopedia.videoTabComponent.view.custom.FeedPlayStickyHeaderRecyclerV
 import com.tokopedia.videoTabComponent.view.uimodel.SelectedPlayWidgetCard
 import com.tokopedia.videoTabComponent.view.viewholder.PlayFeedWidgetViewHolder
 import com.tokopedia.videoTabComponent.viewmodel.PlayFeedVideoTabViewModel
-import com.tokopedia.videoTabComponent.viewmodel.PlayWidgetCardClickListener
 import com.tokopedia.videoTabComponent.viewmodel.VideoTabAdapter
 import timber.log.Timber
 import javax.inject.Inject

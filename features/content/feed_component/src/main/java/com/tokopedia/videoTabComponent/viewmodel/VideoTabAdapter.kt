@@ -10,6 +10,7 @@ import com.tokopedia.play.widget.ui.model.PlayWidgetReminderType
 import com.tokopedia.play.widget.ui.model.PlayWidgetUiModel
 import com.tokopedia.play.widget.ui.type.PlayWidgetChannelType
 import com.tokopedia.videoTabComponent.callback.PlaySlotTabCallback
+import com.tokopedia.videoTabComponent.callback.PlayWidgetCardClickListener
 import com.tokopedia.videoTabComponent.domain.delegate.PlaySlotTabViewAdapterDelegate
 import com.tokopedia.videoTabComponent.domain.delegate.PlayWidgetViewAdapterDelegate
 import com.tokopedia.videoTabComponent.domain.mapper.WIDGET_UPCOMING
@@ -214,4 +215,3 @@ class VideoTabAdapter(
 
     }
 }
-typealias PlayWidgetCardClickListener = (channelId: String, position: Int) -> Unit
