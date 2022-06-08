@@ -96,10 +96,6 @@ class PlayChatListView : ConstraintLayout {
         } catch (ignored: IllegalStateException) {}
     }
 
-    fun showNewChat(chat: PlayChatUiModel) {
-//        chatAdapter.addChat(chat)
-    }
-
     fun setChatList(chatList: List<PlayChatUiModel>) {
         chatAdapter.submitList(chatList)
     }

@@ -940,22 +940,6 @@ class PlayViewModel @AssistedInject constructor(
         updateChannelStatus()
 
         updateChannelInfo(channelData)
-//
-//        viewModelScope.launch {
-//            var index = 0
-//            while(isActive && index < 100) {
-//                delay(30)
-//                setNewChat(
-//                    PlayChatUiModel(
-//                        message = index++.toString(),
-//                        isSelfMessage = false,
-//                        name = "Halo",
-//                        messageId = "",
-//                        userId = "123"
-//                    )
-//                )
-//            }
-//        }
     }
 
     fun defocusPage(shouldPauseVideo: Boolean) {
