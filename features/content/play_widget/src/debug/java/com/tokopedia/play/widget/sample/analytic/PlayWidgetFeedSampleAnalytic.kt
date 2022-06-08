@@ -19,7 +19,6 @@ class PlayWidgetFeedSampleAnalytic : PlayWidgetInListAnalyticListener {
         config: PlayWidgetConfigUiModel,
         channelPositionInList: Int,
         verticalWidgetPosition: Int,
-        businessWidgetPosition: Int,
     ) {
         Log.d("FeedPlayWidget","onClickChannelCard PlayWidgetJumboView ${item.channelId} $channelPositionInList")
     }
@@ -30,7 +29,6 @@ class PlayWidgetFeedSampleAnalytic : PlayWidgetInListAnalyticListener {
         config: PlayWidgetConfigUiModel,
         channelPositionInList: Int,
         verticalWidgetPosition: Int,
-        businessWidgetPosition: Int,
     ) {
         Log.d("FeedPlayWidget","onImpressChannelCard PlayWidgetJumboView ${item.channelId} $channelPositionInList")
     }
@@ -41,7 +39,6 @@ class PlayWidgetFeedSampleAnalytic : PlayWidgetInListAnalyticListener {
         config: PlayWidgetConfigUiModel,
         channelPositionInList: Int,
         verticalWidgetPosition: Int,
-        businessWidgetPosition: Int,
     ) {
         Log.d("FeedPlayWidget","onImpressChannelCard PlayWidgetLargeView ${item.channelId} $channelPositionInList")
     }
@@ -52,7 +49,6 @@ class PlayWidgetFeedSampleAnalytic : PlayWidgetInListAnalyticListener {
         config: PlayWidgetConfigUiModel,
         channelPositionInList: Int,
         verticalWidgetPosition: Int,
-        businessWidgetPosition: Int,
     ) {
         Log.d("FeedPlayWidget","onClickChannelCard PlayWidgetLargeView ${item.channelId} $channelPositionInList")
     }
@@ -63,7 +59,6 @@ class PlayWidgetFeedSampleAnalytic : PlayWidgetInListAnalyticListener {
         config: PlayWidgetConfigUiModel,
         channelPositionInList: Int,
         verticalWidgetPosition: Int,
-        businessWidgetPosition: Int
     ) {
         Log.d("FeedPlayWidget","onImpressChannelCard PlayWidgetMediumView ${item.channelId} $channelPositionInList")
     }
@@ -74,7 +69,6 @@ class PlayWidgetFeedSampleAnalytic : PlayWidgetInListAnalyticListener {
         config: PlayWidgetConfigUiModel,
         channelPositionInList: Int,
         verticalWidgetPosition: Int,
-        businessWidgetPosition: Int
     ) {
         Log.d("FeedPlayWidget","onClickChannelCard PlayWidgetMediumView ${item.channelId} $channelPositionInList")
     }
