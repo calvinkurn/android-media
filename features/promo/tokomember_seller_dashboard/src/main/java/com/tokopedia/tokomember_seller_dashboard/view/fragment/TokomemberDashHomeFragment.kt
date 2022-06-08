@@ -10,9 +10,8 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.tokomember_seller_dashboard.R
 import com.tokopedia.tokomember_seller_dashboard.di.component.DaggerTokomemberDashComponent
 import com.tokopedia.tokomember_seller_dashboard.tracker.TmTracker
+import com.tokopedia.tokomember_seller_dashboard.util.TokoLiveDataResult
 import com.tokopedia.tokomember_seller_dashboard.view.viewmodel.TokomemberDashHomeViewmodel
-import com.tokopedia.usecase.coroutines.Fail
-import com.tokopedia.usecase.coroutines.Success
 import javax.inject.Inject
 
 class TokomemberDashHomeFragment : BaseDaggerFragment() {
@@ -47,12 +46,15 @@ class TokomemberDashHomeFragment : BaseDaggerFragment() {
     private fun observeViewModel() {
 
         tokomemberDashHomeViewmodel.tokomemberHomeResultLiveData.observe(viewLifecycleOwner, {
-            when(it){
-                is Success ->{
+            when(it.status){
+                TokoLiveDataResult.STATUS.LOADING ->{
 
                 }
-                is Fail ->{
-                    it.throwable.message
+                TokoLiveDataResult.STATUS.SUCCESS->{
+                    it.data?.membershipGetSellerAnalyticsTopSection?.shopProfile?.homeCardTemplate?.backgroundColor
+                }
+                TokoLiveDataResult.STATUS.ERROR->{
+
                 }
             }
         })

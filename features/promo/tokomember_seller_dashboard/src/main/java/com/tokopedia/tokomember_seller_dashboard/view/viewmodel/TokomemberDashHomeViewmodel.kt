@@ -5,10 +5,8 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.tokomember_seller_dashboard.di.qualifier.CoroutineMainDispatcher
 import com.tokopedia.tokomember_seller_dashboard.domain.TokomemberDashHomeUsecase
-import com.tokopedia.tokomember_seller_dashboard.model.ProgramList
-import com.tokopedia.usecase.coroutines.Fail
-import com.tokopedia.usecase.coroutines.Result
-import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.tokomember_seller_dashboard.model.TmDashHomeResponse
+import com.tokopedia.tokomember_seller_dashboard.util.TokoLiveDataResult
 import kotlinx.coroutines.CoroutineDispatcher
 import javax.inject.Inject
 
@@ -17,15 +15,16 @@ class TokomemberDashHomeViewmodel @Inject constructor(
     @CoroutineMainDispatcher dispatcher: CoroutineDispatcher,
 ) : BaseViewModel(dispatcher) {
 
-    private val _tokomemberHomeResultLiveData = MutableLiveData<Result<ProgramList>>()
-    val tokomemberHomeResultLiveData: LiveData<Result<ProgramList>> = _tokomemberHomeResultLiveData
+    private val _tokomemberHomeResultLiveData = MutableLiveData<TokoLiveDataResult<TmDashHomeResponse>>()
+    val tokomemberHomeResultLiveData: LiveData<TokoLiveDataResult<TmDashHomeResponse>> = _tokomemberHomeResultLiveData
 
     fun getHomePageData(shopId: Int, cardID: Int, status: Int = -1, page: Int = 1, pageSize: Int = 10) {
         tokomemberDashHomeUsecase.cancelJobs()
+        _tokomemberHomeResultLiveData.postValue(TokoLiveDataResult.loading())
         tokomemberDashHomeUsecase.getHomeData({
-            _tokomemberHomeResultLiveData.postValue(Success(it))
+            _tokomemberHomeResultLiveData.postValue(TokoLiveDataResult.success(it))
         }, {
-            _tokomemberHomeResultLiveData.postValue(Fail(it))
+            _tokomemberHomeResultLiveData.postValue(TokoLiveDataResult.error(it))
         }, shopId, cardID, status, page, pageSize)
     }
 
