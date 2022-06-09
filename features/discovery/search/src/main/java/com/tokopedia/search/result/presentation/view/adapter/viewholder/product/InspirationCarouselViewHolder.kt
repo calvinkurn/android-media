@@ -32,7 +32,6 @@ import com.tokopedia.search.result.presentation.view.listener.InspirationCarouse
 import com.tokopedia.search.utils.addItemDecorationIfNotExists
 import com.tokopedia.search.utils.getHorizontalShadowOffset
 import com.tokopedia.search.utils.getVerticalShadowOffset
-import com.tokopedia.unifycomponents.CardUnify2
 import com.tokopedia.utils.view.binding.viewBinding
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers

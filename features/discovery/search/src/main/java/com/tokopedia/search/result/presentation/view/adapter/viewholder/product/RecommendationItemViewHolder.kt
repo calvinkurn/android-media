@@ -9,7 +9,6 @@ import com.tokopedia.recommendation_widget_common.listener.RecommendationListene
 import com.tokopedia.search.R
 import com.tokopedia.search.databinding.SearchResultRecommendationCardSmallGridBinding
 import com.tokopedia.search.result.presentation.model.RecommendationItemDataView
-import com.tokopedia.unifycomponents.CardUnify2
 import com.tokopedia.utils.view.binding.viewBinding
 
 class RecommendationItemViewHolder (

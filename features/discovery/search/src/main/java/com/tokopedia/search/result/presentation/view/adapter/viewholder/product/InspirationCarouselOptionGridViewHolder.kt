@@ -10,7 +10,6 @@ import com.tokopedia.search.result.presentation.model.BadgeItemDataView
 import com.tokopedia.search.result.presentation.model.InspirationCarouselDataView
 import com.tokopedia.search.result.presentation.model.LabelGroupDataView
 import com.tokopedia.search.result.presentation.view.listener.InspirationCarouselListener
-import com.tokopedia.unifycomponents.CardUnify2
 import com.tokopedia.utils.view.binding.viewBinding
 
 class InspirationCarouselOptionGridViewHolder(
