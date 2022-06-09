@@ -297,12 +297,21 @@ class ProductTagViewModel @AssistedInject constructor(
                 ProductTagSource.GlobalSearch -> {
                     val prevQuery = _globalSearchProduct.value.param.query
                     _globalSearchProduct.setValue {
-                        GlobalSearchProductUiModel.Empty.copy(param = initParam(query, prevQuery).copy().apply {
+                        val prevParam = _globalSearchProduct.value.param.apply {
+                            this.prevQuery = this.query
+                            this.query = query
+                        }
+                        GlobalSearchProductUiModel.Empty.copy(param = initParam(prevParam).copy().apply {
                             this.componentId = componentId
                         })
                     }
+
                     _globalSearchShop.setValue {
-                        GlobalSearchShopUiModel.Empty.copy(param = initParam(query, prevQuery).copy().apply {
+                        val prevParam = _globalSearchShop.value.param.apply {
+                            this.prevQuery = this.query
+                            this.query = query
+                        }
+                        GlobalSearchShopUiModel.Empty.copy(param = initParam(prevParam).copy().apply {
                             this.componentId = componentId
                         })
                     }
@@ -453,8 +462,8 @@ class ProductTagViewModel @AssistedInject constructor(
     private fun handleOpenMyShopSortBottomSheet() {
         viewModelScope.launchCatchError(block = {
             if(_myShopSort.value.isEmpty()) {
-                val query = _myShopProduct.value.param.query
-                val param = initParam(query).apply {
+                val prevParam = _myShopProduct.value.param
+                val param = initParam(prevParam).apply {
                     source = SearchParamUiModel.SOURCE_SEARCH_PRODUCT
                 }
 
@@ -481,8 +490,8 @@ class ProductTagViewModel @AssistedInject constructor(
         val currState = _myShopProduct.value
         if(currState.param.isParamFound(selectedSort.key, selectedSort.value)) return
 
-        val query = currState.param.query
-        val newParam = initParam(query).apply {
+        val prevParam = currState.param
+        val newParam = initParam(prevParam).apply {
             addParam(selectedSort.key, selectedSort.value)
         }
 
@@ -545,18 +554,31 @@ class ProductTagViewModel @AssistedInject constructor(
         if(suggestionQuery.isEmpty()) return
 
         _globalSearchProduct.setValue {
-            GlobalSearchProductUiModel.Empty.copy(param = initParam(suggestionQuery))
+            val prevParamProduct = _globalSearchProduct.value.param.apply {
+                this.prevQuery = this.query
+                this.query = suggestionQuery
+            }
+            GlobalSearchProductUiModel.Empty.copy(param = initParam(prevParamProduct))
+        }
+
+        _globalSearchShop.setValue {
+            val prevParamShop = _globalSearchShop.value.param.apply {
+                this.prevQuery = this.query
+                this.query = suggestionQuery
+            }
+            GlobalSearchShopUiModel.Empty.copy(param = initParam(prevParamShop))
         }
 
         handleLoadGlobalSearchProduct()
+        handleLoadGlobalSearchShop()
     }
 
     private fun handleTickerClicked() {
         val tickerParam = _globalSearchProduct.value.ticker.query
         if(tickerParam.isEmpty()) return
 
-        val query = _globalSearchProduct.value.param.query
-        val newParam = initParam(query).apply {
+        val prevParam = _globalSearchProduct.value.param
+        val newParam = initParam(prevParam).apply {
             tickerParam.toMapParam().forEach {
                 addParam(it.key, it.value)
             }
@@ -597,8 +619,8 @@ class ProductTagViewModel @AssistedInject constructor(
         viewModelScope.launchCatchError(block = {
             val currState = _globalSearchProduct.value
 
-            val query = currState.param.query
-            val param = initParam(query).apply {
+            val prevParam = currState.param
+            val param = initParam(prevParam).apply {
                 source = SearchParamUiModel.SOURCE_SEARCH_PRODUCT
             }
 
@@ -627,10 +649,8 @@ class ProductTagViewModel @AssistedInject constructor(
     }
 
     private fun handleApplyProductSortFilter(selectedSortFilter: Map<String, String>) {
-        val query = _globalSearchProduct.value.param.query
-        val prevQuery = _globalSearchProduct.value.param.prevQuery
-
-        val newParam = initParam(query, prevQuery)
+        val prevParam = _globalSearchProduct.value.param
+        val newParam = initParam(prevParam)
 
         selectedSortFilter.forEach { newParam.addParam(it.key, it.value) }
 
@@ -727,8 +747,8 @@ class ProductTagViewModel @AssistedInject constructor(
         viewModelScope.launchCatchError(block = {
             val currState = _globalSearchShop.value
 
-            val query = currState.param.query
-            val param = initParam(query).apply {
+            val prevParam = currState.param
+            val param = initParam(prevParam).apply {
                 source = SearchParamUiModel.SOURCE_SEARCH_SHOP
                 pageSource = SearchParamUiModel.SOURCE_SEARCH_SHOP
             }
@@ -762,9 +782,8 @@ class ProductTagViewModel @AssistedInject constructor(
     }
 
     private fun handleApplyShopSortFilter(selectedSortFilter: Map<String, String>) {
-        val query = _globalSearchShop.value.param.query
-        val prevQuery = _globalSearchShop.value.param.prevQuery
-        val newParam = initParam(query, prevQuery)
+        val prevParam = _globalSearchShop.value.param
+        val newParam = initParam(prevParam)
 
         selectedSortFilter.forEach { newParam.addParam(it.key, it.value) }
 
@@ -824,9 +843,11 @@ class ProductTagViewModel @AssistedInject constructor(
     private fun handleSearchShopProduct(query: String) {
         if(_shopProduct.value.param.query == query) return
 
-        _shopProduct.setValue { ShopProductUiModel.Empty.copy(
+        _shopProduct.setValue {
+
+            ShopProductUiModel.Empty.copy(
                 shop = shop,
-                param = param.copy().apply { this.query = query }
+                param = initParam(_shopProduct.value.param).apply { this.query = query }
             )
         }
         handleLoadShopProduct()
@@ -837,10 +858,11 @@ class ProductTagViewModel @AssistedInject constructor(
         return source == ProductTagSource.GlobalSearch && _globalSearchProduct.value.param.query.isEmpty()
     }
 
-    private fun initParam(query: String, prevQuery: String = ""): SearchParamUiModel {
+    private fun initParam(prevParam: SearchParamUiModel): SearchParamUiModel {
         return SearchParamUiModel.Empty.apply {
-            this.prevQuery = prevQuery
-            this.query = query
+            this.prevQuery = prevParam.prevQuery
+            this.query = prevParam.query
+            this.componentId = prevParam.componentId
         }
     }
 
