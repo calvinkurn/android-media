@@ -10,6 +10,7 @@ import com.tokopedia.shop.flashsale.common.extension.hourOnly
 import com.tokopedia.shop.flashsale.domain.entity.CampaignAction
 import com.tokopedia.shop.flashsale.domain.entity.CampaignCreationResult
 import com.tokopedia.shop.flashsale.domain.entity.Gradient
+import com.tokopedia.shop.flashsale.domain.entity.enums.PaymentType
 import com.tokopedia.shop.flashsale.domain.usecase.DoSellerCampaignCreationUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -47,10 +48,10 @@ class CampaignInformationViewModel @Inject constructor(
         get() = _campaignName
 
     private var selection: Selection? = null
-    private var selectedColor: Gradient? = null
+    private var selectedColor = defaultGradientColor
     private var selectedStartDate = Date()
     private var selectedEndDate = Date()
-    private var showTeaser = false
+    private var showTeaser = true
 
     private val forbiddenWords = listOf(
         "kejar diskon",
@@ -73,7 +74,6 @@ class CampaignInformationViewModel @Inject constructor(
 
     sealed class ValidationResult {
         object LapsedStartDate : ValidationResult()
-        object ExceedMaxOverlappedCampaign : ValidationResult()
         object LapsedTeaserStartDate : ValidationResult()
         object Valid : ValidationResult()
     }
@@ -84,7 +84,7 @@ class CampaignInformationViewModel @Inject constructor(
         val startDate: Date,
         val endDate: Date,
         val showTeaser: Boolean,
-        val teaserDate: Date?,
+        val teaserDate: Date,
         val firstColor: String,
         val secondColor: String
     )
@@ -111,14 +111,12 @@ class CampaignInformationViewModel @Inject constructor(
     fun onNextButtonPressed(selection: Selection, now: Date) {
         this.selection = selection
 
-        val teaserDate = selection.teaserDate ?: selection.startDate
-
-        if (selection.showTeaser && teaserDate.after(now)) {
+        if (selection.showTeaser && selection.teaserDate.before(now)) {
             _areInputValid.value = ValidationResult.LapsedTeaserStartDate
             return
         }
 
-        if (selection.startDate.after(now)) {
+        if (selection.startDate.before(now)) {
             _areInputValid.value = ValidationResult.LapsedStartDate
             return
         }
@@ -137,8 +135,10 @@ class CampaignInformationViewModel @Inject constructor(
                         selection.startDate,
                         selection.endDate,
                         selection.teaserDate,
+                        showTeaser = selection.showTeaser,
                         firstColor = selection.firstColor,
-                        secondColor = selection.secondColor
+                        secondColor = selection.secondColor,
+                        paymentType = PaymentType.INSTANT
                     )
                 val result = doSellerCampaignCreationUseCase.execute(param)
                 _campaignCreation.postValue(Success(result))
@@ -154,16 +154,17 @@ class CampaignInformationViewModel @Inject constructor(
         launchCatchError(
             dispatchers.io,
             block = {
-                val param =
-                    DoSellerCampaignCreationUseCase.Param(
+                val param = DoSellerCampaignCreationUseCase.Param(
                         CampaignAction.Update(campaignId),
                         selection.campaignName,
                         selection.startDate,
                         selection.endDate,
                         selection.teaserDate,
+                        showTeaser = selection.showTeaser,
                         firstColor = selection.firstColor,
-                        secondColor = selection.secondColor
-                    )
+                        secondColor = selection.secondColor,
+                        paymentType = PaymentType.INSTANT
+                )
                 val result = doSellerCampaignCreationUseCase.execute(param)
                 _campaignUpdate.postValue(Success(result))
             },
@@ -182,7 +183,7 @@ class CampaignInformationViewModel @Inject constructor(
         selectedColor = gradient
     }
 
-    fun getColor(): Gradient? {
+    fun getColor(): Gradient {
         return selectedColor
     }
 
@@ -206,11 +207,7 @@ class CampaignInformationViewModel @Inject constructor(
         this.showTeaser = showTeaser
     }
 
-    fun isUsingTeaser(): Boolean {
-        return showTeaser
-    }
-
-    fun markAsSelected(selectedGradient: Gradient, gradients: List<Gradient>): List<Gradient> {
+    fun markColorAsSelected(selectedGradient: Gradient, gradients: List<Gradient>): List<Gradient> {
         return gradients.map { gradient ->
             if (gradient == selectedGradient) {
                 gradient.copy(isSelected = true)
@@ -220,7 +217,7 @@ class CampaignInformationViewModel @Inject constructor(
         }
     }
 
-    fun deselectAll(gradients: List<Gradient>): List<Gradient> {
+    fun deselectAllColor(gradients: List<Gradient>): List<Gradient> {
         return gradients.map { gradient -> gradient.copy(isSelected = false) }
     }
 

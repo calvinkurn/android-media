@@ -51,7 +51,7 @@ fun Date.advanceMinuteBy(minute: Int): Date {
 fun Date.decreaseHourBy(desiredHourToBeDecreased: Int): Date {
     val now = Calendar.getInstance()
     now.time = this
-    now.add(Calendar.HOUR_OF_DAY, desiredHourToBeDecreased)
+    now.add(Calendar.HOUR_OF_DAY, -desiredHourToBeDecreased)
     return now.time
 }
 
@@ -69,6 +69,14 @@ fun Date.hourOnly(): Date {
     val calendar = Calendar.getInstance()
     calendar.time = this
     calendar.set(Calendar.MINUTE, 0)
+    calendar.set(Calendar.SECOND, 0)
+    calendar.set(Calendar.MILLISECOND, 0)
+    return calendar.time
+}
+
+fun Date.minuteOnly(): Date {
+    val calendar = Calendar.getInstance()
+    calendar.time = this
     calendar.set(Calendar.SECOND, 0)
     calendar.set(Calendar.MILLISECOND, 0)
     return calendar.time

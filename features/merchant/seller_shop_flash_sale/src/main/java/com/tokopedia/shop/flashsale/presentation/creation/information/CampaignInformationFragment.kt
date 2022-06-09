@@ -27,6 +27,8 @@ import com.tokopedia.shop.flashsale.domain.entity.Gradient
 import com.tokopedia.shop.flashsale.domain.entity.enums.PageMode
 import com.tokopedia.shop.flashsale.presentation.creation.information.adapter.GradientColorAdapter
 import com.tokopedia.shop.flashsale.presentation.creation.information.bottomsheet.CampaignDatePickerBottomSheet
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import java.util.*
 import javax.inject.Inject
@@ -92,6 +94,7 @@ class CampaignInformationFragment : BaseDaggerFragment() {
         setupView()
         observeValidationResult()
         observeCampaignName()
+        observeCampaignCreation()
     }
 
     private fun observeValidationResult() {
@@ -106,14 +109,32 @@ class CampaignInformationFragment : BaseDaggerFragment() {
         }
     }
 
+    private fun observeCampaignCreation() {
+        viewModel.campaignCreation.observe(viewLifecycleOwner) { result ->
+            when(result) {
+                is Success -> {
+                    binding?.btnCreateCampaign?.stopLoading()
+                    if (result.data.isSuccess) {
+
+                    } else {
+                        showErrorTicker(result.data.errorTitle, result.data.errorDescription)
+                    }
+                }
+                is Fail -> {
+                    binding?.btnCreateCampaign?.stopLoading()
+                    binding?.cardView showError result.throwable
+                }
+            }
+        }
+    }
+
     private fun setupView() {
+        binding?.switchTeaser?.isChecked = true
         setupToolbar()
         setupRecyclerView()
         setupClickListeners()
         setupTextFields()
         setupDatePicker()
-
-        binding?.switchTeaser?.isChecked = true
     }
 
     private fun setupRecyclerView() {
@@ -215,21 +236,20 @@ class CampaignInformationFragment : BaseDaggerFragment() {
 
     private fun handleValidationResult(validationResult: CampaignInformationViewModel.ValidationResult) {
         when (validationResult) {
-            CampaignInformationViewModel.ValidationResult.ExceedMaxOverlappedCampaign -> {
-
-
-            }
             CampaignInformationViewModel.ValidationResult.LapsedStartDate -> {
-
-
+                showLapsedScheduleTicker()
+                hideLapsedTeaserTicker()
             }
             CampaignInformationViewModel.ValidationResult.LapsedTeaserStartDate -> {
-
-
+                showLapsedTeaserTicker()
+                hideLapsedScheduleTicker()
             }
             CampaignInformationViewModel.ValidationResult.Valid -> {
+                hideLapsedTeaserTicker()
+                hideLapsedScheduleTicker()
 
                 binding?.btnCreateCampaign?.enable()
+                binding?.btnCreateCampaign.showLoading()
                 val selection = viewModel.getSelection() ?: return
                 viewModel.createCampaign(selection)
             }
@@ -240,7 +260,7 @@ class CampaignInformationFragment : BaseDaggerFragment() {
         val rawHexColor = binding?.tauHexColor?.editText?.text.toString().trim().toHexColor()
         val gradient = Gradient(rawHexColor, rawHexColor, isSelected = true)
         binding?.imgHexColorPreview?.setBackgroundFromGradient(gradient)
-        val deselectedColors = viewModel.deselectAll(adapter.getItems())
+        val deselectedColors = viewModel.deselectAllColor(adapter.getItems())
         adapter.submit(deselectedColors)
         viewModel.setSelectedColor(gradient)
     }
@@ -274,10 +294,10 @@ class CampaignInformationFragment : BaseDaggerFragment() {
     }
 
     private fun handleSelectedColor(selectedGradient: Gradient) {
-        val allGradients = adapter.getItems()
-        val updatedColorSelection = viewModel.markAsSelected(selectedGradient, allGradients)
-        adapter.submit(updatedColorSelection)
         viewModel.setSelectedColor(selectedGradient)
+        val allGradients = adapter.getItems()
+        val updatedColorSelection = viewModel.markColorAsSelected(selectedGradient, allGradients)
+        adapter.submit(updatedColorSelection)
     }
 
     private fun displayStartDatePicker() {
@@ -368,6 +388,12 @@ class CampaignInformationFragment : BaseDaggerFragment() {
         binding?.tickerLapsedSchedule?.setTextDescription(getString(R.string.sfs_error_message_schedule_lapsed_description))
     }
 
+    private fun showErrorTicker(title : String, description : String) {
+        binding?.tickerLapsedSchedule?.visible()
+        binding?.tickerLapsedSchedule?.tickerTitle = title
+        binding?.tickerLapsedSchedule?.setTextDescription(description)
+    }
+
     private fun hideLapsedScheduleTicker() {
         binding?.tickerLapsedSchedule?.gone()
     }
@@ -389,4 +415,6 @@ class CampaignInformationFragment : BaseDaggerFragment() {
     private fun hideMaxCampaignOverlappedTicker() {
         binding?.tickerLapsedSchedule?.gone()
     }
+
+
 }

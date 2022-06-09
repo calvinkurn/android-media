@@ -4,8 +4,11 @@ import android.annotation.SuppressLint
 import com.tokopedia.shop.flashsale.domain.entity.Gradient
 
 @SuppressLint("UnsupportedDarkModeColor")
+val defaultGradientColor =  Gradient("#26A116", "#60BB55", true)
+
+@SuppressLint("UnsupportedDarkModeColor")
 val campaignGradientColors = listOf(
-    Gradient("#26A116", "#60BB55", true),
+    defaultGradientColor,
     Gradient("#019751", "#00AA5B", false),
     Gradient("#00615B", "#04837E", false),
     Gradient("#2B4A62", "#3E6786", false),
