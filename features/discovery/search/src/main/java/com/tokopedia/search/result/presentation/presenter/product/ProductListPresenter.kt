@@ -1789,11 +1789,12 @@ class ProductListPresenter @Inject constructor(
         val wishlistResult = productCardOptionsModel.wishlistResult
 
         if (!wishlistResult.isSuccess) {
-            view.showMessageFailedWishlistAction(wishlistResult.isAddWishlist)
+            view.showMessageFailedWishlistAction(wishlistResult)
         } else {
             view.trackWishlistRecommendationProductLoginUser(!productCardOptionsModel.isWishlisted)
             view.updateWishlistStatus(productCardOptionsModel.productId, wishlistResult.isAddWishlist)
-            view.showMessageSuccessWishlistAction(wishlistResult.isAddWishlist)
+            view.showMessageSuccessWishlistAction(wishlistResult)
+            if (productCardOptionsModel.isTopAds) view.hitWishlistClickUrl(productCardOptionsModel)
         }
     }
 
@@ -1815,14 +1816,15 @@ class ProductListPresenter @Inject constructor(
         val wishlistResult = productCardOptionsModel.wishlistResult
 
         if (!wishlistResult.isSuccess) {
-            view.showMessageFailedWishlistAction(wishlistResult.isAddWishlist)
+            view.showMessageFailedWishlistAction(wishlistResult)
         } else {
             view.trackWishlistProduct(createWishlistTrackingModel(
                     productCardOptionsModel,
                     productCardOptionsModel.wishlistResult.isAddWishlist
             ))
             view.updateWishlistStatus(productCardOptionsModel.productId, wishlistResult.isAddWishlist)
-            view.showMessageSuccessWishlistAction(wishlistResult.isAddWishlist)
+            view.showMessageSuccessWishlistAction(wishlistResult)
+            if (productCardOptionsModel.isTopAds) view.hitWishlistClickUrl(productCardOptionsModel)
         }
     }
 
@@ -1966,6 +1968,7 @@ class ProductListPresenter @Inject constructor(
         productCardOptionsModel.productId = item.productID
         productCardOptionsModel.isTopAds = item.isTopAds || item.isOrganicAds
         productCardOptionsModel.topAdsWishlistUrl = item.topadsWishlistUrl ?: ""
+        productCardOptionsModel.topAdsClickUrl = item.topadsClickUrl ?: ""
         productCardOptionsModel.isRecommendation = false
         productCardOptionsModel.screenName = SearchEventTracking.Category.SEARCH_RESULT
         productCardOptionsModel.seeSimilarProductEvent = SearchTracking.EVENT_CLICK_SEARCH_RESULT

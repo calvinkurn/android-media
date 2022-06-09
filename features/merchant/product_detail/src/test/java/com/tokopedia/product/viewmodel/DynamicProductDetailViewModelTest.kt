@@ -30,7 +30,6 @@ import com.tokopedia.product.detail.common.data.model.carttype.CartTypeData
 import com.tokopedia.product.detail.common.data.model.pdplayout.BasicInfo
 import com.tokopedia.product.detail.common.data.model.pdplayout.ComponentData
 import com.tokopedia.product.detail.common.data.model.pdplayout.DynamicProductInfoP1
-import com.tokopedia.product.detail.common.data.model.pdplayout.Media
 import com.tokopedia.product.detail.common.data.model.product.Category
 import com.tokopedia.product.detail.common.data.model.product.ProductParams
 import com.tokopedia.product.detail.common.data.model.product.Stock
@@ -64,6 +63,8 @@ import com.tokopedia.recommendation_widget_common.domain.request.GetRecommendati
 import com.tokopedia.recommendation_widget_common.presentation.model.AnnotationChip
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
+import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.uimodel.ReviewMediaImageThumbnailUiModel
+import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.uimodel.ReviewMediaVideoThumbnailUiModel
 import com.tokopedia.shop.common.domain.interactor.model.favoriteshop.FollowShop
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.topads.sdk.domain.model.TopAdsGetDynamicSlottingData
@@ -78,12 +79,10 @@ import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.wishlist.common.listener.WishListActionListener
-import io.mockk.coEvery
-import io.mockk.coVerify
-import io.mockk.every
-import io.mockk.invoke
-import io.mockk.slot
-import io.mockk.verify
+import com.tokopedia.wishlistcommon.data.response.AddToWishlistV2Response
+import com.tokopedia.wishlistcommon.data.response.DeleteWishlistV2Response
+import com.tokopedia.wishlistcommon.listener.WishlistV2ActionListener
+import io.mockk.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runBlockingTest
 import org.junit.Assert
@@ -2316,9 +2315,105 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
         viewModel.playWidgetReminderSwitch.verifyErrorEquals(Fail(expectedThrowable))
     }
 
+    @Test
+    fun `verify add to wishlistv2 returns success` () {
+        val productId = "123"
+        val resultWishlistAddV2 = AddToWishlistV2Response.Data.WishlistAddV2(success = true)
+
+        every { addToWishlistV2UseCase.setParams(any(), any()) } just Runs
+        coEvery { addToWishlistV2UseCase.executeOnBackground() } returns Success(resultWishlistAddV2)
+
+        val mockListener: WishlistV2ActionListener = mockk(relaxed = true)
+        viewModel.addWishListV2(productId, mockListener)
+
+        verify { addToWishlistV2UseCase.setParams(productId, userSessionInterface.userId) }
+        coVerify { addToWishlistV2UseCase.executeOnBackground() }
+    }
+
+    @Test
+    fun `verify add to wishlistv2 returns fail` () {
+        val productId = "123"
+        val recommendationItem = RecommendationItem(isTopAds = false, productId = 123L)
+        val mockThrowable = mockk<Throwable>("fail")
+
+        every { addToWishlistV2UseCase.setParams(any(), any()) } just Runs
+        coEvery { addToWishlistV2UseCase.executeOnBackground() } returns Fail(mockThrowable)
+
+        val mockListener: WishlistV2ActionListener = mockk(relaxed = true)
+        viewModel.addWishListV2(productId, mockListener)
+
+        verify { addToWishlistV2UseCase.setParams(recommendationItem.productId.toString(), userSessionInterface.userId) }
+        coVerify { addToWishlistV2UseCase.executeOnBackground() }
+    }
+
+    @Test
+    fun `verify remove wishlistV2 returns success`(){
+        val productId = "123"
+        val resultWishlistRemoveV2 = DeleteWishlistV2Response.Data.WishlistRemoveV2(success = true)
+
+        every { deleteWishlistV2UseCase.setParams(any(), any()) } just Runs
+        coEvery { deleteWishlistV2UseCase.executeOnBackground() } returns Success(resultWishlistRemoveV2)
+
+        val mockListener: WishlistV2ActionListener = mockk(relaxed = true)
+        viewModel.removeWishListV2(productId, mockListener)
+
+        verify { deleteWishlistV2UseCase.setParams(productId, userSessionInterface.userId) }
+        coVerify { deleteWishlistV2UseCase.executeOnBackground() }
+    }
+
+    @Test
+    fun `verify remove wishlistV2 returns fail`(){
+        val productId = "123"
+        val mockThrowable = mockk<Throwable>("fail")
+
+        every { deleteWishlistV2UseCase.setParams(any(), any()) } just Runs
+        coEvery { deleteWishlistV2UseCase.executeOnBackground() } returns Fail(mockThrowable)
+
+        val mockListener: WishlistV2ActionListener = mockk(relaxed = true)
+        viewModel.removeWishListV2(productId, mockListener)
+
+        verify { deleteWishlistV2UseCase.setParams(productId, userSessionInterface.userId) }
+        coVerify { deleteWishlistV2UseCase.executeOnBackground() }
+    }
+
 
     //======================================END OF PDP SECTION=======================================//
     //==============================================================================================//
+
+    // region Review Section
+    @Test
+    fun `on success get product info login should contain valid review data`() {
+        val expectedVideoCount = 1
+        val expectedImageCount = 4
+        val expectedBuyerMediaCount = 64
+        val expectedSocialProofText = "Foto & Video Pembeli"
+
+        `on success get product info login`()
+
+        val actualVideoCount = viewModel.p2Data.value?.imageReview?.reviewMediaThumbnails?.mediaThumbnails?.count {
+            it is ReviewMediaVideoThumbnailUiModel
+        }
+        val actualImageCount = viewModel.p2Data.value?.imageReview?.reviewMediaThumbnails?.mediaThumbnails?.count {
+            it is ReviewMediaImageThumbnailUiModel
+        }
+        val showingSeeMoreThumbnail = viewModel.p2Data.value?.imageReview?.reviewMediaThumbnails?.mediaThumbnails?.count {
+            it is ReviewMediaImageThumbnailUiModel && it.isShowingSeeMore()
+        }
+        val seeMoreThumbnailPosition = viewModel.p2Data.value?.imageReview?.reviewMediaThumbnails?.mediaThumbnails?.indexOfFirst {
+            it is ReviewMediaImageThumbnailUiModel && it.isShowingSeeMore()
+        }
+        val showingSeeMoreThumbnailOnLastThumbnailOnly = showingSeeMoreThumbnail == 1 && seeMoreThumbnailPosition == 4
+        val actualBuyerMediaCount = viewModel.p2Data.value?.imageReview?.buyerMediaCount
+        val actualSocialProofText = viewModel.p2Data.value?.imageReview?.staticSocialProofText
+
+        Assert.assertEquals("Invalid video count.", expectedVideoCount, actualVideoCount)
+        Assert.assertEquals("Invalid image count.", expectedImageCount, actualImageCount)
+        Assert.assertTrue("Should show see more thumbnail on last position but was not show", showingSeeMoreThumbnailOnLastThumbnailOnly)
+        Assert.assertEquals("Invalid buyer media count.", expectedBuyerMediaCount, actualBuyerMediaCount)
+        Assert.assertEquals("Invalid social proof text", expectedSocialProofText, actualSocialProofText)
+    }
+    // endregion Review Section
+
     private fun getUserLocationCache(): LocalCacheModel {
         return LocalCacheModel("123", "123", "123", "123")
     }

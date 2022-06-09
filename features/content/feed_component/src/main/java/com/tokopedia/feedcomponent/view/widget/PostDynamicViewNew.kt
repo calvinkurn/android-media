@@ -40,6 +40,7 @@ import com.tokopedia.feedcomponent.domain.mapper.TYPE_FEED_X_CARD_PLAY
 import com.tokopedia.feedcomponent.domain.mapper.TYPE_FEED_X_CARD_POST
 import com.tokopedia.feedcomponent.domain.mapper.TYPE_IMAGE
 import com.tokopedia.feedcomponent.domain.mapper.TYPE_TOPADS_HEADLINE_NEW
+import com.tokopedia.feedcomponent.util.ColorUtil
 import com.tokopedia.feedcomponent.util.TagConverter
 import com.tokopedia.feedcomponent.util.TimeConverter
 import com.tokopedia.feedcomponent.util.util.*
@@ -675,7 +676,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
                             .replace("\n", "<br/>")
                             .replace(DynamicPostViewHolder.NEWLINE, "<br/>")
                             .plus("... ")
-                            .plus("<font color='#6D7588'>")
+                            .plus("<font color='${ColorUtil.getColorFromResToString(context, com.tokopedia.unifyprinciples.R.color.Unify_N400)}'>" + "<b>")
                             .plus(context.getString(R.string.feed_component_read_more_button))
                             .plus("</b></font>")
                     )
@@ -1081,7 +1082,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
                                                 feedXCard.followers.isFollowed,
                                                 feedMedia.type,
                                                 positionInFeed,
-                                                feedXCard.author.name,
+                                                feedXCard.playChannelID,
                                                 shopName = feedXCard.author.name
                                         )
                                     }
