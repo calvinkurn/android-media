@@ -107,9 +107,7 @@ class UserConsentWidget : FrameLayout {
                         purposeDataModel: UserConsentCollectionDataModel.CollectionPointDataModel.PurposeDataModel
                     ) {
                         userConsentActionClickListener?.onCheckedChange(isChecked)
-                        collection?.purposes?.let {
-                            userConsentAnalytics.trackOnPurposeCheck(isChecked, it)
-                        }
+                        userConsentAnalytics.trackOnPurposeCheckOnOptional(isChecked, purposeDataModel)
 
                         val isMandatoryPurpose = collection?.purposes?.find {
                             it.id == purposeDataModel.id
@@ -122,7 +120,9 @@ class UserConsentWidget : FrameLayout {
                                 it.isChecked
                             }
 
-                            viewBinding.buttonAction.isEnabled = isAllChecked == true
+                            if (isAllChecked == true) {
+                                viewBinding.buttonAction.isEnabled = true
+                            }
                         }
                     }
                 })
@@ -184,6 +184,7 @@ class UserConsentWidget : FrameLayout {
 
     private fun onSuccessGetConsentCollection() {
         collection?.let {
+            userConsentAnalytics.trackOnConsentView(it.purposes)
             userConsentDescription = UserConsentDescription(context, it)
         }
 
@@ -203,14 +204,9 @@ class UserConsentWidget : FrameLayout {
     }
 
     private fun renderView() {
-        var purposeText = ""
-        collection?.purposes?.let {
-            userConsentAnalytics.trackOnConsentView(it)
-        }
-
         when {
             collection?.attributes?.collectionPointPurposeRequirement == MANDATORY -> {
-                purposeText = ""
+                var purposeText = ""
                 if (collection?.purposes?.size.orZero() == 1) {
                     purposeText = collection?.purposes?.get(0)?.description.orEmpty()
                 } else {
@@ -230,14 +226,15 @@ class UserConsentWidget : FrameLayout {
                     }
                 }
 
-                viewBinding?.buttonAction?.isEnabled = true
                 viewBinding?.singleConsent?.apply {
                     if (collection?.attributes?.collectionPointStatementOnlyFlag == NO_CHECKLIST) {
                         checkboxPurposes.hide()
                         iconMandatoryInfo.show()
+                        viewBinding.buttonAction.isEnabled = true
                     } else if (collection?.attributes?.collectionPointStatementOnlyFlag == CHECKLIST) {
                         checkboxPurposes.show()
                         iconMandatoryInfo.hide()
+                        viewBinding.buttonAction.isEnabled = false
                     }
 
                     if (collection?.attributes?.policyNoticeType == TERM_CONDITION) {
@@ -292,18 +289,6 @@ class UserConsentWidget : FrameLayout {
         }
     }
 
-    override fun invalidate() {
-        super.invalidate()
-
-        viewBinding?.singleConsent?.apply {
-            checkboxPurposes.isChecked = false
-        }
-
-        viewBinding?.buttonAction?.isEnabled = false
-
-        userConsentPurposeAdapter?.clearAllItems()
-    }
-
     private fun setLoader(isLoading: Boolean) {
         viewBinding?.apply {
             if (isLoading) {
@@ -331,6 +316,17 @@ class UserConsentWidget : FrameLayout {
         userConsentActionClickListener?.onFailed(throwable)
     }
 
+    override fun invalidate() {
+        super.invalidate()
+
+        viewBinding?.singleConsent?.apply {
+            checkboxPurposes.isChecked = false
+        }
+
+        viewBinding?.buttonAction?.isEnabled = false
+        userConsentPurposeAdapter?.clearAllItems()
+    }
+
     fun load(
         lifecycleOwner: LifecycleOwner,
         consentCollectionParam: ConsentCollectionParam,
@@ -340,15 +336,16 @@ class UserConsentWidget : FrameLayout {
         this.consentCollectionParam = consentCollectionParam
         this.userConsentActionClickListener = userConsentActionClickListener
 
+        invalidate()
         initObserver()
         viewModel?.getConsentCollection(consentCollectionParam)
-
-        invalidate()
     }
 
-    fun onDetach() {
+    fun onDestroy() {
         lifecycleOwner?.let {
             viewModel?.consentCollection?.removeObservers(it)
         }
+
+        lifecycleOwner = null
     }
 }

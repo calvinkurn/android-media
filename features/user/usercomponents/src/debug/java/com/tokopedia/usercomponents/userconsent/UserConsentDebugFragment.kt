@@ -1,5 +1,6 @@
 package com.tokopedia.usercomponents.userconsent
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -51,9 +52,10 @@ class UserConsentDebugFragment: BaseDaggerFragment() {
 
             }
 
+            @SuppressLint("SetTextI18n")
             override fun onActionClicked(payload: UserConsentPayload) {
                 viewBinding?.textPayloadData?.apply {
-                    text = "PAYLOAD: \n\n${payload.toString()}"
+                    text = "PAYLOAD: \n\n$payload"
                 }?.show()
             }
 
@@ -63,8 +65,8 @@ class UserConsentDebugFragment: BaseDaggerFragment() {
         })
     }
 
-    override fun onDetach() {
-        super.onDetach()
-        viewBinding?.sampleUserConsent?.onDetach()
+    override fun onDestroy() {
+        super.onDestroy()
+        viewBinding?.sampleUserConsent?.onDestroy()
     }
 }

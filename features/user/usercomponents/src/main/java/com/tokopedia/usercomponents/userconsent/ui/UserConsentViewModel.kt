@@ -9,6 +9,7 @@ import com.tokopedia.usercomponents.userconsent.common.UserConsentCollectionData
 import com.tokopedia.usercomponents.userconsent.common.UserConsentStateResult
 import com.tokopedia.usercomponents.userconsent.domain.ConsentCollectionParam
 import com.tokopedia.usercomponents.userconsent.domain.GetConsentCollectionUseCase
+import com.tokopedia.utils.lifecycle.SingleLiveEvent
 import javax.inject.Inject
 
 class UserConsentViewModel @Inject constructor(
@@ -16,7 +17,7 @@ class UserConsentViewModel @Inject constructor(
     dispatchers: CoroutineDispatchers
 ) : BaseViewModel(dispatchers.main) {
 
-    private val _consentCollection = MutableLiveData<UserConsentStateResult<UserConsentCollectionDataModel>>()
+    private val _consentCollection = SingleLiveEvent<UserConsentStateResult<UserConsentCollectionDataModel>>()
     val consentCollection: LiveData<UserConsentStateResult<UserConsentCollectionDataModel>>
         get() = _consentCollection
 

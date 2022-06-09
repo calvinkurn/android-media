@@ -20,7 +20,7 @@ class UserConsentAnalytics @Inject constructor() {
         trackerParam[EVENT_BUSINESS_UNIT] = BUSINESS_UNIT_USER_PLATFORM
         trackerParam[EVENT_CURRENT_SITE] = TOKOPEDIA_MARKETPLACE_SITE
 
-        TrackApp.getInstance().gtm.sendGeneralEvent(trackerParam)
+        tracker.sendGeneralEvent(trackerParam)
     }
 
     private fun generatePurposeId(purposes: MutableList<UserConsentCollectionDataModel.CollectionPointDataModel.PurposeDataModel>): String {
@@ -40,6 +40,18 @@ class UserConsentAnalytics @Inject constructor() {
                 if (isChecked) LABEL.CHECK
                 else LABEL.UNCHECK,
                 generatePurposeId(purposes)
+            )
+        )
+    }
+
+    fun trackOnPurposeCheckOnOptional(isChecked: Boolean, purposes: UserConsentCollectionDataModel.CollectionPointDataModel.PurposeDataModel) {
+        sendTracker(
+            action = ACTION.CLICK_TICK_BOX,
+            label = String.format(
+                LABEL.TICK_BOX,
+                if (isChecked) LABEL.CHECK
+                else LABEL.UNCHECK,
+                purposes.id
             )
         )
     }
