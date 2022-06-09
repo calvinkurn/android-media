@@ -393,7 +393,6 @@ class PlayBroadcastViewModel @AssistedInject constructor(
             is PlayBroadcastAction.ClickQuizChoiceOption -> handleChoiceDetail(event.choice)
             PlayBroadcastAction.LoadMoreCurrentChoiceParticipant -> handleLoadMoreParticipant()
             PlayBroadcastAction.ClickGameResultWidget -> handleClickGameResultWidget()
-            PlayBroadcastAction.ClickQuizGift -> {}
             /**
              * Giveaway
              */

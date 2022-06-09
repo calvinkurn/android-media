@@ -15,6 +15,7 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.databinding.ViewQuizGiftBinding
+import com.tokopedia.play.broadcaster.ui.action.PlayBroadcastAction
 import com.tokopedia.play_common.util.extension.showKeyboard
 
 /**
@@ -46,6 +47,7 @@ class QuizGiftView : ConstraintLayout {
 
     private var mOnChangedListener: ((String) -> Unit)? = null
     private var mOnClickListener: (() -> Unit)? = null
+    private var mOnClickCloseGiftListener: (() -> Unit)? = null
 
     private val coachMark: CoachMark2 = CoachMark2(context)
 
@@ -70,6 +72,7 @@ class QuizGiftView : ConstraintLayout {
                 bindingGiftInput.etBroQuizGift.setText("")
             }
             bindingGiftInput.etBroQuizGift.showKeyboard(false)
+            mOnClickCloseGiftListener?.invoke()
         }
         bindingGiftInput.etBroQuizGift.afterTextChanged {
             mOnChangedListener?.invoke(it)
@@ -163,5 +166,9 @@ class QuizGiftView : ConstraintLayout {
 
             showKeyboard(isFocus)
         }
+    }
+
+    fun setOnCloseGiftClickListener(listener: () -> Unit) {
+        mOnClickCloseGiftListener = listener
     }
 }

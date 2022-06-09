@@ -215,6 +215,13 @@ class PlayBroadcastInteractiveAnalyticImpl @Inject constructor(
             )
     }
 
+    override fun onClickCloseQuizGift(channelId: String, channelTitle: String) {
+        sendClickEvent(
+            "click - x giveaway optional",
+            "${userSession.shopId} - $channelId - $channelTitle",
+            )
+    }
+
     private fun sendClickEvent(
         eventAction: String,
         eventLabel: String,
