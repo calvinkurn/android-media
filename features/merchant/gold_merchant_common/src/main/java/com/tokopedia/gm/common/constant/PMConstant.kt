@@ -10,6 +10,7 @@ import com.tokopedia.user_identification_common.KYCConstant
 object PMConstant {
 
     const val PM_SETTING_INFO_SOURCE = "power-merchant-subscription-android-ui"
+    const val APP_UPDATE_ERROR_CODE = "err.validate.app_outdated"
 
     object Images {
         const val PM_BADGE =

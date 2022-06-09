@@ -1,5 +1,7 @@
 package com.tokopedia.gm.common.presentation.model
 
+import com.tokopedia.gm.common.constant.PMConstant
+
 /**
  * Created by @ilhamsuaib on 09/06/22.
  */
@@ -7,7 +9,7 @@ package com.tokopedia.gm.common.presentation.model
 data class DeactivationResultUiModel(
     val errorCode: String
 ) {
-    companion object {
-        const val APP_UPDATE_ERROR_CODE = "err.validate.app_outdated"
+    fun shouldUpdateApp(): Boolean {
+        return errorCode == PMConstant.APP_UPDATE_ERROR_CODE
     }
 }

@@ -191,12 +191,8 @@ class DeactivationQuestionnaireBottomSheet :
                 onDeactivationSuccess?.invoke()
                 dismiss()
             }
-            data.errorCode == DeactivationResultUiModel.APP_UPDATE_ERROR_CODE -> {
-                openFallbackPage()
-            }
-            else -> {
-                setOnDeactivationFail(RuntimeException())
-            }
+            data.shouldUpdateApp() -> openFallbackPage()
+            else -> setOnDeactivationFail(RuntimeException())
         }
     }
 
