@@ -7,6 +7,7 @@ import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
+import com.tokopedia.epharmacy.R
 import com.tokopedia.epharmacy.di.DaggerEPharmacyComponent
 import com.tokopedia.epharmacy.di.EPharmacyComponent
 import com.tokopedia.epharmacy.ui.fragment.UploadPrescriptionFragment
@@ -23,7 +24,13 @@ class EPharmacyActivity : BaseSimpleActivity(), HasComponent<EPharmacyComponent>
     override fun onCreate(savedInstanceState: Bundle?) {
         ePharmacyComponent.inject(this)
         super.onCreate(savedInstanceState)
+        updateTitle(getString(R.string.epharmacy_upload_title))
     }
+
+    override fun getLayoutRes() = R.layout.epharmacy_activity
+    override fun getToolbarResourceID() = R.id.e_pharmacy_header
+    override fun getParentViewResourceID(): Int = R.id.e_pharmacy_parent_view
+
     companion object {
         fun getCallingIntent(base : Activity) : Intent{
             return Intent(base,EPharmacyActivity::class.java)
@@ -34,7 +41,7 @@ class EPharmacyActivity : BaseSimpleActivity(), HasComponent<EPharmacyComponent>
         return UploadPrescriptionFragment.newInstance(Bundle())
     }
 
-    override fun getComponent() = initInjector()
+    override fun getComponent() = ePharmacyComponent
 
     private fun initInjector() = DaggerEPharmacyComponent.builder()
         .baseAppComponent(
