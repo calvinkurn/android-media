@@ -2,7 +2,7 @@ package com.tokopedia.play.broadcaster.ui.model.game.quiz
 
 sealed class QuizChoiceDetailStateUiModel {
     object Loading : QuizChoiceDetailStateUiModel()
-    object Error : QuizChoiceDetailStateUiModel()
+    data class Error(val choiceId: String, val index: Int) : QuizChoiceDetailStateUiModel()
     data class Success(val dataUiModel: QuizChoiceDetailUiModel) : QuizChoiceDetailStateUiModel()
-    object Unknown : QuizChoiceDetailStateUiModel()
+    object Empty : QuizChoiceDetailStateUiModel()
 }
