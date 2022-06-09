@@ -88,6 +88,7 @@ class QuizFormView : ConstraintLayout {
         }
 
         binding.icCloseQuizForm.setOnClickListener {
+            eventBus.emit(Event.Close)
             eventBus.emit(Event.Back)
         }
 
@@ -306,6 +307,7 @@ class QuizFormView : ConstraintLayout {
         object GiftClicked : Event
         object GiftClosed : Event
         object Submit: Event
+        object Close : Event
     }
 
     companion object {

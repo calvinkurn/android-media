@@ -312,12 +312,16 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
                     parentViewModel.channelId,
                     parentViewModel.channelTitle,
                 )
-            QuizFormView.Event.Submit -> {
+            QuizFormView.Event.Submit ->
                 analytic.onClickStartQuiz(
                     parentViewModel.channelId,
                     parentViewModel.channelTitle,
                 )
-            }
+            QuizFormView.Event.Close ->
+                analytic.onClickBackQuiz(
+                    parentViewModel.channelId,
+                    parentViewModel.channelTitle
+                )
             else -> {}
         }
     }
@@ -987,10 +991,6 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
                 QuizFormStateUiModel.Nothing -> {
                     hideKeyboard()
                     showQuizForm(false)
-                    analytic.onClickBackQuiz(
-                        parentViewModel.channelId,
-                        parentViewModel.channelTitle
-                    )
                 }
                 QuizFormStateUiModel.Preparation -> {
                     showQuizForm(true)
