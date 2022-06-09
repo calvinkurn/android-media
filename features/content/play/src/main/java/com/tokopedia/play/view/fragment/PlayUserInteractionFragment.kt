@@ -10,7 +10,6 @@ import android.os.Build
 import android.os.Bundle
 import android.view.*
 import androidx.constraintlayout.widget.ConstraintSet
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.google.android.material.bottomsheet.BottomSheetBehavior
@@ -74,7 +73,7 @@ import com.tokopedia.play.view.viewmodel.PlayInteractionViewModel
 import com.tokopedia.play.view.viewmodel.PlayViewModel
 import com.tokopedia.play.view.wrapper.InteractionEvent
 import com.tokopedia.play.view.wrapper.LoginStateEvent
-import com.tokopedia.play_common.model.ui.PlayChatUiModel
+import com.tokopedia.play_common.util.PerformanceClassConfig
 import com.tokopedia.play_common.util.event.EventObserver
 import com.tokopedia.play_common.util.extension.*
 import com.tokopedia.play_common.view.doOnApplyWindowInsets
@@ -88,7 +87,6 @@ import com.tokopedia.universal_sharing.view.model.ShareModel
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
-import java.util.*
 import javax.inject.Inject
 import com.tokopedia.play_common.R as commonR
 
@@ -96,12 +94,13 @@ import com.tokopedia.play_common.R as commonR
  * Created by jegul on 29/11/19
  */
 class PlayUserInteractionFragment @Inject constructor(
-        private val viewModelFactory: ViewModelProvider.Factory,
-        private val dispatchers: CoroutineDispatchers,
-        private val pipAnalytic: PlayPiPAnalytic,
-        private val analytic: PlayAnalytic,
-        private val multipleLikesIconCacheStorage: MultipleLikesIconCacheStorage,
-        private val castAnalyticHelper: CastAnalyticHelper
+    private val viewModelFactory: ViewModelProvider.Factory,
+    private val dispatchers: CoroutineDispatchers,
+    private val pipAnalytic: PlayPiPAnalytic,
+    private val analytic: PlayAnalytic,
+    private val multipleLikesIconCacheStorage: MultipleLikesIconCacheStorage,
+    private val castAnalyticHelper: CastAnalyticHelper,
+    private val performanceClassConfig: PerformanceClassConfig,
 ) :
         TkpdBaseV4Fragment(),
         PlayMoreActionBottomSheet.Listener,
@@ -149,7 +148,12 @@ class PlayUserInteractionFragment @Inject constructor(
     private val topmostLikeView by viewComponentOrNull(isEagerInit = true) { EmptyViewComponent(it, R.id.view_topmost_like) }
     private val rtnView by viewComponentOrNull { RealTimeNotificationViewComponent(it, this) }
     private val likeBubbleView by viewComponent { LikeBubbleViewComponent(
-        it, R.id.view_like_bubble, viewLifecycleOwner.lifecycleScope, multipleLikesIconCacheStorage) }
+        it,
+        R.id.view_like_bubble,
+        viewLifecycleOwner.lifecycleScope,
+        multipleLikesIconCacheStorage,
+        performanceClassConfig,
+    ) }
     private val productSeeMoreView by viewComponentOrNull(isEagerInit = true) { ProductSeeMoreViewComponent(it, R.id.view_product_see_more, this) }
     private val kebabMenuView by viewComponentOrNull(isEagerInit = true) { KebabMenuViewComponent(it, R.id.view_kebab_menu, this) }
 
@@ -187,8 +191,15 @@ class PlayUserInteractionFragment @Inject constructor(
     private val playFullscreenManager: PlayFullscreenManager
         get() = requireActivity() as PlayFullscreenManager
 
+    /**
+     * Danger said to not use requireContext().resources because it may crash,
+     * that's why I have to use nullable context.
+     * Though tbh this is not something that I recommend
+     */
     private val orientation: ScreenOrientation
-        get() = ScreenOrientation.getByInt(resources.configuration.orientation)
+        get() = context?.resources?.configuration?.orientation?.let {
+            ScreenOrientation.getByInt(it)
+        } ?: ScreenOrientation.Unknown
 
     private val screenOrientationDataSource = object : ScreenOrientationDataSource {
         override fun getScreenOrientation(): ScreenOrientation {
@@ -651,13 +662,13 @@ class PlayUserInteractionFragment @Inject constructor(
         observeVideoMeta()
         observeVideoProperty()
         observeChannelInfo()
-        observeNewChat()
-        observeChatList()
         observePinnedMessage()
         observeBottomInsetsState()
 
         observeUiState()
         observeUiEvent()
+
+        observeChats()
 
         observeLoggedInInteractionEvent()
         observeCastState()
@@ -741,19 +752,12 @@ class PlayUserInteractionFragment @Inject constructor(
         })
     }
 
-    private fun observeNewChat() {
-        playViewModel.observableNewChat.observe(viewLifecycleOwner, DistinctEventObserver {
-            chatListView?.showNewChat(it)
-        })
-    }
-
-    private fun observeChatList() {
-        playViewModel.observableChatList.observe(viewLifecycleOwner, object : Observer<List<PlayChatUiModel>> {
-            override fun onChanged(chatList: List<PlayChatUiModel>) {
-                playViewModel.observableChatList.removeObserver(this)
-                chatListView?.setChatList(chatList)
+    private fun observeChats() {
+        viewLifecycleOwner.lifecycleScope.launchWhenResumed {
+            playViewModel.chats.collectLatest {
+                chatListView?.setChatList(it)
             }
-        })
+        }
     }
 
     private fun observePinnedMessage() {
