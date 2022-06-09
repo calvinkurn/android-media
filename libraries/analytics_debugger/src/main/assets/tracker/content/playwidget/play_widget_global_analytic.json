@@ -42,7 +42,7 @@
       "event":"view_item",
       "eventAction":"impression on play sgc banner",
       "eventCategory":".*",
-      "eventLabel":".* - \\d+ - .*",
+      "eventLabel":".* - \\d+",
       "businessUnit":"play",
       "currentSite":"(tokopediamarketplace|tokopediaseller)",
       "promotions":[
@@ -60,7 +60,7 @@
       "event":"select_content",
       "eventAction":"click on play sgc banner",
       "eventCategory":".*",
-      "eventLabel":".* - \\d+ - .*",
+      "eventLabel":".* - \\d+",
       "businessUnit":"play",
       "currentSite":"(tokopediamarketplace|tokopediaseller)",
       "promotions":[

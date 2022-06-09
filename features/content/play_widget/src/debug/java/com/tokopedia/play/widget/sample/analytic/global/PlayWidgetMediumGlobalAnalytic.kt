@@ -202,7 +202,6 @@ class PlayWidgetMediumGlobalAnalytic @AssistedInject constructor(
             eventLabel = trackerMultiFields(
                 model.prefix, /** prefix **/
                 verticalWidgetPosition + 1, /** widgetPosition **/
-                "", /** recommendationType **/
             ),
             promotions = listOf(
                 BaseTrackerConst.Promotion(
@@ -233,7 +232,6 @@ class PlayWidgetMediumGlobalAnalytic @AssistedInject constructor(
             eventLabel = trackerMultiFields(
                 model.prefix, /** prefix **/
                 verticalWidgetPosition + 1, /** widgetPosition **/
-                "", /** recommendationType **/
             ),
             promotions = listOf(
                 BaseTrackerConst.Promotion(
