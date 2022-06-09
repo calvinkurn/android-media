@@ -63,6 +63,7 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.mapviewer.activity.MapViewerActivity
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.bottom_sheet_event_pdp_about.view.*
 import kotlinx.android.synthetic.main.bottom_sheet_event_pdp_facilities.view.*
@@ -325,6 +326,9 @@ class EventPDPFragment : BaseListFragment<EventPDPModel, EventPDPFactoryImpl>(),
         (activity as EventNavigationActivity).supportActionBar?.setHomeAsUpIndicator(navIcon)
 
         event_pdp_collapsing_toolbar.title = ""
+        context?.let {
+            event_pdp_collapsing_toolbar.setCollapsedTitleTypeface(Typography.getFontType(it, true, Typography.DISPLAY_1))
+        }
         event_pdp_app_bar_layout.addOnOffsetChangedListener(object : AppBarLayout.OnOffsetChangedListener {
             override fun onOffsetChanged(appBarLayout: AppBarLayout, verticalOffset: Int) {
                 context?.let { context ->
