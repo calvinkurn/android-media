@@ -6,7 +6,6 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.shop.flashsale.common.constant.QuantityPickerConstant.CAMPAIGN_TEASER_MAXIMUM_UPCOMING_HOUR
 import com.tokopedia.shop.flashsale.common.constant.QuantityPickerConstant.CAMPAIGN_TEASER_MINIMUM_UPCOMING_HOUR
-import com.tokopedia.shop.flashsale.common.extension.advanceMinuteBy
 import com.tokopedia.shop.flashsale.common.extension.hourOnly
 import com.tokopedia.shop.flashsale.domain.entity.CampaignAction
 import com.tokopedia.shop.flashsale.domain.entity.CampaignCreationResult
@@ -28,7 +27,6 @@ class CampaignInformationViewModel @Inject constructor(
 
     companion object {
         private const val MIN_CAMPAIGN_NAME_LENGTH = 5
-        private const val THIRTY_MINUTE = 30
         private const val ONE_HOUR = 1
     }
 
@@ -228,7 +226,7 @@ class CampaignInformationViewModel @Inject constructor(
 
     fun normalizeEndDate(endDate: Date, startDate: Date): Date {
         return if (endDate.before(startDate)) {
-            startDate.advanceMinuteBy(THIRTY_MINUTE)
+            startDate
         } else {
             endDate
         }

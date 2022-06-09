@@ -14,7 +14,9 @@ import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.seller_shop_flash_sale.R
 import com.tokopedia.seller_shop_flash_sale.databinding.SsfsBottomsheetCampaignDatePickerBinding
 import com.tokopedia.shop.flashsale.common.constant.DateConstant
-import com.tokopedia.shop.flashsale.common.extension.*
+import com.tokopedia.shop.flashsale.common.extension.formatTo
+import com.tokopedia.shop.flashsale.common.extension.localFormatTo
+import com.tokopedia.shop.flashsale.common.extension.showError
 import com.tokopedia.shop.flashsale.common.util.DateManager
 import com.tokopedia.shop.flashsale.di.component.DaggerShopFlashSaleComponent
 import com.tokopedia.shop.flashsale.domain.entity.GroupedCampaign
@@ -161,9 +163,8 @@ class CampaignDatePickerBottomSheet : BottomSheetUnify() {
             override fun onDateSelected(date: Date) {
                 showTimePicker(
                     date,
-                    onTimePicked = { dateTime ->
-                        doOnDelayFinished { onDateTimePicked(dateTime) }
-                    }
+                    minimumDate,
+                    onTimePicked = { dateTime -> doOnDelayFinished { onDateTimePicked(dateTime) } }
                 )
             }
 
@@ -179,15 +180,14 @@ class CampaignDatePickerBottomSheet : BottomSheetUnify() {
         this.onDateTimePicked = onDatePicked
     }
 
-
-    fun showTimePicker(selectedDate: Date, onTimePicked: (Date) -> Unit) {
+    fun showTimePicker(selectedDate: Date, minimumDate: Date, onTimePicked: (Date) -> Unit) {
         val title = getString(R.string.sfs_select_campaign_time)
         val info = String.format(
             getString(R.string.sfs_placeholder_selected_date),
             selectedDate.localFormatTo(DateConstant.DATE)
         )
         val buttonWording = getString(R.string.sfs_apply)
-        val param = TimePickerHandler.Param(selectedDate, title, info, buttonWording)
+        val param = TimePickerHandler.Param(selectedDate, minimumDate, title, info, buttonWording)
 
         val timePickerHandler = TimePickerHandler(param)
         timePickerHandler.show(requireActivity(), childFragmentManager, onTimePicked)

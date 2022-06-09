@@ -41,6 +41,7 @@ class CampaignInformationFragment : BaseDaggerFragment() {
         private const val HEX_COLOR_TEXT_FIELD_MAX_LENGTH = 6
         private const val ONE_HOUR = 1
         private const val THRESHOLD = 12
+        private const val THIRTY_MINUTE = 30
 
 
         @JvmStatic
@@ -296,8 +297,10 @@ class CampaignInformationFragment : BaseDaggerFragment() {
 
 
     private fun displayEndDatePicker() {
-        val endDate = viewModel.normalizeEndDate(viewModel.getSelectedEndDate(), viewModel.getSelectedStartDate())
-        val minimumDate = viewModel.getSelectedStartDate()
+        val startDate = viewModel.getSelectedStartDate().advanceMinuteBy(THIRTY_MINUTE)
+        val endDate = viewModel.normalizeEndDate(viewModel.getSelectedEndDate(), startDate)
+        val minimumDate = viewModel.getSelectedStartDate().advanceMinuteBy(THIRTY_MINUTE)
+
         val bottomSheet = CampaignDatePickerBottomSheet.newInstance(endDate, minimumDate)
         bottomSheet.setOnDateTimePicked { newEndDate ->
             viewModel.setSelectedEndDate(newEndDate)
@@ -307,7 +310,9 @@ class CampaignInformationFragment : BaseDaggerFragment() {
     }
 
     private fun adjustEndDate() {
-        val endDate = viewModel.normalizeEndDate(viewModel.getSelectedEndDate(), viewModel.getSelectedStartDate())
+        val startDate = viewModel.getSelectedStartDate().advanceMinuteBy(THIRTY_MINUTE)
+        val endDate = viewModel.normalizeEndDate(viewModel.getSelectedEndDate(), startDate)
+
         viewModel.setSelectedEndDate(endDate)
         binding?.tauEndDate?.editText?.setText(endDate.localFormatTo(DateConstant.DATE_TIME_MINUTE_LEVEL))
     }

@@ -15,7 +15,7 @@ import javax.inject.Inject
 
 class TimePickerHandler @Inject constructor(private val param : Param)  {
 
-    data class Param(val date: Date, val title: String, val info: String, val buttonWording: String)
+    data class Param(val date: Date, val minimumDate : Date, val title: String, val info: String, val buttonWording: String)
 
     fun show(
         context: Context,
@@ -24,8 +24,8 @@ class TimePickerHandler @Inject constructor(private val param : Param)  {
     ) {
 
         val minTime = GregorianCalendar(LocaleConstant.INDONESIA).apply {
-            set(Calendar.HOUR_OF_DAY, 0)
-            set(Calendar.MINUTE, 0)
+            set(Calendar.HOUR_OF_DAY, param.minimumDate.extractHour())
+            set(Calendar.MINUTE, param.minimumDate.extractMinute())
         }
         val defaultTime = GregorianCalendar(LocaleConstant.INDONESIA)
         val maxTime = GregorianCalendar(LocaleConstant.INDONESIA).apply {
