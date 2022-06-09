@@ -322,20 +322,21 @@ class CreatePostActivityNew : BaseSimpleActivity(), CreateContentPostCommonListe
         else mFeedAccountList.firstOrNull { it.id == selectedFeedAccountId }
             ?: mFeedAccountList.first()
 
-        val createPostViewModel =
-            (intent?.extras?.get(CreatePostViewModel.TAG) as CreatePostViewModel?)
-       createPostViewModel?.let {
-           if (it.isEditState){
-               selectedFeedAccount = findAccountByAuthorIdOfPost(mFeedAccountList, it.editAuthorId)
-           }
-       }
+        val createPostViewModel = (intent?.extras?.get(CreatePostViewModel.TAG) as CreatePostViewModel?)
+        createPostViewModel?.let {
+               if (it.isEditState){
+                   selectedFeedAccount = findAccountByAuthorIdOfPost(mFeedAccountList, it.editAuthorId)
+            }
+        }
 
         toolbarCommon.apply {
             icon = selectedFeedAccount.iconUrl
             title = getString(R.string.feed_content_post_sebagai)
             subtitle = selectedFeedAccount.name
             createPostViewModel?.let {
-                if (!it.isEditState)
+                val isAllowSwitchAccount = mFeedAccountList.size > 1 && mFeedAccountList.find { it.isUserPostEligible } != null
+
+                if (!it.isEditState && isAllowSwitchAccount)
                     setOnAccountClickListener {
                         feedAccountAnalytic.clickAccountInfo()
                         FeedAccountTypeBottomSheet
