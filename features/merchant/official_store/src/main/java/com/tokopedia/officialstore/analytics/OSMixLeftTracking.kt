@@ -11,16 +11,16 @@ import com.tokopedia.track.interfaces.ContextAnalytics
 
 object OSMixLeftTracking: BaseTrackerConst() {
 
-    private val VALUE_BUSINESS_UNIT_DEFAULT = "home & browse"
-    private val VALUE_CURRENT_SITE_DEFAULT = "tokopediamarketplace"
-    private val OS_MICROSITE_SINGLE = "os microsite"
-    private val OS_MICROSITE = "os microsite - "
-    private val SLASH_OFFICIAL_STORE = "/official-store"
-    private val IMPRESSION_BANNER_MIX_LEFT = "impression banner - dynamic channel left carousel"
-    private val CLICK_BANNER_MIX_LEFT = "click banner dynamic channel left carousel"
-    private val VALUE_DYNAMIC_MIX_LEFT_CAROUSEL = "dynamic channel left carousel"
-    private val SKEL_APPLINK = "{&data}"
-    private val SKEL_APPLINK_DATA = "&data"
+    private const val VALUE_BUSINESS_UNIT_DEFAULT = "home & browse"
+    private const val VALUE_CURRENT_SITE_DEFAULT = "tokopediamarketplace"
+    private const val OS_MICROSITE_SINGLE = "os microsite"
+    private const val OS_MICROSITE = "os microsite - "
+    private const val SLASH_OFFICIAL_STORE = "/official-store"
+    private const val IMPRESSION_BANNER_MIX_LEFT = "impression banner - dynamic channel left carousel"
+    private const val CLICK_BANNER_MIX_LEFT = "click banner dynamic channel left carousel"
+    private const val VALUE_DYNAMIC_MIX_LEFT_CAROUSEL = "dynamic channel left carousel"
+    private const val SKEL_APPLINK = "{&data}"
+    private const val SKEL_APPLINK_DATA = "&data"
 
     fun eventImpressionMixLeftImageBanner(channel: ChannelModel, categoryName: String, bannerPosition: Int, userId: String) =
             BaseTrackerBuilder()
