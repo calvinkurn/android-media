@@ -248,7 +248,6 @@ object TokoFoodPurchaseUiModelMapper {
                                   isEnabled: Boolean,
                                   mIsAvailable: Boolean): TokoFoodPurchaseProductTokoFoodPurchaseUiModel {
         val addOnsAndParamPair = getAddOnsAndParamPairList(product.variants)
-        val addOnsList = addOnsAndParamPair.map { it.first }
         return TokoFoodPurchaseProductTokoFoodPurchaseUiModel(
             isAvailable = mIsAvailable,
             id = product.productId,
@@ -260,8 +259,7 @@ object TokoFoodPurchaseUiModelMapper {
             minQuantity = MIN_QUANTITY_STOCK,
             maxQuantity = MAX_QUANTITY_STOCK,
             notes = product.notes,
-            addOns = addOnsList,
-            hasAddOnsOption = addOnsList.isNotEmpty(),
+            addOns = addOnsAndParamPair.map { it.first },
             originalPrice = product.originalPrice,
             originalPriceFmt = product.originalPriceFmt,
             discountPercentage = product.discountPercentage,
