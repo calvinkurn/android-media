@@ -702,29 +702,6 @@ class PlayViewModel @AssistedInject constructor(
         _observableBottomInsetsState.value = insetsMap
     }
 
-    fun showChooseAddressWidget(estimatedHeight: Int) {
-        val insetsMap = getLatestBottomInsetsMapState().toMutableMap()
-
-        insetsMap[BottomInsetsType.ChooseAddress] =
-            BottomInsetsState.Shown(
-                estimatedInsetsHeight = estimatedHeight,
-                isPreviousStateSame = insetsMap[BottomInsetsType.ChooseAddress]?.isShown == true
-            )
-
-        _observableBottomInsetsState.value = insetsMap
-    }
-
-    fun hideChooseAddressWidget() {
-        val insetsMap = getLatestBottomInsetsMapState().toMutableMap()
-
-        insetsMap[BottomInsetsType.ChooseAddress] =
-            BottomInsetsState.Hidden(
-                isPreviousStateSame = insetsMap[BottomInsetsType.ChooseAddress]?.isHidden == true
-            )
-
-        _observableBottomInsetsState.value = insetsMap
-    }
-
     fun onShowUserReportSheet(estimatedSheetHeight: Int = 0) {
         val insetsMap = getLatestKebabBottomInset().toMutableMap()
 
@@ -826,14 +803,12 @@ class PlayViewModel @AssistedInject constructor(
         val defaultVariantSheetState = currentBottomInsetsMap?.get(BottomInsetsType.VariantSheet)?.isHidden ?: true
         val defaultLeaderboardSheetState = currentBottomInsetsMap?.get(BottomInsetsType.LeaderboardSheet)?.isHidden ?: true
         val defaultCouponSheetState = currentBottomInsetsMap?.get(BottomInsetsType.CouponSheet)?.isHidden ?: true
-        val defaultChooseAddressState = currentBottomInsetsMap?.get(BottomInsetsType.ChooseAddress)?.isHidden ?: true
         return mapOf(
                 BottomInsetsType.Keyboard to BottomInsetsState.Hidden(defaultKeyboardState),
                 BottomInsetsType.ProductSheet to BottomInsetsState.Hidden(defaultProductSheetState),
                 BottomInsetsType.VariantSheet to BottomInsetsState.Hidden(defaultVariantSheetState),
                 BottomInsetsType.LeaderboardSheet to BottomInsetsState.Hidden(defaultLeaderboardSheetState),
                 BottomInsetsType.CouponSheet to BottomInsetsState.Hidden(defaultCouponSheetState),
-                BottomInsetsType.ChooseAddress to BottomInsetsState.Hidden(defaultChooseAddressState),
         )
     }
     //endregion
@@ -1176,7 +1151,6 @@ class PlayViewModel @AssistedInject constructor(
             BottomInsetsType.VariantSheet -> onHideVariantSheet()
             BottomInsetsType.LeaderboardSheet -> hideLeaderboardSheet()
             BottomInsetsType.CouponSheet -> hideCouponSheet()
-            BottomInsetsType.ChooseAddress -> hideChooseAddressWidget()
         }
         return shownBottomSheets.isNotEmpty()
     }

@@ -18,8 +18,7 @@ val Map<BottomInsetsType, BottomInsetsState>.isAnyBottomSheetsShown: Boolean
     get() = this[BottomInsetsType.VariantSheet]?.isShown == true ||
             this[BottomInsetsType.ProductSheet]?.isShown == true ||
             this[BottomInsetsType.LeaderboardSheet]?.isShown == true ||
-            this[BottomInsetsType.CouponSheet]?.isShown == true ||
-            this[BottomInsetsType.ChooseAddress]?.isShown == true
+            this[BottomInsetsType.CouponSheet]?.isShown == true
 
 val Map<BottomInsetsType, BottomInsetsState>.isProductSheetsShown: Boolean
     get() = this[BottomInsetsType.ProductSheet]?.isShown == true
@@ -29,9 +28,6 @@ val Map<BottomInsetsType, BottomInsetsState>.isLeaderboardSheetShown: Boolean
 
 val Map<BottomInsetsType, BottomInsetsState>.isCouponSheetsShown: Boolean
     get() = this[BottomInsetsType.CouponSheet]?.isShown == true
-
-val Map<BottomInsetsType, BottomInsetsState>.isChooseAddressWidgetShown: Boolean
-    get() = this[BottomInsetsType.ChooseAddress]?.isShown == true
 
 val View.isFullAlpha: Boolean
     get() = alpha == 0.0f

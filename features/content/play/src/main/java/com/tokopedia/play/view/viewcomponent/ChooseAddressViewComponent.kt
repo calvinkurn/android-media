@@ -16,8 +16,6 @@ class ChooseAddressViewComponent(
     private val listener: Listener
 ) : ViewComponent(container, R.id.cl_choose_address_widget) {
 
-    private val bottomSheetBehavior = BottomSheetBehavior.from(rootView)
-
     private val chooseAddressWidget: ChooseAddressWidget = findViewById(R.id.widget_choose_addres)
 
     private val insideListener = object : ChooseAddressWidget.ChooseAddressWidgetListener{
@@ -60,14 +58,6 @@ class ChooseAddressViewComponent(
         }
 
         show()
-    }
-
-    override fun show() {
-        bottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
-    }
-
-    override fun hide() {
-        bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
     }
 
     interface Listener {

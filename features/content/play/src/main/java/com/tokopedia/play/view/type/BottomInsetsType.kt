@@ -10,5 +10,4 @@ enum class BottomInsetsType {
     VariantSheet,
     LeaderboardSheet,
     CouponSheet,
-    ChooseAddress,
 }
