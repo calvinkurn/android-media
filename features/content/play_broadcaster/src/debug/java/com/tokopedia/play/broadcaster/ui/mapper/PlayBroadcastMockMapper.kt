@@ -409,7 +409,7 @@ class PlayBroadcastMockMapper : PlayBroadcastMapper {
     ): List<PlayLeaderboardUiModel> {
         return response.data.slots.map { slot ->
             PlayLeaderboardUiModel(
-                title = if (getLeaderboardType(slot.type) == LeadeboardType.Giveaway) slot.title else slot.question,
+                title = slot.getSlotTitle(),
                 winners = slot.winner.mapIndexed { index, winner ->
                     PlayWinnerUiModel(
                         rank = index + 1,
@@ -420,8 +420,13 @@ class PlayBroadcastMockMapper : PlayBroadcastMapper {
                         topChatMessage =
                         if (getLeaderboardType(slot.type) == LeadeboardType.Giveaway)
                             response.data.config.topchatMessage
+                            .replace(FORMAT_FIRST_NAME, winner.userName)
+                            .replace(FORMAT_TITLE, slot.getSlotTitle())
                         else
-                            response.data.config.topchatMessageQuiz,
+                            response.data.config.topchatMessageQuiz
+                                .replace(FORMAT_FIRST_NAME, winner.userName)
+                                .replace(FORMAT_TITLE, slot.getSlotTitle())
+                        ,
                     )
                 },
                 choices = slot.choices.mapIndexed { index, choice ->
@@ -460,7 +465,15 @@ class PlayBroadcastMockMapper : PlayBroadcastMapper {
     private fun generateAlphabetChoices(index: Int): Char = arrayOfChoices[index]
     private val arrayOfChoices = ('A'..'D').toList()
 
+    private fun GetSellerLeaderboardSlotResponse.SlotData.getSlotTitle() : String {
+        return if (getLeaderboardType(this.type) == LeadeboardType.Giveaway)
+            this.title
+        else
+            this.question
+    }
     companion object {
         const val LOCAL_RTMP_URL: String = "rtmp://192.168.0.110:1935/stream/"
+        private const val FORMAT_FIRST_NAME = "{{first_name}}"
+        private const val FORMAT_TITLE = "{{title}}"
     }
 }
