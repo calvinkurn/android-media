@@ -11,9 +11,9 @@ class PlayWidgetShopAnalyticModel(
 
     override val prefix: String = "SHOP_PAGE"
 
-    override val category: String = "shop page - ${if (isOwnShop) "seller" else "buyer"}"
+    override val category: String = "shop page - buyer"
 
-    override val promotionsItemName: String = "shop-play-widget"
+    override val promotionsItemName: String = "play-shop-widget"
 
     override val promotionsCreativeName: String = "play widget in shop"
 

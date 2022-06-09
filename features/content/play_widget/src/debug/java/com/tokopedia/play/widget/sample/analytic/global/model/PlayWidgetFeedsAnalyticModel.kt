@@ -9,7 +9,7 @@ class PlayWidgetFeedsAnalyticModel : PlayWidgetAnalyticModel {
 
     override val category: String = "feed updates - cmp"
 
-    override val promotionsItemName: String = "feed-play-widget"
+    override val promotionsItemName: String = "play-feed-widget"
 
     override val promotionsCreativeName: String = "play widget in feed"
 }
