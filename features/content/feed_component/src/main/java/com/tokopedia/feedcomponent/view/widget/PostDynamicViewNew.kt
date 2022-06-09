@@ -1269,10 +1269,12 @@ class PostDynamicViewNew @JvmOverloads constructor(
         videoItem?.run {
             val layoutLihatProdukParent = findViewById<Typography>(R.id.video_lihat_product)
             if (tagProducts.isEmpty()) {
-                layoutLihatProdukParent.gone()
+                layoutLihatProdukParent?.gone()
             } else {
-                layoutLihatProdukParent.visible()
-                 hideViewWithAnimation(layoutLihatProdukParent, context)
+                layoutLihatProdukParent?.let {
+                    it.visible()
+                    hideViewWithAnimation(it, context)
+                }
             }
 
 
@@ -1281,7 +1283,9 @@ class PostDynamicViewNew @JvmOverloads constructor(
             }
             handlerAnim?.postDelayed({
                 if (tagProducts.isNotEmpty()) {
-                    showViewWithAnimation(layoutLihatProdukParent, context)
+                    layoutLihatProdukParent?.let {
+                        showViewWithAnimation(layoutLihatProdukParent, context)
+                    }
                 }
             }, TIME_SECOND)
             productVideoJob?.cancel()

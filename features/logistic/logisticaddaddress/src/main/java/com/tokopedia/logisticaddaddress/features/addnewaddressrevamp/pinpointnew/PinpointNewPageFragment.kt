@@ -323,6 +323,15 @@ class PinpointNewPageFragment: BaseDaggerFragment(), OnMapReadyCallback {
         super.onDestroyView()
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        stopLocationUpdate()
+    }
+
+    private fun stopLocationUpdate() {
+        fusedLocationClient?.removeLocationUpdates(locationCallback)
+    }
+
     override fun onLowMemory() {
         super.onLowMemory()
         binding?.mapViews?.onLowMemory()
@@ -636,7 +645,7 @@ class PinpointNewPageFragment: BaseDaggerFragment(), OnMapReadyCallback {
                 viewModel.getDistrictData(data.latitude, data.longitude)
             } else {
                 fusedLocationClient?.requestLocationUpdates(AddNewAddressUtils.getLocationRequest(),
-                        createLocationCallback(), null)
+                        locationCallback, null)
             }
 
         }
@@ -744,18 +753,18 @@ class PinpointNewPageFragment: BaseDaggerFragment(), OnMapReadyCallback {
         return isGpsOn
     }
 
-    fun createLocationCallback(): LocationCallback {
-        return object : LocationCallback() {
+    private val locationCallback: LocationCallback =
+        object : LocationCallback() {
             override fun onLocationResult(locationResult: LocationResult) {
                 if (!hasRequestedLocation) {
                     //send to maps
                     hasRequestedLocation = true
                 }
+                stopLocationUpdate()
                 moveMap(getLatLng(locationResult.lastLocation.latitude, locationResult.lastLocation.longitude), ZOOM_LEVEL)
                 viewModel.getDistrictData(locationResult.lastLocation.latitude, locationResult.lastLocation.longitude)
             }
         }
-    }
 
     private fun showBottomSheetInfo() {
         bottomSheetInfo = BottomSheetUnify()

@@ -49,6 +49,7 @@
         android:layout_width="@dimen/dp_24"
         android:alpha="0.9"
         android:minWidth="@dimen/dp_24"
+        android:elevation="@dimen/unify_space_16"
         android:text="@string/feed_post_tag_text"
         android:textColor="@color/feed_dms_produk_tag_heading_color"
         app:layout_constraintBottom_toBottomOf="@id/post_image"

@@ -274,8 +274,8 @@ class DealsBrandFragment : DealsBaseFragment(), DealsBrandActionListener,
     override fun getRecyclerView(view: View): RecyclerView = view.findViewById(R.id.deals_brand_recycler_view)
 
     override fun showTitle(brands: DealsBrandsDataView) {
+        hideTitleShimmering()
         if (!brands.title.isNullOrEmpty() && showTitle()) {
-            hideTitleShimmering()
             binding.tvBrandTitle.show()
             binding.unusedLine.show()
             binding.tvBrandTitle.text = brands.title

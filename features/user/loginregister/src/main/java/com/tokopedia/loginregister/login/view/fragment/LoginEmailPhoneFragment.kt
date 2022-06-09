@@ -136,7 +136,7 @@ import javax.inject.Named
 /**
  * @author by nisie on 18/01/19.
  */
-open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.View {
+open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.View{
 
     private var isTraceStopped: Boolean = false
     private lateinit var performanceMonitoring: PerformanceMonitoring
@@ -359,7 +359,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
         }
 
         val emailExtensionList = mutableListOf<String>()
-        emailExtensionList.addAll(resources.getStringArray(R.array.email_extension))
+        emailExtensionList.addAll(requireContext().resources.getStringArray(R.array.email_extension))
         partialRegisterInputView?.setEmailExtension(emailExtension, emailExtensionList)
         partialRegisterInputView?.initKeyboardListener(view)
 
@@ -758,7 +758,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
 
     private fun setupSpannableText() {
         activity?.let {
-            val sourceString = resources.getString(R.string.span_not_have_tokopedia_account)
+            val sourceString = requireContext().resources.getString(R.string.span_not_have_tokopedia_account)
 
             val spannable = SpannableString(sourceString)
 
@@ -1117,8 +1117,6 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
             if (userSession.isLoggedIn) {
                 val userData = UserData()
                 userData.userId = userSession.userId
-                userData.email = userSession.email
-                userData.phoneNumber = userSession.phoneNumber
                 userData.medium = userSession.loginMethod
 
                 //Identity Event
