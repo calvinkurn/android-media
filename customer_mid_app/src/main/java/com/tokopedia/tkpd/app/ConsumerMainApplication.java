@@ -159,7 +159,6 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
         }
         initializeNewRelic();
         EmbraceMonitoring.INSTANCE.setCarrierProperties(this);
-        executeArithmeticException();
     }
 
     private void initializeNewRelic() {
@@ -168,6 +167,7 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
                 !remoteConfig.getBoolean(RemoteConfigKey.ENABLE_INIT_NR_IN_ACTIVITY, true);
         if (isDisableInitNrInAct) {
             NewRelic.withApplicationToken(Keys.NEW_RELIC_TOKEN_MA).start(this);
+            executeArithmeticException();
         }
     }
 
