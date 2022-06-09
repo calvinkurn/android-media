@@ -48,6 +48,7 @@
         android:background="@drawable/feed_bg_lihat_produk"
         android:layout_width="@dimen/dp_24"
         android:minWidth="@dimen/dp_24"
+        android:elevation="@dimen/unify_space_16"
         android:text="@string/feed_post_tag_text"
         android:textColor="@color/Unify_N0"
         app:layout_constraintBottom_toBottomOf="@id/post_image"

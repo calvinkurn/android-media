@@ -57,13 +57,18 @@ object TrackingConstant {
     const val ACTION_CLICK_ON_POWER_MERCHANT_BENEFIT = "click on power merchant benefit"
     const val ACTION_CLICK_TIPS_TO_IMPROVE_SHOP_SCORE = "click tips to improve shop score"
     const val ACTION_POPUP_SUCCESS_REGISTER = "pop up success register pm"
-    const val ACTION_POPUP_ADD_NEW_PRODUCT = "pop up add new product"
-    const val ACTION_CLICK_TAB_POWER_MERCHANT_PRO = "click power merchant pro tab"
+    const val ACTION_POPUP_ADD_NEW_PRODUCT = "click add product on pop up minimum product"
+    const val ACTION_CLICK_TAB_POWER_MERCHANT = "click power merchant tab"
     const val ACTION_POPUP_UNABLE_TO_REGISTER_SHOP_MODERATION = "pop up unable to register shop moderation"
     const val ACTION_CLICK_ACKNOWLEDGE_SHOP_MODERATION = "click acknowledge shop moderation"
     const val ACTION_CLICK_STOP_PM_BECOME_RM = "click stop power merchant - become rm"
     const val ACTION_CLICK_STOP_PM_BECOME_PM = "click stop power merchant - become pm"
     const val ACTION_CLICK_STOP_PM_CONFIRM_TO_STOP = "stop power merchant - confirm to stop"
+    const val ACTION_CLICK_DETAIL_TERM_MEMBERSHIP = "click lihat detail - syarat keanggotaan"
+    const val ACTION_CLICK_LEARN_MORE_PM = "click pelajari power merchant selengkapnya - keuntungan"
+    const val ACTION_CLICK_SEE_CATEGORY = "click lihat kategori"
+
+    const val EVENT_CLICK_PG = "clickPG"
 
     fun getPowerMerchantCategory(): String = if (GlobalConfig.isSellerApp()) {
         "$CATEGORY_SELLER_APP - $POWER_MERCHANT_PRO"

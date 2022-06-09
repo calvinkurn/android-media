@@ -423,4 +423,6 @@ di tempatmu.</string>
     <string name="flight_resend_eticket_dialog_email_hint">Johndoe@tokopedia.com</string>
     <string name="flight_resend_eticket_success" translatable="false">Hore! E-mail berhasil dikirim.</string>
     <string name="flight_order_detail_title">Daftar Transaksi</string>
+
+    <string name="flight_default_error_img_url">https://images.tokopedia.net/img/android/res/singleDpi/ic_digital_checkout_failed_transaction.png</string>
 </resources>

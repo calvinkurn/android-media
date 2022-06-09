@@ -43,6 +43,28 @@ class WishlistV2UseCase @Inject constructor(@ApplicationContext private val gqlR
                         url
                       }
                     }
+                    ticker {
+                        message
+                        type
+                        button {
+                            text
+                            action
+                        }
+                    }
+                    storage_cleaner_bottomsheet {
+                        title
+                        description
+                        options {
+                            name
+                            description
+                            action
+                        }
+                        button {
+                            text
+                        }
+                    }
+                    count_removable_items
+                    show_delete_progress
                     sort_filters {
                       id
                       name

@@ -4,9 +4,11 @@ import android.app.Application
 import android.content.Context
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.discovery2.Utils
+import com.tokopedia.discovery2.ComponentNames
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.data.DataItem
 import com.tokopedia.discovery2.usecase.bannerusecase.BannerUseCase
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.banners.multibanners.BANNER_ACTION_CODE
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.banners.multibanners.MultiBannerViewModel
 import com.tokopedia.user.session.UserSession
 import io.mockk.*
@@ -138,7 +140,7 @@ class MultiBannerViewModelTest {
     fun `test for onAttachToViewHolder`() {
         viewModel.bannerUseCase = bannerUseCase
         coEvery { componentsItem.properties?.dynamic } returns true
-        coEvery { bannerUseCase.loadFirstPageComponents(componentsItem.id, componentsItem.pageEndPoint) } returns true
+        coEvery { bannerUseCase.loadFirstPageComponents(componentsItem.id, componentsItem.pageEndPoint, application.applicationContext) } returns true
 
         val list = ArrayList<ComponentsItem>()
         coEvery { componentsItem.getComponentsItem() } returns list
@@ -189,6 +191,7 @@ class MultiBannerViewModelTest {
     }
 
     /****************************************** onBannerClicked() ****************************************/
+
     @Test
     fun `banner action is APPLINK`() {
         list.clear()
@@ -259,5 +262,28 @@ class MultiBannerViewModelTest {
 //        coVerify {
 //        }
 
+    }
+
+    @Test
+    fun `test for setComponentPromoNameForCoupons when component is SingleBanner`() {
+        val list = mutableListOf(DataItem(action = BANNER_ACTION_CODE))
+        every { componentsItem.data } returns list
+
+        viewModel.setComponentPromoNameForCoupons(ComponentNames.SingleBanner.componentName,list)
+        assert(viewModel.getComponentData().value?.data?.firstOrNull()?.componentPromoName == "single_promo_code")
+    }
+
+    @Test
+    fun `test for setComponentPromoNameForCoupons when component is DoubleBanner`() {
+        val list = mutableListOf(DataItem(action = BANNER_ACTION_CODE))
+        every { componentsItem.data } returns list
+
+        viewModel.setComponentPromoNameForCoupons(ComponentNames.DoubleBanner.componentName,list)
+        assert(viewModel.getComponentData().value?.data?.firstOrNull()?.componentPromoName == "double_promo_code")
+    }
+
+    @After
+    fun shutDown() {
+        Dispatchers.resetMain()
     }
 }
