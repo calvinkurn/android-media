@@ -3,7 +3,12 @@ package com.tokopedia.tokofood.feature.merchant.presentation.fragment
 import android.content.Context
 import android.net.Uri
 import android.os.Bundle
-import android.view.*
+import android.view.LayoutInflater
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
+import android.view.View
+import android.view.ViewGroup
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
@@ -41,9 +46,19 @@ import com.tokopedia.tokofood.feature.merchant.domain.model.response.TokoFoodMer
 import com.tokopedia.tokofood.feature.merchant.domain.model.response.TokoFoodTickerDetail
 import com.tokopedia.tokofood.feature.merchant.presentation.adapter.MerchantPageCarouselAdapter
 import com.tokopedia.tokofood.feature.merchant.presentation.adapter.ProductListAdapter
-import com.tokopedia.tokofood.feature.merchant.presentation.bottomsheet.*
+import com.tokopedia.tokofood.feature.merchant.presentation.bottomsheet.CategoryFilterBottomSheet
+import com.tokopedia.tokofood.feature.merchant.presentation.bottomsheet.CustomOrderDetailBottomSheet
+import com.tokopedia.tokofood.feature.merchant.presentation.bottomsheet.MerchantInfoBottomSheet
+import com.tokopedia.tokofood.feature.merchant.presentation.bottomsheet.OrderNoteBottomSheet
+import com.tokopedia.tokofood.feature.merchant.presentation.bottomsheet.ProductDetailBottomSheet
 import com.tokopedia.tokofood.feature.merchant.presentation.mapper.TokoFoodMerchantUiModelMapper
-import com.tokopedia.tokofood.feature.merchant.presentation.model.*
+import com.tokopedia.tokofood.feature.merchant.presentation.model.CategoryFilterListUiModel
+import com.tokopedia.tokofood.feature.merchant.presentation.model.CustomOrderDetail
+import com.tokopedia.tokofood.feature.merchant.presentation.model.MerchantOpsHour
+import com.tokopedia.tokofood.feature.merchant.presentation.model.MerchantShareComponent
+import com.tokopedia.tokofood.feature.merchant.presentation.model.ProductListItem
+import com.tokopedia.tokofood.feature.merchant.presentation.model.ProductUiModel
+import com.tokopedia.tokofood.feature.merchant.presentation.model.VariantWrapperUiModel
 import com.tokopedia.tokofood.feature.merchant.presentation.viewholder.MerchantCarouseItemViewHolder
 import com.tokopedia.tokofood.feature.merchant.presentation.viewholder.ProductCardViewHolder
 import com.tokopedia.tokofood.feature.merchant.presentation.viewmodel.MerchantPageViewModel
@@ -625,11 +640,14 @@ class MerchantPageFragment : BaseMultiFragment(),
                     super.onScrolled(recyclerView, dx, dy)
                     val mLayoutManager = it.layoutManager as? LinearLayoutManager
                     val firstVisibleItemPos = mLayoutManager?.findFirstVisibleItemPosition().orZero()
-                    val productListItem = productListAdapter?.getProductListItems()?.filterIndexed { position, _ ->
-                        position == firstVisibleItemPos
-                    }?.firstOrNull()
-                    filterNameSelected = productListItem?.productCategory?.title.orEmpty()
-                    setCategoryPlaceholder(filterNameSelected)
+                    val productListItem =
+                        productListAdapter?.getProductListItems()?.filterIndexed { position, _ ->
+                            position == firstVisibleItemPos
+                        }?.firstOrNull { productItem -> productItem.productCategory.title.isNotBlank() }
+                    productListItem?.let { productsItem ->
+                        filterNameSelected = productsItem.productCategory.title
+                        setCategoryPlaceholder(filterNameSelected)
+                    }
                 }
             })
         }
