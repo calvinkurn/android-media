@@ -6,12 +6,15 @@ import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.homenav.mainnav.data.mapper.AccountHeaderMapper
 import com.tokopedia.homenav.mainnav.data.mapper.BuListMapper
+import com.tokopedia.homenav.mainnav.data.pojo.favoriteshop.FavoriteShopData
 import com.tokopedia.homenav.mainnav.data.pojo.membership.MembershipPojo
 import com.tokopedia.homenav.mainnav.data.pojo.order.UohData
 import com.tokopedia.homenav.mainnav.data.pojo.payment.Payment
+import com.tokopedia.homenav.mainnav.data.pojo.review.ReviewProduct
 import com.tokopedia.homenav.mainnav.data.pojo.tokopoint.TokopointsStatusFilteredPojo
 import com.tokopedia.homenav.mainnav.data.pojo.shop.ShopData
 import com.tokopedia.homenav.mainnav.data.pojo.user.UserPojo
+import com.tokopedia.homenav.mainnav.data.pojo.wishlist.WishlistData
 import com.tokopedia.homenav.mainnav.domain.model.DynamicHomeIconEntity
 import com.tokopedia.homenav.mainnav.domain.usecases.*
 import com.tokopedia.navigation_common.usecase.GetWalletAppBalanceUseCase
@@ -140,6 +143,27 @@ class MainNavUseCaseModule {
     @Provides
     fun provideGetAffiliateUserUseCase(graphqlRepository: GraphqlRepository): GetAffiliateUserUseCase{
         return GetAffiliateUserUseCase(graphqlRepository)
+    }
+
+    @MainNavScope
+    @Provides
+    fun provideGetReviewProductUseCase(graphqlRepository: GraphqlRepository): GetReviewProductUseCase{
+        val useCase = GraphqlUseCase<ReviewProduct>(graphqlRepository)
+        return GetReviewProductUseCase(useCase)
+    }
+
+    @MainNavScope
+    @Provides
+    fun provideGetWishlistUseCase(graphqlRepository: GraphqlRepository): GetWishlistNavUseCase{
+        val useCase = GraphqlUseCase<WishlistData>(graphqlRepository)
+        return GetWishlistNavUseCase(useCase)
+    }
+
+    @MainNavScope
+    @Provides
+    fun provideGetFavoriteShopUseCase(graphqlRepository: GraphqlRepository, userSession: UserSessionInterface): GetFavoriteShopsNavUseCase{
+        val useCase = GraphqlUseCase<FavoriteShopData>(graphqlRepository)
+        return GetFavoriteShopsNavUseCase(useCase, userSession)
     }
 
     @MainNavScope

@@ -35,7 +35,8 @@ import com.tokopedia.utils.view.binding.viewBinding
 class FeaturedShopViewHolder(
         itemView: View,
         private val listener: FeaturedShopListener,
-        private val homeComponentListener: HomeComponentListener?
+        private val homeComponentListener: HomeComponentListener?,
+        private val cardInteraction: Boolean = false
 ) : AbstractViewHolder<FeaturedShopDataModel>(itemView), CommonProductCardCarouselListener {
 
     private var binding: HomeFeaturedShopBinding? by viewBinding()
@@ -100,7 +101,7 @@ class FeaturedShopViewHolder(
             listData.add(CarouselSeeMorePdpDataModel(element.channelModel.channelHeader.applink, element.channelModel.channelHeader.backImage, this))
 
         if(!this::adapter.isInitialized) {
-            val typeFactoryImpl = CommonCarouselProductCardTypeFactoryImpl(element.channelModel)
+            val typeFactoryImpl = CommonCarouselProductCardTypeFactoryImpl(element.channelModel, cardInteraction)
             adapter = FeaturedShopAdapter(listData, typeFactoryImpl)
             binding?.dcBannerRv?.adapter = adapter
         } else {

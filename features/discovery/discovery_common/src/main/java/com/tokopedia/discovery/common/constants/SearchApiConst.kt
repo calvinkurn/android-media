@@ -49,6 +49,7 @@ class SearchApiConst {
         const val OFFICIAL = "official"
         const val KEYWORD = "keyword"
         const val HINT = "hint"
+        const val PLACEHOLDER = "placeholder"
         const val ACTIVE_TAB = "st"
         const val ORIGIN_FILTER = "origin_filter" // which page filter params come from
         const val TOKEN = "token"
