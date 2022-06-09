@@ -174,6 +174,7 @@ internal class SearchProductHandleQuickFilterTest : ProductListPresenterTestFixt
         val searchProductModel = searchProductModelWithMultipleOptionQuickFilter.jsonToObject<SearchProductModel>()
         val selectedFilter = searchProductModel.quickFilterModel.filter[0]
         `Given Search Product API will return SearchProductModel`(searchProductModel)
+        `Given Set Quick Filter Called`()
         `Given data has been loaded`()
 
         `When Open Dropdown Quick Filter`(0)
@@ -189,11 +190,13 @@ internal class SearchProductHandleQuickFilterTest : ProductListPresenterTestFixt
         openDropdownQuickFilter(selectedIndex)
     }
 
-    private fun openDropdownQuickFilter(selectedIndex: Int) {
-        verify {
+    private fun `Given Set Quick Filter Called`() {
+        every {
             productListView.setQuickFilter(capture(listItemSlot))
-        }
+        } just runs
+    }
 
+    private fun openDropdownQuickFilter(selectedIndex: Int) {
         val sortFilterItemList = listItemSlot.captured
 
         sortFilterItemList[selectedIndex].listener()
@@ -214,6 +217,7 @@ internal class SearchProductHandleQuickFilterTest : ProductListPresenterTestFixt
         selectedFilter.options[1].inputState = true.toString()
 
         `Given Search Product API will return SearchProductModel`(searchProductModel)
+        `Given Set Quick Filter Called`()
         `Given data has been loaded`()
         `Given Dropdown Quick Filter Has Been Opened`(0)
 
