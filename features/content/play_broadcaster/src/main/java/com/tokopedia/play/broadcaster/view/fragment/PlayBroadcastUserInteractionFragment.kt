@@ -312,6 +312,12 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
                     parentViewModel.channelId,
                     parentViewModel.channelTitle,
                 )
+            QuizFormView.Event.Submit -> {
+                analytic.onClickStartQuiz(
+                    parentViewModel.channelId,
+                    parentViewModel.channelTitle,
+                )
+            }
             else -> {}
         }
     }
