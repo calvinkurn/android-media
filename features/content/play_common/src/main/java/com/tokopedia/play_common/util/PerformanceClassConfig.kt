@@ -47,20 +47,20 @@ class PerformanceClassConfig @Inject constructor(
                 } catch (ignore: Throwable) {
                 }
             }
-            val maxCpuFreq = if (freqResolved == 0) -1
+            val maxCpuFreq = if (freqResolved == 0) CPU_FREQ_UNKNOWN
             else ceil(totalCpuFreq / freqResolved.toDouble()).toInt()
 
             if (androidVersion < Build.VERSION_CODES.LOLLIPOP ||
-                cpuCount <= 2 ||
-                memoryClass <= 100 ||
-                cpuCount <= 4 && maxCpuFreq != -1 && maxCpuFreq <= 1250 ||
-                cpuCount <= 4 && maxCpuFreq <= 1600 && memoryClass <= 128 && androidVersion <= Build.VERSION_CODES.LOLLIPOP ||
-                cpuCount <= 4 && maxCpuFreq <= 1300 && memoryClass <= 128 && androidVersion <= Build.VERSION_CODES.N) {
+                cpuCount <= CPU_COUNT_LOW ||
+                memoryClass <= MEM_CLASS_LOW ||
+                cpuCount <= CPU_COUNT_MEDIUM && maxCpuFreq != CPU_FREQ_UNKNOWN && maxCpuFreq <= CPU_FREQ_LOW ||
+                cpuCount <= CPU_COUNT_MEDIUM && maxCpuFreq <= CPU_FREQ_HIGH && memoryClass <= MEM_CLASS_MEDIUM && androidVersion <= Build.VERSION_CODES.LOLLIPOP ||
+                cpuCount <= CPU_COUNT_MEDIUM && maxCpuFreq <= CPU_FREQ_MEDIUM && memoryClass <= MEM_CLASS_MEDIUM && androidVersion <= Build.VERSION_CODES.N) {
                 PERFORMANCE_CLASS_LOW
-            } else if (cpuCount < 8 ||
-                memoryClass <= 160 ||
-                maxCpuFreq != -1 && maxCpuFreq <= 2050 ||
-                maxCpuFreq == -1 && cpuCount == 8 && androidVersion <= Build.VERSION_CODES.M) {
+            } else if (cpuCount < CPU_COUNT_HIGH ||
+                memoryClass <= MEM_CLASS_HIGH ||
+                maxCpuFreq != CPU_FREQ_UNKNOWN && maxCpuFreq <= CPU_FREQ_V_HIGH ||
+                maxCpuFreq == CPU_FREQ_UNKNOWN && cpuCount == CPU_COUNT_HIGH && androidVersion <= Build.VERSION_CODES.M) {
                 PERFORMANCE_CLASS_AVERAGE
             } else {
                 PERFORMANCE_CLASS_HIGH
@@ -74,5 +74,19 @@ class PerformanceClassConfig @Inject constructor(
         const val PERFORMANCE_CLASS_LOW = 0
         const val PERFORMANCE_CLASS_AVERAGE = 1
         const val PERFORMANCE_CLASS_HIGH = 2
+
+        private const val CPU_COUNT_LOW = 2
+        private const val CPU_COUNT_MEDIUM = 4
+        private const val CPU_COUNT_HIGH = 8
+
+        private const val MEM_CLASS_LOW = 100
+        private const val MEM_CLASS_MEDIUM = 128
+        private const val MEM_CLASS_HIGH = 160
+
+        private const val CPU_FREQ_UNKNOWN = -1
+        private const val CPU_FREQ_LOW = 1250
+        private const val CPU_FREQ_MEDIUM = 1300
+        private const val CPU_FREQ_HIGH = 1600
+        private const val CPU_FREQ_V_HIGH = 2050
     }
 }
