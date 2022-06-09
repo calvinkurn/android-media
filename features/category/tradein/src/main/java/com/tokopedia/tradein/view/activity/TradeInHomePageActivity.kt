@@ -199,7 +199,7 @@ class TradeInHomePageActivity : BaseViewModelActivity<TradeInHomePageVM>(),
         (newFragment as TradeInEducationalPageFragment).setUpTradeInClick(this)
         supportFragmentManager.beginTransaction()
             .replace(parentViewResourceID, newFragment, newFragment.tag)
-            .commit()
+            .commitAllowingStateLoss()
         tradeInAnalytics.openEducationalScreen()
     }
 
