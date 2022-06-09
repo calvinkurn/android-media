@@ -56,9 +56,15 @@ class PickerViewModel(
     val selectedFeedAccount: Flow<FeedAccountUiModel>
         get() = _selectedFeedAccount
 
-    private val _feedAccountList = mutableListOf<FeedAccountUiModel>()
+    private val _feedAccountListState = MutableStateFlow<List<FeedAccountUiModel>>(emptyList())
+    val feedAccountListState: Flow<List<FeedAccountUiModel>>
+        get() = _feedAccountListState
+
     val feedAccountList: List<FeedAccountUiModel>
-        get() = _feedAccountList
+        get() = _feedAccountListState.value
+
+    val isAllowChangeAccount: Boolean
+        get() = feedAccountList.size > 1 && feedAccountList.find { it.isUser && it.hasAcceptTnc } != null
 
     fun getFolderData() {
         launchCatchError(block = {
@@ -209,11 +215,12 @@ class PickerViewModel(
                     iconUrl = it.thumbnail,
                     badge = it.badge,
                     type = it.type,
+                    hasUsername = response.feedContentForm.hasUsername,
+                    hasAcceptTnc = response.feedContentForm.hasAcceptTnc,
                 )
             }
 
-            _feedAccountList.clear()
-            _feedAccountList.addAll(feedAccountList)
+            _feedAccountListState.value = feedAccountList
 
             if(feedAccountList.isNotEmpty()) {
                 _selectedFeedAccount.value = feedAccountList.first()
@@ -234,7 +241,9 @@ class PickerViewModel(
         launchCatchError(block = {
             val current = _selectedFeedAccount.value
             if(current.id != feedAccountId) {
-                _selectedFeedAccount.value = _feedAccountList.firstOrNull { it.id == feedAccountId } ?: FeedAccountUiModel.Empty
+                _selectedFeedAccount.value = _feedAccountListState.value.firstOrNull {
+                    it.id == feedAccountId
+                } ?: FeedAccountUiModel.Empty
             }
         }, onError = { })
     }

@@ -9,6 +9,8 @@ data class FeedAccountUiModel(
     val iconUrl: String,
     val badge: String,
     val type: String,
+    val hasUsername: Boolean,
+    val hasAcceptTnc: Boolean,
 ) {
     val isUser: Boolean
         get() = type == TYPE_USER
@@ -26,6 +28,8 @@ data class FeedAccountUiModel(
             iconUrl = "",
             badge = "",
             type = "",
+            hasUsername = false,
+            hasAcceptTnc = false,
         )
     }
 }
