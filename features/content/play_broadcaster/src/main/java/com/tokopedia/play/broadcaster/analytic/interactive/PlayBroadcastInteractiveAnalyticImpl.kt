@@ -194,6 +194,13 @@ class PlayBroadcastInteractiveAnalyticImpl @Inject constructor(
         )
     }
 
+    override fun onclickBackSetTimerGiveAway(channelId: String, channelTitle: String) {
+        sendClickEvent(
+            "click - back duration giveaway",
+            "${userSession.shopId} - $channelId - $channelTitle",
+            )
+    }
+
     private fun sendClickEvent(
         eventAction: String,
         eventLabel: String,

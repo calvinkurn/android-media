@@ -179,7 +179,10 @@ class GiveawayFormView : ConstraintLayout {
         binding.viewGiveaway.getHeader().maxLength = MAX_TITLE_LENGTH
 
         binding.icCloseGiveawayForm.setOnClickListener { back() }
-        timePickerBinding.ivSheetClose.setOnClickListener { back() }
+        timePickerBinding.ivSheetClose.setOnClickListener {
+            mListener?.onClickBackSetTimer()
+            back()
+        }
 
         setEnabledContinue(shouldEnable = false)
 
@@ -262,5 +265,7 @@ class GiveawayFormView : ConstraintLayout {
             view: GiveawayFormView,
             data: Data,
         )
+
+        fun onClickBackSetTimer()
     }
 }

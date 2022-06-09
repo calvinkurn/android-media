@@ -161,6 +161,9 @@ class InteractiveSetupDialogFragment @Inject constructor(
                         )
                     )
                 }
+                override fun onClickBackSetTimer() {
+                    analytic.onclickBackSetTimerGiveAway(viewModel.channelId, viewModel.channelTitle)
+                }
             })
             formView
         }.apply {
