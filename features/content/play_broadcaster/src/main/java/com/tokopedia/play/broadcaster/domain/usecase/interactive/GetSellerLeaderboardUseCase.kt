@@ -64,6 +64,10 @@ class GetSellerLeaderboardUseCase @Inject constructor(
                     otherParticipantCount
                   }
                 }
+                config {
+                  topchatMessage
+                  topchatMessageQuiz
+                }
               }
             }
         """
@@ -72,5 +76,4 @@ class GetSellerLeaderboardUseCase @Inject constructor(
             PARAM_CHANNEL_ID to channelID,
         )
     }
-
 }
