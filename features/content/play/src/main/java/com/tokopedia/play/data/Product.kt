@@ -40,6 +40,6 @@ data class Product(
         val appLink: String = "",
         @SerializedName("web_link")
         val webLink: String = "",
-        @SerializedName("is_tokonow")
+        @SerializedName("is_toko_now")
         val isTokonow: Boolean = false,
 )
