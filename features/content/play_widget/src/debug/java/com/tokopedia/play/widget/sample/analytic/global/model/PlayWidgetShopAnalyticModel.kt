@@ -1,10 +1,12 @@
 package com.tokopedia.play.widget.sample.analytic.global.model
 
+import com.tokopedia.play.widget.sample.analytic.const.trackerMultiFields
+
 /**
  * Created by kenny.hadisaputra on 31/05/22
  */
 class PlayWidgetShopAnalyticModel(
-    isOwnShop: Boolean,
+    private val isOwnShop: Boolean,
 ) : PlayWidgetAnalyticModel {
 
     override val prefix: String = "SHOP_PAGE"
@@ -15,5 +17,8 @@ class PlayWidgetShopAnalyticModel(
 
     override val promotionsCreativeName: String = "play widget in shop"
 
-    override val eventActionSuffix: String? = if (isOwnShop) "own shop" else null
+    override fun eventActionChannel(action: String): String {
+        return if (isOwnShop) trackerMultiFields(action, "own shop")
+        else action
+    }
 }

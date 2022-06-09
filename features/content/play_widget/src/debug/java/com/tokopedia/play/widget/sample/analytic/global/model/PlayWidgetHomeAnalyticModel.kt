@@ -12,6 +12,4 @@ class PlayWidgetHomeAnalyticModel : PlayWidgetAnalyticModel {
     override val promotionsItemName: String = "play-home-widget"
 
     override val promotionsCreativeName: String = "play widget in home"
-
-    override val eventActionSuffix: String? = null
 }

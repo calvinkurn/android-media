@@ -12,6 +12,4 @@ class PlayWidgetFeedsAnalyticModel : PlayWidgetAnalyticModel {
     override val promotionsItemName: String = "feed-play-widget"
 
     override val promotionsCreativeName: String = "play widget in feed"
-
-    override val eventActionSuffix: String? = null
 }

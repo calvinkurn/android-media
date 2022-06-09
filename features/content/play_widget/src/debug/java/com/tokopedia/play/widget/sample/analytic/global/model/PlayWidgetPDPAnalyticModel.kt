@@ -12,6 +12,4 @@ class PlayWidgetPDPAnalyticModel : PlayWidgetAnalyticModel {
     override val promotionsItemName: String = "play-pdp-widget"
 
     override val promotionsCreativeName: String = "play widget in pdp"
-
-    override val eventActionSuffix: String? = null
 }

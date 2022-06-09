@@ -67,10 +67,7 @@ class PlayWidgetMediumGlobalAnalytic @AssistedInject constructor(
         val trackerMap = BaseTrackerBuilder().constructBasicPromotionView(
             event = PROMO_VIEW,
             eventCategory = model.category,
-            eventAction = trackerMultiFields(
-                "impression on play sgc channel", model.eventActionSuffix,
-                skipNull = true,
-            ),
+            eventAction = model.eventActionChannel("impression on play sgc channel"),
             eventLabel = trackerMultiFields(
                 model.prefix, /** prefix **/
                 item.channelType.toTrackingType(), /** videoType **/
@@ -112,10 +109,7 @@ class PlayWidgetMediumGlobalAnalytic @AssistedInject constructor(
         val trackerMap = BaseTrackerBuilder().constructBasicPromotionClick(
             event = PROMO_CLICK,
             eventCategory = model.category,
-            eventAction = trackerMultiFields(
-                "click", model.eventActionSuffix,
-                skipNull = true,
-            ),
+            eventAction = model.eventActionChannel("click"),
             eventLabel = trackerMultiFields(
                 model.prefix, /** prefix **/
                 item.channelType.toTrackingType(), /** videoType **/

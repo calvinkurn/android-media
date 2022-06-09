@@ -12,6 +12,4 @@ class PlayWidgetVideoTabAnalyticModel : PlayWidgetAnalyticModel {
     override val promotionsItemName: String = "play-video-tab-widget"
 
     override val promotionsCreativeName: String = "play widget in video tab"
-
-    override val eventActionSuffix: String? = null
 }
