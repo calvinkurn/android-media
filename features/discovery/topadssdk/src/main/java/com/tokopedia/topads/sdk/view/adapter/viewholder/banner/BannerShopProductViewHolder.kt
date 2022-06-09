@@ -12,7 +12,6 @@ import com.tokopedia.topads.sdk.listener.TopAdsBannerClickListener
 import com.tokopedia.topads.sdk.listener.TopAdsItemImpressionListener
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.topads.sdk.view.adapter.viewmodel.banner.BannerShopProductViewModel
-import com.tokopedia.unifycomponents.CardUnify2
 
 /**
  * Created by errysuprayogi on 4/16/18.
