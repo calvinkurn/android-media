@@ -7,6 +7,8 @@ import com.tokopedia.shop.flashsale.di.scope.ShopFlashSaleScope
 import com.tokopedia.shop.flashsale.presentation.creation.information.CampaignInformationActivity
 import com.tokopedia.shop.flashsale.presentation.creation.information.CampaignInformationFragment
 import com.tokopedia.shop.flashsale.presentation.creation.information.bottomsheet.CampaignDatePickerBottomSheet
+import com.tokopedia.shop.flashsale.presentation.creation.rule.CampaignRuleActivity
+import com.tokopedia.shop.flashsale.presentation.creation.rule.CampaignRuleFragment
 import com.tokopedia.shop.flashsale.presentation.creation.rule.bottomsheet.MerchantCampaignTNCBottomSheet
 import com.tokopedia.shop.flashsale.presentation.draft.bottomsheet.DraftDeleteBottomSheet
 import com.tokopedia.shop.flashsale.presentation.list.container.CampaignListActivity
@@ -30,4 +32,7 @@ interface ShopFlashSaleComponent {
     fun inject(bottomSheet: DraftDeleteBottomSheet)
     fun inject(bottomSheet: CampaignDatePickerBottomSheet)
     fun inject(fragment: MerchantCampaignTNCBottomSheet)
+
+    fun inject(activity: CampaignRuleActivity)
+    fun inject(fragment: CampaignRuleFragment)
 }
