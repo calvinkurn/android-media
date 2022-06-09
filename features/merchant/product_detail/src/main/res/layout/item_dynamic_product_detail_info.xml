@@ -20,7 +20,7 @@
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
         android:text="@string/merchant_product_detail_label_product_detail"
-        app:typographyType="heading_4"
+        app:typographyType="display_1"
         app:typographyWeight="bold"
         tools:text="Detail Produk" />
 
