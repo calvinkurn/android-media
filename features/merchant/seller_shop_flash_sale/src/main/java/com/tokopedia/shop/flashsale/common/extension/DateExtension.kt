@@ -65,3 +65,24 @@ fun Date.dateOnly(): Date {
     calendar.set(Calendar.MILLISECOND, 0)
     return calendar.time
 }
+
+fun Date.hourOnly(): Date {
+    val calendar = Calendar.getInstance()
+    calendar.time = this
+    calendar.set(Calendar.MINUTE, 0)
+    calendar.set(Calendar.SECOND, 0)
+    calendar.set(Calendar.MILLISECOND, 0)
+    return calendar.time
+}
+
+fun Date.extractHour(): Int {
+    val calendar = Calendar.getInstance()
+    calendar.time = this
+    return calendar.get(Calendar.HOUR_OF_DAY)
+}
+
+fun Date.extractMinute(): Int {
+    val calendar = Calendar.getInstance()
+    calendar.time = this
+    return calendar.get(Calendar.MINUTE)
+}

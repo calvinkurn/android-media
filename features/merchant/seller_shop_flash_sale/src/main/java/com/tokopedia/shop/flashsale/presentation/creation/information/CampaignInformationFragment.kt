@@ -16,6 +16,7 @@ import com.tokopedia.seller_shop_flash_sale.R
 import com.tokopedia.seller_shop_flash_sale.databinding.SsfsFragmentCampaignInformationBinding
 import com.tokopedia.shop.flashsale.common.constant.Constant
 import com.tokopedia.shop.flashsale.common.constant.DateConstant
+import com.tokopedia.shop.flashsale.common.constant.QuantityPickerConstant
 import com.tokopedia.shop.flashsale.common.extension.*
 import com.tokopedia.shop.flashsale.common.util.DateManager
 import com.tokopedia.shop.flashsale.common.util.doOnTextChanged
@@ -87,12 +88,19 @@ class CampaignInformationFragment : BaseDaggerFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupView()
-        observeDataChange()
+        observeValidationResult()
+        observeCampaignName()
     }
 
-    private fun observeDataChange() {
+    private fun observeValidationResult() {
         viewModel.areInputValid.observe(viewLifecycleOwner) { validationResult ->
             handleValidationResult(validationResult)
+        }
+    }
+
+    private fun observeCampaignName() {
+        viewModel.campaignName.observe(viewLifecycleOwner) { validationResult ->
+            handleCampaignNameValidationResult(validationResult)
         }
     }
 
@@ -102,6 +110,8 @@ class CampaignInformationFragment : BaseDaggerFragment() {
         setupClickListeners()
         setupTextFields()
         setupDatePicker()
+
+        binding?.switchTeaser?.isChecked = true
     }
 
     private fun setupRecyclerView() {
@@ -119,7 +129,7 @@ class CampaignInformationFragment : BaseDaggerFragment() {
     private fun setupTextFields() {
         binding?.run {
             tauCampaignName.textInputLayout.editText?.doOnTextChanged { text ->
-                validateInput()
+                viewModel.onCampaignNameChange(text)
             }
 
             tauHexColor.setMaxLength(HEX_COLOR_TEXT_FIELD_MAX_LENGTH)
@@ -131,7 +141,7 @@ class CampaignInformationFragment : BaseDaggerFragment() {
                 }
             }
 
-            switchTeaser.isChecked = true
+
         }
     }
 
@@ -140,13 +150,17 @@ class CampaignInformationFragment : BaseDaggerFragment() {
             btnDraft.setOnClickListener { validateInput() }
             btnCreateCampaign.setOnClickListener { validateInput() }
             btnApply.setOnClickListener { handleApplyButtonClick() }
+
+            quantityEditor.editText.inputType = InputType.TYPE_NULL
             quantityEditor.setValueChangedListener { newValue, oldValue, _ ->
                 handleQuantityEditor(newValue, oldValue)
             }
+
             switchTeaser.setOnCheckedChangeListener { _, isChecked ->
                 viewModel.setShowTeaser(isChecked)
                 handleSwitchTeaser(isChecked)
             }
+
             contentSwitcher.setOnCheckedChangeListener { _, isChecked ->
                 handleContentSwitcher(isChecked)
             }
@@ -169,31 +183,42 @@ class CampaignInformationFragment : BaseDaggerFragment() {
         }
     }
 
+    private fun handleCampaignNameValidationResult(validationResult: CampaignInformationViewModel.CampaignNameValidationResult) {
+        when (validationResult) {
+            CampaignInformationViewModel.CampaignNameValidationResult.CampaignNameIsEmpty -> {
+                showError(getString(R.string.sfs_error_message_field_not_filled))
+                binding?.btnCreateCampaign?.disable()
+            }
+            CampaignInformationViewModel.CampaignNameValidationResult.CampaignNameBelowMinCharacter -> {
+                showError(getString(R.string.sfs_error_message_min_char))
+                binding?.btnCreateCampaign?.disable()
+            }
+            CampaignInformationViewModel.CampaignNameValidationResult.CampaignNameHasForbiddenWords -> {
+                showError(getString(R.string.sfs_error_message_forbidden_words))
+                binding?.btnCreateCampaign?.disable()
+            }
+            CampaignInformationViewModel.CampaignNameValidationResult.Valid -> {
+                hideError()
+                binding?.btnCreateCampaign?.enable()
+            }
+        }
+    }
+
     private fun handleValidationResult(validationResult: CampaignInformationViewModel.ValidationResult) {
         when (validationResult) {
-            CampaignInformationViewModel.ValidationResult.CampaignNameIsEmpty -> {
-                showError(getString(R.string.sfs_error_message_field_not_filled))
-            }
-            CampaignInformationViewModel.ValidationResult.CampaignNameBelowMinCharacter -> {
-                showError(getString(R.string.sfs_error_message_min_char))
-            }
-            CampaignInformationViewModel.ValidationResult.CampaignNameHasForbiddenWords -> {
-                showError(getString(R.string.sfs_error_message_forbidden_words))
-            }
             CampaignInformationViewModel.ValidationResult.ExceedMaxOverlappedCampaign -> {
-                hideError()
+
 
             }
             CampaignInformationViewModel.ValidationResult.LapsedStartDate -> {
-                hideError()
+
 
             }
             CampaignInformationViewModel.ValidationResult.LapsedTeaserStartDate -> {
-                hideError()
+
 
             }
             CampaignInformationViewModel.ValidationResult.Valid -> {
-                hideError()
 
                 binding?.btnCreateCampaign?.enable()
                 val selection = viewModel.getSelection() ?: return
@@ -203,14 +228,12 @@ class CampaignInformationFragment : BaseDaggerFragment() {
     }
 
     private fun handleApplyButtonClick() {
-        val color = binding?.tauHexColor?.editText?.text.toString().trim().toHexColor()
-        binding?.imgHexColorPreview?.setBackgroundFromGradient(
-            Gradient(
-                color,
-                color,
-                isSelected = true
-            )
-        )
+        val rawHexColor = binding?.tauHexColor?.editText?.text.toString().trim().toHexColor()
+        val gradient = Gradient(rawHexColor, rawHexColor, isSelected = true)
+        binding?.imgHexColorPreview?.setBackgroundFromGradient(gradient)
+        val deselectedColors = viewModel.deselectAll(adapter.getItems())
+        adapter.submit(deselectedColors)
+        viewModel.setSelectedColor(gradient)
     }
 
     private fun handleSwitchTeaser(showTeaserSettings: Boolean) {
@@ -230,12 +253,14 @@ class CampaignInformationFragment : BaseDaggerFragment() {
     }
 
     private fun handleContentSwitcher(hexColorOptionSelected: Boolean) {
+        val isHexColorTextFieldFilled = binding?.tauHexColor?.editText?.text.toString().trim().length == HEX_COLOR_TEXT_FIELD_MAX_LENGTH
         binding?.recyclerView?.isVisible = !hexColorOptionSelected
         binding?.groupHexColorPicker?.isVisible = hexColorOptionSelected
+        binding?.btnApply?.isVisible = hexColorOptionSelected && isHexColorTextFieldFilled
 
         if (hexColorOptionSelected) {
             val hexColor = binding?.tauHexColor?.editText?.text.toString().trim().toHexColor()
-            viewModel.setColor(Gradient(hexColor, hexColor, isSelected = true))
+            viewModel.setSelectedColor(Gradient(hexColor, hexColor, isSelected = true))
         }
     }
 
@@ -243,22 +268,24 @@ class CampaignInformationFragment : BaseDaggerFragment() {
         val allGradients = adapter.getItems()
         val updatedColorSelection = viewModel.markAsSelected(selectedGradient, allGradients)
         adapter.submit(updatedColorSelection)
-        viewModel.setColor(selectedGradient)
+        viewModel.setSelectedColor(selectedGradient)
     }
 
     private fun displayStartDatePicker() {
         val selectedDate = viewModel.getSelectedStartDate()
         val minimumDate = Date()
 
-        val bottomSheet =
-            CampaignDatePickerBottomSheet.newInstance(selectedDate, minimumDate)
+        val bottomSheet = CampaignDatePickerBottomSheet.newInstance(selectedDate, minimumDate)
         bottomSheet.setOnDateTimePicked { newStartDate ->
             viewModel.setSelectedStartDate(newStartDate)
             binding?.tauStartDate?.editText?.setText(newStartDate.localFormatTo(DateConstant.DATE_TIME_MINUTE_LEVEL))
-            refreshEndDate()
+            adjustEndDate()
+            adjustQuantityPicker(newStartDate)
+
         }
         bottomSheet.show(childFragmentManager, bottomSheet.tag)
     }
+
 
     private fun displayEndDatePicker() {
         val endDate = viewModel.normalizeEndDate(viewModel.getSelectedEndDate(), viewModel.getSelectedStartDate())
@@ -271,10 +298,18 @@ class CampaignInformationFragment : BaseDaggerFragment() {
         bottomSheet.show(childFragmentManager, bottomSheet.tag)
     }
 
-    private fun refreshEndDate() {
+    private fun adjustEndDate() {
         val endDate = viewModel.normalizeEndDate(viewModel.getSelectedEndDate(), viewModel.getSelectedStartDate())
         viewModel.setSelectedEndDate(endDate)
         binding?.tauEndDate?.editText?.setText(endDate.localFormatTo(DateConstant.DATE_TIME_MINUTE_LEVEL))
+    }
+
+    private fun adjustQuantityPicker(newStartDate : Date) {
+        val currentValue = binding?.quantityEditor?.editText?.text.toString().trim().toIntOrZero()
+        val maxValue = viewModel.getTeaserQuantityEditorMaxValue(newStartDate, Date())
+        binding?.quantityEditor?.maxValue = maxValue
+        binding?.quantityEditor?.addButton?.isEnabled = currentValue <= QuantityPickerConstant.CAMPAIGN_TEASER_MAXIMUM_UPCOMING_HOUR
+        binding?.quantityEditor?.subtractButton?.isEnabled = currentValue > QuantityPickerConstant.CAMPAIGN_TEASER_MINIMUM_UPCOMING_HOUR
     }
 
     private fun validateInput() {
@@ -300,8 +335,7 @@ class CampaignInformationFragment : BaseDaggerFragment() {
             secondColor
         )
 
-        viewModel.setSelection(selection)
-        viewModel.validateInput(selection)
+        viewModel.onNextButtonPressed(selection, Date())
     }
 
 

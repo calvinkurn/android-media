@@ -5,8 +5,12 @@ import androidx.fragment.app.FragmentManager
 import com.tokopedia.datepicker.datetimepicker.DateTimePickerUnify
 import com.tokopedia.shop.flashsale.common.constant.Constant
 import com.tokopedia.shop.flashsale.common.constant.LocaleConstant
+import com.tokopedia.shop.flashsale.common.extension.extractHour
+import com.tokopedia.shop.flashsale.common.extension.extractMinute
 import com.tokopedia.shop.flashsale.common.extension.toCalendar
-import java.util.*
+import java.util.Date
+import java.util.GregorianCalendar
+import java.util.Calendar
 import javax.inject.Inject
 
 class TimePickerHandler @Inject constructor(private val param : Param)  {
@@ -56,17 +60,6 @@ class TimePickerHandler @Inject constructor(private val param : Param)  {
         dateTimePicker.show(fragmentManager, dateTimePicker.tag)
     }
 
-    private fun Date.extractHour(): Int {
-        val calendar = Calendar.getInstance()
-        calendar.time = this
-        return calendar.get(Calendar.HOUR_OF_DAY)
-    }
-
-    private fun Date.extractMinute(): Int {
-        val calendar = Calendar.getInstance()
-        calendar.time = this
-        return calendar.get(Calendar.MINUTE)
-    }
 
     private fun buildSelectedDateInstance(date: Date, hour: Int, minute: Int): Date {
         val calendar = date.toCalendar()

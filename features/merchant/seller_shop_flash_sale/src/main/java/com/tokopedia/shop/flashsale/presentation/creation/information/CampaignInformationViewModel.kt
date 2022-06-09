@@ -4,8 +4,10 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.kotlin.extensions.orFalse
+import com.tokopedia.shop.flashsale.common.constant.QuantityPickerConstant.CAMPAIGN_TEASER_MAXIMUM_UPCOMING_HOUR
+import com.tokopedia.shop.flashsale.common.constant.QuantityPickerConstant.CAMPAIGN_TEASER_MINIMUM_UPCOMING_HOUR
 import com.tokopedia.shop.flashsale.common.extension.advanceMinuteBy
+import com.tokopedia.shop.flashsale.common.extension.hourOnly
 import com.tokopedia.shop.flashsale.domain.entity.CampaignAction
 import com.tokopedia.shop.flashsale.domain.entity.CampaignCreationResult
 import com.tokopedia.shop.flashsale.domain.entity.Gradient
@@ -16,6 +18,7 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
 import com.tokopedia.utils.lifecycle.SingleLiveEvent
 import java.util.*
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 class CampaignInformationViewModel @Inject constructor(
@@ -26,6 +29,7 @@ class CampaignInformationViewModel @Inject constructor(
     companion object {
         private const val MIN_CAMPAIGN_NAME_LENGTH = 5
         private const val THIRTY_MINUTE = 30
+        private const val ONE_HOUR = 1
     }
 
     private val _areInputValid = SingleLiveEvent<ValidationResult>()
@@ -39,6 +43,10 @@ class CampaignInformationViewModel @Inject constructor(
     private val _campaignUpdate = MutableLiveData<Result<CampaignCreationResult>>()
     val campaignUpdate: LiveData<Result<CampaignCreationResult>>
         get() = _campaignUpdate
+
+    private val _campaignName = MutableLiveData<CampaignNameValidationResult>()
+    val campaignName: LiveData<CampaignNameValidationResult>
+        get() = _campaignName
 
     private var selection: Selection? = null
     private var selectedColor: Gradient? = null
@@ -58,10 +66,14 @@ class CampaignInformationViewModel @Inject constructor(
         "lazada"
     )
 
+    sealed class CampaignNameValidationResult {
+        object CampaignNameIsEmpty : CampaignNameValidationResult()
+        object CampaignNameBelowMinCharacter : CampaignNameValidationResult()
+        object CampaignNameHasForbiddenWords : CampaignNameValidationResult()
+        object Valid : CampaignNameValidationResult()
+    }
+
     sealed class ValidationResult {
-        object CampaignNameIsEmpty : ValidationResult()
-        object CampaignNameBelowMinCharacter : ValidationResult()
-        object CampaignNameHasForbiddenWords : ValidationResult()
         object LapsedStartDate : ValidationResult()
         object ExceedMaxOverlappedCampaign : ValidationResult()
         object LapsedTeaserStartDate : ValidationResult()
@@ -79,44 +91,31 @@ class CampaignInformationViewModel @Inject constructor(
         val secondColor: String
     )
 
-
     fun onCampaignNameChange(campaignName: String) {
         if (campaignName.isEmpty()) {
-            _areInputValid.value = ValidationResult.CampaignNameIsEmpty
+            _campaignName.value = CampaignNameValidationResult.CampaignNameIsEmpty
             return
         }
 
         if (campaignName.length < MIN_CAMPAIGN_NAME_LENGTH) {
-            _areInputValid.value = ValidationResult.CampaignNameBelowMinCharacter
+            _campaignName.value = CampaignNameValidationResult.CampaignNameBelowMinCharacter
             return
         }
 
         if (campaignName in forbiddenWords) {
-            _areInputValid.value = ValidationResult.CampaignNameHasForbiddenWords
+            _campaignName.value = CampaignNameValidationResult.CampaignNameHasForbiddenWords
             return
         }
+
+        _campaignName.value = CampaignNameValidationResult.Valid
     }
 
-    fun validateInput(selection: Selection) {
-        val now = Date()
+    fun onNextButtonPressed(selection: Selection, now: Date) {
+        this.selection = selection
+
         val teaserDate = selection.teaserDate ?: selection.startDate
 
-        if (selection.campaignName.isEmpty()) {
-            _areInputValid.value = ValidationResult.CampaignNameIsEmpty
-            return
-        }
-
-        if (selection.campaignName.length < MIN_CAMPAIGN_NAME_LENGTH) {
-            _areInputValid.value = ValidationResult.CampaignNameBelowMinCharacter
-            return
-        }
-
-        if (selection.campaignName in forbiddenWords) {
-            _areInputValid.value = ValidationResult.CampaignNameHasForbiddenWords
-            return
-        }
-
-        if (selection.showTeaser && teaserDate.after(now).orFalse()) {
+        if (selection.showTeaser && teaserDate.after(now)) {
             _areInputValid.value = ValidationResult.LapsedTeaserStartDate
             return
         }
@@ -177,15 +176,11 @@ class CampaignInformationViewModel @Inject constructor(
 
     }
 
-    fun setSelection(selection: Selection) {
-        this.selection = selection
-    }
-
     fun getSelection(): Selection? {
         return selection
     }
 
-    fun setColor(gradient: Gradient) {
+    fun setSelectedColor(gradient: Gradient) {
         selectedColor = gradient
     }
 
@@ -217,8 +212,8 @@ class CampaignInformationViewModel @Inject constructor(
         return showTeaser
     }
 
-    fun markAsSelected(selectedGradient: Gradient, gradients : List<Gradient>): List<Gradient> {
-        return gradients.map {  gradient ->
+    fun markAsSelected(selectedGradient: Gradient, gradients: List<Gradient>): List<Gradient> {
+        return gradients.map { gradient ->
             if (gradient == selectedGradient) {
                 gradient.copy(isSelected = true)
             } else {
@@ -227,11 +222,28 @@ class CampaignInformationViewModel @Inject constructor(
         }
     }
 
-    fun normalizeEndDate(endDate: Date, startDate: Date) : Date {
+    fun deselectAll(gradients: List<Gradient>): List<Gradient> {
+        return gradients.map { gradient -> gradient.copy(isSelected = false) }
+    }
+
+    fun normalizeEndDate(endDate: Date, startDate: Date): Date {
         return if (endDate.before(startDate)) {
             startDate.advanceMinuteBy(THIRTY_MINUTE)
         } else {
             endDate
+        }
+    }
+
+    fun getTeaserQuantityEditorMaxValue(startDate: Date, now: Date): Int {
+        val startDateWithoutMinute = startDate.hourOnly()
+        val nowWithoutMinute = now.hourOnly()
+        val differenceInMillis = startDateWithoutMinute.time - nowWithoutMinute.time
+        val hourDifference = TimeUnit.MILLISECONDS.toHours(differenceInMillis)
+        val adjustedHourDifference = (hourDifference - ONE_HOUR).toInt()
+        return when {
+            adjustedHourDifference > CAMPAIGN_TEASER_MAXIMUM_UPCOMING_HOUR -> CAMPAIGN_TEASER_MAXIMUM_UPCOMING_HOUR
+            adjustedHourDifference <= CAMPAIGN_TEASER_MINIMUM_UPCOMING_HOUR -> CAMPAIGN_TEASER_MINIMUM_UPCOMING_HOUR
+            else -> adjustedHourDifference
         }
     }
 }
