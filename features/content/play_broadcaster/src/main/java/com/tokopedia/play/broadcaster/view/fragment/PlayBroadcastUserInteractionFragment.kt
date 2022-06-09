@@ -972,6 +972,10 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
                     showQuizForm(true)
                 }
                 is QuizFormStateUiModel.SetDuration -> {
+                    analytic.onClickContinueQuiz(
+                        parentViewModel.channelId,
+                        parentViewModel.channelTitle,
+                    )
                     /** TODO: handle set duration */
                 }
             }

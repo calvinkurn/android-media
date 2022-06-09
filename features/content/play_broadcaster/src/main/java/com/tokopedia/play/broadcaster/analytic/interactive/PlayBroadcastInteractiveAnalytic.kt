@@ -44,4 +44,6 @@ interface PlayBroadcastInteractiveAnalytic {
 
     fun onclickBackSetTimerGiveAway(channelId: String, channelTitle: String)
 
+    fun onClickContinueQuiz(channelId: String, channelTitle: String)
+
 }
