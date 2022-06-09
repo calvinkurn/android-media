@@ -52,4 +52,6 @@ interface PlayBroadcastInteractiveAnalytic {
 
     fun onClickStartQuiz(channelId: String, channelTitle: String)
 
+    fun onClickBackQuizDuration(channelId: String, channelTitle: String)
+
 }

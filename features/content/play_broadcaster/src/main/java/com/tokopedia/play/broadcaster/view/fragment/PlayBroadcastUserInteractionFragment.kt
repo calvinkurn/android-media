@@ -327,6 +327,11 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
                     parentViewModel.channelId,
                     parentViewModel.channelTitle,
                 )
+            QuizFormView.Event.BackSelectDuration ->
+                analytic.onClickBackQuizDuration(
+                    parentViewModel.channelId,
+                    parentViewModel.channelTitle,
+                )
             else -> {}
         }
     }

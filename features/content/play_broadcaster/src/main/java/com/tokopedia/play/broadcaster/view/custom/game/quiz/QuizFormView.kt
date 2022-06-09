@@ -109,6 +109,7 @@ class QuizFormView : ConstraintLayout {
         }
 
         timePickerBinding.ivSheetClose.setOnClickListener {
+            eventBus.emit(Event.BackSelectDuration)
             eventBus.emit(Event.Back)
         }
 
@@ -308,6 +309,7 @@ class QuizFormView : ConstraintLayout {
         object GiftClosed : Event
         object Submit: Event
         object Close : Event
+        object BackSelectDuration : Event
     }
 
     companion object {
