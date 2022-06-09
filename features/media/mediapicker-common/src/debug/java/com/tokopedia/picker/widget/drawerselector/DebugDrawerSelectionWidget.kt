@@ -111,7 +111,7 @@ class DebugDrawerSelectionWidget : FrameLayout {
 
         placeholderPreview = typedArray.getResourceId(
             R.styleable.MediaPickerPreviewWidget_placeholder,
-            R.drawable.picker_ic_placeholder_media_preview
+            R.drawable.picker_ic_placeholder_media_preview_debug
         )
     }
 
