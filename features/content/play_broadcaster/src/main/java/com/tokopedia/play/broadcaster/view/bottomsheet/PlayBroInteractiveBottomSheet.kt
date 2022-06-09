@@ -183,13 +183,13 @@ class PlayBroInteractiveBottomSheet @Inject constructor(
     override fun onCloseButtonClicked(view: PlayInteractiveLeaderboardViewComponent) {
         when (sheetType) {
             Type.LEADERBOARD.toString() -> {
-                analytic.clickCloseGameResultBottomsheet(
+                analytic.onClickCloseGameResultBottomsheet(
                     parentViewModel.channelId,
                     parentViewModel.channelTitle,
                 )
             }
             Type.REPORT.toString() -> {
-                analytic.clickCloseGameResultReport(
+                analytic.onClickCloseGameResultReport(
                     parentViewModel.channelId,
                     parentViewModel.channelTitle,
                 )
@@ -205,8 +205,7 @@ class PlayBroInteractiveBottomSheet @Inject constructor(
     ) {
         analytic.onClickChatWinnerIcon(
             parentViewModel.channelId,
-            parentViewModel.interactiveId,
-            parentViewModel.activeInteractiveTitle
+            parentViewModel.channelTitle,
         )
         RouteManager.route(
             requireContext(),

@@ -105,207 +105,95 @@ class PlayBroadcastInteractiveAnalyticImpl @Inject constructor(
 
     override fun onClickChatWinnerIcon(
         channelId: String,
-        interactiveId: String,
-        interactiveTitle: String
+        channelTitle: String,
+    ) {
+        sendClickEvent(
+            "click - chat winners",
+            "${userSession.shopId} - $channelId - $channelTitle",
+        )
+    }
+
+    override fun onClickGameIconButton(channelId: String, channelTitle: String) {
+        sendClickEvent(
+            "click - gamification button",
+            "${userSession.shopId} - $channelId - $channelTitle",
+        )
+    }
+
+    override fun onClickGameOption(channelId: String, channelTitle: String, gameType: String) {
+        sendClickEvent(
+            "click - engagement widget",
+            "${userSession.shopId} - $channelId - $channelTitle - $gameType",
+        )
+    }
+
+    override fun onClickContinueGiveaway(channelId: String, channelTitle: String) {
+        sendClickEvent(
+            "click - lanjut giveaway",
+            "${userSession.shopId} - $channelId - $channelTitle",
+        )
+    }
+
+    override fun onImpressGameIconButton(channelId: String, channelTitle: String) {
+        sendImpressionEvent(
+            "view - gamification button",
+            "${userSession.shopId} - $channelId - $channelTitle",
+        )
+    }
+
+    override fun onClickBackGiveaway(channelId: String, channelTitle: String) {
+        sendClickEvent(
+            "click - back gamification selection",
+            "${userSession.shopId} - $channelId - $channelTitle",
+        )
+    }
+
+    override fun onClickGameResult(channelId: String, channelTitle: String) {
+        sendClickEvent(
+            "click - hasil game",
+            "${userSession.shopId} - $channelId - $channelTitle",
+        )
+    }
+
+    override fun onClickCloseGameResultBottomsheet(channelId: String, channelTitle: String) {
+        sendClickEvent(
+            "click - x hasil game bottomsheet",
+            "${userSession.shopId} - $channelId - $channelTitle"
+        )
+    }
+
+    override fun onClickCloseGameResultReport(channelId: String, channelTitle: String) {
+        sendClickEvent(
+            "click - x report page gamification",
+            "${userSession.shopId} - $channelId - $channelTitle",
+        )
+    }
+
+    private fun sendClickEvent(
+        eventAction: String,
+        eventLabel: String,
+    ) {
+        sendEvent(eventAction,eventLabel, KEY_TRACK_CLICK_EVENT)
+    }
+
+    private fun sendImpressionEvent(
+        eventAction: String,
+        eventLabel: String,
+    ) {
+        sendEvent(eventAction,eventLabel, KEY_TRACK_VIEW_EVENT)
+    }
+
+    private fun sendEvent(
+        eventAction: String,
+        eventLabel: String,
+        eventKey: String,
     ) {
         TrackApp.getInstance().gtm.sendGeneralEvent(
             mapOf(
-                KEY_EVENT to KEY_TRACK_CLICK_EVENT,
+                KEY_EVENT to eventKey,
+                KEY_EVENT_ACTION to eventAction,
                 KEY_EVENT_CATEGORY to KEY_TRACK_CATEGORY,
-                KEY_EVENT_ACTION to "click chat in bottom sheet",
-                KEY_EVENT_LABEL to "$channelId - live - $interactiveId - $interactiveTitle",
-                KEY_CURRENT_SITE to currentSite,
-                KEY_BUSINESS_UNIT to KEY_TRACK_BUSINESS_UNIT,
-                KEY_SHOP_ID to userSession.shopId,
-                KEY_USER_ID to userSession.userId
-            )
-        )
-    }
-
-    /**
-     * {"event":"clickPG",
-     * "eventAction":"click - gamification button",
-     * "eventCategory":"seller broadcast",
-     * "eventLabel":"{shop_id} - {channel_id} - {channel title}",
-     * "businessUnit":"play",
-     * "currentSite":"tokopediamarketplace",
-     * "sessionIris":"{session_iris}",
-     * "userId":"{user_id}"}
-     */
-    override fun onClickGameIconButton(channelId: String, channelTitle: String) {
-        TrackApp.getInstance().gtm.sendGeneralEvent(
-            mapOf(
-                KEY_EVENT to KEY_TRACK_CLICK_EVENT,
-                KEY_EVENT_ACTION to "click - gamification button",
-                KEY_EVENT_CATEGORY to KEY_TRACK_CATEGORY,
-                KEY_EVENT_LABEL to "${userSession.shopId} - $channelId - $channelTitle",
-                KEY_BUSINESS_UNIT to KEY_TRACK_BUSINESS_UNIT,
-                KEY_CURRENT_SITE to currentSite,
-                KEY_USER_ID to userSession.userId
-            )
-        )
-    }
-
-    /**
-     * {"event":"clickPG",
-     * "eventAction":"click - engagement widget",
-     * "eventCategory":"seller broadcast",
-     * "eventLabel":"{shop_id} - {channel_id} - {channel title} - {engagement widget name}",
-     * "businessUnit":"play","currentSite":"tokopediamarketplace",
-     * "sessionIris":"{session_iris}",
-     * "userId":"{user_id}"}
-     */
-    override fun onClickGameOption(channelId: String, channelTitle: String, gameType: String) {
-        TrackApp.getInstance().gtm.sendGeneralEvent(
-            mapOf(
-                KEY_EVENT to KEY_TRACK_CLICK_EVENT,
-                KEY_EVENT_ACTION to "click - engagement widget",
-                KEY_EVENT_CATEGORY to KEY_TRACK_CATEGORY,
-                KEY_EVENT_LABEL to "${userSession.shopId} - $channelId - $channelTitle - $gameType",
-                KEY_BUSINESS_UNIT to KEY_TRACK_BUSINESS_UNIT,
-                KEY_CURRENT_SITE to currentSite,
-                KEY_USER_ID to userSession.userId
-            )
-        )
-    }
-
-    /**
-     * {"event":"clickPG",
-     * "eventAction":"click - lanjut giveaway",
-     * "eventCategory":"seller broadcast",
-     * "eventLabel":"{shop_id} - {channel_id} - {channel title}",
-     * "businessUnit":"play",
-     * "currentSite":"tokopediamarketplace",
-     * "sessionIris":"{session_iris}",
-     * "userId":"{user_id}"}
-     */
-    override fun onClickContinueGiveaway(channelId: String, channelTitle: String){
-        TrackApp.getInstance().gtm.sendGeneralEvent(
-            mapOf(
-                KEY_EVENT to KEY_TRACK_CLICK_EVENT,
-                KEY_EVENT_ACTION to "click - lanjut giveaway",
-                KEY_EVENT_CATEGORY to KEY_TRACK_CATEGORY,
-                KEY_EVENT_LABEL to "${userSession.shopId} - $channelId - $channelTitle",
-                KEY_BUSINESS_UNIT to KEY_TRACK_BUSINESS_UNIT,
-                KEY_CURRENT_SITE to currentSite,
-                KEY_USER_ID to userSession.userId
-            )
-        )
-    }
-
-    /**
-     * {"event":"viewPGIris",
-     * "eventAction":"view - gamification button",
-     * "eventCategory":"seller broadcast",
-     * "eventLabel":"{shop_id} - {channel_id} - {channel title}",
-     * "businessUnit":"play",
-     * "currentSite":"tokopediamarketplace",
-     * "sessionIris":"{session_iris}",
-     * "userId":"{user_id}"}
-     */
-    override fun onImpressGameIconButton(channelId: String, channelTitle: String) {
-        TrackApp.getInstance().gtm.sendGeneralEvent(
-            mapOf(
-                KEY_EVENT to KEY_TRACK_VIEW_EVENT,
-                KEY_EVENT_ACTION to "view - gamification button",
-                KEY_EVENT_CATEGORY to KEY_TRACK_CATEGORY,
-                KEY_EVENT_LABEL to "${userSession.shopId} - $channelId - $channelTitle",
-                KEY_BUSINESS_UNIT to KEY_TRACK_BUSINESS_UNIT,
-                KEY_CURRENT_SITE to currentSite,
-                KEY_USER_ID to userSession.userId
-            )
-        )
-    }
-
-    /**
-     * {"event":"clickPG",
-     * "eventAction":"click - back gamification selection",
-     * "eventCategory":"seller broadcast",
-     * "eventLabel":"{shop_id} - {channel_id} - {channel title}",
-     * "businessUnit":"play",
-     * "currentSite":"tokopediamarketplace",
-     * "sessionIris":"{session_iris}",
-     * "userId":"{user_id}"}
-     */
-    override fun onClickBackGiveaway(channelId: String, channelTitle: String) {
-        TrackApp.getInstance().gtm.sendGeneralEvent(
-            mapOf(
-                KEY_EVENT to KEY_TRACK_CLICK_EVENT,
-                KEY_EVENT_ACTION to "click - back gamification selection",
-                KEY_EVENT_CATEGORY to KEY_TRACK_CATEGORY,
-                KEY_EVENT_LABEL to "${userSession.shopId} - $channelId - $channelTitle",
-                KEY_BUSINESS_UNIT to KEY_TRACK_BUSINESS_UNIT,
-                KEY_CURRENT_SITE to currentSite,
-                KEY_USER_ID to userSession.userId
-            )
-        )
-    }
-
-    /**
-     * {"event":"clickPG",
-     * "eventAction":"click - hasil game",
-     * "eventCategory":"seller broadcast",
-     * "eventLabel":"{shop_id} - {channel_id} - {channel title}",
-     * "businessUnit":"play",
-     * "currentSite":"tokopediamarketplace",
-     * "sessionIris":"{session_iris}",
-     * "userId":"{user_id}"}
-     */
-    override fun clickGameResult(channelId: String, channelTitle: String) {
-        TrackApp.getInstance().gtm.sendGeneralEvent(
-            mapOf(
-                KEY_EVENT to KEY_TRACK_CLICK_EVENT,
-                KEY_EVENT_ACTION to "click - hasil game",
-                KEY_EVENT_CATEGORY to KEY_TRACK_CATEGORY,
-                KEY_EVENT_LABEL to "${userSession.shopId} - $channelId - $channelTitle",
-                KEY_BUSINESS_UNIT to KEY_TRACK_BUSINESS_UNIT,
-                KEY_CURRENT_SITE to currentSite,
-                KEY_USER_ID to userSession.userId
-            )
-        )
-    }
-
-    /**
-     * {"event":"clickPG",
-     * "eventAction":"click - x hasil game bottomsheet",
-     * "eventCategory":"seller broadcast",
-     * "eventLabel":"{shop_id} - {channel_id} - {channel title}",
-     * "businessUnit":"play",
-     * "currentSite":"tokopediamarketplace",
-     * "sessionIris":"{session_iris}",
-     * "userId":"{user_id}"}
-     */
-    override fun clickCloseGameResultBottomsheet(channelId: String, channelTitle: String){
-        TrackApp.getInstance().gtm.sendGeneralEvent(
-            mapOf(
-                KEY_EVENT to KEY_TRACK_CLICK_EVENT,
-                KEY_EVENT_ACTION to "click - x hasil game bottomsheet",
-                KEY_EVENT_CATEGORY to KEY_TRACK_CATEGORY,
-                KEY_EVENT_LABEL to "${userSession.shopId} - $channelId - $channelTitle",
-                KEY_BUSINESS_UNIT to KEY_TRACK_BUSINESS_UNIT,
-                KEY_CURRENT_SITE to currentSite,
-                KEY_USER_ID to userSession.userId
-            )
-        )
-    }
-
-    /**
-     * {"event":"clickPG",
-     * "eventAction":"click - x report page gamification",
-     * "eventCategory":"seller broadcast",
-     * "eventLabel":"{shop_id} - {channel_id} - {channel title}",
-     * "businessUnit":"play",
-     * "currentSite":"tokopediamarketplace",
-     * "sessionIris":"{session_iris}",
-     * "userId":"{user_id}"}
-     */
-    override fun clickCloseGameResultReport(channelId: String, channelTitle: String){
-        TrackApp.getInstance().gtm.sendGeneralEvent(
-            mapOf(
-                KEY_EVENT to KEY_TRACK_CLICK_EVENT,
-                KEY_EVENT_ACTION to "click - x report page gamification",
-                KEY_EVENT_CATEGORY to KEY_TRACK_CATEGORY,
-                KEY_EVENT_LABEL to "${userSession.shopId} - $channelId - $channelTitle",
+                KEY_EVENT_LABEL to eventLabel,
                 KEY_BUSINESS_UNIT to KEY_TRACK_BUSINESS_UNIT,
                 KEY_CURRENT_SITE to currentSite,
                 KEY_USER_ID to userSession.userId

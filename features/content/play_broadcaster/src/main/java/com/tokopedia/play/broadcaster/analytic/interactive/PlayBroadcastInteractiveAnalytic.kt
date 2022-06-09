@@ -16,7 +16,7 @@ interface PlayBroadcastInteractiveAnalytic {
 
     fun onClickWinnerIcon(channelId: String, interactiveId: String, interactiveTitle: String)
 
-    fun onClickChatWinnerIcon(channelId: String, interactiveId: String, interactiveTitle: String)
+    fun onClickChatWinnerIcon(channelId: String, channelTitle: String)
 
     fun onClickGameIconButton(channelId: String, channelTitle: String)
 
@@ -28,9 +28,9 @@ interface PlayBroadcastInteractiveAnalytic {
 
     fun onClickBackGiveaway(channelId: String, channelTitle: String)
 
-    fun clickGameResult(channelId: String, channelTitle: String)
+    fun onClickGameResult(channelId: String, channelTitle: String)
 
-    fun clickCloseGameResultBottomsheet(channelId: String, channelTitle: String)
+    fun onClickCloseGameResultBottomsheet(channelId: String, channelTitle: String)
 
-    fun clickCloseGameResultReport(channelId: String, channelTitle: String)
+    fun onClickCloseGameResultReport(channelId: String, channelTitle: String)
 }

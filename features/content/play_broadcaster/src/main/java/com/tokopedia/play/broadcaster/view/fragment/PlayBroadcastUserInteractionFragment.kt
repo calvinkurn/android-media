@@ -131,7 +131,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
 
     private val interactiveGameResultViewComponent by viewComponentOrNull { InteractiveGameResultViewComponent(it, object : InteractiveGameResultViewComponent.Listener {
         override fun onGameResultClicked(view: InteractiveGameResultViewComponent) {
-            analytic.clickGameResult(parentViewModel.channelId, parentViewModel.channelTitle)
+            analytic.onClickGameResult(parentViewModel.channelId, parentViewModel.channelTitle)
             parentViewModel.submitAction(PlayBroadcastAction.ClickGameResultWidget)
             view.hideCoachMark()
         }
