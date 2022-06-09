@@ -10,11 +10,13 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp"
-        android:lineSpacingMultiplier="1.2"
+        android:layout_marginBottom="16dp"
+        android:lineSpacingMultiplier="1.5"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:typographyType="paragraph_1"
+        app:typographyType="paragraph_2"
         app:typographyWeight="reguler" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

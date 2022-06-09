@@ -13,11 +13,12 @@ import com.tokopedia.unifycomponents.BottomSheetUnify
 open class ModalBottomSheet: BottomSheetUnify() {
 
     companion object {
-        var MODAL_WIDTH_RATIO = 0.7
+        const val MODAL_WIDTH_RATIO = 0.7
         const val MODAL_WIDE_WIDTH_RATIO = 0.9
         const val MODAL_MARGIN_PERCENTAGE = 0.4f
     }
 
+    var modalWidthRatio = MODAL_WIDTH_RATIO
     var useWideModal = false
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -57,7 +58,7 @@ open class ModalBottomSheet: BottomSheetUnify() {
         bsLayout.layoutParams.width = if (useWideModal) {
             getScreenWidth() * MODAL_WIDE_WIDTH_RATIO
         } else {
-            getScreenWidth() * MODAL_WIDTH_RATIO
+            getScreenWidth() * modalWidthRatio
         }.toInt()
         bsLayout.background = requireContext().getDrawable(com.tokopedia.unifycomponents.R.drawable.notification_big_bg)
         bsLayout.requestLayout()
