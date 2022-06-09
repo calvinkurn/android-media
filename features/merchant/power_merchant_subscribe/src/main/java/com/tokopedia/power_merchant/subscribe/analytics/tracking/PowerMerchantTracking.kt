@@ -303,6 +303,17 @@ class PowerMerchantTracking @Inject constructor(
         sendEvent(event)
     }
 
+    fun sendEventClickTooltipShopLevel(shopLevel: String) {
+        val event = createEvent(
+            event = TrackingConstant.EVENT_CLICK_PG,
+            action = TrackingConstant.ACTION_CLICK_TOOLTIP_SHOP_LEVEL,
+            category = TrackingConstant.getPowerMerchantCategory(),
+            label = shopLevel
+        )
+
+        sendEvent(event)
+    }
+
     fun sendEventClickCTAPmUpgradeLearnMore(shopScore: String) {
         val event = createEventMapPmPro(
             event = TrackingConstant.EVENT_CLICK_POWER_MERCHANT,
@@ -315,7 +326,7 @@ class PowerMerchantTracking @Inject constructor(
         sendEvent(event)
     }
 
-    fun sendEventClickDetailTermPM(shopScore:String) {
+    fun sendEventClickDetailTermPM(shopScore: String) {
         val event = createEvent(
             event = TrackingConstant.EVENT_CLICK_PG,
             category = TrackingConstant.getPowerMerchantCategory(),
@@ -326,7 +337,7 @@ class PowerMerchantTracking @Inject constructor(
         sendEvent(event)
     }
 
-    fun sendEventClickLearnMorePMBenefit(shopScore:String) {
+    fun sendEventClickLearnMorePMBenefit(shopScore: String) {
         val event = createEvent(
             event = TrackingConstant.EVENT_CLICK_PG,
             category = TrackingConstant.getPowerMerchantCategory(),
@@ -337,7 +348,7 @@ class PowerMerchantTracking @Inject constructor(
         sendEvent(event)
     }
 
-    fun sendEventClickLearnMorePM(shopScore:String) {
+    fun sendEventClickLearnMorePM(shopScore: String) {
         val event = createEvent(
             event = TrackingConstant.EVENT_CLICK_PG,
             category = TrackingConstant.getPowerMerchantCategory(),
@@ -360,7 +371,7 @@ class PowerMerchantTracking @Inject constructor(
     }
 
 
-    fun sendEventClickProgressBar(currentGrade:String) {
+    fun sendEventClickProgressBar(currentGrade: String) {
         val event = createEvent(
             event = TrackingConstant.EVENT_CLICK_PG,
             action = TrackingConstant.ACTION_CLICK_PROGRESS_BAR,

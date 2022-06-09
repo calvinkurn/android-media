@@ -78,6 +78,7 @@ object TrackingConstant {
     const val ACTION_CLICK_FEE_SERVICE = "click biaya layanan"
     const val ACTION_CLICK_DETAIL_KEANGGOTAAN_PAGE = "click tab progress bar - detail keanggotaan"
     const val ACTION_CLICK_SHOP_PERFORMANCE = "click performa toko - detail keanggotaan"
+    const val ACTION_CLICK_TOOLTIP_SHOP_LEVEL = "click tooltip level toko"
 
     const val EVENT_CLICK_PG = "clickPG"
     const val VIEW_PG_IRIS = "viewPGIris"
