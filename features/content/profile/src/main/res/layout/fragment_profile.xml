@@ -64,7 +64,7 @@
                         android:layout_gravity="center"
                         android:lineSpacingExtra="4sp"
                         android:text="@string/profile_follow"
-                        android:textColor="@color/Unify_G500"
+                        android:textColor="@color/Green_G500"
                         android:textStyle="bold"
                         app:fontSize="small" />
                 </FrameLayout>
@@ -94,7 +94,7 @@
                         android:layout_marginStart="4dp"
                         android:layout_marginLeft="4dp"
                         android:text="@string/title_share_en"
-                        android:textColor="@color/Unify_N700_68"
+                        android:textColor="@color/color_like_comment_share"
                         android:visibility="gone"
                         app:fontSize="micro"
                         tools:textSize="@dimen/sp_12"
@@ -108,7 +108,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_above="@id/footer"
-            android:background="@color/Unify_N0"
+            android:background="@color/white"
             android:fitsSystemWindows="true">
 
             <com.google.android.material.appbar.AppBarLayout
@@ -124,7 +124,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:fitsSystemWindows="true"
-                    app:contentScrim="@color/Unify_N0"
+                    app:contentScrim="@color/white"
                     app:layout_scrollFlags="scroll|snap|exitUntilCollapsed">
 
                     <FrameLayout
@@ -166,7 +166,7 @@
                                     android:layout_width="wrap_content"
                                     android:layout_height="match_parent"
                                     android:layout_gravity="center"
-                                    android:tint="@color/Unify_N0"
+                                    android:tint="@color/white"
                                     app:srcCompat="@drawable/ic_action_back" />
 
                                 <TextView
@@ -176,7 +176,7 @@
                                     android:layout_gravity="center"
                                     android:layout_marginLeft="16dp"
                                     android:layout_weight="1"
-                                    android:textColor="@color/Unify_N0"
+                                    android:textColor="@color/white"
                                     android:textSize="@dimen/sp_17"
                                     android:textStyle="bold" />
 
@@ -186,7 +186,7 @@
                                     android:layout_height="match_parent"
                                     android:layout_gravity="center"
                                     android:layout_marginLeft="16dp"
-                                    android:tint="@color/Unify_N0"
+                                    android:tint="@color/white"
                                     tools:src="@drawable/ic_share_white" />
 
                                 <ImageView
@@ -195,7 +195,7 @@
                                     android:layout_height="match_parent"
                                     android:layout_gravity="center"
                                     android:layout_marginLeft="16dp"
-                                    android:tint="@color/Unify_N0"
+                                    android:tint="@color/white"
                                     tools:src="@drawable/ic_share_white" />
 
                             </LinearLayout>
@@ -245,7 +245,7 @@
                                             android:id="@+id/tv_name"
                                             android:layout_width="wrap_content"
                                             android:layout_height="wrap_content"
-                                            android:textColor="@color/Unify_N0"
+                                            android:textColor="@color/white"
                                             android:textSize="@dimen/sp_17"
                                             android:textStyle="bold"
                                             tools:text="Raisa Andriana" />
@@ -256,7 +256,7 @@
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
                                         android:layout_marginTop="4dp"
-                                        android:textColor="@color/Unify_N0"
+                                        android:textColor="@color/white"
                                         android:textSize="@dimen/sp_12"
                                         tools:text="200 follower" />
 
@@ -325,7 +325,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="match_parent"
                                 android:layout_gravity="center"
-                                android:tint="@color/Unify_N700_68"
+                                android:tint="@color/black_70"
                                 app:srcCompat="@drawable/ic_action_back" />
 
                             <TextView
@@ -335,7 +335,7 @@
                                 android:layout_gravity="center"
                                 android:layout_marginLeft="16dp"
                                 android:layout_weight="1"
-                                android:textColor="@color/Unify_N700_68"
+                                android:textColor="@color/black_70"
                                 android:textSize="@dimen/sp_17"
                                 android:textStyle="bold" />
 
@@ -345,7 +345,7 @@
                                 android:layout_height="match_parent"
                                 android:layout_gravity="center"
                                 android:layout_marginLeft="16dp"
-                                android:tint="@color/Unify_N500"
+                                android:tint="#52565E"
                                 tools:src="@drawable/ic_share_white" />
 
                             <ImageView
@@ -354,7 +354,7 @@
                                 android:layout_height="match_parent"
                                 android:layout_gravity="center"
                                 android:layout_marginLeft="16dp"
-                                android:tint="@color/Unify_N500"
+                                android:tint="#52565E"
                                 tools:src="@drawable/ic_share_white" />
 
                         </LinearLayout>
@@ -390,7 +390,7 @@
             android:id="@+id/loadingLayout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@color/Unify_N0"
+            android:background="@color/white"
             android:visibility="gone">
 
             <ProgressBar
@@ -407,9 +407,9 @@
         android:layout_gravity="end|bottom"
         android:layout_marginEnd="@dimen/spacing_lvl4"
         android:layout_marginBottom="@dimen/fab_create_post_bottom_margin"
-        android:tint="@color/Unify_N0"
+        android:tint="@color/Neutral_N0"
         android:visibility="gone"
-        app:backgroundTint="@color/Unify_G400"
+        app:backgroundTint="@color/Green_G400"
         app:srcCompat="@drawable/ic_plus_add"
         />
 

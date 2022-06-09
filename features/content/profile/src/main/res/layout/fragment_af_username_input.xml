@@ -32,7 +32,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_below="@+id/header_rounded"
-            android:background="@color/Unify_N0"
+            android:background="@color/white"
             android:padding="16dp">
 
             <View
@@ -59,7 +59,7 @@
                 android:fontFamily="sans-serif"
                 android:lineSpacingExtra="9sp"
                 android:text="@string/af_make_by_me_profile"
-                android:textColor="@color/Unify_N700_68"
+                android:textColor="@color/black_70"
                 android:textSize="@dimen/sp_16"
                 android:textStyle="bold"
                 app:layout_constraintStart_toStartOf="parent"
@@ -74,7 +74,7 @@
                 android:layout_marginLeft="-4dp"
                 android:layout_marginTop="16dp"
                 android:hint="@string/af_type_username"
-                android:textColorHint="@color/Unify_N700_68"
+                android:textColorHint="@color/black_56"
                 app:layout_constraintTop_toBottomOf="@+id/title">
 
                 <com.tokopedia.affiliate.feature.onboarding.view.widget.ProfilePrefixEditText
@@ -88,7 +88,7 @@
                     android:singleLine="true"
                     android:textSize="@dimen/sp_16"
                     app:prefix="@string/af_by_me_domain"
-                    app:prefixTextColor="@color/Unify_N700_68" />
+                    app:prefixTextColor="@color/black_70" />
             </com.tokopedia.design.text.TkpdHintTextInputLayout>
 
             <androidx.cardview.widget.CardView
@@ -145,7 +145,7 @@
                 android:gravity="center_horizontal"
                 android:lineSpacingExtra="4sp"
                 android:text="@string/af_agree_terms"
-                android:textColor="@color/Unify_N700_44"
+                android:textColor="@color/black_54"
                 android:textSize="@dimen/sp_12"
                 android:textStyle="normal"
                 app:layout_constraintBottom_toTopOf="@+id/termsAndCondition" />
@@ -158,7 +158,7 @@
                 android:gravity="center_horizontal"
                 android:lineSpacingExtra="4sp"
                 android:text="@string/af_terms_and_condition"
-                android:textColor="@color/Unify_G600"
+                android:textColor="#399c3f"
                 android:textSize="@dimen/sp_12"
                 android:textStyle="bold"
                 app:layout_constraintBottom_toBottomOf="parent" />
