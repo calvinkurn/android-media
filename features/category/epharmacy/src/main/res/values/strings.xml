@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">ePharmacy</string>
     <string name="label_e_pharmacy">ePharmacy</string>
+    <string name="epharmacy_host">epharmacy</string>
     <string name="epharmacy_ketentuan_foto_resep">Ketentuan foto resep</string>
     <string name="epharmacy_upload_title">Upload Foto Resep</string>
     <string name="epharmacy_upload_instruction_1">Pastikan seluruh bagian kertas terlihat dan dapat terbaca</string>
