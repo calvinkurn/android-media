@@ -999,12 +999,13 @@ class OfficialStoreTracking(context: Context) {
             list.add(VALUE_NON_LOGIN_NEW)
         else list.add(VALUE_LOGIN_NEW)
         val listKeyValue = TextUtils.join(" - ", list)
-        val eventAction = "$CLICK on product $valueDynamicMix"
+        val eventAction = "$CLICK product - $valueDynamicMix"
+        val eventLabel = "${channel.id} - ${channel.channelHeader.name} - $categoryName"
         val data = DataLayer.mapOf(
                 EVENT, EVENT_PRODUCT_CLICK,
                 EVENT_CATEGORY, OS_MICROSITE_SINGLE,
                 EVENT_ACTION, eventAction,
-                EVENT_LABEL, channel.id + " - " + categoryName,
+                EVENT_LABEL, eventLabel,
                 FIELD_BUSINESS_UNIT, VALUE_BUSINESS_UNIT_DEFAULT,
                 FIELD_CURRENT_SITE, VALUE_CURRENT_SITE_DEFAULT,
                 USER_ID, userId,
