@@ -2,6 +2,7 @@ package com.tokopedia.review.feature.createreputation.model
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
+import java.io.Serializable
 
 data class ProductrevGetPostSubmitBottomSheetResponse(
     @SerializedName("type")
@@ -19,7 +20,7 @@ data class ProductrevGetPostSubmitBottomSheetResponse(
     @SerializedName("buttonList")
     @Expose
     val buttonList: List<Button>? = null
-) {
+) : Serializable {
     data class Button(
         @SerializedName("type")
         @Expose
@@ -42,7 +43,7 @@ data class ProductrevGetPostSubmitBottomSheetResponse(
         @SerializedName("appLink")
         @Expose
         val appLink: String? = null,
-    ) {
+    ) : Serializable {
         companion object {
             const val TYPE_STANDARD = "standard"
             const val TYPE_CLOSE = "close"

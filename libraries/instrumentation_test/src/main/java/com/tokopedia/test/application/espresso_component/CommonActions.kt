@@ -223,6 +223,15 @@ object CommonActions {
         })
     }
 
+    fun findViewHolderAndDo(recyclerViewId: Int, position: Int, action: (View?) -> Unit) {
+        val viewInteraction = Espresso.onView(ViewMatchers.withId(recyclerViewId)).check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
+        viewInteraction.perform(
+                RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(position, screenShotChild { view ->
+                    action.invoke(view)
+                })
+        )
+    }
+
     /**
      * Will screenshot viewholder based on position, please make sure your data
      * @param shouldDelay if you need delay or wait (usually waiting for image to be inflate)

@@ -78,7 +78,6 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.rechargeCreditCard)
     implementation projectOrAar(rootProject.ext.features.digitalEmoney)
     implementation projectOrAar(rootProject.ext.features.digitalBrizzi)
-    implementation projectOrAar(rootProject.ext.features.smartBills)
     implementation projectOrAar(rootProject.ext.features.digitalCheckout)
     implementation projectOrAar(rootProject.ext.features.rechargePdpEmoney)
     implementation projectOrAar(rootProject.ext.features.digitalProductDetail)

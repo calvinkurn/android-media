@@ -30,6 +30,8 @@ class ProductDetailActivityMock : ProductDetailActivity() {
         // Don't inflate fragment immediately
     }
 
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         supportFragmentManager.executePendingTransactions()
@@ -52,7 +54,7 @@ class ProductDetailActivityMock : ProductDetailActivity() {
         return PRODUCT_DETAIL_TAG
     }
 
-    fun getPdpFragment():DynamicProductDetailFragment {
+    fun getPdpFragment(): DynamicProductDetailFragment {
         return supportFragmentManager.findFragmentByTag(tagFragment) as DynamicProductDetailFragment
     }
 

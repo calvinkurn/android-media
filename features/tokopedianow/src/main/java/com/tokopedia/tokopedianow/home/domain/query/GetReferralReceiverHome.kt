@@ -2,7 +2,7 @@ package com.tokopedia.tokopedianow.home.domain.query
 
 import com.tokopedia.gql_query_annotation.GqlQueryInterface
 
-object GetReferralReceiverHome: GqlQueryInterface {
+internal object GetReferralReceiverHome: GqlQueryInterface {
 
     const val PARAM_SLUG = "slug"
 

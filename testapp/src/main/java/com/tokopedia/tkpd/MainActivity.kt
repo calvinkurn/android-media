@@ -11,7 +11,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.tkpd.testgql.TestGqlUseCase
 import com.tokopedia.url.TokopediaUrl
@@ -55,7 +54,7 @@ class MainActivity : AppCompatActivity() {
         /* use mainapp login use case */
         logoutButton.setOnClickListener {
             val logoutIntent = RouteManager.getIntent(this, ApplinkConstInternalUserPlatform.LOGOUT).apply {
-                putExtra(ApplinkConstInternalGlobal.PARAM_IS_RETURN_HOME, false)
+                putExtra(ApplinkConstInternalUserPlatform.PARAM_IS_RETURN_HOME, false)
             }
             startActivityForResult(logoutIntent, REQUEST_CODE_LOGOUT)
         }
