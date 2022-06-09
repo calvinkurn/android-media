@@ -8,8 +8,8 @@ import android.net.Uri
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextUtils
-import android.util.Log
 import android.text.TextWatcher
+import android.util.Log
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
@@ -19,7 +19,6 @@ import android.widget.EditText
 import android.widget.ImageView
 import android.widget.LinearLayout
 import androidx.cardview.widget.CardView
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -36,25 +35,19 @@ import com.tokopedia.abstraction.common.utils.network.URLGenerator
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.chat_common.BaseChatFragment
 import com.tokopedia.chat_common.BaseChatToolbarActivity
 import com.tokopedia.chat_common.data.*
 import com.tokopedia.chat_common.domain.pojo.attachmentmenu.*
 import com.tokopedia.chat_common.domain.pojo.invoiceattachment.InvoiceLinkPojo
 import com.tokopedia.chat_common.util.EndlessRecyclerViewScrollUpListener
-import com.tokopedia.chat_common.view.adapter.AttachmentMenuAdapter
 import com.tokopedia.chat_common.view.listener.BaseChatViewState
 import com.tokopedia.chat_common.view.listener.TypingListener
-import com.tokopedia.chat_common.view.widget.AttachmentMenuRecyclerView
-import com.tokopedia.chatbot.ChatbotConstant.ChatbotUnification.ARTICLE_ENTRY
 import com.tokopedia.chatbot.ChatbotConstant.ChatbotUnification.ARTICLE_ID
 import com.tokopedia.chatbot.ChatbotConstant.ChatbotUnification.ARTICLE_TITLE
 import com.tokopedia.chatbot.ChatbotConstant.ChatbotUnification.CODE
 import com.tokopedia.chatbot.ChatbotConstant.ChatbotUnification.EVENT
-import com.tokopedia.chatbot.ChatbotConstant.ChatbotUnification.FALSE
 import com.tokopedia.chatbot.ChatbotConstant.ChatbotUnification.IMAGE_URL
-import com.tokopedia.chatbot.ChatbotConstant.ChatbotUnification.IS_ATTACHED
 import com.tokopedia.chatbot.ChatbotConstant.ChatbotUnification.STATUS
 import com.tokopedia.chatbot.ChatbotConstant.ChatbotUnification.STATUS_ID
 import com.tokopedia.chatbot.ChatbotConstant.ChatbotUnification.USED_BY
@@ -63,14 +56,15 @@ import com.tokopedia.chatbot.ChatbotConstant.CsatRating.RATING_FOUR
 import com.tokopedia.chatbot.ChatbotConstant.CsatRating.RATING_ONE
 import com.tokopedia.chatbot.ChatbotConstant.CsatRating.RATING_THREE
 import com.tokopedia.chatbot.ChatbotConstant.CsatRating.RATING_TWO
-import com.tokopedia.chatbot.ChatbotConstant.MAX_MEDIA_COUNT
 import com.tokopedia.chatbot.ChatbotConstant.ONE_SECOND_IN_MILLISECONDS
 import com.tokopedia.chatbot.ChatbotConstant.REQUEST_CODE_CHAT_IMAGE
 import com.tokopedia.chatbot.ChatbotConstant.REQUEST_CODE_CHAT_VIDEO
 import com.tokopedia.chatbot.ChatbotConstant.REQUEST_SUBMIT_CSAT
 import com.tokopedia.chatbot.ChatbotConstant.REQUEST_SUBMIT_FEEDBACK
-import com.tokopedia.chatbot.ChatbotConstant.SOURCE_ID_FOR_VIDEO_UPLOAD
 import com.tokopedia.chatbot.ChatbotConstant.TOKOPEDIA_ATTACH_INVOICE_REQ_CODE
+import com.tokopedia.chatbot.ChatbotConstant.VideoUpload.MAX_DURATION_FOR_VIDEO
+import com.tokopedia.chatbot.ChatbotConstant.VideoUpload.MAX_MEDIA_COUNT
+import com.tokopedia.chatbot.ChatbotConstant.VideoUpload.SOURCE_ID_FOR_VIDEO_UPLOAD
 import com.tokopedia.chatbot.R
 import com.tokopedia.chatbot.analytics.ChatbotAnalytics.Companion.chatbotAnalytics
 import com.tokopedia.chatbot.attachinvoice.domain.mapper.AttachInvoiceMapper
@@ -103,7 +97,6 @@ import com.tokopedia.chatbot.view.ChatbotInternalRouter
 import com.tokopedia.chatbot.view.activity.ChatBotCsatActivity
 import com.tokopedia.chatbot.view.activity.ChatBotProvideRatingActivity
 import com.tokopedia.chatbot.view.activity.ChatbotActivity
-import com.tokopedia.chatbot.view.activity.ChatbotActivity.Companion.DEEP_LINK_URI
 import com.tokopedia.chatbot.view.adapter.ChatbotAdapter
 import com.tokopedia.chatbot.view.adapter.ChatbotTypeFactoryImpl
 import com.tokopedia.chatbot.view.adapter.MediaRetryBottomSheetAdapter
@@ -151,10 +144,11 @@ private const val DELETE = 0
 private const val SEE_ALL_INVOICE_TEXT = "lihat_semua_transaksi"
 
 class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
-        AttachedInvoiceSelectionListener, QuickReplyListener,
-        ChatActionListBubbleListener, ChatRatingListener,
-        TypingListener, ChatOptionListListener, CsatOptionListListener,
-        View.OnClickListener, TransactionInvoiceBottomSheetListener, StickyActionButtonClickListener, VideoUploadListener, AttachmentMenu.AttachmentMenuListener{
+    AttachedInvoiceSelectionListener, QuickReplyListener,
+    ChatActionListBubbleListener, ChatRatingListener,
+    TypingListener, ChatOptionListListener, CsatOptionListListener,
+    View.OnClickListener, TransactionInvoiceBottomSheetListener, StickyActionButtonClickListener,
+    VideoUploadListener, AttachmentMenu.AttachmentMenuListener {
 
     override fun clearChatText() {
         replyEditText.setText("")
@@ -188,13 +182,6 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
     private var isStickyButtonClicked = false
     private var isChatRefreshed = false
     private var isFirstPage = true
-    private lateinit var mediaPickerContainer : LinearLayout
-    private lateinit var imagePicker : ConstraintLayout
-    private lateinit var videoPicker : ConstraintLayout
-    private var userVideoUploadEligible : Boolean ?= null
-    private var maxFileSize : Int = 0
-    private var listOfAllowedExtention : List<String> = ArrayList()
-    private lateinit var attachmentRecyclerView : AttachmentMenuRecyclerView
     private var isArticleEntry = false
     private var hashMap: Map<String,String> = HashMap<String,String>()
     var isAttached : Boolean = false
@@ -207,6 +194,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
     private var isFloatingSendButton: Boolean = false
     private var isFloatingInvoiceCancelled : Boolean = false
     lateinit var textWatcher : TextWatcher
+    private var isConnectedToAgent : Boolean = false
 
     override fun initInjector() {
         if (activity != null && (activity as Activity).application != null) {
@@ -303,16 +291,6 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
         sendButton = view.findViewById(R.id.send_but)
 
         isFloatingInvoiceCancelled = false
-     //   mediaPickerContainer = view.findViewById(R.id.media_picker_layout)
-    //    imagePicker = view.findViewById(R.id.image_picker)
-    //    videoPicker = view.findViewById(R.id.video_picker)
-        attachmentRecyclerView = view.findViewById(R.id.rv_attachment_menu)
-     //   attachmentRecyclerView.show()
-     //   mediaPickerContainer = view.findViewById(R.id.media_picker_layout)
-    //    imagePicker = view.findViewById(R.id.image_picker)
-    //    videoPicker = view.findViewById(R.id.video_picker)
-        attachmentRecyclerView = view.findViewById(R.id.rv_attachment_menu)
-     //   attachmentRecyclerView.show()
         setChatBackground()
         getRecyclerView(view)?.addItemDecoration(ChatBubbleItemDecorator(setDateIndicator()))
 
@@ -437,6 +415,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
                     modeType(ModeType.VIDEO_ONLY)
                     multipleSelectionMode()
                     maxMediaItem(MAX_MEDIA_COUNT)
+                    maxVideoDuration(MAX_DURATION_FOR_VIDEO)
                 }
             }
             startActivityForResult(intent, REQUEST_CODE_CHAT_VIDEO)
@@ -1205,10 +1184,17 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
     }
 
     override fun createAttachmentMenus(): List<AttachmentMenu> {
-        return listOf(
-            ChatbotImageMenu(),
-            VideoMenu()
-        )
+        if(isConnectedToAgent){
+            return listOf(
+                ChatbotImageMenu(),
+                VideoMenu()
+            )
+        } else {
+            return listOf(
+                ChatbotImageMenu()
+            )
+        }
+
     }
 
     override fun onClickAttachImage(menu: AttachmentMenu) {
@@ -1454,6 +1440,11 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
         fragmentManager?.let {
             bottomSheetPage.show(it, "retry media bottom sheet")
         }
+    }
+
+    override fun sessionChangeStateHandler(state: Boolean) {
+        isConnectedToAgent = state
+        createAttachmentMenus()
     }
 }
 

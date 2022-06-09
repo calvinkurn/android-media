@@ -65,6 +65,8 @@ interface ChatbotContract {
         fun uploadUsingOldMechanism(data: Intent)
 
         fun sendInvoiceForArticle()
+
+        fun sessionChangeStateHandler(state : Boolean)
     }
 
     interface Presenter : BaseChatContract.Presenter<View> {

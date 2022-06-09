@@ -24,6 +24,7 @@ import com.tokopedia.chat_common.domain.SendWebsocketParam
 import com.tokopedia.chat_common.domain.pojo.ChatSocketPojo
 import com.tokopedia.chat_common.domain.pojo.invoiceattachment.InvoiceLinkPojo
 import com.tokopedia.chat_common.presenter.BaseChatPresenter
+import com.tokopedia.chatbot.ChatbotConstant.AttachmentType.SESSION_CHANGE
 import com.tokopedia.chatbot.ChatbotConstant.ChatbotUnification.ARTICLE_ID
 import com.tokopedia.chatbot.ChatbotConstant.ChatbotUnification.ARTICLE_TITLE
 import com.tokopedia.chatbot.ChatbotConstant.ChatbotUnification.CODE
@@ -44,6 +45,8 @@ import com.tokopedia.chatbot.ChatbotConstant.ImageUpload.MAX_FILE_SIZE
 import com.tokopedia.chatbot.ChatbotConstant.ImageUpload.MAX_FILE_SIZE_UPLOAD_SECURE
 import com.tokopedia.chatbot.ChatbotConstant.ImageUpload.MINIMUM_HEIGHT
 import com.tokopedia.chatbot.ChatbotConstant.ImageUpload.MINIMUM_WIDTH
+import com.tokopedia.chatbot.ChatbotConstant.MODE_AGENT
+import com.tokopedia.chatbot.ChatbotConstant.MODE_BOT
 import com.tokopedia.chatbot.R
 import com.tokopedia.chatbot.data.ConnectionDividerViewModel
 import com.tokopedia.chatbot.data.TickerData.TickerData
@@ -54,6 +57,7 @@ import com.tokopedia.chatbot.data.invoice.AttachInvoiceSingleViewModel
 import com.tokopedia.chatbot.data.network.ChatbotUrl
 import com.tokopedia.chatbot.data.quickreply.QuickReplyViewModel
 import com.tokopedia.chatbot.data.seprator.ChatSepratorViewModel
+import com.tokopedia.chatbot.data.sessionchange.SessionChangeAttributes
 import com.tokopedia.chatbot.data.toolbarpojo.ToolbarAttributes
 import com.tokopedia.chatbot.data.uploadsecure.UploadSecureResponse
 import com.tokopedia.chatbot.data.videoupload.VideoUploadUiModel
@@ -235,6 +239,14 @@ class ChatbotPresenter @Inject constructor(
                     if(attachmentType == LIVE_CHAT_DIVIDER){
                         mappingQueueDivider(liveChatDividerAttribute, chatResponse.message.timeStampUnixNano)
                     }
+                    if(attachmentType == SESSION_CHANGE) {
+                        val agentMode: SessionChangeAttributes = Gson().fromJson(
+                            chatResponse.attachment?.attributes,
+                            SessionChangeAttributes::class.java
+                        )
+                        handleReplyBubble(agentMode)
+                    }
+
 
                 } catch (e: JsonSyntaxException) {
                     e.printStackTrace()
@@ -274,6 +286,16 @@ class ChatbotPresenter @Inject constructor(
                 ?.subscribe(subscriber)
 
         mSubscription.add(subscription)
+    }
+
+    private fun handleReplyBubble(agentMode: SessionChangeAttributes) {
+        if (agentMode!=null){
+            if (agentMode.sessionChange.mode==MODE_AGENT){
+                view.sessionChangeStateHandler(true)
+            }else if (agentMode.sessionChange.mode==MODE_BOT){
+                view.sessionChangeStateHandler(false)
+            }
+        }
     }
 
     private fun getLiveChatQuickReply(): List<QuickReplyViewModel> {

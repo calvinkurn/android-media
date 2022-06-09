@@ -385,13 +385,6 @@ class ChatbotViewStateImpl(@NonNull override val view: View,
         }
     }
 
-    override fun setupChatMenu() {
-        super.setupChatMenu()
-//        chatMenuButton.setOnClickListener {
-//            onChatMenuButtonClicked.invoke()
-//        }
-    }
-
     override fun getRecyclerViewId(): Int {
         return R.id.recycler_view
     }

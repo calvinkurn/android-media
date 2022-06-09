@@ -8,8 +8,8 @@ object ChatbotConstant {
     const val REQUEST_SUBMIT_FEEDBACK = 909
     const val REQUEST_SUBMIT_CSAT = 911
     const val ONE_SECOND_IN_MILLISECONDS = 1000
-    const val SOURCE_ID_FOR_VIDEO_UPLOAD = "fLapDZ"
-    const val MAX_MEDIA_COUNT = 6
+    const val MODE_AGENT = "agent"
+    const val MODE_BOT = "bot"
 
     object CsatRating {
         const val RATING_ONE = 1
@@ -42,6 +42,7 @@ object ChatbotConstant {
     object AttachmentType {
         const val TYPE_SECURE_IMAGE_UPLOAD = "26"
         const val TYPE_VIDEO_UPLOAD = "30"
+        const val SESSION_CHANGE = "31"
     }
 
     object ChatbotUnification{
@@ -62,5 +63,11 @@ object ChatbotConstant {
         const val USED_BY = "used_by"
         const val ARTICLE_ENTRY = "article_entry"
         const val FALSE = "false"
+    }
+
+    object VideoUpload {
+        const val SOURCE_ID_FOR_VIDEO_UPLOAD = "fLapDZ"
+        const val MAX_MEDIA_COUNT = 6
+        const val MAX_DURATION_FOR_VIDEO = 300000L
     }
 }
