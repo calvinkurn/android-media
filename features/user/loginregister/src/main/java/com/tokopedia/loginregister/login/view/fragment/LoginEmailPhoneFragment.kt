@@ -64,6 +64,7 @@ import com.tokopedia.linker.LinkerManager
 import com.tokopedia.linker.LinkerUtils
 import com.tokopedia.linker.model.UserData
 import com.tokopedia.loginregister.R
+import com.tokopedia.loginregister.common.analytics.NeedHelpAnalytics
 import com.tokopedia.loginregister.common.analytics.LoginRegisterAnalytics
 import com.tokopedia.loginregister.common.analytics.RegisterAnalytics
 import com.tokopedia.loginregister.common.analytics.SeamlessLoginAnalytics
@@ -75,6 +76,7 @@ import com.tokopedia.loginregister.common.view.LoginTextView
 import com.tokopedia.loginregister.common.view.PartialRegisterInputView
 import com.tokopedia.loginregister.common.view.banner.DynamicBannerConstant
 import com.tokopedia.loginregister.common.view.banner.data.DynamicBannerDataModel
+import com.tokopedia.loginregister.login.view.bottomsheet.NeedHelpBottomSheet
 import com.tokopedia.loginregister.common.view.bottomsheet.SocmedBottomSheet
 import com.tokopedia.loginregister.common.view.dialog.PopupErrorDialog
 import com.tokopedia.loginregister.common.view.dialog.RegisteredDialog
@@ -113,10 +115,7 @@ import com.tokopedia.sessioncommon.util.TwoFactorMluHelper
 import com.tokopedia.sessioncommon.view.admin.dialog.LocationAdminDialog
 import com.tokopedia.sessioncommon.view.forbidden.activity.ForbiddenActivity
 import com.tokopedia.track.TrackApp
-import com.tokopedia.unifycomponents.ImageUnify
-import com.tokopedia.unifycomponents.LoaderUnify
-import com.tokopedia.unifycomponents.Toaster
-import com.tokopedia.unifycomponents.UnifyButton
+import com.tokopedia.unifycomponents.*
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.unifycomponents.ticker.TickerData
@@ -137,7 +136,7 @@ import javax.inject.Named
 /**
  * @author by nisie on 18/01/19.
  */
-open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.View {
+open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.View{
 
     private var isTraceStopped: Boolean = false
     private lateinit var performanceMonitoring: PerformanceMonitoring
@@ -157,6 +156,9 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
 
     @Inject
     lateinit var seamlessAnalytics: SeamlessLoginAnalytics
+
+    @Inject
+    lateinit var needHelpAnalytics: NeedHelpAnalytics
 
     @field:Named(SessionModule.SESSION_MODULE)
     @Inject
@@ -192,6 +194,10 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
     private var callTokopediaCare: Typography? = null
     private var sharedPrefs: SharedPreferences? = null
 
+    private var needHelpBottomSheetUnify: NeedHelpBottomSheet? = null
+    private var isUsingRollenceNeedHelp = false
+    private var passOnStop = false
+
     override fun getScreenName(): String {
         return LoginRegisterAnalytics.SCREEN_LOGIN
     }
@@ -206,6 +212,15 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
         activity?.let {
             analytics.trackScreen(it, screenName)
         }
+        if (passOnStop){
+            isUsingRollenceNeedHelp = isUsingRollenceNeedHelp()
+            setUpRollenceNeedHelpView()
+        }
+    }
+
+    override fun onStop() {
+        super.onStop()
+        passOnStop = true
     }
 
     override fun onResume() {
@@ -286,6 +301,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
 
         source = getParamString(ApplinkConstInternalGlobal.PARAM_SOURCE, arguments, savedInstanceState, "")
         isAutoLogin = getParamBoolean(LoginConstants.AutoLogin.IS_AUTO_LOGIN, arguments, savedInstanceState, false)
+        isUsingRollenceNeedHelp = isUsingRollenceNeedHelp()
         refreshRolloutVariant()
     }
 
@@ -343,10 +359,9 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
         }
 
         val emailExtensionList = mutableListOf<String>()
-        emailExtensionList.addAll(resources.getStringArray(R.array.email_extension))
+        emailExtensionList.addAll(requireContext().resources.getStringArray(R.array.email_extension))
         partialRegisterInputView?.setEmailExtension(emailExtension, emailExtensionList)
         partialRegisterInputView?.initKeyboardListener(view)
-        initKeyboardListener(view)
 
         autoFillWithDataFromLatestLoggedIn()
 
@@ -667,12 +682,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
                 registerAnalytics.trackClickBottomSignUpButton()
                 goToRegisterInitial(source)
             }
-
-            val forgotPassword = partialRegisterInputView?.findViewById<Typography>(R.id.forgot_pass)
-            forgotPassword?.setOnClickListener {
-                analytics.trackClickForgotPassword()
-                goToForgotPassword()
-            }
+            setUpRollenceNeedHelpView()
         }
 
         showLoadingDiscover()
@@ -681,15 +691,35 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
         }
     }
 
+    private fun setUpRollenceNeedHelpView(){
+        val forgotPassword = partialRegisterInputView?.findViewById<Typography>(R.id.forgot_pass)
+        forgotPassword?.text = setUpForgotPasswordTitle()
+        forgotPassword?.setOnClickListener {
+            if (isUsingRollenceNeedHelp) {
+                needHelpAnalytics.trackPageClickButuhBantuan()
+                showNeedHelpBottomSheet()
+            } else {
+                analytics.trackClickForgotPassword()
+                goToForgotPassword()
+            }
+        }
+
+        if (isUsingRollenceNeedHelp) {
+            callTokopediaCare?.hide()
+        } else {
+            initKeyboardListener(view)
+        }
+    }
+
     private fun initKeyboardListener(view: View?) {
         view?.run {
             com.tokopedia.loginregister.common.utils.KeyboardHandler(view, object : com.tokopedia.loginregister.common.utils.KeyboardHandler.OnKeyBoardVisibilityChangeListener {
                 override fun onKeyboardShow() {
-                    callTokopediaCare?.hide()
+                    if (!isUsingRollenceNeedHelp) callTokopediaCare?.hide()
                 }
 
                 override fun onKeyboardHide() {
-                    callTokopediaCare?.show()
+                    if (!isUsingRollenceNeedHelp) callTokopediaCare?.show()
                 }
             })
         }
@@ -728,7 +758,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
 
     private fun setupSpannableText() {
         activity?.let {
-            val sourceString = resources.getString(R.string.span_not_have_tokopedia_account)
+            val sourceString = requireContext().resources.getString(R.string.span_not_have_tokopedia_account)
 
             val spannable = SpannableString(sourceString)
 
@@ -774,6 +804,13 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
         callTokopediaCare?.setText(spannable, TextView.BufferType.SPANNABLE)
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        // https://stackoverflow.com/questions/28539216/
+        callTokopediaCare?.movementMethod = null
+        callTokopediaCare?.text = ""
+    }
+
     private fun onChangeButtonClicked() {
         analytics.trackChangeButtonClicked()
 
@@ -793,8 +830,32 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
         activity?.applicationContext?.let { analytics.eventClickForgotPasswordFromLogin(it) }
     }
 
+    private fun setUpForgotPasswordTitle(): String?{
+        return context?.getString(
+            if (isUsingRollenceNeedHelp)
+                R.string.loginregister_need_help
+            else
+                R.string.title_forgot_password
+        )
+    }
+
+    private fun isUsingRollenceNeedHelp(): Boolean {
+        val newInactivePhoneNumberAbTestKey = RemoteConfigInstance.getInstance().abTestPlatform?.getString(
+            ROLLENCE_KEY_INACTIVE_PHONE_NUMBER,
+            ""
+        ).orEmpty()
+        return newInactivePhoneNumberAbTestKey.isNotEmpty()
+    }
+
+    private fun showNeedHelpBottomSheet(){
+        if (needHelpBottomSheetUnify == null)
+            needHelpBottomSheetUnify = NeedHelpBottomSheet()
+
+        needHelpBottomSheetUnify?.show(childFragmentManager, TAG_NEED_HELP_BOTTOM_SHEET)
+    }
+
     override fun goToTokopediaCareWebview() {
-        RouteManager.route(activity, String.format("%s?url=%s", ApplinkConst.WEBVIEW,
+        RouteManager.route(activity, String.format(TOKOPEDIA_CARE_STRING_FORMAT, ApplinkConst.WEBVIEW,
                 getInstance().MOBILEWEB + TOKOPEDIA_CARE_PATH))
     }
 
@@ -1056,8 +1117,6 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
             if (userSession.isLoggedIn) {
                 val userData = UserData()
                 userData.userId = userSession.userId
-                userData.email = userSession.email
-                userData.phoneNumber = userSession.phoneNumber
                 userData.medium = userSession.loginMethod
 
                 //Identity Event
@@ -1820,10 +1879,15 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
 
     companion object {
 
+        private const val ROLLENCE_KEY_INACTIVE_PHONE_NUMBER = "inactivephone_login"
+
+        private const val TAG_NEED_HELP_BOTTOM_SHEET = "NEED HELP BOTTOM SHEET"
+
         private const val LOGIN_LOAD_TRACE = "gb_login_trace"
         private const val LOGIN_SUBMIT_TRACE = "gb_submit_login_trace"
         private const val CHARACTER_NOT_ALLOWED = "CHARACTER_NOT_ALLOWED"
-        private const val TOKOPEDIA_CARE_PATH = "help"
+        const val TOKOPEDIA_CARE_PATH = "help"
+        const val TOKOPEDIA_CARE_STRING_FORMAT = "%s?url=%s"
 
         private const val PASSWORD_MIN_LENGTH = 4
 

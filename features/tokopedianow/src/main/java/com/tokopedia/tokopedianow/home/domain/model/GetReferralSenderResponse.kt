@@ -12,6 +12,8 @@ data class GetReferralSenderHomeResponse(
         @Expose
         @SerializedName("resultStatus")
         val resultStatus: ResultStatus,
+        @SerializedName("reward")
+        val reward: Reward,
         @Expose
         @SerializedName("sharingMetadata")
         val sharingMetaData: SharingMetadata
@@ -26,6 +28,10 @@ data class GetReferralSenderHomeResponse(
             @Expose
             @SerializedName("reason")
             val reason: String
+        )
+        data class Reward(
+            @SerializedName("maxReward")
+            val maxReward: String
         )
         data class SharingMetadata(
             @Expose

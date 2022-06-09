@@ -115,7 +115,9 @@ import javax.inject.Named
 /**
  * @author by nisie on 10/24/18.
  */
-open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.PartialRegisterInputViewListener, RegisterInitialRouter {
+open class RegisterInitialFragment : BaseDaggerFragment(),
+    PartialRegisterInputView.PartialRegisterInputViewListener,
+    RegisterInitialRouter{
 
     private lateinit var optionTitle: Typography
     private lateinit var separator: View
@@ -316,7 +318,7 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
         partialRegisterInputView.setListener(this)
 
         val emailExtensionList = mutableListOf<String>()
-        emailExtensionList.addAll(resources.getStringArray(R.array.email_extension))
+        emailExtensionList.addAll(requireContext().resources.getStringArray(R.array.email_extension))
         partialRegisterInputView.setEmailExtension(emailExtension, emailExtensionList)
         partialRegisterInputView.initKeyboardListener(view)
 
@@ -545,7 +547,7 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
 
         val layoutParams = LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT,
-                resources.getDimensionPixelSize(R.dimen.dp_52))
+                requireContext().resources.getDimensionPixelSize(R.dimen.dp_52))
         layoutParams.setMargins(0, SOCMED_BUTTON_MARGIN_SIZE, 0, SOCMED_BUTTON_MARGIN_SIZE)
 
         socmedButtonsContainer?.removeAllViews()
@@ -1182,9 +1184,6 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
         registerAnalytics.trackSuccessRegister(
                 userSession.loginMethod,
                 userSession.userId,
-                userSession.name,
-                userSession.email,
-                userSession.phoneNumber,
                 userSession.isGoldMerchant,
                 userSession.shopId,
                 userSession.shopName
@@ -1257,7 +1256,7 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
         activity?.let {
             val phoneNumbers = PhoneUtils.getPhoneNumber(it, permissionCheckerHelper)
             if (phoneNumbers.isNotEmpty()) {
-                partialRegisterInputView.setAdapterInputEmailPhone(ArrayAdapter(it, R.layout.select_dialog_item_material, phoneNumbers),
+                partialRegisterInputView.setAdapterInputEmailPhone(ArrayAdapter(it, androidx.appcompat.R.layout.select_dialog_item_material, phoneNumbers),
                         View.OnFocusChangeListener { v, hasFocus ->
                             if (v?.windowVisibility == View.VISIBLE) {
                                 activity?.isFinishing?.let { isFinishing ->

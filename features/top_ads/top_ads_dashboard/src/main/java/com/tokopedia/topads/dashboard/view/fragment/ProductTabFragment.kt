@@ -300,7 +300,7 @@ class ProductTabFragment : BaseDaggerFragment() {
         dialog.show()
     }
 
-    fun fetchgroupList(search: String) {
+    private fun fetchgroupList(search: String) {
         movetoGroupSheet.updateData(mutableListOf())
         viewModel.getGroupList(search, ::onSuccessGroupList)
     }
@@ -331,7 +331,7 @@ class ProductTabFragment : BaseDaggerFragment() {
     private fun getAdIds(): MutableList<String> {
         val ads: MutableList<String> = mutableListOf()
         adapter.getSelectedItems().forEach {
-            ads.add(it.data.adId.toString())
+            ads.add(it.data.adId)
         }
         return ads
     }
@@ -343,7 +343,7 @@ class ProductTabFragment : BaseDaggerFragment() {
         else
             ACTION_DEACTIVATE
         viewModel.setProductAction(::onSuccessAction, actionActivate,
-            listOf((adapter.items[pos] as ProductItemModel).data.adId.toString()), resources, null)
+            listOf((adapter.items[pos] as ProductItemModel).data.adId), null)
     }
 
     private fun onSuccessAction() {
@@ -422,8 +422,8 @@ class ProductTabFragment : BaseDaggerFragment() {
             totalProductCount = totalCount
         }
         response.data.forEach {
-            adIds.add(it.adId.toString())
-            itemList.add(it.itemId.toString())
+            adIds.add(it.adId)
+            itemList.add(it.itemId)
             adapter.items.add(ProductItemModel(it))
         }
         if (adIds.isNotEmpty()) {
@@ -462,14 +462,10 @@ class ProductTabFragment : BaseDaggerFragment() {
         activity?.setResult(Activity.RESULT_OK)
         when (actionActivate) {
             ACTION_DELETE -> {
-                view.let {
-                    Toaster.make(it!!,
-                        getString(R.string.topads_without_product_del_toaster),
-                        TOASTER_DURATION.toInt(), Toaster.TYPE_NORMAL,
-                        getString(com.tokopedia.topads.common.R.string.topads_common_batal),
-                        View.OnClickListener {
+                view?.let {
+                    Toaster.make(it, getString(R.string.topads_without_product_del_toaster), TOASTER_DURATION.toInt(), Toaster.TYPE_NORMAL, getString(com.tokopedia.topads.common.R.string.topads_common_batal)) {
                             deleteCancel = true
-                        })
+                        }
                 }
                 val coroutineScope = CoroutineScope(Dispatchers.Main)
                 coroutineScope.launch {
@@ -478,7 +474,9 @@ class ProductTabFragment : BaseDaggerFragment() {
                         if (!deleteCancel) {
                             totalProductCount -= getAdIds().size
                             viewModel.setProductAction(::onSuccessAction,
-                                actionActivate, getAdIds(), resources, selectedFilter)
+                                actionActivate,
+                                getAdIds(),
+                                selectedFilter)
                             if (totalProductCount == 0) {
                                 activity?.finish()
                             }
@@ -491,14 +489,18 @@ class ProductTabFragment : BaseDaggerFragment() {
             ACTION_MOVE -> {
                 totalProductCount -= getAdIds().size
                 viewModel.setProductAction(::onSuccessAction,
-                    actionActivate, getAdIds(), resources, selectedFilter)
+                    actionActivate,
+                    getAdIds(),
+                    selectedFilter)
                 if (totalProductCount == 0) {
                     activity?.finish()
                 }
             }
             else -> {
                 viewModel.setProductAction(::onSuccessAction,
-                    actionActivate, getAdIds(), resources, selectedFilter)
+                    actionActivate,
+                    getAdIds(),
+                    selectedFilter)
             }
         }
     }

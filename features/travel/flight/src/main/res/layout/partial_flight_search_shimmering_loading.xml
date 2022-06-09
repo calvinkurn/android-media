@@ -19,27 +19,27 @@
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <com.elyeproj.loaderviewlibrary.LoaderTextView
+        <com.tokopedia.unifycomponents.LoaderUnify
             android:id="@+id/flightSearchLoaderTitle"
             android:layout_width="match_parent"
             android:layout_height="@dimen/layout_lvl1"
             android:layout_marginEnd="@dimen/spacing_lvl5"
             android:layout_marginRight="@dimen/spacing_lvl5"
-            app:corners="20"
+            app:loader_corner_radius="10dp"
+            app:loader_type="rect"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:use_gradient="true" />
+            app:layout_constraintTop_toTopOf="parent" />
 
-        <com.elyeproj.loaderviewlibrary.LoaderImageView
+        <com.tokopedia.unifycomponents.LoaderUnify
             android:id="@+id/flightSearchLoaderDotDepartureTime"
             android:layout_width="@dimen/layout_lvl1"
             android:layout_height="@dimen/layout_lvl1"
-            app:corners="20"
+            app:loader_corner_radius="10dp"
+            app:loader_type="rect"
             app:layout_constraintBottom_toBottomOf="@+id/flightSearchLoaderDepartureTime"
             app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/flightSearchLoaderDepartureTime"
-            app:use_gradient="true" />
+            app:layout_constraintTop_toTopOf="@+id/flightSearchLoaderDepartureTime" />
 
         <View
             android:layout_width="1dp"
@@ -51,77 +51,77 @@
             app:layout_constraintRight_toRightOf="@+id/flightSearchLoaderDotDepartureTime"
             app:layout_constraintTop_toBottomOf="@+id/flightSearchLoaderDotDepartureTime" />
 
-        <com.elyeproj.loaderviewlibrary.LoaderImageView
+        <com.tokopedia.unifycomponents.LoaderUnify
             android:id="@+id/flightSearchLoaderDotArrivalTime"
             android:layout_width="@dimen/layout_lvl1"
             android:layout_height="@dimen/layout_lvl1"
-            app:corners="20"
+            app:loader_corner_radius="10dp"
+            app:loader_type="rect"
             app:layout_constraintBottom_toBottomOf="@+id/flightSearchLoaderArrivalTime"
             app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/flightSearchLoaderArrivalTime"
-            app:use_gradient="true" />
+            app:layout_constraintTop_toTopOf="@+id/flightSearchLoaderArrivalTime" />
 
-        <com.elyeproj.loaderviewlibrary.LoaderTextView
+        <com.tokopedia.unifycomponents.LoaderUnify
             android:id="@+id/flightSearchLoaderDepartureTime"
             android:layout_width="@dimen/layout_lvl7"
             android:layout_height="@dimen/layout_lvl1"
             android:layout_marginStart="@dimen/spacing_lvl3"
             android:layout_marginLeft="@dimen/spacing_lvl3"
             android:layout_marginTop="@dimen/spacing_lvl4"
-            app:corners="20"
+            app:loader_corner_radius="10dp"
+            app:loader_type="rect"
             app:layout_constraintLeft_toRightOf="@+id/flightSearchLoaderDotDepartureTime"
-            app:layout_constraintTop_toBottomOf="@+id/flightSearchLoaderTitle"
-            app:use_gradient="true" />
+            app:layout_constraintTop_toBottomOf="@+id/flightSearchLoaderTitle" />
 
-        <com.elyeproj.loaderviewlibrary.LoaderTextView
+        <com.tokopedia.unifycomponents.LoaderUnify
             android:id="@+id/flightSearchLoaderDuration"
             android:layout_width="@dimen/layout_lvl6"
             android:layout_height="@dimen/layout_lvl1"
             android:layout_marginTop="@dimen/spacing_lvl3"
-            app:corners="20"
+            app:loader_corner_radius="10dp"
+            app:loader_type="rect"
             app:layout_constraintLeft_toLeftOf="@+id/flightSearchLoaderDepartureTime"
-            app:layout_constraintTop_toBottomOf="@+id/flightSearchLoaderDepartureTime"
-            app:use_gradient="true" />
+            app:layout_constraintTop_toBottomOf="@+id/flightSearchLoaderDepartureTime" />
 
-        <com.elyeproj.loaderviewlibrary.LoaderTextView
+        <com.tokopedia.unifycomponents.LoaderUnify
             android:id="@+id/flightSearchLoaderArrivalTime"
             android:layout_width="@dimen/layout_lvl7"
             android:layout_height="@dimen/layout_lvl1"
             android:layout_marginTop="@dimen/spacing_lvl3"
-            app:corners="20"
+            app:loader_corner_radius="10dp"
+            app:loader_type="rect"
             app:layout_constraintLeft_toLeftOf="@+id/flightSearchLoaderDepartureTime"
-            app:layout_constraintTop_toBottomOf="@+id/flightSearchLoaderDuration"
-            app:use_gradient="true" />
+            app:layout_constraintTop_toBottomOf="@+id/flightSearchLoaderDuration" />
 
-        <com.elyeproj.loaderviewlibrary.LoaderTextView
+        <com.tokopedia.unifycomponents.LoaderUnify
             android:layout_width="@dimen/layout_lvl7"
             android:layout_height="@dimen/layout_lvl1"
             android:layout_marginTop="@dimen/spacing_lvl3"
             android:layout_marginBottom="@dimen/spacing_lvl2"
-            app:corners="20"
+            app:loader_corner_radius="10dp"
+            app:loader_type="rect"
             app:layout_constraintBottom_toTopOf="@+id/flightSearchLoaderPrice"
-            app:layout_constraintRight_toRightOf="parent"
-            app:use_gradient="true" />
+            app:layout_constraintRight_toRightOf="parent" />
 
-        <com.elyeproj.loaderviewlibrary.LoaderTextView
+        <com.tokopedia.unifycomponents.LoaderUnify
             android:id="@+id/flightSearchLoaderPrice"
             android:layout_width="@dimen/layout_lvl9"
             android:layout_height="@dimen/layout_lvl1"
-            app:corners="20"
+            app:loader_corner_radius="10dp"
+            app:loader_type="rect"
             app:layout_constraintBottom_toBottomOf="@+id/flightSearchLoaderArrivalTime"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/flightSearchLoaderDepartureTime"
-            app:use_gradient="true" />
+            app:layout_constraintTop_toTopOf="@+id/flightSearchLoaderDepartureTime" />
 
-        <com.elyeproj.loaderviewlibrary.LoaderImageView
+        <com.tokopedia.unifycomponents.LoaderUnify
             android:layout_width="@dimen/layout_lvl3"
             android:layout_height="@dimen/layout_lvl3"
             android:layout_marginTop="@dimen/spacing_lvl3"
-            app:corners="20"
+            app:loader_corner_radius="10dp"
+            app:loader_type="rect"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/flightSearchLoaderPrice"
-            app:use_gradient="true" />
+            app:layout_constraintTop_toBottomOf="@+id/flightSearchLoaderPrice" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

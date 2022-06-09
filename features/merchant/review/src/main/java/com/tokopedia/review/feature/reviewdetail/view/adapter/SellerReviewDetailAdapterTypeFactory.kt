@@ -1,6 +1,7 @@
 package com.tokopedia.review.feature.reviewdetail.view.adapter
 
 import android.view.View
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
@@ -15,12 +16,15 @@ import com.tokopedia.review.feature.reviewdetail.view.model.OverallRatingDetailU
 import com.tokopedia.review.feature.reviewdetail.view.model.ProductFeedbackErrorUiModel
 import com.tokopedia.review.feature.reviewdetail.view.model.ProductReviewFilterUiModel
 import com.tokopedia.review.feature.reviewdetail.view.model.TopicUiModel
+import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.adapter.typefactory.ReviewMediaThumbnailTypeFactory
 
 class SellerReviewDetailAdapterTypeFactory(
     private val listener: SellerReviewDetailListener,
     private val overallRatingDetailListener: OverallRatingDetailListener,
     private val productFeedbackDetailListener: ProductFeedbackDetailListener,
-    private var ratingAndTopicsDetailListener: SellerRatingAndTopicListener
+    private var ratingAndTopicsDetailListener: SellerRatingAndTopicListener,
+    private val reviewMediaThumbnailListener: ReviewMediaThumbnailTypeFactory.Listener,
+    private val reviewMediaThumbnailRecycledViewPool: RecyclerView.RecycledViewPool
 ) : BaseAdapterTypeFactory(), TypeFactoryDetailViewHolder {
 
     override fun type(feedbackUiModel: FeedbackUiModel): Int {
@@ -50,6 +54,8 @@ class SellerReviewDetailAdapterTypeFactory(
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<*> {
         return when (type) {
             ProductFeedbackDetailViewHolder.LAYOUT -> ProductFeedbackDetailViewHolder(
+                reviewMediaThumbnailRecycledViewPool,
+                reviewMediaThumbnailListener,
                 parent,
                 productFeedbackDetailListener
             )

@@ -2,9 +2,10 @@ package com.tokopedia.topads.common.domain.usecase
 
 import android.os.Bundle
 import com.google.gson.reflect.TypeToken
+import com.tokopedia.common.network.coroutines.RestRequestInteractor
+import com.tokopedia.common.network.coroutines.repository.RestRepository
 import com.tokopedia.common.network.data.model.RequestType
 import com.tokopedia.common.network.data.model.RestRequest
-import com.tokopedia.common.network.domain.RestRequestUseCase
 import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.network.data.model.response.DataResponse
@@ -39,6 +40,7 @@ import com.tokopedia.topads.common.data.internal.ParamObject.PUBLISHED
 import com.tokopedia.topads.common.data.internal.ParamObject.STRATEGIES
 import com.tokopedia.topads.common.data.raw.MANAGE_GROUP
 import com.tokopedia.topads.common.data.response.*
+import com.tokopedia.topads.common.data.response.groupitem.GroupItemResponse
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.user.session.UserSessionInterface
 import java.util.*
@@ -50,8 +52,24 @@ import kotlin.collections.ArrayList
  */
 
 @GqlQuery("ManageGroupAdsQuery", MANAGE_GROUP)
-class TopAdsCreateUseCase @Inject constructor(val userSession: UserSessionInterface) :
-    RestRequestUseCase() {
+class TopAdsCreateUseCase @Inject constructor(val userSession: UserSessionInterface) {
+
+    private val restRepository: RestRepository by lazy { RestRequestInteractor.getInstance().restRepository }
+
+    suspend fun execute(requestParams: RequestParams?): FinalAdResponse {
+        val token = object : TypeToken<DataResponse<FinalAdResponse>>() {}.type
+        val query = ManageGroupAdsQuery.GQL_QUERY
+        val request = GraphqlRequest(query, FinalAdResponse::class.java, requestParams?.parameters)
+        val headers = HashMap<String, String>()
+        headers["Content-Type"] = "application/json"
+        val restRequest =
+            RestRequest.Builder(TopAdsCommonConstant.TOPADS_GRAPHQL_TA_URL, token)
+                .setBody(request)
+                .setHeaders(headers)
+                .setRequestType(RequestType.POST)
+                .build()
+        return restRepository.getResponse(restRequest).getData<DataResponse<FinalAdResponse>>().data
+    }
 
     fun setParam(
         source: String?, dataProduct: Bundle,
@@ -244,22 +262,5 @@ class TopAdsCreateUseCase @Inject constructor(val userSession: UserSessionInterf
         else
             input.keywordOperation = keywordList
         return input
-    }
-
-    override fun buildRequest(requestParams: RequestParams?): MutableList<RestRequest> {
-        val tempRequest = ArrayList<RestRequest>()
-        val token = object : TypeToken<DataResponse<FinalAdResponse>>() {}.type
-        val query = ManageGroupAdsQuery.GQL_QUERY
-        val request = GraphqlRequest(query, FinalAdResponse::class.java, requestParams?.parameters)
-        val headers = HashMap<String, String>()
-        headers["Content-Type"] = "application/json"
-        val restReferralRequest =
-            RestRequest.Builder(TopAdsCommonConstant.TOPADS_GRAPHQL_TA_URL, token)
-                .setBody(request)
-                .setHeaders(headers)
-                .setRequestType(RequestType.POST)
-                .build()
-        tempRequest.add(restReferralRequest)
-        return tempRequest
     }
 }
