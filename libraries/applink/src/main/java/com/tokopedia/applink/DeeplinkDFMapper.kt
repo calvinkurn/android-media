@@ -105,6 +105,9 @@ import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.SHOP_PAGE_
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.SHOP_PAGE_SETTING_CUSTOMER_APP_WITH_SHOP_ID
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.SHOP_SETTINGS_BASE
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.USER_NOTIFICATION_SETTING
+import com.tokopedia.applink.internal.ApplinkConstInternalMedia.INTERNAL_MEDIA_PICKER
+import com.tokopedia.applink.internal.ApplinkConstInternalMedia.INTERNAL_MEDIA_PICKER_ALBUM
+import com.tokopedia.applink.internal.ApplinkConstInternalMedia.INTERNAL_MEDIA_PICKER_PREVIEW
 import com.tokopedia.applink.internal.ApplinkConstInternalMechant.BRANDLIST
 import com.tokopedia.applink.internal.ApplinkConstInternalMechant.BRANDLIST_SEARCH
 import com.tokopedia.applink.internal.ApplinkConstInternalMechant.MERCHANT_GIFTING
@@ -554,9 +557,9 @@ object DeeplinkDFMapper : CoroutineScope {
 
             // Media
             add(DFP({
-                it.startsWith(ApplinkConstInternalMedia.INTERNAL_MEDIA_PICKER) ||
-                        it.startsWith(ApplinkConstInternalMedia.INTERNAL_MEDIA_PICKER_ALBUM) ||
-                        it.startsWith(ApplinkConstInternalMedia.INTERNAL_MEDIA_PICKER_PREVIEW)
+                it.startsWith(INTERNAL_MEDIA_PICKER) ||
+                        it.startsWith(INTERNAL_MEDIA_PICKER_ALBUM) ||
+                        it.startsWith(INTERNAL_MEDIA_PICKER_PREVIEW)
             }, DF_IMAGE_PICKER_INSTA, R.string.title_image_picker))
 
             // Transaction
