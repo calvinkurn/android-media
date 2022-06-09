@@ -46,4 +46,9 @@ class OrderTrackingStickyHelpButton @JvmOverloads constructor(
             navigator?.goToHelpPage(orderId, appUrl, merchantData?.merchantId.orEmpty())
         }
     }
+
+    override fun onDetachedFromWindow() {
+        binding = null
+        super.onDetachedFromWindow()
+    }
 }

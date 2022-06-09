@@ -9,7 +9,6 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentManager
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
-import com.tokopedia.tokofood.R
 import com.tokopedia.tokofood.databinding.TokofoodPartialOrderDetailStickyActionButtonsBinding
 import com.tokopedia.tokofood.feature.ordertracking.presentation.bottomsheet.SecondaryActionBottomSheet
 import com.tokopedia.tokofood.feature.ordertracking.presentation.navigator.OrderTrackingNavigator
@@ -97,14 +96,14 @@ class OrderDetailStickyActionButton @JvmOverloads constructor(
                     resources.getDimensionPixelSize(com.tokopedia.unifycomponents.R.dimen.button_stroke_width),
                     ContextCompat.getColor(
                         context,
-                        R.color.food_order_detail_dms_secondary_action_button_stroke_color
+                        com.tokopedia.tokofood.R.color.food_order_detail_dms_secondary_action_button_stroke_color
                     )
                 )
             }
             setColorFilter(
                 ContextCompat.getColor(
                     context,
-                    R.color.food_order_detail_dms_secondary_action_button_color_filter
+                    com.tokopedia.tokofood.R.color.food_order_detail_dms_secondary_action_button_color_filter
                 )
             )
             setOnClickListener(
@@ -122,7 +121,6 @@ class OrderDetailStickyActionButton @JvmOverloads constructor(
         actionButtons: ActionButtonsUiModel,
         fragmentManager: FragmentManager
     ) {
-
         setupPrimaryButton(trackingWrapperUiModel, actionButtons.primaryActionButton)
         setupSecondaryButton(
             trackingWrapperUiModel,
@@ -133,5 +131,10 @@ class OrderDetailStickyActionButton @JvmOverloads constructor(
 
     fun setOrderTrackingNavigator(navigator: OrderTrackingNavigator) {
         this.navigator = navigator
+    }
+
+    override fun onDetachedFromWindow() {
+        binding = null
+        super.onDetachedFromWindow()
     }
 }
