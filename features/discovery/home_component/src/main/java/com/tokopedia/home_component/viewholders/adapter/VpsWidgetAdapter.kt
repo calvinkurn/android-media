@@ -1,6 +1,5 @@
 package com.tokopedia.home_component.viewholders.adapter
 
-import android.graphics.Color
 import android.graphics.Typeface
 import android.text.SpannableStringBuilder
 import android.text.Spanned
