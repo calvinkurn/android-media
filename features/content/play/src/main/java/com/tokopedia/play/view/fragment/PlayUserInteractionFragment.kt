@@ -1715,6 +1715,7 @@ class PlayUserInteractionFragment @Inject constructor(
 
     override fun onAddressUpdated(view: ChooseAddressViewComponent) {
         initAddress()
+        playViewModel.submitAction(RetryGetTagItemsAction)
     }
 
     override fun onInfoClicked(view: ChooseAddressViewComponent) {
