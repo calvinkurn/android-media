@@ -11,6 +11,9 @@ import com.tokopedia.tokofood.data.createIconsModel
 import com.tokopedia.tokofood.data.createKeroAddrIsEligibleForAddressFeature
 import com.tokopedia.tokofood.data.createKeroEditAddressResponse
 import com.tokopedia.tokofood.data.createLoadingState
+import com.tokopedia.tokofood.data.createMerchantListModel1
+import com.tokopedia.tokofood.data.createMerchantListModel2
+import com.tokopedia.tokofood.data.createMerchantListResponse
 import com.tokopedia.tokofood.data.createNoAddressState
 import com.tokopedia.tokofood.data.createNoPinPoinState
 import com.tokopedia.tokofood.data.createSliderBannerDataModel
@@ -19,12 +22,15 @@ import com.tokopedia.tokofood.data.createUSPModel
 import com.tokopedia.tokofood.data.createUSPResponse
 import com.tokopedia.tokofood.feature.home.domain.constanta.TokoFoodHomeStaticLayoutId
 import com.tokopedia.tokofood.feature.home.domain.constanta.TokoFoodHomeStaticLayoutId.Companion.CHOOSE_ADDRESS_WIDGET_ID
+import com.tokopedia.tokofood.feature.home.domain.constanta.TokoFoodHomeStaticLayoutId.Companion.MERCHANT_TITLE
 import com.tokopedia.tokofood.feature.home.domain.constanta.TokoFoodLayoutItemState
+import com.tokopedia.tokofood.feature.home.domain.constanta.TokoFoodLayoutState.Companion.LOAD_MORE
 import com.tokopedia.tokofood.feature.home.domain.constanta.TokoFoodLayoutState.Companion.SHOW
 import com.tokopedia.tokofood.feature.home.domain.constanta.TokoFoodLayoutState.Companion.UPDATE
 import com.tokopedia.tokofood.feature.home.presentation.fragment.TokoFoodHomeFragment.Companion.SOURCE
 import com.tokopedia.tokofood.feature.home.presentation.uimodel.TokoFoodHomeChooseAddressWidgetUiModel
 import com.tokopedia.tokofood.feature.home.presentation.uimodel.TokoFoodHomeEmptyStateLocationUiModel
+import com.tokopedia.tokofood.feature.home.presentation.uimodel.TokoFoodHomeMerchantTitleUiModel
 import com.tokopedia.tokofood.feature.home.presentation.uimodel.TokoFoodItemUiModel
 import com.tokopedia.tokofood.feature.home.presentation.uimodel.TokoFoodListUiModel
 import com.tokopedia.usecase.coroutines.Success
@@ -310,6 +316,52 @@ class TokoFoodHomeViewModelTest: TokoFoodHomeViewModelTestFixture() {
                 )
             ),
             state = UPDATE
+        )
+
+        verifyCallHomeLayout()
+        verifyCallTicker()
+        verifyCallIcons()
+        verifyCallUSP()
+
+        verifyTickerHasBeenRemoved()
+        verifyGetHomeLayoutResponseSuccess(expectedResponse)
+    }
+
+    @Test
+    fun `when scrolledToLastItem and hasNext true when onScrollProductList should set loadMore success`() {
+        val containLastItemIndex = 5
+        val itemCount = 6
+        onGetTicker_thenReturn(createTicker())
+        onGetUSP_thenReturn(createUSPResponse())
+        onGetIcons_thenReturn(createDynamicIconsResponse())
+        onGetHomeLayoutData_thenReturn(createHomeLayoutList())
+        onGetMerchantList_thenReturn(createMerchantListResponse())
+
+        viewModel.getHomeLayout(LocalCacheModel())
+        viewModel.getLayoutComponentData(LocalCacheModel())
+        viewModel.onScrollProductList(containLastItemIndex, itemCount, LocalCacheModel())
+
+        val expectedResponse = TokoFoodListUiModel(
+            items = listOf(
+                TokoFoodHomeChooseAddressWidgetUiModel(CHOOSE_ADDRESS_WIDGET_ID),
+                createHomeTickerDataModel(),
+                createUSPModel(),
+                createIconsModel(),
+                createSliderBannerDataModel(
+                    id = "33333",
+                    groupId = "",
+                    headerName = "Banner TokoFood"
+                ),
+                createDynamicLegoBannerDataModel(
+                    id = "44444",
+                    groupId = "",
+                    headerName = "6 Image"
+                ),
+                TokoFoodHomeMerchantTitleUiModel(MERCHANT_TITLE),
+                createMerchantListModel1(),
+                createMerchantListModel2()
+            ),
+            state = LOAD_MORE
         )
 
         verifyCallHomeLayout()

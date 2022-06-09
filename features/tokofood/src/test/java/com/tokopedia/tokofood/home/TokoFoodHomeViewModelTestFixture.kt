@@ -19,6 +19,7 @@ import com.tokopedia.tokofood.feature.home.domain.data.TokoFoodHomeDynamicIconsR
 import com.tokopedia.tokofood.feature.home.domain.data.TokoFoodHomeLayoutResponse
 import com.tokopedia.tokofood.feature.home.domain.data.TokoFoodHomeTickerResponse
 import com.tokopedia.tokofood.feature.home.domain.data.TokoFoodHomeUSPResponse
+import com.tokopedia.tokofood.feature.home.domain.data.TokoFoodMerchantListResponse
 import com.tokopedia.tokofood.feature.home.domain.usecase.TokoFoodHomeDynamicChannelUseCase
 import com.tokopedia.tokofood.feature.home.domain.usecase.TokoFoodHomeDynamicIconsUseCase
 import com.tokopedia.tokofood.feature.home.domain.usecase.TokoFoodHomeTickerUseCase
@@ -69,6 +70,14 @@ abstract class TokoFoodHomeViewModelTestFixture {
 
     private val privateHomeLayoutItemList by lazy {
         viewModel.getPrivateField<MutableList<TokoFoodItemUiModel>>("homeLayoutItemList")
+    }
+
+    private val privatePageKey by lazy {
+        viewModel.getPrivateField<String>("pageKey")
+    }
+
+    private val privateHasTickerBeenRemoved by lazy {
+        viewModel.getPrivateField<Boolean>("hasTickerBeenRemoved")
     }
 
     @Before
@@ -145,6 +154,10 @@ abstract class TokoFoodHomeViewModelTestFixture {
     protected fun verfifyKeroEditAddressSuccess(expectedResponse: Boolean) {
         val actualResponse = viewModel.updatePinPointState.value
         Assert.assertEquals(expectedResponse, actualResponse)
+    }
+
+    protected fun verifyTickerHasBeenRemoved(){
+        Assert.assertTrue(privateHasTickerBeenRemoved)
     }
 
     protected fun onGetChooseAddress_thenReturn(getStateChosenAddressResponse: GetStateChosenAddressQglResponse) {
@@ -254,6 +267,21 @@ abstract class TokoFoodHomeViewModelTestFixture {
     protected fun verifyCallHomeLayout() {
         coVerify { tokoFoodDynamicChanelUseCase.execute(any()) }
     }
+
+    protected fun onGetMerchantList_thenReturn(
+        layoutResponse: TokoFoodMerchantListResponse,
+        localCacheModel: LocalCacheModel = LocalCacheModel()
+    ) {
+        coEvery { tokoFoodMerchantListUseCase.execute(localCacheModel = localCacheModel, pageKey = any()) } returns layoutResponse
+    }
+
+    protected fun onGetMerchantList_thenReturn(
+        error: Throwable,
+        localCacheModel: LocalCacheModel = LocalCacheModel()
+    ) {
+        coEvery { tokoFoodMerchantListUseCase.execute(localCacheModel = localCacheModel, pageKey = privatePageKey) } throws error
+    }
+
 
     inline fun <reified T>Any.getPrivateField(name: String): T {
         return this::class.java.getDeclaredField(name).let {

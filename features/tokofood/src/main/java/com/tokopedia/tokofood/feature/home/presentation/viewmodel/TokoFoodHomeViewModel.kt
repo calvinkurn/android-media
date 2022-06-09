@@ -7,6 +7,7 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.asyncCatchError
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.localizationchooseaddress.domain.response.GetStateChosenAddressResponse
@@ -221,17 +222,7 @@ class TokoFoodHomeViewModel @Inject constructor(
     }
 
     fun onScrollProductList(containsLastItemIndex: Int?, itemCount: Int, localCacheModel: LocalCacheModel) {
-        val lastItemIndex = itemCount - 1
-        val scrolledToLastItem = (containsLastItemIndex == lastItemIndex
-                && containsLastItemIndex.isMoreThanZero()
-                && itemCount.isMoreThanZero())
-        val hasNextPage = pageKey.isNotEmpty()
-        val layoutList = homeLayoutItemList.toMutableList()
-        val isLoading = layoutList.firstOrNull { it.layout is TokoFoodProgressBarUiModel } != null
-        val isEmptyStateShown = layoutList.firstOrNull { it.layout is TokoFoodHomeEmptyStateLocationUiModel } != null
-        val isError = layoutList.firstOrNull { it.layout is TokoFoodErrorStateUiModel } != null
-
-        if(scrolledToLastItem && hasNextPage && !isLoading && !isEmptyStateShown && !isError) {
+        if(shouldLoadMore(containsLastItemIndex, itemCount)) {
             showProgressBar()
             getMerchantList(localCacheModel = localCacheModel)
         }
@@ -332,5 +323,19 @@ class TokoFoodHomeViewModel @Inject constructor(
         )
 
         _homeLayoutList.postValue(Success(data))
+    }
+
+    private fun shouldLoadMore(containsLastItemIndex: Int?, itemCount: Int): Boolean {
+        val lastItemIndex = itemCount - Int.ONE
+        val scrolledToLastItem = (containsLastItemIndex == lastItemIndex
+                && containsLastItemIndex.isMoreThanZero()
+                && itemCount.isMoreThanZero())
+        val hasNextPage = pageKey.isNotEmpty()
+        val layoutList = homeLayoutItemList.toMutableList()
+        val isLoading = layoutList.firstOrNull { it.layout is TokoFoodProgressBarUiModel } != null
+        val isEmptyStateShown = layoutList.firstOrNull { it.layout is TokoFoodHomeEmptyStateLocationUiModel } != null
+        val isError = layoutList.firstOrNull { it.layout is TokoFoodErrorStateUiModel } != null
+
+        return scrolledToLastItem && hasNextPage && !isLoading && !isEmptyStateShown && !isError
     }
 }

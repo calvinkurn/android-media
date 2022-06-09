@@ -24,12 +24,15 @@ import com.tokopedia.tokofood.feature.home.domain.data.DynamicHomeIcon
 import com.tokopedia.tokofood.feature.home.domain.data.DynamicIcon
 import com.tokopedia.tokofood.feature.home.domain.data.Header
 import com.tokopedia.tokofood.feature.home.domain.data.HomeLayoutResponse
+import com.tokopedia.tokofood.feature.home.domain.data.Merchant
 import com.tokopedia.tokofood.feature.home.domain.data.TickerItem
 import com.tokopedia.tokofood.feature.home.domain.data.Tickers
 import com.tokopedia.tokofood.feature.home.domain.data.TokoFoodHomeDynamicIconsResponse
 import com.tokopedia.tokofood.feature.home.domain.data.TokoFoodHomeLayoutResponse
 import com.tokopedia.tokofood.feature.home.domain.data.TokoFoodHomeTickerResponse
 import com.tokopedia.tokofood.feature.home.domain.data.TokoFoodHomeUSPResponse
+import com.tokopedia.tokofood.feature.home.domain.data.TokoFoodMerchantList
+import com.tokopedia.tokofood.feature.home.domain.data.TokoFoodMerchantListResponse
 import com.tokopedia.tokofood.feature.home.domain.data.USP
 import com.tokopedia.tokofood.feature.home.domain.data.USPResponse
 import com.tokopedia.tokofood.feature.home.presentation.uimodel.TokoFoodHomeChooseAddressWidgetUiModel
@@ -39,6 +42,7 @@ import com.tokopedia.tokofood.feature.home.presentation.uimodel.TokoFoodHomeLoad
 import com.tokopedia.tokofood.feature.home.presentation.uimodel.TokoFoodHomeTickerUiModel
 import com.tokopedia.tokofood.feature.home.presentation.uimodel.TokoFoodHomeUSPUiModel
 import com.tokopedia.tokofood.feature.home.presentation.uimodel.TokoFoodListUiModel
+import com.tokopedia.tokofood.feature.home.presentation.uimodel.TokoFoodMerchantListUiModel
 import com.tokopedia.tokofood.feature.merchant.domain.model.response.TokoFoodTickerDetail
 import com.tokopedia.tokofood.feature.purchase.purchasepage.domain.model.response.KeroEditAddress
 import com.tokopedia.tokofood.feature.purchase.purchasepage.domain.model.response.KeroEditAddressData
@@ -286,5 +290,39 @@ fun createIconsModel(): TokoFoodHomeIconsUiModel {
         listIcons = createDynamicIconsResponse().dynamicIcon.listDynamicIcon,
         state = TokoFoodLayoutState.SHOW,
         verticalPosition = 1
+    )
+}
+
+fun createMerchantListResponse(): TokoFoodMerchantListResponse {
+    return TokoFoodMerchantListResponse(
+        data = TokoFoodMerchantList(
+            merchants = listOf(
+                Merchant(
+                   id = "abcdef",
+                   name = "Toko 1",
+                   isClosed = false
+                ),
+                Merchant(
+                    id = "abcdeg",
+                    name = "Toko 2",
+                    isClosed = true
+                )
+            ),
+            nextPageKey = "2"
+        )
+    )
+}
+
+fun createMerchantListModel1(): TokoFoodMerchantListUiModel {
+    return TokoFoodMerchantListUiModel(
+        id = "abcdef",
+        createMerchantListResponse().data.merchants.first()
+    )
+}
+
+fun createMerchantListModel2(): TokoFoodMerchantListUiModel {
+    return TokoFoodMerchantListUiModel(
+        id = "abcdeg",
+        createMerchantListResponse().data.merchants.get(1)
     )
 }
