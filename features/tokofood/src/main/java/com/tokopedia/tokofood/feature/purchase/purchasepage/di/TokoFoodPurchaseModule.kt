@@ -9,8 +9,6 @@ import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
 import dagger.Provides
 
-//TODO: Use common DI
-
 @Module
 class TokoFoodPurchaseModule {
 

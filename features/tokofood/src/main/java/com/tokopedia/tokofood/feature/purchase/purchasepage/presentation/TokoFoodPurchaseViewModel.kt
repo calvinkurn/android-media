@@ -398,7 +398,6 @@ class TokoFoodPurchaseViewModel @Inject constructor(
         refreshPartialCartInformation()
         val dataList = getVisitablesValue()
         val unavailableSectionItems = mutableListOf<Visitable<*>>()
-        // TODO: Check if ticer error section is only related to unavailable products
         getVisitablesValue().getTickerErrorShopLevelUiModel()?.let {
             unavailableSectionItems.add(it.second)
         }
