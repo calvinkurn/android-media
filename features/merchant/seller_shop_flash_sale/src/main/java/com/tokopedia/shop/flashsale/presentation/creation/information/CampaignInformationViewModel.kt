@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.orFalse
+import com.tokopedia.shop.flashsale.common.extension.advanceMinuteBy
 import com.tokopedia.shop.flashsale.domain.entity.CampaignAction
 import com.tokopedia.shop.flashsale.domain.entity.CampaignCreationResult
 import com.tokopedia.shop.flashsale.domain.entity.Gradient
@@ -24,6 +25,7 @@ class CampaignInformationViewModel @Inject constructor(
 
     companion object {
         private const val MIN_CAMPAIGN_NAME_LENGTH = 5
+        private const val THIRTY_MINUTE = 30
     }
 
     private val _areInputValid = SingleLiveEvent<ValidationResult>()
@@ -222,6 +224,14 @@ class CampaignInformationViewModel @Inject constructor(
             } else {
                 gradient.copy(isSelected = false)
             }
+        }
+    }
+
+    fun normalizeEndDate(endDate: Date, startDate: Date) : Date {
+        return if (endDate.before(startDate)) {
+            startDate.advanceMinuteBy(THIRTY_MINUTE)
+        } else {
+            endDate
         }
     }
 }

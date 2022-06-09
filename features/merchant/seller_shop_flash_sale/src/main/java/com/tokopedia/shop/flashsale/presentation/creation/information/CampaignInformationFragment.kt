@@ -243,23 +243,23 @@ class CampaignInformationFragment : BaseDaggerFragment() {
     }
 
     private fun displayStartDatePicker() {
-        val previouslySelectedStartDate = viewModel.getSelectedStartDate()
+        val selectedDate = viewModel.getSelectedStartDate()
         val minimumDate = Date()
+
         val bottomSheet =
-            CampaignDatePickerBottomSheet.newInstance(previouslySelectedStartDate, minimumDate)
+            CampaignDatePickerBottomSheet.newInstance(selectedDate, minimumDate)
         bottomSheet.setOnDateTimePicked { newStartDate ->
             viewModel.setSelectedStartDate(newStartDate)
             binding?.tauStartDate?.editText?.setText(newStartDate.localFormatTo(DateConstant.DATE_TIME_MINUTE_LEVEL))
+            refreshEndDate()
         }
         bottomSheet.show(childFragmentManager, bottomSheet.tag)
     }
 
     private fun displayEndDatePicker() {
+        val endDate = viewModel.normalizeEndDate(viewModel.getSelectedEndDate(), viewModel.getSelectedStartDate())
         val minimumDate = viewModel.getSelectedStartDate()
-        val previouslySelectedEndDate = viewModel.getSelectedEndDate()
-
-        val bottomSheet =
-            CampaignDatePickerBottomSheet.newInstance(previouslySelectedEndDate, minimumDate)
+        val bottomSheet = CampaignDatePickerBottomSheet.newInstance(endDate, minimumDate)
         bottomSheet.setOnDateTimePicked { newEndDate ->
             viewModel.setSelectedEndDate(newEndDate)
             binding?.tauEndDate?.editText?.setText(newEndDate.localFormatTo(DateConstant.DATE_TIME_MINUTE_LEVEL))
@@ -267,6 +267,11 @@ class CampaignInformationFragment : BaseDaggerFragment() {
         bottomSheet.show(childFragmentManager, bottomSheet.tag)
     }
 
+    private fun refreshEndDate() {
+        val endDate = viewModel.normalizeEndDate(viewModel.getSelectedEndDate(), viewModel.getSelectedStartDate())
+        viewModel.setSelectedEndDate(endDate)
+        binding?.tauEndDate?.editText?.setText(endDate.localFormatTo(DateConstant.DATE_TIME_MINUTE_LEVEL))
+    }
 
     private fun validateInput() {
         val startDate = viewModel.getSelectedStartDate()

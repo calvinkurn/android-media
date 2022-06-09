@@ -3,6 +3,7 @@ package com.tokopedia.shop.flashsale.common.extension
 import com.tokopedia.shop.flashsale.common.constant.LocaleConstant
 import java.text.SimpleDateFormat
 import java.util.*
+import kotlin.math.min
 
 private const val EMPTY_STRING = ""
 
@@ -37,6 +38,13 @@ fun Date.advanceHourBy(hour: Int): Date {
     val now = Calendar.getInstance()
     now.time = this
     now.add(Calendar.HOUR_OF_DAY, hour)
+    return now.time
+}
+
+fun Date.advanceMinuteBy(minute: Int): Date {
+    val now = Calendar.getInstance()
+    now.time = this
+    now.add(Calendar.MINUTE, minute)
     return now.time
 }
 
