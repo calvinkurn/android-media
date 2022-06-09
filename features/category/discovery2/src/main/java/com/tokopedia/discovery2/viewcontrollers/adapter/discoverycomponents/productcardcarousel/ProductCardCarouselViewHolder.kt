@@ -91,18 +91,15 @@ class ProductCardCarouselViewHolder(itemView: View, val fragment: Fragment) : Ab
                             linearLayoutManager.findViewByPosition(linearLayoutManager.findFirstVisibleItemPosition())
                         firstView?.let {
                             val distanceFromLeft = it.left
-                            if (distanceFromLeft <= 0) {
+                            val translateX = distanceFromLeft * 0.2f
+                            if (translateX <= 0) {
+                                mixLeftBannerCard.translationX = translateX
                                 val itemSize = it.width.toFloat()
-                                val ratio = (abs(distanceFromLeft).toFloat() / itemSize)
-                                val alpha = (ratio * 0.8f)
-                                val scale = (ratio * 0.3f)
+                                val alpha = (abs(distanceFromLeft).toFloat() / itemSize * 0.80f)
                                 mixLeftBannerCard.alpha = 1 - alpha
-                                mixLeftBannerCard.scaleY = 1 - scale
-                                mixLeftBannerCard.scaleX = 1 - scale
                             } else {
+                                mixLeftBannerCard.translationX = 0f
                                 mixLeftBannerCard.alpha = 1f
-                                mixLeftBannerCard.scaleY = 1f
-                                mixLeftBannerCard.scaleX = 1f
                             }
                         }
                     } else if (linearLayoutManager.findFirstVisibleItemPosition() > 0 && dx != 0) {
