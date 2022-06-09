@@ -1109,7 +1109,7 @@ class OfficialStoreTracking(context: Context) {
         val eventDataLayer = Bundle()
         eventDataLayer.putParcelableArrayList("promotions", createMixLeftEcommerceDataLayer(
                 channelId = channel.id,
-                categoryName = categoryName.toLowerCase(),
+                categoryName = categoryName.lowercase(),
                 headerName = channel.header?.name.orEmpty(),
                 bannerPosition = bannerPosition,
                 creative = channel.name,
@@ -1123,7 +1123,7 @@ class OfficialStoreTracking(context: Context) {
         eventDataLayer.putString(EVENT_ACTION, "$CLICK banner $VALUE_DYNAMIC_MIX_LEFT_CAROUSEL")
         eventDataLayer.putString(EVENT_LABEL, channel.id)
         eventDataLayer.putString(CATEGORY_ID, channel.categoryPersona)
-        eventDataLayer.putString(CAMPAIGN_CODE, "${channel.campaignCode.orEmpty()}")
+        eventDataLayer.putString(CAMPAIGN_CODE, "channel.campaignCode")
 
         tracker.sendEnhanceEcommerceEvent("select_content", eventDataLayer)
     }
@@ -1137,7 +1137,7 @@ class OfficialStoreTracking(context: Context) {
         eventDataLayer.putString(EVENT_LABEL, channel.id)
         eventDataLayer.putParcelableArrayList("promotions", createMixLeftEcommerceDataLayer(
             channelId = channel.id,
-            categoryName = categoryName.toLowerCase(),
+            categoryName = categoryName.lowercase(),
             headerName = channel.header?.name.orEmpty(),
             bannerPosition = bannerPosition,
             creative = channel.name,
