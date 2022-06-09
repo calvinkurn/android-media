@@ -6,7 +6,7 @@
     android:id="@+id/card_product_attachment"
     android:layout_width="@dimen/dp_260"
     android:layout_height="@dimen/dp_86"
-    app:cardBackgroundColor="@color/Unify_N0"
+    app:cardBackgroundColor="@color/Unify_Background"
     app:cardCornerRadius="10dp"
     app:cardUseCompatPadding="true"
     app:cardPreventCornerOverlap="false"
