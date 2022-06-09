@@ -63,4 +63,11 @@ interface PlayBroadcastInteractiveAnalytic {
         interactiveTitle: String
     )
 
+    fun onClickCloseOngoingQuizBottomSheet(
+        channelId: String,
+        channelTitle: String,
+        interactiveId: String,
+        interactiveTitle: String
+    )
+
 }

@@ -626,7 +626,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         }
     }
 
-    fun setInteractiveTitle(title: String) {
+    private fun setInteractiveTitle(title: String) {
         getCurrentSetupDataStore().setSetupInteractiveTitle(title)
     }
 
@@ -634,7 +634,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         getCurrentSetupDataStore().setActiveInteractiveTitle(title)
     }
 
-    fun setSelectedInteractiveDuration(durationInMs: Long) {
+    private fun setSelectedInteractiveDuration(durationInMs: Long) {
         getCurrentSetupDataStore().setSelectedInteractiveDuration(durationInMs)
     }
 
@@ -1267,7 +1267,8 @@ class PlayBroadcastViewModel @AssistedInject constructor(
                 )
                 newInteractive
             }
-
+            setActiveInteractiveTitle("")
+            setInteractiveId("")
             if (interactive.waitingDuration > 0)
                 delay(interactive.waitingDuration)
             else
@@ -1288,6 +1289,8 @@ class PlayBroadcastViewModel @AssistedInject constructor(
                 )
                 interactive
             }
+            setActiveInteractiveTitle("")
+            setInteractiveId("")
             if (interactive.waitingDuration > 0)
                 delay(interactive.waitingDuration)
             else

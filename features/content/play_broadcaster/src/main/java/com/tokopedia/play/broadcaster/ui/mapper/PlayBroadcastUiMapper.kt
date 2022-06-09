@@ -461,8 +461,6 @@ class PlayBroadcastUiMapper @Inject constructor(
                         count = choice.participantCount.toString(),
                         showArrow = true
                     ),
-                    interactiveId = dataUiModel.interactiveId,
-                    interactiveTitle = textTransformer.transform(dataUiModel.question),
                 )
             },
             endsIn = dataUiModel.countDownEnd,

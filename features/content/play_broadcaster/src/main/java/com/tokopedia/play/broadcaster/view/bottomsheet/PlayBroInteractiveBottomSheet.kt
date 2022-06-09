@@ -182,6 +182,14 @@ class PlayBroInteractiveBottomSheet @Inject constructor(
 
     override fun onCloseButtonClicked(view: PlayInteractiveLeaderboardViewComponent) {
         when (sheetType) {
+            Type.QUIZ_DETAIL.toString() -> {
+                analytic.onClickCloseOngoingQuizBottomSheet(
+                    parentViewModel.channelId,
+                    parentViewModel.channelTitle,
+                    parentViewModel.interactiveId,
+                    parentViewModel.activeInteractiveTitle,
+                )
+            }
             Type.LEADERBOARD.toString() -> {
                 analytic.onClickCloseGameResultBottomsheet(
                     parentViewModel.channelId,
@@ -230,8 +238,8 @@ class PlayBroInteractiveBottomSheet @Inject constructor(
             analytic.onCLickQuizOptionLive(
                 parentViewModel.channelId,
                 parentViewModel.channelTitle,
-                item.interactiveId,
-                item.interactiveTitle,
+                parentViewModel.interactiveId,
+                parentViewModel.activeInteractiveTitle,
             )
         }
         parentViewModel.submitAction(PlayBroadcastAction.ClickQuizChoiceOption(item))
