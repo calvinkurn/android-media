@@ -3,7 +3,6 @@ package com.tokopedia.shop.flashsale.common.extension
 import com.tokopedia.shop.flashsale.common.constant.LocaleConstant
 import java.text.SimpleDateFormat
 import java.util.*
-import kotlin.math.min
 
 private const val EMPTY_STRING = ""
 
@@ -49,14 +48,6 @@ fun Date.advanceMinuteBy(minute: Int): Date {
 }
 
 
-fun Date.advanceMonthBy(month: Int): Date {
-    val now = Calendar.getInstance()
-    now.time = this
-    now.add(Calendar.MONTH, month)
-    return now.time
-}
-
-
 fun Date.decreaseHourBy(desiredHourToBeDecreased: Int): Date {
     val now = Calendar.getInstance()
     now.time = this
@@ -93,22 +84,4 @@ fun Date.extractMinute(): Int {
     val calendar = Calendar.getInstance()
     calendar.time = this
     return calendar.get(Calendar.MINUTE)
-}
-
-fun Date.extractMonth(): Int {
-    val calendar = Calendar.getInstance()
-    calendar.time = this
-    return calendar.get(Calendar.MONTH)
-}
-
-fun Date.isToday(): Boolean {
-    val now = Calendar.getInstance()
-    now.time = Date()
-    val currentDayOfMonth = now.get(Calendar.DAY_OF_YEAR)
-
-    val calendar = Calendar.getInstance()
-    calendar.time = this
-    val dayOfMonth = calendar.get(Calendar.DAY_OF_YEAR)
-
-    return currentDayOfMonth == dayOfMonth
 }

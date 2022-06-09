@@ -7,11 +7,8 @@ import com.tokopedia.shop.flashsale.common.constant.Constant
 import com.tokopedia.shop.flashsale.common.constant.LocaleConstant
 import com.tokopedia.shop.flashsale.common.extension.extractHour
 import com.tokopedia.shop.flashsale.common.extension.extractMinute
-import com.tokopedia.shop.flashsale.common.extension.isToday
 import com.tokopedia.shop.flashsale.common.extension.toCalendar
-import java.util.Date
-import java.util.GregorianCalendar
-import java.util.Calendar
+import java.util.*
 import javax.inject.Inject
 
 class TimePickerHandler @Inject constructor(private val param: Param) {
@@ -83,8 +80,7 @@ class TimePickerHandler @Inject constructor(private val param: Param) {
     }
 
     private fun buildMinTime(): GregorianCalendar {
-        val isToday = param.selectedDateFromCalendar.isToday()
-        return if (isToday) {
+        return if (param.selectedDateFromCalendar.before(param.minimumDate)) {
             GregorianCalendar(LocaleConstant.INDONESIA).apply {
                 set(Calendar.HOUR_OF_DAY, param.minimumDate.extractHour())
                 set(Calendar.MINUTE, param.minimumDate.extractMinute())
