@@ -3,7 +3,12 @@ package com.tokopedia.tokofood.feature.merchant.presentation.fragment
 import android.content.Context
 import android.net.Uri
 import android.os.Bundle
-import android.view.*
+import android.view.LayoutInflater
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
+import android.view.View
+import android.view.ViewGroup
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
@@ -41,9 +46,19 @@ import com.tokopedia.tokofood.feature.merchant.domain.model.response.TokoFoodMer
 import com.tokopedia.tokofood.feature.merchant.domain.model.response.TokoFoodTickerDetail
 import com.tokopedia.tokofood.feature.merchant.presentation.adapter.MerchantPageCarouselAdapter
 import com.tokopedia.tokofood.feature.merchant.presentation.adapter.ProductListAdapter
-import com.tokopedia.tokofood.feature.merchant.presentation.bottomsheet.*
+import com.tokopedia.tokofood.feature.merchant.presentation.bottomsheet.CategoryFilterBottomSheet
+import com.tokopedia.tokofood.feature.merchant.presentation.bottomsheet.CustomOrderDetailBottomSheet
+import com.tokopedia.tokofood.feature.merchant.presentation.bottomsheet.MerchantInfoBottomSheet
+import com.tokopedia.tokofood.feature.merchant.presentation.bottomsheet.OrderNoteBottomSheet
+import com.tokopedia.tokofood.feature.merchant.presentation.bottomsheet.ProductDetailBottomSheet
 import com.tokopedia.tokofood.feature.merchant.presentation.mapper.TokoFoodMerchantUiModelMapper
-import com.tokopedia.tokofood.feature.merchant.presentation.model.*
+import com.tokopedia.tokofood.feature.merchant.presentation.model.CategoryFilterListUiModel
+import com.tokopedia.tokofood.feature.merchant.presentation.model.CustomOrderDetail
+import com.tokopedia.tokofood.feature.merchant.presentation.model.MerchantOpsHour
+import com.tokopedia.tokofood.feature.merchant.presentation.model.MerchantShareComponent
+import com.tokopedia.tokofood.feature.merchant.presentation.model.ProductListItem
+import com.tokopedia.tokofood.feature.merchant.presentation.model.ProductUiModel
+import com.tokopedia.tokofood.feature.merchant.presentation.model.VariantWrapperUiModel
 import com.tokopedia.tokofood.feature.merchant.presentation.viewholder.MerchantCarouseItemViewHolder
 import com.tokopedia.tokofood.feature.merchant.presentation.viewholder.ProductCardViewHolder
 import com.tokopedia.tokofood.feature.merchant.presentation.viewmodel.MerchantPageViewModel
@@ -285,9 +300,7 @@ class MerchantPageFragment : BaseMultiFragment(),
         }
     }
 
-    private fun setCategoryPlaceholder() {
-        filterNameSelected = productListAdapter?.getProductListItems()
-            ?.firstOrNull()?.productCategory?.title.orEmpty()
+    private fun setCategoryPlaceholder(filterNameSelected: String) {
         binding?.tvCategoryPlaceholder?.text = filterNameSelected
     }
 
@@ -408,7 +421,7 @@ class MerchantPageFragment : BaseMultiFragment(),
                     filterNameSelected = productListItems.firstOrNull()?.productCategory?.title.orEmpty()
                     val finalProductListItems = viewModel.applyProductSelection(productListItems, viewModel.selectedProducts)
                     renderProductList(finalProductListItems)
-                    setCategoryPlaceholder()
+                    setCategoryPlaceholder(filterNameSelected)
                 }
                 is Fail -> {
 
@@ -623,6 +636,22 @@ class MerchantPageFragment : BaseMultiFragment(),
             it.layoutManager = LinearLayoutManager(
                 it.context
             )
+
+            it.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+                override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                    super.onScrolled(recyclerView, dx, dy)
+                    val mLayoutManager = it.layoutManager as? LinearLayoutManager
+                    val firstVisibleItemPos = mLayoutManager?.findFirstVisibleItemPosition().orZero()
+                    val productListItem =
+                        productListAdapter?.getProductListItems()?.filterIndexed { position, _ ->
+                            position == firstVisibleItemPos
+                        }?.firstOrNull { productItem -> productItem.productCategory.title.isNotBlank() }
+                    productListItem?.let { productsItem ->
+                        filterNameSelected = productsItem.productCategory.title
+                        setCategoryPlaceholder(filterNameSelected)
+                    }
+                }
+            })
         }
         (binding?.rvProductList?.itemAnimator as SimpleItemAnimator).supportsChangeAnimations =
             false
@@ -705,7 +734,7 @@ class MerchantPageFragment : BaseMultiFragment(),
                 merchantPageAnalytics.clickOnOrderProductBottomSheet(
                     productListItem,
                     merchantId,
-                    it,
+                    it.name,
                     cardPositions.first
                 )
             }
@@ -718,7 +747,7 @@ class MerchantPageFragment : BaseMultiFragment(),
             merchantPageAnalytics.clickOnOrderProductCard(
                 productListItem,
                 merchantId,
-                it,
+                it.name,
                 cardPositions.first
             )
         }
@@ -731,6 +760,7 @@ class MerchantPageFragment : BaseMultiFragment(),
         val productUiModel = productListItem.productUiModel
         viewModel.productMap[productUiModel.id] = cardPositions
         if (productUiModel.isCustomizable && productUiModel.isAtc) {
+            customOrderDetailBottomSheet?.setProductPosition(cardPositions.first)
             customOrderDetailBottomSheet?.setProductUiModel(productUiModel)
             customOrderDetailBottomSheet?.show(childFragmentManager)
         } else if (productUiModel.isCustomizable) {
@@ -750,7 +780,7 @@ class MerchantPageFragment : BaseMultiFragment(),
         viewModel.merchantData?.let {
             merchantPageAnalytics.clickOnAtcButton(
                 productListItem, merchantId,
-                it,
+                it.name,
                 cardPositions.first
             )
         }
@@ -812,13 +842,6 @@ class MerchantPageFragment : BaseMultiFragment(),
             )
             activityViewModel?.updateQuantity(updateParam, SOURCE)
         }
-    }
-
-    override fun onNavigateToOrderCustomizationPage(
-        cartId: String,
-        productUiModel: ProductUiModel
-    ) {
-        TODO("Not yet implemented")
     }
 
     override fun onNavigateToOrderCustomizationPage(
@@ -944,15 +967,13 @@ class MerchantPageFragment : BaseMultiFragment(),
         viewModel.productListItems = productListAdapter?.getProductListItems()?: mutableListOf()
 
         val cacheManager = context?.let { SaveInstanceCacheManager(it, true) }
-        val variantTracker =
-            viewModel.merchantData?.let {
-                VariantWrapperUiModel(
+        val variantTracker = VariantWrapperUiModel(
                     productListItem,
                     merchantId,
-                    it,
+                    viewModel.merchantData?.name.orEmpty(),
                     productPosition
-                )
-            } ?: VariantWrapperUiModel()
+        )
+
         cacheManager?.put(
             OrderCustomizationFragment.BUNDLE_KEY_VARIANT_TRACKER,
             variantTracker
@@ -962,7 +983,7 @@ class MerchantPageFragment : BaseMultiFragment(),
             productUiModel = productListItem.productUiModel,
             cartId = cartId,
             merchantId = merchantId,
-            cacheManager?.id.orEmpty()
+            cacheManagerId = cacheManager?.id.orEmpty()
         )
         navigateToNewFragment(orderCustomizationFragment)
     }

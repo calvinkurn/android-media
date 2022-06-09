@@ -98,6 +98,11 @@ class OrderTrackingStatusInfoWidget : ConstraintLayout {
         binding?.tvOrderTrackingStatusDesc?.text = subTitle
     }
 
+    override fun onDetachedFromWindow() {
+        binding = null
+        super.onDetachedFromWindow()
+    }
+
     companion object {
         private const val SEARCHING_DRIVER = "SEARCHING_DRIVER"
         private const val ON_PROCESS = "ON_PROCESS"
