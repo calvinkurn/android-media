@@ -33,4 +33,6 @@ interface PlayBroadcastInteractiveAnalytic {
     fun onClickCloseGameResultBottomsheet(channelId: String, channelTitle: String)
 
     fun onClickCloseGameResultReport(channelId: String, channelTitle: String)
+
+    fun onImpressFailedLeaderboard(channelId: String, channelTitle: String)
 }

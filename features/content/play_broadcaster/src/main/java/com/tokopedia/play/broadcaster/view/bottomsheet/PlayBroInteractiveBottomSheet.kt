@@ -216,6 +216,7 @@ class PlayBroInteractiveBottomSheet @Inject constructor(
     }
 
     override fun onRefreshButtonClicked(view: PlayInteractiveLeaderboardViewComponent) {
+
         parentViewModel.submitAction(PlayBroadcastAction.ClickRefreshQuizDetailBottomSheet)
     }
 
@@ -224,7 +225,7 @@ class PlayBroInteractiveBottomSheet @Inject constructor(
     }
 
     override fun onRefreshButtonImpressed(view: PlayInteractiveLeaderboardViewComponent) {
-        //TODO("Not yet implemented")
+        analytic.onImpressFailedLeaderboard(parentViewModel.channelId, parentViewModel.channelTitle)
     }
 
     override fun onLeaderBoardImpressed(

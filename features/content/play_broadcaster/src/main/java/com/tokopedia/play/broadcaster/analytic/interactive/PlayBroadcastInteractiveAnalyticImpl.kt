@@ -103,10 +103,7 @@ class PlayBroadcastInteractiveAnalyticImpl @Inject constructor(
         )
     }
 
-    override fun onClickChatWinnerIcon(
-        channelId: String,
-        channelTitle: String,
-    ) {
+    override fun onClickChatWinnerIcon(channelId: String, channelTitle: String) {
         sendClickEvent(
             "click - chat winners",
             "${userSession.shopId} - $channelId - $channelTitle",
@@ -167,6 +164,13 @@ class PlayBroadcastInteractiveAnalyticImpl @Inject constructor(
             "click - x report page gamification",
             "${userSession.shopId} - $channelId - $channelTitle",
         )
+    }
+
+    override fun onImpressFailedLeaderboard(channelId: String, channelTitle: String) {
+        sendImpressionEvent(
+            "view - failed to load",
+            "${userSession.shopId} - $channelId - $channelTitle",
+            )
     }
 
     private fun sendClickEvent(
