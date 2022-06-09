@@ -1,12 +1,11 @@
 package com.tokopedia.play.view.viewcomponent
 
 import android.view.ViewGroup
-import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.fragment.app.Fragment
-import com.google.android.material.bottomsheet.BottomSheetBehavior
-import com.tokopedia.localizationchooseaddress.ui.widget.ChooseAddressWidget
+import com.tokopedia.localizationchooseaddress.ui.bottomsheet.ChooseAddressBottomSheet
 import com.tokopedia.play.R
 import com.tokopedia.play_common.viewcomponent.ViewComponent
+import com.tokopedia.unifycomponents.UnifyButton
 
 /**
  * @author by astidhiyaa on 03/06/22
@@ -14,50 +13,46 @@ import com.tokopedia.play_common.viewcomponent.ViewComponent
 class ChooseAddressViewComponent(
     container: ViewGroup,
     private val listener: Listener
-) : ViewComponent(container, R.id.cl_choose_address_widget) {
+) : ViewComponent(container, R.id.view_play_widget_address) {
 
-    private val chooseAddressWidget: ChooseAddressWidget = findViewById(R.id.widget_choose_addres)
+    private lateinit var chooseAddressBottomSheet: ChooseAddressBottomSheet
+    private val btnChoose: UnifyButton = findViewById(R.id.btn_change_address)
 
-    private val insideListener = object : ChooseAddressWidget.ChooseAddressWidgetListener{
-        override fun onLocalizingAddressUpdatedFromWidget() {
-            chooseAddressWidget.updateWidget()
+    private val insideListener = object : ChooseAddressBottomSheet.ChooseAddressBottomSheetListener{
+        override fun onLocalizingAddressServerDown() {}
+
+        override fun onAddressDataChanged() {
             listener.onAddressUpdated(this@ChooseAddressViewComponent)
         }
 
-        override fun onLocalizingAddressUpdatedFromBackground() {
+        override fun getLocalizingAddressHostSourceBottomSheet(): String = "login"
+
+        override fun onLocalizingAddressLoginSuccessBottomSheet() {
             //TODO("Not yet implemented")
         }
 
-        override fun onLocalizingAddressServerDown() {
+        override fun onDismissChooseAddressBottomSheet() {
             //TODO("Not yet implemented")
         }
-
-        override fun onLocalizingAddressRollOutUser(isRollOutUser: Boolean) {
-            //TODO("Not yet implemented")
-        }
-
-        override fun getLocalizingAddressHostFragment(): Fragment = listener.getFragmentForAddress(this@ChooseAddressViewComponent)
-
-        override fun getLocalizingAddressHostSourceData(): String = "login"
-
-        override fun onLocalizingAddressLoginSuccess() {
-            //TODO("Not yet implemented")
-        }
-
     }
 
     init {
-        chooseAddressWidget.bindChooseAddress(insideListener)
+        btnChoose.setOnClickListener {
+            openBottomSheet()
+        }
     }
 
-    fun showWithHeight(height: Int) {
-        if (rootView.height != height) {
-            val layoutParams = rootView.layoutParams as CoordinatorLayout.LayoutParams
-            layoutParams.height = height
-            rootView.layoutParams = layoutParams
-        }
+    private fun openBottomSheet() {
+        if (!getBottomSheet().isVisible)
+            getBottomSheet().showNow(listener.getFragmentForAddress(this@ChooseAddressViewComponent).childFragmentManager, "")
+    }
 
-        show()
+    private fun getBottomSheet() : ChooseAddressBottomSheet {
+        if(!::chooseAddressBottomSheet.isInitialized) {
+            chooseAddressBottomSheet = ChooseAddressBottomSheet()
+            chooseAddressBottomSheet.setListener(insideListener)
+        }
+        return chooseAddressBottomSheet
     }
 
     interface Listener {

@@ -10,6 +10,7 @@ import android.os.Build
 import android.os.Bundle
 import android.view.*
 import androidx.constraintlayout.widget.ConstraintSet
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
@@ -22,6 +23,8 @@ import com.tokopedia.kotlin.extensions.coroutines.asyncCatchError
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
+import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.play.PLAY_KEY_CHANNEL_ID
 import com.tokopedia.play.R
@@ -124,7 +127,8 @@ class PlayUserInteractionFragment @Inject constructor(
         RealTimeNotificationViewComponent.Listener,
         CastViewComponent.Listener,
         ProductSeeMoreViewComponent.Listener,
-        KebabMenuViewComponent.Listener
+        KebabMenuViewComponent.Listener,
+        ChooseAddressViewComponent.Listener
 {
     private val viewSize by viewComponent { EmptyViewComponent(it, R.id.view_size) }
     private val gradientBackgroundView by viewComponent { EmptyViewComponent(it, R.id.view_gradient_background) }
@@ -152,6 +156,7 @@ class PlayUserInteractionFragment @Inject constructor(
         it, R.id.view_like_bubble, viewLifecycleOwner.lifecycleScope, multipleLikesIconCacheStorage) }
     private val productSeeMoreView by viewComponentOrNull(isEagerInit = true) { ProductSeeMoreViewComponent(it, R.id.view_product_see_more, this) }
     private val kebabMenuView by viewComponentOrNull(isEagerInit = true) { KebabMenuViewComponent(it, R.id.view_kebab_menu, this) }
+    private val chooseAddressView by viewComponentOrNull { ChooseAddressViewComponent(it, this) }
 
     /**
      * Interactive
@@ -212,6 +217,8 @@ class PlayUserInteractionFragment @Inject constructor(
 
     private lateinit var productAnalyticHelper: ProductAnalyticHelper
 
+    private lateinit var localCache: LocalCacheModel
+
     /**
      * Animation
      */
@@ -243,6 +250,7 @@ class PlayUserInteractionFragment @Inject constructor(
         setupObserve()
 
         invalidateSystemUiVisibility()
+        initAddress()
     }
 
     override fun onStart() {
@@ -1670,6 +1678,27 @@ class PlayUserInteractionFragment @Inject constructor(
     override fun onKebabMenuClick(view: KebabMenuViewComponent) {
         analytic.clickKebabMenu()
         playViewModel.submitAction(OpenKebabAction)
+    }
+
+    /***
+     * Choose Address
+     */
+
+    private fun initAddress() {
+        localCache = ChooseAddressUtils.getLocalizingAddressData(context = requireContext())
+
+        val warehouseId = localCache.warehouses.find {
+            it.service_type == localCache.service_type
+        }?.warehouse_id ?: 0
+
+        playViewModel.submitAction(SendWarehouseId(isOOC = localCache.isOutOfCoverage(), id = warehouseId.toString()))
+    }
+
+    override fun getFragmentForAddress(view: ChooseAddressViewComponent): Fragment = this
+
+
+    override fun onAddressUpdated(view: ChooseAddressViewComponent) {
+        initAddress()
     }
 
     companion object {

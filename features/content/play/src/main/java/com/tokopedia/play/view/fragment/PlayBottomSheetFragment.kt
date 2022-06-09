@@ -101,8 +101,6 @@ class PlayBottomSheetFragment @Inject constructor(
 
     override fun getScreenName(): String = "Play Bottom Sheet"
 
-    private lateinit var userLocalData: LocalCacheModel
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         playViewModel = ViewModelProvider(
@@ -120,7 +118,6 @@ class PlayBottomSheetFragment @Inject constructor(
         setupView(view)
         setupObserve()
         initAnalytic()
-        initAddress()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -648,15 +645,5 @@ class PlayBottomSheetFragment @Inject constructor(
             childFragmentManager,
             requireActivity().classLoader
         )
-    }
-
-    private fun initAddress() {
-        userLocalData = ChooseAddressUtils.getLocalizingAddressData(context = requireContext())
-
-        val warehouseId = userLocalData.warehouses.find {
-            it.service_type == userLocalData.service_type
-        }?.warehouse_id ?: 0
-
-        playViewModel.submitAction(SendWarehouseId(isOOC = userLocalData.isOutOfCoverage(), id = warehouseId.toString()))
     }
 }
