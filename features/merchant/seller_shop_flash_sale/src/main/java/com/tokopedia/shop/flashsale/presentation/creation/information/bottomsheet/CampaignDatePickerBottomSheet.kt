@@ -10,16 +10,24 @@ import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.calendar.CalendarPickerView
 import com.tokopedia.calendar.Legend
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.seller_shop_flash_sale.R
 import com.tokopedia.seller_shop_flash_sale.databinding.SsfsBottomsheetCampaignDatePickerBinding
+import com.tokopedia.shop.flashsale.common.constant.DateConstant
+import com.tokopedia.shop.flashsale.common.extension.localFormatTo
 import com.tokopedia.shop.flashsale.common.extension.showError
 import com.tokopedia.shop.flashsale.common.util.DateManager
 import com.tokopedia.shop.flashsale.di.component.DaggerShopFlashSaleComponent
 import com.tokopedia.shop.flashsale.domain.entity.GroupedCampaign
+import com.tokopedia.shop.flashsale.presentation.creation.information.TimePickerHandler
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.lifecycle.autoClearedNullable
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import java.util.*
 import javax.inject.Inject
 
@@ -28,15 +36,16 @@ class CampaignDatePickerBottomSheet : BottomSheetUnify() {
     companion object {
         private const val BUNDLE_KEY_SELECTED_DATE = "selected_date"
         private const val BUNDLE_KEY_MINIMUM_DATE = "minimum_date"
+        private const val DISMISS_BOTTOM_SHEET_DELAY_IN_MILLIS: Long = 500
 
         @JvmStatic
         fun newInstance(
-            previouslySelectedDate: Date,
+            selectedDate: Date,
             minimumDate: Date
         ): CampaignDatePickerBottomSheet {
             return CampaignDatePickerBottomSheet().apply {
                 arguments = Bundle().apply {
-                    putSerializable(BUNDLE_KEY_SELECTED_DATE, previouslySelectedDate)
+                    putSerializable(BUNDLE_KEY_SELECTED_DATE, selectedDate)
                     putSerializable(BUNDLE_KEY_MINIMUM_DATE, minimumDate)
                 }
             }
@@ -44,8 +53,8 @@ class CampaignDatePickerBottomSheet : BottomSheetUnify() {
     }
 
     private var binding by autoClearedNullable<SsfsBottomsheetCampaignDatePickerBinding>()
-    private var onDatePicked: (Date) -> Unit = {}
-    private val previouslySelectedDate by lazy {
+    private var onDateTimePicked: (Date) -> Unit = {}
+    private val selectedDate by lazy {
         arguments?.getSerializable(BUNDLE_KEY_SELECTED_DATE) as? Date ?: Date()
     }
 
@@ -110,10 +119,13 @@ class CampaignDatePickerBottomSheet : BottomSheetUnify() {
 
             when (result) {
                 is Success -> {
-                    println()
+                    binding?.tpgDateDescription?.visible()
+                    binding?.unifyCalendar?.visible()
                     displayCalendar(result.data)
                 }
                 is Fail -> {
+                    binding?.tpgDateDescription?.gone()
+                    binding?.unifyCalendar?.gone()
                     binding?.root showError result.throwable
                 }
             }
@@ -133,14 +145,18 @@ class CampaignDatePickerBottomSheet : BottomSheetUnify() {
         calendar?.run {
             init(minimumDate, endDate, legends)
                 .inMode(CalendarPickerView.SelectionMode.SINGLE)
-                .withSelectedDate(previouslySelectedDate)
+                .withSelectedDate(selectedDate)
         }
 
 
         calendar?.setOnDateSelectedListener(object : CalendarPickerView.OnDateSelectedListener {
             override fun onDateSelected(date: Date) {
-                onDatePicked(date)
-                dismiss()
+                showTimePicker(
+                    date,
+                    onTimePicked = { dateTime ->
+                        doOnDelayFinished { onDateTimePicked(dateTime) }
+                    }
+                )
             }
 
             override fun onDateUnselected(date: Date) {
@@ -151,9 +167,29 @@ class CampaignDatePickerBottomSheet : BottomSheetUnify() {
 
     }
 
-    fun setOnDatePicked(onDatePicked: (Date) -> Unit) {
-        this.onDatePicked = onDatePicked
+    fun setOnDateTimePicked(onDatePicked: (Date) -> Unit) {
+        this.onDateTimePicked = onDatePicked
     }
 
 
+    fun showTimePicker(selectedDate: Date, onTimePicked: (Date) -> Unit) {
+        val title = getString(R.string.sfs_select_campaign_time)
+        val info = String.format(
+            getString(R.string.sfs_placeholder_selected_date),
+            selectedDate.localFormatTo(DateConstant.DATE)
+        )
+        val buttonWording = getString(R.string.sfs_apply)
+        val param = TimePickerHandler.Param(selectedDate, title, info, buttonWording)
+
+        val timePickerHandler = TimePickerHandler(param)
+        timePickerHandler.show(requireActivity(), childFragmentManager, onTimePicked)
+    }
+
+    private fun doOnDelayFinished(block: () -> Unit) {
+        CoroutineScope(Dispatchers.Main).launch {
+            delay(DISMISS_BOTTOM_SHEET_DELAY_IN_MILLIS)
+            block()
+            dismiss()
+        }
+    }
 }

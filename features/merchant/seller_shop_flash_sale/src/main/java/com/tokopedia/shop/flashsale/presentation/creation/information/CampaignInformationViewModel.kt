@@ -40,8 +40,8 @@ class CampaignInformationViewModel @Inject constructor(
 
     private var selection: Selection? = null
     private var selectedColor: Gradient? = null
-    private var selectedStartDate: Date? = null
-    private var selectedEndDate: Date? = null
+    private var selectedStartDate = Date()
+    private var selectedEndDate = Date()
     private var showTeaser = false
 
     private val forbiddenWords = listOf(
@@ -60,8 +60,6 @@ class CampaignInformationViewModel @Inject constructor(
         object CampaignNameIsEmpty : ValidationResult()
         object CampaignNameBelowMinCharacter : ValidationResult()
         object CampaignNameHasForbiddenWords : ValidationResult()
-        object StartDateNotSelected : ValidationResult()
-        object EndDateNotSelected : ValidationResult()
         object LapsedStartDate : ValidationResult()
         object ExceedMaxOverlappedCampaign : ValidationResult()
         object LapsedTeaserStartDate : ValidationResult()
@@ -71,13 +69,14 @@ class CampaignInformationViewModel @Inject constructor(
 
     data class Selection(
         val campaignName: String,
-        val startDate: Date?,
-        val endDate: Date?,
+        val startDate: Date,
+        val endDate: Date,
         val showTeaser: Boolean,
         val teaserDate: Date?,
         val firstColor: String,
         val secondColor: String
     )
+
 
     fun onCampaignNameChange(campaignName: String) {
         if (campaignName.isEmpty()) {
@@ -115,18 +114,7 @@ class CampaignInformationViewModel @Inject constructor(
             return
         }
 
-        if (selection.startDate == null) {
-            _areInputValid.value = ValidationResult.StartDateNotSelected
-            return
-        }
-
-        if (selection.endDate == null) {
-            _areInputValid.value = ValidationResult.EndDateNotSelected
-            return
-        }
-
-
-        if (selection.showTeaser && teaserDate?.after(now).orFalse()) {
+        if (selection.showTeaser && teaserDate.after(now).orFalse()) {
             _areInputValid.value = ValidationResult.LapsedTeaserStartDate
             return
         }
@@ -207,7 +195,7 @@ class CampaignInformationViewModel @Inject constructor(
         this.selectedStartDate = selectedStartDate
     }
 
-    fun getSelectedStartDate(): Date? {
+    fun getSelectedStartDate(): Date {
         return selectedStartDate
     }
 
@@ -215,7 +203,7 @@ class CampaignInformationViewModel @Inject constructor(
         this.selectedEndDate = selectedEndDate
     }
 
-    fun getSelectedEndDate(): Date? {
+    fun getSelectedEndDate(): Date {
         return selectedEndDate
     }
 

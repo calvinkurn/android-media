@@ -12,6 +12,8 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/unify_space_16"
         android:layout_marginTop="@dimen/unify_space_16"
+        android:visibility="gone"
+        tools:visibility="visible"
         android:layout_marginEnd="@dimen/unify_space_16"
         android:text="@string/sfs_date_picker_description"
         app:layout_constraintEnd_toEndOf="parent"
@@ -40,11 +42,12 @@
         android:layout_width="match_parent"
         android:layout_marginTop="@dimen/unify_space_8"
         android:layout_height="@dimen/sfs_calendar_height"
+        tools:visibility="visible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        android:visibility="gone"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tpgErrorMessage"
-        tools:ignore="DeprecatedResource" />
+        app:layout_constraintTop_toBottomOf="@id/tpgErrorMessage" />
 
     <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/loader"

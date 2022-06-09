@@ -36,6 +36,7 @@ class CampaignInformationFragment : BaseDaggerFragment() {
         private const val FIRST_STEP = 1
         private const val SPAN_COUNT = 6
         private const val HEX_COLOR_TEXT_FIELD_MAX_LENGTH = 6
+        private const val ONE_HOUR = 1
 
         @JvmStatic
         fun newInstance(pageMode: PageMode): CampaignInformationFragment {
@@ -97,6 +98,7 @@ class CampaignInformationFragment : BaseDaggerFragment() {
         setupRecyclerView()
         setupClickListeners()
         setupTextFields()
+        setupDatePicker()
     }
 
     private fun setupRecyclerView() {
@@ -126,10 +128,7 @@ class CampaignInformationFragment : BaseDaggerFragment() {
                 }
             }
 
-            tauStartDate.editText.inputType = InputType.TYPE_NULL
-            tauEndDate.editText.inputType = InputType.TYPE_NULL
-            tauStartDate.editText.setOnClickListener { displayStartDatePicker() }
-            tauEndDate.editText.setOnClickListener { displayEndDatePicker() }
+            switchTeaser.isChecked = true
         }
     }
 
@@ -148,6 +147,22 @@ class CampaignInformationFragment : BaseDaggerFragment() {
             contentSwitcher.setOnCheckedChangeListener { _, isChecked ->
                 handleContentSwitcher(isChecked)
             }
+        }
+    }
+
+    private fun setupDatePicker() {
+        val now = dateManager.getCurrentDate()
+        val defaultStartDate = now.localFormatTo(DateConstant.DATE_TIME_MINUTE_LEVEL)
+        val defaultEndDate = now.advanceHourBy(ONE_HOUR).localFormatTo(DateConstant.DATE_TIME_MINUTE_LEVEL)
+
+        binding?.run {
+            tauStartDate.editText.setText(defaultStartDate)
+            tauEndDate.editText.setText(defaultEndDate)
+
+            tauStartDate.editText.inputType = InputType.TYPE_NULL
+            tauEndDate.editText.inputType = InputType.TYPE_NULL
+            tauStartDate.editText.setOnClickListener { displayStartDatePicker() }
+            tauEndDate.editText.setOnClickListener { displayEndDatePicker() }
         }
     }
 
@@ -228,26 +243,26 @@ class CampaignInformationFragment : BaseDaggerFragment() {
     }
 
     private fun displayStartDatePicker() {
-        val previouslySelectedStartDate = viewModel.getSelectedStartDate() ?: Date()
+        val previouslySelectedStartDate = viewModel.getSelectedStartDate()
         val minimumDate = Date()
         val bottomSheet =
             CampaignDatePickerBottomSheet.newInstance(previouslySelectedStartDate, minimumDate)
-        bottomSheet.setOnDatePicked { newStartDate ->
+        bottomSheet.setOnDateTimePicked { newStartDate ->
             viewModel.setSelectedStartDate(newStartDate)
-            binding?.tauStartDate?.editText?.setText(newStartDate.formatTo(DateConstant.DATE_TIME_MINUTE_LEVEL))
+            binding?.tauStartDate?.editText?.setText(newStartDate.localFormatTo(DateConstant.DATE_TIME_MINUTE_LEVEL))
         }
         bottomSheet.show(childFragmentManager, bottomSheet.tag)
     }
 
     private fun displayEndDatePicker() {
-        val minimumDate = viewModel.getSelectedStartDate() ?: Date()
-        val previouslySelectedEndDate = viewModel.getSelectedEndDate() ?: minimumDate
+        val minimumDate = viewModel.getSelectedStartDate()
+        val previouslySelectedEndDate = viewModel.getSelectedEndDate()
 
         val bottomSheet =
             CampaignDatePickerBottomSheet.newInstance(previouslySelectedEndDate, minimumDate)
-        bottomSheet.setOnDatePicked { newEndDate ->
+        bottomSheet.setOnDateTimePicked { newEndDate ->
             viewModel.setSelectedEndDate(newEndDate)
-            binding?.tauEndDate?.editText?.setText(newEndDate.formatTo(DateConstant.DATE_TIME_MINUTE_LEVEL))
+            binding?.tauEndDate?.editText?.setText(newEndDate.localFormatTo(DateConstant.DATE_TIME_MINUTE_LEVEL))
         }
         bottomSheet.show(childFragmentManager, bottomSheet.tag)
     }
@@ -262,7 +277,7 @@ class CampaignInformationFragment : BaseDaggerFragment() {
         } else {
             Constant.ZERO
         }
-        val teaserDate = startDate?.decreaseHourBy(decreaseByHour)
+        val teaserDate = startDate.decreaseHourBy(decreaseByHour)
         val firstColor = viewModel.getColor()?.first.orEmpty()
         val secondColor = viewModel.getColor()?.second.orEmpty()
 
