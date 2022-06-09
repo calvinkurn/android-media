@@ -172,7 +172,7 @@ class EditKeywordsFragment : BaseDaggerFragment() {
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(
-            resources.getLayout(com.tokopedia.topads.common.R.layout.topads_create_fragment_budget_list),
+            context?.resources?.getLayout(com.tokopedia.topads.common.R.layout.topads_create_fragment_budget_list),
             container,
             false
         )
