@@ -40,6 +40,7 @@ import com.tokopedia.topchat.common.websocket.*
 import com.tokopedia.topchat.common.websocket.DefaultTopChatWebSocket.Companion.PAGE_CHATROOM
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.websocket.DEFAULT_PING
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
 import dagger.Module
@@ -134,6 +135,7 @@ class ChatModule {
                 .connectTimeout(retryPolicy.connectTimeout.toLong(), TimeUnit.SECONDS)
                 .readTimeout(retryPolicy.readTimeout.toLong(), TimeUnit.SECONDS)
                 .writeTimeout(retryPolicy.writeTimeout.toLong(), TimeUnit.SECONDS)
+                .pingInterval(DEFAULT_PING, TimeUnit.MILLISECONDS)
 
         if (GlobalConfig.isAllowDebuggingTools()) {
             builder.addInterceptor(chuckInterceptor)
