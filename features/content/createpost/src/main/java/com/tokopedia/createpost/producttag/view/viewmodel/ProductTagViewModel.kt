@@ -541,11 +541,14 @@ class ProductTagViewModel @AssistedInject constructor(
     }
 
     private fun handleSuggestionClicked() {
-        val suggestionQuery = _globalSearchProduct.value.suggestion.query
+        val suggestionQuery = _globalSearchProduct.value.suggestion.suggestion
         if(suggestionQuery.isEmpty()) return
 
-        val query = _globalSearchProduct.value.param.query
-        handleGlobalSearchParamCorrection(suggestionQuery, query)
+        _globalSearchProduct.setValue {
+            GlobalSearchProductUiModel.Empty.copy(param = initParam(suggestionQuery))
+        }
+
+        handleLoadGlobalSearchProduct()
     }
 
     private fun handleTickerClicked() {
@@ -553,8 +556,17 @@ class ProductTagViewModel @AssistedInject constructor(
         if(tickerParam.isEmpty()) return
 
         val query = _globalSearchProduct.value.param.query
+        val newParam = initParam(query).apply {
+            tickerParam.toMapParam().forEach {
+                addParam(it.key, it.value)
+            }
+        }
 
-        handleGlobalSearchParamCorrection(tickerParam, query)
+        _globalSearchProduct.setValue {
+            GlobalSearchProductUiModel.Empty.copy(param = newParam)
+        }
+
+        handleLoadGlobalSearchProduct()
     }
 
     private fun handleCloseTicker() {
@@ -830,20 +842,6 @@ class ProductTagViewModel @AssistedInject constructor(
             this.prevQuery = prevQuery
             this.query = query
         }
-    }
-
-    private fun handleGlobalSearchParamCorrection(param: String, query: String) {
-        val newParam = initParam(query).apply {
-            param.toMapParam().forEach {
-                addParam(it.key, it.value)
-            }
-        }
-
-        _globalSearchProduct.setValue {
-            GlobalSearchProductUiModel.Empty.copy(param = newParam)
-        }
-
-        handleLoadGlobalSearchProduct()
     }
 
     companion object {

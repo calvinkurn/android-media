@@ -6,4 +6,5 @@ package com.tokopedia.createpost.producttag.view.uimodel
 data class SuggestionUiModel(
     val text: String = "",
     val query: String = "",
+    val suggestion: String = "",
 )

@@ -44,6 +44,7 @@ class FeedAceSearchProductUseCase @Inject constructor(
                     currentKeyword
                     suggestion
                     text
+                    query
                   }
                   ticker {
                     text

@@ -127,6 +127,7 @@ class ProductTagUiModelMapper @Inject constructor() {
             suggestion = SuggestionUiModel(
                 text = response.wrapper.data.suggestion.text,
                 query = response.wrapper.data.suggestion.query,
+                suggestion = response.wrapper.data.suggestion.suggestion,
             ),
             ticker = TickerUiModel(
                 text = response.wrapper.data.ticker.text,
