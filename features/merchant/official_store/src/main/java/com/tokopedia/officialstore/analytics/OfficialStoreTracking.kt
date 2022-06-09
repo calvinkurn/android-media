@@ -39,90 +39,82 @@ class OfficialStoreTracking(context: Context) {
 
     private var trackingIris = IrisAnalytics.getInstance(context)
 
-    private val EVENT = "event"
-    private val EVENT_CATEGORY = "eventCategory"
-    private val EVENT_ACTION = "eventAction"
-    private val EVENT_LABEL = "eventLabel"
-    private val EVENT_ATTRIBUTION = "attribution"
-    private val EVENT_LABEL_POPULAR_BRANDS = "%s - %s - %s"
-    private val IMPRESSION_BANNER = "impression banner"
-    private val EVENT_POPULAR_BRANDS = "%s - %s"
-    private val PROMOTIONS_ID_POPULAR_BRANDS = "%s_%s"
-    private val PROMOTIONS = "promotions"
-    private val PROMOTIONS_NAME_POPULAR_BRANDS = "%s%s - %s - %s"
-    private val CLICK_BANNER = "click banner"
+    companion object{
 
-    private val ATTRIBUTION = "attribution"
-    private val AFFINITY_LABEL = "affinityLabel"
-    private val CATEGORY_ID = "categoryId"
-    private val SHOP_ID = "shopId"
-    private val ECOMMERCE = "ecommerce"
-    private val CLICK = "click"
-    private val IMPRESSION = "impression"
-    private val ECOMMERCE_IMPRESSIONS = "impressions"
-    private val ECOMMERCE_CURRENCY_CODE = "currencyCode"
-    private val FIELD_BUSINESS_UNIT = "businessUnit"
-    private val FIELD_CURRENT_SITE = "currentSite"
-    private val USER_ID = "userId"
-    private val REFERENCE_POPULAR_BRANDS = "reference: row 18"
-
-    private val CLICK_HOMEPAGE = "clickHomepage"
-    private val CLICK_OS_MICROSITE = "clickOSMicrosite"
-    private val PROMO_CLICK = "promoClick"
-    private val PROMO_VIEW = "promoView"
-    private val CATEGORY = "category"
-
-    private val CAMPAIGN_CODE = "campaignCode"
-
-    private val OS_MICROSITE = "os microsite - "
-
-    private val ALL_BRANDS = "all brands"
-    private val VIEW_ALL = "view all"
-
-    private val FIELD_PRODUCTS = "products"
-    private val FIELD_PRODUCT_NAME = "name"
-    private val FIELD_PRODUCT_ID = "id"
-    private val FIELD_PRODUCT_PRICE = "price"
-    private val FIELD_PRODUCT_BRAND = "brand"
-    private val FIELD_PRODUCT_VARIANT = "variant"
-    private val FIELD_PRODUCT_CATEGORY = "category"
-    private val FIELD_PRODUCT_LIST = "list"
-    private val FIELD_PRODUCT_QUANTITY = "quantity"
-    private val FIELD_PRODUCT_POSITION = "position"
-    private val FIELD_ACTION_FIELD = "actionField"
-    private val FIELD_CATEGORY_ID = "category_id"
-    private val FIELD_SHOP_ID = "shop_id"
-    private val FIELD_SHOP_TYPE = "shop_type"
-    private val FIELD_SHOP_NAME = "shop_name"
-    private val FIELD_DIMENSION_38 = "dimension38"
-    private val FIELD_PRODUCT_CREATIVE = "creative"
-
-    private val VALUE_NONE_OTHER = "none / other"
-    private val VALUE_NONE = "none"
-    private val VALUE_IDR = "IDR"
-    private val VALUE_EMPTY = ""
-    private val VALUE_NON_LOGIN = ""
-    private val VALUE_NON_LOGIN_NEW = "non login"
-    private val VALUE_LOGIN_NEW = "login"
-    private val VALUE_DYNAMIC_MIX_TOP_CAROUSEL = "dynamic channel top carousel"
-    private val VALUE_DYNAMIC_MIX_LEFT_CAROUSEL = "dynamic channel left carousel"
-    private val VALUE_BUSINESS_UNIT_DEFAULT = "home & browse"
-    private val VALUE_CURRENT_SITE_DEFAULT = "tokopediamarketplace"
-
-
-    private val EVENT_PRODUCT_VIEW = "productView"
-    private val EVENT_PRODUCT_CLICK = "productClick"
-
-
-    private val PRODUCT_EVENT_ACTION = "product recommendation"
-
-    private val EVENT_CATEGORY_RECOMMENDATION_PAGE_WITH_PRODUCT_ID = "recommendation page with product id"
-    private val SLASH_OFFICIAL_STORE = "/official-store"
-    private val SLASH_OFFICIAL_STORE_WITHOUT_CATEGORY = "/official-store/"
-    private val SKEL_APPLINK = "{&data}"
-    private val SKEL_APPLINK_DATA = "&data"
-
-    private val POPULAR_BRANDS = "popular brands"
+        private const val EVENT = "event"
+        private const val EVENT_CATEGORY = "eventCategory"
+        private const val EVENT_ACTION = "eventAction"
+        private const val EVENT_LABEL = "eventLabel"
+        private const val EVENT_ATTRIBUTION = "attribution"
+        private const val EVENT_LABEL_POPULAR_BRANDS = "%s - %s - %s"
+        private const val IMPRESSION_BANNER = "impression banner"
+        private const val EVENT_POPULAR_BRANDS = "%s - %s"
+        private const val PROMOTIONS_ID_POPULAR_BRANDS = "%s_%s"
+        private const val PROMOTIONS = "promotions"
+        private const val PROMOTIONS_NAME_POPULAR_BRANDS = "%s%s - %s - %s"
+        private const val CLICK_BANNER = "click banner"
+        private const val ATTRIBUTION = "attribution"
+        private const val AFFINITY_LABEL = "affinityLabel"
+        private const val CATEGORY_ID = "categoryId"
+        private const val SHOP_ID = "shopId"
+        private const val ECOMMERCE = "ecommerce"
+        private const val CLICK = "click"
+        private const val IMPRESSION = "impression"
+        private const val ECOMMERCE_IMPRESSIONS = "impressions"
+        private const val ECOMMERCE_CURRENCY_CODE = "currencyCode"
+        private const val FIELD_BUSINESS_UNIT = "businessUnit"
+        private const val FIELD_CURRENT_SITE = "currentSite"
+        private const val USER_ID = "userId"
+        private const val REFERENCE_POPULAR_BRANDS = "reference: row 18"
+        private const val CLICK_HOMEPAGE = "clickHomepage"
+        private const val CLICK_OS_MICROSITE = "clickOSMicrosite"
+        private const val PROMO_CLICK = "promoClick"
+        private const val PROMO_VIEW = "promoView"
+        private const val CATEGORY = "category"
+        private const val CAMPAIGN_CODE = "campaignCode"
+        private const val OS_MICROSITE = "os microsite - "
+        private const val ALL_BRANDS = "all brands"
+        private const val VIEW_ALL = "view all"
+        private const val FIELD_PRODUCTS = "products"
+        private const val FIELD_PRODUCT_NAME = "name"
+        private const val FIELD_PRODUCT_ID = "id"
+        private const val FIELD_PRODUCT_PRICE = "price"
+        private const val FIELD_PRODUCT_BRAND = "brand"
+        private const val FIELD_PRODUCT_VARIANT = "variant"
+        private const val FIELD_PRODUCT_CATEGORY = "category"
+        private const val FIELD_PRODUCT_LIST = "list"
+        private const val FIELD_PRODUCT_QUANTITY = "quantity"
+        private const val FIELD_PRODUCT_POSITION = "position"
+        private const val FIELD_ACTION_FIELD = "actionField"
+        private const val FIELD_CATEGORY_ID = "category_id"
+        private const val FIELD_SHOP_ID = "shop_id"
+        private const val FIELD_SHOP_TYPE = "shop_type"
+        private const val FIELD_SHOP_NAME = "shop_name"
+        private const val FIELD_DIMENSION_38 = "dimension38"
+        private const val FIELD_PRODUCT_CREATIVE = "creative"
+        private const val VALUE_NONE_OTHER = "none / other"
+        private const val VALUE_NONE = "none"
+        private const val VALUE_IDR = "IDR"
+        private const val VALUE_EMPTY = ""
+        private const val VALUE_NON_LOGIN = ""
+        private const val VALUE_NON_LOGIN_NEW = "non login"
+        private const val VALUE_LOGIN_NEW = "login"
+        private const val VALUE_DYNAMIC_MIX_TOP_CAROUSEL = "dynamic channel top carousel"
+        private const val VALUE_DYNAMIC_MIX_LEFT_CAROUSEL = "dynamic channel left carousel"
+        private const val VALUE_BUSINESS_UNIT_DEFAULT = "home & browse"
+        private const val VALUE_CURRENT_SITE_DEFAULT = "tokopediamarketplace"
+        private const val EVENT_PRODUCT_VIEW = "productView"
+        private const val EVENT_PRODUCT_CLICK = "productClick"
+        private const val PRODUCT_EVENT_ACTION = "product recommendation"
+        private const val EVENT_CATEGORY_RECOMMENDATION_PAGE_WITH_PRODUCT_ID = "recommendation page with product id"
+        private const val SLASH_OFFICIAL_STORE = "/official-store"
+        private const val SLASH_OFFICIAL_STORE_WITHOUT_CATEGORY = "/official-store/"
+        private const val SKEL_APPLINK = "{&data}"
+        private const val SKEL_APPLINK_DATA = "&data"
+        private const val POPULAR_BRANDS = "popular brands"
+        private const val RADIX_10 = 10
+        const val OS_MICROSITE_SINGLE = "os microsite"
+    }
 
     fun sendScreen(categoryName: String) {
         val screenName = "/official-store/$categoryName"
@@ -188,7 +180,7 @@ class OfficialStoreTracking(context: Context) {
                          bannerItem: com.tokopedia.officialstore.official.data.model.Banner, userId: String) {
         val bundle = Bundle().apply {
             putString(EVENT, Event.SELECT_CONTENT)
-            putString(EVENT_CATEGORY, "os microsite")
+            putString(EVENT_CATEGORY, OS_MICROSITE_SINGLE)
             putString(EVENT_ACTION, "$CLICK banner - slider banner")
             putString(EVENT_LABEL, "slider banner - $categoryName")
             putString(USER_ID, userId)
@@ -199,7 +191,7 @@ class OfficialStoreTracking(context: Context) {
                     putString(BaseTrackerConst.Promotion.CREATIVE_NAME, bannerItem.title)
                     putString(BaseTrackerConst.Promotion.CREATIVE_SLOT, (bannerPosition+1).toString())
                     putString("item_id", bannerItem.bannerId)
-                    putString("item_name", "/official-store/$categoryName - slider banner")
+                    putString("item_name", "${SLASH_OFFICIAL_STORE}/$categoryName - slider banner")
                 }
             )
             putParcelableArrayList(BaseTrackerConst.Promotion.KEY, promotions)
@@ -212,13 +204,13 @@ class OfficialStoreTracking(context: Context) {
         val trackerBuilder = BaseTrackerBuilder().apply {
             constructBasicPromotionView(
                 event = PROMO_VIEW,
-                eventCategory = "os microsite",
+                eventCategory = OS_MICROSITE_SINGLE,
                 eventAction = "$IMPRESSION banner - slider banner",
                 eventLabel = "slider banner - $categoryName",
                 promotions = listOf(BaseTrackerConst.Promotion(
                     creative = bannerItem.title,
                     position = bannerPosition.toString(),
-                    name = "/official-store/$categoryName - slider banner",
+                    name = "${SLASH_OFFICIAL_STORE}/$categoryName - slider banner",
                     id = bannerItem.bannerId,
                     creativeUrl = bannerItem.applink
                 ))
@@ -1050,7 +1042,7 @@ class OfficialStoreTracking(context: Context) {
             else -> ""
         }
         val eventLabel = when(channel.layout){
-            DynamicChannelLayout.LAYOUT_MIX_TOP -> channel.id + " - " + categoryName
+            DynamicChannelLayout.LAYOUT_MIX_TOP -> "${channel.id} - $categoryName"
             DynamicChannelLayout.LAYOUT_MIX_LEFT -> "${channel.id} - ${channel.channelHeader.name} - $categoryName"
             else -> ""
         }
@@ -1073,7 +1065,7 @@ class OfficialStoreTracking(context: Context) {
             else -> ""
         }
         val eventLabel = when(channel.layout){
-            DynamicChannelLayout.LAYOUT_MIX_TOP -> channel.id + " - " + categoryName
+            DynamicChannelLayout.LAYOUT_MIX_TOP -> "${channel.id} - $categoryName"
             DynamicChannelLayout.LAYOUT_MIX_LEFT -> "${channel.id} - ${channel.channelHeader.name} - $categoryName"
             else -> ""
         }
@@ -1161,10 +1153,4 @@ class OfficialStoreTracking(context: Context) {
         promotion.putString("creative_url", creativeUrl)
         return arrayListOf(promotion)
     }
-
-    companion object {
-        private const val RADIX_10 = 10
-        const val OS_MICROSITE_SINGLE = "os microsite"
-    }
-
 }
