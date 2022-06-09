@@ -332,7 +332,7 @@ class CampaignListFragment : BaseSimpleListFragment<CampaignAdapter, CampaignUiM
     }
 
     override fun addElementToAdapter(list: List<CampaignUiModel>) {
-        adapter?.addData(list)
+        adapter?.submit(list)
     }
 
     override fun loadData(page: Int) {
@@ -359,7 +359,7 @@ class CampaignListFragment : BaseSimpleListFragment<CampaignAdapter, CampaignUiM
     }
 
     override fun clearAdapterData() {
-        adapter?.clearData()
+        adapter?.clearAll()
     }
 
     override fun onShowLoading() {
