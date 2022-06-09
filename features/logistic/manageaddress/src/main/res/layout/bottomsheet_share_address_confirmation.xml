@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginHorizontal="16dp"
+    android:layout_marginVertical="20dp"
+    android:background="@color/Unify_Background">
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/img_confirmation"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/image_delayed" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/txt_title_confirm_share_address"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="25dp"
+        android:gravity="center"
+        android:text="@string/share_address_confirmation_title"
+        android:textColor="@color/Unify_N700_96"
+        app:layout_constraintTop_toBottomOf="@id/img_confirmation"
+        app:typographyType="heading_2"
+        app:typographyWeight="bold" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/txt_desc_share_address"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:gravity="center"
+        android:text="@string/share_address_confirmation_description"
+        android:textColor="@color/Unify_N700_68"
+        app:layout_constraintTop_toBottomOf="@id/txt_title_confirm_share_address"
+        app:typographyType="body_2" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/txt_terms_share_address"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:layout_marginBottom="16dp"
+        android:gravity="center"
+        android:text="@string/share_address_confirmation_tnc_content"
+        android:textColor="@color/Unify_N700_68"
+        app:layout_constraintTop_toBottomOf="@id/txt_desc_share_address"
+        app:layout_constraintBottom_toTopOf="@id/btn_share"
+        app:typographyType="body_3" />
+
+    <com.tokopedia.unifycomponents.UnifyButton
+        android:id="@+id/btn_share"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="20dp"
+        android:text="@string/label_share"
+        android:textAlignment="center"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:unifyButtonType="main"
+        app:unifyButtonVariant="filled" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
