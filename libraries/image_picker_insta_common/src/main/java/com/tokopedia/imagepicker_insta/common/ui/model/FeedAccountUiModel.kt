@@ -18,6 +18,9 @@ data class FeedAccountUiModel(
     val isShop: Boolean
         get() = type == TYPE_SHOP
 
+    val isUserPostEligible: Boolean
+        get() = isUser && hasAcceptTnc
+
     companion object {
         private const val TYPE_USER = "content-user"
         private const val TYPE_SHOP = "content-shop"

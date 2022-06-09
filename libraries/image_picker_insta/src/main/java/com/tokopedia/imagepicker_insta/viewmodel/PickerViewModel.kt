@@ -64,7 +64,7 @@ class PickerViewModel(
         get() = _feedAccountListState.value
 
     val isAllowChangeAccount: Boolean
-        get() = feedAccountList.size > 1 && feedAccountList.find { it.isUser && it.hasAcceptTnc } != null
+        get() = feedAccountList.size > 1 && feedAccountList.find { it.isUserPostEligible } != null
 
     fun getFolderData() {
         launchCatchError(block = {
