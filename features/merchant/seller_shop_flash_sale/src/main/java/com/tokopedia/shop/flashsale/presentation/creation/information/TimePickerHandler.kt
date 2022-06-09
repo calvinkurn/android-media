@@ -35,8 +35,6 @@ class TimePickerHandler @Inject constructor(private val param: Param) {
         fragmentManager: FragmentManager,
         onTimePicked: (Date) -> Unit
     ) {
-
-
         val minTime = buildMinTime()
 
         val defaultTime = GregorianCalendar(LocaleConstant.INDONESIA).apply {
@@ -48,7 +46,6 @@ class TimePickerHandler @Inject constructor(private val param: Param) {
             set(Calendar.HOUR_OF_DAY, LAST_HOUR_OF_A_DAY)
             set(Calendar.MINUTE, LAST_MINUTE)
         }
-
 
         val dateTimePicker = DateTimePickerUnify(
             context,

@@ -282,7 +282,7 @@ class CampaignInformationFragment : BaseDaggerFragment() {
 
     private fun displayStartDatePicker() {
         val selectedDate = viewModel.getSelectedStartDate()
-        val minimumDate = Date()
+        val minimumDate = dateManager.getDefaultMinimumCampaignStartDate()
 
         val bottomSheet = CampaignDatePickerBottomSheet.newInstance(selectedDate, minimumDate)
         bottomSheet.setOnDateTimePicked { newStartDate ->
