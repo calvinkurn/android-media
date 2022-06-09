@@ -6,6 +6,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.ViewCompat
+import androidx.core.widget.NestedScrollView
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.OnLifecycleEvent
 import androidx.recyclerview.widget.GridLayoutManager
@@ -32,6 +33,7 @@ class QuizOptionDetailViewComponent(
     listener: Listener
 ) : ViewComponent(container, R.id.cl_quiz_option_details) {
 
+    private val nsvQuizDetail: NestedScrollView = findViewById(R.id.nsvQuizDetail)
     private val rvChoice: RecyclerView = findViewById(R.id.rv_choice)
     private val rvWinner: RecyclerView = findViewById(R.id.rv_winner)
     private val rvParticipant: RecyclerView = findViewById(R.id.rv_participants)
@@ -51,7 +53,11 @@ class QuizOptionDetailViewComponent(
     private val ivSheetBack: ImageView = findViewById(R.id.iv_sheet_back)
     private val placeholder: View = findViewById(R.id.participant_placeholder)
     private val tvEmptyParticipant: TextView = findViewById(R.id.tv_participant_empty_message)
-    private val bottomSheetBehavior = BottomSheetBehavior.from(rootView)
+    private val bottomSheetBehavior = try {
+        BottomSheetBehavior.from(rootView)
+    } catch (e: IllegalArgumentException) {
+        null
+    }
 
     init {
         tvSheetTitle.text =
@@ -73,7 +79,6 @@ class QuizOptionDetailViewComponent(
         rvWinner.adapter = winnerAdapter
         rvParticipant.adapter = participantAdapter
         rvParticipant.layoutManager = GridLayoutManager(container.context, 2)
-        bottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
     }
 
     fun setData(choiceDetail: QuizChoiceDetailUiModel, ongoing: Boolean) {
@@ -120,12 +125,20 @@ class QuizOptionDetailViewComponent(
         tvSheetTitle.text = title
     }
 
+    fun addOnTouchListener(listener: NestedScrollView.OnScrollChangeListener) {
+        nsvQuizDetail.setOnScrollChangeListener(listener)
+    }
+
     override fun show() {
-        bottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
+        if (bottomSheetBehavior != null) {
+            bottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
+        } else super.show()
     }
 
     override fun hide() {
-        bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
+        if (bottomSheetBehavior != null) {
+            bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
+        } else super.hide()
     }
 
     /**
