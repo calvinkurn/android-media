@@ -963,6 +963,10 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
                 QuizFormStateUiModel.Nothing -> {
                     hideKeyboard()
                     showQuizForm(false)
+                    analytic.onClickBackQuiz(
+                        parentViewModel.channelId,
+                        parentViewModel.channelTitle
+                    )
                 }
                 QuizFormStateUiModel.Preparation -> {
                     showQuizForm(true)

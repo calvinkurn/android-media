@@ -187,6 +187,13 @@ class PlayBroadcastInteractiveAnalyticImpl @Inject constructor(
             )
     }
 
+    override fun onClickBackQuiz(channelId: String, channelTitle: String) {
+        sendClickEvent(
+            "click - back quiz",
+            "${userSession.shopId} - $channelId - $channelTitle",
+        )
+    }
+
     private fun sendClickEvent(
         eventAction: String,
         eventLabel: String,

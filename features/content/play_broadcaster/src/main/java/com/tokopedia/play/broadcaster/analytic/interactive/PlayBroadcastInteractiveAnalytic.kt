@@ -39,4 +39,7 @@ interface PlayBroadcastInteractiveAnalytic {
     fun onClickRefreshGameResult(channelId: String, channelTitle: String)
 
     fun onImpressSelectGame(channelId: String, channelTitle: String)
+
+    fun onClickBackQuiz(channelId: String, channelTitle: String)
+
 }
