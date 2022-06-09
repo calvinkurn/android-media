@@ -169,9 +169,16 @@ class CampaignInformationFragment : BaseDaggerFragment() {
     }
 
     private fun setupDatePicker() {
-        val now = dateManager.getCurrentDate()
+        val now = dateManager.getDefaultMinimumCampaignStartDate()
         val defaultStartDate = now.localFormatTo(DateConstant.DATE_TIME_MINUTE_LEVEL)
-        val defaultEndDate = now.advanceHourBy(ONE_HOUR).localFormatTo(DateConstant.DATE_TIME_MINUTE_LEVEL)
+        viewModel.setSelectedStartDate(now)
+
+        val endDate = now.advanceHourBy(ONE_HOUR)
+        val defaultEndDate = endDate.localFormatTo(DateConstant.DATE_TIME_MINUTE_LEVEL)
+        viewModel.setSelectedEndDate(endDate)
+
+        adjustQuantityPicker(now)
+
 
         binding?.run {
             tauStartDate.editText.setText(defaultStartDate)
