@@ -65,11 +65,11 @@ internal class MasterProductCardItemDecorator() : RecyclerView.ItemDecoration() 
                 if (spanIndex.isZero()) {
                     //settings for left column
                     val left = parent.context.resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.unify_space_12)
-                    val others = parent.context.resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.unify_space_8)
+                    val others = parent.context.resources.getDimensionPixelSize(com.tokopedia.discovery2.R.dimen.dp_6)
                     setMarginsShopCard(view, left = left,right = others, top = others, bottom = others)
                 } else {
                     //settings for right column
-                    val others = parent.context.resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.unify_space_8)
+                    val others = parent.context.resources.getDimensionPixelSize(com.tokopedia.discovery2.R.dimen.dp_6)
                     val right = parent.context.resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.unify_space_12)
                     setMarginsShopCard(view, left = others,right = right, top = others, bottom = others)
                 }
