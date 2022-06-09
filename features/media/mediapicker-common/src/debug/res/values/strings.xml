@@ -2,4 +2,5 @@
 <resources>
     <string name="picker_cd_item_selection_placeholder_border">placeholder border</string>
     <string name="picker_cd_item_selection_placeholder_image">placeholder image</string>
+    <string name="picker_cd_widget_thumbnail_preview">thumbnail preview</string>
 </resources>
