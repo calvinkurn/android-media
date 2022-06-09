@@ -71,7 +71,8 @@
             android:background="?attr/selectableItemBackgroundBorderless"
             android:visibility="gone"
             tools:visibility="visible"
-            app:typographyType="heading_5"/>
+            app:typographyWeight="bold"
+            app:typographyType="display_3"/>
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.recyclerview.widget.RecyclerView
