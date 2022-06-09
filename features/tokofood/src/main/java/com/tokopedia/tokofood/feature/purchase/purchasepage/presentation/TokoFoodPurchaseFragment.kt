@@ -621,6 +621,7 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
         viewBinding?.noPinpointPurchase?.run {
             setType(GlobalError.PAGE_NOT_FOUND)
             errorIllustration.loadImage(NO_PINPOINT_URL)
+            errorIllustration.adjustViewBounds = true
             errorTitle.text = context?.getString(R.string.text_purchase_no_pinpoint).orEmpty()
             errorDescription.text = context?.getString(R.string.text_purchase_pinpoint_benefit).orEmpty()
             errorAction.text = context?.getString(R.string.text_purchase_set_pinpoint).orEmpty()
