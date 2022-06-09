@@ -16,6 +16,7 @@ import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.unifyprinciples.Typography
 import kotlinx.android.synthetic.main.ent_layout_viewholder_event_carouse.view.*
 import kotlinx.android.synthetic.main.ent_layout_viewholder_event_carousel_adapter_item.view.*
 import java.text.SimpleDateFormat
@@ -92,6 +93,7 @@ class EventCarouselEventViewHolder(itemView: View,
                     show()
                     text = dateFormated
                 }
+                typeface = Typography.getFontType(context, true, Typography.DISPLAY_2)
             }
 
             holder.view.event_price.apply {
