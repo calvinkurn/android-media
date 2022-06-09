@@ -268,6 +268,8 @@ open class NotifcenterDetailUseCase @Inject constructor(
             				product_id
             				name
             				url
+                            android_url
+                            ios_url
             				image_url
             				department_id
             				min_order

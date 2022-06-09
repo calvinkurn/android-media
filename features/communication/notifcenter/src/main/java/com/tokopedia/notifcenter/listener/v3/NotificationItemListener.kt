@@ -24,7 +24,7 @@ interface NotificationItemListener {
     fun trackProductImpression(
             notification: NotificationUiModel, product: ProductData, position: Int
     )
-    fun trackProductClick(
+    fun onProductClicked(
             notification: NotificationUiModel, product: ProductData, position: Int
     )
     fun trackBumpReminder()

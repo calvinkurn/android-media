@@ -753,12 +753,14 @@ open class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTyp
         analytic.trackProductImpression(notification, product, position)
     }
 
-    override fun trackProductClick(
+    override fun onProductClicked(
         notification: NotificationUiModel,
         product: ProductData,
         position: Int
     ) {
         analytic.trackProductClick(notification, product, position)
+        val intent = RouteManager.getIntent(context, product.androidUrl)
+        startActivity(intent)
     }
 
     override fun trackBumpReminder() {

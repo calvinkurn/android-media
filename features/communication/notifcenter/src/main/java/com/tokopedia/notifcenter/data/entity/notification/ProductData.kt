@@ -58,7 +58,9 @@ data class ProductData(
         @SerializedName("is_variant")
         var isVariant: Boolean = false,
         @SerializedName("is_preorder")
-        var isPreorder: Boolean = false
+        var isPreorder: Boolean = false,
+        @SerializedName("android_url")
+        val androidUrl: String = ""
 ) {
     var loadingReminderState: Boolean = false
 
