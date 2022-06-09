@@ -202,13 +202,12 @@ class TokoFoodHomeViewModel @Inject constructor(
     }
 
     fun getLayoutComponentData(localCacheModel: LocalCacheModel?){
-        launchCatchError(block = {
+        launch {
             homeLayoutItemList.filter { it.state == TokoFoodLayoutItemState.NOT_LOADED }.forEach {
                 homeLayoutItemList.setStateToLoading(it)
 
-                when (val item = it.layout){
-                    is TokoFoodHomeLayoutUiModel -> getTokoFoodHomeComponent(item, localCacheModel)
-                    else -> {}
+                if (it.layout is TokoFoodHomeLayoutUiModel) {
+                    getTokoFoodHomeComponent(it.layout, localCacheModel)
                 }
 
                 val data = TokoFoodListUiModel(
@@ -218,7 +217,7 @@ class TokoFoodHomeViewModel @Inject constructor(
 
                 _homeLayoutList.postValue(Success(data))
             }
-        }){}
+        }
     }
 
     fun onScrollProductList(containsLastItemIndex: Int?, itemCount: Int, localCacheModel: LocalCacheModel) {
@@ -284,8 +283,8 @@ class TokoFoodHomeViewModel @Inject constructor(
 
     private suspend fun getTickerDataAsync(item: TokoFoodHomeTickerUiModel, localCacheModel: LocalCacheModel?): Deferred<Unit?> {
         return asyncCatchError(block = {
-            val uspData = tokoFoodHomeTickerUseCase.execute(localCacheModel)
-            homeLayoutItemList.mapTickerData(item, uspData)
+            val tickerData = tokoFoodHomeTickerUseCase.execute(localCacheModel)
+            homeLayoutItemList.mapTickerData(item, tickerData)
         }){
             homeLayoutItemList.removeItem(item.id)
         }
