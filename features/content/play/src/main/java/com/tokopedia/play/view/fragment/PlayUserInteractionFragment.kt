@@ -1701,6 +1701,10 @@ class PlayUserInteractionFragment @Inject constructor(
         initAddress()
     }
 
+    override fun onInfoClicked(view: ChooseAddressViewComponent) {
+        playViewModel.submitAction(OpenFooterUserReport(getString(R.string.play_tokonow_info_weblink)))
+    }
+
     companion object {
         private const val INTERACTION_TOUCH_CLICK_TOLERANCE = 25
 

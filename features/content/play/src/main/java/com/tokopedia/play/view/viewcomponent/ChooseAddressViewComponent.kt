@@ -1,7 +1,9 @@
 package com.tokopedia.play.view.viewcomponent
 
 import android.view.ViewGroup
+import android.widget.TextView
 import androidx.fragment.app.Fragment
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.localizationchooseaddress.ui.bottomsheet.ChooseAddressBottomSheet
 import com.tokopedia.play.R
 import com.tokopedia.play_common.viewcomponent.ViewComponent
@@ -17,6 +19,7 @@ class ChooseAddressViewComponent(
 
     private lateinit var chooseAddressBottomSheet: ChooseAddressBottomSheet
     private val btnChoose: UnifyButton = findViewById(R.id.btn_change_address)
+    private val tvInfo: TextView = findViewById(R.id.tv_address_desc)
 
     private val insideListener = object : ChooseAddressBottomSheet.ChooseAddressBottomSheetListener{
         override fun onLocalizingAddressServerDown() {}
@@ -32,7 +35,7 @@ class ChooseAddressViewComponent(
         }
 
         override fun onDismissChooseAddressBottomSheet() {
-            //TODO("Not yet implemented")
+            hideBottomSheet()
         }
     }
 
@@ -40,11 +43,21 @@ class ChooseAddressViewComponent(
         btnChoose.setOnClickListener {
             openBottomSheet()
         }
+
+        tvInfo.text = MethodChecker.fromHtml(getString(R.string.play_address_widget_info))
+        tvInfo.setOnClickListener {
+            listener.onInfoClicked(this@ChooseAddressViewComponent)
+        }
     }
 
     private fun openBottomSheet() {
         if (!getBottomSheet().isVisible)
             getBottomSheet().showNow(listener.getFragmentForAddress(this@ChooseAddressViewComponent).childFragmentManager, "")
+    }
+
+    private fun hideBottomSheet() {
+        if (getBottomSheet().isVisible)
+            getBottomSheet().dismiss()
     }
 
     private fun getBottomSheet() : ChooseAddressBottomSheet {
@@ -58,5 +71,6 @@ class ChooseAddressViewComponent(
     interface Listener {
         fun getFragmentForAddress(view: ChooseAddressViewComponent) : Fragment
         fun onAddressUpdated(view: ChooseAddressViewComponent)
+        fun onInfoClicked(view: ChooseAddressViewComponent)
     }
 }
