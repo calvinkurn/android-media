@@ -8,6 +8,7 @@ import com.tokopedia.shop.flashsale.domain.entity.CampaignMeta
 import com.tokopedia.shop.flashsale.domain.entity.CampaignUiModel
 import com.tokopedia.shop.flashsale.domain.entity.aggregate.CampaignPrerequisiteData
 import com.tokopedia.shop.flashsale.domain.entity.aggregate.ShareComponentMetadata
+import com.tokopedia.shop.flashsale.domain.usecase.GetSellerCampaignEligibilityUseCase
 import com.tokopedia.shop.flashsale.domain.usecase.GetSellerCampaignListUseCase
 import com.tokopedia.shop.flashsale.domain.usecase.aggregate.GetCampaignPrerequisiteDataUseCase
 import com.tokopedia.shop.flashsale.domain.usecase.aggregate.GetShareComponentMetadataUseCase
@@ -21,7 +22,8 @@ class CampaignListViewModel @Inject constructor(
     private val dispatchers: CoroutineDispatchers,
     private val getSellerCampaignListUseCase: GetSellerCampaignListUseCase,
     private val getCampaignPrerequisiteDataUseCase: GetCampaignPrerequisiteDataUseCase,
-    private val getShareComponentMetadataUseCase: GetShareComponentMetadataUseCase
+    private val getShareComponentMetadataUseCase: GetShareComponentMetadataUseCase,
+    private val getSellerCampaignEligibilityUseCase: GetSellerCampaignEligibilityUseCase
 ) : BaseViewModel(dispatchers.main) {
 
     private val _campaigns = MutableLiveData<Result<CampaignMeta>>()
@@ -35,6 +37,11 @@ class CampaignListViewModel @Inject constructor(
     private val _shareComponentMetadata = MutableLiveData<Result<ShareComponentMetadata>>()
     val shareComponentMetadata: LiveData<Result<ShareComponentMetadata>>
         get() = _shareComponentMetadata
+
+
+    private val _sellerEligibility = MutableLiveData<Result<Boolean>>()
+    val sellerEligibility: LiveData<Result<Boolean>>
+        get() = _sellerEligibility
 
     private var drafts : List<CampaignUiModel> = emptyList()
 
@@ -85,6 +92,20 @@ class CampaignListViewModel @Inject constructor(
             },
             onError = { error ->
                 _shareComponentMetadata.postValue(Fail(error))
+            }
+        )
+
+    }
+
+    fun getSellerEligibility() {
+        launchCatchError(
+            dispatchers.io,
+            block = {
+                val metadata = getSellerCampaignEligibilityUseCase.execute()
+                _sellerEligibility.postValue(Success(metadata))
+            },
+            onError = { error ->
+                _sellerEligibility.postValue(Fail(error))
             }
         )
 

@@ -140,11 +140,18 @@ class CampaignListFragment : BaseSimpleListFragment<CampaignAdapter, CampaignUiM
         observeCampaigns()
         observeCampaignPrerequisiteData()
         observeShareComponentMetadata()
+        observeSellerEligibility()
         viewModel.getCampaignPrerequisiteData()
     }
 
+
     private fun setupView() {
-        binding?.btnCreateCampaign?.setOnClickListener { handleCreateCampaign() }
+        binding?.btnCreateCampaign?.setOnClickListener {
+            binding?.btnCreateCampaign?.isLoading = true
+            binding?.btnCreateCampaign?.loadingText = getString(R.string.sfs_please_wait)
+            viewModel.getSellerEligibility()
+        }
+
         binding?.btnDraft?.setOnClickListener {
             DraftListBottomSheet.showUsingCampaignUiModel(
                 childFragmentManager,
@@ -247,6 +254,21 @@ class CampaignListFragment : BaseSimpleListFragment<CampaignAdapter, CampaignUiM
                 }
                 is Fail -> {
                     dismissLoaderDialog()
+                    binding?.root showError result.throwable
+                }
+            }
+        }
+    }
+
+    private fun observeSellerEligibility() {
+        viewModel.sellerEligibility.observe(viewLifecycleOwner) { result ->
+            when (result) {
+                is Success -> {
+                    binding?.btnCreateCampaign?.isLoading = false
+                    handleSellerEligibility(result.data)
+                }
+                is Fail -> {
+                    binding?.btnCreateCampaign?.isLoading = false
                     binding?.root showError result.throwable
                 }
             }
@@ -374,6 +396,13 @@ class CampaignListFragment : BaseSimpleListFragment<CampaignAdapter, CampaignUiM
         }
     }
 
+    private fun handleSellerEligibility(isEligible : Boolean) {
+        if (isEligible) {
+            handleCreateCampaign()
+        } else {
+
+        }
+    }
     private fun displayCampaigns(data: CampaignMeta) {
         if (data.campaigns.size.isMoreThanZero()) {
             binding?.groupNoSearchResult?.gone()

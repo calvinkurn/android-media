@@ -9,4 +9,5 @@ object DateConstant {
     const val DATE_TIME_MINUTE_LEVEL = "yyyy-MM-dd HH:mm"
     const val TIME_WIB = "HH.mm 'WIB'"
     const val DATE = "dd MMM yyyy"
+    const val MONTH = "MMMM"
 }

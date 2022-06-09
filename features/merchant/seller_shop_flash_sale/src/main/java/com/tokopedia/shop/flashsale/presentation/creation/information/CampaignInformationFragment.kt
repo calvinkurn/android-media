@@ -17,6 +17,8 @@ import com.tokopedia.seller_shop_flash_sale.databinding.SsfsFragmentCampaignInfo
 import com.tokopedia.shop.flashsale.common.constant.Constant
 import com.tokopedia.shop.flashsale.common.constant.DateConstant
 import com.tokopedia.shop.flashsale.common.constant.QuantityPickerConstant
+import com.tokopedia.shop.flashsale.common.constant.QuantityPickerConstant.CAMPAIGN_TEASER_MULTIPLIED_STEP_SIZE
+import com.tokopedia.shop.flashsale.common.constant.QuantityPickerConstant.CAMPAIGN_TEASER_NORMAL_STEP_SIZE
 import com.tokopedia.shop.flashsale.common.extension.*
 import com.tokopedia.shop.flashsale.common.util.DateManager
 import com.tokopedia.shop.flashsale.common.util.doOnTextChanged
@@ -39,8 +41,7 @@ class CampaignInformationFragment : BaseDaggerFragment() {
         private const val HEX_COLOR_TEXT_FIELD_MAX_LENGTH = 6
         private const val ONE_HOUR = 1
         private const val THRESHOLD = 12
-        private const val NORMAL_STEP_SIZE = 1
-        private const val MULTIPLIED_STEP_SIZE = 12
+
 
         @JvmStatic
         fun newInstance(pageMode: PageMode): CampaignInformationFragment {
@@ -244,11 +245,11 @@ class CampaignInformationFragment : BaseDaggerFragment() {
         val isIncreasing = newValue > oldValue
         val isDecreasing = newValue < oldValue
         if (isIncreasing && newValue % THRESHOLD == Constant.ZERO) {
-            binding?.quantityEditor?.stepValue = MULTIPLIED_STEP_SIZE
+            binding?.quantityEditor?.stepValue = CAMPAIGN_TEASER_MULTIPLIED_STEP_SIZE
         } else if (isDecreasing && oldValue == THRESHOLD) {
-            binding?.quantityEditor?.stepValue = NORMAL_STEP_SIZE
+            binding?.quantityEditor?.stepValue = CAMPAIGN_TEASER_NORMAL_STEP_SIZE
         } else {
-            binding?.quantityEditor?.stepValue = NORMAL_STEP_SIZE
+            binding?.quantityEditor?.stepValue = CAMPAIGN_TEASER_NORMAL_STEP_SIZE
         }
     }
 

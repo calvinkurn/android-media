@@ -49,6 +49,14 @@ fun Date.advanceMinuteBy(minute: Int): Date {
 }
 
 
+fun Date.advanceMonthBy(month: Int): Date {
+    val now = Calendar.getInstance()
+    now.time = this
+    now.add(Calendar.MONTH, month)
+    return now.time
+}
+
+
 fun Date.decreaseHourBy(desiredHourToBeDecreased: Int): Date {
     val now = Calendar.getInstance()
     now.time = this
@@ -85,4 +93,10 @@ fun Date.extractMinute(): Int {
     val calendar = Calendar.getInstance()
     calendar.time = this
     return calendar.get(Calendar.MINUTE)
+}
+
+fun Date.extractMonth(): Int {
+    val calendar = Calendar.getInstance()
+    calendar.time = this
+    return calendar.get(Calendar.MONTH)
 }
