@@ -598,7 +598,7 @@ open class TopChatViewModel @Inject constructor(
                     //analytics data
                     productName = product.productName,
                     category = product.category,
-                    price = product.productPrice,
+                    price = product.productPrice
                 )
             ),
             userId = userId
