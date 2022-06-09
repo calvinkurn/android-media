@@ -45,6 +45,7 @@ import com.tokopedia.unifycomponents.setIconUnify
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import timber.log.Timber
+import java.util.*
 import javax.inject.Inject
 
 /**
@@ -344,18 +345,14 @@ class MembershipDetailFragment : BaseDaggerFragment() {
     }
 
     private fun getGradeNameCamelCased(gradeName: String): String {
-        val strings = mutableListOf<String>()
-        var tmpStr = String.EMPTY
-        gradeName.forEach {
-            if (it.toString() != SPACE) {
-                tmpStr += it.toString()
-            } else {
-                strings.add(tmpStr)
-                tmpStr = String.EMPTY
+        return gradeName.split(SPACE).joinToString(SPACE) { str ->
+            str.replaceFirstChar {
+                if (it.isLowerCase()) {
+                    it.titlecase(Locale.getDefault())
+                } else {
+                    it.toString()
+                }
             }
-        }
-        return strings.joinToString(SPACE) { str ->
-            str.replaceFirstChar { it.titlecase() }
         }
     }
 
