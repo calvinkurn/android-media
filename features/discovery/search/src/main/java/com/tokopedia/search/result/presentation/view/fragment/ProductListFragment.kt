@@ -1100,7 +1100,7 @@ class ProductListFragment: BaseDaggerFragment(),
         }
     }
 
-    private fun isFilterHasNewOption(filter: Filter): Boolean = filter.options.any { it.isNew }
+    private fun isFilterHasNewOption(filter: Filter): Boolean = filter.options.all { it.isNew }
 
     private fun sortFilterItemShowNew(item: SortFilterItem, isNew: Boolean) {
         item.refChipUnify.showNewNotification = isNew
