@@ -180,6 +180,13 @@ class PlayBroadcastInteractiveAnalyticImpl @Inject constructor(
         )
     }
 
+    override fun onImpressSelectGame(channelId: String, channelTitle: String) {
+        sendImpressionEvent(
+            "view - engagement widget",
+            "${userSession.shopId} - $channelId - $channelTitle",
+            )
+    }
+
     private fun sendClickEvent(
         eventAction: String,
         eventLabel: String,

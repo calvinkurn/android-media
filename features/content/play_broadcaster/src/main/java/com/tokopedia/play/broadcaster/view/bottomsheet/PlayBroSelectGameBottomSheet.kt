@@ -58,6 +58,10 @@ class PlayBroSelectGameBottomSheet @Inject constructor(
 
         setupView()
         setupObserver()
+        analytic.onImpressSelectGame(
+            viewModel.channelId,
+            viewModel.channelTitle,
+        )
     }
 
     override fun onDestroyView() {
