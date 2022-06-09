@@ -89,7 +89,7 @@ class ProductSheetViewComponent(
         }
 
         override fun onInformationClicked(section: ProductSectionUiModel.Section) {
-            //TODO("Not yet implemented")
+            listener.onInformationClicked(this@ProductSheetViewComponent)
         }
 
         override fun onProductChanged() {
