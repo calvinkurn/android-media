@@ -45,13 +45,13 @@ internal class GlobalNavWidgetCatalogAdapter(
     }
 
     override fun getItemViewType(position: Int): Int {
-        return if (isPositionViewAllCard(position))
+        return if (isLastPosition(position))
             GlobalNavWidgetCatalogViewAllCardViewHolder.LAYOUT
         else
             GlobalNavWidgetCatalogViewHolder.LAYOUT
     }
 
-    private fun isPositionViewAllCard(position: Int): Boolean = position > itemList.size - 1
+    private fun isLastPosition(position: Int): Boolean = position == itemCount - 1
 
     override fun getItemCount(): Int = itemList.size + 1
 
