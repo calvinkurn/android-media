@@ -85,7 +85,6 @@ class PlayBroInteractiveBottomSheet @Inject constructor(
             }
         })
 
-        //TODO("Please check if this is working or not")
         choiceDetailSheetView.addOnTouchListener { v, _, _, _, _ ->
             bottomSheet.updateScrollingChild(v)
         }
