@@ -520,11 +520,9 @@ class ImagePickerInstaMainFragment : PermissionFragment(), ImagePickerFragmentCo
                     toolbarCommon.setOnAccountClickListener {
                         openFeedAccountBottomSheet()
                     }
-                    toolbarCommon.showHideExpandIcon(true)
                 }
                 else {
                     toolbarCommon.setOnAccountClickListener(null)
-                    toolbarCommon.showHideExpandIcon(false)
                 }
             }
         }

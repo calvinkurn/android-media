@@ -96,6 +96,8 @@ class ImagePickerCommonToolbar @JvmOverloads constructor(
 
     fun setOnAccountClickListener(listener: BackClickListener?) {
         mOnClickListener = listener
+
+        showHideExpandIcon(mOnClickListener != null)
     }
 }
 
