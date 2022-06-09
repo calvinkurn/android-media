@@ -35,5 +35,7 @@ const val GQL_QUERY_CONTENT_FORM: String = """query ContentForm(${'$'}relatedID:
     caption
     error
     productTagSources
+    has_username
+    has_accept_tnc
   }
 }"""
