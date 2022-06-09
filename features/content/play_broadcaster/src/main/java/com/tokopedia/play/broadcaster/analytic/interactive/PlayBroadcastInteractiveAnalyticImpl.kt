@@ -170,21 +170,28 @@ class PlayBroadcastInteractiveAnalyticImpl @Inject constructor(
         sendImpressionEvent(
             "view - failed to load",
             "${userSession.shopId} - $channelId - $channelTitle",
-            )
+        )
+    }
+
+    override fun onClickRefreshGameResult(channelId: String, channelTitle: String) {
+        sendClickEvent(
+            "click - coba lagi hasil game",
+            "${userSession.shopId} - $channelId - $channelTitle",
+        )
     }
 
     private fun sendClickEvent(
         eventAction: String,
         eventLabel: String,
     ) {
-        sendEvent(eventAction,eventLabel, KEY_TRACK_CLICK_EVENT)
+        sendEvent(eventAction, eventLabel, KEY_TRACK_CLICK_EVENT)
     }
 
     private fun sendImpressionEvent(
         eventAction: String,
         eventLabel: String,
     ) {
-        sendEvent(eventAction,eventLabel, KEY_TRACK_VIEW_EVENT)
+        sendEvent(eventAction, eventLabel, KEY_TRACK_VIEW_EVENT)
     }
 
     private fun sendEvent(

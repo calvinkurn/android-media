@@ -165,7 +165,7 @@ class PlayBroInteractiveBottomSheet @Inject constructor(
 
     private fun showChoiceDetail(dataUiModel: QuizChoiceDetailUiModel) {
         leaderboardSheetView.hide()
-        choiceDetailSheetView.setData(dataUiModel, isOngoingBottomsheet())
+        choiceDetailSheetView.setData(dataUiModel, isQuizDetail())
         choiceDetailSheetView.show()
 
     }
@@ -216,7 +216,12 @@ class PlayBroInteractiveBottomSheet @Inject constructor(
     }
 
     override fun onRefreshButtonClicked(view: PlayInteractiveLeaderboardViewComponent) {
-
+        if (!isQuizDetail()){
+            analytic.onClickRefreshGameResult(
+                parentViewModel.channelId,
+                parentViewModel.channelTitle,
+            )
+        }
         parentViewModel.submitAction(PlayBroadcastAction.ClickRefreshQuizDetailBottomSheet)
     }
 
@@ -299,7 +304,7 @@ class PlayBroInteractiveBottomSheet @Inject constructor(
         }
     }
 
-    private fun isOngoingBottomsheet() = sheetType == Type.QUIZ_DETAIL.toString()
+    private fun isQuizDetail() = sheetType == Type.QUIZ_DETAIL.toString()
 
     enum class Type {
         LEADERBOARD,

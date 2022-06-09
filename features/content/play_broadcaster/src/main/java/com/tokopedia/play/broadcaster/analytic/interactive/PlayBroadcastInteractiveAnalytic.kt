@@ -35,4 +35,6 @@ interface PlayBroadcastInteractiveAnalytic {
     fun onClickCloseGameResultReport(channelId: String, channelTitle: String)
 
     fun onImpressFailedLeaderboard(channelId: String, channelTitle: String)
+
+    fun onClickRefreshGameResult(channelId: String, channelTitle: String)
 }
