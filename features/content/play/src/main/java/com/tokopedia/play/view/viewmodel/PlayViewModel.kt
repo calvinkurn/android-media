@@ -1425,7 +1425,7 @@ class PlayViewModel @AssistedInject constructor(
         likeReminderTimer = viewModelScope.launch(dispatchers.computation) {
             delay(TimeUnit.MINUTES.toMillis(1))
             timerFactory.createLoopingAlarm(
-                millisInFuture = TimeUnit.MINUTES.toMillis(5),
+                millisInFuture = TimeUnit.MINUTES.toMillis(INTERVAL_LIKE_REMINDER_IN_MIN),
                 stopCondition = { !shouldRemindLike() },
                 onStart = { sendLikeReminder() }
             )
@@ -2334,5 +2334,10 @@ class PlayViewModel @AssistedInject constructor(
         private const val REQUEST_CODE_USER_REPORT = 575
 
         private const val WEB_SOCKET_SOURCE_PLAY_VIEWER = "Viewer"
+
+        /**
+         * Reminder
+         */
+        private const val INTERVAL_LIKE_REMINDER_IN_MIN = 5L
     }
 }

@@ -191,8 +191,15 @@ class PlayUserInteractionFragment @Inject constructor(
     private val playFullscreenManager: PlayFullscreenManager
         get() = requireActivity() as PlayFullscreenManager
 
+    /**
+     * Danger said to not use requireContext().resources because it may crash,
+     * that's why I have to use nullable context.
+     * Though tbh this is not something that I recommend
+     */
     private val orientation: ScreenOrientation
-        get() = ScreenOrientation.getByInt(resources.configuration.orientation)
+        get() = context?.resources?.configuration?.orientation?.let {
+            ScreenOrientation.getByInt(it)
+        } ?: ScreenOrientation.Unknown
 
     private val screenOrientationDataSource = object : ScreenOrientationDataSource {
         override fun getScreenOrientation(): ScreenOrientation {
