@@ -13,6 +13,7 @@ import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.feedcomponent.data.pojo.whitelist.WhitelistQuery
 import com.tokopedia.feedplus.domain.usecase.GetContentFormForFeedUseCase
 import com.tokopedia.feedcomponent.domain.usecase.GetWhitelistUseCase
+import com.tokopedia.feedcomponent.domain.usecase.GetWhitelistUseCase.Companion.WHITELIST_ENTRY_POINT
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -94,7 +95,7 @@ class FeedPlusContainerViewModel @Inject constructor(baseDispatcher: CoroutineDi
         getWhitelistUseCase.clearRequest()
         getWhitelistUseCase.setCacheStrategy(authorListEmpty)
         getWhitelistUseCase.addRequest(getWhitelistUseCase.getRequest(
-                GetWhitelistUseCase.createRequestParams("entrypoint"))
+                GetWhitelistUseCase.createRequestParams(WHITELIST_ENTRY_POINT))
         )
         getWhitelistUseCase.execute(RequestParams.EMPTY, object: Subscriber<GraphqlResponse>() {
             override fun onNext(t: GraphqlResponse) {
@@ -129,5 +130,4 @@ class FeedPlusContainerViewModel @Inject constructor(baseDispatcher: CoroutineDi
             )
         }
     }
-
 }
