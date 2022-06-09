@@ -11,11 +11,15 @@ import com.tokopedia.kotlin.model.ImpressHolder
 data class MissionWidgetListDataModel(
     val missionWidgetList: List<MissionWidgetDataModel> = listOf(),
     val channelModel: ChannelModel,
-    val isErrorLoad: Boolean = false
+    val status: Int
 ) : HomeComponentVisitable, ImpressHolder() {
 
     companion object {
         private const val MAX_MISSION_WIDGET_SIZE = 6
+        const val STATUS_LOADING = 0
+        const val STATUS_ERROR = 1
+        const val STATUS_SUCCESS = 2
+        const val STATUS_EMPTY = 3
     }
 
     fun isShowMissionWidget() =

@@ -13,6 +13,7 @@ import com.tokopedia.home.beranda.data.mapper.HomeDataMapper
 import com.tokopedia.home.beranda.data.mapper.HomeDynamicChannelDataMapper
 import com.tokopedia.home.beranda.data.mapper.HomeRecommendationMapper
 import com.tokopedia.home.beranda.data.model.HomeAtfData
+import com.tokopedia.home.beranda.data.model.HomeMissionWidgetData
 import com.tokopedia.home.beranda.data.model.HomeWidget
 import com.tokopedia.home.beranda.data.model.TokopointsDrawerListHomeData
 import com.tokopedia.home.beranda.domain.interactor.usecase.HomeDynamicChannelUseCase
@@ -351,7 +352,7 @@ class HomeUseCaseModule {
     @Provides
     @HomeScope
     fun provideMissionWidgetUseCase(graphqlRepository: GraphqlRepository): HomeMissionWidgetRepository {
-        val useCase = com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase<HomeWidget.HomeMissionWidget>(graphqlRepository)
+        val useCase = com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase<HomeMissionWidgetData.HomeMissionWidget>(graphqlRepository)
         useCase.setGraphqlQuery(MissionWidgetQuery())
         return HomeMissionWidgetRepository(useCase)
     }

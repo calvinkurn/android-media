@@ -10,9 +10,9 @@ import com.tokopedia.home.beranda.di.module.query.QueryMissionWidget.MISSION_WID
 @GqlQuery(MISSION_WIDGET_QUERY_NAME, MISSION_WIDGET_QUERY)
 internal object QueryMissionWidget {
     const val MISSION_WIDGET_QUERY_NAME = "MissionWidgetQuery"
-    const val MISSION_WIDGET_QUERY = "query getHomeMissionWidget() {\n" +
-            "  getHomeMissionWidget{\n" +
-            "    missions{\n" +
+    const val MISSION_WIDGET_QUERY = "query getHomeMissionWidget(\$type: String!, \$location: String!) {\n" +
+            "  getHomeMissionWidget(type: \$type, location: \$location) {\n" +
+            "    missions {\n" +
             "      id\n" +
             "      title\n" +
             "      subTitle\n" +
@@ -21,5 +21,5 @@ internal object QueryMissionWidget {
             "      imageURL\n" +
             "    }\n" +
             "  }\n" +
-            "}"
+            "}\n"
 }

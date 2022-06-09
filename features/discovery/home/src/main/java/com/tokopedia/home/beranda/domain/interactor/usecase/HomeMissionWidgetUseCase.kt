@@ -1,7 +1,8 @@
 package com.tokopedia.home.beranda.domain.interactor.usecase
 
-import com.tokopedia.home.beranda.data.model.HomeWidget
+import com.tokopedia.home.beranda.data.model.HomeMissionWidgetData
 import com.tokopedia.home.beranda.domain.interactor.repository.HomeMissionWidgetRepository
+import com.tokopedia.home.constant.ConstantKey
 import com.tokopedia.home_component.visitable.MissionWidgetDataModel
 import com.tokopedia.home_component.visitable.MissionWidgetListDataModel
 import javax.inject.Inject
@@ -16,17 +17,17 @@ class HomeMissionWidgetUseCase @Inject constructor(
     suspend fun onMissionWidgetRefresh(refreshCount: Int, currentMissionWidgetListDataModel: MissionWidgetListDataModel): MissionWidgetListDataModel {
         return try {
             val results = missionWidgetRepository.executeOnBackground()
-            val resultList = convertMissionWidgetDataList(results.missionWidget.missions)
+            val resultList = convertMissionWidgetDataList(results.getHomeMissionWidget.missions)
             currentMissionWidgetListDataModel.copy(
                 missionWidgetList = resultList,
-                isErrorLoad = false
+                status = ConstantKey.LoadDataKey.STATUS_SUCCESS
             )
         } catch (e: Exception) {
-            currentMissionWidgetListDataModel.copy(isErrorLoad = true)
+            currentMissionWidgetListDataModel.copy(status = ConstantKey.LoadDataKey.STATUS_ERROR)
         }
     }
 
-    private fun convertMissionWidgetDataList(missionWidgetList: List<HomeWidget.Mission>): MutableList<MissionWidgetDataModel> {
+    private fun convertMissionWidgetDataList(missionWidgetList: List<HomeMissionWidgetData.Mission>): MutableList<MissionWidgetDataModel> {
         val dataList: MutableList<MissionWidgetDataModel> = mutableListOf()
         for (pojo in missionWidgetList) {
             dataList.add(

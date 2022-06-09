@@ -213,15 +213,21 @@ class HomeDynamicChannelUseCase @Inject constructor(
                         )
                     }
 
-                    dynamicChannelPlainResponse.getWidgetDataIfExist<
-                            MissionWidgetListDataModel,
-                            HomeWidget.HomeMissionWidget>(widgetRepository = homeMissionWidgetRepository) { visitableFound, data, position ->
-                        val resultList = convertMissionWidgetDataList(data.missionWidget.missions)
+                    try {
+                        dynamicChannelPlainResponse.getWidgetDataIfExist<
+                                MissionWidgetListDataModel,
+                                HomeMissionWidgetData.HomeMissionWidget>(widgetRepository = homeMissionWidgetRepository) { visitableFound, data, position ->
+                            val resultList =
+                                convertMissionWidgetDataList(data.getHomeMissionWidget.missions)
 
-                        visitableFound.copy(
-                            missionWidgetList = resultList,
-                            isErrorLoad = false
-                        )
+                            visitableFound.copy(
+                                missionWidgetList = resultList,
+                                status = MissionWidgetListDataModel.STATUS_SUCCESS
+                            )
+                        }
+                    }
+                    catch (e: Exception) {
+                        e.printStackTrace()
                     }
 
                     dynamicChannelPlainResponse.getWidgetDataIfExist<
@@ -484,7 +490,7 @@ class HomeDynamicChannelUseCase @Inject constructor(
         return dataList
     }
 
-    private fun convertMissionWidgetDataList(missionWidgetList: List<HomeWidget.Mission>): MutableList<MissionWidgetDataModel> {
+    private fun convertMissionWidgetDataList(missionWidgetList: List<HomeMissionWidgetData.Mission>): MutableList<MissionWidgetDataModel> {
         val dataList: MutableList<MissionWidgetDataModel> = mutableListOf()
         for (pojo in missionWidgetList) {
             dataList.add(

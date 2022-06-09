@@ -39,7 +39,7 @@ class MissionWidgetViewHolder(
     }
 
     override fun bind(element: MissionWidgetListDataModel) {
-
+        val x = 1
     }
 
     override fun onProductCardImpressed(
