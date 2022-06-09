@@ -387,3 +387,93 @@ internal val singleGlobalNavWidgetModelCardImage = GlobalNavWidgetModel(
             ))
         }
 )
+
+internal val globalNavWidgetCatalogWidgetModel = GlobalNavWidgetModel(
+    source = "specification_catalog",
+    keyword = "",
+    title = "Samsung Galaxy Tab Active 3",
+    navTemplate = "catalog",
+    background = "",
+    clickSeeAllApplink = "tokopedia://catalog/74223",
+    clickSeeAllUrl = "https://www.tokopedia.com/catalog/samsung-74223/samsung-galaxy-tab-active-3",
+    itemList = mutableListOf<GlobalNavWidgetModel.Item>().also {
+        it.add(GlobalNavWidgetModel.Item(
+            categoryName = "",
+            name = "Info Produk",
+            info = "Samsung, Hitam, 2020, 8.0 Inch, 1200 x 1920 pixel(PLS IPS), Nano-SIM, Stylus, IP68 dust/water resistant (up to 1.5m for 30 mins), MIL-STD-810H compliant, Galaxy Tab Active 3",
+            imageUrl = "",
+            clickItemApplink = "",
+            clickItemUrl = "",
+            subtitle = "",
+            backgroundUrl = "",
+            logoUrl = "https://images.tokopedia.net/img/catalog/topspec/icons/setting.png",
+            position = 0
+        ))
+
+        it.add(GlobalNavWidgetModel.Item(
+            categoryName = "",
+            name = "Detail Teknis",
+            info = "Octa Core, 4 GB, 64 GB, 128 GB, Android 10, One UI 2.5, 2.7 GHz, Octa-core (4x2.7 GHz Mongoose M3 & 4x1.7 GHz Cortex-A55)",
+            imageUrl = "",
+            clickItemApplink = "",
+            clickItemUrl = "",
+            subtitle = "",
+            backgroundUrl = "",
+            logoUrl = "https://images.tokopedia.net/img/catalog/topspec/icons/setting.png",
+            position = 0
+        ))
+
+        it.add(GlobalNavWidgetModel.Item(
+            categoryName = "",
+            name = "Baterai",
+            info = "Fast charging 15W, Li-Ion, 5050 mAh",
+            imageUrl = "",
+            clickItemApplink = "",
+            clickItemUrl = "",
+            subtitle = "",
+            backgroundUrl = "",
+            logoUrl = "https://images.tokopedia.net/img/catalog/topspec/icons/setting.png",
+            position = 0
+        ))
+
+        it.add(GlobalNavWidgetModel.Item(
+            categoryName = "",
+            name = "Fitur Audiovisual",
+            info = "5 MP, f/2.2, 13 MP, f/1.9, (wide), AF, Bisa auto focus, Tidak bisa tahan air, Bisa deteksi wajah, Bisa rekam vidio",
+            imageUrl = "",
+            clickItemApplink = "",
+            clickItemUrl = "",
+            subtitle = "",
+            backgroundUrl = "",
+            logoUrl = "https://images.tokopedia.net/img/catalog/topspec/icons/setting.png",
+            position = 0
+        ))
+
+        it.add(GlobalNavWidgetModel.Item(
+            categoryName = "",
+            name = "Konektivitas",
+            info = "GSM / HSPA / LTE, 5.0, A2DP, LE, Type C, Wi-Fi 802.11 a/b/g/n/ac/6, dual-band, Wi-Fi Direct, hotspot, Infrared tidak tersedia, Bisa tethering seluler, NFC tersedia, Bisa koneksi USB Type-C 3.1; magnetic connector, Bisa navigasi (A-GPS, GLONASS, GALILEO, BDS)",
+            imageUrl = "",
+            clickItemApplink = "",
+            clickItemUrl = "",
+            subtitle = "",
+            backgroundUrl = "",
+            logoUrl = "https://images.tokopedia.net/img/catalog/topspec/icons/setting.png",
+            position = 0
+        ))
+
+        it.add(GlobalNavWidgetModel.Item(
+            categoryName = "",
+            name = "Detail Fisik & Fitur",
+            info = "213.8 x 126.8 x 9.9 mm (8.42 x 4.99 x 0.39 in), 426 g (Wi-Fi) / 429 g (LTE) (15.03 oz), Fitur sidik jari tersedia, Aksesoris mouse tidak tersedia, Aksesoris pena tersedia, Aksesoris papan ketik tersedia",
+            imageUrl = "",
+            clickItemApplink = "",
+            clickItemUrl = "",
+            subtitle = "",
+            backgroundUrl = "",
+            logoUrl = "https://images.tokopedia.net/img/catalog/topspec/icons/setting.png",
+            position = 0
+        ))
+    }
+
+)
