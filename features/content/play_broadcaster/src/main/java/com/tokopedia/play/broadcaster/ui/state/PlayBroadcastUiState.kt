@@ -50,7 +50,7 @@ data class PlayBroadcastUiState(
                 interactive = InteractiveUiModel.Unknown,
                 interactiveConfig = InteractiveConfigUiModel.empty(),
                 interactiveSetup = InteractiveSetupUiModel.Empty,
-                quizDetail = QuizDetailStateUiModel.Unknown,
+                quizDetail = QuizDetailStateUiModel.Empty,
                 onBoarding = OnboardingUiModel.Empty,
                 quizBottomSheetUiState = QuizBottomSheetUiState.Empty,
             )
@@ -147,8 +147,8 @@ data class QuizBottomSheetUiState(
         val Empty: QuizBottomSheetUiState
         get() {
             return QuizBottomSheetUiState(
-                quizDetailState = QuizDetailStateUiModel.Unknown,
-                quizChoiceDetailState =  QuizChoiceDetailStateUiModel.Unknown,
+                quizDetailState = QuizDetailStateUiModel.Empty,
+                quizChoiceDetailState =  QuizChoiceDetailStateUiModel.Empty,
             )
         }
     }
