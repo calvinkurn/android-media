@@ -607,11 +607,11 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
 
         val items = arrayListOf<FloatingButtonItem>()
 
-        if (userSession.hasShop() && userSession.isLoggedIn) {
+        if(viewModel.isShowLivestreamButton) {
             items.add(createCreateLiveFab())
         }
 
-        if(authorList.isNotEmpty()) {
+        if(viewModel.isShowPostButton) {
             items.add(
                 FloatingButtonItem(
                     iconDrawable = getIconUnifyDrawable(requireContext(), IconUnify.IMAGE),
@@ -650,7 +650,7 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
             )
         }
 
-        if (items.isNotEmpty()) {
+        if (items.isNotEmpty() && userSession.isLoggedIn) {
             fabFeed.addItem(items)
             feedFloatingButton.show()
         } else {
