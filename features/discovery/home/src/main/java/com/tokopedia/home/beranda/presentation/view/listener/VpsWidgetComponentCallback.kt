@@ -14,9 +14,6 @@ import com.tokopedia.home_component.model.ChannelModel
  */
 class VpsWidgetComponentCallback(val context: Context?, val homeCategoryListener: HomeCategoryListener): VpsWidgetListener {
     override fun onSeeAllClicked(channelModel: ChannelModel, position: Int) {
-        LegoBannerTracking.sendLegoBannerFourClickViewAll(channelModel, channelModel.id, homeCategoryListener.userId)
-        RouteManager.route(context,
-            channelModel.channelHeader.applink.ifEmpty { channelModel.channelHeader.url })
     }
 
     override fun onItemImpressed(
