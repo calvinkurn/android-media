@@ -16,10 +16,10 @@
       "eventCategory": "homepage",
       "currentSite": "tokopediamarketplace",
       "event": "view_item",
-      "userId": ".+",
-      "eventAction": "impression on banner card dynamic channel bu carousel",
+      "userId": ".*",
+      "eventAction": ".*",
       "sessionIris": ".+",
-      "eventLabel": ""
+      "eventLabel": ".*"
     },
     {
       "promotions": [
@@ -68,7 +68,7 @@
       "userId": ".+",
       "eventAction": "impression on product card dynamic channel bu carousel",
       "sessionIris": ".+",
-      "item_list": "",
+      "item_list": ".*",
       "eventLabel": ".+ - .+ - .+ - .+ - .+ - .+ - .+ - .+",
       "items": [
         {
