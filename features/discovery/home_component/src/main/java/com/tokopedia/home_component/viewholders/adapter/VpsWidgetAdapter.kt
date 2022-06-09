@@ -74,10 +74,6 @@ class VpsWidgetAdapter(
                 cornerRadius = IMAGE_CORNER
             }
             binding?.textDesc?.text = constructBoldFont(item.benefit.type, item.benefit.value)
-            if (item.textColor.isNotEmpty()) {
-                binding?.textName?.setTextColor(Color.parseColor(item.textColor))
-                binding?.textDesc?.setTextColor(Color.parseColor(item.textColor))
-            }
             itemView.addOnImpressionListener(item){
                 if (!isCacheData) {
                     listener?.onItemImpressed(channelModel, item, adapterPosition, parentPosition)

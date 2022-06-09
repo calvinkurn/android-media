@@ -4,21 +4,25 @@ import android.os.Bundle
 import com.tokopedia.home_component.HomeComponentTypeFactory
 import com.tokopedia.home_component.model.ChannelModel
 
+/**
+ * Created by Frenzel
+ */
+
 data class VpsDataModel(
         val channelModel: ChannelModel,
         val isCache: Boolean = false
 ): HomeComponentVisitable {
-    override fun visitableId(): String? {
+    override fun visitableId(): String {
         return channelModel.id
     }
 
     override fun equalsWith(b: Any?): Boolean {
-        return if (b is ChannelModel) {
-            channelModel == b
+        return if (b is VpsDataModel) {
+            b == this
         } else false
     }
 
-    override fun getChangePayloadFrom(b: Any?): Bundle? {
+    override fun getChangePayloadFrom(b: Any?): Bundle {
         return Bundle()
     }
 
