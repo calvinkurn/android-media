@@ -37,6 +37,9 @@ class CampaignInformationFragment : BaseDaggerFragment() {
         private const val SPAN_COUNT = 6
         private const val HEX_COLOR_TEXT_FIELD_MAX_LENGTH = 6
         private const val ONE_HOUR = 1
+        private const val THRESHOLD = 12
+        private const val NORMAL_STEP_SIZE = 1
+        private const val MULTIPLIED_STEP_SIZE = 12
 
         @JvmStatic
         fun newInstance(pageMode: PageMode): CampaignInformationFragment {
@@ -216,12 +219,13 @@ class CampaignInformationFragment : BaseDaggerFragment() {
 
     private fun handleQuantityEditor(newValue: Int, oldValue: Int) {
         val isIncreasing = newValue > oldValue
-        if (newValue % 12 == Constant.ZERO) {
-            binding?.quantityEditor?.stepValue = 12
-            //binding?.quantityEditor?.editText?.setText(24.toString())
+        val isDecreasing = newValue < oldValue
+        if (isIncreasing && newValue % THRESHOLD == Constant.ZERO) {
+            binding?.quantityEditor?.stepValue = MULTIPLIED_STEP_SIZE
+        } else if (isDecreasing && oldValue == THRESHOLD) {
+            binding?.quantityEditor?.stepValue = NORMAL_STEP_SIZE
         } else {
-            binding?.quantityEditor?.stepValue = 1
-            //binding?.quantityEditor?.editText?.setText(newValue)
+            binding?.quantityEditor?.stepValue = NORMAL_STEP_SIZE
         }
     }
 
