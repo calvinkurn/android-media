@@ -1,18 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
-
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <com.tokopedia.header.HeaderUnify
+        android:id="@+id/header_report_talk"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        app:unify_header_is_show_back_button="true"
+        app:unify_header_is_show_shadow="true" />
+
     <ScrollView
         android:id="@+id/mainView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_below="@id/header_report_talk"
         tools:visibility="visible">
-
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -25,38 +31,37 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="16dp"
-                android:layout_marginRight="16dp"
                 android:layout_marginTop="2dp"
+                android:layout_marginRight="16dp"
                 android:text="@string/report_talk_question"
                 android:textColor="@color/Unify_N700_68"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:typographyType="heading_4"
-                app:typographyWeight="bold"
-                />
+                app:typographyWeight="bold" />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/optionRv"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/dp_32"
-                app:layout_constraintTop_toBottomOf="@+id/titleQuestion"/>
+                app:layout_constraintTop_toBottomOf="@+id/titleQuestion" />
 
-            <EditText
+            <com.tokopedia.unifycomponents.TextFieldUnify2
                 android:id="@+id/reason"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/dp_50"
                 android:layout_marginTop="10dp"
-                android:hint="@string/talk_hint_input_reason"
                 android:inputType="text"
                 android:paddingLeft="16dp"
                 android:paddingRight="16dp"
                 android:textColor="@color/Unify_N700_68"
                 android:textColorHighlight="@color/Unify_G400"
                 app:layout_constraintTop_toBottomOf="@id/optionRv"
-                />
+                app:unify_text_field_label_static="true"
+                app:unify_text_field_placeholder="@string/talk_hint_input_reason" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -78,15 +83,6 @@
         android:textColor="@color/Unify_N700_20"
         android:textSize="14sp"
         android:textStyle="normal"
-        tools:visibility="visible"
-        />
-
-    <ProgressBar
-        android:id="@+id/progressBar"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:visibility="gone"
-        tools:visibility="visible"/>
+        tools:visibility="visible" />
 
 </RelativeLayout>

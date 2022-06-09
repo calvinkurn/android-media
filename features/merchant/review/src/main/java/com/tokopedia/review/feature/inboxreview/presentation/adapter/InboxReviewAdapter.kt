@@ -5,6 +5,7 @@ import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.review.feature.inboxreview.presentation.model.FeedbackInboxUiModel
 import com.tokopedia.review.feature.inboxreview.presentation.model.InboxReviewEmptyUiModel
 import com.tokopedia.review.feature.inboxreview.presentation.model.InboxReviewErrorUiModel
+import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.uimodel.ReviewMediaThumbnailVisitable
 
 class InboxReviewAdapter(
         inboxReviewAdapterTypeFactory: InboxReviewAdapterTypeFactory
@@ -16,9 +17,9 @@ class InboxReviewAdapter(
         notifyItemRangeInserted(lastIndex, feedbackInboxList.size)
     }
 
-    fun addInboxFeedbackError() {
+    fun addInboxFeedbackError(throwable: Throwable) {
         if (visitables.getOrNull(lastIndex) !is InboxReviewErrorUiModel) {
-            visitables.add(InboxReviewErrorUiModel())
+            visitables.add(InboxReviewErrorUiModel(throwable))
             notifyItemInserted(lastIndex)
         }
     }
@@ -27,6 +28,12 @@ class InboxReviewAdapter(
         if (visitables.getOrNull(lastIndex) !is InboxReviewEmptyUiModel) {
             visitables.add(InboxReviewEmptyUiModel(isFilter))
             notifyItemInserted(lastIndex)
+        }
+    }
+
+    fun findFeedbackInboxContainingThumbnail(item: ReviewMediaThumbnailVisitable): FeedbackInboxUiModel? {
+        return visitables.filterIsInstance<FeedbackInboxUiModel>().find {
+            it.reviewMediaThumbnail.mediaThumbnails.contains(item)
         }
     }
 }

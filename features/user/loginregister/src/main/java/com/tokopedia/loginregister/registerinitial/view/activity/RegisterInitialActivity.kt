@@ -13,11 +13,13 @@ import com.tokopedia.loginregister.registerinitial.di.DaggerRegisterInitialCompo
 import com.tokopedia.loginregister.registerinitial.di.RegisterInitialComponent
 import com.tokopedia.loginregister.registerinitial.view.fragment.RegisterInitialFragment
 import com.tokopedia.loginregister.registerinitial.view.fragment.RegisterInitialFragment.Companion.createInstance
+import com.tokopedia.telemetry.ITelemetryActivity
 
 /**
  * @author by nisie on 10/2/18.
  */
-open class RegisterInitialActivity : BaseSimpleActivity(), HasComponent<RegisterInitialComponent> {
+open class RegisterInitialActivity : BaseSimpleActivity(), HasComponent<RegisterInitialComponent>,
+    ITelemetryActivity{
 
     private var registerInitialComponent: RegisterInitialComponent? = null
 
@@ -69,4 +71,6 @@ open class RegisterInitialActivity : BaseSimpleActivity(), HasComponent<Register
             return Intent(context, RegisterInitialActivity::class.java)
         }
     }
+
+    override fun getTelemetrySectionName() = "register"
 }

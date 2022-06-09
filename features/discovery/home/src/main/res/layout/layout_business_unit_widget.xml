@@ -71,30 +71,36 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal">
 
-            <com.elyeproj.loaderviewlibrary.LoaderTextView
+            <com.tokopedia.unifycomponents.LoaderUnify
                 android:layout_width="0dp"
                 android:layout_height="30dp"
                 android:layout_marginTop="8dp"
                 android:layout_marginStart="12dp"
                 android:layout_marginLeft="12dp"
                 android:layout_marginBottom="8dp"
-                android:layout_weight="3" />
-            <com.elyeproj.loaderviewlibrary.LoaderTextView
+                android:layout_weight="3"
+                app:loader_corner_radius="0dp"
+                app:loader_type="rect"/>
+            <com.tokopedia.unifycomponents.LoaderUnify
                 android:layout_width="0dp"
                 android:layout_height="30dp"
                 android:layout_marginTop="8dp"
                 android:layout_marginStart="12dp"
                 android:layout_marginLeft="12dp"
                 android:layout_marginBottom="8dp"
-                android:layout_weight="3" />
-            <com.elyeproj.loaderviewlibrary.LoaderTextView
+                android:layout_weight="3"
+                app:loader_corner_radius="0dp"
+                app:loader_type="rect"/>
+            <com.tokopedia.unifycomponents.LoaderUnify
                 android:layout_width="0dp"
                 android:layout_height="30dp"
                 android:layout_marginTop="8dp"
                 android:layout_marginLeft="12dp"
                 android:layout_marginRight="12dp"
                 android:layout_marginBottom="8dp"
-                android:layout_weight="3"/>
+                android:layout_weight="3"
+                app:loader_corner_radius="0dp"
+                app:loader_type="rect"/>
         </LinearLayout>
         <include
             android:id="@+id/grid_loading_layout"

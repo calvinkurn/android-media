@@ -104,6 +104,7 @@ class ProductListTypeFactoryImpl(
     private val videoCarouselListener: InspirationVideoCarouselListener,
     private val videoCarouselWidgetCoordinator: VideoCarouselWidgetCoordinator,
     private val networkMonitor: NetworkMonitor,
+    private val isUsingViewStub: Boolean = false,
 ) : BaseAdapterTypeFactory(), ProductListTypeFactory {
 
     override var recyclerViewItem = 0
@@ -123,12 +124,13 @@ class ProductListTypeFactoryImpl(
     override fun type(productItem: ProductItemDataView): Int {
         return when (recyclerViewItem) {
             SearchConstant.RecyclerView.VIEW_LIST ->
-                ListProductItemViewHolder.LAYOUT
+                ListProductItemViewHolder.layout(isUsingViewStub)
             SearchConstant.RecyclerView.VIEW_PRODUCT_BIG_GRID ->
                 BigGridProductItemViewHolder.LAYOUT
             SearchConstant.RecyclerView.VIEW_PRODUCT_SMALL_GRID ->
-                SmallGridProductItemViewHolder.LAYOUT
-            else -> SmallGridProductItemViewHolder.LAYOUT
+                SmallGridProductItemViewHolder.layout(isUsingViewStub)
+            else ->
+                SmallGridProductItemViewHolder.layout(isUsingViewStub)
         }
     }
 
@@ -224,9 +226,9 @@ class ProductListTypeFactoryImpl(
     @Suppress("ComplexMethod")
     override fun createViewHolder(view: View, type: Int): AbstractViewHolder<*> {
         return when (type) {
-            ListProductItemViewHolder.LAYOUT ->
+            ListProductItemViewHolder.LAYOUT, ListProductItemViewHolder.LAYOUT_WITH_VIEW_STUB ->
                 ListProductItemViewHolder(view, productListener)
-            SmallGridProductItemViewHolder.LAYOUT ->
+            SmallGridProductItemViewHolder.LAYOUT, SmallGridProductItemViewHolder.LAYOUT_WITH_VIEW_STUB ->
                 SmallGridProductItemViewHolder(view, productListener)
             BigGridProductItemViewHolder.LAYOUT ->
                 BigGridProductItemViewHolder(view, productListener)

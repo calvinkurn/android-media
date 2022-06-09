@@ -6,7 +6,7 @@
     >
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rv_widget_sample_feed"
+        android:id="@+id/rv_play_widget_feed_sample"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"

@@ -89,87 +89,94 @@
         app:unifyButtonVariant="ghost"
         tools:text="Bantuan" />
 
-
-
-    <com.elyeproj.loaderviewlibrary.LoaderImageView
+    <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/shimmer_product_manage_suspend_2"
         android:layout_width="match_parent"
         android:layout_height="64dp"
         android:layout_marginTop="14dp"
-        app:corners="8"
+        app:loader_corner_radius="8dp"
+        app:loader_type="rect"
         app:layout_constraintTop_toBottomOf="@id/tv_product_manage_suspend_title" />
 
-    <com.elyeproj.loaderviewlibrary.LoaderTextView
+    <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/shimmer_product_manage_suspend_3"
         android:layout_width="match_parent"
         android:layout_height="24dp"
         android:layout_marginTop="8dp"
-        app:corners="8"
+        app:loader_corner_radius="8dp"
+        app:loader_type="rect"
         app:layout_constraintTop_toBottomOf="@id/shimmer_product_manage_suspend_2" />
 
-    <com.elyeproj.loaderviewlibrary.LoaderTextView
+    <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/shimmer_product_manage_suspend_4"
         android:layout_width="match_parent"
         android:layout_height="24dp"
         android:layout_marginTop="14dp"
-        app:corners="8"
+        app:loader_corner_radius="8dp"
+        app:loader_type="rect"
         app:layout_constraintTop_toBottomOf="@id/shimmer_product_manage_suspend_3" />
 
-    <com.elyeproj.loaderviewlibrary.LoaderTextView
+    <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/shimmer_product_manage_suspend_5_left"
         android:layout_width="32dp"
         android:layout_height="24dp"
         android:layout_marginTop="14dp"
-        app:corners="8"
+        app:loader_corner_radius="8dp"
+        app:loader_type="rect"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/shimmer_product_manage_suspend_4" />
 
-    <com.elyeproj.loaderviewlibrary.LoaderTextView
+    <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/shimmer_product_manage_suspend_5_right"
         android:layout_width="0dp"
         android:layout_height="24dp"
         android:layout_marginStart="8dp"
-        app:corners="8"
+        app:loader_corner_radius="8dp"
+        app:loader_type="rect"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/shimmer_product_manage_suspend_5_left"
         app:layout_constraintTop_toTopOf="@id/shimmer_product_manage_suspend_5_left"
         app:layout_constraintBottom_toBottomOf="@id/shimmer_product_manage_suspend_5_left"/>
 
-    <com.elyeproj.loaderviewlibrary.LoaderTextView
+    <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/shimmer_product_manage_suspend_6_left"
         android:layout_width="32dp"
         android:layout_height="24dp"
         android:layout_marginTop="14dp"
-        app:corners="8"
+        app:loader_corner_radius="8dp"
+        app:loader_type="rect"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/shimmer_product_manage_suspend_5_left" />
 
-    <com.elyeproj.loaderviewlibrary.LoaderTextView
+    <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/shimmer_product_manage_suspend_6_right"
         android:layout_width="0dp"
         android:layout_height="24dp"
         android:layout_marginStart="8dp"
-        app:corners="8"
+        app:loader_corner_radius="8dp"
+        app:loader_type="line"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/shimmer_product_manage_suspend_6_left"
         app:layout_constraintTop_toTopOf="@id/shimmer_product_manage_suspend_6_left"
         app:layout_constraintBottom_toBottomOf="@id/shimmer_product_manage_suspend_6_left"/>
 
-    <com.elyeproj.loaderviewlibrary.LoaderTextView
+    <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/shimmer_product_manage_suspend_7"
         android:layout_width="match_parent"
         android:layout_height="24dp"
         android:layout_marginTop="14dp"
-        app:corners="8"
+        app:loader_corner_radius="8dp"
+        app:loader_type="line"
         app:layout_constraintTop_toBottomOf="@id/shimmer_product_manage_suspend_6_right" />
 
-    <com.elyeproj.loaderviewlibrary.LoaderImageView
+    <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/shimmer_product_manage_suspend_8"
         android:layout_width="match_parent"
         android:layout_height="40dp"
         android:layout_marginTop="22dp"
         android:layout_marginBottom="16dp"
-        app:corners="8"
+        app:loader_corner_radius="8dp"
+        app:loader_type="rect"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toBottomOf="@id/shimmer_product_manage_suspend_7" />
 

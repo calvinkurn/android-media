@@ -1,13 +1,17 @@
 package com.tokopedia.product.addedit.preview.presentation.model
 
 import android.os.Parcelable
+import com.tokopedia.kotlin.extensions.view.ZERO
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.product.addedit.description.presentation.model.DescriptionInputModel
 import com.tokopedia.product.addedit.detail.presentation.model.DetailInputModel
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.NO_DATA
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.REQUEST_CODE_SIZE
 import com.tokopedia.product.addedit.shipment.presentation.model.ShipmentInputModel
+import com.tokopedia.product.addedit.variant.presentation.model.ProductVariantInputModel
 import com.tokopedia.product.addedit.variant.presentation.model.VariantInputModel
-import kotlinx.android.parcel.Parcelize
+import kotlinx.parcelize.IgnoredOnParcel
+import kotlinx.parcelize.Parcelize
 
 /**
  * Created by faisalramd on 2020-04-01.
@@ -28,7 +32,21 @@ data class ProductInputModel (
         var itemSold: Int = 0, // count of successful item transaction
         var isDataChanged: Boolean = false
 ) : Parcelable {
-    companion object {
-        val TAG: String get() = ProductInputModel::class.java.simpleName
-    }
+        @IgnoredOnParcel
+        var lastVariantData = ProductVariantInputModel()
+
+        fun getVariantDefaultVariantPrice(isEditMode: Boolean) = if (isEditMode ||
+                lastVariantData.price == Int.ZERO.toBigInteger()) {
+                detailInputModel.price
+        } else {
+                lastVariantData.price
+        }
+
+        fun resetVariantData() {
+                if (variantInputModel.hasVariant()) {
+                        lastVariantData = variantInputModel.getPrimaryVariantData()
+                        variantInputModel.products = emptyList()
+                        variantInputModel.selections = emptyList()
+                }
+        }
 }
