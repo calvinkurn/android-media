@@ -1,7 +1,5 @@
 package com.tokopedia.tokofood.feature.ordertracking.presentation.viewholder
 
-import android.os.Handler
-import android.os.Looper
 import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
@@ -19,8 +17,6 @@ class TemporaryFinishOrderViewHolder(
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.item_tokofood_order_tracking_temporary_finish
-
-        const val TWO_SECONDS = 2000L
     }
 
     private val binding = ItemTokofoodOrderTrackingTemporaryFinishBinding.bind(itemView)
@@ -37,9 +33,7 @@ class TemporaryFinishOrderViewHolder(
     }
 
     private fun autoRefreshTempFinishOrder(orderDetailResultUiModel: OrderDetailResultUiModel) {
-        Handler(Looper.getMainLooper()).postDelayed({
-            listener.onAutoRefreshTempFinishOrder(orderDetailResultUiModel)
-        }, TWO_SECONDS)
+        listener.onAutoRefreshTempFinishOrder(orderDetailResultUiModel)
     }
 
     interface Listener {
