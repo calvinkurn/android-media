@@ -51,6 +51,10 @@ class RightChatMessageUnifyViewHolder(
             val senderName = mapSenderName(message.parentReply!!)
             customChatLayout?.fxChat?.background = backgroundChatWithReplyBubble
             customChatLayout?.fxChat?.bringToFront()
+            customChatLayout?.apply {
+                setPadding(paddingLeft,paddingTop,-4,paddingBottom)
+            }
+            customChatLayout?.background = null
             setupReplyBubble(senderName, message)
         } else {
             customChatLayout?.fxChat?.background = backgroundChatWithoutReplyBubble

@@ -45,7 +45,7 @@ class LeftChatMessageUnifyViewHolder(
         super.bind(message)
         hideSenderInfo()
         val senderInfoData = convertToSenderInfo(message.source)
-        bindBackground()
+
         if (chatbotAdapterListener.isPreviousItemSender(adapterPosition)) {
             senderInfoData?.let { bindSenderInfo(it) }
         }
@@ -54,8 +54,10 @@ class LeftChatMessageUnifyViewHolder(
             val senderName = mapSenderName(message.parentReply!!)
             customChatLayout?.fxChat?.background = backgroundForChat
             customChatLayout?.fxChat?.bringToFront()
+            customChatLayout?.background = null
             setupReplyBubble(senderName,message)
         } else {
+            bindBackground()
             customChatLayout?.replyBubbleContainer?.hide()
         }
 
