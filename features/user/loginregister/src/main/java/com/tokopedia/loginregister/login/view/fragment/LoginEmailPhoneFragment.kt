@@ -986,8 +986,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
                     })
         }
         emailExtension?.hide()
-        if(!isUsingRollenceNeedHelp)
-            callTokopediaCare?.showWithCondition(!isLoading)
+        callTokopediaCare?.showWithCondition(!isUsingRollenceNeedHelp && !isLoading)
     }
 
     override fun goToRegisterInitial(source: String) {
