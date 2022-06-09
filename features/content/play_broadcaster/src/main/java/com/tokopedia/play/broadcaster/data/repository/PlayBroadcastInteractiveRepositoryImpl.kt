@@ -107,7 +107,7 @@ class PlayBroadcastInteractiveRepositoryImpl @Inject constructor(
                 setRequestParams(GetInteractiveQuizDetailsUseCase.createParams(interactiveId))
             }.executeOnBackground()
 
-            return@withContext mapper.mapQuizDetail(response)
+            return@withContext mapper.mapQuizDetail(response, interactiveId)
         }
 
     override suspend fun getInteractiveQuizChoiceDetail(

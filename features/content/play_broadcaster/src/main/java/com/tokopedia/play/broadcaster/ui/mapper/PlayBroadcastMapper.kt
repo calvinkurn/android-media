@@ -113,7 +113,8 @@ interface PlayBroadcastMapper {
     ): PostInteractiveCreateQuizUseCase.Choice
 
     fun mapQuizDetail(
-        response: GetInteractiveQuizDetailResponse
+        response: GetInteractiveQuizDetailResponse,
+        interactiveId: String,
     ): QuizDetailDataUiModel
 
     fun mapQuizDetailToLeaderBoard(dataUiModel: QuizDetailDataUiModel): PlayLeaderboardUiModel

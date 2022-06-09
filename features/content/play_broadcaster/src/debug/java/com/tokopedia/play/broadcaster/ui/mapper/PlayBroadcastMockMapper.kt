@@ -321,7 +321,7 @@ class PlayBroadcastMockMapper : PlayBroadcastMapper {
         )
     }
 
-    override fun mapQuizDetail(response: GetInteractiveQuizDetailResponse): QuizDetailDataUiModel {
+    override fun mapQuizDetail(response: GetInteractiveQuizDetailResponse, interactiveId: String): QuizDetailDataUiModel {
         return with(response.playInteractiveQuizDetail) {
             QuizDetailDataUiModel(
                 question = question,
@@ -334,7 +334,8 @@ class PlayBroadcastMockMapper : PlayBroadcastMapper {
                         isCorrectAnswer = it.isCorrectAnswer,
                         participantCount = it.participantCount
                     )
-                }
+                },
+                interactiveId = interactiveId,
             )
         }
     }

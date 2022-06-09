@@ -56,4 +56,11 @@ interface PlayBroadcastInteractiveAnalytic {
 
     fun onImpressOngoingQuizWidget(channelId: String, channelTitle: String, quizId: String, quizTitle:String)
 
+    fun onCLickQuizOptionLive(
+        channelId: String,
+        channelTitle: String,
+        interactiveId: String,
+        interactiveTitle: String
+    )
+
 }

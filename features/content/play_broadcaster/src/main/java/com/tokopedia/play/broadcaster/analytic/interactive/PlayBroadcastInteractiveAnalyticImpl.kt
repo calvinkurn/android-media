@@ -229,6 +229,18 @@ class PlayBroadcastInteractiveAnalyticImpl @Inject constructor(
         )
     }
 
+    override fun onCLickQuizOptionLive(
+        channelId: String,
+        channelTitle: String,
+        interactiveId: String,
+        interactiveTitle: String
+    ) {
+        sendClickEvent(
+            "click - quiz result option live room",
+            "${userSession.shopId} - $channelId - $channelTitle - $interactiveId - $interactiveTitle",
+        )
+    }
+
     override fun onClickBackQuizDuration(channelId: String, channelTitle: String) {
         sendClickEvent(
             "click - back duration quiz",
