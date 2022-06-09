@@ -1,6 +1,5 @@
 package com.tokopedia.play_common.ui.leaderboard
 
-import android.view.MotionEvent
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout
@@ -45,7 +44,11 @@ class PlayInteractiveLeaderboardViewComponent(
     private val ivSheetClose: ImageView = findViewById(R.id.iv_sheet_close)
     private val btnRefreshError: UnifyButton = findViewById(R.id.btn_action_leaderboard_error)
 
-    private val bottomSheetBehavior = BottomSheetBehavior.from(rootView)
+    private val bottomSheetBehavior = try {
+        BottomSheetBehavior.from(rootView)
+    } catch (e: IllegalArgumentException) {
+        null
+    }
 
     private val leaderboardAdapter = PlayInteractiveLeaderboardAdapter(object : PlayInteractiveLeaderboardViewHolder.Listener {
         override fun onChatWinnerButtonClicked(winner: PlayWinnerUiModel, position: Int) {
@@ -102,19 +105,6 @@ class PlayInteractiveLeaderboardViewComponent(
 
         registerAdapterObserver()
         rvLeaderboard.addItemDecoration(PlayLeaderBoardItemDecoration(rvLeaderboard.context))
-        bottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
-        rvLeaderboard.setOnTouchListener { v, event ->
-            when (event.action) {
-                MotionEvent.ACTION_DOWN -> // Disallow NestedScrollView to intercept touch events.
-                    v.parent.requestDisallowInterceptTouchEvent(true)
-                MotionEvent.ACTION_UP ->   // Allow NestedScrollView to intercept touch events.
-                    v.parent.requestDisallowInterceptTouchEvent(false)
-            }
-
-            // Handle RecyclerView touch events.
-            v.onTouchEvent(event)
-            true
-        }
 
         btnRefreshError.rootView.addOnImpressionListener(impressHolder){
             listener.onRefreshButtonImpressed(this)
@@ -142,6 +132,10 @@ class PlayInteractiveLeaderboardViewComponent(
         llPlaceholder.show()
     }
 
+    fun addItemTouchListener(listener: RecyclerView.OnItemTouchListener) {
+        rvLeaderboard.addOnItemTouchListener(listener)
+    }
+
     fun showWithHeight(height: Int) {
         if (rootView.height != height) {
             val layoutParams = rootView.layoutParams as CoordinatorLayout.LayoutParams
@@ -162,11 +156,15 @@ class PlayInteractiveLeaderboardViewComponent(
     }
 
     override fun show() {
-        bottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
+        if (bottomSheetBehavior != null) {
+            bottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
+        } else super.show()
     }
 
     override fun hide() {
-        bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
+        if (bottomSheetBehavior != null) {
+            bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
+        } else super.hide()
     }
 
     private fun registerAdapterObserver() {

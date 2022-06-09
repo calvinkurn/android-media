@@ -1,26 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:background="@android:color/transparent">
+    android:background="@android:color/transparent"
+    >
 
     <include
         layout="@layout/view_play_bro_quiz_option_details"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:behavior_hideable="true"
-        app:behavior_skipCollapsed="true"
-        app:layout_behavior="com.tokopedia.play_common.util.behavior.LockableBottomSheetBehavior"
         />
 
     <include
         layout="@layout/view_play_interactive_leaderboard"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:behavior_hideable="true"
-        app:behavior_skipCollapsed="true"
-        app:layout_behavior="com.tokopedia.play_common.util.behavior.LockableBottomSheetBehavior"
         />
 
-</androidx.coordinatorlayout.widget.CoordinatorLayout>
+</FrameLayout>
