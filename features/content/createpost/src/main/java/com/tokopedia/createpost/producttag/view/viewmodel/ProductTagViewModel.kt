@@ -295,7 +295,6 @@ class ProductTagViewModel @AssistedInject constructor(
         viewModelScope.launchCatchError(block = {
             when(source) {
                 ProductTagSource.GlobalSearch -> {
-                    val prevQuery = _globalSearchProduct.value.param.query
                     _globalSearchProduct.setValue {
                         val prevParam = _globalSearchProduct.value.param.apply {
                             this.prevQuery = this.query

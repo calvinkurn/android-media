@@ -25,6 +25,12 @@ fun <T : Boolean> T.assertFalse() {
         .isEqualTo(false)
 }
 
+fun String.assertEmpty() {
+    Assertions
+        .assertThat(this)
+        .isEqualTo("")
+}
+
 fun <T : Any> List<T>.assertEmpty() {
     Assertions
         .assertThat(this.size)
