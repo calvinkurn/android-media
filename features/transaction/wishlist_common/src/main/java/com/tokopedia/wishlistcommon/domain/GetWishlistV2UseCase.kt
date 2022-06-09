@@ -8,7 +8,7 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.usecase.coroutines.UseCase
-import com.tokopedia.wishlist.data.model.WishlistV2Params
+import com.tokopedia.wishlistcommon.data.WishlistV2Params
 import com.tokopedia.wishlistcommon.data.response.GetWishlistV2Response
 import com.tokopedia.wishlistcommon.util.GQL_WISHLIST_V2
 import javax.inject.Inject

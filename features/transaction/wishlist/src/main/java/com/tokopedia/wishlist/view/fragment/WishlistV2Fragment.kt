@@ -40,6 +40,8 @@ import com.tokopedia.linker.model.LinkerError
 import com.tokopedia.linker.model.LinkerShareResult
 import com.tokopedia.linker.share.DataMapper
 import com.tokopedia.loaderdialog.LoaderDialog
+import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
+import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.logger.ServerLogger
 import com.tokopedia.logger.utils.Priority
 import com.tokopedia.network.exception.MessageErrorException
@@ -70,7 +72,7 @@ import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import com.tokopedia.utils.text.currency.StringUtils
 import com.tokopedia.wishlist.data.model.WishlistV2BulkRemoveAdditionalParams
-import com.tokopedia.wishlist.data.model.WishlistV2Params
+import com.tokopedia.wishlistcommon.data.WishlistV2Params
 import com.tokopedia.wishlist.data.model.response.DeleteWishlistProgressV2Response
 import com.tokopedia.wishlist.data.model.response.WishlistV2Response
 import com.tokopedia.wishlist.databinding.FragmentWishlistV2Binding
@@ -128,6 +130,7 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
     private var countRemovableAutomaticDelete = 0
     private var hitCountDeletion = false
     private val handler = Handler(Looper.getMainLooper())
+    private var userAddressData: LocalCacheModel? = null
     private val progressDeletionRunnable = Runnable {
         getCountDeletionProgress()
     }
@@ -404,6 +407,12 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
         return (activity?.application as BaseMainApplication).baseAppComponent
     }
 
+    private fun fetchUserLatestAddressData() {
+        context?.let {
+            userAddressData = ChooseAddressUtils.getLocalizingAddressData(it)
+        }
+    }
+
     private fun prepareLayout() {
         context?.let {
             activity?.window?.decorView?.setBackgroundColor(ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N0))
@@ -588,6 +597,16 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
     }
 
     private fun loadWishlistV2() {
+        fetchUserLatestAddressData()
+        userAddressData?.let { address ->
+            paramWishlistV2.wishlistChosenAddress = WishlistV2Params.WishlistChosenAddress(
+                districtId = address.district_id,
+                cityId = address.city_id,
+                latitude = address.lat,
+                longitude = address.long,
+                postalCode = address.postal_code,
+                addressId = address.address_id)
+        }
         paramWishlistV2.page = currPage
         wishlistViewModel.loadWishlistV2(paramWishlistV2, wishlistPref?.getTypeLayout(),
             paramWishlistV2.source == SOURCE_AUTOMATIC_DELETION
@@ -958,7 +977,8 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
             override fun onRadioButtonSelected(name: String, optionId: String, label: String) {
                 filterBottomSheet.dismiss()
                 paramWishlistV2.sortFilters.removeAll { it.name == name }
-                paramWishlistV2.sortFilters.add(WishlistV2Params.WishlistSortFilterParam(
+                paramWishlistV2.sortFilters.add(
+                    WishlistV2Params.WishlistSortFilterParam(
                         name = filterItem.name, selected = arrayListOf(optionId)))
                 doRefresh()
                 hitAnalyticsFilterOptionSelected(name, label)
@@ -1002,7 +1022,8 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
             override fun onSaveCheckboxSelection() {
                 if (listOptionIdSelected.isNotEmpty()) {
                     paramWishlistV2.sortFilters.removeAll { it.name == nameSelected }
-                    paramWishlistV2.sortFilters.add(WishlistV2Params.WishlistSortFilterParam(
+                    paramWishlistV2.sortFilters.add(
+                        WishlistV2Params.WishlistSortFilterParam(
                             name = nameSelected, selected = listOptionIdSelected as ArrayList<String>))
                 }
 
@@ -1307,7 +1328,8 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
         val listOptionIdSelected = mutableListOf<String>()
         listOptionIdSelected.add(OPTION_ID_SORT_OLDEST)
             paramWishlistV2.sortFilters.clear()
-            paramWishlistV2.sortFilters.add(WishlistV2Params.WishlistSortFilterParam(
+            paramWishlistV2.sortFilters.add(
+                WishlistV2Params.WishlistSortFilterParam(
                 name = FILTER_SORT, selected = listOptionIdSelected as ArrayList<String>))
 
         doRefresh()
