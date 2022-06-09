@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.home_component.productcardgridcarousel.dataModel.*
 import com.tokopedia.home_component.productcardgridcarousel.viewHolder.*
+import com.tokopedia.home_component.visitable.MissionWidgetDataModel
 
 /**
  * @author by yoasfs on 09/06/20
@@ -48,6 +49,10 @@ class CommonCarouselProductCardTypeFactoryImpl(
         return SpecialReleaseItemViewHolder.LAYOUT
     }
 
+    override fun type(dataModel: MissionWidgetDataModel): Int {
+        return MissionWidgetItemViewHolder.LAYOUT
+    }
+
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<*> {
         return when (type) {
             CarouselProductCardViewHolder.LAYOUT -> {
@@ -73,6 +78,9 @@ class CommonCarouselProductCardTypeFactoryImpl(
             }
             SpecialReleaseItemViewHolder.LAYOUT -> {
                 SpecialReleaseItemViewHolder(parent, channels, cardInteraction)
+            }
+            MissionWidgetItemViewHolder.LAYOUT -> {
+                MissionWidgetItemViewHolder(parent, cardInteraction)
             }
             else -> {
                 super.createViewHolder(parent, type)
