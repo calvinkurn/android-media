@@ -40,4 +40,7 @@
     <string name="on_error_observing_delete_wishlist_v2_string_builder">Error observingDeleteWishlistV2(). userId: %1$s | %2$s | %3$s</string>
     <string name="on_error_observing_bulk_delete_wishlist_v2_string_builder">Error observingBulkDeleteWishlistV2(). userId: %1$s | %2$s | %3$s</string>
     <string name="on_error_observing_atc_string_builder">Error observingAtc(). userId: %1$s | %2$s | %3$s</string>
+
+    <string name="wishlist_v2_terlama_disimpan">Wishlist sudah diurutkan dari barang yang terlama disimpan.</string>
+    <string name="wishlist_v2_default_message_deletion_progress">Wishlist kamu lagi dibersihkan. Sambil menunggu, kamu tetap bisa beraktivitas di Tokopedia. ⏳ </string>
 </resources>
