@@ -267,7 +267,7 @@ class InspirationCarouselViewHolder(
             shopLocation = shopLocation,
             shopBadgeList = badgeItemDataViewList.toProductCardModelShopBadges(),
             isTopAds = isOrganicAds,
-            cardInteraction = true
+            cardInteraction = true,
         )
     }
 
