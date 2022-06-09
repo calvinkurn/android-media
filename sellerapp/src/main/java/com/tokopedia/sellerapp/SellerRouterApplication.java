@@ -27,7 +27,7 @@ import com.tokopedia.cachemanager.CacheManager;
 import com.tokopedia.cachemanager.PersistentCacheManager;
 import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.core.TkpdCoreRouter;
-import com.tokopedia.core.app.MainApplication;
+import com.tokopedia.app.common.MainApplication;
 import com.tokopedia.core.common.ui.MaintenancePage;
 import com.tokopedia.core.gcm.FCMCacheManager;
 import com.tokopedia.core.gcm.base.IAppNotificationReceiver;
@@ -106,7 +106,6 @@ public abstract class SellerRouterApplication extends MainApplication implements
         LinkerRouter,
         SellerHomeRouter,
         LoginRouter {
-
     private TopAdsComponent topAdsComponent;
     private TetraDebugger tetraDebugger;
 

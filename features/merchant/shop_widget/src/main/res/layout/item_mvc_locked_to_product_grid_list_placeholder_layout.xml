@@ -9,24 +9,26 @@
     android:paddingEnd="16dp"
     android:paddingBottom="8dp">
 
-    <com.elyeproj.loaderviewlibrary.LoaderImageView
+    <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/shimmer_product_1"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginTop="16dp"
-        app:corners="16"
+        app:loader_corner_radius="8dp"
+        app:loader_type="rect"
         app:layout_constraintDimensionRatio="1:1.8"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toLeftOf="@id/shimmer_product_2"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <com.elyeproj.loaderviewlibrary.LoaderImageView
+    <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/shimmer_product_2"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="16dp"
-        app:corners="16"
+        app:loader_corner_radius="8dp"
+        app:loader_type="rect"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintDimensionRatio="1:1.5"
         app:layout_constraintLeft_toRightOf="@id/shimmer_product_1"
@@ -36,13 +38,14 @@
         app:layout_constraintVertical_weight="0.5"
         app:layout_constraintWidth_percent="1" />
 
-    <com.elyeproj.loaderviewlibrary.LoaderImageView
+    <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/shimmer_product_3"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="16dp"
-        app:corners="16"
+        app:loader_corner_radius="8dp"
+        app:loader_type="rect"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintDimensionRatio="1:1.5"
         app:layout_constraintLeft_toRightOf="@id/shimmer_product_4"
@@ -52,12 +55,13 @@
         app:layout_constraintVertical_weight="0.5"
         app:layout_constraintWidth_percent="1" />
 
-    <com.elyeproj.loaderviewlibrary.LoaderImageView
+    <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/shimmer_product_4"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginTop="16dp"
-        app:corners="16"
+        app:loader_corner_radius="8dp"
+        app:loader_type="rect"
         app:layout_constraintDimensionRatio="1:1.8"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toLeftOf="@id/shimmer_product_3"

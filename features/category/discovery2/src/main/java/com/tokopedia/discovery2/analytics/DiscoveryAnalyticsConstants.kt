@@ -241,3 +241,6 @@ const val ANCHOR_TYPE_ICON_TEXT = "Icon-Text"
 
 const val ACTION_VIEW_MY_COUPON  = "view my coupon"
 const val ACTION_CLICK_MY_COUPON  = "click coupon"
+
+const val ACTION_VIEW_COUPON_BANNER = "coupon impression"
+const val ACTION_CLICK_COUPON_BANNER = "click on banner coupon"

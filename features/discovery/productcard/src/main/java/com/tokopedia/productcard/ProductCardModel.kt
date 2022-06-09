@@ -22,65 +22,64 @@ import com.tokopedia.productcard.utils.MIN_QUANTITY_NON_VARIANT
 import com.tokopedia.productcard.utils.TYPE_VARIANT_COLOR
 import com.tokopedia.productcard.utils.TYPE_VARIANT_CUSTOM
 import com.tokopedia.productcard.utils.TYPE_VARIANT_SIZE
-import com.tokopedia.unifycomponents.CardUnify2
 import com.tokopedia.unifycomponents.UnifyButton
 
 data class ProductCardModel (
-    val productImageUrl: String = "",
-    @Deprecated("Cannot wishlist from product card anymore")
+        val productImageUrl: String = "",
+        @Deprecated("Cannot wishlist from product card anymore")
         var isWishlisted: Boolean = false,
-    @Deprecated("Cannot wishlist from product card anymore")
+        @Deprecated("Cannot wishlist from product card anymore")
         val isWishlistVisible: Boolean = false,
-    @Deprecated("replace with labelGroupList")
+        @Deprecated("replace with labelGroupList")
         val labelPromo: Label = Label(),
-    @Deprecated("No more shop image")
+        @Deprecated("No more shop image")
         val shopImageUrl: String = "",
-    @Deprecated("No more shop name")
+        @Deprecated("No more shop name")
         val shopName: String = "",
-    val productName: String = "",
-    val discountPercentage: String = "",
-    val slashedPrice: String = "",
-    val priceRange: String = "",
-    val formattedPrice: String = "",
-    val shopBadgeList: List<ShopBadge> = listOf(),
-    val shopLocation: String = "",
-    val ratingCount: Int = 0,
-    val reviewCount: Int = 0,
-    @Deprecated("replace with labelGroupList")
+        val productName: String = "",
+        val discountPercentage: String = "",
+        val slashedPrice: String = "",
+        val priceRange: String = "",
+        val formattedPrice: String = "",
+        val shopBadgeList: List<ShopBadge> = listOf(),
+        val shopLocation: String = "",
+        val ratingCount: Int = 0,
+        val reviewCount: Int = 0,
+        @Deprecated("replace with labelGroupList")
         val labelCredibility: Label = Label(),
-    @Deprecated("replace with labelGroupList")
+        @Deprecated("replace with labelGroupList")
         val labelOffers: Label = Label(),
-    val freeOngkir: FreeOngkir = FreeOngkir(),
-    val isTopAds: Boolean = false,
-    val ratingString: String = "",
-    val hasThreeDots: Boolean = false,
-    val labelGroupList: List<LabelGroup> = listOf(),
-    val hasDeleteProductButton: Boolean = false,
-    val hasAddToCartButton: Boolean = false,
-    val hasRemoveFromWishlistButton: Boolean = false,
-    val pdpViewCount: String = "",
-    val stockBarLabel: String = "",
-    val stockBarLabelColor: String = "",
-    val stockBarPercentage: Int = 0,
-    val isOutOfStock: Boolean = false,
-    @Deprecated("determined from product card")
+        val freeOngkir: FreeOngkir = FreeOngkir(),
+        val isTopAds: Boolean = false,
+        val ratingString: String = "",
+        val hasThreeDots: Boolean = false,
+        val labelGroupList: List<LabelGroup> = listOf(),
+        val hasDeleteProductButton: Boolean = false,
+        val hasAddToCartButton: Boolean = false,
+        val hasRemoveFromWishlistButton: Boolean = false,
+        val pdpViewCount: String = "",
+        val stockBarLabel: String = "",
+        val stockBarLabelColor: String = "",
+        val stockBarPercentage: Int = 0,
+        val isOutOfStock: Boolean = false,
+        @Deprecated("determined from product card")
         val addToCardText: String = "",
-    val shopRating: String = "",
-    val isShopRatingYellow: Boolean = false,
-    val countSoldRating: String = "",
-    val hasNotifyMeButton: Boolean = false,
-    val labelGroupVariantList: List<LabelGroupVariant> = listOf(),
-    @Deprecated("determined from product card")
+        val shopRating: String = "",
+        val isShopRatingYellow: Boolean = false,
+        val countSoldRating: String = "",
+        val hasNotifyMeButton: Boolean = false,
+        val labelGroupVariantList: List<LabelGroupVariant> = listOf(),
+        @Deprecated("determined from product card")
         val addToCartButtonType: Int = UnifyButton.Type.TRANSACTION,
-    val isWideContent: Boolean = false,
-    val variant: Variant? = null,
-    val nonVariant: NonVariant? = null,
-    val hasSimilarProductButton: Boolean = false,
-    val hasButtonThreeDotsWishlist: Boolean = false,
-    val hasAddToCartWishlist: Boolean = false,
-    val hasSimilarProductWishlist: Boolean = false,
-    val customVideoURL : String = "",
-    var animationOnPress: Int = CardUnify2.ANIMATE_OVERLAY,
+        val isWideContent: Boolean = false,
+        val variant: Variant? = null,
+        val nonVariant: NonVariant? = null,
+        val hasSimilarProductButton: Boolean = false,
+        val hasButtonThreeDotsWishlist: Boolean = false,
+        val hasAddToCartWishlist: Boolean = false,
+        val hasSimilarProductWishlist: Boolean = false,
+        val customVideoURL : String = "",
+        val cardInteraction: Boolean = false,
 ) {
     @Deprecated("replace with labelGroupList")
     var isProductSoldOut: Boolean = false

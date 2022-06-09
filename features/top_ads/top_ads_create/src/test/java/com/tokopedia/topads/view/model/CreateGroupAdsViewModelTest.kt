@@ -108,4 +108,14 @@ class CreateGroupAdsViewModelTest {
         }
         Assert.assertEquals(expected, actual)
     }
+
+    @Test
+    fun `validateGroup test exception`() {
+        var errorCalled = false
+        every { topAdsGroupValidateNameUseCase.execute(any(), captureLambda()) } answers {
+            secondArg<(Throwable) -> Unit>().invoke(mockk())
+        }
+        viewModel.validateGroup("",{},{errorCalled = true})
+        Assert.assertTrue(errorCalled)
+    }
 }

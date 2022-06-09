@@ -47,6 +47,16 @@
       "channelId": ".*",
       "businessUnit": "home & browse",
       "currentSite": "tokopediamarketplace"
+    },
+    {
+      "eventCategory": "homepage",
+      "event": "clickHomepage",
+      "eventAction": "click view all card on dynamic channel feature campaign",
+      "sessionIris": ".*",
+      "eventLabel": ".* - .*",
+      "channelId": ".*",
+      "businessUnit": "home & browse",
+      "currentSite": "tokopediamarketplace"
     }
   ]
 }
