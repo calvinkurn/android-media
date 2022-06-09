@@ -18,6 +18,8 @@ import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
 import com.tokopedia.track.builder.BaseTrackerBuilder
 import com.tokopedia.track.builder.util.BaseTrackerConst
+import com.tokopedia.track.builder.util.BaseTrackerConst.Promotion.Companion.ITEM_ID
+import com.tokopedia.track.builder.util.BaseTrackerConst.Promotion.Companion.ITEM_NAME
 import com.tokopedia.track.interfaces.ContextAnalytics
 import com.tokopedia.trackingoptimizer.TrackingQueue
 
@@ -114,6 +116,7 @@ class OfficialStoreTracking(context: Context) {
         private const val POPULAR_BRANDS = "popular brands"
         private const val RADIX_10 = 10
         const val OS_MICROSITE_SINGLE = "os microsite"
+        private const val VALUE_SLIDER_BANNER = "slider banner"
     }
 
     fun sendScreen(categoryName: String) {
@@ -181,8 +184,8 @@ class OfficialStoreTracking(context: Context) {
         val bundle = Bundle().apply {
             putString(EVENT, Event.SELECT_CONTENT)
             putString(EVENT_CATEGORY, OS_MICROSITE_SINGLE)
-            putString(EVENT_ACTION, "$CLICK banner - slider banner")
-            putString(EVENT_LABEL, "slider banner - $categoryName")
+            putString(EVENT_ACTION, "$CLICK banner - $VALUE_SLIDER_BANNER")
+            putString(EVENT_LABEL, "$VALUE_SLIDER_BANNER - $categoryName")
             putString(USER_ID, userId)
             putString(FIELD_BUSINESS_UNIT, VALUE_BUSINESS_UNIT_DEFAULT)
             putString(FIELD_CURRENT_SITE, VALUE_CURRENT_SITE_DEFAULT)
@@ -190,8 +193,8 @@ class OfficialStoreTracking(context: Context) {
                 Bundle().apply {
                     putString(BaseTrackerConst.Promotion.CREATIVE_NAME, bannerItem.title)
                     putString(BaseTrackerConst.Promotion.CREATIVE_SLOT, (bannerPosition+1).toString())
-                    putString("item_id", bannerItem.bannerId)
-                    putString("item_name", "${SLASH_OFFICIAL_STORE}/$categoryName - slider banner")
+                    putString(ITEM_ID, bannerItem.bannerId)
+                    putString(ITEM_NAME, "${SLASH_OFFICIAL_STORE}/$categoryName - $VALUE_SLIDER_BANNER")
                 }
             )
             putParcelableArrayList(BaseTrackerConst.Promotion.KEY, promotions)
@@ -205,12 +208,12 @@ class OfficialStoreTracking(context: Context) {
             constructBasicPromotionView(
                 event = PROMO_VIEW,
                 eventCategory = OS_MICROSITE_SINGLE,
-                eventAction = "$IMPRESSION banner - slider banner",
-                eventLabel = "slider banner - $categoryName",
+                eventAction = "$IMPRESSION banner - $VALUE_SLIDER_BANNER",
+                eventLabel = "$VALUE_SLIDER_BANNER - $categoryName",
                 promotions = listOf(BaseTrackerConst.Promotion(
                     creative = bannerItem.title,
                     position = bannerPosition.toString(),
-                    name = "${SLASH_OFFICIAL_STORE}/$categoryName - slider banner",
+                    name = "${SLASH_OFFICIAL_STORE}/$categoryName - $VALUE_SLIDER_BANNER",
                     id = bannerItem.bannerId,
                     creativeUrl = bannerItem.applink
                 ))
