@@ -947,6 +947,12 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
                     }
                 )
                 interactiveActiveView?.show()
+                analytic.onImpressOngoingQuizWidget(
+                    parentViewModel.channelId,
+                    parentViewModel.channelTitle,
+                    state.id,
+                    state.title,
+                )
                 interactiveFinishedView?.hide()
             }
             InteractiveUiModel.Quiz.Status.Finished -> {

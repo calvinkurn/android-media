@@ -54,4 +54,6 @@ interface PlayBroadcastInteractiveAnalytic {
 
     fun onClickBackQuizDuration(channelId: String, channelTitle: String)
 
+    fun onImpressOngoingQuizWidget(channelId: String, channelTitle: String, quizId: String, quizTitle:String)
+
 }
