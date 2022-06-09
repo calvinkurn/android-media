@@ -4,7 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.basemvvm.viewmodel.BaseViewModel
 import com.tokopedia.epharmacy.di.qualifier.CoroutineMainDispatcher
-import com.tokopedia.epharmacy.network.response.GetEPharmacyResponse
+import com.tokopedia.epharmacy.network.response.EPharmacyDataResponse
 import com.tokopedia.epharmacy.usecase.GetEPharmacyOrderDetailUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -17,8 +17,8 @@ class UploadPrescriptionViewModel @Inject constructor(
     @CoroutineMainDispatcher dispatcher: CoroutineDispatcher
 )  : BaseViewModel(dispatcher){
 
-    private val _productDetailLiveData = MutableLiveData<Result<GetEPharmacyResponse.EPharmacyData>>()
-    val productDetailLiveData: LiveData<Result<GetEPharmacyResponse.EPharmacyData>> = _productDetailLiveData
+    private val _productDetailLiveData = MutableLiveData<Result<EPharmacyDataResponse>>()
+    val productDetailLiveDataResponse: LiveData<Result<EPharmacyDataResponse>> = _productDetailLiveData
 
     fun getEPharmacyDetail(orderId: String) {
         getEPharmacyOrderDetailUseCase.cancelJobs()
@@ -29,8 +29,8 @@ class UploadPrescriptionViewModel @Inject constructor(
         )
     }
 
-    private fun onAvailableEPharmacyDetail(ePharmacyDetail: GetEPharmacyResponse) {
-        ePharmacyDetail.ePharmacyData?.let { data ->
+    private fun onAvailableEPharmacyDetail(ePharmacyDetailResponse: EPharmacyDataResponse) {
+        ePharmacyDetailResponse.let { data ->
             if(data.ePharmacyProducts?.isEmpty() == true)
                 onFailEPharmacyDetail(IllegalStateException("Data invalid"))
             else {

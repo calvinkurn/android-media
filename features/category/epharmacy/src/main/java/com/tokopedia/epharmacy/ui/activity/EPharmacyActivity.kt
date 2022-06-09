@@ -1,7 +1,5 @@
 package com.tokopedia.epharmacy.ui.activity
 
-import  android.app.Activity
-import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.app.BaseMainApplication
@@ -30,12 +28,6 @@ class EPharmacyActivity : BaseSimpleActivity(), HasComponent<EPharmacyComponent>
     override fun getLayoutRes() = R.layout.epharmacy_activity
     override fun getToolbarResourceID() = R.id.e_pharmacy_header
     override fun getParentViewResourceID(): Int = R.id.e_pharmacy_parent_view
-
-    companion object {
-        fun getCallingIntent(base : Activity) : Intent{
-            return Intent(base,EPharmacyActivity::class.java)
-        }
-    }
 
     override fun getNewFragment(): Fragment {
         return UploadPrescriptionFragment.newInstance(Bundle())

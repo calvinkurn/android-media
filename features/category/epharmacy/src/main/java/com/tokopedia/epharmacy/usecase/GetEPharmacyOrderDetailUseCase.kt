@@ -1,7 +1,7 @@
 package com.tokopedia.epharmacy.usecase
 
 import com.tokopedia.epharmacy.network.gql.GQL_FETCH_ORDER_DETAILS_QUERY
-import com.tokopedia.epharmacy.network.response.GetEPharmacyResponse
+import com.tokopedia.epharmacy.network.response.EPharmacyDataResponse
 import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
@@ -9,13 +9,13 @@ import javax.inject.Inject
 
 @GqlQuery("GQL_FETCH_ORDER_DETAILS_QUERY",GQL_FETCH_ORDER_DETAILS_QUERY)
 class GetEPharmacyOrderDetailUseCase @Inject constructor(graphqlRepository: GraphqlRepository) :
-    GraphqlUseCase<GetEPharmacyResponse>(graphqlRepository) {
+    GraphqlUseCase<EPharmacyDataResponse>(graphqlRepository) {
 
-    fun getEPharmacyDetail(onSuccess: (GetEPharmacyResponse) -> Unit,
+    fun getEPharmacyDetail(onSuccess: (EPharmacyDataResponse) -> Unit,
                            onError: (Throwable) -> Unit,
                            orderId: String) {
         try {
-            this.setTypeClass(GetEPharmacyResponse::class.java)
+            this.setTypeClass(EPharmacyDataResponse::class.java)
             this.setRequestParams(getRequestParams(orderId))
             this.setGraphqlQuery(GQL_FETCH_ORDER_DETAILS_QUERY)
             this.execute(

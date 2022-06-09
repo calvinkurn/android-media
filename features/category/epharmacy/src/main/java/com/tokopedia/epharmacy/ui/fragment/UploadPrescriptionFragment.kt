@@ -1,25 +1,36 @@
 package com.tokopedia.epharmacy.ui.fragment
 
+import android.graphics.Typeface
 import android.os.Bundle
+import android.text.SpannableString
+import android.text.Spanned
+import android.text.TextPaint
+import android.text.style.ClickableSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.graphics.drawable.DrawableCompat
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-import com.tokopedia.basemvvm.viewcontrollers.BaseViewModelFragment
-import com.tokopedia.basemvvm.viewmodel.BaseViewModel
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.epharmacy.R
 import com.tokopedia.epharmacy.di.EPharmacyComponent
-import com.tokopedia.epharmacy.network.response.GetEPharmacyResponse
+import com.tokopedia.epharmacy.network.response.EPharmacyDataResponse
 import com.tokopedia.epharmacy.viewmodel.UploadPrescriptionViewModel
-import com.tokopedia.globalerror.GlobalError
+import com.tokopedia.unifycomponents.UnifyButton
+import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
-import java.net.SocketTimeoutException
-import java.net.UnknownHostException
 import javax.inject.Inject
 
 class UploadPrescriptionFragment : BaseDaggerFragment() {
+
+    private var ePharmacyToolTipText : Typography? = null
+    private var ePharmacyRecyclerView : RecyclerView? = null
+    private var fotoResepButton : UnifyButton? = null
+    private var doneButton : UnifyButton? = null
 
     @Inject
     lateinit var viewModelFactory: dagger.Lazy<ViewModelProvider.Factory>
@@ -39,14 +50,15 @@ class UploadPrescriptionFragment : BaseDaggerFragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return super.onCreateView(inflater, container, savedInstanceState)
+        return inflater.inflate(R.layout.epharmacy_upload_prescription_fragment, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initArguments()
         setUpObservers()
-        initViews()
+        initViews(view)
+        initData()
         uploadPrescriptionViewModel.getEPharmacyDetail("0")
     }
 
@@ -59,7 +71,7 @@ class UploadPrescriptionFragment : BaseDaggerFragment() {
     }
 
     private fun observerEPharmacyDetail(){
-        uploadPrescriptionViewModel.productDetailLiveData.observe(viewLifecycleOwner){
+        uploadPrescriptionViewModel.productDetailLiveDataResponse.observe(viewLifecycleOwner){
             when (it) {
                 is Success -> {
                     onSuccessEPharmacyData(it)
@@ -73,19 +85,76 @@ class UploadPrescriptionFragment : BaseDaggerFragment() {
 
     private fun onFailEPharmacyData(it: Fail) {
         when (it.throwable) {
-//            is UnknownHostException, is SocketTimeoutException -> fullPageGlobalError(
-//                GlobalError.NO_CONNECTION
-//            )
-//            is IllegalStateException -> fullPageEmptyError()
-//            else -> fullPageGlobalError(GlobalError.SERVER_ERROR)
+
         }
     }
 
-    private fun onSuccessEPharmacyData(it: Success<GetEPharmacyResponse.EPharmacyData>) {
+    private fun onSuccessEPharmacyData(it: Success<EPharmacyDataResponse>) {
 
     }
 
-    private fun initViews() {
+    private fun initViews(view: View) {
+        view.apply {
+            ePharmacyToolTipText = findViewById(R.id.tooltip)
+            ePharmacyRecyclerView = findViewById(R.id.epharmacy_rv)
+            fotoResepButton = findViewById(R.id.foto_resep_button)
+            doneButton = findViewById(R.id.selesai_button)
+        }
+    }
+
+    private fun initData(){
+        renderToolTip()
+        renderFotoResepButton()
+        renderDoneButton()
+    }
+
+    private fun renderDoneButton() {
+        doneButton?.setOnClickListener {
+            onClickDoneButton()
+        }
+    }
+
+    private fun renderToolTip() {
+        val terms = getString(R.string.epharmacy_terms)
+        val spannableString = SpannableString(terms)
+        val clickableSpan = object : ClickableSpan() {
+            override fun onClick(widget: View) {
+                showTnC()
+            }
+
+            override fun updateDrawState(ds: TextPaint) {
+                ds.color = MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G500)
+                ds.isUnderlineText = false
+                ds.typeface = Typeface.DEFAULT_BOLD
+            }
+        }
+        spannableString.setSpan(clickableSpan, 44, 65, Spanned.SPAN_INCLUSIVE_EXCLUSIVE)
+        ePharmacyToolTipText?.text = spannableString
+        ePharmacyToolTipText?.isClickable = true
+    }
+
+    private fun renderFotoResepButton() {
+        MethodChecker.getDrawable(context,com.tokopedia.iconunify.R.drawable.iconunify_camera)?.let {
+            DrawableCompat.setTint(
+                DrawableCompat.wrap(it),
+                MethodChecker.getColor(context,com.tokopedia.unifyprinciples.R.color.Green_G500)
+            )
+            fotoResepButton?.setDrawable(it, UnifyButton.DrawablePosition.LEFT)
+        }
+        fotoResepButton?.setOnClickListener {
+            onClickFotoResepButton()
+        }
+    }
+
+    private fun showTnC() {
+
+    }
+
+    private fun onClickFotoResepButton() {
+
+    }
+
+    private fun onClickDoneButton() {
 
     }
 
