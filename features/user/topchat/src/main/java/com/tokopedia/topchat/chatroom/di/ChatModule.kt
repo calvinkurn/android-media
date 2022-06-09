@@ -42,6 +42,8 @@ import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
+import com.tokopedia.wishlistcommon.domain.AddToWishlistV2UseCase
+import com.tokopedia.wishlistcommon.domain.DeleteWishlistV2UseCase
 import dagger.Module
 import dagger.Provides
 import okhttp3.OkHttpClient
@@ -175,14 +177,26 @@ class ChatModule {
 
     @ChatScope
     @Provides
+    internal fun provideAddWishListUseCase(@TopchatContext context: Context): AddWishListUseCase {
+        return AddWishListUseCase(context)
+    }
+
+    @ChatScope
+    @Provides
+    internal fun provideRemoveWishListUseCase(@TopchatContext context: Context): RemoveWishListUseCase {
+        return RemoveWishListUseCase(context)
+    }
+
+    @ChatScope
+    @Provides
     fun provideGraphqlRepositoryModule(): GraphqlRepository {
         return GraphqlInteractor.getInstance().graphqlRepository
     }
 
     @ChatScope
     @Provides
-    internal fun provideAddWishListUseCase(@TopchatContext context: Context): AddWishListUseCase {
-        return AddWishListUseCase(context)
+    internal fun provideAddToWishlistV2UseCase(graphqlRepository: GraphqlRepository): AddToWishlistV2UseCase {
+        return AddToWishlistV2UseCase(graphqlRepository)
     }
 
     @ChatScope
@@ -194,8 +208,8 @@ class ChatModule {
 
     @ChatScope
     @Provides
-    internal fun provideRemoveWishListUseCase(@TopchatContext context: Context): RemoveWishListUseCase {
-        return RemoveWishListUseCase(context)
+    internal fun provideDeleteWishlistV2UseCase(graphqlRepository: GraphqlRepository): DeleteWishlistV2UseCase {
+        return DeleteWishlistV2UseCase(graphqlRepository)
     }
 
     @ChatScope
