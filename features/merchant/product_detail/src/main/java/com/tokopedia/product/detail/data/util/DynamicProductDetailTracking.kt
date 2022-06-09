@@ -1446,8 +1446,7 @@ object DynamicProductDetailTracking {
 
             val mediaType = "media type:${media.type}"
             val itemName = "product_id:$productId;variantOptionID:${media.variantOptionId}"
-            //TODO
-            val itemId = ""
+            val itemId = media.urlOriginal
 
             val mapEvent = DataLayer.mapOf(
                     ProductTrackingConstant.Tracking.KEY_EVENT, "promoView",
@@ -1493,8 +1492,7 @@ object DynamicProductDetailTracking {
             val eventLabel = "count_media:${productInfo?.data?.media?.size ?: 0}"
             val mediaType = "media type:${media.type}"
             val itemName = "product_id:$productId;variantOptionID:${media.variantOptionId}"
-            //TODO
-            val itemId = ""
+            val itemId = media.urlOriginal
 
             val mapEvent = DataLayer.mapOf(
                     ProductTrackingConstant.Tracking.KEY_EVENT, "promoView",
