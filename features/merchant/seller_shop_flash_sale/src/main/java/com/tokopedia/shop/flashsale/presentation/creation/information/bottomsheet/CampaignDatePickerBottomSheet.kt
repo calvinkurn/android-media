@@ -153,7 +153,8 @@ class CampaignDatePickerBottomSheet : BottomSheetUnify() {
         calendar?.onScrollMonthListener = object : CalendarPickerView.OnScrollMonthListener {
             override fun onScrolled(date: Date) {
                 val monthName = date.formatTo(DateConstant.MONTH)
-                val emptyQuotaWording = String.format(getString(R.string.sfs_placeholder_empty_quota), monthName)
+                val emptyQuotaWording =
+                    String.format(getString(R.string.sfs_placeholder_empty_quota), monthName)
                 binding?.tpgErrorMessage?.text = emptyQuotaWording
                 binding?.tpgErrorMessage?.visible()
             }
@@ -163,6 +164,7 @@ class CampaignDatePickerBottomSheet : BottomSheetUnify() {
             override fun onDateSelected(date: Date) {
                 showTimePicker(
                     date,
+                    selectedDate,
                     minimumDate,
                     onTimePicked = { dateTime -> doOnDelayFinished { onDateTimePicked(dateTime) } }
                 )
@@ -180,14 +182,26 @@ class CampaignDatePickerBottomSheet : BottomSheetUnify() {
         this.onDateTimePicked = onDatePicked
     }
 
-    fun showTimePicker(selectedDate: Date, minimumDate: Date, onTimePicked: (Date) -> Unit) {
+    fun showTimePicker(
+        selectedDateFromCalendar: Date,
+        defaultDate: Date,
+        minimumDate: Date,
+        onTimePicked: (Date) -> Unit
+    ) {
         val title = getString(R.string.sfs_select_campaign_time)
         val info = String.format(
             getString(R.string.sfs_placeholder_selected_date),
-            selectedDate.localFormatTo(DateConstant.DATE)
+            selectedDateFromCalendar.localFormatTo(DateConstant.DATE)
         )
         val buttonWording = getString(R.string.sfs_apply)
-        val param = TimePickerHandler.Param(selectedDate, minimumDate, title, info, buttonWording)
+        val param = TimePickerHandler.Param(
+            selectedDateFromCalendar,
+            defaultDate,
+            minimumDate,
+            title,
+            info,
+            buttonWording
+        )
 
         val timePickerHandler = TimePickerHandler(param)
         timePickerHandler.show(requireActivity(), childFragmentManager, onTimePicked)

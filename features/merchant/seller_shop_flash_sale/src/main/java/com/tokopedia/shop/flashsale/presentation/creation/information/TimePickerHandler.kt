@@ -13,9 +13,21 @@ import java.util.GregorianCalendar
 import java.util.Calendar
 import javax.inject.Inject
 
-class TimePickerHandler @Inject constructor(private val param : Param)  {
+class TimePickerHandler @Inject constructor(private val param: Param) {
 
-    data class Param(val date: Date, val minimumDate : Date, val title: String, val info: String, val buttonWording: String)
+    data class Param(
+        val selectedDateFromCalendar: Date,
+        val defaultDate: Date,
+        val minimumDate: Date,
+        val title: String,
+        val info: String,
+        val buttonWording: String
+    )
+
+    companion object {
+        private const val LAST_HOUR_OF_A_DAY = 23
+        private const val LAST_MINUTE = 59
+    }
 
     fun show(
         context: Context,
@@ -27,10 +39,15 @@ class TimePickerHandler @Inject constructor(private val param : Param)  {
             set(Calendar.HOUR_OF_DAY, param.minimumDate.extractHour())
             set(Calendar.MINUTE, param.minimumDate.extractMinute())
         }
-        val defaultTime = GregorianCalendar(LocaleConstant.INDONESIA)
+
+        val defaultTime = GregorianCalendar(LocaleConstant.INDONESIA).apply {
+            set(Calendar.HOUR_OF_DAY, param.defaultDate.extractHour())
+            set(Calendar.MINUTE, param.defaultDate.extractMinute())
+        }
+
         val maxTime = GregorianCalendar(LocaleConstant.INDONESIA).apply {
-            set(Calendar.HOUR_OF_DAY, 23)
-            set(Calendar.MINUTE, 59)
+            set(Calendar.HOUR_OF_DAY, LAST_HOUR_OF_A_DAY)
+            set(Calendar.MINUTE, LAST_MINUTE)
         }
 
 
@@ -52,7 +69,7 @@ class TimePickerHandler @Inject constructor(private val param : Param)  {
                 val selectedDate = getDate().time
                 val hour = selectedDate.extractHour()
                 val minute = selectedDate.extractMinute()
-                val dateTime = buildSelectedDateInstance(param.date, hour, minute)
+                val dateTime = buildSelectedDateInstance(param.selectedDateFromCalendar, hour, minute)
                 onTimePicked(dateTime)
                 dismiss()
             }
