@@ -3,6 +3,7 @@ package com.tokopedia.play.view.uimodel.state
 import androidx.annotation.StringRes
 import com.tokopedia.play.view.type.BottomInsetsState
 import com.tokopedia.play.view.type.BottomInsetsType
+import com.tokopedia.play.view.uimodel.WarehouseInfoUiModel
 import com.tokopedia.play.view.uimodel.recom.PlayChannelDetailUiModel
 import com.tokopedia.play.view.uimodel.recom.PlayPartnerInfo
 import com.tokopedia.play.view.uimodel.recom.PlayQuickReplyInfoUiModel
@@ -31,6 +32,7 @@ data class PlayViewerNewUiState(
     val kebabMenu: PlayKebabMenuUiState,
     val selectedVariant: NetworkResult<VariantUiModel>,
     val isLoadingBuy: Boolean,
+    val address: AddressWidgetUiState,
 )
 
 data class PlayInteractiveViewUiState(
@@ -109,3 +111,8 @@ enum class ViewVisibility {
     Invisible,
     Gone
 }
+
+data class AddressWidgetUiState(
+    val shouldShow: Boolean,
+    val warehouseInfo: WarehouseInfoUiModel
+)

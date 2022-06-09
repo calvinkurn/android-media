@@ -238,7 +238,7 @@ fun <T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, R> combine(
         )
 }
 
-fun <T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, R> combine(
+fun <T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, R> combine(
         flow: Flow<T1>,
         flow2: Flow<T2>,
         flow3: Flow<T3>,
@@ -254,11 +254,12 @@ fun <T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, R> combin
         flow13: Flow<T13>,
         flow14: Flow<T14>,
         flow15: Flow<T15>,
-        transform: suspend (T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15) -> R
+        flow16: Flow<T16>,
+        transform: suspend (T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16) -> R
 ): Flow<R> = combine(
         flow, flow2, flow3, flow4, flow5,
         flow6, flow7, flow8, flow9, flow10,
-        flow11, flow12, flow13, flow14, flow15
+        flow11, flow12, flow13, flow14, flow15, flow16
 ) { args: Array<*> ->
         transform(
                 args[0] as T1,
@@ -276,5 +277,6 @@ fun <T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, R> combin
                 args[12] as T13,
                 args[13] as T14,
                 args[14] as T15,
+                args[15] as T16,
         )
 }

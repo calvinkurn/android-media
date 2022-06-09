@@ -259,6 +259,13 @@ class PlayViewModel @AssistedInject constructor(
         )
     }.flowOn(dispatchers.computation)
 
+    private val _addressUiState = combine(_partnerInfo, _warehouseInfo){ partnerInfo, warehouseInfo ->
+        AddressWidgetUiState(
+            warehouseInfo = warehouseInfo,
+            shouldShow = partnerInfo.type == PartnerType.Tokonow && warehouseInfo.isOOC && (channelType.isLive || channelType.isVod)
+        )
+    }
+
     /**
      * Until repeatOnLifecycle is available (by updating library version),
      * this can be used as an alternative to "complete" un-completable flow when page is not focused
@@ -281,9 +288,10 @@ class PlayViewModel @AssistedInject constructor(
         _kebabMenuUiState.distinctUntilChanged(),
         _selectedVariant,
         _loadingBuy,
+        _addressUiState,
     ) { channelDetail, interactive, partner, winnerBadge, bottomInsets,
         like, totalView, rtn, title, tagItems,
-        status, quickReply, kebabMenu, selectedVariant, isLoadingBuy ->
+        status, quickReply, kebabMenu, selectedVariant, isLoadingBuy, address ->
         PlayViewerNewUiState(
             channel = channelDetail,
             interactiveView = interactive,
@@ -300,6 +308,7 @@ class PlayViewModel @AssistedInject constructor(
             kebabMenu = kebabMenu,
             selectedVariant = selectedVariant,
             isLoadingBuy = isLoadingBuy,
+            address = address
         )
     }.flowOn(dispatchers.computation)
 

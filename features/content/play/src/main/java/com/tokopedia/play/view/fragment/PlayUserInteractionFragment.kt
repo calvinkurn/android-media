@@ -819,9 +819,10 @@ class PlayUserInteractionFragment @Inject constructor(
                 renderStatsInfoView(state.totalView)
                 renderRealTimeNotificationView(state.rtn)
                 renderViewAllProductView(state.tagItems, state.bottomInsets)
-                renderFeaturedProductView(prevState?.tagItems, state.tagItems, state.bottomInsets, state.status)
+                renderFeaturedProductView(prevState?.tagItems, state.tagItems, state.bottomInsets, state.status, state.address)
                 renderQuickReplyView(prevState?.quickReply, state.quickReply, prevState?.bottomInsets, state.bottomInsets, state.channel)
                 renderKebabMenuView(state.kebabMenu)
+                renderAddressWidget(state.address)
 
                 handleStatus(state.status)
 
@@ -1542,7 +1543,13 @@ class PlayUserInteractionFragment @Inject constructor(
         tagItem: TagItemUiModel,
         bottomInsets: Map<BottomInsetsType, BottomInsetsState>,
         status: PlayStatusUiModel,
+        address: AddressWidgetUiState
     ) {
+        if(address.shouldShow) {
+            productFeaturedView?.hide()
+            return
+        }
+
         if (tagItem.resultState.isLoading && tagItem.product.productSectionList.isEmpty()) {
             productFeaturedView?.setPlaceholder()
         } else if (prevTagItem?.product?.productSectionList != tagItem.product.productSectionList) {
@@ -1586,6 +1593,15 @@ class PlayUserInteractionFragment @Inject constructor(
     private fun renderKebabMenuView(kebabMenuUiState: PlayKebabMenuUiState) {
         if(kebabMenuUiState.shouldShow) kebabMenuView?.show()
         else kebabMenuView?.hide()
+    }
+
+    private fun renderAddressWidget(addressUiState: AddressWidgetUiState){
+        if(addressUiState.shouldShow){
+            chooseAddressView?.show()
+            productFeaturedView?.hide()
+        } else {
+            chooseAddressView?.hide()
+        }
     }
 
     private fun castViewOnStateChanged(
