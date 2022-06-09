@@ -259,8 +259,10 @@ class GlobalNavWidget: BaseCustomView {
             globalNavWidgetListener: GlobalNavWidgetListener
     ) {
         when(globalNavWidgetModel.navTemplate) {
-            GlobalNavWidgetConstant.NAV_TEMPLATE_CARD -> handleGlobalNavCardTemplate(globalNavWidgetModel, globalNavWidgetListener)
-            GlobalNavWidgetConstant.NAV_TEMPLATE_CATALOG -> handleGlobalNavCatalogTemplate(globalNavWidgetModel, globalNavWidgetListener)
+            GlobalNavWidgetConstant.NAV_TEMPLATE_CARD ->
+                handleGlobalNavCardTemplate(globalNavWidgetModel, globalNavWidgetListener)
+            GlobalNavWidgetConstant.NAV_TEMPLATE_CATALOG ->
+                handleGlobalNavCatalogTemplate(globalNavWidgetModel, globalNavWidgetListener)
             else -> handleGlobalNavDefaultTemplate(globalNavWidgetModel, globalNavWidgetListener)
         }
     }

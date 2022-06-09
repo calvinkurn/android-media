@@ -26,7 +26,11 @@ internal class GlobalNavWidgetCatalogAdapter(
         return viewType.doWhenViewType({
             GlobalNavWidgetCatalogViewHolder(view)
         }, {
-            GlobalNavWidgetCatalogViewAllCardViewHolder(view, globalNavWidgetListener, globalNavWidgetModel)
+            GlobalNavWidgetCatalogViewAllCardViewHolder(
+                view,
+                globalNavWidgetListener,
+                globalNavWidgetModel
+            )
         })
     }
 

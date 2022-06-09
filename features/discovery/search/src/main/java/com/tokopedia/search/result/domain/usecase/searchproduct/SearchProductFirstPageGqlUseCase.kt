@@ -103,15 +103,8 @@ class SearchProductFirstPageGqlUseCase(
             )
 
     private fun MutableList<GraphqlRequest>.addGlobalNavRequest(requestParams: RequestParams, query: String, params: String) {
-        val searchProductParams = requestParams.parameters[SEARCH_PRODUCT_PARAMS] as HashMap<String?, Any?>
-        val req = requestParams.putString("user_id", "4505260")
-
-        searchProductParams["user_id"] = "4505260"
-
-        val params2 = UrlParamUtils.generateUrlParamString(searchProductParams)
-
         if (!requestParams.isSkipGlobalNav()) {
-            add(createGlobalSearchNavigationRequest(query = query, params = params2))
+            add(createGlobalSearchNavigationRequest(query = query, params = params))
         }
     }
 
