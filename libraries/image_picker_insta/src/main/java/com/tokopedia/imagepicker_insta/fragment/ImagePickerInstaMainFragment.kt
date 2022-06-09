@@ -303,7 +303,6 @@ class ImagePickerInstaMainFragment : PermissionFragment(), ImagePickerFragmentCo
             TrackerProvider.tracker?.onBackButtonFromPicker()
             activity?.finish()
         }
-        toolbarCommon.setClickListenerToOpenBottomSheet()
 
         (activity as ImagePickerInstaActivity).run {
             setSupportActionBar(toolbarCommon)

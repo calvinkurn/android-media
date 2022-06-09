@@ -335,21 +335,19 @@ class CreatePostActivityNew : BaseSimpleActivity(), CreateContentPostCommonListe
             title = getString(R.string.feed_content_post_sebagai)
             subtitle = selectedFeedAccount.name
             createPostViewModel?.let {
-                showHideExpandIcon(!it.isEditState)
                 if (!it.isEditState)
-                    setClickListenerToOpenBottomSheet()
+                    setOnAccountClickListener {
+                        feedAccountAnalytic.clickAccountInfo()
+                        FeedAccountTypeBottomSheet
+                            .getFragment(supportFragmentManager, classLoader)
+                            .showNow(supportFragmentManager)
+                    }
+                else setOnAccountClickListener(null)
             }
 
 
             setOnBackClickListener {
                 onBackPressed()
-            }
-
-            setOnAccountClickListener {
-                feedAccountAnalytic.clickAccountInfo()
-                FeedAccountTypeBottomSheet
-                    .getFragment(supportFragmentManager, classLoader)
-                    .showNow(supportFragmentManager)
             }
 
             visibility = View.VISIBLE
