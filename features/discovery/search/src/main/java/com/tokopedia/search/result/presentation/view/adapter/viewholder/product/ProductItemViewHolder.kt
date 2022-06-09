@@ -45,7 +45,7 @@ abstract class ProductItemViewHolder(
             labelGroupVariantList = labelGroupVariantList.toProductCardModelLabelGroupVariant(),
             isWideContent = isWideContent,
             customVideoURL = customVideoURL,
-            animationOnPress = CardUnify2.ANIMATE_OVERLAY_BOUNCE
+            cardInteraction = true
         )
     }
 

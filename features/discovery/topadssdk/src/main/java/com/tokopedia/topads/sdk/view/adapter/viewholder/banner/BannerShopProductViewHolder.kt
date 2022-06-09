@@ -29,7 +29,6 @@ class BannerShopProductViewHolder(container: View, private val topAdsBannerClick
     override fun bind(element: BannerShopProductViewModel?) {
         element?.let { model ->
             val productCardViewModel = model.product
-            productCardViewModel.animationOnPress = CardUnify2.ANIMATE_OVERLAY_BOUNCE
             productCardGridView.run {
                 applyCarousel()
                 setProductModel(productCardViewModel)

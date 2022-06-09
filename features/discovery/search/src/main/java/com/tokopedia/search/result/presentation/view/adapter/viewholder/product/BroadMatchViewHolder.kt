@@ -80,7 +80,7 @@ class BroadMatchViewHolder(
                     freeOngkir = it.freeOngkirDataView.toProductCardModelFreeOngkir(),
                     isTopAds = it.isOrganicAds,
                     hasThreeDots = it.carouselProductType.hasThreeDots,
-                    animationOnPress = CardUnify2.ANIMATE_OVERLAY_BOUNCE
+                    cardInteraction = true,
                 )
             },
             carouselProductCardOnItemClickListener = object : CarouselProductCardListener.OnItemClickListener {

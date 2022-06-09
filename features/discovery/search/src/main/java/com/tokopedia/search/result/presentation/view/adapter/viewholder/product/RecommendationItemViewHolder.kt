@@ -27,8 +27,10 @@ class RecommendationItemViewHolder (
     override fun bind(recommendationItemDataView: RecommendationItemDataView) {
         val view = binding?.root ?: return
         val recommendationItem = recommendationItemDataView.recommendationItem
-        val productModel = recommendationItem.toProductCardModel(hasThreeDots = true)
-        productModel.animationOnPress = CardUnify2.ANIMATE_OVERLAY_BOUNCE
+        val productModel = recommendationItem.toProductCardModel(
+            hasThreeDots = true,
+            cardInteraction = true
+        )
         view.setProductModel(productModel)
 
         view.setOnClickListener {

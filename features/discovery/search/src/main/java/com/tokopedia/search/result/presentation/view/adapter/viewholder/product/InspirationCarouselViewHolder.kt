@@ -268,7 +268,7 @@ class InspirationCarouselViewHolder(
             shopLocation = shopLocation,
             shopBadgeList = badgeItemDataViewList.toProductCardModelShopBadges(),
             isTopAds = isOrganicAds,
-            animationOnPress = CardUnify2.ANIMATE_OVERLAY_BOUNCE
+            cardInteraction = true
         )
     }
 

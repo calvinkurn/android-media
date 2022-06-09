@@ -47,7 +47,7 @@ class InspirationCarouselOptionGridViewHolder(
             labelGroupList = labelGroupDataList.toProductCardModelLabelGroup(),
             shopLocation = shopLocation,
             shopBadgeList = badgeItemDataViewList.toProductCardModelShopBadges(),
-            animationOnPress = CardUnify2.ANIMATE_OVERLAY_BOUNCE
+            cardInteraction = true
         )
     }
 
