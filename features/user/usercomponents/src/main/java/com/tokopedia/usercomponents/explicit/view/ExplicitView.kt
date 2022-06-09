@@ -35,7 +35,7 @@ import com.tokopedia.usercomponents.explicit.domain.model.Property
 import com.tokopedia.usercomponents.explicit.view.viewmodel.ExplicitViewModel
 import javax.inject.Inject
 
-class ExplicitView : CardUnify2, ExplicitAction {
+open class ExplicitView : CardUnify2, ExplicitAction {
 
     @Inject
     lateinit var explicitAnalytics: ExplicitAnalytics
@@ -44,9 +44,9 @@ class ExplicitView : CardUnify2, ExplicitAction {
     lateinit var viewModelFactory: ViewModelProvider.Factory
     private var viewModel: ExplicitViewModel? = null
 
-    private val bindingQuestion = LayoutWidgetExplicitQuestionBinding.inflate(LayoutInflater.from(context), this, false)
-    private val bindingSuccess = LayoutWidgetExplicitSuccessBinding.inflate(LayoutInflater.from(context), this, false)
-    private val bindingFailed = LayoutWidgetExplicitFailedBinding.inflate(LayoutInflater.from(context), this, false)
+    private var bindingQuestion: LayoutWidgetExplicitQuestionBinding? = null
+    private var bindingSuccess: LayoutWidgetExplicitSuccessBinding? = null
+    private var bindingFailed: LayoutWidgetExplicitFailedBinding? = null
 
     private var templateName = ""
     private var pageName = ""
@@ -95,8 +95,15 @@ class ExplicitView : CardUnify2, ExplicitAction {
     }
 
     private fun initView() {
+        initBinding()
         initInjector()
         initListener()
+    }
+
+    private fun initBinding() {
+        bindingQuestion = LayoutWidgetExplicitQuestionBinding.inflate(LayoutInflater.from(context), this, false)
+        bindingSuccess = LayoutWidgetExplicitSuccessBinding.inflate(LayoutInflater.from(context), this, false)
+        bindingFailed = LayoutWidgetExplicitFailedBinding.inflate(LayoutInflater.from(context), this, false)
     }
 
     private fun initInjector() {
@@ -150,7 +157,7 @@ class ExplicitView : CardUnify2, ExplicitAction {
     }
 
     private fun setViewQuestion(data: Property?) {
-        bindingQuestion.apply {
+        bindingQuestion?.apply {
             txtTitle.text = data?.title
             txtDescription.text = data?.subtitle
             imgIcon.urlSrc = data?.image ?: ""
@@ -160,27 +167,27 @@ class ExplicitView : CardUnify2, ExplicitAction {
     }
 
     private fun initListener() {
-        bindingQuestion.root.setOnClickListener {
+        bindingQuestion?.root?.setOnClickListener {
             explicitAnalytics.trackClickCard(pageName, templateName, pagePath, pageType)
         }
 
-        bindingQuestion.imgDismiss.setOnClickListener {
+        bindingQuestion?.imgDismiss?.setOnClickListener {
             explicitAnalytics.trackClickDismissButton(pageName, templateName, pagePath, pageType)
             viewModel?.updateState()
             onDismiss()
         }
 
-        bindingSuccess.imgSuccessDismiss.setOnClickListener { onDismiss() }
+        bindingSuccess?.imgSuccessDismiss?.setOnClickListener { onDismiss() }
 
-        bindingQuestion.btnPositifAction.setOnClickListener {
+        bindingQuestion?.btnPositifAction?.setOnClickListener {
             onButtonPositifClicked()
         }
 
-        bindingQuestion.btnNegatifAction.setOnClickListener {
+        bindingQuestion?.btnNegatifAction?.setOnClickListener {
             onButtonNegatifClicked()
         }
 
-        bindingFailed.containerLocalLoad.refreshBtn?.setOnClickListener {
+        bindingFailed?.containerLocalLoad?.refreshBtn?.setOnClickListener {
             if (preferenceAnswer == null)
                 viewModel?.getExplicitContent(templateName)
             else {
@@ -198,7 +205,7 @@ class ExplicitView : CardUnify2, ExplicitAction {
 
     override fun onLoading() {
         showShadow(true)
-        bindingQuestion.apply {
+        bindingQuestion?.apply {
             imgShimmer.visible()
             imgBackground.invisible()
             imgIcon.invisible()
@@ -208,12 +215,12 @@ class ExplicitView : CardUnify2, ExplicitAction {
             btnPositifAction.invisible()
             btnNegatifAction.invisible()
         }
-        replaceView(bindingQuestion.root)
+        replaceView(bindingQuestion?.root)
     }
 
     override fun onQuestionShow() {
         showShadow(true)
-        bindingQuestion.apply {
+        bindingQuestion?.apply {
             imgShimmer.gone()
             imgBackground.visible()
             imgIcon.visible()
@@ -231,12 +238,12 @@ class ExplicitView : CardUnify2, ExplicitAction {
                 isEnabled = true
             }
         }
-        replaceView(bindingQuestion.root)
+        replaceView(bindingQuestion?.root)
     }
 
     override fun onButtonPositifClicked() {
         explicitAnalytics.trackClickPositifButton(pageName, templateName, pagePath, pageType)
-        bindingQuestion.apply {
+        bindingQuestion?.apply {
             btnPositifAction.isLoading = true
             btnNegatifAction.isEnabled = false
         }
@@ -246,7 +253,7 @@ class ExplicitView : CardUnify2, ExplicitAction {
 
     override fun onButtonNegatifClicked() {
         explicitAnalytics.trackClickNegatifButton(pageName, templateName, pagePath, pageType)
-        bindingQuestion.apply {
+        bindingQuestion?.apply {
             btnNegatifAction.isLoading = true
             btnPositifAction.isEnabled = false
         }
@@ -257,26 +264,27 @@ class ExplicitView : CardUnify2, ExplicitAction {
     override fun onSubmitSuccessShow() {
         showShadow(true)
         initSuccessMessageText()
-        replaceView(bindingSuccess.root)
+        replaceView(bindingSuccess?.root)
     }
 
     override fun onDismiss() {
         this.hide()
+        onCleared()
     }
 
     override fun onFailed() {
         showShadow(false)
         setViewFailed()
-        replaceView(bindingFailed.containerLocalLoad)
+        replaceView(bindingFailed?.containerLocalLoad)
     }
 
-    private fun replaceView(view: View) {
+    private fun replaceView(view: View?) {
         removeAllViews()
         addView(view)
     }
 
     private fun setViewFailed() {
-        bindingFailed.containerLocalLoad.apply {
+        bindingFailed?.containerLocalLoad?.apply {
             title?.text = context.getString(R.string.explicit_failed_title)
             description?.text = context.getString(R.string.explicit_failed_subtitle)
         }
@@ -305,8 +313,8 @@ class ExplicitView : CardUnify2, ExplicitAction {
             ).length,
             0
         )
-        bindingSuccess.txtSuccessTitle.movementMethod = LinkMovementMethod.getInstance()
-        bindingSuccess.txtSuccessTitle.setText(spannable, TextView.BufferType.SPANNABLE)
+        bindingSuccess?.txtSuccessTitle?.movementMethod = LinkMovementMethod.getInstance()
+        bindingSuccess?.txtSuccessTitle?.setText(spannable, TextView.BufferType.SPANNABLE)
     }
 
     private fun goToExplicitProfilePreference() {
@@ -316,5 +324,21 @@ class ExplicitView : CardUnify2, ExplicitAction {
 
     private fun showShadow(isShow: Boolean) {
         this.cardType = if (isShow) TYPE_SHADOW else TYPE_CLEAR
+    }
+
+    override fun onDetachedFromWindow() {
+        super.onDetachedFromWindow()
+        onCleared()
+    }
+
+    override fun onCleared() {
+        val lifecycleOwner = context as LifecycleOwner
+        viewModel?.explicitContent?.removeObservers(lifecycleOwner)
+        viewModel?.statusSaveAnswer?.removeObservers(lifecycleOwner)
+        viewModel?.isQuestionLoading?.removeObservers(lifecycleOwner)
+        removeAllViews()
+        bindingFailed = null
+        bindingQuestion = null
+        bindingSuccess = null
     }
 }
