@@ -334,7 +334,7 @@ class CreatePostActivityNew : BaseSimpleActivity(), CreateContentPostCommonListe
             title = getString(R.string.feed_content_post_sebagai)
             subtitle = selectedFeedAccount.name
             createPostViewModel?.let {
-                val isAllowSwitchAccount = mFeedAccountList.size > 1 && mFeedAccountList.find { it.isUserPostEligible } != null
+                val isAllowSwitchAccount = mFeedAccountList.size > 1 && mFeedAccountList.find { acc -> acc.isUserPostEligible } != null
 
                 if (!it.isEditState && isAllowSwitchAccount)
                     setOnAccountClickListener {
