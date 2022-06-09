@@ -10,6 +10,7 @@ import android.util.Pair;
 
 import androidx.annotation.Nullable;
 
+import com.google.crypto.tink.shaded.protobuf.InvalidProtocolBufferException;
 import com.tokopedia.encryption.security.AeadEncryptor;
 import com.tokopedia.encryption.security.AeadEncryptorImpl;
 import com.tokopedia.logger.ServerLogger;
@@ -20,6 +21,8 @@ import com.tokopedia.user.session.datastore.UserSessionDataStoreClient;
 import com.tokopedia.user.session.datastore.UserSessionKeyMapper;
 import com.tokopedia.user.session.util.EncoderDecoder;
 
+import java.security.GeneralSecurityException;
+import java.security.KeyStoreException;
 import java.util.HashMap;
 
 public class MigratedUserSession {
@@ -200,7 +203,14 @@ public class MigratedUserSession {
             } else {
                 return EncoderDecoder.Decrypt(message, UserSession.KEY_IV);
             }
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
+            if(e instanceof InvalidProtocolBufferException ||
+                    e instanceof GeneralSecurityException ||
+                    e instanceof KeyStoreException ||
+                    e instanceof IllegalArgumentException) {
+                setEncryptionState(true);
+            }
             logUserSessionEvent("decrypt_string_exception", e);
             return "";
         }
@@ -218,6 +228,15 @@ public class MigratedUserSession {
         SharedPreferences sharedPrefs = context.getSharedPreferences(newPrefName, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPrefs.edit();
         editor.putBoolean(keyName + Constants.IS_PII_MIGRATED, isMigrated);
+        editor.apply();
+    }
+
+    private void setEncryptionState(Boolean isError) {
+        String prefName = "ENCRYPTION_STATE_PREF";
+        String keyName = "KEY_ENCRYPTION_ERROR";
+        SharedPreferences sharedPrefs = context.getSharedPreferences(prefName, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPrefs.edit();
+        editor.putBoolean(keyName, isError);
         editor.apply();
     }
 

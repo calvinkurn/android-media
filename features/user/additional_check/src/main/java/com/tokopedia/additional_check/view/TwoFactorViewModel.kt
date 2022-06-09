@@ -5,6 +5,7 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.additional_check.data.OfferingData
 import com.tokopedia.additional_check.data.ShowInterruptData
 import com.tokopedia.additional_check.data.pref.AdditionalCheckPreference
+import com.tokopedia.additional_check.domain.usecase.GetSimpleProfileUseCase
 import com.tokopedia.additional_check.domain.usecase.OfferInterruptUseCase
 import com.tokopedia.additional_check.domain.usecase.ShowInterruptUseCase
 import com.tokopedia.additional_check.internal.AdditionalCheckConstants
@@ -22,6 +23,7 @@ class TwoFactorViewModel @Inject constructor (@Named(SessionModule.SESSION_MODUL
                                               private val showInterruptUseCase: ShowInterruptUseCase,
                                               private val offerInterruptUseCase: OfferInterruptUseCase,
                                               private val fingerprintPreference: FingerprintPreference,
+                                              private val getSimpleProfileUseCase: GetSimpleProfileUseCase,
                                               dispatcher: CoroutineDispatcher
 ): BaseViewModel(dispatcher) {
 
@@ -61,6 +63,21 @@ class TwoFactorViewModel @Inject constructor (@Named(SessionModule.SESSION_MODUL
                 onSuccess(result)
             }, onError = {
                 onError(it)
+            })
+        }
+    }
+
+    fun refreshUserSession(onSuccess: (Boolean) -> Unit) {
+        if(userSession.name.isEmpty()) {
+            launchCatchError(block = {
+                val profile = getSimpleProfileUseCase(Unit).data
+                userSession.name = profile.fullName
+                userSession.email = profile.email
+                userSession.profilePicture = profile.profilePicture
+                userSession.phoneNumber = profile.phone
+                onSuccess.invoke(true)
+            }, onError = {
+                onSuccess.invoke(false)
             })
         }
     }

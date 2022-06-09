@@ -3,8 +3,8 @@ package com.tokopedia.encryption.security
 import android.content.Context
 import android.util.Base64
 import com.google.crypto.tink.Aead
+import com.google.crypto.tink.KeyTemplates
 import com.google.crypto.tink.aead.AeadConfig
-import com.google.crypto.tink.aead.AesGcmKeyManager
 import com.google.crypto.tink.integration.android.AndroidKeysetManager
 
 class AeadEncryptorImpl(val context: Context) : AeadEncryptor {
@@ -26,8 +26,7 @@ class AeadEncryptorImpl(val context: Context) : AeadEncryptor {
     override fun initAead(): Aead {
         aeadInstance = AndroidKeysetManager.Builder()
             .withSharedPref(context.applicationContext, KEYSET_NAME, PREFERENCE_FILE)
-            .withKeyTemplate(AesGcmKeyManager.aes256GcmTemplate())
-            .withMasterKeyUri(MASTER_KEY_URI)
+            .withKeyTemplate(KeyTemplates.get("AES256_GCM"))
             .build()
             .keysetHandle
             .getPrimitive(Aead::class.java)
