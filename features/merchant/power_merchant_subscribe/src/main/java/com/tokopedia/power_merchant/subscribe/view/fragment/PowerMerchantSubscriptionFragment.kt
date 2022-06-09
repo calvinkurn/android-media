@@ -35,6 +35,7 @@ import com.tokopedia.power_merchant.subscribe.common.utils.PowerMerchantErrorLog
 import com.tokopedia.power_merchant.subscribe.common.utils.PowerMerchantPrefManager
 import com.tokopedia.power_merchant.subscribe.databinding.FragmentPmPowerMerchantSubscriptionBinding
 import com.tokopedia.power_merchant.subscribe.di.PowerMerchantSubscribeComponent
+import com.tokopedia.power_merchant.subscribe.view.activity.FallbackActivity
 import com.tokopedia.power_merchant.subscribe.view.activity.SubscriptionActivityInterface
 import com.tokopedia.power_merchant.subscribe.view.adapter.WidgetAdapterFactoryImpl
 import com.tokopedia.power_merchant.subscribe.view.adapter.viewholder.PMWidgetListener
@@ -518,12 +519,25 @@ open class PowerMerchantSubscriptionFragment :
     private fun setOnPmActivationSuccess(data: PMActivationStatusUiModel) {
         notifyUpgradePmProWidget()
 
-        if (!data.isSuccess) {
-            val actionText = getString(R.string.power_merchant_ok_label)
-            showErrorToaster(data.message, actionText)
-            return
+        if (data.isSuccess) {
+            renderUiOnActivationSuccess()
+        } else {
+            if (data.shouldUpdateApp()) {
+                openFallbackPage()
+            } else {
+                val actionText = getString(R.string.power_merchant_ok_label)
+                showErrorToaster(data.message, actionText)
+            }
         }
+    }
 
+    private fun openFallbackPage() {
+        context?.let {
+            FallbackActivity.startActivity(it)
+        }
+    }
+
+    private fun renderUiOnActivationSuccess() {
         view?.rootView?.let {
             it.post {
                 val message = getString(R.string.pm_submit_activation_success)

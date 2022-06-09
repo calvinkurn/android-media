@@ -41,5 +41,11 @@
                     android:scheme="@string/internal_scheme" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".view.activity.FallbackActivity"
+            android:exported="false"
+            android:label="@string/pm_title_activity"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White" />
     </application>
 </manifest>
