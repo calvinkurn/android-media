@@ -51,19 +51,19 @@ class ChoosePaymentMethodBottomSheet : BottomSheetUnify() {
         binding?.run {
             tgPoint1PaymentMethod.apply {
                 text =
-                    SpannableString(getString(R.string.payment_method_point_1)).toBulletSpan()
+                    SpannableString(getString(R.string.choose_payment_method_point_1)).toBulletSpan()
             }
             tgPoint2PaymentMethod.apply {
                 text =
-                    SpannableString(getString(R.string.payment_method_point_2)).toBulletSpan()
+                    SpannableString(getString(R.string.choose_payment_method_point_2)).toBulletSpan()
             }
             tgPoint3PaymentMethod.apply {
                 text =
-                    SpannableString(getString(R.string.payment_method_point_3)).toBulletSpan()
+                    SpannableString(getString(R.string.choose_payment_method_point_3)).toBulletSpan()
             }
             tgPoint4PaymentMethod.apply {
                 text =
-                    SpannableString(getString(R.string.payment_method_point_4)).toBulletSpan()
+                    SpannableString(getString(R.string.choose_payment_method_point_4)).toBulletSpan()
             }
         }
     }

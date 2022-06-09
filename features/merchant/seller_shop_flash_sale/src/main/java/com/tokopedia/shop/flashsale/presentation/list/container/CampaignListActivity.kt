@@ -37,6 +37,5 @@ class CampaignListActivity: BaseSimpleActivity() {
         super.onCreate(savedInstanceState)
         setupDependencyInjection()
         setContentView(R.layout.ssfs_activity_campaign_list)
-        ShopClosedDialog().show(supportFragmentManager)
     }
 }
