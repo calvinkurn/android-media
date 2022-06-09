@@ -62,7 +62,7 @@ data class HomeCard(
 	val status: Int? = null
 )
 
-data class Shop(
+data class HomeShop(
 
 	@SerializedName("appLink")
 	val appLink: String? = null,
@@ -101,7 +101,7 @@ data class MembershipGetSellerAnalyticsTopSection(
 data class ShopProfile(
 
 	@SerializedName("shop")
-	val shop: Shop? = null,
+	val shop: HomeShop? = null,
 
 	@SerializedName("cardTemplate")
 	val homeCardTemplate: HomeCardTemplate? = null,
