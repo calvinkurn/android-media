@@ -242,6 +242,7 @@ class ProductTagViewModel @AssistedInject constructor(
 
             /** Global Search Product */
             ProductTagAction.LoadGlobalSearchProduct -> handleLoadGlobalSearchProduct()
+            ProductTagAction.SuggestionClicked -> handleSuggestionClicked()
             ProductTagAction.TickerClicked -> handleTickerClicked()
             ProductTagAction.CloseTicker -> handleCloseTicker()
             is ProductTagAction.SelectProductQuickFilter -> handleSelectProductQuickFilter(action.quickFilter)
@@ -539,22 +540,21 @@ class ProductTagViewModel @AssistedInject constructor(
         }
     }
 
+    private fun handleSuggestionClicked() {
+        val suggestionQuery = _globalSearchProduct.value.suggestion.query
+        if(suggestionQuery.isEmpty()) return
+
+        val query = _globalSearchProduct.value.param.query
+        handleGlobalSearchParamCorrection(suggestionQuery, query)
+    }
+
     private fun handleTickerClicked() {
         val tickerParam = _globalSearchProduct.value.ticker.query
         if(tickerParam.isEmpty()) return
 
         val query = _globalSearchProduct.value.param.query
-        val newParam = initParam(query).apply {
-            tickerParam.toMapParam().forEach {
-                addParam(it.key, it.value)
-            }
-        }
 
-        _globalSearchProduct.setValue {
-            GlobalSearchProductUiModel.Empty.copy(param = newParam)
-        }
-
-        handleLoadGlobalSearchProduct()
+        handleGlobalSearchParamCorrection(tickerParam, query)
     }
 
     private fun handleCloseTicker() {
@@ -830,6 +830,20 @@ class ProductTagViewModel @AssistedInject constructor(
             this.prevQuery = prevQuery
             this.query = query
         }
+    }
+
+    private fun handleGlobalSearchParamCorrection(param: String, query: String) {
+        val newParam = initParam(query).apply {
+            param.toMapParam().forEach {
+                addParam(it.key, it.value)
+            }
+        }
+
+        _globalSearchProduct.setValue {
+            GlobalSearchProductUiModel.Empty.copy(param = newParam)
+        }
+
+        handleLoadGlobalSearchProduct()
     }
 
     companion object {

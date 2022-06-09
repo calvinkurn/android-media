@@ -125,6 +125,9 @@ data class FeedAceSearchProductResponse(
     data class Suggestion(
         @SerializedName("text")
         val text: String = "",
+
+        @SerializedName("query")
+        val query: String = "",
     )
 
     data class Ticker(

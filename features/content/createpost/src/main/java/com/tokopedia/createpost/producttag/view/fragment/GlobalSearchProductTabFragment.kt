@@ -244,7 +244,12 @@ class GlobalSearchProductTabFragment @Inject constructor(
     @OptIn(ExperimentalStdlibApi::class)
     private fun updateAdapterData(currState: GlobalSearchProductUiState, showLoading: Boolean) {
         val finalProducts = buildList {
-            if(currState.suggestion.isNotEmpty()) add(ProductTagCardAdapter.Model.Suggestion(text = currState.suggestion))
+            if(currState.suggestion.text.isNotEmpty()) add(
+                ProductTagCardAdapter.Model.Suggestion(text = currState.suggestion.text) {
+                    viewModel.submitAction(ProductTagAction.SuggestionClicked)
+                }
+            )
+
             if(currState.ticker.text.isNotEmpty())
                 add(
                     ProductTagCardAdapter.Model.Ticker(

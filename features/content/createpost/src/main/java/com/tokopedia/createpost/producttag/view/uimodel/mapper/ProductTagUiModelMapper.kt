@@ -124,7 +124,10 @@ class ProductTagUiModelMapper @Inject constructor() {
                 keywordProcess = response.wrapper.header.keywordProcess,
                 componentId = response.wrapper.header.componentId,
             ),
-            suggestion = response.wrapper.data.suggestion.text,
+            suggestion = SuggestionUiModel(
+                text = response.wrapper.data.suggestion.text,
+                query = response.wrapper.data.suggestion.query,
+            ),
             ticker = TickerUiModel(
                 text = response.wrapper.data.ticker.text,
                 query = response.wrapper.data.ticker.query,

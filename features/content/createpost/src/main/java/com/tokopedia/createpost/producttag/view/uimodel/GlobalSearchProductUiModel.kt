@@ -12,7 +12,7 @@ data class GlobalSearchProductUiModel(
     val sortFilters: DynamicFilterModel,
     val state: PagedState,
     val param: SearchParamUiModel,
-    val suggestion: String,
+    val suggestion: SuggestionUiModel,
     val ticker: TickerUiModel,
 ) {
 
@@ -24,7 +24,7 @@ data class GlobalSearchProductUiModel(
                 sortFilters = DynamicFilterModel(),
                 state = PagedState.Unknown,
                 param = SearchParamUiModel.Empty,
-                suggestion = "",
+                suggestion = SuggestionUiModel(),
                 ticker = TickerUiModel()
             )
     }
