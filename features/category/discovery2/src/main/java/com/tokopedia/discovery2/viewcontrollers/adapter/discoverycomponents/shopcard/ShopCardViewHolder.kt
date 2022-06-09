@@ -2,7 +2,6 @@ package com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.sho
 
 import android.graphics.Color
 import android.view.View
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -11,6 +10,7 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.discovery2.ComponentNames
 import com.tokopedia.discovery2.R
 import com.tokopedia.discovery2.data.ComponentsItem
+import com.tokopedia.discovery2.databinding.HorizontalRvShopCardLayoutBinding
 import com.tokopedia.discovery2.di.getSubComponent
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.DiscoveryRecycleAdapter
@@ -18,33 +18,29 @@ import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewH
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.loader.loadImageWithoutPlaceholder
-import com.tokopedia.unifycomponents.ImageUnify
-import com.tokopedia.unifycomponents.LocalLoad
 import java.lang.Exception
 
 class ShopCardViewHolder(itemView: View, private val fragment: Fragment) : AbstractViewHolder(itemView, fragment.viewLifecycleOwner) {
-    private var constraint: ConstraintLayout = itemView.findViewById(R.id.parent_container)
-    private var mBgImage: ImageUnify = itemView.findViewById(R.id.bg_image)
-    private var mShopCardRecyclerView: RecyclerView = itemView.findViewById(R.id.shop_card_rv)
-    private var shopEmptyState: LocalLoad? = null
+    private val binding: HorizontalRvShopCardLayoutBinding = HorizontalRvShopCardLayoutBinding.bind(itemView)
     private val shopCardRecyclerViewDecorator = ShopCardItemDecorator()
     private var linearLayoutManager: LinearLayoutManager = LinearLayoutManager(itemView.context, LinearLayoutManager.HORIZONTAL, false)
     private var mDiscoveryRecycleAdapter: DiscoveryRecycleAdapter
     private lateinit var mShopCardViewModel: ShopCardViewModel
 
     init {
-        linearLayoutManager.initialPrefetchItemCount = 4
-        mShopCardRecyclerView.layoutManager = linearLayoutManager
-        mDiscoveryRecycleAdapter = DiscoveryRecycleAdapter(fragment)
-        mShopCardRecyclerView.adapter = mDiscoveryRecycleAdapter
-        shopEmptyState = itemView.findViewById(R.id.viewEmptyState)
+        with(binding) {
+            linearLayoutManager.initialPrefetchItemCount = 4
+            shopCardRv.layoutManager = linearLayoutManager
+            mDiscoveryRecycleAdapter = DiscoveryRecycleAdapter(fragment)
+            shopCardRv.adapter = mDiscoveryRecycleAdapter
+        }
     }
 
     override fun bindView(discoveryBaseViewModel: DiscoveryBaseViewModel) {
         mShopCardViewModel = discoveryBaseViewModel as ShopCardViewModel
         getSubComponent().inject(mShopCardViewModel)
-        mShopCardRecyclerView.show()
-        shopEmptyState?.hide()
+        binding.shopCardRv.show()
+        binding.viewEmptyState.hide()
         addDefaultItemDecorator()
         if (mShopCardViewModel.shouldShowShimmer()) {
             addShimmer()
@@ -65,7 +61,7 @@ class ShopCardViewHolder(itemView: View, private val fragment: Fragment) : Abstr
                 }
             })
             mShopCardViewModel.getShopCardItemsListData().observe(it, { item ->
-                mShopCardRecyclerView.show()
+                binding.shopCardRv.show()
                 mDiscoveryRecycleAdapter.setDataList(item)
             })
 
@@ -91,26 +87,28 @@ class ShopCardViewHolder(itemView: View, private val fragment: Fragment) : Abstr
     }
 
     private fun setHolderBackgroundData(item: ComponentsItem?) {
-        try {
-            if (item?.properties?.backgroundImageUrl.isNullOrEmpty()) {
-                mBgImage.hide()
-            } else {
-                mBgImage.show()
-                mBgImage.loadImageWithoutPlaceholder(item?.properties?.backgroundImageUrl)
+        with(binding) {
+            try {
+                if (item?.properties?.backgroundImageUrl.isNullOrEmpty()) {
+                    bgImage.hide()
+                } else {
+                    bgImage.show()
+                    bgImage.loadImageWithoutPlaceholder(item?.properties?.backgroundImageUrl)
+                }
+                if (!item?.properties?.backgroundColor.isNullOrEmpty()) {
+                    parentContainer.setBackgroundColor(Color.parseColor(item?.properties?.backgroundColor))
+                } else {
+                    parentContainer.setBackgroundColor(MethodChecker.getColor(itemView.context, R.color.discovery2_dms_shop_card_bg))
+                }
+            } catch (e: Exception) {
+                parentContainer.setBackgroundColor(MethodChecker.getColor(itemView.context, R.color.discovery2_dms_shop_card_bg))
+                e.printStackTrace()
             }
-            if (!item?.properties?.backgroundColor.isNullOrEmpty()) {
-                constraint.setBackgroundColor(Color.parseColor(item?.properties?.backgroundColor))
-            } else {
-                constraint.setBackgroundColor(MethodChecker.getColor(itemView.context, R.color.discovery2_dms_shop_card_bg))
-            }
-        } catch (e: Exception) {
-            constraint.setBackgroundColor(MethodChecker.getColor(itemView.context, R.color.discovery2_dms_shop_card_bg))
-            e.printStackTrace()
         }
     }
 
     private fun handleShopCardPagination() {
-        mShopCardRecyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+        binding.shopCardRv.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
                 val visibleItemCount: Int = linearLayoutManager.childCount
@@ -126,29 +124,33 @@ class ShopCardViewHolder(itemView: View, private val fragment: Fragment) : Abstr
     }
 
     private fun handleErrorState() {
-        hideShimmer()
-        mDiscoveryRecycleAdapter.notifyDataSetChanged()
-        if (mShopCardViewModel.getShopList() == null) {
-            shopEmptyState?.run {
-                title?.text = context?.getString(R.string.discovery_product_empty_state_title).orEmpty()
-                description?.text = context?.getString(R.string.discovery_section_empty_state_description).orEmpty()
-                refreshBtn?.setOnClickListener {
-                    reloadComponent()
+        with(binding) {
+            hideShimmer()
+            mDiscoveryRecycleAdapter.notifyDataSetChanged()
+            if (mShopCardViewModel.getShopList() == null) {
+                viewEmptyState.run {
+                    title?.text = context?.getString(R.string.discovery_product_empty_state_title).orEmpty()
+                    description?.text = context?.getString(R.string.discovery_section_empty_state_description).orEmpty()
+                    refreshBtn?.setOnClickListener {
+                        reloadComponent()
+                    }
+                    viewEmptyState.show()
                 }
-                shopEmptyState?.show()
+            } else {
+                viewEmptyState.hide()
             }
-        } else {
-            shopEmptyState?.hide()
-        }
 
-        mShopCardRecyclerView.hide()
+            binding.shopCardRv.hide()
+        }
     }
 
     private fun reloadComponent() {
-        mShopCardRecyclerView.show()
-        shopEmptyState?.hide()
-        mShopCardViewModel.resetComponent()
-        mShopCardViewModel.fetchShopCardData()
+        with(binding) {
+            shopCardRv.show()
+            viewEmptyState.hide()
+            mShopCardViewModel.resetComponent()
+            mShopCardViewModel.fetchShopCardData()
+        }
     }
 
     private fun addShimmer() {
@@ -164,9 +166,11 @@ class ShopCardViewHolder(itemView: View, private val fragment: Fragment) : Abstr
     }
 
     private fun addDefaultItemDecorator() {
-        if (mShopCardRecyclerView.itemDecorationCount > 0)
-            mShopCardRecyclerView.removeItemDecorationAt(0)
-        mShopCardRecyclerView.addItemDecoration(shopCardRecyclerViewDecorator)
+        with(binding) {
+            if (shopCardRv.itemDecorationCount > 0)
+                shopCardRv.removeItemDecorationAt(0)
+            shopCardRv.addItemDecoration(shopCardRecyclerViewDecorator)
+        }
     }
 
 }
