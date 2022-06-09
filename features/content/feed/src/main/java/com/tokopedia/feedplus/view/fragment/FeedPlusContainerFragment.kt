@@ -607,7 +607,7 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
 
         val items = arrayListOf<FloatingButtonItem>()
 
-        if(viewModel.isShowLivestreamButton) {
+        if(userSession.isLoggedIn && userSession.hasShop()) {
             items.add(createCreateLiveFab())
         }
 

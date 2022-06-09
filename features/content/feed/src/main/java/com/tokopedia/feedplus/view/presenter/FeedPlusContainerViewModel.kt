@@ -34,23 +34,9 @@ class FeedPlusContainerViewModel @Inject constructor(baseDispatcher: CoroutineDi
     var feedContentForm = FeedContentForm()
 
     val isShowPostButton: Boolean
-        get() {
-            return when(val whitelist = whitelistResp.value) {
-                is Success -> {
-                   whitelist.data.isShopAccountExists || whitelist.data.isUserAccountPostEligible
-                }
-                else -> false
-            }
-        }
-
-    val isShowLivestreamButton: Boolean
-        get() {
-            return when(val whitelist = whitelistResp.value) {
-                is Success -> {
-                    whitelist.data.isShopAccountExists || whitelist.data.isUserAccountLivestreamEligible
-                }
-                else -> false
-            }
+        get() = when(val whitelist = whitelistResp.value) {
+            is Success -> whitelist.data.isShopAccountExists || whitelist.data.isUserAccountPostEligible
+            else -> false
         }
 
     init {

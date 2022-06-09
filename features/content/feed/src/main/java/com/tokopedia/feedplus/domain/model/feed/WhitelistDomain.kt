@@ -25,9 +25,6 @@ data class WhitelistDomain(
     val isUserAccountPostEligible: Boolean
         get() = authors.find{ it.type == TYPE_USER && it.post.hasAcceptTnc } != null
 
-    val isUserAccountLivestreamEligible: Boolean
-        get() = authors.find{ it.type == TYPE_USER && it.livestream.hasAcceptTnc } != null
-
     companion object {
         val Empty: WhitelistDomain
             get() = WhitelistDomain(
