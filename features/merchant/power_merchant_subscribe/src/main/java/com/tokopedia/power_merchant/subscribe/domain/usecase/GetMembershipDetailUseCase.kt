@@ -62,7 +62,7 @@ class GetMembershipDetailUseCase @Inject constructor(
                   grade_name
                 }
               }
-              goldGetPMShopInfo(shop_id: ${'$'}shopId, source: "power-merchant-subscription-android-ui", filter: {including_pm_pro_eligibility: false}) {
+              goldGetPMShopInfo(shop_id: ${'$'}shopId, source: "power-merchant-subscription-android-ui", filter: {including_pm_pro_eligibility: true}) {
                 item_sold_one_month
                 niv_one_month
               }

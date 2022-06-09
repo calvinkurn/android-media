@@ -134,7 +134,7 @@
     <string name="pm_bottom_sheet_moderated_shop_description">Saat ini, tokomu dalam pengawasan Tokopedia \ndan bisa bergabung jika toko kembali aktif. \nHubungi Tokopedia Care untuk info lebih detail.</string>
     <string name="pm_upgrade_to_power_merchant_pro">Upgrade ke Power Merchant PRO</string>
     <string name="pm_check_pm_pro_status_info">Pengecekan status PM PRO</string>
-    <string name="pm_pro_checking_status_on">Pengecekan status PM PRO dilakukan:</string>
+    <string name="pm_pro_checking_status_on">Pengecekan status PM PRO</string>
     <string name="pm_every_monday">Setiap hari Senin</string>
     <string name="pm_every_monday_next_month">Setiap Senin pertama bulan berikutnya</string>
     <string name="pm_status_info_next_update"><![CDATA[Update selanjutnya: <b>%1$s</b>]]></string>

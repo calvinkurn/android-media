@@ -26,7 +26,6 @@ import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.ZERO
-import com.tokopedia.kotlin.extensions.view.asCamelCase
 import com.tokopedia.kotlin.extensions.view.getResColor
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.observe
@@ -57,6 +56,7 @@ class MembershipDetailFragment : BaseDaggerFragment() {
     companion object {
         private const val SATURATION_INACTIVE = 0.0f
         private const val SATURATION_ACTIVE = 1f
+        private const val SPACE = " "
 
         fun createInstance(): MembershipDetailFragment {
             return MembershipDetailFragment()
@@ -319,7 +319,9 @@ class MembershipDetailFragment : BaseDaggerFragment() {
     private fun showHeaderInfo(data: MembershipDetailUiModel) {
         binding?.run {
             tvPmMembershipPerformancePeriod.text = getString(
-                R.string.pm_date_based_on_your_sell, data.periodDate, data.gradeName.asCamelCase()
+                R.string.pm_date_based_on_your_sell,
+                data.periodDate,
+                getGradeNameCamelCased(data.gradeName)
             ).parseAsHtml()
             tvPmMembershipNextUpdate.text = if (data.isCalibrationDate) {
                 getString(
@@ -338,6 +340,22 @@ class MembershipDetailFragment : BaseDaggerFragment() {
                     requireContext().getResColor(com.tokopedia.unifyprinciples.R.color.Unify_GN400)
                 )
             }
+        }
+    }
+
+    private fun getGradeNameCamelCased(gradeName: String): String {
+        val strings = mutableListOf<String>()
+        var tmpStr = String.EMPTY
+        gradeName.forEach {
+            if (it.toString() != SPACE) {
+                tmpStr += it.toString()
+            } else {
+                strings.add(tmpStr)
+                tmpStr = String.EMPTY
+            }
+        }
+        return strings.joinToString(SPACE) { str ->
+            str.replaceFirstChar { it.titlecase() }
         }
     }
 

@@ -738,7 +738,7 @@ open class PowerMerchantSubscriptionFragment :
     private fun getShopGradeWidgetData(data: PMGradeBenefitInfoUiModel): WidgetShopGradeUiModel {
         val shopGrade = data.currentPMGrade
         val shopInfo = pmBasicInfo?.shopInfo
-        val newFormat = "dd MMMM yyyy"
+
         return WidgetShopGradeUiModel(
             isNewSeller = shopInfo?.isNewSeller.orTrue(),
             is30FirstMonday = shopInfo?.is30DaysFirstMonday.orFalse(),
@@ -748,7 +748,7 @@ open class PowerMerchantSubscriptionFragment :
             pmProShopScoreThreshold = shopInfo?.shopScorePmProThreshold.orZero(),
             itemSoldThreshold = shopInfo?.itemSoldPmProThreshold.orZero(),
             netItemValueThreshold = shopInfo?.netItemValuePmProThreshold.orZero(),
-            autoExtendDateStr = pmBasicInfo?.pmStatus?.getExpiredTimeFmt(newFormat).orEmpty(),
+            nextMonthlyRefreshDate = pmBasicInfo?.shopInfo?.nextMonthlyRefreshDate.orEmpty(),
             shopAge = shopInfo?.shopAge.orZero(),
             gradeBackgroundUrl = shopGrade?.backgroundUrl.orEmpty(),
             pmStatus = pmBasicInfo?.pmStatus?.status ?: PMStatusConst.INACTIVE,

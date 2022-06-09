@@ -367,11 +367,19 @@ class ShopGradeWidget(
 
     private fun getPmProStatusInfo(element: WidgetShopGradeUiModel): PMProStatusInfoUiModel {
         return PMProStatusInfoUiModel(
-            autoExtendDateFmt = element.autoExtendDateStr,
+            nextMonthlyRefreshDate = getFormattedRefreshDate(element.nextMonthlyRefreshDate),
             pmActiveShopScoreThreshold = element.shopScoreThreshold,
             pmProActiveShopScoreThreshold = element.pmProShopScoreThreshold,
             itemSoldThreshold = element.itemSoldThreshold,
             netItemValueThreshold = element.netItemValueThreshold
+        )
+    }
+
+    private fun getFormattedRefreshDate(nextMonthlyRefreshDate: String): String {
+        return DateFormatUtils.formatDate(
+            DateFormatUtils.FORMAT_YYYY_MM_DD,
+            DateFormatUtils.FORMAT_DD_MMMM_YYYY,
+            nextMonthlyRefreshDate
         )
     }
 

@@ -15,7 +15,7 @@ class WidgetShopGradeUiModel(
         val pmProShopScoreThreshold: Int = 0,
         val itemSoldThreshold: Long,
         val netItemValueThreshold: Long,
-        val autoExtendDateStr: String,
+        val nextMonthlyRefreshDate: String,
         val shopAge: Long = 0L,
         val gradeBackgroundUrl: String = "",
         val pmStatus: String = "",
