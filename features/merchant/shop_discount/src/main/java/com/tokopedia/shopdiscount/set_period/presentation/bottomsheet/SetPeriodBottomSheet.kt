@@ -21,8 +21,8 @@ import com.tokopedia.shopdiscount.manage_discount.util.ShopDiscountManageDiscoun
 import com.tokopedia.shopdiscount.set_period.data.uimodel.SetPeriodResultUiModel
 import com.tokopedia.shopdiscount.set_period.presentation.viewmodel.SetPeriodBottomSheetViewModel
 import com.tokopedia.shopdiscount.utils.constant.DateConstant
+import com.tokopedia.shopdiscount.utils.constant.DiscountStatus
 import com.tokopedia.shopdiscount.utils.constant.SetPeriodBottomSheetChipsState
-import com.tokopedia.shopdiscount.utils.constant.SlashPriceStatusId
 import com.tokopedia.shopdiscount.utils.extension.parseTo
 import com.tokopedia.shopdiscount.utils.extension.showError
 import com.tokopedia.shopdiscount.utils.extension.toDate
@@ -174,7 +174,7 @@ class SetPeriodBottomSheet : BottomSheetUnify() {
                 }
             }
             when (slashPriceStatusId.toIntOrZero()) {
-                SlashPriceStatusId.ONGOING, SlashPriceStatusId.PAUSED -> {
+                DiscountStatus.ONGOING, DiscountStatus.PAUSED -> {
                     binding?.tfuStartDate?.isEnabled = false
                 }
             }

@@ -39,7 +39,7 @@ import com.tokopedia.shopdiscount.manage_discount.presentation.view.viewmodel.Sh
 import com.tokopedia.shopdiscount.manage_discount.util.ShopDiscountManageDiscountMode
 import com.tokopedia.shopdiscount.manage_product_discount.presentation.activity.ShopDiscountManageProductDiscountActivity
 import com.tokopedia.shopdiscount.manage_product_discount.presentation.activity.ShopDiscountManageProductVariantDiscountActivity
-import com.tokopedia.shopdiscount.utils.constant.SlashPriceStatusId
+import com.tokopedia.shopdiscount.utils.constant.DiscountStatus
 import com.tokopedia.shopdiscount.utils.extension.showError
 import com.tokopedia.shopdiscount.utils.extension.showToaster
 import com.tokopedia.shopdiscount.utils.rv_decoration.ShopDiscountDividerItemDecoration
@@ -322,7 +322,7 @@ class ShopDiscountManageDiscountFragment : BaseDaggerFragment(),
                         tracker.sendClickSaveSlashPrice(mode)
                         when (mode) {
                             ShopDiscountManageDiscountMode.CREATE -> {
-                                slashPriceStatusId = SlashPriceStatusId.SCHEDULED
+                                slashPriceStatusId = DiscountStatus.SCHEDULED
                                 successSubmitToasterWording =
                                     getString(R.string.shop_discount_manage_discount_success_create)
                             }

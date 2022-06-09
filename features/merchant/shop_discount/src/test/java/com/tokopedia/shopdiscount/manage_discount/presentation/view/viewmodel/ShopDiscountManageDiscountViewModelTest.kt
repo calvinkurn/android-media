@@ -20,7 +20,7 @@ import com.tokopedia.shopdiscount.manage_discount.domain.MutationSlashPriceProdu
 import com.tokopedia.shopdiscount.manage_discount.util.ShopDiscountManageDiscountConstant.GET_SETUP_PRODUCT_LIST_DELAY
 import com.tokopedia.shopdiscount.manage_discount.util.ShopDiscountManageDiscountMode
 import com.tokopedia.shopdiscount.utils.constant.DateConstant.DATE_TIME_SECOND_PRECISION_WITH_TIMEZONE
-import com.tokopedia.shopdiscount.utils.constant.SlashPriceStatusId
+import com.tokopedia.shopdiscount.utils.constant.DiscountStatus
 import com.tokopedia.unit.test.rule.CoroutineTestRule
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -56,8 +56,8 @@ class ShopDiscountManageDiscountViewModelTest {
     private val mockSelectedProductVariantId = ""
     private val mockModeCreate = ShopDiscountManageDiscountMode.CREATE
     private val mockModeUpdate = ShopDiscountManageDiscountMode.UPDATE
-    private val mockSlashPriceStatus = SlashPriceStatusId.CREATE
-    private val mockSlashPriceStatusOngoing = SlashPriceStatusId.ONGOING
+    private val mockSlashPriceStatus = DiscountStatus.DEFAULT
+    private val mockSlashPriceStatusOngoing = DiscountStatus.ONGOING
     private val mockStartDateValue = Date(1652415771000)
     private val mockEndDateValue = Date(1670880168000)
     private val mockBulkApplyRupiahDiscountAmount = 1000
@@ -1210,7 +1210,7 @@ class ShopDiscountManageDiscountViewModelTest {
                             )
                         ),
                         slashPriceInfo = ShopDiscountSetupProductUiModel.SetupProductData.ProductSlashPriceInfo(
-                            slashPriceStatusId = SlashPriceStatusId.ONGOING.toString(),
+                            slashPriceStatusId = DiscountStatus.ONGOING.toString(),
                             startDate = mockStartDateValue
                         )
                     )
@@ -1449,7 +1449,7 @@ class ShopDiscountManageDiscountViewModelTest {
         viewModel.checkStartDateError(
             getMockListSetupProductDataWithStartDateLessThanFiveMinutesFromNow(),
             mockModeCreate,
-            SlashPriceStatusId.ONGOING
+            DiscountStatus.ONGOING
         )
         val liveData = viewModel.updatedProductListData.value
         assert(liveData?.all {
@@ -1462,7 +1462,7 @@ class ShopDiscountManageDiscountViewModelTest {
         viewModel.checkStartDateError(
             getMockListSetupProductDataWithStartDateLessThanFiveMinutesFromNow2(),
             mockModeCreate,
-            SlashPriceStatusId.ONGOING
+            DiscountStatus.ONGOING
         )
         val liveData = viewModel.updatedProductListData.value
         assert(liveData?.all {

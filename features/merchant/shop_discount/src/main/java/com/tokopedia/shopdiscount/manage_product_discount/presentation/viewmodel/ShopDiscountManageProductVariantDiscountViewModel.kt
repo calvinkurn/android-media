@@ -16,8 +16,8 @@ import com.tokopedia.shopdiscount.manage_discount.data.uimodel.ShopDiscountSetup
 import com.tokopedia.shopdiscount.info.data.uimodel.ShopDiscountSellerInfoUiModel
 import com.tokopedia.shopdiscount.info.util.ShopDiscountSellerInfoMapper
 import com.tokopedia.shopdiscount.manage_product_discount.data.uimodel.ShopDiscountManageProductVariantItemUiModel
+import com.tokopedia.shopdiscount.utils.constant.DiscountStatus
 import com.tokopedia.shopdiscount.utils.constant.ShopDiscountManageProductDiscountErrorValidation.Companion.NONE
-import com.tokopedia.shopdiscount.utils.constant.SlashPriceStatusId
 import com.tokopedia.shopdiscount.utils.extension.allCheckEmptyList
 import com.tokopedia.shopdiscount.utils.extension.toCalendar
 import com.tokopedia.shopdiscount.utils.extension.unixToMs
@@ -220,7 +220,7 @@ class ShopDiscountManageProductVariantDiscountViewModel @Inject constructor(
                 }
             }
             when (this.slashPriceStatusId.toIntOrZero()) {
-                SlashPriceStatusId.CREATE, SlashPriceStatusId.SCHEDULED -> {
+                DiscountStatus.DEFAULT, DiscountStatus.SCHEDULED -> {
                     this.startDate = bulkApplyDiscountResult.startDate ?: Date()
                 }
             }

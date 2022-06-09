@@ -31,7 +31,7 @@ import com.tokopedia.shopdiscount.manage_discount.domain.MutationSlashPriceProdu
 import com.tokopedia.shopdiscount.manage_discount.util.ShopDiscountManageDiscountConstant.GET_SETUP_PRODUCT_LIST_DELAY
 import com.tokopedia.shopdiscount.manage_discount.util.ShopDiscountManageDiscountMapper
 import com.tokopedia.shopdiscount.manage_discount.util.ShopDiscountManageDiscountMode
-import com.tokopedia.shopdiscount.utils.constant.SlashPriceStatusId
+import com.tokopedia.shopdiscount.utils.constant.DiscountStatus
 import com.tokopedia.shopdiscount.utils.extension.allCheckEmptyList
 import com.tokopedia.shopdiscount.utils.extension.setElement
 import com.tokopedia.usecase.coroutines.Fail
@@ -519,7 +519,7 @@ class ShopDiscountManageDiscountViewModel @Inject constructor(
             it.listProductWarehouse.none {productWarehouse -> productWarehouse.abusiveRule }
         }.forEach { productToBeUpdated ->
             when (productToBeUpdated.slashPriceInfo.slashPriceStatusId.toIntOrZero()) {
-                SlashPriceStatusId.CREATE, SlashPriceStatusId.SCHEDULED -> {
+                DiscountStatus.DEFAULT, DiscountStatus.SCHEDULED -> {
                     productToBeUpdated.slashPriceInfo.startDate = bulkApplyDiscountResult.startDate ?: Date()
                 }
             }
