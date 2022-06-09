@@ -45,6 +45,7 @@ class QuizGiftView : ConstraintLayout {
     private val bindingGiftInput = binding.layoutQuizGiftInput
 
     private var mOnChangedListener: ((String) -> Unit)? = null
+    private var mOnClickListener: (() -> Unit)? = null
 
     private val coachMark: CoachMark2 = CoachMark2(context)
 
@@ -59,6 +60,7 @@ class QuizGiftView : ConstraintLayout {
                 }
                 setFocus(true)
             }
+            mOnClickListener?.invoke()
         }
 
         bindingGiftInput.icCloseInputGift.setOnClickListener {
@@ -107,6 +109,10 @@ class QuizGiftView : ConstraintLayout {
 
     fun setOnTextChangeListener(listener: (String) -> Unit) {
         mOnChangedListener = listener
+    }
+
+    fun setOnClickListener(listener: () -> Unit) {
+        mOnClickListener = listener
     }
 
     fun hideGiftTextFieldIfEmpty() {

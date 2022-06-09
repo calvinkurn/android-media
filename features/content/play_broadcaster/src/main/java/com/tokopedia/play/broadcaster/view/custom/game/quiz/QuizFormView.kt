@@ -99,6 +99,10 @@ class QuizFormView : ConstraintLayout {
             eventBus.emit(Event.GiftChanged(it))
         }
 
+        binding.viewQuizGift.setOnClickListener {
+            eventBus.emit(Event.GiftClicked)
+        }
+
         timePickerBinding.ivSheetClose.setOnClickListener {
             eventBus.emit(Event.Back)
         }
@@ -295,6 +299,7 @@ class QuizFormView : ConstraintLayout {
         data class GiftChanged(val gift: String): Event
         data class SaveQuizData(val quizFormData: QuizFormDataUiModel): Event
         data class SelectDuration(val duration: Long): Event
+        object GiftClicked : Event
         object Submit: Event
     }
 

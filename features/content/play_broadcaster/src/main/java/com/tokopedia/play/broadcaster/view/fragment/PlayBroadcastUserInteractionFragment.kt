@@ -281,6 +281,12 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
 
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
             quizForm.listen().collect {
+                if (it == QuizFormView.Event.GiftClicked) {
+                    analytic.onClickQuizGift(
+                        parentViewModel.channelId,
+                        parentViewModel.channelTitle,
+                    )
+                }
                 parentViewModel.submitAction(
                     when(it) {
                         QuizFormView.Event.Back -> PlayBroadcastAction.ClickBackOnQuiz
@@ -292,6 +298,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
                         is QuizFormView.Event.SaveQuizData -> PlayBroadcastAction.SaveQuizData(it.quizFormData)
                         is QuizFormView.Event.SelectDuration -> PlayBroadcastAction.SelectQuizDuration(it.duration)
                         QuizFormView.Event.Submit -> PlayBroadcastAction.SubmitQuizForm
+                        QuizFormView.Event.GiftClicked -> PlayBroadcastAction.ClickQuizGift
                     }
                 )
             }
