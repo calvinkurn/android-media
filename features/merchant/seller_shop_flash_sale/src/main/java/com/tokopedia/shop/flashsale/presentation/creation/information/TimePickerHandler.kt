@@ -7,6 +7,7 @@ import com.tokopedia.shop.flashsale.common.constant.Constant
 import com.tokopedia.shop.flashsale.common.constant.LocaleConstant
 import com.tokopedia.shop.flashsale.common.extension.extractHour
 import com.tokopedia.shop.flashsale.common.extension.extractMinute
+import com.tokopedia.shop.flashsale.common.extension.isToday
 import com.tokopedia.shop.flashsale.common.extension.toCalendar
 import java.util.Date
 import java.util.GregorianCalendar
@@ -35,10 +36,8 @@ class TimePickerHandler @Inject constructor(private val param: Param) {
         onTimePicked: (Date) -> Unit
     ) {
 
-        val minTime = GregorianCalendar(LocaleConstant.INDONESIA).apply {
-            set(Calendar.HOUR_OF_DAY, param.minimumDate.extractHour())
-            set(Calendar.MINUTE, param.minimumDate.extractMinute())
-        }
+
+        val minTime = buildMinTime()
 
         val defaultTime = GregorianCalendar(LocaleConstant.INDONESIA).apply {
             set(Calendar.HOUR_OF_DAY, param.defaultDate.extractHour())
@@ -86,4 +85,18 @@ class TimePickerHandler @Inject constructor(private val param: Param) {
         return calendar.time
     }
 
+    private fun buildMinTime(): GregorianCalendar {
+        val isToday = param.selectedDateFromCalendar.isToday()
+        return if (isToday) {
+            GregorianCalendar(LocaleConstant.INDONESIA).apply {
+                set(Calendar.HOUR_OF_DAY, param.minimumDate.extractHour())
+                set(Calendar.MINUTE, param.minimumDate.extractMinute())
+            }
+        } else {
+            GregorianCalendar(LocaleConstant.INDONESIA).apply {
+                set(Calendar.HOUR_OF_DAY, Constant.ZERO)
+                set(Calendar.MINUTE, Constant.ZERO)
+            }
+        }
+    }
 }

@@ -100,3 +100,15 @@ fun Date.extractMonth(): Int {
     calendar.time = this
     return calendar.get(Calendar.MONTH)
 }
+
+fun Date.isToday(): Boolean {
+    val now = Calendar.getInstance()
+    now.time = Date()
+    val currentDayOfMonth = now.get(Calendar.DAY_OF_YEAR)
+
+    val calendar = Calendar.getInstance()
+    calendar.time = this
+    val dayOfMonth = calendar.get(Calendar.DAY_OF_YEAR)
+
+    return currentDayOfMonth == dayOfMonth
+}
