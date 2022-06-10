@@ -12,7 +12,7 @@ import com.tokopedia.home_component.model.ChannelModel
 /**
  * Created by frenzel
  */
-class VpsWidgetComponentCallback(val context: Context?, val homeCategoryListener: HomeCategoryListener): VpsWidgetListener {
+class VpsWidgetComponentCallback(val homeCategoryListener: HomeCategoryListener): VpsWidgetListener {
     override fun onSeeAllClicked(channelModel: ChannelModel, position: Int) {
     }
 
@@ -32,7 +32,7 @@ class VpsWidgetComponentCallback(val context: Context?, val homeCategoryListener
         parentPosition: Int
     ) {
         VpsWidgetTracking.sendVpsItemClick(channelModel, channelGrid, position, homeCategoryListener.userId)
-        RouteManager.route(context, channelGrid.applink)
+        homeCategoryListener.onDynamicChannelClicked(channelGrid.applink)
     }
 
     override fun onChannelImpressed(channelModel: ChannelModel, parentPosition: Int) {
