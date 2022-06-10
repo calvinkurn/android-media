@@ -121,13 +121,13 @@ class QuizWidgetView : ConstraintLayout {
 
     private fun animateCorrectAnswer(){
         answerTrueAnimator.addListener(animationListener)
-        answerTrueAnimator.duration = 120L
+        answerTrueAnimator.duration = 400L
         answerTrueAnimator.start()
     }
 
     private fun animateWrongAnswer(){
         answerFalseAnimator.addListener(animationListener)
-        answerFalseAnimator.duration = 120L
+        answerFalseAnimator.duration = 400L
         answerFalseAnimator.start()
     }
 
@@ -139,18 +139,18 @@ class QuizWidgetView : ConstraintLayout {
     }
 
     private val clickRotateMinAnimation = ObjectAnimator.ofFloat(
-        binding.root, View.ROTATION, 0f, -6f
+        binding.root, View.ROTATION, 0f, -4f
     )
 
     private val clickRotateMaxAnimation = ObjectAnimator.ofFloat(
-        binding.root, View.ROTATION, 0f, 6f
+        binding.root, View.ROTATION, 0f, 4f
     )
 
     private val clickScaleXAnimation = ObjectAnimator.ofFloat(
-        binding.root, View.SCALE_X, 1f, 0.8f
+        binding.root, View.SCALE_X, 0.8f, 1f
     )
     private val clickScaleYAnimation = ObjectAnimator.ofFloat(
-        binding.root, View.SCALE_Y, 1f, 0.8f
+        binding.root, View.SCALE_Y, 0.8f, 1f
     )
 
     private val answerFalseAnimator = AnimatorSet().apply {
