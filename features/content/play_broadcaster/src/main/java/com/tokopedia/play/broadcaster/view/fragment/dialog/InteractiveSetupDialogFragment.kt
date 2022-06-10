@@ -17,6 +17,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.analytic.interactive.PlayBroadcastInteractiveAnalytic
+import com.tokopedia.play.broadcaster.analytic.PlayBroadcastAnalytic
 import com.tokopedia.play.broadcaster.ui.action.PlayBroadcastAction
 import com.tokopedia.play.broadcaster.ui.event.PlayBroadcastEvent
 import com.tokopedia.play.broadcaster.ui.model.game.GameType
@@ -153,7 +154,6 @@ class InteractiveSetupDialogFragment @Inject constructor(
                     analytic.onClickBackGiveaway(viewModel.channelId, viewModel.channelTitle)
                     dismiss() }
                 override fun onDone(view: GiveawayFormView, data: GiveawayFormView.Data) {
-                    analytic.onClickContinueGiveaway(viewModel.channelId, viewModel.channelTitle)
                     viewModel.submitAction(
                         PlayBroadcastAction.CreateGiveaway(
                             title = data.title,
@@ -163,6 +163,10 @@ class InteractiveSetupDialogFragment @Inject constructor(
                 }
                 override fun onClickBackSetTimer() {
                     analytic.onclickBackSetTimerGiveAway(viewModel.channelId, viewModel.channelTitle)
+                }
+
+                override fun onClickContinue() {
+                    analytic.onClickContinueGiveaway(viewModel.channelId, viewModel.channelTitle)
                 }
             })
             formView
