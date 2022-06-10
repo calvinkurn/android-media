@@ -5,7 +5,6 @@ import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.shopdiscount.common.data.response.ResponseHeader
 
-@SuppressLint("Invalid Data Type")
 data class GetSlashPriceSetupProductListResponse(
     @SerializedName("getSlashPriceSetupProductList")
     @Expose
@@ -26,6 +25,7 @@ data class GetSlashPriceSetupProductListResponse(
             @SerializedName("name")
             @Expose
             var name: String = "",
+            @SuppressLint("Invalid Data Type")
             @SerializedName("price")
             @Expose
             var price: Price = Price(),
@@ -93,25 +93,25 @@ data class GetSlashPriceSetupProductListResponse(
                 var abusiveRule: Boolean = false,
                 @SerializedName("avg_sold_price")
                 @Expose
-                var avgSoldPrice: Int = 0,
+                var avgSoldPrice: Double = 0.0,
                 @SerializedName("cheapest_price")
                 @Expose
-                var cheapestPrice: Int = 0,
+                var cheapestPrice: Double = 0.0,
                 @SerializedName("discounted_price")
                 @Expose
-                var discountedPrice: Int = 0,
+                var discountedPrice: Double = 0.0,
                 @SerializedName("discounted_percentage")
                 @Expose
                 var discountedPercentage: Int = 0,
                 @SerializedName("min_recommendation_price")
                 @Expose
-                var minRecommendationPrice: Int = 0,
+                var minRecommendationPrice: Double = 0.0,
                 @SerializedName("min_recommendation_percentage")
                 @Expose
                 var minRecommendationPercentage: Int = 0,
                 @SerializedName("max_recommendation_price")
                 @Expose
-                var maxRecommendationPrice: Int = 0,
+                var maxRecommendationPrice: Double = 0.0,
                 @SerializedName("max_recommendation_percentage")
                 @Expose
                 var maxRecommendationPercentage: Int = 0,
@@ -126,7 +126,7 @@ data class GetSlashPriceSetupProductListResponse(
                 var warehouseType: Int = 0,
                 @SerializedName("original_price")
                 @Expose
-                var originalPrice: Int = 0
+                var originalPrice: Double = 0.0
             )
 
             data class SlashPriceInfo(
@@ -135,7 +135,7 @@ data class GetSlashPriceSetupProductListResponse(
                 var slashPriceProductId: String = "",
                 @SerializedName("discounted_price")
                 @Expose
-                var discountedPrice: Int = 0,
+                var discountedPrice: Double = 0.0,
                 @SerializedName("discount_percentage")
                 @Expose
                 var discountPercentage: Int = 0,
@@ -157,6 +157,7 @@ data class GetSlashPriceSetupProductListResponse(
                 @SerializedName("name")
                 @Expose
                 var name: String = "",
+                @SuppressLint("Invalid Data Type")
                 @SerializedName("price")
                 @Expose
                 var price: Price = Price(),

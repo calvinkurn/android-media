@@ -93,17 +93,17 @@ object ShopDiscountProductDetailMapper {
 
     private fun getMinPriceDiscounted(productData: GetSlashPriceProductDetailResponse.GetSlashPriceProductDetail.ProductList): Int {
         return productData.warehouses.map {
-            it.discountedPrice
+            it.discountedPrice.toInt()
         }.toMutableList().apply {
-            add(productData.discountedPrice)
+            add(productData.discountedPrice.toInt())
         }.minOrNull().orZero()
     }
 
     private fun getMaxPriceDiscounted(productData: GetSlashPriceProductDetailResponse.GetSlashPriceProductDetail.ProductList): Int {
         return productData.warehouses.map {
-            it.discountedPrice
+            it.discountedPrice.toInt()
         }.toMutableList().apply {
-            add(productData.discountedPrice)
+            add(productData.discountedPrice.toInt())
         }.maxOrNull().orZero()
     }
 

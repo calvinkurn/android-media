@@ -91,7 +91,7 @@ object ShopDiscountManageDiscountMapper {
             }
             ShopDiscountSetupProductUiModel.SetupProductData.ProductSlashPriceInfo(
                 slashPriceProductId = it.slashPriceProductId,
-                discountedPrice = it.discountedPrice,
+                discountedPrice = it.discountedPrice.toInt(),
                 discountPercentage = it.discountPercentage,
                 startDate = startDate,
                 endDate = endDate,
@@ -133,18 +133,18 @@ object ShopDiscountManageDiscountMapper {
                 warehouseStock = it.warehouseStock,
                 maxOrder = it.maxOrder,
                 abusiveRule = it.abusiveRule,
-                avgSoldPrice = it.avgSoldPrice,
-                cheapestPrice = it.cheapestPrice,
-                discountedPrice = it.discountedPrice,
+                avgSoldPrice = it.avgSoldPrice.toInt(),
+                cheapestPrice = it.cheapestPrice.toInt(),
+                discountedPrice = it.discountedPrice.toInt(),
                 discountedPercentage = it.discountedPercentage,
-                minRecommendationPrice = it.minRecommendationPrice,
+                minRecommendationPrice = it.minRecommendationPrice.toInt(),
                 minRecommendationPercentage = it.minRecommendationPercentage,
-                maxRecommendationPrice = it.maxRecommendationPrice,
+                maxRecommendationPrice = it.maxRecommendationPrice.toInt(),
                 maxRecommendationPercentage = it.maxRecommendationPercentage,
                 disable = it.disable,
                 disableRecommendation = it.disableRecommendation,
                 warehouseType = it.warehouseType,
-                originalPrice = it.originalPrice
+                originalPrice = it.originalPrice.toInt()
             )
         }
     }

@@ -24,7 +24,7 @@ data class GetSlashPriceProductListResponse(
             @SerializedName("discounted_percentage")
             val discountedPercentage: Int = 0,
             @SerializedName("discounted_price")
-            val discountedPrice: Long = 0,
+            val discountedPrice: Double = 0.0,
             @SerializedName("discounted_price_data")
             val discountedPriceData: DiscountedPriceData = DiscountedPriceData(),
             @SerializedName("end_date")
@@ -114,25 +114,25 @@ data class GetSlashPriceProductListResponse(
                 var abusiveRule: Boolean = false,
                 @SerializedName("avg_sold_price")
                 @Expose
-                var avgSoldPrice: Long = 0,
+                var avgSoldPrice: Double = 0.0,
                 @SerializedName("cheapest_price")
                 @Expose
-                var cheapestPrice: Long = 0,
+                var cheapestPrice: Double = 0.0,
                 @SerializedName("discounted_price")
                 @Expose
-                var discountedPrice: Long = 0,
+                var discountedPrice: Double = 0.0,
                 @SerializedName("discounted_percentage")
                 @Expose
                 var discountedPercentage: Int = 0,
                 @SerializedName("min_recommendation_price")
                 @Expose
-                var minRecommendationPrice: Int = 0,
+                var minRecommendationPrice: Double = 0.0,
                 @SerializedName("min_recommendation_percentage")
                 @Expose
                 var minRecommendationPercentage: Int = 0,
                 @SerializedName("max_recommendation_price")
                 @Expose
-                var maxRecommendationPrice: Int = 0,
+                var maxRecommendationPrice: Double = 0.0,
                 @SerializedName("max_recommendation_percentage")
                 @Expose
                 var maxRecommendationPercentage: Int = 0,
@@ -147,7 +147,7 @@ data class GetSlashPriceProductListResponse(
                 var warehouseType: Int = 0,
                 @SerializedName("original_price")
                 @Expose
-                var originalPrice: Long = 0
+                var originalPrice: Double = 0.0
             )
         }
     }
