@@ -2486,17 +2486,15 @@ open class HomeRevampFragment : BaseDaggerFragment(),
 
     override val homeMainToolbarHeight: Int
         get() {
-            return context?.run {
-                var height = resources.getDimensionPixelSize(R.dimen.default_toolbar_status_height)
-                context?.let {
-                    navToolbar?.let {
-                        height = navToolbar?.height
-                            ?: resources.getDimensionPixelSize(R.dimen.default_toolbar_status_height)
-                        height += 8f.toDpInt()
-                    }
+            var height = requireActivity().resources.getDimensionPixelSize(R.dimen.default_toolbar_status_height)
+            context?.let { context ->
+                navToolbar?.let {
+                    height = navToolbar?.height
+                        ?: context.resources.getDimensionPixelSize(R.dimen.default_toolbar_status_height)
+                    height += 8f.toDpInt()
                 }
-                height
-            } ?: 0
+            }
+            return height
         }
 
     private fun showFeedSectionViewHolderShadow(show: Boolean) {
