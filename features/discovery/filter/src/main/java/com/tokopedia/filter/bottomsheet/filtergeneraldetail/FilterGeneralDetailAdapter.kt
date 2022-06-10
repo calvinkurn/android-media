@@ -129,7 +129,7 @@ internal class FilterGeneralDetailAdapter(
         fun onOptionClick(option: Option, isChecked: Boolean, position: Int)
     }
 
-    private enum class Payload {
+    enum class Payload {
         BIND_INPUT_STATE_ONLY
     }
 }

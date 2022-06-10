@@ -212,14 +212,13 @@ internal class SearchProductHandleQuickFilterTest : ProductListPresenterTestFixt
     @Test
     fun `Open Dropdown Quick Filter and Apply Option`() {
         val searchProductModel = searchProductModelWithMultipleOptionQuickFilter.jsonToObject<SearchProductModel>()
-        val selectedFilter = searchProductModel.quickFilterModel.filter[0]
-        selectedFilter.options[0].inputState = true.toString()
-        selectedFilter.options[1].inputState = true.toString()
+        val selectedQuickFilterIndex = 0
+        val selectedFilter = searchProductModel.quickFilterModel.filter[selectedQuickFilterIndex]
 
         `Given Search Product API will return SearchProductModel`(searchProductModel)
         `Given Set Quick Filter Called`()
         `Given data has been loaded`()
-        `Given Dropdown Quick Filter Has Been Opened`(0)
+        `Given Dropdown Quick Filter Has Been Opened`(selectedQuickFilterIndex)
 
         `When Apply Dropdown Quick Filter`(selectedFilter.options)
 

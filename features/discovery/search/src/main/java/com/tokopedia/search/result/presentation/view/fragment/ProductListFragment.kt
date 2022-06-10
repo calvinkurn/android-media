@@ -2037,11 +2037,7 @@ class ProductListFragment: BaseDaggerFragment(),
 
     private fun setupActiveOptionsQuickFilter(filter: Filter) {
         filter.options.forEach {
-            if (isFilterSelected(it)) {
-                filter.options.firstOrNull {
-                    option -> option.uniqueId == it.uniqueId
-                }?.inputState = true.toString()
-            }
+            it.inputState = isFilterSelected(it).toString()
         }
     }
 
