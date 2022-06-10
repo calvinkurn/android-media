@@ -216,11 +216,26 @@ class VideoPictureView @JvmOverloads constructor(
     }
 
     private fun updateMediaLabel(position: Int) {
-        val desc = videoPictureAdapter?.currentList?.getOrNull(position)?.mediaDescription ?: ""
+        val mediaData = videoPictureAdapter?.currentList?.getOrNull(position)
+        val variantName = mediaData?.mediaDescription ?: ""
+        val totalMediaCount = videoPictureAdapter?.currentList?.size ?: 0
+        val index = "${position + 1} / $totalMediaCount"
+
+        val stringLabel = when {
+            mediaData?.isVideoType() == true -> ""
+            variantName.isEmpty() -> {
+                index
+            }
+            else -> {
+                context.getString(R.string.pdp_media_label_builder, index, variantName)
+            }
+        }
+
         val ignoreUpdateLabel = position == RecyclerView.NO_POSITION
-                || binding.txtAnimLabel.getCurrentText() == desc
+                || binding.txtAnimLabel.getCurrentText() == stringLabel
         if (ignoreUpdateLabel) return
-        binding.txtAnimLabel.showView(desc)
+
+        binding.txtAnimLabel.showView(stringLabel)
     }
 
     companion object {

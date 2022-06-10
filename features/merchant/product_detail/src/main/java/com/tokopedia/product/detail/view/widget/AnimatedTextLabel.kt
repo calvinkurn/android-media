@@ -22,6 +22,12 @@ import com.tokopedia.product.detail.R
 import com.tokopedia.unifyprinciples.Typography
 
 class AnimatedTextLabel : FrameLayout {
+
+    companion object {
+        private const val MAX_LIMIT_CHAR = 20
+        private const val CHAR_TAKEN_AFTER_ELLIPSIS = 17
+    }
+
     constructor(context: Context) : super(context)
 
     constructor(context: Context, attrSet: AttributeSet) : super(context, attrSet)
@@ -46,7 +52,7 @@ class AnimatedTextLabel : FrameLayout {
     }
 
     fun getCurrentText(): String {
-        return(txtLabel?.text ?: "").toString()
+        return (txtLabel?.text ?: "").toString()
     }
 
     fun showView(desc: String) {
@@ -78,8 +84,8 @@ class AnimatedTextLabel : FrameLayout {
     }
 
     private fun ellipsisText(desc: String): String {
-        return if (desc.length > 15) {
-            desc.take(15) + "..."
+        return if (desc.length > MAX_LIMIT_CHAR) {
+            desc.take(CHAR_TAKEN_AFTER_ELLIPSIS) + "..."
         } else {
             desc
         }
