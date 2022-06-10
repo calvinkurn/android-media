@@ -331,14 +331,9 @@ class VoucherGameListFragment : BaseListFragment<Visitable<VoucherGameListAdapte
             }
             context?.let {
                 promo_banner.setBannerSeeAllTextColor(ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_G500))
+                promo_banner.setBannerIndicator(Indicator.GREEN)
+                promo_banner.bannerSeeAll.setTextSize(TypedValue.COMPLEX_UNIT_PX, it.resources.getDimension(BANNER_SEE_ALL_TEXT_SIZE))
             }
-            promo_banner.setBannerIndicator(Indicator.GREEN)
-
-            with(promo_banner.bannerSeeAll){
-                setTextSize(TypedValue.COMPLEX_UNIT_PX, resources.getDimension(BANNER_SEE_ALL_TEXT_SIZE))
-                typeface = Typography.getFontType(requireContext(), true, Typography.DISPLAY_2)
-            }
-
             promo_banner.buildView()
             promo_banner.visibility = View.VISIBLE
         } else {
