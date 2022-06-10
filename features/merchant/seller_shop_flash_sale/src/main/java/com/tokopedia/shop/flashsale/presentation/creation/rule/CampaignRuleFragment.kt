@@ -150,8 +150,7 @@ class CampaignRuleFragment : BaseDaggerFragment() {
     }
 
     private fun showChoosePaymentMethodBottomSheet() {
-        val context = context ?: return
-        ChoosePaymentMethodBottomSheet.createInstance(context)
+        ChoosePaymentMethodBottomSheet()
             .show(parentFragmentManager)
     }
 
