@@ -103,6 +103,7 @@ import com.tokopedia.product.detail.common.data.model.constant.ProductStatusType
 import com.tokopedia.product.detail.common.data.model.constant.TopAdsShopCategoryTypeDef
 import com.tokopedia.product.detail.common.data.model.pdplayout.DynamicProductInfoP1
 import com.tokopedia.product.detail.common.data.model.pdplayout.ProductDetailGallery
+import com.tokopedia.product.detail.common.data.model.pdplayout.ProductMultilocation
 import com.tokopedia.product.detail.common.data.model.product.ProductParams
 import com.tokopedia.product.detail.common.data.model.product.TopAdsGetProductManage
 import com.tokopedia.product.detail.common.data.model.rates.P2RatesEstimateData
@@ -347,6 +348,7 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
     private var uuid = ""
     private var urlQuery: String = ""
     private var affiliateChannel: String = ""
+    private var alreadyShowMultilocBottomSheet: Boolean = false
 
     //Prevent several method at onResume to being called when first open page.
     private var firstOpenPage: Boolean? = null
@@ -825,36 +827,53 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
      * ImpressionComponent
      */
     override fun onImpressComponent(componentTrackDataModel: ComponentTrackDataModel) {
-        when (componentTrackDataModel.componentName) {
-            ProductDetailConstant.PRODUCT_PROTECTION -> DynamicProductDetailTracking.Impression
-                    .eventEcommerceDynamicComponent(
+        val purchaseProtectionUrl = if (componentTrackDataModel.componentName
+                == ProductDetailConstant.PRODUCT_PROTECTION) {
+            getPurchaseProtectionUrl()
+        } else {
+            ""
+        }
+
+        DynamicProductDetailTracking.Impression
+                .eventImpressionComponent(
+                        trackingQueue = trackingQueue,
+                        componentTrackDataModel = componentTrackDataModel,
+                        productInfo = viewModel.getDynamicProductInfoP1,
+                        componentName = "",
+                        purchaseProtectionUrl = purchaseProtectionUrl,
+                        userId = viewModel.userId,
+                        lcaWarehouseId = getLcaWarehouseId()
+                )
+
+    }
+
+    override fun onShopCredibilityImpressed(countLocation: String,
+                                            componentTrackDataModel: ComponentTrackDataModel) {
+        if (countLocation.isNotEmpty()) {
+            DynamicProductDetailTracking.Impression
+                    .eventImpressionShopMultilocation(
                             trackingQueue = trackingQueue,
                             componentTrackDataModel = componentTrackDataModel,
                             productInfo = viewModel.getDynamicProductInfoP1,
-                            componentName = getPPTitleName(),
-                            purchaseProtectionUrl = getPurchaseProtectionUrl(),
+                            shopCountLocation = countLocation,
                             userId = viewModel.userId,
-                            lcaWarehouseId = getLcaWarehouseId())
-            ProductDetailConstant.STOCK_ASSURANCE ->
-                DynamicProductDetailTracking.Impression.eventOneLinerImpression(
+                            lcaWarehouseId = getLcaWarehouseId()
+                    )
+        }
+
+        onImpressComponent(componentTrackDataModel)
+    }
+
+    override fun onOneLinersImpressed(componentTrackDataModel: ComponentTrackDataModel) {
+        //Impression using custom field, a bit different with onImpressComponent
+        DynamicProductDetailTracking.Impression
+                .eventOneLinerImpression(
                         trackingQueue = trackingQueue,
                         componentTrackDataModel = componentTrackDataModel,
                         productInfo = viewModel.getDynamicProductInfoP1,
                         userId = viewModel.userId,
                         lcaWarehouseId = getLcaWarehouseId()
                 )
-            else -> DynamicProductDetailTracking.Impression
-                    .eventEcommerceDynamicComponent(
-                            trackingQueue = trackingQueue,
-                            componentTrackDataModel = componentTrackDataModel,
-                            productInfo = viewModel.getDynamicProductInfoP1,
-                            componentName = "",
-                            purchaseProtectionUrl = "",
-                            userId = viewModel.userId,
-                            lcaWarehouseId = getLcaWarehouseId()
-                    )
-
-        }
     }
 
     /**
@@ -868,6 +887,14 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
 
             }
         }
+    }
+
+    override fun onShopMultilocClicked(componentTrackDataModel: ComponentTrackDataModel) {
+        DynamicProductDetailTracking.Click.onInformationIconMultiLocClicked(
+                viewModel.getDynamicProductInfoP1,
+                componentTrackDataModel,
+                viewModel.userId
+        )
     }
 
     override fun onCategoryCarouselImageClicked(url: String, categoryTitle: String, categoryId: String, componentTrackDataModel: ComponentTrackDataModel?) {
@@ -2220,8 +2247,15 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
         }
 
         setupProductVideoCoordinator()
-
         submitInitialList(pdpUiUpdater?.mapOfData?.values?.toList() ?: listOf())
+        showWarehouseChangeBs(productInfo.basic.productMultilocation)
+    }
+
+    private fun showWarehouseChangeBs(productMultiloc: ProductMultilocation) {
+        if (productMultiloc.isReroute && !alreadyShowMultilocBottomSheet) {
+            alreadyShowMultilocBottomSheet = true
+            goToApplink(productMultiloc.eduLink.applink)
+        }
     }
 
     private fun setupProductVideoCoordinator() {
@@ -2298,13 +2332,7 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
                 context = context,
                 p2Data = it,
                 productId = viewModel.getDynamicProductInfoP1?.basic?.productID ?: "",
-                isProductWarehouse = viewModel.getDynamicProductInfoP1?.basic?.isWarehouse()
-                        ?: false,
-                isProductInCampaign = viewModel.getDynamicProductInfoP1?.data?.campaign?.isActive
-                        ?: false,
-                isOutOfStock = viewModel.getDynamicProductInfoP1?.getFinalStock()?.toIntOrNull() == 0,
-                boeImageUrl = boeData.imageURL,
-                isProductParent = viewModel.getDynamicProductInfoP1?.isProductParent ?: false)
+                boeImageUrl = boeData.imageURL)
 
         initNavigationTab(it)
         updateUi()
