@@ -161,6 +161,6 @@ interface ChatbotContract {
 
         fun sendVideoAttachment(filePath: String, startTime: String, messageId: String)
 
-        fun cancelVideoUpload(file: String, sourceId: String)
+        fun cancelVideoUpload(file: String, sourceId: String, onError: (Throwable) -> Unit)
     }
 }

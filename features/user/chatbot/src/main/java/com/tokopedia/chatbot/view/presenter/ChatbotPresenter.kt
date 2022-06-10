@@ -97,9 +97,7 @@ import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.websocket.RxWebSocket
 import com.tokopedia.websocket.WebSocketResponse
 import com.tokopedia.websocket.WebSocketSubscriber
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.*
 import okhttp3.*
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.RequestBody.Companion.toRequestBody
@@ -170,6 +168,7 @@ class ChatbotPresenter @Inject constructor(
     private var isErrorOnLeaveQueue = false
     private lateinit var chatResponse:ChatSocketPojo
     private val job= SupervisorJob()
+    private var videoUploadJob = Job()
 
     init {
         mSubscription = CompositeSubscription()
@@ -819,27 +818,29 @@ class ChatbotPresenter @Inject constructor(
     ) {
         val originalFile = File(videoUploadUiModel.videoUrl)
 
-        launchCatchError(
+        videoUploadJob = launchCatchError(
             block = {
                 val param = uploaderUseCase.createParams(
                     filePath = originalFile,
                     sourceId = sourceId
                 )
-
-                when (val result = uploaderUseCase.invoke(param)) {
-                    is UploadResult.Success -> {
-                        sendVideoAttachment(result.videoUrl,startTime, messageId)
-                    }
-                    is UploadResult.Error -> {
-                        result.message
-                        onErrorVideoUpload(result.message,videoUploadUiModel)
+                //TODO check
+                if (videoUploadJob.isActive) {
+                    when (val result = uploaderUseCase.invoke(param)) {
+                        is UploadResult.Success -> {
+                            sendVideoAttachment(result.videoUrl, startTime, messageId)
+                        }
+                        is UploadResult.Error -> {
+                            onErrorVideoUpload(result.message, videoUploadUiModel)
+                        }
                     }
                 }
             },
             onError = {
-                onErrorVideoUpload(it.message ?: "",videoUploadUiModel)
+                onErrorVideoUpload(it.message ?: "", videoUploadUiModel)
             }
-        )
+        ) as CompletableJob
+        //TODO check this
     }
 
     override fun sendVideoAttachment(filePath: String, startTime: String, messageId: String) {
@@ -850,7 +851,18 @@ class ChatbotPresenter @Inject constructor(
         )
     }
 
-    override fun cancelVideoUpload(file: String, sourceId: String) {
-        //TODO cancel video upload
+    override fun cancelVideoUpload(file: String, sourceId: String,  onErrorVideoUpload: (Throwable) -> Unit) {
+        videoUploadJob = launchCatchError(
+            block = {
+                uploaderUseCase.abortUpload(
+                    filePath = file,
+                    sourceId = sourceId
+            )
+                videoUploadJob.cancel()
+            },
+            onError = {
+                onErrorVideoUpload(it)
+            }
+        ) as CompletableJob
     }
 }

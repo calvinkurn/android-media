@@ -1397,8 +1397,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
     }
 
     override fun onVideoUploadCancelClicked(video: VideoUploadUiModel) {
-        //TODO changes to be made here
-        presenter.cancelVideoUpload(video.videoUrl!!,SOURCE_ID_FOR_VIDEO_UPLOAD)
+        presenter.cancelVideoUpload(video.videoUrl!!,SOURCE_ID_FOR_VIDEO_UPLOAD, onError())
         //UI changes - what to do when the user cancels the video upload with progress bar clicked
         getViewState()?.showRetryUploadVideos(video,true)
     }
