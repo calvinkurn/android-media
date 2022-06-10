@@ -266,7 +266,14 @@ class PlayBroInteractiveBottomSheet @Inject constructor(
         view: PlayInteractiveLeaderboardViewComponent,
         leaderboard: PlayLeaderboardUiModel
     ) {
-        //TODO("Not yet implemented")
+        if (sheetType == Type.LEADERBOARD.toString())
+            analytic.onImpressOngoingLeaderBoard(
+                parentViewModel.channelId,
+                parentViewModel.channelTitle,
+                leaderboard.id,
+                leaderboard.title,
+                leaderboard.reward,
+            )
     }
 
     override fun onBackButtonClicked(view: QuizOptionDetailViewComponent) {

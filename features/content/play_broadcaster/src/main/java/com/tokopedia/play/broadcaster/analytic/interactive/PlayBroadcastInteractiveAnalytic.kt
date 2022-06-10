@@ -84,4 +84,10 @@ interface PlayBroadcastInteractiveAnalytic {
         interactiveTitle: String
     )
 
+    fun onImpressOngoingLeaderBoard(
+        channelId: String,
+        channelTitle: String,
+        interactiveId: String,
+        interactiveTitle: String,
+        reward: String)
 }

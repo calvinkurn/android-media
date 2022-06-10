@@ -293,6 +293,20 @@ class PlayBroadcastInteractiveAnalyticImpl @Inject constructor(
             )
     }
 
+    override fun onImpressOngoingLeaderBoard(
+        channelId: String,
+        channelTitle: String,
+        interactiveId: String,
+        interactiveTitle: String,
+        reward: String
+    ) {
+        val prizes = if (reward.isNotBlank()) "prize" else "no prize"
+        sendImpressionEvent(
+            "view - quiz result live room",
+            "${userSession.shopId} - $channelId - $channelTitle - $interactiveId - $interactiveTitle - $prizes",
+            )
+    }
+
     private fun sendClickEvent(
         eventAction: String,
         eventLabel: String,
