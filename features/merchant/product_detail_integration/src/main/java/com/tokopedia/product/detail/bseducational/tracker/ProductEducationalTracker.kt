@@ -25,7 +25,7 @@ object ProductEducationalTracker {
                       eventCategory: String) {
         val mapEvent = DataLayer.mapOf(
                 ProductTrackingConstant.Tracking.KEY_EVENT, "promoView",
-                ProductTrackingConstant.Tracking.KEY_CATEGORY, "${ProductTrackingConstant.Category.PDP} $eventCategory",
+                ProductTrackingConstant.Tracking.KEY_CATEGORY, "${ProductTrackingConstant.Category.PDP} - $eventCategory",
                 ProductTrackingConstant.Tracking.KEY_ACTION, "impression - $eventCategory",
                 ProductTrackingConstant.Tracking.KEY_LABEL, "",
                 ProductTrackingConstant.Tracking.KEY_BUSINESS_UNIT, ProductTrackingConstant.Tracking.BUSINESS_UNIT_PDP,
@@ -57,7 +57,7 @@ object ProductEducationalTracker {
                                eventCategory: String) {
         val mapEvent = TrackAppUtils.gtmData(
                 ProductTrackingConstant.PDP.EVENT_CLICK_PG,
-                "${ProductTrackingConstant.Category.PDP} $eventCategory",
+                "${ProductTrackingConstant.Category.PDP} - $eventCategory",
                 "click - cta button on $eventCategory",
                 "button:$button;title:$eduTitle;description:$eduDesc")
         mapEvent[ProductTrackingConstant.Tracking.KEY_BUSINESS_UNIT] = ProductTrackingConstant.Tracking.BUSINESS_UNIT_PDP
