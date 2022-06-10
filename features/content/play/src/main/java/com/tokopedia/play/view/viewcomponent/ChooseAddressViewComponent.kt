@@ -28,11 +28,9 @@ class ChooseAddressViewComponent(
             listener.onAddressUpdated(this@ChooseAddressViewComponent)
         }
 
-        override fun getLocalizingAddressHostSourceBottomSheet(): String = "login"
+        override fun getLocalizingAddressHostSourceBottomSheet(): String = "play"
 
-        override fun onLocalizingAddressLoginSuccessBottomSheet() {
-            //TODO("Not yet implemented")
-        }
+        override fun onLocalizingAddressLoginSuccessBottomSheet() {}
 
         override fun onDismissChooseAddressBottomSheet() {
             hideBottomSheet()
