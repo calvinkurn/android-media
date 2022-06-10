@@ -94,6 +94,18 @@ class ShopCardInfiniteModelTest {
         TestCase.assertEquals(viewModel.syncData.value, true)
     }
 
+    @Test
+    fun `test for onAttachToViewHolder success when loadFirstPageComponents returns false`() {
+        viewModel.shopCardInfiniteUseCase = shopCardInfiniteUseCase
+        coEvery {
+            shopCardInfiniteUseCase.loadFirstPageComponents(componentsItem.id, componentsItem.pageEndPoint)
+        } returns false
+
+        viewModel.onAttachToViewHolder()
+
+        TestCase.assertEquals(viewModel.syncData.value, false)
+    }
+
     /**************************** end of onAttachToViewHolder() *******************************************/
 
 
