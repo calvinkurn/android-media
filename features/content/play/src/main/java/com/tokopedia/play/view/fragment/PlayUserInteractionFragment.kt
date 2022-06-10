@@ -818,7 +818,7 @@ class PlayUserInteractionFragment @Inject constructor(
                 renderLikeBubbleView(state.like)
                 renderStatsInfoView(state.totalView)
                 renderRealTimeNotificationView(state.rtn)
-                renderViewAllProductView(state.tagItems, state.bottomInsets)
+                renderViewAllProductView(state.tagItems, state.bottomInsets, state.address, state.partner)
                 renderFeaturedProductView(prevState?.tagItems, state.tagItems, state.bottomInsets, state.status, state.address)
                 renderQuickReplyView(prevState?.quickReply, state.quickReply, prevState?.bottomInsets, state.bottomInsets, state.channel)
                 renderKebabMenuView(state.kebabMenu)
@@ -1526,9 +1526,10 @@ class PlayUserInteractionFragment @Inject constructor(
 
     private fun renderViewAllProductView(
         tagItem: TagItemUiModel,
-        bottomInsets: Map<BottomInsetsType, BottomInsetsState>
+        bottomInsets: Map<BottomInsetsType, BottomInsetsState>,
+        address: AddressWidgetUiState,
     ) {
-        if(!bottomInsets.isAnyShown) productSeeMoreView?.show()
+        if(!bottomInsets.isAnyShown && !address.shouldShow) productSeeMoreView?.show()
         else productSeeMoreView?.hide()
 
         val productListSize = tagItem.product.productSectionList.filterIsInstance<ProductSectionUiModel.Section>().sumOf {
