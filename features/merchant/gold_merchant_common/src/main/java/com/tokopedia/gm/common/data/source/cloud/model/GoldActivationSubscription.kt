@@ -10,7 +10,6 @@ data class GoldActivationSubscription(
 ) {
     fun isSuccess(): Boolean {
         return goldActivationData.header.errorCode.isBlank()
-                && goldActivationData.header.message.isEmpty()
     }
 }
 

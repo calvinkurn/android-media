@@ -46,6 +46,7 @@ class ShopGradeWidget(
 
     companion object {
         private const val DATE_FORMAT = "dd MMM yyyy"
+        private const val END_OF_TENURE_DAYS = 90L
         val RES_LAYOUT = R.layout.widget_pm_shop_grade
         const val SATURATION_INACTIVE = 0.0f
     }
@@ -324,11 +325,10 @@ class ShopGradeWidget(
     }
 
     private fun getEndOfTenureDate(element: WidgetShopGradeUiModel): String {
-        val endOfTenureDays = 90L
         val shopAge = element.shopAge
         val nowMillis = Date().time
-        val remainingDays = endOfTenureDays.minus(shopAge)
-        return if (remainingDays < endOfTenureDays) {
+        val remainingDays = END_OF_TENURE_DAYS.minus(shopAge)
+        return if (remainingDays < END_OF_TENURE_DAYS) {
             val remainingDaysMillis = TimeUnit.DAYS.toMillis(remainingDays)
             val endOfTenureMillis = nowMillis.plus(remainingDaysMillis)
             DateFormatUtils.getFormattedDate(endOfTenureMillis, DATE_FORMAT)
