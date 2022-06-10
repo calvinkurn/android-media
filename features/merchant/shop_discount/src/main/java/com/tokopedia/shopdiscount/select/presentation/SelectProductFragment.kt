@@ -22,7 +22,7 @@ import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.shopdiscount.R
 import com.tokopedia.shopdiscount.databinding.FragmentSelectProductBinding
 import com.tokopedia.shopdiscount.di.component.DaggerShopDiscountComponent
-import com.tokopedia.shopdiscount.manage_discount.presentation.view.activity.ShopDiscountManageDiscountActivity
+import com.tokopedia.shopdiscount.manage_discount.presentation.view.activity.ShopDiscountManageActivity
 import com.tokopedia.shopdiscount.manage_discount.util.ShopDiscountManageDiscountMode
 import com.tokopedia.shopdiscount.search.presentation.SearchProductFragment
 import com.tokopedia.shopdiscount.select.domain.entity.ReservableProduct
@@ -425,7 +425,7 @@ class SelectProductFragment : BaseDaggerFragment() {
 
     private fun redirectToApplyDiscountPage() {
         binding?.btnManage?.isLoading = false
-        ShopDiscountManageDiscountActivity.start(
+        ShopDiscountManageActivity.start(
             requireActivity(),
             viewModel.getRequestId(),
             ZERO,

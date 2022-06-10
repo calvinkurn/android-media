@@ -10,18 +10,18 @@ import com.tokopedia.shopdiscount.utils.constant.TrackerConstant.EDIT
 import com.tokopedia.shopdiscount.utils.constant.TrackerConstant.PHYSICAL_GOODS_BUSINESS_UNIT
 import com.tokopedia.shopdiscount.utils.constant.TrackerConstant.SLASH_PRICE_LIST_OF_PRODUCTS
 import com.tokopedia.shopdiscount.utils.constant.TrackerConstant.SLASH_PRICE_SET_DISCOUNT
-import com.tokopedia.shopdiscount.utils.constant.TrackerConstant.TOKOPEDIA_MARKETPLACE
+import com.tokopedia.shopdiscount.utils.constant.TrackerConstant.TOKOPEDIA_SELLER
 import com.tokopedia.track.builder.Tracker
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
-class ProductListPageTracker @Inject constructor(private val userSession: UserSessionInterface) {
+class ShopDiscountTracker @Inject constructor(private val userSession: UserSessionInterface) {
 
     fun sendClickAddProductEvent() {
         Tracker.Builder()
             .setBusinessUnit(PHYSICAL_GOODS_BUSINESS_UNIT)
             .setEventCategory(SLASH_PRICE_LIST_OF_PRODUCTS)
-            .setCurrentSite(TOKOPEDIA_MARKETPLACE)
+            .setCurrentSite(TOKOPEDIA_SELLER)
             .setShopId(userSession.shopId)
             .setEvent(CLICK_PG)
             .setEventAction(CLICK_ADD_PRODUCT)
@@ -38,7 +38,7 @@ class ProductListPageTracker @Inject constructor(private val userSession: UserSe
         Tracker.Builder()
             .setBusinessUnit(PHYSICAL_GOODS_BUSINESS_UNIT)
             .setEventCategory(eventCategory)
-            .setCurrentSite(TOKOPEDIA_MARKETPLACE)
+            .setCurrentSite(TOKOPEDIA_SELLER)
             .setShopId(userSession.shopId)
             .setEvent(CLICK_PG)
             .setEventAction(CLICK_SAVE)

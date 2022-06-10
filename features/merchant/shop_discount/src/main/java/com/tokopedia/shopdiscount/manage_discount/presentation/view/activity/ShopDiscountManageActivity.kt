@@ -8,9 +8,9 @@ import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.shopdiscount.R
-import com.tokopedia.shopdiscount.manage_discount.presentation.view.fragment.ShopDiscountManageDiscountFragment
+import com.tokopedia.shopdiscount.manage_discount.presentation.view.fragment.ShopDiscountManageFragment
 
-class ShopDiscountManageDiscountActivity : BaseSimpleActivity() {
+class ShopDiscountManageActivity : BaseSimpleActivity() {
 
     private var requestId: String = ""
     private var status: Int = -1
@@ -25,7 +25,7 @@ class ShopDiscountManageDiscountActivity : BaseSimpleActivity() {
 
         @JvmStatic
         fun start(context: Context, requestId : String, discountStatus : Int, mode : String) {
-            val starter = Intent(context, ShopDiscountManageDiscountActivity::class.java)
+            val starter = Intent(context, ShopDiscountManageActivity::class.java)
                 .putExtra(REQUEST_ID_PARAM, requestId)
                 .putExtra(STATUS_PARAM, discountStatus)
                 .putExtra(MODE_PARAM, mode)
@@ -40,14 +40,14 @@ class ShopDiscountManageDiscountActivity : BaseSimpleActivity() {
     }
 
     override fun onBackPressed() {
-        (fragment as? ShopDiscountManageDiscountFragment)?.onBackPressed()
+        (fragment as? ShopDiscountManageFragment)?.onBackPressed()
     }
 
     override fun getLayoutRes(): Int {
         return R.layout.activity_manage_discount
     }
 
-    override fun getNewFragment(): Fragment = ShopDiscountManageDiscountFragment.createInstance(
+    override fun getNewFragment(): Fragment = ShopDiscountManageFragment.createInstance(
         requestId,
         status,
         mode,

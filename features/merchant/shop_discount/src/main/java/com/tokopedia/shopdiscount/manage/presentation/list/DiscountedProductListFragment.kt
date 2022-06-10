@@ -19,13 +19,13 @@ import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.loaderdialog.LoaderDialog
 import com.tokopedia.shopdiscount.R
 import com.tokopedia.shopdiscount.cancel.CancelDiscountDialog
-import com.tokopedia.shopdiscount.databinding.FragmentProductListBinding
+import com.tokopedia.shopdiscount.databinding.FragmentDiscountedProductListBinding
 import com.tokopedia.shopdiscount.di.component.DaggerShopDiscountComponent
 import com.tokopedia.shopdiscount.manage.domain.entity.Product
 import com.tokopedia.shopdiscount.manage.domain.entity.ProductData
-import com.tokopedia.shopdiscount.manage.presentation.container.ProductManageFragment
+import com.tokopedia.shopdiscount.manage.presentation.container.DiscountedProductManageFragment
 import com.tokopedia.shopdiscount.manage.presentation.container.RecyclerViewScrollListener
-import com.tokopedia.shopdiscount.manage_discount.presentation.view.activity.ShopDiscountManageDiscountActivity
+import com.tokopedia.shopdiscount.manage_discount.presentation.view.activity.ShopDiscountManageActivity
 import com.tokopedia.shopdiscount.manage_discount.util.ShopDiscountManageDiscountMode
 import com.tokopedia.shopdiscount.more_menu.MoreMenuBottomSheet
 import com.tokopedia.shopdiscount.product_detail.presentation.bottomsheet.ShopDiscountProductDetailBottomSheet
@@ -36,7 +36,7 @@ import com.tokopedia.shopdiscount.utils.constant.EMPTY_STRING
 import com.tokopedia.shopdiscount.utils.constant.ZERO
 import com.tokopedia.shopdiscount.utils.extension.*
 import com.tokopedia.shopdiscount.utils.paging.BaseSimpleListFragment
-import com.tokopedia.shopdiscount.utils.tracker.ProductListPageTracker
+import com.tokopedia.shopdiscount.utils.tracker.ShopDiscountTracker
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -49,7 +49,7 @@ import kotlinx.coroutines.launch
 import java.util.*
 import javax.inject.Inject
 
-class ProductListFragment : BaseSimpleListFragment<ProductAdapter, Product>(){
+class DiscountedProductListFragment : BaseSimpleListFragment<ProductAdapter, Product>(){
 
     companion object {
         private const val BUNDLE_KEY_DISCOUNT_STATUS_NAME = "status_name"
@@ -68,8 +68,8 @@ class ProductListFragment : BaseSimpleListFragment<ProductAdapter, Product>(){
             discountStatusId: Int,
             productCount : Int,
             onDiscountRemoved: (Int, Int) -> Unit = { _, _ -> }
-        ): ProductListFragment {
-            val fragment = ProductListFragment()
+        ): DiscountedProductListFragment {
+            val fragment = DiscountedProductListFragment()
             fragment.arguments = Bundle().apply {
                 putString(BUNDLE_KEY_DISCOUNT_STATUS_NAME, discountStatusName)
                 putInt(BUNDLE_KEY_DISCOUNT_STATUS_ID, discountStatusId)
@@ -93,7 +93,7 @@ class ProductListFragment : BaseSimpleListFragment<ProductAdapter, Product>(){
         arguments?.getInt(BUNDLE_KEY_PRODUCT_COUNT).orZero()
     }
 
-    private var binding by autoClearedNullable<FragmentProductListBinding>()
+    private var binding by autoClearedNullable<FragmentDiscountedProductListBinding>()
 
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
@@ -102,11 +102,11 @@ class ProductListFragment : BaseSimpleListFragment<ProductAdapter, Product>(){
     lateinit var userSession : UserSessionInterface
 
     @Inject
-    lateinit var tracker: ProductListPageTracker
+    lateinit var tracker: ShopDiscountTracker
 
     private val loaderDialog by lazy { LoaderDialog(requireActivity()) }
     private val viewModelProvider by lazy { ViewModelProvider(this, viewModelFactory) }
-    private val viewModel by lazy { viewModelProvider.get(ProductListViewModel::class.java) }
+    private val viewModel by lazy { viewModelProvider.get(DiscountedProductListViewModel::class.java) }
     private var onDiscountRemoved: (Int, Int) -> Unit = { _, _ -> }
     private var onSwipeRefresh: () -> Unit = {}
     private var isFirstLoad = true
@@ -124,7 +124,7 @@ class ProductListFragment : BaseSimpleListFragment<ProductAdapter, Product>(){
     private var onScrollDown: () -> Unit = {}
     private var onScrollUp: () -> Unit = {}
 
-    override fun getScreenName(): String = ProductListFragment::class.java.canonicalName.orEmpty()
+    override fun getScreenName(): String = DiscountedProductListFragment::class.java.canonicalName.orEmpty()
     override fun initInjector() {
         DaggerShopDiscountComponent.builder()
             .baseAppComponent((activity?.applicationContext as? BaseMainApplication)?.baseAppComponent)
@@ -137,7 +137,7 @@ class ProductListFragment : BaseSimpleListFragment<ProductAdapter, Product>(){
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        binding = FragmentProductListBinding.inflate(inflater, container, false)
+        binding = FragmentDiscountedProductListBinding.inflate(inflater, container, false)
         return binding?.root
     }
 
@@ -205,12 +205,12 @@ class ProductListFragment : BaseSimpleListFragment<ProductAdapter, Product>(){
     }
 
     private fun setupTabChangeListener() {
-        val listener = object : ProductManageFragment.TabChangeListener{
+        val listener = object : DiscountedProductManageFragment.TabChangeListener{
             override fun onTabChanged() {
                 handleEmptyState(productCount)
             }
         }
-        (parentFragment as? ProductManageFragment)?.setTabChangeListener(listener)
+        (parentFragment as? DiscountedProductManageFragment)?.setTabChangeListener(listener)
     }
 
     private fun observeProducts() {
@@ -638,7 +638,7 @@ class ProductListFragment : BaseSimpleListFragment<ProductAdapter, Product>(){
     private fun redirectToUpdateDiscountPage() {
         binding?.btnBulkManage?.isLoading = false
         dismissLoaderDialog()
-        ShopDiscountManageDiscountActivity.start(
+        ShopDiscountManageActivity.start(
             requireActivity(),
             viewModel.getRequestId(),
             discountStatusId,

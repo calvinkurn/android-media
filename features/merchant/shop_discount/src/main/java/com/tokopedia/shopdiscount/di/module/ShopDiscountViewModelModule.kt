@@ -7,11 +7,11 @@ import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
 import com.tokopedia.shopdiscount.bulk.presentation.DiscountBulkApplyViewModel
 import com.tokopedia.shopdiscount.di.scope.ShopDiscountComponentScope
 import com.tokopedia.shopdiscount.info.presentation.viewmodel.ShopDiscountSellerInfoBottomSheetViewModel
-import com.tokopedia.shopdiscount.manage.presentation.container.ProductManageViewModel
-import com.tokopedia.shopdiscount.manage.presentation.list.ProductListViewModel
-import com.tokopedia.shopdiscount.manage_discount.presentation.view.viewmodel.ShopDiscountManageDiscountViewModel
-import com.tokopedia.shopdiscount.manage_product_discount.presentation.viewmodel.ShopDiscountManageProductDiscountViewModel
-import com.tokopedia.shopdiscount.manage_product_discount.presentation.viewmodel.ShopDiscountManageProductVariantDiscountViewModel
+import com.tokopedia.shopdiscount.manage.presentation.container.DiscountedProductManageViewModel
+import com.tokopedia.shopdiscount.manage.presentation.list.DiscountedProductListViewModel
+import com.tokopedia.shopdiscount.manage_discount.presentation.view.viewmodel.ShopDiscountManageViewModel
+import com.tokopedia.shopdiscount.manage_product_discount.presentation.viewmodel.ShopDiscountManageProductViewModel
+import com.tokopedia.shopdiscount.manage_product_discount.presentation.viewmodel.ShopDiscountManageVariantViewModel
 import com.tokopedia.shopdiscount.product_detail.presentation.viewmodel.ShopDiscountProductDetailBottomSheetViewModel
 import com.tokopedia.shopdiscount.search.presentation.SearchProductViewModel
 import com.tokopedia.shopdiscount.select.presentation.SelectProductViewModel
@@ -35,8 +35,8 @@ abstract class ShopDiscountViewModelModule {
 
     @Binds
     @IntoMap
-    @ViewModelKey(ProductManageViewModel::class)
-    internal abstract fun provideProductManageViewModel(viewModel: ProductManageViewModel): ViewModel
+    @ViewModelKey(DiscountedProductManageViewModel::class)
+    internal abstract fun provideProductManageViewModel(viewModel: DiscountedProductManageViewModel): ViewModel
 
     @Binds
     @IntoMap
@@ -45,8 +45,8 @@ abstract class ShopDiscountViewModelModule {
 
     @Binds
     @IntoMap
-    @ViewModelKey(ProductListViewModel::class)
-    internal abstract fun provideProductListViewModel(viewModel: ProductListViewModel): ViewModel
+    @ViewModelKey(DiscountedProductListViewModel::class)
+    internal abstract fun provideProductListViewModel(viewModel: DiscountedProductListViewModel): ViewModel
 
     @Binds
     @IntoMap
@@ -65,13 +65,13 @@ abstract class ShopDiscountViewModelModule {
 
     @Binds
     @IntoMap
-    @ViewModelKey(ShopDiscountManageDiscountViewModel::class)
-    internal abstract fun provideShopDiscountManageDiscountViewModel(viewModel: ShopDiscountManageDiscountViewModel): ViewModel
+    @ViewModelKey(ShopDiscountManageViewModel::class)
+    internal abstract fun provideShopDiscountManageDiscountViewModel(viewModel: ShopDiscountManageViewModel): ViewModel
 
     @Binds
     @IntoMap
-    @ViewModelKey(ShopDiscountManageProductDiscountViewModel::class)
-    internal abstract fun provideShopDiscountManageProductDiscountViewModel(viewModel: ShopDiscountManageProductDiscountViewModel): ViewModel
+    @ViewModelKey(ShopDiscountManageProductViewModel::class)
+    internal abstract fun provideShopDiscountManageProductDiscountViewModel(viewModel: ShopDiscountManageProductViewModel): ViewModel
 
     @Binds
     @IntoMap
@@ -80,7 +80,7 @@ abstract class ShopDiscountViewModelModule {
 
     @Binds
     @IntoMap
-    @ViewModelKey(ShopDiscountManageProductVariantDiscountViewModel::class)
-    internal abstract fun provideShopDiscountManageProductVariantDiscountViewModel(viewModel: ShopDiscountManageProductVariantDiscountViewModel): ViewModel
+    @ViewModelKey(ShopDiscountManageVariantViewModel::class)
+    internal abstract fun provideShopDiscountManageProductVariantDiscountViewModel(viewModel: ShopDiscountManageVariantViewModel): ViewModel
 
 }

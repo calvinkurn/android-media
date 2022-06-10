@@ -29,31 +29,30 @@ import com.tokopedia.shopdiscount.bulk.presentation.DiscountBulkApplyBottomSheet
 import com.tokopedia.shopdiscount.common.widget.ShopDiscountLabelBulkApply
 import com.tokopedia.shopdiscount.databinding.FragmentManageDiscountBinding
 import com.tokopedia.shopdiscount.di.component.DaggerShopDiscountComponent
-import com.tokopedia.shopdiscount.manage.presentation.container.ProductManageActivity
+import com.tokopedia.shopdiscount.manage.presentation.container.DiscountedProductManageActivity
 import com.tokopedia.shopdiscount.manage_discount.data.uimodel.ShopDiscountSetupProductUiModel
 import com.tokopedia.shopdiscount.manage_discount.presentation.adapter.ShopDiscountManageDiscountAdapter
 import com.tokopedia.shopdiscount.manage_discount.presentation.adapter.ShopDiscountManageDiscountTypeFactoryImpl
 import com.tokopedia.shopdiscount.manage_discount.presentation.adapter.viewholder.ShopDiscountManageDiscountGlobalErrorViewHolder
 import com.tokopedia.shopdiscount.manage_discount.presentation.adapter.viewholder.ShopDiscountSetupProductItemViewHolder
-import com.tokopedia.shopdiscount.manage_discount.presentation.view.viewmodel.ShopDiscountManageDiscountViewModel
+import com.tokopedia.shopdiscount.manage_discount.presentation.view.viewmodel.ShopDiscountManageViewModel
 import com.tokopedia.shopdiscount.manage_discount.util.ShopDiscountManageDiscountMode
-import com.tokopedia.shopdiscount.manage_product_discount.presentation.activity.ShopDiscountManageProductDiscountActivity
-import com.tokopedia.shopdiscount.manage_product_discount.presentation.activity.ShopDiscountManageProductVariantDiscountActivity
+import com.tokopedia.shopdiscount.manage_product_discount.presentation.activity.ShopDiscountManageProductActivity
+import com.tokopedia.shopdiscount.manage_product_discount.presentation.activity.ShopDiscountManageVariantActivity
 import com.tokopedia.shopdiscount.utils.constant.DiscountStatus
 import com.tokopedia.shopdiscount.utils.extension.showError
 import com.tokopedia.shopdiscount.utils.extension.showToaster
 import com.tokopedia.shopdiscount.utils.rv_decoration.ShopDiscountDividerItemDecoration
-import com.tokopedia.shopdiscount.utils.tracker.ProductListPageTracker
+import com.tokopedia.shopdiscount.utils.tracker.ShopDiscountTracker
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.lifecycle.autoClearedNullable
-import java.util.*
 import javax.inject.Inject
 
-class ShopDiscountManageDiscountFragment : BaseDaggerFragment(),
+class ShopDiscountManageFragment : BaseDaggerFragment(),
     ShopDiscountSetupProductItemViewHolder.Listener,
     ShopDiscountManageDiscountGlobalErrorViewHolder.Listener {
 
@@ -71,7 +70,7 @@ class ShopDiscountManageDiscountFragment : BaseDaggerFragment(),
             mode: String,
             selectedProductVariantId: String
         ) =
-            ShopDiscountManageDiscountFragment().apply {
+            ShopDiscountManageFragment().apply {
                 arguments = Bundle().apply {
                     putString(REQUEST_ID_ARG, requestId)
                     putInt(SELECTED_SLASH_PRICE_STATUS_ARG, status)
@@ -83,7 +82,7 @@ class ShopDiscountManageDiscountFragment : BaseDaggerFragment(),
 
     private var viewBinding by autoClearedNullable<FragmentManageDiscountBinding>()
     override fun getScreenName(): String =
-        ShopDiscountManageDiscountFragment::class.java.canonicalName.orEmpty()
+        ShopDiscountManageFragment::class.java.canonicalName.orEmpty()
 
     private var rvProductList: RecyclerView? = null
     private var containerButtonSubmit: ViewGroup? = null
@@ -95,10 +94,10 @@ class ShopDiscountManageDiscountFragment : BaseDaggerFragment(),
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
     @Inject
-    lateinit var tracker: ProductListPageTracker
+    lateinit var tracker: ShopDiscountTracker
 
     private val viewModelProvider by lazy { ViewModelProvider(this, viewModelFactory) }
-    private val viewModel by lazy { viewModelProvider.get(ShopDiscountManageDiscountViewModel::class.java) }
+    private val viewModel by lazy { viewModelProvider.get(ShopDiscountManageViewModel::class.java) }
     private var requestId: String = ""
     private var selectedSlashPriceStatusId: Int = -1
     private var mode: String = ""
@@ -227,7 +226,7 @@ class ShopDiscountManageDiscountFragment : BaseDaggerFragment(),
     private fun setupRecyclerView() {
         rvProductList?.apply {
             layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
-            adapter = this@ShopDiscountManageDiscountFragment.adapter
+            adapter = this@ShopDiscountManageFragment.adapter
             itemAnimator = null
             setDecoration()
         }
@@ -363,7 +362,7 @@ class ShopDiscountManageDiscountFragment : BaseDaggerFragment(),
         successSubmitToasterWording: String
     ) {
         context?.let {
-            ProductManageActivity.start(
+            DiscountedProductManageActivity.start(
                 it,
                 selectedPriceStatusId,
                 successSubmitToasterWording
@@ -573,14 +572,14 @@ class ShopDiscountManageDiscountFragment : BaseDaggerFragment(),
             context,
             ApplinkConstInternalSellerapp.SHOP_DISCOUNT_MANAGE_PRODUCT_VARIANT_DISCOUNT
         )
-        intent.putExtra(ShopDiscountManageProductVariantDiscountActivity.MODE_PARAM, mode)
+        intent.putExtra(ShopDiscountManageVariantActivity.MODE_PARAM, mode)
         intent.putExtra(
-            ShopDiscountManageProductVariantDiscountActivity.PRODUCT_MANAGE_UI_MODEL,
+            ShopDiscountManageVariantActivity.PRODUCT_MANAGE_UI_MODEL,
             model.copy()
         )
         startActivityForResult(
             intent,
-            ShopDiscountManageProductVariantDiscountActivity.REQUEST_CODE_APPLY_PRODUCT_VARIANT_DISCOUNT
+            ShopDiscountManageVariantActivity.REQUEST_CODE_APPLY_PRODUCT_VARIANT_DISCOUNT
         )
     }
 
@@ -589,14 +588,14 @@ class ShopDiscountManageDiscountFragment : BaseDaggerFragment(),
             context,
             ApplinkConstInternalSellerapp.SHOP_DISCOUNT_MANAGE_PRODUCT_DISCOUNT
         )
-        intent.putExtra(ShopDiscountManageProductDiscountActivity.MODE_PARAM, mode)
+        intent.putExtra(ShopDiscountManageProductActivity.MODE_PARAM, mode)
         intent.putExtra(
-            ShopDiscountManageProductDiscountActivity.PRODUCT_MANAGE_UI_MODEL,
+            ShopDiscountManageProductActivity.PRODUCT_MANAGE_UI_MODEL,
             model.copy()
         )
         startActivityForResult(
             intent,
-            ShopDiscountManageProductDiscountActivity.REQUEST_CODE_APPLY_PRODUCT_DISCOUNT
+            ShopDiscountManageProductActivity.REQUEST_CODE_APPLY_PRODUCT_DISCOUNT
         )
     }
 
@@ -653,19 +652,19 @@ class ShopDiscountManageDiscountFragment : BaseDaggerFragment(),
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         when (requestCode) {
-            ShopDiscountManageProductDiscountActivity.REQUEST_CODE_APPLY_PRODUCT_DISCOUNT -> {
+            ShopDiscountManageProductActivity.REQUEST_CODE_APPLY_PRODUCT_DISCOUNT -> {
                 if (resultCode == Activity.RESULT_OK) {
                     data?.extras?.getParcelable<ShopDiscountSetupProductUiModel.SetupProductData>(
-                        ShopDiscountManageProductDiscountActivity.PRODUCT_DATA_RESULT
+                        ShopDiscountManageProductActivity.PRODUCT_DATA_RESULT
                     )?.let {
                         applyUpdatedProductData(it)
                     }
                 }
             }
-            ShopDiscountManageProductVariantDiscountActivity.REQUEST_CODE_APPLY_PRODUCT_VARIANT_DISCOUNT -> {
+            ShopDiscountManageVariantActivity.REQUEST_CODE_APPLY_PRODUCT_VARIANT_DISCOUNT -> {
                 if (resultCode == Activity.RESULT_OK) {
                     data?.extras?.getParcelable<ShopDiscountSetupProductUiModel.SetupProductData>(
-                        ShopDiscountManageProductDiscountActivity.PRODUCT_DATA_RESULT
+                        ShopDiscountManageProductActivity.PRODUCT_DATA_RESULT
                     )?.let {
                         applyUpdatedProductData(it)
                     }

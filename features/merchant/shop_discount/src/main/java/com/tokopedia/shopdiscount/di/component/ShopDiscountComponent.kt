@@ -6,13 +6,13 @@ import com.tokopedia.shopdiscount.di.module.ShopDiscountModule
 import com.tokopedia.shopdiscount.di.module.ShopDiscountViewModelModule
 import com.tokopedia.shopdiscount.di.scope.ShopDiscountComponentScope
 import com.tokopedia.shopdiscount.info.presentation.bottomsheet.ShopDiscountSellerInfoBottomSheet
-import com.tokopedia.shopdiscount.manage.presentation.container.ProductManageActivity
-import com.tokopedia.shopdiscount.manage.presentation.container.ProductManageFragment
-import com.tokopedia.shopdiscount.manage.presentation.list.ProductListFragment
-import com.tokopedia.shopdiscount.manage_discount.presentation.view.fragment.ShopDiscountManageDiscountFragment
-import com.tokopedia.shopdiscount.manage_product_discount.presentation.fragment.ShopDiscountManageProductDiscountFragment
-import com.tokopedia.shopdiscount.manage_product_discount.presentation.fragment.ShopDiscountManageProductDiscountMultiLocFragment
-import com.tokopedia.shopdiscount.manage_product_discount.presentation.fragment.ShopDiscountManageProductVariantDiscountFragment
+import com.tokopedia.shopdiscount.manage.presentation.container.DiscountedProductManageActivity
+import com.tokopedia.shopdiscount.manage.presentation.container.DiscountedProductManageFragment
+import com.tokopedia.shopdiscount.manage.presentation.list.DiscountedProductListFragment
+import com.tokopedia.shopdiscount.manage_discount.presentation.view.fragment.ShopDiscountManageFragment
+import com.tokopedia.shopdiscount.manage_product_discount.presentation.fragment.ShopDiscountManageProductFragment
+import com.tokopedia.shopdiscount.manage_product_discount.presentation.fragment.ShopDiscountManageVariantFragment
+import com.tokopedia.shopdiscount.manage_product_discount.presentation.fragment.ShopDiscountMultiLocEduFragment
 import com.tokopedia.shopdiscount.product_detail.presentation.bottomsheet.ShopDiscountProductDetailBottomSheet
 import com.tokopedia.shopdiscount.search.presentation.SearchProductActivity
 import com.tokopedia.shopdiscount.search.presentation.SearchProductFragment
@@ -30,19 +30,19 @@ import dagger.Component
     dependencies = [BaseAppComponent::class]
 )
 interface ShopDiscountComponent {
-    fun inject(activity : ProductManageActivity)
+    fun inject(activity : DiscountedProductManageActivity)
     fun inject(bottomSheet: DiscountBulkApplyBottomSheet)
-    fun inject(fragment: ProductManageFragment)
+    fun inject(fragment: DiscountedProductManageFragment)
     fun inject(bottomSheet: ShopDiscountProductDetailBottomSheet)
-    fun inject(fragment : ProductListFragment)
+    fun inject(fragment : DiscountedProductListFragment)
     fun inject(activity : SearchProductActivity)
     fun inject(bottomSheet: ShopDiscountSellerInfoBottomSheet)
     fun inject(fragment: SearchProductFragment)
     fun inject(fragment: SelectProductFragment)
     fun inject(fragment: SelectProductActivity)
-    fun inject(fragment: ShopDiscountManageDiscountFragment)
-    fun inject(fragment: ShopDiscountManageProductDiscountFragment)
+    fun inject(fragment: ShopDiscountManageFragment)
+    fun inject(fragment: ShopDiscountManageProductFragment)
     fun inject(bottomSheet: SetPeriodBottomSheet)
-    fun inject(fragment: ShopDiscountManageProductDiscountMultiLocFragment)
-    fun inject(fragment: ShopDiscountManageProductVariantDiscountFragment)
+    fun inject(fragment: ShopDiscountMultiLocEduFragment)
+    fun inject(fragment: ShopDiscountManageVariantFragment)
 }
