@@ -22,7 +22,6 @@
     <!-- Kol Comment New -->
     <string name="kol_activity_title">Komentar</string>
     <string name="kol_delete_1_comment">1 Komentar dihapus.</string>
-    <string name="kol_delete_comment_ok">Kembalikan</string>
     <string name="kol_adding_comment_error">Oops, tidak bisa memberi komentar.</string>
     <string name="kol_deleting_comment_error">Oops, tidak bisa menghapus komentar.</string>
 

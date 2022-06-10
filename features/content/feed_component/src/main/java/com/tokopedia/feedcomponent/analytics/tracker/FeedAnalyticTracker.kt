@@ -1640,29 +1640,6 @@ class FeedAnalyticTracker
         TrackApp.getInstance().gtm.sendGeneralEvent(map)
     }
 
-    fun clickKembalikanCommentPage(actvityId: String, authorId: String, isVideoPost: Boolean, isFollowed: Boolean, postType: String) {
-        val map = mapOf(
-            KEY_EVENT to CLICK_FEED,
-            EVENT_CATEGORY to CATEGORY_FEED_TIMELINE_COMMENT,
-            EVENT_ACTION to String.format(
-                FORMAT_THREE_PARAM,
-                CLICK,
-                "kembalikan to undo delete",
-                getPostType(postType, isFollowed, if (isVideoPost) TYPE_VIDEO else TYPE_IMAGE)
-            ),
-            KEY_EVENT_LABEL to String.format(
-                FORMAT_TWO_PARAM,
-                actvityId,
-                authorId
-            ),
-            KEY_BUSINESS_UNIT_EVENT to CONTENT,
-            KEY_CURRENT_SITE_EVENT to MARKETPLACE,
-
-            KEY_EVENT_USER_ID to userSessionInterface.userId
-        )
-        TrackApp.getInstance().gtm.sendGeneralEvent(map)
-    }
-
     fun clickMuteButton(activityId: String, isMute: Boolean, id: String, isFollowed: Boolean, mediaType: String) {
         var map = getCommonMap()
         map = map.plus(

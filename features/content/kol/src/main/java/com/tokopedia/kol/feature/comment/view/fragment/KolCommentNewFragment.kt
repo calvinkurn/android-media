@@ -177,13 +177,7 @@ class KolCommentNewFragment : BaseDaggerFragment(), KolComment.View, KolComment.
                             getString(R.string.kol_delete_1_comment),
                             TOASTER_DURATION_DELETE_COMMENT,
                             Toaster.TYPE_NORMAL,
-                            getString(R.string.kol_delete_comment_ok)
-                    ) {
-                        feedAnalytics.clickKembalikanCommentPage(postId, authorId, isVideoPost, isFollowed, postType)
-                        adapter?.clearList()
-                        presenter.getCommentFirstTime(arguments?.getInt(ARGS_ID) ?: 0)
-                        toBeDeleted = false
-                    }.show()
+                    ).show()
 
                 }
             } else {
