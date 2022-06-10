@@ -587,8 +587,7 @@ class PlayBottomSheetFragment @Inject constructor(
     }
 
     override fun onInformationClicked(
-        view: ProductSheetViewComponent,
-        productSectionUiModel: ProductSectionUiModel.Section
+        view: ProductSheetViewComponent
     ) {
         openPageByApplink(ApplinkConstInternalTokopediaNow.EDUCATIONAL_INFO , pipMode = false)
     }
