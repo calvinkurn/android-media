@@ -1,9 +1,6 @@
 package com.tokopedia.common_sdk_affiliate_toko.usecase
 
-import com.tokopedia.common_sdk_affiliate_toko.model.AffiliateCookieParams
-import com.tokopedia.common_sdk_affiliate_toko.model.AffiliateSdkPageType
-import com.tokopedia.common_sdk_affiliate_toko.model.CreateAffiliateCookieRequest
-import com.tokopedia.common_sdk_affiliate_toko.model.CreateAffiliateCookieResponse
+import com.tokopedia.common_sdk_affiliate_toko.model.*
 import com.tokopedia.common_sdk_affiliate_toko.raw.GQL_Create_Cookie
 import com.tokopedia.common_sdk_affiliate_toko.repository.CommonAffiliateRepository
 import com.tokopedia.track.TrackApp
@@ -27,7 +24,7 @@ class CreateCookieUseCase {
         deviceId: String
     ): CreateAffiliateCookieRequest {
         return CreateAffiliateCookieRequest(
-            param.additionalParam,
+            param.toCreateCookieAdditionParam(),
             CreateAffiliateCookieRequest.AffiliateDetail(param.affiliateUUID),
             CreateAffiliateCookieRequest.CookieLevel(if (param.affiliatePageDetail.pageType == AffiliateSdkPageType.PDP) "Product" else "Page"),
             CreateAffiliateCookieRequest.Header(

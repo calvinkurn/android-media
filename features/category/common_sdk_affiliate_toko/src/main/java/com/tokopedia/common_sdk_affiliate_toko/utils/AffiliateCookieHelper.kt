@@ -5,11 +5,14 @@ import android.net.Uri
 import com.tokopedia.common_sdk_affiliate_toko.model.AffiliateCookieParams
 import com.tokopedia.common_sdk_affiliate_toko.model.AffiliateSdkPageType
 import com.tokopedia.common_sdk_affiliate_toko.model.CreateAffiliateCookieRequest
+import com.tokopedia.common_sdk_affiliate_toko.usecase.CheckCookieUseCase
 import com.tokopedia.common_sdk_affiliate_toko.usecase.CreateCookieUseCase
 import com.tokopedia.track.TrackApp
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import okhttp3.HttpUrl.Companion.toHttpUrl
+import timber.log.Timber
+import java.lang.Exception
 import java.net.URI
 import java.net.URL
 import java.net.URLEncoder
@@ -25,17 +28,20 @@ object AffiliateCookieHelper {
         when (params.affiliatePageDetail.pageType) {
             AffiliateSdkPageType.PDP -> {
                 if (params.affiliateUUID.isNotEmpty()) {
-                    //TODO call createAffiliateCookie
                     CreateCookieUseCase().createCookieRequest(params, UserSession(context).deviceId)
                 }
             }
             else -> {
                 affiliateUUID = params.affiliateUUID
                 if (affiliateUUID.isNotEmpty()) {
-                    //TODO call createAffiliateCookie
-
+                    CreateCookieUseCase().createCookieRequest(params, UserSession(context).deviceId)
                 } else {
-                    //TODO call checkAffiliateCookie
+                    val response = CheckCookieUseCase().checkAffiliateCookie(params)
+                    try {
+                        affiliateUUID = response.affiliateUuId ?: ""
+                    } catch (e: Exception) {
+                        Timber.e(e)
+                    }
                 }
             }
         }

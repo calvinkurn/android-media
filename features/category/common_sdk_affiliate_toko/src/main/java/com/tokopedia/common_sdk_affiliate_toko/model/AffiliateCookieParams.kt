@@ -7,9 +7,14 @@ class AffiliateCookieParams(
     val affiliatePageDetail: AffiliatePageDetail,
     val affiliateChannel: String,
     val uuid: String,
-    val additionalParam: List<CreateAffiliateCookieRequest.AdditionalParam>,
+    val additionalParam: List<AdditionalParam>,
     val productInfo: AffiliateSdkProductInfo = AffiliateSdkProductInfo(),
     val affiliateUUID: String = ""
+)
+
+class AdditionalParam(
+    var key: String?,
+    var value: String?
 )
 
 class AffiliatePageDetail(
@@ -25,4 +30,12 @@ enum class AffiliateSdkPageType {
     CLP,
     CAMPAIGN,
     CATALOG
+}
+
+fun AffiliateCookieParams.toCreateCookieAdditionParam(): List<CreateAffiliateCookieRequest.AdditionalParam> {
+    return additionalParam.map { CreateAffiliateCookieRequest.AdditionalParam(it.key, it.value) }
+}
+
+fun AffiliateCookieParams.toCheckCookieAdditionParam(): List<CheckAffiliateCookieRequest.AdditionalParam> {
+    return additionalParam.map { CheckAffiliateCookieRequest.AdditionalParam(it.key, it.value) }
 }

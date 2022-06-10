@@ -24,7 +24,7 @@ data class AffiliateCookieResponse(
 
     @SerializedName("AffiliateUUID")
     @Expose
-    val affiliateUuId: String = ""
+    val affiliateUuId: String? = ""
 )
 
 data class AffiliateCookieData(
