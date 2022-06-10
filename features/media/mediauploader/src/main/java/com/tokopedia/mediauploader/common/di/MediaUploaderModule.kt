@@ -4,6 +4,8 @@ import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.mediauploader.UploaderUseCase
+import com.tokopedia.mediauploader.common.url.EnvManager
+import com.tokopedia.mediauploader.common.url.MediaUploaderUrl
 import com.tokopedia.mediauploader.image.ImageUploaderManager
 import com.tokopedia.mediauploader.image.data.ImageUploadServices
 import com.tokopedia.mediauploader.image.domain.GetImagePolicyUseCase
@@ -27,6 +29,22 @@ class MediaUploaderModule {
         @ApplicationContext context: Context
     ): UserSessionInterface {
         return UserSession(context)
+    }
+
+    @Provides
+    @MediaUploaderQualifier
+    fun provideEnvManager(
+        @ApplicationContext context: Context
+    ): EnvManager {
+        return EnvManager(context)
+    }
+
+    @Provides
+    @MediaUploaderQualifier
+    fun provideMediaUploaderUrl(
+        envManager: EnvManager
+    ): MediaUploaderUrl {
+        return MediaUploaderUrl(envManager)
     }
 
     @Provides
