@@ -135,6 +135,7 @@ import com.tokopedia.product.detail.data.util.DynamicProductDetailMapper
 import com.tokopedia.product.detail.data.util.DynamicProductDetailMapper.generateAffiliateShareData
 import com.tokopedia.product.detail.data.util.DynamicProductDetailMapper.generateProductShareData
 import com.tokopedia.product.detail.data.util.DynamicProductDetailMapper.generateUserLocationRequestRates
+import com.tokopedia.product.detail.data.util.DynamicProductDetailMapper.zeroIfEmpty
 import com.tokopedia.product.detail.data.util.DynamicProductDetailSwipeTrackingState
 import com.tokopedia.product.detail.data.util.DynamicProductDetailTalkGoToReplyDiscussion
 import com.tokopedia.product.detail.data.util.DynamicProductDetailTalkGoToWriteDiscussion
@@ -2654,10 +2655,13 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
         }
     }
 
+
     private fun onClickShareProduct() {
         viewModel.getDynamicProductInfoP1?.let { productInfo ->
             DynamicProductDetailTracking.Click.eventClickPdpShare(
-                    productInfo.basic.productID, viewModel.userId
+                    productInfo.basic.productID, viewModel.userId,
+                    zeroIfEmpty(productInfo.data.campaign.campaignID),
+                    zeroIfEmpty(pdpUiUpdater?.productBundlingData?.bundleInfo?.bundleId)
             )
             shareProduct(productInfo)
         }
@@ -2667,7 +2671,9 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
         val productInfo = dynamicProductInfoP1 ?: viewModel.getDynamicProductInfoP1
         if (productInfo != null) {
 
-            val productData = generateProductShareData(productInfo, viewModel.userId, viewModel.getShopInfo().shopCore.url)
+            val productData = generateProductShareData(productInfo, viewModel.userId,
+                viewModel.getShopInfo().shopCore.url, pdpUiUpdater?.productBundlingData?.bundleInfo?.bundleId ?: "0")
+
             val shopInfo = if (viewModel.getShopInfo().isShopInfoNotEmpty()) viewModel.getShopInfo() else null
             val affiliateData = generateAffiliateShareData(productInfo, shopInfo, viewModel.variantData)
             checkAndExecuteReferralAction(productData, affiliateData)
