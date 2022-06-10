@@ -1,5 +1,7 @@
 package com.tokopedia.play.broadcaster.analytic.interactive
 
+import com.tokopedia.play_common.model.ui.LeadeboardType
+
 
 /**
  * Created by mzennis on 22/07/21.
@@ -96,5 +98,13 @@ interface PlayBroadcastInteractiveAnalytic {
         channelTitle: String,
         interactiveId: String,
         interactiveTitle: String
+    )
+
+    fun onImpressReportLeaderboard(
+        channelId: String,
+        channelTitle: String,
+        id: String,
+        title: String,
+        engagementType: String
     )
 }

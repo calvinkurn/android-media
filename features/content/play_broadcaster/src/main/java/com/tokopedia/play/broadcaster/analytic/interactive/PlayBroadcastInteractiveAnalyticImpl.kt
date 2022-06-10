@@ -1,6 +1,7 @@
 package com.tokopedia.play.broadcaster.analytic.interactive
 
 import com.tokopedia.play.broadcaster.analytic.*
+import com.tokopedia.play_common.model.ui.LeadeboardType
 import com.tokopedia.track.TrackApp
 import com.tokopedia.user.session.UserSessionInterface
 import java.util.concurrent.TimeUnit
@@ -317,6 +318,19 @@ class PlayBroadcastInteractiveAnalyticImpl @Inject constructor(
             "view - quiz result option live room",
             "${userSession.shopId} - $channelId - $channelTitle - $interactiveId - $interactiveTitle",
             )
+    }
+
+    override fun onImpressReportLeaderboard(
+        channelId: String,
+        channelTitle: String,
+        interactiveId: String,
+        interactiveTitle: String,
+        engagementType: String
+    ) {
+        sendImpressionEvent(
+            "view - quiz result report page",
+            "${userSession.shopId} - $channelId - $channelTitle - $interactiveId - $interactiveTitle - $engagementType",
+        )
     }
 
     private fun sendClickEvent(

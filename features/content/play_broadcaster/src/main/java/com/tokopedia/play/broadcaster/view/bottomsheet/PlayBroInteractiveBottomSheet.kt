@@ -274,14 +274,24 @@ class PlayBroInteractiveBottomSheet @Inject constructor(
         view: PlayInteractiveLeaderboardViewComponent,
         leaderboard: PlayLeaderboardUiModel
     ) {
-        if (sheetType == Type.LEADERBOARD.toString())
-            analytic.onImpressOngoingLeaderBoard(
-                parentViewModel.channelId,
-                parentViewModel.channelTitle,
-                leaderboard.id,
-                leaderboard.title,
-                leaderboard.reward,
-            )
+        when (sheetType) {
+            Type.LEADERBOARD.toString() ->
+                analytic.onImpressOngoingLeaderBoard(
+                    parentViewModel.channelId,
+                    parentViewModel.channelTitle,
+                    leaderboard.id,
+                    leaderboard.title,
+                    leaderboard.reward,
+                )
+            Type.REPORT.toString() ->
+                analytic.onImpressReportLeaderboard(
+                    parentViewModel.channelId,
+                    parentViewModel.channelTitle,
+                    leaderboard.id,
+                    leaderboard.title,
+                    leaderboard.leaderBoardType.toString().lowercase(),
+                )
+        }
     }
 
     override fun onBackButtonClicked(view: QuizOptionDetailViewComponent) {
