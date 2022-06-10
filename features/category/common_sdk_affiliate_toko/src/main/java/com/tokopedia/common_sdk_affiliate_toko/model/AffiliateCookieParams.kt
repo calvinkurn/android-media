@@ -1,15 +1,18 @@
 package com.tokopedia.common_sdk_affiliate_toko.model
 
+import com.google.gson.annotations.SerializedName
 
-data class AffiliateCookieParams(
+
+class AffiliateCookieParams(
     val affiliatePageDetail: AffiliatePageDetail,
     val affiliateChannel: String,
     val uuid: String,
+    val additionalParam: List<CreateAffiliateCookieRequest.AdditionalParam>,
     val productInfo: AffiliateSdkProductInfo = AffiliateSdkProductInfo(),
     val affiliateUUID: String = ""
 )
 
-data class AffiliatePageDetail(
+class AffiliatePageDetail(
     val pageType: AffiliateSdkPageType,
     val pageId: String,
     val siteId: String = "1",

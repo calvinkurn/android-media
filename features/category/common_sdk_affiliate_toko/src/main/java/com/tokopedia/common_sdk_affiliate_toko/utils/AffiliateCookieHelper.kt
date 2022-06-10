@@ -4,6 +4,11 @@ import android.content.Context
 import android.net.Uri
 import com.tokopedia.common_sdk_affiliate_toko.model.AffiliateCookieParams
 import com.tokopedia.common_sdk_affiliate_toko.model.AffiliateSdkPageType
+import com.tokopedia.common_sdk_affiliate_toko.model.CreateAffiliateCookieRequest
+import com.tokopedia.common_sdk_affiliate_toko.usecase.CreateCookieUseCase
+import com.tokopedia.track.TrackApp
+import com.tokopedia.user.session.UserSession
+import com.tokopedia.user.session.UserSessionInterface
 import okhttp3.HttpUrl.Companion.toHttpUrl
 import java.net.URI
 import java.net.URL
@@ -13,7 +18,7 @@ object AffiliateCookieHelper {
 
     private var affiliateUUID: String = ""
 
-    fun initCookie(
+    suspend fun initCookie(
         context: Context,
         params: AffiliateCookieParams
     ) {
@@ -21,12 +26,14 @@ object AffiliateCookieHelper {
             AffiliateSdkPageType.PDP -> {
                 if (params.affiliateUUID.isNotEmpty()) {
                     //TODO call createAffiliateCookie
+                    CreateCookieUseCase().createCookieRequest(params, UserSession(context).deviceId)
                 }
             }
             else -> {
                 affiliateUUID = params.affiliateUUID
                 if (affiliateUUID.isNotEmpty()) {
                     //TODO call createAffiliateCookie
+
                 } else {
                     //TODO call checkAffiliateCookie
                 }

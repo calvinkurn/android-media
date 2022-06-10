@@ -83,8 +83,6 @@ data class CreateAffiliateCookieRequest(
         var categoryID: String?,
         @SerializedName("IsVariant")
         var isVariant: Boolean?,
-        @SerializedName("ProductID")
-        var productID: String?,
         @SerializedName("StockQty")
         var stockQty: Int?
     )
