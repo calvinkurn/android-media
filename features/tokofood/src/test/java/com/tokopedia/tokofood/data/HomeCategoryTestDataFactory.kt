@@ -36,6 +36,7 @@ import com.tokopedia.tokofood.feature.home.domain.data.TokoFoodMerchantList
 import com.tokopedia.tokofood.feature.home.domain.data.TokoFoodMerchantListResponse
 import com.tokopedia.tokofood.feature.home.domain.data.USP
 import com.tokopedia.tokofood.feature.home.domain.data.USPResponse
+import com.tokopedia.tokofood.feature.home.presentation.uimodel.TokoFoodCategoryLoadingStateUiModel
 import com.tokopedia.tokofood.feature.home.presentation.uimodel.TokoFoodHomeChooseAddressWidgetUiModel
 import com.tokopedia.tokofood.feature.home.presentation.uimodel.TokoFoodHomeEmptyStateLocationUiModel
 import com.tokopedia.tokofood.feature.home.presentation.uimodel.TokoFoodHomeIconsUiModel
@@ -55,6 +56,16 @@ import com.tokopedia.unifycomponents.ticker.TickerData
 fun createLoadingState(): TokoFoodListUiModel {
     val mutableList = mutableListOf<Visitable<*>>()
     val loadingStateUiModel = TokoFoodHomeLoadingStateUiModel(id = LOADING_STATE)
+    mutableList.add(loadingStateUiModel)
+    return TokoFoodListUiModel(
+        items = mutableList,
+        state = TokoFoodLayoutState.LOADING
+    )
+}
+
+fun createLoadingCategoryState(): TokoFoodListUiModel {
+    val mutableList = mutableListOf<Visitable<*>>()
+    val loadingStateUiModel = TokoFoodCategoryLoadingStateUiModel(id = LOADING_STATE)
     mutableList.add(loadingStateUiModel)
     return TokoFoodListUiModel(
         items = mutableList,
@@ -310,6 +321,26 @@ fun createMerchantListResponse(): TokoFoodMerchantListResponse {
                 )
             ),
             nextPageKey = "2"
+        )
+    )
+}
+
+fun createMerchantListEmptyPageResponse(): TokoFoodMerchantListResponse {
+    return TokoFoodMerchantListResponse(
+        data = TokoFoodMerchantList(
+            merchants = listOf(
+                Merchant(
+                    id = "abcdef",
+                    name = "Toko 1",
+                    isClosed = false
+                ),
+                Merchant(
+                    id = "abcdeg",
+                    name = "Toko 2",
+                    isClosed = true
+                )
+            ),
+            nextPageKey = ""
         )
     )
 }

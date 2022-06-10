@@ -38,7 +38,11 @@ class TokoFoodCategoryViewModel @Inject constructor(
     private val _categoryLoadMore = MutableLiveData<Result<TokoFoodListUiModel>>()
 
     private val categoryLayoutItemList :MutableList<Visitable<*>> = mutableListOf()
-    private var pageKey = ""
+    private var pageKey = INITIAL_PAGE_KEY_MERCHANT
+
+    companion object {
+        private const val INITIAL_PAGE_KEY_MERCHANT = "1"
+    }
 
     fun getLoadingState() {
         categoryLayoutItemList.clear()
@@ -61,9 +65,8 @@ class TokoFoodCategoryViewModel @Inject constructor(
     }
 
     fun getCategoryLayout(localCacheModel: LocalCacheModel, option: Int = 0,
-                          sortBy: Int = 0, cuisine: String = "", page: String = "") {
+                          sortBy: Int = 0, cuisine: String = "") {
         launchCatchError(block = {
-            setPageKey(page)
             categoryLayoutItemList.clear()
             val categoryResponse = withContext(dispatchers.io) {
                 tokoFoodMerchantListUseCase.execute(
@@ -99,8 +102,17 @@ class TokoFoodCategoryViewModel @Inject constructor(
         }
     }
 
-    private fun loadMoreMerchant(localCacheModel: LocalCacheModel, option: Int = 0,
-                                 sortBy: Int = 0, cuisine: String = "") {
+    fun showProgressBar(){
+        categoryLayoutItemList.addProgressBar()
+        val data = TokoFoodListUiModel(
+            items = categoryLayoutItemList,
+            state = TokoFoodLayoutState.UPDATE
+        )
+        _categoryLayoutList.postValue(Success(data))
+    }
+
+    private fun loadMoreMerchant(localCacheModel: LocalCacheModel, option: Int,
+                                 sortBy: Int, cuisine: String) {
         launchCatchError(block = {
             val categoryResponse = withContext(dispatchers.io) {
                 tokoFoodMerchantListUseCase.execute(
@@ -129,15 +141,6 @@ class TokoFoodCategoryViewModel @Inject constructor(
         pageKey = pageNew
     }
 
-    private fun showProgressBar(){
-        categoryLayoutItemList.addProgressBar()
-        val data = TokoFoodListUiModel(
-            items = categoryLayoutItemList,
-            state = TokoFoodLayoutState.UPDATE
-        )
-        _categoryLayoutList.postValue(Success(data))
-    }
-
     private fun shouldLoadMore(containsLastItemIndex: Int, itemCount: Int): Boolean {
         val lastItemIndex = itemCount - 1
         val scrolledToLastItem = (containsLastItemIndex == lastItemIndex
@@ -147,7 +150,13 @@ class TokoFoodCategoryViewModel @Inject constructor(
         val isLoading = layoutList.firstOrNull { it is TokoFoodProgressBarUiModel } != null
         val isError = layoutList.firstOrNull { it is TokoFoodErrorStateUiModel } != null
 
-        return scrolledToLastItem && hasNextPage && !isLoading && !isError
+        return scrolledToLastItem
+                &&
+                hasNextPage
+                &&
+                !isLoading
+                &&
+                !isError
     }
 
 }

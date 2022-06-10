@@ -51,6 +51,16 @@ abstract class TokoFoodCategoryViewModelTestFixture {
         Assert.assertTrue(actualResponse is Fail)
     }
 
+    protected fun verifyLoadMoreLayoutResponseSuccess(expectedResponse: TokoFoodListUiModel) {
+        val actualResponse = viewModel.loadMore.value
+        Assert.assertEquals(expectedResponse, (actualResponse as Success).data)
+    }
+
+    protected fun verifyLoadMoreLayoutResponseFail() {
+        val actualResponse = viewModel.loadMore.value
+        Assert.assertTrue(actualResponse is Fail)
+    }
+
     protected fun onGetMerchantList_thenReturn(
         layoutResponse: TokoFoodMerchantListResponse,
         localCacheModel: LocalCacheModel = LocalCacheModel(),
