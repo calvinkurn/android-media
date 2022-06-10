@@ -25,6 +25,6 @@
     <color name="chatbot_dms_message_hint_color">#7031353B</color>
     <color name="chatbot_dms_add_attachment_color">#8D96AA</color>
     <color name="chatbot_dms_sender_image_background">#F3F4F5</color>
-    <color name="chatbot_color_date">#F531353B</color>
+    <color name="chatbot_dms_color_date">#F531353B</color>
 
 </resources>
