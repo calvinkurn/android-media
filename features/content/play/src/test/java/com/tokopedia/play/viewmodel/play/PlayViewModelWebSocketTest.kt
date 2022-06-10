@@ -14,6 +14,11 @@ import com.tokopedia.play.robot.thenVerify
 import com.tokopedia.play.util.*
 import com.tokopedia.play.view.uimodel.action.PlayViewerNewAction
 import com.tokopedia.play.view.uimodel.event.*
+import com.tokopedia.play.util.chat.ChatStreams
+import com.tokopedia.play.view.uimodel.MerchantVoucherUiModel
+import com.tokopedia.play.view.uimodel.PlayProductUiModel
+import com.tokopedia.play.view.uimodel.event.ShowCoachMarkWinnerEvent
+import com.tokopedia.play.view.uimodel.event.ShowWinningDialogEvent
 import com.tokopedia.play.view.uimodel.recom.*
 import com.tokopedia.play.websocket.response.*
 import com.tokopedia.play_common.model.dto.interactive.InteractiveUiModel
@@ -116,19 +121,28 @@ class PlayViewModelWebSocketTest {
         val message1 = "Message 1"
         val message2 = "Message 2"
 
-        givenPlayViewModelRobot(
+        val chatStreamsFactory = object : ChatStreams.Factory {
+            override fun create(scope: CoroutineScope): ChatStreams {
+                return ChatStreams(scope, testDispatcher)
+            }
+        }
+
+        val robot = createPlayViewModelRobot(
             playChannelWebSocket = fakePlayWebSocket,
             dispatchers = testDispatcher,
-            playSocketToModelMapper = mapperBuilder.buildSocketMapper(),
-        ) {
-            createPage(channelData)
-            focusPage(channelData)
-        } andThen {
+            chatStreamsFactory = chatStreamsFactory,
+        )
+
+        robot.use {
+            it.createPage(channelData)
+            it.focusPage(channelData)
+
             fakePlayWebSocket.fakeReceivedMessage(PlayChatSocketResponse.generateResponse(message1))
             fakePlayWebSocket.fakeReceivedMessage(PlayChatSocketResponse.generateResponse(message2))
-        } thenVerify {
-            viewModel.observableNewChat.value?.peekContent()?.message?.isEqualTo(message2)
+            testDispatcher.coroutineDispatcher.advanceTimeBy(500)
         }
+
+        robot.viewModel.chats.value.last().message.assertEqualTo(message2)
     }
 
     @Test

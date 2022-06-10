@@ -31,6 +31,7 @@ import com.tokopedia.play.ui.toolbar.model.PartnerType
 import com.tokopedia.play.util.CastPlayerHelper
 import com.tokopedia.play.util.channel.state.PlayViewerChannelStateListener
 import com.tokopedia.play.util.channel.state.PlayViewerChannelStateProcessor
+import com.tokopedia.play.util.chat.ChatStreams
 import com.tokopedia.play.util.setValue
 import com.tokopedia.play.util.share.PlayShareExperience
 import com.tokopedia.play.util.share.PlayShareExperienceData
@@ -108,6 +109,7 @@ class PlayViewModel @AssistedInject constructor(
     private val timerFactory: TimerFactory,
     private val castPlayerHelper: CastPlayerHelper,
     private val playShareExperience: PlayShareExperience,
+    chatStreamsFactory: ChatStreams.Factory,
 ) : ViewModel() {
 
     @AssistedFactory
@@ -119,10 +121,6 @@ class PlayViewModel @AssistedInject constructor(
         get() = _observableChannelInfo
     val observableVideoMeta: LiveData<PlayVideoMetaInfoUiModel> /**Changed**/
         get() = _observableVideoMeta
-    val observableNewChat: LiveData<Event<PlayChatUiModel>>
-        get() = _observableNewChat
-    val observableChatList: LiveData<out List<PlayChatUiModel>>
-        get() = _observableChatList
     val observableBottomInsetsState: LiveData<Map<BottomInsetsType, BottomInsetsState>>
         get() = _observableBottomInsetsState
     val observablePinnedMessage: LiveData<PinnedMessageUiModel>
@@ -297,6 +295,11 @@ class PlayViewModel @AssistedInject constructor(
         }.map { if (it is AllowedWhenInactiveEvent) it.event else it }
             .flowOn(dispatchers.computation)
 
+    private val chatStreams = chatStreamsFactory.create(viewModelScope)
+
+    val chats: StateFlow<List<PlayChatUiModel>>
+        get() = chatStreams.chats
+
     val videoOrientation: VideoOrientation
         get() {
             val videoStream = _observableVideoMeta.value?.videoStream
@@ -404,17 +407,11 @@ class PlayViewModel @AssistedInject constructor(
     private var socketJob: Job? = null
 
     private val _observableChannelInfo = MutableLiveData<PlayChannelInfoUiModel>()
-    private val _observableChatList = MutableLiveData<MutableList<PlayChatUiModel>>()
     private val _observablePinnedMessage = MutableLiveData<PinnedMessageUiModel>()
     private val _observableVideoProperty = MutableLiveData<VideoPropertyUiModel>()
     private val _observableVideoMeta = MutableLiveData<PlayVideoMetaInfoUiModel>() /**Changed**/
     private val _observableBottomInsetsState = MutableLiveData<Map<BottomInsetsType, BottomInsetsState>>()
     private val _observableKebabSheets = MutableLiveData<Map<KebabMenuType, BottomInsetsState>>()
-    private val _observableNewChat = MediatorLiveData<Event<PlayChatUiModel>>().apply {
-        addSource(_observableChatList) { chatList ->
-            chatList.lastOrNull()?.let { value = Event(it) }
-        }
-    }
     private val _observableEventPiPState = MutableLiveData<Event<PiPState>>()
     private val _observableOnboarding = MutableLiveData<Event<Unit>>() /**Added**/
     private val _observableCastState = MutableLiveData<PlayCastUiModel>()
@@ -514,8 +511,6 @@ class PlayViewModel @AssistedInject constructor(
         videoBufferGovernor.startBufferGovernance()
 
         stateHandler.observeForever(stateHandlerObserver)
-
-        _observableChatList.value = mutableListOf()
 
         viewModelScope.launch {
             tapGiveawayFlow.collect(::onReceivedTapGiveawayAction)
@@ -1116,18 +1111,19 @@ class PlayViewModel @AssistedInject constructor(
 
         val cleanMessage = message.trimMultipleNewlines()
         playChannelWebSocket.send(
-                playSocketToModelMapper.mapSendChat(cleanMessage, channelId)
+            playSocketToModelMapper.mapSendChat(cleanMessage, channelId)
         )
         setNewChat(
-                playUiModelMapper.mapChat(
-                        PlayChat(
-                                message = cleanMessage,
-                                user = PlayChat.UserData(
-                                        id = userSession.userId,
-                                        name = userSession.name,
-                                        image = userSession.profilePicture)
-                        )
+            playUiModelMapper.mapChat(
+                PlayChat(
+                    message = cleanMessage,
+                    user = PlayChat.UserData(
+                        id = userSession.userId,
+                        name = userSession.name,
+                        image = userSession.profilePicture
+                    )
                 )
+            )
         )
     }
 
@@ -1333,9 +1329,7 @@ class PlayViewModel @AssistedInject constructor(
      * Private Method
      */
     private fun setNewChat(chat: PlayChatUiModel) {
-        val currentChatList = _observableChatList.value ?: mutableListOf()
-        currentChatList.add(chat)
-        _observableChatList.value = currentChatList
+        chatStreams.addChat(chat)
     }
 
     private suspend fun getReportSummaries(channelId: String): ReportSummaries = withContext(dispatchers.io) {
@@ -1459,7 +1453,7 @@ class PlayViewModel @AssistedInject constructor(
         likeReminderTimer = viewModelScope.launch(dispatchers.computation) {
             delay(TimeUnit.MINUTES.toMillis(1))
             timerFactory.createLoopingAlarm(
-                millisInFuture = TimeUnit.MINUTES.toMillis(5),
+                millisInFuture = TimeUnit.MINUTES.toMillis(INTERVAL_LIKE_REMINDER_IN_MIN),
                 stopCondition = { !shouldRemindLike() },
                 onStart = { sendLikeReminder() }
             )
@@ -2489,5 +2483,10 @@ class PlayViewModel @AssistedInject constructor(
         private const val REQUEST_CODE_LOGIN_PLAY_INTERACTIVE = 576
 
         private const val WEB_SOCKET_SOURCE_PLAY_VIEWER = "Viewer"
+
+        /**
+         * Reminder
+         */
+        private const val INTERVAL_LIKE_REMINDER_IN_MIN = 5L
     }
 }
