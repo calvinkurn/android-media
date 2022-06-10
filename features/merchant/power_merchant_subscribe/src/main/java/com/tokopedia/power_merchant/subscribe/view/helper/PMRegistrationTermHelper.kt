@@ -27,63 +27,18 @@ object PMRegistrationTermHelper {
         val firstTerm = if (shopInfo.isNewSeller) {
             getActiveProductTerm(context, shopInfo)
         } else {
-            getShopScoreTerm(context, shopInfo, false)
+            getShopScoreTerm(context, shopInfo)
         }
         return listOf(firstTerm, getKycTerm(context, shopInfo, isRegularMerchant))
     }
 
-    private fun getItemOrderTerm(
-        shopInfo: PMShopInfoUiModel,
-        isEligible: Boolean,
-        context: Context
-    ): Triple<String, String, Boolean> {
-        val title: String
-        val description: String
-        var isChecked = false
-        if (isEligible) {
-            val textColor =
-                PMCommonUtils.getHexColor(
-                    context,
-                    com.tokopedia.unifyprinciples.R.color.Unify_G500
-                )
-            title = context.getString(
-                R.string.pm_number_of_order,
-                textColor,
-                shopInfo.itemSoldOneMonth.toString()
-            )
-            description = context.getString(
-                R.string.pm_number_of_minimum_order,
-                shopInfo.itemSoldPmProThreshold.toString()
-            )
-            isChecked = true
-        } else {
-            val textColor =
-                PMCommonUtils.getHexColor(
-                    context,
-                    com.tokopedia.unifyprinciples.R.color.Unify_R600
-                )
-            title = context.getString(
-                R.string.pm_number_of_order,
-                textColor,
-                shopInfo.itemSoldOneMonth.toString()
-            )
-            description = context.getString(
-                R.string.pm_number_of_minimum_order,
-                shopInfo.itemSoldPmProThreshold.toString()
-            )
-        }
-        return Triple(title, description, isChecked)
-    }
-
     private fun getShopScoreTerm(
         context: Context,
-        shopInfo: PMShopInfoUiModel,
-        isPmProSelected: Boolean
+        shopInfo: PMShopInfoUiModel
     ): RegistrationTermUiModel.ShopScore {
         val isNewSeller = shopInfo.isNewSeller
         val isFirstMondayNewSeller = shopInfo.is30DaysFirstMonday
-        val isEligibleShopScore =
-            (isPmProSelected && shopInfo.isEligibleShopScorePmPro()) || (!isPmProSelected && shopInfo.isEligibleShopScore())
+        val isEligibleShopScore = shopInfo.isEligibleShopScore()
         val (shopScoreResIcon, isChecked) = getResDrawableIcon(shopInfo, isEligibleShopScore)
 
         val title: String
@@ -318,6 +273,4 @@ object PMRegistrationTermHelper {
             isNewSeller = shopInfo.isNewSeller
         )
     }
-
-
 }
