@@ -296,8 +296,6 @@ class InteractiveDialogFragment @Inject constructor(
     }
 
     companion object {
-        private const val WIDTH_PERCENTAGE = 0.6
-
         private const val TAG = "InteractiveDialogFragment"
 
         private const val FADE_TRANSITION_DELAY = 3000L

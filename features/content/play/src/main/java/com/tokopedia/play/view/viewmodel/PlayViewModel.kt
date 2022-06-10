@@ -1863,14 +1863,20 @@ class PlayViewModel @AssistedInject constructor(
             repo.setJoined(interactiveId)
 
             updateQuizOptionUi(selectedId = option.id, correctId = response)
-            _uiEvent.emit(QuizAnsweredEvent(option.id == response))
+            handleEventQuizAnswered(option.id == response)
         }) {
-            _uiEvent.emit(QuizAnsweredEvent(false))
+            handleEventQuizAnswered(false)
             setUpQuizOptionLoader(selectedId = option.id, isLoading = false)
             _uiEvent.emit(
                 ShowErrorEvent(it)
             )
         }
+    }
+
+    private fun handleEventQuizAnswered(isCorrect: Boolean) {
+        viewModelScope.launchCatchError(dispatchers.computation, block = {
+            _uiEvent.emit(QuizAnsweredEvent(isCorrect)
+        }){}
     }
 
     private fun updateQuizOptionUi(selectedId: String, correctId: String){
