@@ -33,9 +33,9 @@ class HomeSwitcherViewHolder(
                 R.drawable.tokopedianow_bg_switcher_switching_part,
                 itemView.context.theme
             )
-            ivCurrentService.background = drawable
+            aivIntendedService.background = drawable
 
-            cvCurrentService.setOnClickListener {
+            cvIntendedService.setOnClickListener {
                 listener?.onClickSwitcher()
             }
 
