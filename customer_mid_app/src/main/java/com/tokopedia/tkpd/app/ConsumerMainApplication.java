@@ -66,6 +66,8 @@ import com.tokopedia.notifications.inApp.CMInAppManager;
 import com.tokopedia.pageinfopusher.PageInfoPusherSubscriber;
 import com.tokopedia.prereleaseinspector.ViewInspectorSubscriber;
 import com.tokopedia.promotionstarget.presentation.subscriber.GratificationSubscriber;
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
+import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.remoteconfig.RemoteConfigInstance;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.tokopedia.remoteconfig.abtest.AbTestPlatform;
@@ -160,7 +162,18 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
     }
 
     private void initializeNewRelic() {
-        NewRelic.withApplicationToken(Keys.NEW_RELIC_TOKEN_MA).start(this);
+        RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(this);
+        boolean isDisableInitNrInAct =
+                !remoteConfig.getBoolean(RemoteConfigKey.ENABLE_INIT_NR_IN_ACTIVITY, true);
+        if (isDisableInitNrInAct) {
+            NewRelic.withApplicationToken(Keys.NEW_RELIC_TOKEN_MA).start(this);
+            executeArithmeticException();
+        }
+    }
+
+    private void executeArithmeticException() {
+        int result = 0 / 0;
+        System.out.println(result);
     }
 
     private void checkAppPackageNameAsync() {
