@@ -7,8 +7,8 @@
 
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/imgPmUpgradeBackdrop"
-        android:layout_width="@dimen/layout_lvl0"
-        android:layout_height="@dimen/gmc_dimen_200dp"
+        android:layout_width="0dp"
+        android:layout_height="200dp"
         android:scaleType="fitXY"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -27,9 +27,9 @@
 
         <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/icPmProBadge"
-            android:layout_width="@dimen/layout_lvl5"
-            android:layout_height="@dimen/layout_lvl5"
-            android:layout_marginStart="@dimen/layout_lvl2"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginStart="16dp"
             app:layout_constraintBottom_toBottomOf="@+id/tvPmUpgradePmProTitle"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="@+id/tvPmUpgradePmProTitle"
@@ -37,11 +37,11 @@
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tvPmUpgradePmProTitle"
-            android:layout_width="@dimen/layout_lvl0"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/unify_space_12"
-            android:layout_marginTop="@dimen/gmc_dimen_22dp"
-            android:layout_marginEnd="@dimen/layout_lvl2"
+            android:layout_marginStart="12dp"
+            android:layout_marginTop="22dp"
+            android:layout_marginEnd="16dp"
             android:text="@string/pm_get_exclusive_benefit_of_being_pm_pro"
             android:textColor="@color/Unify_Static_White"
             app:layout_constraintEnd_toEndOf="parent"
@@ -52,10 +52,10 @@
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tvPmUpgradePmProDesc"
-            android:layout_width="@dimen/layout_lvl0"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/gmc_dimen_22dp"
-            android:layout_marginEnd="@dimen/layout_lvl2"
+            android:layout_marginTop="22dp"
+            android:layout_marginEnd="16dp"
             android:textColor="@color/Unify_Static_White"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="@id/icPmProBadge"
@@ -68,9 +68,9 @@
         android:id="@+id/tickerPmWidget"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/unify_space_12"
-        android:layout_marginTop="@dimen/unify_space_12"
-        android:layout_marginEnd="@dimen/unify_space_12"
+        android:layout_marginStart="12dp"
+        android:layout_marginTop="12dp"
+        android:layout_marginEnd="12dp"
         android:visibility="gone"
         app:closeButtonVisibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
@@ -82,11 +82,11 @@
 
     <com.tokopedia.unifycomponents.CardUnify
         android:id="@+id/cardPmUpgradeTerms"
-        android:layout_width="@dimen/layout_lvl0"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/layout_lvl1"
-        android:layout_marginTop="@dimen/gmc_dimen_18dp"
-        android:layout_marginEnd="@dimen/layout_lvl1"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="18dp"
+        android:layout_marginEnd="8dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tickerPmWidget">
@@ -110,8 +110,8 @@
                 android:id="@+id/tvPmHeaderTermsStatus"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/unify_space_4"
-                android:layout_marginTop="@dimen/unify_space_16"
+                android:layout_marginStart="4dp"
+                android:layout_marginTop="16dp"
                 android:text="@string/pm_header_terms_status"
                 android:textColor="@color/Unify_NN950"
                 android:textSize="@dimen/unify_font_12"
@@ -121,12 +121,12 @@
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rvPmUpgradeTerms"
-                android:layout_width="@dimen/layout_lvl0"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/unify_space_12"
-                android:layout_marginTop="@dimen/unify_space_16"
-                android:layout_marginEnd="@dimen/unify_space_12"
-                android:layout_marginBottom="@dimen/unify_space_4"
+                android:layout_marginStart="12dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="12dp"
+                android:layout_marginBottom="4dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -138,12 +138,12 @@
 
     <com.tokopedia.unifycomponents.CardUnify
         android:id="@+id/cardPmUpgradeBenefits"
-        android:layout_width="@dimen/layout_lvl0"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/layout_lvl1"
-        android:layout_marginTop="@dimen/layout_lvl1"
-        android:layout_marginEnd="@dimen/layout_lvl1"
-        android:layout_marginBottom="@dimen/unify_space_12"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="12dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -154,7 +154,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:padding="@dimen/unify_space_12">
+            android:padding="12dp">
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tvPmUpgradeBenefitDescription"
@@ -168,7 +168,7 @@
                 android:id="@+id/rvPmUpgradeBenefits"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/layout_lvl1"
+                android:layout_marginTop="8dp"
                 tools:itemCount="6"
                 tools:listitem="@layout/item_pm_grade_benefit" />
 
@@ -177,9 +177,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
-                android:layout_marginTop="@dimen/unify_space_4"
+                android:layout_marginTop="4dp"
                 android:gravity="center"
-                android:padding="@dimen/unify_space_4"
+                android:padding="4dp"
                 android:text="@string/power_merchant_learn_more"
                 android:textColor="@color/Unify_G500"
                 app:typographyType="body_3"

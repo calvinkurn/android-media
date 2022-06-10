@@ -11,7 +11,7 @@ sealed class PmActiveTermUiModel(
     open val isChecked: Boolean,
     open val clickableText: String? = null,
     open val appLinkOrUrl: String? = null,
-    val periority: Int = 0
+    val priority: Int = 0
 ) {
     data class ShopScore(
         override val title: String,
@@ -44,7 +44,7 @@ sealed class PmActiveTermUiModel(
         isChecked,
         clickableText,
         appLinkOrUrl,
-        periority = 1
+        priority = 1
     )
 
     data class Order(
