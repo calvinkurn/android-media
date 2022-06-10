@@ -57,7 +57,7 @@ object PromoCreationStaticData {
                     R.drawable.ic_sah_slash_price,
                     resourceProvider.getPromoCreationTitleSlashPrice(),
                     resourceProvider.getPromoCreationDescriptionSlashPrice(),
-                    resourceProvider.getPromoCreationExtraSlashPrice(),
+                    "",
                     slashPriceApplink
                 )
             )
