@@ -151,7 +151,7 @@ class TwoFactorCheckerSubscriber : Application.ActivityLifecycleCallbacks {
     private fun logUserProfileRecovery(isSuccess: Boolean) {
         ServerLogger.log(Priority.P2, DataStoreMigrationWorker.USER_SESSION_LOGGER_TAG,
             mapOf(
-                "type" to "recover_user_profile",
+                "method" to "recover_user_profile",
                 "is_success" to isSuccess.toString()
             )
         )
