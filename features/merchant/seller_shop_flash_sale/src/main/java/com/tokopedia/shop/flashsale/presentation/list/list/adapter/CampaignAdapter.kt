@@ -15,6 +15,7 @@ import com.tokopedia.shop.flashsale.common.constant.Constant
 import com.tokopedia.shop.flashsale.common.extension.toCalendar
 import com.tokopedia.shop.flashsale.domain.entity.CampaignUiModel
 import com.tokopedia.shop.flashsale.domain.entity.enums.CampaignStatus
+import com.tokopedia.shop.flashsale.domain.entity.enums.isActive
 import com.tokopedia.unifyprinciples.Typography
 import java.util.*
 
@@ -98,7 +99,7 @@ class CampaignAdapter(
             binding.tpgReminderCount.text = campaign.notifyMeCount.toString()
             binding.tpgSoldCount.text = campaign.summary.soldItem.toString()
             binding.loader.isVisible = isLoading
-            binding.imgMore.isVisible = shouldEnableMoreMenu(campaign.status)
+            binding.imgMore.isVisible = campaign.status.isActive()
             handleTimer(campaign.status, campaign.startDate)
             handleCampaignStatusIndicator(campaign.status)
         }
@@ -151,10 +152,5 @@ class CampaignAdapter(
             val color = ContextCompat.getColor(this.context, resourceId)
             this.setTextColor(color)
         }
-
-        private fun shouldEnableMoreMenu(campaignStatus: CampaignStatus): Boolean {
-            return campaignStatus == CampaignStatus.UPCOMING || campaignStatus == CampaignStatus.IN_SUBMISSION || campaignStatus == CampaignStatus.IN_REVIEW || campaignStatus == CampaignStatus.READY || campaignStatus == CampaignStatus.ONGOING
-        }
-
     }
 }

@@ -10,6 +10,7 @@ import com.tokopedia.seller_shop_flash_sale.R
 import com.tokopedia.seller_shop_flash_sale.databinding.SsfsBottomsheetMoreMenuBinding
 import com.tokopedia.shop.flashsale.domain.entity.CampaignListMoreMenu
 import com.tokopedia.shop.flashsale.domain.entity.enums.CampaignStatus
+import com.tokopedia.shop.flashsale.domain.entity.enums.isAvailable
 import com.tokopedia.shop.flashsale.presentation.list.list.adapter.CampaignListMoreMenuAdapter
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.utils.lifecycle.autoClearedNullable
@@ -40,7 +41,7 @@ class MoreMenuBottomSheet : BottomSheetUnify() {
     private var binding by autoClearedNullable<SsfsBottomsheetMoreMenuBinding>()
     private val campaignId by lazy { arguments?.getLong(BUNDLE_KEY_CAMPAIGN_ID).orZero() }
     private val campaignName by lazy { arguments?.getString(BUNDLE_KEY_CAMPAIGN_NAME).orEmpty() }
-    private val campaignStatus by lazy { arguments?.getParcelable(BUNDLE_KEY_CAMPAIGN_STATUS) as? CampaignStatus }
+    private val campaignStatus by lazy { arguments?.getParcelable(BUNDLE_KEY_CAMPAIGN_STATUS) as? CampaignStatus  ?: CampaignStatus.CANCELLED }
 
     private val availableCampaignMoreMenu = listOf(
         CampaignListMoreMenu(R.string.sfs_share, R.drawable.ic_sfs_share) { onShareCampaignMenuSelected() },
@@ -107,10 +108,10 @@ class MoreMenuBottomSheet : BottomSheetUnify() {
     }
 
     private fun getMenus(): List<CampaignListMoreMenu> {
-        return when (campaignStatus) {
-            CampaignStatus.IN_SUBMISSION, CampaignStatus.IN_REVIEW, CampaignStatus.READY -> availableCampaignMoreMenu
-            CampaignStatus.UPCOMING -> upcomingCampaignMoreMenu
-            CampaignStatus.ONGOING -> ongoingCampaignMoreMenu
+        return when {
+            campaignStatus.isAvailable() -> availableCampaignMoreMenu
+            campaignStatus == CampaignStatus.UPCOMING -> upcomingCampaignMoreMenu
+            campaignStatus == CampaignStatus.ONGOING -> ongoingCampaignMoreMenu
             else -> emptyList()
         }
     }

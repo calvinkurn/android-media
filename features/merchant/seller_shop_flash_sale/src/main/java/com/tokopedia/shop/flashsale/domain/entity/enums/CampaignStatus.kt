@@ -29,3 +29,11 @@ enum class CampaignStatus(val id: Int) : Parcelable {
     ONGOING_CANCELLATION(CAMPAIGN_STATUS_ID_ONGOING_CANCELLATION),
     CANCELLED(CAMPAIGN_STATUS_ID_CANCELLED)
 }
+
+fun CampaignStatus.isActive(): Boolean {
+    return this == CampaignStatus.IN_SUBMISSION || this == CampaignStatus.IN_REVIEW || this == CampaignStatus.READY || this == CampaignStatus.UPCOMING || this == CampaignStatus.ONGOING
+}
+
+fun CampaignStatus.isAvailable(): Boolean {
+    return this == CampaignStatus.IN_SUBMISSION || this == CampaignStatus.IN_REVIEW || this == CampaignStatus.READY
+}
