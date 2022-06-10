@@ -19,7 +19,7 @@ import com.tokopedia.usecase.coroutines.Success
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
-class ProductListViewModel @Inject constructor(
+class DiscountedProductListViewModel @Inject constructor(
     private val dispatchers: CoroutineDispatchers,
     private val getSlashPriceProductListUseCase: GetSlashPriceProductListUseCase,
     private val deleteDiscountUseCase: DeleteDiscountUseCase,

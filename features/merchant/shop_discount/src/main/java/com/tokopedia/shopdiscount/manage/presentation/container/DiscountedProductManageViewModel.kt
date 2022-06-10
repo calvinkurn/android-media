@@ -23,7 +23,7 @@ import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
-class ProductManageViewModel @Inject constructor(
+class DiscountedProductManageViewModel @Inject constructor(
     private val dispatchers: CoroutineDispatchers,
     private val getSlashPriceProductListMetaUseCase: GetSlashPriceProductListMetaUseCase,
     private val getSlashPriceBenefitUseCase: GetSlashPriceBenefitUseCase,

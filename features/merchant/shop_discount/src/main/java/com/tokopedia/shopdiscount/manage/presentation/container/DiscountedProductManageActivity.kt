@@ -9,7 +9,7 @@ import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.shopdiscount.R
 import com.tokopedia.shopdiscount.di.component.DaggerShopDiscountComponent
 
-class ProductManageActivity : BaseSimpleActivity() {
+class DiscountedProductManageActivity : BaseSimpleActivity() {
 
     companion object {
         private const val BUNDLE_KEY_PREVIOUS_DISCOUNT_STATUS_ID = "previous_discount_status_id"
@@ -20,7 +20,7 @@ class ProductManageActivity : BaseSimpleActivity() {
             context: Context, previouslySelectedDiscountStatusId: Int,
             toasterWording: String
         ) {
-            val starter = Intent(context, ProductManageActivity::class.java)
+            val starter = Intent(context, DiscountedProductManageActivity::class.java)
                 .putExtra(
                     BUNDLE_KEY_PREVIOUS_DISCOUNT_STATUS_ID,
                     previouslySelectedDiscountStatusId
@@ -44,7 +44,7 @@ class ProductManageActivity : BaseSimpleActivity() {
     }
 
     override fun getLayoutRes() = R.layout.activity_product_manage
-    override fun getNewFragment() = ProductManageFragment.newInstance(previouslySelectedDiscountStatusId, toasterWording)
+    override fun getNewFragment() = DiscountedProductManageFragment.newInstance(previouslySelectedDiscountStatusId, toasterWording)
     override fun getParentViewResourceID() = R.id.container
 
     private fun setupDependencyInjection() {
