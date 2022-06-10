@@ -45,7 +45,6 @@ public abstract class MainApplication extends CoreNetworkApplication {
 
     protected void initRemoteConfig() {
         remoteConfig = new FirebaseRemoteConfigImpl(MainApplication.this);
-        remoteConfig.fetch(getRemoteConfigListener());
     }
 
     protected RemoteConfig.Listener getRemoteConfigListener(){

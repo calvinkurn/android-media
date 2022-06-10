@@ -155,7 +155,6 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
         if (getUserSession().isLoggedIn()) {
             Embrace.getInstance().setUserIdentifier(getUserSession().getUserId());
         }
-        initializeNewRelic();
         EmbraceMonitoring.INSTANCE.setCarrierProperties(this);
     }
 
@@ -324,6 +323,7 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
         createCustomSoundNotificationChannel();
 
         initLogManager();
+        initializeNewRelic();
         initEmbraceConfig();
         DevMonitoring devMonitoring = new DevMonitoring(ConsumerMainApplication.this);
         devMonitoring.initCrashMonitoring();
