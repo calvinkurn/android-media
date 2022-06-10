@@ -195,6 +195,7 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
                 shopCredibility?.run {
                     isOs = it.data.isOS
                     isPm = it.data.isPowerMerchant
+                    shopLocation = it.basic.productMultilocation.cityName
                 }
             }
 
@@ -388,19 +389,16 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
     fun updateDataP2(context: Context?,
                      p2Data: ProductInfoP2UiData,
                      productId: String,
-                     isProductWarehouse: Boolean,
-                     isProductInCampaign: Boolean,
-                     isOutOfStock: Boolean,
-                     boeImageUrl: String,
-                     isProductParent: Boolean) {
+                     boeImageUrl: String) {
         p2Data.let {
             updateData(ProductDetailConstant.PRODUCT_SHOP_CREDIBILITY) {
                 shopCredibility?.run {
                     shopLastActive = if (context == null) "" else it.shopInfo.shopLastActive.getRelativeDate(context)
                     shopName = it.shopInfo.shopCore.name
                     shopAva = it.shopInfo.shopAssets.avatar
-                    shopLocation = it.shopInfo.location
                     isGoApotik = it.isGoApotik
+                    shopWarehouseCount = it.shopInfo.shopMultilocation.warehouseCount
+                    shopWarehouseApplink = it.shopInfo.shopMultilocation.eduLink.applink
                     shopTierBadgeUrl = it.shopInfo.shopTierBadgeUrl
                     infoShopData = if (context == null) listOf() else
                         getTwoShopInfoHieararchy(context,
