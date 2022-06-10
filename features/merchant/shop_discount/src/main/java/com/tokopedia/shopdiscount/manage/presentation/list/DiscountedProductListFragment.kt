@@ -25,7 +25,7 @@ import com.tokopedia.shopdiscount.manage.domain.entity.Product
 import com.tokopedia.shopdiscount.manage.domain.entity.ProductData
 import com.tokopedia.shopdiscount.manage.presentation.container.DiscountedProductManageFragment
 import com.tokopedia.shopdiscount.manage.presentation.container.RecyclerViewScrollListener
-import com.tokopedia.shopdiscount.manage_discount.presentation.view.activity.ShopDiscountManageDiscountActivity
+import com.tokopedia.shopdiscount.manage_discount.presentation.view.activity.ShopDiscountManageActivity
 import com.tokopedia.shopdiscount.manage_discount.util.ShopDiscountManageDiscountMode
 import com.tokopedia.shopdiscount.more_menu.MoreMenuBottomSheet
 import com.tokopedia.shopdiscount.product_detail.presentation.bottomsheet.ShopDiscountProductDetailBottomSheet
@@ -638,7 +638,7 @@ class DiscountedProductListFragment : BaseSimpleListFragment<ProductAdapter, Pro
     private fun redirectToUpdateDiscountPage() {
         binding?.btnBulkManage?.isLoading = false
         dismissLoaderDialog()
-        ShopDiscountManageDiscountActivity.start(
+        ShopDiscountManageActivity.start(
             requireActivity(),
             viewModel.getRequestId(),
             discountStatusId,

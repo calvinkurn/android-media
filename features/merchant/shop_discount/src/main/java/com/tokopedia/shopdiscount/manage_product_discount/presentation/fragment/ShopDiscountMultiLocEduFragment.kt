@@ -15,7 +15,7 @@ import com.tokopedia.shopdiscount.manage_discount.util.ShopDiscountManageDiscoun
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 
-class ShopDiscountManageProductDiscountMultiLocFragment : BaseDaggerFragment() {
+class ShopDiscountMultiLocEduFragment : BaseDaggerFragment() {
 
     companion object {
         const val MODE_ARG = "mode_arg"
@@ -24,16 +24,16 @@ class ShopDiscountManageProductDiscountMultiLocFragment : BaseDaggerFragment() {
 
         fun createInstance(
             mode: String
-        ) = ShopDiscountManageProductDiscountMultiLocFragment().apply {
+        ) = ShopDiscountMultiLocEduFragment().apply {
             arguments = Bundle().apply {
-                putString(ShopDiscountManageProductDiscountFragment.MODE_ARG, mode)
+                putString(ShopDiscountManageProductFragment.MODE_ARG, mode)
             }
         }
     }
 
     private var viewBinding by autoClearedNullable<FragmentManageProductDiscountMultiLocBinding>()
     override fun getScreenName(): String =
-        ShopDiscountManageProductDiscountMultiLocFragment::class.java.canonicalName.orEmpty()
+        ShopDiscountMultiLocEduFragment::class.java.canonicalName.orEmpty()
 
     private var mode: String = ""
     private var headerUnify: HeaderUnify? = null

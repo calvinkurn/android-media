@@ -34,7 +34,7 @@
         </activity>
 
         <activity
-            android:name=".manage_discount.presentation.view.activity.ShopDiscountManageDiscountActivity"
+            android:name=".manage_discount.presentation.view.activity.ShopDiscountManageActivity"
             android:exported="false"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White">
@@ -52,7 +52,7 @@
         </activity>
 
         <activity
-            android:name="com.tokopedia.shopdiscount.manage_product_discount.presentation.activity.ShopDiscountManageProductDiscountActivity"
+            android:name="com.tokopedia.shopdiscount.manage_product_discount.presentation.activity.ShopDiscountManageProductActivity"
             android:exported="false"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White"
@@ -71,7 +71,7 @@
         </activity>
 
         <activity
-            android:name="com.tokopedia.shopdiscount.manage_product_discount.presentation.activity.ShopDiscountManageProductDiscountMultiLocActivity"
+            android:name="com.tokopedia.shopdiscount.manage_product_discount.presentation.activity.ShopDiscountMultiLocEduActivity"
             android:exported="false"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White"
@@ -90,7 +90,7 @@
         </activity>
 
         <activity
-            android:name="com.tokopedia.shopdiscount.manage_product_discount.presentation.activity.ShopDiscountManageProductVariantDiscountActivity"
+            android:name="com.tokopedia.shopdiscount.manage_product_discount.presentation.activity.ShopDiscountManageVariantActivity"
             android:exported="false"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White"

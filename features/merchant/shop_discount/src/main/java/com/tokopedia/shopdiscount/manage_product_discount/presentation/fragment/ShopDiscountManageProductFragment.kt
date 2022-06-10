@@ -31,9 +31,9 @@ import com.tokopedia.shopdiscount.di.component.DaggerShopDiscountComponent
 import com.tokopedia.shopdiscount.info.data.uimodel.ShopDiscountSellerInfoUiModel
 import com.tokopedia.shopdiscount.manage_discount.data.uimodel.ShopDiscountSetupProductUiModel
 import com.tokopedia.shopdiscount.manage_discount.util.ShopDiscountManageDiscountMode
-import com.tokopedia.shopdiscount.manage_product_discount.presentation.activity.ShopDiscountManageProductDiscountActivity
-import com.tokopedia.shopdiscount.manage_product_discount.presentation.activity.ShopDiscountManageProductDiscountMultiLocActivity
-import com.tokopedia.shopdiscount.manage_product_discount.presentation.viewmodel.ShopDiscountManageProductDiscountViewModel
+import com.tokopedia.shopdiscount.manage_product_discount.presentation.activity.ShopDiscountManageProductActivity
+import com.tokopedia.shopdiscount.manage_product_discount.presentation.activity.ShopDiscountMultiLocEduActivity
+import com.tokopedia.shopdiscount.manage_product_discount.presentation.viewmodel.ShopDiscountManageProductViewModel
 import com.tokopedia.shopdiscount.set_period.data.uimodel.SetPeriodResultUiModel
 import com.tokopedia.shopdiscount.set_period.presentation.bottomsheet.SetPeriodBottomSheet
 import com.tokopedia.shopdiscount.utils.constant.DateConstant
@@ -62,7 +62,7 @@ import java.text.DecimalFormat
 import java.text.NumberFormat
 import javax.inject.Inject
 
-class ShopDiscountManageProductDiscountFragment : BaseDaggerFragment() {
+class ShopDiscountManageProductFragment : BaseDaggerFragment() {
 
     companion object {
         const val PRODUCT_DATA_ARG = "product_data_arg"
@@ -73,7 +73,7 @@ class ShopDiscountManageProductDiscountFragment : BaseDaggerFragment() {
         fun createInstance(
             mode: String,
             productData: ShopDiscountSetupProductUiModel.SetupProductData
-        ) = ShopDiscountManageProductDiscountFragment().apply {
+        ) = ShopDiscountManageProductFragment().apply {
             arguments = Bundle().apply {
                 putString(MODE_ARG, mode)
                 putParcelable(PRODUCT_DATA_ARG, productData)
@@ -83,7 +83,7 @@ class ShopDiscountManageProductDiscountFragment : BaseDaggerFragment() {
 
     private var viewBinding by autoClearedNullable<FragmentManageProductDiscountBinding>()
     override fun getScreenName(): String =
-        ShopDiscountManageProductDiscountFragment::class.java.canonicalName.orEmpty()
+        ShopDiscountManageProductFragment::class.java.canonicalName.orEmpty()
 
     private var mode: String = ""
     private var headerUnify: HeaderUnify? = null
@@ -117,7 +117,7 @@ class ShopDiscountManageProductDiscountFragment : BaseDaggerFragment() {
     lateinit var viewModelFactory: ViewModelFactory
 
     private val viewModelProvider by lazy { ViewModelProvider(this, viewModelFactory) }
-    private val viewModel by lazy { viewModelProvider.get(ShopDiscountManageProductDiscountViewModel::class.java) }
+    private val viewModel by lazy { viewModelProvider.get(ShopDiscountManageProductViewModel::class.java) }
     private var textFieldDiscountPercentageWatcher: NumberThousandSeparatorTextWatcher? = null
     private var textFieldDiscountPriceWatcher: NumberThousandSeparatorTextWatcher? = null
 
@@ -147,7 +147,7 @@ class ShopDiscountManageProductDiscountFragment : BaseDaggerFragment() {
         buttonApply?.setOnClickListener {
             val productData = viewModel.getProductData()
             val intentData = Intent().apply {
-                putExtra(ShopDiscountManageProductDiscountActivity.PRODUCT_DATA_RESULT, productData)
+                putExtra(ShopDiscountManageProductActivity.PRODUCT_DATA_RESULT, productData)
             }
             activity?.setResult(Activity.RESULT_OK, intentData)
             activity?.finish()
@@ -495,7 +495,7 @@ class ShopDiscountManageProductDiscountFragment : BaseDaggerFragment() {
                 it,
                 ApplinkConstInternalSellerapp.SHOP_DISCOUNT_MANAGE_PRODUCT_MULTI_LOC_DISCOUNT
             )
-            intent.putExtra(ShopDiscountManageProductDiscountMultiLocActivity.MODE_PARAM, mode)
+            intent.putExtra(ShopDiscountMultiLocEduActivity.MODE_PARAM, mode)
             startActivity(intent)
         }
     }

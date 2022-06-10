@@ -11,7 +11,7 @@ class ReserveProductRequestMapper @Inject constructor() {
             requestHeader = RequestHeader(),
             action = DoSlashPriceReservationRequest.DoSlashPriceReservationAction.RESERVE,
             requestId = requestId,
-            state = DoSlashPriceReservationRequest.DoSlashPriceReservationState.CREATE,
+            state = DoSlashPriceReservationRequest.DoSlashPriceReservationState.CREATE.toString(),
             listProductData = products.mapIndexed { position, productId ->
                 DoSlashPriceReservationRequest.SlashPriceReservationProduct(
                     productId,

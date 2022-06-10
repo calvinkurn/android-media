@@ -58,7 +58,7 @@ object ShopDiscountProductDetailMapper {
             requestHeader = getRequestHeader(),
             action = DoSlashPriceReservationRequest.DoSlashPriceReservationAction.RESERVE,
             requestId = requestId,
-            state = DoSlashPriceReservationRequest.DoSlashPriceReservationState.EDIT,
+            state = DoSlashPriceReservationRequest.DoSlashPriceReservationState.EDIT.toString(),
             listProductData = listOf(
                 DoSlashPriceReservationRequest.SlashPriceReservationProduct(
                     productId = productParentId,

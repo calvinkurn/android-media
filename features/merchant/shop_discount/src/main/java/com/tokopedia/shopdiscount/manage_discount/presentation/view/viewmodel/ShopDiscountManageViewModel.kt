@@ -31,7 +31,6 @@ import com.tokopedia.shopdiscount.manage_discount.domain.MutationSlashPriceProdu
 import com.tokopedia.shopdiscount.manage_discount.util.ShopDiscountManageDiscountConstant.GET_SETUP_PRODUCT_LIST_DELAY
 import com.tokopedia.shopdiscount.manage_discount.util.ShopDiscountManageDiscountMapper
 import com.tokopedia.shopdiscount.manage_discount.util.ShopDiscountManageDiscountMode
-import com.tokopedia.shopdiscount.utils.constant.DateConstant
 import com.tokopedia.shopdiscount.utils.constant.DateConstant.FIVE_MINUTES
 import com.tokopedia.shopdiscount.utils.constant.DiscountStatus
 import com.tokopedia.shopdiscount.utils.extension.allCheckEmptyList
@@ -45,7 +44,7 @@ import java.util.*
 import javax.inject.Inject
 import kotlin.math.round
 
-class ShopDiscountManageDiscountViewModel @Inject constructor(
+class ShopDiscountManageViewModel @Inject constructor(
     private val dispatcherProvider: CoroutineDispatchers,
     private val getSlashPriceSetupProductListUseCase: GetSlashPriceSetupProductListUseCase,
     private val mutationSlashPriceProductSubmissionUseCase: MutationSlashPriceProductSubmissionUseCase,
@@ -596,10 +595,10 @@ class ShopDiscountManageDiscountViewModel @Inject constructor(
         launchCatchError(dispatcherProvider.io, block = {
             val state = when (mode) {
                 ShopDiscountManageDiscountMode.CREATE -> {
-                    DoSlashPriceReservationRequest.DoSlashPriceReservationState.CREATE
+                    DoSlashPriceReservationRequest.DoSlashPriceReservationState.CREATE.toString()
                 }
                 else -> {
-                    DoSlashPriceReservationRequest.DoSlashPriceReservationState.EDIT
+                    DoSlashPriceReservationRequest.DoSlashPriceReservationState.EDIT.toString()
                 }
             }
             val request = ShopDiscountManageDiscountMapper.mapToDoSlashPriceStopRequest(

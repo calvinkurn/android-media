@@ -6,9 +6,9 @@ import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.shopdiscount.R
 import com.tokopedia.shopdiscount.manage_discount.data.uimodel.ShopDiscountSetupProductUiModel
-import com.tokopedia.shopdiscount.manage_product_discount.presentation.fragment.ShopDiscountManageProductVariantDiscountFragment
+import com.tokopedia.shopdiscount.manage_product_discount.presentation.fragment.ShopDiscountManageVariantFragment
 
-class ShopDiscountManageProductVariantDiscountActivity : BaseSimpleActivity() {
+class ShopDiscountManageVariantActivity : BaseSimpleActivity() {
 
     private var productData: ShopDiscountSetupProductUiModel.SetupProductData = ShopDiscountSetupProductUiModel.SetupProductData()
     private var mode: String = ""
@@ -27,14 +27,14 @@ class ShopDiscountManageProductVariantDiscountActivity : BaseSimpleActivity() {
     }
 
     override fun onBackPressed() {
-        (fragment as? ShopDiscountManageProductVariantDiscountFragment)?.onBackPressed()
+        (fragment as? ShopDiscountManageVariantFragment)?.onBackPressed()
     }
 
     override fun getLayoutRes(): Int {
         return R.layout.activity_manage_product_variant_discount
     }
 
-    override fun getNewFragment(): Fragment = ShopDiscountManageProductVariantDiscountFragment.createInstance(mode, productData)
+    override fun getNewFragment(): Fragment = ShopDiscountManageVariantFragment.createInstance(mode, productData)
 
     override fun getParentViewResourceID(): Int {
         return R.id.parent_view
