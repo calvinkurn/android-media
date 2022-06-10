@@ -49,7 +49,7 @@ class CommonCarouselProductCardTypeFactoryImpl(
         return SpecialReleaseItemViewHolder.LAYOUT
     }
 
-    override fun type(dataModel: MissionWidgetDataModel): Int {
+    override fun type(dataModel: CarouselMissionWidgetDataModel): Int {
         return MissionWidgetItemViewHolder.LAYOUT
     }
 
