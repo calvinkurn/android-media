@@ -344,6 +344,14 @@ class TokoFoodHomeViewModel @Inject constructor(
         val isEmptyStateShown = layoutList.firstOrNull { it.layout is TokoFoodHomeEmptyStateLocationUiModel } != null
         val isError = layoutList.firstOrNull { it.layout is TokoFoodErrorStateUiModel } != null
 
-        return scrolledToLastItem && hasNextPage && !isLoading && !isEmptyStateShown && !isError
+        return scrolledToLastItem
+                &&
+                hasNextPage
+                &&
+                !isLoading
+                &&
+                !isEmptyStateShown
+                &&
+                !isError
     }
 }

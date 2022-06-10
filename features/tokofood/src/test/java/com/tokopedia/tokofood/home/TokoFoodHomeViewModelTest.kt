@@ -730,4 +730,17 @@ class TokoFoodHomeViewModelTest: TokoFoodHomeViewModelTestFixture() {
 
         verifyGetHomeLayoutResponseSuccess(expectedResponse)
     }
+
+    @Test
+    fun `when has page key is empty and user request load more should not load more`() {
+        viewModel.showProgressBar()
+        val expectedResponse = createLoadMoreState()
+        val containLastItemIndex = 5
+        val itemCount = 6
+        viewModel.setPageKey("")
+        viewModel.onScrollProductList(containLastItemIndex, itemCount, LocalCacheModel())
+
+
+        verifyGetHomeLayoutResponseSuccess(expectedResponse)
+    }
 }
