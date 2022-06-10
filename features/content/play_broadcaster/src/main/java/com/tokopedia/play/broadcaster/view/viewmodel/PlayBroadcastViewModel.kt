@@ -967,7 +967,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
     private fun getQuizChoiceDetailData(choiceId: String, index: Int, cursor: String = "") {
         val oldParticipant = when (val state = _quizChoiceDetailState.value) {
             is QuizChoiceDetailStateUiModel.Success -> {
-                if (cursor.isNotBlank()) state.dataUiModel.participants.toList() else emptyList()
+                if (cursor.isNotBlank()) state.dataUiModel.participants else emptyList()
             }
             else -> emptyList()
         }
@@ -1426,13 +1426,9 @@ class PlayBroadcastViewModel @AssistedInject constructor(
             }
 
             _quizFormData.update {
-                val defaultIndex = max(
-                    0, quizConfig.eligibleStartTimeInMs.indexOf(
-                        TimeUnit.MINUTES.toMillis(DEFAULT_QUIZ_DURATION_PICKER_IN_MINUTE)
-                    )
-                )
                 QuizFormDataUiModel(
-                    durationInMs = quizConfig.eligibleStartTimeInMs.getOrNull(defaultIndex) ?: 0,
+                    durationInMs = quizConfig.eligibleStartTimeInMs.indexOf(TimeUnit.MINUTES.toMillis(
+                        DEFAULT_QUIZ_DURATION_PICKER_IN_MINUTE)).coerceAtLeast(0).toLong(),
                     options = initialOptions
                 )
             }
