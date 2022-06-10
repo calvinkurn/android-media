@@ -185,7 +185,7 @@ class PlayBroadcastInteractiveAnalyticImpl @Inject constructor(
         sendImpressionEvent(
             "view - engagement widget",
             "${userSession.shopId} - $channelId - $channelTitle",
-            )
+        )
     }
 
     override fun onClickBackQuiz(channelId: String, channelTitle: String) {
@@ -199,28 +199,28 @@ class PlayBroadcastInteractiveAnalyticImpl @Inject constructor(
         sendClickEvent(
             "click - back duration giveaway",
             "${userSession.shopId} - $channelId - $channelTitle",
-            )
+        )
     }
 
     override fun onClickContinueQuiz(channelId: String, channelTitle: String) {
         sendClickEvent(
             "click - lanjut quiz",
             "${userSession.shopId} - $channelId - $channelTitle",
-            )
+        )
     }
 
     override fun onClickQuizGift(channelId: String, channelTitle: String) {
         sendClickEvent(
             "click - giveaway optional",
             "${userSession.shopId} - $channelId - $channelTitle",
-            )
+        )
     }
 
     override fun onClickCloseQuizGift(channelId: String, channelTitle: String) {
         sendClickEvent(
             "click - x giveaway optional",
             "${userSession.shopId} - $channelId - $channelTitle",
-            )
+        )
     }
 
     override fun onClickStartQuiz(channelId: String, channelTitle: String) {
@@ -234,10 +234,15 @@ class PlayBroadcastInteractiveAnalyticImpl @Inject constructor(
         sendClickEvent(
             "click - back duration quiz",
             "${userSession.shopId} - $channelId - $channelTitle",
-            )
+        )
     }
 
-    override fun onImpressOngoingQuizWidget(channelId: String, channelTitle: String, quizId: String, quizTitle: String) {
+    override fun onImpressOngoingQuizWidget(
+        channelId: String,
+        channelTitle: String,
+        quizId: String,
+        quizTitle: String
+    ) {
         sendImpressionEvent(
             "view - ongoing quiz widget",
             "${userSession.shopId} - $channelId - $channelTitle - $quizId - $quizTitle",
@@ -266,7 +271,7 @@ class PlayBroadcastInteractiveAnalyticImpl @Inject constructor(
         sendClickEvent(
             "click - close quiz result",
             "${userSession.shopId} - $channelId - $channelTitle - $interactiveId - $interactiveTitle",
-            )
+        )
     }
 
     override fun onClickBackQuizChoiceDetail(
@@ -291,7 +296,7 @@ class PlayBroadcastInteractiveAnalyticImpl @Inject constructor(
         sendClickEvent(
             "click - ongoing quiz widget",
             "${userSession.shopId} - $channelId - $channelTitle - $interactiveId - $interactiveTitle",
-            )
+        )
     }
 
     override fun onImpressOngoingLeaderBoard(
@@ -305,7 +310,7 @@ class PlayBroadcastInteractiveAnalyticImpl @Inject constructor(
         sendImpressionEvent(
             "view - quiz result live room",
             "${userSession.shopId} - $channelId - $channelTitle - $interactiveId - $interactiveTitle - $prizes",
-            )
+        )
     }
 
     override fun onImpressQuizChoiceDetail(
@@ -317,7 +322,7 @@ class PlayBroadcastInteractiveAnalyticImpl @Inject constructor(
         sendImpressionEvent(
             "view - quiz result option live room",
             "${userSession.shopId} - $channelId - $channelTitle - $interactiveId - $interactiveTitle",
-            )
+        )
     }
 
     override fun onImpressReportLeaderboard(
@@ -330,6 +335,18 @@ class PlayBroadcastInteractiveAnalyticImpl @Inject constructor(
         sendImpressionEvent(
             "view - quiz result report page",
             "${userSession.shopId} - $channelId - $channelTitle - $interactiveId - $interactiveTitle - $engagementType",
+        )
+    }
+
+    override fun onImpressReportQuizChoiceDetail(
+        channelId: String,
+        channelTitle: String,
+        interactiveId: String,
+        interactiveTitle: String
+    ) {
+        sendImpressionEvent(
+            "view - quiz result option report page",
+            "${userSession.shopId} - $channelId - $channelTitle - $interactiveId - $interactiveTitle",
         )
     }
 

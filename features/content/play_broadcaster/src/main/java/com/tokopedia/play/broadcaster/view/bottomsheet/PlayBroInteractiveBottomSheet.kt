@@ -182,13 +182,25 @@ class PlayBroInteractiveBottomSheet @Inject constructor(
         leaderboardSheetView.hide()
         choiceDetailSheetView.setData(dataUiModel, isQuizDetail())
         choiceDetailSheetView.show()
-        if (isQuizDetail())
-            analytic.onImpressQuizChoiceDetail(
-                parentViewModel.channelId,
-                parentViewModel.channelTitle,
-                dataUiModel.choice.interactiveId,
-                dataUiModel.choice.interactiveTitle,
-            )
+        when (sheetType) {
+            Type.QUIZ_DETAIL.toString() -> {
+                analytic.onImpressQuizChoiceDetail(
+                    parentViewModel.channelId,
+                    parentViewModel.channelTitle,
+                    dataUiModel.choice.interactiveId,
+                    dataUiModel.choice.interactiveTitle,
+                )
+            }
+            Type.REPORT.toString() -> {
+                analytic.onImpressReportQuizChoiceDetail(
+                    parentViewModel.channelId,
+                    parentViewModel.channelTitle,
+                    dataUiModel.choice.interactiveId,
+                    dataUiModel.choice.interactiveTitle,
+                )
+            }
+        }
+
     }
 
     private fun showErrorChoiceDetail() {

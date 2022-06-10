@@ -107,4 +107,11 @@ interface PlayBroadcastInteractiveAnalytic {
         title: String,
         engagementType: String
     )
+
+    fun onImpressReportQuizChoiceDetail(
+        channelId: String,
+        channelTitle: String,
+        interactiveId: String,
+        interactiveTitle: String
+    )
 }
