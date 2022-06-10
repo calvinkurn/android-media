@@ -713,9 +713,6 @@ open class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTyp
                             view?.let { v ->
                                 AddRemoveWishlistV2Handler.showAddToWishlistV2SuccessToaster(result, context, v)
                             }
-                            if (product.isTopads) {
-                                product.imageUrl
-                            }
                         }
 
                         override fun onErrorRemoveWishlist(throwable: Throwable, productId: String) {}
