@@ -232,7 +232,6 @@ class DiscountedProductManageFragment : BaseDaggerFragment() {
                         binding?.shimmer?.content?.gone()
                         binding?.groupContent?.gone()
                         binding?.globalError?.gone()
-                        binding?.globalError?.gone()
                         if(!it.data.hasBenefitPackage && !it.data.isAuthorize) {
                             showRbacBottomSheet()
                             showErrorEligibleView()
