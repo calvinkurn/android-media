@@ -46,7 +46,7 @@ data class DoSlashPriceProductSubmissionRequest(
                 @SerializedName("max_order")
                 var maxOrder: String = "",
                 @SerializedName("discounted_price")
-                var discountedPrice: Int = 0,
+                var discountedPrice: Double = 0.0,
                 @SerializedName("discounted_percentage")
                 var discountedPercentage: Int = 0,
                 @SerializedName("enable")

@@ -219,7 +219,7 @@ object ShopDiscountManageDiscountMapper {
         return DoSlashPriceProductSubmissionRequest.SubmittedSlashPriceProduct.SlashPriceWarehouse.Value(
             warehouseId = productWarehouse.warehouseId,
             maxOrder = maxOrder,
-            discountedPrice = productWarehouse.discountedPrice,
+            discountedPrice = productWarehouse.discountedPrice.toDouble(),
             discountedPercentage = productWarehouse.discountedPercentage,
             enable = !productWarehouse.disable
         )
