@@ -23,8 +23,8 @@ private fun getContrastColor(@ColorInt color: Int): Int {
 /**
  *
  * @param context
- * @param idColor example R.color.your_color
- * @return with example #FFFFFF hex color uppercase
+ * @param idColor example R(dot)color(dot)your_color
+ * @return with example (hashtag)FFFFFF hex color uppercase
  *
  */
 fun getHexColorFromIdColor(context: Context, idColor: Int) : String {
