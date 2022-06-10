@@ -72,10 +72,6 @@ abstract class TokoFoodHomeViewModelTestFixture {
         viewModel.getPrivateField<MutableList<TokoFoodItemUiModel>>("homeLayoutItemList")
     }
 
-    private val privatePageKey by lazy {
-        viewModel.getPrivateField<String>("pageKey")
-    }
-
     private val privateHasTickerBeenRemoved by lazy {
         viewModel.getPrivateField<Boolean>("hasTickerBeenRemoved")
     }
@@ -270,16 +266,18 @@ abstract class TokoFoodHomeViewModelTestFixture {
 
     protected fun onGetMerchantList_thenReturn(
         layoutResponse: TokoFoodMerchantListResponse,
-        localCacheModel: LocalCacheModel = LocalCacheModel()
+        localCacheModel: LocalCacheModel = LocalCacheModel(),
+        pageKey: String = "1"
     ) {
-        coEvery { tokoFoodMerchantListUseCase.execute(localCacheModel = localCacheModel, pageKey = any()) } returns layoutResponse
+        coEvery { tokoFoodMerchantListUseCase.execute(localCacheModel = localCacheModel, pageKey = pageKey) } returns layoutResponse
     }
 
     protected fun onGetMerchantList_thenReturn(
         error: Throwable,
-        localCacheModel: LocalCacheModel = LocalCacheModel()
+        localCacheModel: LocalCacheModel = LocalCacheModel(),
+        pageKey: String = "1"
     ) {
-        coEvery { tokoFoodMerchantListUseCase.execute(localCacheModel = localCacheModel, pageKey = privatePageKey) } throws error
+        coEvery { tokoFoodMerchantListUseCase.execute(localCacheModel = localCacheModel, pageKey = pageKey) } throws error
     }
 
 

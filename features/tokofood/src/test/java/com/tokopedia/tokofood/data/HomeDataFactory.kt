@@ -17,6 +17,7 @@ import com.tokopedia.tokofood.feature.home.domain.constanta.TokoFoodHomeStaticLa
 import com.tokopedia.tokofood.feature.home.domain.constanta.TokoFoodHomeStaticLayoutId.Companion.EMPTY_STATE_NO_ADDRESS
 import com.tokopedia.tokofood.feature.home.domain.constanta.TokoFoodHomeStaticLayoutId.Companion.EMPTY_STATE_NO_PIN_POINT
 import com.tokopedia.tokofood.feature.home.domain.constanta.TokoFoodHomeStaticLayoutId.Companion.LOADING_STATE
+import com.tokopedia.tokofood.feature.home.domain.constanta.TokoFoodHomeStaticLayoutId.Companion.PROGRESS_BAR
 import com.tokopedia.tokofood.feature.home.domain.constanta.TokoFoodHomeStaticLayoutId.Companion.TICKER_WIDGET_ID
 import com.tokopedia.tokofood.feature.home.domain.constanta.TokoFoodLayoutState
 import com.tokopedia.tokofood.feature.home.domain.data.DynamicHomeChannelResponse
@@ -43,6 +44,7 @@ import com.tokopedia.tokofood.feature.home.presentation.uimodel.TokoFoodHomeTick
 import com.tokopedia.tokofood.feature.home.presentation.uimodel.TokoFoodHomeUSPUiModel
 import com.tokopedia.tokofood.feature.home.presentation.uimodel.TokoFoodListUiModel
 import com.tokopedia.tokofood.feature.home.presentation.uimodel.TokoFoodMerchantListUiModel
+import com.tokopedia.tokofood.feature.home.presentation.uimodel.TokoFoodProgressBarUiModel
 import com.tokopedia.tokofood.feature.merchant.domain.model.response.TokoFoodTickerDetail
 import com.tokopedia.tokofood.feature.purchase.purchasepage.domain.model.response.KeroEditAddress
 import com.tokopedia.tokofood.feature.purchase.purchasepage.domain.model.response.KeroEditAddressData
@@ -93,6 +95,16 @@ fun createChooseAddress(): GetStateChosenAddressQglResponse {
                 addressId = 1
             )
         )
+    )
+}
+
+fun createLoadMoreState(): TokoFoodListUiModel {
+    val mutableList = mutableListOf<Visitable<*>>()
+    val progressBarUiModel = TokoFoodProgressBarUiModel(id = PROGRESS_BAR)
+    mutableList.add(progressBarUiModel)
+    return TokoFoodListUiModel(
+        items = mutableList,
+        state = TokoFoodLayoutState.UPDATE
     )
 }
 

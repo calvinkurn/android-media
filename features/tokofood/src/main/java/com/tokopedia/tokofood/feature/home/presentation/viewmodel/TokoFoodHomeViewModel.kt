@@ -166,6 +166,15 @@ class TokoFoodHomeViewModel @Inject constructor(
         _homeLayoutList.postValue(Success(data))
     }
 
+    fun showProgressBar() {
+        homeLayoutItemList.addProgressBar()
+        val data = TokoFoodListUiModel(
+            getHomeVisitableList(),
+            TokoFoodLayoutState.UPDATE
+        )
+        _homeLayoutList.postValue(Success(data))
+    }
+
     fun removeTickerWidget(id: String) {
         launch(block = {
             hasTickerBeenRemoved = true
@@ -223,7 +232,7 @@ class TokoFoodHomeViewModel @Inject constructor(
         }
     }
 
-    fun onScrollProductList(containsLastItemIndex: Int?, itemCount: Int, localCacheModel: LocalCacheModel) {
+    fun onScrollProductList(containsLastItemIndex: Int, itemCount: Int, localCacheModel: LocalCacheModel) {
         if(shouldLoadMore(containsLastItemIndex, itemCount)) {
             showProgressBar()
             getMerchantList(localCacheModel = localCacheModel)
@@ -234,6 +243,10 @@ class TokoFoodHomeViewModel @Inject constructor(
         val layoutList = homeLayoutItemList.toMutableList()
         val isEmptyStateShown = layoutList.firstOrNull { it.layout is TokoFoodHomeEmptyStateLocationUiModel } != null
         return isEmptyStateShown
+    }
+
+    fun setPageKey(pageNew:String) {
+        pageKey = pageNew
     }
 
     private fun getMerchantList(localCacheModel: LocalCacheModel) {
@@ -255,15 +268,6 @@ class TokoFoodHomeViewModel @Inject constructor(
             removeMerchantMainTitle()
             merchantListUpdate()
         }
-    }
-
-    private fun showProgressBar() {
-        homeLayoutItemList.addProgressBar()
-        val data = TokoFoodListUiModel(
-            getHomeVisitableList(),
-            TokoFoodLayoutState.UPDATE
-        )
-        _homeLayoutList.postValue(Success(data))
     }
 
     private suspend fun getTokoFoodHomeComponent(item: TokoFoodHomeLayoutUiModel, localCacheModel: LocalCacheModel?) {
@@ -310,10 +314,6 @@ class TokoFoodHomeViewModel @Inject constructor(
         homeLayoutItemList.removeItem(item?.getVisitableId())
     }
 
-    private fun setPageKey(pageNew:String) {
-        pageKey = pageNew
-    }
-
     private fun isInitialPageKey(): Boolean {
         return pageKey.equals(INITIAL_PAGE_KEY_MERCHANT)
     }
@@ -334,11 +334,10 @@ class TokoFoodHomeViewModel @Inject constructor(
         _homeLayoutList.postValue(Success(data))
     }
 
-    private fun shouldLoadMore(containsLastItemIndex: Int?, itemCount: Int): Boolean {
+    private fun shouldLoadMore(containsLastItemIndex: Int, itemCount: Int): Boolean {
         val lastItemIndex = itemCount - Int.ONE
         val scrolledToLastItem = (containsLastItemIndex == lastItemIndex
-                && containsLastItemIndex.isMoreThanZero()
-                && itemCount.isMoreThanZero())
+                && containsLastItemIndex.isMoreThanZero())
         val hasNextPage = pageKey.isNotEmpty()
         val layoutList = homeLayoutItemList.toMutableList()
         val isLoading = layoutList.firstOrNull { it.layout is TokoFoodProgressBarUiModel } != null
