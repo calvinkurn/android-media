@@ -1,4 +1,4 @@
-package com.tokopedia.mediauploader.video.data.internal
+package com.tokopedia.mediauploader.common.internal
 
 import android.content.Context
 import com.google.gson.Gson
@@ -8,12 +8,13 @@ import com.tokopedia.mediauploader.video.data.params.LargeUploadCacheParam
 import java.io.File
 import javax.inject.Inject
 
-class LargeUploadStateHandler @Inject constructor(
-    @ApplicationContext context: Context
+class LargeUploadStateManager @Inject constructor(
+    @ApplicationContext context: Context,
+    private val gson: Gson
 ) : LocalCacheHandler(context, NAME_PREFERENCE_LARGE_UPLOAD) {
 
     fun set(sourceId: String, state: LargeUploadCacheParam) {
-        val content = Gson().toJson(state)
+        val content = gson.toJson(state)
         val cacheKey = key(sourceId, state.filePath)
         putString(cacheKey, content)
 
@@ -28,7 +29,7 @@ class LargeUploadStateHandler @Inject constructor(
             return null
         }
 
-        return Gson().fromJson(content, LargeUploadCacheParam::class.java)
+        return gson.fromJson(content, LargeUploadCacheParam::class.java)
     }
 
     fun setPartNumber(sourceId: String, fileName: String, partNumber: Int) {

@@ -14,6 +14,14 @@ data class VideoPolicy(
     @Expose @SerializedName("retry_interval") var retryInterval: Int? = null,
 ) {
 
+    /**
+     * from: .mp4, .mov, .mkv
+     * to: mp4,mov,mkv
+     */
+    val allowedExtension = extension
+        .split(",")
+        .map { it.drop(1) }
+
     fun thresholdSizeOfVideo(): Int {
         return thresholdSize?: 10
     }

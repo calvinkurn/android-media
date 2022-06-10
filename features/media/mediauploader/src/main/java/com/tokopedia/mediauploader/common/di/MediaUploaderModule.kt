@@ -4,8 +4,8 @@ import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.mediauploader.UploaderUseCase
-import com.tokopedia.mediauploader.common.url.EnvManager
-import com.tokopedia.mediauploader.common.url.MediaUploaderUrl
+import com.tokopedia.mediauploader.common.internal.MediaUploaderUrl
+import com.tokopedia.mediauploader.common.internal.SourcePolicyManager
 import com.tokopedia.mediauploader.image.ImageUploaderManager
 import com.tokopedia.mediauploader.image.data.ImageUploadServices
 import com.tokopedia.mediauploader.image.domain.GetImagePolicyUseCase
@@ -33,22 +33,6 @@ class MediaUploaderModule {
 
     @Provides
     @MediaUploaderQualifier
-    fun provideEnvManager(
-        @ApplicationContext context: Context
-    ): EnvManager {
-        return EnvManager(context)
-    }
-
-    @Provides
-    @MediaUploaderQualifier
-    fun provideMediaUploaderUrl(
-        envManager: EnvManager
-    ): MediaUploaderUrl {
-        return MediaUploaderUrl(envManager)
-    }
-
-    @Provides
-    @MediaUploaderQualifier
     fun provideUploaderUseCase(
         imageUploader: ImageUploaderManager,
         videoUploader: VideoUploaderManager
@@ -62,11 +46,13 @@ class MediaUploaderModule {
     @Provides
     @MediaUploaderQualifier
     fun provideVideoUploaderManager(
+        policyManager: SourcePolicyManager,
         policyUseCase: GetVideoPolicyUseCase,
         simpleUploader: SimpleUploaderManager,
         largeUploader: LargeUploaderManager
     ): VideoUploaderManager {
         return VideoUploaderManager(
+            policyManager,
             policyUseCase,
             simpleUploader,
             largeUploader
@@ -95,10 +81,12 @@ class MediaUploaderModule {
     @Provides
     @MediaUploaderQualifier
     fun provideImageUploaderManager(
+        policyManager: SourcePolicyManager,
         imagePolicyUseCase: GetImagePolicyUseCase,
         imageUploaderUseCase: GetImageUploaderUseCase
     ): ImageUploaderManager {
         return ImageUploaderManager(
+            policyManager,
             imagePolicyUseCase,
             imageUploaderUseCase
         )

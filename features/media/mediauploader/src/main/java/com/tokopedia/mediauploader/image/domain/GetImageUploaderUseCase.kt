@@ -2,7 +2,7 @@ package com.tokopedia.mediauploader.image.domain
 
 import com.tokopedia.graphql.domain.coroutine.CoroutineUseCase
 import com.tokopedia.mediauploader.common.state.ProgressUploader
-import com.tokopedia.mediauploader.common.url.MediaUploaderUrl
+import com.tokopedia.mediauploader.common.internal.MediaUploaderUrl
 import com.tokopedia.mediauploader.image.data.ImageUploadServices
 import com.tokopedia.mediauploader.image.data.entity.ImageUploader
 import com.tokopedia.mediauploader.image.data.params.ImageUploadParam
@@ -18,10 +18,10 @@ open class GetImageUploaderUseCase @Inject constructor(
 
     override suspend fun execute(params: ImageUploadParam): ImageUploader {
         if (params.hasNoParams()) throw RuntimeException("No param found")
-        val (hostUrl, sourceId, _, timeOut) = params
+        val (sourceId, timeOut) = params
 
         return services.uploadImage(
-            urlToUpload = url.imageUpload(hostUrl, sourceId),
+            urlToUpload = url.imageUpload(sourceId),
             partBody = params.fileBody(progressUploader),
             timeOut = timeOut
         )
