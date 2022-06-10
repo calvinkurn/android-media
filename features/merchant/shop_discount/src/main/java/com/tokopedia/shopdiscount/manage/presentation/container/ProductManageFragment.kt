@@ -13,6 +13,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.iconunify.IconUnify
@@ -57,6 +58,7 @@ class ProductManageFragment : BaseDaggerFragment() {
         private const val TAB_POSITION_THIRD = 2
         private const val BUNDLE_KEY_TOASTER_WORDING = "toaster_wording"
         private const val BUNDLE_KEY_PREVIOUS_DISCOUNT_STATUS_ID = "previous_discount_status_id"
+        private const val SELLER_ADMIN_ARTICLE = "https://seller.tokopedia.com/edu/fitur-admin-toko/"
 
         @JvmStatic
         fun newInstance(
@@ -277,7 +279,16 @@ class ProductManageFragment : BaseDaggerFragment() {
     }
 
     private fun showRbacBottomSheet() {
-        RouteManager.route(context,ApplinkConstInternalSellerapp.ADMIN_RESTRICTION)
+        RouteManager.route(context, getSlashPriceApplink())
+    }
+
+    private fun getSlashPriceApplink(): String {
+        return UriUtil.buildUriAppendParam(
+            uri = ApplinkConstInternalSellerapp.ADMIN_RESTRICTION,
+            queryParameters = mapOf(
+                ApplinkConstInternalSellerapp.PARAM_ARTICLE_URL to SELLER_ADMIN_ARTICLE
+            )
+        )
     }
 
     override fun onResume() {

@@ -89,6 +89,7 @@ object ApplinkConstInternalSellerapp {
 
     //AdminRestrictionActivity
     const val ADMIN_RESTRICTION = "$INTERNAL_SELLERAPP/admin-restriction"
+    const val PARAM_ARTICLE_URL = "article_url"
 
     //ShopDiscount
     const val SHOP_DISCOUNT = "$INTERNAL_SELLERAPP/shop-discount"

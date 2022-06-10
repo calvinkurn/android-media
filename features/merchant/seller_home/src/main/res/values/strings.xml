@@ -177,6 +177,7 @@
     <string name="sah_admin_restriction_label">Admin Restriction</string>
     <string name="sah_admin_restriction_title">Oops, kamu nggak punya izin untuk mengakses fitur ini</string>
     <string name="sah_admin_restriction_desc">Hubungi pemilik toko terlebih dulu untuk melanjutkan aktivitas, ya.</string>
+    <string name="sah_admin_restriction_article_desc">Hubungi pemilik toko terlebih dulu untuk melanjutkan aktivitas, ya. &lt;a href="#"&gt;Baca artikelnya&lt;/a&gt;.</string>
     <string name="sah_admin_restriction_button">Oke, Saya Mengerti</string>
     <string name="sah_admin_restriction_message">Oops, kamu tidak punya izin untuk mengakses halaman ini</string>
     
