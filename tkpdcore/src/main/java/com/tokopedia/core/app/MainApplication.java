@@ -47,10 +47,6 @@ public abstract class MainApplication extends CoreNetworkApplication {
         remoteConfig = new FirebaseRemoteConfigImpl(MainApplication.this);
     }
 
-    protected RemoteConfig.Listener getRemoteConfigListener(){
-        return null;
-    }
-
     public UserSession getUserSession() {
         return userSession;
     }
