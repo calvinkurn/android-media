@@ -3,9 +3,13 @@ package com.tokopedia.home_component.util
 import android.content.Context
 import android.content.res.Resources
 import android.graphics.Color
+import android.graphics.Outline
 import android.graphics.drawable.*
+import android.os.Build
 import android.util.TypedValue
 import android.view.View
+import android.view.ViewOutlineProvider
+import androidx.annotation.RequiresApi
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.home_component.model.ChannelConfig
 import com.tokopedia.home_component.model.ChannelModel
@@ -94,5 +98,25 @@ fun RecyclerView.removeAllItemDecoration() {
     if (this.itemDecorationCount > 0)
     for (i in 0 until this.itemDecorationCount) {
         this.removeItemDecorationAt(i)
+    }
+}
+
+object ImageUnifyUtils {
+    private const val DEFAULT_RADIUS = 0
+    private const val CURVE_RADIUS = 18f
+
+    fun cornerRadiusTopImageUnify(): ViewOutlineProvider {
+        return object : ViewOutlineProvider() {
+            @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
+            override fun getOutline(view: View, outline: Outline?) {
+                outline?.setRoundRect(
+                    DEFAULT_RADIUS,
+                    DEFAULT_RADIUS,
+                    view.width,
+                    (view.height + CURVE_RADIUS).toInt(),
+                    CURVE_RADIUS
+                )
+            }
+        }
     }
 }

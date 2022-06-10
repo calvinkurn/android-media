@@ -5,7 +5,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.home_component.R
 import com.tokopedia.home_component.databinding.HomeBannerItemMissionWidgetBinding
 import com.tokopedia.home_component.productcardgridcarousel.dataModel.CarouselMissionWidgetDataModel
-import com.tokopedia.home_component.visitable.MissionWidgetDataModel
+import com.tokopedia.home_component.util.ImageUnifyUtils
 import com.tokopedia.unifycomponents.CardUnify2
 import com.tokopedia.utils.view.binding.viewBinding
 
@@ -31,6 +31,7 @@ class MissionWidgetItemViewHolder (
             CardUnify2.ANIMATE_OVERLAY_BOUNCE
         } else CardUnify2.ANIMATE_OVERLAY
         binding?.imageMissionWidget?.setImageUrl(element.imageURL)
+        binding?.imageMissionWidget?.outlineProvider = ImageUnifyUtils.cornerRadiusTopImageUnify()
         binding?.titleMissionWidget?.text = element.title
         binding?.subtitleMissionWidget?.text = element.subTitle
     }

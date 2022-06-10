@@ -7,22 +7,15 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.home_component.R
 import com.tokopedia.home_component.customview.HeaderListener
 import com.tokopedia.home_component.databinding.GlobalComponentMissionWidgetBinding
-import com.tokopedia.home_component.decoration.MerchantVoucherDecoration
+import com.tokopedia.home_component.decoration.MissionWidgetItemDecoration
 import com.tokopedia.home_component.listener.MissionWidgetComponentListener
 import com.tokopedia.home_component.model.ChannelGrid
 import com.tokopedia.home_component.model.ChannelModel
-import com.tokopedia.home_component.productcardgridcarousel.dataModel.CarouselMerchantVoucherDataModel
 import com.tokopedia.home_component.productcardgridcarousel.dataModel.CarouselMissionWidgetDataModel
-import com.tokopedia.home_component.productcardgridcarousel.dataModel.CarouselSeeMorePdpDataModel
-import com.tokopedia.home_component.productcardgridcarousel.dataModel.CarouselViewAllCardDataModel
 import com.tokopedia.home_component.productcardgridcarousel.listener.CommonProductCardCarouselListener
 import com.tokopedia.home_component.productcardgridcarousel.typeFactory.CommonCarouselProductCardTypeFactoryImpl
-import com.tokopedia.home_component.productcardgridcarousel.viewHolder.CarouselViewAllCardViewHolder
 import com.tokopedia.home_component.util.ChannelWidgetUtil
-import com.tokopedia.home_component.util.getTopadsString
-import com.tokopedia.home_component.viewholders.adapter.MerchantVoucherAdapter
 import com.tokopedia.home_component.viewholders.adapter.MissionWidgetAdapter
-import com.tokopedia.home_component.visitable.MerchantVoucherDataModel
 import com.tokopedia.home_component.visitable.MissionWidgetDataModel
 import com.tokopedia.home_component.visitable.MissionWidgetListDataModel
 import com.tokopedia.utils.view.binding.viewBinding
@@ -64,7 +57,7 @@ class MissionWidgetViewHolder(
 
     private fun valuateRecyclerViewDecoration() {
         if (binding?.homeComponentMissionWidgetRcv?.itemDecorationCount == 0) binding?.homeComponentMissionWidgetRcv?.addItemDecoration(
-            MerchantVoucherDecoration()
+            MissionWidgetItemDecoration()
         )
         binding?.homeComponentMissionWidgetRcv?.layoutManager = LinearLayoutManager(
             itemView.context,
