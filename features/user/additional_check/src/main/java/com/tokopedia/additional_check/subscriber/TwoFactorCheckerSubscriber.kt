@@ -33,6 +33,7 @@ import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.user.session.datastore.workmanager.DataStoreMigrationWorker
+import timber.log.Timber
 import javax.inject.Inject
 
 /**
@@ -49,6 +50,8 @@ class TwoFactorCheckerSubscriber : Application.ActivityLifecycleCallbacks {
     lateinit var userSession: UserSessionInterface
 
     private var remoteConfig: FirebaseRemoteConfigImpl? = null
+
+    private var refreshCounter = 0
 
     private val exceptionPage = listOf(
         "ConsumerSplashScreen",
@@ -135,21 +138,24 @@ class TwoFactorCheckerSubscriber : Application.ActivityLifecycleCallbacks {
     }
 
     private fun isNeedEncryptionCheck(activity: Activity): Boolean {
-        val sharedPrefs: SharedPreferences = activity.getSharedPreferences(encryptionPrefName, Context.MODE_PRIVATE)
-        return sharedPrefs.getBoolean(encryptionKeyName, false)
+        val sharedPrefs: SharedPreferences =
+            activity.getSharedPreferences(encryptionPrefName, Context.MODE_PRIVATE)
+        return sharedPrefs.getBoolean(encryptionKeyName, false) && (refreshCounter < 10)
     }
 
     private fun checkEncryptionStatus(activity: Activity) {
-        if(isNeedEncryptionCheck(activity)) {
+        if (isNeedEncryptionCheck(activity)) {
             viewModel.refreshUserSession {
+                refreshCounter++
                 logUserProfileRecovery(it)
-                if(it) setEncryptionState(activity, false)
+                if (it) setEncryptionState(activity, false)
             }
         }
     }
 
     private fun logUserProfileRecovery(isSuccess: Boolean) {
-        ServerLogger.log(Priority.P2, DataStoreMigrationWorker.USER_SESSION_LOGGER_TAG,
+        ServerLogger.log(
+            Priority.P2, DataStoreMigrationWorker.USER_SESSION_LOGGER_TAG,
             mapOf(
                 "method" to "recover_user_profile",
                 "is_success" to isSuccess.toString()

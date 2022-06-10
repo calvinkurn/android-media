@@ -49,16 +49,12 @@ class AeadEncryptorImpl(val context: Context) : AeadEncryptor {
         return String(getAead().decrypt(messageToDecrypt, associatedData), Charsets.UTF_8)
     }
 
-    companion object {
-        val MASTER_KEY_URI = "android-keystore://tkpd_master_keyset"
-        fun del() {
-            try {
-                val keyStore: KeyStore = KeyStore.getInstance(KeyStore.getDefaultType())
-                keyStore.load(null)
-                keyStore.deleteEntry(MASTER_KEY_URI)
-            } catch (e: KeyStoreException) {
-                e.printStackTrace()
-            }
-        }
+    override fun delete() {
+        val keyStore: KeyStore = KeyStore.getInstance("AndroidKeyStore")
+        keyStore.load(null)
+        keyStore.deleteEntry(MASTER_KEY_URI)
+
+        context.getSharedPreferences(PREFERENCE_FILE, Context.MODE_PRIVATE).edit().clear().apply()
     }
+
 }
