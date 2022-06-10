@@ -270,6 +270,12 @@ class PlayBroInteractiveBottomSheet @Inject constructor(
     }
 
     override fun onBackButtonClicked(view: QuizOptionDetailViewComponent) {
+        analytic.onClickBackQuizChoiceDetail(
+            parentViewModel.channelId,
+            parentViewModel.channelTitle,
+            parentViewModel.interactiveId,
+            parentViewModel.activeInteractiveTitle,
+        )
         parentViewModel.submitAction(PlayBroadcastAction.ClickBackOnChoiceDetail)
     }
 

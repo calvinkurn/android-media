@@ -70,4 +70,11 @@ interface PlayBroadcastInteractiveAnalytic {
         interactiveTitle: String
     )
 
+    fun onClickBackQuizChoiceDetail(
+        channelId: String,
+        channelTitle: String,
+        interactiveId: String,
+        interactiveTitle: String
+    )
+
 }
