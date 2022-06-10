@@ -411,10 +411,10 @@ object DynamicProductDetailMapper {
         )
     }
 
-    private fun zeroIfEmpty(data: String?) : String{
-        return if(data == null || data.isEmpty()){
+    fun zeroIfEmpty(data: String?): String {
+        return if (data == null || data.isEmpty()) {
             "0"
-        } else{
+        } else {
             data
         }
     }

@@ -36,8 +36,10 @@ object ProductShareTracking {
         }
     }
 
-    fun onCloseShareWidgetClicked(type: Int, userId: String, productId: String,
-                                  campaignId: String, bundleId: String) {
+    fun onCloseShareWidgetClicked(
+        type: Int, userId: String, productId: String,
+        campaignId: String, bundleId: String
+    ) {
         if (type == CUSTOM_SHARE_SHEET) {
             onCloseNormalShareClicked(userId, productId, campaignId, bundleId)
         } else {
