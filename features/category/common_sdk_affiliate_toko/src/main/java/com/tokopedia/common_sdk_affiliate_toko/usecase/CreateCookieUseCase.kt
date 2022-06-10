@@ -4,8 +4,11 @@ import com.tokopedia.common_sdk_affiliate_toko.model.*
 import com.tokopedia.common_sdk_affiliate_toko.raw.GQL_Create_Cookie
 import com.tokopedia.common_sdk_affiliate_toko.repository.CommonAffiliateRepository
 import com.tokopedia.track.TrackApp
+import javax.inject.Inject
 
-class CreateCookieUseCase {
+class CreateCookieUseCase @Inject constructor(
+    private val commonAffiliateRepository: CommonAffiliateRepository
+){
     companion object {
         const val INPUT_PARAM = "input"
     }
@@ -61,7 +64,7 @@ class CreateCookieUseCase {
         param: AffiliateCookieParams,
         deviceId: String
     ): CreateAffiliateCookieResponse {
-        return CommonAffiliateRepository.getGQLData(
+        return commonAffiliateRepository.getGQLData(
             GQL_Create_Cookie,
             CreateAffiliateCookieResponse::class.java,
             createRequestParam(param, deviceId)

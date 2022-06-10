@@ -3,8 +3,11 @@ package com.tokopedia.common_sdk_affiliate_toko.usecase
 import com.tokopedia.common_sdk_affiliate_toko.model.*
 import com.tokopedia.common_sdk_affiliate_toko.raw.GQL_Check_Cookie
 import com.tokopedia.common_sdk_affiliate_toko.repository.CommonAffiliateRepository
+import javax.inject.Inject
 
-class CheckCookieUseCase {
+class CheckCookieUseCase @Inject constructor(
+    private val commonAffiliateRepository: CommonAffiliateRepository
+){
     companion object {
         const val INPUT_PARAM = "input"
     }
@@ -28,7 +31,7 @@ class CheckCookieUseCase {
     suspend fun checkAffiliateCookie(
         param: AffiliateCookieParams
     ): AffiliateCookieResponse {
-        return CommonAffiliateRepository.getGQLData(
+        return commonAffiliateRepository.getGQLData(
             GQL_Check_Cookie,
             AffiliateCookieResponse::class.java,
             createRequestParam(param)
