@@ -7,14 +7,14 @@
     android:orientation="vertical">
 
     <com.tokopedia.header.HeaderUnify
-        android:id="@+id/toolbar"
+        android:id="@+id/toolbar_voucher_game"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:unify_header_is_show_back_button="true"
         app:unify_header_is_show_shadow="true"/>
 
     <FrameLayout
-        android:id="@+id/parent_view"
+        android:id="@+id/parent_view_voucher_game"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
