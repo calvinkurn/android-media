@@ -1,10 +1,13 @@
 package com.tokopedia.mediauploader.common.url
 
 import android.content.Context
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.url.Env
 import javax.inject.Inject
 
-class EnvManager @Inject constructor(val context: Context) {
+class EnvManager @Inject constructor(
+    @ApplicationContext val context: Context
+) {
 
     fun getEnv(): Env {
         val sharedPref = context.getSharedPreferences(

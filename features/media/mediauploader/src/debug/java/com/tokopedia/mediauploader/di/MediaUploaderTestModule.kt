@@ -5,8 +5,6 @@ import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.mediauploader.common.di.MediaUploaderModule
-import com.tokopedia.mediauploader.common.url.EnvManager
-import com.tokopedia.mediauploader.common.url.MediaUploaderUrl
 import com.tokopedia.mediauploader.manager.UploadMediaNotificationManager
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
@@ -24,22 +22,6 @@ class MediaUploaderTestModule(
         @ApplicationContext context: Context
     ): UserSessionInterface {
         return UserSession(context)
-    }
-
-    @Provides
-    @MediaUploaderTestScope
-    fun provideEnvManager(
-        @ApplicationContext context: Context
-    ): EnvManager {
-        return EnvManager(context)
-    }
-
-    @Provides
-    @MediaUploaderTestScope
-    fun provideMediaUploaderUrl(
-        envManager: EnvManager
-    ): MediaUploaderUrl {
-        return MediaUploaderUrl(envManager)
     }
 
     @Provides
