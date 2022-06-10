@@ -156,7 +156,6 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
             Embrace.getInstance().setUserIdentifier(getUserSession().getUserId());
         }
         EmbraceMonitoring.INSTANCE.setCarrierProperties(this);
-        executeArithmeticException();
     }
 
     private void initializeNewRelic() {
@@ -165,11 +164,6 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
         if (isDisableInitNrInAct) {
             NewRelic.withApplicationToken(Keys.NEW_RELIC_TOKEN_MA).start(this);
         }
-    }
-
-    private void executeArithmeticException() {
-        int result = 0 / 0;
-        System.out.println(result);
     }
 
     private void checkAppPackageNameAsync() {
