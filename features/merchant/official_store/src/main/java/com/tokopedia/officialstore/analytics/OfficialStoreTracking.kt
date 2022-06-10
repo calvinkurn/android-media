@@ -42,7 +42,6 @@ class OfficialStoreTracking(context: Context) {
     private var trackingIris = IrisAnalytics.getInstance(context)
 
     companion object{
-
         private const val EVENT = "event"
         private const val EVENT_CATEGORY = "eventCategory"
         private const val EVENT_ACTION = "eventAction"
@@ -85,19 +84,13 @@ class OfficialStoreTracking(context: Context) {
         private const val FIELD_PRODUCT_VARIANT = "variant"
         private const val FIELD_PRODUCT_CATEGORY = "category"
         private const val FIELD_PRODUCT_LIST = "list"
-        private const val FIELD_PRODUCT_QUANTITY = "quantity"
         private const val FIELD_PRODUCT_POSITION = "position"
         private const val FIELD_ACTION_FIELD = "actionField"
-        private const val FIELD_CATEGORY_ID = "category_id"
-        private const val FIELD_SHOP_ID = "shop_id"
-        private const val FIELD_SHOP_TYPE = "shop_type"
-        private const val FIELD_SHOP_NAME = "shop_name"
         private const val FIELD_DIMENSION_38 = "dimension38"
         private const val FIELD_PRODUCT_CREATIVE = "creative"
         private const val VALUE_NONE_OTHER = "none / other"
         private const val VALUE_NONE = "none"
         private const val VALUE_IDR = "IDR"
-        private const val VALUE_EMPTY = ""
         private const val VALUE_NON_LOGIN = ""
         private const val VALUE_NON_LOGIN_NEW = "non login"
         private const val VALUE_LOGIN_NEW = "login"
@@ -108,7 +101,6 @@ class OfficialStoreTracking(context: Context) {
         private const val EVENT_PRODUCT_VIEW = "productView"
         private const val EVENT_PRODUCT_CLICK = "productClick"
         private const val PRODUCT_EVENT_ACTION = "product recommendation"
-        private const val EVENT_CATEGORY_RECOMMENDATION_PAGE_WITH_PRODUCT_ID = "recommendation page with product id"
         private const val SLASH_OFFICIAL_STORE = "/official-store"
         private const val SLASH_OFFICIAL_STORE_WITHOUT_CATEGORY = "/official-store/"
         private const val SKEL_APPLINK = "{&data}"
@@ -116,7 +108,18 @@ class OfficialStoreTracking(context: Context) {
         private const val POPULAR_BRANDS = "popular brands"
         private const val RADIX_10 = 10
         const val OS_MICROSITE_SINGLE = "os microsite"
+
+        const val FORMAT_DASH_TWO_VALUES = "%s - %s"
+        const val FORMAT_DASH_THREE_VALUES = "%s - %s - %s"
+        const val FORMAT_DASH_FOUR_VALUES = "%s - %s - %s - %s"
+        const val FORMAT_UNDERSCORE_TWO_VALUES = "%s_%s"
+        const val FORMAT_ITEM_NAME = "${SLASH_OFFICIAL_STORE}/%s - %s"
+        const val FORMAT_ITEM_LIST = "${SLASH_OFFICIAL_STORE}/%s - %s - %s"
+        const val FORMAT_CLICK_VIEW_ALL = "click view all on %s"
+        const val FORMAT_CLICK_VIEW_ALL_CARD = "click view all card on %s"
         private const val VALUE_SLIDER_BANNER = "slider banner"
+        private const val VALUE_PRODUCT_IMPRESSION = "$IMPRESSION product"
+        private const val VALUE_PRODUCT_CLICK = "$CLICK product"
     }
 
     fun sendScreen(categoryName: String) {
@@ -184,8 +187,8 @@ class OfficialStoreTracking(context: Context) {
         val bundle = Bundle().apply {
             putString(EVENT, Event.SELECT_CONTENT)
             putString(EVENT_CATEGORY, OS_MICROSITE_SINGLE)
-            putString(EVENT_ACTION, "$CLICK banner - $VALUE_SLIDER_BANNER")
-            putString(EVENT_LABEL, "$VALUE_SLIDER_BANNER - $categoryName")
+            putString(EVENT_ACTION, FORMAT_DASH_TWO_VALUES.format(CLICK_BANNER, VALUE_SLIDER_BANNER))
+            putString(EVENT_LABEL, FORMAT_DASH_TWO_VALUES.format(VALUE_SLIDER_BANNER, categoryName))
             putString(USER_ID, userId)
             putString(FIELD_BUSINESS_UNIT, VALUE_BUSINESS_UNIT_DEFAULT)
             putString(FIELD_CURRENT_SITE, VALUE_CURRENT_SITE_DEFAULT)
@@ -194,7 +197,7 @@ class OfficialStoreTracking(context: Context) {
                     putString(BaseTrackerConst.Promotion.CREATIVE_NAME, bannerItem.title)
                     putString(BaseTrackerConst.Promotion.CREATIVE_SLOT, (bannerPosition+1).toString())
                     putString(ITEM_ID, bannerItem.bannerId)
-                    putString(ITEM_NAME, "${SLASH_OFFICIAL_STORE}/$categoryName - $VALUE_SLIDER_BANNER")
+                    putString(ITEM_NAME, FORMAT_ITEM_NAME.format(categoryName, VALUE_SLIDER_BANNER))
                 }
             )
             putParcelableArrayList(BaseTrackerConst.Promotion.KEY, promotions)
@@ -208,12 +211,12 @@ class OfficialStoreTracking(context: Context) {
             constructBasicPromotionView(
                 event = PROMO_VIEW,
                 eventCategory = OS_MICROSITE_SINGLE,
-                eventAction = "$IMPRESSION banner - $VALUE_SLIDER_BANNER",
-                eventLabel = "$VALUE_SLIDER_BANNER - $categoryName",
+                eventAction = FORMAT_DASH_TWO_VALUES.format(IMPRESSION_BANNER, VALUE_SLIDER_BANNER),
+                eventLabel = FORMAT_DASH_TWO_VALUES.format(VALUE_SLIDER_BANNER, categoryName),
                 promotions = listOf(BaseTrackerConst.Promotion(
                     creative = bannerItem.title,
                     position = bannerPosition.toString(),
-                    name = "${SLASH_OFFICIAL_STORE}/$categoryName - $VALUE_SLIDER_BANNER",
+                    name = FORMAT_ITEM_NAME.format(categoryName, VALUE_SLIDER_BANNER),
                     id = bannerItem.bannerId,
                     creativeUrl = bannerItem.applink
                 ))
@@ -852,8 +855,8 @@ class OfficialStoreTracking(context: Context) {
             DynamicChannelLayout.LAYOUT_MIX_LEFT -> VALUE_DYNAMIC_MIX_LEFT_CAROUSEL
             else -> ""
         }
-        val eventAction = "$IMPRESSION product - $valueDynamicMix"
-        val eventLabel = "$valueDynamicMix - ${channel.id} - ${channel.channelHeader.name} - $categoryName"
+        val eventAction = FORMAT_DASH_TWO_VALUES.format(VALUE_PRODUCT_IMPRESSION, valueDynamicMix)
+        val eventLabel = FORMAT_DASH_FOUR_VALUES.format(valueDynamicMix, channel.id, channel.channelHeader.name, categoryName)
         val data = DataLayer.mapOf(
                 EVENT, EVENT_PRODUCT_VIEW,
                 EVENT_CATEGORY, OS_MICROSITE_SINGLE,
@@ -871,7 +874,7 @@ class OfficialStoreTracking(context: Context) {
                                     productPosition,
                                     isLogin,
                                     valueDynamicMix,
-                                    "$SLASH_OFFICIAL_STORE/$categoryName - $valueDynamicMix - ${channel.channelHeader.name}"
+                                    FORMAT_ITEM_LIST.format(categoryName, valueDynamicMix, channel.channelHeader.name)
                         )
                     )
                 )
@@ -994,8 +997,8 @@ class OfficialStoreTracking(context: Context) {
             list.add(VALUE_NON_LOGIN_NEW)
         else list.add(VALUE_LOGIN_NEW)
         val listKeyValue = TextUtils.join(" - ", list)
-        val eventAction = "$CLICK product - $valueDynamicMix"
-        val eventLabel = "${channel.id} - ${channel.channelHeader.name} - $categoryName"
+        val eventAction = FORMAT_DASH_TWO_VALUES.format(VALUE_PRODUCT_CLICK, valueDynamicMix)
+        val eventLabel = FORMAT_DASH_THREE_VALUES.format(channel.id, channel.channelHeader.name, categoryName)
         val data = DataLayer.mapOf(
                 EVENT, EVENT_PRODUCT_CLICK,
                 EVENT_CATEGORY, OS_MICROSITE_SINGLE,
@@ -1045,11 +1048,11 @@ class OfficialStoreTracking(context: Context) {
             else -> ""
         }
         val eventLabel = when(channel.layout){
-            DynamicChannelLayout.LAYOUT_MIX_TOP -> "${channel.id} - $categoryName"
-            DynamicChannelLayout.LAYOUT_MIX_LEFT -> "${channel.id} - ${channel.channelHeader.name} - $categoryName"
+            DynamicChannelLayout.LAYOUT_MIX_TOP -> FORMAT_DASH_TWO_VALUES.format(channel.id, categoryName)
+            DynamicChannelLayout.LAYOUT_MIX_LEFT -> FORMAT_DASH_THREE_VALUES.format(channel.id, channel.channelHeader.name, categoryName)
             else -> ""
         }
-        val eventActionValue = "click view all card on $valueDynamicMix"
+        val eventActionValue = FORMAT_CLICK_VIEW_ALL_CARD.format(valueDynamicMix)
         tracker.sendGeneralEvent(DataLayer.mapOf(
                 EVENT, CLICK_HOMEPAGE,
                 EVENT_CATEGORY, OS_MICROSITE_SINGLE,
@@ -1068,11 +1071,11 @@ class OfficialStoreTracking(context: Context) {
             else -> ""
         }
         val eventLabel = when(channel.layout){
-            DynamicChannelLayout.LAYOUT_MIX_TOP -> "${channel.id} - $categoryName"
-            DynamicChannelLayout.LAYOUT_MIX_LEFT -> "${channel.id} - ${channel.channelHeader.name} - $categoryName"
+            DynamicChannelLayout.LAYOUT_MIX_TOP -> FORMAT_DASH_TWO_VALUES.format(channel.id, categoryName)
+            DynamicChannelLayout.LAYOUT_MIX_LEFT -> FORMAT_DASH_THREE_VALUES.format(channel.id, channel.channelHeader.name, categoryName)
             else -> ""
         }
-        val eventActionValue = "click view all on $valueDynamicMix"
+        val eventActionValue = FORMAT_CLICK_VIEW_ALL.format(valueDynamicMix)
         tracker.sendGeneralEvent(DataLayer.mapOf(
                 EVENT, CLICK_HOMEPAGE,
                 EVENT_CATEGORY, OS_MICROSITE_SINGLE,

@@ -1,13 +1,8 @@
 package com.tokopedia.officialstore.analytics
 
-import android.os.Bundle
-import com.tokopedia.analytic_constant.Event
 import com.tokopedia.home_component.model.ChannelModel
-import com.tokopedia.officialstore.official.data.model.dynamic_channel.Channel
-import com.tokopedia.track.TrackApp
 import com.tokopedia.track.builder.BaseTrackerBuilder
 import com.tokopedia.track.builder.util.BaseTrackerConst
-import com.tokopedia.track.interfaces.ContextAnalytics
 
 object OSMixLeftTracking: BaseTrackerConst() {
 
@@ -28,10 +23,23 @@ object OSMixLeftTracking: BaseTrackerConst() {
                             event = Event.PROMO_VIEW,
                             eventAction = IMPRESSION_BANNER_MIX_LEFT,
                             eventCategory = OS_MICROSITE_SINGLE,
-                            eventLabel = "$VALUE_DYNAMIC_MIX_LEFT_CAROUSEL - ${channel.id} - ${channel.channelHeader.name} - $categoryName",
+                            eventLabel = OfficialStoreTracking.FORMAT_DASH_FOUR_VALUES.format(
+                                VALUE_DYNAMIC_MIX_LEFT_CAROUSEL,
+                                channel.id,
+                                channel.channelHeader.name,
+                                categoryName
+                            ),
                             promotions = listOf(Promotion(
-                                id = "${channel.channelBanner.id}_${channel.id}",
-                                name = "$SLASH_OFFICIAL_STORE/${categoryName.lowercase()} - $VALUE_DYNAMIC_MIX_LEFT_CAROUSEL - ${channel.channelBanner.applink} - ${channel.channelHeader.name}",
+                                id = OfficialStoreTracking.FORMAT_UNDERSCORE_TWO_VALUES.format(
+                                    channel.channelBanner.id,
+                                    channel.id
+                                ),
+                                name = OfficialStoreTracking.FORMAT_ITEM_NAME.format(
+                                    categoryName.lowercase(),
+                                    VALUE_DYNAMIC_MIX_LEFT_CAROUSEL,
+                                    channel.channelBanner.applink,
+                                    channel.channelHeader.name
+),
                                 position = (bannerPosition+1).toString(),
                                 creative = channel.name
                             )))
