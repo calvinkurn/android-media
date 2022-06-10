@@ -1,4 +1,4 @@
-package com.tokopedia.logisticCommon.ui.userconsent.analytic
+package com.tokopedia.logisticCommon.data.analytics
 
 import com.tokopedia.track.builder.BaseTrackerBuilder
 import com.tokopedia.track.builder.util.BaseTrackerConst

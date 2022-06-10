@@ -14,7 +14,7 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalLogistic
 import com.tokopedia.logisticCommon.R
-import com.tokopedia.logisticCommon.ui.userconsent.analytic.TncAnalytics
+import com.tokopedia.logisticCommon.data.analytics.TncAnalytics
 
 object LogisticUserConsentHelper {
 

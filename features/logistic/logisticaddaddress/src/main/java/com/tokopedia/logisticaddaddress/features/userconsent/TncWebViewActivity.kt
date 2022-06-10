@@ -1,4 +1,4 @@
-package com.tokopedia.logisticCommon.ui.userconsent
+package com.tokopedia.logisticaddaddress.features.userconsent
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
