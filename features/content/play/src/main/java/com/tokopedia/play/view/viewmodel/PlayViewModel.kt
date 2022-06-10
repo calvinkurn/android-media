@@ -1875,7 +1875,7 @@ class PlayViewModel @AssistedInject constructor(
 
     private fun handleEventQuizAnswered(isCorrect: Boolean) {
         viewModelScope.launchCatchError(dispatchers.computation, block = {
-            _uiEvent.emit(QuizAnsweredEvent(isCorrect)
+            _uiEvent.emit(QuizAnsweredEvent(isCorrect))
         }){}
     }
 
