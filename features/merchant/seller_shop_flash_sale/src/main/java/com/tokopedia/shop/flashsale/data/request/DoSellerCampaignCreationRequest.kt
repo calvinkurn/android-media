@@ -38,18 +38,9 @@ data class DoSellerCampaignCreationRequest(
     val showTeaser: Boolean,
 
     @SerializedName("payment_type")
-    val paymentType: Int? = null,
+    val paymentType: Int,
 
-    @SerializedName("thematic_participation")
-    val thematicParticipation: Boolean,
-
-    @SerializedName("thematic_info")
-    val thematicInfo: ThematicInfo
-) {
-    data class ThematicInfo(
-        @SuppressLint("Invalid Data Type") @SerializedName("thematic_id") val thematicId: Long,
-        @SuppressLint("Invalid Data Type") @SerializedName("sub_thematic_id") val subThematicId: Long
-    )
+    ) {
 
     data class GradientColorInput(
         @SerializedName("first_color") val firstColor: String,

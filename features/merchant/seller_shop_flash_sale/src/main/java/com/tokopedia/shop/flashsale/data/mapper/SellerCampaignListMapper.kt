@@ -49,14 +49,20 @@ class SellerCampaignListMapper @Inject constructor() {
 
     private fun Int.convert(): CampaignStatus {
         return when (this) {
-            CAMPAIGN_STATUS_ID_AVAILABLE -> CampaignStatus.AVAILABLE
+            CAMPAIGN_STATUS_ID_DRAFT -> CampaignStatus.DRAFT
+
+            CAMPAIGN_STATUS_ID_IN_SUBMISSION -> CampaignStatus.IN_SUBMISSION
+            CAMPAIGN_STATUS_ID_IN_REVIEW -> CampaignStatus.IN_REVIEW
+            CAMPAIGN_STATUS_ID_READY -> CampaignStatus.READY
             CAMPAIGN_STATUS_ID_UPCOMING -> CampaignStatus.UPCOMING
             CAMPAIGN_STATUS_ID_ONGOING -> CampaignStatus.ONGOING
+
             CAMPAIGN_STATUS_ID_FINISHED -> CampaignStatus.FINISHED
             CAMPAIGN_STATUS_ID_ONGOING_CANCELLATION -> CampaignStatus.ONGOING_CANCELLATION
-            CAMPAIGN_STATUS_ID_DRAFT -> CampaignStatus.DRAFT
             CAMPAIGN_STATUS_ID_CANCELLED -> CampaignStatus.CANCELLED
-            else ->  CampaignStatus.CANCELLED
+
+            else -> CampaignStatus.CANCELLED
+
         }
     }
 

@@ -145,11 +145,18 @@ class CampaignListFragment : BaseSimpleListFragment<CampaignAdapter, CampaignUiM
         observeCampaigns()
         observeCampaignPrerequisiteData()
         observeShareComponentMetadata()
+        observeSellerEligibility()
         viewModel.getCampaignPrerequisiteData()
     }
 
+
     private fun setupView() {
-        binding?.btnCreateCampaign?.setOnClickListener { handleCreateCampaign() }
+        binding?.btnCreateCampaign?.setOnClickListener {
+            binding?.btnCreateCampaign?.isLoading = true
+            binding?.btnCreateCampaign?.loadingText = getString(R.string.sfs_please_wait)
+            viewModel.getSellerEligibility()
+        }
+
         binding?.btnDraft?.setOnClickListener {
             DraftListBottomSheet.showUsingCampaignUiModel(
                 childFragmentManager,
@@ -258,6 +265,21 @@ class CampaignListFragment : BaseSimpleListFragment<CampaignAdapter, CampaignUiM
         }
     }
 
+    private fun observeSellerEligibility() {
+        viewModel.sellerEligibility.observe(viewLifecycleOwner) { result ->
+            when (result) {
+                is Success -> {
+                    binding?.btnCreateCampaign?.isLoading = false
+                    handleSellerEligibility(result.data)
+                }
+                is Fail -> {
+                    binding?.btnCreateCampaign?.isLoading = false
+                    binding?.root showError result.throwable
+                }
+            }
+        }
+    }
+
     fun setOnScrollDownListener(onScrollDown: () -> Unit = {}) {
         this.onScrollDown = onScrollDown
     }
@@ -310,7 +332,7 @@ class CampaignListFragment : BaseSimpleListFragment<CampaignAdapter, CampaignUiM
     }
 
     override fun addElementToAdapter(list: List<CampaignUiModel>) {
-        adapter?.addData(list)
+        adapter?.submit(list)
     }
 
     override fun loadData(page: Int) {
@@ -337,7 +359,7 @@ class CampaignListFragment : BaseSimpleListFragment<CampaignAdapter, CampaignUiM
     }
 
     override fun clearAdapterData() {
-        adapter?.clearData()
+        adapter?.clearAll()
     }
 
     override fun onShowLoading() {
@@ -375,6 +397,14 @@ class CampaignListFragment : BaseSimpleListFragment<CampaignAdapter, CampaignUiM
             )
         } else {
             CampaignInformationActivity.start(requireActivity(), PageMode.CREATE)
+        }
+    }
+
+    private fun handleSellerEligibility(isEligible : Boolean) {
+        if (isEligible) {
+            handleCreateCampaign()
+        } else {
+            routeToPmSubscribePage()
         }
     }
 
