@@ -25,10 +25,14 @@ import com.tokopedia.additional_check.view.TwoFactorViewModel
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.config.GlobalConfig
+import com.tokopedia.logger.ServerLogger
+import com.tokopedia.logger.utils.Priority
 import com.tokopedia.loginfingerprint.view.helper.BiometricPromptHelper
 import com.tokopedia.notifications.inApp.CMInAppManager
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigInstance
+import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.user.session.datastore.workmanager.DataStoreMigrationWorker
 import javax.inject.Inject
 
 /**
@@ -40,6 +44,9 @@ class TwoFactorCheckerSubscriber : Application.ActivityLifecycleCallbacks {
 
     @Inject
     lateinit var viewModel: TwoFactorViewModel
+
+    @Inject
+    lateinit var userSession: UserSessionInterface
 
     private var remoteConfig: FirebaseRemoteConfigImpl? = null
 
@@ -115,9 +122,7 @@ class TwoFactorCheckerSubscriber : Application.ActivityLifecycleCallbacks {
                 .inject(this)
 
             doChecking(activity)
-            if(whiteListedPageEncryption.contains(activity.javaClass.simpleName)) {
-                checkEncryptionStatus(activity)
-            }
+            checkEncryptionStatus(activity)
         }
     }
 
@@ -137,9 +142,19 @@ class TwoFactorCheckerSubscriber : Application.ActivityLifecycleCallbacks {
     private fun checkEncryptionStatus(activity: Activity) {
         if(isNeedEncryptionCheck(activity)) {
             viewModel.refreshUserSession {
+                logUserProfileRecovery(it)
                 if(it) setEncryptionState(activity, false)
             }
         }
+    }
+
+    private fun logUserProfileRecovery(isSuccess: Boolean) {
+        ServerLogger.log(Priority.P2, DataStoreMigrationWorker.USER_SESSION_LOGGER_TAG,
+            mapOf(
+                "type" to "recover_user_profile",
+                "is_success" to isSuccess.toString()
+            )
+        )
     }
 
     private fun getTwoFactorRemoteConfig(activity: Activity?): Boolean? {
