@@ -310,8 +310,8 @@ class TokoFoodHomeViewModel @Inject constructor(
         return homeLayoutItemList.mapNotNull { it.layout }
     }
 
-    private fun removeUnsupportedLayout(item: Visitable<*>?) {
-        homeLayoutItemList.removeItem(item?.getVisitableId())
+    private fun removeUnsupportedLayout(item: TokoFoodHomeLayoutUiModel) {
+        homeLayoutItemList.removeItem(item.getVisitableId())
     }
 
     private fun isInitialPageKey(): Boolean {

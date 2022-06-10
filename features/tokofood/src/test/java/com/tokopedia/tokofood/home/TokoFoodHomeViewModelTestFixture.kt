@@ -108,12 +108,6 @@ abstract class TokoFoodHomeViewModelTestFixture {
         Assert.assertNotNull(actualResponse)
     }
 
-    protected fun verifyGetUnknownShown() {
-        val homeLayoutList = viewModel.layoutList.value
-        val actualResponse = (homeLayoutList as Success).data.items.find { it is UnknownLayout }
-        Assert.assertNotNull(actualResponse)
-    }
-
     protected fun verifyGetChooseAddressFail() {
         val actualResponse = viewModel.chooseAddress.value
         Assert.assertTrue(actualResponse is Fail)
@@ -301,12 +295,4 @@ abstract class TokoFoodHomeViewModelTestFixture {
     object UnknownHomeLayout: TokoFoodHomeLayoutUiModel("1") {
         override fun type(typeFactory: TokoFoodHomeTypeFactory?) = 0
     }
-
-    object UnknownLayout: HomeComponentVisitable {
-        override fun visitableId(): String? = null
-        override fun equalsWith(b: Any?): Boolean = false
-        override fun getChangePayloadFrom(b: Any?): Bundle? = null
-        override fun type(typeFactory: HomeComponentTypeFactory?) = 0
-    }
-
 }

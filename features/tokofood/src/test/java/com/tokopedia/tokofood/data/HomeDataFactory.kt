@@ -129,6 +129,17 @@ fun createKeroEditAddressResponse(): KeroEditAddressResponse {
     )
 }
 
+fun createKeroEditAddressResponseFail(): KeroEditAddressResponse {
+    return KeroEditAddressResponse(
+        keroEditAddress = KeroEditAddress(
+            data = KeroEditAddressData(
+                addressId = "123",
+                isSuccess = 0
+            )
+        )
+    )
+}
+
 fun createTickerStateRemoved(): TokoFoodListUiModel {
     val mutableList = mutableListOf<Visitable<*>>()
     val chooseAddressModel = TokoFoodHomeChooseAddressWidgetUiModel(id = CHOOSE_ADDRESS_WIDGET_ID)

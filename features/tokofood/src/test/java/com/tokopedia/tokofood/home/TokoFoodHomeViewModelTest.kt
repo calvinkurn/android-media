@@ -10,6 +10,7 @@ import com.tokopedia.tokofood.data.createHomeTickerDataModel
 import com.tokopedia.tokofood.data.createIconsModel
 import com.tokopedia.tokofood.data.createKeroAddrIsEligibleForAddressFeature
 import com.tokopedia.tokofood.data.createKeroEditAddressResponse
+import com.tokopedia.tokofood.data.createKeroEditAddressResponseFail
 import com.tokopedia.tokofood.data.createLoadMoreState
 import com.tokopedia.tokofood.data.createLoadingState
 import com.tokopedia.tokofood.data.createMerchantListModel1
@@ -38,8 +39,6 @@ import com.tokopedia.tokofood.feature.home.presentation.uimodel.TokoFoodHomeEmpt
 import com.tokopedia.tokofood.feature.home.presentation.uimodel.TokoFoodHomeMerchantTitleUiModel
 import com.tokopedia.tokofood.feature.home.presentation.uimodel.TokoFoodItemUiModel
 import com.tokopedia.tokofood.feature.home.presentation.uimodel.TokoFoodListUiModel
-import com.tokopedia.tokofood.feature.home.presentation.uimodel.TokoFoodProgressBarUiModel
-import com.tokopedia.usecase.coroutines.Success
 import org.junit.Test
 import java.lang.NullPointerException
 
@@ -139,12 +138,22 @@ class TokoFoodHomeViewModelTest: TokoFoodHomeViewModelTestFixture() {
     }
 
     @Test
-    fun `when getting keroEditAddress should run and give the success result`() {
+    fun `when getting keroEditAddress should run and give the success result true`() {
         onGetKeroEditAddress_thenReturn(createKeroEditAddressResponse())
 
         viewModel.updatePinPoin("", "", "")
 
         val expectedResponse = createKeroEditAddressResponse().keroEditAddress.data.isEditSuccess()
+        verfifyKeroEditAddressSuccess(expectedResponse)
+    }
+
+    @Test
+    fun `when getting keroEditAddress should run and give the success result false`() {
+        onGetKeroEditAddress_thenReturn(createKeroEditAddressResponseFail())
+
+        viewModel.updatePinPoin("", "", "")
+
+        val expectedResponse = createKeroEditAddressResponseFail().keroEditAddress.data.isEditSuccess()
         verfifyKeroEditAddressSuccess(expectedResponse)
     }
 
@@ -277,20 +286,6 @@ class TokoFoodHomeViewModelTest: TokoFoodHomeViewModelTestFixture() {
         )
 
         verifyGetHomeLayoutResponseSuccess(expectedResponse)
-    }
-
-    @Test
-    fun `when getting homeLayout and there is null visitable should run and is unknown type`() {
-        val unknownHomeLayout = TokoFoodItemUiModel(
-            UnknownLayout,
-            TokoFoodLayoutItemState.NOT_LOADED
-        )
-
-        addHomeLayoutItem(unknownHomeLayout)
-
-        viewModel.getLayoutComponentData(LocalCacheModel())
-
-        verifyGetUnknownShown()
     }
 
 
