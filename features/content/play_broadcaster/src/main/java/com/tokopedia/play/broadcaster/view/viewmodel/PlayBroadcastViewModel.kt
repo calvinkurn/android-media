@@ -1385,21 +1385,25 @@ class PlayBroadcastViewModel @AssistedInject constructor(
 
     private fun handleRefreshQuizDetail() {
         _quizChoiceDetailState.value = QuizChoiceDetailStateUiModel.Empty
-        if (_quizDetailState.value is QuizDetailStateUiModel.Error) {
-            if ((_quizDetailState.value as QuizDetailStateUiModel.Error).isQuizDetail) {
-                getQuizDetailData()
-            } else {
-                getLeaderboardWithSlots((_quizDetailState.value as QuizDetailStateUiModel.Error).allowChat)
+        when (val state = _quizDetailState.value) {
+            is QuizDetailStateUiModel.Error -> {
+                if (state.isQuizDetail)
+                    getQuizDetailData()
+                else
+                    getLeaderboardWithSlots(state.allowChat)
             }
+
         }
     }
 
     private fun handleRefreshQuizOptionDetail() {
-        if (_quizChoiceDetailState.value is QuizChoiceDetailStateUiModel.Error) {
-            getQuizChoiceDetailData(
-                choiceId = (_quizChoiceDetailState.value as QuizChoiceDetailStateUiModel.Error).choiceId,
-                index = (_quizChoiceDetailState.value as QuizChoiceDetailStateUiModel.Error).index,
-            )
+        when (val state = _quizChoiceDetailState.value) {
+            is QuizChoiceDetailStateUiModel.Error -> {
+                getQuizChoiceDetailData(
+                    choiceId = state.choiceId,
+                    index = state.index
+                )
+            }
         }
     }
 
