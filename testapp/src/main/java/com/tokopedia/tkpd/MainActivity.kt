@@ -126,6 +126,6 @@ class MainActivity : AppCompatActivity() {
         /*
          * Put your default applink here
          */
-        return ""
+        return ApplinkConst.TokoFood.HOME
     }
 }

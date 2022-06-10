@@ -54,7 +54,7 @@ class MultipleFragmentsViewModel @Inject constructor(
 
     private val miniCartLoadingQueue = MutableLiveData(-Int.ONE)
 
-    private val shopId: String
+    val shopId: String
         get() = cartDataState.value?.shop?.shopId.orEmpty()
 
     companion object {
