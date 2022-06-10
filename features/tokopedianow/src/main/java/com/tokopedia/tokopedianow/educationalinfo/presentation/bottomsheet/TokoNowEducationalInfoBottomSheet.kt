@@ -29,7 +29,7 @@ class TokoNowEducationalInfoBottomSheet :
     BottomSheetUnify(){
 
     companion object {
-        private const val BACKGROUND_BOTTOMSHEET = "https://images.tokopedia.net/img/android/others/bg_bottomsheet_tokomart_educational_information.png"
+        private const val BACKGROUND_BOTTOMSHEET = "https://images.tokopedia.net/img/android/tokonow/bg_bottomsheet_tokomart_educational_information.png"
         private val TAG = TokoNowEducationalInfoBottomSheet::class.simpleName
 
         fun newInstance(): TokoNowEducationalInfoBottomSheet {
