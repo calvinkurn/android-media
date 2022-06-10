@@ -707,6 +707,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
         if (isUsingRollenceNeedHelp) {
             callTokopediaCare?.hide()
         } else {
+            callTokopediaCare?.show()
             initKeyboardListener(view)
         }
     }
@@ -715,11 +716,11 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
         view?.run {
             com.tokopedia.loginregister.common.utils.KeyboardHandler(view, object : com.tokopedia.loginregister.common.utils.KeyboardHandler.OnKeyBoardVisibilityChangeListener {
                 override fun onKeyboardShow() {
-                    if (!isUsingRollenceNeedHelp) callTokopediaCare?.hide()
+                    callTokopediaCare?.hide()
                 }
 
                 override fun onKeyboardHide() {
-                    if (!isUsingRollenceNeedHelp) callTokopediaCare?.show()
+                    if (!isUsingRollenceNeedHelp) callTokopediaCare?.show() else callTokopediaCare?.hide()
                 }
             })
         }
@@ -985,7 +986,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
                     })
         }
         emailExtension?.hide()
-        callTokopediaCare?.showWithCondition(!isLoading)
+        callTokopediaCare?.showWithCondition(!isUsingRollenceNeedHelp && !isLoading)
     }
 
     override fun goToRegisterInitial(source: String) {

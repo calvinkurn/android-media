@@ -22,7 +22,7 @@
         app:tabGravity="center"
         app:tabIndicatorHeight="0dp" />
 
-    <TextView
+    <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/info"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -34,8 +34,8 @@
         android:background="@drawable/bg_kol_circle_white"
         android:fontFamily="sans-serif-medium"
         android:padding="8dp"
-        android:textColor="@color/black_54"
-        android:textSize="@dimen/sp_10"
+        android:textColor="@color/Unify_N700_44"
+        app:typographyType="small"
         android:textStyle="normal"
         android:visibility="gone"
         tools:text="Periode Komisi telah berakhir"
@@ -51,13 +51,13 @@
         android:paddingRight="4dp"
         android:paddingTop="10dp">
 
-        <TextView
+        <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tooltip"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:fontFamily="sans-serif-medium"
-            android:textColor="@color/medium_green"
-            android:textSize="@dimen/sp_12"
+            android:textColor="@color/Unify_G400"
+            app:typographyType="display_3"
             android:textStyle="normal"
             tools:ignore="RtlSymmetry"
             tools:text="Kunjungi Toko" />
@@ -67,7 +67,7 @@
             android:layout_height="0dp"
             android:layout_weight="1" />
 
-        <TextView
+        <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/addImageBtn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -82,8 +82,8 @@
             android:paddingTop="8dp"
             android:text="@string/kol_add_photo"
             android:textAllCaps="false"
-            android:textColor="@color/black_54"
-            android:textSize="@dimen/sp_12"
+            android:textColor="@color/Unify_N700_44"
+            app:typographyType="display_3"
             android:textStyle="normal"
             android:visibility="gone"
             tools:targetApi="lollipop"
