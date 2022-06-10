@@ -15,16 +15,18 @@ class CreateCookieUseCase @Inject constructor(
 
     private fun createRequestParam(
         param: AffiliateCookieParams,
-        deviceId: String
+        deviceId: String,
+        androidVersion: String
     ): HashMap<String, Any> {
         return hashMapOf(
-            INPUT_PARAM to affiliateCookieDTO(param, deviceId)
+            INPUT_PARAM to affiliateCookieDTO(param, deviceId, androidVersion)
         )
     }
 
     private fun affiliateCookieDTO(
         param: AffiliateCookieParams,
-        deviceId: String
+        deviceId: String,
+        androidVersion: String
     ): CreateAffiliateCookieRequest {
         return CreateAffiliateCookieRequest(
             param.toCreateCookieAdditionParam(),
@@ -49,7 +51,7 @@ class CreateCookieUseCase @Inject constructor(
             ),
             CreateAffiliateCookieRequest.PlatformDetail(
                 platform = "android",
-                ""
+                androidVersion
             ),
             CreateAffiliateCookieRequest.ProductDetail(
                 param.productInfo.CategoryID,
@@ -62,12 +64,13 @@ class CreateCookieUseCase @Inject constructor(
 
     suspend fun createCookieRequest(
         param: AffiliateCookieParams,
-        deviceId: String
+        deviceId: String,
+        androidVersion:String
     ): CreateAffiliateCookieResponse {
         return commonAffiliateRepository.getGQLData(
             GQL_Create_Cookie,
             CreateAffiliateCookieResponse::class.java,
-            createRequestParam(param, deviceId)
+            createRequestParam(param, deviceId, androidVersion)
 
         )
     }

@@ -7,8 +7,6 @@ import com.tokopedia.affiliate.interfaces.*
 import com.tokopedia.affiliate.ui.custom.AffiliateBottomNavBarInterface
 import com.tokopedia.affiliate.ui.viewholder.*
 import com.tokopedia.affiliate.ui.viewholder.viewmodel.*
-import com.tokopedia.common_sdk_affiliate_toko.utils.AffiliateCookieHelper
-import javax.inject.Inject
 
 class AffiliateAdapterFactory(
         private var shareButtonInterface: ShareButtonInterface? = null,
