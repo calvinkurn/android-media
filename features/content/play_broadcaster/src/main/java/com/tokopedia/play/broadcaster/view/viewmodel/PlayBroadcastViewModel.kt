@@ -964,10 +964,12 @@ class PlayBroadcastViewModel @AssistedInject constructor(
     }
 
     private fun getQuizChoiceDetailData(choiceId: String, index: Int, cursor: String = "") {
-        val oldParticipant =
-            if (_quizChoiceDetailState.value is QuizChoiceDetailStateUiModel.Success && cursor.isNotBlank()) {
-                (_quizChoiceDetailState.value as QuizChoiceDetailStateUiModel.Success).dataUiModel.participants.toMutableList()
-            } else emptyList()
+        val oldParticipant = when (val state = _quizChoiceDetailState.value) {
+            is QuizChoiceDetailStateUiModel.Success -> {
+                if (cursor.isNotBlank()) state.dataUiModel.participants else emptyList()
+            }
+            else -> emptyList()
+        }
         _quizChoiceDetailState.value = QuizChoiceDetailStateUiModel.Loading
         viewModelScope.launchCatchError(block = {
             val quizChoicesDetailUiModel = repo.getInteractiveQuizChoiceDetail(
@@ -1307,15 +1309,15 @@ class PlayBroadcastViewModel @AssistedInject constructor(
     }
 
     private fun handleLoadMoreParticipant() {
-        if (_quizChoiceDetailState.value is QuizChoiceDetailStateUiModel.Success) {
-            val detailStateUiModel =
-                (_quizChoiceDetailState.value as QuizChoiceDetailStateUiModel.Success).dataUiModel
-            if (detailStateUiModel.cursor != "-1") {
-                getQuizChoiceDetailData(
-                    choiceId = detailStateUiModel.choice.id,
-                    index = detailStateUiModel.choice.index,
-                    cursor = detailStateUiModel.cursor
-                )
+        when (val state = _quizChoiceDetailState.value) {
+            is QuizChoiceDetailStateUiModel.Success -> {
+                if (state.dataUiModel.cursor != FLAG_END_CURSOR) {
+                    getQuizChoiceDetailData(
+                        choiceId = state.dataUiModel.choice.id,
+                        index = state.dataUiModel.choice.index,
+                        cursor = state.dataUiModel.cursor
+                    )
+                }
             }
         }
     }
@@ -1387,21 +1389,25 @@ class PlayBroadcastViewModel @AssistedInject constructor(
 
     private fun handleRefreshQuizDetail() {
         _quizChoiceDetailState.value = QuizChoiceDetailStateUiModel.Empty
-        if (_quizDetailState.value is QuizDetailStateUiModel.Error) {
-            if ((_quizDetailState.value as QuizDetailStateUiModel.Error).isQuizDetail) {
-                getQuizDetailData()
-            } else {
-                getLeaderboardWithSlots((_quizDetailState.value as QuizDetailStateUiModel.Error).allowChat)
+        when (val state = _quizDetailState.value) {
+            is QuizDetailStateUiModel.Error -> {
+                if (state.isQuizDetail)
+                    getQuizDetailData()
+                else
+                    getLeaderboardWithSlots(state.allowChat)
             }
+
         }
     }
 
     private fun handleRefreshQuizOptionDetail() {
-        if (_quizChoiceDetailState.value is QuizChoiceDetailStateUiModel.Error) {
-            getQuizChoiceDetailData(
-                choiceId = (_quizChoiceDetailState.value as QuizChoiceDetailStateUiModel.Error).choiceId,
-                index = (_quizChoiceDetailState.value as QuizChoiceDetailStateUiModel.Error).index,
-            )
+        when (val state = _quizChoiceDetailState.value) {
+            is QuizChoiceDetailStateUiModel.Error -> {
+                getQuizChoiceDetailData(
+                    choiceId = state.choiceId,
+                    index = state.index
+                )
+            }
         }
     }
 
@@ -1422,13 +1428,9 @@ class PlayBroadcastViewModel @AssistedInject constructor(
             }
 
             _quizFormData.update {
-                val defaultIndex = max(
-                    0, quizConfig.eligibleStartTimeInMs.indexOf(
-                        TimeUnit.MINUTES.toMillis(DEFAULT_QUIZ_DURATION_PICKER_IN_MINUTE)
-                    )
-                )
                 QuizFormDataUiModel(
-                    durationInMs = quizConfig.eligibleStartTimeInMs.getOrNull(defaultIndex) ?: 0,
+                    durationInMs = quizConfig.eligibleStartTimeInMs.indexOf(TimeUnit.MINUTES.toMillis(
+                        DEFAULT_QUIZ_DURATION_PICKER_IN_MINUTE)).coerceAtLeast(0).toLong(),
                     options = initialOptions
                 )
             }
@@ -1523,7 +1525,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         private const val DEFAULT_BEFORE_LIVE_COUNT_DOWN = 5
         private const val DEFAULT_QUIZ_DURATION_PICKER_IN_MINUTE = 5L
         private const val DEFAULT_GAME_RESULT_AUTO_DISMISS = 5000L
-
+        private const val FLAG_END_CURSOR = "-1"
         private const val WEB_SOCKET_SOURCE_PLAY_BROADCASTER = "Broadcaster"
     }
 }
