@@ -4,5 +4,6 @@ data class ProductMiniSocialProofItemDataModel(
         val key: String = "",
         val formattedCount: String = "",
         val type: ProductMiniSocialProofItemType,
-        val reviewTitle: String = ""
+        val reviewTitle: String = "",
+        val buyerPhotosTitle: String = ""
 )

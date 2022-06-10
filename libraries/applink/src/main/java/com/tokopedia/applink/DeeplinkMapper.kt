@@ -158,12 +158,9 @@ object DeeplinkMapper {
      * Expected query = https://registeruat.dbank.co.id/web-verification/#/tokopedia/
      */
     private fun getQuery(uriString: String, uri: Uri): String? {
-        val uriStringAfterQMark = uriString.substringAfter("?")
-        if (uriStringAfterQMark.contains("#")) {
-            return uriStringAfterQMark
-        } else {
-            return uri.query
-        }
+        return if (uriString.contains("?")) {
+            uriString.substringAfter("?")
+        } else uri.query
     }
 
     private fun getRegisteredNavigationProductTalk(productId: String?): String {
@@ -495,12 +492,12 @@ object DeeplinkMapper {
             DLP.host(ApplinkConst.HOST_PLAY_NOTIF_VIDEO) { _, _, _, _ -> ApplinkConstInternalGlobal.YOUTUBE_VIDEO },
             DLP.startWith(ApplinkConst.CHANGE_INACTIVE_PHONE) { ctx, _, deeplink, _ -> DeeplinkMapperUser.getRegisteredNavigationUser(ctx, deeplink)},
             DLP.exact(ApplinkConst.ADD_PIN_ONBOARD) { ctx, _, deeplink, _ -> DeeplinkMapperUser.getRegisteredNavigationUser(ctx, deeplink)},
-            DLP.startWith(ApplinkConst.ADD_FINGERPRINT_ONBOARDING) { ctx, _, deeplink, _ -> DeeplinkMapperUser.getRegisteredNavigationUser(ctx, deeplink) },
             DLP.exact(ApplinkConst.SETTING_PROFILE) { ctx, _, deeplink, _ -> DeeplinkMapperUser.getRegisteredNavigationUser(ctx, deeplink) },
             DLP.exact(ApplinkConst.MediaPicker.MEDIA_PICKER, ApplinkConstInternalMedia.INTERNAL_MEDIA_PICKER),
             DLP.exact(ApplinkConst.MediaPicker.MEDIA_PICKER_PREVIEW, ApplinkConstInternalMedia.INTERNAL_MEDIA_PICKER_PREVIEW),
             DLP.host(ApplinkConst.WEB_HOST) {_, _, deeplink, _ -> getWebHostWebViewLink(deeplink)},
             DLP.exact(ApplinkConst.INPUT_INACTIVE_NUMBER) { ctx, _, deeplink, _ -> DeeplinkMapperUser.getRegisteredNavigationUser(ctx, deeplink) },
+            DLP.exact(ApplinkConst.ADD_PHONE) { ctx, _, deeplink, _ -> DeeplinkMapperUser.getRegisteredNavigationUser(ctx, deeplink) }
         )
 
     fun getTokopediaSchemeList():List<DLP>{
@@ -546,7 +543,12 @@ object DeeplinkMapper {
     private fun putToTop(index: Int) {
         // Uncomment this for performance for RouteManager. Currently disabled in production
         // Requirement: deeplinkPatternTokopediaSchemeList should be order-independent
-        // deeplinkPatternTokopediaSchemeList.add(0, deeplinkPatternTokopediaSchemeList.removeAt(index))
+        if (GlobalConfig.isAllowDebuggingTools()) {
+            deeplinkPatternTokopediaSchemeList.add(
+                0,
+                deeplinkPatternTokopediaSchemeList.removeAt(index)
+            )
+        }
     }
 
     private fun getRegisteredNavigationFromInternalTokopedia(context: Context, uri: Uri, deeplink: String): String {

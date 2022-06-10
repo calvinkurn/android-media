@@ -1,5 +1,11 @@
 package com.tokopedia.review.common.util
 
 interface ReviewAttachedImagesClickListener {
-    fun onAttachedImagesClicked(productName: String, attachedImages: List<String>, position: Int)
+    fun onAttachedMediaClicked(
+        productID: String,
+        feedbackID: String,
+        position: Int,
+        images: List<String>,
+        videos: List<String>
+    )
 }

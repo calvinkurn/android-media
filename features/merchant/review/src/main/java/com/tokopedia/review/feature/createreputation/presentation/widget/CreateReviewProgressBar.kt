@@ -2,16 +2,24 @@ package com.tokopedia.review.feature.createreputation.presentation.widget
 
 import android.content.Context
 import android.util.AttributeSet
-import android.view.View
+import android.view.LayoutInflater
+import android.view.animation.AccelerateInterpolator
 import androidx.core.content.ContextCompat
+import androidx.transition.Fade
+import androidx.transition.TransitionManager
+import com.tokopedia.kotlin.extensions.view.ZERO
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.review.R
+import com.tokopedia.review.databinding.WidgetCreateReviewProgressBarBinding
 import com.tokopedia.review.feature.createreputation.presentation.uimodel.CreateReviewProgressBarState
-import com.tokopedia.unifycomponents.BaseCustomView
-import com.tokopedia.unifycomponents.ProgressBarUnify
-import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.review.feature.createreputation.presentation.uistate.CreateReviewProgressBarUiState
 
-
-class CreateReviewProgressBar : BaseCustomView {
+class CreateReviewProgressBar @JvmOverloads constructor(
+    context: Context,
+    attrs: AttributeSet? = null,
+    defStyleAttr: Int = Int.ZERO
+) : BaseCreateReviewCustomView<WidgetCreateReviewProgressBarBinding>(context, attrs, defStyleAttr) {
 
     companion object {
         private const val COMPLETE_PROGRESS = 100
@@ -20,42 +28,37 @@ class CreateReviewProgressBar : BaseCustomView {
         private const val QUARTER_PROGRESS = 25
         private const val PARTIALLY_COMPLETE_PROGRESS = 66
         private const val EMPTY_PROGRESS = 33
+
+        private const val TRANSITION_DURATION = 300L
     }
 
-    private var progressBar: ProgressBarUnify? = null
-    private var progressBarText: Typography? = null
+    private val transitionHandler = TransitionHandler()
 
-    constructor(context: Context) : super(context) {
-        init()
+    override val binding = WidgetCreateReviewProgressBarBinding.inflate(LayoutInflater.from(context), this, true)
+
+    private fun showLoading() = transitionHandler.transitionToShowLoading()
+
+    private fun WidgetCreateReviewProgressBarBinding.showProgressBar(
+        uiState: CreateReviewProgressBarUiState.Showing
+    ) {
+        transitionHandler.transitionToShowProgressBar()
+        setupProgressBarState(uiState.state)
     }
 
-    constructor(context: Context, attrs: AttributeSet) : super(context, attrs) {
-        init()
-    }
-
-    constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int) : super(context, attrs, defStyleAttr) {
-        init()
-    }
-
-    private fun init() {
-        View.inflate(context,  com.tokopedia.review.R.layout.widget_create_review_progress_bar, this)
-        progressBar = findViewById(R.id.review_form_progress_bar)
-        progressBarText = findViewById(R.id.review_form_progress_bar_description)
-        progressBar?.progressBarHeight = ProgressBarUnify.SIZE_SMALL
-    }
-
-    fun setProgressBarValue(progress: CreateReviewProgressBarState) {
+    private fun WidgetCreateReviewProgressBarBinding.setupProgressBarState(
+        state: CreateReviewProgressBarState
+    ) {
         when {
-            progress.isComplete() -> {
+            state.isComplete() -> {
                 setCompleteProgress()
-                if (progress.isGoodRating) {
+                if (state.isGoodRating) {
                     setGoodRatingCompleteText()
                     return
                 }
                 setBadRatingCompleteText()
             }
-            progress.isNeedPhotoOnly() -> {
-                if (progress.isGoodRating) {
+            state.isNeedPhotoOnly() -> {
+                if (state.isGoodRating) {
                     setGoodRatingNeedPhotoText()
                     setPartiallyCompleteProgress()
                     return
@@ -64,8 +67,8 @@ class CreateReviewProgressBar : BaseCustomView {
                 setThreeQuartersProgress()
                 return
             }
-            progress.isNeedReviewOnly() -> {
-                if (progress.isGoodRating) {
+            state.isNeedReviewOnly() -> {
+                if (state.isGoodRating) {
                     setGoodRatingNeedReviewText()
                     setPartiallyCompleteProgress()
                     return
@@ -74,8 +77,8 @@ class CreateReviewProgressBar : BaseCustomView {
                 setThreeQuartersProgress()
                 return
             }
-            progress.isNeedBadRatingReasonOnly() -> {
-                if (progress.isTextAreaFilled && progress.isPhotosFilled) {
+            state.isNeedBadRatingReasonOnly() -> {
+                if (state.isTextAreaFilled && state.isPhotosFilled) {
                     setThreeQuartersProgress()
                 } else {
                     setHalfProgress()
@@ -83,12 +86,12 @@ class CreateReviewProgressBar : BaseCustomView {
                 setNeedBadRatingReasonText()
                 return
             }
-            progress.isBadRatingReasonSelected && !progress.isGoodRating -> {
+            state.isBadRatingReasonSelected && !state.isGoodRating -> {
                 setHalfProgress()
                 setNeedReviewOnlyText()
             }
             else -> {
-                if (progress.isGoodRating) {
+                if (state.isGoodRating) {
                     setEmptyProgress()
                     setGoodRatingEmptyText()
                     return
@@ -99,81 +102,141 @@ class CreateReviewProgressBar : BaseCustomView {
         }
     }
 
-    private fun setEmptyProgress() {
-        progressBar?.apply {
+    private fun WidgetCreateReviewProgressBarBinding.setEmptyProgress() {
+        layoutProgressBar.reviewFormProgressBar.apply {
             setValue(EMPTY_PROGRESS)
             progressBarColor = intArrayOf(ContextCompat.getColor(context, com.tokopedia.unifycomponents.R.color.Unify_Y400), ContextCompat.getColor(context, com.tokopedia.unifycomponents.R.color.Unify_Y400))
         }
     }
 
-    private fun setPartiallyCompleteProgress() {
-        progressBar?.apply {
+    private fun WidgetCreateReviewProgressBarBinding.setPartiallyCompleteProgress() {
+        layoutProgressBar.reviewFormProgressBar.apply {
             setValue(PARTIALLY_COMPLETE_PROGRESS)
             progressBarColor = intArrayOf(ContextCompat.getColor(context, com.tokopedia.unifycomponents.R.color.Unify_Y300), ContextCompat.getColor(context, com.tokopedia.unifycomponents.R.color.Unify_Y300))
         }
     }
 
-    private fun setCompleteProgress() {
-        progressBar?.apply {
+    private fun WidgetCreateReviewProgressBarBinding.setCompleteProgress() {
+        layoutProgressBar.reviewFormProgressBar.apply {
             setValue(COMPLETE_PROGRESS)
             progressBarColor = intArrayOf(ContextCompat.getColor(context, com.tokopedia.unifycomponents.R.color.Unify_G400), ContextCompat.getColor(context, com.tokopedia.unifycomponents.R.color.Unify_G400))
         }
     }
 
-    private fun setQuarterProgress() {
-        progressBar?.apply {
+    private fun WidgetCreateReviewProgressBarBinding.setQuarterProgress() {
+        layoutProgressBar.reviewFormProgressBar.apply {
             setValue(QUARTER_PROGRESS)
             progressBarColor = intArrayOf(ContextCompat.getColor(context, com.tokopedia.unifycomponents.R.color.Unify_Y400), ContextCompat.getColor(context, com.tokopedia.unifycomponents.R.color.Unify_Y400))
         }
     }
 
-    private fun setHalfProgress() {
-        progressBar?.apply {
+    private fun WidgetCreateReviewProgressBarBinding.setHalfProgress() {
+        layoutProgressBar.reviewFormProgressBar.apply {
             setValue(HALF_PROGRESS)
             progressBarColor = intArrayOf(ContextCompat.getColor(context, com.tokopedia.unifycomponents.R.color.Unify_Y300), ContextCompat.getColor(context, com.tokopedia.unifycomponents.R.color.Unify_Y300))
         }
     }
 
-    private fun setThreeQuartersProgress() {
-        progressBar?.apply {
+    private fun WidgetCreateReviewProgressBarBinding.setThreeQuartersProgress() {
+        layoutProgressBar.reviewFormProgressBar.apply {
             setValue(THREE_QUARTERS_PROGRESS)
             progressBarColor = intArrayOf(ContextCompat.getColor(context, com.tokopedia.unifycomponents.R.color.Unify_Y300), ContextCompat.getColor(context, com.tokopedia.unifycomponents.R.color.Unify_Y300))
         }
     }
 
-    private fun setGoodRatingCompleteText() {
-        progressBarText?.text = context.getString(R.string.review_form_progress_bar_good_complete)
+    private fun WidgetCreateReviewProgressBarBinding.setGoodRatingCompleteText() {
+        layoutProgressBar.reviewFormProgressBarDescription.text = context.getString(R.string.review_form_progress_bar_good_complete)
     }
 
-    private fun setGoodRatingNeedPhotoText() {
-        progressBarText?.text = context.getString(R.string.review_form_progress_bar_good_need_photo)
+    private fun WidgetCreateReviewProgressBarBinding.setGoodRatingNeedPhotoText() {
+        layoutProgressBar.reviewFormProgressBarDescription.text = context.getString(R.string.review_form_progress_bar_good_need_photo)
     }
 
-    private fun setGoodRatingNeedReviewText() {
-        progressBarText?.text = context.getString(R.string.review_form_progress_bar_good_need_text)
+    private fun WidgetCreateReviewProgressBarBinding.setGoodRatingNeedReviewText() {
+        layoutProgressBar.reviewFormProgressBarDescription.text = context.getString(R.string.review_form_progress_bar_good_need_text)
     }
 
-    private fun setGoodRatingEmptyText() {
-        progressBarText?.text = context.getString(R.string.review_form_progress_bar_good_empty)
+    private fun WidgetCreateReviewProgressBarBinding.setGoodRatingEmptyText() {
+        layoutProgressBar.reviewFormProgressBarDescription.text = context.getString(R.string.review_form_progress_bar_good_empty)
     }
 
-    private fun setBadRatingCompleteText() {
-        progressBarText?.text = context.getString(R.string.review_form_progress_bar_bad_complete)
+    private fun WidgetCreateReviewProgressBarBinding.setBadRatingCompleteText() {
+        layoutProgressBar.reviewFormProgressBarDescription.text = context.getString(R.string.review_form_progress_bar_bad_complete)
     }
 
-    private fun setBadRatingFlowNeedPhotoText() {
-        progressBarText?.text = context.getString(R.string.review_form_progress_bar_bad_need_photo)
+    private fun WidgetCreateReviewProgressBarBinding.setBadRatingFlowNeedPhotoText() {
+        layoutProgressBar.reviewFormProgressBarDescription.text = context.getString(R.string.review_form_progress_bar_bad_need_photo)
     }
 
-    private fun setBadRatingEmptyText() {
-        progressBarText?.text = context.getString(R.string.review_form_progress_bar_bad_need_bad_rating_reason)
+    private fun WidgetCreateReviewProgressBarBinding.setBadRatingEmptyText() {
+        layoutProgressBar.reviewFormProgressBarDescription.text = context.getString(R.string.review_form_progress_bar_bad_need_bad_rating_reason)
     }
 
-    private fun setNeedReviewOnlyText() {
-        progressBarText?.text = context.getString(R.string.review_form_progress_bar_new_flow_need_review_only)
+    private fun WidgetCreateReviewProgressBarBinding.setNeedReviewOnlyText() {
+        layoutProgressBar.reviewFormProgressBarDescription.text = context.getString(R.string.review_form_progress_bar_new_flow_need_review_only)
     }
 
-    private fun setNeedBadRatingReasonText() {
-        progressBarText?.text = context.getString(R.string.review_form_progress_bar_bad_need_reason)
+    private fun WidgetCreateReviewProgressBarBinding.setNeedBadRatingReasonText() {
+        layoutProgressBar.reviewFormProgressBarDescription.text = context.getString(R.string.review_form_progress_bar_bad_need_reason)
+    }
+
+    fun updateUi(uiState: CreateReviewProgressBarUiState) {
+        when(uiState) {
+            is CreateReviewProgressBarUiState.Loading -> {
+                showLoading()
+                animateShow()
+            }
+            is CreateReviewProgressBarUiState.Showing -> {
+                binding.showProgressBar(uiState)
+                animateShow()
+            }
+        }
+    }
+
+    private inner class TransitionHandler {
+        private val fadeTransition by lazy(LazyThreadSafetyMode.NONE) {
+            Fade().apply {
+                duration = TRANSITION_DURATION
+                addTarget(binding.layoutProgressBar.root)
+                addTarget(binding.layoutProgressBarLoading.root)
+                interpolator = AccelerateInterpolator()
+            }
+        }
+
+        private fun WidgetCreateReviewProgressBarBinding.showLoadingLayout() {
+            layoutProgressBarLoading.root.show()
+        }
+
+        private fun WidgetCreateReviewProgressBarBinding.hideLoadingLayout() {
+            layoutProgressBarLoading.root.gone()
+        }
+
+        private fun WidgetCreateReviewProgressBarBinding.showProgressBarLayout() {
+            layoutProgressBar.root.show()
+        }
+
+        private fun WidgetCreateReviewProgressBarBinding.hideProgressBarLayout() {
+            layoutProgressBar.root.gone()
+        }
+
+        private fun WidgetCreateReviewProgressBarBinding.beginDelayedTransition() {
+            TransitionManager.beginDelayedTransition(root, fadeTransition)
+        }
+
+        fun transitionToShowProgressBar() {
+            with(binding) {
+                beginDelayedTransition()
+                hideLoadingLayout()
+                showProgressBarLayout()
+            }
+        }
+
+        fun transitionToShowLoading() {
+            with(binding) {
+                beginDelayedTransition()
+                hideProgressBarLayout()
+                showLoadingLayout()
+            }
+        }
     }
 }

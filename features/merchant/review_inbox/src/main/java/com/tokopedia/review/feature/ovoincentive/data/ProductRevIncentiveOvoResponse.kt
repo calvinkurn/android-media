@@ -2,6 +2,7 @@ package com.tokopedia.review.feature.ovoincentive.data
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
+import java.io.Serializable
 
 data class ProductRevIncentiveOvoResponse(
     @SerializedName("ticker")
@@ -28,7 +29,7 @@ data class ProductRevIncentiveOvoResponse(
     @SerializedName("illustration_list")
     @Expose
     val illustrations: List<Illustration>? = null
-) {
+) : Serializable {
     data class Illustration(
         @SerializedName("image_url")
         @Expose
@@ -36,5 +37,5 @@ data class ProductRevIncentiveOvoResponse(
         @SerializedName("text")
         @Expose
         val text: String? = null
-    )
+    ) : Serializable
 }

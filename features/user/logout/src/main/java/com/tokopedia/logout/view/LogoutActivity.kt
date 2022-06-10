@@ -26,11 +26,12 @@ import com.tokopedia.analyticsdebugger.debugger.TetraDebugger
 import com.tokopedia.analyticsdebugger.debugger.TetraDebugger.Companion.instance
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.cachemanager.PersistentCacheManager
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.core.gcm.NotificationModHandler
 import com.tokopedia.dialog.DialogUnify
+import com.tokopedia.encryption.security.AeadEncryptor
 import com.tokopedia.logout.R
 import com.tokopedia.logout.di.DaggerLogoutComponent
 import com.tokopedia.logout.di.LogoutComponent
@@ -65,6 +66,9 @@ class LogoutActivity : BaseSimpleActivity(), HasComponent<LogoutComponent> {
     lateinit var viewModelFactory: ViewModelProvider.Factory
     private val viewModelProvider by lazy { ViewModelProviders.of(this, viewModelFactory) }
     private val logoutViewModel by lazy { viewModelProvider.get(LogoutViewModel::class.java) }
+
+    @Inject
+    lateinit var aeadEncryptor: AeadEncryptor
 
     private var isReturnToHome = true
     private var isClearDataOnly = false
@@ -105,8 +109,8 @@ class LogoutActivity : BaseSimpleActivity(), HasComponent<LogoutComponent> {
 
     private fun getParams() {
         if (intent.extras != null) {
-            isReturnToHome = intent.extras?.getBoolean(ApplinkConstInternalGlobal.PARAM_IS_RETURN_HOME, true) as Boolean
-            isClearDataOnly = intent.extras?.getBoolean(ApplinkConstInternalGlobal.PARAM_IS_CLEAR_DATA_ONLY, false) as Boolean
+            isReturnToHome = intent.extras?.getBoolean(ApplinkConstInternalUserPlatform.PARAM_IS_RETURN_HOME, true) as Boolean
+            isClearDataOnly = intent.extras?.getBoolean(ApplinkConstInternalUserPlatform.PARAM_IS_CLEAR_DATA_ONLY, false) as Boolean
         }
     }
 
@@ -190,6 +194,7 @@ class LogoutActivity : BaseSimpleActivity(), HasComponent<LogoutComponent> {
         tetraDebugger?.setUserId("")
         userSession.clearToken()
         userSession.logoutSession()
+
         RemoteConfigInstance.getInstance().abTestPlatform.fetchByType(null)
 
         if (isReturnToHome) {
@@ -242,9 +247,16 @@ class LogoutActivity : BaseSimpleActivity(), HasComponent<LogoutComponent> {
     }
 
     private fun saveLoginReminderData() {
-        getSharedPreferences(STICKY_LOGIN_REMINDER_PREF, Context.MODE_PRIVATE)?.edit()?.apply {
-            putString(KEY_USER_NAME, userSession.name).apply()
-            putString(KEY_PROFILE_PICTURE, userSession.profilePicture).apply()
+        try {
+            val encryptedUsername = aeadEncryptor.encrypt(userSession.name, null)
+            val encryptedProfilePicture = aeadEncryptor.encrypt(userSession.profilePicture, null)
+
+            getSharedPreferences(STICKY_LOGIN_REMINDER_PREF, Context.MODE_PRIVATE)?.edit()?.apply {
+                putString(KEY_USER_NAME, encryptedUsername).apply()
+                putString(KEY_PROFILE_PICTURE, encryptedProfilePicture).apply()
+            }
+        } catch (e: Exception) {
+            //skip save login reminder data
         }
     }
 
