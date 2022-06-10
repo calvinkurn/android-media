@@ -204,10 +204,8 @@ class KeywordSearchActivity : BaseActivity(), HasComponent<TopAdsEditComponent> 
             } else {
                 txtError?.visibility = View.GONE
                 if (!intent?.getStringExtra(PRODUCT_IDS_SELECTED).isNullOrEmpty()) {
-                    viewModel.searchKeyword(search.searchBarTextField.text.toString(),
-                        intent?.getStringExtra(PRODUCT_IDS_SELECTED)
-                            ?: "",
-                        ::onSuccessSearch)
+                    viewModel.searchKeyword(search.searchBarTextField.text.toString(), intent?.getStringExtra(PRODUCT_IDS_SELECTED)
+                            ?: "", ::onSuccessSearch,resources)
                 } else {
                     setEmpty(true)
                     if (manualKeywords.isNotEmpty())

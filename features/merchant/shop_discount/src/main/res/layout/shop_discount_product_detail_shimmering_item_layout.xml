@@ -5,48 +5,44 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-    <com.elyeproj.loaderviewlibrary.LoaderImageView
+    <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/shimmer_product_image"
         android:layout_width="64dp"
         android:layout_height="64dp"
-        app:corners="16"
+        app:loader_type="rect"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:use_gradient="true"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <com.elyeproj.loaderviewlibrary.LoaderImageView
+    <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/shimmer_right"
         android:layout_width="0dp"
         android:layout_height="54dp"
         android:layout_marginStart="14dp"
-        app:corners="16"
-        app:use_gradient="true"
+        app:loader_type="rect"
         app:layout_constraintLeft_toRightOf="@id/shimmer_product_image"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <com.elyeproj.loaderviewlibrary.LoaderImageView
+    <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/shimmer_small_bottom_1"
         android:layout_width="0dp"
         android:layout_height="12dp"
         android:layout_marginStart="26dp"
         android:layout_marginTop="8dp"
-        app:corners="16"
-        app:use_gradient="true"
+        app:loader_type="rect"
         app:layout_constraintHorizontal_chainStyle="packed"
         app:layout_constraintHorizontal_weight="0.6"
         app:layout_constraintLeft_toRightOf="@id/shimmer_product_image"
         app:layout_constraintRight_toLeftOf="@id/shimmer_small_bottom_2"
         app:layout_constraintTop_toBottomOf="@id/shimmer_right" />
 
-    <com.elyeproj.loaderviewlibrary.LoaderImageView
+    <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/shimmer_small_bottom_2"
         android:layout_width="0dp"
         android:layout_height="12dp"
         android:layout_marginStart="26dp"
         android:layout_marginTop="8dp"
-        app:corners="16"
-        app:use_gradient="true"
+        app:loader_type="rect"
         android:layout_marginEnd="12dp"
         app:layout_constraintHorizontal_weight="0.2"
         app:layout_constraintLeft_toRightOf="@id/shimmer_small_bottom_1"

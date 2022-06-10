@@ -39,10 +39,11 @@ import com.tokopedia.shopdiscount.manage_discount.presentation.view.viewmodel.Sh
 import com.tokopedia.shopdiscount.manage_discount.util.ShopDiscountManageDiscountMode
 import com.tokopedia.shopdiscount.manage_product_discount.presentation.activity.ShopDiscountManageProductDiscountActivity
 import com.tokopedia.shopdiscount.manage_product_discount.presentation.activity.ShopDiscountManageProductVariantDiscountActivity
-import com.tokopedia.shopdiscount.utils.constant.SlashPriceStatusId
+import com.tokopedia.shopdiscount.utils.constant.DiscountStatus
 import com.tokopedia.shopdiscount.utils.extension.showError
 import com.tokopedia.shopdiscount.utils.extension.showToaster
 import com.tokopedia.shopdiscount.utils.rv_decoration.ShopDiscountDividerItemDecoration
+import com.tokopedia.shopdiscount.utils.tracker.ProductListPageTracker
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerCallback
@@ -92,6 +93,8 @@ class ShopDiscountManageDiscountFragment : BaseDaggerFragment(),
 
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
+    @Inject
+    lateinit var tracker: ProductListPageTracker
 
     private val viewModelProvider by lazy { ViewModelProvider(this, viewModelFactory) }
     private val viewModel by lazy { viewModelProvider.get(ShopDiscountManageDiscountViewModel::class.java) }
@@ -315,9 +318,10 @@ class ShopDiscountManageDiscountFragment : BaseDaggerFragment(),
                     } else {
                         val slashPriceStatusId: Int
                         val successSubmitToasterWording: String
+                        tracker.sendClickSaveSlashPrice(mode)
                         when (mode) {
                             ShopDiscountManageDiscountMode.CREATE -> {
-                                slashPriceStatusId = SlashPriceStatusId.SCHEDULED
+                                slashPriceStatusId = DiscountStatus.SCHEDULED
                                 successSubmitToasterWording =
                                     getString(R.string.shop_discount_manage_discount_success_create)
                             }

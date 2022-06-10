@@ -97,6 +97,8 @@ class TokoNowSearchFragment :
         getComponent(SearchComponent::class.java).inject(this)
     }
 
+    override fun trackingEventLabel(): String = ""
+
     override fun observeViewModel() {
         super.observeViewModel()
 

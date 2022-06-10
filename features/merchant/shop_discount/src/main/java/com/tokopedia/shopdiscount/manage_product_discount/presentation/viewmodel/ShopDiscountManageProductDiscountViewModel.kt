@@ -15,18 +15,19 @@ import com.tokopedia.shopdiscount.info.data.uimodel.ShopDiscountSellerInfoUiMode
 import com.tokopedia.shopdiscount.info.util.ShopDiscountSellerInfoMapper
 import com.tokopedia.shopdiscount.manage_discount.data.uimodel.ShopDiscountSetupProductUiModel.SetupProductData.ErrorType.Companion.NO_ERROR
 import com.tokopedia.shopdiscount.manage_discount.data.uimodel.ShopDiscountSetupProductUiModel.SetupProductData.ErrorType.Companion.START_DATE_ERROR
+import com.tokopedia.shopdiscount.utils.constant.DateConstant.FIVE_MINUTES
 import com.tokopedia.shopdiscount.utils.constant.ShopDiscountManageProductDiscountErrorValidation.Companion.ERROR_PRICE_MAX
 import com.tokopedia.shopdiscount.utils.constant.ShopDiscountManageProductDiscountErrorValidation.Companion.ERROR_PRICE_MIN
 import com.tokopedia.shopdiscount.utils.constant.ShopDiscountManageProductDiscountErrorValidation.Companion.ERROR_R2_ABUSIVE
 import com.tokopedia.shopdiscount.utils.constant.ShopDiscountManageProductDiscountErrorValidation.Companion.ERROR_START_DATE
 import com.tokopedia.shopdiscount.utils.constant.ShopDiscountManageProductDiscountErrorValidation.Companion.NONE
+import com.tokopedia.shopdiscount.utils.extension.minutesToMillis
 import com.tokopedia.shopdiscount.utils.extension.toCalendar
 import com.tokopedia.shopdiscount.utils.extension.unixToMs
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import java.util.*
-import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import kotlin.math.round
 
@@ -119,9 +120,7 @@ class ShopDiscountManageProductDiscountViewModel @Inject constructor(
     private fun checkProductStartDateError(
         setupProductUiModel: ShopDiscountSetupProductUiModel.SetupProductData
     ): Boolean {
-        return (setupProductUiModel.slashPriceInfo.startDate.time - Date().time) < TimeUnit.MINUTES.toMillis(
-            5
-        )
+        return (setupProductUiModel.slashPriceInfo.startDate.time - Date().time) < FIVE_MINUTES.minutesToMillis()
     }
 
     private fun getVpsPackageDefaultEndDate(slashPriceBenefitData: ShopDiscountSellerInfoUiModel): Date {

@@ -31,15 +31,17 @@ import com.tokopedia.shopdiscount.manage_discount.domain.MutationSlashPriceProdu
 import com.tokopedia.shopdiscount.manage_discount.util.ShopDiscountManageDiscountConstant.GET_SETUP_PRODUCT_LIST_DELAY
 import com.tokopedia.shopdiscount.manage_discount.util.ShopDiscountManageDiscountMapper
 import com.tokopedia.shopdiscount.manage_discount.util.ShopDiscountManageDiscountMode
-import com.tokopedia.shopdiscount.utils.constant.SlashPriceStatusId
+import com.tokopedia.shopdiscount.utils.constant.DateConstant
+import com.tokopedia.shopdiscount.utils.constant.DateConstant.FIVE_MINUTES
+import com.tokopedia.shopdiscount.utils.constant.DiscountStatus
 import com.tokopedia.shopdiscount.utils.extension.allCheckEmptyList
+import com.tokopedia.shopdiscount.utils.extension.minutesToMillis
 import com.tokopedia.shopdiscount.utils.extension.setElement
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.coroutines.delay
 import java.util.*
-import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import kotlin.math.round
 
@@ -519,7 +521,7 @@ class ShopDiscountManageDiscountViewModel @Inject constructor(
             it.listProductWarehouse.none {productWarehouse -> productWarehouse.abusiveRule }
         }.forEach { productToBeUpdated ->
             when (productToBeUpdated.slashPriceInfo.slashPriceStatusId.toIntOrZero()) {
-                SlashPriceStatusId.CREATE, SlashPriceStatusId.SCHEDULED -> {
+                DiscountStatus.DEFAULT, DiscountStatus.SCHEDULED -> {
                     productToBeUpdated.slashPriceInfo.startDate = bulkApplyDiscountResult.startDate ?: Date()
                 }
             }
@@ -683,9 +685,7 @@ class ShopDiscountManageDiscountViewModel @Inject constructor(
     private fun checkProductStartDateError(
         setupProductUiModel: ShopDiscountSetupProductUiModel.SetupProductData
     ): Boolean {
-        return (setupProductUiModel.slashPriceInfo.startDate.time - Date().time) < TimeUnit.MINUTES.toMillis(
-            5
-        )
+        return (setupProductUiModel.slashPriceInfo.startDate.time - Date().time) < FIVE_MINUTES.minutesToMillis()
     }
 
 }

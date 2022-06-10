@@ -196,9 +196,7 @@ object FeedScrollListenerNew {
     private fun isVODCard(list: List<Visitable<*>>, position: Int): Boolean {
         return (list.size > position && list[position] is DynamicPostUiModel
                 && (list[position] as DynamicPostUiModel).feedXCard.typename == TYPE_FEED_X_CARD_PLAY
-                && (list[position] as DynamicPostUiModel).feedXCard.media.isNotEmpty() && ((list[position] as DynamicPostUiModel).feedXCard.media.find {
-            it.type == TYPE_VIDEO
-        } != null))
+                && (list[position] as DynamicPostUiModel).feedXCard.media.isNotEmpty())
     }
     private fun isLongVideoCard(list: List<Visitable<*>>, position: Int): Boolean {
         return (list.size > position && list[position] is DynamicPostUiModel

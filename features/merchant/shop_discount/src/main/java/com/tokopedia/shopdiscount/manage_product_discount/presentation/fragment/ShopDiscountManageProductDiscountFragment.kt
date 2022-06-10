@@ -3,8 +3,10 @@ package com.tokopedia.shopdiscount.manage_product_discount.presentation.fragment
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
+import android.text.Editable
 import android.text.InputFilter
 import android.text.SpannableString
+import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -156,6 +158,25 @@ class ShopDiscountManageProductDiscountFragment : BaseDaggerFragment() {
         quantityEditorMaxOrder?.setValueChangedListener { newValue, _, _ ->
             viewModel.updateMaxOrderData(newValue)
         }
+        quantityEditorMaxOrder?.editText?.addTextChangedListener(object : TextWatcher {
+                override fun beforeTextChanged(
+                    s: CharSequence?,
+                    start: Int,
+                    count: Int,
+                    after: Int
+                ) {
+
+                }
+
+                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                    viewModel.updateMaxOrderData(quantityEditorMaxOrder?.getValue().orZero())
+                }
+
+                override fun afterTextChanged(s: Editable?) {
+
+                }
+
+            })
     }
 
     private fun configDiscountPeriodSection(

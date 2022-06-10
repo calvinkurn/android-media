@@ -10,8 +10,8 @@ import com.tokopedia.shopdiscount.common.data.response.ResponseHeader
 import com.tokopedia.shopdiscount.info.data.uimodel.ShopDiscountSellerInfoUiModel
 import com.tokopedia.shopdiscount.manage_discount.data.uimodel.ShopDiscountSetupProductUiModel
 import com.tokopedia.shopdiscount.manage_product_discount.data.uimodel.ShopDiscountManageProductVariantItemUiModel
+import com.tokopedia.shopdiscount.utils.constant.DiscountStatus
 import com.tokopedia.shopdiscount.utils.constant.ShopDiscountManageProductDiscountErrorValidation
-import com.tokopedia.shopdiscount.utils.constant.SlashPriceStatusId
 import com.tokopedia.shopdiscount.utils.extension.toCalendar
 import com.tokopedia.shopdiscount.utils.extension.unixToMs
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
@@ -518,12 +518,12 @@ class ShopDiscountManageProductVariantDiscountViewModelTest {
             ShopDiscountManageProductVariantItemUiModel(
                 isEnabled = false,
                 variantMinOriginalPrice = 100000,
-                slashPriceStatusId = SlashPriceStatusId.CREATE.toString()
+                slashPriceStatusId = DiscountStatus.DEFAULT.toString()
             ),
             ShopDiscountManageProductVariantItemUiModel(
                 isEnabled = true,
                 variantMinOriginalPrice = 100000,
-                slashPriceStatusId = SlashPriceStatusId.CREATE.toString(),
+                slashPriceStatusId = DiscountStatus.DEFAULT.toString(),
                 valueErrorType = ShopDiscountManageProductDiscountErrorValidation.NONE,
                 discountedPrice = 10000
             )
@@ -535,12 +535,12 @@ class ShopDiscountManageProductVariantDiscountViewModelTest {
             ShopDiscountManageProductVariantItemUiModel(
                 isEnabled = false,
                 variantMinOriginalPrice = 100000,
-                slashPriceStatusId = SlashPriceStatusId.ONGOING.toString()
+                slashPriceStatusId = DiscountStatus.ONGOING.toString()
             ),
             ShopDiscountManageProductVariantItemUiModel(
                 isEnabled = true,
                 variantMinOriginalPrice = 100000,
-                slashPriceStatusId = SlashPriceStatusId.ONGOING.toString(),
+                slashPriceStatusId = DiscountStatus.ONGOING.toString(),
                 valueErrorType = ShopDiscountManageProductDiscountErrorValidation.NONE,
                 discountedPrice = 10000
             )
