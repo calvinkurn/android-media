@@ -1,5 +1,6 @@
 package com.tokopedia.shop.flashsale.presentation.list.list
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -39,6 +40,7 @@ import com.tokopedia.shop.flashsale.presentation.list.list.bottomsheet.MoreMenuB
 import com.tokopedia.shop.flashsale.presentation.list.list.listener.RecyclerViewScrollListener
 import com.tokopedia.shop.flashsale.presentation.creation.information.CampaignInformationActivity
 import com.tokopedia.shop.flashsale.presentation.cancelation.CancelCampaignBottomSheet
+import com.tokopedia.shop.flashsale.presentation.creation.manage.ChooseProductActivity
 import com.tokopedia.shop.flashsale.presentation.draft.bottomsheet.DraftListBottomSheet
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.universal_sharing.view.bottomsheet.SharingUtil
@@ -146,6 +148,10 @@ class CampaignListFragment : BaseSimpleListFragment<CampaignAdapter, CampaignUiM
         observeCampaignPrerequisiteData()
         observeShareComponentMetadata()
         viewModel.getCampaignPrerequisiteData()
+
+        Intent(context, ChooseProductActivity::class.java).apply {
+            requireContext().startActivity(this)
+        }
     }
 
     private fun setupView() {
@@ -349,10 +355,15 @@ class CampaignListFragment : BaseSimpleListFragment<CampaignAdapter, CampaignUiM
     }
 
     override fun onDataEmpty() {
+
     }
 
     override fun onGetListError(message: String) {
 
+    }
+
+    override fun onScrolled(xScrollAmount: Int, yScrollAmount: Int) {
+        // no-op
     }
 
     private fun handleScrollDownEvent() {

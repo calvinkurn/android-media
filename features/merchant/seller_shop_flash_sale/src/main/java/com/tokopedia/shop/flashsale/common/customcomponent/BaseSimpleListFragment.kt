@@ -35,6 +35,7 @@ abstract class BaseSimpleListFragment<T: RecyclerView.Adapter<*>, F>: BaseDagger
     abstract fun onHideLoading()
     abstract fun onDataEmpty()
     abstract fun onGetListError(message: String)
+    abstract fun onScrolled(xScrollAmount: Int, yScrollAmount: Int)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -86,6 +87,11 @@ abstract class BaseSimpleListFragment<T: RecyclerView.Adapter<*>, F>: BaseDagger
 
     private fun createEndlessRecyclerViewListener(): EndlessRecyclerViewScrollListener {
         return object : EndlessRecyclerViewScrollListener(recyclerView?.layoutManager) {
+            override fun onScrolled(view: RecyclerView, dx: Int, dy: Int) {
+                super.onScrolled(view, dx, dy)
+                onScrolled(dx, dy)
+            }
+
             override fun onLoadMore(page: Int, totalItemsCount: Int) {
                 showLoading()
                 loadData(page)
