@@ -1,10 +1,6 @@
 package com.tokopedia.tokofood.home
 
-import android.os.Bundle
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import androidx.lifecycle.LiveData
-import com.tokopedia.home_component.HomeComponentTypeFactory
-import com.tokopedia.home_component.visitable.HomeComponentVisitable
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.localizationchooseaddress.domain.response.GetStateChosenAddressQglResponse
 import com.tokopedia.localizationchooseaddress.domain.response.GetStateChosenAddressResponse
@@ -14,7 +10,6 @@ import com.tokopedia.logisticCommon.data.response.KeroAddrIsEligibleForAddressFe
 import com.tokopedia.logisticCommon.data.response.KeroAddrIsEligibleForAddressFeatureResponse
 import com.tokopedia.logisticCommon.domain.usecase.EligibleForAddressUseCase
 import com.tokopedia.tokofood.common.domain.usecase.KeroEditAddressUseCase
-import com.tokopedia.tokofood.feature.home.domain.data.HomeLayoutResponse
 import com.tokopedia.tokofood.feature.home.domain.data.TokoFoodHomeDynamicIconsResponse
 import com.tokopedia.tokofood.feature.home.domain.data.TokoFoodHomeLayoutResponse
 import com.tokopedia.tokofood.feature.home.domain.data.TokoFoodHomeTickerResponse
@@ -34,7 +29,6 @@ import com.tokopedia.tokofood.feature.home.presentation.viewmodel.TokoFoodHomeVi
 import com.tokopedia.tokofood.feature.purchase.purchasepage.domain.model.response.KeroEditAddressResponse
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.usecase.coroutines.Fail
-import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
@@ -274,18 +268,11 @@ abstract class TokoFoodHomeViewModelTestFixture {
         coEvery { tokoFoodMerchantListUseCase.execute(localCacheModel = localCacheModel, pageKey = pageKey) } throws error
     }
 
-
     inline fun <reified T>Any.getPrivateField(name: String): T {
         return this::class.java.getDeclaredField(name).let {
             it.isAccessible = true
             return@let it.get(this) as T
         }
-    }
-
-    fun<T: Any> LiveData<Result<T>>.verifySuccessEquals(expected: Success<Any>) {
-        val expectedResult = expected.data
-        val actualResult = (value as? Success<T>)?.data
-        Assert.assertEquals(expectedResult, actualResult)
     }
 
     protected fun addHomeLayoutItem(item: TokoFoodItemUiModel) {

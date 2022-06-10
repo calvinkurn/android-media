@@ -140,28 +140,6 @@ fun createKeroEditAddressResponseFail(): KeroEditAddressResponse {
     )
 }
 
-fun createTickerStateRemoved(): TokoFoodListUiModel {
-    val mutableList = mutableListOf<Visitable<*>>()
-    val chooseAddressModel = TokoFoodHomeChooseAddressWidgetUiModel(id = CHOOSE_ADDRESS_WIDGET_ID)
-    mutableList.add(chooseAddressModel)
-    return TokoFoodListUiModel(
-        items = mutableList,
-        state = TokoFoodLayoutState.UPDATE
-    )
-}
-
-fun createTickerState(): TokoFoodListUiModel {
-    val mutableList = mutableListOf<Visitable<*>>()
-    val chooseAddressModel = TokoFoodHomeChooseAddressWidgetUiModel(id = CHOOSE_ADDRESS_WIDGET_ID)
-    val tickerModel = createHomeTickerDataModel()
-    mutableList.add(chooseAddressModel)
-    mutableList.add(tickerModel)
-    return TokoFoodListUiModel(
-        items = mutableList,
-        state = TokoFoodLayoutState.UPDATE
-    )
-}
-
 fun createHomeTickerDataModel(tickers: List<TickerData> = listOf(createTickerData())): TokoFoodHomeTickerUiModel {
     return TokoFoodHomeTickerUiModel(id = TICKER_WIDGET_ID, tickers = tickers, TokoFoodLayoutState.SHOW)
 }
