@@ -33,7 +33,6 @@ import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.user.session.datastore.workmanager.DataStoreMigrationWorker
-import timber.log.Timber
 import javax.inject.Inject
 
 /**
@@ -140,7 +139,7 @@ class TwoFactorCheckerSubscriber : Application.ActivityLifecycleCallbacks {
     private fun isNeedEncryptionCheck(activity: Activity): Boolean {
         val sharedPrefs: SharedPreferences =
             activity.getSharedPreferences(encryptionPrefName, Context.MODE_PRIVATE)
-        return sharedPrefs.getBoolean(encryptionKeyName, false) && (refreshCounter < 10)
+        return sharedPrefs.getBoolean(encryptionKeyName, false) && (refreshCounter < MAX_REFRESH_ATTEMPT)
     }
 
     private fun checkEncryptionStatus(activity: Activity) {
@@ -306,6 +305,8 @@ class TwoFactorCheckerSubscriber : Application.ActivityLifecycleCallbacks {
         const val encryptionKeyName = "KEY_ENCRYPTION_ERROR"
 
         private const val NEW_BIOMETRIC_OFFERING = "biometric_offer_an"
+
+        private const val MAX_REFRESH_ATTEMPT = 10
 
         fun mapToApplink(
             activity: Activity,

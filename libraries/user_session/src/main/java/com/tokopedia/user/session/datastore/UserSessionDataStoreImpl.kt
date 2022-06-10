@@ -533,7 +533,7 @@ class UserSessionDataStoreImpl(private val store: DataStore<UserSessionProto>) :
             val messageDigest = digest.digest()
             val hexString = StringBuilder()
             for (b in messageDigest) {
-                hexString.append(String.format("%02x", b and (0xff).toByte()))
+                hexString.append(String.format(HEX_FORMAT, b and (0xff).toByte()))
             }
             hexString.toString()
         } catch (e: Exception) {
@@ -546,6 +546,7 @@ class UserSessionDataStoreImpl(private val store: DataStore<UserSessionProto>) :
         const val USER_PREFERENCES_NAME = "user_session"
         const val SORT_ORDER_KEY = "sort_order"
 
+        const val HEX_FORMAT = "%02x"
         const val USER_SESSION_AB_TEST_KEY = "android_data_store_v2"
         val SHARED_PREFERENCE_AB_TEST_PLATFORM = "tkpd-ab-test-platform"
     }
