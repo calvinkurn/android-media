@@ -20,6 +20,9 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.loader.loadImageWithoutPlaceholder
 import java.lang.Exception
 
+private const val ITEM_COUNT_4 = 4
+private const val ITEM_COUNT_6 = 6
+
 class ShopCardViewHolder(itemView: View, private val fragment: Fragment) : AbstractViewHolder(itemView, fragment.viewLifecycleOwner) {
     private val binding: HorizontalRvShopCardLayoutBinding = HorizontalRvShopCardLayoutBinding.bind(itemView)
     private val shopCardRecyclerViewDecorator = ShopCardItemDecorator()
@@ -29,7 +32,7 @@ class ShopCardViewHolder(itemView: View, private val fragment: Fragment) : Abstr
 
     init {
         with(binding) {
-            linearLayoutManager.initialPrefetchItemCount = 4
+            linearLayoutManager.initialPrefetchItemCount = ITEM_COUNT_4
             shopCardRv.layoutManager = linearLayoutManager
             mDiscoveryRecycleAdapter = DiscoveryRecycleAdapter(fragment)
             shopCardRv.adapter = mDiscoveryRecycleAdapter
@@ -155,7 +158,7 @@ class ShopCardViewHolder(itemView: View, private val fragment: Fragment) : Abstr
 
     private fun addShimmer() {
         val list: ArrayList<ComponentsItem> = ArrayList()
-        for (i in 1..6) {
+        for (i in 1..ITEM_COUNT_6) {
             list.add(ComponentsItem(name = ComponentNames.BannerCarouselShimmer.componentName))
         }
         mDiscoveryRecycleAdapter.setDataList(list)
