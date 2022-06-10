@@ -76,6 +76,9 @@
     <string name="sd_discount_seller_no_access_title">Diskon Toko belum bisa diakses</string>
     <string name="sd_discount_seller_no_access_desc">Untuk sementara, kamu bisa akses Diskon Toko lewat versi desktop, ya.</string>
 
+    <string name="sd_ongoing">Berlangsung</string>
+    <string name="sd_upcoming">Akan Datang</string>
+    <string name="sd_paused">Dialihkan</string>
 
     <!-- Product Detail   -->
     <string name="change_discount">Ubah Diskon</string>

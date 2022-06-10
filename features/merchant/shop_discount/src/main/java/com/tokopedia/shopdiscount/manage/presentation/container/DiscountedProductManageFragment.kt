@@ -107,11 +107,13 @@ class DiscountedProductManageFragment : BaseDaggerFragment() {
     private val viewModelProvider by lazy { ViewModelProvider(this, viewModelFactory) }
     private val viewModel by lazy { viewModelProvider.get(DiscountedProductManageViewModel::class.java) }
 
-    private val tabs = listOf(
-        PageTab("Berlangsung", "ACTIVE", DiscountStatus.ONGOING, 0, TAB_POSITION_FIRST),
-        PageTab("Akan Datang", "SCHEDULED", DiscountStatus.SCHEDULED, 0, TAB_POSITION_SECOND),
-        PageTab("Dialihkan", "PAUSED", DiscountStatus.PAUSED, 0, TAB_POSITION_THIRD)
-    )
+    private val tabs by lazy {
+        listOf(
+            PageTab(getString(R.string.sd_ongoing), "ACTIVE", DiscountStatus.ONGOING, 0, TAB_POSITION_FIRST),
+            PageTab(getString(R.string.sd_upcoming), "SCHEDULED", DiscountStatus.SCHEDULED, 0, TAB_POSITION_SECOND),
+            PageTab(getString(R.string.sd_paused), "PAUSED", DiscountStatus.PAUSED, 0, TAB_POSITION_THIRD)
+        )
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
