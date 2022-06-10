@@ -30,8 +30,9 @@
     <string name="text_purchase_message_need_pinpoint"><![CDATA[Pengiriman &amp; estimasi tiba akan tampil di sini setelah pinpoint terdeteksi. <b><font color=#00AA5B>Atur Pinpoint</font></b>]]></string>
     <string name="text_purchase_add_notes">Tambah Catatan</string>
     <string name="text_purchase_change_notes">Ubah Catatan</string>
+    <string name="text_purchase_add_notes_and_variant">Tambah Catatan/Varian</string>
     <string name="text_purchase_change_notes_and_variant">Ubah Catatan/Varian</string>
-    <string name="texT_purchase_consent_next">Lanjut</string>
+    <string name="text_purchase_consent_next">Lanjut</string>
     <string name="text_purchase_to_homepage">Ke Homepage</string>
     <string name="text_purchase_order_notes">Catatan pesanan</string>
     <string name="text_purchase_address_phone">%s (%s)"</string>
