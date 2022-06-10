@@ -78,6 +78,7 @@
         android:visibility="gone">
 
         <com.tokopedia.unifycomponents.CardUnify2
+            android:id="@+id/card_wishlist_v2_sticky_deletion"
             android:layout_width="match_parent"
             android:layout_height="82dp"
             app:cardBackgroundColor="@color/Unify_Background"
