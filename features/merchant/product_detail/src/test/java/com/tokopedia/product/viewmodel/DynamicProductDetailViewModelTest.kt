@@ -30,7 +30,6 @@ import com.tokopedia.product.detail.common.data.model.carttype.CartTypeData
 import com.tokopedia.product.detail.common.data.model.pdplayout.BasicInfo
 import com.tokopedia.product.detail.common.data.model.pdplayout.ComponentData
 import com.tokopedia.product.detail.common.data.model.pdplayout.DynamicProductInfoP1
-import com.tokopedia.product.detail.common.data.model.pdplayout.Media
 import com.tokopedia.product.detail.common.data.model.product.Category
 import com.tokopedia.product.detail.common.data.model.product.ProductParams
 import com.tokopedia.product.detail.common.data.model.product.Stock
@@ -64,6 +63,8 @@ import com.tokopedia.recommendation_widget_common.domain.request.GetRecommendati
 import com.tokopedia.recommendation_widget_common.presentation.model.AnnotationChip
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
+import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.uimodel.ReviewMediaImageThumbnailUiModel
+import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.uimodel.ReviewMediaVideoThumbnailUiModel
 import com.tokopedia.shop.common.domain.interactor.model.favoriteshop.FollowShop
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.topads.sdk.domain.model.TopAdsGetDynamicSlottingData
@@ -2378,6 +2379,41 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
 
     //======================================END OF PDP SECTION=======================================//
     //==============================================================================================//
+
+    // region Review Section
+    @Test
+    fun `on success get product info login should contain valid review data`() {
+        val expectedVideoCount = 1
+        val expectedImageCount = 4
+        val expectedBuyerMediaCount = 64
+        val expectedSocialProofText = "Foto & Video Pembeli"
+
+        `on success get product info login`()
+
+        val actualVideoCount = viewModel.p2Data.value?.imageReview?.reviewMediaThumbnails?.mediaThumbnails?.count {
+            it is ReviewMediaVideoThumbnailUiModel
+        }
+        val actualImageCount = viewModel.p2Data.value?.imageReview?.reviewMediaThumbnails?.mediaThumbnails?.count {
+            it is ReviewMediaImageThumbnailUiModel
+        }
+        val showingSeeMoreThumbnail = viewModel.p2Data.value?.imageReview?.reviewMediaThumbnails?.mediaThumbnails?.count {
+            it is ReviewMediaImageThumbnailUiModel && it.isShowingSeeMore()
+        }
+        val seeMoreThumbnailPosition = viewModel.p2Data.value?.imageReview?.reviewMediaThumbnails?.mediaThumbnails?.indexOfFirst {
+            it is ReviewMediaImageThumbnailUiModel && it.isShowingSeeMore()
+        }
+        val showingSeeMoreThumbnailOnLastThumbnailOnly = showingSeeMoreThumbnail == 1 && seeMoreThumbnailPosition == 4
+        val actualBuyerMediaCount = viewModel.p2Data.value?.imageReview?.buyerMediaCount
+        val actualSocialProofText = viewModel.p2Data.value?.imageReview?.staticSocialProofText
+
+        Assert.assertEquals("Invalid video count.", expectedVideoCount, actualVideoCount)
+        Assert.assertEquals("Invalid image count.", expectedImageCount, actualImageCount)
+        Assert.assertTrue("Should show see more thumbnail on last position but was not show", showingSeeMoreThumbnailOnLastThumbnailOnly)
+        Assert.assertEquals("Invalid buyer media count.", expectedBuyerMediaCount, actualBuyerMediaCount)
+        Assert.assertEquals("Invalid social proof text", expectedSocialProofText, actualSocialProofText)
+    }
+    // endregion Review Section
+
     private fun getUserLocationCache(): LocalCacheModel {
         return LocalCacheModel("123", "123", "123", "123")
     }

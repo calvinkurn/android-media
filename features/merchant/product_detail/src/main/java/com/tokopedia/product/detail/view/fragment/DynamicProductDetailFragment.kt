@@ -59,8 +59,6 @@ import com.tokopedia.discovery.common.manager.ProductCardOptionsWishlistCallback
 import com.tokopedia.discovery.common.manager.handleProductCardOptionsActivityResult
 import com.tokopedia.discovery.common.manager.showProductCardOptions
 import com.tokopedia.discovery.common.model.ProductCardOptionsModel
-import com.tokopedia.gallery.ImageReviewGalleryActivity
-import com.tokopedia.gallery.viewmodel.ImageReviewItem
 import com.tokopedia.iris.util.IrisSession
 import com.tokopedia.kotlin.extensions.view.createDefaultProgressDialog
 import com.tokopedia.kotlin.extensions.view.hasValue
@@ -205,6 +203,8 @@ import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.remoteconfig.abtest.AbTestPlatform
+import com.tokopedia.reviewcommon.feature.media.gallery.detailed.domain.model.ProductrevGetReviewMedia
+import com.tokopedia.reviewcommon.feature.media.gallery.detailed.util.ReviewMediaGalleryRouter
 import com.tokopedia.searchbar.data.HintData
 import com.tokopedia.searchbar.navigation_component.NavToolbar
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
@@ -1179,7 +1179,7 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
     /**
      * ProductReviewViewHolder
      */
-    override fun onSeeAllLastItemImageReview(componentTrackDataModel: ComponentTrackDataModel?) {
+    override fun onSeeAllLastItemMediaReview(componentTrackDataModel: ComponentTrackDataModel?) {
         DynamicProductDetailTracking.Click.onSeeAllLastItemImageReview(viewModel.getDynamicProductInfoP1, componentTrackDataModel
                 ?: ComponentTrackDataModel())
         goToReviewImagePreview()
@@ -1193,15 +1193,26 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
         }
     }
 
-    override fun onImageReviewClick(listOfImage: List<ImageReviewItem>, position: Int, componentTrackDataModel: ComponentTrackDataModel?, imageCount: String) {
+    override fun onMediaReviewClick(
+        reviewID: String,
+        position: Int,
+        componentTrackDataModel: ComponentTrackDataModel?,
+        detailedMediaResult: ProductrevGetReviewMedia
+    ) {
         context?.let {
             DynamicProductDetailTracking.Click.eventClickReviewOnBuyersImage(viewModel.getDynamicProductInfoP1, componentTrackDataModel
-                    ?: ComponentTrackDataModel(), listOfImage[position].reviewId)
-            val listOfImageReview: List<String> = listOfImage.map {
-                it.imageUrlLarge ?: ""
-            }
-            ImageReviewGalleryActivity.moveTo(context, ArrayList(listOfImageReview), position, viewModel.getDynamicProductInfoP1?.basic?.productID
-                    ?: "", imageCount)
+                    ?: ComponentTrackDataModel(), reviewID)
+            ReviewMediaGalleryRouter.routeToReviewMediaGallery(
+                context = it,
+                pageSource = ReviewMediaGalleryRouter.PageSource.PDP,
+                productID = viewModel.getDynamicProductInfoP1?.basic?.productID.orEmpty(),
+                shopID = viewModel.getDynamicProductInfoP1?.basic?.shopID.orEmpty(),
+                isProductReview = true,
+                isFromGallery = false,
+                mediaPosition = position.inc(),
+                showSeeMore = detailedMediaResult.hasNext,
+                preloadedDetailedReviewMediaResult = detailedMediaResult
+            ).let { startActivity(it) }
         }
     }
 
