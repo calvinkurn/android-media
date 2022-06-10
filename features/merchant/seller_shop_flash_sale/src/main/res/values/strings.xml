@@ -96,9 +96,6 @@
     <string name="sfs_error_message_schedule_lapsed_title">Jadwal campaign pilihanmu sudah lewat</string>
     <string name="sfs_error_message_schedule_lapsed_description">Yuk, atur ulang jadwal campaignmu dulu!</string>
 
-    <string name="sfs_error_message_overlapped_schedule_title">Jadwal campaign sudah melewati batas</string>
-    <string name="sfs_error_message_overlapped_schedule_description">Kamu cuma bisa punya 3 campaign dalam periode yang sama. Atur ulang jadwalmu, ya.</string>
-
     <string name="sfs_error_message_teaser_schedule_lapsed_title">Jadwal teaser campaign sudah lewat</string>
     <string name="sfs_error_message_teaser_schedule_lapsed_description">Atur ulang jadwal teaser-nya, ya.</string>
 
