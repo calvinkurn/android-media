@@ -9,6 +9,7 @@ import com.tokopedia.additional_check.domain.usecase.GetSimpleProfileUseCase
 import com.tokopedia.additional_check.domain.usecase.OfferInterruptUseCase
 import com.tokopedia.additional_check.domain.usecase.ShowInterruptUseCase
 import com.tokopedia.additional_check.internal.AdditionalCheckConstants
+import com.tokopedia.encryption.security.AeadEncryptorImpl
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.sessioncommon.data.fingerprint.FingerprintPreference
 import com.tokopedia.sessioncommon.di.SessionModule
@@ -71,6 +72,7 @@ class TwoFactorViewModel @Inject constructor (@Named(SessionModule.SESSION_MODUL
         if(userSession.name.isEmpty()) {
             launchCatchError(block = {
                 val profile = getSimpleProfileUseCase(Unit).data
+                AeadEncryptorImpl.del()
                 userSession.name = profile.fullName
                 userSession.email = profile.email
                 userSession.profilePicture = profile.profilePicture

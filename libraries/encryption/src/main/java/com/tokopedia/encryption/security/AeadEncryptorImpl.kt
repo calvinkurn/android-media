@@ -2,10 +2,13 @@ package com.tokopedia.encryption.security
 
 import android.content.Context
 import android.util.Base64
+import android.util.Log
 import com.google.crypto.tink.Aead
 import com.google.crypto.tink.KeyTemplates
 import com.google.crypto.tink.aead.AeadConfig
 import com.google.crypto.tink.integration.android.AndroidKeysetManager
+import java.security.KeyStore
+import java.security.KeyStoreException
 
 class AeadEncryptorImpl(val context: Context) : AeadEncryptor {
 
@@ -44,5 +47,18 @@ class AeadEncryptorImpl(val context: Context) : AeadEncryptor {
     override fun decrypt(base64EncryptedString: String, associatedData: ByteArray?): String {
         val messageToDecrypt = Base64.decode(base64EncryptedString, Base64.DEFAULT)
         return String(getAead().decrypt(messageToDecrypt, associatedData), Charsets.UTF_8)
+    }
+
+    companion object {
+        val MASTER_KEY_URI = "android-keystore://tkpd_master_keyset"
+        fun del() {
+            try {
+                val keyStore: KeyStore = KeyStore.getInstance(KeyStore.getDefaultType())
+                keyStore.load(null)
+                keyStore.deleteEntry(MASTER_KEY_URI)
+            } catch (e: KeyStoreException) {
+                e.printStackTrace()
+            }
+        }
     }
 }
