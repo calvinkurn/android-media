@@ -965,10 +965,12 @@ class PlayBroadcastViewModel @AssistedInject constructor(
     }
 
     private fun getQuizChoiceDetailData(choiceId: String, index: Int, cursor: String = "") {
-        val oldParticipant =
-            if (_quizChoiceDetailState.value is QuizChoiceDetailStateUiModel.Success && cursor.isNotBlank()) {
-                (_quizChoiceDetailState.value as QuizChoiceDetailStateUiModel.Success).dataUiModel.participants.toMutableList()
-            } else emptyList()
+        val oldParticipant = when (val state = _quizChoiceDetailState.value) {
+            is QuizChoiceDetailStateUiModel.Success -> {
+                if (cursor.isNotBlank()) state.dataUiModel.participants.toMutableList() else emptyList()
+            }
+            else -> emptyList()
+        }
         _quizChoiceDetailState.value = QuizChoiceDetailStateUiModel.Loading
         viewModelScope.launchCatchError(block = {
             val quizChoicesDetailUiModel = repo.getInteractiveQuizChoiceDetail(
@@ -1305,15 +1307,15 @@ class PlayBroadcastViewModel @AssistedInject constructor(
     }
 
     private fun handleLoadMoreParticipant() {
-        if (_quizChoiceDetailState.value is QuizChoiceDetailStateUiModel.Success) {
-            val detailStateUiModel =
-                (_quizChoiceDetailState.value as QuizChoiceDetailStateUiModel.Success).dataUiModel
-            if (detailStateUiModel.cursor != "-1") {
-                getQuizChoiceDetailData(
-                    choiceId = detailStateUiModel.choice.id,
-                    index = detailStateUiModel.choice.index,
-                    cursor = detailStateUiModel.cursor
-                )
+        when (val state = _quizChoiceDetailState.value) {
+            is QuizChoiceDetailStateUiModel.Success -> {
+                if (state.dataUiModel.cursor != "-1") {
+                    getQuizChoiceDetailData(
+                        choiceId = state.dataUiModel.choice.id,
+                        index = state.dataUiModel.choice.index,
+                        cursor = state.dataUiModel.cursor
+                    )
+                }
             }
         }
     }
