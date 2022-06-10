@@ -16,6 +16,7 @@ import com.tokopedia.logisticCommon.data.constant.AddressConstant
 import com.tokopedia.logisticCommon.data.response.EligibleForAddressFeature
 import com.tokopedia.logisticCommon.domain.usecase.EligibleForAddressUseCase
 import com.tokopedia.tokofood.common.domain.usecase.KeroEditAddressUseCase
+import com.tokopedia.tokofood.feature.home.domain.constanta.TokoFoodHomeStaticLayoutId.Companion.MERCHANT_TITLE
 import com.tokopedia.tokofood.feature.home.domain.constanta.TokoFoodLayoutItemState
 import com.tokopedia.tokofood.feature.home.domain.constanta.TokoFoodLayoutState
 import com.tokopedia.tokofood.feature.home.domain.mapper.TokoFoodHomeMapper.addErrorState
@@ -50,6 +51,7 @@ import com.tokopedia.tokofood.feature.home.presentation.uimodel.TokoFoodProgress
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
+import java.lang.NullPointerException
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -250,6 +252,7 @@ class TokoFoodHomeViewModel @Inject constructor(
             homeLayoutItemList.mapCategoryLayoutList(categoryResponse.data.merchants)
             merchantListUpdate()
         }){
+            removeMerchantMainTitle()
             merchantListUpdate()
         }
     }
@@ -313,6 +316,12 @@ class TokoFoodHomeViewModel @Inject constructor(
 
     private fun isInitialPageKey(): Boolean {
         return pageKey.equals(INITIAL_PAGE_KEY_MERCHANT)
+    }
+
+    private fun removeMerchantMainTitle(){
+        if (isInitialPageKey()){
+            homeLayoutItemList.removeItem(MERCHANT_TITLE)
+        }
     }
 
     private fun merchantListUpdate() {
