@@ -90,4 +90,11 @@ interface PlayBroadcastInteractiveAnalytic {
         interactiveId: String,
         interactiveTitle: String,
         reward: String)
+
+    fun onImpressQuizChoiceDetail(
+        channelId: String,
+        channelTitle: String,
+        interactiveId: String,
+        interactiveTitle: String
+    )
 }

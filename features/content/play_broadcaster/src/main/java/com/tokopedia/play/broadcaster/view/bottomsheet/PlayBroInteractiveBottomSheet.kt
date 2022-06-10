@@ -78,7 +78,8 @@ class PlayBroInteractiveBottomSheet @Inject constructor(
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        leaderboardSheetView.addItemTouchListener(object : RecyclerView.SimpleOnItemTouchListener() {
+        leaderboardSheetView.addItemTouchListener(object :
+            RecyclerView.SimpleOnItemTouchListener() {
             override fun onInterceptTouchEvent(rv: RecyclerView, e: MotionEvent): Boolean {
                 bottomSheet.updateScrollingChild(rv)
                 return false
@@ -181,6 +182,13 @@ class PlayBroInteractiveBottomSheet @Inject constructor(
         leaderboardSheetView.hide()
         choiceDetailSheetView.setData(dataUiModel, isQuizDetail())
         choiceDetailSheetView.show()
+        if (isQuizDetail())
+            analytic.onImpressQuizChoiceDetail(
+                parentViewModel.channelId,
+                parentViewModel.channelTitle,
+                dataUiModel.choice.interactiveId,
+                dataUiModel.choice.interactiveTitle,
+            )
     }
 
     private fun showErrorChoiceDetail() {
@@ -237,7 +245,7 @@ class PlayBroInteractiveBottomSheet @Inject constructor(
     }
 
     override fun onRefreshButtonClicked(view: PlayInteractiveLeaderboardViewComponent) {
-        if (!isQuizDetail()){
+        if (!isQuizDetail()) {
             analytic.onClickRefreshGameResult(
                 parentViewModel.channelId,
                 parentViewModel.channelTitle,
@@ -247,7 +255,7 @@ class PlayBroInteractiveBottomSheet @Inject constructor(
     }
 
     override fun onChoiceItemClicked(item: QuizChoicesUiModel) {
-        if (isQuizDetail()){
+        if (isQuizDetail()) {
             analytic.onCLickQuizOptionLive(
                 parentViewModel.channelId,
                 parentViewModel.channelTitle,
@@ -312,7 +320,8 @@ class PlayBroInteractiveBottomSheet @Inject constructor(
             type: Type,
             size: Size? = Size.HALF,
         ): PlayBroInteractiveBottomSheet {
-            val oldInstance = fragmentManager.findFragmentByTag(TAG) as? PlayBroInteractiveBottomSheet
+            val oldInstance =
+                fragmentManager.findFragmentByTag(TAG) as? PlayBroInteractiveBottomSheet
             return oldInstance ?: (fragmentManager.fragmentFactory.instantiate(
                 classLoader,
                 PlayBroInteractiveBottomSheet::class.java.name,
@@ -347,6 +356,7 @@ class PlayBroInteractiveBottomSheet @Inject constructor(
     }
 
     private fun isQuizDetail() = sheetType == Type.QUIZ_DETAIL.toString()
+    private fun isReportType() = sheetType == Type.REPORT.toString()
 
     enum class Type {
         LEADERBOARD,

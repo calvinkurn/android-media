@@ -354,7 +354,9 @@ class PlayBroadcastMockMapper : PlayBroadcastMapper {
                         isCorrect = choice.isCorrectAnswer,
                         count = choice.participantCount.toString(),
                         showArrow = true
-                    )
+                    ),
+                    interactiveId = dataUiModel.interactiveId,
+                    interactiveTitle = dataUiModel.question,
                 )
             },
             endsIn = dataUiModel.countDownEnd,
@@ -362,13 +364,15 @@ class PlayBroadcastMockMapper : PlayBroadcastMapper {
             otherParticipantText = "",
             winners = emptyList(),
             leaderBoardType = LeadeboardType.Quiz,
-            id = "" //TODO() please add Id
+            id = dataUiModel.interactiveId,
         )
     }
 
     override fun mapChoiceDetail(
         response: GetInteractiveQuizChoiceDetailResponse,
-        choiceIndex: Int
+        choiceIndex: Int,
+        interactiveId: String,
+        interactiveTitle: String,
     ): QuizChoiceDetailUiModel {
         return with(response.playInteractiveQuizChoiceDetail) {
             QuizChoiceDetailUiModel(
@@ -381,7 +385,9 @@ class PlayBroadcastMockMapper : PlayBroadcastMapper {
                         choice.isCorrectAnswer,
                         "${choice.participantCount} Respon",
                         false,
-                    )
+                    ),
+                    interactiveId = interactiveId,
+                    interactiveTitle = interactiveTitle,
                 ),
                 cursor = cursor,
                 winners = winners.map {
@@ -440,14 +446,16 @@ class PlayBroadcastMockMapper : PlayBroadcastMapper {
                             isCorrect = choice.isCorrectAnswer,
                             count = choice.participantCount.toString(),
                             showArrow = true
-                        )
+                        ),
+                        interactiveId = slot.interactiveId,
+                        interactiveTitle = slot.getSlotTitle(),
                     )
                 },
                 otherParticipantText = slot.otherParticipantCountText,
                 otherParticipant = slot.otherParticipantCount.toLong(),
                 reward = slot.reward,
                 leaderBoardType = getLeaderboardType(slot.type),
-                id = "" //TODO() please add Id
+                id = slot.interactiveId
             )
         }
     }

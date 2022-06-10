@@ -73,7 +73,6 @@ import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
 import java.util.*
 import java.util.concurrent.TimeUnit
-import kotlin.math.max
 
 /**
  * Created by mzennis on 24/05/20.
@@ -963,7 +962,12 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         }
     }
 
-    private fun getQuizChoiceDetailData(choiceId: String, index: Int, cursor: String = "") {
+    private fun getQuizChoiceDetailData(choiceId: String,
+                                        index: Int,
+                                        cursor: String = "",
+                                        interactiveId: String,
+                                        interactiveTitle : String,
+    ) {
         val oldParticipant = when (val state = _quizChoiceDetailState.value) {
             is QuizChoiceDetailStateUiModel.Success -> {
                 if (cursor.isNotBlank()) state.dataUiModel.participants else emptyList()
@@ -976,6 +980,8 @@ class PlayBroadcastViewModel @AssistedInject constructor(
                 choiceIndex = index,
                 choiceId = choiceId,
                 cursor = cursor,
+                interactiveId = interactiveId,
+                interactiveTitle = interactiveTitle
             )
             if (cursor.isNotBlank()) {
                 val updatedQuizChoicesDetailUiModel =
@@ -988,7 +994,12 @@ class PlayBroadcastViewModel @AssistedInject constructor(
             }
         }) {
             it.stackTrace
-            _quizChoiceDetailState.value = QuizChoiceDetailStateUiModel.Error(choiceId, index)
+            _quizChoiceDetailState.value = QuizChoiceDetailStateUiModel.Error(
+                choiceId,
+                index,
+                interactiveId,
+                interactiveTitle,
+            )
         }
     }
 
@@ -1305,7 +1316,12 @@ class PlayBroadcastViewModel @AssistedInject constructor(
     }
 
     private fun handleChoiceDetail(choice: QuizChoicesUiModel) {
-        getQuizChoiceDetailData(choiceId = choice.id, index = choice.index)
+        getQuizChoiceDetailData(
+            choiceId = choice.id,
+            index = choice.index,
+            interactiveId = choice.interactiveId,
+            interactiveTitle = choice.interactiveTitle
+        )
     }
 
     private fun handleLoadMoreParticipant() {
@@ -1315,7 +1331,9 @@ class PlayBroadcastViewModel @AssistedInject constructor(
                     getQuizChoiceDetailData(
                         choiceId = state.dataUiModel.choice.id,
                         index = state.dataUiModel.choice.index,
-                        cursor = state.dataUiModel.cursor
+                        cursor = state.dataUiModel.cursor,
+                        interactiveId = state.dataUiModel.choice.interactiveId,
+                        interactiveTitle = state.dataUiModel.choice.interactiveTitle,
                     )
                 }
             }
@@ -1405,7 +1423,9 @@ class PlayBroadcastViewModel @AssistedInject constructor(
             is QuizChoiceDetailStateUiModel.Error -> {
                 getQuizChoiceDetailData(
                     choiceId = state.choiceId,
-                    index = state.index
+                    index = state.index,
+                    interactiveId = state.interactiveId,
+                    interactiveTitle = state.interactiveTitle,
                 )
             }
         }

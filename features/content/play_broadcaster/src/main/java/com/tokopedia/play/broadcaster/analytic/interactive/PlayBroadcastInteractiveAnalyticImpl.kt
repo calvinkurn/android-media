@@ -307,6 +307,18 @@ class PlayBroadcastInteractiveAnalyticImpl @Inject constructor(
             )
     }
 
+    override fun onImpressQuizChoiceDetail(
+        channelId: String,
+        channelTitle: String,
+        interactiveId: String,
+        interactiveTitle: String
+    ) {
+        sendImpressionEvent(
+            "view - quiz result option live room",
+            "${userSession.shopId} - $channelId - $channelTitle - $interactiveId - $interactiveTitle",
+            )
+    }
+
     private fun sendClickEvent(
         eventAction: String,
         eventLabel: String,

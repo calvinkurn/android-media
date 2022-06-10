@@ -38,6 +38,8 @@ interface PlayBroadcastInteractiveRepository {
         choiceIndex: Int,
         choiceId: String,
         cursor: String,
+        interactiveId: String,
+        interactiveTitle: String,
     ): QuizChoiceDetailUiModel
 
     suspend fun getSellerLeaderboardWithSlot(channelId: String, allowChat: Boolean): List<PlayLeaderboardUiModel>

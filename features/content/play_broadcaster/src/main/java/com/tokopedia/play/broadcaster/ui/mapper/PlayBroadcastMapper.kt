@@ -121,7 +121,9 @@ interface PlayBroadcastMapper {
 
     fun mapChoiceDetail(
         response: GetInteractiveQuizChoiceDetailResponse,
-        choiceIndex: Int
+        choiceIndex: Int,
+        interactiveId: String,
+        interactiveTitle:String,
     ): QuizChoiceDetailUiModel
 
     fun mapLeaderBoardWithSlot(response: GetSellerLeaderboardSlotResponse, allowChat: Boolean): List<PlayLeaderboardUiModel>

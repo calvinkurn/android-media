@@ -111,14 +111,14 @@ class PlayBroadcastInteractiveRepositoryImpl @Inject constructor(
         }
 
     override suspend fun getInteractiveQuizChoiceDetail(
-        choiceIndex: Int, choiceId: String, cursor: String
+        choiceIndex: Int, choiceId: String, cursor: String, interactiveId: String, interactiveTitle:String
     ): QuizChoiceDetailUiModel =
         withContext(dispatchers.io) {
             val response = getInteractiveQuizChoiceDetailsUseCase.apply {
                 setRequestParams(GetInteractiveQuizChoiceDetailsUseCase.createParams(choiceId, cursor))
             }.executeOnBackground()
 
-            return@withContext mapper.mapChoiceDetail(response, choiceIndex)
+            return@withContext mapper.mapChoiceDetail(response, choiceIndex, interactiveId, interactiveTitle)
         }
 
     override suspend fun getSellerLeaderboardWithSlot(
