@@ -36,7 +36,7 @@ import com.tokopedia.shopdiscount.utils.constant.EMPTY_STRING
 import com.tokopedia.shopdiscount.utils.constant.ZERO
 import com.tokopedia.shopdiscount.utils.extension.*
 import com.tokopedia.shopdiscount.utils.paging.BaseSimpleListFragment
-import com.tokopedia.shopdiscount.utils.tracker.ProductListPageTracker
+import com.tokopedia.shopdiscount.utils.tracker.ShopDiscountTracker
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -102,7 +102,7 @@ class DiscountedProductListFragment : BaseSimpleListFragment<ProductAdapter, Pro
     lateinit var userSession : UserSessionInterface
 
     @Inject
-    lateinit var tracker: ProductListPageTracker
+    lateinit var tracker: ShopDiscountTracker
 
     private val loaderDialog by lazy { LoaderDialog(requireActivity()) }
     private val viewModelProvider by lazy { ViewModelProvider(this, viewModelFactory) }
