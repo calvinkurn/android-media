@@ -25,6 +25,7 @@
         app:layout_constraintTop_toBottomOf="@+id/header">
 
         <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/wrapper_campaign_rule_content"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
@@ -100,7 +101,7 @@
                 app:layout_constraintTop_toBottomOf="@+id/tg_choose_payment_method_label" />
 
             <View
-                android:id="@+id/ssfs_campaign_rule_divider"
+                android:id="@+id/divider_campaign_rule"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/unify_space_8"
                 android:layout_marginTop="@dimen/unify_space_16"
@@ -108,14 +109,14 @@
                 app:layout_constraintTop_toBottomOf="@+id/chips_instant_payment_method" />
 
             <com.tokopedia.unifyprinciples.Typography
-                android:id="@+id/ssfs_campaign_rule_buyer_setting_label"
+                android:id="@+id/tg_buyer_setting_label"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/unify_space_16"
                 android:layout_marginTop="@dimen/unify_space_16"
                 android:text="@string/campaign_rule_buyer_setting"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/ssfs_campaign_rule_divider"
+                app:layout_constraintTop_toBottomOf="@+id/divider_campaign_rule"
                 app:typographyType="paragraph_2"
                 app:typographyWeight="bold" />
 
@@ -125,9 +126,9 @@
                 android:layout_height="@dimen/unify_space_16"
                 android:layout_marginStart="4dp"
                 app:icon_name="INFORMATION"
-                app:layout_constraintBottom_toBottomOf="@id/ssfs_campaign_rule_buyer_setting_label"
-                app:layout_constraintStart_toEndOf="@id/ssfs_campaign_rule_buyer_setting_label"
-                app:layout_constraintTop_toTopOf="@id/ssfs_campaign_rule_buyer_setting_label" />
+                app:layout_constraintBottom_toBottomOf="@id/tg_buyer_setting_label"
+                app:layout_constraintStart_toEndOf="@id/tg_buyer_setting_label"
+                app:layout_constraintTop_toTopOf="@id/tg_buyer_setting_label" />
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tg_unique_account_label"
@@ -139,7 +140,7 @@
                 android:text="@string/campaign_rule_unique_account"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/ssfs_campaign_rule_buyer_setting_label"
+                app:layout_constraintTop_toBottomOf="@+id/tg_buyer_setting_label"
                 app:typographyType="paragraph_3"
                 app:typographyWeight="bold" />
 
@@ -217,7 +218,7 @@
                 android:layout_marginStart="@dimen/unify_space_16"
                 android:layout_marginTop="@dimen/unify_space_16"
                 android:layout_marginEnd="@dimen/unify_space_16"
-                android:text="@string/campaign_rule_unique_account"
+                android:text="@string/campaign_rule_campaign_relation"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tips_unique_account"
@@ -250,6 +251,94 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/chips_campaign_relation_yes"
                 app:layout_constraintTop_toBottomOf="@+id/tg_campaign_relation" />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/tg_choose_previous_campaign_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/unify_space_16"
+                android:layout_marginTop="@dimen/unify_space_16"
+                android:text="@string/campaign_rule_choose_previous_campaign_title"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/chips_campaign_relation_no"
+                app:typographyType="paragraph_3"
+                app:typographyWeight="bold" />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/tg_choose_previous_campaign_subtitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/unify_space_16"
+                android:layout_marginTop="@dimen/unify_space_4"
+                android:text="@string/campaign_rule_choose_previous_campaign_subtitle"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tg_choose_previous_campaign_title"
+                app:typographyType="small" />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/btn_choose_previous_campaign"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="@dimen/unify_space_16"
+                android:gravity="center"
+                android:padding="@dimen/unify_space_4"
+                android:text="@string/campaign_rule_choose_previous_campaign_button"
+                android:textColor="@color/Unify_GN500"
+                app:layout_constraintBottom_toBottomOf="@+id/tg_choose_previous_campaign_subtitle"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/tg_choose_previous_campaign_title"
+                app:typographyType="paragraph_2"
+                app:typographyWeight="bold" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rv_selected_previous_campaign"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/unify_space_16"
+                android:layout_marginTop="@dimen/unify_space_8"
+                android:layout_marginEnd="@dimen/unify_space_16"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tg_choose_previous_campaign_subtitle"
+                tools:itemCount="10"
+                tools:listitem="@layout/ssfs_item_related_campaign" />
+
+            <androidx.constraintlayout.widget.Group
+                android:id="@+id/group_choose_previous_campaign"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                app:constraint_referenced_ids="tg_choose_previous_campaign_title, tg_choose_previous_campaign_subtitle, btn_choose_previous_campaign, rv_selected_previous_campaign" />
+
+            <View
+                android:id="@+id/divider_campaign_rule_tnc"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/sfs_1_dp"
+                android:layout_marginTop="@dimen/unify_space_16"
+                android:background="@color/Unify_NN50"
+                app:layout_constraintTop_toBottomOf="@+id/rv_selected_previous_campaign" />
+
+            <com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
+                android:id="@+id/checbox_campaign_rule_tnc"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/unify_space_16"
+                android:layout_marginTop="@dimen/unify_space_12"
+                android:layout_marginEnd="@dimen/unify_space_16"
+                android:layout_marginBottom="@dimen/unify_space_32"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:text="@string/campaign_rule_tnc_checkbox_label"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/divider_campaign_rule_tnc" />
+
+            <androidx.constraintlayout.widget.Group
+                android:id="@+id/group_campaign_rule_tnc"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                app:constraint_referenced_ids="divider_campaign_rule_tnc, checbox_campaign_rule_tnc"
+                tools:visibility="visible" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>
