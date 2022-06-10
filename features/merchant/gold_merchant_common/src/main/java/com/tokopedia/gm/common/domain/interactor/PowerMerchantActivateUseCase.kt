@@ -40,8 +40,8 @@ class PowerMerchantActivateUseCase @Inject constructor(
 
     companion object {
         private val QUERY = """
-         mutation activatePowerMerchant(${'$'}source: String!, ${'$'}current_shop_tier: Int, ${'$'}next_shop_tier: Int) {
-           goldActivationSubscription(source: ${'$'}source, current_shop_tier: ${'$'}current_shop_tier, next_shop_tier: ${'$'}next_shop_tier) {
+         mutation activatePowerMerchant(${'$'}source: String!) {
+           goldActivationSubscription(source: ${'$'}source) {
              header {
                messages
                error_code
@@ -61,13 +61,11 @@ class PowerMerchantActivateUseCase @Inject constructor(
          }
         """.trimIndent()
 
-        private const val CURRENT_SHOP_TIER = "current_shop_tier"
         private const val SOURCE = "source"
 
-        fun createActivationParam(currentShopTier: Int, source: String): RequestParams {
+        fun createActivationParam(source: String): RequestParams {
             return RequestParams.create().apply {
                 putString(SOURCE, source)
-                putInt(CURRENT_SHOP_TIER, currentShopTier)
             }
         }
     }

@@ -153,9 +153,7 @@ open class PowerMerchantSubscriptionFragment :
 
     override fun cancelPmDeactivationSubmission(position: Int) {
         observePmCancelDeactivationSubmission()
-        val currentPmTireType = pmBasicInfo?.pmStatus?.pmTier ?: PMConstant.PMTierType.NA
-        val shopTier = getShopTireByPmTire(currentPmTireType)
-        mViewModel.cancelPmDeactivationSubmission(shopTier)
+        mViewModel.cancelPmDeactivationSubmission()
 
         val isPmPro = pmBasicInfo?.pmStatus?.pmTier == PMConstant.PMTierType.POWER_MERCHANT_PRO
         powerMerchantTracking.sendEventClickCancelOptOutPowerMerchant(isPmPro)
@@ -315,12 +313,9 @@ open class PowerMerchantSubscriptionFragment :
             return
         }
 
-        val currentPmTire = pmBasicInfo?.pmStatus?.pmTier ?: PMConstant.PMTierType.NA
-        val currentShopTireType = getShopTireByPmTire(currentPmTire)
-
         showActivationProgress()
         observePmActivationStatus()
-        mViewModel.submitPMActivation(currentShopTireType)
+        mViewModel.submitPMActivation()
 
         powerMerchantTracking.sendEventClickUpgradePowerMerchantPro()
     }
@@ -582,14 +577,6 @@ open class PowerMerchantSubscriptionFragment :
 
     private fun hideActivationProgress() {
         (activity as? SubscriptionActivityInterface)?.hideActivationProgress()
-    }
-
-    private fun getShopTireByPmTire(pmTire: Int): Int {
-        return when (pmTire) {
-            PMConstant.PMTierType.POWER_MERCHANT -> PMConstant.ShopTierType.POWER_MERCHANT
-            PMConstant.PMTierType.POWER_MERCHANT_PRO -> PMConstant.ShopTierType.POWER_MERCHANT_PRO
-            else -> PMConstant.ShopTierType.REGULAR_MERCHANT
-        }
     }
 
     private fun observePmActiveState() {
