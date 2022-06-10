@@ -6,7 +6,14 @@ import com.tokopedia.shop.flashsale.presentation.creation.manage.model.ReservePr
 object ReserveProductMapper {
     fun mapFromProduct(product: GetSellerCampaignValidatedProductListResponse.Product) =
         ReserveProductModel (
-            title = product.productName
+            productName = product.productName,
+            imageUrl = product.pictures.firstOrNull {
+                it.urlThumbnail.isNotBlank()
+            }?.urlThumbnail.orEmpty(),
+            sku = product.sku,
+            price = product.price,
+            variantCount = product.variantChildsIds.size,
+            stock = product.stock
         )
 
     fun mapFromProductList(

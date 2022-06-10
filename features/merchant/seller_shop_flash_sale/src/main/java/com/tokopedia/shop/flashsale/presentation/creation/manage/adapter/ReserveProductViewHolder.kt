@@ -4,9 +4,14 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.kotlin.extensions.view.getCurrencyFormatted
+import com.tokopedia.kotlin.extensions.view.getNumberFormatted
+import com.tokopedia.kotlin.extensions.view.isMoreThanZero
+import com.tokopedia.kotlin.extensions.view.isVisible
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.seller_shop_flash_sale.R
-import com.tokopedia.seller_shop_flash_sale.databinding.SsfsItemDraftBinding
 import com.tokopedia.seller_shop_flash_sale.databinding.SsfsItemReserveProductBinding
+import com.tokopedia.shop.flashsale.presentation.creation.manage.model.ReserveProductModel
 import com.tokopedia.utils.view.binding.viewBinding
 
 class ReserveProductViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -18,9 +23,16 @@ class ReserveProductViewHolder(itemView: View) : RecyclerView.ViewHolder(itemVie
 
     private val binding: SsfsItemReserveProductBinding? by viewBinding()
 
-    fun bind(item: String) {
+    fun bind(item: ReserveProductModel) {
         binding?.apply {
-            tvProductName.text = item
+            tvProductName.text = item.productName
+            imgProduct.loadImage(item.imageUrl)
+            tvSku.text = "SKU: " + if (item.sku.isBlank()) "-" else item.sku
+            tvStock.text = "Total stok: ${item.stock}"
+            tvProductPrice.text = item.price.getCurrencyFormatted()
+            labelVariantCount.text = "${item.variantCount} Varian Produk"
+            labelVariantCount.isVisible = item.variantCount.isMoreThanZero()
+            checkboxItem.isChecked = item.isSelected
         }
     }
 }

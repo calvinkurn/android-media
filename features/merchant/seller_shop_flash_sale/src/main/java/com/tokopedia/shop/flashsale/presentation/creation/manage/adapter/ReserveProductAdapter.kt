@@ -17,7 +17,7 @@ class ReserveProductAdapter : RecyclerView.Adapter<ReserveProductViewHolder>() {
     }
 
     override fun onBindViewHolder(holder: ReserveProductViewHolder, position: Int) {
-        holder.bind(items[position].title)
+        holder.bind(items[position])
     }
 
     override fun getItemCount() = items.size

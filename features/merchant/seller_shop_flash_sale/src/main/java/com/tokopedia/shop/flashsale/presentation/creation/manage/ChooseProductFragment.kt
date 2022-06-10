@@ -10,6 +10,8 @@ import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.seller_shop_flash_sale.databinding.SsfsFragmentChooseProductBinding
 import com.tokopedia.shop.flashsale.common.constant.ChooseProductConstant.PRODUCT_LIST_SIZE
 import com.tokopedia.shop.flashsale.common.customcomponent.BaseSimpleListFragment
+import com.tokopedia.shop.flashsale.common.extension.setFragmentToUnifyBgColor
+import com.tokopedia.shop.flashsale.common.extension.showError
 import com.tokopedia.shop.flashsale.di.component.DaggerShopFlashSaleComponent
 import com.tokopedia.shop.flashsale.presentation.creation.manage.adapter.ReserveProductAdapter
 import com.tokopedia.shop.flashsale.presentation.creation.manage.model.ReserveProductModel
@@ -24,6 +26,7 @@ class ChooseProductFragment : BaseSimpleListFragment<ReserveProductAdapter, Rese
     lateinit var viewModel: ChooseProductViewModel
 
     private var binding by autoClearedNullable<SsfsFragmentChooseProductBinding>()
+    private var guidelineBegin = 58
 
     override fun getScreenName() = ChooseProductFragment::class.java.canonicalName.orEmpty()
 
@@ -45,20 +48,9 @@ class ChooseProductFragment : BaseSimpleListFragment<ReserveProductAdapter, Rese
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        setFragmentToUnifyBgColor()
 
-        viewModel.reserveProductList.observe(viewLifecycleOwner) {
-            renderList(it, hasNextPage = it.size == getPerPage())
-        }
-
-        viewModel.errors.observe(viewLifecycleOwner) {
-            showErrorToaster(it)
-        }
-    }
-
-    private fun showErrorToaster(throwable: Throwable) {
-        val errorMessage = ErrorHandler.getErrorMessage(context, throwable)
-        Toaster.build(view = view ?: return, errorMessage, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR)
-            .show()
+        setupObservers()
     }
 
     override fun createAdapter() = ReserveProductAdapter()
@@ -93,12 +85,28 @@ class ChooseProductFragment : BaseSimpleListFragment<ReserveProductAdapter, Rese
     override fun onGetListError(message: String) {
     }
 
-    var guidelineBegin = 58
     override fun onScrolled(xScrollAmount: Int, yScrollAmount: Int) {
         guidelineBegin -= yScrollAmount
         if (guidelineBegin < 0) guidelineBegin = 0
         if (guidelineBegin > 58) guidelineBegin = 58
         binding?.guideline3?.setGuidelineBegin(guidelineBegin)
         binding?.guideline4?.setGuidelineEnd(guidelineBegin)
+    }
+
+    private fun setupObservers() {
+        setupReserveProductListObserver()
+        setupErrorsObserver()
+    }
+
+    private fun setupErrorsObserver() {
+        viewModel.errors.observe(viewLifecycleOwner) {
+            view?.showError(it)
+        }
+    }
+
+    private fun setupReserveProductListObserver() {
+        viewModel.reserveProductList.observe(viewLifecycleOwner) {
+            renderList(it, hasNextPage = it.size == getPerPage())
+        }
     }
 }
