@@ -43,7 +43,7 @@
         app:layout_constraintVertical_chainStyle="packed"
         app:layout_goneMarginEnd="16dp"
         app:layout_goneMarginLeft="8dp"
-        app:typographyType="heading_5"
+        app:typographyType="paragraph_1"
         app:typographyWeight="bold"
         tools:text="Chupacup Indonesia Rayaaa" />
 

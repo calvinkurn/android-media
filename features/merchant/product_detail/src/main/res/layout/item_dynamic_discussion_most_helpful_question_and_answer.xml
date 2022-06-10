@@ -30,7 +30,7 @@
             android:textColor="@color/Unify_N700_68"
             android:layout_marginStart="@dimen/layout_lvl1"
             android:layout_marginLeft="@dimen/layout_lvl1"
-            app:typographyType="display_3"
+            app:typographyType="display_2"
             app:typographyWeight="bold"
             app:layout_constraintTop_toTopOf="@id/productDetailDiscussionInquirerProfilePicture"
             app:layout_constraintBottom_toBottomOf="@id/productDetailDiscussionInquirerProfilePicture"
@@ -75,7 +75,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/productDetailDiscussionInquirerProfilePicture"
-            app:typographyType="display_2"
+            app:typographyType="paragraph_2"
             app:typographyWeight="reguler" />
 
         <androidx.constraintlayout.widget.ConstraintLayout
@@ -123,7 +123,7 @@
                 android:textColor="@color/Unify_N700_68"
                 android:visibility="gone"
                 app:layout_goneMarginStart="@dimen/layout_lvl2"
-                app:typographyType="display_3"
+                app:typographyType="display_2"
                 app:typographyWeight="bold"
                 app:layout_constraintStart_toEndOf="@id/productDetailDiscussionRespondentProfilePicture"
                 app:layout_constraintTop_toTopOf="parent"
@@ -188,7 +188,7 @@
             android:layout_marginTop="@dimen/spacing_lvl2"
             android:maxLines="2"
             android:ellipsize="end"
-            app:typographyType="display_2"
+            app:typographyType="paragraph_2"
             app:layout_constraintStart_toStartOf="@id/product_detail_discussion_respondent_info_container"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@id/product_detail_discussion_respondent_info_container" />
