@@ -16,8 +16,8 @@ object AdminConfirmationRegQuery : GqlQueryInterface {
 
     private val GQL_QUERY = """
         mutation ${OPERATION_NAME}(${'$'}source: String!, ${'$'}shopID: String!, ${'$'}userId: String!, ${'$'}shopManageID: String!, ${'$'}acceptBecomeAdmin: Boolean!) {
-          adminConfirmationReg(input: {
-            source: "adminConfirmationReg-android",
+          ${OPERATION_NAME}(input: {
+            source: ${'$'}source,
             shopID: ${'$'}shopID,
             userId: ${'$'}userId,
             acceptBecomeAdmin: ${'$'}acceptBecomeAdmin,
