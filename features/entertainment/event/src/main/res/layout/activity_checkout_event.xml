@@ -8,7 +8,7 @@
     android:orientation="vertical">
 
     <com.tokopedia.header.HeaderUnify
-        android:id="@+id/toolbar_checkout"
+        android:id="@+id/toolbar_event_checkout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:unify_header_is_show_back_button="true"
@@ -16,7 +16,7 @@
         />
 
     <FrameLayout
-        android:id="@+id/parent_view"
+        android:id="@+id/parent_view_event_checkout"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 

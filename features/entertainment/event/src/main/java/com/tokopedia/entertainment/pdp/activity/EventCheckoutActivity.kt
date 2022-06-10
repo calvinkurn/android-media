@@ -17,11 +17,11 @@ import com.tokopedia.oms.scrooge.ScroogePGUtil
 class EventCheckoutActivity : BaseSimpleActivity(), HasComponent<EventPDPComponent>{
 
     override fun getToolbarResourceID(): Int {
-        return R.id.toolbar_checkout
+        return R.id.toolbar_event_checkout
     }
 
     override fun getParentViewResourceID(): Int {
-        return R.id.parent_view
+        return R.id.parent_view_event_checkout
     }
 
     override fun getLayoutRes(): Int {

@@ -19,10 +19,16 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.unifyprinciples.Typography
-import kotlinx.android.synthetic.main.ent_layout_viewholder_event_carouse.view.*
-import kotlinx.android.synthetic.main.ent_layout_viewholder_event_carousel_adapter_item.view.*
+import kotlinx.android.synthetic.main.ent_layout_viewholder_event_carousel.view.ent_btn_see_more
+import kotlinx.android.synthetic.main.ent_layout_viewholder_event_carousel.view.ent_recycle_view_carousel
+import kotlinx.android.synthetic.main.ent_layout_viewholder_event_carousel_adapter_item.view.event_date
+import kotlinx.android.synthetic.main.ent_layout_viewholder_event_carousel_adapter_item.view.event_image
+import kotlinx.android.synthetic.main.ent_layout_viewholder_event_carousel_adapter_item.view.event_location
+import kotlinx.android.synthetic.main.ent_layout_viewholder_event_carousel_adapter_item.view.event_price
+import kotlinx.android.synthetic.main.ent_layout_viewholder_event_carousel_adapter_item.view.event_title
+import kotlinx.android.synthetic.main.ent_layout_viewholder_event_carousel_adapter_item.view.tg_event_home_start_from
 import java.text.SimpleDateFormat
-import java.util.*
+import java.util.Date
 import com.tokopedia.unifyprinciples.R.dimen as unifyDimens
 
 
@@ -58,7 +64,7 @@ class EventCarouselEventViewHolder(itemView: View,
     companion object {
         @LayoutRes
         @kotlin.jvm.JvmField
-        var LAYOUT: Int = R.layout.ent_layout_viewholder_event_carouse
+        var LAYOUT: Int = R.layout.ent_layout_viewholder_event_carousel
         val TAG = EventCarouselEventViewHolder::class.java.simpleName
 
         const val EMPTY_DATE = "0"

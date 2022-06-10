@@ -21,8 +21,14 @@ import com.tokopedia.kotlin.extensions.view.getDimens
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.show
-import kotlinx.android.synthetic.main.ent_layout_viewholder_event_grid.view.*
-import kotlinx.android.synthetic.main.ent_layout_viewholder_event_grid_adapter_item.view.*
+import kotlinx.android.synthetic.main.ent_layout_viewholder_event_grid.view.btn_see_all
+import kotlinx.android.synthetic.main.ent_layout_viewholder_event_grid.view.ent_recycle_view_grid
+import kotlinx.android.synthetic.main.ent_layout_viewholder_event_grid.view.ent_title_card
+import kotlinx.android.synthetic.main.ent_layout_viewholder_event_grid_adapter_item.view.image
+import kotlinx.android.synthetic.main.ent_layout_viewholder_event_grid_adapter_item.view.txt_location
+import kotlinx.android.synthetic.main.ent_layout_viewholder_event_grid_adapter_item.view.txt_price
+import kotlinx.android.synthetic.main.ent_layout_viewholder_event_grid_adapter_item.view.txt_start_title
+import kotlinx.android.synthetic.main.ent_layout_viewholder_event_grid_adapter_item.view.txt_title
 import com.tokopedia.unifyprinciples.R.dimen as unifyDimens
 
 /**
