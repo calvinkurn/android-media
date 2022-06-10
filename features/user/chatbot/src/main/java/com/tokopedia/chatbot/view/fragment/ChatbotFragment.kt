@@ -43,6 +43,7 @@ import com.tokopedia.chat_common.domain.pojo.invoiceattachment.InvoiceLinkPojo
 import com.tokopedia.chat_common.util.EndlessRecyclerViewScrollUpListener
 import com.tokopedia.chat_common.view.listener.BaseChatViewState
 import com.tokopedia.chat_common.view.listener.TypingListener
+import com.tokopedia.chat_common.view.widget.AttachmentMenuRecyclerView
 import com.tokopedia.chatbot.ChatbotConstant.ChatbotUnification.ARTICLE_ID
 import com.tokopedia.chatbot.ChatbotConstant.ChatbotUnification.ARTICLE_TITLE
 import com.tokopedia.chatbot.ChatbotConstant.ChatbotUnification.CODE
@@ -106,7 +107,6 @@ import com.tokopedia.chatbot.view.listener.ChatbotContract
 import com.tokopedia.chatbot.view.listener.ChatbotViewState
 import com.tokopedia.chatbot.view.listener.ChatbotViewStateImpl
 import com.tokopedia.chatbot.view.presenter.ChatbotPresenter
-import com.tokopedia.imagepicker.common.*
 import com.tokopedia.imagepreview.ImagePreviewActivity
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.picker.common.MediaPicker
@@ -195,6 +195,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
     private var isFloatingInvoiceCancelled : Boolean = false
     lateinit var textWatcher : TextWatcher
     private var isConnectedToAgent : Boolean = false
+    private lateinit var attachmentMenuRecyclerView : AttachmentMenuRecyclerView
 
     override fun initInjector() {
         if (activity != null && (activity as Activity).application != null) {
@@ -289,6 +290,8 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
         invoiceImage = view.findViewById(R.id.iv_thumbnail)
         invoiceCancel = view.findViewById(R.id.iv_cross)
         sendButton = view.findViewById(R.id.send_but)
+
+        attachmentMenuRecyclerView = view.findViewById(R.id.rv_attachment_menu)
 
         isFloatingInvoiceCancelled = false
         setChatBackground()
@@ -1184,16 +1187,13 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
     }
 
     override fun createAttachmentMenus(): List<AttachmentMenu> {
+        var list = mutableListOf<AttachmentMenu>()
         if(isConnectedToAgent){
-            return listOf(
-                ChatbotImageMenu(),
-                VideoMenu()
-            )
+            attachmentMenuRecyclerView?.addVideoAttachmentMenu()
         } else {
-            return listOf(
-                ChatbotImageMenu()
-            )
+            list.add(ChatbotImageMenu())
         }
+        return list
 
     }
 
