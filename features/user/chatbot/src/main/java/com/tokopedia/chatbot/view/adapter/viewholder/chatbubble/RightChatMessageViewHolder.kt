@@ -15,7 +15,7 @@ open class RightChatMessageViewHolder(
 
     protected open val bg = ViewUtil.generateBackgroundWithShadow(
             customChatLayout,
-            R.color.chatbot_right_message_bg,
+            R.color.chatbot_dms_right_message_bg,
             R.dimen.dp_chatbot_20,
             R.dimen.dp_chatbot_0,
             R.dimen.dp_chatbot_20,
