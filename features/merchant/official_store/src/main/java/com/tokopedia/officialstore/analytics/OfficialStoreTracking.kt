@@ -114,6 +114,7 @@ class OfficialStoreTracking(context: Context) {
         const val FORMAT_DASH_FOUR_VALUES = "%s - %s - %s - %s"
         const val FORMAT_UNDERSCORE_TWO_VALUES = "%s_%s"
         const val FORMAT_ITEM_NAME = "${SLASH_OFFICIAL_STORE}/%s - %s"
+        const val FORMAT_ITEM_NAME_FOUR_VALUES = "${SLASH_OFFICIAL_STORE}/%s - %s - %s - %s"
         const val FORMAT_ITEM_LIST = "${SLASH_OFFICIAL_STORE}/%s - %s - %s"
         const val FORMAT_CLICK_VIEW_ALL = "click view all on %s"
         const val FORMAT_CLICK_VIEW_ALL_CARD = "click view all card on %s"

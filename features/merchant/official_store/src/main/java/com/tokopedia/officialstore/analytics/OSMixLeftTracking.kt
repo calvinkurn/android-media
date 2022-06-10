@@ -34,7 +34,7 @@ object OSMixLeftTracking: BaseTrackerConst() {
                                     channel.channelBanner.id,
                                     channel.id
                                 ),
-                                name = OfficialStoreTracking.FORMAT_ITEM_NAME.format(
+                                name = OfficialStoreTracking.FORMAT_ITEM_NAME_FOUR_VALUES.format(
                                     categoryName.lowercase(),
                                     VALUE_DYNAMIC_MIX_LEFT_CAROUSEL,
                                     channel.channelBanner.applink,
