@@ -327,12 +327,20 @@ class BaseTokoFoodOrderTrackingFragment :
     ) {
         binding?.run {
             if (orderStatus in listOf(OrderStatusType.COMPLETED, OrderStatusType.CANCELLED)) {
-                updateViewsOrderCompleted(
-                    actionButtonsUiModel,
-                    toolbarLiveTrackingUiModel,
-                    orderStatus,
-                    merchantData
-                )
+                if (orderStatus == OrderStatusType.COMPLETED) {
+                    updateViewsOrderCompleted(
+                        actionButtonsUiModel,
+                        toolbarLiveTrackingUiModel,
+                        orderStatus,
+                        merchantData
+                    )
+                } else {
+                    updateViewsOrderLiveTracking(
+                        actionButtonsUiModel,
+                        toolbarLiveTrackingUiModel,
+                        orderStatus
+                    )
+                }
             } else {
                 orderLiveTrackingFragment = TokoFoodOrderLiveTrackingFragment(
                     binding,
@@ -342,11 +350,6 @@ class BaseTokoFoodOrderTrackingFragment :
                     toolbarHandler
                 )
                 orderLiveTrackingFragment?.let { lifecycle.addObserver(it) }
-                updateViewsOrderLiveTracking(
-                    actionButtonsUiModel,
-                    toolbarLiveTrackingUiModel,
-                    orderStatus
-                )
             }
         }
     }
@@ -387,7 +390,7 @@ class BaseTokoFoodOrderTrackingFragment :
         merchantData: MerchantDataUiModel
     ) {
         binding?.run {
-            containerOrderTrackingHelpButton.hide()
+            containerOrderTrackingHelpButton.show()
             containerOrderTrackingActionsButton.apply {
                 setOrderTrackingNavigator(navigator)
                 setupActionButtons(
