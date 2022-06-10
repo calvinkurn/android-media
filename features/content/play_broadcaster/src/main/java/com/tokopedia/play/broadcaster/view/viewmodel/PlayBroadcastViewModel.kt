@@ -216,6 +216,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         )
     }
 
+    @Suppress("MagicNumber")
     val uiState = combine(
         _channelUiState.distinctUntilChanged(),
         _pinnedMessageUiState.distinctUntilChanged(),
