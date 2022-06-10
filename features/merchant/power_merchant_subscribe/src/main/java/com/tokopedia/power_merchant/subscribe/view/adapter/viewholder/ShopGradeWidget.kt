@@ -156,7 +156,6 @@ class ShopGradeWidget(
                             com.tokopedia.gm.common.R.dimen.gmc_dimen_136dp,
                             com.tokopedia.gm.common.R.dimen.gmc_dimen_132dp,
                             PMConstant.Images.IMG_TOPED_NEW_SELLER_PM_PRO_INACTIVE
-
                         )
                     }
                     !isPmPro && isPmActive -> {
@@ -181,13 +180,6 @@ class ShopGradeWidget(
                             com.tokopedia.gm.common.R.dimen.gmc_dimen_128dp,
                             com.tokopedia.gm.common.R.dimen.gmc_dimen_134dp,
                             PMConstant.Images.IMG_TOPED_PM_PRO_ACTIVE
-                        )
-                    }
-                    isPmPro && !isPmActive -> {
-                        Triple(
-                            com.tokopedia.gm.common.R.dimen.gmc_dimen_136dp,
-                            com.tokopedia.gm.common.R.dimen.gmc_dimen_132dp,
-                            PMConstant.Images.IMG_TOPED_PM_PRO_INACTIVE
                         )
                     }
                     !isPmPro && isPmActive -> {
