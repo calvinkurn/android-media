@@ -3,10 +3,13 @@ package com.tokopedia.play.broadcaster.view.bottomsheet
 import android.content.DialogInterface
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.bottomsheet.updateScrollingChild
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
@@ -75,6 +78,17 @@ class PlayBroInteractiveBottomSheet @Inject constructor(
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        leaderboardSheetView.addItemTouchListener(object : RecyclerView.SimpleOnItemTouchListener() {
+            override fun onInterceptTouchEvent(rv: RecyclerView, e: MotionEvent): Boolean {
+                bottomSheet.updateScrollingChild(rv)
+                return false
+            }
+        })
+
+        choiceDetailSheetView.addOnTouchListener { v, _, _, _, _ ->
+            bottomSheet.updateScrollingChild(v)
+        }
+
         when (sheetSize) {
             Size.HALF.toString() -> {
                 binding.root.layoutParams = binding.root.layoutParams.apply {
@@ -167,7 +181,6 @@ class PlayBroInteractiveBottomSheet @Inject constructor(
         leaderboardSheetView.hide()
         choiceDetailSheetView.setData(dataUiModel, isOngoingBottomsheet())
         choiceDetailSheetView.show()
-
     }
 
     private fun showErrorChoiceDetail() {
