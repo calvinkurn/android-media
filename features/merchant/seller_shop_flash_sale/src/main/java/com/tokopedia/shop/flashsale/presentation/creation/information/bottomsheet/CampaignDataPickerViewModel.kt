@@ -32,7 +32,7 @@ class CampaignDataPickerViewModel @Inject constructor(
                 val campaigns = getSellerCampaignListUseCase.execute(
                     rows = 100,
                     offset = Constant.FIRST_PAGE,
-                    statusId = listOf(CampaignStatus.UPCOMING.id, CampaignStatus.AVAILABLE.id)
+                    statusId = listOf(CampaignStatus.UPCOMING.id, CampaignStatus.IN_SUBMISSION.id)
                 )
                 val groupedCampaign = groupByDate(campaigns.campaigns)
                 _campaigns.postValue(Success(groupedCampaign))

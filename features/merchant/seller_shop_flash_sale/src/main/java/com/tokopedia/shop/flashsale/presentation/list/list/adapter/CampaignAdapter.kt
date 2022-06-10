@@ -117,7 +117,7 @@ class CampaignAdapter(
                     binding.tpgCampaignStatus.textColor(Unify_YN400)
                     binding.imgCampaignStatusIndicator.setImageResource(R.drawable.ic_sfs_campaign_indicator_upcoming)
                 }
-                CampaignStatus.AVAILABLE -> {
+                CampaignStatus.IN_SUBMISSION, CampaignStatus.IN_REVIEW, CampaignStatus.READY -> {
                     binding.tpgCampaignStatus.setStatus(R.string.sfs_available)
                     binding.tpgCampaignStatus.textColor(Unify_NN600)
                     binding.imgCampaignStatusIndicator.setImageResource(R.drawable.ic_sfs_campaign_indicator_available)
@@ -153,7 +153,7 @@ class CampaignAdapter(
         }
 
         private fun shouldEnableMoreMenu(campaignStatus: CampaignStatus): Boolean {
-            return campaignStatus == CampaignStatus.UPCOMING || campaignStatus == CampaignStatus.AVAILABLE || campaignStatus == CampaignStatus.ONGOING
+            return campaignStatus == CampaignStatus.UPCOMING || campaignStatus == CampaignStatus.IN_SUBMISSION || campaignStatus == CampaignStatus.IN_REVIEW || campaignStatus == CampaignStatus.READY || campaignStatus == CampaignStatus.ONGOING
         }
 
     }

@@ -108,7 +108,7 @@ class MoreMenuBottomSheet : BottomSheetUnify() {
 
     private fun getMenus(): List<CampaignListMoreMenu> {
         return when (campaignStatus) {
-            CampaignStatus.AVAILABLE -> availableCampaignMoreMenu
+            CampaignStatus.IN_SUBMISSION, CampaignStatus.IN_REVIEW, CampaignStatus.READY -> availableCampaignMoreMenu
             CampaignStatus.UPCOMING -> upcomingCampaignMoreMenu
             CampaignStatus.ONGOING -> ongoingCampaignMoreMenu
             else -> emptyList()
