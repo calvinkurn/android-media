@@ -1,23 +1,21 @@
 package com.tokopedia.common_sdk_affiliate_toko.model
 
 
+data class AffiliateCookieParams(
+    val affiliatePageDetail: AffiliatePageDetail,
+    val affiliateChannel: String,
+    val uuid: String,
+    val productInfo: AffiliateSdkProductInfo = AffiliateSdkProductInfo(),
+    val affiliateUUID: String = ""
+)
 
-sealed class AffiliateCookieParams {
-     class PDP(
-       val productInfo: AffiliateSdkProductInfo,
-       val affiliateUUID: String = ""
-     ) : AffiliateCookieParams()
+data class AffiliatePageDetail(
+    val pageType: AffiliateSdkPageType,
+    val pageId: String,
+    val siteId: String = "1",
+    val verticalId: String = "1",
+)
 
-    class  AffiliateSdkPage(
-      val pageType: AffiliateSdkPageType,
-      val productInfo: AffiliateSdkProductInfo,
-      val pageId: String,
-      val siteId: String = "1",
-      val verticalId: String = "1",
-      val affiliateUUID: String = ""
-    ) : AffiliateCookieParams()
-
-}
 enum class AffiliateSdkPageType {
     PDP,
     SHOP,

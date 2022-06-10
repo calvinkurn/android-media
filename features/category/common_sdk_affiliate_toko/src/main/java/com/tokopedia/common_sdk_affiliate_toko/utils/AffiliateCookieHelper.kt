@@ -3,6 +3,7 @@ package com.tokopedia.common_sdk_affiliate_toko.utils
 import android.content.Context
 import android.net.Uri
 import com.tokopedia.common_sdk_affiliate_toko.model.AffiliateCookieParams
+import com.tokopedia.common_sdk_affiliate_toko.model.AffiliateSdkPageType
 import okhttp3.HttpUrl.Companion.toHttpUrl
 import java.net.URI
 import java.net.URL
@@ -16,13 +17,13 @@ object AffiliateCookieHelper {
         context: Context,
         params: AffiliateCookieParams
     ) {
-        when (params) {
-            is AffiliateCookieParams.PDP -> {
+        when (params.affiliatePageDetail.pageType) {
+            AffiliateSdkPageType.PDP -> {
                 if (params.affiliateUUID.isNotEmpty()) {
                     //TODO call createAffiliateCookie
                 }
             }
-            is AffiliateCookieParams.AffiliateSdkPage -> {
+            else -> {
                 affiliateUUID = params.affiliateUUID
                 if (affiliateUUID.isNotEmpty()) {
                     //TODO call createAffiliateCookie
