@@ -77,8 +77,4 @@ class CentralizedPromoResourceProvider @Inject constructor(
         return getString(R.string.centralized_promo_promo_creation_slash_price_description).orEmpty()
     }
 
-    fun getPromoCreationExtraSlashPrice(): String {
-        return getString(R.string.centralized_promo_promo_creation_slash_price_extra).orEmpty()
-    }
-
 }

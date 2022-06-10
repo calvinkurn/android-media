@@ -2,6 +2,7 @@ package com.tokopedia.centralizedpromo.view
 
 import android.net.Uri
 import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalContent
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.applink.sellerhome.SellerHomeApplinkConst
@@ -13,6 +14,9 @@ import com.tokopedia.sellerhome.R
 
 
 object PromoCreationStaticData {
+
+    private const val SELLER_ADMIN_ARTICLE = "https://seller.tokopedia.com/edu/fitur-admin-toko/"
+
     fun provideStaticData(
         resourceProvider: CentralizedPromoResourceProvider,
         broadcastChatExtra: String,
@@ -46,14 +50,14 @@ object PromoCreationStaticData {
                 if (isSlashPriceEligible) {
                     ApplinkConstInternalSellerapp.SHOP_DISCOUNT
                 } else {
-                    ApplinkConstInternalSellerapp.ADMIN_RESTRICTION
+                    getSlashPriceApplink()
                 }
             promoItems.add(
                 PromoCreationUiModel(
                     R.drawable.ic_sah_slash_price,
                     resourceProvider.getPromoCreationTitleSlashPrice(),
                     resourceProvider.getPromoCreationDescriptionSlashPrice(),
-                    resourceProvider.getPromoCreationExtraSlashPrice(),
+                    "",
                     slashPriceApplink
                 )
             )
@@ -143,5 +147,14 @@ object PromoCreationStaticData {
         Uri.parse(ApplinkConstInternalSellerapp.CENTRALIZED_PROMO_FIRST_TIME).buildUpon()
             .appendQueryParameter(SellerHomeApplinkConst.PROMO_TYPE, promoType)
             .build().toString()
+
+    private fun getSlashPriceApplink(): String {
+        return UriUtil.buildUriAppendParam(
+            uri = ApplinkConstInternalSellerapp.ADMIN_RESTRICTION,
+            queryParameters = mapOf(
+                ApplinkConstInternalSellerapp.PARAM_ARTICLE_URL to SELLER_ADMIN_ARTICLE
+            )
+        )
+    }
 
 }
