@@ -10,7 +10,7 @@ object ProductDetailBottomSheetTracking {
 
     private const val ACTION_IMPRESSION_INFO_ITEM = "impression - product detail bottomsheet"
     private const val CATEGORY_PRODUCT_DETAIL_BOTTOMSHEET = "product detail page - product detail bottomsheet"
-    private const val ACTION_CLICK_INFO_PRODUCT_DETAIL_BOTTOMSHEET = "click clickable information on product detail bottomsheet"
+    private const val ACTION_CLICK_INFO_PRODUCT_DETAIL_BOTTOMSHEET = "click - clickable information on product detail bottomsheet"
 
     fun impressInfoItem(
         productInfo: DynamicProductInfoP1,
