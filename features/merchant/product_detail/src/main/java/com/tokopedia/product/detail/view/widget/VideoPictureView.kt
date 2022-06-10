@@ -221,8 +221,13 @@ class VideoPictureView @JvmOverloads constructor(
         val totalMediaCount = videoPictureAdapter?.currentList?.size ?: 0
         val index = "${position + 1} / $totalMediaCount"
 
+        if (mediaData?.isVideoType() == true) {
+            binding.txtAnimLabel.showView("")
+            binding.txtAnimLabel.setEmptyText()
+            return
+        }
+
         val stringLabel = when {
-            mediaData?.isVideoType() == true -> ""
             variantName.isEmpty() -> {
                 index
             }

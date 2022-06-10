@@ -85,10 +85,12 @@ class ProductMainThumbnailAdapter(val listener: ProductMainThumbnailListener?,
             binding.pdpImgThumbnail.loadImage(element.media.urlOriginal)
             setupBackground(element)
             view.setOnClickListener {
-                listener?.onThumbnailClicked(element)
-                pdpListener?.trackThumbnailClicked(position,
-                        element.media,
-                        componentTrackDataModel)
+                if (!element.isSelected) {
+                    listener?.onThumbnailClicked(element)
+                    pdpListener?.trackThumbnailClicked(position,
+                            element.media,
+                            componentTrackDataModel)
+                }
             }
         }
 
