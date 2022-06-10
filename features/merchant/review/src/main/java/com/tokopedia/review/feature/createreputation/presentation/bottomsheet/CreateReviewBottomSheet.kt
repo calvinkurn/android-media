@@ -919,7 +919,6 @@ class CreateReviewBottomSheet : BottomSheetUnify() {
                         modeType(ModeType.COMMON)
                         maxMediaItem(MAX_IMAGE_COUNT)
                         maxVideoItem(MAX_VIDEO_COUNT)
-                        includeMedias(viewModel.getSelectedMediaFiles())
                         maxVideoFileSize(MAX_VIDEO_SIZE_BYTE)
                     }
                 } else {
