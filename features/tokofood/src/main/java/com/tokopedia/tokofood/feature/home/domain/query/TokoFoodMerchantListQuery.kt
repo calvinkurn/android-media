@@ -76,7 +76,9 @@ object TokoFoodMerchantListQuery: GqlQueryInterface {
         return TokoFoodParamFilterMerchant().apply {
             this.option = option
             this.brandId = brandId
-            this.cuisines = listOf(cuisine)
+            if (cuisine.isNotEmpty()) {
+                this.cuisines = listOf(cuisine)
+            }
         }
     }
 
