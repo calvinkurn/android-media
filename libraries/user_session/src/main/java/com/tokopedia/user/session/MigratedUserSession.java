@@ -178,6 +178,10 @@ public class MigratedUserSession {
     private String encryptString(String message, String keyName) {
         try {
             if (Constants.PII_DATA_SET.contains(keyName)) {
+                // Create backup for PII Data using old encryption
+                String backupData = EncoderDecoder.Encrypt(message, UserSession.KEY_IV);
+                setPiiDataBackup(backupData, keyName);
+
                 String result = aead.encrypt(message, null);
                 if(!result.isEmpty()) {
                     setPiiMigrationStatus(true, keyName);
@@ -212,7 +216,14 @@ public class MigratedUserSession {
                 setEncryptionState(true);
             }
             logUserSessionEvent("decrypt_string_exception", e);
-            return "";
+
+            // Check for backup value
+            String oldValue = getBackupPiiData(keyName);
+            if(!oldValue.isEmpty()) {
+                return oldValue;
+            } else {
+                return "";
+            }
         }
     }
 
@@ -238,6 +249,20 @@ public class MigratedUserSession {
         SharedPreferences.Editor editor = sharedPrefs.edit();
         editor.putBoolean(keyName, isError);
         editor.apply();
+    }
+
+    private void setPiiDataBackup(String data, String keyName) {
+        String newPrefName = String.format("%s%s", LOGIN_SESSION, suffix);
+        SharedPreferences sharedPrefs = context.getSharedPreferences(newPrefName, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPrefs.edit();
+        editor.putString(keyName + Constants.PII_BACKUP, data);
+        editor.apply();
+    }
+
+    private String getBackupPiiData(String keyName) {
+        String newPrefName = String.format("%s%s", LOGIN_SESSION, suffix);
+        SharedPreferences sharedPrefs = context.getSharedPreferences(newPrefName, Context.MODE_PRIVATE);
+        return sharedPrefs.getString(keyName + Constants.PII_BACKUP, "");
     }
 
     private Boolean isMigratedToGoogleTink(String keyName) {
