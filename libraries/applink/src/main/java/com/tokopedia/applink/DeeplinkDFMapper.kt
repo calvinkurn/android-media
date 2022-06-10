@@ -92,9 +92,9 @@ import com.tokopedia.applink.internal.ApplinkConstInternalContent.INTERNAL_AFFIL
 import com.tokopedia.applink.internal.ApplinkConstInternalContent.INTERNAL_CONTENT_POST_DETAIL
 import com.tokopedia.applink.internal.ApplinkConstInternalContent.MEDIA_PREVIEW
 import com.tokopedia.applink.internal.ApplinkConstInternalContent.VIDEO_DETAIL
+import com.tokopedia.applink.internal.ApplinkConstInternalDeals.DEALS_BRAND_DETAIL_PAGE
 import com.tokopedia.applink.internal.ApplinkConstInternalDeals.DEALS_BRAND_PAGE
 import com.tokopedia.applink.internal.ApplinkConstInternalDeals.DEALS_CATEGORY_PAGE
-import com.tokopedia.applink.internal.ApplinkConstInternalDeals.DEALS_BRAND_DETAIL_PAGE
 import com.tokopedia.applink.internal.ApplinkConstInternalDeals.DEALS_HOMEPAGE
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery.AUTOCOMPLETE
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery.SEARCH_RESULT
@@ -159,9 +159,6 @@ import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.SHOP_PAGE_
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.SHOP_PAGE_SETTING_CUSTOMER_APP_WITH_SHOP_ID
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.SHOP_SETTINGS_BASE
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.USER_NOTIFICATION_SETTING
-import com.tokopedia.applink.internal.ApplinkConstInternalMedia.INTERNAL_MEDIA_PICKER
-import com.tokopedia.applink.internal.ApplinkConstInternalMedia.INTERNAL_MEDIA_PICKER_ALBUM
-import com.tokopedia.applink.internal.ApplinkConstInternalMedia.INTERNAL_MEDIA_PICKER_PREVIEW
 import com.tokopedia.applink.internal.ApplinkConstInternalMechant.BRANDLIST
 import com.tokopedia.applink.internal.ApplinkConstInternalMechant.BRANDLIST_SEARCH
 import com.tokopedia.applink.internal.ApplinkConstInternalMechant.MERCHANT_GIFTING
@@ -171,6 +168,9 @@ import com.tokopedia.applink.internal.ApplinkConstInternalMechant.MERCHANT_PRODU
 import com.tokopedia.applink.internal.ApplinkConstInternalMechant.MERCHANT_SHOP_SCORE
 import com.tokopedia.applink.internal.ApplinkConstInternalMechant.MERCHANT_SHOP_SHOWCASE_LIST
 import com.tokopedia.applink.internal.ApplinkConstInternalMechant.MERCHANT_STATISTIC_DASHBOARD
+import com.tokopedia.applink.internal.ApplinkConstInternalMedia.INTERNAL_MEDIA_PICKER
+import com.tokopedia.applink.internal.ApplinkConstInternalMedia.INTERNAL_MEDIA_PICKER_ALBUM
+import com.tokopedia.applink.internal.ApplinkConstInternalMedia.INTERNAL_MEDIA_PICKER_PREVIEW
 import com.tokopedia.applink.internal.ApplinkConstInternalNotification.NOTIFICATION
 import com.tokopedia.applink.internal.ApplinkConstInternalNotification.NOTIFICATION_BUYER
 import com.tokopedia.applink.internal.ApplinkConstInternalOperational.INTERNAL_INBOX_LIST
@@ -670,9 +670,9 @@ object DeeplinkDFMapper : CoroutineScope {
             add(DFP({ it.startsWith(ApplinkConstInternalMarketplace.ADMIN_ACCEPTED) ||
                     it.startsWith(ApplinkConstInternalMarketplace.ADMIN_INVITATION) ||
                     it.startsWith(ApplinkConstInternalMarketplace.ADMIN_REDIRECTION) ||
-                    it.startsWith(ADMIN_INVITATION) ||
-                    it.startsWith(ADMIN_ACCEPTED) ||
-                    it.startsWith(ADMIN_REDIRECTION) ||
+                    it.startsWith(ApplinkConst.ADMIN_INVITATION) ||
+                    it.startsWith(ApplinkConst.ADMIN_ACCEPTED) ||
+                    it.startsWith(ApplinkConst.ADMIN_REDIRECTION) ||
                     it.startsWith(SellerApp.ADMIN_INVITATION) ||
                     it.startsWith(SellerApp.ADMIN_ACCEPTED) ||
                     it.startsWith(SellerApp.ADMIN_REDIRECTION)
