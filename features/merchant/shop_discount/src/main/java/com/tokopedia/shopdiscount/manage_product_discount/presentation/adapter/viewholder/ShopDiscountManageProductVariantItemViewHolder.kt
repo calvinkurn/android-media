@@ -13,7 +13,7 @@ import com.tokopedia.shopdiscount.R
 import com.tokopedia.shopdiscount.databinding.LayoutShopDiscountManageProductVariantItemBinding
 import com.tokopedia.shopdiscount.manage_discount.data.uimodel.ShopDiscountSetupProductUiModel
 import com.tokopedia.shopdiscount.manage_product_discount.data.uimodel.ShopDiscountManageProductVariantItemUiModel
-import com.tokopedia.shopdiscount.manage_product_discount.presentation.fragment.ShopDiscountManageProductVariantDiscountFragmentListener
+import com.tokopedia.shopdiscount.manage_product_discount.presentation.fragment.ShopDiscountManageVariantFragmentListener
 import com.tokopedia.shopdiscount.set_period.data.uimodel.SetPeriodResultUiModel
 import com.tokopedia.shopdiscount.set_period.presentation.bottomsheet.SetPeriodBottomSheet
 import com.tokopedia.shopdiscount.utils.formatter.RangeFormatterUtil
@@ -41,7 +41,7 @@ class ShopDiscountManageProductVariantItemViewHolder(
     itemView: View,
     private val listener: Listener,
     private val mode: String,
-    private val fragmentListener: ShopDiscountManageProductVariantDiscountFragmentListener
+    private val fragmentListener: ShopDiscountManageVariantFragmentListener
 ) : AbstractViewHolder<ShopDiscountManageProductVariantItemUiModel>(itemView) {
     private var viewBinding: LayoutShopDiscountManageProductVariantItemBinding? by viewBinding()
     private var toggleEnableVariant: SwitchUnify? = null

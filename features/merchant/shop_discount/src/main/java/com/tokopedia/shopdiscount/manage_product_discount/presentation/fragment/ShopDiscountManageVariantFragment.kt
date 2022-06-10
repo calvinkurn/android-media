@@ -30,12 +30,12 @@ import com.tokopedia.shopdiscount.di.component.DaggerShopDiscountComponent
 import com.tokopedia.shopdiscount.info.data.uimodel.ShopDiscountSellerInfoUiModel
 import com.tokopedia.shopdiscount.manage_discount.data.uimodel.ShopDiscountSetupProductUiModel
 import com.tokopedia.shopdiscount.manage_discount.util.ShopDiscountManageDiscountMode
-import com.tokopedia.shopdiscount.manage_product_discount.presentation.activity.ShopDiscountManageProductDiscountMultiLocActivity
-import com.tokopedia.shopdiscount.manage_product_discount.presentation.activity.ShopDiscountManageProductVariantDiscountActivity
+import com.tokopedia.shopdiscount.manage_product_discount.presentation.activity.ShopDiscountMultiLocEduActivity
+import com.tokopedia.shopdiscount.manage_product_discount.presentation.activity.ShopDiscountManageVariantActivity
 import com.tokopedia.shopdiscount.manage_product_discount.presentation.adapter.ShopDiscountManageProductVariantDiscountAdapter
 import com.tokopedia.shopdiscount.manage_product_discount.presentation.adapter.ShopDiscountManageProductVariantDiscountTypeFactoryImpl
 import com.tokopedia.shopdiscount.manage_product_discount.presentation.adapter.viewholder.ShopDiscountManageProductVariantItemViewHolder
-import com.tokopedia.shopdiscount.manage_product_discount.presentation.viewmodel.ShopDiscountManageProductVariantDiscountViewModel
+import com.tokopedia.shopdiscount.manage_product_discount.presentation.viewmodel.ShopDiscountManageVariantViewModel
 import com.tokopedia.shopdiscount.utils.rv_decoration.ShopDiscountDividerItemDecoration
 import com.tokopedia.unifycomponents.DividerUnify
 import com.tokopedia.unifycomponents.ImageUnify
@@ -49,10 +49,10 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
 
-class ShopDiscountManageProductVariantDiscountFragment
+class ShopDiscountManageVariantFragment
     : BaseDaggerFragment(),
     ShopDiscountManageProductVariantItemViewHolder.Listener,
-    ShopDiscountManageProductVariantDiscountFragmentListener {
+    ShopDiscountManageVariantFragmentListener {
 
     companion object {
         const val PRODUCT_DATA_ARG = "product_data_arg"
@@ -61,7 +61,7 @@ class ShopDiscountManageProductVariantDiscountFragment
         fun createInstance(
             mode: String,
             productData: ShopDiscountSetupProductUiModel.SetupProductData,
-        ) = ShopDiscountManageProductVariantDiscountFragment().apply {
+        ) = ShopDiscountManageVariantFragment().apply {
             arguments = Bundle().apply {
                 putString(MODE_ARG, mode)
                 putParcelable(PRODUCT_DATA_ARG, productData)
@@ -71,7 +71,7 @@ class ShopDiscountManageProductVariantDiscountFragment
 
     private var viewBinding by autoClearedNullable<FragmentManageProductVariantDiscountBinding>()
     override fun getScreenName(): String =
-        ShopDiscountManageProductVariantDiscountFragment::class.java.canonicalName.orEmpty()
+        ShopDiscountManageVariantFragment::class.java.canonicalName.orEmpty()
 
     private val adapter by lazy {
         ShopDiscountManageProductVariantDiscountAdapter(
@@ -107,7 +107,7 @@ class ShopDiscountManageProductVariantDiscountFragment
     private val viewModelProvider by lazy { ViewModelProvider(this, viewModelFactory) }
     private val viewModel by lazy {
         viewModelProvider.get(
-            ShopDiscountManageProductVariantDiscountViewModel::class.java
+            ShopDiscountManageVariantViewModel::class.java
         )
     }
 
@@ -144,7 +144,7 @@ class ShopDiscountManageProductVariantDiscountFragment
         rvContent?.apply {
             isNestedScrollingEnabled = false
             layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
-            adapter = this@ShopDiscountManageProductVariantDiscountFragment.adapter
+            adapter = this@ShopDiscountManageVariantFragment.adapter
             itemAnimator = null
             setDecoration()
         }
@@ -168,7 +168,7 @@ class ShopDiscountManageProductVariantDiscountFragment
             val productData = viewModel.getProductData()
             val intentData = Intent().apply {
                 putExtra(
-                    ShopDiscountManageProductVariantDiscountActivity.PRODUCT_DATA_RESULT,
+                    ShopDiscountManageVariantActivity.PRODUCT_DATA_RESULT,
                     productData
                 )
             }
@@ -435,7 +435,7 @@ class ShopDiscountManageProductVariantDiscountFragment
                 it,
                 ApplinkConstInternalSellerapp.SHOP_DISCOUNT_MANAGE_PRODUCT_MULTI_LOC_DISCOUNT
             )
-            intent.putExtra(ShopDiscountManageProductDiscountMultiLocActivity.MODE_PARAM, mode)
+            intent.putExtra(ShopDiscountMultiLocEduActivity.MODE_PARAM, mode)
             startActivity(intent)
         }
     }

@@ -28,7 +28,7 @@ import java.util.*
 import javax.inject.Inject
 import kotlin.math.round
 
-class ShopDiscountManageProductVariantDiscountViewModel @Inject constructor(
+class ShopDiscountManageVariantViewModel @Inject constructor(
     private val dispatcherProvider: CoroutineDispatchers,
     private val getSlashPriceBenefitUseCase: GetSlashPriceBenefitUseCase
 ) : BaseViewModel(dispatcherProvider.main) {

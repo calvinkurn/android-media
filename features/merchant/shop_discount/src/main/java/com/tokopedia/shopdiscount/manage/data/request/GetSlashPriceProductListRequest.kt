@@ -8,40 +8,31 @@ import com.tokopedia.shopdiscount.utils.constant.DiscountStatus
 
 data class GetSlashPriceProductListRequest(
     @SerializedName("request_header")
-    @Expose
     var requestHeader: RequestHeader = RequestHeader(),
     @SerializedName("filter")
-    @Expose
     var filter: Filter = Filter(),
 ) {
     data class Filter(
         @SerializedName("page")
-        @Expose
         var page: Int = 0,
 
         @SerializedName("page_size")
-        @Expose
         var pageSize: Int = 10,
 
         @SerializedName("keyword")
-        @Expose
         var keyword: String = "",
 
         @SerializedName("category")
-        @Expose
         var categoryIds: List<String> = emptyList(),
 
         @SuppressLint("Invalid Data Type")
         @SerializedName("etalase_id")
-        @Expose
         var etalaseIds: List<String> = emptyList(),
 
         @SerializedName("warehouse_ids")
-        @Expose
         var warehouseIds: List<String> = emptyList(),
 
         @SerializedName("status")
-        @Expose
         var status: Int = DiscountStatus.ONGOING
     )
 }

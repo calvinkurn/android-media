@@ -26,7 +26,7 @@ import org.junit.Test
 import java.util.*
 import java.util.concurrent.TimeUnit
 
-class ShopDiscountManageProductVariantDiscountViewModelTest {
+class ShopDiscountManageVariantViewModelTest {
 
     @RelaxedMockK
     lateinit var getSlashPriceBenefitUseCase: GetSlashPriceBenefitUseCase
@@ -44,7 +44,7 @@ class ShopDiscountManageProductVariantDiscountViewModelTest {
     private val mockBulkApplyRupiahDiscountAmountBulkApply = 1000
     private val mockBulkApplyPercentageDiscountAmountBulkApply = 10
     private val viewModel by lazy {
-        ShopDiscountManageProductVariantDiscountViewModel(
+        ShopDiscountManageVariantViewModel(
             CoroutineTestDispatchersProvider,
             getSlashPriceBenefitUseCase
         )
