@@ -23,12 +23,10 @@ object ProductEducationalTracker {
                       shopId: String,
                       userId: String,
                       eventCategory: String) {
-        val typeFlagString = generateTypeFlagString(typeFlag)
-
         val mapEvent = DataLayer.mapOf(
                 ProductTrackingConstant.Tracking.KEY_EVENT, "promoView",
-                ProductTrackingConstant.Tracking.KEY_CATEGORY, eventCategory,
-                ProductTrackingConstant.Tracking.KEY_ACTION, "impression - $typeFlagString",
+                ProductTrackingConstant.Tracking.KEY_CATEGORY, "${ProductTrackingConstant.Category.PDP} $eventCategory",
+                ProductTrackingConstant.Tracking.KEY_ACTION, "impression - $eventCategory",
                 ProductTrackingConstant.Tracking.KEY_LABEL, "",
                 ProductTrackingConstant.Tracking.KEY_BUSINESS_UNIT, ProductTrackingConstant.Tracking.BUSINESS_UNIT_PDP,
                 ProductTrackingConstant.Tracking.KEY_CURRENT_SITE, ProductTrackingConstant.Tracking.CURRENT_SITE,
@@ -37,7 +35,7 @@ object ProductEducationalTracker {
                 "promoView", DataLayer.mapOf(
                 "promotions", DataLayer.listOf(
                 DataLayer.mapOf(
-                        "id", "$typeFlagString - $shopId - $productId",
+                        "id", "$eventCategory - $shopId - $productId",
                         "name", "title:$eduTitle;description:$eduDesc",
                         "creative", "",
                         "position", position
@@ -57,12 +55,10 @@ object ProductEducationalTracker {
                                productId: String,
                                userId: String,
                                eventCategory: String) {
-        val typeFlagString = generateTypeFlagString(typeFlag)
-
         val mapEvent = TrackAppUtils.gtmData(
                 ProductTrackingConstant.PDP.EVENT_CLICK_PG,
-                eventCategory,
-                "click - cta button on $typeFlagString",
+                "${ProductTrackingConstant.Category.PDP} $eventCategory",
+                "click - cta button on $eventCategory",
                 "button:$button;title:$eduTitle;description:$eduDesc")
         mapEvent[ProductTrackingConstant.Tracking.KEY_BUSINESS_UNIT] = ProductTrackingConstant.Tracking.BUSINESS_UNIT_PDP
         mapEvent[ProductTrackingConstant.Tracking.KEY_CURRENT_SITE] = ProductTrackingConstant.Tracking.CURRENT_SITE
@@ -71,14 +67,5 @@ object ProductEducationalTracker {
         mapEvent[ProductTrackingConstant.Tracking.KEY_HIT_USER_ID] = userId.ifEmpty { null }
 
         TrackApp.getInstance().gtm.sendGeneralEvent(mapEvent)
-    }
-
-    private fun generateTypeFlagString(typeFlag: String): String {
-        return when (typeFlag) {
-            WAREHOUSE_CHANGE_FLAG -> "reroute bottom sheet"
-            SHOP_MULTILOC_FLAG -> "shop info bottom sheet"
-            WEIGHT_FLAG -> "berat satuan bottomsheet"
-            else -> ""
-        }
     }
 }
