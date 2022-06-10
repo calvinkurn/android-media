@@ -15,6 +15,7 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.base.app.BaseMainApplication
+import com.tokopedia.encryption.security.AeadEncryptor
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
@@ -65,6 +66,9 @@ class StickyLoginView : FrameLayout, CoroutineScope, DarkModeListener {
     @Inject
     lateinit var userSession: UserSessionInterface
     private var remoteConfig: RemoteConfig? = null
+
+    @Inject
+    lateinit var aeadEncryptor: AeadEncryptor
 
     private var viewBinding = LayoutWidgetStickyLoginBinding.inflate(LayoutInflater.from(context), this)
 
@@ -393,18 +397,23 @@ class StickyLoginView : FrameLayout, CoroutineScope, DarkModeListener {
 
     @SuppressLint("SetTextI18n")
     private fun showLoginReminder(page: StickyLoginConstant.Page) {
-        val name = getPrefLoginReminder(context).getString(KEY_USER_NAME, "")
-        val profilePicture = getPrefLoginReminder(context).getString(KEY_PROFILE_PICTURE, "")
+        try {
+            val encryptedName = getPrefLoginReminder(context).getString(KEY_USER_NAME, "")
+            val encryptedProfilePicture = getPrefLoginReminder(context).getString(KEY_PROFILE_PICTURE, "")
 
-        viewBinding.layoutStickyContent.setContent("$TEXT_RE_LOGIN $name")
+            val name = aeadEncryptor.decrypt(encryptedName ?: "", null)
+            val profilePicture = aeadEncryptor.decrypt(encryptedProfilePicture ?: "", null)
 
-        profilePicture?.let {
+            viewBinding.layoutStickyContent.setContent("$TEXT_RE_LOGIN $name")
+
             viewBinding.layoutStickyImageLeft.type = ImageUnify.TYPE_CIRCLE
-            viewBinding.layoutStickyImageLeft.setImageUrl(it)
-        }
+            viewBinding.layoutStickyImageLeft.setImageUrl(profilePicture)
 
-        trackerLoginReminder.viewOnPage(page)
-        show()
+            trackerLoginReminder.viewOnPage(page)
+            show()
+        } catch (e: Exception) {
+            hide()
+        }
     }
 
     private fun updateDarkMode() {
