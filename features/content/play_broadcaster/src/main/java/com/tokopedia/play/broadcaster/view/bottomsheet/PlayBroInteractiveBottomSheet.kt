@@ -267,13 +267,23 @@ class PlayBroInteractiveBottomSheet @Inject constructor(
     }
 
     override fun onChoiceItemClicked(item: QuizChoicesUiModel) {
-        if (isQuizDetail()) {
-            analytic.onCLickQuizOptionLive(
-                parentViewModel.channelId,
-                parentViewModel.channelTitle,
-                parentViewModel.interactiveId,
-                parentViewModel.activeInteractiveTitle,
-            )
+        when (sheetType){
+            Type.QUIZ_DETAIL.toString() -> {
+                analytic.onCLickQuizOptionLive(
+                    parentViewModel.channelId,
+                    parentViewModel.channelTitle,
+                    item.interactiveId,
+                    item.interactiveTitle,
+                )
+            }
+            Type.REPORT.toString() -> {
+                analytic.onCLickQuizOptionReport(
+                    parentViewModel.channelId,
+                    parentViewModel.channelTitle,
+                    item.interactiveId,
+                    item.interactiveTitle,
+                )
+            }
         }
         parentViewModel.submitAction(PlayBroadcastAction.ClickQuizChoiceOption(item))
     }

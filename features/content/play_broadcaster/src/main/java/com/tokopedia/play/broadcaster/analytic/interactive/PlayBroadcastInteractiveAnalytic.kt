@@ -114,4 +114,11 @@ interface PlayBroadcastInteractiveAnalytic {
         interactiveId: String,
         interactiveTitle: String
     )
+
+    fun onCLickQuizOptionReport(
+        channelId: String,
+        channelTitle: String,
+        interactiveId: String,
+        interactiveTitle: String
+    )
 }

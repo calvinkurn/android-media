@@ -350,6 +350,18 @@ class PlayBroadcastInteractiveAnalyticImpl @Inject constructor(
         )
     }
 
+    override fun onCLickQuizOptionReport(
+        channelId: String,
+        channelTitle: String,
+        interactiveId: String,
+        interactiveTitle: String
+    ) {
+        sendClickEvent(
+            "click - quiz result option report page",
+            "${userSession.shopId} - $channelId - $channelTitle - $interactiveId - $interactiveTitle",
+            )
+    }
+
     private fun sendClickEvent(
         eventAction: String,
         eventLabel: String,
