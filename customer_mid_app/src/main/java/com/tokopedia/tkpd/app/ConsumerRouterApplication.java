@@ -101,6 +101,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import rx.Observable;
 import timber.log.Timber;
+import com.tokopedia.user.session.datastore.workmanager.DataStoreMigrationWorker;
 
 
 /**
@@ -186,7 +187,15 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         initCMPushNotification();
         initTetraDebugger();
         initCMDependencies();
+        initDataStoreMigration();
         return true;
+    }
+
+    private void initDataStoreMigration() {
+        UserSessionInterface userSession = new UserSession(context);
+        if(userSession.isLoggedIn()) {
+            DataStoreMigrationWorker.Companion.scheduleWorker(this);
+        }
     }
 
     private void initCMDependencies(){

@@ -5,6 +5,7 @@ import com.google.gson.GsonBuilder
 import com.google.gson.JsonObject
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_CTA_HEADER_MSG
+import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_PRODUCT_BUNDLING
 import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_STICKER
 import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_VOUCHER
 import com.tokopedia.chat_common.data.MessageUiModel
@@ -14,8 +15,11 @@ import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.merchantvoucher.common.gql.data.*
 import com.tokopedia.topchat.chatroom.domain.pojo.TopChatVoucherPojo
 import com.tokopedia.topchat.chatroom.domain.pojo.headerctamsg.HeaderCtaButtonAttachment
+import com.tokopedia.topchat.chatroom.domain.pojo.product_bundling.ProductBundlingPojo
 import com.tokopedia.topchat.chatroom.domain.pojo.sticker.attr.StickerAttributesResponse
 import com.tokopedia.topchat.chatroom.view.uimodel.StickerUiModel
+import com.tokopedia.topchat.chatroom.view.uimodel.product_bundling.MultipleProductBundlingUiModel
+import com.tokopedia.topchat.chatroom.view.uimodel.product_bundling.ProductBundlingUiModel
 import com.tokopedia.topchat.chatroom.view.viewmodel.TopChatVoucherUiModel
 import com.tokopedia.websocket.WebSocketResponse
 import javax.inject.Inject
@@ -40,6 +44,7 @@ class TopChatRoomWebSocketMessageMapper @Inject constructor(
             TYPE_VOUCHER -> convertToVoucher(pojo, jsonAttributes)
             TYPE_STICKER.toString() -> convertToSticker(pojo, jsonAttributes)
             TYPE_CTA_HEADER_MSG -> convertToCtaHeaderMsg(pojo, jsonAttributes)
+            TYPE_PRODUCT_BUNDLING -> convertToProductBundling(pojo, jsonAttributes)
             else -> super.mapAttachmentMessage(pojo, jsonAttributes)
         }
     }
@@ -102,5 +107,30 @@ class TopChatRoomWebSocketMessageMapper @Inject constructor(
 
     fun parseResponse(response: WebSocketResponse?): ChatSocketPojo {
         return Gson().fromJson(response?.jsonObject, ChatSocketPojo::class.java)
+    }
+
+    private fun convertToProductBundling(
+        payload: ChatSocketPojo,
+        jsonAttributes: JsonObject
+    ): Visitable<*> {
+        val pojo = gson.fromJson(
+            jsonAttributes,
+            ProductBundlingPojo::class.java
+        )
+        return if (pojo.listProductBundling.size == 1) {
+            ProductBundlingUiModel.Builder()
+                .withIsSender(!payload.isOpposite)
+                .withResponseFromWs(payload)
+                .withNeedSync(false)
+                .withProductBundling(pojo.listProductBundling.first())
+                .build()
+        } else {
+            MultipleProductBundlingUiModel.Builder()
+                .withIsSender(!payload.isOpposite)
+                .withResponseFromWs(payload)
+                .withNeedSync(false)
+                .withProductBundlingResponse(pojo.listProductBundling)
+                .build()
+        }
     }
 }
