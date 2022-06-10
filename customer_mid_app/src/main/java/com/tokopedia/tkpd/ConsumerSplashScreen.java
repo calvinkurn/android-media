@@ -29,7 +29,6 @@ import com.tokopedia.logger.utils.Priority;
 import com.tokopedia.loginregister.registerpushnotif.services.RegisterPushNotificationWorker;
 import com.tokopedia.navigation.presentation.activity.MainParentActivity;
 import com.tokopedia.notifications.CMPushNotificationManager;
-import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.tokopedia.weaver.WeaveInterface;
@@ -169,7 +168,6 @@ public class ConsumerSplashScreen extends SplashScreen {
     }
 
     private void initializationNewRelic() {
-        RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(this);
         boolean isEnableInitNrInAct =
                 remoteConfig.getBoolean(RemoteConfigKey.ENABLE_INIT_NR_IN_ACTIVITY, true);
         if (isEnableInitNrInAct) {
