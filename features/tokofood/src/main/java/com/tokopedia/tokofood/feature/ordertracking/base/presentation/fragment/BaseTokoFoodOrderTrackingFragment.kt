@@ -78,7 +78,7 @@ class BaseTokoFoodOrderTrackingFragment :
         OrderTrackingNavigator(this, tracking)
     }
 
-    private val orderId: String by lazy(LazyThreadSafetyMode.NONE) {
+    private val orderId by lazy {
         arguments?.getString(DeeplinkMapperTokoFood.PATH_ORDER_ID).orEmpty()
     }
 
