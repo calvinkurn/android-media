@@ -20,7 +20,7 @@ import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.shopdiscount.R
 import com.tokopedia.shopdiscount.databinding.LayoutBottomSheetShopDiscountProductDetailBinding
 import com.tokopedia.shopdiscount.di.component.DaggerShopDiscountComponent
-import com.tokopedia.shopdiscount.manage_discount.presentation.view.activity.ShopDiscountManageDiscountActivity
+import com.tokopedia.shopdiscount.manage_discount.presentation.view.activity.ShopDiscountManageActivity
 import com.tokopedia.shopdiscount.manage_discount.util.ShopDiscountManageDiscountMode
 import com.tokopedia.shopdiscount.product_detail.data.uimodel.ShopDiscountDetailReserveProductUiModel
 import com.tokopedia.shopdiscount.product_detail.data.uimodel.ShopDiscountProductDetailUiModel
@@ -171,16 +171,16 @@ class ShopDiscountProductDetailBottomSheet : BottomSheetUnify(),
                     ApplinkConstInternalSellerapp.SHOP_DISCOUNT_MANAGE_DISCOUNT
                 )
                 intent.putExtra(
-                    ShopDiscountManageDiscountActivity.REQUEST_ID_PARAM,
+                    ShopDiscountManageActivity.REQUEST_ID_PARAM,
                     uiModel.requestId
                 )
-                intent.putExtra(ShopDiscountManageDiscountActivity.STATUS_PARAM, status)
+                intent.putExtra(ShopDiscountManageActivity.STATUS_PARAM, status)
                 intent.putExtra(
-                    ShopDiscountManageDiscountActivity.MODE_PARAM,
+                    ShopDiscountManageActivity.MODE_PARAM,
                     ShopDiscountManageDiscountMode.UPDATE
                 )
                 intent.putExtra(
-                    ShopDiscountManageDiscountActivity.SELECTED_PRODUCT_VARIANT_ID_PARAM,
+                    ShopDiscountManageActivity.SELECTED_PRODUCT_VARIANT_ID_PARAM,
                     uiModel.selectedProductVariantId
                 )
                 startActivity(intent)

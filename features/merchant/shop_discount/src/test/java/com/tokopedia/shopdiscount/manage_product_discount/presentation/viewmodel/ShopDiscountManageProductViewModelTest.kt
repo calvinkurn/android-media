@@ -26,7 +26,7 @@ import org.junit.Rule
 import org.junit.Test
 import java.util.*
 
-class ShopDiscountManageProductDiscountViewModelTest {
+class ShopDiscountManageProductViewModelTest {
 
     @RelaxedMockK
     lateinit var getSlashPriceBenefitUseCase: GetSlashPriceBenefitUseCase
@@ -44,7 +44,7 @@ class ShopDiscountManageProductDiscountViewModelTest {
     private val mockEndDate = Date(1684287429L.unixToMs())
 
     private val viewModel by lazy {
-        ShopDiscountManageProductDiscountViewModel(
+        ShopDiscountManageProductViewModel(
             CoroutineTestDispatchersProvider,
             getSlashPriceBenefitUseCase
         )

@@ -35,7 +35,7 @@ import org.junit.Test
 import java.util.*
 
 @ExperimentalCoroutinesApi
-class ShopDiscountManageDiscountViewModelTest {
+class ShopDiscountManageViewModelTest {
 
     @RelaxedMockK
     lateinit var getSlashPriceSetupProductListUseCase: GetSlashPriceSetupProductListUseCase
@@ -69,7 +69,7 @@ class ShopDiscountManageDiscountViewModelTest {
     private val mockProductId3 = "3"
 
     private val viewModel by lazy {
-        ShopDiscountManageDiscountViewModel(
+        ShopDiscountManageViewModel(
             testCoroutineRule.dispatchers,
             getSlashPriceSetupProductListUseCase,
             mutationSlashPriceProductSubmissionUseCase,

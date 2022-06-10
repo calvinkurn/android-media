@@ -11,7 +11,7 @@ class UpdateDiscountRequestMapper @Inject constructor() {
             requestHeader = RequestHeader(),
             action = DoSlashPriceReservationRequest.DoSlashPriceReservationAction.RESERVE,
             requestId = requestId,
-            state = DoSlashPriceReservationRequest.DoSlashPriceReservationState.EDIT,
+            state = DoSlashPriceReservationRequest.DoSlashPriceReservationState.EDIT.toString(),
             listProductData = productIds.mapIndexed { position, productId ->
                 DoSlashPriceReservationRequest.SlashPriceReservationProduct(
                     productId,
