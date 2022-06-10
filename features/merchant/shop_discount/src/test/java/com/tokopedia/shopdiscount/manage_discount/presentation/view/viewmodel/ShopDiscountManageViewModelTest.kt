@@ -785,13 +785,13 @@ class ShopDiscountManageViewModelTest {
                         warehouses = arrayListOf(
                             GetSlashPriceSetupProductListResponse.GetSlashPriceSetupProductList.ProductList.Warehouses(
                                 discountedPercentage = 50,
-                                avgSoldPrice = 4000,
-                                discountedPrice = 5000,
-                                originalPrice = 10000
+                                avgSoldPrice = 4000.0,
+                                discountedPrice = 5000.0,
+                                originalPrice = 10000.0
                             )
                         ),
                         slashPriceInfo = GetSlashPriceSetupProductListResponse.GetSlashPriceSetupProductList.ProductList.SlashPriceInfo(
-                            discountedPrice = 6000,
+                            discountedPrice = 6000.0,
                             discountPercentage = 50
                         )
                     )
@@ -811,13 +811,13 @@ class ShopDiscountManageViewModelTest {
                         warehouses = arrayListOf(
                             GetSlashPriceSetupProductListResponse.GetSlashPriceSetupProductList.ProductList.Warehouses(
                                 discountedPercentage = 50,
-                                avgSoldPrice = 6000,
-                                discountedPrice = 5000,
-                                originalPrice = 10000
+                                avgSoldPrice = 6000.0,
+                                discountedPrice = 5000.0,
+                                originalPrice = 10000.0
                             )
                         ),
                         slashPriceInfo = GetSlashPriceSetupProductListResponse.GetSlashPriceSetupProductList.ProductList.SlashPriceInfo(
-                            discountedPrice = 6000,
+                            discountedPrice = 6000.0,
                             discountPercentage = 50
                         )
                     )
@@ -837,13 +837,13 @@ class ShopDiscountManageViewModelTest {
                         warehouses = arrayListOf(
                             GetSlashPriceSetupProductListResponse.GetSlashPriceSetupProductList.ProductList.Warehouses(
                                 discountedPercentage = 50,
-                                avgSoldPrice = 4000,
-                                discountedPrice = 5000,
-                                originalPrice = 10000
+                                avgSoldPrice = 4000.0,
+                                discountedPrice = 5000.0,
+                                originalPrice = 10000.0
                             )
                         ),
                         slashPriceInfo = GetSlashPriceSetupProductListResponse.GetSlashPriceSetupProductList.ProductList.SlashPriceInfo(
-                            discountedPrice = 5000,
+                            discountedPrice = 5000.0,
                             discountPercentage = 50,
                             startDate = "0001-01-01 00:00:00 +0000 UTC",
                             endDate = "0001-01-01 00:00:00 +0000 UTC"
@@ -867,13 +867,13 @@ class ShopDiscountManageViewModelTest {
                                 warehouses = arrayListOf(
                                     GetSlashPriceSetupProductListResponse.GetSlashPriceSetupProductList.ProductList.Warehouses(
                                         discountedPercentage = 50,
-                                        avgSoldPrice = 4000,
-                                        discountedPrice = 5000,
-                                        originalPrice = 10000
+                                        avgSoldPrice = 4000.0,
+                                        discountedPrice = 5000.0,
+                                        originalPrice = 10000.0
                                     )
                                 ),
                                 slashPriceInfo = GetSlashPriceSetupProductListResponse.GetSlashPriceSetupProductList.ProductList.SlashPriceInfo(
-                                    discountedPrice = 6000,
+                                    discountedPrice = 6000.0,
                                     discountPercentage = 50
                                 )
                             )
@@ -897,13 +897,13 @@ class ShopDiscountManageViewModelTest {
                                 warehouses = arrayListOf(
                                     GetSlashPriceSetupProductListResponse.GetSlashPriceSetupProductList.ProductList.Warehouses(
                                         discountedPercentage = 50,
-                                        discountedPrice = 5000,
-                                        originalPrice = 10000,
+                                        discountedPrice = 5000.0,
+                                        originalPrice = 10000.0,
                                         abusiveRule = true
                                     )
                                 ),
                                 slashPriceInfo = GetSlashPriceSetupProductListResponse.GetSlashPriceSetupProductList.ProductList.SlashPriceInfo(
-                                    discountedPrice = 6000,
+                                    discountedPrice = 6000.0,
                                     discountPercentage = 50
                                 )
                             ),
@@ -911,12 +911,12 @@ class ShopDiscountManageViewModelTest {
                                 warehouses = arrayListOf(
                                     GetSlashPriceSetupProductListResponse.GetSlashPriceSetupProductList.ProductList.Warehouses(
                                         discountedPercentage = 50,
-                                        discountedPrice = 5000,
-                                        originalPrice = 10000
+                                        discountedPrice = 5000.0,
+                                        originalPrice = 10000.0
                                     )
                                 ),
                                 slashPriceInfo = GetSlashPriceSetupProductListResponse.GetSlashPriceSetupProductList.ProductList.SlashPriceInfo(
-                                    discountedPrice = 6000,
+                                    discountedPrice = 6000.0,
                                     discountPercentage = 50
                                 )
                             )

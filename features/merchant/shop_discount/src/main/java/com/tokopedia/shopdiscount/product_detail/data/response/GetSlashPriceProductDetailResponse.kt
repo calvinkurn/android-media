@@ -5,7 +5,6 @@ import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.shopdiscount.common.data.response.ResponseHeader
 
-@SuppressLint("Invalid Data Type")
 data class GetSlashPriceProductDetailResponse(
     @SerializedName("GetSlashPriceProductDetail")
     @Expose
@@ -29,6 +28,7 @@ data class GetSlashPriceProductDetailResponse(
             @SerializedName("name")
             @Expose
             var name: String = "",
+            @SuppressLint("Invalid Data Type")
             @SerializedName("price")
             @Expose
             var price: Price = Price(),
@@ -46,7 +46,7 @@ data class GetSlashPriceProductDetailResponse(
             var picture: String = "",
             @SerializedName("discounted_price")
             @Expose
-            var discountedPrice: Int = 0,
+            var discountedPrice: Double = 0.0,
             @SerializedName("discounted_percentage")
             @Expose
             var discountedPercentage: Int = 0,
@@ -107,13 +107,13 @@ data class GetSlashPriceProductDetailResponse(
                 var eventId: String = "",
                 @SerializedName("discounted_price")
                 @Expose
-                var discountedPrice: Int = 0,
+                var discountedPrice: Double = 0.0,
                 @SerializedName("discounted_percentage")
                 @Expose
                 var discountedPercentage: Int = 0,
                 @SerializedName("original_price")
                 @Expose
-                var originalPrice: Int = 0
+                var originalPrice: Double = 0.0
             )
         }
     }
