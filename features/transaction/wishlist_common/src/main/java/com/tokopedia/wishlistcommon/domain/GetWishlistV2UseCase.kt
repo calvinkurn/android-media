@@ -19,7 +19,7 @@ class GetWishlistV2UseCase @Inject constructor(private val graphqlRepository: Gr
     private var params: Map<String, Any?>? = null
     override suspend fun executeOnBackground(): Result<GetWishlistV2Response.Data.WishlistV2> {
         return try {
-            val request = GraphqlRequest(GetWishlistV2(), GetWishlistV2Response.Data::class.java)
+            val request = GraphqlRequest(GetWishlistV2(), GetWishlistV2Response.Data::class.java, params)
             val response = graphqlRepository.response(listOf(request)).getSuccessData<GetWishlistV2Response.Data>()
             Success(response.wishlistV2)
         } catch (e: Exception) {
