@@ -19,7 +19,7 @@ class InteractiveActiveViewComponent(
 ) : ViewComponent(container, R.id.view_interactive_active) {
 
     private val parent = rootView as ViewGroup
-
+    lateinit var interactiveType: InteractiveType
 
     init {
         rootView.setOnClickListener {
@@ -39,6 +39,7 @@ class InteractiveActiveViewComponent(
                 onDurationEnd = { onDurationEnd() }
             )
         }
+        interactiveType = InteractiveType.GIVEAWAY
     }
 
     fun setUpcomingGiveaway(
@@ -53,6 +54,7 @@ class InteractiveActiveViewComponent(
                 onDurationEnd = { onDurationEnd() }
             )
         }
+        interactiveType = InteractiveType.GIVEAWAY
     }
 
 
@@ -68,6 +70,7 @@ class InteractiveActiveViewComponent(
                 onDurationEnd = { onDurationEnd() }
             )
         }
+        interactiveType = InteractiveType.QUIZ
     }
 
     private inline fun <reified V: View> setChildView(viewCreator: () -> V): V {
@@ -81,7 +84,11 @@ class InteractiveActiveViewComponent(
     }
 
     interface Listener {
-
         fun onWidgetClicked(view: InteractiveActiveViewComponent)
+    }
+
+    enum class InteractiveType{
+        QUIZ,
+        GIVEAWAY,
     }
 }

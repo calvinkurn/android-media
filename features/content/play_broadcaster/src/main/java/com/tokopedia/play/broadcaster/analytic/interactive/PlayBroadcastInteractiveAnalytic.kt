@@ -77,4 +77,11 @@ interface PlayBroadcastInteractiveAnalytic {
         interactiveTitle: String
     )
 
+    fun onClickOngoingQuiz(
+        channelId: String,
+        channelTitle: String,
+        interactiveId: String,
+        interactiveTitle: String
+    )
+
 }

@@ -124,6 +124,14 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
      */
     private val interactiveActiveView by viewComponentOrNull { InteractiveActiveViewComponent(it, object : InteractiveActiveViewComponent.Listener {
         override fun onWidgetClicked(view: InteractiveActiveViewComponent) {
+            if (view.interactiveType==InteractiveActiveViewComponent.InteractiveType.QUIZ){
+                analytic.onClickOngoingQuiz(
+                    parentViewModel.channelId,
+                    parentViewModel.channelTitle,
+                    parentViewModel.interactiveId,
+                    parentViewModel.activeInteractiveTitle,
+                )
+            }
             parentViewModel.submitAction(PlayBroadcastAction.ClickOngoingWidget)
         }
     }) }

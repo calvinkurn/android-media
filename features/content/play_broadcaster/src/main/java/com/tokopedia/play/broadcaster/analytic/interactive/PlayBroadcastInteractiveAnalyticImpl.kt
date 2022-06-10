@@ -281,6 +281,18 @@ class PlayBroadcastInteractiveAnalyticImpl @Inject constructor(
             )
     }
 
+    override fun onClickOngoingQuiz(
+        channelId: String,
+        channelTitle: String,
+        interactiveId: String,
+        interactiveTitle: String
+    ) {
+        sendClickEvent(
+            "click - ongoing quiz widget",
+            "${userSession.shopId} - $channelId - $channelTitle - $interactiveId - $interactiveTitle",
+            )
+    }
+
     private fun sendClickEvent(
         eventAction: String,
         eventLabel: String,
