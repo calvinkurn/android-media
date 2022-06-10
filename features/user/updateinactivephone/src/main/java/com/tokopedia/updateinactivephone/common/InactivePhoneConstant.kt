@@ -41,6 +41,8 @@ object InactivePhoneConstant {
     const val OTP_TYPE_INACTIVE_PHONE_PIN = 161
     const val OTP_TYPE_INACTIVE_PHONE_SMS = 162
 
+    const val MINIMUM_PHONE_NUMBER = 9
+
     const val IS_USE_REGULAR_FLOW = "isUseRegularFlow"
 
     fun filePath(context: Context, fileType: Int): String {

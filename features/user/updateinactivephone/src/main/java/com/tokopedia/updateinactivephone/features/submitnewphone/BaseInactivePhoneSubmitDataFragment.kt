@@ -12,6 +12,7 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.updateinactivephone.R
 import com.tokopedia.updateinactivephone.common.InactivePhoneConstant
+import com.tokopedia.updateinactivephone.common.InactivePhoneConstant.MINIMUM_PHONE_NUMBER
 import com.tokopedia.updateinactivephone.databinding.FragmentInactivePhoneDataUploadBinding
 import com.tokopedia.updateinactivephone.di.InactivePhoneComponentBuilder
 import com.tokopedia.updateinactivephone.domain.data.InactivePhoneUserDataModel
@@ -90,7 +91,7 @@ abstract class BaseInactivePhoneSubmitDataFragment : BaseDaggerFragment() {
                 viewBinding?.textPhoneNumber?.error = getString(R.string.text_form_error_empty)
                 return false
             }
-            phoneNumber.length < 9 -> {
+            phoneNumber.length < MINIMUM_PHONE_NUMBER -> {
                 viewBinding?.textPhoneNumber?.error = getString(R.string.text_form_error_min_9_digit)
                 return false
             }
