@@ -30,6 +30,7 @@ abstract class CreatePostBindModule {
     @CreatePostScope
     abstract fun bindGetProfileHeaderUserCase(usecase: GetProfileHeaderUseCase): GraphqlUseCase
 
+    /** TODO: will uncomment this later when these 2 dependencies can be be mocked */
 //    @Binds
 //    @CreatePostScope
 //    abstract fun bindGetProductSuggestionUseCase(usecase: GetProductSuggestionUseCase): UseCase<List<ProductSuggestionItem>>
