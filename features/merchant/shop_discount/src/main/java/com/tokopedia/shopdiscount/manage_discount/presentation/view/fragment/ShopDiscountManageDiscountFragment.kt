@@ -29,7 +29,7 @@ import com.tokopedia.shopdiscount.bulk.presentation.DiscountBulkApplyBottomSheet
 import com.tokopedia.shopdiscount.common.widget.ShopDiscountLabelBulkApply
 import com.tokopedia.shopdiscount.databinding.FragmentManageDiscountBinding
 import com.tokopedia.shopdiscount.di.component.DaggerShopDiscountComponent
-import com.tokopedia.shopdiscount.manage.presentation.container.ProductManageActivity
+import com.tokopedia.shopdiscount.manage.presentation.container.DiscountedProductManageActivity
 import com.tokopedia.shopdiscount.manage_discount.data.uimodel.ShopDiscountSetupProductUiModel
 import com.tokopedia.shopdiscount.manage_discount.presentation.adapter.ShopDiscountManageDiscountAdapter
 import com.tokopedia.shopdiscount.manage_discount.presentation.adapter.ShopDiscountManageDiscountTypeFactoryImpl
@@ -49,7 +49,6 @@ import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.lifecycle.autoClearedNullable
-import java.util.*
 import javax.inject.Inject
 
 class ShopDiscountManageDiscountFragment : BaseDaggerFragment(),
@@ -359,7 +358,7 @@ class ShopDiscountManageDiscountFragment : BaseDaggerFragment(),
         successSubmitToasterWording: String
     ) {
         context?.let {
-            ProductManageActivity.start(
+            DiscountedProductManageActivity.start(
                 it,
                 selectedPriceStatusId,
                 successSubmitToasterWording

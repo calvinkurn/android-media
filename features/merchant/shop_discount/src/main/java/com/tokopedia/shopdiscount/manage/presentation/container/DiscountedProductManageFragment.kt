@@ -23,14 +23,14 @@ import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.shopdiscount.R
-import com.tokopedia.shopdiscount.databinding.FragmentDiscountProductManageBinding
+import com.tokopedia.shopdiscount.databinding.FragmentDiscountedProductManageBinding
 import com.tokopedia.shopdiscount.di.component.DaggerShopDiscountComponent
 import com.tokopedia.shopdiscount.info.presentation.bottomsheet.ShopDiscountSellerInfoBottomSheet
 import com.tokopedia.shopdiscount.manage.domain.entity.PageTab
-import com.tokopedia.shopdiscount.manage.presentation.list.ProductListFragment
+import com.tokopedia.shopdiscount.manage.presentation.list.DiscountedProductListFragment
 import com.tokopedia.shopdiscount.utils.constant.DiscountStatus
-import com.tokopedia.shopdiscount.utils.extension.setFragmentToUnifyBgColor
 import com.tokopedia.shopdiscount.utils.constant.UrlConstant
+import com.tokopedia.shopdiscount.utils.extension.setFragmentToUnifyBgColor
 import com.tokopedia.shopdiscount.utils.extension.showError
 import com.tokopedia.shopdiscount.utils.extension.showToaster
 import com.tokopedia.shopdiscount.utils.preference.SharedPreferenceDataStore
@@ -47,7 +47,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 
-class ProductManageFragment : BaseDaggerFragment() {
+class DiscountedProductManageFragment : BaseDaggerFragment() {
 
     companion object {
         private const val NOT_SET = 0
@@ -62,8 +62,8 @@ class ProductManageFragment : BaseDaggerFragment() {
         fun newInstance(
             previouslySelectedDiscountStatusId: Int,
             toasterWording: String
-        ): ProductManageFragment {
-            return ProductManageFragment().apply {
+        ): DiscountedProductManageFragment {
+            return DiscountedProductManageFragment().apply {
                 val bundle = Bundle()
                 bundle.putInt(
                     BUNDLE_KEY_PREVIOUS_DISCOUNT_STATUS_ID,
@@ -75,7 +75,7 @@ class ProductManageFragment : BaseDaggerFragment() {
         }
     }
 
-    private var binding by autoClearedNullable<FragmentDiscountProductManageBinding>()
+    private var binding by autoClearedNullable<FragmentDiscountedProductManageBinding>()
     private val toasterWording by lazy {
         arguments?.getString(
             BUNDLE_KEY_TOASTER_WORDING
@@ -87,7 +87,7 @@ class ProductManageFragment : BaseDaggerFragment() {
             BUNDLE_KEY_PREVIOUS_DISCOUNT_STATUS_ID
         ) ?: NOT_SET
     }
-    override fun getScreenName(): String = ProductManageFragment::class.java.canonicalName.orEmpty()
+    override fun getScreenName(): String = DiscountedProductManageFragment::class.java.canonicalName.orEmpty()
     override fun initInjector() {
         DaggerShopDiscountComponent.builder()
             .baseAppComponent((activity?.applicationContext as? BaseMainApplication)?.baseAppComponent)
@@ -105,7 +105,7 @@ class ProductManageFragment : BaseDaggerFragment() {
     private var remoteConfig: RemoteConfig? = null
 
     private val viewModelProvider by lazy { ViewModelProvider(this, viewModelFactory) }
-    private val viewModel by lazy { viewModelProvider.get(ProductManageViewModel::class.java) }
+    private val viewModel by lazy { viewModelProvider.get(DiscountedProductManageViewModel::class.java) }
 
     private val tabs = listOf(
         PageTab("Berlangsung", "ACTIVE", DiscountStatus.ONGOING, 0, TAB_POSITION_FIRST),
@@ -118,7 +118,7 @@ class ProductManageFragment : BaseDaggerFragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        binding = FragmentDiscountProductManageBinding.inflate(inflater, container, false)
+        binding = FragmentDiscountedProductManageBinding.inflate(inflater, container, false)
         return binding?.root
     }
 
@@ -350,7 +350,7 @@ class ProductManageFragment : BaseDaggerFragment() {
         val pages = mutableListOf<Pair<String, Fragment>>()
 
         tabs.forEach { tab ->
-            val fragment = ProductListFragment.newInstance(
+            val fragment = DiscountedProductListFragment.newInstance(
                 tab.name,
                 tab.discountStatusId,
                 tab.count,

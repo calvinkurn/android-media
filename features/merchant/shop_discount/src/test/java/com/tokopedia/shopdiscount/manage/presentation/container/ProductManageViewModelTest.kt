@@ -59,7 +59,7 @@ class ProductManageViewModelTest {
 
 
     private val viewModel by lazy {
-        ProductManageViewModel(
+        DiscountedProductManageViewModel(
             CoroutineTestDispatchersProvider,
             getSlashPriceProductListMetaUseCase,
             getSlashPriceBenefitUseCase,
