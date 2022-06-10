@@ -136,6 +136,7 @@
         app:labelType="general_light_grey"
         app:layout_constraintBottom_toBottomOf="@id/pdp_shipment_courier_label_1"
         app:layout_constraintLeft_toRightOf="@id/pdp_shipment_courier_label_1"
+        app:layout_constraintTop_toTopOf="@id/pdp_shipment_courier_label_1"
         tools:text="Instan" />
 
     <com.tokopedia.unifycomponents.Label
@@ -147,6 +148,7 @@
         app:labelType="general_light_grey"
         app:layout_constraintBottom_toBottomOf="@id/pdp_shipment_courier_label_1"
         app:layout_constraintLeft_toRightOf="@id/pdp_shipment_courier_option_1"
+        app:layout_constraintTop_toTopOf="@id/pdp_shipment_courier_label_1"
         app:layout_goneMarginStart="4dp" />
 
     <com.tokopedia.iconunify.IconUnify
