@@ -17,7 +17,7 @@ object TokoFoodHomeCategoryCommonAnalytics: BaseTrackerConst() {
         itemBundles.addAll(
             data.availableSection.products.map {
                 Bundle().apply {
-                    putString(TokoFoodAnalytics.KEY_CATEGORY_ID, EMPTY_DATA)
+                    putString(TokoFoodAnalytics.KEY_CATEGORY_ID, EMPTY_DATA) //TODO change to Category ID from checkout data
                     putString(TokoFoodAnalytics.KEY_DIMENSION_45, it.cartId)
                     putString(Items.ITEM_BRAND, EMPTY_DATA)
                     putString(Items.ITEM_CATEGORY, EMPTY_DATA)
