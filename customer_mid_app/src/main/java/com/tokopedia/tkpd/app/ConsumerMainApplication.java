@@ -161,7 +161,7 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
 
     private void initializeNewRelic() {
         boolean isDisableInitNrInAct =
-                !remoteConfig.getBoolean(RemoteConfigKey.ENABLE_INIT_NR_IN_ACTIVITY, true);
+                !remoteConfig.getBoolean(RemoteConfigKey.ENABLE_INIT_NR_IN_ACTIVITY);
         if (isDisableInitNrInAct) {
             NewRelic.withApplicationToken(Keys.NEW_RELIC_TOKEN_MA).start(this);
         }
