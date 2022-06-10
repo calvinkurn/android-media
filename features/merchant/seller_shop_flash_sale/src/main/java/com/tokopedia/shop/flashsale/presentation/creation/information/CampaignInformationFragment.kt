@@ -355,8 +355,8 @@ class CampaignInformationFragment : BaseDaggerFragment() {
             Constant.ZERO
         }
         val teaserDate = startDate.decreaseHourBy(decreaseByHour)
-        val firstColor = viewModel.getColor()?.first.orEmpty()
-        val secondColor = viewModel.getColor()?.second.orEmpty()
+        val firstColor = viewModel.getColor().first
+        val secondColor = viewModel.getColor().second
 
         val selection = CampaignInformationViewModel.Selection(
             binding?.tauCampaignName?.editText?.text.toString().trim(),
@@ -405,16 +405,5 @@ class CampaignInformationFragment : BaseDaggerFragment() {
     private fun hideLapsedTeaserTicker() {
         binding?.tickerLapsedTeaser?.gone()
     }
-
-    private fun showMaxCampaignOverlappedTicker() {
-        binding?.tickerLapsedSchedule?.visible()
-        binding?.tickerLapsedSchedule?.tickerTitle = getString(R.string.sfs_error_message_overlapped_schedule_title)
-        binding?.tickerLapsedSchedule?.setTextDescription(getString(R.string.sfs_error_message_overlapped_schedule_description))
-    }
-
-    private fun hideMaxCampaignOverlappedTicker() {
-        binding?.tickerLapsedSchedule?.gone()
-    }
-
 
 }
