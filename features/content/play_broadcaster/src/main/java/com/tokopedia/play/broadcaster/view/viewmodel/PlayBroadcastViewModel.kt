@@ -967,7 +967,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
     private fun getQuizChoiceDetailData(choiceId: String, index: Int, cursor: String = "") {
         val oldParticipant = when (val state = _quizChoiceDetailState.value) {
             is QuizChoiceDetailStateUiModel.Success -> {
-                if (cursor.isNotBlank()) state.dataUiModel.participants.toMutableList() else emptyList()
+                if (cursor.isNotBlank()) state.dataUiModel.participants.toList() else emptyList()
             }
             else -> emptyList()
         }
@@ -1309,7 +1309,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
     private fun handleLoadMoreParticipant() {
         when (val state = _quizChoiceDetailState.value) {
             is QuizChoiceDetailStateUiModel.Success -> {
-                if (state.dataUiModel.cursor != "-1") {
+                if (state.dataUiModel.cursor != FLAG_END_CURSOR) {
                     getQuizChoiceDetailData(
                         choiceId = state.dataUiModel.choice.id,
                         index = state.dataUiModel.choice.index,
@@ -1527,7 +1527,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         private const val DEFAULT_BEFORE_LIVE_COUNT_DOWN = 5
         private const val DEFAULT_QUIZ_DURATION_PICKER_IN_MINUTE = 5L
         private const val DEFAULT_GAME_RESULT_AUTO_DISMISS = 5000L
-
+        private const val FLAG_END_CURSOR = "-1"
         private const val WEB_SOCKET_SOURCE_PLAY_BROADCASTER = "Broadcaster"
     }
 }
