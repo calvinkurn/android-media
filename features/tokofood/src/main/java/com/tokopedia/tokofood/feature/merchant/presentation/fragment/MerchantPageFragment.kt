@@ -433,7 +433,9 @@ class MerchantPageFragment : BaseMultiFragment(),
     private fun collectCartDataFlow() {
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
             activityViewModel?.cartDataFlow?.collect { cartData ->
-                viewModel.selectedProducts = cartData.availableSection.products
+                cartData?.availableSection?.products?.let { products ->
+                    viewModel.selectedProducts = products
+                }
             }
         }
     }

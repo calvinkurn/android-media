@@ -6,13 +6,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
-import com.tokopedia.cartcommon.data.response.common.Button
-import com.tokopedia.cartcommon.data.response.common.OutOfService
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.tokofood.R
 import com.tokopedia.tokofood.databinding.LayoutBottomSheetPurchaseGlobalErrorBinding
 import com.tokopedia.unifycomponents.BottomSheetUnify
-import com.tokopedia.unifycomponents.setImage
 
 class TokoFoodPurchaseGlobalErrorBottomSheet : BottomSheetUnify() {
 
@@ -103,50 +100,4 @@ class TokoFoodPurchaseGlobalErrorBottomSheet : BottomSheetUnify() {
         }
     }
 
-    // TODO: Remove if it does not need out of service
-    private fun renderGlobalError(viewBinding: LayoutBottomSheetPurchaseGlobalErrorBinding,
-                                  outOfService: OutOfService?,
-                                  listener: Listener?,
-                                  defaultType: Int) {
-        with(viewBinding) {
-            if (outOfService != null) {
-                when (outOfService.id) {
-                    OutOfService.ID_MAINTENANCE, OutOfService.ID_TIMEOUT, OutOfService.ID_OVERLOAD -> {
-                        layoutGlobalError.setType(GlobalError.SERVER_ERROR)
-                        outOfService.buttons.firstOrNull()?.let { buttonData ->
-                            layoutGlobalError.errorAction.text = buttonData.message
-                            layoutGlobalError.setActionClickListener {
-                                when (buttonData.id) {
-                                    Button.ID_HOMEPAGE -> {
-                                        listener?.onGoToHome()
-                                        dismiss()
-                                    }
-                                    Button.ID_RETRY -> {
-                                        listener?.onRetry()
-                                        dismiss()
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-
-                if (outOfService.title.isNotBlank()) {
-                    layoutGlobalError.errorTitle.text = outOfService.title
-                }
-                if (outOfService.description.isNotBlank()) {
-                    layoutGlobalError.errorDescription.text = outOfService.description
-                }
-                if (outOfService.image.isNotBlank()) {
-                    layoutGlobalError.errorIllustration.setImage(outOfService.image, 0f)
-                }
-            } else {
-                layoutGlobalError.setType(defaultType)
-                layoutGlobalError.setActionClickListener {
-                    listener?.onRetry()
-                    dismiss()
-                }
-            }
-        }
-    }
 }

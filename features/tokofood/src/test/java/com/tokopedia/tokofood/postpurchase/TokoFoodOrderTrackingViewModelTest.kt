@@ -50,6 +50,7 @@ class TokoFoodOrderTrackingViewModelTest : TokoFoodOrderTrackingViewModelTestFix
             assertEquals(viewModel.getMerchantData()?.merchantName, orderDetailResultUiModel.merchantData.merchantName)
             assertTrue(viewModel.getFoodItems().isNotEmpty())
             assertTrue(viewModel.userSession.userId.isNullOrBlank())
+            assertTrue(viewModel.getMerchantData() != null)
         }
     }
 
@@ -156,6 +157,15 @@ class TokoFoodOrderTrackingViewModelTest : TokoFoodOrderTrackingViewModelTestFix
 
             result.cancel()
             viewModel.viewModelScope.coroutineContext.cancelChildren()
+        }
+    }
+
+    @Test
+    fun `when the orderId is empty then there is no action`() {
+        runBlocking {
+            val orderIdEmpty = ""
+            viewModel.updateOrderId(orderIdEmpty)
+            assertEquals(orderIdEmpty, viewModel.getOrderId())
         }
     }
 

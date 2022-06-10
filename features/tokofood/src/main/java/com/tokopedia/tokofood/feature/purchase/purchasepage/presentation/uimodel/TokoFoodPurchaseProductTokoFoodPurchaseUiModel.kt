@@ -11,7 +11,6 @@ data class TokoFoodPurchaseProductTokoFoodPurchaseUiModel(
         var name: String = "",
         var imageUrl: String = "",
         var addOns: List<String> = emptyList(),
-        var hasAddOnsOption: Boolean = false,
         var originalPrice: Double = 0.0,
         var originalPriceFmt: String = "",
         var price: Double = 0.0,

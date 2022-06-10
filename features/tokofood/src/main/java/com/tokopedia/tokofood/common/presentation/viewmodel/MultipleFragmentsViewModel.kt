@@ -41,7 +41,7 @@ class MultipleFragmentsViewModel @Inject constructor(
     private val removeCartTokoFoodUseCase: RemoveCartTokoFoodUseCase
 ) : ViewModel(), CoroutineScope {
 
-    private val cartDataState = MutableStateFlow(CheckoutTokoFoodData())
+    private val cartDataState = MutableStateFlow<CheckoutTokoFoodData?>(null)
     val cartDataFlow = cartDataState.asStateFlow()
 
     private val cartDataValidationState = MutableSharedFlow<UiEvent>()
@@ -55,7 +55,7 @@ class MultipleFragmentsViewModel @Inject constructor(
     private val miniCartLoadingQueue = MutableLiveData(-Int.ONE)
 
     private val shopId: String
-        get() = cartDataState.value.shop.shopId
+        get() = cartDataState.value?.shop?.shopId.orEmpty()
 
     companion object {
         const val MINI_CART_STATE_KEY = "mini_cart_state_key"
@@ -77,28 +77,16 @@ class MultipleFragmentsViewModel @Inject constructor(
         )
     }
 
-    fun loadCartList(source: String) {
-        launchCatchError(block = {
-            miniCartLoadingQueue.value = miniCartLoadingQueue.value?.plus(Int.ONE)
-            miniCartUiModelState.emit(Result.Loading())
-            loadCartTokoFoodUseCase(source).collect {
-                cartDataState.emit(it.data)
-                miniCartLoadingQueue.value = miniCartLoadingQueue.value?.minus(Int.ONE)
-                if (miniCartLoadingQueue.value?.isLessThanZero() == true) {
-                    miniCartUiModelState.emit(Result.Success(mapCartDataToMiniCart(it.data)))
-                }
-                cartDataValidationState.emit(UiEvent(state = UiEvent.EVENT_SUCCESS_LOAD_CART))
+    fun loadInitial(source: String) {
+        cartDataState.value.let { cartData ->
+            if (cartData == null) {
+                loadCartList(source)
+            } else {
+                launchCatchError(block = {
+                    setMiniCartValue(cartData)
+                }) {}
             }
-        }, onError = {
-            miniCartLoadingQueue.value?.minus(Int.ONE)
-            miniCartUiModelState.emit(Result.Failure(it))
-            cartDataValidationState.emit(
-                UiEvent(
-                    state = UiEvent.EVENT_FAILED_LOAD_CART,
-                    throwable = it
-                )
-            )
-        })
+        }
     }
 
     fun loadCartList(response: CheckoutTokoFood) {
@@ -267,6 +255,32 @@ class MultipleFragmentsViewModel @Inject constructor(
         }) {}
     }
 
+    private fun loadCartList(source: String) {
+        launchCatchError(block = {
+            miniCartLoadingQueue.value = miniCartLoadingQueue.value?.plus(Int.ONE)
+            miniCartUiModelState.emit(Result.Loading())
+            loadCartTokoFoodUseCase(source).collect {
+                cartDataState.emit(it.data)
+                setMiniCartValue(it.data)
+            }
+        }, onError = {
+            miniCartLoadingQueue.value?.minus(Int.ONE)
+            miniCartUiModelState.emit(Result.Failure(it))
+            cartDataValidationState.emit(UiEvent(
+                state = UiEvent.EVENT_FAILED_LOAD_CART,
+                throwable = it
+            ))
+        })
+    }
+
+    private suspend fun setMiniCartValue(data: CheckoutTokoFoodData) {
+        miniCartLoadingQueue.value = miniCartLoadingQueue.value?.minus(Int.ONE)
+        if (miniCartLoadingQueue.value?.isLessThanZero() == true) {
+            miniCartUiModelState.emit(Result.Success(mapCartDataToMiniCart(data)))
+        }
+        cartDataValidationState.emit(UiEvent(state = UiEvent.EVENT_SUCCESS_LOAD_CART))
+    }
+
     private fun mapCartDataToMiniCart(cartData: CheckoutTokoFoodData): MiniCartUiModel {
         return MiniCartUiModel(
             shopName = cartData.shop.name,
@@ -292,15 +306,14 @@ class MultipleFragmentsViewModel @Inject constructor(
     }
 
     private fun getUnavailableProductsParam(shopId: String): RemoveCartTokoFoodParam {
-        val cartList = cartDataState.value.unavailableSection.products
-            .asSequence()
-            .map {
+        val cartList = cartDataState.value?.unavailableSection?.products
+            ?.map {
                 RemoveItemTokoFoodParam(
                     cartId = it.cartId.toLongOrZero(),
                     productId = it.productId,
                     shopId = shopId
                 )
-            }.toList()
+            }?.toList().orEmpty()
         return RemoveCartTokoFoodParam(carts = cartList)
     }
 
