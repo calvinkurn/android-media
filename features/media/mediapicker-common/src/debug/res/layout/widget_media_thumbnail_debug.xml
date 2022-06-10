@@ -16,6 +16,7 @@
             android:id="@+id/img_preview"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:contentDescription="@string/picker_cd_widget_thumbnail_preview"
             tools:src="@tools:sample/avatars"/>
 
         <View
