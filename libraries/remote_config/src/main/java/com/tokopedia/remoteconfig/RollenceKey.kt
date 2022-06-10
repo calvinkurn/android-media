@@ -58,6 +58,7 @@ object RollenceKey {
     const val WISHLIST_V2_REVAMP = "Wishlist_revamp_apps"
     const val WISHLIST_OLD_VARIANT = "control_variant"
     const val WISHLIST_V2_VARIANT = "experiment_variant"
+    const val ADD_REMOVE_WISHLIST_V2 = "addremove_wishlistv2"
 
     // advanced search negative keywords
     const val SEARCH_ADVANCED_KEYWORD_ADV_NEG = "keyword_adv_neg"
@@ -72,4 +73,11 @@ object RollenceKey {
     // Video Carousel Widget
     const val SEARCH_VIDEO_WIDGET = "VideoWidget"
     const val SEARCH_VIDEO_WIDGET_VARIANT = "experiment_variant"
+
+    // Global Menu (Me Page)
+    const val ME_PAGE_REVAMP = "Navigation_Mepage"
+    const val ME_PAGE_REVAMP_VARIANT = "Mepage_Variant"
+
+    // Review
+    const val CREATE_REVIEW_MEDIA_PICKER_EXPERIMENT_NAME = "review_video"
 }

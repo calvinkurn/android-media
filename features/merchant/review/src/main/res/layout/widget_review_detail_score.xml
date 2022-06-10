@@ -100,7 +100,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:barrierDirection="bottom"
-        app:constraint_referenced_ids="reviewEditableBadSmiley, reviewEditableMediocreSmiley, reviewEditableExcellentSmiley"/>
+        app:constraint_referenced_ids="reviewEditableBadSmiley, reviewEditableMediocreSmiley, reviewEditableExcellentSmiley"
+        tools:viewBindingIgnore="true" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/reviewScoreDeadlineLabel"

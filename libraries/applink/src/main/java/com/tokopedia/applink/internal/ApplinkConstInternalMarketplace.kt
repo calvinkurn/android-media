@@ -69,6 +69,9 @@ object ApplinkConstInternalMarketplace {
     // ReviewCredibilityActivity
     const val REVIEW_CREDIBILITY = "$INTERNAL_MARKETPLACE/review/credibility/{userId}/{source}/"
 
+    // DetailedReviewMediaGalleryActivity
+    const val REVIEW_MEDIA_GALLERY = "$INTERNAL_MARKETPLACE/review/media-gallery"
+
     // StockReminderActivity
     const val STOCK_REMINDER_BASE = "$INTERNAL_MARKETPLACE/stock-reminder/"
 
