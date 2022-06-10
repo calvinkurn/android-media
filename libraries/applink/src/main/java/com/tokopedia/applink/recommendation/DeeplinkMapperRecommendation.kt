@@ -13,8 +13,7 @@ fun getRegisteredNavigationRecommendation(deeplink: String): String {
 }
 
 private const val RECOM_PRODUCT_ID = "recomProductId"
-fun getRegisteredNavigationRecommendationFromHttp(deeplink: String): String {
-    val uri = Uri.parse(deeplink)
+fun getRegisteredNavigationRecommendationFromHttp(uri: Uri): String {
     return when {
         uri.pathSegments.size > 0 -> {
             ApplinkConsInternalHome.DISCOVERY_HOME_RECOMMENDATION + uri.path
