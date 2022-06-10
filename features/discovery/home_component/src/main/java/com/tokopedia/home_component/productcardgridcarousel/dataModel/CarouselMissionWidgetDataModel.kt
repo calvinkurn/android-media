@@ -13,7 +13,8 @@ class CarouselMissionWidgetDataModel(
     val subTitle: String = "",
     val appLink: String = "",
     val url: String = "",
-    val imageURL: String = ""
+    val imageURL: String = "",
+    val subtitleHeight: Int = 0
 ) : Visitable<CommonCarouselProductCardTypeFactory>, ImpressHolder() {
     override fun type(typeFactory: CommonCarouselProductCardTypeFactory): Int {
         return typeFactory.type(this)

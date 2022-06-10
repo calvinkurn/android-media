@@ -1,6 +1,8 @@
 package com.tokopedia.home_component.viewholders
 
+import android.content.Context
 import android.view.View
+import android.widget.LinearLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
@@ -18,6 +20,7 @@ import com.tokopedia.home_component.util.ChannelWidgetUtil
 import com.tokopedia.home_component.viewholders.adapter.MissionWidgetAdapter
 import com.tokopedia.home_component.visitable.MissionWidgetDataModel
 import com.tokopedia.home_component.visitable.MissionWidgetListDataModel
+import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.view.binding.viewBinding
 
 /**
@@ -73,17 +76,18 @@ class MissionWidgetViewHolder(
         binding?.homeComponentMissionWidgetRcv?.scrollToPosition(0)
     }
 
-    private fun convertDataToMissionWidgetData(listMissionWidget: List<MissionWidgetDataModel>): MutableList<Visitable<*>> {
+    private fun convertDataToMissionWidgetData(element: MissionWidgetListDataModel): MutableList<Visitable<*>> {
         val list : MutableList<Visitable<*>> = mutableListOf()
-        for (element in listMissionWidget) {
+        for (missionWidget in element.missionWidgetList) {
             list.add(
                 CarouselMissionWidgetDataModel(
-                    id = element.id,
-                    title = element.title,
-                    subTitle = element.subTitle,
-                    appLink = element.appLink,
-                    url = element.url,
-                    imageURL = element.imageURL
+                    id = missionWidget.id,
+                    title = missionWidget.title,
+                    subTitle = missionWidget.subTitle,
+                    appLink = missionWidget.appLink,
+                    url = missionWidget.url,
+                    imageURL = missionWidget.imageURL,
+                    subtitleHeight = element.subtitleHeight
                 )
             )
         }
@@ -93,7 +97,7 @@ class MissionWidgetViewHolder(
     private fun setLayoutByStatus(element: MissionWidgetListDataModel) {
         binding?.homeComponentMissionWidgetRcv?.setHasFixedSize(true)
         valuateRecyclerViewDecoration()
-        val visitables = convertDataToMissionWidgetData(element.missionWidgetList)
+        val visitables = convertDataToMissionWidgetData(element)
         mappingItem(element.channelModel, visitables)
     }
 

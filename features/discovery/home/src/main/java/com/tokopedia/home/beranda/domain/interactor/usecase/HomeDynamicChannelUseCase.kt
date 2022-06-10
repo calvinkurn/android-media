@@ -3,6 +3,7 @@ package com.tokopedia.home.beranda.domain.interactor.usecase
 import android.content.Context
 import android.os.Bundle
 import android.util.Log
+import android.widget.LinearLayout
 import com.google.gson.Gson
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.home.beranda.data.datasource.local.HomeRoomDataSource
@@ -29,6 +30,7 @@ import com.tokopedia.home.util.HomeServerLogger
 import com.tokopedia.home_component.model.ReminderEnum
 import com.tokopedia.home_component.usecase.featuredshop.DisplayHeadlineAdsEntity
 import com.tokopedia.home_component.usecase.featuredshop.mappingTopAdsHeaderToChannelGrid
+import com.tokopedia.home_component.util.toDpInt
 import com.tokopedia.home_component.visitable.FeaturedShopDataModel
 import com.tokopedia.home_component.visitable.MissionWidgetDataModel
 import com.tokopedia.home_component.visitable.MissionWidgetListDataModel
@@ -44,6 +46,7 @@ import com.tokopedia.recommendation_widget_common.widget.bestseller.model.BestSe
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
+import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
@@ -219,10 +222,18 @@ class HomeDynamicChannelUseCase @Inject constructor(
                                 HomeMissionWidgetData.HomeMissionWidget>(widgetRepository = homeMissionWidgetRepository) { visitableFound, data, position ->
                             val resultList =
                                 convertMissionWidgetDataList(data.getHomeMissionWidget.missions)
+                            val subtitleHeight = applicationContext?.let {
+                                findMaxSubtitleText(
+                                    data.getHomeMissionWidget.missions,
+                                    124f.toDpInt(),
+                                    applicationContext
+                                )
+                            } ?: 0
 
                             visitableFound.copy(
                                 missionWidgetList = resultList,
-                                status = MissionWidgetListDataModel.STATUS_SUCCESS
+                                status = MissionWidgetListDataModel.STATUS_SUCCESS,
+                                subtitleHeight = subtitleHeight
                             )
                         }
                     }
@@ -506,6 +517,49 @@ class HomeDynamicChannelUseCase @Inject constructor(
         }
         return dataList
     }
+
+    private fun measureSummaryTextHeight(
+        text: CharSequence?,
+        textWidth: Int,
+        context: Context
+    ): Int {
+        val params =
+            LinearLayout.LayoutParams(textWidth, LinearLayout.LayoutParams.WRAP_CONTENT)
+        val paramsTextView =
+            LinearLayout.LayoutParams(textWidth, LinearLayout.LayoutParams.WRAP_CONTENT)
+        val typography = Typography(context)
+        typography.setType(Typography.PARAGRAPH_3)
+        typography.setWeight(Typography.BOLD)
+        typography.layoutParams = paramsTextView
+        typography.text = text
+        typography.maxLines = 2
+        typography.measure(0, 0)
+        val linearLayout = LinearLayout(context)
+        linearLayout.layoutParams = params
+        linearLayout.addView(typography)
+        linearLayout.measure(0, 0)
+        typography.post {}.run {
+            return typography.measuredHeight
+        }
+    }
+
+    fun findMaxSubtitleText(
+        missionWidgetItems: List<HomeMissionWidgetData.Mission>,
+        textWidth: Int,
+        context: Context
+    ): Int {
+        var maxHeight = 0
+        for (missionWidget in missionWidgetItems) {
+            val heightText = (measureSummaryTextHeight(
+                missionWidget.subTitle,
+                textWidth,
+                context
+            ))
+            if (heightText > maxHeight) maxHeight = heightText
+        }
+        return maxHeight
+    }
+
 
     private suspend inline fun <reified T: Visitable<*>, reified K> HomeDynamicChannelModel.getWidgetDataIfExist(
             bundleParam: (T) -> Bundle = { Bundle() },

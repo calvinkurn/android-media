@@ -34,5 +34,6 @@ class MissionWidgetItemViewHolder (
         binding?.imageMissionWidget?.outlineProvider = ImageUnifyUtils.cornerRadiusTopImageUnify()
         binding?.titleMissionWidget?.text = element.title
         binding?.subtitleMissionWidget?.text = element.subTitle
+        binding?.subtitleMissionWidget?.height = element.subtitleHeight
     }
 }

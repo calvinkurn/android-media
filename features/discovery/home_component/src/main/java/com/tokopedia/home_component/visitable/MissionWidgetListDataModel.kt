@@ -11,7 +11,8 @@ import com.tokopedia.kotlin.model.ImpressHolder
 data class MissionWidgetListDataModel(
     val missionWidgetList: List<MissionWidgetDataModel> = listOf(),
     val channelModel: ChannelModel,
-    val status: Int
+    val status: Int,
+    val subtitleHeight: Int = 0
 ) : HomeComponentVisitable, ImpressHolder() {
 
     companion object {
