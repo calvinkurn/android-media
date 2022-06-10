@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.view.DateFormatUtils
+import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
@@ -25,10 +26,7 @@ import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.imagepicker.common.ImagePickerBuilder
 import com.tokopedia.imagepicker.common.ImagePickerResultExtractor
 import com.tokopedia.imagepicker.common.putImagePickerBuilder
-import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.loaderdialog.LoaderDialog
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.profilecompletion.R
@@ -52,6 +50,7 @@ import com.tokopedia.profilecompletion.profileinfo.view.viewholder.ProfileInfoTi
 import com.tokopedia.profilecompletion.profileinfo.viewmodel.ProfileViewModel
 import com.tokopedia.profilecompletion.settingprofile.domain.UrlSettingProfileConst
 import com.tokopedia.profilecompletion.settingprofile.view.fragment.SettingProfileFragment
+import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.sessioncommon.ErrorHandlerSession
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.ImageUnify
@@ -140,7 +139,12 @@ class ProfileInfoFragment : BaseDaggerFragment(),
         binding?.profileInfoImageSubtitle?.setOnClickListener(editPhotoListener)
         binding?.profileInfoImageUnify?.setImageUrl(userSession.profilePicture)
 
-        binding?.tgCloseAccount?.setOnClickListener { loadCheckFinancialAssets() }
+        val isUsingRollenceCloseAccount = isUsingRollenceCloseAccount()
+        binding?.dividerCloseAccount?.showWithCondition(isUsingRollenceCloseAccount)
+        binding?.tgCloseAccount?.showWithCondition(isUsingRollenceCloseAccount)
+        if (isUsingRollenceCloseAccount){
+            binding?.tgCloseAccount?.setOnClickListener { loadCheckFinancialAssets() }
+        }
     }
 
     private fun setupObserver() {
@@ -715,7 +719,24 @@ class ProfileInfoFragment : BaseDaggerFragment(),
         bottomSheetCloseAccount.show(childFragmentManager, TAG_BOTTOM_SHEET_CLOSE_ACCOUNT)
     }
 
-    private fun goToCloseAccount() {}
+    private fun goToCloseAccount() {
+        RouteManager.route(
+            context,
+            String.format(
+                TOKOPEDIA_WEB_STRING_FORMAT,
+                ApplinkConst.WEBVIEW,
+                TokopediaUrl.getInstance().MOBILEWEB.plus(TOKOPEDIA_CLOSE_ACCOUNT_PATH)
+            )
+        )
+    }
+
+    private fun isUsingRollenceCloseAccount(): Boolean {
+        val newCloseAccountAbTestKey = RemoteConfigInstance.getInstance().abTestPlatform?.getString(
+            ROLLENCE_KEY_CLOSE_ACCOUNT,
+            ""
+        ).orEmpty()
+        return newCloseAccountAbTestKey.isNotEmpty()
+    }
 
     companion object {
         const val MAX_FILE_SIZE = 2048
@@ -726,6 +747,9 @@ class ProfileInfoFragment : BaseDaggerFragment(),
         private const val GENDER_FEMALE = 2
         private const val TAG_BOTTOM_SHEET_CLOSE_ACCOUNT = "bottom sheet close account"
         private const val EMPTY_STRING = ""
+        private const val TOKOPEDIA_WEB_STRING_FORMAT = "%s?url=%s"
+        private const val TOKOPEDIA_CLOSE_ACCOUNT_PATH = "user/close-account"
+        private const val ROLLENCE_KEY_CLOSE_ACCOUNT = "close_account"
 
         fun createInstance(): ProfileInfoFragment {
             return ProfileInfoFragment()
