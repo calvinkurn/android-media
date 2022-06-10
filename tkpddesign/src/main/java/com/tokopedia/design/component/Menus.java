@@ -13,12 +13,13 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
+import com.tokopedia.unifycomponents.UnifyButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.tokopedia.design.R;
 import com.tokopedia.design.base.BaseBottomSheetView;
+import com.tokopedia.unifyprinciples.Typography;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -146,7 +147,7 @@ public class Menus extends BaseBottomSheetView {
 
         private class FooterViewHolder extends RecyclerView.ViewHolder {
 
-            private Button button;
+            private Typography button;
 
             FooterViewHolder(View view) {
                 super(view);
