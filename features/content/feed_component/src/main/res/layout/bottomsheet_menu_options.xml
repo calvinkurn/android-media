@@ -35,7 +35,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/spacing_lvl4"
         android:text="@string/feed_component_report_it"
-        android:textColor="@color/Red_R600"
+        android:textColor="@color/Unify_R600"
         app:typographyType="body_2"
         app:typographyWeight="bold" />
 
@@ -75,7 +75,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/spacing_lvl4"
         android:text="@string/feed_delete_comment"
-        android:textColor="@color/Red_R600"
+        android:textColor="@color/Unify_R600"
         android:visibility="gone"
         app:typographyType="body_2"
         app:typographyWeight="bold"
