@@ -10,3 +10,10 @@ fun getRegisteredNavigationRecommendation(deeplink: String): String {
         else -> ApplinkConsInternalHome.DEFAULT_HOME_RECOMMENDATION
     }
 }
+
+fun getRegisteredNavigationRecommendationFromHttp(uri: Uri): String {
+    return when {
+        uri.pathSegments.size > 0 -> ApplinkConsInternalHome.DISCOVERY_HOME_RECOMMENDATION + uri.path
+        else -> ApplinkConsInternalHome.DISCOVERY_HOME_RECOMMENDATION
+    }
+}
