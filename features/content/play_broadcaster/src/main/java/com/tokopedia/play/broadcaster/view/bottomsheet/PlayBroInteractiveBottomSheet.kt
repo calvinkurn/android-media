@@ -135,7 +135,7 @@ class PlayBroInteractiveBottomSheet @Inject constructor(
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
             parentViewModel.uiState.collectLatest {
                 when (it.quizBottomSheetUiState.quizDetailState) {
-                    QuizDetailStateUiModel.Error -> leaderboardSheetView.setError()
+                    is QuizDetailStateUiModel.Error -> leaderboardSheetView.setError()
                     QuizDetailStateUiModel.Loading -> leaderboardSheetView.setLoading()
                     is QuizDetailStateUiModel.Success -> {
                         setUIModel(
@@ -143,7 +143,7 @@ class PlayBroInteractiveBottomSheet @Inject constructor(
                             it.quizBottomSheetUiState.quizChoiceDetailState
                         )
                     }
-                    QuizDetailStateUiModel.Unknown -> {
+                    QuizDetailStateUiModel.Empty -> {
                         if (isVisible)
                             dismiss()
                     }
@@ -158,10 +158,10 @@ class PlayBroInteractiveBottomSheet @Inject constructor(
     ) {
         leaderboardSheetView.setData(listOfLeaderboardUiModel)
         when (quizChoiceDetailState) {
-            QuizChoiceDetailStateUiModel.Error -> showErrorChoiceDetail()
+            is QuizChoiceDetailStateUiModel.Error -> showErrorChoiceDetail()
             QuizChoiceDetailStateUiModel.Loading -> showLoadingChoiceDetail()
             is QuizChoiceDetailStateUiModel.Success -> showChoiceDetail(quizChoiceDetailState.dataUiModel)
-            QuizChoiceDetailStateUiModel.Unknown -> showQuizDetail()
+            QuizChoiceDetailStateUiModel.Empty -> showQuizDetail()
         }
     }
 
