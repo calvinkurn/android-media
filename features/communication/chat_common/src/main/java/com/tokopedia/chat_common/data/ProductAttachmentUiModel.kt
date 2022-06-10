@@ -85,6 +85,8 @@ open class ProductAttachmentUiModel protected constructor(
 
     var isUpcomingCampaign: Boolean = builder.isUpcomingCampaign
     var locationStock: LocationStock = builder.locationStock
+    var androidUrl: String = builder.androidUrl
+    var iosUrl: String = builder.iosUrl
 
     init {
         if (variants.isNotEmpty()) {
@@ -134,6 +136,8 @@ open class ProductAttachmentUiModel protected constructor(
             isSupportVariant = attribute.productProfile.isSupportVariant
             isUpcomingCampaign = attribute.productProfile.isUpcomingCampaign
             locationStock = attribute.productProfile.locationStock
+            androidUrl = attribute.productProfile.androidUrl
+            iosUrl = attribute.productProfile.iosUrl
         }
     }
 
@@ -354,6 +358,8 @@ open class ProductAttachmentUiModel protected constructor(
         internal var isFulfillment: Boolean = false
         internal var urlTokoCabang: String = ""
         internal var descTokoCabang: String = ""
+        internal var androidUrl: String = ""
+        internal var iosUrl: String = ""
 
         fun withProductAttributesResponse(product: ProductAttachmentAttributes): Builder {
             withProductId(product.productId)
@@ -385,6 +391,8 @@ open class ProductAttachmentUiModel protected constructor(
             withIsFulfillment(product.productProfile.isFulFillment)
             withUrlTokoCabang(product.productProfile.urlTokocabang)
             withDescTokoCabang(product.productProfile.descTokocabang)
+            withAndroidUrl(product.productProfile.androidUrl)
+            withIOSUrl(product.productProfile.iosUrl)
             return self()
         }
 
@@ -540,6 +548,16 @@ open class ProductAttachmentUiModel protected constructor(
 
         fun withDescTokoCabang(descTokoCabang: String): Builder {
             this.descTokoCabang = descTokoCabang
+            return self()
+        }
+
+        fun withAndroidUrl(androidUrl: String): Builder {
+            this.androidUrl = androidUrl
+            return self()
+        }
+
+        fun withIOSUrl(iosUrl: String) : Builder {
+            this.iosUrl = iosUrl
             return self()
         }
 

@@ -88,4 +88,9 @@ class ProductProfile {
     @SerializedName("location_stock")
     @Expose
     var locationStock: LocationStock = LocationStock()
+
+    @SerializedName("android_url")
+    var androidUrl: String = ""
+    @SerializedName("ios_url")
+    var iosUrl: String = ""
 }
