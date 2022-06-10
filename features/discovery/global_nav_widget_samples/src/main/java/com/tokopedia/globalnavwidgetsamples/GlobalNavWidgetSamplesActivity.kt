@@ -25,7 +25,6 @@ class GlobalNavWidgetSamplesActivity : AppCompatActivity(), GlobalNavWidgetListe
         binding.singleGlobalNavWidgetCardIconWithNoSubtitleInfo.setData(singleGlobalNavWidgetModelCardIconWithNoSubtitleInfo, this)
         binding.singleGlobalNavWidgetCardIcon.setData(singleGlobalNavWidgetModelCardIcon, this)
         binding.singleGlobalNavWidgetCardImage.setData(singleGlobalNavWidgetModelCardImage, this)
-        binding.globalNavWidgetCatalogWidgetModel.setData(globalNavWidgetCatalogWidgetModel, this)
     }
 
     override fun onClickItem(item: GlobalNavWidgetModel.Item) {
