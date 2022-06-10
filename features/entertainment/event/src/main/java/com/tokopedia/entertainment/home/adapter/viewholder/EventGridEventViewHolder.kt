@@ -117,7 +117,7 @@ class EventGridEventViewHolder(itemView: View,
                         position + 1)
             })
 
-            holder.view.txt_title.run {
+            holder.view.txt_title.apply {
                 val labelParams = this.layoutParams as ConstraintLayout.LayoutParams
                 if (item.location.isEmpty()) {
                     labelParams.topToBottom = holder.view.image.id
@@ -127,7 +127,7 @@ class EventGridEventViewHolder(itemView: View,
                 layoutParams = labelParams
             }
 
-            holder.view.txt_start_title.run {
+            holder.view.txt_start_title.apply {
                 if (item.location.isNotEmpty()) {
                     setMargin(
                         getDimens(unifyDimens.spacing_lvl3),

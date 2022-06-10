@@ -126,7 +126,7 @@ class EventCarouselEventViewHolder(itemView: View,
                         position + 1)
             })
 
-            holder.view.event_title.run {
+            holder.view.event_title.apply {
                 val labelParams = this.layoutParams as ConstraintLayout.LayoutParams
                 if (item.location.isEmpty()) {
                     labelParams.topToBottom = holder.view.event_image.id
@@ -148,7 +148,7 @@ class EventCarouselEventViewHolder(itemView: View,
                 layoutParams = labelParams
             }
 
-            holder.view.tg_event_home_start_from.run {
+            holder.view.tg_event_home_start_from.apply {
                 if (item.location.isNotEmpty()) {
                     setMargin(
                         getDimens(unifyDimens.unify_space_0),
@@ -166,7 +166,7 @@ class EventCarouselEventViewHolder(itemView: View,
                 }
             }
 
-            holder.view.event_price.run {
+            holder.view.event_price.apply {
                 if (item.location.isNotEmpty()) {
                     setMargin(
                         getDimens(unifyDimens.spacing_lvl2),
