@@ -86,9 +86,10 @@ class MediaUploaderModule {
     @Provides
     @MediaUploaderQualifier
     fun provideGetImageUploaderUseCase(
-        services: ImageUploadServices
+        services: ImageUploadServices,
+        url: MediaUploaderUrl
     ): GetImageUploaderUseCase {
-        return GetImageUploaderUseCase(services)
+        return GetImageUploaderUseCase(services, url)
     }
 
     @Provides
@@ -116,9 +117,10 @@ class MediaUploaderModule {
     @Provides
     @MediaUploaderQualifier
     fun provideGetSimpleVideoUploaderUseCase(
-        services: VideoUploadServices
+        services: VideoUploadServices,
+        url: MediaUploaderUrl
     ): GetSimpleUploaderUseCase {
-        return GetSimpleUploaderUseCase(services)
+        return GetSimpleUploaderUseCase(services, url)
     }
 
     // --- large video ---
@@ -126,41 +128,46 @@ class MediaUploaderModule {
     @Provides
     @MediaUploaderQualifier
     fun provideInitVideoUploaderUseCase(
-        services: VideoUploadServices
+        services: VideoUploadServices,
+        url: MediaUploaderUrl
     ): InitVideoUploaderUseCase {
-        return InitVideoUploaderUseCase(services)
+        return InitVideoUploaderUseCase(services, url)
     }
 
     @Provides
     @MediaUploaderQualifier
     fun provideGetChunkCheckerUseCase(
-        services: VideoUploadServices
+        services: VideoUploadServices,
+        url: MediaUploaderUrl
     ): GetChunkCheckerUseCase {
-        return GetChunkCheckerUseCase(services)
+        return GetChunkCheckerUseCase(services, url)
     }
 
     @Provides
     @MediaUploaderQualifier
     fun provideGetChunkUploaderUseCase(
-        services: VideoUploadServices
+        services: VideoUploadServices,
+        url: MediaUploaderUrl
     ): GetChunkUploaderUseCase {
-        return GetChunkUploaderUseCase(services)
+        return GetChunkUploaderUseCase(services, url)
     }
 
     @Provides
     @MediaUploaderQualifier
     fun provideSetCompleteUploaderUseCase(
-        services: VideoUploadServices
+        services: VideoUploadServices,
+        url: MediaUploaderUrl
     ): SetCompleteUploaderUseCase {
-        return SetCompleteUploaderUseCase(services)
+        return SetCompleteUploaderUseCase(services, url)
     }
 
     @Provides
     @MediaUploaderQualifier
     fun provideSetAbortUploaderUseCase(
-        services: VideoUploadServices
+        services: VideoUploadServices,
+        url: MediaUploaderUrl
     ): SetAbortUploaderUseCase {
-        return SetAbortUploaderUseCase(services)
+        return SetAbortUploaderUseCase(services, url)
     }
 
 }
