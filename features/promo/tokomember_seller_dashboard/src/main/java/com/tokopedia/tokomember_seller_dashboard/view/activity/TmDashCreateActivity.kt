@@ -24,10 +24,14 @@ import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_PROGRAM_ID
 import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_PROGRAM_TYPE
 import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_SHOP_ID
 import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_VOUCHER_ID
-import com.tokopedia.tokomember_seller_dashboard.util.TM_DIALOG_CANCEL_CTA_PRIMARY
-import com.tokopedia.tokomember_seller_dashboard.util.TM_DIALOG_CANCEL_CTA_SECONDARY
-import com.tokopedia.tokomember_seller_dashboard.util.TM_DIALOG_CANCEL_DESC
-import com.tokopedia.tokomember_seller_dashboard.util.TM_DIALOG_CANCEL_TITLE
+import com.tokopedia.tokomember_seller_dashboard.util.TM_DIALOG_CANCEL_CTA_PRIMARY_COUPON
+import com.tokopedia.tokomember_seller_dashboard.util.TM_DIALOG_CANCEL_CTA_PRIMARY_PROGRAM
+import com.tokopedia.tokomember_seller_dashboard.util.TM_DIALOG_CANCEL_CTA_SECONDARY_COUPON
+import com.tokopedia.tokomember_seller_dashboard.util.TM_DIALOG_CANCEL_CTA_SECONDARY_PROGRAM
+import com.tokopedia.tokomember_seller_dashboard.util.TM_DIALOG_CANCEL_DESC_COUPON
+import com.tokopedia.tokomember_seller_dashboard.util.TM_DIALOG_CANCEL_DESC_PROGRAM
+import com.tokopedia.tokomember_seller_dashboard.util.TM_DIALOG_CANCEL_TITLE_COUPON
+import com.tokopedia.tokomember_seller_dashboard.util.TM_DIALOG_CANCEL_TITLE_PROGRAM
 import com.tokopedia.tokomember_seller_dashboard.view.fragment.TmCreateCardFragment
 import com.tokopedia.tokomember_seller_dashboard.view.fragment.TmDashPreviewFragment
 import com.tokopedia.tokomember_seller_dashboard.view.fragment.TmMultipleCuponCreateFragment
@@ -78,10 +82,32 @@ class TmDashCreateActivity : AppCompatActivity(), TmOpenFragmentCallback {
                 val dialogCancel =
                     DialogUnify(this, DialogUnify.VERTICAL_ACTION, DialogUnify.NO_IMAGE)
                 dialogCancel.apply {
-                    setTitle(TM_DIALOG_CANCEL_TITLE)
-                    setDescription(TM_DIALOG_CANCEL_DESC)
-                    setPrimaryCTAText(TM_DIALOG_CANCEL_CTA_PRIMARY)
-                    setSecondaryCTAText(TM_DIALOG_CANCEL_CTA_SECONDARY)
+                    when (screenType) {
+                        PROGRAM -> {
+                            setTitle(TM_DIALOG_CANCEL_TITLE_PROGRAM)
+                            setDescription(TM_DIALOG_CANCEL_DESC_PROGRAM)
+                            setPrimaryCTAText(TM_DIALOG_CANCEL_CTA_PRIMARY_PROGRAM)
+                            setSecondaryCTAText(TM_DIALOG_CANCEL_CTA_SECONDARY_PROGRAM)
+                        }
+                        COUPON_SINGLE -> {
+                            setTitle(TM_DIALOG_CANCEL_TITLE_COUPON)
+                            setDescription(TM_DIALOG_CANCEL_DESC_COUPON)
+                            setPrimaryCTAText(TM_DIALOG_CANCEL_CTA_PRIMARY_COUPON)
+                            setSecondaryCTAText(TM_DIALOG_CANCEL_CTA_SECONDARY_COUPON)
+                        }
+                        COUPON_MULTIPLE -> {
+                            setTitle(TM_DIALOG_CANCEL_TITLE_COUPON)
+                            setDescription(TM_DIALOG_CANCEL_DESC_COUPON)
+                            setPrimaryCTAText(TM_DIALOG_CANCEL_CTA_PRIMARY_COUPON)
+                            setSecondaryCTAText(TM_DIALOG_CANCEL_CTA_SECONDARY_COUPON)
+                        }
+                        COUPON_MULTIPLE_BUAT -> {
+                            setTitle(TM_DIALOG_CANCEL_TITLE_COUPON)
+                            setDescription(TM_DIALOG_CANCEL_DESC_COUPON)
+                            setPrimaryCTAText(TM_DIALOG_CANCEL_CTA_PRIMARY_COUPON)
+                            setSecondaryCTAText(TM_DIALOG_CANCEL_CTA_SECONDARY_COUPON)
+                        }
+                    }
                     setPrimaryCTAClickListener {
                         dismiss()
                     }

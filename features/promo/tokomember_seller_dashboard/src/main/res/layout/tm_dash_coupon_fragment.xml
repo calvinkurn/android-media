@@ -3,54 +3,13 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:tools="http://schemas.android.com/tools"
     android:background="@color/Unify_Background"
     android:id="@+id/viewFlipperCoupon">
 
-    <include android:id="@+id/shimmer_coupon_list"
-        layout="@layout/tm_shimmer_layout_coupon_list"/>
+    <include layout="@layout/tm_shimmer_layout_coupon_list"/>
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
+    <include layout="@layout/tm_dash_coupon_list"/>
 
-    <com.tokopedia.sortfilter.SortFilter
-        android:layout_height="wrap_content"
-        android:layout_width="match_parent"
-        android:id="@+id/filter"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginTop="16dp"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:sort_filter_relationship="AND"
-        app:sort_filter_type="advanced" />
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:id="@+id/rv_coupon"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginTop="16dp"
-        app:layout_constraintTop_toBottomOf="@id/filter"
-        app:layout_constraintBottom_toBottomOf="@id/btn_create_coupon"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
-
-    <com.tokopedia.unifycomponents.UnifyButton
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/btn_create_coupon"
-        android:text="+ Kupon"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginBottom="8dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
+    <include layout="@layout/tm_layout_no_access"/>
 
 </ViewFlipper>

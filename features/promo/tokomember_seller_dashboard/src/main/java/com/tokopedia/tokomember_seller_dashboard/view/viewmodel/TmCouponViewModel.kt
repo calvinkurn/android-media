@@ -11,7 +11,7 @@ import com.tokopedia.tokomember_seller_dashboard.domain.TmKuponInitialUsecase
 import com.tokopedia.tokomember_seller_dashboard.model.TmCouponInitialResponse
 import com.tokopedia.tokomember_seller_dashboard.model.TmCouponListResponse
 import com.tokopedia.tokomember_seller_dashboard.model.TmCouponUpdateResponse
-import com.tokopedia.tokomember_seller_dashboard.model.TmUpdateCouponQuotaResponse
+import com.tokopedia.tokomember_seller_dashboard.model.TmUpdateCouponQuotaDataExt
 import com.tokopedia.tokomember_seller_dashboard.util.TokoLiveDataResult
 import kotlinx.coroutines.CoroutineDispatcher
 import javax.inject.Inject
@@ -35,8 +35,8 @@ class TmCouponViewModel @Inject constructor(
     val tmCouponUpdateLiveData: LiveData<TokoLiveDataResult<TmCouponUpdateResponse>> =
         _tmCouponUpdateLiveData
 
-    private val _tmCouponQuotaUpdateLiveData = MutableLiveData<TokoLiveDataResult<TmUpdateCouponQuotaResponse>>()
-    val tmCouponQuotaUpdateLiveData: LiveData<TokoLiveDataResult<TmUpdateCouponQuotaResponse>> =
+    private val _tmCouponQuotaUpdateLiveData = MutableLiveData<TokoLiveDataResult<TmUpdateCouponQuotaDataExt>>()
+    val tmCouponQuotaUpdateLiveData: LiveData<TokoLiveDataResult<TmUpdateCouponQuotaDataExt>> =
         _tmCouponQuotaUpdateLiveData
 
     fun getCouponList(voucherStatus: String, voucherType: Int?){

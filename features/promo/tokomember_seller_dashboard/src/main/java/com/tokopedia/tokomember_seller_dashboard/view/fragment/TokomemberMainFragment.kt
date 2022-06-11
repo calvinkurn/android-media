@@ -49,7 +49,7 @@ class TokomemberMainFragment : BaseDaggerFragment() {
         observeViewModel()
         tmEligibilityViewModel.getSellerInfo()
         tmTracker = TmTracker()
-        btn_no_access.setOnClickListener {
+        btn_error.setOnClickListener {
             Toast.makeText(context, "Not allowed", Toast.LENGTH_SHORT).show()
             tmTracker?.clickBackHomeBSNoAccess(shopId.toString())
         }

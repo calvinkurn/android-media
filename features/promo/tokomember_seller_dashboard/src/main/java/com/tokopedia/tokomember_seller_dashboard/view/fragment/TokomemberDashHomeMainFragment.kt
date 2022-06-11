@@ -93,7 +93,7 @@ class TokomemberDashHomeMainFragment : BaseDaggerFragment() {
         var adapter = TokomemberDashHomeViewpagerAdapter(childFragmentManager)
         adapter.addFragment(TokomemberDashHomeFragment.newInstance(), "Home")
         adapter.addFragment(TokomemberDashProgramListFragment.newInstance(arguments), "Program")
-        adapter.addFragment(TokomemberDashCouponFragment.newInstance(), "Kupon Tokomember")
+        adapter.addFragment(TokomemberDashCouponFragment.newInstance(arguments), "Kupon Tokomember")
 
         homeViewPager.adapter = adapter
 

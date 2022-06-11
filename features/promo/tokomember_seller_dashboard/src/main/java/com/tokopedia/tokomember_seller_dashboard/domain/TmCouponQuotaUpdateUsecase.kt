@@ -3,21 +3,21 @@ package com.tokopedia.tokomember_seller_dashboard.domain
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.tokomember_seller_dashboard.model.TMUpdateQuotaRequest
-import com.tokopedia.tokomember_seller_dashboard.model.TmUpdateCouponQuotaResponse
+import com.tokopedia.tokomember_seller_dashboard.model.TmUpdateCouponQuotaDataExt
 import javax.inject.Inject
 
 class TmCouponQuotaUpdateUsecase @Inject constructor(
     graphqlRepository: GraphqlRepository
-): GraphqlUseCase<TmUpdateCouponQuotaResponse>(graphqlRepository) {
+): GraphqlUseCase<TmUpdateCouponQuotaDataExt>(graphqlRepository) {
 
     fun updateCouponQuota(
-        success: (TmUpdateCouponQuotaResponse) -> Unit,
+        success: (TmUpdateCouponQuotaDataExt) -> Unit,
         failure : (Throwable) -> Unit,
         quota: Int,
         voucherId: Int,
         token: String
     ){
-        setTypeClass(TmUpdateCouponQuotaResponse::class.java)
+        setTypeClass(TmUpdateCouponQuotaDataExt::class.java)
         setRequestParams(getRequestParams(quota, voucherId, token))
         setGraphqlQuery(QUERY_TM_COUPON_UPDATE_QUOTA)
         execute(
@@ -27,14 +27,14 @@ class TmCouponQuotaUpdateUsecase @Inject constructor(
     }
 
     private fun getRequestParams(quota: Int, voucherId: Int, token: String): Map<String, Any> {
-        val req = TMUpdateQuotaRequest(quota, voucherId, token, source = "android")
-        return mapOf("merchantVoucherUpdateStatusData" to req)
+        val req = TMUpdateQuotaRequest(quota = quota, voucher_id = voucherId, token = token, source = "android")
+        return mapOf("merchantVoucherUpdateQuotaData" to req)
     }
 }
 
 const val QUERY_TM_COUPON_UPDATE_QUOTA = """
-    mutation merchantPromotionUpdateStatusMV(${'$'}merchantVoucherUpdateStatusData: mvUpdateStatusRequest) {
-        merchantPromotionUpdateStatusMV(merchantVoucherUpdateStatusData: ${'$'}merchantVoucherUpdateStatusData) {
+    mutation merchantPromotionUpdateMVQuota(${'$'}merchantVoucherUpdateQuotaData: mvUpdateQuotaData!) {
+        merchantPromotionUpdateMVQuota(merchantVoucherUpdateQuotaData: ${'$'}merchantVoucherUpdateQuotaData) {
             status
             message
             process_time

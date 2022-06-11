@@ -12,6 +12,7 @@ import android.text.style.ClickableSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
 import com.google.gson.Gson
 import com.tokopedia.abstraction.base.app.BaseMainApplication
@@ -76,12 +77,14 @@ import com.tokopedia.tokomember_seller_dashboard.util.TIME_DESC
 import com.tokopedia.tokomember_seller_dashboard.util.TIME_TITLE
 import com.tokopedia.tokomember_seller_dashboard.util.TmDateUtil
 import com.tokopedia.tokomember_seller_dashboard.util.TmFileUtil
+import com.tokopedia.tokomember_seller_dashboard.util.TmPrefManager
 import com.tokopedia.tokomember_seller_dashboard.util.TokoLiveDataResult
 import com.tokopedia.tokomember_seller_dashboard.util.UPDATE
 import com.tokopedia.tokomember_seller_dashboard.view.activity.TokomemberDashIntroActivity
 import com.tokopedia.tokomember_seller_dashboard.view.customview.BottomSheetClickListener
 import com.tokopedia.tokomember_seller_dashboard.view.customview.TokomemberBottomsheet
 import com.tokopedia.tokomember_seller_dashboard.view.viewmodel.TmDashCreateViewModel
+import com.tokopedia.tokomember_seller_dashboard.view.viewmodel.TmProgramListViewModel
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.TextFieldUnify2
 import com.tokopedia.unifycomponents.Toaster
@@ -89,11 +92,11 @@ import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.text.currency.CurrencyFormatHelper
 import com.tokopedia.utils.text.currency.NumberTextWatcher
 import kotlinx.android.synthetic.main.tm_dash_kupon_create_container.*
+import kotlinx.android.synthetic.main.tm_dash_program_fragment.*
 import kotlinx.android.synthetic.main.tm_dash_single_coupon.*
 import kotlinx.android.synthetic.main.tm_kupon_create_single.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.util.*
 import javax.inject.Inject
@@ -127,11 +130,13 @@ class TmSingleCouponCreateFragment : BaseDaggerFragment() {
 
     @Inject
     lateinit var viewModelFactory: dagger.Lazy<ViewModelProvider.Factory>
-    private val tokomemberDashCreateViewModel: TmDashCreateViewModel by lazy(
-        LazyThreadSafetyMode.NONE
-    ) {
+    private val tokomemberDashCreateViewModel: TmDashCreateViewModel by lazy(LazyThreadSafetyMode.NONE) {
         val viewModelProvider = ViewModelProvider(this, viewModelFactory.get())
         viewModelProvider.get(TmDashCreateViewModel::class.java)
+    }
+    private val tmProgramListViewModel: TmProgramListViewModel? by lazy(LazyThreadSafetyMode.NONE) {
+        val viewModelProvider = activity?.let { ViewModelProvider(it, viewModelFactory.get()) }
+        viewModelProvider?.get(TmProgramListViewModel::class.java)
     }
 
     override fun onCreateView(
@@ -157,7 +162,12 @@ class TmSingleCouponCreateFragment : BaseDaggerFragment() {
         }
         else{
             tokomemberDashCreateViewModel.getInitialCouponData(CREATE,"")
-            renderProgram()
+            val prefManager = context?.let { it1 -> TmPrefManager(it1) }
+            prefManager?.shopId?.let { it ->
+                prefManager.cardId?.let { it1 ->
+                    tmProgramListViewModel?.getProgramList(it, it1)
+                }
+            }
             renderSingleCoupon()
         }
     }
@@ -176,6 +186,61 @@ class TmSingleCouponCreateFragment : BaseDaggerFragment() {
     }
 
     private fun observeViewModel() {
+
+        tmProgramListViewModel?.tokomemberProgramListResultLiveData?.observe(viewLifecycleOwner, {
+            when (it.status) {
+                TokoLiveDataResult.STATUS.LOADING ->{
+                }
+                TokoLiveDataResult.STATUS.SUCCESS -> {
+                    if(!it.data?.membershipGetProgramList?.programSellerList.isNullOrEmpty()){
+                        var startTime: String? = ""
+                        var endTime: String? = ""
+                        run time@ {
+                            it.data?.membershipGetProgramList?.programSellerList?.forEach { item ->
+                                if (item?.status == 4 || item?.status == 3) {
+                                    //check if starttime < current time
+                                    if (TmDateUtil.getTimeInMillis(item.timeWindow?.startTime, "yyyy-MM-dd HH:mm:ss").toLong() > Date().time) {
+                                        startTime = item.timeWindow?.startTime
+                                        endTime = item.timeWindow?.endTime
+                                        return@time
+                                    }
+                                    else{
+                                        view?.let { it1 -> Toaster.build(it1, "Select proper start time", Toaster.TYPE_ERROR, Toaster.LENGTH_LONG).show() }
+                                    }
+                                }
+                            }
+                        }
+                        if(startTime.isNullOrEmpty()) {
+                            if (TmDateUtil.getTimeInMillis(
+                                    it.data?.membershipGetProgramList?.programSellerList?.firstOrNull()?.timeWindow?.startTime,
+                                    "yyyy-MM-dd HH:mm:ss"
+                                ).toLong() > Date().time
+                            ) {
+                                startTime =
+                                    it.data?.membershipGetProgramList?.programSellerList?.firstOrNull()?.timeWindow?.startTime
+                                endTime =
+                                    it.data?.membershipGetProgramList?.programSellerList?.firstOrNull()?.timeWindow?.endTime
+                                programData = ProgramUpdateDataInput()
+                                programData?.apply {
+                                    timeWindow = TimeWindow(startTime = startTime, endTime = endTime)
+                                }
+                            }
+                            else{
+                                view?.let { it1 -> Toaster.build(it1, "Select proper start time", Toaster.TYPE_ERROR, Toaster.LENGTH_LONG).show() }
+
+                            }
+                        }
+                        renderProgram()
+                    }
+                    else{
+                        view?.let { it1 -> Toaster.build(it1, "No program found", Toaster.TYPE_ERROR, Toaster.LENGTH_LONG).show() }
+                        Toast.makeText(context, "No program found", Toast.LENGTH_LONG).show()
+                    }
+                }
+                TokoLiveDataResult.STATUS.ERROR -> {
+                }
+            }
+        })
 
         tokomemberDashCreateViewModel.tmCouponInitialLiveData.observe(viewLifecycleOwner,{
             when(it.status){
@@ -228,8 +293,8 @@ class TmSingleCouponCreateFragment : BaseDaggerFragment() {
                 TokoLiveDataResult.STATUS.SUCCESS -> {
                     if (it.data?.membershipValidateBenefit?.resultStatus?.code == "200") {
                         errorState.isValidateCouponError = false
-                        updateCoupon()
-//                        uploadImagePremium()
+//                        updateCoupon()
+                        uploadImagePremium()
                     } else {
                         closeLoadingDialog()
                         setButtonState()
@@ -246,12 +311,17 @@ class TmSingleCouponCreateFragment : BaseDaggerFragment() {
             }
         })
 
-        tokomemberDashCreateViewModel.tmCouponUploadLiveData.observe(viewLifecycleOwner,{
+        tokomemberDashCreateViewModel.tmCouponUploadMultipleLiveData.observe(viewLifecycleOwner,{
             when(it.status){
                 TokoLiveDataResult.STATUS.SUCCESS -> {
                     when(it.data){
                         is UploadResult.Success ->{
-                            updateCoupon()
+                            if(fromEdit) {
+                                updateCoupon()
+                            }
+                            else{
+
+                            }
                         }
                         is UploadResult.Error ->{
                             view?.let { it ->

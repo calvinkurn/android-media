@@ -78,7 +78,7 @@ class TmAddQuotaBottomsheet: BottomSheetUnify() {
         )
         setChild(childView)
         observeViewModel()
-        tmCouponViewModel.getInitialCouponData("update", voucherType)
+        tmCouponViewModel.getInitialCouponData("update", voucherType.lowercase())
     }
 
     private fun observeViewModel() {
@@ -98,7 +98,7 @@ class TmAddQuotaBottomsheet: BottomSheetUnify() {
         tmCouponViewModel.tmCouponQuotaUpdateLiveData.observe(viewLifecycleOwner, {
             when(it.status){
                 TokoLiveDataResult.STATUS.SUCCESS ->{
-                    if(it.data?.data?.merchantPromotionUpdateMVQuota?.data?.status == "success"){
+                    if(it.data?.merchantPromotionUpdateMVQuota?.data?.status == "success"){
                         tmCouponListRefreshCallback.refreshCouponList()
                         dismiss()
                     }
@@ -143,8 +143,8 @@ class TmAddQuotaBottomsheet: BottomSheetUnify() {
                 val quota = textFieldQuota.editText.text.toString().toIntOrZero()
                 if(quota >= voucherQuota) {
                     tmCouponViewModel.updateQuota(
-                        quota,
-                        voucherId.toIntOrZero(),
+                        quota = quota,
+                        voucherId = voucherId.toIntOrZero(),
                         token
                     )
                 }

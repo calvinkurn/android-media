@@ -115,10 +115,16 @@ const val TM_NOT_ELIGIBLE_TITLE = "Tokomu belum memenuhi syarat"
 const val TM_NOT_ELIGIBLE_DESC= "Pastikan toko berstatus Official Store. Yuk, baca cara untuk jadi Official Store!"
 const val TM_NOT_ELIGIBLE_CTA = "Pelajari Official Store"
 
-const val TM_DIALOG_CANCEL_TITLE = "Yakin batalkan program?"
-const val TM_DIALOG_CANCEL_DESC = "Pengaturan yang dibuat akan hilang kalau kamu batalkan proses pembuatan TokoMember, lho."
-const val TM_DIALOG_CANCEL_CTA_PRIMARY = "Lanjut"
-const val TM_DIALOG_CANCEL_CTA_SECONDARY = "Batalkan Program"
+const val TM_DIALOG_CANCEL_TITLE_PROGRAM = "Yakin batalkan program?"
+const val TM_DIALOG_CANCEL_DESC_PROGRAM = "Pengaturan yang dibuat akan hilang kalau kamu batalkan proses pembuatan TokoMember, lho."
+const val TM_DIALOG_CANCEL_CTA_PRIMARY_PROGRAM = "Lanjut"
+const val TM_DIALOG_CANCEL_CTA_SECONDARY_PROGRAM = "Batalkan Program"
+
+const val TM_DIALOG_CANCEL_TITLE_COUPON = "Batal membuat kupon?"
+const val TM_DIALOG_CANCEL_DESC_COUPON = "Member tokomu bisa makin aktif belanja dengan kupon yang kamu buat, lho."
+const val TM_DIALOG_CANCEL_CTA_PRIMARY_COUPON = "Lanjut Buat"
+const val TM_DIALOG_CANCEL_CTA_SECONDARY_COUPON = "Batal"
+
 const val PROGRAM_CTA = "Buat Program"
 const val PROGRAM_CTA_EDIT = "Simpan"
 

@@ -33,7 +33,7 @@ class TmCouponUpdateStatusUsecase@Inject constructor(
 }
 
 const val QUERY_TM_COUPON_UPDATE_STATUS = """
-    mutation merchantPromotionUpdateStatusMV(${'$'}merchantVoucherUpdateStatusData: mvUpdateStatusRequest) {
+    mutation merchantPromotionUpdateStatusMV(${'$'}merchantVoucherUpdateStatusData: mvUpdateStatusRequest!) {
         merchantPromotionUpdateStatusMV(merchantVoucherUpdateStatusData: ${'$'}merchantVoucherUpdateStatusData) {
             status
             message

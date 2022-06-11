@@ -1,10 +1,14 @@
 package com.tokopedia.tokomember_seller_dashboard.view.fragment
 
+import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
+import com.bumptech.glide.Glide
+import com.bumptech.glide.request.target.CustomTarget
+import com.bumptech.glide.request.transition.Transition
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.RouteManager
@@ -15,6 +19,7 @@ import com.tokopedia.tokomember_seller_dashboard.di.component.DaggerTokomemberDa
 import com.tokopedia.tokomember_seller_dashboard.model.Cta
 import com.tokopedia.tokomember_seller_dashboard.model.TickerItem
 import com.tokopedia.tokomember_seller_dashboard.tracker.TmTracker
+import com.tokopedia.tokomember_seller_dashboard.util.TmPrefManager
 import com.tokopedia.tokomember_seller_dashboard.util.TokoLiveDataResult
 import com.tokopedia.tokomember_seller_dashboard.view.viewmodel.TokomemberDashHomeViewmodel
 import com.tokopedia.unifycomponents.ImageUnify
@@ -24,6 +29,7 @@ import javax.inject.Inject
 
 class TokomemberDashHomeFragment : BaseDaggerFragment() {
 
+    private var prefManager: TmPrefManager? = null
     private var tmTracker: TmTracker? = null
     private var shopId = 0
 
@@ -48,12 +54,30 @@ class TokomemberDashHomeFragment : BaseDaggerFragment() {
         tmTracker?.viewHomeTabsSection(shopId.toString())
 
         renderTicker(null)
-        ivShopContainer.loadImage("https://ecs7.tokopedia.net/cards/ray2-f.png")
+        Glide.with(flShop)
+            .asDrawable()
+            .load("https://ecs7.tokopedia.net/cards/ray2-f.png")
+            .into(object : CustomTarget<Drawable>(){
+                override fun onResourceReady(resource: Drawable, transition: Transition<in Drawable>?) {
+                    flShop.background = resource
+                }
+                override fun onLoadCleared(placeholder: Drawable?) {
+
+                }
+            })
         ivShopIcon.loadImage("https://images.tokopedia.net/img/seller_no_logo_0.png")
         tvShopName.text = "desynila7"
 
         observeViewModel()
         tokomemberDashHomeViewmodel.getHomePageData(6553698, 3827)
+        prefManager = context?.let { it1 -> TmPrefManager(it1) }
+        prefManager?.cardId = 3668
+        prefManager?.shopId = 6551183
+    }
+
+    override fun onStop() {
+        super.onStop()
+        prefManager?.clearPref()
     }
 
     private fun observeViewModel() {
@@ -64,8 +88,23 @@ class TokomemberDashHomeFragment : BaseDaggerFragment() {
 
                 }
                 TokoLiveDataResult.STATUS.SUCCESS->{
-                    it.data?.membershipGetSellerAnalyticsTopSection?.shopProfile?.homeCardTemplate?.backgroundColor
+                    Glide.with(flShop)
+                        .asDrawable()
+                        .load(it.data?.membershipGetSellerAnalyticsTopSection?.shopProfile?.homeCardTemplate?.backgroundImgUrl)
+                        .into(object : CustomTarget<Drawable>(){
+                            override fun onResourceReady(resource: Drawable, transition: Transition<in Drawable>?) {
+                                flShop.background = resource
+                            }
+                            override fun onLoadCleared(placeholder: Drawable?) {
+
+                            }
+                        })
+                    ivShopIcon.loadImage(it.data?.membershipGetSellerAnalyticsTopSection?.shopProfile?.shop?.avatar)
+                    tvShopName.text = it.data?.membershipGetSellerAnalyticsTopSection?.shopProfile?.shop?.name
                     renderTicker(it.data?.membershipGetSellerAnalyticsTopSection?.ticker)
+                    val prefManager = context?.let { it1 -> TmPrefManager(it1) }
+                    prefManager?.cardId = it.data?.membershipGetSellerAnalyticsTopSection?.shopProfile?.homeCard?.shopID
+                    prefManager?.shopId = it.data?.membershipGetSellerAnalyticsTopSection?.shopProfile?.homeCard?.id
                 }
                 TokoLiveDataResult.STATUS.ERROR->{
 

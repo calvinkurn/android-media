@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.FragmentManager
 import com.google.gson.Gson
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.media.loader.loadImage
@@ -15,7 +14,6 @@ import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.toDp
 import com.tokopedia.unifyprinciples.Typography
-import kotlinx.android.synthetic.main.tm_dash_intro_bottomsheet.*
 
 class TokomemberBottomsheet : BottomSheetUnify() {
 

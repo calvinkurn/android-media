@@ -201,6 +201,9 @@ class TmProgramFragment : BaseDaggerFragment(), ChipGroupCallback ,
             ProgramActionType.CREATE ->{
                 tmDashCreateViewModel.getProgramInfo(programId,shopId, ACTION_CREATE)
             }
+            ProgramActionType.CREATE_BUAT ->{
+                tmDashCreateViewModel.getProgramInfo(programId,shopId, ACTION_CREATE)
+            }
             ProgramActionType.DETAIL ->{
                 tmDashCreateViewModel.getProgramInfo(programId,shopId, ACTION_DETAIL)
             }
@@ -365,8 +368,7 @@ class TmProgramFragment : BaseDaggerFragment(), ChipGroupCallback ,
                     arguments?.getInt(BUNDLE_PROGRAM_ID).toString()
                 )
             }
-
-                initCreateProgram(membershipGetProgramForm)
+            initCreateProgram(membershipGetProgramForm)
         }
     }
 
@@ -515,8 +517,8 @@ class TmProgramFragment : BaseDaggerFragment(), ChipGroupCallback ,
         const val HEADER_TITLE_EXTEND = "Perpanjang TokoMember"
         const val HEADER_TITLE_EDIT =  "Ubah Program"
 
-        const val DATA = 1
         const val SHIMMER = 0
+        const val DATA = 1
         const val ERROR = 2
         fun newInstance(extras: Bundle?) = TmProgramFragment().apply {
             arguments = extras

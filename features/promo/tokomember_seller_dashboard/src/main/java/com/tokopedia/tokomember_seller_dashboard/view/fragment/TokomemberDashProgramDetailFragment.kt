@@ -83,6 +83,8 @@ class TokomemberDashProgramDetailFragment : BaseDaggerFragment() {
         tvTransactionVip.text = membershipGetProgramForm?.programForm?.programAttributes?.getOrNull(1)?.minimumTransaction.toString()
         tvMemberCountVip.text = membershipGetProgramForm?.levelInfo?.levelList?.getOrNull(1)?.totalMember
 
+        childFragmentManager.beginTransaction().add(R.id.frameCouponList, TokomemberDashCouponFragment.newInstance(arguments), tag).addToBackStack(tag).commit()
+
     }
 
     private fun setHeader() {

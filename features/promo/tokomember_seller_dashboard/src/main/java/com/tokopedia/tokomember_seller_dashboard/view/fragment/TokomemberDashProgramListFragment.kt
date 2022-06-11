@@ -34,6 +34,7 @@ import com.tokopedia.tokomember_seller_dashboard.view.activity.TmDashCreateActiv
 import com.tokopedia.tokomember_seller_dashboard.view.adapter.TokomemberDashProgramAdapter
 import com.tokopedia.tokomember_seller_dashboard.view.viewmodel.TmProgramListViewModel
 import kotlinx.android.synthetic.main.tm_dash_program_fragment.*
+import kotlinx.android.synthetic.main.tm_layout_no_access.*
 import javax.inject.Inject
 
 class TokomemberDashProgramListFragment : BaseDaggerFragment(), ProgramActions {
@@ -93,6 +94,7 @@ class TokomemberDashProgramListFragment : BaseDaggerFragment(), ProgramActions {
             TmDashCreateActivity.openActivity(shopId, activity, CreateScreenType.PROGRAM, ProgramActionType.CREATE_BUAT, null, null, )
             tmTracker?.clickProgramListButton(shopId.toString())
         }
+        setEmptyProgramListData()
     }
 
     private fun observeViewModel() {
@@ -102,10 +104,15 @@ class TokomemberDashProgramListFragment : BaseDaggerFragment(), ProgramActions {
                     viewFlipperProgramList.displayedChild = 0
                 }
                 TokoLiveDataResult.STATUS.SUCCESS -> {
-                    viewFlipperProgramList.displayedChild = 1
-                    tokomemberDashProgramAdapter.programSellerList = it.data?.membershipGetProgramList?.programSellerList as ArrayList<ProgramSellerListItem>
-                    tokomemberDashProgramAdapter.notifyDataSetChanged()
-                    tmProgramListViewModel?.refreshList(LOADED)
+                    if(it.data?.membershipGetProgramList?.programSellerList.isNullOrEmpty()){
+                        viewFlipperProgramList.displayedChild = 2
+                    }
+                    else {
+                        viewFlipperProgramList.displayedChild = 1
+                        tokomemberDashProgramAdapter.programSellerList = it.data?.membershipGetProgramList?.programSellerList as ArrayList<ProgramSellerListItem>
+                        tokomemberDashProgramAdapter.notifyDataSetChanged()
+                        tmProgramListViewModel?.refreshList(LOADED)
+                    }
                 }
                 TokoLiveDataResult.STATUS.ERROR -> {
                     tmProgramListViewModel?.refreshList(LOADED)
@@ -183,4 +190,12 @@ class TokomemberDashProgramListFragment : BaseDaggerFragment(), ProgramActions {
         }
     }
 
+    private fun setEmptyProgramListData() {
+        tv_heading_error.text = "Buat program TokoMember, yuk!"
+        tv_desc_error.text = "Program yang menarik bisa bikin member lebih sering berbelanja di tokomu."
+        btn_error.text = "Buat Program TokoMember"
+        btn_error.setOnClickListener {
+            TmDashCreateActivity.openActivity(shopId, activity, CreateScreenType.PROGRAM, ProgramActionType.CREATE_BUAT, null, null, )
+        }
+    }
 }
