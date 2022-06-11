@@ -291,4 +291,6 @@ public class RemoteConfigKey {
     public static final String PRODUCT_CARD_ENABLE_INTERACTION = "android_product_card_enable_interaction";
 
     public static final String ENABLE_PRODUCT_CARD_VIEWSTUB = "android_mainapp_enable_product_card_viewstub";
+
+    public static final String ENABLE_INIT_NR_IN_ACTIVITY = "android_mainapp_init_nr_in_activity";
 }
