@@ -30,15 +30,15 @@ class StockReminderActivity : BaseSimpleActivity() {
 
     override fun getNewFragment(): Fragment? {
         var productId = 0L
-        var stock = 0
+        var isVariant = false
         val uri = intent.data
         if (uri != null) {
-            val (infoProductId, infoProductName, infoStock) = uri.getProductInformation()
+            val (infoProductId, infoProductName, infoIsVariant) = uri.getProductInformation()
             productId = infoProductId
             productName = infoProductName
-            stock = infoStock
+            isVariant = infoIsVariant
         }
-        return StockReminderFragment.createInstance(productId, productName, stock)
+        return StockReminderFragment.createInstance(productId, productName, isVariant)
     }
 
     override fun setupLayout(savedInstanceState: Bundle?) {
@@ -57,7 +57,6 @@ class StockReminderActivity : BaseSimpleActivity() {
                 onBackPressed()
             }
             headerTitle = getString(R.string.product_stock_reminder_header_title)
-            headerSubTitle = productName
         }
     }
 
@@ -67,14 +66,15 @@ class StockReminderActivity : BaseSimpleActivity() {
      *
      * @return  Triple of productId, productName, and stock
      */
-    private fun Uri.getProductInformation(): Triple<Long, String, Int> {
+    private fun Uri.getProductInformation(): Triple<Long, String, Boolean> {
         val uriString =
             this.toString().replace(ApplinkConstInternalMarketplace.STOCK_REMINDER_BASE, "")
         val productId = uriString.substringBefore(SLASH_CHAR).toLongOrZero()
-        val informationUriString = uriString.substringAfter(SLASH_CHAR).substringBeforeLast(SLASH_CHAR)
-        val stock = informationUriString.substringAfterLast(SLASH_CHAR).toIntOrZero()
+        val informationUriString =
+            uriString.substringAfter(SLASH_CHAR).substringBeforeLast(SLASH_CHAR)
+        val isVariant = informationUriString.substringAfterLast(SLASH_CHAR).toBoolean()
         val productName = informationUriString.substringBeforeLast(SLASH_CHAR)
-        return Triple(productId, productName, stock)
+        return Triple(productId, productName, isVariant)
     }
 
 }

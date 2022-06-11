@@ -106,7 +106,6 @@ import com.tokopedia.product.manage.feature.list.constant.ProductManageAnalytics
 import com.tokopedia.product.manage.feature.list.constant.ProductManageListConstant
 import com.tokopedia.product.manage.feature.list.constant.ProductManageListConstant.BROADCAST_CHAT_CREATE
 import com.tokopedia.product.manage.feature.list.constant.ProductManageListConstant.EXTRA_IS_NEED_TO_RELOAD_DATA_SHOP_PRODUCT_LIST
-import com.tokopedia.product.manage.feature.list.constant.ProductManageListConstant.EXTRA_THRESHOLD
 import com.tokopedia.product.manage.feature.list.constant.ProductManageListConstant.PRODUCT_ID
 import com.tokopedia.product.manage.feature.list.constant.ProductManageListConstant.REQUEST_CODE_ADD_PRODUCT
 import com.tokopedia.product.manage.feature.list.constant.ProductManageListConstant.REQUEST_CODE_EDIT_PRODUCT
@@ -213,6 +212,7 @@ import java.util.concurrent.TimeoutException
 import javax.inject.Inject
 import kotlin.collections.ArrayList
 import android.text.TextPaint
+import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.product.manage.common.feature.uploadstatus.constant.UploadStatusType
 
 open class ProductManageFragment :
@@ -965,7 +965,7 @@ open class ProductManageFragment :
             ApplinkConstInternalMarketplace.STOCK_REMINDER,
             product.id,
             product.title,
-            product.stock.toString()
+            product.isVariant().toString()
         )
             .plus("?${ApplinkConstInternalMarketplace.ARGS_CACHE_MANAGER_ID}=$cacheManagerId")
         goToSellerMigrationPage(
@@ -1267,9 +1267,7 @@ open class ProductManageFragment :
                 if (sellerMigrationFeatureName == SellerMigrationFeatureName.FEATURE_SET_CASHBACK) {
                     onSetCashbackResult(cacheManager)
                 } else if (sellerMigrationFeatureName == SellerMigrationFeatureName.FEATURE_STOCK_REMINDER) {
-                    val productName: String = cacheManager?.getString(EXTRA_PRODUCT_NAME).orEmpty()
-                    val threshold = cacheManager?.get(EXTRA_THRESHOLD, Int::class.java) ?: 0
-                    onSetStockReminderResult(threshold, productName)
+                    onSetStockReminderResult()
                 }
             }
         }
@@ -2328,9 +2326,7 @@ open class ProductManageFragment :
                 }
                 REQUEST_CODE_STOCK_REMINDER -> {
                     if (resultCode == Activity.RESULT_OK) {
-                        val productName = intent.getStringExtra(EXTRA_PRODUCT_NAME).orEmpty()
-                        val threshold = intent.getIntExtra(EXTRA_THRESHOLD, 0)
-                        onSetStockReminderResult(threshold, productName)
+                        onSetStockReminderResult()
                     }
                 }
                 SET_CASHBACK_REQUEST_CODE -> {
@@ -2430,13 +2426,8 @@ open class ProductManageFragment :
         }
     }
 
-    private fun onSetStockReminderResult(threshold: Int, productName: String) {
-        val toasterMessage =
-            if (threshold > 0) {
-                getString(R.string.product_stock_reminder_toaster_success_desc, productName)
-            } else {
-                getString(R.string.product_stock_reminder_toaster_success_remove_desc, productName)
-            }
+    private fun onSetStockReminderResult() {
+        val toasterMessage = getString(R.string.product_stock_reminder_toaster_success_desc)
         constraintLayout?.let {
             Toaster.build(it, toasterMessage, Snackbar.LENGTH_SHORT, Toaster.TYPE_NORMAL).show()
         }

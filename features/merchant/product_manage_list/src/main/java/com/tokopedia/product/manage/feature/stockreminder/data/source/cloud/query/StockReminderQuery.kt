@@ -35,6 +35,7 @@ internal object StockReminderQuery {
             "      product_id\n" +
             "      warehouse_id\n" +
             "      threshold    \n" +
+            "      thresholdStatus    \n" +
             "    }\n" +
             "  }\n" +
             "}"

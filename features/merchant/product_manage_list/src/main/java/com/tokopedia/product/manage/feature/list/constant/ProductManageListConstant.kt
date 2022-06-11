@@ -13,7 +13,6 @@ object ProductManageListConstant {
     const val EXTRA_UPDATED_STOCK = "extra_updated_stock"
     const val EXTRA_UPDATED_STATUS = "extra_update_status"
     const val EXTRA_UPDATE_MESSAGE = "extra_update_message"
-    const val EXTRA_THRESHOLD = "extra_threshold"
     const val EXTRA_RESULT_STATUS = "extra_result_status"
     const val EXTRA_IS_NEED_TO_RELOAD_DATA_SHOP_PRODUCT_LIST = "EXTRA_IS_NEED_TO_RELOAD_DATA"
     const val GQL_POPUP_NAME = "gql_popup"
