@@ -9,5 +9,5 @@ data class ReserveProductModel(
     val price: Double = Int.ZERO.toDouble(),
     val variantCount: Int = Int.ZERO,
     val stock: Long = Int.ZERO.toLong(),
-    val isSelected: Boolean = false,
+    var isSelected: Boolean = false,
 )

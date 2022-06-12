@@ -53,7 +53,7 @@ class ChooseProductFragment : BaseSimpleListFragment<ReserveProductAdapter, Rese
         setupObservers()
     }
 
-    override fun createAdapter() = ReserveProductAdapter()
+    override fun createAdapter() = ReserveProductAdapter(::onSelectedItemChanges)
 
     override fun getRecyclerView(view: View) = binding?.rvProducts
 
@@ -90,7 +90,13 @@ class ChooseProductFragment : BaseSimpleListFragment<ReserveProductAdapter, Rese
         if (guidelineBegin < 0) guidelineBegin = 0
         if (guidelineBegin > 58) guidelineBegin = 58
         binding?.guideline3?.setGuidelineBegin(guidelineBegin)
-        binding?.guideline4?.setGuidelineEnd(guidelineBegin)
+        binding?.guideline4?.setGuidelineEnd(guidelineBegin+6)
+    }
+
+    private fun onSelectedItemChanges(selectedItem: MutableList<String>) {
+        selectedItem.forEach {
+            println("yahu " + it)
+        }
     }
 
     private fun setupObservers() {

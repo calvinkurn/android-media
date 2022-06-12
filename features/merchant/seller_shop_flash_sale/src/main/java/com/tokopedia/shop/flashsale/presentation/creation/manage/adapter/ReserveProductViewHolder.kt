@@ -14,7 +14,10 @@ import com.tokopedia.seller_shop_flash_sale.databinding.SsfsItemReserveProductBi
 import com.tokopedia.shop.flashsale.presentation.creation.manage.model.ReserveProductModel
 import com.tokopedia.utils.view.binding.viewBinding
 
-class ReserveProductViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+class ReserveProductViewHolder(
+    itemView: View,
+    private val itemOnClick: (position: Int, value: Boolean) -> Unit
+) : RecyclerView.ViewHolder(itemView) {
 
     companion object {
         fun createRootView(parent: ViewGroup): View = LayoutInflater.from(parent.context)
@@ -33,6 +36,13 @@ class ReserveProductViewHolder(itemView: View) : RecyclerView.ViewHolder(itemVie
             labelVariantCount.text = "${item.variantCount} Varian Produk"
             labelVariantCount.isVisible = item.variantCount.isMoreThanZero()
             checkboxItem.isChecked = item.isSelected
+            root.setOnClickListener {
+                checkboxItem.isChecked = !checkboxItem.isChecked
+                itemOnClick(adapterPosition, checkboxItem.isChecked)
+            }
+            checkboxItem.setOnClickListener {
+                itemOnClick(adapterPosition, checkboxItem.isChecked)
+            }
         }
     }
 }
