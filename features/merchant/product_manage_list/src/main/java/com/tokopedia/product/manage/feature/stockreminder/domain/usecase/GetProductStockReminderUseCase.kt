@@ -52,6 +52,7 @@ class GetProductStockReminderUseCase @Inject constructor(
         private const val PARAM_EDIT = "edit"
         private const val PARAM_WAREHOUSE_ID = "warehouseID"
         private const val PARAM_STOCK_ALERT = "stockAlert"
+        private const val PARAM_AGGREGATE = "aggregate"
 
         fun createRequestParams(productId: String,
                                 paramEdit: Boolean = true,
@@ -62,6 +63,7 @@ class GetProductStockReminderUseCase @Inject constructor(
 
             val extraInfoParam = RequestParams().apply {
                 putBoolean(PARAM_STOCK_ALERT, true)
+                putBoolean(PARAM_AGGREGATE, true)
             }.parameters
 
             return RequestParams().apply {
