@@ -17,10 +17,10 @@ data class GetCurrentInteractiveResponse(
 
 data class ChannelInteractive(
         @SerializedName("channel_id")
-        val channelID: Long = 0,
+        val channelID: String = "",
 
         @SerializedName("interactive_id")
-        val interactiveID: Long = 0,
+        val interactiveID: String = "",
 
         @SerializedName("interactive_type")
         val interactiveType: Int = -1,

@@ -323,7 +323,7 @@ class PostTagAnalytics @Inject constructor(private val userSessionInterface: Use
     // row 28
     // docs - https://docs.google.com/spreadsheets/d/1pnZfjiNKbAk8LR37DhNGSwm2jvM3wKqNJc2lfWLejXA/edit#gid=1781959013
     fun trackViewPostTagFeedShop(
-            postId: Int,
+            postId: String,
             postTagItemList: List<PostTagItem>,
             author: String,
             trackingModel: TrackingPostModel) {
@@ -355,7 +355,7 @@ class PostTagAnalytics @Inject constructor(private val userSessionInterface: Use
     }
 
     fun trackViewPostTagProfileSelf(
-            postId: Int,
+            postId: String,
             postTagItemList: List<PostTagItem>,
             trackingModel: TrackingPostModel) {
         getBasicViewPostTagEvent(
@@ -368,14 +368,14 @@ class PostTagAnalytics @Inject constructor(private val userSessionInterface: Use
     }
 
     fun trackClickPostTagProfileSelf(
-            postId: Int,
+            postId: String,
             postTag: PostTagItem,
             postTagPosition: Int,
             trackingModel: TrackingPostModel) {
         getBasicClickPostTagEvent(
                 Screen.MY_PROFILE,
                 Category.MY_PROFILE_SOCIALCOMMERCE,
-                postId.toString(),
+                postId,
                 postTag,
                 postTagPosition,
                 trackingModel,
@@ -383,27 +383,27 @@ class PostTagAnalytics @Inject constructor(private val userSessionInterface: Use
     }
 
     fun trackViewPostTagProfileOther(
-            postId: Int,
+            postId: String,
             postTagItemList: List<PostTagItem>,
             trackingModel: TrackingPostModel) {
         getBasicViewPostTagEvent(
                 Screen.PROFILE,
                 Category.USER_PROFILE_SOCIALCOMMERCE,
-                postId.toString(),
+                postId,
                 postTagItemList,
                 trackingModel,
                 ListSource.USER_PROFILE_PAGE)
     }
 
     fun trackClickPostTagProfileOther(
-            postId: Int,
+            postId: String,
             postTag: PostTagItem,
             postTagPosition: Int,
             trackingModel: TrackingPostModel) {
         getBasicClickPostTagEvent(
                 Screen.PROFILE,
                 Category.USER_PROFILE_SOCIALCOMMERCE,
-                postId.toString(),
+                postId,
                 postTag,
                 postTagPosition,
                 trackingModel,

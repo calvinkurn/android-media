@@ -27,13 +27,13 @@ public class KolPostViewModel extends BaseKolViewModel {
     private List<TrackingViewModel> trackingViewModel;
     private boolean showTopShadow;
 
-    public KolPostViewModel(int userId, String activityType, String cardType, String title, String name, String avatar, String label, String kolProfileUrl, boolean followed, String review, boolean liked, int totalLike, int totalComment, int page, int contentId, String time, boolean isShowComment, boolean isShowLike, boolean editable, boolean deletable, boolean multipleContent) {
+    public KolPostViewModel(String userId, String activityType, String cardType, String title, String name, String avatar, String label, String kolProfileUrl, boolean followed, String review, boolean liked, int totalLike, int totalComment, int page, String contentId, String time, boolean isShowComment, boolean isShowLike, boolean editable, boolean deletable, boolean multipleContent) {
         super(userId, activityType, cardType, title, name, avatar, label, kolProfileUrl, followed, review, liked, totalLike, totalComment, page, contentId, time, isShowComment, isShowLike, editable, deletable, multipleContent);
     }
 
-    public KolPostViewModel(int userId, String cardType, String title, String name, String avatar,
+    public KolPostViewModel(String  userId, String cardType, String title, String name, String avatar,
                             String label, String kolProfileUrl, boolean followed, String review,
-                            boolean liked, int totalLike, int totalComment, int page, int kolId,
+                            boolean liked, int totalLike, int totalComment, int page, String kolId,
                             String time, boolean isShowComment, boolean isShowLike,
                             List<String> imageList, int tagsId, String contentName, String tagsType,
                             String tagsCaption, String tagsLink, List<TrackingViewModel> trackingViewModel) {
@@ -49,9 +49,9 @@ public class KolPostViewModel extends BaseKolViewModel {
         this.trackingViewModel = trackingViewModel;
     }
 
-    public KolPostViewModel(int userId, String cardType, String title, String name, String avatar,
+    public KolPostViewModel(String userId, String cardType, String title, String name, String avatar,
                             String label, String kolProfileUrl, boolean followed, String review,
-                            boolean liked, int totalLike, int totalComment, int page, int kolId,
+                            boolean liked, int totalLike, int totalComment, int page, String kolId,
                             String time, boolean isShowComment, boolean isShowLike,
                             boolean editable, boolean deletable, List<String> imageList,
                             int tagsId, String contentName, String tagsType,

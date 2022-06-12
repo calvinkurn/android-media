@@ -54,7 +54,6 @@ import com.tokopedia.feedcomponent.domain.mapper.*
 import com.tokopedia.feedcomponent.domain.model.DynamicFeedDomainModel
 import com.tokopedia.feedcomponent.domain.usecase.GetDynamicFeedUseCase
 import com.tokopedia.feedcomponent.util.FeedScrollListenerNew
-import com.tokopedia.feedcomponent.util.TopadsRollenceUtil
 import com.tokopedia.feedcomponent.util.util.DataMapper
 import com.tokopedia.feedcomponent.view.adapter.viewholder.banner.BannerAdapter
 import com.tokopedia.feedcomponent.view.adapter.viewholder.highlight.HighlightAdapter
@@ -74,7 +73,6 @@ import com.tokopedia.feedcomponent.view.viewmodel.banner.TrackingBannerModel
 import com.tokopedia.feedcomponent.view.viewmodel.highlight.HighlightCardViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.post.DynamicPostViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.post.TrackingPostModel
-import com.tokopedia.feedcomponent.view.viewmodel.post.grid.GridPostViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.post.poll.PollContentViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.posttag.ProductPostTagViewModelNew
 import com.tokopedia.feedcomponent.view.viewmodel.recommendation.FeedRecommendationViewModel
@@ -100,7 +98,6 @@ import com.tokopedia.feedplus.view.adapter.viewholder.productcard.RetryViewHolde
 import com.tokopedia.feedplus.view.analytics.FeedAnalytics
 import com.tokopedia.feedplus.view.analytics.FeedEnhancedTracking
 import com.tokopedia.feedplus.view.analytics.FeedTrackingEventLabel
-import com.tokopedia.feedplus.view.analytics.ProductEcommerce
 import com.tokopedia.feedplus.view.analytics.widget.FeedPlayWidgetAnalyticListener
 import com.tokopedia.feedplus.view.constants.Constants.FeedConstants.KEY_FEED
 import com.tokopedia.feedplus.view.constants.Constants.FeedConstants.KEY_FEED_FIRST_PAGE_CURSOR
@@ -112,7 +109,6 @@ import com.tokopedia.feedplus.view.util.NpaLinearLayoutManager
 import com.tokopedia.feedplus.view.viewmodel.FeedPromotedShopViewModel
 import com.tokopedia.feedplus.view.viewmodel.RetryModel
 import com.tokopedia.feedplus.view.viewmodel.onboarding.OnboardingViewModel
-import com.tokopedia.graphql.data.GraphqlClient
 import com.tokopedia.interest_pick_common.view.adapter.InterestPickAdapter
 import com.tokopedia.interest_pick_common.view.viewmodel.InterestPickDataViewModel
 import com.tokopedia.interest_pick_common.view.viewmodel.SubmitInterestResponseViewModel
@@ -943,7 +939,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
 
         listTopAds.add(
             FeedEnhancedTracking.Promotion(
-                Integer.valueOf(product.adId),
+                product.adId,
                 FeedEnhancedTracking.Promotion
                     .createContentNameTopadsProduct(),
                 if (TextUtils.isEmpty(product.adRefKey))
@@ -952,7 +948,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
                     product.adRefKey,
                 position,
                 product.category.toString(),
-                Integer.valueOf(product.id),
+                product.id,
                 FeedEnhancedTracking.Promotion.TRACKING_EMPTY
             )
         )
@@ -973,13 +969,13 @@ class FeedPlusFragment : BaseDaggerFragment(),
 
         listTopAds.add(
             FeedEnhancedTracking.Promotion(
-                Integer.valueOf(shop.adId),
+                shop.adId,
                 FeedEnhancedTracking.Promotion
                     .createContentNameTopadsShop(),
                 shop.adRefKey,
                 position,
                 FeedEnhancedTracking.Promotion.TRACKING_EMPTY,
-                Integer.valueOf(shop.adId),
+                shop.adId,
                 FeedEnhancedTracking.Promotion.TRACKING_EMPTY
             )
         )
@@ -3379,7 +3375,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
 
     override fun onTopAdsViewImpression(bannerId: String, imageUrl: String) {
         analytics.eventTopadsRecommendationImpression(
-            listOf(TrackingRecommendationModel(authorId = bannerId.toIntOrZero())),
+            listOf(TrackingRecommendationModel(authorId = bannerId)),
             userIdInt
         )
         feedViewModel.doTopAdsTracker(imageUrl, "", "", "", false)

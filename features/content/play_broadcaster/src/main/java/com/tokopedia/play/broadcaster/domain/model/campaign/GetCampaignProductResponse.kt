@@ -45,6 +45,7 @@ data class GetCampaignProductResponse(
         @SerializedName("imageURL700")
         val imageURL700: String = "",
 
+        @SuppressLint("Invalid Data Type")
         @SerializedName("price")
         val price: String = "",
 

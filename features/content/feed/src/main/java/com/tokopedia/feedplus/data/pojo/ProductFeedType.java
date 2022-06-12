@@ -1,5 +1,7 @@
 package com.tokopedia.feedplus.data.pojo;
 
+import android.annotation.SuppressLint;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.TagsItem;
@@ -19,6 +21,7 @@ public class ProductFeedType {
   @Expose
   private String price;
 
+  @SuppressLint("Invalid Data Type")
   @SerializedName("price_int")
   @Expose
   private Integer priceInt;
@@ -27,6 +30,7 @@ public class ProductFeedType {
   @Expose
   private String priceOriginal;
 
+  @SuppressLint("Invalid Data Type")
   @SerializedName("price_original_int")
   @Expose
   private Integer priceOriginalInt;
