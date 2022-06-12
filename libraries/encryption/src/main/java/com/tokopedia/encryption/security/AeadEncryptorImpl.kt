@@ -2,10 +2,13 @@ package com.tokopedia.encryption.security
 
 import android.content.Context
 import android.util.Base64
+import android.util.Log
 import com.google.crypto.tink.Aead
 import com.google.crypto.tink.KeyTemplates
 import com.google.crypto.tink.aead.AeadConfig
 import com.google.crypto.tink.integration.android.AndroidKeysetManager
+import java.security.KeyStore
+import java.security.KeyStoreException
 
 class AeadEncryptorImpl(val context: Context) : AeadEncryptor {
 
@@ -27,7 +30,6 @@ class AeadEncryptorImpl(val context: Context) : AeadEncryptor {
         aeadInstance = AndroidKeysetManager.Builder()
             .withSharedPref(context.applicationContext, KEYSET_NAME, PREFERENCE_FILE)
             .withKeyTemplate(KeyTemplates.get("AES256_GCM"))
-            .withMasterKeyUri(MASTER_KEY_URI)
             .build()
             .keysetHandle
             .getPrimitive(Aead::class.java)
@@ -46,4 +48,13 @@ class AeadEncryptorImpl(val context: Context) : AeadEncryptor {
         val messageToDecrypt = Base64.decode(base64EncryptedString, Base64.DEFAULT)
         return String(getAead().decrypt(messageToDecrypt, associatedData), Charsets.UTF_8)
     }
+
+    override fun delete() {
+        val keyStore: KeyStore = KeyStore.getInstance("AndroidKeyStore")
+        keyStore.load(null)
+        keyStore.deleteEntry(MASTER_KEY_URI)
+
+        context.getSharedPreferences(PREFERENCE_FILE, Context.MODE_PRIVATE).edit().clear().apply()
+    }
+
 }
