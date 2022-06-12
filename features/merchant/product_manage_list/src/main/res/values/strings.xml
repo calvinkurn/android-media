@@ -67,6 +67,8 @@
     <string name="product_stock_reminder_ticker">Kamu akan menerima notifikasi jika jumlah stok utama kurang dari Batas Min. Stok di bawah ini.</string>
     <string name="product_stock_reminder_label_limit_stock">Batas Min. Stok</string>
     <string name="product_stock_reminder_label_status">Status</string>
+    <string name="product_stock_reminder_min_stock_error">Min. %d</string>
+    <string name="product_stock_reminder_max_stock_error">Maks. %1s</string>
 
     <string name="product_manage_search_hint">Cari produk atau SKU</string>
     <string name="product_manage_cancel_multiple_select">Batalkan</string>

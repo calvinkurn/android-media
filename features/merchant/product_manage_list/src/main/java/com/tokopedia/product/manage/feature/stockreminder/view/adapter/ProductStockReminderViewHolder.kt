@@ -5,6 +5,7 @@ import android.text.TextWatcher
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import androidx.annotation.LayoutRes
+import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.kotlin.extensions.orFalse
@@ -29,7 +30,8 @@ class ProductStockReminderViewHolder(
         private const val REMINDER_ACTIVE = 2
         private const val REMINDER_INACTIVE = 1
 
-        private const val MINIMUM_STOCK = 1
+        private const val MINIMUM_STOCK = 5
+        private const val MAXIMUM_STOCK = 999999
         private const val EMPTY_INPUT_STOCK = 0
     }
 
@@ -85,11 +87,12 @@ class ProductStockReminderViewHolder(
                 } else {
                     EMPTY_INPUT_STOCK
                 }
+                validateMinMaxStock(stock)
                 toggleQuantityEditorBtn(stock)
-                if (binding?.swStockReminder?.isChecked.orFalse()){
-                    listener.onChangeStockReminder(product.id,stock, REMINDER_ACTIVE)
-                }else{
-                    listener.onChangeStockReminder(product.id,stock, REMINDER_INACTIVE)
+                if (binding?.swStockReminder?.isChecked.orFalse()) {
+                    listener.onChangeStockReminder(product.id, stock, REMINDER_ACTIVE)
+                } else {
+                    listener.onChangeStockReminder(product.id, stock, REMINDER_INACTIVE)
 
                 }
             }
@@ -98,6 +101,24 @@ class ProductStockReminderViewHolder(
             }
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+            }
+        }
+    }
+
+    fun validateMinMaxStock(stock: Int) {
+        when {
+            stock < MINIMUM_STOCK -> {
+                binding?.qeStock?.errorMessageText = itemView.resources.getString(
+                    R.string.product_stock_reminder_min_stock_error,
+                    MINIMUM_STOCK
+                )
+            }
+            stock > MAXIMUM_STOCK -> {
+                binding?.qeStock?.errorMessageText = itemView.resources.getString(
+                    R.string.product_stock_reminder_max_stock_error,
+                    MAXIMUM_STOCK.getNumberFormatted()
+                )
+
             }
         }
     }
@@ -135,7 +156,7 @@ class ProductStockReminderViewHolder(
 
                 stock--
 
-                if (stock >= MINIMUM_STOCK) {
+                if (stock > EMPTY_INPUT_STOCK) {
                     editText.setText(stock.getNumberFormatted())
                 }
             }
