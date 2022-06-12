@@ -1,9 +1,13 @@
 package com.tokopedia.home_component.visitable
 
+import android.content.Context
 import android.os.Bundle
+import android.widget.LinearLayout
 import com.tokopedia.home_component.HomeComponentTypeFactory
+import com.tokopedia.home_component.R
 import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.kotlin.model.ImpressHolder
+import com.tokopedia.unifyprinciples.Typography
 
 /**
  * Created by dhaba

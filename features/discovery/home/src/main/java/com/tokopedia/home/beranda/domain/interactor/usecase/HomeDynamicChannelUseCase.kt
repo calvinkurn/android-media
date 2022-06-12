@@ -30,6 +30,7 @@ import com.tokopedia.home.util.HomeServerLogger
 import com.tokopedia.home_component.model.ReminderEnum
 import com.tokopedia.home_component.usecase.featuredshop.DisplayHeadlineAdsEntity
 import com.tokopedia.home_component.usecase.featuredshop.mappingTopAdsHeaderToChannelGrid
+import com.tokopedia.home_component.util.MissionWidgetUtil
 import com.tokopedia.home_component.util.toDpInt
 import com.tokopedia.home_component.visitable.FeaturedShopDataModel
 import com.tokopedia.home_component.visitable.MissionWidgetDataModel
@@ -223,12 +224,11 @@ class HomeDynamicChannelUseCase @Inject constructor(
                             val resultList =
                                 convertMissionWidgetDataList(data.getHomeMissionWidget.missions)
                             val subtitleHeight = applicationContext?.let {
-                                findMaxSubtitleText(
-                                    data.getHomeMissionWidget.missions,
-                                    124f.toDpInt(),
+                                MissionWidgetUtil.findMaxHeightSubtitleText(
+                                    resultList,
                                     applicationContext
                                 )
-                            } ?: 0
+                            } ?: MissionWidgetUtil.DEFAULT_SUBTITLE_HEIGHT
 
                             visitableFound.copy(
                                 missionWidgetList = resultList,
@@ -517,49 +517,6 @@ class HomeDynamicChannelUseCase @Inject constructor(
         }
         return dataList
     }
-
-    private fun measureSummaryTextHeight(
-        text: CharSequence?,
-        textWidth: Int,
-        context: Context
-    ): Int {
-        val params =
-            LinearLayout.LayoutParams(textWidth, LinearLayout.LayoutParams.WRAP_CONTENT)
-        val paramsTextView =
-            LinearLayout.LayoutParams(textWidth, LinearLayout.LayoutParams.WRAP_CONTENT)
-        val typography = Typography(context)
-        typography.setType(Typography.PARAGRAPH_3)
-        typography.setWeight(Typography.BOLD)
-        typography.layoutParams = paramsTextView
-        typography.text = text
-        typography.maxLines = 2
-        typography.measure(0, 0)
-        val linearLayout = LinearLayout(context)
-        linearLayout.layoutParams = params
-        linearLayout.addView(typography)
-        linearLayout.measure(0, 0)
-        typography.post {}.run {
-            return typography.measuredHeight
-        }
-    }
-
-    fun findMaxSubtitleText(
-        missionWidgetItems: List<HomeMissionWidgetData.Mission>,
-        textWidth: Int,
-        context: Context
-    ): Int {
-        var maxHeight = 0
-        for (missionWidget in missionWidgetItems) {
-            val heightText = (measureSummaryTextHeight(
-                missionWidget.subTitle,
-                textWidth,
-                context
-            ))
-            if (heightText > maxHeight) maxHeight = heightText
-        }
-        return maxHeight
-    }
-
 
     private suspend inline fun <reified T: Visitable<*>, reified K> HomeDynamicChannelModel.getWidgetDataIfExist(
             bundleParam: (T) -> Bundle = { Bundle() },
