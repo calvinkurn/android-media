@@ -26,9 +26,9 @@ import com.tokopedia.tokomember_seller_dashboard.util.COUPON_PROCESSING
 import com.tokopedia.tokomember_seller_dashboard.util.COUPON_STOPPED
 import com.tokopedia.tokomember_seller_dashboard.util.COUPON_VIP
 import com.tokopedia.tokomember_seller_dashboard.util.DELETE
-import com.tokopedia.tokomember_seller_dashboard.util.TmDateUtil.setDate
 import com.tokopedia.tokomember_seller_dashboard.util.EDIT
 import com.tokopedia.tokomember_seller_dashboard.util.STOP
+import com.tokopedia.tokomember_seller_dashboard.util.TmDateUtil.setDate
 import com.tokopedia.tokomember_seller_dashboard.view.fragment.TokomemberOptionsMenuBottomsheet
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.UnifyButton
@@ -96,8 +96,18 @@ class TmCouponVh(itemView: View, val fragmentManager: FragmentManager) : Recycle
 
         when(item.voucherStatus){
             COUPON_DELETED ->{
+                optionMenu.hide()
+                btnAddQuota.hide()
+                tvCouponState.text = "Dihapus"
+                tvCouponState.setTextColor(ColorStateList.valueOf(ContextCompat.getColor(itemView.context, R.color.Unify_NN400)))
+                viewStatus.backgroundTintList = ColorStateList.valueOf(ContextCompat.getColor(itemView.context, R.color.Unify_NN400))
             }
             COUPON_PROCESSING ->{
+                optionMenu.hide()
+                btnAddQuota.hide()
+                tvCouponState.text = "Pengolahan"
+                tvCouponState.setTextColor(ColorStateList.valueOf(ContextCompat.getColor(itemView.context, R.color.Unify_NN400)))
+                viewStatus.backgroundTintList = ColorStateList.valueOf(ContextCompat.getColor(itemView.context, R.color.Unify_NN400))
             }
             COUPON_NOT_STARTED ->{
                 optionMenu.setOnClickListener {
@@ -148,7 +158,16 @@ class TmCouponVh(itemView: View, val fragmentManager: FragmentManager) : Recycle
                 tvCouponState.setTextColor(ColorStateList.valueOf(ContextCompat.getColor(itemView.context, R.color.Unify_GN500)))
                 viewStatus.backgroundTintList = ColorStateList.valueOf(ContextCompat.getColor(itemView.context, R.color.Unify_GN500))
             }
-            COUPON_ENDED or COUPON_STOPPED ->{
+            COUPON_ENDED ->{
+                optionMenu.hide()
+                btnAddQuota.hide()
+                tvCouponState.text = "Berakhir"
+                tvCouponState.setTextColor(ColorStateList.valueOf(ContextCompat.getColor(itemView.context, R.color.Unify_NN400)))
+                viewStatus.backgroundTintList = ColorStateList.valueOf(ContextCompat.getColor(itemView.context, R.color.Unify_NN400))
+            }
+            COUPON_STOPPED ->{
+                optionMenu.hide()
+                btnAddQuota.hide()
                 tvCouponState.text = "Berakhir"
                 tvCouponState.setTextColor(ColorStateList.valueOf(ContextCompat.getColor(itemView.context, R.color.Unify_NN400)))
                 viewStatus.backgroundTintList = ColorStateList.valueOf(ContextCompat.getColor(itemView.context, R.color.Unify_NN400))
