@@ -28,5 +28,5 @@ data class DataItem(
 
 	@SerializedName("id")
 	@Expose
-	val id: Int = 0
+	val id: String = ""
 )

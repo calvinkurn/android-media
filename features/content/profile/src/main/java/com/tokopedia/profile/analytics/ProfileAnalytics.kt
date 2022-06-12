@@ -321,7 +321,7 @@ class ProfileAnalytics @Inject constructor(private val userSessionInterface: Use
                 it[EVENT_ECOMMERCE] = ProfileEnhancedTracking.Ecommerce.getEcommerceClick(
                         listOf(
                                 ProfileEnhancedTracking.Promotion(
-                                        id = feedDatum.id.toIntOrZero(),
+                                        id = feedDatum.id,
                                         name = String.format(FORMAT_RECOMMENDATION_PROMOTION_NAME, Category.USER_PROFILE_PAGE, Promotion.Name.EMPTY_POST_RECOMMENDATION),
                                         creative = "${feedDatum.content.header.avatarTitle} - ${feedDatum.content.tracking.authorID}",
                                         position = position,
@@ -346,7 +346,7 @@ class ProfileAnalytics @Inject constructor(private val userSessionInterface: Use
                 it[EVENT_ECOMMERCE] = ProfileEnhancedTracking.Ecommerce.getEcommerceView(
                         feedDatumList.mapIndexed { position, feedDatum ->
                             ProfileEnhancedTracking.Promotion(
-                                    id = feedDatum.id.toIntOrZero(),
+                                    id = feedDatum.id,
                                     name = String.format(FORMAT_RECOMMENDATION_PROMOTION_NAME, Category.USER_PROFILE_PAGE, Promotion.Name.EMPTY_POST_RECOMMENDATION),
                                     creative = "${feedDatum.content.header.avatarTitle} - ${feedDatum.content.tracking.authorID}",
                                     position = position,
@@ -384,7 +384,7 @@ class ProfileAnalytics @Inject constructor(private val userSessionInterface: Use
     fun eventClickCard(templateType: String, activityName: String,
                        trackingType: String, mediaType: String, tagsType: String,
                        redirectUrl: String, element: String, totalContent: Int,
-                       postId: Int, position: Int, contentPosition: String, userId: Int, isOwner: Boolean) {
+                       postId: String, position: Int, contentPosition: String, userId: Int, isOwner: Boolean) {
         val screen = if (isOwner) Screen.MY_PROFILE else Screen.PROFILE
         val category = if (isOwner) Category.MY_PROFILE_SOCIALCOMMERCE else Category.USER_PROFILE_SOCIALCOMMERCE
         val name = if (isOwner) Category.MY_PROFILE_PAGE else Category.USER_PROFILE_PAGE
@@ -419,7 +419,7 @@ class ProfileAnalytics @Inject constructor(private val userSessionInterface: Use
     fun eventViewCard(templateType: String, activityName: String,
                       trackingType: String, mediaType: String, tagsType: String,
                       redirectUrl: String,
-                      totalContent: Int, postId: Int, position: Int, userId: Int, isOwner: Boolean) {
+                      totalContent: Int, postId: String, position: Int, userId: Int, isOwner: Boolean) {
         val screen = if (isOwner) Screen.MY_PROFILE else Screen.PROFILE
         val category = if (isOwner) Category.MY_PROFILE_SOCIALCOMMERCE else Category.USER_PROFILE_SOCIALCOMMERCE
         val name = if (isOwner) Category.MY_PROFILE_PAGE else Category.USER_PROFILE_PAGE

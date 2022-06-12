@@ -5,14 +5,14 @@ package com.tokopedia.profile.following_list.domain.model;
  */
 
 public class FollowingDomain {
-    private final int id;
+    private final String id;
     private final String name;
     private final String avatarUrl;
     private final String profileApplink;
     private final String profileUrl;
     private final boolean isInfluencer;
 
-    public FollowingDomain(int id, String name, String avatarUrl, String profileApplink,
+    public FollowingDomain(String id, String name, String avatarUrl, String profileApplink,
                            String profileUrl, boolean isInfluencer) {
         this.id = id;
         this.name = name;
@@ -22,7 +22,7 @@ public class FollowingDomain {
         this.isInfluencer = isInfluencer;
     }
 
-    public int getId() {
+    public String getId() {
         return id;
     }
 
