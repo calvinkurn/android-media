@@ -38,6 +38,7 @@ import com.tokopedia.tokomember_seller_dashboard.model.TmCouponDetailData
 import com.tokopedia.tokomember_seller_dashboard.model.TmIntroBottomsheetModel
 import com.tokopedia.tokomember_seller_dashboard.model.TmSingleCouponData
 import com.tokopedia.tokomember_seller_dashboard.model.ValidationError
+import com.tokopedia.tokomember_seller_dashboard.model.mapper.TmCouponCreateMapper
 import com.tokopedia.tokomember_seller_dashboard.util.ACTION_EDIT
 import com.tokopedia.tokomember_seller_dashboard.util.ANDROID
 import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_PROGRAM_DATA
@@ -89,6 +90,9 @@ import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.TextFieldUnify2
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.utils.date.DateUtil
 import com.tokopedia.utils.text.currency.CurrencyFormatHelper
 import com.tokopedia.utils.text.currency.NumberTextWatcher
 import kotlinx.android.synthetic.main.tm_dash_kupon_create_container.*
@@ -214,7 +218,7 @@ class TmSingleCouponCreateFragment : BaseDaggerFragment() {
                             if (TmDateUtil.getTimeInMillis(
                                     it.data?.membershipGetProgramList?.programSellerList?.firstOrNull()?.timeWindow?.startTime,
                                     "yyyy-MM-dd HH:mm:ss"
-                                ).toLong() > Date().time
+                                ).toLong() > DateUtil.getCurrentDate().time.div(1000)
                             ) {
                                 startTime =
                                     it.data?.membershipGetProgramList?.programSellerList?.firstOrNull()?.timeWindow?.startTime
@@ -254,7 +258,7 @@ class TmSingleCouponCreateFragment : BaseDaggerFragment() {
                         getCouponDetails()
                     }
                     else{
-
+                        token = it.data?.getInitiateVoucherPage?.data?.token
                     }
                 }
                 TokoLiveDataResult.STATUS.ERROR -> {
@@ -320,7 +324,25 @@ class TmSingleCouponCreateFragment : BaseDaggerFragment() {
                                 updateCoupon()
                             }
                             else{
-
+                                //TODO create coupon mutation
+                                    if(token != null && tmCouponDetail?.voucherImagePortrait != null && tmCouponDetail?.voucherImageSquare != null && tmCouponDetail?.voucherDiscountAmtMax != null) {
+                                        val tmMerchantCouponCreateData =
+                                            TmCouponCreateMapper.mapCreateDataSingle(
+                                                couponPremiumData = couponPremiumData,
+                                                tmCouponPremiumUploadId = it.data.uploadId,
+                                                tmStartDateUnix = tmCouponStartDateUnix,
+                                                tmEndDateUnix = tmCouponEndDateUnix,
+                                                tmStartTimeUnix = tmCouponStartTimeUnix,
+                                                tmEndTimeUnix = tmCouponEndTimeUnix,
+                                                token = token!!,
+                                                imagePortrait = tmCouponDetail?.voucherImagePortrait!!,
+                                                imageSquare = tmCouponDetail?.voucherImageSquare!!,
+                                                maximumBenefit = tmCouponDetail?.voucherDiscountAmtMax!!
+                                            )
+                                        tokomemberDashCreateViewModel.createCoupon(
+                                            tmMerchantCouponCreateData
+                                        )
+                                    }
                             }
                         }
                         is UploadResult.Error ->{
@@ -391,6 +413,19 @@ class TmSingleCouponCreateFragment : BaseDaggerFragment() {
                     //handleError
                     closeLoadingDialog()
                     setButtonState()
+                }
+            }
+        })
+
+        tokomemberDashCreateViewModel.tmCouponCreateLiveData.observe(viewLifecycleOwner, {
+            when (it) {
+                is Success -> {
+                    //Open Dashboard
+                    activity?.finish()
+                    tmCouponListRefreshCallback?.refreshCouponList()
+                }
+                is Fail -> {
+                    //handleError
                 }
             }
         })

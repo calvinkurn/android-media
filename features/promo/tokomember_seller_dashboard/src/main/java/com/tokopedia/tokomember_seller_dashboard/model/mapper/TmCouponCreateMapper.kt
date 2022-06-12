@@ -73,4 +73,47 @@ object TmCouponCreateMapper {
             voucher = voucherList
         )
     }
+
+    fun mapCreateDataSingle(
+        couponPremiumData: TmSingleCouponData?,
+        tmCouponPremiumUploadId: String,
+        tmStartDateUnix: Calendar?,
+        tmEndDateUnix: Calendar?,
+        tmStartTimeUnix: Calendar?,
+        tmEndTimeUnix: Calendar?,
+        token:String,
+        imageSquare:String,
+        imagePortrait: String,
+        maximumBenefit: Int
+    ): TmMerchantCouponUnifyRequest {
+        //Mutation Mapper
+
+        val voucherList = arrayListOf<TmCouponCreateRequest>()
+        voucherList.add(0, TmCouponCreateRequest(
+            benefitIdr = maximumBenefit,
+            benefitMax = couponPremiumData?.maxCashback.toIntSafely(),
+            targetBuyer = 3,
+            image = tmCouponPremiumUploadId,
+            couponType = couponPremiumData?.typeCoupon,
+            minPurchase = couponPremiumData?.minTransaki.toIntSafely(),
+            minimumTierLevel = 1,
+            benefitPercent = couponPremiumData?.cashBackPercentage,
+            quota = couponPremiumData?.quota.toIntSafely(),
+            imagePortrait = imagePortrait,
+            imageSquare = imageSquare,
+            isPublic = 0,
+            hourStart = tmStartTimeUnix?.let { TmDateUtil.getTimeFromUnix(it) },
+            dateStart = tmStartDateUnix?.let { TmDateUtil.getDateFromUnix(it) },
+            hourEnd = tmEndTimeUnix?.let { TmDateUtil.getTimeFromUnix(it) },
+            dateEnd = tmEndDateUnix?.let { TmDateUtil.getDateFromUnix(it) },
+            benefitType = couponPremiumData?.typeCashback
+        ))
+
+        return TmMerchantCouponUnifyRequest(
+            token = token,
+            source = ANDROID,
+            status = "",
+            voucher = voucherList
+        )
+    }
 }

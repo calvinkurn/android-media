@@ -126,12 +126,12 @@ class TokomemberDashCouponFragment : BaseDaggerFragment(), TmCouponActions, Sort
 //                            }
                         }
 //                        selectedStatus = selectedStatus.removeRange(selectedStatus.length - 1, selectedStatus.length) as StringBuilder
-                        if(selectedStatusList.isNullOrEmpty()){
-                            filterStatus.type = ChipsUnify.TYPE_NORMAL
-                        }
-                        else{
-                            filterStatus.type = ChipsUnify.TYPE_SELECTED
-                        }
+//                        if(selectedStatusList.isNullOrEmpty()){
+//                            filterStatus.type = ChipsUnify.TYPE_NORMAL
+//                        }
+//                        else{
+//                            filterStatus.type = ChipsUnify.TYPE_SELECTED
+//                        }
                         voucherStatus = selectedStatusList.toString().replace("[", "")
                         voucherStatus = voucherStatus.replace("]", "")
                         voucherStatus = voucherStatus.replace(" ", "")
