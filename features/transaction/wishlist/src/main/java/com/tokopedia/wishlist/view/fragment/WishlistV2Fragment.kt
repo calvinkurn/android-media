@@ -654,7 +654,6 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
                                     btnText = bulkDeleteWishlistV2.button.text
                                 }
 
-                                println("++ show toaster bulkDeleteMode = 0")
                                 showToaster(msg, btnText, Toaster.TYPE_NORMAL)
                                 setRefreshing()
                             } else {
@@ -761,7 +760,6 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
                 toasterMessage = data.toasterMessage
             )
             updateDeletionWidget(finishData)
-            println("++ show toaster finishDeletionWidget")
             showToaster(data.toasterMessage, "", Toaster.TYPE_NORMAL)
         }
         hideStickyDeletionProgress()
