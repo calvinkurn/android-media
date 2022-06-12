@@ -489,18 +489,14 @@ open class HomeRevampViewModel @Inject constructor(
     fun getMissionWidgetRefresh() {
         findWidget<MissionWidgetListDataModel> { missionWidgetListDataModel, position ->
             launch {
-//                homeDataModel.updateWidgetModel(visitable = missionWidgetListDataModel, visitableToChange = missionWidgetListDataModel.copy(status = MissionWidgetListDataModel.STATUS_LOADING), position = position) {
-//                    updateHomeData(homeDataModel)
-//                }
-
-//                deleteWidget(missionWidgetListDataModel, position)
                 updateWidget(
                     missionWidgetListDataModel.copy(status = MissionWidgetListDataModel.STATUS_LOADING),
                     position
                 )
-
-//                updateWidget(missionWidgetListDataModel.copy(status = MissionWidgetListDataModel.STATUS_LOADING), position)
-//                updateWidget(homeMissionWidgetUseCase.get().onMissionWidgetRefresh(missionWidgetListDataModel), position)
+                updateWidget(
+                    homeMissionWidgetUseCase.get()
+                        .onMissionWidgetRefresh(missionWidgetListDataModel), position
+                )
             }
         }
     }

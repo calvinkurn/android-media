@@ -132,6 +132,10 @@ class MissionWidgetViewHolder(
         setLayoutByStatus(element)
     }
 
+    override fun bind(element: MissionWidgetListDataModel, payloads: MutableList<Any>) {
+        bind(element)
+    }
+
     override fun onProductCardImpressed(
         channel: ChannelModel,
         channelGrid: ChannelGrid,
