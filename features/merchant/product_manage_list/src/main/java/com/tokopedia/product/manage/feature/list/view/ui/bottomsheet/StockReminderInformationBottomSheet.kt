@@ -13,7 +13,8 @@ import com.tokopedia.utils.lifecycle.autoClearedNullable
 
 class StockReminderInformationBottomSheet(
     private val fm: FragmentManager? = null,
-    private val stockAlertCount:Int
+    private val stockAlertCount: Int,
+    private val stockAlertActive: Boolean
 ) : BottomSheetUnify() {
 
     companion object {
@@ -60,10 +61,18 @@ class StockReminderInformationBottomSheet(
     }
 
     private fun setupView() {
-        val description = context?.getString(
-            com.tokopedia.product.manage.common.R.string.product_manage_stock_description_information_stock_reminder,
-            stockAlertCount
-        ).orEmpty()
+
+        val description = if (stockAlertActive) {
+            context?.getString(
+                com.tokopedia.product.manage.common.R.string.product_manage_stock_description_information_stock_reminder_active,
+                stockAlertCount
+            ).orEmpty()
+        } else {
+            context?.getString(
+                com.tokopedia.product.manage.common.R.string.product_manage_stock_description_information_stock_reminder,
+                stockAlertCount
+            ).orEmpty()
+        }
         val padding =
             context?.resources?.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl4)
                 .orZero()

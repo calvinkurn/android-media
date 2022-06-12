@@ -65,6 +65,8 @@
     <string name="product_stock_reminder_typography_desc">Pengingat akan aktif jika stok produk kurang dari"</string>
     <string name="product_stock_reminder_button">Simpan</string>
     <string name="product_stock_reminder_ticker">Kamu akan menerima notifikasi jika jumlah stok utama kurang dari Batas Min. Stok di bawah ini.</string>
+    <string name="product_stock_reminder_ticker_multi_location_1">Pengingat Stok akan diterapkan ke semua lokasi tokomu.</string>
+    <string name="product_stock_reminder_ticker_multi_location_2">Kamu akan menerima notifikasi jika jumlah stok utama kurang dari Batas Min. Stok di bawah ini.</string>
     <string name="product_stock_reminder_label_limit_stock">Batas Min. Stok</string>
     <string name="product_stock_reminder_label_status">Status</string>
     <string name="product_stock_reminder_min_stock_error">Min. %d</string>
@@ -133,7 +135,7 @@
     <string name="product_manage_add_etalase">Tambah Etalase</string>
     <string name="product_manage_etalase_search_hint">Cari nama etalase</string>
     <string name="product_manage_stock_information">Informasi Stok</string>
-    <string name="product_manage_stock_reminder_info">Informasi Pengingat Stok</string>
+    <string name="product_manage_stock_reminder_info">Info Pengingat Stok</string>
 
     <string name="product_manage_suspend_title">Pelanggaran produk</string>
 

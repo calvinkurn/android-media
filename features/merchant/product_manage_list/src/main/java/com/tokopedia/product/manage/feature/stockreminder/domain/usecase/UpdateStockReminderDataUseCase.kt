@@ -10,10 +10,10 @@ import com.tokopedia.product.manage.feature.stockreminder.data.source.cloud.resp
 import javax.inject.Inject
 
 class UpdateStockReminderDataUseCase @Inject constructor(
-        repository: GraphqlRepository
-): GraphqlUseCase<UpdateStockReminderResponse>(repository) {
+    repository: GraphqlRepository
+) : GraphqlUseCase<UpdateStockReminderResponse>(repository) {
 
-    companion object{
+    companion object {
         private const val PARAM_INPUT = "input"
     }
 
@@ -23,19 +23,13 @@ class UpdateStockReminderDataUseCase @Inject constructor(
         setTypeClass(UpdateStockReminderResponse::class.java)
     }
 
-    fun setParams(shopId: String, productId: String, warehouseId: String, threshold: String) {
-
-        val productWarehouseCreateParam = ProductWarehouseParam(productId, warehouseId, threshold)
-        val listProductWarehouseCreateParam = ArrayList<ProductWarehouseParam>()
-
-        listProductWarehouseCreateParam.add(productWarehouseCreateParam)
-
-        val stockReminderCreateParam = CreateUpdateStockReminderParam(shopId, true, listProductWarehouseCreateParam)
+    fun setParams(shopId: String, listProductWarehouseParam: ArrayList<ProductWarehouseParam>) {
+        val stockReminderCreateParam =
+            CreateUpdateStockReminderParam(shopId, true, listProductWarehouseParam)
         val params: Map<String, Any?> = mutableMapOf(
-                PARAM_INPUT to stockReminderCreateParam
+            PARAM_INPUT to stockReminderCreateParam
         )
         setRequestParams(params)
-
     }
 
 }

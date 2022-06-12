@@ -37,6 +37,9 @@ import com.tokopedia.product.manage.feature.stockreminder.view.adapter.ProductSt
 import com.tokopedia.product.manage.feature.stockreminder.view.data.ProductStockReminderUiModel
 import com.tokopedia.product.manage.feature.stockreminder.view.viewmodel.StockReminderViewModel
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.unifycomponents.ticker.Ticker
+import com.tokopedia.unifycomponents.ticker.TickerData
+import com.tokopedia.unifycomponents.ticker.TickerPagerAdapter
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -120,6 +123,14 @@ class StockReminderFragment : BaseDaggerFragment(),
         observeState()
     }
 
+    override fun onChangeStockReminder(productId: String, stock: Int, status: Int, isValid: Boolean) {
+        updateProductWareHouseList(productId) {
+            it.copy(threshold = stock.toString(), thresholdStatus = status.toString())
+        }
+        binding?.btnSaveReminder?.isEnabled = isValid
+
+    }
+
     private fun checkLogin() {
         if (!userSession.isLoggedIn) {
             RouteManager.route(context, ApplinkConst.LOGIN)
@@ -143,6 +154,15 @@ class StockReminderFragment : BaseDaggerFragment(),
             updateStockReminderObserver()
         )
         getStockReminder()
+
+        binding?.clEditAll?.showWithCondition(isVariant)
+
+        val tickerData = getTicker()
+        val tickerAdapter = TickerPagerAdapter(
+            requireContext(),
+            tickerData
+        )
+        binding?.tickerStockReminder?.addPagerView(tickerAdapter,tickerData)
 //
 
 
@@ -258,16 +278,10 @@ class StockReminderFragment : BaseDaggerFragment(),
     }
 
     private fun updateStockReminder() {
-        productId?.let { productId ->
-            warehouseId?.let { warehouseId ->
-                viewModel.updateStockReminder(
-                    userSession.shopId,
-                    productId,
-                    warehouseId,
-                    threshold.toString()
-                )
-            }
-        }
+        viewModel.updateStockReminder(
+            userSession.shopId,
+            listProductWarehouse
+        )
     }
 
     private fun getStockReminderObserver() =
@@ -405,6 +419,28 @@ class StockReminderFragment : BaseDaggerFragment(),
             }
         }
 
+    private fun getTicker(): List<TickerData> {
+        if (userSession.isMultiLocationShop) {
+            return listOf(
+                TickerData(
+                    description = activity?.getString(R.string.product_stock_reminder_ticker_multi_location_1).orEmpty(),
+                    type = Ticker.TYPE_ANNOUNCEMENT
+                ),
+                TickerData(
+                    description = activity?.getString(R.string.product_stock_reminder_ticker_multi_location_2).orEmpty(),
+                    type = Ticker.TYPE_ANNOUNCEMENT
+                )
+            )
+        }else{
+            return listOf(
+                TickerData(
+                    description = activity?.getString(R.string.product_stock_reminder_ticker).orEmpty(),
+                    type = Ticker.TYPE_ANNOUNCEMENT
+                ),
+            )
+        }
+    }
+
     private fun getProductWareHouseList(): List<ProductWarehouseParam> {
         return listProductWarehouse.toList()
     }
@@ -417,12 +453,5 @@ class StockReminderFragment : BaseDaggerFragment(),
             val index = listProductWarehouse.indexOf(it)
             listProductWarehouse[index] = block.invoke(it)
         }
-    }
-
-    override fun onChangeStockReminder(productId: String, stock: Int, status: Int) {
-        updateProductWareHouseList(productId) {
-            it.copy(threshold = stock.toString(), thresholdStatus = status.toString())
-        }
-
     }
 }

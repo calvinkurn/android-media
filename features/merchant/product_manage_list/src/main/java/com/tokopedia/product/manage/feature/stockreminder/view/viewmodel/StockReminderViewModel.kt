@@ -88,13 +88,11 @@ class StockReminderViewModel @Inject constructor(
 
     fun updateStockReminder(
         shopId: String,
-        productId: String,
-        wareHouseId: String,
-        threshold: String
+        listProductWarehouseParam: ArrayList<ProductWarehouseParam>
     ) {
         showLoading()
         launchCatchError(block = {
-            stockReminderDataUseCase.setUpdateStockParams(shopId, productId, wareHouseId, threshold)
+            stockReminderDataUseCase.setUpdateStockParams(shopId, listProductWarehouseParam)
             val updateStockReminder = stockReminderDataUseCase.executeUpdateStockReminder()
             updateStockReminderMutableLiveData.postValue(Success(updateStockReminder))
             hideLoading()

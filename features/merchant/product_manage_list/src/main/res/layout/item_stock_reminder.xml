@@ -32,7 +32,8 @@
         app:layout_constraintTop_toTopOf="@+id/tvProductName"
         app:qty_default_value="1"
         app:qty_min_value="1"
-        app:qty_max_value="100"/>
+        app:qty_max_value="100"
+        />
 
     <com.tokopedia.unifycomponents.selectioncontrol.SwitchUnify
         android:id="@+id/swStockReminder"
@@ -40,5 +41,6 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="16dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@id/qeStock" />
+        app:layout_constraintTop_toTopOf="@id/qeStock"
+        android:checked="true"/>
 </androidx.constraintlayout.widget.ConstraintLayout>

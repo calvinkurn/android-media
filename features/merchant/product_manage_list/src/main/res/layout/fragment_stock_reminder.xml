@@ -20,12 +20,65 @@
         app:tickerType="announcement"/>
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/clEditAll"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/tickerStockReminder">
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tvLabelEditAll"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:textColor="@color/Unify_NN950"
+            android:text="Atur Sekaligus"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="16dp"
+            android:textSize="14dp"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/ivEdit"/>
+
+        <com.tokopedia.iconunify.IconUnify
+            android:id="@+id/ivEdit"
+            android:layout_width="34dp"
+            android:layout_height="26dp"
+            app:icon_name="EDIT"
+            android:padding="2dp"
+            android:layout_marginEnd="19dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/tvLabelEditAll"
+            app:layout_constraintBottom_toBottomOf="@id/tvLabelEditAll"
+            />
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tvLabelEditAllDesc"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:textColor="@color/Unify_NN600"
+            android:text="Atur pengingat stok sekaligus"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            android:textSize="12dp"
+            app:typographyType="body_3"
+            app:layout_constraintTop_toBottomOf="@id/tvLabelEditAll"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/ivEdit" />
+
+        <com.tokopedia.unifycomponents.DividerUnify
+            android:id="@+id/divider"
+            android:layout_width="match_parent"
+            android:layout_height="8dp"
+            android:background="@color/Unify_NN50"
+            android:layout_marginTop="16dp"
+            app:layout_constraintTop_toBottomOf="@id/tvLabelEditAllDesc"/>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:layout_marginEnd="16dp"
         app:layout_constraintEnd_toStartOf="@id/tvLabelStatus"
-        app:layout_constraintTop_toBottomOf="@+id/tickerStockReminder">
+        app:layout_constraintTop_toBottomOf="@+id/clEditAll">
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tvLabelLimitStock"
             android:layout_width="wrap_content"
@@ -64,7 +117,7 @@
         android:textSize="14sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tickerStockReminder"
+        app:layout_constraintTop_toBottomOf="@+id/clEditAll"
         app:typographyType="body_2"
         />
 
@@ -100,6 +153,7 @@
             android:layout_marginRight="16dp"
             android:layout_marginBottom="8dp"
             android:text="@string/product_stock_reminder_button"
+            android:enabled="false"
             tools:ignore="RtlSymmetry" />
 
     </androidx.cardview.widget.CardView>

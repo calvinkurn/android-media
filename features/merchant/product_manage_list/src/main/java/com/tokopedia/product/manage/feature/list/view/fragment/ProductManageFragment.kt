@@ -207,7 +207,6 @@ import java.util.concurrent.TimeoutException
 import javax.inject.Inject
 import kotlin.collections.ArrayList
 import android.text.TextPaint
-import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.product.manage.common.feature.uploadstatus.constant.UploadStatusType
 import com.tokopedia.product.manage.feature.list.view.ui.bottomsheet.*
 
@@ -962,7 +961,7 @@ open class ProductManageFragment :
             ApplinkConstInternalMarketplace.STOCK_REMINDER,
             product.id,
             product.title,
-            product.isVariant().toString()
+            product.isVariant.toString()
         )
             .plus("?${ApplinkConstInternalMarketplace.ARGS_CACHE_MANAGER_ID}=$cacheManagerId")
         goToSellerMigrationPage(
@@ -1587,25 +1586,38 @@ open class ProductManageFragment :
     private fun initPopUpDialog(productId: String): DialogUnify {
         context?.let { context ->
             return DialogUnify(context, DialogUnify.VERTICAL_ACTION, DialogUnify.NO_IMAGE).apply {
-                val backgroundColor = MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_GN500)
+                val backgroundColor = MethodChecker.getColor(
+                    context,
+                    com.tokopedia.unifyprinciples.R.color.Unify_GN500
+                )
                 val spanText = SpannableString(getString(R.string.popup_tips_trick_clickable))
                 val textLinkLength = TEXT_LINK_LENGTH_END
                 val textLinkStart = TEXT_LINK_LENGTH_START
-                spanText.setSpan(object : ClickableSpan() {
-                    override fun onClick(v: View) {
-                        RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, URL_TIPS_TRICK))
-                        activity?.finish()
-                    }
-                    override fun updateDrawState(ds: TextPaint) {
-                        ds.color = backgroundColor
-                        ds.isUnderlineText = false
-                    }
-                },
+                spanText.setSpan(
+                    object : ClickableSpan() {
+                        override fun onClick(v: View) {
+                            RouteManager.route(
+                                context,
+                                String.format("%s?url=%s", ApplinkConst.WEBVIEW, URL_TIPS_TRICK)
+                            )
+                            activity?.finish()
+                        }
+
+                        override fun updateDrawState(ds: TextPaint) {
+                            ds.color = backgroundColor
+                            ds.isUnderlineText = false
+                        }
+                    },
                     spanText.length - textLinkLength,
                     spanText.length - textLinkStart,
                     Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
                 )
-                spanText.setSpan(StyleSpan(Typeface.BOLD), spanText.length - textLinkLength, spanText.length - textLinkStart, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+                spanText.setSpan(
+                    StyleSpan(Typeface.BOLD),
+                    spanText.length - textLinkLength,
+                    spanText.length - textLinkStart,
+                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+                )
 
                 setTitle(getString(R.string.popup_label_static))
                 setDescription(spanText)
@@ -1824,8 +1836,12 @@ open class ProductManageFragment :
         stockInfoBottomSheet.show()
     }
 
-    override fun onClickStockReminderInformation(stockAlertCount:Int) {
-        val stockReminderInfoBottomSheet = StockReminderInformationBottomSheet(childFragmentManager,stockAlertCount)
+    override fun onClickStockReminderInformation(stockAlertCount: Int, stockAlertActive: Boolean) {
+        val stockReminderInfoBottomSheet = StockReminderInformationBottomSheet(
+            childFragmentManager,
+            stockAlertCount,
+            stockAlertActive
+        )
         stockReminderInfoBottomSheet.show()
     }
 
@@ -2101,7 +2117,7 @@ open class ProductManageFragment :
             ApplinkConstInternalMarketplace.STOCK_REMINDER,
             productManageUiModel.id,
             productManageUiModel.title,
-            productManageUiModel.stock.toString()
+            productManageUiModel.isVariant.toString()
         )
         startActivityForResult(intent, REQUEST_CODE_STOCK_REMINDER)
     }

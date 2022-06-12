@@ -1,7 +1,5 @@
 package com.tokopedia.product.manage.feature.list.view.adapter.viewholder
 
-import android.graphics.ColorMatrix
-import android.graphics.ColorMatrixColorFilter
 import android.graphics.PorterDuff
 import android.view.View
 import androidx.annotation.LayoutRes
@@ -9,7 +7,6 @@ import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.image.ImageHandler.loadImageFitCenter
 import com.tokopedia.kotlin.extensions.orFalse
-import com.tokopedia.kotlin.extensions.orTrue
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.product.manage.R
 import com.tokopedia.product.manage.common.feature.list.data.model.ProductUiModel
@@ -47,6 +44,8 @@ class ProductViewHolder(
         showProductImage(product)
         showStockHintImage(product)
         showStockAlertImage(product)
+        showStockAlertActiveImage(product)
+
         showProductCheckBox(product)
         showProductTopAdsIcon(product)
         showCampaignCountText(product)
@@ -159,11 +158,23 @@ class ProductViewHolder(
         )
         binding?.imageStockReminder
             ?.showWithCondition(
-                product.hasStockAlert)
+                product.hasStockAlert && !product.stockAlertActive)
         binding?.clImage
             ?.showWithCondition(
                 binding?.imageStockInformation?.isVisible.orFalse()
                         || binding?.imageStockReminder?.isVisible.orFalse()
+            )
+    }
+
+    private fun showStockAlertActiveImage(product: ProductUiModel) {
+        binding?.imageStockAlertActive
+            ?.showWithCondition(
+                product.stockAlertActive)
+        binding?.clImage
+            ?.showWithCondition(
+                binding?.imageStockInformation?.isVisible.orFalse()
+                        || binding?.imageStockReminder?.isVisible.orFalse()
+                        || binding?.imageStockAlertActive?.isVisible.orFalse()
             )
     }
 
@@ -182,7 +193,14 @@ class ProductViewHolder(
         binding?.imageStockInformation?.setOnClickListener { listener.onClickStockInformation() }
         binding?.imageStockReminder?.setOnClickListener {
             listener.onClickStockReminderInformation(
-                product.stockAlertCount
+                product.stockAlertCount,
+                product.stockAlertActive
+            )
+        }
+        binding?.imageStockAlertActive?.setOnClickListener {
+            listener.onClickStockReminderInformation(
+                product.stockAlertCount,
+                product.stockAlertActive
             )
         }
         binding?.btnContactCS?.setOnClickListener { listener.onClickContactCsButton(product) }
@@ -286,7 +304,7 @@ class ProductViewHolder(
 
     interface ProductViewHolderView {
         fun onClickStockInformation()
-        fun onClickStockReminderInformation(stockAlertCount: Int)
+        fun onClickStockReminderInformation(stockAlertCount: Int, stockAlertActive: Boolean)
         fun onClickMoreOptionsButton(product: ProductUiModel)
         fun onClickProductItem(product: ProductUiModel)
         fun onClickProductCheckBox(isChecked: Boolean, position: Int)

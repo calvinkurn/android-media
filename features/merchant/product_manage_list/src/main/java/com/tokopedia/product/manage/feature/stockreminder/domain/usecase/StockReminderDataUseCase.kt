@@ -11,7 +11,7 @@ class StockReminderDataUseCase @Inject constructor(private val getStockReminderD
 
     fun setCreateStockParams(shopId: String, listProductWarehouseParam : ArrayList<ProductWarehouseParam>) = createStockReminderDataUseCase.setParams(shopId, listProductWarehouseParam)
 
-    fun setUpdateStockParams(shopId: String, productId: String, warehouseId: String, threshold: String) = updateStockReminderDataUseCase.setParams(shopId, productId, warehouseId, threshold)
+    fun setUpdateStockParams(shopId: String, listProductWarehouseParam : ArrayList<ProductWarehouseParam>) = updateStockReminderDataUseCase.setParams(shopId, listProductWarehouseParam)
 
     suspend fun executeGetStockReminder() = getStockReminderDataUseCase.executeOnBackground()
 
