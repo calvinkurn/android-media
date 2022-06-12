@@ -33,18 +33,25 @@
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/home_component_mission_widget_rcv"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            tools:visibility="visible"/>
 
         <include
             android:id="@+id/shimmering_mission_widget"
-            layout="@layout/home_component_mission_widget_shimmering"/>
+            layout="@layout/home_component_mission_widget_shimmering"
+            android:visibility="gone"
+            tools:visibility="visible"/>
 
         <com.tokopedia.unifycomponents.LocalLoad
             android:id="@+id/refresh_mission_widget"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginHorizontal="12dp"
             app:unify_local_load_title="@string/mission_widget_failed_title"
-        app:unify_local_load_description="@string/mission_widget_failed_description"/>
+            app:unify_local_load_description="@string/mission_widget_failed_description"
+            android:visibility="gone"
+            tools:visibility="visible"/>
 
     </LinearLayout>
 
