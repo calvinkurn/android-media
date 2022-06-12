@@ -3,7 +3,6 @@ package com.tokopedia.home.beranda.domain.interactor.usecase
 import android.content.Context
 import android.os.Bundle
 import android.util.Log
-import android.widget.LinearLayout
 import com.google.gson.Gson
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.home.beranda.data.datasource.local.HomeRoomDataSource
@@ -31,7 +30,6 @@ import com.tokopedia.home_component.model.ReminderEnum
 import com.tokopedia.home_component.usecase.featuredshop.DisplayHeadlineAdsEntity
 import com.tokopedia.home_component.usecase.featuredshop.mappingTopAdsHeaderToChannelGrid
 import com.tokopedia.home_component.util.MissionWidgetUtil
-import com.tokopedia.home_component.util.toDpInt
 import com.tokopedia.home_component.visitable.FeaturedShopDataModel
 import com.tokopedia.home_component.visitable.MissionWidgetDataModel
 import com.tokopedia.home_component.visitable.MissionWidgetListDataModel
@@ -47,7 +45,6 @@ import com.tokopedia.recommendation_widget_common.widget.bestseller.model.BestSe
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
-import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
@@ -217,10 +214,14 @@ class HomeDynamicChannelUseCase @Inject constructor(
                         )
                     }
 
-                    try {
-                        dynamicChannelPlainResponse.getWidgetDataIfExist<
-                                MissionWidgetListDataModel,
-                                HomeMissionWidgetData.HomeMissionWidget>(widgetRepository = homeMissionWidgetRepository) { visitableFound, data, position ->
+                    dynamicChannelPlainResponse.getWidgetDataIfExistHandleError<
+                            MissionWidgetListDataModel,
+                            HomeMissionWidgetData.HomeMissionWidget>(
+                        widgetRepository = homeMissionWidgetRepository,
+                        handleOnFailed = { visitableFound, visitablePosition ->
+                            visitableFound.copy(status = MissionWidgetListDataModel.STATUS_ERROR)
+                        },
+                        mapToWidgetData = { visitableFound, data, position ->
                             val resultList =
                                 convertMissionWidgetDataList(data.getHomeMissionWidget.missions)
                             val subtitleHeight = applicationContext?.let {
@@ -236,10 +237,7 @@ class HomeDynamicChannelUseCase @Inject constructor(
                                 subtitleHeight = subtitleHeight
                             )
                         }
-                    }
-                    catch (e: Exception) {
-                        e.printStackTrace()
-                    }
+                    )
 
                     dynamicChannelPlainResponse.getWidgetDataIfExist<
                             FeaturedShopDataModel,
@@ -576,6 +574,59 @@ class HomeDynamicChannelUseCase @Inject constructor(
                 ) {}
             }
             HomeServerLogger.warning_home_repository_error(e, T::class.java.simpleName, K::class.java.simpleName)
+        }
+        return this
+    }
+
+    private suspend inline fun <reified T: Visitable<*>, reified K> HomeDynamicChannelModel.getWidgetDataIfExistHandleError(
+            bundleParam: (T) -> Bundle = { Bundle() },
+            widgetRepository: HomeRepository<K>,
+            predicate: (T?) -> Boolean = {true},
+            deleteWidgetWhen:(K?) -> Boolean = {false},
+            onWidgetExist: (Int) -> Unit = {},
+            mapToWidgetData: (T, K, Int) -> T,
+            handleOnFailed: (T, Int) -> T
+    ): HomeDynamicChannelModel {
+        findWidgetList<T>(this, predicate) { indexedValueList ->
+            onWidgetExist.invoke(indexedValueList.size)
+            indexedValueList.forEach {
+                val visitableFound = it.value
+                val visitablePosition = it.index
+                try {
+                    val data = widgetRepository.getRemoteData(bundleParam.invoke(visitableFound))
+                    if (!deleteWidgetWhen.invoke(data)) {
+                        this.updateWidgetModel(
+                            visitable = mapToWidgetData.invoke(
+                                visitableFound,
+                                data,
+                                visitablePosition
+                            ),
+                            visitableToChange = visitableFound,
+                            position = visitablePosition
+                        ) {
+                            //no-op
+                        }
+                    } else {
+                        this.deleteWidgetModel(
+                            visitable = visitableFound,
+                            position = visitablePosition
+                        ) {
+                            //no-op
+                        }
+                    }
+                } catch (e: Exception) {
+                    this.updateWidgetModel(
+                        visitable = handleOnFailed.invoke(
+                            visitableFound,
+                            visitablePosition
+                        ),
+                        visitableToChange = visitableFound,
+                        position = visitablePosition
+                    ) {
+                        //no-op
+                    }
+                }
+            }
         }
         return this
     }

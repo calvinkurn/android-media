@@ -22,14 +22,10 @@ class HomeMissionWidgetRepository @Inject constructor(
     }
 
     override suspend fun executeOnBackground(): HomeMissionWidgetData.HomeMissionWidget {
-        try {
-            graphqlUseCase.clearCache()
-            graphqlUseCase.setRequestParams(generateParam())
-            val response = graphqlUseCase.executeOnBackground()
-            return response
-        } catch (e: Exception) {
-            return getCachedData()
-        }
+        graphqlUseCase.clearCache()
+        graphqlUseCase.setRequestParams(generateParam())
+        val response = graphqlUseCase.executeOnBackground()
+        return response
     }
 
     companion object{
