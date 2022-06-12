@@ -20,6 +20,7 @@ import com.tokopedia.home.beranda.domain.model.HomeFlag
 import com.tokopedia.home.beranda.domain.model.recharge_recommendation.RechargeRecommendation
 import com.tokopedia.home.beranda.domain.model.review.SuggestedProductReview
 import com.tokopedia.home.beranda.domain.model.salam_widget.SalamWidget
+import com.tokopedia.home.beranda.helper.MissionWidgetHelper
 import com.tokopedia.home.beranda.helper.Result
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.HomeDynamicChannelModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.*
@@ -223,7 +224,7 @@ class HomeDynamicChannelUseCase @Inject constructor(
                         },
                         mapToWidgetData = { visitableFound, data, position ->
                             val resultList =
-                                convertMissionWidgetDataList(data.getHomeMissionWidget.missions)
+                                MissionWidgetHelper.convertMissionWidgetDataList(data.getHomeMissionWidget.missions)
                             val subtitleHeight = applicationContext?.let {
                                 MissionWidgetUtil.findMaxHeightSubtitleText(
                                     resultList,
@@ -494,23 +495,6 @@ class HomeDynamicChannelUseCase @Inject constructor(
                             imageUrl = pojo.imageUrl,
                             title = pojo.keyword,
                             productCount = pojo.productCount)
-            )
-        }
-        return dataList
-    }
-
-    private fun convertMissionWidgetDataList(missionWidgetList: List<HomeMissionWidgetData.Mission>): MutableList<MissionWidgetDataModel> {
-        val dataList: MutableList<MissionWidgetDataModel> = mutableListOf()
-        for (pojo in missionWidgetList) {
-            dataList.add(
-                    MissionWidgetDataModel(
-                        id = pojo.id,
-                        title = pojo.title,
-                        subTitle = pojo.subTitle,
-                        appLink = pojo.appLink,
-                        url = pojo.url,
-                        imageURL = pojo.imageURL
-                    )
             )
         }
         return dataList

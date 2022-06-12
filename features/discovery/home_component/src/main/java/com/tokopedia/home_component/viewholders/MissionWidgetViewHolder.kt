@@ -96,6 +96,9 @@ class MissionWidgetViewHolder(
         if (element.isShowMissionWidget()) {
             binding?.homeComponentHeaderView?.show()
             binding?.root?.show()
+            binding?.refreshMissionWidget?.refreshBtn?.setOnClickListener {
+                missionWidgetComponentListener.refreshMissionWidget(element)
+            }
             setHeaderComponent(element = element)
             setChannelDivider(element)
             when (element.status) {

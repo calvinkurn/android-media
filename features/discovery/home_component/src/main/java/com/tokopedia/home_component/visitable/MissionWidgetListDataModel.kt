@@ -34,13 +34,11 @@ data class MissionWidgetListDataModel(
     }
 
     override fun equalsWith(b: Any?): Boolean {
-        return if (b is MerchantVoucherDataModel) {
-            channelModel.channelConfig.createdTimeMillis == b.channelModel.channelConfig.createdTimeMillis
-        } else false
+        return this === b
     }
 
     override fun getChangePayloadFrom(b: Any?): Bundle? {
-        return Bundle()
+        return Bundle.EMPTY
     }
 
     override fun type(typeFactory: HomeComponentTypeFactory): Int {

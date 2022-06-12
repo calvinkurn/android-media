@@ -21,17 +21,16 @@ class HomeMissionWidgetRepository @Inject constructor(
         graphqlUseCase.setCacheStrategy(GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build())
     }
 
-    override suspend fun executeOnBackground(): HomeMissionWidgetData.HomeMissionWidget {
-        graphqlUseCase.clearCache()
-        graphqlUseCase.setRequestParams(generateParam())
-        val response = graphqlUseCase.executeOnBackground()
-        return response
-    }
-
     companion object{
         private const val TYPE = "type"
         private const val LOCATION = "location"
         private const val DEFAULT_VALUE = ""
+    }
+
+    override suspend fun executeOnBackground(): HomeMissionWidgetData.HomeMissionWidget {
+        graphqlUseCase.clearCache()
+        graphqlUseCase.setRequestParams(generateParam())
+        return graphqlUseCase.executeOnBackground()
     }
 
     private fun generateParam(): Map<String, Any?> {
