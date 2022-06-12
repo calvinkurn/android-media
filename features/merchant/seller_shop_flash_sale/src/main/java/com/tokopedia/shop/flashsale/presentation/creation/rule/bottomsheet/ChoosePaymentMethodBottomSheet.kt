@@ -1,6 +1,7 @@
 package com.tokopedia.shop.flashsale.presentation.creation.rule.bottomsheet
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.os.Bundle
 import android.text.SpannableString
 import android.view.LayoutInflater
@@ -16,6 +17,17 @@ import com.tokopedia.utils.lifecycle.autoClearedNullable
 class ChoosePaymentMethodBottomSheet : BottomSheetUnify() {
 
     companion object {
+        @JvmStatic
+        fun createInstance(context: Context): ChoosePaymentMethodBottomSheet =
+            ChoosePaymentMethodBottomSheet().apply {
+                val view = View.inflate(
+                    context,
+                    R.layout.ssfs_bottom_sheet_choose_payment_method,
+                    null
+                )
+                setChild(view)
+            }
+
         private const val TAG = "ChoosePaymentMethodBottomSheet"
     }
 

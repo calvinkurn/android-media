@@ -31,3 +31,7 @@ fun String.toColor(): Int {
         Color.WHITE
     }
 }
+
+fun String.toHexColor() : String{
+    return "#${this}"
+}

@@ -9,8 +9,8 @@ import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.shop.flashsale.common.constant.Constant
 import com.tokopedia.shop.flashsale.common.constant.DateConstant
-import com.tokopedia.shop.flashsale.common.extension.formatTo
-import com.tokopedia.shop.flashsale.common.extension.toCalendar
+import com.tokopedia.shop.flashsale.common.extension.localFormatTo
+import com.tokopedia.shop.flashsale.common.extension.minuteOnly
 import com.tokopedia.shop.flashsale.data.mapper.DoSellerCampaignCreationMapper
 import com.tokopedia.shop.flashsale.data.request.DoSellerCampaignCreationRequest
 import com.tokopedia.shop.flashsale.data.response.DoSellerCampaignCreationResponse
@@ -29,7 +29,6 @@ class DoSellerCampaignCreationUseCase @Inject constructor(
 ) : GraphqlUseCase<CampaignCreationResult>(repository) {
 
     companion object {
-        private const val DECREASED_BY_ONE_HOUR = -1
         private const val REQUEST_PARAM_KEY = "params"
         private const val QUERY_NAME = "DoSellerCampaignCreation"
         private const val QUERY = """
@@ -84,18 +83,14 @@ class DoSellerCampaignCreationUseCase @Inject constructor(
             is CampaignAction.Update -> params.action.campaignId
         }
 
-        val startDate = params.scheduledStart.toCalendar()
-        startDate.add(Calendar.HOUR_OF_DAY, DECREASED_BY_ONE_HOUR)
-        val adjustedUpcomingTime = startDate.time
-
         val payload = DoSellerCampaignCreationRequest(
             actionId,
             CampaignType.FLASH_SALE.id,
             campaignId,
             params.campaignName,
-            params.scheduledStart.formatTo(DateConstant.DATE_TIME),
-            params.scheduledEnd.formatTo(DateConstant.DATE_TIME),
-            adjustedUpcomingTime.formatTo(DateConstant.DATE_TIME),
+            params.scheduledStart.minuteOnly().localFormatTo(DateConstant.DATE_TIME),
+            params.scheduledEnd.minuteOnly().localFormatTo(DateConstant.DATE_TIME),
+            params.teaserDate.minuteOnly().localFormatTo(DateConstant.DATE_TIME),
             params.campaignRelation,
             params.isCampaignRuleSubmit,
             DoSellerCampaignCreationRequest.GradientColorInput(
@@ -103,11 +98,11 @@ class DoSellerCampaignCreationUseCase @Inject constructor(
                 params.secondColor
             ),
             params.showTeaser,
-            params.paymentType?.id,
-            params.thematicParticipation,
-            DoSellerCampaignCreationRequest.ThematicInfo(params.thematicId, params.subThematicId)
+            params.paymentType.id
         )
+
         val requestParams = mapOf(REQUEST_PARAM_KEY to payload)
+
         return GraphqlRequest(
             DoSellerCampaignCreation(),
             DoSellerCampaignCreationResponse::class.java,
@@ -120,15 +115,13 @@ class DoSellerCampaignCreationUseCase @Inject constructor(
         val campaignName: String,
         val scheduledStart: Date,
         val scheduledEnd: Date,
+        val teaserDate : Date,
         val campaignRelation: List<Long> = emptyList(),
         val isCampaignRuleSubmit: Boolean = false,
         val firstColor: String,
         val secondColor: String,
         val showTeaser: Boolean = false,
-        val paymentType: PaymentType? = null,
-        val thematicParticipation: Boolean = false,
-        val thematicId: Long = 0,
-        val subThematicId: Long = 0
+        val paymentType: PaymentType
     )
 
 }

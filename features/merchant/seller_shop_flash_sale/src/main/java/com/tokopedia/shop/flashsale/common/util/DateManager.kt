@@ -13,6 +13,11 @@ class DateManager @Inject constructor() {
         private const val THREE_MONTH_FROM_NOW = 3
     }
 
+    fun getCurrentDate(): Date {
+        return Date()
+    }
+
+
     fun getCurrentMonth(): Int {
         val calendar = Calendar.getInstance()
         return calendar.get(Calendar.MONTH) + ADVANCE_BY_ONE
@@ -42,11 +47,6 @@ class DateManager @Inject constructor() {
         return calendar.time
     }
 
-    fun decreaseHourBy(date: Date, desiredHourToBeDecreased: Int): Date {
-        val now = Calendar.getInstance()
-        now.time = date
-        now.add(Calendar.HOUR_OF_DAY, desiredHourToBeDecreased)
-        return now.time
-    }
+
 }
 

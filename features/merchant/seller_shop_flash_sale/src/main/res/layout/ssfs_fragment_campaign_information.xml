@@ -39,8 +39,10 @@
                 app:layout_constraintEnd_toStartOf="@+id/imgCampaignNameHelper"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:unify_text_field_label_static="true"
-                app:unify_text_field_placeholder="@string/sfs_campaign_name" />
+                app:unify_text_field_counter="15"
+                app:unify_text_field_input_type="text"
+                app:unify_text_field_label="@string/sfs_campaign_name"
+                app:unify_text_field_maxline="1" />
 
             <com.tokopedia.unifycomponents.ImageUnify
                 android:id="@+id/imgCampaignNameHelper"
@@ -59,6 +61,26 @@
                 android:orientation="vertical"
                 app:layout_constraintGuide_percent="0.5" />
 
+            <com.tokopedia.unifycomponents.ticker.Ticker
+                android:id="@+id/tickerLapsedSchedule"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/unify_space_16"
+                android:layout_marginTop="@dimen/unify_space_8"
+                android:layout_marginEnd="@dimen/unify_space_16"
+                android:visibility="gone"
+                app:closeButtonVisibility="gone"
+                app:descriptionText="@string/sfs_error_message_schedule_lapsed_description"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tauCampaignName"
+                app:tickerShapeType="loose"
+                app:tickerType="error"
+                app:titleText="@string/sfs_error_message_schedule_lapsed_title"
+                tools:visibility="visible">
+
+            </com.tokopedia.unifycomponents.ticker.Ticker>
+
             <com.tokopedia.unifycomponents.TextAreaUnify2
                 android:id="@+id/tauStartDate"
                 android:layout_width="0dp"
@@ -68,9 +90,9 @@
                 android:layout_marginEnd="@dimen/unify_space_8"
                 app:layout_constraintEnd_toStartOf="@+id/guideline2"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tauCampaignName"
-                app:unify_text_field_label_static="true"
-                app:unify_text_field_placeholder="@string/sfs_schedule_start_date" />
+                app:layout_constraintTop_toBottomOf="@+id/tickerLapsedSchedule"
+                app:unify_text_field_label="@string/sfs_schedule_start_date"
+                app:unify_text_field_label_static="true" />
 
             <com.tokopedia.unifycomponents.TextAreaUnify2
                 android:id="@+id/tauEndDate"
@@ -81,22 +103,10 @@
                 android:layout_marginEnd="@dimen/unify_space_16"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="@+id/guideline2"
-                app:layout_constraintTop_toBottomOf="@+id/tauCampaignName"
+                app:layout_constraintTop_toBottomOf="@+id/tickerLapsedSchedule"
+                app:unify_text_field_label="@string/sfs_schedule_end_date"
                 app:unify_text_field_label_static="true"
-                app:unify_text_field_placeholder="@string/sfs_schedule_end_date" />
-
-            <com.tokopedia.unifyprinciples.Typography
-                android:id="@+id/tpgMinDuration"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/unify_space_8"
-                android:layout_marginTop="@dimen/unify_space_8"
-                android:text="@string/sfs_min_duration"
-                app:layout_constraintEnd_toEndOf="@+id/tauEndDate"
-                app:layout_constraintHorizontal_bias="0.0"
-                app:layout_constraintStart_toStartOf="@+id/tauEndDate"
-                app:layout_constraintTop_toBottomOf="@+id/tauEndDate"
-                app:typographyType="body_3" />
+                app:unify_text_field_message="@string/sfs_min_duration" />
 
             <com.tokopedia.unifycomponents.DividerUnify
                 android:id="@+id/dividerUnify"
@@ -105,7 +115,7 @@
                 android:layout_marginTop="@dimen/unify_space_16"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/tpgMinDuration" />
+                app:layout_constraintTop_toBottomOf="@id/tauEndDate" />
 
             <com.tokopedia.unifycomponents.selectioncontrol.SwitchUnify
                 android:id="@+id/switchTeaser"
@@ -115,6 +125,24 @@
                 android:layout_marginTop="@dimen/unify_space_8"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="@+id/tpgTeaserDescription" />
+
+            <com.tokopedia.unifycomponents.ticker.Ticker
+                android:id="@+id/tickerLapsedTeaser"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/unify_space_16"
+                android:layout_marginTop="@dimen/unify_space_8"
+                android:layout_marginEnd="@dimen/unify_space_16"
+                android:visibility="gone"
+                app:closeButtonVisibility="gone"
+                app:descriptionText="@string/sfs_error_message_teaser_schedule_lapsed_description"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/dividerUnify"
+                app:tickerShapeType="loose"
+                app:tickerType="error"
+                app:titleText="@string/sfs_error_message_teaser_schedule_lapsed_title"
+                tools:visibility="visible" />
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tpgTeaserDescription"
@@ -126,7 +154,7 @@
                 android:text="@string/sfs_teaser_description"
                 app:layout_constraintEnd_toStartOf="@+id/imgCampaignTeaserHelper"
                 app:layout_constraintStart_toEndOf="@id/switchTeaser"
-                app:layout_constraintTop_toBottomOf="@+id/dividerUnify"
+                app:layout_constraintTop_toBottomOf="@+id/tickerLapsedTeaser"
                 app:layout_goneMarginTop="@dimen/unify_space_16"
                 app:typographyType="body_2" />
 
@@ -147,12 +175,13 @@
                 android:layout_marginTop="@dimen/unify_space_12"
                 app:layout_constraintStart_toStartOf="@+id/tpgTeaserDescription"
                 app:layout_constraintTop_toBottomOf="@+id/tpgTeaserDescription"
-                app:qty_default_value="0"
+                app:qty_default_value="1"
                 app:qty_max_value="24"
-                app:qty_min_value="0"
+                app:qty_min_value="1"
                 app:unify_qty_step_value="1" />
 
             <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/tpgTeaserDurationBefore"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/unify_space_16"
@@ -210,11 +239,69 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/contentSwitcher"
-                app:layout_constraintVertical_bias="0.0" />
+                app:layout_constraintVertical_bias="0.0"
+                tools:visibility="gone" />
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/imgHexColorPreview"
+                android:layout_width="@dimen/unify_space_48"
+                android:layout_height="@dimen/unify_space_48"
+                android:layout_marginStart="@dimen/unify_space_16"
+                android:layout_marginEnd="@dimen/unify_space_16"
+                android:background="@drawable/sfs_shape_rounded_color"
+                app:layout_constraintBottom_toBottomOf="@+id/tauHexColor"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/tauHexColor" />
+
+            <com.tokopedia.unifycomponents.TextAreaUnify2
+                android:id="@+id/tauHexColor"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/unify_space_16"
+                android:layout_marginTop="@dimen/unify_space_16"
+                android:layout_marginEnd="@dimen/unify_space_8"
+                android:layout_marginBottom="@dimen/unify_space_16"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/btnApply"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toEndOf="@id/imgHexColorPreview"
+                app:layout_constraintTop_toBottomOf="@+id/contentSwitcher"
+                app:layout_constraintVertical_bias="0.0"
+                app:unify_text_field_label="@string/sfs_hex_code"
+                app:unify_text_field_prepend_text="@string/sfs_hashtag" />
+
+            <com.tokopedia.unifycomponents.UnifyButton
+                android:id="@+id/btnApply"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="@dimen/unify_space_16"
+                android:minWidth="@dimen/unify_space_96"
+                android:text="@string/sfs_apply"
+                android:visibility="invisible"
+                app:layout_constraintBottom_toBottomOf="@+id/tauHexColor"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/tauHexColor"
+                app:unifyButtonType="main"
+                app:unifyButtonVariant="ghost"
+                tools:visibility="visible" />
+
+            <androidx.constraintlayout.widget.Group
+                android:id="@+id/groupHexColorPicker"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                app:constraint_referenced_ids="imgHexColorPreview,tauHexColor" />
+
+            <androidx.constraintlayout.widget.Group
+                android:id="@+id/groupTeaserSettings"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:constraint_referenced_ids="quantityEditor, tpgTeaserDurationBefore" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>
-
 
     <androidx.cardview.widget.CardView
         android:id="@+id/cardView"
@@ -252,6 +339,7 @@
                 android:layout_marginTop="@dimen/unify_space_8"
                 android:layout_marginEnd="@dimen/unify_space_16"
                 android:layout_marginBottom="@dimen/unify_space_8"
+                android:enabled="false"
                 android:text="@string/sfs_save_next"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -262,4 +350,5 @@
         </androidx.constraintlayout.widget.ConstraintLayout>
 
     </androidx.cardview.widget.CardView>
+
 </androidx.constraintlayout.widget.ConstraintLayout>
