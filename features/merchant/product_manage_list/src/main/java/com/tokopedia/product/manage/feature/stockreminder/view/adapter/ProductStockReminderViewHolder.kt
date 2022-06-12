@@ -120,6 +120,9 @@ class ProductStockReminderViewHolder(
                 )
 
             }
+            else -> {
+                binding?.qeStock?.errorMessageText = String.EMPTY
+            }
         }
     }
 
