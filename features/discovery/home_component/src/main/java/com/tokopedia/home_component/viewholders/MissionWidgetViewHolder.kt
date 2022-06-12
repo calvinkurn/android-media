@@ -1,8 +1,6 @@
 package com.tokopedia.home_component.viewholders
 
-import android.content.Context
 import android.view.View
-import android.widget.LinearLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
@@ -18,9 +16,9 @@ import com.tokopedia.home_component.productcardgridcarousel.listener.CommonProdu
 import com.tokopedia.home_component.productcardgridcarousel.typeFactory.CommonCarouselProductCardTypeFactoryImpl
 import com.tokopedia.home_component.util.ChannelWidgetUtil
 import com.tokopedia.home_component.viewholders.adapter.MissionWidgetAdapter
-import com.tokopedia.home_component.visitable.MissionWidgetDataModel
 import com.tokopedia.home_component.visitable.MissionWidgetListDataModel
-import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.utils.view.binding.viewBinding
 
 /**
@@ -37,7 +35,7 @@ class MissionWidgetViewHolder(
         val LAYOUT = R.layout.global_component_mission_widget
     }
 
-    private var binding : GlobalComponentMissionWidgetBinding? by viewBinding()
+    private var binding: GlobalComponentMissionWidgetBinding? by viewBinding()
     private var adapter: MissionWidgetAdapter? = null
 
     private fun setHeaderComponent(element: MissionWidgetListDataModel) {
@@ -77,7 +75,7 @@ class MissionWidgetViewHolder(
     }
 
     private fun convertDataToMissionWidgetData(element: MissionWidgetListDataModel): MutableList<Visitable<*>> {
-        val list : MutableList<Visitable<*>> = mutableListOf()
+        val list: MutableList<Visitable<*>> = mutableListOf()
         for (missionWidget in element.missionWidgetList) {
             list.add(
                 CarouselMissionWidgetDataModel(
@@ -95,15 +93,39 @@ class MissionWidgetViewHolder(
     }
 
     private fun setLayoutByStatus(element: MissionWidgetListDataModel) {
-        binding?.homeComponentMissionWidgetRcv?.setHasFixedSize(true)
-        valuateRecyclerViewDecoration()
-        val visitables = convertDataToMissionWidgetData(element)
-        mappingItem(element.channelModel, visitables)
+        if (element.isShowMissionWidget()) {
+            binding?.homeComponentHeaderView?.show()
+            binding?.root?.show()
+            setHeaderComponent(element = element)
+            setChannelDivider(element)
+            when (element.status) {
+                MissionWidgetListDataModel.STATUS_LOADING -> {
+                    binding?.refreshMissionWidget?.gone()
+                    binding?.homeComponentMissionWidgetRcv?.gone()
+                    binding?.shimmeringMissionWidget?.root?.show()
+                }
+                MissionWidgetListDataModel.STATUS_ERROR -> {
+                    binding?.refreshMissionWidget?.show()
+                    binding?.homeComponentMissionWidgetRcv?.gone()
+                    binding?.shimmeringMissionWidget?.root?.gone()
+                }
+                else -> {
+                    binding?.refreshMissionWidget?.gone()
+                    binding?.homeComponentMissionWidgetRcv?.show()
+                    binding?.shimmeringMissionWidget?.root?.gone()
+                    binding?.homeComponentMissionWidgetRcv?.setHasFixedSize(true)
+                    valuateRecyclerViewDecoration()
+                    val visitables = convertDataToMissionWidgetData(element)
+                    mappingItem(element.channelModel, visitables)
+                }
+            }
+        } else {
+            binding?.homeComponentHeaderView?.gone()
+            binding?.root?.gone()
+        }
     }
 
     override fun bind(element: MissionWidgetListDataModel) {
-        setHeaderComponent(element = element)
-        setChannelDivider(element)
         setLayoutByStatus(element)
     }
 

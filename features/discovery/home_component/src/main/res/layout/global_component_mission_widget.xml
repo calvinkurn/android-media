@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    android:id="@+id/container_mission_widget"
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -22,7 +24,7 @@
         app:layout_constraintTop_toBottomOf="@id/home_component_divider_header" />
 
     <LinearLayout
-        android:id="@+id/container_mission_widget"
+        android:id="@+id/container_mission_widget_item"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
@@ -60,7 +62,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:visibility="gone"
-        app:layout_constraintTop_toBottomOf="@id/container_mission_widget"
+        app:layout_constraintTop_toBottomOf="@id/container_mission_widget_item"
         tools:background="@color/Unify_B500"
         tools:layout_height="8dp"
         tools:visibility="visible" />
