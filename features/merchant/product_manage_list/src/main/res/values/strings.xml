@@ -131,6 +131,8 @@
     <string name="product_manage_add_etalase">Tambah Etalase</string>
     <string name="product_manage_etalase_search_hint">Cari nama etalase</string>
     <string name="product_manage_stock_information">Informasi Stok</string>
+    <string name="product_manage_stock_reminder_info">Informasi Pengingat Stok</string>
+
     <string name="product_manage_suspend_title">Pelanggaran produk</string>
 
     <string name="product_manage_list_empty_search">Oops, produk yang kamu cari tidak ditemukan.</string>
