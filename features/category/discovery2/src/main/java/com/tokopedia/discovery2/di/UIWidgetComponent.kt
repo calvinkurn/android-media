@@ -37,6 +37,7 @@ import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.shop
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.tabs.TabsViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.tokopoints.TokopointsViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.topadsheadline.TopAdsHeadlineViewModel
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.topquest.TopQuestViewModel
 import dagger.Subcomponent
 
 
@@ -79,5 +80,6 @@ interface UIWidgetComponent {
     fun inject(myCouponItemViewModel: MyCouponItemViewModel)
     fun inject(viewModel: ProductCardSingleViewModel)
     fun inject(shopBannerInfiniteViewModel: ShopBannerInfiniteViewModel)
+    fun inject(viewModel: TopQuestViewModel)
 
 }

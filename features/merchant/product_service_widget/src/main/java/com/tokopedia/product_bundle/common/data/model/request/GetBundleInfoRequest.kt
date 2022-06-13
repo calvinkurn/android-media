@@ -30,7 +30,9 @@ data class RequestData(
     @SerializedName("BundleGroup")
     val BundleGroup: Boolean = false,
     @SerializedName("Preorder")
-    val Preorder: Boolean = false
+    val Preorder: Boolean = false,
+    @SerializedName("BundleStats")
+    val BundleStats: Boolean = false
 )
 
 data class ProductInfo(

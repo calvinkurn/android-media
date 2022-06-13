@@ -46,6 +46,7 @@ import com.tokopedia.localizationchooseaddress.domain.response.GetStateChosenAdd
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.minicart.common.analytics.MiniCartAnalytics
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
+import com.tokopedia.minicart.common.domain.usecase.MiniCartSource
 import com.tokopedia.minicart.common.widget.MiniCartWidget
 import com.tokopedia.minicart.common.widget.MiniCartWidgetListener
 import com.tokopedia.product.detail.common.AtcVariantHelper
@@ -1313,7 +1314,8 @@ class TokoNowHomeFragment: Fragment(),
         if(showMiniCartWidget && !outOfCoverage) {
             val pageName = MiniCartAnalytics.Page.HOME_PAGE
             val shopIds = listOf(localCacheModel?.shop_id.orEmpty())
-            miniCartWidget?.initialize(shopIds, this, this, pageName = pageName)
+            val source = MiniCartSource.TokonowHome
+            miniCartWidget?.initialize(shopIds, this, this, pageName = pageName, source = source)
             miniCartWidget?.show()
             hideStickyLogin()
 

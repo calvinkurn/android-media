@@ -11,6 +11,7 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.localizationchooseaddress.domain.usecase.GetChosenAddressWarehouseLocUseCase
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
+import com.tokopedia.minicart.common.domain.usecase.MiniCartSource
 import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.viewutil.RecomPageConstant.TOKONOW_CLP
 import com.tokopedia.recommendation_widget_common.viewutil.RecomPageConstant.TOKONOW_NO_RESULT
@@ -42,9 +43,11 @@ import com.tokopedia.tokopedianow.searchcategory.cartservice.CartService
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.CategoryTitle
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.TitleDataView
 import com.tokopedia.tokopedianow.searchcategory.presentation.viewmodel.BaseSearchCategoryViewModel
-import com.tokopedia.tokopedianow.searchcategory.utils.*
+import com.tokopedia.tokopedianow.searchcategory.utils.ABTestPlatformWrapper
+import com.tokopedia.tokopedianow.searchcategory.utils.CATEGORY_GRID_TITLE
 import com.tokopedia.tokopedianow.searchcategory.utils.CATEGORY_ID
 import com.tokopedia.tokopedianow.searchcategory.utils.CATEGORY_LIST_DEPTH
+import com.tokopedia.tokopedianow.searchcategory.utils.ChooseAddressWrapper
 import com.tokopedia.tokopedianow.searchcategory.utils.TOKONOW_DIRECTORY
 import com.tokopedia.tokopedianow.searchcategory.utils.WAREHOUSE_ID
 import com.tokopedia.usecase.RequestParams
@@ -179,7 +182,7 @@ class TokoNowCategoryViewModel @Inject constructor (
 
     override fun createFooterVisitableList(): List<Visitable<*>> {
         val recomData =
-            TokoNowRecommendationCarouselUiModel(pageName = TOKONOW_CLP)
+            TokoNowRecommendationCarouselUiModel(pageName = TOKONOW_CLP, miniCartSource = MiniCartSource.TokonowCategoryPage)
         recomData.categoryId = getRecomCategoryId(recomData)
         return listOf(
             createAisleDataView(),
@@ -221,7 +224,7 @@ class TokoNowCategoryViewModel @Inject constructor (
         loadCategoryGrid(isEmptyProductList)
     }
 
-    override fun onViewCreated() {
+    override fun onViewCreated(source: MiniCartSource?) {
         when(externalServiceType) {
             ServiceType.NOW_20M -> {
                 setUserPreference(ServiceType.NOW_15M)
@@ -230,7 +233,7 @@ class TokoNowCategoryViewModel @Inject constructor (
                 setUserPreference(ServiceType.NOW_2H)
             }
             else -> {
-                super.onViewCreated()
+                super.onViewCreated(source)
             }
         }
     }
