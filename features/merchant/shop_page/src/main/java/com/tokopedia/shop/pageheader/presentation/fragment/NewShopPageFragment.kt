@@ -741,7 +741,7 @@ class NewShopPageFragment :
                 fragment = this,
                 listener = this,
                 isShopDirectPurchase = true,
-                source = MiniCartSource.TokonowHome
+                source = MiniCartSource.ShopPage
             )
         }
     }
