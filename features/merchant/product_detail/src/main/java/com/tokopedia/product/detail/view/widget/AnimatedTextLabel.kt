@@ -134,7 +134,7 @@ class TextLabelAnimator(private val txtView: Typography) {
                 .with(createTranslationXAnimator({
                     txtView.text = desc
                 }) {
-
+                    txtView.text = desc
                 }).with(createAlphaAnimator(txtView.alpha, 1F, ALPHA_300_DURATION))
         animatorSet.start()
     }

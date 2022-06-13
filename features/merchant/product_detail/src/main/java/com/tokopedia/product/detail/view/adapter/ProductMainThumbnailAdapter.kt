@@ -84,14 +84,7 @@ class ProductMainThumbnailAdapter(val listener: ProductMainThumbnailListener?,
 
             binding.pdpImgThumbnail.loadImage(element.media.urlOriginal)
             setupBackground(element)
-            view.setOnClickListener {
-                if (!element.isSelected) {
-                    listener?.onThumbnailClicked(element)
-                    pdpListener?.trackThumbnailClicked(position,
-                            element.media,
-                            componentTrackDataModel)
-                }
-            }
+            setupClickThumbnail(element)
         }
 
         override fun bind(element: ThumbnailDataModel) {
@@ -104,6 +97,7 @@ class ProductMainThumbnailAdapter(val listener: ProductMainThumbnailListener?,
 
             if ((payloads[0] as? Bundle)?.getInt(PAYLOAD_ACTIVATED) == Int.ONE) {
                 setupBackground(element)
+                setupClickThumbnail(element)
             }
         }
 
@@ -116,6 +110,17 @@ class ProductMainThumbnailAdapter(val listener: ProductMainThumbnailListener?,
                 binding.pdpThumbnailContainer.background =
                         ContextCompat.getDrawable(view.context,
                                 R.drawable.pdp_thumbnail_inactive_bg)
+            }
+        }
+
+        private fun setupClickThumbnail(element: ThumbnailDataModel) {
+            view.setOnClickListener {
+                if (!element.isSelected) {
+                    listener?.onThumbnailClicked(element)
+                    pdpListener?.trackThumbnailClicked(position,
+                            element.media,
+                            componentTrackDataModel)
+                }
             }
         }
     }
