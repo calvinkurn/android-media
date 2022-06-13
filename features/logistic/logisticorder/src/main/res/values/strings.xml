@@ -46,8 +46,8 @@ setelah 3 x 24 jam, ada beberapa kemungkinan:</string>
     <string name="tipping_success_payment_text">Tip kamu akan diberikan!</string>
     <string name="tipping_success_to_gojek_text">Tip kamu sudah diberikan!</string>
     <string name="tipping_result_desc"><![CDATA[Tip 100% ditransfer ke driver <b>setelah pesanan sampai</b>. Tip akan dikembalikan ke kamu jika pesanan batal]]></string>
-    <string name="minimum_tipping">Min. Rp1.000</string>
-    <string name="maksimum_tipping">Maks. Rp20.000</string>
+    <string name="minimum_tipping">Min. %1$s</string>
+    <string name="maksimum_tipping">Maks. %1$s</string>
     <string name="detail_info_label">Detail Informasi</string>
     <string name="resi_label">No. Resi</string>
     <string name="invoice_label">No. Invoice</string>
@@ -63,7 +63,7 @@ setelah 3 x 24 jam, ada beberapa kemungkinan:</string>
     <string name="tipping_layout_description">Pilih atau tulis sendiri jumlah tip</string>
     <string name="nominal_tip_label">Tulis Nominal Tip</string>
     <string name="btn_tipping_text">Pilih Pembayaran</string>
-    <string name="nominal_tip_message">Rp1.000 - Rp.20.000</string>
+    <string name="nominal_tip_message">%1$s - %2$s</string>
     <string name="btn_driver_info_text">Mengerti</string>
     <string name="card_tipping_btn_default_text">Beri Tip</string>
     <string name="last_driver_button">Hubungi</string>

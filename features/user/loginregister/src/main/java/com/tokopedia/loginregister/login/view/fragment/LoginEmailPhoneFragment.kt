@@ -359,7 +359,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
         }
 
         val emailExtensionList = mutableListOf<String>()
-        emailExtensionList.addAll(resources.getStringArray(R.array.email_extension))
+        emailExtensionList.addAll(requireContext().resources.getStringArray(R.array.email_extension))
         partialRegisterInputView?.setEmailExtension(emailExtension, emailExtensionList)
         partialRegisterInputView?.initKeyboardListener(view)
 
@@ -707,6 +707,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
         if (isUsingRollenceNeedHelp) {
             callTokopediaCare?.hide()
         } else {
+            callTokopediaCare?.show()
             initKeyboardListener(view)
         }
     }
@@ -715,11 +716,11 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
         view?.run {
             com.tokopedia.loginregister.common.utils.KeyboardHandler(view, object : com.tokopedia.loginregister.common.utils.KeyboardHandler.OnKeyBoardVisibilityChangeListener {
                 override fun onKeyboardShow() {
-                    if (!isUsingRollenceNeedHelp) callTokopediaCare?.hide()
+                    callTokopediaCare?.hide()
                 }
 
                 override fun onKeyboardHide() {
-                    if (!isUsingRollenceNeedHelp) callTokopediaCare?.show()
+                    if (!isUsingRollenceNeedHelp) callTokopediaCare?.show() else callTokopediaCare?.hide()
                 }
             })
         }
@@ -758,7 +759,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
 
     private fun setupSpannableText() {
         activity?.let {
-            val sourceString = resources.getString(R.string.span_not_have_tokopedia_account)
+            val sourceString = requireContext().resources.getString(R.string.span_not_have_tokopedia_account)
 
             val spannable = SpannableString(sourceString)
 
@@ -985,7 +986,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
                     })
         }
         emailExtension?.hide()
-        callTokopediaCare?.showWithCondition(!isLoading)
+        callTokopediaCare?.showWithCondition(!isUsingRollenceNeedHelp && !isLoading)
     }
 
     override fun goToRegisterInitial(source: String) {
@@ -1117,8 +1118,6 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
             if (userSession.isLoggedIn) {
                 val userData = UserData()
                 userData.userId = userSession.userId
-                userData.email = userSession.email
-                userData.phoneNumber = userSession.phoneNumber
                 userData.medium = userSession.loginMethod
 
                 //Identity Event

@@ -120,6 +120,7 @@ open class GetPdpLayoutUseCase @Inject constructor(private val gqlUseCase: Multi
             		}
             		... on pdpDataProductContent {
                       name
+                      parentName
                       isCOD
                       price {
                         value
@@ -194,6 +195,8 @@ open class GetPdpLayoutUseCase @Inject constructor(private val gqlUseCase: Multi
                         title
                         subtitle
                         applink
+                        infoLink
+                        icon
                         showAtFront
                         isAnnotation
                       }

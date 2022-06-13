@@ -69,6 +69,9 @@ object ApplinkConstInternalMarketplace {
     // ReviewCredibilityActivity
     const val REVIEW_CREDIBILITY = "$INTERNAL_MARKETPLACE/review/credibility/{userId}/{source}/"
 
+    // DetailedReviewMediaGalleryActivity
+    const val REVIEW_MEDIA_GALLERY = "$INTERNAL_MARKETPLACE/review/media-gallery"
+
     // StockReminderActivity
     const val STOCK_REMINDER_BASE = "$INTERNAL_MARKETPLACE/stock-reminder/"
 
@@ -196,7 +199,7 @@ object ApplinkConstInternalMarketplace {
     // PowerMerchantSubscribeActivity
     const val POWER_MERCHANT_SUBSCRIBE = "$INTERNAL_MARKETPLACE/power-merchant-subscribe"
 
-    // BenefitPackageActivity
+    // MembershipDetailActivity
     const val PM_BENEFIT_PACKAGE = "$INTERNAL_MARKETPLACE/pm-benefit-package"
 
     const val GOLD_MERCHANT_REDIRECT = "$INTERNAL_MARKETPLACE/gold-merchant-redirect"

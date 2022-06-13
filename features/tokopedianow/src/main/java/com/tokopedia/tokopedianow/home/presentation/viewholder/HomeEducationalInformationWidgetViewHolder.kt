@@ -8,14 +8,15 @@ import androidx.core.graphics.BlendModeCompat
 import com.airbnb.lottie.LottieCompositionFactory
 import com.airbnb.lottie.LottieDrawable
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalTokopediaNow.EDUCATIONAL_INFO
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.tokopedianow.R
-import com.tokopedia.tokopedianow.common.util.TokoNowServiceTypeUtil.EDU_WIDGET_RESOURCE_ID
-import com.tokopedia.tokopedianow.common.util.TokoNowServiceTypeUtil.getServiceTypeFormattedCopy
+import com.tokopedia.tokopedianow.common.constant.ServiceType
+import com.tokopedia.tokopedianow.common.util.TokoNowServiceTypeUtil.EDU_WIDGET_DURATION_RESOURCE_ID
+import com.tokopedia.tokopedianow.common.util.TokoNowServiceTypeUtil.EDU_WIDGET_SELECTED_PRODUCT_FREE_SHIPPING_RESOURCE_ID
+import com.tokopedia.tokopedianow.common.util.TokoNowServiceTypeUtil.getServiceTypeRes
 import com.tokopedia.tokopedianow.databinding.ItemTokopedianowHomeEducationalInformationWidgetBinding
 import com.tokopedia.tokopedianow.home.constant.HomeLayoutItemState
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeEducationalInformationWidgetUiModel
@@ -31,6 +32,7 @@ class HomeEducationalInformationWidgetViewHolder(
         private const val IMG_TIME = "https://images.tokopedia.net/img/android/tokonow/tokonow_ic_educational_information_two_hours.png"
         private const val IMG_STOCK_AVAILABLE = "https://images.tokopedia.net/img/android/tokonow/tokonow_ic_educational_information_stock_available.png"
         private const val IMG_GUARANTEED_QUALITY = "https://images.tokopedia.net/img/android/tokonow/tokonow_ic_educational_information_guaranteed_quality.png"
+        private const val IMG_FREE_SHIPPING = "https://images.tokopedia.net/img/android/tokonow/ic_educational_information_free_shipping.png"
 
         @LayoutRes
         val LAYOUT = R.layout.item_tokopedianow_home_educational_information_widget
@@ -49,16 +51,11 @@ class HomeEducationalInformationWidgetViewHolder(
         binding?.apply {
             cvEducationalInfo.show()
 
-            tpTime.text = MethodChecker.fromHtml(
-                getServiceTypeFormattedCopy(
-                    context = root.context,
-                    key = EDU_WIDGET_RESOURCE_ID,
-                    serviceType = serviceType
-                )
-            )
-            
+            setDurationText(serviceType)
+            setSelectedProductFreeShippingText(serviceType)
+
             iuTime.setImageUrl(IMG_TIME)
-            iuStockAvailable.setImageUrl(IMG_STOCK_AVAILABLE)
+            iuSelectedProductFreeShipping.setImageUrl(if (serviceType == ServiceType.NOW_15M) IMG_STOCK_AVAILABLE  else IMG_FREE_SHIPPING)
             iuGuaranteedQuality.setImageUrl(IMG_GUARANTEED_QUALITY)
         }
 
@@ -66,6 +63,24 @@ class HomeEducationalInformationWidgetViewHolder(
             setupBasicButton()
         } else {
             setupLottie()
+        }
+    }
+
+    private fun setDurationText(serviceType: String) {
+        getServiceTypeRes(
+            key = EDU_WIDGET_DURATION_RESOURCE_ID,
+            serviceType = serviceType
+        )?.let {
+            binding?.tpTime?.text = getString(it)
+        }
+    }
+
+    private fun setSelectedProductFreeShippingText(serviceType: String) {
+        getServiceTypeRes(
+            key = EDU_WIDGET_SELECTED_PRODUCT_FREE_SHIPPING_RESOURCE_ID,
+            serviceType = serviceType
+        )?.let {
+            binding?.tpSelectedProductFreeShipping?.text = getString(it)
         }
     }
 
