@@ -66,12 +66,13 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
-            <com.tokopedia.unifycomponents.ImageUnify
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+            <com.tokopedia.iconunify.IconUnify
+                android:layout_width="24dp"
+                android:layout_height="24dp"
                 android:layout_marginStart="@dimen/unify_space_4"
                 android:layout_marginTop="@dimen/unify_space_4"
-                android:src="@drawable/ic_tips"
+                app:icon_color_light_enable="@color/Unify_GN500"
+                app:icon_name="LIGHT_BULB"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="@id/imageBackground" />
 
