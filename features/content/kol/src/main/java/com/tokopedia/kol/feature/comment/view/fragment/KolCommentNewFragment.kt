@@ -589,4 +589,11 @@ class KolCommentNewFragment : BaseDaggerFragment(), KolComment.View, KolComment.
         presenter.detachView()
     }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+
+        try {
+            Toaster.onCTAClick = View.OnClickListener {  }
+        } catch (ignored: UninitializedPropertyAccessException) {}
+    }
 }
