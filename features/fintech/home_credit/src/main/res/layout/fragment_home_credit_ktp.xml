@@ -16,7 +16,8 @@
         <com.tokopedia.unifycomponents.CardUnify
             android:layout_width="wrap_content"
             app:card_type="border"
-          android:id="@+id/cardBorderCamera"
+            android:contentDescription="@string/image_border"
+            android:id="@+id/cardBorderCamera"
             android:layout_gravity="center"
             android:layout_marginLeft="@dimen/unify_space_16"
             android:layout_marginRight="@dimen/unify_space_16"
