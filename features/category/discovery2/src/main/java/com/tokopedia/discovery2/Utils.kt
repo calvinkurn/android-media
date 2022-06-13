@@ -94,6 +94,7 @@ class Utils {
         const val RPC_PAGE__SIZE = "rpc_page_size"
         const val RPC_NEXT_PAGE = "rpc_next_page"
         const val DARK_MODE = "dark_mode"
+        private const val DEFAULT_HEX_CODE = "#FFFFFF"
 
 
         fun extractDimension(url: String?, dimension: String = "height"): Int? {
@@ -287,13 +288,17 @@ class Utils {
             }
         }
 
-        fun isValidHexCode(color: String?): Boolean {
+        fun getValidHexCode(color: String?): String {
             val regex = "^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$"
             val pattern: Pattern = Pattern.compile(regex)
             if (color.isNullOrEmpty()) {
-                return false
+                return DEFAULT_HEX_CODE
             }
-            return pattern.matcher(color).matches()
+            return if(pattern.matcher(color).matches())
+                color
+            else
+                DEFAULT_HEX_CODE
+
         }
 
         fun setTimerBoxDynamicBackground(view: View, color: Int) {
