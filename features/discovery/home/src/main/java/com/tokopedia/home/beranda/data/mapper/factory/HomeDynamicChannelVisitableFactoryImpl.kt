@@ -55,6 +55,7 @@ class HomeDynamicChannelVisitableFactoryImpl(
         private const val VALUE_BANNER_UNKNOWN_LAYOUT_TYPE = "lego banner unknown"
 
         private const val CUE_WIDGET_MIN_SIZE = 4
+        private const val VPS_WIDGET_SIZE = 4
     }
 
     override fun buildVisitableList(homeChannelData: HomeChannelData, isCache: Boolean, trackingQueue: TrackingQueue, context: Context): HomeDynamicChannelVisitableFactory {
@@ -201,6 +202,9 @@ class HomeDynamicChannelVisitableFactoryImpl(
                 }
                 DynamicHomeChannel.Channels.LAYOUT_CUE_WIDGET -> {
                     createCueCategory(channel, position)
+                }
+                DynamicHomeChannel.Channels.LAYOUT_VPS_WIDGET -> {
+                    createVpsWidget(channel, position)
                 }
             }
         }
@@ -613,6 +617,20 @@ class HomeDynamicChannelVisitableFactoryImpl(
         )
     }
 
+    private fun mappingVpsWidgetComponent(
+        channel: DynamicHomeChannel.Channels,
+        isCache: Boolean,
+        verticalPosition: Int
+    ): Visitable<*> {
+        return VpsDataModel(
+            channelModel = DynamicChannelComponentMapper.mapHomeChannelToComponent(
+                channel,
+                verticalPosition
+            ),
+            isCache = isCache
+        )
+    }
+
     private fun createPopularKeywordChannel(channel: DynamicHomeChannel.Channels) {
         if (!isCache) visitableList.add(
             PopularKeywordListDataModel(
@@ -682,6 +700,17 @@ class HomeDynamicChannelVisitableFactoryImpl(
         if (gridSize >= CUE_WIDGET_MIN_SIZE) {
             visitableList.add(
                 mappingCueCategoryComponent(
+                    channel, isCache, verticalPosition
+                )
+            )
+        }
+    }
+
+    private fun createVpsWidget(channel: DynamicHomeChannel.Channels, verticalPosition: Int) {
+        val gridSize = channel.grids.size
+        if (gridSize >= VPS_WIDGET_SIZE) {
+            visitableList.add(
+                mappingVpsWidgetComponent(
                     channel, isCache, verticalPosition
                 )
             )
