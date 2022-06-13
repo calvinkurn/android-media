@@ -134,6 +134,7 @@ class TmSingleCouponCreateFragment : BaseDaggerFragment() {
     private var fromEdit = false
     private var voucherId = 0
     private var errorCount = 0
+    private var prefManager: TmPrefManager? = null
 
     @Inject
     lateinit var viewModelFactory: dagger.Lazy<ViewModelProvider.Factory>
@@ -169,9 +170,9 @@ class TmSingleCouponCreateFragment : BaseDaggerFragment() {
         }
         else{
             tokomemberDashCreateViewModel.getInitialCouponData(CREATE,"")
-            val prefManager = context?.let { it1 -> TmPrefManager(it1) }
+            prefManager = context?.let { it1 -> TmPrefManager(it1) }
             prefManager?.shopId?.let { it ->
-                prefManager.cardId?.let { it1 ->
+                prefManager?.cardId?.let { it1 ->
                     tmProgramListViewModel?.getProgramList(it, it1)
                 }
             }
@@ -278,8 +279,7 @@ class TmSingleCouponCreateFragment : BaseDaggerFragment() {
                 TokoLiveDataResult.STATUS.SUCCESS -> {
                     errorState.isPreValidateVipError = false
                     if (it.data?.voucherValidationPartial?.header?.messages?.size == 1){
-                        tokomemberDashCreateViewModel.validateProgram(arguments?.getInt(
-                            BUNDLE_SHOP_ID).toString(),programData?.timeWindow?.startTime?:"",programData?.timeWindow?.endTime?:"","")
+                        tokomemberDashCreateViewModel.validateProgram(prefManager?.shopId.toString(),TmDateUtil.getTimeInMillis(programData?.timeWindow?.startTime?:""),TmDateUtil.getTimeInMillisEnd(programData?.timeWindow?.endTime?:""),"")
                     }
                     else {
                         handleProgramValidateError(it.data?.voucherValidationPartial?.data?.validationError,"premium")
@@ -663,7 +663,7 @@ class TmSingleCouponCreateFragment : BaseDaggerFragment() {
             override fun onButtonClick(errorCount: Int) {
                 bottomSheet.dismiss()
                 activity?.finish()
-                arguments?.getInt(BUNDLE_SHOP_ID)?.let { TmDashCreateActivity.openActivity(it, activity, CreateScreenType.PROGRAM, ProgramActionType.CREATE, null, null) }
+                prefManager?.shopId?.let { TmDashCreateActivity.openActivity(it, activity, CreateScreenType.PROGRAM, ProgramActionType.CREATE, null, null) }
             }
         })
         bottomSheet.show(childFragmentManager,"")
