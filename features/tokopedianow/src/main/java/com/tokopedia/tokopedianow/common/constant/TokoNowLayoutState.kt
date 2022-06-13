@@ -4,14 +4,14 @@ import androidx.annotation.IntDef
 
 @Retention(AnnotationRetention.SOURCE)
 @IntDef(
+    TokoNowLayoutState.IDLE,
     TokoNowLayoutState.SHOW,
     TokoNowLayoutState.LOADING,
     TokoNowLayoutState.HIDE,
     TokoNowLayoutState.LOAD_MORE,
     TokoNowLayoutState.LOADED,
     TokoNowLayoutState.EMPTY,
-    TokoNowLayoutState.UPDATE,
-    TokoNowLayoutState.IDLE
+    TokoNowLayoutState.UPDATE
 )
 annotation class TokoNowLayoutState {
     companion object {

@@ -182,7 +182,11 @@ class TokoNowCategoryViewModel @Inject constructor (
 
     override fun createFooterVisitableList(): List<Visitable<*>> {
         val recomData =
-            TokoNowRecommendationCarouselUiModel(pageName = TOKONOW_CLP, miniCartSource = MiniCartSource.TokonowCategoryPage)
+            TokoNowRecommendationCarouselUiModel(
+                pageName = TOKONOW_CLP,
+                isBindWithPageName = true,
+                miniCartSource = MiniCartSource.TokonowCategoryPage
+            )
         recomData.categoryId = getRecomCategoryId(recomData)
         return listOf(
             createAisleDataView(),

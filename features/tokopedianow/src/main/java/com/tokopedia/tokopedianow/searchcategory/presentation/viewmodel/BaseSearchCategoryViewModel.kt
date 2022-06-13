@@ -453,6 +453,7 @@ abstract class BaseSearchCategoryViewModel(
             TokoNowRecommendationCarouselUiModel(
                 pageName = TOKONOW_NO_RESULT,
                 keywords = getKeywordForGeneralSearchTracking(),
+                isBindWithPageName = true,
                 miniCartSource = miniCartSource
             )
         )
