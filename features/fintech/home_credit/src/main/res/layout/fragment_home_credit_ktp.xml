@@ -60,6 +60,7 @@
         android:layout_height="match_parent"
         android:layout_gravity="center"
         android:adjustViewBounds="true"
+        android:contentDescription="@string/overlay_content_description"
         android:scaleType="centerInside"
         android:visibility="gone" />
 
