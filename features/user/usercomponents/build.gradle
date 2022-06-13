@@ -64,22 +64,13 @@ dependencies {
     testImplementation rootProject.ext.testDependencies.mockk
     testImplementation rootProject.ext.testDependencies.kotlinTest
     testImplementation rootProject.ext.testDependencies.assertJCore
-    testImplementation rootProject.ext.miscDependencies.coroutineTest
     testImplementation rootProject.ext.testDependencies.archCoreTesting
-    testImplementation rootProject.ext.supportLibDependencies.kotlinReflection
     testImplementation projectOrAar(rootProject.ext.libraries.unitTest)
 
-    androidTestImplementation rootProject.ext.firebase.messaging
-    androidTestImplementation rootProject.ext.miscDependencies.coroutineTest
-
     androidTestImplementation rootProject.ext.testDependencies.androidTestRunner
-    androidTestImplementation rootProject.ext.testDependencies.archCoreTesting
-    androidTestImplementation rootProject.ext.testDependencies.androidxTest
     androidTestImplementation rootProject.ext.testDependencies.espressoCore
     androidTestImplementation rootProject.ext.testDependencies.espressoContrib
     androidTestImplementation rootProject.ext.testDependencies.espressoIntents
-    androidTestImplementation rootProject.ext.tkpdInternalLibDependencies.cachemanager
-    androidTestImplementation rootProject.ext.playServicesDependencies.analytics
 
     androidTestImplementation projectOrAar(rootProject.ext.libraries.analytics)
     androidTestImplementation projectOrAar(rootProject.ext.libraries.analyticsDebugger)
