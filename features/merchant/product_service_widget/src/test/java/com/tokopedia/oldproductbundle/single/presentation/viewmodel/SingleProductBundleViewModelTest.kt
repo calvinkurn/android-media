@@ -9,6 +9,7 @@ import com.tokopedia.oldproductbundle.common.util.AtcVariantMapper
 import com.tokopedia.oldproductbundle.single.presentation.model.SingleProductBundleErrorEnum
 import com.tokopedia.oldproductbundle.single.presentation.model.SingleProductBundleSelectedItem
 import com.tokopedia.oldproductbundle.util.getOrAwaitValue
+import com.tokopedia.product_bundle.common.data.constant.ProductBundleConstants
 import io.mockk.coEvery
 import io.mockk.coVerify
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -119,15 +120,44 @@ class SingleProductBundleViewModelTest: SingleProductBundleViewModelTestFixture(
                 isVariantEmpty = false
             )
         )
-
         // if variant child changed
-        viewModel.validateAndAddToCart("cart", "", "123", "456", singleProductBundleSelectedItem)
+        viewModel.validateAndAddToCart(ProductBundleConstants.PAGE_SOURCE_CART, "", "123", "456", singleProductBundleSelectedItem)
         coVerify { addToCartBundleUseCase.executeOnBackground() }
 
         // if variant child not changed
-        viewModel.validateAndAddToCart("cart", "", "123", "123", singleProductBundleSelectedItem)
+        viewModel.validateAndAddToCart(ProductBundleConstants.PAGE_SOURCE_MINI_CART, "", "123", "123", singleProductBundleSelectedItem)
         val addToCartResult = viewModel.addToCartResult.getOrAwaitValue()
         assertEquals("123", addToCartResult.requestParams.bundleId)
+    }
+
+    @Test
+    fun `validateAndAddToCart using different selectedBundleId should invoke success addToCartResult`() = runBlocking {
+        val singleProductBundleSelectedItem = listOf(
+            SingleProductBundleSelectedItem(
+                shopId = "123",
+                bundleId = "123",
+                productId = "123",
+                quantity = 12,
+                isSelected = true,
+                isVariantEmpty = false
+            )
+        )
+
+        coEvery {
+            addToCartBundleUseCase.executeOnBackground()
+        } returns AddToCartBundleModel(
+            status = "OK",
+            addToCartBundleDataModel = AddToCartBundleDataModel(
+                success = 1,
+                message = emptyList()
+            )
+        )
+
+        viewModel.validateAndAddToCart(ProductBundleConstants.PAGE_SOURCE_MINI_CART, "123", "1133", "123", singleProductBundleSelectedItem)
+
+        coVerify { addToCartBundleUseCase.executeOnBackground() }
+        val addToCartResult = viewModel.addToCartResult.getOrAwaitValue()
+        assertEquals("123", addToCartResult.requestParams.shopId)
     }
 
     @Test
