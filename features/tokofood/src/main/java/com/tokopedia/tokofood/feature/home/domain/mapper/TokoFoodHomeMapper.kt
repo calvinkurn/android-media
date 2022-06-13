@@ -138,8 +138,7 @@ object TokoFoodHomeMapper {
         updateItemById(item.visitableId) {
             val ticker = TokoFoodHomeTickerUiModel(
                 item.visitableId,
-                mapTickerData(tickerResponse.ticker.tickerList),
-                TokoFoodLayoutState.SHOW
+                mapTickerData(tickerResponse.ticker.tickerList)
             )
             TokoFoodItemUiModel(ticker, TokoFoodLayoutItemState.LOADED)
         }
@@ -183,7 +182,7 @@ object TokoFoodHomeMapper {
     }
 
     fun MutableList<TokoFoodItemUiModel>.addTickerWidget() {
-        val ticker = TokoFoodHomeTickerUiModel(id = TICKER_WIDGET_ID, tickers = emptyList(), TokoFoodLayoutState.LOADING)
+        val ticker = TokoFoodHomeTickerUiModel(id = TICKER_WIDGET_ID, tickers = emptyList())
         add(TokoFoodItemUiModel(ticker, TokoFoodLayoutItemState.NOT_LOADED))
     }
 

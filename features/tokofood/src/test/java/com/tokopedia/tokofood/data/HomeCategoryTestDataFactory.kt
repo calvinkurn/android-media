@@ -12,7 +12,6 @@ import com.tokopedia.localizationchooseaddress.domain.response.GetStateChosenAdd
 import com.tokopedia.logisticCommon.data.response.EligibleForAddressFeature
 import com.tokopedia.logisticCommon.data.response.KeroAddrIsEligibleForAddressFeatureData
 import com.tokopedia.logisticCommon.data.response.KeroAddrIsEligibleForAddressFeatureResponse
-import com.tokopedia.tokofood.feature.home.domain.constanta.TokoFoodHomeStaticLayoutId
 import com.tokopedia.tokofood.feature.home.domain.constanta.TokoFoodHomeStaticLayoutId.Companion.CHOOSE_ADDRESS_WIDGET_ID
 import com.tokopedia.tokofood.feature.home.domain.constanta.TokoFoodHomeStaticLayoutId.Companion.EMPTY_STATE_NO_ADDRESS
 import com.tokopedia.tokofood.feature.home.domain.constanta.TokoFoodHomeStaticLayoutId.Companion.EMPTY_STATE_NO_PIN_POINT
@@ -152,7 +151,7 @@ fun createKeroEditAddressResponseFail(): KeroEditAddressResponse {
 }
 
 fun createHomeTickerDataModel(tickers: List<TickerData> = listOf(createTickerData())): TokoFoodHomeTickerUiModel {
-    return TokoFoodHomeTickerUiModel(id = TICKER_WIDGET_ID, tickers = tickers, TokoFoodLayoutState.SHOW)
+    return TokoFoodHomeTickerUiModel(id = TICKER_WIDGET_ID, tickers = tickers)
 }
 
 fun createTickerData(
