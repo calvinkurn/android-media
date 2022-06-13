@@ -12,6 +12,7 @@ import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
@@ -56,6 +57,7 @@ import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.util.*
 import javax.inject.Inject
@@ -198,14 +200,11 @@ class KolCommentNewFragment : BaseDaggerFragment(), KolComment.View, KolComment.
                 }
                 viewLifecycleOwner.lifecycle.addObserver(lifecycleObserver)
 
-                val callback = object : Snackbar.Callback() {
-                    override fun onDismissed(transientBottomBar: Snackbar?, event: Int) {
-                        deleteFn()
-                        viewLifecycleOwner.lifecycle.removeObserver(lifecycleObserver)
-                        transientBottomBar?.removeCallback(this)
-                    }
+                viewLifecycleOwner.lifecycleScope.launchWhenResumed {
+                    delay(TOASTER_DURATION_DELETE_COMMENT.toLong())
+                    deleteFn()
+                    viewLifecycleOwner.lifecycle.removeObserver(lifecycleObserver)
                 }
-                Toaster.snackBar.addCallback(callback)
 
                 toaster.show()
 

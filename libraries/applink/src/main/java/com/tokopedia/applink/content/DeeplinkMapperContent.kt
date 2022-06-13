@@ -40,8 +40,7 @@ object DeeplinkMapperContent {
                 return ApplinkConstInternalContent.INTERNAL_CONTENT_CREATE_POST
             }
             deepLink.startsWithPattern(ApplinkConst.KOL_COMMENT) -> {
-//                return deepLink.replace(ApplinkConst.KOL_COMMENT.substringBefore("{"), ApplinkConstInternalContent.COMMENT.substringBefore("{")).plus(ApplinkConstInternalContent.COMMENT_EXTRA_PARAM)
-                return deepLink.replace(ApplinkConst.KOL_COMMENT.substringBefore("{"), ApplinkConstInternalContent.COMMENT_NEW.substringBefore("{")).plus(ApplinkConstInternalContent.COMMENT_EXTRA_PARAM)
+                return deepLink.replace(ApplinkConst.KOL_COMMENT.substringBefore("{"), ApplinkConstInternalContent.COMMENT.substringBefore("{")).plus(ApplinkConstInternalContent.COMMENT_EXTRA_PARAM)
             }
             deepLink.startsWithPattern(ApplinkConst.CONTENT_DETAIL) -> {
                 return deepLink.replace(ApplinkConst.CONTENT_DETAIL.substringBefore("{"), ApplinkConstInternalContent.INTERNAL_CONTENT_POST_DETAIL)
