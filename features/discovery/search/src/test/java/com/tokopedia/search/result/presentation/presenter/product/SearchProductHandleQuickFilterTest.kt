@@ -12,6 +12,7 @@ import com.tokopedia.search.result.domain.model.SearchProductModel
 import com.tokopedia.search.shouldBe
 import com.tokopedia.search.utils.createSearchProductDefaultQuickFilter
 import com.tokopedia.sortfilter.SortFilterItem
+import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.usecase.RequestParams
 import io.mockk.*
 import org.junit.Test
@@ -177,17 +178,78 @@ internal class SearchProductHandleQuickFilterTest : ProductListPresenterTestFixt
         `Given Set Quick Filter Called`()
         `Given data has been loaded`()
 
-        `When Open Dropdown Quick Filter`(0)
+        `When Click Quick Filter Item`(0)
 
         `Then verify dropdown quick filter bottomsheet has opened and track sent`(selectedFilter)
     }
 
-    private fun `When Open Dropdown Quick Filter`(selectedIndex: Int) {
-        openDropdownQuickFilter(selectedIndex)
+    @Test
+    fun `Open Dropdown Quick Filter Using Chevron`() {
+        val searchProductModel = searchProductModelWithMultipleOptionQuickFilter.jsonToObject<SearchProductModel>()
+        val selectedFilter = searchProductModel.quickFilterModel.filter[0]
+
+        `Given Search Product API will return SearchProductModel`(searchProductModel)
+        `Given Set Quick Filter Called`()
+        `Given data has been loaded`()
+
+        `When Click Quick Filter Using Chevron`(0)
+
+        `Then verify dropdown quick filter bottomsheet has opened and track sent`(selectedFilter)
     }
 
-    private fun `Given Dropdown Quick Filter Has Been Opened`(selectedIndex: Int) {
-        openDropdownQuickFilter(selectedIndex)
+    @Test
+    fun `Click Quick Filter with Single Option`() {
+        val searchProductModel = searchProductModelWithQuickFilter.jsonToObject<SearchProductModel>()
+        val selectedFilter = searchProductModel.quickFilterModel.filter[0]
+
+        `Given Search Product API will return SearchProductModel`(searchProductModel)
+        `Given Set Quick Filter Called`()
+        `Given data has been loaded`()
+
+        `When Click Quick Filter Item`(0)
+
+        `Then verify quick filter clicked`(selectedFilter, selectedFilter.options.first())
+    }
+
+    @Test
+    fun `Quick Filter Item Type Is Selected When There Is Active Filter`() {
+        val searchProductModel = searchProductModelWithQuickFilter.jsonToObject<SearchProductModel>()
+        val selectedFilterIndex = 0
+        val selectedFilter = searchProductModel.quickFilterModel.filter[selectedFilterIndex].options[0]
+
+        `Given Search Product API will return SearchProductModel`(searchProductModel)
+        `Given Set Quick Filter Called`()
+        `Given Selected Option will return true`(selectedFilter)
+
+        `When Load Data`()
+
+        `Then Assert Quick Filter That Has Active Option Will Have Selected Type`(selectedFilterIndex)
+    }
+
+    private fun `Then Assert Quick Filter That Has Active Option Will Have Selected Type`(selectedFilterIndex: Int) {
+        val sortFilterItemList = listItemSlot.captured
+
+        assert(sortFilterItemList[selectedFilterIndex].type == ChipsUnify.TYPE_SELECTED)
+    }
+
+    private fun `Given Selected Option will return true`(selectedOption: Option) {
+        every {
+            productListView.isFilterSelected(selectedOption)
+        } answers { true }
+    }
+
+    private fun `Then verify quick filter clicked`(filter: Filter, option: Option) {
+        verify {
+            productListView.onQuickFilterSelected(filter, option)
+        }
+    }
+
+    private fun `When Click Quick Filter Item`(selectedIndex: Int) {
+        clickQuickFilter(selectedIndex)
+    }
+
+    private fun `Given Quick Filter Item Has Been Clicked`(selectedIndex: Int) {
+        clickQuickFilter(selectedIndex)
     }
 
     private fun `Given Set Quick Filter Called`() {
@@ -196,10 +258,16 @@ internal class SearchProductHandleQuickFilterTest : ProductListPresenterTestFixt
         } just runs
     }
 
-    private fun openDropdownQuickFilter(selectedIndex: Int) {
+    private fun clickQuickFilter(selectedIndex: Int) {
         val sortFilterItemList = listItemSlot.captured
 
         sortFilterItemList[selectedIndex].listener()
+    }
+
+    private fun `When Click Quick Filter Using Chevron`(selectedIndex: Int) {
+        val sortFilterItemList = listItemSlot.captured
+
+        sortFilterItemList[selectedIndex].chevronListener?.invoke()
     }
 
     private fun `Then verify dropdown quick filter bottomsheet has opened and track sent`(filter: Filter) {
@@ -218,7 +286,7 @@ internal class SearchProductHandleQuickFilterTest : ProductListPresenterTestFixt
         `Given Search Product API will return SearchProductModel`(searchProductModel)
         `Given Set Quick Filter Called`()
         `Given data has been loaded`()
-        `Given Dropdown Quick Filter Has Been Opened`(selectedQuickFilterIndex)
+        `Given Quick Filter Item Has Been Clicked`(selectedQuickFilterIndex)
 
         `When Apply Dropdown Quick Filter`(selectedFilter.options)
 
