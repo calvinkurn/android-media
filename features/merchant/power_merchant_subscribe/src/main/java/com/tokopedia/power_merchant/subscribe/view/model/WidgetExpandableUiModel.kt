@@ -1,6 +1,7 @@
 package com.tokopedia.power_merchant.subscribe.view.model
 
 import com.tokopedia.gm.common.constant.PMConstant
+import com.tokopedia.gm.common.constant.PMStatusConst
 import com.tokopedia.gm.common.data.source.local.model.PMCurrentGradeUiModel
 import com.tokopedia.power_merchant.subscribe.view.adapter.WidgetAdapterFactory
 
@@ -27,4 +28,6 @@ class WidgetExpandableUiModel(
     fun isDowngradePeriod(): Boolean = nextMonthlyRefreshDate == nextQuarterlyCalibrationRefreshDate
 
     fun isPmPro(): Boolean = pmTierType == PMConstant.PMTierType.POWER_MERCHANT_PRO
+
+    fun isPmActive(): Boolean = pmStatus == PMStatusConst.ACTIVE
 }

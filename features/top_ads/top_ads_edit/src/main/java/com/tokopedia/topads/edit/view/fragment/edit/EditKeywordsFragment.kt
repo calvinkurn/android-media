@@ -22,6 +22,7 @@ import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.topads.common.analytics.TopAdsCreateAnalytics
 import com.tokopedia.topads.common.constant.TopAdsCommonConstant
 import com.tokopedia.topads.common.constant.TopAdsCommonConstant.BROAD_POSITIVE
@@ -171,7 +172,7 @@ class EditKeywordsFragment : BaseDaggerFragment() {
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(
-            resources.getLayout(com.tokopedia.topads.common.R.layout.topads_create_fragment_budget_list),
+            context?.resources?.getLayout(com.tokopedia.topads.common.R.layout.topads_create_fragment_budget_list),
             container,
             false
         )
@@ -396,23 +397,37 @@ class EditKeywordsFragment : BaseDaggerFragment() {
     private fun onEditType(pos: Int) {
         TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsEditEvent(CLICK_EDIT_KEYWORD_TYPE, "")
         val sheet = ChooseKeyBottomSheet.newInstance()
-        val type = (adapter.items[pos] as EditKeywordItemViewModel).data.typeInt
-        sheet.show(childFragmentManager, type)
+        val item = (adapter.items.getOrNull(pos) as? EditKeywordItemViewModel)
+
+        val type = item?.data?.typeInt
+        if (type != null) {
+            sheet.show(childFragmentManager, type)
+        }
+
         sheet.onSelect = { typeKey ->
             val typeInt = if (typeKey == BROAD_TYPE)
                 BROAD_POSITIVE
             else
                 EXACT_POSITIVE
-            (adapter.items[pos] as EditKeywordItemViewModel).data.typeInt = typeInt
-            if ((adapter.items[pos] as EditKeywordItemViewModel).data.typeInt != type) {
-                actionStatusChange(pos)
+
+
+            item?.let {
+                item.data.typeInt = typeInt
+                if (item.data.typeInt != type) {
+                    actionStatusChange(pos)
+                }
             }
+
             adapter.notifyItemChanged(pos)
         }
     }
 
     private fun actionEnable(isEnable: Boolean) {
-        callBack.buttonDisable(!budgetInput.isTextFieldError && !budgetInputRekomendasi.isTextFieldError)
+        var isValid = !budgetInput.isTextFieldError
+        if (budgetInputRekomendasi.isVisible) {
+            isValid = isValid && (!budgetInputRekomendasi.isTextFieldError)
+        }
+        callBack.buttonDisable(isValid)
     }
 
     private fun setMessageErrorField(error: String, bid: String, bool: Boolean, forRekommendedBid: Boolean) {

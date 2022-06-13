@@ -13,6 +13,8 @@ import com.tokopedia.review.common.data.ReviewViewState
 import com.tokopedia.review.common.data.Success
 import com.tokopedia.review.feature.inbox.history.data.ProductrevFeedbackHistoryResponse
 import com.tokopedia.review.feature.inbox.history.domain.usecase.ProductrevFeedbackHistoryUseCase
+import com.tokopedia.review.feature.inbox.history.presentation.adapter.uimodel.ReviewHistoryUiModel
+import com.tokopedia.review.feature.inbox.history.presentation.mapper.ReviewHistoryDataMapper
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -27,6 +29,10 @@ class ReviewHistoryViewModel @Inject constructor(
     val reviewList: LiveData<ReviewViewState<ProductrevFeedbackHistoryResponse>>
         get() = _reviewList
 
+    private val _reviewHistoryList = MediatorLiveData<List<ReviewHistoryUiModel>>()
+    val reviewHistoryList: LiveData<List<ReviewHistoryUiModel>>
+        get() = _reviewHistoryList
+
     private var searchQuery = ""
 
     private val currentPage = MutableLiveData(ReviewInboxConstants.REVIEW_INBOX_INITIAL_PAGE)
@@ -34,6 +40,9 @@ class ReviewHistoryViewModel @Inject constructor(
     init {
         _reviewList.addSource(currentPage) {
             getReviewData(it)
+        }
+        _reviewHistoryList.addSource(_reviewList) {
+            _reviewHistoryList.value = ReviewHistoryDataMapper.mapReviewListToReviewHistoryList(it)
         }
     }
 
