@@ -82,6 +82,24 @@ class UserInteractionTest {
     }
 
     @Test
+    fun `WHEN user change product quantity with invalid id THEN quantity should not be updated accordingly on widget ui model`() {
+        //given
+        val productId = "19207966120"
+        val newQty = 5
+        val productUiModel = MiniCartProductUiModel(productId = productId)
+        val miniCartListUiModel = DataProvider.provideMiniCartListUiModelAllAvailable()
+        viewModel.setMiniCartListUiModel(miniCartListUiModel)
+        val miniCartSimplifiedData = DataProvider.provideMiniCartSimplifiedDataAllAvailable()
+        viewModel.setMiniCartSimplifiedData(miniCartSimplifiedData)
+
+        //when
+        viewModel.updateProductQty(productUiModel, newQty)
+
+        //then
+        assert(viewModel.miniCartSimplifiedData.value?.miniCartItems == miniCartSimplifiedData.miniCartItems)
+    }
+
+    @Test
     fun `WHEN user change product notes THEN notes should be updated accordingly on bottomsheet ui model`() {
         //given
         val productId = "1920796612"
@@ -158,6 +176,27 @@ class UserInteractionTest {
         val productBundle = miniCartItemBundle?.products?.get(MiniCartItemKey(productId))
 
         assert(productBundle?.notes ?: 0 == newNotes)
+    }
+
+    @Test
+    fun `WHEN user change product bundle notes with invalid id THEN notes should not be updated accordingly on widget ui model`() {
+        //given
+        val productId = "21484762780"
+        val isBundling = true
+        val bundleId = "360120"
+        val newNotes = "new notes"
+        val miniCartListUiModel = DataProvider.provideMiniCartBundleListUiModelAllAvailable()
+        viewModel.setMiniCartListUiModel(miniCartListUiModel)
+        val miniCartSimplifiedData = DataProvider.provideGetMiniCartBundleSimplifiedSuccessAllAvailable()
+        viewModel.setMiniCartSimplifiedData(miniCartSimplifiedData)
+
+        //when
+        viewModel.updateProductNotes(productId, isBundling, bundleId, newNotes)
+
+        //then
+        val miniCartItemBundle = viewModel.miniCartSimplifiedData.value?.miniCartItems
+
+        assert(miniCartItemBundle == miniCartSimplifiedData.miniCartItems)
     }
 
     @Test
