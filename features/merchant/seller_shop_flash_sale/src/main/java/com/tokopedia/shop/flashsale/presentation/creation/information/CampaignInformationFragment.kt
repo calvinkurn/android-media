@@ -260,7 +260,7 @@ class CampaignInformationFragment : BaseDaggerFragment() {
         val rawHexColor = binding?.tauHexColor?.editText?.text.toString().trim().toHexColor()
         val gradient = Gradient(rawHexColor, rawHexColor, isSelected = true)
         binding?.imgHexColorPreview?.setBackgroundFromGradient(gradient)
-        val deselectedColors = viewModel.deselectAllColor(adapter.getItems())
+        val deselectedColors = viewModel.deselectAllColor(adapter.snapshot())
         adapter.submit(deselectedColors)
         viewModel.setSelectedColor(gradient)
     }
@@ -295,7 +295,7 @@ class CampaignInformationFragment : BaseDaggerFragment() {
 
     private fun handleSelectedColor(selectedGradient: Gradient) {
         viewModel.setSelectedColor(selectedGradient)
-        val allGradients = adapter.getItems()
+        val allGradients = adapter.snapshot()
         val updatedColorSelection = viewModel.markColorAsSelected(selectedGradient, allGradients)
         adapter.submit(updatedColorSelection)
     }
