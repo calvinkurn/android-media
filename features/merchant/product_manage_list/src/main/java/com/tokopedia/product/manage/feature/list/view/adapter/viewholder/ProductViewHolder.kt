@@ -147,6 +147,7 @@ class ProductViewHolder(
             ?.showWithCondition(
                 binding?.imageStockInformation?.isVisible.orFalse()
                         || binding?.imageStockReminder?.isVisible.orFalse()
+                        || binding?.imageStockAlertActive?.isVisible.orFalse()
             )
     }
 
@@ -166,6 +167,7 @@ class ProductViewHolder(
             ?.showWithCondition(
                 binding?.imageStockInformation?.isVisible.orFalse()
                         || binding?.imageStockReminder?.isVisible.orFalse()
+                        || binding?.imageStockAlertActive?.isVisible.orFalse()
             )
     }
 
