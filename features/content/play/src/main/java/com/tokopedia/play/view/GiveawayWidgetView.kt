@@ -105,16 +105,16 @@ class GiveawayWidgetView : ConstraintLayout {
 
     private fun animateTap() {
         tapAnimator.addListener(animationListener)
-        tapAnimator.duration = 80L
+        tapAnimator.duration = 200L
         tapAnimator.start()
     }
 
 
     private val clickScaleXAnimation = ObjectAnimator.ofFloat(
-        binding.flTap, View.SCALE_X, 1f, 0.8f
+        binding.flTap, View.SCALE_X, 1f, 0.6f
     )
     private val clickScaleYAnimation = ObjectAnimator.ofFloat(
-        binding.flTap, View.SCALE_Y, 1f, 0.8f
+        binding.flTap, View.SCALE_Y, 1f, 0.6f
     )
 
     private val tapAnimator = AnimatorSet().apply {
