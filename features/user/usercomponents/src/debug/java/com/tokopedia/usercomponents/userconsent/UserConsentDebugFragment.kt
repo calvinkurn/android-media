@@ -20,7 +20,7 @@ class UserConsentDebugFragment: BaseDaggerFragment() {
     var viewBinding by autoClearedNullable<FragmentDebugUserConsentBinding>()
 
     override fun getScreenName(): String {
-        return "User Consent Debug Fragment"
+        return SCREEN_NAME
     }
 
     override fun initInjector() { }
@@ -32,7 +32,7 @@ class UserConsentDebugFragment: BaseDaggerFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewBinding?.textCollextionId?.editText?.setText("6d45e8ce-d46d-4f0e-bf0c-a93f82f75e36")
+        viewBinding?.textCollextionId?.editText?.setText(COLLECTION_ID_SAMPLE)
         viewBinding?.buttonLoadConsent?.setOnClickListener {
             loadConsentComponent(
                 viewBinding?.textCollextionId?.editText?.text.toString(),
@@ -68,5 +68,10 @@ class UserConsentDebugFragment: BaseDaggerFragment() {
     override fun onDestroy() {
         super.onDestroy()
         viewBinding?.sampleUserConsent?.onDestroy()
+    }
+
+    companion object {
+        private const val SCREEN_NAME = "User Consent Debug Fragment"
+        private const val COLLECTION_ID_SAMPLE = "6d45e8ce-d46d-4f0e-bf0c-a93f82f75e36"
     }
 }
