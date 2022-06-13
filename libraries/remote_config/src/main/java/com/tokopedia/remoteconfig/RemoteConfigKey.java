@@ -292,5 +292,10 @@ public class RemoteConfigKey {
     public static final String PRODUCT_CARD_ENABLE_INTERACTION = "android_product_card_enable_interaction";
 
     public static final String ENABLE_PRODUCT_CARD_VIEWSTUB = "android_mainapp_enable_product_card_viewstub";
+
+    public static final String ENABLE_OLD_BUNDLE_SELECTION_PAGE = "android_enable_old_bundle_selection_page";
+
+    public static final String ENABLE_INIT_NR_IN_ACTIVITY = "android_mainapp_init_nr_in_activity";
+
     public static final String ENABLE_SHOP_DISCOUNT = "app_android_enable_shop_discount";
 }

@@ -14,7 +14,7 @@ import com.tokopedia.play.ui.toolbar.model.PartnerFollowAction
 import com.tokopedia.play.ui.toolbar.model.PartnerType
 import com.tokopedia.play.util.assertEqualTo
 import com.tokopedia.play.util.isEqualToIgnoringFields
-import com.tokopedia.play.view.uimodel.action.ClickFollowAction
+import com.tokopedia.play.view.uimodel.action.PlayViewerNewAction
 import com.tokopedia.play.view.uimodel.event.OpenPageEvent
 import com.tokopedia.play.view.uimodel.recom.PartnerFollowableStatus
 import com.tokopedia.play.view.uimodel.recom.PlayPartnerFollowStatus
@@ -75,7 +75,7 @@ class PlayFollowBuyerTest {
             createPage(mockChannelData)
             focusPage(mockChannelData)
         } andWhen {
-            submitAction(ClickFollowAction)
+            submitAction(PlayViewerNewAction.Follow)
         } thenVerify {
             withState {
                 partner.status.assertEqualTo(
@@ -100,7 +100,7 @@ class PlayFollowBuyerTest {
             createPage(mockChannelData)
             focusPage(mockChannelData)
         } andWhen {
-            submitAction(ClickFollowAction)
+            submitAction(PlayViewerNewAction.Follow)
         } thenVerify {
             withState {
                 partner.status.assertEqualTo(
@@ -124,7 +124,7 @@ class PlayFollowBuyerTest {
             createPage(mockChannelData)
             focusPage(mockChannelData)
         } andWhenExpectEvent {
-            submitAction(ClickFollowAction)
+            submitAction(PlayViewerNewAction.Follow)
         } thenVerify { event ->
             withState {
                 partner.status.assertEqualTo(
@@ -153,7 +153,7 @@ class PlayFollowBuyerTest {
             createPage(mockChannelData)
             focusPage(mockChannelData)
         } andWhen {
-            submitAction(ClickFollowAction)
+            submitAction(PlayViewerNewAction.Follow)
         } thenVerify {
             withState {
                 partner.status.assertEqualTo(
@@ -178,7 +178,7 @@ class PlayFollowBuyerTest {
             createPage(mockChannelData)
             focusPage(mockChannelData)
         } andWhen {
-            submitAction(ClickFollowAction)
+            submitAction(PlayViewerNewAction.Follow)
         } thenVerify {
             withState {
                 partner.status.assertEqualTo(
@@ -202,7 +202,7 @@ class PlayFollowBuyerTest {
             createPage(mockChannelData)
             focusPage(mockChannelData)
         } andWhen {
-            submitAction(ClickFollowAction)
+            submitAction(PlayViewerNewAction.Follow)
         } thenVerify {
             withState {
                 partner.status.assertEqualTo(
