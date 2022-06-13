@@ -427,6 +427,7 @@ open class HomeRecommendationFragment : Fragment(), HomeRecommendationListener {
 
                     if (wishlistResult.isUsingWishlistV2) {
                         showMessageSuccessAddWishlistV2(wishlistResult)
+                        if (productCardOptionsModel.isTopAds) hitWishlistClickUrl(productCardOptionsModel)
                     } else {
                         showMessageSuccessAddWishlist()
                     }
@@ -450,6 +451,18 @@ open class HomeRecommendationFragment : Fragment(), HomeRecommendationListener {
         } else {
             TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(getRecommendationAddWishlistNonLogin(productCardOptionsModel.productId, tabName))
             RouteManager.route(context, ApplinkConst.LOGIN)
+        }
+    }
+
+    private fun hitWishlistClickUrl(productCardOptionsModel: ProductCardOptionsModel) {
+        context?.let {
+            TopAdsUrlHitter(it).hitClickUrl(
+                this::class.java.simpleName,
+                productCardOptionsModel.topAdsClickUrl,
+                productCardOptionsModel.productId,
+                productCardOptionsModel.productName,
+                productCardOptionsModel.productImageUrl
+            )
         }
     }
 

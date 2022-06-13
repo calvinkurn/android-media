@@ -199,13 +199,14 @@ public class InboxFragment extends BaseTestableParentFragment<GlobalNavComponent
         adapter.notifyItemChanged(productCardOptionsModel.getProductPosition(), isAddWishlist);
 
         if (isAddWishlist) {
-            if (isUsingWishlistV2) showSuccessAddWishlistV2(productCardOptionsModel.getWishlistResult());
+            if (isUsingWishlistV2) {
+                showSuccessAddWishlistV2(productCardOptionsModel.getWishlistResult());
+                if (productCardOptionsModel.isTopAds()) onClickTopAdsWishlistV2(productCardOptionsModel);
+            }
             else showSuccessAddWishlist();
         } else {
-            if (isUsingWishlistV2) {
-                showSuccessRemoveWishlistV2(productCardOptionsModel.getWishlistResult());
-                if (productCardOptionsModel.isTopAds()) onClickTopAdsWishlistV2(productCardOptionsModel);
-            } else showSuccessRemoveWishlist();
+            if (isUsingWishlistV2) showSuccessRemoveWishlistV2(productCardOptionsModel.getWishlistResult());
+            else showSuccessRemoveWishlist();
         }
     }
 
