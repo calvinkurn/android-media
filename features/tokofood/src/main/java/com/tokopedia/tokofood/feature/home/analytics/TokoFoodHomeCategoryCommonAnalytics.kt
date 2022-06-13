@@ -13,7 +13,7 @@ import com.tokopedia.track.constant.TrackerConstant
 
 object TokoFoodHomeCategoryCommonAnalytics: BaseTrackerConst() {
 
-    fun impressMerchant(userId: String?, destinationId: String?, merchant: Merchant, horizontalPosition: Int): Map<String, Any> {
+    fun impressMerchant(userId: String?, destinationId: String?, merchant: Merchant, horizontalPosition: Int, isHome: Boolean): Map<String, Any> {
         val trackingBuilder = BaseTrackerBuilder()
         val merchantAddress = if (merchant.addressLocality.isNotEmpty()) merchant.addressLocality else EMPTY_DATA
         val listPromotions = arrayListOf(
@@ -28,7 +28,7 @@ object TokoFoodHomeCategoryCommonAnalytics: BaseTrackerConst() {
             event = Event.PROMO_VIEW,
             eventAction = TokoFoodAnalytics.EVENT_ACTION_VIEW_MERCHANT_LIST,
             eventLabel = "",
-            eventCategory = TokoFoodAnalytics.EVENT_CATEGORY_HOME_PAGE,
+            eventCategory = if (isHome) TokoFoodAnalytics.EVENT_CATEGORY_HOME_PAGE else TokoFoodAnalytics.EVENT_CATEGORY_CATEGORY_PAGE,
             promotions = listPromotions)
             .appendBusinessUnit(TokoFoodAnalytics.PHYSICAL_GOODS)
             .appendCurrentSite(TokoFoodAnalytics.TOKOPEDIA_MARKETPLACE)

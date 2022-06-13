@@ -328,7 +328,7 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
 
     override fun onImpressMerchant(merchant: Merchant, horizontalPosition: Int) {
         trackingQueue.putEETracking(TokoFoodHomeCategoryCommonAnalytics.impressMerchant(userSession.userId,
-            localCacheModel?.district_id, merchant, horizontalPosition) as HashMap<String, Any>)
+            localCacheModel?.district_id, merchant, horizontalPosition, isHome = true) as HashMap<String, Any>)
     }
 
     override fun onTickerDismissed(id: String) {
