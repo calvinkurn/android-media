@@ -26,8 +26,6 @@
             app:tickerType="announcement" />
 
 
-
-
         <LinearLayout
             android:id="@+id/empty_search"
             android:layout_width="match_parent"
@@ -35,27 +33,27 @@
             android:layout_marginTop="40dp"
             android:orientation="vertical"
             android:visibility="gone"
+            tools:visibility="visible"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/search_input_view">
+            app:layout_constraintTop_toTopOf="parent">
 
             <ImageView
                 android:id="@+id/iv_empty_address"
 
-                android:layout_width="@dimen/dp_280"
-                android:layout_height="@dimen/dp_140"
+                android:layout_width="280dp"
+                android:layout_height="140dp"
                 android:layout_gravity="center_horizontal"
-                android:layout_marginLeft="@dimen/dp_60"
-                android:layout_marginRight="@dimen/dp_60"
+                android:layout_marginLeft="60dp"
+                android:layout_marginRight="60dp"
                 android:contentDescription="@string/image_desc" />
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/title_empty_search"
                 android:layout_width="match_parent"
-
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:layout_marginLeft="40dp"
-                android:layout_marginTop="@dimen/dp_26"
+                android:layout_marginTop="26dp"
                 android:layout_marginRight="40dp"
                 android:gravity="center"
                 android:text="@string/title_empty_search"
@@ -77,16 +75,16 @@
         </LinearLayout>
 
         <androidx.recyclerview.widget.RecyclerView
-            android:visibility="gone"
             android:id="@+id/address_list"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            tools:listitem="@layout/item_manage_people_address"
             android:layout_marginBottom="8dp"
+            android:visibility="gone"
             app:layout_constraintBottom_toTopOf="@id/ll_btn"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            tools:listitem="@layout/item_manage_people_address" />
 
 
         <include
@@ -97,7 +95,7 @@
             android:visibility="gone"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-           app:layout_constraintTop_toTopOf="parent"/>
+            app:layout_constraintTop_toTopOf="parent" />
 
         <com.tokopedia.globalerror.GlobalError
             android:id="@+id/global_error"
@@ -110,7 +108,7 @@
             android:id="@+id/ll_btn"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/Unify_N0"
+            android:background="@color/Unify_Background"
             android:orientation="vertical"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"

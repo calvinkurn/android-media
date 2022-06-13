@@ -49,6 +49,7 @@ import com.tokopedia.manageaddress.util.ManageAddressConstant.REQUEST_CODE_PARAM
 import com.tokopedia.manageaddress.util.ManageAddressConstant.SCREEN_NAME_CART_EXISTING_USER
 import com.tokopedia.manageaddress.util.ManageAddressConstant.SCREEN_NAME_CHOOSE_ADDRESS_EXISTING_USER
 import com.tokopedia.manageaddress.util.ManageAddressConstant.SCREEN_NAME_USER_NEW
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.purchase_platform.common.constant.CheckoutConstant
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
@@ -162,9 +163,10 @@ class MainAddressFragment : BaseDaggerFragment(), ManageAddressItemAdapter.Manag
     private fun initView() {
         setButtonEnabled(false)
 
-        ImageHandler.LoadImage(binding?.emptyStateManageAddress?.ivEmptyState, EMPTY_STATE_PICT_URL)
-        ImageHandler.LoadImage(binding?.ivEmptyAddress, EMPTY_SEARCH_PICT_URL)
-
+        binding?.apply {
+            emptyStateManageAddress?.ivEmptyState?.loadImage(EMPTY_STATE_PICT_URL)
+            ivEmptyAddress?.loadImage(EMPTY_SEARCH_PICT_URL)
+        }
         initScrollListener()
 
     }

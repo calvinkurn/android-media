@@ -133,8 +133,4 @@
     <string name="tablayout_label_main">Utama</string>
     <string name="tablayout_label_from_friend">Dari teman</string>
 
-
-    <!-- TODO: Remove later after have view from friend,  -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
-
 </resources>
