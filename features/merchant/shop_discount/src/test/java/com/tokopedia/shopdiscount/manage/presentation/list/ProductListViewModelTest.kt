@@ -70,7 +70,7 @@ class ProductListViewModelTest {
     private val requestId = "1930129309"
 
     private val viewModel by lazy {
-        ProductListViewModel(
+        DiscountedProductListViewModel(
             CoroutineTestDispatchersProvider,
             getSlashPriceProductListUseCase,
             deleteDiscountUseCase,

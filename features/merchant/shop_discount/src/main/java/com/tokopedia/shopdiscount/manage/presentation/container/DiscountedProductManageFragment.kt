@@ -13,6 +13,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.iconunify.IconUnify
@@ -23,14 +24,14 @@ import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.shopdiscount.R
-import com.tokopedia.shopdiscount.databinding.FragmentDiscountProductManageBinding
+import com.tokopedia.shopdiscount.databinding.FragmentDiscountedProductManageBinding
 import com.tokopedia.shopdiscount.di.component.DaggerShopDiscountComponent
 import com.tokopedia.shopdiscount.info.presentation.bottomsheet.ShopDiscountSellerInfoBottomSheet
 import com.tokopedia.shopdiscount.manage.domain.entity.PageTab
-import com.tokopedia.shopdiscount.manage.presentation.list.ProductListFragment
+import com.tokopedia.shopdiscount.manage.presentation.list.DiscountedProductListFragment
 import com.tokopedia.shopdiscount.utils.constant.DiscountStatus
-import com.tokopedia.shopdiscount.utils.extension.setFragmentToUnifyBgColor
 import com.tokopedia.shopdiscount.utils.constant.UrlConstant
+import com.tokopedia.shopdiscount.utils.extension.setFragmentToUnifyBgColor
 import com.tokopedia.shopdiscount.utils.extension.showError
 import com.tokopedia.shopdiscount.utils.extension.showToaster
 import com.tokopedia.shopdiscount.utils.preference.SharedPreferenceDataStore
@@ -47,7 +48,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 
-class ProductManageFragment : BaseDaggerFragment() {
+class DiscountedProductManageFragment : BaseDaggerFragment() {
 
     companion object {
         private const val NOT_SET = 0
@@ -57,13 +58,14 @@ class ProductManageFragment : BaseDaggerFragment() {
         private const val TAB_POSITION_THIRD = 2
         private const val BUNDLE_KEY_TOASTER_WORDING = "toaster_wording"
         private const val BUNDLE_KEY_PREVIOUS_DISCOUNT_STATUS_ID = "previous_discount_status_id"
+        private const val SELLER_ADMIN_ARTICLE = "https://seller.tokopedia.com/edu/fitur-admin-toko/"
 
         @JvmStatic
         fun newInstance(
             previouslySelectedDiscountStatusId: Int,
             toasterWording: String
-        ): ProductManageFragment {
-            return ProductManageFragment().apply {
+        ): DiscountedProductManageFragment {
+            return DiscountedProductManageFragment().apply {
                 val bundle = Bundle()
                 bundle.putInt(
                     BUNDLE_KEY_PREVIOUS_DISCOUNT_STATUS_ID,
@@ -75,7 +77,7 @@ class ProductManageFragment : BaseDaggerFragment() {
         }
     }
 
-    private var binding by autoClearedNullable<FragmentDiscountProductManageBinding>()
+    private var binding by autoClearedNullable<FragmentDiscountedProductManageBinding>()
     private val toasterWording by lazy {
         arguments?.getString(
             BUNDLE_KEY_TOASTER_WORDING
@@ -87,7 +89,7 @@ class ProductManageFragment : BaseDaggerFragment() {
             BUNDLE_KEY_PREVIOUS_DISCOUNT_STATUS_ID
         ) ?: NOT_SET
     }
-    override fun getScreenName(): String = ProductManageFragment::class.java.canonicalName.orEmpty()
+    override fun getScreenName(): String = DiscountedProductManageFragment::class.java.canonicalName.orEmpty()
     override fun initInjector() {
         DaggerShopDiscountComponent.builder()
             .baseAppComponent((activity?.applicationContext as? BaseMainApplication)?.baseAppComponent)
@@ -105,20 +107,22 @@ class ProductManageFragment : BaseDaggerFragment() {
     private var remoteConfig: RemoteConfig? = null
 
     private val viewModelProvider by lazy { ViewModelProvider(this, viewModelFactory) }
-    private val viewModel by lazy { viewModelProvider.get(ProductManageViewModel::class.java) }
+    private val viewModel by lazy { viewModelProvider.get(DiscountedProductManageViewModel::class.java) }
 
-    private val tabs = listOf(
-        PageTab("Berlangsung", "ACTIVE", DiscountStatus.ONGOING, 0, TAB_POSITION_FIRST),
-        PageTab("Akan Datang", "SCHEDULED", DiscountStatus.SCHEDULED, 0, TAB_POSITION_SECOND),
-        PageTab("Dialihkan", "PAUSED", DiscountStatus.PAUSED, 0, TAB_POSITION_THIRD)
-    )
+    private val tabs by lazy {
+        listOf(
+            PageTab(getString(R.string.sd_ongoing), "ACTIVE", DiscountStatus.ONGOING, 0, TAB_POSITION_FIRST),
+            PageTab(getString(R.string.sd_upcoming), "SCHEDULED", DiscountStatus.SCHEDULED, 0, TAB_POSITION_SECOND),
+            PageTab(getString(R.string.sd_paused), "PAUSED", DiscountStatus.PAUSED, 0, TAB_POSITION_THIRD)
+        )
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        binding = FragmentDiscountProductManageBinding.inflate(inflater, container, false)
+        binding = FragmentDiscountedProductManageBinding.inflate(inflater, container, false)
         return binding?.root
     }
 
@@ -230,7 +234,6 @@ class ProductManageFragment : BaseDaggerFragment() {
                         binding?.shimmer?.content?.gone()
                         binding?.groupContent?.gone()
                         binding?.globalError?.gone()
-                        binding?.globalError?.gone()
                         if(!it.data.hasBenefitPackage && !it.data.isAuthorize) {
                             showRbacBottomSheet()
                             showErrorEligibleView()
@@ -277,7 +280,16 @@ class ProductManageFragment : BaseDaggerFragment() {
     }
 
     private fun showRbacBottomSheet() {
-        RouteManager.route(context,ApplinkConstInternalSellerapp.ADMIN_RESTRICTION)
+        RouteManager.route(context, getSlashPriceApplink())
+    }
+
+    private fun getSlashPriceApplink(): String {
+        return UriUtil.buildUriAppendParam(
+            uri = ApplinkConstInternalSellerapp.ADMIN_RESTRICTION,
+            queryParameters = mapOf(
+                ApplinkConstInternalSellerapp.PARAM_ARTICLE_URL to SELLER_ADMIN_ARTICLE
+            )
+        )
     }
 
     override fun onResume() {
@@ -350,7 +362,7 @@ class ProductManageFragment : BaseDaggerFragment() {
         val pages = mutableListOf<Pair<String, Fragment>>()
 
         tabs.forEach { tab ->
-            val fragment = ProductListFragment.newInstance(
+            val fragment = DiscountedProductListFragment.newInstance(
                 tab.name,
                 tab.discountStatusId,
                 tab.count,

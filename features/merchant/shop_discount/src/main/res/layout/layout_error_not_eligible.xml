@@ -5,7 +5,7 @@
     android:id="@+id/container_layout_error_not_eligible"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".manage.presentation.container.ProductManageFragment">
+    tools:context=".manage.presentation.container.DiscountedProductManageFragment">
 
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/image_error_not_eligible"
