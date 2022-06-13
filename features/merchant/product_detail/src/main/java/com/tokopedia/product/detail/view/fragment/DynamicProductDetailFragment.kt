@@ -238,8 +238,7 @@ import com.tokopedia.wishlistcommon.util.WishlistV2CommonConsts.OPEN_WISHLIST
 import com.tokopedia.wishlistcommon.util.WishlistV2CommonConsts.TOASTER_RED
 import com.tokopedia.wishlistcommon.util.WishlistV2RemoteConfigRollenceUtil
 import rx.subscriptions.CompositeSubscription
-import java.util.Locale
-import java.util.UUID
+import java.util.*
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
@@ -3173,7 +3172,7 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
         viewModel.deleteProductInCart(viewModel.getDynamicProductInfoP1?.basic?.productID ?: "")
     }
 
-    override fun updateQuantityNonVarTokoNow(quantity: Int, miniCart: MiniCartItem, oldValue: Int) {
+    override fun updateQuantityNonVarTokoNow(quantity: Int, miniCart: MiniCartItem.MiniCartItemProduct, oldValue: Int) {
         if (!viewModel.isUserSessionActive) {
             doLoginWhenUserClickButton()
             return
@@ -3965,6 +3964,7 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
         val parameterizedAppLink = Uri.parse(appLink).buildUpon()
                 .appendQueryParameter(ApplinkConstInternalMechant.QUERY_PARAM_BUNDLE_ID, bundleId)
                 .appendQueryParameter(ApplinkConstInternalMechant.QUERY_PARAM_PAGE_SOURCE, ApplinkConstInternalMechant.SOURCE_PDP)
+                .appendQueryParameter(ApplinkConstInternalMechant.QUERY_PARAM_WAREHOUSE_ID, viewModel.getMultiOriginByProductId().id)
                 .build()
                 .toString()
         val intent = RouteManager.getIntent(requireContext(), parameterizedAppLink)
