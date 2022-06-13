@@ -39,7 +39,6 @@ import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilderFlag
 import com.tokopedia.searchbar.navigation_component.util.NavToolbarExt
 import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFoodData
-import com.tokopedia.tokofood.common.constants.ShareComponentConstants
 import com.tokopedia.tokofood.common.minicartwidget.view.TokoFoodMiniCartWidget
 import com.tokopedia.tokofood.common.presentation.UiEvent
 import com.tokopedia.tokofood.common.presentation.listener.HasViewModel
@@ -48,6 +47,7 @@ import com.tokopedia.tokofood.common.util.Constant
 import com.tokopedia.tokofood.common.util.TokofoodErrorLogger
 import com.tokopedia.tokofood.databinding.FragmentTokofoodCategoryBinding
 import com.tokopedia.tokofood.feature.home.analytics.TokoFoodCategoryAnalytics
+import com.tokopedia.tokofood.feature.home.analytics.TokoFoodHomeCategoryCommonAnalytics
 import com.tokopedia.tokofood.feature.home.di.DaggerTokoFoodHomeComponent
 import com.tokopedia.tokofood.feature.home.domain.constanta.TokoFoodLayoutState
 import com.tokopedia.tokofood.feature.home.domain.data.Merchant
@@ -61,6 +61,7 @@ import com.tokopedia.tokofood.feature.home.presentation.uimodel.TokoFoodListUiMo
 import com.tokopedia.tokofood.feature.home.presentation.view.listener.TokoFoodView
 import com.tokopedia.tokofood.feature.home.presentation.viewmodel.TokoFoodCategoryViewModel
 import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.TokoFoodPurchaseFragment
+import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
@@ -83,6 +84,9 @@ class TokoFoodCategoryFragment: BaseDaggerFragment(),
 
     @Inject
     lateinit var analytics: TokoFoodCategoryAnalytics
+
+    @Inject
+    lateinit var trackingQueue: TrackingQueue
 
     private var binding by autoClearedNullable<FragmentTokofoodCategoryBinding>()
     private val viewModel by lazy {
@@ -167,6 +171,11 @@ class TokoFoodCategoryFragment: BaseDaggerFragment(),
         initializeMiniCartCategory()
     }
 
+    override fun onPause() {
+        super.onPause()
+        trackingQueue.sendAll()
+    }
+
     override fun getFragmentTitle(): String? {
         return ""
     }
@@ -224,7 +233,9 @@ class TokoFoodCategoryFragment: BaseDaggerFragment(),
     }
 
     override fun onImpressMerchant(merchant: Merchant, horizontalPosition: Int) {
-        analytics.impressMerchant(userSession.userId, localCacheModel?.district_id, merchant, horizontalPosition)
+        trackingQueue.putEETracking(
+            TokoFoodHomeCategoryCommonAnalytics.impressMerchant(userSession.userId,
+            localCacheModel?.district_id, merchant, horizontalPosition) as HashMap<String, Any>)
     }
 
     private fun onRefreshLayout() {

@@ -60,6 +60,7 @@ import com.tokopedia.tokofood.common.presentation.viewmodel.MultipleFragmentsVie
 import com.tokopedia.tokofood.common.util.TokofoodErrorLogger
 import com.tokopedia.tokofood.databinding.FragmentTokofoodHomeBinding
 import com.tokopedia.tokofood.feature.home.analytics.TokoFoodHomeAnalytics
+import com.tokopedia.tokofood.feature.home.analytics.TokoFoodHomeCategoryCommonAnalytics
 import com.tokopedia.tokofood.feature.home.analytics.TokoFoodHomePageLoadTimeMonitoring
 import com.tokopedia.tokofood.feature.home.di.DaggerTokoFoodHomeComponent
 import com.tokopedia.tokofood.feature.home.domain.constanta.TokoFoodLayoutState
@@ -89,6 +90,7 @@ import com.tokopedia.tokofood.feature.home.presentation.view.listener.TokoFoodHo
 import com.tokopedia.tokofood.feature.home.presentation.view.listener.TokoFoodView
 import com.tokopedia.tokofood.feature.home.presentation.viewmodel.TokoFoodHomeViewModel
 import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.TokoFoodPurchaseFragment
+import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.universal_sharing.view.bottomsheet.UniversalShareBottomSheet
 import com.tokopedia.universal_sharing.view.bottomsheet.listener.ShareBottomsheetListener
@@ -121,6 +123,9 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
 
     @Inject
     lateinit var analytics: TokoFoodHomeAnalytics
+
+    @Inject
+    lateinit var trackingQueue: TrackingQueue
 
     private var binding by autoClearedNullable<FragmentTokofoodHomeBinding>()
     private val viewModel by lazy {
@@ -251,6 +256,11 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
         initializeMiniCartHome()
     }
 
+    override fun onPause() {
+        super.onPause()
+        trackingQueue.sendAll()
+    }
+
     override fun getFragmentPage(): Fragment = this
 
     override fun getFragmentManagerPage(): FragmentManager = childFragmentManager
@@ -314,7 +324,8 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
     }
 
     override fun onImpressMerchant(merchant: Merchant, horizontalPosition: Int) {
-        analytics.impressMerchant(userSession.userId, localCacheModel?.district_id, merchant, horizontalPosition)
+        trackingQueue.putEETracking(TokoFoodHomeCategoryCommonAnalytics.impressMerchant(userSession.userId,
+            localCacheModel?.district_id, merchant, horizontalPosition) as HashMap<String, Any>)
     }
 
     override fun onTickerDismissed(id: String) {

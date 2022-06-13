@@ -15,7 +15,6 @@ import com.tokopedia.tokofood.common.analytics.TokoFoodAnalytics.EVENT_ACTION_VI
 import com.tokopedia.tokofood.common.analytics.TokoFoodAnalytics.EVENT_ACTION_VIEW_CATEGORY_ICONS
 import com.tokopedia.tokofood.common.analytics.TokoFoodAnalytics.EVENT_ACTION_VIEW_CATEGORY_WIDGET
 import com.tokopedia.tokofood.common.analytics.TokoFoodAnalytics.EVENT_ACTION_VIEW_LEGO_SIX
-import com.tokopedia.tokofood.common.analytics.TokoFoodAnalytics.EVENT_ACTION_VIEW_MERCHANT_LIST
 import com.tokopedia.tokofood.common.analytics.TokoFoodAnalyticsConstants
 import com.tokopedia.tokofood.common.analytics.TokoFoodAnalyticsConstants.ADD_TO_CART
 import com.tokopedia.tokofood.common.analytics.TokoFoodAnalyticsConstants.EMPTY_DATA
@@ -36,6 +35,8 @@ import com.tokopedia.tokofood.feature.home.domain.data.DynamicIcon
 import com.tokopedia.tokofood.feature.home.domain.data.Merchant
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
+import com.tokopedia.track.builder.BaseTrackerBuilder
+import com.tokopedia.track.builder.`interface`.BaseTrackerBuilderInterface
 import com.tokopedia.track.builder.util.BaseTrackerConst
 import com.tokopedia.track.builder.util.BaseTrackerConst.Event.SELECT_CONTENT
 
@@ -142,16 +143,6 @@ class TokoFoodHomeAnalytics: BaseTrackerConst() {
         eventDataLayer.putParcelableArrayList(Promotion.KEY, getPromotionMerchant(merchant, horizontalPosition))
         eventDataLayer.selectContent(userId, destinationId)
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(SELECT_CONTENT, eventDataLayer)
-    }
-
-    fun impressMerchant(userId: String?, destinationId: String?, merchant: Merchant, horizontalPosition: Int) {
-        val eventDataLayer = Bundle().apply {
-            putString(TrackAppUtils.EVENT_ACTION,  EVENT_ACTION_VIEW_MERCHANT_LIST)
-            putString(TrackAppUtils.EVENT_LABEL, "")
-        }
-        eventDataLayer.putParcelableArrayList(Promotion.KEY, getPromotionMerchant(merchant, horizontalPosition))
-        eventDataLayer.viewItem(userId, destinationId)
-        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(VIEW_ITEM, eventDataLayer)
     }
 
     fun openScreenHomePage(userId: String?, destinationId: String?, isLoggenInStatus: Boolean) {
