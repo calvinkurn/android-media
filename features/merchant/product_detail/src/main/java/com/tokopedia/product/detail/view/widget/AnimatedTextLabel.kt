@@ -38,6 +38,7 @@ class AnimatedTextLabel : FrameLayout {
     private var containerLabel: FrameLayout? = null
     private var previousText: String = ""
     private val animatorSet = AnimatorSet()
+    private val animatorWidthOpacitySet = AnimatorSet()
     private var animationHelper: TextLabelAnimator? = null
 
     init {
@@ -67,7 +68,7 @@ class AnimatedTextLabel : FrameLayout {
                 animationHelper?.animateChangeText(
                         processText,
                         getWidth(processText, txtLabel?.textSize ?: 0F),
-                        animatorSet)
+                        animatorWidthOpacitySet)
             } else {
                 renderTextAndRestoreWidth(processText)
                 containerLabel?.let {
@@ -129,14 +130,15 @@ class TextLabelAnimator(private val txtView: Typography) {
 
     fun animateChangeText(desc: String,
                           widthTarget: Int,
-                          animatorSet: AnimatorSet) {
-        animatorSet.play(createWidthAnimator(txtView.width, widthTarget))
+                          animatorWidthOpacitySet: AnimatorSet) {
+        animatorWidthOpacitySet.cancel()
+        animatorWidthOpacitySet.play(createWidthAnimator(txtView.width, widthTarget))
                 .with(createTranslationXAnimator({
                     txtView.text = desc
                 }) {
                     txtView.text = desc
                 }).with(createAlphaAnimator(txtView.alpha, 1F, ALPHA_300_DURATION))
-        animatorSet.start()
+        animatorWidthOpacitySet.start()
     }
 
     fun animateFadeOut(animatorSet: AnimatorSet) {

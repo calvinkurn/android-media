@@ -5,6 +5,6 @@
     <corners android:radius="8dp" />
 
     <stroke
-        android:width="2dp"
+        android:width="3dp"
         android:color="@color/Unify_GN500" />
 </shape>
