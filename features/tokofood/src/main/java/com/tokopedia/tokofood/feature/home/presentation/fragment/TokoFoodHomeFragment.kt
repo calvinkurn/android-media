@@ -26,6 +26,8 @@ import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConsInternalNavigation
 import com.tokopedia.applink.internal.ApplinkConstInternalLogistic
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.kotlin.extensions.view.ONE
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.addOneTimeGlobalLayoutListener
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.observe
@@ -175,6 +177,7 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
         }
     }
 
+    private var jumpToTopView: View? = null
     private var navToolbar: NavToolbar? = null
     private var rvHome: RecyclerView? = null
     private var swipeLayout: SwipeRefreshLayout? = null
@@ -184,6 +187,8 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
     private var shareHomeTokoFood: TokoFoodHomeShare? = null
     private var localCacheModel: LocalCacheModel? = null
     private var pageLoadTimeMonitoring: TokoFoodHomePageLoadTimeMonitoring? = null
+    private var dividerHeight = 4
+    private var totalScrolled = 0
     private var movingPosition = 0
     private val spaceZero: Int
         get() = resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.unify_space_0).toInt()
@@ -414,6 +419,7 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
 
     private fun setupUi() {
         view?.apply {
+            jumpToTopView = binding?.icJumpToTop?.root
             navToolbar = binding?.navToolbar
             rvHome = binding?.rvHome
             swipeLayout = binding?.swipeRefreshLayout
@@ -589,6 +595,7 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
     }
 
     private fun onLoadingHomelayout(data: TokoFoodListUiModel) {
+        hideJumpToTop()
         hideMiniCartHome()
         showHomeLayout(data)
         checkAddressDataAndServiceArea()
@@ -635,6 +642,7 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
         return object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
+                setupJumpToTop(recyclerView, dy)
                 onScrollProductList()
             }
         }
@@ -920,5 +928,29 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
 
     private fun stopPerformanceMonitoring() {
         pageLoadTimeMonitoring?.stopPerformanceMonitoring()
+    }
+
+    private fun hideJumpToTop() {
+        jumpToTopView?.hide()
+    }
+
+    private fun showJumpToTop(recyclerView: RecyclerView) {
+        jumpToTopView?.show()
+        jumpToTopView?.setOnClickListener {
+            recyclerView.scrollToPosition(Int.ZERO)
+            totalScrolled = 0
+            hideJumpToTop()
+        }
+    }
+
+    private fun setupJumpToTop(recyclerView: RecyclerView, dy: Int) {
+        totalScrolled += dy
+        binding?.root?.height?.let {
+            if (totalScrolled > (it / dividerHeight)) {
+                showJumpToTop(recyclerView)
+            } else {
+                hideJumpToTop()
+            }
+        }
     }
 }
