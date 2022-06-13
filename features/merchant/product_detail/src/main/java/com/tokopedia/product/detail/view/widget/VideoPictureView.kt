@@ -13,6 +13,7 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
+import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.addOneTimeGlobalLayoutListener
 import com.tokopedia.product.detail.R
@@ -219,9 +220,12 @@ class VideoPictureView @JvmOverloads constructor(
         val mediaData = videoPictureAdapter?.currentList?.getOrNull(position)
         val variantName = mediaData?.mediaDescription ?: ""
         val totalMediaCount = videoPictureAdapter?.currentList?.size ?: 0
-        val index = "${position + 1} / $totalMediaCount"
+        val index = "${position + Int.ONE} / $totalMediaCount"
+        val totalImageCount = videoPictureAdapter?.currentList?.count {
+            !it.isVideoType()
+        } ?: 0
 
-        if (mediaData?.isVideoType() == true) {
+        if (mediaData?.isVideoType() == true || totalImageCount <= HIDE_LABEL_IMAGE_COUNT_MIN) {
             binding.txtAnimLabel.showView("")
             binding.txtAnimLabel.setEmptyText()
             return
@@ -245,5 +249,6 @@ class VideoPictureView @JvmOverloads constructor(
 
     companion object {
         private const val VIDEO_PICTURE_PAGE_LIMIT = 3
+        private const val HIDE_LABEL_IMAGE_COUNT_MIN = 1
     }
 }
