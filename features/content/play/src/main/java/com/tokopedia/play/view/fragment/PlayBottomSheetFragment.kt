@@ -532,15 +532,15 @@ class PlayBottomSheetFragment @Inject constructor(
                                 BottomInsetsType.VariantSheet
                             } else BottomInsetsType.ProductSheet //TEMPORARY
 
-                            val (wording, route) = if(event.product.isTokoNow)
-                                Pair(getString(R.string.play_add_to_cart_message_success_tokonow), "tokopedia://now?isMiniCartOpen=true")
-                            else Pair(getString(R.string.play_add_to_cart_message_success), ApplinkConstInternalMarketplace.CART)
+                            val (wording, route, toaster) = if(event.product.isTokoNow)
+                                Triple(getString(R.string.play_add_to_cart_message_success_tokonow), getString(R.string.play_tokonow_minicart_applink), getString(R.string.play_toaster_tokonow_wording))
+                            else Triple(getString(R.string.play_add_to_cart_message_success), ApplinkConstInternalMarketplace.CART, getString(R.string.play_toaster_global_wording))
 
                             doShowToaster(
                                 bottomSheetType = bottomInsetsType,
                                 toasterType = Toaster.TYPE_NORMAL,
                                 message = wording,
-                                actionText = getString(R.string.play_action_view),
+                                actionText = toaster,
                                 actionClickListener = {
                                     RouteManager.route(requireContext(), route)
                                     analytic.clickSeeToasterAfterAtc()

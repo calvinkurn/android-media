@@ -1528,6 +1528,7 @@ class PlayUserInteractionFragment @Inject constructor(
         tagItem: TagItemUiModel,
         bottomInsets: Map<BottomInsetsType, BottomInsetsState>,
         address: AddressWidgetUiState,
+        partner: PlayPartnerInfo
     ) {
         if(!bottomInsets.isAnyShown && !address.shouldShow) productSeeMoreView?.show()
         else productSeeMoreView?.hide()
