@@ -49,8 +49,8 @@ class ChooseAddressViewComponent(
     }
 
     private fun openBottomSheet() {
-        if (!getBottomSheet().isVisible)
-            getBottomSheet().showNow(listener.getFragmentForAddress(this@ChooseAddressViewComponent).childFragmentManager, "")
+        if (!getBottomSheet().isAdded)
+            getBottomSheet().showNow(listener.getFragmentForAddress(this@ChooseAddressViewComponent).childFragmentManager, PLAY_CHOOSE_ADDRESS_TAG)
     }
 
     private fun hideBottomSheet() {
@@ -64,6 +64,10 @@ class ChooseAddressViewComponent(
             chooseAddressBottomSheet.setListener(insideListener)
         }
         return chooseAddressBottomSheet
+    }
+
+    companion object {
+        private const val PLAY_CHOOSE_ADDRESS_TAG = "PLAY_ADDRESS"
     }
 
     interface Listener {
