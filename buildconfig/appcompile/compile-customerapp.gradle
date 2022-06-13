@@ -269,7 +269,6 @@ includeIfEnabled("features:user:seamless_login_common")
 includeIfEnabled("features:user:vote")
 includeIfEnabled("features:user:telephony_masking")
 includeIfEnabled("features:user:fcm_common")
-includeIfEnabled("features:user:usercomponents")
 
 includeIfEnabled("tkpdcore")
 includeIfEnabled("tkpddesign")
