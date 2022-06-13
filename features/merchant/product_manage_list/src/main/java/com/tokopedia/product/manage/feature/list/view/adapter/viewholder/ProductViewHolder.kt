@@ -26,7 +26,6 @@ class ProductViewHolder(
         @LayoutRes
         var LAYOUT = R.layout.item_manage_product_list
         const val MAX_SHOWING_STOCK = 999_999
-        const val SATURATION_GREY = 0.5f
     }
 
     private val binding by viewBinding<ItemManageProductListBinding>()
