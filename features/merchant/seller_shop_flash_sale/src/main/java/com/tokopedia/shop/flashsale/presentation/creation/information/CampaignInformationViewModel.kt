@@ -9,9 +9,11 @@ import com.tokopedia.shop.flashsale.common.constant.QuantityPickerConstant.CAMPA
 import com.tokopedia.shop.flashsale.common.extension.hourOnly
 import com.tokopedia.shop.flashsale.domain.entity.CampaignAction
 import com.tokopedia.shop.flashsale.domain.entity.CampaignCreationResult
+import com.tokopedia.shop.flashsale.domain.entity.CampaignUiModel
 import com.tokopedia.shop.flashsale.domain.entity.Gradient
 import com.tokopedia.shop.flashsale.domain.entity.enums.PaymentType
 import com.tokopedia.shop.flashsale.domain.usecase.DoSellerCampaignCreationUseCase
+import com.tokopedia.shop.flashsale.domain.usecase.GetSellerCampaignDetailUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -24,6 +26,7 @@ import javax.inject.Inject
 class CampaignInformationViewModel @Inject constructor(
     private val dispatchers: CoroutineDispatchers,
     private val doSellerCampaignCreationUseCase: DoSellerCampaignCreationUseCase,
+    private val getSellerCampaignDetailUseCase: GetSellerCampaignDetailUseCase
 ) : BaseViewModel(dispatchers.main) {
 
     companion object {
@@ -46,6 +49,10 @@ class CampaignInformationViewModel @Inject constructor(
     private val _campaignName = MutableLiveData<CampaignNameValidationResult>()
     val campaignName: LiveData<CampaignNameValidationResult>
         get() = _campaignName
+
+    private val _campaignDetail= MutableLiveData<Result<CampaignUiModel>>()
+    val campaignDetail: LiveData<Result<CampaignUiModel>>
+        get() = _campaignDetail
 
     private var selection: Selection? = null
     private var selectedColor = defaultGradientColor
@@ -170,6 +177,21 @@ class CampaignInformationViewModel @Inject constructor(
             },
             onError = { error ->
                 _campaignUpdate.postValue(Fail(error))
+            }
+        )
+
+    }
+
+
+    fun getCampaignDetail(campaignId: Long) {
+        launchCatchError(
+            dispatchers.io,
+            block = {
+                val result = getSellerCampaignDetailUseCase.execute(campaignId.toInt())
+                _campaignDetail.postValue(Success(result))
+            },
+            onError = { error ->
+                _campaignDetail.postValue(Fail(error))
             }
         )
 

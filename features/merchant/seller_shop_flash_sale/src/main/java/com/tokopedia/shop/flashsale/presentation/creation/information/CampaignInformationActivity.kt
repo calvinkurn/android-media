@@ -19,23 +19,29 @@ class CampaignInformationActivity: BaseSimpleActivity() {
         @JvmStatic
         fun start(context: Context) {
             val starter = Intent(context, CampaignInformationActivity::class.java)
+
             val bundle = Bundle()
             bundle.putParcelable(BUNDLE_KEY_PAGE_MODE, PageMode.CREATE)
+            starter.putExtras(bundle)
+
             context.startActivity(starter)
         }
 
         @JvmStatic
         fun startUpdateMode(context: Context, campaignId: Long) {
             val starter = Intent(context, CampaignInformationActivity::class.java)
+
             val bundle = Bundle()
             bundle.putParcelable(BUNDLE_KEY_PAGE_MODE, PageMode.UPDATE)
             bundle.putLong(BUNDLE_KEY_CAMPAIGN_ID, campaignId)
+            starter.putExtras(bundle)
+
             context.startActivity(starter)
         }
     }
 
     private val pageMode by lazy {
-        intent?.extras?.getParcelable(BUNDLE_KEY_PAGE_MODE) as? PageMode ?: PageMode.CREATE
+        intent?.extras?.getParcelable(BUNDLE_KEY_PAGE_MODE) ?: PageMode.CREATE
     }
 
     private val campaignId by lazy {
