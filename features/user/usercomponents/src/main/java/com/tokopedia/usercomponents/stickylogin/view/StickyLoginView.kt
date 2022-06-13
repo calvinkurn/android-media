@@ -2,7 +2,6 @@ package com.tokopedia.usercomponents.stickylogin.view
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.content.Intent
 import android.graphics.drawable.Drawable
 import android.os.Build
 import android.util.AttributeSet
@@ -52,7 +51,6 @@ import com.tokopedia.usercomponents.stickylogin.di.DaggerStickyLoginComponent
 import com.tokopedia.usercomponents.stickylogin.di.module.StickyLoginModule
 import com.tokopedia.usercomponents.stickylogin.domain.data.StickyLoginTickerDataModel
 import com.tokopedia.usercomponents.stickylogin.view.viewModel.StickyLoginViewModel
-import com.tokopedia.usercomponents.userconsent.UserConsentDebugActivity
 import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
 import kotlinx.coroutines.*
 import java.util.concurrent.TimeUnit
@@ -157,10 +155,7 @@ class StickyLoginView : FrameLayout, CoroutineScope, DarkModeListener {
                 page?.let { _page -> tracker.clickOnLogin(_page) }
             }
 
-//            stickyLoginAction?.onClick()
-
-            val intent = Intent(context, UserConsentDebugActivity::class.java)
-            context?.startActivity(intent)
+            stickyLoginAction?.onClick()
         }
 
         viewBinding.layoutStickyContainer.addOnLayoutChangeListener { _, _, _, _, _, _, _, _, _ ->
@@ -388,10 +383,6 @@ class StickyLoginView : FrameLayout, CoroutineScope, DarkModeListener {
             viewBinding.layoutStickyContainer.hide()
             stickyLoginAction?.onViewChange(false)
         }
-
-        // delete soon
-        setContent("Entry point test", "User Consent")
-        show()
     }
 
     /**
