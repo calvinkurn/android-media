@@ -33,13 +33,18 @@ fun getRegisteredNavigationRecommendationFromHttp(uri: Uri): String {
 
 fun redirectToDiscoveryRecom(uri: Uri): String {
     return if (uri.pathSegments.size > 0) {
-        Uri.Builder()
+        val applink = Uri.Builder()
             .scheme(DeeplinkConstant.SCHEME_TOKOPEDIA)
             .authority(ApplinkConsInternalHome.AUTHORITY_DISCOVERY)
             .appendPath(ApplinkConsInternalHome.PATH_REKOMENDASI)
             .appendQueryParameter(RECOM_PRODUCT_ID, uri.pathSegments[1])
             .build()
-            .toString() + "?${uri.query}"
+            .toString()
+        if (uri.query != null) {
+            return applink + "&${uri.query}"
+        } else {
+            return applink
+        }
     } else {
         Uri.Builder()
             .scheme(DeeplinkConstant.SCHEME_TOKOPEDIA)
