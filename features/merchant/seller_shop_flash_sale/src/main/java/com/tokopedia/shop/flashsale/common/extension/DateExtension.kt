@@ -5,21 +5,10 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 
-
 fun Date.formatTo(desiredOutputFormat: String, locale: Locale = LocaleConstant.INDONESIA): String {
     return try {
         val outputFormat = SimpleDateFormat(desiredOutputFormat, locale)
         outputFormat.timeZone = TimeZone.getTimeZone("GMT")
-        val output = outputFormat.format(this)
-        output
-    } catch (e: Exception) {
-        ""
-    }
-}
-
-fun Date.localFormatTo(desiredOutputFormat: String, locale: Locale = LocaleConstant.INDONESIA): String {
-    return try {
-        val outputFormat = SimpleDateFormat(desiredOutputFormat, locale)
         val output = outputFormat.format(this)
         output
     } catch (e: Exception) {
@@ -93,3 +82,14 @@ fun Date.extractMinute(): Int {
     calendar.time = this
     return calendar.get(Calendar.MINUTE)
 }
+
+fun Date.localFormatTo(desiredOutputFormat: String, locale: Locale = LocaleConstant.INDONESIA): String {
+    return try {
+        val outputFormat = SimpleDateFormat(desiredOutputFormat, locale)
+        val output = outputFormat.format(this)
+        output
+    } catch (e: Exception) {
+        ""
+    }
+}
+
