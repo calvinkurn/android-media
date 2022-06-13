@@ -189,7 +189,6 @@ class CampaignInformationViewModel @Inject constructor(
             dispatchers.io,
             block = {
                 val result = getSellerCampaignDetailUseCase.execute(campaignId.toInt())
-                delay(2000)
                 _campaignDetail.postValue(Success(result))
             },
             onError = { error ->
