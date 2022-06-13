@@ -21,7 +21,7 @@ object AdminConfirmationRegQuery : GqlQueryInterface {
             shopID: ${'$'}shopID,
             userId: ${'$'}userId,
             acceptBecomeAdmin: ${'$'}acceptBecomeAdmin,
-            shopManageId: ${'$'}shopManageID
+            shopManageId: ${'$'}shopManageId
           }) {
               success
               message
