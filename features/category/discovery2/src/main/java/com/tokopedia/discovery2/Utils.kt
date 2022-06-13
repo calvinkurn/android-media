@@ -33,6 +33,8 @@ import com.tokopedia.user.session.UserSession
 import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.*
+import java.util.regex.Matcher
+import java.util.regex.Pattern
 import kotlin.math.floor
 
 
@@ -283,6 +285,15 @@ class Utils {
             } catch (exception: Exception) {
                 MethodChecker.getColor(context, defaultColor)
             }
+        }
+
+        fun isValidHexCode(color: String?): Boolean {
+            val regex = "^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$"
+            val pattern: Pattern = Pattern.compile(regex)
+            if (color.isNullOrEmpty()) {
+                return false
+            }
+            return pattern.matcher(color).matches()
         }
 
         fun setTimerBoxDynamicBackground(view: View, color: Int) {
