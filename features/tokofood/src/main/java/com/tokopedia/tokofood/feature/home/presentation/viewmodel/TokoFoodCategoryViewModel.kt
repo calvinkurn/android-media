@@ -150,13 +150,7 @@ class TokoFoodCategoryViewModel @Inject constructor(
         val isLoading = layoutList.firstOrNull { it is TokoFoodProgressBarUiModel } != null
         val isError = layoutList.firstOrNull { it is TokoFoodErrorStateUiModel } != null
 
-        return scrolledToLastItem
-                &&
-                hasNextPage
-                &&
-                !isLoading
-                &&
-                !isError
+        return scrolledToLastItem && hasNextPage && !isLoading && !isError
     }
 
 }
