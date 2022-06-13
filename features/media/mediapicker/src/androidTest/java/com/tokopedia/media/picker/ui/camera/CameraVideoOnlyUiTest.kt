@@ -84,8 +84,9 @@ class CameraVideoOnlyUiTest : CameraPageTest() {
         val flashState = Robot.clickFlashButton()
 
         // Then
-        assert(flashState != null)
-        assert(flashState?.first != flashState?.second)
+        if(flashState != null){
+            assert(flashState.first != flashState.second)
+        }
     }
 
     @Test

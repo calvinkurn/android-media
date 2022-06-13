@@ -58,24 +58,28 @@ abstract class CameraPageTest : PickerTest() {
 
             onView(
                 withId(R.id.cameraView)
-            ).perform(
-                PickerCameraViewActions.getFlashViewAction { viewRef ->
-                    cameraRef = viewRef
-                }
-            )
+            ).check { view, _ ->
+                cameraRef = view as CameraView
+            }
+
+            /**
+             * supported flash 1 means flash only support OFF,
+             * that means device didn't have flash
+             */
+            if (cameraRef?.cameraOptions?.supportedFlash?.size == 1) {
+                return null
+            }
 
             val initialFlashState = cameraRef?.flash?.ordinal
+
 
             onView(
                 withId(R.id.btn_flash)
             ).perform(click())
 
-            val latestFlashState = cameraRef?.flash?.ordinal
+            var latestFlashState = cameraRef?.flash?.ordinal
 
-            return if (initialFlashState == null || latestFlashState == null)
-                null
-            else
-                Pair(initialFlashState, latestFlashState)
+            return Pair(initialFlashState ?: 0, latestFlashState ?: -1)
         }
 
         fun clickCaptureVideo(duration: Long) {

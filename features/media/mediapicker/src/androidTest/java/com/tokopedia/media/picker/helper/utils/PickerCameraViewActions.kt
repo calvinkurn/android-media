@@ -29,22 +29,6 @@ object PickerCameraViewActions {
         }
     }
 
-    fun getFlashViewAction(setCameraRef: (cameraRef: CameraView) -> Unit): ViewAction {
-        return object : ViewAction {
-            override fun getConstraints(): Matcher<View> {
-                return ViewMatchers.isAssignableFrom(CameraView::class.java)
-            }
-
-            override fun getDescription(): String {
-                return "get camera view reference"
-            }
-
-            override fun perform(uiController: UiController?, view: View?) {
-                setCameraRef(view as CameraView)
-            }
-        }
-    }
-
     fun getRecordVideoViewAction(duration: Long): ViewAction {
         return object : ViewAction {
             override fun getConstraints(): Matcher<View> {
