@@ -11,8 +11,16 @@ sealed class PmActiveTermUiModel(
     open val isChecked: Boolean,
     open val clickableText: String? = null,
     open val appLinkOrUrl: String? = null,
-    val priority: Int = 0
+    val priority: Int = PRIORITY_0
 ) {
+
+    companion object {
+        private const val PRIORITY_0 = 0
+        private const val PRIORITY_1 = 1
+        private const val PRIORITY_2 = 2
+        private const val PRIORITY_3 = 3
+    }
+
     data class ShopScore(
         override val title: String,
         override val descriptionHtml: String,
@@ -27,24 +35,7 @@ sealed class PmActiveTermUiModel(
         isChecked,
         clickableText,
         appLinkOrUrl,
-        1
-    )
-
-    data class ActiveProduct(
-        override val title: String,
-        override val descriptionHtml: String,
-        override val resDrawableIcon: Int,
-        override val isChecked: Boolean,
-        override val clickableText: String? = null,
-        override val appLinkOrUrl: String? = null
-    ) : PmActiveTermUiModel(
-        title,
-        descriptionHtml,
-        resDrawableIcon,
-        isChecked,
-        clickableText,
-        appLinkOrUrl,
-        priority = 1
+        PRIORITY_1
     )
 
     data class Order(
@@ -61,7 +52,7 @@ sealed class PmActiveTermUiModel(
         isChecked,
         clickableText,
         appLinkOrUrl,
-        2
+        PRIORITY_2
     )
 
     data class NetItemValue(
@@ -78,7 +69,6 @@ sealed class PmActiveTermUiModel(
         isChecked,
         clickableText,
         appLinkOrUrl,
-        3
+        PRIORITY_3
     )
-
 }
