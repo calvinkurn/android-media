@@ -6,6 +6,7 @@ import com.google.android.gms.cast.framework.CastContext
 import com.google.android.gms.cast.framework.media.MediaIntentReceiver
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.play.util.PlayCastHelper
 import java.lang.Exception
 
 class PlayCastMediaIntentReceiver: MediaIntentReceiver() {
@@ -13,15 +14,15 @@ class PlayCastMediaIntentReceiver: MediaIntentReceiver() {
         super.onReceiveOtherAction(context, actionName, data)
         context?.let {
             if(actionName == PlayCastNotificationAction.ACTION_OPEN_PLAY) {
-                val castContext = CastContext.getSharedInstance(it)
-                val channelId = castContext.sessionManager
-                    .currentCastSession
-                    .remoteMediaClient
-                    ?.mediaInfo
-                    ?.metadata
-                    ?.getString(CHANNEL_ID).orEmpty()
-
                 try {
+                    val castContext = PlayCastHelper.getCastContext(it)
+                    val channelId = castContext?.sessionManager
+                        ?.currentCastSession
+                        ?.remoteMediaClient
+                        ?.mediaInfo
+                        ?.metadata
+                        ?.getString(CHANNEL_ID).orEmpty()
+
                     val intent = RouteManager.getIntent(it, ApplinkConst.PLAY_DETAIL.replace("{$CHANNEL_ID}", channelId))
                     intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
                     it.startActivity(intent)

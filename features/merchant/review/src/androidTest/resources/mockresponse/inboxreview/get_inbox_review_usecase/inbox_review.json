@@ -1,0 +1,41 @@
+{
+  "productrevGetInboxReviewByShop": {
+    "list": [
+      {
+        "feedbackIDStr": "572417021",
+        "rating": 5,
+        "user": {
+          "userIDStr": "81960079",
+          "userName": "Try Sugiharto Buyer Automation"
+        },
+        "product": {
+          "productIDStr": "1379490463",
+          "productName": "urueueue",
+          "productImageURL": "https://ecs7.tokopedia.net/img/cache/200-square/VqbcmM/2020/11/27/4e648daf-62de-4a3e-b592-18b5ce5ecdf0.jpg",
+          "productVariant": {
+            "variantID": 0,
+            "variantName": ""
+          },
+          "productPageURL": "https://www.tokopedia.com/tumblersbux/urueueue"
+        },
+        "attachments": [],
+        "invoiceID": "",
+        "reviewText": "",
+        "reviewTime": "2022-01-12T12:34:06Z",
+        "replyText": "Terima kasih telah berbelanja di Tumbler Starbucks 123. Bagikan link toko kami https://www.tokopedia.com/tumblersbux kepada teman-teman Anda dan favoritkan Toko kami untuk terus update mengenai stok dan produk terbaru",
+        "replyTime": "2022-01-12T12:34:06Z",
+        "isAutoReply": true,
+        "isKejarUlasan": false,
+        "badRatingReasonFmt": "",
+        "ratingDisclaimer": ""
+      }
+    ],
+    "filterBy": "status\u003danswered",
+    "remainder": 0,
+    "reviewCount": 1,
+    "limit": 15,
+    "page": 1,
+    "hasNext": false,
+    "useAutoReply": true
+  }
+}

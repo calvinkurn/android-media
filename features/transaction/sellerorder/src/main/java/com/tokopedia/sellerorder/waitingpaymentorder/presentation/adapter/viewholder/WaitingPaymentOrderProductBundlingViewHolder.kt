@@ -41,7 +41,7 @@ class WaitingPaymentOrderProductBundlingViewHolder(
                 adapter = this@WaitingPaymentOrderProductBundlingViewHolder.adapter
             }
             if (itemDecorationCount == Int.ZERO) {
-                val margins = getDimens(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3)
+                val margins = getDimens(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl4)
                 addItemDecoration(
                     RecyclerViewItemDivider(
                         divider = MethodChecker.getDrawable(

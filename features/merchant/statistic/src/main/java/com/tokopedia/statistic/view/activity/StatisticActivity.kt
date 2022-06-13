@@ -6,7 +6,6 @@ import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
 import android.os.CountDownTimer
-import android.view.View
 import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.tabs.TabLayout
@@ -16,9 +15,7 @@ import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
-import com.tokopedia.coachmark.CoachMarkPreference
 import com.tokopedia.kotlin.extensions.view.*
-import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.statistic.R
 import com.tokopedia.statistic.analytics.StatisticTracker
 import com.tokopedia.statistic.analytics.performance.StatisticIdlingResourceListener
@@ -28,7 +25,6 @@ import com.tokopedia.statistic.analytics.performance.StatisticPerformanceMonitor
 import com.tokopedia.statistic.common.Const
 import com.tokopedia.statistic.common.StatisticPageHelper
 import com.tokopedia.statistic.common.utils.StatisticAppLinkHandler
-import com.tokopedia.statistic.common.utils.StatisticRemoteConfig
 import com.tokopedia.statistic.common.utils.logger.StatisticLogger
 import com.tokopedia.statistic.databinding.ActivityStcStatisticBinding
 import com.tokopedia.statistic.di.DaggerStatisticComponent
@@ -36,9 +32,11 @@ import com.tokopedia.statistic.di.StatisticComponent
 import com.tokopedia.statistic.view.fragment.StatisticFragment
 import com.tokopedia.statistic.view.model.StatisticPageUiModel
 import com.tokopedia.statistic.view.viewhelper.FragmentListener
+import com.tokopedia.statistic.view.viewhelper.StatisticCoachMarkHelper
 import com.tokopedia.statistic.view.viewhelper.StatisticViewPagerAdapter
 import com.tokopedia.statistic.view.viewhelper.setOnTabSelectedListener
 import com.tokopedia.statistic.view.viewmodel.StatisticActivityViewModel
+import com.tokopedia.unifycomponents.setNew
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
@@ -67,12 +65,18 @@ class StatisticActivity : BaseActivity(), HasComponent<StatisticComponent>,
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
 
+    @Inject
+    lateinit var pageHelper: StatisticPageHelper
+
+    @Inject
+    lateinit var coachMarkHelper: StatisticCoachMarkHelper
+
     private val viewModel: StatisticActivityViewModel by lazy {
         ViewModelProvider(this, viewModelFactory).get(StatisticActivityViewModel::class.java)
     }
     private var pages: List<StatisticPageUiModel> = emptyList()
     private var viewPagerAdapter: StatisticViewPagerAdapter? = null
-    private val performanceMonitoring: StatisticPerformanceMonitoringInterface by lazy {
+    val performanceMonitoring: StatisticPerformanceMonitoringInterface by lazy {
         StatisticPerformanceMonitoring()
     }
     var pltListener: StatisticIdlingResourceListener? = null
@@ -88,7 +92,10 @@ class StatisticActivity : BaseActivity(), HasComponent<StatisticComponent>,
         super.onCreate(savedInstanceState)
         initInjector()
 
-        checkWhiteListStatus()
+        if (savedInstanceState == null) {
+            checkWhiteListStatus()
+        }
+
         binding = ActivityStcStatisticBinding.inflate(layoutInflater).apply {
             root.setBackgroundColor(getResColor(com.tokopedia.unifyprinciples.R.color.Unify_Background))
             setContentView(root)
@@ -149,21 +156,22 @@ class StatisticActivity : BaseActivity(), HasComponent<StatisticComponent>,
     }
 
     private fun getWhiteListedPages(): List<StatisticPageUiModel> {
-        val remoteConfig = StatisticRemoteConfig(FirebaseRemoteConfigImpl(applicationContext))
         return listOf(
-            StatisticPageHelper.getShopStatistic(this, remoteConfig),
-            StatisticPageHelper.getProductStatistic(this, remoteConfig),
-            StatisticPageHelper.getOperationalStatistic(this),
-            StatisticPageHelper.getBuyerStatistic(this)
+            pageHelper.getShopStatistic(),
+            pageHelper.getProductStatistic(),
+            pageHelper.getTrafficStatistic(),
+            pageHelper.getOperationalStatistic(),
+            pageHelper.getBuyerStatistic()
         )
     }
 
     private fun getNonWhiteListedPages(): List<StatisticPageUiModel> {
-        val remoteConfig = StatisticRemoteConfig(FirebaseRemoteConfigImpl(applicationContext))
         return listOf(
-            StatisticPageHelper.getShopStatistic(this, remoteConfig),
-            StatisticPageHelper.getProductStatistic(this, remoteConfig),
-            StatisticPageHelper.getBuyerStatistic(this)
+            pageHelper.getShopStatistic(),
+            pageHelper.getProductStatistic(),
+            pageHelper.getTrafficStatistic(),
+            pageHelper.getOperationalStatistic(),
+            pageHelper.getBuyerStatistic()
         )
     }
 
@@ -254,10 +262,18 @@ class StatisticActivity : BaseActivity(), HasComponent<StatisticComponent>,
                 val tab = tabStatistic.addNewTab(title, isFirstIndex)
                 sendTabImpressionEvent(tab.view, title)
 
-                getOperationalInsightCoachMark(title, tab.view)?.let {
+                val page = pages.firstOrNull { it.pageTitle == title }
+                page?.let {
+                    tabStatistic.getUnifyTabLayout().getTabAt(index)?.setNew(it.shouldShowTag)
+                }
+
+                coachMarkHelper.getTrafficInsightCoachMark(title, tab.view)?.let {
                     coachMarkItems.add(it)
                 }
-                getProductInsightCoachMark(title, tab.view)?.let {
+                coachMarkHelper.getOperationalInsightCoachMark(title, tab.view)?.let {
+                    coachMarkItems.add(it)
+                }
+                coachMarkHelper.getProductInsightCoachMark(title, tab.view)?.let {
                     coachMarkItems.add(it)
                 }
             }
@@ -279,10 +295,35 @@ class StatisticActivity : BaseActivity(), HasComponent<StatisticComponent>,
             coachMark.showCoachMark(ArrayList(coachMarkItems))
             coachMark.setStepListener(object : CoachMark2.OnStepListener {
                 override fun onStep(currentIndex: Int, coachMarkItem: CoachMark2Item) {
-                    saveCoachMarkHasShownByTitle(coachMarkItem.title.toString())
+                    coachMarkHelper.saveCoachMarkHasShownByTitle(coachMarkItem.title.toString())
+                    sendCoachMarkImpressionTracker(coachMarkItem.title.toString())
+                    sendCoachMarkClickTracker(currentIndex)
                 }
             })
-            saveCoachMarkHasShownByTitle(coachMarkItems.first().title.toString())
+            val title = coachMarkItems.firstOrNull()?.title?.toString().orEmpty()
+            coachMarkHelper.saveCoachMarkHasShownByTitle(title)
+        }
+    }
+
+    private fun sendCoachMarkClickTracker(currentIndex: Int) {
+        val item = coachMark.coachMarkItem.getOrNull(currentIndex.minus(Int.ONE))
+        item?.let {
+            val title = it.title.toString()
+            if (coachMarkHelper.getIsTrafficInsightTab(title)) {
+                StatisticTracker.sendTrafficInsightCoachMarkCtaClickEvent(
+                    Const.PageSource.TRAFFIC_INSIGHT,
+                    title
+                )
+            }
+        }
+    }
+
+    private fun sendCoachMarkImpressionTracker(title: String) {
+        if (coachMarkHelper.getIsTrafficInsightTab(title)) {
+            StatisticTracker.sendTrafficInsightImpressionCoachMarkEvent(
+                Const.PageSource.TRAFFIC_INSIGHT,
+                title
+            )
         }
     }
 
@@ -329,64 +370,9 @@ class StatisticActivity : BaseActivity(), HasComponent<StatisticComponent>,
         performanceMonitoring.initPerformanceMonitoring()
     }
 
-    private fun getIsProductInsightTab(title: String): Boolean {
-        return title == getString(R.string.stc_product) ||
-                title == getString(R.string.stc_product_coachmark_title)
-    }
-
-    private fun getIsOperationalInsightTab(title: String): Boolean {
-        return title == getString(R.string.stc_operational) ||
-                title == getString(R.string.stc_operational_coachmark_title)
-    }
-
-    private fun getProductInsightCoachMark(title: String, itemView: View): CoachMark2Item? {
-        if (getIsProductInsightTab(title)) {
-            if (!CoachMarkPreference.hasShown(this, Const.SHOW_PRODUCT_INSIGHT_COACH_MARK_KEY)) {
-                return CoachMark2Item(
-                    itemView,
-                    getString(R.string.stc_product_coachmark_title),
-                    getString(R.string.stc_product_coachmark_desc)
-                )
-            }
-        }
-        return null
-    }
-
-    private fun getOperationalInsightCoachMark(title: String, view: View): CoachMark2Item? {
-        if (getIsOperationalInsightTab(title)) {
-            if (!CoachMarkPreference.hasShown(
-                    this,
-                    Const.HAS_SHOWN_OPERATIONAL_INSIGHT_COACH_MARK_KEY
-                )
-            ) {
-                return CoachMark2Item(
-                    view,
-                    getString(R.string.stc_operational_coachmark_title),
-                    getString(R.string.stc_operational_coachmark_desc)
-                )
-            }
-        }
-        return null
-    }
-
     private fun dismissCoachMarkOnTabSelected() {
         if (coachMark.isDismissed) return
         coachMark.dismissCoachMark()
-    }
-
-    private fun saveCoachMarkHasShownByTitle(title: String) {
-        when {
-            getIsProductInsightTab(title) -> {
-                setCoachMarkHasShown(Const.SHOW_PRODUCT_INSIGHT_COACH_MARK_KEY)
-            }
-            getIsOperationalInsightTab(title) -> {
-                setCoachMarkHasShown(Const.HAS_SHOWN_OPERATIONAL_INSIGHT_COACH_MARK_KEY)
-            }
-        }
-    }
-
-    private fun setCoachMarkHasShown(tag: String) {
-        CoachMarkPreference.setShown(this, tag, true)
     }
 
     private fun checkUserRole(roles: List<String>) {

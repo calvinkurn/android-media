@@ -1,6 +1,7 @@
 package com.tokopedia.affiliate.usecase
 
-import com.tokopedia.affiliate.model.AffiliateValidateUserData
+import com.google.gson.Gson
+import com.tokopedia.affiliate.model.response.AffiliateValidateUserData
 import com.tokopedia.affiliate.model.raw.GQL_Affiliate_Validate
 import com.tokopedia.affiliate.repository.AffiliateRepository
 import javax.inject.Inject
@@ -16,9 +17,9 @@ class AffiliateValidateUserStatusUseCase @Inject constructor(
 
     suspend fun validateUserStatus(email: String): AffiliateValidateUserData {
         return repository.getGQLData(
-                GQL_Affiliate_Validate,
-                AffiliateValidateUserData::class.java,
-                createRequestParams(email)
+            GQL_Affiliate_Validate,
+            AffiliateValidateUserData::class.java,
+            createRequestParams(email)
         )
     }
 

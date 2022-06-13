@@ -4,13 +4,13 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingTop="16dp"
-    android:paddingBottom="9dp">
+    android:paddingBottom="16dp"
+    tools:paddingTop="16dp">
 
     <FrameLayout
         android:id="@+id/container_img_header_main"
-        android:layout_width="112dp"
-        android:layout_height="112dp"
+        android:layout_width="144dp"
+        android:layout_height="144dp"
         android:layout_marginStart="16dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -23,15 +23,17 @@
             android:scaleType="centerCrop"
             tools:src="@tools:sample/avatars" />
 
-        <com.tokopedia.unifycomponents.ImageUnify
+        <com.tokopedia.iconunify.IconUnify
             android:id="@+id/ic_enlarge_img_header"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:adjustViewBounds="true"
-            android:scaleType="centerCrop"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
             android:layout_gravity="end|bottom"
-            android:layout_margin="6dp"
-            app:srcCompat="@drawable/ic_enlarge_icon" />
+            android:layout_margin="8dp"
+            android:adjustViewBounds="true"
+            android:background="@drawable/bg_circle_grey"
+            android:scaleType="centerCrop"
+            app:icon_color_light_enable="@color/Unify_NN0"
+            app:icon_name="SCREEN_FIT" />
 
     </FrameLayout>
 
@@ -39,7 +41,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
+        android:layout_marginStart="12dp"
         android:layout_marginEnd="16dp"
         app:layout_constraintBottom_toBottomOf="@id/container_img_header_main"
         app:layout_constraintEnd_toEndOf="parent"
@@ -50,7 +52,6 @@
             android:id="@+id/lbl_variant_name_1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
             android:ellipsize="end"
             android:maxWidth="120dp"
             android:maxLines="1"
@@ -81,7 +82,6 @@
             android:id="@+id/txt_header_main_price"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
             android:layout_marginTop="2dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/lbl_variant_name_1"
@@ -158,12 +158,12 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
-            android:textColor="@color/Unify_N700_68"
+            android:textColor="@color/Unify_GN500"
             android:visibility="gone"
             app:layout_constraintStart_toStartOf="@+id/txt_header_main_price"
             app:layout_constraintTop_toBottomOf="@+id/txt_header_stock"
             app:typographyType="small"
-            tools:text="Dikirim dari Tokocabang"
+            android:text="@string/atc_variant_tokocabang"
             tools:visibility="visible" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
@@ -171,7 +171,7 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:layout_marginTop="11dp"
+        android:layout_marginTop="12dp"
         android:background="@color/Unify_N75"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

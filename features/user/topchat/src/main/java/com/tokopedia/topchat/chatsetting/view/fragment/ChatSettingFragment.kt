@@ -20,7 +20,7 @@ import com.tokopedia.topchat.chatsetting.view.adapter.ChatSettingTypeFactoryImpl
 import com.tokopedia.topchat.chatsetting.view.adapter.decoration.ChatSettingDividerItemDecoration
 import com.tokopedia.topchat.chatsetting.view.adapter.viewholder.ChatSettingViewHolder
 import com.tokopedia.topchat.chatsetting.viewmodel.ChatSettingViewModel
-import com.tokopedia.topchat.chattemplate.view.activity.TemplateChatActivity.PARAM_IS_SELLER
+import com.tokopedia.topchat.chattemplate.view.activity.TemplateChatActivity.Companion.PARAM_IS_SELLER
 import com.tokopedia.usecase.coroutines.Success
 import javax.inject.Inject
 

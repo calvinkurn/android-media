@@ -5,36 +5,39 @@ import android.os.Bundle
 import com.tokopedia.kotlin.extensions.toFormattedString
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.product.detail.R
-import com.tokopedia.product.detail.data.util.ProductDetailConstant
 import com.tokopedia.product.detail.common.productThousandFormatted
+import com.tokopedia.product.detail.data.util.ProductDetailConstant
 import com.tokopedia.product.detail.view.adapter.factory.DynamicProductDetailAdapterFactory
 import com.tokopedia.product.detail.view.util.getIdLocale
 import com.tokopedia.product.detail.view.util.getRelativeDateByHours
 import com.tokopedia.product.detail.view.util.getRelativeDateByMinute
+import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo.TickerDataResponse
 import java.text.SimpleDateFormat
 
 /**
  * Created by Yehezkiel on 15/06/20
  */
 data class ProductShopCredibilityDataModel(
-        val name: String = "",
-        val type: String = "",
+    val name: String = "",
+    val type: String = "",
 
-        var shopLastActive: String = "",
-        var shopName: String = "",
-        var shopAva: String = "",
-        var shopLocation: String = "",
-        var shopTierBadgeUrl: String = "",
+    var shopLastActive: String = "",
+    var shopName: String = "",
+    var shopAva: String = "",
+    var shopLocation: String = "",
+    var shopTierBadgeUrl: String = "",
 
-        var isOs: Boolean = false,
-        var isPm: Boolean = false,
-        var isGoApotik: Boolean = false,
+    var isOs: Boolean = false,
+    var isPm: Boolean = false,
+    var isGoApotik: Boolean = false,
 
-        var infoShopData: List<ShopCredibilityUiData> = listOf(),
+    var infoShopData: List<ShopCredibilityUiData> = listOf(),
+
+    var tickerDataResponse: List<TickerDataResponse> = listOf(),
 
         //Favorite
-        var enableButtonFavorite: Boolean = false,
-        var isFavorite: Boolean = false
+    var enableButtonFavorite: Boolean = false,
+    var isFavorite: Boolean = false
 
 ) : DynamicPdpDataModel {
     override val impressHolder: ImpressHolder = ImpressHolder()

@@ -6,13 +6,16 @@
     <external-files-path
         name="external_files"
         path="." />
-    <cache-path
-        name="cache"
-        path="." />
     <external-cache-path
         name="external_cache"
         path="." />
     <files-path
-        name="files"
-        path="." />
+        name="global_sharing"
+        path="Tokopedia/" />
+    <files-path
+        name="blockcanary"
+        path="blockcanary/" />
+    <files-path
+        name="voucher_images"
+        path="voucher_images/" />
 </paths>

@@ -95,6 +95,7 @@ object ChatMessageViewHolderBinder {
         fxChat: FlexBoxChatLayout?
     ) {
         val htmlMessage = MethodChecker.fromHtml(chat.message)
+        fxChat?.setMessageTypeFace(chat)
         fxChat?.setMessage(htmlMessage)
     }
 
@@ -138,7 +139,7 @@ object ChatMessageViewHolderBinder {
     }
 
     fun bindChatReadStatus(element: MessageUiModel, checkMark: ImageView) {
-        if (element.isShowTime && element.isSender) {
+        if (element.isShowTime && element.isSender && !element.isDeleted()) {
             checkMark.show()
             val imageResource = when {
                 element.isDummy -> com.tokopedia.chat_common.R.drawable.ic_chatcommon_check_rounded_grey

@@ -6,24 +6,24 @@ import android.view.ViewGroup
 import androidx.viewbinding.ViewBinding
 import java.lang.reflect.Method
 
-object ViewBindingCache {
+object ViewBindingMethodBinder {
 
-    private val inflateCache = mutableMapOf<Class<out ViewBinding>, InflateViewBinding<ViewBinding>>()
-    private val bindCache = mutableMapOf<Class<out ViewBinding>, BindViewBinding<ViewBinding>>()
+    private val inflates = mutableMapOf<Class<out ViewBinding>, InflateViewBinding<ViewBinding>>()
+    private val binds = mutableMapOf<Class<out ViewBinding>, BindViewBinding<ViewBinding>>()
 
     @Suppress("UNCHECKED_CAST")
     internal fun <T : ViewBinding> getInflateWithLayoutInflater(viewBindingClass: Class<T>): InflateViewBinding<T> {
-        return inflateCache.getOrPut(viewBindingClass) { InflateViewBinding(viewBindingClass) } as InflateViewBinding<T>
+        return inflates.getOrPut(viewBindingClass) { InflateViewBinding(viewBindingClass) } as InflateViewBinding<T>
     }
 
     @Suppress("UNCHECKED_CAST")
     internal fun <T : ViewBinding> getBind(viewBindingClass: Class<T>): BindViewBinding<T> {
-        return bindCache.getOrPut(viewBindingClass) { BindViewBinding(viewBindingClass) } as BindViewBinding<T>
+        return binds.getOrPut(viewBindingClass) { BindViewBinding(viewBindingClass) } as BindViewBinding<T>
     }
 
     fun clear() {
-        inflateCache.clear()
-        bindCache.clear()
+        inflates.clear()
+        binds.clear()
     }
 }
 

@@ -13,13 +13,13 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.home_component.customview.DynamicChannelHeaderView
 import com.tokopedia.home_component.customview.HeaderListener
 import com.tokopedia.home_component.model.ChannelGrid
-import com.tokopedia.home_component.model.ChannelHeader
 import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.home_component.productcardgridcarousel.dataModel.CarouselEmptyCardDataModel
 import com.tokopedia.home_component.productcardgridcarousel.dataModel.CarouselSeeMorePdpDataModel
 import com.tokopedia.home_component.productcardgridcarousel.listener.CommonProductCardCarouselListener
 import com.tokopedia.home_component.util.ChannelWidgetUtil
 import com.tokopedia.home_component.util.GravitySnapHelper
+import com.tokopedia.home_component.util.ServerTimeOffsetUtil
 import com.tokopedia.home_component.util.loadImageFitCenter
 import com.tokopedia.home_component.util.setGradientBackground
 import com.tokopedia.home_component.viewholders.adapter.MixLeftAdapter
@@ -39,13 +39,16 @@ import kotlinx.android.synthetic.main.home_recharge_bu_widget_mix_left.view.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
+import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.math.abs
 
 @SuppressLint("SyntheticAccessor")
-class RechargeBUWidgetMixLeftViewHolder(itemView: View,
-                                        val listener: RechargeBUWidgetListener)
-    : AbstractViewHolder<RechargeBUWidgetDataModel>(itemView), CoroutineScope, CommonProductCardCarouselListener {
+class RechargeBUWidgetMixLeftViewHolder(
+    itemView: View,
+    val listener: RechargeBUWidgetListener
+) : AbstractViewHolder<RechargeBUWidgetDataModel>(itemView), CoroutineScope,
+    CommonProductCardCarouselListener {
 
     lateinit var dataModel: RechargeBUWidgetDataModel
 
@@ -70,6 +73,9 @@ class RechargeBUWidgetMixLeftViewHolder(itemView: View,
         val LAYOUT = R.layout.home_recharge_bu_widget_mix_left
         const val BU_WIDGET_TYPE_LEFT = "mix-left"
         const val RESET_IMAGE_LAYOUT_VALUE: Int = 0
+
+        private const val EXPIRED_DATE_PATTERN = "yyyy-MM-dd'T'HH:mm:ssZZZZ"
+        private const val SECOND_IN_MILIS = 1000
     }
 
     override fun bind(element: RechargeBUWidgetDataModel) {
@@ -100,14 +106,23 @@ class RechargeBUWidgetMixLeftViewHolder(itemView: View,
         bind(element)
     }
 
-    override fun onProductCardImpressed(channelModel: ChannelModel, channelGrid: ChannelGrid, position: Int) {
-        if(!isCacheData){
+    override fun onProductCardImpressed(
+        channelModel: ChannelModel,
+        channelGrid: ChannelGrid,
+        position: Int
+    ) {
+        if (!isCacheData) {
             // Decrement position to account for empty product card
             listener.onRechargeBUWidgetProductCardImpression(dataModel, position - 1)
         }
     }
 
-    override fun onProductCardClicked(channelModel: ChannelModel, channelGrid: ChannelGrid, position: Int, applink: String) {
+    override fun onProductCardClicked(
+        channelModel: ChannelModel,
+        channelGrid: ChannelGrid,
+        position: Int,
+        applink: String
+    ) {
         // Decrement position to account for empty product card
         listener.onRechargeBUWidgetItemClick(dataModel, position - 1)
     }
@@ -143,7 +158,12 @@ class RechargeBUWidgetMixLeftViewHolder(itemView: View,
                 if (!isCacheData)
                     listener.onRechargeBUWidgetBannerImpression(dataModel)
             }
-            image.layout(RESET_IMAGE_LAYOUT_VALUE,RESET_IMAGE_LAYOUT_VALUE,RESET_IMAGE_LAYOUT_VALUE,RESET_IMAGE_LAYOUT_VALUE)
+            image.layout(
+                RESET_IMAGE_LAYOUT_VALUE,
+                RESET_IMAGE_LAYOUT_VALUE,
+                RESET_IMAGE_LAYOUT_VALUE,
+                RESET_IMAGE_LAYOUT_VALUE
+            )
             image.loadImageFitCenter(imageUrl)
             if (gradientColor.isNotEmpty()) {
                 parallaxBackground.setGradientBackground(arrayListOf(gradientColor))
@@ -161,7 +181,14 @@ class RechargeBUWidgetMixLeftViewHolder(itemView: View,
 
         val typeFactoryImpl = RechargeBUWidgetProductCardTypeFactoryImpl(channel)
         val listData = mutableListOf<Visitable<*>>()
-        listData.add(CarouselEmptyCardDataModel(channel, adapterPosition, this, rechargePerso.applink))
+        listData.add(
+            CarouselEmptyCardDataModel(
+                channel,
+                adapterPosition,
+                this,
+                rechargePerso.applink
+            )
+        )
         val productDataList = convertDataToProductData(rechargePerso)
         listData.addAll(productDataList)
         if (rechargePerso.textlink.isNotEmpty()) {
@@ -182,7 +209,8 @@ class RechargeBUWidgetMixLeftViewHolder(itemView: View,
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
                 if (layoutManager.findFirstVisibleItemPosition() == 0) {
-                    val firstView = layoutManager.findViewByPosition(layoutManager.findFirstVisibleItemPosition())
+                    val firstView =
+                        layoutManager.findViewByPosition(layoutManager.findFirstVisibleItemPosition())
                     firstView?.let {
                         val distanceFromLeft = it.left
                         val translateX = distanceFromLeft * 0.2f
@@ -202,7 +230,8 @@ class RechargeBUWidgetMixLeftViewHolder(itemView: View,
     private fun convertDataToProductData(data: RechargePerso): List<RechargeBUWidgetProductCardModel> {
         val list: MutableList<RechargeBUWidgetProductCardModel> = mutableListOf()
         for (element in data.items) {
-            list.add(RechargeBUWidgetProductCardModel(
+            list.add(
+                RechargeBUWidgetProductCardModel(
                     element.mediaUrl,
                     element.backgroundColor,
                     element.mediaUrlType,
@@ -213,8 +242,13 @@ class RechargeBUWidgetMixLeftViewHolder(itemView: View,
                     element.label1,
                     element.label3,
                     element.applink,
-                    this
-            ))
+                    this,
+                    element.soldPercentageValue,
+                    element.soldPercentageLabel,
+                    element.soldPercentageLabelColor,
+                    element.showSoldPercentage
+                )
+            )
         }
         return list
     }
@@ -226,7 +260,8 @@ class RechargeBUWidgetMixLeftViewHolder(itemView: View,
     }
 
     private suspend fun RecyclerView.setHeightBasedOnProductCardMaxHeight(
-            productCardModelList: List<ProductCardModel>) {
+        productCardModelList: List<ProductCardModel>
+    ) {
         val productCardHeight = getProductCardMaxHeight(productCardModelList)
 
         val carouselLayoutParams = this.layoutParams
@@ -235,14 +270,39 @@ class RechargeBUWidgetMixLeftViewHolder(itemView: View,
     }
 
     private suspend fun getProductCardMaxHeight(productCardModelList: List<ProductCardModel>): Int {
-        val productCardWidth = itemView.context.resources.getDimensionPixelSize(com.tokopedia.productcard.R.dimen.product_card_flashsale_width)
-        return productCardModelList.getMaxHeightForGridView(itemView.context, Dispatchers.Default, productCardWidth)
+        val productCardWidth =
+            itemView.context.resources.getDimensionPixelSize(com.tokopedia.productcard.R.dimen.product_card_flashsale_width)
+        return productCardModelList.getMaxHeightForGridView(
+            itemView.context,
+            Dispatchers.Default,
+            productCardWidth
+        )
     }
 
     private fun setHeaderComponent(element: RechargeBUWidgetDataModel) {
-        val headerView = itemView.findViewById<DynamicChannelHeaderView>(R.id.recharge_bu_widget_header_view)
+        val headerView =
+            itemView.findViewById<DynamicChannelHeaderView>(R.id.recharge_bu_widget_header_view)
+        val currentDate = Calendar.getInstance().time
+        val currentTimeInSeconds = currentDate.time / SECOND_IN_MILIS
+
+        val parser = SimpleDateFormat(EXPIRED_DATE_PATTERN)
+        val expiredTime = if (element.data.endTime.isNotEmpty())
+            parser.format(Date(element.data.endTime.toLong() * SECOND_IN_MILIS))
+        else ""
+
         val channel = element.channel.copy(
-                channelHeader = ChannelHeader(name = element.data.title, applink = element.data.applink)
+            channelHeader = element.channel.channelHeader.copy(
+                name = element.data.title,
+                applink = if (element.data.textlink.isNotEmpty()) element.data.applink else "",
+                subtitle = element.data.subtitle,
+                expiredTime = expiredTime,
+                serverTimeUnix = currentTimeInSeconds
+            ),
+            channelConfig = element.channel.channelConfig.copy(
+                serverTimeOffset = ServerTimeOffsetUtil.getServerTimeOffsetFromUnix(
+                    currentTimeInSeconds
+                )
+            )
         )
         headerView.setChannel(channel, object : HeaderListener {
             override fun onSeeAllClick(link: String) {
@@ -250,7 +310,11 @@ class RechargeBUWidgetMixLeftViewHolder(itemView: View,
             }
 
             override fun onChannelExpired(channelModel: ChannelModel) {
-
+                itemView.recharge_bu_widget_header_view.hide()
+                itemView.home_recharge_container.hide()
+                itemView.recharge_bu_content_shimmering.show()
+                val source = element.channel.widgetParam.removePrefix("?section=")
+                listener.getRechargeBUWidget(WidgetSource.findSourceByString(source))
             }
         })
     }

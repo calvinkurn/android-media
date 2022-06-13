@@ -5,8 +5,8 @@ import android.util.Base64;
 
 import androidx.collection.ArrayMap;
 
-import com.tokopedia.authentication.AuthConstant;
-import com.tokopedia.authentication.AuthHelper;
+import com.tokopedia.network.authentication.AuthConstant;
+import com.tokopedia.network.authentication.AuthHelper;
 import com.tokopedia.core.gcm.FCMCacheManager;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.network.CoreNetworkApplication;
@@ -87,8 +87,6 @@ public class AuthUtil {
         public static final String KEY_WSV4_NEW = convert(RAW_KEY_WSV4);
         public static final String KEY_WSV4 = "web_service_v4";
         public static final String KEY_MOJITO = "mojito_api_v1";
-        public static String KEY_CREDIT_CARD_VAULT = convert(RAW_SCROOGE_KEY);
-        public static String ZEUS_WHITELIST = convert(RAW_ZEUS_KEY);
         public static String KEY_BRANCHIO = convert(RAW_BRANCHIO_KEY_ID);
     }
 

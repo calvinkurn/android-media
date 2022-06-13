@@ -1,51 +1,56 @@
 package com.tokopedia.home.beranda.data.query
 
-object PlayLiveDynamicChannelQuery {
+import com.tokopedia.gql_query_annotation.GqlQuery
+import com.tokopedia.home.beranda.data.query.PlayLiveDynamicChannelQuery.PLAY_LIVE_DYNAMIC_QUERY
+import com.tokopedia.home.beranda.data.query.PlayLiveDynamicChannelQuery.PLAY_LIVE_DYNAMIC_QUERY_NAME
+
+@GqlQuery(PLAY_LIVE_DYNAMIC_QUERY_NAME, PLAY_LIVE_DYNAMIC_QUERY)
+internal object PlayLiveDynamicChannelQuery {
+
 
     private const val source = "\$source"
     private const val page = "\$page"
     private const val limit = "\$limit"
     private const val device = "\$device"
-    fun getQuery() = """
-        query play($source: String!,$page:Int!,$limit:Int!,$device:String!){
-          playGetLiveDynamicChannels(req:{
-            source: $source,
-            current_page: $page,
-            limit:$limit,
-            device:$device
-          }){
-            header{
-              process_time
-            }
-            data{
-              channels{
-                partner_type
-                partner_id
-                channel_id
-                title
-                description
-                cover_url
-                is_show_total_view
-                total_view_formatted
-                moderator_id
-                moderator_name
-                moderator_thumb_url
-                slug
-                video_stream{
-                  orientation
-                  type
-                  is_live
-                  config{
-                    youtube_id
-                    livestream_id
-                    stream_url
-                    is_playback
-                    is_auto_play
-                  }
-                }
-              }      
-            }
-          }
-        }
-    """.trimIndent()
+    const val PLAY_LIVE_DYNAMIC_QUERY_NAME = "PlayLiveDynamicQuery"
+    const val PLAY_LIVE_DYNAMIC_QUERY = "query play($source: String!,$page:Int!,$limit:Int!,$device:String!){\n" +
+            "          playGetLiveDynamicChannels(req:{\n" +
+            "            source: $source,\n" +
+            "            current_page: $page,\n" +
+            "            limit:$limit,\n" +
+            "            device:$device\n" +
+            "          }){\n" +
+            "            header{\n" +
+            "              process_time\n" +
+            "            }\n" +
+            "            data{\n" +
+            "              channels{\n" +
+            "                partner_type\n" +
+            "                partner_id\n" +
+            "                channel_id\n" +
+            "                title\n" +
+            "                description\n" +
+            "                cover_url\n" +
+            "                is_show_total_view\n" +
+            "                total_view_formatted\n" +
+            "                moderator_id\n" +
+            "                moderator_name\n" +
+            "                moderator_thumb_url\n" +
+            "                slug\n" +
+            "                video_stream{\n" +
+            "                  orientation\n" +
+            "                  type\n" +
+            "                  is_live\n" +
+            "                  config{\n" +
+            "                    youtube_id\n" +
+            "                    livestream_id\n" +
+            "                    stream_url\n" +
+            "                    is_playback\n" +
+            "                    is_auto_play\n" +
+            "                  }\n" +
+            "                }\n" +
+            "              }      \n" +
+            "            }\n" +
+            "          }\n" +
+            "        }"
 }

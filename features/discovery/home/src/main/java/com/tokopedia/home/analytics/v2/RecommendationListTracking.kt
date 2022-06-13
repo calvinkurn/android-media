@@ -13,13 +13,18 @@ import com.tokopedia.track.builder.util.BaseTrackerConst
 
 object RecommendationListTracking: BaseTrackerConst(){
     private const val RECOMMENDATION_LIST_CAROUSEL_PRODUCT = "dynamic channel list carousel"
-    private const val RECOMMENDATION_LIST_IMPRESSION_EVENT_ACTION = "impression on dynamic channel list carousel"
-    private const val RECOMMENDATION_LIST_CLICK_EVENT_ACTION = "click on dynamic channel list carousel"
+    private const val RECOMMENDATION_LIST_IMPRESSION_EVENT_ACTION = "impression on product dynamic channel list carousel"
+    private const val RECOMMENDATION_LIST_CLICK_EVENT_ACTION = "click on product dynamic channel list carousel"
     private const val RECOMMENDATION_LIST_CLICK_ADD_TO_CART_EVENT_ACTION = "click add to cart on dynamic channel list carousel"
     private const val RECOMMENDATION_LIST_SEE_ALL_EVENT_ACTION = "click view all on dynamic channel list carousel"
     private const val RECOMMENDATION_LIST_SEE_ALL_CARD_EVENT_ACTION = "click view all card on dynamic channel list carousel"
     private const val RECOMMENDATION_LIST_CLOSE_EVENT_ACTION = "click on close dynamic channel list carousel"
-    private const val LIST_DYNAMIC_CHANNEL_LIST_CAROUSEL = "/ - p%s - dynamic channel list carousel - product - %s - %s - %s - %s"
+    private const val LIST_DYNAMIC_CHANNEL_LIST_CAROUSEL = "/ - p%s - dynamic channel list carousel - product - %s - carousel - %s - %s - %s - %s"
+    // / - p{x} - dynamic channel list carousel - product - {topads/non topads} - {carousel/non carousel} - {recommendation_type} - {recomm_page_name} - {bu_type} - {header name}
+
+    private const val TOPADS = "topads"
+    private const val NON_TOPADS = "non topads"
+    private const val ADD_TO_CART_P = "1"
 
     fun getRecommendationListImpression(channel: DynamicHomeChannel.Channels, isToIris: Boolean = false, userId: String, parentPosition: Int): Map<String, Any> {
         val baseTracker = BaseTrackerBuilder()
@@ -159,7 +164,13 @@ object RecommendationListTracking: BaseTrackerConst(){
                         )
                 ),
                 list = String.format(
-                        "/ - p%s - %s - product", parentPosition, RECOMMENDATION_LIST_CAROUSEL_PRODUCT
+                        LIST_DYNAMIC_CHANNEL_LIST_CAROUSEL,
+                        parentPosition,
+                        if (grid.isTopads) TOPADS else NON_TOPADS,
+                        grid.recommendationType,
+                        channel.pageName,
+                        channel.trackingAttributionModel.galaxyAttribution,
+                        channel.channelHeader.name
                 ))
                 .appendChannelId(channel.id)
                 .appendCampaignCode(channel.trackingAttributionModel.campaignCode)
@@ -270,7 +281,7 @@ object RecommendationListTracking: BaseTrackerConst(){
             Screen.KEY, Screen.DEFAULT,
             CurrentSite.KEY, CurrentSite.DEFAULT,
             UserId.KEY, userId,
-            Label.CHANNEL_LABEL, channel.id,
+            Label.CHANNEL_LABEL, Label.FORMAT_2_ITEMS.format(channel.id, channel.channelHeader.name),
             BusinessUnit.KEY, BusinessUnit.DEFAULT,
             Ecommerce.KEY, Ecommerce.getEcommerceProductAddToCart(
             products = listOf(
@@ -296,7 +307,13 @@ object RecommendationListTracking: BaseTrackerConst(){
                     )
             ),
             list = String.format(
-                    "/ - p%s - %s - product", "1", RECOMMENDATION_LIST_CAROUSEL_PRODUCT
+                    LIST_DYNAMIC_CHANNEL_LIST_CAROUSEL,
+                    ADD_TO_CART_P,
+                    if (grid.isTopads) TOPADS else NON_TOPADS,
+                    grid.recommendationType,
+                    channel.pageName,
+                    channel.trackingAttributionModel.galaxyAttribution,
+                    channel.channelHeader.name
             ),
             buildCustomList = null
     )

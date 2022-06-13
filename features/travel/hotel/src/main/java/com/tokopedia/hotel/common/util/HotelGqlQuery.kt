@@ -523,6 +523,10 @@ object HotelGqlQuery {
                 number
               }
             }
+            agent {
+              name
+              logo
+            }
           }
         }
     """.trimIndent()

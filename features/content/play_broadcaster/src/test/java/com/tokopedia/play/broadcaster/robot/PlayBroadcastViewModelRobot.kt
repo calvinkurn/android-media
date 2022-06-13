@@ -1,17 +1,17 @@
 package com.tokopedia.play.broadcaster.robot
 
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import com.tokopedia.play.broadcaster.data.config.HydraConfigStore
 import com.tokopedia.play.broadcaster.data.datastore.PlayBroadcastDataStore
-import com.tokopedia.play.broadcaster.data.socket.PlayBroadcastWebSocket
-import com.tokopedia.play.broadcaster.domain.repository.PlayBroadcastChannelRepository
 import com.tokopedia.play.broadcaster.domain.repository.PlayBroadcastRepository
-import com.tokopedia.play.broadcaster.domain.usecase.*
-import com.tokopedia.play.broadcaster.domain.usecase.interactive.GetInteractiveConfigUseCase
-import com.tokopedia.play.broadcaster.domain.usecase.interactive.PostInteractiveCreateSessionUseCase
-import com.tokopedia.play.broadcaster.logger.PlayLoggerTest
-import com.tokopedia.play.broadcaster.pusher.PlayLivePusherMediator
+import com.tokopedia.play.broadcaster.domain.usecase.GetAddedChannelTagsUseCase
+import com.tokopedia.play.broadcaster.domain.usecase.GetChannelUseCase
+import com.tokopedia.play.broadcaster.domain.usecase.GetSocketCredentialUseCase
+import com.tokopedia.play.broadcaster.pusher.mediator.PusherMediator
 import com.tokopedia.play.broadcaster.ui.action.PlayBroadcastAction
+import com.tokopedia.play.broadcaster.ui.event.PlayBroadcastEvent
+import com.tokopedia.play.broadcaster.ui.mapper.PlayBroProductUiMapper
 import com.tokopedia.play.broadcaster.ui.mapper.PlayBroadcastMapper
 import com.tokopedia.play.broadcaster.ui.mapper.PlayBroadcastUiMapper
 import com.tokopedia.play.broadcaster.ui.state.PlayBroadcastUiState
@@ -19,16 +19,18 @@ import com.tokopedia.play.broadcaster.util.TestHtmlTextTransformer
 import com.tokopedia.play.broadcaster.util.logger.PlayLogger
 import com.tokopedia.play.broadcaster.util.preference.HydraSharedPreferences
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastViewModel
-import com.tokopedia.play_common.domain.usecase.interactive.GetCurrentInteractiveUseCase
-import com.tokopedia.play_common.domain.usecase.interactive.GetInteractiveLeaderboardUseCase
 import com.tokopedia.play_common.model.mapper.PlayChannelInteractiveMapper
-import com.tokopedia.play_common.model.mapper.PlayInteractiveLeaderboardMapper
+import com.tokopedia.play_common.websocket.PlayWebSocket
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchers
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.mockk
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.cancel
+import kotlinx.coroutines.cancelChildren
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.runBlockingTest
+import kotlinx.coroutines.yield
 import java.io.Closeable
 
 /**
@@ -36,48 +38,38 @@ import java.io.Closeable
  */
 internal class PlayBroadcastViewModelRobot(
     private val dispatchers: CoroutineTestDispatchers = CoroutineTestDispatchers,
-    livePusherMediator: PlayLivePusherMediator = mockk(relaxed = true),
+    handle: SavedStateHandle = SavedStateHandle(),
+    livePusherMediator: PusherMediator = mockk(relaxed = true),
     mDataStore: PlayBroadcastDataStore = mockk(relaxed = true),
     hydraConfigStore: HydraConfigStore = mockk(relaxed = true),
     sharedPref: HydraSharedPreferences = mockk(relaxed = true),
     getChannelUseCase: GetChannelUseCase = mockk(relaxed = true),
-    createChannelUseCase: CreateChannelUseCase = mockk(relaxed = true),
-    updateChannelUseCase: PlayBroadcastUpdateChannelUseCase = mockk(relaxed = true),
     getAddedChannelTagsUseCase: GetAddedChannelTagsUseCase = mockk(relaxed = true),
     getSocketCredentialUseCase: GetSocketCredentialUseCase = mockk(relaxed = true),
-    getInteractiveConfigUseCase: GetInteractiveConfigUseCase = mockk(relaxed = true),
-    getCurrentInteractiveUseCase: GetCurrentInteractiveUseCase = mockk(relaxed = true),
-    getInteractiveLeaderboardUseCase: GetInteractiveLeaderboardUseCase = mockk(relaxed = true),
-    createInteractiveSessionUseCase: PostInteractiveCreateSessionUseCase = mockk(relaxed = true),
     userSession: UserSessionInterface = mockk(relaxed = true),
-    playBroadcastWebSocket: PlayBroadcastWebSocket = mockk(relaxed = true),
+    playBroadcastWebSocket: PlayWebSocket = mockk(relaxed = true),
     playBroadcastMapper: PlayBroadcastMapper = PlayBroadcastUiMapper(TestHtmlTextTransformer()),
-    channelInteractiveMapper: PlayChannelInteractiveMapper = mockk(relaxed = true),
-    interactiveLeaderboardMapper: PlayInteractiveLeaderboardMapper = mockk(relaxed = true),
+    productMapper: PlayBroProductUiMapper = mockk(relaxed = true),
+    channelInteractiveMapper: PlayChannelInteractiveMapper = PlayChannelInteractiveMapper(),
     channelRepo: PlayBroadcastRepository = mockk(relaxed = true),
     logger: PlayLogger = mockk(relaxed = true),
 ) : Closeable {
 
     private val viewModel = PlayBroadcastViewModel(
+        handle,
         livePusherMediator,
         mDataStore,
         hydraConfigStore,
         sharedPref,
         getChannelUseCase,
-        createChannelUseCase,
-        updateChannelUseCase,
         getAddedChannelTagsUseCase,
         getSocketCredentialUseCase,
-        getInteractiveConfigUseCase,
-        getCurrentInteractiveUseCase,
-        getInteractiveLeaderboardUseCase,
-        createInteractiveSessionUseCase,
         dispatchers,
         userSession,
         playBroadcastWebSocket,
         playBroadcastMapper,
+        productMapper,
         channelInteractiveMapper,
-        interactiveLeaderboardMapper,
         channelRepo,
         logger,
     )
@@ -108,6 +100,20 @@ internal class PlayBroadcastViewModelRobot(
         dispatchers.coroutineDispatcher.advanceUntilIdle()
         scope.cancel()
         return uiStateList
+    }
+
+    fun recordEvent(fn: suspend PlayBroadcastViewModelRobot.() -> Unit): List<PlayBroadcastEvent> {
+        val scope = CoroutineScope(dispatchers.coroutineDispatcher)
+        val uiEvents = mutableListOf<PlayBroadcastEvent>()
+        scope.launch {
+            viewModel.uiEvent.collect {
+                uiEvents.add(it)
+            }
+        }
+        dispatchers.coroutineDispatcher.runBlockingTest { fn() }
+        dispatchers.coroutineDispatcher.advanceUntilIdle()
+        scope.cancel()
+        return uiEvents
     }
 
     fun cancelRemainingTasks() {
@@ -141,6 +147,12 @@ internal class PlayBroadcastViewModelRobot(
         val field = viewModel.javaClass.getDeclaredField(name)
         field.isAccessible = true
         return field.get(viewModel) as T
+    }
+
+    fun executeViewModelPrivateFunction(name: String) {
+        val method = viewModel.javaClass.getDeclaredMethod(name)
+        method.isAccessible = true
+        method.invoke(viewModel)
     }
 
     override fun close() {

@@ -10,6 +10,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.carouselproductcard.CarouselProductCardListener
 import com.tokopedia.carouselproductcard.CarouselProductCardView
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.model.ImpressHolder
@@ -80,9 +81,17 @@ class ShopHomeCarousellProductViewHolder(
                 hide()
             }
         }
+        setWidgetImpressionListener(shopHomeCarousellProductUiModel)
+    }
+
+    private fun setWidgetImpressionListener(model: ShopHomeCarousellProductUiModel) {
+        itemView.addOnImpressionListener(model.impressHolder) {
+            shopHomeCarouselProductListener.onCarouselProductWidgetImpression(adapterPosition, model)
+        }
     }
 
     private fun bindShopProductCarousel(shopHomeProductViewModelList: List<ShopHomeProductUiModel>) {
+        recyclerView?.isNestedScrollingEnabled = false
         recyclerView?.bindCarouselProductCardViewGrid(
                 productCardModelList = shopHomeProductViewModelList.map {
                     ShopPageHomeMapper.mapToProductCardModel(

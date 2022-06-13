@@ -2,6 +2,10 @@ package com.tokopedia.saldodetails.view.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.saldodetails.commom.analytics.SaldoDetailsConstants
+import com.tokopedia.saldodetails.commom.utils.AllTransaction
+import com.tokopedia.saldodetails.commom.utils.IncomeTransaction
+import com.tokopedia.saldodetails.commom.utils.RefundTransaction
+import com.tokopedia.saldodetails.commom.utils.SalesTransaction
 import com.tokopedia.saldodetails.saldoDetail.saldoTransactionHistory.domain.data.*
 import com.tokopedia.saldodetails.saldoDetail.saldoTransactionHistory.domain.usecase.GetAllTypeTransactionUseCase
 import com.tokopedia.saldodetails.saldoDetail.saldoTransactionHistory.domain.usecase.GetSalesTransactionListUseCase
@@ -10,13 +14,10 @@ import com.tokopedia.saldodetails.saldoDetail.saldoTransactionHistory.viewmodel.
 import com.tokopedia.saldodetails.saldoDetail.saldoTransactionHistory.viewmodel.LoadMoreError
 import com.tokopedia.saldodetails.saldoDetail.saldoTransactionHistory.viewmodel.SaldoHistoryResponse
 import com.tokopedia.saldodetails.saldoDetail.saldoTransactionHistory.viewmodel.TransactionHistoryViewModel
-import com.tokopedia.saldodetails.commom.utils.AllTransaction
-import com.tokopedia.saldodetails.commom.utils.IncomeTransaction
-import com.tokopedia.saldodetails.commom.utils.RefundTransaction
-import com.tokopedia.saldodetails.commom.utils.SalesTransaction
 import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.mockk
+import io.mockk.verify
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.TestCoroutineDispatcher
 import org.junit.Before
@@ -48,7 +49,7 @@ class TransactionHistoryViewModelTest {
         coEvery { getAllTypeTransactionUseCase.loadAllTypeTransactions(any(), any(), any(), any()) } coAnswers {
             secondArg<(Throwable) -> Unit>().invoke(mockThrowable)
         }
-        viewModel.refreshAllTabsData(Date(), Date(), true)
+        viewModel.refreshAllTabsData(Date(), Date())
 
         assert(viewModel.getLiveDataByTransactionType(AllTransaction).value is InitialLoadingError)
         assert(viewModel.getLiveDataByTransactionType(IncomeTransaction).value is InitialLoadingError)
@@ -64,7 +65,7 @@ class TransactionHistoryViewModelTest {
         coEvery { getAllTypeTransactionUseCase.loadAllTypeTransactions(any(), any(), any(), any()) } coAnswers {
             firstArg<(GqlAllDepositSummaryResponse) -> Unit>().invoke(data)
         }
-        viewModel.refreshAllTabsData(Date(), Date(), true)
+        viewModel.refreshAllTabsData(Date(), Date())
 
         assert(viewModel.getLiveDataByTransactionType(AllTransaction).value is InitialLoadingError)
         assert(viewModel.getLiveDataByTransactionType(IncomeTransaction).value is InitialLoadingError)
@@ -83,7 +84,7 @@ class TransactionHistoryViewModelTest {
         coEvery { getAllTypeTransactionUseCase.loadAllTypeTransactions(any(), any(), any(), any()) } coAnswers {
             firstArg<(GqlAllDepositSummaryResponse) -> Unit>().invoke(data)
         }
-        viewModel.refreshAllTabsData(Date(), Date(), true)
+        viewModel.refreshAllTabsData(Date(), Date())
 
         assert(viewModel.getLiveDataByTransactionType(AllTransaction).value is SaldoHistoryResponse)
         assert(viewModel.getLiveDataByTransactionType(IncomeTransaction).value is SaldoHistoryResponse)
@@ -221,6 +222,15 @@ class TransactionHistoryViewModelTest {
         assert(viewModel.getEventLabelForList(RefundTransaction) == SaldoDetailsConstants.EventLabel.SALDO_FETCH_WITHDRAWAL_LIST)
         assert(viewModel.getEventLabelForList(IncomeTransaction) == SaldoDetailsConstants.EventLabel.SALDO_FETCH_WITHDRAWAL_LIST)
     }
+
+    @Test
+    fun `Test select transaction filter valid selection`() {
+        viewModel.selectTransactionFilter(1, IncomeTransaction)
+        assert(viewModel.currentSelectedFilter == 1)
+        assert(viewModel.preSelected == 0)
+        assert(viewModel.filterLiveData.value == IncomeTransaction)
+    }
+
 
 
 }

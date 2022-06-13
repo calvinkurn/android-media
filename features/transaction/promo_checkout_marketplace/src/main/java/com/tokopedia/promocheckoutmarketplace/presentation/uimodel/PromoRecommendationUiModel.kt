@@ -12,24 +12,6 @@ data class PromoRecommendationUiModel(
         return typeFactory.type(this)
     }
 
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (javaClass != other?.javaClass) return false
-
-        other as PromoRecommendationUiModel
-
-        if (uiData != other.uiData) return false
-        if (uiState != other.uiState) return false
-
-        return true
-    }
-
-    override fun hashCode(): Int {
-        var result = uiData.hashCode()
-        result = 31 * result + uiState.hashCode()
-        return result
-    }
-
     data class UiData(
             var promoCodes: List<String> = emptyList(),
             var promoCount: Int = 0,
@@ -37,6 +19,7 @@ data class PromoRecommendationUiModel(
     )
 
     data class UiState(
+            var isInitialization: Boolean = false,
             var isButtonSelectEnabled: Boolean = false
     )
 

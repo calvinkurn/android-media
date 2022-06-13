@@ -39,7 +39,7 @@ internal class GetProductCountUseCase(
     @GqlQuery("GetProductCount", GET_PRODUCT_COUNT_QUERY)
     private fun createGraphqlRequest(requestParams: RequestParams): GraphqlRequest =
         GraphqlRequest(
-            GetProductCount.GQL_QUERY,
+            GetProductCount(),
             GetProductCountModel::class.java,
             createVariables(requestParams)
         )

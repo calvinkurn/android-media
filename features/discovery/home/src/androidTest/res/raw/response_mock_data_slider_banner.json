@@ -1,0 +1,30 @@
+[
+    {
+        "data": {
+            "slides": {
+                "meta": {
+                    "total_data": 0
+                },
+                "slides": [
+                    {
+                        "id": "24619",
+                        "galaxy_attribution": "PG",
+                        "persona": "valuepersona",
+                        "brand_id": "valuebrandid",
+                        "category_persona": "valuecategorypersona",
+                        "image_url": "https://images.tokopedia.net/img/cache/800/VxWOnu/2021/9/21/b3f87381-4006-4501-953e-e0b75694d6b3.jpg",
+                        "redirect_url": "https://www.tokopedia.com/discovery/bangga-buatan-indonesia",
+                        "applink": "tokopedia://discovery/bangga-buatan-indonesia?source=homepage.slider_banner.0.22591",
+                        "topads_view_url": "",
+                        "promo_code": "",
+                        "creative_name": "X_PG_HPB1_All User_Bangga Buatan Indonesia",
+                        "type": "general",
+                        "category_id": "{}",
+                        "campaignCode": "thco0000575",
+                        "title": "X_PG_HPB1_All User_Bangga Buatan Indonesia"
+                    }
+                ]
+            }
+        }
+    }
+]

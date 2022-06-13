@@ -60,10 +60,6 @@ object ApplinkConstInternalGlobal {
     // tokopedia-android-internal://global/withdraw
     const val AUTO_WITHDRAW_SETTING = "$INTERNAL_GLOBAL/autoWithdrawSettings"
 
-    // InactivePhoneOnboardingActivity
-    // tokopedia-android-internal://global/change-inactive-phone
-    const val CHANGE_INACTIVE_PHONE = "$INTERNAL_GLOBAL/change-inactive-phone"
-
     // TkpdPaySettingActivity
     // tokopedia-android-internal://global/payment-setting
     const val PAYMENT_SETTING = "$INTERNAL_GLOBAL/payment-setting"
@@ -97,10 +93,6 @@ object ApplinkConstInternalGlobal {
     // tokopedia-android-internal://global/profile-completion
     const val PROFILE_COMPLETION = "$INTERNAL_GLOBAL/profile-completion"
 
-    // SettingProfileActivity
-    // tokopedia-android-internal://global/setting-profile
-    const val SETTING_PROFILE = "$INTERNAL_GLOBAL/setting-profile"
-
     // LandingShopCreationActivity
     // tokopedia-android-internal://global/landing-shop-creation
     const val LANDING_SHOP_CREATION = "$INTERNAL_GLOBAL/landing-shop-creation"
@@ -113,7 +105,7 @@ object ApplinkConstInternalGlobal {
     // tokopedia-android-internal://global/name-shop-creation
     const val NAME_SHOP_CREATION = "$INTERNAL_GLOBAL/name-shop-creation"
 
-    const val LIVENESS_DETECTION = "$INTERNAL_GLOBAL/liveness-detection"
+    const val LIVENESS_DETECTION = "$INTERNAL_GLOBAL/liveness-detection?projectId={projectId}"
 
     const val USER_IDENTIFICATION_INFO_BASE = "$INTERNAL_GLOBAL/user-identification-info"
 
@@ -132,7 +124,7 @@ object ApplinkConstInternalGlobal {
 
     // UserIdentificationFormActivity
     // tokopedia-android-internal://global/user-identification-form
-    const val USER_IDENTIFICATION_FORM = "$USER_IDENTIFICATION_FORM_BASE?projectId={projectId}"
+    const val USER_IDENTIFICATION_FORM = "$USER_IDENTIFICATION_FORM_BASE?projectId={projectId}&redirectUrl={redirectUrl}"
     const val PARAM_PROJECT_ID = "projectId"
 
     const val PARAM_CALL_BACK = "callBack"
@@ -140,7 +132,10 @@ object ApplinkConstInternalGlobal {
     // UserIdentificationInfoSimpleActivity
     // tokopedia-android-internal://global/user-identification-only
     @JvmField
-    val USER_IDENTIFICATION_INFO_SIMPLE = "$INTERNAL_GLOBAL/user-identification-only?projectId={projectId}"
+    val USER_IDENTIFICATION_INFO_SIMPLE = "$INTERNAL_GLOBAL/user-identification-only?projectId={projectId}&showIntro={showIntro}&redirectUrl={redirectUrl}"
+    const val PARAM_SHOW_INTRO = "showIntro"
+    const val PARAM_REDIRECT_URL = "redirectUrl"
+    const val PARAM_KYC_TYPE = "type"
 
     // InboxTalkActivity
     // tokopedia-android-internal://global/inbox-talk
@@ -216,18 +211,6 @@ object ApplinkConstInternalGlobal {
     // tokopedia-android-internal://global/add-pin-from-2fa
     const val ADD_PIN_FROM_2FA = "$INTERNAL_GLOBAL/add-pin-from-2fa"
 
-    // PinOnboardingActivity
-    // tokopedia-android-internal://global/add-pin-onboarding
-    const val ADD_PIN_ONBOARDING = "$INTERNAL_GLOBAL/add-pin-onboarding"
-
-    // RegisterFingerprintOnboardingActivity
-    // tokopedia-android-internal://global/add-fingerprint-onboarding
-    const val ADD_FINGERPRINT_ONBOARDING = "$INTERNAL_GLOBAL/add-fingerprint-onboarding"
-
-    // PinCompleteActivity
-    // tokopedia-android-internal://global/add-pin-complete
-    const val ADD_PIN_COMPLETE = "$INTERNAL_GLOBAL/add-pin-complete"
-
     // VerificationActivity
     // tokopedia-android-internal://global/cotp
     const val COTP = "$INTERNAL_GLOBAL/cotp"
@@ -239,14 +222,6 @@ object ApplinkConstInternalGlobal {
     // SettingNotifActivity
     // tokopedia-android-internal://global/otp-push-notif-setting
     const val OTP_PUSH_NOTIF_SETTING = "$INTERNAL_GLOBAL/otp-push-notif-setting"
-
-    // FingerprintSettingActivity
-    // tokopedia-android-internal://global/biometric-setting
-    const val BIOMETRIC_SETTING = "$INTERNAL_GLOBAL/biometric-setting"
-
-    // VerifyFingerprintActivity
-    // tokopedia-android-internal://global/verify-fingerprint
-    const val VERIFY_BIOMETRIC = "$INTERNAL_GLOBAL/verify-fingerprint"
 
     // LoginByQrActivity
     // tokopedia-android-internal://global/qr-login
@@ -287,6 +262,8 @@ object ApplinkConstInternalGlobal {
 
     const val IMAGE_PICKER = "$INTERNAL_GLOBAL/image-picker"
     const val IMAGE_PICKER_V2 = "$INTERNAL_GLOBAL/image-picker/v2/"
+    const val USER_PROFILE_LANDING = "$INTERNAL_GLOBAL/people/"
+    const val USER_PROFILE_FOLLOWERS = "$INTERNAL_GLOBAL/people/followers/"
 
     const val IMAGE_EDITOR = "$INTERNAL_GLOBAL/image-editor"
 
@@ -307,16 +284,6 @@ object ApplinkConstInternalGlobal {
     const val GLOBAL_INTERNAL_DIGITAL_DEAL_SLUG_BASE = "$INTERNAL_GLOBAL/deals-slug/"
 
     const val GLOBAL_INTERNAL_DIGITAL_DEAL_SLUG = "$GLOBAL_INTERNAL_DIGITAL_DEAL_SLUG_BASE{slug}/"
-
-    const val GLOBAL_INTERNAL_DIGITAL_DEAL_CATEGORY = "$INTERNAL_GLOBAL/deals/category/page"
-
-    const val GLOBAL_INTERNAL_DIGITAL_DEAL_ALL_BRANDS_BASE = "$INTERNAL_GLOBAL/deals-allbrands/"
-
-    const val GLOBAL_INTERNAL_DIGITAL_DEAL_ALL_BRANDS = "$GLOBAL_INTERNAL_DIGITAL_DEAL_ALL_BRANDS_BASE{isVoucher}/"
-
-    const val GLOBAL_INTERNAL_DIGITAL_DEAL_BRAND_DETAIL_BASE = "$INTERNAL_GLOBAL/deals-brand/"
-
-    const val GLOBAL_INTERNAL_DIGITAL_DEAL_BRAND_DETAIL = "$GLOBAL_INTERNAL_DIGITAL_DEAL_BRAND_DETAIL_BASE{slug}/"
 
     // PhoneVerificationProfileActivity
     // tokopedia-android-internal://global/setting-bank
@@ -353,14 +320,6 @@ object ApplinkConstInternalGlobal {
     // tokopedia-android-internal://global/ovoqrthanks/{transfer_id}
     const val OQR_PIN_URL_ENTRY_PATTERN = "$INTERNAL_GLOBAL/ovoqrthanks/{transfer_id}/"
 
-    // InstantDebitBcaActivity
-    // tokopedia-android-internal://global/instantdebitbca?callbackUrl={callbackUrl}
-    const val INSTANT_DEBIT_BCA_ENTRY_PATTERN = "$INTERNAL_GLOBAL/instantdebitbca"
-
-    // BcaEditLimitActivity
-    // tokopedia-android-internal://global/editbcaoneklik?callbackUrl={callbackUrl}&xcoid={xcoid}
-    const val EDIT_BCA_ONE_KLICK_ENTRY_PATTERN = "$INTERNAL_GLOBAL/editbcaoneklik"
-
     const val DISCOVERY = "$INTERNAL_GLOBAL/discovery"
 
 
@@ -381,17 +340,6 @@ object ApplinkConstInternalGlobal {
         "dfname={moduleTranslate}&" +
         "dfapplink={encodedApplink}&" +
         DFFALLBACKURL_KEY +"={fallbackUrl}"
-
-    /**
-     * LogoutActivity
-     * @applink : tokopedia-android-internal://global/logout
-     * @param   : [PARAM_IS_RETURN_HOME]
-     * default is 'true', set 'false' if you wan get activity result
-     **/
-    const val LOGOUT = "$INTERNAL_GLOBAL/logout"
-    /** for param logout */
-    const val PARAM_IS_RETURN_HOME = "return_to_home"
-    const val PARAM_IS_CLEAR_DATA_ONLY = "is_clear_data_only"
 
     /**
      * TermPrivacyActivity
@@ -454,17 +402,9 @@ object ApplinkConstInternalGlobal {
     // tokopedia-android-internal://global/screen-recorder
     const val SCREEN_RECORDER = "$INTERNAL_GLOBAL/screen-recorder"
 
-    // TwoFactorActivity
-    // tokopedia-android-internal://global/two-factor-register
-    const val TWO_FACTOR_REGISTER = "$INTERNAL_GLOBAL/two-factor-register"
-
     // AccountHomeActivity
     // tokopedia-android-internal://global/account-home-old
     const val OLD_HOME_ACCOUNT = "$INTERNAL_GLOBAL/old-home-account"
-
-    // HomeAccountUserActivity
-    // tokopedia-android-internal://global/new-home-account
-    const val NEW_HOME_ACCOUNT = "$INTERNAL_GLOBAL/new-home-account"
 
     // FundsAndInvestmentActivity
     // tokopedia-android-internal://global/funds-and-investment
@@ -511,4 +451,9 @@ object ApplinkConstInternalGlobal {
 
     //TkpdYoutubeVideoActivity
     const val YOUTUBE_VIDEO = "$INTERNAL_GLOBAL/youtube-video"
+
+    //DataExplorerActivity
+    const val DATA_EXPLORER = "$INTERNAL_GLOBAL/data-explorer"
+
+    const val COMMISSION_BREAKDOWN = "$INTERNAL_GLOBAL/transaction-fee-download"
 }

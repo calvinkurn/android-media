@@ -3,7 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    tools:viewBindingIgnore="true" >
 
     <com.tokopedia.review.feature.reading.presentation.widget.ReadReviewProductInfo
         android:id="@+id/read_review_product_info"
@@ -59,25 +60,34 @@
         app:typographyWeight="reguler"
         tools:text="Saya sangat puas sekali!! Awalnya saya gak percaya. Dengan memakai handphone ini, saya bisa mendengarkan suaara jernih... Selengkapnya" />
 
-    <com.tokopedia.review.feature.reading.presentation.widget.ReadReviewAttachedImages
-        android:id="@+id/read_review_attached_images"
-        android:layout_width="wrap_content"
+    <com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.widget.ReviewMediaThumbnail
+        android:id="@+id/read_review_attached_media"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_10"
-        android:orientation="horizontal"
+        android:layout_marginHorizontal="12dp"
+        android:layout_marginTop="4dp"
         android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/read_review_item_review"
         tools:visibility="visible" />
 
-    <com.tokopedia.unifycomponents.ImageUnify
-        android:id="@+id/read_review_like_button"
+    <com.tokopedia.review.common.presentation.widget.ReviewBadRatingReasonWidget
+        android:id="@+id/read_review_bad_rating_reason"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="2dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/read_review_attached_media" />
+
+    <com.tokopedia.iconunify.IconUnify
+        android:id="@+id/read_review_like_button"
+        android:layout_width="16dp"
+        android:layout_height="16dp"
         android:layout_marginTop="@dimen/layout_lvl1"
         app:layout_constraintStart_toStartOf="@id/read_review_item_review"
-        app:layout_constraintTop_toBottomOf="@id/read_review_attached_images"
-        app:srcCompat="@drawable/ic_read_review_like" />
+        app:layout_constraintTop_toBottomOf="@id/read_review_bad_rating_reason"
+        app:icon_name="THUMB" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/read_review_like_count"

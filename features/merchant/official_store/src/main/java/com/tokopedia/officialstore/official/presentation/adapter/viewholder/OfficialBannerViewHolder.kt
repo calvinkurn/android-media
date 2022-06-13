@@ -1,6 +1,5 @@
 package com.tokopedia.officialstore.official.presentation.adapter.viewholder
 
-import android.content.Context
 import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
@@ -11,14 +10,18 @@ import com.tokopedia.kotlin.extensions.view.toEmptyStringIfNull
 import com.tokopedia.officialstore.ApplinkConstant
 import com.tokopedia.officialstore.R
 import com.tokopedia.officialstore.analytics.OfficialStoreTracking
+import com.tokopedia.officialstore.databinding.ViewmodelOfficialBannerBinding
 import com.tokopedia.officialstore.official.presentation.adapter.datamodel.OfficialBannerDataModel
+import com.tokopedia.officialstore.official.presentation.dynamic_channel.DynamicChannelEventHandler
 import com.tokopedia.officialstore.official.presentation.widget.BannerOfficialStore
-import kotlinx.android.synthetic.main.viewmodel_official_banner.view.*
+import com.tokopedia.utils.view.binding.viewBinding
 
-class OfficialBannerViewHolder(view: View): AbstractViewHolder<OfficialBannerDataModel>(view),
+class OfficialBannerViewHolder(view: View, val dcEventHandler: DynamicChannelEventHandler): AbstractViewHolder<OfficialBannerDataModel>(view),
         BannerView.OnPromoClickListener, BannerView.OnPromoAllClickListener,
         BannerView.OnPromoDragListener, BannerView.OnPromoScrolledListener,
         BannerView.OnPromoLoadedListener {
+
+    private var binding: ViewmodelOfficialBannerBinding? by viewBinding()
 
     private var banner: BannerOfficialStore? = null
     private var elementBanner: OfficialBannerDataModel? = null
@@ -34,7 +37,7 @@ class OfficialBannerViewHolder(view: View): AbstractViewHolder<OfficialBannerDat
 
     override fun bind(element: OfficialBannerDataModel) {
         elementBanner = element
-        itemView.banner_official.run {
+        binding?.bannerOfficial?.run {
             setPromoList(element.banner.map { it.imageUrl })
             setOnPromoDragListener(this@OfficialBannerViewHolder)
             setOnPromoLoadedListener(this@OfficialBannerViewHolder)
@@ -52,7 +55,9 @@ class OfficialBannerViewHolder(view: View): AbstractViewHolder<OfficialBannerDat
             officialStoreTracking?.eventClickBanner(
                     elementBanner?.categoryName.toEmptyStringIfNull(),
                     position,
-                    it)
+                    it,
+                    dcEventHandler.getUserId()
+            )
         }
 
         elementBanner?.banner?.let {
@@ -78,7 +83,8 @@ class OfficialBannerViewHolder(view: View): AbstractViewHolder<OfficialBannerDat
                 officialStoreTracking?.eventImpressionBanner(
                         elementBanner?.categoryName.toEmptyStringIfNull(),
                         position,
-                        it
+                        it,
+                        dcEventHandler.getUserId()
                 )
             }
         }

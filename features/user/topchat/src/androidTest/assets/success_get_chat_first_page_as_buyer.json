@@ -12,6 +12,7 @@
     "hasNextAfter": false,
     "textareaReply": 1,
     "replyIDsAttachment": "544202118,544205296,579910159",
+    "attachmentIDs": "544202118,544205296,544202118,579910159",
     "contacts": [
       {
         "role": "Shop Owner",
@@ -240,9 +241,9 @@
               {
                 "msgId": 1190718912,
                 "replyId": "9962594893",
-                "senderId": 19016250,
+                "senderId": 17235411,
                 "senderName": "ennoseller",
-                "role": "User",
+                "role": "Shop Owner",
                 "msg": "\u003ca rel=\"nofollow\" target=\"_blank\" href=\"https://www.tokopedia.com/vip-list/piyama-baju-tidur-2\"\u003ehttps://www.tokopedia.com/vip-list/piyama-baju-tidur-2\u003c/a\u003e",
                 "replyTime": "1599606921458596000",
                 "status": 1,

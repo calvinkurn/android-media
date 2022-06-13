@@ -1,8 +1,7 @@
 package com.tokopedia.flight.detail.view.model
 
-import com.tokopedia.flight.orderlist.data.cloud.entity.Amenity
-import com.tokopedia.flight.orderlist.data.cloud.entity.AmenityEntity
-import com.tokopedia.flight.orderlist.view.viewmodel.FlightOrderDetailRouteInfoViewModel
+import com.tokopedia.flight.detail.data.Amenity
+import com.tokopedia.flight.detail.data.AmenityEntity
 import com.tokopedia.flight.search.data.cloud.single.Info
 import java.util.*
 import javax.inject.Inject
@@ -22,7 +21,7 @@ class FlightDetailRouteInfoModelMapper @Inject constructor() {
         return viewModel
     }
 
-    private fun transform(info: FlightOrderDetailRouteInfoViewModel?)
+    private fun transform(info: FlightOrderDetailInfoModel?)
             : FlightDetailRouteInfoModel? {
         var viewModel: FlightDetailRouteInfoModel? = null
         if (info != null) {
@@ -47,7 +46,7 @@ class FlightDetailRouteInfoModelMapper @Inject constructor() {
         return viewModels
     }
 
-    fun transformOrderInfo(infos: List<FlightOrderDetailRouteInfoViewModel?>?)
+    fun transformOrderInfo(infos: List<FlightOrderDetailInfoModel?>?)
             : List<FlightDetailRouteInfoModel> {
         val viewModels: MutableList<FlightDetailRouteInfoModel> = ArrayList()
         if (infos != null) {
@@ -65,14 +64,16 @@ class FlightDetailRouteInfoModelMapper @Inject constructor() {
         val routeInfoViewModels: MutableList<FlightDetailRouteInfoModel> = ArrayList()
         if (freeAmenities != null) {
             if (freeAmenities.cabinBaggage.unit.isNotEmpty() &&
-                    freeAmenities.cabinBaggage.value.isNotEmpty()) {
+                freeAmenities.cabinBaggage.value.isNotEmpty()
+            ) {
                 val infoViewModel = FlightDetailRouteInfoModel()
                 infoViewModel.label = freeAmenities.cabinBaggage.value
                 infoViewModel.value = freeAmenities.cabinBaggage.unit
                 routeInfoViewModels.add(infoViewModel)
             }
             if (freeAmenities.freeBaggage.unit.isNotEmpty() &&
-                    freeAmenities.freeBaggage.value.isNotEmpty()) {
+                freeAmenities.freeBaggage.value.isNotEmpty()
+            ) {
                 val infoViewModel = FlightDetailRouteInfoModel()
                 infoViewModel.label = freeAmenities.freeBaggage.value
                 infoViewModel.value = freeAmenities.freeBaggage.unit
@@ -101,7 +102,8 @@ class FlightDetailRouteInfoModelMapper @Inject constructor() {
     }
 
     fun transformOrderAmenities(amenities: List<Amenity>?): List<com.tokopedia.flight.search.data.cloud.single.Amenity> {
-        val dataList: MutableList<com.tokopedia.flight.search.data.cloud.single.Amenity> = ArrayList()
+        val dataList: MutableList<com.tokopedia.flight.search.data.cloud.single.Amenity> =
+            ArrayList()
         if (amenities != null) {
             for (item in amenities) {
                 dataList.add(transform(item))

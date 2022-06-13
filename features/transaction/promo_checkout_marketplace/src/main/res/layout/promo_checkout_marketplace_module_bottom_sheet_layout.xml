@@ -2,7 +2,7 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/bottom_sheet_promo_last_seen"
+    android:id="@+id/bottom_sheet_promo_suggestion"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@drawable/bottomsheet_background"
@@ -19,40 +19,35 @@
         android:layout_height="wrap_content"
         android:visibility="visible">
 
-        <ImageView
-            android:id="@+id/bottom_sheet_close"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:paddingLeft="12dp"
-            android:paddingTop="16dp"
-            android:paddingRight="12dp"
-            android:paddingBottom="16dp"
-            app:srcCompat="@drawable/ic_close_default"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/bottom_sheet_title"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
-            android:paddingTop="16dp"
-            android:paddingBottom="16dp"
-            android:text="@string/label_promo_last_seen_title"
+            android:padding="16dp"
+            android:text="@string/label_promo_suggestion_title"
             android:textColor="@color/Unify_N700_96"
-            app:layout_constraintBottom_toBottomOf="@+id/bottom_sheet_close"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/bottom_sheet_close"
+            app:layout_constraintEnd_toStartOf="@+id/button_close"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:typographyType="heading_3" />
 
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/button_close"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/label_button_close"
+            app:typographyType="heading_3"
+            android:padding="16dp"
+            android:textColor="@color/Unify_GN500"
+            app:layout_constraintBottom_toBottomOf="@+id/bottom_sheet_title"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/bottom_sheet_title" />
+
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rv_promo_last_seen"
+            android:id="@+id/rv_promo_suggestion"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:paddingLeft="12dp"
-            android:paddingRight="12dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/bottom_sheet_title" />
 

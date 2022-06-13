@@ -123,6 +123,8 @@ class DigitalCartActivityWithSubscriptionTest {
                 withId(R.id.tvCheckoutMyBillsHeaderTitle)) )
         checkoutSubscriptionHeaderTitle.perform(CustomActionUtils.nestedScrollTo())
         checkoutSubscriptionHeaderTitle.check(matches(isDisplayed()))
+        onView(getElementFromMatchAtPosition(withId(R.id.checkBoxCheckoutMyBills), 0)).check(matches(
+            not(isDisplayed())))
 
         val checkoutSubcriptionBody = onView(AllOf.allOf(withText("Text Before Checked"),
                 withId(R.id.tvCheckoutMyBillsDescription)) )

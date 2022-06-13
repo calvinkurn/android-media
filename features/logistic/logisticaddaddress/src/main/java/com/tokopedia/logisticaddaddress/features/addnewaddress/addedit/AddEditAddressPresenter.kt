@@ -1,6 +1,7 @@
 package com.tokopedia.logisticaddaddress.features.addnewaddress.addedit
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
+import com.tokopedia.localizationchooseaddress.domain.model.WarehouseModel
 import com.tokopedia.logisticaddaddress.common.AddressConstants
 import com.tokopedia.logisticaddaddress.domain.usecase.AddAddressUseCase
 import com.tokopedia.logisticaddaddress.domain.usecase.AutoCompleteUseCase
@@ -9,7 +10,10 @@ import com.tokopedia.logisticaddaddress.domain.usecase.GetZipCodeUseCase
 import com.tokopedia.logisticaddaddress.features.addnewaddress.analytics.AddNewAddressAnalytics
 import com.tokopedia.logisticaddaddress.utils.SimpleIdlingResource
 import com.tokopedia.logisticCommon.data.entity.address.SaveAddressDataModel
+import com.tokopedia.logisticCommon.data.entity.address.WarehouseDataModel
+import com.tokopedia.logisticCommon.data.mapper.AddAddressMapper
 import com.tokopedia.logisticCommon.data.response.AddAddressResponse
+import com.tokopedia.logisticCommon.data.response.WarehousesAddAddress
 import rx.Subscriber
 import timber.log.Timber
 import javax.inject.Inject
@@ -50,6 +54,8 @@ class AddEditAddressPresenter
                                 model.id = this.addrId
                                 model.warehouseId = this.tokonow.warehouseId
                                 model.shopId = this.tokonow.shopId
+                                model.warehouses = AddAddressMapper.mapWarehouses(this.tokonow.warehouses)
+                                model.serviceType = this.tokonow.serviceType
                                 view?.onSuccessAddAddress(model)
                             } else {
                                 view?.showError(null)

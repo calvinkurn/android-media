@@ -39,9 +39,15 @@ class ProductrevFeedbackHistoryUseCase @Inject constructor(graphqlRepository: Gr
                           rating
                           reviewText
                           attachmentsURL {
+                            attachmentID
                             fullSize
                             thumbnail
                           }
+                          video {
+                            attachmentID
+                            url
+                          }
+                          badRatingReasonFmt
                         }
                       }
                       hasNext

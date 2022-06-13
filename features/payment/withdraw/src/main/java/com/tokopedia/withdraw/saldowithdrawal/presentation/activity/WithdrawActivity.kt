@@ -9,6 +9,7 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.withdraw.R
+import com.tokopedia.unifycomponents.R as RUnifyComp
 import com.tokopedia.withdraw.saldowithdrawal.analytics.WithdrawAnalytics
 import com.tokopedia.withdraw.saldowithdrawal.di.component.DaggerWithdrawComponent
 import com.tokopedia.withdraw.saldowithdrawal.di.component.WithdrawComponent
@@ -87,7 +88,7 @@ class WithdrawActivity : BaseSimpleActivity(), WithdrawalFragmentCallback,
 
     override fun openSuccessFragment(withdrawalRequest: WithdrawalRequest,
                                      submitWithdrawalResponse: SubmitWithdrawalResponse) {
-        swd_header.setNavigationIcon(R.drawable.unify_bottomsheet_close)
+        swd_header.setNavigationIcon(RUnifyComp.drawable.unify_bottomsheet_close)
         updateHeaderTitle(getString(R.string.swd_success_page_title))
         val successFragment = SuccessFragmentWithdrawal.getInstance(withdrawalRequest, submitWithdrawalResponse)
         val fragmentTransaction = supportFragmentManager.beginTransaction()

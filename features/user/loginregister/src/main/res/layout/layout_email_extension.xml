@@ -5,7 +5,7 @@
     android:id="@+id/recyclerViewEmailExtension"
     android:layout_width="match_parent"
     android:layout_height="@dimen/layout_lvl6"
-    android:background="@color/Unify_N0"
+    android:background="@color/Unify_Background"
     android:orientation="horizontal"
     app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
     tools:listitem="@layout/layout_list_email_extension">

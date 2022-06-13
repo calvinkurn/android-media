@@ -270,4 +270,91 @@ object PromoQuery {
             }
         }
     }"""
+
+    fun promoDealsCheck()="""
+    query validate_use_promo(${'$'}params: ValidateUsePromoParams!){
+        event_validate_use_promo(params: ${'$'}params) {
+            header {
+                process_time
+                total_data
+                error_data {
+                    id
+                    type
+                    attributes {
+                        code
+                        title
+                        detail
+                        status
+                        process_time
+                        reason
+                    }
+                }
+            }
+            data {
+                global_success
+                promo_code_id
+                gateway_id
+                benefit_summary_info {
+                    final_benefit_text
+                    final_benefit_amount_str
+                    final_benefit_amount
+                    summaries {
+                        description
+                        type
+                        amount_str
+                        amount
+                        details{
+                            description
+                            type
+                            amount_str
+                            amount
+                            points
+                        }
+                    },
+                }
+                usage_details{
+                    code
+                    success
+                    message {
+                        text
+                    }
+                    benefit_summary{
+                        benefit_details{
+                            amount_idr
+                            amount_points
+                            data_type
+                            benefit_type
+                            currency_type
+                        }
+                    }
+                    promo_detail{
+                        type
+                        is_coupon
+                    }
+                }
+                additional_info{
+                    message_info {
+                        message
+                        detail
+                    }
+                    error_detail {
+                        message
+                    }
+                    usage_summaries{
+                        description
+                        type
+                        amount_str
+                        amount
+                        currency_details_str
+                        currency_details{
+                            amount_idr
+                            amount_points
+                            currency_type
+                        }
+                    }
+                }
+            }
+            code
+        }
+    }""".trimEnd()
 }

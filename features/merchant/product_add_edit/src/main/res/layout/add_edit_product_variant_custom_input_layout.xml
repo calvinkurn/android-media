@@ -13,7 +13,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/spacing_lvl4"
         app:text_field_counter="@integer/max_custom_variant_unit_value_length"
-        app:text_field_label_static="true"
+        app:text_field_label="jhfksdjfskdfj"
         app:text_field_message="@string/label_variant_custom_input_message" />
 
     <com.tokopedia.unifycomponents.UnifyButton

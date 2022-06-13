@@ -19,13 +19,12 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
-import com.tokopedia.coachmark.CoachMark2
-import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.discovery.common.manager.ProductCardOptionsWishlistCallback
 import com.tokopedia.discovery.common.manager.handleProductCardOptionsActivityResult
 import com.tokopedia.discovery.common.manager.showProductCardOptions
 import com.tokopedia.discovery.common.model.ProductCardOptionsModel
 import com.tokopedia.discovery.common.utils.CoachMarkLocalCache
+import com.tokopedia.discovery.common.utils.toDpInt
 import com.tokopedia.home.R
 import com.tokopedia.home.analytics.v2.HomeRecommendationTracking
 import com.tokopedia.home.analytics.v2.HomeRecommendationTracking.getRecommendationAddWishlistLogin
@@ -59,7 +58,6 @@ import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils.convertToLocationParams
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.remoteconfig.RemoteConfigInstance
-import com.tokopedia.remoteconfig.RollenceKey
 import com.tokopedia.smart_recycler_helper.SmartExecutors
 import com.tokopedia.topads.sdk.analytics.TopAdsGtmTracker
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
@@ -67,6 +65,7 @@ import com.tokopedia.track.TrackApp
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.wishlistcommon.util.AddRemoveWishlistV2Handler
 import java.util.*
 import javax.inject.Inject
 
@@ -114,7 +113,7 @@ open class HomeRecommendationFragment : Fragment(), HomeRecommendationListener {
         super.onCreate(savedInstanceState)
         initInjector()
         initViewModel()
-        viewModel.topAdsBannerNextPageToken = homeCategoryListener?.getTopAdsBannerNextPageToken()?:""
+        viewModel.topAdsBannerNextPage = homeCategoryListener?.getTopAdsBannerNextPage()?:""
     }
 
     override fun onAttach(context: Context) {
@@ -208,7 +207,7 @@ open class HomeRecommendationFragment : Fragment(), HomeRecommendationListener {
     private fun setupRecyclerView() {
         recyclerView?.layoutManager = staggeredGridLayoutManager
         (recyclerView?.layoutManager as StaggeredGridLayoutManager?)?.gapStrategy = StaggeredGridLayoutManager.GAP_HANDLING_NONE
-        recyclerView?.addItemDecoration(HomeFeedItemDecoration(resources.getDimensionPixelSize(R.dimen.dp_4)))
+        recyclerView?.addItemDecoration(HomeFeedItemDecoration(4f.toDpInt()))
         recyclerView?.adapter = adapter
         parentPool?.setMaxRecycledViews(
                 LAYOUT,
@@ -425,14 +424,28 @@ open class HomeRecommendationFragment : Fragment(), HomeRecommendationListener {
             if (wishlistResult.isSuccess) {
                 if (wishlistResult.isAddWishlist) {
                     TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(getRecommendationAddWishlistLogin(productCardOptionsModel.productId, tabName))
-                    showMessageSuccessAddWishlist()
+
+                    if (wishlistResult.isUsingWishlistV2) {
+                        showMessageSuccessAddWishlistV2(wishlistResult)
+                    } else {
+                        showMessageSuccessAddWishlist()
+                    }
+
                 } else {
                     TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(getRecommendationRemoveWishlistLogin(productCardOptionsModel.productId, tabName))
-                    showMessageSuccessRemoveWishlist()
+                    if (wishlistResult.isUsingWishlistV2) {
+                        showMessageSuccessRemoveWishlistV2(wishlistResult)
+                    } else {
+                        showMessageSuccessRemoveWishlist()
+                    }
                 }
                 updateWishlist(productCardOptionsModel.productId, wishlistResult.isAddWishlist, productCardOptionsModel.productPosition)
             } else {
-                showMessageFailedWishlistAction()
+                if (wishlistResult.isUsingWishlistV2) {
+                    showMessageFailedWishlistV2Action(wishlistResult)
+                } else {
+                    showMessageFailedWishlistAction()
+                }
             }
         } else {
             TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(getRecommendationAddWishlistNonLogin(productCardOptionsModel.productId, tabName))
@@ -440,18 +453,23 @@ open class HomeRecommendationFragment : Fragment(), HomeRecommendationListener {
         }
     }
 
+    private fun showMessageSuccessAddWishlistV2(wishlistResult: ProductCardOptionsModel.WishlistResult) {
+        if (activity == null) return
+        val view = requireActivity().findViewById<View>(android.R.id.content)
+
+        context?.let { context ->
+            AddRemoveWishlistV2Handler.showAddToWishlistV2SuccessToaster(wishlistResult, context, view)
+        }
+    }
+
     private fun showMessageSuccessAddWishlist() {
         if (activity == null) return
         val view = requireActivity().findViewById<View>(android.R.id.content)
-        val message = getString(R.string.msg_success_add_wishlist)
+
+        val msg = getString(com.tokopedia.wishlist_common.R.string.on_success_add_to_wishlist_msg)
+        val ctaText = getString(com.tokopedia.wishlist_common.R.string.cta_success_add_to_wishlist)
         view?.let {
-            Toaster.make(
-                    it,
-                    message,
-                    Toaster.LENGTH_LONG,
-                    Toaster.TYPE_NORMAL,
-                    getString(R.string.go_to_wishlist),
-                    View.OnClickListener { goToWishlist() })
+            Toaster.build(it, msg, Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL, ctaText, View.OnClickListener{ goToWishlist() }).show()
         }
     }
 
@@ -463,14 +481,36 @@ open class HomeRecommendationFragment : Fragment(), HomeRecommendationListener {
     private fun showMessageSuccessRemoveWishlist() {
         if (activity == null) return
         val view = requireActivity().findViewById<View>(android.R.id.content)
-        val message = getString(R.string.msg_success_remove_wishlist)
-        Toaster.make(view, message, Toaster.LENGTH_LONG, Toaster.TYPE_NORMAL)
+
+        val msg = getString(com.tokopedia.wishlist_common.R.string.on_success_remove_from_wishlist_msg)
+        val ctaText = getString(com.tokopedia.wishlist_common.R.string.cta_success_remove_from_wishlist)
+        view?.let {
+            Toaster.build(it, msg, Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL, ctaText, View.OnClickListener{ goToWishlist() }).show()
+        }
+    }
+
+    private fun showMessageSuccessRemoveWishlistV2(wishlistResult: ProductCardOptionsModel.WishlistResult) {
+        if (activity == null) return
+        val view = requireActivity().findViewById<View>(android.R.id.content)
+
+        context?.let { context ->
+            AddRemoveWishlistV2Handler.showRemoveWishlistV2SuccessToaster(wishlistResult, context, view)
+        }
     }
 
     private fun showMessageFailedWishlistAction() {
         if (activity == null) return
         val view = activity?.findViewById<View>(android.R.id.content)
         view?.let { Toaster.make(it, ErrorHandler.getErrorMessage(activity, null), Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR) }
+    }
+
+    private fun showMessageFailedWishlistV2Action(wishlistResult: ProductCardOptionsModel.WishlistResult) {
+        if (activity == null) return
+        val view = activity?.findViewById<View>(android.R.id.content)
+
+        var msgError = ErrorHandler.getErrorMessage(activity, Throwable())
+        if (wishlistResult.messageV2.isNotEmpty()) msgError = wishlistResult.messageV2
+        view?.let { AddRemoveWishlistV2Handler.showWishlistV2ErrorToaster(msgError, it) }
     }
 
     fun smoothScrollRecyclerViewByVelocity(distance: Int) {
@@ -506,5 +546,10 @@ open class HomeRecommendationFragment : Fragment(), HomeRecommendationListener {
 
     private fun getLocationParamString() : String {
         return ChooseAddressUtils.getLocalizingAddressData(requireContext())?.convertToLocationParams() ?: ""
+    }
+
+    override fun onDestroyView() {
+        Toaster.onCTAClick = View.OnClickListener { }
+        super.onDestroyView()
     }
 }

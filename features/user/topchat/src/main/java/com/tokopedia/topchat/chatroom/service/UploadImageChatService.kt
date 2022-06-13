@@ -4,10 +4,9 @@ import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import androidx.core.app.JobIntentService
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
-import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.tokopedia.abstraction.base.app.BaseMainApplication
+import com.tokopedia.abstraction.base.service.JobIntentServiceX
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.abstraction.constant.TkpdState
@@ -31,7 +30,7 @@ import kotlinx.coroutines.withContext
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
-open class UploadImageChatService: JobIntentService(), CoroutineScope {
+open class UploadImageChatService: JobIntentServiceX(), CoroutineScope {
 
     @Inject
     lateinit var uploadImageUseCase: TopchatUploadImageUseCase
@@ -84,9 +83,28 @@ open class UploadImageChatService: JobIntentService(), CoroutineScope {
 
     private fun setupData(intent: Intent) {
         messageId = intent.getStringExtra(MESSAGE_ID,)?: ""
-        val imageUploadService = intent.getParcelableExtra<ImageUploadServiceModel>(IMAGE)
+        val imageUploadService = ImageUploadServiceModel(
+            messageId = messageId,
+            fromUid = intent.getStringExtra(FROM_UI_ID)?: "",
+            from = intent.getStringExtra(FROM)?: "",
+            fromRole = intent.getStringExtra(FROM_ROLE)?: "",
+            attachmentId = intent.getStringExtra(ATTACHMENT_ID)?: "",
+            attachmentType = intent.getStringExtra(ATTACHMENT_TYPE)?: "",
+            replyTime = intent.getStringExtra(REPLY_TIME)?: "",
+            startTime = intent.getStringExtra(START_TIME)?: "",
+            message = intent.getStringExtra(MESSAGE)?: "",
+            source = intent.getStringExtra(SOURCE)?: "",
+            imageUrl = intent.getStringExtra(IMAGE_URL)?: "",
+            imageUrlThumbnail = intent.getStringExtra(IMAGE_URL_THUMBNAIL)?: "",
+            parentReply = intent.getStringExtra(PARENT_REPLY)?: "",
+            localId = intent.getStringExtra(LOCAL_ID)?: "",
+            isRead = intent.getBooleanExtra(IS_READ, false),
+            isDummy = intent.getBooleanExtra(IS_DUMMY, false),
+            isSender = intent.getBooleanExtra(IS_SENDER, false),
+            isRetry = intent.getBooleanExtra(IS_RETRY, false)
+        )
         imageUploadService?.let {
-            image =  ImageUploadMapper.mapToImageUploadViewModel(it)
+            image =  ImageUploadMapper.mapToImageUploadUiModel(it)
         }
     }
 
@@ -108,14 +126,15 @@ open class UploadImageChatService: JobIntentService(), CoroutineScope {
     ) {
         launchCatchError(block = {
             withContext(dispatcher.io) {
-                val result = replyChatGQLUseCase.replyMessage(
+                val param = ReplyChatGQLUseCase.Param(
                     msgId = msgId,
                     msg = msg,
                     filePath = filePath,
                     source = dummyMessage.source,
                     parentReply = dummyMessage.parentReply
                 )
-                if(result.data.attachment.attributes.isNotEmpty()) {
+                val response = replyChatGQLUseCase(param)
+                if(response.data.attachment.attributes.isNotEmpty()) {
                     removeDummyOnList(dummyMessage)
                     sendSuccessBroadcast()
                 }
@@ -150,7 +169,9 @@ open class UploadImageChatService: JobIntentService(), CoroutineScope {
         result.putExtras(generateBundleError(position, throwable))
         LocalBroadcastManager.getInstance(this).sendBroadcast(result)
 
-        firebaseLogError(throwable)
+        ErrorHandler.getErrorMessage(this, throwable, ErrorHandler.Builder().apply {
+            className = UploadImageChatService::class.java.name
+        }.build())
 
         val errorMessage = uploaderReadableError(throwable)
         notificationManager?.onFailedUpload(errorMessage)
@@ -174,14 +195,6 @@ open class UploadImageChatService: JobIntentService(), CoroutineScope {
     override fun onDestroy() {
         super.onDestroy()
         replyChatGQLUseCase.cancel()
-    }
-
-    private fun firebaseLogError(throwable: Throwable) {
-        try {
-            FirebaseCrashlytics.getInstance().recordException(throwable)
-        } catch (e: IllegalStateException) {
-            e.printStackTrace()
-        }
     }
 
     private fun uploaderReadableError(throwable: Throwable): String {
@@ -215,13 +228,46 @@ open class UploadImageChatService: JobIntentService(), CoroutineScope {
         const val RETRY_POSITION = "retryPosition"
         const val ERROR_MESSAGE = "errorMessage"
         const val MESSAGE_ID = "messageId"
+        const val FROM_UI_ID = "fromUid"
+        const val FROM = "from"
+        const val FROM_ROLE = "fromRole"
+        const val ATTACHMENT_ID = "attachmentId"
+        const val ATTACHMENT_TYPE = "attachmentType"
+        const val REPLY_TIME = "replyTime"
+        const val START_TIME = "startTime"
+        const val IS_READ = "isRead"
+        const val IS_DUMMY = "isDummy"
+        const val IS_SENDER = "isSender"
+        const val MESSAGE = "message"
+        const val SOURCE = "source"
+        const val IMAGE_URL = "imageUrl"
+        const val IMAGE_URL_THUMBNAIL = "imageUrlThumbnail"
+        const val IS_RETRY = "isRetry"
+        const val PARENT_REPLY = "parentReply"
+        const val LOCAL_ID = "localId"
         const val BROADCAST_UPLOAD_IMAGE = "BROADCAST_UPLOAD_IMAGE"
         var dummyMap = arrayListOf<UploadImageDummy>()
 
         fun enqueueWork(context: Context, image: ImageUploadServiceModel, messageId: String) {
             val intent = Intent(context, UploadImageChatService::class.java)
-            intent.putExtra(IMAGE, image)
             intent.putExtra(MESSAGE_ID, messageId)
+            intent.putExtra(MESSAGE, image.message)
+            intent.putExtra(FROM_UI_ID, image.fromUid)
+            intent.putExtra(FROM, image.from)
+            intent.putExtra(FROM_ROLE, image.fromRole)
+            intent.putExtra(ATTACHMENT_ID, image.attachmentId)
+            intent.putExtra(ATTACHMENT_TYPE, image.attachmentType)
+            intent.putExtra(REPLY_TIME, image.replyTime)
+            intent.putExtra(START_TIME, image.startTime)
+            intent.putExtra(PARENT_REPLY, image.parentReply)
+            intent.putExtra(LOCAL_ID, image.localId)
+            intent.putExtra(SOURCE, image.source)
+            intent.putExtra(IMAGE_URL, image.imageUrl)
+            intent.putExtra(IMAGE_URL_THUMBNAIL, image.imageUrlThumbnail)
+            intent.putExtra(IS_SENDER, image.isSender)
+            intent.putExtra(IS_RETRY, image.isRetry)
+            intent.putExtra(IS_READ, image.isRead)
+            intent.putExtra(IS_DUMMY, image.isDummy)
             enqueueWork(context, UploadImageChatService::class.java, JOB_ID_UPLOAD_IMAGE, intent)
         }
 

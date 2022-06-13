@@ -1,6 +1,5 @@
 package com.tokopedia.profilecompletion.addphone
 
-import android.content.Context
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
@@ -10,6 +9,7 @@ import com.tokopedia.profilecompletion.addphone.data.AddPhoneResult
 import com.tokopedia.profilecompletion.addphone.data.UserValidatePojo
 import com.tokopedia.profilecompletion.addphone.viewmodel.AddPhoneViewModel
 import com.tokopedia.profilecompletion.data.ProfileCompletionQueryConstant
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -36,8 +36,6 @@ class AddPhoneViewModelTest {
 
     val addPhoneGraphQlUseCase = mockk<GraphqlUseCase<AddPhonePojo>>(relaxed = true)
     val userValidateGraphQlUseCase = mockk<GraphqlUseCase<UserValidatePojo>>(relaxed = true)
-
-    val context = mockk<Context>(relaxed = true)
 
     private val testDispatcher = TestCoroutineDispatcher()
 
@@ -66,7 +64,7 @@ class AddPhoneViewModelTest {
                 addPhoneGraphQlUseCase,
                 userValidateGraphQlUseCase,
                 rawQueries,
-                testDispatcher
+                CoroutineTestDispatchersProvider
         )
         viewModel.addPhoneResponse.observeForever(addPhoneObserver)
         viewModel.userValidateResponse.observeForever(userValidateObserver)
@@ -83,7 +81,7 @@ class AddPhoneViewModelTest {
         verify {
             addPhoneGraphQlUseCase.setTypeClass(any())
             addPhoneGraphQlUseCase.setRequestParams(mockParam)
-            addPhoneGraphQlUseCase.setGraphqlQuery(any())
+            addPhoneGraphQlUseCase.setGraphqlQuery(any<String>())
             addPhoneGraphQlUseCase.execute(any(), any())
         }
     }
@@ -162,7 +160,7 @@ class AddPhoneViewModelTest {
         verify {
             userValidateGraphQlUseCase.setTypeClass(any())
             userValidateGraphQlUseCase.setRequestParams(mockParam)
-            userValidateGraphQlUseCase.setGraphqlQuery(any())
+            userValidateGraphQlUseCase.setGraphqlQuery(any<String>())
             userValidateGraphQlUseCase.execute(any(), any())
         }
     }
@@ -180,6 +178,21 @@ class AddPhoneViewModelTest {
 
         /* Then */
         verify { userValidateObserver.onChanged(Success(userValidatePojo)) }
+    }
+
+    @Test
+    fun `on Error user Validate`() {
+        /* When */
+        userValidatePojo.userProfileValidate.isValid = true
+
+        every { userValidateGraphQlUseCase.execute(any(), any()) } answers {
+            secondArg<(Throwable) -> Unit>().invoke(mockThrowable)
+        }
+
+        viewModel.userProfileValidate(msisdn)
+
+        /* Then */
+        verify { userValidateObserver.onChanged(Fail(mockThrowable)) }
     }
 
     @Test

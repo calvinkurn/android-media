@@ -10,11 +10,11 @@ import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.search.result.domain.model.GlobalSearchNavigationModel
+import com.tokopedia.search.result.domain.model.LastFilterModel
 import com.tokopedia.search.result.domain.model.QuickFilterModel
 import com.tokopedia.search.result.domain.model.SearchInspirationCarouselModel
 import com.tokopedia.search.result.domain.model.SearchInspirationWidgetModel
 import com.tokopedia.search.result.domain.model.SearchProductModel
-import com.tokopedia.search.result.domain.model.LastFilterModel
 import com.tokopedia.search.utils.SearchLogger
 import com.tokopedia.search.utils.UrlParamUtils
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsImageViewUseCase
@@ -55,7 +55,9 @@ class SearchProductFirstPageGqlUseCase(
 
         val query = getQueryFromParameters(searchProductParams)
         val params = UrlParamUtils.generateUrlParamString(searchProductParams)
-        val headlineAdsParams = createHeadlineParams(searchProductParams, HEADLINE_ITEM_VALUE_FIRST_PAGE)
+        val headlineAdsParams = com.tokopedia.topads.sdk.utils.TopAdsHeadlineViewParams.createHeadlineParams(
+                requestParams.parameters[SEARCH_PRODUCT_PARAMS] as? Map<String, Any?>,
+                HEADLINE_ITEM_VALUE_FIRST_PAGE, "0")
 
         val graphqlRequestList = graphqlRequests {
             addAceSearchProductRequest(params)
@@ -95,7 +97,7 @@ class SearchProductFirstPageGqlUseCase(
     @GqlQuery("QuickFilter", QUICK_FILTER_QUERY)
     private fun createQuickFilterRequest(query: String, params: String) =
             GraphqlRequest(
-                    QuickFilter.GQL_QUERY,
+                    QuickFilter(),
                     QuickFilterModel::class.java,
                     mapOf(GQL.KEY_QUERY to query, GQL.KEY_PARAMS to params)
             )
@@ -106,9 +108,10 @@ class SearchProductFirstPageGqlUseCase(
         }
     }
 
+    @GqlQuery("GlobalNav", GLOBAL_NAV_GQL_QUERY)
     private fun createGlobalSearchNavigationRequest(query: String, params: String) =
             GraphqlRequest(
-                    GLOBAL_NAV_GQL_QUERY,
+                    GlobalNav(),
                     GlobalSearchNavigationModel::class.java,
                     mapOf(GQL.KEY_QUERY to query, GQL.KEY_PARAMS to params)
             )
@@ -122,7 +125,7 @@ class SearchProductFirstPageGqlUseCase(
     @GqlQuery("InspirationCarousel", SEARCH_INSPIRATION_CAROUSEL_QUERY)
     private fun createSearchInspirationCarouselRequest(params: String) =
             GraphqlRequest(
-                    InspirationCarousel.GQL_QUERY,
+                    InspirationCarousel(),
                     SearchInspirationCarouselModel::class.java,
                     mapOf(GQL.KEY_PARAMS to params)
             )
@@ -136,7 +139,7 @@ class SearchProductFirstPageGqlUseCase(
     @GqlQuery("InspirationWidget", SEARCH_INSPIRATION_WIDGET_QUERY)
     private fun createSearchInspirationWidgetRequest(params: String) =
             GraphqlRequest(
-                    InspirationWidget.GQL_QUERY,
+                    InspirationWidget(),
                     SearchInspirationWidgetModel::class.java,
                     mapOf(GQL.KEY_PARAMS to params)
             )
@@ -152,7 +155,7 @@ class SearchProductFirstPageGqlUseCase(
     @GqlQuery("GetLastFilter", GET_LAST_FILTER_GQL_QUERY)
     private fun createGetLastFilterRequest(params: String) =
         GraphqlRequest(
-            GetLastFilter.GQL_QUERY,
+            GetLastFilter(),
             LastFilterModel::class.java,
             mapOf(GQL.KEY_PARAMS to params)
         )
@@ -292,6 +295,7 @@ class SearchProductFirstPageGqlUseCase(
                         type
                         position
                         layout
+                        tracking_option
                         options {
                             title
                             url
@@ -301,6 +305,7 @@ class SearchProductFirstPageGqlUseCase(
                             banner_applink_url
                             identifier
                             meta
+                            component_id
                             product {
                                 id
                                 name
@@ -313,6 +318,7 @@ class SearchProductFirstPageGqlUseCase(
                                 applink
                                 description
                                 rating_average
+                                component_id
                                 label_groups {
                                     title
                                     type
@@ -340,6 +346,7 @@ class SearchProductFirstPageGqlUseCase(
                                     productWishlistUrl
                                     productViewUrl
                                 }
+                                customvideo_url
                             }
                         }
                     }
@@ -360,7 +367,15 @@ class SearchProductFirstPageGqlUseCase(
                             url
                             color
                             applink
+                            component_id
+                            filters {
+                              title
+                              key
+                              name
+                              value
+                            }
                         }
+                        tracking_option
                     }
                 }
             }

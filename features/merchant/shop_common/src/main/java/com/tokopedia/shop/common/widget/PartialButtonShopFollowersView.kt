@@ -72,7 +72,8 @@ class PartialButtonShopFollowersView private constructor(val view: View, private
                    iconUrl: String = "",
                    hideButton: Boolean = false,
                    maxLine: Int = 1,
-                   centerImage: Boolean = false) = with(view) {
+                   centerImage: Boolean = false,
+                   customPaddingBottom: Int = 8) = with(view) {
         if (alreadyFollowShop) {
             setupVisibility = false
             return@with
@@ -86,15 +87,17 @@ class PartialButtonShopFollowersView private constructor(val view: View, private
         setOnClickListener {}
         setupRoundedTopShadow()
 
+        val titleParams = followersTitle?.layoutParams as ViewGroup.MarginLayoutParams
+
+        if (centerImage) {
+            titleParams.topMargin = 4.toPx()
+            view.setPadding(0, 0, 0, customPaddingBottom.toPx())
+        } else {
+            titleParams.topMargin = 0.toPx()
+            view.setPadding(0, 0, 0, 0.toPx())
+        }
+
         followersImageAsset?.run {
-            val params = layoutParams as ViewGroup.MarginLayoutParams
-
-            if (centerImage) {
-                params.bottomMargin = 16.toPx()
-            } else {
-                params.bottomMargin = 0
-            }
-
             if (iconUrl.isNotEmpty()) {
                 ImageHandler.loadImageWithoutPlaceholderAndError(this, iconUrl)
             } else {
@@ -156,8 +159,10 @@ class PartialButtonShopFollowersView private constructor(val view: View, private
             )
         }
         followersBtn?.run {
-            if (!buttonLabel.isNullOrBlank()) {
-                text = buttonLabel
+            text = if (!buttonLabel.isNullOrBlank()) {
+                buttonLabel
+            } else {
+                context.getString(R.string.merchant_shop_common_follow_label)
             }
             setOnClickListener {
                 if (!isLoading) {

@@ -2,14 +2,13 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.tokopedia.df.recharge.brizzi">
 
-    <dist:module
-        dist:title="@string/title_digital_emoney">
+    <dist:module dist:title="@string/title_digital_emoney">
         <dist:delivery>
-            <dist:on-demand/>
+            <dist:on-demand />
             <dist:install-time>
                 <dist:conditions>
-                    <dist:min-sdk dist:value="21"/>
-                    <dist:max-sdk dist:value="23"/>
+                    <dist:min-sdk dist:value="21" />
+                    <dist:max-sdk dist:value="23" />
                 </dist:conditions>
             </dist:install-time>
         </dist:delivery>

@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout android:orientation="horizontal"
+    android:layout_width="264dp"
+    android:layout_height="match_parent"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <com.tokopedia.unifycomponents.LoaderUnify
+        android:id="@+id/circular_progress_bar"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_marginStart="12dp"
+        android:layout_marginTop="14dp"
+        android:layout_marginBottom="14dp"
+        app:loader_type="circle"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.tokopedia.unifycomponents.LoaderUnify
+        android:id="@+id/title"
+        android:layout_width="0dp"
+        android:layout_height="12dp"
+        android:layout_marginStart="12dp"
+        android:layout_marginEnd="12dp"
+        app:layout_constraintBottom_toTopOf="@+id/desc1"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/circular_progress_bar"
+        app:layout_constraintTop_toTopOf="@+id/circular_progress_bar"
+        app:loader_type="line"
+        app:typographyType="heading_5" />
+
+    <com.tokopedia.unifycomponents.LoaderUnify
+        android:id="@+id/desc1"
+        android:layout_width="0dp"
+        android:layout_height="12dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="32dp"
+        app:layout_constraintBottom_toTopOf="@+id/desc2"
+        app:layout_constraintEnd_toEndOf="@+id/title"
+        app:layout_constraintStart_toStartOf="@+id/title"
+        app:layout_constraintTop_toBottomOf="@+id/title"
+        app:loader_type="line" />
+
+    <com.tokopedia.unifycomponents.LoaderUnify
+        android:id="@+id/desc2"
+        android:layout_width="0dp"
+        android:layout_height="12dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="32dp"
+        app:layout_constraintBottom_toBottomOf="@+id/circular_progress_bar"
+        app:layout_constraintEnd_toEndOf="@+id/desc1"
+        app:layout_constraintStart_toStartOf="@+id/desc1"
+        app:layout_constraintTop_toBottomOf="@+id/desc1"
+        app:loader_type="line" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -29,6 +29,7 @@ class GetShopOperationalUseCase @Inject constructor(
             ShopOperationalHourMapper.mapToShopOperationalData(
                 shopOperationalResponse.await(),
                 shopClosedInfoResponse.await().closedInfo.detail,
+                shopClosedInfoResponse.await().statusInfo,
                 shopSettingsAccess.await()
             )
         }

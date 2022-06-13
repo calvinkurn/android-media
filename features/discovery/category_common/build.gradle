@@ -27,13 +27,14 @@ buildscript {
 dependencies {
     implementation projectOrAar(rootProject.ext.libraries.tkpdabstraction)
     implementation projectOrAar(rootProject.ext.libraries.graphql)
+    implementation projectOrAar(rootProject.ext.libraries.kotlinExtensions)
     implementation rootProject.ext.dbDependencies.dbRoomRuntime
     implementation rootProject.ext.debugToolsDependencies.chuck
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
     implementation rootProject.ext.tkpdInternalLibDependencies.url
-    implementation rootProject.ext.tkpdInternalLibDependencies.network
+    implementation projectOrAar(rootProject.ext.libraries.network)
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
-    implementation rootProject.ext.tkpdInternalLibDependencies.usersession
+    implementation projectOrAar(rootProject.ext.libraries.usersession)
     implementation rootProject.ext.miscDependencies.dagger
     implementation rootProject.ext.miscDependencies.rxJava
     implementation rootProject.ext.networkDependencies.loggingInterceptor

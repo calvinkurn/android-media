@@ -31,6 +31,12 @@ fun ImageView.loadImage(drawable: Drawable?) = this.setImageDrawable(drawable)
 
 fun ImageView.loadImage(resource: Int) = this.setImageResource(resource)
 
+inline fun ImageView.loadImage(
+    resource: Int,
+    crossinline properties: Properties.() -> Unit = {}
+) = call(resource, Properties()
+    .apply(properties))
+
 fun ImageView.loadImage(uri: Uri) = this.setImageURI(uri)
 
 inline fun ImageView.loadImage(
@@ -72,6 +78,15 @@ fun ImageView.loadImageRounded(
     resource: Int,
     rounded: Float
 ) = this.setImageResource(resource)
+
+inline fun ImageView.loadImageRounded(
+    uri: Uri,
+    rounded: Float = DEFAULT_ROUNDED,
+    crossinline properties: Properties.() -> Unit = {}
+) = call(uri, Properties()
+    .apply(properties)
+    .setRoundedRadius(rounded)
+)
 
 inline fun ImageView.loadImageRounded(
     data: Bitmap,

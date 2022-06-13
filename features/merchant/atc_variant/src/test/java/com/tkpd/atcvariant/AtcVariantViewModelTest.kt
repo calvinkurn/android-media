@@ -13,6 +13,7 @@ import com.tokopedia.cartcommon.data.response.deletecart.RemoveFromCartData
 import com.tokopedia.cartcommon.data.response.updatecart.Data
 import com.tokopedia.cartcommon.data.response.updatecart.UpdateCartV2Data
 import com.tokopedia.product.detail.common.data.model.aggregator.AggregatorMiniCartUiModel
+import com.tokopedia.product.detail.common.data.model.pdplayout.ProductDetailGallery
 import com.tokopedia.product.detail.common.getCurrencyFormatted
 import com.tokopedia.shop.common.domain.interactor.model.favoriteshop.DataFollowShop
 import com.tokopedia.shop.common.domain.interactor.model.favoriteshop.FollowShop
@@ -20,6 +21,8 @@ import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.wishlist.common.listener.WishListActionListener
+import com.tokopedia.wishlistcommon.data.response.AddToWishlistV2Response
+import com.tokopedia.wishlistcommon.listener.WishlistV2ActionListener
 import io.mockk.*
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert
@@ -33,7 +36,7 @@ class AtcVariantViewModelTest : BaseAtcVariantViewModelTest() {
     //region helper function
     @Test
     fun `get aggreagator data`() {
-        `render initial variant with given child id and hit gql tokonow`()
+        `render initial variant with given child id and hit gql tokonow campaign hide gimmick`()
         val data = viewModel.getVariantAggregatorData()
 
         Assert.assertNotNull(data)
@@ -80,17 +83,17 @@ class AtcVariantViewModelTest : BaseAtcVariantViewModelTest() {
      * render without calling gql, because all of the data already provided from PDP
      */
     @Test
-    fun `render initial variant with given parent id and non hit gql tokonow tokocabang`() {
+    fun `render initial variant with given parent id and non hit gql tokonow tokocabang campaign`() {
         val aggregatorParams = generateParamsVariantFulfilled("2147818569", true)
 
         coEvery {
-            aggregatorMiniCartUseCase.executeOnBackground(any(), any(), any(), any(), any(), any(), true)
+            aggregatorMiniCartUseCase.executeOnBackground(any(), any(), any(), any(), any(), any(), true, any())
         } returns AggregatorMiniCartUiModel()
 
         viewModel.decideInitialValue(aggregatorParams, true)
 
         coVerify(inverse = true) {
-            aggregatorMiniCartUseCase.executeOnBackground(any(), any(), any(), any(), any(), any(), true)
+            aggregatorMiniCartUseCase.executeOnBackground(any(), any(), any(), any(), any(), any(), true, any())
         }
 
         val visitablesData = (viewModel.initialData.value as Success).data
@@ -104,10 +107,16 @@ class AtcVariantViewModelTest : BaseAtcVariantViewModelTest() {
                 expectedSelectedOptionIdsLevelTwo = "254085",
                 expectedVariantName = listOf("Merah", "M"),
                 expectedQuantity = 23,
-                expectedMinOrder = 1,
+                expectedMinOrder = 3, //use min order campaign
                 cashBackPercentage = 102,
                 uspImageUrl = "icon usp",
                 isTokoCabang = true
+        )
+
+        assertCampaign(
+                visitablesData,
+                expectedCampaignActive = true,
+                expectedDiscountedPrice = 208000.getCurrencyFormatted()
         )
         assertStockCopy("")
         assertButton(expectedCartText = "Simpan Perubahan")
@@ -121,13 +130,13 @@ class AtcVariantViewModelTest : BaseAtcVariantViewModelTest() {
         val aggregatorParams = generateParamsVariantFulfilled("2147818569", false)
 
         coEvery {
-            aggregatorMiniCartUseCase.executeOnBackground(any(), any(), any(), any(), any(), any(), false)
+            aggregatorMiniCartUseCase.executeOnBackground(any(), any(), any(), any(), any(), any(), true, any())
         } returns AggregatorMiniCartUiModel()
 
         viewModel.decideInitialValue(aggregatorParams, true)
 
         coVerify(inverse = true) {
-            aggregatorMiniCartUseCase.executeOnBackground(any(), any(), any(), any(), any(), any(), false)
+            aggregatorMiniCartUseCase.executeOnBackground(any(), any(), any(), any(), any(), any(), true, any())
         }
     }
 
@@ -136,13 +145,13 @@ class AtcVariantViewModelTest : BaseAtcVariantViewModelTest() {
         val aggregatorParams = generateParamsVariantFulfilled("2147818569", true, true)
 
         coEvery {
-            aggregatorMiniCartUseCase.executeOnBackground(any(), any(), any(), any(), any(), any(), true)
+            aggregatorMiniCartUseCase.executeOnBackground(any(), any(), any(), any(), any(), any(), true, any())
         } returns AggregatorMiniCartUiModel()
 
         viewModel.decideInitialValue(aggregatorParams, true)
 
         coVerify {
-            aggregatorMiniCartUseCase.executeOnBackground(any(), any(), any(), any(), any(), any(), true)
+            aggregatorMiniCartUseCase.executeOnBackground(any(), any(), any(), any(), any(), any(), true, any())
         }
 
         Assert.assertEquals(viewModel.getActivityResultData().shouldRefreshPreviousPage, true)
@@ -170,7 +179,7 @@ class AtcVariantViewModelTest : BaseAtcVariantViewModelTest() {
                 expectedSelectedOptionIdsLevelTwo = "254085",
                 expectedVariantName = listOf("Merah", "M"),
                 expectedQuantity = 0,
-                expectedMinOrder = 1,
+                expectedMinOrder = 3,
                 cashBackPercentage = 102,
                 uspImageUrl = "icon usp",
                 isTokoCabang = true
@@ -200,7 +209,7 @@ class AtcVariantViewModelTest : BaseAtcVariantViewModelTest() {
                 expectedSelectedOptionIdsLevelTwo = "254085",
                 expectedVariantName = listOf("Merah", "M"),
                 expectedQuantity = 23,
-                expectedMinOrder = 1,
+                expectedMinOrder = 3,
                 cashBackPercentage = 102,
                 uspImageUrl = "icon usp",
                 isTokoCabang = true
@@ -215,7 +224,7 @@ class AtcVariantViewModelTest : BaseAtcVariantViewModelTest() {
      * Doesnt has product in minicart
      */
     @Test
-    fun `render initial variant with given child id and hit gql tokonow`() {
+    fun `render initial variant with given child id and hit gql tokonow campaign hide gimmick`() {
         decideSuccessValueHitGqlAggregator("2147818593", true)
 
         val visitablesData = (viewModel.initialData.value as Success).data
@@ -234,6 +243,9 @@ class AtcVariantViewModelTest : BaseAtcVariantViewModelTest() {
                 uspImageUrl = "icon usp",
                 isTokoCabang = false
         )
+        assertCampaign(visitablesData,
+                expectedCampaignActive = false,
+                expectedDiscountedPrice = 2000.getCurrencyFormatted())
         assertStockCopy("")
         assertButton()
         assertRestrictionData(
@@ -461,7 +473,7 @@ class AtcVariantViewModelTest : BaseAtcVariantViewModelTest() {
     //region atc
     @Test
     fun `on success delete cart`() {
-        `render initial variant with given child id and hit gql tokonow`()
+        `render initial variant with given child id and hit gql tokonow campaign hide gimmick`()
         `on success atc tokonow`()
 
         val mockData = RemoveFromCartData(data = com.tokopedia.cartcommon.data.response.deletecart.Data(message = listOf("sukses delete cart")))
@@ -497,7 +509,7 @@ class AtcVariantViewModelTest : BaseAtcVariantViewModelTest() {
 
     @Test
     fun `on fail delete cart`() {
-        `render initial variant with given child id and hit gql tokonow`()
+        `render initial variant with given child id and hit gql tokonow campaign hide gimmick`()
         `on success atc tokonow`()
 
         coEvery {
@@ -530,7 +542,7 @@ class AtcVariantViewModelTest : BaseAtcVariantViewModelTest() {
 
     @Test
     fun `on success atc tokonow`() {
-        `render initial variant with given child id and hit gql tokonow`()
+        `render initial variant with given child id and hit gql tokonow campaign hide gimmick`()
         val actionButtonAtc = 2
 
         val atcResponseSuccess = AddToCartDataModel(data = DataModel(success = 1, productId = 2147818593L, cartId = "2147818593"), status = "OK")
@@ -572,7 +584,7 @@ class AtcVariantViewModelTest : BaseAtcVariantViewModelTest() {
 
     @Test
     fun `on fail atc`() {
-        `render initial variant with given child id and hit gql tokonow`()
+        `render initial variant with given child id and hit gql tokonow campaign hide gimmick`()
         val actionButtonAtc = 2
         val atcResponseError = AddToCartDataModel(data = DataModel(success = 0), status = "", errorMessage = arrayListOf("gagal ya"))
 
@@ -633,7 +645,7 @@ class AtcVariantViewModelTest : BaseAtcVariantViewModelTest() {
 
     @Test
     fun `on success ocs`() {
-        `render initial variant with given child id and hit gql tokonow`()
+        `render initial variant with given child id and hit gql tokonow campaign hide gimmick`()
         val actionButtonAtc = 3
         val slot = slot<RequestParams>()
 
@@ -655,7 +667,7 @@ class AtcVariantViewModelTest : BaseAtcVariantViewModelTest() {
 
     @Test
     fun `on fail ocs`() {
-        `render initial variant with given child id and hit gql tokonow`()
+        `render initial variant with given child id and hit gql tokonow campaign hide gimmick`()
         val actionButtonAtc = 3
 
         val atcResponseError = AddToCartDataModel(data = DataModel(success = 0), status = "", errorMessage = arrayListOf("gagal ya"))
@@ -673,7 +685,7 @@ class AtcVariantViewModelTest : BaseAtcVariantViewModelTest() {
 
     @Test
     fun `on success occ`() {
-        `render initial variant with given child id and hit gql tokonow`()
+        `render initial variant with given child id and hit gql tokonow campaign hide gimmick`()
         val actionButtonAtc = 4
         val atcResponseError = AddToCartDataModel(data = DataModel(success = 0), status = "", errorMessage = arrayListOf("gagal ya"))
 
@@ -690,7 +702,7 @@ class AtcVariantViewModelTest : BaseAtcVariantViewModelTest() {
 
     @Test
     fun `on fail occ`() {
-        `render initial variant with given child id and hit gql tokonow`()
+        `render initial variant with given child id and hit gql tokonow campaign hide gimmick`()
         val actionButtonAtc = 4
 
         val atcResponseSuccess = AddToCartDataModel(data = DataModel(success = 1, productId = 2147818593L), status = "OK")
@@ -796,6 +808,79 @@ class AtcVariantViewModelTest : BaseAtcVariantViewModelTest() {
         Assert.assertEquals(captureParams.captured.getString("shopID", ""), "12345")
         Assert.assertEquals(captureParams.captured.getString("action", ""), "follow")
     }
+
+    @Test
+    fun `variant image clicked will post gallery data value`(){
+        val imageUrl = "url1234"
+        val productId = "2147818570"
+        val userId = "123"
+        val mainImageTag = "some tag"
+        val type = ProductDetailGallery.Item.Type.Image
+
+        decideSuccessValueHitGqlAggregator("2147818569", true)
+
+        val defaultItem = ProductDetailGallery.Item(
+            id = "",
+            url = imageUrl,
+            tag = mainImageTag,
+            type = type
+        )
+
+        val optionIds = listOf("254079", "254080","254081", "254082" ,"254083")
+        val tags = listOf("Biru", "Merah", "Kuning", "Hijau", "Ungu")
+        val expectedUrl = "https://images.tokopedia.net/img/cache/700/VqbcmM/2021/5/27/f4f95629-5b09-423c-a1c2-58691e1a2f30.jpg"
+
+        val items = optionIds.mapIndexed{ index, optionId ->
+            ProductDetailGallery.Item(
+                id = optionId,
+                url = expectedUrl,
+                tag = tags.getOrNull(index),
+                type = ProductDetailGallery.Item.Type.Image
+            )
+        }
+        val selectedId = "254079"
+
+        viewModel.onVariantImageClicked(imageUrl, productId, userId, mainImageTag)
+
+        val data = viewModel.variantImagesData.value
+
+        Assert.assertEquals(defaultItem, data?.defaultItem)
+        Assert.assertEquals(items, data?.items)
+        Assert.assertEquals(selectedId, data?.selectedId)
+        Assert.assertEquals(ProductDetailGallery.Page.VariantBottomSheet, data?.page)
+    }
+
+    @Test
+    fun `variant image clicked fallback test with empty images and available default image`(){
+        val imageUrl = "url1234"
+        val productId = "2147818570"
+        val userId = "123"
+        val mainImageTag = "some tag"
+
+        viewModel.onVariantImageClicked(imageUrl, productId, userId, mainImageTag)
+
+        val data = viewModel.variantImagesData.value
+
+        Assert.assertEquals(imageUrl, data?.defaultItem?.url)
+        Assert.assertEquals(emptyList<ProductDetailGallery.Item>(), data?.items)
+        Assert.assertEquals(ProductDetailGallery.Page.VariantBottomSheet, data?.page)
+    }
+
+    @Test
+    fun `variant image clicked fallback test with empty images and empty default image`(){
+        val imageUrl = ""
+        val productId = "2147818570"
+        val userId = "123"
+        val mainImageTag = "some tag"
+
+        viewModel.onVariantImageClicked(imageUrl, productId, userId, mainImageTag)
+
+        val data = viewModel.variantImagesData.value
+
+        Assert.assertEquals(null, data)
+    }
+
+
     //endregion
 
     private fun verifyAtcUsecase(verifyAtc: Boolean = false, verifyOcs: Boolean = false, verifyOcc: Boolean = false, verifyUpdateAtc: Boolean = false) {
@@ -819,5 +904,35 @@ class AtcVariantViewModelTest : BaseAtcVariantViewModelTest() {
         coVerify(inverse = inverseUpdateAtc) {
             updateCartUseCase.executeOnBackground()
         }
+    }
+
+    @Test
+    fun `verify add to wishlistv2 returns success` () {
+        val productId = "123"
+        val resultWishlistAddV2 = AddToWishlistV2Response.Data.WishlistAddV2(success = true)
+
+        every { addToWishlistV2UseCase.setParams(any(), any()) } just Runs
+        coEvery { addToWishlistV2UseCase.executeOnBackground() } returns Success(resultWishlistAddV2)
+
+        val mockListener: WishlistV2ActionListener = mockk(relaxed = true)
+        viewModel.addWishlistV2(productId, "", mockListener)
+
+        verify { addToWishlistV2UseCase.setParams(productId, "") }
+        coVerify { addToWishlistV2UseCase.executeOnBackground() }
+    }
+
+    @Test
+    fun `verify add to wishlistv2 returns fail` () {
+        val productId = "123"
+        val mockThrowable = mockk<Throwable>("fail")
+
+        every { addToWishlistV2UseCase.setParams(any(), any()) } just Runs
+        coEvery { addToWishlistV2UseCase.executeOnBackground() } returns Fail(mockThrowable)
+
+        val mockListener: WishlistV2ActionListener = mockk(relaxed = true)
+        viewModel.addWishlistV2(productId, "", mockListener)
+
+        verify { addToWishlistV2UseCase.setParams(productId, "") }
+        coVerify { addToWishlistV2UseCase.executeOnBackground() }
     }
 }

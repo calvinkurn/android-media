@@ -25,6 +25,7 @@ abstract class BaseTrackerConst {
         const val PROMO_VIEW_IRIS = "promoViewIris"
         const val CLICK_HOMEPAGE = "clickHomepage"
         const val PRODUCT_ADD_TO_CART = "addToCart"
+        const val SELECT_CONTENT = "select_content"
     }
 
     protected object Category{
@@ -81,6 +82,23 @@ abstract class BaseTrackerConst {
         const val KEY = "campaignCode"
     }
 
+    protected object ItemList {
+        const val KEY = "item_list"
+    }
+
+    protected object Items {
+        const val KEY = "items"
+        const val DIMENSION_83 = "dimension83"
+        const val DIMENSION_83_DEFAULT = "bebas ongkir"
+        const val INDEX = "index"
+        const val ITEM_BRAND = "item_brand"
+        const val ITEM_CATEGORY = "item_category"
+        const val ITEM_ID = "item_id"
+        const val ITEM_NAME = "item_name"
+        const val ITEM_VARIANT = "item_variant"
+        const val PRICE = "price"
+    }
+
     protected object Value {
         const val NONE_OTHER = "none / other"
         const val LIST_WITH_HEADER = "/ - p%s - %s - %s"
@@ -98,7 +116,15 @@ abstract class BaseTrackerConst {
             val position: String,
             val promoIds: String = "",
             val promoCodes: String = "",
-            val creativeUrl: String = "")
+            val creativeUrl: String = "") {
+        companion object {
+            const val KEY = "promotions"
+            const val CREATIVE_NAME = "creative_name"
+            const val CREATIVE_SLOT = "creative_slot"
+            const val ITEM_ID = "item_id"
+            const val ITEM_NAME = "item_name"
+        }
+    }
 
     open class  Product(
             val name: String,
@@ -123,19 +149,20 @@ abstract class BaseTrackerConst {
             val shopId:String = "",
             val shopName: String = "",
             val shopType: String = "",
-            val pageName: String = ""
+            val pageName: String = "",
+            val wishlistId: String = "",
     )
 
     object Ecommerce {
         const val KEY = "ecommerce"
         const val PROMOTION_NAME = "/ - p%s - %s - %s"
         private const val PRODUCT_VIEW = "productView"
-        private const val PRODUCT_CLICK = "productClick"
+        const val PRODUCT_CLICK = "productClick"
         private const val CLICK = "click"
         private const val ADD = "add"
         private const val IMPRESSIONS = "impressions"
         private const val PROMO_VIEW = "promoView"
-        private const val PROMO_CLICK = "promoClick"
+        const val PROMO_CLICK = "promoClick"
         private const val PROMOTIONS = "promotions"
         private const val PRODUCTS = "products"
         private const val ACTION_FIELD = "actionField"
@@ -175,6 +202,7 @@ abstract class BaseTrackerConst {
         private const val KEY_DIMENSION_83 = "dimension83"
         private const val KEY_DIMENSION_84 = "dimension84"
         private const val KEY_DIMENSION_96 = "dimension96"
+        private const val KEY_DIMENSION_125 = "dimension125"
 
         fun getEcommercePromoView(promotions: List<Promotion>): Map<String, Any> {
             return DataLayer.mapOf(
@@ -293,12 +321,7 @@ abstract class BaseTrackerConst {
             map[KEY_VARIANT] = if(product.variant.isNotBlank()) product.variant else NONE
             map[KEY_PRICE] = product.productPrice
             map[KEY_CATEGORY] = if(product.category.isNotBlank()) product.category else NONE
-            map[KEY_CATEGORY_ID] = if(product.categoryId.isNotBlank()) product.categoryId else NONE
-            map[KEY_SHOP_ID] = if(product.shopId.isNotBlank()) product.shopId else NONE
-            map[KEY_SHOP_NAME] = if(product.shopName.isNotBlank()) product.shopId else NONE
-            map[KEY_SHOP_TYPE] = if(product.shopType.isNotBlank()) product.shopType else NONE
             map[KEY_POSITION] = product.productPosition
-            map[KEY_DIMENSION_83] = checkBebasOngkir(product)
             map[KEY_DIMENSION_40] = buildCustomList?.invoke(product) ?: if(list.isEmpty()) setNewList(product, list) else list
             if(product.clusterId != -1) map[KEY_DIMENSION_11] = product.clusterId.toString()
             if (product.channelId.isNotEmpty()) map[KEY_DIMENSION_84] = product.channelId else NONE
@@ -310,6 +333,14 @@ abstract class BaseTrackerConst {
             if(product.cartId.isNotEmpty()) map[KEY_DIMENSION_81] = ""
             if(product.cartId.isNotEmpty()) map[KEY_DIMENSION_82] = NONE
             if(product.quantity.isNotEmpty()) map[KEY_QUANTITY] = product.quantity
+            if(product.wishlistId.isNotEmpty()) map[KEY_DIMENSION_125] = product.wishlistId
+            else {
+                map[KEY_CATEGORY_ID] = if(product.categoryId.isNotBlank()) product.categoryId else NONE
+                map[KEY_SHOP_ID] = if(product.shopId.isNotBlank()) product.shopId else NONE
+                map[KEY_SHOP_NAME] = if(product.shopName.isNotBlank()) product.shopId else NONE
+                map[KEY_SHOP_TYPE] = if(product.shopType.isNotBlank()) product.shopType else NONE
+                map[KEY_DIMENSION_83] = checkBebasOngkir(product)
+            }
             return map
         }
 

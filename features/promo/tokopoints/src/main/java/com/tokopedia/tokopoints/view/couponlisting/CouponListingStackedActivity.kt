@@ -132,7 +132,9 @@ class CouponListingStackedActivity : BaseSimpleActivity(), StackedCouponActivity
             mPresenter.getFilter()
         } else if ((requestCode == REQUEST_CODE_STACKED_IN_ADAPTER || requestCode == REQUEST_CODE_STACKED_ADAPTER) && resultCode == Activity.RESULT_OK) {
             val fragemnt = mAdapter?.getRegisteredFragment(view_pager_sort_type.currentItem)
-            fragemnt?.onActivityResult(requestCode, resultCode, data)
+            data?.let {
+                fragemnt?.onActivityResult(requestCode, resultCode, it)
+            }
         } else {
             finish()
         }

@@ -2,6 +2,7 @@ package com.tokopedia.homenav.view.activity
 
 import android.content.res.TypedArray
 import android.os.Bundle
+import android.view.View
 import android.widget.FrameLayout
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.Navigation
@@ -10,15 +11,17 @@ import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceCallback
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.applink.internal.ApplinkConsInternalNavigation
+import com.tokopedia.discovery.common.utils.toDpInt
 import com.tokopedia.homenav.R
 import com.tokopedia.homenav.mainnav.view.fragment.MainNavFragmentArgs
 import com.tokopedia.searchbar.navigation_component.NavToolbar
-import kotlinx.android.synthetic.main.activity_main_nav.*
+import com.tokopedia.utils.resources.isDarkMode
 
 class HomeNavActivity: AppCompatActivity(), HomeNavPerformanceInterface {
 
     private var pageSource: String = ""
-
+    private var toolbar: NavToolbar? = null
+    private var fragmentContainer: View? = null
     private val navPerformanceMonitoring = PerformanceMonitoring()
     private val navPerformanceCallback = PageLoadTimePerformanceCallback(
             NAV_PAGE_PERFORMANCE_MONITORING_PREPARE_METRICS,
@@ -49,7 +52,11 @@ class HomeNavActivity: AppCompatActivity(), HomeNavPerformanceInterface {
         pageSource = intent.getStringExtra(ApplinkConsInternalNavigation.PARAM_PAGE_SOURCE)?:""
         findViewById<NavToolbar>(R.id.toolbar)?.let {
             it.setToolbarTitle(getString(R.string.title_main_nav))
-            it.setupToolbarWithStatusBar(this, NavToolbar.Companion.StatusBar.STATUS_BAR_LIGHT, true)
+            it.setupToolbarWithStatusBar(
+                this,
+                if (applicationContext.isDarkMode()) NavToolbar.Companion.StatusBar.STATUS_BAR_DARK else NavToolbar.Companion.StatusBar.STATUS_BAR_LIGHT,
+                true
+            )
             it.setShowShadowEnabled(true)
         }
         setupNavigation()
@@ -65,8 +72,9 @@ class HomeNavActivity: AppCompatActivity(), HomeNavPerformanceInterface {
     }
 
     private fun setupNavigation() {
+        toolbar = findViewById(R.id.toolbar)
         val navController = findNavController(R.id.fragment_container)
-        toolbar.setOnBackButtonClickListener {
+        toolbar?.setOnBackButtonClickListener {
             navController.navigateUp()
         }
         navController.setGraph(R.navigation.nav_graph,
@@ -74,23 +82,24 @@ class HomeNavActivity: AppCompatActivity(), HomeNavPerformanceInterface {
     }
 
     private fun setupView() {
+        fragmentContainer = findViewById(R.id.fragment_container)
         try {
             val styledAttributes: TypedArray = getTheme().obtainStyledAttributes(intArrayOf(android.R.attr.actionBarSize))
             val mActionBarSize = styledAttributes.getDimension(0, 0f).toInt()
             styledAttributes.recycle()
 
-            val layoutParams = fragment_container.view?.layoutParams as FrameLayout.LayoutParams
+            val layoutParams = fragmentContainer?.layoutParams as FrameLayout.LayoutParams
             layoutParams.setMargins(
                     layoutParams.leftMargin,
-                    resources.getDimensionPixelOffset(R.dimen.dp_16) + mActionBarSize,
+                    16f.toDpInt() + mActionBarSize,
                     layoutParams.rightMargin,
                     layoutParams.bottomMargin
             )
         } catch (e: Exception) {
-            val layoutParams = fragment_container.view?.layoutParams as FrameLayout.LayoutParams
+            val layoutParams = fragmentContainer?.layoutParams as FrameLayout.LayoutParams
             layoutParams.setMargins(
                     layoutParams.leftMargin,
-                    resources.getDimensionPixelOffset(R.dimen.dp_200),
+                    200f.toDpInt(),
                     layoutParams.rightMargin,
                     layoutParams.bottomMargin
             )

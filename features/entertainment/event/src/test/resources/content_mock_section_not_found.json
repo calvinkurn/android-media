@@ -1,0 +1,53 @@
+{
+  "event_content_by_id": {
+    "data": {
+      "title": "",
+      "meta_description": "",
+      "meta_title": "",
+      "meta_index": 0,
+      "meta_follow": 0,
+      "section_data": [
+        {
+          "priority": 1,
+          "section": "Informasi Pentin",
+          "content": [
+            {
+              "id": "141",
+              "content_section_id": "98",
+              "priority": 1,
+              "content_type_id": 5,
+              "value_image": {
+                "url": "",
+                "redirect_url": ""
+              },
+              "value_header_image": {
+                "header_text": "",
+                "columns": [],
+                "footer_text": ""
+              },
+              "value_accordion": [
+                {
+                  "title": "Cara Pengunaan",
+                  "content": "Anda akan menerima email konfirmasi dan voucher sesaat setelah pemesanan..\n\nTest 123 click "
+                },
+                {
+                  "title": "Syarat & ketentuan",
+                  "content": "Anda akan menerima email konfirmasi dan voucher sesaat setelah pemesanan..\n\nTest 123 click "
+                },
+                {
+                  "title": "Kebijakan Pembatalan",
+                  "content": "Anda akan menerima email konfirmasi dan voucher sesaat setelah pemesanan..\n\nTest 123 click "
+                }
+              ],
+              "value_text": "",
+              "value_label_bullet": [],
+              "value_image_bullet": [],
+              "value_carousel": [],
+              "value_bullet_list": []
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

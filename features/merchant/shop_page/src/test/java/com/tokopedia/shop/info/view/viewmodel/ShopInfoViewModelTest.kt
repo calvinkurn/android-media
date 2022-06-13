@@ -4,7 +4,7 @@ import com.tokopedia.shop.common.data.model.ShopInfoData
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopBadge
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.shop.common.graphql.data.shopnote.ShopNoteModel
-import com.tokopedia.shop.note.view.model.ShopNoteUiModel
+import com.tokopedia.shop_widget.note.view.model.ShopNoteUiModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import io.mockk.coEvery
@@ -135,6 +135,14 @@ class ShopInfoViewModelTest: ShopInfoViewModelTestFixture() {
         assert(viewModel.shopBadgeReputation.value is Fail)
     }
 
+    @Test
+    fun `check whether userId should return mocked value`() {
+        val mockUserId = "753348464"
+        onGetUserId_thenReturn(mockUserId)
+        val userId =  viewModel.userId()
+        assert(userId == mockUserId)
+    }
+
     //region stub
     private suspend fun onGetShopInfo_thenReturn(shopInfo: ShopInfo) {
         coEvery { getShopInfoUseCase.executeOnBackground() } returns shopInfo
@@ -162,6 +170,10 @@ class ShopInfoViewModelTest: ShopInfoViewModelTestFixture() {
 
     private fun onGetShopId_thenReturn(shopId: String) {
         every { userSessionInterface.shopId } returns shopId
+    }
+
+    private fun onGetUserId_thenReturn(userId: String) {
+        every { userSessionInterface.userId } returns userId
     }
     //endregion
 
@@ -227,7 +239,11 @@ class ShopInfoViewModelTest: ShopInfoViewModelTestFixture() {
                 goldOS.isGold,
                 createdInfo.openSince,
                 emptyList(),
-                shopSnippetUrl
+                shopSnippetUrl,
+                isGoApotik,
+                epharmacyInfo.siaNumber,
+                epharmacyInfo.sipaNumber,
+                epharmacyInfo.apj
         )
     }
 

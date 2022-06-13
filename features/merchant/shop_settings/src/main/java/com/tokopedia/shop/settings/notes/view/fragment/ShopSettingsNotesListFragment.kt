@@ -91,9 +91,6 @@ class ShopSettingsNotesListFragment : BaseListFragment<ShopNoteUiModel, ShopNote
     override fun onCreate(savedInstanceState: Bundle?) {
         setHasOptionsMenu(true)
         super.onCreate(savedInstanceState)
-        context?.let {
-            GraphqlClient.init(it)
-        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -226,7 +223,7 @@ class ShopSettingsNotesListFragment : BaseListFragment<ShopNoteUiModel, ShopNote
                     activity?.let { it ->
                         DialogUnify(it, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE).apply {
                             setTitle(getString(R.string.title_dialog_delete_shop_note))
-                            setDescription(getString(R.string.desc_dialog_delete_shop_note, text))
+                            setDescription(getString(R.string.desc_dialog_delete_shop_note, shopNoteUiModel.title))
                             setPrimaryCTAText(getString(R.string.action_delete))
                             setSecondaryCTAText(getString(com.tokopedia.resources.common.R.string.general_label_cancel))
                             setPrimaryCTAClickListener {

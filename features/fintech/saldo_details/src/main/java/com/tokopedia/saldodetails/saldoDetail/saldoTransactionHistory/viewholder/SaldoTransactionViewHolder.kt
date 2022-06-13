@@ -9,7 +9,6 @@ import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.saldodetails.R
 import com.tokopedia.saldodetails.commom.utils.SaldoDateUtil.DATE_PATTERN_FOR_UI
 import com.tokopedia.saldodetails.commom.utils.SaldoDateUtil.DATE_PATTERN_FROM_SERVER
-import com.tokopedia.saldodetails.commom.utils.SaldoRollence
 import com.tokopedia.saldodetails.saldoDetail.saldoTransactionHistory.domain.data.DepositHistoryList
 import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifyprinciples.Typography
@@ -30,7 +29,6 @@ class SaldoTransactionViewHolder(itemView: View, val onClick: (Visitable<*>) -> 
 
     override fun bind(element: DepositHistoryList) {
         val context = itemView.context
-        val isSaldoRollenceEnabled = SaldoRollence.isSaldoRevampEnabled()
         tvTitle.text = element.typeDescription
         tvNote.text = element.note
         if (element.amount > 0) {
@@ -51,14 +49,14 @@ class SaldoTransactionViewHolder(itemView: View, val onClick: (Visitable<*>) -> 
             DATE_PATTERN_FOR_UI,
             element.createTime,
         )
-        if(!element.withdrawalStatusString.isNullOrEmpty() && isSaldoRollenceEnabled){
+        if(!element.withdrawalStatusString.isNullOrEmpty()){
             labelTransactionStatus.visible()
             labelTransactionStatus.text = element.withdrawalStatusString
             labelTransactionStatus.setLabelType(getLocalLabelColor(element.withdrawalStatusColor))
         } else {
             labelTransactionStatus.gone()
         }
-        if(element.haveDetail && isSaldoRollenceEnabled){
+        if(element.haveDetail){
             itemView.setOnClickListener { openDetailPage(element) }
             iconNext.visible()
         } else{

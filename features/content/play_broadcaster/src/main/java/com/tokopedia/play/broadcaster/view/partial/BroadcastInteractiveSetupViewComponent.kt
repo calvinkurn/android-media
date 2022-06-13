@@ -184,7 +184,7 @@ class BroadcastInteractiveSetupViewComponent(
 
     override fun show() {
         super.show()
-        if (!isPickerSheetVisible()) setFocusOnEditTextTitle()
+        if (!isPickerSheetVisible()) showKeyboard(true)
     }
 
     private fun setupLabelGuideline(showPickerSheet: Boolean) {
@@ -216,7 +216,6 @@ class BroadcastInteractiveSetupViewComponent(
     }
 
     private fun setFocusOnEditTextTitle() {
-        showKeyboard(true)
         editTextTitle.apply {
             isFocusable = true
             isFocusableInTouchMode = true
@@ -237,6 +236,7 @@ class BroadcastInteractiveSetupViewComponent(
 
     private fun showSetupTitleLayout() {
         setFocusOnEditTextTitle()
+        showKeyboard(true)
         showPickerSheet(false)
         setupLabelGuideline(false)
     }

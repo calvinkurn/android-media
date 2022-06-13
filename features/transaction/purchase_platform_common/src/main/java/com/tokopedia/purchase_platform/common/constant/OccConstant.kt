@@ -4,4 +4,5 @@ object OccConstant {
     const val SOURCE = "source"
     const val SOURCE_PDP = "pdp"
     const val SOURCE_MINICART = "minicart"
+    const val SOURCE_FINTECH = "fintech"
 }

@@ -3,6 +3,8 @@ package com.tokopedia.search.utils
 import android.content.Context
 import android.os.Build
 import com.google.gson.Gson
+import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.DEFAULT_VALUE_OF_ORIGIN_FILTER_FROM_FILTER_PAGE
+import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.ORIGIN_FILTER
 import com.tokopedia.filter.common.data.DataValue
 import com.tokopedia.filter.common.data.DynamicFilterModel
 import com.tokopedia.kotlin.extensions.view.dpToPx
@@ -27,12 +29,17 @@ internal fun applyQuickFilterElevation(context: Context?, sortFilter: SortFilter
     }
 }
 
-internal fun createSearchProductDefaultFilter() = Gson().fromJson(createSearchProductDefaultFilterJSON(), DynamicFilterModel::class.java)
-internal fun createSearchProductDefaultQuickFilter() = Gson().fromJson(createSearchProductDefaultQuickFilterJSON(), DataValue::class.java)
+internal fun Map<String, String>.addFilterOrigin(): Map<String, String> =
+    toMutableMap().also {
+        it[ORIGIN_FILTER] = DEFAULT_VALUE_OF_ORIGIN_FILTER_FROM_FILTER_PAGE
+    }
 
-internal fun createSearchShopDefaultQuickFilter() = Gson().fromJson(createSearchShopDefaultQuickFilterJSON(), DataValue::class.java)
+internal fun createSearchProductDefaultFilter() = Gson().fromJson(SEARCH_PRODUCT_DEFAULT_FILTER_JSON, DynamicFilterModel::class.java)
+internal fun createSearchProductDefaultQuickFilter() = Gson().fromJson(SEARCH_PRODUCT_DEFAULT_QUICK_FILTER_JSON, DataValue::class.java)
 
-private fun createSearchProductDefaultFilterJSON() =
+internal fun createSearchShopDefaultQuickFilter() = Gson().fromJson(SEARCH_SHOP_DEFAULT_QUICK_FILTER_JSON, DataValue::class.java)
+
+private const val SEARCH_PRODUCT_DEFAULT_FILTER_JSON =
         """
             {
               "data": {
@@ -279,7 +286,7 @@ private fun createSearchProductDefaultFilterJSON() =
             }
         """
 
-private fun createSearchProductDefaultQuickFilterJSON() =
+private const val SEARCH_PRODUCT_DEFAULT_QUICK_FILTER_JSON =
         """
         {
             "filter": [
@@ -363,7 +370,7 @@ private fun createSearchProductDefaultQuickFilterJSON() =
         }
         """
 
-private fun createSearchShopDefaultQuickFilterJSON() =
+private const val SEARCH_SHOP_DEFAULT_QUICK_FILTER_JSON =
         """
     {
         "filter": [

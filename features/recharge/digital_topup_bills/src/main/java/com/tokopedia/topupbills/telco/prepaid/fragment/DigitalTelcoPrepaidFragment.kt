@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.ViewTreeObserver
 import android.widget.LinearLayout
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
@@ -70,7 +71,7 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
     private lateinit var buyWidget: TopupBillsCheckoutWidget
     private lateinit var sharedModelPrepaid: SharedTelcoPrepaidViewModel
     private lateinit var telcoTabViewModel: TelcoTabViewModel
-    private lateinit var loadingShimmering: LinearLayout
+    private lateinit var loadingShimmering: ConstraintLayout
     private lateinit var viewPager: ViewPager2
     private lateinit var tabLayout: TabsUnify
     private lateinit var separator: View
@@ -88,6 +89,8 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
     private var showProducts = false
     private val favNumberList = mutableListOf<TopupBillsFavNumberItem>()
     private val seamlessFavNumberList = mutableListOf<TopupBillsSeamlessFavNumberItem>()
+
+    private var dynamicSpacerHeightRes = R.dimen.telco_dynamic_banner_space
 
     private val viewModelFragmentProvider by lazy { ViewModelProvider(this, viewModelFactory) }
 
@@ -179,8 +182,9 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
 
     private fun showDynamicSpacer() {
         dynamicSpacer.layoutParams.height =
-                context?.resources?.getDimensionPixelSize(R.dimen.telco_dynamic_banner_space)
-                        ?: DEFAULT_SPACE_HEIGHT
+            context?.resources?.getDimensionPixelSize(dynamicSpacerHeightRes)
+                ?: DEFAULT_SPACE_HEIGHT
+
         dynamicSpacer.requestLayout()
     }
 
@@ -426,6 +430,7 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
                     this.operatorData.rechargeCatalogPrefixSelect.prefixes.single {
                         telcoClientNumberWidget.getInputNumber().startsWith(it.value)
                     }
+                operatorName = selectedOperator.operator.attributes.name
 
                 /* validate phone number */
                 val isInputValid = validatePhoneNumber(operatorData, telcoClientNumberWidget)
@@ -469,7 +474,6 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
         actionTypeTrackingJob?.cancel()
         actionTypeTrackingJob = lifecycleScope.launch {
             delay(INPUT_ACTION_TRACKING_DELAY)
-            operatorName = selectedOperator.operator.attributes.name
             when (inputNumberActionType) {
                 InputNumberActionType.MANUAL -> {
                     topupAnalytics.eventInputNumberManual(categoryId, operatorName)
@@ -558,8 +562,17 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
             }
         }
 
-        override fun onClickAutoComplete() {
+        override fun onClickAutoComplete(isFavoriteContact: Boolean) {
             inputNumberActionType = InputNumberActionType.AUTOCOMPLETE
+            if (isFavoriteContact) {
+                topupAnalytics.clickFavoriteContactAutoComplete(
+                    categoryId, operatorName, userSession.userId
+                )
+            } else {
+                topupAnalytics.clickFavoriteNumberAutoComplete(
+                    categoryId, operatorName, userSession.userId
+                )
+            }
         }
     }
 
@@ -735,6 +748,8 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
                 setAutoCompleteList(favNumbers)
                 setFavoriteNumber(favNumbers)
                 showOnBoarding()
+
+                dynamicSpacerHeightRes = R.dimen.telco_dynamic_banner_space_extended
             }
         }
     }

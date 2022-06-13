@@ -2,8 +2,8 @@ package com.tokopedia.test.application.environment.network;
 
 import android.content.Context;
 
-import com.tokopedia.authentication.AuthHelper;
-import com.tokopedia.authentication.AuthKey;
+import com.tokopedia.network.authentication.AuthHelper;
+import com.tokopedia.network.authentication.AuthKey;
 import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.network.interceptor.TkpdBaseInterceptor;
 import com.tokopedia.network.refreshtoken.AccessTokenRefresh;

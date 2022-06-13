@@ -1,6 +1,7 @@
 package com.tokopedia.kol.feature.post.view.adapter.viewholder
 
 import android.view.View
+import com.tokopedia.feedcomponent.view.adapter.viewholder.post.DynamicPostUIViewHolder
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.DynamicPostViewHolder
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.grid.GridPostAdapter
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.image.ImagePostViewHolder
@@ -16,7 +17,7 @@ import com.tokopedia.user.session.UserSessionInterface
  * @author by nisie on 26/03/19.
  */
 class KolPostDetailViewHolder(private val kolView: View,
-                              listener: DynamicPostListener,
+                              listener: DynamicPostViewHolder.DynamicPostListener,
                               cardTitleListener: CardTitleView.CardTitleListener,
                               imagePostListener: ImagePostViewHolder.ImagePostListener,
                               youtubePostListener: YoutubeViewHolder.YoutubePostListener,
@@ -25,7 +26,7 @@ class KolPostDetailViewHolder(private val kolView: View,
                               videoViewListener: VideoViewHolder.VideoViewListener,
                               feedMultipleImageViewListener: FeedMultipleImageView.FeedMultipleImageViewListener,
                               userSession : UserSessionInterface) :
-        DynamicPostViewHolder(kolView, listener, cardTitleListener,
+        DynamicPostUIViewHolder(kolView, listener, cardTitleListener,
                 imagePostListener, youtubePostListener, pollOptionListener, gridItemListener,
                 videoViewListener, feedMultipleImageViewListener, userSession) {
 

@@ -6,9 +6,9 @@
             android:name="com.tokopedia.kategori.view.activity.CategoryBrowseActivity"
             android:label="@string/label_kategori"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.White"
-            android:windowSoftInputMode="adjustResize">
-
+            android:theme="@style/Theme.AppCompat.DayNight.NoActionBar"
+            android:windowSoftInputMode="adjustResize"
+            android:exported="false">
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
 
@@ -18,9 +18,7 @@
                 <data
                     android:host="@string/host_belanja_kategori"
                     android:scheme="@string/internal_scheme" />
-
             </intent-filter>
-
         </activity>
     </application>
 </manifest>

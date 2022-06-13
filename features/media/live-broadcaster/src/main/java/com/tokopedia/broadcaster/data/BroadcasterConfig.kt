@@ -1,43 +1,29 @@
 package com.tokopedia.broadcaster.data
 
+import com.tokopedia.broadcaster.mediator.LivePusherConfig
 import com.wmspanel.libstream.AudioConfig
 import com.wmspanel.libstream.Streamer
 
-enum class AudioType(val status: String) {
-    MIC("MIC"),
-    PCM("PCM"),
-}
-
-enum class BitrateMode(val status: String) {
-    LadderAscend("LadderAscend"),
-    LogarithmicDescend("LogarithmicDescend"),
-}
-
 data class BroadcasterConfig(
-    var ingestUrl: String = "",
-    var videoWidth: Int = 1280,
-    var videoHeight: Int = 720,
-    var fps: Float = 30.0f,
-    var videoBitrate: Int = 2000 * 1000, // Kbps -> bps
-    var audioRate: Int = 44100, // 44.1kHz
-    var audioChannelCount: Int = 1,
-    var audioSource: Int = 5,
-    var audioType: AudioType = AudioType.MIC, // we have MIC and PCM
-    var maxRetry: Int = 3,
-    var reconnectDelay: Int = 3000,
-    var bitrateMode: BitrateMode = BitrateMode.LadderAscend
-) {
+    override var videoWidth: Int = 1280,
+    override var videoHeight: Int = 720,
+    override var fps: Float = 30.0f,
+    override var videoBitrate: Int = 2000 * 1000, // Kbps -> bps
+    override var audioRate: Int = 44100, // 44.1kHz
+    override var audioChannelCount: Int = 1,
+    override var audioSource: Int = 5,
+    override var audioType: AudioType = AudioType.MIC, // we have MIC and PCM
+    override var maxRetry: Int = 3,
+    override var reconnectDelay: Int = 3000,
+    override var bitrateMode: BitrateMode = BitrateMode.LadderAscend,
+    override var netTrackerInterval: Int = 5000
+) : LivePusherConfig {
 
-    val audioBitrate: Int = AudioConfig.calcBitRate(
+    override val audioBitrate: Int = AudioConfig.calcBitRate(
         audioRate,
         audioChannelCount,
         AudioConfig.AAC_PROFILE
     )
-
-    fun ingestUrl(value: String) = apply {
-        ingestUrl = value
-        return this
-    }
 
     fun videoSize(width: Int, height: Int) = apply {
         videoWidth = width

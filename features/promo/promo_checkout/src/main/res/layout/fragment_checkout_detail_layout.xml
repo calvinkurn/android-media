@@ -5,7 +5,7 @@
     android:id="@+id/parent_container"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/Unify_N0"
+    android:background="@color/Unify_Background"
     android:orientation="vertical"
     app:elevation="@dimen/layout_lvl0">
 
@@ -78,7 +78,7 @@
                     app:typographyType="body_2"
                     app:typographyWeight="bold" />
 
-                <WebView
+                <com.tokopedia.webview.TkpdWebView
                     android:id="@+id/webviewTnc"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"

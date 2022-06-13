@@ -18,18 +18,10 @@
     <string name="toko_cash_pending_body">Anda mendapatkan cashback TokoCash sebesar %s dari transaksi terakhir</string>
     <string name="digital_widget_title">Produk Digital</string>
     <string name="official_store">Official Store</string>
-    <string name="home_header_tokopoint_unable_to_load_label">Gagal Memuat</string>
-    <string name="home_header_tokopoint_no_coupons">Cari Kupon</string>
-    <string name="home_header_tokopoint_no_tokopoints">TokoPoints</string>
-    <string name="home_header_tokopoint_refresh_label">Coba Lagi</string>
-    <string name="home_header_tokopoint_bebasongkir">Bebas Ongkir</string>
     <string name="home_header_tokocash_unable_to_load_label">Gagal Memuat</string>
     <string name="home_header_tokocash_refresh_label">Coba Lagi</string>
-    <string name="hampir_habis">Hampir Habis</string>
-    <string name="home_header_fintech_scan">Scan</string>
     <string name="home_header_fintech_points_new">%1$s Points</string>
     <string name="home_header_topup_ovo"><b>Top-up OVO</b></string>
-    <string name="home_header_fintech_cek_sekarang">Cek Sekarang</string>
 
     <string name="sc_notif_desc">Tak ada yang terlewat, semua notifikasi ada di sini. </string>
     
@@ -57,24 +49,12 @@
     <string name="home_recommendation_empty_title">Tidak ada hasil</string>
     <string name="home_recommendation_empty_description">Produk tidak ada untuk kategori ini</string>
 
-    <string name="go_to_wishlist" tools:ignore="ExtraTranslation">Lihat Wishlist</string>
-
     <string name="review_create_success_toaster">Terima kasih, %s. Ulasanmu akan membantu penjual &amp; calon pembeli lain!</string>
     <string name="review_oke">Oke</string>
 
     <string name="content_desc_see_all_button">text lihat semua</string>
 
     <string name="home_page_retry_dynamic_channel">Coba Lagi</string>
-
-    <string name="onboarding_navigation_title">Wow, ada yang baru di Toped!</string>
-    <string name="onboarding_navigation_description">Ayo kenalan dengan tampilan &#38; navigasi baru untuk menjelajahi aplikasi Tokopedia!</string>
-    <string name="onboarding_navigation_button">Yuk, Kenalan!</string>
-
-    <string name="onboarding_coachmark_title">Yuhuu~ ini Menu Utama kamu 👋</string>
-    <string name="onboarding_coachmark_description">Kamu bisa lihat Akun, Semua Kategori, cek Wishlist &#38; Daftar Transaksi di sini, ya!</string>
-
-    <string name="onboarding_coachmark_inbox_title">Temukan Inbox &amp; Notifikasi di sini!</string>
-    <string name="onboarding_coachmark_inbox_description">Sekarang kamu bisa cek chat, diskusi &amp; notifikasi dengan lebih mudah di halaman ini.</string>
 
     <string name="onboarding_coachmark_wallet_title">Kenalan sama TokoPoints, yuk! </string>
 
@@ -87,7 +67,7 @@
     <string name="home_gopay_new_active_cta_coachmark_title">TokoPoints kini jadi GoPay Coins ✨</string>
     <string name="home_gopay_new_active_cta_coachmark_description">Points-mu aman, kok. Sambungin akun Gojek &amp; Tokopedia buat pakai GoPay &amp; GoPay Coins!</string>
 
-    <string name="home_gopay_new_coachmark_title">Kamu bisa pakai GoPay  GoPay Coins</string>
+    <string name="home_gopay_new_coachmark_title">Kamu bisa pakai GoPay &amp; GoPay Coins</string>
     <string name="home_gopay_new_coachmark_description">Cek saldomu di sini! Kalau kamu punya TokoPoints, semuanya udah diubah ke GoPay Coins.</string>
 
     <string name="home_tokonow_coachmark_title">Belanja kebutuhan harian, 2 jam tiba dan gratis ongkir 🚀</string>
@@ -99,10 +79,7 @@
     <string name="error_state_atf_localload_title">Bagian ini gagal ditampilkan</string>
     <string name="error_state_atf_localload_description">Klik ikon sebelah untuk coba lagi</string>
 
-    <string name="content_desc_image_scan">Scan QR Code</string>
-    <string name="content_desc_tokocash">Tokocash</string>
     <string name="content_desc_tokopoint">Tokopoint</string>
-    <string name="content_desc_free_ongkir">Bebas Ongkir</string>
     <string name="content_desc_error_state_icon">Image error</string>
     <string name="content_desc_error_state_channel">Content error</string>
     <string name="content_desc_home_background">Home background</string>
@@ -120,7 +97,6 @@
 
     <string name="popular_keyword_error_title">Bagian ini gagal ditampilkan</string>
     <string name="sprint_card_item">Sprint Card Item</string>
-    <string name="sprint_product_item">Sprint Product Item</string>
 
     <string name="tag_home_nav_toolbar">home_navigation_toolbar</string>
     <string name="tag_balance_widget">drawerItemType %s</string>

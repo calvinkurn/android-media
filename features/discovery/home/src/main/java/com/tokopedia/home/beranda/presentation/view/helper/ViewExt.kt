@@ -26,3 +26,11 @@ fun View.setSafeOnClickListener(onSafeClick: (View) -> Unit) {
 fun String.isHexColor(): Boolean {
     return HexValidator.validate(this)
 }
+
+fun View.getPositionWidgetVertical(): Int {
+    val originalPosition = intArrayOf(0,0)
+    this.getLocationInWindow(originalPosition)
+    return if (originalPosition.size > 1)
+        originalPosition[1]
+    else 0
+}

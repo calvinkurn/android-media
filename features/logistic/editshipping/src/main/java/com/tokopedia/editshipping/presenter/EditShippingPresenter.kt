@@ -1,6 +1,7 @@
 package com.tokopedia.editshipping.presenter
 
 import android.os.Bundle
+import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.editshipping.domain.model.editshipping.EditShippingCouriers
 import com.tokopedia.editshipping.domain.model.editshipping.ProvinceCitiesDistrict
 import com.tokopedia.editshipping.domain.model.editshipping.ShopShipping
@@ -63,6 +64,8 @@ interface EditShippingPresenter {
     fun onViewDestroyed()
 
     fun setSavedInstance(savedInstance: Bundle?)
+
+    fun setSavedInstance(cacheManager: SaveInstanceCacheManager?)
 
     fun passShippingData(): OpenShopData?
 

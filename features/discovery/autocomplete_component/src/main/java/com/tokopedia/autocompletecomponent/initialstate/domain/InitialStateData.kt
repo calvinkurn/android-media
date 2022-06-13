@@ -15,6 +15,9 @@ data class InitialStateData(
         @SerializedName("label_action")
         val labelAction: String = "",
 
+        @SerializedName("tracking_option")
+        val trackingOption: Int = 0,
+
         @SerializedName("items")
         val items: List<InitialStateItem> = listOf()
 ) {

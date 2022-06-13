@@ -9,6 +9,7 @@ import com.tokopedia.flight.common.di.module.FlightModule
 import com.tokopedia.flight.common.di.scope.FlightScope
 import com.tokopedia.flight.common.domain.FlightRepository
 import com.tokopedia.flight.common.view.BaseFlightActivity
+import com.tokopedia.flight.resend_eticket.presentation.bottomsheet.FlightOrderResendEmailBottomSheet
 import com.tokopedia.flight.search.data.FlightRouteDao
 import com.tokopedia.flight.search.data.cache.db.dao.FlightComboDao
 import com.tokopedia.flight.search.data.cache.db.dao.FlightJourneyDao
@@ -21,8 +22,10 @@ import dagger.Component
  * @author by furqan on 09/06/2021
  */
 @FlightScope
-@Component(modules = [FlightModule::class],
-        dependencies = [BaseAppComponent::class])
+@Component(
+    modules = [FlightModule::class],
+    dependencies = [BaseAppComponent::class]
+)
 interface FlightComponent {
     @ApplicationContext
     fun context(): Context

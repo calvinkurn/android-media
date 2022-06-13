@@ -16,6 +16,7 @@ buildscript {
 
 dependencies {
     implementation projectOrAar(rootProject.ext.features.resourcesCommon)
+    implementation projectOrAar(rootProject.ext.libraries.tkpddesign)
     implementation projectOrAar(rootProject.ext.libraries.tkpdabstraction)
     implementation projectOrAar(rootProject.ext.libraries.track)
     implementation projectOrAar(rootProject.ext.libraries.kotlinExtensions)
@@ -23,19 +24,17 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.webview)
     implementation projectOrAar(rootProject.ext.libraries.utils)
 
-
     implementation rootProject.ext.unifyDependencies.principles
     implementation rootProject.ext.unifyDependencies.components
     implementation rootProject.ext.unifyDependencies.icons
     implementation rootProject.ext.unifyDependencies.global_error
-    implementation rootProject.ext.tkpdInternalLibDependencies.usersession
+    implementation projectOrAar(rootProject.ext.libraries.usersession)
     implementation rootProject.ext.tkpdInternalLibDependencies.cachemanager
     implementation projectOrAar(rootProject.ext.libraries.graphql)
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
 
     implementation rootProject.ext.supportLibDependencies.constraintLayout
     implementation rootProject.ext.miscDependencies.multiDex
-    implementation rootProject.ext.miscDependencies.loaderviewlibrary
     implementation rootProject.ext.miscDependencies.roundCornerProgressBar
     kapt rootProject.ext.miscDependencies.daggerCompiler
     implementation rootProject.ext.miscDependencies.coroutineCore
@@ -59,3 +58,5 @@ project.ext {
 }
 
 apply from: '../../publish_local.gradle'
+apply from: '../../jacoco_task.gradle'
+apply from: '../../sonar_config.gradle'

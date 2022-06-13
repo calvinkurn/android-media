@@ -1,9 +1,10 @@
 package com.tokopedia.sellerhome.domain.usecase
 
-import com.tokopedia.abstraction.common.network.exception.MessageErrorException
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
+import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.sellerhome.domain.gqlquery.GqlGetShopInfo
 import com.tokopedia.sellerhome.domain.mapper.ShopInfoMapper
 import com.tokopedia.sellerhome.domain.model.GetShopInfoResponse
 import com.tokopedia.sellerhome.view.model.ShopInfoUiModel
@@ -19,7 +20,7 @@ class GetShopInfoUseCase(
 ) : BaseGqlUseCase<ShopInfoUiModel>() {
 
     override suspend fun executeOnBackground(): ShopInfoUiModel {
-        val gqlRequest = GraphqlRequest(QUERY, GetShopInfoResponse::class.java, params.parameters)
+        val gqlRequest = GraphqlRequest(GqlGetShopInfo, GetShopInfoResponse::class.java, params.parameters)
         val gqlResponse = gqlRepository.response(listOf(gqlRequest))
 
         val errors = gqlResponse.getError(GetShopInfoResponse::class.java)
@@ -40,14 +41,5 @@ class GetShopInfoUseCase(
                 putLong(USER_ID, userId.toLongOrZero())
             }
         }
-
-        const val QUERY = "query getShopInfoMoengage(\$userID: Int!) {\n" +
-                "  shopInfoMoengage(userID: \$userID) {\n" +
-                "    info {\n" +
-                "      shop_name\n" +
-                "      shop_avatar\n" +
-                "    }\n" +
-                "  }\n" +
-                "}"
     }
 }

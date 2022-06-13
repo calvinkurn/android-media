@@ -2,6 +2,7 @@ package com.tokopedia.review.common.analytics
 
 object ReviewTrackingConstant {
     const val VIEW_REVIEW = "viewReviewIris"
+    const val KEY_VIEW_ITEM = "view_item"
     const val VIEW_OVO_INCENTIVES_TICKER = "view - ovo incentives ticker"
     const val EVENT_CLICK_REVIEW = "clickReview"
     const val REVIEW_PAGE = "ulasan page"
@@ -18,13 +19,22 @@ object ReviewTrackingConstant {
     const val KEY_SCREEN_NAME = "screenName"
     const val KEY_USER_ID = "userId"
     const val KEY_PAGE_SOURCE = "pageSource"
+    const val KEY_ECOMMERCE = "ecommerce"
+    const val KEY_PROMO_VIEW = "promoView"
+    const val KEY_PROMOTIONS = "promotions"
     const val ACTION_CLICK = "click"
     const val CLICK_SMILEY = "$ACTION_CLICK - smiley"
 
     const val KEY_BUSINESS_UNIT = "businessUnit"
     const val KEY_CURRENT_SITE = "currentSite"
     const val KEY_PRODUCT_ID = "productId"
+    const val KEY_CREATIVE_NAME = "creative_name"
+    const val KEY_CREATIVE_SLOT = "creative_slot"
+    const val KEY_ITEM_ID = "item_id"
+    const val KEY_ITEM_NAME = "item_name"
 
     const val BUSINESS_UNIT = "product detail page"
     const val CURRENT_SITE = "tokopediamarketplace"
+
+    const val EVENT_PROMO_VIEW = "promoView"
 }

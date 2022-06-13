@@ -2,14 +2,14 @@ package com.tokopedia.play.broadcaster.util.preference
 
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
-import com.tokopedia.play.broadcaster.di.broadcast.PlayBroadcastScope
+import com.tokopedia.play.broadcaster.di.ActivityRetainedScope
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
 /**
  * Created by jegul on 09/07/20
  */
-@PlayBroadcastScope
+@ActivityRetainedScope
 class HydraSharedPreferences @Inject constructor(
         @ApplicationContext context: Context,
         private val userSession: UserSessionInterface

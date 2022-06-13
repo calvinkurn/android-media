@@ -12,6 +12,8 @@ import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import okhttp3.*
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.RequestBody.Companion.toRequestBody
 import org.json.JSONObject
 import retrofit2.Retrofit
 import java.util.*
@@ -72,7 +74,7 @@ class ApiService(private val context: Context) {
                     }
                     request.header(HEADER_DEVICE, HEADER_ANDROID + GlobalConfig.VERSION_NAME)
                     addUserAgent(request)
-                    request.method(original.method(), original.body())
+                    request.method(original.method, original.body)
                     val requestBuilder = request.build()
 
                     it.proceed(requestBuilder)
@@ -111,8 +113,8 @@ class ApiService(private val context: Context) {
 
         fun parse(data: String): RequestBody {
             val jsonObject = JSONObject(data).toString()
-            return RequestBody.create(okhttp3.MediaType.parse("application/json; charset=utf-8"),
-                    jsonObject)
+            return jsonObject
+                .toRequestBody("application/json; charset=utf-8".toMediaTypeOrNull())
         }
 
         fun getUserAgent(): String {

@@ -10,7 +10,8 @@ data class FragmentUiModel(
             var totalBenefit: Int = 0,
             var usedPromoCount: Int = 0,
             var exception: Throwable? = null,
-            var preAppliedPromoCode: List<String> = emptyList()
+            var preAppliedPromoCode: List<String> = emptyList(),
+            var defaultErrorMessage: String = ""
     )
 
     data class UiState(

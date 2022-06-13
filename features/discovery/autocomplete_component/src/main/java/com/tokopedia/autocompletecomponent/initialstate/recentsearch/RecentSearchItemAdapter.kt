@@ -3,11 +3,11 @@ package com.tokopedia.autocompletecomponent.initialstate.recentsearch
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.autocompletecomponent.R
 import com.tokopedia.autocompletecomponent.initialstate.BaseItemInitialStateSearch
-import com.tokopedia.autocompletecomponent.initialstate.InitialStateItemClickListener
 
-class RecentSearchItemAdapter(private val listener: InitialStateItemClickListener) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class RecentSearchItemAdapter(
+    private val listener: RecentSearchListener,
+) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     companion object{
         private const val TEMPLATE_ONE_LINE = "list_single_line"
@@ -32,13 +32,23 @@ class RecentSearchItemAdapter(private val listener: InitialStateItemClickListene
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return when(viewType){
             TYPE_TWO_LINE -> {
-                val itemView = LayoutInflater.from(parent.context)
-                        .inflate(R.layout.layout_autocomplete_double_line_item, parent, false)
+                val itemView = LayoutInflater
+                    .from(parent.context)
+                    .inflate(
+                        RecentSearchDoubleLineItemViewHolder.LAYOUT,
+                        parent,
+                        false
+                    )
                 RecentSearchDoubleLineItemViewHolder(itemView, listener)
             }
             else -> {
-                val itemView = LayoutInflater.from(parent.context)
-                        .inflate(R.layout.layout_autocomplete_single_line_item, parent, false)
+                val itemView = LayoutInflater
+                    .from(parent.context)
+                    .inflate(
+                        RecentSearchSingleLineItemViewHolder.LAYOUT,
+                        parent,
+                        false
+                    )
                 RecentSearchSingleLineItemViewHolder(itemView, listener)
             }
         }

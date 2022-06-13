@@ -37,7 +37,7 @@ import com.tokopedia.troubleshooter.notification.ui.uiview.UserSettingUIView.Com
 
 interface TroubleshootContract {
     fun removeTickers()
-    fun tickers(element: TickerItemUIView, status: StatusState)
+    fun tickers(element: TickerItemUIView)
     fun userSetting()
     fun deviceSetting()
     fun soundNotification()
@@ -94,7 +94,7 @@ class TroubleshootViewModel @Inject constructor(
         }
     }
 
-    override fun tickers(element: TickerItemUIView, status: StatusState) {
+    override fun tickers(element: TickerItemUIView) {
         if (_tickerItems.contains(element)) return
         _tickerItems.add(element)
     }
@@ -199,16 +199,19 @@ class TroubleshootViewModel @Inject constructor(
         })
     }
 
-    private fun notificationSetting(result: UserNotificationResponse): UserSettingUIView {
+    fun notificationSetting(result: UserNotificationResponse): UserSettingUIView {
         val userNotification = UserSettingUIView()
-        result.userSetting.settingSections.forEach { section ->
-            section?.listSettings?.forEach {
+        result.userSetting.settingSections
+            .filterNotNull()
+            .flatMap { it.listSettings }
+            .filterNotNull()
+            .map {
                 userNotification.notifications++
-                if (it?.status == true) {
+
+                if (it.status) {
                     userNotification.totalOn++
                 }
             }
-        }
         return userNotification
     }
 

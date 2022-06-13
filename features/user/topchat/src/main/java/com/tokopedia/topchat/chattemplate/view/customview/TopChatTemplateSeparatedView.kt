@@ -22,10 +22,9 @@ class TopChatTemplateSeparatedView @JvmOverloads constructor(
 
     private var view: View? = null
 
-    private var chatTemplateList: List<Visitable<Any>> = arrayListOf()
+    private var chatTemplateList: List<Visitable<*>> = arrayListOf()
     private var recyclerView: RecyclerView? = null
     private var adapter: TemplateChatAdapter? = null
-    private var listener: ChatTemplateListener? = null
 
     init {
         initViewLayout()
@@ -41,9 +40,7 @@ class TopChatTemplateSeparatedView @JvmOverloads constructor(
     }
 
     fun setupSeparatedChatTemplate(chatTemplateListener: ChatTemplateListener) {
-        listener = chatTemplateListener
-        adapter = TemplateChatAdapter(TemplateChatTypeFactoryImpl(listener))
-
+        adapter = TemplateChatAdapter(TemplateChatTypeFactoryImpl(chatTemplateListener))
         recyclerView?.setHasFixedSize(true)
         recyclerView?.layoutManager = LinearLayoutManager(
             view?.context, LinearLayoutManager.HORIZONTAL, false)
@@ -51,8 +48,8 @@ class TopChatTemplateSeparatedView @JvmOverloads constructor(
         adapter?.list?.clear()
     }
 
-    fun updateTemplate(chatTemplates: List<Visitable<Any>>) {
+    fun updateTemplate(chatTemplates: List<Visitable<*>>) {
         chatTemplateList = chatTemplates
-        adapter?.list = chatTemplates
+        adapter?.setList(chatTemplates)
     }
 }

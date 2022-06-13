@@ -28,7 +28,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/date"
         android:layout_alignParentRight="true"
-        app:cardBackgroundColor="@color/Unify_N0"
+        app:cardBackgroundColor="@color/Unify_Background"
         app:cardCornerRadius="@dimen/attached_image_corner_radius"
         app:cardElevation="@dimen/dp_topchat_0"
         app:cardPreventCornerOverlap="false"

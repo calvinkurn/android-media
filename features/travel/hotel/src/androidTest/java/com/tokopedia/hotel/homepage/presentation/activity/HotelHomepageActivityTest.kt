@@ -171,21 +171,21 @@ class HotelHomepageActivityTest {
     }
 
     private fun changeDate() {
-        Thread.sleep(3000)
+        Thread.sleep(2000)
         onView(withTagStringValue(R.id.tv_hotel_homepage_checkin_date.toString())).perform(click())
 
-        Thread.sleep(3000)
-        val sdf = SimpleDateFormat("d")
-        val checkInDate = sdf.format(DateUtil.getCurrentDate())
-        val checkoutDate = sdf.format(DateUtil.getCurrentDate().addTimeToSpesificDate(Calendar.DATE, 2))
-        try {
-            onView(CommonMatcher.getElementFromMatchAtPosition(withText(checkInDate), 1)).perform(click())
-            onView(CommonMatcher.getElementFromMatchAtPosition(withText(checkoutDate), 1)).perform(click())
-        } catch (e: Exception) {
-            onView(CommonMatcher.getElementFromMatchAtPosition(withText(checkInDate), 0)).perform(click())
-            onView(CommonMatcher.getElementFromMatchAtPosition(withText(checkoutDate), 0)).perform(click())
-        }
+        Thread.sleep(5000)
 
+        // select static date - 8
+        onView(CommonMatcher.getElementFromMatchAtPosition(withText("8"), 1)).check(matches(isDisplayed()))
+        Thread.sleep(1000)
+        onView(CommonMatcher.getElementFromMatchAtPosition(withText("8"), 1)).perform(click())
+        Thread.sleep(1000)
+
+        // select static date - 9
+        onView(CommonMatcher.getElementFromMatchAtPosition(withText("9"), 1)).check(matches(isDisplayed()))
+        Thread.sleep(1000)
+        onView(CommonMatcher.getElementFromMatchAtPosition(withText("9"), 1)).perform(click())
         Thread.sleep(1000)
     }
 

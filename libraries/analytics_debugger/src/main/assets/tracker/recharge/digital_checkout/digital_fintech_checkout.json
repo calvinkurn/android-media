@@ -127,8 +127,17 @@
       "eventLabel": ".+ - .+",
       "businessUnit": "recharge",
       "currentSite": "tokopediadigital",
-      "userId": ".+",
       "sessionIris": ".+"
+    },
+    {
+      "event": "viewCheckoutIris",
+      "eventCategory": "digital - checkout page",
+      "eventAction": "view tick box auto debit",
+      "eventLabel": "(enabled|disabled) - .+ - .+",
+      "businessUnit": "recharge",
+      "currentSite": "tokopediadigitalRecharge",
+      "sessionIris": ".+",
+      "userId": ".+"
     },
     {
       "event": "view_item_list",

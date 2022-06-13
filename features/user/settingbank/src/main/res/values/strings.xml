@@ -19,7 +19,7 @@
     <string name="sbank_nama_bank">Nama Bank</string>
     <string name="sbank_periksa">Periksa</string>
     <string name="sbank_save_account">Simpan</string>
-    <string name="sbank_add_bank_tnc">Dengan klik “Simpan”, kamu menyetujui Syarat &amp; Ketentuan.</string>
+    <string name="sbank_add_bank_tnc">Dengan klik “Simpan”, kamu menyetujui Kebijakan Privasi dan Syarat dan Ketentuan.</string>
     <string name="sbank_add_bank_tnc_clickable_part">Syarat &amp; Ketentuan</string>
     <string name="sbank_verification_in_progress">Sedang dalam Pengecekan</string>
     <string name="sbank_make_bank_primary">Jadikan Utama</string>
@@ -59,5 +59,9 @@
     <string name="sbank_oke">oke</string>
     <string name="sbank_ya_tambah">Ya, Tambah</string>
     <string name="sbank_batal">Batal</string>
+    <string name="sbank_privacy_url">https://www.tokopedia.com/privacy</string>
+    <string name="sbank_privacy">Kebijakan</string>
+    <string name="sbank_terms">Syarat</string>
+    <string name="sbank_and_privacy_terms">dan</string>
 
 </resources>

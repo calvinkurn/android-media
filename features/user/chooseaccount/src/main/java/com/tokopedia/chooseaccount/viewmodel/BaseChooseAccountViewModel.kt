@@ -9,7 +9,7 @@ import com.tokopedia.sessioncommon.data.PopupError
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 
-open class BaseChooseAccountViewModel(
+abstract class BaseChooseAccountViewModel(
         dispatcher: CoroutineDispatchers
 ): BaseViewModel(dispatcher.main) {
 

@@ -4,25 +4,32 @@ import android.graphics.Color
 import android.view.View
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
+import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.loadImageCircle
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.sellerorder.R
+import com.tokopedia.sellerorder.common.util.Utils.generateHapticFeedback
 import com.tokopedia.sellerorder.databinding.DetailShippingItemBinding
 import com.tokopedia.sellerorder.detail.data.model.SomDetailData
 import com.tokopedia.sellerorder.detail.data.model.SomDetailShipping
-import com.tokopedia.sellerorder.detail.presentation.adapter.SomDetailAdapter
+import com.tokopedia.sellerorder.detail.presentation.adapter.factory.SomDetailAdapterFactoryImpl
 import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.utils.view.binding.viewBinding
 
 /**
  * Created by fwidjaja on 2019-10-04.
  */
-class SomDetailShippingViewHolder(itemView: View, private val actionListener: SomDetailAdapter.ActionListener?) : SomDetailAdapter.BaseViewHolder<SomDetailData>(itemView) {
+class SomDetailShippingViewHolder(
+    itemView: View?,
+    private val actionListener: SomDetailAdapterFactoryImpl.ActionListener?
+) : AbstractViewHolder<SomDetailData>(itemView) {
 
     private val binding by viewBinding<DetailShippingItemBinding>()
 
-    override fun bind(item: SomDetailData, position: Int) {
+    override fun bind(item: SomDetailData) {
         if (item.dataObject is SomDetailShipping) {
             binding?.run {
                 val layoutParamsReceiverName = tvReceiverName.layoutParams as? ConstraintLayout.LayoutParams
@@ -86,9 +93,9 @@ class SomDetailShippingViewHolder(itemView: View, private val actionListener: So
                         tvReceiverProvince.hide()
                     }
 
-                    shippingAddressCopy.apply {
+                    maskTriggerShippingAddressCopyArea.apply {
                         setOnClickListener {
-
+                            it.generateHapticFeedback()
                             val numberPhoneText = if (numberPhone.isNotBlank()) {
                                 "\n" + numberPhone
                             } else ""
@@ -121,18 +128,17 @@ class SomDetailShippingViewHolder(itemView: View, private val actionListener: So
                 }
 
                 if (item.dataObject.awb.isNotEmpty()) {
-                    rlNoResi.visibility = View.VISIBLE
-                    noResiValue.show()
+                    layoutAwb.show()
                     noResiValue.text = item.dataObject.awb
                     if (item.dataObject.awbTextColor.isNotEmpty()) {
                         noResiValue.setTextColor(Color.parseColor(item.dataObject.awbTextColor))
                     }
-                    noResiCopy.setOnClickListener {
+                    maskTriggerAwbCopyArea.setOnClickListener {
+                        it.generateHapticFeedback()
                         actionListener?.onTextCopied(root.context.getString(R.string.awb_label), item.dataObject.awb, root.context.getString(R.string.readable_awb_label))
                     }
                 } else {
-                    rlNoResi.visibility = View.GONE
-                    noResiValue.hide()
+                    layoutAwb.hide()
                 }
 
                 // booking online - driver
@@ -170,22 +176,27 @@ class SomDetailShippingViewHolder(itemView: View, private val actionListener: So
                     bookingCodeTitle.hide()
                     bookingCodeCopy.hide()
                     bookingCodeValue.hide()
+                    maskTriggerBookingCodeCopyArea.hide()
                 } else {
                     if (item.dataObject.onlineBookingCode.isEmpty() && item.dataObject.onlineBookingMsg.isEmpty()) {
                         bookingCodeTitle.hide()
                         bookingCodeCopy.hide()
                         bookingCodeValue.hide()
+                        maskTriggerBookingCodeCopyArea.hide()
                     } else {
                         bookingCodeTitle.show()
                         bookingCodeCopy.show()
                         bookingCodeValue.show()
+                        maskTriggerBookingCodeCopyArea.show()
 
                         if (item.dataObject.onlineBookingCode.isEmpty()) {
                             bookingCodeTitle.hide()
                             bookingCodeCopy.hide()
                             bookingCodeValue.hide()
+                            maskTriggerBookingCodeCopyArea.hide()
                         } else {
-                            bookingCodeCopy.setOnClickListener {
+                            maskTriggerBookingCodeCopyArea.setOnClickListener {
+                                it.generateHapticFeedback()
                                 actionListener?.onTextCopied(root.context.getString(R.string.booking_code_label), item.dataObject.onlineBookingCode, root.context.getString(R.string.readable_booking_code_label))
                             }
                             bookingCodeValue.apply {
@@ -201,25 +212,26 @@ class SomDetailShippingViewHolder(itemView: View, private val actionListener: So
                 }
 
                 // dropshipper
-                if (item.dataObject.dropshipperName.isNotEmpty() || item.dataObject.dropshipperPhone.isNotEmpty()) {
-                    tvSomDropshipperLabel.visibility = View.VISIBLE
-                    tvSomDropshipperName.show()
-                    val numberPhoneDropShipper = if (item.dataObject.dropshipperPhone.startsWith(NUMBER_PHONE_SIX_TWO)) {
-                        item.dataObject.dropshipperPhone.replaceFirst(NUMBER_PHONE_SIX_TWO, NUMBER_PHONE_ZERO, true)
-                    } else {
-                        item.dataObject.dropshipperPhone
-                    }
-                    if (numberPhoneDropShipper.isNotBlank()) {
-                        tvSomDropshipperName.text = item.dataObject.dropshipperName
-                        tvDropshipperNumber.text = numberPhoneDropShipper
-                    } else {
-                        tvDropshipperNumber.hide()
-                        tvSomDropshipperName.text = item.dataObject.dropshipperName
-                    }
+                val numberPhoneDropShipper = if (item.dataObject.dropshipperPhone.startsWith(NUMBER_PHONE_SIX_TWO)) {
+                    item.dataObject.dropshipperPhone.replaceFirst(NUMBER_PHONE_SIX_TWO, NUMBER_PHONE_ZERO, true)
                 } else {
-                    tvSomDropshipperLabel.visibility = View.GONE
-                    tvSomDropshipperName.hide()
+                    item.dataObject.dropshipperPhone
                 }
+                if (numberPhoneDropShipper.isNotBlank()) {
+                    tvDropshipperNumber.text = numberPhoneDropShipper
+                    tvDropshipperNumber.show()
+                } else {
+                    tvDropshipperNumber.gone()
+                }
+                if (item.dataObject.dropshipperName.isNotBlank()) {
+                    tvSomDropshipperName.text = item.dataObject.dropshipperName
+                    tvSomDropshipperName.show()
+                } else {
+                    tvSomDropshipperName.gone()
+                }
+                tvSomDropshipperLabel.showWithCondition(
+                    numberPhoneDropShipper.isNotBlank() || item.dataObject.dropshipperName.isNotBlank()
+                )
             }
         }
     }
@@ -228,5 +240,7 @@ class SomDetailShippingViewHolder(itemView: View, private val actionListener: So
         const val NUMBER_PHONE_SIX_TWO = "62"
         const val NUMBER_PHONE_ZERO = "0"
         const val CONTAINS_COMMA = ","
+
+        val LAYOUT = R.layout.detail_shipping_item
     }
 }

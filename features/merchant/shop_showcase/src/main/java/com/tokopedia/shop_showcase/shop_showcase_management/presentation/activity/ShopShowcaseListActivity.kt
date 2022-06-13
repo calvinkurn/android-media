@@ -1,11 +1,14 @@
 package com.tokopedia.shop_showcase.shop_showcase_management.presentation.activity
 
+import android.content.pm.ActivityInfo
 import android.os.Bundle
+import android.provider.Settings
 import androidx.annotation.IdRes
 import androidx.annotation.LayoutRes
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.applink.etalase.DeepLinkMapperEtalase
+import com.tokopedia.device.info.DeviceScreenInfo
 import com.tokopedia.shop.common.constant.ShopShowcaseParamConstant
 import com.tokopedia.shop.common.data.model.ShowcaseItemPicker
 import com.tokopedia.shop.common.graphql.data.shopetalase.ShopEtalaseModel
@@ -17,6 +20,7 @@ import com.tokopedia.shop_showcase.common.ShopType
 import com.tokopedia.shop_showcase.shop_showcase_management.presentation.fragment.*
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.utils.accelerometer.orientation.AccelerometerOrientationListener
 
 class ShopShowcaseListActivity : BaseSimpleActivity(), ShopShowcaseFragmentNavigation {
 
@@ -48,6 +52,11 @@ class ShopShowcaseListActivity : BaseSimpleActivity(), ShopShowcaseFragmentNavig
     private var productName: String = ""
     private var listShowcase: ArrayList<ShopEtalaseModel>? = arrayListOf()
     private var preSelectedShowcaseListPicker: ArrayList<ShowcaseItemPicker>? = arrayListOf()
+    private val accelerometerOrientationListener: AccelerometerOrientationListener by lazy {
+        AccelerometerOrientationListener(contentResolver) {
+            setScreenOrientation(it)
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         val bundle = intent.getBundleExtra(ShopShowcaseParamConstant.EXTRA_BUNDLE)
@@ -76,8 +85,30 @@ class ShopShowcaseListActivity : BaseSimpleActivity(), ShopShowcaseFragmentNavig
         }
 
         setBackgroundColor()
-
+        configInitialScreenOrientation()
         super.onCreate(savedInstanceState)
+    }
+
+    private fun configInitialScreenOrientation() {
+        if(isShowcasePickerFragment()){
+            val isAccelerometerRotationEnabled = Settings.System.getInt(
+                contentResolver,
+                Settings.System.ACCELEROMETER_ROTATION,
+                0
+            ) == 1
+            setScreenOrientation(isAccelerometerRotationEnabled)
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        registerAccelerometerOrientationListener()
+    }
+
+    private fun registerAccelerometerOrientationListener() {
+        if (DeviceScreenInfo.isTablet(this)) {
+            accelerometerOrientationListener.register()
+        }
     }
 
     override fun getLayoutRes(): Int {
@@ -90,7 +121,7 @@ class ShopShowcaseListActivity : BaseSimpleActivity(), ShopShowcaseFragmentNavig
 
     override fun getNewFragment(): Fragment? {
         return when {
-            isNeedToOpenShowcasePicker.isNotEmpty() -> getShowcasePickerFragment()
+            isShowcasePickerFragment() -> getShowcasePickerFragment()
             isNeedToOpenReorder -> getShowcaseListReorderFragment()
             else -> getShowcaseListFragment()
         }
@@ -141,6 +172,17 @@ class ShopShowcaseListActivity : BaseSimpleActivity(), ShopShowcaseFragmentNavig
         )
     }
 
+    private fun isShowcasePickerFragment(): Boolean {
+        return isNeedToOpenShowcasePicker.isNotEmpty()
+    }
+
+    private fun setScreenOrientation(isEnabled: Boolean) {
+        if (DeviceScreenInfo.isTablet(this)) {
+            requestedOrientation =
+                if (isEnabled) ActivityInfo.SCREEN_ORIENTATION_FULL_SENSOR else ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+        }
+    }
+
     /**
      * @return shopId from deeplink query param.
      * @return userSession.shopId, if shopId is null or blank or = 0
@@ -176,7 +218,7 @@ class ShopShowcaseListActivity : BaseSimpleActivity(), ShopShowcaseFragmentNavig
 
     private fun setBackgroundColor() {
         window.decorView.setBackgroundColor(
-                androidx.core.content.ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_N0)
+                androidx.core.content.ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_Background)
         )
     }
 

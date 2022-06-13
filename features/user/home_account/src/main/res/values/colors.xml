@@ -12,4 +12,9 @@
     <color name="icon_bg_shadow_1">#1031353B</color>
     <color name="icon_bg_shadow_2">#1531353B</color>
     <color name="icon_bg_shadow_3">#2031353B</color>
+
+    <color name="account_recommendation_separator_color">#f3f4f5</color>
+    <color name="account_rewardShortcut_title_color">#A8A9AC</color>
+    <color name="setting_text_grey">#AD31353B</color>
+    <color name="account_home_grey_arrow_icon">#bdbdbd</color>
 </resources>

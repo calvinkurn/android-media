@@ -25,6 +25,7 @@ import com.tokopedia.tokopedianow.searchcategory.presentation.listener.ChooseAdd
 import com.tokopedia.tokopedianow.searchcategory.presentation.listener.ProductItemListener
 import com.tokopedia.tokopedianow.searchcategory.presentation.listener.QuickFilterListener
 import com.tokopedia.tokopedianow.searchcategory.presentation.listener.TitleListener
+import com.tokopedia.tokopedianow.searchcategory.presentation.listener.SwitcherWidgetListener
 import com.tokopedia.tokopedianow.searchcategory.presentation.typefactory.BaseSearchCategoryTypeFactoryImpl
 import com.tokopedia.tokopedianow.searchcategory.presentation.viewholder.BaseChooseAddressViewHolder
 
@@ -36,6 +37,7 @@ class SearchTypeFactoryImpl(
     quickFilterListener: QuickFilterListener,
     categoryFilterListener: CategoryFilterListener,
     productItemListener: ProductItemListener,
+    switcherWidgetListener: SwitcherWidgetListener,
     tokoNowEmptyStateNoResultListener: TokoNowEmptyStateNoResultViewHolder.TokoNowEmptyStateNoResultListener,
     private val suggestionListener: SuggestionListener,
     private val categoryJumperListener: CategoryJumperListener,
@@ -51,6 +53,7 @@ class SearchTypeFactoryImpl(
     quickFilterListener,
     categoryFilterListener,
     productItemListener,
+    switcherWidgetListener,
     tokoNowEmptyStateNoResultListener,
     recommendationCarouselListener,
     recomWidgetBindPageNameListener,

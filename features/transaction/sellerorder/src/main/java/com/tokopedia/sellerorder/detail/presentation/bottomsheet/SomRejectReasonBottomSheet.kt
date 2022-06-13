@@ -6,6 +6,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.common.presenter.SomBottomSheet
 import com.tokopedia.sellerorder.common.util.SomConsts
@@ -15,7 +16,7 @@ import com.tokopedia.unifycomponents.ticker.TickerCallback
 
 class SomRejectReasonBottomSheet(context: Context,
                                  actionListener: SomBottomSheetRejectReasonsAdapter.ActionListener
-) : SomBottomSheet<BottomsheetRejectReasonListBinding>(LAYOUT, true, true, false, SomConsts.TITLE_PILIH_PENOLAKAN, context, true) {
+) : SomBottomSheet<BottomsheetRejectReasonListBinding>(LAYOUT, true, true, false, false, false, SomConsts.TITLE_PILIH_PENOLAKAN, context, true) {
 
     companion object {
         private val LAYOUT = R.layout.bottomsheet_reject_reason_list
@@ -36,7 +37,7 @@ class SomRejectReasonBottomSheet(context: Context,
 
     fun setupTicker(isPenaltyReject: Boolean, penaltyRejectWording: String) {
         binding?.tickerBottomSheetRejectReasonList?.run {
-            if (isPenaltyReject) {
+            if (isPenaltyReject && penaltyRejectWording.isNotBlank()) {
                 show()
                 setHtmlDescription(penaltyRejectWording)
                 setDescriptionClickEvent(object : TickerCallback {

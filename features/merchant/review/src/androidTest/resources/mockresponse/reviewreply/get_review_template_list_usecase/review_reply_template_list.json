@@ -1,0 +1,29 @@
+{
+  "reviewResponseTemplateListV2": {
+    "autoReply": {
+      "autoReplyId": 463715,
+      "status": 1,
+      "templateId": 659224
+    },
+    "list": [
+      {
+        "templateId": 659224,
+        "title": "Template Balasan Otomatis",
+        "message": "Terima kasih telah berbelanja di Tumbler Starbucks 123. Bagikan link toko kami https://www.tokopedia.com/tumblersbux kepada teman-teman Anda dan favoritkan Toko kami untuk terus update mengenai stok dan produk terbaru",
+        "status": 2
+      },
+      {
+        "templateId": 1483877,
+        "title": "Toko sudah tutup",
+        "message": "Hai Pembeli, mohonmaaf toko kami sudah tutup hari ini. Tapi jangan khawatir kami akan membalas pesan Anda besok pagi ya. Terimakasih",
+        "status": 1
+      },
+      {
+        "templateId": 1603780,
+        "title": "makasih",
+        "message": "gomawo yaa",
+        "status": 1
+      }
+    ]
+  }
+}

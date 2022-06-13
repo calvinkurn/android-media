@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/containerInboxReview"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="?selectableItemBackground"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools">
+    android:background="?selectableItemBackground">
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvProductTitle"
@@ -100,21 +99,43 @@
         app:typographyType="body_3"
         tools:text="Udah nyari Nike Air Force 1 Low White Red Casual Shoes ini akhirnya dapet juga di toko ini, thanks banget gan! barang dijamin ori sesuai deskripsi, kualitas mantap, kemasannya rapih, pengirimannya tepat waktu, recommended seller deh pokoknya gak akan kapok belanja kemari gan! next nya gw cari sepatu rare lagi."/>
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rvItemAttachmentFeedback"
-        android:layout_width="@dimen/layout_lvl0"
+    <com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.widget.ReviewMediaThumbnail
+        android:id="@+id/review_media_thumbnails"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/spacing_lvl4"
-        android:clipChildren="false"
-        android:clipToPadding="false"
-        android:paddingStart="@dimen/spacing_lvl4"
-        android:paddingLeft="@dimen/spacing_lvl4"
-        android:paddingEnd="@dimen/spacing_lvl4"
-        android:paddingRight="@dimen/spacing_lvl4"
+        android:layout_marginHorizontal="12dp"
+        android:layout_marginTop="8dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tvFeedbackReview" />
+
+    <com.tokopedia.review.common.presentation.widget.ReviewBadRatingReasonWidget
+        android:id="@+id/badRatingReasonReview"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/review_media_thumbnails" />
+
+    <com.tokopedia.review.common.presentation.widget.ReviewBadRatingDisclaimerWidget
+        android:id="@+id/badRatingReasonDisclaimer"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:visibility="gone"
+        android:layout_marginTop="6dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/badRatingReasonReview" />
+
+    <androidx.constraintlayout.widget.Barrier
+        android:id="@+id/inbox_review_barrier"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:barrierDirection="bottom"
+        app:constraint_referenced_ids="badRatingReasonReview, badRatingReasonDisclaimer, review_media_thumbnails, tvFeedbackReview"
+        tools:viewBindingIgnore="true" />
 
     <View
         android:id="@+id/replyFeedbackState"
@@ -123,7 +144,7 @@
         tools:background="@drawable/rectangle_8"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintBottom_toBottomOf="@+id/tvReplyComment"
-        app:layout_constraintTop_toBottomOf="@id/rvItemAttachmentFeedback"
+        app:layout_constraintTop_toBottomOf="@id/inbox_review_barrier"
         android:layout_marginStart="@dimen/spacing_lvl4"
         android:layout_marginTop="@dimen/spacing_lvl4"/>
 
@@ -136,7 +157,7 @@
         app:typographyType="body_3"
         app:typographyWeight="bold"
         android:textColor="@color/Unify_N700_96"
-        app:layout_constraintTop_toBottomOf="@id/rvItemAttachmentFeedback"
+        app:layout_constraintTop_toBottomOf="@id/inbox_review_barrier"
         app:layout_constraintStart_toEndOf="@id/replyFeedbackState"
         tools:text="Balasan otomatis •"/>
 
@@ -144,7 +165,7 @@
         android:id="@+id/tvReplyDate"
         android:layout_width="@dimen/layout_lvl0"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/rvItemAttachmentFeedback"
+        app:layout_constraintTop_toBottomOf="@id/inbox_review_barrier"
         app:layout_constraintStart_toEndOf="@id/tvReplyUser"
         android:layout_marginStart="@dimen/spacing_lvl2"
         android:layout_marginTop="@dimen/spacing_lvl4"
@@ -176,7 +197,8 @@
         android:layout_height="1dp"
         android:layout_marginTop="@dimen/spacing_lvl4"
         app:layout_constraintTop_toBottomOf="@id/replyFeedbackState"
-        app:layout_constraintStart_toStartOf="parent"/>
+        app:layout_constraintStart_toStartOf="parent"
+        tools:viewBindingIgnore="true" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvActionReplyReview"
@@ -199,6 +221,7 @@
         android:layout_marginTop="@dimen/spacing_lvl3"
         app:layout_constraintTop_toBottomOf="@id/tvActionReplyReview"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"/>
+        app:layout_constraintStart_toStartOf="parent"
+        tools:viewBindingIgnore="true" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

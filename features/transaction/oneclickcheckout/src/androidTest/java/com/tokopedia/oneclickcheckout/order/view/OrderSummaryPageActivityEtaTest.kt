@@ -9,20 +9,16 @@ import androidx.test.espresso.intent.matcher.IntentMatchers.anyIntent
 import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.oneclickcheckout.common.idling.OccIdlingResource
-import com.tokopedia.oneclickcheckout.common.interceptor.GET_OCC_CART_PAGE_MANY_PROFILE_REVAMP_RESPONSE_PATH
-import com.tokopedia.oneclickcheckout.common.interceptor.GET_OCC_CART_PAGE_ONE_PROFILE_REVAMP_WITH_BOE_RESPONSE_PATH
-import com.tokopedia.oneclickcheckout.common.interceptor.OneClickCheckoutInterceptor
-import com.tokopedia.oneclickcheckout.common.interceptor.RATES_ETA_RESPONSE_PATH
-import com.tokopedia.oneclickcheckout.common.interceptor.RATES_ETA_WITH_BOE_RESPONSE_PATH
-import com.tokopedia.oneclickcheckout.common.interceptor.VALIDATE_USE_PROMO_REVAMP_BBO_APPLIED_RESPONSE
-import com.tokopedia.oneclickcheckout.common.interceptor.VALIDATE_USE_PROMO_REVAMP_BOE_APPLIED_RESPONSE
+import com.tokopedia.oneclickcheckout.common.interceptor.*
 import com.tokopedia.oneclickcheckout.common.robot.orderSummaryPage
 import com.tokopedia.oneclickcheckout.common.rule.FreshIdlingResourceTestRule
+import com.tokopedia.test.application.annotations.UiTest
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 
+@UiTest
 class OrderSummaryPageActivityEtaTest {
 
     @get:Rule
@@ -145,8 +141,7 @@ class OrderSummaryPageActivityEtaTest {
 
             assertShipmentPromoRevamp(
                     hasPromo = true,
-                    promoTitle = "Tersedia Bebas Ongkir Extra",
-                    promoSubtitle = "Estimasi tiba besok - 3 Feb")
+                    promoDescription = "Tersedia Bebas Ongkir Extra")
 
             assertPayment("Rp111.300", "Bayar")
 
@@ -159,7 +154,7 @@ class OrderSummaryPageActivityEtaTest {
                     shippingDuration = null,
                     shippingCourier = "Pengiriman Bebas Ongkir Extra",
                     shippingPrice = null,
-                    shippingEta = "Estimasi tiba besok - 3 Feb"
+                    shippingEta = null
             )
 
             assertPayment("Rp101.300", "Bayar")

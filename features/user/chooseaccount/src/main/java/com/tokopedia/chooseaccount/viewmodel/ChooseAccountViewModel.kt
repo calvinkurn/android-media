@@ -13,7 +13,6 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.sessioncommon.data.LoginToken
 import com.tokopedia.sessioncommon.data.LoginTokenPojo
-import com.tokopedia.sessioncommon.di.SessionModule
 import com.tokopedia.sessioncommon.domain.subscriber.LoginTokenSubscriber
 import com.tokopedia.sessioncommon.domain.usecase.LoginTokenUseCase
 import com.tokopedia.usecase.coroutines.Fail
@@ -21,7 +20,6 @@ import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
-import javax.inject.Named
 
 /**
  * Created by Ade Fulki on 2019-11-14.
@@ -30,14 +28,10 @@ import javax.inject.Named
 
 open class ChooseAccountViewModel @Inject constructor(
         private val getAccountsListUseCase: GetAccountListUseCase,
-        @param:Named(SessionModule.SESSION_MODULE) private val userSessionInterface: UserSessionInterface,
+        private val userSessionInterface: UserSessionInterface,
         private val loginTokenUseCase: LoginTokenUseCase,
         dispatcher: CoroutineDispatchers
 ) : BaseChooseAccountViewModel(dispatcher) {
-
-    private val mutableGetAccountListFBResponse = MutableLiveData<Result<AccountListDataModel>>()
-    val getAccountListDataModelFBResponse: LiveData<Result<AccountListDataModel>>
-        get() = mutableGetAccountListFBResponse
 
     private val mutableGetAccountListPhoneResponse = MutableLiveData<Result<AccountListDataModel>>()
     val getAccountListDataModelPhoneResponse: LiveData<Result<AccountListDataModel>>
@@ -120,17 +114,6 @@ open class ChooseAccountViewModel @Inject constructor(
 
     private fun handleGetAccountListError(throwable: Throwable, type: String) {
         mutableGetAccountListPhoneResponse.value = Fail(throwable)
-    }
-
-    private fun onSuccessGetAccountListPhoneNumber(data: AccountsDataModel) {
-        if (data.accountListDataModel.errorResponseDataModels.isEmpty()) {
-            mutableGetAccountListPhoneResponse.value = Success(data.accountListDataModel)
-        } else if (data.accountListDataModel.errorResponseDataModels[0].message.isNotEmpty()) {
-            mutableGetAccountListPhoneResponse.value =
-                Fail(MessageErrorException(data.accountListDataModel.errorResponseDataModels[0].message))
-        } else {
-            mutableGetAccountListPhoneResponse.value = Fail(RuntimeException())
-        }
     }
 
     override fun onCleared() {

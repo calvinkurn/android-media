@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.tokopedia.unifycomponents.CardUnify xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/topAdsCarouselRoot"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="@dimen/layout_6_item_width"
+        android:layout_height="match_parent">
+
+        <com.tokopedia.unifycomponents.ImageUnify
+            android:id="@+id/carouselItemImageFirst"
+            android:layout_width="@dimen/unify_space_0"
+            android:layout_height="@dimen/layout_6_item_image_height"
+            android:layout_marginStart="@dimen/unify_space_8"
+            android:layout_marginTop="@dimen/unify_space_8"
+            android:layout_marginEnd="@dimen/unify_space_8"
+            app:layout_constraintDimensionRatio="1:1"
+            app:layout_constraintEnd_toStartOf="@id/carouselItemImageTwo"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:src="@tools:sample/avatars" />
+
+        <com.tokopedia.unifycomponents.ImageUnify
+            android:id="@+id/carouselItemImageTwo"
+            android:layout_width="@dimen/unify_space_0"
+            android:layout_height="@dimen/layout_6_item_image_height"
+            android:layout_marginTop="@dimen/unify_space_8"
+            android:layout_marginEnd="@dimen/unify_space_8"
+            app:layout_constraintDimensionRatio="1:1"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/carouselItemImageFirst"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:src="@tools:sample/avatars" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/product_card_topads"
+            android:textColor="@color/Unify_N0"
+            android:visibility="visible"
+            android:shadowColor="@color/Unify_N700_32"
+            android:shadowDy="1"
+            android:shadowRadius="2"
+            android:layout_marginEnd="@dimen/unify_space_8"
+            android:layout_marginBottom="@dimen/unify_space_4"
+            app:layout_constraintBottom_toBottomOf="@id/carouselItemImageTwo"
+            app:layout_constraintEnd_toEndOf="@id/carouselItemImageTwo"
+            app:typographyType="small"
+            app:typographyWeight="bold"
+            tools:visibility="visible"/>
+
+        <com.tokopedia.unifycomponents.ImageUnify
+            android:id="@+id/brandIcon"
+            android:layout_width="@dimen/dp_24"
+            android:layout_height="@dimen/dp_24"
+            android:layout_marginStart="@dimen/unify_space_8"
+            android:layout_marginTop="@dimen/unify_space_12"
+            android:layout_marginBottom="@dimen/unify_space_12"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/carouselItemImageFirst"
+            tools:src="@tools:sample/avatars" />
+
+        <com.tokopedia.unifycomponents.ImageUnify
+            android:id="@+id/brandBadge"
+            android:layout_width="@dimen/layout_lvl2"
+            android:layout_height="@dimen/layout_lvl2"
+            android:layout_marginStart="@dimen/unify_space_8"
+            app:layout_constraintBottom_toBottomOf="@+id/brandIcon"
+            app:layout_constraintStart_toEndOf="@id/brandIcon"
+            app:layout_constraintTop_toTopOf="@+id/brandIcon" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/carouselItemName"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/unify_space_8"
+            android:layout_marginEnd="@dimen/unify_space_8"
+            android:ellipsize="end"
+            android:maxLines="1"
+            app:layout_constraintBottom_toBottomOf="@+id/brandBadge"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/brandBadge"
+            app:layout_constraintTop_toTopOf="@+id/brandBadge"
+            tools:text="Samsung Mobiledfdrdfdr" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</com.tokopedia.unifycomponents.CardUnify>

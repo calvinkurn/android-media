@@ -5,18 +5,27 @@
     android:id="@+id/top_frame"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/Unify_N0">
+    android:background="@color/Unify_Background">
 
     <com.yalantis.ucrop.view.UCropView
         android:id="@+id/ucrop"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
 
-    <ProgressBar
+    <View
+        android:id="@+id/bg_shadow"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/Unify_NN900"
+        android:alpha="0.7"
+        android:visibility="gone"
+        tools:visibility="visible"/>
+
+    <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/progressbar"
         style="?android:attr/indeterminate"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="@dimen/layout_lvl6"
+        android:layout_height="@dimen/layout_lvl6"
         android:layout_gravity="center"
         android:indeterminate="true"
         android:visibility="gone"

@@ -1,5 +1,6 @@
 package com.tokopedia.localizationchooseaddress.ui.bottomsheet
 
+import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -9,7 +10,13 @@ import com.tokopedia.localizationchooseaddress.domain.mapper.ChooseAddressMapper
 import com.tokopedia.localizationchooseaddress.domain.model.ChosenAddressList
 import com.tokopedia.localizationchooseaddress.domain.model.ChosenAddressModel
 import com.tokopedia.localizationchooseaddress.domain.model.DefaultChosenAddressModel
+import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.localizationchooseaddress.domain.model.StateChooseAddressParam
+import com.tokopedia.localizationchooseaddress.domain.response.RefreshTokonowDataResponse
+import com.tokopedia.localizationchooseaddress.domain.usecase.RefreshTokonowDataUsecase
+import com.tokopedia.logisticCommon.data.constant.AddressConstant
+import com.tokopedia.logisticCommon.data.response.EligibleForAddressFeature
+import com.tokopedia.logisticCommon.domain.usecase.EligibleForAddressUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -18,7 +25,9 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class ChooseAddressViewModel @Inject constructor(private val chooseAddressRepo: ChooseAddressRepository,
-                                                 private val chooseAddressMapper: ChooseAddressMapper) : ViewModel(){
+                                                 private val chooseAddressMapper: ChooseAddressMapper,
+                                                 private val eligibleForAddressUseCase: EligibleForAddressUseCase,
+                                                 private val refreshTokonowDataUsecase: RefreshTokonowDataUsecase) : ViewModel(){
 
     private val _chosenAddressList = MutableLiveData<Result<List<ChosenAddressList>>>()
     val chosenAddressList: LiveData<Result<List<ChosenAddressList>>>
@@ -36,6 +45,16 @@ class ChooseAddressViewModel @Inject constructor(private val chooseAddressRepo: 
     private val _getDefaultAddress = MutableLiveData<Result<DefaultChosenAddressModel>>()
     val getDefaultAddress: LiveData<Result<DefaultChosenAddressModel>>
         get() = _getDefaultAddress
+
+    private val _eligibleForAnaRevamp = MutableLiveData<Result<EligibleForAddressFeature>>()
+    val eligibleForAnaRevamp: LiveData<Result<EligibleForAddressFeature>>
+        get() = _eligibleForAnaRevamp
+
+    private val _tokonowData = MutableLiveData<Result<RefreshTokonowDataResponse.Data.RefreshTokonowData.RefreshTokonowDataSuccess>>()
+    val tokonowData: LiveData<Result<RefreshTokonowDataResponse.Data.RefreshTokonowData.RefreshTokonowDataSuccess>>
+        get() = _tokonowData
+
+    var isFirstLoad = true
 
     fun getChosenAddressList(source: String, isTokonow: Boolean) {
         viewModelScope.launch(onErrorGetChosenAddressList) {
@@ -65,6 +84,25 @@ class ChooseAddressViewModel @Inject constructor(private val chooseAddressRepo: 
         }
     }
 
+    fun checkUserEligibilityForAnaRevamp() {
+        eligibleForAddressUseCase.eligibleForAddressFeature(
+            {
+                _eligibleForAnaRevamp.value = Success(it.eligibleForRevampAna)
+            },
+            {
+                _eligibleForAnaRevamp.value = Fail(it)
+            },
+            AddressConstant.ANA_REVAMP_FEATURE_ID
+        )
+    }
+
+    fun getTokonowData(localCacheModel: LocalCacheModel) {
+        viewModelScope.launch(onErrorRefreshTokonow) {
+            val data = refreshTokonowDataUsecase.execute(localCacheModel)
+            _tokonowData.value = Success(data.refreshTokonowData.data)
+        }
+    }
+
     private val onErrorGetChosenAddressList = CoroutineExceptionHandler{ _, e ->
         _chosenAddressList.value = Fail(e)
     }
@@ -79,6 +117,10 @@ class ChooseAddressViewModel @Inject constructor(private val chooseAddressRepo: 
 
     private val onErrorGetDefaultChosenAddress = CoroutineExceptionHandler{ _, e ->
         _getDefaultAddress.value = Fail(e)
+    }
+
+    private val onErrorRefreshTokonow = CoroutineExceptionHandler{ _, e ->
+        _tokonowData.value = Fail(e)
     }
 
 }

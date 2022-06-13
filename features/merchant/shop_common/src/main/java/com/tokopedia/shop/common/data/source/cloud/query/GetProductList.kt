@@ -11,6 +11,9 @@ internal object GetProductList {
                 reason
                 errorCode
             }
+            meta {
+                totalHits
+            }
             data{
                 id
                 name
@@ -40,6 +43,7 @@ internal object GetProductList {
                     name
                     iconURL
                 }
+                suspendLevel
             }
         }
     }

@@ -1,120 +1,32 @@
 package com.tokopedia.topchat.chatroom.domain.usecase
 
-import com.tokopedia.chat_common.data.ChatroomViewModel
-import com.tokopedia.chat_common.domain.pojo.ChatReplies
-import com.tokopedia.chat_common.domain.pojo.GetExistingChatPojo
-import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
-import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.kotlin.extensions.view.toLongOrZero
-import com.tokopedia.topchat.chatroom.domain.mapper.TopChatRoomGetExistingChatMapper
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.chat_common.domain.pojo.roommetadata.RoomMetaData
-import kotlinx.coroutines.*
+import com.tokopedia.chat_common.domain.pojo.GetExistingChatPojo
+import com.tokopedia.graphql.coroutines.data.extensions.request
+import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
-import kotlin.coroutines.CoroutineContext
-
-
-/**
- * @author : Steven 30/11/18
- */
 
 open class GetChatUseCase @Inject constructor(
-        private val gqlUseCase: GraphqlUseCase<GetExistingChatPojo>,
-        protected val mapper: TopChatRoomGetExistingChatMapper,
-        private var dispatchers: CoroutineDispatchers
-) : CoroutineScope {
+    private val repository: GraphqlRepository,
+    private val dispatcher: CoroutineDispatchers,
+) {
 
     var minReplyTime = "" // for param beforeReplyTime for top
     var maxReplyTime = "" // for param afterReplyTime for bottom
     var hasNext = false // has next top
     var hasNextAfter = false // has next bottom
 
-    override val coroutineContext: CoroutineContext get() = dispatchers.main + SupervisorJob()
-
-    fun getFirstPageChat(
-            messageId: String,
-            onSuccess: (ChatroomViewModel, ChatReplies) -> Unit,
-            onErrorGetChat: (Throwable) -> Unit,
-            roomMetaData: (RoomMetaData) -> Unit
-    ) {
-        val topQuery = generateFirstPageQuery()
-        val params = generateFirstPageParam(messageId)
-        getChat(topQuery, params, onSuccess, onErrorGetChat) { _, chat ->
-            updateMinReplyTime(chat)
-            updateMaxReplyTime(chat)
-            val metaData = mapper.generateRoomMetaData(messageId, chat)
-            roomMetaData(metaData)
+    suspend fun getFirstPageChat(messageId: String): GetExistingChatPojo  {
+        return withContext(dispatcher.io) {
+            val topQuery = generateFirstPageQuery()
+            val params = generateFirstPageParam(messageId)
+            val response = getChat(topQuery, params)
+            updateMinReplyTime(response)
+            updateMaxReplyTime(response)
+            response
         }
-    }
-
-    fun getTopChat(
-            messageId: String,
-            onSuccess: (ChatroomViewModel, ChatReplies) -> Unit,
-            onErrorGetChat: (Throwable) -> Unit
-    ) {
-        val topQuery = generateTopQuery()
-        val params = generateTopParam(messageId)
-        getChat(topQuery, params, onSuccess, onErrorGetChat) { _, chat ->
-            updateMinReplyTime(chat)
-        }
-    }
-
-    fun getBottomChat(
-            messageId: String,
-            onSuccess: (ChatroomViewModel, ChatReplies) -> Unit,
-            onErrorGetChat: (Throwable) -> Unit
-    ) {
-        val topQuery = generateBottomQuery()
-        val params = generateBottomParam(messageId)
-        getChat(topQuery, params, onSuccess, onErrorGetChat) { _, chat ->
-            updateMaxReplyTime(chat)
-        }
-    }
-
-    private fun getChat(
-            query: String,
-            params: Map<String, Any>,
-            onSuccess: (ChatroomViewModel, ChatReplies) -> Unit,
-            onErrorGetChat: (Throwable) -> Unit,
-            onResponseReady: (ChatroomViewModel, GetExistingChatPojo) -> Unit
-    ) {
-        launchCatchError(
-                dispatchers.io,
-                {
-                    val response = gqlUseCase.apply {
-                        setTypeClass(GetExistingChatPojo::class.java)
-                        setRequestParams(params)
-                        setGraphqlQuery(query)
-                    }.executeOnBackground()
-                    val chatroomViewModel = mapper.map(response)
-                    onResponseReady(chatroomViewModel, response)
-                    withContext(dispatchers.main) {
-                        onSuccess(chatroomViewModel, response.chatReplies)
-                    }
-                },
-                {
-                    withContext(dispatchers.main) {
-                        onErrorGetChat(it)
-                    }
-                }
-        )
-    }
-
-    private fun generateFirstPageParam(messageId: String): Map<String, Any> {
-        return mutableMapOf<String, Any>(
-                PARAM_MESSAGE_ID to messageId.toLongOrZero()
-        ).apply {
-            if (minReplyTime.isNotEmpty()) {
-                put(PARAM_BEFORE_REPLY_TIME, minReplyTime)
-            }
-        }
-    }
-
-    private fun generateBottomParam(messageId: String): Map<String, Any> {
-        return mapOf(
-                PARAM_MESSAGE_ID to messageId.toLongOrZero(),
-                PARAM_AFTER_REPLY_TIME to maxReplyTime
-        )
     }
 
     private fun generateFirstPageQuery(): String {
@@ -125,17 +37,54 @@ open class GetChatUseCase @Inject constructor(
         }
     }
 
+    private fun generateFirstPageParam(messageId: String): Map<String, Any> {
+        return mutableMapOf<String, Any>(
+            PARAM_MESSAGE_ID to messageId.toLongOrZero()
+        ).apply {
+            if (minReplyTime.isNotEmpty()) {
+                put(PARAM_BEFORE_REPLY_TIME, minReplyTime)
+            }
+        }
+    }
+
+    suspend fun getBottomChat(messageId: String): GetExistingChatPojo  {
+        return withContext(dispatcher.io) {
+            val topQuery = generateBottomQuery()
+            val params = generateBottomParam(messageId)
+            val response = getChat(topQuery, params)
+            updateMaxReplyTime(response)
+            response
+        }
+    }
+
     private fun generateBottomQuery(): String {
         return requestQuery.format(
-                ", $$PARAM_AFTER_REPLY_TIME: String",
-                ", afterReplyTime: $$PARAM_AFTER_REPLY_TIME"
+            ", $${PARAM_AFTER_REPLY_TIME}: String",
+            ", afterReplyTime: $${PARAM_AFTER_REPLY_TIME}"
         )
+    }
+
+    private fun generateBottomParam(messageId: String): Map<String, Any> {
+        return mapOf(
+            PARAM_MESSAGE_ID to messageId.toLongOrZero(),
+            PARAM_AFTER_REPLY_TIME to maxReplyTime
+        )
+    }
+
+    suspend fun getTopChat(messageId: String): GetExistingChatPojo {
+        return withContext(dispatcher.io) {
+            val topQuery = generateTopQuery()
+            val params = generateTopParam(messageId)
+            val response = getChat(topQuery, params)
+            updateMinReplyTime(response)
+            response
+        }
     }
 
     private fun generateTopQuery(): String {
         return requestQuery.format(
-                ", $$PARAM_BEFORE_REPLY_TIME: String",
-                ", beforeReplyTime: $$PARAM_BEFORE_REPLY_TIME"
+            ", $${PARAM_BEFORE_REPLY_TIME}: String",
+            ", beforeReplyTime: $${PARAM_BEFORE_REPLY_TIME}"
         )
     }
 
@@ -149,17 +98,15 @@ open class GetChatUseCase @Inject constructor(
         hasNextAfter = chat.chatReplies.hasNextAfter
     }
 
-    private fun generateTopParam(messageId: String): Map<String, Any> {
-        return mapOf(
-                PARAM_MESSAGE_ID to messageId.toLongOrZero(),
-                PARAM_BEFORE_REPLY_TIME to minReplyTime
-        )
+    private suspend fun getChat(query: String, params: Map<String, Any>): GetExistingChatPojo {
+        return repository.request(query, params)
     }
 
-    fun unsubscribe() {
-        if (coroutineContext.isActive) {
-            cancel()
-        }
+    private fun generateTopParam(messageId: String): Map<String, Any> {
+        return mapOf(
+            PARAM_MESSAGE_ID to messageId.toLongOrZero(),
+            PARAM_BEFORE_REPLY_TIME to minReplyTime
+        )
     }
 
     fun isInTheMiddleOfThePage(): Boolean {
@@ -173,16 +120,10 @@ open class GetChatUseCase @Inject constructor(
         hasNextAfter = false
     }
 
-    companion object {
-        private const val PARAM_MESSAGE_ID: String = "msgId"
-        private const val PARAM_BEFORE_REPLY_TIME: String = "beforeReplyTime"
-        private const val PARAM_AFTER_REPLY_TIME: String = "afterReplyTime"
-    }
-
     private val requestQuery = """
-        query get_chat_replies($$PARAM_MESSAGE_ID: Int!%s) {
+        query get_chat_replies($${PARAM_MESSAGE_ID}: Int!%s) {
           status
-          chatReplies(msgId: $$PARAM_MESSAGE_ID, isTextOnly: true%s) {
+          chatReplies(msgId: $${PARAM_MESSAGE_ID}, isTextOnly: true%s) {
             minReplyTime
             maxReplyTime
             block {
@@ -206,6 +147,7 @@ open class GetChatUseCase @Inject constructor(
               domain
               isOfficial
               isGold
+              shopType
               badge
               status {
                 timestamp
@@ -245,6 +187,7 @@ open class GetChatUseCase @Inject constructor(
                     subText
                     imageURL
                     isExpired
+                    replyID
                   }
                   attachment {
                     id
@@ -262,5 +205,11 @@ open class GetChatUseCase @Inject constructor(
         }
 
     """.trimIndent()
+
+    companion object {
+        const val PARAM_MESSAGE_ID: String = "msgId"
+        const val PARAM_BEFORE_REPLY_TIME: String = "beforeReplyTime"
+        const val PARAM_AFTER_REPLY_TIME: String = "afterReplyTime"
+    }
 
 }

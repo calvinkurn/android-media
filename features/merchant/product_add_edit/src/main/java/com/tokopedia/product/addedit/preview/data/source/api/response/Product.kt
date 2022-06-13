@@ -1,8 +1,10 @@
 package com.tokopedia.product.addedit.preview.data.source.api.response
 
+import android.annotation.SuppressLint
 import com.google.gson.annotations.SerializedName
 import java.math.BigInteger
 
+@SuppressLint("Invalid Data Type")
 data class Product(
         @SerializedName("productID")
         val productID: String = "",
@@ -14,6 +16,7 @@ data class Product(
         val stock: Int = 0,
         @SerializedName("priceCurrency")
         val priceCurrency: String = "",
+        @SuppressLint("Invalid Data Type") // price currently using Integer at server
         @SerializedName("price")
         val price: BigInteger = 0.toBigInteger(),
         @SerializedName("lastUpdatePrice")
@@ -32,20 +35,8 @@ data class Product(
         val condition: String = "",
         @SerializedName("mustInsurance")
         val mustInsurance: Boolean = false,
-        @SerializedName("isKreasiLokal")
-        val isKreasiLokal: Boolean = false,
-        @SerializedName("alias")
-        val alias: String = "",
         @SerializedName("sku")
         val sku: String = "",
-        @SerializedName("gtin")
-        val gtin: String = "",
-        @SerializedName("url")
-        val url: String = "",
-        @SerializedName("brand")
-        val brand: Brand = Brand(),
-        @SerializedName("catalog")
-        val catalog: Catalog = Catalog(),
         @SerializedName("category")
         val category: Category = Category(),
         @SerializedName("menus")
@@ -64,10 +55,6 @@ data class Product(
         val videos: List<Video> = listOf(),
         @SerializedName("cashback")
         val cashback: Cashback = Cashback(),
-        @SerializedName("lock")
-        val lock: Lock = Lock(),
-        @SerializedName("stats")
-        val stats: Stats = Stats(),
         @SerializedName("txStats")
         val txStats: TxStats = TxStats(),
         @SerializedName("variant")

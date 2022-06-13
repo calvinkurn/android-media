@@ -3,30 +3,40 @@ package com.tokopedia.sellerhomecommon.domain.mapper
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.orTrue
 import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.sellerhomecommon.data.WidgetLastUpdatedSharedPrefInterface
+import com.tokopedia.sellerhomecommon.domain.model.GetMilestoneDataResponse
 import com.tokopedia.sellerhomecommon.domain.model.MilestoneData
 import com.tokopedia.sellerhomecommon.domain.model.MissionProgressBar
 import com.tokopedia.sellerhomecommon.presentation.model.*
-import com.tokopedia.sellerhomecommon.utils.SellerHomeCommonPreferenceManager
 import javax.inject.Inject
 
 class MilestoneMapper @Inject constructor(
-    private val sellerHomeCommonPreferenceManager: SellerHomeCommonPreferenceManager
-) {
+    lastUpdatedSharedPref: WidgetLastUpdatedSharedPrefInterface,
+    lastUpdatedEnabled: Boolean
+) : BaseWidgetMapper(lastUpdatedSharedPref, lastUpdatedEnabled),
+    BaseResponseMapper<GetMilestoneDataResponse, List<MilestoneDataUiModel>> {
 
     companion object {
         private const val HIDDEN_BUTTON_STATUS = 0
-        private const val ENABLED_BUTTON_STATUS = 1
         private const val DISABLED_BUTTON_STATUS = 2
+        private const val ZERO_MS = 0L
+        private const val ONE_SECOND_MILLIS = 1000L
     }
 
-    fun mapMilestoneResponseToUiModel(
-        data: List<MilestoneData>,
+    override fun mapRemoteDataToUiData(
+        response: GetMilestoneDataResponse,
         isFromCache: Boolean
     ): List<MilestoneDataUiModel> {
-
+        val data = response.fetchMilestoneWidgetData?.data.orEmpty()
         return data.map {
-            val missionMilestone = mapGetMilestoneMission(it.mission.orEmpty())
-                .plus(mapGetMilestoneFinish(it.finishMission))
+            val missions = mapGetMilestoneMission(it.mission.orEmpty())
+            val finishCard = mapGetMilestoneFinish(it.finishMission)
+            val areAllMissionsCompleted = missions.all { m -> m.missionCompletionStatus }
+            val allMissions = if (areAllMissionsCompleted) {
+                finishCard.plus(missions)
+            } else {
+                missions.plus(finishCard)
+            }
             return@map MilestoneDataUiModel(
                 dataKey = it.dataKey.orEmpty(),
                 error = it.errorMsg.orEmpty(),
@@ -37,13 +47,21 @@ class MilestoneMapper @Inject constructor(
                 backgroundColor = it.backgroundColor.orEmpty(),
                 backgroundImageUrl = it.backgroundImageUrl.orEmpty(),
                 showNumber = it.showNumber.orFalse(),
-                isShowMission = sellerHomeCommonPreferenceManager.getIsShowMilestoneWidget(),
                 isError = it.error.orFalse(),
                 milestoneProgress = mapGetMilestoneProgressbar(it.progressBar),
-                milestoneMissions = missionMilestone,
-                milestoneCta = mapGetMilestoneCta(it.cta)
+                milestoneMissions = allMissions,
+                milestoneCta = mapGetMilestoneCta(it.cta),
+                deadlineMillis = convertSecondToMillisecond(it.deadlineMillis.orZero()),
+                lastUpdated = getLastUpdatedMillis(it.dataKey.orEmpty(), isFromCache)
             )
         }
+    }
+
+    private fun convertSecondToMillisecond(seconds: Long): Long {
+        if (seconds == ZERO_MS) {
+            return seconds
+        }
+        return seconds.times(ONE_SECOND_MILLIS)
     }
 
     private fun mapGetMilestoneMission(missionData: List<MilestoneData.Mission>): List<MilestoneMissionUiModel> {
@@ -61,6 +79,12 @@ class MilestoneMapper @Inject constructor(
                     urlType = getUrlType(buttonMissionData?.urlType),
                     appLink = buttonMissionData?.applink.orEmpty(),
                     buttonStatus = getButtonStatus(buttonMissionData?.buttonStatus)
+                ),
+                missionProgress = MissionProgressUiModel(
+                    description = it.progress?.description.orEmpty(),
+                    percentage = it.progress?.percentage.orZero(),
+                    completed = it.progress?.completed.orEmpty(),
+                    target = it.progress?.target.orEmpty()
                 )
             )
         }

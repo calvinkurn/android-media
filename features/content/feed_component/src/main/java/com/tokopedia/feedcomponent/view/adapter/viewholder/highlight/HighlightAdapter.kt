@@ -71,7 +71,7 @@ class HighlightAdapter(val list: MutableList<HighlightCardViewModel>,
                     "",
                     FollowCta(),
                     "",
-                    false, "", isVideo = false, isCaption = false
+                    false, "", mediaType = "", isCaption = false
                 )
             }
             itemView.userName.setOnClickListener {
@@ -82,7 +82,7 @@ class HighlightAdapter(val list: MutableList<HighlightCardViewModel>,
                     "",
                     FollowCta(),
                     "",
-                    false, "", isVideo = false, isCaption = false
+                    false, "", mediaType = "", isCaption = false
                 )
             }
             itemView.productImage.setOnClickListener {
@@ -160,7 +160,7 @@ class HighlightAdapter(val list: MutableList<HighlightCardViewModel>,
             type: String,
             isFollowed: Boolean,
             shopId: String,
-            isVideo: Boolean,
+            mediaType: String,
             isCaption: Boolean
         )
 

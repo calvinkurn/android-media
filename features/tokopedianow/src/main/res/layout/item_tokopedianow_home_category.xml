@@ -1,38 +1,70 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.tokopedia.unifycomponents.CardUnify xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
+<androidx.constraintlayout.widget.ConstraintLayout
+    android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:id="@+id/cu_item_category"
-    android:padding="@dimen/spacing_lvl3"
-    app:card_type="shadow">
+    android:layout_marginTop="8dp"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+    <com.google.android.material.imageview.ShapeableImageView
+        android:id="@+id/siv_category"
+        android:layout_width="88dp"
+        android:layout_height="96dp"
+        android:layout_margin="4dp"
+        android:paddingBottom="8dp"
+        android:elevation="4dp"
+        android:scaleType="centerCrop"
+        android:background="@color/tokopedianow_cardview_background_dms_color"
+        app:cardCornerRadius="8dp"
+        app:shapeAppearanceOverlay="@style/roundedCornerImageDisplay"
+        app:layout_constraintBottom_toTopOf="@+id/tp_category"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"/>
 
-        <com.tokopedia.unifycomponents.ImageUnify
-            android:id="@+id/iu_category"
-            android:layout_width="@dimen/layout_lvl6"
-            android:layout_height="@dimen/layout_lvl6"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tp_category"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:ellipsize="end"
+        android:gravity="center"
+        android:maxLines="2"
+        android:textColor="@color/Unify_N700"
+        app:layout_constraintEnd_toEndOf="@+id/siv_category"
+        app:layout_constraintStart_toStartOf="@+id/siv_category"
+        app:layout_constraintTop_toBottomOf="@+id/siv_category"
+        app:typographyType="body_3"
+        tools:text="Long Category Title" />
 
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/tp_category"
-            android:layout_width="@dimen/layout_lvl0"
-            android:layout_height="@dimen/layout_lvl0"
-            android:layout_marginStart="@dimen/spacing_lvl3"
-            android:ellipsize="end"
-            android:gravity="center_vertical"
-            android:maxLines="2"
-            android:textColor="@color/Unify_N700"
-            app:layout_constraintBottom_toBottomOf="@id/iu_category"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@id/iu_category"
-            app:layout_constraintTop_toTopOf="@id/iu_category"
-            app:typographyType="small"
-            tools:text="Long Category Title" />
-    </androidx.constraintlayout.widget.ConstraintLayout>
-</com.tokopedia.unifycomponents.CardUnify>
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tp_all_category"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="12dp"
+        android:layout_marginBottom="20dp"
+        android:ellipsize="end"
+        android:gravity="start"
+        android:maxLines="2"
+        android:text="@string/tokopedianow_all_category"
+        android:textColor="@color/Unify_Static_White"
+        android:translationZ="4dp"
+        app:layout_constraintBottom_toBottomOf="@+id/siv_category"
+        app:layout_constraintEnd_toStartOf="@+id/iu_chevron"
+        app:layout_constraintStart_toStartOf="@+id/siv_category"
+        app:typographyType="heading_6"
+        tools:text="Semua Kategori" />
+
+    <com.tokopedia.iconunify.IconUnify
+        android:id="@+id/iu_chevron"
+        android:layout_width="13dp"
+        android:layout_height="13dp"
+        android:layout_marginEnd="12dp"
+        android:translationZ="4dp"
+        app:icon_color_light_enable="@color/Unify_Static_White"
+        app:icon_name="CHEVRON_RIGHT"
+        app:layout_constraintBottom_toBottomOf="@+id/tp_all_category"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/tp_all_category"
+        app:layout_constraintVertical_bias="0.95" />
+</androidx.constraintlayout.widget.ConstraintLayout >

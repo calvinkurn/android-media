@@ -31,6 +31,7 @@ import com.tokopedia.topchat.chatroom.view.adapter.viewholder.ProductCarouselLis
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.ReviewViewHolder
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.AdapterListener
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.Payload
+import com.tokopedia.topchat.chatroom.view.adapter.viewholder.product_bundling.ProductBundlingCarouselViewHolder
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.srw.SrwBubbleViewHolder
 import com.tokopedia.topchat.chatroom.view.custom.SingleProductAttachmentContainer
 import com.tokopedia.topchat.chatroom.view.custom.SrwFrameLayout
@@ -47,10 +48,13 @@ import com.tokopedia.topchat.chatroom.view.viewmodel.SendablePreview
 class TopChatRoomAdapter constructor(
     private val context: Context?,
     private val adapterTypeFactory: TopChatTypeFactoryImpl
-) : BaseChatAdapter(adapterTypeFactory), ProductCarouselListAttachmentViewHolder.Listener,
+) : BaseChatAdapter(adapterTypeFactory),
+    ProductCarouselListAttachmentViewHolder.Listener,
+    ProductBundlingCarouselViewHolder.Listener,
     AdapterListener {
 
     private val productCarouselState: ArrayMap<Int, Parcelable> = ArrayMap()
+    private val productBundlingCarouselState: ArrayMap<Int, Parcelable> = ArrayMap()
     private var bottomMostHeaderDate: HeaderDateUiModel? = null
     private var topMostHeaderDate: HeaderDateUiModel? = null
     private var topMostHeaderDateIndex: Int? = null
@@ -74,16 +78,47 @@ class TopChatRoomAdapter constructor(
         return localId != null && replyMap.contains(localId)
     }
 
-    fun updatePreviewFromWs(
+    fun removePreviewMsg(localId: String) {
+        if (!hasPreviewOnList(localId)) return
+        val chatBubblePosition = getLocalIdMsgPosition(localId)
+        if (chatBubblePosition == RecyclerView.NO_POSITION) return
+        visitables.removeAt(chatBubblePosition)
+        notifyItemRemoved(chatBubblePosition)
+        replyMap.remove(localId)
+    }
+
+    fun updatePreviewUiModel(
         visitable: Visitable<*>,
         localId: String
     ) {
-        val chatBubblePosition = visitables.indexOfFirst {
-            it is BaseChatUiModel && it.localId == localId
-        }
+        val chatBubblePosition = getLocalIdMsgPosition(localId)
         if (chatBubblePosition == RecyclerView.NO_POSITION) return
         visitables[chatBubblePosition] = visitable
         notifyItemChanged(chatBubblePosition, Payload.REBIND)
+    }
+
+    fun updatePreviewState(
+        localId: String
+    ) {
+        val chatBubblePosition = getLocalIdMsgPosition(localId)
+        if (chatBubblePosition == RecyclerView.NO_POSITION) return
+        notifyItemChanged(chatBubblePosition, Payload.REBIND)
+    }
+
+    fun deleteMsg(replyTimeNano: String) {
+        val chatBubblePosition = visitables.indexOfFirst {
+            it is BaseChatUiModel && it.replyTime == replyTimeNano
+        }
+        if (chatBubblePosition == RecyclerView.NO_POSITION) return
+        val msg = visitables[chatBubblePosition] as? BaseChatUiModel ?: return
+        val deletedBubbleUiModel = MessageUiModel.Builder()
+            .withBaseChatUiModel(msg)
+            .withSafelySendableUiModel(msg)
+            .withMarkAsDeleted()
+            .build()
+        visitables.removeAt(chatBubblePosition)
+        visitables.add(chatBubblePosition, deletedBubbleUiModel)
+        notifyItemChanged(chatBubblePosition)
     }
 
     override fun getItemViewType(position: Int): Int {
@@ -95,7 +130,8 @@ class TopChatRoomAdapter constructor(
         parent: ViewGroup,
         viewType: Int
     ): AbstractViewHolder<out Visitable<*>> {
-        return adapterTypeFactory.createViewHolder(parent, viewType, this, this)
+        return adapterTypeFactory.createViewHolder(
+            parent, viewType, this, this, this)
     }
 
     override fun saveProductCarouselState(position: Int, state: Parcelable?) {
@@ -123,14 +159,16 @@ class TopChatRoomAdapter constructor(
 
     fun getBubblePosition(localId: String, replyTime: String): Int {
         return if (replyMap.contains(localId)) {
-            visitables.indexOfFirst {
-                it is BaseChatUiModel && it.localId == localId
-            }
+            getLocalIdMsgPosition(localId)
         } else {
             visitables.indexOfFirst {
                 it is BaseChatUiModel && it.replyTime == replyTime
             }
         }
+    }
+
+    private fun getLocalIdMsgPosition(localId: String) = visitables.indexOfFirst {
+        it is BaseChatUiModel && it.localId == localId
     }
 
     override fun isOpposite(adapterPosition: Int, isSender: Boolean): Boolean {
@@ -144,7 +182,7 @@ class TopChatRoomAdapter constructor(
         return isSender != nextItemIsSender
     }
 
-    override fun getProductCarouselViewPool(): RecyclerView.RecycledViewPool {
+    override fun getCarouselViewPool(): RecyclerView.RecycledViewPool {
         return carouselViewPool
     }
 
@@ -656,5 +694,15 @@ class TopChatRoomAdapter constructor(
         }
         val updatePosition = visitables.indexOf(element)
         return Pair(updatePosition, visitables.getOrNull(updatePosition) as? T)
+    }
+
+    override fun saveProductBundlingCarouselState(position: Int, state: Parcelable?) {
+        state?.let {
+            productBundlingCarouselState[position] = it
+        }
+    }
+
+    override fun getProductBundlingCarouselState(position: Int): Parcelable? {
+        return productBundlingCarouselState[position]
     }
 }

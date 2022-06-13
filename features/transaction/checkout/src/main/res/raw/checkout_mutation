@@ -32,14 +32,16 @@ mutation checkout($carts: CheckoutParams) {
           }
         }
       }
-    }
-    error_reporter {
-      eligible
-      texts {
-        submit_title
-        submit_description
-        submit_button
-        cancel_button
+      prompt {
+        type
+        title
+        description
+        buttons {
+          text
+          link
+          color
+          action
+        }
       }
     }
   }

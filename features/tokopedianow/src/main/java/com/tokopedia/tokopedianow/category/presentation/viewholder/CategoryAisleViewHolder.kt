@@ -4,13 +4,19 @@ import android.os.Build
 import android.view.View
 import android.widget.TextView
 import androidx.annotation.LayoutRes
-import androidx.core.content.ContextCompat
+import androidx.vectordrawable.graphics.drawable.VectorDrawableCompat
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.kotlin.extensions.view.getDimens
+import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.category.presentation.listener.CategoryAisleListener
 import com.tokopedia.tokopedianow.category.presentation.model.CategoryAisleDataView
 import com.tokopedia.tokopedianow.category.presentation.model.CategoryAisleItemDataView
+import com.tokopedia.tokopedianow.common.constant.ServiceType.NOW_2H
+import com.tokopedia.tokopedianow.common.util.TokoNowServiceTypeUtil.CATEGORY_AISLE_HEADER_ID
+import com.tokopedia.tokopedianow.common.util.TokoNowServiceTypeUtil.getServiceTypeRes
 import com.tokopedia.tokopedianow.databinding.ItemTokopedianowCategoryAisleBinding
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.utils.view.binding.viewBinding
@@ -51,6 +57,10 @@ class CategoryAisleViewHolder(
         binding?.tokoNowSearchCategoryAisleImageLeft
     }
 
+    private val txtCategoryAisleHeader by lazy {
+        binding?.tokoNowSearchCategoryAisleHeader
+    }
+
     init {
         setContainerBackground(itemView)
     }
@@ -59,9 +69,10 @@ class CategoryAisleViewHolder(
         try {
             if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N) return
 
-            val drawable = ContextCompat.getDrawable(
-                itemView.context,
+            val drawable = VectorDrawableCompat.create(
+                itemView.context.resources,
                 R.drawable.tokopedianow_ic_aisle_background,
+                itemView.context.theme
             )
             aisleContainer?.background = drawable
         } catch (throwable: Throwable) {
@@ -77,10 +88,38 @@ class CategoryAisleViewHolder(
             1 -> {
                 rightAisleCard?.visibility = View.INVISIBLE
                 bindLeftAisle(aisle.items[0])
+                bindHeaderAisle(aisle.serviceType)
+                addMarginTop(aisle.serviceType)
             }
             else -> {
                 bindLeftAisle(aisle.items[0])
                 bindRightAisle(aisle.items[1])
+                bindHeaderAisle(aisle.serviceType)
+                addMarginTop(aisle.serviceType)
+            }
+        }
+    }
+
+    private fun addMarginTop(serviceType: String) {
+        binding?.apply {
+            if (serviceType == NOW_2H) {
+                tokoNowSearchCategoryAisleDivider.setMargin(
+                    left = root.getDimens(com.tokopedia.unifyprinciples.R.dimen.unify_space_0),
+                    top = root.getDimens(com.tokopedia.unifyprinciples.R.dimen.unify_space_12),
+                    right = root.getDimens(com.tokopedia.unifyprinciples.R.dimen.unify_space_0),
+                    bottom = root.getDimens(com.tokopedia.unifyprinciples.R.dimen.unify_space_0)
+                )
+            }
+        }
+    }
+
+    private fun bindHeaderAisle(serviceType: String) {
+        binding?.root?.context?.let {
+            getString(getServiceTypeRes(
+                key = CATEGORY_AISLE_HEADER_ID,
+                serviceType = serviceType).orZero()
+            )?.apply {
+                txtCategoryAisleHeader?.text = this
             }
         }
     }

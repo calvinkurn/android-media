@@ -75,6 +75,9 @@ class StatisticViewModelTest {
     @RelaxedMockK
     lateinit var getBarChartDataUseCase: GetBarChartDataUseCase
 
+    @RelaxedMockK
+    lateinit var getAnnouncementDataUseCase: GetAnnouncementDataUseCase
+
     @get:Rule
     val rule = InstantTaskExecutorRule()
 
@@ -99,6 +102,7 @@ class StatisticViewModelTest {
             { getTableDataUseCase },
             { getPieChartDataUseCase },
             { getBarChartDataUseCase },
+            { getAnnouncementDataUseCase },
             CoroutineTestDispatchersProvider
         )
 
@@ -679,5 +683,53 @@ class StatisticViewModelTest {
         }
 
         assert(viewModel.barChartWidgetData.value is Fail)
+    }
+
+    @Test
+    fun `should success when get announcement widget data`() = runBlocking {
+        val dataKeys = listOf(anyString())
+        val result = listOf(AnnouncementDataUiModel())
+
+        getAnnouncementDataUseCase.params = GetAnnouncementDataUseCase.createRequestParams(dataKeys)
+
+        coEvery {
+            getAnnouncementDataUseCase.executeOnBackground()
+        } returns result
+
+        viewModel.getAnnouncementWidgetData(dataKeys)
+
+        viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
+
+        coVerify {
+            getAnnouncementDataUseCase.executeOnBackground()
+        }
+
+        //number of data keys and result should same
+        Assertions.assertTrue(dataKeys.size == result.size)
+
+        val expectedResult = Success(result)
+        Assertions.assertTrue(expectedResult.data.size == dataKeys.size)
+        Assertions.assertEquals(expectedResult, viewModel.announcementWidgetData.value)
+    }
+
+    @Test
+    fun `should failed when get announcement widget data`() = runBlocking {
+        val dataKeys = listOf(anyString(), anyString())
+
+        getAnnouncementDataUseCase.params = GetAnnouncementDataUseCase.createRequestParams(dataKeys)
+
+        coEvery {
+            getAnnouncementDataUseCase.executeOnBackground()
+        } throws RuntimeException("error")
+
+        viewModel.getAnnouncementWidgetData(dataKeys)
+
+        viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
+
+        coVerify {
+            getAnnouncementDataUseCase.executeOnBackground()
+        }
+
+        assert(viewModel.announcementWidgetData.value is Fail)
     }
 }

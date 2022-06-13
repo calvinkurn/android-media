@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/websocket_logging_nav"
+    app:startDestination="@id/webSocketLoggingFragment">
+
+    <fragment
+        android:id="@+id/webSocketLoggingFragment"
+        android:name="com.tokopedia.analyticsdebugger.websocket.ui.fragment.WebSocketLoggingFragment"
+        android:label="WebSocketLoggingFragment" >
+        <action
+            android:id="@+id/action_webSocketLoggingFragment_to_webSocketDetailLoggingFragment"
+            app:destination="@id/webSocketDetailLoggingFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/webSocketDetailLoggingFragment"
+        android:name="com.tokopedia.analyticsdebugger.websocket.ui.fragment.WebSocketDetailLoggingFragment"
+        android:label="WebSocketDetailLoggingFragment">
+
+        <argument
+            android:name="title"
+            app:argType="string"
+            />
+
+        <argument
+            android:name="dateTime"
+            app:argType="string"
+            />
+
+        <argument
+            android:name="channelId"
+            app:argType="string"
+            />
+
+        <argument
+            android:name="gcToken"
+            app:argType="string"
+            />
+
+        <argument
+            android:name="message"
+            app:argType="string"
+            />
+
+    </fragment>
+</navigation>

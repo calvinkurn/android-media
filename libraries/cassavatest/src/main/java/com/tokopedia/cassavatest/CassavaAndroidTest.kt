@@ -3,7 +3,7 @@ package com.tokopedia.cassavatest
 import android.content.Context
 import androidx.test.platform.app.InstrumentationRegistry
 import com.google.gson.GsonBuilder
-import com.tokopedia.analyticsdebugger.cassava.AnalyticsMapParser
+import com.tokopedia.analyticsdebugger.cassava.utils.AnalyticsParser
 import com.tokopedia.analyticsdebugger.cassava.data.CassavaRepository
 import com.tokopedia.analyticsdebugger.cassava.data.CassavaSource
 import com.tokopedia.analyticsdebugger.cassava.data.api.CassavaApi
@@ -11,8 +11,8 @@ import com.tokopedia.analyticsdebugger.cassava.data.request.ValidationResultData
 import com.tokopedia.analyticsdebugger.cassava.data.request.ValidationResultRequest
 import com.tokopedia.analyticsdebugger.cassava.domain.QueryListUseCase
 import com.tokopedia.analyticsdebugger.cassava.domain.ValidationResultUseCase
-import com.tokopedia.analyticsdebugger.cassava.validator.Utils
-import com.tokopedia.analyticsdebugger.cassava.validator.core.*
+import com.tokopedia.analyticsdebugger.cassava.utils.Utils
+import com.tokopedia.analyticsdebugger.cassava.core.*
 import com.tokopedia.analyticsdebugger.database.TkpdAnalyticsDatabase
 import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
 import com.tokopedia.url.TokopediaUrl
@@ -45,7 +45,7 @@ fun getAnalyticsWithQuery(gtmLogDBSource: GtmLogDBSource,
                           shouldSendResult: Boolean = true): List<Validator> {
     val cassavaQuery = getQuery(InstrumentationRegistry.getInstrumentation().context, queryId, isFromNetwork)
     val validators = cassavaQuery.query.map { it.toDefaultValidator() }
-    val validationResult = ValidatorEngine(gtmLogDBSource, AnalyticsMapParser())
+    val validationResult = ValidatorEngine(gtmLogDBSource, AnalyticsParser())
             .computeRx(validators, cassavaQuery.mode.value)
             .toBlocking()
             .first()
@@ -60,7 +60,7 @@ fun getAnalyticsWithQuery(gtmLogDBSource: GtmLogDBSource,
                           queryFileName: String): List<Validator> {
     val cassavaQuery = getQuery(context, queryFileName)
     val validators = cassavaQuery.query.map { it.toDefaultValidator() }
-    return ValidatorEngine(gtmLogDBSource, AnalyticsMapParser())
+    return ValidatorEngine(gtmLogDBSource, AnalyticsParser())
             .computeRx(validators, cassavaQuery.mode.value)
             .toBlocking()
             .first()
@@ -70,7 +70,7 @@ fun getAnalyticsWithQuery(gtmLogDBSource: GtmLogDBSource,
 fun getAnalyticsWithQuery(gtmLogDBSource: GtmLogDBSource, queryString: String): List<Validator> {
     val cassavaQuery = getQuery(InstrumentationRegistry.getInstrumentation().context, queryString)
     val validators = cassavaQuery.query.map { it.toDefaultValidator() }
-    return ValidatorEngine(gtmLogDBSource, AnalyticsMapParser())
+    return ValidatorEngine(gtmLogDBSource, AnalyticsParser())
             .computeRx(validators, cassavaQuery.mode.value)
             .toBlocking()
             .first()

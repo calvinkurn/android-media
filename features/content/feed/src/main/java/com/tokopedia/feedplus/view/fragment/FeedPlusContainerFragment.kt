@@ -1,7 +1,9 @@
 package com.tokopedia.feedplus.view.fragment
 
+import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.TransitionDrawable
 import android.os.Build
@@ -21,7 +23,6 @@ import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.DisplayMetricUtils
-import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.affiliatecommon.DISCOVERY_BY_ME
 import com.tokopedia.affiliatecommon.data.util.AffiliatePreference
@@ -57,6 +58,7 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.navigation_common.listener.AllNotificationListener
 import com.tokopedia.navigation_common.listener.FragmentListener
 import com.tokopedia.navigation_common.listener.MainParentStatusBarListener
+import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.remoteconfig.*
 import com.tokopedia.searchbar.data.HintData
 import com.tokopedia.searchbar.navigation_component.NavToolbar
@@ -72,6 +74,7 @@ import com.tokopedia.unifycomponents.floatingbutton.FloatingButtonUnify
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.videoTabComponent.view.VideoTabFragment
 import kotlinx.android.synthetic.main.fragment_feed_plus_container.*
 import kotlinx.android.synthetic.main.partial_feed_error.*
 import timber.log.Timber
@@ -87,9 +90,14 @@ private const val BROADCAST_VISIBLITY = "BROADCAST_VISIBILITY"
 class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNotificationListener, FeedMainToolbar.OnToolBarClickListener,PostProgressUpdateView.PostUpdateSwipe {
 
     private var showOldToolbar: Boolean = false
+    private var shouldHitFeedTracker: Boolean = false
+    private var isTrackerOnBroadcastRecieveAlreadyHit: Boolean = false
+    private var isFeedSelectedFromBottomNavigation: Boolean = false
     private var feedToolbar: Toolbar? = null
     private var authorList: List<Author>? = null
+    private lateinit var newFeedReceiver: BroadcastReceiver
     private var postProgressUpdateView: PostProgressUpdateView? = null
+    private var viewPager: ViewPager? = null
     private var mInProgress = false
 
     companion object {
@@ -98,18 +106,18 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
         const val PARAM_SHOW_PROGRESS_BAR = "show_posting_progress_bar"
         const val PARAM_IS_EDIT_STATE = "is_edit_state"
         const val PARAM_MEDIA_PREVIEW = "media_preview"
-        val MAX_MULTI_SELECT_ALLOWED_VALUE = 5
+        const val MAX_MULTI_SELECT_ALLOWED_VALUE = 5
+        const val FEED_BACKGROUND_CROSSFADER_DURATION = 200
 
-        val TITLE = "title"
-        val SUB_TITLE = "subtitle"
-        val TOOLBAR_ICON_RES = "icon_res"
-        val TOOLBAR_ICON_URL = "icon_url"
-        val MENU_TITLE = "menu_title"
-        val MAX_MULTI_SELECT_ALLOWED = "max_multi_select"
-        val APPLINK_AFTER_CAMERA_CAPTURE = "link_cam"
-        val APPLINK_FOR_GALLERY_PROCEED = "link_gall"
-        val APPLINK_FOR_BACK_NAVIGATION = "link_back"
-        val URIS = "ip_uris"
+        const val TITLE = "title"
+        const val SUB_TITLE = "subtitle"
+        const val TOOLBAR_ICON_URL = "icon_url"
+        const val MAX_MULTI_SELECT_ALLOWED = "max_multi_select"
+        const val APPLINK_AFTER_CAMERA_CAPTURE = "link_cam"
+        const val APPLINK_FOR_GALLERY_PROCEED = "link_gall"
+        private const val BROADCAST_FEED = "BROADCAST_FEED"
+        const val FEED_IS_VISIBLE = "FEED_IS_VISIBLE"
+
 
         @JvmStatic
         fun newInstance(bundle: Bundle?) = FeedPlusContainerFragment().apply { arguments = bundle }
@@ -130,7 +138,7 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
     @Inject
     lateinit var entryPointAnalytic: FeedEntryPointAnalytic
 
-    val KEY_IS_LIGHT_THEME_STATUS_BAR = "is_light_theme_status_bar"
+    private val keyIsLightThemeStatusBar = "is_light_theme_status_bar"
     private var mainParentStatusBarListener: MainParentStatusBarListener? = null
 
     private val viewModel by lazy {
@@ -154,7 +162,6 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
     private var startToTransitionOffset = 0
     private var searchBarTransitionRange = 0
     private var isLightThemeStatusBar = false
-    private var useNewInbox = false
     private var isSeller = false
 
     private lateinit var coachMarkItem: CoachMarkItem
@@ -195,7 +202,6 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
             status_bar_bg2.layoutParams.height = DisplayMetricUtils.getStatusBarHeight(it)
         }
         initNavRevampAbTest()
-        initInboxAbTest()
         initToolbar()
         initView()
         requestFeedTab()
@@ -206,18 +212,8 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
         showOldToolbar = false
     }
 
-    private fun initInboxAbTest() {
-        useNewInbox = RemoteConfigInstance.getInstance().abTestPlatform.getString(
-                RollenceKey.KEY_AB_INBOX_REVAMP, RollenceKey.VARIANT_OLD_INBOX
-        ) == RollenceKey.VARIANT_NEW_INBOX && !showOldToolbar
-    }
-
     private fun getInboxIcon(): Int {
-        return if (useNewInbox) {
-            IconList.ID_INBOX
-        } else {
-            IconList.ID_MESSAGE
-        }
+        return IconList.ID_MESSAGE
     }
 
     private fun initToolbar() {
@@ -267,9 +263,7 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
         val icons = IconBuilder(IconBuilderFlag(pageSource = ApplinkConsInternalNavigation.SOURCE_HOME))
                 .addIcon(getInboxIcon()) { onInboxButtonClick() }
 
-        if (!useNewInbox) {
-            icons.addIcon(IconList.ID_NOTIFICATION) { onNotificationClick() }
-        }
+        icons.addIcon(IconList.ID_NOTIFICATION) { onNotificationClick() }
         icons.apply {
             addIcon(IconList.ID_CART) {}
         }
@@ -282,6 +276,8 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
     override fun onPause() {
         super.onPause()
         hideAllFab()
+        shouldHitFeedTracker = true
+        unRegisterNewFeedReceiver()
     }
 
     override fun onResume() {
@@ -290,12 +286,23 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
             fab_feed.visibility = View.GONE
         else
             fab_feed.visibility = View.VISIBLE
+        registerNewFeedReceiver()
+
+        if (shouldHitFeedTracker && isFeedSelectedFromBottomNavigation) {
+            toolBarAnalytics.createAnalyticsForOpenScreen(
+                viewPager?.currentItem ?: 0,
+                userSession.isLoggedIn.toString(),
+                userSession.userId
+            )
+            toolBarAnalytics.userVisitsFeed(userSession.isLoggedIn.toString(), userSession.userId)
+        }
+
 
         if (activity?.intent?.getBooleanExtra(PARAM_SHOW_PROGRESS_BAR, false) == true) {
             if (!mInProgress) {
                 val isEditPost = activity?.intent?.getBooleanExtra(
                     PARAM_IS_EDIT_STATE, false) ?: false
-                postProgressUpdateView?.resetProgressBarState(isEditPost ?: false)
+                postProgressUpdateView?.resetProgressBarState(isEditPost)
                 if (!isEditPost) {
                     val mediaPath = activity?.intent?.getStringExtra(
                         PARAM_MEDIA_PREVIEW) ?: ""
@@ -363,9 +370,7 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
             setInboxNumber(inboxCount)
         }
         (feedToolbar as? NavToolbar)?.run {
-            if (!useNewInbox) {
-                setBadgeCounter(IconList.ID_NOTIFICATION, notificationCount)
-            }
+            setBadgeCounter(IconList.ID_NOTIFICATION, notificationCount)
             setBadgeCounter(getInboxIcon(), inboxCount)
             setBadgeCounter(IconList.ID_CART, cartCount)
         }
@@ -398,17 +403,70 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
 
     private fun initView() {
         postProgressUpdateView = view?.findViewById(R.id.postUpdateView)
+        viewPager = view?.findViewById(R.id.view_pager)
         postProgressUpdateView?.setCreatePostData(CreatePostViewModel())
         postProgressUpdateView?.setPostUpdateListener(this)
         hideAllFab()
         setAdapter()
         setViewPager()
+        //initial value when feed opened for very first time
+        isFeedSelectedFromBottomNavigation = true
+
+        newFeedReceiver = object : BroadcastReceiver() {
+            override fun onReceive(context: Context, intent: Intent?) {
+                if (intent != null && intent.action != null) {
+                    if (intent.action == BROADCAST_FEED) {
+                        if (intent.hasExtra(FEED_IS_VISIBLE)) {
+                            isFeedSelectedFromBottomNavigation = intent.extras?.getBoolean(
+                                FEED_IS_VISIBLE
+                            ) ?: isFeedSelectedFromBottomNavigation
+                        }
+                        if (!isTrackerOnBroadcastRecieveAlreadyHit && isFeedSelectedFromBottomNavigation) {
+                            isTrackerOnBroadcastRecieveAlreadyHit = true
+                            toolBarAnalytics.createAnalyticsForOpenScreen(
+                                viewPager?.currentItem ?: 0,
+                                userSession.isLoggedIn.toString(),
+                                userSession.userId
+                            )
+                        }
+
+                    } else if (intent.action == BROADCAST_VISIBLITY) {
+
+                        //When some other tab in selected instead of feed from bottom navigation
+                        isFeedSelectedFromBottomNavigation = false
+                        isTrackerOnBroadcastRecieveAlreadyHit = false
+                    }
+                }
+            }
+        }
+        registerNewFeedReceiver()
         onNotificationChanged(
             badgeNumberNotification,
             badgeNumberInbox,
             badgeNumberCart
         ) // notify badge after toolbar created
     }
+    private fun registerNewFeedReceiver() {
+        if (activity != null && requireActivity().applicationContext != null) {
+            val intentFilter = IntentFilter()
+
+            intentFilter.addAction(BROADCAST_FEED)
+            intentFilter.addAction(BROADCAST_VISIBLITY)
+
+            LocalBroadcastManager
+                .getInstance(requireActivity().applicationContext)
+                .registerReceiver(newFeedReceiver, intentFilter)
+        }
+    }
+
+    private fun unRegisterNewFeedReceiver() {
+        if (activity != null && requireActivity().applicationContext != null) {
+            LocalBroadcastManager
+                .getInstance(requireActivity().applicationContext)
+                .unregisterReceiver(newFeedReceiver)
+        }
+    }
+
 
     private fun initFab() {
         fab_feed.type = FloatingButtonUnify.BASIC
@@ -482,6 +540,13 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
         }
     }
 
+    override fun onStop() {
+        super.onStop()
+        activity?.run {
+            unRegisterNewFeedReceiver()
+        }
+    }
+
     private fun enableContentCreationNewFlow(): Boolean {
         val config: RemoteConfig = FirebaseRemoteConfigImpl(context)
         return config.getBoolean(RemoteConfigKey.ENABLE_NEW_CONTENT_CREATION_FLOW, true)
@@ -498,17 +563,20 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
             }
 
             override fun onPageSelected(position: Int) {
-                    if (position == 1) {
-                        context?.let {
-                            val intent = Intent(BROADCAST_VISIBLITY)
-                            LocalBroadcastManager.getInstance(it.applicationContext)
-                                .sendBroadcast(intent)
-                        }
-                        postProgressUpdateView?.hide()
-                    } else if (position == 0 && mInProgress) {
-                        postProgressUpdateView?.show()
+                toolBarAnalytics.clickOnVideoTabOnFeedPage(position, userSession.userId)
+                toolBarAnalytics.createAnalyticsForOpenScreen(position, userSession.isLoggedIn.toString(), userSession.userId)
+
+                updateFeedUpdateVisibility(position)
+
+                if (position == 1 || position == 2) {
+                    postProgressUpdateView?.hide()
+                    if (position == 2) {
+                        videoTabAutoPlayJumboWidget()
                     }
+                } else if (position == 0 && mInProgress) {
+                    postProgressUpdateView?.show()
                 }
+            }
 
             override fun onPageScrollStateChanged(state: Int) {
             }
@@ -540,7 +608,13 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
     }
 
     private fun onSuccessGetTab(data: FeedTabs) {
-        val feedData = data.feedData.filter { it.type == FeedTabs.TYPE_FEEDS || it.type == FeedTabs.TYPE_EXPLORE || it.type == FeedTabs.TYPE_CUSTOM }
+        val feedData = data.feedData.filter { it.type == FeedTabs.TYPE_FEEDS || it.type == FeedTabs.TYPE_EXPLORE || it.type == FeedTabs.TYPE_CUSTOM || it.type == FeedTabs.TYPE_VIDEO }
+
+        tab_layout?.getUnifyTabLayout()?.removeAllTabs()
+        feedData.forEach {
+            tab_layout?.addNewTab(it.title)
+        }
+
         pagerAdapter.setItemList(feedData)
         view_pager.currentItem = if (data.meta.selectedIndex < feedData.size) data.meta.selectedIndex else 0
         view_pager.offscreenPageLimit = pagerAdapter.count
@@ -548,6 +622,8 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
         feed_error.visibility = View.GONE
         tab_layout.visibility = View.VISIBLE
         view_pager.visibility = View.VISIBLE
+
+
 
         if (hasCategoryIdParam()) {
             goToExplore()
@@ -587,15 +663,15 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
 
     private fun showNormalTextWhiteToolbar() {
         if (toolbarType != TOOLBAR_GRADIENT) {
-            feedBackgroundCrossfader.reverseTransition(200)
+            feedBackgroundCrossfader.reverseTransition(FEED_BACKGROUND_CROSSFADER_DURATION)
             toolbarType = TOOLBAR_GRADIENT
             status_bar_bg2.visibility = when {
                 Build.VERSION.SDK_INT < Build.VERSION_CODES.M -> View.VISIBLE
                 else -> View.INVISIBLE
             }
             activity?.let {
-                tab_layout.setSelectedTabIndicatorColor(MethodChecker.getColor(activity, com.tokopedia.unifyprinciples.R.color.Unify_G400))
-                tab_layout.setTabTextColors(MethodChecker.getColor(activity, com.tokopedia.unifyprinciples.R.color.Unify_N700_32), MethodChecker.getColor(activity, com.tokopedia.unifyprinciples.R.color.Unify_G400))
+                tab_layout.getUnifyTabLayout().setSelectedTabIndicatorColor(MethodChecker.getColor(activity, com.tokopedia.unifyprinciples.R.color.Unify_G400))
+                tab_layout.getUnifyTabLayout().setTabTextColors(MethodChecker.getColor(activity, com.tokopedia.unifyprinciples.R.color.Unify_N700_32), MethodChecker.getColor(activity, com.tokopedia.unifyprinciples.R.color.Unify_G400))
             }
             requestStatusBarDark()
         }
@@ -603,15 +679,15 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
 
     private fun showWhiteTextTransparentToolbar() {
         if (toolbarType != TOOLBAR_WHITE) {
-            feedBackgroundCrossfader.reverseTransition(200)
+            feedBackgroundCrossfader.reverseTransition(FEED_BACKGROUND_CROSSFADER_DURATION)
             toolbarType = TOOLBAR_WHITE
             status_bar_bg2.visibility = when {
                 Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP -> View.INVISIBLE
                 else -> View.GONE
             }
             activity?.let {
-                tab_layout.setSelectedTabIndicatorColor(MethodChecker.getColor(activity, com.tokopedia.unifyprinciples.R.color.Unify_N0))
-                tab_layout.setTabTextColors(MethodChecker.getColor(activity, com.tokopedia.unifyprinciples.R.color.Unify_N0), MethodChecker.getColor(activity, com.tokopedia.unifyprinciples.R.color.Unify_N0))
+                tab_layout.getUnifyTabLayout().setSelectedTabIndicatorColor(MethodChecker.getColor(activity, com.tokopedia.unifyprinciples.R.color.Unify_N0))
+                tab_layout.getUnifyTabLayout().setTabTextColors(MethodChecker.getColor(activity, com.tokopedia.unifyprinciples.R.color.Unify_N0), MethodChecker.getColor(activity, com.tokopedia.unifyprinciples.R.color.Unify_N0))
             }
             requestStatusBarLight()
         }
@@ -701,12 +777,12 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
-        outState.putBoolean(KEY_IS_LIGHT_THEME_STATUS_BAR, isLightThemeStatusBar)
+        outState.putBoolean(keyIsLightThemeStatusBar, isLightThemeStatusBar)
     }
 
     override fun onViewStateRestored(savedInstanceState: Bundle?) {
         super.onViewStateRestored(savedInstanceState)
-        isLightThemeStatusBar = savedInstanceState?.getBoolean(KEY_IS_LIGHT_THEME_STATUS_BAR)
+        isLightThemeStatusBar = savedInstanceState?.getBoolean(keyIsLightThemeStatusBar)
                 ?: false
     }
 
@@ -729,7 +805,7 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
 
     override fun swipeOnPostUpdate() {
         Toaster.build(requireView(),
-            getString(com.tokopedia.feedplus.R.string.feed_post_successful_toaster),
+            getString(R.string.feed_post_successful_toaster),
             Toaster.LENGTH_LONG,
             Toaster.TYPE_NORMAL).show()
         mInProgress = false
@@ -745,6 +821,27 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
             //no op
         }
         updateVisibility(false)
+    }
+    fun videoTabAutoPlayJumboWidget(){
+        try {
+            val fragment = pagerAdapter.getRegisteredFragment(view_pager.currentItem)
+            if (fragment is VideoTabFragment) {
+                fragment.autoplayJumboWidget()
+            }
+        } catch (e: IllegalStateException) {
+            Timber.e(e)
+        }
+
+    }
+    fun updateFeedUpdateVisibility(position: Int) {
+        try {
+            val fragment = pagerAdapter.getRegisteredFragment(position)
+            if (fragment is FeedPlusFragment) {
+                fragment.updateFeedVisibilityVariable(position == 0)
+            }
+        } catch (e: IllegalStateException) {
+            Timber.e(e)
+        }
     }
 
     override fun onRetryCLicked() {

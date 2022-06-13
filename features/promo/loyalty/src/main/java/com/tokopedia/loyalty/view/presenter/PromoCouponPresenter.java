@@ -11,7 +11,7 @@ import com.google.gson.JsonParser;
 import com.google.gson.JsonSyntaxException;
 import com.tokopedia.abstraction.common.network.exception.HttpErrorException;
 import com.tokopedia.abstraction.constant.IRouterConstant;
-import com.tokopedia.authentication.AuthHelper;
+import com.tokopedia.network.authentication.AuthHelper;
 import com.tokopedia.logger.ServerLogger;
 import com.tokopedia.logger.utils.Priority;
 import com.tokopedia.loyalty.domain.usecase.TrainCheckVoucherUseCase;

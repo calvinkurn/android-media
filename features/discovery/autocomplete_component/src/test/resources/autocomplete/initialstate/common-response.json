@@ -5,6 +5,7 @@
       "feature_id": "recent_view",
       "header": "Terakhir dilihat",
       "label_action": "",
+      "tracking_option": 3,
       "items": [
         {
           "id": "20100686",
@@ -19,7 +20,8 @@
           "label": "",
           "label_type": "",
           "shortcut_image": "",
-          "type": ""
+          "type": "",
+          "component_id": "01.02.01.01"
         },
         {
           "id": "472114665",
@@ -34,7 +36,8 @@
           "label": "",
           "label_type": "",
           "shortcut_image": "",
-          "type": ""
+          "type": "",
+          "component_id": "01.02.01.01"
         }
       ]
     },
@@ -43,6 +46,7 @@
       "feature_id": "recent_search",
       "header": "Terakhir dicari",
       "label_action": "",
+      "tracking_option": 3,
       "items": [
         {
           "id": "0",
@@ -57,7 +61,8 @@
           "label": "",
           "label_type": "",
           "shortcut_image": "https://ecs7.tokopedia.net/img/autocomplete/ic-close-3x.png",
-          "type": "keyword"
+          "type": "keyword",
+          "component_id": "01.02.01.01"
         },
         {
           "id": "2400899",
@@ -72,7 +77,8 @@
           "label": "Toko",
           "label_type": "",
           "shortcut_image": "",
-          "type": "shop"
+          "type": "shop",
+          "component_id": "01.02.01.01"
         },
         {
           "id": "25544",
@@ -87,7 +93,8 @@
           "label": "",
           "label_type": "",
           "shortcut_image": "https://images.tokopedia.net/img/jbZAUJ/2020/12/15/845f9be9-d0d7-46ea-9c7d-d3333633f0e2.png",
-          "type": "curated"
+          "type": "curated",
+          "component_id": "01.02.01.01"
         }
       ]
     },
@@ -96,6 +103,7 @@
       "feature_id": "popular_search",
       "header": "Pencarian populer",
       "label_action": "Refresh",
+      "tracking_option": 3,
       "items": [
         {
           "id": "0",
@@ -110,7 +118,8 @@
           "label": "",
           "label_type": "",
           "shortcut_image": "",
-          "type": ""
+          "type": "",
+          "component_id": "01.02.01.01"
         },
         {
           "id": "0",
@@ -125,7 +134,8 @@
           "label": "",
           "label_type": "",
           "shortcut_image": "",
-          "type": ""
+          "type": "",
+          "component_id": "01.02.01.01"
         },
         {
           "id": "0",
@@ -140,7 +150,8 @@
           "label": "",
           "label_type": "",
           "shortcut_image": "",
-          "type": ""
+          "type": "",
+          "component_id": "01.02.01.01"
         },
         {
           "id": "0",
@@ -155,7 +166,8 @@
           "label": "",
           "label_type": "",
           "shortcut_image": "",
-          "type": ""
+          "type": "",
+          "component_id": "01.02.01.01"
         },
         {
           "id": "0",
@@ -170,7 +182,8 @@
           "label": "",
           "label_type": "",
           "shortcut_image": "",
-          "type": ""
+          "type": "",
+          "component_id": "01.02.01.01"
         },
         {
           "id": "0",
@@ -185,7 +198,8 @@
           "label": "",
           "label_type": "",
           "shortcut_image": "",
-          "type": ""
+          "type": "",
+          "component_id": "01.02.01.01"
         },
         {
           "id": "0",
@@ -200,7 +214,8 @@
           "label": "",
           "label_type": "",
           "shortcut_image": "",
-          "type": ""
+          "type": "",
+          "component_id": "01.02.01.01"
         },
         {
           "id": "0",
@@ -215,7 +230,8 @@
           "label": "",
           "label_type": "",
           "shortcut_image": "",
-          "type": ""
+          "type": "",
+          "component_id": "01.02.01.01"
         }
       ]
     },
@@ -224,6 +240,7 @@
       "feature_id": "new_section",
       "header": "New Section",
       "label_action": "",
+      "tracking_option": 3,
       "items": [
         {
           "id": "0",
@@ -238,7 +255,8 @@
           "label": "",
           "label_type": "",
           "shortcut_image": "",
-          "type": ""
+          "type": "",
+          "component_id": "01.02.01.01"
         },
         {
           "id": "0",
@@ -253,7 +271,8 @@
           "label": "",
           "label_type": "",
           "shortcut_image": "",
-          "type": ""
+          "type": "",
+          "component_id": "01.02.01.01"
         },
         {
           "id": "0",
@@ -268,7 +287,8 @@
           "label": "",
           "label_type": "",
           "shortcut_image": "",
-          "type": ""
+          "type": "",
+          "component_id": "01.02.01.01"
         },
         {
           "id": "0",
@@ -283,7 +303,8 @@
           "label": "",
           "label_type": "",
           "shortcut_image": "",
-          "type": ""
+          "type": "",
+          "component_id": "01.02.01.01"
         },
         {
           "id": "0",
@@ -298,7 +319,8 @@
           "label": "",
           "label_type": "",
           "shortcut_image": "",
-          "type": ""
+          "type": "",
+          "component_id": "01.02.01.01"
         },
         {
           "id": "0",
@@ -313,7 +335,8 @@
           "label": "",
           "label_type": "",
           "shortcut_image": "",
-          "type": ""
+          "type": "",
+          "component_id": "01.02.01.01"
         },
         {
           "id": "0",
@@ -328,7 +351,8 @@
           "label": "",
           "label_type": "",
           "shortcut_image": "",
-          "type": ""
+          "type": "",
+          "component_id": "01.02.01.01"
         },
         {
           "id": "0",
@@ -343,7 +367,8 @@
           "label": "",
           "label_type": "",
           "shortcut_image": "",
-          "type": ""
+          "type": "",
+          "component_id": "01.02.01.01"
         }
       ]
     }

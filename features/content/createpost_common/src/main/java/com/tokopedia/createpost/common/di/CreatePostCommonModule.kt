@@ -95,7 +95,6 @@ class CreatePostCommonModule(private val context: Context) {
     @Provides
     @CreatePostScope
     fun provideGraphQlRepository(@ApplicationContext context: Context): GraphqlRepository {
-        GraphqlClient.init(context)
         return GraphqlInteractor.getInstance().graphqlRepository
     }
 

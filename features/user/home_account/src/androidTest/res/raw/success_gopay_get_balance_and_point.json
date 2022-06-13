@@ -1,0 +1,13 @@
+{
+  "walletappGetAccountBalance":{
+    "id":"gopay",
+    "icon":"https://images.tokopedia.net/img/walletapp/v1/pemuda-logo-short.png",
+    "title":"Aktifkan",
+    "subtitle":"GoPay \u0026 Coins",
+    "subtitle_color":"#03AC0E",
+    "applink":"tokopedia://gojek-account-link",
+    "weblink":"https://accounts.tokopedia.com/account-link/v1/gojek-auth",
+    "is_active":false,
+    "is_show":true
+  }
+}

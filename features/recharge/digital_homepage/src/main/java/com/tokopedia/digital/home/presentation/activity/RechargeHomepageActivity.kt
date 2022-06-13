@@ -26,7 +26,6 @@ class RechargeHomepageActivity : BaseSimpleActivity(), HasComponent<RechargeHome
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         supportActionBar?.hide()
-        GraphqlClient.init(this)
     }
 
     override fun getNewFragment(): Fragment {

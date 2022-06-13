@@ -5,6 +5,7 @@ import android.net.Uri
 import android.os.Build
 import android.view.View
 import android.view.ViewTreeObserver
+import android.webkit.URLUtil
 import android.widget.FrameLayout
 import com.tokopedia.feedcomponent.R
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.MediaItem
@@ -87,24 +88,27 @@ class MultimediaGridViewHolder(private val feedMultipleImageViewListener: FeedMu
             itemView.loading_progress.show()
             itemView.layout_dummy.gone()
             itemView.frame_video.invisible()
-            itemView.layout_video.setVideoURI(Uri.parse(url))
-            itemView.layout_video.setOnPreparedListener(object: MediaPlayer.OnPreparedListener{
-                override fun onPrepared(mp: MediaPlayer) {
-                    mp.isLooping = true
-                    mp.setOnInfoListener(object: MediaPlayer.OnInfoListener {
-                        override fun onInfo(mp: MediaPlayer?, what: Int, extra: Int): Boolean {
-                            if (what == MediaPlayer.MEDIA_INFO_VIDEO_RENDERING_START) {
-                                itemView.loading_progress.gone()
-                                itemView.frame_video.visibility = View.VISIBLE
-                                return true
+
+            if (URLUtil.isValidUrl(url)) {
+                itemView.layout_video.setVideoURI(Uri.parse(url))
+                itemView.layout_video.setOnPreparedListener(object : MediaPlayer.OnPreparedListener {
+                    override fun onPrepared(mp: MediaPlayer) {
+                        mp.isLooping = true
+                        mp.setOnInfoListener(object : MediaPlayer.OnInfoListener {
+                            override fun onInfo(mp: MediaPlayer?, what: Int, extra: Int): Boolean {
+                                if (what == MediaPlayer.MEDIA_INFO_VIDEO_RENDERING_START) {
+                                    itemView.loading_progress.gone()
+                                    itemView.frame_video.visibility = View.VISIBLE
+                                    return true
+                                }
+                                return false
                             }
-                            return false
-                        }
-                    })
-                }
-            })
-            itemView.layout_video.start()
-            isPlaying = true
+                        })
+                    }
+                })
+                itemView.layout_video.start()
+                isPlaying = true
+            }
         }
     }
 

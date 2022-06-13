@@ -53,6 +53,15 @@
                     app:pageColor="@color/Unify_N150"
                     app:strokeColor="@color/Unify_N150" />
 
+                <ImageView
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintRight_toRightOf="parent"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/layout_lvl7"
+                    android:background="@drawable/background_blur_deal"
+                    />
+
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 

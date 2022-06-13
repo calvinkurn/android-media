@@ -1,0 +1,50 @@
+package com.tokopedia.topchat.chatroom.view.custom
+
+import android.text.Editable
+import android.text.TextWatcher
+import com.tokopedia.topchat.chatroom.view.listener.ReplyBoxTextListener
+
+class ComposeTextWatcher(
+    private val replyBoxTextListener: ReplyBoxTextListener,
+    private val listener: Listener?
+) : TextWatcher {
+
+    interface Listener {
+        fun onComposeTextLimitExceeded(offset: Int)
+        fun hideTextLimitError()
+    }
+
+    override fun afterTextChanged(s: Editable?) {}
+    override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+    override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+        if (isEligibleToSendMsg(s)) {
+            replyBoxTextListener.enableSendButton()
+            listener?.hideTextLimitError()
+        } else {
+            if (isExceedLimit(s)) {
+                val offset = calculateOffset(s)
+                listener?.onComposeTextLimitExceeded(offset)
+            } else {
+                listener?.hideTextLimitError()
+            }
+            replyBoxTextListener.disableSendButton(isExceedLimit(s))
+        }
+    }
+
+    private fun calculateOffset(s: CharSequence?): Int {
+        s ?: return 0
+        return s.length - MAX_CHAR
+    }
+
+    private fun isEligibleToSendMsg(s: CharSequence?): Boolean {
+        return s != null && s.isNotBlank() && !isExceedLimit(s)
+    }
+
+    private fun isExceedLimit(s: CharSequence?): Boolean {
+        return s != null && s.length > MAX_CHAR
+    }
+
+    companion object {
+        const val MAX_CHAR = 1000
+    }
+}

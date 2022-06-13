@@ -48,4 +48,12 @@ class ChooseAddressWidgetCallback(
     override fun onChangeTextColor(): Int {
         return com.tokopedia.unifyprinciples.R.color.Unify_Static_White
     }
+
+    override fun onTokonowDataRefreshed() {
+        homeCategoryListener.onChooseAddressUpdated()
+    }
+
+    override fun isNeedToRefreshTokonowData(): Boolean {
+        return true
+    }
 }

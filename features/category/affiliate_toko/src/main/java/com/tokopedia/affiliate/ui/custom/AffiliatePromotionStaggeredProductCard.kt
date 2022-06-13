@@ -1,6 +1,6 @@
 package com.tokopedia.affiliate.ui.custom
 
-import com.tokopedia.affiliate.model.AffiliateRecommendedProductData
+import com.tokopedia.affiliate.model.response.AffiliateRecommendedProductData
 import com.tokopedia.productcard.ProductCardModel
 
 class AffiliatePromotionStaggeredProductCard  {
@@ -54,7 +54,7 @@ class AffiliatePromotionStaggeredProductCard  {
             return if (data?.isNotEmpty() == true){ data }else { "" }
         }
 
-        private fun getFooterDataFromType(item : AffiliateRecommendedProductData.RecommendedAffiliateProduct.Data.Card.Item,type : FooterType) : AffiliateRecommendedProductData.RecommendedAffiliateProduct.Data.Card.Item.Footer?{
+        private fun getFooterDataFromType(item : AffiliateRecommendedProductData.RecommendedAffiliateProduct.Data.Card.Item, type : FooterType) : AffiliateRecommendedProductData.RecommendedAffiliateProduct.Data.Card.Item.Footer?{
             return (item.footer?.find{ it?.footerType == type.type})
         }
     }

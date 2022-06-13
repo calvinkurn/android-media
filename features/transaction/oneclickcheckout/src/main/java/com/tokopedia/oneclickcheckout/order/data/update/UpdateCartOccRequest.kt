@@ -51,7 +51,11 @@ data class UpdateCartOccProfileRequest(
         @SerializedName("sp_id")
         val spId: Int = 0,
         @SerializedName("is_free_shipping_selected")
-        val isFreeShippingSelected: Boolean = false
+        val isFreeShippingSelected: Boolean = false,
+        @SerializedName("tenure_type")
+        val tenureType: Int = 0,
+        @SerializedName("option_id")
+        val optionId: String = "",
 ) {
     companion object {
         const val EXPRESS_CHECKOUT_PARAM = "express_checkout_param"

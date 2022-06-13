@@ -3,6 +3,7 @@
 package com.tokopedia.search.result.presentation.presenter.product
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.discovery.common.model.WishlistTrackingModel
 import com.tokopedia.search.listShouldBe
 import com.tokopedia.search.result.domain.model.SearchProductModel
@@ -13,20 +14,24 @@ import com.tokopedia.search.shouldBe
 import io.mockk.CapturingSlot
 import io.mockk.MockKVerificationScope
 
-fun MockKVerificationScope.verifyShowLoading(productListView: ProductListSectionContract.View) {
-    productListView.stopPreparePagePerformanceMonitoring()
-    productListView.startNetworkRequestPerformanceMonitoring()
+fun MockKVerificationScope.verifyShowLoading(
+    productListView: ProductListSectionContract.View,
+    performanceMonitoring: PageLoadTimePerformanceInterface,
+) {
+    performanceMonitoring.stopPreparePagePerformanceMonitoring()
+    performanceMonitoring.startNetworkRequestPerformanceMonitoring()
 
     productListView.showRefreshLayout()
 }
 
 fun MockKVerificationScope.verifyProcessingData(
-        productListView: ProductListSectionContract.View,
-        searchProductModel: SearchProductModel,
-        visitableListSlot: CapturingSlot<List<Visitable<*>>>
+    productListView: ProductListSectionContract.View,
+    performanceMonitoring: PageLoadTimePerformanceInterface,
+    searchProductModel: SearchProductModel,
+    visitableListSlot: CapturingSlot<List<Visitable<*>>>
 ) {
-    productListView.stopNetworkRequestPerformanceMonitoring()
-    productListView.startRenderPerformanceMonitoring()
+    performanceMonitoring.stopNetworkRequestPerformanceMonitoring()
+    performanceMonitoring.startRenderPerformanceMonitoring()
 
     productListView.isLandingPage
 
@@ -40,7 +45,6 @@ fun MockKVerificationScope.verifyProcessingData(
     productListView.setProductList(capture(visitableListSlot))
     productListView.backToTop()
     productListView.addLoading()
-    productListView.stopTracePerformanceMonitoring()
 }
 
 fun MockKVerificationScope.verifyHideLoading(productListView: ProductListSectionContract.View) {
@@ -103,12 +107,15 @@ internal fun WishlistTrackingModel.assert(
     keyword shouldBe keyword
 }
 
+@Suppress("LongParameterList")
 internal fun List<InspirationCarouselDataView.Option.Product>.assert(
-        expectedInspirationCarouselProduct: List<InspirationCarouselProduct>,
-        inspirationCarouselType: String,
-        inspirationCarouselLayout: String,
-        optionPosition: Int,
-        optionTitle: String,
+    expectedInspirationCarouselProduct: List<InspirationCarouselProduct>,
+    inspirationCarouselTitle: String,
+    inspirationCarouselType: String,
+    inspirationCarouselLayout: String,
+    optionPosition: Int,
+    optionTitle: String,
+    expectedDimension90: String
 ) {
     var productPosition = 1
     listShouldBe(expectedInspirationCarouselProduct) { actualProduct, expectedProduct ->
@@ -142,6 +149,9 @@ internal fun List<InspirationCarouselDataView.Option.Product>.assert(
             actual.imageUrl shouldBe expected.imageUrl
             actual.isShown shouldBe expected.isShown
         }
+        actualProduct.componentId shouldBe expectedProduct.componentId
+        actualProduct.inspirationCarouselTitle shouldBe inspirationCarouselTitle
+        actualProduct.dimension90 shouldBe expectedDimension90
         productPosition++
     }
 }

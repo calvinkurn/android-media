@@ -25,9 +25,11 @@ object HistoryRepository {
                 notificationType,
                 notificationId
         )
-        getInstance(context)
+        runCatching {
+            getInstance(context)
                 .historyNotificationDao()
                 .storeNotification(data)
+        }
     }
 
     @JvmStatic
@@ -35,30 +37,40 @@ object HistoryRepository {
             context: Context,
             notificationType: Int
     ): List<HistoryNotification> {
-        return getInstance(context)
+        return runCatching {
+            getInstance(context)
                 .historyNotificationDao()
                 .getListHistoryNotification(notificationType, HISTORY_NOTIFICATION_LIMIT)
+        }.getOrDefault(arrayListOf())
+
     }
 
     @JvmStatic
     fun clearHistoryNotification(context: Context, notificationType: Int, notificationId: Int) {
-        getInstance(context)
+        runCatching {
+            getInstance(context)
                 .historyNotificationDao()
                 .clearHistoryNotification(notificationType, notificationId)
+        }
+
     }
 
     @JvmStatic
     fun clearAllHistoryNotification(context: Context, notificationType: Int) {
-        getInstance(context)
+        runCatching {
+            getInstance(context)
                 .historyNotificationDao()
                 .clearAllHistoryNotification(notificationType)
+        }
     }
 
     @JvmStatic
     fun isSingleNotification(context: Context, notificationType: Int): Boolean {
-        return getInstance(context)
+        return runCatching {
+            getInstance(context)
                 .historyNotificationDao()
                 .countNotification(notificationType) == 0
+        }.getOrDefault(true)
     }
 
 }

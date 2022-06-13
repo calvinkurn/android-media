@@ -64,9 +64,7 @@ class MenuItemsViewHolder(
                         RouteManager.route(context, onClickApplink)
                     }
 
-                    if (element.iconUnify == IconUnify.PERFORMANCE) {
-                        clickSendTracker.invoke()
-                    }
+                    clickSendTracker.invoke()
                 }
             }
             setupTag(element.tag)

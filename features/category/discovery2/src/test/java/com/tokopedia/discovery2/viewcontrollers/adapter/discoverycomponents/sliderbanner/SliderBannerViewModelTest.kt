@@ -53,4 +53,10 @@ class SliderBannerViewModelTest {
         assert(viewModel.getListDataLiveData().value?.size == 5)
         assert(viewModel.getListDataLiveData().value?.firstOrNull()?.name == ComponentNames.SingleBanner.componentName)
     }
+
+    @Test
+    fun `test for position passed to VM`(){
+        val viewModel: SliderBannerViewModel = spyk(SliderBannerViewModel(application, componentsItem, 99))
+        assert(viewModel.position == 99)
+    }
 }

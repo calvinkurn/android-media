@@ -14,12 +14,18 @@
     <dimen name="margin_5">5dp</dimen>
     <dimen name="margin_8">8dp</dimen>
     <dimen name="margin_10">10dp</dimen>
+    <dimen name="rating_star_size">11dp</dimen>
+    <dimen name="margin_18">18dp</dimen>
     <dimen name="margin_54">54dp</dimen>
     <dimen name="shop_box">54dp</dimen>
     <dimen name="shop_box_big">115dp</dimen>
     <dimen name="padding_buy">8dp</dimen>
     <dimen name="feed_ava">40dp</dimen>
     <dimen name="border_radius">3dp</dimen>
+    <dimen name="layout_6_item_width">160dp</dimen>
+    <dimen name="layout_5_item_width">128dp</dimen>
+    <dimen name="layout_5_item_shop_logo_size">72dp</dimen>
+    <dimen name="layout_6_item_image_height">68dp</dimen>
 
     <dimen name="font_large">18sp</dimen>
     <dimen name="font_normal">14sp</dimen>

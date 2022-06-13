@@ -1,5 +1,6 @@
 package com.tokopedia.broadcaster.utils
 
+import android.annotation.SuppressLint
 import android.os.Build
 
 object DeviceInfo {
@@ -8,6 +9,7 @@ object DeviceInfo {
 
     private val supportedAbi = mutableListOf(ARMEABI_V7A, ARM64_V8A)
 
+    @SuppressLint("ObsoleteSdkInt")
     private fun checkDeviceAbi(): Boolean {
         return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             supportedAbi.contains(Build.SUPPORTED_ABIS[0])

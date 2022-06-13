@@ -1,0 +1,21 @@
+[
+  {
+    "data": {
+      "ProductWishlistQuery": false,
+      "status": "OK"
+    }
+  },
+  {
+    "data": {
+      "shopInfoByID": {
+        "result": [
+          {
+            "favoriteData": {
+              "alreadyFavorited": 0
+            }
+          }
+        ]
+      }
+    }
+  }
+]

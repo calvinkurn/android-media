@@ -16,6 +16,24 @@
         android:clickable="false"
         android:focusable="false"
         android:focusableInTouchMode="false"
+        tools:text="🍞"
+        android:visibility="visible"
+        />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/usr_emoji"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingBottom="1dp"
+        android:scaleType="fitCenter"
+        android:visibility="invisible"
+        app:layout_constraintStart_toStartOf="@id/usr_badge"
+        app:layout_constraintTop_toTopOf="@+id/usr_badge"
+        app:layout_constraintBottom_toBottomOf="@id/usr_badge"
+        android:clickable="false"
+        android:focusable="false"
+        android:focusableInTouchMode="false"
+        tools:text="🍞"
         />
 
     <com.tokopedia.unifyprinciples.Typography
@@ -24,9 +42,9 @@
         android:layout_height="wrap_content"
         android:lines="1"
         android:ellipsize="end"
-        android:layout_marginStart="6dp"
+        android:layout_marginStart="20dp"
         app:layout_goneMarginStart="10dp"
-        app:layout_constraintStart_toEndOf="@id/usr_badge"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:typographyType="heading_4"

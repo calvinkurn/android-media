@@ -1,9 +1,10 @@
 package com.tokopedia.shop.common.graphql.data.shopopen
 
+import android.annotation.SuppressLint
 import android.os.Parcelable
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
-import kotlinx.android.parcel.Parcelize
+import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class ValidateShopDomainNameResult(
@@ -14,6 +15,7 @@ data class ValidateShopDomainNameResult(
 
 @Parcelize
 data class ValidateDomainShopName(
+        @SuppressLint("Invalid Data Type")
         @SerializedName("isValid")
         @Expose
         val isValid: Boolean = false,

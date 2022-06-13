@@ -37,13 +37,13 @@ class UohRobot {
 
     fun clickPrimaryButton() {
         onView(withId(R.id.rv_order_list))
-                .perform(RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(0,
+                .perform(RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(1,
                         clickOnViewChild(R.id.uoh_btn_action)))
     }
 
     fun clickThreeDotsMenu() {
         onView(withId(R.id.rv_order_list))
-                .perform(RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(0,
+                .perform(RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(1,
                         clickOnViewChild(R.id.iv_kebab_menu)))
     }
 
@@ -55,7 +55,7 @@ class UohRobot {
     fun clickOrderCard() {
         intending(anyIntent()).respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
         onView(withId(R.id.rv_order_list))
-                .perform(RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(0,
+                .perform(RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(1,
                         clickOnViewChild(R.id.cl_data_product)))
     }
 

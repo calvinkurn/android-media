@@ -1,5 +1,6 @@
 package com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.tabs
 
+import android.os.Handler
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewTreeObserver
@@ -20,9 +21,12 @@ import com.tokopedia.discovery2.viewcontrollers.adapter.factory.ComponentsList
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
 import com.tokopedia.discovery2.viewcontrollers.customview.CustomViewCreator
 import com.tokopedia.discovery2.viewcontrollers.fragment.DiscoveryFragment
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.unifycomponents.TabsUnify
 
 private const val TAB_START_PADDING = 20
+private const val DELAY_400 : Long = 400
 private const val SHOULD_HIDE_L1 = false
 private const val SOURCE = "best-seller"
 
@@ -49,6 +53,8 @@ class TabsViewHolder(itemView: View, private val fragment: Fragment) :
         tabsViewModel.getUnifyTabLiveData().observe(fragment.viewLifecycleOwner, {
             tabsHolder.hasRightArrow = tabsViewModel.getArrowVisibilityStatus()
             tabsHolder.tabLayout.removeAllTabs()
+            if((fragment.activity as DiscoveryActivity).isFromCategory())
+                tabsHolder.customTabMode = TabLayout.MODE_SCROLLABLE
             tabsHolder.getUnifyTabLayout().setSelectedTabIndicator(tabsHolder.getUnifyTabLayout().tabSelectedIndicator)
             var selectedPosition = 0
             it.forEachIndexed { index, tabItem ->
@@ -63,9 +69,15 @@ class TabsViewHolder(itemView: View, private val fragment: Fragment) :
             tabsHolder.viewTreeObserver
                 .addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
                     override fun onGlobalLayout() {
-                        if(selectedPosition>=0) {
-                            tabsHolder.tabLayout.getTabAt(selectedPosition)?.select()
-                            selectedPosition = -1
+                        fragment.activity?.let { activity ->
+                            if (selectedPosition >= 0 && (activity as DiscoveryActivity).isFromCategory()) {
+                                tabsHolder.gone()
+                                tabsHolder.tabLayout.getTabAt(selectedPosition)?.select()
+                                Handler().postDelayed({
+                                    tabsHolder.show()
+                                }, DELAY_400)
+                                selectedPosition = -1
+                            }
                         }
                     }
                 })
@@ -74,7 +86,7 @@ class TabsViewHolder(itemView: View, private val fragment: Fragment) :
         tabsViewModel.getColorTabComponentLiveData().observe(fragment.viewLifecycleOwner, Observer {
             tabsHolder.tabLayout.apply {
                 layoutParams.width = ViewGroup.LayoutParams.WRAP_CONTENT
-                layoutParams.height = tabsHolder.context.resources.getDimensionPixelSize(R.dimen.dp_56)
+                layoutParams.height = tabsHolder.context.resources.getDimensionPixelSize(R.dimen.dp_55)
                 tabMode = TabLayout.MODE_SCROLLABLE
                 removeAllTabs()
                 setBackgroundResource(0)
@@ -174,7 +186,7 @@ class TabsViewHolder(itemView: View, private val fragment: Fragment) :
             if (it.size >= tab.position)
                 (fragment as? DiscoveryFragment)?.getDiscoveryAnalytics()
                         ?.trackTabsClick(tabsViewModel.components.id,
-                                tabsViewModel.components.position,
+                                tabsViewModel.position,
                                 it[tab.position],
                                 tab.position)
         }

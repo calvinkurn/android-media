@@ -1,0 +1,50 @@
+{
+  "tokopoints":{
+    "status":{
+      "tier":{
+        "nameDesc":"Member Silver 2",
+        "eggImageHomepageURL":"https://ecs7.tokopedia.net/img/blog/promo/2021/04/silver.png",
+        "backgroundImgURLMobile":"https://ecs7.tokopedia.net/tokopointsimprovement/tokopointsattribute/img-bg-tokopoints-silver.png"
+      }
+    }
+  },
+  "tokopointsShortcutList":{
+    "shortcutGroupList":[
+      {
+        "groupCode":"account_page_widget",
+        "shortcutList":[
+          {
+            "id":1,
+            "cta":{
+              "text":"TokoMember",
+              "url":"https://www.tokopedia.com/membership",
+              "appLink":"tokopedia://webview?url=https://www.tokopedia.com/membership"
+            },
+            "iconImageURL":"https://images.tokopedia.net/img/rewardspage/widget/tokomember.png",
+            "description":"6 Toko"
+          },
+          {
+            "id":2,
+            "cta":{
+              "text":"TopQuest",
+              "url":"https://www.tokopedia.com/seru/topquest",
+              "appLink":"tokopedia://webview?url=https://www.tokopedia.com/seru/topquest"
+            },
+            "iconImageURL":"https://images.tokopedia.net/img/rewardspage/widget/TopQuest.png",
+            "description":"10 Tantangan"
+          },
+          {
+            "id":3,
+            "cta":{
+              "text":"Kupon Saya",
+              "url":"https://www.tokopedia.com/rewards/kupon-saya",
+              "appLink":"tokopedia://rewards/kupon-saya"
+            },
+            "iconImageURL":"https://images.tokopedia.net/img/rewardspage/widget/MyCoupons.png",
+            "description":"31 Kupon"
+          }
+        ]
+      }
+    ]
+  }
+}

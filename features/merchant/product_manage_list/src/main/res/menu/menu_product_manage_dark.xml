@@ -4,14 +4,14 @@
 
     <item
         android:id="@+id/add_product_menu"
-        android:icon="@drawable/ic_productmanage_add_black_70"
         android:title="@string/title_add_product"
-        app:showAsAction="always">
+        app:actionLayout="@layout/layout_product_manage_add_menu"
+        app:showAsAction="ifRoom">
     </item>
 
     <item
         android:id="@+id/action_more_menu"
-        android:icon="@drawable/ic_product_manage_more_grey"
         android:title="@string/product_manage_more_menu"
-        app:showAsAction="always" />
+        app:actionLayout="@layout/layout_product_manage_more_menu"
+        app:showAsAction="ifRoom" />
 </menu>

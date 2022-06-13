@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/client_number_widget_simplified_layout"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="@dimen/unify_space_12"
+    android:background="@drawable/bg_client_number_widget_shadow"
+    android:visibility="gone"
+    tools:visibility="visible"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    
+    <com.tokopedia.iconunify.IconUnify
+        android:id="@+id/client_number_simplified_icon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:icon_name="PHONE"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/client_number_simplified_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/spacing_lvl4"
+        tools:text="Nama Kontak"
+        app:typographyType="body_3"
+        app:layout_constraintTop_toTopOf="@id/client_number_simplified_icon"
+        app:layout_constraintStart_toEndOf="@id/client_number_simplified_icon"
+        app:layout_constraintBottom_toTopOf="@id/client_number_simplified_phone_number"/>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/client_number_simplified_phone_number"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/spacing_lvl4"
+        tools:text="081208120812"
+        app:typographyType="body_2"
+        app:typographyWeight="bold"
+        app:layout_constraintStart_toEndOf="@id/client_number_simplified_icon"
+        app:layout_constraintTop_toBottomOf="@id/client_number_simplified_label"
+        app:layout_constraintBottom_toBottomOf="@id/client_number_simplified_icon"/>
+    
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/client_number_simplified_operator_icon"
+        android:layout_width="@dimen/layout_lvl7"
+        android:layout_height="@dimen/layout_lvl4"
+        android:layout_marginStart="@dimen/spacing_lvl4"
+        android:scaleType="centerCrop"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

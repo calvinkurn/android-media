@@ -7,6 +7,7 @@ import com.tokopedia.discovery2.ComponentNames
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.datamapper.getComponent
 import com.tokopedia.discovery2.usecase.MerchantVoucherUseCase
+import com.tokopedia.discovery2.usecase.bannerinfiniteusecase.BannerInfiniteUseCase
 import com.tokopedia.discovery2.usecase.productCardCarouselUseCase.ProductCardsUseCase
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
@@ -27,6 +28,9 @@ class ErrorLoadViewModel(val application: Application,
     @Inject
     lateinit var merchantVoucherUseCase: MerchantVoucherUseCase
 
+    @Inject
+    lateinit var bannerInfiniteUseCase: BannerInfiniteUseCase
+
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.Main + SupervisorJob()
 
@@ -39,9 +43,11 @@ class ErrorLoadViewModel(val application: Application,
                 if (it.noOfPagesLoaded == 0) {
                     syncData.value = when (components.parentComponentName) {
                         ComponentNames.MerchantVoucherList.componentName ->
-                            merchantVoucherUseCase.loadFirstPageComponents(
-                                components.parentComponentId,
-                                components.pageEndPoint
+                            hitMerchantVoucherFirstPageCall(it)
+                        ComponentNames.BannerInfinite.componentName ->
+                            bannerInfiniteUseCase.loadFirstPageComponents(
+                                    components.id,
+                                    components.pageEndPoint
                             )
                         else ->
                             productCardUseCase.loadFirstPageComponents(
@@ -52,10 +58,20 @@ class ErrorLoadViewModel(val application: Application,
                 } else {
                     syncData.value =
                         when (components.parentComponentName) {
-                            ComponentNames.MerchantVoucherList.componentName ->
-                                merchantVoucherUseCase.getVoucherUseCase(
-                                    components.id,
-                                    components.pageEndPoint
+                            ComponentNames.MerchantVoucherList.componentName ->{
+                                if (it.getComponentsItem().isNullOrEmpty()) {
+                                    hitMerchantVoucherFirstPageCall(it)
+                                } else
+                                    merchantVoucherUseCase.getVoucherUseCase(
+                                        components.id,
+                                        components.pageEndPoint
+                                    )
+                            }
+
+                            ComponentNames.BannerInfinite.componentName ->
+                                bannerInfiniteUseCase.getBannerUseCase(
+                                        components.id,
+                                        components.pageEndPoint
                                 )
                             else ->
                                 productCardUseCase.getProductCardsUseCase(
@@ -69,5 +85,19 @@ class ErrorLoadViewModel(val application: Application,
         }, onError = {
             showLoader.value = false
         })
+    }
+
+    private suspend fun hitMerchantVoucherFirstPageCall(components: ComponentsItem):Boolean{
+        components.noOfPagesLoaded = 0
+        val shouldSync =
+            merchantVoucherUseCase.loadFirstPageComponents(
+                components.id,
+                components.pageEndPoint
+            )
+        return if (components.getComponentsItem().isNullOrEmpty()) {
+            showLoader.value = false
+            false
+        } else
+            shouldSync
     }
 }

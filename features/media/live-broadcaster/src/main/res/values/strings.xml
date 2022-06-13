@@ -1,6 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="live_broadcaster_label">Broadcaster Chucker</string>
-
     <string name="live_broadcaster_title_detail">Chucker Detail</string>
 </resources>

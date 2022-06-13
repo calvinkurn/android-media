@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_sah_social_desc"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/sah_social_desc"
+        android:textColor="@color/Unify_NN600"
+        android:layout_marginHorizontal="16dp"
+        app:typographyType="body_2"
+        app:typographyWeight="reguler"
+        app:layout_constraintTop_toTopOf="parent"/>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_sah_social"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="11dp"
+        android:layout_marginBottom="-0.5dp"
+        android:orientation="vertical"
+        app:layout_constraintTop_toBottomOf="@id/tv_sah_social_desc"
+        tools:listitem="@layout/item_sah_social_links"
+        tools:itemCount="4"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

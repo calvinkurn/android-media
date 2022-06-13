@@ -38,6 +38,9 @@ data class OtpModeListData(
         @SerializedName("linkType")
         @Expose
         var linkType: Int = 0,
+        @SerializedName("defaultMode")
+        @Expose
+        var defaultMode: Int = 0,
         @SerializedName("modeLists")
         @Expose
         var modeList: ArrayList<ModeListData> = arrayListOf()

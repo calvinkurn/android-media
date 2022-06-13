@@ -9,7 +9,7 @@ import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.shop.score.R
 import com.tokopedia.shop.score.common.*
-import com.tokopedia.shop.score.common.presentation.BaseBottomSheetShopScore
+import com.tokopedia.shop.score.common.presentation.bottomsheet.BaseBottomSheetShopScore
 import com.tokopedia.shop.score.databinding.BottomSheetDateFilterPenaltyBinding
 import kotlinx.coroutines.*
 import java.text.SimpleDateFormat

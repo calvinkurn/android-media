@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/iv_shipping"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_lvl4"
+        android:visibility="gone"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/ic_play_shipping_voucher"
+        tools:visibility="gone" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_special_promo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/spacing_lvl3"
+        android:ellipsize="end"
+        android:gravity="center_horizontal"
+        android:maxLines="1"
+        android:textColor="@color/Unify_B500"
+        android:visibility="gone"
+        app:layout_constraintStart_toEndOf="@+id/iv_shipping"
+        app:layout_constraintTop_toTopOf="@+id/iv_shipping"
+        app:typographyType="body_3"
+        app:typographyWeight="bold"
+        tools:ignore="TextContrastCheck"
+        tools:text="Khusus TokoMember"
+        tools:visibility="gone" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_coupon_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_lvl2"
+        android:ellipsize="end"
+        android:maxLines="1"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/iv_shipping"
+        app:layout_goneMarginTop="@dimen/spacing_lvl4"
+        app:typographyType="body_2"
+        app:typographyWeight="bold"
+        tools:text="Gratis Ongkir hingga Rp500.000" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_expired_date"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_lvl1"
+        android:layout_marginBottom="@dimen/spacing_lvl4"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:textColor="@color/Unify_N700_68"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/tv_min_transaction"
+        app:layout_constraintTop_toBottomOf="@+id/tv_min_transaction"
+        app:typographyType="body_3"
+        tools:text="Berakhir dalam 10 hari"
+        tools:visibility="visible" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_coupon_stock"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/spacing_lvl2"
+        android:layout_marginEnd="@dimen/spacing_lvl3"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:textColor="@color/Unify_R600"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toEndOf="@+id/tv_expired_date"
+        app:layout_constraintTop_toTopOf="@+id/tv_expired_date"
+        app:typographyType="body_3"
+        tools:text="Sisa 20 kupon"
+        tools:visibility="gone" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_min_transaction"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_lvl1"
+        android:layout_marginBottom="@dimen/spacing_lvl4"
+        android:ellipsize="end"
+        android:maxLines="1"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/tv_coupon_title"
+        app:layout_constraintTop_toBottomOf="@+id/tv_coupon_title"
+        app:layout_constraintVertical_bias="0.0"
+        app:layout_goneMarginBottom="@dimen/spacing_lvl4"
+        app:typographyType="body_3"
+        tools:text="Transaksi min. Rp1.000.000"
+        tools:visibility="visible" />
+
+    <com.tokopedia.iconunify.IconUnify
+        android:id="@+id/iv_copy_voucher"
+        android:layout_width="@dimen/spacing_lvl5"
+        android:layout_height="@dimen/spacing_lvl5"
+        android:layout_marginEnd="@dimen/spacing_lvl3"
+        app:icon_name="COPY"
+        app:layout_constraintBottom_toBottomOf="@+id/tv_coupon_stock"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

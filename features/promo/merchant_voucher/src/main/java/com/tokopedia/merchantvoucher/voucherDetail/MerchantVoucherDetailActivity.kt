@@ -41,7 +41,6 @@ class MerchantVoucherDetailActivity : BaseSimpleActivity() {
         voucherId = intent.getIntExtra(MerchantVoucherDetailActivity.VOUCHER_ID, 0)
         merchantVoucherViewModel = intent.getParcelableExtra(MerchantVoucherDetailActivity.VOUCHER)
         voucherShopId = intent.getStringExtra(MerchantVoucherDetailActivity.VOUCHER_SHOP_ID)
-        GraphqlClient.init(this)
         super.onCreate(savedInstanceState)
     }
 }

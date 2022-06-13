@@ -50,7 +50,9 @@ class PromoCheckoutListPresenter(private val graphqlUseCase: GraphqlUseCase,
     private fun generateInputList(page: Int, serviceId: String, categoryId: Int): JsonObject {
         val input = JsonObject()
         input.addProperty(SERVICE_ID, serviceId)
-        input.addProperty(CATEGORY_ID, categoryId)
+        if (!serviceId.equals(SERVICE_ID_NEW_DEALS)){
+            input.addProperty(CATEGORY_ID, categoryId)
+        }
         input.addProperty(CATEGORY_ID_COUPON, 0)
         input.addProperty(PAGE, page)
         input.addProperty(LIMIT, 10)
@@ -101,5 +103,6 @@ class PromoCheckoutListPresenter(private val graphqlUseCase: GraphqlUseCase,
         private val LIMIT = "limit"
         private val INCLUDE_EXTRA_INFO = "includeExtraInfo"
         private val API_VERSION_VALUE = "2.0.0"
+        const val SERVICE_ID_NEW_DEALS = "food_and_voucher"
     }
 }

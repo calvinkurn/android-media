@@ -1,0 +1,259 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ScrollView
+        android:id="@+id/main_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/Unify_Background"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:id="@+id/fragment_account_setting_account_section"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <com.tokopedia.unifyprinciples.Typography
+                    android:id="@+id/label_view_identity"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/Unify_N0"
+                    android:textSize="@dimen/fontSize_lvl3"
+                    android:layout_marginStart="@dimen/spacing_lvl4"
+                    android:minHeight="@dimen/unify_space_64"
+                    app:typographyWeight="bold"
+                    android:padding="@dimen/unify_space_8"
+                    android:gravity="center_vertical"
+                    android:text="@string/title_personal_data_setting"
+                    />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="0.5dp"
+                    android:background="@drawable/bg_list_separator" />
+
+                <com.tokopedia.unifyprinciples.Typography
+                    android:id="@+id/label_view_address"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/Unify_N0"
+                    android:textSize="@dimen/fontSize_lvl3"
+                    android:layout_marginStart="@dimen/spacing_lvl4"
+                    android:minHeight="@dimen/unify_space_64"
+                    app:typographyWeight="bold"
+                    android:padding="@dimen/unify_space_8"
+                    android:gravity="center_vertical"
+                    android:text="@string/title_address_setting"
+                    />
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="0.5dp"
+                    android:background="@drawable/bg_list_separator" />
+
+                <com.tokopedia.unifyprinciples.Typography
+                    android:id="@+id/label_view_account_bank"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/Unify_N0"
+                    android:textSize="@dimen/fontSize_lvl3"
+                    android:layout_marginStart="@dimen/spacing_lvl4"
+                    android:minHeight="@dimen/unify_space_64"
+                    app:typographyWeight="bold"
+                    android:padding="@dimen/unify_space_8"
+                    android:gravity="center_vertical"
+                    android:text="@string/title_bank_account_setting"
+                    />
+
+                <View
+                    android:id="@+id/separator_sampai"
+                    android:layout_width="match_parent"
+                    android:layout_height="0.5dp"
+                    android:background="@drawable/bg_list_separator" />
+
+                <com.tokopedia.unifyprinciples.Typography
+                    android:id="@+id/label_view_sampai"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/Unify_N0"
+                    android:textSize="@dimen/fontSize_lvl3"
+                    android:layout_marginStart="@dimen/spacing_lvl4"
+                    android:minHeight="@dimen/unify_space_64"
+                    app:typographyWeight="bold"
+                    android:padding="@dimen/unify_space_8"
+                    android:gravity="center_vertical"
+                    android:text="@string/title_sampai_project"
+                    />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="0.5dp"
+                    android:background="@drawable/bg_list_separator" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="0.5dp"
+                    android:background="@drawable/bg_list_separator" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/fragment_account_setting_security_section"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <com.tokopedia.unifyprinciples.Typography
+                    android:layout_height="wrap_content"
+                    android:layout_width="wrap_content"
+                    app:typographyWeight="bold"
+                    app:typographyType="heading_4"
+                    android:layout_marginStart="@dimen/unify_space_16"
+                    android:layout_marginLeft="@dimen/unify_space_16"
+                    android:layout_marginTop="@dimen/unify_space_24"
+                    android:layout_marginBottom="@dimen/unify_space_8"
+                    android:text="@string/header_privacy_account_setting" />
+
+                <com.tokopedia.unifyprinciples.Typography
+                    android:id="@+id/label_view_password"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/Unify_N0"
+                    android:textSize="@dimen/fontSize_lvl3"
+                    android:layout_marginStart="@dimen/spacing_lvl4"
+                    android:minHeight="@dimen/unify_space_64"
+                    app:typographyWeight="bold"
+                    android:padding="@dimen/unify_space_8"
+                    android:gravity="center_vertical"
+                    android:text="@string/title_password_setting"
+                    />
+
+                <View
+                    android:id="@+id/separator_pin"
+                    android:layout_width="match_parent"
+                    android:layout_height="0.5dp"
+                    android:background="@drawable/bg_list_separator" />
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center_vertical"
+                    android:gravity="center_vertical">
+
+                    <com.tokopedia.unifyprinciples.Typography
+                        android:id="@+id/label_view_pin"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@color/Unify_N0"
+                        android:textSize="@dimen/fontSize_lvl3"
+                        android:layout_marginStart="@dimen/spacing_lvl4"
+                        android:minHeight="@dimen/unify_space_64"
+                        app:typographyWeight="bold"
+                        android:padding="@dimen/unify_space_8"
+                        android:gravity="center_vertical"
+                        android:text="@string/title_setting_pin"
+                        />
+
+                    <Space
+                        android:id="@+id/space"
+                        android:layout_width="@dimen/dp_120"
+                        android:layout_height="0dp" />
+
+                    <com.tokopedia.unifycomponents.Label
+                        android:id="@+id/text_new"
+                        app:labelTitle="NEW"
+                        app:labelType="general_dark_red"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_margin="5dp"
+                        android:layout_toRightOf="@+id/space"
+                        android:background="@drawable/bg_rounded_corners_red"
+                        android:lineSpacingExtra="2sp"
+                        android:padding="@dimen/unify_space_2"
+                        android:textAllCaps="true"
+                        android:textColor="@color/Unify_N0" />
+
+                </RelativeLayout>
+
+                <View
+                    android:id="@+id/separator_biometric"
+                    android:layout_width="match_parent"
+                    android:layout_height="0.5dp"
+                    android:background="@drawable/bg_list_separator" />
+
+                <com.tokopedia.unifyprinciples.Typography
+                    android:id="@+id/label_view_biometric"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/Unify_N0"
+                    android:textSize="@dimen/fontSize_lvl3"
+                    android:layout_marginStart="@dimen/spacing_lvl4"
+                    android:minHeight="@dimen/unify_space_64"
+                    app:typographyWeight="bold"
+                    android:padding="@dimen/unify_space_8"
+                    android:gravity="center_vertical"
+                    android:text="Sidik Jari"
+                    />
+
+                <View
+                    android:id="@+id/separator_kyc"
+                    android:layout_width="match_parent"
+                    android:layout_height="0.5dp"
+                    android:background="@drawable/bg_list_separator" />
+
+                <com.tokopedia.unifyprinciples.Typography
+                    android:id="@+id/label_view_kyc"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/Unify_N0"
+                    android:textSize="@dimen/fontSize_lvl3"
+                    android:layout_marginStart="@dimen/spacing_lvl4"
+                    android:minHeight="@dimen/unify_space_64"
+                    app:typographyWeight="bold"
+                    android:padding="@dimen/unify_space_8"
+                    android:gravity="center_vertical"
+                    android:text="@string/title_kyc_setting"
+                    />
+
+                <View
+                    android:id="@+id/separator_push_notif"
+                    android:layout_width="match_parent"
+                    android:layout_height="0.5dp"
+                    android:background="@drawable/bg_list_separator" />
+
+                <com.tokopedia.unifyprinciples.Typography
+                    android:id="@+id/label_view_push_notif"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/Unify_N0"
+                    android:textSize="@dimen/fontSize_lvl3"
+                    android:layout_marginStart="@dimen/spacing_lvl4"
+                    android:minHeight="@dimen/unify_space_64"
+                    app:typographyWeight="bold"
+                    android:padding="@dimen/unify_space_8"
+                    android:gravity="center_vertical"
+                    android:text="@string/title_signin_with_notification"
+                    />
+
+            </LinearLayout>
+            </LinearLayout>
+    </ScrollView>
+
+    <com.tokopedia.unifycomponents.LoaderUnify
+        android:id="@+id/progress_bar"
+        android:layout_width="@dimen/unify_space_40"
+        android:layout_height="@dimen/unify_space_40"
+        android:layout_centerInParent="true"
+        android:visibility="visible" />
+
+</RelativeLayout>

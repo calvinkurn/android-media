@@ -4,10 +4,9 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.widget.FrameLayout
-import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.recommendation_widget_common.R
-import kotlinx.android.synthetic.main.view_specs.view.*
 
 class SpecsView: FrameLayout  {
     constructor(context: Context) : super(context)
@@ -19,9 +18,11 @@ class SpecsView: FrameLayout  {
     }
 
     fun setSpecsInfo(specsListModel: SpecsListModel) {
-        rootView.rv_specs.layoutManager = LinearLayoutManager(context)
-        rootView.rv_specs.adapter =
+
+        val rv_specs = rootView.findViewById<RecyclerView>(R.id.rv_specs)
+        rv_specs.layoutManager = LinearLayoutManager(context)
+        rv_specs.adapter =
             SpecsAdapter(specsListModel)
-        rootView.rv_specs.suppressLayout(true)
+        rv_specs.suppressLayout(true)
     }
 }

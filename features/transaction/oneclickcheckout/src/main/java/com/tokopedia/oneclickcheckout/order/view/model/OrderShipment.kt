@@ -30,6 +30,7 @@ data class OrderShipment(
         val isApplyLogisticPromo: Boolean = false,
         val shippingRecommendationData: ShippingRecommendationData? = null,
         val insurance: OrderInsurance = OrderInsurance(),
+        val isHideChangeCourierCard : Boolean = false,
 
         // Analytics
         var hasTriggerViewMessageTracking: Boolean = false
@@ -74,6 +75,10 @@ data class OrderShipment(
         return if (isApplyLogisticPromo && logisticPromoShipping != null && logisticPromoViewModel != null) {
             logisticPromoViewModel.discountedRate
         } else shippingPrice ?: 0
+    }
+
+    fun isUseInsurance(): Boolean {
+        return insurance.isCheckInsurance && insurance.insuranceData != null
     }
 
     fun getRealInsurancePrice(): Int {

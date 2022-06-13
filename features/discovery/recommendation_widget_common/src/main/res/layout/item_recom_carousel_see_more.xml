@@ -18,7 +18,8 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/container_banner_mix_more"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:background="@color/Unify_N0">
 
         <ImageView
             android:id="@+id/background_banner_mix_more"
@@ -48,8 +49,8 @@
 
         <ImageView
             android:id="@+id/banner_mix_arrow"
-            android:layout_width="@dimen/dp_50"
-            android:layout_height="@dimen/dp_50"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
             app:srcCompat="@drawable/ic_product_action_see_more_arrow_normal_352"
             app:layout_constraintBottom_toTopOf="@+id/tv_dc_mix_see_more"
             app:layout_constraintEnd_toEndOf="parent"

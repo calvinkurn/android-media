@@ -32,10 +32,12 @@ class SessionActivityLifecycleCallbacks : Application.ActivityLifecycleCallbacks
         logger.running = true
 
         Thread {
-            logger.checkSession(
-                activityName = activity.javaClass.simpleName,
-                connectionType = getConnectionType(activity)
-            )
+            Runnable {
+                logger.checkSession(
+                    activityName = activity.javaClass.simpleName,
+                    connectionType = getConnectionType(activity)
+                )
+            }
         }.start()
     }
 

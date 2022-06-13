@@ -8,20 +8,23 @@ import com.tokopedia.filter.common.data.DynamicFilterModel
 import com.tokopedia.search.result.shop.domain.model.SearchShopModel
 import com.tokopedia.search.result.shop.presentation.model.ShopCpmDataView
 import com.tokopedia.search.result.shop.presentation.model.ShopDataView
+import com.tokopedia.search.utils.ChooseAddressWrapper
 import com.tokopedia.usecase.coroutines.UseCase
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Lazy as daggerLazy
 
+@Suppress("LongParameterList")
 internal class SearchShopViewModelFactory(
-        private val coroutineDispatcher: CoroutineDispatchers,
-        private val searchParameter: Map<String, Any>,
-        private val searchShopFirstPageUseCase: daggerLazy<UseCase<SearchShopModel>>,
-        private val searchShopLoadMoreUseCase: daggerLazy<UseCase<SearchShopModel>>,
-        private val getDynamicFilterUseCase: daggerLazy<UseCase<DynamicFilterModel>>,
-        private val getShopCountUseCase: daggerLazy<UseCase<Int>>,
-        private val shopCpmDataViewMapper: daggerLazy<Mapper<SearchShopModel, ShopCpmDataView>>,
-        private val shopDataViewMapper: daggerLazy<Mapper<SearchShopModel, ShopDataView>>,
-        private val userSession: daggerLazy<UserSessionInterface>
+    private val coroutineDispatcher: CoroutineDispatchers,
+    private val searchParameter: Map<String, Any>,
+    private val searchShopFirstPageUseCase: daggerLazy<UseCase<SearchShopModel>>,
+    private val searchShopLoadMoreUseCase: daggerLazy<UseCase<SearchShopModel>>,
+    private val getDynamicFilterUseCase: daggerLazy<UseCase<DynamicFilterModel>>,
+    private val getShopCountUseCase: daggerLazy<UseCase<Int>>,
+    private val shopCpmDataViewMapper: daggerLazy<Mapper<SearchShopModel, ShopCpmDataView>>,
+    private val shopDataViewMapper: daggerLazy<Mapper<SearchShopModel, ShopDataView>>,
+    private val userSession: daggerLazy<UserSessionInterface>,
+    private val chooseAddressWrapper: ChooseAddressWrapper,
 ): ViewModelProvider.Factory {
 
     @Suppress("UNCHECKED_CAST")
@@ -35,15 +38,16 @@ internal class SearchShopViewModelFactory(
 
     private fun createSearchShopViewModel(): SearchShopViewModel {
         return SearchShopViewModel(
-                coroutineDispatcher,
-                searchParameter,
-                searchShopFirstPageUseCase,
-                searchShopLoadMoreUseCase,
-                getDynamicFilterUseCase,
-                getShopCountUseCase,
-                shopCpmDataViewMapper,
-                shopDataViewMapper,
-                userSession
+            coroutineDispatcher,
+            searchParameter,
+            searchShopFirstPageUseCase,
+            searchShopLoadMoreUseCase,
+            getDynamicFilterUseCase,
+            getShopCountUseCase,
+            shopCpmDataViewMapper,
+            shopDataViewMapper,
+            userSession,
+            chooseAddressWrapper
         )
     }
 }

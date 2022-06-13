@@ -33,13 +33,13 @@ class TopAdsInsightTabAdapter : RecyclerView.Adapter<TopAdsTabInsightViewHolder>
         holder.toggleActivate(position == selectedTabPosition)
     }
 
-    fun setTabTitles(resources: Resources, countProduct: Int, countBid: Int, countKey: Int) {
+    fun setTabTitles(resources: Resources, countProduct: Int, countBid: Int, countKey: Int,isProduk: Boolean = true) {
         tabMenus.clear()
         if (countProduct != 0)
             tabMenus.add(String.format(resources.getString(R.string.topads_dash_product_suggestion_insight_count), countProduct))
         if (countBid != 0)
             tabMenus.add(String.format(resources.getString(R.string.topads_dash_bid_suggestion_insight_count), countBid))
-        if (countKey != 0)
+        if ((isProduk && countKey != 0) || !isProduk)
             tabMenus.add(String.format(resources.getString(R.string.topads_dash_keyword_count), countKey))
         notifyDataSetChanged()
     }

@@ -12,7 +12,6 @@ import com.tokopedia.discovery.common.manager.PRODUCT_CARD_OPTIONS_MODEL
 import com.tokopedia.discovery.common.model.ProductCardOptionsModel
 import com.tokopedia.productcard.options.di.ProductCardOptionsContextModule
 import com.tokopedia.unifycomponents.BottomSheetUnify
-import kotlinx.android.synthetic.main.product_card_options_activity_layout.*
 import javax.inject.Inject
 import javax.inject.Named
 
@@ -101,10 +100,14 @@ internal class ProductCardOptionsActivity : BaseSimpleActivity() {
                 }, FINISH_ACTIVITY_DELAY)
             }
             setShowListener {
-                childFragmentManager
-                        .beginTransaction()
-                        .replace(R.id.parentView, newFragment, tagFragment)
-                        .commit()
+                // check whether activity is finishing or has been destroyed
+                if(!isFinishing || !isDestroyed) {
+                    childFragmentManager
+                            .beginTransaction()
+                            .replace(R.id.parentView, newFragment, tagFragment)
+                            // in case the commit happened after previous state check, allow state loss
+                            .commitAllowingStateLoss()
+                }
 
                 bottomSheetProductCardOptions = null
             }

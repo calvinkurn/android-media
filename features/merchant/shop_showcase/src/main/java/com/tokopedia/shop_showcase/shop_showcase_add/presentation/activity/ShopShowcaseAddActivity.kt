@@ -86,7 +86,7 @@ class ShopShowcaseAddActivity : BaseSimpleActivity() {
 
     private fun setBackgroundColor() {
         window.decorView.setBackgroundColor(
-                androidx.core.content.ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_N0)
+                androidx.core.content.ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_Background)
         )
     }
 

@@ -6,6 +6,7 @@ import android.content.Context
 import android.os.CountDownTimer
 import android.util.AttributeSet
 import android.view.View
+import android.view.ViewGroup
 import android.widget.FrameLayout
 import android.widget.TextView
 import com.tokopedia.kotlin.extensions.view.gone
@@ -55,6 +56,18 @@ class PlayTimerLiveCountDown @JvmOverloads constructor(
         animatorInfoOut = AnimatorInflater.loadAnimator(context, R.animator.play_timer_count_down_translate_alpha) as AnimatorSet
         textAnimatorIn.setTarget(countText)
         textAnimatorOut.setTarget(countText)
+    }
+
+    override fun onAttachedToWindow() {
+        super.onAttachedToWindow()
+        btnCancel.doOnApplyWindowInsets { view, insets, _, margin ->
+            val marginLayoutParams = view.layoutParams as MarginLayoutParams
+            val newBottomMargin = margin.bottom + insets.systemWindowInsetBottom
+            if (marginLayoutParams.bottomMargin != newBottomMargin) {
+                marginLayoutParams.updateMargins(bottom = newBottomMargin)
+                view.parent.requestLayout()
+            }
+        }
     }
 
     override fun onDetachedFromWindow() {

@@ -4,6 +4,7 @@ import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.manageaddress.databinding.ItemShopLocationBinding
 import com.tokopedia.manageaddress.domain.model.shoplocation.ShopLocationOldUiModel
 import com.tokopedia.manageaddress.ui.shoplocation.shopaddress.viewholder.ShopLocationViewHolder
 
@@ -13,7 +14,10 @@ class ShopLocationOldTypeFactory(private val listener: ShopLocationViewHolder.On
 
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when(type){
-            ShopLocationViewHolder.LAYOUT -> ShopLocationViewHolder(parent, listener)
+            ShopLocationViewHolder.LAYOUT -> {
+                val binding = ItemShopLocationBinding.bind(parent)
+                ShopLocationViewHolder(binding, listener)
+            }
             else -> super.createViewHolder(parent, type)
         }
     }

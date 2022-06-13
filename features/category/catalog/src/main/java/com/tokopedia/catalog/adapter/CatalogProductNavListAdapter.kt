@@ -110,7 +110,7 @@ class CatalogProductNavListAdapter(private val productTypeFactory: CatalogTypeFa
         notifyItemRangeRemoved(0, itemSizeBeforeCleared)
     }
 
-    fun updateWishlistStatus(productId: Int?, isWishlisted: Boolean) {
+    fun updateWishlistStatus(productId: String?, isWishlisted: Boolean) {
         for (i in visitables.indices) {
             if (visitables[i] is CatalogProductItem) {
                 val model = visitables[i] as CatalogProductItem
@@ -122,7 +122,7 @@ class CatalogProductNavListAdapter(private val productTypeFactory: CatalogTypeFa
         }
     }
 
-    fun setWishlistButtonEnabled(productId: Int?, isEnabled: Boolean) {
+    fun setWishlistButtonEnabled(productId: String?, isEnabled: Boolean) {
         for (i in visitables.indices) {
             if (visitables[i] is CatalogProductItem) {
                 val model = visitables[i] as CatalogProductItem
@@ -136,6 +136,7 @@ class CatalogProductNavListAdapter(private val productTypeFactory: CatalogTypeFa
 
     override fun onViewAttachedToWindow(holder: AbstractViewHolder<Visitable<*>>) {
         super.onViewAttachedToWindow(holder)
+        catalogProductCardListener.setLastAttachItemPosition(holder.adapterPosition)
         if (holder is CatalogListProductViewHolder) {
             val position = holder.adapterPosition
             if (!viewMap.containsKey(position)) {
@@ -153,6 +154,11 @@ class CatalogProductNavListAdapter(private val productTypeFactory: CatalogTypeFa
                 catalogProductCardListener.onProductImpressed(item,holder.adapterPosition)
             }
         }
+    }
+
+    override fun onViewDetachedFromWindow(holder: AbstractViewHolder<Visitable<*>>) {
+        super.onViewDetachedFromWindow(holder)
+        catalogProductCardListener.setLastDetachedItemPosition(holder.adapterPosition)
     }
 
     fun onPause() {

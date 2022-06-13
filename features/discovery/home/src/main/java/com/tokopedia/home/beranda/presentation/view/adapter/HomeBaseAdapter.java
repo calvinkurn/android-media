@@ -1,26 +1,18 @@
 package com.tokopedia.home.beranda.presentation.view.adapter;
 
-import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.AsyncDifferConfig;
-import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.ListAdapter;
-import androidx.recyclerview.widget.RecyclerView;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.adapter.factory.AdapterTypeFactory;
-import com.tokopedia.abstraction.base.view.adapter.model.ErrorNetworkModel;
-import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel;
-import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.HideViewHolder;
-import com.tokopedia.home.beranda.domain.model.HomeData;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -53,7 +45,11 @@ public class HomeBaseAdapter<F extends AdapterTypeFactory> extends
     @SuppressWarnings("unchecked")
     @Override
     public void onBindViewHolder(AbstractViewHolder holder, int position) {
-        holder.bind(getItem(position));
+        try {
+            holder.bind(getItem(position));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @SuppressWarnings("unchecked")

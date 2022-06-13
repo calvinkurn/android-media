@@ -1,0 +1,121 @@
+[
+  {
+    "data": {
+      "thanksPageData": {
+        "current_site": "tokopediadigital",
+        "business_unit": "payment",
+        "merchant_code": "tokopediapulsa",
+        "profile_code": "PULSA_ETOLL",
+        "payment_id": 1947791453,
+        "payment_status": 3,
+        "payment_type": "TOKOPEDIA",
+        "gateway_name": "Saldo Tokopedia",
+        "gateway_image": "https://ecs7.tokopedia.net/img/toppay/payment-logo/saldo-new.png",
+        "expire_time_unix": 1638418189,
+        "expire_time_str": "Kamis, 02 Des 2021 11:09 WIB",
+        "page_type": "Success",
+        "title": "Thanks Page",
+        "message": "",
+        "order_amount": 22500,
+        "order_amount_str": "22.500",
+        "amount": 22500,
+        "amount_str": "22.500",
+        "combine_amount": 0,
+        "payment_items": [],
+        "payment_deduction": [],
+        "payment_details": [
+          {
+            "gateway_code": "TOKOPEDIAWALLET",
+            "gateway_name": "Saldo Tokopedia",
+            "amount": 22500,
+            "amount_str": "22.500",
+            "amount_combine": 0,
+            "amount_combine_str": ""
+          }
+        ],
+        "promo_data": [],
+        "order_list": [
+          {
+            "order_id": "949717691",
+            "store_id": "",
+            "store_type": "",
+            "logistic_type": "",
+            "store_name": "",
+            "item_list": [
+              {
+                "product_id": "2069",
+                "product_name": "DG - Transaction Flow",
+                "product_brand": "none / other",
+                "price": 22500,
+                "price_str": "22.500",
+                "quantity": 1,
+                "product_plan_protection": 0,
+                "weight": 0,
+                "weight_unit": "",
+                "total_price": 22500,
+                "total_price_str": "22.500",
+                "promo_code": "",
+                "category": "PDP - Checkout - ThankYou",
+                "variant": "",
+                "thumbnail_product": "",
+                "bebas_ongkir_dimension": "none / other",
+                "is_bbi": false,
+                "category_id": "34",
+                "bundle_group_id": ""
+              }
+            ],
+            "bundle_group_data": [],
+            "shipping_amount": 0,
+            "shipping_amount_str": "0",
+            "shipping_desc": "",
+            "insurance_amount": 0,
+            "insurance_amount_str": "0",
+            "logistic_duration": "",
+            "logistic_eta": "",
+            "address": "",
+            "promo_data": [],
+            "tax": 0,
+            "coupon": "",
+            "revenue": 0
+          }
+        ],
+        "additional_info": {
+          "account_number": "",
+          "account_dest": "",
+          "bank_name": "",
+          "bank_branch": " ()",
+          "payment_code": "",
+          "masked_number": "",
+          "installment_info": "",
+          "interest": 0,
+          "revenue": 0
+        },
+        "how_to_pay": "tokopedia://howtopay?deadline=Kamis%2C+2+Dec+2021%2C+11%3A09+WIB&gateway_code=TOKOPEDIAWALLET&gateway_logo=https%3A%2F%2Fecs7.tokopedia.net%2Fimg%2Ftoppay%2Fpayment-logo%2Fsaldo-new.png&gateway_name=Saldo+Tokopedia&merchant_code=tokopediapulsa&payment_code=&payment_type=&total_amount=22.500&transaction_id=1947791453",
+        "how_to_pay_applink": "tokopedia://howtopay?deadline=Kamis%2C+2+Dec+2021%2C+11%3A09+WIB&gateway_code=TOKOPEDIAWALLET&gateway_logo=https%3A%2F%2Fecs7.tokopedia.net%2Fimg%2Ftoppay%2Fpayment-logo%2Fsaldo-new.png&gateway_name=Saldo+Tokopedia&merchant_code=tokopediapulsa&payment_code=&payment_type=&total_amount=22.500&transaction_id=1947791453",
+        "event": "transaction",
+        "event_category": "order complete",
+        "event_action": "",
+        "event_label": "",
+        "currency_code": "IDR",
+        "whitelisted_rba": true,
+        "push_gtm": true,
+        "new_user": false,
+        "is_mub": false,
+        "custom_data": {
+          "tracking_data": "[{\"event\": \"transaction\",\"eventCategory\": \"digital - thanks\",\"eventAction\": \"view purchase attempt\",\"eventLabel\": \"Uang Elektronik - Mandiri E-Money - Success\",\"currentSite\": \"tokopediadigital\",\"environment\": \"android\",\"loginStatus\": \"1\",\"userId\": \"17211378\",\"siteName\": \"Recharge Site\",\"businessUnit\": \"payment\",\"payment_id\": \"1947791453\",\"ecommerce\": {\"currencyCode\": \"IDR\",\"purchase\": {\"actionField\": {\"id\": \"949717691\",\"revenue\": \"22500.00\",\"tax\": \"\",\"coupon\": \"\"},\"products\": [{\"name\": \"Mandiri E-Money Rp 20.000\",\"id\": \"2069\",\"price\": \"22500.00\",\"quantity\": \"1\"}]}},\"categoryId\": \"34\",\"categoryName\": \"Uang Elektronik\",\"operator\": \"Mandiri E-Money\",\"profileId\":\"PULSA_ETOLL\", \"datalayer_id\":\"17841\"}]",
+          "custom_order_url_app": "tokopedia://digital/order",
+          "custom_home_url_app": "tokopedia://digital/smartcard?idem_potency_key=1",
+          "custom_title": "Selamat, pembayaran Mandiri E-Money Rp 20.000 berhasil!",
+          "custom_subtitle": "Kamu bisa cek status transaksimu di Detail Transaksi, ya.",
+          "custom_title_order_button": "Lihat Daftar Transaksi",
+          "custom_wtv_text": "Transaksimu baru dilanjutkan setelah pembayaran terverifikasi.",
+          "custom_title_home_button": "Update Saldo"
+        },
+        "config_flag": "{\"enable_thanks_widget\":true,\"hide_dg_recom\":false,\"hide_feature_recom\":false,\"hide_global_menu\":false,\"hide_home_button\":false,\"hide_pg_recom\":false,\"hide_search_bar\":false}",
+        "config_list": "{\"tickers\":\"[]\"}",
+        "gateway_additional_data": [],
+        "fee_details": []
+      }
+    }
+  }
+]

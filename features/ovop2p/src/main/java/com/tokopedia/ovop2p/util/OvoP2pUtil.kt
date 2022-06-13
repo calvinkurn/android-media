@@ -45,39 +45,6 @@ object OvoP2pUtil {
         return dialogBuilder
     }
 
-//    fun executeOvoP2pTransferRequest(context: Context, subscriber: Subscriber<GraphqlResponse>, gqlMutationDataMap: HashMap<String, Any>) {
-//        val ovoP2pTransferRequestUseCase = GraphqlUseCase()
-//        val graphqlRequest = GraphqlRequest(GraphqlHelper.loadRawString(context.resources, R.raw.ovo_p2p_transfer_request),
-//                OvoP2pTransferRequestBase::class.java, gqlMutationDataMap)
-//        ovoP2pTransferRequestUseCase.addRequest(graphqlRequest)
-//        ovoP2pTransferRequestUseCase.execute(subscriber)
-//    }
-//
-//    fun executeOvoP2pTransferConfirm(context: Context, subscriber: Subscriber<GraphqlResponse>, gqlMutationDataMap: HashMap<String, Any>) {
-//        val ovoP2pTransferConfirmUseCase = GraphqlUseCase()
-//        val graphqlRequest = GraphqlRequest(GraphqlHelper.loadRawString(context.resources, R.raw.ovo_p2p_transfer_confirm),
-//                OvoP2pTransferConfirmBase::class.java, gqlMutationDataMap)
-//        ovoP2pTransferConfirmUseCase.addRequest(graphqlRequest)
-//        ovoP2pTransferConfirmUseCase.execute(subscriber)
-//    }
-//
-//    fun executeOvoP2pTransferThankyou(context: Context, subscriber: Subscriber<GraphqlResponse>, gqlMutationDataMap: HashMap<String, Any>) {
-//        val ovoP2pTransferThankyouUseCase = GraphqlUseCase()
-//        val graphqlRequest = GraphqlRequest(GraphqlHelper.loadRawString(context.resources, R.raw.ovo_p2p_thank_you_page),
-//                OvoP2pTransferThankyouBase::class.java, gqlMutationDataMap)
-//        ovoP2pTransferThankyouUseCase.addRequest(graphqlRequest)
-//        ovoP2pTransferThankyouUseCase.execute(subscriber)
-//    }
-//
-//    fun executeOvoGetWalletData(context: Context, subscriber: Subscriber<GraphqlResponse>) {
-//        var ovoWalletDataUseCase = GraphqlUseCase()
-//        val graphqlRequest = GraphqlRequest(
-//                GraphqlHelper.loadRawString(context.getResources(), R.raw.ovop2p_wallet_detail),
-//                WalletDataBase::class.java)
-//        ovoWalletDataUseCase.addRequest(graphqlRequest)
-//        ovoWalletDataUseCase.execute(subscriber)
-//
-//    }
 
     fun extractNumbersFromString(srcStr: String): String {
         var numStr = srcStr.split("-").toString()

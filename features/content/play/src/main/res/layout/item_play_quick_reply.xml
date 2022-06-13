@@ -1,16 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-<TextView android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
+<com.tokopedia.unifyprinciples.Typography
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/tv_quick_reply"
-    android:gravity="start"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
     android:background="@drawable/bg_play_chat"
-    android:lineHeight="@dimen/fontSize_lvl5"
+    android:gravity="start"
     android:paddingStart="@dimen/spacing_lvl4"
     android:paddingTop="@dimen/spacing_lvl2"
     android:paddingEnd="@dimen/spacing_lvl4"
     android:paddingBottom="@dimen/spacing_lvl2"
     android:textColor="@color/Unify_Static_White"
-    android:textSize="@dimen/fontSize_lvl2"
-    tools:text="134134" />
+    app:typographyType="body_3"
+    tools:text="134134"
+    />

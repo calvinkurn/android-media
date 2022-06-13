@@ -5,7 +5,7 @@ import com.tokopedia.ovop2p.domain.model.OvoP2pTransferThankyouBase
 import com.tokopedia.ovop2p.domain.usecase.OvoTrnxThankyouPageUseCase
 import com.tokopedia.ovop2p.view.viewStates.ThankYouErrSnkBar
 import com.tokopedia.ovop2p.view.viewStates.ThankYouSucs
-import com.tokopedia.ovop2p.viewmodel.OvoP2pTxnThankYouOvoUsrVM
+import com.tokopedia.ovop2p.viewmodel.OvoP2PTransactionThankYouVM
 import io.mockk.coEvery
 import io.mockk.mockk
 import org.junit.Assert
@@ -18,14 +18,14 @@ class TrnxThankYouUnitTest {
     val instantTaskExecutorRule = InstantTaskExecutorRule()
 
     private val ovoP2pTrnxThankYouUseCase = mockk<OvoTrnxThankyouPageUseCase>(relaxed = true)
-    private lateinit var trnxThankYouViewModel: OvoP2pTxnThankYouOvoUsrVM
+    private lateinit var trnxThankYouViewModel: OvoP2PTransactionThankYouVM
 
     private val fetchFailedErrorMessage = "Fetch Failed"
     private val mockThrowable = Throwable(message = fetchFailedErrorMessage)
 
     @Before
     fun setUp() {
-        trnxThankYouViewModel = OvoP2pTxnThankYouOvoUsrVM(ovoP2pTrnxThankYouUseCase)
+        trnxThankYouViewModel = OvoP2PTransactionThankYouVM(ovoP2pTrnxThankYouUseCase)
     }
 
     @Test

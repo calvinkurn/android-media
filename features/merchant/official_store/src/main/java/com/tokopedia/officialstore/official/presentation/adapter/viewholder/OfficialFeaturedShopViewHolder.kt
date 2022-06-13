@@ -8,11 +8,12 @@ import com.tokopedia.kotlin.extensions.view.toEmptyStringIfNull
 import com.tokopedia.officialstore.R
 import com.tokopedia.officialstore.analytics.OfficialStoreTracking
 import com.tokopedia.officialstore.common.listener.FeaturedShopListener
+import com.tokopedia.officialstore.databinding.ViewmodelOfficialFeaturedShopBinding
 import com.tokopedia.officialstore.official.data.model.Shop
 import com.tokopedia.officialstore.official.presentation.adapter.datamodel.OfficialFeaturedShopDataModel
 import com.tokopedia.officialstore.official.presentation.widget.FeaturedShopAdapter
 import com.tokopedia.officialstore.official.presentation.widget.GridSpacingItemDecoration
-import kotlinx.android.synthetic.main.viewmodel_official_featured_shop.view.*
+import com.tokopedia.utils.view.binding.viewBinding
 
 //this is old featured brand from external api
 //now doubles with featured brand on dynamic channel
@@ -20,24 +21,25 @@ class OfficialFeaturedShopViewHolder(view: View, listener: FeaturedShopListener)
 
     private var adapter: FeaturedShopAdapter? = null
 
+    private var binding: ViewmodelOfficialFeaturedShopBinding? by viewBinding()
     private var officialStoreTracking: OfficialStoreTracking? = null
 
     override fun bind(element: OfficialFeaturedShopDataModel) {
         if(adapter == null){
             adapter = FeaturedShopAdapter(itemView.context)
-            itemView.recycler_view_featured_shop?.addItemDecoration(GridSpacingItemDecoration(SPACE_COUNT_2, SPACE_COUNT_8))
-            itemView.recycler_view_featured_shop?.adapter = adapter
+            binding?.recyclerViewFeaturedShop?.addItemDecoration(GridSpacingItemDecoration(SPACE_COUNT_2, SPACE_COUNT_8))
+            binding?.recyclerViewFeaturedShop?.adapter = adapter
         }
 
-        itemView.link_featured_shop?.setOnClickListener {
-            officialStoreTracking?.eventClickAllFeaturedBrand(
+        binding?.linkFeaturedShop?.setOnClickListener {
+            officialStoreTracking?.eventClickAllShop(
                     element.categoryName.toEmptyStringIfNull())
 
             RouteManager.route(it.context, element?.headerShop?.link)
         }
 
-        itemView.link_featured_shop?.text = element?.headerShop?.ctaText
-        itemView.title_featured_shop?.text = element?.headerShop?.title
+        binding?.linkFeaturedShop?.text = element?.headerShop?.ctaText
+        binding?.titleFeaturedShop?.text = element?.headerShop?.title
 
         element?.featuredShop?.let {
             adapter?.shopList = it

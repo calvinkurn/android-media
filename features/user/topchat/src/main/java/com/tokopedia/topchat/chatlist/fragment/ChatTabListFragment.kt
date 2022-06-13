@@ -27,7 +27,7 @@ import com.tokopedia.coachmark.CoachMarkPreference
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
-import com.tokopedia.seller.active.common.service.UpdateShopActiveService
+import com.tokopedia.seller.active.common.worker.UpdateShopActiveWorker
 import com.tokopedia.seller_migration_common.listener.SellerHomeFragmentListener
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatlist.activity.ChatListActivity.Companion.BUYER_ANALYTICS_LABEL
@@ -102,13 +102,13 @@ open class ChatTabListFragment constructor() : BaseDaggerFragment(), ChatListCon
         initChatCounterObserver()
         initToolTip()
         initBackground()
-        context?.let { UpdateShopActiveService.startService(it) }
+        context?.let { UpdateShopActiveWorker.execute(it) }
     }
 
     private fun initBackground() {
         if (GlobalConfig.isSellerApp()) {
             context?.let {
-                viewPager?.setBackgroundColor(MethodChecker.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N0))
+                viewPager?.setBackgroundColor(MethodChecker.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_Background))
             }
         }
     }
@@ -221,7 +221,7 @@ open class ChatTabListFragment constructor() : BaseDaggerFragment(), ChatListCon
         for (i in 0 until tabList.size) {
             tabLayout?.newTab()?.let { tabLayout?.addTab(it) }
             tabLayout?.setBackgroundColor(MethodChecker.getColor(
-                    context, com.tokopedia.unifyprinciples.R.color.Unify_N0
+                    context, com.tokopedia.unifyprinciples.R.color.Unify_Background
             ))
         }
 
@@ -424,7 +424,7 @@ open class ChatTabListFragment constructor() : BaseDaggerFragment(), ChatListCon
     }
 
     private fun isFromSeller(fromUid: String, tag: String): Boolean {
-        return (tag == ROLE_SELLER && fromUid != userSession.userId)
+        return (tag == ROLE_SELLER && fromUid != userSession.userId) && !GlobalConfig.isSellerApp()
     }
 
     private fun isFromMyselfAsSeller(fromUid: String, tag: String): Boolean {

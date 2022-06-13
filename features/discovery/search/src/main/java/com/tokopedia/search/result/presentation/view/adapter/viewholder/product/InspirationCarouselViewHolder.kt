@@ -48,6 +48,9 @@ class InspirationCarouselViewHolder(
         @LayoutRes
         @JvmField
         val LAYOUT = R.layout.search_inspiration_carousel
+
+        private const val LEFT_OFFSET_NOT_FIRST_DIVISOR = 4
+        private const val RIGHT_OFFSET_NOT_LAST_DIVISOR = 4
     }
 
     private var binding: SearchInspirationCarouselBinding? by viewBinding()
@@ -249,20 +252,22 @@ class InspirationCarouselViewHolder(
 
     private fun InspirationCarouselDataView.Option.Product.toProductCardModel(): ProductCardModel {
         return ProductCardModel(
-                productImageUrl = imgUrl,
-                productName = name,
-                formattedPrice = priceStr,
-                countSoldRating = ratingAverage,
-                slashedPrice = if (discountPercentage > 0) originalPrice else "",
-                discountPercentage = if (discountPercentage > 0) "$discountPercentage%" else "",
-                labelGroupList = labelGroupDataList.map { ProductCardModel.LabelGroup(
-                        title = it.title,
-                        position = it.position,
-                        type = it.type,
-                        imageUrl = it.imageUrl,
-                ) },
-                shopLocation = shopLocation,
-                shopBadgeList = badgeItemDataViewList.toProductCardModelShopBadges()
+            productImageUrl = imgUrl,
+            productName = name,
+            formattedPrice = priceStr,
+            countSoldRating = ratingAverage,
+            slashedPrice = if (discountPercentage > 0) originalPrice else "",
+            discountPercentage = if (discountPercentage > 0) "$discountPercentage%" else "",
+            labelGroupList = labelGroupDataList.map { ProductCardModel.LabelGroup(
+                    title = it.title,
+                    position = it.position,
+                    type = it.type,
+                    imageUrl = it.imageUrl,
+            ) },
+            shopLocation = shopLocation,
+            shopBadgeList = badgeItemDataViewList.toProductCardModelShopBadges(),
+            isTopAds = isOrganicAds,
+            cardInteraction = true,
         )
     }
 
@@ -361,7 +366,7 @@ class InspirationCarouselViewHolder(
 
         private fun getLeftOffsetFirstItem(): Int { return left - (cardViewHorizontalOffset / 2) }
 
-        private fun getLeftOffsetNotFirstItem(): Int { return (left / 4) - (cardViewHorizontalOffset / 2) }
+        private fun getLeftOffsetNotFirstItem(): Int { return (left / LEFT_OFFSET_NOT_FIRST_DIVISOR) - (cardViewHorizontalOffset / 2) }
 
         private fun getRightOffset(view: View, parent: RecyclerView): Int {
             return if (parent.getChildAdapterPosition(view) == (parent.adapter?.itemCount ?: 0) - 1) getRightOffsetLastItem()
@@ -370,6 +375,6 @@ class InspirationCarouselViewHolder(
 
         private fun getRightOffsetLastItem(): Int { return right - (cardViewHorizontalOffset / 2) }
 
-        private fun getRightOffsetNotLastItem(): Int { return (right / 4) - (cardViewHorizontalOffset / 2) }
+        private fun getRightOffsetNotLastItem(): Int { return (right / RIGHT_OFFSET_NOT_LAST_DIVISOR) - (cardViewHorizontalOffset / 2) }
     }
 }

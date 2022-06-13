@@ -6,6 +6,7 @@ import androidx.test.filters.SdkSuppress
 import com.tkpd.macrobenchmark.base.BaseStartupBenchmark
 import com.tkpd.macrobenchmark.util.MacroDevOps
 import com.tkpd.macrobenchmark.util.MacroIntent
+import com.tkpd.macrobenchmark.util.MacroInteration
 import org.junit.Before
 import org.junit.runner.RunWith
 import org.junit.runners.Parameterized
@@ -26,4 +27,15 @@ class OSStartupBenchmark(startupMode: StartupMode): BaseStartupBenchmark(startup
         MacroDevOps.setupEnvironment(MacroIntent.OfficialStore.getOsMacroSetupIntent())
     }
     override fun getIntent() = MacroIntent.OfficialStore.getOsIntent()
+
+    override fun waitUntil() {
+        MacroInteration.waitUntilRecyclerViewExist(
+                MacroIntent.TKPD_PACKAGE_NAME,
+                MacroIntent.OfficialStore.RV_RESOURCE_ID,
+        )
+        MacroInteration.waitForRecyclerViewContent(
+                MacroIntent.TKPD_PACKAGE_NAME,
+                MacroIntent.OfficialStore.RV_RESOURCE_ID,
+        )
+    }
 }

@@ -50,12 +50,6 @@
         android:scaleType="centerInside"
         android:visibility="gone" />
 
-    <com.tokopedia.homecredit.view.widget.RectangleOverlayView
-        android:id="@+id/cicleOverlay"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_above="@+id/camera_controls"
-        android:visibility="gone" />
 
     <RelativeLayout
         android:layout_width="match_parent"

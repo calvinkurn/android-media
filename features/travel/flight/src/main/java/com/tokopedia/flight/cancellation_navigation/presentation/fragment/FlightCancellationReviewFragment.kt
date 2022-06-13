@@ -34,8 +34,8 @@ import com.tokopedia.flight.cancellation.presentation.bottomsheet.FlightCancella
 import com.tokopedia.flight.cancellation.presentation.model.FlightCancellationModel
 import com.tokopedia.flight.cancellation.presentation.model.FlightCancellationWrapperModel
 import com.tokopedia.flight.cancellation.presentation.viewmodel.FlightCancellationReviewViewModel
+import com.tokopedia.flight.common.util.FlightErrorUtil
 import com.tokopedia.flight.databinding.FragmentFlightCancellationReviewBinding
-import com.tokopedia.flight.orderlist.util.FlightErrorUtil
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success

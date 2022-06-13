@@ -24,7 +24,6 @@ class InstrumentedTest {
     @Before
     fun before() {
         targetContext = InstrumentationRegistry.getInstrumentation().targetContext
-//        GraphqlClient.init(targetContext)
     }
 
     @Test

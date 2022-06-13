@@ -7,8 +7,10 @@ import com.tokopedia.common.network.domain.RestRequestUseCase
 import com.tokopedia.pms.proof.model.PaymentProofResponse
 import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.usecase.RequestParams
-import okhttp3.MediaType
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.RequestBody
+import okhttp3.RequestBody.Companion.asRequestBody
+import okhttp3.RequestBody.Companion.toRequestBody
 import java.io.File
 import java.io.UnsupportedEncodingException
 import java.net.URLEncoder
@@ -37,16 +39,24 @@ class UploadPaymentProofUseCase @Inject constructor() : RestRequestUseCase() {
     private fun generateRequestParams(): HashMap<String, Any>? {
         val requestBodyMap = HashMap<String, Any>()
 
-        val reqImgFile: RequestBody = RequestBody.create(MediaType.parse(MEDIA_TYPE_IMAGE), File(imageFilePath))
+        val reqImgFile: RequestBody = File(imageFilePath)
+            .asRequestBody(MEDIA_TYPE_IMAGE.toMediaTypeOrNull())
         try {
-            requestBodyMap[PARAMS_UPLOAD_FILE+ PARAMS_UPLOAD_FILE_NAME + URLEncoder.encode(imageFilePath, ENCODING_UTF_8)] = reqImgFile
+            requestBodyMap[PARAMS_UPLOAD_FILE + PARAMS_UPLOAD_FILE_NAME + URLEncoder.encode(
+                imageFilePath,
+                ENCODING_UTF_8
+            )] = reqImgFile
         } catch (e: UnsupportedEncodingException) {
             e.printStackTrace()
         }
-        requestBodyMap[PARAMS_PAYMENT_ID] = RequestBody.create(MediaType.parse(MEDIA_TYPE_TEXT), paymentId)
-        requestBodyMap[PARAMS_UPLOAD_SIGNATURE] = RequestBody.create(MediaType.parse(MEDIA_TYPE_TEXT), getSignature())
-        requestBodyMap[PARAMS_MERCHANT_CODE] = RequestBody.create(MediaType.parse(MEDIA_TYPE_TEXT), merchantCode)
-        requestBodyMap[PARAM_IS_TEST] = RequestBody.create(MediaType.parse(MEDIA_TYPE_TEXT), false.toString())
+        requestBodyMap[PARAMS_PAYMENT_ID] = paymentId
+            .toRequestBody(MEDIA_TYPE_TEXT.toMediaTypeOrNull())
+        requestBodyMap[PARAMS_UPLOAD_SIGNATURE] = getSignature()
+            .toRequestBody(MEDIA_TYPE_TEXT.toMediaTypeOrNull())
+        requestBodyMap[PARAMS_MERCHANT_CODE] = merchantCode
+            .toRequestBody(MEDIA_TYPE_TEXT.toMediaTypeOrNull())
+        requestBodyMap[PARAM_IS_TEST] = false.toString()
+            .toRequestBody(MEDIA_TYPE_TEXT.toMediaTypeOrNull())
         return requestBodyMap
     }
 

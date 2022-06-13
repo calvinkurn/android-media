@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white">
+    android:background="@color/Unify_N0">
 
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
@@ -34,7 +34,7 @@
                 android:layout_marginLeft="4dp"
                 android:gravity="center_vertical"
                 android:text="@string/title_activity_promo"
-                android:textColor="@color/clr_f531353b"
+                android:textColor="@color/Unify_N700_96"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/shimmer_back"
                 app:layout_constraintTop_toTopOf="parent"
@@ -46,19 +46,19 @@
             android:id="@+id/tab_layout"
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_75"
-            android:background="@color/white"
-            app:tabIndicatorColor="@color/tkpd_main_green"
+            android:background="@color/Unify_N0"
+            app:tabIndicatorColor="@color/Unify_G500"
             app:tabIndicatorHeight="3dp"
             app:tabMode="fixed"
-            app:tabSelectedTextColor="@color/tkpd_main_green"
+            app:tabSelectedTextColor="@color/Unify_G500"
             app:tabTextAppearance="@style/CustomTitlePageIndicatorLoyalty"
-            app:tabTextColor="@color/grey_600"
+            app:tabTextColor="@color/Unify_NN600"
             tools:visibility="gone" />
 
         <View
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_1"
-            android:background="@color/unify_N75" />
+            android:background="@color/Unify_N75" />
 
     </com.google.android.material.appbar.AppBarLayout>
 

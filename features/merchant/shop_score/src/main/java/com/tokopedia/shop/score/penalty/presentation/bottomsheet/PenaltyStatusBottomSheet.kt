@@ -3,7 +3,7 @@ package com.tokopedia.shop.score.penalty.presentation.bottomsheet
 import android.view.View
 import androidx.fragment.app.FragmentManager
 import com.tokopedia.shop.score.R
-import com.tokopedia.shop.score.common.presentation.BaseBottomSheetShopScore
+import com.tokopedia.shop.score.common.presentation.bottomsheet.BaseBottomSheetShopScore
 import com.tokopedia.shop.score.databinding.BottomSheetStatusPenaltyBinding
 
 class PenaltyStatusBottomSheet : BaseBottomSheetShopScore<BottomSheetStatusPenaltyBinding>() {

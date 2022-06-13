@@ -1,6 +1,7 @@
 package com.tokopedia.sellerhome.settings.view.animator
 
 import android.view.MotionEvent
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 
 class SecondaryShopInfoAnimator(private val recyclerView: RecyclerView?) {
@@ -8,6 +9,8 @@ class SecondaryShopInfoAnimator(private val recyclerView: RecyclerView?) {
     companion object {
         private const val SCROLLING_POSITION = 100
         private const val ZERO_Y_DELTA = 0
+
+        private const val RV_RIGHT_DIRECTION = 1
     }
 
     private var isRecyclerViewHasScrolled = false
@@ -36,7 +39,13 @@ class SecondaryShopInfoAnimator(private val recyclerView: RecyclerView?) {
                     return
                 }
                 val offset = recyclerView.computeHorizontalScrollOffset()
-                if (offset >= SCROLLING_POSITION) {
+                // Scroll back to initial state if the rv has scrolled to determined position or
+                // if it has reached the end of rv
+                val shouldScrollBack =
+                    offset >= SCROLLING_POSITION || !recyclerView.canScrollHorizontally(
+                        RV_RIGHT_DIRECTION
+                    )
+                if (shouldScrollBack) {
                     recyclerView.smoothScrollBy(-SCROLLING_POSITION, ZERO_Y_DELTA)
                 }
             }
@@ -62,7 +71,8 @@ class SecondaryShopInfoAnimator(private val recyclerView: RecyclerView?) {
     }
 
     fun swipeRecyclerViewGently() {
-        if (!isRecyclerViewHasScrolled) {
+        val shouldScroll = !(isRecyclerViewHasScrolled || checkIfAllContentsHaveShown())
+        if (shouldScroll) {
             removeOnScrollListener(onScrollListener)
             recyclerView?.run {
                 addOnScrollListener(onAutomaticScrollListener)
@@ -78,6 +88,22 @@ class SecondaryShopInfoAnimator(private val recyclerView: RecyclerView?) {
 
     private fun removeOnTouchListener() {
         recyclerView?.removeOnItemTouchListener(onRecyclerViewTouchedListener)
+    }
+
+    /**
+     * Returns whether all contents in secondary are visible in the screen.
+     * If true, then we should not need to scroll the rv
+     *
+     * @return  is all contents have shown
+     */
+    private fun checkIfAllContentsHaveShown(): Boolean {
+        return (recyclerView?.layoutManager as? LinearLayoutManager)?.findLastVisibleItemPosition()
+            ?.let { lastVisiblePosition ->
+                recyclerView.adapter?.itemCount?.minus(1)?.let { lastIndexPosition ->
+                    val isNoPosition = lastVisiblePosition == RecyclerView.NO_POSITION
+                    !isNoPosition && lastVisiblePosition >= lastIndexPosition
+                }
+            } ?: false
     }
 
 }

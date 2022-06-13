@@ -34,7 +34,14 @@
             "type": "textDarkGrey",
             "url": ""
           }
-        ]
+        ],
+        "component_id": "03.02.01.01",
+        "ads": {
+          "id": "",
+          "productClickUrl": "",
+          "productWishlistUrl": "",
+          "productViewUrl": ""
+        }
       },
       {
         "id": 455064185,
@@ -69,7 +76,14 @@
             "type": "textDarkGrey",
             "url": ""
           }
-        ]
+        ],
+        "component_id": "03.02.01.02",
+        "ads": {
+          "id": "123456",
+          "productClickUrl": "https://ta.tokopedia.com/promo/v1/clicks/",
+          "productWishlistUrl": "https://ta.tokopedia.com/promo/v1/wishlists/",
+          "productViewUrl": "https://ta.tokopedia.com/promo/v1/views/"
+        }
       },
       {
         "id": 399926285,
@@ -104,7 +118,14 @@
             "type": "textDarkGrey",
             "url": ""
           }
-        ]
+        ],
+        "component_id": "03.02.01.03",
+        "ads": {
+          "id": "",
+          "productClickUrl": "",
+          "productWishlistUrl": "",
+          "productViewUrl": ""
+        }
       },
       {
         "id": 753733680,
@@ -139,7 +160,14 @@
             "type": "textDarkGrey",
             "url": ""
           }
-        ]
+        ],
+        "component_id": "03.02.01.04",
+        "ads": {
+          "id": "",
+          "productClickUrl": "",
+          "productWishlistUrl": "",
+          "productViewUrl": ""
+        }
       },
       {
         "id": 153937415,
@@ -174,7 +202,14 @@
             "type": "textDarkGrey",
             "url": ""
           }
-        ]
+        ],
+        "component_id": "03.02.01.05",
+        "ads": {
+          "id": "",
+          "productClickUrl": "",
+          "productWishlistUrl": "",
+          "productViewUrl": ""
+        }
       }
     ]
   }

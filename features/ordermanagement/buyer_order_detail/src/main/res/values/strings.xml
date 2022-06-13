@@ -17,11 +17,12 @@
     <string name="message_invoice_copied">Kode invoice telah tersalin</string>
     <string name="message_awb_copied">Nomor resi telah tersalin</string>
     <string name="message_receiver_address_copied">Alamat penerima telah tersalin</string>
+    <string name="message_dropshipper_copied">Dropshipper telah tersalin</string>
     <string name="html_link">%1$s &lt;a href=\"%2$s\"&gt;%3$s&lt;/a&gt;</string>
     <string name="label_product_price_and_quantity">%1$d x %2$s</string>
     <string name="failed_to_get_information">Informasi gagal dimuat</string>
     <string name="bottomsheet_finish_order_description">Dengan klik Selesai, dana akan diteruskan ke penjual dan kamu tidak dapat mengajukan komplain.</string>
-    <string name="bottomsheet_finish_order_product_description">Pastikan kamu sudah menerima barang yang sesuai dengan pesananmu.</string>
+    <string name="bottomsheet_finish_order_product_description">Pastikan barang pesanan yang kamu terima sudah benar. Lakukan transaksi hanya di Tokopedia dan laporkan jika ada indikasi penipuan.</string>
     <string name="bottomsheet_finish_order_cashback_description"><![CDATA[Jika memenuhi Syarat & Ketentuan, cashback dari transaksi yang pakai promo akan dikirim maks. 24 jam ke depan.]]></string>
     <string name="label_complaint">Ajukan Komplain</string>
     <string name="label_finish">Selesai</string>
@@ -41,7 +42,33 @@
     <string name="buyer_order_detail_error_message_cant_open_snapshot_when_waiting_invoice">Oops, halaman detail produk belum bisa di akses karena sedang menunggu invoice</string>
     <string name="copy_label_awb_number">bom_awb</string>
     <string name="copy_label_receiver_address">bom_receiver_address</string>
+    <string name="copy_label_dropship">bom_dropship</string>
+    <string name="bom_recommendation_lbl">Rekomendasi untukmu</string>
 
     <!--Product Bundling-->
     <string name="buyer_order_detail_bundling_price_total">Total Harga Paket</string>
+
+    <!--Order Extension-->
+    <string name="order_extension_title_order_has_been_sent">Oops, penjual telah mengirim pesananmu</string>
+    <string name="order_extension_desc_order_has_been_sent">Pesanan yang sudah masuk proses pengiriman tidak dapat dibatalkan.</string>
+    <string name="order_extension_title_confirmed_order_cancelled">Yakin ingin membatalkan pesanan?</string>
+    <string name="order_extension_desc_confirmed_order_cancelled"><![CDATA[%1s <font color="%2$s"><b>%3$s</b></font>]]></string>
+    <string name="order_extension_order_cancelled">Batalkan Pesanan</string>
+    <string name="order_extension_btn_secondary">Perpanjang Pesanan</string>
+    <string name="order_extension_title_submission_extends">Estimasi proses pesananmu akan diperpanjang 2x24 jam hari kerja. Barangmu tiba menyesuaikan durasi proses, ya.</string>
+    <string name="order_extension_reason_submission_extends">Alasan perpanjangan pesanan:</string>
+    <string name="order_extension_reason_submission_extends_value">" Kendala operasional "</string>
+    <string name="order_extension_title_submission_extends_bottom_sheet">Bersediakah kamu untuk memperpanjang waktu pesanan?</string>
+    <string name="order_extension_message_error_connection">Oops, koneksi internetmu terganggu. Silakan cek koneksi internet dan coba lagi, ya.</string>
+    <string name="buyer_order_extension_label">Buyer Order Extension</string>
+
+    <!--Addons -->
+    <string name="order_addons_from_label">Dari</string>
+    <string name="order_addons_to_label">Ke</string>
+    <string name="order_addons_to_value">: %s</string>
+    <string name="order_addons_from_value">: %s</string>
+    <string name="order_addons_total_price_label">Total %s</string>
+    <string name="order_addons_read_more">&lt;a href="#"&gt;Lihat Selengkapnya&lt;/a&gt;</string>
+    <string name="order_addons_close"> &lt;a href="#"&gt;Tutup&lt;/a&gt;</string>
+    <string name="order_addons_type_and_name">%1$s - %2$s</string>
 </resources>

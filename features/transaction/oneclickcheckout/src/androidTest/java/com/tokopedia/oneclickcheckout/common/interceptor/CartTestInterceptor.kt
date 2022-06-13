@@ -71,6 +71,11 @@ const val GET_OCC_CART_PAGE_OVO_ACTIVATED_REVAMP_RESPONSE_PATH = "cart/get_occ_c
 const val GET_OCC_CART_PAGE_OVO_LOW_WALLET_REVAMP_RESPONSE_PATH = "cart/get_occ_cart_page_ovo_low_wallet_revamp_response.json"
 const val GET_OCC_CART_PAGE_OVO_TOP_UP_REVAMP_RESPONSE_PATH = "cart/get_occ_cart_page_ovo_top_up_revamp_response.json"
 
+const val GET_OCC_CART_PAGE_GOPAY_NO_PHONE_RESPONSE_PATH = "cart/get_occ_cart_page_gopay_no_phone_response.json"
+const val GET_OCC_CART_PAGE_GOPAY_ACTIVATION_RESPONSE_PATH = "cart/get_occ_cart_page_gopay_activation_response.json"
+const val GET_OCC_CART_PAGE_GOPAY_ACTIVATED_RESPONSE_PATH = "cart/get_occ_cart_page_gopay_activated_response.json"
+const val GET_OCC_CART_PAGE_GOPAY_LOW_WALLET_RESPONSE_PATH = "cart/get_occ_cart_page_gopay_low_wallet_response.json"
+
 const val GET_OCC_CART_PAGE_ONE_PROFILE_REVAMP_RESPONSE_PATH = "cart/get_occ_cart_page_one_profile_revamp_response.json"
 const val GET_OCC_CART_PAGE_MANY_PROFILE_REVAMP_RESPONSE_PATH = "cart/get_occ_cart_page_many_profile_revamp_response.json"
 
@@ -100,6 +105,9 @@ const val GET_OCC_CART_PAGE_MULTI_PRODUCT_ORDER_ERROR_RESPONSE_PATH = "cart/get_
 
 const val GET_OCC_CART_PAGE_MULTI_PRODUCT_TOKONOW_RESPONSE_PATH = "cart/get_occ_cart_page_multi_product_tokonow_response.json"
 const val GET_OCC_CART_PAGE_MULTI_PRODUCT_TOKONOW_NEAR_OVERWEIGHT_RESPONSE_PATH = "cart/get_occ_cart_page_multi_product_tokonow_near_overweight_response.json"
+
+const val GET_OCC_CART_PAGE_GOCICIL_RESPONSE_PATH = "cart/get_occ_cart_page_gocicil_default_response.json"
+const val GET_OCC_CART_PAGE_GOCICIL_LIMITED_WALLET_AMOUNT_RESPONSE_PATH = "cart/get_occ_cart_page_gocicil_limited_wallet_amount_response.json"
 
 const val UPDATE_CART_OCC_SUCCESS_RESPONSE_PATH = "cart/update_cart_occ_success_response.json"
 const val UPDATE_CART_OCC_DIALOG_PROMPT_RESPONSE_PATH = "cart/update_cart_occ_dialog_prompt_response.json"

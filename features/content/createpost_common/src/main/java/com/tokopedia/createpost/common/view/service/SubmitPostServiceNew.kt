@@ -5,8 +5,8 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.text.TextUtils
-import androidx.core.app.JobIntentService
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
+import com.tokopedia.abstraction.base.service.JobIntentServiceX
 import com.tokopedia.affiliatecommon.BROADCAST_SUBMIT_POST_NEW
 import com.tokopedia.affiliatecommon.SUBMIT_POST_SUCCESS_NEW
 import com.tokopedia.affiliatecommon.data.pojo.submitpost.response.Content
@@ -26,7 +26,7 @@ import rx.Subscriber
 import timber.log.Timber
 import javax.inject.Inject
 
-class SubmitPostServiceNew : JobIntentService() {
+class SubmitPostServiceNew : JobIntentServiceX() {
 
     @Inject
     lateinit var submitPostUseCase: SubmitPostUseCaseNew
@@ -89,7 +89,9 @@ class SubmitPostServiceNew : JobIntentService() {
                     getFileAbsolutePath(it.path)!! to it.type
                 },
                 if (isTypeAffiliate(viewModel.authorType)) viewModel.adIdList
-                else viewModel.productIdList, viewModel.completeImageList
+                else viewModel.productIdList, viewModel.completeImageList,
+                 viewModel.mediaWidth,
+                 viewModel.mediaHeight
             ), getSubscriber())
     }
 

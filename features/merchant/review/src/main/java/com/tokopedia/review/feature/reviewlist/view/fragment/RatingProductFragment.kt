@@ -28,6 +28,7 @@ import com.tokopedia.coachmark.CoachMarkItem
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.media.loader.loadImage
+import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.review.R
 import com.tokopedia.review.ReviewInstance
 import com.tokopedia.review.common.analytics.ReviewSellerPerformanceMonitoringContract
@@ -58,10 +59,12 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
+import java.net.SocketTimeoutException
+import java.net.UnknownHostException
 import javax.inject.Inject
 
 
-class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTypeFactory>(),
+open class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTypeFactory>(),
     HasComponent<ReviewProductListComponent>,
     ReviewSummaryViewHolder.ReviewSummaryViewListener,
     SellerReviewListViewHolder.SellerReviewListListener,
@@ -69,10 +72,10 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
 
     companion object {
         const val TAG_COACH_MARK_RATING_PRODUCT = "coachMarkRatingProduct"
+        const val BOTTOM_SHEET_FILTER_TAG = "bottomSheetFilterTag"
+        const val BOTTOM_SHEET_SORT_TAG = "bottomSheetSortTag"
         private const val searchQuery = "search"
         private const val MAX_LENGTH_SEARCH = 3
-        private const val BOTTOM_SHEET_SORT_TAG = "bottomSheetSortTag"
-        private const val BOTTOM_SHEET_FILTER_TAG = "bottomSheetFilterTag"
 
         private const val IS_DIRECTLY_GO_TO_RATING = "is_directly_go_to_rating"
 
@@ -102,7 +105,7 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
 
     private val prefKey = this.javaClass.name + ".pref"
 
-    private var prefs: SharedPreferences? = null
+    protected var prefs: SharedPreferences? = null
 
     private val coachMarkItems: ArrayList<CoachMarkItem> = arrayListOf()
 
@@ -138,7 +141,7 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
     private var reviewSellerPerformanceMonitoringListener: ReviewSellerPerformanceMonitoringListener? =
         null
 
-    private val coachMark: CoachMark by lazy {
+    val coachMark: CoachMark by lazy {
         initCoachMark()
     }
 
@@ -188,7 +191,7 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
         activity?.window?.decorView?.setBackgroundColor(
             ContextCompat.getColor(
                 requireContext(),
-                com.tokopedia.unifyprinciples.R.color.Unify_N0
+                com.tokopedia.unifyprinciples.R.color.Unify_Background
             )
         )
         initTickerReviewReminder()
@@ -197,6 +200,7 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
         initChipsSort(view)
         initChipsFilter(view)
         initEmptyState()
+        scrollRecyclerViewSendTracking()
         observeLiveData()
     }
 
@@ -218,6 +222,7 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
 
     override fun onResume() {
         super.onResume()
+        loadInitialData()
         if (!isClickTrackingAlreadySent) {
             tracking.eventClickTabRatingProduct(userSession.shopId.orEmpty())
         }
@@ -338,6 +343,17 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
         return view.findViewById(R.id.rvRatingProduct)
     }
 
+    private fun scrollRecyclerViewSendTracking() {
+        binding?.rvRatingProduct?.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                super.onScrollStateChanged(recyclerView, newState)
+                if (newState != RecyclerView.SCROLL_STATE_IDLE) {
+                    tracking.eventScrollRatingProduct(userSession.shopId.orEmpty())
+                }
+            }
+        })
+    }
+
     private fun initSearchBar() {
         binding?.searchBarLayout?.searchBarRatingProduct?.apply {
             isClearable = true
@@ -432,13 +448,13 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
         tracking.eventViewErrorIris(throwable.message.orEmpty())
         swipeToRefresh?.isRefreshing = false
         if (reviewSellerAdapter.itemCount.isZero()) {
-            if (throwable.message?.isNotEmpty() == true) {
-                binding?.globalErrorReviewSeller?.setType(GlobalError.SERVER_ERROR)
-            } else if (throwable.message?.isEmpty() == true) {
+            if (throwable is UnknownHostException || throwable is SocketTimeoutException) {
                 binding?.globalErrorReviewSeller?.setType(GlobalError.NO_CONNECTION)
+            } else {
+                binding?.globalErrorReviewSeller?.setType(GlobalError.SERVER_ERROR)
             }
 
-            showErrorState()
+            showErrorState(throwable.getErrorMessage(context))
 
             binding?.globalErrorReviewSeller?.setActionClickListener {
                 tracking.eventClickRetryError(
@@ -449,13 +465,13 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
             }
         } else {
             onErrorLoadMoreToaster(
-                getString(R.string.error_message_load_more_review_product),
+                throwable.getErrorMessage(context, getString(R.string.error_message_load_more_review_product)),
                 getString(R.string.action_retry_toaster_review_product)
             )
         }
     }
 
-    private fun showErrorState() {
+    private fun showErrorState(errorMessage: String) {
         binding?.apply {
             filterAndSortLayout.root.gone()
             rvRatingProduct.gone()
@@ -463,6 +479,7 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
             searchBarLayout.root.show()
             scrollViewGlobalErrorReviewSeller.show()
             globalErrorReviewSeller.show()
+            globalErrorReviewSeller.errorDescription.text = errorMessage
         }
     }
 
@@ -496,7 +513,6 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
     }
 
     private fun loadNextPage(page: Int) {
-        tracking.eventScrollRatingProduct(userSession.shopId.orEmpty())
         viewModelListReviewList?.getNextProductReviewList(
             sortBy = sortBy.orEmpty(),
             filterBy = filterAllText.orEmpty(),
@@ -673,11 +689,12 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
             Toaster.build(
                 it,
                 message,
+                duration = Toaster.LENGTH_INDEFINITE,
                 actionText = action,
                 type = Toaster.TYPE_ERROR,
                 clickListener = {
                     loadInitialData()
-                })
+                }).show()
         }
     }
 
@@ -863,5 +880,9 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
                 binding?.searchBarLayout?.tickerReviewReminder?.hide()
             }
         }
+    }
+
+    override fun callInitialLoadAutomatically(): Boolean {
+        return false
     }
 }

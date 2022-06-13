@@ -6,5 +6,6 @@ object Const {
     const val GQL_RESPONSE_MAX_LENGTH = 100
     const val GQL_QUERY_HASHING_ERROR = 244
     const val AKAMAI_SENSOR_DATA_HEADER = "X-acf-sensor-data"
+    const val TKPD_AKAMAI = "X-TKPD-AKAMAI"
     const val QUERY_HASHING_HEADER = "queryhash"
 }

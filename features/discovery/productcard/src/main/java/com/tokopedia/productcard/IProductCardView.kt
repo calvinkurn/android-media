@@ -1,7 +1,9 @@
 package com.tokopedia.productcard
 
 import android.view.View
+import android.widget.ImageView
 import com.tokopedia.unifycomponents.UnifyButton
+import com.tokopedia.video_widget.VideoPlayerController
 
 interface IProductCardView {
 
@@ -18,4 +20,8 @@ interface IProductCardView {
     fun getNotifyMeButton(): UnifyButton?
 
     fun getShopBadgeView(): View?
+
+    fun getProductImageView(): ImageView?
+
+    fun getVideoPlayerController(): VideoPlayerController
 }

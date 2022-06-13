@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.shop.common.data.source.cloud.model.followshop.FollowShop
 import com.tokopedia.shop.common.util.ShopProductViewGridType
+import com.tokopedia.shop.common.view.model.ShopPageFabConfig
 import com.tokopedia.shop.common.view.model.ShopProductFilterParameter
 import com.tokopedia.util.LiveDataUtil.observeAwaitValue
 import io.mockk.MockKAnnotations
@@ -26,6 +27,10 @@ class ShopPageCommonViewModelTest {
 
     private val shopProductFilterParameterSharedViewModel by lazy {
         ShopProductFilterParameterSharedViewModel()
+    }
+
+    private val shopPageFeedTabSharedViewModel by lazy {
+        ShopPageFeedTabSharedViewModel()
     }
 
     private val context = mockk<Context>(relaxed = true)
@@ -102,6 +107,60 @@ class ShopPageCommonViewModelTest {
 
         shopProductFilterParameterSharedViewModel.sharedShopProductFilterParameter.value?.let {
             verifySuccessResult(mockData, it)
+        }
+    }
+
+    @Test
+    fun `Trigger shop feed tab clear cache should be success`() {
+        shopPageFeedTabSharedViewModel.clearCache()
+        shopPageFeedTabSharedViewModel.feedTabClearCache.observeAwaitValue()
+        shopPageFeedTabSharedViewModel.feedTabClearCache.value?.let {
+            verifySuccessResult(true, it)
+        }
+    }
+
+    @Test
+    fun `Hide shop page seller migration bottomsheet should be success`() {
+        shopPageFeedTabSharedViewModel.hideSellerMigrationBottomSheet()
+        shopPageFeedTabSharedViewModel.sellerMigrationBottomSheet.observeAwaitValue()
+        shopPageFeedTabSharedViewModel.sellerMigrationBottomSheet.value?.let {
+            verifySuccessResult(false, it)
+        }
+    }
+
+    @Test
+    fun `Show shop page seller migration bottomsheet should be success`() {
+        shopPageFeedTabSharedViewModel.showSellerMigrationBottomSheet()
+        shopPageFeedTabSharedViewModel.sellerMigrationBottomSheet.observeAwaitValue()
+        shopPageFeedTabSharedViewModel.sellerMigrationBottomSheet.value?.let {
+            verifySuccessResult(true, it)
+        }
+    }
+
+    @Test
+    fun `Setup shop page fab should be success`() {
+        shopPageFeedTabSharedViewModel.setupShopPageFab(ShopPageFabConfig())
+        shopPageFeedTabSharedViewModel.shopPageFab.observeAwaitValue()
+        shopPageFeedTabSharedViewModel.shopPageFab.value?.let {
+            verifySuccessResult(ShopPageFeedTabSharedViewModel.FAB_ACTION_SETUP, it)
+        }
+    }
+
+    @Test
+    fun `Show shop page fab should be success`() {
+        shopPageFeedTabSharedViewModel.showShopPageFab()
+        shopPageFeedTabSharedViewModel.shopPageFab.observeAwaitValue()
+        shopPageFeedTabSharedViewModel.shopPageFab.value?.let {
+            verifySuccessResult(ShopPageFeedTabSharedViewModel.FAB_ACTION_SHOW, it)
+        }
+    }
+
+    @Test
+    fun `Hide shop page fab should be success`() {
+        shopPageFeedTabSharedViewModel.hideShopPageFab()
+        shopPageFeedTabSharedViewModel.shopPageFab.observeAwaitValue()
+        shopPageFeedTabSharedViewModel.shopPageFab.value?.let {
+            verifySuccessResult(ShopPageFeedTabSharedViewModel.FAB_ACTION_HIDE, it)
         }
     }
 

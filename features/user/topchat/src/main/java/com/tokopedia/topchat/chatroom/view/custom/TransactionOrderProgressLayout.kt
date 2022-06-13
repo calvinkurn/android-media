@@ -328,7 +328,7 @@ class TransactionOrderProgressLayout : LinearLayout {
 
         companion object {
             val COLOR_NOT_SEEN = com.tokopedia.unifyprinciples.R.color.Unify_G100
-            var COLOR_SEEN = com.tokopedia.unifyprinciples.R.color.Unify_N0
+            var COLOR_SEEN = com.tokopedia.unifyprinciples.R.color.Unify_Background
 
             const val OPEN = "Tutup"
             const val CLOSE = "Lihat"

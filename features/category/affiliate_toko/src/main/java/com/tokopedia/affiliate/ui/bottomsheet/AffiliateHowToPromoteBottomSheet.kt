@@ -24,17 +24,24 @@ class AffiliateHowToPromoteBottomSheet : BottomSheetUnify() {
     private var contentView: View? = null
     private val steps: ArrayList<Pair<String,Boolean>> = arrayListOf()
     private var state = STATE_HOW_TO_PROMOTE
+    private var performanceTitle = ""
+    private var performanceDesc = ""
 
     companion object {
+        const val TITILE = "title"
+        const val DESC = "description"
         const val STATE = "state"
         const val STATE_HOW_TO_PROMOTE  = 1
         const val STATE_PRODUCT_INACTIVE = 2
         const val STATE_BETA_INFO = 3
+        const val STATE_PERFORMA_INFO = 4
 
-        fun newInstance(state : Int): AffiliateHowToPromoteBottomSheet {
+        fun newInstance(state : Int,title: String? = "",description: String? = null): AffiliateHowToPromoteBottomSheet {
             return AffiliateHowToPromoteBottomSheet().apply {
                 arguments = Bundle().apply {
                     putInt(STATE,state)
+                    putString(TITILE,title)
+                    putString(DESC,description)
                 }
             }
         }
@@ -65,6 +72,14 @@ class AffiliateHowToPromoteBottomSheet : BottomSheetUnify() {
             STATE_PRODUCT_INACTIVE -> {
                 setTitle(getString(R.string.affiliate_product_inactive))
                 steps.add(Pair(getString(R.string.affiliate_product_inactive_text),false))
+            }
+            STATE_PERFORMA_INFO -> {
+                arguments?.let {
+                    performanceTitle = it.getString(TITILE,"")
+                    performanceDesc = it.getString(DESC,"")
+                }
+                setTitle(performanceTitle)
+                steps.add(Pair(performanceDesc,false))
             }
             else -> {
                 setTitle(getString(R.string.affiliate_beta_info))

@@ -7,7 +7,8 @@ data class OverallRatingDetailUiModel(
     var productName: String? = "",
     var ratingAvg: Float? = 0.0F,
     var reviewCount: Int? = 0,
-    var chipFilter: String? = ""
+    var chipFilter: String? = "",
+    var tickerText: String? = ""
 ): BaseSellerReviewDetail {
     override fun type(typeFactory: SellerReviewDetailAdapterTypeFactory): Int {
         return typeFactory.type(this)

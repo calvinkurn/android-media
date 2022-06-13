@@ -52,12 +52,12 @@ import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.util.*
 import javax.inject.Inject
 
 private const val REQUEST_LOGIN = 345
+private const val TOASTER_DURATION_DELETE_COMMENT = 3000
 
 class KolCommentNewFragment : BaseDaggerFragment(), KolComment.View, KolComment.View.ViewHolder,
     MentionAdapterListener {
@@ -163,28 +163,28 @@ class KolCommentNewFragment : BaseDaggerFragment(), KolComment.View, KolComment.
                 deleteComment(adapterPosition)
                 var toBeDeleted = true
                 view?.let {
+                    val coroutineScope = CoroutineScope(Dispatchers.Main)
+                    coroutineScope.launch {
+                        if (activity != null && isAdded) {
+                            if (toBeDeleted)
+                                presenter.deleteComment(id, adapterPosition)
+                        }
+                    }
                     Toaster.toasterCustomCtaWidth =
-                        com.tokopedia.unifyprinciples.R.dimen.unify_space_96
+                            com.tokopedia.unifyprinciples.R.dimen.unify_space_96
                     Toaster.build(
-                        it,
-                        getString(R.string.kol_delete_1_comment),
-                        3000,
-                        Toaster.TYPE_NORMAL,
-                        getString(R.string.kol_delete_comment_ok)
+                            it,
+                            getString(R.string.kol_delete_1_comment),
+                            TOASTER_DURATION_DELETE_COMMENT,
+                            Toaster.TYPE_NORMAL,
+                            getString(R.string.kol_delete_comment_ok)
                     ) {
                         feedAnalytics.clickKembalikanCommentPage(postId, authorId, isVideoPost, isFollowed, postType)
                         adapter?.clearList()
                         presenter.getCommentFirstTime(arguments?.getInt(ARGS_ID) ?: 0)
                         toBeDeleted = false
                     }.show()
-                    val coroutineScope = CoroutineScope(Dispatchers.Main)
-                    coroutineScope.launch {
-                        delay(3000L)
-                        if (activity != null && isAdded) {
-                            if (toBeDeleted)
-                                presenter.deleteComment(id, adapterPosition)
-                        }
-                    }
+
                 }
             } else {
                 goToLogin()
@@ -223,6 +223,7 @@ class KolCommentNewFragment : BaseDaggerFragment(), KolComment.View, KolComment.
             isDeletable = canDeleteComment
         )
         sheet.show((context as FragmentActivity).supportFragmentManager, "")
+        sheet.setIsCommentPage(true)
         sheet.onReport = {
             if (userSession?.isLoggedIn == true) {
                 reportBottomSheet = ReportBottomSheet.newInstance(
@@ -318,6 +319,7 @@ class KolCommentNewFragment : BaseDaggerFragment(), KolComment.View, KolComment.
         val list = ArrayList<Visitable<*>?>()
         kolComments?.let { list.addAll(it.listNewComments) }
         list.reverse()
+        totalNewComment = list.size
         adapter?.addList(list)
 
         header?.isCanLoadMore = kolComments?.isHasNextPage ?: false
@@ -360,7 +362,9 @@ class KolCommentNewFragment : BaseDaggerFragment(), KolComment.View, KolComment.
         kolComment?.setText("")
         enableSendComment()
         KeyboardHandler.DropKeyboard(context, kolComment)
-        totalNewComment += 1
+        val numberOfComments = adapter?.itemCount ?: -1
+        /**totalNewComment is number of comment item in adapter excluding first caption item*/
+        totalNewComment = if (numberOfComments != -1) numberOfComments - 1 else totalNewComment
 
         listComment?.scrollToPosition(adapter?.itemCount ?: 1 - 1)
         activity?.setResult(Activity.RESULT_OK, getReturnIntent(totalNewComment))
@@ -379,8 +383,10 @@ class KolCommentNewFragment : BaseDaggerFragment(), KolComment.View, KolComment.
     }
 
     override fun onSuccessDeleteComment(adapterPosition: Int) {
-        if (adapterPosition < adapter?.itemCount ?: 0) {
-            totalNewComment -= 1
+        if (adapterPosition <= adapter?.itemCount ?: 0) {
+            val numberOfComments = adapter?.itemCount ?: -1
+            /**totalNewComment is number of comment item in adapter excluding first caption item*/
+            totalNewComment = if (numberOfComments != -1) numberOfComments - 1 else totalNewComment
             activity?.setResult(Activity.RESULT_OK, getReturnIntent(totalNewComment))
         }
         adapter?.removeLoading()
@@ -488,6 +494,7 @@ class KolCommentNewFragment : BaseDaggerFragment(), KolComment.View, KolComment.
         val list = ArrayList<Visitable<*>?>()
         kolComments?.let { list.addAll(it.listNewComments) }
         list.reverse()
+        totalNewComment = list.size
         adapter?.setList(list)
         adapter?.notifyDataSetChanged()
     }

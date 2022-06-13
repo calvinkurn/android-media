@@ -2,45 +2,55 @@ package com.tokopedia.review.feature.inboxreview.presentation.viewholder
 
 import android.view.View
 import androidx.core.content.ContextCompat
-import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.review.R
-import com.tokopedia.review.common.util.PaddingItemDecoratingReview
 import com.tokopedia.review.common.util.getReviewStar
 import com.tokopedia.review.common.util.toRelativeDate
 import com.tokopedia.review.common.util.toReviewDescriptionFormatted
 import com.tokopedia.review.databinding.ItemInboxReviewBinding
 import com.tokopedia.review.feature.inboxreview.presentation.adapter.FeedbackInboxReviewListener
-import com.tokopedia.review.feature.inboxreview.presentation.adapter.InboxReviewFeedbackImageAdapter
 import com.tokopedia.review.feature.inboxreview.presentation.model.FeedbackInboxUiModel
 import com.tokopedia.review.feature.reviewdetail.view.adapter.viewholder.ProductFeedbackDetailViewHolder
+import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.adapter.typefactory.ReviewMediaThumbnailTypeFactory
 
-class InboxReviewFeedbackViewHolder(view: View,
-                                    private val feedbackInboxReviewListener: FeedbackInboxReviewListener): AbstractViewHolder<FeedbackInboxUiModel>(view) {
+class InboxReviewFeedbackViewHolder(
+    view: View,
+    reviewMediaThumbnailRecycledViewPool: RecyclerView.RecycledViewPool,
+    reviewMediaThumbnailListener: ReviewMediaThumbnailTypeFactory.Listener,
+    private val feedbackInboxReviewListener: FeedbackInboxReviewListener
+) : AbstractViewHolder<FeedbackInboxUiModel>(view) {
 
     companion object {
-        val LAYOUT = R.layout.item_inbox_review
+        val LAYOUT = com.tokopedia.review.R.layout.item_inbox_review
         const val DATE_REVIEW_FORMAT = "yyyy-MM-dd'T'HH:mm:ss'Z'"
         const val FEEDBACK_MAX_CHAR = 150
     }
 
-    private var reviewInboxFeedbackImageAdapter: InboxReviewFeedbackImageAdapter? = null
     private val impressHolder = ImpressHolder()
     private val binding = ItemInboxReviewBinding.bind(view)
 
+    init {
+        binding.reviewMediaThumbnails.setListener(reviewMediaThumbnailListener)
+        binding.reviewMediaThumbnails.setRecycledViewPool(reviewMediaThumbnailRecycledViewPool)
+    }
+
     override fun bind(element: FeedbackInboxUiModel) {
-        reviewInboxFeedbackImageAdapter = InboxReviewFeedbackImageAdapter(feedbackInboxReviewListener)
         with(binding) {
             if(adapterPosition == 0) {
                 feedbackInboxReviewListener.onBackgroundMarginIsReplied(element.replyText.isBlank())
             }
             if(element.replyText.isNotBlank()) {
-                containerInboxReview.setBackgroundColor(ContextCompat.getColor(root.context, com.tokopedia.unifyprinciples.R.color.Unify_N0))
+                root.setBackgroundColor(ContextCompat.getColor(root.context, com.tokopedia.unifyprinciples.R.color.Unify_Background))
             } else {
-                containerInboxReview.setBackgroundColor(ContextCompat.getColor(root.context, com.tokopedia.unifyprinciples.R.color.Unify_G100))
+                root.setBackgroundColor(ContextCompat.getColor(root.context, com.tokopedia.unifyprinciples.R.color.Unify_G100))
             }
             tvProductTitle.text = element.productName
             ivRatingFeedback.setImageResource(getReviewStar(element.rating.orZero()))
@@ -54,6 +64,8 @@ class InboxReviewFeedbackViewHolder(view: View,
             setupFeedbackReview(element.reviewText, element.feedbackId, element.productID)
             setImageAttachment(element)
             showKejarUlasanLabel(element.isKejarUlasan)
+            setBadRatingReason(element.badRatingReason)
+            setBadRatingDisclaimer(element.ratingDisclaimer)
         }
     }
 
@@ -121,23 +133,13 @@ class InboxReviewFeedbackViewHolder(view: View,
 
     private fun setImageAttachment(element: FeedbackInboxUiModel) {
         with(binding) {
-            val linearLayoutManager = LinearLayoutManager(root.context, LinearLayoutManager.HORIZONTAL, false)
-            rvItemAttachmentFeedback.apply {
-                layoutManager = linearLayoutManager
-                if (itemDecorationCount == 0) {
-                    addItemDecoration(PaddingItemDecoratingReview())
-                }
-                adapter = reviewInboxFeedbackImageAdapter
+            reviewMediaThumbnails.apply {
+                setData(element.reviewMediaThumbnail)
             }
-            if (element.attachments.isEmpty()) {
-                rvItemAttachmentFeedback.hide()
+            if (element.reviewMediaThumbnail.mediaThumbnails.isEmpty()) {
+                reviewMediaThumbnails.hide()
             } else {
-                reviewInboxFeedbackImageAdapter?.setAttachmentUiData(element.attachments)
-                reviewInboxFeedbackImageAdapter?.setFeedbackId(element.feedbackId)
-                reviewInboxFeedbackImageAdapter?.setTitleProduct(element.productName)
-                reviewInboxFeedbackImageAdapter?.setProductId(element.productID)
-                reviewInboxFeedbackImageAdapter?.submitList(element.attachments)
-                rvItemAttachmentFeedback.show()
+                reviewMediaThumbnails.show()
             }
         }
     }
@@ -185,4 +187,11 @@ class InboxReviewFeedbackViewHolder(view: View,
         }
     }
 
+    private fun setBadRatingReason(reason: String) {
+        binding.badRatingReasonReview.showBadRatingReason(reason)
+    }
+
+    private fun setBadRatingDisclaimer(disclaimer: String) {
+        binding.badRatingReasonDisclaimer.setDisclaimer(disclaimer)
+    }
 }

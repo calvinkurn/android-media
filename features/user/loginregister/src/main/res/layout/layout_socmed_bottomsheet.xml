@@ -3,7 +3,7 @@
     android:id="@+id/socmed_container"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/Unify_N0"
+    android:background="@color/Unify_Background"
     android:orientation="vertical"
     android:paddingLeft="@dimen/spacing_lvl5"
     android:paddingTop="@dimen/spacing_lvl4"

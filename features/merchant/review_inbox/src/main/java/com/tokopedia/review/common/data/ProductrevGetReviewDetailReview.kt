@@ -18,7 +18,10 @@ data class ProductrevGetReviewDetailReview(
         val reviewTimeFormatted: String = "",
         @SerializedName("attachmentsURL")
         @Expose
-        val attachments: List<ProductrevReviewAttachment> = emptyList(),
+        val imageAttachments: List<ProductrevReviewImageAttachment> = emptyList(),
+        @SerializedName("video")
+        @Expose
+        val videoAttachments: List<ProductrevReviewVideoAttachment> = emptyList(),
         @SerializedName("editable")
         @Expose
         val editable: Boolean = false,
@@ -27,5 +30,14 @@ data class ProductrevGetReviewDetailReview(
         val sentAsAnonymous: Boolean = false,
         @SerializedName("reviewerName")
         @Expose
-        val reviewerName: String = ""
+        val reviewerName: String = "",
+        @SerializedName("badRatingReasonFmt")
+        @Expose
+        val badRatingReasonFmt: String = "",
+        @SerializedName("ratingDisclaimer")
+        @Expose
+        val ratingDisclaimer: String = "",
+        @SerializedName("editDisclaimer")
+        @Expose
+        val editDisclaimer: String = ""
 )

@@ -28,8 +28,6 @@ interface WidgetAdapterFactory {
 
     fun type(barChartWidget: BarChartWidgetUiModel): Int
 
-    fun type(footerLayout: WhiteSpaceUiModel): Int
-
     fun type(tickerWidget: TickerWidgetUiModel): Int
 
     fun type(multiLineGraphWidget: MultiLineGraphWidgetUiModel): Int
@@ -39,4 +37,6 @@ interface WidgetAdapterFactory {
     fun type(recommendationWidget: RecommendationWidgetUiModel): Int
 
     fun type(milestoneWidgetUiModel: MilestoneWidgetUiModel): Int
+
+    fun type(calendarWidgetUiModel: CalendarWidgetUiModel): Int
 }

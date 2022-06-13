@@ -9,7 +9,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:animateLayoutChanges="true"
-        android:background="@color/Unify_N0">
+        android:background="@color/Unify_Background">
 
         <com.tokopedia.home_account.view.custom.SwipeRecyclerView
             android:id="@+id/funds_and_investment_rv"

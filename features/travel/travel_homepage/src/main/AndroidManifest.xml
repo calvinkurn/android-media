@@ -7,8 +7,8 @@
             android:name=".destination.presentation.activity.TravelDestinationActivity"
             android:label=""
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.WhiteUnify" >
-
+            android:theme="@style/Theme.WhiteUnify"
+            android:exported="false">
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
 
@@ -22,5 +22,4 @@
             </intent-filter>
         </activity>
     </application>
-
 </manifest>

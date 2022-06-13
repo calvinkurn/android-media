@@ -80,15 +80,16 @@
         app:notificationColor="color_secondary"
         app:layout_constraintEnd_toEndOf="parent"/>
 
-    <androidx.appcompat.widget.AppCompatImageView
+    <com.tokopedia.iconunify.IconUnify
         android:id="@+id/talkInboxAlertSignifier"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="16dp"
+        android:layout_height="16dp"
         android:layout_marginEnd="@dimen/layout_lvl2"
         app:layout_constraintTop_toTopOf="@id/talkInboxAnswerCount"
         app:layout_constraintBottom_toBottomOf="@id/talkInboxAnswerCount"
         app:layout_constraintEnd_toEndOf="parent"
-        app:srcCompat="@drawable/ic_talk_inbox_alert_signifier"/>
+        app:icon_name="WARNING"
+        app:icon_color_light_enable="@color/Unify_Y300"/>
 
     <androidx.constraintlayout.widget.Barrier
         android:id="@+id/talk_inbox_barrier"

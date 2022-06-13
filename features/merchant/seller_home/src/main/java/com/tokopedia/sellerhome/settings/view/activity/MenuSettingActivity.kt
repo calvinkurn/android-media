@@ -11,11 +11,11 @@ import com.tokopedia.sellerhome.settings.view.fragment.MenuSettingFragment
 
 class MenuSettingActivity : BaseSimpleActivity() {
 
-    override fun getNewFragment(): Fragment? =
+    override fun getNewFragment(): Fragment =
         MenuSettingFragment.createInstance()
 
     override fun onCreateView(parent: View?, name: String, context: Context, attrs: AttributeSet): View? {
-        window.decorView.setBackgroundColor(androidx.core.content.ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_N0))
+        window.decorView.setBackgroundColor(androidx.core.content.ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_Background))
         return super.onCreateView(parent, name, context, attrs)
     }
 

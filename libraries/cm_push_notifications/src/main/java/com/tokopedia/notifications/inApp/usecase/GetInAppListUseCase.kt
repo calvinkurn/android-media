@@ -10,8 +10,6 @@ import java.util.*
 
 class GetInAppListUseCase(private val repositoryManager: RepositoryManager) {
 
-    private val HOURS_24_IN_MILLIS: Long = 24 * 60 * 60 * 1000L
-
     suspend fun getInAppListByScreenName(screenName: String, isActivity: Boolean): List<CMInApp>? {
         return withContext(Dispatchers.IO) {
             synchronized(this) {
@@ -71,6 +69,10 @@ class GetInAppListUseCase(private val repositoryManager: RepositoryManager) {
                 true
             }
         }
+    }
+
+    companion object {
+        private const val HOURS_24_IN_MILLIS: Long = 24 * 60 * 60 * 1000L
     }
 
 }

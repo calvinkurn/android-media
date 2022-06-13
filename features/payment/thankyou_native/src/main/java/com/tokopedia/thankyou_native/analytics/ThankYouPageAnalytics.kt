@@ -51,7 +51,7 @@ class ThankYouPageAnalytics @Inject constructor(
         if (thanksPageData.pushGtm) {
             when (ThankPageTypeMapper.getThankPageType(thanksPageData)) {
                 MarketPlaceThankPage -> sendThankYouPageDataLoadEvent(thanksPageData)
-                else -> sendigitalThankYouPageDataLoadEvent(thanksPageData)
+                else -> senDigitalThankYouPageDataLoadEvent(thanksPageData)
             }
             appsFlyerPurchaseEvent(thanksPageData)
             sendBranchIOEvent(thanksPageData)
@@ -71,6 +71,7 @@ class ThankYouPageAnalytics @Inject constructor(
                     data[ParentTrackingKey.KEY_LOGISTIC_TYPE] = shopOrder.logisticType
                     data[ParentTrackingKey.KEY_ECOMMERCE] = getEnhancedECommerceNode(shopOrder)
                     data[ParentTrackingKey.IS_NEW_USER] = thanksPageData.isNewUser.toString()
+                    data[ParentTrackingKey.NEW_CUSTOMER] = thanksPageData.isNewUser.toString()
                     analyticTracker.sendEnhanceEcommerceEvent(data)
                 }
             }
@@ -79,11 +80,11 @@ class ThankYouPageAnalytics @Inject constructor(
         })
     }
 
-    fun sendigitalThankYouPageDataLoadEvent(thanksPageData: ThanksPageData) {
+    private fun senDigitalThankYouPageDataLoadEvent(thanksPageData: ThanksPageData) {
         this.thanksPageData = thanksPageData
         CoroutineScope(mainDispatcher).launchCatchError(block = {
             withContext(bgDispatcher) {
-                thanksPageData.thanksCustomization?.apply {
+                thanksPageData.customDataOther?.apply {
                     trackingData?.let {
                         processDataForGTM(it)
                     }
@@ -376,6 +377,7 @@ object ParentTrackingKey {
     val KEY_CURRENT_SITE = "currentSite"
     val KEY_BUSINESS_UNIT = "businessUnit"
     const val IS_NEW_USER = "isNewUser"
+    const val NEW_CUSTOMER = "new_customer"
     const val KEY_ID = "id"
     const val KEY_QTY = "quantity"
     const val AF_SHIPPING_PRICE = "af_shipping_price"

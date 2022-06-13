@@ -33,10 +33,10 @@ internal class SearchShopSuggestionTest: SearchShopDataViewTestFixtures() {
     private fun `Then verify search shop suggestion`(searchShopModel: SearchShopModel) {
         val searchShopState = searchShopViewModel.getSearchShopLiveData().value
         val visitableList = searchShopState?.data as List<Visitable<*>>
-        visitableList[0].shouldBeInstanceOf<ShopSuggestionDataView>()
+        visitableList[1].shouldBeInstanceOf<ShopSuggestionDataView>()
 
         val suggestionModel = searchShopModel.aceSearchShop.suggestion
-        val suggestionViewModel = visitableList[0] as ShopSuggestionDataView
+        val suggestionViewModel = visitableList[1] as ShopSuggestionDataView
         suggestionViewModel.currentKeyword shouldBe suggestionModel.currentKeyword
         suggestionViewModel.query shouldBe suggestionModel.query
         suggestionViewModel.text shouldBe suggestionModel.text

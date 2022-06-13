@@ -1,10 +1,13 @@
 package com.tokopedia.tokopedianow.category.presentation.viewmodel
 
+import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressConstant
+import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.tokopedianow.category.domain.model.CategoryModel
 import com.tokopedia.tokopedianow.searchcategory.UpdateCartTestHelper
 import com.tokopedia.tokopedianow.searchcategory.UpdateCartTestHelper.Callback
 import com.tokopedia.tokopedianow.searchcategory.jsonToObject
+import com.tokopedia.unit.test.ext.verifyValueEquals
 import io.mockk.verify
 import org.junit.Test
 
@@ -67,5 +70,57 @@ class CategoryUpdateCartTest: CategoryTestFixtures(), Callback {
     @Test
     fun `onViewReloadPage should have product with quantity from mini cart`() {
         updateCartTestHelper.`onViewReloadPage should have product with quantity from mini cart`()
+    }
+
+    @Test
+    fun `when choose address null should NOT update miniCart live data`() {
+        `Given address data null`()
+
+        tokoNowCategoryViewModel.onViewUpdateCartItems(MiniCartSimplifiedData())
+
+        tokoNowCategoryViewModel.miniCartWidgetLiveData
+            .verifyValueEquals(null)
+
+        tokoNowCategoryViewModel.isShowMiniCartLiveData
+            .verifyValueEquals(null)
+    }
+
+    @Test
+    fun `when warehouseId 0 should update isShowMiniCartLiveData false`() {
+        val miniCartSimplifiedData = MiniCartSimplifiedData(isShowMiniCartWidget = true)
+
+        `Given choose address data`(LocalCacheModel(warehouse_id = "0"))
+
+        tokoNowCategoryViewModel.onViewReloadPage()
+        tokoNowCategoryViewModel.onViewUpdateCartItems(miniCartSimplifiedData)
+
+        tokoNowCategoryViewModel.isShowMiniCartLiveData
+            .verifyValueEquals(false)
+    }
+
+    @Test
+    fun `when warehouseId NOT equals 0 should update isShowMiniCartLiveData true`() {
+        val miniCartSimplifiedData = MiniCartSimplifiedData(isShowMiniCartWidget = true)
+
+        `Given choose address data`(LocalCacheModel(warehouse_id = "1"))
+
+        tokoNowCategoryViewModel.onViewReloadPage()
+        tokoNowCategoryViewModel.onViewUpdateCartItems(miniCartSimplifiedData)
+
+        tokoNowCategoryViewModel.isShowMiniCartLiveData
+            .verifyValueEquals(true)
+    }
+
+    @Test
+    fun `when isShowMiniCartWidget false should update isShowMiniCartLiveData false`() {
+        val miniCartSimplifiedData = MiniCartSimplifiedData(isShowMiniCartWidget = false)
+
+        `Given choose address data`(LocalCacheModel(warehouse_id = "1"))
+
+        tokoNowCategoryViewModel.onViewReloadPage()
+        tokoNowCategoryViewModel.onViewUpdateCartItems(miniCartSimplifiedData)
+
+        tokoNowCategoryViewModel.isShowMiniCartLiveData
+            .verifyValueEquals(false)
     }
 }

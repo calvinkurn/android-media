@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.tokopedia.unifycomponents.CardUnify xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/parentLayout"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    app:card_type="shadow">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/constraint_layout_calendar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+
+        <com.tokopedia.unifycomponents.LoaderUnify
+            android:id="@+id/header_calendar_shimmer"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:loader_corner_radius="0dp"
+            app:loader_type="rect" />
+
+        <com.tokopedia.unifycomponents.LoaderUnify
+            android:id="@+id/line1"
+            android:layout_width="100dp"
+            android:layout_height="20dp"
+            android:layout_marginTop="16dp"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/header_calendar_shimmer"
+            app:loader_corner_radius="8dp"
+            app:loader_type="line" />
+
+        <com.tokopedia.unifycomponents.LoaderUnify
+            android:id="@+id/line2"
+            android:layout_width="100dp"
+            android:layout_height="20dp"
+            android:layout_marginTop="8dp"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/line1"
+            app:loader_corner_radius="8dp"
+            app:loader_type="line" />
+
+        <com.tokopedia.unifycomponents.LoaderUnify
+            android:id="@+id/line3"
+            android:layout_width="90dp"
+            android:layout_height="10dp"
+            android:layout_marginTop="16dp"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/line2"
+            app:loader_corner_radius="8dp"
+            app:loader_type="line" />
+
+        <com.tokopedia.unifycomponents.LoaderUnify
+            android:id="@+id/line4"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginRight="8dp"
+            android:layout_marginBottom="8dp"
+            app:layout_constraintDimensionRatio="1:1"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/line3"
+            app:loader_corner_radius="4dp"
+            app:loader_type="rect" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/constraint_layout_calendar_single"
+        android:layout_width="match_parent"
+        android:visibility="gone"
+        android:layout_height="wrap_content">
+
+
+        <com.tokopedia.unifycomponents.LoaderUnify
+            android:id="@+id/header_calendar_shimmer_single"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:loader_corner_radius="0dp"
+            app:loader_type="rect" />
+
+        <com.tokopedia.unifycomponents.LoaderUnify
+            android:id="@+id/line4_single"
+            android:layout_width="152dp"
+            android:layout_height="128dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginRight="8dp"
+            android:layout_marginBottom="8dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/header_calendar_shimmer_single"
+            app:loader_corner_radius="4dp"
+            app:loader_type="rect" />
+
+        <com.tokopedia.unifycomponents.LoaderUnify
+            android:id="@+id/line1_single"
+            android:layout_width="100dp"
+            android:layout_height="20dp"
+            android:layout_marginTop="16dp"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintLeft_toRightOf="@+id/line4_single"
+            app:layout_constraintTop_toBottomOf="@id/header_calendar_shimmer_single"
+            app:loader_corner_radius="8dp"
+            app:loader_type="line" />
+
+        <com.tokopedia.unifycomponents.LoaderUnify
+            android:id="@+id/line2_single"
+            android:layout_width="100dp"
+            android:layout_height="20dp"
+            android:layout_marginTop="8dp"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintLeft_toRightOf="@+id/line4_single"
+            app:layout_constraintTop_toBottomOf="@id/line1_single"
+            app:loader_corner_radius="8dp"
+            app:loader_type="line" />
+
+        <com.tokopedia.unifycomponents.LoaderUnify
+            android:id="@+id/line3_single"
+            android:layout_width="90dp"
+            android:layout_height="10dp"
+            android:layout_marginTop="16dp"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintLeft_toRightOf="@+id/line4_single"
+            app:layout_constraintTop_toBottomOf="@id/line2_single"
+            app:loader_corner_radius="8dp"
+            app:loader_type="line" />
+
+        <com.tokopedia.unifycomponents.LoaderUnify
+            android:id="@+id/line5_single"
+            android:layout_width="90dp"
+            android:layout_height="10dp"
+            android:layout_marginTop="4dp"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintLeft_toRightOf="@+id/line4_single"
+            app:layout_constraintTop_toBottomOf="@id/line3_single"
+            app:loader_corner_radius="8dp"
+            app:loader_type="line" />
+        <com.tokopedia.unifycomponents.LoaderUnify
+            android:id="@+id/line6_single"
+            android:layout_width="0dp"
+            android:layout_height="24dp"
+            android:layout_marginTop="12dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintLeft_toRightOf="@+id/line4_single"
+            app:layout_constraintTop_toBottomOf="@id/line5_single"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:loader_corner_radius="4dp"
+            app:loader_type="rect" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</com.tokopedia.unifycomponents.CardUnify>

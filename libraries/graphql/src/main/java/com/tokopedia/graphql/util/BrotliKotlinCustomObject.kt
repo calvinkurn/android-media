@@ -28,7 +28,7 @@ object BrotliKotlinCustomObject : Interceptor {
             }
 
     internal fun uncompress(response: Response): Response {
-        val body = response.body() ?: return response
+        val body = response.body ?: return response
         val encoding = response.header("Content-Encoding") ?: return response
 
         val decompressedSource = when {
@@ -41,9 +41,9 @@ object BrotliKotlinCustomObject : Interceptor {
 
 
         return response.newBuilder()
-                .removeHeader("Content-Encoding")
-                .removeHeader("Content-Length")
-                .body(ResponseBody.create(body.contentType(), -1, decompressedSource))
-                .build()
+            .removeHeader("Content-Encoding")
+            .removeHeader("Content-Length")
+            .body(ResponseBody.create(body.contentType(), -1, decompressedSource))
+            .build()
     }
 }

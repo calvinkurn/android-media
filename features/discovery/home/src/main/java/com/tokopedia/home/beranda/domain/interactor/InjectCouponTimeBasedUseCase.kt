@@ -3,6 +3,7 @@ package com.tokopedia.home.beranda.domain.interactor
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
+import com.tokopedia.home.beranda.di.module.query.SetInjectCouponTimeBasedQuery
 import com.tokopedia.home.beranda.domain.model.SetInjectCouponTimeBased
 import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject
@@ -20,18 +21,9 @@ class InjectCouponTimeBasedUseCase @Inject constructor(
         graphqlUseCase.setTypeClass(SetInjectCouponTimeBased::class.java)
     }
 
-    private fun getQuery(): String = """
-        query{
-            SetInjectCouponTimeBased {
-                is_success
-                error_message
-            }
-        }
-    """.trimIndent()
-
     override suspend fun executeOnBackground(): SetInjectCouponTimeBased {
         graphqlUseCase.clearCache()
-        graphqlUseCase.setGraphqlQuery(getQuery())
+        graphqlUseCase.setGraphqlQuery(SetInjectCouponTimeBasedQuery())
         return graphqlUseCase.executeOnBackground()
     }
 }

@@ -1,8 +1,8 @@
 package com.tokopedia.core.network.retrofit.interceptors;
 
 
-import com.tokopedia.authentication.AuthConstant;
-import com.tokopedia.authentication.AuthHelper;
+import com.tokopedia.network.authentication.AuthConstant;
+import com.tokopedia.network.authentication.AuthHelper;
 import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.core.exception.SessionExpiredException;
 import com.tokopedia.network.interceptor.TkpdBaseInterceptor;

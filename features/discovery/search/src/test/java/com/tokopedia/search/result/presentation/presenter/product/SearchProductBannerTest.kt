@@ -6,6 +6,7 @@ import com.tokopedia.search.jsonToObject
 import com.tokopedia.search.result.complete
 import com.tokopedia.search.result.domain.model.SearchProductModel
 import com.tokopedia.search.result.presentation.model.*
+import com.tokopedia.search.result.product.searchintokopedia.SearchInTokopediaDataView
 import com.tokopedia.search.shouldBe
 import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
 import io.mockk.every
@@ -156,6 +157,7 @@ internal class SearchProductBannerTest: ProductListPresenterTestFixtures() {
         val dummyTDN = TopAdsImageViewModel(position = 1, bannerName = "Position 1")
         searchProductModel.setTopAdsImageViewModelList(listOf(dummyTDN))
 
+        `Given top ads headline helper will process headline ads`(searchProductModel)
         `Given search product API will success`(searchProductModel)
         `Given view will set and add product list`()
 
@@ -203,6 +205,7 @@ internal class SearchProductBannerTest: ProductListPresenterTestFixtures() {
         val dummyTDN = TopAdsImageViewModel(position = 1, bannerName = "Position 1")
         searchProductModel.setTopAdsImageViewModelList(listOf(dummyTDN))
 
+        `Given top ads headline helper will process headline ads`(searchProductModel)
         `Given search product API will success`(searchProductModel)
         `Given view will set and add product list`()
 

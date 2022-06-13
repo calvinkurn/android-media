@@ -20,7 +20,7 @@ import com.tokopedia.sellerorder.list.presentation.models.BaseSomListBulkProcess
 
 class SomListBulkProcessOrderBottomSheet(
         context: Context
-) : SomBottomSheet<BottomsheetSomListBulkProcessOrderBinding>(LAYOUT, true, true, false, "", context, true) {
+) : SomBottomSheet<BottomsheetSomListBulkProcessOrderBinding>(LAYOUT, true, true, false, false, false, "", context, true) {
 
     companion object {
         private val LAYOUT = R.layout.bottomsheet_som_list_bulk_process_order

@@ -22,6 +22,8 @@ class SearchProductTopAdsImageViewHolder(
         @LayoutRes
         @JvmField
         val LAYOUT = R.layout.search_result_product_top_ads_image_view_layout
+
+        const val IMAGE_CORNER_RADIUS = 20
     }
     private var binding: SearchResultProductTopAdsImageViewLayoutBinding? by viewBinding()
 
@@ -32,7 +34,7 @@ class SearchProductTopAdsImageViewHolder(
         val topAdsImageView = binding.searchProductTopAdsImageView
         val topAdsImageViewModel = element.topAdsImageViewModel
 
-        topAdsImageView.loadImage(topAdsImageViewModel, 20) {
+        topAdsImageView.loadImage(topAdsImageViewModel, IMAGE_CORNER_RADIUS) {
             topAdsImageView.hide()
         }
 

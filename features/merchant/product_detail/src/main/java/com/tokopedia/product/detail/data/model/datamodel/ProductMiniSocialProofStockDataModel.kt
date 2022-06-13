@@ -3,6 +3,7 @@ package com.tokopedia.product.detail.data.model.datamodel
 import android.os.Bundle
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.product.detail.common.productThousandFormatted
+import com.tokopedia.product.detail.data.util.ProductDetailConstant
 import com.tokopedia.product.detail.view.adapter.factory.DynamicProductDetailAdapterFactory
 
 data class ProductMiniSocialProofStockDataModel(
@@ -14,7 +15,8 @@ data class ProductMiniSocialProofStockDataModel(
         var viewCount: Int = 0,
         var wishlistCount: Int = 0,
         var buyerPhotosCount: Int = 0,
-        var paymentVerifiedCount: Int = 0,
+        var buyerPhotoStaticText: String = ProductDetailConstant.BUYER_IMAGE_TEXT, //default fallback string
+        var itemSoldFmt: String = "",
         var shouldRenderSocialProof: Boolean = false,
         var socialProofData: List<ProductMiniSocialProofItemDataModel> = emptyList()
 ) : DynamicPdpDataModel {
@@ -58,7 +60,7 @@ data class ProductMiniSocialProofStockDataModel(
 
     private fun firstPositionData(type: ProductMiniSocialProofItemType): ProductMiniSocialProofItemDataModel {
         return when {
-            paymentVerifiedCount != 0 -> ProductMiniSocialProofItemDataModel(PAYMENT_VERIFIED, paymentVerifiedCount.productThousandFormatted(), type)
+            itemSoldFmt != "" -> ProductMiniSocialProofItemDataModel(PAYMENT_VERIFIED, itemSoldFmt, type)
             wishlistCount != 0 -> ProductMiniSocialProofItemDataModel(WISHLIST, wishlistCount.productThousandFormatted(), type)
             viewCount != 0 -> ProductMiniSocialProofItemDataModel(VIEW_COUNT, viewCount.productThousandFormatted(), type)
             else -> ProductMiniSocialProofItemDataModel(type = type)
@@ -72,26 +74,64 @@ data class ProductMiniSocialProofStockDataModel(
 
     fun setSocialProofData() {
         if (shouldShowSingleViewSocialProof()) {
-            socialProofData = listOf(firstPositionData(ProductMiniSocialProofItemType.ProductMiniSocialProofSingleText))
+            socialProofData = listOf(firstPositionData(
+                    ProductMiniSocialProofItemType.ProductMiniSocialProofSingleText
+            ))
             return
         }
 
-        val socialProofBuilder = mutableListOf(firstPositionData(ProductMiniSocialProofItemType.ProductMiniSocialProofText))
+        val socialProofBuilder = mutableListOf(firstPositionData(
+                ProductMiniSocialProofItemType.ProductMiniSocialProofText)
+        )
 
         appendStockAtFirst(socialProofBuilder)
-        appendChipIfNotZero(ratingCount.toFloat(), RATING, socialProofBuilder, rating.toString())
-        appendChipIfNotZero(buyerPhotosCount.toFloat(), BUYER_PHOTOS, socialProofBuilder)
+        appendChipIfNotZero(
+                count = ratingCount.toFloat(),
+                type = RATING,
+                list = socialProofBuilder,
+                ratingTitle = rating.toString()
+        )
+
+        appendChipIfNotZero(
+                count = buyerPhotosCount.toFloat(),
+                type = BUYER_PHOTOS,
+                list = socialProofBuilder,
+                buyerPhotosTitle = buyerPhotoStaticText
+        )
+
         socialProofData = socialProofBuilder.take(MAX_SOCIAL_PROOF_ITEM)
     }
 
-    private fun appendChipIfNotZero(count: Float?, type: String, list: MutableList<ProductMiniSocialProofItemDataModel>, ratingTitle: String = ""): MutableList<ProductMiniSocialProofItemDataModel> {
+    private fun appendChipIfNotZero(count: Float?,
+                                    type: String,
+                                    list: MutableList<ProductMiniSocialProofItemDataModel>,
+                                    ratingTitle: String = "",
+                                    buyerPhotosTitle: String = ""): MutableList<ProductMiniSocialProofItemDataModel> {
         if (count != 0F) {
-            if (type == RATING) {
-                list.add(ProductMiniSocialProofItemDataModel(type, count?.productThousandFormatted()
-                        ?: "", ProductMiniSocialProofItemType.ProductMiniSocialProofChip, ratingTitle))
-            } else {
-                list.add(ProductMiniSocialProofItemDataModel(type, count?.productThousandFormatted()
-                        ?: "", ProductMiniSocialProofItemType.ProductMiniSocialProofChip))
+            when (type) {
+                RATING -> {
+                    list.add(ProductMiniSocialProofItemDataModel(
+                            key = type,
+                            formattedCount = count?.productThousandFormatted() ?: "",
+                            type = ProductMiniSocialProofItemType.ProductMiniSocialProofChip,
+                            reviewTitle = ratingTitle)
+                    )
+                }
+                BUYER_PHOTOS -> {
+                    list.add(ProductMiniSocialProofItemDataModel(
+                            key = type,
+                            formattedCount = count?.productThousandFormatted() ?: "",
+                            type = ProductMiniSocialProofItemType.ProductMiniSocialProofChip,
+                            buyerPhotosTitle = buyerPhotosTitle)
+                    )
+                }
+                else -> {
+                    list.add(ProductMiniSocialProofItemDataModel(
+                            key = type,
+                            formattedCount = count?.productThousandFormatted() ?: "",
+                            type = ProductMiniSocialProofItemType.ProductMiniSocialProofChip)
+                    )
+                }
             }
         }
         return list
@@ -100,9 +140,9 @@ data class ProductMiniSocialProofStockDataModel(
     private fun appendStockAtFirst(builder: MutableList<ProductMiniSocialProofItemDataModel>) {
         if (stock.isBlank() || stock == "0") return
         builder.add(0, ProductMiniSocialProofItemDataModel(
-                STOCK,
-                stock,
-                ProductMiniSocialProofItemType.ProductMiniSocialProofTextDivider
+                key = STOCK,
+                formattedCount = stock,
+                type = ProductMiniSocialProofItemType.ProductMiniSocialProofTextDivider
         ))
     }
 }

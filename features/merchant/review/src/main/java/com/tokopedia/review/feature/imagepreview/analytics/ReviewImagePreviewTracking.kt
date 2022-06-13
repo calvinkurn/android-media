@@ -1,5 +1,6 @@
 package com.tokopedia.review.feature.imagepreview.analytics
 
+import com.tokopedia.analyticconstant.DataLayer
 import com.tokopedia.review.common.analytics.ReviewTrackingConstant
 import com.tokopedia.review.feature.reading.analytics.ReadReviewTrackingConstants
 import com.tokopedia.track.TrackApp
@@ -121,33 +122,41 @@ object ReviewImagePreviewTracking {
         userId: String,
         trackingQueue: TrackingQueue
     ) {
-        trackingQueue.putEETracking(
-            hashMapOf(
-                ReviewTrackingConstant.EVENT to ReadReviewTrackingConstants.EVENT_PROMO_VIEW,
-                ReviewTrackingConstant.EVENT_ACTION to ReviewImagePreviewTrackingConstants.EVENT_ACTION_IMPRESS_IMAGE,
-                ReviewTrackingConstant.EVENT_LABEL to String.format(
-                    ReviewImagePreviewTrackingConstants.EVENT_LABEL_IMPRESS_IMAGE,
-                    imageCount
-                ),
-                ReviewTrackingConstant.EVENT_CATEGORY to ReviewImagePreviewTrackingConstants.EVENT_CATEGORY_IMAGE_GALLERY,
-                ReadReviewTrackingConstants.KEY_USER_ID to userId,
-                ReadReviewTrackingConstants.KEY_BUSINESS_UNIT to ReadReviewTrackingConstants.BUSINESS_UNIT,
-                ReadReviewTrackingConstants.KEY_CURRENT_SITE to ReadReviewTrackingConstants.CURRENT_SITE,
-                ReadReviewTrackingConstants.KEY_PRODUCT_ID to productId,
-                ReadReviewTrackingConstants.KEY_ECOMMERCE to mapOf(
-                    ReadReviewTrackingConstants.EVENT_PROMO_VIEW to mapOf(
-                        ReadReviewTrackingConstants.KEY_PROMOTIONS to listOf(
-                            mapOf(
-                                ReadReviewTrackingConstants.KEY_ID to attachmentId,
-                                ReadReviewTrackingConstants.KEY_CREATIVE to "",
-                                ReadReviewTrackingConstants.KEY_NAME to "",
-                                ReadReviewTrackingConstants.KEY_POSITION to position.toString()
-                            )
+        val trackingMap = DataLayer.mapOf(
+            ReviewTrackingConstant.EVENT,
+            ReadReviewTrackingConstants.EVENT_PROMO_VIEW,
+            ReviewTrackingConstant.EVENT_ACTION,
+            ReviewImagePreviewTrackingConstants.EVENT_ACTION_IMPRESS_IMAGE,
+            ReviewTrackingConstant.EVENT_LABEL,
+            String.format(
+                ReviewImagePreviewTrackingConstants.EVENT_LABEL_IMPRESS_IMAGE,
+                imageCount
+            ),
+            ReviewTrackingConstant.EVENT_CATEGORY,
+            ReviewImagePreviewTrackingConstants.EVENT_CATEGORY_IMAGE_GALLERY,
+            ReadReviewTrackingConstants.KEY_USER_ID,
+            userId,
+            ReadReviewTrackingConstants.KEY_BUSINESS_UNIT,
+            ReadReviewTrackingConstants.BUSINESS_UNIT,
+            ReadReviewTrackingConstants.KEY_CURRENT_SITE,
+            ReadReviewTrackingConstants.CURRENT_SITE,
+            ReadReviewTrackingConstants.KEY_PRODUCT_ID,
+            productId,
+            ReadReviewTrackingConstants.KEY_ECOMMERCE,
+            DataLayer.mapOf(
+                ReadReviewTrackingConstants.EVENT_PROMO_VIEW, DataLayer.mapOf(
+                    ReadReviewTrackingConstants.KEY_PROMOTIONS, DataLayer.listOf(
+                        DataLayer.mapOf(
+                            ReadReviewTrackingConstants.KEY_ID, attachmentId,
+                            ReadReviewTrackingConstants.KEY_CREATIVE, "",
+                            ReadReviewTrackingConstants.KEY_NAME, "",
+                            ReadReviewTrackingConstants.KEY_POSITION, position.toString()
                         )
                     )
                 )
             )
         )
+        trackingQueue.putEETracking(trackingMap as HashMap<String, Any>?)
     }
 
     fun trackClickReviewerName(

@@ -14,6 +14,8 @@ import android.view.inputmethod.InputMethodManager
 import androidx.fragment.app.DialogFragment
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
+import com.tokopedia.kotlin.extensions.orFalse
+import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.product.manage.R
 import com.tokopedia.product.manage.common.feature.list.analytics.ProductManageTracking
@@ -33,23 +35,40 @@ class ProductManageQuickEditPriceFragment(private var onFinishedListener: OnFini
     companion object {
         private const val KEY_CACHE_MANAGER_ID = "cache_manager_id"
         private const val KEY_PRODUCT = "product"
+        private const val KEY_IS_MULTILOCATION = "is_multilocation"
 
-        fun createInstance(product: ProductUiModel, onFinishedListener: OnFinishedListener) : ProductManageQuickEditPriceFragment {
-            return ProductManageQuickEditPriceFragment(onFinishedListener, product)
+        fun createInstance(context: Context,
+                           product: ProductUiModel,
+                           isMultiLocation: Boolean = false,
+                           onFinishedListener: OnFinishedListener) : ProductManageQuickEditPriceFragment {
+            return ProductManageQuickEditPriceFragment(onFinishedListener, product).apply {
+                SaveInstanceCacheManager(context, KEY_CACHE_MANAGER_ID).apply {
+                    put(KEY_IS_MULTILOCATION, isMultiLocation)
+                }
+            }
         }
     }
+
+    private var isMultiLocation = false
 
     private var binding by autoClearedNullable<FragmentQuickEditPriceBinding>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        savedInstanceState?.let {
-            val cacheManagerId = it.getString(KEY_CACHE_MANAGER_ID).orEmpty()
-            val cacheManager = context?.let { context ->
-                SaveInstanceCacheManager(context, cacheManagerId)
-            }
-            product = cacheManager?.get<ProductUiModel>(KEY_PRODUCT, ProductUiModel::class.java, null)
+        val cacheManager: SaveInstanceCacheManager?
+        if (savedInstanceState == null) {
+            cacheManager = context?.let { SaveInstanceCacheManager(it, KEY_CACHE_MANAGER_ID) }
+        } else {
+            val cacheManagerId = savedInstanceState.getString(KEY_CACHE_MANAGER_ID).orEmpty()
+            cacheManager = context?.let { SaveInstanceCacheManager(it, cacheManagerId) }
+            product =
+                cacheManager?.get<ProductUiModel>(KEY_PRODUCT, ProductUiModel::class.java, null)
         }
+        isMultiLocation =
+            cacheManager?.get(KEY_IS_MULTILOCATION, Boolean::class.java, false).orFalse()
+
+        val view = View.inflate(context, R.layout.fragment_quick_edit_price,null)
+        setChild(view)
         setTitle(getString(R.string.product_manage_menu_set_price))
         setStyle(DialogFragment.STYLE_NORMAL, com.tokopedia.product.manage.common.R.style.DialogStyle)
     }
@@ -66,6 +85,7 @@ class ProductManageQuickEditPriceFragment(private var onFinishedListener: OnFini
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        setupMultilocationTicker()
         product?.minPrice?.price?.let { initView(it) }
     }
 
@@ -73,7 +93,12 @@ class ProductManageQuickEditPriceFragment(private var onFinishedListener: OnFini
         super.onSaveInstanceState(outState)
         val cacheManager = context?.let { SaveInstanceCacheManager(it, true) }
         cacheManager?.put(KEY_PRODUCT, product)
+        cacheManager?.put(KEY_IS_MULTILOCATION, isMultiLocation)
         outState.putString(KEY_CACHE_MANAGER_ID, cacheManager?.id.orEmpty())
+    }
+
+    private fun setupMultilocationTicker() {
+        binding?.tickerProductManageEditPriceMultiloc?.showWithCondition(isMultiLocation)
     }
 
     private fun initView(currentPrice: String) {

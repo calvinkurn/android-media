@@ -46,7 +46,7 @@
                 android:layout_toEndOf="@id/iv_period_promo"
                 android:layout_toRightOf="@id/iv_period_promo"
                 android:text="@string/label_period_promo_loyalty_module"
-                android:textColor="@color/grey_600"
+                android:textColor="@color/Unify_N700_68"
                 android:textSize="12sp"/>
 
             <TextView
@@ -56,7 +56,7 @@
                 android:layout_below="@+id/tv_label_period_promo"
                 android:layout_toEndOf="@id/iv_period_promo"
                 android:layout_toRightOf="@id/iv_period_promo"
-                android:textColor="@color/grey_800"
+                android:textColor="@color/Unify_N700_96"
                 android:textSize="14sp"
                 tools:text="1 - 27 Januari 2018"/>
 
@@ -92,7 +92,7 @@
                 app:drawableRightCompat="@drawable/info_icon"
                 android:drawablePadding="5dp"
                 android:text="@string/label_promo_code_loyalty_module"
-                android:textColor="@color/grey_600"
+                android:textColor="@color/Unify_N700_68"
                 android:textSize="12sp"/>
 
             <TextView
@@ -102,9 +102,9 @@
                 android:layout_below="@+id/tv_label_code_promo"
                 android:layout_toEndOf="@id/iv_code_promo"
                 android:layout_toRightOf="@id/iv_code_promo"
-                android:textColor="#ff5722"
+                android:textColor="@color/Unify_Y500"
                 android:textSize="14sp"
-                tools:text="ANGGAGANTENG"/>
+                tools:text="ANGGAGANTENG" />
 
             <TextView
                 android:id="@+id/btn_copy_code_promo"
@@ -115,7 +115,8 @@
                 android:background="@drawable/btn_cancel"
                 android:padding="5dp"
                 android:text="@string/label_copy_promo_code_loyalty_module"
-                tools:ignore="RelativeOverlap"/>
+                android:textColor="@color/Unify_N700_68"
+                tools:ignore="RelativeOverlap" />
 
         </RelativeLayout>
 
@@ -146,7 +147,7 @@
                 android:layout_toRightOf="@id/iv_multiple_code_promo"
                 android:drawablePadding="5dp"
                 android:gravity="center_vertical"
-                android:textColor="@color/grey_600"
+                android:textColor="@color/Unify_N700_68"
                 android:textSize="14sp"
                 tools:text="3 Kode Promo"/>
 
@@ -180,7 +181,7 @@
                 android:drawablePadding="5dp"
                 android:gravity="center_vertical"
                 android:text="Tanpa Kode Promo"
-                android:textColor="@color/grey_600"
+                android:textColor="@color/Unify_N700_68"
                 android:textSize="14sp"
                 tools:ignore="HardcodedText"/>
 

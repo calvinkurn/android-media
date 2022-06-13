@@ -34,7 +34,6 @@ class SearchEventListViewHolder(val view: View,
 
     override fun bind(element: SearchEventModel) {
         eventListAdapter.listKegiatan = element.listEvent
-        eventListAdapter.resources = element.resources
         eventListAdapter.notifyDataSetChanged()
     }
 
@@ -54,7 +53,6 @@ class SearchEventListViewHolder(val view: View,
     class KegiatanAdapter(val listener: SearchEventListListener) : RecyclerView.Adapter<KegiatanHolder>(){
 
         lateinit var listKegiatan : List<KegiatanSuggestion>
-        lateinit var resources: Resources
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): KegiatanHolder {
             return KegiatanHolder(LayoutInflater.from(parent.context)
@@ -87,7 +85,7 @@ class SearchEventListViewHolder(val view: View,
             } else{
                 holder.view.txtTanggalSearch.visibility = View.VISIBLE
                 holder.view.txtTanggalSearch.text = DateFormatUtils.getFormattedDate(element.tanggal_kegiatan, "dd MMM")
-                holder.view.txtLokasiSearch.text = String.format(resources.getString(R.string.ent_search_black_circle, element.lokasi_kegiatan))
+                holder.view.txtLokasiSearch.text = String.format(holder.view.resources.getString(R.string.ent_search_black_circle, element.lokasi_kegiatan))
             }
         }
     }

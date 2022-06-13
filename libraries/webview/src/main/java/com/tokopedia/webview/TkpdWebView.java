@@ -1,25 +1,27 @@
 package com.tokopedia.webview;
 
+import static com.tokopedia.abstraction.common.utils.network.AuthUtil.DEFAULT_VALUE_WEBVIEW_FLAG_PARAM_DEVICE;
+
 import android.content.Context;
 import android.net.Uri;
 import android.os.Build;
 import android.text.TextUtils;
 import android.util.AttributeSet;
+import android.util.Base64;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.core.content.ContextCompat;
 
 import com.google.android.play.core.splitcompat.SplitCompat;
 import com.google.firebase.crashlytics.FirebaseCrashlytics;
 import com.tokopedia.abstraction.common.utils.network.AuthUtil;
-import com.tokopedia.authentication.AuthConstant;
-import com.tokopedia.authentication.AuthHelper;
-import com.tokopedia.authentication.AuthKey;
 import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.devicefingerprint.header.FingerprintModelGenerator;
+import com.tokopedia.network.authentication.AuthConstant;
+import com.tokopedia.network.authentication.AuthHelper;
+import com.tokopedia.network.authentication.AuthKey;
 import com.tokopedia.network.data.model.FingerprintModel;
 import com.tokopedia.network.utils.URLGenerator;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
@@ -27,12 +29,11 @@ import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.tokopedia.user.session.UserSessionInterface;
 import com.tokopedia.utils.view.DarkModeUtil;
+import com.tokopedia.webview.ext.HtmlWebHelperKt;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.Map;
-
-import static com.tokopedia.abstraction.common.utils.network.AuthUtil.DEFAULT_VALUE_WEBVIEW_FLAG_PARAM_DEVICE;
 
 /**
  * Created by nisie on 11/30/16.
@@ -76,6 +77,16 @@ public class TkpdWebView extends WebView {
         void onHasScrolled();
     }
 
+    /**
+     * This method already provide html wrapper such as header,body, etc
+     * Dark Mode Support
+     * @param data
+     */
+    public void loadPartialWebView(String data) {
+        String generatedHtml = HtmlWebHelperKt.constructContentToHtml(getContext(), data);
+        loadData(Base64.encodeToString(generatedHtml.getBytes(), Base64.DEFAULT), "text/html", "base64");
+    }
+
     private void init(Context context) {
         remoteConfig = new FirebaseRemoteConfigImpl(context);
         //set custom tracking, helpful for GA
@@ -85,8 +96,6 @@ public class TkpdWebView extends WebView {
             webSettings.setUserAgentString(userAgent);
         }
         SplitCompat.installActivity(context);
-        setBackgroundColor(ContextCompat.getColor(getContext(),
-                com.tokopedia.unifyprinciples.R.color.Unify_Background));
     }
 
     public void setWebViewScrollListener(@Nullable TkpdWebView.WebviewScrollListener scrollListener) {
@@ -211,9 +220,13 @@ public class TkpdWebView extends WebView {
     }
 
     @Override
-    public void loadUrl(@NonNull String url, @NonNull Map<String, String> additionalHttpHeaders) {
+    public void loadUrl(@NonNull String url, Map<String, String> additionalHttpHeaders) {
         if (WebViewHelper.isUrlValid(url)) {
-            super.loadUrl(url, additionalHttpHeaders);
+            if (additionalHttpHeaders!= null) {
+                super.loadUrl(url, additionalHttpHeaders);
+            } else {
+                super.loadUrl(url);
+            }
         } else {
             if (!GlobalConfig.DEBUG)
                 FirebaseCrashlytics.getInstance().log(

@@ -1,0 +1,14 @@
+{
+  "shopInfoByID": {
+    "result": [
+      {
+        "createInfo": {
+          "shopCreated": "2021-11-01"
+        }
+      }
+    ],
+    "error": {
+      "message": ""
+    }
+  }
+}

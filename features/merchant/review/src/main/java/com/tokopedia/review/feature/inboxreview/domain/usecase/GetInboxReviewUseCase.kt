@@ -40,8 +40,13 @@ class GetInboxReviewUseCase @Inject constructor(
                         productPageURL
                     }
                     attachments {
+                      attachmentID
                       thumbnailURL
                       fullsizeURL
+                    }
+                    videoAttachments {
+                      attachmentID
+                      videoUrl
                     }
                     invoiceID
                     reviewText
@@ -50,6 +55,8 @@ class GetInboxReviewUseCase @Inject constructor(
                     replyTime
                     isAutoReply
                     isKejarUlasan
+                    badRatingReasonFmt
+                    ratingDisclaimer
                 }
                 filterBy
                 remainder

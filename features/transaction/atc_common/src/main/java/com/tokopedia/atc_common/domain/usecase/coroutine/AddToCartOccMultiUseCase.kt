@@ -16,7 +16,7 @@ import com.tokopedia.localizationchooseaddress.common.ChosenAddressRequestHelper
 import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject
 
-class AddToCartOccMultiUseCase @Inject constructor(@ApplicationContext private val graphqlRepository: GraphqlRepository,
+open class AddToCartOccMultiUseCase @Inject constructor(@ApplicationContext private val graphqlRepository: GraphqlRepository,
                                                    private val addToCartDataMapper: AddToCartDataMapper,
                                                    private val chosenAddressAddToCartRequestHelper: ChosenAddressRequestHelper) : UseCase<AddToCartOccMultiDataModel>() {
 

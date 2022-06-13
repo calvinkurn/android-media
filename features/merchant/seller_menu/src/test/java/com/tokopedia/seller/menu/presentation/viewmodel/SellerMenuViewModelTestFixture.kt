@@ -1,7 +1,7 @@
 package com.tokopedia.seller.menu.presentation.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.tokopedia.gm.common.domain.interactor.GetShopInfoPeriodUseCase
+import com.tokopedia.gm.common.domain.interactor.GetShopCreatedInfoUseCase
 import com.tokopedia.gm.common.presentation.model.ShopInfoPeriodUiModel
 import com.tokopedia.product.manage.common.feature.list.data.model.filter.ProductListMetaData
 import com.tokopedia.product.manage.common.feature.list.data.model.filter.ProductListMetaResponse
@@ -9,7 +9,7 @@ import com.tokopedia.product.manage.common.feature.list.data.model.filter.Produc
 import com.tokopedia.product.manage.common.feature.list.data.model.filter.Tab
 import com.tokopedia.product.manage.common.feature.list.domain.usecase.GetProductListMetaUseCase
 import com.tokopedia.seller.menu.common.domain.entity.OthersBalance
-import com.tokopedia.seller.menu.common.domain.usecase.GetAllShopInfoUseCase
+import com.tokopedia.seller.menu.domain.usecase.GetAllShopInfoUseCase
 import com.tokopedia.seller.menu.common.view.uimodel.UserShopInfoWrapper
 import com.tokopedia.seller.menu.common.view.uimodel.base.PowerMerchantStatus
 import com.tokopedia.seller.menu.common.view.uimodel.base.partialresponse.PartialSettingFail
@@ -17,7 +17,7 @@ import com.tokopedia.seller.menu.common.view.uimodel.base.partialresponse.Partia
 import com.tokopedia.seller.menu.common.view.uimodel.base.partialresponse.PartialSettingSuccessInfoType.PartialShopSettingSuccessInfo
 import com.tokopedia.seller.menu.common.view.uimodel.base.partialresponse.PartialSettingSuccessInfoType.PartialTopAdsSettingSuccessInfo
 import com.tokopedia.seller.menu.common.view.uimodel.shopinfo.SettingShopInfoUiModel
-import com.tokopedia.seller.menu.common.view.uimodel.shopinfo.ShopInfoUiModel
+import com.tokopedia.seller.menu.presentation.uimodel.ShopInfoUiModel
 import com.tokopedia.seller.menu.data.model.SellerMenuNotificationResponse
 import com.tokopedia.seller.menu.data.model.SellerMenuNotificationResponse.*
 import com.tokopedia.seller.menu.domain.query.ShopScoreLevelResponse
@@ -43,7 +43,7 @@ open class SellerMenuViewModelTestFixture {
     private lateinit var getAllShopInfoUseCase: GetAllShopInfoUseCase
     private lateinit var getProductListMetaUseCase: GetProductListMetaUseCase
     private lateinit var getSellerMenuNotifications: GetSellerNotificationUseCase
-    private lateinit var getShopInfoPeriodUseCase: GetShopInfoPeriodUseCase
+    private lateinit var getShopCreatedInfoUseCase: GetShopCreatedInfoUseCase
     private lateinit var getShopScoreLevelUseCase: GetShopScoreLevelUseCase
     private lateinit var userSession: UserSessionInterface
 
@@ -54,13 +54,13 @@ open class SellerMenuViewModelTestFixture {
         getAllShopInfoUseCase = mockk(relaxed = true)
         getProductListMetaUseCase = mockk(relaxed = true)
         getSellerMenuNotifications = mockk(relaxed = true)
-        getShopInfoPeriodUseCase = mockk(relaxed = true)
+        getShopCreatedInfoUseCase = mockk(relaxed = true)
         getShopScoreLevelUseCase = mockk(relaxed = true)
         userSession = mockk(relaxed = true)
 
         viewModel = SellerMenuViewModel(
                 getAllShopInfoUseCase,
-                getShopInfoPeriodUseCase,
+                getShopCreatedInfoUseCase,
                 getProductListMetaUseCase,
                 getSellerMenuNotifications,
                 getShopScoreLevelUseCase,
@@ -70,11 +70,11 @@ open class SellerMenuViewModelTestFixture {
     }
 
     protected fun onGetShopInfoPeriodUseCase_thenReturn(response: ShopInfoPeriodUiModel) {
-        coEvery { getShopInfoPeriodUseCase.executeOnBackground() } returns response
+        coEvery { getShopCreatedInfoUseCase.executeOnBackground() } returns response
     }
 
     protected fun onGetGetShopInfoPeriodUseCase_thenReturnError(error: Throwable) {
-        coEvery { getShopInfoPeriodUseCase.executeOnBackground() } throws error
+        coEvery { getShopCreatedInfoUseCase.executeOnBackground() } throws error
     }
 
     protected fun onGetAllShopInfoUseCase_thenReturn(response: Pair<PartialSettingResponse, PartialSettingResponse>) {
@@ -115,7 +115,6 @@ open class SellerMenuViewModelTestFixture {
 
     protected fun createShopSettingsResponse(
             totalFollowers: Long = 35000,
-            topAdsBalance: Float = 2000f,
             shopBadgeUrl: String = "https://www.tokopedia/shop_bage.png",
             shopType: PowerMerchantStatus = PowerMerchantStatus.Active,
             successPair: Pair<Boolean, Boolean> = true to true
@@ -136,8 +135,7 @@ open class SellerMenuViewModelTestFixture {
         val topAdsInfoResponse =
             if (topAdsInfoSuccess) {
                 PartialTopAdsSettingSuccessInfo(
-                    OthersBalance(),
-                    topAdsBalance
+                    OthersBalance()
                 )
             } else {
                 PartialSettingFail
@@ -148,7 +146,6 @@ open class SellerMenuViewModelTestFixture {
 
     protected fun createShopInfoUiModel(
             totalFollowers: Long = 35000,
-            topAdsBalance: Float = 2000f,
             shopBadgeUrl: String = "https://www.tokopedia/shop_bage.png",
             shopType: PowerMerchantStatus = PowerMerchantStatus.Active,
             shopScore: Long = 70,
@@ -162,8 +159,7 @@ open class SellerMenuViewModelTestFixture {
         )
 
         val topAdsInfoResponse = PartialTopAdsSettingSuccessInfo(
-                OthersBalance(),
-                topAdsBalance
+                OthersBalance()
         )
 
         return ShopInfoUiModel(SettingShopInfoUiModel(

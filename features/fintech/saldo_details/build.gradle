@@ -31,8 +31,8 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.utils)
 
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
-    implementation rootProject.ext.tkpdInternalLibDependencies.network
-    implementation rootProject.ext.tkpdInternalLibDependencies.usersession
+    implementation projectOrAar(rootProject.ext.libraries.network)
+    implementation projectOrAar(rootProject.ext.libraries.usersession)
     implementation rootProject.ext.tkpdInternalLibDependencies.url
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
 
@@ -46,9 +46,9 @@ dependencies {
     implementation rootProject.ext.unifyDependencies.empty_state
     implementation rootProject.ext.supportLibDependencies.constraintLayout
     implementation rootProject.ext.unifyDependencies.calendar
+    implementation rootProject.ext.unifyDependencies.sortFilter
 
     implementation rootProject.ext.miscDependencies.multiDex
-    implementation rootProject.ext.miscDependencies.loaderviewlibrary
     implementation rootProject.ext.miscDependencies.roundCornerProgressBar
     implementation rootProject.ext.miscDependencies.lifeCycleExtentions
     implementation rootProject.ext.miscDependencies.viewModel
@@ -79,4 +79,5 @@ project.ext {
 
 apply from: '../../../publish_local.gradle'
 apply plugin: 'kotlin-android'
-//apply from: '../../../jacoco_task.gradle'
+apply from: '../../../jacoco_task.gradle'
+apply from: '../../../sonar_config.gradle'

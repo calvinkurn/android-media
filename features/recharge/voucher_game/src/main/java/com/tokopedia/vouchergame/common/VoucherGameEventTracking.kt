@@ -59,7 +59,6 @@ interface VoucherGameEventTracking {
             var CREATIVE = "creative"
             var CREATIVE_URL = "creative_url"
             var PROMO_ID = "promo_id"
-            var PROMO_CODE = "promo_code"
             var PROMOTIONS = "promotions"
         }
     }

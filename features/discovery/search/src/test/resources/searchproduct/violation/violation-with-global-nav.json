@@ -1,0 +1,82 @@
+{
+  "ace_search_product_v4": {
+    "header": {
+      "totalData": 0,
+      "totalDataText": "",
+      "defaultView": 0,
+      "responseCode": 2,
+      "errorMessage": "",
+      "additionalParams": "",
+      "keywordProcess": "",
+      "componentId": ""
+    },
+    "data": {
+      "isQuerySafe": true,
+      "autocompleteApplink": "",
+      "redirection": {
+        "redirectApplink": ""
+      },
+      "ticker": {
+        "text": "",
+        "query": "",
+        "typeId": 0,
+        "componentId": "",
+        "trackingOption": 0
+      },
+      "banner": {
+        "position": 0,
+        "text": "",
+        "applink": "",
+        "imageUrl": ""
+      },
+      "related": {
+        "relatedKeyword": "",
+        "position": 0,
+        "trackingOption": 0,
+        "otherRelated": []
+      },
+      "suggestion": {
+        "suggestion": "",
+        "query": "",
+        "text": "",
+        "componentId": "",
+        "trackingOption": 0
+      },
+      "products": [],
+      "violation": {
+        "headerText": "Oops, yang kamu cari itu obat keras",
+        "descriptionText": "Kamu bisa cari obat lain yang dijual bebas & berizin BPOM, ya.",
+        "imageURL": "https://images.tokopedia.net/img/jbZAUJ/2022/1/14/401ff07b-464e-4898-b46e-7ee5a1552b8d.png",
+        "ctaURL": "https://seller.tokopedia.com/edu/produk-yang-dilarang/",
+        "buttonText": "Pelajari Selengkapnya",
+        "buttonType": "ghostMain"
+      }
+    }
+  },
+  "global_search_navigation": {
+    "data": {
+      "source": "other",
+      "title": "Info Penting tentang Obat Keras",
+      "keyword": "avigan",
+      "nav_template": "pill",
+      "background": "",
+      "see_all_applink": "",
+      "see_all_url": "",
+      "show_topads": true,
+      "list": [
+        {
+          "category_name": "",
+          "name": "Info Penting tentang Obat Keras",
+          "info": "",
+          "image_url": "https://images.tokopedia.net/img/cache/64-square/iEWsxH/2021/7/19/e7e0bbfc-747f-48d5-87f4-cf6f403c856a.png?ect=4g",
+          "applink": "tokopedia://webview?url=https://www.tokopedia.com/help/article/info-penting-tentang-obat-keras",
+          "url": "https://www.tokopedia.com/help/article/info-penting-tentang-obat-keras",
+          "subtitle": "",
+          "strikethrough": "",
+          "background_url": "",
+          "logo_url": ""
+        }
+      ]
+    }
+  }
+}

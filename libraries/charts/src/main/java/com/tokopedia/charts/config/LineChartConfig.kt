@@ -1,7 +1,6 @@
 package com.tokopedia.charts.config
 
 import android.graphics.Color
-import android.graphics.drawable.Drawable
 import com.tokopedia.charts.common.ChartColor
 import com.tokopedia.charts.config.annotation.ChartConfigDsl
 import com.tokopedia.charts.model.LineChartConfigModel
@@ -21,7 +20,7 @@ class LineChartConfig : BaseChartConfig() {
     }
 
     private var chartLineMode: Int = LineChartView.LINE_MODE_LINEAR
-    private var chartDotColor: Int = Color.parseColor(ChartColor.DEFAULT_LINE_CHART_DOT_COLOR)
+    private var chartDotColor: Int = Color.parseColor(ChartColor.DMS_DEFAULT_LINE_CHART_DOT_COLOR)
     private var isChartDotEnabled: Boolean = false
     private var isChartDotHoleEnabled: Boolean = false
 

@@ -17,8 +17,8 @@
 
     <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/img_user_login_shimmer"
-        android:layout_width="@dimen/dp_56"
-        android:layout_height="@dimen/dp_56"
+        android:layout_width="56dp"
+        android:layout_height="56dp"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:loader_type="circle"/>
@@ -29,7 +29,7 @@
         android:layout_height="12sp"
         android:layout_marginStart="12dp"
         android:layout_marginTop="4dp"
-        android:textSize="@dimen/sp_16"
+        android:textSize="16sp"
         app:loader_type="line"
         app:layout_constraintTop_toTopOf="@id/img_user_login_shimmer"
         app:layout_constraintLeft_toRightOf="@id/img_user_login_shimmer"

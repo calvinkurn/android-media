@@ -1,59 +1,76 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.swiperefreshlayout.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/swipeRefreshLayoutWaitingPaymentOrder"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/waitingPaymentOrderContainer"
+    <com.tokopedia.header.HeaderUnify
+        android:id="@+id/headerWaitingPaymentOrder"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        app:unify_header_is_show_back_button="true"
+        app:unify_header_is_show_shadow="true"
+        app:unify_header_title="@string/title_som_waiting_payment" />
 
-        <com.tokopedia.unifycomponents.ticker.Ticker
-            android:id="@+id/tickerWaitingPaymentOrder"
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/swipeRefreshLayoutWaitingPaymentOrder"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/headerWaitingPaymentOrder">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/waitingPaymentOrderContainer"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="14dp"
-            android:layout_marginTop="@dimen/layout_lvl1"
-            android:layout_marginEnd="14dp"
-            android:visibility="gone"
-            app:closeButtonVisibility="gone"
-            app:descriptionText="@string/som_waiting_payment_orders_ticker_description"
-            app:layout_constraintBottom_toTopOf="@id/rvWaitingPaymentOrder"
-            app:layout_constraintTop_toTopOf="parent"
-            app:tickerShapeType="loose" />
+            android:layout_height="match_parent">
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rvWaitingPaymentOrder"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/layout_lvl0"
-            android:layoutAnimation="@anim/recycler_view_animation_top_to_bottom"
-            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-            app:layout_constraintBottom_toTopOf="@id/cardCheckAndSetStock"
-            app:layout_constraintTop_toBottomOf="@id/tickerWaitingPaymentOrder" />
-
-        <androidx.cardview.widget.CardView
-            android:id="@+id/cardCheckAndSetStock"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="bottom"
-            android:visibility="gone"
-            app:cardCornerRadius="@dimen/layout_lvl0"
-            app:cardElevation="@dimen/layout_lvl1"
-            app:layout_constraintBottom_toBottomOf="parent">
-
-            <com.tokopedia.unifycomponents.UnifyButton
-                android:id="@+id/btnCheckAndSetStock"
+            <com.tokopedia.unifycomponents.ticker.Ticker
+                android:id="@+id/tickerWaitingPaymentOrder"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/layout_lvl2"
+                android:layout_marginStart="14dp"
                 android:layout_marginTop="@dimen/layout_lvl1"
-                android:layout_marginEnd="@dimen/layout_lvl2"
-                android:layout_marginBottom="@dimen/layout_lvl1"
-                android:text="@string/btn_waiting_payment_check_and_set_Stock" />
+                android:layout_marginEnd="14dp"
+                android:visibility="gone"
+                app:closeButtonVisibility="gone"
+                app:descriptionText="@string/som_waiting_payment_orders_ticker_description"
+                app:layout_constraintBottom_toTopOf="@id/rvWaitingPaymentOrder"
+                app:layout_constraintTop_toTopOf="parent"
+                app:tickerShapeType="loose" />
 
-        </androidx.cardview.widget.CardView>
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rvWaitingPaymentOrder"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/layout_lvl0"
+                android:layoutAnimation="@anim/recycler_view_animation_top_to_bottom"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                app:layout_constraintBottom_toTopOf="@id/cardCheckAndSetStock"
+                app:layout_constraintTop_toBottomOf="@id/tickerWaitingPaymentOrder" />
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
-</androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+            <androidx.cardview.widget.CardView
+                android:id="@+id/cardCheckAndSetStock"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom"
+                android:visibility="gone"
+                app:cardCornerRadius="@dimen/layout_lvl0"
+                app:cardElevation="@dimen/layout_lvl1"
+                app:layout_constraintBottom_toBottomOf="parent">
+
+                <com.tokopedia.unifycomponents.UnifyButton
+                    android:id="@+id/btnCheckAndSetStock"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/layout_lvl2"
+                    android:layout_marginTop="@dimen/layout_lvl1"
+                    android:layout_marginEnd="@dimen/layout_lvl2"
+                    android:layout_marginBottom="@dimen/layout_lvl1"
+                    android:text="@string/btn_waiting_payment_check_and_set_Stock" />
+
+            </androidx.cardview.widget.CardView>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

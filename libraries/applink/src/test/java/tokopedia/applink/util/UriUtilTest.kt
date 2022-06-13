@@ -2,6 +2,7 @@ package tokopedia.applink.util
 
 import android.net.Uri
 import android.os.Bundle
+import com.tokopedia.applink.RouteManagerKt.trimDoubleSchemeDeeplink
 import com.tokopedia.applink.UriUtil
 import org.junit.Assert
 import org.junit.Test
@@ -10,6 +11,21 @@ import org.robolectric.RobolectricTestRunner
 
 @RunWith(RobolectricTestRunner::class)
 class UriUtilTest {
+
+    @Test
+    fun trimDoubleSchemeDeeplink_test() {
+        var url = "tokopedia://tokopedia://tokopedia://discovery/clp_otomotif_63"
+        Assert.assertEquals("tokopedia://discovery/clp_otomotif_63",
+            trimDoubleSchemeDeeplink(url))
+
+        url = "tokopedia://tokopedia://discovery/clp_fashion-pria_1759"
+        Assert.assertEquals("tokopedia://discovery/clp_fashion-pria_1759",
+            trimDoubleSchemeDeeplink(url))
+
+        url = "sellerapp://sellerapp://webview?url=https://tokopedia.com/help"
+        Assert.assertEquals("sellerapp://webview?url=https://tokopedia.com/help",
+            trimDoubleSchemeDeeplink(url))
+    }
 
     @Test
     fun `buildUri correct case`() {

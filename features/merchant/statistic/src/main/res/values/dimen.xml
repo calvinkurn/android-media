@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <dimen name="dimen_stc_22dp">22dp</dimen>
     <dimen name="dimen_stc_minus2dp">-2dp</dimen>
     <dimen name="dimen_stc_date_filter_height">72dp</dimen>
 </resources>

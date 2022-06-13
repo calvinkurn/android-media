@@ -1,74 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/cl_pinned"
-    android:layout_width="@dimen/layout_lvl0"
+    android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:background="@drawable/bg_play_pinned_message"
-    tools:layout_width="match_parent"
-    tools:parentTag="androidx.constraintlayout.widget.ConstraintLayout"
+    android:orientation="horizontal"
+    tools:background="@color/Unify_Static_Black_32"
     >
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/cl_pinned_content"
-        android:layout_width="@dimen/layout_lvl0"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/spacing_lvl3"
-        android:layout_marginEnd="@dimen/spacing_lvl3"
-        android:layout_marginTop="@dimen/spacing_lvl2"
-        android:layout_marginBottom="@dimen/spacing_lvl2"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/tv_pinned_action"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        >
-
-        <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/iv_pinned"
-            android:layout_width="@dimen/spacing_lvl4"
-            android:layout_height="@dimen/spacing_lvl4"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0"
-            app:srcCompat="@drawable/ic_play_pin_green"
-            />
-
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/tv_pinned_message"
-            android:layout_width="@dimen/layout_lvl0"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/spacing_lvl2"
-            android:textColor="@color/Unify_Static_White"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0"
-            app:layout_constraintStart_toEndOf="@id/iv_pinned"
-            app:layout_constraintTop_toTopOf="parent"
-            app:lineHeight="@dimen/fontSize_lvl5"
-            app:typographyType="body_3"
-            tools:text="@string/play_mock_pinned_message"
-            />
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
-
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/tv_pinned_action"
-        android:layout_width="wrap_content"
-        android:layout_height="0dp"
-        android:background="@drawable/bg_play_pinned_action"
-        android:gravity="center"
-        android:paddingStart="@dimen/spacing_lvl3"
-        android:paddingEnd="@dimen/spacing_lvl3"
-        android:text="@string/play_action_view"
-        android:textColor="@color/Unify_Static_White"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:typographyType="body_3"
-        app:typographyWeight="bold"
+    <com.tokopedia.iconunify.IconUnify
+        android:id="@+id/icon_pinned"
+        android:layout_width="@dimen/layout_lvl2"
+        android:layout_height="@dimen/layout_lvl2"
+        android:layout_marginTop="@dimen/spacing_lvl1"
+        app:icon_color_light_enable="@color/play_dms_pinned_icon"
+        app:icon_color_night_enable="@color/play_dms_pinned_icon"
+        app:icon_name="PUSH_PIN_FILLED"
         />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_pinned_message"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/dp_6"
+        android:layout_marginTop="@dimen/spacing_lvl1"
+        android:textColor="@color/Unify_Static_White"
+        app:typographyType="body_3"
+        tools:text="Kunjungi koleksi baru kami di sini"
+        />
+
+</LinearLayout>

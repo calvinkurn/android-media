@@ -12,11 +12,12 @@ enum class PlaySocketType(var value: String) {
     QuickReply("QUICK_REPLY"),
     EventBanned("BANNED"),
     EventFreeze("FREEZE"),
-    ProductTag("PRODUCT_TAG"),
+    ProductTag("PRODUCT_TAG_UPDATE"),
     MerchantVoucher("MERCHANT_VOUCHERS"),
     ChannelInteractiveStatus("CHANNEL_INTERACTIVE_STATUS"),
     ChannelInteractive("CHANNEL_INTERACTIVE"),
     RealTimeNotification("REAL_TIME_NOTIF"),
     UpdateConfigMultipleLike("UPDATE_CONFIG_MULTIPLE_LIKE"),
-    UserWinnerStatus("USER_WINNER_STATUS")
+    UserWinnerStatus("USER_WINNER_STATUS"),
+    ChannelInteractiveQuiz("CHANNEL_QUIZ"),
 }

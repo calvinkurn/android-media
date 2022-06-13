@@ -14,6 +14,9 @@ interface SmartBillsAnalyticConstants {
             const val PRODUCT_CLICK = "productClick"
             const val CHECKOUT = "checkout"
             const val EVENT_VALUE_CHECKOUT_PROGRESS = "checkout_progress"
+
+            const val VIEW_ITEM_LIST = "view_item_list"
+            const val SELECT_CONTENT = "select_content"
         }
     }
 
@@ -35,6 +38,9 @@ interface SmartBillsAnalyticConstants {
             const val CLICK_EXPAND_ACCORDION = "click expand button pdp"
             const val CLICK_COLLAPSE_ACCORDION = "click collapse button pdp"
             const val CLICK_REFRESH_ACCORDION = "click reload button pdp"
+
+            const val VIEW_PAGE = "view page"
+
         }
     }
 
@@ -56,6 +62,7 @@ interface SmartBillsAnalyticConstants {
             const val IS_LOGIN_STATUS = "isLoggedInStatus"
             const val PRODUCT_STATUS = "productStatus"
             const val ITEMS = "items"
+            const val ITEM_LIST = "item_list"
         }
     }
 
@@ -88,6 +95,8 @@ interface SmartBillsAnalyticConstants {
             const val SHOP_ID = "shop_id"
             const val SHOP_NAME = "shop_name"
             const val SHOP_TYPE = "shop_type"
+
+            const val INDEX = "index"
         }
     }
 }

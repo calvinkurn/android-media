@@ -10,6 +10,9 @@ class TopupBillsMenuDetail(
         @SerializedName("catalog")
         @Expose
         val catalog: TopupBillsCatalog = TopupBillsCatalog(),
+        @SerializedName("user_perso")
+        @Expose
+        val userPerso: TopupBillsUserPerso = TopupBillsUserPerso(),
         @SerializedName("recommendations")
         @Expose
         val recommendations: List<TopupBillsRecommendation> = listOf(),

@@ -33,13 +33,15 @@ abstract class BaseStartupBenchmark(private val startupMode: StartupMode) {
     @Test
     fun macrobenchmarkLaunchTime() {
         benchmarkRule.measureStartup(
-            startupMode = startupMode,
-            iterations = MacroArgs.getIterations(InstrumentationRegistry.getArguments())) {
-            getIntent()
-        }
+                startupMode = startupMode,
+                iterations = MacroArgs.getIterations(InstrumentationRegistry.getArguments()),
+                intent = { getIntent() },
+                waitUntil = { waitUntil() })
     }
 
     abstract fun getIntent(): Intent
+
+    abstract fun waitUntil()
 
     companion object {
         @Parameterized.Parameters(name = "mode={0}")

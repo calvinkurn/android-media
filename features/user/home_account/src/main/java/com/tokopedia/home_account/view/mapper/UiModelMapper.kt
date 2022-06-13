@@ -17,7 +17,8 @@ object UiModelMapper {
             subtitle = walletappGetAccountBalance.subtitle,
             urlImage = walletappGetAccountBalance.icon,
             applink = walletappGetAccountBalance.applink,
-            isActive = walletappGetAccountBalance.isActive
+            isActive = walletappGetAccountBalance.isActive,
+                hideTitle = walletappGetAccountBalance.hideTitle
         )
     }
 
@@ -59,46 +60,15 @@ object UiModelMapper {
     }
 
     fun getWalletUiModel(walletappGetAccountBalance: WalletappGetAccountBalance): WalletUiModel {
-        val subTitle = if (walletappGetAccountBalance.isActive) {
-            when (walletappGetAccountBalance.id) {
-                AccountConstants.WALLET.GOPAY -> {
-                    if (walletappGetAccountBalance.subtitle.equals(
-                            AccountConstants.WALLET.GOPAY,
-                            ignoreCase = true
-                        )
-                    ) {
-                        walletappGetAccountBalance.title
-                    } else {
-                        "${walletappGetAccountBalance.title} • ${walletappGetAccountBalance.subtitle}"
-                    }
-                }
-                AccountConstants.WALLET.GOPAYLATER -> {
-                    if (walletappGetAccountBalance.subtitle.equals(
-                            AccountConstants.WALLET.GOPAYLATER,
-                            ignoreCase = true
-                        )
-                    ) {
-                        walletappGetAccountBalance.title
-                    } else {
-                        "${walletappGetAccountBalance.title} • ${walletappGetAccountBalance.subtitle}"
-                    }
-                }
-                AccountConstants.WALLET.TOKOPOINT -> {
+        val subTitle = if (walletappGetAccountBalance.hideTitle) {
+                walletappGetAccountBalance.title
+            } else {
+                if (walletappGetAccountBalance.id == AccountConstants.WALLET.TOKOPOINT) {
                     "${walletappGetAccountBalance.title} ${walletappGetAccountBalance.subtitle}"
-                }
-                AccountConstants.WALLET.SALDO -> {
-                    walletappGetAccountBalance.title
-                }
-                AccountConstants.WALLET.CO_BRAND_CC -> {
-                    walletappGetAccountBalance.subtitle
-                }
-                else -> {
+                } else {
                     "${walletappGetAccountBalance.title} • ${walletappGetAccountBalance.subtitle}"
                 }
             }
-        } else {
-            walletappGetAccountBalance.subtitle
-        }
 
         return WalletUiModel(
             id = walletappGetAccountBalance.id,

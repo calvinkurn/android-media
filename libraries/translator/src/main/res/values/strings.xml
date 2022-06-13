@@ -30,7 +30,7 @@
     <string name="translator_title">Translator (ON/OFF)</string>
     <string name="api_key_setting">API Key Setting</string>
     <string name="curr_key">Current Key</string>
-    <string name="trnsl_1">trnsl.1.1.20190508T115205Z.10630ca1780c554e.a7a33e218b8e806e8d38cb32f0ef91ae07d7ae49</string>
+    <string name="trnsl_1"/>
     <string name="enter_your_key">Enter your key</string>
     <string name="save_key">Save key</string>
     <string name="visit_below">Visit below for new API key</string>

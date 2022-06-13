@@ -6,10 +6,10 @@ import com.tokopedia.topchat.FileUtil
 import com.tokopedia.topchat.callOnCleared
 import com.tokopedia.topchat.chatlist.data.mapper.WebSocketMapper.mapToIncomingChat
 import com.tokopedia.topchat.chatlist.data.mapper.WebSocketMapper.mapToIncomingTypeState
-import com.tokopedia.topchat.chatlist.domain.websocket.DefaultTopChatWebSocket
-import com.tokopedia.topchat.chatlist.domain.websocket.DefaultTopChatWebSocket.Companion.CODE_NORMAL_CLOSURE
-import com.tokopedia.topchat.chatlist.domain.websocket.DefaultWebSocketParser
-import com.tokopedia.topchat.chatlist.domain.websocket.WebSocketStateHandler
+import com.tokopedia.topchat.common.websocket.DefaultTopChatWebSocket
+import com.tokopedia.topchat.common.websocket.DefaultTopChatWebSocket.Companion.CODE_NORMAL_CLOSURE
+import com.tokopedia.topchat.common.websocket.DefaultWebSocketParser
+import com.tokopedia.topchat.common.websocket.WebSocketStateHandler
 import com.tokopedia.topchat.chatlist.model.BaseIncomingItemWebSocketModel
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.usecase.coroutines.Result

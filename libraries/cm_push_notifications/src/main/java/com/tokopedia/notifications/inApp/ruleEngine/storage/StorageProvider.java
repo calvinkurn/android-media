@@ -1,7 +1,11 @@
 package com.tokopedia.notifications.inApp.ruleEngine.storage;
 
 import android.text.TextUtils;
+import android.util.Log;
 
+import com.tokopedia.logger.ServerLogger;
+import com.tokopedia.logger.utils.Priority;
+import com.tokopedia.notifications.common.CMConstant;
 import com.tokopedia.notifications.inApp.ruleEngine.interfaces.InterfaceDataStore;
 import com.tokopedia.notifications.inApp.ruleEngine.storage.dao.ElapsedTimeDao;
 import com.tokopedia.notifications.inApp.ruleEngine.storage.dao.InAppDataDao;
@@ -10,14 +14,24 @@ import com.tokopedia.notifications.inApp.ruleEngine.storage.entities.inappdata.C
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import rx.Completable;
 import rx.functions.Action0;
 import rx.schedulers.Schedulers;
-import timber.log.Timber;
+
 
 public class StorageProvider implements InterfaceDataStore {
+
+    private static final String SERVER_LOGGER_TAG = "CM_VALIDATION";
+    private static final String SERVER_LOGGER_KEY_TYPE = "type";
+    private static final String SERVER_LOGGER_KEY_ERROR = "err";
+    private static final String SERVER_LOGGER_KEY_DATA = "data";
+    private static final String SERVER_LOGGER_TYPE_EXCEPTION = "exception";
+    private static final String SERVER_LOGGER_DATA_VISIBLE_STATE = "CM InApp Update Visible State";
+
     private final InAppDataDao inAppDataDao;
     private final ElapsedTimeDao elapsedTimeDao;
     private StorageProviderListener storageProviderListener;
@@ -188,7 +202,16 @@ public class StorageProvider implements InterfaceDataStore {
         return Completable.fromAction(new Action0() {
             @Override
             public void call() {
-                inAppDataDao.updateVisibleStateForAlreadyShown();
+                try {
+                    inAppDataDao.updateVisibleStateForAlreadyShown();
+                } catch (Exception e) {
+                    Map<String, String> messageMap = new HashMap<>();
+                    messageMap.put(SERVER_LOGGER_KEY_TYPE, SERVER_LOGGER_TYPE_EXCEPTION);
+                    messageMap.put(SERVER_LOGGER_KEY_ERROR,
+                            Log.getStackTraceString(e).substring(0, (Math.min(Log.getStackTraceString(e).length(), CMConstant.TimberTags.MAX_LIMIT))));
+                    messageMap.put(SERVER_LOGGER_KEY_DATA, SERVER_LOGGER_DATA_VISIBLE_STATE);
+                    ServerLogger.log(Priority.P2, SERVER_LOGGER_TAG, messageMap);
+                }
             }
         }).subscribeOn(Schedulers.io());
     }

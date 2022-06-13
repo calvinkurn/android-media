@@ -21,10 +21,10 @@ internal class OnSuggestionLocalItemClickTest: SuggestionPresenterTestFixtures()
     fun `Test tracking click suggestion item local keyword`() {
         `Given View already load data`(suggestionCampaignResponse, searchParameter)
 
-        val item = findDataView<SuggestionDoubleLineWithoutImageDataDataView>(TYPE_LOCAL)
+        val item = visitableList.findDoubleLineWithoutImage(TYPE_LOCAL)
 
-        `when suggestion item clicked`(item)
-        `then verify view tracking click item local keyword is correct`(item)
+        `when suggestion item clicked`(item.data)
+        `then verify view tracking click item local keyword is correct`(item.data)
     }
 
     private fun `when suggestion item clicked`(item: BaseSuggestionDataView) {
@@ -40,7 +40,12 @@ internal class OnSuggestionLocalItemClickTest: SuggestionPresenterTestFixtures()
         val userId = "0"
 
         verify {
-            suggestionView.trackEventClickLocalKeyword(expectedEventLabel, userId, item.dimension90)
+            suggestionView.trackEventClickLocalKeyword(
+                expectedEventLabel,
+                userId,
+                item.dimension90,
+                item,
+            )
             suggestionView.onClickSuggestion(item.applink)
         }
     }
@@ -49,10 +54,10 @@ internal class OnSuggestionLocalItemClickTest: SuggestionPresenterTestFixtures()
     fun `Test tracking click suggestion item global keyword`() {
         `Given View already load data`(suggestionCampaignResponse, searchParameter)
 
-        val item = findDataView<SuggestionDoubleLineWithoutImageDataDataView>(TYPE_GLOBAL)
+        val item = visitableList.findDoubleLineWithoutImage(TYPE_GLOBAL)
 
-        `when suggestion item clicked`(item)
-        `then verify view tracking click item global keyword is correct`(item)
+        `when suggestion item clicked`(item.data)
+        `then verify view tracking click item global keyword is correct`(item.data)
     }
 
     private fun `then verify view tracking click item global keyword is correct`(item: BaseSuggestionDataView) {
@@ -63,7 +68,12 @@ internal class OnSuggestionLocalItemClickTest: SuggestionPresenterTestFixtures()
         val userId = "0"
 
         verify {
-            suggestionView.trackEventClickGlobalKeyword(expectedEventLabel, userId, item.dimension90)
+            suggestionView.trackEventClickGlobalKeyword(
+                expectedEventLabel,
+                userId,
+                item.dimension90,
+                item,
+            )
             suggestionView.onClickSuggestion(item.applink)
         }
     }
@@ -72,10 +82,10 @@ internal class OnSuggestionLocalItemClickTest: SuggestionPresenterTestFixtures()
     fun `Test tracking click suggestion item product line`() {
         `Given View already load data`(suggestionCampaignResponse, searchParameter)
 
-        val item = findDataView<SuggestionProductLineDataDataView>(TYPE_PRODUCT)
+        val item = visitableList.findProductLine(TYPE_PRODUCT)
 
-        `when suggestion item clicked`(item)
-        `then verify view tracking click item product line is correct`(item)
+        `when suggestion item clicked`(item.data)
+        `then verify view tracking click item product line is correct`(item.data)
     }
 
     private fun `then verify view tracking click item product line is correct`(item: BaseSuggestionDataView) {

@@ -2,6 +2,8 @@ package com.tokopedia.oneclickcheckout.order.data.get
 
 import android.annotation.SuppressLint
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.purchase_platform.common.feature.gifting.data.response.AddOnWording
+import com.tokopedia.purchase_platform.common.feature.gifting.data.response.PopUp
 import com.tokopedia.purchase_platform.common.feature.promo.domain.model.PromoSAFResponse
 import com.tokopedia.purchase_platform.common.feature.tickerannouncement.Ticker
 
@@ -14,14 +16,14 @@ class GetOccCartData(
         val popUpMessage: String = "",
         @SerializedName("max_char_note")
         val maxCharNote: Int = 0,
+        @SerializedName("placeholder_note")
+        val placeholderNote: String = "",
         @SerializedName("kero_token")
         val keroToken: String = "",
         @SerializedName("kero_unix_time")
         val keroUnixTime: String = "",
         @SerializedName("kero_discom_token")
         val keroDiscomToken: String = "",
-        @SerializedName("error_ticker")
-        val errorTicker: String = "",
         @SerializedName("tickers")
         val tickers: List<Ticker> = emptyList(),
         @SerializedName("occ_main_onboarding")
@@ -38,10 +40,12 @@ class GetOccCartData(
         val paymentAdditionalData: PaymentAdditionalData = PaymentAdditionalData(),
         @SerializedName("prompt")
         val prompt: OccPromptResponse = OccPromptResponse(),
-        @SerializedName("max_quantity")
-        val maxQty: String = "",
         @SerializedName("total_product_price")
-        val totalProductPrice: String = ""
+        val totalProductPrice: String = "",
+        @SerializedName("pop_up")
+        val popUp: PopUp = PopUp(),
+        @SerializedName("add_on_wording")
+        val addOnWording: AddOnWording = AddOnWording()
 )
 
 class CustomerData(

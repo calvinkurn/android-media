@@ -15,7 +15,11 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import io.mockk.coEvery
+import io.mockk.every
+import io.mockk.verify
 import io.mockk.mockk
+import io.mockk.just
+import io.mockk.runs
 import junit.framework.Assert.assertEquals
 import org.junit.Before
 import org.junit.Rule
@@ -196,5 +200,18 @@ class DealsSearchViewModelTest {
 
         // then
         assert((viewModel.dealsInitialResponse.value as Success).data == mockInitialLoadData)
+    }
+
+    @Test
+    fun onClearedViewModel(){
+        every { loadInitialDataUseCase.cancelJobs() } just runs
+        every { searchUseCase.cancelJobs() } just runs
+
+        val method = viewModel::class.java.getDeclaredMethod("onCleared")
+        method.isAccessible = true
+        method.invoke(viewModel)
+
+        verify { loadInitialDataUseCase.cancelJobs() }
+        verify { searchUseCase.cancelJobs() }
     }
 }

@@ -1,0 +1,55 @@
+@file:JvmName("AuthConstant")
+package com.tokopedia.network.authentication
+
+const val CONTENT_TYPE = "application/x-www-form-urlencoded"
+const val DATE_FORMAT = "EEE, dd MMM yyyy HH:mm:ss ZZZ"
+internal const val CONTENT_TYPE_JSON = "application/json"
+internal const val MAC_ALGORITHM = "HmacSHA1"
+
+const val HEADER_RELEASE_TRACK = "x-release-track"
+
+const val HEADER_AUTHORIZATION = "Authorization"
+const val HEADER_CONTENT_TYPE = "Content-Type"
+const val HEADER_CONTENT_MD5 = "Content-MD5"
+const val HEADER_DATE = "Date"
+const val HEADER_DEVICE = "X-Device"
+const val HEADER_OS_VERSION = "os_version"
+const val HEADER_REQUEST_METHOD = "Request-Method"
+const val HEADER_SESSION_ID = "Tkpd-SessionId"
+const val HEADER_TKPD_USER_ID = "Tkpd-UserId"
+const val HEADER_USER_AGENT = "User-Agent"
+const val HEADER_USER_ID = "X-User-ID"
+const val HEADER_X_APP_VERSION = "X-APP-VERSION"
+const val HEADER_X_METHOD = "X-Method"
+const val HEADER_X_TKPD_APP_NAME = "X-Tkpd-App-Name"
+const val HEADER_X_TKPD_APP_VERSION = "X-Tkpd-App-Version"
+const val HEADER_X_TKPD_USER_ID = "X-Tkpd-UserId"
+internal const val HEADER_CACHE_CONTROL = "cache-control"
+internal const val HEADER_OS_TYPE = "os-type"
+internal const val HEADER_PARAM_BEARER = "Bearer"
+internal const val HEADER_PATH = "X-Tkpd-Path"
+internal const val HEADER_X_MSISDN = "x-msisdn"
+internal const val X_TKPD_HEADER_AUTHORIZATION = "X-TKPD-Authorization"
+
+internal const val KEY_FINGERPRINT_DATA = "Fingerprint-Data"
+internal const val KEY_FINGERPRINT_HASH = "Fingerprint-Hash"
+
+const val PARAM_OS_TYPE = "os_type"
+internal const val PARAM_DEVICE_ID = "device_id"
+internal const val PARAM_HASH = "hash"
+internal const val PARAM_TIMESTAMP = "device_time"
+internal const val PARAM_USER_ID = "user_id"
+internal const val PARAM_X_TKPD_USER_ID = "x-tkpd-userid"
+
+const val WEBVIEW_FLAG_PARAM_APP_VERSION = "app_version"
+const val WEBVIEW_FLAG_PARAM_DEVICE = "device"
+const val WEBVIEW_FLAG_PARAM_FLAG_APP = "flag_app"
+const val WEBVIEW_FLAG_PARAM_OS_VERSION = "os_version"
+const val WEBVIEW_FLAG_PARAM_UTM_SOURCE = "utm_source"
+
+const val DEFAULT_VALUE_WEBVIEW_FLAG_PARAM_DEVICE = "android"
+const val DEFAULT_VALUE_WEBVIEW_FLAG_PARAM_FLAG_APP = "1"
+const val DEFAULT_VALUE_WEBVIEW_FLAG_PARAM_UTM_SOURCE = "android"
+
+internal const val HEADER_ACCOUNT_AUTHORIZATION = "Accounts-Authorization"
+internal const val HEADER_HMAC_SIGNATURE_KEY = "TKPDROID AndroidApps:"

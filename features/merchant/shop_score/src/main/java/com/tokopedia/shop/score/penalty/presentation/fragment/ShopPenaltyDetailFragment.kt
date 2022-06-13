@@ -12,6 +12,7 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
+import com.tokopedia.device.info.DeviceScreenInfo
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.shop.score.R
@@ -27,7 +28,7 @@ import com.tokopedia.shop.score.penalty.presentation.viewmodel.ShopPenaltyDetail
 import com.tokopedia.utils.view.binding.viewBinding
 import javax.inject.Inject
 
-class ShopPenaltyDetailFragment : BaseDaggerFragment() {
+open class ShopPenaltyDetailFragment : BaseDaggerFragment() {
 
     @Inject
     lateinit var shopPenaltyDetailViewModel: ShopPenaltyDetailViewModel
@@ -47,9 +48,7 @@ class ShopPenaltyDetailFragment : BaseDaggerFragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        activity?.intent?.let {
-            keyCacheManagerId = it.getStringExtra(KEY_CACHE_MANAGE_ID) ?: ""
-        }
+        keyCacheManagerId = arguments?.getString(KEY_CACHE_MANAGE_ID) ?: ""
     }
 
     override fun initInjector() {
@@ -76,7 +75,7 @@ class ShopPenaltyDetailFragment : BaseDaggerFragment() {
             activity?.window?.decorView?.setBackgroundColor(
                 ContextCompat.getColor(
                     it,
-                    com.tokopedia.unifyprinciples.R.color.Unify_N0
+                    com.tokopedia.unifyprinciples.R.color.Unify_Background
                 )
             )
             cacheManager = SaveInstanceCacheManager(it, keyCacheManagerId)
@@ -117,7 +116,10 @@ class ShopPenaltyDetailFragment : BaseDaggerFragment() {
                 shopPenaltyDetailUiModel.endDateDetail
             )
         )
-        binding?.tvDescResultDetailPenalty?.text = shopPenaltyDetailUiModel.descStatusPenalty
+        shopPenaltyDetailUiModel.descStatusPenalty?.let {
+            binding?.tvDescResultDetailPenalty?.text = getString(it)
+        }
+
         setupRvStepper(shopPenaltyDetailUiModel.stepperPenaltyDetailList)
 
         binding?.icInfoStatusPenalty?.setOnClickListener {
@@ -162,9 +164,12 @@ class ShopPenaltyDetailFragment : BaseDaggerFragment() {
     private fun setupActionBar() {
         (activity as? AppCompatActivity)?.run {
             supportActionBar?.hide()
-            setSupportActionBar(binding?.penaltyDetailToolbar)
-            supportActionBar?.run {
+            binding?.penaltyDetailToolbar?.apply {
                 title = getString(R.string.title_penalty_detail_shop_score)
+                isShowBackButton = !DeviceScreenInfo.isTablet(this@run)
+                setNavigationOnClickListener {
+                    onBackPressed()
+                }
             }
         }
     }
@@ -176,8 +181,12 @@ class ShopPenaltyDetailFragment : BaseDaggerFragment() {
         const val SPAN_WIDTH_LAST_ITEM = 1
         const val MAX_SPAN_COUNT = 5
 
-        fun newInstance(): ShopPenaltyDetailFragment {
-            return ShopPenaltyDetailFragment()
+        fun newInstance(keyCacheManagerId: String): ShopPenaltyDetailFragment {
+            return ShopPenaltyDetailFragment().apply {
+                val bundle = Bundle()
+                bundle.putString(KEY_CACHE_MANAGE_ID, keyCacheManagerId)
+                arguments = bundle
+            }
         }
     }
 }

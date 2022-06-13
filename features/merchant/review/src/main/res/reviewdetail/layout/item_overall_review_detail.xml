@@ -6,6 +6,24 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <RelativeLayout
+        android:id="@+id/relative_layout_ticker"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:visibility="visible">
+
+        <com.tokopedia.unifycomponents.ticker.Ticker
+            android:id="@+id/rating_disclaimer_product_ticker"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:tickerType="announcement"
+            app:tickerShapeType="full"
+            app:layout_constraintTop_toTopOf="parent" />
+    </RelativeLayout>
+
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/rating_star"
         android:layout_width="@dimen/dp_28"
@@ -14,7 +32,7 @@
         android:layout_marginStart="@dimen/spacing_lvl4"
         android:layout_marginEnd="@dimen/spacing_lvl4"
         app:srcCompat="@drawable/ic_rating_star_item"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/relative_layout_ticker"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintBottom_toTopOf="@id/total_review"
         android:contentDescription="@string/rating_star_icon_content_description" />
@@ -31,7 +49,7 @@
         app:typographyWeight="bold"
         app:layout_constraintStart_toEndOf="@id/rating_star"
         app:layout_constraintEnd_toStartOf="@id/maximum_rating_star_value"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/relative_layout_ticker"
         app:layout_constraintBottom_toTopOf="@id/total_review"/>
 
     <com.tokopedia.unifyprinciples.Typography

@@ -31,11 +31,13 @@
       "related": {
         "relatedKeyword": "",
         "position": 1,
+        "trackingOption": 3,
         "otherRelated": [
           {
             "keyword": "samsung a30",
             "url": "https://www.tokopedia.com/search?q=samsung+a30&source=related_keyword&st=product",
             "applink": "tokopedia://search?q=samsung+a30&source=related_keyword&st=product",
+            "componentId": "01.01.01.01",
             "product": [
               {
                 "id": 554631097,
@@ -73,7 +75,8 @@
                   "productClickUrl": "",
                   "productWishlistUrl": "",
                   "productViewUrl": ""
-                }
+                },
+                "componentId": "01.01.02.01"
               },
               {
                 "id": 1107195585,
@@ -111,7 +114,8 @@
                   "productClickUrl": "",
                   "productWishlistUrl": "",
                   "productViewUrl": ""
-                }
+                },
+                "componentId": "01.01.02.02"
               },
               {
                 "id": 615953085,
@@ -149,7 +153,8 @@
                   "productClickUrl": "",
                   "productWishlistUrl": "",
                   "productViewUrl": ""
-                }
+                },
+                "componentId": "01.01.02.03"
               }
             ]
           },
@@ -157,6 +162,7 @@
             "keyword": "samsung a8",
             "url": "https://www.tokopedia.com/search?q=samsung+a8&source=related_keyword&st=product",
             "applink": "tokopedia://search?q=samsung+a8&source=related_keyword&st=product",
+            "componentId": "01.01.01.02",
             "product": [
               {
                 "id": 630037796,
@@ -278,6 +284,7 @@
             "keyword": "samsung m11",
             "url": "https://www.tokopedia.com/search?q=samsung+m11&source=related_keyword&st=product",
             "applink": "tokopedia://search?q=samsung+m11&source=related_keyword&st=product",
+            "componentId": "01.01.01.03",
             "product": [
               {
                 "id": 884018884,
@@ -347,6 +354,7 @@
             "keyword": "samsung a10",
             "url": "https://www.tokopedia.com/search?q=samsung+a10&source=related_keyword&st=product",
             "applink": "tokopedia://search?q=samsung+a10&source=related_keyword&st=product",
+            "componentId": "01.01.01.04",
             "product": [
               {
                 "id": 1274003805,

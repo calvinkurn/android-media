@@ -5,7 +5,6 @@ import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
-import android.os.Handler
 import android.util.DisplayMetrics
 import android.view.LayoutInflater
 import android.view.View
@@ -21,10 +20,14 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConsInternalNavigation
 import com.tokopedia.applink.internal.ApplinkConsInternalNavigation.SOURCE_ACCOUNT
-import com.tokopedia.coachmark.CoachMark2
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.coachmark.CoachMark2Item
+import com.tokopedia.discovery.common.utils.toDpInt
+import com.tokopedia.homenav.MePageRollenceController
 import com.tokopedia.homenav.R
 import com.tokopedia.homenav.base.datamodel.HomeNavMenuDataModel
+import com.tokopedia.homenav.base.datamodel.HomeNavTitleDataModel
+import com.tokopedia.homenav.common.util.ClientMenuGenerator
 import com.tokopedia.homenav.common.util.ClientMenuGenerator.Companion.ID_ALL_TRANSACTION
 import com.tokopedia.homenav.common.util.ClientMenuGenerator.Companion.ID_FAVORITE_SHOP
 import com.tokopedia.homenav.common.util.ClientMenuGenerator.Companion.ID_HOME
@@ -40,27 +43,27 @@ import com.tokopedia.homenav.mainnav.MainNavConst.RecentViewAb.VARIANT
 import com.tokopedia.homenav.mainnav.di.DaggerMainNavComponent
 import com.tokopedia.homenav.mainnav.domain.MainNavSharedPref.getProfileCacheData
 import com.tokopedia.homenav.mainnav.domain.MainNavSharedPref.setProfileCacheFromAccountModel
+import com.tokopedia.homenav.mainnav.domain.model.NavFavoriteShopModel
+import com.tokopedia.homenav.mainnav.domain.model.NavWishlistModel
 import com.tokopedia.homenav.mainnav.view.adapter.typefactory.MainNavTypeFactoryImpl
 import com.tokopedia.homenav.mainnav.view.adapter.viewholder.MainNavListAdapter
 import com.tokopedia.homenav.mainnav.view.analytics.TrackingBuSection
 import com.tokopedia.homenav.mainnav.view.analytics.TrackingTransactionSection
 import com.tokopedia.homenav.mainnav.view.analytics.TrackingUserMenuSection
+import com.tokopedia.homenav.mainnav.view.datamodel.MainNavigationDataModel
+import com.tokopedia.homenav.mainnav.view.datamodel.account.AccountHeaderDataModel
 import com.tokopedia.homenav.mainnav.view.interactor.MainNavListener
 import com.tokopedia.homenav.mainnav.view.presenter.MainNavViewModel
-import com.tokopedia.homenav.mainnav.view.datamodel.account.AccountHeaderDataModel
-import com.tokopedia.homenav.mainnav.view.datamodel.MainNavigationDataModel
 import com.tokopedia.homenav.view.activity.HomeNavPerformanceInterface
 import com.tokopedia.homenav.view.router.NavigationRouter
 import com.tokopedia.kotlin.extensions.view.addOneTimeGlobalLayoutListener
-import com.tokopedia.kotlin.extensions.view.toDp
 import com.tokopedia.remoteconfig.RemoteConfig
-import com.tokopedia.searchbar.navigation_component.NavConstant
 import com.tokopedia.searchbar.navigation_component.NavToolbar
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
-import java.util.HashMap
+import java.util.*
 import javax.inject.Inject
 
 class MainNavFragment : BaseDaggerFragment(), MainNavListener {
@@ -70,7 +73,10 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
         private const val REQUEST_LOGIN = 1234
         private const val REQUEST_REGISTER = 2345
         private const val OFFSET_TO_SHADOW = 100
+        private const val REQUEST_REVIEW_PRODUCT = 999
         private const val COACHMARK_SAFE_DELAY = 200L
+        private const val PDP_EXTRA_UPDATED_POSITION = "wishlistUpdatedPosition"
+        private const val REQUEST_FROM_PDP = 394
     }
 
     private var mainNavDataFetched: Boolean = false
@@ -115,6 +121,11 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        MePageRollenceController.fetchMePageRollenceValue()
+        val rollence = MePageRollenceController.isMePageUsingRollenceVariant()
+        viewModel.setIsMePageUsingRollenceVariant(rollence)
+
         pageSource = args.StringMainNavArgsSourceKey
         viewModel.setPageSource(pageSource)
         context?.let {
@@ -136,7 +147,7 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
         super.onViewCreated(view, savedInstanceState)
         recyclerView = view.findViewById(R.id.recycler_view)
         if (recyclerView.itemDecorationCount == 0)
-            recyclerView.addItemDecoration(MainNavSpacingDecoration(12f.toDp().toInt()))
+            recyclerView.addItemDecoration(MainNavSpacingDecoration(12f.toDpInt()))
         recyclerView.addOnScrollListener(object: RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
@@ -156,6 +167,7 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
         if (resultCode == Activity.RESULT_OK) {
             when (requestCode) {
                 REQUEST_LOGIN, REQUEST_REGISTER -> viewModel.reloadMainNavAfterLogin()
+                REQUEST_REVIEW_PRODUCT -> viewModel.refreshTransactionListData()
             }
         }
     }
@@ -168,9 +180,6 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
         })
 
         viewModel.allProcessFinished.observe(viewLifecycleOwner, Observer {
-            if (it.getContentIfNotHandled() == true) {
-                validateOnboarding()
-            }
         })
 
         viewModel.networkProcessLiveData.observe(viewLifecycleOwner, Observer { isFinished->
@@ -238,7 +247,7 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
     }
 
     override fun onErrorBuListClicked(position: Int) {
-        viewModel.refreshBuListdata()
+        viewModel.refreshBuListData()
     }
 
     override fun onErrorTransactionListClicked(position: Int) {
@@ -247,6 +256,7 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
 
     override fun onMenuClick(homeNavMenuDataModel: HomeNavMenuDataModel) {
         view?.let {
+            hitClickTrackingBasedOnId(homeNavMenuDataModel)
             if (homeNavMenuDataModel.sectionId == MainNavConst.Section.ORDER || homeNavMenuDataModel.sectionId == MainNavConst.Section.BU_ICON) {
                 if(homeNavMenuDataModel.applink.isNotEmpty()){
                     if (!handleClickFromPageSource(homeNavMenuDataModel)) {
@@ -259,7 +269,6 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
                 TrackingBuSection.onClickBusinessUnitItem(homeNavMenuDataModel.itemTitle, userSession.userId)
             } else {
                 RouteManager.route(requireContext(), homeNavMenuDataModel.applink)
-                hitClickTrackingBasedOnId(homeNavMenuDataModel)
             }
         }
     }
@@ -304,6 +313,47 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
 
     override fun getReviewCounterAbIsUnify(): Boolean {
         return remoteConfig.getString(EXP_NAME, CONTROL) == VARIANT
+    }
+
+    override fun onErrorAffiliateInfoRefreshClicked(position: Int) {
+        viewModel.refreshUserAffiliateData()
+    }
+
+    override fun onTitleClicked(homeNavTitleDataModel: HomeNavTitleDataModel) {
+        when(homeNavTitleDataModel.identifier){
+            ClientMenuGenerator.IDENTIFIER_TITLE_ORDER_HISTORY -> sendTrackingAllTransaction()
+            ClientMenuGenerator.IDENTIFIER_TITLE_WISHLIST -> TrackingTransactionSection.clickOnWishlistViewAll()
+            ClientMenuGenerator.IDENTIFIER_TITLE_FAVORITE_SHOP -> TrackingTransactionSection.clickOnFavoriteShopViewAll()
+        }
+        RouteManager.route(context, homeNavTitleDataModel.applink)
+    }
+
+    override fun onErrorWishlistClicked() {
+        viewModel.refreshWishlistData()
+    }
+
+    override fun onWishlistItemClicked(wishlistModel: NavWishlistModel, position: Int) {
+        TrackingTransactionSection.clickOnWishlistItem(getUserId(), wishlistModel, position)
+        goToPDP(wishlistModel.productId, position)
+    }
+
+    override fun onErrorFavoriteShopClicked() {
+        viewModel.refreshFavoriteShopData()
+    }
+
+    override fun onFavoriteShopItemClicked(favoriteShopModel: NavFavoriteShopModel, position: Int) {
+        TrackingTransactionSection.clickOnFavoriteShopItem(
+            userId = getUserId(),
+            position = position,
+            favoriteShopModel = favoriteShopModel
+        )
+        val intent = RouteManager.getIntent(context, ApplinkConst.SHOP, favoriteShopModel.id)
+        startActivity(intent)
+    }
+
+    override fun showReviewProduct(uriReviewProduct: String) {
+        val intent = RouteManager.getIntent(context, uriReviewProduct)
+        startActivityForResult(intent, REQUEST_REVIEW_PRODUCT)
     }
 
     private fun getNavPerformanceCallback(): PageLoadTimePerformanceInterface? {
@@ -364,108 +414,6 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
         return userSession
     }
 
-    //coach mark logic
-    //true if user has done navigation onboarding on P1
-    private fun saveFirstViewNavigationNavPagP1(boolean: Boolean) {
-        context?.let {
-            sharedPrefs = it.getSharedPreferences(
-                    NavConstant.KEY_FIRST_VIEW_NAVIGATION, Context.MODE_PRIVATE)
-            sharedPrefs?.run {
-                edit()
-                        .putBoolean(NavConstant.KEY_FIRST_VIEW_NAVIGATION_ONBOARDING_NAV_P1, boolean)
-                        .putBoolean(NavConstant.KEY_P1_DONE_AS_NON_LOGIN,
-                                !getUserSession().isLoggedIn)
-                        .apply()
-            }
-        }
-    }
-
-    //true if user has done navigation onboarding on P1
-    private fun saveFirstViewNavigationNavPagP2(boolean: Boolean) {
-        context?.let {
-            sharedPrefs = it.getSharedPreferences(
-                    NavConstant.KEY_FIRST_VIEW_NAVIGATION, Context.MODE_PRIVATE)
-            sharedPrefs?.run {
-                edit()
-                        .putBoolean(NavConstant.KEY_FIRST_VIEW_NAVIGATION_ONBOARDING_NAV_P2, boolean)
-                        .apply()
-            }
-        }
-    }
-
-    private fun isFirstViewNavigationNavPageP1(): Boolean {
-        context?.let {
-            sharedPrefs = it.getSharedPreferences(
-                    NavConstant.KEY_FIRST_VIEW_NAVIGATION, Context.MODE_PRIVATE)
-            val firstViewNavigation = sharedPrefs?.getBoolean(
-                    NavConstant.KEY_FIRST_VIEW_NAVIGATION_ONBOARDING_NAV_P1, false)?:false
-            return firstViewNavigation
-        }
-        return true
-    }
-
-    private fun isFirstViewNavigationNavPageP2(): Boolean {
-        context?.let {
-            sharedPrefs = it.getSharedPreferences(
-                    NavConstant.KEY_FIRST_VIEW_NAVIGATION, Context.MODE_PRIVATE)
-            val firstViewNavigation = sharedPrefs?.getBoolean(
-                    NavConstant.KEY_FIRST_VIEW_NAVIGATION_ONBOARDING_NAV_P2, true)?:false
-            return firstViewNavigation
-        }
-        return true
-    }
-
-    private fun isP1OnboardingDoneAsNonLogin(): Boolean {
-        context?.let {
-            sharedPrefs = it.getSharedPreferences(
-                    NavConstant.KEY_FIRST_VIEW_NAVIGATION, Context.MODE_PRIVATE)
-            val fromNonLogin = sharedPrefs?.getBoolean(
-                    NavConstant.KEY_P1_DONE_AS_NON_LOGIN, true)?:false
-            return fromNonLogin
-        }
-        return true
-    }
-
-    private fun needToShowOnboarding(): Boolean {
-        return isFirstViewNavigationNavPageP1() || isFirstViewNavigationNavPageP2()
-    }
-
-    private fun validateOnboarding() {
-        if (needToShowOnboarding() &&
-                !isOngoingShowOnboarding) {
-            showNavigationPageOnboarding()
-            isOngoingShowOnboarding = true
-        }
-    }
-
-    //return is the function is success or not
-    private fun showNavigationPageOnboarding(): Boolean {
-        if (isFirstViewNavigationNavPageP1()) {
-            //do the p1 onboarding
-
-            if (getUserSession().isLoggedIn) {
-                val coachMarkConfig = buildP1LoggedInCoachmarkConfig()
-                val coachMark = CoachMark2(requireContext()).buildCoachmarkFromConfig(coachMarkConfig)
-                coachMark.showCoachMark(step = coachMarkConfig.items)
-                coachMarkConfig.onFinish.invoke()
-            }
-            else {
-                val coachMarkConfig = buildP1NonLoggedInCoachmarkConfig()
-                val coachMark = CoachMark2(requireContext()).buildCoachmarkFromConfig(coachMarkConfig)
-                coachMark.showCoachMark(step = coachMarkConfig.items)
-                coachMarkConfig.onFinish.invoke()
-            }
-        }
-        else if (isFirstViewNavigationNavPageP2()) {
-            if (getUserSession().isLoggedIn && isP1OnboardingDoneAsNonLogin()){
-                val coachMarkConfig = buildP2LoggedInCoachmarkConfig()
-                val coachMark = CoachMark2(requireContext()).buildCoachmarkFromConfig(coachMarkConfig)
-                coachMark.showCoachMark(step = coachMarkConfig.items)
-                coachMarkConfig.onFinish.invoke()
-            }
-        }
-        return true
-    }
 
     private fun haveUserLogoutData(): Boolean {
         val name = getSharedPreference().getString(AccountHeaderDataModel.KEY_USER_NAME, "") ?: ""
@@ -476,157 +424,15 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
         return requireContext().getSharedPreferences(AccountHeaderDataModel.STICKY_LOGIN_REMINDER_PREF, Context.MODE_PRIVATE)
     }
 
-    private fun buildP1LoggedInCoachmarkConfig(): CoachmarkRecyclerViewConfig {
-        val itemsArray = arrayListOf<CoachMark2Item>()
-        itemsArray.buildP1LoggedInCoachmark()
-        val itemsConfigArray = arrayListOf<CoachmarkItemReyclerViewConfig>()
-        itemsConfigArray.buildP1LoggedInCoachmarkItemReyclerViewConfig()
-        return CoachmarkRecyclerViewConfig(itemsArray, itemsConfigArray) {
-            saveFirstViewNavigationNavPagP1(false)
+    private fun goToPDP(productId: String, position: Int) {
+        RouteManager.getIntent(context, ApplinkConstInternalMarketplace.PRODUCT_DETAIL, productId).run {
+            putExtra(PDP_EXTRA_UPDATED_POSITION, position)
+            startActivityForResult(this, REQUEST_FROM_PDP)
         }
     }
 
-    private fun buildP1NonLoggedInCoachmarkConfig(): CoachmarkRecyclerViewConfig {
-        val itemsArray = arrayListOf<CoachMark2Item>()
-        itemsArray.buildP1NonLoggedInCoachmark()
-        val itemsConfigArray = arrayListOf<CoachmarkItemReyclerViewConfig>()
-        itemsConfigArray.buildP1NonLoggedInCoachmarkItemReyclerViewConfig()
-        return CoachmarkRecyclerViewConfig(itemsArray, itemsConfigArray) {
-            saveFirstViewNavigationNavPagP1(false)
-        }
-    }
-
-    private fun buildP2LoggedInCoachmarkConfig(): CoachmarkRecyclerViewConfig {
-        val itemsArray = arrayListOf<CoachMark2Item>()
-        itemsArray.buildP2LoggedInCoachmark()
-        val itemsConfigArray = arrayListOf<CoachmarkItemReyclerViewConfig>()
-        itemsConfigArray.buildP2LoggedInCoachmarkItemReyclerViewConfig()
-        return CoachmarkRecyclerViewConfig(itemsArray, itemsConfigArray) {
-            saveFirstViewNavigationNavPagP2(false)
-        }
-    }
-
-    private fun CoachMark2.buildCoachmarkFromConfig(coachmarkRecyclerViewConfig: CoachmarkRecyclerViewConfig): CoachMark2 {
-        val coachMark = this
-        val coachMarkItems = coachmarkRecyclerViewConfig.items
-        val coachMarkConfig = coachmarkRecyclerViewConfig.configs
-
-        if (coachMarkConfig.isNotEmpty()) {
-            val firstPositionConfig = coachMarkConfig[0]
-            firstPositionConfig.targetPosition?.let {
-                val holder = recyclerView.findViewHolderForAdapterPosition(it)
-                holder?.let {
-                    if (coachMarkItems.isNotEmpty()) {
-                        coachMarkItems[0].anchorView = holder.itemView
-                    }
-                }
-            }
-
-            coachMark.setStepListener(object: CoachMark2.OnStepListener {
-                override fun onStep(currentIndex: Int, item: CoachMark2Item) {
-                    val coachMarkItem = coachMarkItem[currentIndex]
-                    val config = coachMarkConfig[currentIndex]
-
-                    recyclerView.smoothScrollToPosition(config.scrollToPosition)
-                    coachMark.isDismissed = true
-                    Handler().postDelayed({
-                        config.targetPosition?.let {
-                            coachMark.isDismissed = false
-                            val holder = recyclerView.findViewHolderForAdapterPosition(it)
-                            holder?.let {
-                                coachMarkItem.anchorView = holder.itemView
-                                coachMark.showCoachMark(coachMarkItems, null, currentIndex)
-                            }
-                        }
-                    }, COACHMARK_SAFE_DELAY)
-                }
-            })
-        }
-        return coachMark
-    }
-
-    private fun ArrayList<CoachMark2Item>.buildP1LoggedInCoachmark() {
-        this.add(
-                CoachMark2Item(
-                        recyclerView.rootView,
-                        getString(R.string.onboarding_login_p1_s1_title),
-                        getString(R.string.onboarding_login_p1_s1_description)
-                )
-        )
-        this.add(
-                CoachMark2Item(
-                        recyclerView.rootView,
-                        getString(R.string.onboarding_login_p1_s2_title),
-                        getString(R.string.onboarding_login_p1_s2_description)
-                )
-        )
-        this.add(
-                CoachMark2Item(
-                        recyclerView.rootView,
-                        getString(R.string.onboarding_login_p1_s3_title),
-                        getString(R.string.onboarding_login_p1_s3_description)
-                )
-        )
-    }
-
-    private fun ArrayList<CoachMark2Item>.buildP1NonLoggedInCoachmark() {
-        this.add(
-                CoachMark2Item(
-                        recyclerView.rootView,
-                        getString(R.string.onboarding_login_p1_s2_title),
-                        getString(R.string.onboarding_login_p1_s2_description)
-                )
-        )
-        this.add(
-                CoachMark2Item(
-                        recyclerView.rootView,
-                        getString(R.string.onboarding_login_p1_s3_title),
-                        getString(R.string.onboarding_login_p1_s3_description)
-                )
-        )
-    }
-
-    private fun ArrayList<CoachMark2Item>.buildP2LoggedInCoachmark() {
-        this.add(
-                CoachMark2Item(
-                        recyclerView.rootView,
-                        getString(R.string.onboarding_login_p2_s1_title),
-                        getString(R.string.onboarding_login_p2_s1_description)
-                )
-        )
-    }
-
-    private fun ArrayList<CoachmarkItemReyclerViewConfig>.buildP1LoggedInCoachmarkItemReyclerViewConfig() {
-        this.add(
-                CoachmarkItemReyclerViewConfig(
-                        0, viewModel.findHeaderModelPosition())
-        )
-        this.add(
-                CoachmarkItemReyclerViewConfig(
-                        0, viewModel.findAllTransactionModelPosition())
-        )
-        this.add(
-                CoachmarkItemReyclerViewConfig(
-                        (viewModel.mainNavLiveData.value?.dataList?.size?:0)-1, viewModel.findComplainModelPosition())
-        )
-    }
-
-    private fun ArrayList<CoachmarkItemReyclerViewConfig>.buildP1NonLoggedInCoachmarkItemReyclerViewConfig() {
-        this.add(
-                CoachmarkItemReyclerViewConfig(
-                        (viewModel.mainNavLiveData.value?.dataList?.size?:0)-1, viewModel.findAllTransactionModelPosition())
-        )
-        this.add(
-                CoachmarkItemReyclerViewConfig(
-                        (viewModel.mainNavLiveData.value?.dataList?.size?:0)-1, viewModel.findComplainModelPosition())
-        )
-    }
-
-    private fun ArrayList<CoachmarkItemReyclerViewConfig>.buildP2LoggedInCoachmarkItemReyclerViewConfig() {
-        this.add(
-                CoachmarkItemReyclerViewConfig(
-                        0, viewModel.findHeaderModelPosition())
-        )
+    private fun sendTrackingAllTransaction() {
+        TrackingTransactionSection.clickOnAllTransaction(userSession.userId)
     }
 }
 

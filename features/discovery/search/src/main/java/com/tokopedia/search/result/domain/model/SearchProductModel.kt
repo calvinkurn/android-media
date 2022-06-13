@@ -3,12 +3,14 @@ package com.tokopedia.search.result.domain.model
 import android.annotation.SuppressLint
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.discovery.common.constants.SearchConstant.InspirationCard.TYPE_SIZE_PERSO
 import com.tokopedia.filter.common.data.DataValue
+import com.tokopedia.filter.common.data.Filter
+import com.tokopedia.filter.common.data.Option
 import com.tokopedia.search.result.domain.model.LastFilterModel.LastFilter
 import com.tokopedia.topads.sdk.domain.model.CpmModel
 import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
 import com.tokopedia.topads.sdk.domain.model.TopAdsModel
-import java.util.*
 
 data class SearchProductModel(
         @SerializedName("ace_search_product_v4")
@@ -45,6 +47,9 @@ data class SearchProductModel(
 
     private val topAdsImageViewModelList: MutableList<TopAdsImageViewModel> = mutableListOf()
 
+    val backendFilters: String
+        get() = searchProduct.backendFilters
+
     fun setTopAdsImageViewModelList(topAdsImageViewModelList: List<TopAdsImageViewModel>) {
         this.topAdsImageViewModelList.clear()
         this.topAdsImageViewModelList.addAll(topAdsImageViewModelList)
@@ -60,7 +65,11 @@ data class SearchProductModel(
             @SerializedName("data")
             @Expose
             val data: SearchProductData = SearchProductData()
-    )
+    ) {
+
+        val backendFilters: String
+            get() = data.backendFilters
+    }
 
     data class SearchProductHeader(
             @SerializedName("totalData")
@@ -89,7 +98,11 @@ data class SearchProductModel(
 
             @SerializedName("keywordProcess")
             @Expose
-            val keywordProcess: String = "0"
+            val keywordProcess: String = "0",
+
+            @SerializedName("componentId")
+            @Expose
+            val componentId: String = "",
     )
 
     data class SearchProductData(
@@ -100,6 +113,10 @@ data class SearchProductModel(
             @SerializedName("autocompleteApplink")
             @Expose
             val autocompleteApplink: String = "",
+
+            @SerializedName("backendFilters")
+            @Expose
+            val backendFilters: String = "",
 
             @SerializedName("redirection")
             @Expose
@@ -123,7 +140,11 @@ data class SearchProductModel(
 
             @SerializedName("products")
             @Expose
-            val productList: List<Product> = listOf()
+            val productList: List<Product> = listOf(),
+
+            @SerializedName("violation")
+            @Expose
+            val violation: Violation = Violation(),
     )
 
     data class Redirection(
@@ -143,7 +164,15 @@ data class SearchProductModel(
 
             @SerializedName("typeId")
             @Expose
-            val typeId: Int = 0
+            val typeId: Int = 0,
+
+            @SerializedName("componentId")
+            @Expose
+            val componentId: String = "",
+
+            @SerializedName("trackingOption")
+            @Expose
+            val trackingOption: Int = 0,
     )
 
     data class Related(
@@ -154,6 +183,10 @@ data class SearchProductModel(
             @SerializedName("position")
             @Expose
             val position: Int = 0,
+
+            @SerializedName("trackingOption")
+            @Expose
+            val trackingOption: Int = 0,
 
             @SerializedName("otherRelated")
             @Expose
@@ -172,6 +205,10 @@ data class SearchProductModel(
             @SerializedName("applink")
             @Expose
             val applink: String = "",
+
+            @SerializedName("componentId")
+            @Expose
+            val componentId: String = "",
 
             @SerializedName("product")
             @Expose
@@ -234,7 +271,11 @@ data class SearchProductModel(
 
             @SerializedName("ads")
             @Expose
-            val ads: ProductAds = ProductAds()
+            val ads: ProductAds = ProductAds(),
+
+            @SerializedName("componentId")
+            @Expose
+            val componentId: String = "",
     ) {
             fun isOrganicAds(): Boolean = ads.id.isNotEmpty()
     }
@@ -276,7 +317,15 @@ data class SearchProductModel(
 
             @SerializedName("text")
             @Expose
-            val text: String = ""
+            val text: String = "",
+
+            @SerializedName("componentId")
+            @Expose
+            val componentId: String = "",
+
+            @SerializedName("trackingOption")
+            @Expose
+            val trackingOption: Int = 0,
     )
 
     data class Banner(
@@ -405,7 +454,11 @@ data class SearchProductModel(
 
             @SerializedName("applink")
             @Expose
-            val applink: String = ""
+            val applink: String = "",
+
+            @SerializedName("customVideoURL")
+            @Expose
+            val customVideoURL: String = "",
     ) {
 
         fun isOrganicAds(): Boolean = ads.id.isNotEmpty()
@@ -632,6 +685,10 @@ data class SearchProductModel(
             @Expose
             val layout: String = "",
 
+            @SerializedName("tracking_option")
+            @Expose
+            val trackingOption: String = "0",
+
             @SerializedName("options")
             @Expose
             val inspirationCarouselOptions: List<InspirationCarouselOption> = listOf()
@@ -669,6 +726,10 @@ data class SearchProductModel(
             @SerializedName("meta")
             @Expose
             val meta: String = "",
+
+            @SerializedName("component_id")
+            @Expose
+            val componentId: String = "",
 
             @SerializedName("product")
             @Expose
@@ -752,6 +813,14 @@ data class SearchProductModel(
             @SerializedName("ads")
             @Expose
             val ads: ProductAds = ProductAds(),
+
+            @SerializedName("component_id")
+            @Expose
+            val componentId: String = "",
+
+            @SerializedName("customvideo_url")
+            @Expose
+            val customVideoURL: String = "",
     ) {
         fun isOrganicAds(): Boolean = ads.id.isNotEmpty()
     }
@@ -790,48 +859,115 @@ data class SearchProductModel(
     )
 
     data class SearchInspirationWidget(
-            @SerializedName("data")
-            @Expose
-            val data: List<InspirationCardData> = listOf()
+        @SerializedName("data")
+        @Expose
+        val data: List<InspirationWidgetData> = listOf()
+    ) {
+        fun asFilterList(): List<Filter> =
+            data
+                .filter { it.type == TYPE_SIZE_PERSO }
+                .map { it.asFilter() }
+    }
+
+    data class InspirationWidgetData (
+        @SerializedName("title")
+        @Expose
+        val title: String = "",
+
+        @SerializedName("type")
+        @Expose
+        val type: String = "",
+
+        @SerializedName("position")
+        @Expose
+        val position: Int = 0,
+
+        @SerializedName("options")
+        @Expose
+        val inspirationWidgetOptions: List<InspirationWidgetOption> = listOf(),
+
+        @SerializedName("tracking_option")
+        @Expose
+        val trackingOption: Int = 0,
+    ) {
+        fun asFilter(): Filter =
+            Filter(
+                options = inspirationWidgetOptions.map { it.asOption() }
+            )
+    }
+
+    data class InspirationWidgetOption (
+        @SerializedName("text")
+        @Expose
+        val text: String = "",
+
+        @SerializedName("img")
+        @Expose
+        val img: String = "",
+
+        @SerializedName("url")
+        @Expose
+        val url: String = "",
+
+        @SerializedName("color")
+        @Expose
+        val color: String = "",
+
+        @SerializedName("applink")
+        @Expose
+        val applink: String = "",
+
+        @SerializedName("filters")
+        @Expose
+        val filters: InspirationWidgetFilter,
+
+        @SerializedName("component_id")
+        @Expose
+        val componentId: String,
+    ) {
+        fun asOption() = Option(
+            key = filters.key,
+            value = filters.value,
+            name = filters.name,
+        )
+    }
+
+    data class InspirationWidgetFilter (
+        @SerializedName("key")
+        @Expose
+        val key: String = "",
+
+        @SerializedName("name")
+        @Expose
+        val name: String = "",
+
+        @SerializedName("value")
+        @Expose
+        val value: String = "",
     )
 
-    data class InspirationCardData (
-            @SerializedName("title")
-            @Expose
-            val title: String = "",
-
-            @SerializedName("type")
-            @Expose
-            val type: String = "",
-
-            @SerializedName("position")
-            @Expose
-            val position: Int = 0,
-
-            @SerializedName("options")
-            @Expose
-            val inspiratioWidgetOptions: List<InspirationCardOption> = listOf()
-    )
-
-    data class InspirationCardOption (
-            @SerializedName("text")
-            @Expose
-            val text: String = "",
-
-            @SerializedName("img")
-            @Expose
-            val img: String = "",
-
-            @SerializedName("url")
-            @Expose
-            val url: String = "",
-
-            @SerializedName("color")
-            @Expose
-            val color: String = "",
-
-            @SerializedName("applink")
-            @Expose
-            val applink: String = ""
-    )
+    data class Violation(
+        @SerializedName("headerText")
+        @Expose
+        val headerText: String = "",
+        @SerializedName("descriptionText")
+        @Expose
+        val descriptionText: String = "",
+        @SerializedName("imageURL")
+        @Expose
+        val imageUrl: String = "",
+        @SerializedName("ctaURL")
+        @Expose
+        val ctaUrl: String = "",
+        @SerializedName("buttonText")
+        @Expose
+        val buttonText: String = "",
+        @SerializedName("buttonType")
+        @Expose
+        val buttonType: String = "",
+    ) {
+        fun isValid(): Boolean {
+            return headerText.isNotEmpty() && descriptionText.isNotEmpty()
+        }
+    }
 }

@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <com.tokopedia.unifycomponents.SearchBarUnify
+        android:id="@+id/catalog_product_search"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/unify_space_40"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:search_bar_show_icon="false"
+        android:background="@drawable/nav_toolbar_searchbar_bg_corner"
+        app:search_bar_placeholder="@string/catalog_search_product_hint"
+        android:layout_marginStart="@dimen/spacing_lvl4"
+        android:layout_marginEnd="@dimen/spacing_lvl4"
+        android:layout_marginTop="@dimen/spacing_lvl2"
+        app:layout_constraintBottom_toTopOf="@id/catalog_staggered_recycler_view"
+        />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/catalog_staggered_recycler_view"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        tools:itemCount="4"
+        tools:listitem="@layout/catalog_staggered_product_card_item_layout"
+        tools:orientation="vertical"
+        app:layout_constraintTop_toBottomOf="@+id/catalog_product_search"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginTop="@dimen/spacing_lvl4"
+        android:layout_marginStart="@dimen/unify_space_12"
+        android:layout_marginEnd="@dimen/unify_space_12"
+        android:paddingBottom="@dimen/unify_space_40"
+        tools:visibility="visible"
+        android:visibility="visible"
+        />
+
+    <com.tkpd.remoteresourcerequest.view.DeferredImageView
+        android:id="@+id/catalog_no_product_view"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_220"
+        android:background="@color/Unify_N0"
+        android:gravity="center"
+        android:paddingTop="@dimen/dp_40"
+        android:visibility="gone"
+        app:layout_constraintTop_toBottomOf="@id/catalog_product_search"
+        app:completeUrl="https://images.tokopedia.net/img/android/res/singleDpi/catalog_no_products_state_big.png"
+        app:imageDpiSupportType="singleDpi"
+        tools:visibility="visible" />
+
+    <com.tokopedia.globalerror.GlobalError
+        android:id="@+id/global_error"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:background="@color/Unify_N0"
+        android:gravity="center"
+        android:visibility="gone"
+        app:layout_constraintTop_toBottomOf="@id/catalog_no_product_view"
+        tools:visibility="gone" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -7,7 +7,7 @@
     android:paddingBottom="@dimen/unify_space_12"
     android:paddingStart="@dimen/spacing_lvl4"
     android:paddingEnd="@dimen/spacing_lvl4"
-    android:background="@color/Unify_N0">
+    android:background="@color/Unify_Background">
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/common_topup_bills_autocomplete_empty_title"

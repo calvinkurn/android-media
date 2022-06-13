@@ -37,7 +37,9 @@ class NewBrandViewHolder(itemView: View?, listener: BrandlistPageTrackingListene
         headerView?.text = element?.header?.title
 
         element?.newBrands?.let {
-            adapter?.setNewBrands(it)
+            if (recyclerView?.isComputingLayout == false) {
+                adapter?.setNewBrands(it)
+            }
         }
     }
 

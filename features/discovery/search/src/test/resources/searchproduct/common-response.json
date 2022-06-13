@@ -7,11 +7,13 @@
       "totalDataText": "4.3jt+",
       "additionalParams": "",
       "errorMessage": "",
-      "defaultView": 1
+      "defaultView": 1,
+      "component_id": "01.02.02.01"
     },
     "data": {
       "isQuerySafe": true,
       "autocompleteApplink": "tokopedia://search-autocomplete?q=samsung",
+      "backendFilters": "fcity=123,234#456&official=true",
       "redirection": {
         "redirectApplink": ""
       },

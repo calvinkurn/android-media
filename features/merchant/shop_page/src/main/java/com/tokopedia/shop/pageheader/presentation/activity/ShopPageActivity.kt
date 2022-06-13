@@ -5,6 +5,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.widget.LinearLayout
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
@@ -18,25 +19,27 @@ import com.tokopedia.config.GlobalConfig
 import com.tokopedia.mvcwidget.views.MvcView
 import com.tokopedia.shop.R
 import com.tokopedia.shop.ShopComponentHelper
-import com.tokopedia.shop.common.constant.ShopPageConstant.HOME_V2_EXTRA
 import com.tokopedia.shop.common.constant.ShopPagePerformanceConstant.PltConstant.SHOP_TRACE
 import com.tokopedia.shop.common.constant.ShopPagePerformanceConstant.PltConstant.SHOP_TRACE_ACTIVITY_PREPARE
 import com.tokopedia.shop.common.constant.ShopPagePerformanceConstant.PltConstant.SHOP_TRACE_MIDDLE
 import com.tokopedia.shop.common.constant.ShopPagePerformanceConstant.PltConstant.SHOP_TRACE_PREPARE
 import com.tokopedia.shop.common.constant.ShopPagePerformanceConstant.PltConstant.SHOP_TRACE_RENDER
 import com.tokopedia.shop.common.constant.ShopPagePerformanceConstant.SHOP_HEADER_TRACE
-import com.tokopedia.shop.common.constant.ShopPagePerformanceConstant.SHOP_HOME_TAB_TRACE
 import com.tokopedia.shop.common.constant.ShopPagePerformanceConstant.SHOP_HOME_TAB_V2_TRACE
 import com.tokopedia.shop.common.constant.ShopPagePerformanceConstant.SHOP_HOME_WEB_VIEW_TRACE
 import com.tokopedia.shop.common.constant.ShopPagePerformanceConstant.SHOP_PRODUCT_TAB_TRACE
 import com.tokopedia.shop.common.di.component.ShopComponent
-import com.tokopedia.shop.common.util.ShopUtil
+import com.tokopedia.shop.common.view.interfaces.HasSharedViewModel
+import com.tokopedia.shop.common.view.viewmodel.ShopPageFeedTabSharedViewModel
 import com.tokopedia.shop.info.view.activity.ShopInfoActivity
 import com.tokopedia.shop.pageheader.presentation.fragment.InterfaceShopPageHeader
 import com.tokopedia.shop.pageheader.presentation.fragment.NewShopPageFragment
 import com.tokopedia.shop.pageheader.presentation.listener.ShopPagePerformanceMonitoringListener
 
-class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>, ShopPagePerformanceMonitoringListener{
+class ShopPageActivity : BaseSimpleActivity(),
+        HasComponent<ShopComponent>,
+        HasSharedViewModel,
+        ShopPagePerformanceMonitoringListener {
 
     companion object {
         const val SHOP_ID = "EXTRA_SHOP_ID"
@@ -54,6 +57,10 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>, Shop
 
     private val sellerMigrationDestinationApplink by lazy {
         intent?.getStringExtra(SellerMigrationApplinkConst.SELLER_MIGRATION_APPLINKS_EXTRA)
+    }
+
+    private val shopPageFeedTabSharedViewModel by lazy {
+        ViewModelProvider(this).get(ShopPageFeedTabSharedViewModel::class.java)
     }
 
     private var performanceMonitoringShop: PageLoadTimePerformanceInterface? = null
@@ -85,6 +92,10 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>, Shop
         (fragment as? InterfaceShopPageHeader)?.onBackPressed()
     }
 
+    override fun getSharedViewModel(): ShopPageFeedTabSharedViewModel {
+        return shopPageFeedTabSharedViewModel
+    }
+
     fun stopShopHeaderPerformanceMonitoring() {
         performanceMonitoringShopHeader?.stopTrace()
     }
@@ -113,11 +124,7 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>, Shop
 
         performanceMonitoringShopHeader = PerformanceMonitoring.start(SHOP_HEADER_TRACE)
         performanceMonitoringShopProductTab = PerformanceMonitoring.start(SHOP_PRODUCT_TAB_TRACE)
-        performanceMonitoringShopHomeTab = if(isUsingNewShopHomeTab()){
-            PerformanceMonitoring.start(SHOP_HOME_TAB_V2_TRACE)
-        } else{
-            PerformanceMonitoring.start(SHOP_HOME_TAB_TRACE)
-        }
+        performanceMonitoringShopHomeTab = PerformanceMonitoring.start(SHOP_HOME_TAB_V2_TRACE)
 
         performanceMonitoringShopHomeWebViewTab = PerformanceMonitoring.start(SHOP_HOME_WEB_VIEW_TRACE)
     }
@@ -159,10 +166,6 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>, Shop
 
     private fun getShopInfoIntent(context: Context): Intent {
         return Intent(context, ShopInfoActivity::class.java)
-    }
-
-    private fun isUsingNewShopHomeTab(): Boolean {
-        return ShopUtil.isUsingNewShopHomeTab(intent)
     }
 
     override fun getShopPageLoadTimePerformanceCallback(): PageLoadTimePerformanceInterface? {

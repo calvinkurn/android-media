@@ -119,30 +119,32 @@ class SettingStateViewModelTest {
         assertTrue(viewModel.getSettingStates().isNotEmpty())
     }
 
-    @Test fun `it should updated the temporary state with a new one`() {
+    @Test fun `it should updated the setting state with a new one correctly`() {
+        val expectedStatusValue = false
+        val mockKey = "key"
+
+        viewModel.getSettingStates().add(ParentSetting(key = mockKey, status = true))
+        viewModel.updateSettingState(ParentSetting(key = mockKey, status = expectedStatusValue))
+
+        val result = viewModel.getSettingStates().first()
+
+        assertTrue(result.status == expectedStatusValue)
+    }
+
+    @Test fun `it cannot find same key and cannot update the setting state properly`() {
         val expectedStatusValue = false
 
-        viewModel.getSettingStates().add(ParentSetting(
-                "name",
-                "icon",
-                "key",
-                true
-        ))
+        viewModel.getSettingStates().add(ParentSetting(key = "key1", status = true))
+        viewModel.updateSettingState(ParentSetting(key = "key2", status = expectedStatusValue))
 
-        viewModel.updateSettingState(ParentSetting(
-                "name",
-                "icon",
-                "key",
-                expectedStatusValue
-        ))
-
-        // validate through the status of parentSetting
         val result = viewModel.getSettingStates().first()
-        assertTrue(result.status == expectedStatusValue)
+
+        assertTrue(result.status != expectedStatusValue)
     }
 
     @Test fun `it should not able to updated the temporary state`() {
         viewModel.updateSettingState(null)
+
         assertTrue(viewModel.getSettingStates().isEmpty())
     }
 

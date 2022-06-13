@@ -1,6 +1,7 @@
 package com.tokopedia.review.feature.reading.analytics
 
 import android.os.Bundle
+import com.tokopedia.analyticconstant.DataLayer
 import com.tokopedia.review.common.analytics.ReviewTrackingConstant
 import com.tokopedia.review.feature.reading.analytics.ReadReviewTrackingConstants.SCREEN_NAME_SHOP_REVIEW
 import com.tokopedia.track.TrackApp
@@ -44,39 +45,52 @@ object ReadReviewTracking {
         productId: String,
         trackingQueue: TrackingQueue
     ) {
-        trackingQueue.putEETracking(
-            hashMapOf(
-                ReviewTrackingConstant.EVENT to ReadReviewTrackingConstants.EVENT_PROMO_VIEW,
-                ReviewTrackingConstant.EVENT_ACTION to ReadReviewTrackingConstants.EVENT_ACTION_IMPRESS_ITEM,
-                ReviewTrackingConstant.EVENT_LABEL to String.format(
-                    ReadReviewTrackingConstants.EVENT_LABEL_IMPRESSION,
-                    countRating,
-                    countReview
-
-                ),
-                ReadReviewTrackingConstants.KEY_PRODUCT_ID to productId,ReviewTrackingConstant.EVENT_CATEGORY to ReadReviewTrackingConstants.EVENT_CATEGORY,
-                ReadReviewTrackingConstants.KEY_USER_ID to userId,
-                ReadReviewTrackingConstants.KEY_BUSINESS_UNIT to ReadReviewTrackingConstants.BUSINESS_UNIT,
-                ReadReviewTrackingConstants.KEY_CURRENT_SITE to ReadReviewTrackingConstants.CURRENT_SITE,
-                ReadReviewTrackingConstants.KEY_ECOMMERCE to mapOf(
-                    ReadReviewTrackingConstants.EVENT_PROMO_VIEW to mapOf(
-                        ReadReviewTrackingConstants.KEY_PROMOTIONS to listOf(
-                            mapOf(
-                                ReadReviewTrackingConstants.KEY_ID to feedbackId,
-                                ReadReviewTrackingConstants.KEY_CREATIVE to ReadReviewTrackingConstants.EVENT_CATEGORY,
-                                ReadReviewTrackingConstants.KEY_NAME to String.format(
-                                    ReadReviewTrackingConstants.EE_NAME,
-                                    characterCount,
-                                    imageCount
-                                ),
-                                ReadReviewTrackingConstants.KEY_POSITION to position.toString(),
-                                ReadReviewTrackingConstants.KEY_PRODUCT_ID to productId
-                            )
+        val trackingMap = DataLayer.mapOf(
+            ReviewTrackingConstant.EVENT,
+            ReadReviewTrackingConstants.EVENT_PROMO_VIEW,
+            ReviewTrackingConstant.EVENT_ACTION,
+            ReadReviewTrackingConstants.EVENT_ACTION_IMPRESS_ITEM,
+            ReviewTrackingConstant.EVENT_LABEL,
+            String.format(
+                ReadReviewTrackingConstants.EVENT_LABEL_IMPRESSION,
+                countRating,
+                countReview
+            ),
+            ReadReviewTrackingConstants.KEY_PRODUCT_ID,
+            productId,
+            ReviewTrackingConstant.EVENT_CATEGORY,
+            ReadReviewTrackingConstants.EVENT_CATEGORY,
+            ReadReviewTrackingConstants.KEY_USER_ID,
+            userId,
+            ReadReviewTrackingConstants.KEY_BUSINESS_UNIT,
+            ReadReviewTrackingConstants.BUSINESS_UNIT,
+            ReadReviewTrackingConstants.KEY_CURRENT_SITE,
+            ReadReviewTrackingConstants.CURRENT_SITE,
+            ReadReviewTrackingConstants.KEY_ECOMMERCE,
+            DataLayer.mapOf(
+                ReadReviewTrackingConstants.EVENT_PROMO_VIEW, DataLayer.mapOf(
+                    ReadReviewTrackingConstants.KEY_PROMOTIONS, DataLayer.listOf(
+                        DataLayer.mapOf(
+                            ReadReviewTrackingConstants.KEY_ID,
+                            feedbackId,
+                            ReadReviewTrackingConstants.KEY_CREATIVE,
+                            ReadReviewTrackingConstants.EVENT_CATEGORY,
+                            ReadReviewTrackingConstants.KEY_NAME,
+                            String.format(
+                                ReadReviewTrackingConstants.EE_NAME,
+                                characterCount,
+                                imageCount
+                            ),
+                            ReadReviewTrackingConstants.KEY_POSITION,
+                            position.toString(),
+                            ReadReviewTrackingConstants.KEY_PRODUCT_ID,
+                            productId
                         )
                     )
                 )
             )
         )
+        trackingQueue.putEETracking(trackingMap as HashMap<String, Any>?)
     }
 
     fun trackOnFilterClicked(filterName: String, isActive: Boolean, productId: String) {

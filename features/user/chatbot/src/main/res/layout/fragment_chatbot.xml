@@ -16,6 +16,22 @@
         android:layout_alignParentBottom="true"
         android:orientation="vertical">
 
+        <RelativeLayout
+            android:id="@+id/float_chat_item"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/chatbot_chat_background"
+            android:visibility="gone"
+            tools:visibility="visible">
+
+            <include
+                layout="@layout/attached_invoice_float_chat_item"
+                android:layout_width="@dimen/dp_chatbot_220"
+                android:layout_height="wrap_content">
+
+            </include>
+        </RelativeLayout>
+
         <LinearLayout
             android:id="@+id/add_comment_area"
             android:layout_width="match_parent"
@@ -24,29 +40,30 @@
             android:visibility="gone"
             tools:visibility="visible">
 
+
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/list_quick_reply"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/chatbot_chat_background"
-                android:paddingLeft="@dimen/spacing_lvl4"
                 android:layout_marginTop="@dimen/dp_chatbot_3"
                 android:layout_marginRight="@dimen/dp_chatbot_3"
+                android:background="@color/chatbot_chat_background"
+                android:paddingLeft="@dimen/spacing_lvl4"
                 android:paddingTop="@dimen/spacing_lvl3"
                 android:visibility="gone"
-                tools:visibility="visible"
+                tools:itemCount="1"
                 tools:listitem="@layout/chatbot_item_quick_reply"
-                tools:itemCount="1"/>
+                tools:visibility="visible" />
 
             <RelativeLayout
                 android:id="@+id/reply_box"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:background="@color/chatbot_chat_background"
                 android:paddingStart="@dimen/spacing_lvl4"
                 android:paddingTop="@dimen/spacing_lvl3"
                 android:paddingEnd="@dimen/spacing_lvl4"
-                android:paddingBottom="@dimen/spacing_lvl4"
-                android:background="@color/chatbot_chat_background">
+                android:paddingBottom="@dimen/spacing_lvl4">
 
                 <ImageView
                     android:id="@+id/send_but"
@@ -57,8 +74,8 @@
                     android:layout_alignParentRight="true"
                     android:layout_centerVertical="true"
                     android:layout_gravity="center"
-                    app:srcCompat="@drawable/ic_chatbot_send"
-                    android:contentDescription="@null"/>
+                    android:contentDescription="@null"
+                    app:srcCompat="@drawable/ic_chatbot_send" />
 
                 <LinearLayout
                     android:id="@+id/new_comment_container"
@@ -81,33 +98,32 @@
                         android:id="@+id/new_comment"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:background="@null"
                         android:hint="@string/cb_bot_reply_text"
                         android:inputType="textMultiLine"
                         android:maxLines="5"
                         android:textSize="@dimen/fontSize_lvl4"
-                        android:background="@null"
                         tools:text="@tools:sample/lorem/random" />
 
                 </LinearLayout>
 
 
-
                 <FrameLayout
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
+                    android:layout_width="@dimen/unify_space_40"
+                    android:layout_height="@dimen/unify_space_40"
                     android:layout_alignEnd="@+id/new_comment_container"
                     android:layout_alignRight="@+id/new_comment_container"
                     android:layout_alignBottom="@+id/new_comment_container"
-                    android:layout_marginEnd="8dp"
-                    android:layout_marginRight="8dp"
+                    android:layout_marginEnd="@dimen/unify_space_8"
+                    android:layout_marginRight="@dimen/unify_space_8"
                     android:background="@drawable/bg_oval_transparent">
 
                     <ImageView
                         android:id="@+id/iv_chat_menu"
-                        android:layout_width="40dp"
-                        android:layout_height="40dp"
-                        android:padding="8dp"
+                        android:layout_width="@dimen/unify_space_40"
+                        android:layout_height="@dimen/unify_space_40"
                         android:contentDescription="@null"
+                        android:padding="@dimen/unify_space_8"
                         app:srcCompat="@drawable/ic_add_attachment_chatbot" />
                 </FrameLayout>
             </RelativeLayout>
@@ -141,8 +157,9 @@
             layout="@layout/chatbot_layout_rating"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:elevation="8dp"
+            android:elevation="@dimen/spacing_lvl3"
             android:visibility="gone" />
+
 
     </LinearLayout>
 
@@ -169,7 +186,7 @@
             android:id="@+id/dateIndicator"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@color/Unify_N700_68"
+            android:textColor="@color/chatbot_color_date"
             android:layout_alignParentEnd="true"
             android:layout_alignParentBottom="true"
             android:paddingTop="@dimen/spacing_lvl1"
@@ -185,10 +202,10 @@
         android:id="@+id/swipe_refresh_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/chatbot_ticker"
         android:layout_above="@+id/footer"
-        android:layout_marginBottom="@dimen/unify_space_8"
-        android:layout_gravity="center">
+        android:layout_below="@id/chatbot_ticker"
+        android:layout_gravity="center"
+        android:layout_marginBottom="@dimen/unify_space_8">
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recycler_view"

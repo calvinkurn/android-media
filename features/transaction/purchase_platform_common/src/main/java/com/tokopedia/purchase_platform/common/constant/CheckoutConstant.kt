@@ -29,6 +29,10 @@ object CheckoutConstant {
     const val RESULT_CODE_COUPON_STATE_CHANGED = 735
     const val KERO_TOKEN = "token"
     const val EXTRA_REF = "EXTRA_REF"
+    const val REQUEST_ADD_ON_PRODUCT_LEVEL_BOTTOMSHEET = 333
+    const val REQUEST_ADD_ON_ORDER_LEVEL_BOTTOMSHEET = 555
+    const val ADD_ON_PRODUCT_LEVEL = "product"
+    const val ADD_ON_ORDER_LEVEL = "order"
 
     const val EXTRA_DISTRICT_RECOMMENDATION_TOKEN = "DISTRICT_RECOMMENDATION_TOKEN"
     const val EXTRA_CURRENT_ADDRESS = "CURRENT_ADDRESS"
@@ -40,4 +44,7 @@ object CheckoutConstant {
     const val TYPE_REQUEST_MULTIPLE_ADDRESS_CHANGE_ADDRESS = 2
     const val TYPE_REQUEST_SELECT_ADDRESS_FROM_COMPLETE_LIST = 0
     const val TYPE_REQUEST_EDIT_ADDRESS_FOR_TRADE_IN = 4
+
+    const val DEFAULT_ERROR_MESSAGE_FAIL_APPLY_BBO = "Gagal mengaplikasikan bebas ongkir"
+    const val DEFAULT_ERROR_MESSAGE_VALIDATE_PROMO = "Terjadi kesalahan. Ulangi beberapa saat lagi"
 }

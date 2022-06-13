@@ -30,6 +30,7 @@ class ProductViewHolder(
         setTitleAndPrice(product)
         showProductStock(product)
 
+        showProductTicker(product)
         showProductLabel(product)
         showVariantLabel(product)
 
@@ -49,6 +50,18 @@ class ProductViewHolder(
         binding?.textTitle?.text = product.title
         val prices = mutableListOf(product.minPrice?.priceFormatted, product.maxPrice?.priceFormatted).distinct()
         binding?.textPrice?.text = prices.joinToString(" - ")
+    }
+
+    private fun showProductTicker(product: ProductUiModel) {
+        binding?.tickerProductManageViolation?.showWithCondition(product.isPending()
+                || product.isSuspendLevelTwoUntilFour())
+        if (product.isPending()){
+            binding?.tickerProductManageViolation?.setTextDescription(getString(R.string.product_manage_violation_ticker_message))
+        }else{
+            binding?.tickerProductManageViolation?.setTextDescription(getString(R.string.product_manage_suspend_ticker_message))
+
+        }
+
     }
 
     private fun showProductStock(product: ProductUiModel) {
@@ -80,10 +93,21 @@ class ProductViewHolder(
             binding?.btnEditStock?.hide()
             binding?.btnMoreOptions?.hide()
         } else {
-            binding?.btnContactCS?.showWithCondition(product.isViolation())
-            binding?.btnEditPrice?.showWithCondition(product.isNotViolation())
-            binding?.btnEditStock?.showWithCondition(product.isNotViolation())
-            binding?.btnMoreOptions?.showWithCondition(product.isNotViolation())
+            binding?.btnContactCS?.run {
+                showWithCondition(product.isViolation() || product.isPending()
+                        || product.isSuspendLevelTwoUntilFour())
+                when {
+                    product.isViolation() -> {
+                        text = getString(R.string.product_manage_contact_cs)
+                    }
+                    product.isPending() || product.isSuspendLevelTwoUntilFour() -> {
+                        text = getString(R.string.product_manage_violation_or_suspend_button_text)
+                    }
+                }
+            }
+            binding?.btnEditPrice?.showWithCondition(product.isNotViolation() && product.isNotSuspendLevelTwoUntilFour())
+            binding?.btnEditStock?.showWithCondition(product.isNotViolation() && product.isNotSuspendLevelTwoUntilFour())
+            binding?.btnMoreOptions?.showWithCondition(product.isNotViolation() && product.isNotSuspendLevelTwoUntilFour())
         }
 
         binding?.btnEditPrice?.isEnabled = product.hasEditPriceAccess()
@@ -103,7 +127,7 @@ class ProductViewHolder(
 
     private fun showStockHintImage(product: ProductUiModel) {
         binding?.imageStockInformation
-            ?.showWithCondition(product.isEmpty() && product.isNotViolation())
+            ?.showWithCondition((product.isEmpty() && product.isNotViolation()) || product.isSuspend())
     }
 
     private fun showProductImage(product: ProductUiModel) {

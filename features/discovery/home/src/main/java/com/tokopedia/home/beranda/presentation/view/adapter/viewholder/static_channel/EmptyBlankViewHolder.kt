@@ -13,7 +13,7 @@ import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_ch
 
 class EmptyBlankViewHolder(itemView: View) : AbstractViewHolder<DynamicChannelDataModel>(itemView) {
 
-    override fun bind(element: DynamicChannelDataModel) {
+    override fun bind(element: DynamicChannelDataModel?) {
 
     }
 

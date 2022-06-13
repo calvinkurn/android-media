@@ -10,7 +10,7 @@ import com.tokopedia.discovery2.discoveryext.checkForNullAndSize
 import com.tokopedia.discovery2.discoverymapper.DiscoveryDataMapper
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 
-class CircularSliderBannerViewModel(val application: Application, val components: ComponentsItem, val position: Int) : DiscoveryBaseViewModel() {
+class CircularSliderBannerViewModel(application: Application, val components: ComponentsItem,private val position: Int) : DiscoveryBaseViewModel() {
     private val title: MutableLiveData<String> = MutableLiveData()
     init {
         title.value = components.title

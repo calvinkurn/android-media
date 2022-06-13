@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     android:fillViewport="true"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    android:background="@color/Unify_N0">
+    android:background="@color/Unify_Background">
 
     <RelativeLayout
         android:layout_width="match_parent"

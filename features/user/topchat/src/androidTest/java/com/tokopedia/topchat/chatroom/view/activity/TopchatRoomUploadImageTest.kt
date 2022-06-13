@@ -30,8 +30,46 @@ import org.junit.Test
 class TopchatRoomUploadImageTest : TopchatRoomTest() {
 
     @Test
-    fun upload_image_and_stay_in_chatroom() {
+    fun upload_image_with_compress_and_with_service() {
         // Given
+        enableCompressImage()
+        enableUploadImageByService()
+        openChatRoom()
+        // When
+        openImagePicker()
+        // Then
+        assertImageContainerAtPosition(0, matches(isDisplayed()))
+    }
+
+    @Test
+    fun upload_image_with_compress_and_without_service() {
+        // Given
+        enableCompressImage()
+        disableUploadImageByService()
+        openChatRoom()
+        // When
+        openImagePicker()
+        // Then
+        assertImageContainerAtPosition(0, matches(isDisplayed()))
+    }
+
+    @Test
+    fun upload_image_without_compress_and_with_service() {
+        // Given
+        disableCompressImage()
+        enableUploadImageByService()
+        openChatRoom()
+        // When
+        openImagePicker()
+        // Then
+        assertImageContainerAtPosition(0, matches(isDisplayed()))
+    }
+
+    @Test
+    fun upload_image_without_compress_and_without_service() {
+        // Given
+        disableCompressImage()
+        disableUploadImageByService()
         openChatRoom()
         // When
         openImagePicker()
@@ -42,6 +80,7 @@ class TopchatRoomUploadImageTest : TopchatRoomTest() {
     @Test
     fun upload_multiple_images_and_stay_in_chatroom() {
         // Given
+        enableUploadImageByService()
         openChatRoom()
         // When
         val count = getCurrentItemCount()
@@ -58,6 +97,7 @@ class TopchatRoomUploadImageTest : TopchatRoomTest() {
     @Test
     fun upload_image_and_leave_chatroom_then_comeback() {
         // Given
+        enableUploadImageByService()
         openChatRoom()
 
         // When
@@ -73,6 +113,7 @@ class TopchatRoomUploadImageTest : TopchatRoomTest() {
     fun should_have_1_failed_image_attachment_when_user_come_back_to_chatroom() {
         // Given
         uploadImageUseCase.isError = true
+        enableUploadImageByService()
         openChatRoom()
 
         // When
@@ -90,6 +131,7 @@ class TopchatRoomUploadImageTest : TopchatRoomTest() {
     fun should_have_1_failed_image_attachment_when_user_come_back_to_chatroom_after_retry_upload_image() {
         // Given
         uploadImageUseCase.isError = true
+        enableUploadImageByService()
         openChatRoom()
 
         // When

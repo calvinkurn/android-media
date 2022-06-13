@@ -7,5 +7,6 @@ object CassavaUrl {
     const val DATA_TRACKER_PATH = "data-tracker"
 
     const val GET_QUERY_LIST = "$DATA_TRACKER_PATH/v1/datalayers"
+    const val GET_JOURNEY_LIST = "$DATA_TRACKER_PATH/v1/journey/list"
     const val POST_VALIDATION_RESULT = "$DATA_TRACKER_PATH/v1/test-result/journey/{journeyId}"
 }

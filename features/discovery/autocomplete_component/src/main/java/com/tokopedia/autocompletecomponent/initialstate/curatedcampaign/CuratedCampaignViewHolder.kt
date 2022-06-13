@@ -6,14 +6,15 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.autocompletecomponent.R
-import com.tokopedia.autocompletecomponent.initialstate.InitialStateItemClickListener
+import com.tokopedia.autocompletecomponent.databinding.LayoutAutocompleteCuratedCampaignCardBinding
+import com.tokopedia.autocompletecomponent.initialstate.BaseItemInitialStateSearch
 import com.tokopedia.kotlin.extensions.view.setTextAndCheckShow
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
-import kotlinx.android.synthetic.main.layout_autocomplete_curated_campaign_card.view.*
+import com.tokopedia.utils.view.binding.viewBinding
 
 class CuratedCampaignViewHolder(
-        itemView: View,
-        private val clickListener: InitialStateItemClickListener
+    itemView: View,
+    private val listener: CuratedCampaignListener,
 ): AbstractViewHolder<CuratedCampaignDataView>(itemView) {
 
     companion object {
@@ -21,30 +22,42 @@ class CuratedCampaignViewHolder(
         val LAYOUT = R.layout.layout_autocomplete_curated_campaign_card
     }
 
+    private var binding: LayoutAutocompleteCuratedCampaignCardBinding? by viewBinding()
+
     override fun bind(element: CuratedCampaignDataView) {
-        bindImage(element)
-        bindTitle(element)
-        bindSubtitle(element)
+        bindImage(element.baseItemInitialState)
+        bindTitle(element.baseItemInitialState)
+        bindSubtitle(element.baseItemInitialState)
         bindListener(element)
     }
 
-    private fun bindImage(element: CuratedCampaignDataView) {
-        itemView.autocompleteCuratedCampaignImage?.shouldShowWithAction(element.imageUrl.isNotEmpty()) {
-            ImageHandler.loadImageFitCenter(itemView.context, itemView.autocompleteCuratedCampaignImage, element.imageUrl)
+    private fun bindImage(element: BaseItemInitialStateSearch) {
+        val image = binding?.autocompleteCuratedCampaignImage ?: return
+
+        image.shouldShowWithAction(element.imageUrl.isNotEmpty()) {
+            ImageHandler.loadImageFitCenter(
+                itemView.context,
+                image,
+                element.imageUrl
+            )
         }
     }
 
-    private fun bindTitle(element: CuratedCampaignDataView) {
-        itemView.autocompleteCuratedCampaignTitle?.setTextAndCheckShow(MethodChecker.fromHtml(element.title).toString())
+    private fun bindTitle(element: BaseItemInitialStateSearch) {
+        binding?.autocompleteCuratedCampaignTitle?.setTextAndCheckShow(
+            MethodChecker.fromHtml(element.title).toString()
+        )
     }
 
-    private fun bindSubtitle(element: CuratedCampaignDataView) {
-        itemView.autocompleteCuratedCampaignSubtitle?.setTextAndCheckShow(MethodChecker.fromHtml(element.subtitle).toString())
+    private fun bindSubtitle(element: BaseItemInitialStateSearch) {
+        binding?.autocompleteCuratedCampaignSubtitle?.setTextAndCheckShow(
+            MethodChecker.fromHtml(element.subtitle).toString()
+        )
     }
 
     private fun bindListener(element: CuratedCampaignDataView) {
-        itemView.autocompleteCuratedCampaignCard?.setOnClickListener {
-            clickListener.onCuratedCampaignCardClicked(element)
+        binding?.autocompleteCuratedCampaignCard?.setOnClickListener {
+            listener.onCuratedCampaignCardClicked(element)
         }
     }
 }

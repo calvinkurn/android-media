@@ -5,7 +5,7 @@
     <ConstraintSet android:id="@+id/expand">
         <Constraint android:id="@id/tablayout"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/dp_64"
+            android:layout_height="64dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"/>
@@ -14,7 +14,7 @@
     <ConstraintSet android:id="@+id/collapse">
         <Constraint android:id="@id/tablayout"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/dp_64"
+            android:layout_height="64dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent">

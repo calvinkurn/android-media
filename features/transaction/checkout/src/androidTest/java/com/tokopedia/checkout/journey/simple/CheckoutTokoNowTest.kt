@@ -2,10 +2,10 @@ package com.tokopedia.checkout.journey.simple
 
 import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.platform.app.InstrumentationRegistry
-import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
 import com.tokopedia.checkout.ShipmentActivity
 import com.tokopedia.checkout.robot.checkoutPage
 import com.tokopedia.checkout.test.R
+import com.tokopedia.test.application.annotations.UiTest
 import com.tokopedia.test.application.environment.interceptor.mock.MockModelConfig
 import com.tokopedia.test.application.util.InstrumentationAuthHelper
 import com.tokopedia.test.application.util.InstrumentationMockHelper
@@ -14,6 +14,7 @@ import org.junit.After
 import org.junit.Rule
 import org.junit.Test
 
+@UiTest
 class CheckoutTokoNowTest {
 
     @get:Rule
@@ -26,10 +27,7 @@ class CheckoutTokoNowTest {
 
     private val context = InstrumentationRegistry.getInstrumentation().targetContext
 
-    private val gtmLogDBSource = GtmLogDBSource(context)
-
     private fun setup(safResponse: Int = R.raw.saf_bundle_tokonow_default_response, ratesResponse: Int = R.raw.ratesv3_tokonow_default_response) {
-        gtmLogDBSource.deleteAll().subscribe()
         setupGraphqlMockResponse {
             addMockResponse(SHIPMENT_ADDRESS_FORM_KEY, InstrumentationMockHelper.getRawString(context, safResponse), MockModelConfig.FIND_BY_CONTAINS)
             addMockResponse(SAVE_SHIPMENT_KEY, InstrumentationMockHelper.getRawString(context, R.raw.save_shipment_default_response), MockModelConfig.FIND_BY_CONTAINS)
@@ -52,12 +50,11 @@ class CheckoutTokoNowTest {
             // Wait for Validate Use
             waitForData()
             assertHasSingleShipmentSelected(activityRule,
-                    title = "Gojek (Rp0)",
+                    title = "Bebas Ongkir (Rp0)",
                     eta = "Estimasi tiba hari ini")
             clickChoosePaymentButton(activityRule)
         } validateAnalytics {
             waitForData()
-            hasPassedAnalytics(gtmLogDBSource, context, ANALYTIC_VALIDATOR_QUERY_FILE_NAME)
             assertGoToPayment()
         }
     }
@@ -75,12 +72,11 @@ class CheckoutTokoNowTest {
             // Wait for Validate Use
             waitForData()
             assertHasSingleShipmentSelected(activityRule,
-                    title = "Gojek (Rp0)",
+                    title = "Bebas Ongkir (Rp0)",
                     eta = "Estimasi tiba hari ini")
             clickChoosePaymentButton(activityRule)
         } validateAnalytics {
             waitForData()
-            hasPassedAnalytics(gtmLogDBSource, context, ANALYTIC_VALIDATOR_QUERY_FILE_NAME)
             assertGoToPayment()
         }
     }
@@ -98,15 +94,14 @@ class CheckoutTokoNowTest {
             // Wait for Validate Use
             waitForData()
             assertHasSingleShipmentSelected(activityRule,
-                    title = "Gojek (",
-                    originalPrice = "Rp13.000",
+                    title = "Bebas Ongkir (Rp13.000 Rp8.000)",
+                    originalPrice = "(Rp13.000 ",
                     discountedPrice = " Rp8.000)",
                     eta = "Estimasi tiba hari ini",
                     message = "Pengiriman melebihi limit bebas ongkir, kamu cukup bayar Rp8.000")
             clickChoosePaymentButton(activityRule)
         } validateAnalytics {
             waitForData()
-            hasPassedAnalytics(gtmLogDBSource, context, ANALYTIC_VALIDATOR_QUERY_FILE_NAME)
             assertGoToPayment()
         }
     }
@@ -128,14 +123,12 @@ class CheckoutTokoNowTest {
             clickChoosePaymentButton(activityRule)
         } validateAnalytics {
             waitForData()
-            hasPassedAnalytics(gtmLogDBSource, context, ANALYTIC_VALIDATOR_QUERY_FILE_NAME)
             assertGoToPayment()
         }
     }
 
     @After
     fun cleanup() {
-        gtmLogDBSource.deleteAll().subscribe()
         if (activityRule.activity?.isDestroyed == false) activityRule.finishActivity()
     }
 

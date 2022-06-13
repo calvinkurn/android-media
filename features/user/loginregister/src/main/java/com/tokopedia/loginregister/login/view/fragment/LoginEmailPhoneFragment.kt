@@ -16,7 +16,6 @@ import android.text.format.DateFormat
 import android.text.method.LinkMovementMethod
 import android.text.style.ClickableSpan
 import android.text.style.ForegroundColorSpan
-import android.util.Log
 import android.view.*
 import android.view.inputmethod.EditorInfo
 import android.widget.EditText
@@ -44,6 +43,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.LANDING_SHOP_CREATION
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
+import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform.METHOD_LOGIN_EMAIL
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform.METHOD_LOGIN_GOOGLE
 import com.tokopedia.config.GlobalConfig
@@ -52,7 +52,10 @@ import com.tokopedia.devicefingerprint.datavisor.workmanager.DataVisorWorker
 import com.tokopedia.devicefingerprint.submitdevice.service.SubmitDeviceWorker
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.header.HeaderUnify
-import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.showWithCondition
+import com.tokopedia.kotlin.extensions.view.toZeroIfNull
 import com.tokopedia.kotlin.util.LetUtil
 import com.tokopedia.kotlin.util.getParamBoolean
 import com.tokopedia.kotlin.util.getParamString
@@ -60,9 +63,8 @@ import com.tokopedia.linker.LinkerConstants
 import com.tokopedia.linker.LinkerManager
 import com.tokopedia.linker.LinkerUtils
 import com.tokopedia.linker.model.UserData
-import com.tokopedia.logger.ServerLogger
-import com.tokopedia.logger.utils.Priority
 import com.tokopedia.loginregister.R
+import com.tokopedia.loginregister.common.analytics.NeedHelpAnalytics
 import com.tokopedia.loginregister.common.analytics.LoginRegisterAnalytics
 import com.tokopedia.loginregister.common.analytics.RegisterAnalytics
 import com.tokopedia.loginregister.common.analytics.SeamlessLoginAnalytics
@@ -74,6 +76,7 @@ import com.tokopedia.loginregister.common.view.LoginTextView
 import com.tokopedia.loginregister.common.view.PartialRegisterInputView
 import com.tokopedia.loginregister.common.view.banner.DynamicBannerConstant
 import com.tokopedia.loginregister.common.view.banner.data.DynamicBannerDataModel
+import com.tokopedia.loginregister.login.view.bottomsheet.NeedHelpBottomSheet
 import com.tokopedia.loginregister.common.view.bottomsheet.SocmedBottomSheet
 import com.tokopedia.loginregister.common.view.dialog.PopupErrorDialog
 import com.tokopedia.loginregister.common.view.dialog.RegisteredDialog
@@ -112,10 +115,7 @@ import com.tokopedia.sessioncommon.util.TwoFactorMluHelper
 import com.tokopedia.sessioncommon.view.admin.dialog.LocationAdminDialog
 import com.tokopedia.sessioncommon.view.forbidden.activity.ForbiddenActivity
 import com.tokopedia.track.TrackApp
-import com.tokopedia.unifycomponents.ImageUnify
-import com.tokopedia.unifycomponents.LoaderUnify
-import com.tokopedia.unifycomponents.Toaster
-import com.tokopedia.unifycomponents.UnifyButton
+import com.tokopedia.unifycomponents.*
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.unifycomponents.ticker.TickerData
@@ -136,7 +136,7 @@ import javax.inject.Named
 /**
  * @author by nisie on 18/01/19.
  */
-open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.View {
+open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.View{
 
     private var isTraceStopped: Boolean = false
     private lateinit var performanceMonitoring: PerformanceMonitoring
@@ -157,6 +157,9 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
     @Inject
     lateinit var seamlessAnalytics: SeamlessLoginAnalytics
 
+    @Inject
+    lateinit var needHelpAnalytics: NeedHelpAnalytics
+
     @field:Named(SessionModule.SESSION_MODULE)
     @Inject
     lateinit var userSession: UserSessionInterface
@@ -166,6 +169,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
     private var isShowTicker: Boolean = false
     private var isShowBanner: Boolean = false
     private var isEnableFingerprint = true
+    private var isEnableSilentVerif = false
     private var isHitRegisterPushNotif: Boolean = false
     private var isEnableEncryptConfig: Boolean = false
     private var activityShouldEnd = true
@@ -190,6 +194,10 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
     private var callTokopediaCare: Typography? = null
     private var sharedPrefs: SharedPreferences? = null
 
+    private var needHelpBottomSheetUnify: NeedHelpBottomSheet? = null
+    private var isUsingRollenceNeedHelp = false
+    private var passOnStop = false
+
     override fun getScreenName(): String {
         return LoginRegisterAnalytics.SCREEN_LOGIN
     }
@@ -204,6 +212,15 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
         activity?.let {
             analytics.trackScreen(it, screenName)
         }
+        if (passOnStop){
+            isUsingRollenceNeedHelp = isUsingRollenceNeedHelp()
+            setUpRollenceNeedHelpView()
+        }
+    }
+
+    override fun onStop() {
+        super.onStop()
+        passOnStop = true
     }
 
     override fun onResume() {
@@ -284,6 +301,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
 
         source = getParamString(ApplinkConstInternalGlobal.PARAM_SOURCE, arguments, savedInstanceState, "")
         isAutoLogin = getParamBoolean(LoginConstants.AutoLogin.IS_AUTO_LOGIN, arguments, savedInstanceState, false)
+        isUsingRollenceNeedHelp = isUsingRollenceNeedHelp()
         refreshRolloutVariant()
     }
 
@@ -294,7 +312,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
     private fun setupBackgroundColor() {
         context?.let {
             activity?.window?.decorView?.setBackgroundColor(
-                    MethodChecker.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N0)
+                    MethodChecker.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_Background)
             )
         }
     }
@@ -312,10 +330,22 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
         return view
     }
 
+    /*
+    * check for savedInstanceState, to prevent clearData() being called when user low on memory
+    * when the device is on low memory the system will kill the background activity/page,
+    * when activity is killed by the system it will called onViewCreated when user back to login page after finishing otp flow and the token will be cleared using clearData() method
+    * it means previous token we got from choose account/otp will be erased, and user will get 401 when hit get user info api.
+    * to prevent this when user back to login page it will check whether savedInstanceState is null or not,
+    * if null it means the activity is first launch, and if it isn't null it means activity is resuming.
+    * we only clear the data when activity is resuming after only being killed by system
+    * */
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         fetchRemoteConfig()
-        clearData()
+        if(savedInstanceState == null) {
+            clearData()
+        }
         initObserver()
         prepareView()
         prepareArgData()
@@ -329,10 +359,9 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
         }
 
         val emailExtensionList = mutableListOf<String>()
-        emailExtensionList.addAll(resources.getStringArray(R.array.email_extension))
+        emailExtensionList.addAll(requireContext().resources.getStringArray(R.array.email_extension))
         partialRegisterInputView?.setEmailExtension(emailExtension, emailExtensionList)
         partialRegisterInputView?.initKeyboardListener(view)
-        initKeyboardListener(view)
 
         autoFillWithDataFromLatestLoggedIn()
 
@@ -505,11 +534,11 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
 
     private fun onErrorLoginBiometric(throwable: Throwable) {
         analytics.trackOnLoginFingerprintFailed(throwable.message ?:"")
-        onErrorLogin("Error Login Fingerprint", "", throwable)
+        onErrorLogin(throwable, LoginErrorCode.ERROR_BIOMETRIC)
     }
 
     private fun gotoVerifyFingerprint() {
-        val intent = RouteManager.getIntent(requireContext(), ApplinkConstInternalGlobal.VERIFY_BIOMETRIC)
+        val intent = RouteManager.getIntent(requireContext(), ApplinkConstInternalUserPlatform.VERIFY_BIOMETRIC)
         startActivityForResult(intent, LoginConstants.Request.REQUEST_VERIFY_BIOMETRIC)
     }
 
@@ -535,6 +564,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
             isEnableFingerprint = firebaseRemoteConfig.getBoolean(LoginConstants.RemoteConfigKey.KEY_LOGIN_FP, true)
             isHitRegisterPushNotif = firebaseRemoteConfig.getBoolean(LoginConstants.RemoteConfigKey.KEY_REGISTER_PUSH_NOTIF, false)
             isEnableEncryptConfig = firebaseRemoteConfig.getBoolean(SessionConstants.FirebaseConfig.CONFIG_LOGIN_ENCRYPTION)
+            isEnableSilentVerif = firebaseRemoteConfig.getBoolean(SessionConstants.FirebaseConfig.CONFIG_SILENT_VERIFICATION)
         }
     }
 
@@ -644,7 +674,6 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
             val email = emailPhoneEditText?.text.toString()
             onChangeButtonClicked()
             emailPhoneEditText?.setText(email)
-            emailPhoneEditText?.setSelection(emailPhoneEditText?.text?.length.orZero())
         }
 
         activity?.let { it ->
@@ -653,17 +682,33 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
                 registerAnalytics.trackClickBottomSignUpButton()
                 goToRegisterInitial(source)
             }
-
-            val forgotPassword = partialRegisterInputView?.findViewById<Typography>(R.id.forgot_pass)
-            forgotPassword?.setOnClickListener {
-                analytics.trackClickForgotPassword()
-                goToForgotPassword()
-            }
+            setUpRollenceNeedHelpView()
         }
 
         showLoadingDiscover()
         context?.run {
             viewModel.discoverLogin()
+        }
+    }
+
+    private fun setUpRollenceNeedHelpView(){
+        val forgotPassword = partialRegisterInputView?.findViewById<Typography>(R.id.forgot_pass)
+        forgotPassword?.text = setUpForgotPasswordTitle()
+        forgotPassword?.setOnClickListener {
+            if (isUsingRollenceNeedHelp) {
+                needHelpAnalytics.trackPageClickButuhBantuan()
+                showNeedHelpBottomSheet()
+            } else {
+                analytics.trackClickForgotPassword()
+                goToForgotPassword()
+            }
+        }
+
+        if (isUsingRollenceNeedHelp) {
+            callTokopediaCare?.hide()
+        } else {
+            callTokopediaCare?.show()
+            initKeyboardListener(view)
         }
     }
 
@@ -675,7 +720,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
                 }
 
                 override fun onKeyboardHide() {
-                    callTokopediaCare?.show()
+                    if (!isUsingRollenceNeedHelp) callTokopediaCare?.show() else callTokopediaCare?.hide()
                 }
             })
         }
@@ -714,7 +759,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
 
     private fun setupSpannableText() {
         activity?.let {
-            val sourceString = resources.getString(R.string.span_not_have_tokopedia_account)
+            val sourceString = requireContext().resources.getString(R.string.span_not_have_tokopedia_account)
 
             val spannable = SpannableString(sourceString)
 
@@ -760,6 +805,13 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
         callTokopediaCare?.setText(spannable, TextView.BufferType.SPANNABLE)
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        // https://stackoverflow.com/questions/28539216/
+        callTokopediaCare?.movementMethod = null
+        callTokopediaCare?.text = ""
+    }
+
     private fun onChangeButtonClicked() {
         analytics.trackChangeButtonClicked()
 
@@ -779,8 +831,32 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
         activity?.applicationContext?.let { analytics.eventClickForgotPasswordFromLogin(it) }
     }
 
+    private fun setUpForgotPasswordTitle(): String?{
+        return context?.getString(
+            if (isUsingRollenceNeedHelp)
+                R.string.loginregister_need_help
+            else
+                R.string.title_forgot_password
+        )
+    }
+
+    private fun isUsingRollenceNeedHelp(): Boolean {
+        val newInactivePhoneNumberAbTestKey = RemoteConfigInstance.getInstance().abTestPlatform?.getString(
+            ROLLENCE_KEY_INACTIVE_PHONE_NUMBER,
+            ""
+        ).orEmpty()
+        return newInactivePhoneNumberAbTestKey.isNotEmpty()
+    }
+
+    private fun showNeedHelpBottomSheet(){
+        if (needHelpBottomSheetUnify == null)
+            needHelpBottomSheetUnify = NeedHelpBottomSheet()
+
+        needHelpBottomSheetUnify?.show(childFragmentManager, TAG_NEED_HELP_BOTTOM_SHEET)
+    }
+
     override fun goToTokopediaCareWebview() {
-        RouteManager.route(activity, String.format("%s?url=%s", ApplinkConst.WEBVIEW,
+        RouteManager.route(activity, String.format(TOKOPEDIA_CARE_STRING_FORMAT, ApplinkConst.WEBVIEW,
                 getInstance().MOBILEWEB + TOKOPEDIA_CARE_PATH))
     }
 
@@ -910,7 +986,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
                     })
         }
         emailExtension?.hide()
-        callTokopediaCare?.showWithCondition(!isLoading)
+        callTokopediaCare?.showWithCondition(!isUsingRollenceNeedHelp && !isLoading)
     }
 
     override fun goToRegisterInitial(source: String) {
@@ -927,12 +1003,18 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
         }
     }
 
+    private fun getErrorHandlerBuilder(): ErrorHandler.Builder {
+        return ErrorHandler.Builder().apply {
+            className = this.javaClass.name
+        }.build()
+    }
+
     override fun onErrorDiscoverLogin(throwable: Throwable) {
         stopTrace()
         dismissLoadingDiscover()
         val forbiddenMessage = context?.getString(
                 com.tokopedia.sessioncommon.R.string.default_request_error_forbidden_auth)
-        val errorMessage = ErrorHandler.getErrorMessage(context, throwable)
+        val errorMessage = ErrorHandler.getErrorMessage(context, throwable, getErrorHandlerBuilder())
         if (errorMessage.removeErrorCode() == forbiddenMessage) {
             onGoToForbiddenPage()
         } else {
@@ -1036,8 +1118,6 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
             if (userSession.isLoggedIn) {
                 val userData = UserData()
                 userData.userId = userSession.userId
-                userData.email = userSession.email
-                userData.phoneNumber = userSession.phoneNumber
                 userData.medium = userSession.loginMethod
 
                 //Identity Event
@@ -1090,18 +1170,11 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
         TrackApp.getInstance().appsFlyer.sendTrackEvent("Login Successful", dataMap)
     }
 
-    private fun onErrorLogin(errorMessage: String?, flow: String) {
-        analytics.eventFailedLogin(userSession.loginMethod, errorMessage?.removeErrorCode(), isFromRegister)
+    private fun onErrorLogin(throwable: Throwable, flow: String) {
+        val errMsg = getErrorMsgWithLogging(throwable, flow)
+        analytics.eventFailedLogin(userSession.loginMethod, errMsg.removeErrorCode(), isFromRegister)
         dismissLoadingLogin()
-        showToaster(errorMessage)
-        loggingError(flow, errorMessage)
-    }
-
-    private fun onErrorLogin(errorMessage: String?, flow: String, throwable: Throwable) {
-        analytics.eventFailedLogin(userSession.loginMethod, errorMessage?.removeErrorCode(), isFromRegister)
-        dismissLoadingLogin()
-        showToaster(errorMessage)
-        loggingErrorWithThrowable(flow, errorMessage, throwable)
+        showToaster(errMsg)
     }
 
     override fun trackSuccessValidate() {
@@ -1110,7 +1183,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
 
     override fun onErrorValidateRegister(throwable: Throwable) {
         dismissLoadingLogin()
-        val message = ErrorHandler.getErrorMessage(context, throwable, ErrorHandler.Builder().withErrorCode(false).build())
+        val message = getErrorMsgWithLogging(throwable, withErrorCode = false, flow = "")
         analytics.trackClickOnNextFail(emailPhoneEditText?.text.toString(), message.removeErrorCode())
         partialRegisterInputView?.onErrorValidate(message)
     }
@@ -1217,23 +1290,17 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
                 dismissLoadingLogin()
                 showPopupErrorAkamai()
             } else if (it is TokenErrorException && !it.errorDescription.isEmpty()) {
-                onErrorLogin(it.errorDescription, LoginErrorCode.ERROR_EMAIL_TOKEN_EXCEPTION, it)
+                onErrorLogin(it, "${it.errorDescription} - ${LoginErrorCode.ERROR_EMAIL_TOKEN_EXCEPTION}")
             } else {
-                val forbiddenMessage = context?.getString(
-                        com.tokopedia.sessioncommon.R.string.default_request_error_forbidden_auth)
-                val errorMessage = ErrorHandler.getErrorMessage(context, it)
+                val forbiddenMessage = context?.getString(com.tokopedia.sessioncommon.R.string.default_request_error_forbidden_auth)
+                val errorMessage = ErrorHandler.getErrorMessage(context, it,
+                    ErrorHandler.Builder().apply {
+                        sendToScalyr = false
+                    }.build())
                 if (errorMessage.removeErrorCode() == forbiddenMessage) {
                     onGoToForbiddenPage()
                 } else {
-                    onErrorLogin(errorMessage, LoginErrorCode.ERROR_EMAIL_UNKNOWN, it)
-
-                    context?.run {
-                        if (!TextUtils.isEmpty(it.message)
-                                && errorMessage.contains(this.getString(R.string
-                                        .default_request_error_unknown))) {
-                            analytics.logUnknownError(it)
-                        }
-                    }
+                    onErrorLogin(it, errorMessage)
                 }
             }
         }
@@ -1255,7 +1322,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
     override fun onErrorGetUserInfo(): (Throwable) -> Unit {
         return {
             dismissLoadingLogin()
-            onErrorLogin(ErrorHandler.getErrorMessage(context, it), LoginErrorCode.ERROR_GET_USER_INFO, it)
+            onErrorLogin(it, LoginErrorCode.ERROR_GET_USER_INFO)
         }
     }
 
@@ -1292,7 +1359,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
     override fun onGoToActivationPageAfterRelogin(): (MessageErrorException) -> Unit {
         return {
             dismissLoadingLogin()
-            onErrorLogin(ErrorHandler.getErrorMessage(context, it), LoginErrorCode.ERROR_ACTIVATION_AFTER_RELOGIN)
+            onErrorLogin(it, LoginErrorCode.ERROR_ACTIVATION_AFTER_RELOGIN)
         }
     }
 
@@ -1300,7 +1367,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
     override fun onGoToSecurityQuestionAfterRelogin(): () -> Unit {
         return {
             dismissLoadingLogin()
-            onErrorLogin(ErrorHandlerSession.getDefaultErrorCodeMessage(ErrorHandlerSession.ErrorCode.UNSUPPORTED_FLOW, context), LoginErrorCode.ERROR_SQ_AFTER_RELOGIN)
+            onErrorLogin(MessageErrorException(ErrorHandlerSession.getDefaultErrorCodeMessage(ErrorHandlerSession.ErrorCode.UNSUPPORTED_FLOW, context)), LoginErrorCode.ERROR_ACTIVATION_AFTER_RELOGIN)
         }
     }
 
@@ -1327,7 +1394,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
                 dismissLoadingLogin()
                 showPopupErrorAkamai()
             } else {
-                onErrorLogin(ErrorHandler.getErrorMessage(context, it), LoginErrorCode.ERROR_GMAIL, it)
+                onErrorLogin(it, LoginErrorCode.ERROR_GMAIL)
             }
         }
     }
@@ -1341,7 +1408,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
 
     override fun onFailedActivateUser(throwable: Throwable) {
         dismissLoadingLogin()
-        onErrorLogin(ErrorHandler.getErrorMessage(context, throwable), LoginErrorCode.ERROR_ACTIVATE_USER, throwable)
+        onErrorLogin(throwable, LoginErrorCode.ERROR_ACTIVATE_USER)
     }
 
     protected fun isEmailNotActive(e: Throwable, email: String): Boolean {
@@ -1539,14 +1606,14 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
                     showLoadingLogin()
                     viewModel.loginGoogle(accessToken, email)
                 } else {
-                    onErrorLogin(ErrorHandlerSession.getDefaultErrorCodeMessage(ErrorHandlerSession.ErrorCode.EMPTY_EMAIL, context), LoginErrorCode.ERROR_ON_GMAIL_NULL_EMAIL)
+                    onErrorLogin(MessageErrorException(ErrorHandlerSession.getDefaultErrorCodeMessage(ErrorHandlerSession.ErrorCode.EMPTY_EMAIL, context)), LoginErrorCode.ERROR_ON_GMAIL_NULL_EMAIL)
                 }
             } else {
-                onErrorLogin(ErrorHandlerSession.getDefaultErrorCodeMessage(ErrorHandlerSession.ErrorCode.EMPTY_ACCESS_TOKEN, context), LoginErrorCode.ERROR_ON_GMAIL_NULL_ACCOUNT)
+                onErrorLogin(MessageErrorException(ErrorHandlerSession.getDefaultErrorCodeMessage(ErrorHandlerSession.ErrorCode.EMPTY_ACCESS_TOKEN, context)), LoginErrorCode.ERROR_ON_GMAIL_CATCH)
             }
         } catch (e: ApiException) {
-            onErrorLogin(String.format(getString(R.string.loginregister_failed_login_google),
-                    e.statusCode.toString()), LoginErrorCode.ERROR_ON_GMAIL_CATCH)
+            onErrorLogin(e, String.format(getString(R.string.loginregister_failed_login_google),
+                e.statusCode.toString()))
         }
 
     }
@@ -1563,10 +1630,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
         if (partialRegisterInputView?.findViewById<Typography>(R.id.change_button)?.visibility == View.VISIBLE) {
             val email = emailPhoneEditText?.text.toString()
             onChangeButtonClicked()
-            emailPhoneEditText?.let {
-                it.setText(email)
-                it.setSelection(it.text.length)
-            }
+            emailPhoneEditText?.setText(email)
         } else if (activity != null) {
             activity?.finish()
         }
@@ -1629,13 +1693,6 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
             colorTickerDefault() -> Ticker.TYPE_ANNOUNCEMENT
             colorTickerWarning() -> Ticker.TYPE_WARNING
             else -> Ticker.TYPE_ANNOUNCEMENT
-        }
-    }
-
-    override fun goToFingerprintRegisterPage() {
-        context?.run {
-            val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.ADD_FINGERPRINT_ONBOARDING)
-            startActivity(intent)
         }
     }
 
@@ -1791,15 +1848,17 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
                 getString(R.string.popup_error_desc),
                 getInstance().MOBILEWEB + TOKOPEDIA_CARE_PATH
         )
-        loggingError("Login", "Akamai Error")
+        getErrorMsgWithLogging(MessageErrorException("Akamai Error"), "Login")
     }
 
-    private fun loggingError(flow: String, errorMessage: String?) {
-        ServerLogger.log(Priority.P2, "BUYER_FLOW_LOGIN", mapOf("type" to flow, "error" to errorMessage.orEmpty()))
-    }
-
-    private fun loggingErrorWithThrowable(flow: String, errorMessage: String?, throwable: Throwable) {
-        ServerLogger.log(Priority.P2, "BUYER_FLOW_LOGIN", mapOf("type" to flow, "error" to errorMessage.orEmpty(), "throwable" to Log.getStackTraceString(throwable)))
+    private fun getErrorMsgWithLogging(throwable: Throwable, flow: String, withErrorCode: Boolean = true): String {
+        val mClassName = if(flow.isEmpty()) LoginEmailPhoneFragment::class.java.name else "${LoginEmailPhoneFragment::class.java.name} - $flow"
+        val message = ErrorHandler.getErrorMessage(context, throwable,
+            ErrorHandler.Builder().apply {
+                withErrorCode(withErrorCode)
+                className = mClassName
+            }.build())
+        return message
     }
 
     private fun autoFillWithDataFromLatestLoggedIn() {
@@ -1821,17 +1880,20 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
 
     companion object {
 
+        private const val ROLLENCE_KEY_INACTIVE_PHONE_NUMBER = "inactivephone_login"
+
+        private const val TAG_NEED_HELP_BOTTOM_SHEET = "NEED HELP BOTTOM SHEET"
+
         private const val LOGIN_LOAD_TRACE = "gb_login_trace"
         private const val LOGIN_SUBMIT_TRACE = "gb_submit_login_trace"
         private const val CHARACTER_NOT_ALLOWED = "CHARACTER_NOT_ALLOWED"
-        private const val TOKOPEDIA_CARE_PATH = "help"
+        const val TOKOPEDIA_CARE_PATH = "help"
+        const val TOKOPEDIA_CARE_STRING_FORMAT = "%s?url=%s"
 
         private const val PASSWORD_MIN_LENGTH = 4
 
         private const val SOCMED_BUTTON_MARGIN_SIZE = 10
         private const val SOCMED_BUTTON_CORNER_SIZE = 10
-
-        private const val OS_11 = 30
 
         fun createInstance(bundle: Bundle): Fragment {
             val fragment = LoginEmailPhoneFragment()

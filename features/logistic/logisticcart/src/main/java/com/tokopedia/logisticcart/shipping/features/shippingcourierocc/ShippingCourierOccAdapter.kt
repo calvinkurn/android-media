@@ -44,7 +44,7 @@ class ShippingCourierOccAdapter(val list: List<RatesViewModelType>, private val 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         when (holder) {
             is ShippingCourierViewHolder -> holder.bindData(list[position] as ShippingCourierUiModel, shippingCourierAdapterListener, position == itemCount - 1)
-            is ArmyViewHolder -> holder.bindData(list[position] as LogisticPromoUiModel, shippingDurationAdapterListener)
+            is ArmyViewHolder -> holder.bindData(list[position] as LogisticPromoUiModel, shippingDurationAdapterListener, isOcc = true)
             is NotifierViewHolder -> holder.bindData()
         }
     }

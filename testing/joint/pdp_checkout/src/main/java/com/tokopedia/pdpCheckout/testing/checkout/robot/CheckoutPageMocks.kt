@@ -6,10 +6,10 @@ object CheckoutPageMocks {
 
     const val SHIPMENT_ADDRESS_FORM_KEY = "shipment_address_form_v3"
 
-    val SHIPMENT_ADDRESS_FORM_BUNDLE_DEFAULT_RESPONSE = R.raw.saf_bundle_analytics_default_response
-    val SHIPMENT_ADDRESS_FORM_BUNDLE_PROMO_RESPONSE = R.raw.saf_bundle_analytics_promo_response
-    val SHIPMENT_ADDRESS_FORM_BUNDLE_TOKONOW_RESPONSE = R.raw.saf_bundle_tokonow_default_response
-    val SHIPMENT_ADDRESS_FORM_BUNDLE_TOKONOW_WITH_FAILED_DEFAULT_DURATION_RESPONSE = R.raw.saf_bundle_tokonow_with_failed_default_duration_response
+    val SHIPMENT_ADDRESS_FORM_DEFAULT_RESPONSE = R.raw.saf_analytics_default_response
+    val SHIPMENT_ADDRESS_FORM_PROMO_RESPONSE = R.raw.saf_analytics_promo_response
+    val SHIPMENT_ADDRESS_FORM_TOKONOW_RESPONSE = R.raw.saf_tokonow_default_response
+    val SHIPMENT_ADDRESS_FORM_TOKONOW_WITH_FAILED_DEFAULT_DURATION_RESPONSE = R.raw.saf_tokonow_with_failed_default_duration_response
 
     const val SAVE_SHIPMENT_KEY = "save_shipment"
     val SAVE_SHIPMENT_DEFAULT_RESPONSE = R.raw.save_shipment_default_response

@@ -40,13 +40,13 @@ class StatisticActivityViewModel @Inject constructor(
 
     fun checkWhiteListStatus() {
         launchCatchError(block = {
-            val whiteListPageSource = Const.WHITE_LIST_KEY_OPERATIONAL_STATISTIC
+            val whiteListPageSource = Const.WHITE_LIST_KEY_TRAFFIC_INSIGHT
             val useCase = checkWhitelistedStatusUseCase.get()
             val requestParams = useCase.createParam(whiteListPageSource)
-            val result = withContext(dispatchers.io) {
+            val result = Success(withContext(dispatchers.io) {
                 useCase.execute(requestParams)
-            }
-            _whitelistedStatus.postValue(Success(result))
+            })
+            _whitelistedStatus.postValue(result)
         }, onError = {
             _whitelistedStatus.postValue(Fail(it))
         })

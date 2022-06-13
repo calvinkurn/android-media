@@ -5,13 +5,22 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.autocompletecomponent.R
+import com.tokopedia.autocompletecomponent.databinding.LayoutAutocompleteDoubleLineItemBinding
 import com.tokopedia.autocompletecomponent.initialstate.BaseItemInitialStateSearch
-import com.tokopedia.autocompletecomponent.initialstate.InitialStateItemClickListener
 import com.tokopedia.kotlin.extensions.view.setTextAndCheckShow
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
-import kotlinx.android.synthetic.main.layout_autocomplete_double_line_item.view.*
+import com.tokopedia.utils.view.binding.viewBinding
 
-class RecentSearchDoubleLineItemViewHolder(itemView: View, private val clickListener: InitialStateItemClickListener) : RecyclerView.ViewHolder(itemView) {
+class RecentSearchDoubleLineItemViewHolder(
+    itemView: View,
+    private val listener: RecentSearchListener,
+) : RecyclerView.ViewHolder(itemView) {
+
+    companion object {
+        val LAYOUT = R.layout.layout_autocomplete_double_line_item
+    }
+
+    private var binding: LayoutAutocompleteDoubleLineItemBinding? by viewBinding()
 
     fun bind(item: BaseItemInitialStateSearch) {
         bindIconImage(item)
@@ -25,55 +34,63 @@ class RecentSearchDoubleLineItemViewHolder(itemView: View, private val clickList
     }
 
     private fun bindIconImage(item: BaseItemInitialStateSearch) {
-        itemView.iconImage?.showWithAction(item.imageUrl.isNotEmpty()) {
+        binding?.iconImage?.showWithAction(item.imageUrl.isNotEmpty()) {
             ImageHandler.loadImageCircle2(itemView.context, it, item.imageUrl)
         }
     }
 
     private fun bindIconTitle(item: BaseItemInitialStateSearch) {
-        itemView.iconTitle?.shouldShowOrHideWithAction(item.iconTitle.isNotEmpty()) {
+        binding?.iconTitle?.shouldShowOrHideWithAction(item.iconTitle.isNotEmpty()) {
             ImageHandler.loadImageWithoutPlaceholderAndError(it, item.iconTitle)
         }
     }
 
     private fun bindIconSubtitle(item: BaseItemInitialStateSearch) {
-        itemView.iconSubtitle?.shouldShowOrHideWithAction(item.iconSubtitle.isNotEmpty()) {
+        binding?.iconSubtitle?.shouldShowOrHideWithAction(item.iconSubtitle.isNotEmpty()) {
             ImageHandler.loadImageWithoutPlaceholderAndError(it, item.iconSubtitle)
         }
     }
 
     private fun bindSubtitle(item: BaseItemInitialStateSearch) {
-        itemView.doubleLineSubtitle?.setTextAndCheckShow(MethodChecker.fromHtml(item.subtitle).toString())
+        binding?.doubleLineSubtitle?.setTextAndCheckShow(MethodChecker.fromHtml(item.subtitle).toString())
     }
 
     private fun bindTitle(item: BaseItemInitialStateSearch) {
-        itemView.doubleLineTitle?.setTextAndCheckShow(MethodChecker.fromHtml(item.title).toString())
+        binding?.doubleLineTitle?.setTextAndCheckShow(MethodChecker.fromHtml(item.title).toString())
 
         setTitleMaxLine(item)
     }
 
     private fun setTitleMaxLine(item: BaseItemInitialStateSearch) {
         if (item.subtitle.isEmpty()) {
-            itemView.doubleLineTitle?.maxLines = 2
+            binding?.doubleLineTitle?.maxLines = 2
         }
     }
 
     private fun bindLabel(item: BaseItemInitialStateSearch) {
-        itemView.doubleLineLabel?.setTextAndCheckShow(item.label)
-        if(itemView.doubleLineLabel.text.isNotEmpty()) {
-            itemView.doubleLineLabel?.setLabelType(0)
+        binding?.doubleLineLabel?.setTextAndCheckShow(item.label)
+        if(binding?.doubleLineLabel?.text?.isNotEmpty() == true) {
+            binding?.doubleLineLabel?.setLabelType(0)
         }
     }
 
     private fun bindRemoveButton(item: BaseItemInitialStateSearch) {
-        itemView.actionShortcutButton?.shouldShowWithAction(item.shortcutImage.isNotEmpty()) {
-        ImageHandler.loadImage2(itemView.actionShortcutButton, item.shortcutImage, R.drawable.autocomplete_ic_remove)
+        binding?.actionShortcutButton?.shouldShowWithAction(item.shortcutImage.isNotEmpty()) {
+            ImageHandler.loadImage2(
+                binding?.actionShortcutButton,
+                item.shortcutImage,
+                R.drawable.autocomplete_ic_remove
+            )
         }
     }
 
     private fun bindListener(item: BaseItemInitialStateSearch) {
-        itemView.actionShortcutButton?.setOnClickListener { _ -> clickListener.onDeleteRecentSearchItem(item) }
-        itemView.autocompleteDoubleLineItem?.setOnClickListener { _ -> clickListener.onRecentSearchItemClicked(item) }
+        binding?.actionShortcutButton?.setOnClickListener { _ ->
+            listener.onDeleteRecentSearchItem(item)
+        }
+        binding?.autocompleteDoubleLineItem?.setOnClickListener { _ ->
+            listener.onRecentSearchItemClicked(item)
+        }
     }
 
     private fun <T : View> T?.showWithAction(shouldShow: Boolean, action: (T) -> Unit) {

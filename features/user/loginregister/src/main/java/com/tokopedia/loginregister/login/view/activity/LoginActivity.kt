@@ -18,11 +18,13 @@ import com.tokopedia.loginregister.login.di.DaggerLoginComponent
 import com.tokopedia.loginregister.login.di.LoginComponent
 import com.tokopedia.loginregister.login.view.fragment.LoginEmailPhoneFragment
 import com.tokopedia.loginregister.login.view.listener.LoginEmailPhoneContract
+import com.tokopedia.telemetry.ITelemetryActivity
 
 /**
  * @author by nisie on 10/1/18.
  */
-open class LoginActivity : BaseSimpleActivity(), HasComponent<LoginComponent> {
+open class LoginActivity : BaseSimpleActivity(), HasComponent<LoginComponent>,
+    ITelemetryActivity {
 
     private var loginComponent: LoginComponent? = null
 
@@ -60,7 +62,7 @@ open class LoginActivity : BaseSimpleActivity(), HasComponent<LoginComponent> {
 
     private fun setWhiteStatusBarIfSellerApp() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && GlobalConfig.isSellerApp()) {
-            setStatusBarColor(MethodChecker.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_N0))
+            setStatusBarColor(MethodChecker.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_Background))
             setLightStatusBar(true)
         }
     }
@@ -119,4 +121,6 @@ open class LoginActivity : BaseSimpleActivity(), HasComponent<LoginComponent> {
         const val PARAM_EMAIL = "e"
         const val PARAM_SOURCE = "source"
     }
+
+    override fun getTelemetrySectionName() = "login"
 }

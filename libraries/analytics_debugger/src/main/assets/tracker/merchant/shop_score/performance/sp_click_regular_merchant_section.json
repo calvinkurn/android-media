@@ -1,0 +1,26 @@
+{
+  "readme": "Shop Performance - click regular merchant section",
+  "mode": "exact",
+  "query": [
+    {
+      "eventCategory": ".*",
+      "userId": ".*",
+      "event": "viewShopScoreIris",
+      "eventAction": "impression - lihat semua keuntungannya",
+      "sessionIris": ".*",
+      "eventLabel": ".*",
+      "businessUnit": "physical goods",
+      "currentSite": "tokopediaseller"
+    },
+    {
+      "eventCategory": ".*",
+      "userId": ".*",
+      "event": "clickShopScore",
+      "eventAction": "click - lihat semua keuntungannya",
+      "sessionIris": ".*",
+      "eventLabel": ".*",
+      "businessUnit": "physical goods",
+      "currentSite": "tokopediaseller"
+    }
+  ]
+}

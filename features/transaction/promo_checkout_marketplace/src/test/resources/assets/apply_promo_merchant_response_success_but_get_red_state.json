@@ -5,8 +5,8 @@
     "error_code": "200",
     "code": "200000",
     "promo": {
-      "global_success": true,
-      "success": true,
+      "global_success": false,
+      "success": false,
       "codes": [],
       "promo_code_id": 0,
       "title_description": "Promo ",

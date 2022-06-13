@@ -50,11 +50,11 @@ class CategoryGetCategoryGridTest: CategoryTestFixtures() {
     }
 
     private fun `Then assert category grid ui model state show`() {
-        val expectedCategoryList = HomeCategoryMapper.mapToCategoryList(categoryList.response.data)
+        val expectedCategoryList = HomeCategoryMapper.mapToCategoryList(categoryList.response.data, warehouseId)
         val visitableList = tokoNowCategoryViewModel.visitableListLiveData.value!!
         val categoryGridUiModel = visitableList.findIndexedCategoryGridUIModel()
 
-        assertThat(categoryGridUiModel.categoryList, shouldBe(expectedCategoryList))
+        assertThat(categoryGridUiModel.categoryListUiModel, shouldBe(expectedCategoryList))
         assertThat(categoryGridUiModel.state, shouldBe(TokoNowLayoutState.SHOW))
     }
 

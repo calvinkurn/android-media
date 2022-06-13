@@ -8,6 +8,8 @@ interface InspirationCarouselListener {
 
     val carouselRecycledViewPool: RecyclerView.RecycledViewPool?
 
+    fun onInspirationCarouselListProductImpressed(product: InspirationCarouselDataView.Option.Product)
+
     fun onInspirationCarouselListProductClicked(product: InspirationCarouselDataView.Option.Product)
 
     fun onInspirationCarouselSeeAllClicked(inspirationCarouselDataViewOption: InspirationCarouselDataView.Option)
@@ -16,9 +18,7 @@ interface InspirationCarouselListener {
 
     fun onImpressedInspirationCarouselInfoProduct(product: InspirationCarouselDataView.Option.Product)
 
-    fun onImpressedInspirationCarouselListProduct(product: InspirationCarouselDataView.Option.Product)
-
-    fun onImpressedInspirationCarouselGridProduct(product: InspirationCarouselDataView.Option.Product)
+    fun onInspirationCarouselGridProductImpressed(product: InspirationCarouselDataView.Option.Product)
 
     fun onInspirationCarouselGridProductClicked(product: InspirationCarouselDataView.Option.Product)
 

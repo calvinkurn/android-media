@@ -1,26 +1,50 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:gravity="center_vertical"
-    android:orientation="horizontal">
+    android:layout_height="wrap_content">
 
     <com.tokopedia.iconunify.IconUnify
         android:id="@+id/icuPmlMoreMenu"
         android:layout_width="@dimen/layout_lvl3"
         android:layout_height="@dimen/layout_lvl3"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/textMenu"
         app:icon_name="VISIBILITY" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/textMenu"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/product_manage_horizontal_spacing"
         android:gravity="center_vertical"
         android:paddingTop="@dimen/product_manage_vertical_spacing"
         android:paddingBottom="@dimen/product_manage_vertical_spacing"
         android:textColor="@color/Unify_N700_96"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toEndOf="@id/icuPmlMoreMenu"
+        app:layout_constraintEnd_toStartOf="@id/label_product_manage_menu_new"
+        app:layout_constraintHorizontal_bias="0"
         app:typographyType="body_2"
-        app:typographyWeight="bold" />
-</LinearLayout>
+        app:typographyWeight="bold"
+        tools:text="@string/product_manage_create_broadcast_chat"/>
+
+    <com.tokopedia.unifycomponents.Label
+        android:id="@+id/label_product_manage_menu_new"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="16dp"
+        android:visibility="gone"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toEndOf="@id/textMenu"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:labelTitle="@string/product_manage_new_tag"
+        app:labelType="general_dark_red"
+        tools:visibility="visible"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

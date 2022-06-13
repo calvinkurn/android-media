@@ -31,9 +31,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/spacing_lvl2"
-        app:layout_constraintTop_toTopOf="@id/tvPostListTitle"
         app:layout_constraintBottom_toBottomOf="@id/tvPostListTitle"
-        app:layout_constraintStart_toEndOf="@id/tvPostListTitle"/>
+        app:layout_constraintStart_toEndOf="@id/tvPostListTitle"
+        app:layout_constraintTop_toTopOf="@id/tvPostListTitle" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/filterShcPostList"
@@ -79,11 +79,41 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/rvPostList" />
 
+    <View
+        android:id="@+id/horLineShcPostListBtm"
+        android:layout_width="0dp"
+        android:layout_height="0.1dp"
+        android:layout_marginTop="24dp"
+        android:layout_marginBottom="8dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/barrierShcPostList"
+        tools:layout_constraintTop_toBottomOf="@+id/pageControlShcPostPager" />
+
+    <androidx.constraintlayout.widget.Barrier
+        android:id="@+id/barrierShcPostList"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:barrierDirection="bottom"
+        app:constraint_referenced_ids="pageControlShcPostPager, btnShcPostEmpty" />
+
+    <com.tokopedia.sellerhomecommon.presentation.view.customview.LastUpdatedView
+        android:id="@+id/luvShcPost"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="4dp"
+        android:layout_marginEnd="8dp"
+        app:layout_constraintBottom_toBottomOf="@+id/horLineShcPostListBtm"
+        app:layout_constraintEnd_toStartOf="@+id/tvPostListSeeDetails"
+        app:layout_constraintHorizontal_bias="1"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/horLineShcPostListBtm" />
+
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvPostListSeeDetails"
-        android:layout_width="@dimen/layout_lvl0"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/layout_lvl1"
         android:background="@android:color/transparent"
         android:gravity="end"
         android:maxLines="1"
@@ -92,26 +122,12 @@
         android:text="@string/shc_more"
         android:textColor="@color/Unify_G500"
         android:textSize="@dimen/fontSize_lvl3"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/icPostListSeeDetails"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/pageControlShcPostPager"
-        app:layout_constraintVertical_bias="1.0"
-        app:typographyType="body_2"
-        app:typographyWeight="reguler" />
-
-    <com.tokopedia.unifycomponents.ImageUnify
-        android:id="@+id/icPostListSeeDetails"
-        android:layout_width="@dimen/layout_lvl1"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/spacing_lvl1"
-        android:layout_marginEnd="@dimen/layout_lvl1"
-        android:contentDescription="@string/shc_content_desc_button_lihat_selengkapnya"
-        app:layout_constraintBottom_toBottomOf="@+id/tvPostListSeeDetails"
+        app:layout_constraintBottom_toBottomOf="@+id/horLineShcPostListBtm"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/tvPostListSeeDetails"
-        app:srcCompat="@drawable/ic_arrow_right_default"
-        app:unify_image_placeholder="@android:color/transparent" />
+        app:layout_constraintTop_toTopOf="@+id/horLineShcPostListBtm"
+        app:typographyType="body_2"
+        app:typographyWeight="reguler"
+        tools:layout_constraintTop_toBottomOf="@+id/pageControlShcPostPager" />
 
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/imgShcPostEmpty"
@@ -137,7 +153,6 @@
         android:layout_marginTop="@dimen/layout_lvl2"
         android:layout_marginEnd="@dimen/layout_lvl3"
         android:gravity="center_horizontal"
-        tools:text="@string/shc_empty_state_title"
         android:textColor="@color/Unify_N700_96"
         android:textSize="@dimen/fontSize_lvl3"
         android:visibility="gone"
@@ -147,6 +162,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/imgShcPostEmpty"
         app:typographyWeight="bold"
+        tools:text="@string/shc_empty_state_title"
         tools:visibility="visible" />
 
     <com.tokopedia.unifyprinciples.Typography

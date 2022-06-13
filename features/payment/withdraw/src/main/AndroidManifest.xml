@@ -3,37 +3,43 @@
     package="com.tokopedia.withdraw">
 
     <application>
-        <activity android:name=".saldowithdrawal.presentation.activity.WithdrawActivity"
+        <activity
+            android:name=".saldowithdrawal.presentation.activity.WithdrawActivity"
             android:label="@string/swd_activity_withdraw"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.WhiteUnify"
-            android:windowSoftInputMode="stateAlwaysHidden|adjustPan">
+            android:windowSoftInputMode="stateAlwaysHidden|adjustPan"
+            android:exported="false">
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
+
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
+
                 <data
                     android:scheme="@string/internal_scheme"
                     android:host="@string/host_global"
-                    android:pathPattern="@string/path_withdraw"/>
+                    android:pathPattern="@string/path_withdraw" />
             </intent-filter>
         </activity>
-        <activity android:name=".auto_withdrawal.presentation.activity.AutoWithdrawalActivity"
+        <activity
+            android:name=".auto_withdrawal.presentation.activity.AutoWithdrawalActivity"
             android:label="@string/swd_activity_auto_withdraw_settings"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.WhiteUnify"
-            android:windowSoftInputMode="stateAlwaysHidden|adjustPan">
+            android:windowSoftInputMode="stateAlwaysHidden|adjustPan"
+            android:exported="false">
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
+
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
+
                 <data
                     android:scheme="@string/internal_scheme"
                     android:host="@string/host_global"
-                    android:pathPattern="@string/path_autoWithdrawSettings"/>
+                    android:pathPattern="@string/path_autoWithdrawSettings" />
             </intent-filter>
         </activity>
-
     </application>
-
 </manifest>

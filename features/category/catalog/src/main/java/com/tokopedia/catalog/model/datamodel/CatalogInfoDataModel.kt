@@ -5,8 +5,11 @@ import com.tokopedia.catalog.adapter.factory.CatalogDetailAdapterFactory
 import com.tokopedia.catalog.model.raw.CatalogImage
 
 data class CatalogInfoDataModel (val name : String = "" , val type : String = "",
-                                 val productName : String?, val productBrand : String?, val tag : String?,
-                                 val priceRange : String? , val description : String?, val shortDescription : String?,
+                                 val productName : String?, val productBrand : String?,
+                                 val departmentId : String?, val tag : String?,
+                                 val priceRange : String? , val description : String?,
+                                 val shortDescription : String?,
+                                 val comparisonInfoCatalogId : String = "",
                                  val images : ArrayList<CatalogImage>?,val url : String?
                                 ) : BaseCatalogDataModel {
 

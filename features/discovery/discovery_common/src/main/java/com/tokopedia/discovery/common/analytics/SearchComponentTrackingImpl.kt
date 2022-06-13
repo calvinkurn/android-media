@@ -12,6 +12,7 @@ import com.tokopedia.discovery.common.analytics.SearchComponentTrackingConst.Eve
 import com.tokopedia.discovery.common.analytics.SearchComponentTrackingConst.Event.VIEWSEARCHIRIS
 import com.tokopedia.discovery.common.analytics.SearchComponentTrackingConst.KEYWORD
 import com.tokopedia.discovery.common.analytics.SearchComponentTrackingConst.KEYWORD_ID_NAME
+import com.tokopedia.discovery.common.analytics.SearchComponentTrackingConst.NONE
 import com.tokopedia.discovery.common.analytics.SearchComponentTrackingConst.Options.CLICK_ONLY
 import com.tokopedia.discovery.common.analytics.SearchComponentTrackingConst.Options.IMPRESSION_AND_CLICK
 import com.tokopedia.discovery.common.analytics.SearchComponentTrackingConst.Options.IMPRESSION_ONLY
@@ -19,6 +20,7 @@ import com.tokopedia.discovery.common.analytics.SearchComponentTrackingConst.PAG
 import com.tokopedia.discovery.common.analytics.SearchComponentTrackingConst.PAGESOURCE
 import com.tokopedia.discovery.common.analytics.SearchComponentTrackingConst.SEARCH
 import com.tokopedia.discovery.common.analytics.SearchComponentTrackingConst.TOKOPEDIAMARKETPLACE
+import com.tokopedia.iris.Iris
 import com.tokopedia.track.TrackAppUtils.EVENT
 import com.tokopedia.track.TrackAppUtils.EVENT_ACTION
 import com.tokopedia.track.TrackAppUtils.EVENT_CATEGORY
@@ -36,36 +38,35 @@ internal class SearchComponentTrackingImpl(
     private val dimension90: String,
 ): SearchComponentTracking {
 
-    private fun sendComponentTracking(
-        analytics: Analytics,
+    private fun dataLayer(
         eventName: String,
         eventAction: String,
         eventLabel: String,
-    ) {
-        analytics.sendGeneralEvent(
-            mapOf(
-                EVENT to eventName,
-                EVENT_ACTION to eventAction,
-                EVENT_CATEGORY to SEARCH_COMPONENT,
-                EVENT_LABEL to eventLabel,
-                BUSINESSUNIT to SEARCH,
-                CURRENTSITE to TOKOPEDIAMARKETPLACE,
-                CAMPAIGNCODE to campaignCode,
-                COMPONENT to componentId,
-                PAGEDESTINATION to applink,
-                PAGESOURCE to dimension90,
-            )
-        )
-    }
+    ) = mapOf(
+        EVENT to eventName,
+        EVENT_ACTION to eventAction,
+        EVENT_CATEGORY to SEARCH_COMPONENT,
+        EVENT_LABEL to eventLabel,
+        BUSINESSUNIT to SEARCH,
+        CURRENTSITE to TOKOPEDIAMARKETPLACE,
+        CAMPAIGNCODE to campaignCode.orNone(),
+        COMPONENT to componentId.orNone(),
+        PAGEDESTINATION to applink.orNone(),
+        PAGESOURCE to dimension90.orNone(),
+    )
 
-    override fun impress(analytics: Analytics) {
+    private fun String.orNone(): String =
+        if (this.isEmpty()) NONE else this
+
+    override fun impress(iris: Iris) {
         if (!impressionEnabled()) return
 
-        sendComponentTracking(
-            analytics,
-            VIEWSEARCHIRIS,
-            IMPRESSION,
-            String.format(KEYWORD_ID_NAME, keyword, valueId, valueName)
+        iris.saveEvent(
+            dataLayer(
+                VIEWSEARCHIRIS,
+                IMPRESSION,
+                impressionClickEventLabel()
+            )
         )
     }
 
@@ -73,14 +74,23 @@ internal class SearchComponentTrackingImpl(
         trackingOption == IMPRESSION_AND_CLICK
             || trackingOption == IMPRESSION_ONLY
 
+    private fun impressionClickEventLabel() =
+        String.format(
+            KEYWORD_ID_NAME,
+            keyword.orNone(),
+            valueId.orNone(),
+            valueName.orNone(),
+        )
+
     override fun click(analytics: Analytics) {
         if (!clickEnabled()) return
 
-        sendComponentTracking(
-            analytics,
-            CLICKSEARCH,
-            CLICK,
-            String.format(KEYWORD_ID_NAME, keyword, valueId, valueName)
+        analytics.sendGeneralEvent(
+            dataLayer(
+                CLICKSEARCH,
+                CLICK,
+                impressionClickEventLabel()
+            )
         )
     }
 
@@ -91,11 +101,12 @@ internal class SearchComponentTrackingImpl(
     override fun clickOtherAction(analytics: Analytics) {
         if (!clickEnabled()) return
 
-        sendComponentTracking(
-            analytics,
-            CLICKSEARCH,
-            CLICK_OTHER_ACTION,
-            String.format(KEYWORD, keyword)
+        analytics.sendGeneralEvent(
+            dataLayer(
+                CLICKSEARCH,
+                CLICK_OTHER_ACTION,
+                String.format(KEYWORD, keyword.orNone())
+            )
         )
     }
 }

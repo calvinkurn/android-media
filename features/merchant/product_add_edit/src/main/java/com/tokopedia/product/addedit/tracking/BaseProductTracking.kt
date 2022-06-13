@@ -1,6 +1,8 @@
 package com.tokopedia.product.addedit.tracking
 
+import com.tokopedia.product.addedit.tracking.ProductAddEditTracking.BUSINESS_UNIT
 import com.tokopedia.product.addedit.tracking.ProductAddEditTracking.CAT_EDIT_PRODUCT_PAGE
+import com.tokopedia.product.addedit.tracking.ProductAddEditTracking.CURRENT_SITE
 import com.tokopedia.product.addedit.tracking.ProductAddEditTracking.EVENT_CLICK_EDIT_PRODUCT
 import com.tokopedia.product.addedit.tracking.ProductAddEditTracking.KEY_SHOP_ID
 import com.tokopedia.track.TrackApp
@@ -147,10 +149,13 @@ object ProductVariantTracking {
     const val EVENT_OPEN_SCREEN = "openScreen"
     const val EVENT_CLICK_ADD_PRODUCT = "clickAddProduct"
     const val EVENT_CLICK_EDIT_PRODUCT = "clickEditProduct"
+    const val EVENT_CLICK_MANAGE_PRODUCT = "clickManageProduct"
     const val CAT_ADD_VARIANT_PAGE = "add variant page"
     const val CAT_ADD_VARIANT_DETAIL_PAGE = "add detail variant page"
     const val CAT_EDIT_VARIANT_PAGE = "edit variant page"
     const val CAT_EDIT_VARIANT_DETAIL_PAGE = "edit detail variant page"
+    const val CAT_ADD_VARIANT_MANAGE_PAGE = "product variant page - add"
+    const val CAT_EDIT_VARIANT_MANAGE_PAGE = "product variant page - edit"
 
     fun getTracker(): ContextAnalytics {
         if (gtmTracker == null) {
@@ -214,6 +219,19 @@ object ProductVariantTracking {
                 KEY_LABEL to label,
                 KEY_SHOP_ID to shopId,
                 KEY_SCREEN_NAME to screenName
+        )
+        getTracker().sendGeneralEvent(map)
+    }
+
+    fun sendCustomVariantTypeEventClick(eventAction: String, eventLabel: String, isEdit: Boolean, shopId: String) {
+        val map = mapOf(
+                KEY_EVENT to EVENT_CLICK_MANAGE_PRODUCT,
+                KEY_ACTION to eventAction,
+                KEY_CATEGORY to if (isEdit) CAT_EDIT_VARIANT_MANAGE_PAGE else CAT_ADD_VARIANT_MANAGE_PAGE,
+                KEY_LABEL to eventLabel,
+                KEY_BUSINESS_UNIT to BUSINESS_UNIT,
+                KEY_CURRENT_SITE to CURRENT_SITE,
+                KEY_SHOP_ID to shopId
         )
         getTracker().sendGeneralEvent(map)
     }

@@ -6,12 +6,12 @@ import androidx.core.view.ViewCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.autocompletecomponent.R
-import com.tokopedia.autocompletecomponent.initialstate.InitialStateItemClickListener
-import kotlinx.android.synthetic.main.layout_recyclerview_autocomplete.view.*
+import com.tokopedia.autocompletecomponent.databinding.LayoutRecentSearchAutocompleteBinding
+import com.tokopedia.utils.view.binding.viewBinding
 
 class RecentSearchViewHolder(
-        itemView: View,
-        clickListener: InitialStateItemClickListener
+    itemView: View,
+    listener: RecentSearchListener
 ): AbstractViewHolder<RecentSearchDataView>(itemView) {
 
     companion object {
@@ -19,14 +19,17 @@ class RecentSearchViewHolder(
         val LAYOUT = R.layout.layout_recent_search_autocomplete
     }
 
-    private val adapter: RecentSearchItemAdapter
+    private val adapter: RecentSearchItemAdapter = RecentSearchItemAdapter(listener)
+
+    private var binding: LayoutRecentSearchAutocompleteBinding? by viewBinding()
 
     init {
-        val layoutManager = LinearLayoutManager(itemView.context)
-        itemView.recyclerView?.layoutManager = layoutManager
-        ViewCompat.setLayoutDirection(itemView.recyclerView, ViewCompat.LAYOUT_DIRECTION_LTR)
-        adapter = RecentSearchItemAdapter(clickListener)
-        itemView.recyclerView?.adapter = adapter
+        binding?.recyclerViewRecentSearch?.let { recyclerView ->
+            val layoutManager = LinearLayoutManager(itemView.context)
+            recyclerView.layoutManager = layoutManager
+            ViewCompat.setLayoutDirection(recyclerView, ViewCompat.LAYOUT_DIRECTION_LTR)
+            recyclerView.adapter = adapter
+        }
     }
 
     override fun bind(element: RecentSearchDataView) {

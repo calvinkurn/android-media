@@ -5,7 +5,7 @@ import com.google.gson.annotations.SerializedName
 
 data class ChatBlastSellerMetadata(
         @SerializedName("urlBroadcast")
-        val urlBroadcast: String = "",
+        var urlBroadcast: String = "",
         @SerializedName("url")
         val url: String = "",
         @SerializedName("status")

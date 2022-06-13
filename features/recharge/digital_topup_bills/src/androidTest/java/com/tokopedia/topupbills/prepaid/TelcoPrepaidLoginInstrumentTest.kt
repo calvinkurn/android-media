@@ -164,17 +164,25 @@ class TelcoPrepaidLoginInstrumentTest {
             .perform(click())
 
         clientNumberWidget_clickClearBtn()
+        clientNumberWidget_typeNumber(PREFIX_PHONE_NUMBER_2)
+        Thread.sleep(2000)
+        onView(withText("085612309812"))
+            .inRoot(RootMatchers.isPlatformPopup())
+            .check(matches(isDisplayed()))
+            .perform(click())
+
+        clientNumberWidget_clickClearBtn()
     }
 
     fun validate_filter_chip() {
-        clientNumberWidget_clickFilterChip_withText("Tokopedia")
-        clientNumberWidget_validateText("081232323239")
+        clientNumberWidget_clickFilterChip_withText("085612309812")
+        clientNumberWidget_validateText("085612309812")
 
         onView(withId(telco_filter_chip)).perform(swipeLeft())
         Thread.sleep(1000)
 
-        clientNumberWidget_clickFilterChip_withText("085612309812")
-        clientNumberWidget_validateText("085612309812")
+        clientNumberWidget_clickFilterChip_withText("Tokopedia")
+        clientNumberWidget_validateText("081232323239")
     }
 
     fun validate_interaction_saved_number() {
@@ -302,6 +310,7 @@ class TelcoPrepaidLoginInstrumentTest {
         private const val VALID_PHONE_NUMBER_2 = "085252525252"
         private const val VALID_PHONE_NUMBER_3 = "081234567890"
         private const val PREFIX_PHONE_NUMBER = "0812"
+        private const val PREFIX_PHONE_NUMBER_2 = "0856"
         private const val ANALYTIC_VALIDATOR_QUERY_LOGIN = "tracker/recharge/recharge_telco_prepaid_login.json"
     }
 }

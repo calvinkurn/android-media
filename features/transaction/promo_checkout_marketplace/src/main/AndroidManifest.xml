@@ -9,7 +9,8 @@
             android:name="com.tokopedia.promocheckoutmarketplace.presentation.PromoCheckoutActivity"
             android:label="@string/promo_checkout_marketplace_module_title_activity_promo_list"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.WhiteUnify">
+            android:theme="@style/Theme.WhiteUnify"
+            android:exported="false">
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
 
@@ -22,7 +23,5 @@
                     android:scheme="@string/internal_scheme" />
             </intent-filter>
         </activity>
-
     </application>
-
 </manifest>

@@ -1,5 +1,6 @@
 package com.tokopedia.digital_deals.view.model.response;
 
+import android.annotation.SuppressLint;
 import android.os.Parcel;
 import android.os.Parcelable;
 
@@ -15,15 +16,19 @@ import java.util.List;
 
 public class DealsDetailsResponse implements Parcelable {
 
+    @SuppressLint("Invalid Data Type")
     @SerializedName("id")
     @Expose
     private int id;
+    @SuppressLint("Invalid Data Type")
     @SerializedName("brand_id")
     @Expose
     private int brandId;
+    @SuppressLint("Invalid Data Type")
     @SerializedName("category_id")
     @Expose
     private int categoryId;
+    @SuppressLint("Invalid Data Type")
     @SerializedName("provider_id")
     @Expose
     private int providerId;
@@ -51,6 +56,7 @@ public class DealsDetailsResponse implements Parcelable {
     @SerializedName("mrp")
     @Expose
     private int mrp;
+    @SuppressLint("Invalid Data Type")
     @SerializedName("sales_price")
     @Expose
     private int salesPrice;
@@ -160,6 +166,12 @@ public class DealsDetailsResponse implements Parcelable {
     @SerializedName("custom_text_1")
     @Expose
     public int customText1;
+    @SerializedName("checkout_business_type")
+    @Expose
+    private int checkoutBusinessType;
+    @SerializedName("checkout_data_type")
+    @Expose
+    private String checkoutDataType;
 
 
     public final static Parcelable.Creator<DealsDetailsResponse> CREATOR = new Creator<DealsDetailsResponse>() {
@@ -226,10 +238,18 @@ public class DealsDetailsResponse implements Parcelable {
         this.desktopUrl = in.readString();
         this.webUrl = in.readString();
         this.appUrl = in.readString();
+        this.checkoutBusinessType = in.readInt();
+        this.checkoutDataType = in.readString();
+        this.minQty = in.readInt();
+        this.maxQty = in.readInt();
     }
 
     public String getWebUrl() {
         return webUrl;
+    }
+
+    public void setWebUrl(String mWebUrl) {
+        this.webUrl = mWebUrl;
     }
 
     public String getAppUrl() {
@@ -603,6 +623,22 @@ public class DealsDetailsResponse implements Parcelable {
         this.seoUrl = seoUrl;
     }
 
+    public String getCheckoutDataType() {
+        return checkoutDataType;
+    }
+
+    public void setCheckoutDataType(String checkoutDataType) {
+        this.checkoutDataType = checkoutDataType;
+    }
+
+    public int getCheckoutBusinessType() {
+        return checkoutBusinessType;
+    }
+
+    public void setCheckoutBusinessType(int checkoutBusinessType) {
+        this.checkoutBusinessType = checkoutBusinessType;
+    }
+
     public void writeToParcel(Parcel dest, int flags) {
 
         dest.writeInt(id);
@@ -650,6 +686,10 @@ public class DealsDetailsResponse implements Parcelable {
         dest.writeString(desktopUrl);
         dest.writeString(webUrl);
         dest.writeString(appUrl);
+        dest.writeInt(checkoutBusinessType);
+        dest.writeString(checkoutDataType);
+        dest.writeInt(minQty);
+        dest.writeInt(maxQty);
 
     }
 

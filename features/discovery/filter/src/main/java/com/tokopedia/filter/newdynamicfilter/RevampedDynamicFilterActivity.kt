@@ -16,6 +16,7 @@ import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.design.keyboard.KeyboardHelper
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.filter.R
+import com.tokopedia.resources.common.R as RCommon
 import com.tokopedia.filter.common.data.Filter
 import com.tokopedia.filter.common.data.Option
 import com.tokopedia.filter.common.data.Option.Companion.KEY_CATEGORY
@@ -126,7 +127,7 @@ class RevampedDynamicFilterActivity : BaseActivity(), DynamicFilterView {
         adapter = DynamicFilterAdapter(dynamicFilterTypeFactory)
         recyclerView?.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
         val dividerItemDecoration = DividerItemDecoration(recyclerView?.context, DividerItemDecoration.VERTICAL)
-        dividerItemDecoration.setDrawable(resources.getDrawable(R.drawable.bg_line_separator))
+        dividerItemDecoration.setDrawable(resources.getDrawable(RCommon.drawable.bg_line_separator))
         recyclerView?.addItemDecoration(dividerItemDecoration)
         recyclerView?.adapter = adapter
         recyclerView?.addOnScrollListener(object : RecyclerView.OnScrollListener() {

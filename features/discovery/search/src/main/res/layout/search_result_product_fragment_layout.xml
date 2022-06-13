@@ -15,7 +15,6 @@
         android:paddingBottom="8dp"
         app:sort_filter_relationship="AND"
         app:sort_filter_type="advanced"
-        android:background="@color/Unify_N0"
         android:visibility="gone" />
 
     <include

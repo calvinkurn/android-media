@@ -1,5 +1,7 @@
 package com.tokopedia.logisticorder.view
 
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.text.format.DateUtils
@@ -27,12 +29,21 @@ import com.tokopedia.logisticorder.di.DaggerTrackingPageComponent
 import com.tokopedia.logisticorder.di.TrackingPageComponent
 import com.tokopedia.logisticorder.uimodel.EtaModel
 import com.tokopedia.logisticorder.uimodel.PageModel
+import com.tokopedia.logisticorder.uimodel.LastDriverModel
 import com.tokopedia.logisticorder.uimodel.TrackOrderModel
 import com.tokopedia.logisticorder.uimodel.TrackingDataModel
-import com.tokopedia.logisticorder.utils.DateUtil
+import com.tokopedia.logisticorder.utils.TippingConstant.OPEN
+import com.tokopedia.logisticorder.utils.TippingConstant.REFUND_TIP
+import com.tokopedia.logisticorder.utils.TippingConstant.SUCCESS_PAYMENT
+import com.tokopedia.logisticorder.utils.TippingConstant.SUCCESS_TO_GOJEK
+import com.tokopedia.logisticorder.utils.TippingConstant.WAITING_PAYMENT
 import com.tokopedia.logisticorder.utils.TrackingPageUtil
+import com.tokopedia.logisticorder.utils.TrackingPageUtil.DEFAULT_OS_TYPE
 import com.tokopedia.logisticorder.utils.TrackingPageUtil.HEADER_KEY_AUTH
+import com.tokopedia.logisticorder.utils.TrackingPageUtil.IMAGE_LARGE_SIZE
 import com.tokopedia.logisticorder.utils.TrackingPageUtil.getDeliveryImage
+import com.tokopedia.logisticorder.view.bottomsheet.DriverInfoBottomSheet
+import com.tokopedia.logisticorder.view.bottomsheet.DriverTippingBottomSheet
 import com.tokopedia.logisticorder.view.livetracking.LiveTrackingActivity
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.unifycomponents.Toaster
@@ -40,6 +51,7 @@ import com.tokopedia.unifycomponents.ticker.*
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.utils.date.DateUtil
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import rx.Observable
 import rx.Subscriber
@@ -52,11 +64,6 @@ class TrackingPageFragment: BaseDaggerFragment(), TrackingHistoryAdapter.OnImage
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
-    @Inject
-    lateinit var dateUtil: DateUtil
-    @Inject
-    lateinit var mAnalytics: OrderAnalyticsOrderTracking
-
     @Inject
     lateinit var userSession: UserSessionInterface
 
@@ -161,7 +168,7 @@ class TrackingPageFragment: BaseDaggerFragment(), TrackingHistoryAdapter.OnImage
         val model = trackingDataModel.trackOrder
         binding?.referenceNumber?.text = model.shippingRefNum
         if (model.detail.serviceCode.isEmpty()) binding?.descriptionLayout?.visibility = View.GONE
-        if (model.detail.sendDate.isNotEmpty()) binding?.deliveryDate?.text = dateUtil.getFormattedDate(model.detail.sendDate)
+        if (model.detail.sendDate.isNotEmpty()) binding?.deliveryDate?.text = DateUtil.formatDate("yyyy-MM-dd", "dd MMMM yyyy", model.detail.sendDate)
         binding?.storeName?.text = model.detail.shipperName
         binding?.storeAddress?.text = model.detail.shipperCity
         binding?.serviceCode?.text = model.detail.serviceCode
@@ -169,13 +176,118 @@ class TrackingPageFragment: BaseDaggerFragment(), TrackingHistoryAdapter.OnImage
         binding?.buyerLocation?.text = model.detail.receiverCity
         binding?.currentStatus?.text = model.status
         setEtaDetail(model.detail.eta)
+        setDriverInfo(trackingDataModel)
         initialHistoryView()
         setHistoryView(model)
         setEmptyHistoryView(model)
         setLiveTrackingButton(model)
         setTicketInfoCourier(trackingDataModel.page)
-        mAnalytics.eventViewOrderTrackingImpressionButtonLiveTracking()
 
+    }
+
+    private fun setDriverInfo(data: TrackingDataModel) {
+        val tippingData = data.tipping
+        if (tippingData.status == OPEN || tippingData.status == WAITING_PAYMENT || tippingData.status == SUCCESS_PAYMENT || tippingData.status ==  SUCCESS_TO_GOJEK || tippingData.status == REFUND_TIP) {
+            setTippingData(data)
+            binding?.tippingGojekLayout?.root?.visibility = View.VISIBLE
+            binding?.dividerTippingGojek?.visibility = View.VISIBLE
+        } else if (data.lastDriver.name.isNotEmpty()) {
+            setLastDriverData(data.lastDriver)
+            binding?.tippingGojekLayout?.root?.visibility = View.VISIBLE
+            binding?.dividerTippingGojek?.visibility = View.VISIBLE
+        } else {
+            binding?.tippingGojekLayout?.root?.visibility = View.GONE
+        }
+    }
+
+    private fun setLastDriverData(lastDriver: LastDriverModel) {
+        binding?.tippingGojekLayout?.run {
+            tippingLayout.visibility = View.GONE
+
+            if (lastDriver.photo.isNotEmpty()) {
+                imgDriver.setImageUrl(lastDriver.photo)
+            }
+            driverName.text = lastDriver.name
+            driverPhone.text = lastDriver.licenseNumber
+            btnCall.setOnClickListener {
+                val callIntent = Intent(Intent.ACTION_DIAL).apply {
+                    this.data = Uri.parse("tel:${lastDriver.phone}")
+                }
+                startActivity(callIntent)
+            }
+        }
+    }
+
+    private fun setTippingData(data: TrackingDataModel) {
+        val tippingData = data.tipping
+        binding?.tippingGojekLayout?.apply {
+            if (tippingData.status == OPEN) {
+                imgFindDriver.setImageUrl(ICON_OPEN_TIPPING_GOJEK)
+                btnTipping.isInverse = true
+            } else {
+                imgFindDriver.visibility = View.GONE
+                bgActiveUp.visibility = View.GONE
+                context?.let { ctx ->
+                    tippingLayout.setCardBackgroundColor(MethodChecker.getColor(ctx, com.tokopedia.unifyprinciples.R.color.Unify_NN0))
+                    val textColor = MethodChecker.getColor(ctx, com.tokopedia.unifyprinciples.R.color.Unify_N700)
+                    tippingText.setTextColor(textColor)
+                    tippingDescription.setTextColor(textColor)
+                }
+            }
+            if (tippingData.tippingLastDriver.name.isEmpty()) {
+                driverName.text = getString(R.string.driver_not_found_title)
+                driverPhone.text = getString(R.string.driver_not_found_subtitle)
+                btnInformation.visibility = View.GONE
+            } else {
+                if (tippingData.tippingLastDriver.photo.isNotEmpty()) {
+                    imgDriver.setImageUrl(tippingData.tippingLastDriver.photo)
+                }
+                driverName.text = tippingData.tippingLastDriver.name
+                driverPhone.text = tippingData.tippingLastDriver.licenseNumber
+            }
+
+            if (tippingData.tippingLastDriver.phone.isNotEmpty()) {
+                btnCall.setOnClickListener {
+                    val callIntent = Intent(Intent.ACTION_DIAL).apply {
+                        this.data = Uri.parse("tel:${tippingData.tippingLastDriver.phone}")
+                    }
+                    startActivity(callIntent)
+                }
+            } else {
+                borderBtnCall.visibility = View.GONE
+                btnCall.visibility = View.GONE
+            }
+
+            btnTipping.text = when (tippingData.status) {
+                SUCCESS_PAYMENT, SUCCESS_TO_GOJEK -> getString(R.string.btn_tipping_success_text)
+                WAITING_PAYMENT -> getString(R.string.btn_tipping_waiting_payment_text)
+                REFUND_TIP -> getString(R.string.btn_tipping_refund_text)
+                else -> getString(R.string.btn_tipping_open_text)
+            }
+
+            tippingText.text = tippingData.statusTitle
+            tippingDescription.text = tippingData.statusSubtitle
+
+            btnInformation.setOnClickListener {
+                DriverInfoBottomSheet().show(parentFragmentManager)
+            }
+            btnTipping.setOnClickListener {
+                when (tippingData.status) {
+                    SUCCESS_PAYMENT, SUCCESS_TO_GOJEK, OPEN -> {
+                        DriverTippingBottomSheet().show(parentFragmentManager, mOrderId, data)
+                    }
+                    WAITING_PAYMENT -> {
+                        RouteManager.route(context, ApplinkConst.PMS)
+                    }
+                    REFUND_TIP -> {
+                        RouteManager.route(context, ApplinkConst.SALDO)
+                    }
+                    else -> {
+                        // no ops
+                    }
+                }
+            }
+        }
     }
 
     private fun showLoading() {
@@ -202,11 +314,15 @@ class TrackingPageFragment: BaseDaggerFragment(), TrackingHistoryAdapter.OnImage
             binding?.retryPickupButton?.isEnabled = true
             binding?.retryPickupButton?.setOnClickListener {
                 binding?.retryPickupButton?.isEnabled = false
-                mOrderId?.let { it -> viewModel.retryBooking(it) }
-                mAnalytics.eventClickButtonCariDriver(mOrderId)
+                mOrderId?.let { it ->
+                    viewModel.retryBooking(it)
+                    OrderAnalyticsOrderTracking.eventClickButtonCariDriver(it)
+                }
             }
             binding?.tvRetryStatus?.visibility = View.GONE
-            mAnalytics.eventViewButtonCariDriver(mOrderId)
+            mOrderId?.let {
+                OrderAnalyticsOrderTracking.eventViewButtonCariDriver(it)
+            }
         } else {
             binding?.retryPickupButton?.visibility = View.GONE
             if (deadline > 0) {
@@ -221,12 +337,17 @@ class TrackingPageFragment: BaseDaggerFragment(), TrackingHistoryAdapter.OnImage
     }
 
     private fun setEtaDetail(model: EtaModel) {
-        binding?.eta?.text = model.userInfo
-        if (model.isChanged) {
-            binding?.eta?.setCompoundDrawablesRelativeWithIntrinsicBounds(0, 0, com.tokopedia.logisticCommon.R.drawable.eta_info, 0)
-            binding?.eta?.setOnClickListener {
-                showEtaBottomSheet(model.userUpdatedInfo)
+        if (model.userInfo.isNotEmpty()) {
+            binding?.eta?.text = model.userInfo
+            if (model.isChanged) {
+                binding?.eta?.setCompoundDrawablesRelativeWithIntrinsicBounds(0, 0, com.tokopedia.logisticCommon.R.drawable.eta_info, 0)
+                binding?.eta?.setOnClickListener {
+                    showEtaBottomSheet(model.userUpdatedInfo)
+                }
             }
+        } else {
+            binding?.lblEta?.visibility = View.GONE
+            binding?.eta?.visibility = View.GONE
         }
     }
 
@@ -241,8 +362,10 @@ class TrackingPageFragment: BaseDaggerFragment(), TrackingHistoryAdapter.OnImage
         if (remainingSeconds <= 0) return
         val timeInMillis = remainingSeconds * 1000
         val strFormat = if (context != null) context?.getString(R.string.retry_dateline_info) else ""
-        mAnalytics.eventViewLabelTungguRetry(
-                DateUtils.formatElapsedTime(timeInMillis / 1000), mOrderId)
+        mOrderId?.let {
+            OrderAnalyticsOrderTracking.eventViewLabelTungguRetry(
+                    DateUtils.formatElapsedTime(timeInMillis / 1000), it)
+        }
         mCountDownTimer = object : CountDownTimer(timeInMillis, PER_SECOND.toLong()) {
             override fun onTick(millsUntilFinished: Long) {
                 if (context != null) {
@@ -263,7 +386,7 @@ class TrackingPageFragment: BaseDaggerFragment(), TrackingHistoryAdapter.OnImage
 
     private fun startSuccessCountdown() {
         binding?.retryPickupButton?.text = getText(R.string.find_new_driver)
-        Observable.timer(5, TimeUnit.SECONDS)
+        Observable.timer(NEW_DRIVER_COUNT_DOWN, TimeUnit.SECONDS)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(object: Subscriber<Long>() {
@@ -289,12 +412,12 @@ class TrackingPageFragment: BaseDaggerFragment(), TrackingHistoryAdapter.OnImage
     }
 
     private fun setHistoryView(model: TrackOrderModel) {
-        if (model.invalid || model.orderStatus == 501 || model.change == 0 || model.trackHistory.isEmpty()) {
+        if (model.invalid || model.orderStatus == INVALID_ORDER_STATUS || model.change == 0 || model.trackHistory.isEmpty()) {
             binding?.trackingHistory?.visibility = View.GONE
         } else {
             binding?.trackingHistory?.visibility = View.VISIBLE
             binding?.trackingHistory?.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
-            binding?.trackingHistory?.adapter = TrackingHistoryAdapter(model.trackHistory, dateUtil, mOrderId?.toLong(), this)
+            binding?.trackingHistory?.adapter = TrackingHistoryAdapter(model.trackHistory, userSession, mOrderId?.toLong(), this)
         }
     }
 
@@ -344,7 +467,7 @@ class TrackingPageFragment: BaseDaggerFragment(), TrackingHistoryAdapter.OnImage
             binding?.notificationHelpStep?.visibility = View.VISIBLE
             binding?.notificationHelpStep?.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
             binding?.notificationHelpStep?.adapter = EmptyTrackingNotesAdapter()
-        } else if (model.orderStatus == 501 || model.change == 0 || model.trackHistory.isEmpty()) {
+        } else if (model.orderStatus == INVALID_ORDER_STATUS || model.change == 0 || model.trackHistory.isEmpty()) {
             binding?.emptyUpdateNotification?.visibility = View.VISIBLE
             binding?.notificationText?.text = getString(R.string.warning_no_courier_change)
             binding?.notificationHelpStep?.visibility = View.GONE
@@ -366,7 +489,6 @@ class TrackingPageFragment: BaseDaggerFragment(), TrackingHistoryAdapter.OnImage
     }
 
     private fun goToLiveTrackingPage(model: TrackOrderModel) {
-        mAnalytics.eventClickOrderTrackingClickButtonLiveTracking()
         var trackingUrl = mTrackingUrl
         if (trackingUrl.isNullOrEmpty()) {
             trackingUrl = model.detail.trackingUrl
@@ -382,9 +504,12 @@ class TrackingPageFragment: BaseDaggerFragment(), TrackingHistoryAdapter.OnImage
     companion object {
         private const val PER_SECOND = 1000
         private const val LIVE_TRACKING_VIEW_REQ = 1
+        private const val NEW_DRIVER_COUNT_DOWN = 5L
+        private const val INVALID_ORDER_STATUS = 501
         private const val ARGUMENTS_ORDER_ID = "ARGUMENTS_ORDER_ID"
         private const val ARGUMENTS_TRACKING_URL = "ARGUMENTS_TRACKING_URL"
         private const val ARGUMENTS_CALLER = "ARGUMENTS_CALLER"
+        private const val ICON_OPEN_TIPPING_GOJEK = "https://images.tokopedia.net/img/android/tipping/Group 3125093.png"
 
         fun createFragment(orderId: String?, liveTrackingUrl: String?, caller: String?): TrackingPageFragment {
             return TrackingPageFragment().apply {
@@ -397,9 +522,9 @@ class TrackingPageFragment: BaseDaggerFragment(), TrackingHistoryAdapter.OnImage
         }
     }
 
-    override fun onImageItemClicked(imageId: String, orderId: Long) {
-        val url = getDeliveryImage(imageId, orderId, "large",
-                userSession.userId, 1, userSession.deviceId)
+    override fun onImageItemClicked(imageId: String, orderId: Long, description: String) {
+        val url = getDeliveryImage(imageId, orderId, IMAGE_LARGE_SIZE,
+                userSession.userId, DEFAULT_OS_TYPE, userSession.deviceId)
         val authKey = String.format("%s %s", TrackingPageUtil.HEADER_VALUE_BEARER, userSession.accessToken)
         val newUrl = GlideUrl(
             url, LazyHeaders.Builder()
@@ -411,7 +536,6 @@ class TrackingPageFragment: BaseDaggerFragment(), TrackingHistoryAdapter.OnImage
             binding?.imgProof?.let { imgProof ->
                 Glide.with(it.context)
                     .load(newUrl)
-                    .centerCrop()
                     .placeholder(it.context.getDrawable(R.drawable.ic_image_error))
                     .error(it.context.getDrawable(R.drawable.ic_image_error))
                     .dontAnimate()
@@ -419,11 +543,13 @@ class TrackingPageFragment: BaseDaggerFragment(), TrackingHistoryAdapter.OnImage
             }
         }
 
-        binding?.imagePreviewLarge?.visibility = View.VISIBLE
-        binding?.iconClose?.setOnClickListener {
-            binding?.imagePreviewLarge?.visibility = View.GONE
+        binding?.run {
+            proofDescription.text = description
+            imagePreviewLarge.visibility = View.VISIBLE
+            iconClose.setOnClickListener {
+                binding?.imagePreviewLarge?.visibility = View.GONE
+            }
         }
-
     }
 
 }

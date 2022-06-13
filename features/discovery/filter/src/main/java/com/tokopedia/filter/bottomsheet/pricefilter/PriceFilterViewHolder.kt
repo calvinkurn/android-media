@@ -10,13 +10,14 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.filter.R
 import com.tokopedia.filter.common.helper.ChipSpacingItemDecoration
 import com.tokopedia.filter.common.helper.addItemDecorationIfNotExists
+import com.tokopedia.filter.databinding.SortFilterBottomSheetChipsLayoutBinding
+import com.tokopedia.filter.databinding.SortFilterBottomSheetPriceFilterViewHolderBinding
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.unifycomponents.TextFieldUnify2
 import com.tokopedia.utils.text.currency.AfterTextWatcher
 import com.tokopedia.utils.text.currency.CurrencyFormatHelper
-import kotlinx.android.synthetic.main.sort_filter_bottom_sheet_chips_layout.view.*
-import kotlinx.android.synthetic.main.sort_filter_bottom_sheet_price_filter_view_holder.view.*
+import com.tokopedia.utils.view.binding.viewBinding
 
 internal class PriceFilterViewHolder(
     itemView: View,
@@ -26,6 +27,7 @@ internal class PriceFilterViewHolder(
     companion object {
         val LAYOUT = R.layout.sort_filter_bottom_sheet_price_filter_view_holder
     }
+    private var binding : SortFilterBottomSheetPriceFilterViewHolderBinding? by viewBinding()
 
     private val layoutManager = ChipsLayoutManager
             .newBuilder(itemView.context)
@@ -41,21 +43,21 @@ internal class PriceFilterViewHolder(
     private var priceFilterViewModel: PriceFilterViewModel? = null
 
     init {
-        itemView.priceFilterMinValue?.addNumberTextChangedListener {
+        binding?.priceFilterMinValue?.addNumberTextChangedListener {
             val priceFilterViewModel = priceFilterViewModel ?: return@addNumberTextChangedListener
             priceFilterViewListener.onMinPriceEditedFromTextInput(
                 priceFilterViewModel,
                 it.currencyToInt(),
             )
         }
-        itemView.priceFilterMaxValue?.addNumberTextChangedListener {
+        binding?.priceFilterMaxValue?.addNumberTextChangedListener {
             val priceFilterViewModel = priceFilterViewModel ?: return@addNumberTextChangedListener
             priceFilterViewListener.onMaxPriceEditedFromTextInput(
                 priceFilterViewModel,
                 it.currencyToInt(),
             )
         }
-        itemView.priceRangeFilterRecyclerView?.let {
+        binding?.priceRangeFilterRecyclerView?.let {
             it.layoutManager = layoutManager
             it.isNestedScrollingEnabled = false
             it.addItemDecorationIfNotExists(spacingItemDecoration)
@@ -82,15 +84,15 @@ internal class PriceFilterViewHolder(
     }
 
     private fun bindTitle(data: PriceFilterViewModel) {
-        itemView.priceFilterTitle?.text = data.priceFilter.title
+        binding?.priceFilterTitle?.text = data.priceFilter.title
     }
 
     private fun bindMinMaxPriceValue(priceFilterViewModel: PriceFilterViewModel) {
-        itemView.priceFilterMinValue?.bindPriceFilterValue(
+        binding?.priceFilterMinValue?.bindPriceFilterValue(
             priceFilterViewModel.minPriceFilterValue,
         )
 
-        itemView.priceFilterMaxValue?.bindPriceFilterValue(
+        binding?.priceFilterMaxValue?.bindPriceFilterValue(
             priceFilterViewModel.maxPriceFilterValue,
         )
     }
@@ -115,8 +117,7 @@ internal class PriceFilterViewHolder(
         val priceRangeOptionAdapter = PriceRangeOptionAdapter(element, priceFilterViewListener)
         val removeAndRecycleExistingViews = false
 
-        itemView
-            .priceRangeFilterRecyclerView
+        binding?.priceRangeFilterRecyclerView
             ?.swapAdapter(priceRangeOptionAdapter, removeAndRecycleExistingViews)
     }
 
@@ -144,15 +145,17 @@ internal class PriceFilterViewHolder(
             private val priceFilterViewModel: PriceFilterViewModel,
             private val priceFilterViewListener: PriceFilterViewListener
     ): RecyclerView.ViewHolder(itemView) {
+        private var binding: SortFilterBottomSheetChipsLayoutBinding? by viewBinding()
 
         fun bind(optionViewModel: PriceOptionViewModel) {
-            itemView.sortFilterChipsUnify?.chipText = optionViewModel.option.name
-            itemView.sortFilterChipsUnify?.chipType = ChipsUnify.TYPE_NORMAL
-            itemView.sortFilterChipsUnify?.chipSize = ChipsUnify.SIZE_MEDIUM
-            itemView.sortFilterChipsUnify?.chipType =
+            val sortFilterChipsUnify = binding?.sortFilterChipsUnify ?:return
+            sortFilterChipsUnify.chipText = optionViewModel.option.name
+            sortFilterChipsUnify.chipType = ChipsUnify.TYPE_NORMAL
+            sortFilterChipsUnify.chipSize = ChipsUnify.SIZE_MEDIUM
+            sortFilterChipsUnify.chipType =
                     if (optionViewModel.isSelected) ChipsUnify.TYPE_SELECTED
                     else ChipsUnify.TYPE_NORMAL
-            itemView.sortFilterChipsUnify?.setOnClickListener {
+            sortFilterChipsUnify.setOnClickListener {
                 priceFilterViewListener.onPriceRangeClicked(priceFilterViewModel, optionViewModel)
             }
         }

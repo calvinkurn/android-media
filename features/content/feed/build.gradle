@@ -59,6 +59,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.feedComponent)
     implementation projectOrAar(rootProject.ext.features.kolCommon)
     implementation projectOrAar(rootProject.ext.features.wishlistCommon)
+    implementation projectOrAar(rootProject.ext.features.wishlistCommonV2)
     implementation projectOrAar(rootProject.ext.features.navigationCommon)
     implementation projectOrAar(rootProject.ext.features.searchbar)
     implementation projectOrAar(rootProject.ext.features.explore)
@@ -91,28 +92,26 @@ dependencies {
     implementation rootProject.ext.unifyDependencies.global_error
     implementation projectOrAar(rootProject.ext.libraries.graphql)
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
-    implementation rootProject.ext.tkpdInternalLibDependencies.usersession
+    implementation projectOrAar(rootProject.ext.libraries.usersession)
     implementation rootProject.ext.tkpdInternalLibDependencies.url
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
-    implementation rootProject.ext.tkpdInternalLibDependencies.network
+    implementation projectOrAar(rootProject.ext.libraries.network)
 
     implementation rootProject.ext.supportLibDependencies.constraintLayout
     implementation rootProject.ext.playServicesDependencies.maps
-    implementation rootProject.ext.miscDependencies.loaderviewlibrary
     implementation rootProject.ext.miscDependencies.roundCornerProgressBar
     implementation rootProject.ext.miscDependencies.dagger
     implementation rootProject.ext.supportLibDependencies.constraintLayout
     implementation rootProject.ext.supportLibDependencies.supportV4
     implementation rootProject.ext.supportLibDependencies.appCompactV7
+    implementation project(path: ':libraries:adapter_delegate')
+    implementation project(path: ':libraries:iris_session')
     kapt rootProject.ext.miscDependencies.daggerCompiler
     implementation rootProject.ext.debugToolsDependencies.chuck
     implementation rootProject.ext.tkpdInternalLibDependencies.analyticConstants
     implementation rootProject.ext.miscDependencies.roundCornerProgressBar
     implementation rootProject.ext.miscDependencies.multiDex
     implementation rootProject.ext.miscDependencies.lottie
-
-    // Embrace
-    implementation rootProject.ext.miscDependencies.embraceSdk
 
     implementation projectOrAar(rootProject.ext.features.sellerMigrationCommon)
     implementation projectOrAar(rootProject.ext.features.createpostCommon)

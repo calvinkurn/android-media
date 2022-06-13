@@ -35,5 +35,6 @@ fun String.decode(): String {
  * Check the String url is encoded or not
  */
 fun String.isUrlEncoded() : Boolean {
-    return contains("%2F") || contains("%252F")
+    return contains("%2F") || contains("%252F") ||
+            contains("%3F") || contains("%253F")
 }

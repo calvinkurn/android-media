@@ -11,7 +11,6 @@ import io.mockk.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.test.TestCoroutineDispatcher
 import kotlinx.coroutines.test.setMain
-import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -23,7 +22,7 @@ class CategoryNavigationViewModelTest {
     private val application: Application = mockk()
     private val testString = "testData"
     private val viewModel: CategoryNavigationViewModel by lazy {
-        spyk(CategoryNavigationViewModel(application, componentsItem, 0))
+        spyk(CategoryNavigationViewModel(application, componentsItem, 99))
     }
     private val useCase: CategoryNavigationUseCase by lazy {
         mockk()
@@ -33,6 +32,17 @@ class CategoryNavigationViewModelTest {
     fun setup() {
         MockKAnnotations.init(this)
         Dispatchers.setMain(TestCoroutineDispatcher())
+    }
+
+    @Test
+    fun `test for useCase`() {
+        val viewModel: CategoryNavigationViewModel =
+                spyk(CategoryNavigationViewModel(application, componentsItem, 99))
+
+        val useCase = mockk<CategoryNavigationUseCase>()
+        viewModel.categoryNavigationUseCase = useCase
+
+        assert(viewModel.categoryNavigationUseCase === useCase)
     }
 
     @Test
@@ -64,16 +74,20 @@ class CategoryNavigationViewModelTest {
 
         viewModel.categoryNavigationUseCase = useCase
         coEvery { useCase.getCategoryNavigationData(componentsItem.id, componentsItem.pageEndPoint) } throws Exception("Error")
-        viewModel.getCategoryNavigationData()
+        viewModel.onAttachToViewHolder()
         coVerify { useCase.getCategoryNavigationData(componentsItem.id, componentsItem.pageEndPoint) }
         assert(viewModel.getListData().value is Fail)
 
         coEvery { useCase.getCategoryNavigationData(componentsItem.id, componentsItem.pageEndPoint) } returns true
         val list = ArrayList<ComponentsItem>()
         every { componentsItem.getComponentsItem() } returns list
-        viewModel.getCategoryNavigationData()
+        viewModel.onAttachToViewHolder()
         assert(viewModel.getListData().value is Success)
         assert((viewModel.getListData().value as Success).data === list)
     }
 
+    @Test
+    fun `test for position passed`(){
+        assert(viewModel.position == 99)
+    }
 }

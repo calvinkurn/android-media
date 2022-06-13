@@ -8,34 +8,57 @@ import androidx.core.content.ContextCompat
 import androidx.core.widget.doOnTextChanged
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.textfield.TextInputLayout
+import com.tokopedia.kotlin.extensions.view.isVisible
+import com.tokopedia.kotlin.extensions.view.isZero
+import com.tokopedia.product.addedit.R
 import com.tokopedia.product.addedit.common.util.setText
-import kotlinx.android.synthetic.main.item_specification_value.view.*
+import com.tokopedia.product.addedit.specification.presentation.model.SpecificationInputModel
+import com.tokopedia.unifycomponents.TextAreaUnify
 
-class SpecificationValueViewHolder(itemView: View, onSpecificationClickListener: OnSpecificationValueViewHolderClickListener) : RecyclerView.ViewHolder(itemView) {
+class SpecificationValueViewHolder(
+    itemView: View,
+    onSpecificationClickListener: OnSpecificationValueViewHolderClickListener
+) : RecyclerView.ViewHolder(itemView) {
 
     interface OnSpecificationValueViewHolderClickListener {
         fun onSpecificationValueTextClicked(position: Int)
         fun onSpecificationValueTextCleared(position: Int)
+        fun onTooltipRequiredClicked()
     }
 
+    private val tfSpecification: TextAreaUnify? = itemView.findViewById(R.id.tfSpecification)
+    private val tooltipRequired: View? = itemView.findViewById(R.id.tooltipRequired)
+
     init {
-        itemView.tfSpecification.textAreaInput.setOnClickListener {
+        tfSpecification?.textAreaInput?.setOnClickListener {
             onSpecificationClickListener.onSpecificationValueTextClicked(adapterPosition)
         }
-        itemView.tfSpecification.textAreaInput.doOnTextChanged { text, _, count, _ ->
+        tfSpecification?.textAreaInput?.doOnTextChanged { text, _, count, _ ->
             if (count > 0 && text?.isBlank() == true)
                 onSpecificationClickListener.onSpecificationValueTextCleared(adapterPosition)
         }
+        tooltipRequired?.setOnClickListener {
+            onSpecificationClickListener.onTooltipRequiredClicked()
+        }
     }
 
-    fun bindData(title: String, value: String) {
-        itemView.tfSpecification.textAreaInput.keyListener = null // disable editing
-        itemView.tfSpecification.textAreaInput.isFocusable = false
-        itemView.tfSpecification.textAreaInput.isClickable = true
-        itemView.tfSpecification.textAreaLabel = title
-        itemView.tfSpecification.setText(value)
-        setTextInputLayoutHintColor(itemView.tfSpecification.textAreaWrapper, itemView.context,
+    fun bindData(title: String, selectedSpecification: SpecificationInputModel) {
+        tfSpecification?.apply {
+            val errorMessage = if (selectedSpecification.errorMessageRes.isZero()) ""
+                               else context.getString(selectedSpecification.errorMessageRes)
+            val suffix = if (selectedSpecification.required)
+                context.getString(R.string.label_asterisk) else ""
+            textAreaInput.keyListener = null // disable editing text
+            textAreaInput.isFocusable = false
+            textAreaInput.isClickable = true
+            textAreaLabel = title + suffix
+            textAreaMessage = errorMessage
+            isError = errorMessage.isNotEmpty()
+            setText(selectedSpecification.data)
+            setTextInputLayoutHintColor(textAreaWrapper, itemView.context,
                 com.tokopedia.unifyprinciples.R.color.Unify_N700_68)
+            tooltipRequired?.isVisible = selectedSpecification.required
+        }
     }
 
     private fun setTextInputLayoutHintColor(textInputLayout: TextInputLayout, context: Context, @ColorRes colorIdRes: Int) {

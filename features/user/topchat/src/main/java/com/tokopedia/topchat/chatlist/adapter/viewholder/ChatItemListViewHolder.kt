@@ -302,7 +302,7 @@ class ChatItemListViewHolder constructor(
             )
         } else {
             itemView.setBackgroundColor(
-                MethodChecker.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N0)
+                MethodChecker.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_Background)
             )
         }
     }

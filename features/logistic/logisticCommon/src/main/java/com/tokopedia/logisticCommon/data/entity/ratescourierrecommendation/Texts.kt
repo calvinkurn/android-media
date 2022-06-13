@@ -8,5 +8,7 @@ data class Texts(
         @SerializedName("chosen_courier")
         val chosenCourier: String = "",
         @SerializedName("ticker_courier")
-        val tickerCourier: String = ""
+        val tickerCourier: String = "",
+        @SerializedName("bottom_sheet_description")
+        val bottomSheetDescription: String = ""
 )

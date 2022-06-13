@@ -4,7 +4,6 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.seller.menu.common.constant.AdminFeature
-import com.tokopedia.seller.menu.common.view.uimodel.SectionTitleUiModel
 
 class ProductSectionTitleUiModel(
         title: String? = null,

@@ -100,8 +100,6 @@ class ProductManageFilterTab(
         changeTabSortFilterText()
     }
 
-    fun getProductCount(): Int = selectedTab?.count.orZero()
-
     fun isFilterActive() = selectedTab != null
 
     fun resetFilters() {

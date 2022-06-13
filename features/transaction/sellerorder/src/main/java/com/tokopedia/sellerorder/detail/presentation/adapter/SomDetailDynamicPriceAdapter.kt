@@ -1,6 +1,5 @@
 package com.tokopedia.sellerorder.detail.presentation.adapter
 
-import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -32,10 +31,6 @@ class SomDetailDynamicPriceAdapter(private val dynamicPriceList: List<SomDetailP
             binding?.run {
                 dynamicPriceLabel.text = data.label
                 dynamicPriceValue.text = data.value
-                if (data.textColor.isNotBlank()) {
-                    dynamicPriceLabel.setTextColor(Color.parseColor(data.textColor))
-                    dynamicPriceValue.setTextColor(Color.parseColor(data.textColor))
-                }
             }
         }
     }

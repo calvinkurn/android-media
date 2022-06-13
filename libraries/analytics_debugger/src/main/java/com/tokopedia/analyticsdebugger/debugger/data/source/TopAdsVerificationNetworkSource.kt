@@ -20,6 +20,10 @@ import kotlin.collections.HashMap
 class TopAdsVerificationNetworkSource @Inject
 constructor(val context: Context, val graphqlUseCase: GraphqlUseCase) {
 
+    companion object {
+        private const val TOPADS_VERIFICATOR_CHUNK_SIZE = 50
+    }
+
     var PENDING_DURATION_MS = 10000 // 10 seconds
 
     private val topAdsLogDao: TopAdsLogDao
@@ -28,20 +32,26 @@ constructor(val context: Context, val graphqlUseCase: GraphqlUseCase) {
         topAdsLogDao = TkpdAnalyticsDatabase.getInstance(context).topAdsLogDao()
     }
 
-    fun appendVerificationStatus(logDBList: List<TopAdsLogDB>): Observable<List<TopAdsLogDB>> {
+    fun appendVerificationStatus(logDBList: List<TopAdsLogDB>, isForTopadsVerificator: Boolean): Observable<List<TopAdsLogDB>> {
         return Observable.create { subscriber ->
             val urlCheckList = ArrayList<String>()
             val urlCheckMap = HashMap<String, TopAdsLogDB>()
-
-            for (item in logDBList) {
-                if (item.eventStatus == STATUS_PENDING && System.currentTimeMillis() - item.timestamp > PENDING_DURATION_MS) {
-                    urlCheckList.add(item.url.trim())
-                    urlCheckMap[item.url.trim()] = item
+            val chuckedSize = if (isForTopadsVerificator) TOPADS_VERIFICATOR_CHUNK_SIZE else logDBList.size
+            logDBList.chunked(chuckedSize).forEach {
+                for (item in it) {
+                    if (item.eventStatus == STATUS_PENDING && System.currentTimeMillis() - item.timestamp > PENDING_DURATION_MS) {
+                        urlCheckList.add(item.url.trim())
+                        urlCheckMap[item.url.trim()] = item
+                    }
                 }
-            }
+                if (isForTopadsVerificator) {
+                    verifyAndUpdateItems(urlCheckList, urlCheckMap)
+                }
+                subscriber.onNext(it)
 
-            verifyAndUpdateItems(urlCheckList, urlCheckMap)
-            subscriber.onNext(logDBList)
+                urlCheckList.clear()
+                urlCheckMap.clear()
+            }
             subscriber.onCompleted()
         }
     }
@@ -52,7 +62,7 @@ constructor(val context: Context, val graphqlUseCase: GraphqlUseCase) {
                 TopAdsVerificationData::class.java
         )
         val variables = createParametersForQuery(urlCheckList)
-        graphqlRequest.setVariables(variables)
+        graphqlRequest.variables = variables
         graphqlUseCase.clearRequest()
         graphqlUseCase.addRequest(graphqlRequest)
         val response: TopAdsVerificationData? = graphqlUseCase.getData(RequestParams.EMPTY)

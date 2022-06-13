@@ -13,10 +13,10 @@ object PlayLivePusherUtil {
 
     // default config: 44.1kHz, Mono, CAMCORDER input
     fun getAudioConfig(config: PlayLivePusherConfig) = AudioConfig().apply {
-        sampleRate = config.audioSampleRate
+        sampleRate = config.audioRate
         channelCount = config.audioChannelCount
         audioSource = config.audioSource
-        bitRate = config.audioBitRate
+        bitRate = config.audioBitrate
     }
 
     // default config: h264, 2 sec. keyframe interval

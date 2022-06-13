@@ -1,8 +1,30 @@
 package com.tokopedia.purchase_platform.common.feature.promo.view.mapper
 
-import com.tokopedia.purchase_platform.common.feature.promo.data.response.validateuse.*
+import com.tokopedia.purchase_platform.common.feature.promo.data.response.validateuse.AdditionalInfo
+import com.tokopedia.purchase_platform.common.feature.promo.data.response.validateuse.BenefitSummaryInfo
+import com.tokopedia.purchase_platform.common.feature.promo.data.response.validateuse.DetailsItem
+import com.tokopedia.purchase_platform.common.feature.promo.data.response.validateuse.Message
+import com.tokopedia.purchase_platform.common.feature.promo.data.response.validateuse.PromoValidateUseResponse
+import com.tokopedia.purchase_platform.common.feature.promo.data.response.validateuse.SummariesItem
+import com.tokopedia.purchase_platform.common.feature.promo.data.response.validateuse.TickerInfo
+import com.tokopedia.purchase_platform.common.feature.promo.data.response.validateuse.TrackingDetailsItem
+import com.tokopedia.purchase_platform.common.feature.promo.data.response.validateuse.UsageSummaries
+import com.tokopedia.purchase_platform.common.feature.promo.data.response.validateuse.ValidateUsePromoRevamp
+import com.tokopedia.purchase_platform.common.feature.promo.data.response.validateuse.VoucherOrdersItem
 import com.tokopedia.purchase_platform.common.feature.promo.domain.model.PromoSpId
-import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.*
+import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.AdditionalInfoUiModel
+import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.BenefitSummaryInfoUiModel
+import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.DetailsItemUiModel
+import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.MessageUiModel
+import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.MvcShippingBenefitUiModel
+import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.PromoCheckoutVoucherOrdersItemUiModel
+import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.PromoSpIdUiModel
+import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.PromoUiModel
+import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.SummariesItemUiModel
+import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.TickerInfoUiModel
+import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.TrackingDetailsItemUiModel
+import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.UsageSummariesUiModel
+import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.ValidateUsePromoRevampUiModel
 
 /**
  * Created by fwidjaja on 2020-03-05.
@@ -20,6 +42,8 @@ class ValidateUsePromoCheckoutMapper {
 
         private fun mapToPromoUiModel(promo: PromoValidateUseResponse): PromoUiModel {
             return PromoUiModel(
+                    globalSuccess = promo.globalSuccess,
+                    success = promo.success,
                     codes = mapCodes(promo.codes),
                     messageUiModel = mapMessageUiModel(promo.message),
                     additionalInfoUiModel = mapToAdditionalInfoUiModel(promo.additionalInfo),
@@ -100,6 +124,7 @@ class ValidateUsePromoCheckoutMapper {
                 promoSpIdUiModels.add(mapPromoSpId(it))
             }
             additionalInfoUiModel.promoSpIds = promoSpIdUiModels
+            additionalInfoUiModel.pomlAutoApplied = additionalInfo.pomlAutoApplied
             return additionalInfoUiModel
         }
 

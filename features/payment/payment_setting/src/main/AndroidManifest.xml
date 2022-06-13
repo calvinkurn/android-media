@@ -6,46 +6,43 @@
             android:name=".list.view.activity.SettingListPaymentActivity"
             android:label="@string/payment_title_list_card"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.WhiteUnify">
-
+            android:theme="@style/Theme.WhiteUnify"
+            android:exported="false">
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
+
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
 
                 <data
                     android:scheme="@string/internal_scheme"
                     android:host="@string/host_payment"
-                    android:path="@string/path_setting"/>
+                    android:path="@string/path_setting" />
             </intent-filter>
-
         </activity>
-
         <activity
             android:name=".detail.view.activity.DetailCreditCardActivity"
             android:label="@string/payment_label_credit_card"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.WhiteUnify" />
-
         <activity
             android:name=".add.view.activity.AddCreditCardActivity"
             android:label="@string/payment_label_button_add_card"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.WhiteUnify">
-
+            android:theme="@style/Theme.WhiteUnify"
+            android:exported="false">
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
+
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
 
                 <data
                     android:scheme="@string/internal_scheme"
                     android:host="@string/host_payment"
-                    android:path="@string/path_add_credit_card"/>
+                    android:path="@string/path_add_credit_card" />
             </intent-filter>
-
         </activity>
-
         <activity
             android:name=".authenticate.view.activity.AuthenticateCreditCardActivity"
             android:label="@string/payment_label_credit_card_verification"

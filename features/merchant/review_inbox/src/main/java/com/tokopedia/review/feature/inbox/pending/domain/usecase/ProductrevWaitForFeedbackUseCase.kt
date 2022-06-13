@@ -41,15 +41,16 @@ class ProductrevWaitForFeedbackUseCase @Inject constructor(graphqlRepository: Gr
                       page
                       limit
                       hasNext
-                      userStats {
-                        labelTitle
-                        labelSubtitle
-                        imageURL
-                      }
                       state {
                         labelTitle
                         labelSubtitle
                         imageURL
+                      }
+                      banners {
+                        labelTitle
+                        labelSubtitle
+                        imageURL
+                        applink
                       }
                     }
                 }

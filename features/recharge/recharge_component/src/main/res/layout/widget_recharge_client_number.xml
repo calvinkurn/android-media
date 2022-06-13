@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <View
+            android:id="@+id/client_number_widget_operator_view"
+            android:layout_width="@dimen/layout_lvl7"
+            android:layout_height="@dimen/layout_lvl3"
+            android:background="@drawable/bg_client_number_operator_icon"
+            android:orientation="vertical"
+            app:layout_constraintBottom_toTopOf="@id/client_number_widget_main_layout"
+            app:layout_constraintStart_toStartOf="@id/client_number_widget_main_layout"
+            app:layout_constraintTop_toTopOf="@id/client_number_widget_main_layout" />
+
+        <ImageView
+            android:id="@+id/client_number_widget_operator_icon"
+            android:layout_width="@dimen/layout_lvl4"
+            android:layout_height="@dimen/layout_lvl2"
+            android:layout_gravity="center"
+            android:elevation="4dp"
+            android:scaleType="centerCrop"
+            android:src="@drawable/placeholder_grey"
+            app:layout_constraintBottom_toBottomOf="@id/client_number_widget_operator_view"
+            app:layout_constraintEnd_toEndOf="@id/client_number_widget_operator_view"
+            app:layout_constraintStart_toStartOf="@id/client_number_widget_operator_view"
+            app:layout_constraintTop_toTopOf="@id/client_number_widget_operator_view" />
+
+        <androidx.constraintlayout.widget.Group
+            android:id="@+id/client_number_widget_operator_group"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="invisible"
+            app:constraint_referenced_ids="client_number_widget_operator_view, client_number_widget_operator_icon" />
+
+        <include
+            android:id="@+id/client_number_widget_main_layout"
+            layout="@layout/view_client_number_widget_main"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <include
+            android:id="@+id/include_layout"
+            layout="@layout/view_recharge_client_number_simplified"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_lvl5"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</merge>

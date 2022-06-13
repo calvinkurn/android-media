@@ -16,4 +16,7 @@ public interface WrapperInterface {
     void setGaClientId(String gaClientId);
     void initSession();
     void initSession(Activity activity, boolean uriHaveCampaignData);
+    void setDelayedSessionInitFlag();
+    void setDataFromInstallReferrerParams(String installReferrerParams);
+    boolean isFirstOpen(Context context);
 }

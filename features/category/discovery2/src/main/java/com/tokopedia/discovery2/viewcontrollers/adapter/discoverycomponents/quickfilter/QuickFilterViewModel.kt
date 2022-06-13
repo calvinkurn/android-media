@@ -37,9 +37,9 @@ class QuickFilterViewModel(val application: Application, val components: Compone
     @Inject
     lateinit var quickFilterUseCase: QuickFilterUseCase
     private var selectedSort: HashMap<String, String> = HashMap()
-    private val quickFilterOptionList: ArrayList<Option> = ArrayList()
+    private val quickFilterList: ArrayList<Filter> = ArrayList()
     private val dynamicFilterModel: MutableLiveData<DynamicFilterModel> = MutableLiveData()
-    private val quickFiltersLiveData: MutableLiveData<ArrayList<Option>> = MutableLiveData()
+    private val quickFiltersLiveData: MutableLiveData<ArrayList<Filter>> = MutableLiveData()
     private val _filterCountLiveData: MutableLiveData<Int> = MutableLiveData()
     private val sortKeySet: MutableSet<String> = HashSet()
     private val productCountMutableLiveData = MutableLiveData<String?>()
@@ -70,13 +70,13 @@ class QuickFilterViewModel(val application: Application, val components: Compone
     }
 
     private fun addFilterOptions(filters: ArrayList<Filter>) {
-        quickFilterOptionList.clear()
+        quickFilterList.clear()
         for (item in filters) {
             if (!item.options.isNullOrEmpty()) {
-                quickFilterOptionList.addAll(item.options)
+                quickFilterList.add(item)
             }
         }
-        quickFiltersLiveData.value = quickFilterOptionList
+        quickFiltersLiveData.value = quickFilterList
     }
 
     fun getTargetComponent(): ComponentsItem? {
@@ -165,8 +165,9 @@ class QuickFilterViewModel(val application: Application, val components: Compone
     }
 
     fun clearQuickFilters(){
-        for (option in quickFilterOptionList)
-            components.filterController.setFilter(option, isFilterApplied = false, isCleanUpExistingFilterWithSameKey = false)
+        for (filter in quickFilterList)
+            for (option in filter.options)
+                components.filterController.setFilter(option, isFilterApplied = false, isCleanUpExistingFilterWithSameKey = false)
         applyFilterToSearchParameter(components.filterController.getParameter())
         reloadData()
     }
@@ -176,6 +177,27 @@ class QuickFilterViewModel(val application: Application, val components: Compone
             components.filterController.setFilter(option, isFilterApplied = true, isCleanUpExistingFilterWithSameKey = false)
         } else {
             components.filterController.setFilter(option, isFilterApplied = false, isCleanUpExistingFilterWithSameKey = false)
+        }
+        applyFilterToSearchParameter(components.filterController.getParameter())
+        setSelectedSort(components.filterController.getParameter())
+        reloadData()
+    }
+
+    fun onDropDownFilterSelected(options : List<Option>) {
+        for(option in options) {
+            if (option.inputState.toBoolean()) {
+                components.filterController.setFilter(
+                    option,
+                    isFilterApplied = true,
+                    isCleanUpExistingFilterWithSameKey = false
+                )
+            } else {
+                components.filterController.setFilter(
+                    option,
+                    isFilterApplied = false,
+                    isCleanUpExistingFilterWithSameKey = false
+                )
+            }
         }
         applyFilterToSearchParameter(components.filterController.getParameter())
         setSelectedSort(components.filterController.getParameter())

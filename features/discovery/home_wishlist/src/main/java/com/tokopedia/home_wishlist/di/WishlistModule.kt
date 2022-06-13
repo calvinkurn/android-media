@@ -16,6 +16,7 @@ import com.tokopedia.smart_recycler_helper.SmartExecutors
 import com.tokopedia.topads.sdk.di.TopAdsWishlistModule
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsImageViewUseCase
 import com.tokopedia.topads.sdk.repository.TopAdsRepository
+import com.tokopedia.topads.sdk.utils.TopAdsIrisSession
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
@@ -76,7 +77,7 @@ open class WishlistModule {
 
     @Provides
     @WishlistScope
-    fun provideTopAdsImageViewUseCase(userSession: UserSessionInterface): TopAdsImageViewUseCase = TopAdsImageViewUseCase(userSession.userId, TopAdsRepository())
+    fun provideTopAdsImageViewUseCase(userSession: UserSessionInterface,@ApplicationContext context: Context): TopAdsImageViewUseCase = TopAdsImageViewUseCase(userSession.userId, TopAdsRepository(),TopAdsIrisSession(context).getSessionId())
 
     @Provides
     @WishlistScope

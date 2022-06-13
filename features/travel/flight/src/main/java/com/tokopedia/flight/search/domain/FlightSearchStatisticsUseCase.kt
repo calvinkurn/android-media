@@ -173,11 +173,11 @@ class FlightSearchStatisticsUseCase @Inject constructor(
                 }
             }
 
-            if (!isHasFreeRapidTest && journeyAndRoutes.flightJourneyTable.hasFreeRapidTest) {
+            if (!isHasFreeRapidTest && journeyAndRoutes.flightJourneyTable.freeRapidTestLabel.isNotEmpty()) {
                 isHasFreeRapidTest = true
             }
 
-            if (!isSeatDistancing && journeyAndRoutes.flightJourneyTable.isSeatDistancing) {
+            if (!isSeatDistancing && journeyAndRoutes.flightJourneyTable.seatDistancingLabel.isNotEmpty()) {
                 isSeatDistancing = true
             }
         }

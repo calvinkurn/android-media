@@ -51,4 +51,48 @@ object DigitalHomepageGqlQuery {
           }
         }
     """.trimIndent()
+
+    val searchAutoComplete = """
+            query DigitalSearchSuggestionQuery(${'$'}param: String!){
+        digiPersoSearchSuggestion(param: ${'$'}param) {
+            data {
+                id
+                name
+                tracking {
+                    userType
+                    keyword
+                }
+                items {
+                    template
+                    type
+                    appLink
+                    url
+                    title
+                    subtitle
+                    iconTitle
+                    iconSubtitle
+                    shortcutImage
+                    imageURL
+                    urlTracker
+                    discountPercentage
+                    discountedPrice
+                    originalPrice
+                    tracking {
+                        itemType
+                        categoryID
+                        categoryName
+                        operatorID
+                        operatorName
+                    }
+                    childItems {
+                        template
+                        type
+                        appLink
+                        url
+                        title
+                    }
+                }
+            }
+        }
+    }""".trimIndent()
 }

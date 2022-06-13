@@ -12,6 +12,9 @@ object DigitalCheckoutTrackingConst {
         const val PRODUCT_VIEW = "productView"
         const val PRODUCT_CLICK = "productClick"
         const val DIGITAL_GENERAL_EVENT = "digitalGeneralEvent"
+        const val VIEW_CHECKOUT_IRIS = "viewCheckoutIris"
+        const val VIEW_DIGITAL_IRIS = "viewDigitalIris"
+        const val CLICK_DIGITAL = "clickDigital"
     }
 
     object Category {
@@ -37,8 +40,12 @@ object DigitalCheckoutTrackingConst {
         const val CLICK_TEBUS_MURAH_ICON = "click tebus murah icon"
         const val UNCHECK_TEBUS_MURAH_ICON = "uncheck tebus murah icon"
 
-
         const val IMPRESSION_CROSSELL_ICON = "impression crossell icon"
+        const val IMPRESSION_AUTODEBIT = "view tick box auto debit"
+
+        const val SUBSCRIPTION_CLICK_INFO_BUTTON = "click on info button"
+        const val SUBSCRIPTION_CLICK_CLOSE_MORE_INFO = "click x info bottom sheet"
+        const val SUBSCRIPTION_VIEW_MORE_INFO_BOTTOM_SHEET = "view info bottom sheet"
     }
 
     object Label {

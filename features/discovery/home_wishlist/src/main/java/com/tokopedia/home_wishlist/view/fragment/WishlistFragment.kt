@@ -56,7 +56,6 @@ import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.remoteconfig.RemoteConfigKey
-import com.tokopedia.remoteconfig.RollenceKey
 import com.tokopedia.remoteconfig.abtest.AbTestPlatform
 import com.tokopedia.searchbar.data.HintData
 import com.tokopedia.searchbar.navigation_component.NavToolbar
@@ -72,6 +71,7 @@ import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.wishlist.common.request.WishlistAdditionalParamRequest
 import com.tokopedia.wishlist.common.toEmptyStringIfZero
 import kotlinx.android.synthetic.main.fragment_new_home_wishlist.*
+import timber.log.Timber
 import javax.inject.Inject
 
 
@@ -128,7 +128,6 @@ open class WishlistFragment : BaseDaggerFragment(), WishlistListener, TopAdsList
     private val searchView by lazy { view?.findViewById<CustomSearchView>(R.id.wishlist_search_view) }
 
     private var additionalParamRequest: WishlistAdditionalParamRequest? = null
-    private var useNewInbox = false
     private var launchSourceWishlist: String = ""
     private var scrollAfterSubmit = false
 
@@ -159,14 +158,7 @@ open class WishlistFragment : BaseDaggerFragment(), WishlistListener, TopAdsList
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        initInboxAbTest()
         return inflater.inflate(R.layout.fragment_new_home_wishlist, container, false)
-    }
-
-    private fun initInboxAbTest() {
-        useNewInbox = getAbTestPlatform().getString(
-            RollenceKey.KEY_AB_INBOX_REVAMP, RollenceKey.VARIANT_OLD_INBOX
-        ) == RollenceKey.VARIANT_NEW_INBOX
     }
 
     private fun getAbTestPlatform(): AbTestPlatform {
@@ -418,28 +410,32 @@ open class WishlistFragment : BaseDaggerFragment(), WishlistListener, TopAdsList
     }
 
     private fun initRecyclerView() {
-        recyclerView?.layoutManager = object: StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL) {
-            override fun supportsPredictiveItemAnimations() = false
+        try {
+            recyclerView?.layoutManager = object: StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL) {
+                override fun supportsPredictiveItemAnimations() = false
 
-            override fun onLayoutChildren(recycler: RecyclerView.Recycler?, state: RecyclerView.State?) {
-                try {
-                    super.onLayoutChildren(recycler, state)
-                } catch (e: Exception) {
-                    e.printStackTrace()
+                override fun onLayoutChildren(recycler: RecyclerView.Recycler?, state: RecyclerView.State?) {
+                    try {
+                        super.onLayoutChildren(recycler, state)
+                    } catch (e: Exception) {
+                        Timber.d(e)
+                    }
                 }
             }
+            recyclerView?.adapter = adapter
+            GravitySnapHelper(Gravity.TOP, true).attachToRecyclerView(recyclerView)
+            recyclerView?.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+                override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                    super.onScrollStateChanged(recyclerView, newState)
+                    navToolbar?.hideKeyboard()
+                    if (coachmarkIsAvailable()) {
+                        coachMark?.dismissCoachMark()
+                    }
+                }
+            })
+        } catch (e: Exception) {
+            Timber.d(e)
         }
-        recyclerView?.adapter = adapter
-        GravitySnapHelper(Gravity.TOP, true).attachToRecyclerView(recyclerView)
-        recyclerView?.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
-                super.onScrollStateChanged(recyclerView, newState)
-                navToolbar?.hideKeyboard()
-                if (coachmarkIsAvailable()) {
-                    coachMark?.dismissCoachMark()
-                }
-            }
-        })
     }
 
     private fun observeData() {
@@ -489,9 +485,7 @@ open class WishlistFragment : BaseDaggerFragment(), WishlistListener, TopAdsList
             searchView?.setWishlistCount(it)
         })
         viewModel.loadMoreWishlistAction.observe(viewLifecycleOwner, Observer { loadMoreWishlistActionData ->
-            updateScrollListenerState(
-                    loadMoreWishlistActionData.getContentIfNotHandled()?.hasNextPage ?: false)
-
+            updateScrollListenerState()
         })
     }
 
@@ -539,18 +533,22 @@ open class WishlistFragment : BaseDaggerFragment(), WishlistListener, TopAdsList
     }
 
     private fun renderList(list: List<WishlistDataModel>) {
-        val recyclerViewState = recyclerView?.layoutManager?.onSaveInstanceState()
-        adapter.submitList(list)
-        if (scrollAfterSubmit) {
-            recyclerView?.addOneTimeGlobalLayoutListener {
-                recyclerView?.scrollToPosition(0)
+        try {
+            val recyclerViewState = recyclerView?.layoutManager?.onSaveInstanceState()
+            adapter.submitList(list)
+            if (scrollAfterSubmit) {
+                recyclerView?.addOneTimeGlobalLayoutListener {
+                    recyclerView?.scrollToPosition(0)
+                }
+                scrollAfterSubmit = false
             }
-            scrollAfterSubmit = false
+            recyclerView?.layoutManager?.onRestoreInstanceState(recyclerViewState)
+        } catch (e: Exception) {
+            Timber.d(e)
         }
-        recyclerView?.layoutManager?.onRestoreInstanceState(recyclerViewState)
     }
 
-    private fun updateScrollListenerState(hasNextPage: Boolean) {
+    private fun updateScrollListenerState() {
         endlessRecyclerViewScrollListener?.updateStateAfterGetData()
     }
 
@@ -850,8 +848,16 @@ open class WishlistFragment : BaseDaggerFragment(), WishlistListener, TopAdsList
     }
 
     private fun updateBottomMargin() {
-        recyclerView?.removeItemDecoration(itemDecorationBottom)
-        recyclerView?.addItemDecoration(itemDecorationBottom)
+        recyclerView?.isComputingLayout?.let {
+            if (isAllowedNotify(it)) {
+                recyclerView?.removeItemDecoration(itemDecorationBottom)
+                recyclerView?.addItemDecoration(itemDecorationBottom)
+            }
+        }
+    }
+
+    private fun isAllowedNotify(isComputingLayout: Boolean): Boolean {
+        return !isComputingLayout
     }
 
     private fun generateWishlistAdditionalParamRequest(): WishlistAdditionalParamRequest {

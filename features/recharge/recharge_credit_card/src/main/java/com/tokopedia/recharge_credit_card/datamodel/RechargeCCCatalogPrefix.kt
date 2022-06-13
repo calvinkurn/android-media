@@ -12,6 +12,9 @@ class CatalogPrefixSelect(
         @SerializedName("text")
         @Expose
         val text: String = "",
+        @SerializedName("validations")
+        @Expose
+        val validations: List<Validation> = listOf(),
         @SerializedName("prefixes")
         @Expose
         val prefixes: List<CatalogPrefixs> = listOf()
@@ -48,4 +51,16 @@ class CatalogPrefixAttributes(
         @SerializedName("name")
         @Expose
         val name: String = ""
+)
+
+class Validation(
+        @SerializedName("title")
+        @Expose
+        val title: String = "",
+        @SerializedName("message")
+        @Expose
+        val message: String = "",
+        @SerializedName("rule")
+        @Expose
+        val rule: String = ""
 )

@@ -3,7 +3,8 @@
     <dimen name="telco_space_3">3dp</dimen>
     <dimen name="telco_space_1">1dp</dimen>
     <dimen name="telco_banner_space">18dp</dimen>
-    <dimen name="telco_dynamic_banner_space">31dp</dimen>
+    <dimen name="telco_dynamic_banner_space">60dp</dimen>
+    <dimen name="telco_dynamic_banner_space_extended">84dp</dimen>
 
     <dimen name="telco_mccm_card_item_width">280dp</dimen>
 </resources>

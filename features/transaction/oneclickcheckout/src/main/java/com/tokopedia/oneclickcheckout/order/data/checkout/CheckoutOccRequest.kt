@@ -63,7 +63,20 @@ data class ShopProduct(
         @SerializedName("finsurance")
         val finsurance: Int = 0,
         @SerializedName("shipping_info")
-        val shippingInfo: ShippingInfo = ShippingInfo()
+        val shippingInfo: ShippingInfo = ShippingInfo(),
+        @SerializedName("items")
+        val items: List<AddOnItem> = emptyList()
+)
+
+data class AddOnItem(
+        @SerializedName("item_type")
+        val itemType: String = "",
+        @SerializedName("item_id")
+        val itemId: String = "",
+        @SerializedName("item_qty")
+        val itemQty: Long = 0,
+        @SerializedName("item_metadata")
+        val itemMetadata: String = ""
 )
 
 data class ProductData(
@@ -74,7 +87,9 @@ data class ProductData(
         @SerializedName("product_notes")
         val productNotes: String = "",
         @SerializedName("is_ppp")
-        val isPPP: Boolean = false
+        val isPPP: Boolean = false,
+        @SerializedName("items")
+        val items: List<AddOnItem> = emptyList()
 )
 
 data class ShippingInfo(

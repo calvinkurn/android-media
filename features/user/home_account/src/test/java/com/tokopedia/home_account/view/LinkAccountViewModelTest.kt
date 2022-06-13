@@ -2,6 +2,7 @@ package com.tokopedia.home_account.view
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
+import com.tokopedia.home_account.linkaccount.data.LinkStatus
 import com.tokopedia.home_account.linkaccount.data.LinkStatusResponse
 import com.tokopedia.home_account.linkaccount.domain.GetLinkStatusUseCase
 import com.tokopedia.home_account.linkaccount.domain.GetUserProfile
@@ -13,6 +14,7 @@ import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.*
+import junit.framework.Assert.assertTrue
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -47,6 +49,16 @@ class LinkAccountViewModelTest {
     fun `on Success Get Link Status, without get profile` () {
         coEvery { getLinkStatusUseCase.invoke(any()) } returns mockLinkStatusResponse
         viewModel.getLinkStatus(false)
+
+        verify {
+            linkStatusResponse.onChanged(Success(mockLinkStatusResponse))
+        }
+    }
+
+    @Test
+    fun `on Success Get Link Status, without get profile - default param` () {
+        coEvery { getLinkStatusUseCase.invoke(any()) } returns mockLinkStatusResponse
+        viewModel.getLinkStatus()
 
         verify {
             linkStatusResponse.onChanged(Success(mockLinkStatusResponse))
@@ -117,6 +129,37 @@ class LinkAccountViewModelTest {
         verify {
             linkStatusResponse.onChanged(Fail(throwable))
         }
+    }
+
+    @Test
+    fun `on Success Get Link Status, no match phone number` () {
+        val mockPhoneNo = "08123123123"
+        every { mockGetUserProfile.profileInfo.phone } returns mockPhoneNo
+        coEvery { getLinkStatusUseCase(any()) } returns mockLinkStatusResponse
+        coEvery { getUserProfile(Unit) } returns mockGetUserProfile
+
+        coEvery { mockLinkStatusResponse.response.linkStatus } returns arrayListOf()
+
+        viewModel.getLinkStatus(true)
+
+        assertTrue((viewModel.linkStatus.value as Success).data.response.linkStatus.isEmpty())
+    }
+
+    @Test
+    fun `on Success Get Link Status, multiple phone` () {
+        val mockPhoneNo = "08123123123"
+        every { mockGetUserProfile.profileInfo.phone } returns mockPhoneNo
+        coEvery { getLinkStatusUseCase(any()) } returns mockLinkStatusResponse
+        coEvery { getUserProfile(Unit) } returns mockGetUserProfile
+
+        coEvery { mockLinkStatusResponse.response.linkStatus } returns arrayListOf(
+            LinkStatus(phoneNo = "123"),
+            LinkStatus(phoneNo = "132")
+        )
+
+        viewModel.getLinkStatus(true)
+
+        assertTrue((viewModel.linkStatus.value as Success).data.response.linkStatus[0].phoneNo == mockPhoneNo)
     }
 
 }

@@ -26,7 +26,11 @@ class RecommendationItemViewHolder (
     override fun bind(recommendationItemDataView: RecommendationItemDataView) {
         val view = binding?.root ?: return
         val recommendationItem = recommendationItemDataView.recommendationItem
-        view.setProductModel(recommendationItem.toProductCardModel(hasThreeDots = true))
+        val productModel = recommendationItem.toProductCardModel(
+            hasThreeDots = true,
+            cardInteraction = true
+        )
+        view.setProductModel(productModel)
 
         view.setOnClickListener {
             listener.onProductClick(recommendationItem, "", adapterPosition)
@@ -53,5 +57,9 @@ class RecommendationItemViewHolder (
         binding?.root?.setThreeDotsOnClickListener {
             listener.onThreeDotsClick(recommendationItemDataView.recommendationItem, adapterPosition)
         }
+    }
+
+    override fun onViewRecycled() {
+        binding?.productCardView?.recycle()
     }
 }

@@ -21,7 +21,6 @@ import com.tokopedia.topchat.chatroom.domain.pojo.param.AddToCartParam;
 import com.tokopedia.topchat.chatroom.domain.pojo.srw.QuestionUiModel;
 import com.tokopedia.topchat.chatroom.view.uimodel.ReviewUiModel;
 import com.tokopedia.topchat.chatroom.view.viewmodel.InvoicePreviewUiModel;
-import com.tokopedia.topchat.chatroom.view.viewmodel.QuotationUiModel;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.track.TrackAppUtils;
 import com.tokopedia.user.session.UserSessionInterface;
@@ -136,8 +135,6 @@ public class TopChatAnalytics {
         public static final String VIEW_PRODUCT_PREVIEW = "view on product thumbnail";
         public static final String CLICK_THUMBNAIL = "click on thumbnail";
         public static final String CLICK_VOUCHER_THUMBNAIL = "click shop voucher thumbnail";
-        public static final String CLICK_ATC_PRODUCT_THUMBNAIL = "click atc on product thumbnail";
-        public static final String CLICK_BUY_PRODUCT_THUMBNAIL = "click buy on product thumbnail";
         public static final String SENT_INVOICE_ATTACHMENT = "click kirim after attach invoice";
         public static final String CLICK_SEE_BUTTON_ON_ATC_SUCCESS_TOASTER = "click lihat button on atc success toaster";
         public static final String CLICK_ADD_ATTACHMENT = "click add attachment";
@@ -151,7 +148,6 @@ public class TopChatAnalytics {
         String CLICK_ADD_TO_WISHLIST = "add wishlist - chat";
         String CLICK_REMOVE_FROM_WISHLIST = "remove wishlist - chat";
         String CLICK_REPLY_BUTTON = "click on reply button";
-        String CLICK_QUOTATION_ATTACHMENT = "click bayar on quotation thumbnail";
         String CLICK_IMAGE_THUMBNAIL = "click image on product thumbnail ";
         String CLICK_OP_CARD_DESCRIPTION = "click on order progress card";
         String CLICK_OP_CTA_DESCRIPTION = "click cta on order progress card";
@@ -365,40 +361,34 @@ public class TopChatAnalytics {
             @NotNull UserSessionInterface user,
             Boolean amISeller
     ) {
-        ArrayList<com.tokopedia.abstraction.processor.beta.ProductListImpressionProduct> products = new ArrayList<>();
-        com.tokopedia.abstraction.processor.beta.ProductListImpressionProduct product1 = new com.tokopedia.abstraction.processor.beta.ProductListImpressionProduct(
-                product.getIdString(),
-                product.getProductName(),
-                null,
-                product.getCategory(),
-                product.getVariants().toString(),
-                product.getPriceInt() + 0.0,
-                null,
-                PRODUCT_INDEX,
-                getFrom(product),
-                getFrom(product),
-                null,
-                null,
-                new ArrayMap<>()
-        );
-        products.add(product1);
-
-        ArrayMap<String, String> additionalData = new ArrayMap<String, String>();
         String eventLabel = product.getEventLabelImpression(amISeller);
-        additionalData.put(EVENT_LABEL, eventLabel);
-        Bundle bundle = com.tokopedia.abstraction.processor.beta.ProductListImpressionBundler.getBundle(
-                getFrom(product),
-                products,
-                null,
-                ProductListImpressionBundler.KEY,
-                Category.CHAT_DETAIL,
-                Action.VIEW_PRODUCT_PREVIEW,
-                BusinessUnit.Communication,
-                null,
-                additionalData
-        );
+        Bundle itemBundle = new Bundle();
+        itemBundle.putString(EE_PARAM_ITEM_ID, product.getIdString());
+        itemBundle.putDouble(EE_PARAM_PRICE, product.getPriceInt() + 0.0);
+        itemBundle.putString(EE_PARAM_ITEM_NAME, product.getProductName());
+        itemBundle.putString(EE_PARAM_ITEM_BRAND, "none");
+        itemBundle.putString(EE_PARAM_ITEM_VARIANT, "[]");
+        itemBundle.putString(EE_PARAM_ITEM_CATEGORY, product.getCategory());
+        itemBundle.putString("dimension87", "");
+        itemBundle.putString("dimension88", "");
+        itemBundle.putString("dimension40", getFrom(product));
+        itemBundle.putString("currency", "IDR");
+        itemBundle.putString("list", getFrom(product));
+        itemBundle.putString("index", String.valueOf(PRODUCT_INDEX));
+
+        Bundle eventDataLayer = new Bundle();
+        eventDataLayer.putString(TrackAppUtils.EVENT, ProductListImpressionBundler.KEY);
+        eventDataLayer.putString(TrackAppUtils.EVENT_CATEGORY, Category.CHAT_DETAIL);
+        eventDataLayer.putString(TrackAppUtils.EVENT_ACTION, Action.VIEW_PRODUCT_PREVIEW);
+        eventDataLayer.putString(TrackAppUtils.EVENT_LABEL, eventLabel);
+        eventDataLayer.putString(KEY_BUSINESS_UNIT, BusinessUnit.Communication);
+        eventDataLayer.putString(KEY_CURRENT_SITE, "");
+        eventDataLayer.putString("item_list", getFrom(product));
+        eventDataLayer.putParcelableArrayList(EE_VALUE_ITEMS, new ArrayList<Bundle>() {{
+            add(itemBundle);
+        }});
         TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(
-                ProductListImpressionBundler.KEY, bundle
+                ProductListImpressionBundler.KEY, eventDataLayer
         );
     }
 
@@ -425,32 +415,6 @@ public class TopChatAnalytics {
         eventTracking.put("eventLabel", "");
 
         return eventTracking;
-    }
-
-    // #AP7
-    public void eventClickAddToCartProductAttachment(
-            @NotNull ProductAttachmentUiModel product,
-            @NotNull UserSessionInterface user
-    ) {
-        TrackApp.getInstance().getGTM().sendGeneralEvent(DataLayer.mapOf(
-                EVENT_NAME, Name.CHAT_DETAIL,
-                EVENT_CATEGORY, Category.CHAT_DETAIL,
-                EVENT_ACTION, Action.CLICK_ATC_PRODUCT_THUMBNAIL,
-                EVENT_LABEL, String.format("%s - %s", getField(product.getStringBlastId()), product.getStringBlastId()),
-                USER_ID, user.getUserId()
-        ));
-    }
-
-    // #AP9
-    public void eventClickBuyProductAttachment(
-            @NotNull ProductAttachmentUiModel product
-    ) {
-        TrackApp.getInstance().getGTM().sendGeneralEvent(DataLayer.mapOf(
-                EVENT_NAME, Name.CHAT_DETAIL,
-                EVENT_CATEGORY, Category.CHAT_DETAIL,
-                EVENT_ACTION, Action.CLICK_BUY_PRODUCT_THUMBNAIL,
-                EVENT_LABEL, String.format("%s - %s", getField(product.getStringBlastId()), product.getStringBlastId())
-        ));
     }
 
     public void invoiceAttachmentSent(@NotNull InvoicePreviewUiModel invoice) {
@@ -581,16 +545,6 @@ public class TopChatAnalytics {
         payload.put("source", SELLERAPP_PUSH_NOTIF);
 
         TrackApp.getInstance().getGTM().sendGeneralEvent(payload);
-    }
-
-    // #QT1
-    public void eventClickQuotation(@NotNull QuotationUiModel msg) {
-        TrackApp.getInstance().getGTM().sendGeneralEvent(
-                Name.CHAT_DETAIL,
-                Category.CHAT_DETAIL,
-                Action.CLICK_QUOTATION_ATTACHMENT,
-                msg.getQuotationId()
-        );
     }
 
     // #AP11

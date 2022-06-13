@@ -10,6 +10,7 @@ import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.DynamicPostNewViewHolder
 import com.tokopedia.feedcomponent.view.adapter.viewholder.topads.TopAdsHeadlineV2ViewHolder
+import com.tokopedia.feedcomponent.view.viewmodel.DynamicPostUiModel
 import com.tokopedia.feedcomponent.view.viewmodel.carousel.CarouselPlayCardViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.shimmer.ShimmerUiModel
 import com.tokopedia.feedplus.view.adapter.typefactory.feed.FeedPlusTypeFactory
@@ -34,6 +35,9 @@ class FeedPlusAdapter(
     private var recyclerView: RecyclerView? = null
     var itemTreshold = 5
 
+    // used to determine dynamicPostViewHolder.setVideo
+    var broadcastValueForDynamicPost = ""
+
     private val endlessScrollListener = object : EndlessScrollRecycleListener() {
         override fun onLoadMore(page: Int, totalItemsCount: Int) {
             if (isLoading)
@@ -53,7 +57,12 @@ class FeedPlusAdapter(
     override fun onViewAttachedToWindow(holder: AbstractViewHolder<Visitable<*>>) {
         super.onViewAttachedToWindow(holder)
         if (holder is DynamicPostNewViewHolder && holder.adapterPosition < list.size && holder.adapterPosition != RecyclerView.NO_POSITION) {
-            (holder as DynamicPostNewViewHolder).onItemAttach(holder.itemView.context)
+            (holder as DynamicPostNewViewHolder).onItemAttach(holder.itemView.context, list[holder.adapterPosition])
+        }
+        else if (holder is TopAdsHeadlineV2ViewHolder && holder.adapterPosition < list.size && holder.adapterPosition != RecyclerView.NO_POSITION) {
+            (holder as TopAdsHeadlineV2ViewHolder).onItemAttach(
+                    holder.itemView.context, list[holder.adapterPosition]
+            )
         }
     }
 
@@ -95,15 +104,26 @@ class FeedPlusAdapter(
     }
 
     override fun onBindViewHolder(holder: AbstractViewHolder<Visitable<*>>, position: Int) {
-        holder.bind(list[position])
+        if (holder is DynamicPostNewViewHolder) {
+            (holder as DynamicPostNewViewHolder).bind(
+                (list[position] as? DynamicPostUiModel), broadcastValueForDynamicPost)
+        } else {
+            holder.bind(list[position])
+        }
     }
 
     override fun onBindViewHolder(
         holder: AbstractViewHolder<Visitable<*>>, position: Int,
         payloads: List<Any>
     ) {
-        if (!payloads.isEmpty()) {
-            holder.bind(list[position], payloads)
+        if (payloads.isNotEmpty()) {
+            if (holder is DynamicPostNewViewHolder) {
+                (holder as DynamicPostNewViewHolder).bind(
+                    (list[position] as? DynamicPostUiModel), (payloads as MutableList),
+                    broadcastValueForDynamicPost)
+            } else {
+                holder.bind(list[position], payloads)
+            }
         } else {
             super.onBindViewHolder(holder, position, payloads)
         }

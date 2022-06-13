@@ -34,5 +34,5 @@ data class AssetConfig(
     @SerializedName("is_active")
     val isActive: Boolean = false,
     @SerializedName("hide_title")
-    val hide_title: Boolean = false
+    val hideTitle: Boolean = false
 )

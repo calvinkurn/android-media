@@ -62,8 +62,8 @@ internal class SearchProductHandleQuickFilterTest : ProductListPresenterTestFixt
 
     private fun `Then verify set quick filter is called`() {
         verifyOrder {
-            productListView.initFilterControllerForQuickFilter(capture(actualQuickFilterList))
             productListView.hideQuickFilterShimmering()
+            productListView.initFilterController(capture(actualQuickFilterList))
             productListView.setQuickFilter(capture(listItemSlot))
         }
     }
@@ -104,35 +104,12 @@ internal class SearchProductHandleQuickFilterTest : ProductListPresenterTestFixt
 
     @Test
     fun `Search Product has No Quick Filter`() {
-        setUp()
-
         val searchProductModel = searchProductModelNoQuickFilter.jsonToObject<SearchProductModel>()
         `Given Search Product API will return SearchProductModel`(searchProductModel)
 
         `When Load Data`()
 
         `Then verify new quick filter interactions`(createSearchProductDefaultQuickFilter())
-    }
-
-    @Test
-    fun `Search Product should not init and show quick filter in empty search`() {
-        val searchProductModel = searchProductModelWithQuickFilterAndNoResult.jsonToObject<SearchProductModel>()
-        `Given Search Product API will return SearchProductModel`(searchProductModel)
-
-        `When Load Data`()
-
-        `Then verify new quick filter interactions for empty search`()
-    }
-
-    private fun `Then verify new quick filter interactions for empty search`() {
-        verify(exactly = 0) {
-            productListView.initFilterControllerForQuickFilter(capture(actualQuickFilterList))
-            productListView.setQuickFilter(capture(listItemSlot))
-        }
-
-        verify {
-            productListView.hideQuickFilterShimmering()
-        }
     }
 
     @Test
@@ -169,7 +146,7 @@ internal class SearchProductHandleQuickFilterTest : ProductListPresenterTestFixt
 
     private fun `Then verify filter controller only initialized once`() {
         verify(exactly = 1) {
-            productListView.initFilterControllerForQuickFilter(any())
+            productListView.initFilterController(any())
         }
     }
 }

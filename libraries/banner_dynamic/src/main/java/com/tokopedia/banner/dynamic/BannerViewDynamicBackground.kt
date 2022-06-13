@@ -26,6 +26,7 @@ import com.tokopedia.banner.dynamic.util.ViewHelper
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.banner.R as RB
 
 /**
  * @author by furqan on 13/09/2019
@@ -45,11 +46,11 @@ class BannerViewDynamicBackground @JvmOverloads constructor(context: Context, at
         view.findViewById<View>(R.id.overlay_round).background = MethodChecker.getDrawable(
                 view.context, R.drawable.background_banner_image_mask)
         bannerRoot = view.findViewById(R.id.banner_root)
-        bannerRecyclerView = view.findViewById(R.id.banner_recyclerview)
-        bannerIndicator = view.findViewById(R.id.banner_indicator_container)
+        bannerRecyclerView = view.findViewById(RB.id.banner_recyclerview)
+        bannerIndicator = view.findViewById(RB.id.banner_indicator_container)
         imgBannerBackground = view.findViewById(R.id.img_banner_background)
         cardBannerView = view.findViewById(R.id.card_banner_view)
-        bannerSeeAll = view.findViewById(R.id.banner_see_all)
+        bannerSeeAll = view.findViewById(RB.id.banner_see_all)
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             if (::cardBannerView.isInitialized) {

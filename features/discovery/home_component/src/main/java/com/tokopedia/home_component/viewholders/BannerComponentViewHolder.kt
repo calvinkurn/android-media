@@ -6,6 +6,7 @@ import androidx.recyclerview.widget.*
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.home_component.R
 import com.tokopedia.home_component.customview.HeaderListener
+import com.tokopedia.home_component.databinding.HomeComponentBannerBinding
 import com.tokopedia.home_component.decoration.BannerChannelDecoration
 import com.tokopedia.home_component.decoration.BannerChannelSingleItemDecoration
 import com.tokopedia.home_component.listener.BannerComponentListener
@@ -22,7 +23,7 @@ import com.tokopedia.home_component.visitable.BannerDataModel
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
-import kotlinx.android.synthetic.main.home_component_banner.view.*
+import com.tokopedia.utils.view.binding.viewBinding
 import kotlinx.coroutines.*
 import kotlin.coroutines.CoroutineContext
 
@@ -32,10 +33,12 @@ import kotlin.coroutines.CoroutineContext
 
 class BannerComponentViewHolder(itemView: View,
                                 private val bannerListener: BannerComponentListener?,
-                                private val homeComponentListener: HomeComponentListener?
+                                private val homeComponentListener: HomeComponentListener?,
+                                private val cardInteraction: Boolean = false
 )
     : AbstractViewHolder<BannerDataModel>(itemView),
         BannerItemListener, CoroutineScope {
+    private var binding: HomeComponentBannerBinding? by viewBinding()
     private var isCache = true
     private val rvBanner: RecyclerView = itemView.findViewById(R.id.rv_banner)
     private var layoutManager = LinearLayoutManager(itemView.context)
@@ -48,16 +51,13 @@ class BannerComponentViewHolder(itemView: View,
 
     //set to true if you want to activate auto-scroll
     private var isAutoScroll = true
-    private var interval = 5000
-    private var currentPagePosition = 0
+    private var currentPagePosition = INITIAL_PAGE_POSITION
 
-    private val state_running = 0
-    private val state_paused = 1
-    private var autoScrollState = state_paused
+    private var autoScrollState = STATE_PAUSED
 
     private fun autoScrollLauncher() = launch(coroutineContext) {
-        while (autoScrollState == state_running) {
-            delay(interval.toLong())
+        while (autoScrollState == STATE_RUNNING) {
+            delay(INTERVAL.toLong())
             autoScrollCoroutine()
         }
     }
@@ -117,8 +117,8 @@ class BannerComponentViewHolder(itemView: View,
     private fun setChannelDivider(element: BannerDataModel) {
         ChannelWidgetUtil.validateHomeComponentDivider(
             channelModel = element.channelModel,
-            dividerTop = itemView.home_component_divider_header,
-            dividerBottom = itemView.home_component_divider_footer
+            dividerTop = binding?.homeComponentDividerHeader,
+            dividerBottom = binding?.homeComponentDividerFooter
         )
     }
 
@@ -138,16 +138,16 @@ class BannerComponentViewHolder(itemView: View,
     }
 
     private fun resumeAutoScroll() {
-        if (autoScrollState == state_paused) {
+        if (autoScrollState == STATE_PAUSED) {
             autoScrollLauncher()
-            autoScrollState = state_running
+            autoScrollState = STATE_RUNNING
         }
     }
 
     private fun pauseAutoScroll() {
-        if (autoScrollState == state_running) {
+        if (autoScrollState == STATE_RUNNING) {
             masterJob.cancelChildren()
-            autoScrollState = state_paused
+            autoScrollState = STATE_PAUSED
         }
     }
 
@@ -171,7 +171,7 @@ class BannerComponentViewHolder(itemView: View,
                 rvBanner.addItemDecoration(BannerChannelSingleItemDecoration())
             } else rvBanner.addItemDecoration(BannerChannelDecoration())
         }
-        val adapter = BannerChannelAdapter(list, this)
+        val adapter = BannerChannelAdapter(list, this, cardInteraction)
         rvBanner.adapter = adapter
         adapter.setItemList(list)
     }
@@ -226,7 +226,7 @@ class BannerComponentViewHolder(itemView: View,
     private fun setHeaderComponent(element: BannerDataModel) {
         if (element.channelModel?.channelHeader?.name?.isNotEmpty() == true) {
             element.channelModel.let {
-                itemView.home_component_header_view.setChannel(element.channelModel, object : HeaderListener {
+                binding?.homeComponentHeaderView?.setChannel(element.channelModel, object : HeaderListener {
                     override fun onSeeAllClick(link: String) {
                         bannerListener?.onPromoAllClick(element.channelModel)
                     }
@@ -236,9 +236,9 @@ class BannerComponentViewHolder(itemView: View,
                     }
                 })
             }
-            itemView.home_component_header_view.visible()
+            binding?.homeComponentHeaderView?.visible()
         } else {
-            itemView.home_component_header_view.gone()
+            binding?.homeComponentHeaderView?.gone()
         }
     }
 
@@ -260,5 +260,9 @@ class BannerComponentViewHolder(itemView: View,
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.home_component_banner
+        private const val INTERVAL = 5000
+        private const val STATE_RUNNING = 0
+        private const val STATE_PAUSED = 1
+        private const val INITIAL_PAGE_POSITION = 0
     }
 }

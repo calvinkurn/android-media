@@ -15,7 +15,6 @@ class SaldoInfoItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView
         }
         itemView.tv_valueFundhold.text = list.amountFmt
         itemView.tv_valueDateWithheld.text = list.holdDate
-        itemView.tv_valueLiquidOnDate.text = list.releaseDate
 
         itemView.tv_reasonTitle.text = list.reasonTitle
         if (list.reason?.length == 0) {

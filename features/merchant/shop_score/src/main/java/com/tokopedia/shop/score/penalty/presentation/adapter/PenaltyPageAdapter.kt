@@ -15,8 +15,6 @@ import com.tokopedia.shop.score.penalty.presentation.adapter.viewholder.ItemSort
 import com.tokopedia.shop.score.penalty.presentation.model.*
 import com.tokopedia.shop.score.penalty.presentation.widget.OnStickySingleHeaderListener
 import com.tokopedia.shop.score.penalty.presentation.widget.StickySingleHeaderView
-import com.tokopedia.shop.score.performance.presentation.adapter.diffutilscallback.ShopPerformanceDiffUtilCallback
-import com.tokopedia.shop.score.performance.presentation.model.BaseShopPerformance
 
 class PenaltyPageAdapter(private val penaltyPageAdapterFactory: PenaltyPageAdapterFactory) :
     BaseListAdapter<Visitable<*>, PenaltyPageAdapterFactory>(penaltyPageAdapterFactory),
@@ -61,7 +59,7 @@ class PenaltyPageAdapter(private val penaltyPageAdapterFactory: PenaltyPageAdapt
         val updateIndex = visitables.indexOfFirst { it is ItemSortFilterPenaltyUiModel }
         visitables.filterIsInstance<ItemSortFilterPenaltyUiModel>()
             .firstOrNull()?.itemSortFilterWrapperList = chipsList
-        if (updateIndex != -1) {
+        if (updateIndex != RecyclerView.NO_POSITION) {
             notifyItemChanged(updateIndex)
         }
     }
@@ -71,8 +69,25 @@ class PenaltyPageAdapter(private val penaltyPageAdapterFactory: PenaltyPageAdapt
         visitables.find { it is ItemPeriodDetailPenaltyUiModel }?.also {
             (it as ItemPeriodDetailPenaltyUiModel).periodDetail = date
         }
-        if (dateIndex != -1) {
+        if (dateIndex != RecyclerView.NO_POSITION) {
             notifyItemChanged(dateIndex, PAYLOAD_DATE_FILTER)
+        }
+    }
+
+    fun updateSelectedBackground(
+        invoicePenaltyText: String
+    ) {
+        visitables.mapIndexed { index, item ->
+            val itemPenalty = item as? ItemPenaltyUiModel
+            if (itemPenalty != null) {
+                if (itemPenalty.invoicePenalty == invoicePenaltyText) {
+                    itemPenalty.isSelected = true
+                    notifyItemChanged(index, PAYLOAD_SELECTED_FILTER)
+                } else if (itemPenalty.isSelected) {
+                    itemPenalty.isSelected = false
+                    notifyItemChanged(index, PAYLOAD_SELECTED_FILTER)
+                }
+            }
         }
     }
 
@@ -157,5 +172,6 @@ class PenaltyPageAdapter(private val penaltyPageAdapterFactory: PenaltyPageAdapt
 
     companion object {
         const val PAYLOAD_DATE_FILTER = 408
+        const val PAYLOAD_SELECTED_FILTER = 508
     }
 }

@@ -1,182 +1,223 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:paddingBottom="@dimen/kyc_centralized_18dp">
+    android:layout_height="match_parent">
 
-    <com.tokopedia.unifycomponents.ImageUnify
-        android:id="@+id/image_banner"
+    <ScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:scaleType="fitStart"
-        android:adjustViewBounds="true"
-        app:layout_constraintCircleRadius="@dimen/layout_lvl0"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:unify_image_type="rect"/>
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/benefit_title_tv"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/image_banner"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        android:layout_marginTop="@dimen/kyc_centralized_23dp"
-        app:typographyType="heading_2"
-        app:typographyWeight="bold"
-        android:text="@string/kyc_benefit_onboarding_title"/>
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingBottom="@dimen/kyc_centralized_18dp">
 
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/benefit_subtitle_tv"
+            <com.tokopedia.unifycomponents.ImageUnify
+                android:id="@+id/image_banner"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/kyc_centralized_195dp"
+                android:adjustViewBounds="true"
+                android:scaleType="fitXY"
+                app:layout_constraintCircleRadius="@dimen/layout_lvl0"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:unify_image_type="rect" />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/benefit_title_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/unify_space_16"
+                android:text="@string/kyc_benefit_onboarding_title"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/image_banner"
+                app:typographyType="heading_2"
+                app:typographyWeight="bold" />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/benefit_subtitle_tv"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/spacing_lvl4"
+                android:layout_marginTop="@dimen/spacing_lvl3"
+                android:layout_marginRight="@dimen/spacing_lvl4"
+                android:text="@string/kyc_benefit_onboarding_subtitle"
+                android:textAlignment="center"
+                android:textColor="@color/Unify_N700_68"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/benefit_title_tv"
+                app:typographyType="body_2" />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/benefit_list_one_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/kyc_centralized_12dp"
+                android:layout_marginTop="@dimen/unify_space_16"
+                android:paddingBottom="@dimen/spacing_lvl1"
+                android:text="@string/kyc_benefit_one_title"
+                app:layout_constraintLeft_toRightOf="@id/image_power_merchant"
+                app:layout_constraintTop_toBottomOf="@id/benefit_subtitle_tv"
+                app:typographyType="heading_4"
+                app:typographyWeight="bold" />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/benefit_list_one_desc_tv"
+                android:layout_width="@dimen/layout_lvl0"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="@dimen/spacing_lvl4"
+                android:text="@string/kyc_benefit_one_desc"
+                android:textColor="@color/Unify_N700_68"
+                app:layout_constraintLeft_toLeftOf="@id/benefit_list_one_tv"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/benefit_list_one_tv"
+                app:typographyType="body_2" />
+
+            <com.tokopedia.unifycomponents.ImageUnify
+                android:id="@+id/image_power_merchant"
+                android:layout_width="@dimen/layout_lvl5"
+                android:layout_height="@dimen/layout_lvl5"
+                android:layout_marginLeft="@dimen/spacing_lvl4"
+                app:layout_constraintBottom_toBottomOf="@id/benefit_list_one_desc_tv"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toLeftOf="@id/benefit_list_one_tv"
+                app:layout_constraintTop_toTopOf="@id/benefit_list_one_tv" />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/benefit_list_two_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/kyc_centralized_12dp"
+                android:layout_marginTop="@dimen/unify_space_16"
+                android:paddingBottom="@dimen/spacing_lvl1"
+                android:text="@string/kyc_benefit_two_title"
+                app:layout_constraintLeft_toRightOf="@id/image_fintech"
+                app:layout_constraintTop_toBottomOf="@id/benefit_list_one_desc_tv"
+                app:typographyType="heading_4"
+                app:typographyWeight="bold" />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/benefit_list_two_desc_tv"
+                android:layout_width="@dimen/layout_lvl0"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="@dimen/spacing_lvl4"
+                android:text="@string/kyc_benefit_two_desc"
+                android:textColor="@color/Unify_N700_68"
+                app:layout_constraintLeft_toLeftOf="@id/benefit_list_two_tv"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/benefit_list_two_tv"
+                app:typographyType="body_2" />
+
+            <com.tokopedia.unifycomponents.ImageUnify
+                android:id="@+id/image_fintech"
+                android:layout_width="@dimen/layout_lvl5"
+                android:layout_height="@dimen/layout_lvl5"
+                android:layout_marginLeft="@dimen/spacing_lvl4"
+                app:layout_constraintBottom_toBottomOf="@id/benefit_list_two_desc_tv"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toLeftOf="@id/benefit_list_two_tv"
+                app:layout_constraintTop_toTopOf="@id/benefit_list_two_tv" />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/benefit_list_three_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/kyc_centralized_12dp"
+                android:layout_marginTop="@dimen/unify_space_16"
+                android:paddingBottom="@dimen/spacing_lvl1"
+                android:text="@string/kyc_benefit_three_title"
+                app:layout_constraintLeft_toRightOf="@id/image_shiled_star"
+                app:layout_constraintTop_toBottomOf="@id/benefit_list_two_desc_tv"
+                app:typographyType="heading_4"
+                app:typographyWeight="bold" />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/benefit_list_three_desc_tv"
+                android:layout_width="@dimen/layout_lvl0"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="@dimen/spacing_lvl4"
+                android:text="@string/kyc_benefit_three_desc"
+                android:textColor="@color/Unify_N700_68"
+                app:layout_constraintLeft_toLeftOf="@id/benefit_list_three_tv"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/benefit_list_three_tv"
+                app:typographyType="body_2" />
+
+            <com.tokopedia.unifycomponents.ImageUnify
+                android:id="@+id/image_shiled_star"
+                android:layout_width="@dimen/layout_lvl5"
+                android:layout_height="@dimen/layout_lvl5"
+                android:layout_marginLeft="@dimen/spacing_lvl4"
+                android:layout_marginRight="@dimen/spacing_lvl4"
+                app:layout_constraintBottom_toBottomOf="@id/benefit_list_three_desc_tv"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toLeftOf="@id/benefit_list_three_tv"
+                app:layout_constraintTop_toTopOf="@id/benefit_list_three_tv" />
+
+            <com.tokopedia.unifycomponents.UnifyImageButton
+                android:id="@+id/close_button"
+                android:layout_width="@dimen/layout_lvl6"
+                android:layout_height="@dimen/layout_lvl6"
+                android:background="@color/Unify_N0_20"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:srcCompat="@drawable/ic_kyc_arrow_back_black"
+                app:unifyImageButtonType="main"
+                app:unifyImageButtonVariant="image" />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/title_kyc_info"
+                android:textColor="@color/Unify_N700_96"
+                app:layout_constraintBottom_toBottomOf="@id/close_button"
+                app:layout_constraintLeft_toRightOf="@id/close_button"
+                app:layout_constraintTop_toTopOf="@id/close_button"
+                app:typographyType="heading_4" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </ScrollView>
+
+    <LinearLayout
+        android:id="@+id/kyc_centralized_button_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/benefit_title_tv"
-        android:layout_marginTop="@dimen/spacing_lvl3"
-        android:layout_marginLeft="@dimen/spacing_lvl4"
-        android:layout_marginRight="@dimen/spacing_lvl4"
-        app:typographyType="body_2"
-        android:text="@string/kyc_benefit_onboarding_subtitle"/>
+        android:layout_gravity="bottom|center"
+        android:background="@color/Unify_Background"
+        android:gravity="bottom|center"
+        android:orientation="vertical"
+        android:paddingBottom="@dimen/unify_space_12"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
 
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/benefit_list_one_tv"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/benefit_subtitle_tv"
-        app:layout_constraintLeft_toRightOf="@id/image_power_merchant"
-        android:layout_marginTop="@dimen/spacing_lvl5"
-        android:layout_marginLeft="@dimen/kyc_centralized_12dp"
-        android:paddingBottom="@dimen/spacing_lvl1"
-        app:typographyType="heading_4"
-        app:typographyWeight="bold"
-        android:text="@string/kyc_benefit_one_title" />
+        <com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
+            android:id="@+id/kyc_benefit_checkbox"
+            android:textColor="@color/Unify_N700_96"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/spacing_lvl4"
+            android:layout_marginTop="@dimen/unify_space_16"
+            android:layout_marginRight="@dimen/spacing_lvl4"
+            android:text="@string/kyc_consent_text" />
 
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/benefit_list_one_desc_tv"
-        android:layout_width="@dimen/layout_lvl0"
-        android:layout_height="wrap_content"
-        app:layout_constraintLeft_toLeftOf="@id/benefit_list_one_tv"
-        app:layout_constraintTop_toBottomOf="@id/benefit_list_one_tv"
-        app:layout_constraintRight_toRightOf="parent"
-        android:layout_marginRight="@dimen/spacing_lvl4"
-        app:typographyType="body_2"
-        android:text="@string/kyc_benefit_one_desc"/>
+        <com.tokopedia.unifycomponents.UnifyButton
+            android:id="@+id/kyc_benefit_btn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/spacing_lvl4"
+            android:layout_marginTop="@dimen/unify_space_12"
+            android:layout_marginRight="@dimen/spacing_lvl4"
+            android:text="@string/kyc_intro_button" />
+    </LinearLayout>
 
-    <com.tokopedia.unifycomponents.ImageUnify
-        android:id="@+id/image_power_merchant"
-        android:layout_width="@dimen/layout_lvl5"
-        android:layout_height="@dimen/layout_lvl5"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toTopOf="@id/benefit_list_one_tv"
-        app:layout_constraintBottom_toBottomOf="@id/benefit_list_one_desc_tv"
-        app:layout_constraintRight_toLeftOf="@id/benefit_list_one_tv"
-        android:layout_marginLeft="@dimen/spacing_lvl4"/>
-
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/benefit_list_two_tv"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/benefit_list_one_desc_tv"
-        app:layout_constraintLeft_toRightOf="@id/image_fintech"
-        android:layout_marginTop="@dimen/spacing_lvl5"
-        android:layout_marginLeft="@dimen/kyc_centralized_12dp"
-        android:paddingBottom="@dimen/spacing_lvl1"
-        app:typographyType="heading_4"
-        app:typographyWeight="bold"
-        android:text="@string/kyc_benefit_two_title" />
-
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/benefit_list_two_desc_tv"
-        android:layout_width="@dimen/layout_lvl0"
-        android:layout_height="wrap_content"
-        app:layout_constraintLeft_toLeftOf="@id/benefit_list_two_tv"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/benefit_list_two_tv"
-        android:layout_marginRight="@dimen/spacing_lvl4"
-        app:typographyType="body_2"
-        android:text="@string/kyc_benefit_two_desc"/>
-
-    <com.tokopedia.unifycomponents.ImageUnify
-        android:id="@+id/image_fintech"
-        android:layout_width="@dimen/layout_lvl5"
-        android:layout_height="@dimen/layout_lvl5"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toTopOf="@id/benefit_list_two_tv"
-        app:layout_constraintBottom_toBottomOf="@id/benefit_list_two_desc_tv"
-        app:layout_constraintRight_toLeftOf="@id/benefit_list_two_tv"
-        android:layout_marginLeft="@dimen/spacing_lvl4"/>
-
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/benefit_list_three_tv"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/benefit_list_two_desc_tv"
-        app:layout_constraintLeft_toRightOf="@id/image_shiled_star"
-        android:layout_marginTop="@dimen/spacing_lvl5"
-        android:layout_marginLeft="@dimen/kyc_centralized_12dp"
-        android:paddingBottom="@dimen/spacing_lvl1"
-        app:typographyType="heading_4"
-        app:typographyWeight="bold"
-        android:text="@string/kyc_benefit_three_title" />
-
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/benefit_list_three_desc_tv"
-        android:layout_width="@dimen/layout_lvl0"
-        android:layout_height="wrap_content"
-        app:layout_constraintLeft_toLeftOf="@id/benefit_list_three_tv"
-        app:layout_constraintTop_toBottomOf="@id/benefit_list_three_tv"
-        app:layout_constraintRight_toRightOf="parent"
-        android:layout_marginRight="@dimen/spacing_lvl4"
-        app:typographyType="body_2"
-        android:text="@string/kyc_benefit_three_desc"/>
-
-    <com.tokopedia.unifycomponents.ImageUnify
-        android:id="@+id/image_shiled_star"
-        android:layout_width="@dimen/layout_lvl5"
-        android:layout_height="@dimen/layout_lvl5"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toTopOf="@id/benefit_list_three_tv"
-        app:layout_constraintBottom_toBottomOf="@id/benefit_list_three_desc_tv"
-        app:layout_constraintRight_toLeftOf="@id/benefit_list_three_tv"
-        android:layout_marginLeft="@dimen/spacing_lvl4"
-        android:layout_marginRight="@dimen/spacing_lvl4" />
-
-    <com.tokopedia.unifycomponents.UnifyButton
-        android:id="@+id/kyc_benefit_btn"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/benefit_list_three_desc_tv"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        android:layout_marginTop="@dimen/spacing_lvl6"
-        android:layout_marginLeft="@dimen/spacing_lvl4"
-        android:layout_marginRight="@dimen/spacing_lvl4"
-        android:text="@string/kyc_intro_button" />
-
-    <com.tokopedia.unifycomponents.UnifyImageButton
-        android:id="@+id/close_button"
-        android:layout_width="@dimen/layout_lvl6"
-        android:layout_height="@dimen/layout_lvl6"
-        android:background="@color/Unify_N0_20"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/ic_kyc_arrow_back_black"
-        app:unifyImageButtonVariant="image"
-        app:unifyImageButtonType="main"/>
-
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/title"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintBottom_toBottomOf="@id/close_button"
-        app:layout_constraintLeft_toRightOf="@id/close_button"
-        app:layout_constraintTop_toTopOf="@id/close_button"
-        app:typographyType="heading_4"
-        android:textColor="@color/Unify_N700_96"
-        android:text="@string/title_kyc_info" />
-
-</androidx.constraintlayout.widget.ConstraintLayout>
+</FrameLayout>

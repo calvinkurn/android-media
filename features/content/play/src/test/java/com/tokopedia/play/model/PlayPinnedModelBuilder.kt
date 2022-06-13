@@ -13,36 +13,32 @@ class PlayPinnedModelBuilder {
     private val productTagsBuilder = PlayProductTagsModelBuilder()
 
     fun buildInfo(
-            pinnedMessage: PinnedMessageUiModel = buildPinnedMessage(),
-            pinnedProduct: PinnedProductUiModel = buildPinnedProduct()
+        pinnedMessage: PinnedMessageUiModel = buildPinnedMessage(),
     ) = PlayPinnedInfoUiModel(
-            pinnedMessage = pinnedMessage,
-            pinnedProduct = pinnedProduct
+        pinnedMessage = pinnedMessage,
     )
 
     fun buildPinnedMessage(
-            id: String = "1",
-            applink: String = "https://www.tokopedia.com",
-            partnerName: String = "haha stag",
-            title: String = "Ayo jelajahi"
+        id: String = "1",
+        appLink: String = "https://www.tokopedia.com",
+        title: String = "Ayo jelajahi"
     ) = PinnedMessageUiModel(
             id = id,
-            applink = applink,
-            partnerName = partnerName,
+            appLink = appLink,
             title = title
     )
 
     fun buildPinnedProduct(
-            partnerName: String = "haha stag",
-            title: String = "Obral",
-            hasPromo: Boolean = true,
-            shouldShow: Boolean = true,
-            productTags: PlayProductTagsUiModel = productTagsBuilder.buildCompleteData()
+        partnerName: String = "haha stag",
+        title: String = "Obral",
+        hasPromo: Boolean = true,
+        shouldShow: Boolean = true,
+        productTags: PlayProductTagsUiModel = productTagsBuilder.buildCompleteData()
     ) = PinnedProductUiModel(
-            partnerName = partnerName,
-            title = title,
-            hasPromo = hasPromo,
-            shouldShow = shouldShow,
-            productTags = productTags
+        partnerName = partnerName,
+        title = title,
+        hasPromo = hasPromo,
+        shouldShow = shouldShow,
+        productTags = productTags
     )
 }

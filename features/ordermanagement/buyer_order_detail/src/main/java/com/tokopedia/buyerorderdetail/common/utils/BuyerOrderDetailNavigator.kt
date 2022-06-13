@@ -8,6 +8,7 @@ import com.google.gson.JsonArray
 import com.google.gson.JsonObject
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder
 import com.tokopedia.buyerorderdetail.common.constants.BuyerOrderDetailCommonIntentParamKey
@@ -24,8 +25,8 @@ import com.tokopedia.usecase.coroutines.Success
 import java.net.URLDecoder
 
 class BuyerOrderDetailNavigator(
-        private val activity: Activity,
-        private val fragment: Fragment
+    private val activity: Activity,
+    private val fragment: Fragment
 ) {
 
     companion object {
@@ -35,6 +36,7 @@ class BuyerOrderDetailNavigator(
         private const val PREFIX_HTTPS = "https://"
         private const val INVOICE_REF_NUM = "invoice_ref_num"
         private const val KEY_ORDER_CATEGORY = "KEY_ORDER_CATEGORY"
+        private const val BUYER_MODE = 1
     }
 
     private fun composeCallIntentData(phoneNumber: String): Uri {
@@ -42,7 +44,10 @@ class BuyerOrderDetailNavigator(
     }
 
     private fun applyTransition() {
-        activity.overridePendingTransition(com.tokopedia.resources.common.R.anim.slide_right_in_medium, com.tokopedia.resources.common.R.anim.slide_left_out_medium)
+        activity.overridePendingTransition(
+            com.tokopedia.resources.common.R.anim.slide_right_in_medium,
+            com.tokopedia.resources.common.R.anim.slide_left_out_medium
+        )
     }
 
     fun goToPrintInvoicePage(url: String, invoiceNum: String) {
@@ -57,8 +62,8 @@ class BuyerOrderDetailNavigator(
 
     fun goToTrackOrderPage(orderId: String) {
         val intent = RouteManager.getIntent(activity, ApplinkConstInternalOrder.TRACK, "")
-                .putExtra(ApplinkConstInternalOrder.EXTRA_ORDER_ID, orderId)
-                .putExtra(ApplinkConstInternalOrder.EXTRA_USER_MODE, 1)
+            .putExtra(ApplinkConstInternalOrder.EXTRA_ORDER_ID, orderId)
+            .putExtra(ApplinkConstInternalOrder.EXTRA_USER_MODE, BUYER_MODE)
         fragment.startActivityForResult(intent, BuyerOrderDetailIntentCode.REQUEST_CODE_IGNORED)
         applyTransition()
     }
@@ -70,16 +75,17 @@ class BuyerOrderDetailNavigator(
             URLDecoder.decode(trackingUrl, BuyerOrderDetailMiscConstant.ENCODING_UTF_8)
         }
         val appLink = Uri.parse(ApplinkConst.ORDER_TRACKING).buildUpon()
-                .appendQueryParameter(ApplinkConst.Query.ORDER_TRACKING_URL_LIVE_TRACKING, decodedUrl)
-                .build()
-                .toString()
+            .appendQueryParameter(ApplinkConst.Query.ORDER_TRACKING_URL_LIVE_TRACKING, decodedUrl)
+            .build()
+            .toString()
         val intent = RouteManager.getIntent(activity, appLink, orderId)
         fragment.startActivityForResult(intent, BuyerOrderDetailIntentCode.REQUEST_CODE_IGNORED)
         applyTransition()
     }
 
     fun goToShopPage(shopId: String) {
-        val intent = RouteManager.getIntent(activity, ApplinkConstInternalMarketplace.SHOP_PAGE, shopId)
+        val intent =
+            RouteManager.getIntent(activity, ApplinkConstInternalMarketplace.SHOP_PAGE, shopId)
         fragment.startActivityForResult(intent, BuyerOrderDetailIntentCode.REQUEST_CODE_IGNORED)
         applyTransition()
     }
@@ -101,9 +107,9 @@ class BuyerOrderDetailNavigator(
     }
 
     fun goToRequestCancellationPage(
-            buyerOrderDetailData: Result<BuyerOrderDetailUiModel>?,
-            button: ActionButtonsUiModel.ActionButton,
-            cacheManager: SaveInstanceCacheManager
+        buyerOrderDetailData: Result<BuyerOrderDetailUiModel>?,
+        button: ActionButtonsUiModel.ActionButton,
+        cacheManager: SaveInstanceCacheManager
     ) {
         if (buyerOrderDetailData is Success) {
             val intent = RouteManager.getIntent(activity, ApplinkConstInternalOrder.INTERNAL_ORDER_BUYER_CANCELLATION_REQUEST_PAGE)
@@ -120,7 +126,10 @@ class BuyerOrderDetailNavigator(
             cacheManager.put(cacheId, payload)
             intent.putExtra(BuyerOrderDetailCommonIntentParamKey.CACHE_ID, cacheId)
             intent.putExtra(BuyerOrderDetailCommonIntentParamKey.CACHE_MANAGER_ID, cacheManager.id)
-            fragment.startActivityForResult(intent, BuyerOrderDetailIntentCode.REQUEST_CODE_REQUEST_CANCEL_ORDER)
+            fragment.startActivityForResult(
+                intent,
+                BuyerOrderDetailIntentCode.REQUEST_CODE_REQUEST_CANCEL_ORDER
+            )
             applyTransition()
         }
     }
@@ -148,30 +157,55 @@ class BuyerOrderDetailNavigator(
     }
 
     fun goToCreateResolution(url: String) {
-        val intent: Intent = RouteManager.getIntent(fragment.context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, url))
-        fragment.startActivityForResult(intent, BuyerOrderDetailIntentCode.REQUEST_CODE_CREATE_RESOLUTION)
+        val intent: Intent = RouteManager.getIntent(
+            fragment.context,
+            String.format("%s?url=%s", ApplinkConst.WEBVIEW, url)
+        )
+        fragment.startActivityForResult(
+            intent,
+            BuyerOrderDetailIntentCode.REQUEST_CODE_CREATE_RESOLUTION
+        )
         applyTransition()
     }
 
-    fun openAppLink(appLink: String, shouldRefreshWhenBack: Boolean) {
+    fun goToOrderExtension(orderId: String) {
+        val params = mapOf(
+            ApplinkConstInternalOrder.PARAM_ORDER_ID to orderId
+        )
+        val appLink = UriUtil.buildUriAppendParams(
+            ApplinkConstInternalOrder.MARKETPLACE_INTERNAL_BUYER_ORDER_EXTENSION,
+            params
+        )
+        val intent = RouteManager.getIntent(fragment.context, appLink).apply {
+            putExtra(ApplinkConstInternalOrder.OrderExtensionKey.IS_FROM_UOH, false)
+        }
+        fragment.startActivityForResult(intent, BuyerOrderDetailIntentCode.REQUEST_CODE_ORDER_EXTENSION)
+        applyTransition()
+    }
+
+    fun openAppLink(appLink: String, shouldRefreshWhenBack: Boolean): Boolean {
         val intent: Intent? = RouteManager.getIntentNoFallback(activity, appLink)
-        if (intent == null) {
+        return if (intent == null) {
             if (appLink.startsWith(PREFIX_HTTP)) {
                 openWebView(appLink, shouldRefreshWhenBack)
-            }
+                true
+            } else false
         } else {
             val requestCode = if (shouldRefreshWhenBack) {
                 BuyerOrderDetailIntentCode.REQUEST_CODE_REFRESH_ONLY
             } else BuyerOrderDetailIntentCode.REQUEST_CODE_IGNORED
             fragment.startActivityForResult(intent, requestCode)
             applyTransition()
+            true
         }
     }
 
     fun openWebView(url: String, shouldRefreshWhenBack: Boolean) {
-        val intent: Intent = RouteManager.getIntent(activity, String.format("%s?url=%s", ApplinkConst.WEBVIEW, url))
-        val requestCode = if (shouldRefreshWhenBack) BuyerOrderDetailIntentCode.REQUEST_CODE_REFRESH_ONLY
-        else BuyerOrderDetailIntentCode.REQUEST_CODE_IGNORED
+        val intent: Intent =
+            RouteManager.getIntent(activity, String.format("%s?url=%s", ApplinkConst.WEBVIEW, url))
+        val requestCode =
+            if (shouldRefreshWhenBack) BuyerOrderDetailIntentCode.REQUEST_CODE_REFRESH_ONLY
+            else BuyerOrderDetailIntentCode.REQUEST_CODE_IGNORED
         fragment.startActivityForResult(intent, requestCode)
         applyTransition()
     }

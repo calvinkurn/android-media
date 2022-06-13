@@ -17,11 +17,6 @@ import dagger.Provides
 class PlayBroadcastSetupModule {
 
     @Provides
-    fun provideGraphQLRepository(): GraphqlRepository {
-        return GraphqlInteractor.getInstance().graphqlRepository
-    }
-
-    @Provides
     fun provideUpdateChannelUseCase(graphqlRepository: GraphqlRepository): UpdateChannelUseCase {
         return UpdateChannelUseCase(graphqlRepository)
     }

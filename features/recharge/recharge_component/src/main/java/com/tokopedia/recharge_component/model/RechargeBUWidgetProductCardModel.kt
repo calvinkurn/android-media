@@ -16,8 +16,12 @@ class RechargeBUWidgetProductCardModel(
         val slashedPrice: String,
         val discountPercentage: String,
         val applink: String,
-        val listener: CommonProductCardCarouselListener
-): ImpressHolder(), Visitable<RechargeBUWidgetProductCardTypeFactory> {
+        val listener: CommonProductCardCarouselListener,
+        val soldPercentage: Int,
+        val soldPercentageLabel: String,
+        val soldPercentageLabelColor: String,
+        val showSoldPercentage: Boolean
+) : ImpressHolder(), Visitable<RechargeBUWidgetProductCardTypeFactory> {
     override fun type(typeFactory: RechargeBUWidgetProductCardTypeFactory): Int {
         return typeFactory.type(this)
     }

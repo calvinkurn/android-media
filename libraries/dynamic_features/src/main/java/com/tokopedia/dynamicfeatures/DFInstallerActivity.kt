@@ -11,12 +11,12 @@ import android.view.View
 import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.TextView
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.google.android.play.core.splitinstall.*
 import com.google.android.play.core.splitinstall.model.SplitInstallErrorCode
 import com.google.android.play.core.splitinstall.model.SplitInstallSessionStatus
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.dynamicfeatures.config.DFConfig
@@ -33,7 +33,6 @@ import com.tokopedia.logger.utils.Priority
 import com.tokopedia.unifycomponents.UnifyButton
 import kotlinx.android.synthetic.main.activity_dynamic_feature_installer.*
 import kotlinx.coroutines.*
-import timber.log.Timber
 import java.lang.Exception
 import java.util.concurrent.TimeUnit
 import kotlin.coroutines.CoroutineContext
@@ -159,10 +158,7 @@ class DFInstallerActivity : BaseSimpleActivity(), CoroutineScope, DFInstaller.DF
         imageView = findViewById(R.id.image)
         buttonDownload = findViewById(R.id.button_download)
         progressGroup = findViewById(R.id.progress_group)
-
-        progressBar.progressDrawable.setColorFilter(
-                ContextCompat.getColor(this, R.color.tkpd_main_green),
-                android.graphics.PorterDuff.Mode.MULTIPLY)
+        progressBar.progressDrawable.setColorFilter(MethodChecker.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_GN500), android.graphics.PorterDuff.Mode.MULTIPLY)
     }
 
     private fun loadAndLaunchModule(moduleName: String) {

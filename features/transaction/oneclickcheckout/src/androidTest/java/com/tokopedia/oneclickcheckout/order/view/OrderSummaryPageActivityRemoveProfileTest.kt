@@ -17,11 +17,13 @@ import com.tokopedia.oneclickcheckout.common.interceptor.GET_OCC_CART_PAGE_REMOV
 import com.tokopedia.oneclickcheckout.common.interceptor.OneClickCheckoutInterceptor
 import com.tokopedia.oneclickcheckout.common.robot.orderSummaryPage
 import com.tokopedia.oneclickcheckout.common.rule.FreshIdlingResourceTestRule
+import com.tokopedia.test.application.annotations.UiTest
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 
+@UiTest
 class OrderSummaryPageActivityRemoveProfileTest {
 
     @get:Rule

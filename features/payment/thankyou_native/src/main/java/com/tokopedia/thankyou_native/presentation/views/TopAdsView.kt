@@ -35,15 +35,15 @@ class TopAdsView @JvmOverloads constructor(
     ) {
         if (!topAdsParams.topAdsUIModelList.isNullOrEmpty()) {
             visible()
-            if (topAdsParams.title.isNotBlank())
-                findViewById<TextView>(R.id.tvFeatureTitle).text = topAdsParams.title
+            if (topAdsParams.sectionTitle.isNotBlank())
+                findViewById<TextView>(R.id.tvFeatureTitle).text = topAdsParams.sectionTitle
             else
                 findViewById<TextView>(R.id.tvFeatureTitle).gone()
 
-            if (topAdsParams.description.isNotBlank())
-                findViewById<TextView>(R.id.tvFeatureDescription).text = topAdsParams.description
-            else
+            if (topAdsParams.sectionDescription.isNullOrBlank())
                 findViewById<TextView>(R.id.tvFeatureDescription).gone()
+            else
+                findViewById<TextView>(R.id.tvFeatureDescription).text = topAdsParams.sectionDescription
 
             addTORecyclerView(topAdsParams.topAdsUIModelList)
         } else {

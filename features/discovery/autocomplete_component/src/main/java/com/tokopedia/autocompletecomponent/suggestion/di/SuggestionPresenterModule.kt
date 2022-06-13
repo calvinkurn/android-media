@@ -8,6 +8,7 @@ import dagger.Provides
 @Module(
     includes = [
         SuggestionUserSessionInterfaceModule::class,
+        SuggestionTopAdsUrlHitter::class,
     ]
 )
 class SuggestionPresenterModule {

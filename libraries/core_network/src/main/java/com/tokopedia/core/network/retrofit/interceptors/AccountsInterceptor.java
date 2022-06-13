@@ -4,8 +4,8 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.text.TextUtils;
 
-import com.tokopedia.authentication.AuthConstant;
-import com.tokopedia.authentication.AuthHelper;
+import com.tokopedia.network.authentication.AuthConstant;
+import com.tokopedia.network.authentication.AuthHelper;
 import com.tokopedia.core.network.CoreNetworkApplication;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.user.session.UserSession;

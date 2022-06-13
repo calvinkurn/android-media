@@ -42,8 +42,8 @@ class ProductRecomWidgetViewHolder(
             element.recomWidgetData?.let {
                 recomWidget.bind(
                     carouselData = RecommendationCarouselData(
-                        it,
-                        RecommendationCarouselData.STATE_READY
+                        recommendationData = it,
+                        state = RecommendationCarouselData.STATE_READY
                     ),
                     adapterPosition = adapterPosition,
                     basicListener = this,
@@ -58,7 +58,6 @@ class ProductRecomWidgetViewHolder(
 
     override fun onSeeAllBannerClicked(data: RecommendationCarouselData, applink: String) {
         listener.onSeeAllRecomClicked(data.recommendationData, data.recommendationData.pageName, applink, getComponentTrackData(productRecom))
-        listener.goToApplink(applink)
     }
 
     override fun onRecomChannelImpressed(data: RecommendationCarouselData) {
@@ -128,6 +127,9 @@ class ProductRecomWidgetViewHolder(
     }
 
     override fun onWidgetFail(pageName: String, e: Throwable) {
+    }
+
+    override fun onShowError(pageName: String, e: Throwable) {
     }
 
     private fun getComponentTrackData(element: ProductRecomWidgetDataModel?) = ComponentTrackDataModel(element?.type

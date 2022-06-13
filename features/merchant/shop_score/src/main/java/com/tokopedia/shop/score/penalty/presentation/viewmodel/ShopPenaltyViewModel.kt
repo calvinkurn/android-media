@@ -24,7 +24,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
-class ShopPenaltyViewModel @Inject constructor(
+open class ShopPenaltyViewModel @Inject constructor(
     private val dispatchers: CoroutineDispatchers,
     private val getShopPenaltyDetailMergeUseCase: Lazy<GetShopPenaltyDetailMergeUseCase>,
     private val getShopPenaltyDetailUseCase: Lazy<GetShopPenaltyDetailUseCase>,

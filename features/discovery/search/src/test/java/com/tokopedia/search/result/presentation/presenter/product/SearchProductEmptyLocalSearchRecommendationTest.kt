@@ -113,7 +113,11 @@ internal class SearchProductEmptyLocalSearchRecommendationTest : ProductListPres
         visitableList.first().assertSearchProductTitle()
 
         localSearchRecommendationModel.searchProduct.data.productList.forEachIndexed { index, product ->
-            visitableList[index + 1].assertOrganicProduct(product, index + 1)
+            visitableList[index + 1].assertOrganicProduct(
+                product,
+                index + 1,
+                searchProductPageTitle
+            )
         }
     }
 
@@ -207,7 +211,11 @@ internal class SearchProductEmptyLocalSearchRecommendationTest : ProductListPres
         visitableList.size shouldBe localSearchRecommendationModel.searchProduct.data.productList.size
 
         localSearchRecommendationModel.searchProduct.data.productList.forEachIndexed { index, product ->
-            visitableList[index].assertOrganicProduct(product, index + 9)
+            visitableList[index].assertOrganicProduct(
+                product,
+                index + 9,
+                searchProductPageTitle,
+            )
         }
     }
 }

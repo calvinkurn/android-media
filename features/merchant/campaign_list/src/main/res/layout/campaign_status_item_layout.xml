@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tpg_campaign_status_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginVertical="@dimen/dp_18"
+        android:layout_marginStart="@dimen/unify_space_16"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="Tersedia" />
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/iv_green_check"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/unify_space_8"
+        app:layout_constraintBottom_toBottomOf="@id/tpg_campaign_status_name"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="@id/tpg_campaign_status_name"
+        app:srcCompat="@drawable/ic_green_check" />
+
+    <View
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/dp_18"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tpg_campaign_status_name" />
+
+    <com.tokopedia.unifycomponents.DividerUnify
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_1"
+        android:layout_marginStart="@dimen/unify_space_16"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

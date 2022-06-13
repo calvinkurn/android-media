@@ -19,7 +19,8 @@ data class BalanceDrawerItemModel(
         var state: Int = STATE_LOADING,
         val trackingAttribute: String = "",
         var alternateBalanceDrawerItem: List<BalanceDrawerItemModel>? = null,
-        var balanceCoachmark: BalanceCoachmark? = null
+        var balanceCoachmark: BalanceCoachmark? = null,
+        val reserveBalance: String = ""
 ) {
     companion object {
         const val TYPE_UNKNOWN = 0
@@ -31,8 +32,6 @@ data class BalanceDrawerItemModel(
         const val TYPE_COUPON = 3
 
         const val TYPE_REWARDS = 4
-
-        const val TYPE_WALLET_OVO = 5
 
         const val TYPE_WALLET_WITH_TOPUP = 6
 

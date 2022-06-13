@@ -11,11 +11,13 @@ sealed class ShareModel {
     abstract var appIntent: Intent?
     var ogImgUrl: String? = ""
     var channel: String? = ""
+    var platform: String = "wa"
     var feature: String? = ""
     var campaign: String? = ""
     var shareOnlyLink: Boolean = false
     var savedImageFilePath: String = ""
     var subjectName: String = ""
+    var isAffiliate: Boolean = false
 
     data class CopyLink(
             override var socialMediaIcon: Drawable? = null,

@@ -61,11 +61,12 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.adapterDelegate)
     implementation projectOrAar(rootProject.ext.libraries.kotlinExtensions)
     implementation projectOrAar(rootProject.ext.libraries.irisSession)
+    implementation projectOrAar(rootProject.ext.libraries.remoteConfig)
 
     implementation rootProject.ext.tkpdInternalLibDependencies.url
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
-    implementation rootProject.ext.tkpdInternalLibDependencies.usersession
-    implementation rootProject.ext.tkpdInternalLibDependencies.network
+    implementation projectOrAar(rootProject.ext.libraries.usersession)
+    implementation projectOrAar(rootProject.ext.libraries.network)
 
     implementation projectOrAar(rootProject.ext.libraries.graphql)
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
@@ -94,12 +95,10 @@ dependencies {
     implementation rootProject.ext.miscDependencies.chips
 
     implementation rootProject.ext.supportLibDependencies.constraintLayout
-    implementation rootProject.ext.miscDependencies.loaderviewlibrary
 
     implementation rootProject.ext.miscDependencies.dagger
     kapt rootProject.ext.miscDependencies.daggerCompiler
     implementation rootProject.ext.miscDependencies.lifeCycleExtentions
-    implementation rootProject.ext.miscDependencies.loaderviewlibrary
 
     implementation(rootProject.ext.miscDependencies.viewPager2) {
         ['androidx.collection', 'androidx.fragment'].each {

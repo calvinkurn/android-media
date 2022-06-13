@@ -1,58 +1,73 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingTop="@dimen/spacing_lvl3"
-    android:paddingStart="@dimen/spacing_lvl4"
-    android:paddingEnd="@dimen/spacing_lvl4"
-    android:paddingBottom="@dimen/spacing_lvl3"
     android:background="?selectableItemBackground"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools">
+    android:paddingStart="@dimen/spacing_lvl4"
+    android:paddingTop="@dimen/spacing_lvl3"
+    android:paddingEnd="@dimen/spacing_lvl4"
+    android:paddingBottom="@dimen/spacing_lvl3">
 
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/ivSearchResultNav"
-        android:layout_width="@dimen/layout_lvl0"
-        android:layout_height="wrap_content"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
         android:layout_marginTop="@dimen/spacing_lvl2"
-        app:layout_constraintTop_toTopOf="parent"
+        android:adjustViewBounds="true"
+        android:background="@android:color/transparent"
+        android:scaleType="centerCrop"
         app:layout_constraintStart_toStartOf="parent"
-        app:srcCompat="@drawable/ic_topads" />
+        app:layout_constraintTop_toTopOf="parent"
+        tools:srcCompat="@drawable/ic_topads" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvTitleSearchResultNav"
         android:layout_width="@dimen/layout_lvl0"
         android:layout_height="wrap_content"
-        app:typographyWeight="reguler"
-        app:typographyType="body_2"
         android:layout_marginStart="@dimen/spacing_lvl3"
-        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toEndOf="@id/ivSearchResultNav"
-        tools:text="Sop jamur"/>
+        app:layout_constraintTop_toTopOf="parent"
+        app:typographyType="body_2"
+        app:typographyWeight="reguler"
+        tools:text="Sop jamur" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvDescSearchResultNav"
         android:layout_width="@dimen/layout_lvl0"
         android:layout_height="wrap_content"
-        app:typographyWeight="reguler"
-        app:typographyType="body_3"
-        android:layout_marginTop="@dimen/spacing_lvl1"
         android:layout_marginStart="@dimen/spacing_lvl3"
+        android:layout_marginTop="@dimen/spacing_lvl1"
         android:layout_marginEnd="@dimen/spacing_lvl4"
-        app:layout_constraintTop_toBottomOf="@id/tvTitleSearchResultNav"
-        app:layout_constraintStart_toEndOf="@id/ivSearchResultNav"
-        app:layout_constraintEnd_toStartOf="@id/ivCloseHistory"
         app:layout_constraintEnd_toEndOf="parent"
-        tools:text="Lebih efektif beriklan agar produkmu dicari banyak pembeli dan penjualanmu meningkat"/>
+        app:layout_constraintEnd_toStartOf="@id/ivCloseHistory"
+        app:layout_constraintStart_toEndOf="@id/ivSearchResultNav"
+        app:layout_constraintTop_toBottomOf="@id/tvTitleSearchResultNav"
+        app:typographyType="body_3"
+        app:typographyWeight="reguler"
+        tools:text="Lebih efektif beriklan agar produkmu dicari banyak pembeli dan penjualanmu meningkat" />
 
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/ivCloseHistory"
         android:layout_width="@dimen/layout_lvl0"
         android:layout_height="wrap_content"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
         android:layout_marginTop="@dimen/spacing_lvl2"
         android:layout_marginEnd="@dimen/spacing_lvl3"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/ic_to_top" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvSearchSubItem"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/tvDescSearchResultNav"
+        app:layout_constraintTop_toBottomOf="@+id/tvDescSearchResultNav"
+        tools:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        tools:listitem="@layout/item_sub_search_result_navigation"
+        tools:orientation="horizontal" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

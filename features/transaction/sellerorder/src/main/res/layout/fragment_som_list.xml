@@ -41,11 +41,10 @@
             app:layout_constraintTop_toTopOf="parent"
             app:unify_header_is_show_shadow="false" />
 
-        <View
+        <com.tokopedia.unifycomponents.DividerUnify
             android:id="@+id/somToolbarShadow"
             android:layout_width="@dimen/layout_lvl0"
             android:layout_height="1dp"
-            android:background="@color/Unify_N75"
             app:layout_constraintBottom_toBottomOf="@+id/som_list_toolbar"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
@@ -125,12 +124,11 @@
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-        <View
+        <com.tokopedia.unifycomponents.DividerUnify
             android:id="@+id/dividerMultiSelect"
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:layout_marginTop="9dp"
-            android:background="@color/Unify_N50"
             android:visibility="gone"
             app:layout_constraintTop_toBottomOf="@id/bulkActionCheckBoxContainer"
             tools:visibility="visible" />
@@ -164,6 +162,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:visibility="gone"
+            app:cardBackgroundColor="@color/Unify_Background"
             app:cardCornerRadius="@dimen/layout_lvl0"
             app:layout_constraintBottom_toBottomOf="parent"
             tools:visibility="visible">
@@ -192,48 +191,53 @@
             app:layout_constraintTop_toBottomOf="@id/dividerMultiSelect"
             app:loader_type="circular" />
 
-        <com.elyeproj.loaderviewlibrary.LoaderImageView
+        <com.tokopedia.unifycomponents.LoaderUnify
             android:id="@+id/sortFilterShimmer1"
             android:layout_width="@dimen/som_list_sort_filter_shimmer_width"
             android:layout_height="@dimen/som_list_sort_filter_shimmer_height"
             android:layout_marginTop="@dimen/som_list_sort_filter_padding_top"
-            app:corners="32"
+            app:loader_corner_radius="16dp"
+            app:loader_type="rect"
             app:layout_constraintStart_toStartOf="@id/searchBarSomList"
             app:layout_constraintTop_toBottomOf="@id/searchBarSomList" />
 
-        <com.elyeproj.loaderviewlibrary.LoaderImageView
+        <com.tokopedia.unifycomponents.LoaderUnify
             android:id="@+id/sortFilterShimmer2"
             android:layout_width="@dimen/som_list_sort_filter_shimmer_width"
             android:layout_height="@dimen/som_list_sort_filter_shimmer_height"
             android:layout_marginStart="@dimen/spacing_lvl3"
-            app:corners="32"
+            app:loader_corner_radius="16dp"
+            app:loader_type="rect"
             app:layout_constraintStart_toEndOf="@id/sortFilterShimmer1"
             app:layout_constraintTop_toTopOf="@id/sortFilterShimmer1" />
 
-        <com.elyeproj.loaderviewlibrary.LoaderImageView
+        <com.tokopedia.unifycomponents.LoaderUnify
             android:id="@+id/sortFilterShimmer3"
             android:layout_width="@dimen/som_list_sort_filter_shimmer_width"
             android:layout_height="@dimen/som_list_sort_filter_shimmer_height"
             android:layout_marginStart="@dimen/spacing_lvl3"
-            app:corners="32"
+            app:loader_corner_radius="16dp"
+            app:loader_type="rect"
             app:layout_constraintStart_toEndOf="@id/sortFilterShimmer2"
             app:layout_constraintTop_toTopOf="@id/sortFilterShimmer1" />
 
-        <com.elyeproj.loaderviewlibrary.LoaderImageView
+        <com.tokopedia.unifycomponents.LoaderUnify
             android:id="@+id/sortFilterShimmer4"
             android:layout_width="@dimen/som_list_sort_filter_shimmer_width"
             android:layout_height="@dimen/som_list_sort_filter_shimmer_height"
             android:layout_marginStart="@dimen/spacing_lvl3"
-            app:corners="32"
+            app:loader_corner_radius="16dp"
+            app:loader_type="rect"
             app:layout_constraintStart_toEndOf="@id/sortFilterShimmer3"
             app:layout_constraintTop_toTopOf="@id/sortFilterShimmer1" />
 
-        <com.elyeproj.loaderviewlibrary.LoaderImageView
+        <com.tokopedia.unifycomponents.LoaderUnify
             android:id="@+id/sortFilterShimmer5"
             android:layout_width="@dimen/som_list_sort_filter_shimmer_width"
             android:layout_height="@dimen/som_list_sort_filter_shimmer_height"
             android:layout_marginStart="@dimen/spacing_lvl3"
-            app:corners="32"
+            app:loader_corner_radius="16dp"
+            app:loader_type="rect"
             app:layout_constraintStart_toEndOf="@id/sortFilterShimmer4"
             app:layout_constraintTop_toTopOf="@id/sortFilterShimmer1" />
 
@@ -242,11 +246,12 @@
         <ScrollView
             android:id="@+id/scrollViewErrorState"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@color/Unify_N0"
+            android:layout_height="@dimen/layout_lvl0"
             android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent">
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/searchBarSomList">
 
             <LinearLayout
                 android:layout_width="match_parent"

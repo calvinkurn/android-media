@@ -22,4 +22,8 @@ class HomeAdapter(
     fun <T> getItem(itemClass: Class<T>): Visitable<*>? {
         return data.find { it.javaClass == itemClass}
     }
+
+    fun findPosition(visitable: Visitable<*>): Int {
+        return data.indexOf(visitable)
+    }
 }

@@ -10,7 +10,7 @@ import com.tokopedia.sellerorder.databinding.BottomsheetCancelOrderBinding
 
 class SomOrderEditAwbBottomSheet(
         context: Context
-) : SomBottomSheet<BottomsheetCancelOrderBinding>(LAYOUT, true, true, false, SomConsts.TITLE_UBAH_RESI, context, true) {
+) : SomBottomSheet<BottomsheetCancelOrderBinding>(LAYOUT, true, true, false, false, false, SomConsts.TITLE_UBAH_RESI, context, true) {
 
     companion object {
         private val LAYOUT = R.layout.bottomsheet_cancel_order

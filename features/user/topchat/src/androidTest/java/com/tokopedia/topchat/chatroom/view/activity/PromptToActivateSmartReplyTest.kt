@@ -137,5 +137,19 @@ class PromptToActivateSmartReplyTest : TopchatRoomTest() {
         )
     }
 
+    @Test
+    fun should_not_show_ticker_if_no_eligible_position_exist(){
+        // Given
+        reminderTickerUseCase.response = reminderTickerUseCase.noRegexMatchSrwPrompt
+        getChatUseCase.response = getChatUseCase.defaultSrwPrompt
+        chatAttachmentUseCase.response = chatAttachmentUseCase.defaultSrwPrompt
+        launchChatRoomActivity()
+
+        // Then
+        assertChatRecyclerview(
+            not(hasViewHolderOf(ReminderTickerViewHolder::class.java))
+        )
+    }
+
     // TODO: Should go to chat setting if clicked from hamburger menu item
 }

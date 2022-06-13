@@ -106,8 +106,10 @@ class RechargeAnalytics(private val rechargePushEventRecommendationUseCase: Rech
             else -> DigitalTrackingConst.Category.DIGITAL_NATIVE
         }
 
+        // TODO: replace channelId with its actual value when available
+        val channelId = ""
         val eventLabel = digitalAtcTrackingModel.categoryName.toLowerCase() + " - " +
-                digitalAtcTrackingModel.operatorName
+                digitalAtcTrackingModel.operatorName + " - " + channelId
 
         products.add(constructProductEnhanceEcommerce(digitalAtcTrackingModel, productName))
 
@@ -125,6 +127,14 @@ class RechargeAnalytics(private val rechargePushEventRecommendationUseCase: Rech
                         DigitalTrackingConst.Label.CURRENTSITE, DigitalTrackingConst.Value.RECHARGE_SITE
                 )
         )
+
+        val mapScreenLaunchData = mapOf(
+            CATEGORY to digitalAtcTrackingModel.categoryName,
+            CATEGORY_ID_SCREEN_LAUNCH to digitalAtcTrackingModel.categoryId,
+            PRODUCT_NAME to productName
+        )
+
+        TrackApp.getInstance().gtm.pushEvent(EVENT_RECHARGE_PURCHASE_START, mapScreenLaunchData)
     }
 
     private fun constructProductEnhanceEcommerce(digitalAtcTrackingModel: DigitalAtcTrackingModel,
@@ -197,6 +207,7 @@ class RechargeAnalytics(private val rechargePushEventRecommendationUseCase: Rech
         const val CATEGORY = "category"
         const val CATEGORY_ID = "digitalCategoryId"
         const val CATEGORY_ID_SCREEN_LAUNCH = "digital_category_id"
+        const val PRODUCT_NAME = "productName"
         const val BUSINESS_UNIT = "businessUnit"
         const val CURRENT_SITE = "currentSite"
 
@@ -204,6 +215,7 @@ class RechargeAnalytics(private val rechargePushEventRecommendationUseCase: Rech
         const val BUSINESS_UNIT_RECHARGE = "recharge"
         const val CURRENT_SITE_RECHARGE = "tokopediadigital"
         const val EVENT_DIGITAL_CATEGORY_SCREEN_LAUNCH = "Digital_Category_Screen_Launched"
+        const val EVENT_RECHARGE_PURCHASE_START = "Recharge_Purchase_Start"
 
         const val EVENT_KEY = "event"
         const val EVENT_CATEGORY = "eventCategory"

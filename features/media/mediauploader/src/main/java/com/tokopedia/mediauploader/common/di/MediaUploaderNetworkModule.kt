@@ -1,12 +1,13 @@
 package com.tokopedia.mediauploader.common.di
 
-import com.tokopedia.mediauploader.data.FileUploadServices
+import com.tokopedia.mediauploader.image.data.ImageUploadServices
+import com.tokopedia.mediauploader.video.data.VideoUploadServices
 import dagger.Module
 import dagger.Provides
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 
-@Module (includes = [NetworkModule::class])
+@Module(includes = [NetworkModule::class])
 class MediaUploaderNetworkModule {
 
     @Provides
@@ -19,10 +20,17 @@ class MediaUploaderNetworkModule {
     }
 
     @Provides
-    fun provideMediaUploaderServices(
+    fun provideImageUploaderServices(
         @MediaUploaderQualifier retrofit: Retrofit
-    ): FileUploadServices {
-        return retrofit.create(FileUploadServices::class.java)
+    ): ImageUploadServices {
+        return retrofit.create(ImageUploadServices::class.java)
+    }
+
+    @Provides
+    fun provideVideoUploaderServices(
+        @MediaUploaderQualifier retrofit: Retrofit
+    ): VideoUploadServices {
+        return retrofit.create(VideoUploadServices::class.java)
     }
 
 }

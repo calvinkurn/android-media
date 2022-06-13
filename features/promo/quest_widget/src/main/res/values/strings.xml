@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="quest_widget_str_dot">•</string>
+    <string name="quest_widget_lihat_semua">Lihat Semua</string>
+    <string name="quest_widget_quest_label">Hadiah misi menantimu</string>
+    <string name="quest_widget_finished_desc">Cek hadiah kamu, yuk!</string>
+    <string name="quest_widget_gagal_memuat">Gagal Memuat</string>
+    <string name="quest_widget_klik_iconnya_untuk_muat_ulang">Klik iconnya untuk muat ulang</string>
+    <string name="quest_widget_nonlogin_banner">https://images.tokopedia.net/img/android/res/singleDpi/quest_widget_nonlogin_banner.png</string>
+</resources>

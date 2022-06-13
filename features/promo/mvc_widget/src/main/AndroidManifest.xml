@@ -4,14 +4,10 @@
     <application>
         <activity
             android:name=".views.activities.TransParentActivity"
-            android:theme="@style/Theme.AppCompat.Translucent">
-        </activity>
-
+            android:theme="@style/Theme.AppCompat.Translucent"></activity>
         <activity
             android:name=".multishopmvc.verticallist.MerchantCouponActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.White">
-        </activity>
+            android:theme="@style/Theme.White"></activity>
     </application>
 </manifest>
-

@@ -37,4 +37,14 @@ class RecommendationCarouselDiffUtilCallback(
 
         return oldItem.areContentsTheSame(newItem)
     }
+
+    override fun getChangePayload(oldItemPosition: Int, newItemPosition: Int): Any? {
+        val oldItem = oldList[oldItemPosition]
+        val newItem = newList[newItemPosition]
+
+        if (oldItem !is RecomCarouselDiffUtilComparable
+            || newItem !is RecomCarouselDiffUtilComparable) return null
+
+        return oldItem.getChangePayload(newItem)
+    }
 }

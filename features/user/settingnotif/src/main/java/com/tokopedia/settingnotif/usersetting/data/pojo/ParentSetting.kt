@@ -5,10 +5,10 @@ import com.tokopedia.settingnotif.usersetting.util.dataClone
 import com.tokopedia.settingnotif.usersetting.view.adapter.factory.SettingFieldTypeFactory
 
 open class ParentSetting(
-        name: String,
-        icon: String,
-        key: String,
-        status: Boolean,
+        name: String = "",
+        icon: String = "",
+        key: String = "",
+        status: Boolean = false,
         @SerializedName("description") var description: String = "",
         @SerializedName("list_settings") var childSettings: List<ChildSetting?> = emptyList()
 ) : BaseSetting(name, icon, key, status) {

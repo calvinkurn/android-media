@@ -45,7 +45,7 @@
         android:ellipsize="end"
         android:lineSpacingExtra="@dimen/fontSize_lvl10"
         android:maxLines="1"
-        android:textColor="@color/updateinactivephone_dms_dark_n0"
+        android:textColor="@color/Unify_N700"
         android:textSize="@dimen/fontSize_lvl4"
         app:typographyType="body_1"
         app:typographyWeight="bold" />

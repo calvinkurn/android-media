@@ -1,0 +1,18 @@
+{
+  "balance": {
+    "buyer_all": 0,
+    "buyer_all_fmt": "Rp0",
+    "buyer_hold": 0,
+    "buyer_hold_fmt": "Rp0",
+    "buyer_usable": 0,
+    "buyer_usable_fmt": "Rp0",
+    "seller_all": 0,
+    "seller_all_fmt": "Rp0",
+    "seller_hold": 0,
+    "seller_hold_fmt": "Rp0",
+    "seller_usable": 0,
+    "seller_usable_fmt": "Rp0",
+    "have_error": false,
+    "is_whitelist": true
+  }
+}

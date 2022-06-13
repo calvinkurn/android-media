@@ -1,3 +1,0 @@
-package com.tokopedia.seller.action.common.interfaces
-
-interface BaseSellerActionPresenter

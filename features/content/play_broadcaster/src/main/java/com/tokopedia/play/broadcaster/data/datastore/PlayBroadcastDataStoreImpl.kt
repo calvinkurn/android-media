@@ -7,8 +7,7 @@ import com.tokopedia.play.broadcaster.data.model.SerializableHydraSetupData
 import com.tokopedia.play.broadcaster.data.model.SerializableProductData
 import com.tokopedia.play.broadcaster.error.ClientException
 import com.tokopedia.play.broadcaster.error.PlayErrorCode
-import com.tokopedia.play.broadcaster.type.OutOfStock
-import com.tokopedia.play.broadcaster.type.StockAvailable
+import com.tokopedia.play.broadcaster.type.*
 import com.tokopedia.play.broadcaster.ui.model.CoverSource
 import com.tokopedia.play.broadcaster.ui.model.PlayCoverUiModel
 import com.tokopedia.play.broadcaster.ui.model.title.PlayTitleUiModel
@@ -45,16 +44,6 @@ class PlayBroadcastDataStoreImpl @Inject constructor(
         }
 
         return SerializableHydraSetupData(
-                selectedProduct = mSetupDataStore.getSelectedProducts().map {
-                    SerializableProductData(
-                            id = it.id,
-                            name = it.name,
-                            imageUrl = it.imageUrl,
-                            originalImageUrl = it.originalImageUrl,
-                            hasStock = it.stock is StockAvailable,
-                            totalStock = if (it.stock is StockAvailable) it.stock.stock else 0
-                    )
-                },
                 selectedCoverData = SerializableCoverData(
                         coverImageUriString = coverImage.toString(),
                         coverTitle = title,
@@ -65,15 +54,6 @@ class PlayBroadcastDataStoreImpl @Inject constructor(
     }
 
     override fun setSerializableData(data: SerializableHydraSetupData) {
-        mSetupDataStore.setSelectedProducts(data.selectedProduct.map {
-            ProductData(
-                    id = it.id,
-                    name = it.name,
-                    imageUrl = it.imageUrl,
-                    originalImageUrl = it.originalImageUrl,
-                    stock = if (it.hasStock) StockAvailable(it.totalStock) else OutOfStock
-            )
-        })
         mSetupDataStore.setFullCover(
                 PlayCoverUiModel(
                         croppedCover = CoverSetupState.Cropped.Uploaded(
@@ -84,5 +64,6 @@ class PlayBroadcastDataStoreImpl @Inject constructor(
                         state = SetupDataState.Uploaded
                 )
         )
+        mSetupDataStore.setTitle(title = data.selectedCoverData.coverTitle)
     }
 }

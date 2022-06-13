@@ -1,0 +1,104 @@
+{
+  "readme": "Deals Homepage CDA",
+  "mode": "exact",
+  "query": [
+    {
+      "networkSpeed": ".*",
+      "businessUnit": "travel & entertainment",
+      "clientId": ".*",
+      "currentSite": "tokopediadigitaldeals",
+      "isLoggedInStatus": true,
+      "appsflyerId": "none",
+      "theme": ".*",
+      "shopId": ".*",
+      "screenName": "/digital/omp/order-detail",
+      "event": "openScreen",
+      "userId": ".*",
+      "sessionIris": ".*"
+    },
+    {
+      "networkSpeed": ".*",
+      "businessUnit": "travel & entertainment",
+      "clientId": ".*",
+      "currentSite": "tokopediadigitaldeals",
+      "isLoggedInStatus": true,
+      "appsflyerId": "none",
+      "theme": ".*",
+      "shopId": ".*",
+      "screenName": "/digital/oms/order-detail",
+      "event": "openScreen",
+      "userId": ".*",
+      "sessionIris": ".*"
+    },
+    {
+      "businessUnit": "travel & entertainment",
+      "eventCategory": "digital - deals",
+      "checkout_step": "1",
+      "currentSite": "tokopediadigitaldeals",
+      "event": "begin_checkout",
+      "userId": ".*",
+      "eventAction": "view checkout",
+      "sessionIris": ".*",
+      "items": [
+        {
+          "cart_id": ".*",
+          "shop_id": "-",
+          "quantity": ".*",
+          "category_id": ".*",
+          "item_id": ".*",
+          "price": ".*",
+          "shop_type": "-",
+          "item_name": ".*",
+          "shop_name": "-",
+          "item_brand": "",
+          "item_variant": "",
+          "item_category": "deals"
+        }
+      ],
+      "eventLabel": ".*",
+      "checkout_option": "cart page loaded"
+    },
+    {
+      "networkSpeed": ".*",
+      "businessUnit": "travel & entertainment",
+      "clientId": ".*",
+      "currentSite": "tokopediadigitaldeals",
+      "isLoggedInStatus": true,
+      "appsflyerId": "none",
+      "theme": ".*",
+      "shopId": ".*",
+      "screenName": "/digital/deals/checkout",
+      "event": "openScreen",
+      "userId": ".*",
+      "sessionIris": ".*"
+    },
+    {
+      "businessUnit": "travel & entertainment",
+      "eventCategory": "digital - deals",
+      "checkout_step": "2",
+      "currentSite": "tokopediadigitaldeals",
+      "event": "checkout_progress",
+      "userId": ".*",
+      "eventAction": "click proceed to payment",
+      "sessionIris": ".*",
+      "items": [
+        {
+          "cart_id": ".*",
+          "shop_id": "-",
+          "quantity": ".*",
+          "category_id": ".*",
+          "item_id": ".*",
+          "price": ".*",
+          "shop_type": "-",
+          "item_name": ".*",
+          "shop_name": "-",
+          "item_brand": "",
+          "item_variant": "",
+          "item_category": "deals"
+        }
+      ],
+      "eventLabel": ".*",
+      "checkout_option": "click payment option button"
+    }
+  ]
+}

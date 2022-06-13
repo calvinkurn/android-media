@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/Unify_N0"
+    android:background="@color/Unify_Background"
     android:padding="@dimen/spacing_lvl4">
 
     <RelativeLayout
@@ -57,7 +57,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_above="@id/input"
-        android:background="@color/Unify_N0"
+        android:background="@color/Unify_Background"
         android:gravity="top"
         android:hint="@string/hint_template_chat"
         android:textColorHint="@color/Unify_N700_20"

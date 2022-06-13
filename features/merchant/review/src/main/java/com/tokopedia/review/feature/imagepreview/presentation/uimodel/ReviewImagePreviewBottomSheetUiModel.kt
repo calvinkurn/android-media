@@ -1,6 +1,6 @@
 package com.tokopedia.review.feature.imagepreview.presentation.uimodel
 
-import com.tokopedia.review.feature.reading.data.UserReviewStats
+import com.tokopedia.reviewcommon.feature.media.gallery.detailed.domain.model.UserReviewStats
 
 data class ReviewImagePreviewBottomSheetUiModel(
     val rating: Int = 0,
@@ -17,5 +17,6 @@ data class ReviewImagePreviewBottomSheetUiModel(
     val isFromGallery: Boolean = false,
     val currentUserId: String = "",
     val reviewerImage: String = "",
-    val source: String = ""
+    val source: String = "",
+    val badRatingReason: String = ""
 )

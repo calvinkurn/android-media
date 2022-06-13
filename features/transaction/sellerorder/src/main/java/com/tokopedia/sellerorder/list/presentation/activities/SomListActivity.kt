@@ -9,7 +9,8 @@ import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.applink.order.DeeplinkMapperOrder
 import com.tokopedia.device.info.DeviceScreenInfo
-import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.seller.active.common.plt.LoadTimeMonitoringListener
 import com.tokopedia.seller.active.common.plt.som.SomListLoadTimeMonitoring
 import com.tokopedia.seller.active.common.plt.som.SomListLoadTimeMonitoringActivity
@@ -38,7 +39,7 @@ class SomListActivity : BaseActivity(), SomListLoadTimeMonitoringActivity {
         _binding = ActivitySomListBinding.inflate(layoutInflater)
         setContentView(binding.root)
         setupStatusBar()
-        window.decorView.setBackgroundColor(ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_N0))
+        window.decorView.setBackgroundColor(ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_Background))
         setupFragment()
     }
 

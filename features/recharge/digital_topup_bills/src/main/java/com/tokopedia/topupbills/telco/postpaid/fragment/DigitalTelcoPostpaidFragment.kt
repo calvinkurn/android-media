@@ -4,7 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.LinearLayout
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
@@ -62,7 +62,7 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
     private lateinit var enquiryViewModel: DigitalTelcoEnquiryViewModel
     private lateinit var telcoTabViewModel: TelcoTabViewModel
     private lateinit var performanceMonitoring: PerformanceMonitoring
-    private lateinit var loadingShimmering: LinearLayout
+    private lateinit var loadingShimmering: ConstraintLayout
     private lateinit var viewPager: ViewPager2
     private lateinit var tabLayout: TabsUnify
     private lateinit var separator: View
@@ -338,8 +338,17 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
                 }
             }
 
-            override fun onClickAutoComplete() {
+            override fun onClickAutoComplete(isFavoriteContact: Boolean) {
                 inputNumberActionType = InputNumberActionType.AUTOCOMPLETE
+                if (isFavoriteContact) {
+                    topupAnalytics.clickFavoriteContactAutoComplete(
+                        categoryId, operatorName, userSession.userId
+                    )
+                } else {
+                    topupAnalytics.clickFavoriteNumberAutoComplete(
+                        categoryId, operatorName, userSession.userId
+                    )
+                }
             }
         })
 
@@ -477,7 +486,6 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
         actionTypeTrackingJob?.cancel()
         actionTypeTrackingJob = lifecycleScope.launch {
             delay(INPUT_ACTION_TYPE_TRACKING_DELAY)
-            operatorName = selectedOperator.operator.attributes.name
             when (inputNumberActionType) {
                 InputNumberActionType.MANUAL -> {
                     topupAnalytics.eventInputNumberManual(categoryId, operatorName)

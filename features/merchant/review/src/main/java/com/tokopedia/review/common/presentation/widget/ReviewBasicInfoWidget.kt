@@ -10,7 +10,7 @@ import com.tokopedia.media.loader.loadImage
 import com.tokopedia.review.R
 import com.tokopedia.review.common.presentation.listener.ReviewBasicInfoListener
 import com.tokopedia.review.common.util.getReviewStar
-import com.tokopedia.review.feature.reading.data.UserReviewStats
+import com.tokopedia.reviewcommon.feature.media.gallery.detailed.domain.model.UserReviewStats
 import com.tokopedia.unifycomponents.BaseCustomView
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifyprinciples.Typography
@@ -154,7 +154,7 @@ class ReviewBasicInfoWidget : BaseCustomView {
 
     fun setReviewerImage(imageUrl: String) {
         profilePicture?.apply {
-            if (listener?.shouldShowCredibilityComponent() == true && isProductReview) {
+            if (isProductReview) {
                 loadImage(imageUrl)
                 show()
                 if (!isAnonymous) {
@@ -208,6 +208,6 @@ class ReviewBasicInfoWidget : BaseCustomView {
     }
 
     fun shouldShowCredibility(): Boolean {
-        return listener?.shouldShowCredibilityComponent() == true && isProductReview && !isAnonymous
+        return isProductReview && !isAnonymous
     }
 }

@@ -19,11 +19,9 @@ class RecommendationCarouselAdapter (
     fun submitList(data: List<Visitable<*>>) {
         val diffUtilCallback = RecommendationCarouselDiffUtilCallback(visitables, data)
         val result = DiffUtil.calculateDiff(diffUtilCallback)
-
+        result.dispatchUpdatesTo(this)
         visitables.clear()
         visitables.addAll(data)
-
-        result.dispatchUpdatesTo(this)
     }
 
     override fun onViewRecycled(holder: AbstractViewHolder<out Visitable<*>>) {

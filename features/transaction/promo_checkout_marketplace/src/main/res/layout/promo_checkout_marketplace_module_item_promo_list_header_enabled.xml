@@ -4,30 +4,31 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/Unify_N0"
     android:orientation="horizontal"
-    android:padding="16dp">
+    android:paddingLeft="16dp"
+    android:paddingRight="16dp">
 
-    <ImageView
-        android:id="@+id/image_promo_list_header"
+    <com.tokopedia.iconunify.IconUnify
+        android:id="@+id/icon_promo_list_header"
         android:layout_width="24dp"
         android:layout_height="24dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/ic_badge_shop_official" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/label_promo_list_header_title"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
-        android:layout_marginLeft="8dp"
+        android:layout_marginEnd="16dp"
         android:ellipsize="end"
         android:textColor="@color/Unify_N700_96"
-        app:layout_constraintStart_toEndOf="@+id/image_promo_list_header"
-        app:layout_constraintTop_toTopOf="parent"
-        app:typographyType="body_2"
+        app:layout_constraintBottom_toBottomOf="@+id/icon_promo_list_header"
+        app:layout_constraintEnd_toStartOf="@+id/label_promo_list_header_sub_title"
+        app:layout_constraintStart_toEndOf="@+id/icon_promo_list_header"
+        app:layout_constraintTop_toTopOf="@+id/icon_promo_list_header"
+        app:typographyType="heading_5"
         app:typographyWeight="bold"
         tools:text="Kupon saya 111" />
 
@@ -35,20 +36,11 @@
         android:id="@+id/label_promo_list_header_sub_title"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginLeft="8dp"
-        app:layout_constraintStart_toEndOf="@+id/image_promo_list_header"
-        app:layout_constraintTop_toBottomOf="@+id/label_promo_list_header_title"
-        app:typographyType="body_3"
-        tools:text="Hanya bisa pilih satu aja" />
-
-    <ImageView
-        android:id="@+id/image_chevron"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:gravity="end"
+        app:layout_constraintBottom_toBottomOf="@+id/label_promo_list_header_title"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/unify_chips_ic_chevron_normal" />
+        app:layout_constraintTop_toTopOf="@+id/label_promo_list_header_title"
+        app:typographyType="body_3"
+        tools:text="Pilih satu aja" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -5,18 +5,16 @@
     <item
         android:id="@+id/add_product_menu"
         android:contentDescription="@string/content_desc_add_product_menu"
-        android:icon="@drawable/ic_pml_plus_dark"
         android:title="@string/title_add_product"
         android:visible="false"
-        app:showAsAction="always">
-    </item>
+        app:actionLayout="@layout/layout_product_manage_add_menu"
+        app:showAsAction="ifRoom"/>
 
     <item
         android:id="@+id/action_more_menu"
-        android:icon="@drawable/ic_product_manage_more_grey"
         android:title="@string/product_manage_more_menu"
         android:visible="false"
-        app:showAsAction="always" />
-
+        app:actionLayout="@layout/layout_product_manage_more_menu"
+        app:showAsAction="ifRoom" />
 
 </menu>

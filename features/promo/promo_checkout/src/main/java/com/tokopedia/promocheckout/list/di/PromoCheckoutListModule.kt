@@ -15,6 +15,7 @@ import com.tokopedia.promocheckout.common.analytics.TrackingPromoCheckoutUtil
 import com.tokopedia.promocheckout.common.di.PromoCheckoutModule
 import com.tokopedia.promocheckout.common.domain.CheckPromoStackingCodeUseCase
 import com.tokopedia.promocheckout.common.domain.deals.DealsCheckRepositoryImpl
+import com.tokopedia.promocheckout.common.domain.deals.DealsCheckVoucherUseCase
 import com.tokopedia.promocheckout.common.domain.deals.DealsCheckoutApi
 import com.tokopedia.promocheckout.common.domain.deals.DealsCheckoutApi.Companion.BASE_URL_EVENT_DEALS
 import com.tokopedia.promocheckout.common.domain.deals.PromoCheckoutDealsRepository
@@ -83,6 +84,12 @@ class PromoCheckoutListModule {
 
     @PromoCheckoutListScope
     @Provides
+    fun provideDealsPromoUseCase(): DealsCheckVoucherUseCase {
+        return DealsCheckVoucherUseCase(GraphqlUseCase())
+    }
+
+    @PromoCheckoutListScope
+    @Provides
     fun provideMarketplacePresenter(graphqlUseCase: GraphqlUseCase, checkPromoStackingCodeUseCase: CheckPromoStackingCodeUseCase): PromoCheckoutListMarketplacePresenter {
         return PromoCheckoutListMarketplacePresenter(graphqlUseCase, checkPromoStackingCodeUseCase)
     }
@@ -109,8 +116,8 @@ class PromoCheckoutListModule {
 
     @PromoCheckoutListScope
     @Provides
-    fun provideDealsPresenter(promoCheckoutListDealsUseCase: PromoCheckoutDealsRepository, compositeSubscription: CompositeSubscription, graphqlUseCase: GraphqlUseCase): PromoCheckoutListDealsPresenter {
-        return PromoCheckoutListDealsPresenter(promoCheckoutListDealsUseCase, compositeSubscription, graphqlUseCase)
+    fun provideDealsPresenter(promoCheckoutListDealsUseCase: DealsCheckVoucherUseCase, graphqlUseCase: GraphqlUseCase): PromoCheckoutListDealsPresenter {
+        return PromoCheckoutListDealsPresenter(promoCheckoutListDealsUseCase, graphqlUseCase)
     }
 
     @PromoCheckoutListScope

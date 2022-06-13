@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/Unify_Background"
+    android:clipToPadding="false"
+    android:descendantFocusability="beforeDescendants"
+    android:focusableInTouchMode="true">
+
+    <RelativeLayout
+        android:id="@+id/search_input_container"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/spacing_lvl3"
+        android:layout_marginTop="@dimen/spacing_lvl3"
+        android:layout_marginRight="@dimen/spacing_lvl3"
+        android:background="@color/Unify_N50">
+
+        <com.tokopedia.unifycomponents.SearchBarUnify
+            android:id="@+id/search_input_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_marginTop="@dimen/unify_space_0"
+            app:search_bar_placeholder="@string/string_attach_product_search_placeholder_text"
+            app:search_bar_show_icon="false" />
+    </RelativeLayout>
+
+    <LinearLayout
+        android:id="@+id/send_button_attach_product_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:background="@color/Unify_Background"
+        android:elevation="@dimen/spacing_lvl3"
+        android:padding="@dimen/spacing_lvl4">
+
+        <Button
+            android:id="@+id/send_button_attach_product"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg_attach_product_button_green"
+            android:enabled="false"
+            android:fontFamily="sans-serif-medium"
+            android:textAllCaps="false"
+            android:textColor="@color/attach_product_dms_text_submit_button"
+            tools:visibility="gone" />
+    </LinearLayout>
+
+    <com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
+        android:id="@+id/swipe_refresh_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@id/send_button_attach_product_container"
+        android:layout_below="@id/search_input_container">
+
+        <com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView
+            android:id="@+id/recycler_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+    </com.tokopedia.abstraction.base.view.widget.SwipeToRefresh>
+
+</RelativeLayout>

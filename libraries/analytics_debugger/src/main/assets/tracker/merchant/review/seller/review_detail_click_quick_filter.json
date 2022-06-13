@@ -8,6 +8,7 @@
       "productId": ".*",
       "isLoggedInStatus": "true|false",
       "appsflyerId": ".*",
+      "theme": ".*",
       "shopId": ".*",
       "screenName": "review detail page",
       "event": "openScreen",

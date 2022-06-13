@@ -3,7 +3,7 @@ package com.tokopedia.home.beranda.presentation.view.listener
 import android.content.Context
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.home.analytics.v2.SalamWidgetTracking
-import com.tokopedia.home.beranda.domain.interactor.DeclineSalamWIdgetUseCase
+import com.tokopedia.home.beranda.domain.interactor.repository.HomeDeclineSalamWIdgetRepository
 import com.tokopedia.home.beranda.domain.model.salam_widget.SalamWidgetData
 import com.tokopedia.home.beranda.listener.HomeCategoryListener
 import com.tokopedia.home_component.listener.SalamWidgetListener
@@ -32,7 +32,7 @@ class SalamWidgetCallback (val context: Context?,
             SalamWidgetTracking.homeSalamWidgetOnCloseTracker(mapRemindertoSalamWidgetData(reminderData))
 
             val requestParams = mapOf(
-                    DeclineSalamWIdgetUseCase.PARAM_WIDGET_ID to reminderData.id.toInt()
+                    HomeDeclineSalamWIdgetRepository.PARAM_WIDGET_ID to reminderData.id.toInt()
             )
             homeCategoryListener.declineSalamItem(requestParams)
         }
@@ -44,10 +44,6 @@ class SalamWidgetCallback (val context: Context?,
                     it, mapRemindertoSalamWidgetData(reminderData), userSessionInterface.userId
             )
         }
-    }
-
-    override fun getSalamWidget() {
-        homeCategoryListener.getSalamWidget()
     }
 
     private fun mapRemindertoSalamWidgetData(reminderData: ReminderData): SalamWidgetData {

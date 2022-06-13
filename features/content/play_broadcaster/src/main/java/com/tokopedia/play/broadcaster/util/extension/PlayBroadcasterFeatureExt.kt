@@ -20,25 +20,20 @@ import java.util.concurrent.TimeUnit
 /**
  * Created by jegul on 16/07/20
  */
-internal fun GlobalError.productNotFoundState() {
-    errorIllustration.setImageResource(com.tokopedia.resources.common.R.drawable.ic_empty_search_wishlist)
-    errorTitle.text = context.getString(R.string.play_product_not_found_title)
-    errorDescription.text = context.getString(R.string.play_product_not_found_desc)
-    errorAction.gone()
-}
-
-internal fun GlobalError.productEtalaseEmpty() {
-    errorIllustration.setImageResource(R.drawable.ic_empty_product_etalase)
-    errorTitle.text = context.getString(R.string.play_product_etalase_empty_title)
-    errorDescription.text = context.getString(R.string.play_product_etalase_empty_desc)
-    errorAction.gone()
-}
-
 internal fun GlobalError.channelNotFound(onAction: () -> Unit) {
     this.errorTitle.setTextColor(ContextCompat.getColor(this.context, com.tokopedia.unifyprinciples.R.color.Unify_Static_White))
     this.errorDescription.setTextColor(ContextCompat.getColor(this.context, R.color.play_dms_white_68))
     this.setType(GlobalError.PAGE_NOT_FOUND)
     this.setActionClickListener { onAction() }
+}
+
+internal fun GlobalError.productTagSummaryEmpty(onAction: () -> Unit) {
+    errorIllustration.setImageResource(R.drawable.ic_empty_product_etalase)
+    errorTitle.text = context.getString(R.string.play_bro_product_summary_empty_title)
+    errorDescription.text = context.getString(R.string.play_bro_product_summary_empty_description)
+    errorAction.text = context.getString(R.string.play_bro_product_summary_empty_action_text)
+    errorSecondaryAction.gone()
+    setActionClickListener { onAction() }
 }
 
 internal fun View.showErrorToaster(
@@ -114,7 +109,11 @@ internal fun ImageView.loadImageFromUrl(url: String, requestListener: RequestLis
             .into(this)
 }
 
+internal fun Long.millisToHours() = TimeUnit.MILLISECONDS.toHours(this)
+
 internal fun Long.millisToMinutes() = TimeUnit.MILLISECONDS.toMinutes(this)
+
+internal fun Long.millisToRemainingMinutes() = TimeUnit.MILLISECONDS.toMinutes(this) % TimeUnit.HOURS.toMinutes(1)
 
 internal fun Long.millisToRemainingSeconds() =
     TimeUnit.MILLISECONDS.toSeconds(this) % TimeUnit.MINUTES.toSeconds(1)

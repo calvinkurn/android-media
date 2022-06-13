@@ -7,6 +7,7 @@ import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsImageViewUseCase
 import com.tokopedia.topads.sdk.repository.TopAdsRepository
+import com.tokopedia.topads.sdk.utils.TopAdsIrisSession
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
@@ -32,7 +33,7 @@ class UohListModule (private val activity: Activity) {
     }
 
     @Provides
-    fun provideTopAdsImageUseCase(userSession: UserSessionInterface): TopAdsImageViewUseCase {
-        return TopAdsImageViewUseCase(userSession.userId, TopAdsRepository())
+    fun provideTopAdsImageUseCase(userSession: UserSessionInterface,topAdsIrisSession: TopAdsIrisSession): TopAdsImageViewUseCase {
+        return TopAdsImageViewUseCase(userSession.userId, TopAdsRepository(),topAdsIrisSession.getSessionId())
     }
 }

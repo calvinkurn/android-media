@@ -1,33 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <dimen name="updateinactivephone_minus_3_5dp">-3.5dp</dimen>
-    <dimen name="updateinactivephone_minus_4dp">-4dp</dimen>
-    <dimen name="updateinactivephone_0dp">0dp</dimen>
-    <dimen name="updateinactivephone_1dp">1dp</dimen>
-    <dimen name="updateinactivephone_2dp">2dp</dimen>
-    <dimen name="updateinactivephone_4dp">4dp</dimen>
-    <dimen name="updateinactivephone_5dp">5dp</dimen>
-    <dimen name="updateinactivephone_6dp">6dp</dimen>
-    <dimen name="updateinactivephone_7dp">7dp</dimen>
-    <dimen name="updateinactivephone_9dp">9dp</dimen>
-    <dimen name="updateinactivephone_10dp">10dp</dimen>
-    <dimen name="updateinactivephone_11dp">11dp</dimen>
-    <dimen name="updateinactivephone_12dp">12dp</dimen>
-    <dimen name="updateinactivephone_14dp">14dp</dimen>
-    <dimen name="updateinactivephone_15dp">15dp</dimen>
-    <dimen name="updateinactivephone_18dp">18dp</dimen>
-    <dimen name="updateinactivephone_20dp">20dp</dimen>
-    <dimen name="updateinactivephone_30dp">30dp</dimen>
-    <dimen name="updateinactivephone_32dp">32dp</dimen>
-    <dimen name="updateinactivephone_39dp">39dp</dimen>
-    <dimen name="updateinactivephone_40dp">40dp</dimen>
-    <dimen name="updateinactivephone_50dp">50dp</dimen>
-    <dimen name="updateinactivephone_112dp">112dp</dimen>
-    <dimen name="updateinactivephone_210dp">210dp</dimen>
-    <dimen name="updateinactivephone_280dp">280dp</dimen>
-
-    <dimen name="updateinactivephone_6sp">6sp</dimen>
-    <dimen name="updateinactivephone_13sp">13sp</dimen>
-    <dimen name="updateinactivephone_15sp">15sp</dimen>
-    <dimen name="updateinactivephone_17sp">17sp</dimen>
+  <dimen name="updateinactivephone_1dp">1dp</dimen>
+  <dimen name="updateinactivephone_4dp">4dp</dimen>
+  <dimen name="updateinactivephone_12dp">12dp</dimen>
+  <dimen name="updateinactivephone_20dp">20dp</dimen>
+  <dimen name="updateinactivephone_50dp">50dp</dimen>
+  <dimen name="updateinactivephone_210dp">210dp</dimen>
+  <dimen name="updateinactivephone_280dp">280dp</dimen>
+  
+  <dimen name="updateinactivephone_6sp">6sp</dimen>
 </resources>

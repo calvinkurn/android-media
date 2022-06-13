@@ -8,6 +8,7 @@ import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant
 import com.tokopedia.product.detail.common.data.model.pdplayout.ProductDetailLayout
+import com.tokopedia.product.detail.common.data.model.rates.TokoNowParam
 import com.tokopedia.product.detail.common.data.model.rates.UserLocationRequest
 import com.tokopedia.product.detail.data.util.TobacoErrorException
 import com.tokopedia.product.detail.usecase.GetPdpLayoutUseCase
@@ -125,7 +126,7 @@ class GetPdpLayoutUseCaseTest {
             gqlUseCase.executeOnBackground()
         } returns createMockGraphqlResponse(ERROR_TYPE.SUCCESS)
 
-        useCaseTestLayoutId.requestParams = GetPdpLayoutUseCase.createParams("", "", "", "", "122", UserLocationRequest(), "")
+        useCaseTestLayoutId.requestParams = GetPdpLayoutUseCase.createParams("", "", "", "", "122", UserLocationRequest(), "", TokoNowParam())
         useCaseTestLayoutId.executeOnBackground()
 
         val layoutId = useCaseTestLayoutId.requestParams.getString(ProductDetailCommonConstant.PARAM_LAYOUT_ID, "")

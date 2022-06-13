@@ -145,7 +145,7 @@ class SmartBillsNominalBottomSheet(private val getNominalCallback: SmartBillsGet
 
     private fun getNominalTelco(){
         viewModel.getCatalogNominal(isRequestNominal, catalogProductInput,viewModel.createCatalogNominal(
-                menuId, platformId, operator, clientNumber))
+                menuId, platformId, operator))
         showLoader()
     }
 

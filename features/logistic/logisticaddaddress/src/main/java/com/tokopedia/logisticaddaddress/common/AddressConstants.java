@@ -47,6 +47,8 @@ public class AddressConstants {
     public static final String EXTRA_DISTRICT_ID = "EXTRA_DISTRICT_ID";
     public static final String EXTRA_POSTAL_CODE = "EXTRA_POSTAL_CODE";
     public static final String EXTRA_SAVE_DATA_UI_MODEL = "EXTRA_SAVE_DATA_UI_MODEL";
+    public static final String EXTRA_IS_EDIT = "EXTRA_IS_EDIT";
+    public static final String EXTRA_ADDRESS_ID = "EXTRA_ADDRESS_ID";
     public static final String EXTRA_IS_CHANGES_REQUESTED = "EXTRA_IS_CHANGES_REQUESTED";
     public static final String EXTRA_IS_UNNAMED_ROAD = "EXTRA_UNNAMED_ROAD";
     public static final String EXTRA_IS_NULL_ZIPCODE = "EXTRA_IS_NULL_ZIPCODE";
@@ -55,6 +57,7 @@ public class AddressConstants {
     public static final String EXTRA_NEGATIVE_FULL_FLOW = "EXTRA_NEGATIVE_FULL_FLOW";
     public static final String EXTRA_FROM_ADDRESS_FORM = "EXTRA_FROM_ADDRESS_FORM";
     public static final String EXTRA_FROM_PINPOINT = "EXTRA_FROM_PINPOINT";
+    public static final String EXTRA_RESET_TO_SEARCH_PAGE = "EXTRA_RESET_TO_SEARCH_PAGE";
 
     private static final Double MONAS_LAT = -6.175794;
     private static final Double MONAS_LONG = 106.826457;

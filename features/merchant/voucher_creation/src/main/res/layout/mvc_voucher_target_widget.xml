@@ -5,7 +5,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <com.tokopedia.vouchercreation.create.view.customview.VoucherCreateTitleView
+    <com.tokopedia.vouchercreation.shop.create.view.customview.VoucherCreateTitleView
         android:id="@+id/voucherTargetWidgetTitle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

@@ -1,6 +1,7 @@
 apply plugin: 'com.android.dynamic-feature'
 apply from: "$rootProject.projectDir/buildconfig/module.gradle"
 apply plugin: 'io.hansel.preprocessor.feature'
+apply plugin: 'robust'
 
 repositories{
     flatDir {
@@ -55,6 +56,8 @@ android {
 }
 
 dependencies {
+	implementation projectOrAar(rootProject.ext.features.shopDiscount)
+
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation project(rootProject.ext.app.sellerapp)
 
@@ -63,6 +66,9 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.shopSettings)
     implementation projectOrAar(rootProject.ext.features.layanan)
     implementation projectOrAar(rootProject.ext.features.withdraw)
+
+    //Media
+    implementation projectOrAar(rootProject.ext.features.liveBroadcaster)
 
     //Content
     implementation projectOrAar(rootProject.ext.features.playBroadcaster)
@@ -77,6 +83,7 @@ dependencies {
 //    implementation projectOrAar(rootProject.ext.features.report)
 //    implementation projectOrAar(rootProject.ext.features.shopOpen)
     implementation projectOrAar(rootProject.ext.features.productDetail)
+    implementation projectOrAar(rootProject.ext.features.productDetailIntegration)
     implementation projectOrAar(rootProject.ext.features.review)
 
     //User
@@ -109,14 +116,17 @@ dependencies {
 
 //    Merchant
     implementation projectOrAar(rootProject.ext.features.shopPage)
+    implementation projectOrAar(rootProject.ext.features.shopPageWidget)
+    implementation projectOrAar(rootProject.ext.features.feedShop)
     implementation projectOrAar(rootProject.ext.features.statistic)
     implementation projectOrAar(rootProject.ext.features.sellerMenu)
-    implementation projectOrAar(rootProject.ext.features.sellerAction)
     implementation projectOrAar(rootProject.ext.features.snapshot)
     implementation projectOrAar(rootProject.ext.features.atcVariant)
 
     // Order Management
     implementation projectOrAar(rootProject.ext.features.ordermanagementhistory)
 
+    //Media
+    implementation projectOrAar(rootProject.ext.features.mediapicker)
     implementation projectOrAar(rootProject.ext.libraries.imagePicker)
 }

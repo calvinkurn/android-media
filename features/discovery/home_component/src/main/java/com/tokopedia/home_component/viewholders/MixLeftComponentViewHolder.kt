@@ -14,6 +14,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.home_component.R
 import com.tokopedia.home_component.customview.HeaderListener
+import com.tokopedia.home_component.databinding.GlobalDcMixLeftBinding
 import com.tokopedia.home_component.listener.HomeComponentListener
 import com.tokopedia.home_component.listener.MixLeftComponentListener
 import com.tokopedia.home_component.mapper.ChannelModelMapper
@@ -37,7 +38,7 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.productcard.utils.getMaxHeightForGridView
 import com.tokopedia.productcard.v2.BlankSpaceConfig
-import kotlinx.android.synthetic.main.global_dc_mix_left.view.*
+import com.tokopedia.utils.view.binding.viewBinding
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -52,8 +53,9 @@ import kotlin.math.abs
 class MixLeftComponentViewHolder (itemView: View,
                                   val mixLeftComponentListener: MixLeftComponentListener?,
                                   val homeComponentListener: HomeComponentListener?,
-                                  private val parentRecycledViewPool: RecyclerView.RecycledViewPool? = null)
-    : AbstractViewHolder<MixLeftDataModel>(itemView), CoroutineScope, CommonProductCardCarouselListener {
+                                  private val parentRecycledViewPool: RecyclerView.RecycledViewPool? = null,
+                                  private val cardInteraction: Boolean = false
+) : AbstractViewHolder<MixLeftDataModel>(itemView), CoroutineScope, CommonProductCardCarouselListener {
 
     private lateinit var adapter: MixLeftAdapter
 
@@ -71,12 +73,15 @@ class MixLeftComponentViewHolder (itemView: View,
 
     private var isCacheData = false
 
+    private var binding: GlobalDcMixLeftBinding? by viewBinding()
 
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.global_dc_mix_left
         val RECYCLER_VIEW_ID = R.id.rv_product
         private const val FPM_MIX_LEFT = "home_mix_left"
+        private const val DISTANCE_LEFT_RATIO = 0.2f
+        private const val ITEM_WIDTH_RATIO = 0.80f
     }
 
     override fun bind(element: MixLeftDataModel) {
@@ -118,8 +123,8 @@ class MixLeftComponentViewHolder (itemView: View,
     private fun setChannelDivider(element: MixLeftDataModel) {
         ChannelWidgetUtil.validateHomeComponentDivider(
             channelModel = element.channelModel,
-            dividerTop = itemView.home_component_divider_header,
-            dividerBottom = itemView.home_component_divider_footer
+            dividerTop = binding?.homeComponentDividerHeader,
+            dividerBottom = binding?.homeComponentDividerFooter
         )
     }
 
@@ -131,6 +136,7 @@ class MixLeftComponentViewHolder (itemView: View,
         containerMixLeft = itemView.findViewById(R.id.container_mixleft)
     }
 
+    @SuppressLint("ResourcePackage")
     private fun setupBackground(channel: ChannelModel) {
         if (channel.channelBanner.imageUrl.isNotEmpty()) {
             loadingBackground.show()
@@ -175,7 +181,7 @@ class MixLeftComponentViewHolder (itemView: View,
         recyclerView.resetLayout()
         layoutManager = LinearLayoutManager(itemView.context, LinearLayoutManager.HORIZONTAL, false)
         recyclerView.layoutManager = layoutManager
-        val typeFactoryImpl = CommonCarouselProductCardTypeFactoryImpl(channel)
+        val typeFactoryImpl = CommonCarouselProductCardTypeFactoryImpl(channel, cardInteraction)
         val listData = mutableListOf<Visitable<*>>()
         listData.add(CarouselEmptyCardDataModel(channel, adapterPosition, this, channel.channelBanner.applink))
         val productDataList = convertDataToProductData(channel)
@@ -225,12 +231,12 @@ class MixLeftComponentViewHolder (itemView: View,
                     val firstView = layoutManager.findViewByPosition(layoutManager.findFirstVisibleItemPosition())
                     firstView?.let {
                         val distanceFromLeft = it.left
-                        val translateX = distanceFromLeft * 0.2f
+                        val translateX = distanceFromLeft * DISTANCE_LEFT_RATIO
                         if (translateX <= 0) {
                             image.translationX = translateX
                             if (distanceFromLeft <= 0) {
                                 val itemSize = it.width.toFloat()
-                                val alpha = (abs(distanceFromLeft).toFloat() / itemSize * 0.80f)
+                                val alpha = (abs(distanceFromLeft).toFloat() / itemSize * ITEM_WIDTH_RATIO)
                                 image.alpha = 1 - alpha
                             }
                         } else {
@@ -247,7 +253,7 @@ class MixLeftComponentViewHolder (itemView: View,
         val list :MutableList<CarouselProductCardDataModel> = mutableListOf()
         for (element in channel.channelGrids) {
             list.add(CarouselProductCardDataModel(
-                    ChannelModelMapper.mapToProductCardModel(element),
+                    ChannelModelMapper.mapToProductCardModel(element, cardInteraction),
                     blankSpaceConfig = BlankSpaceConfig(),
                     grid = element,
                     applink = element.applink,
@@ -279,7 +285,7 @@ class MixLeftComponentViewHolder (itemView: View,
     }
 
     private fun setHeaderComponent(element: MixLeftDataModel) {
-        itemView.home_component_header_view.setChannel(element.channelModel, object : HeaderListener {
+        binding?.homeComponentHeaderView?.setChannel(element.channelModel, object : HeaderListener {
             override fun onSeeAllClick(link: String) {
                 mixLeftComponentListener?.onSeeAllBannerClicked(element.channelModel, element.channelModel.channelHeader.applink)
             }

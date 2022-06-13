@@ -9,6 +9,7 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.category.navbottomsheet.R
+import com.tokopedia.unifyprinciples.R as RUnify
 import com.tokopedia.category.navbottomsheet.model.CategoriesItem
 import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.setTextAndContentDescription
@@ -50,9 +51,9 @@ class  CategoryNavLevelOneAdapter(private val categoryList: MutableList<Categori
 
     private fun initShimmerViewHolder(shimmerViewHolder: ShimmerViewHolder, position: Int) {
         if (position == 0) {
-            shimmerViewHolder.shimmerParent.setBackgroundColor(MethodChecker.getColor(shimmerViewHolder.itemView.context, R.color.Unify_N0))
+            shimmerViewHolder.shimmerParent.setBackgroundColor(MethodChecker.getColor(shimmerViewHolder.itemView.context, RUnify.color.Unify_N0))
         } else {
-            shimmerViewHolder.shimmerParent.setBackgroundColor(MethodChecker.getColor(shimmerViewHolder.itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N50))
+            shimmerViewHolder.shimmerParent.setBackgroundColor(MethodChecker.getColor(shimmerViewHolder.itemView.context, RUnify.color.Unify_N50))
         }
     }
 
@@ -67,12 +68,12 @@ class  CategoryNavLevelOneAdapter(private val categoryList: MutableList<Categori
         }
         if (item?.isSelected == true) {
             holder.categoryImage.loadImage(item.iconImageUrl ?:"", R.drawable.square_shimmer)
-            holder.parentLayout.setBackgroundColor(MethodChecker.getColor(holder.itemView.context, R.color.Unify_N0))
-            holder.categoryName.setTextColor(MethodChecker.getColor(holder.itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N700))
+            holder.parentLayout.setBackgroundColor(MethodChecker.getColor(holder.itemView.context, RUnify.color.Unify_N0))
+            holder.categoryName.setTextColor(MethodChecker.getColor(holder.itemView.context, RUnify.color.Unify_N700))
         } else {
             holder.categoryImage.loadImage(item?.iconImageUrlGray ?:"", R.drawable.square_shimmer)
-            holder.parentLayout.setBackgroundColor(MethodChecker.getColor(holder.itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N50_68))
-            holder.categoryName.setTextColor(MethodChecker.getColor(holder.itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_68))
+            holder.parentLayout.setBackgroundColor(MethodChecker.getColor(holder.itemView.context, RUnify.color.Unify_N50_68))
+            holder.categoryName.setTextColor(MethodChecker.getColor(holder.itemView.context, RUnify.color.Unify_N700_68))
         }
 
         with(holder.categoryName) {setTextAndContentDescription(getEllipsizedMessage(item?.name ?: ""), R.string.nbs_content_desc_name)}
