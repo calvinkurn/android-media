@@ -20,6 +20,7 @@ class GetMerchantCampaignTNCUseCase @Inject constructor(
 ) : GraphqlUseCase<MerchantCampaignTNC>(repository) {
 
     companion object {
+        private const val ACTION_FROM_SELLER = "SELLER"
         private const val REQUEST_PARAM_KEY = "params"
         private const val QUERY_NAME = "GetMerchantCampaignTNC"
         private const val QUERY = """
@@ -67,7 +68,7 @@ class GetMerchantCampaignTNCUseCase @Inject constructor(
             campaignId,
             isUniqueBuyer,
             isCampaignRelation,
-            "SELLER",
+            ACTION_FROM_SELLER,
             paymentType.id
         )
         val params = mapOf(REQUEST_PARAM_KEY to payload)
