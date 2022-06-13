@@ -235,13 +235,13 @@ class UserConsentWidget : FrameLayout {
 
                     if (collection?.attributes?.policyNoticeType == TERM_CONDITION) {
                         descriptionPurposes.text = userConsentDescription?.generateTermConditionSinglePurposeText(
-                            true,
+                            collection?.attributes?.collectionPointPurposeRequirement == MANDATORY,
                             collection?.attributes?.policyNoticeTnCPageID.orEmpty(),
                             purposeText
                         )
                     } else if (collection?.attributes?.policyNoticeType == TERM_CONDITION_POLICY) {
                         descriptionPurposes.text = userConsentDescription?.generateTermConditionPolicySinglePurposeText(
-                            true,
+                            collection?.attributes?.collectionPointPurposeRequirement == MANDATORY,
                             collection?.attributes?.policyNoticeTnCPageID.orEmpty(),
                             collection?.attributes?.policyNoticePolicyPageID.orEmpty(),
                             purposeText

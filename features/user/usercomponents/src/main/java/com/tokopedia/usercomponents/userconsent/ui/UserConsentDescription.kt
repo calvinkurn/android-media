@@ -13,6 +13,7 @@ import com.tokopedia.usercomponents.R
 import com.tokopedia.usercomponents.userconsent.analytics.UserConsentAnalytics
 import com.tokopedia.usercomponents.userconsent.common.UserConsentCollectionDataModel
 import com.tokopedia.usercomponents.userconsent.common.UserConsentConst
+import com.tokopedia.usercomponents.userconsent.common.UserConsentConst.PRIVACY
 
 class UserConsentDescription constructor(
     private val context: Context,
@@ -87,7 +88,7 @@ class UserConsentDescription constructor(
                         userConsentAnalytics.trackOnPolicyHyperLinkClicked(it)
                     }
 
-                    openConsentPageDetail(policyNoticePolicyPageID)
+                    openConsentPageDetail(policyNoticePolicyPageID, tab = PRIVACY)
                 },
                 this.indexOf(textPolicy),
                 this.indexOf(textPolicy) + textPolicy.length,
@@ -141,7 +142,7 @@ class UserConsentDescription constructor(
                         userConsentAnalytics.trackOnPolicyHyperLinkClicked(it)
                     }
 
-                    openConsentPageDetail(policyNoticePolicyPageID)
+                    openConsentPageDetail(policyNoticePolicyPageID, tab = PRIVACY)
                 },
                 this.indexOf(textPolicy),
                 this.indexOf(textPolicy) + textPolicy.length,
@@ -163,8 +164,8 @@ class UserConsentDescription constructor(
         }
     }
 
-    private fun openConsentPageDetail(pageId: String, type: String = "1") {
-        val url = String.format(UserConsentConst.URL_CONSENT_DETAIL, pageId, type)
+    private fun openConsentPageDetail(pageId: String, type: String = "1", tab: String = "") {
+        val url = String.format(UserConsentConst.URL_CONSENT_DETAIL, pageId, type, tab)
         val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.WEBVIEW, url)
         context.startActivity(intent)
     }

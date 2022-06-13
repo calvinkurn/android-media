@@ -7,6 +7,7 @@ object UserConsentConst {
     const val OPTIONAL = "optional"
     const val CHECKLIST = "checklist"
     const val NO_CHECKLIST = "no_checklist"
+    const val PRIVACY = "privacy"
 
-    const val URL_CONSENT_DETAIL = "https://www.tokopedia.com/consent?id=%s&type=%s"
+    const val URL_CONSENT_DETAIL = "https://www.tokopedia.com/consent?id=%s&type=%s&tab=%s"
 }
