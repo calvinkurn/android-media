@@ -16,7 +16,7 @@
         <com.tokopedia.unifycomponents.CardUnify
             android:layout_width="wrap_content"
             app:card_type="border"
-            android:contentDescription="@string/image_border"
+            android:contentDescription="@string/homecredit_ktp_image_border"
             android:id="@+id/cardBorderCamera"
             android:layout_gravity="center"
             android:layout_marginLeft="@dimen/unify_space_16"
@@ -61,7 +61,7 @@
         android:layout_height="match_parent"
         android:layout_gravity="center"
         android:adjustViewBounds="true"
-        android:contentDescription="@string/overlay_content_description"
+        android:contentDescription="@string/homecredit_ktp_overlay_content_description"
         android:scaleType="centerInside"
         android:visibility="gone" />
 
