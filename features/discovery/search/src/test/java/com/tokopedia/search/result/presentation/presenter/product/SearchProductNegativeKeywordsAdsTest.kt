@@ -16,7 +16,6 @@ import rx.Subscriber
 
 internal class SearchProductNegativeKeywordsAdsTest : ProductListPresenterTestFixtures() {
     private val searchProductNegativeKeywordsResponseJSON = "searchproduct/negativekeywords/with-negative-keywords.json"
-    private val searchProductWithTopAdsAndHeadlineAdsJSON = "searchproduct/with-topads-and-headline-ads.json"
 
     private val visitableListSlot = slot<List<Visitable<*>>>()
     private val visitableList by lazy { visitableListSlot.captured }
@@ -44,10 +43,6 @@ internal class SearchProductNegativeKeywordsAdsTest : ProductListPresenterTestFi
             visitableList.filterIsInstance<ProductItemDataView>().all { !it.isTopAds })
     }
 
-    private fun `Then verify that ads is loaded`() {
-        Assert.assertTrue(visitableList.filterIsInstance<ProductItemDataView>().any { it.isTopAds })
-    }
-
     @Test
     fun `Product list with negative keywords will show no ads`() {
         val searchProductModel = searchProductNegativeKeywordsResponseJSON.jsonToObject<SearchProductModel>()
@@ -61,20 +56,5 @@ internal class SearchProductNegativeKeywordsAdsTest : ProductListPresenterTestFi
         `When Load Data`(searchParameter)
 
         `Then verify that ads is not loaded`()
-    }
-
-    @Test
-    fun `Product list with normal keywords will show ads`() {
-        val searchProductModel = searchProductWithTopAdsAndHeadlineAdsJSON.jsonToObject<SearchProductModel>()
-        val searchParameter : Map<String, Any> = mapOf<String, Any>(
-            SearchApiConst.Q to "samsung",
-        )
-
-        `Given search product API will success`(searchProductModel)
-        `Given view will set and add product list`()
-
-        `When Load Data`(searchParameter)
-
-        `Then verify that ads is loaded`()
     }
 }

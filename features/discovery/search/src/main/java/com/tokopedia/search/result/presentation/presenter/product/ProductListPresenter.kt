@@ -373,10 +373,6 @@ class ProductListPresenter @Inject constructor(
         totalData = productDataView.totalData
     }
 
-    private fun isDisableAdsNegativeKeywords(productDataView: ProductDataView) :Boolean {
-        return productDataView.isAdvancedNegativeKeywordSearch()
-    }
-
     private fun createProductDataView(
         searchProductModel: SearchProductModel,
         pageTitleEventLabel: String = "",
@@ -470,7 +466,7 @@ class ProductListPresenter @Inject constructor(
     }
 
     private fun isHideProductAds(productDataView: ProductDataView) : Boolean {
-        return isLocalSearch() || isDisableAdsNegativeKeywords(productDataView)
+        return isLocalSearch() || productDataView.isAdvancedNegativeKeywordSearch()
     }
 
     private fun isLocalSearch() = navSource.isNotEmpty() && pageId.isNotEmpty()
