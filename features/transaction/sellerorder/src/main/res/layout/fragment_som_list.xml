@@ -41,26 +41,7 @@
             app:layout_constraintTop_toTopOf="parent"
             app:unify_header_is_show_shadow="false" />
 
-        <com.tokopedia.unifycomponents.DividerUnify
-            android:id="@+id/somToolbarShadow"
-            android:layout_width="@dimen/layout_lvl0"
-            android:layout_height="1dp"
-            app:layout_constraintBottom_toBottomOf="@+id/som_list_toolbar"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
-
         <!--  start success views  -->
-
-        <com.tokopedia.unifycomponents.SearchBarUnify
-            android:id="@+id/searchBarSomList"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="15dp"
-            android:layout_marginTop="17dp"
-            android:layout_marginRight="15dp"
-            app:layout_constraintTop_toBottomOf="@id/tickerSomList"
-            app:search_bar_placeholder="@string/som_list_hint_search_product"
-            app:search_bar_show_icon="false" />
 
         <com.tokopedia.sortfilter.SortFilter
             android:id="@+id/sortFilterSomList"
@@ -71,7 +52,7 @@
             android:layout_marginEnd="@dimen/layout_lvl0"
             android:paddingBottom="@dimen/spacing_lvl3"
             android:visibility="gone"
-            app:layout_constraintTop_toBottomOf="@id/searchBarSomList"
+            app:layout_constraintTop_toBottomOf="@id/som_list_toolbar"
             app:layout_scrollFlags="scroll|snap"
             app:sort_filter_relationship="AND"
             app:sort_filter_type="advanced"
@@ -196,50 +177,50 @@
             android:layout_width="@dimen/som_list_sort_filter_shimmer_width"
             android:layout_height="@dimen/som_list_sort_filter_shimmer_height"
             android:layout_marginTop="@dimen/som_list_sort_filter_padding_top"
+            app:layout_constraintStart_toStartOf="@id/som_list_toolbar"
+            app:layout_constraintTop_toBottomOf="@id/som_list_toolbar"
             app:loader_corner_radius="16dp"
-            app:loader_type="rect"
-            app:layout_constraintStart_toStartOf="@id/searchBarSomList"
-            app:layout_constraintTop_toBottomOf="@id/searchBarSomList" />
+            app:loader_type="rect" />
 
         <com.tokopedia.unifycomponents.LoaderUnify
             android:id="@+id/sortFilterShimmer2"
             android:layout_width="@dimen/som_list_sort_filter_shimmer_width"
             android:layout_height="@dimen/som_list_sort_filter_shimmer_height"
             android:layout_marginStart="@dimen/spacing_lvl3"
-            app:loader_corner_radius="16dp"
-            app:loader_type="rect"
             app:layout_constraintStart_toEndOf="@id/sortFilterShimmer1"
-            app:layout_constraintTop_toTopOf="@id/sortFilterShimmer1" />
+            app:layout_constraintTop_toTopOf="@id/sortFilterShimmer1"
+            app:loader_corner_radius="16dp"
+            app:loader_type="rect" />
 
         <com.tokopedia.unifycomponents.LoaderUnify
             android:id="@+id/sortFilterShimmer3"
             android:layout_width="@dimen/som_list_sort_filter_shimmer_width"
             android:layout_height="@dimen/som_list_sort_filter_shimmer_height"
             android:layout_marginStart="@dimen/spacing_lvl3"
-            app:loader_corner_radius="16dp"
-            app:loader_type="rect"
             app:layout_constraintStart_toEndOf="@id/sortFilterShimmer2"
-            app:layout_constraintTop_toTopOf="@id/sortFilterShimmer1" />
+            app:layout_constraintTop_toTopOf="@id/sortFilterShimmer1"
+            app:loader_corner_radius="16dp"
+            app:loader_type="rect" />
 
         <com.tokopedia.unifycomponents.LoaderUnify
             android:id="@+id/sortFilterShimmer4"
             android:layout_width="@dimen/som_list_sort_filter_shimmer_width"
             android:layout_height="@dimen/som_list_sort_filter_shimmer_height"
             android:layout_marginStart="@dimen/spacing_lvl3"
-            app:loader_corner_radius="16dp"
-            app:loader_type="rect"
             app:layout_constraintStart_toEndOf="@id/sortFilterShimmer3"
-            app:layout_constraintTop_toTopOf="@id/sortFilterShimmer1" />
+            app:layout_constraintTop_toTopOf="@id/sortFilterShimmer1"
+            app:loader_corner_radius="16dp"
+            app:loader_type="rect" />
 
         <com.tokopedia.unifycomponents.LoaderUnify
             android:id="@+id/sortFilterShimmer5"
             android:layout_width="@dimen/som_list_sort_filter_shimmer_width"
             android:layout_height="@dimen/som_list_sort_filter_shimmer_height"
             android:layout_marginStart="@dimen/spacing_lvl3"
-            app:loader_corner_radius="16dp"
-            app:loader_type="rect"
             app:layout_constraintStart_toEndOf="@id/sortFilterShimmer4"
-            app:layout_constraintTop_toTopOf="@id/sortFilterShimmer1" />
+            app:layout_constraintTop_toTopOf="@id/sortFilterShimmer1"
+            app:loader_corner_radius="16dp"
+            app:loader_type="rect" />
 
         <!--  start error views  -->
 
@@ -251,7 +232,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/searchBarSomList">
+            app:layout_constraintTop_toBottomOf="@id/som_list_toolbar">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -285,7 +266,7 @@
             android:id="@+id/somListUpperMask"
             android:layout_width="@dimen/layout_lvl0"
             android:layout_height="@dimen/layout_lvl0"
-            app:layout_constraintBottom_toTopOf="@id/searchBarSomList"
+            app:layout_constraintBottom_toTopOf="@id/som_list_toolbar"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -297,14 +278,14 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/searchBarSomList" />
+            app:layout_constraintTop_toBottomOf="@id/som_list_toolbar" />
 
         <View
             android:id="@+id/somListLeftMask"
             android:layout_width="@dimen/layout_lvl0"
             android:layout_height="@dimen/layout_lvl0"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@id/searchBarSomList"
+            app:layout_constraintEnd_toStartOf="@id/som_list_toolbar"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -314,7 +295,7 @@
             android:layout_height="@dimen/layout_lvl0"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@id/searchBarSomList"
+            app:layout_constraintStart_toEndOf="@id/som_list_toolbar"
             app:layout_constraintTop_toTopOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>

@@ -98,6 +98,7 @@ import com.tokopedia.sellerorder.common.util.Utils.hideKeyboard
 import com.tokopedia.sellerorder.common.util.Utils.setUserNotAllowedToViewSom
 import com.tokopedia.sellerorder.common.util.Utils.updateShopActive
 import com.tokopedia.sellerorder.databinding.FragmentSomListBinding
+import com.tokopedia.sellerorder.databinding.SomListHeaderBinding
 import com.tokopedia.sellerorder.filter.presentation.bottomsheet.SomFilterBottomSheet
 import com.tokopedia.sellerorder.filter.presentation.model.SomFilterCancelWrapper
 import com.tokopedia.sellerorder.filter.presentation.model.SomFilterUiModel
@@ -210,7 +211,7 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
     private val masterJob = SupervisorJob()
 
     private val somListSortFilterTab: SomListSortFilterTab? by lazy {
-        binding?.sortFilterSomList?.let {
+        somListBinding?.sortFilterSomList?.let {
             SomListSortFilterTab(it, this)
         }
     }
@@ -223,7 +224,7 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
         false
     }
 
-    private val somListLayoutManager by lazy { binding?.rvSomList?.layoutManager as? LinearLayoutManager }
+    private val somListLayoutManager by lazy { somListBinding?.rvSomList?.layoutManager as? LinearLayoutManager }
 
     private val recyclerViewScrollListener: RecyclerView.OnScrollListener by lazy {
         object : RecyclerView.OnScrollListener() {
@@ -379,11 +380,12 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
         }
     }
 
-    protected var binding by autoClearedNullable<FragmentSomListBinding> {
+    protected var somListBinding by autoClearedNullable<FragmentSomListBinding> {
         somListBulkProcessOrderBottomSheet?.clearViewBinding()
         orderRequestCancelBottomSheet?.clearViewBinding()
         somOrderEditAwbBottomSheet?.clearViewBinding()
     }
+    protected var somListHeaderBinding by autoClearedNullable<SomListHeaderBinding>()
 
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.Main + masterJob
@@ -424,8 +426,8 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
         savedInstanceState: Bundle?
     ): View? {
         setHasOptionsMenu(false)
-        binding = FragmentSomListBinding.inflate(inflater, container, false)
-        return binding?.root
+        somListBinding = FragmentSomListBinding.inflate(inflater, container, false)
+        return somListBinding?.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -526,7 +528,7 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
                 isEnabled = true
                 isRefreshing = false
             }
-            binding?.somListLoading?.gone()
+            somListBinding?.somListLoading?.gone()
             adapter?.hideLoading()
         }
     }
@@ -539,7 +541,7 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
         if (status.key != tabActive && refreshFilter) {
             wasChangingTab = true
         }
-        binding?.rvSomList?.itemAnimator =
+        somListBinding?.rvSomList?.itemAnimator =
             if (wasChangingTab && !refreshFilter) {
                 defaultItemAnimator
             } else {
@@ -586,7 +588,7 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
             resetOrderSelectedStatus()
             toggleBulkActionButtonVisibility()
             toggleBulkActionCheckboxVisibility()
-            binding?.run {
+            somListBinding?.run {
                 checkBoxBulkAction.isChecked = false
                 checkBoxBulkAction.setIndeterminate(false)
                 checkBoxBulkAction.skipAnimation()
@@ -734,7 +736,7 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
         orderId: String,
         skipValidateOrder: Boolean
     ) {
-        binding?.rvSomList?.itemAnimator = fadeRightAnimator
+        somListBinding?.rvSomList?.itemAnimator = fadeRightAnimator
         getSwipeRefreshLayout(view)?.isRefreshing = true
         if (!skipValidateOrder) {
             pendingAction = SomPendingAction(actionName, orderId) {
@@ -753,7 +755,7 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
         orderId: String,
         skipValidateOrder: Boolean
     ) {
-        binding?.rvSomList?.itemAnimator = fadeRightAnimator
+        somListBinding?.rvSomList?.itemAnimator = fadeRightAnimator
         getSwipeRefreshLayout(view)?.isRefreshing = true
         if (!skipValidateOrder) {
             pendingAction = SomPendingAction(actionName, orderId) {
@@ -770,7 +772,7 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
     override fun onRespondToCancellationButtonClicked(order: SomListOrderUiModel) {
         view?.let {
             if (it is ViewGroup) {
-                binding?.rvSomList?.itemAnimator = fadeRightAnimator
+                somListBinding?.rvSomList?.itemAnimator = fadeRightAnimator
                 selectedOrderId = order.orderId
                 orderRequestCancelBottomSheet = orderRequestCancelBottomSheet?.apply {
                     setupBuyerRequestCancelBottomSheet(this, order)
@@ -822,10 +824,10 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
             if (!CoachMarkPreference.hasShown(context, SHARED_PREF_NEW_SOM_LIST_COACH_MARK) &&
                 Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP
             ) {
-                binding?.rvSomList?.addOnScrollListener(recyclerViewScrollListener)
+                somListBinding?.rvSomList?.addOnScrollListener(recyclerViewScrollListener)
                 setCoachMarkStepListener()
                 coachMark?.onFinishListener =
-                    { binding?.rvSomList?.removeOnScrollListener(recyclerViewScrollListener) }
+                    { somListBinding?.rvSomList?.removeOnScrollListener(recyclerViewScrollListener) }
                 CoachMarkPreference.setShown(context, SHARED_PREF_NEW_SOM_LIST_COACH_MARK, true)
                 shouldShowCoachMark = true
                 reshowNewOrderCoachMark()
@@ -896,8 +898,8 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
     }
 
     override fun onScrollToTop() {
-        binding?.rvSomList?.post {
-            binding?.rvSomList?.smoothScrollToPosition(RV_TOP_POSITION)
+        somListBinding?.rvSomList?.post {
+            somListBinding?.rvSomList?.smoothScrollToPosition(RV_TOP_POSITION)
         }
     }
 
@@ -1022,8 +1024,8 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
             )
         )
         showWaitingPaymentOrderListMenuShimmer()
-        binding?.rvSomList?.layoutManager = somListLayoutManager
-        binding?.bulkActionCheckBoxContainer?.layoutTransition?.enableTransitionType(CHANGING)
+        somListBinding?.rvSomList?.layoutManager = somListLayoutManager
+        somListBinding?.bulkActionCheckBoxContainer?.layoutTransition?.enableTransitionType(CHANGING)
         setupToolbar()
         setupSearchBar()
         setupListeners()
@@ -1031,7 +1033,7 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
     }
 
     private fun setupMasks() {
-        binding?.run {
+        somListBinding?.run {
             somListUpperMask.setOnTouchListener(maskTouchListener)
             somListLowerMask.setOnTouchListener(maskTouchListener)
             somListLeftMask.setOnTouchListener(maskTouchListener)
@@ -1041,7 +1043,7 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
 
     private fun setupSearchBar() {
         val searchParam = arguments?.getString(QUERY_PARAM_SEARCH).orEmpty()
-        binding?.searchBarSomList?.searchBarTextField?.setText(searchParam)
+        somListHeaderBinding?.searchBarSomList?.searchBarTextField?.setText(searchParam)
     }
 
     private fun observeLoadingStatus() {
@@ -1056,7 +1058,7 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
                 is Success -> {
                     if (adapter.data.filterIsInstance<SomListEmptyStateUiModel>().isNotEmpty()) {
                         showEmptyState()
-                        binding?.rvSomList?.show()
+                        somListBinding?.rvSomList?.show()
                     }
                 }
                 is Fail -> {
@@ -1078,7 +1080,7 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
             when (result) {
                 is Success -> renderTickers(result.data)
                 is Fail -> {
-                    binding?.tickerSomList?.gone()
+                    somListBinding?.tickerSomList?.gone()
                     showToasterError(view)
                     SomErrorHandler.logExceptionToServer(
                         errorTag = SomErrorHandler.SOM_TAG,
@@ -1115,7 +1117,7 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
                         }
                         else -> showGlobalError(Throwable())
                     }
-                    binding?.shimmerViews?.gone()
+                    somListBinding?.shimmerViews?.gone()
                 }
             })
     }
@@ -1141,7 +1143,7 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
     private fun observeOrderList() {
         viewModel.orderListResult.observe(viewLifecycleOwner) { result ->
             somListLoadTimeMonitoring?.startRenderPerformanceMonitoring()
-            binding?.rvSomList?.addOneTimeGlobalLayoutListener {
+            somListBinding?.rvSomList?.addOneTimeGlobalLayoutListener {
                 stopLoadTimeMonitoring()
                 animateOrderTicker(true)
             }
@@ -1828,7 +1830,7 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
                         canDisplayOrderData = isSomListEligible
                         canMultiAcceptOrder = isMultiAcceptEligible
                         if (isSomListEligible) {
-                            binding?.somAdminPermissionView?.hide()
+                            somListBinding?.somAdminPermissionView?.hide()
                             loadInitialData()
                         } else {
                             showAdminPermissionError()
@@ -1945,7 +1947,7 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
 
     protected fun loadFilters(showShimmer: Boolean = true, loadOrders: Boolean) {
         if (showShimmer) {
-            binding?.run {
+            somListBinding?.run {
                 sortFilterSomList.invisible()
                 shimmerViews.show()
             }
@@ -1959,7 +1961,7 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
             if (adapter.dataSize > 0) {
                 getSwipeRefreshLayout(view)?.isRefreshing = true
             } else {
-                binding?.run {
+                somListBinding?.run {
                     rvSomList.gone()
                     somListLoading.show()
                 }
@@ -2000,15 +2002,8 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
     }
 
     private fun setupListeners() {
-        binding?.run {
+        somListBinding?.run {
             tickerSomList.setDescriptionClickEvent(this@SomListFragment)
-            searchBarSomList.searchBarTextField.apply {
-                addTextChangedListener(this@SomListFragment)
-                setOnEditorActionListener { _, _, _ ->
-                    hideKeyboard()
-                    true
-                }
-            }
 
             globalErrorSomList.setActionClickListener {
                 scrollViewErrorState.gone()
@@ -2046,17 +2041,24 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
                 }
             }
         }
+        somListHeaderBinding?.searchBarSomList?.searchBarTextField?.apply {
+            addTextChangedListener(this@SomListFragment)
+            setOnEditorActionListener { _, _, _ ->
+                hideKeyboard()
+                true
+            }
+        }
         setupSearchBarLayoutChangesListener()
     }
 
     private fun setupSearchBarLayoutChangesListener() {
-        (binding?.searchBarSomList?.searchBarTextField?.parent as? View)?.viewTreeObserver?.addOnPreDrawListener {
+        (somListHeaderBinding?.searchBarSomList?.searchBarTextField?.parent as? View)?.viewTreeObserver?.addOnPreDrawListener {
             context?.run {
-                val searchBarContainer = binding?.searchBarSomList?.searchBarTextField?.parent as? View
+                val searchBarContainer = somListHeaderBinding?.searchBarSomList?.searchBarTextField?.parent as? View
                 val horizontalPadding = resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl2).toInt()
                 val verticalPadding = resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3).toInt()
                 if (searchBarContainer?.paddingBottom != verticalPadding || searchBarContainer.paddingTop != verticalPadding) {
-                    binding?.bulkActionCheckBoxContainer?.layoutTransition?.disableTransitionType(CHANGING)
+                    somListBinding?.bulkActionCheckBoxContainer?.layoutTransition?.disableTransitionType(CHANGING)
                     searchBarContainer?.setPadding(
                         horizontalPadding,
                         verticalPadding,
@@ -2066,7 +2068,7 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
                     return@addOnPreDrawListener false
                 }
             }
-            binding?.bulkActionCheckBoxContainer?.layoutTransition?.disableTransitionType(CHANGING)
+            somListBinding?.bulkActionCheckBoxContainer?.layoutTransition?.disableTransitionType(CHANGING)
             true
         }
     }
@@ -2074,12 +2076,12 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
     private fun toggleTvSomListBulkText() {
         context?.run {
             val textResId = if (viewModel.isMultiSelectEnabled) R.string.som_list_multi_select_cancel else R.string.som_list_multi_select
-            binding?.tvSomListBulk?.text = context?.resources?.getString(textResId).orEmpty()
+            somListBinding?.tvSomListBulk?.text = context?.resources?.getString(textResId).orEmpty()
         }
     }
 
     private fun updateOrderCounter() {
-        binding?.multiEditViews?.showWithCondition(
+        somListBinding?.multiEditViews?.showWithCondition(
             (somListSortFilterTab?.shouldShowBulkAction()?.and(canMultiAcceptOrder)
                 ?: false) && GlobalConfig.isSellerApp() && adapter.data.filterIsInstance<SomListOrderUiModel>()
                 .isNotEmpty()
@@ -2094,7 +2096,7 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
                     somListSortFilterTab?.getSelectedFilterOrderCount().orZero()
                 ).orEmpty()
             }
-            binding?.tvSomListOrderCounter?.text = text
+            somListBinding?.tvSomListOrderCounter?.text = text
         }
     }
 
@@ -2216,7 +2218,7 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
     }
 
     private fun toggleBulkActionCheckboxVisibility() {
-        binding?.checkBoxBulkAction?.showWithCondition(viewModel.isMultiSelectEnabled)
+        somListBinding?.checkBoxBulkAction?.showWithCondition(viewModel.isMultiSelectEnabled)
     }
 
     private fun updateBulkActionCheckboxStatus() {
@@ -2226,16 +2228,16 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
         val newIndeterminateStatus =
             groupedOrders[true]?.size.orZero() > 0 && groupedOrders[false]?.size.orZero() > 0
         val newCheckedStatus = groupedOrders[true]?.size.orZero() > 0
-        if (newCheckedStatus != binding?.checkBoxBulkAction?.isChecked) {
-            binding?.checkBoxBulkAction?.isChecked = newCheckedStatus
+        if (newCheckedStatus != somListBinding?.checkBoxBulkAction?.isChecked) {
+            somListBinding?.checkBoxBulkAction?.isChecked = newCheckedStatus
         }
-        if (newIndeterminateStatus != binding?.checkBoxBulkAction?.getIndeterminate()) {
-            binding?.checkBoxBulkAction?.setIndeterminate(newIndeterminateStatus)
+        if (newIndeterminateStatus != somListBinding?.checkBoxBulkAction?.getIndeterminate()) {
+            somListBinding?.checkBoxBulkAction?.setIndeterminate(newIndeterminateStatus)
         }
     }
 
     private fun showWaitingPaymentOrderListMenuShimmer() {
-        binding?.run {
+        somListBinding?.run {
             if (canDisplayOrderData) {
                 somListToolbar.menu?.findItem(R.id.som_list_action_waiting_payment_order_shimmer)?.isVisible = true
                 somListToolbar.menu?.findItem(R.id.som_list_action_waiting_payment_order)?.isVisible = false
@@ -2244,7 +2246,7 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
     }
 
     private fun showWaitingPaymentOrderListMenu() {
-        binding?.run {
+        somListBinding?.run {
             somListToolbar.menu?.findItem(R.id.som_list_action_waiting_payment_order_shimmer)?.isVisible = false
             somListToolbar.menu?.findItem(R.id.som_list_action_waiting_payment_order)?.apply {
                 icon = DottedNotification(
@@ -2258,7 +2260,7 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
     }
 
     private fun showDottedWaitingPaymentOrderListMenu() {
-        binding?.run {
+        somListBinding?.run {
             somListToolbar.menu?.findItem(R.id.som_list_action_waiting_payment_order_shimmer)?.isVisible = false
             somListToolbar.menu?.findItem(R.id.som_list_action_waiting_payment_order)?.apply {
                 icon = DottedNotification(
@@ -2272,7 +2274,7 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
     }
 
     private fun hideWaitingPaymentOrderListMenu() {
-        binding?.run {
+        somListBinding?.run {
             somListToolbar.menu?.findItem(R.id.som_list_action_waiting_payment_order_shimmer)?.isVisible = false
             somListToolbar.menu?.findItem(R.id.som_list_action_waiting_payment_order)?.isVisible = false
         }
@@ -2280,7 +2282,7 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
 
     private fun showGlobalError(throwable: Throwable) {
         dismissCoachMark()
-        binding?.run {
+        somListBinding?.run {
             somListLoading.gone()
             rvSomList.gone()
             multiEditViews.gone()
@@ -2294,7 +2296,7 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
             is UnknownHostException, is SocketTimeoutException -> GlobalError.NO_CONNECTION
             else -> GlobalError.SERVER_ERROR
         }
-        binding?.run {
+        somListBinding?.run {
             globalErrorSomList.setType(errorType)
             sortFilterSomList.invisible()
             scrollViewErrorState.show()
@@ -2305,27 +2307,25 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
 
     private fun showAdminPermissionError() {
         dismissCoachMark()
-        binding?.run {
+        somListBinding?.run {
             somListLoading.gone()
             rvSomList.gone()
             multiEditViews.gone()
         }
         animateBulkAcceptOrderButtonLeave()
-        binding?.run {
-            searchBarSomList.gone()
-            shimmerViews.gone()
-        }
+        somListHeaderBinding?.searchBarSomList?.gone()
+        somListBinding?.shimmerViews?.gone()
         getSwipeRefreshLayout(view)?.apply {
             isRefreshing = false
             isEnabled = false
         }
-        binding?.run {
+        somListBinding?.run {
             sortFilterSomList.gone()
             scrollViewErrorState.gone()
         }
         errorToaster?.dismiss()
         hideWaitingPaymentOrderListMenu()
-        binding?.somAdminPermissionView?.setUserNotAllowedToViewSom {
+        somListBinding?.somAdminPermissionView?.setUserNotAllowedToViewSom {
             if (GlobalConfig.isSellerApp()) {
                 RouteManager.route(context, ApplinkConstInternalSellerapp.SELLER_HOME)
             } else {
@@ -2343,7 +2343,7 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
             tickerPagerAdapter.setPagerDescriptionClickEvent(this)
             this.tickerPagerAdapter = tickerPagerAdapter
         }
-        binding?.tickerSomList?.let { tickerView ->
+        somListBinding?.tickerSomList?.let { tickerView ->
             val visibility = tickerView.visibility
             tickerView.addPagerView(tickerPagerAdapter, activeTickers)
             tickerView.post {
@@ -2356,16 +2356,16 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
 
     protected open fun renderOrderList(data: List<SomListOrderUiModel>) {
         skipSearch = false
-        if (binding?.rvSomList?.visibility != View.VISIBLE) binding?.rvSomList?.show()
+        if (somListBinding?.rvSomList?.visibility != View.VISIBLE) somListBinding?.rvSomList?.show()
         // show only if current order list is based on current search keyword
         if (isLoadingInitialData && data.isEmpty()) {
             showEmptyState()
-            binding?.multiEditViews?.gone()
+            somListBinding?.multiEditViews?.gone()
             toggleBulkActionButtonVisibility()
-        } else if (data.firstOrNull()?.searchParam == binding?.searchBarSomList?.searchBarTextField?.text?.toString().orEmpty()) {
+        } else if (data.firstOrNull()?.searchParam == somListHeaderBinding?.searchBarSomList?.searchBarTextField?.text?.toString().orEmpty()) {
             if (isLoadingInitialData) {
                 (adapter as SomListOrderAdapter).updateOrders(data)
-                binding?.multiEditViews?.showWithCondition(
+                somListBinding?.multiEditViews?.showWithCondition(
                     (somListSortFilterTab?.shouldShowBulkAction()?.and(canMultiAcceptOrder)
                         ?: false) && GlobalConfig.isSellerApp()
                 )
@@ -2374,11 +2374,11 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
                 toggleBulkActionButtonVisibility()
                 if (shouldScrollToTop) {
                     shouldScrollToTop = false
-                    binding?.rvSomList?.addOneTimeGlobalLayoutListener {
-                        binding?.rvSomList?.smoothScrollToPosition(0)
+                    somListBinding?.rvSomList?.addOneTimeGlobalLayoutListener {
+                        somListBinding?.rvSomList?.smoothScrollToPosition(0)
                     }
                 }
-                if (coachMark?.currentIndex == newOrderCoachMarkItemPosition || (coachMark?.currentIndex == bulkProcessCoachMarkItemPosition && !binding?.multiEditViews?.isVisible.orFalse())) {
+                if (coachMark?.currentIndex == newOrderCoachMarkItemPosition || (coachMark?.currentIndex == bulkProcessCoachMarkItemPosition && !somListBinding?.multiEditViews?.isVisible.orFalse())) {
                     dismissCoachMark(true)
                 }
             } else {
@@ -2390,7 +2390,7 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
                     }
                 }
                 (adapter as SomListOrderAdapter).updateOrders(adapter.data.plus(data))
-                binding?.rvSomList?.post {
+                somListBinding?.rvSomList?.post {
                     updateBulkActionCheckboxStatus()
                 }
             }
@@ -2409,7 +2409,7 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
             (adapter as SomListOrderAdapter).updateOrder(order)
         }
         if (adapter.dataSize == 0) {
-            binding?.multiEditViews?.gone()
+            somListBinding?.multiEditViews?.gone()
             toggleBulkActionButtonVisibility()
             viewModel.isMultiSelectEnabled = false
             showEmptyState()
@@ -2440,7 +2440,7 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
 
     private fun createSomListEmptyStateModel(isTopAdsActive: Boolean): Visitable<SomListAdapterTypeFactory> {
         return if (GlobalConfig.isSellerApp() && !isTopAdsActive && somListSortFilterTab?.isNewOrderFilterSelected() == true &&
-            somListSortFilterTab?.isFilterApplied() != true && binding?.searchBarSomList?.searchBarTextField?.text.isNullOrEmpty()
+            somListSortFilterTab?.isFilterApplied() != true && somListHeaderBinding?.searchBarSomList?.searchBarTextField?.text.isNullOrEmpty()
         ) {
             SomListEmptyStateUiModel(
                 imageUrl = SomConsts.SOM_LIST_EMPTY_STATE_NO_FILTER_ILLUSTRATION,
@@ -2450,7 +2450,7 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
                 buttonAppLink = ApplinkConstInternalTopAds.TOPADS_CREATE_ADS,
                 showButton = true
             )
-        } else if (somListSortFilterTab?.isFilterApplied() == true || !binding?.searchBarSomList?.searchBarTextField?.text.isNullOrEmpty()) {
+        } else if (somListSortFilterTab?.isFilterApplied() == true || !somListHeaderBinding?.searchBarSomList?.searchBarTextField?.text.isNullOrEmpty()) {
             SomListEmptyStateUiModel(
                 imageUrl = SomConsts.SOM_LIST_EMPTY_STATE_WITH_FILTER_ILLUSTRATION,
                 title = context?.resources?.getString(R.string.som_list_empty_state_not_found_title).orEmpty()
@@ -2478,10 +2478,10 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
             resetOrderSelectedStatus()
             toggleBulkActionButtonVisibility()
             toggleBulkActionCheckboxVisibility()
-            binding?.checkBoxBulkAction?.isChecked = false
-            binding?.checkBoxBulkAction?.setIndeterminate(false)
+            somListBinding?.checkBoxBulkAction?.isChecked = false
+            somListBinding?.checkBoxBulkAction?.setIndeterminate(false)
         }
-        binding?.scrollViewErrorState?.gone()
+        somListBinding?.scrollViewErrorState?.gone()
         isLoadingInitialData = true
         loadOrderList()
     }
@@ -2546,7 +2546,7 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
             viewModel.getWaitingPaymentCounter()
         }
         if (viewModel.tickerResult.value is Fail) {
-            binding?.tickerSomList?.gone()
+            somListBinding?.tickerSomList?.gone()
             viewModel.getTickers()
         }
         if (viewModel.topAdsCategoryResult.value is Fail) {
@@ -2683,7 +2683,7 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
     }
 
     private fun Throwable.showErrorToaster() {
-        if (!binding?.scrollViewErrorState?.isVisible.orFalse()) {
+        if (!somListBinding?.scrollViewErrorState?.isVisible.orFalse()) {
             if (this is UnknownHostException || this is SocketTimeoutException) {
                 showNoInternetConnectionToaster()
             } else {
@@ -2773,10 +2773,10 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
                             viewModel.resetGetOrderListParam()
                             somListSortFilterTab?.clear()
                             skipSearch = true
-                            binding?.searchBarSomList?.searchBarTextField?.setText("")
+                            somListHeaderBinding?.searchBarSomList?.searchBarTextField?.setText("")
                             somListSortFilterTab?.unselectCurrentStatusFilter()
                         } else {
-                            binding?.rvSomList?.post {
+                            somListBinding?.rvSomList?.post {
                                 reshowNewOrderCoachMark()
                             }
                         }
@@ -2787,7 +2787,7 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
                         viewModel.resetGetOrderListParam()
                         somListSortFilterTab?.clear()
                         skipSearch = true
-                        binding?.searchBarSomList?.searchBarTextField?.setText("")
+                        somListHeaderBinding?.searchBarSomList?.searchBarTextField?.setText("")
                         coachMarkIndexToShow = currentIndex
                         // if user press "Lanjut" after waiting payment coachmark, auto select new order filter, if user press "Balik"
                         // auto deselect new order to show all order
@@ -2827,7 +2827,7 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
                     )
                 )
             }
-            binding?.sortFilterSomList?.let {
+            somListBinding?.sortFilterSomList?.let {
                 add(
                     CoachMark2Item(
                         it,
@@ -2836,7 +2836,7 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
                     )
                 )
             }
-            if (binding?.somListToolbar?.menu?.findItem(R.id.som_list_action_waiting_payment_order)?.isVisible == true) {
+            if (somListBinding?.somListToolbar?.menu?.findItem(R.id.som_list_action_waiting_payment_order)?.isVisible == true) {
                 activity?.findViewById<View>(R.id.som_list_action_waiting_payment_order)?.let {
                     add(
                         CoachMark2Item(
@@ -2848,7 +2848,7 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
                 }
             }
             if (GlobalConfig.isSellerApp()) {
-                binding?.tvSomListBulk?.let {
+                somListBinding?.tvSomListBulk?.let {
                     add(
                         CoachMark2Item(
                             it,
@@ -2865,7 +2865,7 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
         if (coachMark?.currentIndex != -1 && coachMark?.isDismissed == false) {
             shouldShowCoachMark = true
             if (removeScrollListener)
-                binding?.rvSomList?.removeOnScrollListener(recyclerViewScrollListener)
+                somListBinding?.rvSomList?.removeOnScrollListener(recyclerViewScrollListener)
             coachMarkIndexToShow = coachMark?.currentIndex.orZero()
             coachMark?.dismissCoachMark()
             coachMark?.isDismissed = true
@@ -2873,16 +2873,16 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
     }
 
     private fun reshowNewOrderCoachMark() {
-        if (binding?.scrollViewErrorState?.isVisible == false && shouldShowCoachMark && coachMarkIndexToShow == newOrderCoachMarkItemPosition &&
+        if (somListBinding?.scrollViewErrorState?.isVisible == false && shouldShowCoachMark && coachMarkIndexToShow == newOrderCoachMarkItemPosition &&
             (tabActive.isBlank() || tabActive == STATUS_ALL_ORDER) &&
-            somListSortFilterTab?.isFilterApplied() != true && binding?.searchBarSomList?.searchBarTextField?.text.isNullOrBlank()
+            somListSortFilterTab?.isFilterApplied() != true && somListHeaderBinding?.searchBarSomList?.searchBarTextField?.text.isNullOrBlank()
         ) {
             val firstNewOrderPosition =
                 getFirstNewOrder(adapter.data.filterIsInstance<SomListOrderUiModel>())
             if (firstNewOrderPosition != -1) {
-                binding?.rvSomList?.stopScroll()
+                somListBinding?.rvSomList?.stopScroll()
                 somListLayoutManager?.scrollToPositionWithOffset(firstNewOrderPosition, 0)
-                binding?.rvSomList?.post {
+                somListBinding?.rvSomList?.post {
                     somListLayoutManager?.findViewByPosition(firstNewOrderPosition)
                         ?.findViewById<UnifyButton>(R.id.btnQuickAction)?.let {
                         if (getVisiblePercent(it) == 0) {
@@ -2891,8 +2891,8 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
                                 SHARED_PREF_NEW_SOM_LIST_COACH_MARK,
                                 true
                             )
-                            binding?.rvSomList?.removeOnScrollListener(recyclerViewScrollListener)
-                            binding?.rvSomList?.addOnScrollListener(recyclerViewScrollListener)
+                            somListBinding?.rvSomList?.removeOnScrollListener(recyclerViewScrollListener)
+                            somListBinding?.rvSomList?.addOnScrollListener(recyclerViewScrollListener)
                             currentNewOrderWithCoachMark = firstNewOrderPosition
                             shouldShowCoachMark = false
                             val coachMarkItems = createCoachMarkItems(it)
@@ -2910,7 +2910,7 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
 
     protected open fun reshowStatusFilterCoachMark() {
         if (shouldShowFilterCoachMark()) {
-            createCoachMarkItems(binding?.rvSomList).run {
+            createCoachMarkItems(somListBinding?.rvSomList).run {
                 if (activity?.isFinishing != false) return
                 if (size == coachMarkItemCount) {
                     currentNewOrderWithCoachMark = -1
@@ -2926,7 +2926,7 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
 
     protected open fun reshowWaitingPaymentOrderListCoachMark() {
         if (shouldShowWaitingPaymentCoachMark(viewModel.waitingPaymentCounterResult.value)) {
-            createCoachMarkItems(binding?.rvSomList).run {
+            createCoachMarkItems(somListBinding?.rvSomList).run {
                 if (activity?.isFinishing != false) return
                 if (size == coachMarkItemCount) {
                     currentNewOrderWithCoachMark = -1
@@ -2942,7 +2942,7 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
 
     protected open fun reshowBulkAcceptOrderCoachMark() {
         if (shouldShowBulkAcceptOrderCoachMark()) {
-            createCoachMarkItems(binding?.rvSomList).run {
+            createCoachMarkItems(somListBinding?.rvSomList).run {
                 if (activity?.isFinishing != false) return
                 if (size == coachMarkItemCount && GlobalConfig.isSellerApp()) {
                     currentNewOrderWithCoachMark = -1
@@ -2971,27 +2971,27 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
 
     private fun animateBulkAcceptOrderButtonEnter() {
         if (bulkAcceptButtonLeaveAnimation?.isRunning == true) bulkAcceptButtonLeaveAnimation?.cancel()
-        binding?.btnBulkAction?.text = when (somListSortFilterTab?.getSelectedFilterStatus()) {
+        somListBinding?.btnBulkAction?.text = when (somListSortFilterTab?.getSelectedFilterStatus()) {
             STATUS_NEW_ORDER -> context?.resources?.getString(R.string.som_list_bulk_accept_order_button).orEmpty()
             KEY_CONFIRM_SHIPPING -> context?.resources?.getString(R.string.som_list_bulk_confirm_shipping_order_button).orEmpty()
             else -> ""
         }
-        binding?.containerBtnBulkAction?.visible()
+        somListBinding?.containerBtnBulkAction?.visible()
         bulkAcceptButtonEnterAnimation =
-            binding?.containerBtnBulkAction?.animateSlide(binding?.containerBtnBulkAction?.translationY.orZero(), Float.ZERO)
+            somListBinding?.containerBtnBulkAction?.animateSlide(somListBinding?.containerBtnBulkAction?.translationY.orZero(), Float.ZERO)
     }
 
     private fun animateBulkAcceptOrderButtonLeave() {
         if (bulkAcceptButtonEnterAnimation?.isRunning == true) bulkAcceptButtonEnterAnimation?.cancel()
-        bulkAcceptButtonLeaveAnimation = binding?.containerBtnBulkAction?.animateSlide(
-            binding?.containerBtnBulkAction?.translationY.orZero(),
-            binding?.containerBtnBulkAction?.height?.toFloat().orZero()
+        bulkAcceptButtonLeaveAnimation = somListBinding?.containerBtnBulkAction?.animateSlide(
+            somListBinding?.containerBtnBulkAction?.translationY.orZero(),
+            somListBinding?.containerBtnBulkAction?.height?.toFloat().orZero()
         )
         bulkAcceptButtonLeaveAnimation?.addListener(object : Animator.AnimatorListener {
             override fun onAnimationRepeat(animation: Animator?) {}
 
             override fun onAnimationEnd(animation: Animator?) {
-                binding?.containerBtnBulkAction?.gone()
+                somListBinding?.containerBtnBulkAction?.gone()
                 bulkAcceptButtonLeaveAnimation?.removeListener(this)
             }
 
@@ -3006,7 +3006,7 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
     private fun animateOrderTicker(isEnter: Boolean) {
         Handler(Looper.getMainLooper()).postDelayed({
             val shouldAnimateTicker =
-                (isEnter && tickerIsReady && (binding?.tickerSomList?.visibility == View.INVISIBLE || binding?.tickerSomList?.visibility == View.GONE)) || !isEnter
+                (isEnter && tickerIsReady && (somListBinding?.tickerSomList?.visibility == View.INVISIBLE || somListBinding?.tickerSomList?.visibility == View.GONE)) || !isEnter
             if (adapter.data.isNotEmpty() && shouldAnimateTicker) {
                 val enterValue: Float
                 val exitValue: Float
@@ -3017,7 +3017,7 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
                     enterValue = 1f
                     exitValue = Float.ZERO
                 }
-                binding?.tickerSomList?.run {
+                somListBinding?.tickerSomList?.run {
                     val height = height.toFloat().orZero()
                     translationY = enterValue * height
 
@@ -3057,8 +3057,8 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
     }
 
     private fun translateTickerConstrainedLayout(translation: Float) {
-        binding?.run {
-            searchBarSomList.translationY = translation
+        somListHeaderBinding?.searchBarSomList?.translationY = translation
+        somListBinding?.run {
             sortFilterSomList.translationY = translation
             sortFilterShimmer1.translationY = translation
             sortFilterShimmer2.translationY = translation
@@ -3067,7 +3067,7 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
             sortFilterShimmer5.translationY = translation
             bulkActionCheckBoxContainer.translationY = translation
             dividerMultiSelect.translationY = translation
-            val params = (binding?.swipeRefreshLayoutSomList?.layoutParams as? ViewGroup.MarginLayoutParams)
+            val params = (somListBinding?.swipeRefreshLayoutSomList?.layoutParams as? ViewGroup.MarginLayoutParams)
             params?.topMargin = translation.toInt()
             swipeRefreshLayoutSomList.layoutParams = params
             containerBtnBulkAction.translationY = translation
@@ -3171,13 +3171,20 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
         activity?.run {
             (this as? AppCompatActivity)?.run {
                 supportActionBar?.hide()
-                binding?.somListToolbar?.run {
+                somListBinding?.somListToolbar?.run {
                     inflateMenu(R.menu.menu_som_list)
                     title = context?.resources?.getString(getSomListResTitle()).orEmpty()
                     isShowBackButton = showBackButton()
                     setOnMenuItemClickListener(this@SomListFragment)
                     setNavigationOnClickListener {
                         onBackPressed()
+                    }
+                    somListHeaderBinding = SomListHeaderBinding.inflate(
+                        layoutInflater,
+                        null,
+                        false
+                    ).apply {
+                        customView(root)
                     }
                 }
                 updateToolbarMenu()
@@ -3230,18 +3237,18 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
         viewModel.refreshSelectedOrder(orderId, invoice)
     }
 
-    protected open fun shouldShowFilterCoachMark() = binding?.scrollViewErrorState?.isVisible == false &&
+    protected open fun shouldShowFilterCoachMark() = somListBinding?.scrollViewErrorState?.isVisible == false &&
             shouldShowCoachMark && coachMarkIndexToShow == filterChipCoachMarkItemPosition &&
-            binding?.sortFilterSomList?.isVisible == true && binding?.rvSomList != null
+            somListBinding?.sortFilterSomList?.isVisible == true && somListBinding?.rvSomList != null
 
     protected open fun shouldShowWaitingPaymentCoachMark(waitingPaymentOrderListCountResult: Result<WaitingPaymentCounter>?) =
-        binding?.scrollViewErrorState?.isVisible == false && shouldShowCoachMark && binding?.rvSomList != null &&
+        somListBinding?.scrollViewErrorState?.isVisible == false && shouldShowCoachMark && somListBinding?.rvSomList != null &&
                 coachMarkIndexToShow == waitingPaymentCoachMarkItemPosition && waitingPaymentOrderListCountResult is Success
 
     protected open fun shouldShowBulkAcceptOrderCoachMark() =
-        binding?.scrollViewErrorState?.isVisible == false &&
-                shouldShowCoachMark && binding?.rvSomList != null && coachMarkIndexToShow == bulkProcessCoachMarkItemPosition &&
-                binding?.tvSomListBulk?.isVisible == true && tabActive == STATUS_NEW_ORDER
+        somListBinding?.scrollViewErrorState?.isVisible == false &&
+                shouldShowCoachMark && somListBinding?.rvSomList != null && coachMarkIndexToShow == bulkProcessCoachMarkItemPosition &&
+                somListBinding?.tvSomListBulk?.isVisible == true && tabActive == STATUS_NEW_ORDER
 
     protected open fun onSuccessGetFilter(
         result: Success<SomListFilterUiModel>,

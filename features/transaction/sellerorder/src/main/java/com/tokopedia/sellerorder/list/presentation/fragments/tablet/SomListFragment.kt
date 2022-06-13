@@ -205,16 +205,16 @@ class SomListFragment : com.tokopedia.sellerorder.list.presentation.fragments.So
 
     override fun createCoachMarkItems(firstNewOrderView: View?): ArrayList<CoachMark2Item> {
         return arrayListOf<CoachMark2Item>().apply {
-            binding?.sortFilterSomList?.let {
+            somListBinding?.sortFilterSomList?.let {
                 add(CoachMark2Item(it, getString(R.string.som_list_coachmark_sort_filter_title), getString(R.string.som_list_coachmark_sort_filter_description)))
             }
-            if (binding?.somListToolbar?.menu?.findItem(R.id.som_list_action_waiting_payment_order)?.isVisible == true) {
+            if (somListBinding?.somListToolbar?.menu?.findItem(R.id.som_list_action_waiting_payment_order)?.isVisible == true) {
                 activity?.findViewById<View>(R.id.som_list_action_waiting_payment_order)?.let {
                     add(CoachMark2Item(it, getString(R.string.som_list_coachmark_waiting_payment_title), getString(R.string.som_list_coachmark_waiting_payment_description)))
                 }
             }
             if (GlobalConfig.isSellerApp()) {
-                binding?.tvSomListBulk?.let {
+                somListBinding?.tvSomListBulk?.let {
                     add(CoachMark2Item(it, getString(R.string.som_list_coachmark_multi_select_title), getString(R.string.som_list_coachmark_multi_select_description)))
                 }
             }
@@ -229,17 +229,17 @@ class SomListFragment : com.tokopedia.sellerorder.list.presentation.fragments.So
         }, DELAY_COACHMARK)
     }
 
-    override fun shouldShowFilterCoachMark() = binding?.scrollViewErrorState?.isVisible == false &&
+    override fun shouldShowFilterCoachMark() = somListBinding?.scrollViewErrorState?.isVisible == false &&
             shouldShowCoachMark && coachMarkIndexToShow == filterChipCoachMarkItemPosition &&
-            binding?.sortFilterSomList?.isVisible == true
+            somListBinding?.sortFilterSomList?.isVisible == true
 
     override fun shouldShowWaitingPaymentCoachMark(waitingPaymentOrderListCountResult: Result<WaitingPaymentCounter>?) =
-        binding?.scrollViewErrorState?.isVisible == false && coachMarkIndexToShow == waitingPaymentCoachMarkItemPosition &&
+        somListBinding?.scrollViewErrorState?.isVisible == false && coachMarkIndexToShow == waitingPaymentCoachMarkItemPosition &&
                     shouldShowCoachMark && waitingPaymentOrderListCountResult is Success
 
-    override fun shouldShowBulkAcceptOrderCoachMark() = binding?.scrollViewErrorState?.isVisible == false &&
+    override fun shouldShowBulkAcceptOrderCoachMark() = somListBinding?.scrollViewErrorState?.isVisible == false &&
             shouldShowCoachMark && coachMarkIndexToShow == bulkProcessCoachMarkItemPosition &&
-            binding?.tvSomListBulk?.isVisible == true && tabActive == SomConsts.STATUS_NEW_ORDER
+            somListBinding?.tvSomListBulk?.isVisible == true && tabActive == SomConsts.STATUS_NEW_ORDER
 
     private fun notifyOpenOrderDetail(order: SomListOrderUiModel) {
         getOpenedOrder().let { openedOrder ->
@@ -289,7 +289,7 @@ class SomListFragment : com.tokopedia.sellerorder.list.presentation.fragments.So
         val typingAnimator = ValueAnimator.ofInt(0, invoice.length)
         typingAnimator.duration = SEARCH_ANIMATION_DURATION
         typingAnimator.addUpdateListener { animation ->
-            binding?.searchBarSomList?.searchBarTextField?.setText(invoice.substring(0, animation.animatedValue as Int))
+            somListHeaderBinding?.searchBarSomList?.searchBarTextField?.setText(invoice.substring(0, animation.animatedValue as Int))
         }
         typingAnimator.start()
     }
