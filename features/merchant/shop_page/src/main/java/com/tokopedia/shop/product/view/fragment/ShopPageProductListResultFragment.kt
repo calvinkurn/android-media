@@ -161,6 +161,7 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
     private var srpPageId = ""
     private var srpPageTitle = ""
     private var navSource = ""
+    private var isEnableDirectPurchase: Boolean = false
 
     private val staggeredGridLayoutManager: StaggeredGridLayoutManager by lazy {
         StaggeredGridLayoutManager(GRID_SPAN_COUNT, StaggeredGridLayoutManager.VERTICAL)
@@ -333,7 +334,7 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
                     it,
                     isMyShop
             )
-        } ?: viewModel.getShop(shopId, isRefresh = isNeedToReloadData)
+        } ?: viewModel.getShop(shopId.orEmpty(), isRefresh = isNeedToReloadData)
     }
 
     override fun createEndlessRecyclerViewListener(): EndlessRecyclerViewScrollListener {
@@ -381,7 +382,8 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
                     keyword,
                     selectedEtalaseType,
                     shopProductFilterParameter ?: ShopProductFilterParameter(),
-                    localCacheModel ?: LocalCacheModel()
+                    localCacheModel ?: LocalCacheModel(),
+                    isEnableDirectPurchase
             )
         }
     }
@@ -425,7 +427,8 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
                     sortId.toIntOrZero(),
                     selectedEtalaseId,
                     keywordEmptyState,
-                    localCacheModel ?: LocalCacheModel()
+                    localCacheModel ?: LocalCacheModel(),
+                    isEnableDirectPurchase
             )
         }
     }
@@ -442,9 +445,12 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
     }
 
     private fun observeLiveData() {
-        viewModel.shopInfoResp.observe(viewLifecycleOwner, Observer {
+        viewModel.shopData.observe(viewLifecycleOwner, Observer {
             when (it) {
-                is Success -> onSuccessGetShopInfo(it.data)
+                is Success -> {
+                    isEnableDirectPurchase = getIsEnableDirectPurchase(it.data.shopHomeType)
+                    onSuccessGetShopInfo(it.data.shopInfo)
+                }
                 is Fail -> {
                     onErrorGetShopInfo(it.throwable)
                     val throwable = it.throwable
@@ -452,7 +458,7 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
                         ShopUtil.logShopPageP2BuyerFlowAlerting(
                                 tag = SHOP_PAGE_BUYER_FLOW_TAG,
                                 functionName = this::observeLiveData.name,
-                                liveDataName = ShopPageProductListResultViewModel::shopInfoResp.name,
+                                liveDataName = ShopPageProductListResultViewModel::shopData.name,
                                 userId = userId,
                                 shopId = shopId.orEmpty(),
                                 shopName = shopName.orEmpty(),
@@ -566,6 +572,12 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
                 is Fail -> { }
             }
         })
+    }
+
+    private fun getIsEnableDirectPurchase(shopHomeType: ShopPageGetHomeType): Boolean {
+        return shopHomeType.shopLayoutFeatures.firstOrNull {
+            it.name == ShopPageConstant.ShopLayoutFeatures.DIRECT_PURCHASE && it.isActive
+        } != null
     }
 
     private fun sendShopPageSearchResultTracker(productResponseUiModel: GetShopProductUiModel) {
@@ -996,7 +1008,8 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
                         keyword,
                         selectedEtalaseType,
                         shopProductFilterParameter ?: ShopProductFilterParameter(),
-                        localCacheModel ?: LocalCacheModel()
+                        localCacheModel ?: LocalCacheModel(),
+                        isEnableDirectPurchase
                 )
             }
         } else {
@@ -1177,7 +1190,7 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
 
     override fun onDestroy() {
         viewModel.shopSortFilterData.removeObservers(this)
-        viewModel.shopInfoResp.removeObservers(this)
+        viewModel.shopData.removeObservers(this)
         viewModel.productData.removeObservers(this)
         viewModel.bottomSheetFilterLiveData.removeObservers(this)
         viewModel.shopProductFilterCountLiveData.removeObservers(this)

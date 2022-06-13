@@ -1,6 +1,8 @@
 package com.tokopedia.shop.home.util.mapper
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.kotlin.extensions.view.ONE
+import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.kotlin.extensions.view.toDoubleOrZero
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.productcard.ProductCardModel
@@ -60,7 +62,8 @@ object ShopPageHomeMapper {
 
     fun mapToHomeProductViewModelForAllProduct(
         shopProduct: ShopProduct,
-        isMyOwnProduct: Boolean
+        isMyOwnProduct: Boolean,
+        isEnableDirectPurchase: Boolean
     ): ShopHomeProductUiModel =
         with(shopProduct) {
             ShopHomeProductUiModel().also {
@@ -87,6 +90,7 @@ object ShopPageHomeMapper {
                 it.freeOngkirPromoIcon = freeOngkir.imgUrl
                 it.labelGroupList =
                     labelGroupList.map { labelGroup -> mapToLabelGroupViewModel(labelGroup) }
+                it.isEnableDirectPurchase = isEnableDirectPurchase
             }
         }
 
@@ -166,7 +170,7 @@ object ShopPageHomeMapper {
             shopHomeProductViewModel.isShowFreeOngkir, shopHomeProductViewModel.freeOngkirPromoIcon
                 ?: ""
         )
-        return ProductCardModel(
+        val baseProductCardModel = ProductCardModel(
             productImageUrl = shopHomeProductViewModel.imageUrl ?: "",
             productName = shopHomeProductViewModel.name ?: "",
             discountPercentage = discountPercentage,
@@ -181,6 +185,58 @@ object ShopPageHomeMapper {
             hasAddToCartButton = isHasAddToCartButton,
             addToCartButtonType = UnifyButton.Type.MAIN,
             isWideContent = isWideContent
+        )
+        return if (shopHomeProductViewModel.isEnableDirectPurchase) {
+            if (shopHomeProductViewModel.isVariant) {
+                createProductCardWithVariantAtcModel(shopHomeProductViewModel, baseProductCardModel)
+            } else {
+                if (shopHomeProductViewModel.productInCart.isZero()) {
+                    createProductCardWithDefaultAddToCardModel(baseProductCardModel)
+                } else {
+                    createProductCardWithNonVariantAtcModel(
+                        shopHomeProductViewModel,
+                        baseProductCardModel
+                    )
+                }
+            }
+        } else {
+            baseProductCardModel
+        }
+    }
+
+    private fun createProductCardWithDefaultAddToCardModel(baseProductCardModel: ProductCardModel): ProductCardModel {
+        return baseProductCardModel.copy(
+            variant = null,
+            nonVariant = null,
+            hasAddToCartButton = true
+        )
+    }
+
+    private fun createProductCardWithVariantAtcModel(
+        shopHomeProductViewModel: ShopHomeProductUiModel,
+        baseProductCardModel: ProductCardModel
+    ): ProductCardModel {
+        return baseProductCardModel.copy(
+            variant = ProductCardModel.Variant(
+                shopHomeProductViewModel.productInCart
+            ),
+            nonVariant = null,
+            hasAddToCartButton = false
+        )
+    }
+
+    private fun createProductCardWithNonVariantAtcModel(
+        shopHomeProductViewModel: ShopHomeProductUiModel,
+        baseProductCardModel: ProductCardModel
+    ): ProductCardModel {
+        return baseProductCardModel.copy(
+            nonVariant = ProductCardModel.NonVariant(
+                quantity = shopHomeProductViewModel.productInCart,
+                minQuantity = Int.ONE,
+                maxQuantity = 10
+            ),
+            variant = null,
+            hasAddToCartButton = false
         )
     }
 

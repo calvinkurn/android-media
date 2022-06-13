@@ -42,6 +42,9 @@ class ShopProductUiModel : BaseShopProductViewModel, ImpressHolder {
     var isUpcoming: Boolean = false
     var etalaseType: Int? = null
     var hideGimmick: Boolean = false
+    var isEnableDirectPurchase: Boolean = false
+    var productInCart: Int = 0
+    var isVariant: Boolean = false
 
     override fun type(typeFactory: ShopProductAdapterTypeFactory?): Int {
         return typeFactory?.type(this).orZero()

@@ -10,7 +10,11 @@ data class ShopPageGetHomeType(
 
         @SerializedName("homeLayoutData")
         @Expose
-        val homeLayoutData: HomeLayoutData = HomeLayoutData()
+        val homeLayoutData: HomeLayoutData = HomeLayoutData(),
+
+        @SerializedName("shopLayoutFeatures")
+        @Expose
+        val shopLayoutFeatures: List<ShopLayoutFeatures> = listOf()
 ) {
 
     data class Response(
@@ -49,4 +53,14 @@ data class ShopPageGetHomeType(
                 val widgetName: String = ""
         )
     }
+
+    data class ShopLayoutFeatures(
+        @SerializedName("name")
+        @Expose
+        val name: String = "",
+
+        @SerializedName("isActive")
+        @Expose
+        val isActive: Boolean = false
+    )
 }

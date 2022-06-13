@@ -12,6 +12,9 @@ import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.media.loader.loadImageWithEmptyTarget
 import com.tokopedia.media.loader.utils.MediaBitmapEmptyTarget
+import com.tokopedia.minicart.common.domain.data.MiniCartItem
+import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
+import com.tokopedia.minicart.common.domain.data.getMiniCartItemProduct
 import com.tokopedia.network.exception.UserNotLoginException
 import com.tokopedia.remoteconfig.RollenceKey
 import com.tokopedia.shop.common.constant.ShopPageConstant
@@ -136,6 +139,10 @@ class NewShopPageViewModel @Inject constructor(
     private val _shopPageShopShareData = MutableLiveData<Result<ShopInfo>>()
     val shopPageShopShareData: LiveData<Result<ShopInfo>>
         get() = _shopPageShopShareData
+
+    val miniCartSimplifiedData: LiveData<MiniCartSimplifiedData>
+        get() = _miniCartSimplifiedData
+    private val _miniCartSimplifiedData = MutableLiveData<MiniCartSimplifiedData>()
 
     fun getShopPageTabData(
             shopId: String,
@@ -472,4 +479,9 @@ class NewShopPageViewModel @Inject constructor(
         useCase.params = GQLGetShopOperationalHourStatusUseCase.createParams(shopId.toString())
         return useCase.executeOnBackground()
     }
+
+    fun setMiniCartData(miniCart: MiniCartSimplifiedData) {
+        _miniCartSimplifiedData.postValue(miniCart)
+    }
+
 }

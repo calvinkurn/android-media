@@ -146,16 +146,18 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
         private const val KEY_SHOP_HOME_TYPE = "SHOP_HOME_TYPE"
         private const val KEY_IS_OFFICIAL = "IS_OFFICIAL"
         private const val KEY_IS_GOLD_MERCHANT = "IS_GOLD_MERCHANT"
+        private const val KEY_ENABLE_SHOP_DIRECT_PURCHASE = "ENABLE_SHOP_DIRECT_PURCHASE"
 
         @JvmStatic
         fun createInstance(
-                shopId: String,
-                shopName: String,
-                isOfficial: Boolean,
-                isGoldMerchant: Boolean,
-                shopHomeType: String,
-                shopAttribution: String?,
-                shopRef: String
+            shopId: String,
+            shopName: String,
+            isOfficial: Boolean,
+            isGoldMerchant: Boolean,
+            shopHomeType: String,
+            shopAttribution: String?,
+            shopRef: String,
+            isEnableDirectPurchase: Boolean
         ): ShopPageProductListFragment {
             val fragment = ShopPageProductListFragment()
             val bundle = Bundle()
@@ -165,6 +167,7 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
             bundle.putBoolean(KEY_IS_OFFICIAL, isOfficial)
             bundle.putBoolean(KEY_IS_GOLD_MERCHANT, isGoldMerchant)
             bundle.putString(SHOP_ATTRIBUTION, shopAttribution)
+            bundle.putBoolean(KEY_ENABLE_SHOP_DIRECT_PURCHASE, isEnableDirectPurchase)
             fragment.arguments = bundle
             fragment.shopRef = shopRef
             return fragment
@@ -211,6 +214,7 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
     private var shopName: String = ""
     private var shopHomeType: String = ""
     private var shopRef: String = ""
+    private var isEnableDirectPurchase: Boolean = false
     private var isOfficialStore: Boolean = false
     private var isGoldMerchant: Boolean = false
     private var selectedEtalaseId = ""
@@ -310,7 +314,8 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
                 ShopUtil.getProductPerPage(context),
                 selectedEtalaseId,
                 shopProductFilterParameter ?: ShopProductFilterParameter(),
-                ShopUtil.getShopPageWidgetUserAddressLocalData(context) ?: LocalCacheModel()
+                ShopUtil.getShopPageWidgetUserAddressLocalData(context) ?: LocalCacheModel(),
+                isEnableDirectPurchase
         )
     }
 
@@ -854,7 +859,7 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
         startMonitoringPltCustomMetric(SHOP_TRACE_PRODUCT_MIDDLE)
         showLoading()
         initialProductListData?.let{
-            viewModel.setInitialProductList(shopId, ShopUtil.getProductPerPage(context), it)
+            viewModel.setInitialProductList(shopId, ShopUtil.getProductPerPage(context), it, isEnableDirectPurchase)
         }
         viewModel.getShopFilterData(shopId)
         isOnViewCreated = false
@@ -936,7 +941,8 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
                 ShopUtil.getProductPerPage(context),
                 selectedEtalaseId,
                 shopProductFilterParameter ?: ShopProductFilterParameter(),
-                ShopUtil.getShopPageWidgetUserAddressLocalData(context) ?: LocalCacheModel()
+                ShopUtil.getShopPageWidgetUserAddressLocalData(context) ?: LocalCacheModel(),
+                isEnableDirectPurchase
         )
     }
 
@@ -1102,6 +1108,7 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
             isOfficialStore = it.getBoolean(KEY_IS_OFFICIAL, false)
             isGoldMerchant = it.getBoolean(KEY_IS_GOLD_MERCHANT, false)
             shopHomeType = it.getString(KEY_SHOP_HOME_TYPE, "")
+            isEnableDirectPurchase = it.getBoolean(KEY_ENABLE_SHOP_DIRECT_PURCHASE, false)
         }
     }
 
@@ -1391,7 +1398,8 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
                     data,
                     isShowNewShopHomeTab(),
                     ShopUtil.getShopPageWidgetUserAddressLocalData(context) ?: LocalCacheModel(),
-                    context
+                    context,
+                    isEnableDirectPurchase
             )
         }
         if (initialProductListData == null){
@@ -1401,7 +1409,8 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
                     ShopUtil.getProductPerPage(context),
                     etalaseItemDataModel.etalaseId,
                     shopProductFilterParameter ?: ShopProductFilterParameter(),
-                    ShopUtil.getShopPageWidgetUserAddressLocalData(context) ?: LocalCacheModel()
+                    ShopUtil.getShopPageWidgetUserAddressLocalData(context) ?: LocalCacheModel(),
+                    isEnableDirectPurchase
             )
         }
     }

@@ -4,14 +4,24 @@ import com.tokopedia.shop.home.view.model.ShopHomeProductUiModel
 
 interface ShopHomeEndlessProductListener {
     fun onAllProductItemClicked(
-            itemPosition: Int,
-            shopHomeProductViewModel: ShopHomeProductUiModel?
+        itemPosition: Int,
+        shopHomeProductViewModel: ShopHomeProductUiModel?
     )
 
     fun onAllProductItemImpression(
-            itemPosition: Int,
-            shopHomeProductViewModel: ShopHomeProductUiModel?
+        itemPosition: Int,
+        shopHomeProductViewModel: ShopHomeProductUiModel?
     )
 
     fun onThreeDotsAllProductClicked(shopHomeProductViewModel: ShopHomeProductUiModel)
+
+    fun onProductAtcNonVariantQuantityEditorChanged(
+        shopHomeProductViewModel: ShopHomeProductUiModel,
+        quantity: Int
+    )
+
+    fun onProductAtcVariantClick(shopHomeProductViewModel: ShopHomeProductUiModel)
+
+    fun onProductAtcDefaultClick(shopHomeProductViewModel: ShopHomeProductUiModel)
+
 }

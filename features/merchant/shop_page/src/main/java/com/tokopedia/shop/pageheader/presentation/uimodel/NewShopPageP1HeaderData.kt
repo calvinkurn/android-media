@@ -1,5 +1,6 @@
 package com.tokopedia.shop.pageheader.presentation.uimodel
 
+import com.tokopedia.shop.common.data.model.ShopPageGetHomeType
 import com.tokopedia.shop.pageheader.presentation.uimodel.widget.ShopHeaderWidgetUiModel
 
 data class NewShopPageP1HeaderData(
@@ -11,5 +12,6 @@ data class NewShopPageP1HeaderData(
         val shopDomain: String = "",
         val isWhitelist: Boolean = false,
         val url: String = "",
-        val listShopHeaderWidget: List<ShopHeaderWidgetUiModel> = listOf()
+        val listShopHeaderWidget: List<ShopHeaderWidgetUiModel> = listOf(),
+        val shopLayoutFeatures: List<ShopPageGetHomeType.ShopLayoutFeatures> = listOf()
 )

@@ -174,6 +174,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         const val KEY_SHOP_NAME = "SHOP_NAME"
         const val KEY_SHOP_ATTRIBUTION = "SHOP_ATTRIBUTION"
         const val KEY_SHOP_REF = "SHOP_REF"
+        private const val KEY_ENABLE_SHOP_DIRECT_PURCHASE = "ENABLE_SHOP_DIRECT_PURCHASE"
         const val SPAN_COUNT = 2
         const val SAVED_SHOP_SORT_ID = "saved_shop_sort_id"
         const val SAVED_SHOP_SORT_NAME = "saved_shop_sort_name"
@@ -200,7 +201,8 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
             isGoldMerchant: Boolean,
             shopName: String,
             shopAttribution: String,
-            shopRef: String
+            shopRef: String,
+            isEnableDirectPurchase: Boolean
         ): ShopPageHomeFragment {
             val bundle = Bundle()
             bundle.putString(KEY_SHOP_ID, shopId)
@@ -209,7 +211,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
             bundle.putString(KEY_SHOP_NAME, shopName)
             bundle.putString(KEY_SHOP_ATTRIBUTION, shopAttribution)
             bundle.putString(KEY_SHOP_REF, shopRef)
-
+            bundle.putBoolean(KEY_ENABLE_SHOP_DIRECT_PURCHASE, isEnableDirectPurchase)
             return ShopPageHomeFragment().apply {
                 arguments = bundle
             }
@@ -239,6 +241,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
     private var shopName: String = ""
     private var shopAttribution: String = ""
     private var shopRef: String = ""
+    private var isEnableDirectPurchase: Boolean = false
     private var productListName: String = ""
     private var decodeExtParam: String = ""
     private var isThematicWidgetShown: Boolean = false
@@ -621,6 +624,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
             shopName = it.getString(KEY_SHOP_NAME, "")
             shopAttribution = it.getString(KEY_SHOP_ATTRIBUTION, "")
             shopRef = it.getString(KEY_SHOP_REF, "")
+            isEnableDirectPurchase = it.getBoolean(KEY_ENABLE_SHOP_DIRECT_PURCHASE, false)
         }
     }
 
@@ -802,6 +806,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         observePlayWidget()
         observePlayWidgetReminderEvent()
         observePlayWidgetReminder()
+        observeAddToCartLiveData()
     }
 
     private fun sendEmbraceBreadCrumbLogger(
@@ -1278,7 +1283,8 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                 shopProductFilterParameter ?: ShopProductFilterParameter(),
                 initialProductListData,
                 ShopUtil.getShopPageWidgetUserAddressLocalData(context)
-                    ?: LocalCacheModel()
+                    ?: LocalCacheModel(),
+                isEnableDirectPurchase
             )
         }
     }
@@ -1372,7 +1378,8 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                 page,
                 ShopUtil.getProductPerPage(context),
                 shopProductFilterParameter ?: ShopProductFilterParameter(),
-                ShopUtil.getShopPageWidgetUserAddressLocalData(context) ?: LocalCacheModel()
+                ShopUtil.getShopPageWidgetUserAddressLocalData(context) ?: LocalCacheModel(),
+                isEnableDirectPurchase
             )
         }
     }
@@ -2017,6 +2024,53 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                 isWishlisted = shopHomeProductViewModel.isWishList,
                 productId = shopHomeProductViewModel.id ?: ""
             )
+        )
+    }
+
+    override fun onProductAtcNonVariantQuantityEditorChanged(
+        shopHomeProductViewModel: ShopHomeProductUiModel,
+        quantity: Int
+    ) {
+    }
+
+    override fun onProductAtcVariantClick(shopHomeProductViewModel: ShopHomeProductUiModel) {
+        //                if(uiModel.isVariant) {
+//                    AtcVariantHelper.goToAtcVariant(
+//                        context = requireContext(),
+//                        productId = uiModel.productID,
+//                        pageSource = VariantPageSource.SHOP_COUPON_PAGESOURCE,
+//                        shopId = shopId,
+//                        extParams = AtcVariantHelper.generateExtParams(
+//                            mapOf(
+//                                VBS_EXT_PARAMS_PROMO_ID to promoId
+//                            )
+//                        ),
+//                        dismissAfterTransaction = false,
+//                        startActivitResult = this::startActivityForResult
+//                    )
+//                    tracking.sendVbsImpressionTracker(shopId, userId, isSellerView)
+//                }
+    }
+
+    override fun onProductAtcDefaultClick(shopHomeProductViewModel: ShopHomeProductUiModel) {
+        if (isLogin) {
+            if (isOwner) {
+                val sellerViewAtcErrorMessage = getString(R.string.shop_page_seller_atc_error_message)
+                showErrorToast(sellerViewAtcErrorMessage)
+            } else {
+                handleAtcFlow(shopHomeProductViewModel.id.orEmpty(), Int.ONE, shopId)
+            }
+        } else {
+            redirectToLoginPage()
+        }
+    }
+
+    private fun handleAtcFlow(productId: String, quantity: Int, shopId: String) {
+        viewModel?.handleAtcFlow(
+            productId,
+            quantity,
+            shopId,
+            (parentFragment as? NewShopPageFragment)?.getMiniCartSimplifiedData()
         )
     }
 
@@ -3432,6 +3486,26 @@ shopHomeAdapter.itemCount
             if (isViewVisible) playWidgetCoordinator.onResume()
             else playWidgetCoordinator.onPause()
         }
+    }
+
+    private fun observeAddToCartLiveData() {
+        viewModel?.miniCartAdd?.observe(viewLifecycleOwner, {
+            when (it) {
+                is Success -> {
+                    updateMiniCartWidget()
+                    showToastSuccess(
+                        it.data.errorMessage.joinToString(separator = ", ")
+                    )
+                }
+                is Fail -> {
+                    showErrorToast(it.throwable.message.orEmpty())
+                }
+            }
+        })
+    }
+
+    private fun updateMiniCartWidget() {
+        (parentFragment as? NewShopPageFragment)?.updateMiniCartWidget()
     }
 
     private fun showPlayWidgetBottomSheet(channelUiModel: PlayWidgetChannelUiModel) {

@@ -22,6 +22,9 @@ import com.tokopedia.kotlin.extensions.coroutines.asyncCatchError
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
+import com.tokopedia.minicart.common.domain.data.MiniCartItem
+import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
+import com.tokopedia.minicart.common.domain.data.getMiniCartItemProduct
 import com.tokopedia.mvcwidget.usecases.MVCSummaryUseCase
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
@@ -79,7 +82,8 @@ class ShopHomeViewModel @Inject constructor(
     private val userSession: UserSessionInterface,
     private val getShopProductUseCase: GqlGetShopProductUseCase,
     private val dispatcherProvider: CoroutineDispatchers,
-    private val addToCartUseCase: AddToCartUseCase,
+    private val addToCartUseCaseRx: AddToCartUseCase,
+    private val addToCartUseCase: com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase,
     private val addToCartOccUseCase: AddToCartOccMultiUseCase,
     private val addToCartBundleUseCase: AddToCartBundleUseCase,
     private val gqlCheckWishlistUseCase: Provider<GQLCheckWishlistUseCase>,
@@ -167,6 +171,10 @@ class ShopHomeViewModel @Inject constructor(
         get() = _playWidgetReminderObservable
     private val _playWidgetReminderObservable = MutableLiveData<Result<PlayWidgetReminderType>>()
 
+    val miniCartAdd: LiveData<Result<AddToCartDataModel>>
+        get() = _miniCartAdd
+    private val _miniCartAdd = MutableLiveData<Result<AddToCartDataModel>>()
+
     val userSessionShopId: String
         get() = userSession.shopId ?: ""
     val isLogin: Boolean
@@ -182,7 +190,7 @@ class ShopHomeViewModel @Inject constructor(
             val shopHomeLayoutResponse = withContext(dispatcherProvider.io) {
                 gqlShopPageGetHomeType.isFromCacheFirst = false
                 gqlShopPageGetHomeType.params = GqlShopPageGetHomeType.createParams(
-                        shopId.toIntOrZero(),
+                        shopId,
                         extParam
                 )
                 gqlShopPageGetHomeType.executeOnBackground()
@@ -201,11 +209,19 @@ class ShopHomeViewModel @Inject constructor(
             page: Int,
             productPerPage: Int,
             shopProductFilterParameter: ShopProductFilterParameter,
-            widgetUserAddressLocalData: LocalCacheModel
+            widgetUserAddressLocalData: LocalCacheModel,
+            isEnableDirectPurchase: Boolean
     ) {
         launchCatchError(block = {
             val listProductData = withContext(dispatcherProvider.io) {
-                getProductListData(shopId, page, productPerPage, shopProductFilterParameter, widgetUserAddressLocalData)
+                getProductListData(
+                    shopId,
+                    page,
+                    productPerPage,
+                    shopProductFilterParameter,
+                    widgetUserAddressLocalData,
+                    isEnableDirectPurchase
+                )
             }
             _productListData.postValue(Success(listProductData))
         }) {
@@ -338,7 +354,8 @@ class ShopHomeViewModel @Inject constructor(
             page: Int,
             productPerPage: Int,
             shopProductFilterParameter: ShopProductFilterParameter,
-            widgetUserAddressLocalData: LocalCacheModel
+            widgetUserAddressLocalData: LocalCacheModel,
+            isEnableDirectPurchase: Boolean
     ): GetShopHomeProductUiModel {
         getShopProductUseCase.params = GqlGetShopProductUseCase.createParams(
                 shopId,
@@ -357,15 +374,28 @@ class ShopHomeViewModel @Inject constructor(
                 }
         )
         val productListResponse = getShopProductUseCase.executeOnBackground()
-        return mapToShopHomeProductUiModel(shopId, page, productPerPage, productListResponse)
+        return mapToShopHomeProductUiModel(
+            shopId,
+            page,
+            productPerPage,
+            productListResponse,
+            isEnableDirectPurchase
+        )
     }
 
-    private fun mapToShopHomeProductUiModel(shopId: String, page: Int, productPerPage: Int, productListResponse: ShopProduct.GetShopProduct) : GetShopHomeProductUiModel {
+    private fun mapToShopHomeProductUiModel(
+        shopId: String,
+        page: Int,
+        productPerPage: Int,
+        productListResponse: ShopProduct.GetShopProduct,
+        isEnableDirectPurchase: Boolean
+    ) : GetShopHomeProductUiModel {
         val isHasNextPage = ShopUtil.isHasNextPage(page, productPerPage, productListResponse.totalData)
         val productListUiModelData = productListResponse.data.map {
             ShopPageHomeMapper.mapToHomeProductViewModelForAllProduct(
                     it,
-                    ShopUtil.isMyShop(shopId, userSessionShopId)
+                    ShopUtil.isMyShop(shopId, userSessionShopId),
+                    isEnableDirectPurchase
             )
         }
         val totalProductListData = productListResponse.totalData
@@ -401,7 +431,7 @@ class ShopHomeViewModel @Inject constructor(
         val requestParams = AddToCartUseCase.getMinimumParams(product.id
                 ?: "", shopId, productName = product.name ?: "", price = product.displayedPrice
                 ?: "", userId = userId)
-        return addToCartUseCase.createObservable(requestParams).toBlocking().first()
+        return addToCartUseCaseRx.createObservable(requestParams).toBlocking().first()
     }
 
     private suspend fun submitAddProductToCartOcc(shopId: String, product: ShopHomeProductUiModel): AddToCartDataModel {
@@ -772,14 +802,22 @@ class ShopHomeViewModel @Inject constructor(
             productPerPage: Int,
             shopProductFilterParameter: ShopProductFilterParameter,
             initialProductListData: ShopProduct.GetShopProduct?,
-            widgetUserAddressLocalData: LocalCacheModel
+            widgetUserAddressLocalData: LocalCacheModel,
+            isEnableDirectPurchase: Boolean
     ){
         launchCatchError(block = {
             val productList = asyncCatchError(
                     dispatcherProvider.io,
                     block = {
                         if (initialProductListData == null)
-                            getProductListData(shopId, ShopPageConstant.START_PAGE, productPerPage, shopProductFilterParameter, widgetUserAddressLocalData)
+                            getProductListData(
+                                shopId,
+                                ShopPageConstant.START_PAGE,
+                                productPerPage,
+                                shopProductFilterParameter,
+                                widgetUserAddressLocalData,
+                                isEnableDirectPurchase
+                            )
                         else
                             null
                     },
@@ -805,7 +843,8 @@ class ShopHomeViewModel @Inject constructor(
                             shopId,
                             productPerPage,
                             ShopPageConstant.START_PAGE,
-                            initialProductListData
+                            initialProductListData,
+                            isEnableDirectPurchase
                     )))
                 }
                 it.let { sortResponse ->
@@ -815,6 +854,52 @@ class ShopHomeViewModel @Inject constructor(
         }) {
 
         }
+    }
+
+    fun handleAtcFlow(
+        productId: String,
+        quantity: Int,
+        shopId: String,
+        miniCartSimplifiedData: MiniCartSimplifiedData?
+    ) {
+        val miniCartItem = getMiniCartItem(miniCartSimplifiedData, productId)
+        when {
+            miniCartItem == null -> addItemToCart(productId, shopId, quantity)
+//            quantity.isZero() -> removeItemCart(miniCartItem)
+//            else -> updateItemCart(miniCartItem, quantity)
+        }
+    }
+
+    private fun addItemToCart(
+        productId: String,
+        shopId: String,
+        quantity: Int
+    ) {
+        val addToCartRequestParams = com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase.getMinimumParams(
+            productId = productId,
+            shopId = shopId,
+            quantity = quantity
+        )
+        addToCartUseCase.setParams(addToCartRequestParams)
+        addToCartUseCase.execute({
+//            trackAddToCart(
+//                it.data.cartId,
+//                it.data.productId.toString(),
+//                it.data.quantity,
+//                MvcLockedToProductAddToCartTracker.AtcType.ADD
+//            )
+            _miniCartAdd.postValue(Success(it))
+        }, {
+            _miniCartAdd.postValue(Fail(it))
+        })
+    }
+
+    private fun getMiniCartItem(
+        miniCartSimplifiedData: MiniCartSimplifiedData?,
+        productId: String
+    ): MiniCartItem.MiniCartItemProduct? {
+        val items = miniCartSimplifiedData?.miniCartItems.orEmpty()
+        return items.getMiniCartItemProduct(productId)
     }
 
 }

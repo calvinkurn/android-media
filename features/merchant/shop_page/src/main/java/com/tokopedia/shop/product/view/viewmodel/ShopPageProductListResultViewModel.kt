@@ -26,6 +26,8 @@ import com.tokopedia.shop.common.data.model.RestrictionEngineModel
 import com.tokopedia.shop.common.data.source.cloud.model.followstatus.FollowStatus
 import com.tokopedia.shop.common.domain.interactor.GetFollowStatusUseCase
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
+import com.tokopedia.shop.common.data.model.ShopPageGetHomeType
+import com.tokopedia.shop.common.domain.interactor.GqlShopPageGetHomeType
 import com.tokopedia.shop.product.data.source.cloud.model.ShopProductFilterInput
 import com.tokopedia.shop.product.domain.interactor.GqlGetShopProductUseCase
 import com.tokopedia.shop.product.utils.mapper.ShopPageProductListMapper
@@ -55,7 +57,8 @@ class ShopPageProductListResultViewModel @Inject constructor(private val userSes
                                                              private val getShopFilterProductCountUseCase: GetShopFilterProductCountUseCase,
                                                              private val restrictionEngineNplUseCase: RestrictionEngineNplUseCase,
                                                              private val toggleFavouriteShopUseCase: Lazy<ToggleFavouriteShopUseCase>,
-                                                             private val getFollowStatusUseCase: GetFollowStatusUseCase
+                                                             private val getFollowStatusUseCase: GetFollowStatusUseCase,
+                                                             private val getShopHomeTypeUseCase: GqlShopPageGetHomeType
 ) : BaseViewModel(dispatcherProvider.main) {
 
     fun isMyShop(shopId: String) = userSession.shopId == shopId
@@ -66,7 +69,7 @@ class ShopPageProductListResultViewModel @Inject constructor(private val userSes
     val userId: String
         get() = userSession.userId
 
-    val shopInfoResp = MutableLiveData<Result<ShopInfo>>()
+    val shopData = MutableLiveData<Result<ShopPageProductResultPageData>>()
     val productData = MutableLiveData<Result<GetShopProductUiModel>>()
     val shopSortFilterData = MutableLiveData<Result<ShopStickySortFilter>>()
     val bottomSheetFilterLiveData = MutableLiveData<Result<DynamicFilterModel>>()
@@ -82,18 +85,52 @@ class ShopPageProductListResultViewModel @Inject constructor(private val userSes
 
     private var shopSortList = mutableListOf<ShopProductSortModel>()
 
-    fun getShop(shopId: String?, shopDomain: String? = "", isRefresh: Boolean = false) {
-        val id = shopId.toIntOrZero()
-        if (id == 0 && shopDomain == "") return
+    fun getShop(shopId: String, shopDomain: String = "", isRefresh: Boolean = false) {
+        if (shopId.toIntOrZero() == 0 && shopDomain == "") return
         launchCatchError(block = {
-            getShopInfoUseCase.params = GQLGetShopInfoUseCase
-                    .createParams(if (id == 0) listOf() else listOf(id), shopDomain, source = SHOP_PRODUCT_LIST_RESULT_SOURCE)
-            getShopInfoUseCase.isFromCacheFirst = !isRefresh
-            val shopInfo = withContext(dispatcherProvider.io) { getShopInfoUseCase.executeOnBackground() }
-            shopInfoResp.value = Success(shopInfo)
+            val shopInfoAsync = asyncCatchError(dispatcherProvider.io, block = {
+                getShopInfoResponse(
+                    shopId,
+                    shopDomain,
+                    isRefresh
+                )
+            }, onError = {
+                shopData.value = Fail(it)
+                null
+            })
+            val shopHomeTypeAsync = asyncCatchError(dispatcherProvider.io, block = {
+                getShopHomeResponse(shopId)
+            }, onError = {
+                shopData.value = Fail(it)
+                null
+            })
+            shopInfoAsync.await()?.let { shopInfo ->
+                shopHomeTypeAsync.await()?.let { shopHomeData ->
+                    shopData.value = Success(ShopPageProductResultPageData(
+                        shopInfo,
+                        shopHomeData
+                    ))
+                }
+            }
         }) {
-            shopInfoResp.value = Fail(it)
+            shopData.value = Fail(it)
         }
+    }
+
+    private suspend fun getShopHomeResponse(shopId: String) : ShopPageGetHomeType {
+        getShopHomeTypeUseCase.params = GqlShopPageGetHomeType.createParams(shopId, "")
+        return getShopHomeTypeUseCase.executeOnBackground()
+    }
+
+    private suspend fun getShopInfoResponse(
+        shopId: String,
+        shopDomain: String,
+        isRefresh: Boolean
+    ): ShopInfo {
+        getShopInfoUseCase.params = GQLGetShopInfoUseCase
+            .createParams(if (shopId.toIntOrZero() == 0) listOf() else listOf(shopId.toIntOrZero()), shopDomain, source = SHOP_PRODUCT_LIST_RESULT_SOURCE)
+        getShopInfoUseCase.isFromCacheFirst = !isRefresh
+        return getShopInfoUseCase.executeOnBackground()
     }
 
     fun getShopRestrictionInfo(input: RestrictionEngineRequestParams, shopId: String) {
@@ -154,7 +191,8 @@ class ShopPageProductListResultViewModel @Inject constructor(private val userSes
             search: String = "",
             etalaseType: Int,
             shopProductFilterParameter: ShopProductFilterParameter,
-            widgetUserAddressLocalData: LocalCacheModel
+            widgetUserAddressLocalData: LocalCacheModel,
+            isEnableDirectPurchase: Boolean
     ) {
         launchCatchError(block = {
             val getProductResp = withContext(dispatcherProvider.io) {
@@ -175,7 +213,8 @@ class ShopPageProductListResultViewModel @Inject constructor(private val userSes
                                 widgetUserAddressLocalData.lat,
                                 widgetUserAddressLocalData.long
                         ),
-                        etalaseType
+                        etalaseType,
+                        isEnableDirectPurchase
                 )
             }
             productData.postValue(Success(getProductResp))
@@ -191,7 +230,8 @@ class ShopPageProductListResultViewModel @Inject constructor(private val userSes
             sortId: Int = 0,
             etalase: String = "",
             search: String = "",
-            widgetUserAddressLocalData: LocalCacheModel
+            widgetUserAddressLocalData: LocalCacheModel,
+            isEnableDirectPurchase: Boolean
     ) {
         launchCatchError(block = {
             val getProductResp = withContext(dispatcherProvider.io) {
@@ -209,7 +249,12 @@ class ShopPageProductListResultViewModel @Inject constructor(private val userSes
                 getShopProductUseCase.params = GqlGetShopProductUseCase.createParams(shopId,
                         productFilter)
                 val productListResponse = getShopProductUseCase.executeOnBackground()
-                productListResponse.data.map { ShopPageProductListMapper.mapShopProductToProductViewModel(it, isMyShop(shopId), productFilter.etalaseMenu) }
+                productListResponse.data.map { ShopPageProductListMapper.mapShopProductToProductViewModel(
+                    it,
+                    isMyShop(shopId),
+                    productFilter.etalaseMenu,
+                    isEnableDirectPurchase = isEnableDirectPurchase
+                ) }
             }
             _productDataEmpty.postValue(Success(getProductResp))
         }) {
@@ -287,7 +332,8 @@ class ShopPageProductListResultViewModel @Inject constructor(private val userSes
     private suspend fun getShopProductData(
             shopId: String,
             productFilter: ShopProductFilterInput,
-            etalaseType: Int
+            etalaseType: Int,
+            isEnableDirectPurchase: Boolean
     ): GetShopProductUiModel {
         getShopProductUseCase.params = GqlGetShopProductUseCase.createParams(shopId, productFilter)
         val productListResponse = getShopProductUseCase.executeOnBackground()
@@ -295,7 +341,13 @@ class ShopPageProductListResultViewModel @Inject constructor(private val userSes
         val totalProductData  = productListResponse.totalData
         return GetShopProductUiModel(
                 isHasNextPage,
-                productListResponse.data.map { ShopPageProductListMapper.mapShopProductToProductViewModel(it, isMyShop(shopId), productFilter.etalaseMenu, etalaseType) },
+                productListResponse.data.map { ShopPageProductListMapper.mapShopProductToProductViewModel(
+                    it,
+                    isMyShop(shopId),
+                    productFilter.etalaseMenu,
+                    etalaseType,
+                    isEnableDirectPurchase
+                ) },
                 totalProductData,
                 GetShopProductSuggestionUiModel(
                         productListResponse.suggestion.text,

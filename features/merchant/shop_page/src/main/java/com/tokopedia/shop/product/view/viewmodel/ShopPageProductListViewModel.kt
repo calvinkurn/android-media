@@ -93,7 +93,8 @@ class ShopPageProductListViewModel @Inject constructor(
             etalaseList: List<ShopEtalaseItemDataModel>,
             isShowNewShopHomeTab: Boolean,
             widgetUserAddressLocalData: LocalCacheModel,
-            context: Context?
+            context: Context?,
+            isEnableDirectPurchase: Boolean
     ) {
         launchCatchError(coroutineContext, {
             coroutineScope {
@@ -114,7 +115,7 @@ class ShopPageProductListViewModel @Inject constructor(
                 }
                 val shopProductEtalaseHighlightDataAsync = async(dispatcherProvider.io) {
                     if (isShowNewShopHomeTab) null
-                    else getShopProductEtalaseHighlightData(shopId, etalaseList,widgetUserAddressLocalData)
+                    else getShopProductEtalaseHighlightData(shopId, etalaseList,widgetUserAddressLocalData, isEnableDirectPurchase)
                 }
                 membershipStampProgressDataAsync.await()?.let {
                     membershipData.postValue(Success(it))
@@ -138,7 +139,8 @@ class ShopPageProductListViewModel @Inject constructor(
     private suspend fun getShopProductEtalaseHighlightData(
             shopId: String,
             etalaseList: List<ShopEtalaseItemDataModel>,
-            widgetUserAddressLocalData: LocalCacheModel
+            widgetUserAddressLocalData: LocalCacheModel,
+            isEnableDirectPurchase: Boolean
     ): ShopProductEtalaseHighlightUiModel? {
         try {
             val listEtalaseHighlight = etalaseList
@@ -155,7 +157,8 @@ class ShopPageProductListViewModel @Inject constructor(
                             it.etalaseId,
                             "",
                             getSort(it.etalaseId),
-                            widgetUserAddressLocalData
+                            widgetUserAddressLocalData,
+                            isEnableDirectPurchase = isEnableDirectPurchase
                     ).listShopProductUiModel
                 }
             }.awaitAll()
@@ -266,7 +269,8 @@ class ShopPageProductListViewModel @Inject constructor(
             rating: String = "",
             pmax: Int = 0,
             pmin: Int = 0,
-            fcategory: Int? = null
+            fcategory: Int? = null,
+            isEnableDirectPurchase: Boolean
     ): GetShopProductUiModel {
         useCase.params = GqlGetShopProductUseCase.createParams(shopId, ShopProductFilterInput(
                 page = page,
@@ -288,7 +292,12 @@ class ShopPageProductListViewModel @Inject constructor(
         val totalProductData = productListResponse.totalData
         return GetShopProductUiModel(
                 isHasNextPage,
-                productListResponse.data.map { ShopPageProductListMapper.mapShopProductToProductViewModel(it, isMyShop(shopId), etalaseId) },
+                productListResponse.data.map { ShopPageProductListMapper.mapShopProductToProductViewModel(
+                    it,
+                    isMyShop(shopId),
+                    etalaseId,
+                    isEnableDirectPurchase = isEnableDirectPurchase
+                )},
                 totalProductData
         )
     }
@@ -310,7 +319,8 @@ class ShopPageProductListViewModel @Inject constructor(
             productPerPage: Int,
             selectedEtalaseId: String,
             shopProductFilterParameter: ShopProductFilterParameter,
-            widgetUserAddressLocalData: LocalCacheModel
+            widgetUserAddressLocalData: LocalCacheModel,
+            isEnableDirectPurchase: Boolean
     ) {
         launchCatchError(block = {
             val listShopProduct = withContext(dispatcherProvider.io) {
@@ -326,7 +336,8 @@ class ShopPageProductListViewModel @Inject constructor(
                         shopProductFilterParameter.getRating(),
                         shopProductFilterParameter.getPmax(),
                         shopProductFilterParameter.getPmin(),
-                        shopProductFilterParameter.getCategory()
+                        shopProductFilterParameter.getCategory(),
+                        isEnableDirectPurchase
                 )
             }
             productListData.postValue(Success(listShopProduct))
@@ -407,7 +418,8 @@ class ShopPageProductListViewModel @Inject constructor(
     fun setInitialProductList(
             shopId: String,
             productPerPage: Int,
-            initialProductListData: ShopProduct.GetShopProduct
+            initialProductListData: ShopProduct.GetShopProduct,
+            isEnableDirectPurchase: Boolean
     ) {
         productListData.postValue(Success(
                 GetShopProductUiModel(
@@ -417,7 +429,12 @@ class ShopPageProductListViewModel @Inject constructor(
                                 initialProductListData.totalData
                         ),
                         initialProductListData.data.map {
-                            ShopPageProductListMapper.mapShopProductToProductViewModel(it, isMyShop(shopId), "")
+                            ShopPageProductListMapper.mapShopProductToProductViewModel(
+                                it,
+                                isMyShop(shopId),
+                                "",
+                                isEnableDirectPurchase = isEnableDirectPurchase
+                            )
                         },
                         initialProductListData.totalData
                 )

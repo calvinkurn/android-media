@@ -6,6 +6,7 @@ import androidx.annotation.LayoutRes
 
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
+import com.tokopedia.productcard.ATCNonVariantListener
 import com.tokopedia.productcard.ProductCardListView
 import com.tokopedia.shop.R
 import com.tokopedia.shop.databinding.ItemShopHomeProductCardListBinding
@@ -58,8 +59,8 @@ open class ShopHomeProductItemListViewHolder(
                     shopHomeProductViewModel
             )
         }
-        shopHomeProductViewModel?.let {
-            productCard?.setImageProductViewHintListener(it, object : ViewHintListener {
+        shopHomeProductViewModel?.let { shopHomeProductViewModel ->
+            productCard?.setImageProductViewHintListener(shopHomeProductViewModel, object : ViewHintListener {
                 override fun onViewHint() {
                     shopHomeEndlessProductListener?.onAllProductItemImpression(
                             adapterPosition,
@@ -67,6 +68,26 @@ open class ShopHomeProductItemListViewHolder(
                     )
                 }
             })
+
+            productCard?.setAddToCartNonVariantClickListener(object : ATCNonVariantListener {
+                override fun onQuantityChanged(quantity: Int) {
+                    shopHomeEndlessProductListener?.onProductAtcNonVariantQuantityEditorChanged(
+                        shopHomeProductViewModel,
+                        quantity
+                    )
+                }
+            })
+
+            productCard?.setAddVariantClickListener {
+                shopHomeEndlessProductListener?.onProductAtcVariantClick(
+                    shopHomeProductViewModel
+                )
+            }
+
+            productCard?.setAddToCartOnClickListener {
+                shopHomeEndlessProductListener?.onProductAtcDefaultClick(shopHomeProductViewModel)
+            }
+
         }
 
         productCard?.setThreeDotsOnClickListener {

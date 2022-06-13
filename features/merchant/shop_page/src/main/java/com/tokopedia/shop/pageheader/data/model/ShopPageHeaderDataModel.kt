@@ -22,5 +22,6 @@ data class ShopPageHeaderDataModel(
         var shopCoreUrl: String = "",
         var shopBadge: String = "",
         var description: String = "",
-        var tagline: String = ""
+        var tagline: String = "",
+        var isEnableDirectPurchase: Boolean = false
 )
