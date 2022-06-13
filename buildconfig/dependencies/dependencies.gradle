@@ -115,7 +115,7 @@ ext {
     unifyIconVersion = '0.0.4'
     unifyIconsVersion = '1.0.22'
     unifyPrinciplesVersion = '1.4.0'
-    unifyComponentsVersion = '1.2.4'
+    unifyComponentsVersion = '1.2.8'
     unifyCoachMarkVersion = '1.2.16'
     unifyCalendarVersion = '1.2.0'
     unifyBannerVersion = '1.0.4'
@@ -135,7 +135,7 @@ ext {
     unifyTotalAmountVersion = '1.0.6'
     unifyExplorePromoVersion = '1.0.2'
     unifyImageGalleryVersion = '1.0.4'
-    unifyViewAllCardVersion = '1.0.4'
+    unifyViewAllCardVersion = '1.0.5' 
 
     gradlePlugin = [
             crashlytics   : "com.google.firebase:firebase-crashlytics-gradle:${crashlyticsGradleVersion}",

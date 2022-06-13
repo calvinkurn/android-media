@@ -1,159 +1,173 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<com.tokopedia.unifycomponents.CardUnify2
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:paddingTop="4dp"
+    android:id="@+id/card_container_mvc"
     android:layout_width="wrap_content"
-    android:layout_height="wrap_content">
-
+    android:layout_height="wrap_content"
+    android:focusable="true"
+    android:clickable="true"
+    app:cardBackgroundColor="@android:color/transparent"
+    android:background="@android:color/transparent">
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/image_background"
-        android:layout_width="256dp"
-        android:layout_height="@dimen/home_mvc_background_voucher_height"
-        android:layout_marginHorizontal="2dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        android:paddingTop="4dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
 
-        <com.tokopedia.unifycomponents.ImageUnify
-            android:id="@+id/image_background_voucher"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:contentDescription="@string/content_desc_merchant_background"
-            android:scaleX="1.01"
-            android:scaleY="1.027"
-            android:scaleType="fitXY"
-            android:translationY="-0.4dp"
-            app:layout_constraintBottom_toBottomOf="parent"
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/image_background"
+            android:layout_width="256dp"
+            android:layout_height="@dimen/home_mvc_background_voucher_height"
+            android:layout_marginHorizontal="2dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            />
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
-
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/container_shop"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:paddingBottom="7dp"
-        app:layout_constraintTop_toTopOf="@id/image_background"
-        app:layout_constraintStart_toStartOf="@id/image_background"
-        app:layout_constraintEnd_toEndOf="@id/image_background"
-        >
-
-        <com.tokopedia.unifycomponents.ImageUnify
-            android:id="@+id/image_badge"
-            android:layout_width="16dp"
-            android:layout_height="16dp"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="10dp"
-            android:visibility="gone"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/shop_name"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="4dp"
-            android:layout_marginTop="7dp"
-            android:ellipsize="end"
-            android:maxLines="1"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toEndOf="@id/image_badge"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/image_arrow_mvc"
-            app:typographyType="heading_6"
-            tools:text="Shop Name" />
-
-        <com.tokopedia.iconunify.IconUnify
-            android:id="@+id/image_arrow_mvc"
-            android:layout_width="20dp"
-            android:layout_height="20dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="12dp"
-            app:icon_name="CHEVRON_RIGHT"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
-
-    <com.tokopedia.unifycomponents.ImageUnify
-        android:id="@+id/image_divider_voucher"
-        android:layout_width="0dp"
-        android:layout_height="2dp"
-        android:layout_marginHorizontal="16dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/container_shop"
-        app:srcCompat="@drawable/bg_line_voucher" />
-
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/container_product"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_marginTop="8dp"
-        android:paddingBottom="13dp"
-        app:layout_constraintTop_toTopOf="@id/image_divider_voucher"
-        app:layout_constraintBottom_toBottomOf="@id/image_background"
-        app:layout_constraintStart_toStartOf="@id/image_background"
-        app:layout_constraintEnd_toEndOf="@id/image_background"
-        >
-
-        <androidx.cardview.widget.CardView
-            android:id="@+id/container_image_product"
-            android:layout_width="60dp"
-            android:layout_height="60dp"
-            android:layout_marginStart="16dp"
-            app:cardCornerRadius="8dp"
-            app:cardElevation="0dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent">
+            app:layout_constraintTop_toTopOf="parent">
 
             <com.tokopedia.unifycomponents.ImageUnify
-                android:id="@+id/image_product"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent" />
+                android:id="@+id/image_background_voucher"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:contentDescription="@string/content_desc_merchant_background"
+                android:scaleX="1.01"
+                android:scaleY="1.027"
+                android:scaleType="fitXY"
+                android:translationY="-0.4dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                />
 
-        </androidx.cardview.widget.CardView>
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/title_benefit"
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/container_shop"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:textColor="@color/Unify_NN600"
-            android:maxLines="1"
-            app:layout_constraintStart_toEndOf="@id/container_image_product"
-            app:layout_constraintTop_toTopOf="@id/container_image_product"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:typographyType="body_3"
-            tools:text="Cashback" />
+            android:paddingBottom="7dp"
+            android:clickable="true"
+            android:focusable="true"
+            app:layout_constraintTop_toTopOf="@id/image_background"
+            app:layout_constraintStart_toStartOf="@id/image_background"
+            app:layout_constraintEnd_toEndOf="@id/image_background"
+            >
 
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/total_other_coupon"
+            <com.tokopedia.unifycomponents.ImageUnify
+                android:id="@+id/image_badge"
+                android:layout_width="16dp"
+                android:layout_height="16dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="10dp"
+                android:visibility="gone"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/shop_name"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="4dp"
+                android:layout_marginTop="7dp"
+                android:ellipsize="end"
+                android:maxLines="1"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toEndOf="@id/image_badge"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/image_arrow_mvc"
+                app:typographyType="heading_6"
+                tools:text="Shop Name" />
+
+            <com.tokopedia.iconunify.IconUnify
+                android:id="@+id/image_arrow_mvc"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="12dp"
+                app:icon_name="CHEVRON_RIGHT"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <com.tokopedia.unifycomponents.ImageUnify
+            android:id="@+id/image_divider_voucher"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            app:layout_constraintBottom_toBottomOf="@id/container_image_product"
-            app:layout_constraintStart_toStartOf="@id/title_benefit"
+            android:layout_height="2dp"
+            android:layout_marginHorizontal="16dp"
             app:layout_constraintEnd_toEndOf="parent"
-            android:maxLines="1"
-            app:typographyType="small"
-            android:textColor="@color/Unify_NN600"
-            tools:text="+5 Kupon Lainnya" />
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/container_shop"
+            app:srcCompat="@drawable/bg_line_voucher" />
 
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/benefit_price"
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/container_product"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="4dp"
-            app:layout_constraintBottom_toTopOf="@id/total_other_coupon"
-            app:layout_constraintStart_toStartOf="@id/title_benefit"
-            app:layout_constraintTop_toBottomOf="@id/title_benefit"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:typographyType="heading_2"
-            tools:text="Rp5.000.000" />
+            android:layout_height="0dp"
+            android:clickable="false"
+            android:focusable="false"
+            android:layout_marginTop="8dp"
+            android:paddingBottom="13dp"
+            app:layout_constraintTop_toTopOf="@id/image_divider_voucher"
+            app:layout_constraintBottom_toBottomOf="@id/image_background"
+            app:layout_constraintStart_toStartOf="@id/image_background"
+            app:layout_constraintEnd_toEndOf="@id/image_background"
+            >
 
+            <androidx.cardview.widget.CardView
+                android:id="@+id/container_image_product"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:layout_marginStart="16dp"
+                app:cardCornerRadius="8dp"
+                app:cardElevation="0dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent">
+
+                <com.tokopedia.unifycomponents.ImageUnify
+                    android:id="@+id/image_product"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" />
+
+            </androidx.cardview.widget.CardView>
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/title_benefit"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:textColor="@color/Unify_NN600"
+                android:maxLines="1"
+                app:layout_constraintStart_toEndOf="@id/container_image_product"
+                app:layout_constraintTop_toTopOf="@id/container_image_product"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:typographyType="body_3"
+                tools:text="Cashback" />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/total_other_coupon"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                app:layout_constraintBottom_toBottomOf="@id/container_image_product"
+                app:layout_constraintStart_toStartOf="@id/title_benefit"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:maxLines="1"
+                app:typographyType="small"
+                android:textColor="@color/Unify_NN600"
+                tools:text="+5 Kupon Lainnya" />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/benefit_price"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="4dp"
+                app:layout_constraintBottom_toTopOf="@id/total_other_coupon"
+                app:layout_constraintStart_toStartOf="@id/title_benefit"
+                app:layout_constraintTop_toBottomOf="@id/title_benefit"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:typographyType="heading_2"
+                tools:text="Rp5.000.000" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
-</androidx.constraintlayout.widget.ConstraintLayout>
+</com.tokopedia.unifycomponents.CardUnify2>
