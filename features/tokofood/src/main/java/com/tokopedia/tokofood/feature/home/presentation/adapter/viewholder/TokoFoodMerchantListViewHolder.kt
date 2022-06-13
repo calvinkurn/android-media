@@ -1,6 +1,7 @@
 package com.tokopedia.tokofood.feature.home.presentation.adapter.viewholder
 
 import android.view.View
+import android.widget.ImageView
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
@@ -40,6 +41,7 @@ class TokoFoodMerchantListViewHolder (
     private var labelMerchantDiskon: Label? = null
     private var tgTokoFoodMerchantDistance: Typography? = null
     private var tgTokoFoodMerchantRating: Typography? = null
+    private var imgTokoFoodMerchantRating: ImageView? = null
     private var labelMerchantClosed: Label? = null
 
     override fun bind(element: TokoFoodMerchantListUiModel) {
@@ -56,6 +58,7 @@ class TokoFoodMerchantListViewHolder (
         labelMerchantDiskon = binding?.labelMerchantDiskon
         tgTokoFoodMerchantDistance = binding?.tgTokofoodMerchantDistance
         tgTokoFoodMerchantRating = binding?.tgTokofoodMerchantRating
+        imgTokoFoodMerchantRating = binding?.imgTokofoodMerchantRating
         labelMerchantClosed = binding?.labelMerchantClosed
     }
 
@@ -64,7 +67,7 @@ class TokoFoodMerchantListViewHolder (
         setTitleMerchant(merchant.name)
         setLabelDiscount(merchant.promo)
         setMerchantDistance(merchant.distanceFmt, merchant.etaFmt)
-        setMerchantRating(merchant.ratingFmt)
+        setMerchantRating(merchant.ratingFmt, merchant.rating)
         setMerchantCategory(merchant.merchantCategories)
         setPriceLevel(merchant.priceLevel)
         setMerchantClosed(merchant.isClosed)
@@ -99,7 +102,7 @@ class TokoFoodMerchantListViewHolder (
     }
 
     private fun setMerchantDistance(distance: String, eta: String) {
-        var etaDistance = StringBuilder()
+        val etaDistance = StringBuilder()
         if (!distance.isNullOrEmpty()) {
             etaDistance.append(distance)
         }
@@ -117,12 +120,14 @@ class TokoFoodMerchantListViewHolder (
         }
     }
 
-    private fun setMerchantRating(rating: String) {
-        if (!rating.isNullOrEmpty()){
+    private fun setMerchantRating(rating: String, ratingDouble: Double) {
+        if (!rating.isNullOrEmpty() && ratingDouble > 0f){
             tgTokoFoodMerchantRating?.show()
+            imgTokoFoodMerchantRating?.show()
             tgTokoFoodMerchantRating?.text = rating
         } else {
             tgTokoFoodMerchantRating?.hide()
+            imgTokoFoodMerchantRating?.hide()
         }
     }
 
