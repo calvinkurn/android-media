@@ -10,12 +10,11 @@ import com.tokopedia.url.Env
 import javax.inject.Inject
 
 class SourcePolicyManager @Inject constructor(
-    @ApplicationContext val context: Context,
-    private val gson: Gson
+    @ApplicationContext val context: Context
 ) : LocalCacheHandler(context, NAME_PREFERENCE_SOURCE_POLICY) {
 
     fun set(policy: SourcePolicy) {
-        val content = gson.toJson(policy)
+        val content = Gson().toJson(policy)
         putString(KEY_SOURCE_POLICY, content)
 
         applyEditor()
@@ -23,7 +22,7 @@ class SourcePolicyManager @Inject constructor(
 
     fun policy(): SourcePolicy {
         val json = getString(KEY_SOURCE_POLICY, "")
-        return gson.fromJson(json, SourcePolicy::class.java)
+        return Gson().fromJson(json, SourcePolicy::class.java)
     }
 
     fun clear() {

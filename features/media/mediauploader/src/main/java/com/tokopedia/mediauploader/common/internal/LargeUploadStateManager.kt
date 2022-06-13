@@ -9,12 +9,11 @@ import java.io.File
 import javax.inject.Inject
 
 class LargeUploadStateManager @Inject constructor(
-    @ApplicationContext context: Context,
-    private val gson: Gson
+    @ApplicationContext context: Context
 ) : LocalCacheHandler(context, NAME_PREFERENCE_LARGE_UPLOAD) {
 
     fun set(sourceId: String, state: LargeUploadCacheParam) {
-        val content = gson.toJson(state)
+        val content = Gson().toJson(state)
         val cacheKey = key(sourceId, state.filePath)
         putString(cacheKey, content)
 
@@ -29,7 +28,7 @@ class LargeUploadStateManager @Inject constructor(
             return null
         }
 
-        return gson.fromJson(content, LargeUploadCacheParam::class.java)
+        return Gson().fromJson(content, LargeUploadCacheParam::class.java)
     }
 
     fun setPartNumber(sourceId: String, fileName: String, partNumber: Int) {
