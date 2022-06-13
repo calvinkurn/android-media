@@ -1,5 +1,6 @@
 package com.tokopedia.oldproductbundle.single.presentation.viewmodel
 
+import com.tokopedia.atc_common.AtcConstant.ATC_ERROR_GLOBAL
 import com.tokopedia.atc_common.domain.model.response.AddToCartBundleDataModel
 import com.tokopedia.atc_common.domain.model.response.AddToCartBundleModel
 import com.tokopedia.network.exception.MessageErrorException
@@ -195,6 +196,23 @@ class SingleProductBundleViewModelTest: SingleProductBundleViewModelTestFixture(
         coVerify { addToCartBundleUseCase.executeOnBackground() }
         val addToCartResult = viewModel.addToCartResult.getOrAwaitValue()
         assertEquals(1, addToCartResult.responseResult.success)
+    }
+
+    @Test
+    fun `validateAndAddToCart should invoke throwable`() = runBlocking {
+        // Given
+        coEvery {
+            addToCartBundleUseCase.executeOnBackground()
+        } returns AddToCartBundleModel(status = "NOT_OK")
+
+        // When
+        viewModel.validateAndAddToCart("", "", "", "",
+            generateSingleProductBundleSelectedItem())
+
+        // Then
+        coVerify { addToCartBundleUseCase.executeOnBackground() }
+        val throwableError = viewModel.throwableError.getOrAwaitValue()
+        assertEquals(ATC_ERROR_GLOBAL, throwableError.message)
     }
 
     private fun generateProductVariant(): ProductVariant {
