@@ -188,4 +188,15 @@
     <string name="campaign_rule_unique_account_tips_point_1">Pembeli yang sama hanya dapat melakukan transaksi dengan <b>satu akun.</b></string>
     <string name="campaign_rule_unique_account_tips_point_2">Pembeli hanya dapat menggunakan <b>satu kali transaksi</b> dengan campaign ini.</string>
     <string name="campaign_rule_campaign_relation">Apakah pembeli dari campaign sebelumnya dapat mengikuti campaign ini?</string>
+
+    <!--Product List Page-->
+    <string name="chooseproduct_page_title">Pilih Produk</string>
+    <string name="chooseproduct_search_placeholdertext">Cari produk atau SKU</string>
+    <string name="chooseproduct_selected_product_suffix">%d Produk Terpilih</string>
+    <string name="chooseproduct_selected_product_initial">0 Produk Terpilih</string>
+    <string name="chooseproduct_search_empty">Oops, produk tidak ditemukan</string>
+    <string name="chooseproduct_search_empty_desc">Coba gunakan kata kunci lain atau filter yang berbeda, ya.</string>
+    <string name="chooseproduct_product_empty">Oops, kamu belum memiliki produk terdaftar</string>
+    <string name="chooseproduct_product_empty_desc">Yuk, mulai tambah produkmu untuk didaftarkan ke campaign. </string>
+
 </resources>

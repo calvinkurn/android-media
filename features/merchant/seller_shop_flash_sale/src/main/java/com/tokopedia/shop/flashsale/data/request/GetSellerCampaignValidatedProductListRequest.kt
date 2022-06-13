@@ -17,5 +17,7 @@ data class GetSellerCampaignValidatedProductListRequest(
         val page: Int,
         @SerializedName("page_size")
         val pageSize: Int,
+        @SerializedName("keyword")
+        val keyword: String,
     )
 }

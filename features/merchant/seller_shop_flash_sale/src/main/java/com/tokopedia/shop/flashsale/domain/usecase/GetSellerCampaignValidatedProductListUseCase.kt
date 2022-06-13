@@ -63,20 +63,21 @@ class GetSellerCampaignValidatedProductListUseCase @Inject constructor(
         setCacheStrategy(GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build())
     }
 
-    suspend fun execute(page: Int): List<GetSellerCampaignValidatedProductListResponse.Product> {
-        val request = buildRequest(page)
+    suspend fun execute(keyword:String, page: Int): List<GetSellerCampaignValidatedProductListResponse.Product> {
+        val request = buildRequest(keyword, page)
         val response = repository.response(listOf(request))
         val data = response.getSuccessData<GetSellerCampaignValidatedProductListResponse>()
         return data.response.products
     }
 
-    private fun buildRequest(page: Int): GraphqlRequest {
+    private fun buildRequest(keyword:String, page: Int): GraphqlRequest {
         val payload = GetSellerCampaignValidatedProductListRequest(
             campaignType = CAMPAIGN_TYPE_SHOP_FLASH_SALE,
             campaignId = 762195,
             filter = GetSellerCampaignValidatedProductListRequest.Filter(
                 page = page,
-                pageSize = PRODUCT_LIST_SIZE
+                pageSize = PRODUCT_LIST_SIZE,
+                keyword = keyword
             )
         )
         val params = mapOf(REQUEST_PARAM_KEY to payload)

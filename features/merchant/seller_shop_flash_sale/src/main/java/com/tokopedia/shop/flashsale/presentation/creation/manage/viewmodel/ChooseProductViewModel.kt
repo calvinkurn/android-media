@@ -23,16 +23,26 @@ class ChooseProductViewModel @Inject constructor(
     val errors: LiveData<Throwable>
         get() = _errors
 
+    private var searchKeyword: String = ""
+
+    fun isSearching(): Boolean {
+        return searchKeyword.isNotEmpty()
+    }
+
     fun getReserveProductList(page: Int) {
         launchCatchError(
             dispatchers.io,
             block = {
-                val result = getSellerCampaignValidatedProductListUseCase.execute(page)
+                val result = getSellerCampaignValidatedProductListUseCase.execute(searchKeyword, page)
                 _reserveProductList.postValue(ReserveProductMapper.mapFromProductList(result))
             },
             onError = { error ->
                 _errors.postValue(error)
             }
         )
+    }
+
+    fun setSearchKeyword(keyword: String) {
+        searchKeyword = keyword
     }
 }

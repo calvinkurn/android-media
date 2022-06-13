@@ -4,9 +4,12 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.EditorInfo
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.tokopedia.abstraction.base.app.BaseMainApplication
-import com.tokopedia.network.utils.ErrorHandler
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.seller_shop_flash_sale.R
 import com.tokopedia.seller_shop_flash_sale.databinding.SsfsFragmentChooseProductBinding
 import com.tokopedia.shop.flashsale.common.constant.ChooseProductConstant.PRODUCT_LIST_SIZE
 import com.tokopedia.shop.flashsale.common.customcomponent.BaseSimpleListFragment
@@ -16,7 +19,6 @@ import com.tokopedia.shop.flashsale.di.component.DaggerShopFlashSaleComponent
 import com.tokopedia.shop.flashsale.presentation.creation.manage.adapter.ReserveProductAdapter
 import com.tokopedia.shop.flashsale.presentation.creation.manage.model.ReserveProductModel
 import com.tokopedia.shop.flashsale.presentation.creation.manage.viewmodel.ChooseProductViewModel
-import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
 
@@ -51,13 +53,17 @@ class ChooseProductFragment : BaseSimpleListFragment<ReserveProductAdapter, Rese
         setFragmentToUnifyBgColor()
 
         setupObservers()
+        setupSearchBar()
     }
 
     override fun createAdapter() = ReserveProductAdapter(::onSelectedItemChanges)
 
     override fun getRecyclerView(view: View) = binding?.rvProducts
 
-    override fun getSwipeRefreshLayout(view: View): SwipeRefreshLayout? = null
+    override fun getSwipeRefreshLayout(view: View): SwipeRefreshLayout? {
+        binding?.swipeRefreshProducts?.setProgressViewOffset(false, 0, 120)
+        return binding?.swipeRefreshProducts
+    }
 
     override fun getPerPage() = PRODUCT_LIST_SIZE
 
@@ -74,29 +80,38 @@ class ChooseProductFragment : BaseSimpleListFragment<ReserveProductAdapter, Rese
     }
 
     override fun onShowLoading() {
+        binding?.emptyStateSearch?.hide()
+        binding?.emptyStateProduct?.hide()
+        binding?.loaderProducts?.show()
     }
 
     override fun onHideLoading() {
+        binding?.loaderProducts?.hide()
     }
 
     override fun onDataEmpty() {
+        if (viewModel.isSearching()) {
+            binding?.emptyStateSearch?.show()
+        } else {
+            binding?.emptyStateProduct?.show()
+        }
     }
 
     override fun onGetListError(message: String) {
+        view?.showError(message)
     }
 
     override fun onScrolled(xScrollAmount: Int, yScrollAmount: Int) {
         guidelineBegin -= yScrollAmount
         if (guidelineBegin < 0) guidelineBegin = 0
-        if (guidelineBegin > 58) guidelineBegin = 58
+        if (guidelineBegin > 64) guidelineBegin = 64
         binding?.guideline3?.setGuidelineBegin(guidelineBegin)
-        binding?.guideline4?.setGuidelineEnd(guidelineBegin+6)
+        binding?.guideline4?.setGuidelineEnd(guidelineBegin)
     }
 
     private fun onSelectedItemChanges(selectedItem: MutableList<String>) {
-        selectedItem.forEach {
-            println("yahu " + it)
-        }
+        binding?.tvSelectedProduct?.text =
+            getString(R.string.chooseproduct_selected_product_suffix, selectedItem.size)
     }
 
     private fun setupObservers() {
@@ -106,13 +121,24 @@ class ChooseProductFragment : BaseSimpleListFragment<ReserveProductAdapter, Rese
 
     private fun setupErrorsObserver() {
         viewModel.errors.observe(viewLifecycleOwner) {
-            view?.showError(it)
+            showGetListError(it)
         }
     }
 
     private fun setupReserveProductListObserver() {
         viewModel.reserveProductList.observe(viewLifecycleOwner) {
             renderList(it, hasNextPage = it.size == getPerPage())
+        }
+    }
+
+    private fun setupSearchBar() {
+        binding?.searchBarProduct?.searchBarTextField?.setOnEditorActionListener {
+                textView, actionId, _ ->
+            if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+                viewModel.setSearchKeyword(textView.text.toString())
+                loadInitialData()
+            }
+            return@setOnEditorActionListener false
         }
     }
 }
