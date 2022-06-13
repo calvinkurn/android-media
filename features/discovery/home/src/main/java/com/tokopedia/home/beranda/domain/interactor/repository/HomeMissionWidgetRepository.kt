@@ -6,6 +6,7 @@ import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.home.beranda.data.model.HomeMissionWidgetData
 import com.tokopedia.home.beranda.domain.interactor.HomeRepository
+import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject
 
@@ -21,23 +22,29 @@ class HomeMissionWidgetRepository @Inject constructor(
         graphqlUseCase.setCacheStrategy(GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build())
     }
 
+    private val params = RequestParams.create()
+
     companion object{
         private const val TYPE = "type"
-        private const val LOCATION = "location"
-        private const val DEFAULT_VALUE = ""
+        private const val DEFAULT_TYPE = "home_mission"
+        const val BANNER_LOCATION_PARAM = "location"
     }
 
     override suspend fun executeOnBackground(): HomeMissionWidgetData.HomeMissionWidget {
         graphqlUseCase.clearCache()
-        graphqlUseCase.setRequestParams(generateParam())
+        graphqlUseCase.setRequestParams(params.parameters)
         return graphqlUseCase.executeOnBackground()
     }
 
-    private fun generateParam(): Map<String, Any?> {
-        return mapOf(TYPE to DEFAULT_VALUE, LOCATION to DEFAULT_VALUE)
+    private fun generateParam(bundle: Bundle) {
+        bundle.getString(BANNER_LOCATION_PARAM, "")?.let {
+            params.putString(BANNER_LOCATION_PARAM, it)
+        }
+        params.putString(TYPE, DEFAULT_TYPE)
     }
 
     override suspend fun getRemoteData(bundle: Bundle): HomeMissionWidgetData.HomeMissionWidget {
+        generateParam(bundle)
         return executeOnBackground()
     }
 

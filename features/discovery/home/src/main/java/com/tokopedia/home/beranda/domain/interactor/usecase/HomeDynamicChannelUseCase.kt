@@ -32,7 +32,6 @@ import com.tokopedia.home_component.usecase.featuredshop.DisplayHeadlineAdsEntit
 import com.tokopedia.home_component.usecase.featuredshop.mappingTopAdsHeaderToChannelGrid
 import com.tokopedia.home_component.util.MissionWidgetUtil
 import com.tokopedia.home_component.visitable.FeaturedShopDataModel
-import com.tokopedia.home_component.visitable.MissionWidgetDataModel
 import com.tokopedia.home_component.visitable.MissionWidgetListDataModel
 import com.tokopedia.home_component.visitable.ReminderWidgetModel
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
@@ -219,7 +218,15 @@ class HomeDynamicChannelUseCase @Inject constructor(
                             MissionWidgetListDataModel,
                             HomeMissionWidgetData.HomeMissionWidget>(
                         widgetRepository = homeMissionWidgetRepository,
-                        handleOnFailed = { visitableFound, visitablePosition ->
+                        bundleParam = {
+                            Bundle().apply {
+                                putString(
+                                    HomeMissionWidgetRepository.BANNER_LOCATION_PARAM,
+                                    homeChooseAddressRepository.getRemoteData()?.convertToLocationParams()
+                                )
+                            }
+                        },
+                        handleOnFailed = { visitableFound ->
                             visitableFound.copy(status = MissionWidgetListDataModel.STATUS_ERROR)
                         },
                         mapToWidgetData = { visitableFound, data, position ->
@@ -569,7 +576,7 @@ class HomeDynamicChannelUseCase @Inject constructor(
             deleteWidgetWhen:(K?) -> Boolean = {false},
             onWidgetExist: (Int) -> Unit = {},
             mapToWidgetData: (T, K, Int) -> T,
-            handleOnFailed: (T, Int) -> T
+            handleOnFailed: (T) -> T
     ): HomeDynamicChannelModel {
         findWidgetList<T>(this, predicate) { indexedValueList ->
             onWidgetExist.invoke(indexedValueList.size)
@@ -601,8 +608,7 @@ class HomeDynamicChannelUseCase @Inject constructor(
                 } catch (e: Exception) {
                     this.updateWidgetModel(
                         visitable = handleOnFailed.invoke(
-                            visitableFound,
-                            visitablePosition
+                            visitableFound
                         ),
                         visitableToChange = visitableFound,
                         position = visitablePosition
