@@ -594,7 +594,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
 
             if (activity != null &&
                     arguments != null &&
-                    requireArguments().getInt(PARAM_POST_ID, -1) == model.id.toIntOrZero()) {
+                    requireArguments().getInt(PARAM_POST_ID, -1) == model.id) {
 
                 if (resultIntent == null) {
                     resultIntent = Intent()
