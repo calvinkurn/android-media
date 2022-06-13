@@ -377,7 +377,6 @@ class TokoFoodCategoryFragment: BaseDaggerFragment(),
                 option = option,
                 sortBy = sortBy,
                 cuisine = cuisine,
-                page = "1"
             )
         }
     }

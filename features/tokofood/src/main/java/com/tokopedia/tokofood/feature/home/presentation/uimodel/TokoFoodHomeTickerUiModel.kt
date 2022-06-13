@@ -4,7 +4,7 @@ import com.tokopedia.tokofood.feature.home.domain.constanta.TokoFoodLayoutState
 import com.tokopedia.tokofood.feature.home.presentation.adapter.TokoFoodHomeTypeFactory
 import com.tokopedia.unifycomponents.ticker.TickerData
 
-class TokoFoodHomeTickerUiModel (
+data class TokoFoodHomeTickerUiModel (
     val id: String,
     val tickers: List<TickerData>,
     @TokoFoodLayoutState val state: Int

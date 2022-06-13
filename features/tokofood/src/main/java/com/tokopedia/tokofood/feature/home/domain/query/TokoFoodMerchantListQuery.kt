@@ -31,6 +31,7 @@ object TokoFoodMerchantListQuery: GqlQueryInterface {
               promo
               hasBranch
               isClosed
+              addressLocality
             }
           }
         }

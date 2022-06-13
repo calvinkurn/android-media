@@ -38,7 +38,11 @@ class TokoFoodCategoryViewModel @Inject constructor(
     private val _categoryLoadMore = MutableLiveData<Result<TokoFoodListUiModel>>()
 
     private val categoryLayoutItemList :MutableList<Visitable<*>> = mutableListOf()
-    private var pageKey = ""
+    private var pageKey = INITIAL_PAGE_KEY_MERCHANT
+
+    companion object {
+        private const val INITIAL_PAGE_KEY_MERCHANT = "1"
+    }
 
     fun getLoadingState() {
         categoryLayoutItemList.clear()
@@ -61,9 +65,8 @@ class TokoFoodCategoryViewModel @Inject constructor(
     }
 
     fun getCategoryLayout(localCacheModel: LocalCacheModel, option: Int = 0,
-                          sortBy: Int = 0, cuisine: String = "", page: String = "") {
+                          sortBy: Int = 0, cuisine: String = "") {
         launchCatchError(block = {
-            setPageKey(page)
             categoryLayoutItemList.clear()
             val categoryResponse = withContext(dispatchers.io) {
                 tokoFoodMerchantListUseCase.execute(
@@ -87,18 +90,9 @@ class TokoFoodCategoryViewModel @Inject constructor(
         }
     }
 
-    fun onScrollProductList(containsLastItemIndex: Int?, itemCount: Int, localCacheModel: LocalCacheModel, option: Int = 0,
+    fun onScrollProductList(containsLastItemIndex: Int, itemCount: Int, localCacheModel: LocalCacheModel, option: Int = 0,
                             sortBy: Int = 0, cuisine: String = "") {
-        val lastItemIndex = itemCount - 1
-        val scrolledToLastItem = (containsLastItemIndex == lastItemIndex
-                && containsLastItemIndex.isMoreThanZero()
-                && itemCount.isMoreThanZero())
-        val hasNextPage = pageKey.isNotEmpty()
-        val layoutList = categoryLayoutItemList.toMutableList()
-        val isLoading = layoutList.firstOrNull { it is TokoFoodProgressBarUiModel } != null
-        val isError = layoutList.firstOrNull { it is TokoFoodErrorStateUiModel } != null
-
-        if(scrolledToLastItem && hasNextPage && !isLoading && !isError) {
+        if(shouldLoadMore(containsLastItemIndex, itemCount)) {
             showProgressBar()
             loadMoreMerchant(localCacheModel = localCacheModel,
                 option = option,
@@ -108,11 +102,7 @@ class TokoFoodCategoryViewModel @Inject constructor(
         }
     }
 
-    private fun setPageKey(pageNew:String) {
-        pageKey = pageNew
-    }
-
-    private fun showProgressBar(){
+    fun showProgressBar(){
         categoryLayoutItemList.addProgressBar()
         val data = TokoFoodListUiModel(
             items = categoryLayoutItemList,
@@ -121,8 +111,8 @@ class TokoFoodCategoryViewModel @Inject constructor(
         _categoryLayoutList.postValue(Success(data))
     }
 
-    private fun loadMoreMerchant(localCacheModel: LocalCacheModel, option: Int = 0,
-                                 sortBy: Int = 0, cuisine: String = "") {
+    private fun loadMoreMerchant(localCacheModel: LocalCacheModel, option: Int,
+                                 sortBy: Int, cuisine: String) {
         launchCatchError(block = {
             val categoryResponse = withContext(dispatchers.io) {
                 tokoFoodMerchantListUseCase.execute(
@@ -145,6 +135,28 @@ class TokoFoodCategoryViewModel @Inject constructor(
         }){
             _categoryLoadMore.postValue(Fail(it))
         }
+    }
+
+    private fun setPageKey(pageNew:String) {
+        pageKey = pageNew
+    }
+
+    private fun shouldLoadMore(containsLastItemIndex: Int, itemCount: Int): Boolean {
+        val lastItemIndex = itemCount - 1
+        val scrolledToLastItem = (containsLastItemIndex == lastItemIndex
+                && containsLastItemIndex.isMoreThanZero())
+        val hasNextPage = pageKey.isNotEmpty()
+        val layoutList = categoryLayoutItemList.toMutableList()
+        val isLoading = layoutList.firstOrNull { it is TokoFoodProgressBarUiModel } != null
+        val isError = layoutList.firstOrNull { it is TokoFoodErrorStateUiModel } != null
+
+        return scrolledToLastItem
+                &&
+                hasNextPage
+                &&
+                !isLoading
+                &&
+                !isError
     }
 
 }
