@@ -13,7 +13,7 @@ import java.io.OutputStream
 object ImageGenerator {
 
     private const val DEFAULT_SIZE = 400
-    private const val IMAGES_FILES_COUNT = 5
+    const val IMAGES_FILES_COUNT = 5
 
     fun getFiles(context: Context): List<File> {
         val files = mutableListOf<File>()

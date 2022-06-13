@@ -6,6 +6,8 @@ import java.io.FileOutputStream
 
 object VideoGenerator {
 
+    const val VIDEO_FILES_COUNT = 4
+
     private val mockVideoFileNameList = listOf(
         "test_mp_videos.mp4"
     )
@@ -16,11 +18,22 @@ object VideoGenerator {
         }
     }
 
-    private fun streamToFile(context: Context, fileName: String): File {
-        val inputStream = context.resources.assets.open(fileName)
+    fun getMultipleFiles(context: Context): List<File>{
+        val videoCollection = ArrayList<File>()
+        for(i in 0 until VIDEO_FILES_COUNT){
+            videoCollection.add(
+                streamToFile(context, sourceFileName = mockVideoFileNameList.first(), "test_mp_videos_$i.mp4")
+            )
+        }
+
+        return videoCollection
+    }
+
+    private fun streamToFile(context: Context, sourceFileName: String, copyFileName: String): File {
+        val inputStream = context.resources.assets.open(sourceFileName)
 
         // save similar file name into cache dir
-        val outputFile = File(context.externalCacheDir, fileName)
+        val outputFile = File(context.externalCacheDir, copyFileName)
 
         inputStream.use { input ->
             val outputStream = FileOutputStream(outputFile)
