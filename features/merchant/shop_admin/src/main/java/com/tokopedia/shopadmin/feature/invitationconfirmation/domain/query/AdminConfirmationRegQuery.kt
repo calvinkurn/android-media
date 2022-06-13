@@ -25,7 +25,7 @@ object AdminConfirmationRegQuery : GqlQueryInterface {
           }) {
               success
               message
-              accept_become_admin
+              acceptBecomeAdmin
             }
         }   
     """.trimIndent()
