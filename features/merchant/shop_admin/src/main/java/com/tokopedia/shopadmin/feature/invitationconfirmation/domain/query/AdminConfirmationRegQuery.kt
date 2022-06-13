@@ -15,7 +15,7 @@ object AdminConfirmationRegQuery : GqlQueryInterface {
     private const val SHOP_MANAGE_ID = "shopManageId"
 
     private val GQL_QUERY = """
-        mutation ${OPERATION_NAME}(${'$'}source: String!, ${'$'}shopID: String!, ${'$'}userId: String!, ${'$'}shopManageID: String!, ${'$'}acceptBecomeAdmin: Boolean!) {
+        mutation ${OPERATION_NAME}(${'$'}source: String!, ${'$'}shopID: String!, ${'$'}userId: String!, ${'$'}shopManageId: String!, ${'$'}acceptBecomeAdmin: Boolean!) {
           ${OPERATION_NAME}(input: {
             source: ${'$'}source,
             shopID: ${'$'}shopID,
@@ -30,12 +30,12 @@ object AdminConfirmationRegQuery : GqlQueryInterface {
         }   
     """.trimIndent()
 
-    fun createRequestParams(shopID: String, userId: String, acceptBecomeAdmin: Boolean, manageID: String): Map<String, Any> {
+    fun createRequestParams(shopID: String, userId: String, acceptBecomeAdmin: Boolean, shopManageId: String): Map<String, Any> {
         return RequestParams.create().apply {
             putString(SOURCE_KEY, SOURCE)
             putString(SHOP_ID_KEY, shopID)
             putString(USER_ID_KEY, userId)
-            putString(SHOP_MANAGE_ID, manageID)
+            putString(SHOP_MANAGE_ID, shopManageId)
             putBoolean(ACCEPT_BECOME_ADMIN_KEY, acceptBecomeAdmin)
         }.parameters
     }
