@@ -65,7 +65,7 @@ class UserConsentAnalytics @Inject constructor() {
 
     fun trackOnPolicyHyperLinkClicked(purposes: MutableList<UserConsentCollectionDataModel.CollectionPointDataModel.PurposeDataModel>) {
         sendTracker(
-            action = ACTION.CLICK_POLICY_HYPER_LINK,
+            action = ACTION.CLICK_PRIVACY_HYPER_LINK,
             label = generatePurposeId(purposes)
         )
     }
@@ -99,7 +99,7 @@ class UserConsentAnalytics @Inject constructor() {
         object ACTION {
             const val CLICK_TICK_BOX = "click tick box"
             const val CLICK_TNC_HYPER_LINK = "click tnc hyperlink"
-            const val CLICK_POLICY_HYPER_LINK = "click policy hyperlink"
+            const val CLICK_PRIVACY_HYPER_LINK = "click privacy hyperlink"
             const val CLICK_ACTION_BUTTON = "click action button"
             const val VIEW_USER_CONSENT = "view consent box"
         }

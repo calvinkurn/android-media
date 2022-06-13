@@ -109,11 +109,7 @@ class UserConsentWidget : FrameLayout {
                         userConsentActionClickListener?.onCheckedChange(isChecked)
                         userConsentAnalytics.trackOnPurposeCheckOnOptional(isChecked, purposeDataModel)
 
-                        val isMandatoryPurpose = collection?.purposes?.find {
-                            it.id == purposeDataModel.id
-                        }?.attribute?.alwaysMandatory == MANDATORY
-
-                        if (isMandatoryPurpose) {
+                        if (purposeDataModel.attribute.alwaysMandatory == MANDATORY) {
                             viewBinding.buttonAction.isEnabled = isChecked
                         } else {
                             val isAllChecked = userConsentPurposeAdapter?.listCheckBoxView?.all {
