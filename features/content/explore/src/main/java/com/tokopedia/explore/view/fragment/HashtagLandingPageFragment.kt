@@ -144,7 +144,7 @@ class HashtagLandingPageFragment : BaseDaggerFragment(), HashtagLandingItemAdapt
             view?.let {
                 Toaster.build(
                     it, message, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR,
-                    getString(R.string.retry_label)
+                    getString(com.tokopedia.abstraction.R.string.retry_label)
                 ) { loadData(false) }
             }?.show()
         }

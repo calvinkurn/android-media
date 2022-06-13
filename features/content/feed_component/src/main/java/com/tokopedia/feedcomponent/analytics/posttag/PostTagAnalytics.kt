@@ -33,6 +33,7 @@ class PostTagAnalytics @Inject constructor(private val userSessionInterface: Use
         private const val FORMAT_FEED_EVENT_ACTION = "%s - %s - %s"
         private const val FORMAT_2_VALUE = "%s - %s";
         private const val FORMAT_3_VALUE = "%s - %s - %s";
+        private const val USER_ID_MOD_50 = 50
 
         private const val EVENT_NAME = "event"
         private const val EVENT_CATEGORY = "eventCategory"
@@ -259,7 +260,7 @@ class PostTagAnalytics @Inject constructor(private val userSessionInterface: Use
                 EVENT_ACTION, action,
                 EVENT_LABEL, label,
                 KEY_USER_ID, userId,
-                KEY_USER_ID_MOD, userId % 50,
+                KEY_USER_ID_MOD, userId % USER_ID_MOD_50,
                 EVENT_ECOMMERCE, PostTagEnhancedTracking.Ecommerce.getEcommerceView(products)
         )
     }
@@ -278,7 +279,7 @@ class PostTagAnalytics @Inject constructor(private val userSessionInterface: Use
                 EVENT_ACTION, action,
                 EVENT_LABEL, label,
                 KEY_USER_ID, userId,
-                KEY_USER_ID_MOD, userId % 50,
+                KEY_USER_ID_MOD, userId % USER_ID_MOD_50,
                 EVENT_ECOMMERCE, PostTagEnhancedTracking.Ecommerce.getEcommerceClick(products, listSource)
         )
     }
@@ -298,7 +299,7 @@ class PostTagAnalytics @Inject constructor(private val userSessionInterface: Use
                 EVENT_ACTION, action,
                 EVENT_LABEL, productId,
                 KEY_USER_ID, userId,
-                KEY_USER_ID_MOD, userId % 50,
+                KEY_USER_ID_MOD, userId % USER_ID_MOD_50,
                 EVENT_ECOMMERCE, PostTagEnhancedTracking.Ecommerce.getEcommerceClick(products, listSource)
         )
     }

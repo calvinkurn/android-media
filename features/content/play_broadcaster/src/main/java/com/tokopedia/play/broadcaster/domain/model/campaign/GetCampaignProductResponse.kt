@@ -61,6 +61,7 @@ data class GetCampaignProductResponse(
         @SerializedName("condition")
         val condition: Int = 0,
 
+        @SuppressLint("Invalid Data Type")
         @SerializedName("departmentID")
         val departmentID: List<Int> = listOf(),
 
