@@ -415,6 +415,24 @@ class TokoNowHomeViewModel @Inject constructor(
         return repurchase?.productList.orEmpty()
     }
 
+    fun needToShowOnBoardToaster(serviceType: String, has20mCoachMarkBeenShown: Boolean, has2hCoachMarkBeenShown: Boolean, isWarehouseIdZero: Boolean): Boolean {
+
+        /*
+         * SWITCHER TOASTER
+         * - toaster will be shown if coach mark has been shown
+         */
+
+        val is2hServiceType = serviceType == ServiceType.NOW_2H
+        val is20mServiceType = serviceType == ServiceType.NOW_15M
+
+        return when {
+            isWarehouseIdZero -> false
+            is2hServiceType && has20mCoachMarkBeenShown -> true
+            is20mServiceType && has2hCoachMarkBeenShown -> true
+            else -> false
+        }
+    }
+
     fun refreshQuestList() {
         getQuestUiModel()?.let { item ->
             launchCatchError(block = {
@@ -438,7 +456,9 @@ class TokoNowHomeViewModel @Inject constructor(
      */
     fun switchService(localCacheModel: LocalCacheModel) {
         launchCatchError(block = {
-            trackSwitchService(localCacheModel)
+            trackSwitchService(
+                localCacheModel = localCacheModel
+            )
 
             val currentServiceType = localCacheModel.service_type
 
@@ -451,6 +471,20 @@ class TokoNowHomeViewModel @Inject constructor(
                 ServiceType.NOW_15M
             }
 
+            val userPreference = setUserPreferenceUseCase.execute(localCacheModel, serviceType)
+            _setUserPreference.postValue(Success(userPreference))
+        }) {
+            _setUserPreference.postValue(Fail(it))
+        }
+    }
+
+    /***
+     * Switch between NOW 20 minutes/2 hours
+     * @param localCacheModel local data from choose address
+     * @param serviceType which is the intended type of service
+     */
+    fun switchService(localCacheModel: LocalCacheModel, serviceType: String) {
+        launchCatchError(block = {
             val userPreference = setUserPreferenceUseCase.execute(localCacheModel, serviceType)
             _setUserPreference.postValue(Success(userPreference))
         }) {
