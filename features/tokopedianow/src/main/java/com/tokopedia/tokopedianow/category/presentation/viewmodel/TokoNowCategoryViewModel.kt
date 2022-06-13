@@ -30,6 +30,7 @@ import com.tokopedia.tokopedianow.category.utils.CATEGORY_LOAD_MORE_PAGE_USE_CAS
 import com.tokopedia.tokopedianow.category.utils.TOKONOW_CATEGORY_L1
 import com.tokopedia.tokopedianow.category.utils.TOKONOW_CATEGORY_L2
 import com.tokopedia.tokopedianow.category.utils.TOKONOW_CATEGORY_QUERY_PARAM_MAP
+import com.tokopedia.tokopedianow.category.utils.TOKONOW_CATEGORY_SERVICE_TYPE
 import com.tokopedia.tokopedianow.categorylist.domain.usecase.GetCategoryListUseCase
 import com.tokopedia.tokopedianow.common.constant.ServiceType
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState
@@ -62,6 +63,8 @@ class TokoNowCategoryViewModel @Inject constructor (
         val categoryL1: String,
     @param:Named(TOKONOW_CATEGORY_L2)
         val categoryL2: String,
+    @param:Named(TOKONOW_CATEGORY_SERVICE_TYPE)
+        val externalServiceType: String,
     @Named(TOKONOW_CATEGORY_QUERY_PARAM_MAP)
         queryParamMap: Map<String, String>,
     @param:Named(CATEGORY_FIRST_PAGE_USE_CASE)
@@ -106,7 +109,6 @@ class TokoNowCategoryViewModel @Inject constructor (
 
     init {
         updateQueryParamWithCategoryIds()
-
         categoryIdTracking = getCategoryIdForTracking()
     }
 
@@ -220,6 +222,20 @@ class TokoNowCategoryViewModel @Inject constructor (
 
     override fun processEmptyState(isEmptyProductList: Boolean) {
         loadCategoryGrid(isEmptyProductList)
+    }
+
+    override fun onViewCreated(source: MiniCartSource?) {
+        when(externalServiceType) {
+            ServiceType.NOW_20M -> {
+                setUserPreference(ServiceType.NOW_15M)
+            }
+            ServiceType.NOW_2H -> {
+                setUserPreference(ServiceType.NOW_2H)
+            }
+            else -> {
+                super.onViewCreated(source)
+            }
+        }
     }
 
     private fun loadCategoryGrid(isEmptyProductList: Boolean) {

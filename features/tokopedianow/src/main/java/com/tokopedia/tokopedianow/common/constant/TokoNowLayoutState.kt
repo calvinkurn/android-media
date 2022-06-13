@@ -4,18 +4,18 @@ import androidx.annotation.IntDef
 
 @Retention(AnnotationRetention.SOURCE)
 @IntDef(
-    TokoNowLayoutState.NO_STATE,
     TokoNowLayoutState.SHOW,
     TokoNowLayoutState.LOADING,
     TokoNowLayoutState.HIDE,
     TokoNowLayoutState.LOAD_MORE,
     TokoNowLayoutState.LOADED,
     TokoNowLayoutState.EMPTY,
-    TokoNowLayoutState.UPDATE
+    TokoNowLayoutState.UPDATE,
+    TokoNowLayoutState.IDLE
 )
 annotation class TokoNowLayoutState {
     companion object {
-        const val NO_STATE = -1
+        const val IDLE = -1
         const val SHOW = 1
         const val LOADING = 2
         const val HIDE = 3
