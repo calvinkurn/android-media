@@ -11,6 +11,8 @@ import com.tokopedia.seller_shop_flash_sale.databinding.SsfsBottomsheetMoreMenuB
 import com.tokopedia.shop.flashsale.domain.entity.CampaignListMoreMenu
 import com.tokopedia.shop.flashsale.domain.entity.enums.CampaignStatus
 import com.tokopedia.shop.flashsale.domain.entity.enums.isAvailable
+import com.tokopedia.shop.flashsale.domain.entity.enums.isOngoing
+import com.tokopedia.shop.flashsale.domain.entity.enums.isUpcoming
 import com.tokopedia.shop.flashsale.presentation.list.list.adapter.CampaignListMoreMenuAdapter
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.utils.lifecycle.autoClearedNullable
@@ -109,8 +111,8 @@ class MoreMenuBottomSheet : BottomSheetUnify() {
     private fun getMenus(): List<CampaignListMoreMenu> {
         return when {
             campaignStatus.isAvailable() -> availableCampaignMoreMenu
-            campaignStatus == CampaignStatus.UPCOMING -> upcomingCampaignMoreMenu
-            campaignStatus == CampaignStatus.ONGOING -> ongoingCampaignMoreMenu
+            campaignStatus.isUpcoming() -> upcomingCampaignMoreMenu
+            campaignStatus.isOngoing() -> ongoingCampaignMoreMenu
             else -> emptyList()
         }
     }
