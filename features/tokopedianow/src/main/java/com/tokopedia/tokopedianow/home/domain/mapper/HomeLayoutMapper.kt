@@ -20,6 +20,7 @@ import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType.Companion.LE
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType.Companion.LEGO_6_IMAGE
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType.Companion.MAIN_QUEST
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType.Companion.MIX_LEFT_CAROUSEL
+import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType.Companion.MIX_LEFT_CAROUSEL_ATC
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType.Companion.PRODUCT_RECOM
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType.Companion.REPURCHASE_PRODUCT
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType.Companion.SHARING_EDUCATION
@@ -42,8 +43,8 @@ import com.tokopedia.tokopedianow.home.domain.mapper.HomeCategoryMapper.mapToCat
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeCategoryMapper.mapToCategoryList
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeRepurchaseMapper.mapRepurchaseUiModel
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeRepurchaseMapper.mapToRepurchaseUiModel
+import com.tokopedia.tokopedianow.home.domain.mapper.LeftCarouselAtcMapper.mapToLeftCarouselAtc
 import com.tokopedia.tokopedianow.home.domain.mapper.LegoBannerMapper.mapLegoBannerDataModel
-import com.tokopedia.tokopedianow.home.domain.mapper.MixLeftCarouselMapper.mapToMixLeftCarousel
 import com.tokopedia.tokopedianow.home.domain.mapper.ProductRecomMapper.mapProductRecomDataModel
 import com.tokopedia.tokopedianow.home.domain.mapper.QuestMapper.mapQuestUiModel
 import com.tokopedia.tokopedianow.home.domain.mapper.SharingMapper.mapSharingEducationUiModel
@@ -54,12 +55,15 @@ import com.tokopedia.tokopedianow.home.domain.mapper.VisitableMapper.getItemInde
 import com.tokopedia.tokopedianow.home.domain.mapper.VisitableMapper.updateItemById
 import com.tokopedia.tokopedianow.home.domain.model.GetRepurchaseResponse.RepurchaseData
 import com.tokopedia.tokopedianow.home.domain.model.HomeLayoutResponse
+import com.tokopedia.tokopedianow.home.domain.mapper.LeftCarouselMapper.mapToLeftCarousel
 import com.tokopedia.tokopedianow.home.domain.model.HomeRemoveAbleWidget
 import com.tokopedia.tokopedianow.home.presentation.fragment.TokoNowHomeFragment.Companion.SOURCE
 import com.tokopedia.tokopedianow.home.presentation.model.HomeReferralDataModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeEmptyStateUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLayoutItemUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLayoutUiModel
+import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLeftCarouselAtcProductCardUiModel
+import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLeftCarouselAtcUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLoadingStateUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeProductRecomUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeProgressBarUiModel
@@ -86,7 +90,8 @@ object HomeLayoutMapper {
         SHARING_EDUCATION,
         SHARING_REFERRAL,
         MAIN_QUEST,
-        MIX_LEFT_CAROUSEL
+        MIX_LEFT_CAROUSEL,
+        MIX_LEFT_CAROUSEL_ATC
     )
 
     fun MutableList<HomeLayoutItemUiModel>.addLoadingIntoList() {
@@ -286,17 +291,24 @@ object HomeLayoutMapper {
     }
 
     fun MutableList<HomeLayoutItemUiModel>.updateRepurchaseProductQuantity(
-            miniCartData: MiniCartSimplifiedData,
+        miniCartData: MiniCartSimplifiedData,
     ) {
         updateAllProductQuantity(miniCartData, REPURCHASE_PRODUCT)
         updateDeletedProductQuantity(miniCartData, REPURCHASE_PRODUCT)
     }
 
     fun MutableList<HomeLayoutItemUiModel>.updateProductRecomQuantity(
-            miniCartData: MiniCartSimplifiedData,
+        miniCartData: MiniCartSimplifiedData,
     ) {
         updateAllProductQuantity(miniCartData, PRODUCT_RECOM)
         updateDeletedProductQuantity(miniCartData, PRODUCT_RECOM)
+    }
+
+    fun MutableList<HomeLayoutItemUiModel>.updateLeftCarouselProductQuantity(
+        miniCartData: MiniCartSimplifiedData,
+    ) {
+        updateAllProductQuantity(miniCartData, MIX_LEFT_CAROUSEL_ATC)
+        updateDeletedProductQuantity(miniCartData, MIX_LEFT_CAROUSEL_ATC)
     }
 
     // Update all product with quantity from cart
@@ -322,13 +334,14 @@ object HomeLayoutMapper {
         when (type) {
             REPURCHASE_PRODUCT -> updateRepurchaseProductQuantity(productId, quantity)
             PRODUCT_RECOM -> updateProductRecomQuantity(productId, quantity)
+            MIX_LEFT_CAROUSEL_ATC -> updateLeftCarouselProductQuantity(productId, quantity)
         }
     }
 
     // Update quantity to 0 for deleted product in cart
     private fun MutableList<HomeLayoutItemUiModel>.updateDeletedProductQuantity(
-            miniCartData: MiniCartSimplifiedData,
-            @TokoNowLayoutType type: String
+        miniCartData: MiniCartSimplifiedData,
+        @TokoNowLayoutType type: String
     ) {
         when (type) {
             REPURCHASE_PRODUCT -> {
@@ -338,12 +351,9 @@ object HomeLayoutMapper {
                         if (it is MiniCartItem.MiniCartItemProduct) it.productId else null
                     }
                     val deletedProducts = layout.productList.filter { it.productId !in cartProductIds }
-//                    val variantGroup = miniCartData.miniCartItems.groupBy { it.productParentId }
 
                     deletedProducts.forEach { model ->
                         if (model.parentId != DEFAULT_PARENT_ID) {
-//                            val miniCartItemsWithSameParentId = variantGroup[model.parentId]
-//                            val totalQuantity = miniCartItemsWithSameParentId?.sumOf { it.quantity }.orZero()
                             val totalQuantity = miniCartData.miniCartItems.getMiniCartItemParentProduct(model.parentId)?.totalQuantity.orZero()
                             if (totalQuantity == DEFAULT_QUANTITY) {
                                 updateRepurchaseProductQuantity(model.productId, DEFAULT_QUANTITY)
@@ -363,12 +373,9 @@ object HomeLayoutMapper {
                         if (it is MiniCartItem.MiniCartItemProduct) it.productId else null
                     }
                     val deletedProducts = layout.recomWidget.recommendationItemList.filter { it.productId.toString() !in cartProductIds }
-//                    val variantGroup = miniCartData.miniCartItems.groupBy { it.productParentId }
 
                     deletedProducts.forEach { item ->
                         if (item.parentID.toString() != DEFAULT_PARENT_ID) {
-//                            val miniCartItemsWithSameParentId = variantGroup[item.parentID.toString()]
-//                            val totalQuantity = miniCartItemsWithSameParentId?.sumOf { it.quantity }.orZero()
                             val totalQuantity = miniCartData.miniCartItems.getMiniCartItemParentProduct(item.parentID.toString())?.totalQuantity.orZero()
                             if (totalQuantity == DEFAULT_QUANTITY) {
                                 updateProductRecomQuantity(item.productId.toString(), DEFAULT_QUANTITY)
@@ -377,6 +384,36 @@ object HomeLayoutMapper {
                             }
                         } else {
                             updateProductRecomQuantity(item.productId.toString(), DEFAULT_QUANTITY)
+                        }
+                    }
+                }
+            }
+            MIX_LEFT_CAROUSEL_ATC -> {
+                filter { it.layout is HomeLeftCarouselAtcUiModel }.forEach { homeLayoutItemUiModel->
+                    val layout = homeLayoutItemUiModel.layout as HomeLeftCarouselAtcUiModel
+                    val miniCartItems = miniCartData.miniCartItems.values
+                        .filterIsInstance<MiniCartItem.MiniCartItemProduct>()
+                    val cartProductIds = miniCartItems.map { it.productId }
+                    val deletedProducts: MutableList<HomeLeftCarouselAtcProductCardUiModel> = mutableListOf()
+                    layout.productList.forEach {
+                        if((it is HomeLeftCarouselAtcProductCardUiModel) && it.id !in cartProductIds ) {
+                            deletedProducts.add(it)
+                        }
+                    }
+
+                    val variantGroup = miniCartItems.groupBy { it.productParentId }
+
+                    deletedProducts.forEach { item ->
+                        if (item.parentProductId != DEFAULT_PARENT_ID) {
+                            val miniCartItemsWithSameParentId = variantGroup[item.parentProductId]
+                            val totalQuantity = miniCartItemsWithSameParentId?.sumOf { it.quantity }.orZero()
+                            if (totalQuantity == DEFAULT_QUANTITY) {
+                                updateLeftCarouselProductQuantity(item.id.toString(), DEFAULT_QUANTITY)
+                            } else {
+                                updateLeftCarouselProductQuantity(item.id.toString(), totalQuantity)
+                            }
+                        } else {
+                            updateLeftCarouselProductQuantity(item.id.toString(), DEFAULT_QUANTITY)
                         }
                     }
                 }
@@ -440,6 +477,42 @@ object HomeLayoutMapper {
                     val updatedRecom = recom.copy(recommendationItemList = recommendationItemList)
                     val updatedUiModel = uiModel.copy(recomWidget = updatedRecom)
                     homeLayoutItemUiModel.copy(layout = updatedUiModel)
+                }
+            }
+        }
+    }
+
+    private fun MutableList<HomeLayoutItemUiModel>.updateLeftCarouselProductQuantity(
+        productId: String,
+        quantity: Int
+    ) {
+        firstOrNull { it.layout is HomeLeftCarouselAtcUiModel }?.run {
+            val layoutUiModel = layout as HomeLeftCarouselAtcUiModel
+            val productList = layoutUiModel.productList.toMutableList()
+            val productUiModel = productList.firstOrNull {
+                if (it is HomeLeftCarouselAtcProductCardUiModel) {
+                    it.id == productId
+                } else {
+                    false
+                }
+            }
+            val index = layoutUiModel.productList.indexOf(productUiModel)
+
+            (productUiModel as? HomeLeftCarouselAtcProductCardUiModel)?.productCardModel?.run {
+                if (hasVariant()) {
+                    copy(variant = variant?.copy(quantity = quantity))
+                } else {
+                    copy(
+                        hasAddToCartButton = quantity == DEFAULT_QUANTITY,
+                        nonVariant = nonVariant?.copy(quantity = quantity)
+                    )
+                }
+            }?.let {
+                updateItemById(layout.getVisitableId()) {
+                    (productUiModel as? HomeLeftCarouselAtcProductCardUiModel)?.copy(productCardModel = it)?.apply {
+                        productList[index] = this
+                    }
+                    copy(layout = layoutUiModel.copy(productList = productList))
                 }
             }
         }
@@ -515,7 +588,7 @@ object HomeLayoutMapper {
             BANNER_CAROUSEL -> mapSliderBannerModel(response, loadedState)
             PRODUCT_RECOM -> mapProductRecomDataModel(response, loadedState, miniCartData)
             EDUCATIONAL_INFORMATION -> mapEducationalInformationUiModel(response, loadedState, serviceType)
-            MIX_LEFT_CAROUSEL -> mapToMixLeftCarousel(response, loadedState)
+            MIX_LEFT_CAROUSEL_ATC -> mapToLeftCarouselAtc(response, loadedState, miniCartData)
             // endregion
 
             // region TokoNow Component
@@ -525,6 +598,7 @@ object HomeLayoutMapper {
             MAIN_QUEST -> mapQuestUiModel(response, notLoadedState)
             SHARING_EDUCATION -> mapSharingEducationUiModel(response, notLoadedState, serviceType)
             SHARING_REFERRAL -> mapSharingReferralUiModel(response, notLoadedState, warehouseId)
+            MIX_LEFT_CAROUSEL -> mapToLeftCarousel(response, loadedState)
             // endregion
             else -> null
         }

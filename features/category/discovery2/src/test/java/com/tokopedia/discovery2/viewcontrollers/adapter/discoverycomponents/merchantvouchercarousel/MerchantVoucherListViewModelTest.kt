@@ -2,7 +2,9 @@ package com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.mer
 
 import android.app.Application
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import com.tokopedia.discovery.common.utils.URLParser
 import com.tokopedia.discovery2.data.ComponentsItem
+import com.tokopedia.discovery2.data.ErrorState
 import com.tokopedia.discovery2.datamapper.getComponent
 import com.tokopedia.discovery2.usecase.MerchantVoucherUseCase
 import io.mockk.*
@@ -14,6 +16,7 @@ import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
+import java.net.UnknownHostException
 
 class MerchantVoucherListViewModelTest {
     @get:Rule
@@ -51,29 +54,76 @@ class MerchantVoucherListViewModelTest {
     }
 
     @Test
-    fun `test for coupon data sync logic`() {
+    fun `test for coupon data sync logic when we get load value as true and also get data`() {
         viewModel.merchantVoucherUseCase = useCase
         coEvery { useCase.loadFirstPageComponents(componentsItem.id,componentsItem.pageEndPoint) } returns true
+        mockkStatic(::getComponent)
+        mockkConstructor(URLParser::class)
+        every { anyConstructed<URLParser>().paramKeyValueMapDecoded } returns HashMap()
+        val comp: ComponentsItem = spyk()
+        every { getComponent(componentsItem.id,componentsItem.pageEndPoint) } returns comp
+        every { comp.getComponentsItem() } returns listOf(mockk())
         viewModel.onAttachToViewHolder()
         coVerify { useCase.loadFirstPageComponents(componentsItem.id,componentsItem.pageEndPoint) }
         assert(viewModel.syncData.value == true)
-        assert(!componentsItem.verticalProductFailState)
+        assert(!comp.verticalProductFailState)
+    }
+
+    @Test
+    fun `test for coupon data sync logic when we get load value as true and we don't get data`() {
+        viewModel = spyk(MerchantVoucherListViewModel(application, componentsItem, 99))
+        viewModel.merchantVoucherUseCase = useCase
+        coEvery { useCase.loadFirstPageComponents(componentsItem.id,componentsItem.pageEndPoint) } returns true
+        mockkStatic(::getComponent)
+        mockkConstructor(URLParser::class)
+        every { anyConstructed<URLParser>().paramKeyValueMapDecoded } returns HashMap()
+        val comp: ComponentsItem = spyk()
+        every { getComponent(componentsItem.id,componentsItem.pageEndPoint) } returns comp
+        every { comp.getComponentsItem() } returns listOf()
+        viewModel.onAttachToViewHolder()
+        coVerify { useCase.loadFirstPageComponents(componentsItem.id,componentsItem.pageEndPoint) }
+        assert(viewModel.syncData.value == true)
+        assert(comp.verticalProductFailState)
+        assert(comp.errorState == ErrorState.EmptyComponentState)
+    }
+
+    @Test
+    fun `test for coupon data sync logic when we get load value as false`() {
         viewModel = spyk(MerchantVoucherListViewModel(application, componentsItem, 99))
         viewModel.merchantVoucherUseCase = useCase
         coEvery { useCase.loadFirstPageComponents(componentsItem.id,componentsItem.pageEndPoint) } returns false
+        mockkStatic(::getComponent)
+        mockkConstructor(URLParser::class)
+        every { anyConstructed<URLParser>().paramKeyValueMapDecoded } returns HashMap()
+        val comp: ComponentsItem = spyk()
+        every { getComponent(componentsItem.id,componentsItem.pageEndPoint) } returns comp
         viewModel.onAttachToViewHolder()
         coVerify { useCase.loadFirstPageComponents(componentsItem.id,componentsItem.pageEndPoint) }
         assert(viewModel.syncData.value == false)
-        assert(!componentsItem.verticalProductFailState)
+        assert(!comp.verticalProductFailState)
+    }
+
+    @Test
+    fun `test for coupon data sync logic when we get exception`(){
         viewModel = spyk(MerchantVoucherListViewModel(application, componentsItem, 99))
         viewModel.merchantVoucherUseCase = useCase
-        coEvery { useCase.loadFirstPageComponents(componentsItem.id,componentsItem.pageEndPoint) }  throws Exception()
+        coEvery { useCase.loadFirstPageComponents(componentsItem.id,componentsItem.pageEndPoint) }  throws UnknownHostException()
         mockkStatic(::getComponent)
-        every { getComponent(componentsItem.id,componentsItem.pageEndPoint) } returns componentsItem
+        mockkConstructor(URLParser::class)
+        every { anyConstructed<URLParser>().paramKeyValueMapDecoded } returns HashMap()
+        val comp: ComponentsItem = spyk()
+        every { getComponent(componentsItem.id,componentsItem.pageEndPoint) } returns comp
         viewModel.onAttachToViewHolder()
         coVerify { useCase.loadFirstPageComponents(componentsItem.id,componentsItem.pageEndPoint) }
         assert(viewModel.syncData.value == true)
-//        Todo:: why is this not working ??
-//        assert(componentsItem.verticalProductFailState)
+        assert(comp.errorState == ErrorState.NetworkErrorState)
+        assert(comp.verticalProductFailState)
+    }
+
+    @After
+    fun shutDown() {
+        Dispatchers.resetMain()
+        unmockkConstructor(URLParser::class)
+        unmockkStatic(::getComponent)
     }
 }

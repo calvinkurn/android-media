@@ -18,7 +18,7 @@ import java.net.UnknownHostException
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
-class BannerCarouselViewModel(application: Application, val component: ComponentsItem, val position: Int) : DiscoveryBaseViewModel(), CoroutineScope {
+class BannerCarouselViewModel(val application: Application, val component: ComponentsItem, val position: Int) : DiscoveryBaseViewModel(), CoroutineScope {
     private val bannerCarouselList: MutableLiveData<ArrayList<ComponentsItem>> = MutableLiveData()
     private val title: MutableLiveData<String> = MutableLiveData()
     private val componentData: MutableLiveData<ComponentsItem> = MutableLiveData()
@@ -56,7 +56,7 @@ class BannerCarouselViewModel(application: Application, val component: Component
     private fun fetchBannerData() {
         if (component.properties?.dynamic == true) {
             launchCatchError(block = {
-                if (bannerUseCase.loadFirstPageComponents(component.id, component.pageEndPoint)) {
+                if (bannerUseCase.loadFirstPageComponents(component.id, component.pageEndPoint,application.applicationContext)) {
                     if (!component.data.isNullOrEmpty()) {
                         bannerCarouselList.value = DiscoveryDataMapper.mapListToComponentList(component.data!!, ComponentNames.BannerCarouselItemView.componentName,
                                 component.name, position, component.properties?.design

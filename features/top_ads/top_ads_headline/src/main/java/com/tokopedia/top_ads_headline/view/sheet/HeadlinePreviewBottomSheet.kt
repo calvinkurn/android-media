@@ -39,7 +39,7 @@ class HeadlinePreviewBottomSheet : BottomSheetUnify() {
             getString(R.string.topads_headline_preview_bottomsheet_header, headlineName)
         setTitle(bottomSheetTitle)
         cpmModel?.let {
-            topAdsBannerView?.displayAds(it)
+            topAdsBannerView?.displayHeadlineAds(it)
         }
     }
 }

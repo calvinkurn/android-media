@@ -54,5 +54,7 @@ data class Product(
         @SerializedName("product_tracker_data")
         val productTrackerData: ProductTrackerData = ProductTrackerData(),
         @SerializedName("product_cashback")
-        val productCashback: String = ""
+        val productCashback: String = "",
+        @SerializedName("selected_unavailable_action_link")
+        val selectedUnavailableActionLink: String = ""
 )

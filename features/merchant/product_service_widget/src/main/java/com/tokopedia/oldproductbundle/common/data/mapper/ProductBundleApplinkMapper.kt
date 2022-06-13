@@ -9,10 +9,13 @@ object ProductBundleApplinkMapper {
     private const val BUNDLE_ID = "bundleId"
     private const val SELECTED_PRODUCT_IDS = "selectedProductIds"
     private const val SOURCE = "source"
+    private const val WAREHOUSE_ID = "warehouseId"
     private const val DEFAULT_VALUE_APPLINK_DATA = 0L
     private const val PRODUCT_ID_SEGMENT_INDEX = 1
     private const val PRODUCT_ID_SEGMENT_SIZE_MIN = 2
     private const val APPLINK_ARRAY_DELIMITER = ","
+
+    const val DEFAULT_VALUE_WAREHOUSE_ID = "0"
 
     fun getProductIdFromUri(uri: Uri, pathSegments: List<String>): Long {
         return if (pathSegments.size >= PRODUCT_ID_SEGMENT_SIZE_MIN) {
@@ -43,6 +46,10 @@ object ProductBundleApplinkMapper {
 
     fun getPageSourceFromUri(uri: Uri): String {
         return uri.getQueryParameter(SOURCE).orEmpty()
+    }
+
+    fun getWarehouseIdFromUri(uri: Uri): String {
+        return uri.getQueryParameter(WAREHOUSE_ID) ?: DEFAULT_VALUE_WAREHOUSE_ID
     }
 
 }

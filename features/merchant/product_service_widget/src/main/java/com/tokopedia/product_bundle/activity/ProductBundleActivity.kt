@@ -16,7 +16,6 @@ import com.tokopedia.product_bundle.common.data.mapper.ViewType.PAGE
 import com.tokopedia.product_bundle.fragment.EntrypointFragment
 import com.tokopedia.product_bundle.fragment.EntrypointFragment.Companion.newInstance
 import com.tokopedia.product_service_widget.R
-import com.tokopedia.product_service_widget.R.style.Theme_WhiteUnify
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigKey
 
@@ -59,12 +58,14 @@ class ProductBundleActivity : BaseSimpleActivity() {
         val selectedProductIds = ProductBundleApplinkMapper.getSelectedProductIdsFromUri(data)
         val parentProductId = ProductBundleApplinkMapper.getProductIdFromUri(data, data.pathSegments.orEmpty())
         val source = ProductBundleApplinkMapper.getPageSourceFromUri(data)
+        val warehouseId = ProductBundleApplinkMapper.getWarehouseIdFromUri(data)
 
         entrypointFragment = newInstance(
             bundleId = bundleId,
             selectedProductsId = ArrayList(selectedProductIds),
             source = source,
-            parentProductId = parentProductId
+            parentProductId = parentProductId,
+            warehouseId = warehouseId
         )
 
         setTheme(com.tokopedia.abstraction.R.style.Theme_WhiteUnify)

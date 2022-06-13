@@ -128,7 +128,6 @@ class GetMiniCartListUseCase @Inject constructor(@ApplicationContext private val
                         }
                       }
                       cart_details {
-                        selected_unavailable_action_link
                         errors
                         bundle_detail { 
                           bundle_id
@@ -188,6 +187,7 @@ class GetMiniCartListUseCase @Inject constructor(@ApplicationContext private val
                           category_id
                           category
                           product_cashback
+                          selected_unavailable_action_link
                         }
                       }
                     }
@@ -236,7 +236,6 @@ class GetMiniCartListUseCase @Inject constructor(@ApplicationContext private val
                       cart_string
                       errors
                       cart_details {                    
-                        selected_unavailable_action_link
                         errors
                         bundle_detail { 
                           bundle_id
@@ -293,6 +292,7 @@ class GetMiniCartListUseCase @Inject constructor(@ApplicationContext private val
                           warehouse_id
                           category_id
                           category
+                          selected_unavailable_action_link
                         }
                       }
                     }

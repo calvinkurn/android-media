@@ -92,6 +92,8 @@ class DynamicLegoBannerComponentCallback(val context: Context?, val homeCategory
     }
 
     override fun onSeeAllTwoImage(channelModel: ChannelModel, position: Int) {
+        LegoBannerTracking.sendLegoBannerTwoClickViewAll(channelModel)
+        RouteManager.route(context, channelModel.channelHeader.applink)
     }
 
     override fun onClickGridTwoImage(channelModel: ChannelModel, channelGrid: ChannelGrid, position: Int, parentPosition: Int) {

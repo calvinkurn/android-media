@@ -105,7 +105,8 @@ fun List<RecommendationItem>.toProductCardModels(hasThreeDots: Boolean = false):
 fun RecommendationItem.toProductCardModel(
         hasAddToCartButton: Boolean = false,
         addToCartButtonType: Int = UnifyButton.Type.TRANSACTION,
-        hasThreeDots: Boolean = false
+        hasThreeDots: Boolean = false,
+        cardInteraction: Boolean = false
 ) : ProductCardModel{
     var variant: ProductCardModel.Variant? = null
     var nonVariant: ProductCardModel.NonVariant? = null
@@ -142,7 +143,8 @@ fun RecommendationItem.toProductCardModel(
             hasAddToCartButton = hasAddToCartButton,
             addToCartButtonType = addToCartButtonType,
             variant = if (isProductHasParentID()) variant else null,
-            nonVariant = if (isProductHasParentID()) null else nonVariant
+            nonVariant = if (isProductHasParentID()) null else nonVariant,
+            cardInteraction = cardInteraction,
     )
 }
 

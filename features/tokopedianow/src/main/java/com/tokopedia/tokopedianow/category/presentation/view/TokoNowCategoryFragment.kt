@@ -279,6 +279,12 @@ class TokoNowCategoryFragment:
         }
     }
 
+    override fun trackingEventLabel(): String = tokoNowCategoryViewModel.getCurrentCategoryId(
+        categoryIdLvl1 = tokoNowCategoryViewModel.categoryL1,
+        categoryIdLvl2 = categoryIdLvl2,
+        categoryIdLvl3 = categoryIdLvl3
+    )
+
     private fun createShareHomeTokonow(): ShareTokonow {
         return ShareTokonow(
             thumbNailImage = TokoNowHomeFragment.THUMBNAIL_AND_OG_IMAGE_SHARE_URL,
@@ -315,7 +321,8 @@ class TokoNowCategoryFragment:
             userId = userSession.userId,
             categoryIdLvl1 = tokoNowCategoryViewModel.categoryL1,
             categoryIdLvl2 = categoryIdLvl2,
-            categoryIdLvl3 = categoryIdLvl3
+            categoryIdLvl3 = categoryIdLvl3,
+            currentCategoryId = tokoNowCategoryViewModel.getCurrentCategoryId(tokoNowCategoryViewModel.categoryL1, categoryIdLvl2, categoryIdLvl3)
         )
         shareClicked(shareCategoryTokonow)
     }

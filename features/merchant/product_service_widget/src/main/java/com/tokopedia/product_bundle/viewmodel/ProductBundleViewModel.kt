@@ -156,7 +156,7 @@ class ProductBundleViewModel @Inject constructor(
         }
     }
 
-    fun getBundleInfo(productId: Long) {
+    fun getBundleInfo(productId: Long, warehouseId: String) {
         val chosenAddress = chosenAddressRequestHelper.getChosenAddress()
         mPageState.value = ProductBundleState.LOADING
         launchCatchError(block = {
@@ -181,9 +181,10 @@ class ProductBundleViewModel @Inject constructor(
                         )
                     ),
                     productData = ProductData(
-                        productID = productId.toString()
+                        productID = productId.toString(),
+                        warehouseIDs = listOf(warehouseId)
                     ),
-                    bundleIdList = createBundleListParam(productId)
+                    bundleIdList = createBundleListParam(productId, warehouseId)
                 )
                 getBundleInfoUseCase.executeOnBackground()
             }
@@ -265,12 +266,12 @@ class ProductBundleViewModel @Inject constructor(
         }
     }
 
-    fun mapBundleDetailsToProductDetails(userId: String, shopId: Int, productBundleDetails: List<ProductBundleDetail>): List<ProductDetail> {
+    fun mapBundleDetailsToProductDetails(userId: String, shopId: String, productBundleDetails: List<ProductBundleDetail>): List<ProductDetail> {
         return productBundleDetails.map { productBundleDetail ->
             ProductDetail(
                 productId = productBundleDetail.selectedVariantId?: productBundleDetail.productId.toString(),
                 quantity = ATC_BUNDLE_QUANTITY,
-                shopId = shopId.toString(),
+                shopId = shopId,
                 isProductParent = parentProductID == productBundleDetail.productId,
                 customerId = userId,
                 warehouseId = productBundleDetail.warehouseId
@@ -378,10 +379,10 @@ class ProductBundleViewModel @Inject constructor(
                 }
             }
 
-    private fun createBundleListParam(productId: Long): List<Bundle> {
+    private fun createBundleListParam(productId: Long, warehouseId: String): List<Bundle> {
         // if given product ID is 0, then use bundle ID to search bundle info
         return if (productId == Int.ZERO.toLong()) {
-            listOf(Bundle(ID = selectedBundleId.toString()))
+            listOf(Bundle(ID = selectedBundleId.toString(), WarehouseID = warehouseId))
         } else {
             emptyList()
         }

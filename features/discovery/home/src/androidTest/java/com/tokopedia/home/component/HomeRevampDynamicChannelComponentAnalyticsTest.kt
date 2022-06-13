@@ -394,7 +394,7 @@ class HomeRevampDynamicChannelComponentAnalyticsTest {
         HomeDCCassavaTest {
             initTest()
             doActivityTestByModelClass(dataModelClass = MerchantVoucherDataModel::class) { viewHolder: RecyclerView.ViewHolder, i: Int ->
-                actionOnMerchantVoucherWidget(viewHolder)
+                actionOnMerchantVoucherWidget(viewHolder, i)
             }
         } validateAnalytics {
             addDebugEnd()
@@ -412,6 +412,19 @@ class HomeRevampDynamicChannelComponentAnalyticsTest {
         } validateAnalytics {
             addDebugEnd()
             hasPassedAnalytics(cassavaTestRule, ANALYTIC_VALIDATOR_QUERY_FILE_NAME_SPECIAL_RELEASE)
+        }
+    }
+
+    @Test
+    fun testSpecialCampaignWidget() {
+        HomeDCCassavaTest {
+            initTest()
+            doActivityTestByModelClass(dataModelClass = CampaignWidgetDataModel::class) { viewHolder: RecyclerView.ViewHolder, i: Int ->
+                actionOnCampaignWidget(viewHolder, i)
+            }
+        } validateAnalytics {
+            addDebugEnd()
+            hasPassedAnalytics(cassavaTestRule, ANALYTIC_VALIDATOR_QUERY_FILE_NAME_CAMPAIGN_WIDGET)
         }
     }
 

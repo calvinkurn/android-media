@@ -25,7 +25,7 @@ import com.tokopedia.unifycomponents.PageControl
  * @author by errysuprayogi on 11/28/17.
  */
 
-class BannerViewHolder(itemView: View, private val listener: HomeCategoryListener?)
+class BannerViewHolder(itemView: View, private val listener: HomeCategoryListener?, cardInteraction: Boolean = false)
     : AbstractViewHolder<HomepageBannerDataModel>(itemView),
         CircularListener {
     private var slidesList: List<BannerSlidesModel>? = null
@@ -33,7 +33,7 @@ class BannerViewHolder(itemView: View, private val listener: HomeCategoryListene
     private val circularViewPager: CircularViewPager = itemView.findViewById(R.id.circular_view_pager)
     private val indicatorView: PageControl = itemView.findViewById(R.id.indicator_banner)
     private val seeAllPromo: Label = itemView.findViewById(R.id.see_more_label)
-    private val adapter = HomeBannerAdapter(listOf(), this)
+    private val adapter = HomeBannerAdapter(listOf(), this, cardInteraction)
 
     init {
         indicatorView.activeColor = ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N0)
@@ -41,7 +41,7 @@ class BannerViewHolder(itemView: View, private val listener: HomeCategoryListene
         seeAllPromo.unlockFeature = true
         val labelColorHexString = "#${Integer.toHexString(ContextCompat.getColor(itemView.context, R.color.home_dms_color_banner_label_type))}"
         seeAllPromo.setLabelType(labelColorHexString)
-        seeAllPromo.opacityLevel = 0.9f
+        seeAllPromo.opacityLevel = SEE_ALL_PROMO_OPACITY
     }
 
     override fun bind(element: HomepageBannerDataModel) {
@@ -65,7 +65,7 @@ class BannerViewHolder(itemView: View, private val listener: HomeCategoryListene
             slidesList = element.slides
             this.isCache = element.isCache
             element.slides?.let {
-                if (it.size > 5) {
+                if (it.size > SIZE_INDICATOR) {
                     indicatorView.setIndicator(it.size)
                 } else {
                     indicatorView.setIndicator(it.size)
@@ -100,7 +100,7 @@ class BannerViewHolder(itemView: View, private val listener: HomeCategoryListene
         })
         circularViewPager.setAdapter(adapter)
         circularViewPager.setItemList(list)
-        if (list.size > 5) {
+        if (list.size > SIZE_INDICATOR) {
             indicatorView.setIndicator(list.size)
         } else {
             indicatorView.setIndicator(list.size)
@@ -148,5 +148,7 @@ class BannerViewHolder(itemView: View, private val listener: HomeCategoryListene
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.home_banner
+        private const val SEE_ALL_PROMO_OPACITY = 0.9f
+        private const val SIZE_INDICATOR = 5
     }
 }
