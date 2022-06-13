@@ -12,7 +12,7 @@ fun getRegisteredNavigationRecommendation(deeplink: String): String {
     }
 }
 
-private const val RECOM_PRODUCT_ID = "recomProductId"
+private const val RECOM_PRODUCT_ID = "recomProdId"
 fun getRegisteredNavigationRecommendationFromHttp(uri: Uri): String {
     return when {
         uri.pathSegments.size > 0 -> {
