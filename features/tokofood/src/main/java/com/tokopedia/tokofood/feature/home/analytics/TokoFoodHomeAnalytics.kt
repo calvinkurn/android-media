@@ -35,8 +35,6 @@ import com.tokopedia.tokofood.feature.home.domain.data.DynamicIcon
 import com.tokopedia.tokofood.feature.home.domain.data.Merchant
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
-import com.tokopedia.track.builder.BaseTrackerBuilder
-import com.tokopedia.track.builder.`interface`.BaseTrackerBuilderInterface
 import com.tokopedia.track.builder.util.BaseTrackerConst
 import com.tokopedia.track.builder.util.BaseTrackerConst.Event.SELECT_CONTENT
 
