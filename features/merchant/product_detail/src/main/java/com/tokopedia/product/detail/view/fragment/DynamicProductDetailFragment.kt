@@ -239,8 +239,6 @@ import com.tokopedia.wishlistcommon.data.response.AddToWishlistV2Response
 import com.tokopedia.wishlistcommon.data.response.DeleteWishlistV2Response
 import com.tokopedia.wishlistcommon.listener.WishlistV2ActionListener
 import com.tokopedia.wishlistcommon.util.AddRemoveWishlistV2Handler
-import com.tokopedia.wishlistcommon.util.WishlistV2CommonConsts.OPEN_WISHLIST
-import com.tokopedia.wishlistcommon.util.WishlistV2CommonConsts.TOASTER_RED
 import com.tokopedia.wishlistcommon.util.WishlistV2RemoteConfigRollenceUtil
 import rx.subscriptions.CompositeSubscription
 import java.util.*
@@ -2852,14 +2850,25 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
                 recomWishlistItem?.isWishlist = !(recomWishlistItem?.isWishlist ?: false)
                 recomWishlistItem?.let { DynamicProductDetailTracking.Click.eventAddToCartRecommendationWishlist(it, viewModel.userSessionInterface.isLoggedIn, wishlistResult.isAddWishlist) }
 
-                if (wishlistResult.isUsingWishlistV2) showToasterWishlistV2(wishlistResult)
+                if (wishlistResult.isUsingWishlistV2) {
+                    context?.let { context ->
+                        view?.let { v ->
+                            if (wishlistResult.isAddWishlist) {
+                                AddRemoveWishlistV2Handler.showAddToWishlistV2SuccessToaster(wishlistResult, context, v)
+                                if (productCardOptionsModel.isTopAds) hitWishlistClickUrl(productCardOptionsModel)
+                            }
+                            else AddRemoveWishlistV2Handler.showRemoveWishlistV2SuccessToaster(wishlistResult, context, v)
+                        }
+                    }
+                }
                 else showToasterWishlist(wishlistResult)
             } else {
-                if (wishlistResult.isUsingWishlistV2) showToasterErrorWishlistV2(wishlistResult)
-                else {
-                    view?.showToasterError(
-                        if (wishlistResult.isAddWishlist) getString(com.tokopedia.wishlist_common.R.string.on_failed_add_to_wishlist_msg) else getString(com.tokopedia.wishlist_common.R.string.on_failed_remove_from_wishlist_msg)
-                    )
+                var errorMessage = getString(com.tokopedia.wishlist_common.R.string.on_failed_remove_from_wishlist_msg)
+                if (wishlistResult.isAddWishlist) errorMessage = getString(com.tokopedia.wishlist_common.R.string.on_failed_add_to_wishlist_msg)
+
+                view?.let { v ->
+                    if (wishlistResult.isUsingWishlistV2) AddRemoveWishlistV2Handler.showWishlistV2ErrorToaster(errorMessage, v)
+                    else v.showToasterError(errorMessage)
                 }
             }
         } else {
@@ -2867,6 +2876,18 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
         }
 
         recomWishlistItem = null
+    }
+
+    private fun hitWishlistClickUrl(productCardOptionsModel: ProductCardOptionsModel) {
+        context?.let {
+            TopAdsUrlHitter(it).hitClickUrl(
+                this::class.java.simpleName,
+                productCardOptionsModel.topAdsClickUrl,
+                productCardOptionsModel.productId,
+                productCardOptionsModel.productName,
+                productCardOptionsModel.productImageUrl
+            )
+        }
     }
 
     private fun showToasterWishlist(wishlistResult: ProductCardOptionsModel.WishlistResult) {
@@ -2891,43 +2912,6 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
                 ctaListener = cta
             )
         }
-    }
-
-    private fun showToasterWishlistV2(wishlistResult: ProductCardOptionsModel.WishlistResult) {
-        if (wishlistResult.isAddWishlist) {
-            val messageV2 = wishlistResult.messageV2.ifEmpty {
-                if (wishlistResult.isSuccess) getString(com.tokopedia.wishlist_common.R.string.on_success_add_to_wishlist_msg)
-                else getString(com.tokopedia.wishlist_common.R.string.on_failed_add_to_wishlist_msg)
-            }
-
-            var typeToasterV2 = TYPE_NORMAL
-            if (wishlistResult.toasterColorV2 == TOASTER_RED || !wishlistResult.isSuccess) typeToasterV2 = TYPE_ERROR
-
-            var ctaTextV2 = getString(com.tokopedia.wishlist_common.R.string.cta_success_add_to_wishlist)
-            if (wishlistResult.ctaTextV2.isNotEmpty()) ctaTextV2 = wishlistResult.ctaTextV2
-
-            view?.showToaster(message = messageV2, typeToaster = typeToasterV2, ctaText = ctaTextV2, ctaListener = {
-                if (wishlistResult.ctaActionV2 == OPEN_WISHLIST) goToWishlist() })
-        } else {
-            val msg = getString(com.tokopedia.wishlist_common.R.string.on_success_remove_from_wishlist_msg)
-            val ctaText = getString(com.tokopedia.wishlist_common.R.string.cta_success_remove_from_wishlist)
-            val cta = {}
-
-            view?.showToasterSuccess(
-                message = msg,
-                ctaText = ctaText,
-                ctaListener = cta
-            )
-        }
-    }
-
-    private fun showToasterErrorWishlistV2(wishlistResult: ProductCardOptionsModel.WishlistResult) {
-        val errorMsg = wishlistResult.messageV2.ifEmpty {
-            if (wishlistResult.isAddWishlist) getString(com.tokopedia.wishlist_common.R.string.on_failed_add_to_wishlist_msg)
-            else getString(com.tokopedia.wishlist_common.R.string.on_failed_remove_from_wishlist_msg)
-        }
-
-        view?.showToasterError(errorMsg)
     }
 
     private fun trackProductView(isElligible: Boolean, boType: Int) {
