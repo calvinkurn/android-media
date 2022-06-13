@@ -91,11 +91,11 @@ class ProductCardCarouselViewHolder(itemView: View, val fragment: Fragment) : Ab
                             linearLayoutManager.findViewByPosition(linearLayoutManager.findFirstVisibleItemPosition())
                         firstView?.let {
                             val distanceFromLeft = it.left
-                            val translateX = distanceFromLeft * 0.2f
+                            val translateX = distanceFromLeft * TRANSLATION_RATIO
                             if (translateX <= 0) {
                                 mixLeftBannerCard.translationX = translateX
                                 val itemSize = it.width.toFloat()
-                                val alpha = (abs(distanceFromLeft).toFloat() / itemSize * 0.80f)
+                                val alpha = (abs(distanceFromLeft).toFloat() / itemSize * ALHPA_RATIO)
                                 mixLeftBannerCard.alpha = 1 - alpha
                             } else {
                                 mixLeftBannerCard.translationX = 0f
@@ -289,5 +289,7 @@ class ProductCardCarouselViewHolder(itemView: View, val fragment: Fragment) : Ab
 
     companion object{
         const val PREFETCH_ITEM_COUNT = 4
+        private const val ALHPA_RATIO = 0.8f
+        private const val TRANSLATION_RATIO = 0.2f
     }
 }
