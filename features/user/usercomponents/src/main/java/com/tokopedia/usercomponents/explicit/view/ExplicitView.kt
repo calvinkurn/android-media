@@ -18,10 +18,7 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.config.GlobalConfig
-import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.invisible
-import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.unifycomponents.CardUnify2
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -35,9 +32,7 @@ import com.tokopedia.usercomponents.explicit.domain.model.Property
 import com.tokopedia.usercomponents.explicit.view.viewmodel.ExplicitViewModel
 import javax.inject.Inject
 
-class ExplicitView : CardUnify2, ExplicitAction {
-
-    private var explicitAction : ExplicitAction? = null
+open class ExplicitView : CardUnify2, ExplicitAction {
 
     @Inject
     lateinit var explicitAnalytics: ExplicitAnalytics
@@ -170,7 +165,9 @@ class ExplicitView : CardUnify2, ExplicitAction {
 
     private fun initListener() {
         bindingQuestion?.root?.setOnClickListener {
-            explicitAnalytics.trackClickCard(pageName, templateName, pagePath, pageType)
+            if (bindingQuestion?.imgShimmer?.isVisible == false){
+                explicitAnalytics.trackClickCard(pageName, templateName, pagePath, pageType)
+            }
         }
 
         bindingQuestion?.imgDismiss?.setOnClickListener {
@@ -206,7 +203,6 @@ class ExplicitView : CardUnify2, ExplicitAction {
     }
 
     override fun onLoading() {
-        explicitAction?.onLoading()
         showShadow(true)
         bindingQuestion?.apply {
             imgShimmer.visible()
@@ -222,7 +218,6 @@ class ExplicitView : CardUnify2, ExplicitAction {
     }
 
     override fun onQuestionShow() {
-        explicitAction?.onQuestionShow()
         showShadow(true)
         bindingQuestion?.apply {
             imgShimmer.gone()
@@ -246,7 +241,6 @@ class ExplicitView : CardUnify2, ExplicitAction {
     }
 
     override fun onButtonPositifClicked() {
-        explicitAction?.onButtonPositifClicked()
         explicitAnalytics.trackClickPositifButton(pageName, templateName, pagePath, pageType)
         bindingQuestion?.apply {
             btnPositifAction.isLoading = true
@@ -257,7 +251,6 @@ class ExplicitView : CardUnify2, ExplicitAction {
     }
 
     override fun onButtonNegatifClicked() {
-        explicitAction?.onButtonNegatifClicked()
         explicitAnalytics.trackClickNegatifButton(pageName, templateName, pagePath, pageType)
         bindingQuestion?.apply {
             btnNegatifAction.isLoading = true
@@ -268,20 +261,17 @@ class ExplicitView : CardUnify2, ExplicitAction {
     }
 
     override fun onSubmitSuccessShow() {
-        explicitAction?.onSubmitSuccessShow()
         showShadow(true)
         initSuccessMessageText()
         replaceView(bindingSuccess?.root)
     }
 
     override fun onDismiss() {
-        explicitAction?.onDismiss()
         this.hide()
         onCleared()
     }
 
     override fun onFailed() {
-        explicitAction?.onFailed()
         showShadow(false)
         setViewFailed()
         replaceView(bindingFailed?.containerLocalLoad)
@@ -340,7 +330,7 @@ class ExplicitView : CardUnify2, ExplicitAction {
         onCleared()
     }
 
-    private fun onCleared() {
+    override fun onCleared() {
         val lifecycleOwner = context as LifecycleOwner
         viewModel?.explicitContent?.removeObservers(lifecycleOwner)
         viewModel?.statusSaveAnswer?.removeObservers(lifecycleOwner)
@@ -349,9 +339,5 @@ class ExplicitView : CardUnify2, ExplicitAction {
         bindingFailed = null
         bindingQuestion = null
         bindingSuccess = null
-    }
-
-    fun addListener(listener: ExplicitAction){
-        this.explicitAction = listener
     }
 }

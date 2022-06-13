@@ -8,4 +8,5 @@ interface ExplicitAction {
     fun onSubmitSuccessShow()
     fun onDismiss()
     fun onFailed()
+    fun onCleared()
 }
