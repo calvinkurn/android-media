@@ -65,9 +65,6 @@ data class NextPMGradeModel(
         @SerializedName("grade_name")
         @Expose
         val gradeName: String? = "",
-        @SerializedName("image_badge_url")
-        @Expose
-        val imgBadgeUrl: String? = "",
         @SerializedName("image_badge_background_mobile_url")
         @Expose
         val backgroundUrl: String? = ""
@@ -77,9 +74,6 @@ data class CurrentPmGradeModel(
         @SerializedName("grade_name")
         @Expose
         val gradeName: String? = "",
-        @SerializedName("image_badge_url")
-        @Expose
-        val imgBadgeUrl: String? = "",
         @SerializedName("image_badge_background_mobile_url")
         @Expose
         val backgroundUrl: String? = "",

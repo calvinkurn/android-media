@@ -49,18 +49,18 @@ class PowerMerchantSharedViewModelTest {
         MockKAnnotations.init(this)
 
         viewModel = PowerMerchantSharedViewModel(
-                Lazy { getPmBasicInfo },
-                Lazy { getShopModerationStatusUseCase },
-                CoroutineTestDispatchersProvider
+            { getPmBasicInfo },
+            { getShopModerationStatusUseCase },
+            CoroutineTestDispatchersProvider
         )
     }
 
     @Test
     fun `when get pm basic info should return success`() = runBlockingTest {
         val result = PowerMerchantBasicInfoUiModel(
-                PMStatusUiModel(),
-                PMShopInfoUiModel(),
-                emptyList()
+            PMStatusUiModel(),
+            PMShopInfoUiModel(),
+            emptyList()
         )
         val isFirstLoad = anyBoolean()
 

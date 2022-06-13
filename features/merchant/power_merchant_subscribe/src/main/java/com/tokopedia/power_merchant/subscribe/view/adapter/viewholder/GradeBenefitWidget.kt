@@ -16,6 +16,7 @@ import com.tokopedia.gm.common.data.source.local.model.PMGradeWithBenefitsUiMode
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.ZERO
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.power_merchant.subscribe.R
 import com.tokopedia.power_merchant.subscribe.analytics.tracking.PowerMerchantTracking
 import com.tokopedia.power_merchant.subscribe.databinding.WidgetPmGradeBenefitBinding
@@ -55,6 +56,9 @@ class GradeBenefitWidget(
         tvPmLearMorePowerMerchant.setOnClickListener {
             powerMerchantTracking.sendEventClickLearnMorePM(element.shopScore.toString())
             RouteManager.route(root.context, element.ctaAppLink)
+        }
+        tvPmLearMorePowerMerchant.addOnImpressionListener(element.impressHolder){
+            powerMerchantTracking.sendEventImpressUpliftPmPro(element.shopScore.toString())
         }
     }
 
