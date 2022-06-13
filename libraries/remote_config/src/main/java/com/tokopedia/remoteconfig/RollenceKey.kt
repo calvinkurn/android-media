@@ -74,6 +74,10 @@ object RollenceKey {
     const val SEARCH_VIDEO_WIDGET = "VideoWidget"
     const val SEARCH_VIDEO_WIDGET_VARIANT = "experiment_variant"
 
+    // Typo Correction
+    const val SEARCH_TYPO_CORRECTION_ADS = "typo_correction_ads2"
+    const val SEARCH_TYPO_CORRECTION_ADS_VARIANT = "typo2"
+
     // Global Menu (Me Page)
     const val ME_PAGE_REVAMP = "Navigation_Mepage"
     const val ME_PAGE_REVAMP_VARIANT = "Mepage_Variant"
