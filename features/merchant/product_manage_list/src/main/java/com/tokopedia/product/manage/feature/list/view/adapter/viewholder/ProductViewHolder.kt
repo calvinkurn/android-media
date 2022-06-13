@@ -7,6 +7,7 @@ import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.image.ImageHandler.loadImageFitCenter
 import com.tokopedia.kotlin.extensions.orFalse
+import com.tokopedia.kotlin.extensions.orTrue
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.product.manage.R
 import com.tokopedia.product.manage.common.feature.list.data.model.ProductUiModel
@@ -158,7 +159,9 @@ class ProductViewHolder(
         )
         binding?.imageStockReminder
             ?.showWithCondition(
-                product.hasStockAlert && !product.stockAlertActive)
+                product.hasStockAlert && !product.stockAlertActive
+                        && !binding?.imageStockInformation?.isVisible.orTrue()
+            )
         binding?.clImage
             ?.showWithCondition(
                 binding?.imageStockInformation?.isVisible.orFalse()
@@ -169,7 +172,10 @@ class ProductViewHolder(
     private fun showStockAlertActiveImage(product: ProductUiModel) {
         binding?.imageStockAlertActive
             ?.showWithCondition(
-                product.stockAlertActive)
+                product.stockAlertActive
+                        && !binding?.imageStockInformation?.isVisible.orTrue()
+
+            )
         binding?.clImage
             ?.showWithCondition(
                 binding?.imageStockInformation?.isVisible.orFalse()
