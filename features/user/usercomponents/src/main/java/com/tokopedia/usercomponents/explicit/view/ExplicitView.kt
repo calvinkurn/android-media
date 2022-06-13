@@ -35,7 +35,9 @@ import com.tokopedia.usercomponents.explicit.domain.model.Property
 import com.tokopedia.usercomponents.explicit.view.viewmodel.ExplicitViewModel
 import javax.inject.Inject
 
-open class ExplicitView : CardUnify2, ExplicitAction {
+class ExplicitView : CardUnify2, ExplicitAction {
+
+    private var explicitAction : ExplicitAction? = null
 
     @Inject
     lateinit var explicitAnalytics: ExplicitAnalytics
@@ -204,6 +206,7 @@ open class ExplicitView : CardUnify2, ExplicitAction {
     }
 
     override fun onLoading() {
+        explicitAction?.onLoading()
         showShadow(true)
         bindingQuestion?.apply {
             imgShimmer.visible()
@@ -219,6 +222,7 @@ open class ExplicitView : CardUnify2, ExplicitAction {
     }
 
     override fun onQuestionShow() {
+        explicitAction?.onQuestionShow()
         showShadow(true)
         bindingQuestion?.apply {
             imgShimmer.gone()
@@ -242,6 +246,7 @@ open class ExplicitView : CardUnify2, ExplicitAction {
     }
 
     override fun onButtonPositifClicked() {
+        explicitAction?.onButtonPositifClicked()
         explicitAnalytics.trackClickPositifButton(pageName, templateName, pagePath, pageType)
         bindingQuestion?.apply {
             btnPositifAction.isLoading = true
@@ -252,6 +257,7 @@ open class ExplicitView : CardUnify2, ExplicitAction {
     }
 
     override fun onButtonNegatifClicked() {
+        explicitAction?.onButtonNegatifClicked()
         explicitAnalytics.trackClickNegatifButton(pageName, templateName, pagePath, pageType)
         bindingQuestion?.apply {
             btnNegatifAction.isLoading = true
@@ -262,17 +268,20 @@ open class ExplicitView : CardUnify2, ExplicitAction {
     }
 
     override fun onSubmitSuccessShow() {
+        explicitAction?.onSubmitSuccessShow()
         showShadow(true)
         initSuccessMessageText()
         replaceView(bindingSuccess?.root)
     }
 
     override fun onDismiss() {
+        explicitAction?.onDismiss()
         this.hide()
         onCleared()
     }
 
     override fun onFailed() {
+        explicitAction?.onFailed()
         showShadow(false)
         setViewFailed()
         replaceView(bindingFailed?.containerLocalLoad)
@@ -331,7 +340,7 @@ open class ExplicitView : CardUnify2, ExplicitAction {
         onCleared()
     }
 
-    override fun onCleared() {
+    private fun onCleared() {
         val lifecycleOwner = context as LifecycleOwner
         viewModel?.explicitContent?.removeObservers(lifecycleOwner)
         viewModel?.statusSaveAnswer?.removeObservers(lifecycleOwner)
@@ -340,5 +349,9 @@ open class ExplicitView : CardUnify2, ExplicitAction {
         bindingFailed = null
         bindingQuestion = null
         bindingSuccess = null
+    }
+
+    fun addListener(listener: ExplicitAction){
+        this.explicitAction = listener
     }
 }
