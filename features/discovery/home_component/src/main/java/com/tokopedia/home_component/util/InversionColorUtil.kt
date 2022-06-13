@@ -9,6 +9,16 @@ import androidx.core.content.ContextCompat
 /**
  * Created by Lukas on 28/09/20.
  */
+
+const val COLOR_DEFAULT_VAL = 1
+const val RED_MULTIPLIER = 0.299
+const val GREEN_MULTIPLIER = 0.587
+const val BLUE_MULTIPLIER = 0.114
+const val COLOR_DIVIDER_VAL = 255.0
+const val COLOR_THRESHOLD = 0.5
+const val COLOR_WHITE = 0xffffff
+const val FORMAT_HEX_COLOR = "#%06x"
+
 @ColorInt
 fun Int.invertIfDarkMode(context: Context?): Int{
     return if (context != null && context.resources.configuration.uiMode.and(Configuration.UI_MODE_NIGHT_MASK) == Configuration.UI_MODE_NIGHT_YES) getContrastColor(this) else this
@@ -16,8 +26,8 @@ fun Int.invertIfDarkMode(context: Context?): Int{
 
 private fun getContrastColor(@ColorInt color: Int): Int {
     // Counting the perceptive luminance - human eye favors green color...
-    val a = 1 - (0.299 * Color.red(color) + 0.587 * Color.green(color) + 0.114 * Color.blue(color)) / 255.0
-    return if (a < 0.5) color else Color.WHITE
+    val a = COLOR_DEFAULT_VAL - (RED_MULTIPLIER * Color.red(color) + GREEN_MULTIPLIER * Color.green(color) + BLUE_MULTIPLIER * Color.blue(color)) / COLOR_DIVIDER_VAL
+    return if (a < COLOR_THRESHOLD) color else Color.WHITE
 }
 
 /**
@@ -29,9 +39,8 @@ private fun getContrastColor(@ColorInt color: Int): Int {
  */
 fun getHexColorFromIdColor(context: Context, idColor: Int) : String {
     return try {
-        val formatHexColor = "#%06x"
-        val colorWhite = 0xffffff
-        String.format(formatHexColor, ContextCompat.getColor(context, idColor) and colorWhite).uppercase()
+        val colorWhite = COLOR_WHITE
+        String.format(FORMAT_HEX_COLOR, ContextCompat.getColor(context, idColor) and colorWhite).uppercase()
     } catch (e: Exception) {
         e.printStackTrace()
         ""
