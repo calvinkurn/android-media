@@ -69,7 +69,7 @@ class ShopFollowingListFragment : BaseFollowListFragment<ShopFollowingViewModel,
         RouteManager.route(
                 context,
                 ApplinkConst.SHOP_HOME,
-                item.id
+                item.id.toString()
         )
     }
 

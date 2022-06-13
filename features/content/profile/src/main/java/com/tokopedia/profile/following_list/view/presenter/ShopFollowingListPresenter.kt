@@ -72,7 +72,7 @@ class ShopFollowingListPresenter @Inject constructor(
 
     override fun unfollowShop(model: FollowingViewModel) {
         toggleFavouriteShopUseCase.execute(
-                ToggleFavouriteShopUseCase.createRequestParam(model.id, Action.UNFOLLOW),
+                ToggleFavouriteShopUseCase.createRequestParam(model.id.toString(), Action.UNFOLLOW),
                 object : Subscriber<Boolean>() {
                     override fun onNext(t: Boolean) {
                         view.onSuccessUnfollowShop(model)
@@ -104,7 +104,7 @@ class ShopFollowingListPresenter @Inject constructor(
     }
 
     private fun UserShopFollowDetail.convertToUiModel(isAllowedFollowAction: Boolean): ShopFollowingViewModel = ShopFollowingViewModel(
-            id = shopID,
+            id = shopID.toInt(),
             name = shopName,
             avatarUrl = logo,
             isLoadingItem = false,

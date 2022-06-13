@@ -11,7 +11,7 @@ public class User {
     public String typename;
     @SerializedName("id")
     @Expose
-    public String id;
+    public int id;
     @SerializedName("followed")
     @Expose
     public boolean followed;

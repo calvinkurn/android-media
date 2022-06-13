@@ -47,7 +47,7 @@ class ProfileEnhancedTracking {
 
         private fun createPromotionMap(promo: Promotion): Map<String, Any> {
             val map = HashMap<String, Any>()
-            map[KEY_ID] = promo.id
+            map[KEY_ID] = promo.id.toString()
             map[KEY_NAME] = promo.name
             map[KEY_CREATIVE] = promo.creative
             map[KEY_POSITION] = promo.position.toString()
@@ -59,7 +59,7 @@ class ProfileEnhancedTracking {
 
     }
 
-    data class Promotion(val id: String, val name: String, val creative: String, val position: Int,
+    data class Promotion(val id: Int, val name: String, val creative: String, val position: Int,
                          val category: String, val promoId: Int, val promoCode: String)
 
 }

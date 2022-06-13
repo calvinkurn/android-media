@@ -8,7 +8,7 @@ import kotlinx.android.parcel.Parcelize
  */
 @Parcelize
 class UserFollowingViewModel(
-        override val id: String,
+        override val id: Int,
         override val avatarUrl: String,
         val profileApplink: String,
         val profileUrl: String,
@@ -18,7 +18,7 @@ class UserFollowingViewModel(
     override var isLoadingItem: Boolean = false
 
     constructor(isLoadingItem: Boolean): this(
-            "",
+            0,
             "",
             "",
             "",
