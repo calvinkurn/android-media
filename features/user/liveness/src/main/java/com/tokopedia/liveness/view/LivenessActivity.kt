@@ -54,7 +54,7 @@ open class LivenessActivity: PermissionActivity(), HasComponent<LivenessDetectio
             }
         }
 
-        setContentView(R.layout.activity_revamp_liveness)
+        setContentView(com.tokopedia.liveness.R.layout.activity_revamp_liveness)
         ScreenUtil.init(this)
 
         if (!allPermissionsGranted() && livenessSdk.isSDKHandleCameraPermission()) {
@@ -109,7 +109,7 @@ open class LivenessActivity: PermissionActivity(), HasComponent<LivenessDetectio
 
         supportFragmentManager
             .beginTransaction()
-            .replace(R.id.livenessParentView, fragment)
+            .replace(com.tokopedia.liveness.R.id.livenessParentView, fragment)
             .commitAllowingStateLoss()
     }
 
