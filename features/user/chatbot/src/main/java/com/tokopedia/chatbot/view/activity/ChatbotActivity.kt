@@ -2,6 +2,8 @@ package com.tokopedia.chatbot.view.activity
 
 import android.content.Context
 import android.content.Intent
+import android.content.res.Configuration
+import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import android.os.Bundle
 import android.widget.ImageView
 import android.widget.TextView
@@ -88,8 +90,21 @@ class ChatbotActivity : BaseChatToolbarActivity() {
 
     override fun setupToolbar() {
         super.setupToolbar()
-        findViewById<ImageView>(R.id.user_avatar).setImageResource(R.drawable.chatbot_avatar)
+        val userAvatar = findViewById<ImageView>(R.id.user_avatar)
+        userAvatar.apply {
+            if (darkModeEnabled(userAvatar)){
+                setImageResource(R.drawable.ic_tanya_dark_mode)
+            } else {
+                setImageResource(R.drawable.chatbot_avatar)
+            }
+        }
         (findViewById<TextView>(R.id.title)).text = getString(R.string.cb_bot_toolbar_title)
+    }
+
+    private fun darkModeEnabled(view: ImageView): Boolean {
+        val nightModeFlags: Int =  view.context.resources.configuration.uiMode and
+                Configuration.UI_MODE_NIGHT_MASK
+        return nightModeFlags == UI_MODE_NIGHT_YES
     }
 
     fun upadateToolbar(profileName: String?, profileImage: String?, badgeImage: ToolbarAttributes.BadgeImage?) {

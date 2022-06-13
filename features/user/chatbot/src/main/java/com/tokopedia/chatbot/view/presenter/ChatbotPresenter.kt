@@ -2,6 +2,7 @@ package com.tokopedia.chatbot.view.presenter
 
 import android.content.Context
 import android.content.Intent
+import android.content.res.Configuration
 import android.graphics.BitmapFactory
 import android.net.Uri
 import android.text.TextUtils
@@ -219,7 +220,7 @@ class ChatbotPresenter @Inject constructor(
 
                     if (attachmentType== UPDATE_TOOLBAR){
                         val tool = Gson().fromJson(chatResponse.attachment?.attributes, ToolbarAttributes::class.java)
-                        view.updateToolbar(tool.profileName,tool.profileImage, tool.badgeImage)
+                        updateToolbar(tool)
                     }
 
                     val liveChatDividerAttribute = Gson().fromJson(chatResponse.attachment?.attributes, LiveChatDividerAttributes::class.java)
@@ -271,6 +272,34 @@ class ChatbotPresenter @Inject constructor(
                 ?.subscribe(subscriber)
 
         mSubscription.add(subscription)
+    }
+
+    private fun updateToolbar(tool: ToolbarAttributes?) {
+
+        var profileImage = ""
+        val nightModeFlags: Int =  view.context.resources.configuration.uiMode and
+                Configuration.UI_MODE_NIGHT_MASK
+        when (nightModeFlags) {
+            Configuration.UI_MODE_NIGHT_YES -> {
+                tool?.profileImageDark?.let {
+                    profileImage = it
+                }
+            }
+            Configuration.UI_MODE_NIGHT_NO -> {
+                tool?.profileImage?.let {
+                    profileImage = it
+                }
+            }
+            else -> {
+                tool?.profileImage?.let {
+                    profileImage = it
+                }
+            }
+
+        }
+
+        view.updateToolbar(tool?.profileName,profileImage, tool?.badgeImage)
+
     }
 
     private fun getLiveChatQuickReply(): List<QuickReplyViewModel> {
