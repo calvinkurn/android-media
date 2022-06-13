@@ -41,10 +41,14 @@ import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
 import com.tokopedia.product.detail.common.data.model.warehouse.WarehouseInfo
 import com.tokopedia.product.detail.common.usecase.ToggleFavoriteUseCase
 import com.tokopedia.usecase.RequestParams
+import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.wishlist.common.listener.WishListActionListener
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
+import com.tokopedia.wishlistcommon.domain.AddToWishlistV2UseCase
+import com.tokopedia.wishlistcommon.listener.WishlistV2ActionListener
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
@@ -58,6 +62,7 @@ class AtcVariantViewModel @Inject constructor(
         private val addToCartOcsUseCase: AddToCartOcsUseCase,
         private val addToCartOccUseCase: AddToCartOccMultiUseCase,
         private val addWishListUseCase: AddWishListUseCase,
+        private val addToWishlistV2UseCase: AddToWishlistV2UseCase,
         private val updateCartUseCase: UpdateCartUseCase,
         private val deleteCartUseCase: DeleteCartUseCase,
         private val toggleFavoriteUseCase: ToggleFavoriteUseCase
@@ -365,25 +370,39 @@ class AtcVariantViewModel @Inject constructor(
 
     fun addWishlist(productId: String, userId: String) {
         addWishListUseCase.createObservable(productId,
-                userId, object : WishListActionListener {
-            override fun onErrorAddWishList(errorMessage: String?, productId: String?) {
-                _addWishlistResult.postValue(Throwable(errorMessage ?: "").asFail())
-            }
+            userId, object : WishListActionListener {
+                override fun onErrorAddWishList(errorMessage: String?, productId: String?) {
+                    _addWishlistResult.postValue(Throwable(errorMessage ?: "").asFail())
+                }
 
-            override fun onSuccessAddWishlist(productId: String?) {
+                override fun onSuccessAddWishlist(productId: String?) {
+                    updateActivityResult(shouldRefreshPreviousPage = true)
+                    updateButtonAndWishlistLocally(productId ?: "")
+                    _addWishlistResult.postValue(true.asSuccess())
+                }
+
+                override fun onErrorRemoveWishlist(errorMessage: String?, productId: String?) {
+                    // no op
+                }
+
+                override fun onSuccessRemoveWishlist(productId: String?) {
+                    // no op
+                }
+            })
+    }
+
+    fun addWishlistV2(productId: String, userId: String, wishlistV2ActionListener: WishlistV2ActionListener) {
+        viewModelScope.launch(dispatcher.main) {
+            addToWishlistV2UseCase.setParams(productId, userId)
+            val result = withContext(dispatcher.io) { addToWishlistV2UseCase.executeOnBackground() }
+            if (result is Success) {
                 updateActivityResult(shouldRefreshPreviousPage = true)
-                updateButtonAndWishlistLocally(productId ?: "")
-                _addWishlistResult.postValue(true.asSuccess())
+                updateButtonAndWishlistLocally(productId)
+                wishlistV2ActionListener.onSuccessAddWishlist(result.data, productId)
+            } else if (result is Fail) {
+                wishlistV2ActionListener.onErrorAddWishList(result.throwable, productId)
             }
-
-            override fun onErrorRemoveWishlist(errorMessage: String?, productId: String?) {
-                // no op
-            }
-
-            override fun onSuccessRemoveWishlist(productId: String?) {
-                // no op
-            }
-        })
+        }
     }
 
     private fun updateButtonAndWishlistLocally(productId: String) {

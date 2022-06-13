@@ -28,6 +28,8 @@ import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
+import com.tokopedia.wishlistcommon.domain.AddToWishlistV2UseCase
+import com.tokopedia.wishlistcommon.domain.DeleteWishlistV2UseCase
 import com.tokopedia.youtube_common.domain.usecase.GetYoutubeVideoDetailUseCase
 import dagger.Lazy
 import dagger.Module
@@ -100,6 +102,18 @@ class ShopPageHomeModule {
     @Provides
     fun provideRemoveFromWishListUseCase(@ShopPageContext context: Context?): RemoveWishListUseCase {
         return RemoveWishListUseCase(context)
+    }
+
+    @ShopPageHomeScope
+    @Provides
+    fun provideAddToWishListV2UseCase(graphqlRepository: GraphqlRepository): AddToWishlistV2UseCase {
+        return AddToWishlistV2UseCase(graphqlRepository)
+    }
+
+    @ShopPageHomeScope
+    @Provides
+    fun provideRemoveFromWishListV2UseCase(graphqlRepository: GraphqlRepository): DeleteWishlistV2UseCase {
+        return DeleteWishlistV2UseCase(graphqlRepository)
     }
 
     @ShopPageHomeScope

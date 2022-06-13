@@ -17,13 +17,14 @@ class GetMiniCartListUseCase @Inject constructor(@ApplicationContext private val
 
     private var params: Map<String, Any>? = null
 
-    fun setParams(shopIds: List<String>) {
+    fun setParams(shopIds: List<String>, isShopDirectPurchase: Boolean = false) {
         params = mapOf(
                 PARAM_KEY_LANG to PARAM_VALUE_ID,
                 PARAM_KEY_ADDITIONAL to mapOf(
                         PARAM_KEY_SHOP_IDS to shopIds,
                         KEY_CHOSEN_ADDRESS to chosenAddressRequestHelper.getChosenAddress(),
-                        PARAM_KEY_SOURCE to MiniCartSource.MiniCartBottomSheet.value
+                        PARAM_KEY_SOURCE to MiniCartSource.MiniCartBottomSheet.value,
+                        PARAM_KEY_SHOP_DIRECT_PURCHASE to isShopDirectPurchase
                 )
         )
     }
@@ -129,7 +130,6 @@ class GetMiniCartListUseCase @Inject constructor(@ApplicationContext private val
                         }
                       }
                       cart_details {
-                        selected_unavailable_action_link
                         errors
                         bundle_detail { 
                           bundle_id
@@ -189,6 +189,7 @@ class GetMiniCartListUseCase @Inject constructor(@ApplicationContext private val
                           category_id
                           category
                           product_cashback
+                          selected_unavailable_action_link
                         }
                       }
                     }
@@ -237,7 +238,6 @@ class GetMiniCartListUseCase @Inject constructor(@ApplicationContext private val
                       cart_string
                       errors
                       cart_details {                    
-                        selected_unavailable_action_link
                         errors
                         bundle_detail { 
                           bundle_id
@@ -294,6 +294,7 @@ class GetMiniCartListUseCase @Inject constructor(@ApplicationContext private val
                           warehouse_id
                           category_id
                           category
+                          selected_unavailable_action_link
                         }
                       }
                     }

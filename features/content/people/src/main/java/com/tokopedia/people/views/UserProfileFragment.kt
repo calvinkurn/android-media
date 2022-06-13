@@ -73,6 +73,9 @@ class UserProfileFragment : BaseDaggerFragment(),
 
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
+    private val gridLayoutManager by lazy(LazyThreadSafetyMode.NONE) {
+        GridLayoutManager(activity, 2)
+    }
 
     var landedUserName: String? = null
     var displayName: String = ""
@@ -202,7 +205,10 @@ class UserProfileFragment : BaseDaggerFragment(),
 
     private fun initUserPost(userId: String) {
         recyclerviewPost = view?.findViewById(R.id.recycler_view)
-        recyclerviewPost?.layoutManager = GridLayoutManager(activity, 2)
+        gridLayoutManager.spanSizeLookup = getSpanSizeLookUp()
+
+
+        recyclerviewPost?.layoutManager = gridLayoutManager
         if (recyclerviewPost?.itemDecorationCount == 0) {
             context?.resources?.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl1)
                 ?.let {
@@ -213,6 +219,17 @@ class UserProfileFragment : BaseDaggerFragment(),
         mAdapter.resetAdapter()
         mAdapter.cursor = ""
         mAdapter.startDataLoading(userId)
+    }
+
+    private fun getSpanSizeLookUp(): GridLayoutManager.SpanSizeLookup {
+        return object : GridLayoutManager.SpanSizeLookup() {
+            override fun getSpanSize(position: Int): Int {
+                return when (mAdapter.getItemViewType(position)) {
+                    LOADING -> 2
+                    else -> 1
+                }
+            }
+        }
     }
 
     private fun initObserver() {
@@ -519,7 +536,7 @@ class UserProfileFragment : BaseDaggerFragment(),
 
                     }
                     is Success -> {
-                        if (it?.data?.playToggleChannelReminder?.header?.status == 200) {
+                        if (it?.data?.playToggleChannelReminder?.header?.status == SUCCESS_STATUS) {
                             Toaster.build(
                                 btnAction as View,
                                 it.data.playToggleChannelReminder.header.message,
@@ -945,6 +962,7 @@ class UserProfileFragment : BaseDaggerFragment(),
         const val EXTRA_FOLLOW_UNFOLLOW_STATUS = "follow_unfollow_status"
         const val EXTRA_VALUE_IS_FOLLOWED = "is_followed"
         const val EXTRA_VALUE_IS_NOT_FOLLOWED = "is_not_followed"
+        private const val LOADING = -94567
 
         const val PAGE_CONTENT = 0
         const val PAGE_ERROR = 2
@@ -952,6 +970,7 @@ class UserProfileFragment : BaseDaggerFragment(),
         const val PAGE_EMPTY = 3
         const val SEE_ALL_LINE = 3
         const val MAX_LINE = 20
+        const val SUCCESS_STATUS = 200
 
         fun newInstance(extras: Bundle): Fragment {
             val fragment = UserProfileFragment()

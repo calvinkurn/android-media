@@ -111,7 +111,7 @@ object BundleInfoToSingleProductBundleMapper {
                 }
             },
             bundleId = bundleInfo.bundleID.toString(),
-            shopId = bundleInfo.shopID.toString(),
+            shopId = bundleInfo.shopID,
             quantity = bundleItem.minOrder,
             isSelected = bundleInfo.bundleID.toString() == selectedBundleId,
             warehouseId = bundleInfo.warehouseID.toString()

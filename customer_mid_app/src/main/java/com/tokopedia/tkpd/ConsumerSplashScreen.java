@@ -32,8 +32,6 @@ import com.tokopedia.navigation.presentation.activity.MainParentActivity;
 import com.tokopedia.notifications.CMPushNotificationManager;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
-import com.tokopedia.user.session.UserSession;
-import com.tokopedia.user.session.UserSessionInterface;
 import com.tokopedia.weaver.WeaveInterface;
 import com.tokopedia.weaver.Weaver;
 
@@ -171,11 +169,10 @@ public class ConsumerSplashScreen extends SplashScreen {
     }
 
     private void initializationNewRelic() {
-        NewRelic.withApplicationToken(Keys.NEW_RELIC_TOKEN_MA)
-                .start(this.getApplication());
-        UserSessionInterface userSession = new UserSession(this);
-        if (userSession.isLoggedIn()) {
-            NewRelic.setUserId(userSession.getUserId());
+        boolean isEnableInitNrInAct =
+                remoteConfig.getBoolean(RemoteConfigKey.ENABLE_INIT_NR_IN_ACTIVITY);
+        if (isEnableInitNrInAct) {
+            NewRelic.withApplicationToken(Keys.NEW_RELIC_TOKEN_MA).start(this.getApplication());
         }
     }
 
