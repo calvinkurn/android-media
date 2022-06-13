@@ -8,7 +8,9 @@ object ApplinkConsInternalHome {
 
     const val DEFAULT_HOME_RECOMMENDATION = "$INTERNAL_HOME/rekomendasi"
 
-    const val DISCOVERY_HOME_RECOMMENDATION = "${ApplinkConstInternalDiscovery.HOST_DISCOVERY}/rekomendasi"
+    const val AUTHORITY_DISCOVERY = "${ApplinkConstInternalDiscovery.HOST_DISCOVERY}"
+
+    const val PATH_REKOMENDASI = "rekomendasi"
 
     const val HOME_SIMILAR_PRODUCT = "$INTERNAL_HOME/rekomendasi/d/.*"
 

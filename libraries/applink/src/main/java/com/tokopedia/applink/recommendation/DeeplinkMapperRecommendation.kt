@@ -16,14 +16,17 @@ private const val RECOM_PRODUCT_ID = "recomProductId"
 fun getRegisteredNavigationRecommendationFromHttp(uri: Uri): String {
     return when {
         uri.pathSegments.size > 0 -> {
-            ApplinkConsInternalHome.DISCOVERY_HOME_RECOMMENDATION + uri.path
             Uri.Builder()
                 .scheme(DeeplinkConstant.SCHEME_TOKOPEDIA)
-                .appendPath(ApplinkConsInternalHome.DISCOVERY_HOME_RECOMMENDATION)
+                .authority(ApplinkConsInternalHome.AUTHORITY_DISCOVERY)
+                .appendPath(ApplinkConsInternalHome.PATH_REKOMENDASI)
                 .appendQueryParameter(RECOM_PRODUCT_ID, uri.pathSegments[1])
                 .build()
                 .toString() + "?${uri.query}"
         }
-        else -> ApplinkConsInternalHome.DISCOVERY_HOME_RECOMMENDATION
+        else -> Uri.Builder()
+            .scheme(DeeplinkConstant.SCHEME_TOKOPEDIA)
+            .authority(ApplinkConsInternalHome.AUTHORITY_DISCOVERY)
+            .appendPath(ApplinkConsInternalHome.PATH_REKOMENDASI).toString()
     }
 }
