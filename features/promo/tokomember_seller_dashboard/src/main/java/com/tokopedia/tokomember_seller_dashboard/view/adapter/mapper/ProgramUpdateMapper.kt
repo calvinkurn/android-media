@@ -8,7 +8,6 @@ import com.tokopedia.tokomember_seller_dashboard.domain.requestparam.TimeWindow
 import com.tokopedia.tokomember_seller_dashboard.model.MembershipGetProgramForm
 import com.tokopedia.tokomember_seller_dashboard.util.TmDateUtil.addDuration
 import com.tokopedia.tokomember_seller_dashboard.util.TmDateUtil.convertDuration
-import com.tokopedia.tokomember_seller_dashboard.util.TmDateUtil.getTimeInMillis
 
 object ProgramUpdateMapper {
 
@@ -57,6 +56,29 @@ object ProgramUpdateMapper {
         )
         when(programType){
             ProgramActionType.CREATE ->{
+                timeWindow.id = 0
+                actionType = "create"
+                tierLevels.apply {
+                    this?.forEach {
+                        it?.id = 0
+                    }
+                }
+                val programAttributeListItem = ProgramAttributesItem(
+                    isUseMultiplier = true,
+                    multiplierRates = 1,
+                    minimumTransaction = 50000,
+                    id = 0,
+                    programID = 0,
+                    tierLevelID = 0,
+                )
+                programUpdateResponse.apply {
+                    this.tierLevels = tierLevels
+                    this.programAttributes = listOf(programAttributeListItem,programAttributeListItem)
+                    this.actionType = actionType
+                    this.cardID = cardIdCreate
+                }
+            }
+            ProgramActionType.CREATE_FROM_COUPON ->{
                 timeWindow.id = 0
                 actionType = "create"
                 tierLevels.apply {

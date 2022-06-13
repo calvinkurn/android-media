@@ -13,8 +13,11 @@ import com.tokopedia.header.HeaderUnify
 import com.tokopedia.tokomember_seller_dashboard.R
 import com.tokopedia.tokomember_seller_dashboard.callbacks.TmProgramDetailCallback
 import com.tokopedia.tokomember_seller_dashboard.di.component.DaggerTokomemberDashComponent
-import com.tokopedia.tokomember_seller_dashboard.util.*
+import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_IS_SHOW_BS
+import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_PROGRAM_ID
 import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_SHOP_ID
+import com.tokopedia.tokomember_seller_dashboard.util.REFRESH
+import com.tokopedia.tokomember_seller_dashboard.util.REQUEST_CODE_REFRESH
 import com.tokopedia.tokomember_seller_dashboard.view.fragment.TokomemberDashHomeMainFragment
 import com.tokopedia.tokomember_seller_dashboard.view.fragment.TokomemberDashHomeMainFragment.Companion.TAG_HOME
 import com.tokopedia.tokomember_seller_dashboard.view.fragment.TokomemberDashProgramDetailFragment
@@ -62,7 +65,7 @@ class TokomemberDashHomeActivity : AppCompatActivity(), TmProgramDetailCallback 
 
     fun addFragment(fragment: Fragment, tag: String) {
         supportFragmentManager.beginTransaction()
-            .add(R.id.container_home, fragment, tag)
+            .replace(R.id.container_home, fragment, tag)
             .addToBackStack(tag).commit()
     }
 

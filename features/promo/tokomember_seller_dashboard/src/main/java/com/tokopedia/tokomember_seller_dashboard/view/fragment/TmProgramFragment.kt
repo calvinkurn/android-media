@@ -24,16 +24,41 @@ import com.tokopedia.tokomember_common_widget.callbacks.ChipGroupCallback
 import com.tokopedia.tokomember_common_widget.util.CreateScreenType
 import com.tokopedia.tokomember_common_widget.util.ProgramActionType
 import com.tokopedia.tokomember_seller_dashboard.R
-import com.tokopedia.tokomember_seller_dashboard.tracker.TmTracker
 import com.tokopedia.tokomember_seller_dashboard.callbacks.TmOpenFragmentCallback
 import com.tokopedia.tokomember_seller_dashboard.di.component.DaggerTokomemberDashComponent
 import com.tokopedia.tokomember_seller_dashboard.domain.requestparam.ProgramUpdateDataInput
 import com.tokopedia.tokomember_seller_dashboard.model.MembershipGetProgramForm
 import com.tokopedia.tokomember_seller_dashboard.model.ProgramThreshold
 import com.tokopedia.tokomember_seller_dashboard.model.TmIntroBottomsheetModel
-import com.tokopedia.tokomember_seller_dashboard.util.*
+import com.tokopedia.tokomember_seller_dashboard.tracker.TmTracker
+import com.tokopedia.tokomember_seller_dashboard.util.ACTION_CREATE
+import com.tokopedia.tokomember_seller_dashboard.util.ACTION_DETAIL
+import com.tokopedia.tokomember_seller_dashboard.util.ACTION_EDIT
+import com.tokopedia.tokomember_seller_dashboard.util.ACTION_EXTEND
+import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_CARD_ID
+import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_CARD_ID_IN_TOOLS
+import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_EDIT_PROGRAM
+import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_PROGRAM_ID
+import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_PROGRAM_ID_IN_TOOLS
+import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_PROGRAM_TYPE
+import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_SHOP_AVATAR
+import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_SHOP_ID
+import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_SHOP_NAME
+import com.tokopedia.tokomember_seller_dashboard.util.DATE_DESC
+import com.tokopedia.tokomember_seller_dashboard.util.DATE_TITLE
+import com.tokopedia.tokomember_seller_dashboard.util.ERROR_CREATING_CTA
+import com.tokopedia.tokomember_seller_dashboard.util.ERROR_CREATING_CTA_RETRY
+import com.tokopedia.tokomember_seller_dashboard.util.ERROR_CREATING_DESC
+import com.tokopedia.tokomember_seller_dashboard.util.ERROR_CREATING_TITLE
+import com.tokopedia.tokomember_seller_dashboard.util.ERROR_CREATING_TITLE_RETRY
+import com.tokopedia.tokomember_seller_dashboard.util.PROGRAM_CTA
+import com.tokopedia.tokomember_seller_dashboard.util.PROGRAM_CTA_EDIT
+import com.tokopedia.tokomember_seller_dashboard.util.REFRESH
+import com.tokopedia.tokomember_seller_dashboard.util.TM_PROGRAM_EDIT_DIALOG_TITLE
+import com.tokopedia.tokomember_seller_dashboard.util.TM_PROGRAM_MIN_PURCHASE_ERROR
 import com.tokopedia.tokomember_seller_dashboard.util.TmDateUtil.convertDateTime
 import com.tokopedia.tokomember_seller_dashboard.util.TmDateUtil.setDate
+import com.tokopedia.tokomember_seller_dashboard.util.TokoLiveDataResult
 import com.tokopedia.tokomember_seller_dashboard.view.activity.TokomemberDashIntroActivity
 import com.tokopedia.tokomember_seller_dashboard.view.adapter.mapper.ProgramUpdateMapper
 import com.tokopedia.tokomember_seller_dashboard.view.customview.BottomSheetClickListener
@@ -43,7 +68,6 @@ import com.tokopedia.unifycomponents.ProgressBarUnify
 import com.tokopedia.utils.text.currency.NumberTextWatcher
 import kotlinx.android.synthetic.main.tm_dash_program_form_container.*
 import kotlinx.android.synthetic.main.tm_dash_progrm_form.*
-import java.text.SimpleDateFormat
 import java.util.*
 import javax.inject.Inject
 
@@ -186,6 +210,9 @@ class TmProgramFragment : BaseDaggerFragment(), ChipGroupCallback ,
             ProgramActionType.CREATE ->{
                 tmDashCreateViewModel.getProgramInfo(programId,shopId, ACTION_CREATE)
             }
+            ProgramActionType.CREATE_FROM_COUPON ->{
+                tmDashCreateViewModel.getProgramInfo(programId,shopId, ACTION_CREATE)
+            }
             ProgramActionType.CREATE_BUAT ->{
                 tmDashCreateViewModel.getProgramInfo(programId,shopId, ACTION_CREATE)
             }
@@ -215,6 +242,9 @@ class TmProgramFragment : BaseDaggerFragment(), ChipGroupCallback ,
         bundle.putInt(BUNDLE_PROGRAM_ID_IN_TOOLS,programCreationId)
         when(programActionType){
             ProgramActionType.CREATE -> {
+                tmOpenFragmentCallback.openFragment(CreateScreenType.COUPON_MULTIPLE, bundle)
+            }
+            ProgramActionType.CREATE_FROM_COUPON -> {
                 tmOpenFragmentCallback.openFragment(CreateScreenType.COUPON_MULTIPLE, bundle)
             }
             ProgramActionType.EXTEND ->{
@@ -260,6 +290,19 @@ class TmProgramFragment : BaseDaggerFragment(), ChipGroupCallback ,
 
         when(programActionType){
             ProgramActionType.CREATE ->{
+                btnCreateProgram.text = PROGRAM_CTA
+                headerProgram?.apply {
+                    title = HEADER_TITLE_CREATE
+                    subtitle = HEADER_TITLE_DESC
+                    isShowBackButton = true
+                }
+                progressProgram?.apply {
+                    progressBarColorType = ProgressBarUnify.COLOR_GREEN
+                    progressBarHeight = ProgressBarUnify.SIZE_SMALL
+                    setValue(50, false)
+                }
+            }
+            ProgramActionType.CREATE_FROM_COUPON ->{
                 btnCreateProgram.text = PROGRAM_CTA
                 headerProgram?.apply {
                     title = HEADER_TITLE_CREATE
@@ -342,6 +385,12 @@ class TmProgramFragment : BaseDaggerFragment(), ChipGroupCallback ,
         }
         btnCreateProgram?.setOnClickListener {
             if(programActionType == ProgramActionType.CREATE) {
+                tmTracker?.clickProgramCreationButton(
+                    arguments?.getInt(BUNDLE_SHOP_ID).toString(),
+                    arguments?.getInt(BUNDLE_PROGRAM_ID).toString()
+                )
+            }
+            if(programActionType == ProgramActionType.CREATE_FROM_COUPON) {
                 tmTracker?.clickProgramCreationButton(
                     arguments?.getInt(BUNDLE_SHOP_ID).toString(),
                     arguments?.getInt(BUNDLE_PROGRAM_ID).toString()

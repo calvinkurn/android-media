@@ -26,6 +26,8 @@ import com.tokopedia.loaderdialog.LoaderDialog
 import com.tokopedia.mediauploader.common.state.UploadResult
 import com.tokopedia.tokomember_common_widget.callbacks.ChipGroupCallback
 import com.tokopedia.tokomember_common_widget.util.CouponType
+import com.tokopedia.tokomember_common_widget.util.CreateScreenType
+import com.tokopedia.tokomember_common_widget.util.ProgramActionType
 import com.tokopedia.tokomember_common_widget.util.ProgramDateType
 import com.tokopedia.tokomember_seller_dashboard.R
 import com.tokopedia.tokomember_seller_dashboard.callbacks.TmCouponListRefreshCallback
@@ -81,6 +83,7 @@ import com.tokopedia.tokomember_seller_dashboard.util.TmFileUtil
 import com.tokopedia.tokomember_seller_dashboard.util.TmPrefManager
 import com.tokopedia.tokomember_seller_dashboard.util.TokoLiveDataResult
 import com.tokopedia.tokomember_seller_dashboard.util.UPDATE
+import com.tokopedia.tokomember_seller_dashboard.view.activity.TmDashCreateActivity
 import com.tokopedia.tokomember_seller_dashboard.view.activity.TokomemberDashIntroActivity
 import com.tokopedia.tokomember_seller_dashboard.view.customview.BottomSheetClickListener
 import com.tokopedia.tokomember_seller_dashboard.view.customview.TokomemberBottomsheet
@@ -218,7 +221,7 @@ class TmSingleCouponCreateFragment : BaseDaggerFragment() {
                             if (TmDateUtil.getTimeInMillis(
                                     it.data?.membershipGetProgramList?.programSellerList?.firstOrNull()?.timeWindow?.startTime,
                                     "yyyy-MM-dd HH:mm:ss"
-                                ).toLong() > DateUtil.getCurrentDate().time.div(1000)
+                                ).toLong() < DateUtil.getCurrentDate().time.div(1000)
                             ) {
                                 startTime =
                                     it.data?.membershipGetProgramList?.programSellerList?.firstOrNull()?.timeWindow?.startTime
@@ -659,6 +662,8 @@ class TmSingleCouponCreateFragment : BaseDaggerFragment() {
         bottomSheet.setUpBottomSheetListener(object : BottomSheetClickListener {
             override fun onButtonClick(errorCount: Int) {
                 bottomSheet.dismiss()
+                activity?.finish()
+                arguments?.getInt(BUNDLE_SHOP_ID)?.let { TmDashCreateActivity.openActivity(it, activity, CreateScreenType.PROGRAM, ProgramActionType.CREATE, null, null) }
             }
         })
         bottomSheet.show(childFragmentManager,"")

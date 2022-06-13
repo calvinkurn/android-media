@@ -20,6 +20,7 @@ import com.tokopedia.tokomember_common_widget.util.MemberType.Companion.VIP
 import com.tokopedia.tokomember_common_widget.util.ProgramActionType.Companion.CANCEL
 import com.tokopedia.tokomember_common_widget.util.ProgramActionType.Companion.CREATE
 import com.tokopedia.tokomember_common_widget.util.ProgramActionType.Companion.CREATE_BUAT
+import com.tokopedia.tokomember_common_widget.util.ProgramActionType.Companion.CREATE_FROM_COUPON
 import com.tokopedia.tokomember_common_widget.util.ProgramActionType.Companion.DETAIL
 import com.tokopedia.tokomember_common_widget.util.ProgramActionType.Companion.EDIT
 import com.tokopedia.tokomember_common_widget.util.ProgramActionType.Companion.EXTEND
@@ -45,15 +46,16 @@ annotation class AnimationType {
 }
 
 @Retention(AnnotationRetention.SOURCE)
-@IntDef(CREATE, CREATE_BUAT, DETAIL, EXTEND, EDIT, CANCEL)
+@IntDef(CREATE, CREATE_BUAT, CREATE_FROM_COUPON, DETAIL, EXTEND, EDIT, CANCEL)
 annotation class ProgramActionType {
     companion object {
         const val CREATE = 0
         const val CREATE_BUAT = 1
-        const val DETAIL = 2
-        const val EXTEND = 3
-        const val EDIT = 4
-        const val CANCEL = 5
+        const val CREATE_FROM_COUPON = 2
+        const val DETAIL = 3
+        const val EXTEND = 4
+        const val EDIT = 5
+        const val CANCEL = 6
     }
 }
 

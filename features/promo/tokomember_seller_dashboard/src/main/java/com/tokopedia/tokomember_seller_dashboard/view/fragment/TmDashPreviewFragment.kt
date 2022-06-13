@@ -22,11 +22,20 @@ import com.tokopedia.tokomember_seller_dashboard.model.CardTemplate
 import com.tokopedia.tokomember_seller_dashboard.model.MembershipGetProgramForm
 import com.tokopedia.tokomember_seller_dashboard.model.TmCouponPreviewData
 import com.tokopedia.tokomember_seller_dashboard.tracker.TmTracker
-import com.tokopedia.tokomember_seller_dashboard.util.*
+import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_CARD_ID
+import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_CARD_ID_IN_TOOLS
+import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_COUPON_CREATE_DATA
+import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_COUPON_PREVIEW_DATA
+import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_CREATE_SCREEN_TYPE
+import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_PROGRAM_ID
+import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_PROGRAM_ID_IN_TOOLS
+import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_SHOP_ID
+import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_SHOP_NAME
+import com.tokopedia.tokomember_seller_dashboard.util.LOADING_TEXT
 import com.tokopedia.tokomember_seller_dashboard.util.TmDateUtil.setDate
 import com.tokopedia.tokomember_seller_dashboard.util.TmDateUtil.setTime
+import com.tokopedia.tokomember_seller_dashboard.util.TokoLiveDataResult
 import com.tokopedia.tokomember_seller_dashboard.view.activity.TokomemberDashHomeActivity
-import com.tokopedia.tokomember_seller_dashboard.view.activity.TokomemberMainActivity
 import com.tokopedia.tokomember_seller_dashboard.view.adapter.TmCouponPreviewAdapter
 import com.tokopedia.tokomember_seller_dashboard.view.viewmodel.TmDashCreateViewModel
 import com.tokopedia.unifycomponents.ProgressBarUnify
@@ -35,10 +44,7 @@ import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.text.currency.CurrencyFormatHelper
-import kotlinx.android.synthetic.main.tm_dash_create_card.*
 import kotlinx.android.synthetic.main.tm_dash_preview.*
-import kotlinx.android.synthetic.main.tm_dash_preview.containerViewFlipper
-import kotlinx.android.synthetic.main.tm_dash_progrm_form.*
 import javax.inject.Inject
 
 class TmDashPreviewFragment : BaseDaggerFragment() {
@@ -139,7 +145,8 @@ class TmDashPreviewFragment : BaseDaggerFragment() {
                 is Success -> {
                     closeLoadingDialog()
                     if (it.data.merchantPromotionCreateMultipleMV?.data?.status == "Success") {
-                        TokomemberDashHomeActivity.openActivity(arguments?.getInt(BUNDLE_SHOP_ID)?:0, context)
+                        activity?.finish()
+                        TokomemberDashHomeActivity.openActivity(arguments?.getInt(BUNDLE_SHOP_ID)?:0, context, true)
                     } else {
                         view?.let { v ->
                             Toaster.build(
