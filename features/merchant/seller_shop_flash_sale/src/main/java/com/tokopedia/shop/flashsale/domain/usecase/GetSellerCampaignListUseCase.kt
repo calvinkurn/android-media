@@ -65,6 +65,10 @@ class GetSellerCampaignListUseCase @Inject constructor(
                   is_unique_buyer
                   is_campaign_relation
                   is_campaign_rule_submit
+                  gradient_color {
+                     first_color
+                     second_color
+                  }
                   is_shareable
                   bitmask_is_set
                   notify_me_count

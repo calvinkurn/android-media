@@ -19,6 +19,7 @@ import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
 import com.tokopedia.utils.lifecycle.SingleLiveEvent
+import kotlinx.coroutines.delay
 import java.util.*
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
@@ -188,6 +189,7 @@ class CampaignInformationViewModel @Inject constructor(
             dispatchers.io,
             block = {
                 val result = getSellerCampaignDetailUseCase.execute(campaignId.toInt())
+                delay(2000)
                 _campaignDetail.postValue(Success(result))
             },
             onError = { error ->

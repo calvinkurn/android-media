@@ -17,7 +17,9 @@ data class CampaignUiModel(
     val thematicParticipation: Boolean,
     val summary: ProductSummary,
     val startDate: Date,
-    val endDate: Date
+    val endDate: Date,
+    val gradientColor: Gradient,
+    val useUpcomingWidget : Boolean
 ) {
     data class ProductSummary(
         val totalItem: Int,

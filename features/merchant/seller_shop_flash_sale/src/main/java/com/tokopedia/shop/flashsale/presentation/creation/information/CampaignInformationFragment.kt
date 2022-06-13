@@ -23,7 +23,9 @@ import com.tokopedia.shop.flashsale.common.extension.*
 import com.tokopedia.shop.flashsale.common.util.DateManager
 import com.tokopedia.shop.flashsale.common.util.doOnTextChanged
 import com.tokopedia.shop.flashsale.di.component.DaggerShopFlashSaleComponent
+import com.tokopedia.shop.flashsale.domain.entity.CampaignUiModel
 import com.tokopedia.shop.flashsale.domain.entity.Gradient
+import com.tokopedia.shop.flashsale.domain.entity.enums.CampaignStatus
 import com.tokopedia.shop.flashsale.domain.entity.enums.PageMode
 import com.tokopedia.shop.flashsale.presentation.creation.information.adapter.GradientColorAdapter
 import com.tokopedia.shop.flashsale.presentation.creation.information.bottomsheet.CampaignDatePickerBottomSheet
@@ -98,6 +100,9 @@ class CampaignInformationFragment : BaseDaggerFragment() {
         observeValidationResult()
         observeCampaignName()
         observeCampaignCreation()
+        observeCampaignUpdate()
+        observeCampaignDetail()
+        handlePageMode()
     }
 
     private fun observeValidationResult() {
@@ -118,7 +123,8 @@ class CampaignInformationFragment : BaseDaggerFragment() {
                 is Success -> {
                     binding?.btnCreateCampaign?.stopLoading()
                     if (result.data.isSuccess) {
-
+                        //TODO: Navigate to next page
+                        binding?.root showToaster "Campaign berhasil dibuat"
                     } else {
                         showErrorTicker(result.data.errorTitle, result.data.errorDescription)
                     }
@@ -130,6 +136,46 @@ class CampaignInformationFragment : BaseDaggerFragment() {
             }
         }
     }
+
+    private fun observeCampaignUpdate() {
+        viewModel.campaignUpdate.observe(viewLifecycleOwner) { result ->
+            when(result) {
+                is Success -> {
+                    binding?.btnCreateCampaign?.stopLoading()
+                    if (result.data.isSuccess) {
+                        //TODO: Navigate to next page
+                        binding?.root showToaster "Campaign berhasil diperbaharui"
+                    } else {
+                        showErrorTicker(result.data.errorTitle, result.data.errorDescription)
+                    }
+                }
+                is Fail -> {
+                    binding?.btnCreateCampaign?.stopLoading()
+                    binding?.cardView showError result.throwable
+                }
+            }
+        }
+    }
+
+    private fun observeCampaignDetail() {
+        viewModel.campaignDetail.observe(viewLifecycleOwner) { result ->
+            when(result) {
+                is Success -> {
+                    binding?.loader?.gone()
+                    binding?.scrollView?.visible()
+                    binding?.cardView?.visible()
+                    displayCampaignDetail(result.data)
+                }
+                is Fail -> {
+                    binding?.loader?.gone()
+                    binding?.scrollView?.gone()
+                    binding?.cardView?.gone()
+                    binding?.cardView showError result.throwable
+                }
+            }
+        }
+    }
+
 
     private fun setupView() {
         binding?.switchTeaser?.isChecked = true
@@ -216,6 +262,16 @@ class CampaignInformationFragment : BaseDaggerFragment() {
         }
     }
 
+    private fun handlePageMode() {
+        if (pageMode == PageMode.UPDATE) {
+            binding?.loader?.visible()
+            binding?.btnCreateCampaign?.enable()
+            binding?.scrollView?.gone()
+            binding?.cardView?.gone()
+            viewModel.getCampaignDetail(campaignId)
+        }
+    }
+
     private fun handleCampaignNameValidationResult(validationResult: CampaignInformationViewModel.CampaignNameValidationResult) {
         when (validationResult) {
             CampaignInformationViewModel.CampaignNameValidationResult.CampaignNameIsEmpty -> {
@@ -254,7 +310,12 @@ class CampaignInformationFragment : BaseDaggerFragment() {
                 binding?.btnCreateCampaign?.enable()
                 binding?.btnCreateCampaign.showLoading()
                 val selection = viewModel.getSelection() ?: return
-                viewModel.createCampaign(selection)
+
+                if (pageMode == PageMode.CREATE) {
+                    viewModel.createCampaign(selection)
+                } else {
+                    viewModel.updateCampaign(selection, campaignId)
+                }
             }
         }
     }
@@ -409,4 +470,23 @@ class CampaignInformationFragment : BaseDaggerFragment() {
         binding?.tickerLapsedTeaser?.gone()
     }
 
+    private fun displayCampaignDetail(campaign: CampaignUiModel) {
+        binding?.run {
+            tauCampaignName.editText.setText(campaign.campaignName)
+
+            val isEditDateEnabled = campaign.status == CampaignStatus.DRAFT
+            tauStartDate.editText.setText(campaign.startDate.formatTo(DateConstant.DATE_TIME_MINUTE_LEVEL))
+            tauEndDate.editText.setText(campaign.endDate.formatTo(DateConstant.DATE_TIME_MINUTE_LEVEL))
+            tauStartDate.isEnabled = isEditDateEnabled
+            tauEndDate.isEnabled = isEditDateEnabled
+
+            switchTeaser.isChecked = campaign.useUpcomingWidget
+            handleSwitchTeaser(campaign.useUpcomingWidget)
+        }
+
+        viewModel.setSelectedStartDate(campaign.startDate)
+        viewModel.setSelectedEndDate(campaign.endDate)
+        viewModel.setShowTeaser(campaign.useUpcomingWidget)
+        viewModel.setSelectedColor(campaign.gradientColor)
+    }
 }

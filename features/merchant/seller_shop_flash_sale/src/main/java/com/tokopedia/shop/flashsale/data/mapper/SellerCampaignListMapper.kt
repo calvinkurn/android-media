@@ -8,6 +8,7 @@ import com.tokopedia.shop.flashsale.common.extension.epochToDate
 import com.tokopedia.shop.flashsale.data.response.GetSellerCampaignListResponse
 import com.tokopedia.shop.flashsale.domain.entity.CampaignMeta
 import com.tokopedia.shop.flashsale.domain.entity.CampaignUiModel
+import com.tokopedia.shop.flashsale.domain.entity.Gradient
 import com.tokopedia.shop.flashsale.domain.entity.enums.*
 import javax.inject.Inject
 
@@ -36,7 +37,9 @@ class SellerCampaignListMapper @Inject constructor() {
                     it.productSummary.visibleProductCount
                 ),
                 it.startDate.epochToDate(),
-                it.endDate.epochToDate()
+                it.endDate.epochToDate(),
+                Gradient(it.gradientColor.firstColor, it.gradientColor.secondColor, true),
+                it.useUpcomingWidget
             )
         }
         return CampaignMeta(

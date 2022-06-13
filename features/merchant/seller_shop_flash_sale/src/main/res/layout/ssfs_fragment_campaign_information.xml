@@ -15,8 +15,21 @@
         app:unify_header_is_show_shadow="true"
         app:unify_header_title="@string/sfs_info_campaign" />
 
+
+    <com.tokopedia.unifycomponents.LoaderUnify
+        android:id="@+id/loader"
+        android:layout_width="@dimen/unify_space_48"
+        android:layout_height="@dimen/unify_space_48"
+        android:visibility="gone"
+        tools:visibility="visible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/header" />
+
+
     <ScrollView
-        android:id="@+id/nestedScrollView"
+        android:id="@+id/scrollView"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:scrollbars="vertical"
