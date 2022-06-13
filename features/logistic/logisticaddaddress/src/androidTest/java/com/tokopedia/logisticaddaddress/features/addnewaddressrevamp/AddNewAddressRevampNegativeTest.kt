@@ -37,6 +37,7 @@ class AddNewAddressRevampNegativeTest {
     fun setup() {
         setupGraphqlMockResponse {
             addMockResponse(GET_DISTRICT_RECCOM, InstrumentationMockHelper.getRawString(context, R.raw.district_recommendation_jakarta), MockModelConfig.FIND_BY_CONTAINS)
+            addMockResponse(ADD_ADDRESS_KEY, InstrumentationMockHelper.getRawString(context, R.raw.save_address_success), MockModelConfig.FIND_BY_CONTAINS)
         }
     }
 
@@ -113,5 +114,6 @@ class AddNewAddressRevampNegativeTest {
 
         const val AUTOCOMPLETE_KEY = "KeroMapsAutoComplete"
         const val GET_DISTRICT_RECCOM = "GetDistrictRecommendation"
+        const val ADD_ADDRESS_KEY = "kero_add_address"
     }
 }

@@ -319,6 +319,7 @@ class KolCommentNewFragment : BaseDaggerFragment(), KolComment.View, KolComment.
         val list = ArrayList<Visitable<*>?>()
         kolComments?.let { list.addAll(it.listNewComments) }
         list.reverse()
+        totalNewComment = list.size
         adapter?.addList(list)
 
         header?.isCanLoadMore = kolComments?.isHasNextPage ?: false
@@ -361,7 +362,9 @@ class KolCommentNewFragment : BaseDaggerFragment(), KolComment.View, KolComment.
         kolComment?.setText("")
         enableSendComment()
         KeyboardHandler.DropKeyboard(context, kolComment)
-        totalNewComment += 1
+        val numberOfComments = adapter?.itemCount ?: -1
+        /**totalNewComment is number of comment item in adapter excluding first caption item*/
+        totalNewComment = if (numberOfComments != -1) numberOfComments - 1 else totalNewComment
 
         listComment?.scrollToPosition(adapter?.itemCount ?: 1 - 1)
         activity?.setResult(Activity.RESULT_OK, getReturnIntent(totalNewComment))
@@ -381,7 +384,9 @@ class KolCommentNewFragment : BaseDaggerFragment(), KolComment.View, KolComment.
 
     override fun onSuccessDeleteComment(adapterPosition: Int) {
         if (adapterPosition <= adapter?.itemCount ?: 0) {
-            totalNewComment -= 1
+            val numberOfComments = adapter?.itemCount ?: -1
+            /**totalNewComment is number of comment item in adapter excluding first caption item*/
+            totalNewComment = if (numberOfComments != -1) numberOfComments - 1 else totalNewComment
             activity?.setResult(Activity.RESULT_OK, getReturnIntent(totalNewComment))
         }
         adapter?.removeLoading()
@@ -489,6 +494,7 @@ class KolCommentNewFragment : BaseDaggerFragment(), KolComment.View, KolComment.
         val list = ArrayList<Visitable<*>?>()
         kolComments?.let { list.addAll(it.listNewComments) }
         list.reverse()
+        totalNewComment = list.size
         adapter?.setList(list)
         adapter?.notifyDataSetChanged()
     }

@@ -39,6 +39,7 @@ import com.tokopedia.localizationchooseaddress.domain.response.GetStateChosenAdd
 import com.tokopedia.localizationchooseaddress.domain.usecase.GetChosenAddressWarehouseLocUseCase
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
+import com.tokopedia.minicart.common.domain.usecase.MiniCartSource
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.domain.request.GetRecommendationRequestParam
@@ -192,6 +193,8 @@ abstract class BaseSearchCategoryViewModel(
     protected val shopIdMutableLiveData = MutableLiveData("")
     val shopIdLiveData: LiveData<String> = shopIdMutableLiveData
 
+    var miniCartSource: MiniCartSource = MiniCartSource.TokonowSRP
+
     protected val addToCartTrackingMutableLiveData =
             SingleLiveEvent<Triple<Int, String, ProductItemDataView>>()
     val addToCartTrackingLiveData: LiveData<Triple<Int, String, ProductItemDataView>> =
@@ -258,9 +261,16 @@ abstract class BaseSearchCategoryViewModel(
 
     private fun isABTestNavigationRevamp() = true
 
-    open fun onViewCreated() {
+    open fun onViewCreated(source: MiniCartSource? = null) {
+        processLoadDataPage(source)
+    }
+
+    private fun processLoadDataPage(source: MiniCartSource? = null) {
         val shopId = chooseAddressData?.shop_id ?: ""
         val warehouseId = chooseAddressData?.warehouse_id ?: ""
+        if (source != null) {
+            miniCartSource = source
+        }
 
         if (shopId.isValidId())
             processLoadDataWithShopId(shopId, warehouseId)
@@ -322,7 +332,7 @@ abstract class BaseSearchCategoryViewModel(
             hostSource = DEFAULT_VALUE_SOURCE_SEARCH,
             serviceType = chooseAddressData?.service_type.orEmpty()
         ))
-        visitableList.add(TokoNowRecommendationCarouselUiModel(pageName = OOC_TOKONOW))
+        visitableList.add(TokoNowRecommendationCarouselUiModel(pageName = OOC_TOKONOW, miniCartSource = miniCartSource))
     }
 
     protected open fun onGetShopAndWarehouseFailed(throwable: Throwable) {
@@ -443,7 +453,8 @@ abstract class BaseSearchCategoryViewModel(
             TokoNowRecommendationCarouselUiModel(
                 pageName = TOKONOW_NO_RESULT,
                 keywords = getKeywordForGeneralSearchTracking(),
-                isBindWithPageName = true
+                isBindWithPageName = true,
+                miniCartSource = miniCartSource
             )
         )
     }
@@ -575,7 +586,7 @@ abstract class BaseSearchCategoryViewModel(
         dynamicFilterModelMutableLiveData.value = null
 
         showLoading()
-        onViewCreated()
+        processLoadDataPage()
     }
 
     private fun applyFilter() {
@@ -587,7 +598,7 @@ abstract class BaseSearchCategoryViewModel(
         dynamicFilterModelMutableLiveData.value = null
 
         showProgressBar()
-        onViewCreated()
+        processLoadDataPage()
     }
 
     private fun showProgressBar() {
@@ -1002,7 +1013,7 @@ abstract class BaseSearchCategoryViewModel(
         if (!shopId.isValidId()) return
 
         getMiniCartListSimplifiedUseCase.cancelJobs()
-        getMiniCartListSimplifiedUseCase.setParams(listOf(shopId))
+        getMiniCartListSimplifiedUseCase.setParams(listOf(shopId), miniCartSource)
         getMiniCartListSimplifiedUseCase.execute(
             ::onViewUpdateCartItems,
             ::onGetMiniCartDataFailed,
@@ -1186,6 +1197,14 @@ abstract class BaseSearchCategoryViewModel(
     fun onViewRemoveFilter(option: Option) {
         resetSortFilterIfExclude(option)
         filter(option, false)
+    }
+
+    fun needToShowOnBoardBottomSheet(has20mBottomSheetBeenShown: Boolean): Boolean {
+        chooseAddressData?.apply {
+            val is20mServiceType = service_type == ServiceType.NOW_15M
+            return is20mServiceType && !has20mBottomSheetBeenShown
+        }
+        return false
     }
 
     open fun setUserPreference(serviceType: String) {

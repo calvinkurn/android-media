@@ -103,6 +103,12 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
         const val THUMBNAIL_IMG_SCREENSHOT_HEIGHT = 200
         const val THUMBNAIL_IMG_SCREENSHOT_WIDTH = 360
 
+        //for affiliate and general user distinction
+        private const val KEY_GENERAL_USER = "general"
+        private const val KEY_AFFILIATE_USER = "affiliate"
+        private var isAffiliateUser: String = KEY_GENERAL_USER
+
+
         fun createInstance(): UniversalShareBottomSheet = UniversalShareBottomSheet()
 
         fun isCustomSharingEnabled(context: Context?, remoteConfigKey: String = GLOBAL_CUSTOM_SHARING_FEATURE_FLAG): Boolean{
@@ -196,6 +202,10 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
                     }
                 }
             }
+        }
+
+        fun getUserType(): String{
+            return isAffiliateUser
         }
     }
 
@@ -382,6 +392,7 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
                     affiliateCommissionTextView?.text = Html.fromHtml(commissionMessage)
                 }
                 affiliateCommissionTextView?.visibility = View.VISIBLE
+                isAffiliateUser = KEY_AFFILIATE_USER
                 return
             }
         }
