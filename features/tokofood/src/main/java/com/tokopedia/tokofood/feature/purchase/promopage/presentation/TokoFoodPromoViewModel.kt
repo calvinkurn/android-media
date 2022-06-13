@@ -11,11 +11,12 @@ import com.tokopedia.tokofood.feature.purchase.promopage.domain.usecase.PromoLis
 import com.tokopedia.tokofood.feature.purchase.promopage.presentation.mapper.TokoFoodPromoUiModelMapper
 import com.tokopedia.tokofood.feature.purchase.promopage.presentation.uimodel.TokoFoodPromoFragmentUiModel
 import com.tokopedia.utils.lifecycle.SingleLiveEvent
+import dagger.Lazy
 import kotlinx.coroutines.flow.collect
 import javax.inject.Inject
 
 class TokoFoodPromoViewModel @Inject constructor(
-    private val promoListTokoFoodUseCase: PromoListTokoFoodUseCase,
+    private val promoListTokoFoodUseCase: Lazy<PromoListTokoFoodUseCase>,
     val dispatcher: CoroutineDispatchers
 ) : BaseViewModel(dispatcher.main) {
 
@@ -40,7 +41,7 @@ class TokoFoodPromoViewModel @Inject constructor(
 
     fun loadData() {
         launchCatchError(block = {
-            promoListTokoFoodUseCase(SOURCE).collect {
+            promoListTokoFoodUseCase.get()(SOURCE).collect {
                 if (it.isSuccess()) {
                     when {
                         it.data.errorPage.isShowErrorPage -> {
