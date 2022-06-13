@@ -10,6 +10,8 @@ import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.home_component.visitable.MissionWidgetListDataModel
 import io.mockk.mockk
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.test.TestCoroutineDispatcher
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.setMain
@@ -18,6 +20,8 @@ import org.junit.*
 /**
  * Created by dhaba
  */
+@FlowPreview
+@ExperimentalCoroutinesApi
 class HomeViewModelMissionWidgetUnitTest {
     @get:Rule
     val instantTaskExecutorRule = InstantTaskExecutorRule()
