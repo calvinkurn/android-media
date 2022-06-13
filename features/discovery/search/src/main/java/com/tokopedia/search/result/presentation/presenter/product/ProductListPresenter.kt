@@ -217,22 +217,6 @@ class ProductListPresenter @Inject constructor(
     }
 
     //region AB Test booleans
-    private val isABTestNegativeNoAds : Boolean  by lazy {
-        getABTestNegativeNoAds()
-    }
-
-    private fun getABTestNegativeNoAds() :Boolean {
-        return try {
-            val abTestKeywordAdvNeg = view.abTestRemoteConfig?.getString(
-                RollenceKey.SEARCH_ADVANCED_KEYWORD_ADV_NEG,
-                ""
-            )
-            RollenceKey.SEARCH_ADVANCED_NEGATIVE_NO_ADS == abTestKeywordAdvNeg
-        } catch (e: Exception) {
-            false
-        }
-    }
-
     private val isABTestVideoWidget: Boolean by lazy {
         getABTestVideoWidget()
     }
@@ -390,7 +374,7 @@ class ProductListPresenter @Inject constructor(
     }
 
     private fun isDisableAdsNegativeKeywords(productDataView: ProductDataView) :Boolean {
-        return isABTestNegativeNoAds && productDataView.isAdvancedNegativeKeywordSearch()
+        return productDataView.isAdvancedNegativeKeywordSearch()
     }
 
     private fun createProductDataView(
