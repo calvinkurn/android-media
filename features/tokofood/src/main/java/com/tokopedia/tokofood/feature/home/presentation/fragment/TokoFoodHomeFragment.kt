@@ -26,6 +26,7 @@ import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConsInternalNavigation
 import com.tokopedia.applink.internal.ApplinkConstInternalLogistic
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.kotlin.extensions.view.addOneTimeGlobalLayoutListener
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.kotlin.extensions.view.orZero
@@ -54,10 +55,12 @@ import com.tokopedia.tokofood.common.constants.ShareComponentConstants
 import com.tokopedia.tokofood.common.minicartwidget.view.TokoFoodMiniCartWidget
 import com.tokopedia.tokofood.common.presentation.UiEvent
 import com.tokopedia.tokofood.common.presentation.listener.HasViewModel
+import com.tokopedia.tokofood.common.presentation.view.BaseTokofoodActivity
 import com.tokopedia.tokofood.common.presentation.viewmodel.MultipleFragmentsViewModel
 import com.tokopedia.tokofood.common.util.TokofoodErrorLogger
 import com.tokopedia.tokofood.databinding.FragmentTokofoodHomeBinding
 import com.tokopedia.tokofood.feature.home.analytics.TokoFoodHomeAnalytics
+import com.tokopedia.tokofood.feature.home.analytics.TokoFoodHomePageLoadTimeMonitoring
 import com.tokopedia.tokofood.feature.home.di.DaggerTokoFoodHomeComponent
 import com.tokopedia.tokofood.feature.home.domain.constanta.TokoFoodLayoutState
 import com.tokopedia.tokofood.feature.home.domain.data.DynamicIcon
@@ -177,6 +180,7 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
     private var universalShareBottomSheet: UniversalShareBottomSheet? = null
     private var shareHomeTokoFood: TokoFoodHomeShare? = null
     private var localCacheModel: LocalCacheModel? = null
+    private var pageLoadTimeMonitoring: TokoFoodHomePageLoadTimeMonitoring? = null
     private var movingPosition = 0
     private val spaceZero: Int
         get() = resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.unify_space_0).toInt()
@@ -213,6 +217,7 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        initPerformanceMonitoring()
         super.onCreate(savedInstanceState)
         shareHomeTokoFood = createShareHome()
     }
@@ -562,13 +567,16 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
 
     private fun onHideHomeLayout(data: TokoFoodListUiModel) {
         showHomeLayout(data)
+        stopPerformanceMonitoring()
     }
 
     private fun onShowHomeLayout(data: TokoFoodListUiModel) {
+        startRenderPerformanceMonitoring()
         onOpenHomepage()
         showHomeLayout(data)
         getLayoutComponentData()
         initializeMiniCartHome()
+        stopRenderPerformanceMonitoring()
     }
 
     private fun onLoadingHomelayout(data: TokoFoodListUiModel) {
@@ -884,5 +892,24 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
 
     private fun onShowEmptyState(errorState: String, title: String, desc: String){
         analytics.clickEmptyState(userSession.userId, localCacheModel?.district_id, errorState, title, desc)
+    }
+
+    private fun initPerformanceMonitoring() {
+        pageLoadTimeMonitoring = (activity as? BaseTokofoodActivity)?.pageLoadTimeMonitoring
+        pageLoadTimeMonitoring?.startNetworkPerformanceMonitoring()
+    }
+
+    private fun startRenderPerformanceMonitoring() {
+        pageLoadTimeMonitoring?.startRenderPerformanceMonitoring()
+    }
+
+    private fun stopRenderPerformanceMonitoring() {
+        rvHome?.addOneTimeGlobalLayoutListener {
+            pageLoadTimeMonitoring?.stopRenderPerformanceMonitoring()
+        }
+    }
+
+    private fun stopPerformanceMonitoring() {
+        pageLoadTimeMonitoring?.stopPerformanceMonitoring()
     }
 }
