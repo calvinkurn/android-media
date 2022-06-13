@@ -8,7 +8,6 @@ import android.content.Intent
 import android.content.res.Configuration
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import android.view.*
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.fragment.app.Fragment
@@ -1800,9 +1799,6 @@ class PlayUserInteractionFragment @Inject constructor(
 
     private fun initAddress() {
         localCache = ChooseAddressUtils.getLocalizingAddressData(context = requireContext())
-
-        Log.d("SUKSES localCache", localCache.toString())
-        Log.d("SUKSES needUpdate", ChooseAddressUtils.isLocalizingAddressHasUpdated(requireContext(), localCache).toString())
 
         val warehouseId = localCache.warehouses.find {
             it.service_type == localCache.service_type
