@@ -281,6 +281,7 @@ object ProductTrackingConstant {
         const val EVENT_VIEW_PDP = "viewPDP"
         const val EVENT_VIEW_PDP_IRIS = "viewPDPIris"
         const val EVENT_CLICK_COURIER = "clickCourier"
+        const val EVENT_CLICK_COMMUNICATION = "clickCommunication"
     }
 
     object Affiliate {

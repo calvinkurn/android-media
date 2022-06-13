@@ -21,14 +21,14 @@ class SingleProductBundleViewModelTest: SingleProductBundleViewModelTestFixture(
 
     @Test
     fun `setBundleInfo using inactive bundle should invoke pageError`() = runBlocking {
-        viewModel.setBundleInfo(context, singleBundleEmpty.bundleInfo, "", 0, emptyList())
+        viewModel.setBundleInfo(context, singleBundleEmpty?.bundleInfo.orEmpty(), "", 0, emptyList())
         val pageErrorResult = viewModel.pageError.getOrAwaitValue()
         assertEquals(SingleProductBundleErrorEnum.ERROR_BUNDLE_IS_EMPTY, pageErrorResult)
     }
 
     @Test
     fun `setBundleInfo using active bundle should invoke UiModel`() = runBlocking {
-        viewModel.setBundleInfo(context, singleBundleVariant.bundleInfo, "", 0, emptyList())
+        viewModel.setBundleInfo(context, singleBundleVariant?.bundleInfo.orEmpty(), "", 0, emptyList())
         val singleProductBundleUiModelResult = viewModel.singleProductBundleUiModel.getOrAwaitValue()
         assertEquals(true, singleProductBundleUiModelResult.items.isNotEmpty())
     }
@@ -216,7 +216,7 @@ class SingleProductBundleViewModelTest: SingleProductBundleViewModelTestFixture(
     }
 
     private fun generateProductVariant(): ProductVariant {
-        val bundleInfoTest = singleBundleVariant.bundleInfo.firstOrNull()
+        val bundleInfoTest = singleBundleVariant?.bundleInfo?.firstOrNull()
         val bundleItemTest = bundleInfoTest?.bundleItems?.firstOrNull()
         return bundleItemTest?.let {
             AtcVariantMapper.mapToProductVariant(it)

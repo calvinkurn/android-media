@@ -1,5 +1,8 @@
 package com.tokopedia.gifting.presentation.activity
 
+import android.annotation.SuppressLint
+import android.content.pm.ActivityInfo
+import android.os.Build
 import android.os.Bundle
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.applink.RouteManager
@@ -16,6 +19,7 @@ class GiftingBottomsheetActivity: BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_gifting_bottomsheet)
+        setOrientation()
         GiftingBottomSheet(getAddonIdFromUri()).apply {
             setOnDismissListener {
                 finish()
@@ -26,5 +30,12 @@ class GiftingBottomsheetActivity: BaseActivity() {
     private fun getAddonIdFromUri(): String {
         val data = RouteManager.getIntent(this, intent.data.toString()).data
         return data?.pathSegments?.getOrNull(ADDON_ID_SEGMENT_INDEX).orEmpty()
+    }
+
+    @SuppressLint("SourceLockedOrientationActivity")
+    private fun setOrientation() {
+        if (Build.VERSION.SDK_INT != Build.VERSION_CODES.O) {
+            requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+        }
     }
 }
