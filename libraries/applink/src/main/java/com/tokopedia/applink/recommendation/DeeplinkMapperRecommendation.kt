@@ -32,7 +32,7 @@ fun getRegisteredNavigationRecommendationFromHttp(uri: Uri): String {
 }
 
 fun redirectToDiscoveryRecom(uri: Uri): String {
-    if (uri.pathSegments.size > 0) {
+    return if (uri.pathSegments.size > 0) {
         Uri.Builder()
             .scheme(DeeplinkConstant.SCHEME_TOKOPEDIA)
             .authority(ApplinkConsInternalHome.AUTHORITY_DISCOVERY)
