@@ -49,6 +49,7 @@
         <ImageView
             android:id="@+id/img_cutout"
             android:layout_width="match_parent"
+            android:contentDescription="@string/homecredit_ktp_overlay_content_description"
             android:layout_height="match_parent"
           />
 
@@ -61,7 +62,6 @@
         android:layout_height="match_parent"
         android:layout_gravity="center"
         android:adjustViewBounds="true"
-        android:contentDescription="@string/homecredit_ktp_overlay_content_description"
         android:scaleType="centerInside"
         android:visibility="gone" />
 
