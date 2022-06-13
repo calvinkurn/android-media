@@ -54,7 +54,7 @@ class ChooseAddressViewComponent(
     }
 
     private fun hideBottomSheet() {
-        if (getBottomSheet().isVisible)
+        if (getBottomSheet().isAdded)
             getBottomSheet().dismiss()
     }
 
