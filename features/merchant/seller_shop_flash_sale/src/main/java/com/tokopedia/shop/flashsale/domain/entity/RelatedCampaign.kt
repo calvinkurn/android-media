@@ -1,4 +1,4 @@
-package com.tokopedia.shop.flashsale.presentation.creation.rule
+package com.tokopedia.shop.flashsale.domain.entity
 
 data class RelatedCampaign(
     val id: Long,

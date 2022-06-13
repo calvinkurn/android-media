@@ -6,7 +6,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.seller_shop_flash_sale.databinding.SsfsItemRelatedCampaignBinding
-import com.tokopedia.shop.flashsale.presentation.creation.rule.RelatedCampaign
+import com.tokopedia.shop.flashsale.domain.entity.RelatedCampaign
 
 class RelatedCampaignAdapter(
     private val listener: OnRemoveRelatedCampaignListener,

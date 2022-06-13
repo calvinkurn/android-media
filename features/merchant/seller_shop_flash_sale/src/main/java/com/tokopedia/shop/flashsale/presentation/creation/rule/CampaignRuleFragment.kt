@@ -29,7 +29,9 @@ import com.tokopedia.shop.flashsale.common.extension.enable
 import com.tokopedia.shop.flashsale.common.extension.toBulletSpan
 import com.tokopedia.shop.flashsale.di.component.DaggerShopFlashSaleComponent
 import com.tokopedia.shop.flashsale.domain.entity.MerchantCampaignTNC
+import com.tokopedia.shop.flashsale.domain.entity.RelatedCampaign
 import com.tokopedia.shop.flashsale.domain.entity.enums.PageMode
+import com.tokopedia.shop.flashsale.domain.entity.enums.PaymentType
 import com.tokopedia.shop.flashsale.presentation.creation.rule.adapter.OnRemoveRelatedCampaignListener
 import com.tokopedia.shop.flashsale.presentation.creation.rule.adapter.RelatedCampaignAdapter
 import com.tokopedia.shop.flashsale.presentation.creation.rule.adapter.RelatedCampaignItemDecoration
@@ -203,10 +205,10 @@ class CampaignRuleFragment : BaseDaggerFragment(),
     }
 
     private fun observeSelectedPaymentMethod() {
-        viewModel.selectedPaymentMethod.observe(viewLifecycleOwner) { selectedPaymentMethod ->
+        viewModel.selectedPaymentType.observe(viewLifecycleOwner) { selectedPaymentMethod ->
             when (selectedPaymentMethod) {
-                PaymentMethod.Instant -> onInstantPaymentMethodSelected()
-                PaymentMethod.Regular -> onRegularPaymentMethodSelected()
+                PaymentType.INSTANT -> onInstantPaymentMethodSelected()
+                PaymentType.REGULAR -> onRegularPaymentMethodSelected()
                 else -> clearSelectedPaymentMethod()
             }
         }

@@ -6,6 +6,8 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.shop.flashsale.domain.entity.MerchantCampaignTNC
+import com.tokopedia.shop.flashsale.domain.entity.RelatedCampaign
+import com.tokopedia.shop.flashsale.domain.entity.enums.PaymentType
 import com.tokopedia.utils.lifecycle.SingleLiveEvent
 import javax.inject.Inject
 
@@ -17,9 +19,9 @@ class CampaignRuleViewModel @Inject constructor(
         private const val MAX_RELATED_CAMPAIGN = 10
     }
 
-    private val _selectedPaymentMethod = MutableLiveData<PaymentMethod>(PaymentMethod.None)
-    val selectedPaymentMethod: LiveData<PaymentMethod>
-        get() = _selectedPaymentMethod
+    private val _selectedPaymentType = MutableLiveData<PaymentType>()
+    val selectedPaymentType: LiveData<PaymentType>
+        get() = _selectedPaymentType
 
     private val _requireUniqueAccount = MutableLiveData<Boolean>()
     val requireUniqueAccount: LiveData<Boolean>
@@ -72,8 +74,8 @@ class CampaignRuleViewModel @Inject constructor(
         }
     }
 
-    private val isSelectedPaymentMethodValid: Boolean
-        get() = selectedPaymentMethod.value != null && selectedPaymentMethod.value != PaymentMethod.None
+    private val isSelectedPaymentTypeValid: Boolean
+        get() = selectedPaymentType.value != null
     private val isUniqueAccountValid: Boolean
         get() = requireUniqueAccount.value != null
     private val isRelatedCampaignValid: Boolean
@@ -82,19 +84,19 @@ class CampaignRuleViewModel @Inject constructor(
         }
 
     private fun initInputValidationMediator() {
-        _isAllInputValid.addSource(_selectedPaymentMethod) {
-            _isAllInputValid.value = it != null && it != PaymentMethod.None
+        _isAllInputValid.addSource(_selectedPaymentType) {
+            _isAllInputValid.value = it != null
                     && isUniqueAccountValid
                     && isRelatedCampaignValid
         }
         _isAllInputValid.addSource(_requireUniqueAccount) {
             _isAllInputValid.value = it != null
-                    && isSelectedPaymentMethodValid
+                    && isSelectedPaymentTypeValid
                     && isRelatedCampaignValid
         }
         _isAllInputValid.addSource(_allowCampaignRelation) {
             _isAllInputValid.value = it != null
-                    && isSelectedPaymentMethodValid
+                    && isSelectedPaymentTypeValid
                     && isUniqueAccountValid
         }
     }
@@ -113,11 +115,11 @@ class CampaignRuleViewModel @Inject constructor(
     }
 
     fun onRegularPaymentMethodSelected() {
-        _selectedPaymentMethod.value = PaymentMethod.Regular
+        _selectedPaymentType.value = PaymentType.REGULAR
     }
 
     fun onInstantPaymentMethodSelected() {
-        _selectedPaymentMethod.value = PaymentMethod.Instant
+        _selectedPaymentType.value = PaymentType.INSTANT
     }
 
     fun onRequireUniqueAccountSelected() {
@@ -149,13 +151,13 @@ class CampaignRuleViewModel @Inject constructor(
     }
 
     fun onTNCCheckboxChecked() {
+        val paymentType = selectedPaymentType.value ?: return
         val isUniqueBuyer = requireUniqueAccount.value == false
         val isCampaignRelation = allowCampaignRelation.value == true
-        val paymentProfile = selectedPaymentMethod.value?.paymentProfile ?: ""
         _tncClickEvent.value = MerchantCampaignTNC.TncRequest(
             isUniqueBuyer = isUniqueBuyer,
             isCampaignRelation = isCampaignRelation,
-            paymentProfile = paymentProfile,
+            paymentType = paymentType,
         )
     }
 
