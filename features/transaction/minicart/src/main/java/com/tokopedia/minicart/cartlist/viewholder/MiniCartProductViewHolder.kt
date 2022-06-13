@@ -386,13 +386,17 @@ class MiniCartProductViewHolder(private val viewBinding: ItemMiniCartProductBind
 
     private fun renderActionDelete(element: MiniCartProductUiModel) {
         with(viewBinding) {
-            adjustButtonDeleteConstraint(element)
-            buttonDeleteCart.setOnClickListener {
-                if (adapterPosition != RecyclerView.NO_POSITION) {
-                    listener.onDeleteClicked(element)
+            if(!element.isBundlingItem || element.isLastProductItem) {
+                adjustButtonDeleteConstraint(element)
+                buttonDeleteCart.setOnClickListener {
+                    if (adapterPosition != RecyclerView.NO_POSITION) {
+                        listener.onDeleteClicked(element)
+                    }
                 }
+                buttonDeleteCart.show()
+            } else {
+                buttonDeleteCart.hide()
             }
-            buttonDeleteCart.show()
         }
     }
 
@@ -538,6 +542,7 @@ class MiniCartProductViewHolder(private val viewBinding: ItemMiniCartProductBind
 
     private fun renderProductAction(element: MiniCartProductUiModel) {
         if (element.productActions.isNotEmpty()) {
+            resetProductActionState()
             element.productActions.forEach {
                 when (it.id) {
                     ACTION_NOTES -> {
@@ -556,18 +561,29 @@ class MiniCartProductViewHolder(private val viewBinding: ItemMiniCartProductBind
         }
     }
 
+    private fun resetProductActionState() {
+        with(viewBinding) {
+            buttonDeleteCart.hide()
+            textProductUnavailableAction.hide()
+        }
+    }
+
     private fun renderActionSimilarProduct(action: Action, element: MiniCartProductUiModel) {
         with(viewBinding) {
-            textProductUnavailableAction.text = action.message
-            textProductUnavailableAction.setOnClickListener {
-                if (element.selectedUnavailableActionLink.isNotBlank()) {
-                    listener.onShowSimilarProductClicked(element.selectedUnavailableActionLink, element)
+            if(!element.isBundlingItem || element.isLastProductItem) {
+                textProductUnavailableAction.text = action.message
+                textProductUnavailableAction.setOnClickListener {
+                    if (element.selectedUnavailableActionLink.isNotBlank()) {
+                        listener.onShowSimilarProductClicked(element.selectedUnavailableActionLink, element)
+                    }
                 }
+                textProductUnavailableAction.context?.let {
+                    textProductUnavailableAction.setTextColor(ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N700_68))
+                }
+                textProductUnavailableAction.show()
+            } else {
+                textProductUnavailableAction.hide()
             }
-            textProductUnavailableAction.context?.let {
-                textProductUnavailableAction.setTextColor(ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N700_68))
-            }
-            textProductUnavailableAction.show()
         }
     }
 

@@ -256,11 +256,11 @@ class ProductBundleViewModelTest: ProductBundleViewModelTestFixture() {
     @Test
     fun `when mapBundleDetailsToProductDetails data provided then should return correct value`() = coroutineTestRule.runBlockingTest {
         viewModel.parentProductID = 123
-        val productDetailList1 = viewModel.mapBundleDetailsToProductDetails("2323", 2323, listOf(
+        val productDetailList1 = viewModel.mapBundleDetailsToProductDetails("2323", "2323", listOf(
             ProductBundleDetail(productId = 222)
         ))
 
-        val productDetailList2 = viewModel.mapBundleDetailsToProductDetails("2323", 2323, listOf(
+        val productDetailList2 = viewModel.mapBundleDetailsToProductDetails("2323", "2323", listOf(
             ProductBundleDetail(selectedVariantId = "1234", productId = 123)
         ))
 

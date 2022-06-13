@@ -20,7 +20,9 @@ import com.tokopedia.dialog.DialogUnify.Companion.NO_IMAGE
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.header.HeaderUnify
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.showWithCondition
+import com.tokopedia.kotlin.extensions.view.toIntSafely
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.media.loader.loadImageWithoutPlaceholder
@@ -250,8 +252,8 @@ class MultipleProductBundleFragment : BaseDaggerFragment(),
             TotalAmount.Order.AMOUNT,
             TotalAmount.Order.SUBTITLE
         )
-        productBundleOverView?.amountCtaView?.width = resources
-            .getDimension(R.dimen.atc_button_width).toInt()
+        productBundleOverView?.amountCtaView?.width = context?.resources
+            ?.getDimension(R.dimen.atc_button_width).orZero().toIntSafely()
         productBundleOverView?.amountCtaView?.setOnClickListener {
             val isUserLoggedIn = viewModel.isUserLoggedIn()
             if (isUserLoggedIn) {

@@ -266,12 +266,12 @@ class ProductBundleViewModel @Inject constructor(
         }
     }
 
-    fun mapBundleDetailsToProductDetails(userId: String, shopId: Int, productBundleDetails: List<ProductBundleDetail>): List<ProductDetail> {
+    fun mapBundleDetailsToProductDetails(userId: String, shopId: String, productBundleDetails: List<ProductBundleDetail>): List<ProductDetail> {
         return productBundleDetails.map { productBundleDetail ->
             ProductDetail(
                 productId = productBundleDetail.selectedVariantId?: productBundleDetail.productId.toString(),
                 quantity = ATC_BUNDLE_QUANTITY,
-                shopId = shopId.toString(),
+                shopId = shopId,
                 isProductParent = parentProductID == productBundleDetail.productId,
                 customerId = userId,
                 warehouseId = productBundleDetail.warehouseId

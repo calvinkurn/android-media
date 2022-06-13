@@ -30,7 +30,8 @@ class CampaignWidgetViewHolder(
     itemView: View,
     val homeComponentListener: HomeComponentListener?,
     val campaignWidgetComponentListener: CampaignWidgetComponentListener?,
-    private val parentRecycledViewPool: RecyclerView.RecycledViewPool? = null
+    private val parentRecycledViewPool: RecyclerView.RecycledViewPool? = null,
+    private val cardInteraction: Boolean = false
 ) : AbstractViewHolder<CampaignWidgetDataModel>(itemView), CommonProductCardCarouselListener {
 
     private lateinit var adapter: CampaignWidgetAdapter
@@ -126,7 +127,7 @@ class CampaignWidgetViewHolder(
                 )
             }
         }
-        val typeFactoryImpl = CommonCarouselProductCardTypeFactoryImpl(element.channelModel)
+        val typeFactoryImpl = CommonCarouselProductCardTypeFactoryImpl(element.channelModel, cardInteraction)
         adapter = CampaignWidgetAdapter(dataList, typeFactoryImpl)
         layoutManager = LinearLayoutManager(itemView.context, LinearLayoutManager.HORIZONTAL, false)
         recyclerView.adapter = adapter

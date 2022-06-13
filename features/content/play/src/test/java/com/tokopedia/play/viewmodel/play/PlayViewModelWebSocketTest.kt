@@ -11,6 +11,7 @@ import com.tokopedia.play.robot.play.givenPlayViewModelRobot
 import com.tokopedia.play.robot.play.withState
 import com.tokopedia.play.robot.thenVerify
 import com.tokopedia.play.util.*
+import com.tokopedia.play.util.chat.ChatStreams
 import com.tokopedia.play.view.uimodel.MerchantVoucherUiModel
 import com.tokopedia.play.view.uimodel.PlayProductUiModel
 import com.tokopedia.play.view.uimodel.action.InteractiveOngoingFinishedAction
@@ -29,6 +30,7 @@ import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.*
 import kotlinx.coroutines.*
 import kotlinx.coroutines.test.resetMain
+import kotlinx.coroutines.test.runBlockingTest
 import kotlinx.coroutines.test.setMain
 import org.junit.After
 import org.junit.Before
@@ -120,19 +122,28 @@ class PlayViewModelWebSocketTest {
         val message1 = "Message 1"
         val message2 = "Message 2"
 
-        givenPlayViewModelRobot(
+        val chatStreamsFactory = object : ChatStreams.Factory {
+            override fun create(scope: CoroutineScope): ChatStreams {
+                return ChatStreams(scope, testDispatcher)
+            }
+        }
+
+        val robot = createPlayViewModelRobot(
             playChannelWebSocket = fakePlayWebSocket,
             dispatchers = testDispatcher,
-            playSocketToModelMapper = mapperBuilder.buildSocketMapper(),
-        ) {
-            createPage(channelData)
-            focusPage(channelData)
-        } andThen {
+            chatStreamsFactory = chatStreamsFactory,
+        )
+
+        robot.use {
+            it.createPage(channelData)
+            it.focusPage(channelData)
+
             fakePlayWebSocket.fakeReceivedMessage(PlayChatSocketResponse.generateResponse(message1))
             fakePlayWebSocket.fakeReceivedMessage(PlayChatSocketResponse.generateResponse(message2))
-        } thenVerify {
-            viewModel.observableNewChat.value?.peekContent()?.message?.isEqualTo(message2)
+            testDispatcher.coroutineDispatcher.advanceTimeBy(500)
         }
+
+        robot.viewModel.chats.value.last().message.assertEqualTo(message2)
     }
 
     @Test

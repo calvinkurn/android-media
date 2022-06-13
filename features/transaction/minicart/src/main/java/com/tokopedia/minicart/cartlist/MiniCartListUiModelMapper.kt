@@ -322,7 +322,7 @@ class MiniCartListUiModelMapper @Inject constructor() {
             errorType = unavailableReason
             if (isDisabled) {
                 selectedUnavailableActionId = unavailableActionId
-                selectedUnavailableActionLink = cartDetail.selectedUnavailableActionLink
+                selectedUnavailableActionLink = product.selectedUnavailableActionLink
             } else {
                 productQtyLeft = product.productWarningMessage
             }

@@ -410,6 +410,13 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
             categoryListUiModel = TokoNowCategoryListUiModel(
                 categoryList = listOf(
                     TokoNowCategoryItemUiModel(
+                        id = "",
+                        title = "",
+                        imageUrl = null,
+                        appLink = "tokopedia-android-internal://now/category-list?warehouse_id={warehouse_id}",
+                        warehouseId = "1"
+                    ),
+                    TokoNowCategoryItemUiModel(
                         id = "1",
                         title = "Category 1",
                         imageUrl = "tokopedia://",
