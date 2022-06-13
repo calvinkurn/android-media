@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="read_more_color">#42b549</color>
+    <color name="chatbot_dms_read_more_color">#42b549</color>
     <color name="chatbot_black_color_opacity_lvl_35">#66000000</color>
     <color name="chatbot_black_color_opacity_lvl_40">#66141414</color>
     <color name="chatbot_black_color_opacity_lvl_50">#8C000000</color>
