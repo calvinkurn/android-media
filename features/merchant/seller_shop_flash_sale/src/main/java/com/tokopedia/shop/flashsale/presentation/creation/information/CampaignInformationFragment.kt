@@ -38,6 +38,7 @@ class CampaignInformationFragment : BaseDaggerFragment() {
 
     companion object {
         private const val BUNDLE_KEY_PAGE_MODE = "page_mode"
+        private const val BUNDLE_KEY_CAMPAIGN_ID = "campaign_id"
         private const val FIRST_STEP = 1
         private const val SPAN_COUNT = 6
         private const val HEX_COLOR_TEXT_FIELD_MAX_LENGTH = 6
@@ -47,10 +48,11 @@ class CampaignInformationFragment : BaseDaggerFragment() {
 
 
         @JvmStatic
-        fun newInstance(pageMode: PageMode): CampaignInformationFragment {
+        fun newInstance(pageMode: PageMode, campaignId: Long): CampaignInformationFragment {
             val fragment = CampaignInformationFragment()
             val bundle = Bundle()
             bundle.putParcelable(BUNDLE_KEY_PAGE_MODE, pageMode)
+            bundle.putLong(BUNDLE_KEY_CAMPAIGN_ID, campaignId)
             fragment.arguments = bundle
             return fragment
         }
@@ -59,6 +61,7 @@ class CampaignInformationFragment : BaseDaggerFragment() {
 
     private var binding by autoClearedNullable<SsfsFragmentCampaignInformationBinding>()
     private val pageMode by lazy { arguments?.getParcelable(BUNDLE_KEY_PAGE_MODE) as? PageMode }
+    private val campaignId by lazy { arguments?.getLong(BUNDLE_KEY_CAMPAIGN_ID).orZero() }
     private val adapter = GradientColorAdapter()
 
     @Inject
