@@ -2,6 +2,7 @@ package com.tokopedia.tokomember_seller_dashboard.view.fragment
 
 import android.annotation.SuppressLint
 import android.os.Bundle
+import android.text.Html
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,32 +11,34 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.carousel.CarouselUnify
+import com.tokopedia.loaderdialog.LoaderDialog
 import com.tokopedia.tokomember_common_widget.TokomemberShopView
 import com.tokopedia.tokomember_common_widget.model.TokomemberShopCardModel
 import com.tokopedia.tokomember_common_widget.util.CreateScreenType
 import com.tokopedia.tokomember_seller_dashboard.R
 import com.tokopedia.tokomember_seller_dashboard.di.component.DaggerTokomemberDashComponent
-import com.tokopedia.tokomember_seller_dashboard.domain.requestparam.ProgramUpdateDataInput
 import com.tokopedia.tokomember_seller_dashboard.domain.requestparam.TmMerchantCouponUnifyRequest
-import com.tokopedia.tokomember_seller_dashboard.model.CardDataTemplate
+import com.tokopedia.tokomember_seller_dashboard.model.CardTemplate
+import com.tokopedia.tokomember_seller_dashboard.model.MembershipGetProgramForm
 import com.tokopedia.tokomember_seller_dashboard.model.TmCouponPreviewData
 import com.tokopedia.tokomember_seller_dashboard.tracker.TmTracker
-import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_CARD_DATA
-import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_CARD_ID
-import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_COUPON_CREATE_DATA
-import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_COUPON_PREVIEW_DATA
-import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_CREATE_SCREEN_TYPE
-import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_PROGRAM_DATA
-import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_PROGRAM_ID
-import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_SHOP_ID
+import com.tokopedia.tokomember_seller_dashboard.util.*
 import com.tokopedia.tokomember_seller_dashboard.util.TmDateUtil.setDate
+import com.tokopedia.tokomember_seller_dashboard.util.TmDateUtil.setTime
+import com.tokopedia.tokomember_seller_dashboard.view.activity.TokomemberDashHomeActivity
+import com.tokopedia.tokomember_seller_dashboard.view.activity.TokomemberMainActivity
 import com.tokopedia.tokomember_seller_dashboard.view.adapter.TmCouponPreviewAdapter
 import com.tokopedia.tokomember_seller_dashboard.view.viewmodel.TmDashCreateViewModel
 import com.tokopedia.unifycomponents.ProgressBarUnify
+import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.text.currency.CurrencyFormatHelper
+import kotlinx.android.synthetic.main.tm_dash_create_card.*
 import kotlinx.android.synthetic.main.tm_dash_preview.*
+import kotlinx.android.synthetic.main.tm_dash_preview.containerViewFlipper
+import kotlinx.android.synthetic.main.tm_dash_progrm_form.*
 import javax.inject.Inject
 
 class TmDashPreviewFragment : BaseDaggerFragment() {
@@ -49,6 +52,7 @@ class TmDashPreviewFragment : BaseDaggerFragment() {
     private val tmCouponPreviewAdapter: TmCouponPreviewAdapter by lazy {
         TmCouponPreviewAdapter(arrayListOf())
     }
+    private var loaderDialog: LoaderDialog? = null
 
     @Inject
     lateinit var viewModelFactory: dagger.Lazy<ViewModelProvider.Factory>
@@ -74,14 +78,10 @@ class TmDashPreviewFragment : BaseDaggerFragment() {
             arguments?.getParcelable(BUNDLE_COUPON_PREVIEW_DATA) ?: TmCouponPreviewData()
         tmCouponCreateUnifyRequest =
             arguments?.getParcelable(BUNDLE_COUPON_CREATE_DATA) ?: TmMerchantCouponUnifyRequest()
-        tmDashCreateViewModel.getCardInfo(arguments?.getInt(BUNDLE_CARD_ID)?:0)
-        containerViewFlipper.displayedChild = SHIMMER
+        tmDashCreateViewModel.getCardInfo(arguments?.getInt(BUNDLE_CARD_ID_IN_TOOLS)?:0)
         renderHeader()
         observeViewModel()
         renderButton()
-        renderCouponList(tmCouponPreviewData)
-        renderCardCarousel(arguments?.getParcelable(BUNDLE_CARD_DATA))
-        renderProgramPreview(arguments?.getParcelable(BUNDLE_PROGRAM_DATA)?:ProgramUpdateDataInput())
     }
 
     override fun getScreenName() = ""
@@ -94,15 +94,73 @@ class TmDashPreviewFragment : BaseDaggerFragment() {
 
     private fun observeViewModel() {
 
-        tmDashCreateViewModel.tmCouponCreateLiveData.observe(viewLifecycleOwner, {
+        tmDashCreateViewModel.tmCardResultLiveData.observe(viewLifecycleOwner, {
+            when (it.status) {
+                TokoLiveDataResult.STATUS.LOADING -> {
+                    containerViewFlipper.displayedChild = SHIMMER
+                }
+                TokoLiveDataResult.STATUS.SUCCESS -> {
+                    tmDashCreateViewModel.getProgramInfo(
+                        arguments?.getInt(BUNDLE_PROGRAM_ID_IN_TOOLS) ?: 0,
+                        arguments?.getInt(BUNDLE_SHOP_ID) ?: 0,
+                        "create"
+                    )
+                    renderCardCarousel(it.data?.cardTemplate, it.data?.shopAvatar?:"")
+                }
+                TokoLiveDataResult.STATUS.ERROR -> {
+                    handleErrorUiOnErrorData()
+                }
+            }
+        })
 
+        tmDashCreateViewModel.tmProgramResultLiveData.observe(viewLifecycleOwner,{
+            when(it.status){
+                TokoLiveDataResult.STATUS.LOADING -> {
+                    containerViewFlipper.displayedChild = SHIMMER
+                }
+                TokoLiveDataResult.STATUS.SUCCESS -> {
+                    if (it.data?.membershipGetProgramForm?.resultStatus?.code == "200") {
+                        containerViewFlipper.displayedChild = DATA
+                        renderProgramPreview(it.data.membershipGetProgramForm)
+                        renderCouponList(tmCouponPreviewData)
+                    }
+                    else{
+                        handleErrorUiOnErrorData()
+                    }
+                }
+                TokoLiveDataResult.STATUS.ERROR -> {
+                    handleErrorUiOnErrorData()
+                }
+            }
+        })
+
+        tmDashCreateViewModel.tmCouponCreateLiveData.observe(viewLifecycleOwner, {
             when (it) {
                 is Success -> {
-                    //Open Dashboard
-                    //startActivityForResult(Intent(Tok))
+                    closeLoadingDialog()
+                    if (it.data.merchantPromotionCreateMultipleMV?.data?.status == "Success") {
+                        TokomemberDashHomeActivity.openActivity(arguments?.getInt(BUNDLE_SHOP_ID)?:0, context)
+                    } else {
+                        view?.let { v ->
+                            Toaster.build(
+                                v,
+                                it.data?.merchantPromotionCreateMultipleMV?.message ?: "",
+                                Toaster.LENGTH_LONG,
+                                Toaster.TYPE_ERROR
+                            )
+                        }
+                    }
                 }
                 is Fail -> {
-                    //handleError
+                    closeLoadingDialog()
+                    view?.let { v ->
+                        Toaster.build(
+                            v,
+                            it.throwable.localizedMessage ?: "",
+                            Toaster.LENGTH_LONG,
+                            Toaster.TYPE_ERROR
+                        )
+                    }
                 }
             }
         })
@@ -139,6 +197,7 @@ class TmDashPreviewFragment : BaseDaggerFragment() {
 
     private fun renderButton(){
         btnPreview.setOnClickListener {
+            openLoadingDialog()
             if(arguments?.getInt(BUNDLE_CREATE_SCREEN_TYPE) == CreateScreenType.PREVIEW_BUAT){
                 tmTracker?.clickSummaryButtonFromProgramList(
                     arguments?.getInt(BUNDLE_SHOP_ID).toString(),
@@ -155,6 +214,19 @@ class TmDashPreviewFragment : BaseDaggerFragment() {
         }
     }
 
+    private fun openLoadingDialog() {
+        loaderDialog = context?.let { LoaderDialog(it) }
+        loaderDialog?.loaderText?.apply {
+            setType(Typography.DISPLAY_2)
+        }
+        loaderDialog?.setLoadingText(Html.fromHtml(LOADING_TEXT))
+        loaderDialog?.show()
+    }
+
+    private fun closeLoadingDialog() {
+        loaderDialog?.dialog?.dismiss()
+    }
+
     @SuppressLint("NotifyDataSetChanged")
     private fun initRecyclerView(){
         rvPreview.layoutManager = LinearLayoutManager(context,LinearLayoutManager.HORIZONTAL,false)
@@ -163,22 +235,25 @@ class TmDashPreviewFragment : BaseDaggerFragment() {
         tmCouponPreviewAdapter.notifyDataSetChanged()
     }
 
-    private fun renderCardCarousel(data: CardDataTemplate?) {
+    private fun renderCardCarousel(data: CardTemplate?, shopAvatar: String) {
         context?.let {
             shopViewPremium = TokomemberShopView(it)
             shopViewVip = TokomemberShopView(it)
             tmShopCardModel = TokomemberShopCardModel(
-                shopName = data?.card?.name ?: "",
-                numberOfLevel = data?.card?.numberOfLevel ?: 0,
-                backgroundColor = data?.cardTemplate?.backgroundColor ?: "",
-                backgroundImgUrl = data?.cardTemplate?.backgroundImgUrl ?: "",
-                shopType = 0
+                shopName = arguments?.getString(BUNDLE_SHOP_NAME)?:"",
+                backgroundColor = data?.backgroundColor ?: "",
+                backgroundImgUrl = data?.backgroundImgUrl ?: "",
+                shopType = 0,
+                shopIconUrl = shopAvatar
             )
             shopViewPremium?.apply {
                 setShopCardData(tmShopCardModel)
             }
             shopViewVip?.apply {
-                setShopCardData(tmShopCardModel)
+               val vipCardModel =  tmShopCardModel.apply {
+                    shopType = 1
+                }
+                setShopCardData(vipCardModel)
             }
 
             carouselPreview?.apply {
@@ -209,17 +284,17 @@ class TmDashPreviewFragment : BaseDaggerFragment() {
         initRecyclerView()
         tvCouponMulaiValue.text = tmCouponPreviewData.startDate +","+ tmCouponPreviewData.startTime
         tvCouponBerakhirValue.text = tmCouponPreviewData.endDate +","+ tmCouponPreviewData.endTime
-        tvMaxTransactionValue.text = tmCouponPreviewData.maxValue
+        tvMaxTransactionValue.text = "Rp${CurrencyFormatHelper.convertToRupiah(tmCouponPreviewData.maxValue)}"
     }
 
     @SuppressLint("SetTextI18n")
-    private fun renderProgramPreview(programUpdateDataInput: ProgramUpdateDataInput) {
-        tvProgramMulaiValue.text = setDate(programUpdateDataInput.timeWindow?.startTime?:"") + "," + "00:00 WIB"
-        tvProgramBerakhirValue.text = setDate(programUpdateDataInput.timeWindow?.endTime?:"") + "," + "00:00 WIB"
+    private fun renderProgramPreview(membershipGetProgramForm: MembershipGetProgramForm?) {
+        tvProgramMulaiValue.text = setDate(membershipGetProgramForm?.programForm?.timeWindow?.startTime?:"") + "," + setTime(membershipGetProgramForm?.programForm?.timeWindow?.startTime?:"")
+        tvProgramBerakhirValue.text = setDate(membershipGetProgramForm?.programForm?.timeWindow?.endTime?:"") + "," +  setTime(membershipGetProgramForm?.programForm?.timeWindow?.endTime?:"")
         tvProgramMinTransaksiPremiumValue.text =
-            "Rp${CurrencyFormatHelper.convertToRupiah(programUpdateDataInput.tierLevels?.getOrNull(0)?.threshold.toString())}"
+            "Rp${CurrencyFormatHelper.convertToRupiah(membershipGetProgramForm?.programForm?.tierLevels?.getOrNull(0)?.threshold.toString())}"
         tvProgramMinTransaksiVipValue.text =
-            "Rp${CurrencyFormatHelper.convertToRupiah(programUpdateDataInput.tierLevels?.getOrNull(1)?.threshold.toString())}"
+            "Rp${CurrencyFormatHelper.convertToRupiah(membershipGetProgramForm?.programForm?.tierLevels?.getOrNull(1)?.threshold.toString())}"
     }
 
     companion object {

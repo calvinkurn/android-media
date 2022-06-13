@@ -3,10 +3,13 @@ package com.tokopedia.tokomember_seller_dashboard.view.fragment
 import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.text.Html
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.ViewTreeObserver
 import android.widget.Toast
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
@@ -35,19 +38,8 @@ import com.tokopedia.tokomember_seller_dashboard.model.CardDataTemplate
 import com.tokopedia.tokomember_seller_dashboard.model.CardTemplateImageListItem
 import com.tokopedia.tokomember_seller_dashboard.model.TmIntroBottomsheetModel
 import com.tokopedia.tokomember_seller_dashboard.tracker.TmTracker
-import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_CARD_DATA
+import com.tokopedia.tokomember_seller_dashboard.util.*
 import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_CARD_ID
-import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_PROGRAM_TYPE
-import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_SHOP_AVATAR
-import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_SHOP_ID
-import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_SHOP_NAME
-import com.tokopedia.tokomember_seller_dashboard.util.ERROR_CREATING_CTA
-import com.tokopedia.tokomember_seller_dashboard.util.ERROR_CREATING_CTA_RETRY
-import com.tokopedia.tokomember_seller_dashboard.util.ERROR_CREATING_DESC
-import com.tokopedia.tokomember_seller_dashboard.util.ERROR_CREATING_TITLE
-import com.tokopedia.tokomember_seller_dashboard.util.ERROR_CREATING_TITLE_RETRY
-import com.tokopedia.tokomember_seller_dashboard.util.LOADING_TEXT
-import com.tokopedia.tokomember_seller_dashboard.util.TokoLiveDataResult
 import com.tokopedia.tokomember_seller_dashboard.view.activity.TokomemberDashIntroActivity
 import com.tokopedia.tokomember_seller_dashboard.view.adapter.TmCardBgAdapter
 import com.tokopedia.tokomember_seller_dashboard.view.adapter.TmCardColorAdapter
@@ -89,6 +81,7 @@ class TmCreateCardFragment : BaseDaggerFragment(), TokomemberCardColorAdapterLis
     private var tmShopCardModel = TokomemberShopCardModel()
     private var mTmCardModifyInput = TmCardModifyInput()
     private var loaderDialog: LoaderDialog?=null
+    private var inToolsCardId = 0
     private val tmDashCreateViewModel: TmDashCreateViewModel by lazy(
         LazyThreadSafetyMode.NONE
     ) {
@@ -186,8 +179,14 @@ class TmCreateCardFragment : BaseDaggerFragment(), TokomemberCardColorAdapterLis
                     openLoadingDialog()
                 }
                  TokoLiveDataResult.STATUS.SUCCESS -> {
-                     closeLoadingDialog()
-                     openProgramCreationPage()
+                     if(it.data?.membershipCreateEditCard?.resultStatus?.code != "200") {
+                         inToolsCardId = it.data?.membershipCreateEditCard?.intoolsCard?.id ?: 0
+                         closeLoadingDialog()
+                         openProgramCreationPage()
+                     } else{
+                         closeLoadingDialog()
+                         handleErrorUiOnUpdate()
+                     }
                 }
                  TokoLiveDataResult.STATUS.ERROR -> {
                      closeLoadingDialog()
@@ -200,7 +199,7 @@ class TmCreateCardFragment : BaseDaggerFragment(), TokomemberCardColorAdapterLis
     private fun handleErrorUiOnErrorData(){
         containerViewFlipper.displayedChild = ERROR
         globalError.setActionClickListener {
-            tmDashCreateViewModel.getCardInfo(arguments?.getInt("cardID")?:0)
+            tmDashCreateViewModel.getCardInfo(arguments?.getInt(BUNDLE_CARD_ID)?:0)
         }
     }
 
@@ -218,6 +217,7 @@ class TmCreateCardFragment : BaseDaggerFragment(), TokomemberCardColorAdapterLis
         val tmIntroBottomSheetModel = TmIntroBottomsheetModel(title, ERROR_CREATING_DESC , "https://images.tokopedia.net/img/android/res/singleDpi/quest_widget_nonlogin_banner.png", cta , errorCount = retryCount)
         bundle.putString(TokomemberBottomsheet.ARG_BOTTOMSHEET, Gson().toJson(tmIntroBottomSheetModel))
         val bottomSheet = TokomemberBottomsheet.createInstance(bundle)
+        bottomSheet.setUpBottomSheetListener(this)
         bottomSheet.show(childFragmentManager,"")
         retryCount +=1
     }
@@ -239,11 +239,11 @@ class TmCreateCardFragment : BaseDaggerFragment(), TokomemberCardColorAdapterLis
     private fun openProgramCreationPage() {
         val bundle = Bundle()
         bundle.putInt(BUNDLE_PROGRAM_TYPE, 0)
-        bundle.putInt(BUNDLE_SHOP_ID, shopID)
+        bundle.putInt(BUNDLE_CARD_ID_IN_TOOLS,inToolsCardId)
         bundle.putInt(BUNDLE_CARD_ID,arguments?.getInt(BUNDLE_CARD_ID)?:0)
+        bundle.putInt(BUNDLE_SHOP_ID, arguments?.getInt(BUNDLE_SHOP_ID)?:0)
         bundle.putString(BUNDLE_SHOP_AVATAR, arguments?.getString(BUNDLE_SHOP_AVATAR))
         bundle.putString(BUNDLE_SHOP_NAME, arguments?.getString(BUNDLE_SHOP_NAME))
-        bundle.putParcelable(BUNDLE_CARD_DATA , tmShopCardModel)
         tmOpenFragmentCallback.openFragment(CreateScreenType.PROGRAM, bundle)
     }
 
@@ -291,6 +291,14 @@ class TmCreateCardFragment : BaseDaggerFragment(), TokomemberCardColorAdapterLis
         val layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
         rvColor.layoutManager = layoutManager
         rvColor.adapter = adapterColor
+        rvColor?.viewTreeObserver?.addOnGlobalLayoutListener(object: ViewTreeObserver.OnGlobalLayoutListener {
+            override fun onGlobalLayout() {
+                rvColor?.viewTreeObserver?.removeOnGlobalLayoutListener(this)
+                Handler(Looper.getMainLooper()).postDelayed({
+                    rvColor?.findViewHolderForAdapterPosition(0)?.itemView?.performClick()
+                }, 500L)
+            }
+        })
         if (rvColor.itemDecorationCount.isZero()) {
             rvColor.addItemDecoration(TokomemberDashColorItemDecoration(dpToPx(12).toInt()))
         }
@@ -407,6 +415,14 @@ class TmCreateCardFragment : BaseDaggerFragment(), TokomemberCardColorAdapterLis
             if (tokoCardItem is TokomemberCardColor) {
                 getBackgroundPallete(tokoCardItem.id ?: "", tokoCardItem.tokoCardPatternList)
             }
+            rvCardBg?.viewTreeObserver?.addOnGlobalLayoutListener(object: ViewTreeObserver.OnGlobalLayoutListener {
+                override fun onGlobalLayout() {
+                    rvCardBg?.viewTreeObserver?.removeOnGlobalLayoutListener(this)
+                    Handler(Looper.getMainLooper()).postDelayed({
+                        rvCardBg?.findViewHolderForAdapterPosition(0)?.itemView?.performClick()
+                    }, 500L)
+                }
+            })
         }
     }
 
@@ -432,12 +448,13 @@ class TmCreateCardFragment : BaseDaggerFragment(), TokomemberCardColorAdapterLis
         when(errorCount){
             0 -> tmDashCreateViewModel.modifyShopCard(mTmCardModifyInput)
             else -> {
-                (TokomemberDashIntroActivity.openActivity(
+                TokomemberDashIntroActivity.openActivity(
                     shopID, arguments?.getString(BUNDLE_SHOP_AVATAR)?:"",
                         arguments?.getString(BUNDLE_SHOP_NAME)?:"",
                     false,
                     this.context
-                ))
+                )
+                activity?.finish()
             }
         }
     }

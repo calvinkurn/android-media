@@ -31,34 +31,49 @@ object TmDateUtil {
         return "$selectedTime WIB"
     }
 
+    fun setTimeEnd(time: String): String {
+        val parseTime = SimpleDateFormat("yyyy-MM-dd HH:mm:ss Z", Locale("id", "ID"))
+        parseTime.timeZone = TimeZone.getTimeZone("UTC")
+        val date = parseTime.parse(time + "00")
+        val calendar = Calendar.getInstance(Locale("id", "ID"))
+        date?.let {
+            calendar.time = it
+            calendar.add(Calendar.HOUR, -1)
+        }
+        val requireTime =
+            SimpleDateFormat("yyyy-MM-dd HH:mm:ss Z", Locale("id", "ID")).format(calendar.time)
+        return requireTime.substringAfter(" ").substringBefore(" ").substringBeforeLast(":")
+    }
+
     @SuppressLint("SimpleDateFormat")
     fun convertDateTime(t: Date): String {
-        return SimpleDateFormat("yyyy-MM-dd HH:mm:ss Z").format(t)
+        return SimpleDateFormat("yyyy-MM-dd HH:mm:ss Z" , Locale("id","ID")).format(t)
     }
 
     @SuppressLint("SimpleDateFormat")
     fun addDuration(time: String , duration: Int):String {
         //+00 to match Format Z , BE support up to 2 character of Z
-        val parseTime = SimpleDateFormat("yyyy-MM-dd HH:mm:ss Z").parse(time+"00")
+        val parseTime = SimpleDateFormat("yyyy-MM-dd HH:mm:ss Z" , Locale("id","ID")).parse(time+"00")
         val calendar = Calendar.getInstance()
         parseTime?.let {
             calendar.time = it
             calendar.add(Calendar.MONTH , duration )
+            calendar.add(Calendar.MINUTE,30)
         }
-        var requireTime = SimpleDateFormat("yyyy-MM-dd HH:mm:ss Z").format(calendar.time)
-        requireTime = requireTime.substring(0, time.length-2)
+        var requireTime = SimpleDateFormat("yyyy-MM-dd HH:mm:ss Z" , Locale("id","ID")).format(calendar.time)
+        requireTime = requireTime.substring(0, requireTime.length-2)
         return requireTime
     }
 
     @SuppressLint("SimpleDateFormat")
     fun convertDuration(time: String):String{
         //+00 to match Format Z , BE support up to 2 character of Z
-        val parseTime = SimpleDateFormat("yyyy-MM-dd HH:mm:ss Z").parse(time+"00")
+        val parseTime = SimpleDateFormat("yyyy-MM-dd HH:mm:ss Z" , Locale("id","ID")).parse(time+"00")
         val calendar = Calendar.getInstance()
         parseTime?.let {
             calendar.time = it
         }
-        var requireTime = SimpleDateFormat("yyyy-MM-dd HH:mm:ss Z").format(calendar.time)
+        var requireTime = SimpleDateFormat("yyyy-MM-dd HH:mm:ss Z" , Locale("id","ID")).format(calendar.time)
         requireTime = requireTime.substring(0, time.length-2)
         return requireTime
     }
@@ -69,6 +84,34 @@ object TmDateUtil {
         val date = parseTime.parse(dateStr+"00")
         return try {
             (date?.time?.div(1000)).toString()
+        } catch (e: Exception) {
+            "0"
+        }
+    }
+
+
+    fun getTimeInMillis(dateStr: String): String {
+        val parseTime = SimpleDateFormat("yyyy-MM-dd HH:mm:ss Z" , Locale("id","ID"))
+        parseTime.timeZone = TimeZone.getTimeZone("UTC")
+        val date = parseTime.parse(dateStr+"00")
+        return try {
+            (date?.time?.div(1000)).toString()
+        } catch (e: Exception) {
+            "0"
+        }
+    }
+
+    fun getTimeInMillisEnd(dateStr: String): String {
+        val parseTime = SimpleDateFormat("yyyy-MM-dd HH:mm:ss Z" ,Locale("id","ID"))
+        parseTime.timeZone = TimeZone.getTimeZone("UTC")
+        val date = parseTime.parse(dateStr+"00")
+        return try {
+            val calendar = Calendar.getInstance(Locale("id","ID"))
+            date?.let {
+                calendar.time = it
+                calendar.add(Calendar.HOUR,-1)
+            }
+            (calendar.timeInMillis/1000).toString()
         } catch (e: Exception) {
             "0"
         }

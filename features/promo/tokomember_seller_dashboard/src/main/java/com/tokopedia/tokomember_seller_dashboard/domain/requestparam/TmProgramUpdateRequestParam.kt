@@ -52,7 +52,9 @@ data class TimeWindow(
 	var id: Int? = 0,
 	@Expose
 	@SerializedName("endTime")
-	val endTime: String? = null
+	val endTime: String? = null,
+	var startTimeMillis :String = "",
+	var endTimeMillis : String =""
 ) : Parcelable
 
 @Parcelize

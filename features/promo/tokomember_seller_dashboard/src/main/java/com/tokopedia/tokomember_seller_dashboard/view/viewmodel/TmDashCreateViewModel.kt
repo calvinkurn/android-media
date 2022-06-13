@@ -25,17 +25,7 @@ import com.tokopedia.tokomember_seller_dashboard.domain.requestparam.TmCardModif
 import com.tokopedia.tokomember_seller_dashboard.domain.requestparam.TmCouponUpdateRequest
 import com.tokopedia.tokomember_seller_dashboard.domain.requestparam.TmCouponValidateRequest
 import com.tokopedia.tokomember_seller_dashboard.domain.requestparam.TmMerchantCouponUnifyRequest
-import com.tokopedia.tokomember_seller_dashboard.model.CardData
-import com.tokopedia.tokomember_seller_dashboard.model.CardDataTemplate
-import com.tokopedia.tokomember_seller_dashboard.model.MemberShipValidateResponse
-import com.tokopedia.tokomember_seller_dashboard.model.MembershipCreateEditCard
-import com.tokopedia.tokomember_seller_dashboard.model.ProgramDetailData
-import com.tokopedia.tokomember_seller_dashboard.model.ProgramUpdateResponse
-import com.tokopedia.tokomember_seller_dashboard.model.TmCouponDetailResponseData
-import com.tokopedia.tokomember_seller_dashboard.model.TmCouponInitialResponse
-import com.tokopedia.tokomember_seller_dashboard.model.TmKuponCreateMVResponse
-import com.tokopedia.tokomember_seller_dashboard.model.TmKuponUpdateMVResponse
-import com.tokopedia.tokomember_seller_dashboard.model.TmVoucherValidationPartialResponse
+import com.tokopedia.tokomember_seller_dashboard.model.*
 import com.tokopedia.tokomember_seller_dashboard.util.TokoLiveDataResult
 import com.tokopedia.tokomember_seller_dashboard.util.UploadPremiumCouponError
 import com.tokopedia.tokomember_seller_dashboard.util.UploadVipCouponError
@@ -86,8 +76,8 @@ class TmDashCreateViewModel @Inject constructor(
     val tmCardResultLiveData: LiveData<TokoLiveDataResult<CardDataTemplate>> =
         _tmCardResultLiveData
 
-    private val _tokomemberCardModifyLiveData = MutableLiveData<TokoLiveDataResult<MembershipCreateEditCard>>()
-    val tokomemberCardModifyLiveData: LiveData<TokoLiveDataResult<MembershipCreateEditCard>> =
+    private val _tokomemberCardModifyLiveData = MutableLiveData<TokoLiveDataResult<MembershipCreateEditCardResponse>>()
+    val tokomemberCardModifyLiveData: LiveData<TokoLiveDataResult<MembershipCreateEditCardResponse>> =
         _tokomemberCardModifyLiveData
 
     private val _tmCouponPreValidateSingleCouponLiveData = MutableLiveData<TokoLiveDataResult<TmVoucherValidationPartialResponse>>()
@@ -98,8 +88,8 @@ class TmDashCreateViewModel @Inject constructor(
     val tmCouponPreValidateMultipleCouponLiveData: LiveData<TokoLiveDataResult<TmVoucherValidationPartialResponse>> =
         _tmCouponPreValidateMultipleCouponLiveData
 
-    private val _tmCouponCreateLiveData = MutableLiveData<Result<TmKuponCreateMVResponse>>()
-    val tmCouponCreateLiveData: LiveData<Result<TmKuponCreateMVResponse>> =
+    private val _tmCouponCreateLiveData = MutableLiveData<Result<CouponCreateMultiple>>()
+    val tmCouponCreateLiveData: LiveData<Result<CouponCreateMultiple>> =
         _tmCouponCreateLiveData
 
     private val _tmCouponUpdateLiveData = MutableLiveData<TokoLiveDataResult<TmKuponUpdateMVResponse>>()
@@ -229,13 +219,13 @@ class TmDashCreateViewModel @Inject constructor(
         }, actionType, couponType)
     }
 
-    fun validateProgram(shopId: String, startTime:String ,endTime:String){
+    fun validateProgram(shopId: String, startTime:String ,endTime:String , source:String){
         tmKuponProgramValidateUsecase.cancelJobs()
         tmKuponProgramValidateUsecase.getMembershipValidateInfo( {
             _tmProgramValidateLiveData.postValue(TokoLiveDataResult.success(it))
         }, {
             _tmProgramValidateLiveData.postValue(TokoLiveDataResult.error(it, ValidateCouponError()))
-        }, shopId, startTime, endTime)
+        }, shopId, startTime, endTime , source)
     }
 
     fun preValidateCoupon(tmCouponValidateRequest: TmCouponValidateRequest){

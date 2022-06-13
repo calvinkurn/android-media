@@ -7,14 +7,14 @@ import com.tokopedia.tokomember_seller_dashboard.model.*
 import javax.inject.Inject
 
 class TokomemberDashEditCardUsecase @Inject constructor(graphqlRepository: GraphqlRepository) :
-    GraphqlUseCase<MembershipCreateEditCard>(graphqlRepository) {
+    GraphqlUseCase<MembershipCreateEditCardResponse>(graphqlRepository) {
 
     fun modifyShopCard(
-        success: (MembershipCreateEditCard) -> Unit,
+        success: (MembershipCreateEditCardResponse) -> Unit,
         onFail: (Throwable) -> Unit,
         cardModifyInput: TmCardModifyInput
     ){
-        this.setTypeClass(MembershipCreateEditCard::class.java)
+        this.setTypeClass(MembershipCreateEditCardResponse::class.java)
         this.setRequestParams(getRequestParams(cardModifyInput))
         this.setGraphqlQuery(TM_CARD_MODIFY)
         execute({

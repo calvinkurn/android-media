@@ -24,41 +24,16 @@ import com.tokopedia.tokomember_common_widget.callbacks.ChipGroupCallback
 import com.tokopedia.tokomember_common_widget.util.CreateScreenType
 import com.tokopedia.tokomember_common_widget.util.ProgramActionType
 import com.tokopedia.tokomember_seller_dashboard.R
+import com.tokopedia.tokomember_seller_dashboard.tracker.TmTracker
 import com.tokopedia.tokomember_seller_dashboard.callbacks.TmOpenFragmentCallback
 import com.tokopedia.tokomember_seller_dashboard.di.component.DaggerTokomemberDashComponent
 import com.tokopedia.tokomember_seller_dashboard.domain.requestparam.ProgramUpdateDataInput
 import com.tokopedia.tokomember_seller_dashboard.model.MembershipGetProgramForm
 import com.tokopedia.tokomember_seller_dashboard.model.ProgramThreshold
 import com.tokopedia.tokomember_seller_dashboard.model.TmIntroBottomsheetModel
-import com.tokopedia.tokomember_seller_dashboard.tracker.TmTracker
-import com.tokopedia.tokomember_seller_dashboard.util.ACTION_CREATE
-import com.tokopedia.tokomember_seller_dashboard.util.ACTION_DETAIL
-import com.tokopedia.tokomember_seller_dashboard.util.ACTION_EDIT
-import com.tokopedia.tokomember_seller_dashboard.util.ACTION_EXTEND
-import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_CARD_DATA
-import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_CARD_ID
-import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_EDIT_PROGRAM
-import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_PROGRAM_DATA
-import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_PROGRAM_ID
-import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_PROGRAM_TYPE
-import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_SHOP_AVATAR
-import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_SHOP_ID
-import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_SHOP_NAME
-import com.tokopedia.tokomember_seller_dashboard.util.DATE_DESC
-import com.tokopedia.tokomember_seller_dashboard.util.DATE_TITLE
-import com.tokopedia.tokomember_seller_dashboard.util.ERROR_CREATING_CTA
-import com.tokopedia.tokomember_seller_dashboard.util.ERROR_CREATING_CTA_RETRY
-import com.tokopedia.tokomember_seller_dashboard.util.ERROR_CREATING_DESC
-import com.tokopedia.tokomember_seller_dashboard.util.ERROR_CREATING_TITLE
-import com.tokopedia.tokomember_seller_dashboard.util.ERROR_CREATING_TITLE_RETRY
-import com.tokopedia.tokomember_seller_dashboard.util.PROGRAM_CTA
-import com.tokopedia.tokomember_seller_dashboard.util.PROGRAM_CTA_EDIT
-import com.tokopedia.tokomember_seller_dashboard.util.REFRESH
-import com.tokopedia.tokomember_seller_dashboard.util.TM_PROGRAM_EDIT_DIALOG_TITLE
-import com.tokopedia.tokomember_seller_dashboard.util.TM_PROGRAM_MIN_PURCHASE_ERROR
+import com.tokopedia.tokomember_seller_dashboard.util.*
 import com.tokopedia.tokomember_seller_dashboard.util.TmDateUtil.convertDateTime
 import com.tokopedia.tokomember_seller_dashboard.util.TmDateUtil.setDate
-import com.tokopedia.tokomember_seller_dashboard.util.TokoLiveDataResult
 import com.tokopedia.tokomember_seller_dashboard.view.activity.TokomemberDashIntroActivity
 import com.tokopedia.tokomember_seller_dashboard.view.adapter.mapper.ProgramUpdateMapper
 import com.tokopedia.tokomember_seller_dashboard.view.customview.BottomSheetClickListener
@@ -68,8 +43,17 @@ import com.tokopedia.unifycomponents.ProgressBarUnify
 import com.tokopedia.utils.text.currency.NumberTextWatcher
 import kotlinx.android.synthetic.main.tm_dash_program_form_container.*
 import kotlinx.android.synthetic.main.tm_dash_progrm_form.*
+import java.text.SimpleDateFormat
 import java.util.*
 import javax.inject.Inject
+
+private const val COUNTRY_ID = "ID"
+private const val LANGUAGE_ID = "id"
+private const val GMT = "GMT"
+private const val Z = "Z"
+private const val GMT07 = "+0700"
+private val locale = Locale(LANGUAGE_ID, COUNTRY_ID)
+
 
 class TmProgramFragment : BaseDaggerFragment(), ChipGroupCallback ,
     BottomSheetClickListener {
@@ -83,6 +67,7 @@ class TmProgramFragment : BaseDaggerFragment(), ChipGroupCallback ,
     private var errorCount = 0
     private var programUpdateResponse = ProgramUpdateDataInput()
     private var tmTracker: TmTracker? = null
+    private var programCreationId = 0
 
     @Inject
     lateinit var viewModelFactory: dagger.Lazy<ViewModelProvider.Factory>
@@ -156,16 +141,15 @@ class TmProgramFragment : BaseDaggerFragment(), ChipGroupCallback ,
             when(it.status){
                 TokoLiveDataResult.STATUS.SUCCESS -> {
                     if(it.data?.membershipCreateEditProgram?.resultStatus?.code=="200"){
+                        programCreationId = it?.data.membershipCreateEditProgram.programSeller?.id?:0
                         onProgramUpdateSuccess()
                     }
                     else{
-                        onProgramUpdateSuccess()
-                        //  handleErrorOnUpdate()
+                        handleErrorOnUpdate()
                     }
                 }
                 TokoLiveDataResult.STATUS.ERROR ->{
-                    onProgramUpdateSuccess()
-                    //handleErrorOnUpdate()
+                    handleErrorOnUpdate()
                 }
             }
         })
@@ -192,6 +176,7 @@ class TmProgramFragment : BaseDaggerFragment(), ChipGroupCallback ,
         val tmIntroBottomsheetModel = TmIntroBottomsheetModel(title, ERROR_CREATING_DESC , "https://images.tokopedia.net/img/android/res/singleDpi/quest_widget_nonlogin_banner.png", cta , errorCount = errorCount)
         bundle.putString(TokomemberBottomsheet.ARG_BOTTOMSHEET, Gson().toJson(tmIntroBottomsheetModel))
         val bottomsheet = TokomemberBottomsheet.createInstance(bundle)
+        bottomsheet.setUpBottomSheetListener(this)
         bottomsheet.show(childFragmentManager,"")
         errorCount+=1
     }
@@ -223,11 +208,11 @@ class TmProgramFragment : BaseDaggerFragment(), ChipGroupCallback ,
         val bundle = Bundle()
         bundle.putInt(BUNDLE_PROGRAM_TYPE, programActionType)
         bundle.putString(BUNDLE_SHOP_AVATAR, arguments?.getString(BUNDLE_SHOP_AVATAR))
+        bundle.putInt(BUNDLE_CARD_ID_IN_TOOLS,arguments?.getInt(BUNDLE_CARD_ID_IN_TOOLS) ?: 0)
         bundle.putString(BUNDLE_SHOP_NAME, arguments?.getString(BUNDLE_SHOP_NAME))
         bundle.putInt(BUNDLE_SHOP_ID, arguments?.getInt(BUNDLE_SHOP_ID) ?: 0)
         bundle.putInt(BUNDLE_CARD_ID , arguments?.getInt(BUNDLE_CARD_ID)?:0)
-        bundle.putParcelable(BUNDLE_CARD_DATA , arguments?.getParcelable(BUNDLE_CARD_DATA))
-        bundle.putParcelable(BUNDLE_PROGRAM_DATA, programUpdateResponse)
+        bundle.putInt(BUNDLE_PROGRAM_ID_IN_TOOLS,programCreationId)
         when(programActionType){
             ProgramActionType.CREATE -> {
                 tmOpenFragmentCallback.openFragment(CreateScreenType.COUPON_MULTIPLE, bundle)
@@ -415,7 +400,7 @@ class TmProgramFragment : BaseDaggerFragment(), ChipGroupCallback ,
                             textFieldTranskVip.isInputError = true
                             textFieldTranskVip.setMessage("Maks ${programThreshold?.maxThresholdLevel2}")
                         }
-                        number <= programThreshold?.minThresholdLevel2 ?: 0 -> {
+                        number < programThreshold?.minThresholdLevel2 ?: 0 -> {
                             textFieldTranskVip.isInputError = true
                             textFieldTranskVip.setMessage("Min ${programThreshold?.minThresholdLevel2}")
                         }
@@ -471,7 +456,7 @@ class TmProgramFragment : BaseDaggerFragment(), ChipGroupCallback ,
             val dayMax = calMax.get(Calendar.DAY_OF_MONTH)
 
             val maxDate = GregorianCalendar(yearMax, monthMax, dayMax)
-            val currentDate = GregorianCalendar(LocaleUtils.getCurrentLocale(it))
+            val currentDate = GregorianCalendar(Locale("id", "ID"))
 
             val calMin = Calendar.getInstance()
             calMin.add(Calendar.YEAR, MIN_YEAR);
@@ -533,12 +518,13 @@ class TmProgramFragment : BaseDaggerFragment(), ChipGroupCallback ,
         if (errorCount == 0) {
             tmDashCreateViewModel.updateProgram(programUpdateResponse)
         } else {
-            (TokomemberDashIntroActivity.openActivity(
+            TokomemberDashIntroActivity.openActivity(
                 arguments?.getInt(BUNDLE_SHOP_ID) ?: 0,arguments?.getString(BUNDLE_SHOP_AVATAR)?:"" ,arguments?.getString(
                     BUNDLE_SHOP_NAME)?:"",
                 false,
                 this.context
-            ))
+            )
+            activity?.finish()
         }
     }
 }

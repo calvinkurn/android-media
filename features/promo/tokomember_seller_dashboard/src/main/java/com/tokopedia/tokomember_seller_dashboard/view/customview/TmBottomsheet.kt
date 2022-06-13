@@ -54,6 +54,7 @@ class TokomemberBottomsheet : BottomSheetUnify() {
         imgBottomsheet.loadImage(tmIntroBottomSheetModel.image)
         btnProceed.text = tmIntroBottomSheetModel.ctaName
         btnProceed.setOnClickListener {
+            dismiss()
             mBottomSheetClickListener?.onButtonClick(tmIntroBottomSheetModel.errorCount)
         }
     }

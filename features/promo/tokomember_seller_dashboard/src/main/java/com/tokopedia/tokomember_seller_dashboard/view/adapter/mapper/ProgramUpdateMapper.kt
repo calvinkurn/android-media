@@ -8,6 +8,7 @@ import com.tokopedia.tokomember_seller_dashboard.domain.requestparam.TimeWindow
 import com.tokopedia.tokomember_seller_dashboard.model.MembershipGetProgramForm
 import com.tokopedia.tokomember_seller_dashboard.util.TmDateUtil.addDuration
 import com.tokopedia.tokomember_seller_dashboard.util.TmDateUtil.convertDuration
+import com.tokopedia.tokomember_seller_dashboard.util.TmDateUtil.getTimeInMillis
 
 object ProgramUpdateMapper {
 
@@ -24,7 +25,9 @@ object ProgramUpdateMapper {
                 membershipGetProgramForm?.programForm?.timeWindow?.startTime ?: ""
             ),
             endTime = addDuration(membershipGetProgramForm?.programForm?.timeWindow?.startTime ?: "", periodInMonth),
-            periodInMonth = periodInMonth
+            periodInMonth = periodInMonth,
+      //      startTimeMillis = getTimeInMillis(membershipGetProgramForm?.programForm?.timeWindow?.startTime ?: ""),
+//            endTimeMillis = getTimeInMillis(addDuration(membershipGetProgramForm?.programForm?.timeWindow?.startTime ?: "", periodInMonth))
         )
         val programAttributes = membershipGetProgramForm?.programForm?.programAttributes
         programAttributes.apply {

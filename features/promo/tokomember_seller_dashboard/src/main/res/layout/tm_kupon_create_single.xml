@@ -17,13 +17,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <com.tokopedia.unifycomponents.ProgressBarUnify
-                android:id="@+id/progressKupon"
-                android:layout_width="wrap_content"
-                android:layout_height="4dp"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"/>
-
             <com.tokopedia.unifycomponents.ticker.Ticker
                 android:id="@+id/ticker"
                 android:layout_width="match_parent"
@@ -31,7 +24,7 @@
                 app:closeButtonVisibility="gone"
                 app:descriptionText="Biar mudah cepat, pakai rekomendasi kupon dan minimum pembelian untuk member kamu!"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/progressKupon"
+                app:layout_constraintTop_toTopOf="parent"
                 app:tickerShapeType="full"
                 app:tickerType="announcement" />
 

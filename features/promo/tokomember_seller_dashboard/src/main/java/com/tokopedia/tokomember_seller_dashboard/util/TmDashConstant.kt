@@ -6,12 +6,14 @@ const val BUNDLE_SHOP_ID = "bundleShopId"
 const val BUNDLE_SHOP_NAME = "bundleShopName"
 const val BUNDLE_SHOP_AVATAR = "bundleShopAvatar"
 const val BUNDLE_CARD_ID = "bundleCardId"
+const val BUNDLE_CARD_ID_IN_TOOLS = "bundleCardIdInTools"
 const val BUNDLE_VOUCHER_ID = "bundleVoucherId"
 const val BUNDLE_VOUCHER_QUOTA = "bundleVoucherQuota"
 const val BUNDLE_VOUCHER_TYPE = "bundleVoucherType"
 const val BUNDLE_OPTION_MENU = "bundleOptionMenu"
 const val BUNDLE_EDIT_PROGRAM = "bundleEditProgram"
 const val BUNDLE_PROGRAM_ID = "bundleProgramId"
+const val BUNDLE_PROGRAM_ID_IN_TOOLS = "bundleProgramIdInTools"
 const val BUNDLE_PROGRAM_TYPE = "bundleProgramType"
 const val BUNDLE_CARD_DATA = "bundleCardData"
 const val BUNDLE_PROGRAM_DATA = "bundleProgramData"
@@ -20,6 +22,7 @@ const val BUNDLE_COUPON_CREATE_DATA = "bundleCouponCreateData"
 const val BUNDLE_CREATE_SCREEN_TYPE = "bundle_create_screen_type"
 const val BUNDLE_REFRESH = "bundle_refresh"
 const val REQUEST_CODE_REFRESH = 1
+const val BUNDLE_IS_SHOW_BS = "bundle_is_show_bs"
 
 const val ACTION_CREATE = "create"
 const val ACTION_DETAIL = "detail"
@@ -138,3 +141,7 @@ const val COUPON_TYPE_CASHBACK = 3
 
 const val COUPON_DISCOUNT_TYPE_IDR = 1
 const val COUPON_DISCOUNT_TYPE_PERCENT = 2
+
+const val SOURCE_MULTIPLE_COUPON_CREATE = "TokoMember-Create"
+const val SOURCE_MULTIPLE_COUPON_EXTEND = "TokoMember-Extend"
+const val SOURCE_SINGLE_COUPON_CREATE = "TokoMember-Voucher"

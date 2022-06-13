@@ -6,6 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:clickable="true"
+    android:background="@color/Unify_Background"
     android:measureAllChildren="false"
     tools:ignore="MissingDefaultResource">
 
@@ -18,14 +19,8 @@
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
+            android:background="@color/Unify_Background"
             android:layout_height="wrap_content">
-
-            <com.tokopedia.unifycomponents.ProgressBarUnify
-                android:id="@+id/progressKupon"
-                android:layout_width="wrap_content"
-                android:layout_height="4dp"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"/>
 
             <com.tokopedia.unifycomponents.ticker.Ticker
                 android:id="@+id/ticker"
@@ -35,7 +30,7 @@
                 app:descriptionText="Toko tidak aktif > 30 hari.
 Biar mudah  cepat, pakai rekomendasi kupon dan minimum pembelian untuk member kamu!"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/progressKupon"
+                app:layout_constraintTop_toTopOf="parent"
                 app:tickerShapeType="full"
                 app:tickerType="announcement" />
 
@@ -111,8 +106,8 @@ Biar mudah  cepat, pakai rekomendasi kupon dan minimum pembelian untuk member ka
                 android:visibility="gone"
                 app:layout_goneMarginTop="20dp"
                 android:layout_marginTop="20dp"
-                app:layout_constraintStart_toStartOf="@id/tvTitleKuponMembership"
-                app:layout_constraintTop_toBottomOf="@id/icPremiumCoupon"/>
+                app:layout_constraintStart_toStartOf="@+id/tvTitleKuponMembership"
+                app:layout_constraintTop_toBottomOf="@+id/icPremiumCoupon"/>
 
             <View
                 android:id="@+id/viewDividerPremiumCoupon"
@@ -176,7 +171,7 @@ Biar mudah  cepat, pakai rekomendasi kupon dan minimum pembelian untuk member ka
                 app:layout_goneMarginTop="20dp"
                 android:layout_marginTop="20dp"
                 app:layout_constraintTop_toBottomOf="@+id/icVipCoupon"
-                app:layout_constraintStart_toStartOf="@id/tvTitleKuponMembership"/>
+                app:layout_constraintStart_toStartOf="@+id/tvTitleKuponMembership"/>
 
             <View
                 android:id="@+id/viewDividerTwo"
@@ -387,6 +382,7 @@ Biar mudah  cepat, pakai rekomendasi kupon dan minimum pembelian untuk member ka
     <com.tokopedia.globalerror.GlobalError
         android:id="@+id/globalError"
         android:layout_gravity="center"
+        android:background="@color/Unify_Background"
         app:globalerrors_type="SERVER_ERROR"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"/>

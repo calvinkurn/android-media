@@ -87,7 +87,7 @@ object TmFileUtil {
             val bitmap = getBitmapFromView(drawView)
             pictureFile.createNewFile()
             val oStream = FileOutputStream(pictureFile)
-            bitmap?.compress(Bitmap.CompressFormat.PNG, 100, oStream)
+            bitmap?.compress(Bitmap.CompressFormat.JPEG, 70, oStream)
             oStream.flush()
             oStream.close()
         } catch (e: IOException) {

@@ -6,10 +6,10 @@ import com.google.gson.annotations.SerializedName
 data class TmCardModifyResponse(
 	@Expose
 	@SerializedName("data")
-	val data: Data? = null
+	val data: MembershipCreateEditCardResponse? = null
 )
 
-data class Data(
+data class MembershipCreateEditCardResponse(
 	@Expose
 	@SerializedName("membershipCreateEditCard")
 	val membershipCreateEditCard: MembershipCreateEditCard? = null

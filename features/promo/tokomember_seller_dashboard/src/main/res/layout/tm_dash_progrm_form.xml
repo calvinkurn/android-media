@@ -5,6 +5,7 @@
     android:id="@+id/containerViewFlipper"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/Unify_Background"
     android:clickable="true"
     tools:ignore="MissingDefaultResource">
 
@@ -150,7 +151,7 @@
                 app:layout_constraintTop_toBottomOf="@id/cardEditInfo"
                 app:unify_text_field_append_drawable_icon_1="@drawable/iconunify_calendar"
                 app:unify_text_field_clearable="true"
-                app:unify_text_field_input_type="text|number"
+                app:unify_text_field_input_type="number"
                 app:unify_text_field_label="Min. transaksi Premium (Level 1)"
                 app:unify_text_field_label_static="false"
                 app:unify_text_field_prepend_text="Rp" />
@@ -181,7 +182,7 @@
                 app:layout_constraintTop_toBottomOf="@id/tickerInfo"
                 app:unify_text_field_append_drawable_icon_1="@drawable/iconunify_calendar"
                 app:unify_text_field_clearable="true"
-                app:unify_text_field_input_type="text|number"
+                app:unify_text_field_input_type="number"
                 app:unify_text_field_label="Min. transaksi VIP (Level 2)"
                 app:unify_text_field_label_static="false"
                 app:unify_text_field_prepend_text="Rp" />
@@ -212,6 +213,7 @@
 
     <com.tokopedia.globalerror.GlobalError
         android:id="@+id/globalError"
+        android:background="@color/Unify_Background"
         android:layout_gravity="center"
         app:globalerrors_type="SERVER_ERROR"
         android:layout_width="wrap_content"

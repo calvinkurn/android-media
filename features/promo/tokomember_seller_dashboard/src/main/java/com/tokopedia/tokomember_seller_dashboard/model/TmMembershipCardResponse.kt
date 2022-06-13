@@ -102,18 +102,18 @@ data class MembershipGetCardForm(
 	val colorTemplateList: List<ColorTemplateListItem?>? = null,
     @Expose
 	@SerializedName("cardTemplate")
-	val cardTemplate: HomeCardTemplate? = null,
+	val cardTemplate: CardTemplate? = null,
     @Expose
 	@SerializedName("cardTemplateImageList")
 	val cardTemplateImageList: List<CardTemplateImageListItem?>? = null,
     @Expose
 	@SerializedName("card")
-	val card: HomeCard? = null
+	val card: Card? = null
 )
 
 data class CardDataTemplate(
-	val card: HomeCard? = null,
-	val cardTemplate: HomeCardTemplate? = null,
+	val card: Card? = null,
+	val cardTemplate: CardTemplate? = null,
 	val cardTemplateImageList: List<CardTemplateImageListItem?>? = null,
 	val shopAvatar: String = ""
 	)

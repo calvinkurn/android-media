@@ -208,7 +208,9 @@ class TmIntroFragment : BaseDaggerFragment(),
         intent.putExtra(BUNDLE_CARD_ID,cardID?:0)
         intent.putExtra(BUNDLE_SHOP_AVATAR, arguments?.getString(BUNDLE_SHOP_AVATAR))
         intent.putExtra(BUNDLE_SHOP_NAME, arguments?.getString(BUNDLE_SHOP_NAME))
+        intent.putExtra(BUNDLE_SHOP_ID, arguments?.getInt(BUNDLE_SHOP_ID))
         startActivity(intent)
+        activity?.finish()
     }
 
     private fun renderHeader(){

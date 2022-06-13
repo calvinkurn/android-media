@@ -276,7 +276,7 @@ class TmSingleCouponCreateFragment : BaseDaggerFragment() {
                     errorState.isPreValidateVipError = false
                     if (it.data?.voucherValidationPartial?.header?.messages?.size == 1){
                         tokomemberDashCreateViewModel.validateProgram(arguments?.getInt(
-                            BUNDLE_SHOP_ID).toString(),programData?.timeWindow?.startTime?:"",programData?.timeWindow?.endTime?:"")
+                            BUNDLE_SHOP_ID).toString(),programData?.timeWindow?.startTime?:"",programData?.timeWindow?.endTime?:"","")
                     }
                     else {
                         handleProgramValidateError(it.data?.voucherValidationPartial?.data?.validationError,"premium")
@@ -681,7 +681,7 @@ class TmSingleCouponCreateFragment : BaseDaggerFragment() {
         bottomsheet.setUpBottomSheetListener(object : BottomSheetClickListener{
             override fun onButtonClick(errorCount: Int) {
                 when (errorCount) {
-                    0 -> tokomemberDashCreateViewModel.validateProgram("", "", "")
+                    0 -> tokomemberDashCreateViewModel.validateProgram("", "", "","")
                     else -> {
                         (TokomemberDashIntroActivity.openActivity(
                             0, "", "",
@@ -704,8 +704,6 @@ class TmSingleCouponCreateFragment : BaseDaggerFragment() {
                 activity?.onBackPressed()
             }
         }
-
-        progressKupon.hide()
     }
 
     private fun renderButton() {
