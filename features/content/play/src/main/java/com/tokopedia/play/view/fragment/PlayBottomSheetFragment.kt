@@ -571,7 +571,7 @@ class PlayBottomSheetFragment @Inject constructor(
                                 productAction = ProductAction.AddToCart,
                                 bottomInsetsType = bottomInsetsType,
                                 shopInfo = playViewModel.latestCompleteChannelData.partnerInfo,
-                                sectionInfo = event.sectionInfo ?: ProductSectionUiModel.Section.Empty,
+                                sectionInfo = event.sectionInfo,
                             )
                         }
                         else -> {}
