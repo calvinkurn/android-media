@@ -6,6 +6,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.gm.common.constant.PMConstant
+import com.tokopedia.gm.common.data.source.local.model.PMShopInfoUiModel
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
@@ -48,7 +49,7 @@ class UpgradePmProWidget(
     private fun setupNewSeller(element: WidgetUpgradePmProUiModel) {
         val shopInfo = element.shopInfo
         val shopLevel = shopInfo.shopLevel
-        val scoreShowTickerEligible = 70
+        val scoreShowTickerEligible = PMShopInfoUiModel.DEFAULT_PM_PRO_SHOP_SCORE_THRESHOLD
         binding?.run {
             tvPmUpgradePmProDesc.text = getString(
                 R.string.pm_desc_next_update,
