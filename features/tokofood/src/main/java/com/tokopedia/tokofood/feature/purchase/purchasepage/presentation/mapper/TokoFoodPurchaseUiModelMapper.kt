@@ -360,14 +360,14 @@ object TokoFoodPurchaseUiModelMapper {
     private fun mapOptionDetailsToOptionUiModels(maxQty: Int, optionDetails: List<CheckoutTokoFoodProductVariantOption>): List<OptionUiModel> {
         return optionDetails.map { optionDetail ->
             OptionUiModel(
-                isSelected = optionDetail.isSelected,
-                id = optionDetail.optionId,
-                name = optionDetail.name,
-                price = optionDetail.price,
-                priceFmt = optionDetail.priceFmt,
-                selectionControlType = if (maxQty > Int.ONE) SelectionControlType.MULTIPLE_SELECTION else SelectionControlType.SINGLE_SELECTION
+                    isSelected = optionDetail.isSelected,
+                    id = optionDetail.optionId,
+                    status = optionDetail.status,
+                    name = optionDetail.name,
+                    price = optionDetail.price,
+                    priceFmt = optionDetail.priceFmt,
+                    selectionControlType = if (maxQty > Int.ONE) SelectionControlType.MULTIPLE_SELECTION else SelectionControlType.SINGLE_SELECTION
             )
         }
     }
-
 }

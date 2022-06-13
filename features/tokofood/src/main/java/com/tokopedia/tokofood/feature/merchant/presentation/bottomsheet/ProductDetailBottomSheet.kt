@@ -6,6 +6,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
+import com.tokopedia.kotlin.extensions.view.ONE
+import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.tokofood.databinding.BottomsheetProductDetailLayoutBinding
 import com.tokopedia.tokofood.feature.merchant.presentation.model.ProductListItem
@@ -71,7 +73,6 @@ class ProductDetailBottomSheet(private val clickListener: OnProductDetailClickLi
     private fun setupView(productUiModel: ProductUiModel, binding: BottomsheetProductDetailLayoutBinding?) {
         binding?.atcButton?.setOnClickListener {
             sentMerchantTracker?.invoke()
-
             this.cardPositions?.run {
                 if (productUiModel.isCustomizable) {
                     clickListener.onNavigateToOrderCustomizationPage(cartId = "", productUiModel = productUiModel)
@@ -113,6 +114,9 @@ class ProductDetailBottomSheet(private val clickListener: OnProductDetailClickLi
             }
         }
         if (productUiModel.isShopClosed || productUiModel.isOutOfStock) binding?.atcButton?.isEnabled = false
+        if (productUiModel.customOrderDetails.size.isMoreThanZero()) {
+            binding?.atcButton?.text = getString(com.tokopedia.tokofood.R.string.action_add_custom_product)
+        }
     }
 
     fun setSelectedCardPositions(cardPositions: Pair<Int, Int>) {

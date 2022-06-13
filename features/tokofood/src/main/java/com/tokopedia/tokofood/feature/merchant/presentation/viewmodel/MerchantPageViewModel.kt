@@ -207,6 +207,7 @@ class MerchantPageViewModel @Inject constructor(
             OptionUiModel(
                     isSelected = false,
                     id = optionDetail.id,
+                    status = optionDetail.status,
                     name = optionDetail.name,
                     price = optionDetail.price,
                     priceFmt = optionDetail.priceFmt,

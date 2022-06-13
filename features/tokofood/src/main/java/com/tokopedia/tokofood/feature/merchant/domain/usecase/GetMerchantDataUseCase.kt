@@ -37,9 +37,11 @@ class GetMerchantDataUseCase @Inject constructor(@ApplicationContext repository:
             merchantProfile {
               name
               address
+              imageURL
               latitude
               longitude
               merchantCategories
+              closeWarning
               rating
               ratingFmt
               totalRating
@@ -91,6 +93,7 @@ class GetMerchantDataUseCase @Inject constructor(@ApplicationContext repository:
                       name
                       price
                       priceFmt
+                      status
                   }
                   isRequired
                   maxQty

@@ -988,7 +988,8 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
         val orderCustomizationFragment = OrderCustomizationFragment.createInstance(
             productUiModel = productUiModel,
             cartId = element.cartId,
-            merchantId = shopId
+            merchantId = shopId,
+            cacheManagerId = ""
         )
         navigateToNewFragment(orderCustomizationFragment)
     }

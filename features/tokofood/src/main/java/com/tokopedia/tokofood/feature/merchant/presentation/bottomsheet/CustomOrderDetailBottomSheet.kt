@@ -70,7 +70,7 @@ class CustomOrderDetailBottomSheet(private val clickListener: OnCustomOrderDetai
     private fun setupView(binding: BottomsheetOrderInfoLayoutBinding?) {
         binding?.buttonAddCustom?.setOnClickListener {
             productUiModel?.run {
-                clickListener.onNavigateToOrderCustomizationPage(cartId = "", productUiModel = this)
+                clickListener.onNavigateToOrderCustomizationPage(cartId = "", productUiModel = this, productPosition = productPosition)
             }
         }
         binding?.rvOrderInfo?.let {

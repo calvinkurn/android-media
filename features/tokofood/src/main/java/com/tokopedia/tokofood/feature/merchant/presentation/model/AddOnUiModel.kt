@@ -23,22 +23,26 @@ data class AddOnUiModel(
     val isMultipleMandatory = minQty > Int.ONE
 
     @IgnoredOnParcel
-    val addOnItems = options.map { optionUiModel ->
-        ListItemUnify(
-                title = optionUiModel.name,
-                description = optionUiModel.priceFmt
-        ).apply {
-            when (optionUiModel.selectionControlType) {
-                SelectionControlType.SINGLE_SELECTION -> {
-                    setVariant(null, ListItemUnify.RADIO_BUTTON, null)
-                }
-                SelectionControlType.MULTIPLE_SELECTION -> {
-                    setVariant(null, ListItemUnify.CHECKBOX, null)
+    val addOnItems = options
+            .filter { it.isVisible }
+            .map { optionUiModel ->
+
+                var description = optionUiModel.priceFmt
+                if (optionUiModel.isOutOfStock) description = "Stock habis"
+
+
+                ListItemUnify(
+                        title = optionUiModel.name,
+                        description = description
+                ).apply {
+                    when (optionUiModel.selectionControlType) {
+                        SelectionControlType.SINGLE_SELECTION -> {
+                            setVariant(null, ListItemUnify.RADIO_BUTTON, null)
+                        }
+                        SelectionControlType.MULTIPLE_SELECTION -> {
+                            setVariant(null, ListItemUnify.CHECKBOX, null)
+                        }
+                    }
                 }
             }
-        }
-    }
-
-//    @IgnoredOnParcel
-//    var selectedAddOns = options.filter { it.isSelected }.map { it.name }
 }

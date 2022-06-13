@@ -28,6 +28,7 @@ import com.tokopedia.tokofood.feature.merchant.presentation.viewholder.OrderNote
 import com.tokopedia.tokofood.feature.merchant.presentation.model.VariantWrapperUiModel
 import com.tokopedia.tokofood.feature.merchant.presentation.viewholder.ProductAddOnViewHolder
 import com.tokopedia.tokofood.feature.merchant.presentation.viewmodel.OrderCustomizationViewModel
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
@@ -196,6 +197,7 @@ class OrderCustomizationFragment : BaseMultiFragment(),
                     val isError = validationResult.first
                     if (isError) {
                         customListAdapter?.setCustomListItems(validationResult.second)
+                        showErrorMessage()
                         return@setOnClickListener
                     }
                     // exclude the last custom list item which contain order note information
@@ -243,6 +245,16 @@ class OrderCustomizationFragment : BaseMultiFragment(),
             VariantWrapperUiModel::class.java) ?: VariantWrapperUiModel()
 
         this.variantWrapperUiModel = variantWrapperUiModel
+    }
+
+    private fun showErrorMessage() {
+        view?.let { view ->
+            Toaster.build(
+                    view = view,
+                    text = getString(com.tokopedia.tokofood.R.string.text_error_product_custom_selection),
+                    duration = Toaster.LENGTH_SHORT,
+                    type = Toaster.TYPE_NORMAL).show()
+        }
     }
 
     override fun onAddOnSelected(isSelected: Boolean, addOnPrice: Double, addOnPositions: Pair<Int, Int>) {
