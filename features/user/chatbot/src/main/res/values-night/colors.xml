@@ -17,5 +17,6 @@
     <color name="chatbot_dms_sender_image_background">#252930</color>
     <color name="chatbot_dms_chat_background">#1D2025</color>
     <color name="chatbot_dms_color_date">#F531353B</color>
+    <color name="chatbot_dms_chat_divider_text">#FFFAE6</color>
 
 </resources>

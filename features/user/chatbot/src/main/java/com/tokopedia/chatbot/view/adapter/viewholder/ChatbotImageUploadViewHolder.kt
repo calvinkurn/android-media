@@ -63,7 +63,7 @@ class ChatbotImageUploadViewHolder(itemView: View?,
             R.dimen.dp_chatbot_2,
             R.dimen.dp_chatbot_1,
             Gravity.CENTER,
-            com.tokopedia.unifyprinciples.R.color.Unify_G200,
+            R.color.chatbot_dms_stroke,
             getStrokeWidthSenderDimenRes()
     )
     private val bgOpposite = ViewUtil.generateBackgroundWithShadow(
