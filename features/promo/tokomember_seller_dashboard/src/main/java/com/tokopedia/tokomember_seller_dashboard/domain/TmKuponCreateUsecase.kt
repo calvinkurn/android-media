@@ -5,8 +5,6 @@ import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.tokomember_seller_dashboard.domain.requestparam.TmMerchantCouponUnifyRequest
 import com.tokopedia.tokomember_seller_dashboard.model.CouponCreateMultiple
-import com.tokopedia.tokomember_seller_dashboard.model.TmCouponCreateResponseNew
-import com.tokopedia.tokomember_seller_dashboard.model.TmKuponCreateMVResponse
 import javax.inject.Inject
 
 class TmKuponCreateUsecase @Inject constructor(graphqlRepository: GraphqlRepository) :

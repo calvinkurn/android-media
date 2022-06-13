@@ -6,5 +6,5 @@ import com.google.gson.annotations.SerializedName
 data class TmKuponUpdateMVResponse(
     @Expose
     @SerializedName("merchantPromotionUpdateMV")
-    val merchantPromotionCreateMV: MerchantPromotionCreateMV? = null
+    val merchantPromotionCreateMV: MerchantPromotionCreateMultipleMV? = null
 )

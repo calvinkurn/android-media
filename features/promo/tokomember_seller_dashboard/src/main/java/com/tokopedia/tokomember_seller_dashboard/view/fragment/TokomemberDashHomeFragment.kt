@@ -9,6 +9,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
+import com.google.gson.Gson
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.RouteManager
@@ -18,9 +19,13 @@ import com.tokopedia.tokomember_seller_dashboard.R
 import com.tokopedia.tokomember_seller_dashboard.di.component.DaggerTokomemberDashComponent
 import com.tokopedia.tokomember_seller_dashboard.model.Cta
 import com.tokopedia.tokomember_seller_dashboard.model.TickerItem
+import com.tokopedia.tokomember_seller_dashboard.model.TmIntroBottomsheetModel
 import com.tokopedia.tokomember_seller_dashboard.tracker.TmTracker
+import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_IS_SHOW_BS
 import com.tokopedia.tokomember_seller_dashboard.util.TmPrefManager
 import com.tokopedia.tokomember_seller_dashboard.util.TokoLiveDataResult
+import com.tokopedia.tokomember_seller_dashboard.view.customview.BottomSheetClickListener
+import com.tokopedia.tokomember_seller_dashboard.view.customview.TokomemberBottomsheet
 import com.tokopedia.tokomember_seller_dashboard.view.viewmodel.TokomemberDashHomeViewmodel
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifyprinciples.Typography
@@ -32,6 +37,7 @@ class TokomemberDashHomeFragment : BaseDaggerFragment() {
     private var prefManager: TmPrefManager? = null
     private var tmTracker: TmTracker? = null
     private var shopId = 0
+    private var isShowBs = false
 
     @Inject
     lateinit var viewModelFactory: dagger.Lazy<ViewModelProvider.Factory>
@@ -73,6 +79,23 @@ class TokomemberDashHomeFragment : BaseDaggerFragment() {
         prefManager = context?.let { it1 -> TmPrefManager(it1) }
         prefManager?.cardId = 3668
         prefManager?.shopId = 6551183
+
+        isShowBs = arguments?.getBoolean(BUNDLE_IS_SHOW_BS, false) == true
+
+        if(isShowBs){
+            val bundle = Bundle()
+            val tmIntroBottomsheetModel = TmIntroBottomsheetModel("Yay, semua sudah siap!", "Sambil menunggu member gabung, cek perkembangan program TokoMember kamu\n" +
+                    "di menu Home." , "https://images.tokopedia.net/img/android/res/singleDpi/quest_widget_nonlogin_banner.png", "Balik ke Home\n" +
+                    "\n" , errorCount = 0)
+            bundle.putString(TokomemberBottomsheet.ARG_BOTTOMSHEET, Gson().toJson(tmIntroBottomsheetModel))
+            val bottomsheet = TokomemberBottomsheet.createInstance(bundle)
+            bottomsheet.setUpBottomSheetListener(object : BottomSheetClickListener{
+                override fun onButtonClick(errorCount: Int) {
+                    bottomsheet.dismiss()
+                }
+            })
+            bottomsheet.show(childFragmentManager,"")
+        }
     }
 
     override fun onStop() {
@@ -150,8 +173,8 @@ class TokomemberDashHomeFragment : BaseDaggerFragment() {
     }
 
     companion object {
-        fun newInstance(): TokomemberDashHomeFragment {
-            return TokomemberDashHomeFragment()
+        fun newInstance(bundle: Bundle?) = TokomemberDashHomeFragment().apply {
+            arguments = bundle
         }
     }
 }

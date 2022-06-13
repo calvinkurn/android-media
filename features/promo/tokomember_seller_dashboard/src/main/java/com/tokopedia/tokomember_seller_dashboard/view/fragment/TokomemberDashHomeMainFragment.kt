@@ -91,7 +91,7 @@ class TokomemberDashHomeMainFragment : BaseDaggerFragment() {
         homeTabs.getUnifyTabLayout().setupWithViewPager(homeViewPager)
 
         var adapter = TokomemberDashHomeViewpagerAdapter(childFragmentManager)
-        adapter.addFragment(TokomemberDashHomeFragment.newInstance(), "Home")
+        adapter.addFragment(TokomemberDashHomeFragment.newInstance(arguments), "Home")
         adapter.addFragment(TokomemberDashProgramListFragment.newInstance(arguments), "Program")
         adapter.addFragment(TokomemberDashCouponFragment.newInstance(arguments), "Kupon Tokomember")
 
