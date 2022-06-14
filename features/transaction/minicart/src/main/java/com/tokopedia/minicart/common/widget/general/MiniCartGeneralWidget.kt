@@ -305,9 +305,13 @@ class MiniCartGeneralWidget @JvmOverloads constructor(
 
     private fun sendEventClickCheckCart() {
         val miniCartSimplifiedData = viewModel?.miniCartSimplifiedData?.value ?: return
-        analytics.eventClickCheckCartSdp(
+        analytics.eventClickCheckCart(
             basketSize = miniCartSimplifiedData.miniCartWidgetData.totalProductPrice.toString(),
-            shopId = viewModel?.currentShopIds?.value?.joinToString() ?: ""
+            isFulfilled = null,
+            shopId = viewModel?.currentShopIds?.value?.joinToString() ?: "",
+            pageSource = MiniCartAnalytics.Page.SHOP_PAGE,
+            businessUnit = MiniCartAnalytics.VALUE_BUSINESS_UNIT_PURCHASE_PLATFORM,
+            currentSite = MiniCartAnalytics.VALUE_CURRENT_SITE_TOKOPEDIA_MARKETPLACE
         )
     }
 

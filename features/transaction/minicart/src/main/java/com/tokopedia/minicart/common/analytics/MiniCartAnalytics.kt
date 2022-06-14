@@ -11,7 +11,7 @@ import javax.inject.Inject
 class MiniCartAnalytics @Inject constructor(val userSession: UserSessionInterface) {
 
     enum class Page {
-        HOME_PAGE, SEARCH_PAGE, CATEGORY_PAGE, DISCOVERY_PAGE, RECOMMENDATION_INFINITE, MVC_PAGE
+        HOME_PAGE, SEARCH_PAGE, CATEGORY_PAGE, DISCOVERY_PAGE, RECOMMENDATION_INFINITE, MVC_PAGE, SHOP_PAGE
     }
 
     companion object {
@@ -589,14 +589,22 @@ class MiniCartAnalytics @Inject constructor(val userSession: UserSessionInterfac
 
     /* MINI CART SIMPLIFIED MVC Page : https://mynakama.tokopedia.com/datatracker/requestdetail/view/2549 */
     // 6
-    fun eventClickCheckCart(basketSize: String, isFulfilled: Boolean, shopId: String,
+    fun eventClickCheckCart(basketSize: String, isFulfilled: Boolean?, shopId: String,
                             pageSource: Page?, businessUnit: String, currentSite: String) {
         val trackingData = TrackAppUtils.gtmData(EVENT_NAME_CLICK_PG, EVENT_CATEGORY_SHOP_PAGE_BUYER,
                 EVENT_ACTION_CLICK_CHECK_CART, basketSize)
         trackingData[KEY_BUSINESS_UNIT] = businessUnit
         trackingData[KEY_CURRENT_SITE] = currentSite
-        trackingData[KEY_PAGE_SOURCE] = if (pageSource == Page.MVC_PAGE) VALUE_PAGE_SOURCE_MVC_PAGE else ""
-        trackingData[KEY_PROMO_CODE] = if (isFulfilled) VALUE_PROMO_CODE_FULFILLED else VALUE_PROMO_CODE_NOT_FULFILLED
+        trackingData[KEY_PAGE_SOURCE] = when (pageSource) {
+            Page.MVC_PAGE -> VALUE_PAGE_SOURCE_MVC_PAGE
+            Page.SHOP_PAGE -> VALUE_PAGE_SOURCE_SHOP_PAGE
+            else -> ""
+        }
+        trackingData[KEY_PROMO_CODE] = when (isFulfilled) {
+            true -> VALUE_PROMO_CODE_FULFILLED
+            false -> VALUE_PROMO_CODE_NOT_FULFILLED
+            else -> ""
+        }
         trackingData[KEY_SHOP_ID] = shopId
         trackingData[KEY_USER_ID] = userSession.userId
         sendGeneralEvent(trackingData)
@@ -625,19 +633,6 @@ class MiniCartAnalytics @Inject constructor(val userSession: UserSessionInterfac
         )
         trackingData[KEY_BUSINESS_UNIT] = VALUE_BUSINESS_UNIT_PURCHASE_PLATFORM
         trackingData[KEY_CURRENT_SITE] = VALUE_CURRENT_SITE_TOKOPEDIA_MARKETPLACE
-        sendGeneralEvent(trackingData)
-    }
-
-    // 32052 -- Adjusted tracker from eventClickCheckCart() (6), used for Shop Direct Purchase
-    fun eventClickCheckCartSdp(basketSize: String, shopId: String) {
-        val trackingData = TrackAppUtils.gtmData(EVENT_NAME_CLICK_PG, EVENT_CATEGORY_SHOP_PAGE_BUYER,
-            EVENT_ACTION_CLICK_CHECK_CART, basketSize)
-        trackingData[KEY_BUSINESS_UNIT] = VALUE_BUSINESS_UNIT_PURCHASE_PLATFORM
-        trackingData[KEY_CURRENT_SITE] = VALUE_CURRENT_SITE_TOKOPEDIA_MARKETPLACE
-        trackingData[KEY_PAGE_SOURCE] = VALUE_PAGE_SOURCE_SHOP_PAGE
-        trackingData[KEY_PROMO_CODE] = ""
-        trackingData[KEY_SHOP_ID] = shopId
-        trackingData[KEY_USER_ID] = userSession.userId
         sendGeneralEvent(trackingData)
     }
 }
