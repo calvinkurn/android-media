@@ -2,7 +2,6 @@ package com.tokopedia.product.info.view.viewholder.productdetail
 
 import android.os.Build
 import android.os.Bundle
-import android.text.util.Linkify
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.hide
@@ -20,12 +19,13 @@ import com.tokopedia.product.info.view.adapter.diffutil.ProductDetailInfoDiffUti
 import com.tokopedia.product.info.widget.ExpandableAnimation
 import com.tokopedia.product.share.ekstensions.layoutInflater
 import com.tokopedia.unifycomponents.HtmlLinkHelper
+import java.util.regex.Pattern
 
 
 /**
  * Created by Yehezkiel on 13/10/20
  */
-class ProductDetailInfoExpandableViewHolder(private val view: View, private val listener: ProductDetailInfoListener) : AbstractViewHolder<ProductDetailInfoExpandableDataModel>(view) {
+class ProductDetailInfoExpandableViewHolder(private val view: View, private val listener: ProductDetailInfoListener) : AbstractViewHolder<ProductDetailInfoExpandableDataModel>(view){
 
     companion object {
         val LAYOUT = R.layout.bs_item_product_detail_expandable
@@ -77,9 +77,14 @@ class ProductDetailInfoExpandableViewHolder(private val view: View, private val 
     }
 
     private fun setSelectClickableTextView() = with(binding) {
+        val pattern = Pattern.compile("((https?)://)?(www.)?(tokopedia.com|tkp.me)([-a-zA-Z0-9+&@#/%?=~_|!:,.;]*[-a-zA-Z0-9+&@#/%=~_|])?")
+        val SCHEMES = arrayOf("http://", "https://")
 
         productDetailValue.autoLinkMask = 0
-        Linkify.addLinks(productDetailValue, Linkify.WEB_URLS)
+        CustomLinkify.addLinks(productDetailValue,pattern, SCHEMES[1]) { p0, p1, p2 ->
+            //do anything here
+            true
+        }
         productDetailValue.movementMethod = ProductCustomMovementMethod(listener::onBranchLinkClicked)
     }
 
