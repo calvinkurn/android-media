@@ -47,7 +47,7 @@ class UserConsentDebugFragment: BaseDaggerFragment() {
         val consentParam = ConsentCollectionParam(collectionId,version)
         viewBinding?.sampleUserConsent?.apply {
             actionText = viewBinding?.textActionButton?.editText?.text.toString()
-        }?.load(viewLifecycleOwner, consentParam, object : UserConsentActionClickListener {
+        }?.load(viewLifecycleOwner, this, consentParam, object : UserConsentActionClickListener {
             override fun onCheckedChange(isChecked: Boolean) {
 
             }
