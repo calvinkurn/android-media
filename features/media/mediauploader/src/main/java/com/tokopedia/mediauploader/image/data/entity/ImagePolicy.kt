@@ -16,6 +16,10 @@ data class ImagePolicy(
      */
     val allowedExtension = extension
         .split(",")
-        .map { it.drop(1) }
+        .map { it.drop(DELIMETER_DROP_FIRST) }
+
+    companion object {
+        private const val DELIMETER_DROP_FIRST = 1
+    }
 
 }
