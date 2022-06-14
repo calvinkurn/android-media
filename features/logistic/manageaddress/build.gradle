@@ -78,6 +78,7 @@ dependencies {
     kapt rootProject.ext.miscDependencies.lifeCycleRuntime
     implementation rootProject.ext.miscDependencies.viewModelKtx
     implementation rootProject.ext.supportLibDependencies.swipeRefresh
+    implementation project(rootProject.ext.features.medialoader)
 
     //-------------------------------------------------------------------//
     //--------------------- Testing Library Section ---------------------//
