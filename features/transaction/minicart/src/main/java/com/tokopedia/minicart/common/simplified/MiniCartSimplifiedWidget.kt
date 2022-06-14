@@ -320,9 +320,6 @@ class MiniCartSimplifiedWidget : BaseCustomView {
         val miniCartSimplifiedData = viewModel?.miniCartSimplifiedData?.value ?: return
         val validateUseMvcData = viewModel?.validateUseMvcData?.value ?: return
         analytics.eventClickCheckCart(
-                eventName = MiniCartAnalytics.EVENT_NAME_CLICK_PG,
-                eventCategory = MiniCartAnalytics.EVENT_CATEGORY_SHOP_PAGE_BUYER,
-                eventAction = MiniCartAnalytics.EVENT_ACTION_CLICK_CHECK_CART,
                 basketSize = miniCartSimplifiedData.miniCartWidgetData.totalProductPrice.toString(),
                 isFulfilled = validateUseMvcData.progressPercentage >= 100,
                 shopId = viewModel?.currentShopIds?.joinToString() ?: "",

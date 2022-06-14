@@ -94,7 +94,6 @@ class MiniCartAnalytics @Inject constructor(val userSession: UserSessionInterfac
         const val EVENT_ACTION_MVC_PROGRESS_BAR_IMPRESSION = "mvc progress bar impression"
         const val EVENT_ACTION_CLICK_CHANGE_PRODUCT_BUNDLE = "click ubah in product bundling"
         const val EVENT_ACTION_CLICK_ARROW_SIMPLIFIED_SUMMARY = "click arrow to ringkasan belanja"
-        const val EVENT_ACTION_CLICK_SEE_CART = "click lihat keranjang minicart"
 
         // EVENT LABEL
         const val EVENT_LABEL_SUCCESS = "success"
@@ -593,11 +592,10 @@ class MiniCartAnalytics @Inject constructor(val userSession: UserSessionInterfac
 
     /* MINI CART SIMPLIFIED MVC Page : https://mynakama.tokopedia.com/datatracker/requestdetail/view/2549 */
     // 6
-    fun eventClickCheckCart(eventName: String, eventCategory: String, eventAction: String,
-                            basketSize: String, isFulfilled: Boolean?, shopId: String,
+    fun eventClickCheckCart(basketSize: String, isFulfilled: Boolean?, shopId: String,
                             pageSource: Page?, businessUnit: String, currentSite: String,
                             trackerId: String?) {
-        val trackingData = TrackAppUtils.gtmData(eventName, eventCategory, eventAction, basketSize)
+        val trackingData = TrackAppUtils.gtmData(EVENT_NAME_CLICK_PG, EVENT_CATEGORY_SHOP_PAGE_BUYER, EVENT_ACTION_CLICK_CHECK_CART, basketSize)
         trackingData[KEY_BUSINESS_UNIT] = businessUnit
         trackingData[KEY_CURRENT_SITE] = currentSite
         trackingData[KEY_PAGE_SOURCE] = when (pageSource) {
