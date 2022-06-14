@@ -14,6 +14,8 @@ import com.tokopedia.shop.flashsale.common.constant.ChooseProductConstant.PRODUC
 import com.tokopedia.shop.flashsale.common.customcomponent.BaseSimpleListFragment
 import com.tokopedia.shop.flashsale.common.extension.*
 import com.tokopedia.shop.flashsale.di.component.DaggerShopFlashSaleComponent
+import com.tokopedia.shop.flashsale.domain.entity.enums.PageMode
+import com.tokopedia.shop.flashsale.presentation.creation.information.CampaignInformationFragment
 import com.tokopedia.shop.flashsale.presentation.creation.manage.adapter.ReserveProductAdapter
 import com.tokopedia.shop.flashsale.presentation.creation.manage.model.ReserveProductModel
 import com.tokopedia.shop.flashsale.presentation.creation.manage.viewmodel.ChooseProductViewModel
@@ -30,12 +32,24 @@ class ChooseProductFragment : BaseSimpleListFragment<ReserveProductAdapter, Rese
         const val GUIDELINE_MARGIN_MAX = 64
         const val GUIDELINE_MARGIN_MIN = 0
         const val GUIDELINE_ANIMATION_DELAY = 500L
+
+        @JvmStatic
+        fun newInstance(campaignId: String): ChooseProductFragment {
+            val fragment = ChooseProductFragment()
+            val bundle = Bundle()
+            bundle.putString(ChooseProductActivity.BUNDLE_KEY_CAMPAIGN_ID, campaignId)
+            fragment.arguments = bundle
+            return fragment
+        }
     }
 
     @Inject
     lateinit var viewModel: ChooseProductViewModel
     private var binding by autoClearedNullable<SsfsFragmentChooseProductBinding>()
     private var guidelineMargin = GUIDELINE_MARGIN_MAX
+    private val campaignId by lazy {
+        arguments?.getString(ChooseProductActivity.BUNDLE_KEY_CAMPAIGN_ID).orEmpty()
+    }
     private val animateScrollDebounce: (Int) -> Unit by lazy {
         debounce(GUIDELINE_ANIMATION_DELAY, GlobalScope) {
             view?.post { animateScroll(it) }
@@ -84,7 +98,7 @@ class ChooseProductFragment : BaseSimpleListFragment<ReserveProductAdapter, Rese
     }
 
     override fun loadData(page: Int) {
-        viewModel.getReserveProductList(page)
+        viewModel.getReserveProductList(campaignId, page)
     }
 
     override fun clearAdapterData() {
@@ -114,6 +128,7 @@ class ChooseProductFragment : BaseSimpleListFragment<ReserveProductAdapter, Rese
     }
 
     override fun onScrolled(xScrollAmount: Int, yScrollAmount: Int) {
+        if (adapter?.itemCount.orZero() < getPerPage()) return
         guidelineMargin -= yScrollAmount
         if (guidelineMargin < GUIDELINE_MARGIN_MIN) guidelineMargin = GUIDELINE_MARGIN_MIN
         if (guidelineMargin > GUIDELINE_MARGIN_MAX) guidelineMargin = GUIDELINE_MARGIN_MAX

@@ -29,11 +29,12 @@ class ChooseProductViewModel @Inject constructor(
         return searchKeyword.isNotEmpty()
     }
 
-    fun getReserveProductList(page: Int) {
+    fun getReserveProductList(campaignId: String, page: Int) {
         launchCatchError(
             dispatchers.io,
             block = {
-                val result = getSellerCampaignValidatedProductListUseCase.execute(searchKeyword, page)
+                val result = getSellerCampaignValidatedProductListUseCase.execute(
+                    campaignId, searchKeyword, page)
                 _reserveProductList.postValue(ReserveProductMapper.mapFromProductList(result))
             },
             onError = { error ->

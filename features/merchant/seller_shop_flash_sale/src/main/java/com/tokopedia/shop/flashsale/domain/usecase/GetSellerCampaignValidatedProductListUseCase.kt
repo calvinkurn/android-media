@@ -7,6 +7,8 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
+import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.kotlin.extensions.view.toIntSafely
 import com.tokopedia.shop.flashsale.common.constant.ChooseProductConstant.PRODUCT_LIST_SIZE
 import com.tokopedia.shop.flashsale.data.request.GetSellerCampaignValidatedProductListRequest
 import com.tokopedia.shop.flashsale.data.response.GetSellerCampaignValidatedProductListResponse
@@ -63,17 +65,21 @@ class GetSellerCampaignValidatedProductListUseCase @Inject constructor(
         setCacheStrategy(GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build())
     }
 
-    suspend fun execute(keyword:String, page: Int): List<GetSellerCampaignValidatedProductListResponse.Product> {
-        val request = buildRequest(keyword, page)
+    suspend fun execute(
+        campaignId: String,
+        keyword: String,
+        page: Int
+    ): List<GetSellerCampaignValidatedProductListResponse.Product> {
+        val request = buildRequest(campaignId, keyword, page)
         val response = repository.response(listOf(request))
         val data = response.getSuccessData<GetSellerCampaignValidatedProductListResponse>()
         return data.response.products
     }
 
-    private fun buildRequest(keyword:String, page: Int): GraphqlRequest {
+    private fun buildRequest(campaignId: String, keyword:String, page: Int): GraphqlRequest {
         val payload = GetSellerCampaignValidatedProductListRequest(
             campaignType = CAMPAIGN_TYPE_SHOP_FLASH_SALE,
-            campaignId = 762195,
+            campaignId = campaignId.toLongOrNull().orZero(),
             filter = GetSellerCampaignValidatedProductListRequest.Filter(
                 page = page,
                 pageSize = PRODUCT_LIST_SIZE,

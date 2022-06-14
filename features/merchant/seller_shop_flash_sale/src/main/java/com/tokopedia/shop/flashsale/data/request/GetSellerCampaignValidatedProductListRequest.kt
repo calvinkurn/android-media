@@ -3,12 +3,12 @@ package com.tokopedia.shop.flashsale.data.request
 import android.annotation.SuppressLint
 import com.google.gson.annotations.SerializedName
 
-@SuppressLint("Invalid Data Type")
 data class GetSellerCampaignValidatedProductListRequest(
     @SerializedName("campaign_type")
     val campaignType: Int,
+    @SuppressLint("Invalid Data Type") // BE still using number
     @SerializedName("campaign_id")
-    val campaignId: Int,
+    val campaignId: Long,
     @SerializedName("filter")
     val filter: Filter,
 ) {

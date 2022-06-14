@@ -149,9 +149,7 @@ class CampaignListFragment : BaseSimpleListFragment<CampaignAdapter, CampaignUiM
         observeShareComponentMetadata()
         viewModel.getCampaignPrerequisiteData()
 
-        Intent(context, ChooseProductActivity::class.java).apply {
-            requireContext().startActivity(this)
-        }
+        ChooseProductActivity.start(requireContext(), "762195")
     }
 
     private fun setupView() {
