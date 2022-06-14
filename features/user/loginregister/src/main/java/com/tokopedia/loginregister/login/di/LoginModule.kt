@@ -42,10 +42,7 @@ open class LoginModule {
     fun provideSocmedBottomSheet(@ApplicationContext context: Context): SocmedBottomSheet {
         return SocmedBottomSheet(context)
     }
-
-    @Provides
-    fun provideFingerprintPreferenceManager(@ApplicationContext context: Context): FingerprintPreference = FingerprintPreferenceManager(context)
-
+    
     companion object {
         const val NAMED_DISPATCHERS_IO = "DispatcherIO"
         const val LOGIN_CACHE = "LOGIN_CACHE"

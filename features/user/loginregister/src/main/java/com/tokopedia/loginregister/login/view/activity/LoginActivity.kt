@@ -14,6 +14,7 @@ import com.tokopedia.kotlin.extensions.view.setLightStatusBar
 import com.tokopedia.kotlin.extensions.view.setStatusBarColor
 import com.tokopedia.loginregister.R
 import com.tokopedia.loginregister.common.di.DaggerLoginRegisterComponent
+import com.tokopedia.loginregister.login.di.ActivityComponentFactory
 import com.tokopedia.loginregister.login.di.DaggerLoginComponent
 import com.tokopedia.loginregister.login.di.LoginComponent
 import com.tokopedia.loginregister.login.view.fragment.LoginEmailPhoneFragment
@@ -26,8 +27,6 @@ import com.tokopedia.telemetry.ITelemetryActivity
 open class LoginActivity : BaseSimpleActivity(), HasComponent<LoginComponent>,
     ITelemetryActivity {
 
-    private var loginComponent: LoginComponent? = null
-
     override fun getNewFragment(): Fragment {
         val bundle = Bundle()
         bundle.putAll(getBundleFromData())
@@ -39,19 +38,7 @@ open class LoginActivity : BaseSimpleActivity(), HasComponent<LoginComponent>,
     }
 
     override fun getComponent(): LoginComponent {
-        return loginComponent ?: initializeLoginComponent()
-    }
-
-    protected open fun initializeLoginComponent(): LoginComponent {
-        val loginRegisterComponent =  DaggerLoginRegisterComponent.builder()
-                .baseAppComponent((application as BaseMainApplication).baseAppComponent)
-                .build()
-        return DaggerLoginComponent
-                .builder()
-                .loginRegisterComponent(loginRegisterComponent)
-                .build().also {
-                    loginComponent = it
-                }
+        return ActivityComponentFactory.instance.createActivityComponent(application)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
