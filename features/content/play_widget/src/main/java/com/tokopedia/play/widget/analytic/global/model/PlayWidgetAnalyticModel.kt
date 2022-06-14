@@ -1,4 +1,4 @@
-package com.tokopedia.play.widget.sample.analytic.global.model
+package com.tokopedia.play.widget.analytic.global.model
 
 /**
  * Created by kenny.hadisaputra on 31/05/22

@@ -13,7 +13,7 @@ import com.tokopedia.play.widget.analytic.impression.ImpressionHelper
 import com.tokopedia.play.widget.analytic.list.DefaultPlayWidgetInListAnalyticListener
 import com.tokopedia.play.widget.di.PlayWidgetComponent
 import com.tokopedia.play.widget.di.PlayWidgetComponentCreator
-import com.tokopedia.play.widget.sample.analytic.global.model.PlayWidgetAnalyticModel
+import com.tokopedia.play.widget.analytic.global.model.PlayWidgetAnalyticModel
 import com.tokopedia.play.widget.ui.PlayWidgetState
 import com.tokopedia.play.widget.ui.PlayWidgetView
 import com.tokopedia.play.widget.ui.listener.PlayWidgetInternalListener

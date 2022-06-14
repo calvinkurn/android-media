@@ -6,17 +6,15 @@ import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
 import dagger.Provides
-import javax.inject.Named
 
 /**
  * Created by kenny.hadisaputra on 02/06/22
  */
 @Module
-class PlayWidgetInternalModule {
+internal class PlayWidgetInternalModule {
 
     @Provides
     @PlayWidgetScope
-    @Named(INTERNAL_USER_SESSION)
     fun provideUserSession(@ApplicationContext context: Context): UserSessionInterface {
         return UserSession(context)
     }

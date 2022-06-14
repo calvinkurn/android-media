@@ -1,6 +1,6 @@
-package com.tokopedia.play.widget.sample.analytic.global.model
+package com.tokopedia.play.widget.analytic.global.model
 
-import com.tokopedia.play.widget.sample.analytic.const.trackerMultiFields
+import com.tokopedia.play.widget.analytic.const.trackerMultiFields
 
 /**
  * Created by kenny.hadisaputra on 31/05/22

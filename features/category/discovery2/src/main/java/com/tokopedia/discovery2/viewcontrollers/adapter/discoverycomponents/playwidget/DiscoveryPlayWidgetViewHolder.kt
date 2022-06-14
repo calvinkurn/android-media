@@ -9,11 +9,8 @@ import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
 import com.tokopedia.discovery2.viewcontrollers.fragment.DiscoveryFragment
 import com.tokopedia.play.widget.PlayWidgetViewHolder
-import com.tokopedia.play.widget.analytic.list.DefaultPlayWidgetInListAnalyticListener
-import com.tokopedia.play.widget.analytic.list.PlayWidgetInListAnalyticListener
-import com.tokopedia.play.widget.sample.analytic.global.model.PlayWidgetDiscoveryAnalyticModel
+import com.tokopedia.play.widget.analytic.global.model.PlayWidgetDiscoveryAnalyticModel
 import com.tokopedia.play.widget.ui.PlayWidgetMediumView
-import com.tokopedia.play.widget.ui.PlayWidgetSmallView
 import com.tokopedia.play.widget.ui.PlayWidgetView
 import com.tokopedia.play.widget.ui.coordinator.PlayWidgetCoordinator
 import com.tokopedia.play.widget.ui.listener.PlayWidgetListener
@@ -21,7 +18,6 @@ import com.tokopedia.play.widget.ui.model.*
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
-import com.tokopedia.user.session.UserSession
 
 class DiscoveryPlayWidgetViewHolder(itemView: View, private val fragment: Fragment) : AbstractViewHolder(itemView, fragment.viewLifecycleOwner), PlayWidgetListener {
     private lateinit var discoveryPlayWidgetViewModel: DiscoveryPlayWidgetViewModel
