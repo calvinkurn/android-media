@@ -943,4 +943,11 @@ class OfficialStoreHomeViewModelTest {
         assert(viewModel.recomWidget.value is Fail)
         assertEquals((viewModel.recomWidget.value as Fail).throwable, error)
     }
+
+    @Test
+    fun test_get_userId(){
+        val userId = "123"
+        every { userSessionInterface.userId } returns userId
+        assertEquals(viewModel.getUserId(), userId)
+    }
 }
