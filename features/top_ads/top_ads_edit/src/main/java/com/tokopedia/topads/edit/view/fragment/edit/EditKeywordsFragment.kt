@@ -22,6 +22,7 @@ import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.topads.common.analytics.TopAdsCreateAnalytics
 import com.tokopedia.topads.common.constant.TopAdsCommonConstant
 import com.tokopedia.topads.common.constant.TopAdsCommonConstant.BROAD_POSITIVE
@@ -171,7 +172,7 @@ class EditKeywordsFragment : BaseDaggerFragment() {
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(
-            resources.getLayout(com.tokopedia.topads.common.R.layout.topads_create_fragment_budget_list),
+            context?.resources?.getLayout(com.tokopedia.topads.common.R.layout.topads_create_fragment_budget_list),
             container,
             false
         )
@@ -422,7 +423,11 @@ class EditKeywordsFragment : BaseDaggerFragment() {
     }
 
     private fun actionEnable(isEnable: Boolean) {
-        callBack.buttonDisable(!budgetInput.isTextFieldError && !budgetInputRekomendasi.isTextFieldError)
+        var isValid = !budgetInput.isTextFieldError
+        if (budgetInputRekomendasi.isVisible) {
+            isValid = isValid && (!budgetInputRekomendasi.isTextFieldError)
+        }
+        callBack.buttonDisable(isValid)
     }
 
     private fun setMessageErrorField(error: String, bid: String, bool: Boolean, forRekommendedBid: Boolean) {

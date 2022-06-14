@@ -16,6 +16,7 @@ import com.tokopedia.filter.newdynamicfilter.helper.FilterHelper
 import com.tokopedia.filter.newdynamicfilter.helper.OptionHelper
 import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.minicart.common.analytics.MiniCartAnalytics
+import com.tokopedia.minicart.common.domain.usecase.MiniCartSource
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.widget.carousel.RecommendationCarouselData
 import com.tokopedia.searchbar.data.HintData
@@ -157,6 +158,9 @@ class TokoNowSearchFragment :
 
     override val miniCartWidgetPageName: MiniCartAnalytics.Page
         get() = MiniCartAnalytics.Page.SEARCH_PAGE
+
+    override val miniCartWidgetSource: MiniCartSource
+        get() = MiniCartSource.TokonowSRP
 
     override fun getViewModel() = tokoNowSearchViewModel
 
