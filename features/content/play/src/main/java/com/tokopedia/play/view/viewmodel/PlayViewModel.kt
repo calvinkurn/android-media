@@ -1384,6 +1384,7 @@ class PlayViewModel @AssistedInject constructor(
     private suspend fun setupInteractive(interactive: InteractiveUiModel) {
         if (!isInteractiveAllowed) return
         repo.save(interactive)
+        repo.setActive(interactive.id)
         when (interactive) {
             is InteractiveUiModel.Giveaway -> setupGiveaway(interactive)
             is InteractiveUiModel.Quiz -> handleQuizFromNetwork(interactive)
@@ -1405,31 +1406,15 @@ class PlayViewModel @AssistedInject constructor(
     }
 
     private suspend fun handleQuizFromNetwork(quiz: InteractiveUiModel.Quiz) {
-        _interactive.update {
-            it.copy(interactive = quiz)
-        }
-
-        if (quiz.status is InteractiveUiModel.Quiz.Status.Ongoing) {
-          repo.setActive(_interactive.value.interactive.id.toString())
-        }
-
         if (quiz.status == InteractiveUiModel.Quiz.Status.Finished) {
-            val channelId = mChannelData?.id ?: return
-
-            try {
-                val interactiveLeaderboard = repo.getInteractiveLeaderboard(channelId)
-                _leaderboard.update {
-                    it.copy(
-                        data = interactiveLeaderboard,
-                        state = ResultState.Success,
-                    )
-                }
-                setLeaderboardBadgeState(interactiveLeaderboard)
-
-                _interactive.update {
-                    it.copy(interactive = InteractiveUiModel.Unknown)
-                }
-            } catch (e: Throwable) {}
+            _interactive.update {
+                it.copy(interactive = InteractiveUiModel.Unknown)
+            }
+            checkLeaderboard(channelId)
+        } else {
+            _interactive.update {
+                it.copy(interactive = quiz)
+            }
         }
     }
 
