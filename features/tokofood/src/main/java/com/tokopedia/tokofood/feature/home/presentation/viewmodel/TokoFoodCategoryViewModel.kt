@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.tokofood.feature.home.domain.constanta.TokoFoodLayoutState
@@ -78,7 +79,7 @@ class TokoFoodCategoryViewModel @Inject constructor(
             }
 
             setPageKey(categoryResponse.data.nextPageKey)
-            categoryLayoutItemList.mapCategoryLayoutList(categoryResponse.data.merchants)
+            categoryLayoutItemList.mapCategoryLayoutList(categoryResponse.data.merchants) //TODO Check Empty state when UI ready
             val data = TokoFoodListUiModel(
                 items = categoryLayoutItemList,
                 state = TokoFoodLayoutState.SHOW
@@ -142,7 +143,7 @@ class TokoFoodCategoryViewModel @Inject constructor(
     }
 
     private fun shouldLoadMore(containsLastItemIndex: Int, itemCount: Int): Boolean {
-        val lastItemIndex = itemCount - 1
+        val lastItemIndex = itemCount - Int.ONE
         val scrolledToLastItem = (containsLastItemIndex == lastItemIndex
                 && containsLastItemIndex.isMoreThanZero())
         val hasNextPage = pageKey.isNotEmpty()

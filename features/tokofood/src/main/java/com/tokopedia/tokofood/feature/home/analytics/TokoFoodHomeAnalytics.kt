@@ -113,7 +113,7 @@ class TokoFoodHomeAnalytics: BaseTrackerConst() {
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(VIEW_ITEM, eventDataLayer)
     }
 
-    fun clickCategory(userId: String?, destinationId: String?, channelModel: ChannelModel, channelGrid: ChannelGrid, horizontalPosition: Int) {
+    fun clickCategory(userId: String?, destinationId: String?, channelModel: ChannelModel, channelGrid: ChannelGrid, horizontalPosition: Int) { // TODO Test when widget is available
         val eventDataLayer = Bundle().apply {
             putString(TrackAppUtils.EVENT_ACTION,  EVENT_ACTION_CLICK_CATEGORY_WIDGET)
             putString(TrackAppUtils.EVENT_LABEL, "")
@@ -123,7 +123,7 @@ class TokoFoodHomeAnalytics: BaseTrackerConst() {
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(SELECT_CONTENT, eventDataLayer)
     }
 
-    fun impressCategory(userId: String?, destinationId: String?, channelModel: ChannelModel) {
+    fun impressCategory(userId: String?, destinationId: String?, channelModel: ChannelModel) { // TODO Test when widget is available
         val eventDataLayer = Bundle().apply {
             putString(TrackAppUtils.EVENT_ACTION,  EVENT_ACTION_VIEW_CATEGORY_WIDGET)
             putString(TrackAppUtils.EVENT_LABEL, "")

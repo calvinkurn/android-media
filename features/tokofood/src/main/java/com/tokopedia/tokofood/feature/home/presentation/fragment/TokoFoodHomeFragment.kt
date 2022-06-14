@@ -168,8 +168,7 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
         private const val PAGE_TYPE_HOME = "home"
         private const val SHARE_URL = "https://www.tokopedia.com/gofood"
         private const val SHARE_DEEPLINK = "tokopedia://food/home"
-        //TODO Dummy OG IMAGE
-        private const val THUMBNAIL_AND_OG_IMAGE_SHARE_URL = "https://images.tokopedia.net/img/android/now/PN-RICH.jpg"
+        private const val THUMBNAIL_AND_OG_IMAGE_SHARE_URL = "https://images.tokopedia.net/img/android/now/PN-RICH.jpg" //TODO Remove Dummy OG IMAGE
         const val SOURCE = "tokofood"
 
         fun createInstance(): TokoFoodHomeFragment {
@@ -189,7 +188,6 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
     private var pageLoadTimeMonitoring: TokoFoodHomePageLoadTimeMonitoring? = null
     private var dividerHeight = 4
     private var totalScrolled = 0
-    private var movingPosition = 0
     private val spaceZero: Int
         get() = resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.unify_space_0).toInt()
 
@@ -347,9 +345,7 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
         loadLayout()
     }
 
-    override fun onCloseOptionClicked() {
-
-    }
+    override fun onCloseOptionClicked() {}
 
     override fun onShareOptionClicked(shareModel: ShareModel) {
         shareOptionRequest(
@@ -626,10 +622,6 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
         swipeLayout?.isRefreshing = false
     }
 
-    private fun resetMovingPosition() {
-        movingPosition = 0
-    }
-
     private fun removeAllScrollListener() {
         rvHome?.removeOnScrollListener(loadMoreListener)
     }
@@ -662,7 +654,6 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
     }
 
     private fun onRefreshLayout() {
-        resetMovingPosition()
         removeAllScrollListener()
         rvLayoutManager?.setScrollEnabled(true)
         loadLayout()

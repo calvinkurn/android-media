@@ -12,10 +12,8 @@ import com.tokopedia.tokofood.feature.home.presentation.uimodel.TokoFoodCategory
 import com.tokopedia.tokofood.feature.home.presentation.uimodel.TokoFoodErrorStateUiModel
 import com.tokopedia.tokofood.feature.home.presentation.uimodel.TokoFoodMerchantListUiModel
 import com.tokopedia.tokofood.feature.home.presentation.uimodel.TokoFoodProgressBarUiModel
-import com.tokopedia.tokofood.feature.home.presentation.view.listener.TokoFoodView
 
 class TokoFoodCategoryAdapterTypeFactory(
-    private val tokoFoodView: TokoFoodView? = null,
     private val merchantListListener: TokoFoodMerchantListViewHolder.TokoFoodMerchantListListener? = null,
     private val errorStateListener: TokoFoodErrorStateViewHolder.TokoFoodErrorStateListener? = null
 ):  BaseAdapterTypeFactory(),

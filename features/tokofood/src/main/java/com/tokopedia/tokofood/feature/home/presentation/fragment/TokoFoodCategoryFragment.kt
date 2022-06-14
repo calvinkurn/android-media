@@ -8,7 +8,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -58,7 +57,6 @@ import com.tokopedia.tokofood.feature.home.presentation.adapter.TokoFoodListDiff
 import com.tokopedia.tokofood.feature.home.presentation.adapter.viewholder.TokoFoodErrorStateViewHolder
 import com.tokopedia.tokofood.feature.home.presentation.adapter.viewholder.TokoFoodMerchantListViewHolder
 import com.tokopedia.tokofood.feature.home.presentation.uimodel.TokoFoodListUiModel
-import com.tokopedia.tokofood.feature.home.presentation.view.listener.TokoFoodView
 import com.tokopedia.tokofood.feature.home.presentation.viewmodel.TokoFoodCategoryViewModel
 import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.TokoFoodPurchaseFragment
 import com.tokopedia.trackingoptimizer.TrackingQueue
@@ -71,7 +69,6 @@ import javax.inject.Inject
 
 class TokoFoodCategoryFragment: BaseDaggerFragment(),
     IBaseMultiFragment,
-    TokoFoodView,
     TokoFoodMerchantListViewHolder.TokoFoodMerchantListListener,
     TokoFoodErrorStateViewHolder.TokoFoodErrorStateListener
 {
@@ -98,7 +95,6 @@ class TokoFoodCategoryFragment: BaseDaggerFragment(),
     private val adapter by lazy {
         TokoFoodCategoryAdapter(
             typeFactory = TokoFoodCategoryAdapterTypeFactory(
-                tokoFoodView = this,
                 merchantListListener = this,
                 errorStateListener = this
             ),
@@ -176,7 +172,7 @@ class TokoFoodCategoryFragment: BaseDaggerFragment(),
         trackingQueue.sendAll()
     }
 
-    override fun getFragmentTitle(): String? {
+    override fun getFragmentTitle(): String {
         return ""
     }
 
@@ -201,12 +197,6 @@ class TokoFoodCategoryFragment: BaseDaggerFragment(),
     override fun navigateToNewFragment(fragment: Fragment) {
         (activity as? BaseMultiFragActivity)?.navigateToNewFragment(fragment)
     }
-
-    override fun getFragmentManagerPage(): FragmentManager = childFragmentManager
-
-    override fun getFragmentPage(): Fragment = this
-
-    override fun refreshLayoutPage() = onRefreshLayout()
 
     override fun onClickRetryError() {
         loadLayout()
