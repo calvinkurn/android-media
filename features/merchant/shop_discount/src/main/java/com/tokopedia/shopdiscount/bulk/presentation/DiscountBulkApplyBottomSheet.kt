@@ -66,7 +66,7 @@ class DiscountBulkApplyBottomSheet : BottomSheetUnify() {
             mode: Mode = Mode.BULK_APPLY,
             bulkUpdateDefaultStartDate: Date? = null,
             bulkUpdateDefaultEndDate: Date? = null,
-            @DiscountStatus discountStatusId: Int
+            discountStatusId: Int
         ): DiscountBulkApplyBottomSheet {
             val args = Bundle()
             args.putString(BUNDLE_KEY_TITLE, bottomSheetTitle)
