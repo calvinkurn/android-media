@@ -334,6 +334,7 @@ class AdminInvitationConfirmationFragment : BaseDaggerFragment() {
     private fun inflateInvitationRejected() {
         hideLoading()
         setupToolbar(false)
+        confirmationBinding?.root?.hide()
         binding?.run {
             val vsInvitationReject = root.findViewById<View>(R.id.vsInvitationReject)
             if (vsInvitationReject is ViewStub) {
