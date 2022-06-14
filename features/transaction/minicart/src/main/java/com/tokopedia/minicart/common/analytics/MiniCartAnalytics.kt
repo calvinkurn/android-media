@@ -33,6 +33,7 @@ class MiniCartAnalytics @Inject constructor(val userSession: UserSessionInterfac
         const val KEY_SHOP_ID = "shopId"
         const val KEY_PROMO_CODE = "promoCode"
         const val KEY_PAGE_SOURCE = "pageSource"
+        const val KEY_TRACKER_ID = "trackerId"
 
         // EXTRA KEY'S VALUE
         const val VALUE_BUSINESS_UNIT_PURCHASE_PLATFORM = "purchase platform"
@@ -46,6 +47,8 @@ class MiniCartAnalytics @Inject constructor(val userSession: UserSessionInterfac
         const val VALUE_PROMO_CODE_NOT_FULFILLED = "not_fulfilled"
         const val VALUE_PAGE_SOURCE_MVC_PAGE = "mvcpage"
         const val VALUE_PAGE_SOURCE_SHOP_PAGE = "shoppage"
+        const val VALUE_TRACKER_ID_CLICK_SEE_CART_ON_MINICART = "32052"
+        const val VALUE_TRACKER_ID_CLICK_SIMPLIFIED_SUMMARY_ON_MINICART = "32054"
 
         // EVENT NAME
         const val EVENT_NAME_CLICK_MINICART = "clickMinicart"
@@ -592,7 +595,8 @@ class MiniCartAnalytics @Inject constructor(val userSession: UserSessionInterfac
     // 6
     fun eventClickCheckCart(eventName: String, eventCategory: String, eventAction: String,
                             basketSize: String, isFulfilled: Boolean?, shopId: String,
-                            pageSource: Page?, businessUnit: String, currentSite: String) {
+                            pageSource: Page?, businessUnit: String, currentSite: String,
+                            trackerId: String?) {
         val trackingData = TrackAppUtils.gtmData(eventName, eventCategory, eventAction, basketSize)
         trackingData[KEY_BUSINESS_UNIT] = businessUnit
         trackingData[KEY_CURRENT_SITE] = currentSite
@@ -608,6 +612,7 @@ class MiniCartAnalytics @Inject constructor(val userSession: UserSessionInterfac
         }
         trackingData[KEY_SHOP_ID] = shopId
         trackingData[KEY_USER_ID] = userSession.userId
+        trackingData[KEY_TRACKER_ID] = trackerId ?: ""
         sendGeneralEvent(trackingData)
     }
 
@@ -634,6 +639,7 @@ class MiniCartAnalytics @Inject constructor(val userSession: UserSessionInterfac
         )
         trackingData[KEY_BUSINESS_UNIT] = VALUE_BUSINESS_UNIT_PURCHASE_PLATFORM
         trackingData[KEY_CURRENT_SITE] = VALUE_CURRENT_SITE_TOKOPEDIA_MARKETPLACE
+        trackingData[KEY_TRACKER_ID] = VALUE_TRACKER_ID_CLICK_SIMPLIFIED_SUMMARY_ON_MINICART
         sendGeneralEvent(trackingData)
     }
 }

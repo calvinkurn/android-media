@@ -314,7 +314,8 @@ class MiniCartGeneralWidget @JvmOverloads constructor(
             shopId = viewModel?.currentShopIds?.value?.joinToString() ?: "",
             pageSource = MiniCartAnalytics.Page.SHOP_PAGE,
             businessUnit = MiniCartAnalytics.VALUE_BUSINESS_UNIT_PURCHASE_PLATFORM,
-            currentSite = MiniCartAnalytics.VALUE_CURRENT_SITE_TOKOPEDIA_MARKETPLACE
+            currentSite = MiniCartAnalytics.VALUE_CURRENT_SITE_TOKOPEDIA_MARKETPLACE,
+            trackerId = MiniCartAnalytics.VALUE_TRACKER_ID_CLICK_SEE_CART_ON_MINICART
         )
     }
 
