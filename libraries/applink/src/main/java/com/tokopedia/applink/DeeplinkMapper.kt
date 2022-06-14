@@ -389,6 +389,8 @@ object DeeplinkMapper {
             },
             DLP.startWith(ApplinkConst.SELLER_INFO_DETAIL) { _, uri, _, _ -> DeeplinkMapperMerchant.getSellerInfoDetailApplink(uri) },
             DLP.matchPattern(ApplinkConst.ORDER_TRACKING) { _, _, deeplink, _ -> DeeplinkMapperLogistic.getRegisteredNavigationOrder(deeplink) },
+            DLP.matchPattern(ApplinkConst.ORDER_POD) { _, _, deeplink, _ -> DeeplinkMapperLogistic.getRegisteredNavigationPod(deeplink) },
+
             DLP.matchPattern(ApplinkConst.ORDER_HISTORY_SHOP) { _, _, _, idList -> UriUtil.buildUri(ApplinkConstInternalMarketplace.ORDER_HISTORY, idList?.getOrNull(0)) },
             DLP.startWith(ApplinkConst.RESET_PASSWORD, ApplinkConstInternalGlobal.FORGOT_PASSWORD),
             DLP.matchPattern(ApplinkConst.KOL_COMMENT) { _, _, deeplink, _ -> getKolDeepLink(deeplink) },
