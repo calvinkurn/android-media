@@ -41,6 +41,16 @@ class EmptyStateViewModelTest{
         assert(viewModel.position == 99)
     }
 
+    @Test
+    fun `test for components`() {
+        assert(viewModel.components === componentsItem)
+    }
+
+    @Test
+    fun `test for application`(){
+        assert(viewModel.application === application)
+    }
+
     /**************************** getEmptyStateData() *******************************************/
 
     @Test

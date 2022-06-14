@@ -2,8 +2,9 @@ package com.tokopedia.tokopedianow.home.presentation.viewholder
 
 import android.view.View
 import androidx.annotation.LayoutRes
-import androidx.core.content.ContextCompat
+import androidx.vectordrawable.graphics.drawable.VectorDrawableCompat
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.databinding.ItemTokopedianowHomeSwitcherBinding
@@ -24,10 +25,20 @@ class HomeSwitcherViewHolder(
 
     override fun bind(uiModel: HomeSwitcherUiModel) {
         binding?.run {
-            textTitle.text = itemView.context.getString(uiModel.title)
-            textSubtitle.text = itemView.context.getString(uiModel.subtitle)
-            ivIcon.setImageDrawable(ContextCompat.getDrawable(itemView.context, uiModel.icon))
-            root.setOnClickListener { listener?.onClickSwitcher() }
+            tpTitle.text = MethodChecker.fromHtml(getString(uiModel.title))
+            tpSubtitle.text = MethodChecker.fromHtml(getString(uiModel.subtitle))
+
+            val drawable = VectorDrawableCompat.create(
+                itemView.context.resources,
+                R.drawable.tokopedianow_bg_switcher_switching_part,
+                itemView.context.theme
+            )
+            aivIntendedService.background = drawable
+
+            cvIntendedService.setOnClickListener {
+                listener?.onClickSwitcher()
+            }
+
             itemView.addOnImpressionListener(uiModel) {
                 listener?.onImpressSwitcher()
             }

@@ -56,8 +56,9 @@ interface ProductListSectionContract {
         fun trackWishlistRecommendationProductNonLoginUser()
         fun trackWishlistProduct(wishlistTrackingModel: WishlistTrackingModel)
         fun updateWishlistStatus(productId: String?, isWishlisted: Boolean)
-        fun showMessageSuccessWishlistAction(isWishlisted: Boolean)
-        fun showMessageFailedWishlistAction(isWishlisted: Boolean)
+        fun hitWishlistClickUrl(productCardOptionsModel: ProductCardOptionsModel)
+        fun showMessageSuccessWishlistAction(wishlistResult: ProductCardOptionsModel.WishlistResult)
+        fun showMessageFailedWishlistAction(wishlistResult: ProductCardOptionsModel.WishlistResult)
         val previousKeyword: String
         val isLandingPage: Boolean
         fun logWarning(message: String?, throwable: Throwable?)

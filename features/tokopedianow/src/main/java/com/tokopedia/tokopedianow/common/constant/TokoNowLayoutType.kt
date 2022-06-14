@@ -19,7 +19,8 @@ import androidx.annotation.StringDef
     TokoNowLayoutType.SHARING_EDUCATION,
     TokoNowLayoutType.SHARING_REFERRAL,
     TokoNowLayoutType.MAIN_QUEST,
-    TokoNowLayoutType.MIX_LEFT_CAROUSEL
+    TokoNowLayoutType.MIX_LEFT_CAROUSEL,
+    TokoNowLayoutType.MIX_LEFT_CAROUSEL_ATC
 )
 annotation class TokoNowLayoutType {
     companion object {
@@ -34,5 +35,6 @@ annotation class TokoNowLayoutType {
         const val SHARING_REFERRAL = "tokonow_referral"
         const val MAIN_QUEST = "tokonow_main_quest"
         const val MIX_LEFT_CAROUSEL = "left_carousel"
+        const val MIX_LEFT_CAROUSEL_ATC = "left_carousel_atc"
     }
 }

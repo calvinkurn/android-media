@@ -55,6 +55,7 @@ public interface ApplinkConst {
     String SHOP_SETTINGS_NOTE = "tokopedia://setting/shop/note";
     String SHOP_SETTINGS_INFO = "tokopedia://setting/shop/info";
     String PRODUCT_INFO = "tokopedia://product/{product_id}";
+    String PRODUCT_EDUCATIONAL = "tokopedia://product-edu/{type}";
     String PRODUCT_IMAGE_REVIEW = "tokopedia://product/{product_id}/imagereview";
     String PRODUCT_REVIEW = "tokopedia://product/{id}/review";
     String ADD_PATH = "add";
@@ -119,6 +120,7 @@ public interface ApplinkConst {
     String RECENT_VIEW = "tokopedia://recentlyviewed";
     String HOST_LOGIN = "login";
     String LOGIN = "tokopedia://login";
+    String ADD_PHONE = "tokopedia://add-phone";
     String OTP = "tokopedia://otp";
     String QR_LOGIN = "tokopedia://login/qr";
     String OTP_PUSH_NOTIF_RECEIVER = "tokopedia://otp-verify";
@@ -161,6 +163,7 @@ public interface ApplinkConst {
     String TOPCHAT_ASKBUYER = "tokopedia://topchat/askbuyer/{toUserId}?customMessage" +
             "={customMessage}&source={source}&opponent_name={opponent_name}&avatar={avatar}";
     String CHATBOT_HOST = "chatbot";
+    String AFFILIATE_HOST = "affiliate";
     String CHATBOT = "tokopedia://chatbot/{message_id}";
     String CHAT_BOT = "tokopedia://chatbot";
     String CHAT_TEMPLATE = "tokopedia://chat/settings/templatechat";
@@ -525,6 +528,7 @@ public interface ApplinkConst {
         String TOPADS_CREATE_MANUAL_ADS = "tokopedia://topads/create-manual-ads";
         String REVIEW_REMINDER = "sellerapp://review-reminder";
         String SHOP_SCORE_DETAIL = "sellerapp://shop-score-detail";
+        String SHOP_DISCOUNT = "sellerapp://shop-discount";
     }
 
     interface TokopediaNow {

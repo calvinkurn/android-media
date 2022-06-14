@@ -53,7 +53,7 @@ class DigitalTelcoProductFragment : BaseDaggerFragment(), DigitalTelcoProductWid
     private lateinit var sharedModelPrepaid: SharedTelcoPrepaidViewModel
     private lateinit var selectedOperatorName: String
     private lateinit var shimmeringGridLayout: LinearLayout
-    private lateinit var shimmeringListLayout: LinearLayout
+    private lateinit var shimmeringListLayout: ConstraintLayout
     private lateinit var sortFilter: SortFilter
     private lateinit var titleFilterResult: TextView
 
