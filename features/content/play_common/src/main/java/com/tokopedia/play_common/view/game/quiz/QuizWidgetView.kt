@@ -60,11 +60,11 @@ class QuizWidgetView : ConstraintLayout {
     })
 
     private val clickRotateMinAnimation = ObjectAnimator.ofFloat(
-        binding.root, View.ROTATION, 0f, -6f
+        binding.root, View.ROTATION, 0f, -10f
     )
 
     private val clickRotateMaxAnimation = ObjectAnimator.ofFloat(
-        binding.root, View.ROTATION, 0f, 6f
+        binding.root, View.ROTATION, 0f, 10f
     )
 
     private val clickScaleXAnimation = ObjectAnimator.ofFloat(
@@ -75,13 +75,11 @@ class QuizWidgetView : ConstraintLayout {
     )
 
     private val answerFalseAnimator = AnimatorSet().apply {
-        interpolator = AnticipateInterpolator()
         playTogether(clickScaleXAnimation, clickScaleYAnimation)
         playSequentially(clickRotateMinAnimation, clickRotateMaxAnimation)
     }
 
     private val answerTrueAnimator = AnimatorSet().apply {
-        interpolator = AnticipateOvershootInterpolator()
         playTogether(clickScaleXAnimation, clickScaleYAnimation)
     }
 
