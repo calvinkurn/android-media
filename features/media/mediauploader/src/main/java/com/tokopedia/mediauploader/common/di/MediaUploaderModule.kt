@@ -14,7 +14,13 @@ import com.tokopedia.mediauploader.video.LargeUploaderManager
 import com.tokopedia.mediauploader.video.SimpleUploaderManager
 import com.tokopedia.mediauploader.video.VideoUploaderManager
 import com.tokopedia.mediauploader.video.data.VideoUploadServices
-import com.tokopedia.mediauploader.video.domain.*
+import com.tokopedia.mediauploader.video.domain.GetChunkCheckerUseCase
+import com.tokopedia.mediauploader.video.domain.GetChunkUploaderUseCase
+import com.tokopedia.mediauploader.video.domain.GetSimpleUploaderUseCase
+import com.tokopedia.mediauploader.video.domain.GetVideoPolicyUseCase
+import com.tokopedia.mediauploader.video.domain.InitVideoUploaderUseCase
+import com.tokopedia.mediauploader.video.domain.SetAbortUploaderUseCase
+import com.tokopedia.mediauploader.video.domain.SetCompleteUploaderUseCase
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
