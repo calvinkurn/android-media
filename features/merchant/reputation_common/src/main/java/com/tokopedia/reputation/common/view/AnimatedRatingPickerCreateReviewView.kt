@@ -2,9 +2,11 @@ package com.tokopedia.reputation.common.view
 
 import android.content.Context
 import android.os.Handler
+import android.os.Looper
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import com.tokopedia.reputation.common.R
 import com.tokopedia.reputation.common.data.source.cloud.model.AnimCreateReviewModel
 import com.tokopedia.unifycomponents.BaseCustomView
@@ -19,23 +21,36 @@ class AnimatedRatingPickerCreateReviewView @JvmOverloads constructor(
         context: Context, val attrs: AttributeSet? = null, defStyleAttr: Int = 0
 ) : BaseCustomView(context, attrs, defStyleAttr) {
 
+    companion object {
+        private const val INITIAL_RATING = 0
+        private const val INITIAL_COUNT = 1
+        private const val INITIAL_COUNT_MINUS = 5
+        private const val RATING_ANIMATION_DELAY = 50L
+
+        private const val RATING_ONE = 1
+        private const val RATING_TWO = 2
+        private const val RATING_THREE = 3
+        private const val RATING_FOUR = 4
+        private const val RATING_FIVE = 5
+    }
+
     var listOfStarsView: List<AnimCreateReviewModel> = listOf()
-    var count = 1
-    var countMinus = 5
-    var lastReview = 0
-    var clickAt = 0
-    private var handle = Handler()
+    var count = INITIAL_COUNT
+    var countMinus = INITIAL_COUNT_MINUS
+    var lastReview = INITIAL_RATING
+    var clickAt = INITIAL_RATING
+    private var handle = Handler(Looper.getMainLooper())
     private var listener: AnimatedReputationListener? = null
     private var shouldShowDesc = false
-    private var starHeight = -1
-    private var starWidth = -1
+    private var starHeight = ViewGroup.LayoutParams.MATCH_PARENT
+    private var starWidth = ViewGroup.LayoutParams.MATCH_PARENT
 
     init {
-        val styleable = context.obtainStyledAttributes(attrs, R.styleable.AnimatedRatingPickerCreateReviewView, 0, 0)
+        val styleable = context.obtainStyledAttributes(attrs, R.styleable.AnimatedRatingPickerCreateReviewView)
         try {
             shouldShowDesc = styleable.getBoolean(R.styleable.AnimatedRatingPickerCreateReviewView_show_description, false)
-            starHeight = styleable.getDimensionPixelSize(R.styleable.AnimatedRatingPickerCreateReviewView_star_height, -1)
-            starWidth = styleable.getDimensionPixelSize(R.styleable.AnimatedRatingPickerCreateReviewView_star_width, -1)
+            starHeight = styleable.getDimensionPixelSize(R.styleable.AnimatedRatingPickerCreateReviewView_star_height, ViewGroup.LayoutParams.MATCH_PARENT)
+            starWidth = styleable.getDimensionPixelSize(R.styleable.AnimatedRatingPickerCreateReviewView_star_width, ViewGroup.LayoutParams.MATCH_PARENT)
         } finally {
             styleable.recycle()
         }
@@ -51,7 +66,7 @@ class AnimatedRatingPickerCreateReviewView @JvmOverloads constructor(
         )
         listOfStarsView.forEachIndexed { index, animatedStarsView ->
             animatedStarsView.reviewView.setOnClickListener {
-                clickAt = index + 1
+                clickAt = index.inc()
                 generateReviewText(clickAt)
                 if (clickAt < lastReview) {
                     handle.post(reverseAnimation)
@@ -76,7 +91,7 @@ class AnimatedRatingPickerCreateReviewView @JvmOverloads constructor(
     }
 
     private fun setStarHeight() {
-        if (starHeight != -1) {
+        if (starHeight != ViewGroup.LayoutParams.MATCH_PARENT) {
             arrayOf(anim_1_create_review, anim_2_create_review, anim_3_create_review, anim_4_create_review, anim_5_create_review).forEach {
                 it.layoutParams.height = starHeight
             }
@@ -84,7 +99,7 @@ class AnimatedRatingPickerCreateReviewView @JvmOverloads constructor(
     }
 
     private fun setStarWidth() {
-        if (starWidth != -1) {
+        if (starWidth != ViewGroup.LayoutParams.MATCH_PARENT) {
             arrayOf(anim_1_create_review, anim_2_create_review, anim_3_create_review, anim_4_create_review, anim_5_create_review).forEach {
                 it.layoutParams.width = starWidth
             }
@@ -94,16 +109,16 @@ class AnimatedRatingPickerCreateReviewView @JvmOverloads constructor(
     private val normalAnimation = object : Runnable {
         override fun run() {
             if (count <= clickAt) {
-                val reviewData = listOfStarsView[count - 1]
+                val reviewData = listOfStarsView[count.dec()]
                 if (isNormalAnim(reviewData)) { // Animating in normal way
                     reviewData.isAnimated = true
                     reviewData.reviewView.morph()
                 }
                 count++
-                handle.postDelayed(this, 50) // Delay each animation to reach sequential animation
+                handle.postDelayed(this, RATING_ANIMATION_DELAY) // Delay each animation to reach sequential animation
             } else {
                 lastReview = clickAt
-                count = 1
+                count = INITIAL_COUNT
                 handle.removeCallbacks(this)
             }
         }
@@ -112,16 +127,16 @@ class AnimatedRatingPickerCreateReviewView @JvmOverloads constructor(
     private val reverseAnimation = object : Runnable {
         override fun run() {
             if (countMinus > clickAt) {
-                val reviewData = listOfStarsView[countMinus - 1]
+                val reviewData = listOfStarsView[countMinus.dec()]
                 if (shouldReserveAnim(reviewData)) { // When review clicked is under last review click then reverse animation
                     reviewData.isAnimated = false
                     reviewData.reviewView.morph()
                 }
                 countMinus--
-                handle.postDelayed(this, 50) // Delay each animation to reach sequential animation
+                handle.postDelayed(this, RATING_ANIMATION_DELAY) // Delay each animation to reach sequential animation
             } else {
                 lastReview = clickAt
-                countMinus = 5
+                countMinus = INITIAL_COUNT_MINUS
                 handle.removeCallbacks(this)
             }
         }
@@ -137,11 +152,11 @@ class AnimatedRatingPickerCreateReviewView @JvmOverloads constructor(
 
     private fun generateReviewText(index: Int) {
         when (index) {
-            1 -> txt_desc_status.text = resources.getString(R.string.rating_1_star_create_review)
-            2 -> txt_desc_status.text = resources.getString(R.string.rating_2_star_create_review)
-            3 -> txt_desc_status.text = resources.getString(R.string.rating_3_star_create_review)
-            4 -> txt_desc_status.text = resources.getString(R.string.rating_4_star_create_review)
-            5 -> txt_desc_status.text = resources.getString(R.string.rating_5_star_create_review)
+            RATING_ONE -> txt_desc_status.text = resources.getString(R.string.rating_1_star_create_review)
+            RATING_TWO -> txt_desc_status.text = resources.getString(R.string.rating_2_star_create_review)
+            RATING_THREE -> txt_desc_status.text = resources.getString(R.string.rating_3_star_create_review)
+            RATING_FOUR -> txt_desc_status.text = resources.getString(R.string.rating_4_star_create_review)
+            RATING_FIVE -> txt_desc_status.text = resources.getString(R.string.rating_5_star_create_review)
         }
     }
 
@@ -154,6 +169,15 @@ class AnimatedRatingPickerCreateReviewView @JvmOverloads constructor(
         generateReviewText(reviewClickAt)
     }
 
+    fun setRating(rating: Int) {
+        this.clickAt = rating
+        if (clickAt < lastReview) {
+            handle.post(reverseAnimation)
+        } else {
+            handle.post(normalAnimation)
+        }
+        generateReviewText(rating)
+    }
 
     fun getReviewClickAt(): Int = clickAt
 
@@ -163,8 +187,8 @@ class AnimatedRatingPickerCreateReviewView @JvmOverloads constructor(
 
     //Reset stars
     fun resetStars() {
-        clickAt = 0
-        lastReview = 0
+        clickAt = INITIAL_RATING
+        lastReview = INITIAL_RATING
         listOfStarsView.forEach {
             it.reviewView.resetStars()
             it.isAnimated = false

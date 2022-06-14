@@ -100,7 +100,8 @@ import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSession
-import com.tokopedia.wishlist.common.listener.WishListActionListener
+import com.tokopedia.wishlistcommon.util.AddRemoveWishlistV2Handler
+import com.tokopedia.wishlistcommon.util.WishlistV2CommonConsts
 import javax.inject.Inject
 
 class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, ShopProductAdapterTypeFactory>(),
@@ -112,7 +113,6 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
         MerchantVoucherListWidget.OnMerchantVoucherListWidgetListener,
         ShopProductAddViewHolder.ShopProductAddViewHolderListener,
         ShopProductsEmptyViewHolder.ShopProductsEmptyViewHolderListener,
-        WishListActionListener,
         ShopProductImpressionListener,
         ShopProductChangeGridSectionListener,
         SortFilterBottomSheet.Callback,
@@ -244,14 +244,14 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
         }
     }
 
-    override fun onErrorAddWishList(errorMessage: String?, productId: String?) {
+    private fun onErrorAddWishList(errorMessage: String?) {
         onErrorAddToWishList(MessageErrorException(errorMessage))
     }
 
-    override fun onSuccessAddWishlist(productId: String) {
+    private fun onSuccessAddWishlist(productId: String) {
         showToastSuccess(
-                message = getString(com.tokopedia.wishlist.common.R.string.msg_success_add_wishlist),
-                ctaText = getString(com.tokopedia.wishlist.common.R.string.lihat_label),
+                message = getString(com.tokopedia.wishlist_common.R.string.on_success_add_to_wishlist_msg),
+                ctaText = getString(com.tokopedia.wishlist_common.R.string.cta_success_add_to_wishlist),
                 ctaAction = {
                     goToWishlist()
                 }
@@ -259,12 +259,15 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
         shopProductAdapter.updateWishListStatus(productId, true)
     }
 
-    override fun onErrorRemoveWishlist(errorMessage: String?, productId: String?) {
+    private fun onErrorRemoveWishlist(errorMessage: String?, productId: String?) {
         NetworkErrorHelper.showCloseSnackbar(activity, errorMessage)
     }
 
-    override fun onSuccessRemoveWishlist(productId: String) {
-        showToastSuccess(getString(com.tokopedia.wishlist.common.R.string.msg_success_remove_wishlist))
+    private fun onSuccessRemoveWishlist(productId: String) {
+        showToastSuccess(
+                message = getString(com.tokopedia.wishlist_common.R.string.on_success_remove_from_wishlist_msg),
+                ctaText = getString(com.tokopedia.wishlist_common.R.string.cta_success_remove_from_wishlist),
+                ctaAction = null)
         shopProductAdapter.updateWishListStatus(productId, false)
     }
 
@@ -732,10 +735,13 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
     private fun handleWishlistActionForLoggedInUser(productCardOptionsModel: ProductCardOptionsModel) {
         viewModel.clearGetShopProductUseCase()
 
+        val isUsingWishlistV2 = productCardOptionsModel.wishlistResult.isUsingWishlistV2
         if (productCardOptionsModel.wishlistResult.isAddWishlist) {
-            handleWishlistActionAddToWishlist(productCardOptionsModel)
+            if (isUsingWishlistV2) handleWishlistActionAddToWishlistV2(productCardOptionsModel)
+            else handleWishlistActionAddToWishlist(productCardOptionsModel)
         } else {
-            handleWishlistActionRemoveFromWishlist(productCardOptionsModel)
+            if (isUsingWishlistV2) handleWishlistActionRemoveFromWishlistV2(productCardOptionsModel)
+            else handleWishlistActionRemoveFromWishlist(productCardOptionsModel)
         }
     }
 
@@ -743,7 +749,18 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
         if (productCardOptionsModel.wishlistResult.isSuccess) {
             onSuccessAddWishlist(productCardOptionsModel.productId)
         } else {
-            onErrorAddWishList(getString(com.tokopedia.wishlist.common.R.string.msg_error_add_wishlist), productCardOptionsModel.productId)
+            onErrorAddWishList(getString(com.tokopedia.wishlist_common.R.string.on_success_remove_from_wishlist_msg))
+        }
+    }
+
+    private fun handleWishlistActionAddToWishlistV2(productCardOptionsModel: ProductCardOptionsModel) {
+        context?.let { context ->
+            view?.let { v ->
+                AddRemoveWishlistV2Handler.showAddToWishlistV2SuccessToaster(productCardOptionsModel.wishlistResult, context, v)
+            }
+        }
+        if (productCardOptionsModel.wishlistResult.isSuccess) {
+            shopProductAdapter.updateWishListStatus(productCardOptionsModel.productId, true)
         }
     }
 
@@ -751,7 +768,15 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
         if (productCardOptionsModel.wishlistResult.isSuccess) {
             onSuccessRemoveWishlist(productCardOptionsModel.productId)
         } else {
-            onErrorRemoveWishlist(getString(com.tokopedia.wishlist.common.R.string.msg_error_remove_wishlist), productCardOptionsModel.productId)
+            onErrorRemoveWishlist(getString(com.tokopedia.wishlist_common.R.string.on_failed_remove_from_wishlist_msg), productCardOptionsModel.productId)
+        }
+    }
+
+    private fun handleWishlistActionRemoveFromWishlistV2(productCardOptionsModel: ProductCardOptionsModel) {
+        context?.let { context ->
+            view?.let { v ->
+                AddRemoveWishlistV2Handler.showRemoveWishlistV2SuccessToaster(productCardOptionsModel.wishlistResult, context, v)
+            }
         }
     }
 
@@ -1607,4 +1632,8 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
         (parentFragment as? NewShopPageFragment)?.showScrollToTopButton()
     }
 
+    override fun onDestroyView() {
+        Toaster.onCTAClick = View.OnClickListener { }
+        super.onDestroyView()
+    }
 }
