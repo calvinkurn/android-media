@@ -91,6 +91,7 @@
 /features/merchant/product_manage_item/                 @tokopedia/android-minionken-dev
 /features/merchant/shop_widget/                         @tokopedia/android-minionken-dev
 /features/merchant/campaign_list/                       @tokopedia/android-minionken-dev
+/features/merchant/shop_discount/                       @tokopedia/android-minionken-dev
 
 /features/top_ads/top_ads_dashboard/                    @tokopedia/android-miniondarth-dev
 /features/top_ads/top_ads_free_claim/                   @tokopedia/android-miniondarth-dev
