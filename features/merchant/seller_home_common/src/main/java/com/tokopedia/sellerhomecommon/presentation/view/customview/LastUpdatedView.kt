@@ -4,6 +4,7 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.widget.LinearLayout
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.parseAsHtml
 import com.tokopedia.kotlin.extensions.view.visible
@@ -39,7 +40,7 @@ class LastUpdatedView : LinearLayout {
     fun setLastUpdated(lastUpdated: Long) {
         binding?.run {
             val lastUpdatedStr = getLastUpdatedInfo(root.context, lastUpdated)
-            val lastUpdatedFmt = "<i>$lastUpdatedStr</i>".parseAsHtml()
+            val lastUpdatedFmt = lastUpdatedStr.parseAsHtml()
             tvShcLastUpdated.text = lastUpdatedFmt
         }
     }
@@ -95,10 +96,10 @@ class LastUpdatedView : LinearLayout {
     private fun getCalendar(timeInMillis: Long): Calendar {
         return Calendar.getInstance().apply {
             time = Date(timeInMillis)
-            set(Calendar.HOUR_OF_DAY, DateTimeUtil.ZERO)
-            set(Calendar.MINUTE, DateTimeUtil.ZERO)
-            set(Calendar.SECOND, DateTimeUtil.ZERO)
-            set(Calendar.MILLISECOND, DateTimeUtil.ZERO)
+            set(Calendar.HOUR_OF_DAY, Int.ZERO)
+            set(Calendar.MINUTE, Int.ZERO)
+            set(Calendar.SECOND, Int.ZERO)
+            set(Calendar.MILLISECOND, Int.ZERO)
         }
     }
 }

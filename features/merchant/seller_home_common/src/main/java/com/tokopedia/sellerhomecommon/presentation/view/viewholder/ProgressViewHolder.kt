@@ -3,12 +3,22 @@ package com.tokopedia.sellerhomecommon.presentation.view.viewholder
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
+import com.tokopedia.kotlin.extensions.view.getResColor
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.invisible
+import com.tokopedia.kotlin.extensions.view.isVisible
+import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.kotlin.extensions.view.parseAsHtml
+import com.tokopedia.kotlin.extensions.view.showWithCondition
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.sellerhomecommon.R
 import com.tokopedia.sellerhomecommon.databinding.ShcProgressCardWidgetBinding
 import com.tokopedia.sellerhomecommon.presentation.model.ProgressWidgetUiModel
 import com.tokopedia.sellerhomecommon.presentation.view.customview.ShopScorePMWidget
+import com.tokopedia.sellerhomecommon.utils.setUnifyDrawableEnd
 import com.tokopedia.unifycomponents.NotificationUnify
 
 /**
@@ -74,16 +84,46 @@ class ProgressViewHolder(
         element.data?.run {
             with(element) {
                 setTagNotification(element.tag)
-                binding.shcProgressSuccessState.tvProgressTitle.text = title
+                binding.shcProgressSuccessState.tvProgressTitle.text = title.parseAsHtml()
                 binding.shcProgressSuccessState.tvProgressDescription.text =
                     data?.subtitle?.parseAsHtml()
+                setupLastUpdated(element)
                 setupProgressBar(subtitle, valueTxt, maxValueTxt, value, maxValue, colorState)
                 setupDetails(this)
                 addImpressionTracker(this)
+                showLabel(element.data?.label.orEmpty(), element.data?.iconUrl.orEmpty())
             }
         }
 
         showProgressLayout()
+    }
+
+    private fun showLabel(label: String, iconUrl: String) {
+        binding.shcProgressSuccessState.labelShcPmPro.run {
+            if (label.isNotBlank() && iconUrl.isNotBlank()) {
+                visible()
+                setLabel(label, iconUrl)
+            } else {
+                gone()
+            }
+        }
+    }
+
+    private fun setupLastUpdated(element: ProgressWidgetUiModel) {
+        with(binding.shcProgressSuccessState.tvShcProgressLastUpdated) {
+            element.data?.lastUpdated?.let { lastUpdated ->
+                isVisible = lastUpdated.isEnabled
+                setLastUpdated(lastUpdated.lastUpdatedInMillis)
+                setRefreshButtonVisibility(lastUpdated.needToUpdated)
+                setRefreshButtonClickListener {
+                    refreshWidget(element)
+                }
+            }
+        }
+    }
+
+    private fun refreshWidget(element: ProgressWidgetUiModel) {
+        listener.onReloadWidget(element)
     }
 
     private fun setTagNotification(tag: String) {
@@ -154,17 +194,23 @@ class ProgressViewHolder(
         with(binding.shcProgressSuccessState) {
             if (element.ctaText.isNotEmpty() && element.appLink.isNotEmpty()) {
                 tvProgressSeeDetails.text = element.ctaText
-                tvProgressSeeDetails.visibility = View.VISIBLE
-                icProgressArrow.visibility = View.VISIBLE
+                tvProgressSeeDetails.visible()
                 tvProgressSeeDetails.setOnClickListener {
                     goToDetails(element)
                 }
-                icProgressArrow.setOnClickListener {
-                    goToDetails(element)
-                }
+                val dp24 = root.context.resources.getDimension(
+                    com.tokopedia.unifyprinciples.R.dimen.layout_lvl3
+                )
+                tvProgressSeeDetails.setUnifyDrawableEnd(
+                    iconId = IconUnify.CHEVRON_RIGHT,
+                    colorIcon = root.context.getResColor(
+                        com.tokopedia.unifyprinciples.R.color.Unify_GN500
+                    ),
+                    width = dp24,
+                    height = dp24
+                )
             } else {
-                tvProgressSeeDetails.visible()
-                icProgressArrow.gone()
+                tvProgressSeeDetails.invisible()
             }
         }
     }
