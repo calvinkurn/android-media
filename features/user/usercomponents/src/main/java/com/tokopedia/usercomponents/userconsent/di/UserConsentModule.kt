@@ -7,7 +7,7 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 
 @Module
-class UserConsentModule {
+object UserConsentModule {
 
     @Provides
     @ActivityScope
