@@ -85,7 +85,8 @@ class MissionWidgetViewHolder(
                     appLink = missionWidget.appLink,
                     url = missionWidget.url,
                     imageURL = missionWidget.imageURL,
-                    subtitleHeight = element.subtitleHeight
+                    subtitleHeight = element.subtitleHeight,
+                    missionWidgetComponentListener = missionWidgetComponentListener
                 )
             )
         }

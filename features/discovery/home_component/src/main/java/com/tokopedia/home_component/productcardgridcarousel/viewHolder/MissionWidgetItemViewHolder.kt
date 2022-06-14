@@ -12,13 +12,14 @@ import com.tokopedia.utils.view.binding.viewBinding
 /**
  * Created by dhaba
  */
-class MissionWidgetItemViewHolder (
+class MissionWidgetItemViewHolder(
     view: View,
-    private val cardInteraction: Boolean = false
-): AbstractViewHolder<CarouselMissionWidgetDataModel>(view) {
+    private val cardInteraction: Boolean = false,
+) : AbstractViewHolder<CarouselMissionWidgetDataModel>(view) {
 
     private var binding: HomeBannerItemMissionWidgetBinding? by viewBinding()
-    companion object{
+
+    companion object {
         val LAYOUT = R.layout.home_banner_item_mission_widget
     }
 
@@ -27,13 +28,19 @@ class MissionWidgetItemViewHolder (
     }
 
     private fun setLayout(element: CarouselMissionWidgetDataModel){
-        binding?.cardContainerMissionWidget?.animateOnPress = if (cardInteraction) {
-            CardUnify2.ANIMATE_OVERLAY_BOUNCE
-        } else CardUnify2.ANIMATE_OVERLAY
-        binding?.imageMissionWidget?.setImageUrl(element.imageURL)
-        binding?.imageMissionWidget?.outlineProvider = ImageUnifyUtils.cornerRadiusTopImageUnify()
-        binding?.titleMissionWidget?.text = element.title
-        binding?.subtitleMissionWidget?.text = element.subTitle
-        binding?.subtitleMissionWidget?.height = element.subtitleHeight
+        binding?.run {
+            cardContainerMissionWidget.animateOnPress = if (cardInteraction) {
+                CardUnify2.ANIMATE_OVERLAY_BOUNCE
+            } else CardUnify2.ANIMATE_OVERLAY
+            cardContainerMissionWidget.rootView.setOnClickListener {
+                element.missionWidgetComponentListener.onMissionClicked(element, adapterPosition)
+            }
+            imageMissionWidget.setImageUrl(element.imageURL)
+            imageMissionWidget.outlineProvider =
+                ImageUnifyUtils.cornerRadiusTopImageUnify()
+            titleMissionWidget.text = element.title
+            subtitleMissionWidget.text = element.subTitle
+            subtitleMissionWidget.height = element.subtitleHeight
+        }
     }
 }
