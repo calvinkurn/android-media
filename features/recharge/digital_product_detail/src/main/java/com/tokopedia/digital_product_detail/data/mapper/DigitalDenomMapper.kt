@@ -123,6 +123,7 @@ class DigitalDenomMapper @Inject constructor() {
                 slashPrice = if(!it.attributes.productPromo?.newPrice.isNullOrEmpty()) it.attributes.price  else "",
                 slashPricePlain = if(it.attributes.productPromo?.newPricePlain.isMoreThanZero()) it.attributes.pricePlain else EMPTY_PRICE_PLAIN,
                 discountLabel = if (isMCCM) it.attributes.productPromo?.discount ?: "" else "",
+                activePeriod = getMapCustomAttributes(it.attributes.customAttributes, PRODUCT_PULSA_EXPIRE)
             )
         }
     }
@@ -202,5 +203,6 @@ class DigitalDenomMapper @Inject constructor() {
         const val QUOTA_NAME_KEY = "product_paket_data_kuota"
         const val EXPIRED_DAYS_NAME_KEY = "product_paket_data_expire"
         const val PRODUCT_DESC_TICKER_KEY = "product_detail_ticker"
+        const val PRODUCT_PULSA_EXPIRE = "product_pulsa_expire"
     }
 }

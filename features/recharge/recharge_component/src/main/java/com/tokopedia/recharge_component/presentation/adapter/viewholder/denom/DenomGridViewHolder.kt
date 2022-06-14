@@ -49,6 +49,13 @@ class DenomGridViewHolder (
                 } else hide()
             }
 
+            labelDenomGridActivePeriod.run {
+                if (!denomGrid.activePeriod.isNullOrEmpty()) {
+                    show()
+                    text = denomGrid.activePeriod
+                } else hide()
+            }
+
             tgDenomGridPeriode.run {
                 if (!denomGrid.expiredDate.isNullOrEmpty()){
                     show()
