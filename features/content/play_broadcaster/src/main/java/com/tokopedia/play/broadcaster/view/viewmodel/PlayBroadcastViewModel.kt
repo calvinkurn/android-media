@@ -703,7 +703,6 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         _interactive.value = giveaway
         when (giveaway.status) {
             InteractiveUiModel.Giveaway.Status.Finished -> displayGameResultWidgetIfHasLeaderBoard()
-            InteractiveUiModel.Giveaway.Status.Unknown -> handleGiveawayOngoingEnded()
         }
     }
 
@@ -711,7 +710,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         _interactive.value = quiz
         when (quiz.status) {
             InteractiveUiModel.Quiz.Status.Finished -> displayGameResultWidgetIfHasLeaderBoard()
-            InteractiveUiModel.Quiz.Status.Unknown -> handleQuizEnded()
+            InteractiveUiModel.Quiz.Status.Unknown -> stopQuiz()
         }
     }
 
@@ -1316,6 +1315,13 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         }) {
             _interactive.value = InteractiveUiModel.Unknown
         }
+    }
+
+    private fun stopQuiz(){
+        setActiveInteractiveTitle("")
+        setInteractiveId("")
+        displayGameResultWidgetIfHasLeaderBoard()
+        _interactive.value = InteractiveUiModel.Unknown
     }
 
     private fun handleChoiceDetail(choice: QuizChoicesUiModel) {
