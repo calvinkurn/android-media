@@ -22,7 +22,6 @@ object TokoFoodMerchantUiModelMapper {
 
     fun mapProductUiModelToAtcRequestParam(
             shopId: String,
-            cartId: String = "",
             productUiModels: List<ProductUiModel>,
             addOnUiModels: List<AddOnUiModel> = listOf()
     ): UpdateParam {
@@ -31,7 +30,7 @@ object TokoFoodMerchantUiModelMapper {
             productList = productUiModels.map {
                 UpdateProductParam(
                     productId = it.id,
-                    cartId = cartId,
+                    cartId = it.cartId,
                     notes = it.orderNote,
                     quantity = it.orderQty,
                     variants = mapCustomListItemsToVariantParams(addOnUiModels)
