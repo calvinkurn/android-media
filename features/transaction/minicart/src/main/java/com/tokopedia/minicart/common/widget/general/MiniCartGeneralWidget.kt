@@ -21,6 +21,7 @@ import com.tokopedia.minicart.R
 import com.tokopedia.minicart.cartlist.subpage.globalerror.GlobalErrorBottomSheet
 import com.tokopedia.minicart.cartlist.subpage.globalerror.GlobalErrorBottomSheetActionListener
 import com.tokopedia.minicart.chatlist.MiniCartChatListBottomSheetV2
+import com.tokopedia.minicart.common.analytics.MiniCartAnalytics
 import com.tokopedia.minicart.common.data.response.minicartlist.MiniCartData
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.domain.usecase.MiniCartSource
@@ -51,6 +52,9 @@ class MiniCartGeneralWidget @JvmOverloads constructor(
 
     @Inject
     lateinit var globalErrorBottomSheet: GlobalErrorBottomSheet
+
+    @Inject
+    lateinit var analytics: MiniCartAnalytics
 
     private var miniCartWidgetListener: MiniCartWidgetListener? = null
 
@@ -98,6 +102,7 @@ class MiniCartGeneralWidget @JvmOverloads constructor(
         )
         binding.miniCartTotalAmount.setAdditionalButton(chatIcon)
         binding.miniCartTotalAmount.totalAmountAdditionalButton.setOnClickListener {
+            sendEventClickChat()
             showMiniCartChatListBottomSheet(fragment)
         }
         binding.imageChevronUnavailable.setOnClickListener {
