@@ -1441,7 +1441,7 @@ class PlayUserInteractionFragment @Inject constructor(
             (prevIsAnyInsetsShown != isAnyInsetsShown) && !isAnyInsetsShown) {
 
             when (state.interactive) {
-                is InteractiveUiModel.Giveaway -> renderGiveawayView(state.interactive)
+                is InteractiveUiModel.Giveaway -> renderGiveawayView(state.interactive, isAnyInsetsShown)
                 is InteractiveUiModel.Quiz -> renderQuizView(state.interactive)
                 InteractiveUiModel.Unknown -> {
                     interactiveActiveView?.hide()
