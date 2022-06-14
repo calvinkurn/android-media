@@ -31,6 +31,6 @@ class AdminConfirmationRegUseCase @Inject constructor(
                 manageID
             )
         )
-        return mapper.mapToAdminConfirmationRegUiModel(useCase.executeOnBackground())
+        return mapper.mapToAdminConfirmationRegUiModel(useCase.executeOnBackground().adminConfirmationReg)
     }
 }

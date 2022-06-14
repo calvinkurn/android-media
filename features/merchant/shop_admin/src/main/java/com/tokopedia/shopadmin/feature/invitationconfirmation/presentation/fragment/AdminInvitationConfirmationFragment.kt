@@ -253,6 +253,7 @@ class AdminInvitationConfirmationFragment : BaseDaggerFragment() {
         if (adminConfirmationRegUiModel.acceptBecomeAdmin) {
             navigator.goToInvitationAccepted()
         } else {
+            confirmRejectDialog?.dismissDialog()
             inflateInvitationRejected()
         }
     }
@@ -271,6 +272,8 @@ class AdminInvitationConfirmationFragment : BaseDaggerFragment() {
 
     private fun inflateInvitationShopAdminInfo(shopAdminInfoUiModel: ShopAdminInfoUiModel) {
         setupToolbar(false)
+        expiredBinding?.root?.hide()
+        rejectedBinding?.root?.hide()
         binding?.run {
             val invitationActiveVs = root.findViewById<View>(R.id.vsInvitationActive)
             if (invitationActiveVs is ViewStub) {
@@ -312,6 +315,8 @@ class AdminInvitationConfirmationFragment : BaseDaggerFragment() {
     private fun inflateInvitationExpired() {
         hideLoading()
         setupToolbar(false)
+        confirmationBinding?.root?.hide()
+        rejectedBinding?.root?.hide()
         binding?.run {
             val vsInvitationExpired = root.findViewById<View>(R.id.vsInvitationExpired)
             if (vsInvitationExpired is ViewStub) {
@@ -335,6 +340,7 @@ class AdminInvitationConfirmationFragment : BaseDaggerFragment() {
         hideLoading()
         setupToolbar(false)
         confirmationBinding?.root?.hide()
+        expiredBinding?.root?.hide()
         binding?.run {
             val vsInvitationReject = root.findViewById<View>(R.id.vsInvitationReject)
             if (vsInvitationReject is ViewStub) {

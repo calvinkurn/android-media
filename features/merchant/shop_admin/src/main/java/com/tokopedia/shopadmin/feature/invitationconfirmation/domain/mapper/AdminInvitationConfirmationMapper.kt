@@ -33,11 +33,11 @@ class AdminInvitationConfirmationMapper @Inject constructor() {
         )
     }
 
-    fun mapToAdminConfirmationRegUiModel(adminConfirmationRegResponse: AdminConfirmationRegResponse): AdminConfirmationRegUiModel {
+    fun mapToAdminConfirmationRegUiModel(adminConfirmationReg: AdminConfirmationRegResponse.AdminConfirmationReg): AdminConfirmationRegUiModel {
         return AdminConfirmationRegUiModel(
-            isSuccess = adminConfirmationRegResponse.success,
-            message = adminConfirmationRegResponse.message,
-            acceptBecomeAdmin = adminConfirmationRegResponse.acceptBecomeAdmin
+            isSuccess = adminConfirmationReg.success,
+            message = adminConfirmationReg.message,
+            acceptBecomeAdmin = adminConfirmationReg.acceptBecomeAdmin
         )
     }
 
