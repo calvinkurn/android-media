@@ -218,11 +218,11 @@ internal class SearchProductHandleQuickFilterTest : ProductListPresenterTestFixt
     fun `Quick Filter Item Type Is Selected When There Is Active Filter`() {
         val searchProductModel = searchProductModelWithQuickFilter.jsonToObject<SearchProductModel>()
         val selectedFilterIndex = 0
-        val selectedFilter = searchProductModel.quickFilterModel.filter[selectedFilterIndex].options[0]
+        val selectedFilterOption = searchProductModel.quickFilterModel.filter[selectedFilterIndex].options[0]
 
         `Given Search Product API will return SearchProductModel`(searchProductModel)
         `Given Set Quick Filter Called`()
-        `Given Selected Option will return true`(selectedFilter)
+        `Given Selected Option will return true`(selectedFilterOption)
 
         `When Load Data`()
 
