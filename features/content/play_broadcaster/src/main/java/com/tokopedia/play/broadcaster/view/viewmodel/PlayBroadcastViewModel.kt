@@ -1449,14 +1449,15 @@ class PlayBroadcastViewModel @AssistedInject constructor(
                     isMandatory = true,
                 )
             }
-
+            val selectedInitialDurationIfFound =
+                quizConfig.eligibleStartTimeInMs.indexOf(
+                    TimeUnit.MINUTES.toMillis(
+                        DEFAULT_QUIZ_DURATION_PICKER_IN_MINUTE
+                    )
+                ).coerceAtLeast(0)
             _quizFormData.update {
                 QuizFormDataUiModel(
-                    durationInMs = quizConfig.eligibleStartTimeInMs.indexOf(
-                        TimeUnit.MINUTES.toMillis(
-                            DEFAULT_QUIZ_DURATION_PICKER_IN_MINUTE
-                        )
-                    ).coerceAtLeast(0).toLong(),
+                    durationInMs = quizConfig.eligibleStartTimeInMs[selectedInitialDurationIfFound],
                     options = initialOptions
                 )
             }

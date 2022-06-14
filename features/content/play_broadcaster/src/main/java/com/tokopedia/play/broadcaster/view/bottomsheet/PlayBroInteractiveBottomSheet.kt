@@ -350,7 +350,7 @@ class PlayBroInteractiveBottomSheet @Inject constructor(
             fragmentManager: FragmentManager,
             classLoader: ClassLoader,
             type: Type,
-            size: Size? = Size.HALF,
+            size: Size,
         ): PlayBroInteractiveBottomSheet {
             val oldInstance =
                 fragmentManager.findFragmentByTag(TAG) as? PlayBroInteractiveBottomSheet
@@ -360,7 +360,7 @@ class PlayBroInteractiveBottomSheet @Inject constructor(
             ) as PlayBroInteractiveBottomSheet).apply {
                 arguments = Bundle().apply {
                     putString(ARG_TYPE, type.sheetType)
-                    putString(ARG_SIZE, size.toString())
+                    putString(ARG_SIZE, size.tag)
                 }
             }
         }
