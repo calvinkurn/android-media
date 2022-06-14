@@ -173,12 +173,13 @@ internal class SearchProductHandleQuickFilterTest : ProductListPresenterTestFixt
     @Test
     fun `Open Dropdown Quick Filter`() {
         val searchProductModel = searchProductModelWithMultipleOptionQuickFilter.jsonToObject<SearchProductModel>()
-        val selectedFilter = searchProductModel.quickFilterModel.filter[0]
+        val selectedFilterIndex = 0
+        val selectedFilter = searchProductModel.quickFilterModel.filter[selectedFilterIndex]
         `Given Search Product API will return SearchProductModel`(searchProductModel)
         `Given Set Quick Filter Called`()
         `Given data has been loaded`()
 
-        `When Click Quick Filter Item`(0)
+        `When Click Quick Filter Item`(selectedFilterIndex)
 
         `Then verify dropdown quick filter bottomsheet has opened and track sent`(selectedFilter)
     }
@@ -186,13 +187,14 @@ internal class SearchProductHandleQuickFilterTest : ProductListPresenterTestFixt
     @Test
     fun `Open Dropdown Quick Filter Using Chevron`() {
         val searchProductModel = searchProductModelWithMultipleOptionQuickFilter.jsonToObject<SearchProductModel>()
-        val selectedFilter = searchProductModel.quickFilterModel.filter[0]
+        val selectedFilterIndex = 0
+        val selectedFilter = searchProductModel.quickFilterModel.filter[selectedFilterIndex]
 
         `Given Search Product API will return SearchProductModel`(searchProductModel)
         `Given Set Quick Filter Called`()
         `Given data has been loaded`()
 
-        `When Click Quick Filter Using Chevron`(0)
+        `When Click Quick Filter Using Chevron`(selectedFilterIndex)
 
         `Then verify dropdown quick filter bottomsheet has opened and track sent`(selectedFilter)
     }
@@ -200,13 +202,14 @@ internal class SearchProductHandleQuickFilterTest : ProductListPresenterTestFixt
     @Test
     fun `Click Quick Filter with Single Option`() {
         val searchProductModel = searchProductModelWithQuickFilter.jsonToObject<SearchProductModel>()
-        val selectedFilter = searchProductModel.quickFilterModel.filter[0]
+        val selectedFilterIndex = 0
+        val selectedFilter = searchProductModel.quickFilterModel.filter[selectedFilterIndex]
 
         `Given Search Product API will return SearchProductModel`(searchProductModel)
         `Given Set Quick Filter Called`()
         `Given data has been loaded`()
 
-        `When Click Quick Filter Item`(0)
+        `When Click Quick Filter Item`(selectedFilterIndex)
 
         `Then verify quick filter clicked`(selectedFilter, selectedFilter.options.first())
     }
