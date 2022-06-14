@@ -10,8 +10,10 @@ import com.tokopedia.home_component.usecase.featuredshop.GetDisplayHeadlineAds
 import com.tokopedia.home_component.usecase.featuredshop.mappingTopAdsHeaderToChannelGrid
 import com.tokopedia.home_component.visitable.FeaturedShopDataModel
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.officialstore.category.data.model.Category
+import com.tokopedia.officialstore.official.data.mapper.OfficialStoreDynamicChannelComponentMapper
 import com.tokopedia.officialstore.official.data.model.OfficialStoreBanners
 import com.tokopedia.officialstore.official.data.model.OfficialStoreBenefits
 import com.tokopedia.officialstore.official.data.model.OfficialStoreChannel
@@ -579,6 +581,38 @@ class OfficialStoreHomeViewModelTest {
         Assert.assertEquals(viewModel.featuredShopRemove.value?.channelModel?.channelGrids?.size ?: sizeZero, sizeZero)
     }
 
+    @Test
+    fun given_get_headlineAds_error_then_pass_error_to_view() {
+        val prefixUrl = "prefix"
+        val slug = "slug"
+        val category = createCategory(prefixUrl, slug)
+        val channelId = "123"
+
+        val dynamicChannelResponse: MutableList<OfficialStoreChannel> = mutableListOf()
+        dynamicChannelResponse.addAll(
+            listOf(
+                OfficialStoreChannel(channel = Channel(layout = DynamicChannelLayout.LAYOUT_FEATURED_SHOP, id = channelId))
+            )
+        )
+
+        val featuredShopDataModel = FeaturedShopDataModel(
+            OfficialStoreDynamicChannelComponentMapper.mapChannelToComponent(
+                dynamicChannelResponse.first().channel, 0
+            )
+        )
+
+        val error = MessageErrorException()
+
+        coEvery { getOfficialStoreDynamicChannelUseCase.executeOnBackground() } returns dynamicChannelResponse
+        coEvery { getDisplayHeadlineAds.executeOnBackground() } throws error
+
+        viewModel.loadFirstData(category, "")
+
+        assertEquals(viewModel.featuredShopRemove.value?.channelModel?.channelHeader, featuredShopDataModel.channelModel.channelHeader)
+        assertEquals(viewModel.featuredShopRemove.value?.channelModel?.channelBanner, featuredShopDataModel.channelModel.channelBanner)
+        assertEquals(viewModel.featuredShopRemove.value?.channelModel?.channelGrids, featuredShopDataModel.channelModel.channelGrids)
+    }
+
 
     // ===================================== //
     private fun verifyIsLoggedInEquals(expectedLoggedInStatus: Boolean) {
@@ -852,7 +886,7 @@ class OfficialStoreHomeViewModelTest {
     }
 
     @Test
-    fun given_get_bestSelling_then_fetch_recomData_success_should_pass_to_view() = runBlocking {
+    fun given_get_bestSelling_then_fetch_recomData_success_should_pass_to_view() {
         val prefixUrl = "prefix"
         val slug = "slug"
         val category = createCategory(prefixUrl, slug)
@@ -883,8 +917,30 @@ class OfficialStoreHomeViewModelTest {
 
         viewModel.loadFirstData(category, "")
 
-        Assert.assertEquals((viewModel.recomWidget.value as Success).data, bestSellerDataModel)
-        Assert.assertEquals((viewModel.recomWidget.value as Success).data.channelId, channelId)
-        Assert.assertEquals((viewModel.recomWidget.value as Success).data.recommendationItemList.size, bestSellerDataModel.recommendationItemList.size)
+        assertEquals((viewModel.recomWidget.value as Success).data, bestSellerDataModel)
+    }
+
+    @Test
+    fun given_get_bestSelling_then_fetch_recomData_error_should_set_error_value() {
+        val prefixUrl = "prefix"
+        val slug = "slug"
+        val category = createCategory(prefixUrl, slug)
+        val channelId = "123"
+
+        val dynamicChannelResponse = mutableListOf(
+            OfficialStoreChannel(channel = Channel(
+                layout = DynamicChannelLayout.LAYOUT_BEST_SELLING, id = channelId)
+            )
+        )
+
+        val error = MessageErrorException()
+
+        coEvery { getOfficialStoreDynamicChannelUseCase.executeOnBackground() } returns dynamicChannelResponse
+        coEvery { getRecommendationUseCaseCoroutine.getData(any()) } throws error
+
+        viewModel.loadFirstData(category, "")
+
+        assert(viewModel.recomWidget.value is Fail)
+        assertEquals((viewModel.recomWidget.value as Fail).throwable, error)
     }
 }
