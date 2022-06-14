@@ -23,14 +23,16 @@ import com.tokopedia.shop.flashsale.common.extension.*
 import com.tokopedia.shop.flashsale.common.util.DateManager
 import com.tokopedia.shop.flashsale.common.util.doOnTextChanged
 import com.tokopedia.shop.flashsale.di.component.DaggerShopFlashSaleComponent
+import com.tokopedia.shop.flashsale.domain.entity.CampaignUiModel
 import com.tokopedia.shop.flashsale.domain.entity.Gradient
+import com.tokopedia.shop.flashsale.domain.entity.enums.CampaignStatus
 import com.tokopedia.shop.flashsale.domain.entity.enums.PageMode
 import com.tokopedia.shop.flashsale.presentation.creation.information.adapter.GradientColorAdapter
 import com.tokopedia.shop.flashsale.presentation.creation.information.bottomsheet.CampaignDatePickerBottomSheet
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.lifecycle.autoClearedNullable
-import java.util.*
+import java.util.Date
 import javax.inject.Inject
 
 
@@ -38,6 +40,7 @@ class CampaignInformationFragment : BaseDaggerFragment() {
 
     companion object {
         private const val BUNDLE_KEY_PAGE_MODE = "page_mode"
+        private const val BUNDLE_KEY_CAMPAIGN_ID = "campaign_id"
         private const val FIRST_STEP = 1
         private const val SPAN_COUNT = 6
         private const val HEX_COLOR_TEXT_FIELD_MAX_LENGTH = 6
@@ -47,10 +50,11 @@ class CampaignInformationFragment : BaseDaggerFragment() {
 
 
         @JvmStatic
-        fun newInstance(pageMode: PageMode): CampaignInformationFragment {
+        fun newInstance(pageMode: PageMode, campaignId: Long): CampaignInformationFragment {
             val fragment = CampaignInformationFragment()
             val bundle = Bundle()
             bundle.putParcelable(BUNDLE_KEY_PAGE_MODE, pageMode)
+            bundle.putLong(BUNDLE_KEY_CAMPAIGN_ID, campaignId)
             fragment.arguments = bundle
             return fragment
         }
@@ -58,7 +62,8 @@ class CampaignInformationFragment : BaseDaggerFragment() {
     }
 
     private var binding by autoClearedNullable<SsfsFragmentCampaignInformationBinding>()
-    private val pageMode by lazy { arguments?.getParcelable(BUNDLE_KEY_PAGE_MODE) as? PageMode }
+    private val pageMode by lazy { arguments?.getParcelable(BUNDLE_KEY_PAGE_MODE) ?: PageMode.CREATE }
+    private val campaignId by lazy { arguments?.getLong(BUNDLE_KEY_CAMPAIGN_ID).orZero() }
     private val adapter = GradientColorAdapter()
 
     @Inject
@@ -93,19 +98,16 @@ class CampaignInformationFragment : BaseDaggerFragment() {
         super.onViewCreated(view, savedInstanceState)
         setupView()
         observeValidationResult()
-        observeCampaignName()
         observeCampaignCreation()
+        observeCampaignUpdate()
+        observeCampaignDetail()
+        observeSaveDraft()
+        handlePageMode()
     }
 
     private fun observeValidationResult() {
         viewModel.areInputValid.observe(viewLifecycleOwner) { validationResult ->
             handleValidationResult(validationResult)
-        }
-    }
-
-    private fun observeCampaignName() {
-        viewModel.campaignName.observe(viewLifecycleOwner) { validationResult ->
-            handleCampaignNameValidationResult(validationResult)
         }
     }
 
@@ -115,7 +117,8 @@ class CampaignInformationFragment : BaseDaggerFragment() {
                 is Success -> {
                     binding?.btnCreateCampaign?.stopLoading()
                     if (result.data.isSuccess) {
-
+                        //TODO: Navigate to next page
+                        binding?.root showToaster "Campaign berhasil dibuat"
                     } else {
                         showErrorTicker(result.data.errorTitle, result.data.errorDescription)
                     }
@@ -127,6 +130,67 @@ class CampaignInformationFragment : BaseDaggerFragment() {
             }
         }
     }
+
+    private fun observeCampaignUpdate() {
+        viewModel.campaignUpdate.observe(viewLifecycleOwner) { result ->
+            when(result) {
+                is Success -> {
+                    binding?.btnCreateCampaign?.stopLoading()
+                    if (result.data.isSuccess) {
+                        //TODO: Navigate to next page
+                        binding?.root showToaster "Campaign berhasil diperbaharui"
+                    } else {
+                        showErrorTicker(result.data.errorTitle, result.data.errorDescription)
+                    }
+                }
+                is Fail -> {
+                    binding?.btnCreateCampaign?.stopLoading()
+                    binding?.cardView showError result.throwable
+                }
+            }
+        }
+    }
+
+    private fun observeSaveDraft() {
+        viewModel.saveDraft.observe(viewLifecycleOwner) { result ->
+            when(result) {
+                is Success -> {
+                    binding?.btnDraft?.stopLoading()
+                    if (result.data.isSuccess) {
+                        binding?.root showToaster "Draft berhasil dibuat"
+                        requireActivity().finish()
+                    } else {
+                        showErrorTicker(result.data.errorTitle, result.data.errorDescription)
+                    }
+                }
+                is Fail -> {
+                    binding?.btnDraft?.stopLoading()
+                    binding?.cardView showError result.throwable
+                }
+            }
+        }
+    }
+
+
+    private fun observeCampaignDetail() {
+        viewModel.campaignDetail.observe(viewLifecycleOwner) { result ->
+            when(result) {
+                is Success -> {
+                    binding?.loader?.gone()
+                    binding?.scrollView?.visible()
+                    binding?.cardView?.visible()
+                    displayCampaignDetail(result.data)
+                }
+                is Fail -> {
+                    binding?.loader?.gone()
+                    binding?.scrollView?.gone()
+                    binding?.cardView?.gone()
+                    binding?.cardView showError result.throwable
+                }
+            }
+        }
+    }
+
 
     private fun setupView() {
         binding?.switchTeaser?.isChecked = true
@@ -152,7 +216,8 @@ class CampaignInformationFragment : BaseDaggerFragment() {
     private fun setupTextFields() {
         binding?.run {
             tauCampaignName.textInputLayout.editText?.doOnTextChanged { text ->
-                viewModel.onCampaignNameChange(text)
+                val validationResult = viewModel.validateCampaignName(text)
+                handleCampaignNameValidationResult(validationResult)
             }
 
             tauHexColor.setMaxLength(HEX_COLOR_TEXT_FIELD_MAX_LENGTH)
@@ -170,8 +235,10 @@ class CampaignInformationFragment : BaseDaggerFragment() {
 
     private fun setupClickListeners() {
         binding?.run {
-            btnDraft.setOnClickListener { validateInput() }
-            btnCreateCampaign.setOnClickListener { validateInput() }
+            btnDraft.setOnClickListener { validateDraft() }
+            btnCreateCampaign.setOnClickListener {
+                viewModel.validateInput(getCurrentSelection(), Date())
+            }
             btnApply.setOnClickListener { handleApplyButtonClick() }
 
             quantityEditor.editText.inputType = InputType.TYPE_NULL
@@ -213,6 +280,16 @@ class CampaignInformationFragment : BaseDaggerFragment() {
         }
     }
 
+    private fun handlePageMode() {
+        if (pageMode == PageMode.UPDATE) {
+            binding?.loader?.visible()
+            binding?.btnCreateCampaign?.enable()
+            binding?.scrollView?.gone()
+            binding?.cardView?.gone()
+            viewModel.getCampaignDetail(campaignId)
+        }
+    }
+
     private fun handleCampaignNameValidationResult(validationResult: CampaignInformationViewModel.CampaignNameValidationResult) {
         when (validationResult) {
             CampaignInformationViewModel.CampaignNameValidationResult.CampaignNameIsEmpty -> {
@@ -250,8 +327,13 @@ class CampaignInformationFragment : BaseDaggerFragment() {
 
                 binding?.btnCreateCampaign?.enable()
                 binding?.btnCreateCampaign.showLoading()
-                val selection = viewModel.getSelection() ?: return
-                viewModel.createCampaign(selection)
+                val selection = getCurrentSelection()
+
+                if (pageMode == PageMode.CREATE) {
+                    viewModel.createCampaign(selection)
+                } else {
+                    viewModel.updateCampaign(selection, campaignId)
+                }
             }
         }
     }
@@ -260,7 +342,7 @@ class CampaignInformationFragment : BaseDaggerFragment() {
         val rawHexColor = binding?.tauHexColor?.editText?.text.toString().trim().toHexColor()
         val gradient = Gradient(rawHexColor, rawHexColor, isSelected = true)
         binding?.imgHexColorPreview?.setBackgroundFromGradient(gradient)
-        val deselectedColors = viewModel.deselectAllColor(adapter.getItems())
+        val deselectedColors = viewModel.deselectAllColor(adapter.snapshot())
         adapter.submit(deselectedColors)
         viewModel.setSelectedColor(gradient)
     }
@@ -272,6 +354,7 @@ class CampaignInformationFragment : BaseDaggerFragment() {
     private fun handleQuantityEditor(newValue: Int, oldValue: Int) {
         val isIncreasing = newValue > oldValue
         val isDecreasing = newValue < oldValue
+
         if (isIncreasing && newValue % THRESHOLD == Constant.ZERO) {
             binding?.quantityEditor?.stepValue = CAMPAIGN_TEASER_MULTIPLIED_STEP_SIZE
         } else if (isDecreasing && oldValue == THRESHOLD) {
@@ -295,9 +378,13 @@ class CampaignInformationFragment : BaseDaggerFragment() {
 
     private fun handleSelectedColor(selectedGradient: Gradient) {
         viewModel.setSelectedColor(selectedGradient)
-        val allGradients = adapter.getItems()
+        val allGradients = adapter.snapshot()
         val updatedColorSelection = viewModel.markColorAsSelected(selectedGradient, allGradients)
         adapter.submit(updatedColorSelection)
+
+        binding?.tauHexColor?.editText?.setText("")
+        binding?.btnApply?.invisible()
+        binding?.imgHexColorPreview?.setBackgroundResource(R.drawable.sfs_shape_rounded_color)
     }
 
     private fun displayStartDatePicker() {
@@ -345,7 +432,7 @@ class CampaignInformationFragment : BaseDaggerFragment() {
         binding?.quantityEditor?.subtractButton?.isEnabled = currentValue > QuantityPickerConstant.CAMPAIGN_TEASER_MINIMUM_UPCOMING_HOUR
     }
 
-    private fun validateInput() {
+    private fun getCurrentSelection(): CampaignInformationViewModel.Selection {
         val startDate = viewModel.getSelectedStartDate()
         val endDate = viewModel.getSelectedEndDate()
         val showTeaser = binding?.switchTeaser?.isChecked.orFalse()
@@ -357,20 +444,32 @@ class CampaignInformationFragment : BaseDaggerFragment() {
         val teaserDate = startDate.decreaseHourBy(decreaseByHour)
         val firstColor = viewModel.getColor().first
         val secondColor = viewModel.getColor().second
+        val paymentType = viewModel.getPaymentType()
 
-        val selection = CampaignInformationViewModel.Selection(
+        return CampaignInformationViewModel.Selection(
             binding?.tauCampaignName?.editText?.text.toString().trim(),
             startDate,
             endDate,
             showTeaser,
             teaserDate,
             firstColor,
-            secondColor
+            secondColor,
+            paymentType
         )
-
-        viewModel.onNextButtonPressed(selection, Date())
     }
 
+    private fun validateDraft() {
+        val campaignName = binding?.tauCampaignName?.editText?.text.toString().trim()
+        val validationResult = viewModel.validateCampaignName(campaignName)
+
+        if (validationResult !is CampaignInformationViewModel.CampaignNameValidationResult.Valid) {
+            handleCampaignNameValidationResult(validationResult)
+            return
+        }
+
+        binding?.btnDraft.showLoading()
+        viewModel.saveDraft(pageMode, campaignId, getCurrentSelection())
+    }
 
     private fun showError(errorMessage : String) {
         binding?.tauCampaignName?.isInputError = true
@@ -406,4 +505,48 @@ class CampaignInformationFragment : BaseDaggerFragment() {
         binding?.tickerLapsedTeaser?.gone()
     }
 
+    private fun displayCampaignDetail(campaign: CampaignUiModel) {
+        binding?.run {
+            tauCampaignName.editText.setText(campaign.campaignName)
+
+            val isEditDateEnabled = campaign.status == CampaignStatus.DRAFT
+            tauStartDate.editText.setText(campaign.startDate.formatTo(DateConstant.DATE_TIME_MINUTE_LEVEL))
+            tauEndDate.editText.setText(campaign.endDate.formatTo(DateConstant.DATE_TIME_MINUTE_LEVEL))
+            tauStartDate.isEnabled = isEditDateEnabled
+            tauEndDate.isEnabled = isEditDateEnabled
+
+            switchTeaser.isChecked = campaign.useUpcomingWidget
+            handleSwitchTeaser(campaign.useUpcomingWidget)
+            renderSelectedColor(campaign)
+        }
+
+        viewModel.setSelectedStartDate(campaign.startDate)
+        viewModel.setSelectedEndDate(campaign.endDate)
+        viewModel.setShowTeaser(campaign.useUpcomingWidget)
+        viewModel.setSelectedColor(campaign.gradientColor)
+        viewModel.setPaymentType(campaign.paymentType)
+    }
+
+    private fun renderSelectedColor(campaign: CampaignUiModel) {
+        val isUsingHexColor = viewModel.isUsingHexColor(
+            campaign.gradientColor.first,
+            campaign.gradientColor.second
+        )
+
+        binding?.recyclerView?.isVisible = !isUsingHexColor
+        binding?.groupHexColorPicker?.isVisible = isUsingHexColor
+        binding?.btnApply?.isVisible = isUsingHexColor
+
+        if (isUsingHexColor) {
+            binding?.contentSwitcher?.isChecked = true
+            binding?.tauHexColor?.editText?.setText(campaign.gradientColor.first.removeHexColorPrefix())
+            binding?.imgHexColorPreview?.setBackgroundFromGradient(campaign.gradientColor)
+
+            val colors = viewModel.deselectAllColor(adapter.snapshot())
+            adapter.submit(colors)
+        } else {
+            val colors = viewModel.markColorAsSelected(campaign.gradientColor, adapter.snapshot())
+            adapter.submit(colors)
+        }
+    }
 }

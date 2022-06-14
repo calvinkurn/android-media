@@ -15,7 +15,8 @@ import com.tokopedia.utils.view.binding.viewBinding
 
 class DraftListViewHolder(
     itemView: View,
-    private val deleteIconClickListener: (DraftItemModel) -> Unit = {}
+    private val deleteIconClickListener: (DraftItemModel) -> Unit = {},
+    private val onDraftClicked : (DraftItemModel) -> Unit = {}
 ): RecyclerView.ViewHolder(itemView) {
 
     companion object {
@@ -36,9 +37,8 @@ class DraftListViewHolder(
             typographyDraftDesc.text = item.description
             typographyDraftStart.text = MethodChecker.fromHtml("<b>$startDate</b><br/>$startHour")
             typographyDraftEnd.text = MethodChecker.fromHtml("<b>$endDate</b><br/>$endHour")
-            iconDelete.setOnClickListener {
-                deleteIconClickListener.invoke(item)
-            }
+            root.setOnClickListener { onDraftClicked(item) }
+            iconDelete.setOnClickListener { deleteIconClickListener.invoke(item) }
         }
     }
 

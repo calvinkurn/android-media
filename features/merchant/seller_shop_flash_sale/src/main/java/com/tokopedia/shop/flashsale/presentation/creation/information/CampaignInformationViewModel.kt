@@ -9,9 +9,12 @@ import com.tokopedia.shop.flashsale.common.constant.QuantityPickerConstant.CAMPA
 import com.tokopedia.shop.flashsale.common.extension.hourOnly
 import com.tokopedia.shop.flashsale.domain.entity.CampaignAction
 import com.tokopedia.shop.flashsale.domain.entity.CampaignCreationResult
+import com.tokopedia.shop.flashsale.domain.entity.CampaignUiModel
 import com.tokopedia.shop.flashsale.domain.entity.Gradient
+import com.tokopedia.shop.flashsale.domain.entity.enums.PageMode
 import com.tokopedia.shop.flashsale.domain.entity.enums.PaymentType
 import com.tokopedia.shop.flashsale.domain.usecase.DoSellerCampaignCreationUseCase
+import com.tokopedia.shop.flashsale.domain.usecase.GetSellerCampaignDetailUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -24,6 +27,7 @@ import javax.inject.Inject
 class CampaignInformationViewModel @Inject constructor(
     private val dispatchers: CoroutineDispatchers,
     private val doSellerCampaignCreationUseCase: DoSellerCampaignCreationUseCase,
+    private val getSellerCampaignDetailUseCase: GetSellerCampaignDetailUseCase
 ) : BaseViewModel(dispatchers.main) {
 
     companion object {
@@ -43,15 +47,19 @@ class CampaignInformationViewModel @Inject constructor(
     val campaignUpdate: LiveData<Result<CampaignCreationResult>>
         get() = _campaignUpdate
 
-    private val _campaignName = MutableLiveData<CampaignNameValidationResult>()
-    val campaignName: LiveData<CampaignNameValidationResult>
-        get() = _campaignName
+    private val _campaignDetail= MutableLiveData<Result<CampaignUiModel>>()
+    val campaignDetail: LiveData<Result<CampaignUiModel>>
+        get() = _campaignDetail
 
-    private var selection: Selection? = null
+    private val _saveDraft= MutableLiveData<Result<CampaignCreationResult>>()
+    val saveDraft: LiveData<Result<CampaignCreationResult>>
+        get() = _saveDraft
+
     private var selectedColor = defaultGradientColor
     private var selectedStartDate = Date()
     private var selectedEndDate = Date()
     private var showTeaser = true
+    private var paymentType = PaymentType.INSTANT
 
     private val forbiddenWords = listOf(
         "kejar diskon",
@@ -86,31 +94,29 @@ class CampaignInformationViewModel @Inject constructor(
         val showTeaser: Boolean,
         val teaserDate: Date,
         val firstColor: String,
-        val secondColor: String
+        val secondColor: String,
+        val paymentType: PaymentType
     )
 
-    fun onCampaignNameChange(campaignName: String) {
+    fun validateCampaignName(campaignName: String) : CampaignNameValidationResult {
         if (campaignName.isEmpty()) {
-            _campaignName.value = CampaignNameValidationResult.CampaignNameIsEmpty
-            return
+            return CampaignNameValidationResult.CampaignNameIsEmpty
         }
 
         if (campaignName.length < MIN_CAMPAIGN_NAME_LENGTH) {
-            _campaignName.value = CampaignNameValidationResult.CampaignNameBelowMinCharacter
-            return
+            return CampaignNameValidationResult.CampaignNameBelowMinCharacter
+
         }
 
         if (campaignName in forbiddenWords) {
-            _campaignName.value = CampaignNameValidationResult.CampaignNameHasForbiddenWords
-            return
+            return  CampaignNameValidationResult.CampaignNameHasForbiddenWords
+
         }
 
-        _campaignName.value = CampaignNameValidationResult.Valid
+        return CampaignNameValidationResult.Valid
     }
 
-    fun onNextButtonPressed(selection: Selection, now: Date) {
-        this.selection = selection
-
+    fun validateInput(selection: Selection, now: Date) {
         if (selection.showTeaser && selection.teaserDate.before(now)) {
             _areInputValid.value = ValidationResult.LapsedTeaserStartDate
             return
@@ -138,7 +144,7 @@ class CampaignInformationViewModel @Inject constructor(
                         showTeaser = selection.showTeaser,
                         firstColor = selection.firstColor,
                         secondColor = selection.secondColor,
-                        paymentType = PaymentType.INSTANT
+                        paymentType = selection.paymentType
                     )
                 val result = doSellerCampaignCreationUseCase.execute(param)
                 _campaignCreation.postValue(Success(result))
@@ -163,7 +169,7 @@ class CampaignInformationViewModel @Inject constructor(
                         showTeaser = selection.showTeaser,
                         firstColor = selection.firstColor,
                         secondColor = selection.secondColor,
-                        paymentType = PaymentType.INSTANT
+                        paymentType = selection.paymentType
                 )
                 val result = doSellerCampaignCreationUseCase.execute(param)
                 _campaignUpdate.postValue(Success(result))
@@ -175,8 +181,58 @@ class CampaignInformationViewModel @Inject constructor(
 
     }
 
-    fun getSelection(): Selection? {
-        return selection
+    fun saveDraft(mode: PageMode, campaignId: Long, selection: Selection) {
+        launchCatchError(
+            dispatchers.io,
+            block = {
+                val action = if (mode == PageMode.CREATE) {
+                    CampaignAction.Create
+                } else {
+                    CampaignAction.Update(campaignId)
+                }
+
+                val param = DoSellerCampaignCreationUseCase.Param(
+                    action,
+                    selection.campaignName,
+                    selection.startDate,
+                    selection.endDate,
+                    selection.teaserDate,
+                    showTeaser = selection.showTeaser,
+                    firstColor = selection.firstColor,
+                    secondColor = selection.secondColor,
+                    paymentType = selection.paymentType
+                )
+                val result = doSellerCampaignCreationUseCase.execute(param)
+                _saveDraft.postValue(Success(result))
+            },
+            onError = { error ->
+                _saveDraft.postValue(Fail(error))
+            }
+        )
+
+    }
+
+
+    fun getCampaignDetail(campaignId: Long) {
+        launchCatchError(
+            dispatchers.io,
+            block = {
+                val result = getSellerCampaignDetailUseCase.execute(campaignId)
+                _campaignDetail.postValue(Success(result))
+            },
+            onError = { error ->
+                _campaignDetail.postValue(Fail(error))
+            }
+        )
+
+    }
+
+    fun setPaymentType(paymentType : PaymentType) {
+        this.paymentType = paymentType
+    }
+
+    fun getPaymentType(): PaymentType {
+        return paymentType
     }
 
     fun setSelectedColor(gradient: Gradient) {
@@ -209,7 +265,7 @@ class CampaignInformationViewModel @Inject constructor(
 
     fun markColorAsSelected(selectedGradient: Gradient, gradients: List<Gradient>): List<Gradient> {
         return gradients.map { gradient ->
-            if (gradient == selectedGradient) {
+            if (gradient.first == selectedGradient.first && gradient.second == selectedGradient.second) {
                 gradient.copy(isSelected = true)
             } else {
                 gradient.copy(isSelected = false)
@@ -240,5 +296,9 @@ class CampaignInformationViewModel @Inject constructor(
             adjustedHourDifference <= CAMPAIGN_TEASER_MINIMUM_UPCOMING_HOUR -> CAMPAIGN_TEASER_MINIMUM_UPCOMING_HOUR
             else -> adjustedHourDifference
         }
+    }
+
+    fun isUsingHexColor(firstColor : String, secondColor : String) : Boolean {
+        return firstColor == secondColor
     }
 }

@@ -30,16 +30,16 @@ import com.tokopedia.shop.flashsale.domain.entity.CampaignMeta
 import com.tokopedia.shop.flashsale.domain.entity.CampaignUiModel
 import com.tokopedia.shop.flashsale.domain.entity.ShopInfo
 import com.tokopedia.shop.flashsale.domain.entity.aggregate.ShareComponentMetadata
-import com.tokopedia.shop.flashsale.domain.entity.enums.PageMode
 import com.tokopedia.shop.flashsale.domain.entity.enums.CampaignStatus
+import com.tokopedia.shop.flashsale.presentation.cancelation.CancelCampaignBottomSheet
+import com.tokopedia.shop.flashsale.presentation.creation.information.CampaignInformationActivity
+import com.tokopedia.shop.flashsale.presentation.draft.bottomsheet.DraftListBottomSheet
+import com.tokopedia.shop.flashsale.presentation.draft.uimodel.DraftItemModel
 import com.tokopedia.shop.flashsale.presentation.list.container.CampaignListContainerFragment
 import com.tokopedia.shop.flashsale.presentation.list.dialog.showNoCampaignQuotaDialog
 import com.tokopedia.shop.flashsale.presentation.list.list.adapter.CampaignAdapter
 import com.tokopedia.shop.flashsale.presentation.list.list.bottomsheet.MoreMenuBottomSheet
 import com.tokopedia.shop.flashsale.presentation.list.list.listener.RecyclerViewScrollListener
-import com.tokopedia.shop.flashsale.presentation.creation.information.CampaignInformationActivity
-import com.tokopedia.shop.flashsale.presentation.cancelation.CancelCampaignBottomSheet
-import com.tokopedia.shop.flashsale.presentation.draft.bottomsheet.DraftListBottomSheet
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.universal_sharing.view.bottomsheet.SharingUtil
 import com.tokopedia.universal_sharing.view.bottomsheet.UniversalShareBottomSheet
@@ -146,6 +146,10 @@ class CampaignListFragment : BaseSimpleListFragment<CampaignAdapter, CampaignUiM
         observeCampaignPrerequisiteData()
         observeShareComponentMetadata()
         observeSellerEligibility()
+    }
+
+    override fun onResume() {
+        super.onResume()
         viewModel.getCampaignPrerequisiteData()
     }
 
@@ -160,7 +164,9 @@ class CampaignListFragment : BaseSimpleListFragment<CampaignAdapter, CampaignUiM
         binding?.btnDraft?.setOnClickListener {
             DraftListBottomSheet.showUsingCampaignUiModel(
                 childFragmentManager,
-                viewModel.getCampaignDrafts(), ::onDeleteDraftSuccess
+                viewModel.getCampaignDrafts(),
+                ::onDeleteDraftSuccess,
+                ::onDraftClicked
             )
         }
         setupSearchBar()
@@ -393,10 +399,11 @@ class CampaignListFragment : BaseSimpleListFragment<CampaignAdapter, CampaignUiM
             DraftListBottomSheet.showUsingCampaignUiModel(
                 childFragmentManager,
                 campaignDrafts,
-                ::onDeleteDraftSuccess
+                ::onDeleteDraftSuccess,
+                ::onDraftClicked
             )
         } else {
-            CampaignInformationActivity.start(requireActivity(), PageMode.CREATE)
+            CampaignInformationActivity.start(requireActivity())
         }
     }
 
@@ -428,7 +435,7 @@ class CampaignListFragment : BaseSimpleListFragment<CampaignAdapter, CampaignUiM
         }
 
         val buttonOnClickAction =  if (tabPosition == TAB_POSITION_FIRST) {
-            {  }
+            { handleCreateCampaign() }
         } else {
             { onNavigateToActiveCampaignTab() }
         }
@@ -571,6 +578,10 @@ class CampaignListFragment : BaseSimpleListFragment<CampaignAdapter, CampaignUiM
         view?.postDelayed( {
             viewModel.getCampaignPrerequisiteData()
         }, DRAFT_SERVER_SAVING_DURATION)
+    }
+
+    private fun onDraftClicked(draft: DraftItemModel) {
+        CampaignInformationActivity.startUpdateMode(requireActivity(), draft.id)
     }
 
     private fun showLoaderDialog() {

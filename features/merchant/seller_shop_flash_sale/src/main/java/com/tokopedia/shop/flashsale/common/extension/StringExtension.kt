@@ -35,3 +35,12 @@ fun String.toColor(): Int {
 fun String.toHexColor() : String{
     return "#${this}"
 }
+
+fun String.removeHexColorPrefix() : String {
+    return removePrefix("#")
+}
+
+fun String.isNumber(): Boolean {
+    val regex = "-?[0-9]+(\\.[0-9]+)?".toRegex()
+    return this.matches(regex)
+}

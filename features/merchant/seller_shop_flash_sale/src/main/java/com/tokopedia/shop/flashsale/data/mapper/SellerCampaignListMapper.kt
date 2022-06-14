@@ -8,6 +8,7 @@ import com.tokopedia.shop.flashsale.common.extension.epochToDate
 import com.tokopedia.shop.flashsale.data.response.GetSellerCampaignListResponse
 import com.tokopedia.shop.flashsale.domain.entity.CampaignMeta
 import com.tokopedia.shop.flashsale.domain.entity.CampaignUiModel
+import com.tokopedia.shop.flashsale.domain.entity.Gradient
 import com.tokopedia.shop.flashsale.domain.entity.enums.*
 import javax.inject.Inject
 
@@ -36,7 +37,10 @@ class SellerCampaignListMapper @Inject constructor() {
                     it.productSummary.visibleProductCount
                 ),
                 it.startDate.epochToDate(),
-                it.endDate.epochToDate()
+                it.endDate.epochToDate(),
+                Gradient(it.gradientColor.firstColor, it.gradientColor.secondColor, true),
+                it.useUpcomingWidget,
+                it.paymentType.toPaymentType()
             )
         }
         return CampaignMeta(
@@ -54,15 +58,27 @@ class SellerCampaignListMapper @Inject constructor() {
             CAMPAIGN_STATUS_ID_IN_SUBMISSION -> CampaignStatus.IN_SUBMISSION
             CAMPAIGN_STATUS_ID_IN_REVIEW -> CampaignStatus.IN_REVIEW
             CAMPAIGN_STATUS_ID_READY -> CampaignStatus.READY
-            CAMPAIGN_STATUS_ID_UPCOMING -> CampaignStatus.UPCOMING
+            CAMPAIGN_STATUS_ID_READY_LOCKED -> CampaignStatus.READY_LOCKED
             CAMPAIGN_STATUS_ID_ONGOING -> CampaignStatus.ONGOING
 
             CAMPAIGN_STATUS_ID_FINISHED -> CampaignStatus.FINISHED
+            CAMPAIGN_STATUS_PUBLISH_CANCELLED -> CampaignStatus.PUBLISHED_CANCELLED
+            CAMPAIGN_STATUS_SUBMISSION_CANCELLED -> CampaignStatus.SUBMISSION_CANCELLED
+            CAMPAIGN_STATUS_REVIEW_CANCELLED -> CampaignStatus.REVIEW_CANCELLED
+            CAMPAIGN_STATUS_READY_CANCELLED -> CampaignStatus.READY_CANCELLED
             CAMPAIGN_STATUS_ID_ONGOING_CANCELLATION -> CampaignStatus.ONGOING_CANCELLATION
             CAMPAIGN_STATUS_ID_CANCELLED -> CampaignStatus.CANCELLED
 
             else -> CampaignStatus.CANCELLED
 
+        }
+    }
+
+    private fun Int.toPaymentType() : PaymentType {
+        return when(this) {
+            PAYMENT_TYPE_INSTANT -> PaymentType.INSTANT
+            PAYMENT_TYPE_REGULAR -> PaymentType.REGULAR
+            else ->  PaymentType.INSTANT
         }
     }
 

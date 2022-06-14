@@ -8,10 +8,11 @@ class DraftListAdapter: RecyclerView.Adapter<DraftListViewHolder>() {
 
     private var items: List<DraftItemModel> = emptyList()
     private var deleteIconClickListener: (DraftItemModel) -> Unit = {}
+    private var onDraftClicked : (DraftItemModel) -> Unit = {}
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DraftListViewHolder {
         val rootView = DraftListViewHolder.createRootView(parent)
-        return DraftListViewHolder(rootView, deleteIconClickListener)
+        return DraftListViewHolder(rootView, deleteIconClickListener, onDraftClicked)
     }
 
     override fun onBindViewHolder(holder: DraftListViewHolder, position: Int) {
@@ -27,4 +28,9 @@ class DraftListAdapter: RecyclerView.Adapter<DraftListViewHolder>() {
     fun setDeleteIconClickListener(listener: (DraftItemModel) -> Unit){
         deleteIconClickListener = listener
     }
+
+    fun setOnDraftClick(onDraftClicked : (DraftItemModel) -> Unit) {
+        this.onDraftClicked = onDraftClicked
+    }
+
 }
