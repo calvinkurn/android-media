@@ -768,6 +768,7 @@ class MerchantPageFragment : BaseMultiFragment(),
                     shopId = merchantId,
                     productUiModel = productUiModel
                 )
+                activityViewModel?.addToCart(updateParam, SOURCE)
             }
         } else {
             val updateParam = viewModel.mapProductUiModelToAtcRequestParam(
@@ -776,8 +777,9 @@ class MerchantPageFragment : BaseMultiFragment(),
             )
 
             val bottomSheet = ChangeMerchantBottomSheet.newInstance()
+
             bottomSheet.addToCart {
-                activityViewModel?.addToCart(updateParam, SOURCE)
+                activityViewModel?.deleteAllAtcAndAddProduct(updateParam, SOURCE)
             }
             bottomSheet.show(childFragmentManager)
         }

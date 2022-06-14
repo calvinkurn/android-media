@@ -119,6 +119,24 @@ class MultipleFragmentsViewModel @Inject constructor(
         })
     }
 
+    fun deleteAllAtcAndAddProduct(updateParam: UpdateParam, source: String) {
+        launchCatchError(block = {
+            cartDataValidationState.emit(UiEvent(state = UiEvent.EVENT_LOADING_DIALOG))
+            val removeCartParam = getProductParamByIdList()
+            removeCartTokoFoodUseCase(removeCartParam).collect {
+                loadCartList(source)
+                addToCart(updateParam, source)
+            }
+        }, onError = {
+            cartDataValidationState.emit(
+                UiEvent(
+                    state = UiEvent.EVENT_FAILED_DELETE_PRODUCT,
+                    throwable = it
+                )
+            )
+        })
+    }
+
     fun deleteUnavailableProducts(source: String, shopId: String? = null) {
         launchCatchError(block = {
             cartDataValidationState.emit(UiEvent(state = UiEvent.EVENT_LOADING_DIALOG))
@@ -266,10 +284,12 @@ class MultipleFragmentsViewModel @Inject constructor(
         }, onError = {
             miniCartLoadingQueue.value?.minus(Int.ONE)
             miniCartUiModelState.emit(Result.Failure(it))
-            cartDataValidationState.emit(UiEvent(
-                state = UiEvent.EVENT_FAILED_LOAD_CART,
-                throwable = it
-            ))
+            cartDataValidationState.emit(
+                UiEvent(
+                    state = UiEvent.EVENT_FAILED_LOAD_CART,
+                    throwable = it
+                )
+            )
         })
     }
 
@@ -302,6 +322,17 @@ class MultipleFragmentsViewModel @Inject constructor(
                 shopId = shopId
             )
         )
+        return RemoveCartTokoFoodParam(carts = cartList)
+    }
+
+    private fun getProductParamByIdList(): RemoveCartTokoFoodParam {
+        val cartList = cartDataState.value?.getProductListFromCart()?.map {
+            RemoveItemTokoFoodParam(
+                cartId = it.cartId.toLongOrZero(),
+                productId = it.productId,
+                shopId = shopId
+            )
+        }.orEmpty()
         return RemoveCartTokoFoodParam(carts = cartList)
     }
 

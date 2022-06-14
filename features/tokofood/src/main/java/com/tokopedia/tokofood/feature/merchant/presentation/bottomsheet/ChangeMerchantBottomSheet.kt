@@ -1,6 +1,5 @@
 package com.tokopedia.tokofood.feature.merchant.presentation.bottomsheet
 
-import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -8,27 +7,15 @@ import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.tokofood.common.constants.ImageUrl
-import com.tokopedia.tokofood.common.presentation.listener.HasViewModel
-import com.tokopedia.tokofood.common.presentation.viewmodel.MultipleFragmentsViewModel
 import com.tokopedia.tokofood.databinding.BottomsheetChangeMerchantLayoutBinding
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 
 class ChangeMerchantBottomSheet : BottomSheetUnify() {
 
-    private var parentActivity: HasViewModel<MultipleFragmentsViewModel>? = null
-
-    private val activityViewModel: MultipleFragmentsViewModel?
-        get() = parentActivity?.viewModel()
-
     private var binding by autoClearedNullable<BottomsheetChangeMerchantLayoutBinding>()
 
     private var addToCartListener: (() -> Unit)? = null
-
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-        parentActivity = activity as? HasViewModel<MultipleFragmentsViewModel>
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -57,11 +44,9 @@ class ChangeMerchantBottomSheet : BottomSheetUnify() {
     }
 
     private fun setBtnConfirmOrder() {
-        binding?.btnConfirmOrder?.run {
-            this.setOnClickListener {
-                isLoading = true
-                addToCartListener?.invoke()
-            }
+        binding?.btnConfirmOrder?.setOnClickListener {
+            addToCartListener?.invoke()
+            dismissAllowingStateLoss()
         }
     }
 
