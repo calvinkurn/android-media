@@ -196,7 +196,7 @@ class ProductListPresenter @Inject constructor(
     private var topAdsImageViewModelList = mutableListOf<TopAdsImageViewModel>()
     private var suggestionDataView: SuggestionDataView? = null
     private var relatedDataView: RelatedDataView? = null
-    override val quickFilterOptionList = mutableListOf<Option>()
+    override val quickFilterList = mutableListOf<Filter>()
     override var dynamicFilterModel: DynamicFilterModel? = null
         private set
     private var threeDotsProductItem: ProductItemDataView? = null
@@ -1539,38 +1539,73 @@ class ProductListPresenter @Inject constructor(
 
     private fun processQuickFilter(quickFilterData: DataValue) {
         val sortFilterItems = mutableListOf<SortFilterItem>()
-        quickFilterOptionList.clear()
+        quickFilterList.clear()
+        quickFilterList.addAll(quickFilterData.filter)
 
         quickFilterData.filter.forEach { filter ->
             val options = filter.options
-            quickFilterOptionList.addAll(options)
-            sortFilterItems.addAll(convertToSortFilterItem(filter, options))
+            sortFilterItems.add(createSortFilterItem(filter, options))
         }
 
         if (sortFilterItems.isNotEmpty())
             view.setQuickFilter(sortFilterItems)
     }
 
-    private fun convertToSortFilterItem(filter: Filter, options: List<Option>) =
-        options.map { option ->
-            createSortFilterItem(filter, option)
-        }
+    private fun createSortFilterItem(filter: Filter, options: List<Option>): SortFilterItem {
+        val isChipSelected = options.any { view.isFilterSelected(it) }
+        val selectedOptionsOnCurrentFilter = options.filter { view.isFilterSelected(it) }
+        val item = SortFilterItem(createSortFilterTitle(filter, selectedOptionsOnCurrentFilter))
 
-    private fun createSortFilterItem(filter: Filter, option: Option): SortFilterItem {
-        val item = SortFilterItem(filter.title) {
-            view.onQuickFilterSelected(filter, option)
-        }
-
-        setSortFilterItemState(item, option)
+        setSortFilterItemListener(item, filter, options)
+        setSortFilterItemState(item, isChipSelected)
 
         return item
     }
 
-    private fun setSortFilterItemState(item: SortFilterItem, option: Option) {
-        if (view.isFilterSelected(option)) {
+    @Suppress("MagicNumber")
+    private fun createSortFilterTitle(filter: Filter, activeOptions: List<Option>): String {
+        val optionSize = activeOptions.size
+
+        return when {
+            optionSize == 1 -> activeOptions.first().name
+            optionSize > 1 -> "$optionSize ${filter.title}"
+            else -> filter.title
+        }
+    }
+
+    private fun setSortFilterItemState(item: SortFilterItem, isChipSelected: Boolean) {
+        if (isChipSelected) {
             item.type = ChipsUnify.TYPE_SELECTED
             item.typeUpdated = false
+        } else {
+            item.type = ChipsUnify.TYPE_NORMAL
         }
+    }
+
+    @Suppress("MagicNumber")
+    private fun setSortFilterItemListener(item: SortFilterItem, filter: Filter, options: List<Option>) {
+        if (options.size == 1) {
+            item.listener = {
+                view.onQuickFilterSelected(filter, options.first())
+            }
+        } else {
+            item.listener = {
+                onDropDownQuickFilterClick(filter)
+            }
+            item.chevronListener = {
+                onDropDownQuickFilterClick(filter)
+            }
+        }
+    }
+
+    private fun onDropDownQuickFilterClick(filter: Filter) {
+        view.openBottomsheetMultipleOptionsQuickFilter(filter)
+        view.trackEventClickDropdownQuickFilter(filter.title)
+    }
+
+    override fun onApplyDropdownQuickFilter(optionList: List<Option>?) {
+        view.applyDropdownQuickFilter(optionList)
+        view.trackEventApplyDropdownQuickFilter(optionList)
     }
 
     private fun getViewToSendTrackingSearchAttempt(productDataView: ProductDataView) {
