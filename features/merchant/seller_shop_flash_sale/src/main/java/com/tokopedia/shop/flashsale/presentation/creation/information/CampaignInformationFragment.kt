@@ -32,7 +32,7 @@ import com.tokopedia.shop.flashsale.presentation.creation.information.bottomshee
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.lifecycle.autoClearedNullable
-import java.util.Date
+import java.util.*
 import javax.inject.Inject
 
 
@@ -199,6 +199,20 @@ class CampaignInformationFragment : BaseDaggerFragment() {
         setupClickListeners()
         setupTextFields()
         setupDatePicker()
+        setupScrollListener()
+    }
+
+    private fun setupScrollListener() {
+        binding?.scrollView?.isVerticalScrollBarEnabled = false
+        binding?.scrollView?.isHorizontalScrollBarEnabled = false
+        binding?.scrollView?.viewTreeObserver?.addOnScrollChangedListener {
+            val scrollY = binding?.scrollView?.scrollY.orZero()
+            if (scrollY.isScrollUp()) {
+                binding?.cardView?.visible()
+            } else {
+                binding?.cardView?.invisible()
+            }
+        }
     }
 
     private fun setupRecyclerView() {
