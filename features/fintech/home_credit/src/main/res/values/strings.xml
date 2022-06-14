@@ -13,4 +13,5 @@
     <string name="title_loading">Loading</string>
     <string name="homecredit_ktp_overlay_content_description">Camera Overlay</string>
     <string name="homecredit_ktp_image_border">Image Border</string>
+    <string name="homecredit_display_captured">Placeholder for Captured Image</string>
 </resources>

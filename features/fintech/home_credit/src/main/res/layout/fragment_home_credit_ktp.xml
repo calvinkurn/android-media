@@ -61,6 +61,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_gravity="center"
+        android:contentDescription="@string/homecredit_display_captured"
         android:adjustViewBounds="true"
         android:scaleType="centerInside"
         android:visibility="gone" />
