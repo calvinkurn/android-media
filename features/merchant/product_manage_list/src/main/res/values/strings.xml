@@ -71,6 +71,14 @@
     <string name="product_stock_reminder_label_status">Status</string>
     <string name="product_stock_reminder_min_stock_error">Min. %d</string>
     <string name="product_stock_reminder_max_stock_error">Maks. %1s</string>
+    <string name="product_stock_reminder_title_choose_variant">Pilih varian yang ingin diatur</string>
+    <string name="product_stock_reminder">Pengingat Stok</string>
+    <string name="product_stock_reminder_set_at_once">Atur Sekaligus</string>
+    <string name="product_stock_reminder_set_at_once_desc">Atur pengingat stok sekaligus</string>
+    <string name="product_stock_reminder_info_stock_remain">Sisa Stok</string>
+    <string name="product_stock_reminder_info_stock_remain_desc">Disarankan isi batas min. stok setidaknya 5x jumlah minimum pemesanan supaya penjualan terus lancar.</string>
+
+    <string name="label_apply">Terapkan</string>
 
     <string name="product_manage_search_hint">Cari produk atau SKU</string>
     <string name="product_manage_cancel_multiple_select">Batalkan</string>
@@ -207,4 +215,5 @@
     <string name="product_manage_back_to_home">Kembali ke Home</string>
     <string name="product_manage_no_access_description">Hubungi pemilik toko untuk bisa mengakses halaman ini, ya.</string>
     <string name="product_manage_refresh_page">Refresh Halaman</string>
+    <string name="label_all">Semua</string>
 </resources>

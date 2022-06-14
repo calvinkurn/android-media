@@ -30,11 +30,16 @@ import com.tokopedia.product.manage.feature.stockreminder.data.source.cloud.quer
 import com.tokopedia.product.manage.feature.stockreminder.data.source.cloud.response.createupdateresponse.CreateStockReminderResponse
 import com.tokopedia.product.manage.feature.stockreminder.data.source.cloud.response.createupdateresponse.UpdateStockReminderResponse
 import com.tokopedia.product.manage.feature.stockreminder.data.source.cloud.response.getresponse.GetStockReminderResponse
+import com.tokopedia.product.manage.feature.stockreminder.data.source.cloud.response.getresponse.ProductWareHouse
 import com.tokopedia.product.manage.feature.stockreminder.di.DaggerStockReminderComponent
 import com.tokopedia.product.manage.feature.stockreminder.view.adapter.ProductStockReminderAdapter
 import com.tokopedia.product.manage.feature.stockreminder.view.adapter.ProductStockReminderAdapterFactoryImpl
 import com.tokopedia.product.manage.feature.stockreminder.view.adapter.ProductStockReminderViewHolder
+import com.tokopedia.product.manage.feature.stockreminder.view.bottomsheet.SetAtOnceStockReminderBottomSheet
+import com.tokopedia.product.manage.feature.stockreminder.view.bottomsheet.StockRemainingInfoBottomSheet
+import com.tokopedia.product.manage.feature.stockreminder.view.bottomsheet.VariantSelectionStockReminderBottomSheet
 import com.tokopedia.product.manage.feature.stockreminder.view.data.ProductStockReminderUiModel
+import com.tokopedia.product.manage.feature.stockreminder.view.data.mapper.ProductStockReminderMapper.mapToGroupVariant
 import com.tokopedia.product.manage.feature.stockreminder.view.viewmodel.StockReminderViewModel
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.ticker.Ticker
@@ -48,7 +53,7 @@ import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
 
 class StockReminderFragment : BaseDaggerFragment(),
-    ProductStockReminderViewHolder.ProductStockReminder {
+    ProductStockReminderViewHolder.ProductStockReminderListener {
 
     companion object {
         private const val ARG_PRODUCT_ID = "product_id"
@@ -69,11 +74,13 @@ class StockReminderFragment : BaseDaggerFragment(),
     private var productId: String? = null
     private var productName: String? = null
     private var warehouseId: String? = null
-    private var threshold: Int? = null
 
     private var isVariant: Boolean = false
     private var adapter: BaseAdapter<ProductStockReminderAdapterFactoryImpl>? = null
-    private val listProductWarehouse = ArrayList<ProductWarehouseParam>()
+
+    private val updateWarehouseParam = ArrayList<ProductWarehouseParam>()
+
+    private var dataProducts: ArrayList<ProductStockReminderUiModel>? = null
 
     @Inject
     lateinit var userSession: UserSessionInterface
@@ -123,7 +130,12 @@ class StockReminderFragment : BaseDaggerFragment(),
         observeState()
     }
 
-    override fun onChangeStockReminder(productId: String, stock: Int, status: Int, isValid: Boolean) {
+    override fun onChangeStockReminder(
+        productId: String,
+        stock: Int,
+        status: Int,
+        isValid: Boolean
+    ) {
         updateProductWareHouseList(productId) {
             it.copy(threshold = stock.toString(), thresholdStatus = status.toString())
         }
@@ -162,39 +174,25 @@ class StockReminderFragment : BaseDaggerFragment(),
             requireContext(),
             tickerData
         )
-        binding?.tickerStockReminder?.addPagerView(tickerAdapter,tickerData)
-//
+        binding?.tickerStockReminder?.addPagerView(tickerAdapter, tickerData)
+        binding?.ivEdit?.setOnClickListener {
+            showVariantSelectionBottomSheet()
+        }
 
-
-//        binding?.swStockReminder?.setOnCheckedChangeListener { _, isChecked ->
-//            toggleStateChecked = isChecked
-//            toggleStateChecked?.let { state ->
-//                binding?.containerStockReminder?.showWithCondition(state)
-//            }
-//
-//            if (firstStateChecked) {
-//                if (isChecked) {
-//                    ProductManageTracking.eventToggleReminder(TOGGLE_ACTIVE)
-//                } else {
-//                    ProductManageTracking.eventToggleReminder(TOGGLE_NOT_ACTIVE)
-//                }
-//            }
-//            firstStateChecked = true
-//        }
 
         binding?.btnSaveReminder?.setOnClickListener {
 //            binding?.qeStock?.clearFocus()
 //            if (binding?.swStockReminder?.isChecked == true) {
 //                if (threshold == 0) {
 //                    threshold = binding?.qeStock?.getValue()
-            createStockReminder()
+//            createStockReminder()
 //                } else {
 //                    threshold = binding?.qeStock?.getValue()
 //                    updateStockReminder()
 //                }
 //            } else {
 //                threshold = 0
-//                updateStockReminder()
+            updateStockReminder()
 //            }
 //
 //            toggleStateChecked?.let { state ->
@@ -204,6 +202,10 @@ class StockReminderFragment : BaseDaggerFragment(),
 //                    ProductManageTracking.eventToggleReminderSave(TOGGLE_NOT_ACTIVE)
 //                }
 //            }
+        }
+
+        binding?.clRemainingStock?.setOnClickListener {
+            showRemainingStockBottomSheet()
         }
     }
 
@@ -273,14 +275,14 @@ class StockReminderFragment : BaseDaggerFragment(),
     private fun createStockReminder() {
         viewModel.createStockReminder(
             userSession.shopId,
-            listProductWarehouse
+            updateWarehouseParam
         )
     }
 
     private fun updateStockReminder() {
         viewModel.updateStockReminder(
             userSession.shopId,
-            listProductWarehouse
+            updateWarehouseParam
         )
     }
 
@@ -292,7 +294,6 @@ class StockReminderFragment : BaseDaggerFragment(),
                         stockReminderData.data.getByProductIds.data.getOrNull(0)?.productsWareHouse?.getOrNull(
                             0
                         )?.wareHouseId
-
                     viewModel.getProduct(productId.orEmpty(), warehouseId.orEmpty())
                 }
                 is Fail -> {
@@ -320,6 +321,7 @@ class StockReminderFragment : BaseDaggerFragment(),
         when (productData) {
             is Success -> {
                 val product = productData.data
+                dataProducts = ArrayList(product)
                 adapter?.addElement(product)
                 setListProductWarehouse(product)
             }
@@ -354,7 +356,7 @@ class StockReminderFragment : BaseDaggerFragment(),
                 thresholdStatus = it.stockAlertStatus.toString()
             )
         }
-        listProductWarehouse.addAll(productWarehouse)
+        updateWarehouseParam.addAll(productWarehouse)
     }
 
     private fun createStockReminderObserver() =
@@ -423,26 +425,59 @@ class StockReminderFragment : BaseDaggerFragment(),
         if (userSession.isMultiLocationShop) {
             return listOf(
                 TickerData(
-                    description = activity?.getString(R.string.product_stock_reminder_ticker_multi_location_1).orEmpty(),
+                    description = activity?.getString(R.string.product_stock_reminder_ticker_multi_location_1)
+                        .orEmpty(),
                     type = Ticker.TYPE_ANNOUNCEMENT
                 ),
                 TickerData(
-                    description = activity?.getString(R.string.product_stock_reminder_ticker_multi_location_2).orEmpty(),
+                    description = activity?.getString(R.string.product_stock_reminder_ticker_multi_location_2)
+                        .orEmpty(),
                     type = Ticker.TYPE_ANNOUNCEMENT
                 )
             )
-        }else{
+        } else {
             return listOf(
                 TickerData(
-                    description = activity?.getString(R.string.product_stock_reminder_ticker).orEmpty(),
+                    description = activity?.getString(R.string.product_stock_reminder_ticker)
+                        .orEmpty(),
                     type = Ticker.TYPE_ANNOUNCEMENT
                 ),
             )
         }
     }
 
+    private fun showVariantSelectionBottomSheet() {
+        val groupVariantBottomSheet = VariantSelectionStockReminderBottomSheet(
+            childFragmentManager
+        )
+        groupVariantBottomSheet.setData(dataProducts.orEmpty().mapToGroupVariant())
+        groupVariantBottomSheet.setOnNextListener { dataSelection ->
+            showSetOnceStockReminderBottomSheet(dataSelection)
+        }
+        groupVariantBottomSheet.show()
+
+    }
+
+    private fun showSetOnceStockReminderBottomSheet(selection: List<ProductStockReminderUiModel>) {
+        val setAtOnceStockReminderBottomSheet = SetAtOnceStockReminderBottomSheet(
+            childFragmentManager
+        )
+        setAtOnceStockReminderBottomSheet.setOnApplyListener { stockReminder, reminderStatus ->
+            updateFromBulkSetting(stockReminder, reminderStatus, selection)
+        }
+        setAtOnceStockReminderBottomSheet.show()
+
+    }
+
+    private fun showRemainingStockBottomSheet() {
+        val stockRemainingInfoBottomSheet = StockRemainingInfoBottomSheet(
+            childFragmentManager
+        )
+        stockRemainingInfoBottomSheet.show()
+    }
+
     private fun getProductWareHouseList(): List<ProductWarehouseParam> {
-        return listProductWarehouse.toList()
+        return updateWarehouseParam.toList()
     }
 
     private fun updateProductWareHouseList(
@@ -450,8 +485,33 @@ class StockReminderFragment : BaseDaggerFragment(),
         block: (ProductWarehouseParam) -> ProductWarehouseParam
     ) {
         getProductWareHouseList().firstOrNull { it.productId == productId }?.let {
-            val index = listProductWarehouse.indexOf(it)
-            listProductWarehouse[index] = block.invoke(it)
+            val index = updateWarehouseParam.indexOf(it)
+            updateWarehouseParam[index] = block.invoke(it)
         }
     }
+
+    private fun updateFromBulkSetting(
+        stockReminder: Int,
+        reminderStatus: Int,
+        selection: List<ProductStockReminderUiModel>
+    ) {
+        val newDataProduct = arrayListOf<ProductStockReminderUiModel>()
+        dataProducts?.forEach { existing ->
+            val newData = selection.firstOrNull { it.id == existing.id }
+            if (newData != null) {
+                newData.stockAlertCount = stockReminder
+                newData.stockAlertStatus = reminderStatus
+                newDataProduct.add(newData)
+            } else {
+                newDataProduct.add(existing)
+            }
+        }
+
+        dataProducts = newDataProduct
+        adapter?.clearAllElements()
+        adapter?.addElement(newDataProduct)
+        binding?.btnSaveReminder?.isEnabled = selection.isNotEmpty()
+
+    }
+
 }

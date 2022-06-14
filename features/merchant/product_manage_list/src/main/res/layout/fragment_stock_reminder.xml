@@ -29,7 +29,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:textColor="@color/Unify_NN950"
-            android:text="Atur Sekaligus"
+            android:text="@string/product_stock_reminder_set_at_once"
             android:layout_marginStart="16dp"
             android:layout_marginTop="16dp"
             android:layout_marginEnd="16dp"
@@ -54,7 +54,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:textColor="@color/Unify_NN600"
-            android:text="Atur pengingat stok sekaligus"
+            android:text="@string/product_stock_reminder_set_at_once_desc"
             android:layout_marginStart="16dp"
             android:layout_marginEnd="16dp"
             android:textSize="12dp"
@@ -73,6 +73,7 @@
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/clRemainingStock"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
@@ -125,6 +126,7 @@
         android:id="@+id/rvProduct"
         android:layout_width="match_parent"
         android:layout_height="0dp"
+        android:layout_marginTop="20dp"
         app:layout_constraintBottom_toTopOf="@id/cardSaveBtn"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

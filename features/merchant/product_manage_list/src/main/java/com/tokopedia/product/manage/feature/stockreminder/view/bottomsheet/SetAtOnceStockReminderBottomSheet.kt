@@ -1,27 +1,27 @@
-package com.tokopedia.product.manage.feature.stockreminder.view.adapter
+package com.tokopedia.product.manage.feature.stockreminder.view.bottomsheet
 
+import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
-import androidx.annotation.LayoutRes
-import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import androidx.fragment.app.FragmentManager
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
-import com.tokopedia.kotlin.extensions.orFalse
+import com.tokopedia.kotlin.extensions.orTrue
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.product.manage.R
-import com.tokopedia.product.manage.databinding.ItemStockReminderBinding
-import com.tokopedia.product.manage.feature.stockreminder.view.data.ProductStockReminderUiModel
-import com.tokopedia.utils.view.binding.viewBinding
+import com.tokopedia.product.manage.databinding.BottomSheetSetAtOnceStockReminderBinding
+import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.utils.lifecycle.autoClearedNullable
 
-class ProductStockReminderViewHolder(
-    itemView: View,
-    private val listener: ProductStockReminderListener
-) : AbstractViewHolder<ProductStockReminderUiModel>(itemView) {
+class SetAtOnceStockReminderBottomSheet(
+    private val fm: FragmentManager? = null
+) : BottomSheetUnify() {
 
     companion object {
-        @LayoutRes
-        val LAYOUT = R.layout.item_stock_reminder
+        private val TAG: String = SetAtOnceStockReminderBottomSheet::class.java.simpleName
 
         private const val REMINDER_ACTIVE = 2
         private const val REMINDER_INACTIVE = 1
@@ -33,51 +33,95 @@ class ProductStockReminderViewHolder(
 
     private var textChangeListener: TextWatcher? = null
 
-    private var isValid = false
+    private var binding by autoClearedNullable<BottomSheetSetAtOnceStockReminderBinding>()
 
-    private var firstStateChecked = false
+    private var applyListener: (Int,Int) -> Unit =
+        { _: Int, _: Int -> }
 
-    private val binding by viewBinding<ItemStockReminderBinding>()
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        binding = BottomSheetSetAtOnceStockReminderBinding.inflate(
+            inflater,
+            container,
+            false
+        )
+        setupView()
+        setChild(binding?.root)
+        return super.onCreateView(inflater, container, savedInstanceState)
+    }
 
-    override fun bind(product: ProductStockReminderUiModel) {
-        binding?.tvProductName?.text = product.productName
-        setupStatusSwitch(product)
-        setupStockEditorText(product)
+    override fun onViewStateRestored(savedInstanceState: Bundle?) {
+        super.onViewStateRestored(savedInstanceState)
+        savedInstanceState?.run {
+            parentFragment?.childFragmentManager?.beginTransaction()
+                ?.remove(this@SetAtOnceStockReminderBottomSheet)?.commit()
+        }
+    }
+
+    fun setOnApplyListener(applyListener: (stockReminder:Int,reminderStatus:Int) -> Unit) {
+        this.applyListener = applyListener
+    }
+
+    fun show() {
+        fm?.let { show(it, TAG) }
+    }
+
+    private fun setupView() {
+        val title =
+            context?.getString(R.string.product_stock_reminder_set_at_once).orEmpty()
+        setTitle(title)
+        setupStockEditorText()
         setAddButtonClickListener()
         setSubtractButtonClickListener()
-        firstStateChecked = true
-
+        setupStatusSwitch()
+        binding?.buttonApply?.setOnClickListener {
+            dismiss()
+            applyData()
+        }
+        binding?.clRemainingStock?.setOnClickListener {
+            showRemainingStockBottomSheet()
+        }
     }
 
-    private fun setupStatusSwitch(product: ProductStockReminderUiModel) {
+    private fun setupStatusSwitch() {
         binding?.swStockReminder?.setOnCheckedChangeListener { _, _ ->
             val stockLimit = binding?.qeStock?.getValue().orZero()
-
-            notifyChange(product.id,stockLimit)
+            validateMinMaxStock(stockLimit)
         }
-        binding?.swStockReminder?.isChecked = product.stockAlertStatus == REMINDER_ACTIVE
     }
 
-    private fun setupStockEditorText(product: ProductStockReminderUiModel) {
+    private fun applyData() {
+        val stock = binding?.qeStock?.getValue().orZero()
+        val status = if (binding?.swStockReminder?.isChecked.orTrue()) {
+            REMINDER_ACTIVE
+        } else {
+            REMINDER_INACTIVE
+        }
+        applyListener(stock,status)
+    }
+
+    private fun setupStockEditorText() {
         binding?.qeStock?.editText?.run {
-            textChangeListener = createTextChangeListener(product)
+            textChangeListener = createTextChangeListener()
             addTextChangedListener(textChangeListener)
         }
-
-        binding?.qeStock?.setValue(product.stockAlertCount)
+        binding?.qeStock?.setValue(MINIMUM_STOCK)
 
         binding?.qeStock?.run {
             editText.setOnEditorActionListener { _, actionId, _ ->
                 if (actionId == EditorInfo.IME_ACTION_DONE) {
                     clearFocus()
-                    KeyboardHandler.DropKeyboard(itemView.context, this)
+                    KeyboardHandler.DropKeyboard(context, this)
                 }
                 true
             }
         }
     }
 
-    private fun createTextChangeListener(product: ProductStockReminderUiModel): TextWatcher {
+    private fun createTextChangeListener(): TextWatcher {
         return object : TextWatcher {
             override fun afterTextChanged(editor: Editable?) {
                 val input = editor.toString()
@@ -88,7 +132,6 @@ class ProductStockReminderViewHolder(
                 }
                 validateMinMaxStock(stock)
                 toggleQuantityEditorBtn(stock)
-                notifyChange(product.id,stock)
             }
 
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
@@ -99,27 +142,26 @@ class ProductStockReminderViewHolder(
         }
     }
 
-    fun validateMinMaxStock(stock: Int) {
+    private fun validateMinMaxStock(stock: Int) {
         when {
             stock < MINIMUM_STOCK -> {
-                binding?.qeStock?.errorMessageText = itemView.resources.getString(
+                binding?.qeStock?.errorMessageText = activity?.getString(
                     R.string.product_stock_reminder_min_stock_error,
                     MINIMUM_STOCK
-                )
-                isValid = false
+                ).orEmpty()
             }
             stock > MAXIMUM_STOCK -> {
-                binding?.qeStock?.errorMessageText = itemView.resources.getString(
+                binding?.qeStock?.errorMessageText = activity?.getString(
                     R.string.product_stock_reminder_max_stock_error,
                     MAXIMUM_STOCK.getNumberFormatted()
-                )
-                isValid = false
+                ).orEmpty()
             }
             else -> {
                 binding?.qeStock?.errorMessageText = String.EMPTY
-                isValid = true
             }
         }
+        binding?.buttonApply?.isEnabled = !(stock < MINIMUM_STOCK && stock > MAXIMUM_STOCK)
+
     }
 
     private fun setAddButtonClickListener() {
@@ -174,21 +216,11 @@ class ProductStockReminderViewHolder(
         return replace(".", "").toIntOrZero()
     }
 
-    private fun notifyChange(
-        productId: String,
-        stock: Int
-    ) {
-        if (firstStateChecked) {
-            if (binding?.swStockReminder?.isChecked.orFalse()) {
-                listener.onChangeStockReminder(productId, stock, REMINDER_ACTIVE, isValid)
-            } else {
-                isValid = true
-                listener.onChangeStockReminder(productId, Int.ZERO, REMINDER_INACTIVE, isValid)
-            }
-        }
+    private fun showRemainingStockBottomSheet() {
+        val stockRemainingInfoBottomSheet = StockRemainingInfoBottomSheet(
+            childFragmentManager
+        )
+        stockRemainingInfoBottomSheet.show()
     }
 
-    interface ProductStockReminderListener {
-        fun onChangeStockReminder(productId: String, stock: Int, status: Int, isValid: Boolean)
-    }
 }

@@ -7,7 +7,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.product.manage.feature.stockreminder.view.data.ProductStockReminderUiModel
 
 class ProductStockReminderAdapterFactoryImpl(
-    private val listener: ProductStockReminderViewHolder.ProductStockReminder
+    private val listener: ProductStockReminderViewHolder.ProductStockReminderListener
 ) : BaseAdapterTypeFactory(), ProductStockReminderAdapterFactory {
 
 

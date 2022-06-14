@@ -10,9 +10,11 @@ import com.tokopedia.product.manage.feature.stockreminder.view.adapter.ProductSt
 data class ProductStockReminderUiModel(
     val id: String,
     val productName: String,
-    val stockAlertCount: Int,
-    val stockAlertStatus: Int,
-    val stock:Int
+    var stockAlertCount: Int,
+    var stockAlertStatus: Int,
+    val stock: Int,
+    val variantFirst: String = "",
+    val variantSecond: String = ""
 ) : Visitable<ProductStockReminderAdapterFactory> {
 
     override fun type(typeFactory: ProductStockReminderAdapterFactory): Int {
