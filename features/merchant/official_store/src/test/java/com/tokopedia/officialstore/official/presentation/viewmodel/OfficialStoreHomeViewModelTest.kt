@@ -27,6 +27,7 @@ import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCas
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.recommendation_widget_common.widget.bestseller.mapper.BestSellerMapper
+import com.tokopedia.recommendation_widget_common.widget.bestseller.model.BestSellerDataModel
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsWishlishedUseCase
 import com.tokopedia.topads.sdk.domain.model.CpmModel
 import com.tokopedia.topads.sdk.domain.model.TopAdsHeadlineResponse
@@ -848,5 +849,42 @@ class OfficialStoreHomeViewModelTest {
 
         verify { deleteWishlistV2UseCase.setParams(recommItem.productId.toString(), userSessionInterface.userId) }
         coVerify { deleteWishlistV2UseCase.executeOnBackground() }
+    }
+
+    @Test
+    fun given_get_bestSelling_then_fetch_recomData_success_should_pass_to_view() = runBlocking {
+        val prefixUrl = "prefix"
+        val slug = "slug"
+        val category = createCategory(prefixUrl, slug)
+        val channelId = "123"
+
+        val dynamicChannelResponse = mutableListOf(
+            OfficialStoreChannel(channel = Channel(
+                layout = DynamicChannelLayout.LAYOUT_BEST_SELLING, id = channelId)
+            )
+        )
+
+        val recommendationItemList = listOf(
+            RecommendationItem(productId = 123L, isTopAds = false)
+        )
+
+        val recommendationResponse: List<RecommendationWidget> = listOf(
+            RecommendationWidget(recommendationItemList)
+        )
+
+        val bestSellerDataModel = BestSellerDataModel(
+            recommendationItemList = recommendationItemList,
+            channelId = channelId
+        )
+
+        coEvery { getOfficialStoreDynamicChannelUseCase.executeOnBackground() } returns dynamicChannelResponse
+        coEvery { getRecommendationUseCaseCoroutine.getData(any()) } returns recommendationResponse
+        coEvery { bestSellerMapper.mappingRecommendationWidget(any()) } returns bestSellerDataModel
+
+        viewModel.loadFirstData(category, "")
+
+        Assert.assertEquals((viewModel.recomWidget.value as Success).data, bestSellerDataModel)
+        Assert.assertEquals((viewModel.recomWidget.value as Success).data.channelId, channelId)
+        Assert.assertEquals((viewModel.recomWidget.value as Success).data.recommendationItemList.size, bestSellerDataModel.recommendationItemList.size)
     }
 }
