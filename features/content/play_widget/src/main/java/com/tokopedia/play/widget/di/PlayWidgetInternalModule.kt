@@ -11,7 +11,7 @@ import dagger.Provides
  * Created by kenny.hadisaputra on 02/06/22
  */
 @Module
-internal class PlayWidgetInternalModule {
+class PlayWidgetInternalModule {
 
     @Provides
     @PlayWidgetScope
