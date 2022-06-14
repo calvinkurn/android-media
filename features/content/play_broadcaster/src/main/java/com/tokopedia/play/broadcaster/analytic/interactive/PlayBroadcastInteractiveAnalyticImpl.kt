@@ -14,6 +14,7 @@ import javax.inject.Inject
 class PlayBroadcastInteractiveAnalyticImpl @Inject constructor(
     private val userSession: UserSessionInterface
 ) : PlayBroadcastInteractiveAnalytic {
+    val shopId: String = userSession.shopId
 
     override fun onImpressInteractiveTool(channelId: String) {
         TrackApp.getInstance().gtm.sendGeneralEvent(
@@ -24,7 +25,7 @@ class PlayBroadcastInteractiveAnalyticImpl @Inject constructor(
                 KEY_EVENT_LABEL to "$channelId - live",
                 KEY_CURRENT_SITE to currentSite,
                 KEY_BUSINESS_UNIT to KEY_TRACK_BUSINESS_UNIT,
-                KEY_SHOP_ID to userSession.shopId,
+                KEY_SHOP_ID to shopId,
                 KEY_USER_ID to userSession.userId
             )
         )
@@ -39,7 +40,7 @@ class PlayBroadcastInteractiveAnalyticImpl @Inject constructor(
                 KEY_EVENT_LABEL to "$channelId - live",
                 KEY_CURRENT_SITE to currentSite,
                 KEY_BUSINESS_UNIT to KEY_TRACK_BUSINESS_UNIT,
-                KEY_SHOP_ID to userSession.shopId,
+                KEY_SHOP_ID to shopId,
                 KEY_USER_ID to userSession.userId
             )
         )
@@ -60,7 +61,7 @@ class PlayBroadcastInteractiveAnalyticImpl @Inject constructor(
                 KEY_EVENT_LABEL to "$channelId - live - $interactiveId - $interactiveTitle - $durationInSecond",
                 KEY_CURRENT_SITE to currentSite,
                 KEY_BUSINESS_UNIT to KEY_TRACK_BUSINESS_UNIT,
-                KEY_SHOP_ID to userSession.shopId,
+                KEY_SHOP_ID to shopId,
                 KEY_USER_ID to userSession.userId
             )
         )
@@ -79,7 +80,7 @@ class PlayBroadcastInteractiveAnalyticImpl @Inject constructor(
                 KEY_EVENT_LABEL to "$channelId - live - $interactiveId - $interactiveTitle",
                 KEY_CURRENT_SITE to currentSite,
                 KEY_BUSINESS_UNIT to KEY_TRACK_BUSINESS_UNIT,
-                KEY_SHOP_ID to userSession.shopId,
+                KEY_SHOP_ID to shopId,
                 KEY_USER_ID to userSession.userId
             )
         )
@@ -98,7 +99,7 @@ class PlayBroadcastInteractiveAnalyticImpl @Inject constructor(
                 KEY_EVENT_LABEL to "$channelId - live - $interactiveId - $interactiveTitle",
                 KEY_CURRENT_SITE to currentSite,
                 KEY_BUSINESS_UNIT to KEY_TRACK_BUSINESS_UNIT,
-                KEY_SHOP_ID to userSession.shopId,
+                KEY_SHOP_ID to shopId,
                 KEY_USER_ID to userSession.userId
             )
         )
@@ -107,133 +108,133 @@ class PlayBroadcastInteractiveAnalyticImpl @Inject constructor(
     override fun onClickChatWinnerIcon(channelId: String, channelTitle: String) {
         sendClickEvent(
             "click - chat winners",
-            "${userSession.shopId} - $channelId - $channelTitle",
+            "shopId - $channelId - $channelTitle",
         )
     }
 
     override fun onClickGameIconButton(channelId: String, channelTitle: String) {
         sendClickEvent(
             "click - gamification button",
-            "${userSession.shopId} - $channelId - $channelTitle",
+            "$shopId - $channelId - $channelTitle",
         )
     }
 
     override fun onClickGameOption(channelId: String, channelTitle: String, gameType: String) {
         sendClickEvent(
             "click - engagement widget",
-            "${userSession.shopId} - $channelId - $channelTitle - $gameType",
+            "$shopId - $channelId - $channelTitle - $gameType",
         )
     }
 
     override fun onClickContinueGiveaway(channelId: String, channelTitle: String) {
         sendClickEvent(
             "click - lanjut giveaway",
-            "${userSession.shopId} - $channelId - $channelTitle",
+            "$shopId - $channelId - $channelTitle",
         )
     }
 
     override fun onImpressGameIconButton(channelId: String, channelTitle: String) {
         sendImpressionEvent(
             "view - gamification button",
-            "${userSession.shopId} - $channelId - $channelTitle",
+            "$shopId - $channelId - $channelTitle",
         )
     }
 
     override fun onClickBackGiveaway(channelId: String, channelTitle: String) {
         sendClickEvent(
             "click - back gamification selection",
-            "${userSession.shopId} - $channelId - $channelTitle",
+            "$shopId - $channelId - $channelTitle",
         )
     }
 
     override fun onClickGameResult(channelId: String, channelTitle: String) {
         sendClickEvent(
             "click - hasil game",
-            "${userSession.shopId} - $channelId - $channelTitle",
+            "$shopId - $channelId - $channelTitle",
         )
     }
 
     override fun onClickCloseGameResultBottomsheet(channelId: String, channelTitle: String) {
         sendClickEvent(
             "click - x hasil game bottomsheet",
-            "${userSession.shopId} - $channelId - $channelTitle"
+            "$shopId - $channelId - $channelTitle"
         )
     }
 
     override fun onClickCloseGameResultReport(channelId: String, channelTitle: String) {
         sendClickEvent(
             "click - x report page gamification",
-            "${userSession.shopId} - $channelId - $channelTitle",
+            "$shopId - $channelId - $channelTitle",
         )
     }
 
     override fun onImpressFailedLeaderboard(channelId: String, channelTitle: String) {
         sendImpressionEvent(
             "view - failed to load",
-            "${userSession.shopId} - $channelId - $channelTitle",
+            "$shopId - $channelId - $channelTitle",
         )
     }
 
     override fun onClickRefreshGameResult(channelId: String, channelTitle: String) {
         sendClickEvent(
             "click - coba lagi hasil game",
-            "${userSession.shopId} - $channelId - $channelTitle",
+            "$shopId - $channelId - $channelTitle",
         )
     }
 
     override fun onImpressSelectGame(channelId: String, channelTitle: String) {
         sendImpressionEvent(
             "view - engagement widget",
-            "${userSession.shopId} - $channelId - $channelTitle",
+            "$shopId - $channelId - $channelTitle",
         )
     }
 
     override fun onClickBackQuiz(channelId: String, channelTitle: String) {
         sendClickEvent(
             "click - back quiz",
-            "${userSession.shopId} - $channelId - $channelTitle",
+            "$shopId - $channelId - $channelTitle",
         )
     }
 
     override fun onclickBackSetTimerGiveAway(channelId: String, channelTitle: String) {
         sendClickEvent(
             "click - back duration giveaway",
-            "${userSession.shopId} - $channelId - $channelTitle",
+            "$shopId - $channelId - $channelTitle",
         )
     }
 
     override fun onClickContinueQuiz(channelId: String, channelTitle: String) {
         sendClickEvent(
             "click - lanjut quiz",
-            "${userSession.shopId} - $channelId - $channelTitle",
+            "$shopId - $channelId - $channelTitle",
         )
     }
 
     override fun onClickQuizGift(channelId: String, channelTitle: String) {
         sendClickEvent(
             "click - giveaway optional",
-            "${userSession.shopId} - $channelId - $channelTitle",
+            "$shopId - $channelId - $channelTitle",
         )
     }
 
     override fun onClickCloseQuizGift(channelId: String, channelTitle: String) {
         sendClickEvent(
             "click - x giveaway optional",
-            "${userSession.shopId} - $channelId - $channelTitle",
+            "$shopId - $channelId - $channelTitle",
         )
     }
 
     override fun onClickStartQuiz(channelId: String, channelTitle: String) {
         sendClickEvent(
             "click - start quiz",
-            "${userSession.shopId} - $channelId - $channelTitle",
+            "$shopId - $channelId - $channelTitle",
         )
     }
 
     override fun onClickBackQuizDuration(channelId: String, channelTitle: String) {
         sendClickEvent(
             "click - back duration quiz",
-            "${userSession.shopId} - $channelId - $channelTitle",
+            "$shopId - $channelId - $channelTitle",
         )
     }
 
@@ -245,7 +246,7 @@ class PlayBroadcastInteractiveAnalyticImpl @Inject constructor(
     ) {
         sendImpressionEvent(
             "view - ongoing quiz widget",
-            "${userSession.shopId} - $channelId - $channelTitle - $quizId - $quizTitle",
+            "$shopId - $channelId - $channelTitle - $quizId - $quizTitle",
 
             )
     }
@@ -258,7 +259,7 @@ class PlayBroadcastInteractiveAnalyticImpl @Inject constructor(
     ) {
         sendClickEvent(
             "click - quiz result option live room",
-            "${userSession.shopId} - $channelId - $channelTitle - $interactiveId - $interactiveTitle",
+            "$shopId - $channelId - $channelTitle - $interactiveId - $interactiveTitle",
         )
     }
 
@@ -270,7 +271,7 @@ class PlayBroadcastInteractiveAnalyticImpl @Inject constructor(
     ) {
         sendClickEvent(
             "click - close quiz result",
-            "${userSession.shopId} - $channelId - $channelTitle - $interactiveId - $interactiveTitle",
+            "$shopId - $channelId - $channelTitle - $interactiveId - $interactiveTitle",
         )
     }
 
@@ -282,7 +283,7 @@ class PlayBroadcastInteractiveAnalyticImpl @Inject constructor(
     ) {
         sendClickEvent(
             "click - close detail quiz answer",
-            "${userSession.shopId} - $channelId - $channelTitle - $interactiveId - $interactiveTitle",
+            "$shopId - $channelId - $channelTitle - $interactiveId - $interactiveTitle",
 
             )
     }
@@ -295,7 +296,7 @@ class PlayBroadcastInteractiveAnalyticImpl @Inject constructor(
     ) {
         sendClickEvent(
             "click - ongoing quiz widget",
-            "${userSession.shopId} - $channelId - $channelTitle - $interactiveId - $interactiveTitle",
+            "$shopId - $channelId - $channelTitle - $interactiveId - $interactiveTitle",
         )
     }
 
@@ -309,7 +310,7 @@ class PlayBroadcastInteractiveAnalyticImpl @Inject constructor(
         val prizes = if (reward.isNotBlank()) "prize" else "no prize"
         sendImpressionEvent(
             "view - quiz result live room",
-            "${userSession.shopId} - $channelId - $channelTitle - $interactiveId - $interactiveTitle - $prizes",
+            "$shopId - $channelId - $channelTitle - $interactiveId - $interactiveTitle - $prizes",
         )
     }
 
@@ -321,7 +322,7 @@ class PlayBroadcastInteractiveAnalyticImpl @Inject constructor(
     ) {
         sendImpressionEvent(
             "view - quiz result option live room",
-            "${userSession.shopId} - $channelId - $channelTitle - $interactiveId - $interactiveTitle",
+            "$shopId - $channelId - $channelTitle - $interactiveId - $interactiveTitle",
         )
     }
 
@@ -334,7 +335,7 @@ class PlayBroadcastInteractiveAnalyticImpl @Inject constructor(
     ) {
         sendImpressionEvent(
             "view - quiz result report page",
-            "${userSession.shopId} - $channelId - $channelTitle - $interactiveId - $interactiveTitle - $engagementType",
+            "$shopId - $channelId - $channelTitle - $interactiveId - $interactiveTitle - $engagementType",
         )
     }
 
@@ -346,7 +347,7 @@ class PlayBroadcastInteractiveAnalyticImpl @Inject constructor(
     ) {
         sendImpressionEvent(
             "view - quiz result option report page",
-            "${userSession.shopId} - $channelId - $channelTitle - $interactiveId - $interactiveTitle",
+            "$shopId - $channelId - $channelTitle - $interactiveId - $interactiveTitle",
         )
     }
 
@@ -358,7 +359,7 @@ class PlayBroadcastInteractiveAnalyticImpl @Inject constructor(
     ) {
         sendClickEvent(
             "click - quiz result option report page",
-            "${userSession.shopId} - $channelId - $channelTitle - $interactiveId - $interactiveTitle",
+            "$shopId - $channelId - $channelTitle - $interactiveId - $interactiveTitle",
             )
     }
 

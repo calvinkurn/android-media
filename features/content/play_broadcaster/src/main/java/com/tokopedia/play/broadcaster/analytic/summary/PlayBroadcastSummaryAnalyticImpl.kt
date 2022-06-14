@@ -65,15 +65,6 @@ class PlayBroadcastSummaryAnalyticImpl @Inject constructor(
         )
     }
 
-    /**
-     * {"event":"clickPG",
-     * "eventAction":"click - lihat detail gamification",
-     * "eventCategory":"seller broadcast",
-     * "eventLabel":"{shop_id} - {channel_id} - {channel title}",
-     * "businessUnit":"play","currentSite":"tokopediamarketplace",
-     * "sessionIris":"{session_iris}",
-     * "userId":"{user_id}"}
-     */
     override fun clickInteractiveParticipantDetail(channelID: String, channelTitle: String) {
         sendClickEvent(
             "click - lihat detail gamification",
