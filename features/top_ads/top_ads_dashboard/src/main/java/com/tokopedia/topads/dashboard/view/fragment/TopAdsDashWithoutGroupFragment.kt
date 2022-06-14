@@ -118,7 +118,7 @@ class TopAdsDashWithoutGroupFragment : BaseDaggerFragment() {
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?,
     ): View? {
         val view =
-            inflater.inflate(resources.getLayout(R.layout.topads_dash_fragment_non_group_list),
+            inflater.inflate(context?.resources?.getLayout(R.layout.topads_dash_fragment_non_group_list),
                 container, false)
         recyclerView = view.findViewById(R.id.non_group_list)
         loader = view.findViewById(R.id.loader)
@@ -286,8 +286,11 @@ class TopAdsDashWithoutGroupFragment : BaseDaggerFragment() {
         if (list.isEmpty()) {
             movetoGroupSheet.setButtonDisable()
             groupList.add(MovetoGroupEmptyModel())
-        } else
-            topAdsDashboardPresenter.getCountProductKeyword(resources, groupIds, ::onSuccessCount)
+        } else {
+            val resources = context?.resources
+            if(resources != null)
+                topAdsDashboardPresenter.getCountProductKeyword(resources, groupIds, ::onSuccessCount)
+        }
 
         movetoGroupSheet.updateData(groupList)
     }
@@ -387,7 +390,8 @@ class TopAdsDashWithoutGroupFragment : BaseDaggerFragment() {
             adIds.add(it.adId)
             adapter.items.add(NonGroupItemsItemModel(it))
         }
-        if (adIds.isNotEmpty()) {
+        val resources = context?.resources
+        if (adIds.isNotEmpty() && resources != null) {
             val startDate =
                 Utils.format.format((parentFragment as TopAdsProductIklanFragment).startDate)
             val endDate =
