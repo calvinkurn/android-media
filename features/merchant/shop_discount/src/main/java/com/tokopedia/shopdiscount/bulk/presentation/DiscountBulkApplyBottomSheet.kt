@@ -281,7 +281,7 @@ class DiscountBulkApplyBottomSheet : BottomSheetUnify() {
         isUsingVps: Boolean
     ) {
         when {
-            mode == Mode.BULK_APPLY && isUsingVps -> handleAppearanceForBulkApplyModeWithVps(benefit.expiredAt)
+            isUsingVps -> handleAppearanceForBulkApplyModeWithVps(benefit.expiredAt)
             mode == Mode.BULK_APPLY -> handleAppearanceForBulkApplyMode()
             mode == Mode.BULK_UPDATE -> handleAppearanceForBulkUpdateMode()
         }
