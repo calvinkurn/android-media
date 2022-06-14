@@ -701,15 +701,17 @@ class PlayBroadcastViewModel @AssistedInject constructor(
 
     private fun setupGiveaway(giveaway: InteractiveUiModel.Giveaway) {
         _interactive.value = giveaway
-        if (giveaway.status == InteractiveUiModel.Giveaway.Status.Finished) {
-            displayGameResultWidgetIfHasLeaderBoard()
+        when (giveaway.status) {
+            InteractiveUiModel.Giveaway.Status.Finished -> displayGameResultWidgetIfHasLeaderBoard()
+            InteractiveUiModel.Giveaway.Status.Unknown -> handleGiveawayOngoingEnded()
         }
     }
 
     private fun setupQuiz(quiz: InteractiveUiModel.Quiz) {
         _interactive.value = quiz
-        if (quiz.status == InteractiveUiModel.Quiz.Status.Finished) {
-            displayGameResultWidgetIfHasLeaderBoard()
+        when (quiz.status) {
+            InteractiveUiModel.Quiz.Status.Finished -> displayGameResultWidgetIfHasLeaderBoard()
+            InteractiveUiModel.Quiz.Status.Unknown -> handleQuizEnded()
         }
     }
 

@@ -68,7 +68,7 @@
         app:layout_constraintBottom_toBottomOf="@id/timer_ends_in"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/timer_ends_in"
-        app:typographyType="small"
+        app:typographyType="body_3"
         tools:visibility="visible" />
 
     <com.tokopedia.unifycomponents.timer.TimerUnifySingle
