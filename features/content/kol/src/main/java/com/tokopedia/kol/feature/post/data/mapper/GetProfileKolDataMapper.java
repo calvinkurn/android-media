@@ -128,11 +128,11 @@ public class GetProfileKolDataMapper
         }
     }
 
-    private int getTagId(TagsFeedKol tag) {
+    private String getTagId(TagsFeedKol tag) {
         if (tag != null && tag.id != null) {
             return tag.id;
         } else {
-            return 0;
+            return "0";
         }
     }
 

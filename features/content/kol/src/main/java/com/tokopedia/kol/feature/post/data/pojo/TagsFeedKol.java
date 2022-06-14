@@ -8,7 +8,7 @@ public final class TagsFeedKol {
   @SuppressLint("Invalid Data Type")
   @SerializedName("id")
   @Expose
-  public Integer id;
+  public String id;
 
   @SerializedName("type")
   @Expose

@@ -17,7 +17,7 @@ public class KolPostViewModel extends BaseKolViewModel {
 
 
     private List<String> imageList;
-    private int tagsId;
+    private String tagsId;
     private String contentName;
     private String tagsType;
     private String tagsCaption;
@@ -35,7 +35,7 @@ public class KolPostViewModel extends BaseKolViewModel {
                             String label, String kolProfileUrl, boolean followed, String review,
                             boolean liked, int totalLike, int totalComment, int page, String kolId,
                             String time, boolean isShowComment, boolean isShowLike,
-                            List<String> imageList, int tagsId, String contentName, String tagsType,
+                            List<String> imageList, String tagsId, String contentName, String tagsType,
                             String tagsCaption, String tagsLink, List<TrackingViewModel> trackingViewModel) {
         super(userId, tagsType, cardType, title, name, avatar, label, kolProfileUrl, followed,
                 review, liked, totalLike, totalComment, page, kolId, time, isShowComment,
@@ -54,7 +54,7 @@ public class KolPostViewModel extends BaseKolViewModel {
                             boolean liked, int totalLike, int totalComment, int page, String kolId,
                             String time, boolean isShowComment, boolean isShowLike,
                             boolean editable, boolean deletable, List<String> imageList,
-                            int tagsId, String contentName, String tagsType,
+                            String tagsId, String contentName, String tagsType,
                             String tagsCaption, String tagsLink, String trackingId, String info) {
         super(userId, tagsType, cardType, title, name, avatar, label, kolProfileUrl, followed,
                 review, liked, totalLike, totalComment, page, kolId, time, isShowComment,
@@ -77,11 +77,11 @@ public class KolPostViewModel extends BaseKolViewModel {
         this.imageList = imageList;
     }
 
-    public int getTagsId() {
+    public String getTagsId() {
         return tagsId;
     }
 
-    public void setTagsId(int tagsId) {
+    public void setTagsId(String tagsId) {
         this.tagsId = tagsId;
     }
 
