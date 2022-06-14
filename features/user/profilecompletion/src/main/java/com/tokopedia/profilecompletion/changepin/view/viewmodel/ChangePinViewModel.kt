@@ -24,6 +24,7 @@ import com.tokopedia.profilecompletion.common.model.CheckPinV2Data
 import com.tokopedia.profilecompletion.common.model.CheckPinV2Param
 import com.tokopedia.profilecompletion.common.usecase.CheckPinV2UseCase
 import com.tokopedia.profilecompletion.data.ProfileCompletionQueryConstant
+import com.tokopedia.sessioncommon.constants.SessionConstants
 import com.tokopedia.sessioncommon.data.KeyData
 import com.tokopedia.sessioncommon.data.pin.PinStatusParam
 import com.tokopedia.sessioncommon.data.pin.ValidatePinV2Data
@@ -94,7 +95,7 @@ class ChangePinViewModel @Inject constructor(
 
     fun validatePinMediator(pin: String) {
         launchCatchError(block = {
-            val param = PinStatusParam(id = userSession.userId, type = "userid")
+            val param = PinStatusParam(id = userSession.userId, type = TYPE_USER_ID)
             val needHash = checkPinHashV2UseCase(param).data.isNeedHash
             if(needHash) {
                 validatePinV2(pin)
@@ -121,7 +122,7 @@ class ChangePinViewModel @Inject constructor(
     }
 
     suspend fun getPublicKey(): KeyData {
-        generatePublicKeyUseCase.setParams("pinv2")
+        generatePublicKeyUseCase.setParams(SessionConstants.GenerateKeyModule.PIN_V2.value)
         return generatePublicKeyUseCase.executeOnBackground().keyData
     }
 
@@ -252,7 +253,7 @@ class ChangePinViewModel @Inject constructor(
     private fun onSuccessResetPin2FA(): (ResetPin2FaPojo) -> Unit {
         return {
             when {
-                it.data.is_success == 1 -> {
+                it.data.is_success.toBoolean() -> {
                     saveToken(it.data)
                     mutableResetPin2FAResponse.value = Success(it.data)
                 }
@@ -360,6 +361,7 @@ class ChangePinViewModel @Inject constructor(
                 hash = hash
             )
             val result = updatePinV2UseCase(param).mutatePinV2data
+
             when {
                 result.success -> mutableChangePinResponse.value = Success(result)
                 result.errorAddChangePinData.isNotEmpty() && result.errorAddChangePinData[0].message.isNotEmpty() -> {
@@ -388,6 +390,15 @@ class ChangePinViewModel @Inject constructor(
         return {
             it.printStackTrace()
             mutableChangePinResponse.value = Fail(it)
+        }
+    }
+
+    companion object {
+        const val TYPE_USER_ID = "userid"
+        const val TYPE_SUCCESS = 1
+
+        fun Int.toBoolean(): Boolean {
+            return this == TYPE_SUCCESS
         }
     }
 }

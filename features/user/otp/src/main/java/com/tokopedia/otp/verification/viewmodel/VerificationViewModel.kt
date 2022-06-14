@@ -311,7 +311,7 @@ open class VerificationViewModel @Inject constructor(
             if (mode == OtpConstant.OtpMode.PIN && usePinV2) {
                 if (isNeedHash(
                         msisdn.ifEmpty { email },
-                        if (msisdn.isNotEmpty()) "phone" else "email"
+                        if (msisdn.isNotEmpty()) TYPE_PHONE else TYPE_EMAIL
                     )
                 ) {
                     val keyData = getPublicKey()
@@ -394,5 +394,8 @@ open class VerificationViewModel @Inject constructor(
 
     companion object {
         const val VALIDATE_PIN_V2_ROLLENCE = "pdh_val_and"
+
+        const val TYPE_PHONE = "phone"
+        const val TYPE_EMAIL = "email"
     }
 }

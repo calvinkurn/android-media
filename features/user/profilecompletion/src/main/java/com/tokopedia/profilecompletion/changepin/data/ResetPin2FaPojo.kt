@@ -16,24 +16,17 @@ data class ResetPin2FaPojo(
 
 data class ChangePin2FAData(
     @SerializedName("is_success")
-    @Expose
     var is_success: Int = 0,
     @SerializedName("user_id")
-    @Expose
     var userId: String = "",
     @SerializedName("access_token")
-    @Expose
     var accessToken: String = "",
     @SerializedName("sid")
-    @Expose
     var sid: String = "",
     @SerializedName("refresh_token")
-    @Expose
     var refreshToken: String = "",
     @SerializedName("expires_in")
-    @Expose
     var expires: Int = 0,
     @SerializedName("error")
-    @Expose
     var error: String = ""
 )

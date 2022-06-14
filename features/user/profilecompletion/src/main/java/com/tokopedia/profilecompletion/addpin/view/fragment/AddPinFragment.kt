@@ -77,11 +77,7 @@ open class AddPinFragment : BaseDaggerFragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val view = inflater.inflate(R.layout.fragment_add_pin, container, false)
-        inputPin = view.findViewById(R.id.pin)
-        methodIcon = view.findViewById(R.id.method_icon)
-        mainView = view.findViewById(R.id.container)
-        return view
+        return inflater.inflate(R.layout.fragment_add_pin, container, false)
     }
 
     private fun isCreatePinV2(): Boolean {
@@ -96,6 +92,11 @@ open class AddPinFragment : BaseDaggerFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        inputPin = view.findViewById(R.id.pin)
+        methodIcon = view.findViewById(R.id.method_icon)
+        mainView = view.findViewById(R.id.container)
+
         initVar()
         displayInitPin()
 
@@ -385,14 +386,6 @@ open class AddPinFragment : BaseDaggerFragment() {
             trackingPinUtil.trackClickBackButtonInput()
             false
         }
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        addChangePinViewModel.addPinResponse.removeObservers(this)
-        addChangePinViewModel.checkPinResponse.removeObservers(this)
-        addChangePinViewModel.validatePinResponse.removeObservers(this)
-        addChangePinViewModel.flush()
     }
 
     private fun addPinMediator(validateToken: String) {

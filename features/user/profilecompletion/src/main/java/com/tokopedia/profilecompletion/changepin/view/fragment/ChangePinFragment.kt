@@ -29,6 +29,7 @@ import com.tokopedia.profilecompletion.addpin.data.CheckPinData
 import com.tokopedia.profilecompletion.addpin.view.fragment.PinCompleteFragment
 import com.tokopedia.profilecompletion.changepin.view.activity.ChangePinActivity
 import com.tokopedia.profilecompletion.changepin.view.viewmodel.ChangePinViewModel
+import com.tokopedia.profilecompletion.changepin.view.viewmodel.ChangePinViewModel.Companion.toBoolean
 import com.tokopedia.profilecompletion.common.ColorUtils
 import com.tokopedia.profilecompletion.common.LoadingDialog
 import com.tokopedia.profilecompletion.common.analytics.TrackingPinConstant
@@ -103,15 +104,14 @@ open class ChangePinFragment : BaseDaggerFragment(), CoroutineScope {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val view = inflater.inflate(R.layout.fragment_change_pin, container, false)
-        changePinInput = view.findViewById(R.id.pin)
-        methodIcon = view.findViewById(R.id.method_icon)
-        mainView = view.findViewById(R.id.container)
-        return view
+        return inflater.inflate(R.layout.fragment_change_pin, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        changePinInput = view.findViewById(R.id.pin)
+        methodIcon = view.findViewById(R.id.method_icon)
+        mainView = view.findViewById(R.id.container)
         initViews()
         initObserver()
         ColorUtils.setBackgroundColor(context, activity)
@@ -177,10 +177,6 @@ open class ChangePinFragment : BaseDaggerFragment(), CoroutineScope {
 
     open fun handleInputNewPinState(input: String) {
         checkPinMediator(input)
-    }
-
-    private fun validatePinMediator() {
-
     }
 
     private fun checkPinMediator(pin: String) {
@@ -409,7 +405,7 @@ open class ChangePinFragment : BaseDaggerFragment(), CoroutineScope {
             when (it) {
                 is Success -> {
                     dismissLoading()
-                    if (it.data.is_success == 1) goToSuccessPage()
+                    if (it.data.is_success.toBoolean()) goToSuccessPage()
                     else onError(Throwable())
                 }
                 is Fail -> onError(it.throwable)
