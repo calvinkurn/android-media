@@ -34,18 +34,18 @@ class PMProLabelView : LinearLayout {
         initView(context)
     }
 
-    private fun initView(context: Context) {
-        binding = ShcPmProLabelViewBinding.inflate(
-            LayoutInflater.from(context), this, true
-        )
-    }
-
     fun setLabel(label: String, iconUrl: String) {
         binding?.run {
             setLabelBackground()
             imgShcPmProIcon.loadImage(iconUrl)
             tvShcPmProLabel.text = label
         }
+    }
+
+    private fun initView(context: Context) {
+        binding = ShcPmProLabelViewBinding.inflate(
+            LayoutInflater.from(context), this, true
+        )
     }
 
     private fun setLabelBackground() {
