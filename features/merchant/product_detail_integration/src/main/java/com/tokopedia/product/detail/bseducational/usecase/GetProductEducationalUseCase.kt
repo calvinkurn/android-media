@@ -20,6 +20,7 @@ class GetProductEducationalUseCase @Inject constructor(graphqlRepository: Graphq
               	title
               	description
               	icon
+                eventCategory
             	buttons {
             		buttonTitle
                   	color

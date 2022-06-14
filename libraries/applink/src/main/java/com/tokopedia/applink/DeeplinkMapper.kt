@@ -496,9 +496,9 @@ object DeeplinkMapper {
             DLP.exact(ApplinkConst.ADD_PHONE) { ctx, _, deeplink, _ -> DeeplinkMapperUser.getRegisteredNavigationUser(ctx, deeplink) },
             DLP.matchPattern(ApplinkConst.PRODUCT_EDUCATIONAL, targetDeeplink = { _, _, _, idList ->
                 UriUtil.buildUri(
-                    ApplinkConstInternalMarketplace.PRODUCT_DETAIL_EDUCATIONAL,
-                    idList?.lastOrNull() ?: "")
-            })
+                        ApplinkConstInternalMarketplace.PRODUCT_DETAIL_EDUCATIONAL,
+                        idList?.lastOrNull() ?: "")
+            }),
         )
 
     fun getTokopediaSchemeList():List<DLP>{
@@ -587,6 +587,7 @@ object DeeplinkMapper {
             ApplinkConst.SellerApp.WEBVIEW -> ApplinkConstInternalGlobal.WEBVIEW_BASE
             ApplinkConst.SellerApp.BROWSER -> ApplinkConstInternalGlobal.BROWSER
             ApplinkConst.SellerApp.TOPADS_DASHBOARD -> ApplinkConstInternalTopAds.TOPADS_DASHBOARD_INTERNAL
+            ApplinkConst.SellerApp.SHOP_DISCOUNT -> ApplinkConstInternalSellerapp.SHOP_DISCOUNT
             ApplinkConst.SellerApp.TOPADS_CREDIT_HISTORY -> ApplinkConstInternalTopAds.TOPADS_HISTORY_CREDIT
             ApplinkConst.SellerApp.TOPADS_CREDIT -> ApplinkConstInternalTopAds.TOPADS_BUY_CREDIT
             ApplinkConst.SellerApp.TOPADS_CREATE_AUTO_ADS -> ApplinkConstInternalTopAds.TOPADS_AUTOADS_CREATE

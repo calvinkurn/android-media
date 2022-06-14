@@ -94,6 +94,11 @@ import com.tokopedia.product.detail.common.ProductDetailCommonConstant.PARAM_APP
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant.PARAM_APPLINK_SHOP_ID
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant.RQUEST_CODE_ACTIVATE_GOPAY
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant.RQUEST_CODE_UPDATE_FINTECH_WIDGET
+import com.tokopedia.product.detail.common.ProductEducationalHelper
+import com.tokopedia.product.detail.common.ProductTrackingConstant
+import com.tokopedia.product.detail.common.SingleClick
+import com.tokopedia.product.detail.common.VariantConstant
+import com.tokopedia.product.detail.common.VariantPageSource
 import com.tokopedia.product.detail.common.bottomsheet.OvoFlashDealsBottomSheet
 import com.tokopedia.product.detail.common.data.model.aggregator.ProductVariantResult
 import com.tokopedia.product.detail.common.data.model.bebasongkir.BebasOngkir
@@ -136,6 +141,7 @@ import com.tokopedia.product.detail.data.util.DynamicProductDetailMapper
 import com.tokopedia.product.detail.data.util.DynamicProductDetailMapper.generateAffiliateShareData
 import com.tokopedia.product.detail.data.util.DynamicProductDetailMapper.generateProductShareData
 import com.tokopedia.product.detail.data.util.DynamicProductDetailMapper.generateUserLocationRequestRates
+import com.tokopedia.product.detail.data.util.DynamicProductDetailMapper.zeroIfEmpty
 import com.tokopedia.product.detail.data.util.DynamicProductDetailSwipeTrackingState
 import com.tokopedia.product.detail.data.util.DynamicProductDetailTalkGoToReplyDiscussion
 import com.tokopedia.product.detail.data.util.DynamicProductDetailTalkGoToWriteDiscussion
@@ -238,8 +244,7 @@ import com.tokopedia.wishlistcommon.util.WishlistV2CommonConsts.OPEN_WISHLIST
 import com.tokopedia.wishlistcommon.util.WishlistV2CommonConsts.TOASTER_RED
 import com.tokopedia.wishlistcommon.util.WishlistV2RemoteConfigRollenceUtil
 import rx.subscriptions.CompositeSubscription
-import java.util.Locale
-import java.util.UUID
+import java.util.*
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
@@ -933,6 +938,16 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
         RouteManager.route(context, url)
     }
 
+    override fun goToEducational(url: String) {
+        val context = context ?: return
+        ProductEducationalHelper.goToEducationalBottomSheet(
+            context,
+            url,
+            productId ?: "",
+            viewModel.getDynamicProductInfoP1?.basic?.shopID ?: ""
+        )
+    }
+
     override fun showCustomInfoCoachMark(componentName: String, viewTarget: View) {
         if (componentName == ProductDetailConstant.HAMPERS_INFO) {
             pdpCoachmarkHelper?.showCoachMarkHampers(viewTarget)
@@ -1432,28 +1447,45 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
         }
     }
 
+    private fun isUsingAddRemoveWishlistV2(context: Context): Boolean {
+        return WishlistV2RemoteConfigRollenceUtil.isUsingAddRemoveWishlistV2(context)
+    }
+
+    private fun trackingEventSuccessRemoveFromWishlist(componentTrackDataModel: ComponentTrackDataModel) {
+        DynamicProductDetailTracking.Click.eventPDPRemoveToWishlist(viewModel.getDynamicProductInfoP1, componentTrackDataModel)
+    }
+
+    private fun trackingEventSuccessAddToWishlist(componentTrackDataModel: ComponentTrackDataModel) {
+        viewModel.getDynamicProductInfoP1?.let { productInfo ->
+            DynamicProductDetailTracking.Moengage.eventPDPWishlistAppsFyler(productInfo)
+            DynamicProductDetailTracking.Click.eventPDPAddToWishlist(productInfo, componentTrackDataModel)
+        }
+    }
+
     override fun onFabWishlistClicked(isActive: Boolean, componentTrackDataModel: ComponentTrackDataModel) {
         val productInfo = viewModel.getDynamicProductInfoP1
         if (viewModel.isUserSessionActive) {
             if (isActive) {
-                productInfo?.basic?.productID?.let {
-                    if (context?.let { context ->
-                            WishlistV2RemoteConfigRollenceUtil.isUsingAddRemoveWishlistV2(context)
-                        } == true) removeWishlistV2(it)
-                    else removeWishlist(it)
-                    DynamicProductDetailTracking.Click.eventPDPRemoveToWishlist(viewModel.getDynamicProductInfoP1, componentTrackDataModel)
+                productInfo?.basic?.productID?.let { productId ->
+                    context?.let { context ->
+                        if (isUsingAddRemoveWishlistV2(context)) {
+                            removeWishlistV2(productId, componentTrackDataModel)
+                        } else {
+                            removeWishlist(productId)
+                            trackingEventSuccessRemoveFromWishlist(componentTrackDataModel)
+                        }
+                    }
                 }
-
             } else {
                 productInfo?.basic?.productID?.let {
-                    if (context?.let { context ->
-                            WishlistV2RemoteConfigRollenceUtil.isUsingAddRemoveWishlistV2(context)
-                        } == true) addWishlistV2()
-                    else addWishList()
-                    productInfo.let {
-                        DynamicProductDetailTracking.Moengage.eventPDPWishlistAppsFyler(it)
+                    context?.let { context ->
+                        if (isUsingAddRemoveWishlistV2(context)) {
+                            addWishlistV2(componentTrackDataModel)
+                        } else {
+                            addWishList()
+                            trackingEventSuccessAddToWishlist(componentTrackDataModel)
+                        }
                     }
-                    DynamicProductDetailTracking.Click.eventPDPAddToWishlist(viewModel.getDynamicProductInfoP1, componentTrackDataModel)
                 }
             }
         } else {
@@ -2682,10 +2714,13 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
         }
     }
 
+
     private fun onClickShareProduct() {
         viewModel.getDynamicProductInfoP1?.let { productInfo ->
             DynamicProductDetailTracking.Click.eventClickPdpShare(
-                    productInfo.basic.productID, viewModel.userId
+                    productInfo.basic.productID, viewModel.userId,
+                    zeroIfEmpty(productInfo.data.campaign.campaignID),
+                    zeroIfEmpty(pdpUiUpdater?.productBundlingData?.bundleInfo?.bundleId)
             )
             shareProduct(productInfo)
         }
@@ -2695,7 +2730,9 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
         val productInfo = dynamicProductInfoP1 ?: viewModel.getDynamicProductInfoP1
         if (productInfo != null) {
 
-            val productData = generateProductShareData(productInfo, viewModel.userId, viewModel.getShopInfo().shopCore.url)
+            val productData = generateProductShareData(productInfo, viewModel.userId,
+                viewModel.getShopInfo().shopCore.url, pdpUiUpdater?.productBundlingData?.bundleInfo?.bundleId ?: "0")
+
             val shopInfo = if (viewModel.getShopInfo().isShopInfoNotEmpty()) viewModel.getShopInfo() else null
             val affiliateData = generateAffiliateShareData(productInfo, shopInfo, viewModel.variantData)
             checkAndExecuteReferralAction(productData, affiliateData)
@@ -3195,7 +3232,7 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
         viewModel.deleteProductInCart(viewModel.getDynamicProductInfoP1?.basic?.productID ?: "")
     }
 
-    override fun updateQuantityNonVarTokoNow(quantity: Int, miniCart: MiniCartItem, oldValue: Int) {
+    override fun updateQuantityNonVarTokoNow(quantity: Int, miniCart: MiniCartItem.MiniCartItemProduct, oldValue: Int) {
         if (!viewModel.isUserSessionActive) {
             doLoginWhenUserClickButton()
             return
@@ -3848,7 +3885,7 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
             ?: "", onSuccessAddWishlist = this::onSuccessAddWishlist, onErrorAddWishList = this::onErrorAddWishList)
     }
 
-    private fun addWishlistV2() {
+    private fun addWishlistV2(componentTrackDataModel: ComponentTrackDataModel) {
         viewModel.addWishListV2(viewModel.getDynamicProductInfoP1?.basic?.productID
             ?: "", object: WishlistV2ActionListener{
             override fun onErrorAddWishList(throwable: Throwable, productId: String) {
@@ -3867,7 +3904,10 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
                         AddRemoveWishlistV2Handler.showAddToWishlistV2SuccessToaster(result, it, v)
                     }
                 }
-                if(result.success) updateFabIcon(productId, true)
+                if(result.success) {
+                    updateFabIcon(productId, true)
+                    trackingEventSuccessAddToWishlist(componentTrackDataModel)
+                }
             }
 
             override fun onErrorRemoveWishlist(throwable: Throwable, productId: String) {}
@@ -3896,7 +3936,10 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
             onErrorRemoveWishList = this::onErrorRemoveWishList)
     }
 
-    private fun removeWishlistV2(productId: String) {
+    private fun removeWishlistV2(
+        productId: String,
+        componentTrackDataModel: ComponentTrackDataModel
+    ) {
         viewModel.removeWishListV2(productId,
             object: WishlistV2ActionListener{
                 override fun onErrorAddWishList(throwable: Throwable, productId: String) {}
@@ -3921,7 +3964,10 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
                             AddRemoveWishlistV2Handler.showRemoveWishlistV2SuccessToaster(result, context, v)
                         }
                     }
-                    if (result.success) updateFabIcon(productId, false)
+                    if (result.success) {
+                        updateFabIcon(productId, false)
+                        trackingEventSuccessRemoveFromWishlist(componentTrackDataModel)
+                    }
                 }
 
             })
@@ -3987,6 +4033,7 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
         val parameterizedAppLink = Uri.parse(appLink).buildUpon()
                 .appendQueryParameter(ApplinkConstInternalMechant.QUERY_PARAM_BUNDLE_ID, bundleId)
                 .appendQueryParameter(ApplinkConstInternalMechant.QUERY_PARAM_PAGE_SOURCE, ApplinkConstInternalMechant.SOURCE_PDP)
+                .appendQueryParameter(ApplinkConstInternalMechant.QUERY_PARAM_WAREHOUSE_ID, viewModel.getMultiOriginByProductId().id)
                 .build()
                 .toString()
         val intent = RouteManager.getIntent(requireContext(), parameterizedAppLink)

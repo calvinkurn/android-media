@@ -12,7 +12,6 @@ import com.tokopedia.home.beranda.listener.HomeReviewListener
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.*
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.dynamic_icon.DynamicIconSectionDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.spotlight.SpotlightDataModel
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.HeaderDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.RetryModel
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.*
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.*
@@ -72,7 +71,8 @@ class HomeAdapterFactory(private val listener: HomeCategoryListener, private val
                          private val homePayLaterWidgetListener: HomePayLaterWidgetListener,
                          private val specialReleaseComponentListener: SpecialReleaseComponentListener,
                          private val merchantVoucherComponentListener: MerchantVoucherComponentListener,
-                         private val cueWidgetCategoryListener: CueWidgetCategoryListener
+                         private val cueWidgetCategoryListener: CueWidgetCategoryListener,
+                         private val vpsWidgetListener: VpsWidgetListener
                          ) :
         BaseAdapterTypeFactory(),
         HomeTypeFactory, HomeComponentTypeFactory, RecommendationTypeFactory,
@@ -117,12 +117,6 @@ class HomeAdapterFactory(private val listener: HomeCategoryListener, private val
 
     override fun type(dynamicIconSectionDataModel: DynamicIconSectionDataModel): Int {
         return if(dynamicIconSectionDataModel.dynamicIconWrap) DynamicIconTwoRowsSectionViewHolder.LAYOUT else DynamicIconSectionViewHolder.LAYOUT
-    }
-
-    override fun type(headerDataModel: HeaderDataModel): Int {
-        return if (headerDataModel.isUserLogin)
-            OvoViewHolder.LAYOUT
-        else OvoViewHolder.NON_LOGIN_LAYOUT
     }
 
     override fun type(homeRecommendationFeedDataModel: HomeRecommendationFeedDataModel): Int {
@@ -306,6 +300,10 @@ class HomeAdapterFactory(private val listener: HomeCategoryListener, private val
         return CueWidgetCategoryViewHolder.LAYOUT
     }
 
+    override fun type(vpsDataModel: VpsDataModel): Int {
+        return VpsWidgetViewHolder.LAYOUT
+    }
+
     private fun getDynamicChannelLayoutFromType(layout: String): Int {
         /**
          * Layout registered as sprint sale viewholder
@@ -370,7 +368,6 @@ class HomeAdapterFactory(private val listener: HomeCategoryListener, private val
             UseCaseIconSectionViewHolder.LAYOUT -> viewHolder = UseCaseIconSectionViewHolder(view, listener)
             DynamicIconSectionViewHolder.LAYOUT -> viewHolder = DynamicIconSectionViewHolder(view, listener)
             DynamicIconTwoRowsSectionViewHolder.LAYOUT -> viewHolder = DynamicIconTwoRowsSectionViewHolder(view, listener)
-            OvoViewHolder.LAYOUT, OvoViewHolder.NON_LOGIN_LAYOUT -> viewHolder = OvoViewHolder(view, listener)
             RetryViewHolder.LAYOUT -> viewHolder = RetryViewHolder(view, homeFeedsListener)
             SpotlightViewHolder.LAYOUT -> viewHolder = SpotlightViewHolder(view, listener)
             EmptyBlankViewHolder.LAYOUT -> viewHolder = EmptyBlankViewHolder(view)
@@ -498,6 +495,7 @@ class HomeAdapterFactory(private val listener: HomeCategoryListener, private val
             HomePayLaterWidgetViewHolder.LAYOUT -> viewHolder = HomePayLaterWidgetViewHolder(
                 view, homePayLaterWidgetListener)
             CueWidgetCategoryViewHolder.LAYOUT -> viewHolder = CueWidgetCategoryViewHolder(view, cueWidgetCategoryListener)
+            VpsWidgetViewHolder.LAYOUT -> viewHolder = VpsWidgetViewHolder(view, vpsWidgetListener, homeComponentListener, parentRecycledViewPool)
             else -> viewHolder = super.createViewHolder(view, type)
 
         }

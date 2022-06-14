@@ -235,7 +235,7 @@ class NotificationViewModel @Inject constructor(
         launchCatchError(dispatcher.io,
             {
                 bumpReminderUseCase.bumpReminder(
-                    product.productId.toString(),
+                    product.productId,
                     notif.notifId
                 ).collect {
                     it.referer = product.productId
@@ -255,7 +255,7 @@ class NotificationViewModel @Inject constructor(
         launchCatchError(dispatcher.io,
             {
                 deleteReminderUseCase.deleteReminder(
-                    product.productId.toString(),
+                    product.productId,
                     notification.notifId
                 ).collect {
                     it.referer = product.productId

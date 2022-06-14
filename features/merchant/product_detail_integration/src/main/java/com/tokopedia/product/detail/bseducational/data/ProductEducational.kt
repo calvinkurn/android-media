@@ -22,6 +22,10 @@ data class ProductEducationalResponse(
         @Expose
         val icon: String = "",
 
+        @SerializedName("eventCategory")
+        @Expose
+        val eventCategory: String = "",
+
         @SerializedName("buttons")
         @Expose
         val educationalButtons: List<EducationalButtons> = listOf()
