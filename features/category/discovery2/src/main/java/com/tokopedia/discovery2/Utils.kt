@@ -289,11 +289,11 @@ class Utils {
         }
 
         fun getValidHexCode(color: String?): String {
-            val regex = "^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3}|[A-Fa-f0-9]{8})$"
-            val pattern: Pattern = Pattern.compile(regex)
             if (color.isNullOrEmpty()) {
                 return DEFAULT_HEX_CODE
             }
+            val regex = "^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3}|[A-Fa-f0-9]{8})$"
+            val pattern: Pattern = Pattern.compile(regex)
             return if(pattern.matcher(color).matches())
                 color
             else

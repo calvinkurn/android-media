@@ -15,6 +15,7 @@ import java.lang.IllegalArgumentException
 import java.lang.RuntimeException
 import java.text.SimpleDateFormat
 import java.util.*
+import java.util.regex.Pattern
 
 class UtilsTest {
 
@@ -180,6 +181,21 @@ class UtilsTest {
         every { MethodChecker.getColor(context, defaultColor) } returns 1
         Utils.parsedColor(context, fontColour, defaultColor)
         verify { MethodChecker.getColor(context, defaultColor) }
+    }
+
+
+    @Test
+    fun `getValidHexCode Color`(){
+        val defaultColor = "#FFFFFF"
+        val hexcode = "#564843"
+        val hexcode8 = "#FFF"
+        val hexcodeinvalid = "#FLF"
+        val hexcode3 = "#12564843"
+        Assert.assertEquals(Utils.getValidHexCode(hexcode), hexcode)
+        Assert.assertEquals(Utils.getValidHexCode(""), defaultColor)
+        Assert.assertEquals(Utils.getValidHexCode(hexcode3), hexcode3)
+        Assert.assertEquals(Utils.getValidHexCode(hexcode8), hexcode8)
+        Assert.assertEquals(Utils.getValidHexCode(hexcodeinvalid), defaultColor)
     }
 
 
