@@ -1,14 +1,12 @@
 package com.tokopedia.feedplus.view.fragment
 
-import android.content.BroadcastReceiver
-import android.content.Context
-import android.content.Intent
-import android.content.IntentFilter
+import android.content.*
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.TransitionDrawable
 import android.os.Build
 import android.os.Bundle
 import android.text.TextUtils
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -40,6 +38,7 @@ import com.tokopedia.createpost.common.view.customview.PostProgressUpdateView
 import com.tokopedia.createpost.common.view.viewmodel.CreatePostViewModel
 import com.tokopedia.explore.view.fragment.ContentExploreFragment
 import com.tokopedia.feedcomponent.data.pojo.whitelist.Author
+import com.tokopedia.feedcomponent.util.manager.FeedFloatingButtonManager
 import com.tokopedia.feedplus.R
 import com.tokopedia.feedplus.data.pojo.FeedTabs
 import com.tokopedia.feedplus.domain.model.feed.WhitelistDomain
@@ -160,6 +159,15 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
         CoachMarkBuilder()
                 .allowPreviousButton(false)
                 .build()
+                .also {
+                    it.overlayOnClickListener = {
+                        coachMark.close()
+                        feedFloatingButton.expand()
+                    }
+                    it.onFinishListener = {
+                        feedFloatingButton.expand()
+                    }
+                }
     }
 
     private var badgeNumberNotification: Int = 0
@@ -493,7 +501,7 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
     }
 
     override fun expandFab() {
-        if(!fabFeed.menuOpen) {
+        if(!fabFeed.menuOpen && !coachMark.isVisible) {
             feedFloatingButton.expand()
         }
     }
@@ -782,7 +790,7 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
         }
     }
 
-    fun showCreatePostOnBoarding() {
+    private fun showCreatePostOnBoarding() {
         feedFloatingButton.addOneTimeGlobalLayoutListener {
             val location = IntArray(2)
             feedFloatingButton.getLocationOnScreen(location)
