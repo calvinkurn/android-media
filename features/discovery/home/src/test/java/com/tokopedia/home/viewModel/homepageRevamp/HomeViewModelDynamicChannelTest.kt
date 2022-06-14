@@ -3,6 +3,7 @@ package com.tokopedia.home.viewModel.homepageRevamp
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.home.beranda.domain.interactor.usecase.HomeBalanceWidgetUseCase
 import com.tokopedia.home.beranda.domain.interactor.usecase.HomeDynamicChannelUseCase
+import com.tokopedia.home.beranda.helper.Event
 import com.tokopedia.home.beranda.helper.Result
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.HomeDynamicChannelModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.DynamicChannelLoadingModel
@@ -53,6 +54,10 @@ class HomeViewModelDynamicChannelTest{
         homeViewModel.getDynamicChannelDataOnExpired(mockExpiredVisitable, mockExpiredChannelModel, 0)
         Assert.assertTrue(
                 homeViewModel.homeDataModel.list.size == mockNewVisitableList.size
+        )
+        Assert.assertTrue(
+            (homeViewModel.trackingLiveData.value as Event).getContentIfNotHandled()
+                ?.isEmpty() == true
         )
     }
 
