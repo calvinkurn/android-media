@@ -130,17 +130,16 @@ class PowerMerchantSubscriptionViewModelTest {
     fun `when submit PM activation should set result success`() =
         coroutineTestRule.runBlockingTest {
             val result = PMActivationStatusUiModel()
-            val currentShopTire = anyInt()
             val source = anyString()
 
             activatePMUseCase.params =
-                PowerMerchantActivateUseCase.createActivationParam(currentShopTire, source)
+                PowerMerchantActivateUseCase.createActivationParam(source)
 
             coEvery {
                 activatePMUseCase.executeOnBackground()
             } returns result
 
-            viewModel.submitPMActivation(currentShopTire)
+            viewModel.submitPMActivation()
 
             coVerify {
                 activatePMUseCase.executeOnBackground()
@@ -154,17 +153,16 @@ class PowerMerchantSubscriptionViewModelTest {
     @Test
     fun `when submit PM activation should set result failed`() = coroutineTestRule.runBlockingTest {
         val error = Throwable()
-        val currentShopTire = anyInt()
         val source = anyString()
 
         activatePMUseCase.params =
-            PowerMerchantActivateUseCase.createActivationParam(currentShopTire, source)
+            PowerMerchantActivateUseCase.createActivationParam(source)
 
         coEvery {
             activatePMUseCase.executeOnBackground()
         } throws error
 
-        viewModel.submitPMActivation(currentShopTire)
+        viewModel.submitPMActivation()
 
         coVerify {
             activatePMUseCase.executeOnBackground()
@@ -179,13 +177,12 @@ class PowerMerchantSubscriptionViewModelTest {
     fun `when submit cancel PM deactivation should set result success`() =
         coroutineTestRule.runBlockingTest {
             val result = PMActivationStatusUiModel()
-            val currentShopTire = anyInt()
 
             coEvery {
                 activatePMUseCase.executeOnBackground()
             } returns result
 
-            viewModel.cancelPmDeactivationSubmission(currentShopTire)
+            viewModel.cancelPmDeactivationSubmission()
 
             coVerify {
                 activatePMUseCase.executeOnBackground()
@@ -200,13 +197,12 @@ class PowerMerchantSubscriptionViewModelTest {
     fun `when submit cancel PM deactivation should set result failed`() =
         coroutineTestRule.runBlockingTest {
             val error = Throwable()
-            val currentShopTire = anyInt()
 
             coEvery {
                 activatePMUseCase.executeOnBackground()
             } throws error
 
-            viewModel.cancelPmDeactivationSubmission(currentShopTire)
+            viewModel.cancelPmDeactivationSubmission()
 
             coVerify {
                 activatePMUseCase.executeOnBackground()

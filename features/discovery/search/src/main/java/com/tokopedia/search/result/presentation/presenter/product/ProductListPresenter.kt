@@ -217,22 +217,6 @@ class ProductListPresenter @Inject constructor(
     }
 
     //region AB Test booleans
-    private val isABTestNegativeNoAds : Boolean  by lazy {
-        getABTestNegativeNoAds()
-    }
-
-    private fun getABTestNegativeNoAds() :Boolean {
-        return try {
-            val abTestKeywordAdvNeg = view.abTestRemoteConfig?.getString(
-                RollenceKey.SEARCH_ADVANCED_KEYWORD_ADV_NEG,
-                ""
-            )
-            RollenceKey.SEARCH_ADVANCED_NEGATIVE_NO_ADS == abTestKeywordAdvNeg
-        } catch (e: Exception) {
-            false
-        }
-    }
-
     private val isABTestVideoWidget: Boolean by lazy {
         getABTestVideoWidget()
     }
@@ -389,10 +373,6 @@ class ProductListPresenter @Inject constructor(
         totalData = productDataView.totalData
     }
 
-    private fun isDisableAdsNegativeKeywords(productDataView: ProductDataView) :Boolean {
-        return isABTestNegativeNoAds && productDataView.isAdvancedNegativeKeywordSearch()
-    }
-
     private fun createProductDataView(
         searchProductModel: SearchProductModel,
         pageTitleEventLabel: String = "",
@@ -486,7 +466,7 @@ class ProductListPresenter @Inject constructor(
     }
 
     private fun isHideProductAds(productDataView: ProductDataView) : Boolean {
-        return isLocalSearch() || isDisableAdsNegativeKeywords(productDataView)
+        return isLocalSearch() || productDataView.isAdvancedNegativeKeywordSearch()
     }
 
     private fun isLocalSearch() = navSource.isNotEmpty() && pageId.isNotEmpty()
@@ -1789,11 +1769,12 @@ class ProductListPresenter @Inject constructor(
         val wishlistResult = productCardOptionsModel.wishlistResult
 
         if (!wishlistResult.isSuccess) {
-            view.showMessageFailedWishlistAction(wishlistResult.isAddWishlist)
+            view.showMessageFailedWishlistAction(wishlistResult)
         } else {
             view.trackWishlistRecommendationProductLoginUser(!productCardOptionsModel.isWishlisted)
             view.updateWishlistStatus(productCardOptionsModel.productId, wishlistResult.isAddWishlist)
-            view.showMessageSuccessWishlistAction(wishlistResult.isAddWishlist)
+            view.showMessageSuccessWishlistAction(wishlistResult)
+            if (productCardOptionsModel.isTopAds) view.hitWishlistClickUrl(productCardOptionsModel)
         }
     }
 
@@ -1815,14 +1796,15 @@ class ProductListPresenter @Inject constructor(
         val wishlistResult = productCardOptionsModel.wishlistResult
 
         if (!wishlistResult.isSuccess) {
-            view.showMessageFailedWishlistAction(wishlistResult.isAddWishlist)
+            view.showMessageFailedWishlistAction(wishlistResult)
         } else {
             view.trackWishlistProduct(createWishlistTrackingModel(
                     productCardOptionsModel,
                     productCardOptionsModel.wishlistResult.isAddWishlist
             ))
             view.updateWishlistStatus(productCardOptionsModel.productId, wishlistResult.isAddWishlist)
-            view.showMessageSuccessWishlistAction(wishlistResult.isAddWishlist)
+            view.showMessageSuccessWishlistAction(wishlistResult)
+            if (productCardOptionsModel.isTopAds) view.hitWishlistClickUrl(productCardOptionsModel)
         }
     }
 
@@ -1966,6 +1948,7 @@ class ProductListPresenter @Inject constructor(
         productCardOptionsModel.productId = item.productID
         productCardOptionsModel.isTopAds = item.isTopAds || item.isOrganicAds
         productCardOptionsModel.topAdsWishlistUrl = item.topadsWishlistUrl ?: ""
+        productCardOptionsModel.topAdsClickUrl = item.topadsClickUrl ?: ""
         productCardOptionsModel.isRecommendation = false
         productCardOptionsModel.screenName = SearchEventTracking.Category.SEARCH_RESULT
         productCardOptionsModel.seeSimilarProductEvent = SearchTracking.EVENT_CLICK_SEARCH_RESULT

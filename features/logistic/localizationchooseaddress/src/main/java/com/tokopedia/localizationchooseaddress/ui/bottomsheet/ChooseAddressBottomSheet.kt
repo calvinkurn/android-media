@@ -360,7 +360,7 @@ class ChooseAddressBottomSheet : BottomSheetUnify(), HasComponent<ChooseAddressC
                             )),
                             postalCode = data.postalCode,
                             warehouseId = it.data.tokonow.warehouseId.toString(),
-                            shopId = it.data.tokonow.warehouseId.toString(),
+                            shopId = it.data.tokonow.shopId.toString(),
                             warehouses = TokonowWarehouseMapper.mapWarehousesModelToLocal(it.data.tokonow.warehouses),
                             serviceType = it.data.tokonow.serviceType
                         )

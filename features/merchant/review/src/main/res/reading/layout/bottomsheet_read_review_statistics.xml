@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingBottom="@dimen/layout_lvl3">
+    android:paddingBottom="@dimen/layout_lvl3"
+    tools:viewBindingIgnore="true">
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/bottom_sheet_review_statistic_satisfaction_rate"
