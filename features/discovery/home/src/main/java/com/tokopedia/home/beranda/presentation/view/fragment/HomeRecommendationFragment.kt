@@ -461,7 +461,7 @@ open class HomeRecommendationFragment : Fragment(), HomeRecommendationListener {
         context?.let {
             TopAdsUrlHitter(it).hitClickUrl(
                 this::class.java.simpleName,
-                productCardOptionsModel.topAdsClickUrl,
+                productCardOptionsModel.topAdsClickUrl+CLICK_TYPE_WISHLIST,
                 productCardOptionsModel.productId,
                 productCardOptionsModel.productName,
                 productCardOptionsModel.productImageUrl
@@ -548,6 +548,7 @@ open class HomeRecommendationFragment : Fragment(), HomeRecommendationListener {
         private const val HOME_JANKY_FRAMES_MONITORING_SUB_PAGE_NAME = "feed"
         private const val REQUEST_FROM_PDP = 349
         private const val DEFAULT_SPAN_COUNT = 2
+        private const val CLICK_TYPE_WISHLIST = "&click_type=wishlist"
 
         fun newInstance(tabIndex: Int, recomId: Int, tabName: String): HomeRecommendationFragment {
             val homeFeedFragment = HomeRecommendationFragment()

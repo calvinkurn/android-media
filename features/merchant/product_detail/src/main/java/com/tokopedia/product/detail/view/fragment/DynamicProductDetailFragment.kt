@@ -146,6 +146,7 @@ import com.tokopedia.product.detail.data.util.DynamicProductDetailTalkGoToReplyD
 import com.tokopedia.product.detail.data.util.DynamicProductDetailTalkGoToWriteDiscussion
 import com.tokopedia.product.detail.data.util.DynamicProductDetailTracking
 import com.tokopedia.product.detail.data.util.ProductDetailConstant
+import com.tokopedia.product.detail.data.util.ProductDetailConstant.CLICK_TYPE_WISHLIST
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.PARAM_DIRECTED_FROM_MANAGE_OR_PDP
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.REMOTE_CONFIG_DEFAULT_ENABLE_PDP_CUSTOM_SHARING
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.REMOTE_CONFIG_KEY_ENABLE_PDP_CUSTOM_SHARING
@@ -2882,7 +2883,7 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
         context?.let {
             TopAdsUrlHitter(it).hitClickUrl(
                 this::class.java.simpleName,
-                productCardOptionsModel.topAdsClickUrl,
+                productCardOptionsModel.topAdsClickUrl+CLICK_TYPE_WISHLIST,
                 productCardOptionsModel.productId,
                 productCardOptionsModel.productName,
                 productCardOptionsModel.productImageUrl
