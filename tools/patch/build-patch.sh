@@ -38,7 +38,7 @@ buildPatch(){
         echo  "include(\"testapp\")" >> settings.gradle
     fi
     sed -i '' "s/apply plugin: 'io.hansel.preprocessor'/apply plugin: 'robust'/g" testapp/build.gradle
-    ./gradlew :testapp:clean :testapp:assembleRelease -Pcom.robust.mode=patch --no-daemon --stacktrace
+    ./gradlew :testapp:clean :testapp:buildReleasePreBundle -Pcom.robust.mode=patch -Pandroid.enableR8=true --no-daemon --stacktrace
   else
     echo "No applicable selected app"
     exit 1
