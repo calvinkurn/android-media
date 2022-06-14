@@ -3,6 +3,7 @@ package com.tokopedia.play_common.view.game.quiz
 import android.animation.Animator
 import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
+import android.animation.ValueAnimator
 import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
@@ -58,6 +59,46 @@ class QuizWidgetView : ConstraintLayout {
         }
     })
 
+    private val clickRotateMinAnimation = ObjectAnimator.ofFloat(
+        binding.root, View.ROTATION, 0f, -6f
+    )
+
+    private val clickRotateMaxAnimation = ObjectAnimator.ofFloat(
+        binding.root, View.ROTATION, 0f, 6f
+    )
+
+    private val clickScaleXAnimation = ObjectAnimator.ofFloat(
+        binding.root, View.SCALE_X, 0.8f, 1f
+    )
+    private val clickScaleYAnimation = ObjectAnimator.ofFloat(
+        binding.root, View.SCALE_Y, 0.8f, 1f
+    )
+
+    private val answerFalseAnimator = AnimatorSet().apply {
+        interpolator = AnticipateInterpolator()
+        playTogether(clickScaleXAnimation, clickScaleYAnimation)
+        playSequentially(clickRotateMinAnimation, clickRotateMaxAnimation)
+    }
+
+    private val answerTrueAnimator = AnimatorSet().apply {
+        interpolator = AnticipateOvershootInterpolator()
+        playTogether(clickScaleXAnimation, clickScaleYAnimation)
+    }
+
+    private val animationListener = object : Animator.AnimatorListener {
+        override fun onAnimationStart(animation: Animator?) {}
+
+        override fun onAnimationEnd(animation: Animator?) {
+            binding.root.rotation = 0f
+            binding.root.scaleX = 1f
+            binding.root.scaleY = 1f
+        }
+
+        override fun onAnimationCancel(animation: Animator?) {}
+
+        override fun onAnimationRepeat(animation: Animator?) {}
+    }
+
     init {
         binding.rvQuizQuestion.apply {
             itemAnimator = null
@@ -70,6 +111,20 @@ class QuizWidgetView : ConstraintLayout {
         }
 
         binding.quizHeader.isEditable = false
+
+        answerFalseAnimator.childAnimations.forEach {
+            if (it !is ValueAnimator) return@forEach
+            it.duration = 150L
+            it.repeatCount = 1
+            it.repeatMode = ValueAnimator.REVERSE
+        }
+
+        answerTrueAnimator.childAnimations.forEach {
+            if (it !is ValueAnimator) return@forEach
+            it.duration = 150L
+            it.repeatCount = 1
+            it.repeatMode = ValueAnimator.REVERSE
+        }
     }
 
     override fun onDetachedFromWindow() {
@@ -121,13 +176,11 @@ class QuizWidgetView : ConstraintLayout {
 
     private fun animateCorrectAnswer(){
         answerTrueAnimator.addListener(animationListener)
-        answerTrueAnimator.duration = 250L
         answerTrueAnimator.start()
     }
 
     private fun animateWrongAnswer(){
         answerFalseAnimator.addListener(animationListener)
-        answerFalseAnimator.duration = 200L
         answerFalseAnimator.start()
     }
 
@@ -136,46 +189,6 @@ class QuizWidgetView : ConstraintLayout {
         fun onQuizOptionClicked(item: QuizChoicesUiModel)
 
         fun onQuizImpressed()
-    }
-
-    private val clickRotateMinAnimation = ObjectAnimator.ofFloat(
-        binding.root, View.ROTATION, 0f, -6f
-    )
-
-    private val clickRotateMaxAnimation = ObjectAnimator.ofFloat(
-        binding.root, View.ROTATION, 0f, 6f
-    )
-
-    private val clickScaleXAnimation = ObjectAnimator.ofFloat(
-        binding.root, View.SCALE_X, 0.8f, 1f
-    )
-    private val clickScaleYAnimation = ObjectAnimator.ofFloat(
-        binding.root, View.SCALE_Y, 0.8f, 1f
-    )
-
-    private val answerFalseAnimator = AnimatorSet().apply {
-        interpolator = AnticipateInterpolator()
-        playTogether(clickScaleXAnimation, clickScaleYAnimation)
-        playSequentially(clickRotateMinAnimation, clickRotateMaxAnimation)
-    }
-
-    private val answerTrueAnimator = AnimatorSet().apply {
-        interpolator = AnticipateOvershootInterpolator()
-        playTogether(clickScaleXAnimation, clickScaleYAnimation)
-    }
-
-    private val animationListener = object : Animator.AnimatorListener {
-        override fun onAnimationStart(animation: Animator?) {}
-
-        override fun onAnimationEnd(animation: Animator?) {
-            binding.root.rotation = 0f
-            binding.root.scaleX = 1f
-            binding.root.scaleY = 1f
-        }
-
-        override fun onAnimationCancel(animation: Animator?) {}
-
-        override fun onAnimationRepeat(animation: Animator?) {}
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
