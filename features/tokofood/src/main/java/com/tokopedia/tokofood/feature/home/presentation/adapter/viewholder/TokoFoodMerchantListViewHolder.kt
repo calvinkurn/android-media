@@ -85,20 +85,20 @@ class TokoFoodMerchantListViewHolder (
     }
 
     private fun setTitleMerchant(title: String) {
-        if (!title.isNullOrEmpty()){
+        if (title.isNullOrEmpty()){
+            tgTokoFoodMerchantTitle?.hide()
+        } else {
             tgTokoFoodMerchantTitle?.show()
             tgTokoFoodMerchantTitle?.text = title
-        } else {
-            tgTokoFoodMerchantTitle?.hide()
         }
     }
 
     private fun setLabelDiscount(label: String) {
-        if (!label.isNullOrEmpty()){
+        if (label.isNullOrEmpty()){
+            labelMerchantDiskon?.hide()
+        } else {
             labelMerchantDiskon?.show()
             labelMerchantDiskon?.text = label
-        } else {
-            labelMerchantDiskon?.hide()
         }
     }
 
@@ -113,52 +113,52 @@ class TokoFoodMerchantListViewHolder (
             etaDistance.append(eta)
         }
 
-        if (!etaDistance.toString().isNullOrEmpty()){
+        if (etaDistance.toString().isNullOrEmpty()){
+            tgTokoFoodMerchantDistance?.hide()
+        } else {
             tgTokoFoodMerchantDistance?.show()
             tgTokoFoodMerchantDistance?.text = etaDistance
-        } else {
-            tgTokoFoodMerchantDistance?.hide()
         }
     }
 
     private fun setMerchantRating(rating: String, ratingDouble: Double) {
-        if (!rating.isNullOrEmpty() && ratingDouble > 0f){
+        if (rating.isNullOrEmpty() || ratingDouble <= 0f){
+            tgTokoFoodMerchantRating?.hide()
+            imgTokoFoodMerchantRating?.hide()
+        } else {
             tgTokoFoodMerchantRating?.show()
             imgTokoFoodMerchantRating?.show()
             tgTokoFoodMerchantRating?.text = rating
-        } else {
-            tgTokoFoodMerchantRating?.hide()
-            imgTokoFoodMerchantRating?.hide()
         }
     }
 
     private fun setViewDividerCategoryPriceLevel(categories: List<String>, priceLevel: PriceLevel){
         val price = getPriceLevelString(priceLevel)
         val category = getCategoryString(categories)
-        if (!category.isNullOrEmpty() && !price.isNullOrEmpty()){
-            viewDividerTokoFoodMerchant?.show()
-        } else {
+        if (category.isNullOrEmpty() || price.isNullOrEmpty()){
             viewDividerTokoFoodMerchant?.hide()
+        } else {
+            viewDividerTokoFoodMerchant?.show()
         }
     }
 
     private fun setMerchantCategory(categories: List<String>){
         val category = getCategoryString(categories)
-        if (!category.isNullOrEmpty()){
+        if (category.isNullOrEmpty()){
+            tgTokoFoodMerchantCategory?.hide()
+        } else {
             tgTokoFoodMerchantCategory?.show()
             tgTokoFoodMerchantCategory?.text = category
-        } else {
-            tgTokoFoodMerchantCategory?.hide()
         }
     }
 
     private fun setPriceLevel(priceLevel: PriceLevel) {
         val price = getPriceLevelString(priceLevel)
-        if (!price.isNullOrEmpty()){
+        if (price.isNullOrEmpty()){
+            tgTokoFoodMerchantPriceScale?.hide()
+        } else {
             tgTokoFoodMerchantPriceScale?.show()
             tgTokoFoodMerchantPriceScale?.text =  MethodChecker.fromHtml(price)
-        } else {
-            tgTokoFoodMerchantPriceScale?.hide()
         }
     }
 
