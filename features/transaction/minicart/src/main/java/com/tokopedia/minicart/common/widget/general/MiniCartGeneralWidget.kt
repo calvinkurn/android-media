@@ -81,9 +81,11 @@ class MiniCartGeneralWidget @JvmOverloads constructor(
             setLabelTitle(labelText)
             enableAmountChevron(true)
             amountChevronView.setOnClickListener {
+                sendEventClickSimplifiedSummary()
                 showSimplifiedSummaryBottomSheet(fragment)
             }
             amountCtaView.setOnClickListener {
+                sendEventClickCheckCart()
                 RouteManager.route(context, ApplinkConstInternalMarketplace.CART)
             }
             val ctaText = context.getString(R.string.mini_cart_widget_label_see_cart)
@@ -99,6 +101,7 @@ class MiniCartGeneralWidget @JvmOverloads constructor(
             showMiniCartChatListBottomSheet(fragment)
         }
         binding.imageChevronUnavailable.setOnClickListener {
+            sendEventClickSimplifiedSummary()
             showSimplifiedSummaryBottomSheet(fragment)
         }
         binding.chatIcon.setImageDrawable(chatIcon)
@@ -285,6 +288,24 @@ class MiniCartGeneralWidget @JvmOverloads constructor(
         params.weight = 0f
         params.setMargins(0, 0, 4.toPx(), 0)
         binding.miniCartTotalAmount.amountView.layoutParams = params
+    }
+
+    private fun sendEventClickChat() {
+        analytics.eventClickChatOnMiniCart()
+    }
+
+    private fun sendEventClickSimplifiedSummary() {
+        analytics.eventClickSimplifiedSummaryOnMiniCart()
+    }
+
+    private fun sendEventClickCheckCart() {
+        val miniCartSimplifiedData = viewModel?.miniCartSimplifiedData?.value ?: return
+        analytics.eventClickCheckCartSdp(
+            basketSize = miniCartSimplifiedData.miniCartWidgetData.totalProductPrice.toString(),
+            shopId = viewModel?.currentShopIds?.value?.joinToString() ?: "",
+            businessUnit = MiniCartAnalytics.VALUE_BUSINESS_UNIT_PURCHASE_PLATFORM,
+            currentSite = MiniCartAnalytics.VALUE_CURRENT_SITE_TOKOPEDIA_MARKETPLACE
+        )
     }
 
     /**

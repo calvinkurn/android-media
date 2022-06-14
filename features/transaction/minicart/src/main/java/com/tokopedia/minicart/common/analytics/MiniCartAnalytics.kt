@@ -45,6 +45,7 @@ class MiniCartAnalytics @Inject constructor(val userSession: UserSessionInterfac
         const val VALUE_PROMO_CODE_FULFILLED = "fulfilled"
         const val VALUE_PROMO_CODE_NOT_FULFILLED = "not_fulfilled"
         const val VALUE_PAGE_SOURCE_MVC_PAGE = "mvcpage"
+        const val VALUE_PAGE_SOURCE_SHOP_PAGE = "shoppage"
 
         // EVENT NAME
         const val EVENT_NAME_CLICK_MINICART = "clickMinicart"
@@ -89,6 +90,7 @@ class MiniCartAnalytics @Inject constructor(val userSession: UserSessionInterfac
         const val EVENT_ACTION_CLICK_CHECK_CART = "click check cart"
         const val EVENT_ACTION_MVC_PROGRESS_BAR_IMPRESSION = "mvc progress bar impression"
         const val EVENT_ACTION_CLICK_CHANGE_PRODUCT_BUNDLE = "click ubah in product bundling"
+        const val EVENT_ACTION_CLICK_ARROW_SIMPLIFIED_SUMMARY = "click arrow to ringkasan belanja"
 
         // EVENT LABEL
         const val EVENT_LABEL_SUCCESS = "success"
@@ -607,6 +609,33 @@ class MiniCartAnalytics @Inject constructor(val userSession: UserSessionInterfac
                 EVENT_ACTION_MVC_PROGRESS_BAR_IMPRESSION, "$basketSize - $promoPercentage")
         trackingData[KEY_BUSINESS_UNIT] = businessUnit
         trackingData[KEY_CURRENT_SITE] = currentSite
+        trackingData[KEY_SHOP_ID] = shopId
+        trackingData[KEY_USER_ID] = userSession.userId
+        sendGeneralEvent(trackingData)
+    }
+
+    /* https://mynakama.tokopedia.com/datatracker/requestdetail/view/1552 */
+    // 32054
+    fun eventClickSimplifiedSummaryOnMiniCart() {
+        val trackingData = TrackAppUtils.gtmData(
+            EVENT_NAME_CLICK_PP,
+            EVENT_CATEGORY_SHOP_PAGE_BUYER,
+            EVENT_ACTION_CLICK_ARROW_SIMPLIFIED_SUMMARY,
+            ""
+        )
+        trackingData[KEY_BUSINESS_UNIT] = VALUE_BUSINESS_UNIT_PURCHASE_PLATFORM
+        trackingData[KEY_CURRENT_SITE] = VALUE_CURRENT_SITE_TOKOPEDIA_MARKETPLACE
+        sendGeneralEvent(trackingData)
+    }
+
+    // 32052 -- Adjusted tracker from eventClickCheckCart() (6), used for Shop Direct Purchase
+    fun eventClickCheckCartSdp(basketSize: String, shopId: String, businessUnit: String, currentSite: String) {
+        val trackingData = TrackAppUtils.gtmData(EVENT_NAME_CLICK_PG, EVENT_CATEGORY_SHOP_PAGE_BUYER,
+            EVENT_ACTION_CLICK_CHECK_CART, basketSize)
+        trackingData[KEY_BUSINESS_UNIT] = businessUnit
+        trackingData[KEY_CURRENT_SITE] = currentSite
+        trackingData[KEY_PAGE_SOURCE] = VALUE_PAGE_SOURCE_SHOP_PAGE
+        trackingData[KEY_PROMO_CODE] = ""
         trackingData[KEY_SHOP_ID] = shopId
         trackingData[KEY_USER_ID] = userSession.userId
         sendGeneralEvent(trackingData)
