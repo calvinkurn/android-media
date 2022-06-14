@@ -33,6 +33,7 @@ class InteractiveUiModelBuilder {
             winners = buildWinnerList(winnerSize),
             otherParticipantText = "",
             otherParticipant = 0,
+            id = "1"
         )
     }
 

@@ -7,10 +7,26 @@
 
     <declare-styleable name="RoundedConstraintLayout">
         <attr name="rcl_cornerRadius" format="dimension" />
+        <attr name="rcl_topLeftRadius" format="dimension" />
+        <attr name="rcl_topRightRadius" format="dimension" />
+        <attr name="rcl_bottomLeftRadius" format="dimension" />
+        <attr name="rcl_bottomRightRadius" format="dimension" />
     </declare-styleable>
 
     <declare-styleable name="RoundedFrameLayout">
         <attr name="rfl_cornerRadius" format="dimension" />
+        <attr name="rfl_topLeftRadius" format="dimension" />
+        <attr name="rfl_topRightRadius" format="dimension" />
+        <attr name="rfl_bottomLeftRadius" format="dimension" />
+        <attr name="rfl_bottomRightRadius" format="dimension" />
+    </declare-styleable>
+
+    <declare-styleable name="RoundedLinearLayout">
+        <attr name="rll_cornerRadius" format="dimension" />
+        <attr name="rll_topLeftRadius" format="dimension" />
+        <attr name="rll_topRightRadius" format="dimension" />
+        <attr name="rll_bottomLeftRadius" format="dimension" />
+        <attr name="rll_bottomRightRadius" format="dimension" />
     </declare-styleable>
 
     <declare-styleable name="RemoteImageView">

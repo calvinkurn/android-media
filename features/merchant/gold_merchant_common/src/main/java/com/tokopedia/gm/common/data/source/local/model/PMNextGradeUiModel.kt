@@ -9,6 +9,5 @@ data class PMNextGradeUiModel(
         val shopScoreMin: Int = 0,
         val shopScoreMax: Int = 0,
         val gradeName: String = "",
-        val imgBadgeUrl: String = "",
         val backgroundUrl: String? = null
 )
