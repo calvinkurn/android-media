@@ -1,6 +1,7 @@
 package com.tokopedia.play.widget.sample.analytic.global
 
 import com.tokopedia.play.widget.analytic.list.large.PlayWidgetInListLargeAnalyticListener
+import com.tokopedia.play.widget.di.INTERNAL_USER_SESSION
 import com.tokopedia.play.widget.sample.analytic.const.VAL_BUSINESS_UNIT
 import com.tokopedia.play.widget.sample.analytic.const.VAL_CURRENT_SITE
 import com.tokopedia.play.widget.sample.analytic.const.EVENT_CLICK
@@ -35,6 +36,7 @@ import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
 import java.util.HashMap
+import javax.inject.Named
 
 /**
  * Created by kenny.hadisaputra on 31/05/22
@@ -42,7 +44,7 @@ import java.util.HashMap
 class PlayWidgetLargeGlobalAnalytic @AssistedInject constructor(
     @Assisted val model: PlayWidgetAnalyticModel,
     @Assisted val trackingQueue: TrackingQueue,
-    private val userSession: UserSessionInterface,
+    @Named(INTERNAL_USER_SESSION) private val userSession: UserSessionInterface,
 ) : PlayWidgetInListLargeAnalyticListener {
 
     @AssistedFactory
