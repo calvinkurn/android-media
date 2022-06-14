@@ -4,6 +4,8 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.shop.flashsale.common.extension.digitsOnly
+import com.tokopedia.shop.flashsale.common.extension.isNumber
 import com.tokopedia.shop.flashsale.domain.entity.CampaignMeta
 import com.tokopedia.shop.flashsale.domain.entity.CampaignUiModel
 import com.tokopedia.shop.flashsale.domain.entity.aggregate.CampaignPrerequisiteData
@@ -49,7 +51,7 @@ class CampaignListViewModel @Inject constructor(
         rows: Int,
         offset: Int,
         statusId: List<Int>,
-        campaignName: String
+        campaignName : String,
     ) {
         launchCatchError(
             dispatchers.io,
@@ -58,7 +60,8 @@ class CampaignListViewModel @Inject constructor(
                     rows = rows,
                     offset = offset,
                     statusId = statusId,
-                    campaignName = campaignName
+                    campaignId = if (campaignName.isNumber()) campaignName.digitsOnly() else 0,
+                    campaignName = if (campaignName.isNumber()) "" else campaignName
                 )
                 _campaigns.postValue(Success(campaigns))
             },
@@ -68,6 +71,7 @@ class CampaignListViewModel @Inject constructor(
         )
 
     }
+
 
     fun getCampaignPrerequisiteData() {
         launchCatchError(

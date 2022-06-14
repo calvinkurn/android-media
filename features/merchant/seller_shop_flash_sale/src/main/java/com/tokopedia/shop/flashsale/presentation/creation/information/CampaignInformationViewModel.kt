@@ -217,7 +217,7 @@ class CampaignInformationViewModel @Inject constructor(
         launchCatchError(
             dispatchers.io,
             block = {
-                val result = getSellerCampaignDetailUseCase.execute(campaignId.toInt())
+                val result = getSellerCampaignDetailUseCase.execute(campaignId)
                 _campaignDetail.postValue(Success(result))
             },
             onError = { error ->
@@ -301,16 +301,4 @@ class CampaignInformationViewModel @Inject constructor(
     fun isUsingHexColor(firstColor : String, secondColor : String) : Boolean {
         return firstColor == secondColor
     }
-
-    fun findColor(selectedGradient: Gradient, gradients: List<Gradient>): List<Gradient> {
-        return gradients.map { gradient ->
-            if (gradient == selectedGradient) {
-                gradient.copy(isSelected = true)
-            } else {
-                gradient.copy(isSelected = false)
-            }
-        }
-    }
-
-
 }

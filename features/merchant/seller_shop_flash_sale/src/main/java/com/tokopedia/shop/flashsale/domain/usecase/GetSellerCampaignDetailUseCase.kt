@@ -13,7 +13,7 @@ class GetSellerCampaignDetailUseCase @Inject constructor(
 ) : GraphqlUseCase<CampaignUiModel>(repository) {
 
     suspend fun execute(
-        campaignId: Int,
+        campaignId: Long,
     ): CampaignUiModel {
         return coroutineScope {
             val campaignList = getSellerCampaignListUseCase.execute(
