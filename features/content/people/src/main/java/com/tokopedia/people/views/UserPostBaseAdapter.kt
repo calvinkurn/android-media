@@ -175,7 +175,6 @@ open class UserPostBaseAdapter(
             reminderType.reminded
         )
     }
-}
 
     interface PlayWidgetCallback {
         fun updatePostReminderStatus(channelId: String, isActive: Boolean, pos: Int)
