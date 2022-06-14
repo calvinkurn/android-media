@@ -725,7 +725,8 @@ class ProfileInfoFragment : BaseDaggerFragment(),
             String.format(
                 TOKOPEDIA_WEB_STRING_FORMAT,
                 ApplinkConst.WEBVIEW,
-                TokopediaUrl.getInstance().MOBILEWEB.plus(TOKOPEDIA_CLOSE_ACCOUNT_PATH)
+                "https://1364-staging-feature.tokopedia.com/user/close-account"
+                //TokopediaUrl.getInstance().MOBILEWEB.plus(TOKOPEDIA_CLOSE_ACCOUNT_PATH)
             )
         )
     }
@@ -747,7 +748,8 @@ class ProfileInfoFragment : BaseDaggerFragment(),
         private const val GENDER_FEMALE = 2
         private const val TAG_BOTTOM_SHEET_CLOSE_ACCOUNT = "bottom sheet close account"
         private const val EMPTY_STRING = ""
-        private const val TOKOPEDIA_WEB_STRING_FORMAT = "%s?url=%s"
+        private const val TOKOPEDIA_WEB_STRING_FORMAT = "%s?titlebar=false&url=%s"
+        //private const val TOKOPEDIA_WEB_STRING_FORMAT = "%s?url=%s"
         private const val TOKOPEDIA_CLOSE_ACCOUNT_PATH = "user/close-account"
         private const val ROLLENCE_KEY_CLOSE_ACCOUNT = "close_account"
 
