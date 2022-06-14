@@ -16,8 +16,8 @@ public class DeleteKolCommentSubscriber extends Subscriber<Boolean> {
     private final WeakReference<KolComment.View> view;
     private final int adapterPosition;
 
-    public DeleteKolCommentSubscriber(WeakReference<KolComment.View> view, int adapterPosition) {
-        this.view = view;
+    public DeleteKolCommentSubscriber(KolComment.View view, int adapterPosition) {
+        this.view = new WeakReference<KolComment.View>(view);
         this.adapterPosition = adapterPosition;
     }
 

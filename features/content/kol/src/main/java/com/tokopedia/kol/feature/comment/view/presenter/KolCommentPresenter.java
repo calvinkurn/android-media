@@ -86,10 +86,7 @@ public class KolCommentPresenter extends BaseDaggerPresenter<KolComment.View>
         getView().showProgressDialog();
         deleteKolCommentUseCase.execute(
                 DeleteKolCommentUseCase.getParam(Integer.parseInt(id)),
-                new DeleteKolCommentSubscriber(
-                        new WeakReference<KolComment.View>(getView()),
-                        adapterPosition
-                )
+                new DeleteKolCommentSubscriber(getView(), adapterPosition)
         );
     }
 
