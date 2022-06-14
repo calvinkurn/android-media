@@ -7,28 +7,40 @@ import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.tokopedia.abstraction.base.app.BaseMainApplication
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.seller_shop_flash_sale.R
 import com.tokopedia.seller_shop_flash_sale.databinding.SsfsFragmentChooseProductBinding
 import com.tokopedia.shop.flashsale.common.constant.ChooseProductConstant.PRODUCT_LIST_SIZE
 import com.tokopedia.shop.flashsale.common.customcomponent.BaseSimpleListFragment
-import com.tokopedia.shop.flashsale.common.extension.setFragmentToUnifyBgColor
-import com.tokopedia.shop.flashsale.common.extension.showError
+import com.tokopedia.shop.flashsale.common.extension.*
 import com.tokopedia.shop.flashsale.di.component.DaggerShopFlashSaleComponent
 import com.tokopedia.shop.flashsale.presentation.creation.manage.adapter.ReserveProductAdapter
 import com.tokopedia.shop.flashsale.presentation.creation.manage.model.ReserveProductModel
 import com.tokopedia.shop.flashsale.presentation.creation.manage.viewmodel.ChooseProductViewModel
 import com.tokopedia.utils.lifecycle.autoClearedNullable
+import kotlinx.coroutines.DelicateCoroutinesApi
+import kotlinx.coroutines.GlobalScope
 import javax.inject.Inject
 
+@DelicateCoroutinesApi
 class ChooseProductFragment : BaseSimpleListFragment<ReserveProductAdapter, ReserveProductModel>() {
+
+    companion object {
+        const val SWIPEPROGRESS_MARGIN = 120
+        const val GUIDELINE_MARGIN_MAX = 64
+        const val GUIDELINE_MARGIN_MIN = 0
+        const val GUIDELINE_ANIMATION_DELAY = 500L
+    }
 
     @Inject
     lateinit var viewModel: ChooseProductViewModel
-
     private var binding by autoClearedNullable<SsfsFragmentChooseProductBinding>()
-    private var guidelineBegin = 58
+    private var guidelineMargin = GUIDELINE_MARGIN_MAX
+    private val animateScrollDebounce: (Int) -> Unit by lazy {
+        debounce(GUIDELINE_ANIMATION_DELAY, GlobalScope) {
+            view?.post { animateScroll(it) }
+        }
+    }
 
     override fun getScreenName() = ChooseProductFragment::class.java.canonicalName.orEmpty()
 
@@ -61,7 +73,7 @@ class ChooseProductFragment : BaseSimpleListFragment<ReserveProductAdapter, Rese
     override fun getRecyclerView(view: View) = binding?.rvProducts
 
     override fun getSwipeRefreshLayout(view: View): SwipeRefreshLayout? {
-        binding?.swipeRefreshProducts?.setProgressViewOffset(false, 0, 120)
+        binding?.swipeRefreshProducts?.setProgressViewOffset(false, Int.ZERO, SWIPEPROGRESS_MARGIN)
         return binding?.swipeRefreshProducts
     }
 
@@ -102,11 +114,12 @@ class ChooseProductFragment : BaseSimpleListFragment<ReserveProductAdapter, Rese
     }
 
     override fun onScrolled(xScrollAmount: Int, yScrollAmount: Int) {
-        guidelineBegin -= yScrollAmount
-        if (guidelineBegin < 0) guidelineBegin = 0
-        if (guidelineBegin > 64) guidelineBegin = 64
-        binding?.guideline3?.setGuidelineBegin(guidelineBegin)
-        binding?.guideline4?.setGuidelineEnd(guidelineBegin)
+        guidelineMargin -= yScrollAmount
+        if (guidelineMargin < GUIDELINE_MARGIN_MIN) guidelineMargin = GUIDELINE_MARGIN_MIN
+        if (guidelineMargin > GUIDELINE_MARGIN_MAX) guidelineMargin = GUIDELINE_MARGIN_MAX
+        binding?.guidelineFooter?.setGuidelineEnd(guidelineMargin)
+        binding?.guidelineHeader?.setGuidelineBegin(guidelineMargin)
+        animateScrollDebounce.invoke(yScrollAmount)
     }
 
     private fun onSelectedItemChanges(selectedItem: MutableList<String>) {
@@ -139,6 +152,18 @@ class ChooseProductFragment : BaseSimpleListFragment<ReserveProductAdapter, Rese
                 loadInitialData()
             }
             return@setOnEditorActionListener false
+        }
+    }
+
+    private fun animateScroll(scrollingAmount: Int) {
+        if (scrollingAmount.isMoreThanZero()) {
+            binding?.guidelineHeader?.animateSlide(guidelineMargin, GUIDELINE_MARGIN_MIN, true)
+            binding?.guidelineFooter?.animateSlide(guidelineMargin, GUIDELINE_MARGIN_MIN, false)
+            guidelineMargin = GUIDELINE_MARGIN_MIN
+        } else if (scrollingAmount.isLessThanZero()){
+            binding?.guidelineHeader?.animateSlide(guidelineMargin, GUIDELINE_MARGIN_MAX, true)
+            binding?.guidelineFooter?.animateSlide(guidelineMargin, GUIDELINE_MARGIN_MAX, false)
+            guidelineMargin = GUIDELINE_MARGIN_MAX
         }
     }
 }

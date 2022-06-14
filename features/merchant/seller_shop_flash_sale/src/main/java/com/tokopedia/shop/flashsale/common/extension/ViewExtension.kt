@@ -1,14 +1,21 @@
 package com.tokopedia.shop.flashsale.common.extension
 
+import android.animation.ValueAnimator
 import android.view.View
+import android.view.animation.AccelerateDecelerateInterpolator
 import android.view.animation.Animation
 import android.view.animation.TranslateAnimation
+import androidx.constraintlayout.widget.Guideline
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.unifycomponents.Toaster
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 infix fun View?.showError(throwable : Throwable) {
     val errorMessage = ErrorHandler.getErrorMessage(this?.context, throwable)
@@ -57,7 +64,6 @@ fun View?.slideUp(duration: Int = 350) {
         })
         this.startAnimation(animate)
     }
-
 }
 
 fun View?.slideDown(duration : Int = 350) {
@@ -81,4 +87,33 @@ fun View?.slideDown(duration : Int = 350) {
         })
         this.startAnimation(animate)
     }
+}
+
+fun <T> debounce(
+    waitMs: Long,
+    scope: CoroutineScope,
+    destinationFunction: (T) -> Unit
+): (T) -> Unit {
+    var debounceJob: Job? = null
+    return { param: T ->
+        debounceJob?.cancel()
+        debounceJob = scope.launch {
+            delay(waitMs)
+            destinationFunction(param)
+        }
+    }
+}
+
+fun Guideline?.animateSlide(fromHeight: Int, targetHeight: Int, isGuidelineBegin: Boolean) = this?.run {
+    val valueAnimator = ValueAnimator.ofInt(fromHeight, targetHeight)
+    valueAnimator.duration = resources.getInteger(com.tokopedia.unifyprinciples.R.integer.Unify_T2).toLong()
+    valueAnimator.interpolator = AccelerateDecelerateInterpolator()
+    valueAnimator.addUpdateListener { animation ->
+        if (isGuidelineBegin) {
+            setGuidelineBegin(animation.animatedValue as Int)
+        } else {
+            setGuidelineEnd(animation.animatedValue as Int)
+        }
+    }
+    valueAnimator.start()
 }
