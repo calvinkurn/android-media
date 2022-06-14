@@ -306,6 +306,9 @@ class MiniCartGeneralWidget @JvmOverloads constructor(
     private fun sendEventClickCheckCart() {
         val miniCartSimplifiedData = viewModel?.miniCartSimplifiedData?.value ?: return
         analytics.eventClickCheckCart(
+            eventName = MiniCartAnalytics.EVENT_NAME_CLICK_PP,
+            eventCategory = MiniCartAnalytics.EVENT_CATEGORY_SHOP_PAGE_BUYER,
+            eventAction = MiniCartAnalytics.EVENT_ACTION_CLICK_SEE_CART,
             basketSize = miniCartSimplifiedData.miniCartWidgetData.totalProductPrice.toString(),
             isFulfilled = null,
             shopId = viewModel?.currentShopIds?.value?.joinToString() ?: "",
