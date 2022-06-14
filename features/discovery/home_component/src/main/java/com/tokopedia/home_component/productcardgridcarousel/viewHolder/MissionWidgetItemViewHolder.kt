@@ -1,5 +1,6 @@
 package com.tokopedia.home_component.productcardgridcarousel.viewHolder
 
+import android.text.TextUtils
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.home_component.R
@@ -21,6 +22,7 @@ class MissionWidgetItemViewHolder(
 
     companion object {
         val LAYOUT = R.layout.home_banner_item_mission_widget
+        private const val MAX_LINES_MISSION_WIDGET = 2
     }
 
     override fun bind(element: CarouselMissionWidgetDataModel) {
@@ -39,8 +41,10 @@ class MissionWidgetItemViewHolder(
             imageMissionWidget.outlineProvider =
                 ImageUnifyUtils.cornerRadiusTopImageUnify()
             titleMissionWidget.text = element.title
-            subtitleMissionWidget.text = element.subTitle
             subtitleMissionWidget.height = element.subtitleHeight
+            subtitleMissionWidget.text = element.subTitle
+            subtitleMissionWidget.maxLines = MAX_LINES_MISSION_WIDGET
+            subtitleMissionWidget.ellipsize = TextUtils.TruncateAt.END
         }
     }
 }
