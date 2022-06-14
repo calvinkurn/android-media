@@ -1,6 +1,7 @@
 package com.tokopedia.shop.flashsale.domain.entity
 
 import android.os.Parcelable
+import com.tokopedia.shop.flashsale.domain.entity.enums.PaymentType
 import kotlinx.parcelize.Parcelize
 
 data class MerchantCampaignTNC(
@@ -18,7 +19,7 @@ data class MerchantCampaignTNC(
         var campaignId: Long = 0,
         var isUniqueBuyer: Boolean = false,
         var isCampaignRelation: Boolean = false,
-        var paymentProfile: String = ""
+        var paymentType: PaymentType = PaymentType.INSTANT
     ): Parcelable
 }
 
