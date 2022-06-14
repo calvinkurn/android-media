@@ -6,10 +6,12 @@ import android.view.LayoutInflater
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.media.databinding.WidgetMediaThumbnailBinding
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.picker.common.uimodel.MediaUiModel
 import com.tokopedia.media.picker.ui.widget.layout.SquareFrameLayout
+import com.tokopedia.picker.common.util.wrapper.PickerFile
 import com.tokopedia.media.R as mediaResources
 import com.tokopedia.unifyprinciples.Typography.Companion.BODY_3
 import com.tokopedia.unifyprinciples.Typography.Companion.SMALL
@@ -42,19 +44,19 @@ class MediaThumbnailWidget @JvmOverloads constructor(
         val file = element.file?: return
 
         binding.container.show()
+        onVideoShow(file)
 
         binding.imgPreview.loadImage(file.path) {
             isAnimate(true)
             setPlaceHolder(-1)
             centerCrop()
         }
+    }
 
-        if (file.isVideo()) {
-            binding.bgVideoShadow.show()
-
-            binding.txtDuration.show()
-            binding.txtDuration.text = file.readableVideoDuration(context)
-        }
+    private fun onVideoShow(file: PickerFile) {
+        binding.bgVideoShadow.showWithCondition(file.isVideo())
+        binding.txtDuration.showWithCondition(file.isVideo())
+        binding.txtDuration.text = file.readableVideoDuration(context)
     }
 
     fun removeWidget() {
