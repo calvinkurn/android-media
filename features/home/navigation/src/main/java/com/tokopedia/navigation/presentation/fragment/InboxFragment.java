@@ -460,6 +460,9 @@ public class InboxFragment extends BaseTestableParentFragment<GlobalNavComponent
         productCardOptionsModel.setProductId(String.valueOf(recommendationItem.getProductId()));
         productCardOptionsModel.setTopAds(recommendationItem.isTopAds());
         productCardOptionsModel.setTopAdsWishlistUrl(recommendationItem.getWishlistUrl());
+        productCardOptionsModel.setTopAdsClickUrl(recommendationItem.getClickUrl());
+        productCardOptionsModel.setProductName(recommendationItem.getName());
+        productCardOptionsModel.setProductImageUrl(recommendationItem.getImageUrl());
         productCardOptionsModel.setProductPosition(productPosition);
 
         return productCardOptionsModel;

@@ -413,6 +413,9 @@ open class HomeRecommendationFragment : Fragment(), HomeRecommendationListener {
         productCardOptionsModel.productId = homeRecommendationItemDataModel.product.id
         productCardOptionsModel.isTopAds = homeRecommendationItemDataModel.product.isTopads
         productCardOptionsModel.topAdsWishlistUrl = homeRecommendationItemDataModel.product.wishlistUrl
+        productCardOptionsModel.topAdsClickUrl = homeRecommendationItemDataModel.product.clickUrl
+        productCardOptionsModel.productName = homeRecommendationItemDataModel.product.name
+        productCardOptionsModel.productImageUrl = homeRecommendationItemDataModel.product.imageUrl
         productCardOptionsModel.productPosition = position
         return productCardOptionsModel
     }
