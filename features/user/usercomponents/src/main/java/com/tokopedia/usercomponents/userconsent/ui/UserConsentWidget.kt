@@ -5,11 +5,11 @@ import android.text.method.LinkMovementMethod
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.widget.FrameLayout
-import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
+import androidx.lifecycle.ViewModelStoreOwner
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
@@ -26,7 +26,7 @@ import com.tokopedia.usercomponents.userconsent.common.UserConsentConst.TERM_CON
 import com.tokopedia.usercomponents.userconsent.common.UserConsentPayload
 import com.tokopedia.usercomponents.userconsent.common.UserConsentPurposeUiModel
 import com.tokopedia.usercomponents.userconsent.common.UserConsentStateResult
-import com.tokopedia.usercomponents.userconsent.di.UserConsentComponentBuilder
+import com.tokopedia.usercomponents.userconsent.di.DaggerUserConsentComponent
 import com.tokopedia.usercomponents.userconsent.domain.ConsentCollectionParam
 import com.tokopedia.usercomponents.userconsent.ui.adapter.UserConsentPurposeAdapter
 import com.tokopedia.usercomponents.userconsent.ui.adapter.UserConsentPurposeViewHolder
@@ -130,14 +130,10 @@ class UserConsentWidget : FrameLayout {
 
     private fun initInjector() {
         context?.let {
-            UserConsentComponentBuilder
-                .getComponent(it)
+            DaggerUserConsentComponent.builder()
+                .baseAppComponent((it.applicationContext as BaseMainApplication).baseAppComponent)
+                .build()
                 .inject(this)
-
-            if (it is AppCompatActivity) {
-                val viewModelProvider = ViewModelProviders.of(it, viewModelFactory)
-                viewModel = viewModelProvider[UserConsentViewModel::class.java]
-            }
         }
     }
 
@@ -145,14 +141,19 @@ class UserConsentWidget : FrameLayout {
         val typedArray = context.theme.obtainStyledAttributes(
             attributeSet,
             R.styleable.UserConsentWidget,
-            0,
-            0
+            NUMBER_ZERO,
+            NUMBER_ZERO
         )
 
         actionText = typedArray.getString(R.styleable.UserConsentWidget_actionText)
             ?: context.getString(R.string.user_consent_default_action_text)
 
         typedArray.recycle()
+    }
+
+    private fun initViewModel(viewModelStoreOwner: ViewModelStoreOwner) {
+        val viewModelProvider = ViewModelProvider(viewModelStoreOwner, viewModelFactory)
+        viewModel = viewModelProvider.get(UserConsentViewModel::class.java)
     }
 
     private fun initObserver() {
@@ -169,7 +170,7 @@ class UserConsentWidget : FrameLayout {
                     is UserConsentStateResult.Success -> {
                         setLoader(false)
                         result.data?.let { data ->
-                            collection = data.collectionPoints[0]
+                            collection = data.collectionPoints[NUMBER_ZERO]
                             onSuccessGetConsentCollection()
                         }
                     }
@@ -202,80 +203,88 @@ class UserConsentWidget : FrameLayout {
     private fun renderView() {
         when {
             collection?.attributes?.collectionPointPurposeRequirement == MANDATORY -> {
-                var purposeText = ""
-                if (collection?.purposes?.size.orZero() == 1) {
-                    purposeText = collection?.purposes?.get(0)?.description.orEmpty()
-                } else {
-                    collection?.purposes?.forEachIndexed { index, purposeDataModel ->
-                        purposeText += when(index) {
-                            (collection?.purposes?.size.orZero() - 1) -> {
-                                " & ${purposeDataModel.description}"
-                            }
-
-                            (collection?.purposes?.size.orZero() - 2) -> {
-                                purposeDataModel.description
-                            }
-                            else -> {
-                                "${purposeDataModel.description}, "
-                            }
-                        }
-                    }
-                }
-
-                viewBinding?.singleConsent?.apply {
-                    if (collection?.attributes?.collectionPointStatementOnlyFlag == NO_CHECKLIST) {
-                        checkboxPurposes.hide()
-                        iconMandatoryInfo.show()
-                        viewBinding.buttonAction.isEnabled = true
-                    } else if (collection?.attributes?.collectionPointStatementOnlyFlag == CHECKLIST) {
-                        checkboxPurposes.show()
-                        iconMandatoryInfo.hide()
-                        viewBinding.buttonAction.isEnabled = false
-                    }
-
-                    if (collection?.attributes?.policyNoticeType == TERM_CONDITION) {
-                        descriptionPurposes.text = userConsentDescription?.generateTermConditionSinglePurposeText(
-                            collection?.attributes?.collectionPointPurposeRequirement == MANDATORY,
-                            collection?.attributes?.policyNoticeTnCPageID.orEmpty(),
-                            purposeText
-                        )
-                    } else if (collection?.attributes?.policyNoticeType == TERM_CONDITION_POLICY) {
-                        descriptionPurposes.text = userConsentDescription?.generateTermConditionPolicySinglePurposeText(
-                            collection?.attributes?.collectionPointPurposeRequirement == MANDATORY,
-                            collection?.attributes?.policyNoticeTnCPageID.orEmpty(),
-                            collection?.attributes?.policyNoticePolicyPageID.orEmpty(),
-                            purposeText
-                        )
-                    }
-
-                    descriptionPurposes.movementMethod = LinkMovementMethod.getInstance()
-                }?.root?.show()
+                renderSinglePurpose()
             }
 
             collection?.attributes?.collectionPointPurposeRequirement == OPTIONAL &&
             collection?.attributes?.collectionPointStatementOnlyFlag == CHECKLIST -> {
-                if (collection?.purposes?.size.orZero() > 1) {
-                    viewBinding?.multipleConsent?.apply {
-                        if (collection?.attributes?.policyNoticeType == TERM_CONDITION) {
-                            textMainDescription.text = userConsentDescription?.generateTermConditionMultipleOptionalPurposeText(
-                                collection?.attributes?.policyNoticeTnCPageID.orEmpty()
-                            )
-                        } else if (collection?.attributes?.policyNoticeType == TERM_CONDITION_POLICY) {
-                            textMainDescription.text = userConsentDescription?.generateTermConditionPolicyMultipleOptionalPurposeText(
-                                collection?.attributes?.policyNoticeTnCPageID.orEmpty(),
-                                collection?.attributes?.policyNoticePolicyPageID.orEmpty()
-                            )
-                        }
+                renderMultiplePurpose()
+            }
+        }
+    }
 
-                        textMainDescription.movementMethod = LinkMovementMethod.getInstance()
-                        recyclerPurposes.adapter = userConsentPurposeAdapter
-                        userConsentPurposeAdapter?.clearAllItems()
-                        collection?.purposes?.forEach {
-                            userConsentPurposeAdapter?.addItem(UserConsentPurposeUiModel(it))
-                        }
-                    }?.root?.show()
+    private fun renderSinglePurpose() {
+        var purposeText = ""
+        if (collection?.purposes?.size.orZero() == NUMBER_ONE) {
+            purposeText = collection?.purposes?.get(NUMBER_ZERO)?.description.orEmpty()
+        } else {
+            collection?.purposes?.forEachIndexed { index, purposeDataModel ->
+                purposeText += when(index) {
+                    (collection?.purposes?.size.orZero() - NUMBER_ONE) -> {
+                        " & ${purposeDataModel.description}"
+                    }
+
+                    (collection?.purposes?.size.orZero() - NUMBER_TWO) -> {
+                        purposeDataModel.description
+                    }
+                    else -> {
+                        "${purposeDataModel.description}, "
+                    }
                 }
             }
+        }
+
+        viewBinding?.singleConsent?.apply {
+            if (collection?.attributes?.collectionPointStatementOnlyFlag == NO_CHECKLIST) {
+                checkboxPurposes.hide()
+                iconMandatoryInfo.show()
+                viewBinding.buttonAction.isEnabled = true
+            } else if (collection?.attributes?.collectionPointStatementOnlyFlag == CHECKLIST) {
+                checkboxPurposes.show()
+                iconMandatoryInfo.hide()
+                viewBinding.buttonAction.isEnabled = false
+            }
+
+            if (collection?.attributes?.policyNoticeType == TERM_CONDITION) {
+                descriptionPurposes.text = userConsentDescription?.generateTermConditionSinglePurposeText(
+                    collection?.attributes?.collectionPointPurposeRequirement == MANDATORY,
+                    collection?.attributes?.policyNoticeTnCPageID.orEmpty(),
+                    purposeText
+                )
+            } else if (collection?.attributes?.policyNoticeType == TERM_CONDITION_POLICY) {
+                descriptionPurposes.text = userConsentDescription?.generateTermConditionPolicySinglePurposeText(
+                    collection?.attributes?.collectionPointPurposeRequirement == MANDATORY,
+                    collection?.attributes?.policyNoticeTnCPageID.orEmpty(),
+                    collection?.attributes?.policyNoticePolicyPageID.orEmpty(),
+                    purposeText
+                )
+            }
+
+            descriptionPurposes.movementMethod = LinkMovementMethod.getInstance()
+        }?.root?.show()
+    }
+
+    private fun renderMultiplePurpose() {
+        if (collection?.purposes?.size.orZero() > NUMBER_ONE) {
+            viewBinding?.multipleConsent?.apply {
+                if (collection?.attributes?.policyNoticeType == TERM_CONDITION) {
+                    textMainDescription.text = userConsentDescription?.generateTermConditionMultipleOptionalPurposeText(
+                        collection?.attributes?.policyNoticeTnCPageID.orEmpty()
+                    )
+                } else if (collection?.attributes?.policyNoticeType == TERM_CONDITION_POLICY) {
+                    textMainDescription.text = userConsentDescription?.generateTermConditionPolicyMultipleOptionalPurposeText(
+                        collection?.attributes?.policyNoticeTnCPageID.orEmpty(),
+                        collection?.attributes?.policyNoticePolicyPageID.orEmpty()
+                    )
+                }
+
+                textMainDescription.movementMethod = LinkMovementMethod.getInstance()
+                recyclerPurposes.adapter = userConsentPurposeAdapter
+                userConsentPurposeAdapter?.clearAllItems()
+                collection?.purposes?.forEach {
+                    userConsentPurposeAdapter?.addItem(UserConsentPurposeUiModel(it))
+                }
+            }?.root?.show()
         }
     }
 
@@ -325,6 +334,7 @@ class UserConsentWidget : FrameLayout {
 
     fun load(
         lifecycleOwner: LifecycleOwner,
+        viewModelStoreOwner: ViewModelStoreOwner,
         consentCollectionParam: ConsentCollectionParam,
         userConsentActionClickListener: UserConsentActionClickListener
     ) {
@@ -333,6 +343,7 @@ class UserConsentWidget : FrameLayout {
         this.userConsentActionClickListener = userConsentActionClickListener
 
         invalidate()
+        initViewModel(viewModelStoreOwner)
         initObserver()
         viewModel?.getConsentCollection(consentCollectionParam)
     }
@@ -343,5 +354,11 @@ class UserConsentWidget : FrameLayout {
         }
 
         lifecycleOwner = null
+    }
+
+    companion object {
+        private const val NUMBER_ZERO = 0
+        private const val NUMBER_ONE = 1
+        private const val NUMBER_TWO = 2
     }
 }
