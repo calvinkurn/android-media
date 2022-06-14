@@ -101,7 +101,7 @@ class TopAdsHeadlineKeyFragment : BaseDaggerFragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?,
     ): View? {
-        val view = inflater.inflate(resources.getLayout(R.layout.topads_dash_fragment_keyword_list),
+        val view = inflater.inflate(context?.resources?.getLayout(R.layout.topads_dash_fragment_keyword_list),
             container, false)
         adapter = KeywordAdapter(KeywordAdapterTypeFactoryImpl(::onCheckedChange,
             ::setSelectMode, ::startEditActivity, true))
@@ -139,6 +139,7 @@ class TopAdsHeadlineKeyFragment : BaseDaggerFragment() {
             TopAdsDashboardConstant.ACTION_ACTIVATE
         else
             TopAdsDashboardConstant.ACTION_DEACTIVATE
+        val resources = context?.resources ?: return
         viewModel.setKeywordAction(actionActivate,
             listOf((adapter.items[pos] as KeywordItemModel).result.keywordId.toString()),
             resources, ::onSuccessAction)
@@ -236,6 +237,7 @@ class TopAdsHeadlineKeyFragment : BaseDaggerFragment() {
 
     private fun performAction(actionActivate: String) {
         activity?.setResult(Activity.RESULT_OK)
+        val resources = context?.resources ?: return
         if (actionActivate == TopAdsDashboardConstant.ACTION_DELETE) {
             view?.let {
                 Toaster.build(it,
@@ -281,12 +283,17 @@ class TopAdsHeadlineKeyFragment : BaseDaggerFragment() {
     }
 
     private fun fetchData() {
-        viewModel.getCountProductKeyword(resources,
-            listOf(arguments?.getInt(TopAdsDashboardConstant.GROUP_ID).toString()), ::successCount)
+        val resources = context?.resources
+        if (resources != null)
+            viewModel.getCountProductKeyword(resources,
+                listOf(arguments?.getInt(TopAdsDashboardConstant.GROUP_ID).toString()),
+                ::successCount)
         currentPageNum = 1
         loader?.visibility = View.VISIBLE
         adapter.items.clear()
         adapter.notifyDataSetChanged()
+
+        if(resources == null) return
         viewModel.getGroupKeywordData(resources,
             1, arguments?.getInt(TopAdsDashboardConstant.GROUP_ID) ?: 0,
             searchBar?.searchBarTextField?.text.toString(), groupFilterSheet.getSelectedSortId(),
@@ -351,6 +358,7 @@ class TopAdsHeadlineKeyFragment : BaseDaggerFragment() {
     }
 
     private fun fetchNextPage(currentPage: Int) {
+        val resources = context?.resources ?: return
         viewModel.getGroupKeywordData(resources,
             1, arguments?.getInt(TopAdsDashboardConstant.GROUP_ID) ?: 0,
             searchBar?.searchBarTextField?.text.toString(), groupFilterSheet.getSelectedSortId(),

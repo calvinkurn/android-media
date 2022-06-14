@@ -5,7 +5,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
-import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.topads.common.data.util.Utils.addBidValidationListener
 import com.tokopedia.topads.common.data.util.Utils.removeCommaRawString
 import com.tokopedia.topads.common.view.sheet.InfoBottomSheet
@@ -82,7 +81,9 @@ class BidSwitchManualBudgetBottomSheet(
         btnSave = view.findViewById(R.id.btn_save_bid_switch_bs)
         txtRecommendasiTitle = view.findViewById(R.id.txtRecommendasiTitle)
 
-        setTitle(resources.getString(com.tokopedia.topads.common.R.string.topads_common_manual_dialog_title))
+        context?.resources?.apply {
+            setTitle(getString(com.tokopedia.topads.common.R.string.topads_common_manual_dialog_title))
+        }
 
         val drawableRight = context?.let {
             ContextCompat.getDrawable(

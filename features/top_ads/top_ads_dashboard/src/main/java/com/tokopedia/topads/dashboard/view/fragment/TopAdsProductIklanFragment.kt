@@ -519,7 +519,8 @@ class TopAdsProductIklanFragment : TopAdsBaseTabFragment(), TopAdsDashboardView 
             adIds.add(it.adId)
             autoAdsAdapter.items.add(AutoAdsItemsItemModel(it))
         }
-        if (adIds.isNotEmpty()) {
+        val resources = context?.resources
+        if (adIds.isNotEmpty() && resources != null) {
             topAdsDashboardPresenter.getProductStats(resources,
                 format.format(startDate),
                 format.format(endDate),
@@ -552,7 +553,7 @@ class TopAdsProductIklanFragment : TopAdsBaseTabFragment(), TopAdsDashboardView 
 
     private fun loadData() {
         try {
-            topAdsDashboardPresenter.getAutoAdsStatus(resources, ::onSuccessAdsInfo)
+            topAdsDashboardPresenter.getAutoAdsStatus(requireContext().resources, ::onSuccessAdsInfo)
         } catch (e: IllegalStateException) {
             e.printStackTrace()
         }
@@ -589,7 +590,8 @@ class TopAdsProductIklanFragment : TopAdsBaseTabFragment(), TopAdsDashboardView 
             swipeRefreshLayout?.isRefreshing = false
             snackbarRetry?.hideRetrySnackbar()
             this.dataStatistic = dataStatistic
-            if (this.dataStatistic != null && dataStatistic.cells.isNotEmpty()) {
+            val resources = context?.resources
+            if (this.dataStatistic != null && dataStatistic.cells.isNotEmpty() && resources != null) {
                 topAdsTabAdapter?.setSummary(dataStatistic.summary,
                     resources.getStringArray(R.array.top_ads_tab_statistics_labels))
             }
@@ -603,6 +605,7 @@ class TopAdsProductIklanFragment : TopAdsBaseTabFragment(), TopAdsDashboardView 
 
     private fun onSuccessAdsInfo(data: AutoAdsResponse.TopAdsGetAutoAds.Data) {
         adCurrentState = data.status
+        val resources = context?.resources ?: return
         topAdsDashboardPresenter.getAdsStatus(resources)
     }
 

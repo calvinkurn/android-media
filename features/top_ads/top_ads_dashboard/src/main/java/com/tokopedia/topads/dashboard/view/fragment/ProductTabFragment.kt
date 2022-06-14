@@ -140,7 +140,7 @@ class ProductTabFragment : BaseDaggerFragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?,
     ): View? {
-        val view = inflater.inflate(resources.getLayout(R.layout.topads_dash_fragment_product_list),
+        val view = inflater.inflate(context?.resources?.getLayout(R.layout.topads_dash_fragment_product_list),
             container, false)
         recyclerView = view.findViewById(R.id.product_list)
         loader = view.findViewById(R.id.loader)
@@ -309,8 +309,11 @@ class ProductTabFragment : BaseDaggerFragment() {
         if (list.isEmpty()) {
             movetoGroupSheet.setButtonDisable()
             groupList.add(MovetoGroupEmptyModel())
-        } else
-            viewModel.getCountProductKeyword(resources, groupIds, ::onSuccessCount)
+        } else {
+            val resources = context?.resources
+            if (resources != null)
+                viewModel.getCountProductKeyword(resources, groupIds, ::onSuccessCount)
+        }
         movetoGroupSheet.updateData(groupList)
     }
 
@@ -417,10 +420,13 @@ class ProductTabFragment : BaseDaggerFragment() {
         if (adIds.isNotEmpty()) {
             val startDate = getDateCallBack?.getStartDate() ?: ""
             val endDate = getDateCallBack?.getEndDate() ?: ""
-            viewModel.getProductStats(resources,
-                startDate, endDate, adIds, ::onSuccessStats,
-                groupFilterSheet.getSelectedSortId(), groupFilterSheet.getSelectedStatusId(),
-                groupFilterSheet.getSelectedAdPlacementType())
+            val resources = context?.resources
+            if (resources != null)
+                viewModel.getProductStats(
+                    resources,
+                    startDate, endDate, adIds, ::onSuccessStats,
+                    groupFilterSheet.getSelectedSortId(), groupFilterSheet.getSelectedStatusId(),
+                    groupFilterSheet.getSelectedAdPlacementType())
         }
         setFilterCount()
         (activity as TopAdsGroupDetailViewActivity).getBidForKeywords(itemList)
