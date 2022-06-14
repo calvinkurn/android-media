@@ -31,7 +31,7 @@
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_address_desc"
-            app:typographyType="body_2"
+            app:typographyType="body_3"
             android:padding="@dimen/spacing_lvl2"
             android:textColor="@color/Unify_Static_White"
             android:layout_width="wrap_content"
