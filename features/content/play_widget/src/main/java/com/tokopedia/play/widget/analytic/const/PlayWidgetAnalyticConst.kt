@@ -1,4 +1,4 @@
-package com.tokopedia.play.widget.sample.analytic.const
+package com.tokopedia.play.widget.analytic.const
 
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.play.widget.ui.type.PlayWidgetChannelType

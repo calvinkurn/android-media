@@ -1,15 +1,11 @@
-package com.tokopedia.play.widget.sample.analytic
+package com.tokopedia.play.widget.analytic.global
 
 import com.tokopedia.play.widget.analytic.list.PlayWidgetInListAnalyticListener
 import com.tokopedia.play.widget.analytic.list.jumbo.PlayWidgetInListJumboAnalyticListener
 import com.tokopedia.play.widget.analytic.list.large.PlayWidgetInListLargeAnalyticListener
 import com.tokopedia.play.widget.analytic.list.medium.PlayWidgetInListMediumAnalyticListener
 import com.tokopedia.play.widget.analytic.list.small.PlayWidgetInListSmallAnalyticListener
-import com.tokopedia.play.widget.sample.analytic.global.PlayWidgetJumboGlobalAnalytic
-import com.tokopedia.play.widget.sample.analytic.global.PlayWidgetLargeGlobalAnalytic
-import com.tokopedia.play.widget.sample.analytic.global.model.PlayWidgetAnalyticModel
-import com.tokopedia.play.widget.sample.analytic.global.PlayWidgetMediumGlobalAnalytic
-import com.tokopedia.play.widget.sample.analytic.global.PlayWidgetSmallGlobalAnalytic
+import com.tokopedia.play.widget.analytic.global.model.PlayWidgetAnalyticModel
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory

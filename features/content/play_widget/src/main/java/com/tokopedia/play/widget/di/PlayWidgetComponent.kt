@@ -1,7 +1,7 @@
 package com.tokopedia.play.widget.di
 
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
-import com.tokopedia.play.widget.sample.analytic.PlayWidgetGlobalAnalytic
+import com.tokopedia.play.widget.analytic.global.PlayWidgetGlobalAnalytic
 import dagger.Component
 
 /**
@@ -12,7 +12,7 @@ import dagger.Component
     dependencies = [BaseAppComponent::class],
     modules = [PlayWidgetInternalModule::class],
 )
-interface PlayWidgetComponent {
+internal interface PlayWidgetComponent {
 
     fun getGlobalAnalyticFactory(): PlayWidgetGlobalAnalytic.Factory
 }
