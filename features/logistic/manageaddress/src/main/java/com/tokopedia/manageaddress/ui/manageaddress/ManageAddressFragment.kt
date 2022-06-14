@@ -7,7 +7,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
-import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
@@ -17,27 +16,18 @@ import com.tokopedia.design.text.SearchInputView
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.localizationchooseaddress.analytics.ChooseAddressTracking
-import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
-import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.logisticCommon.data.constant.AddressConstant.ANA_REVAMP_FEATURE_ID
-import com.tokopedia.logisticCommon.data.constant.AddressConstant.EDIT_ADDRESS_REVAMP_FEATURE_ID
-import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
 import com.tokopedia.logisticCommon.data.entity.address.SaveAddressDataModel
 import com.tokopedia.manageaddress.R
-import com.tokopedia.manageaddress.data.analytics.ManageAddressAnalytics
 import com.tokopedia.manageaddress.databinding.FragmentManageAddressBinding
 import com.tokopedia.manageaddress.di.ManageAddressComponent
-import com.tokopedia.manageaddress.domain.mapper.AddressModelMapper
-import com.tokopedia.manageaddress.domain.model.ManageAddressState
 import com.tokopedia.manageaddress.ui.manageaddress.fromfriend.FromFriendFragment
 import com.tokopedia.manageaddress.ui.manageaddress.mainaddress.MainAddressFragment
 import com.tokopedia.manageaddress.util.ManageAddressConstant
 import com.tokopedia.manageaddress.util.ManageAddressConstant.DEFAULT_ERROR_MESSAGE
-import com.tokopedia.manageaddress.util.ManageAddressConstant.EDIT_PARAM
 import com.tokopedia.manageaddress.util.ManageAddressConstant.EXTRA_REF
 import com.tokopedia.manageaddress.util.ManageAddressConstant.KERO_TOKEN
 import com.tokopedia.manageaddress.util.ManageAddressConstant.REQUEST_CODE_PARAM_CREATE
-import com.tokopedia.manageaddress.util.ManageAddressConstant.REQUEST_CODE_PARAM_EDIT
 import com.tokopedia.manageaddress.util.ManageAddressConstant.SCREEN_NAME_CART_EXISTING_USER
 import com.tokopedia.manageaddress.util.ManageAddressConstant.SCREEN_NAME_CHOOSE_ADDRESS_EXISTING_USER
 import com.tokopedia.manageaddress.util.ManageAddressConstant.SCREEN_NAME_USER_NEW
@@ -50,7 +40,6 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
-import timber.log.Timber
 import javax.inject.Inject
 
 /**
@@ -163,7 +152,7 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener {
     private fun initHeader() {
         manageAddressListener?.setAddButtonOnClickListener {
             if (isLocalization == true) ChooseAddressTracking.onClickButtonTambahAlamat(userSession.userId)
-            openFormAddressView(null)
+            openFormAddAddressView()
         }
     }
 
@@ -238,13 +227,8 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener {
         }
     }
 
-    private fun openFormAddressView(data: RecipientAddressModel?) {
-        if (data == null) {
-            viewModel.checkUserEligibilityForAnaRevamp()
-        } else {
-            ManageAddressAnalytics.sendClickButtonUbahAlamatEvent()
-            viewModel.checkUserEligibilityForEditAddressRevamp(data)
-        }
+    private fun openFormAddAddressView() {
+        viewModel.checkUserEligibilityForAnaRevamp()
     }
 
     fun setListener(listener: ManageAddressListener) {

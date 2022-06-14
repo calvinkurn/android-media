@@ -11,7 +11,6 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalLogistic
 import com.tokopedia.globalerror.GlobalError
@@ -57,7 +56,6 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
-import timber.log.Timber
 import java.net.ConnectException
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
@@ -496,7 +494,6 @@ class MainAddressFragment : BaseDaggerFragment(), ManageAddressItemAdapter.Manag
     private fun setEmptyState() {
         binding?.run {
 
-            Timber.d("setEmptyState ${adapter.addressList.size}")
             if (adapter.addressList.isNotEmpty()) {
                 emptyStateManageAddress.root.gone()
                 mainAddressListener?.visibilitySearchInput(true)
