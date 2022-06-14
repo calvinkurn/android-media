@@ -629,11 +629,11 @@ class MiniCartAnalytics @Inject constructor(val userSession: UserSessionInterfac
     }
 
     // 32052 -- Adjusted tracker from eventClickCheckCart() (6), used for Shop Direct Purchase
-    fun eventClickCheckCartSdp(basketSize: String, shopId: String, businessUnit: String, currentSite: String) {
+    fun eventClickCheckCartSdp(basketSize: String, shopId: String) {
         val trackingData = TrackAppUtils.gtmData(EVENT_NAME_CLICK_PG, EVENT_CATEGORY_SHOP_PAGE_BUYER,
             EVENT_ACTION_CLICK_CHECK_CART, basketSize)
-        trackingData[KEY_BUSINESS_UNIT] = businessUnit
-        trackingData[KEY_CURRENT_SITE] = currentSite
+        trackingData[KEY_BUSINESS_UNIT] = VALUE_BUSINESS_UNIT_PURCHASE_PLATFORM
+        trackingData[KEY_CURRENT_SITE] = VALUE_CURRENT_SITE_TOKOPEDIA_MARKETPLACE
         trackingData[KEY_PAGE_SOURCE] = VALUE_PAGE_SOURCE_SHOP_PAGE
         trackingData[KEY_PROMO_CODE] = ""
         trackingData[KEY_SHOP_ID] = shopId

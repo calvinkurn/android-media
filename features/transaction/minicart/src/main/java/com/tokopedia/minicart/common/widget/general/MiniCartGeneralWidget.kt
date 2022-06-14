@@ -302,9 +302,7 @@ class MiniCartGeneralWidget @JvmOverloads constructor(
         val miniCartSimplifiedData = viewModel?.miniCartSimplifiedData?.value ?: return
         analytics.eventClickCheckCartSdp(
             basketSize = miniCartSimplifiedData.miniCartWidgetData.totalProductPrice.toString(),
-            shopId = viewModel?.currentShopIds?.value?.joinToString() ?: "",
-            businessUnit = MiniCartAnalytics.VALUE_BUSINESS_UNIT_PURCHASE_PLATFORM,
-            currentSite = MiniCartAnalytics.VALUE_CURRENT_SITE_TOKOPEDIA_MARKETPLACE
+            shopId = viewModel?.currentShopIds?.value?.joinToString() ?: ""
         )
     }
 
