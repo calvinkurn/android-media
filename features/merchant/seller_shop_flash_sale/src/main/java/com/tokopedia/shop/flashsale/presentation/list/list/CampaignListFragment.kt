@@ -146,6 +146,10 @@ class CampaignListFragment : BaseSimpleListFragment<CampaignAdapter, CampaignUiM
         observeCampaignPrerequisiteData()
         observeShareComponentMetadata()
         observeSellerEligibility()
+    }
+
+    override fun onResume() {
+        super.onResume()
         viewModel.getCampaignPrerequisiteData()
     }
 
@@ -431,7 +435,7 @@ class CampaignListFragment : BaseSimpleListFragment<CampaignAdapter, CampaignUiM
         }
 
         val buttonOnClickAction =  if (tabPosition == TAB_POSITION_FIRST) {
-            {  }
+            { handleCreateCampaign() }
         } else {
             { onNavigateToActiveCampaignTab() }
         }

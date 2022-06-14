@@ -98,22 +98,16 @@ class CampaignInformationFragment : BaseDaggerFragment() {
         super.onViewCreated(view, savedInstanceState)
         setupView()
         observeValidationResult()
-        observeCampaignName()
         observeCampaignCreation()
         observeCampaignUpdate()
         observeCampaignDetail()
+        observeSaveDraft()
         handlePageMode()
     }
 
     private fun observeValidationResult() {
         viewModel.areInputValid.observe(viewLifecycleOwner) { validationResult ->
             handleValidationResult(validationResult)
-        }
-    }
-
-    private fun observeCampaignName() {
-        viewModel.campaignName.observe(viewLifecycleOwner) { validationResult ->
-            handleCampaignNameValidationResult(validationResult)
         }
     }
 
@@ -156,6 +150,27 @@ class CampaignInformationFragment : BaseDaggerFragment() {
             }
         }
     }
+
+    private fun observeSaveDraft() {
+        viewModel.saveDraft.observe(viewLifecycleOwner) { result ->
+            when(result) {
+                is Success -> {
+                    binding?.btnDraft?.stopLoading()
+                    if (result.data.isSuccess) {
+                        binding?.root showToaster "Draft berhasil dibuat"
+                        requireActivity().finish()
+                    } else {
+                        showErrorTicker(result.data.errorTitle, result.data.errorDescription)
+                    }
+                }
+                is Fail -> {
+                    binding?.btnDraft?.stopLoading()
+                    binding?.cardView showError result.throwable
+                }
+            }
+        }
+    }
+
 
     private fun observeCampaignDetail() {
         viewModel.campaignDetail.observe(viewLifecycleOwner) { result ->
@@ -201,7 +216,8 @@ class CampaignInformationFragment : BaseDaggerFragment() {
     private fun setupTextFields() {
         binding?.run {
             tauCampaignName.textInputLayout.editText?.doOnTextChanged { text ->
-                viewModel.onCampaignNameChange(text)
+                val validationResult = viewModel.validateCampaignName(text)
+                handleCampaignNameValidationResult(validationResult)
             }
 
             tauHexColor.setMaxLength(HEX_COLOR_TEXT_FIELD_MAX_LENGTH)
@@ -219,8 +235,10 @@ class CampaignInformationFragment : BaseDaggerFragment() {
 
     private fun setupClickListeners() {
         binding?.run {
-            btnDraft.setOnClickListener { validateInput() }
-            btnCreateCampaign.setOnClickListener { validateInput() }
+            btnDraft.setOnClickListener { validateDraft() }
+            btnCreateCampaign.setOnClickListener {
+                viewModel.onNextButtonPressed(getCurrentSelection(), Date())
+            }
             btnApply.setOnClickListener { handleApplyButtonClick() }
 
             quantityEditor.editText.inputType = InputType.TYPE_NULL
@@ -309,7 +327,7 @@ class CampaignInformationFragment : BaseDaggerFragment() {
 
                 binding?.btnCreateCampaign?.enable()
                 binding?.btnCreateCampaign.showLoading()
-                val selection = viewModel.getSelection() ?: return
+                val selection = getCurrentSelection()
 
                 if (pageMode == PageMode.CREATE) {
                     viewModel.createCampaign(selection)
@@ -409,7 +427,7 @@ class CampaignInformationFragment : BaseDaggerFragment() {
         binding?.quantityEditor?.subtractButton?.isEnabled = currentValue > QuantityPickerConstant.CAMPAIGN_TEASER_MINIMUM_UPCOMING_HOUR
     }
 
-    private fun validateInput() {
+    private fun getCurrentSelection(): CampaignInformationViewModel.Selection {
         val startDate = viewModel.getSelectedStartDate()
         val endDate = viewModel.getSelectedEndDate()
         val showTeaser = binding?.switchTeaser?.isChecked.orFalse()
@@ -422,7 +440,7 @@ class CampaignInformationFragment : BaseDaggerFragment() {
         val firstColor = viewModel.getColor().first
         val secondColor = viewModel.getColor().second
 
-        val selection = CampaignInformationViewModel.Selection(
+        return CampaignInformationViewModel.Selection(
             binding?.tauCampaignName?.editText?.text.toString().trim(),
             startDate,
             endDate,
@@ -431,10 +449,20 @@ class CampaignInformationFragment : BaseDaggerFragment() {
             firstColor,
             secondColor
         )
-
-        viewModel.onNextButtonPressed(selection, Date())
     }
 
+    private fun validateDraft() {
+        val campaignName = binding?.tauCampaignName?.editText?.text.toString().trim()
+        val validationResult = viewModel.validateCampaignName(campaignName)
+
+        if (validationResult !is CampaignInformationViewModel.CampaignNameValidationResult.Valid) {
+            handleCampaignNameValidationResult(validationResult)
+            return
+        }
+
+        binding?.btnDraft.showLoading()
+        viewModel.saveDraft(pageMode, campaignId, getCurrentSelection())
+    }
 
     private fun showError(errorMessage : String) {
         binding?.tauCampaignName?.isInputError = true
