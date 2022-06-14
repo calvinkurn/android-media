@@ -186,57 +186,6 @@ class MerchantPageAnalytics @Inject constructor(private val userSession: UserSes
         tracker.sendEnhanceEcommerceEvent(TokoFoodAnalyticsConstants.ADD_TO_CART, eventDataLayer)
     }
 
-    fun clickOnOrderProductCard(
-        productListItem: ProductListItem,
-        merchantId: String,
-        merchantName: String,
-        position: Int
-    ) {
-        val foodItem = productListItem.productUiModel
-
-        val itemBundle = getCartItemsBundle(
-            productListItem,
-            merchantId,
-            merchantName,
-            foodItem.orderQty.toString()
-        )
-
-        val eventDataLayer = Bundle().apply {
-            putString(TrackAppUtils.EVENT, TokoFoodAnalyticsConstants.ADD_TO_CART)
-            putString(
-                TrackAppUtils.EVENT_ACTION,
-                TokoFoodAnalyticsConstants.CLICK_ON_PRODUCT_CARD
-            )
-            putString(
-                TrackAppUtils.EVENT_CATEGORY,
-                TokoFoodAnalyticsConstants.TOKOFOOD_MERCHANT_PAGE
-            )
-            putString(
-                TrackAppUtils.EVENT_LABEL,
-                "$merchantId - ${foodItem.name} - ${foodItem.price.toInt()} - $position"
-            )
-            putString(
-                TokoFoodAnalyticsConstants.BUSSINESS_UNIT,
-                TokoFoodAnalyticsConstants.PHYSICAL_GOODS
-            )
-            putString(
-                TokoFoodAnalyticsConstants.CURRENT_SITE,
-                TokoFoodAnalyticsConstants.TOKOPEDIA_MARKETPLACE
-            )
-            putParcelableArrayList(
-                TokoFoodAnalyticsConstants.ITEM_LIST, arrayListOf()
-            )
-            putParcelableArrayList(
-                AddToCartExternalAnalytics.EE_VALUE_ITEMS, arrayListOf(itemBundle)
-            )
-            putString(TokoFoodAnalyticsConstants.PRODUCT_ID, foodItem.id)
-            putString(TokoFoodAnalyticsConstants.SHOP_ID, merchantId)
-            putString(TokoFoodAnalyticsConstants.USER_ID, userSession.userId)
-        }
-
-        tracker.sendEnhanceEcommerceEvent(TokoFoodAnalyticsConstants.ADD_TO_CART, eventDataLayer)
-    }
-
     fun clickOnOrderProductBottomSheet(
         productListItem: ProductListItem,
         merchantId: String,

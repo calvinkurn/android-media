@@ -47,6 +47,7 @@ import com.tokopedia.tokofood.feature.merchant.domain.model.response.TokoFoodTic
 import com.tokopedia.tokofood.feature.merchant.presentation.adapter.MerchantPageCarouselAdapter
 import com.tokopedia.tokofood.feature.merchant.presentation.adapter.ProductListAdapter
 import com.tokopedia.tokofood.feature.merchant.presentation.bottomsheet.CategoryFilterBottomSheet
+import com.tokopedia.tokofood.feature.merchant.presentation.bottomsheet.ChangeMerchantBottomSheet
 import com.tokopedia.tokofood.feature.merchant.presentation.bottomsheet.CustomOrderDetailBottomSheet
 import com.tokopedia.tokofood.feature.merchant.presentation.bottomsheet.MerchantInfoBottomSheet
 import com.tokopedia.tokofood.feature.merchant.presentation.bottomsheet.OrderNoteBottomSheet
@@ -445,6 +446,7 @@ class MerchantPageFragment : BaseMultiFragment(),
             activityViewModel?.cartDataValidationFlow?.collect {
                 when (it.state) {
                     UiEvent.EVENT_SUCCESS_LOAD_CART -> { }
+                    UiEvent.EVENT_FAILED_ADD_TO_CART -> { }
                     UiEvent.EVENT_SUCCESS_ADD_TO_CART -> {
                         (it.data as? Pair<*, *>)?.let { pair ->
                             (pair.first as? UpdateParam)?.productList?.firstOrNull()
@@ -742,15 +744,6 @@ class MerchantPageFragment : BaseMultiFragment(),
         bottomSheet.setSelectedCardPositions(cardPositions)
         bottomSheet.setProductListItem(productListItem)
         bottomSheet.show(childFragmentManager)
-
-        viewModel.merchantData?.let {
-            merchantPageAnalytics.clickOnOrderProductCard(
-                productListItem,
-                merchantId,
-                it.name,
-                cardPositions.first
-            )
-        }
     }
 
     override fun onAtcButtonClicked(
@@ -758,23 +751,37 @@ class MerchantPageFragment : BaseMultiFragment(),
         cardPositions: Pair<Int, Int>
     ) {
         val productUiModel = productListItem.productUiModel
-        viewModel.productMap[productUiModel.id] = cardPositions
-        if (productUiModel.isCustomizable && productUiModel.isAtc) {
-            customOrderDetailBottomSheet?.setProductPosition(cardPositions.first)
-            customOrderDetailBottomSheet?.setProductUiModel(productUiModel)
-            customOrderDetailBottomSheet?.show(childFragmentManager)
-        } else if (productUiModel.isCustomizable) {
-            navigateToOrderCustomizationPage(
-                cartId = "",
-                productListItem = productListItem,
-                cardPositions.first
-            )
+        if (activityViewModel?.shopId == merchantId) {
+            viewModel.productMap[productUiModel.id] = cardPositions
+            if (productUiModel.isCustomizable && productUiModel.isAtc) {
+                customOrderDetailBottomSheet?.setProductPosition(cardPositions.first)
+                customOrderDetailBottomSheet?.setProductUiModel(productUiModel)
+                customOrderDetailBottomSheet?.show(childFragmentManager)
+            } else if (productUiModel.isCustomizable) {
+                navigateToOrderCustomizationPage(
+                    cartId = "",
+                    productListItem = productListItem,
+                    cardPositions.first
+                )
+            } else {
+                val updateParam = viewModel.mapProductUiModelToAtcRequestParam(
+                    shopId = merchantId,
+                    productUiModel = productUiModel
+                )
+                activityViewModel?.addToCart(updateParam, SOURCE)
+            }
         } else {
             val updateParam = viewModel.mapProductUiModelToAtcRequestParam(
                 shopId = merchantId,
                 productUiModel = productUiModel
             )
-            activityViewModel?.addToCart(updateParam, SOURCE)
+
+            val bottomSheet = ChangeMerchantBottomSheet.newInstance()
+
+            bottomSheet.addToCart {
+                activityViewModel?.deleteAllAtcAndAddProduct(updateParam, SOURCE)
+            }
+            bottomSheet.show(childFragmentManager)
         }
 
         viewModel.merchantData?.let {
