@@ -653,6 +653,7 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
         if (items.isNotEmpty() && userSession.isLoggedIn) {
             fabFeed.addItem(items)
             feedFloatingButton.show()
+            showCreatePostOnBoarding()
         } else {
             feedFloatingButton.hide()
         }
