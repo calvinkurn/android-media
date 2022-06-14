@@ -39,7 +39,8 @@ class SellerCampaignListMapper @Inject constructor() {
                 it.startDate.epochToDate(),
                 it.endDate.epochToDate(),
                 Gradient(it.gradientColor.firstColor, it.gradientColor.secondColor, true),
-                it.useUpcomingWidget
+                it.useUpcomingWidget,
+                it.paymentType.toPaymentType()
             )
         }
         return CampaignMeta(
@@ -70,6 +71,14 @@ class SellerCampaignListMapper @Inject constructor() {
 
             else -> CampaignStatus.CANCELLED
 
+        }
+    }
+
+    private fun Int.toPaymentType() : PaymentType {
+        return when(this) {
+            PAYMENT_TYPE_INSTANT -> PaymentType.INSTANT
+            PAYMENT_TYPE_REGULAR -> PaymentType.REGULAR
+            else ->  PaymentType.INSTANT
         }
     }
 

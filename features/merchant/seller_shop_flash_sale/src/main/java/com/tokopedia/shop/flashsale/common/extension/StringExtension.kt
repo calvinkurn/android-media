@@ -35,3 +35,7 @@ fun String.toColor(): Int {
 fun String.toHexColor() : String{
     return "#${this}"
 }
+
+fun String.removeHexColorPrefix() : String {
+    return removePrefix("#")
+}

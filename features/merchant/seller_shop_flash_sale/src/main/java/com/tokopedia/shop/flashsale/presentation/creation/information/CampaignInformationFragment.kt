@@ -32,7 +32,7 @@ import com.tokopedia.shop.flashsale.presentation.creation.information.bottomshee
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.lifecycle.autoClearedNullable
-import java.util.*
+import java.util.Date
 import javax.inject.Inject
 
 
@@ -237,7 +237,7 @@ class CampaignInformationFragment : BaseDaggerFragment() {
         binding?.run {
             btnDraft.setOnClickListener { validateDraft() }
             btnCreateCampaign.setOnClickListener {
-                viewModel.onNextButtonPressed(getCurrentSelection(), Date())
+                viewModel.validateInput(getCurrentSelection(), Date())
             }
             btnApply.setOnClickListener { handleApplyButtonClick() }
 
@@ -354,6 +354,7 @@ class CampaignInformationFragment : BaseDaggerFragment() {
     private fun handleQuantityEditor(newValue: Int, oldValue: Int) {
         val isIncreasing = newValue > oldValue
         val isDecreasing = newValue < oldValue
+
         if (isIncreasing && newValue % THRESHOLD == Constant.ZERO) {
             binding?.quantityEditor?.stepValue = CAMPAIGN_TEASER_MULTIPLIED_STEP_SIZE
         } else if (isDecreasing && oldValue == THRESHOLD) {
@@ -380,6 +381,10 @@ class CampaignInformationFragment : BaseDaggerFragment() {
         val allGradients = adapter.snapshot()
         val updatedColorSelection = viewModel.markColorAsSelected(selectedGradient, allGradients)
         adapter.submit(updatedColorSelection)
+
+        binding?.tauHexColor?.editText?.setText("")
+        binding?.btnApply?.invisible()
+        binding?.imgHexColorPreview?.setBackgroundResource(R.drawable.sfs_shape_rounded_color)
     }
 
     private fun displayStartDatePicker() {
@@ -439,6 +444,7 @@ class CampaignInformationFragment : BaseDaggerFragment() {
         val teaserDate = startDate.decreaseHourBy(decreaseByHour)
         val firstColor = viewModel.getColor().first
         val secondColor = viewModel.getColor().second
+        val paymentType = viewModel.getPaymentType()
 
         return CampaignInformationViewModel.Selection(
             binding?.tauCampaignName?.editText?.text.toString().trim(),
@@ -447,7 +453,8 @@ class CampaignInformationFragment : BaseDaggerFragment() {
             showTeaser,
             teaserDate,
             firstColor,
-            secondColor
+            secondColor,
+            paymentType
         )
     }
 
@@ -510,11 +517,36 @@ class CampaignInformationFragment : BaseDaggerFragment() {
 
             switchTeaser.isChecked = campaign.useUpcomingWidget
             handleSwitchTeaser(campaign.useUpcomingWidget)
+            renderSelectedColor(campaign)
         }
 
         viewModel.setSelectedStartDate(campaign.startDate)
         viewModel.setSelectedEndDate(campaign.endDate)
         viewModel.setShowTeaser(campaign.useUpcomingWidget)
         viewModel.setSelectedColor(campaign.gradientColor)
+        viewModel.setPaymentType(campaign.paymentType)
+    }
+
+    private fun renderSelectedColor(campaign: CampaignUiModel) {
+        val isUsingHexColor = viewModel.isUsingHexColor(
+            campaign.gradientColor.first,
+            campaign.gradientColor.second
+        )
+
+        binding?.recyclerView?.isVisible = !isUsingHexColor
+        binding?.groupHexColorPicker?.isVisible = isUsingHexColor
+        binding?.btnApply?.isVisible = isUsingHexColor
+
+        if (isUsingHexColor) {
+            binding?.contentSwitcher?.isChecked = true
+            binding?.tauHexColor?.editText?.setText(campaign.gradientColor.first.removeHexColorPrefix())
+            binding?.imgHexColorPreview?.setBackgroundFromGradient(campaign.gradientColor)
+
+            val colors = viewModel.deselectAllColor(adapter.snapshot())
+            adapter.submit(colors)
+        } else {
+            val colors = viewModel.markColorAsSelected(campaign.gradientColor, adapter.snapshot())
+            adapter.submit(colors)
+        }
     }
 }

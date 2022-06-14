@@ -59,6 +59,7 @@ class CampaignInformationViewModel @Inject constructor(
     private var selectedStartDate = Date()
     private var selectedEndDate = Date()
     private var showTeaser = true
+    private var paymentType = PaymentType.INSTANT
 
     private val forbiddenWords = listOf(
         "kejar diskon",
@@ -93,7 +94,8 @@ class CampaignInformationViewModel @Inject constructor(
         val showTeaser: Boolean,
         val teaserDate: Date,
         val firstColor: String,
-        val secondColor: String
+        val secondColor: String,
+        val paymentType: PaymentType
     )
 
     fun validateCampaignName(campaignName: String) : CampaignNameValidationResult {
@@ -114,7 +116,7 @@ class CampaignInformationViewModel @Inject constructor(
         return CampaignNameValidationResult.Valid
     }
 
-    fun onNextButtonPressed(selection: Selection, now: Date) {
+    fun validateInput(selection: Selection, now: Date) {
         if (selection.showTeaser && selection.teaserDate.before(now)) {
             _areInputValid.value = ValidationResult.LapsedTeaserStartDate
             return
@@ -142,7 +144,7 @@ class CampaignInformationViewModel @Inject constructor(
                         showTeaser = selection.showTeaser,
                         firstColor = selection.firstColor,
                         secondColor = selection.secondColor,
-                        paymentType = PaymentType.INSTANT
+                        paymentType = selection.paymentType
                     )
                 val result = doSellerCampaignCreationUseCase.execute(param)
                 _campaignCreation.postValue(Success(result))
@@ -167,7 +169,7 @@ class CampaignInformationViewModel @Inject constructor(
                         showTeaser = selection.showTeaser,
                         firstColor = selection.firstColor,
                         secondColor = selection.secondColor,
-                        paymentType = PaymentType.INSTANT
+                        paymentType = selection.paymentType
                 )
                 val result = doSellerCampaignCreationUseCase.execute(param)
                 _campaignUpdate.postValue(Success(result))
@@ -198,7 +200,7 @@ class CampaignInformationViewModel @Inject constructor(
                     showTeaser = selection.showTeaser,
                     firstColor = selection.firstColor,
                     secondColor = selection.secondColor,
-                    paymentType = PaymentType.INSTANT
+                    paymentType = selection.paymentType
                 )
                 val result = doSellerCampaignCreationUseCase.execute(param)
                 _saveDraft.postValue(Success(result))
@@ -223,6 +225,14 @@ class CampaignInformationViewModel @Inject constructor(
             }
         )
 
+    }
+
+    fun setPaymentType(paymentType : PaymentType) {
+        this.paymentType = paymentType
+    }
+
+    fun getPaymentType(): PaymentType {
+        return paymentType
     }
 
     fun setSelectedColor(gradient: Gradient) {
@@ -255,7 +265,7 @@ class CampaignInformationViewModel @Inject constructor(
 
     fun markColorAsSelected(selectedGradient: Gradient, gradients: List<Gradient>): List<Gradient> {
         return gradients.map { gradient ->
-            if (gradient == selectedGradient) {
+            if (gradient.first == selectedGradient.first && gradient.second == selectedGradient.second) {
                 gradient.copy(isSelected = true)
             } else {
                 gradient.copy(isSelected = false)
@@ -287,4 +297,20 @@ class CampaignInformationViewModel @Inject constructor(
             else -> adjustedHourDifference
         }
     }
+
+    fun isUsingHexColor(firstColor : String, secondColor : String) : Boolean {
+        return firstColor == secondColor
+    }
+
+    fun findColor(selectedGradient: Gradient, gradients: List<Gradient>): List<Gradient> {
+        return gradients.map { gradient ->
+            if (gradient == selectedGradient) {
+                gradient.copy(isSelected = true)
+            } else {
+                gradient.copy(isSelected = false)
+            }
+        }
+    }
+
+
 }

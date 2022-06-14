@@ -1,6 +1,7 @@
 package com.tokopedia.shop.flashsale.domain.entity
 
 import com.tokopedia.shop.flashsale.domain.entity.enums.CampaignStatus
+import com.tokopedia.shop.flashsale.domain.entity.enums.PaymentType
 import java.util.Date
 
 data class CampaignUiModel(
@@ -19,7 +20,8 @@ data class CampaignUiModel(
     val startDate: Date,
     val endDate: Date,
     val gradientColor: Gradient,
-    val useUpcomingWidget : Boolean
+    val useUpcomingWidget: Boolean,
+    val paymentType : PaymentType
 ) {
     data class ProductSummary(
         val totalItem: Int,
