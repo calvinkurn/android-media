@@ -1,7 +1,6 @@
 package com.tokopedia.manageaddress.ui.manageaddress
 
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
@@ -12,7 +11,6 @@ import com.tokopedia.manageaddress.databinding.ActivityManageAddressBinding
 import com.tokopedia.manageaddress.di.DaggerManageAddressComponent
 import com.tokopedia.manageaddress.di.ManageAddressComponent
 import com.tokopedia.manageaddress.ui.manageaddress.mainaddress.MainAddressFragment
-import timber.log.Timber
 
 class ManageAddressActivity : BaseActivity(), HasComponent<ManageAddressComponent>, ManageAddressFragment.ManageAddressListener,
     MainAddressFragment.MainAddressListener {
