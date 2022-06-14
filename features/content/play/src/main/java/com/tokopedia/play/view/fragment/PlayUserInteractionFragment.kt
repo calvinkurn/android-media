@@ -1453,6 +1453,7 @@ class PlayUserInteractionFragment @Inject constructor(
 
     private fun renderGiveawayView(
         state: InteractiveUiModel.Giveaway,
+        isAnyInsetsShown: Boolean,
     ) {
         when (val status = state.status) {
             is InteractiveUiModel.Giveaway.Status.Upcoming -> {
@@ -1477,7 +1478,7 @@ class PlayUserInteractionFragment @Inject constructor(
                 interactiveActiveView?.show()
                 interactiveFinishView?.hide()
 
-                playViewModel.submitAction(PlayViewerNewAction.StartPlayingInteractive)
+                if(!isAnyInsetsShown) playViewModel.submitAction(PlayViewerNewAction.StartPlayingInteractive)
             }
             InteractiveUiModel.Giveaway.Status.Finished -> {
                 interactiveActiveView?.hide()
