@@ -20,6 +20,7 @@ import com.tokopedia.home.beranda.domain.interactor.usecase.HomeBusinessUnitUseC
 import com.tokopedia.home.beranda.domain.interactor.usecase.*
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
 import com.tokopedia.home.beranda.domain.model.HomeData
+import com.tokopedia.home.beranda.domain.model.SearchPlaceholder
 import com.tokopedia.home.beranda.domain.model.SetInjectCouponTimeBased
 import com.tokopedia.home.beranda.domain.model.recharge_recommendation.DeclineRechargeRecommendation
 import com.tokopedia.home.beranda.domain.model.recharge_recommendation.RechargeRecommendation
@@ -292,6 +293,12 @@ fun HomeRechargeBuWidgetUseCase.givenOnGetRechargeBuWidgetFromHolderError() {
 
 fun HomeBalanceWidgetUseCase.givenGetHomeBalanceWidgetReturn(homeHeaderDataModel: HomeHeaderDataModel) {
     coEvery { onGetBalanceWidgetData(any()) } returns homeHeaderDataModel
+}
+
+fun HomeSearchUseCase.givenSearchPlaceHolderReturn(isFirstInstall: Boolean) {
+    val searchPlaceHolder = SearchPlaceholder()
+    searchPlaceHolder.Data().placeholders = arrayListOf<SearchPlaceholder.PlaceHolder>(SearchPlaceholder().PlaceHolder())
+    coEvery { onGetSearchHint(isFirstInstall, any(), any()) } returns searchPlaceHolder
 }
 
 fun HomeBalanceWidgetUseCase.givenGetTokopointDataReturn(homeHeaderDataModel: HomeHeaderDataModel) {
