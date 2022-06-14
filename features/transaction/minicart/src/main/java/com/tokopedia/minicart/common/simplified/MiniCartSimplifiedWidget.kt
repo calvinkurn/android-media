@@ -329,6 +329,7 @@ class MiniCartSimplifiedWidget : BaseCustomView {
                 pageSource = viewModel?.currentPageSource,
                 businessUnit = viewModel?.currentBusinessUnit ?: "",
                 currentSite = viewModel?.currentSite ?: "",
+                trackerId = ""
         )
         sendEventMvcProgressBarImpression(isClickCheckCart = true)
     }
