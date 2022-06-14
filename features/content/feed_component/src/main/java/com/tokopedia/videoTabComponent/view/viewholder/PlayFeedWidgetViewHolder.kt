@@ -7,6 +7,7 @@ import com.tokopedia.play.widget.ui.PlayWidgetJumboView
 import com.tokopedia.play.widget.ui.PlayWidgetLargeView
 import com.tokopedia.play.widget.ui.PlayWidgetMediumView
 import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
+import com.tokopedia.play.widget.ui.model.PlayWidgetConfigUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetUiModel
 import com.tokopedia.videoTabComponent.callback.PlayWidgetCardClickListener
 import com.tokopedia.videoTabComponent.view.coordinator.PlayWidgetCoordinatorVideoTab
@@ -29,10 +30,10 @@ class PlayFeedWidgetViewHolder private constructor() {
                 override fun onClickChannelCard(
                     view: PlayWidgetJumboView,
                     item: PlayWidgetChannelUiModel,
-                    channelPositionInList: Int,
-                    isAutoPlay: Boolean
+                    config: PlayWidgetConfigUiModel,
+                    channelPositionInList: Int
                 ) {
-                    super.onClickChannelCard(view, item, channelPositionInList, isAutoPlay)
+                    super.onClickChannelCard(view, item, config, channelPositionInList)
                     clickListener.invoke(item.channelId, channelPositionInList)
                 }
             })
@@ -65,10 +66,10 @@ class PlayFeedWidgetViewHolder private constructor() {
                 override fun onClickChannelCard(
                     view: PlayWidgetLargeView,
                     item: PlayWidgetChannelUiModel,
-                    channelPositionInList: Int,
-                    isAutoPlay: Boolean
+                    config: PlayWidgetConfigUiModel,
+                    channelPositionInList: Int
                 ) {
-                    super.onClickChannelCard(view, item, channelPositionInList, isAutoPlay)
+                    super.onClickChannelCard(view, item, config, channelPositionInList)
                     clickListener.invoke(item.channelId, channelPositionInList)
                 }
             })
@@ -101,10 +102,10 @@ class PlayFeedWidgetViewHolder private constructor() {
                 override fun onClickChannelCard(
                     view: PlayWidgetMediumView,
                     item: PlayWidgetChannelUiModel,
-                    channelPositionInList: Int,
-                    isAutoPlay: Boolean
+                    config: PlayWidgetConfigUiModel,
+                    channelPositionInList: Int
                 ) {
-                    super.onClickChannelCard(view, item, channelPositionInList, isAutoPlay)
+                    super.onClickChannelCard(view, item, config, channelPositionInList)
                     clickListener.invoke(item.channelId, channelPositionInList)
                 }
             })
