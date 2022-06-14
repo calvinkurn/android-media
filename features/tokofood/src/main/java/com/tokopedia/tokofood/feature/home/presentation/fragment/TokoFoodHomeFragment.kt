@@ -26,6 +26,8 @@ import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConsInternalNavigation
 import com.tokopedia.applink.internal.ApplinkConstInternalLogistic
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.kotlin.extensions.view.ONE
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.addOneTimeGlobalLayoutListener
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.observe
@@ -51,7 +53,6 @@ import com.tokopedia.searchbar.navigation_component.icons.IconList
 import com.tokopedia.searchbar.navigation_component.util.NavToolbarExt
 import com.tokopedia.tokofood.R
 import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFoodData
-import com.tokopedia.tokofood.common.constants.ShareComponentConstants
 import com.tokopedia.tokofood.common.minicartwidget.view.TokoFoodMiniCartWidget
 import com.tokopedia.tokofood.common.presentation.UiEvent
 import com.tokopedia.tokofood.common.presentation.listener.HasViewModel
@@ -60,6 +61,7 @@ import com.tokopedia.tokofood.common.presentation.viewmodel.MultipleFragmentsVie
 import com.tokopedia.tokofood.common.util.TokofoodErrorLogger
 import com.tokopedia.tokofood.databinding.FragmentTokofoodHomeBinding
 import com.tokopedia.tokofood.feature.home.analytics.TokoFoodHomeAnalytics
+import com.tokopedia.tokofood.feature.home.analytics.TokoFoodHomeCategoryCommonAnalytics
 import com.tokopedia.tokofood.feature.home.analytics.TokoFoodHomePageLoadTimeMonitoring
 import com.tokopedia.tokofood.feature.home.di.DaggerTokoFoodHomeComponent
 import com.tokopedia.tokofood.feature.home.domain.constanta.TokoFoodLayoutState
@@ -81,7 +83,6 @@ import com.tokopedia.tokofood.feature.home.presentation.bottomsheet.TokoFoodUSPB
 import com.tokopedia.tokofood.feature.home.presentation.share.TokoFoodHomeShare
 import com.tokopedia.tokofood.feature.home.presentation.share.TokoFoodUniversalShareUtil.shareOptionRequest
 import com.tokopedia.tokofood.feature.home.presentation.share.TokoFoodUniversalShareUtil.shareRequest
-import com.tokopedia.tokofood.feature.home.presentation.uimodel.TokoFoodHomeEmptyStateLocationUiModel
 import com.tokopedia.tokofood.feature.home.presentation.uimodel.TokoFoodListUiModel
 import com.tokopedia.tokofood.feature.home.presentation.view.listener.TokoFoodHomeBannerComponentCallback
 import com.tokopedia.tokofood.feature.home.presentation.view.listener.TokoFoodHomeCategoryWidgetV2ComponentCallback
@@ -89,6 +90,7 @@ import com.tokopedia.tokofood.feature.home.presentation.view.listener.TokoFoodHo
 import com.tokopedia.tokofood.feature.home.presentation.view.listener.TokoFoodView
 import com.tokopedia.tokofood.feature.home.presentation.viewmodel.TokoFoodHomeViewModel
 import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.TokoFoodPurchaseFragment
+import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.universal_sharing.view.bottomsheet.UniversalShareBottomSheet
 import com.tokopedia.universal_sharing.view.bottomsheet.listener.ShareBottomsheetListener
@@ -121,6 +123,9 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
 
     @Inject
     lateinit var analytics: TokoFoodHomeAnalytics
+
+    @Inject
+    lateinit var trackingQueue: TrackingQueue
 
     private var binding by autoClearedNullable<FragmentTokofoodHomeBinding>()
     private val viewModel by lazy {
@@ -163,8 +168,7 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
         private const val PAGE_TYPE_HOME = "home"
         private const val SHARE_URL = "https://www.tokopedia.com/gofood"
         private const val SHARE_DEEPLINK = "tokopedia://food/home"
-        //TODO Dummy OG IMAGE
-        private const val THUMBNAIL_AND_OG_IMAGE_SHARE_URL = "https://images.tokopedia.net/img/android/now/PN-RICH.jpg"
+        private const val THUMBNAIL_AND_OG_IMAGE_SHARE_URL = "https://images.tokopedia.net/img/android/now/PN-RICH.jpg" //TODO Remove Dummy OG IMAGE
         const val SOURCE = "tokofood"
 
         fun createInstance(): TokoFoodHomeFragment {
@@ -172,6 +176,7 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
         }
     }
 
+    private var jumpToTopView: View? = null
     private var navToolbar: NavToolbar? = null
     private var rvHome: RecyclerView? = null
     private var swipeLayout: SwipeRefreshLayout? = null
@@ -181,7 +186,8 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
     private var shareHomeTokoFood: TokoFoodHomeShare? = null
     private var localCacheModel: LocalCacheModel? = null
     private var pageLoadTimeMonitoring: TokoFoodHomePageLoadTimeMonitoring? = null
-    private var movingPosition = 0
+    private var dividerHeight = 4
+    private var totalScrolled = 0
     private val spaceZero: Int
         get() = resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.unify_space_0).toInt()
 
@@ -251,6 +257,11 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
         initializeMiniCartHome()
     }
 
+    override fun onPause() {
+        super.onPause()
+        trackingQueue.sendAll()
+    }
+
     override fun getFragmentPage(): Fragment = this
 
     override fun getFragmentManagerPage(): FragmentManager = childFragmentManager
@@ -314,7 +325,8 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
     }
 
     override fun onImpressMerchant(merchant: Merchant, horizontalPosition: Int) {
-        analytics.impressMerchant(userSession.userId, localCacheModel?.district_id, merchant, horizontalPosition)
+        trackingQueue.putEETracking(TokoFoodHomeCategoryCommonAnalytics.impressMerchant(userSession.userId,
+            localCacheModel?.district_id, merchant, horizontalPosition, isHome = true) as HashMap<String, Any>)
     }
 
     override fun onTickerDismissed(id: String) {
@@ -333,9 +345,7 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
         loadLayout()
     }
 
-    override fun onCloseOptionClicked() {
-
-    }
+    override fun onCloseOptionClicked() {}
 
     override fun onShareOptionClicked(shareModel: ShareModel) {
         shareOptionRequest(
@@ -405,6 +415,7 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
 
     private fun setupUi() {
         view?.apply {
+            jumpToTopView = binding?.icJumpToTop?.root
             navToolbar = binding?.navToolbar
             rvHome = binding?.rvHome
             swipeLayout = binding?.swipeRefreshLayout
@@ -580,6 +591,7 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
     }
 
     private fun onLoadingHomelayout(data: TokoFoodListUiModel) {
+        hideJumpToTop()
         hideMiniCartHome()
         showHomeLayout(data)
         checkAddressDataAndServiceArea()
@@ -610,10 +622,6 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
         swipeLayout?.isRefreshing = false
     }
 
-    private fun resetMovingPosition() {
-        movingPosition = 0
-    }
-
     private fun removeAllScrollListener() {
         rvHome?.removeOnScrollListener(loadMoreListener)
     }
@@ -626,6 +634,7 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
         return object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
+                setupJumpToTop(recyclerView, dy)
                 onScrollProductList()
             }
         }
@@ -645,7 +654,6 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
     }
 
     private fun onRefreshLayout() {
-        resetMovingPosition()
         removeAllScrollListener()
         rvLayoutManager?.setScrollEnabled(true)
         loadLayout()
@@ -911,5 +919,29 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
 
     private fun stopPerformanceMonitoring() {
         pageLoadTimeMonitoring?.stopPerformanceMonitoring()
+    }
+
+    private fun hideJumpToTop() {
+        jumpToTopView?.hide()
+    }
+
+    private fun showJumpToTop(recyclerView: RecyclerView) {
+        jumpToTopView?.show()
+        jumpToTopView?.setOnClickListener {
+            recyclerView.scrollToPosition(Int.ZERO)
+            totalScrolled = 0
+            hideJumpToTop()
+        }
+    }
+
+    private fun setupJumpToTop(recyclerView: RecyclerView, dy: Int) {
+        totalScrolled += dy
+        binding?.root?.height?.let {
+            if (totalScrolled > (it / dividerHeight)) {
+                showJumpToTop(recyclerView)
+            } else {
+                hideJumpToTop()
+            }
+        }
     }
 }

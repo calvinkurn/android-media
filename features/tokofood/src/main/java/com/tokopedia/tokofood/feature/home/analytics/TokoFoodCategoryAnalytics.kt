@@ -31,16 +31,6 @@ class TokoFoodCategoryAnalytics: BaseTrackerConst() {
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(Event.SELECT_CONTENT, eventDataLayer)
     }
 
-    fun impressMerchant(userId: String?, destinationId: String?, merchant: Merchant, horizontalPosition: Int) {
-        val eventDataLayer = Bundle().apply {
-            putString(TrackAppUtils.EVENT_ACTION, TokoFoodAnalytics.EVENT_ACTION_VIEW_MERCHANT_LIST)
-            putString(TrackAppUtils.EVENT_LABEL, "")
-        }
-        eventDataLayer.putParcelableArrayList(Promotion.KEY, getPromotionMerchant(merchant, horizontalPosition))
-        eventDataLayer.viewItem(userId, destinationId)
-        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(TokoFoodAnalyticsConstants.VIEW_ITEM, eventDataLayer)
-    }
-
     fun clickAtc(userId: String?, destinationId: String?, data: CheckoutTokoFoodData){
         val eventDataLayer = Bundle().apply {
             putString(TrackAppUtils.EVENT_ACTION, TokoFoodAnalytics.EVENT_ACTION_CLICK_ORDER_MINICART)

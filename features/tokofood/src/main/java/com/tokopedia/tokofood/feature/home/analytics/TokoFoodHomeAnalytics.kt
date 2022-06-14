@@ -15,7 +15,6 @@ import com.tokopedia.tokofood.common.analytics.TokoFoodAnalytics.EVENT_ACTION_VI
 import com.tokopedia.tokofood.common.analytics.TokoFoodAnalytics.EVENT_ACTION_VIEW_CATEGORY_ICONS
 import com.tokopedia.tokofood.common.analytics.TokoFoodAnalytics.EVENT_ACTION_VIEW_CATEGORY_WIDGET
 import com.tokopedia.tokofood.common.analytics.TokoFoodAnalytics.EVENT_ACTION_VIEW_LEGO_SIX
-import com.tokopedia.tokofood.common.analytics.TokoFoodAnalytics.EVENT_ACTION_VIEW_MERCHANT_LIST
 import com.tokopedia.tokofood.common.analytics.TokoFoodAnalyticsConstants
 import com.tokopedia.tokofood.common.analytics.TokoFoodAnalyticsConstants.ADD_TO_CART
 import com.tokopedia.tokofood.common.analytics.TokoFoodAnalyticsConstants.EMPTY_DATA
@@ -114,7 +113,7 @@ class TokoFoodHomeAnalytics: BaseTrackerConst() {
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(VIEW_ITEM, eventDataLayer)
     }
 
-    fun clickCategory(userId: String?, destinationId: String?, channelModel: ChannelModel, channelGrid: ChannelGrid, horizontalPosition: Int) {
+    fun clickCategory(userId: String?, destinationId: String?, channelModel: ChannelModel, channelGrid: ChannelGrid, horizontalPosition: Int) { // TODO Test when widget is available
         val eventDataLayer = Bundle().apply {
             putString(TrackAppUtils.EVENT_ACTION,  EVENT_ACTION_CLICK_CATEGORY_WIDGET)
             putString(TrackAppUtils.EVENT_LABEL, "")
@@ -124,7 +123,7 @@ class TokoFoodHomeAnalytics: BaseTrackerConst() {
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(SELECT_CONTENT, eventDataLayer)
     }
 
-    fun impressCategory(userId: String?, destinationId: String?, channelModel: ChannelModel) {
+    fun impressCategory(userId: String?, destinationId: String?, channelModel: ChannelModel) { // TODO Test when widget is available
         val eventDataLayer = Bundle().apply {
             putString(TrackAppUtils.EVENT_ACTION,  EVENT_ACTION_VIEW_CATEGORY_WIDGET)
             putString(TrackAppUtils.EVENT_LABEL, "")
@@ -142,16 +141,6 @@ class TokoFoodHomeAnalytics: BaseTrackerConst() {
         eventDataLayer.putParcelableArrayList(Promotion.KEY, getPromotionMerchant(merchant, horizontalPosition))
         eventDataLayer.selectContent(userId, destinationId)
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(SELECT_CONTENT, eventDataLayer)
-    }
-
-    fun impressMerchant(userId: String?, destinationId: String?, merchant: Merchant, horizontalPosition: Int) {
-        val eventDataLayer = Bundle().apply {
-            putString(TrackAppUtils.EVENT_ACTION,  EVENT_ACTION_VIEW_MERCHANT_LIST)
-            putString(TrackAppUtils.EVENT_LABEL, "")
-        }
-        eventDataLayer.putParcelableArrayList(Promotion.KEY, getPromotionMerchant(merchant, horizontalPosition))
-        eventDataLayer.viewItem(userId, destinationId)
-        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(VIEW_ITEM, eventDataLayer)
     }
 
     fun openScreenHomePage(userId: String?, destinationId: String?, isLoggenInStatus: Boolean) {

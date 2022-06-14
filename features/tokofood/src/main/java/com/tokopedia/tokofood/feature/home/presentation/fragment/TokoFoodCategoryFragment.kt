@@ -8,7 +8,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -39,7 +38,6 @@ import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilderFlag
 import com.tokopedia.searchbar.navigation_component.util.NavToolbarExt
 import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFoodData
-import com.tokopedia.tokofood.common.constants.ShareComponentConstants
 import com.tokopedia.tokofood.common.minicartwidget.view.TokoFoodMiniCartWidget
 import com.tokopedia.tokofood.common.presentation.UiEvent
 import com.tokopedia.tokofood.common.presentation.listener.HasViewModel
@@ -48,6 +46,7 @@ import com.tokopedia.tokofood.common.util.Constant
 import com.tokopedia.tokofood.common.util.TokofoodErrorLogger
 import com.tokopedia.tokofood.databinding.FragmentTokofoodCategoryBinding
 import com.tokopedia.tokofood.feature.home.analytics.TokoFoodCategoryAnalytics
+import com.tokopedia.tokofood.feature.home.analytics.TokoFoodHomeCategoryCommonAnalytics
 import com.tokopedia.tokofood.feature.home.di.DaggerTokoFoodHomeComponent
 import com.tokopedia.tokofood.feature.home.domain.constanta.TokoFoodLayoutState
 import com.tokopedia.tokofood.feature.home.domain.data.Merchant
@@ -58,9 +57,9 @@ import com.tokopedia.tokofood.feature.home.presentation.adapter.TokoFoodListDiff
 import com.tokopedia.tokofood.feature.home.presentation.adapter.viewholder.TokoFoodErrorStateViewHolder
 import com.tokopedia.tokofood.feature.home.presentation.adapter.viewholder.TokoFoodMerchantListViewHolder
 import com.tokopedia.tokofood.feature.home.presentation.uimodel.TokoFoodListUiModel
-import com.tokopedia.tokofood.feature.home.presentation.view.listener.TokoFoodView
 import com.tokopedia.tokofood.feature.home.presentation.viewmodel.TokoFoodCategoryViewModel
 import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.TokoFoodPurchaseFragment
+import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
@@ -70,7 +69,6 @@ import javax.inject.Inject
 
 class TokoFoodCategoryFragment: BaseDaggerFragment(),
     IBaseMultiFragment,
-    TokoFoodView,
     TokoFoodMerchantListViewHolder.TokoFoodMerchantListListener,
     TokoFoodErrorStateViewHolder.TokoFoodErrorStateListener
 {
@@ -84,6 +82,9 @@ class TokoFoodCategoryFragment: BaseDaggerFragment(),
     @Inject
     lateinit var analytics: TokoFoodCategoryAnalytics
 
+    @Inject
+    lateinit var trackingQueue: TrackingQueue
+
     private var binding by autoClearedNullable<FragmentTokofoodCategoryBinding>()
     private val viewModel by lazy {
         ViewModelProvider(this, viewModelFactory).get(TokoFoodCategoryViewModel::class.java)
@@ -94,7 +95,6 @@ class TokoFoodCategoryFragment: BaseDaggerFragment(),
     private val adapter by lazy {
         TokoFoodCategoryAdapter(
             typeFactory = TokoFoodCategoryAdapterTypeFactory(
-                tokoFoodView = this,
                 merchantListListener = this,
                 errorStateListener = this
             ),
@@ -167,7 +167,12 @@ class TokoFoodCategoryFragment: BaseDaggerFragment(),
         initializeMiniCartCategory()
     }
 
-    override fun getFragmentTitle(): String? {
+    override fun onPause() {
+        super.onPause()
+        trackingQueue.sendAll()
+    }
+
+    override fun getFragmentTitle(): String {
         return ""
     }
 
@@ -192,12 +197,6 @@ class TokoFoodCategoryFragment: BaseDaggerFragment(),
     override fun navigateToNewFragment(fragment: Fragment) {
         (activity as? BaseMultiFragActivity)?.navigateToNewFragment(fragment)
     }
-
-    override fun getFragmentManagerPage(): FragmentManager = childFragmentManager
-
-    override fun getFragmentPage(): Fragment = this
-
-    override fun refreshLayoutPage() = onRefreshLayout()
 
     override fun onClickRetryError() {
         loadLayout()
@@ -224,7 +223,9 @@ class TokoFoodCategoryFragment: BaseDaggerFragment(),
     }
 
     override fun onImpressMerchant(merchant: Merchant, horizontalPosition: Int) {
-        analytics.impressMerchant(userSession.userId, localCacheModel?.district_id, merchant, horizontalPosition)
+        trackingQueue.putEETracking(
+            TokoFoodHomeCategoryCommonAnalytics.impressMerchant(userSession.userId,
+            localCacheModel?.district_id, merchant, horizontalPosition, isHome = false) as HashMap<String, Any>)
     }
 
     private fun onRefreshLayout() {

@@ -6,6 +6,7 @@ import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.tokofood.feature.home.analytics.TokoFoodCategoryAnalytics
 import com.tokopedia.tokofood.feature.home.analytics.TokoFoodHomeAnalytics
+import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
@@ -25,6 +26,11 @@ class TokoFoodHomeModule {
     @Provides
     fun homeAnalytic(): TokoFoodHomeAnalytics {
         return TokoFoodHomeAnalytics()
+    }
+
+    @Provides
+    fun trackingQueue(@ApplicationContext context: Context): TrackingQueue {
+        return TrackingQueue(context)
     }
 
     @Provides
