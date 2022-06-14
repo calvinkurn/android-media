@@ -88,7 +88,7 @@ class MerchantCampaignTNCBottomSheet : BottomSheetUnify() {
                 it.campaignId,
                 it.isUniqueBuyer,
                 it.isCampaignRelation,
-                it.paymentProfile
+                it.paymentType
             )
         }
         setupObserver()

@@ -11,6 +11,7 @@ import com.tokopedia.shop.flashsale.data.mapper.MerchantCampaignTNCMapper
 import com.tokopedia.shop.flashsale.data.request.GetMerchantCampaignTNCRequest
 import com.tokopedia.shop.flashsale.data.response.GetMerchantCampaignTNCResponse
 import com.tokopedia.shop.flashsale.domain.entity.MerchantCampaignTNC
+import com.tokopedia.shop.flashsale.domain.entity.enums.PaymentType
 import javax.inject.Inject
 
 class GetMerchantCampaignTNCUseCase @Inject constructor(
@@ -19,6 +20,7 @@ class GetMerchantCampaignTNCUseCase @Inject constructor(
 ) : GraphqlUseCase<MerchantCampaignTNC>(repository) {
 
     companion object {
+        private const val ACTION_FROM_SELLER = "SELLER"
         private const val REQUEST_PARAM_KEY = "params"
         private const val QUERY_NAME = "GetMerchantCampaignTNC"
         private const val QUERY = """
@@ -48,9 +50,9 @@ class GetMerchantCampaignTNCUseCase @Inject constructor(
         campaignId: Long,
         isUniqueBuyer: Boolean,
         isCampaignRelation: Boolean,
-        paymentProfile: String
+        paymentType: PaymentType
     ): MerchantCampaignTNC {
-        val request = buildRequest(campaignId, isUniqueBuyer, isCampaignRelation, paymentProfile)
+        val request = buildRequest(campaignId, isUniqueBuyer, isCampaignRelation, paymentType)
         val response = repository.response(listOf(request))
         val data = response.getSuccessData<GetMerchantCampaignTNCResponse>()
         return mapper.map(data)
@@ -60,14 +62,14 @@ class GetMerchantCampaignTNCUseCase @Inject constructor(
         campaignId: Long,
         isUniqueBuyer: Boolean,
         isCampaignRelation: Boolean,
-        paymentProfile: String
+        paymentType: PaymentType
     ): GraphqlRequest {
         val payload = GetMerchantCampaignTNCRequest(
             campaignId,
             isUniqueBuyer,
             isCampaignRelation,
-            "SELLER",
-            paymentProfile
+            ACTION_FROM_SELLER,
+            paymentType.id
         )
         val params = mapOf(REQUEST_PARAM_KEY to payload)
         return GraphqlRequest(

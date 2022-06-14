@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.shop.flashsale.domain.entity.MerchantCampaignTNC
+import com.tokopedia.shop.flashsale.domain.entity.enums.PaymentType
 import com.tokopedia.shop.flashsale.domain.usecase.GetMerchantCampaignTNCUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -25,7 +26,7 @@ class MerchantCampaignTNCViewModel @Inject constructor(
         campaignId: Long,
         isUniqueBuyer: Boolean,
         isCampaignRelation: Boolean,
-        paymentProfile: String
+        paymentType: PaymentType
     ){
         launchCatchError(
             dispatchers.io,
@@ -34,7 +35,7 @@ class MerchantCampaignTNCViewModel @Inject constructor(
                     campaignId = campaignId,
                     isUniqueBuyer = isUniqueBuyer,
                     isCampaignRelation = isCampaignRelation,
-                    paymentProfile = paymentProfile
+                    paymentType = paymentType
                 )
                 _merchantCampaignTNC.postValue(Success(merchantCampaignTNC))
             },
