@@ -280,7 +280,7 @@ class OfficialStoreHomeViewModel @Inject constructor(
             val bestSellerDataModel = bestSellerMapper.mappingRecommendationWidget(data.first().copy(channelId = channelId))
             _recomWidget.value = Success(bestSellerDataModel)
         } catch (t: Throwable) {
-            Fail(t)
+            _recomWidget.value = Fail(t)
         }
     }
 
