@@ -254,7 +254,13 @@ class AdminInvitationConfirmationFragment : BaseDaggerFragment() {
             navigator.goToInvitationAccepted()
         } else {
             confirmRejectDialog?.dismissDialog()
-            inflateInvitationRejected()
+            val titleRejected =
+                getString(com.tokopedia.shopadmin.R.string.title_invitation_rejected)
+            val descRejected = getString(
+                    com.tokopedia.shopadmin.R.string.desc_invitation_rejected,
+                    userSession.shopName.orEmpty()
+                )
+            inflateInvitationRejected(titleRejected, descRejected)
         }
     }
 
@@ -264,7 +270,15 @@ class AdminInvitationConfirmationFragment : BaseDaggerFragment() {
             AdminStatus.WAITING_CONFIRMATION -> {
                 viewModel.fetchShopAdminInfo(invitationConfirmationParam.getShopId().toLongOrZero())
             }
-            AdminStatus.REJECT -> inflateInvitationRejected()
+            AdminStatus.REJECT -> {
+                val titleRejected =
+                    getString(com.tokopedia.shopadmin.R.string.title_invitation_has_been_rejected)
+                val descRejected = getString(
+                        com.tokopedia.shopadmin.R.string.desc_invitation_rejected,
+                        userSession.shopName.orEmpty()
+                    )
+                inflateInvitationRejected(titleRejected, descRejected)
+            }
             AdminStatus.EXPIRED -> inflateInvitationExpired()
             else -> activity?.finish()
         }
@@ -336,7 +350,7 @@ class AdminInvitationConfirmationFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun inflateInvitationRejected() {
+    private fun inflateInvitationRejected(titleRejected: String, descRejected: String) {
         hideLoading()
         setupToolbar(false)
         confirmationBinding?.root?.hide()
@@ -349,7 +363,7 @@ class AdminInvitationConfirmationFragment : BaseDaggerFragment() {
             } else {
                 vsInvitationReject?.show()
             }
-            setInvitationRejected()
+            setInvitationRejected(titleRejected, descRejected)
         }
     }
 
@@ -369,12 +383,10 @@ class AdminInvitationConfirmationFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun setInvitationRejected() {
+    private fun setInvitationRejected(title: String, desc: String) {
         rejectedBinding?.run {
-            tvInvitationRejectedDesc.text = getString(
-                R.string.desc_invitation_rejected,
-                invitationConfirmationParam.getShopName()
-            )
+            tvInvitationRejectedTitle.text = title
+            tvInvitationRejectedDesc.text = desc
             imgInvitationRejected.setImageUrl(AdminImageUrl.IL_INVITATION_REJECTED)
             btnInvitationRejected.setOnClickListener {
                 navigator.goToHomeBuyer()
@@ -383,7 +395,6 @@ class AdminInvitationConfirmationFragment : BaseDaggerFragment() {
     }
 
     private fun setShopAdminInfo(shopAdminInfoUiModel: ShopAdminInfoUiModel) {
-        invitationConfirmationParam.setShopName(shopAdminInfoUiModel.shopName)
         confirmationBinding?.run {
             imgAdminConfirmationInvitation.setImageUrl(
                 AdminImageUrl.IL_CONFIRMATION_INVITATION
@@ -393,7 +404,7 @@ class AdminInvitationConfirmationFragment : BaseDaggerFragment() {
                 shopAdminInfoUiModel.shopName
             )
             imgShopAdminAvatar.setImageUrl(shopAdminInfoUiModel.iconUrl)
-            tvShopTitle.text = invitationConfirmationParam.getShopName()
+            tvShopTitle.text = shopAdminInfoUiModel.shopName
 
             if (userSession.email.isNullOrEmpty()) {
                 adminInvitationWithEmailSection.root.hide()
@@ -456,7 +467,12 @@ class AdminInvitationConfirmationFragment : BaseDaggerFragment() {
                 showRejectConfirmationDialog()
             }
             btnAccessAccept.setOnClickListener {
-                navigator.goToOtp(getEmailFromTextField(), userSession.phoneNumber.orEmpty())
+                if (userSession.email.isNullOrBlank()) {
+                    navigator.goToOtp(getEmailFromTextField(), userSession.phoneNumber.orEmpty())
+                } else {
+                    showLoadingConfirmationCta()
+                    adminConfirmationReg(true)
+                }
             }
         }
     }
