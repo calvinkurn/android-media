@@ -73,6 +73,7 @@ abstract class BaseNotification internal constructor(
 
             builder.setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
             builder.setSmallIcon(drawableIcon)
+            setGroup(builder)
             setSoundProperties(builder)
             setNotificationIcon(builder)
             return builder
@@ -95,9 +96,20 @@ abstract class BaseNotification internal constructor(
 
             builder.setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
             builder.setSmallIcon(drawableIcon)
+            baseNotificationModel.payloadExtra?.groupId?.let {
+                setGroup(builder, it)
+            }
             setSoundProperties(builder)
             return builder
         }
+
+    private fun setGroup(builder: NotificationCompat.Builder, groupId: String) {
+        val isNougatAndAbove = Build.VERSION.SDK_INT >= Build.VERSION_CODES.N
+        builder.setGroup(groupId)
+        if (!isNougatAndAbove) {
+            builder.setGroupSummary(true)
+        }
+    }
 
     /*
     *

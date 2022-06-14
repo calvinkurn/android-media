@@ -191,6 +191,14 @@ data class SerializedNotificationData(
     @SerializedName(PayloadExtraDataKey.SESSION_ID)
     var sessionId: String?,
 
+    @Expose
+    @SerializedName(PayloadExtraDataKey.GROUP_ID)
+    var groupId: String?,
+
+    @Expose
+    @SerializedName(PayloadExtraDataKey.GROUP_NAME)
+    var groupName: String?,
+
     @SerializedName(NOTIFICATION_CHANNEL)
     @Expose
     var notificationChannel: String? = null,

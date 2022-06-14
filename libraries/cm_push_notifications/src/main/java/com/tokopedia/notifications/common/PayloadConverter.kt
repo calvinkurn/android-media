@@ -397,6 +397,8 @@ object PayloadConverter {
             journeyId = data.getString(PayloadExtraDataKey.JOURNEY_ID, null),
             journeyName = data.getString(PayloadExtraDataKey.JOURNEY_NAME, null),
             sessionId = data.getString(PayloadExtraDataKey.SESSION_ID, null),
+            groupId = data.getString(PayloadExtraDataKey.GROUP_ID, null),
+            groupName = data.getString(PayloadExtraDataKey.GROUP_NAME, null)
         )
     }
 
@@ -406,6 +408,8 @@ object PayloadConverter {
             journeyId = data.journeyId,
             journeyName = data.journeyName,
             sessionId = data.sessionId,
+            groupId = data.groupId,
+            groupName = data.groupName
         )
     }
 }

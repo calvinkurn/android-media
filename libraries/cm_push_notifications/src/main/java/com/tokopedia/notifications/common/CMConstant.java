@@ -151,6 +151,8 @@ public interface CMConstant {
             String JOURNEY_ID = "jrnId";
             String JOURNEY_NAME = "jrnName";
             String SESSION_ID = "sesnId";
+            String GROUP_ID = "groupId";
+            String GROUP_NAME = "groupName";
         }
 
 

@@ -19,4 +19,10 @@ data class PayloadExtra(
     @SerializedName(PayloadExtraDataKey.SESSION_ID)
     val sessionId : String? = null,
 
+    @SerializedName(PayloadExtraDataKey.GROUP_ID)
+    val groupId : String? = null,
+
+    @SerializedName(PayloadExtraDataKey.GROUP_NAME)
+    val groupName : String? = null
+
 ) : Parcelable
