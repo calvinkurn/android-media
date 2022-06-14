@@ -334,7 +334,7 @@ class ProductTabFragment : BaseDaggerFragment() {
         else
             ACTION_DEACTIVATE
         viewModel.setProductAction(::onSuccessAction, actionActivate,
-            listOf((adapter.items[pos] as ProductItemModel).data.adId), resources, null)
+            listOf((adapter.items[pos] as ProductItemModel).data.adId), null)
     }
 
     private fun onSuccessAction() {
@@ -465,7 +465,9 @@ class ProductTabFragment : BaseDaggerFragment() {
                         if (!deleteCancel) {
                             totalProductCount -= getAdIds().size
                             viewModel.setProductAction(::onSuccessAction,
-                                actionActivate, getAdIds(), resources, selectedFilter)
+                                actionActivate,
+                                getAdIds(),
+                                selectedFilter)
                             if (totalProductCount == 0) {
                                 activity?.finish()
                             }
@@ -478,14 +480,18 @@ class ProductTabFragment : BaseDaggerFragment() {
             ACTION_MOVE -> {
                 totalProductCount -= getAdIds().size
                 viewModel.setProductAction(::onSuccessAction,
-                    actionActivate, getAdIds(), resources, selectedFilter)
+                    actionActivate,
+                    getAdIds(),
+                    selectedFilter)
                 if (totalProductCount == 0) {
                     activity?.finish()
                 }
             }
             else -> {
                 viewModel.setProductAction(::onSuccessAction,
-                    actionActivate, getAdIds(), resources, selectedFilter)
+                    actionActivate,
+                    getAdIds(),
+                    selectedFilter)
             }
         }
     }

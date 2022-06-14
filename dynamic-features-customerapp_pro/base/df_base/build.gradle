@@ -109,6 +109,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.shopShowcase)
     implementation projectOrAar(rootProject.ext.features.brandlist)
     implementation projectOrAar(rootProject.ext.features.productDetail)
+    implementation projectOrAar(rootProject.ext.features.productDetailIntegration)
     implementation projectOrAar(rootProject.ext.features.atcVariant)
     implementation projectOrAar(rootProject.ext.features.shopPage)
     implementation projectOrAar(rootProject.ext.features.shopPageWidget)
@@ -151,6 +152,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.buyerorder)
     implementation projectOrAar(rootProject.ext.features.unifyorderhistory)
     implementation projectOrAar(rootProject.ext.features.wishlist)
+    implementation projectOrAar(rootProject.ext.features.addOnGifting)
 
     //Order Management
     implementation projectOrAar(rootProject.ext.features.ordermanagementhistory)

@@ -285,16 +285,6 @@ object ApplinkConstInternalGlobal {
 
     const val GLOBAL_INTERNAL_DIGITAL_DEAL_SLUG = "$GLOBAL_INTERNAL_DIGITAL_DEAL_SLUG_BASE{slug}/"
 
-    const val GLOBAL_INTERNAL_DIGITAL_DEAL_CATEGORY = "$INTERNAL_GLOBAL/deals/category/page"
-
-    const val GLOBAL_INTERNAL_DIGITAL_DEAL_ALL_BRANDS_BASE = "$INTERNAL_GLOBAL/deals-allbrands/"
-
-    const val GLOBAL_INTERNAL_DIGITAL_DEAL_ALL_BRANDS = "$GLOBAL_INTERNAL_DIGITAL_DEAL_ALL_BRANDS_BASE{isVoucher}/"
-
-    const val GLOBAL_INTERNAL_DIGITAL_DEAL_BRAND_DETAIL_BASE = "$INTERNAL_GLOBAL/deals-brand/"
-
-    const val GLOBAL_INTERNAL_DIGITAL_DEAL_BRAND_DETAIL = "$GLOBAL_INTERNAL_DIGITAL_DEAL_BRAND_DETAIL_BASE{slug}/"
-
     // PhoneVerificationProfileActivity
     // tokopedia-android-internal://global/setting-bank
     const val ADD_BANK = "$INTERNAL_GLOBAL/add-bank"
@@ -350,17 +340,6 @@ object ApplinkConstInternalGlobal {
         "dfname={moduleTranslate}&" +
         "dfapplink={encodedApplink}&" +
         DFFALLBACKURL_KEY +"={fallbackUrl}"
-
-    /**
-     * LogoutActivity
-     * @applink : tokopedia-android-internal://global/logout
-     * @param   : [PARAM_IS_RETURN_HOME]
-     * default is 'true', set 'false' if you wan get activity result
-     **/
-    const val LOGOUT = "$INTERNAL_GLOBAL/logout"
-    /** for param logout */
-    const val PARAM_IS_RETURN_HOME = "return_to_home"
-    const val PARAM_IS_CLEAR_DATA_ONLY = "is_clear_data_only"
 
     /**
      * TermPrivacyActivity
@@ -475,4 +454,6 @@ object ApplinkConstInternalGlobal {
 
     //DataExplorerActivity
     const val DATA_EXPLORER = "$INTERNAL_GLOBAL/data-explorer"
+
+    const val COMMISSION_BREAKDOWN = "$INTERNAL_GLOBAL/transaction-fee-download"
 }

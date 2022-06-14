@@ -1,7 +1,7 @@
 package com.tokopedia.product.manage.common.feature.draft.data.db.source
 
 import com.tokopedia.product.manage.common.feature.draft.data.db.entity.AddEditProductDraftEntity
-import rx.Observable
+import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
 class AddEditProductDraftDataSource @Inject constructor(private val dataManager: AddEditProductDraftDataManager) {
@@ -16,14 +16,19 @@ class AddEditProductDraftDataSource @Inject constructor(private val dataManager:
         return dataManager.getDraft(productId)
     }
 
+    fun getAllDraftsFlow(shopId: String): Flow<List<AddEditProductDraftEntity>> {
+        checkUpdateBlankShopId(shopId)
+        return dataManager.getAllDraftsFlow(shopId)
+    }
+
     fun getAllDrafts(shopId: String): List<AddEditProductDraftEntity> {
         checkUpdateBlankShopId(shopId)
         return dataManager.getAllDrafts(shopId)
     }
 
-    fun getAllDraftsCount(shopId: String): Observable<Long> {
+    fun getAllDraftsCount(shopId: String): Flow<Long> {
         checkUpdateBlankShopId(shopId)
-        return dataManager.getAllDraftsCount(shopId)
+        return dataManager.getAllDraftsCountFlow(shopId)
     }
 
     fun deleteDraft(productId: Long): Boolean {

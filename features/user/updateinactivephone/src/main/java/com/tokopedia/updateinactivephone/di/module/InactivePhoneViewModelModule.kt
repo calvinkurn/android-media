@@ -7,6 +7,7 @@ import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
 import com.tokopedia.abstraction.common.di.scope.ActivityScope
 import com.tokopedia.updateinactivephone.features.InactivePhoneViewModel
 import com.tokopedia.updateinactivephone.features.accountlist.InactivePhoneAccountListViewModel
+import com.tokopedia.updateinactivephone.features.inputoldphonenumber.viewmodel.InputOldPhoneNumberViewModel
 import com.tokopedia.updateinactivephone.features.submitnewphone.InactivePhoneDataUploadViewModel
 import dagger.Binds
 import dagger.Module
@@ -36,4 +37,10 @@ abstract class InactivePhoneViewModelModule {
     @IntoMap
     @ViewModelKey(InactivePhoneDataUploadViewModel::class)
     abstract fun dataUploadViewModel(viewModelInactivePhone: InactivePhoneDataUploadViewModel): ViewModel
+
+    @ActivityScope
+    @Binds
+    @IntoMap
+    @ViewModelKey(InputOldPhoneNumberViewModel::class)
+    abstract fun inputOldPhoneNumberViewModel(viewModel: InputOldPhoneNumberViewModel): ViewModel
 }

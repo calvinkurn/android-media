@@ -32,9 +32,22 @@ import com.tokopedia.promocheckout.detail.view.presenter.CheckPromoCodeDetailExc
 import com.tokopedia.promocheckout.detail.view.presenter.PromoCheckoutDetailContract
 import com.tokopedia.promocheckout.widget.TimerCheckoutWidget
 import com.tokopedia.promocheckout.widget.TimerPromoCheckout
-import kotlinx.android.synthetic.main.fragment_checkout_detail_layout.*
-import kotlinx.android.synthetic.main.include_period_tnc_promo.*
-import kotlinx.android.synthetic.main.include_period_tnc_promo.view.*
+import kotlinx.android.synthetic.main.fragment_checkout_detail_layout.buttonCancel
+import kotlinx.android.synthetic.main.fragment_checkout_detail_layout.buttonUse
+import kotlinx.android.synthetic.main.fragment_checkout_detail_layout.containerButton
+import kotlinx.android.synthetic.main.fragment_checkout_detail_layout.imageBannerPromo
+import kotlinx.android.synthetic.main.fragment_checkout_detail_layout.mainView
+import kotlinx.android.synthetic.main.fragment_checkout_detail_layout.progressBarLoading
+import kotlinx.android.synthetic.main.fragment_checkout_detail_layout.textTitlePromo
+import kotlinx.android.synthetic.main.fragment_checkout_detail_layout.webviewTnc
+import kotlinx.android.synthetic.main.include_period_tnc_promo.imageMinTrans
+import kotlinx.android.synthetic.main.include_period_tnc_promo.imagePeriod
+import kotlinx.android.synthetic.main.include_period_tnc_promo.view.imageMinTrans
+import kotlinx.android.synthetic.main.include_period_tnc_promo.view.textMinTrans
+import kotlinx.android.synthetic.main.include_period_tnc_promo.view.textPeriod
+import kotlinx.android.synthetic.main.include_period_tnc_promo.view.timerUsage
+import kotlinx.android.synthetic.main.include_period_tnc_promo.view.titleMinTrans
+import kotlinx.android.synthetic.main.include_period_tnc_promo.view.titlePeriod
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -152,7 +165,7 @@ abstract class BasePromoCheckoutDetailFragment : Fragment(), PromoCheckoutDetail
             }
             view?.textPeriod?.text = it.usage.usageStr
             webviewTnc?.settings?.javaScriptEnabled = true
-            webviewTnc?.loadData(getFormattedHtml(it.tnc), "text/html", "UTF-8")
+            webviewTnc?.loadPartialWebView(it.tnc)
             enableOrDisableViews(it)
         }
     }

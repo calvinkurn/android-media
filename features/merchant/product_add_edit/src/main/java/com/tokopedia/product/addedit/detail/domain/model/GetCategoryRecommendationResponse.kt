@@ -1,5 +1,6 @@
 package com.tokopedia.product.addedit.detail.domain.model
 
+import android.annotation.SuppressLint
 import com.google.gson.annotations.SerializedName
 
 data class GetCategoryRecommendationResponse(
@@ -14,7 +15,7 @@ data class GetCategoryRecommendationDataModel(
 
 data class CategoryItemModel(
         @SerializedName("id")
-        var id: Long?,
+        var id: String?,
         @SerializedName("name")
         var name: String?
 )

@@ -224,6 +224,7 @@ class DiscoveryHomeFactory {
 
             initializeComponent(ComponentsList.CarouselErrorLoad, ::CarouselErrorLoadViewHolder, ::CarouselErrorLoadViewModel)
             initializeComponent(ComponentsList.ProductListErrorLoad, ::ErrorLoadViewHolder, ::ErrorLoadViewModel)
+            initializeComponent(ComponentsList.ProductListNetworkErrorLoad, ::ErrorLoadViewHolder, ::ErrorLoadViewModel)
 
             //Category Best Seller
             initializeComponent(ComponentsList.CategoryBestSeller, ::CategoryBestSellerViewHolder, ::CategoryBestSellerViewModel)
