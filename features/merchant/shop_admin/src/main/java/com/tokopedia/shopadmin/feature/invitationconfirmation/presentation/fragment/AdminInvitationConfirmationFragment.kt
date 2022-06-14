@@ -64,7 +64,7 @@ class AdminInvitationConfirmationFragment : BaseDaggerFragment() {
     }
 
     private val navigator by lazy {
-        InvitationConfirmationNavigator(this, invitationConfirmationParam)
+        InvitationConfirmationNavigator(this)
     }
 
     private var binding by autoClearedNullable<FragmentAdminInvitationConfirmationBinding>()
@@ -251,7 +251,7 @@ class AdminInvitationConfirmationFragment : BaseDaggerFragment() {
 
     private fun redirectAfterConfirmReg(adminConfirmationRegUiModel: AdminConfirmationRegUiModel) {
         if (adminConfirmationRegUiModel.acceptBecomeAdmin) {
-            navigator.goToInvitationAccepted()
+            navigator.goToInvitationAccepted(userSession.shopName)
         } else {
             confirmRejectDialog?.dismissDialog()
             val titleRejected =

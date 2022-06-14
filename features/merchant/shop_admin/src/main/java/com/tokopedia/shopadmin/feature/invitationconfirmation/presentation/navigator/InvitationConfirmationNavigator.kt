@@ -10,15 +10,14 @@ import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.shopadmin.common.constants.Constants
-import com.tokopedia.shopadmin.feature.invitationconfirmation.domain.param.InvitationConfirmationParam
 
 class InvitationConfirmationNavigator(
-    private val fragment: Fragment,
-    private val invitationConfirmationParam: InvitationConfirmationParam
+    private val fragment: Fragment
 ) : LifecycleObserver {
-    fun goToInvitationAccepted() {
+
+    fun goToInvitationAccepted(shopName: String) {
         val params =
-            mapOf<String, Any>(Constants.SHOP_NAME_PARAM to invitationConfirmationParam.getShopName())
+            mapOf<String, Any>(Constants.SHOP_NAME_PARAM to shopName)
         val appLink = UriUtil.buildUriAppendParams(
             ApplinkConstInternalMarketplace.ADMIN_INVITATION,
             params
@@ -40,14 +39,15 @@ class InvitationConfirmationNavigator(
     }
 
     fun goToOtp(email: String, phoneNumber: String) {
-        val intent = RouteManager.getIntent(fragment.context, ApplinkConstInternalGlobal.COTP).apply {
-            putExtra(ApplinkConstInternalGlobal.PARAM_EMAIL, email)
-            putExtra(ApplinkConstInternalGlobal.PARAM_OTP_TYPE, OTP_TYPE_EMAIL)
-            putExtra(ApplinkConstInternalGlobal.PARAM_REQUEST_OTP_MODE, MODE_EMAIL)
-            putExtra(ApplinkConstInternalGlobal.PARAM_MSISDN, phoneNumber)
-            putExtra(ApplinkConstInternalGlobal.PARAM_CAN_USE_OTHER_METHOD, false)
-            putExtra(ApplinkConstInternalGlobal.PARAM_IS_SHOW_CHOOSE_METHOD, false)
-        }
+        val intent =
+            RouteManager.getIntent(fragment.context, ApplinkConstInternalGlobal.COTP).apply {
+                putExtra(ApplinkConstInternalGlobal.PARAM_EMAIL, email)
+                putExtra(ApplinkConstInternalGlobal.PARAM_OTP_TYPE, OTP_TYPE_EMAIL)
+                putExtra(ApplinkConstInternalGlobal.PARAM_REQUEST_OTP_MODE, MODE_EMAIL)
+                putExtra(ApplinkConstInternalGlobal.PARAM_MSISDN, phoneNumber)
+                putExtra(ApplinkConstInternalGlobal.PARAM_CAN_USE_OTHER_METHOD, false)
+                putExtra(ApplinkConstInternalGlobal.PARAM_IS_SHOW_CHOOSE_METHOD, false)
+            }
         fragment.startActivityForResult(intent, REQUEST_OTP)
     }
 
