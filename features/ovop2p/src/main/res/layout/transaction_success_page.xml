@@ -226,7 +226,7 @@
                 android:background="@drawable/btn_bg_rounded_corners"
                 android:gravity="center"
                 android:text="@string/ovop2p_chk_rcom"
-                android:textColor="@color/white"
+                android:textColor="@color/Unify_Static_White"
                 android:textSize="@dimen/ovop2p_sp14"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/see_dtl"

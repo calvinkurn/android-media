@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white">
+    android:background="@color/Unify_Static_White">
 
     <ImageView
         android:id="@+id/sucs_img"
@@ -224,7 +224,7 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/ovop2p_dp10"
         android:layout_marginTop="@dimen/unify_space_24"
-        android:background="@color/clr_eef0f3"
+        android:background="@color/ovop2p_clr_eef0f3"
         app:layout_constraintTop_toBottomOf="@+id/txt_src_fnd" />
 
     <include

@@ -38,7 +38,7 @@
         android:gravity="center"
         android:visibility="gone"
         android:text="@string/trnsfr"
-        android:textColor="@color/white"
+        android:textColor="@color/Unify_Static_White"
         android:textSize="@dimen/ovop2p_sp14" />
 
     <TextView
