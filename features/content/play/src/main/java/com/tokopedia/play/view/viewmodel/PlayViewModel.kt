@@ -1120,7 +1120,7 @@ class PlayViewModel @AssistedInject constructor(
 
         val cleanMessage = message.trimMultipleNewlines()
         playChannelWebSocket.send(
-            playSocketToModelMapper.mapSendChat(cleanMessage, channelId)
+            playSocketToModelMapper.mapSendChat(cleanMessage, channelId, _warehouseInfo.value.warehouseId)
         )
         setNewChat(
             playUiModelMapper.mapChat(

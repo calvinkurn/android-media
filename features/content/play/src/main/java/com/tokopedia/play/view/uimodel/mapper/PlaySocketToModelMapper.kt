@@ -106,8 +106,8 @@ class PlaySocketToModelMapper @Inject constructor(
     /**
      * Send
      */
-    fun mapSendChat(message: String, channelId: String): String {
-        return parseSendMessage(message, channelId)
+    fun mapSendChat(message: String, channelId: String, warehouseId: String): String {
+        return parseSendMessage(message, channelId, warehouseId)
     }
 
     fun mapSendLike(channelId: String): String {
@@ -121,10 +121,11 @@ class PlaySocketToModelMapper @Inject constructor(
         return bundle.toString()
     }
 
-    private fun parseSendMessage(message: String, channelId: String): String {
+    private fun parseSendMessage(message: String, channelId: String, warehouseId: String): String {
         val param = JsonObject()
         param.addProperty(PARAM_SEND_CHANNEL_ID, channelId.toLongOrZero())
         param.addProperty(PARAM_SEND_MESSAGE, message)
+        param.addProperty(PARAM_SEND_WAREHOUSE_ID, warehouseId.toLongOrZero())
 
         val bundle = JsonObject()
         bundle.addProperty(PARAM_SEND_TYPE, PARAM_SEND_TYPE_SEND)
@@ -141,5 +142,6 @@ class PlaySocketToModelMapper @Inject constructor(
         private const val PARAM_SEND_TYPE_MULTIPLE_LIKE = "MULTIPLE_LIKE"
         private const val PARAM_SEND_CHANNEL_ID = "channel_id"
         private const val PARAM_SEND_MESSAGE = "message"
+        private const val PARAM_SEND_WAREHOUSE_ID = "warehouse_id"
     }
 }
