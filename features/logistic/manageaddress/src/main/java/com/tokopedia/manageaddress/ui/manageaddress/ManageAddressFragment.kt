@@ -120,7 +120,7 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener {
         }
 
         val pages = listOf(
-            Pair(getString(R.string.tablayout_label_main), MainAddressFragment.newInstance(Bundle())),
+            Pair(getString(R.string.tablayout_label_main), MainAddressFragment.newInstance(bundle)),
             Pair(getString(R.string.tablayout_label_from_friend), FromFriendFragment())
         )
 
