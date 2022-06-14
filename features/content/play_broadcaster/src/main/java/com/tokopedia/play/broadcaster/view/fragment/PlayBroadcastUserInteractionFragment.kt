@@ -122,18 +122,19 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
     /**
      * Interactive
      */
-    private val interactiveActiveView by viewComponentOrNull { InteractiveActiveViewComponent(it, object : InteractiveActiveViewComponent.Listener {
-        override fun onWidgetClicked(view: InteractiveActiveViewComponent) {
-            if (view.interactiveType==InteractiveActiveViewComponent.InteractiveType.QUIZ){
-                analytic.onClickOngoingQuiz(
-                    parentViewModel.channelId,
-                    parentViewModel.channelTitle,
-                    parentViewModel.interactiveId,
-                    parentViewModel.activeInteractiveTitle,
-                )
+    private val interactiveActiveView by viewComponentOrNull {
+        InteractiveActiveViewComponent(it, object : InteractiveActiveViewComponent.Listener {
+            override fun onWidgetClicked(view: InteractiveActiveViewComponent) {
+                if (view.interactiveType == InteractiveActiveViewComponent.InteractiveType.QUIZ){
+                    analytic.onClickOngoingQuiz(
+                        parentViewModel.channelId,
+                        parentViewModel.channelTitle,
+                        parentViewModel.interactiveId,
+                        parentViewModel.activeInteractiveTitle,
+                    )
+                }
+                parentViewModel.submitAction(PlayBroadcastAction.ClickOngoingWidget)
             }
-            parentViewModel.submitAction(PlayBroadcastAction.ClickOngoingWidget)
-        }
     }) }
     private val interactiveFinishedView by viewComponentOrNull { InteractiveFinishViewComponent(it) }
 

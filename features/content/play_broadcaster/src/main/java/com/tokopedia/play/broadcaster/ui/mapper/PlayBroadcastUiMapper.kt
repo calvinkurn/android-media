@@ -478,7 +478,7 @@ class PlayBroadcastUiMapper @Inject constructor(
         response: GetInteractiveQuizChoiceDetailResponse,
         choiceIndex: Int,
         interactiveId: String,
-        interactiveTitle:String,
+        interactiveTitle: String,
     ): QuizChoiceDetailUiModel {
         return with(response.playInteractiveQuizChoiceDetail) {
             QuizChoiceDetailUiModel(

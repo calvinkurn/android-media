@@ -103,7 +103,7 @@ class PlayBroSelectGameBottomSheet @Inject constructor(
     override fun onGameOptionClick(gameType: GameType) {
         viewModel.submitAction(PlayBroadcastAction.ClickGameOption(gameType))
         when (gameType) {
-            is GameType.Quiz -> analytic.onClickGameOption( viewModel.channelId, viewModel.channelTitle, "quiz")
+            is GameType.Quiz -> analytic.onClickGameOption( viewModel.channelId, viewModel.channelTitle, KEY_QUIZ_ANALYTIC)
         }
         dismiss()
     }
@@ -114,6 +114,7 @@ class PlayBroSelectGameBottomSheet @Inject constructor(
 
     companion object {
         private const val TAG = "SelectGameBottomSheet"
+        private const val KEY_QUIZ_ANALYTIC = "quiz"
 
         fun getFragment(
             fragmentManager: FragmentManager,

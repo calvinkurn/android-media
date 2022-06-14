@@ -80,7 +80,6 @@ class QuizFormView : ConstraintLayout {
     init {
         binding.viewGameHeader.type = GameHeaderView.Type.QUIZ
         timePickerBinding.puTimer.infiniteMode = false
-        timePickerBinding.ivSheetClose.setImage(IconUnify.ARROW_BACK)
         timePickerBinding.tvSheetTitle.text = context.getString(R.string.play_bro_quiz_set_duration_title)
 
         binding.tvBroQuizFormNext.setOnClickListener {

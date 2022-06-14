@@ -39,9 +39,9 @@ class PlayBroInteractiveBottomSheet @Inject constructor(
     QuizOptionDetailViewComponent.Listener {
 
     private val sheetType
-        get() = arguments?.getString(ARG_TYPE) ?: ""
+        get() = arguments?.getString(ARG_TYPE) ?: Type.UNKNOWN.sheetType
     private val sheetSize
-        get() = arguments?.getString(ARG_SIZE) ?: Size.HALF.toString()
+        get() = arguments?.getString(ARG_SIZE) ?: Size.HALF.tag
 
     private val leaderboardSheetView by viewComponent {
         PlayInteractiveLeaderboardViewComponent(
@@ -90,23 +90,23 @@ class PlayBroInteractiveBottomSheet @Inject constructor(
             bottomSheet.updateScrollingChild(v)
         }
 
-        when (sheetSize) {
-            Size.HALF.toString() -> {
+        when (Size.mapFromString(sheetSize)) {
+            Size.HALF -> {
                 binding.root.layoutParams = binding.root.layoutParams.apply {
                     height = (getScreenHeight() * 0.65f).toInt()
                 }
             }
-            Size.FULL.toString() -> {
+            Size.FULL -> {
                 binding.root.layoutParams = binding.root.layoutParams.apply {
                     height = (getScreenHeight() * 1f).toInt()
                 }
             }
         }
-        if (sheetType.isNotBlank()) {
-            when (sheetType) {
-                Type.QUIZ_DETAIL.toString() -> setupQuizDetail()
-                Type.LEADERBOARD.toString() -> setupLeaderBoard()
-                Type.REPORT.toString() -> setupReport()
+        if (Type.mapFromString(sheetType) != Type.UNKNOWN) {
+            when (Type.mapFromString(sheetType)) {
+                Type.QUIZ_DETAIL -> setupQuizDetail()
+                Type.LEADERBOARD -> setupLeaderBoard()
+                Type.REPORT -> setupReport()
             }
             observeQuizDetail()
         }
@@ -182,8 +182,8 @@ class PlayBroInteractiveBottomSheet @Inject constructor(
         leaderboardSheetView.hide()
         choiceDetailSheetView.setData(dataUiModel, isQuizDetail())
         choiceDetailSheetView.show()
-        when (sheetType) {
-            Type.QUIZ_DETAIL.toString() -> {
+        when (Type.mapFromString(sheetType)) {
+            Type.QUIZ_DETAIL -> {
                 analytic.onImpressQuizChoiceDetail(
                     parentViewModel.channelId,
                     parentViewModel.channelTitle,
@@ -191,7 +191,7 @@ class PlayBroInteractiveBottomSheet @Inject constructor(
                     dataUiModel.choice.interactiveTitle,
                 )
             }
-            Type.REPORT.toString() -> {
+            Type.REPORT -> {
                 analytic.onImpressReportQuizChoiceDetail(
                     parentViewModel.channelId,
                     parentViewModel.channelTitle,
@@ -214,8 +214,8 @@ class PlayBroInteractiveBottomSheet @Inject constructor(
     }
 
     override fun onCloseButtonClicked(view: PlayInteractiveLeaderboardViewComponent) {
-        when (sheetType) {
-            Type.QUIZ_DETAIL.toString() -> {
+        when (Type.mapFromString(sheetType)) {
+            Type.QUIZ_DETAIL -> {
                 analytic.onClickCloseOngoingQuizBottomSheet(
                     parentViewModel.channelId,
                     parentViewModel.channelTitle,
@@ -223,13 +223,13 @@ class PlayBroInteractiveBottomSheet @Inject constructor(
                     parentViewModel.activeInteractiveTitle,
                 )
             }
-            Type.LEADERBOARD.toString() -> {
+            Type.LEADERBOARD -> {
                 analytic.onClickCloseGameResultBottomsheet(
                     parentViewModel.channelId,
                     parentViewModel.channelTitle,
                 )
             }
-            Type.REPORT.toString() -> {
+            Type.REPORT -> {
                 analytic.onClickCloseGameResultReport(
                     parentViewModel.channelId,
                     parentViewModel.channelTitle,
@@ -267,8 +267,8 @@ class PlayBroInteractiveBottomSheet @Inject constructor(
     }
 
     override fun onChoiceItemClicked(item: QuizChoicesUiModel) {
-        when (sheetType){
-            Type.QUIZ_DETAIL.toString() -> {
+        when (Type.mapFromString(sheetType)) {
+            Type.QUIZ_DETAIL -> {
                 analytic.onCLickQuizOptionLive(
                     parentViewModel.channelId,
                     parentViewModel.channelTitle,
@@ -276,7 +276,7 @@ class PlayBroInteractiveBottomSheet @Inject constructor(
                     item.interactiveTitle,
                 )
             }
-            Type.REPORT.toString() -> {
+            Type.REPORT -> {
                 analytic.onCLickQuizOptionReport(
                     parentViewModel.channelId,
                     parentViewModel.channelTitle,
@@ -296,8 +296,8 @@ class PlayBroInteractiveBottomSheet @Inject constructor(
         view: PlayInteractiveLeaderboardViewComponent,
         leaderboard: PlayLeaderboardUiModel
     ) {
-        when (sheetType) {
-            Type.LEADERBOARD.toString() ->
+        when (Type.mapFromString(sheetType)) {
+            Type.LEADERBOARD ->
                 analytic.onImpressOngoingLeaderBoard(
                     parentViewModel.channelId,
                     parentViewModel.channelTitle,
@@ -305,7 +305,7 @@ class PlayBroInteractiveBottomSheet @Inject constructor(
                     leaderboard.title,
                     leaderboard.reward,
                 )
-            Type.REPORT.toString() ->
+            Type.REPORT ->
                 analytic.onImpressReportLeaderboard(
                     parentViewModel.channelId,
                     parentViewModel.channelTitle,
@@ -359,7 +359,7 @@ class PlayBroInteractiveBottomSheet @Inject constructor(
                 PlayBroInteractiveBottomSheet::class.java.name,
             ) as PlayBroInteractiveBottomSheet).apply {
                 arguments = Bundle().apply {
-                    putString(ARG_TYPE, type.toString())
+                    putString(ARG_TYPE, type.sheetType)
                     putString(ARG_SIZE, size.toString())
                 }
             }
@@ -387,17 +387,34 @@ class PlayBroInteractiveBottomSheet @Inject constructor(
         }
     }
 
-    private fun isQuizDetail() = sheetType == Type.QUIZ_DETAIL.toString()
-    private fun isReportType() = sheetType == Type.REPORT.toString()
+    private fun isQuizDetail() = sheetType == Type.QUIZ_DETAIL.sheetType
 
-    enum class Type {
-        LEADERBOARD,
-        QUIZ_DETAIL,
-        REPORT,
+    enum class Type(val sheetType: String) {
+        LEADERBOARD("leaderboard"),
+        QUIZ_DETAIL("quiz_detail"),
+        REPORT("report"),
+        UNKNOWN("");
+
+        companion object {
+            fun mapFromString(sheetType: String): Type {
+                return values().firstOrNull {
+                    it.sheetType == sheetType
+                } ?: UNKNOWN
+            }
+        }
     }
 
-    enum class Size {
-        FULL,
-        HALF
+    enum class Size(val tag: String) {
+        FULL("full"),
+        HALF("half"),
+        UNKNOWN("");
+
+        companion object {
+            fun mapFromString(tag: String): Size {
+                return values().firstOrNull {
+                    it.tag == tag
+                } ?: UNKNOWN
+            }
+        }
     }
 }
