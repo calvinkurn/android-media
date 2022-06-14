@@ -1948,11 +1948,18 @@ class PlayViewModel @AssistedInject constructor(
     }
 
     private fun handleClickPartnerName(applink: String) {
-        viewModelScope.launch {
-            val partnerInfo = _partnerInfo.value
-            if (partnerInfo.type == PartnerType.Shop) playAnalytic.clickShop(channelId, channelType, partnerInfo.id.toString())
-            _uiEvent.emit(OpenPageEvent(applink = applink, pipMode = true))
+        fun openPage() {
+            viewModelScope.launch {
+                _uiEvent.emit(OpenPageEvent(applink = applink, pipMode = true))
+            }
         }
+
+        val partnerInfo = _partnerInfo.value
+        if (partnerInfo.type == PartnerType.Shop) playAnalytic.clickShop(channelId, channelType, partnerInfo.id.toString())
+
+        if (partnerInfo.type == PartnerType.Tokonow) needLogin {
+            openPage()
+        } else openPage()
     }
 
     private fun handleClickRetryInteractive() {
@@ -1969,6 +1976,7 @@ class PlayViewModel @AssistedInject constructor(
             REQUEST_CODE_LOGIN_PLAY_INTERACTIVE -> handlePlayingInteractive(shouldPlay = true)
             REQUEST_CODE_USER_REPORT -> handleUserReport()
             REQUEST_CODE_LOGIN_UPCO_REMINDER -> handleSendReminder(selectedUpcomingCampaign, isFromLogin = true)
+            REQUEST_CODE_LOGIN_PLAY_TOKONOW -> updateTagItems() // need to ask if user log in and open page again
             else -> {}
         }
     }
@@ -2496,6 +2504,7 @@ class PlayViewModel @AssistedInject constructor(
         private const val REQUEST_CODE_LOGIN_UPCO_REMINDER = 574
         private const val REQUEST_CODE_USER_REPORT = 575
         private const val REQUEST_CODE_LOGIN_PLAY_INTERACTIVE = 576
+        private const val REQUEST_CODE_LOGIN_PLAY_TOKONOW = 577
 
         private const val WEB_SOCKET_SOURCE_PLAY_VIEWER = "Viewer"
 
