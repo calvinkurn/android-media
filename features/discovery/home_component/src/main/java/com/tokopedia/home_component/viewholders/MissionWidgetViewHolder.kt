@@ -104,19 +104,22 @@ class MissionWidgetViewHolder(
             setChannelDivider(element)
             when (element.status) {
                 MissionWidgetListDataModel.STATUS_LOADING -> {
+                    binding?.homeComponentHeaderView?.gone()
                     binding?.refreshMissionWidget?.gone()
                     binding?.homeComponentMissionWidgetRcv?.gone()
-                    binding?.shimmeringMissionWidget?.root?.show()
+                    binding?.shimmeringMissionWidget?.show()
                 }
                 MissionWidgetListDataModel.STATUS_ERROR -> {
                     binding?.refreshMissionWidget?.show()
                     binding?.homeComponentMissionWidgetRcv?.gone()
-                    binding?.shimmeringMissionWidget?.root?.gone()
+                    binding?.shimmeringMissionWidget?.gone()
+                    binding?.homeComponentHeaderView?.show()
                 }
                 else -> {
                     binding?.refreshMissionWidget?.gone()
                     binding?.homeComponentMissionWidgetRcv?.show()
-                    binding?.shimmeringMissionWidget?.root?.gone()
+                    binding?.shimmeringMissionWidget?.gone()
+                    binding?.homeComponentHeaderView?.show()
                     binding?.homeComponentMissionWidgetRcv?.setHasFixedSize(true)
                     valuateRecyclerViewDecoration()
                     val visitables = convertDataToMissionWidgetData(element)

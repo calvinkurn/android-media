@@ -40,6 +40,7 @@ import com.tokopedia.home.beranda.domain.gql.feed.HomeFeedTabGqlResponse
 import com.tokopedia.home.beranda.domain.interactor.*
 import com.tokopedia.home.beranda.domain.interactor.repository.*
 import com.tokopedia.home.beranda.domain.interactor.usecase.HomeBalanceWidgetUseCase
+import com.tokopedia.home.beranda.domain.interactor.usecase.HomeMissionWidgetUseCase
 import com.tokopedia.home.beranda.domain.model.*
 import com.tokopedia.home.beranda.domain.model.banner.HomeBannerData
 import com.tokopedia.home.beranda.domain.model.review.SuggestedProductReview
@@ -137,6 +138,17 @@ class HomeUseCaseModule {
             homeMissionWidgetRepository = homeMissionWidgetRepository
     )
 
+    @HomeScope
+    @Provides
+    fun provideHomeMissionWidgetUseCase(
+            @ApplicationContext context: Context,
+            homeChooseAddressRepository: HomeChooseAddressRepository,
+            homeMissionWidgetRepository: HomeMissionWidgetRepository
+    ) = HomeMissionWidgetUseCase (
+            applicationContext = context,
+            homeChooseAddressRepository = homeChooseAddressRepository,
+            missionWidgetRepository = homeMissionWidgetRepository
+    )
 
     @Provides
     fun provideGetHomeRecommendationUseCase(

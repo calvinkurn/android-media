@@ -40,11 +40,26 @@
             android:visibility="gone"
             tools:visibility="visible"/>
 
-        <include
+        <LinearLayout
             android:id="@+id/shimmering_mission_widget"
-            layout="@layout/home_component_mission_widget_shimmering"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
             android:visibility="gone"
-            tools:visibility="visible"/>
+            tools:visibility="visible">
+
+            <com.tokopedia.unifycomponents.LoaderUnify
+                android:layout_width="188dp"
+                android:layout_height="8dp"
+                app:loader_type="rect"
+                app:loader_corner_radius="0dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginVertical="20dp"/>
+
+            <include
+                layout="@layout/home_component_mission_widget_shimmering" />
+
+        </LinearLayout>
 
         <com.tokopedia.unifycomponents.LocalLoad
             android:id="@+id/refresh_mission_widget"
