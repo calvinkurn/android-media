@@ -74,7 +74,6 @@ class PlayBroInteractiveBottomSheet @Inject constructor(
             requireActivity(),
             parentViewModelFactoryCreator.create(requireActivity())
         )[PlayBroadcastViewModel::class.java]
-
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -85,6 +84,7 @@ class PlayBroInteractiveBottomSheet @Inject constructor(
                 return false
             }
         })
+        leaderboardSheetView.clearTopPadding()
 
         choiceDetailSheetView.addOnTouchListener { v, _, _, _, _ ->
             bottomSheet.updateScrollingChild(v)
