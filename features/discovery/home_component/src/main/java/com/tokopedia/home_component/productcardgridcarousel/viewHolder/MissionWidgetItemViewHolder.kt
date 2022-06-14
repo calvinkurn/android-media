@@ -7,6 +7,7 @@ import com.tokopedia.home_component.R
 import com.tokopedia.home_component.databinding.HomeBannerItemMissionWidgetBinding
 import com.tokopedia.home_component.productcardgridcarousel.dataModel.CarouselMissionWidgetDataModel
 import com.tokopedia.home_component.util.ImageUnifyUtils
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.unifycomponents.CardUnify2
 import com.tokopedia.utils.view.binding.viewBinding
 
@@ -36,6 +37,9 @@ class MissionWidgetItemViewHolder(
             } else CardUnify2.ANIMATE_OVERLAY
             cardContainerMissionWidget.rootView.setOnClickListener {
                 element.missionWidgetComponentListener.onMissionClicked(element, adapterPosition)
+            }
+            cardContainerMissionWidget.rootView.addOnImpressionListener(element) {
+                element.missionWidgetComponentListener.onMissionImpressed(element, adapterPosition)
             }
             imageMissionWidget.setImageUrl(element.imageURL)
             imageMissionWidget.outlineProvider =

@@ -6,7 +6,6 @@ import com.tokopedia.home.beranda.presentation.viewModel.HomeRevampViewModel
 import com.tokopedia.home_component.listener.MissionWidgetComponentListener
 import com.tokopedia.home_component.productcardgridcarousel.dataModel.CarouselMissionWidgetDataModel
 import com.tokopedia.home_component.visitable.MissionWidgetListDataModel
-import com.tokopedia.track.TrackApp
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 
@@ -28,7 +27,7 @@ class MissionWidgetComponentCallback(
         element: CarouselMissionWidgetDataModel,
         horizontalPosition: Int
     ) {
-        MissionWidgetTracking.getMissionWidgetClicked(element, horizontalPosition, homeCategoryListener.userId)
+        MissionWidgetTracking.sendMissionWidgetClicked(element, horizontalPosition, homeCategoryListener.userId)
         homeCategoryListener.onDynamicChannelClicked(element.appLink)
     }
 
@@ -36,6 +35,12 @@ class MissionWidgetComponentCallback(
         element: CarouselMissionWidgetDataModel,
         horizontalPosition: Int
     ) {
-
+        homeCategoryListener.getTrackingQueueObj()?.putEETracking(
+            MissionWidgetTracking.getMissionWidgetView(
+                element,
+                horizontalPosition,
+                homeCategoryListener.userId
+            ) as HashMap<String, Any>
+        )
     }
 }
