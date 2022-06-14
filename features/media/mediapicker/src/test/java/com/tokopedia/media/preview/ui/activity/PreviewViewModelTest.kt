@@ -98,7 +98,7 @@ class PreviewViewModelTest {
         lateinit var pickerResult: PickerResult
 
         // When
-        every { getFileFormatByMimeType(any(), any(), any()) } returns false
+        every { getFileFormatByMimeType(any(), any(), any()) } returns true
         every { saveToGalleryManagerMock.dispatch(any()) } returns null
         every { imageCompressorMock.compress(any()) } answers {
             flow {
