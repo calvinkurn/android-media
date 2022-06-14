@@ -131,7 +131,7 @@ class ShopInfoViewHolder(
             val message = statusInfoUiModel?.statusMessage.orEmpty()
 
             if (title.isNotEmpty() && message.isNotEmpty()) {
-                tickerShopInfo.tickerTitle = title
+                tickerShopInfo.tickerTitle = title.parseAsHtml().toString()
                 tickerShopInfo.setHtmlDescription(message)
                 val tickerType: Int = when (statusInfoUiModel?.tickerType) {
                     TICKER_TYPE_DANGER -> Ticker.TYPE_ERROR

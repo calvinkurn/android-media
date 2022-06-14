@@ -414,7 +414,9 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         getPageLoadTimeCallback()?.startCustomMetric(HomePerformanceConstant.KEY_PERFORMANCE_ON_CREATE_HOME)
         beautyFestEvent = BEAUTY_FEST_NOT_SET
         fragmentCreatedForFirstTime = true
-        searchBarTransitionRange = resources.getDimensionPixelSize(R.dimen.home_revamp_searchbar_transition_range)
+        context?.run {
+            searchBarTransitionRange = resources.getDimensionPixelSize(R.dimen.home_revamp_searchbar_transition_range)
+        }
         startToTransitionOffset = 1f.toDpInt()
         getPageLoadTimeCallback()?.stopCustomMetric(HomePerformanceConstant.KEY_PERFORMANCE_ON_CREATE_HOME)
     }
@@ -1447,11 +1449,13 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     }
 
     private fun adjustHomeBackgroundHeight() {
-        val layoutParams = backgroundViewImage.layoutParams
-        layoutParams.height =
+        context?.run {
+            val layoutParams = backgroundViewImage.layoutParams
+            layoutParams.height =
                 resources.getDimensionPixelSize(R.dimen.home_background_balance_small_with_choose_address)
-        backgroundViewImage.layoutParams = layoutParams
-        loaderHeaderImage.layoutParams = layoutParams
+            backgroundViewImage.layoutParams = layoutParams
+            loaderHeaderImage.layoutParams = layoutParams
+        }
     }
 
     private fun setData(data: List<Visitable<*>>, isCache: Boolean) {
@@ -1630,6 +1634,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
             SpecialReleaseComponentCallback(context, this),
             MerchantVoucherComponentCallback(this),
             CueWidgetComponentCallback(this),
+            VpsWidgetComponentCallback(this),
             MissionWidgetComponentCallback(this, getHomeViewModel())
         )
         val asyncDifferConfig = AsyncDifferConfig.Builder(HomeVisitableDiffUtil())
@@ -2523,11 +2528,11 @@ open class HomeRevampFragment : BaseDaggerFragment(),
 
     override val homeMainToolbarHeight: Int
         get() {
-            var height = resources.getDimensionPixelSize(R.dimen.default_toolbar_status_height)
-            context?.let {
+            var height = requireActivity().resources.getDimensionPixelSize(R.dimen.default_toolbar_status_height)
+            context?.let { context ->
                 navToolbar?.let {
                     height = navToolbar?.height
-                        ?: resources.getDimensionPixelSize(R.dimen.default_toolbar_status_height)
+                        ?: context.resources.getDimensionPixelSize(R.dimen.default_toolbar_status_height)
                     height += 8f.toDpInt()
                 }
             }

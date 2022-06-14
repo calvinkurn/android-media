@@ -1,9 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
-<Button xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:id="@+id/btn_action_menus"
-    android:textAllCaps="false"
-    android:background="@null"
-    android:textColor="@color/Unify_G500"
-    android:layout_margin="8dp" />
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:background="@color/Unify_Background">
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/btn_action_menus"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"
+        android:paddingBottom="@dimen/unify_space_8"
+        android:paddingTop="@dimen/unify_space_8"
+        android:background="@null"
+        android:gravity="center"
+        android:textAllCaps="false"
+        android:textColor="@color/Unify_G500" />
+
+</LinearLayout>

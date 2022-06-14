@@ -102,19 +102,19 @@ class MediaPreviewFragment: BaseDaggerFragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        mediaPreviewViewModel.postDetailLive.observe(this, Observer {
+        mediaPreviewViewModel.postDetailLive.observe(viewLifecycleOwner, Observer {
             when(it){
                 is Success -> onSuccessGetDetail(it.data)
                 is Fail -> onErrorGetDetail(it.throwable)
             }
         })
 
-        mediaPreviewViewModel.postFooterLive.observe(this, Observer {
+        mediaPreviewViewModel.postFooterLive.observe(viewLifecycleOwner, Observer {
             val (footer, footerTemplate) = it ?: return@Observer
             bindFooter(footer, footerTemplate)
         })
 
-        mediaPreviewViewModel.postTagLive.observe(this, Observer { postTag ->
+        mediaPreviewViewModel.postTagLive.observe(viewLifecycleOwner, Observer { postTag ->
             postTag?.let { bindTags(it) }
         })
     }
@@ -284,7 +284,12 @@ class MediaPreviewFragment: BaseDaggerFragment() {
                     }
                 }
 
-                tag_picture.loadImageRounded(tags.items[0].thumbnail, resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.unify_space_8))
+                context?.let {
+                    tag_picture.loadImageRounded(
+                        tags.items[0].thumbnail,
+                        it.resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.unify_space_8)
+                    )
+                }
                 tag_picture.visible()
                 buttonTagAction?.visible()
             }
@@ -410,7 +415,7 @@ class MediaPreviewFragment: BaseDaggerFragment() {
             label_like.text = if (footer.totalLike > 0) footer.totalLike.toString()
                 else getString(com.tokopedia.feedcomponent.R.string.kol_action_like)
             val color = context?.let { ContextCompat.getColor(it,
-                    if (footer.isLiked) R.color.kol_green_g500 else com.tokopedia.unifyprinciples.R.color.Unify_N0 ) }
+                    if (footer.isLiked) com.tokopedia.unifyprinciples.R.color.Unify_G500 else com.tokopedia.unifyprinciples.R.color.Unify_N0 ) }
             color?.let {
                 icon_thumb.setColorFilter(it, PorterDuff.Mode.MULTIPLY)
                 label_like.setTextColor(it)

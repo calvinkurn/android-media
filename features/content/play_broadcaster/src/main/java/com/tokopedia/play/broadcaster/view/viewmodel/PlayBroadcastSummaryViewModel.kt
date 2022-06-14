@@ -35,7 +35,6 @@ import kotlinx.coroutines.flow.*
 /**
  * @author by jessica on 27/05/20
  */
-
 class PlayBroadcastSummaryViewModel @AssistedInject constructor(
     @Assisted("channelId") val channelId: String,
     @Assisted("channelTitle") val channelTitle: String,
@@ -319,6 +318,7 @@ class PlayBroadcastSummaryViewModel @AssistedInject constructor(
     private fun convertDate(raw: String): String =
         PlayDateTimeFormatter.formatDate(raw, outputPattern = PlayDateTimeFormatter.dMMMMyyyy)
 
+    @Suppress("MagicNumber")
     private fun isEligiblePostVideo(duration: String): Boolean {
         return try {
             val split = duration.split(":")
