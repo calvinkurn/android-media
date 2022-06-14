@@ -57,6 +57,7 @@ import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.trackingoptimizer.TrackingQueue
+import com.tokopedia.unifycomponents.CardUnify2
 import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.universal_sharing.view.bottomsheet.SharingUtil
@@ -716,7 +717,7 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
                         if (result.data.status == OK) {
                             val data = result.data.data
                             if (data.success) {
-                                if (data.totalItems == data.successfullyRemovedItems || data.successfullyRemovedItems >= data.totalItems) {
+                                if (data.successfullyRemovedItems >= data.totalItems) {
                                     finishDeletionWidget(data)
                                 } else {
                                     updateDeletionWidget(data)
@@ -747,8 +748,9 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
     }
 
     private fun finishDeletionWidget(data: DeleteWishlistProgressV2Response.Data.DeleteWishlistProgress.DataDeleteWishlistProgress) {
+        stopProgressDeletionHandler()
         wishlistViewModel.countDeletionWishlistV2.removeObservers(this)
-        if (data.totalItems > 0) {
+        if (data.totalItems > 0 && data.toasterMessage.isNotEmpty()) {
             val finishData = DeleteWishlistProgressV2Response.Data.DeleteWishlistProgress.DataDeleteWishlistProgress(
                 totalItems = data.totalItems,
                 successfullyRemovedItems = data.totalItems,
@@ -760,7 +762,6 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
             updateDeletionWidget(finishData)
             showToaster(data.toasterMessage, "", Toaster.TYPE_NORMAL)
         }
-        stopProgressDeletionHandler()
         hideStickyDeletionProgress()
         doRefresh()
     }
@@ -773,6 +774,7 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
         val indicatorProgressBar = percentage*100
 
         binding?.run {
+            wishlistV2StickyCountManageLabel.cardWishlistV2StickyDeletion.cardType = CardUnify2.TYPE_SHADOW
             wishlistV2StickyCountManageLabel.rlWishlistV2StickyProgressDeletionWidget.visible()
             wishlistV2StickyCountManageLabel.wishlistV2CountDeletionMessage.text = message
             wishlistV2StickyCountManageLabel.wishlistV2CountDeletionProgressbar.setValue(indicatorProgressBar.roundToInt(), true)

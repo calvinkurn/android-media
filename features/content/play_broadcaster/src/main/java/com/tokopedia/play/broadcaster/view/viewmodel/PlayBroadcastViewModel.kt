@@ -36,7 +36,7 @@ import com.tokopedia.play.broadcaster.util.logger.PlayLogger
 import com.tokopedia.play.broadcaster.util.preference.HydraSharedPreferences
 import com.tokopedia.play.broadcaster.util.share.PlayShareWrapper
 import com.tokopedia.play.broadcaster.view.state.*
-import com.tokopedia.play_common.domain.model.interactive.ChannelInteractive
+import com.tokopedia.play_common.domain.model.interactive.GiveawayResponse
 import com.tokopedia.play_common.model.dto.interactive.PlayCurrentInteractiveModel
 import com.tokopedia.play_common.model.dto.interactive.PlayInteractiveTimeStatus
 import com.tokopedia.play_common.model.mapper.PlayChannelInteractiveMapper
@@ -195,6 +195,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         )
     }
 
+    @Suppress("MagicNumber")
     val uiState = combine(
         _channelUiState.distinctUntilChanged(),
         _pinnedMessageUiState.distinctUntilChanged(),
@@ -599,7 +600,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
                     logger.logSocketType(result)
                 }
             }
-            is ChannelInteractive -> {
+            is GiveawayResponse -> {
                 val currentInteractive = channelInteractiveMapper.mapInteractive(result)
                 handleActiveInteractiveFromNetwork(currentInteractive)
             }

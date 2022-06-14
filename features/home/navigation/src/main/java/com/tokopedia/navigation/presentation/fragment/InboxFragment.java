@@ -100,6 +100,7 @@ public class InboxFragment extends BaseTestableParentFragment<GlobalNavComponent
     private static final int SHIFTING_INDEX = 1;
     private static final int TOP_ADS_BANNER_COUNT = 2;
     private static final int HEADLINE_ADS_BANNER_COUNT = 2;
+    private static final String CLICK_TYPE_WISHLIST = "&click_type=wishlist";
 
     @Inject
     InboxPresenter presenter;
@@ -201,9 +202,18 @@ public class InboxFragment extends BaseTestableParentFragment<GlobalNavComponent
             if (isUsingWishlistV2) showSuccessAddWishlistV2(productCardOptionsModel.getWishlistResult());
             else showSuccessAddWishlist();
         } else {
-            if (isUsingWishlistV2) showSuccessRemoveWishlistV2(productCardOptionsModel.getWishlistResult());
-            else showSuccessRemoveWishlist();
+            if (isUsingWishlistV2) {
+                showSuccessRemoveWishlistV2(productCardOptionsModel.getWishlistResult());
+                if (productCardOptionsModel.isTopAds()) onClickTopAdsWishlistV2(productCardOptionsModel);
+            } else showSuccessRemoveWishlist();
         }
+    }
+
+    private void onClickTopAdsWishlistV2(ProductCardOptionsModel productCardOptionsModel) {
+        String clickUrl = productCardOptionsModel.getTopAdsClickUrl() + CLICK_TYPE_WISHLIST;
+        new TopAdsUrlHitter(getContext()).hitClickUrl(getActivity().getClass().getName(), clickUrl,
+                productCardOptionsModel.getProductId(), productCardOptionsModel.getProductName(),
+                productCardOptionsModel.getProductImageUrl(), COMPONENT_NAME_TOP_ADS);
     }
 
     private void showSuccessAddWishlist() {
