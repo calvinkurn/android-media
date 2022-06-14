@@ -19,7 +19,7 @@ class InvitationConfirmationNavigator(
         val params =
             mapOf<String, Any>(Constants.SHOP_NAME_PARAM to shopName)
         val appLink = UriUtil.buildUriAppendParams(
-            ApplinkConstInternalMarketplace.ADMIN_INVITATION,
+            ApplinkConstInternalMarketplace.ADMIN_ACCEPTED,
             params
         )
         RouteManager.route(fragment.context, appLink)
