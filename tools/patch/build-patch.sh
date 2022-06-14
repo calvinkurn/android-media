@@ -1,8 +1,6 @@
 #!/usr/bin/env bash
 set -e
 
-#sed -i '' "s/release {/release {\n            minifyEnabled true/g" testapp/build.gradle
-
 buildPatch(){
   APP_NAME=$1
   ROBUST_FOLDER=robust
