@@ -63,29 +63,31 @@ class TokomemberMainFragment : BaseDaggerFragment() {
                     shopId = it.data.userShopInfo?.info?.shopId.toIntOrZero()
                     shopAvatar = it.data.userShopInfo?.info?.shopAvatar?:""
                     shopName = it.data.userShopInfo?.info?.shopName?:""
-                    tmEligibilityViewModel.checkUserEligibility(shopId)
+                    tmEligibilityViewModel.getOnboardingInfo(shopId)
                 }
                 is Fail -> {
                 }
             }
         })
 
-        tmEligibilityViewModel.userEligibilityCheckResultLiveData.observe(viewLifecycleOwner, {
-            when (it){
-                is Success ->{
-                    if(it.data.rbacAuthorizeAccess?.isAuthorized == true) {
-                        tmEligibilityViewModel.checkEligibility(shopId, true)
-                    }
-                    else{
-                        viewFlipperIntro?.displayedChild = 2
-                        tmTracker?.viewBSNoAccess(shopId.toString())
-                        Toast.makeText(context, it.data.rbacAuthorizeAccess?.error, Toast.LENGTH_SHORT).show()
-                    }
-                }
-                else -> {
-
-                }
-            }
+        tmEligibilityViewModel.tokomemberOnboardingResultLiveData.observe(viewLifecycleOwner,{
+          when(it) {
+              is Success -> {
+                  if (it.data.membershipGetSellerOnboarding?.resultStatus?.code == "200"){
+                      if (it.data.membershipGetSellerOnboarding?.sellerHomeContent?.isShowContent == true){
+                          tmEligibilityViewModel.checkEligibility(shopId, true)
+                      } else{
+                          TokomemberDashHomeActivity.openActivity(shopId, context)
+                          activity?.finish()
+                      }
+                  } else{
+                      viewFlipperIntro?.displayedChild = 2
+                      tmTracker?.viewBSNoAccess(shopId.toString())
+                  }
+              }
+              is Fail -> {
+              }
+          }
         })
 
         tmEligibilityViewModel.eligibilityCheckResultLiveData.observe(viewLifecycleOwner, {
@@ -101,24 +103,17 @@ class TokomemberMainFragment : BaseDaggerFragment() {
     }
 
     private fun checkEligibility(data: CheckEligibility?) {
-        if(data?.eligibilityCheckData?.isEligible == true)
-        {
-            if (data.eligibilityCheckData.message.title.isNullOrEmpty() and data.eligibilityCheckData.message.subtitle.isNullOrEmpty())
-            {
-                TokomemberDashHomeActivity.openActivity(shopId, context)
-                activity?.finish()
-                // redirect to dashboard
-            }
-            else{
-                TokomemberDashIntroActivity.openActivity(shopId,shopAvatar,shopName, context = context)
-                activity?.finish()
-                // redirect to intro page
-            }
-        }
-        else{
-            TokomemberDashIntroActivity.openActivity(shopId, shopAvatar,shopName,true, context)
+        if (data?.eligibilityCheckData?.isEligible == true) {
+            TokomemberDashIntroActivity.openActivity(
+                shopId,
+                shopAvatar,
+                shopName,
+                context = context
+            )
             activity?.finish()
-            // redirect to intro page + bottomsheet
+        } else {
+            TokomemberDashIntroActivity.openActivity(shopId, shopAvatar, shopName, true, context)
+            activity?.finish()
         }
     }
 

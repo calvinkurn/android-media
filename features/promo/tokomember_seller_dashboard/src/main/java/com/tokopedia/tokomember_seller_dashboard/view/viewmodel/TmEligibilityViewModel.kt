@@ -4,10 +4,12 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.tokomember_seller_dashboard.di.qualifier.CoroutineMainDispatcher
+import com.tokopedia.tokomember_seller_dashboard.domain.TmOnBoardingCheckUsecase
 import com.tokopedia.tokomember_seller_dashboard.domain.TokomemberAuthenticatedUsecase
 import com.tokopedia.tokomember_seller_dashboard.domain.TokomemberEligibilityUsecase
 import com.tokopedia.tokomember_seller_dashboard.domain.TokomemberUserEligibilityUsecase
 import com.tokopedia.tokomember_seller_dashboard.model.CheckEligibility
+import com.tokopedia.tokomember_seller_dashboard.model.MembershipData
 import com.tokopedia.tokomember_seller_dashboard.model.SellerData
 import com.tokopedia.tokomember_seller_dashboard.model.TmUserElligibilityResponseData
 import com.tokopedia.usecase.coroutines.Fail
@@ -19,18 +21,20 @@ import javax.inject.Inject
 class TmEligibilityViewModel @Inject constructor(
     private val tokomemberEligibilityUsecase: TokomemberEligibilityUsecase,
     private val tokomemberAuthenticatedUsecase: TokomemberAuthenticatedUsecase,
-    private val tmUserEligibilityUsecase: TokomemberUserEligibilityUsecase,
+    private val tmOnBoardingCheckUsecase: TmOnBoardingCheckUsecase,
     @CoroutineMainDispatcher dispatcher: CoroutineDispatcher
     ) : BaseViewModel(dispatcher) {
 
     private val _eligibilityCheckResultLiveData = MutableLiveData<Result<CheckEligibility>>()
     val eligibilityCheckResultLiveData: LiveData<Result<CheckEligibility>> = _eligibilityCheckResultLiveData
 
-    private val _userEligibilityCheckResultLiveData = MutableLiveData<Result<TmUserElligibilityResponseData>>()
-    val userEligibilityCheckResultLiveData: LiveData<Result<TmUserElligibilityResponseData>> = _userEligibilityCheckResultLiveData
-
     private val _sellerInfoResultLiveData = MutableLiveData<Result<SellerData>>()
     val sellerInfoResultLiveData: LiveData<Result<SellerData>> = _sellerInfoResultLiveData
+
+    private val _tokomemberOnboardingResultLiveData =
+        MutableLiveData<Result<MembershipData>>()
+    val tokomemberOnboardingResultLiveData: LiveData<Result<MembershipData>> =
+        _tokomemberOnboardingResultLiveData
 
     fun checkEligibility(shopID: Int, isRegister: Boolean) {
         tokomemberEligibilityUsecase.cancelJobs()
@@ -41,14 +45,13 @@ class TmEligibilityViewModel @Inject constructor(
         }, shopID, isRegister)
     }
 
-    fun checkUserEligibility(shopId: Int) {
-        tmUserEligibilityUsecase.cancelJobs()
-        tmUserEligibilityUsecase.checkUserEligibility({
-            _userEligibilityCheckResultLiveData.postValue(Success(it))
+    fun getOnboardingInfo(shopID: Int) {
+        tmOnBoardingCheckUsecase.cancelJobs()
+        tmOnBoardingCheckUsecase.getMemberOnboardingInfo({
+            _tokomemberOnboardingResultLiveData.postValue(Success(it))
         }, {
-            _userEligibilityCheckResultLiveData.postValue(Fail(it))
-        }, shopId)
-
+            _tokomemberOnboardingResultLiveData.postValue(Fail(it))
+        }, shopID)
     }
 
     fun getSellerInfo() {
