@@ -1,5 +1,6 @@
 package com.tokopedia.sessioncommon.data.pin
 
+import android.annotation.SuppressLint
 import com.google.gson.annotations.SerializedName
 
 data class ValidatePinV2Response(
@@ -8,6 +9,7 @@ data class ValidatePinV2Response(
 )
 
 data class ValidatePinV2Data(
+    @SuppressLint("Invalid Data Type")
     @SerializedName("valid")
     val valid: Boolean = false,
     @SerializedName("error_message")

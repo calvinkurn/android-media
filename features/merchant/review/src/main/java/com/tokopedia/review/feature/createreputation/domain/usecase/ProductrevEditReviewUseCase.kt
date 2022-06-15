@@ -23,11 +23,12 @@ class ProductrevEditReviewUseCase @Inject constructor(private val gqlUseCase: Mu
         const val PARAM_IS_ANONYMOUS = "isAnonymous"
         const val PARAM_CURRENT_ATTACHMENT_URL = "currentAttachmentURLs"
         const val PARAM_NEW_ATTACHMENT_ID = "newAttachmentIDs"
+        const val PARAM_CURRENT_VIDEO_ATTACHMENT_URLS = "currentVideoURLs"
         const val EDIT_REVIEW_QUERY_CLASS_NAME = "EditReview"
         const val EDIT_REVIEW_MUTATION =
             """
-                mutation productrevEditReview(${'$'}feedbackID: String!, ${'$'}reputationID: String!, ${'$'}productID : String!, ${'$'}shopID: String!, ${'$'}rating: Int!, ${'$'}reviewText: String, ${'$'}isAnonymous: Boolean, ${'$'}currentAttachmentURLs: [String],${'$'}newAttachmentIDs: [String]) {
-                  productrevEditReview(feedbackID: ${'$'}feedbackID, reputationID: ${'$'}reputationID, productID: ${'$'}productID, shopID: ${'$'}shopID, rating: ${'$'}rating, reviewText: ${'$'}reviewText, isAnonymous: ${'$'}isAnonymous , currentAttachmentURLs: ${'$'}currentAttachmentURLs, newAttachmentIDs: ${'$'}newAttachmentIDs) {
+                mutation productrevEditReview(${'$'}feedbackID: String!, ${'$'}reputationID: String!, ${'$'}productID : String!, ${'$'}shopID: String!, ${'$'}rating: Int!, ${'$'}reviewText: String, ${'$'}isAnonymous: Boolean, ${'$'}currentAttachmentURLs: [String],${'$'}newAttachmentIDs: [String], ${'$'}currentVideoURLs: [String]) {
+                  productrevEditReview(feedbackID: ${'$'}feedbackID, reputationID: ${'$'}reputationID, productID: ${'$'}productID, shopID: ${'$'}shopID, rating: ${'$'}rating, reviewText: ${'$'}reviewText, isAnonymous: ${'$'}isAnonymous , currentAttachmentURLs: ${'$'}currentAttachmentURLs, newAttachmentIDs: ${'$'}newAttachmentIDs, currentVideoURLs: ${'$'}currentVideoURLs) {
                     success
                   }
                 }
@@ -36,7 +37,19 @@ class ProductrevEditReviewUseCase @Inject constructor(private val gqlUseCase: Mu
 
     private var requestParams = RequestParams.EMPTY
 
-    fun setParams(feedbackId: String, reputationId: String, productId: String, shopId: String, reputationScore: Int = 0, rating: Int, reviewText: String, isAnonymous: Boolean, oldAttachmentUrls: List<String> = emptyList(), attachmentIds: List<String> = emptyList()) {
+    fun setParams(
+        feedbackId: String,
+        reputationId: String,
+        productId: String,
+        shopId: String,
+        reputationScore: Int = 0,
+        rating: Int,
+        reviewText: String,
+        isAnonymous: Boolean,
+        oldAttachmentUrls: List<String> = emptyList(),
+        attachmentIds: List<String> = emptyList(),
+        oldVideoAttachmentUrls: List<String> = emptyList()
+    ) {
         requestParams = RequestParams.create().apply {
             putString(PARAM_FEEDBACK_ID, feedbackId)
             putString(PARAM_REPUTATION_ID, reputationId)
@@ -57,6 +70,9 @@ class ProductrevEditReviewUseCase @Inject constructor(private val gqlUseCase: Mu
             }
             if(attachmentIds.isNotEmpty()) {
                 putObject(PARAM_NEW_ATTACHMENT_ID, attachmentIds)
+            }
+            if (oldVideoAttachmentUrls.isNotEmpty()) {
+                putObject(PARAM_CURRENT_VIDEO_ATTACHMENT_URLS, oldVideoAttachmentUrls)
             }
         }
     }
