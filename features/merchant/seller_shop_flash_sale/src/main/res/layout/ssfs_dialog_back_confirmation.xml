@@ -76,7 +76,6 @@
         android:layout_marginEnd="@dimen/unify_space_16"
         android:text="@string/sfs_save_as_draft"
         app:layout_constraintBottom_toBottomOf="parent"
-        android:layout_marginBottom="@dimen/unify_space_24"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/btnNo"
