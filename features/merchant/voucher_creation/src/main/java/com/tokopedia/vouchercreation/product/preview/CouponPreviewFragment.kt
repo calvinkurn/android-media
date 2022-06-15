@@ -35,7 +35,10 @@ import com.tokopedia.vouchercreation.common.extension.splitByThousand
 import com.tokopedia.vouchercreation.common.tracker.CouponPreviewTracker
 import com.tokopedia.vouchercreation.common.utils.DateTimeUtils
 import com.tokopedia.vouchercreation.common.utils.DateTimeUtils.EXTRA_DAYS_COUPON
+import com.tokopedia.vouchercreation.common.utils.DateTimeUtils.getCouponMaxEndDate
+import com.tokopedia.vouchercreation.common.utils.DateTimeUtils.getMinStartDate
 import com.tokopedia.vouchercreation.common.utils.DateTimeUtils.isBeforeRollout
+import com.tokopedia.vouchercreation.common.utils.DateTimeUtils.roundDate
 import com.tokopedia.vouchercreation.common.utils.HyperlinkClickHandler
 import com.tokopedia.vouchercreation.common.utils.setFragmentToUnifyBgColor
 import com.tokopedia.vouchercreation.databinding.FragmentCouponPreviewBinding
@@ -871,15 +874,15 @@ class CouponPreviewFragment: BaseDaggerFragment() {
     }
 
     private fun getCouponDefaultStartDate() : Date {
-        val calendar = Calendar.getInstance()
-        calendar.add(Calendar.HOUR_OF_DAY, COUPON_START_DATE_OFFSET_IN_HOUR)
+        val calendar = context?.getMinStartDate() ?: GregorianCalendar()
+        calendar.roundDate()
         return calendar.time
     }
 
     private fun getCouponDefaultEndDate(): Date {
-        val calendar = Calendar.getInstance()
-        calendar.add(Calendar.DAY_OF_MONTH, EXTRA_DAYS_COUPON)
-        return calendar.time
+        val startDate = GregorianCalendar().apply { time = getCouponDefaultStartDate() }
+        val endDate = getCouponMaxEndDate(startDate)
+        return endDate.time
     }
 
     private fun getCouponDefaultStartDateBeforeRollout() : Date {
