@@ -54,6 +54,7 @@
 /features/merchant/power_merchant_subscribe/            @tokopedia/android-minionstuart-dev
 /features/merchant/product_detail/                      @tokopedia/android-minionstuart-dev
 /features/merchant/product_detail_common/               @tokopedia/android-minionstuart-dev
+/features/merchant/product_detail_integration/          @tokopedia/android-minionstuart-dev
 /features/merchant/atc_variant/                         @tokopedia/android-minionstuart-dev
 /features/merchant/product_manage_common/               @tokopedia/android-minionstuart-dev
 /features/merchant/product_manage_list/                 @tokopedia/android-minionstuart-dev
@@ -92,6 +93,7 @@
 /features/merchant/product_manage_item/                 @tokopedia/android-minionken-dev
 /features/merchant/shop_widget/                         @tokopedia/android-minionken-dev
 /features/merchant/campaign_list/                       @tokopedia/android-minionken-dev
+/features/merchant/shop_discount/                       @tokopedia/android-minionken-dev
 
 /features/top_ads/top_ads_dashboard/                    @tokopedia/android-miniondarth-dev
 /features/top_ads/top_ads_free_claim/                   @tokopedia/android-miniondarth-dev
@@ -368,7 +370,7 @@
 /libraries/screenshot_observer                          @tokopedia/android-core-dev
 /libraries/tokopatch                                    @tokopedia/android-core-dev
 /libraries/macrobenchmark/								@tokopedia/android-core-dev
-/libraries/universal_sharing/							@tokopedia/android-gatekeeperloadtime-dev
+/libraries/universal_sharing/							@tokopedia/android-core-dev
 
 /buildconfig/                                           @tokopedia/android-core-dev
 /dynamic-features/                                      @tokopedia/android-core-dev
