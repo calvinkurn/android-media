@@ -7,6 +7,7 @@ import com.tokopedia.tokofood.feature.ordertracking.presentation.viewholder.Orde
 import com.tokopedia.tokofood.feature.ordertracking.presentation.viewholder.OrderTrackingTickerViewHolder
 import com.tokopedia.tokofood.feature.ordertracking.presentation.viewholder.TemporaryFinishOrderViewHolder
 
-interface OrderTrackingListener: OrderDetailToggleCtaViewHolder.OrderDetailToggleCtaListener,
-        OrderTrackingTickerViewHolder.Listener, TemporaryFinishOrderViewHolder.Listener,
-        DriverSectionViewHolder.Listener, OrderTrackingErrorViewHolder.Listener, InvoiceOrderNumberViewHolder.Listener
+interface OrderTrackingListener : OrderDetailToggleCtaViewHolder.OrderDetailToggleCtaListener,
+    OrderTrackingTickerViewHolder.Listener, TemporaryFinishOrderViewHolder.Listener,
+    DriverSectionViewHolder.Listener, OrderTrackingErrorViewHolder.Listener,
+    InvoiceOrderNumberViewHolder.Listener
