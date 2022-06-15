@@ -109,4 +109,7 @@
     <string name="message_applink_failed">Applink is not supported, please check the value from searchbar</string>
     <string name="view_applink_list">View Applink List</string>
 
+    <string name="enable_new_typography_guideline">Enable New Typography Guideline</string>
+
+
 </resources>

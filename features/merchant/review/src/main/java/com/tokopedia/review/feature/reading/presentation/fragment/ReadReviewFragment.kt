@@ -39,6 +39,7 @@ import com.tokopedia.review.common.presentation.listener.ReviewBasicInfoListener
 import com.tokopedia.review.common.presentation.listener.ReviewReportBottomSheetListener
 import com.tokopedia.review.common.presentation.widget.ReviewReportBottomSheet
 import com.tokopedia.review.common.util.ReviewConstants
+import com.tokopedia.review.common.util.getErrorMessage
 import com.tokopedia.review.feature.credibility.presentation.activity.ReviewCredibilityActivity
 import com.tokopedia.review.feature.imagepreview.presentation.activity.ReviewImagePreviewActivity
 import com.tokopedia.review.feature.reading.analytics.ReadReviewTracking
@@ -66,6 +67,8 @@ import com.tokopedia.unifycomponents.floatingbutton.FloatingButtonUnify
 import com.tokopedia.unifycomponents.list.ListItemUnify
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import java.net.SocketTimeoutException
+import java.net.UnknownHostException
 import javax.inject.Inject
 
 open class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAdapterTypeFactory>(),
@@ -93,13 +96,13 @@ open class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAd
             shopId: String = "",
             isProductReview: Boolean
         ): ReadReviewFragment {
-            return ReadReviewFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ReviewConstants.ARGS_PRODUCT_ID, productId)
-                    putString(ReviewConstants.ARGS_SHOP_ID, shopId)
-                    putBoolean(ReviewConstants.ARGS_IS_PRODUCT_REVIEW, isProductReview)
-                }
-            }
+            val fragment = ReadReviewFragment()
+            val fragmentArguments = Bundle()
+            fragmentArguments.putString(ReviewConstants.ARGS_PRODUCT_ID, productId)
+            fragmentArguments.putString(ReviewConstants.ARGS_SHOP_ID, shopId)
+            fragmentArguments.putBoolean(ReviewConstants.ARGS_IS_PRODUCT_REVIEW, isProductReview)
+            fragment.arguments = fragmentArguments
+            return fragment
         }
     }
 
@@ -891,7 +894,7 @@ open class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAd
 
     private fun onFailGetRatingAndTopic(throwable: Throwable) {
         logToCrashlytics(throwable)
-        showError()
+        showError(throwable)
     }
 
     private fun onSuccessGetProductReviews(productrevGetProductReviewList: ProductrevGetProductReviewList) {
@@ -941,9 +944,9 @@ open class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAd
     open fun onFailGetProductReviews(throwable: Throwable) {
         logToCrashlytics(throwable)
         if (currentPage == 0) {
-            showError()
+            showError(throwable)
         } else {
-            showToasterError(getString(R.string.review_reading_connection_error)) {
+            showToasterError(throwable.getErrorMessage(context)) {
                 loadData(
                     currentPage
                 )
@@ -951,8 +954,14 @@ open class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAd
         }
     }
 
-    open fun showError() {
+    open fun showError(throwable: Throwable) {
         globalError?.apply {
+            if (throwable is SocketTimeoutException || throwable is UnknownHostException) {
+                setType(GlobalError.NO_CONNECTION)
+            } else {
+                setType(GlobalError.SERVER_ERROR)
+            }
+            errorDescription.text = throwable.getErrorMessage(context)
             setActionClickListener {
                 loadInitialData()
             }

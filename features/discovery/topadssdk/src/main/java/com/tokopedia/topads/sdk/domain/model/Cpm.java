@@ -25,6 +25,7 @@ public class Cpm implements Parcelable {
     private static final String KEY_CTA_TEXT = "button_text";
     private static final String KEY_LAYOUT = "layout";
     private static final String KEY_POSITION = "position";
+    private static final String KEY_WIDGET_TITLE = "widget_title";
 
     @SerializedName(KEY_TEMPLATE_ID)
     private int templateId;
@@ -48,6 +49,8 @@ public class Cpm implements Parcelable {
     private int layout = 0;
     @SerializedName(KEY_POSITION)
     private int position = 0;
+    @SerializedName(KEY_WIDGET_TITLE)
+    private String widgetTitle = "";
 
     public Cpm() {
     }
@@ -89,6 +92,9 @@ public class Cpm implements Parcelable {
         if(!object.isNull(KEY_POSITION)) {
             setPosition(object.getInt(KEY_POSITION));
         }
+        if(!object.isNull(KEY_WIDGET_TITLE)){
+            setWidgetTitle(object.getString(KEY_WIDGET_TITLE));
+        }
     }
 
     protected Cpm(Parcel in) {
@@ -99,6 +105,7 @@ public class Cpm implements Parcelable {
         promotedText = in.readString();
         uri = in.readString();
         decription = in.readString();
+        widgetTitle = in.readString();
         cpmShop = in.readParcelable(CpmShop.class.getClassLoader());
         cta = in.readString();
         layout = in.readInt();
@@ -114,6 +121,7 @@ public class Cpm implements Parcelable {
         dest.writeString(promotedText);
         dest.writeString(uri);
         dest.writeString(decription);
+        dest.writeString(widgetTitle);
         dest.writeParcelable(cpmShop, flags);
         dest.writeString(cta);
         dest.writeInt(layout);
@@ -223,5 +231,13 @@ public class Cpm implements Parcelable {
 
     public int getPosition() {
         return this.position;
+    }
+
+    public String getWidgetTitle() {
+        return widgetTitle;
+    }
+
+    public void setWidgetTitle(String widgetTitle) {
+        this.widgetTitle = widgetTitle;
     }
 }

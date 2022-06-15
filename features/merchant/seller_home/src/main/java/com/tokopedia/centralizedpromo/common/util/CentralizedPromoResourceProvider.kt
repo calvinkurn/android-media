@@ -61,4 +61,12 @@ class CentralizedPromoResourceProvider @Inject constructor(
         return getString(R.string.centralized_promo_promo_creation_voucher_product_description).orEmpty()
     }
 
+    fun getPromoCreationTitleTokopediaPlay(): String {
+        return getString(R.string.centralized_promo_promo_creation_tokopedia_play_title).orEmpty()
+    }
+
+    fun getPromoCreationDescriptionTokopediaPlay(): String {
+        return getString(R.string.centralized_promo_promo_creation_tokopedia_play_description).orEmpty()
+    }
+
 }

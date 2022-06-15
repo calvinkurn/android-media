@@ -18,6 +18,7 @@ import com.tokopedia.sellerhomecommon.databinding.ShcCardWidgetBinding
 import com.tokopedia.sellerhomecommon.presentation.model.CardDataUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.CardWidgetUiModel
 import com.tokopedia.unifycomponents.NotificationUnify
+import java.util.*
 
 /**
  * Created By @ilhamsuaib on 19/05/20
@@ -129,9 +130,20 @@ class CardViewHolder(
                 tvCardValue.visible()
                 tvCardValue.text = (element.data?.value ?: ZERO_STR).parseAsHtml()
             }
-            tvCardSubValue.text = element.data?.description?.parseAsHtml()
+            if (element.data?.description.isNullOrBlank()) {
+                tvCardSubValue.invisible()
+            } else {
+                tvCardSubValue.visible()
+                tvCardSubValue.show(
+                    primary = element.data?.description.orEmpty(),
+                    secondary = element.data?.secondaryDescription.orEmpty()
+                )
+            }
             root.addOnImpressionListener(element.impressHolder) {
                 listener.sendCardImpressionEvent(element)
+                if (!element.data?.description.isNullOrBlank()) {
+                    tvCardSubValue.showTextWithAnimation()
+                }
             }
 
             root.setOnClickListener {
@@ -150,7 +162,8 @@ class CardViewHolder(
         with(binding) {
             containerCard.viewTreeObserver.addOnPreDrawListener {
                 element.data?.lastUpdated?.let {
-                    val shouldShowRefreshButton = it.needToUpdated.orFalse() && !element.showLoadingState
+                    val shouldShowRefreshButton =
+                        it.needToUpdated.orFalse() && !element.showLoadingState
                     icShcRefreshCard.isVisible = shouldShowRefreshButton && it.isEnabled
                     icShcRefreshCard.setOnClickListener {
                         refreshWidget(element)
@@ -183,7 +196,7 @@ class CardViewHolder(
             tvCardTitle.visible()
             tvCardValue.visible()
             tvCardValue.text = root.context.getString(R.string.shc_load_failed)
-            tvCardSubValue.text = ""
+            tvCardSubValue.invisible()
         }
     }
 

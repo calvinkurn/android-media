@@ -20,4 +20,16 @@
     <string name="thematic_widget_see_all">Lihat Semua</string>
     <string name="thematic_widget_subtitle">Berakhir dalam</string>
     <string name="thematic_widget_see_all_desc">Masih banyak barang lainnya, lho!</string>
+
+    <!-- Shop Note Detail -->
+    <string name="shop_note_detail_date_format">%1$s, pukul %2$s</string>
+    <string name="shop_note_title">Catatan Toko</string>
+    <string name="read">Baca</string>
+
+    <!-- Shop Favourite -->
+    <string name="favorited_shop_title">Followers Toko</string>
+    <string name="shop_product_empty_follower_title">Toko ini belum memiliki follower</string>
+    <string name="shop_product_empty_product_title_desc">Jadi yang pertama untuk follow Toko %1$s dan temukan update tentang toko ini di feed Anda.</string>
+    <string name="shop_page_label_follow">Follow</string>
+    <string name="shop_product_my_empty_follower_title">Toko Anda belum memiliki follower</string>
 </resources>

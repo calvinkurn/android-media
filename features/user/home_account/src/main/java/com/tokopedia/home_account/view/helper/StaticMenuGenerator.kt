@@ -5,6 +5,7 @@ import com.tokopedia.abstraction.constant.TkpdCache
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalLogistic
+import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.home_account.AccountConstants
 import com.tokopedia.home_account.PermissionChecker
 import com.tokopedia.home_account.R
@@ -29,7 +30,8 @@ class StaticMenuGenerator @Inject constructor(val context: Context) {
                 CommonDataView(applink = ApplinkConstInternalGlobal.PAYMENT_SETTING, title = context?.getString(R.string.menu_account_title_instant_payment), body = context?.getString(R.string.menu_account_desc_instant_payment), type = CommonViewHolder.TYPE_DEFAULT, icon = IconUnify.CARD, id = AccountConstants.SettingCode.SETTING_INSTANT_PAYMENT),
                 CommonDataView(applink = ApplinkConstInternalGlobal.ACCOUNT_SETTING, title = context?.getString(R.string.menu_account_title_security), body = context?.getString(R.string.menu_account_desc_security), type = CommonViewHolder.TYPE_DEFAULT, icon = IconUnify.LOCK, id = AccountConstants.SettingCode.SETTING_SECURITY),
                 CommonDataView(applink = ApplinkConst.SETTING_NOTIFICATION, title = context?.getString(R.string.menu_account_title_notification), body = context?.getString(R.string.menu_account_desc_notification), type = CommonViewHolder.TYPE_DEFAULT, icon = IconUnify.BELL_RING, id = AccountConstants.SettingCode.SETTING_NOTIFICATION),
-                CommonDataView(applink = ApplinkConstInternalGlobal.LINK_ACCOUNT, title = context?.getString(R.string.menu_account_title_account_link), body = context?.getString(R.string.menu_account_desc_account_link), type = CommonViewHolder.TYPE_DEFAULT, icon = IconUnify.LINK, id = AccountConstants.SettingCode.SETTING_LINK_ACCOUNT, labelText = "BARU")
+                CommonDataView(applink = ApplinkConstInternalGlobal.LINK_ACCOUNT, title = context?.getString(R.string.menu_account_title_account_link), body = context?.getString(R.string.menu_account_desc_account_link), type = CommonViewHolder.TYPE_DEFAULT, icon = IconUnify.LINK, id = AccountConstants.SettingCode.SETTING_LINK_ACCOUNT, labelText = "BARU"),
+                CommonDataView(applink = ApplinkConstInternalUserPlatform.EXPLICIT_PROFILE, title = context?.getString(R.string.menu_account_title_explicit_profile), body = context?.getString(R.string.menu_account_desc_explicit_profile), type = CommonViewHolder.TYPE_DEFAULT, icon = IconUnify.SHOPPING_BAG, id = AccountConstants.SettingCode.SETTING_EXPLICIT_PROFILE)
         ), isExpanded = true)
     }
 

@@ -298,6 +298,12 @@ data class DataItem(
         @SerializedName("shop_location")
         var shopLocation: String? = "",
 
+        @SerializedName("shop_url_desktop")
+        var shopURLDesktop: String? = "",
+
+        @SerializedName("url_desktop")
+        var productURLDesktop: String? = "",
+
         @SerializedName("discount_percentage")
         var discountPercentage: String? = "",
 
@@ -476,11 +482,17 @@ data class DataItem(
 
         var tabName: String? = "",
 
+        var componentPromoName: String? = "",
+
         var hasNotifyMe: Boolean = false,
 
         var departmentID: Int = 0,
 
         var hasThreeDots: Boolean = false,
+
+        var hasThreeDotsWishlist: Boolean = false,
+
+        var hasATCWishlist: Boolean = false,
 
         var isWishList: Boolean = false,
 

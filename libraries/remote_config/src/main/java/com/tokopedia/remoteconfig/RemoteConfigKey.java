@@ -210,10 +210,6 @@ public class RemoteConfigKey {
     public static final String ENABLE_BRANCH_UTM_SUPPORT = "app_enable_branch_utm_support";
     public static final String ENABLE_BRANCH_UTM_ONLY_BRANCH_LINK = "app_enable_branch_utm_only_branch_link";
 
-    public static final String ENABLE_REVAMP_EVENT = "android_mainapp_enable_event_revamp";
-    public static final String ENABLE_REVAMP_PDP_EVENT = "android_mainapp_enable_pdp_event";
-    public static final String ENABLE_REVAMP_DEALS_EVENT = "android_main_app_enable_deals_revamp_phase_2";
-
     public static final String APP_ENABLE_BRANCH_INIT_DEEPLINKHANDLER = "app_enable_branch_init_deplinkhandler";
     public static final String APP_ENABLE_BRANCH_INIT_DEEPLINK_ACTIVITY = "app_enable_branch_init_deeplinkActivity";
 
@@ -239,6 +235,8 @@ public class RemoteConfigKey {
     public static final String KYC_USING_SELFIE = "android_main_app_enabled_kyc_selfie";
 
     public static final String HOME_ENABLE_PAGINATION = "android_customer_home_enable_pagination";
+    public static final String HOME_REMOVE_PAGINATION = "android_customer_home_remove_pagination";
+
     public static final String HOME_ENABLE_SHARED_PREF_CACHE = "android_customer_home_enable_shared_pref_cache";
     public static final String HOME_ENABLE_AUTO_REFRESH_WISHLIST = "android_customer_home_auto_refresh_wishlist";
     public static final String HOME_ENABLE_AUTO_REFRESH_UOH = "android_customer_home_auto_refresh_uoh";
@@ -284,4 +282,12 @@ public class RemoteConfigKey {
     public static final String ENABLE_MVC_PRODUCT = "android_enable_mvc_product";
 
     public static final String ENABLE_THEMATIC_WIDGET_SHOP = "android_enable_thematic_widget_shop";
+
+    public static final String ENABLE_NEW_PROFILE_INFO = "android_use_new_profile_revamp";
+
+    public static final String DISCOVERY_DISABLE_SINGLE_PROD_CARD = "android_discovery_single_product_disable";
+
+    public static final String PRODUCT_CARD_ENABLE_INTERACTION = "android_product_card_enable_interaction";
+
+    public static final String ENABLE_PRODUCT_CARD_VIEWSTUB = "android_mainapp_enable_product_card_viewstub";
 }

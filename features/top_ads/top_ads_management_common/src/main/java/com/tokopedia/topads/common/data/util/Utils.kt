@@ -31,7 +31,7 @@ object Utils {
 
     /**
      * This method helps to validate and update ui for edit bid textfield
-     * @param[block] has true value ,if validation passed and vice versa
+     * @param[block] is false ,if validation passed or is true is bid is error
      */
     fun TextFieldUnify.addBidValidationListener(
         minBid: String, maxBid: String, suggestedBid: String,

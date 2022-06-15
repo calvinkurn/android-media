@@ -3,6 +3,7 @@ package com.tokopedia.pdp.fintech.view.bottomsheet
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -15,6 +16,8 @@ import com.tokopedia.pdp.fintech.domain.datamodel.ActivationBottomSheetDescripti
 import com.tokopedia.pdp.fintech.domain.datamodel.FintechRedirectionWidgetDataClass
 import com.tokopedia.pdp.fintech.view.activity.ActivationBottomSheetActivity
 import com.tokopedia.pdp_fintech.R
+import com.tokopedia.pdp_fintech.databinding.BottomSheetPdpWidgetGopayActivationBinding
+import com.tokopedia.pdp_fintech.databinding.PdpFintechWidgetLayoutBinding
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.UnifyButton
@@ -30,28 +33,32 @@ class GopayLinkBenefitBottomSheet : BottomSheetUnify() {
     lateinit var userSession: UserSessionInterface
 
 
-    private var parentView: View? = null
-    private val childLayoutRes = R.layout.bottom_sheet_pdp_widget_gopay_activation
+
     private var activationBottomSheetDetail: FintechRedirectionWidgetDataClass? = null
-    private  var headerIcon: ImageUnify? = null
-    private  var bottomsheetTitle: Typography? = null
-    private  var proceedButton: UnifyButton? = null
-    private  var findyaText: Typography? = null
-    private  var findyaIcon: ImageUnify? = null
-    private  var supervisedText: Typography? = null
-    private  var supervisedIcon: ImageUnify? = null
     private var webUrl: String? = null
     private var arrayOfFeatures: ArrayList<ActivationBottomSheetDescriptions> = ArrayList()
     private lateinit var gopayLinkBenefitAdapter: GopayLinkBenefitAdapter
 
+    private lateinit var binding: BottomSheetPdpWidgetGopayActivationBinding
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        initView()
+
         initArgument()
         this.isDragable = true
         this.isHideable = true
         customPeekHeight = (getScreenHeight()).toDp()
+    }
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        binding = BottomSheetPdpWidgetGopayActivationBinding.inflate(inflater,container,false)
+        setChild(binding.root)
+        return  super.onCreateView(inflater, container, savedInstanceState)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -59,24 +66,15 @@ class GopayLinkBenefitBottomSheet : BottomSheetUnify() {
         context?.let {
             gopayLinkBenefitAdapter = GopayLinkBenefitAdapter(arrayOfFeatures, it)
         }
-
-        headerIcon = view.findViewById(R.id.imageDisplayer)
-        bottomsheetTitle = view.findViewById(R.id.gopayActivationBottomSheet)
-       val recyclerBenifits:RecyclerView = view.findViewById(R.id.activationBenifitRecycler)
-        proceedButton = view.findViewById(R.id.btnRegister)
-        findyaText = view.findViewById(R.id.findyaFootNote)
-        findyaIcon = view.findViewById(R.id.findayaIcon)
-        supervisedText = view.findViewById(R.id.supervisedText)
-        supervisedIcon = view.findViewById(R.id.supervisedIcon)
-        recyclerBenifits.adapter = gopayLinkBenefitAdapter
-        recyclerBenifits.layoutManager = LinearLayoutManager(context)
+        binding.activationBenifitRecycler.adapter = gopayLinkBenefitAdapter
+        binding.activationBenifitRecycler.layoutManager = LinearLayoutManager(context)
         setListener()
         setData()
     }
 
 
     private fun setListener() {
-        proceedButton?.setOnClickListener {
+        binding.btnRegister.setOnClickListener {
             sendClickEvent()
             openRouteView(webUrl)
         }
@@ -117,10 +115,10 @@ class GopayLinkBenefitBottomSheet : BottomSheetUnify() {
     private fun setData() {
         setHeaderIcon()
         setFooterIcon()
-        findyaText?.text = activationBottomSheetDetail?.widgetBottomSheet?.productFootnote
-        supervisedText?.text = activationBottomSheetDetail?.widgetBottomSheet?.footnote
-        bottomsheetTitle?.text = activationBottomSheetDetail?.widgetBottomSheet?.title
-        proceedButton?.text =
+        binding.findyaFootNote.text = activationBottomSheetDetail?.widgetBottomSheet?.productFootnote
+        binding.supervisedText.text = activationBottomSheetDetail?.widgetBottomSheet?.footnote
+        binding.gopayActivationBottomSheet.text = activationBottomSheetDetail?.widgetBottomSheet?.title
+        binding.btnRegister.text =
             activationBottomSheetDetail?.widgetBottomSheet?.buttons?.get(0)?.buttonText
         activationBottomSheetDetail?.widgetBottomSheet?.descriptions?.let { listOfBenefitDescription ->
             gopayLinkBenefitAdapter.updateData(
@@ -132,40 +130,48 @@ class GopayLinkBenefitBottomSheet : BottomSheetUnify() {
 
     private fun setFooterIcon() {
         if (context?.isDarkMode() == true) {
-            activationBottomSheetDetail?.widgetBottomSheet?.productFootnoteIconDark?.let { findyaDarkIcon ->
-                findyaIcon?.setImageUrl(
-                    findyaDarkIcon
-                )
-            }
-            activationBottomSheetDetail?.widgetBottomSheet?.footnoteIconDark?.let { supervisedDarkIcon ->
-                supervisedIcon?.setImageUrl(
-                    supervisedDarkIcon
-                )
-            }
+            setlightMode()
         } else {
-            activationBottomSheetDetail?.widgetBottomSheet?.productFootnoteIconLight?.let { findyaLightIcon ->
-                findyaIcon?.setImageUrl(
-                    findyaLightIcon
-                )
-            }
-            activationBottomSheetDetail?.widgetBottomSheet?.footnoteIconLight?.let { supervisedLightIcon ->
-                supervisedIcon?.setImageUrl(
-                    supervisedLightIcon
-                )
-            }
+            setDarkMode()
+        }
+    }
+
+    private fun setDarkMode() {
+        activationBottomSheetDetail?.widgetBottomSheet?.productFootnoteIconLight?.let { findyaLightIcon ->
+            binding.findayaIcon.setImageUrl(
+                findyaLightIcon
+            )
+        }
+        activationBottomSheetDetail?.widgetBottomSheet?.footnoteIconLight?.let { supervisedLightIcon ->
+            binding.supervisedIcon.setImageUrl(
+                supervisedLightIcon
+            )
+        }
+    }
+
+    private fun setlightMode() {
+        activationBottomSheetDetail?.widgetBottomSheet?.productFootnoteIconDark?.let { findyaDarkIcon ->
+            binding.findayaIcon.setImageUrl(
+                findyaDarkIcon
+            )
+        }
+        activationBottomSheetDetail?.widgetBottomSheet?.footnoteIconDark?.let { supervisedDarkIcon ->
+            binding.supervisedIcon.setImageUrl(
+                supervisedDarkIcon
+            )
         }
     }
 
     private fun setHeaderIcon() {
         if (context?.isDarkMode() == true)
             activationBottomSheetDetail?.widgetBottomSheet?.productIconDark?.let {
-                headerIcon?.setImageUrl(
+                binding.imageDisplayer.setImageUrl(
                     it
                 )
             }
         else
             activationBottomSheetDetail?.widgetBottomSheet?.productIconLight?.let {
-                headerIcon?.setImageUrl(
+                binding.imageDisplayer.setImageUrl(
                     it
                 )
             }
@@ -192,14 +198,6 @@ class GopayLinkBenefitBottomSheet : BottomSheetUnify() {
 
     }
 
-    private fun initView() {
-        val childView = LayoutInflater.from(context).inflate(
-            childLayoutRes,
-            null, false
-        )
-        setChild(childView)
-
-    }
 
 
     companion object {

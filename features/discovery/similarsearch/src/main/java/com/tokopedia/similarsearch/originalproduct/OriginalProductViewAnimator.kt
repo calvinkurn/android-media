@@ -3,9 +3,12 @@ package com.tokopedia.similarsearch.originalproduct
 import android.util.TypedValue
 import android.view.View
 import android.view.ViewGroup
+import androidx.cardview.widget.CardView
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
 import com.tokopedia.similarsearch.R
-import kotlinx.android.synthetic.main.similar_search_original_product_layout.view.*
+import com.tokopedia.unifycomponents.UnifyButton
+import com.tokopedia.unifyprinciples.Typography
 
 internal class OriginalProductViewAnimator(
         private val originalProductView: View
@@ -31,16 +34,41 @@ internal class OriginalProductViewAnimator(
     private var currentVerticalScrollOffsetInPercent = 0f
     private var remainingVerticalScrollOffsetInPercent = 0f
 
+    private val cardViewOriginalProductSimilarSearch: CardView? by lazy(LazyThreadSafetyMode.NONE) {
+       originalProductView.findViewById(R.id.cardViewOriginalProductSimilarSearch)
+    }
+    private val buttonBuy: UnifyButton? by lazy(LazyThreadSafetyMode.NONE) {
+        originalProductView.findViewById(R.id.buttonBuy)
+    }
+    private val buttonAddToCart: UnifyButton? by lazy(LazyThreadSafetyMode.NONE) {
+        originalProductView.findViewById(R.id.buttonAddToCart)
+    }
+    private val buttonAddToCartCollapsed: UnifyButton? by lazy(LazyThreadSafetyMode.NONE) {
+        originalProductView.findViewById(R.id.buttonAddToCartCollapsed)
+    }
+    private val textViewProductName: Typography? by lazy(LazyThreadSafetyMode.NONE) {
+        originalProductView.findViewById(R.id.textViewProductName)
+    }
+    private val textViewPrice: Typography? by lazy(LazyThreadSafetyMode.NONE) {
+        originalProductView.findViewById(R.id.textViewPrice)
+    }
+    private val textViewProductNameCollapsed: Typography? by lazy(LazyThreadSafetyMode.NONE) {
+        originalProductView.findViewById(R.id.textViewProductNameCollapsed)
+    }
+    private val constraintLayoutOriginalProduct: ConstraintLayout? by lazy(LazyThreadSafetyMode.NONE) {
+        originalProductView.findViewById(R.id.constraintLayoutOriginalProduct)
+    }
+
     init {
-        originalProductView.cardViewOriginalProductSimilarSearch?.post(this::initializeAfterOriginalProductViewReady)
+        cardViewOriginalProductSimilarSearch?.post(this::initializeAfterOriginalProductViewReady)
     }
 
     private fun initializeAfterOriginalProductViewReady() {
-        buttonBuyMarginTop = originalProductView.buttonBuy.getMarginTop()
+        buttonBuyMarginTop = buttonBuy.getMarginTop()
         containerTravelDistance = getOriginalProductContainerTravelDistance()
         cardViewCollapsedHeight = getCardViewCollapsedHeight()
         constraintLayoutCollapsedHeight = getConstraintLayoutCollapsedHeight()
-        textViewPriceMarginTop = originalProductView.textViewPrice.getMarginTop()
+        textViewPriceMarginTop = textViewPrice.getMarginTop()
         textViewPriceTravelDistance = getTextViewPriceTravelDistance()
 
         isAnimatorInitialized = true
@@ -55,21 +83,21 @@ internal class OriginalProductViewAnimator(
     }
 
     private fun getOriginalProductContainerTravelDistance() =
-            (originalProductView.buttonBuy?.measuredHeight ?: 0) +
+            (buttonBuy?.measuredHeight ?: 0) +
                     buttonBuyMarginTop +
-                    ((originalProductView.constraintLayoutOriginalProduct?.paddingBottom ?: 0) * 2)
+                    ((constraintLayoutOriginalProduct?.paddingBottom ?: 0) * 2)
 
     private fun getCardViewCollapsedHeight() =
-            (originalProductView.cardViewOriginalProductSimilarSearch?.measuredHeight ?: 0) -
+            (cardViewOriginalProductSimilarSearch?.measuredHeight ?: 0) -
                     containerTravelDistance
 
     private fun getConstraintLayoutCollapsedHeight() =
-            (originalProductView.constraintLayoutOriginalProduct?.measuredHeight ?: 0) -
+            (constraintLayoutOriginalProduct?.measuredHeight ?: 0) -
                     containerTravelDistance
 
     private fun getTextViewPriceTravelDistance() =
-            (originalProductView.textViewProductName?.measuredHeight ?: 0) -
-                    (originalProductView.textViewProductNameCollapsed?.measuredHeight ?: 0)
+            (textViewProductName?.measuredHeight ?: 0) -
+                    (textViewProductNameCollapsed?.measuredHeight ?: 0)
 
     fun animateBasedOnScroll(verticalScrollDistance: Int) {
         if (!isAnimatorInitialized) return
@@ -102,14 +130,14 @@ internal class OriginalProductViewAnimator(
         val cardViewHeight =
                 cardViewCollapsedHeight + (remainingVerticalScrollOffsetInPercent * containerTravelDistance)
 
-        originalProductView.cardViewOriginalProductSimilarSearch?.layoutParams?.height = cardViewHeight.toInt()
+        cardViewOriginalProductSimilarSearch?.layoutParams?.height = cardViewHeight.toInt()
     }
 
     private fun resizeConstraintLayout() {
         val constraintLayoutHeight =
                 constraintLayoutCollapsedHeight + (remainingVerticalScrollOffsetInPercent * containerTravelDistance)
 
-        originalProductView.constraintLayoutOriginalProduct?.layoutParams?.height = constraintLayoutHeight.toInt()
+        constraintLayoutOriginalProduct?.layoutParams?.height = constraintLayoutHeight.toInt()
     }
 
     private fun transitioningChildViews() {
@@ -230,9 +258,9 @@ internal class OriginalProductViewAnimator(
                     .coerceAtMost(1.0f)
 
     private fun setButtonsClickableBasedOnVisibility() {
-        originalProductView.buttonBuy?.isClickable = originalProductView.buttonBuy.getAlphaOrZero() > VISIBILITY_THRESHOLD
-        originalProductView.buttonAddToCart?.isClickable = originalProductView.buttonAddToCart.getAlphaOrZero() > VISIBILITY_THRESHOLD
-        originalProductView.buttonAddToCartCollapsed?.isClickable = originalProductView.buttonAddToCartCollapsed.getAlphaOrZero() > VISIBILITY_THRESHOLD
+        buttonBuy?.isClickable = buttonBuy.getAlphaOrZero() > VISIBILITY_THRESHOLD
+        buttonAddToCart?.isClickable = buttonAddToCart.getAlphaOrZero() > VISIBILITY_THRESHOLD
+        buttonAddToCartCollapsed?.isClickable = buttonAddToCartCollapsed.getAlphaOrZero() > VISIBILITY_THRESHOLD
     }
 
     private fun View?.getAlphaOrZero(): Float {
@@ -241,9 +269,9 @@ internal class OriginalProductViewAnimator(
 
     private fun applyConstraintSet(apply: (constraintSet: ConstraintSet) -> Unit) {
         val constraintSet = ConstraintSet()
-        constraintSet.clone(originalProductView.constraintLayoutOriginalProduct)
+        constraintSet.clone(constraintLayoutOriginalProduct)
         apply(constraintSet)
-        constraintSet.applyTo(originalProductView.constraintLayoutOriginalProduct)
+        constraintSet.applyTo(constraintLayoutOriginalProduct)
     }
 
     private fun Float.toPx(): Int {

@@ -5,7 +5,7 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.pdp.fintech.di.qualifier.CoroutineMainDispatcher
 import com.tokopedia.pdp.fintech.domain.datamodel.WidgetDetail
 import com.tokopedia.pdp.fintech.domain.usecase.FintechWidgetUseCase
-import com.tokopedia.pdp.fintech.view.FintechPriceUrlDataModel
+import com.tokopedia.pdp.fintech.view.FintechPriceDataModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -27,8 +27,7 @@ class FintechWidgetViewModel @Inject constructor
 
 
     fun getWidgetData(
-        productCategory: String, listOfAmountandUrls: HashMap<String, FintechPriceUrlDataModel>,
-
+        productCategory: String, listOfAmountandUrls: HashMap<String, FintechPriceDataModel>,
         ) {
         fintchWidgetUseCase.getWidgetData(
             ::onSuccessWidgetData,

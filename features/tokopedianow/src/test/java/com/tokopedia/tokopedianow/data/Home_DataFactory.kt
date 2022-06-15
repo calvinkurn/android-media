@@ -7,6 +7,8 @@ import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.home_component.visitable.BannerDataModel
 import com.tokopedia.home_component.visitable.DynamicLegoBannerDataModel
 import com.tokopedia.home_component.visitable.MixLeftDataModel
+import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
+import com.tokopedia.localizationchooseaddress.domain.model.LocalWarehouseModel
 import com.tokopedia.localizationchooseaddress.domain.response.GetStateChosenAddressQglResponse
 import com.tokopedia.localizationchooseaddress.domain.response.GetStateChosenAddressResponse
 import com.tokopedia.localizationchooseaddress.domain.response.Tokonow
@@ -16,6 +18,7 @@ import com.tokopedia.minicart.common.domain.data.MiniCartWidgetData
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.tokopedianow.categorylist.domain.model.CategoryListResponse
 import com.tokopedia.tokopedianow.categorylist.domain.model.CategoryResponse
+import com.tokopedia.tokopedianow.common.constant.ServiceType
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType
 import com.tokopedia.tokopedianow.common.model.*
@@ -91,6 +94,14 @@ fun createDynamicChannelLayoutList(): List<HomeLayoutResponse> {
         ),
         HomeLayoutResponse(
             id = "2122",
+            layout = "left_carousel_atc",
+            header = Header(
+                name = "Mix Left Atc Carousel",
+                serverTimeUnix = 0
+            )
+        ),
+        HomeLayoutResponse(
+            id = "2333",
             layout = "left_carousel",
             header = Header(
                 name = "Mix Left Carousel",
@@ -326,7 +337,19 @@ fun createSliderBannerDataModel(
     return BannerDataModel(channelModel = channelModel)
 }
 
-fun createMixLeftDataModel(
+fun createLeftCarouselAtcDataModel(
+    id: String,
+    headerName: String,
+): HomeLeftCarouselAtcUiModel {
+    return HomeLeftCarouselAtcUiModel(
+        id = id,
+        name = "",
+        header = TokoNowDynamicHeaderUiModel(title = headerName),
+        productList = listOf(HomeLeftCarouselAtcProductCardSpaceUiModel(channelId = id, channelHeaderName = headerName))
+    )
+}
+
+fun createLeftCarouselDataModel(
     id: String,
     groupId: String,
     headerName: String,
@@ -375,4 +398,25 @@ fun createHomeProductCardUiModel(
     @TokoNowLayoutType type: String = TokoNowLayoutType.REPURCHASE_PRODUCT
 ): TokoNowProductCardUiModel {
     return TokoNowProductCardUiModel(productId, shopId, quantity, parentId, product, type)
+}
+
+fun createLocalCacheModel(
+    warehouseId: String = "111111",
+    warehouses: List<LocalWarehouseModel> = listOf(
+        LocalWarehouseModel(
+            warehouse_id = 111111,
+            service_type = ServiceType.NOW_2H
+        ),
+        LocalWarehouseModel(
+            warehouse_id = 222222,
+            service_type = ServiceType.NOW_15M
+        )
+    ),
+    serviceType: String = ServiceType.NOW_2H
+): LocalCacheModel {
+    return LocalCacheModel(
+        warehouse_id = warehouseId,
+        warehouses = warehouses,
+        service_type = serviceType
+    )
 }

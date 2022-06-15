@@ -5,6 +5,7 @@ import androidx.annotation.LayoutRes
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.BlendModeColorFilterCompat
 import androidx.core.graphics.BlendModeCompat
+import androidx.vectordrawable.graphics.drawable.VectorDrawableCompat
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.RouteManager
@@ -36,6 +37,7 @@ class HomeQuestAllClaimedWidgetViewHolder(
         setIcon()
         setCloseBtn(element.id)
         setText(element.currentQuestFinished, element.totalQuestTarget)
+        setHalfCircleBackground()
     }
 
     private fun setIcon() {
@@ -67,4 +69,12 @@ class HomeQuestAllClaimedWidgetViewHolder(
         }
     }
 
+    private fun setHalfCircleBackground() {
+        val icon = VectorDrawableCompat.create(
+            itemView.resources,
+            R.drawable.tokopedianow_bg_quest_all_claimed_circle,
+            itemView.context.theme
+        )
+        binding?.ivHalfCircleBg?.setImageDrawable(icon)
+    }
 }

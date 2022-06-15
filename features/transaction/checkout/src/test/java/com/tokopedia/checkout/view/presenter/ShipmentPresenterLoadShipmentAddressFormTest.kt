@@ -3,33 +3,54 @@ package com.tokopedia.checkout.view.presenter
 import com.google.gson.Gson
 import com.tokopedia.checkout.analytics.CheckoutAnalyticsPurchaseProtection
 import com.tokopedia.checkout.domain.mapper.ShipmentMapper
+import com.tokopedia.checkout.domain.model.cartshipmentform.CampaignTimerUi
 import com.tokopedia.checkout.domain.model.cartshipmentform.CartShipmentAddressFormData
 import com.tokopedia.checkout.domain.model.cartshipmentform.Donation
 import com.tokopedia.checkout.domain.model.cartshipmentform.GroupAddress
-import com.tokopedia.checkout.domain.usecase.*
+import com.tokopedia.checkout.domain.model.cartshipmentform.GroupShop
+import com.tokopedia.checkout.domain.model.cartshipmentform.Product
+import com.tokopedia.checkout.domain.usecase.ChangeShippingAddressGqlUseCase
+import com.tokopedia.checkout.domain.usecase.CheckoutGqlUseCase
+import com.tokopedia.checkout.domain.usecase.GetShipmentAddressFormV3UseCase
+import com.tokopedia.checkout.domain.usecase.ReleaseBookingUseCase
+import com.tokopedia.checkout.domain.usecase.SaveShipmentStateGqlUseCase
 import com.tokopedia.checkout.view.DataProvider
 import com.tokopedia.checkout.view.ShipmentContract
 import com.tokopedia.checkout.view.ShipmentPresenter
 import com.tokopedia.checkout.view.converter.ShipmentDataConverter
+import com.tokopedia.checkout.view.uimodel.CrossSellModel
 import com.tokopedia.checkout.view.uimodel.EgoldAttributeModel
 import com.tokopedia.checkout.view.uimodel.ShipmentButtonPaymentModel
+import com.tokopedia.checkout.view.uimodel.ShipmentCostModel
+import com.tokopedia.checkout.view.uimodel.ShipmentCrossSellModel
 import com.tokopedia.logisticCommon.data.entity.address.UserAddress
 import com.tokopedia.logisticCommon.data.response.KeroAddrIsEligibleForAddressFeatureData
-import com.tokopedia.logisticCommon.data.response.KeroAddrIsEligibleForAddressFeatureResponse
 import com.tokopedia.logisticCommon.domain.usecase.EditAddressUseCase
 import com.tokopedia.logisticCommon.domain.usecase.EligibleForAddressUseCase
 import com.tokopedia.logisticcart.shipping.features.shippingcourier.view.ShippingCourierConverter
 import com.tokopedia.logisticcart.shipping.features.shippingduration.view.RatesResponseStateConverter
+import com.tokopedia.logisticcart.shipping.model.CodModel
 import com.tokopedia.logisticcart.shipping.usecase.GetRatesApiUseCase
 import com.tokopedia.logisticcart.shipping.usecase.GetRatesUseCase
 import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsCourierSelection
 import com.tokopedia.purchase_platform.common.exception.CartResponseErrorException
+import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.AddOnWordingData
+import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.PopUpData
 import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.OldClearCacheAutoApplyStackUseCase
 import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.OldValidateUsePromoRevampUseCase
+import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyUiModel
+import com.tokopedia.purchase_platform.common.feature.purchaseprotection.domain.PurchaseProtectionPlanData
 import com.tokopedia.purchase_platform.common.schedulers.TestSchedulers
 import com.tokopedia.user.session.UserSessionInterface
-import io.mockk.*
+import io.mockk.MockKAnnotations
+import io.mockk.Runs
+import io.mockk.coEvery
+import io.mockk.every
 import io.mockk.impl.annotations.MockK
+import io.mockk.just
+import io.mockk.verify
+import io.mockk.verifyOrder
+import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
 import rx.subscriptions.CompositeSubscription
@@ -451,7 +472,310 @@ class ShipmentPresenterLoadShipmentAddressFormTest {
         }
     }
 
+    @Test
+    fun `GIVEN load checkout page with last apply WHEN get last apply THEN should return last apply data`() {
+        // Given
+        val groupAddress = GroupAddress().apply {
+            userAddress = UserAddress(state = 0)
+        }
+        val lastApplyUiModel = LastApplyUiModel(
+                codes = listOf("promoCode")
+        )
+        coEvery { getShipmentAddressFormV3UseCase.setParams(any(), any(), any(), any(), any(), any()) } just Runs
+        coEvery { getShipmentAddressFormV3UseCase.execute(any(), any()) } answers {
+            firstArg<(CartShipmentAddressFormData) -> Unit>().invoke(CartShipmentAddressFormData(groupAddress = listOf(groupAddress), lastApplyData = lastApplyUiModel))
+        }
 
+        // When
+        presenter.processInitialLoadCheckoutPage(true, false, false, false, false, null, "", "")
+
+        // Then
+        assertEquals(lastApplyUiModel, presenter.lastApplyData)
+    }
+
+    @Test
+    fun `GIVEN load checkout page with cod data WHEN get cod data THEN should return cod data`() {
+        // Given
+        val groupAddress = GroupAddress().apply {
+            userAddress = UserAddress(state = 0)
+        }
+        val codData = CodModel(
+                isCod = true,
+                counterCod = 1
+        )
+        coEvery { getShipmentAddressFormV3UseCase.setParams(any(), any(), any(), any(), any(), any()) } just Runs
+        coEvery { getShipmentAddressFormV3UseCase.execute(any(), any()) } answers {
+            firstArg<(CartShipmentAddressFormData) -> Unit>().invoke(CartShipmentAddressFormData(groupAddress = listOf(groupAddress), cod = codData))
+        }
+
+        // When
+        presenter.processInitialLoadCheckoutPage(true, false, false, false, false, null, "", "")
+
+        // Then
+        assertEquals(codData, presenter.codData)
+    }
+
+    @Test
+    fun `GIVEN load checkout page with ineligible promo dialog data WHEN get ineligible promo dialog data THEN should return ineligible promo dialog data`() {
+        // Given
+        val groupAddress = GroupAddress().apply {
+            userAddress = UserAddress(state = 0)
+        }
+        val ineligiblePromoDialog = true
+        coEvery { getShipmentAddressFormV3UseCase.setParams(any(), any(), any(), any(), any(), any()) } just Runs
+        coEvery { getShipmentAddressFormV3UseCase.execute(any(), any()) } answers {
+            firstArg<(CartShipmentAddressFormData) -> Unit>().invoke(CartShipmentAddressFormData(groupAddress = listOf(groupAddress), isIneligiblePromoDialogEnabled = ineligiblePromoDialog))
+        }
+
+        // When
+        presenter.processInitialLoadCheckoutPage(true, false, false, false, false, null, "", "")
+
+        // Then
+        assertEquals(ineligiblePromoDialog, presenter.isIneligiblePromoDialogEnabled)
+    }
+
+    @Test
+    fun `GIVEN load checkout page with show onboarding data WHEN get show onboarding data THEN should return show onboarding data`() {
+        // Given
+        val groupAddress = GroupAddress().apply {
+            userAddress = UserAddress(state = 0)
+        }
+        val showOnboarding = true
+        coEvery { getShipmentAddressFormV3UseCase.setParams(any(), any(), any(), any(), any(), any()) } just Runs
+        coEvery { getShipmentAddressFormV3UseCase.execute(any(), any()) } answers {
+            firstArg<(CartShipmentAddressFormData) -> Unit>().invoke(CartShipmentAddressFormData(groupAddress = listOf(groupAddress), isShowOnboarding = showOnboarding))
+        }
+
+        // When
+        presenter.processInitialLoadCheckoutPage(true, false, false, false, false, null, "", "")
+
+        // Then
+        assertEquals(showOnboarding, presenter.isShowOnboarding)
+    }
+
+    @Test
+    fun `GIVEN load checkout page with pop up data WHEN load checkout page THEN should show pop up`() {
+        // Given
+        val groupAddress = GroupAddress().apply {
+            userAddress = UserAddress(state = 0)
+        }
+        val popUp = PopUpData(
+                title = "title",
+                description = "desc"
+        )
+        coEvery { getShipmentAddressFormV3UseCase.setParams(any(), any(), any(), any(), any(), any()) } just Runs
+        coEvery { getShipmentAddressFormV3UseCase.execute(any(), any()) } answers {
+            firstArg<(CartShipmentAddressFormData) -> Unit>().invoke(CartShipmentAddressFormData(groupAddress = listOf(groupAddress), popup = popUp))
+        }
+
+        // When
+        presenter.processInitialLoadCheckoutPage(true, false, false, false, false, null, "", "")
+
+        // Then
+        verify {
+            view.showPopUp(popUp)
+        }
+    }
+
+    @Test
+    fun `GIVEN load checkout page with pop up data without title WHEN load checkout page THEN should not show pop up`() {
+        // Given
+        val groupAddress = GroupAddress().apply {
+            userAddress = UserAddress(state = 0)
+        }
+        val popUp = PopUpData(
+                title = "",
+                description = "desc"
+        )
+        coEvery { getShipmentAddressFormV3UseCase.setParams(any(), any(), any(), any(), any(), any()) } just Runs
+        coEvery { getShipmentAddressFormV3UseCase.execute(any(), any()) } answers {
+            firstArg<(CartShipmentAddressFormData) -> Unit>().invoke(CartShipmentAddressFormData(groupAddress = listOf(groupAddress), popup = popUp))
+        }
+
+        // When
+        presenter.processInitialLoadCheckoutPage(true, false, false, false, false, null, "", "")
+
+        // Then
+        verify(inverse = true) {
+            view.showPopUp(popUp)
+        }
+    }
+
+    @Test
+    fun `GIVEN load checkout page with pop up data without description WHEN load checkout page THEN should not show pop up`() {
+        // Given
+        val groupAddress = GroupAddress().apply {
+            userAddress = UserAddress(state = 0)
+        }
+        val popUp = PopUpData(
+                title = "title",
+                description = ""
+        )
+        coEvery { getShipmentAddressFormV3UseCase.setParams(any(), any(), any(), any(), any(), any()) } just Runs
+        coEvery { getShipmentAddressFormV3UseCase.execute(any(), any()) } answers {
+            firstArg<(CartShipmentAddressFormData) -> Unit>().invoke(CartShipmentAddressFormData(groupAddress = listOf(groupAddress), popup = popUp))
+        }
+
+        // When
+        presenter.processInitialLoadCheckoutPage(true, false, false, false, false, null, "", "")
+
+        // Then
+        verify(inverse = true) {
+            view.showPopUp(popUp)
+        }
+    }
+
+    @Test
+    fun `GIVEN load checkout page with cross sell data WHEN load checkout page THEN should set cross sell data`() {
+        // Given
+        val groupAddress = GroupAddress().apply {
+            userAddress = UserAddress(state = 0)
+        }
+        val crossSell = listOf(CrossSellModel())
+        coEvery { getShipmentAddressFormV3UseCase.setParams(any(), any(), any(), any(), any(), any()) } just Runs
+        coEvery { getShipmentAddressFormV3UseCase.execute(any(), any()) } answers {
+            firstArg<(CartShipmentAddressFormData) -> Unit>().invoke(CartShipmentAddressFormData(groupAddress = listOf(groupAddress), crossSell = crossSell))
+        }
+
+        // When
+        presenter.processInitialLoadCheckoutPage(true, false, false, false, false, null, "", "")
+
+        // Then
+        assertEquals(listOf(ShipmentCrossSellModel()), presenter.listShipmentCrossSellModel)
+    }
+
+    @Test
+    fun `GIVEN load checkout page with ppp data WHEN load checkout page THEN should set ppp page true and should send ppp impression`() {
+        // Given
+        val purchaseProtectionPlanData = PurchaseProtectionPlanData(
+                isProtectionAvailable = true,
+                protectionTitle = "title",
+                protectionPricePerProduct = 1000
+        )
+        val productCatId = 1
+        val groupAddress = GroupAddress().apply {
+            userAddress = UserAddress(state = 0)
+            groupShop = listOf(
+                    GroupShop(
+                            products = listOf(
+                                    Product(
+                                            purchaseProtectionPlanData = purchaseProtectionPlanData,
+                                            productCatId = productCatId
+                                    )
+                            )
+                    )
+            )
+        }
+        coEvery { getShipmentAddressFormV3UseCase.setParams(any(), any(), any(), any(), any(), any()) } just Runs
+        coEvery { getShipmentAddressFormV3UseCase.execute(any(), any()) } answers {
+            firstArg<(CartShipmentAddressFormData) -> Unit>().invoke(CartShipmentAddressFormData(groupAddress = listOf(groupAddress), addOnWording = AddOnWordingData()))
+        }
+
+        // When
+        presenter.processInitialLoadCheckoutPage(true, false, false, false, false, null, "", "")
+
+        // Then
+        verify {
+            analyticsPurchaseProtection.eventImpressionOfProduct(any(), listOf("${purchaseProtectionPlanData.protectionTitle} - ${purchaseProtectionPlanData.protectionPricePerProduct} - $productCatId"))
+        }
+    }
+
+    @Test
+    fun `GIVEN null shipment button data WHEN get shipment button data THEN should return new shipment button data`() {
+        // Given
+        presenter.shipmentButtonPaymentModel = null
+
+        // Then
+        assertEquals(0, presenter.shipmentButtonPaymentModel.quantity)
+        assertEquals("-", presenter.shipmentButtonPaymentModel.totalPrice)
+    }
+
+    @Test
+    fun `GIVEN not null shipment button data WHEN get shipment button data THEN should return shipment button data`() {
+        // Given
+        presenter.shipmentButtonPaymentModel = ShipmentButtonPaymentModel(
+                totalPrice = "Rp1.000", quantity = 1
+        )
+
+        // Then
+        assertEquals(1, presenter.shipmentButtonPaymentModel.quantity)
+        assertEquals("Rp1.000", presenter.shipmentButtonPaymentModel.totalPrice)
+    }
+
+    @Test
+    fun `GIVEN null shipment cost data WHEN get shipment cost data THEN should return new shipment cost data`() {
+        // Given
+        presenter.shipmentCostModel = null
+
+        // Then
+        assertEquals(ShipmentCostModel(), presenter.shipmentCostModel)
+    }
+
+    @Test
+    fun `GIVEN not null shipment cost data WHEN get shipment cost data THEN should return shipment cost data`() {
+        // Given
+        val shipmentCostModel = ShipmentCostModel(
+                totalPrice = 1000.0
+        )
+        presenter.shipmentCostModel = shipmentCostModel
+
+        // Then
+        assertEquals(shipmentCostModel, presenter.shipmentCostModel)
+    }
+
+    @Test
+    fun `GIVEN coupon state not changed WHEN get coupon state data THEN should return coupon state not changed`() {
+        assertEquals(false, presenter.couponStateChanged)
+    }
+
+    @Test
+    fun `GIVEN coupon state changed WHEN get coupon state data THEN should return coupon state changed`() {
+        // Given
+        presenter.couponStateChanged = true
+
+        // Then
+        assertEquals(true, presenter.couponStateChanged)
+    }
+
+    @Test
+    fun `GIVEN null campaign timer WHEN get campaign timer data THEN should return null`() {
+        // Then
+        assertEquals(null, presenter.campaignTimer)
+    }
+
+    @Test
+    fun `GIVEN campaign timer not show timer WHEN get campaign timer data THEN should return null`() {
+        // Given
+        val groupAddress = GroupAddress().apply {
+            userAddress = UserAddress(state = 0)
+        }
+        val campaignTimerUi = CampaignTimerUi(showTimer = false)
+        coEvery { getShipmentAddressFormV3UseCase.setParams(any(), any(), any(), any(), any(), any()) } just Runs
+        coEvery { getShipmentAddressFormV3UseCase.execute(any(), any()) } answers {
+            firstArg<(CartShipmentAddressFormData) -> Unit>().invoke(CartShipmentAddressFormData(groupAddress = listOf(groupAddress), campaignTimerUi = campaignTimerUi))
+        }
+        presenter.processInitialLoadCheckoutPage(true, false, false, false, false, null, "", "")
+
+        // Then
+        assertEquals(null, presenter.campaignTimer)
+    }
+
+    @Test
+    fun `GIVEN campaign timer show timer WHEN get campaign timer data THEN should return campaign timer data`() {
+        // Given
+        val groupAddress = GroupAddress().apply {
+            userAddress = UserAddress(state = 0)
+        }
+        val campaignTimerUi = CampaignTimerUi(showTimer = true)
+        coEvery { getShipmentAddressFormV3UseCase.setParams(any(), any(), any(), any(), any(), any()) } just Runs
+        coEvery { getShipmentAddressFormV3UseCase.execute(any(), any()) } answers {
+            firstArg<(CartShipmentAddressFormData) -> Unit>().invoke(CartShipmentAddressFormData(groupAddress = listOf(groupAddress), campaignTimerUi = campaignTimerUi))
+        }
+        presenter.processInitialLoadCheckoutPage(true, false, false, false, false, null, "", "")
+
+        // Then
+        assertEquals(campaignTimerUi, presenter.campaignTimer)
+    }
 
     @Test
     fun `WHEN load checkout page get default value address state THEN should render checkout page`() {

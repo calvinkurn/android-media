@@ -69,14 +69,14 @@ class ImageReviewGqlResponse {
         var uriLarge: String? = null
         @SerializedName("reviewID")
         @Expose
-        var reviewID: Int = 0
+        var reviewID: String = ""
     }
 
     class Review {
 
         @SerializedName("reviewId")
         @Expose
-        var reviewId: Int = 0
+        var reviewId: String = ""
         @SerializedName("message")
         @Expose
         var message: String? = null

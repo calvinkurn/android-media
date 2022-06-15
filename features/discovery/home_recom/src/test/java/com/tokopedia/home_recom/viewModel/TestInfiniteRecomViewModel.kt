@@ -9,10 +9,12 @@ import com.tokopedia.cartcommon.data.response.updatecart.Data
 import com.tokopedia.cartcommon.data.response.updatecart.UpdateCartV2Data
 import com.tokopedia.cartcommon.domain.usecase.DeleteCartUseCase
 import com.tokopedia.cartcommon.domain.usecase.UpdateCartUseCase
+import com.tokopedia.home_recom.model.datamodel.RecomErrorResponse
 import com.tokopedia.home_recom.model.datamodel.RecommendationItemDataModel
 import com.tokopedia.home_recom.util.RecommendationDispatcherTest
 import com.tokopedia.home_recom.viewmodel.InfiniteRecomViewModel
 import com.tokopedia.minicart.common.domain.data.MiniCartItem
+import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
 import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.domain.request.GetRecommendationRequestParam
@@ -23,9 +25,11 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Lazy
 import io.mockk.coEvery
-import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk
+import io.mockk.spyk
+import io.mockk.verify
+import io.mockk.coVerify
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.runBlockingTest
 import org.junit.Assert
@@ -48,7 +52,7 @@ class TestInfiniteRecomViewModel {
     private val deleteCartUseCase = mockk<DeleteCartUseCase>(relaxed = true)
     private val dispatcher = RecommendationDispatcherTest()
 
-    private val viewModel: InfiniteRecomViewModel = InfiniteRecomViewModel(
+    private val viewModel: InfiniteRecomViewModel = spyk(InfiniteRecomViewModel(
             userSessionInterface = userSessionInterface,
             getRecommendationUseCase = Lazy { getRecommendationUseCase },
             addToCartUseCase = Lazy { addToCartUseCase },
@@ -56,7 +60,7 @@ class TestInfiniteRecomViewModel {
             updateCartUseCase = Lazy { updateCartUseCase },
             deleteCartUseCase = Lazy { deleteCartUseCase },
             dispatcher = dispatcher
-    )
+    ))
 
     private val recommendation = RecommendationItem(productId = 1234)
     private val recomParam = GetRecommendationRequestParam()
@@ -248,4 +252,180 @@ class TestInfiniteRecomViewModel {
         Assert.assertTrue(viewModel.atcRecomTokonow.value is Fail)
     }
 
+    @Test
+    fun `given recommendation first page tokonow when get recommendation first page with empty pageName product id then recommendation in view model should not empty`() = runBlocking {
+        coEvery { getRecommendationUseCase.getData(any()) } returns listOf(
+            RecommendationWidget(recommendationItemList = listOf(recommendation), isTokonow = true)
+        )
+
+        viewModel.getRecommendationFirstPage("", "", "", false)
+
+        assert(viewModel.recommendationFirstLiveData.value != null)
+        assert(viewModel.recommendationFirstLiveData.value?.filterIsInstance<RecommendationItemDataModel>()?.isNotEmpty() == true)
+    }
+
+    @Test
+    fun `given atc recom non variant quantity changed when user not logged in then atcRecomTokonowNonLogin in viewmodel should be updated with new recomItem`() {
+        every { userSessionInterface.isLoggedIn } returns false
+        val recomItem = RecommendationItem(productId = 12345, shopId = 123)
+        val quantity = 1
+
+        viewModel.onAtcRecomNonVariantQuantityChanged(recomItem, quantity)
+
+        assert(viewModel.atcRecomTokonowNonLogin.value == recomItem)
+    }
+
+    @Test
+    fun `given atc recom non variant quantity changed when user logged in with new quantity is zero and not equal to recom item quantity then deleteRecomItemFromCart should be executed`() {
+        every { userSessionInterface.isLoggedIn } returns true
+        val recomItem = RecommendationItem(productId = 12345, shopId = 123, quantity = 1)
+        val quantity = 0
+
+        viewModel.onAtcRecomNonVariantQuantityChanged(recomItem, quantity)
+
+        verify { viewModel.deleteRecomItemFromCart(recomItem, any()) }
+        verify(inverse = true) { viewModel.atcRecomNonVariant(recomItem, quantity) }
+        verify(inverse = true) { viewModel.updateRecomCartNonVariant(recomItem, quantity, any()) }
+    }
+
+    @Test
+    fun `given atc recom non variant quantity changed when user logged in with new quantity is not zero and not equal to recom item quantity then atcRecomNonVariant should be executed`() {
+        every { userSessionInterface.isLoggedIn } returns true
+        val recomItem = RecommendationItem(productId = 12345, shopId = 123, quantity = 0)
+        val quantity = 1
+
+        viewModel.onAtcRecomNonVariantQuantityChanged(recomItem, quantity)
+
+        verify(inverse = true) { viewModel.deleteRecomItemFromCart(recomItem, any()) }
+        verify { viewModel.atcRecomNonVariant(recomItem, quantity) }
+        verify(inverse = true) { viewModel.updateRecomCartNonVariant(recomItem, quantity, any()) }
+    }
+
+    @Test
+    fun `given atc recom non variant quantity changed when user logged in with new quantity is not equal to recom item quantity and both are not zero then updateRecomCartNonVariant should be executed`() {
+        every { userSessionInterface.isLoggedIn } returns true
+        val recomItem = RecommendationItem(productId = 12345, shopId = 123, quantity = 3)
+        val quantity = 1
+
+        viewModel.onAtcRecomNonVariantQuantityChanged(recomItem, quantity)
+
+        verify(inverse = true) { viewModel.deleteRecomItemFromCart(recomItem, any()) }
+        verify(inverse = true) { viewModel.atcRecomNonVariant(recomItem, quantity) }
+        verify { viewModel.updateRecomCartNonVariant(recomItem, quantity, any()) }
+    }
+
+    @Test
+    fun `given atc recom non variant quantity changed when user logged in with new quantity is equal to recom item quantity then do nothing`() {
+        every { userSessionInterface.isLoggedIn } returns true
+        val recomItem = RecommendationItem(productId = 12345, shopId = 123, quantity = 1)
+        val quantity = 1
+
+        viewModel.onAtcRecomNonVariantQuantityChanged(recomItem, quantity)
+
+        verify(inverse = true) { viewModel.deleteRecomItemFromCart(recomItem, any()) }
+        verify(inverse = true) { viewModel.atcRecomNonVariant(recomItem, quantity) }
+        verify(inverse = true) { viewModel.updateRecomCartNonVariant(recomItem, quantity, any()) }
+    }
+
+    @Test
+    fun `given mini cart data when get mini cart data then miniCartData and minicartWidgetUpdater in viewmodel should be updated`() = runBlocking {
+        val shopId = "123"
+        val miniCartItems = listOf<MiniCartItem>(MiniCartItem(productId = "1"), MiniCartItem(productId = "2"))
+        val miniCartData = MiniCartSimplifiedData(miniCartItems = miniCartItems)
+        coEvery {
+            miniCartListSimplifiedUseCase.executeOnBackground()
+        } returns miniCartData
+
+        viewModel.getMiniCart(shopId)
+
+        verify { miniCartListSimplifiedUseCase.setParams(listOf(shopId)) }
+        coVerify { miniCartListSimplifiedUseCase.executeOnBackground() }
+        assert(viewModel.miniCartData.value == miniCartData.miniCartItems.associateBy { it.productId })
+        assert(viewModel.minicartWidgetUpdater.value == miniCartData)
+    }
+
+    @Test
+    fun `given thrown error when get mini cart data then minicartError should be updated`() = runBlocking {
+        val shopId = "123"
+        val error = Throwable()
+        coEvery {
+            miniCartListSimplifiedUseCase.executeOnBackground()
+        } throws error
+
+        viewModel.getMiniCart(shopId)
+
+        verify { miniCartListSimplifiedUseCase.setParams(listOf(shopId)) }
+        coVerify { miniCartListSimplifiedUseCase.executeOnBackground() }
+        assert(viewModel.minicartError.value == error)
+    }
+
+    @Test
+    fun `given empty result when get recommendation first page then errorGetRecomData should be updated with empty first page set to true` () = runBlocking {
+        val pageName = "test"
+        val productId = "123"
+        val queryParam = "test"
+        val forceRefresh = true
+
+        coEvery { getRecommendationUseCase.getData(any()) } returns emptyList()
+
+        viewModel.getRecommendationFirstPage(pageName, productId, queryParam, forceRefresh)
+
+        assert(viewModel.errorGetRecomData.value != null)
+        assert(viewModel.errorGetRecomData.value is RecomErrorResponse)
+        assert(viewModel.errorGetRecomData.value?.isEmptyFirstPage == true)
+        assert(viewModel.errorGetRecomData.value?.isForceRefreshAndError == forceRefresh)
+    }
+
+    @Test
+    fun `given thrown error when get recommendation first page then errorGetRecomData should be updated with error first page set to true` () = runBlocking {
+        val pageName = "test"
+        val productId = "123"
+        val queryParam = "test"
+        val forceRefresh = true
+        val error = Throwable()
+
+        coEvery { getRecommendationUseCase.getData(any()) } throws error
+
+        viewModel.getRecommendationFirstPage(pageName, productId, queryParam, forceRefresh)
+
+        assert(viewModel.errorGetRecomData.value != null)
+        assert(viewModel.errorGetRecomData.value is RecomErrorResponse)
+        assert(viewModel.errorGetRecomData.value?.isErrorFirstPage == true)
+        assert(viewModel.errorGetRecomData.value?.isForceRefreshAndError == forceRefresh)
+        assert(viewModel.errorGetRecomData.value?.errorThrowable == error)
+    }
+
+    @Test
+    fun `given empty result when get recommendation next page then errorGetRecomData should be updated with empty next page set to true` () = runBlocking {
+        val pageName = "test"
+        val productId = "123"
+        val pageNumber = 2
+        val queryParam = "test"
+
+        coEvery { getRecommendationUseCase.getData(any()) } returns emptyList()
+
+        viewModel.getRecommendationNextPage(pageName, productId, pageNumber, queryParam)
+
+        assert(viewModel.errorGetRecomData.value != null)
+        assert(viewModel.errorGetRecomData.value is RecomErrorResponse)
+        assert(viewModel.errorGetRecomData.value?.isEmptyNextPage == true)
+    }
+
+    @Test
+    fun `given thrown error when get recommendation next page then errorGetRecomData should be updated with page number being set` () = runBlocking {
+        val pageName = "test"
+        val productId = "123"
+        val pageNumber = 2
+        val queryParam = "test"
+        val error = Throwable()
+
+        coEvery { getRecommendationUseCase.getData(any()) } throws error
+
+        viewModel.getRecommendationNextPage(pageName, productId, pageNumber, queryParam)
+
+        assert(viewModel.errorGetRecomData.value != null)
+        assert(viewModel.errorGetRecomData.value is RecomErrorResponse)
+        assert(viewModel.errorGetRecomData.value?.errorThrowable == error)
+        assert(viewModel.errorGetRecomData.value?.pageNumber == pageNumber)
+    }
 }

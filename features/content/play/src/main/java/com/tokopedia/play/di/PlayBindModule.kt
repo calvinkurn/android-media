@@ -16,14 +16,8 @@ import com.tokopedia.play.analytic.tagitem.PlayTagItemsAnalytic
 import com.tokopedia.play.analytic.tagitem.PlayTagItemsAnalyticImpl
 import com.tokopedia.play.analytic.upcoming.PlayUpcomingAnalytic
 import com.tokopedia.play.analytic.upcoming.PlayUpcomingAnalyticImpl
-import com.tokopedia.play.data.repository.*
-import com.tokopedia.play.domain.repository.*
-import com.tokopedia.play.util.share.PlayShareExperience
-import com.tokopedia.play.util.share.PlayShareExperienceImpl
 import com.tokopedia.play.util.timer.PlayTimerFactory
 import com.tokopedia.play.util.timer.TimerFactory
-import com.tokopedia.play.view.storage.interactive.PlayInteractiveStorage
-import com.tokopedia.play.view.storage.interactive.PlayInteractiveStorageImpl
 import dagger.Binds
 import dagger.Module
 
@@ -32,50 +26,6 @@ import dagger.Module
  */
 @Module
 abstract class PlayBindModule {
-
-    @Binds
-    @PlayScope
-    abstract fun bindInteractiveRepository(repo: PlayViewerInteractiveRepositoryImpl): PlayViewerInteractiveRepository
-
-    @Binds
-    @PlayScope
-    abstract fun bindInteractiveStorage(storage: PlayInteractiveStorageImpl): PlayInteractiveStorage
-
-    @Binds
-    @PlayScope
-    abstract fun bindPartnerRepository(repo: PlayViewerPartnerRepositoryImpl): PlayViewerPartnerRepository
-
-    @Binds
-    @PlayScope
-    abstract fun bindLikeRepository(repo: PlayViewerLikeRepositoryImpl): PlayViewerLikeRepository
-
-    @Binds
-    @PlayScope
-    abstract fun bindCartRepository(repo: PlayViewerChannelRepositoryImpl): PlayViewerChannelRepository
-
-    @Binds
-    @PlayScope
-    abstract fun bindChannelRepository(repo: PlayViewerCartRepositoryImpl): PlayViewerCartRepository
-
-    @Binds
-    @PlayScope
-    abstract fun bindTagItemRepository(repo: PlayViewerTagItemRepositoryImpl): PlayViewerTagItemRepository
-
-    @Binds
-    @PlayScope
-    abstract fun bindBroTrackerRepository(repo: PlayViewerBroTrackerRepositoryImpl): PlayViewerBroTrackerRepository
-
-    @Binds
-    @PlayScope
-    abstract fun bindUserReportRepository(repo: PlayViewerUserReportRepositoryImpl): PlayViewerUserReportRepository
-
-    @Binds
-    @PlayScope
-    abstract fun bindSocketRepository(repo: PlayViewerSocketRepositoryImpl): PlayViewerSocketRepository
-
-    @Binds
-    @PlayScope
-    abstract fun bindRepository(repo: PlayViewerRepositoryImpl): PlayViewerRepository
 
     /**
      * Analytic

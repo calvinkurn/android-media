@@ -17,21 +17,11 @@ class RechargeSimplifyBuyWidget @JvmOverloads constructor(@NotNull context: Cont
     private var rechargeSimplifyBuyWidgetBinding = WidgetRechargeSimplifyBuyBinding.inflate(
             LayoutInflater.from(context), this, true)
 
-    fun showSimplifyBuyWidget(listener: RechargeSimplifyWidgetListener){
+    fun renderSimplifyBuyWidget(listener: RechargeSimplifyWidgetListener){
         with(rechargeSimplifyBuyWidgetBinding){
-            root.show()
             btnSimplifyBuyWidget.setOnClickListener {
                 listener.onClickedButton()
             }
         }
     }
-
-    fun isLoadingButton(isLoadingActive: Boolean){
-        with(rechargeSimplifyBuyWidgetBinding){
-            btnSimplifyBuyWidget.run {
-                isLoading = isLoadingActive
-            }
-        }
-    }
-
 }

@@ -13,6 +13,7 @@ import com.tokopedia.cartcommon.data.response.deletecart.RemoveFromCartData
 import com.tokopedia.cartcommon.data.response.updatecart.Data
 import com.tokopedia.cartcommon.data.response.updatecart.UpdateCartV2Data
 import com.tokopedia.product.detail.common.data.model.aggregator.AggregatorMiniCartUiModel
+import com.tokopedia.product.detail.common.data.model.pdplayout.ProductDetailGallery
 import com.tokopedia.product.detail.common.getCurrencyFormatted
 import com.tokopedia.shop.common.domain.interactor.model.favoriteshop.DataFollowShop
 import com.tokopedia.shop.common.domain.interactor.model.favoriteshop.FollowShop
@@ -809,6 +810,79 @@ class AtcVariantViewModelTest : BaseAtcVariantViewModelTest() {
         Assert.assertEquals(captureParams.captured.getString("shopID", ""), "12345")
         Assert.assertEquals(captureParams.captured.getString("action", ""), "follow")
     }
+
+    @Test
+    fun `variant image clicked will post gallery data value`(){
+        val imageUrl = "url1234"
+        val productId = "2147818570"
+        val userId = "123"
+        val mainImageTag = "some tag"
+        val type = ProductDetailGallery.Item.Type.Image
+
+        decideSuccessValueHitGqlAggregator("2147818569", true)
+
+        val defaultItem = ProductDetailGallery.Item(
+            id = "",
+            url = imageUrl,
+            tag = mainImageTag,
+            type = type
+        )
+
+        val optionIds = listOf("254079", "254080","254081", "254082" ,"254083")
+        val tags = listOf("Biru", "Merah", "Kuning", "Hijau", "Ungu")
+        val expectedUrl = "https://images.tokopedia.net/img/cache/700/VqbcmM/2021/5/27/f4f95629-5b09-423c-a1c2-58691e1a2f30.jpg"
+
+        val items = optionIds.mapIndexed{ index, optionId ->
+            ProductDetailGallery.Item(
+                id = optionId,
+                url = expectedUrl,
+                tag = tags.getOrNull(index),
+                type = ProductDetailGallery.Item.Type.Image
+            )
+        }
+        val selectedId = "254079"
+
+        viewModel.onVariantImageClicked(imageUrl, productId, userId, mainImageTag)
+
+        val data = viewModel.variantImagesData.value
+
+        Assert.assertEquals(defaultItem, data?.defaultItem)
+        Assert.assertEquals(items, data?.items)
+        Assert.assertEquals(selectedId, data?.selectedId)
+        Assert.assertEquals(ProductDetailGallery.Page.VariantBottomSheet, data?.page)
+    }
+
+    @Test
+    fun `variant image clicked fallback test with empty images and available default image`(){
+        val imageUrl = "url1234"
+        val productId = "2147818570"
+        val userId = "123"
+        val mainImageTag = "some tag"
+
+        viewModel.onVariantImageClicked(imageUrl, productId, userId, mainImageTag)
+
+        val data = viewModel.variantImagesData.value
+
+        Assert.assertEquals(imageUrl, data?.defaultItem?.url)
+        Assert.assertEquals(emptyList<ProductDetailGallery.Item>(), data?.items)
+        Assert.assertEquals(ProductDetailGallery.Page.VariantBottomSheet, data?.page)
+    }
+
+    @Test
+    fun `variant image clicked fallback test with empty images and empty default image`(){
+        val imageUrl = ""
+        val productId = "2147818570"
+        val userId = "123"
+        val mainImageTag = "some tag"
+
+        viewModel.onVariantImageClicked(imageUrl, productId, userId, mainImageTag)
+
+        val data = viewModel.variantImagesData.value
+
+        Assert.assertEquals(null, data)
+    }
+
+
     //endregion
 
     private fun verifyAtcUsecase(verifyAtc: Boolean = false, verifyOcs: Boolean = false, verifyOcc: Boolean = false, verifyUpdateAtc: Boolean = false) {

@@ -12,11 +12,11 @@ class InboxReputationDetailHeaderUiModel (
     var name: String,
     var deadline: String,
     var reputationDataUiModel: ReputationDataUiModel,
-    var role: Int,
+    var role: String,
     val revieweeBadgeCustomerUiModel: RevieweeBadgeCustomerUiModel,
     val revieweeBadgeSellerUiModel: RevieweeBadgeSellerUiModel,
-    val shopId: Long,
-    val userId: Long
+    val shopId: String,
+    val userId: String
 ) : Visitable<InboxReputationDetailTypeFactory> {
 
     override fun type(typeFactory: InboxReputationDetailTypeFactory): Int {

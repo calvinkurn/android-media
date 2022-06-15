@@ -107,6 +107,7 @@ internal object GetHomeLayoutData {
                gradient_color
              }
              token
+             widgetParam
            }
          }
        }

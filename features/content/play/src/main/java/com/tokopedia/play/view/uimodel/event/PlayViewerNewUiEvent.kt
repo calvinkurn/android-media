@@ -72,13 +72,13 @@ data class BuySuccessEvent(
     val product: PlayProductUiModel.Product,
     val isVariant: Boolean,
     val cartId: String,
-    val sectionInfo: ProductSectionUiModel.Section? = null,
+    val sectionInfo: ProductSectionUiModel.Section,
 ) : PlayViewerNewUiEvent()
 data class AtcSuccessEvent(
     val product: PlayProductUiModel.Product,
     val isVariant: Boolean,
     val cartId: String,
-    val sectionInfo: ProductSectionUiModel.Section? = null,
+    val sectionInfo: ProductSectionUiModel.Section,
 ) : PlayViewerNewUiEvent()
 
 //---------------------
@@ -97,3 +97,6 @@ data class AllowedWhenInactiveEvent(
         require(event !is AllowedWhenInactiveEvent)
     }
 }
+
+object OpenKebabEvent: PlayViewerNewUiEvent()
+object OpenUserReportEvent: PlayViewerNewUiEvent()

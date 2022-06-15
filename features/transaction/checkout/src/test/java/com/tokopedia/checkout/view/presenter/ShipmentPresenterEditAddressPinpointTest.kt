@@ -2,7 +2,11 @@ package com.tokopedia.checkout.view.presenter
 
 import com.google.gson.Gson
 import com.tokopedia.checkout.analytics.CheckoutAnalyticsPurchaseProtection
-import com.tokopedia.checkout.domain.usecase.*
+import com.tokopedia.checkout.domain.usecase.ChangeShippingAddressGqlUseCase
+import com.tokopedia.checkout.domain.usecase.CheckoutGqlUseCase
+import com.tokopedia.checkout.domain.usecase.GetShipmentAddressFormV3UseCase
+import com.tokopedia.checkout.domain.usecase.ReleaseBookingUseCase
+import com.tokopedia.checkout.domain.usecase.SaveShipmentStateGqlUseCase
 import com.tokopedia.checkout.view.ShipmentContract
 import com.tokopedia.checkout.view.ShipmentPresenter
 import com.tokopedia.checkout.view.converter.ShipmentDataConverter
@@ -176,6 +180,51 @@ class ShipmentPresenterEditAddressPinpointTest {
                 "message_error": ["$errorMessage"]
             }
         """.trimIndent())
+
+        // When
+        presenter.editAddressPinpoint(latitude, longitude, ShipmentCartItemModel(), locationPass)
+
+        // Then
+        verifyOrder {
+            view.showLoading()
+            view.setHasRunningApiCall(true)
+            view.setHasRunningApiCall(false)
+            view.hideLoading()
+            view.navigateToSetPinpoint(errorMessage, locationPass)
+        }
+    }
+
+    @Test
+    fun pinpointFailedWithoutErrorMessage_ShouldNavigateToSetPinpointWithDefaultErrorMessage() {
+        // Given
+        presenter.recipientAddressModel = RecipientAddressModel().apply {
+            id = "1"
+            addressName = "address 1"
+            street = "street 1"
+            postalCode = "12345"
+            destinationDistrictId = "1"
+            cityId = "1"
+            provinceId = "1"
+            recipientName = "user 1"
+            recipientPhoneNumber = "1234567890"
+        }
+
+        val latitude = "123"
+        val longitude = "456"
+        val locationPass = LocationPass()
+
+        val errorMessage = "error"
+
+        every { editAddressUseCase.createObservable(any()) } returns Observable.just("""
+            {
+                "data": {
+                    "is_success": 0
+                },
+                "message_error": []
+            }
+        """.trimIndent())
+
+        every { view.activityContext.getString(com.tokopedia.abstraction.R.string.default_request_error_unknown) } returns errorMessage
 
         // When
         presenter.editAddressPinpoint(latitude, longitude, ShipmentCartItemModel(), locationPass)

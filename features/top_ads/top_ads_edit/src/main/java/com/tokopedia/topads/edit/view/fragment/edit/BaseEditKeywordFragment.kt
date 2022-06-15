@@ -166,7 +166,6 @@ class BaseEditKeywordFragment : BaseDaggerFragment(), EditKeywordsFragment.Butto
         sharedViewModel.setAutoBidStatus(autoBidState)
         bidStrategy = autoBidState
         if (autoBidState.isNotEmpty()) {
-            buttonDisable(true)
             keywordGroup?.visibility = View.GONE
             autoBidTicker?.visibility = View.VISIBLE
             viewPager?.visibility = View.GONE

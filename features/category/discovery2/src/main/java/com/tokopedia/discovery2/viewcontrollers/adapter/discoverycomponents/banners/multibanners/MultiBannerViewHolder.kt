@@ -10,6 +10,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.discovery2.ComponentNames
 import com.tokopedia.discovery2.R
 import com.tokopedia.discovery2.Utils
 import com.tokopedia.discovery2.data.DataItem
@@ -139,6 +140,11 @@ class MultiBannerViewHolder(private val customItemView: View, val fragment: Frag
         val height = multiBannerViewModel.getBannerUrlHeight()
         val width = multiBannerViewModel.getBannerUrlWidth()
 
+        /*coupons can be there in form of banners so we need to set hardcoded values for component_name
+         (i have added componentPromoName key in dataItem for it)*/
+        // purpose - we need to send different GTM in case of coupons
+        multiBannerViewModel.setComponentPromoNameForCoupons(bannerName,data)
+
         for ((index, bannerItem) in data.withIndex()) {
             var bannerView: BannerItem
             val isLastItem = index == data.size - 1
@@ -162,11 +168,17 @@ class MultiBannerViewHolder(private val customItemView: View, val fragment: Frag
     }
 
     private fun sendImpressionEventForBanners(data: List<DataItem>) {
-        (fragment as? DiscoveryFragment)?.getDiscoveryAnalytics()?.trackBannerImpression(
-                data,
-                null,
-                Utils.getUserId(fragment.context)
-        )
+        if(data.firstOrNull()?.action == BANNER_ACTION_CODE){
+            (fragment as? DiscoveryFragment)?.getDiscoveryAnalytics()?.trackPromoBannerImpression(
+                    data
+            )
+        }else {
+            (fragment as? DiscoveryFragment)?.getDiscoveryAnalytics()?.trackBannerImpression(
+                    data,
+                    null,
+                    Utils.getUserId(fragment.context)
+            )
+        }
     }
 
     private fun checkSubscriptionStatus(position: Int) {
@@ -176,8 +188,13 @@ class MultiBannerViewHolder(private val customItemView: View, val fragment: Frag
     private fun setClickOnBanners(itemData: DataItem, index: Int) {
         bannersItemList[index].bannerImageView.setOnClickListener {
             multiBannerViewModel.onBannerClicked(index, context)
-            (fragment as? DiscoveryFragment)?.getDiscoveryAnalytics()
-                    ?.trackBannerClick(itemData, index, Utils.getUserId(fragment.context))
+            if(itemData.action == BANNER_ACTION_CODE){
+                (fragment as? DiscoveryFragment)?.getDiscoveryAnalytics()
+                        ?.trackPromoBannerClick(itemData, index)
+            }else {
+                (fragment as? DiscoveryFragment)?.getDiscoveryAnalytics()
+                        ?.trackBannerClick(itemData, index, Utils.getUserId(fragment.context))
+            }
         }
     }
 }

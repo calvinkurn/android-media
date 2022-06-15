@@ -19,7 +19,6 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.google.android.material.snackbar.Snackbar;
-import com.google.firebase.crashlytics.FirebaseCrashlytics;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.applink.ApplinkConst;
@@ -28,7 +27,6 @@ import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.applink.internal.ApplinkConstInternalLogistic;
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform;
 import com.tokopedia.dialog.DialogUnify;
-import com.tokopedia.home_account.BuildConfig;
 import com.tokopedia.home_account.R;
 import com.tokopedia.home_account.account_settings.AccountHomeUrl;
 import com.tokopedia.home_account.account_settings.analytics.AccountAnalytics;
@@ -37,7 +35,6 @@ import com.tokopedia.home_account.account_settings.data.model.AccountSettingConf
 import com.tokopedia.home_account.account_settings.di.component.AccountSettingComponent;
 import com.tokopedia.home_account.account_settings.di.component.DaggerAccountSettingComponent;
 import com.tokopedia.home_account.account_settings.presentation.AccountSetting;
-import com.tokopedia.home_account.account_settings.presentation.util.AccountHomeErrorHandler;
 import com.tokopedia.network.utils.ErrorHandler;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.unifycomponents.LoaderUnify;
@@ -167,15 +164,10 @@ public class AccountSettingFragment extends BaseDaggerFragment implements Accoun
 
     @Override
     public void showError(Throwable e, String errorCode) {
-        String message = String.format("%s (%s)", ErrorHandler.getErrorMessage(getActivity(), e), errorCode);
+        ErrorHandler.Builder error = new ErrorHandler.Builder();
+        error.setClassName(AccountSettingFragment.class.getName());
+        String message = String.format("%s (%s)", ErrorHandler.getErrorMessage(getActivity(), e, error), errorCode);
         showError(message);
-
-        AccountHomeErrorHandler.logExceptionToCrashlytics(
-                e,
-                userSession.getUserId(),
-                userSession.getEmail(),
-                errorCode
-        );
     }
 
     @Override
@@ -325,15 +317,6 @@ public class AccountSettingFragment extends BaseDaggerFragment implements Accoun
 
     private boolean showFingerprintMenu() {
         return firebaseRemoteConfig.getBoolean(REMOTE_CONFIG_SETTING_BIOMETRIC, true);
-    }
-
-    @Override
-    public void logUnknownError(Throwable e) {
-        try {
-            if (!BuildConfig.DEBUG) FirebaseCrashlytics.getInstance().recordException(e);
-        } catch (IllegalStateException ex) {
-            ex.printStackTrace();
-        }
     }
 
     private void onPinMenuClicked(){

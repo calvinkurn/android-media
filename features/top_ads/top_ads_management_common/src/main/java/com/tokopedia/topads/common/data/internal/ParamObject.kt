@@ -4,6 +4,7 @@ package com.tokopedia.topads.common.data.internal
  * Author errysuprayogi on 25,October,2019
  */
 object ParamObject {
+    const val CONTENT_TYPE_JSON = "application/json"
     const val SHOP_Id = "shopId"
     const val CREDIT_DATA = "creditData"
     const val SHOP_DATA = "shopData"
@@ -122,4 +123,7 @@ object ParamObject {
     const val PRODUCT_SEARCH = "product_search"
     const val PRODUCT_AUTO_BROWSE = "product_auto_browse"
     const val PRODUCT_BROWSE = "product_browse"
+    const val AD_TYPE_PRODUCT_ADS = "1"
+    const val AD_TYPE_SHOP_ADS = "3"
+    const val KEY_AD_TYPE = "ad_type"
 }

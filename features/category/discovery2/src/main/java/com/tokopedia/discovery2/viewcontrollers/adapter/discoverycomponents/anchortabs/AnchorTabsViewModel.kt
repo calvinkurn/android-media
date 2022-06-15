@@ -66,11 +66,7 @@ class AnchorTabsViewModel(
                     compId = components.id,
                     anchorMap = sectionPositionMap
                 )
-                if(selectedSectionId.isEmpty() && compList.isNotEmpty()){
-                    selectedSectionId = compList.first().data?.firstOrNull()?.targetSectionID?:""
-                    selectedSectionPos = 0
-                }
-                if(anchorTabsUseCase.selectedId.isEmpty()){
+                if(selectedSectionId.isNotEmpty() && anchorTabsUseCase.selectedId.isEmpty()){
                     anchorTabsUseCase.selectedId = selectedSectionId
                 }
                 components.setComponentsItem(compList)
@@ -98,6 +94,8 @@ class AnchorTabsViewModel(
             }
             if (isClickNotify)
                 pauseDispatchChanges = true
+            selectedSectionId = sectionId
+        } else if (getPositionForSectionID(sectionId) == selectedSectionPos) {
             selectedSectionId = sectionId
         }
     }

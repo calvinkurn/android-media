@@ -58,6 +58,7 @@ class PlayBroadcastSummaryFragment @Inject constructor(
                 ): T {
                     return summaryViewModelFactory.create(
                         parentViewModel.channelId,
+                        parentViewModel.channelTitle,
                         parentViewModel.productSectionList,
                         parentViewModel.summaryLeaderboardInfo,
                     ) as T

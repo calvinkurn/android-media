@@ -21,6 +21,7 @@
         app:titleTextAppearance="?titleTextAppearance">
 
         <include
+            android:id="@+id/toolbarContent"
             layout="@layout/similar_search_toolbar_layout" />
 
     </androidx.appcompat.widget.Toolbar>

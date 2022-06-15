@@ -77,11 +77,6 @@ object SomConsts {
     const val TITLE_KURIR_PENGIRIMAN = "Kurir Pengiriman"
     const val TITLE_JENIS_LAYANAN = "Jenis Layanan"
 
-    const val INPUT_ORDER_ID = "#orderId"
-    const val INPUT_SHIPPING_REF = "#shippingRef"
-    const val INPUT_AGENCY_ID = "#agencyId"
-    const val INPUT_SP_ID = "#spId"
-
     const val LABEL_EMPTY = "-"
     const val LABEL_COPY_BOOKING_CODE = "LABEL_COPY_BOOKING_CODE"
 
@@ -103,8 +98,6 @@ object SomConsts {
 
     const val SORT_ASCENDING = 0
     const val SORT_DESCENDING = 2
-    const val CHIPS_SORT_DESC = "Paling Baru"
-    const val CHIPS_SORT_ASC = "Paling Lama"
 
     const val NOT_YET_PRINTED_LABEL = "Belum Dicetak"
     const val ALREADY_PRINT_LABEL = "Sudah Dicetak"

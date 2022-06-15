@@ -140,11 +140,11 @@ import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilderFlag
 import com.tokopedia.searchbar.navigation_component.icons.IconList
 import com.tokopedia.searchbar.navigation_component.listener.NavRecyclerViewScrollListener
-import com.tokopedia.stickylogin.common.StickyLoginConstant
-import com.tokopedia.stickylogin.common.helper.isRegisteredFromStickyLogin
-import com.tokopedia.stickylogin.common.helper.saveIsRegisteredFromStickyLogin
-import com.tokopedia.stickylogin.view.StickyLoginAction
-import com.tokopedia.stickylogin.view.StickyLoginView
+import com.tokopedia.usercomponents.stickylogin.common.StickyLoginConstant
+import com.tokopedia.usercomponents.stickylogin.common.helper.isRegisteredFromStickyLogin
+import com.tokopedia.usercomponents.stickylogin.common.helper.saveIsRegisteredFromStickyLogin
+import com.tokopedia.usercomponents.stickylogin.view.StickyLoginAction
+import com.tokopedia.usercomponents.stickylogin.view.StickyLoginView
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.track.TrackApp
 import com.tokopedia.trackingoptimizer.TrackingQueue
@@ -1626,7 +1626,8 @@ open class HomeRevampFragment : BaseDaggerFragment(),
             this,
             this,
             SpecialReleaseComponentCallback(context, this),
-            MerchantVoucherComponentCallback(this)
+            MerchantVoucherComponentCallback(this),
+            CueWidgetComponentCallback(this)
         )
         val asyncDifferConfig = AsyncDifferConfig.Builder(HomeVisitableDiffUtil())
                 .setBackgroundThreadExecutor(Executors.newSingleThreadExecutor())

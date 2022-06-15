@@ -408,6 +408,67 @@ class ShopPlayWidgetAnalyticListener(
         )
     }
 
+    /***
+     * isRilisanSpesial is always true bcz the tracker sent only for Rilisan Spesial channel
+     */
+    override fun onLabelPromoClicked(
+        view: PlayWidgetMediumView,
+        item: PlayWidgetChannelUiModel,
+        channelPositionInList: Int,
+        businessWidgetPosition: Int,
+        isAutoPlay: Boolean
+    ) {
+        val tracker = BaseTrackerBuilder().constructBasicPromotionClick(
+            event = PROMO_CLICK,
+            eventCategory = SHOP_PAGE_BUYER,
+            eventAction = CLICK,
+            eventLabel = "click channel - $shopId - ${item.channelId} - $businessWidgetPosition - $channelPositionInList - is autoplay $isAutoPlay - is rilisan spesial true",
+            promotions = listOf(
+                BaseTrackerConst.Promotion(
+                    id = item.channelId,
+                    name = "/shoppage play inside banner",
+                    creative = item.title,
+                    position = channelPositionInList.toString()
+                )
+            )
+        )
+            .appendUserId(userId)
+            .appendBusinessUnit("play")
+            .appendCurrentSite(currentSite)
+            .appendShopId(shopId)
+            .build()
+        if (tracker is HashMap<String, Any>) trackingQueue.putEETracking(tracker)
+    }
+
+    override fun onLabelPromoImpressed(
+        view: PlayWidgetMediumView,
+        item: PlayWidgetChannelUiModel,
+        channelPositionInList: Int,
+        businessWidgetPosition: Int,
+        isAutoPlay: Boolean
+    ) {
+        val tracker = BaseTrackerBuilder().constructBasicPromotionView(
+            event = PROMO_VIEW,
+            eventCategory = SHOP_PAGE_BUYER,
+            eventAction = "impression on play sgc channel",
+            eventLabel = "view channel - $shopId - ${item.channelId} - $businessWidgetPosition - $channelPositionInList - is autoplay $isAutoPlay - is rilisan spesial true",
+            promotions = listOf(
+                BaseTrackerConst.Promotion(
+                    id = item.channelId,
+                    name = "/shoppage play inside banner",
+                    creative = item.title,
+                    position = channelPositionInList.toString()
+                )
+            )
+        )
+            .appendUserId(userId)
+            .appendBusinessUnit("play")
+            .appendCurrentSite(currentSite)
+            .appendShopId(shopId)
+            .build()
+        if (tracker is HashMap<String, Any>) trackingQueue.putEETracking(tracker)
+    }
+
     private fun getChannelStatusValue(channelType: PlayWidgetChannelType): String {
         return when(channelType) {
             PlayWidgetChannelType.Live -> "live"

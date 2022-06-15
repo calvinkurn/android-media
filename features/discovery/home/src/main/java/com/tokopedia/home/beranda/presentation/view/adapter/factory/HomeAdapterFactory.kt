@@ -71,7 +71,8 @@ class HomeAdapterFactory(private val listener: HomeCategoryListener, private val
                          private val cmHomeWidgetCallback: CMHomeWidgetCallback,
                          private val homePayLaterWidgetListener: HomePayLaterWidgetListener,
                          private val specialReleaseComponentListener: SpecialReleaseComponentListener,
-                         private val merchantVoucherComponentListener: MerchantVoucherComponentListener
+                         private val merchantVoucherComponentListener: MerchantVoucherComponentListener,
+                         private val cueWidgetCategoryListener: CueWidgetCategoryListener
                          ) :
         BaseAdapterTypeFactory(),
         HomeTypeFactory, HomeComponentTypeFactory, RecommendationTypeFactory,
@@ -301,6 +302,10 @@ class HomeAdapterFactory(private val listener: HomeCategoryListener, private val
         return HomePayLaterWidgetViewHolder.LAYOUT
     }
 
+    override fun type(cueCategoryDataModel: CueCategoryDataModel): Int {
+        return CueWidgetCategoryViewHolder.LAYOUT
+    }
+
     private fun getDynamicChannelLayoutFromType(layout: String): Int {
         /**
          * Layout registered as sprint sale viewholder
@@ -361,7 +366,7 @@ class HomeAdapterFactory(private val listener: HomeCategoryListener, private val
             ProductOrganicChannelViewHolder.LAYOUT -> viewHolder = ProductOrganicChannelViewHolder(view, listener, parentRecycledViewPool)
             BannerViewHolder.LAYOUT -> viewHolder = BannerViewHolder(view, listener)
             TickerViewHolder.LAYOUT -> viewHolder = TickerViewHolder(view, listener)
-            NewBusinessViewHolder.LAYOUT -> viewHolder = NewBusinessViewHolder(view, listener)
+            NewBusinessViewHolder.LAYOUT -> viewHolder = NewBusinessViewHolder(view, listener, cardInteraction = true)
             UseCaseIconSectionViewHolder.LAYOUT -> viewHolder = UseCaseIconSectionViewHolder(view, listener)
             DynamicIconSectionViewHolder.LAYOUT -> viewHolder = DynamicIconSectionViewHolder(view, listener)
             DynamicIconTwoRowsSectionViewHolder.LAYOUT -> viewHolder = DynamicIconTwoRowsSectionViewHolder(view, listener)
@@ -370,49 +375,54 @@ class HomeAdapterFactory(private val listener: HomeCategoryListener, private val
             SpotlightViewHolder.LAYOUT -> viewHolder = SpotlightViewHolder(view, listener)
             EmptyBlankViewHolder.LAYOUT -> viewHolder = EmptyBlankViewHolder(view)
             InspirationHeaderViewHolder.LAYOUT -> viewHolder = InspirationHeaderViewHolder(view)
-            HomeRecommendationFeedViewHolder.LAYOUT -> viewHolder = HomeRecommendationFeedViewHolder(view, listener)
+            HomeRecommendationFeedViewHolder.LAYOUT -> viewHolder = HomeRecommendationFeedViewHolder(view, listener, cardInteraction = true)
             BannerImageViewHolder.LAYOUT -> viewHolder = BannerImageViewHolder(view, listener)
-            ReviewViewHolder.LAYOUT -> viewHolder = ReviewViewHolder(view, homeReviewListener, listener)
+            ReviewViewHolder.LAYOUT -> viewHolder = ReviewViewHolder(view, homeReviewListener, listener, cardInteraction = true)
             PlayCardViewHolder.LAYOUT -> viewHolder = PlayCardViewHolder(view, listener)
             HomeLoadingMoreViewHolder.LAYOUT -> viewHolder = HomeLoadingMoreViewHolder(view)
             ErrorPromptViewHolder.LAYOUT -> viewHolder = ErrorPromptViewHolder(view, listener)
-            PopularKeywordViewHolder.LAYOUT -> viewHolder = PopularKeywordViewHolder(view, listener, popularKeywordListener)
+            PopularKeywordViewHolder.LAYOUT -> viewHolder = PopularKeywordViewHolder(view, listener, popularKeywordListener, cardInteraction = true)
             CategoryWidgetViewHolder.LAYOUT -> viewHolder = CategoryWidgetViewHolder(view, listener)
-            CategoryWidgetV2ViewHolder.LAYOUT -> viewHolder = CategoryWidgetV2ViewHolder(view, listener)
-            BestSellerViewHolder.LAYOUT -> viewHolder = BestSellerViewHolder(view, bestSellerListener)
+            CategoryWidgetV2ViewHolder.LAYOUT -> viewHolder = CategoryWidgetV2ViewHolder(view, listener, cardInteraction = true)
+            BestSellerViewHolder.LAYOUT -> viewHolder = BestSellerViewHolder(view, bestSellerListener, cardInteraction = true)
             ProductHighlightComponentViewHolder.LAYOUT -> viewHolder = ProductHighlightComponentViewHolder(
                     view,
                     homeComponentListener,
-                    productHighlightListener
+                    productHighlightListener,
+                    cardInteraction = true
             )
             DynamicLegoBannerViewHolder.LAYOUT -> viewHolder =
                     DynamicLegoBannerViewHolder(
                             view,
                             legoListener,
                             homeComponentListener,
-                            parentRecycledViewPool
+                            parentRecycledViewPool,
+                            cardInteraction = true
                     )
             RecommendationListCarouselViewHolder.LAYOUT -> viewHolder =
                     RecommendationListCarouselViewHolder(
                             view,
                             recommendationListCarouselListener,
-                            parentRecycledViewPool
+                            parentRecycledViewPool,
+                            cardInteraction = true
                     )
             MixLeftComponentViewHolder.LAYOUT -> viewHolder =
                     MixLeftComponentViewHolder(
                             view,
                             mixLeftComponentListener,
                             homeComponentListener,
-                            parentRecycledViewPool
+                            parentRecycledViewPool,
+                            cardInteraction = true
                     )
             MixTopComponentViewHolder.LAYOUT -> viewHolder =
                     MixTopComponentViewHolder(
                             view,
                             homeComponentListener,
-                            mixTopComponentListener
+                            mixTopComponentListener,
+                            cardInteraction = true
                     )
             ReminderWidgetViewHolder.LAYOUT -> viewHolder =
-                    ReminderWidgetViewHolder(view,reminderWidgetListener)
+                    ReminderWidgetViewHolder(view,reminderWidgetListener, cardInteraction = true)
             TopadsBannerViewHolder.LAYOUT -> viewHolder = TopadsBannerViewHolder(view, listener)
             DynamicChannelLoadingViewHolder.LAYOUT -> viewHolder = DynamicChannelLoadingViewHolder(view)
             DynamicChannelRetryViewHolder.LAYOUT -> viewHolder = DynamicChannelRetryViewHolder(view, listener)
@@ -425,7 +435,8 @@ class HomeAdapterFactory(private val listener: HomeCategoryListener, private val
             FeaturedShopViewHolder.LAYOUT -> viewHolder = FeaturedShopViewHolder(
                     view,
                     featuredShopListener,
-                    homeComponentListener
+                    homeComponentListener,
+                    cardInteraction = true
             )
             CategoryNavigationViewHolder.LAYOUT -> viewHolder = CategoryNavigationViewHolder(view, categoryNavigationListener)
             CarouselPlayWidgetViewHolder.LAYOUT -> {
@@ -441,7 +452,7 @@ class HomeAdapterFactory(private val listener: HomeCategoryListener, private val
             RechargeBUWidgetMixTopViewHolder.LAYOUT -> viewHolder =
                 RechargeBUWidgetMixTopViewHolder(view, rechargeBUWidgetListener)
             BannerComponentViewHolder.LAYOUT -> viewHolder =
-                BannerComponentViewHolder(view, bannerComponentListener, homeComponentListener)
+                BannerComponentViewHolder(view, bannerComponentListener, homeComponentListener, cardInteraction = true)
             DynamicIconViewHolder.LAYOUT -> viewHolder =
                 DynamicIconViewHolder(view, dynamicIconComponentListener)
             ErrorStateIconViewHolder.LAYOUT -> viewHolder = ErrorStateIconViewHolder(view, listener)
@@ -469,14 +480,16 @@ class HomeAdapterFactory(private val listener: HomeCategoryListener, private val
                 view,
                 homeComponentListener,
                 campaignWidgetComponentListener,
-                parentRecycledViewPool
+                parentRecycledViewPool,
+                cardInteraction = true
             )
             MerchantVoucherViewHolder.LAYOUT -> viewHolder =
-                MerchantVoucherViewHolder(view, merchantVoucherComponentListener)
+                MerchantVoucherViewHolder(view, merchantVoucherComponentListener, cardInteraction = true)
             SpecialReleaseViewHolder.LAYOUT -> viewHolder = SpecialReleaseViewHolder(
                 view,
                 homeComponentListener,
-                specialReleaseComponentListener
+                specialReleaseComponentListener,
+                cardInteraction = true
             )
             CMHomeWidgetViewHolder.LAYOUT-> viewHolder = CMHomeWidgetViewHolder(
                 view,
@@ -484,6 +497,7 @@ class HomeAdapterFactory(private val listener: HomeCategoryListener, private val
             )
             HomePayLaterWidgetViewHolder.LAYOUT -> viewHolder = HomePayLaterWidgetViewHolder(
                 view, homePayLaterWidgetListener)
+            CueWidgetCategoryViewHolder.LAYOUT -> viewHolder = CueWidgetCategoryViewHolder(view, cueWidgetCategoryListener)
             else -> viewHolder = super.createViewHolder(view, type)
 
         }

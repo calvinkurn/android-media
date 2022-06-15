@@ -5,7 +5,8 @@ import com.tokopedia.common.network.coroutines.repository.RestRepository
 import com.tokopedia.common.network.util.CommonUtil
 import com.tokopedia.inbox.common.AndroidFileUtil
 import com.tokopedia.inbox.test.R
-import com.tokopedia.topads.sdk.domain.model.TopAdsmageViewResponse
+import com.tokopedia.network.data.model.response.DataResponse
+import com.tokopedia.topads.sdk.domain.model.TopAdsBannerResponse
 import com.tokopedia.topads.sdk.repository.TopAdsRepository
 
 class FakeTopAdsRepository : TopAdsRepository() {
@@ -16,25 +17,33 @@ class FakeTopAdsRepository : TopAdsRepository() {
             repository.isError = value
         }
 
-    var response = TopAdsmageViewResponse(null, null, null)
+    var response = TopAdsBannerResponse(
+        TopAdsBannerResponse.TopadsDisplayBannerAdsV3(null, null)
+    )
         set(value) {
             field = value
-            repository.response = value
+            val dataResponse = DataResponse<TopAdsBannerResponse>().apply {
+                data = value
+            }
+            repository.response = dataResponse
         }
 
-    val defaultResponse: TopAdsmageViewResponse
+    val defaultResponse: TopAdsBannerResponse
         get() = AndroidFileUtil.parseRaw(
-            R.raw.notifcenter_tdn, TopAdsmageViewResponse::class.java
+            R.raw.notifcenter_tdn, TopAdsBannerResponse::class.java
         )
 
-    val noDataResponse: TopAdsmageViewResponse
+    val noDataResponse: TopAdsBannerResponse
         get() {
             val responseObj: JsonObject = AndroidFileUtil.parseRaw(
                 R.raw.notifcenter_tdn, JsonObject::class.java
             )
-            responseObj.getAsJsonArray("data").remove(0)
+            responseObj
+                .getAsJsonObject("topadsDisplayBannerAdsV3")
+                .getAsJsonArray("data")
+                .remove(0)
             return CommonUtil.fromJson(
-                responseObj.toString(), TopAdsmageViewResponse::class.java
+                responseObj.toString(), TopAdsBannerResponse::class.java
             )
         }
 

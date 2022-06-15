@@ -97,6 +97,12 @@ data class PlayKebabMenuUiState(
     val shouldShow: Boolean
 )
 
+enum class KebabMenuType{
+    ThreeDots,
+    UserReportList,
+    UserReportSubmission
+}
+
 enum class ViewVisibility {
 
     Visible,

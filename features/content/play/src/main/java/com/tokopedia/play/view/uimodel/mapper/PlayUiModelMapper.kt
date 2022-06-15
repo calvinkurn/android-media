@@ -82,6 +82,12 @@ class PlayUiModelMapper @Inject constructor(
         return input.status == "success"
     }
 
+    fun mapFollowingKol(input: List<FollowKOL.FollowedKOL>): Pair<Boolean, String> = Pair(input.firstOrNull()?.status ?: false, input.firstOrNull()?.encryptedUserId ?: "")
+
+    fun mapUnfollowKol(input: KOLUnFollowStatus): Boolean {
+        return input.unFollowedKOLInfo.data.isSuccess == 1
+    }
+
     fun mapVariantChildToProduct(
         child: VariantChild,
         prevDetail: PlayProductUiModel.Product,

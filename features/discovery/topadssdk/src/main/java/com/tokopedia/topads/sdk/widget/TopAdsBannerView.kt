@@ -106,7 +106,7 @@ class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
     }
 
     @Throws(Exception::class)
-    private fun renderViewCpmShop(context: Context, cpmModel: CpmModel?, appLink: String, adsClickUrl: String) {
+    private fun renderViewCpmShop(context: Context, cpmModel: CpmModel?, appLink: String, adsClickUrl: String, index: Int) {
         if (activityIsFinishing(context))
             return
         val cpmData = cpmModel?.data?.firstOrNull()
@@ -126,10 +126,10 @@ class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
 
             template = SHOP_TEMPLATE
         }
-        setHeadlineShopData(cpmModel, appLink, adsClickUrl)
+        setHeadlineShopData(cpmModel, appLink, adsClickUrl, index)
     }
 
-    private fun setHeadlineShopData(cpmModel: CpmModel?, appLink: String, adsClickUrl: String) {
+    private fun setHeadlineShopData(cpmModel: CpmModel?, appLink: String, adsClickUrl: String, index: Int) {
 
         val adsBannerShopCardView = findViewById<ShopCardView?>(R.id.adsBannerShopCardView)
         val shopDetail = findViewById<View?>(R.id.shop_detail)
@@ -137,7 +137,7 @@ class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
         val shopAdsProductView = findViewById<ShopAdsWithOneProductView>(R.id.shopAdsProductView)
         val list = findViewById<RecyclerView?>(R.id.list)
         val container = findViewById<View>(R.id.container)
-        val cpmData = cpmModel?.data?.firstOrNull()
+        val cpmData = cpmModel?.data?.getOrNull(index)
 
         if (cpmData?.cpm?.layout != LAYOUT_6 && cpmData?.cpm?.layout != LAYOUT_5 ) {
             if (isEligible(cpmData)) {
@@ -324,7 +324,7 @@ class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
     private fun setTopAdsCarousel(cpmModel: CpmModel?, topAdsCarousel: ToadsCarousel?) {
         topAdsCarousel?.setTopAdsCarouselModel(
             TopAdsCarouselModel(
-                title = context.getString(com.tokopedia.topads.sdk.R.string.topads_sdk_layout_6_title),
+                title = getTopAdsCarouselTitle(cpmModel?.data?.firstOrNull()?.cpm?.widgetTitle),
                 items = getTopAdsItem(cpmModel)
             ), object : TopAdsCarouselListener {
                 override fun onItemImpressed(position: Int) {
@@ -379,6 +379,11 @@ class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
                 }
             }
         )
+    }
+
+    private fun getTopAdsCarouselTitle(widgetTitle: String?): String {
+        return if (widgetTitle.isNullOrEmpty()) context.getString(R.string.topads_sdk_layout_6_title)
+        else widgetTitle
     }
 
     private fun getTopAdsItem(cpmModel: CpmModel?): List<TopAdsCarouselModel.TopAdsCarouselItem> {
@@ -617,18 +622,22 @@ class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
 
     }
 
-    fun displayAdsWithProductShimmer(cpmModel: CpmModel?, showProductShimmer: Boolean = false) {
+    fun displayAdsWithProductShimmer(cpmModel: CpmModel?, showProductShimmer: Boolean = false, index: Int = 0) {
         this.showProductShimmer = showProductShimmer
-        displayAds(cpmModel)
+        displayAds(cpmModel, index)
     }
 
-    override fun displayAds(cpmModel: CpmModel?) {
+    fun displayHeadlineAds(cpmModel: CpmModel?, index: Int = 0){
+        displayAds(cpmModel, index)
+    }
+
+    override fun displayAds(cpmModel: CpmModel?, index: Int) {
         try {
             if (cpmModel != null && cpmModel.data.size > 0) {
                 val data = cpmModel.data[0]
                 if (data != null && data.cpm != null) {
                     if (data.cpm.cpmShop != null && isResponseValid(data)) {
-                        renderViewCpmShop(context, cpmModel, data.applinks, data.adClickUrl)
+                        renderViewCpmShop(context, cpmModel, data.applinks, data.adClickUrl, index)
                     } else if (data.cpm.templateId == ITEM_4) {
                         renderViewCpmDigital(context, data.cpm)
                         setOnClickListener {

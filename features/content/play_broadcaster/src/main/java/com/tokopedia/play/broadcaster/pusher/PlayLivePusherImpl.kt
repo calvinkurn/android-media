@@ -220,8 +220,9 @@ class PlayLivePusherImpl : PlayLivePusher, Streamer.Listener {
      * Private methods
      */
     private fun isDeviceHaveCameraAvailable(context: Context): Boolean {
-        this.mAvailableCameras.clear()
-        this.mAvailableCameras.addAll(CameraManager.getAvailableCameras(context))
+        if (mAvailableCameras.isNullOrEmpty()) {
+            this.mAvailableCameras.addAll(CameraManager.getAvailableCameras(context))
+        }
         return mAvailableCameras.isNotEmpty()
     }
 
@@ -242,7 +243,14 @@ class PlayLivePusherImpl : PlayLivePusher, Streamer.Listener {
         builder.setSurface(surfaceView.surfaceHolder.surface)
         builder.setSurfaceSize(Streamer.Size(surfaceView.width, surfaceView.height))
 
-        val activeCamera = mAvailableCameras.firstOrNull { it.lensFacing == CameraType.Front } ?: mAvailableCameras.first()
+
+        val activeCamera = if (mAvailableCameras.isEmpty()) {
+            return
+        } else {
+            mAvailableCameras.firstOrNull {
+                it.lensFacing == CameraType.Front
+            } ?: mAvailableCameras.first()
+        }
         builder.setCameraId(activeCamera.cameraId)
 
         val cameraSize = CameraManager.getVideoSize(activeCamera) ?: mConfig.getVideoSize()

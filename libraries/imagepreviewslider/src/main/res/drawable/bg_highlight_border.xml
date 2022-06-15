@@ -2,5 +2,5 @@
 <shape xmlns:android="http://schemas.android.com/apk/res/android" android:shape="rectangle">
     <corners android:radius="2dp"/>
     <solid android:color="@android:color/transparent"/>
-    <stroke android:color="@android:color/holo_green_light" android:width="3dp"/>
+    <stroke android:color="@color/imagepreviewslider_dms_holo_green_light" android:width="3dp"/>
 </shape>

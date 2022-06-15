@@ -733,6 +733,11 @@
             "data": [],
             "name": "shipment",
             "type": "shipment"
+          },
+          {
+            "data": [],
+            "name": "play_carousel",
+            "type": "content_widget"
           }
         ],
         "name": "Default Layout",

@@ -6,7 +6,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_centerInParent="true"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:background="@color/kyc_dms_background_camera">
 
     <com.otaliastudios.cameraview.CameraView
         android:id="@+id/full_camera_view"
@@ -18,13 +19,28 @@
         app:cameraAudio="off"/>
 
     <com.tokopedia.unifycomponents.ImageUnify
-        android:id="@+id/full_image_preview"
+        android:id="@+id/imagePreviewKtp"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_gravity="center"
         android:adjustViewBounds="true"
         android:scaleType="centerCrop"
         android:visibility="gone" />
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/imagePreviewFace"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_gravity="center"
+        android:adjustViewBounds="true"
+        android:scaleType="centerCrop"
+        android:visibility="gone"
+        android:layout_margin="@dimen/layout_lvl4"
+        app:layout_constraintCircleRadius="@dimen/layout_lvl1"
+        app:layout_constraintTop_toBottomOf="@id/close_button"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/subtitle"/>
 
     <com.tokopedia.kyc_centralized.view.customview.FocusedCameraKTPView
         android:id="@+id/focused_view_ktp"
@@ -78,7 +94,6 @@
         app:typographyType="body_2"
         app:typographyWeight="bold"
         tools:text="@string/camera_ktp_subtitle" />
-
 
     <FrameLayout
         android:id="@+id/image_button_shutter"
@@ -147,7 +162,7 @@
             android:id="@+id/next_button"
             android:layout_width="@dimen/layout_lvl0"
             android:layout_height="match_parent"
-            app:unifyButtonVariant="ghost"
+            app:unifyButtonVariant="filled"
             android:layout_marginStart="@dimen/spacing_lvl1"
             android:layout_weight="1"
             android:gravity="center"
