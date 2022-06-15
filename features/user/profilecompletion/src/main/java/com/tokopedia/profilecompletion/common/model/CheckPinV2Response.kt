@@ -1,5 +1,6 @@
 package com.tokopedia.profilecompletion.common.model
 
+import android.annotation.SuppressLint
 import com.google.gson.annotations.SerializedName
 
 data class CheckPinV2Response(
@@ -8,6 +9,7 @@ data class CheckPinV2Response(
 )
 
 data class CheckPinV2Data(
+    @SuppressLint("Invalid Data Type")
     @SerializedName("valid")
     var valid: Boolean = false,
     @SerializedName("error_message")
