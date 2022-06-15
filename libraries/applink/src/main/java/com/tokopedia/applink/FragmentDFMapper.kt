@@ -36,7 +36,7 @@ object FragmentDFMapper {
              */
             add(FragmentDFPattern(
                     {it == FragmentConst.SHOP_REVIEW_FRAGMENT},
-                    DeeplinkDFMapper.DF_MERCHANT_REVIEW,
+                    DeeplinkDFMapper.DF_MERCHANT_NONLOGIN,
                     R.string.shop_review_tab
             ))
 

@@ -123,15 +123,15 @@ class ShopReviewFragment : ReadReviewFragment() {
         }
     }
 
-    override fun showError() {
-        super.showError()
+    override fun showError(throwable: Throwable) {
+        super.showError(throwable)
         nestedScrollViewContainer?.visible()
     }
 
     override fun onFailGetProductReviews(throwable: Throwable) {
         logToCrashlytics(throwable)
         if (currentPage == Int.ZERO) {
-            showError()
+            showError(throwable)
         } else {
             showErrorToaster(getString(R.string.review_reading_connection_error)) {
                 loadData(currentPage)
