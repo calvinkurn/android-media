@@ -41,7 +41,7 @@ class LoginUseCaseModule {
             : GraphqlUseCase<RegisterCheckPojo> = GraphqlUseCase(graphqlRepository)
 
     @Provides
-    fun provideLoginTokenUseCaseV2(graphqlRepository: GraphqlRepository, @Named(SessionModule.SESSION_MODULE) userSessionInterface: UserSessionInterface): LoginTokenV2UseCase {
+    fun provideLoginTokenUseCaseV2(graphqlRepository: GraphqlRepository, userSessionInterface: UserSessionInterface): LoginTokenV2UseCase {
         val useCase = GraphqlUseCase<LoginTokenPojoV2>(graphqlRepository)
         return LoginTokenV2UseCase(useCase, userSessionInterface)
     }
@@ -64,8 +64,7 @@ class LoginUseCaseModule {
     }
 
     @Provides
-    fun provideLoginFingerprintUsecase(graphqlRepository: GraphqlRepository, dispatchers: CoroutineDispatchers, @Named(
-        SessionModule.SESSION_MODULE) userSessionInterface: UserSessionInterface, fingerprintPreference: FingerprintPreference
+    fun provideLoginFingerprintUsecase(graphqlRepository: GraphqlRepository, dispatchers: CoroutineDispatchers, userSessionInterface: UserSessionInterface, fingerprintPreference: FingerprintPreference
     ): LoginFingerprintUseCase {
         val useCase = GraphqlUseCase<LoginTokenPojo>(graphqlRepository)
         return LoginFingerprintUseCase(useCase, dispatchers, userSessionInterface, fingerprintPreference)

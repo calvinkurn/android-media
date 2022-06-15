@@ -50,7 +50,6 @@ class LoginEmailPhoneViewModel @Inject constructor(
         private val dynamicBannerUseCase: DynamicBannerUseCase,
         private val registerCheckFingerprintUseCase: RegisterCheckFingerprintUseCase,
         private val loginFingerprintUseCase: LoginFingerprintUseCase,
-        @Named(SessionModule.SESSION_MODULE)
         private val userSession: UserSessionInterface,
         private val dispatchers: CoroutineDispatchers
 ) : BaseViewModel(dispatchers.main) {

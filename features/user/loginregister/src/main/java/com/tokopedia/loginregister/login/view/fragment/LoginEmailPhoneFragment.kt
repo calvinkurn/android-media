@@ -160,7 +160,6 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
     @Inject
     lateinit var needHelpAnalytics: NeedHelpAnalytics
 
-    @field:Named(SessionModule.SESSION_MODULE)
     @Inject
     lateinit var userSession: UserSessionInterface
 

@@ -30,7 +30,6 @@ import kotlin.coroutines.CoroutineContext
 @Deprecated("move into workmanager")
 class RegisterPushNotifService : JobIntentServiceX(), CoroutineScope {
 
-    @field:Named(SessionModule.SESSION_MODULE)
     @Inject
     lateinit var userSession: UserSessionInterface
 

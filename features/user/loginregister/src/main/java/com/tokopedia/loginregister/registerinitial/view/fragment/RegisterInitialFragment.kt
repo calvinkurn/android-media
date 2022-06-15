@@ -150,7 +150,6 @@ open class RegisterInitialFragment : BaseDaggerFragment(),
     @Inject
     lateinit var externalRegisterPreference: ExternalRegisterPreference
 
-    @field:Named(SESSION_MODULE)
     @Inject
     lateinit var userSession: UserSessionInterface
 

@@ -8,7 +8,6 @@ import javax.inject.Inject
 import javax.inject.Named
 
 class OvoCreationAnalytics @Inject constructor(
-        @Named(SessionModule.SESSION_MODULE)
         val userSession: UserSessionInterface)
 {
 

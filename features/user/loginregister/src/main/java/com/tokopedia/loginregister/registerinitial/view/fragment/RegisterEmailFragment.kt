@@ -81,7 +81,6 @@ open class RegisterEmailFragment : BaseDaggerFragment() {
     @Inject
     lateinit var registerAnalytics: RegisterAnalytics
 
-    @field:Named(SessionModule.SESSION_MODULE)
     @Inject
     lateinit var userSession: UserSessionInterface
 

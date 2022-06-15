@@ -29,33 +29,17 @@ import retrofit2.Retrofit;
 @SessionCommonScope
 @Component(modules = {
         LoginRegisterModule.class,
-        SessionModule.class
 }, dependencies = {BaseAppComponent.class})
 public interface LoginRegisterComponent {
 
     @ApplicationContext
     Context getContext();
 
-    Retrofit.Builder getRetrofitBuilder();
-
-    CacheManager provideCacheManager();
-
-    @Named(SessionModule.SESSION_MODULE)
     UserSessionInterface provideUserSession();
-
-    @Named(SessionModule.TOKEN)
-    OkHttpClient provideTokenOkHttpClient();
-
-    @Named(SessionModule.TOKEN)
-    Retrofit provideTokenRetrofit();
-
-    TokenApi provideTokenApi();
 
     LoginRegisterAnalytics provideLoginRegisterAnalytics();
 
     RegisterAnalytics provideRegisterAnalytics();
-
-    Resources provideResources();
 
     PermissionCheckerHelper providePermissionCheckerHelper();
 
