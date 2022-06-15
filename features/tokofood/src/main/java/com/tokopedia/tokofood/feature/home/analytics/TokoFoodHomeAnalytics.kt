@@ -113,7 +113,7 @@ class TokoFoodHomeAnalytics: BaseTrackerConst() {
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(VIEW_ITEM, eventDataLayer)
     }
 
-    fun clickCategory(userId: String?, destinationId: String?, channelModel: ChannelModel, channelGrid: ChannelGrid, horizontalPosition: Int) { // TODO Test when widget is available
+    fun clickCategory(userId: String?, destinationId: String?, channelModel: ChannelModel, channelGrid: ChannelGrid, horizontalPosition: Int) {
         val eventDataLayer = Bundle().apply {
             putString(TrackAppUtils.EVENT_ACTION,  EVENT_ACTION_CLICK_CATEGORY_WIDGET)
             putString(TrackAppUtils.EVENT_LABEL, "")
@@ -123,7 +123,7 @@ class TokoFoodHomeAnalytics: BaseTrackerConst() {
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(SELECT_CONTENT, eventDataLayer)
     }
 
-    fun impressCategory(userId: String?, destinationId: String?, channelModel: ChannelModel) { // TODO Test when widget is available
+    fun impressCategory(userId: String?, destinationId: String?, channelModel: ChannelModel) {
         val eventDataLayer = Bundle().apply {
             putString(TrackAppUtils.EVENT_ACTION,  EVENT_ACTION_VIEW_CATEGORY_WIDGET)
             putString(TrackAppUtils.EVENT_LABEL, "")
@@ -243,7 +243,7 @@ class TokoFoodHomeAnalytics: BaseTrackerConst() {
                 Bundle().apply {
                     putString(Promotion.CREATIVE_NAME, "${it.imageUrl} - ${it.applink}")
                     putString(Promotion.CREATIVE_SLOT, (position + Int.ONE).toString())
-                    putString(Promotion.ITEM_ID, "${it.name} - ${it.categoryId}")
+                    putString(Promotion.ITEM_ID, "${it.name} - ${it.id}")
                     putString(Promotion.ITEM_NAME, "$GOFOOD_PAGENAME - ${TokoFoodHomeLayoutType.CATEGORY_WIDGET} - ${channelModel.verticalPosition + Int.ONE} - ${channelModel.channelHeader.name}")
                 }
             }
