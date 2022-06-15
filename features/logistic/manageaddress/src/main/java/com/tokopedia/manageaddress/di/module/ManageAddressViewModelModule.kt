@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
 import com.tokopedia.abstraction.common.di.scope.ActivityScope
+import com.tokopedia.manageaddress.ui.manageaddress.fromfriend.FromFriendViewModel
 import com.tokopedia.manageaddress.ui.manageaddress.ManageAddressViewModel
 import com.tokopedia.manageaddress.ui.shoplocation.ShopLocationViewModel
 import dagger.Binds
@@ -29,4 +30,10 @@ abstract class ManageAddressViewModelModule {
     @IntoMap
     @ViewModelKey(ShopLocationViewModel::class)
     internal abstract fun providesShopLocationViewModel(viewModel: ShopLocationViewModel): ViewModel
+
+    @ActivityScope
+    @Binds
+    @IntoMap
+    @ViewModelKey(FromFriendViewModel::class)
+    internal abstract fun providesFromFriendViewModel(viewModel: FromFriendViewModel): ViewModel
 }

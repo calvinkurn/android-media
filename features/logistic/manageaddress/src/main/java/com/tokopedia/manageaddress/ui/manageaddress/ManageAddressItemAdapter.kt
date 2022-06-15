@@ -5,7 +5,6 @@ import android.graphics.Bitmap
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.content.ContextCompat
@@ -21,23 +20,40 @@ import com.tokopedia.manageaddress.databinding.ItemManagePeopleAddressBinding
 import com.tokopedia.unifycomponents.CardUnify
 import com.tokopedia.unifycomponents.toDp
 
-
-class ManageAddressItemAdapter(private val listener: ManageAddressItemAdapterListener) : RecyclerView.Adapter<ManageAddressItemAdapter.ManageAddressViewHolder>() {
+class ManageAddressItemAdapter : RecyclerView.Adapter<ManageAddressItemAdapter.ManageAddressViewHolder>() {
 
     var addressList = mutableListOf<RecipientAddressModel>()
     var token: Token? = null
     private var selectedPos = RecyclerView.NO_POSITION
     private var isItemClicked = false
+    private var mainAddressListener: MainAddressItemAdapterListener? = null
+    private var isShareAddress = false
+    private var fromFriendAddressListener: FromFriendAddressItemAdapterListener? = null
 
-    interface ManageAddressItemAdapterListener {
+    fun setMainAddressListener(isShareAddress: Boolean, listener: MainAddressItemAdapterListener) {
+        this.isShareAddress = isShareAddress
+        this.mainAddressListener = listener
+    }
+
+    fun setFromFriendAddressListener(listener: FromFriendAddressItemAdapterListener) {
+        fromFriendAddressListener = listener
+    }
+
+    interface MainAddressItemAdapterListener {
         fun onManageAddressEditClicked(peopleAddress: RecipientAddressModel)
         fun onManageAddressLainnyaClicked(peopleAddress: RecipientAddressModel)
         fun onAddressItemSelected(peopleAddress: RecipientAddressModel)
+        fun onShareAddressClicked(peopleAddress: RecipientAddressModel)
+    }
+
+    interface FromFriendAddressItemAdapterListener {
+        fun onSaveAddressSharedClicked(peopleAddress: RecipientAddressModel)
+        fun onDeleteAddressSharedClicked(peopleAddress: RecipientAddressModel)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ManageAddressViewHolder {
         val binding = ItemManagePeopleAddressBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        return ManageAddressViewHolder(binding, listener)
+        return ManageAddressViewHolder(binding, mainAddressListener, fromFriendAddressListener)
     }
 
     override fun getItemCount(): Int {
@@ -49,18 +65,23 @@ class ManageAddressItemAdapter(private val listener: ManageAddressItemAdapterLis
         holder.bindData(addressList[position])
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     fun addList(data: List<RecipientAddressModel>) {
         addressList.addAll(data)
         notifyDataSetChanged()
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     fun clearData() {
         selectedPos = RecyclerView.NO_POSITION
         addressList.clear()
         notifyDataSetChanged()
     }
 
-    inner class ManageAddressViewHolder(private val binding: ItemManagePeopleAddressBinding, private val listener: ManageAddressItemAdapterListener) : RecyclerView.ViewHolder(binding.root) {
+    inner class ManageAddressViewHolder(private val binding: ItemManagePeopleAddressBinding,
+                                        private val manageAddressListener: MainAddressItemAdapterListener? = null,
+                                        private val addressSharedListener: FromFriendAddressItemAdapterListener? = null,
+    ) : RecyclerView.ViewHolder(binding.root) {
         val assetMoreBtn = AppCompatResources.getDrawable(itemView.context, R.drawable.ic_more_horiz)
 
         @SuppressLint("SetTextI18n")
@@ -69,42 +90,80 @@ class ManageAddressItemAdapter(private val listener: ManageAddressItemAdapterLis
                 val addressStreet = data.street
                 val tokopediaNoteCondition = context.getString(R.string.tokopedia_note_delimeter)
                 setVisibility(data)
-                setPrimary(data)
+                switchActionView(data)
                 binding.addressName.text = data.addressName
                 binding.receiverName.text = data.recipientName
-                binding.receiverPhone.text = data.recipientPhoneNumber
+                binding.receiverPhone.text = getShownPhoneNumber(data.recipientPhoneNumber)
                 if (addressStreet.contains(tokopediaNoteCondition)) {
                     val tokopediaNote = tokopediaNoteCondition + addressStreet.substringAfterLast(tokopediaNoteCondition)
                     val newAddress = addressStreet.replace(tokopediaNote, "")
                     binding.tokopediaNote.visible()
                     binding.tokopediaNote.text = tokopediaNote
-                    binding.addressDetail.text = newAddress
+                    binding.addressDetail.text = getShownAddress(newAddress)
                 } else {
                     binding.tokopediaNote.gone()
-                    binding.addressDetail.text = data.street
+                    binding.addressDetail.text = getShownAddress(data.street)
                 }
                 val bitmap = assetMoreBtn?.toBitmap()
                 val d: Drawable = BitmapDrawable(resources, bitmap?.let { Bitmap.createScaledBitmap(it, 80.toDp(), 80.toDp(), true) })
                 binding.btnSecondary.setCompoundDrawablesWithIntrinsicBounds(d, null, null, null)
 
                 val cardSelected: Boolean
-                if (data.isStateChosenAddress && !isItemClicked) {
+                if (data.isStateChosenAddress && !isItemClicked && manageAddressListener != null) {
                     cardSelected = true
                     selectedPos = layoutPosition
                 } else {
                     cardSelected = selectedPos == layoutPosition
                 }
-                binding.cardAddress.hasCheckIcon = cardSelected
+                binding.cardAddress.hasCheckIcon = cardSelected && isShareAddress.not()
                 if (cardSelected) {
                     binding.cardAddress.cardType = CardUnify.TYPE_BORDER_ACTIVE
                 } else {
                     binding.cardAddress.cardType = CardUnify.TYPE_BORDER
                 }
-                setListener(itemView, data)
+                setListener(data)
             }
         }
 
-        private fun setPrimary(peopleAddress: RecipientAddressModel) {
+        private fun switchActionView(data: RecipientAddressModel) {
+            if (manageAddressListener != null) {
+                if (isShareAddress) {
+                    hideActionView()
+                } else {
+                    showIconShare()
+                    setPrimaryButton(data)
+                }
+            } else if (addressSharedListener != null) {
+                showIconGift()
+                setAddressSharedButton()
+            }
+        }
+
+        private fun showIconShare() {
+            binding.iconShare.visible()
+            binding.imgGift.gone()
+        }
+
+        private fun showIconGift() {
+            binding.iconShare.gone()
+            binding.imgGift.visible()
+            binding.imgGift.setImageUrl(IMAGE_GIFT_CARD)
+        }
+
+        private fun hideActionView() {
+            binding.iconShare.gone()
+            binding.imgGift.gone()
+            binding.btnPrimary.gone()
+            binding.btnSecondary.gone()
+            binding.lblMainAddress.gone()
+            binding.btnSave.gone()
+            binding.btnDelete.gone()
+        }
+
+        private fun setPrimaryButton(peopleAddress: RecipientAddressModel) {
+            binding.btnPrimary.visible()
+            binding.btnSave.gone()
+            binding.btnDelete.gone()
             if (peopleAddress.addressStatus == 2) {
                 binding.lblMainAddress.visible()
                 binding.btnSecondary.gone()
@@ -114,9 +173,57 @@ class ManageAddressItemAdapter(private val listener: ManageAddressItemAdapterLis
             }
         }
 
+        private fun setAddressSharedButton() {
+            binding.btnPrimary.gone()
+            binding.lblMainAddress.gone()
+            binding.btnSecondary.gone()
+            binding.btnSave.visible()
+            binding.btnDelete.visible()
+        }
+
+        private fun getShownPhoneNumber(phoneNumber: String) : String {
+            return if (addressSharedListener != null) {
+                phoneNumber.hidePhone()
+            } else {
+                phoneNumber
+            }
+        }
+
+        private fun getShownAddress(address: String) : String {
+            return if (addressSharedListener != null) {
+                address.hideAddress()
+            } else {
+                address
+            }
+        }
+
+        private fun String.hidePhone(): String {
+            val chars = this.toCharArray()
+
+            forEachIndexed { index, _ ->
+                if (index.isNotModulusTwo()) chars[index] = '*'
+            }
+
+            return String(chars)
+        }
+
+        private fun Int.isNotModulusTwo(): Boolean {
+            return this > 2 && this % 2 == 1
+        }
+
+        private fun String.hideAddress(): String {
+            val chars = this.toCharArray()
+
+            forEachIndexed { index, _ ->
+                if (index > INDEX_SHOW_CHARACTER)
+                    chars[index] = '*'
+            }
+
+            return String(chars)
+        }
+
         private fun setVisibility(peopleAddress: RecipientAddressModel) {
-            if(peopleAddress.latitude.isNullOrEmpty() || peopleAddress.longitude.isNullOrEmpty() ||
-                    peopleAddress.latitude == "0.0" ||  peopleAddress.longitude == "0.0") {
+            if(peopleAddress.latitude.isNullOrZero()|| peopleAddress.longitude.isNullOrZero()) {
                 val colorGrey = ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_96)
                 binding.imgLocationState.setImage(IconUnify.LOCATION_OFF, colorGrey, colorGrey)
                 binding.tvPinpointState.text = itemView.context.getString(R.string.no_pinpoint)
@@ -127,20 +234,43 @@ class ManageAddressItemAdapter(private val listener: ManageAddressItemAdapterLis
             }
         }
 
-        private fun setListener(itemView: View, peopleAddress: RecipientAddressModel) {
-            binding.btnPrimary.setOnClickListener  {
-                listener.onManageAddressEditClicked(peopleAddress)
+        private fun String?.isNullOrZero(): Boolean {
+            return this.isNullOrEmpty() || this == "0.0"
+        }
+
+        private fun setListener(peopleAddress: RecipientAddressModel) {
+            manageAddressListener?.apply {
+                binding.btnPrimary.setOnClickListener {
+                    onManageAddressEditClicked(peopleAddress)
+                }
+                binding.btnSecondary.setOnClickListener {
+                    onManageAddressLainnyaClicked(peopleAddress)
+                }
+                binding.cardAddress.setOnClickListener {
+                    isItemClicked = true
+                    notifyItemChanged(selectedPos)
+                    selectedPos = layoutPosition
+                    notifyItemChanged(layoutPosition)
+                    manageAddressListener.onAddressItemSelected(peopleAddress)
+                }
+                binding.iconShare.setOnClickListener {
+                    onShareAddressClicked(peopleAddress)
+                }
             }
-            binding.btnSecondary.setOnClickListener {
-                listener.onManageAddressLainnyaClicked(peopleAddress)
-            }
-            binding.cardAddress.setOnClickListener {
-                isItemClicked = true
-                notifyItemChanged(selectedPos)
-                selectedPos = layoutPosition
-                notifyItemChanged(layoutPosition)
-                listener.onAddressItemSelected(peopleAddress)
+
+            addressSharedListener?.apply {
+                binding.btnSave.setOnClickListener {
+                    onSaveAddressSharedClicked(peopleAddress)
+                }
+                binding.btnDelete.setOnClickListener {
+                    onDeleteAddressSharedClicked(peopleAddress)
+                }
             }
         }
+    }
+
+    companion object {
+        private const val IMAGE_GIFT_CARD = "https://images.tokopedia.net/img/android/shareaddress/gift%20card%20-%20color.png"
+        private const val INDEX_SHOW_CHARACTER = 4
     }
 }

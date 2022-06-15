@@ -28,6 +28,7 @@ import com.tokopedia.logisticCommon.data.constant.AddressConstant.EXTRA_EDIT_ADD
 import com.tokopedia.logisticCommon.data.constant.LogisticConstant.EXTRA_IS_STATE_CHOSEN_ADDRESS_CHANGED
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
 import com.tokopedia.logisticCommon.data.entity.address.SaveAddressDataModel
+import com.tokopedia.logisticCommon.ui.shareaddress.ShareAddressBottomSheet
 import com.tokopedia.manageaddress.R
 import com.tokopedia.manageaddress.data.analytics.ManageAddressAnalytics
 import com.tokopedia.manageaddress.databinding.BottomsheetActionAddressBinding
@@ -37,6 +38,7 @@ import com.tokopedia.manageaddress.domain.mapper.AddressModelMapper
 import com.tokopedia.manageaddress.domain.model.ManageAddressState
 import com.tokopedia.manageaddress.ui.manageaddress.ManageAddressItemAdapter
 import com.tokopedia.manageaddress.ui.manageaddress.ManageAddressViewModel
+import com.tokopedia.manageaddress.ui.shareaddress.bottomsheets.ShareAddressConfirmationBottomSheet
 import com.tokopedia.manageaddress.util.ManageAddressConstant
 import com.tokopedia.manageaddress.util.ManageAddressConstant.DEFAULT_ERROR_MESSAGE
 import com.tokopedia.manageaddress.util.ManageAddressConstant.EDIT_PARAM
@@ -65,7 +67,7 @@ import javax.inject.Inject
  * MainAddressFragment
  * fragment inside viewPager of ManageAddressFragment
  */
-class MainAddressFragment : BaseDaggerFragment(), ManageAddressItemAdapter.ManageAddressItemAdapterListener {
+class MainAddressFragment : BaseDaggerFragment(), ManageAddressItemAdapter.MainAddressItemAdapterListener {
 
     companion object {
 
@@ -87,7 +89,9 @@ class MainAddressFragment : BaseDaggerFragment(), ManageAddressItemAdapter.Manag
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
-    private val adapter = ManageAddressItemAdapter(this)
+    private val adapter = ManageAddressItemAdapter().apply {
+        setMainAddressListener(false, this@MainAddressFragment)
+    }
 
     private val viewModel: ManageAddressViewModel by lazy {
         ViewModelProvider(this, viewModelFactory)[ManageAddressViewModel::class.java]
@@ -96,6 +100,8 @@ class MainAddressFragment : BaseDaggerFragment(), ManageAddressItemAdapter.Manag
 
     private var binding by autoClearedNullable<FragmentMainAddressBinding>()
     private var bottomSheetLainnya: BottomSheetUnify? = null
+    private var bottomSheetShareAddress: BottomSheetUnify? = null
+    private var bottomSheetConfirmationShareAddress: BottomSheetUnify? = null
 
     private var _selectedAddressItem: RecipientAddressModel? = null
     private var editedChosenAddress: RecipientAddressModel? = null
@@ -779,6 +785,45 @@ class MainAddressFragment : BaseDaggerFragment(), ManageAddressItemAdapter.Manag
 
     fun setListener(listener: MainAddressListener) {
         this.mainAddressListener = listener
+    }
+
+    override fun onShareAddressClicked(peopleAddress: RecipientAddressModel) {
+        showShareAddressBottomSheet(peopleAddress.id)
+    }
+
+    private fun showShareAddressBottomSheet(addressId: String) {
+        val shareAddressListener = object : ShareAddressBottomSheet.ShareAddressListener {
+            override fun onClickShareAddress(email: String?, phone: String?) {
+                bottomSheetShareAddress?.dismiss()
+                showShareAddressConfirmationBottomSheet(email, phone, addressId)
+            }
+        }
+
+        bottomSheetShareAddress = ShareAddressBottomSheet.newInstance(
+            isRequestAddress = false,
+            shareAddressListener = shareAddressListener
+        )
+        bottomSheetShareAddress?.show(parentFragmentManager,
+            ShareAddressBottomSheet.TAG_SHARE_ADDRESS
+        )
+    }
+
+    private fun showShareAddressConfirmationBottomSheet(
+        email: String?,
+        phone: String?,
+        addressId: String
+    ) {
+        bottomSheetConfirmationShareAddress = ShareAddressConfirmationBottomSheet.newInstance(
+            email = email, phone = phone, addressId = addressId,
+            listener = object : ShareAddressConfirmationBottomSheet.Listener {
+                override fun onSuccessShareAddress() {
+                    bottomSheetConfirmationShareAddress?.dismiss()
+                }
+            }
+        )
+        bottomSheetConfirmationShareAddress?.show(parentFragmentManager,
+            ShareAddressConfirmationBottomSheet.TAG_SHARE_ADDRESS_CONFIRMATION
+        )
     }
 
     interface MainAddressListener {

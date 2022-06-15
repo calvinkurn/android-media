@@ -110,12 +110,6 @@ class ShareAddressConfirmationBottomSheet : BottomSheetUnify(),
         }
     }
 
-    fun show(manager: FragmentManager?) {
-        manager?.run {
-            super.show(this, TAG_SHARE_ADDRESS)
-        }
-    }
-
     private fun TextView.addLinkText(
         linkText: String,
         onClickEvent: () -> Unit
@@ -153,7 +147,7 @@ class ShareAddressConfirmationBottomSheet : BottomSheetUnify(),
     }
 
     companion object {
-        const val TAG_SHARE_ADDRESS = "ShareAddressConfirmationBottomSheet"
+        const val TAG_SHARE_ADDRESS_CONFIRMATION = "ShareAddressConfirmationBottomSheet"
 
         fun newInstance(
             email: String? = null,
