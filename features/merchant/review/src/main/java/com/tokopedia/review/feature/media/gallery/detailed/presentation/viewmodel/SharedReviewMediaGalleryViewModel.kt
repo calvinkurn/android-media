@@ -460,4 +460,8 @@ class SharedReviewMediaGalleryViewModel @Inject constructor(
     fun getPageSource(): Int {
         return _pageSource.value
     }
+
+    fun hideOverlay() {
+        _overlayVisibility.update { false }
+    }
 }

@@ -8,6 +8,7 @@ import android.net.Network
 import android.net.NetworkCapabilities
 import android.net.NetworkRequest
 import android.os.Bundle
+import android.os.CountDownTimer
 import android.view.GestureDetector
 import android.view.MotionEvent
 import androidx.appcompat.app.AppCompatActivity
@@ -53,6 +54,7 @@ class DetailedReviewMediaGalleryActivity : AppCompatActivity(), CoroutineScope {
     companion object {
         const val TOASTER_KEY_ERROR_GET_REVIEW_MEDIA = "ERROR_GET_REVIEW_MEDIA"
         const val KEY_CACHE_MANAGER_ID = "cacheManagerId"
+        const val AUTO_HIDE_OVERLAY_DURATION = 5000L
     }
 
     @Inject
@@ -105,6 +107,7 @@ class DetailedReviewMediaGalleryActivity : AppCompatActivity(), CoroutineScope {
     }
 
     private val gestureListener = DetailedReviewMediaGalleryGestureListener()
+    private val autoHideOverlayHandler = AutoHideOverlayHandler()
     private val bottomSheetHandler = BottomSheetHandler()
     private val connectivityStatusListener = ConnectivityStatusListener()
 
@@ -146,6 +149,7 @@ class DetailedReviewMediaGalleryActivity : AppCompatActivity(), CoroutineScope {
     }
 
     override fun dispatchTouchEvent(e: MotionEvent?): Boolean {
+        autoHideOverlayHandler.restartTimerIfAlreadyStarted()
         return if (
             e != null && !e.isAboveCloseButton() && !e.isAboveKebabButton() &&
             !e.isAboveController() && !e.isAboveReviewDetail() &&
@@ -314,7 +318,7 @@ class DetailedReviewMediaGalleryActivity : AppCompatActivity(), CoroutineScope {
             requestedOrientation = when(it.orientation) {
                 OrientationUiState.Orientation.LANDSCAPE -> {
                     enableFullscreen()
-                    ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE
+                    ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
                 }
                 else -> {
                     disableFullscreen()
@@ -356,12 +360,30 @@ class DetailedReviewMediaGalleryActivity : AppCompatActivity(), CoroutineScope {
         }
     }
 
+    private fun collectOverlayVisibilityUpdate() {
+        collectWhenResumed(
+            combine(
+                sharedReviewMediaGalleryViewModel.overlayVisibility,
+                sharedReviewMediaGalleryViewModel.orientationUiState
+            ) { overlayVisibility, orientationUiState ->
+                overlayVisibility && orientationUiState.isLandscape()
+            }
+        ) { startAutoHideTimer ->
+            if (startAutoHideTimer) {
+                autoHideOverlayHandler.restartTimer()
+            } else {
+                autoHideOverlayHandler.stopTimer()
+            }
+        }
+    }
+
     private fun initUiStateCollectors() {
         collectToolbarUiStateUpdate()
         collectOrientationUiStateUpdate()
         collectActionMenuBottomSheetUiStateUpdate()
         collectToasterQueue()
         collectToasterActionClickEvent()
+        collectOverlayVisibilityUpdate()
     }
 
     private fun MotionEvent.isAboveCloseButton(): Boolean {
@@ -452,6 +474,44 @@ class DetailedReviewMediaGalleryActivity : AppCompatActivity(), CoroutineScope {
 
             override fun onLost(network: Network) {
                 sharedReviewMediaGalleryViewModel.updateWifiConnectivityStatus(connected = false)
+            }
+        }
+    }
+
+    private inner class AutoHideOverlayHandler {
+        private val timer by lazy(LazyThreadSafetyMode.NONE) {
+            object: CountDownTimer(AUTO_HIDE_OVERLAY_DURATION, AUTO_HIDE_OVERLAY_DURATION) {
+                override fun onTick(millisUntilFinished: Long) {
+                    // noop
+                }
+
+                override fun onFinish() {
+                    sharedReviewMediaGalleryViewModel.hideOverlay()
+                }
+            }
+        }
+
+        private var started: Boolean = false
+
+        fun startTimer() {
+            timer.start()
+            started = true
+        }
+
+        fun stopTimer() {
+            timer.cancel()
+            started = false
+        }
+
+        fun restartTimer() {
+            stopTimer()
+            startTimer()
+        }
+
+        fun restartTimerIfAlreadyStarted() {
+            if (started) {
+                stopTimer()
+                startTimer()
             }
         }
     }
