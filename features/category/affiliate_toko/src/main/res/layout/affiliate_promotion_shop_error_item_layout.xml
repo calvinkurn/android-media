@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="8dp">
+
+        <ImageView
+            android:id="@+id/imageShop"
+            android:layout_width="@dimen/product_card_list_image_size"
+            android:layout_height="@dimen/product_card_list_image_size"
+            android:adjustViewBounds="true"
+            android:contentDescription="@string/content_desc_imageShop"
+            android:gravity="center"
+            android:visibility="visible"
+            app:layout_constraintDimensionRatio="H,1:1"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:srcCompat="@tools:sample/avatars"
+            tools:visibility="visible" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/textViewErrorTitle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:textColor="@color/Unify_NN950"
+            android:textSize="16sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/imageShop"
+            app:layout_constraintTop_toTopOf="@id/imageShop"
+            app:typographyWeight="bold"
+            tools:text="Oops, toko ini belum bisa dipromosikan" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/textViewErrorMessage"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:textColor="@color/Unify_NN600"
+            android:textSize="12sp"
+            app:typographyType="body_2"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/imageShop"
+            app:layout_constraintTop_toBottomOf="@id/textViewErrorTitle"
+            tools:text="Kamu bisa pilih produk dari toko Official Store maupun Power Merchant." />
+
+
+        <com.tokopedia.unifycomponents.UnifyButton
+            android:id="@+id/buttonLink"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:clickable="true"
+            android:contentDescription="@string/content_desc_buttonPromotion"
+            android:focusable="true"
+            android:foreground="?attr/selectableItemBackground"
+            android:text="@string/ganti_link"
+            android:textColor="@color/Unify_GN500"
+            android:visibility="gone"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/imageShop"
+            app:unifyButtonSize="small"
+            app:unifyButtonType="main"
+            app:unifyButtonVariant="filled"
+            tools:text="@string/ganti_link"
+            tools:visibility="visible" />
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <com.tokopedia.unifycomponents.DividerUnify
+        android:layout_width="match_parent"
+        android:layout_height="8dp"
+        android:layout_marginTop="4dp" />
+</LinearLayout>
