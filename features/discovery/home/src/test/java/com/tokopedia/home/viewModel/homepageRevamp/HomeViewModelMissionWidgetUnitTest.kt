@@ -57,7 +57,6 @@ class HomeViewModelMissionWidgetUnitTest {
 
     @Test
     fun `given failed mission widget when refresh data mission widget then get success data mission widget`(){
-
         val observerHome: Observer<HomeDynamicChannelModel> = mockk(relaxed = true)
         getHomeUseCase.givenGetHomeDataReturn(
             HomeDynamicChannelModel(
@@ -65,7 +64,6 @@ class HomeViewModelMissionWidgetUnitTest {
             )
         )
 
-        // home viewModel
         homeViewModel = createHomeViewModel(getHomeUseCase = getHomeUseCase, homeMissionWidgetUseCase = homeMissionWidgetUseCase)
         homeViewModel.homeLiveDynamicChannel.observeForever(observerHome)
 
