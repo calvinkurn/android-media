@@ -23,6 +23,9 @@
     <string name="home_share_title">GoFood kini hadir di Tokopedia!</string>
     <string name="home_share_desc">Jelajahi berbagai pilihan restoran dengan menu-menu kesukaanmu. Banyak promonya, cepat sampainya.</string>
     <string name="home_share_tn_title">GoFood</string>
+    <string name="home_category_empty_state_title">Yah, belum ada apa apa disini</string>
+    <string name="home_category_empty_state_desc">Yuk, cek kategori lain untuk temukan resto yang kamu incar.</string>
+    <string name="home_category_empty_state_try_again">Coba Lagi</string>
     <!-- Mini Cart -->
     <string name="minicart_order">Pesan (%d)</string>
 
