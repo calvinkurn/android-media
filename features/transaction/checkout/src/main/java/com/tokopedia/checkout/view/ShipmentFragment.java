@@ -2011,8 +2011,8 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
             for (OrdersItem ordersItem : validateUsePromoRequest.getOrders()) {
                 if (ordersItem.getUniqueId().equals(shipmentCartItemModel.getCartString())) {
-                    ordersItem.setSpId(courierData.getShipperProductId());
-                    ordersItem.setShippingId(courierData.getShipperId());
+                    ordersItem.setSpId(courierItemData.getShipperProductId());
+                    ordersItem.setShippingId(courierItemData.getShipperId());
                     break;
                 }
             }
