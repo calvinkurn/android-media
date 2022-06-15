@@ -31,14 +31,14 @@ class UserConsentDescription constructor(
     }
 
     fun generateTermConditionSinglePurposeText(
-        isMandatory: Boolean,
+        isChecklist: Boolean,
         policyNoticeTnCPageID: String,
         purposeText: String
     ): SpannableString {
-        val message = if(isMandatory) {
-            context.resources.getString(R.string.user_consent_agreement_single_purpose_term_condition_mandatory)
-        } else {
+        val message = if(isChecklist) {
             context.resources.getString(R.string.user_consent_agreement_single_purpose_term_condition)
+        } else {
+            context.resources.getString(R.string.user_consent_agreement_single_purpose_term_condition_mandatory)
         }
 
         return SpannableString(String.format(message, textTermCondition, purposeText)).apply {
@@ -58,16 +58,17 @@ class UserConsentDescription constructor(
     }
 
     fun generateTermConditionPolicySinglePurposeText(
-        isMandatory: Boolean,
+        isChecklist: Boolean,
         policyNoticeTnCPageID: String,
         policyNoticePolicyPageID: String,
         purposeText: String
     ): SpannableString {
-        val message = if (isMandatory) {
-            context.resources.getString(R.string.user_consent_agreement_single_purpose_term_condition_policy_mandatory)
-        } else {
+        val message = if (isChecklist) {
             context.resources.getString(R.string.user_consent_agreement_single_purpose_term_condition_policy)
+        } else {
+            context.resources.getString(R.string.user_consent_agreement_single_purpose_term_condition_policy_mandatory)
         }
+
         return SpannableString(String.format(message, textTermCondition, textPolicy, purposeText)).apply {
             setSpan(
                 createClickableSpannable {
