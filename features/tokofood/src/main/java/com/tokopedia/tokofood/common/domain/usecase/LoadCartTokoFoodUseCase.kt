@@ -52,6 +52,7 @@ class LoadCartTokoFoodUseCase @Inject constructor(
                 products {
                   cart_id
                   product_id
+                  category_id
                   price
                   notes
                   quantity
@@ -79,6 +80,7 @@ class LoadCartTokoFoodUseCase @Inject constructor(
                 products {
                   cart_id
                   product_id
+                  category_id
                   price
                   notes
                   quantity

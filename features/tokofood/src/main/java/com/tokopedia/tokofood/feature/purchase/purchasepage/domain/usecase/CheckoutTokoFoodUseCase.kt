@@ -84,6 +84,7 @@ class CheckoutTokoFoodUseCase @Inject constructor(
                 products {
                   cart_id
                   product_id
+                  category_id
                   name
                   description
                   image_url
@@ -122,6 +123,7 @@ class CheckoutTokoFoodUseCase @Inject constructor(
                 products {
                   cart_id
                   product_id
+                  category_id
                   name
                   description
                   image_url

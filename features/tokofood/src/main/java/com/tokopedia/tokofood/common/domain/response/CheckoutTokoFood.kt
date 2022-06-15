@@ -178,6 +178,9 @@ data class CheckoutTokoFoodProduct(
     @SerializedName("product_id")
     @Expose
     val productId: String = "",
+    @SerializedName("category_id")
+    @Expose
+    val categoryId: String = "",
     @SerializedName("name")
     @Expose
     val productName: String = "",
