@@ -1,13 +1,11 @@
 package com.tokopedia.tokomember_seller_dashboard.util
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.Canvas
-import android.graphics.Color
-import android.media.MediaScannerConnection
-import android.os.Environment
-import android.util.Log
 import android.view.View
+import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.utils.image.ImageProcessingUtil
@@ -15,7 +13,10 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import timber.log.Timber
-import java.io.*
+import java.io.ByteArrayOutputStream
+import java.io.File
+import java.io.FileOutputStream
+import java.io.IOException
 
 object TmFileUtil {
 
@@ -58,9 +59,17 @@ object TmFileUtil {
         })
     }
 
+     @SuppressLint("Range")
      private fun getBitmapFromView(view: View): Bitmap? {
         //Define a bitmap with the same size as the view
-        val returnedBitmap = Bitmap.createBitmap(view.width, view.height, Bitmap.Config.ARGB_8888)
+         val spec = View.MeasureSpec.makeMeasureSpec(
+             ViewGroup.LayoutParams.WRAP_CONTENT,
+             View.MeasureSpec.UNSPECIFIED
+         )
+
+         view.measure(spec, spec)
+         view.layout(0, 0, view.measuredWidth, view.measuredHeight)
+         val returnedBitmap = Bitmap.createBitmap(view.measuredWidth, view.measuredHeight, Bitmap.Config.ARGB_8888)
         //Bind a canvas to it
         val canvas = Canvas(returnedBitmap)
         //Get the view's background

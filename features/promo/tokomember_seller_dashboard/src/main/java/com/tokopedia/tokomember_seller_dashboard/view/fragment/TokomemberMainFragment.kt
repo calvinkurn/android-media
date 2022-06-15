@@ -77,7 +77,7 @@ class TokomemberMainFragment : BaseDaggerFragment() {
                       if (it.data.membershipGetSellerOnboarding?.sellerHomeContent?.isShowContent == true){
                           tmEligibilityViewModel.checkEligibility(shopId, true)
                       } else{
-                          TokomemberDashHomeActivity.openActivity(shopId, context)
+                          TokomemberDashHomeActivity.openActivity(shopId,it.data.membershipGetSellerOnboarding?.cardID?.toIntOrZero()?:0, context)
                           activity?.finish()
                       }
                   } else{

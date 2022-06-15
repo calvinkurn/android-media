@@ -44,6 +44,7 @@ const val TM_SELLER_ONBOARD_CHECK = """
       message
       reason
     }
+    cardID
     sellerHomeContent {
       isShowContent
     }

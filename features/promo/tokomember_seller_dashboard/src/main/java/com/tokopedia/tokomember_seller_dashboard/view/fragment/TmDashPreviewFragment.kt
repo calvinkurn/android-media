@@ -153,7 +153,8 @@ class TmDashPreviewFragment : BaseDaggerFragment() {
                     closeLoadingDialog()
                     if (it.data.merchantPromotionCreateMultipleMV?.data?.status == "Success") {
                         activity?.finish()
-                        TokomemberDashHomeActivity.openActivity(arguments?.getInt(BUNDLE_SHOP_ID)?:0, context, true)
+                        TokomemberDashHomeActivity.openActivity(arguments?.getInt(BUNDLE_SHOP_ID)?:0,arguments?.getInt(
+                            BUNDLE_CARD_ID)?:0, context, true)
                     } else {
                         view?.let { v ->
                             Toaster.build(
