@@ -309,7 +309,7 @@ class MiniCartGeneralWidget @JvmOverloads constructor(
             basketSize = miniCartSimplifiedData.miniCartWidgetData.totalProductPrice.toString(),
             isFulfilled = null,
             shopId = viewModel?.currentShopIds?.value?.joinToString() ?: "",
-            pageSource = MiniCartAnalytics.Page.SHOP_PAGE,
+            pageSource = viewModel?.currentPage,
             businessUnit = MiniCartAnalytics.VALUE_BUSINESS_UNIT_PURCHASE_PLATFORM,
             currentSite = MiniCartAnalytics.VALUE_CURRENT_SITE_TOKOPEDIA_MARKETPLACE,
             trackerId = MiniCartAnalytics.VALUE_TRACKER_ID_CLICK_SEE_CART_ON_MINICART
@@ -321,7 +321,7 @@ class MiniCartGeneralWidget @JvmOverloads constructor(
      */
     fun initialize(
         shopIds: List<String>, fragment: Fragment, listener: MiniCartWidgetListener,
-        isShopDirectPurchase: Boolean = true, source: MiniCartSource
+        isShopDirectPurchase: Boolean = true, source: MiniCartSource, page: MiniCartAnalytics.Page
     ) {
         if (viewModel == null) {
             initializeView(fragment)
@@ -329,6 +329,7 @@ class MiniCartGeneralWidget @JvmOverloads constructor(
             initializeViewModel(fragment)
             viewModel?.isShopDirectPurchase = isShopDirectPurchase
             viewModel?.currentSource = source
+            viewModel?.currentPage = page
             viewModel?.initializeShopIds(shopIds)
         }
         updateData()
