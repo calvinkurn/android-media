@@ -29,6 +29,8 @@ import com.tokopedia.shop.flashsale.domain.entity.enums.CampaignStatus
 import com.tokopedia.shop.flashsale.domain.entity.enums.PageMode
 import com.tokopedia.shop.flashsale.presentation.creation.information.adapter.GradientColorAdapter
 import com.tokopedia.shop.flashsale.presentation.creation.information.bottomsheet.CampaignDatePickerBottomSheet
+import com.tokopedia.shop.flashsale.presentation.creation.information.bottomsheet.CampaignTeaserInformationBottomSheet
+import com.tokopedia.shop.flashsale.presentation.creation.information.bottomsheet.ForbiddenWordsInformationBottomSheet
 import com.tokopedia.shop.flashsale.presentation.creation.information.dialog.BackConfirmationDialog
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -271,6 +273,12 @@ class CampaignInformationFragment : BaseDaggerFragment() {
 
             contentSwitcher.setOnCheckedChangeListener { _, isChecked ->
                 handleContentSwitcher(isChecked)
+            }
+            imgCampaignNameHelper.setOnClickListener {
+                ForbiddenWordsInformationBottomSheet().show(childFragmentManager)
+            }
+            imgCampaignTeaserHelper.setOnClickListener {
+                CampaignTeaserInformationBottomSheet().show(childFragmentManager)
             }
         }
     }
@@ -576,6 +584,5 @@ class CampaignInformationFragment : BaseDaggerFragment() {
         dialog.setOnSecondaryActionClick {  }
         dialog.setOnThirdActionClick { validateDraft() }
         dialog.show()
-            //dialog.show(requireActivity())
     }
 }
