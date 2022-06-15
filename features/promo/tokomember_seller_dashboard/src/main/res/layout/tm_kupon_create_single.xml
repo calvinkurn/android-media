@@ -6,7 +6,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:clickable="true"
-    tools:ignore="MissingDefaultResource">
+    tools:ignore="MissingDefaultResource"
+    android:focusable="true">
 
     <androidx.core.widget.NestedScrollView
         android:id="@+id/scrollContainer"
@@ -34,7 +35,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/unify_space_16"
                 android:layout_marginTop="@dimen/unify_space_16"
-                android:text="Kupon Membership"
+                android:text="@string/tm_kupon_membership"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/ticker"
                 app:typographyType="display_1"
@@ -45,7 +46,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/unify_space_16"
-                android:text="Level Member"
+                android:text="@string/tm_level_member"
                 android:visibility="gone"
                 app:layout_constraintStart_toStartOf="@id/tvTitleKuponMembership"
                 app:layout_constraintTop_toBottomOf="@id/tvTitleKuponMembership"
@@ -73,7 +74,7 @@
             <View
                 android:id="@+id/viewDividerTwo"
                 android:layout_width="match_parent"
-                android:layout_height="8dp"
+                android:layout_height="@dimen/unify_space_8"
                 android:background="@color/Unify_NN50"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/customViewSingleCoupon" />
@@ -83,7 +84,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/unify_space_16"
-                android:text="Periode kupon"
+                android:text="@string/tm_periode_kupon"
                 app:layout_constraintStart_toStartOf="@id/tvTitleKuponMembership"
                 app:layout_constraintTop_toBottomOf="@+id/viewDividerTwo"
                 app:typographyType="display_2"
@@ -94,7 +95,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/unify_space_24"
-                android:text="Masa Berlaku"
+                android:text="@string/tm_masa_berlaku"
                 app:layout_constraintStart_toStartOf="@id/tvTitleKuponMembership"
                 app:layout_constraintTop_toBottomOf="@id/tvTitleProgram"
                 app:typographyType="display_3"
@@ -111,7 +112,7 @@
             <View
                 android:id="@+id/viewDividerThree"
                 android:layout_width="match_parent"
-                android:layout_height="4dp"
+                android:layout_height="@dimen/unify_space_4"
                 android:layout_marginTop="@dimen/unify_space_24"
                 android:background="@color/Unify_NN50"
                 app:layout_constraintStart_toStartOf="parent"
@@ -182,7 +183,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:clickable="true"
-                android:focusable="false"
+                android:focusable="true"
                 android:layout_marginTop="@dimen/unify_space_16"
                 android:layout_marginEnd="@dimen/unify_space_16"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -226,7 +227,7 @@
                         app:typographyType="display_3"
                         app:typographyWeight="bold"
                         android:textColor="@color/Unify_NN950"
-                        android:text="Estimasi Maks. Pengeluaran"
+                        android:text="@string/tm_kupon_max_value"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
 
@@ -236,14 +237,13 @@
                         app:typographyType="display_3"
                         app:typographyWeight="reguler"
                         android:textColor="@color/Unify_NN600"
-                        android:text="Dipotong dari transaksi selesai"
+                        android:text="@string/tm_kupon_transaksi_selesai"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@id/tvMaximumValueLabel" />
 
                     <com.tokopedia.unifyprinciples.Typography
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Rp2.000.000"
                         app:typographyType="display_3"
                         app:typographyWeight="bold"
                         android:textColor="@color/Unify_NN950"
@@ -258,7 +258,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/unify_space_16"
-                    android:text="Buat Kupon"
+                    android:text="@string/tm_buat_kupon"
                     app:unifyButtonSize="large"
                     app:unifyButtonType="main"
                     app:unifyButtonVariant="filled" />
@@ -274,8 +274,7 @@
                     android:textColor="@color/Unify_NN950"
                     android:layout_marginBottom="@dimen/unify_space_16"
                     android:textColorLink="@color/Unify_G500"
-                    android:text="Dengan klik Buat Kupon, kamu menyetujui
-syarat  ketentuan TokoMember." />
+                    android:text="@string/tm_kupon_tnc" />
 
             </LinearLayout>
         </androidx.constraintlayout.widget.ConstraintLayout>

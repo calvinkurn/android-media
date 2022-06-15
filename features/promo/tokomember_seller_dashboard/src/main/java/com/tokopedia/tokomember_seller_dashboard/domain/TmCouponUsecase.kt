@@ -26,10 +26,11 @@ class TmCouponUsecase@Inject constructor(
 
     private fun getRequestParams(voucherStatus: String, voucherType: Int?): Map<String, Any> {
         val req = TmMVFilter(voucherType, voucherStatus, "1", "3")
-        return mapOf("Filter" to req)
+        return mapOf(FILTER_INPUT to req)
     }
 }
 
+const val FILTER_INPUT = "Filter"
 const val QUERY_TM_COUPON_LIST = """
     
     query MerchantPromotionGetMVList(${'$'}Filter: MVFilter!) {

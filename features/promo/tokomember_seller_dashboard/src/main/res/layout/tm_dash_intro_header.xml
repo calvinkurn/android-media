@@ -34,7 +34,7 @@
             <com.tokopedia.unifyprinciples.Typography
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Tokomember"
+                android:text="@string/tm_tokomember"
                 android:textColor="@color/Unify_GN500"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toEndOf="@id/ivIconTokomember"
@@ -48,7 +48,7 @@
         android:id="@+id/tvTitle"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="2dp"
+        android:layout_marginTop="@dimen/unify_space_2"
         android:layout_marginEnd="@dimen/unify_space_16"
         android:textColor="@color/Unify_N0"
         app:layout_constraintEnd_toEndOf="parent"

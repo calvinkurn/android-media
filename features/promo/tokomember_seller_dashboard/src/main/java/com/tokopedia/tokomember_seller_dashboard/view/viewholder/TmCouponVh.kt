@@ -34,7 +34,10 @@ import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
 
-class TmCouponVh(itemView: View, val fragmentManager: FragmentManager) : RecyclerView.ViewHolder(itemView) {
+const val VIP = "VIP"
+const val PREMIUM = "Premium"
+
+class TmCouponVh(itemView: View, private val fragmentManager: FragmentManager) : RecyclerView.ViewHolder(itemView) {
 
     private lateinit var tvCouponState: Typography
     lateinit var tvDate: Typography
@@ -46,7 +49,7 @@ class TmCouponVh(itemView: View, val fragmentManager: FragmentManager) : Recycle
     lateinit var ivCoupon: ImageUnify
     lateinit var btnAddQuota: UnifyButton
 
-    @SuppressLint("ResourcePackage")
+    @SuppressLint("ResourcePackage", "SetTextI18n")
     fun bind(item: VouchersItem, tmCouponActions: TmCouponActions) {
 
         viewStatus = itemView.findViewById(R.id.view_status)
@@ -61,14 +64,14 @@ class TmCouponVh(itemView: View, val fragmentManager: FragmentManager) : Recycle
 
         tvDate.text = "${item.voucherStartTime?.let { setDate(it) }} - ${item.voucherFinishTime?.let { setDate(it) }}"
         tvCouponTitle.text = item.voucherName
-        when(item.minimumTierLevel){
-            COUPON_VIP ->{
-                tvMembership.text = "VIP"
+        when(item.minimumTierLevel) {
+            COUPON_VIP -> {
+                tvMembership.text = VIP
                 tvMembership.setTextColor(ColorStateList.valueOf(ContextCompat.getColor(itemView.context, R.color.Unify_YN500)))
                 tvMembership.backgroundTintList = ColorStateList.valueOf(ContextCompat.getColor(itemView.context, R.color.Unify_YN100))
             }
-            COUPON_MEMBER ->{
-                tvMembership.text = "Premium"
+            COUPON_MEMBER -> {
+                tvMembership.text = PREMIUM
                 tvMembership.setTextColor(ColorStateList.valueOf(ContextCompat.getColor(itemView.context, R.color.Unify_NN600)))
                 tvMembership.backgroundTintList = ColorStateList.valueOf(ContextCompat.getColor(itemView.context, R.color.Unify_NN100))
             }
@@ -153,7 +156,7 @@ class TmCouponVh(itemView: View, val fragmentManager: FragmentManager) : Recycle
                         }
                     }
                 }
-                ivCoupon.loadImage(R.drawable.ic_tm_member_golden)
+                ivCoupon.loadImage(R.drawable.tm_ic_member_golden)
                 tvCouponState.text = "Kupon Aktif"
                 tvCouponState.setTextColor(ColorStateList.valueOf(ContextCompat.getColor(itemView.context, R.color.Unify_GN500)))
                 viewStatus.backgroundTintList = ColorStateList.valueOf(ContextCompat.getColor(itemView.context, R.color.Unify_GN500))

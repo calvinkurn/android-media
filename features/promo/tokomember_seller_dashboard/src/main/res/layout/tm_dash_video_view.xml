@@ -23,21 +23,6 @@
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
-         <!--   <com.tokopedia.unifycomponents.ImageUnify
-                android:id="@+id/videoPreviewImage"
-                android:layout_width="0dp"
-                android:layout_height="0dp"
-                android:adjustViewBounds="true"
-                android:scaleType="centerCrop"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintDimensionRatio="2:1"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:unify_image_corner_radius="0"
-                app:srcCompat="@drawable/thumbnail"
-                tools:visibility="visible" />-->
-
             <View
                 android:id="@+id/video_view"
                 android:layout_width="match_parent"
@@ -108,7 +93,7 @@
         <View
             android:id="@+id/viewBgSelector"
             android:layout_width="@dimen/unify_space_64"
-            android:layout_height="64dp"
+            android:layout_height="@dimen/unify_space_64"
             android:alpha="0.2"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
@@ -119,8 +104,8 @@
 
         <ImageView
             android:id="@+id/ic_play"
-            android:layout_width="32dp"
-            android:layout_height="32dp"
+            android:layout_width="@dimen/unify_space_32"
+            android:layout_height="@dimen/unify_space_32"
             android:src="@drawable/tm_dash_ic_video_play"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"

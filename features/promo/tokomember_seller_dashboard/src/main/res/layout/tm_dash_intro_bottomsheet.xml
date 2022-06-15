@@ -12,40 +12,36 @@
         android:orientation="vertical">
 
     <com.tokopedia.unifycomponents.ImageUnify
-        android:layout_width="280dp"
-        android:layout_height="210dp"
-        android:layout_marginTop="12dp"
-        android:id="@+id/img_bottom_sheet"
-        />
+        android:layout_width="@dimen/tm_dash_dp_280"
+        android:layout_height="@dimen/tm_dash_dp_210"
+        android:layout_marginTop="@dimen/unify_space_12"
+        android:id="@+id/img_bottom_sheet" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/tv_heading"
         app:typographyType="heading_2"
-        android:layout_marginTop="16dp"
-        android:text="Tokomu belum memenuhi syarat"/>
+        android:layout_marginTop="@dimen/unify_space_16"
+        android:text="@string/tm_bs_initial_title"/>
 
     <com.tokopedia.unifyprinciples.Typography
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/tv_desc"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="@dimen/unify_space_8"
         android:gravity="center_horizontal"
-        android:text="Pastikan toko berstatus Official Store. Yuk, baca cara untuk jadi Official Store!"
-        app:typographyType="body_1"
-
-        />
+        android:text="@string/tm_bs_initial_desc"
+        app:typographyType="body_1" />
 
     <com.tokopedia.unifycomponents.UnifyButton
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/btn_proceed"
-        android:layout_marginTop="24dp"
+        android:layout_marginTop="@dimen/unify_space_24"
         android:layout_marginBottom="@dimen/unify_space_16"
         app:unifyButtonSize="large"
-        android:text="Pelajari Official Store"
-        />
+        android:text="@string/tm_bs_initial_btn_text" />
 
     </LinearLayout>
 

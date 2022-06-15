@@ -27,10 +27,12 @@ class TmKuponCreateUsecase @Inject constructor(graphqlRepository: GraphqlReposit
     }
 
     private fun getRequestParams(tmMerchantCouponUnifyRequest: TmMerchantCouponUnifyRequest): Map<String, Any> {
-        return mapOf("merchantVoucherMultipleData" to tmMerchantCouponUnifyRequest)
+        return mapOf(MERCHANT_COUPON_MULTIPLE_INPUT to tmMerchantCouponUnifyRequest)
     }
 
 }
+
+const val MERCHANT_COUPON_MULTIPLE_INPUT = "merchantVoucherMultipleData"
 
 const val KUPON_CREATE = """
      mutation merchantPromotionCreateMultipleMV(${'$'}merchantVoucherMultipleData: mvCreateMultipleData!) {

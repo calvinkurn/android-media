@@ -6,7 +6,6 @@
     android:background="@color/Unify_Background"
     android:id="@+id/viewFlipperCoupon">
 
-
         <androidx.core.widget.NestedScrollView
             android:layout_width="match_parent"
             android:layout_height="match_parent">
@@ -21,9 +20,9 @@
         android:layout_height="wrap_content"
         android:layout_width="match_parent"
         android:id="@+id/filter"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginStart="@dimen/unify_space_16"
+        android:layout_marginEnd="@dimen/unify_space_16"
+        android:layout_marginTop="@dimen/unify_space_16"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -34,10 +33,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/rv_coupon"
-        android:layout_marginTop="16dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginBottom="32dp"
+        android:layout_marginTop="@dimen/unify_space_16"
+        android:layout_marginStart="@dimen/unify_space_16"
+        android:layout_marginEnd="@dimen/unify_space_16"
+        android:layout_marginBottom="@dimen/unify_space_32"
         app:layout_constraintTop_toBottomOf="@id/filter"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>
@@ -51,10 +50,10 @@
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
             android:id="@+id/btn_create_coupon"
-            android:text="+ Kupon"
-            android:layout_marginStart="16dp"
-            android:layout_marginEnd="16dp"
-            android:layout_marginBottom="16dp"/>
+            android:text="@string/tm_kupon_add"
+            android:layout_marginStart="@dimen/unify_space_16"
+            android:layout_marginEnd="@dimen/unify_space_16"
+            android:layout_marginBottom="@dimen/unify_space_16"/>
 
 
 </RelativeLayout>

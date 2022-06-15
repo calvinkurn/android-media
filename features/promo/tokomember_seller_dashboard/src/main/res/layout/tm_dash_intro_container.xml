@@ -11,7 +11,7 @@
         android:layout_height="@dimen/unify_space_24"
         android:id="@+id/loaderUnify"
         android:layout_gravity="center"
-        app:loader_corner_radius="8dp"
+        app:loader_corner_radius="@dimen/unify_space_8"
         app:loader_type="circular"  />
 
     <include layout="@layout/tm_dash_intro"/>

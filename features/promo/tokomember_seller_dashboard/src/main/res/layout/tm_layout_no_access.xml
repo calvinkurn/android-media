@@ -28,8 +28,7 @@
         android:layout_width="280dp"
         android:layout_height="210dp"
         android:layout_marginTop="12dp"
-        android:id="@+id/iv_error"
-        />
+        android:id="@+id/iv_error" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:layout_width="wrap_content"
@@ -37,7 +36,7 @@
         android:id="@+id/tv_heading_error"
         app:typographyType="heading_2"
         android:layout_marginTop="16dp"
-        android:text="Oops, kamu nggak punya akses untuk halaman ini"/>
+        android:text="@string/tm_layout_no_access_title"/>
 
     <com.tokopedia.unifyprinciples.Typography
         android:layout_width="wrap_content"
@@ -45,10 +44,8 @@
         android:id="@+id/tv_desc_error"
         android:layout_marginTop="8dp"
         android:gravity="center_horizontal"
-        android:text="Hubungi pemilik toko untuk bisa mengakses halaman ini, ya."
-        app:typographyType="body_1"
-
-        />
+        android:text="@string/tm_layout_no_access_desc"
+        app:typographyType="body_1" />
 
     <com.tokopedia.unifycomponents.UnifyButton
         android:layout_width="match_parent"
@@ -57,7 +54,7 @@
         android:layout_marginTop="24dp"
         android:layout_marginBottom="@dimen/unify_space_16"
         app:unifyButtonSize="large"
-        android:text="Kembali ke Home" />
+        android:text="@string/tm_layout_no_access_cta" />
 
     </LinearLayout>
 

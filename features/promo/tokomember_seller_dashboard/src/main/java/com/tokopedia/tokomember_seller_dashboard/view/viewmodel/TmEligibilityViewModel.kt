@@ -7,11 +7,9 @@ import com.tokopedia.tokomember_seller_dashboard.di.qualifier.CoroutineMainDispa
 import com.tokopedia.tokomember_seller_dashboard.domain.TmOnBoardingCheckUsecase
 import com.tokopedia.tokomember_seller_dashboard.domain.TokomemberAuthenticatedUsecase
 import com.tokopedia.tokomember_seller_dashboard.domain.TokomemberEligibilityUsecase
-import com.tokopedia.tokomember_seller_dashboard.domain.TokomemberUserEligibilityUsecase
 import com.tokopedia.tokomember_seller_dashboard.model.CheckEligibility
 import com.tokopedia.tokomember_seller_dashboard.model.MembershipData
 import com.tokopedia.tokomember_seller_dashboard.model.SellerData
-import com.tokopedia.tokomember_seller_dashboard.model.TmUserElligibilityResponseData
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
