@@ -37,7 +37,8 @@
         app:srcCompat="@drawable/ic_close_white"
         android:contentDescription="@string/content_desc_reminder" />
 
-    <androidx.cardview.widget.CardView
+    <com.tokopedia.unifycomponents.CardUnify2
+        android:id="@+id/card_reminder"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/home_component_margin_default"
@@ -123,7 +124,7 @@
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-    </androidx.cardview.widget.CardView>
+    </com.tokopedia.unifycomponents.CardUnify2>
 
     <include
         android:id="@+id/home_reminder_recommendation_loading"

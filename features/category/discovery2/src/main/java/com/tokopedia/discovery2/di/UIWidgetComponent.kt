@@ -34,9 +34,11 @@ import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.quic
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.shopcard.ShopCardViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.section.SectionViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.shopbannerinfinite.ShopBannerInfiniteViewModel
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.shopcardinfinite.ShopCardInfiniteViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.tabs.TabsViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.tokopoints.TokopointsViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.topadsheadline.TopAdsHeadlineViewModel
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.topquest.TopQuestViewModel
 import dagger.Subcomponent
 
 
@@ -79,5 +81,7 @@ interface UIWidgetComponent {
     fun inject(myCouponItemViewModel: MyCouponItemViewModel)
     fun inject(viewModel: ProductCardSingleViewModel)
     fun inject(shopBannerInfiniteViewModel: ShopBannerInfiniteViewModel)
+    fun inject(viewModel: TopQuestViewModel)
+    fun inject(shopCardInfiniteViewModel: ShopCardInfiniteViewModel)
 
 }
