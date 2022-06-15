@@ -142,9 +142,8 @@ class DynamicChannelHeaderView: FrameLayout {
             handleSubtitlePosition(channelSubtitleName, channel, channelTitleContainer)
 
             if(channel.style == ChannelStyle.ChannelHome){
-                seeAllButton?.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G500))
+                seeAllButton?.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_GN500))
             } else if(channel.style == ChannelStyle.ChannelOS){
-                seeAllButton?.setTypeface(null, Typeface.NORMAL)
                 seeAllButton?.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_P600))
             }
 
