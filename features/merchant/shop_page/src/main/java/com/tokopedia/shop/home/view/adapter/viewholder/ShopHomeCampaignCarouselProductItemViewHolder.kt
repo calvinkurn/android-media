@@ -48,7 +48,8 @@ open class ShopHomeCampaignCarouselProductItemViewHolder(
         productCard?.setProductModel(ShopPageHomeMapper.mapToProductCardCampaignModel(
                 isHasAddToCartButton = false,
                 hasThreeDots = false,
-                shopHomeProductViewModel = shopHomeProductViewModel
+                shopHomeProductViewModel = shopHomeProductViewModel,
+                widgetName = shopHomeNewProductLaunchCampaignUiModel.name
         ))
         setListener()
     }

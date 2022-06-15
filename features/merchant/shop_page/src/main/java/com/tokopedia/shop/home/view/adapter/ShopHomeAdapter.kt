@@ -17,10 +17,7 @@ import com.tokopedia.shop.R
 import com.tokopedia.shop.common.util.ShopProductViewGridType
 import com.tokopedia.shop.common.util.ShopUtil.setElement
 import com.tokopedia.shop.home.WidgetName
-import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeProductItemBigGridViewHolder
-import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeProductItemListViewHolder
-import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeProductViewHolder
-import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeSliderBannerViewHolder
+import com.tokopedia.shop.home.view.adapter.viewholder.*
 import com.tokopedia.shop.home.view.model.*
 import com.tokopedia.shop.product.view.adapter.scrolllistener.DataEndlessScrollListener
 import com.tokopedia.shop.product.view.datamodel.ShopProductSortFilterUiModel
@@ -210,6 +207,7 @@ class ShopHomeAdapter(
     fun updateProductWidgetData(shopHomeCarousellProductUiModel: ShopHomeCarousellProductUiModel) {
         val newList = getNewVisitableItems()
         val position = newList.indexOf(shopHomeCarousellProductUiModel)
+        shopHomeCarousellProductUiModel.copy()
         shopHomeCarousellProductUiModel.isNewData = true
         newList.setElement(position, shopHomeCarousellProductUiModel)
         submitList(newList)
@@ -645,5 +643,30 @@ class ShopHomeAdapter(
             val dynamicRuleDescription = dynamicRule?.descriptionHeader.orEmpty()
             nplItemCampaignId == campaignId && dynamicRuleDescription.isNotEmpty()
         }
+    }
+
+    fun asd() {
+        val newList = getNewVisitableItems()
+//        newList.filterIsInstance<ShopHomeProductUiModel>().onEach {
+//            it
+//                it.productInCart = 10
+//        }
+        newList.filterIsInstance<ShopHomeCarousellProductUiModel>()
+            .onEachIndexed { index, shopHomeCarousellProductUiModel ->
+                (recyclerView?.findViewHolderForAdapterPosition(index) as? ShopHomeCarousellProductViewHolder)?.bind(
+                    shopHomeCarousellProductUiModel
+//                    shopHomeCarousellProductUiModel.copy().apply {
+//                        productList.onEach {
+//                            it.productInCart = 30
+//                        }
+//                    }
+                )
+//                shopHomeCarousellProductUiModel.productList.onEach {
+//                    it.productInCart = 20
+//                }.also {
+//                    shopHomeCarousellProductUiModel.isNewData = true
+//                }
+            }
+//        submitList(newList)
     }
 }

@@ -18,4 +18,13 @@ interface ShopHomeFlashSaleWidgetListener {
     fun onFlashSaleWidgetImpressed(model : ShopHomeFlashSaleUiModel, position: Int)
 
     fun onPlaceHolderClickSeeAll(model: ShopHomeFlashSaleUiModel)
+
+    fun onProductAtcNonVariantQuantityEditorChanged(
+        shopHomeProductViewModel: ShopHomeProductUiModel,
+        quantity: Int
+    )
+
+    fun onProductAtcVariantClick(shopHomeProductViewModel: ShopHomeProductUiModel)
+
+    fun onProductAtcDefaultClick(shopHomeProductViewModel: ShopHomeProductUiModel)
 }

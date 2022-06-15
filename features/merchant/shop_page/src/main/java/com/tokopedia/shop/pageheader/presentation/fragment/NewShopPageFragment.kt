@@ -120,6 +120,7 @@ import com.tokopedia.shop.common.view.viewmodel.ShopPageFeedTabSharedViewModel
 import com.tokopedia.shop.common.view.viewmodel.ShopPageFeedTabSharedViewModel.Companion.FAB_ACTION_HIDE
 import com.tokopedia.shop.common.view.viewmodel.ShopPageFeedTabSharedViewModel.Companion.FAB_ACTION_SETUP
 import com.tokopedia.shop.common.view.viewmodel.ShopPageFeedTabSharedViewModel.Companion.FAB_ACTION_SHOW
+import com.tokopedia.shop.common.view.viewmodel.ShopPageMiniCartSharedViewModel
 import com.tokopedia.shop.databinding.NewShopPageFragmentContentLayoutBinding
 import com.tokopedia.shop.databinding.NewShopPageMainBinding
 import com.tokopedia.shop.databinding.WidgetSellerMigrationBottomSheetHasPostBinding
@@ -140,6 +141,7 @@ import com.tokopedia.shop.pageheader.presentation.uimodel.component.*
 import com.tokopedia.shop.pageheader.presentation.uimodel.widget.ShopHeaderWidgetUiModel
 import com.tokopedia.shop.product.view.fragment.ShopPageProductListFragment
 import com.tokopedia.shop.search.view.activity.ShopSearchProductActivity
+import com.tokopedia.shop_widget.mvc_locked_to_product.util.MvcLockedToProductUtil
 import com.tokopedia.usercomponents.stickylogin.common.StickyLoginConstant
 import com.tokopedia.usercomponents.stickylogin.view.StickyLoginAction
 import com.tokopedia.usercomponents.stickylogin.view.StickyLoginView
@@ -305,6 +307,7 @@ class NewShopPageFragment :
     private var shopUnmoderateBottomSheet: ShopRequestUnmoderateBottomSheet? = null
     private var shopImageFilePath: String = ""
     private var shopProductFilterParameterSharedViewModel: ShopProductFilterParameterSharedViewModel? = null
+    private var shopPageMiniCartSharedViewModel: ShopPageMiniCartSharedViewModel? = null
     private var shopPageFollowingStatusSharedViewModel: ShopPageFollowingStatusSharedViewModel? = null
     private var shopPageFeedTabSharedViewModel: ShopPageFeedTabSharedViewModel? = null
     private var sharedPreferences: SharedPreferences? = null
@@ -386,6 +389,7 @@ class NewShopPageFragment :
         shopPageFollowingStatusSharedViewModel?.shopPageFollowingStatusLiveData?.removeObservers(this)
         shopPageFeedTabSharedViewModel?.sellerMigrationBottomSheet?.removeObservers(this)
         shopPageFeedTabSharedViewModel?.shopPageFab?.removeObservers(this)
+        shopPageMiniCartSharedViewModel?.miniCartSimplifiedData?.removeObservers(this)
         shopViewModel?.flush()
         removeTemporaryShopImage(shopImageFilePath)
         UniversalShareBottomSheet.clearState(screenShotDetector)
@@ -515,8 +519,8 @@ class NewShopPageFragment :
             startMonitoringPltCustomMetric(SHOP_TRACE_HEADER_SHOP_NAME_AND_PICTURE_RENDER)
             when (result) {
                 is Success -> {
-                    initMiniCart()
                     onSuccessGetShopPageP1Data(result.data)
+                    initMiniCart()
                 }
                 is Fail -> {
                     val throwable = result.throwable
@@ -714,7 +718,9 @@ class NewShopPageFragment :
 
     private fun observeMiniCartSimplifiedData() {
      shopViewModel?.miniCartSimplifiedData?.observe(viewLifecycleOwner, {
-//            refreshCartCounterData()
+            refreshCartCounterData()
+//            updateProductListQuantityOnHomeTab(it)
+//         updateProductListQuantityOnProductTab(it)
 //            rvProductList?.invalidateItemDecorations()
 //            adapter.updateProductListDataWithMiniCartData(it)
             if (it.isShowMiniCartWidget) {
@@ -723,6 +729,11 @@ class NewShopPageFragment :
                 hideMiniCartWidget()
             }
         })
+    }
+
+    private fun refreshCartCounterData() {
+        if (isLogin && !MvcLockedToProductUtil.isSellerApp())
+            newNavigationToolbar?.updateNotification()
     }
 
     private fun hideMiniCartWidget() {
@@ -902,6 +913,9 @@ class NewShopPageFragment :
         sharedPreferences = activity?.getSharedPreferences(SHOP_PAGE_PREFERENCE, Context.MODE_PRIVATE)
         shopViewModel = ViewModelProviders.of(this, viewModelFactory).get(NewShopPageViewModel::class.java)
         shopProductFilterParameterSharedViewModel = ViewModelProviders.of(requireActivity()).get(ShopProductFilterParameterSharedViewModel::class.java)
+        shopPageMiniCartSharedViewModel = ViewModelProviders.of(requireActivity()).get(
+            ShopPageMiniCartSharedViewModel::class.java
+        )
         shopPageFollowingStatusSharedViewModel = ViewModelProviders.of(requireActivity()).get(ShopPageFollowingStatusSharedViewModel::class.java)
         shopPageFeedTabSharedViewModel = ViewModelProviders.of(requireActivity()).get(ShopPageFeedTabSharedViewModel::class.java)
         context?.let {
@@ -2628,7 +2642,7 @@ class NewShopPageFragment :
     }
 
     override fun onCartItemsUpdated(miniCartSimplifiedData: MiniCartSimplifiedData) {
-        shopViewModel?.setMiniCartData(miniCartSimplifiedData)
+        shopPageMiniCartSharedViewModel?.updateSharedMiniCartData(miniCartSimplifiedData)
     }
 
     fun getMiniCartSimplifiedData(): MiniCartSimplifiedData? {

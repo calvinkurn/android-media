@@ -12,6 +12,7 @@ import com.tokopedia.carouselproductcard.CarouselProductCardListener
 import com.tokopedia.carouselproductcard.CarouselProductCardView
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.productcard.ProductCardModel
@@ -47,6 +48,12 @@ class ShopHomeCarousellProductViewHolder(
 
     init {
         initView()
+    }
+
+    override fun onViewRecycled() {
+        val carouselScrollPosition = recyclerView?.getCurrentPosition() ?: 0
+        shopHomeCarousellProductUiModel?.rvPosition = carouselScrollPosition
+        super.onViewRecycled()
     }
 
     private fun initView() {
@@ -101,25 +108,12 @@ class ShopHomeCarousellProductViewHolder(
                             false
                     )
                 },
+            scrollToPosition = shopHomeCarousellProductUiModel?.rvPosition.orZero(),
                 carouselProductCardOnItemAddToCartListener = object : CarouselProductCardListener.OnItemAddToCartListener {
                     override fun onItemAddToCart(productCardModel: ProductCardModel, carouselProductCardPosition: Int) {
                         val shopProductViewModel = shopHomeProductViewModelList.getOrNull(carouselProductCardPosition)
                                 ?: return
-                        if (!isEtalaseCarousel()) {
-                            shopHomeCarouselProductListener.onCarouselProductItemClickAddToCart(
-                                    adapterPosition,
-                                    carouselProductCardPosition,
-                                    shopHomeCarousellProductUiModel,
-                                    shopProductViewModel
-                            )
-                        } else {
-                            shopHomeCarouselProductListener.onCarouselProductShowcaseItemClickAddToCart(
-                                    adapterPosition,
-                                    carouselProductCardPosition,
-                                    shopHomeCarousellProductUiModel,
-                                    shopProductViewModel
-                            )
-                        }
+                        shopHomeCarouselProductListener.onProductAtcDefaultClick(shopProductViewModel)
                     }
 
                 },
@@ -142,6 +136,27 @@ class ShopHomeCarousellProductViewHolder(
                                     shopProductViewModel
                             )
                         }
+                    }
+                },
+                carouselProductCardOnItemATCNonVariantClickListener = object : CarouselProductCardListener.OnATCNonVariantClickListener{
+                    override fun onATCNonVariantClick(
+                        productCardModel: ProductCardModel,
+                        carouselProductCardPosition: Int,
+                        quantity: Int
+                    ) {
+                        val shopProductViewModel = shopHomeProductViewModelList.getOrNull(carouselProductCardPosition)
+                            ?: return
+                        shopHomeCarouselProductListener.onProductAtcNonVariantQuantityEditorChanged(shopProductViewModel, quantity)
+                    }
+                },
+                carouselProductCardOnItemAddVariantClickListener = object: CarouselProductCardListener.OnAddVariantClickListener{
+                    override fun onAddVariantClick(
+                        productCardModel: ProductCardModel,
+                        carouselProductCardPosition: Int
+                    ) {
+                        val shopProductViewModel = shopHomeProductViewModelList.getOrNull(carouselProductCardPosition)
+                            ?: return
+                        shopHomeCarouselProductListener.onProductAtcVariantClick(shopProductViewModel)
                     }
                 },
                 carouselProductCardOnItemImpressedListener = object : CarouselProductCardListener.OnItemImpressedListener {

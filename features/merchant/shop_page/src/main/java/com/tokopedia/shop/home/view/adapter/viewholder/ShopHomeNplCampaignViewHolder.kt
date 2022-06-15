@@ -157,7 +157,8 @@ class ShopHomeNplCampaignViewHolder(
                         ShopPageHomeMapper.mapToProductCardCampaignModel(
                                 isHasAddToCartButton = false,
                                 hasThreeDots = false,
-                                shopHomeProductViewModel = it
+                                shopHomeProductViewModel = it,
+                                widgetName = model.name
                         )
                     })
                 } catch (throwable: Exception) {

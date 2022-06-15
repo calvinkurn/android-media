@@ -14,7 +14,8 @@ data class ShopHomeCarousellProductUiModel(
         override val name: String = "",
         override val type: String = "",
         override val header: Header = Header(),
-        val productList: List<ShopHomeProductUiModel> = listOf()
+        val productList: List<ShopHomeProductUiModel> = listOf(),
+        var rvPosition: Int = 0
 ) : BaseShopHomeWidgetUiModel() {
     val impressHolder = ImpressHolder()
 

@@ -182,6 +182,8 @@ class ShopHomeViewModel @Inject constructor(
     val userId: String
         get() = userSession.userId
 
+    private var miniCartData : MiniCartSimplifiedData? = null
+
     fun getShopPageHomeWidgetLayoutData(
             shopId: String,
             extParam: String,
@@ -392,10 +394,12 @@ class ShopHomeViewModel @Inject constructor(
     ) : GetShopHomeProductUiModel {
         val isHasNextPage = ShopUtil.isHasNextPage(page, productPerPage, productListResponse.totalData)
         val productListUiModelData = productListResponse.data.map {
+            val productInCart = getProductInMiniCart(it.productId, miniCartData)
             ShopPageHomeMapper.mapToHomeProductViewModelForAllProduct(
                     it,
                     ShopUtil.isMyShop(shopId, userSessionShopId),
-                    isEnableDirectPurchase
+                    isEnableDirectPurchase,
+                    productInCart
             )
         }
         val totalProductListData = productListResponse.totalData
@@ -404,6 +408,31 @@ class ShopHomeViewModel @Inject constructor(
                 productListUiModelData,
                 totalProductListData
         )
+    }
+
+    private fun getProductInMiniCart(
+        productId: String,
+        miniCartSimplifiedData: MiniCartSimplifiedData?
+    ): Int {
+        val matchedMiniCartItem = getMatchedMiniCartItem(productId, miniCartSimplifiedData)
+        return if (matchedMiniCartItem != null && !matchedMiniCartItem.isError) {
+            matchedMiniCartItem.quantity
+        } else {
+            0
+        }
+    }
+
+    private fun getMatchedMiniCartItem(
+        productId: String,
+        miniCartData: MiniCartSimplifiedData?
+    ): MiniCartItem.MiniCartItemProduct? {
+//        val isVariant = productUiModel.isVariant
+//        if (isVariant) {
+//            return miniCartData.miniCartItems.values.firstOrNull {
+//                it is MiniCartItem.MiniCartItemProduct && (it.productId == productUiModel.productID || productUiModel.childIDs.contains(it.productId))
+//            } as? MiniCartItem.MiniCartItemProduct
+//        }
+        return miniCartData?.miniCartItems?.getMiniCartItemProduct(productId)
     }
 
     private suspend fun getSortListData(): List<ShopProductSortModel> {
@@ -733,7 +762,8 @@ class ShopHomeViewModel @Inject constructor(
             listWidgetLayout: List<ShopPageHomeWidgetLayoutUiModel.WidgetLayout>,
             shopId: String,
             widgetUserAddressLocalData: LocalCacheModel,
-            isThematicWidgetShown: Boolean
+            isThematicWidgetShown: Boolean,
+            isEnableDirectPurchase: Boolean
     ) {
         launchCatchError(block = {
             val responseWidgetContent = withContext(dispatcherProvider.io) {
@@ -761,7 +791,8 @@ class ShopHomeViewModel @Inject constructor(
                     responseWidgetContent.listWidget,
                     ShopUtil.isMyShop(shopId, userSessionShopId),
                     isLogin,
-                    isThematicWidgetShown
+                    isThematicWidgetShown,
+                    isEnableDirectPurchase
             )
             val mapShopHomeWidgetData = mutableMapOf<Pair<String, String>, Visitable<*>?>().apply{
                 listWidgetLayout.onEach {
@@ -900,6 +931,10 @@ class ShopHomeViewModel @Inject constructor(
     ): MiniCartItem.MiniCartItemProduct? {
         val items = miniCartSimplifiedData?.miniCartItems.orEmpty()
         return items.getMiniCartItemProduct(productId)
+    }
+
+    fun setMiniCartData(miniCartSimplifiedData: MiniCartSimplifiedData?) {
+        miniCartData = miniCartSimplifiedData
     }
 
 }

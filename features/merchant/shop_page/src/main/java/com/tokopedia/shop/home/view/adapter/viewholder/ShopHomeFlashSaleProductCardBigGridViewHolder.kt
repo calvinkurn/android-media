@@ -4,10 +4,12 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.getScreenWidth
+import com.tokopedia.productcard.ATCNonVariantListener
 import com.tokopedia.productcard.ProductCardGridView
 import com.tokopedia.shop.R
 import com.tokopedia.shop.home.util.mapper.ShopPageHomeMapper
 import com.tokopedia.shop.home.view.listener.ShopHomeFlashSaleWidgetListener
+import com.tokopedia.shop.home.view.model.ShopHomeFlashSaleUiModel
 import com.tokopedia.shop.home.view.model.ShopHomeProductUiModel
 
 class ShopHomeFlashSaleProductCardBigGridViewHolder(
@@ -27,9 +29,31 @@ class ShopHomeFlashSaleProductCardBigGridViewHolder(
     init {
         adjustProductCardWidth(false)
         setupClickListener(listener)
+        setupAddToCartListener(listener)
     }
 
-    fun bindData(uiModel: ShopHomeProductUiModel) {
+    private fun setupAddToCartListener(listener: ShopHomeFlashSaleWidgetListener) {
+        uiModel?.let{ shopHomeProductUiModel ->
+            productCardBigGrid?.setAddToCartNonVariantClickListener(object : ATCNonVariantListener {
+                override fun onQuantityChanged(quantity: Int) {
+                    listener.onProductAtcNonVariantQuantityEditorChanged(
+                        shopHomeProductUiModel,
+                        quantity
+                    )
+                }
+            })
+
+            productCardBigGrid?.setAddVariantClickListener {
+                listener.onProductAtcVariantClick(shopHomeProductUiModel)
+            }
+
+            productCardBigGrid?.setAddToCartOnClickListener {
+                listener.onProductAtcDefaultClick(shopHomeProductUiModel)
+            }
+        }
+    }
+
+    fun bindData(uiModel: ShopHomeProductUiModel, fsUiModel: ShopHomeFlashSaleUiModel?) {
         this.uiModel = uiModel
         productCardBigGrid?.applyCarousel()
         productCardBigGrid?.layoutParams?.height = ViewGroup.LayoutParams.MATCH_PARENT
@@ -37,7 +61,8 @@ class ShopHomeFlashSaleProductCardBigGridViewHolder(
             ShopPageHomeMapper.mapToProductCardCampaignModel(
                 isHasAddToCartButton = false,
                 hasThreeDots = false,
-                shopHomeProductViewModel = uiModel
+                shopHomeProductViewModel = uiModel,
+                widgetName = fsUiModel?.name.orEmpty()
             )
         )
     }

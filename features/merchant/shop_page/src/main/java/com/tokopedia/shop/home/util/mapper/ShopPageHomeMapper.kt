@@ -47,6 +47,7 @@ import com.tokopedia.shop.home.view.model.ShopHomeVoucherUiModel
 import com.tokopedia.shop.home.view.model.ShopPageHomeWidgetLayoutUiModel
 import com.tokopedia.shop.home.view.model.StatusCampaign
 import com.tokopedia.shop.common.data.model.ShopPageGetHomeType
+import com.tokopedia.shop.home.WidgetName.RECENT_ACTIVITY
 import com.tokopedia.shop.product.data.model.ShopProduct
 import com.tokopedia.shop.product.view.datamodel.LabelGroupUiModel
 import com.tokopedia.shop_widget.common.uimodel.DynamicHeaderUiModel
@@ -63,7 +64,8 @@ object ShopPageHomeMapper {
     fun mapToHomeProductViewModelForAllProduct(
         shopProduct: ShopProduct,
         isMyOwnProduct: Boolean,
-        isEnableDirectPurchase: Boolean
+        isEnableDirectPurchase: Boolean,
+        productInCart: Int
     ): ShopHomeProductUiModel =
         with(shopProduct) {
             ShopHomeProductUiModel().also {
@@ -91,6 +93,7 @@ object ShopPageHomeMapper {
                 it.labelGroupList =
                     labelGroupList.map { labelGroup -> mapToLabelGroupViewModel(labelGroup) }
                 it.isEnableDirectPurchase = isEnableDirectPurchase
+                it.productInCart = productInCart
             }
         }
 
@@ -108,6 +111,7 @@ object ShopPageHomeMapper {
         isHasATC: Boolean,
         isHasOCCButton: Boolean,
         occButtonText: String = "",
+        widgetName: String = ""
     ): ProductCardModel {
         val discountWithoutPercentageString =
             shopHomeProductViewModel.discountPercentage?.replace("%", "")
@@ -123,7 +127,7 @@ object ShopPageHomeMapper {
                 ?: ""
         )
 
-        return if (isHasOCCButton) {
+        val baseProductCardModel = if (isHasOCCButton) {
             ProductCardModel(
                 productImageUrl = shopHomeProductViewModel.imageUrl ?: "",
                 productName = shopHomeProductViewModel.name ?: "",
@@ -149,6 +153,32 @@ object ShopPageHomeMapper {
                 hasAddToCartButton = isHasATC
             )
         }
+        return if (isShopPersonalizationWidgetEnableDirectPurchase(
+                shopHomeProductViewModel.isEnableDirectPurchase,
+                widgetName
+        )) {
+            if (shopHomeProductViewModel.isVariant) {
+                createProductCardWithVariantAtcModel(shopHomeProductViewModel, baseProductCardModel)
+            } else {
+                if (shopHomeProductViewModel.productInCart.isZero()) {
+                    createProductCardWithDefaultAddToCardModel(baseProductCardModel)
+                } else {
+                    createProductCardWithNonVariantAtcModel(
+                        shopHomeProductViewModel,
+                        baseProductCardModel
+                    )
+                }
+            }
+        } else {
+            baseProductCardModel
+        }
+    }
+
+    private fun isShopPersonalizationWidgetEnableDirectPurchase(
+        enableDirectPurchase: Boolean,
+        widgetName: String
+    ): Boolean {
+        return enableDirectPurchase && (widgetName == RECENT_ACTIVITY)
     }
 
     fun mapToProductCardModel(
@@ -243,7 +273,8 @@ object ShopPageHomeMapper {
     fun mapToProductCardCampaignModel(
         isHasAddToCartButton: Boolean,
         hasThreeDots: Boolean,
-        shopHomeProductViewModel: ShopHomeProductUiModel
+        shopHomeProductViewModel: ShopHomeProductUiModel,
+        widgetName: String
     ): ProductCardModel {
         val discountWithoutPercentageString =
             shopHomeProductViewModel.discountPercentage?.replace("%", "")
@@ -258,7 +289,7 @@ object ShopPageHomeMapper {
             shopHomeProductViewModel.isShowFreeOngkir, shopHomeProductViewModel.freeOngkirPromoIcon
                 ?: ""
         )
-        return ProductCardModel(
+        val baseProductCardModel = ProductCardModel(
             productImageUrl = shopHomeProductViewModel.imageUrl ?: "",
             productName = shopHomeProductViewModel.name ?: "",
             discountPercentage = discountPercentage.takeIf { !shopHomeProductViewModel.hideGimmick }
@@ -277,6 +308,32 @@ object ShopPageHomeMapper {
             stockBarLabel = shopHomeProductViewModel.stockLabel,
             stockBarPercentage = shopHomeProductViewModel.stockSoldPercentage
         )
+        return if (isShopCampaignWidgetEnableDirectPurchase(
+                shopHomeProductViewModel.isEnableDirectPurchase,
+                widgetName
+            )) {
+            if (shopHomeProductViewModel.isVariant) {
+                createProductCardWithVariantAtcModel(shopHomeProductViewModel, baseProductCardModel)
+            } else {
+                if (shopHomeProductViewModel.productInCart.isZero()) {
+                    createProductCardWithDefaultAddToCardModel(baseProductCardModel)
+                } else {
+                    createProductCardWithNonVariantAtcModel(
+                        shopHomeProductViewModel,
+                        baseProductCardModel
+                    )
+                }
+            }
+        } else {
+            baseProductCardModel
+        }
+    }
+
+    private fun isShopCampaignWidgetEnableDirectPurchase(
+        enableDirectPurchase: Boolean,
+        widgetName: String
+    ): Boolean {
+        return enableDirectPurchase && widgetName == FLASH_SALE_TOKO
     }
 
     fun mapToShopHomeCampaignNplTncUiModel(model: ShopHomeCampaignNplTncModel): ShopHomeCampaignNplTncUiModel {
@@ -306,7 +363,8 @@ object ShopPageHomeMapper {
             widgetResponse: ShopLayoutWidget.Widget,
             isMyOwnProduct: Boolean,
             isLoggedIn: Boolean,
-            isThematicWidgetShown: Boolean
+            isThematicWidgetShown: Boolean,
+            isEnableDirectPurchase: Boolean
     ): Visitable<*>? {
         if (widgetResponse.name == VOUCHER_STATIC) {
             return mapToVoucherUiModel(widgetResponse)
@@ -316,14 +374,14 @@ object ShopPageHomeMapper {
                 mapToDisplayWidget(widgetResponse)
             }
             PRODUCT.toLowerCase() -> {
-                mapToProductWidgetUiModel(widgetResponse, isMyOwnProduct)
+                mapToProductWidgetUiModel(widgetResponse, isMyOwnProduct, isEnableDirectPurchase)
             }
             CAMPAIGN.toLowerCase() -> {
                 if (isThematicWidgetShown) {
                     when(widgetResponse.name) {
                         ETALASE_THEMATIC -> mapToThematicWidget(widgetResponse)
                         BIG_CAMPAIGN_THEMATIC -> mapToThematicWidget(widgetResponse)
-                        FLASH_SALE_TOKO -> mapToFlashSaleUiModel(widgetResponse)
+                        FLASH_SALE_TOKO -> mapToFlashSaleUiModel(widgetResponse, isEnableDirectPurchase)
                         NEW_PRODUCT_LAUNCH_CAMPAIGN -> mapToNewProductLaunchCampaignUiModel(
                             widgetResponse,
                             isLoggedIn
@@ -332,7 +390,10 @@ object ShopPageHomeMapper {
                     }
                 } else {
                     when(widgetResponse.name) {
-                        FLASH_SALE_TOKO -> mapToFlashSaleUiModel(widgetResponse)
+                        FLASH_SALE_TOKO -> mapToFlashSaleUiModel(
+                            widgetResponse,
+                            isEnableDirectPurchase
+                        )
                         NEW_PRODUCT_LAUNCH_CAMPAIGN -> mapToNewProductLaunchCampaignUiModel(
                             widgetResponse, isLoggedIn
                         )
@@ -343,7 +404,8 @@ object ShopPageHomeMapper {
             DYNAMIC.toLowerCase(Locale.getDefault()) -> mapCarouselPlayWidget(widgetResponse)
             PERSONALIZATION.toLowerCase(Locale.getDefault()) -> mapToProductPersonalizationUiModel(
                 widgetResponse,
-                isMyOwnProduct
+                isMyOwnProduct,
+                isEnableDirectPurchase
             )
             SHOWCASE.toLowerCase(Locale.getDefault()) -> mapToShowcaseListUiModel(widgetResponse)
             CARD.lowercase() -> mapToCardDonationUiModel(widgetResponse)
@@ -356,14 +418,15 @@ object ShopPageHomeMapper {
 
     private fun mapToProductPersonalizationUiModel(
         widgetResponse: ShopLayoutWidget.Widget,
-        isMyProduct: Boolean
+        isMyProduct: Boolean,
+        isEnableDirectPurchase: Boolean
     ) = ShopHomeCarousellProductUiModel(
         widgetId = widgetResponse.widgetID,
         layoutOrder = widgetResponse.layoutOrder,
         name = widgetResponse.name,
         type = widgetResponse.type,
         header = mapToHeaderModel(widgetResponse.header),
-        productList = mapToWidgetProductListPersonalization(widgetResponse.data, isMyProduct)
+        productList = mapToWidgetProductListPersonalization(widgetResponse.data, isMyProduct, isEnableDirectPurchase)
     )
 
     private fun mapToShowcaseListUiModel(
@@ -458,7 +521,8 @@ object ShopPageHomeMapper {
     }
 
     private fun mapToFlashSaleUiModel(
-        widgetResponse: ShopLayoutWidget.Widget
+        widgetResponse: ShopLayoutWidget.Widget,
+        isEnableDirectPurchase: Boolean
     ): ShopHomeFlashSaleUiModel {
         return ShopHomeFlashSaleUiModel(
             widgetResponse.widgetID,
@@ -466,7 +530,7 @@ object ShopPageHomeMapper {
             widgetResponse.name,
             widgetResponse.type,
             mapToHeaderModel(widgetResponse.header),
-            mapToFlashSaleUiModelList(widgetResponse.data)
+            mapToFlashSaleUiModelList(widgetResponse.data, isEnableDirectPurchase)
         )
     }
 
@@ -499,7 +563,10 @@ object ShopPageHomeMapper {
         }
     }
 
-    private fun mapToFlashSaleUiModelList(data: List<ShopLayoutWidget.Widget.Data>): List<ShopHomeFlashSaleUiModel.FlashSaleItem> {
+    private fun mapToFlashSaleUiModelList(
+        data: List<ShopLayoutWidget.Widget.Data>,
+        isEnableDirectPurchase: Boolean
+    ): List<ShopHomeFlashSaleUiModel.FlashSaleItem> {
         return data.map {
             ShopHomeFlashSaleUiModel.FlashSaleItem(
                 it.campaignId,
@@ -514,7 +581,7 @@ object ShopPageHomeMapper {
                 it.totalNotifyWording,
                 it.totalProduct,
                 it.totalProductWording,
-                mapCampaignFlashSaleListProduct(it.statusCampaign, it.listProduct),
+                mapCampaignFlashSaleListProduct(it.statusCampaign, it.listProduct, isEnableDirectPurchase),
                 false,
                 it.backgroundGradientColor.firstColor,
                 it.backgroundGradientColor.secondColor
@@ -558,7 +625,8 @@ object ShopPageHomeMapper {
 
     private fun mapCampaignFlashSaleListProduct(
         statusCampaign: String,
-        listProduct: List<ShopLayoutWidget.Widget.Data.Product>
+        listProduct: List<ShopLayoutWidget.Widget.Data.Product>,
+        isEnableDirectPurchase: Boolean
     ): List<ShopHomeProductUiModel> {
         return listProduct.map {
             ShopHomeProductUiModel().apply {
@@ -583,6 +651,7 @@ object ShopPageHomeMapper {
                 }
                 labelGroupList =
                     it.labelGroups.map { labelGroup -> mapToLabelGroupViewModel(labelGroup) }
+                this.isEnableDirectPurchase = isEnableDirectPurchase
             }
         }
     }
@@ -685,7 +754,8 @@ object ShopPageHomeMapper {
 
     private fun mapToProductWidgetUiModel(
         widgetModel: ShopLayoutWidget.Widget,
-        isMyOwnProduct: Boolean
+        isMyOwnProduct: Boolean,
+        isEnableDirectPurchase: Boolean
     ): ShopHomeCarousellProductUiModel {
         return ShopHomeCarousellProductUiModel(
             widgetModel.widgetID,
@@ -693,7 +763,7 @@ object ShopPageHomeMapper {
             widgetModel.name,
             widgetModel.type,
             mapToHeaderModel(widgetModel.header),
-            mapToWidgetProductListItemViewModel(widgetModel.data, isMyOwnProduct)
+            mapToWidgetProductListItemViewModel(widgetModel.data, isMyOwnProduct, isEnableDirectPurchase)
         )
     }
 
@@ -711,7 +781,8 @@ object ShopPageHomeMapper {
 
     private fun mapToWidgetProductListPersonalization(
         data: List<ShopLayoutWidget.Widget.Data>,
-        isMyOwnProduct: Boolean
+        isMyOwnProduct: Boolean,
+        isEnableDirectPurchase: Boolean
     ): List<ShopHomeProductUiModel> {
         return data.map {
             ShopHomeProductUiModel().apply {
@@ -733,6 +804,7 @@ object ShopPageHomeMapper {
                 categoryBreadcrumbs = it.categoryBreadcrumbs
                 labelGroupList = it.labelGroups.map { mapToLabelGroupViewModel(it) }
                 minimumOrder = it.minimumOrder ?: 1
+                this.isEnableDirectPurchase = isEnableDirectPurchase
             }
         }
     }
@@ -763,18 +835,20 @@ object ShopPageHomeMapper {
 
     private fun mapToWidgetProductListItemViewModel(
         data: List<ShopLayoutWidget.Widget.Data>,
-        isMyOwnProduct: Boolean
+        isMyOwnProduct: Boolean,
+        isEnableDirectPurchase: Boolean
     ): List<ShopHomeProductUiModel> {
         return mutableListOf<ShopHomeProductUiModel>().apply {
             data.onEach {
-                add(mapToWidgetProductItem(it, isMyOwnProduct))
+                add(mapToWidgetProductItem(it, isMyOwnProduct, isEnableDirectPurchase))
             }
         }.toList()
     }
 
     private fun mapToWidgetProductItem(
         response: ShopLayoutWidget.Widget.Data,
-        isMyOwnProduct: Boolean
+        isMyOwnProduct: Boolean,
+        isEnableDirectPurchase: Boolean
     ): ShopHomeProductUiModel =
         ShopHomeProductUiModel().apply {
             id = response.productID.toString()
@@ -795,6 +869,7 @@ object ShopPageHomeMapper {
             freeOngkirPromoIcon = response.freeOngkirPromoIcon
             labelGroupList =
                 response.labelGroups.map { labelGroup -> mapToLabelGroupViewModel(labelGroup) }
+            this.isEnableDirectPurchase = isEnableDirectPurchase
         }
 
     fun mapToGetCampaignNotifyMeUiModel(model: GetCampaignNotifyMeModel): GetCampaignNotifyMeUiModel {
@@ -822,11 +897,12 @@ object ShopPageHomeMapper {
             responseWidgetData: List<ShopLayoutWidget.Widget>,
             myShop: Boolean,
             isLoggedIn: Boolean,
-            isThematicWidgetShown: Boolean
+            isThematicWidgetShown: Boolean,
+            isEnableDirectPurchase: Boolean
     ): List<Visitable<*>> {
         return mutableListOf<Visitable<*>>().apply {
             responseWidgetData.filter { it.data.isNotEmpty() || it.type.equals(DYNAMIC, ignoreCase = true) || it.name == VOUCHER_STATIC || it.type.equals(CARD, ignoreCase = true)}.onEach {
-                when (val widgetUiModel = mapToWidgetUiModel(it, myShop, isLoggedIn, isThematicWidgetShown)) {
+                when (val widgetUiModel = mapToWidgetUiModel(it, myShop, isLoggedIn, isThematicWidgetShown, isEnableDirectPurchase)) {
                     is BaseShopHomeWidgetUiModel -> {
                         widgetUiModel.let { model ->
                             model.widgetMasterId = it.widgetMasterID
@@ -863,7 +939,8 @@ object ShopPageHomeMapper {
             listWidgetLayout: List<ShopPageHomeWidgetLayoutUiModel.WidgetLayout>,
             myShop: Boolean,
             isLoggedIn: Boolean,
-            isThematicWidgetShown: Boolean
+            isThematicWidgetShown: Boolean,
+            isEnableDirectPurchase: Boolean
     ): List<Visitable<*>> {
         return mutableListOf<Visitable<*>>().apply {
             listWidgetLayout.onEach {
@@ -872,7 +949,7 @@ object ShopPageHomeMapper {
                                 widgetID = it.widgetId,
                                 type = it.widgetType,
                                 name = it.widgetName,
-                        ), myShop, isLoggedIn, isThematicWidgetShown
+                        ), myShop, isLoggedIn, isThematicWidgetShown, isEnableDirectPurchase
                 )?.let{ resModel ->
                     when (resModel) {
                         is BaseShopHomeWidgetUiModel -> {
