@@ -29,6 +29,7 @@ open class MediaUiModel(
 
     override fun hashCode(): Int {
         var hashCode = id.hashCode()
+        hashCode = 5 * hashCode + file.hashCode()
         hashCode = 5 * hashCode + uri.hashCode()
         hashCode = 5 * hashCode + isFromPickerCamera.hashCode()
         return hashCode

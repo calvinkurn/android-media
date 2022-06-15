@@ -5,6 +5,7 @@ import android.util.AttributeSet
 import android.view.LayoutInflater
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.media.databinding.WidgetMediaThumbnailBinding
@@ -44,19 +45,21 @@ class MediaThumbnailWidget @JvmOverloads constructor(
         val file = element.file?: return
 
         binding.container.show()
-        onVideoShow(file)
 
         binding.imgPreview.loadImage(file.path) {
             isAnimate(true)
             setPlaceHolder(-1)
             centerCrop()
         }
+
+        onVideoShow(file)
     }
 
     private fun onVideoShow(file: PickerFile) {
         binding.bgVideoShadow.showWithCondition(file.isVideo())
-        binding.txtDuration.showWithCondition(file.isVideo())
-        binding.txtDuration.text = file.readableVideoDuration(context)
+        binding.txtDuration.shouldShowWithAction(file.isVideo()) {
+            binding.txtDuration.text = file.readableVideoDuration(context)
+        }
     }
 
     fun removeWidget() {
