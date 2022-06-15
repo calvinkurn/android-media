@@ -13,7 +13,7 @@ class CoachMarkPrefHelper @Inject constructor(
 ) {
 
     companion object {
-        const val REBATE_ANNOUNCEMENT_DATA_KEY = "communicationPeriodAnnouncement"
+        const val REBATE_ANNOUNCEMENT_DATA_KEY = "rebateMVPAnnouncement"
         const val KEY_RECOMMENDATION_COACH_MARK = "key_recommendation_coach_mark"
         const val KEY_REBATE_COACH_MARK = "key_rebate_coach_mark"
     }
