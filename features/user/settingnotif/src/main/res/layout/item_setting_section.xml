@@ -19,14 +19,13 @@
         android:layout_gravity="center_vertical"
         app:srcCompat="@drawable/ic_notifsetting_notification" />
 
-    <TextView
+    <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_section_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
         android:textColor="@color/Unify_N700_96"
-        android:textSize="@dimen/fontSize_lvl5"
-        android:textStyle="bold"
+        app:typographyType="heading_3"
         tools:text="Transaksi"/>
 
 </LinearLayout>
