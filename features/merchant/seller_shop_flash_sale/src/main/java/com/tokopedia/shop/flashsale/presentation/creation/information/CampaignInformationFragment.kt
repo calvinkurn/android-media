@@ -29,6 +29,7 @@ import com.tokopedia.shop.flashsale.domain.entity.enums.CampaignStatus
 import com.tokopedia.shop.flashsale.domain.entity.enums.PageMode
 import com.tokopedia.shop.flashsale.presentation.creation.information.adapter.GradientColorAdapter
 import com.tokopedia.shop.flashsale.presentation.creation.information.bottomsheet.CampaignDatePickerBottomSheet
+import com.tokopedia.shop.flashsale.presentation.creation.information.dialog.BackConfirmationDialog
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.lifecycle.autoClearedNullable
@@ -225,6 +226,9 @@ class CampaignInformationFragment : BaseDaggerFragment() {
     private fun setupToolbar() {
         binding?.header?.headerSubTitle =
             String.format(getString(R.string.sfs_placeholder_step_counter), FIRST_STEP)
+        binding?.header?.setNavigationOnClickListener {
+            showBackToPreviousPageConfirmation()
+        }
     }
 
     private fun setupTextFields() {
@@ -399,6 +403,8 @@ class CampaignInformationFragment : BaseDaggerFragment() {
         binding?.tauHexColor?.editText?.setText("")
         binding?.btnApply?.invisible()
         binding?.imgHexColorPreview?.setBackgroundResource(R.drawable.sfs_shape_rounded_color)
+
+        binding?.cardView?.visible()
     }
 
     private fun displayStartDatePicker() {
@@ -562,5 +568,13 @@ class CampaignInformationFragment : BaseDaggerFragment() {
             val colors = viewModel.markColorAsSelected(campaign.gradientColor, adapter.snapshot())
             adapter.submit(colors)
         }
+    }
+
+    private fun showBackToPreviousPageConfirmation() {
+        val dialog = BackConfirmationDialog()
+        dialog.setOnPrimaryActionClick { requireActivity().finish() }
+        dialog.setOnSecondaryActionClick {  }
+        dialog.setOnThirdActionClick { validateDraft() }
+        dialog.show(childFragmentManager, dialog.tag)
     }
 }
