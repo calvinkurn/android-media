@@ -45,7 +45,6 @@ import com.tokopedia.tokofood.feature.home.presentation.uimodel.TokoFoodHomeUSPU
 import com.tokopedia.tokofood.feature.home.presentation.uimodel.TokoFoodListUiModel
 import com.tokopedia.tokofood.feature.home.presentation.uimodel.TokoFoodMerchantListUiModel
 import com.tokopedia.tokofood.feature.home.presentation.uimodel.TokoFoodProgressBarUiModel
-import com.tokopedia.tokofood.feature.merchant.domain.model.response.TokoFoodTickerDetail
 import com.tokopedia.tokofood.feature.purchase.purchasepage.domain.model.response.KeroEditAddress
 import com.tokopedia.tokofood.feature.purchase.purchasepage.domain.model.response.KeroEditAddressData
 import com.tokopedia.tokofood.feature.purchase.purchasepage.domain.model.response.KeroEditAddressResponse
@@ -320,6 +319,15 @@ fun createMerchantListResponse(): TokoFoodMerchantListResponse {
                 )
             ),
             nextPageKey = "2"
+        )
+    )
+}
+
+fun createMerchantListEmptyResponse(): TokoFoodMerchantListResponse {
+    return TokoFoodMerchantListResponse(
+        data = TokoFoodMerchantList(
+            merchants = listOf(),
+            nextPageKey = ""
         )
     )
 }
