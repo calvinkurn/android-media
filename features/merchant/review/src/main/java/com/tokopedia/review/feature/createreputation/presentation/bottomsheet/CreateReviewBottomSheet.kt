@@ -144,9 +144,9 @@ class CreateReviewBottomSheet : BottomSheetUnify() {
 
     override fun onPause() {
         super.onPause()
-//        bottomSheetHandler.dismissOvoIncentiveBottomSheet()
-//        bottomSheetHandler.dismissCreateReviewTextAreaBottomSheet()
-//        bottomSheetHandler.dismissCreateReviewPostSubmitBottomSheet()
+        bottomSheetHandler.dismissOvoIncentiveBottomSheet()
+        bottomSheetHandler.dismissCreateReviewTextAreaBottomSheet()
+        bottomSheetHandler.dismissCreateReviewPostSubmitBottomSheet()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
