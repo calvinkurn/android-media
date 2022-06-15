@@ -7,6 +7,7 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.minicart.cartlist.uimodel.MiniCartListUiModel
 import com.tokopedia.minicart.chatlist.MiniCartChatListUiModelMapper
 import com.tokopedia.minicart.chatlist.MiniCartChatListViewModel
+import com.tokopedia.minicart.common.analytics.MiniCartAnalytics
 import com.tokopedia.minicart.common.data.response.minicartlist.MiniCartData
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
@@ -29,6 +30,7 @@ class MiniCartGeneralViewModel @Inject constructor(
     var isShopDirectPurchase = false
 
     var currentSource: MiniCartSource = MiniCartSource.ShopPage
+    var currentPage: MiniCartAnalytics.Page = MiniCartAnalytics.Page.SHOP_PAGE
 
     // Widget Data
     private val _globalEvent = MutableLiveData<GlobalEvent>()
