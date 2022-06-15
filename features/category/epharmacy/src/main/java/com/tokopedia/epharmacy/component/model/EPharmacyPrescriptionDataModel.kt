@@ -3,9 +3,10 @@ package com.tokopedia.epharmacy.component.model
 import android.os.Bundle
 import com.tokopedia.epharmacy.adapters.factory.EPharmacyAdapterFactory
 import com.tokopedia.epharmacy.component.BaseEPharmacyDataModel
+import com.tokopedia.epharmacy.network.response.PrescriptionImage
 
 data class EPharmacyPrescriptionDataModel(val name : String = "", val type : String = "",
-                                       val keySet : LinkedHashSet<String>)
+                                       var prescriptions : ArrayList<PrescriptionImage?>?)
     : BaseEPharmacyDataModel {
 
     override fun name(): String = name
@@ -17,7 +18,7 @@ data class EPharmacyPrescriptionDataModel(val name : String = "", val type : Str
     }
 
     override fun equalsWith(newData: BaseEPharmacyDataModel): Boolean {
-        return false
+        return this === newData
     }
 
     override fun getChangePayload(newData: BaseEPharmacyDataModel): Bundle? {

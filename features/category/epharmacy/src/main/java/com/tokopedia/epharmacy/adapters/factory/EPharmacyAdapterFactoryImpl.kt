@@ -1,15 +1,17 @@
 package com.tokopedia.epharmacy.adapters.factory
 
 import android.view.View
+import androidx.recyclerview.widget.DiffUtil
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.epharmacy.adapters.EPharmacyListener
+import com.tokopedia.epharmacy.component.BaseEPharmacyDataModel
 import com.tokopedia.epharmacy.component.model.EPharmacyPrescriptionDataModel
 import com.tokopedia.epharmacy.component.model.EPharmacyProductDataModel
 import com.tokopedia.epharmacy.component.viewholder.EPharmacyPrescriptionViewHolder
 import com.tokopedia.epharmacy.component.viewholder.EPharmacyProductViewHolder
 
-class EPharmacyAdapterFactoryImpl(private val ePharmacyListener: EPharmacyListener) : BaseAdapterTypeFactory() , EPharmacyAdapterFactory {
+class EPharmacyAdapterFactoryImpl(private val ePharmacyListener: EPharmacyListener?) : BaseAdapterTypeFactory() , EPharmacyAdapterFactory {
 
     override fun type(data: EPharmacyPrescriptionDataModel): Int {
         return EPharmacyPrescriptionViewHolder.LAYOUT
@@ -25,5 +27,20 @@ class EPharmacyAdapterFactoryImpl(private val ePharmacyListener: EPharmacyListen
             EPharmacyProductViewHolder.LAYOUT -> EPharmacyProductViewHolder(view, ePharmacyListener)
             else -> super.createViewHolder(view,type)
         }
+    }
+}
+
+class EPharmacyDetailDiffUtil: DiffUtil.ItemCallback<BaseEPharmacyDataModel>() {
+
+    override fun areItemsTheSame(oldItem: BaseEPharmacyDataModel, newItem: BaseEPharmacyDataModel): Boolean {
+        return oldItem.name() == newItem.name()
+    }
+
+    override fun areContentsTheSame(oldItem: BaseEPharmacyDataModel, newItem: BaseEPharmacyDataModel): Boolean {
+        return oldItem.equalsWith(newItem)
+    }
+
+    override fun getChangePayload(oldItem: BaseEPharmacyDataModel, newItem: BaseEPharmacyDataModel): Any? {
+        return oldItem.getChangePayload(newItem)
     }
 }

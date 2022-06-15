@@ -1,5 +1,6 @@
 package com.tokopedia.epharmacy.ui.activity
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.app.BaseMainApplication
@@ -9,6 +10,7 @@ import com.tokopedia.epharmacy.R
 import com.tokopedia.epharmacy.di.DaggerEPharmacyComponent
 import com.tokopedia.epharmacy.di.EPharmacyComponent
 import com.tokopedia.epharmacy.ui.fragment.UploadPrescriptionFragment
+import com.tokopedia.epharmacy.utils.MEDIA_PICKER_REQUEST_CODE
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
@@ -31,6 +33,17 @@ class EPharmacyActivity : BaseSimpleActivity(), HasComponent<EPharmacyComponent>
 
     override fun getNewFragment(): Fragment {
         return UploadPrescriptionFragment.newInstance(Bundle())
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        when(requestCode){
+            MEDIA_PICKER_REQUEST_CODE -> {
+                val fragment = supportFragmentManager.findFragmentById(R.id.e_pharmacy_parent_view)
+                fragment?.onActivityResult(requestCode, resultCode, data)
+            }else -> super.onActivityResult(requestCode, resultCode, data)
+
+        }
+
     }
 
     override fun getComponent() = ePharmacyComponent

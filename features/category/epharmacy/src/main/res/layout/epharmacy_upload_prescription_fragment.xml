@@ -13,6 +13,7 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        android:paddingBottom="@dimen/spacing_lvl3"
         app:layout_constraintBottom_toTopOf="@id/tooltip"
         tools:listitem="@layout/epharmacy_product_view_item"
         tools:itemCount="3"
@@ -32,6 +33,8 @@
         app:typographyType="display_3"
         tools:text="Dengan klik “Foto Resep” kamu setuju dengan
 Syarat dan Ketentuan."
+        android:visibility="gone"
+        tools:visibility="visible"
         />
 
     <com.tokopedia.unifycomponents.UnifyButton
@@ -48,6 +51,8 @@ Syarat dan Ketentuan."
         app:unifyButtonType="main"
         app:unifyButtonVariant="ghost"
         app:unifyButtonSize="large"
+        android:visibility="gone"
+        tools:visibility="visible"
         />
 
     <com.tokopedia.unifycomponents.UnifyButton

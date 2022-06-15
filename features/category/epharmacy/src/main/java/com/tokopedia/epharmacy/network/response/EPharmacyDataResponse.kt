@@ -2,6 +2,7 @@ package com.tokopedia.epharmacy.network.response
 
 
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.epharmacy.utils.GALLERY_IMAGE_VIEW_TYPE
 
 data class EPharmacyDataResponse(
     @SerializedName("epharmacy_button")
@@ -15,13 +16,17 @@ data class EPharmacyDataResponse(
     @SerializedName("payment_date")
     val paymentDate: String?,
     @SerializedName("prescription_images")
-    val prescriptionImages: List<PrescriptionImage?>?,
+    val prescriptionImages: ArrayList<PrescriptionImage?>?,
     @SerializedName("products")
     val ePharmacyProducts: List<EPharmacyProduct?>?,
     @SerializedName("shop_id")
     val shopId: String?,
+    @SerializedName("shop_type")
+    val shopType: String?,
     @SerializedName("shop_name")
-    val shopName: String?
+    val shopName: String?,
+    @SerializedName("shop_location")
+    val shopLocation: String?
 )
 
 data class EpharmacyButton(
@@ -30,9 +35,11 @@ data class EpharmacyButton(
     @SerializedName("text")
     val text: String?,
     @SerializedName("type")
-    val type: String?,
-    @SerializedName("uri")
-    val uri: String?
+    val type: String = "primary",
+    @SerializedName("applink")
+    val appLink: String?,
+    @SerializedName("desktop_url")
+    val desktopUrl: String?
 )
 
 data class EpharmacyTicker(
@@ -52,13 +59,17 @@ data class PrescriptionImage(
     @SerializedName("status")
     val status: String?,
     @SerializedName("is_uploading")
-    val isUploading: Boolean?,
+    val isUploading: Boolean = false,
     @SerializedName("is_upload_success")
-    val isUploadSuccess: String?,
+    val isUploadSuccess: Boolean = false,
     @SerializedName("is_deletable")
-    val isDeletable: String?,
+    val isDeletable: Boolean = false,
     @SerializedName("is_upload_failed")
-    val isUploadFailed: Boolean?
+    val isUploadFailed: Boolean = false,
+    @SerializedName("view_type")
+    val viewType: Int = GALLERY_IMAGE_VIEW_TYPE,
+    @SerializedName("local_path")
+    val localPath: String = ""
 )
 
 data class EPharmacyProduct(
@@ -71,7 +82,9 @@ data class EPharmacyProduct(
     @SerializedName("product_image")
     val productImage: String?,
     @SerializedName("quantity")
-    val quantity: Int?
+    val quantity: Int?,
+    @SerializedName("item_weight")
+    val itemWeight: Int?
 )
 
 data class Header(

@@ -3,6 +3,8 @@
     <string name="label_e_pharmacy">ePharmacy</string>
     <string name="epharmacy_host">epharmacy</string>
     <string name="epharmacy_ketentuan_foto_resep">Ketentuan foto resep</string>
+    <string name="epharmacy_upload_foto_resep">Upload Foto Resep</string>
+    <string name="epharmacy_foto_resep_dokter">Foto Resep Dokter</string>
     <string name="epharmacy_upload_title">Upload Foto Resep</string>
     <string name="epharmacy_upload_instruction_1">Pastikan seluruh bagian kertas terlihat dan dapat terbaca</string>
     <string name="epharmacy_upload_instruction_2">Upload foto resep sesuai dengan obat yang dibeli</string>
@@ -10,5 +12,6 @@
     <string name="epharmacy_foto_resep">Foto Resep</string>
     <string name="epharmacy_terms">Dengan klik “Foto Resep” kamu setuju dengan\nSyarat dan Ketentuan.</string>
     <string name="epharmacy_selesai">Selesai</string>
+    <string name="epharmacy_products_title">Obat butuh resep dokter</string>
 
 </resources>
