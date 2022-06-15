@@ -26,4 +26,6 @@ object ManageAddressConstant {
     const val EXTRA_LONG = "EXTRA_LONG"
     const val EXTRA_LAT = "EXTRA_LAT"
     const val EXTRA_IS_LOCALIZATION = "EXTRA_IS_LOCALIZATION"
+
+    const val EXTRA_QUERY = "EXTRA_QUERY"
 }

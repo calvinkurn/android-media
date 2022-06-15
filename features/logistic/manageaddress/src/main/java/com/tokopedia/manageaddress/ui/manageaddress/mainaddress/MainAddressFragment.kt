@@ -35,6 +35,7 @@ import com.tokopedia.manageaddress.databinding.FragmentMainAddressBinding
 import com.tokopedia.manageaddress.di.ManageAddressComponent
 import com.tokopedia.manageaddress.domain.mapper.AddressModelMapper
 import com.tokopedia.manageaddress.domain.model.ManageAddressState
+import com.tokopedia.manageaddress.ui.manageaddress.ManageAddressFragment
 import com.tokopedia.manageaddress.ui.manageaddress.ManageAddressItemAdapter
 import com.tokopedia.manageaddress.ui.manageaddress.ManageAddressViewModel
 import com.tokopedia.manageaddress.util.ManageAddressConstant
@@ -126,13 +127,11 @@ class MainAddressFragment : BaseDaggerFragment(), ManageAddressItemAdapter.Manag
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         initView()
         initAdapter()
         initArguments()
-
-
         initSearch()
+
         observerListAddress()
         observerSetDefault()
         observerGetChosenAddress()
@@ -149,6 +148,7 @@ class MainAddressFragment : BaseDaggerFragment(), ManageAddressItemAdapter.Manag
         typeRequest = arguments?.getInt(CheckoutConstant.EXTRA_TYPE_REQUEST)
         prevState = arguments?.getInt(CheckoutConstant.EXTRA_PREVIOUS_STATE_ADDRESS) ?: -1
         localChosenAddr = context?.let { ChooseAddressUtils.getLocalizingAddressData(it) }
+        viewModel.savedQuery = arguments?.getString(ManageAddressConstant.EXTRA_QUERY) ?: ""
     }
 
     private fun initAdapter() {
@@ -280,7 +280,6 @@ class MainAddressFragment : BaseDaggerFragment(), ManageAddressItemAdapter.Manag
         })
     }
 
-
     private fun observerListAddress() {
         viewModel.addressList.observe(viewLifecycleOwner) {
             when (it) {
@@ -298,7 +297,6 @@ class MainAddressFragment : BaseDaggerFragment(), ManageAddressItemAdapter.Manag
                     updateData(it.data.listAddress)
                     setEmptyState()
                     isLoading = false
-
                 }
 
                 is ManageAddressState.Fail -> {
@@ -419,7 +417,6 @@ class MainAddressFragment : BaseDaggerFragment(), ManageAddressItemAdapter.Manag
         bottomSheetLainnya = null
     }
 
-
     fun performSearch(query: String, saveAddressDataModel: SaveAddressDataModel?) {
         clearData()
         maxItemPosition = 0
@@ -428,7 +425,6 @@ class MainAddressFragment : BaseDaggerFragment(), ManageAddressItemAdapter.Manag
             viewModel.searchAddress(query, prevState, addrId, true)
         }
     }
-
 
     private fun goToAddAddress(eligible: Boolean) {
         val token = viewModel.token
@@ -496,7 +492,7 @@ class MainAddressFragment : BaseDaggerFragment(), ManageAddressItemAdapter.Manag
 
             if (adapter.addressList.isNotEmpty()) {
                 emptyStateManageAddress.root.gone()
-                mainAddressListener?.visibilitySearchInput(true)
+                getManageAddressFragment()?.searchInputVisibility(true)
 
                 this.addressList.visible()
                 emptySearch.gone()
@@ -505,19 +501,19 @@ class MainAddressFragment : BaseDaggerFragment(), ManageAddressItemAdapter.Manag
                     openFormAddressView(null)
                 }
                 emptyStateManageAddress.root.visible()
-                mainAddressListener?.visibilitySearchInput(false)
+                getManageAddressFragment()?.searchInputVisibility(false)
 
                 addressList.gone()
                 emptySearch.gone()
             } else {
                 emptySearch.visible()
                 emptyStateManageAddress.root.gone()
-                mainAddressListener?.visibilitySearchInput(true)
+                getManageAddressFragment()?.searchInputVisibility(true)
+
                 addressList.gone()
             }
         }
     }
-
 
     /**
      * its called when first open main address
@@ -526,8 +522,6 @@ class MainAddressFragment : BaseDaggerFragment(), ManageAddressItemAdapter.Manag
         val searchKey = viewModel.savedQuery
         performSearch(searchKey, null)
         if (isLocalization == true) ChooseAddressTracking.impressAddressListPage(userSession.userId)
-
-        mainAddressListener?.initSearchText(viewModel.savedQuery)
     }
 
     private fun updateData(data: List<RecipientAddressModel>) {
@@ -684,8 +678,7 @@ class MainAddressFragment : BaseDaggerFragment(), ManageAddressItemAdapter.Manag
                     viewModel.searchAddress("", prevState, getChosenAddrId(), true)
                 }
             }
-            mainAddressListener?.visibilitySearchInput(false)
-
+            getManageAddressFragment()?.searchInputVisibility(false)
             addressList.gone()
             emptyStateManageAddress.root.gone()
             globalError.visible()
@@ -775,14 +768,13 @@ class MainAddressFragment : BaseDaggerFragment(), ManageAddressItemAdapter.Manag
         setChosenAddress(true)
     }
 
-    private var mainAddressListener: MainAddressListener? = null
-
-    fun setListener(listener: MainAddressListener) {
-        this.mainAddressListener = listener
-    }
-
-    interface MainAddressListener {
-        fun visibilitySearchInput(show: Boolean)
-        fun initSearchText(searchKey: String)
+    private fun getManageAddressFragment(): ManageAddressFragment? {
+        val fragments = activity?.supportFragmentManager?.fragments
+        fragments?.forEach { currentFragment ->
+            if (currentFragment != null && currentFragment.isVisible && currentFragment is ManageAddressFragment) {
+                return currentFragment
+            }
+        }
+        return null
     }
 }

@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
@@ -25,6 +26,7 @@ import com.tokopedia.manageaddress.ui.manageaddress.fromfriend.FromFriendFragmen
 import com.tokopedia.manageaddress.ui.manageaddress.mainaddress.MainAddressFragment
 import com.tokopedia.manageaddress.util.ManageAddressConstant
 import com.tokopedia.manageaddress.util.ManageAddressConstant.DEFAULT_ERROR_MESSAGE
+import com.tokopedia.manageaddress.util.ManageAddressConstant.EXTRA_QUERY
 import com.tokopedia.manageaddress.util.ManageAddressConstant.EXTRA_REF
 import com.tokopedia.manageaddress.util.ManageAddressConstant.KERO_TOKEN
 import com.tokopedia.manageaddress.util.ManageAddressConstant.REQUEST_CODE_PARAM_CREATE
@@ -76,6 +78,9 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener {
 
     private var isLocalization: Boolean? = false
 
+    var tabAdapter: ManageAddressViewPagerAdapter? = null
+
+
     override fun getScreenName(): String = ""
 
     override fun initInjector() {
@@ -99,33 +104,32 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener {
         initSearchView()
 
         initView()
+        setSearchView(viewModel.savedQuery)
 
     }
 
     private fun initView() {
         val bundle = Bundle()
         if (arguments != null && arguments != null) {
+            bundle.putString(EXTRA_QUERY, viewModel.savedQuery)
             bundle.putAll(arguments)
         }
 
-        val pages = listOf(
-            Pair(getString(R.string.tablayout_label_main), MainAddressFragment.newInstance(bundle)),
-            Pair(getString(R.string.tablayout_label_from_friend), FromFriendFragment())
-        )
+
 
         binding?.apply {
 
-            val tabAdapter = activity?.let { ManageAddressVIewPagerAdapter(it, pages) }
+            tabAdapter = activity?.let { ManageAddressViewPagerAdapter(it, fragmentPage()) }
             vpManageAddress.adapter = tabAdapter
             vpManageAddress.isUserInputEnabled = false
             TabsUnifyMediator(tlManageAddress, vpManageAddress) { tab, position ->
-                tab.setCustomText(pages[position].first)
+                tab.setCustomText(fragmentPage()[position].first)
             }
         }
     }
 
     override fun onSearchSubmitted(text: String) {
-        performSearch(text, null)
+        performSearch(text)
     }
 
     override fun onSearchTextChanged(text: String?) {
@@ -148,8 +152,25 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener {
     /**
      *  call to main address fragment by Activity with callback
      */
-    private fun performSearch(query: String, saveAddressDataModel: SaveAddressDataModel?) {
-        manageAddressListener?.setSearch(query, saveAddressDataModel)
+    private fun performSearch(query: String) {
+        viewModel.savedQuery = query
+        tabAdapter?.updateData(fragmentPage())
+    }
+
+    private fun fragmentPage(): List<Pair<String, Fragment>> {
+        return listOf(
+            Pair(getString(R.string.tablayout_label_main), MainAddressFragment.newInstance(bundleData())),
+            Pair(getString(R.string.tablayout_label_from_friend), FromFriendFragment())
+        )
+    }
+
+    private fun bundleData(): Bundle {
+        val bundle = Bundle()
+        if (arguments != null) {
+            bundle.putString(EXTRA_QUERY, viewModel.savedQuery)
+            bundle.putAll(arguments)
+        }
+        return bundle
     }
 
     private fun initHeader() {
@@ -218,16 +239,18 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener {
             searchBarTextField.setOnEditorActionListener { _, actionId, event ->
                 if (actionId == EditorInfo.IME_ACTION_SEARCH) {
                     clearFocus()
-                    performSearch(searchBarTextField.text.toString() ?: "", null)
+                    performSearch(searchBarTextField.text.toString() ?: "")
                     return@setOnEditorActionListener true
                 }
                 return@setOnEditorActionListener false
             }
 
-            clearListener = { performSearch("", null) }
+            clearListener = { performSearch("") }
 
             searchBarPlaceholder = getString(R.string.label_find_address)
         }
+
+
     }
 
     private fun openFormAddAddressView() {
