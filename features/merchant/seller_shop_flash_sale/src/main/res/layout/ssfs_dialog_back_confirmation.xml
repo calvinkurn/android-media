@@ -6,7 +6,7 @@
     android:layout_height="wrap_content">
 
     <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/tg_shop_close_title"
+        android:id="@+id/tpgTitle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
@@ -21,7 +21,7 @@
         app:typographyWeight="bold" />
 
     <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/tg_shop_close_description"
+        android:id="@+id/tpgDescription"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/unify_space_16"
@@ -34,7 +34,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tg_shop_close_title"
+        app:layout_constraintTop_toBottomOf="@+id/tpgTitle"
         app:typographyType="paragraph_2"
         app:typographyWeight="reguler" />
 
@@ -46,9 +46,10 @@
         android:layout_marginTop="@dimen/unify_space_24"
         android:layout_marginEnd="@dimen/unify_space_16"
         android:text="@string/sfs_confirm_delete"
+        app:unifyButtonSize="medium"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tg_shop_close_description" />
+        app:layout_constraintTop_toBottomOf="@+id/tpgDescription" />
 
     <com.tokopedia.unifycomponents.UnifyButton
         android:id="@+id/btnNo"
@@ -60,6 +61,7 @@
         app:unifyButtonType="main"
         app:unifyButtonVariant="ghost"
         android:text="@string/sfs_no"
+        app:unifyButtonSize="medium"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/btnYes" />
@@ -70,6 +72,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/unify_space_16"
         android:layout_marginTop="@dimen/unify_space_12"
+        app:unifyButtonSize="medium"
         android:layout_marginEnd="@dimen/unify_space_16"
         android:text="@string/sfs_save_as_draft"
         app:layout_constraintBottom_toBottomOf="parent"

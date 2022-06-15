@@ -571,10 +571,11 @@ class CampaignInformationFragment : BaseDaggerFragment() {
     }
 
     private fun showBackToPreviousPageConfirmation() {
-        val dialog = BackConfirmationDialog()
+        val dialog = BackConfirmationDialog(requireActivity())
         dialog.setOnPrimaryActionClick { requireActivity().finish() }
         dialog.setOnSecondaryActionClick {  }
         dialog.setOnThirdActionClick { validateDraft() }
-        dialog.show(childFragmentManager, dialog.tag)
+        dialog.show()
+            //dialog.show(requireActivity())
     }
 }

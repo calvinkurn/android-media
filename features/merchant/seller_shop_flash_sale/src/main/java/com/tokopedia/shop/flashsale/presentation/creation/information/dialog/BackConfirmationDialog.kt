@@ -1,64 +1,110 @@
 package com.tokopedia.shop.flashsale.presentation.creation.information.dialog
 
-import android.os.Bundle
-import android.view.LayoutInflater
+import android.annotation.SuppressLint
+import android.app.ActionBar
+import android.app.Dialog
+import android.content.Context
+import android.os.Build
 import android.view.View
 import android.view.ViewGroup
-import com.tokopedia.seller_shop_flash_sale.databinding.SsfsDialogBackConfirmationBinding
-import com.tokopedia.shop.flashsale.common.customcomponent.ModalBottomSheet
-import com.tokopedia.utils.lifecycle.autoClearedNullable
+import android.view.Window
+import androidx.constraintlayout.widget.ConstraintLayout
+import com.tokopedia.dialog.DialogUnify
+import com.tokopedia.seller_shop_flash_sale.R
+import com.tokopedia.unifycomponents.UnifyButton
 
-class BackConfirmationDialog : ModalBottomSheet() {
+@SuppressLint("UnifyComponentUsage")
+class BackConfirmationDialog(private val context: Context) {
 
-    init {
-        overlayClickDismiss = true
-        modalWidthRatio = CUSTOM_MODAL_WIDTH_RATIO
-        modalMarginPercentage = MODAL_MARGIN_PERCENTAGE
-        showCloseIcon = false
-        setCloseClickListener { dismiss() }
-    }
-
-    companion object {
-        private const val MODAL_MARGIN_PERCENTAGE = 0.3f
-        private const val CUSTOM_MODAL_WIDTH_RATIO = 0.75
-    }
-
+    private var btnPrimaryAction: UnifyButton? = null
+    private var btnSecondaryAction: UnifyButton? = null
+    private var btnThirdAction: UnifyButton? = null
     private var onPrimaryActionClick: () -> Unit = {}
     private var onSecondaryActionClick: () -> Unit = {}
     private var onThirdActionClick: () -> Unit = {}
 
-    private var binding by autoClearedNullable<SsfsDialogBackConfirmationBinding>()
+    private val dialog = DialogUnify(context, DialogUnify.VERTICAL_ACTION, DialogUnify.NO_IMAGE)
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        binding = SsfsDialogBackConfirmationBinding.inflate(inflater, container, false)
-        setChild(binding?.root)
-        return super.onCreateView(inflater, container, savedInstanceState)
-    }
+    init {
+        setupMargin()
+        val view = View.inflate(context, R.layout.ssfs_dialog_back_confirmation, null)
+        dialog.setUnlockVersion()
+        dialog.setChild(view)
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
+        btnPrimaryAction = view.findViewById(R.id.btnYes)
+        btnSecondaryAction = view.findViewById(R.id.btnNo)
+        btnThirdAction = view.findViewById(R.id.btnSaveAsDraft)
         setupView()
     }
 
+    private fun setupMargin() {
+
+            val layoutParams = dialog.dialogContent.layoutParams as ConstraintLayout.LayoutParams
+
+            layoutParams.setMargins(layoutParams.marginStart, 0,
+                layoutParams.marginEnd, 0)
+            dialog.dialogContent.layoutParams = layoutParams
+
+
+    }
+
+
+    fun show() {
+     /*   val layoutParams = dialog.dialogContainer.layoutParams as ConstraintLayout.LayoutParams
+        layoutParams.setMargins(layoutParams.leftMargin, 0, layoutParams.rightMargin, 0)
+        dialog.dialogContainer.layoutParams = layoutParams*/
+        //dialog.dialogContent.layoutParams = layoutParams
+        //dialog.dialogImageContainer.layoutParams = layoutParams
+       // dialog.dialogCTAContainer.layoutParams = layoutParams
+        dialog.show()
+    }
+
     private fun setupView() {
-        binding?.run {
-            btnYes.setOnClickListener {
-                onPrimaryActionClick()
-                dismiss()
-            }
-            btnNo.setOnClickListener {
-                onSecondaryActionClick()
-                dismiss()
-            }
-            btnSaveAsDraft.setOnClickListener {
-                onThirdActionClick()
-                dismiss()
-            }
+        btnPrimaryAction?.setOnClickListener {
+            onPrimaryActionClick()
+            dialog.dismiss()
         }
+        btnSecondaryAction?.setOnClickListener {
+            onSecondaryActionClick()
+            dialog.dismiss()
+        }
+        btnThirdAction?.setOnClickListener {
+            onThirdActionClick()
+            dialog.dismiss()
+        }
+    }
+
+
+   /* fun show(context: Context) {
+        val dialog = Dialog(context)
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+
+        val window = dialog.window
+        window?.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+
+        val view = View.inflate(context, R.layout.ssfs_dialog_back_confirmation, null)
+        dialog.setContentView(view)
+
+        setupView(dialog)
+
+        dialog.show()
+    }*/
+
+    private fun setupView(dialog: Dialog) {
+        btnPrimaryAction?.setOnClickListener {
+            onPrimaryActionClick()
+            dialog.dismiss()
+        }
+        btnSecondaryAction?.setOnClickListener {
+            onSecondaryActionClick()
+            dialog.dismiss()
+        }
+        btnThirdAction?.setOnClickListener {
+            onThirdActionClick()
+            dialog.dismiss()
+        }
+
+
     }
 
     fun setOnPrimaryActionClick(onPrimaryActionClick: () -> Unit) {
