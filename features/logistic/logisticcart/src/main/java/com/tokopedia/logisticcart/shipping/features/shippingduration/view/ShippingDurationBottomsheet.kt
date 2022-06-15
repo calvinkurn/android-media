@@ -89,6 +89,24 @@ class ShippingDurationBottomsheet : ShippingDurationContract.View, ShippingDurat
         bottomSheet?.show(fragmentManager, this.javaClass.simpleName)
     }
 
+    fun show(
+        activity: Activity,
+        fragmentManager: FragmentManager,
+        shippingDurationBottomsheetListener: ShippingDurationBottomsheetListener?,
+        shippingRecommendationData: ShippingRecommendationData,
+        cartPosition: Int,
+        isDisableOrderPrioritas: Boolean
+    ) {
+        this.activity = activity
+        this.shippingDurationBottomsheetListener = shippingDurationBottomsheetListener
+        initBottomSheet(activity, shippingRecommendationData)
+        initView(activity)
+        // todo move to other fun
+        mCartPosition = cartPosition
+        this.isDisableOrderPrioritas = isDisableOrderPrioritas
+        bottomSheet?.show(fragmentManager, this.javaClass.simpleName)
+    }
+
     private fun initBottomSheet(activity: Activity) {
         bottomSheet = BottomSheetUnify()
         bottomSheet?.showCloseIcon = true
@@ -110,6 +128,30 @@ class ShippingDurationBottomsheet : ShippingDurationContract.View, ShippingDurat
             bottomSheet?.dismiss()
         }
     }
+
+    private fun initBottomSheet(activity: Activity, shippingRecommendationData: ShippingRecommendationData) {
+        bottomSheet = BottomSheetUnify()
+        bottomSheet?.showCloseIcon = true
+        bottomSheet?.setTitle(activity.getString(R.string.title_bottomsheet_shipment_duration))
+        bottomSheet?.clearContentPadding = true
+        bottomSheet?.customPeekHeight = Resources.getSystem().displayMetrics.heightPixels / 2
+        bottomSheet?.isDragable = true
+        bottomSheet?.isHideable = true
+        bottomSheet?.setShowListener {
+            chooseCourierTracePerformance = PerformanceMonitoring.start(CHOOSE_COURIER_TRACE)
+            presenter?.attachView(this)
+            setupRecyclerView(mCartPosition)
+            showData(shippingRecommendationData.shippingDurationUiModels, shippingRecommendationData.listLogisticPromo, shippingRecommendationData.preOrderModel)
+        }
+        bottomSheet?.setOnDismissListener {
+            presenter?.detachView()
+        }
+        bottomSheet?.setCloseClickListener {
+            shippingDurationBottomsheetListener?.onShippingDurationButtonCloseClicked()
+            bottomSheet?.dismiss()
+        }
+    }
+
 
     private fun initData(shipmentDetailData: ShipmentDetailData, selectedServiceId: Int, shopShipmentList: List<ShopShipment>, recipientAddressModel: RecipientAddressModel, cartPosition: Int, codHistory: Int, isLeasing: Boolean, pslCode: String, products: ArrayList<Product>, cartString: String, isDisableOrderPrioritas: Boolean, isTradeInDropOff: Boolean, isFulFillment: Boolean, preOrderTime: Int, mvc: String) {
         bundle = Bundle()
