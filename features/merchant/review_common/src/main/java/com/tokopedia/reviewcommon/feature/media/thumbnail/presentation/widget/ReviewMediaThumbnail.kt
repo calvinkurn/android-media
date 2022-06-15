@@ -46,7 +46,7 @@ class ReviewMediaThumbnail @JvmOverloads constructor(
         if (binding.root.adapter == null) {
             binding.root.adapter = adapter
         }
-        adapter.setElements(data.mediaThumbnails.take(MAX_MEDIA_COUNT))
+        post { adapter.setElements(data.mediaThumbnails.take(MAX_MEDIA_COUNT)) }
     }
 
     fun setListener(listener: ReviewMediaThumbnailTypeFactory.Listener) {
