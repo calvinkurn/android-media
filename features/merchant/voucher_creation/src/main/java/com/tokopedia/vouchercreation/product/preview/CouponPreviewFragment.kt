@@ -768,10 +768,11 @@ class CouponPreviewFragment: BaseDaggerFragment() {
 
     private fun displayCouponPreviewBottomSheet() {
         val isCreateMode = viewModel.isCreateMode(pageMode)
+        val isDuplicateMode = viewModel.isDuplicateMode(pageMode)
         val parentProductIds = viewModel.getParentProductIds(selectedProducts, selectedProductIds)
 
         val bottomSheet = CouponImagePreviewBottomSheet.newInstance(
-            isCreateMode,
+            isCreateMode || isDuplicateMode,
             couponInformation ?: return,
             couponSettings ?: return,
             parentProductIds
