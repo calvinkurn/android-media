@@ -241,20 +241,6 @@ class MerchantPageFragment : BaseMultiFragment(),
         collectFlow()
         fetchMerchantData()
         initializeMiniCartWidget()
-
-
-        val x = CartTokoFoodData(
-                bottomSheet = CartTokoFoodBottomSheet(
-                        title = "title", description = "desc", imageUrl = "https://images.tokopedia.net/img/ic-tokofood_home_no_pin_poin.png"
-                )
-        )
-        val bottomSheet = PhoneNumberVerificationBottomSheet.createInstance(
-                bottomSheetData = x.bottomSheet,
-                clickListener = this@MerchantPageFragment
-        )
-        bottomSheet.show(childFragmentManager)
-
-
     }
 
     private fun setBackgroundDefaultColor() {
