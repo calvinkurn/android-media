@@ -125,7 +125,6 @@ class MultipleFragmentsViewModel @Inject constructor(
             val removeCartParam = getProductParamByIdList()
             if (removeCartParam.carts.isNotEmpty()) {
                 removeCartTokoFoodUseCase(removeCartParam).collect {
-                    loadCartList(source)
                     addToCart(updateParam, source)
                 }
             }
