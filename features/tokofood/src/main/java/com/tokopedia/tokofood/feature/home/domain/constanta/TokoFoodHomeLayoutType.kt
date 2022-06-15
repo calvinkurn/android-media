@@ -7,7 +7,6 @@ import androidx.annotation.StringDef
  */
 @Retention(AnnotationRetention.SOURCE)
 @StringDef(
-    TokoFoodHomeLayoutType.TABS_TOKOFOOD,
     TokoFoodHomeLayoutType.USP_TOKOFOOD,
     TokoFoodHomeLayoutType.BANNER_CAROUSEL,
     TokoFoodHomeLayoutType.LEGO_6_IMAGE,
@@ -16,11 +15,12 @@ import androidx.annotation.StringDef
 )
 annotation class TokoFoodHomeLayoutType {
     companion object {
-        const val TABS_TOKOFOOD = "double_banner"
-        const val USP_TOKOFOOD = "tokofood_usp"
+        //from dynamic channel
         const val BANNER_CAROUSEL = "banner_carousel_v2"
         const val LEGO_6_IMAGE = "6_image"
         const val CATEGORY_WIDGET = "category_widget"
+        //from other gql
+        const val USP_TOKOFOOD = "tokofood_usp"
         const val ICON_TOKOFOOD = "home_icon"
     }
 }
