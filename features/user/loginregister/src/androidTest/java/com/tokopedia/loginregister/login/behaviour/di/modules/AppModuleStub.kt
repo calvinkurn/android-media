@@ -12,6 +12,7 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.graphql.domain.GraphqlUseCaseInterface
 import com.tokopedia.loginregister.login.stub.CoroutineAndroidTestDispatchersProvider
+import com.tokopedia.loginregister.login.stub.FakeGraphqlRepository
 import com.tokopedia.test.application.datastore.TestUserSessionDataStore
 import com.tokopedia.user.session.datastore.UserSessionDataStore
 import dagger.Module
@@ -50,7 +51,7 @@ class AppModuleStub(private val context: Context) {
     @Provides
     @ApplicationContext
     fun provideGraphqlUseCaseRepository(): GraphqlRepository {
-        return GraphqlInteractor.getInstance().graphqlRepository
+        return FakeGraphqlRepository()
     }
 
     @Provides
