@@ -1376,6 +1376,10 @@ class PlayViewModel @AssistedInject constructor(
 
     private fun checkInteractive(channelId: String) {
         if (!isInteractiveAllowed) return
+        /**
+         * cancel task delay waiting duration in winner socket if game is coming in flash
+         */
+        cancelAllDelayFromSocketWinner()
         viewModelScope.launchCatchError(dispatchers.io, block = {
             val interactive = repo.getCurrentInteractive(channelId)
             setupInteractive(interactive)
