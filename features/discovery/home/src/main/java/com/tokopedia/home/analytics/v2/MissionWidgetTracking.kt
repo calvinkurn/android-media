@@ -52,8 +52,8 @@ object MissionWidgetTracking : BaseTrackerConst() {
             CustomAction.ITEM_ID_FORMAT.format(
                 element.channel.id,
                 element.id,
-                CustomAction.DEFAULT_VALUE,
-                CustomAction.DEFAULT_VALUE
+                element.channel.trackingAttributionModel.persoType,
+                element.channel.trackingAttributionModel.categoryId
             )
         )
         promotion.putString(
@@ -76,8 +76,8 @@ object MissionWidgetTracking : BaseTrackerConst() {
         val itemId = CustomAction.ITEM_ID_FORMAT.format(
             element.channel.id,
             element.id,
-            CustomAction.DEFAULT_VALUE,
-            CustomAction.DEFAULT_VALUE
+            element.channel.trackingAttributionModel.persoType,
+            element.channel.trackingAttributionModel.categoryId
         )
         val itemName = CustomAction.ITEM_NAME_FORMAT.format(
             element.verticalPosition,
