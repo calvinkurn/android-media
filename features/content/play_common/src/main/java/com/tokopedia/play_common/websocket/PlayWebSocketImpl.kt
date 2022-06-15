@@ -1,7 +1,6 @@
 package com.tokopedia.play_common.websocket
 
 import android.content.Context
-import android.util.Log
 import com.google.gson.Gson
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
@@ -76,7 +75,6 @@ class PlayWebSocketImpl(
     override fun connect(channelId: String, warehouseId: String, gcToken: String, source: String) {
         close()
         val url = generateUrl(channelId, warehouseId, gcToken)
-        Log.d("sukses socket", url)
         mWebSocket = client.newWebSocket(getRequest(url, userSession.accessToken), webSocketListener)
         WebSocketLogger.getInstance(context).init(buildGeneralInfo(channelId, warehouseId, gcToken, source).toString())
     }
