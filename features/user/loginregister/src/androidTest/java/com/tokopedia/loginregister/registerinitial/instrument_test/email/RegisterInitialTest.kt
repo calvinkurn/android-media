@@ -49,11 +49,11 @@ class RegisterInitialTest: RegisterInitialBase() {
             registerType = "email",
             view = emailNotRegistered
         )
-        registerCheckUseCase.response = RegisterCheckPojo(data)
+//        registerCheckUseCase.response = RegisterCheckPojo(data)
 
         val profileInfo = ProfileInfo(userId = "123456", fullName = "Kelvin Saputra")
         val profilePojo = ProfilePojo(profileInfo)
-        getProfileUseCaseStub.response = profilePojo
+//        getProfileUseCaseStub.response = profilePojo
 
         //When
         runTest {
@@ -68,7 +68,7 @@ class RegisterInitialTest: RegisterInitialBase() {
     fun check_register_email_failed_tracker() {
         //Given
         isDefaultRegisterCheck = false
-        registerCheckUseCase.isError = true
+//        registerCheckUseCase.isError = true
 
         //When
         runTest {

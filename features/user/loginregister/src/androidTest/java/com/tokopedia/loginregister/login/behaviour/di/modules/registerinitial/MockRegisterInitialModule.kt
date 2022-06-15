@@ -15,13 +15,9 @@ import kotlinx.coroutines.Dispatchers
 
 @Module
 class MockRegisterInitialModule {
-    @Provides
-    fun providesContext(@ApplicationContext context: Context): Context = context
 
     @Provides
-    fun provideGraphQlRepository(): GraphqlRepository {
-        return GraphqlInteractor.getInstance().graphqlRepository
-    }
+    fun providesContext(@ApplicationContext context: Context): Context = context
 
     @RegisterInitialScope
     @Provides

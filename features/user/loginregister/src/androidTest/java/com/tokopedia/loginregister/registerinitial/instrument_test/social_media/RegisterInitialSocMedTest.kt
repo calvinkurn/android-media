@@ -33,7 +33,7 @@ class RegisterInitialSocMedTest: RegisterInitialBase() {
     @Test
     fun check_failed_register_tracker_google() {
         isDefaultRegisterCheck = false
-        registerCheckUseCase.isError = true
+//        registerCheckUseCase.isError = true
 
         runTest {
             checkRegisterGoogle()

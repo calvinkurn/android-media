@@ -24,7 +24,7 @@ class RegisterNormalCase: RegisterInitialBase() {
     fun gotoLoginIfEmailExist() {
         isDefaultRegisterCheck = false
         val data = RegisterCheckData(isExist = true , userID = "123456", registerType = "email", view = "yoris.prayogooooo@tokopedia.com")
-        registerCheckUseCase.response = RegisterCheckPojo(data)
+//        registerCheckUseCase.response = RegisterCheckPojo(data)
 
         runTest {
             inputEmailOrPhone("yoris.prayogo@tokopedia.com")
@@ -38,7 +38,7 @@ class RegisterNormalCase: RegisterInitialBase() {
     fun gotoLoginIfDialogClicked() {
         isDefaultRegisterCheck = false
         val data = RegisterCheckData(isExist = true , userID = "123456", registerType = "email", view = "yoris.prayogooooo@tokopedia.com")
-        registerCheckUseCase.response = RegisterCheckPojo(data)
+//        registerCheckUseCase.response = RegisterCheckPojo(data)
 
         runTest {
             inputEmailOrPhone("yoris.prayogo@tokopedia.com")
@@ -59,7 +59,7 @@ class RegisterNormalCase: RegisterInitialBase() {
     fun gotoVerificationpage_IfNotRegistered() {
         isDefaultRegisterCheck = false
         val data = RegisterCheckData(isExist = false , userID = "123456", registerType = "email", view = "yoris.prayogo+3@tokopedia.com")
-        registerCheckUseCase.response = RegisterCheckPojo(data)
+//        registerCheckUseCase.response = RegisterCheckPojo(data)
 
         runTest {
             inputEmailOrPhone("yoris.prayogo+3@tokopedia.com")
@@ -91,7 +91,7 @@ class RegisterNormalCase: RegisterInitialBase() {
     fun showNotRegisteredDialog_IfPhoneRegistered() {
         isDefaultRegisterCheck = false
         val data = RegisterCheckData(isExist = true , userID = "123456", registerType = "phone", view = "082242454511")
-        registerCheckUseCase.response = RegisterCheckPojo(data)
+//        registerCheckUseCase.response = RegisterCheckPojo(data)
 
         runTest {
             inputEmailOrPhone("082242454511")
@@ -105,7 +105,7 @@ class RegisterNormalCase: RegisterInitialBase() {
     fun showProceedPhoneDialog_IfPhoneNotRegistered() {
         isDefaultRegisterCheck = false
         val data = RegisterCheckData(isExist = false , userID = "0", registerType = "phone", view = "08224245450411")
-        registerCheckUseCase.response = RegisterCheckPojo(data)
+//        registerCheckUseCase.response = RegisterCheckPojo(data)
 
         runTest {
             inputEmailOrPhone("08224245450411")
@@ -119,7 +119,7 @@ class RegisterNormalCase: RegisterInitialBase() {
     fun gotoLoginIfPhoneDialogClicked() {
         isDefaultRegisterCheck = false
         val data = RegisterCheckData(isExist = true , userID = "123456", registerType = "phone", view = "082242454511")
-        registerCheckUseCase.response = RegisterCheckPojo(data)
+//        registerCheckUseCase.response = RegisterCheckPojo(data)
 
         runTest {
             inputEmailOrPhone("082242454511")

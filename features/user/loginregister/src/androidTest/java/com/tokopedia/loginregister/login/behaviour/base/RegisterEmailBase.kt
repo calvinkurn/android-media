@@ -49,31 +49,31 @@ open class RegisterEmailBase: LoginRegisterBase() {
 
     protected open lateinit var activity: RegisterEmailActivityStub
 
-    protected lateinit var registerInitialComponentStub: RegisterInitialComponentStub
+//    protected lateinit var registerInitialComponentStub: RegisterInitialComponentStub
 
     protected open lateinit var fragmentTransactionIdling: FragmentTransactionIdle
-
-    @Inject
-    lateinit var generatePublicKeyUseCase: GeneratePublicKeyUseCase
-
-    @Inject
-    lateinit var registerCheckUseCase: GraphqlUseCaseStub<RegisterCheckPojo>
-
-    @Inject
-    lateinit var discoverUseCaseStub: DiscoverUseCaseStub
+//
+//    @Inject
+//    lateinit var generatePublicKeyUseCase: GeneratePublicKeyUseCase
+//
+//    @Inject
+//    lateinit var registerCheckUseCase: GraphqlUseCaseStub<RegisterCheckPojo>
+//
+//    @Inject
+//    lateinit var discoverUseCaseStub: DiscoverUseCaseStub
 
     @Before
     open fun before() {
-        val baseAppComponent = DaggerBaseAppComponentStub.builder()
-            .appModuleStub(AppModuleStub(applicationContext))
-            .build()
-        val loginRegisterComponent =  DaggerMockLoginRegisterComponent.builder()
-            .baseAppComponentStub(baseAppComponent)
-            .build()
-        registerInitialComponentStub = DaggerRegisterInitialComponentStub.builder()
-            .mockLoginRegisterComponent(loginRegisterComponent)
-            .build()
-        registerInitialComponentStub.inject(this)
+//        val baseAppComponent = DaggerBaseAppComponentStub.builder()
+//            .appModuleStub(AppModuleStub(applicationContext))
+//            .build()
+//        val loginRegisterComponent =  DaggerMockLoginRegisterComponent.builder()
+//            .baseAppComponentStub(baseAppComponent)
+//            .build()
+//        registerInitialComponentStub = DaggerRegisterInitialComponentStub.builder()
+//            .mockLoginRegisterComponent(loginRegisterComponent)
+//            .build()
+//        registerInitialComponentStub.inject(this)
     }
 
     @After
@@ -82,7 +82,7 @@ open class RegisterEmailBase: LoginRegisterBase() {
     }
 
     protected fun inflateTestFragment() {
-        activity.setupTestFragment(registerInitialComponentStub)
+//        activity.setupTestFragment(registerInitialComponentStub)
         waitForFragmentResumed()
     }
 
@@ -116,7 +116,7 @@ open class RegisterEmailBase: LoginRegisterBase() {
 
     protected fun setRegisterCheckDefaultResponse() {
         val data = RegisterCheckData(isExist = true , userID = "123456", registerType = "email", view = "yoris.prayogooooo@tokopedia.com")
-        registerCheckUseCase.response = RegisterCheckPojo(data)
+//        registerCheckUseCase.response = RegisterCheckPojo(data)
     }
 
     protected fun setDefaultDiscover() {
@@ -124,7 +124,7 @@ open class RegisterEmailBase: LoginRegisterBase() {
             ProviderData("gplus", "Google", "https://accounts.tokopedia.com/gplus-login", "", "#FFFFFF"),
         )
         val response = DiscoverPojo(DiscoverData(mockProviders, ""))
-        discoverUseCaseStub.response = response
+//        discoverUseCaseStub.response = response
     }
 
     fun runTest(test: () -> Unit) {

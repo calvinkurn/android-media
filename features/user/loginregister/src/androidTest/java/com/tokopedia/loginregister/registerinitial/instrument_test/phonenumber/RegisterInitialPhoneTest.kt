@@ -40,7 +40,7 @@ class RegisterInitialPhoneTest: RegisterInitialBase() {
             registerType = "phone",
             view = "0851-5636-46951"
         )
-        registerCheckUseCase.response = RegisterCheckPojo(data)
+//        registerCheckUseCase.response = RegisterCheckPojo(data)
 
         //When
         runTest {
@@ -62,7 +62,7 @@ class RegisterInitialPhoneTest: RegisterInitialBase() {
             registerType = "phone",
             view = "0851-5636-46951"
         )
-        registerCheckUseCase.response = RegisterCheckPojo(data)
+//        registerCheckUseCase.response = RegisterCheckPojo(data)
 
         //When
         runTest {

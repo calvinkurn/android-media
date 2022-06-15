@@ -55,7 +55,7 @@ class LoginNormalCase : LoginBase() {
             registerType = "phone",
             view = "082242454504"
         )
-        registerCheckUseCaseStub.response = RegisterCheckPojo(data = data)
+//        registerCheckUseCaseStub.response = RegisterCheckPojo(data = data)
 
         runTest {
             inputEmailOrPhone("082242454504")
@@ -108,7 +108,7 @@ class LoginNormalCase : LoginBase() {
             registerType = "email",
             view = "yoris.prayogo@tokopedia.com"
         )
-        registerCheckUseCaseStub.response = RegisterCheckPojo(data = data)
+//        registerCheckUseCaseStub.response = RegisterCheckPojo(data = data)
 
         runTest {
             inputEmailOrPhone("yoris.prayogo@tokopedia.com")
@@ -170,7 +170,7 @@ class LoginNormalCase : LoginBase() {
             registerType = "email",
             view = "yoris.prayogo@tokopedia.com"
         )
-        registerCheckUseCaseStub.response = RegisterCheckPojo(data = data)
+//        registerCheckUseCaseStub.response = RegisterCheckPojo(data = data)
 
         runTest {
             intending(hasData(ApplinkConstInternalGlobal.COTP)).respondWith(
@@ -204,11 +204,11 @@ class LoginNormalCase : LoginBase() {
             view = "yoris.prayogo@tokopedia.com",
             isPending = false
         )
-        registerCheckUseCaseStub.response = RegisterCheckPojo(data = regCheck)
+//        registerCheckUseCaseStub.response = RegisterCheckPojo(data = regCheck)
 
         val loginToken = LoginToken(accessToken = "abc123")
         val loginPojo = LoginTokenPojo(loginToken)
-        loginTokenUseCaseStub.response = loginPojo
+//        loginTokenUseCaseStub.response = loginPojo
 
         runTest {
             mockVerificationSuccess()
@@ -232,19 +232,19 @@ class LoginNormalCase : LoginBase() {
             view = "yoris.prayogo@tokopedia.com",
             isPending = false
         )
-        registerCheckUseCaseStub.response = RegisterCheckPojo(data = regCheck)
+//        registerCheckUseCaseStub.response = RegisterCheckPojo(data = regCheck)
 
         val loginToken = LoginToken(accessToken = "abc123")
         val loginPojo = LoginTokenPojo(loginToken)
-        loginTokenUseCaseStub.response = loginPojo
+//        loginTokenUseCaseStub.response = loginPojo
 
         val keyData = KeyData(key = "abc1234", hash = "1234")
         val keyResponse = GenerateKeyPojo(keyData = keyData)
-        generatePublicKeyUseCaseStub.response = keyResponse
+//        generatePublicKeyUseCaseStub.response = keyResponse
 
         val profileInfo = ProfileInfo(userId = "123456", fullName = "CHARACTER_NOT_ALLOWED")
         val profilePojo = ProfilePojo(profileInfo)
-        getProfileUseCaseStub.response = profilePojo
+//        getProfileUseCaseStub.response = profilePojo
 
 
         runTest {

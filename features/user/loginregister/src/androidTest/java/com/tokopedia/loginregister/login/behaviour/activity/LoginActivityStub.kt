@@ -3,20 +3,15 @@ package com.tokopedia.loginregister.login.behaviour.activity
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
-import com.tokopedia.loginregister.login.behaviour.di.LoginComponentStub
 import com.tokopedia.loginregister.login.behaviour.fragment.LoginEmailPhoneFragmentStub
 import com.tokopedia.loginregister.login.view.activity.LoginActivity
 
 class LoginActivityStub: LoginActivity() {
 
-    lateinit var loginComponentStub: LoginComponentStub
+//    lateinit var loginComponentStub: LoginComponentStub
 
     override fun inflateFragment() {
         // Don't inflate fragment immediately
-    }
-
-    override fun initializeLoginComponent(): LoginComponentStub {
-        return loginComponentStub
     }
 
     private fun getBundleFromData(): Bundle {
@@ -53,13 +48,13 @@ class LoginActivityStub: LoginActivity() {
 
         return LoginEmailPhoneFragmentStub.createInstance(bundle)
     }
-
-    fun setupTestFragment(loginComponentStub: LoginComponentStub) {
-        this.loginComponentStub = loginComponentStub
-        supportFragmentManager.beginTransaction()
-                .replace(parentViewResourceID, newFragment, TAG)
-                .commit()
-    }
+//
+//    fun setupTestFragment(loginComponentStub: LoginComponentStub) {
+//        this.loginComponentStub = loginComponentStub
+//        supportFragmentManager.beginTransaction()
+//                .replace(parentViewResourceID, newFragment, TAG)
+//                .commit()
+//    }
 
     override fun getTagFragment(): String {
         return TAG

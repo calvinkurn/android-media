@@ -49,7 +49,7 @@ class RegisterNegativeCase: RegisterInitialBase() {
         val errorMsg = "got errors from be"
         isDefaultRegisterCheck = false
         val data = RegisterCheckData(errors = arrayListOf(errorMsg))
-        registerCheckUseCase.response = RegisterCheckPojo(data = data)
+//        registerCheckUseCase.response = RegisterCheckPojo(data = data)
 
         runTest {
             inputEmailOrPhone("yoris.prayogo@tokopedia.com")
