@@ -32,9 +32,6 @@ class HomeMissionWidgetData {
         @SerializedName("applink")
         @Expose
         val appLink: String = "",
-        @SerializedName("URL")
-        @Expose
-        val url: String = "",
         @SerializedName("imageURL")
         @Expose
         val imageURL: String = ""

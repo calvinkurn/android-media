@@ -11,7 +11,6 @@ import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
 import com.tokopedia.home.beranda.domain.model.HomeChannelData
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.*
 import com.tokopedia.home.beranda.presentation.view.analytics.HomeTrackingUtils
-import com.tokopedia.home.constant.ConstantKey
 import com.tokopedia.home.util.ServerTimeOffsetUtil
 import com.tokopedia.home_component.model.ReminderEnum
 import com.tokopedia.home_component.visitable.*
@@ -645,7 +644,7 @@ class HomeDynamicChannelVisitableFactoryImpl(
                     channel,
                     verticalPosition
                 ),
-                status = ConstantKey.LoadDataKey.STATUS_LOADING
+                status = MissionWidgetListDataModel.STATUS_LOADING
             )
         )
     }

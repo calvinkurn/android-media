@@ -41,6 +41,7 @@ object MissionWidgetUtil {
     ): Int {
         var maxHeight = 0
         var subtitleWidth = context.resources.getDimensionPixelSize(R.dimen.home_mission_widget_image_size)
+
         //substract with margin start and end
         subtitleWidth -= context.resources.getDimensionPixelSize(R.dimen.home_mission_widget_margin_horizontal_subtitle)
         subtitleWidth -= context.resources.getDimensionPixelSize(R.dimen.home_mission_widget_margin_horizontal_subtitle)

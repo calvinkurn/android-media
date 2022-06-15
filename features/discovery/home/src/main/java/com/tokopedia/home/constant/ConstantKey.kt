@@ -57,11 +57,4 @@ object ConstantKey {
         const val KEY_BEAUTY_FEST = "KEY_BEAUTY_FEST"
         const val KEY_IS_BEAUTY_FEST ="KEY_IS_BEAUTY_FEST"
     }
-
-    object LoadDataKey {
-        const val STATUS_LOADING = 0
-        const val STATUS_ERROR = 1
-        const val STATUS_SUCCESS = 2
-        const val STATUS_EMPTY = 3
-    }
 }

@@ -16,7 +16,6 @@ object MissionWidgetHelper {
                         title = pojo.title,
                         subTitle = pojo.subTitle,
                         appLink = pojo.appLink,
-                        url = pojo.url,
                         imageURL = pojo.imageURL
                     )
             )

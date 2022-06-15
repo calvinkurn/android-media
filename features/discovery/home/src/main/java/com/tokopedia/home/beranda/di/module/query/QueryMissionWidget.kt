@@ -17,7 +17,6 @@ internal object QueryMissionWidget {
             "      title\n" +
             "      subTitle\n" +
             "      applink\n" +
-            "      URL\n" +
             "      imageURL\n" +
             "    }\n" +
             "  }\n" +

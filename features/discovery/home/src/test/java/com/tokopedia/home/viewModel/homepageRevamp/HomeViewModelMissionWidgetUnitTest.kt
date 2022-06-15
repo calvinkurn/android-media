@@ -15,7 +15,11 @@ import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.test.TestCoroutineDispatcher
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.setMain
-import org.junit.*
+import org.junit.Rule
+import org.junit.Before
+import org.junit.After
+import org.junit.Test
+import org.junit.Assert
 
 /**
  * Created by dhaba

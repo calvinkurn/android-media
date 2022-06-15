@@ -6,7 +6,6 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.home_component.productcardgridcarousel.dataModel.*
 import com.tokopedia.home_component.productcardgridcarousel.viewHolder.*
-import com.tokopedia.home_component.visitable.MissionWidgetDataModel
 
 /**
  * @author by yoasfs on 09/06/20

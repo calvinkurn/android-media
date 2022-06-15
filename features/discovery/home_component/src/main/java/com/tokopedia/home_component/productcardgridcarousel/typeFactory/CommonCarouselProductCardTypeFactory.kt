@@ -4,8 +4,6 @@ import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.factory.AdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.home_component.productcardgridcarousel.dataModel.*
-import com.tokopedia.home_component.visitable.MissionWidgetDataModel
-import com.tokopedia.home_component.visitable.MissionWidgetListDataModel
 
 interface CommonCarouselProductCardTypeFactory: AdapterTypeFactory {
     fun type(cardDataModelCarousel: CarouselEmptyCardDataModel): Int

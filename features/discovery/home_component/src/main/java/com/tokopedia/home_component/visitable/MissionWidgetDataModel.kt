@@ -1,7 +1,5 @@
 package com.tokopedia.home_component.visitable
 
-import com.tokopedia.kotlin.model.ImpressHolder
-
 /**
  * Created by dhaba
  */
@@ -10,6 +8,5 @@ data class MissionWidgetDataModel(
     val title: String = "",
     val subTitle: String = "",
     val appLink: String = "",
-    val url: String = "",
     val imageURL: String = ""
 )

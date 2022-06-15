@@ -29,10 +29,10 @@ class HomeMissionWidgetUseCase @Inject constructor(
                 MissionWidgetHelper.convertMissionWidgetDataList(results.getHomeMissionWidget.missions)
             currentMissionWidgetListDataModel.copy(
                 missionWidgetList = resultList,
-                status = ConstantKey.LoadDataKey.STATUS_SUCCESS
+                status = MissionWidgetListDataModel.STATUS_SUCCESS
             )
         } catch (e: Exception) {
-            currentMissionWidgetListDataModel.copy(status = ConstantKey.LoadDataKey.STATUS_ERROR)
+            currentMissionWidgetListDataModel.copy(status = MissionWidgetListDataModel.STATUS_ERROR)
         }
     }
 }
