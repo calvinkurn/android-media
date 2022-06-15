@@ -469,6 +469,8 @@ open class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListen
                 isTopAds = item.isTopAds,
                 topAdsWishlistUrl = item.wishlistUrl,
                 topAdsClickUrl = item.clickUrl,
+                productName = item.name,
+                productImageUrl = item.imageUrl,
                 productPosition = adapterPosition
             )
         )
