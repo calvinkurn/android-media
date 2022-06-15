@@ -610,7 +610,7 @@ class MiniCartAnalytics @Inject constructor(val userSession: UserSessionInterfac
         }
         trackingData[KEY_SHOP_ID] = shopId
         trackingData[KEY_USER_ID] = userSession.userId
-        trackingData[KEY_TRACKER_ID] = trackerId ?: ""
+        trackerId?.let { trackingData[KEY_TRACKER_ID] = it }
         sendGeneralEvent(trackingData)
     }
 
