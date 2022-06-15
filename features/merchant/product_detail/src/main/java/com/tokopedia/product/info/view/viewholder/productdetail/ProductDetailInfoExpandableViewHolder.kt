@@ -77,7 +77,7 @@ class ProductDetailInfoExpandableViewHolder(private val view: View, private val 
     }
 
     private fun setSelectClickableTextView() = with(binding) {
-        val pattern = Pattern.compile("((https?)://)?(www.)?(tokopedia.com|tkp.me)([-a-zA-Z0-9+&@#/%?=~_|!:,.;]*[-a-zA-Z0-9+&@#/%=~_|])?")
+        val pattern = Pattern.compile("((https?)://)?(www.)?(tokopedia.com|tkp.me|tokopedia.link)([-a-zA-Z0-9+&@#/%?=~_|!:,;]*[-a-zA-Z0-9+&@#/%=~_|])?")
         val SCHEMES = arrayOf("http://", "https://")
 
         productDetailValue.autoLinkMask = 0
