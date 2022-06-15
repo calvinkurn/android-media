@@ -31,6 +31,9 @@ class ProductCardsGQLRepository @Inject constructor() : BaseRepository(), Produc
                     DiscoveryDataMapper().mapListToComponentList(componentData, ComponentNames.ProductCardRevampItem.componentName, componentProperties, creativeName, parentListSize = componentsListSize, parentSectionId = componentItem?.parentSectionId)
                 }
             }
+            ComponentNames.ProductCardSingle.componentName -> {
+                DiscoveryDataMapper().mapListToComponentList(componentData, ComponentNames.ProductCardSingleItem.componentName, componentProperties, creativeName, parentListSize = componentsListSize, parentSectionId = componentItem?.parentSectionId)
+            }
             ComponentNames.ProductCardCarousel.componentName ->
                 DiscoveryDataMapper().mapListToComponentList(componentData, ComponentNames.ProductCardCarouselItem.componentName, componentProperties, creativeName, parentListSize = componentsListSize)
             ComponentNames.ProductCardSprintSale.componentName ->

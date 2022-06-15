@@ -85,7 +85,7 @@
         android:background="@color/Unify_N0"
         android:elevation="4dp">
 
-        <com.elyeproj.loaderviewlibrary.LoaderTextView
+        <com.tokopedia.unifycomponents.LoaderUnify
             android:id="@+id/title_shimmering"
             android:layout_width="@dimen/layout_lvl7"
             android:layout_height="@dimen/spacing_lvl4"
@@ -93,11 +93,12 @@
             android:layout_marginTop="@dimen/spacing_lvl4"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:use_gradient="true"
+            app:loader_corner_radius="0dp"
+            app:loader_type="rect"
             android:background="@drawable/background_event_pdp_shimmering"
             />
 
-        <com.elyeproj.loaderviewlibrary.LoaderTextView
+        <com.tokopedia.unifycomponents.LoaderUnify
             android:id="@+id/price_shimmering"
             android:layout_width="@dimen/layout_lvl9"
             android:layout_height="@dimen/spacing_lvl4"
@@ -107,11 +108,12 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/title_shimmering"
-            app:use_gradient="true"
+            app:loader_corner_radius="0dp"
+            app:loader_type="rect"
             android:background="@drawable/background_event_pdp_shimmering"
             />
 
-        <com.elyeproj.loaderviewlibrary.LoaderTextView
+        <com.tokopedia.unifycomponents.LoaderUnify
             android:id="@+id/btn_shimmering"
             android:layout_width="@dimen/layout_lvl8"
             android:layout_height="@dimen/spacing_lvl6"
@@ -119,7 +121,8 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:use_gradient="true"
+            app:loader_corner_radius="0dp"
+            app:loader_type="rect"
             android:background="@drawable/background_event_pdp_shimmering"
         />
 

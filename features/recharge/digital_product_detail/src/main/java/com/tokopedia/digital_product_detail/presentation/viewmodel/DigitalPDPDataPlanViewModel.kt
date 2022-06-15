@@ -149,9 +149,19 @@ class DigitalPDPDataPlanViewModel @Inject constructor(
     fun getFavoriteNumbers(categoryIds: List<Int>, favoriteNumberTypes: List<FavoriteNumberType>) {
         viewModelScope.launchCatchError(dispatchers.main, block = {
             val data = repo.getFavoriteNumbers(favoriteNumberTypes, categoryIds)
-            _favoriteChipsData.value = RechargeNetworkResult.Success(data.favoriteChips)
-            _autoCompleteData.value = RechargeNetworkResult.Success(data.autoCompletes)
-            _prefillData.value = RechargeNetworkResult.Success(data.prefill)
+            for (type in favoriteNumberTypes) {
+                when (type) {
+                    FavoriteNumberType.PREFILL -> {
+                        _prefillData.value = RechargeNetworkResult.Success(data.prefill)
+                    }
+                    FavoriteNumberType.CHIP -> {
+                        _favoriteChipsData.value = RechargeNetworkResult.Success(data.favoriteChips)
+                    }
+                    FavoriteNumberType.LIST -> {
+                        _autoCompleteData.value = RechargeNetworkResult.Success(data.autoCompletes)
+                    }
+                }
+            }
         }) {
             // this section is not reachable due to no fail scenario
         }

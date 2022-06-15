@@ -294,9 +294,13 @@ class LiveBroadcasterManager constructor(
         builder.setSurface(surfaceView.surfaceHolder.surface)
         builder.setSurfaceSize(Streamer.Size(surfaceView.width, surfaceView.height))
 
-        val activeCamera = mAvailableCameras.firstOrNull {
-            it.lensFacing == CameraType.Front
-        } ?: mAvailableCameras.first()
+        val activeCamera = if (mAvailableCameras.isEmpty()) {
+            return
+        } else {
+            mAvailableCameras.firstOrNull {
+                it.lensFacing == CameraType.Front
+            } ?: mAvailableCameras.first()
+        }
 
         builder.setCameraId(activeCamera.cameraId)
 
@@ -334,8 +338,9 @@ class LiveBroadcasterManager constructor(
     }
 
     private fun isDeviceHaveCameraAvailable(context: Context): Boolean {
-        mAvailableCameras.clear()
-        mAvailableCameras.addAll(CameraManager.getAvailableCameras(context))
+        if (mAvailableCameras.isNullOrEmpty()) {
+            this.mAvailableCameras.addAll(CameraManager.getAvailableCameras(context))
+        }
         return mAvailableCameras.isNotEmpty()
     }
 

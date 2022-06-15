@@ -26,6 +26,7 @@ import com.tokopedia.topads.sdk.domain.model.CpmModel
 import com.tokopedia.topads.sdk.utils.*
 import com.tokopedia.topads.sdk.widget.TopAdsHeadlineView
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.unifyprinciples.R as unifyR
 
 const val TOPADS_VARIANT_EXPERIMENT_CLEAN = 2
 const val TOPADS_VARIANT_EXPERIMENT_INFO = 3
@@ -141,10 +142,10 @@ open class TopAdsHeadlineV2ViewHolder(
                 )
             }
             container.setMargin(
-                    itemView.context.resources.getDimensionPixelSize(R.dimen.unify_space_0),
-                    itemView.context.resources.getDimensionPixelSize(R.dimen.unify_space_12),
-                    itemView.context.resources.getDimensionPixelSize(R.dimen.unify_space_0),
-                    itemView.context.resources.getDimensionPixelSize(R.dimen.unify_space_12)
+                    itemView.context.resources.getDimensionPixelSize(unifyR.dimen.unify_space_0),
+                    itemView.context.resources.getDimensionPixelSize(unifyR.dimen.unify_space_12),
+                    itemView.context.resources.getDimensionPixelSize(unifyR.dimen.unify_space_0),
+                    itemView.context.resources.getDimensionPixelSize(unifyR.dimen.unify_space_12)
             )
             topadsHeadlineUiModel?.let { setImpressionListener(it) }
         } else {

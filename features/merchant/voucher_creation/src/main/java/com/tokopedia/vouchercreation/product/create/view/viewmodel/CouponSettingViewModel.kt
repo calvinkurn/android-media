@@ -2,8 +2,7 @@ package com.tokopedia.vouchercreation.product.create.view.viewmodel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
-import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import androidx.lifecycle.ViewModel
 import com.tokopedia.utils.lifecycle.SingleLiveEvent
 import com.tokopedia.vouchercreation.common.utils.ResourceProvider
 import com.tokopedia.vouchercreation.product.create.domain.entity.CouponSettings
@@ -13,9 +12,8 @@ import com.tokopedia.vouchercreation.product.create.domain.entity.MinimumPurchas
 import javax.inject.Inject
 
 class CouponSettingViewModel @Inject constructor(
-    private val resourceProvider: ResourceProvider,
-    private val dispatchers: CoroutineDispatchers
-) : BaseViewModel(dispatchers.main) {
+    private val resourceProvider: ResourceProvider
+) : ViewModel() {
 
     private val _areInputValid = MutableLiveData<Boolean>()
     val areInputValid: LiveData<Boolean>
@@ -84,7 +82,6 @@ class CouponSettingViewModel @Inject constructor(
         }
 
         if (selectedCouponType == CouponType.CASHBACK) {
-            val discountTypeSelected = isDiscountTypeSelected(selectedDiscountType)
             val minimumPurchaseSelected = isMinimumPurchaseSelected(selectedMinimumPurchaseType)
             val validQuota = isValidQuota(cashbackQuota) is QuotaState.ValidQuota
 
@@ -96,7 +93,7 @@ class CouponSettingViewModel @Inject constructor(
                         selectedMinimumPurchaseType
                     )
                     val validDiscountAmount = isValidCashbackDiscountAmount(cashbackDiscountAmount)
-                    discountTypeSelected && validDiscountAmount && minimumPurchaseSelected && validMinimumPurchase && validQuota
+                    validDiscountAmount && minimumPurchaseSelected && validMinimumPurchase && validQuota
                 }
                 DiscountType.PERCENTAGE -> {
                     val validMinimumPurchase = isValidCashbackMinimumPurchase(
@@ -106,7 +103,7 @@ class CouponSettingViewModel @Inject constructor(
                     )
                     val validCashbackPercentage = isValidCashbackPercentage(cashbackPercentage) is CashbackPercentageState.ValidPercentage
                     val validMaxDiscountAmount = isValidMaximumCashbackAmount(cashbackMaximumAmount) is CashbackAmountState.ValidAmount
-                    discountTypeSelected && validCashbackPercentage && validMaxDiscountAmount && minimumPurchaseSelected && validMinimumPurchase && validQuota
+                    validCashbackPercentage && validMaxDiscountAmount && minimumPurchaseSelected && validMinimumPurchase && validQuota
                 }
                 DiscountType.NONE -> false
 
@@ -126,11 +123,6 @@ class CouponSettingViewModel @Inject constructor(
             _areInputValid.value = validFreeShipping
         }
 
-    }
-
-
-    private fun isDiscountTypeSelected(selectedDiscountType: DiscountType): Boolean {
-        return selectedDiscountType != DiscountType.NONE
     }
 
     private fun isMinimumPurchaseSelected(selectedMinimumPurchaseType: MinimumPurchaseType): Boolean {

@@ -110,6 +110,7 @@
     <string name="card_courier_count_example">Jumlah: 1</string>
     <string name="courier_notes_example">Tidak perlu memberikan ongkir ke kurir</string>
     <string name="courier_option_schedule">Oleh kurir: %1$s</string>
+    <string name="req_pickup_ticket_desc_template">%1$s &lt;a href="%2$s"&gt;%3$s&lt;/a&gt;</string>
 
     <string name="cancel_order_batal">Batal</string>
     <string name="btn_konfirmasi">Konfirmasi</string>

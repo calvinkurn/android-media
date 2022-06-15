@@ -28,16 +28,21 @@ import com.tokopedia.recommendation_widget_common.widget.bestseller.recommendati
 import com.tokopedia.recommendation_widget_common.widget.bestseller.recommendations.typefactory.RecommendationCarouselTypeFactory
 import com.tokopedia.recommendation_widget_common.widget.bestseller.recommendations.typefactory.RecommendationCarouselTypeFactoryImpl
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
+import com.tokopedia.unifycomponents.CardUnify2
 import com.tokopedia.utils.view.binding.viewBinding
+import com.tokopedia.wishlistcommon.listener.WishlistV2ActionListener
 
 /**
  * Created by Lukas on 05/11/20.
  */
-class BestSellerViewHolder (private val view: View, private val listener: RecommendationWidgetListener): AbstractViewHolder<BestSellerDataModel>(view), AnnotationChipListener, RecommendationCarouselListener{
+class BestSellerViewHolder (private val view: View,
+                            private val listener: RecommendationWidgetListener,
+                            cardInteraction: Boolean = false
+): AbstractViewHolder<BestSellerDataModel>(view), AnnotationChipListener, RecommendationCarouselListener{
 
     private val minChipsToShow = 1
 
-    private var recommendationTypeFactory = RecommendationCarouselTypeFactoryImpl(this)
+    private var recommendationTypeFactory = RecommendationCarouselTypeFactoryImpl(this, cardInteraction)
 
     private var annotationChipAdapter: AnnotationChipFilterAdapter = AnnotationChipFilterAdapter(this)
     private var recommendationAdapter: RecommendationCarouselAdapter = RecommendationCarouselAdapter(recommendationTypeFactory)
@@ -183,6 +188,7 @@ class BestSellerViewHolder (private val view: View, private val listener: Recomm
     }
 
     override fun onWishlistClick(item: RecommendationItem, isAddWishlist: Boolean, callback: (Boolean, Throwable?) -> Unit) {}
+    override fun onWishlistV2Click(item: RecommendationItem, isAddWishlist: Boolean) {}
 
     companion object{
         val LAYOUT = R.layout.best_seller_view_holder

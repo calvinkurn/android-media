@@ -45,25 +45,17 @@ class ItemVariantChipViewHolder(val view: View,
 
         when (element.currentState) {
             VariantConstant.STATE_EMPTY -> {
-                chipVariant.chipType = ChipsUnify.TYPE_NORMAL
-                chipVariant.isDashed = true
+                chipVariant.chipType = ChipsUnify.TYPE_DISABLE
             }
-            VariantConstant.STATE_SELECTED_EMPTY -> {
+            VariantConstant.STATE_SELECTED, VariantConstant.STATE_SELECTED_EMPTY -> {
                 chipVariant.chipType = ChipsUnify.TYPE_SELECTED
-                chipVariant.isDashed = true
-            }
-            VariantConstant.STATE_SELECTED -> {
-                chipVariant.chipType = ChipsUnify.TYPE_SELECTED
-                chipVariant.isDashed = false
                 setViewListener(element, element.currentState)
             }
             VariantConstant.STATE_UNSELECTED -> {
                 chipVariant.chipType = ChipsUnify.TYPE_NORMAL
-                chipVariant.isDashed = false
             }
             else -> {
                 chipVariant.chipType = ChipsUnify.TYPE_DISABLE
-                chipVariant.isDashed = false
             }
         }
     }

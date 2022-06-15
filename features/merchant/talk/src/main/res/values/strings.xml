@@ -172,4 +172,5 @@
     <string name="template_list_fail_load_template_list">Wah, internet putus. Cek paket data atau WiFi-mu, ya. </string>
     <string name="template_list_add_edit_template_limit">Template diskusi melebihi batas maks. karakter.</string>
 
+    <string name="menu_talk_inbox_setting_content_description">Pengaturan diskusi</string>
 </resources>

@@ -5,7 +5,6 @@ import android.content.Context
 import android.os.Bundle
 import android.view.*
 import android.view.inputmethod.InputMethodManager
-import androidx.appcompat.widget.AppCompatEditText
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -60,10 +59,11 @@ class ContentCreateCaptionFragment : BaseCreatePostFragmentNew() {
         return v
     }
 
+
+
     private fun initialiseViews(v: View) {
         captionTxt = v.findViewById(R.id.caption)
         contentPreviewRv = v.findViewById(R.id.content_post_image_rv)
-
     }
 
 

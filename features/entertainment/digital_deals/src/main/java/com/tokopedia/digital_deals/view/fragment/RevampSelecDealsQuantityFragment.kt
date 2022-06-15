@@ -31,7 +31,6 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.deal_item_card.iv_brand
 import kotlinx.android.synthetic.main.deal_item_card.tv_brand_name
-import kotlinx.android.synthetic.main.fragment_brand_detail.toolbar
 import kotlinx.android.synthetic.main.fragment_checkout_deal.tv_deal_details
 import kotlinx.android.synthetic.main.fragment_checkout_deal.tv_total_amount
 import kotlinx.android.synthetic.main.fragment_deal_quantity.*
@@ -70,6 +69,10 @@ class RevampSelecDealsQuantityFragment: BaseDaggerFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        if (savedInstanceState != null) {
+            dealsDetail = savedInstanceState.getParcelable(EXTRA_PDP_PASS_DATA) ?: DealsDetailsResponse()
+            toolbar.setTitle(resources.getString(com.tokopedia.digital_deals.R.string.select_number_of_voucher))
+        }
         showLayout()
         observeVerify()
     }
@@ -81,7 +84,9 @@ class RevampSelecDealsQuantityFragment: BaseDaggerFragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        dealsDetail = dealFragmentCallback.dealDetails
+        dealFragmentCallback?.dealDetails?.let {
+            dealsDetail = it
+        }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -95,7 +100,13 @@ class RevampSelecDealsQuantityFragment: BaseDaggerFragment() {
         }
     }
 
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putParcelable(EXTRA_PDP_PASS_DATA, dealsDetail)
+    }
+
     private fun showLayout(){
+        dealFragmentCallback?.hideMainToolbar()
         toolbar?.apply {
             (activity as BaseSimpleActivity).setSupportActionBar(this)
             setNavigationIcon(ContextCompat.getDrawable(context, com.tokopedia.digital_deals.R.drawable.ic_close_deals))
@@ -234,6 +245,7 @@ class RevampSelecDealsQuantityFragment: BaseDaggerFragment() {
 
     companion object{
         const val REQUEST_CODE_LOGIN = 101
+        private const val EXTRA_PDP_PASS_DATA = "EXTRA_PDP_DETAIL_PASS_DATA"
 
         fun createInstance(): RevampSelecDealsQuantityFragment {
             return RevampSelecDealsQuantityFragment()

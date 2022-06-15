@@ -5,6 +5,7 @@ import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.recommendation_widget_common.databinding.ItemComparisonComparedWidgetBinding
+import com.tokopedia.recommendation_widget_common.widget.ComparisonWidgetTracking
 import com.tokopedia.recommendation_widget_common.widget.ProductRecommendationTracking
 import com.tokopedia.recommendation_widget_common.widget.comparison.ComparisonListModel
 import com.tokopedia.recommendation_widget_common.widget.comparison.ComparisonModel
@@ -55,10 +56,11 @@ class ComparisonWidgetComparedItemViewHolder(val view: View): RecyclerView.ViewH
                         recommendationItem = comparisonModel.recommendationItem,
                         androidPageName = recommendationTrackingModel.androidPageName,
                         headerTitle = recommendationTrackingModel.headerTitle,
-                        chipsTitle = comparisonModel.productCardModel.productName,
                         position = adapterPosition,
                         isLoggedIn = userSession.isLoggedIn,
-                        anchorProductId = comparisonListModel.getAnchorProduct()?.recommendationItem?.productId.toString()
+                        anchorProductId = comparisonListModel.getAnchorProduct()?.recommendationItem?.productId.toString(),
+                        userId = userSession.userId,
+                        widgetType = ProductRecommendationTracking.COMPARISON_WIDGET
                     )
                 )
                 comparisonWidgetInterface.onProductCardClicked(comparisonModel.recommendationItem, comparisonListModel, adapterPosition)
@@ -76,13 +78,12 @@ class ComparisonWidgetComparedItemViewHolder(val view: View): RecyclerView.ViewH
                 )
             }
             trackingQueue?.putEETracking(
-                ProductRecommendationTracking.getImpressionProductTracking(
+                ComparisonWidgetTracking.getImpressionProductTrackingComparisonWidget(
                     recommendationItem = comparisonModel.recommendationItem,
                     androidPageName = recommendationTrackingModel.androidPageName,
                     headerTitle = recommendationTrackingModel.headerTitle,
                     position = adapterPosition,
-                    isLoggedIn = userSession.isLoggedIn,
-                    anchorProductId = comparisonListModel.getAnchorProduct()?.recommendationItem?.productId.toString()
+                    userId = userSession.userId
                 )
             )
             comparisonWidgetInterface.onProductCardImpressed(comparisonModel.recommendationItem, comparisonListModel, adapterPosition)

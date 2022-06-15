@@ -10,6 +10,7 @@ import com.tokopedia.trackingoptimizer.constant.Constant.Companion.ECOMMERCE
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.videoTabComponent.analytics.tracker.PlayAnalyticsTracker.EventName.PROMO_CLICK
 import com.tokopedia.videoTabComponent.analytics.tracker.PlayAnalyticsTracker.EventName.PROMO_VIEW
+import com.tokopedia.videoTabComponent.analytics.tracker.PlayAnalyticsTracker.EventName.VIEW_HOMEPAGE_IRIS
 import com.tokopedia.videoTabComponent.analytics.tracker.PlayAnalyticsTracker.PlayTrackerConst.PROMOTIONS
 import com.tokopedia.videoTabComponent.analytics.tracker.PlayAnalyticsTracker.PlayTrackerConst.USER_ID
 import java.util.*
@@ -54,7 +55,7 @@ class PlayAnalyticsTracker @Inject constructor(
     //4
     fun impressOnLagiLiveContentCarouselWidget() {
         createAnalyticsData(
-                PROMO_VIEW,
+                VIEW_HOMEPAGE_IRIS,
                 EventAction.IMPRESSION_CAROUSEL_WIDGET_LAGI_LIVE,
                 EventCategory.CONTENT_FEED_TIMELINE_VIDEO,
                 ""
@@ -176,7 +177,7 @@ class PlayAnalyticsTracker @Inject constructor(
     //12
     fun impressOnFilterChipsInVideoTab(filterCategory: String) {
         createAnalyticsData(
-            EventName.CLICK_HOMEPAGE,
+            EventName.VIEW_HOMEPAGE_IRIS,
             EventAction.IMPRESSION_FILTER_CHIPS,
             EventCategory.CONTENT_FEED_TIMELINE_VIDEO,
             EventLabel.getFilterCategory(filterCategory)
@@ -676,8 +677,8 @@ class PlayAnalyticsTracker @Inject constructor(
         const val IMPRESSION_CAROUSEL_WIDGET_UPCOMING = "impression - carousel widget - upcoming"
         const val IMPRESSION_CONTENT_CARDS_LAGI_LIVE = "impression - content cards - lagi live"
 
-        const val IMPRESSION_CONTENT_CARDS_UPCOMING = "impressions - content cards - upcoming"
-        const val IMPRESSION_CONTENT_CARDS = "impressions - content cards"
+        const val IMPRESSION_CONTENT_CARDS_UPCOMING = "impression - content cards - upcoming"
+        const val IMPRESSION_CONTENT_CARDS = "impression - content cards"
         const val IMPRESSION_FILTER_CHIPS = "impression - filter chips"
     }
     private object Promotions{
@@ -691,31 +692,31 @@ class PlayAnalyticsTracker @Inject constructor(
     private object EventLabel {
 
         fun liveVodUpcoming(channelId: String, shopId: String, type: String) =
-            "{${channelId}} - {${shopId}} - {${type}}"
+            "$channelId - $shopId - $type"
 
         fun liveVodUpcomingFilterCategory(
             channelId: String,
             shopId: String,
             type: String,
             filterCategory: String
-        ) = "{${channelId}} - {${shopId}} - {${type}} - {${filterCategory}}"
+        ) = "$channelId - $shopId - $type - $filterCategory"
 
         fun liveVodUpcoming(
             channelId: String,
             shopId: String,
             type: String,
             filterCategory: String
-        ) = "{${channelId}} - {${shopId}} - {${type}}"
+        ) = "$channelId - $shopId - $type"
 
         fun liveVodUpcomingFilterCategoryEntryPointCarousel(
             channelId: String, shopId: String, type: String, filterCategory: String, entryPoint: String =""
         ) =
-            "{${channelId}} - {${shopId}} - {${type}} - $FILTER_CATEGORY_EMPTY - {${entryPoint}}"
+            "$channelId - $shopId - $type - $FILTER_CATEGORY_EMPTY - $entryPoint"
 
         const val FILTER_CATEGORY_ENTRY_POINT_CAROUSEL_WIDGET =
             "{filter category} - {entry point carousel widget}"
 
-        fun getFilterCategory(filterCategory: String) = "{${filterCategory}}"
+        fun getFilterCategory(filterCategory: String) = "$filterCategory"
 
         fun getScreenName(position: Int): String {
             return when (position) {

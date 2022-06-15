@@ -7,7 +7,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
-import com.elyeproj.loaderviewlibrary.LoaderTextView
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.DateFormatUtils
 import com.tokopedia.common_electronic_money.R
@@ -15,6 +14,7 @@ import com.tokopedia.common_electronic_money.data.AttributesEmoneyInquiry
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.unifycomponents.BaseCustomView
+import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.currency.CurrencyFormatUtil
 import org.jetbrains.annotations.NotNull
@@ -36,12 +36,12 @@ class ETollCardInfoView @JvmOverloads constructor(@NotNull context: Context, att
     private val textLabelCardNumber: TextView
     private val textCardNumber: TextView
     private val imageIssuer: ImageView
-    private val textLabelBalanceLoader: LoaderTextView
-    private val textRemainingBalanceLoader: LoaderTextView
-    private val textDateLoader: LoaderTextView
-    private val textLabelCardNumberLoader: LoaderTextView
-    private val textCardNumberLoader: LoaderTextView
-    private val imageIssuerLoader: LoaderTextView
+    private val textLabelBalanceLoader: LoaderUnify
+    private val textRemainingBalanceLoader: LoaderUnify
+    private val textDateLoader: LoaderUnify
+    private val textLabelCardNumberLoader: LoaderUnify
+    private val textCardNumberLoader: LoaderUnify
+    private val imageIssuerLoader: LoaderUnify
 
     val cardNumber: String
         get() = attributesEmoneyInquiry.cardNumber

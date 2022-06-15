@@ -22,7 +22,7 @@ object ProductTitleValidationMapper {
                     productName,
                     mapErrorKeywords(blacklistKeyword),
                     mapWarningKeywords(negativeKeyword, typoDetection),
-                    blacklistKeyword.isNotEmpty(),
+                    false, // disable blacklist checking
                     negativeKeyword.isNotEmpty(),
                     typoDetection.isNotEmpty(),
                     mapTypoCorrections(typoDetection)

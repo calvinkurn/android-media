@@ -13,7 +13,7 @@ import com.tokopedia.shop.R
 import com.tokopedia.shop.common.constant.ShopPagePerformanceConstant.SHOP_HOME_IMAGE_SLIDER_BANNER_TRACE
 import com.tokopedia.shop.databinding.ViewmodelSliderBannerBinding
 import com.tokopedia.shop.databinding.WidgetSliderBannerItemBinding
-import com.tokopedia.shop.home.ShopCarouselBannerImageUnify
+import com.tokopedia.shop.common.view.ShopCarouselBannerImageUnify
 import com.tokopedia.shop.home.view.listener.ShopHomeDisplayWidgetListener
 import com.tokopedia.shop.home.view.model.ShopHomeDisplayWidgetUiModel
 import com.tokopedia.unifycomponents.toPx
