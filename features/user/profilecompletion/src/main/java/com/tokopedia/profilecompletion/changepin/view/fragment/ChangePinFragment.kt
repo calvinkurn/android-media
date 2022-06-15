@@ -27,6 +27,8 @@ import com.tokopedia.profilecompletion.R
 import com.tokopedia.profilecompletion.addpin.data.AddChangePinData
 import com.tokopedia.profilecompletion.addpin.data.CheckPinData
 import com.tokopedia.profilecompletion.addpin.view.fragment.PinCompleteFragment
+import com.tokopedia.profilecompletion.addpin.view.fragment.PinCompleteFragment.Companion.SOURCE_ADD_PIN
+import com.tokopedia.profilecompletion.addpin.view.fragment.PinCompleteFragment.Companion.SOURCE_DEFAULT
 import com.tokopedia.profilecompletion.changepin.view.activity.ChangePinActivity
 import com.tokopedia.profilecompletion.changepin.view.viewmodel.ChangePinViewModel
 import com.tokopedia.profilecompletion.changepin.view.viewmodel.ChangePinViewModel.Companion.toBoolean
@@ -370,11 +372,11 @@ open class ChangePinFragment : BaseDaggerFragment(), CoroutineScope {
             RouteManager.getIntent(context, ApplinkConstInternalUserPlatform.ADD_PIN_COMPLETE)
                 .apply {
                     flags = Intent.FLAG_ACTIVITY_FORWARD_RESULT
-                    if (source < 1) {
+                    if (source < SOURCE_ADD_PIN) {
                         source = PinCompleteFragment.SOURCE_CHANGE_PIN
                     }
                     putExtra(ApplinkConstInternalGlobal.PARAM_SOURCE, source)
-                    source = 0
+                    source = SOURCE_DEFAULT
                 }
 
         startActivity(intent)

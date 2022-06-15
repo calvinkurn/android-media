@@ -17,6 +17,7 @@ import com.tokopedia.profilecompletion.common.model.CheckPinV2Data
 import com.tokopedia.profilecompletion.common.model.CheckPinV2Param
 import com.tokopedia.profilecompletion.common.usecase.CheckPinV2UseCase
 import com.tokopedia.profilecompletion.data.ProfileCompletionQueryConstant
+import com.tokopedia.sessioncommon.constants.SessionConstants
 import com.tokopedia.sessioncommon.data.KeyData
 import com.tokopedia.sessioncommon.domain.usecase.GeneratePublicKeyUseCase
 import com.tokopedia.usecase.coroutines.Fail
@@ -286,7 +287,7 @@ class AddChangePinViewModel @Inject constructor(
     }
 
     suspend fun getPublicKey(): KeyData {
-        generatePublicKeyUseCase.setParams("pinv2")
+        generatePublicKeyUseCase.setParams(SessionConstants.GenerateKeyModule.PIN_V2.value)
         return generatePublicKeyUseCase.executeOnBackground().keyData
     }
 

@@ -99,6 +99,7 @@ class PinCompleteFragment : BaseDaggerFragment() {
 	const val COMPLETE_PICT_URL =
 	    "https://ecs7.tokopedia.net/android/user/success_update_pin.png"
 
+	const val SOURCE_DEFAULT = 0
 	const val SOURCE_ADD_PIN = 1
 	const val SOURCE_CHANGE_PIN = 2
 	const val SOURCE_FORGOT_PIN = 3

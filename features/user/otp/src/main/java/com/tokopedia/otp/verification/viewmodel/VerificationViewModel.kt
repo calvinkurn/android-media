@@ -243,11 +243,11 @@ open class VerificationViewModel @Inject constructor(
                 msisdn = msisdn
             )
 
-            if (usePinV2 && isNeedHash(id = userId.toString(), type = "userid")) {
+            if (usePinV2 && isNeedHash(id = userId.toString(), type = SessionConstants.CheckPinType.USER_ID.value)) {
                 val keyData = getPublicKey()
                 val encryptedPin = RsaUtils.encryptWithSalt(
                     code,
-                    keyData.key.replace("=", ""),
+                    keyData.key,
                     salt = OtpConstant.PIN_V2_SALT
                 )
                 if (encryptedPin.isNotEmpty()) {
@@ -311,13 +311,13 @@ open class VerificationViewModel @Inject constructor(
             if (mode == OtpConstant.OtpMode.PIN && usePinV2) {
                 if (isNeedHash(
                         msisdn.ifEmpty { email },
-                        if (msisdn.isNotEmpty()) TYPE_PHONE else TYPE_EMAIL
+                        if (msisdn.isNotEmpty()) SessionConstants.CheckPinType.PHONE.value else SessionConstants.CheckPinType.EMAIL.value
                     )
                 ) {
                     val keyData = getPublicKey()
                     val encryptedPin = RsaUtils.encryptWithSalt(
                         code,
-                        keyData.key.replace("=", ""),
+                        keyData.key,
                         salt = OtpConstant.PIN_V2_SALT
                     )
                     if (encryptedPin.isNotEmpty()) {
@@ -373,7 +373,9 @@ open class VerificationViewModel @Inject constructor(
 
     suspend fun getPublicKey(): KeyData {
         generatePublicKeyUseCase.setParams(SessionConstants.GenerateKeyModule.PIN_V2.value)
-        return generatePublicKeyUseCase.executeOnBackground().keyData
+        val result = generatePublicKeyUseCase.executeOnBackground().keyData
+        result.key = SessionConstants.cleanPublicKey(result.key)
+        return result
     }
 
     public override fun onCleared() {
@@ -394,8 +396,5 @@ open class VerificationViewModel @Inject constructor(
 
     companion object {
         const val VALIDATE_PIN_V2_ROLLENCE = "pdh_val_and"
-
-        const val TYPE_PHONE = "phone"
-        const val TYPE_EMAIL = "email"
     }
 }

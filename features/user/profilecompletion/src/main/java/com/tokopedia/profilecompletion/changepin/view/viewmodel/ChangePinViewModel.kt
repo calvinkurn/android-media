@@ -25,6 +25,7 @@ import com.tokopedia.profilecompletion.common.model.CheckPinV2Param
 import com.tokopedia.profilecompletion.common.usecase.CheckPinV2UseCase
 import com.tokopedia.profilecompletion.data.ProfileCompletionQueryConstant
 import com.tokopedia.sessioncommon.constants.SessionConstants
+import com.tokopedia.sessioncommon.constants.SessionConstants.cleanPublicKey
 import com.tokopedia.sessioncommon.data.KeyData
 import com.tokopedia.sessioncommon.data.pin.PinStatusParam
 import com.tokopedia.sessioncommon.data.pin.ValidatePinV2Data
@@ -95,7 +96,7 @@ class ChangePinViewModel @Inject constructor(
 
     fun validatePinMediator(pin: String) {
         launchCatchError(block = {
-            val param = PinStatusParam(id = userSession.userId, type = TYPE_USER_ID)
+            val param = PinStatusParam(id = userSession.userId, type = SessionConstants.CheckPinType.USER_ID.value)
             val needHash = checkPinHashV2UseCase(param).data.isNeedHash
             if(needHash) {
                 validatePinV2(pin)
@@ -123,13 +124,15 @@ class ChangePinViewModel @Inject constructor(
 
     suspend fun getPublicKey(): KeyData {
         generatePublicKeyUseCase.setParams(SessionConstants.GenerateKeyModule.PIN_V2.value)
-        return generatePublicKeyUseCase.executeOnBackground().keyData
+        val result = generatePublicKeyUseCase.executeOnBackground().keyData
+        result.key = cleanPublicKey(result.key)
+        return result
     }
 
     fun validatePinV2(pin: String) {
         launchCatchError(block = {
             val keyData = getPublicKey()
-            val encryptedPin = RsaUtils.encryptWithSalt(pin, keyData.key.replace("=", ""), salt = OtpConstant.PIN_V2_SALT)
+            val encryptedPin = RsaUtils.encryptWithSalt(pin, keyData.key, salt = OtpConstant.PIN_V2_SALT)
             hash = keyData.hash
             val param = ValidatePinV2Param(
                 pin = encryptedPin,
@@ -195,7 +198,7 @@ class ChangePinViewModel @Inject constructor(
     fun checkPinV2(pin: String) {
         launchCatchError(block = {
             val keyData = getPublicKey()
-            val encryptedPin = RsaUtils.encryptWithSalt(pin, keyData.key.replace("=", ""), salt = OtpConstant.PIN_V2_SALT)
+            val encryptedPin = RsaUtils.encryptWithSalt(pin, keyData.key, salt = OtpConstant.PIN_V2_SALT)
             hash = keyData.hash
             val checkPinParam = CheckPinV2Param(encryptedPin, keyData.hash)
             val checkPinResult = checkPinV2UseCase(checkPinParam).data
@@ -349,8 +352,8 @@ class ChangePinViewModel @Inject constructor(
     fun changePinV2(pin: String, pinOld: String) {
         launchCatchError(block = {
             val keyData = getPublicKey()
-            val encryptedPin = RsaUtils.encryptWithSalt(pin, keyData.key.replace("=", ""), salt = OtpConstant.PIN_V2_SALT)
-            val encryptedOldPin = RsaUtils.encryptWithSalt(pinOld, keyData.key.replace("=", ""), salt = OtpConstant.PIN_V2_SALT)
+            val encryptedPin = RsaUtils.encryptWithSalt(pin, keyData.key, salt = OtpConstant.PIN_V2_SALT)
+            val encryptedOldPin = RsaUtils.encryptWithSalt(pinOld, keyData.key, salt = OtpConstant.PIN_V2_SALT)
 
             hash = keyData.hash
 
@@ -394,8 +397,7 @@ class ChangePinViewModel @Inject constructor(
     }
 
     companion object {
-        const val TYPE_USER_ID = "userid"
-        const val TYPE_SUCCESS = 1
+        private const val TYPE_SUCCESS = 1
 
         fun Int.toBoolean(): Boolean {
             return this == TYPE_SUCCESS
