@@ -12,7 +12,6 @@ data class MissionWidgetListDataModel(
     val missionWidgetList: List<MissionWidgetDataModel> = listOf(),
     val channelModel: ChannelModel,
     val status: Int = STATUS_LOADING,
-    val subtitleHeight: Int = 0
 ) : HomeComponentVisitable, ImpressHolder() {
 
     companion object {

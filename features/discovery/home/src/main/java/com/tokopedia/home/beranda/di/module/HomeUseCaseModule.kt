@@ -138,18 +138,6 @@ class HomeUseCaseModule {
             homeMissionWidgetRepository = homeMissionWidgetRepository
     )
 
-    @HomeScope
-    @Provides
-    fun provideHomeMissionWidgetUseCase(
-            @ApplicationContext context: Context,
-            homeChooseAddressRepository: HomeChooseAddressRepository,
-            homeMissionWidgetRepository: HomeMissionWidgetRepository
-    ) = HomeMissionWidgetUseCase (
-            applicationContext = context,
-            homeChooseAddressRepository = homeChooseAddressRepository,
-            missionWidgetRepository = homeMissionWidgetRepository
-    )
-
     @Provides
     fun provideGetHomeRecommendationUseCase(
             @ApplicationContext context: Context,

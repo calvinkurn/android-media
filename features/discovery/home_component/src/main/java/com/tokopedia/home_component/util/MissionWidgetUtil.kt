@@ -10,8 +10,6 @@ import com.tokopedia.unifyprinciples.Typography
  * Created by dhaba
  */
 object MissionWidgetUtil {
-    const val DEFAULT_SUBTITLE_HEIGHT = 0
-
     private fun measureSummaryTextHeight(
         text: CharSequence?,
         textWidth: Int,

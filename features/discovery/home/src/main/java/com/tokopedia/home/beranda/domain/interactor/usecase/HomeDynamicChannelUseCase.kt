@@ -229,20 +229,12 @@ class HomeDynamicChannelUseCase @Inject constructor(
                         handleOnFailed = { visitableFound ->
                             visitableFound.copy(status = MissionWidgetListDataModel.STATUS_ERROR)
                         },
-                        mapToWidgetData = { visitableFound, data, position ->
+                        mapToWidgetData = { visitableFound, data, _ ->
                             val resultList =
                                 MissionWidgetHelper.convertMissionWidgetDataList(data.getHomeMissionWidget.missions)
-                            val subtitleHeight = applicationContext?.let {
-                                MissionWidgetUtil.findMaxHeightSubtitleText(
-                                    resultList,
-                                    applicationContext
-                                )
-                            } ?: MissionWidgetUtil.DEFAULT_SUBTITLE_HEIGHT
-
                             visitableFound.copy(
                                 missionWidgetList = resultList,
-                                status = MissionWidgetListDataModel.STATUS_SUCCESS,
-                                subtitleHeight = subtitleHeight
+                                status = MissionWidgetListDataModel.STATUS_SUCCESS
                             )
                         }
                     )

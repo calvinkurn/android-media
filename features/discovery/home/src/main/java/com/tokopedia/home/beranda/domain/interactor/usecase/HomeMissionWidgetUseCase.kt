@@ -1,12 +1,10 @@
 package com.tokopedia.home.beranda.domain.interactor.usecase
 
-import android.content.Context
 import android.os.Bundle
 import com.tokopedia.home.beranda.domain.interactor.repository.HomeChooseAddressRepository
 import com.tokopedia.home.beranda.domain.interactor.repository.HomeMissionWidgetRepository
 import com.tokopedia.home.beranda.helper.MissionWidgetHelper
 import com.tokopedia.home.constant.ConstantKey
-import com.tokopedia.home_component.util.MissionWidgetUtil
 import com.tokopedia.home_component.visitable.MissionWidgetListDataModel
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils.convertToLocationParams
 import javax.inject.Inject
@@ -16,8 +14,7 @@ import javax.inject.Inject
  */
 class HomeMissionWidgetUseCase @Inject constructor(
     private val missionWidgetRepository: HomeMissionWidgetRepository,
-    private val homeChooseAddressRepository: HomeChooseAddressRepository,
-    private val applicationContext: Context?
+    private val homeChooseAddressRepository: HomeChooseAddressRepository
 ) {
 
     suspend fun onMissionWidgetRefresh(currentMissionWidgetListDataModel: MissionWidgetListDataModel): MissionWidgetListDataModel {
@@ -30,16 +27,9 @@ class HomeMissionWidgetUseCase @Inject constructor(
             })
             val resultList =
                 MissionWidgetHelper.convertMissionWidgetDataList(results.getHomeMissionWidget.missions)
-            val subtitleHeight = applicationContext?.let {
-                MissionWidgetUtil.findMaxHeightSubtitleText(
-                    resultList,
-                    applicationContext
-                )
-            } ?: MissionWidgetUtil.DEFAULT_SUBTITLE_HEIGHT
             currentMissionWidgetListDataModel.copy(
                 missionWidgetList = resultList,
-                status = ConstantKey.LoadDataKey.STATUS_SUCCESS,
-                subtitleHeight = subtitleHeight
+                status = ConstantKey.LoadDataKey.STATUS_SUCCESS
             )
         } catch (e: Exception) {
             currentMissionWidgetListDataModel.copy(status = ConstantKey.LoadDataKey.STATUS_ERROR)

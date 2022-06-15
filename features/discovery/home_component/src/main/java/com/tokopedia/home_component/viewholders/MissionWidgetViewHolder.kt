@@ -15,6 +15,7 @@ import com.tokopedia.home_component.productcardgridcarousel.dataModel.CarouselMi
 import com.tokopedia.home_component.productcardgridcarousel.listener.CommonProductCardCarouselListener
 import com.tokopedia.home_component.productcardgridcarousel.typeFactory.CommonCarouselProductCardTypeFactoryImpl
 import com.tokopedia.home_component.util.ChannelWidgetUtil
+import com.tokopedia.home_component.util.MissionWidgetUtil
 import com.tokopedia.home_component.viewholders.adapter.MissionWidgetAdapter
 import com.tokopedia.home_component.visitable.MissionWidgetListDataModel
 import com.tokopedia.kotlin.extensions.view.gone
@@ -26,7 +27,7 @@ import com.tokopedia.utils.view.binding.viewBinding
  */
 class MissionWidgetViewHolder(
     itemView: View,
-    val missionWidgetComponentListener: MissionWidgetComponentListener,
+    private val missionWidgetComponentListener: MissionWidgetComponentListener,
     private val cardInteraction: Boolean = false
 ) : AbstractViewHolder<MissionWidgetListDataModel>(itemView),
     CommonProductCardCarouselListener {
@@ -41,10 +42,12 @@ class MissionWidgetViewHolder(
     private fun setHeaderComponent(element: MissionWidgetListDataModel) {
         binding?.homeComponentHeaderView?.setChannel(element.channelModel, object : HeaderListener {
             override fun onSeeAllClick(link: String) {
-
+                //no-op
             }
 
-            override fun onChannelExpired(channelModel: ChannelModel) {}
+            override fun onChannelExpired(channelModel: ChannelModel) {
+                //no-op
+            }
         })
     }
 
@@ -76,6 +79,10 @@ class MissionWidgetViewHolder(
 
     private fun convertDataToMissionWidgetData(element: MissionWidgetListDataModel): MutableList<Visitable<*>> {
         val list: MutableList<Visitable<*>> = mutableListOf()
+        val subtitleHeight = MissionWidgetUtil.findMaxHeightSubtitleText(
+            element.missionWidgetList,
+            itemView.context
+        )
         for (missionWidget in element.missionWidgetList) {
             list.add(
                 CarouselMissionWidgetDataModel(
@@ -85,7 +92,7 @@ class MissionWidgetViewHolder(
                     appLink = missionWidget.appLink,
                     url = missionWidget.url,
                     imageURL = missionWidget.imageURL,
-                    subtitleHeight = element.subtitleHeight,
+                    subtitleHeight = subtitleHeight,
                     missionWidgetComponentListener = missionWidgetComponentListener,
                     channel = element.channelModel,
                     verticalPosition = adapterPosition
@@ -147,7 +154,7 @@ class MissionWidgetViewHolder(
         channelGrid: ChannelGrid,
         position: Int
     ) {
-
+        //no-op
     }
 
     override fun onProductCardClicked(
@@ -156,14 +163,14 @@ class MissionWidgetViewHolder(
         position: Int,
         applink: String
     ) {
-
+        //no-op
     }
 
     override fun onSeeMoreCardClicked(channel: ChannelModel, applink: String) {
-
+        //no-op
     }
 
     override fun onEmptyCardClicked(channel: ChannelModel, applink: String, parentPos: Int) {
-
+        //no-op
     }
 }
