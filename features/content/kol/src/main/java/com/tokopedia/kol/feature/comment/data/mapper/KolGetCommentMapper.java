@@ -53,7 +53,7 @@ public class KolGetCommentMapper
                 postKol.getDescription() == null ? "" : postKol.getDescription(),
                 postKol.getCreateTime() == null ? "" :
                         postKol.getCreateTime(),
-                String.valueOf(postKol.getUserId()),
+                postKol.getUserId(),
                 postKol.getUserUrl(),
                 getTagsLink(postKol),
                 !postKol.getUserBadges().isEmpty() ? postKol.getUserBadges().get(0) : "",
@@ -64,7 +64,7 @@ public class KolGetCommentMapper
                 postKol.getUserName() == null ? "" : postKol.getUserName(),
                 postKol.getDescription() == null ? "" : postKol.getDescription(),
                 postKol.getCreateTime() == null ? "" : postKol.getCreateTime(),
-                String.valueOf(postKol.getUserId()),
+                postKol.getUserId(),
                 postKol.getUserUrl(),
                 getTagsLink(postKol),
                 !postKol.getUserBadges().isEmpty() ? postKol.getUserBadges().get(0) : "",
@@ -108,8 +108,8 @@ public class KolGetCommentMapper
 
         for (Comment comment : getUserPostComment.getComments()) {
             KolCommentViewModel kolCommentViewModel = new KolCommentViewModel(
-                    String.valueOf(comment.getId()),
-                    String.valueOf(comment.getUserID()),
+                    comment.getId(),
+                    comment.getUserID(),
                     null,
                     comment.getUserPhoto() == null ? "" : comment.getUserPhoto(),
                     comment.getUserName() == null ? "" : comment.getUserName(),
@@ -133,8 +133,8 @@ public class KolGetCommentMapper
 
         for (Comment comment : getUserPostComment.getComments()) {
             KolCommentNewModel kolCommentViewModel = new KolCommentNewModel(
-                    String.valueOf(comment.getId()),
-                    String.valueOf(comment.getUserID()),
+                    comment.getId(),
+                    comment.getUserID(),
                     null,
                     comment.getUserPhoto() == null ? "" : comment.getUserPhoto(),
                     comment.getUserName() == null ? "" : comment.getUserName(),
