@@ -199,7 +199,7 @@ class TxnSucsOvoUser : BaseDaggerFragment(), View.OnClickListener {
                                 AnalyticsUtil.EventCategory.OVO_SUMRY_TRNSFR_SUCS, "", AnalyticsUtil.EventAction.CLK_KMBL_TKPD)
                     }
                 }
-                R.id.btn_ok -> {
+                com.tokopedia.unifycomponents.R.id.snackbar_btn -> {
                     errorSnackbar.let {
                         if (it.isShownOrQueued) it.dismiss()
                     }

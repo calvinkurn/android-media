@@ -167,7 +167,7 @@ class OvoP2PForm : BaseDaggerFragment(), View.OnClickListener, SearchView.OnQuer
                         )
                     }
                 }
-                R.id.btn_ok -> {
+                com.tokopedia.unifycomponents.R.id.snackbar_btn -> {
                     errorSnackbar.let {
                         if (it.isShownOrQueued) it.dismiss()
                     }
