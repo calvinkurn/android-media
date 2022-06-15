@@ -1730,7 +1730,7 @@ class PlayViewModel @AssistedInject constructor(
 
             if (!checkWinnerStatus() && interactive.interactive is InteractiveUiModel.Giveaway) {
                 delayTapJob?.cancel()
-                delayTapJob = viewModelScope.launch(dispatchers.computation) {
+                delayTapJob = viewModelScope.launch(dispatchers.immediate){
                     delay(interactive.interactive.waitingDuration)
                     checkWinnerStatus()
                 }
@@ -1773,7 +1773,7 @@ class PlayViewModel @AssistedInject constructor(
                 showLeaderBoard(interactiveId = interactiveType.id)
             } else {
                 delayQuizJob?.cancel()
-                delayQuizJob = viewModelScope.launch(dispatchers.computation) {
+                delayQuizJob = viewModelScope.launch(dispatchers.immediate){
                     delay(interactive.interactive.waitingDuration)
                     if(isFinished) {
                         if(winnerStatus == null) showLeaderBoard(interactiveId = interactiveType.id) else processWinnerStatus(winnerStatus, interactiveType)
