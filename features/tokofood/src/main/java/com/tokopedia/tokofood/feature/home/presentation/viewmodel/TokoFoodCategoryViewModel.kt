@@ -6,12 +6,14 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.tokofood.feature.home.domain.constanta.TokoFoodLayoutState
 import com.tokopedia.tokofood.feature.home.domain.mapper.TokoFoodCategoryMapper.addErrorState
 import com.tokopedia.tokofood.feature.home.domain.mapper.TokoFoodCategoryMapper.addLoadingCategoryIntoList
 import com.tokopedia.tokofood.feature.home.domain.mapper.TokoFoodCategoryMapper.addProgressBar
+import com.tokopedia.tokofood.feature.home.domain.mapper.TokoFoodCategoryMapper.mapCategoryEmptyLayout
 import com.tokopedia.tokofood.feature.home.domain.mapper.TokoFoodCategoryMapper.mapCategoryLayoutList
 import com.tokopedia.tokofood.feature.home.domain.mapper.TokoFoodCategoryMapper.removeProgressBar
 import com.tokopedia.tokofood.feature.home.domain.usecase.TokoFoodMerchantListUseCase
@@ -37,8 +39,12 @@ class TokoFoodCategoryViewModel @Inject constructor(
     private val _categoryLayoutList = MutableLiveData<Result<TokoFoodListUiModel>>()
     private val _categoryLoadMore = MutableLiveData<Result<TokoFoodListUiModel>>()
 
-    private val categoryLayoutItemList :MutableList<Visitable<*>> = mutableListOf()
-    private var pageKey = ""
+    val categoryLayoutItemList :MutableList<Visitable<*>> = mutableListOf()
+    private var pageKey = INITIAL_PAGE_KEY_MERCHANT
+
+    companion object {
+        private const val INITIAL_PAGE_KEY_MERCHANT = "1"
+    }
 
     fun getLoadingState() {
         categoryLayoutItemList.clear()
@@ -61,9 +67,8 @@ class TokoFoodCategoryViewModel @Inject constructor(
     }
 
     fun getCategoryLayout(localCacheModel: LocalCacheModel, option: Int = 0,
-                          sortBy: Int = 0, cuisine: String = "", page: String = "") {
+                          sortBy: Int = 0, cuisine: String = "") {
         launchCatchError(block = {
-            setPageKey(page)
             categoryLayoutItemList.clear()
             val categoryResponse = withContext(dispatchers.io) {
                 tokoFoodMerchantListUseCase.execute(
@@ -75,7 +80,11 @@ class TokoFoodCategoryViewModel @Inject constructor(
             }
 
             setPageKey(categoryResponse.data.nextPageKey)
-            categoryLayoutItemList.mapCategoryLayoutList(categoryResponse.data.merchants)
+            if (categoryResponse.data.merchants.isNotEmpty()) {
+                categoryLayoutItemList.mapCategoryLayoutList(categoryResponse.data.merchants)
+            } else {
+                categoryLayoutItemList.mapCategoryEmptyLayout()
+            }
             val data = TokoFoodListUiModel(
                 items = categoryLayoutItemList,
                 state = TokoFoodLayoutState.SHOW
@@ -87,18 +96,9 @@ class TokoFoodCategoryViewModel @Inject constructor(
         }
     }
 
-    fun onScrollProductList(containsLastItemIndex: Int?, itemCount: Int, localCacheModel: LocalCacheModel, option: Int = 0,
+    fun onScrollProductList(containsLastItemIndex: Int, itemCount: Int, localCacheModel: LocalCacheModel, option: Int = 0,
                             sortBy: Int = 0, cuisine: String = "") {
-        val lastItemIndex = itemCount - 1
-        val scrolledToLastItem = (containsLastItemIndex == lastItemIndex
-                && containsLastItemIndex.isMoreThanZero()
-                && itemCount.isMoreThanZero())
-        val hasNextPage = pageKey.isNotEmpty()
-        val layoutList = categoryLayoutItemList.toMutableList()
-        val isLoading = layoutList.firstOrNull { it is TokoFoodProgressBarUiModel } != null
-        val isError = layoutList.firstOrNull { it is TokoFoodErrorStateUiModel } != null
-
-        if(scrolledToLastItem && hasNextPage && !isLoading && !isError) {
+        if(shouldLoadMore(containsLastItemIndex, itemCount)) {
             showProgressBar()
             loadMoreMerchant(localCacheModel = localCacheModel,
                 option = option,
@@ -108,11 +108,7 @@ class TokoFoodCategoryViewModel @Inject constructor(
         }
     }
 
-    private fun setPageKey(pageNew:String) {
-        pageKey = pageNew
-    }
-
-    private fun showProgressBar(){
+    fun showProgressBar(){
         categoryLayoutItemList.addProgressBar()
         val data = TokoFoodListUiModel(
             items = categoryLayoutItemList,
@@ -121,8 +117,8 @@ class TokoFoodCategoryViewModel @Inject constructor(
         _categoryLayoutList.postValue(Success(data))
     }
 
-    private fun loadMoreMerchant(localCacheModel: LocalCacheModel, option: Int = 0,
-                                 sortBy: Int = 0, cuisine: String = "") {
+    private fun loadMoreMerchant(localCacheModel: LocalCacheModel, option: Int,
+                                 sortBy: Int, cuisine: String) {
         launchCatchError(block = {
             val categoryResponse = withContext(dispatchers.io) {
                 tokoFoodMerchantListUseCase.execute(
@@ -145,6 +141,22 @@ class TokoFoodCategoryViewModel @Inject constructor(
         }){
             _categoryLoadMore.postValue(Fail(it))
         }
+    }
+
+    private fun setPageKey(pageNew:String) {
+        pageKey = pageNew
+    }
+
+    private fun shouldLoadMore(containsLastItemIndex: Int, itemCount: Int): Boolean {
+        val lastItemIndex = itemCount - Int.ONE
+        val scrolledToLastItem = (containsLastItemIndex == lastItemIndex
+                && containsLastItemIndex.isMoreThanZero())
+        val hasNextPage = pageKey.isNotEmpty()
+        val layoutList = categoryLayoutItemList.toMutableList()
+        val isLoading = layoutList.firstOrNull { it is TokoFoodProgressBarUiModel } != null
+        val isError = layoutList.firstOrNull { it is TokoFoodErrorStateUiModel } != null
+
+        return scrolledToLastItem && hasNextPage && !isLoading && !isError
     }
 
 }

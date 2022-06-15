@@ -25,25 +25,18 @@ class CustomOrderDetailBottomSheet(private val clickListener: OnCustomOrderDetai
 
     companion object {
 
-        const val BUNDLE_KEY_PRODUCT_POSITION = "PRODUCT_POSITION"
         @JvmStatic
         fun createInstance(clickListener: OnCustomOrderDetailClickListener): CustomOrderDetailBottomSheet {
-            return CustomOrderDetailBottomSheet(clickListener).apply {
-                arguments = Bundle().apply {
-                    putInt(BUNDLE_KEY_PRODUCT_POSITION, productPosition)
-                }
-            }
+            return CustomOrderDetailBottomSheet(clickListener)
         }
     }
 
 
-    private val productPosition by lazy {
-        arguments?.getInt(BUNDLE_KEY_PRODUCT_POSITION).orZero()
-    }
-
     private var binding: BottomsheetOrderInfoLayoutBinding? = null
 
     private var adapter: OrderDetailAdapter = OrderDetailAdapter(this)
+
+    private var productPosition: Int? = null
 
     private var productUiModel: ProductUiModel? = null
 
@@ -70,7 +63,8 @@ class CustomOrderDetailBottomSheet(private val clickListener: OnCustomOrderDetai
     private fun setupView(binding: BottomsheetOrderInfoLayoutBinding?) {
         binding?.buttonAddCustom?.setOnClickListener {
             productUiModel?.run {
-                clickListener.onNavigateToOrderCustomizationPage(cartId = "", productUiModel = this, productPosition = productPosition)
+                clickListener.onNavigateToOrderCustomizationPage(cartId = "", productUiModel = this,
+                    productPosition.orZero())
             }
         }
         binding?.rvOrderInfo?.let {
@@ -87,13 +81,17 @@ class CustomOrderDetailBottomSheet(private val clickListener: OnCustomOrderDetai
         this.productUiModel = productUiModel
     }
 
+    fun setProductPosition(productPosition: Int) {
+        this.productPosition = productPosition
+    }
+
     fun show(fragmentManager: FragmentManager) {
         showNow(fragmentManager, this::class.java.simpleName)
     }
 
     override fun onEditButtonClicked(cartId: String) {
         productUiModel?.run {
-            clickListener.onNavigateToOrderCustomizationPage(cartId = cartId, productUiModel = this, productPosition)
+            clickListener.onNavigateToOrderCustomizationPage(cartId = cartId, productUiModel = this, productPosition.orZero())
         }
     }
 

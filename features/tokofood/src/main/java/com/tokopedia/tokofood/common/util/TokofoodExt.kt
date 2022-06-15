@@ -1,9 +1,11 @@
 package com.tokopedia.tokofood.common.util
 
+import android.view.View
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.network.constant.ResponseStatus
 import com.tokopedia.tokofood.common.domain.response.CartTokoFoodData
 import com.tokopedia.tokofood.common.presentation.uimodel.UpdateParam
+import com.tokopedia.unifycomponents.Toaster
 import java.net.ConnectException
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
@@ -32,6 +34,19 @@ object TokofoodExt {
                 (pair.second as? CartTokoFoodData)?.let { cartTokoFoodData ->
                     updateParams to cartTokoFoodData
                 }
+            }
+        }
+    }
+
+    fun View?.showErrorToaster(errorMessage: String) {
+        if (errorMessage.isNotBlank()) {
+            this?.let {
+                Toaster.build(
+                    it,
+                    text = errorMessage,
+                    duration = Toaster.LENGTH_SHORT,
+                    type = Toaster.TYPE_ERROR
+                ).show()
             }
         }
     }

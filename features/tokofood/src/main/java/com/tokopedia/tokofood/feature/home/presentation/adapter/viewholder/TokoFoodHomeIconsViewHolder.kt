@@ -8,10 +8,13 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.tokofood.R
 import com.tokopedia.tokofood.databinding.ItemTokofoodIconBinding
 import com.tokopedia.tokofood.databinding.ItemTokofoodIconsBinding
+import com.tokopedia.tokofood.feature.home.domain.constanta.TokoFoodLayoutState
 import com.tokopedia.tokofood.feature.home.domain.data.DynamicIcon
 import com.tokopedia.tokofood.feature.home.presentation.uimodel.TokoFoodHomeIconsUiModel
 import com.tokopedia.unifycomponents.ImageUnify
@@ -34,14 +37,30 @@ class TokoFoodHomeIconsViewHolder(
     private val binding: ItemTokofoodIconsBinding? by viewBinding()
     private val adapter = TokoFoodIconAdapter()
     private var iconRecyclerView: RecyclerView? = null
+    private var shimmeringLayout: View? = null
 
     override fun bind(element: TokoFoodHomeIconsUiModel) {
-        setupTokoFoodIcon(element)
+        setupTokoFoodIcon()
+        when(element.state){
+            TokoFoodLayoutState.SHOW -> showTokoFoodIcon(element)
+            TokoFoodLayoutState.LOADING -> showLoadingLayout()
+        }
     }
 
-    private fun setupTokoFoodIcon(element: TokoFoodHomeIconsUiModel){
-        val icons = element.listIcons
+    private fun setupTokoFoodIcon(){
         iconRecyclerView = binding?.tokofoodIconRecyclerView
+        shimmeringLayout = binding?.tokofoodIconShimmering?.root
+    }
+
+    private fun showLoadingLayout(){
+        iconRecyclerView?.hide()
+        shimmeringLayout?.show()
+    }
+
+    private fun showTokoFoodIcon(element: TokoFoodHomeIconsUiModel){
+        iconRecyclerView?.show()
+        shimmeringLayout?.hide()
+        val icons = element.listIcons
         if (!icons.isNullOrEmpty()){
             adapter.submitList(element.listIcons, element.verticalPosition)
         }

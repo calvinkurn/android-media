@@ -131,28 +131,38 @@ class TokoFoodPurchaseProductViewHolder(private val viewBinding: ItemPurchasePro
                 return
             }
 
-            if (element.notes.isNotBlank()) {
+            val isNoteBlank = element.notes.isBlank()
+
+            if (isNoteBlank) {
+                notes.gone()
+            } else {
                 notes.text = element.notes
                 notes.show()
-            } else {
-                notes.gone()
             }
 
-            if (element.hasAddOnsOption) {
-                addNotesButton.text = getString(R.string.text_purchase_change_notes_and_variant)
-                addNotesButton.setOnClickListener {
-                    listener.onTextChangeNoteAndVariantClicked(element)
-                }
-            } else {
-                if (element.notes.isNotBlank()) {
-                    addNotesButton.text = getString(R.string.text_purchase_change_notes)
-                } else {
-                    addNotesButton.text = getString(R.string.text_purchase_add_notes)
-                }
+            if (element.variants.isEmpty()) {
+                addNotesButton.text =
+                    if (isNoteBlank) {
+                        getString(R.string.text_purchase_add_notes)
+                    } else {
+                        getString(R.string.text_purchase_change_notes)
+                    }
                 addNotesButton.setOnClickListener {
                     listener.onTextChangeNotesClicked(element)
                 }
+            } else {
+                addNotesButton.text =
+                    if (isNoteBlank) {
+                        getString(R.string.text_purchase_add_notes_and_variant)
+                    } else {
+                        getString(R.string.text_purchase_change_notes_and_variant)
+                    }
+                addNotesButton.setOnClickListener {
+                    listener.onTextChangeNoteAndVariantClicked(element)
+                }
             }
+
+
             addNotesButton.show()
             notes.renderAlphaProductItem(element)
             addNotesButton.renderAlphaProductItem(element)

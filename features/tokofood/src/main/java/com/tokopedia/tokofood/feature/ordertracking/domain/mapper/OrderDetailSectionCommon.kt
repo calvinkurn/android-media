@@ -39,6 +39,7 @@ abstract class OrderDetailSectionCommon {
     ): InvoiceOrderNumberUiModel {
         return InvoiceOrderNumberUiModel(
             invoiceNumber = invoice.invoiceNumber,
+            invoiceUrl = invoice.invoiceURL,
             goFoodOrderNumber = invoice.gofoodOrderNumber.orEmpty(),
             paymentDate = paymentDate
         )

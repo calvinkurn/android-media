@@ -21,7 +21,6 @@ import com.tokopedia.tokofood.feature.home.domain.constanta.TokoFoodHomeLayoutTy
 import com.tokopedia.tokofood.feature.home.domain.constanta.TokoFoodHomeLayoutType.Companion.CATEGORY_WIDGET
 import com.tokopedia.tokofood.feature.home.domain.constanta.TokoFoodHomeLayoutType.Companion.ICON_TOKOFOOD
 import com.tokopedia.tokofood.feature.home.domain.constanta.TokoFoodHomeLayoutType.Companion.LEGO_6_IMAGE
-import com.tokopedia.tokofood.feature.home.domain.constanta.TokoFoodHomeLayoutType.Companion.TABS_TOKOFOOD
 import com.tokopedia.tokofood.feature.home.domain.constanta.TokoFoodHomeLayoutType.Companion.USP_TOKOFOOD
 import com.tokopedia.tokofood.feature.home.domain.constanta.TokoFoodHomeStaticLayoutId
 import com.tokopedia.tokofood.feature.home.domain.constanta.TokoFoodHomeStaticLayoutId.Companion.CHOOSE_ADDRESS_WIDGET_ID
@@ -58,7 +57,6 @@ object TokoFoodHomeMapper {
         BANNER_CAROUSEL,
         LEGO_6_IMAGE,
         CATEGORY_WIDGET,
-        TABS_TOKOFOOD,
         USP_TOKOFOOD,
         ICON_TOKOFOOD
     )
@@ -138,8 +136,7 @@ object TokoFoodHomeMapper {
         updateItemById(item.visitableId) {
             val ticker = TokoFoodHomeTickerUiModel(
                 item.visitableId,
-                mapTickerData(tickerResponse.ticker.tickerList),
-                TokoFoodLayoutState.SHOW
+                mapTickerData(tickerResponse.ticker.tickerList)
             )
             TokoFoodItemUiModel(ticker, TokoFoodLayoutItemState.LOADED)
         }
@@ -183,7 +180,7 @@ object TokoFoodHomeMapper {
     }
 
     fun MutableList<TokoFoodItemUiModel>.addTickerWidget() {
-        val ticker = TokoFoodHomeTickerUiModel(id = TICKER_WIDGET_ID, tickers = emptyList(), TokoFoodLayoutState.LOADING)
+        val ticker = TokoFoodHomeTickerUiModel(id = TICKER_WIDGET_ID, tickers = emptyList())
         add(TokoFoodItemUiModel(ticker, TokoFoodLayoutItemState.NOT_LOADED))
     }
 

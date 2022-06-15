@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel
@@ -18,6 +19,7 @@ import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.kotlin.extensions.view.removeObservers
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.tokofood.common.util.TokofoodErrorLogger
+import com.tokopedia.tokofood.common.util.TokofoodExt.showErrorToaster
 import com.tokopedia.tokofood.databinding.FragmentTokofoodOrderTrackingBinding
 import com.tokopedia.tokofood.feature.ordertracking.analytics.TokoFoodPostPurchaseAnalytics
 import com.tokopedia.tokofood.feature.ordertracking.di.component.TokoFoodOrderTrackingComponent
@@ -41,10 +43,13 @@ import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.Tempora
 import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.ToolbarLiveTrackingUiModel
 import com.tokopedia.tokofood.feature.ordertracking.presentation.viewholder.TrackingWrapperUiModel
 import com.tokopedia.tokofood.feature.ordertracking.presentation.viewmodel.TokoFoodOrderTrackingViewModel
-import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.lifecycle.autoClearedNullable
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import java.lang.ref.WeakReference
 import javax.inject.Inject
 
@@ -73,15 +78,17 @@ class BaseTokoFoodOrderTrackingFragment :
         OrderTrackingNavigator(this, tracking)
     }
 
+    private val orderId by lazy {
+        arguments?.getString(DeeplinkMapperTokoFood.PATH_ORDER_ID).orEmpty()
+    }
+
     private var toolbarHandler: OrderTrackingToolbarHandler? = null
 
     private var binding by autoClearedNullable<FragmentTokofoodOrderTrackingBinding>()
 
     private var orderLiveTrackingFragment: TokoFoodOrderLiveTrackingFragment? = null
 
-    private val orderId: String by lazy(LazyThreadSafetyMode.NONE) {
-        arguments?.getString(DeeplinkMapperTokoFood.PATH_ORDER_ID).orEmpty()
-    }
+    private var delayAutoRefreshFinishOrderTempJob: Job? = null
 
     override fun getScreenName(): String = ""
 
@@ -119,6 +126,7 @@ class BaseTokoFoodOrderTrackingFragment :
         orderLiveTrackingFragment?.let {
             lifecycle.removeObserver(it)
         }
+        delayAutoRefreshFinishOrderTempJob?.cancel()
         super.onDestroy()
     }
 
@@ -144,13 +152,17 @@ class BaseTokoFoodOrderTrackingFragment :
     }
 
     override fun onAutoRefreshTempFinishOrder(orderDetailResultUiModel: OrderDetailResultUiModel) {
-        with(orderDetailResultUiModel) {
-            orderTrackingAdapter.removeOrderTrackingData()
-            orderTrackingAdapter.updateOrderTracking(orderDetailList)
-            updateViewsOrderCompleted(
-                actionButtonsUiModel, toolbarLiveTrackingUiModel, orderStatusKey,
-                orderDetailResultUiModel.merchantData
-            )
+        delayAutoRefreshFinishOrderTempJob?.cancel()
+        delayAutoRefreshFinishOrderTempJob = viewLifecycleOwner.lifecycleScope.launch(Dispatchers.Main) {
+            delay(TWO_SECONDS)
+            with(orderDetailResultUiModel) {
+                orderTrackingAdapter.removeOrderTrackingData()
+                orderTrackingAdapter.updateOrderTracking(orderDetailList)
+                updateViewsOrderCompleted(
+                    actionButtonsUiModel, toolbarLiveTrackingUiModel, orderStatusKey,
+                    orderDetailResultUiModel.merchantData
+                )
+            }
         }
     }
 
@@ -161,6 +173,10 @@ class BaseTokoFoodOrderTrackingFragment :
 
     override fun onErrorActionClicked() {
         fetchOrderDetail()
+    }
+
+    override fun onInvoiceOrderClicked(invoiceNumber: String, invoiceUrl: String) {
+        navigator.goToPrintInvoicePage(invoiceUrl, invoiceNumber)
     }
 
     override val parentPool: RecyclerView.RecycledViewPool
@@ -224,7 +240,7 @@ class BaseTokoFoodOrderTrackingFragment :
                         TokofoodErrorLogger.ErrorType.ERROR_DRIVER_PHONE_NUMBER,
                         TokofoodErrorLogger.ErrorDescription.ERROR_DRIVER_PHONE_NUMBER
                     )
-                    showErrorToaster("")
+                    view?.showErrorToaster("")
                 }
             }
         }
@@ -315,12 +331,20 @@ class BaseTokoFoodOrderTrackingFragment :
     ) {
         binding?.run {
             if (orderStatus in listOf(OrderStatusType.COMPLETED, OrderStatusType.CANCELLED)) {
-                updateViewsOrderCompleted(
-                    actionButtonsUiModel,
-                    toolbarLiveTrackingUiModel,
-                    orderStatus,
-                    merchantData
-                )
+                if (orderStatus == OrderStatusType.COMPLETED) {
+                    updateViewsOrderCompleted(
+                        actionButtonsUiModel,
+                        toolbarLiveTrackingUiModel,
+                        orderStatus,
+                        merchantData
+                    )
+                } else {
+                    updateViewsOrderLiveTracking(
+                        actionButtonsUiModel,
+                        toolbarLiveTrackingUiModel,
+                        orderStatus
+                    )
+                }
             } else {
                 orderLiveTrackingFragment = TokoFoodOrderLiveTrackingFragment(
                     binding,
@@ -330,11 +354,6 @@ class BaseTokoFoodOrderTrackingFragment :
                     toolbarHandler
                 )
                 orderLiveTrackingFragment?.let { lifecycle.addObserver(it) }
-                updateViewsOrderLiveTracking(
-                    actionButtonsUiModel,
-                    toolbarLiveTrackingUiModel,
-                    orderStatus
-                )
             }
         }
     }
@@ -375,7 +394,7 @@ class BaseTokoFoodOrderTrackingFragment :
         merchantData: MerchantDataUiModel
     ) {
         binding?.run {
-            containerOrderTrackingHelpButton.hide()
+            containerOrderTrackingHelpButton.show()
             containerOrderTrackingActionsButton.apply {
                 setOrderTrackingNavigator(navigator)
                 setupActionButtons(
@@ -397,19 +416,6 @@ class BaseTokoFoodOrderTrackingFragment :
         }
     }
 
-    private fun showErrorToaster(errorMessage: String) {
-        if (errorMessage.isNotBlank()) {
-            view?.let {
-                Toaster.build(
-                    it,
-                    text = errorMessage,
-                    duration = Toaster.LENGTH_SHORT,
-                    type = Toaster.TYPE_ERROR
-                ).show()
-            }
-        }
-    }
-
     private fun logExceptionToServerLogger(
         throwable: Throwable,
         errorType: String,
@@ -425,6 +431,8 @@ class BaseTokoFoodOrderTrackingFragment :
     }
 
     companion object {
+
+        const val TWO_SECONDS = 2000L
 
         fun newInstance(bundle: Bundle?): BaseTokoFoodOrderTrackingFragment {
             return if (bundle == null) {

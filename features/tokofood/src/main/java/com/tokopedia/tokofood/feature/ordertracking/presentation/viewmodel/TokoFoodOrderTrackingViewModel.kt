@@ -25,11 +25,11 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
@@ -57,7 +57,7 @@ class TokoFoodOrderTrackingViewModel @Inject constructor(
     val orderLiveTrackingStatus: SharedFlow<Result<OrderStatusLiveTrackingUiModel>> =
         _orderLiveTrackingStatus
 
-    private val _orderId = MutableStateFlow("")
+    private val _orderId = MutableSharedFlow<String>(Int.ONE)
 
     private val _orderCompletedLiveTracking = MutableLiveData<Result<OrderDetailResultUiModel>>()
     val orderCompletedLiveTracking: LiveData<Result<OrderDetailResultUiModel>>
@@ -77,8 +77,12 @@ class TokoFoodOrderTrackingViewModel @Inject constructor(
             _orderId
                 .debounce(DELAY_ORDER_STATE)
                 .flatMapLatest { orderId ->
-                    fetchOrderStatusUseCase(orderId).catch {
-                        emit(Fail(it))
+                    if (orderId.isNotBlank()) {
+                        fetchOrderStatusUseCase(orderId).catch {
+                            emit(Fail(it))
+                        }
+                    } else {
+                        emptyFlow()
                     }
                 }
                 .flowOn(coroutineDispatchers.io)

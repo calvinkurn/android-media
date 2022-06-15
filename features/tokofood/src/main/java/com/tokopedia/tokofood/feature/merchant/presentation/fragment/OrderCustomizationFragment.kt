@@ -24,8 +24,8 @@ import com.tokopedia.tokofood.feature.merchant.presentation.adapter.CustomListAd
 import com.tokopedia.tokofood.feature.merchant.presentation.model.AddOnUiModel
 import com.tokopedia.tokofood.feature.merchant.presentation.model.CustomListItem
 import com.tokopedia.tokofood.feature.merchant.presentation.model.ProductUiModel
-import com.tokopedia.tokofood.feature.merchant.presentation.viewholder.OrderNoteInputViewHolder
 import com.tokopedia.tokofood.feature.merchant.presentation.model.VariantWrapperUiModel
+import com.tokopedia.tokofood.feature.merchant.presentation.viewholder.OrderNoteInputViewHolder
 import com.tokopedia.tokofood.feature.merchant.presentation.viewholder.ProductAddOnViewHolder
 import com.tokopedia.tokofood.feature.merchant.presentation.viewmodel.OrderCustomizationViewModel
 import com.tokopedia.unifycomponents.Toaster
@@ -53,13 +53,15 @@ class OrderCustomizationFragment : BaseMultiFragment(),
         fun createInstance(productUiModel: ProductUiModel,
                            cartId: String = "",
                            merchantId: String = "",
-                           cacheManagerId: String
+                           cacheManagerId: String? = null
         ) = OrderCustomizationFragment().apply {
             this.arguments = Bundle().apply {
                 putParcelable(BUNDLE_KEY_PRODUCT_UI_MODEL, productUiModel)
                 putString(BUNDLE_KEY_CART_ID, cartId)
                 putString(BUNDLE_KEY_MERCHANT_ID, merchantId)
-                putString(BUNDLE_KEY_CACHE_MANAGER_ID, cacheManagerId)
+                if (cacheManagerId != null) {
+                    putString(BUNDLE_KEY_CACHE_MANAGER_ID, cacheManagerId)
+                }
             }
         }
     }
@@ -185,14 +187,6 @@ class OrderCustomizationFragment : BaseMultiFragment(),
             binding?.atcButton?.setOnClickListener {
                 customListAdapter?.getCustomListItems()?.run {
 
-                    //hit trackers
-                    merchantPageAnalytics.clickOnOrderVariantPage(
-                        variantWrapperUiModel?.productListItem,
-                        variantWrapperUiModel?.merchantId.orEmpty(),
-                        variantWrapperUiModel?.tokoFoodMerchantProfile,
-                        variantWrapperUiModel?.position.orZero()
-                    )
-
                     val validationResult = viewModel.validateCustomOrderInput(this)
                     val isError = validationResult.first
                     if (isError) {
@@ -213,7 +207,16 @@ class OrderCustomizationFragment : BaseMultiFragment(),
                             addOnUiModels = addOnUiModels
                     )
                     if (viewModel.isEditingCustomOrder(cartId)) activityViewModel?.updateCart(updateParam = updateParam, source = SOURCE)
-                    else activityViewModel?.addToCart(updateParam = updateParam, source = SOURCE)
+                    else {
+                        activityViewModel?.addToCart(updateParam = updateParam, source = SOURCE)
+                        //hit trackers
+                        merchantPageAnalytics.clickOnOrderVariantPage(
+                            variantWrapperUiModel?.productListItem,
+                            variantWrapperUiModel?.merchantId.orEmpty(),
+                            variantWrapperUiModel?.merchantName.orEmpty(),
+                            variantWrapperUiModel?.position.orZero()
+                        )
+                    }
                     parentFragmentManager.popBackStack()
                 }
             }

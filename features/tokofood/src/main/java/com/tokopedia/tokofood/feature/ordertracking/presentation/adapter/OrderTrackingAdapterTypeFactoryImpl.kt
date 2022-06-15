@@ -163,7 +163,7 @@ class OrderTrackingAdapterTypeFactoryImpl(
             OrderTrackingStatusInfoViewHolder.LAYOUT -> OrderTrackingStatusInfoViewHolder(parent)
             OrderTrackingEstimationViewHolder.LAYOUT -> OrderTrackingEstimationViewHolder(parent)
             FoodItemViewHolder.LAYOUT -> FoodItemViewHolder(parent, recyclerViewPollerListener)
-            InvoiceOrderNumberViewHolder.LAYOUT -> InvoiceOrderNumberViewHolder(parent)
+            InvoiceOrderNumberViewHolder.LAYOUT -> InvoiceOrderNumberViewHolder(parent, orderTrackingListener)
             PaymentDetailViewHolder.LAYOUT -> PaymentDetailViewHolder(parent)
             PaymentMethodViewHolder.LAYOUT -> PaymentMethodViewHolder(parent)
             PaymentAmountViewHolder.LAYOUT -> PaymentAmountViewHolder(parent)

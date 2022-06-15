@@ -14,18 +14,6 @@ import com.tokopedia.track.constant.TrackerConstant
  */
 object TokoFoodPurchaseAnalytics: BaseTrackerConst() {
 
-    /**
-     * TODO:
-     * food id array: what is the value?
-     * promo_code: cant get value
-     * item_brand: what is the value?
-     * item_category: what is the value?
-     * item_variant: what is the value?
-     * shop_type: what is the value?
-     * Purchase Success Tracking: should be webview
-     * Items attributes: available only or not
-     */
-
     fun sendLoadCheckoutTracking(data: CheckoutTokoFoodData,
                                  userId: String) {
         val totalProductPrice = data.shoppingSummary.costBreakdown.totalCartPrice.originalAmount
@@ -97,8 +85,14 @@ object TokoFoodPurchaseAnalytics: BaseTrackerConst() {
         itemBundles.addAll(
             data.availableSection.products.map {
                 Bundle().apply {
+                    putString(
+                        TokoFoodAnalytics.KEY_DIMENSION_49,
+                        data.shoppingSummary.discountBreakdown.firstOrNull()?.discountId.orEmpty()
+                    )
                     putString(TokoFoodAnalytics.KEY_DIMENSION_79, data.shop.shopId)
                     putString(Items.ITEM_ID, it.productId)
+                    // TODO: Put item category
+                    putString(Items.ITEM_CATEGORY, "")
                     putDouble(Items.PRICE, it.price)
                     putInt(Items.QUANTITY, it.quantity)
                     putString(TrackerConstant.SHOP_ID, data.shop.shopId)

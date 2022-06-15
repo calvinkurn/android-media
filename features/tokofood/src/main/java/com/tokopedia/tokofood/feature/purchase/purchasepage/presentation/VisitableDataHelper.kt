@@ -20,7 +20,6 @@ object VisitableDataHelper {
     fun MutableList<Visitable<*>>.getProductById(productId: String, cartId: String): Pair<Int, TokoFoodPurchaseProductTokoFoodPurchaseUiModel>? {
         loop@ for ((index, data) in this.withIndex()) {
             when {
-                // TODO: Check if that is the product according to variants
                 data is TokoFoodPurchaseProductTokoFoodPurchaseUiModel && data.id == productId && data.cartId == cartId -> {
                     return Pair(index, data)
                 }

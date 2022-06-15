@@ -47,6 +47,7 @@ class TokoFoodUSPBottomSheet: BottomSheetUnify() {
 
     private fun initBottomSheet(viewBinding: BottomsheetTokofoodUspBinding) {
         uspTitle?.let { setTitle(it) }
+        clearContentPadding = true
         showCloseIcon = true
         isDragable = false
         setChild(viewBinding.root)

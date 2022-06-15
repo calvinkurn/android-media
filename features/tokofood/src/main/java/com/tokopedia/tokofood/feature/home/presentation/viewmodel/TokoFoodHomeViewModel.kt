@@ -7,6 +7,7 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.asyncCatchError
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.localizationchooseaddress.domain.response.GetStateChosenAddressResponse
@@ -15,6 +16,7 @@ import com.tokopedia.logisticCommon.data.constant.AddressConstant
 import com.tokopedia.logisticCommon.data.response.EligibleForAddressFeature
 import com.tokopedia.logisticCommon.domain.usecase.EligibleForAddressUseCase
 import com.tokopedia.tokofood.common.domain.usecase.KeroEditAddressUseCase
+import com.tokopedia.tokofood.feature.home.domain.constanta.TokoFoodHomeStaticLayoutId.Companion.MERCHANT_TITLE
 import com.tokopedia.tokofood.feature.home.domain.constanta.TokoFoodLayoutItemState
 import com.tokopedia.tokofood.feature.home.domain.constanta.TokoFoodLayoutState
 import com.tokopedia.tokofood.feature.home.domain.mapper.TokoFoodHomeMapper.addErrorState
@@ -49,6 +51,7 @@ import com.tokopedia.tokofood.feature.home.presentation.uimodel.TokoFoodProgress
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
+import java.lang.NullPointerException
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -163,6 +166,15 @@ class TokoFoodHomeViewModel @Inject constructor(
         _homeLayoutList.postValue(Success(data))
     }
 
+    fun showProgressBar() {
+        homeLayoutItemList.addProgressBar()
+        val data = TokoFoodListUiModel(
+            getHomeVisitableList(),
+            TokoFoodLayoutState.UPDATE
+        )
+        _homeLayoutList.postValue(Success(data))
+    }
+
     fun removeTickerWidget(id: String) {
         launch(block = {
             hasTickerBeenRemoved = true
@@ -202,13 +214,12 @@ class TokoFoodHomeViewModel @Inject constructor(
     }
 
     fun getLayoutComponentData(localCacheModel: LocalCacheModel?){
-        launchCatchError(block = {
+        launch {
             homeLayoutItemList.filter { it.state == TokoFoodLayoutItemState.NOT_LOADED }.forEach {
                 homeLayoutItemList.setStateToLoading(it)
 
-                when (val item = it.layout){
-                    is TokoFoodHomeLayoutUiModel -> getTokoFoodHomeComponent(item, localCacheModel)
-                    else -> {}
+                if (it.layout is TokoFoodHomeLayoutUiModel) {
+                    getTokoFoodHomeComponent(it.layout, localCacheModel)
                 }
 
                 val data = TokoFoodListUiModel(
@@ -218,21 +229,11 @@ class TokoFoodHomeViewModel @Inject constructor(
 
                 _homeLayoutList.postValue(Success(data))
             }
-        }){}
+        }
     }
 
-    fun onScrollProductList(containsLastItemIndex: Int?, itemCount: Int, localCacheModel: LocalCacheModel) {
-        val lastItemIndex = itemCount - 1
-        val scrolledToLastItem = (containsLastItemIndex == lastItemIndex
-                && containsLastItemIndex.isMoreThanZero()
-                && itemCount.isMoreThanZero())
-        val hasNextPage = pageKey.isNotEmpty()
-        val layoutList = homeLayoutItemList.toMutableList()
-        val isLoading = layoutList.firstOrNull { it.layout is TokoFoodProgressBarUiModel } != null
-        val isEmptyStateShown = layoutList.firstOrNull { it.layout is TokoFoodHomeEmptyStateLocationUiModel } != null
-        val isError = layoutList.firstOrNull { it.layout is TokoFoodErrorStateUiModel } != null
-
-        if(scrolledToLastItem && hasNextPage && !isLoading && !isEmptyStateShown && !isError) {
+    fun onScrollProductList(containsLastItemIndex: Int, itemCount: Int, localCacheModel: LocalCacheModel) {
+        if(shouldLoadMore(containsLastItemIndex, itemCount)) {
             showProgressBar()
             getMerchantList(localCacheModel = localCacheModel)
         }
@@ -242,6 +243,10 @@ class TokoFoodHomeViewModel @Inject constructor(
         val layoutList = homeLayoutItemList.toMutableList()
         val isEmptyStateShown = layoutList.firstOrNull { it.layout is TokoFoodHomeEmptyStateLocationUiModel } != null
         return isEmptyStateShown
+    }
+
+    fun setPageKey(pageNew:String) {
+        pageKey = pageNew
     }
 
     private fun getMerchantList(localCacheModel: LocalCacheModel) {
@@ -260,17 +265,9 @@ class TokoFoodHomeViewModel @Inject constructor(
             homeLayoutItemList.mapCategoryLayoutList(categoryResponse.data.merchants)
             merchantListUpdate()
         }){
+            removeMerchantMainTitle()
             merchantListUpdate()
         }
-    }
-
-    private fun showProgressBar() {
-        homeLayoutItemList.addProgressBar()
-        val data = TokoFoodListUiModel(
-            getHomeVisitableList(),
-            TokoFoodLayoutState.UPDATE
-        )
-        _homeLayoutList.postValue(Success(data))
     }
 
     private suspend fun getTokoFoodHomeComponent(item: TokoFoodHomeLayoutUiModel, localCacheModel: LocalCacheModel?) {
@@ -284,8 +281,8 @@ class TokoFoodHomeViewModel @Inject constructor(
 
     private suspend fun getTickerDataAsync(item: TokoFoodHomeTickerUiModel, localCacheModel: LocalCacheModel?): Deferred<Unit?> {
         return asyncCatchError(block = {
-            val uspData = tokoFoodHomeTickerUseCase.execute(localCacheModel)
-            homeLayoutItemList.mapTickerData(item, uspData)
+            val tickerData = tokoFoodHomeTickerUseCase.execute(localCacheModel)
+            homeLayoutItemList.mapTickerData(item, tickerData)
         }){
             homeLayoutItemList.removeItem(item.id)
         }
@@ -313,16 +310,18 @@ class TokoFoodHomeViewModel @Inject constructor(
         return homeLayoutItemList.mapNotNull { it.layout }
     }
 
-    private fun removeUnsupportedLayout(item: Visitable<*>?) {
-        homeLayoutItemList.removeItem(item?.getVisitableId())
-    }
-
-    private fun setPageKey(pageNew:String) {
-        pageKey = pageNew
+    private fun removeUnsupportedLayout(item: TokoFoodHomeLayoutUiModel) {
+        homeLayoutItemList.removeItem(item.getVisitableId())
     }
 
     private fun isInitialPageKey(): Boolean {
         return pageKey.equals(INITIAL_PAGE_KEY_MERCHANT)
+    }
+
+    private fun removeMerchantMainTitle(){
+        if (isInitialPageKey()){
+            homeLayoutItemList.removeItem(MERCHANT_TITLE)
+        }
     }
 
     private fun merchantListUpdate() {
@@ -333,5 +332,18 @@ class TokoFoodHomeViewModel @Inject constructor(
         )
 
         _homeLayoutList.postValue(Success(data))
+    }
+
+    private fun shouldLoadMore(containsLastItemIndex: Int, itemCount: Int): Boolean {
+        val lastItemIndex = itemCount - Int.ONE
+        val scrolledToLastItem = (containsLastItemIndex == lastItemIndex
+                && containsLastItemIndex.isMoreThanZero())
+        val hasNextPage = pageKey.isNotEmpty()
+        val layoutList = homeLayoutItemList.toMutableList()
+        val isLoading = layoutList.firstOrNull { it.layout is TokoFoodProgressBarUiModel } != null
+        val isEmptyStateShown = layoutList.firstOrNull { it.layout is TokoFoodHomeEmptyStateLocationUiModel } != null
+        val isError = layoutList.firstOrNull { it.layout is TokoFoodErrorStateUiModel } != null
+
+        return scrolledToLastItem && hasNextPage && !isLoading && !isEmptyStateShown && !isError
     }
 }

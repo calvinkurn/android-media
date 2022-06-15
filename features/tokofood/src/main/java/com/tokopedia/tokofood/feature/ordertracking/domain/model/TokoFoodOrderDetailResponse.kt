@@ -190,13 +190,13 @@ data class TokoFoodOrderDetailResponse(
         data class OrderStatus(
             @SerializedName("iconName")
             @Expose
-            val iconName: String = "",
+            val iconName: String? = "",
             @SerializedName("status")
             @Expose
             val status: String = "",
             @SerializedName("subtitle")
             @Expose
-            val subtitle: String = "",
+            val subtitle: String? = "",
             @SerializedName("title")
             @Expose
             val title: String = ""

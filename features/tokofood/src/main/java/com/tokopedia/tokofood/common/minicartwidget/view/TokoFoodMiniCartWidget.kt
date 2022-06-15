@@ -55,7 +55,7 @@ class TokoFoodMiniCartWidget @JvmOverloads constructor(
                 }
             }
         }
-        viewModel?.loadCartList(source)
+        viewModel?.loadInitial(source)
     }
 
     private fun renderTotalAmount(miniCartUiModel: MiniCartUiModel){

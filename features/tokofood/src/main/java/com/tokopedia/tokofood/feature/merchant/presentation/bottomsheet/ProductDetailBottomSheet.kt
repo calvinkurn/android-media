@@ -19,7 +19,7 @@ class ProductDetailBottomSheet(private val clickListener: OnProductDetailClickLi
     interface OnProductDetailClickListener {
         fun onAtcButtonClicked(productListItem: ProductListItem, cardPositions: Pair<Int, Int>)
         fun onIncreaseQtyButtonClicked(productId: String, quantity: Int, cardPositions: Pair<Int, Int>)
-        fun onNavigateToOrderCustomizationPage(cartId: String, productUiModel: ProductUiModel)
+        fun onNavigateToOrderCustomizationPage(cartId: String, productUiModel: ProductUiModel, productPosition: Int)
     }
 
     companion object {
@@ -75,7 +75,8 @@ class ProductDetailBottomSheet(private val clickListener: OnProductDetailClickLi
             sentMerchantTracker?.invoke()
             this.cardPositions?.run {
                 if (productUiModel.isCustomizable) {
-                    clickListener.onNavigateToOrderCustomizationPage(cartId = "", productUiModel = productUiModel)
+                    clickListener.onNavigateToOrderCustomizationPage(cartId = "",
+                        productUiModel = productUiModel, productPosition = first)
                 }
                 if (!productUiModel.isAtc) {
                     productListItem?.let { productListItem ->

@@ -1,11 +1,23 @@
-<androidx.recyclerview.widget.RecyclerView
+<FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/tokofood_icon_recycler_view"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:clipToPadding="false"
-    android:layout_marginTop="@dimen/spacing_lvl3"
-    android:layout_marginBottom="@dimen/spacing_lvl4"
-    android:orientation="horizontal">
+    >
 
-</androidx.recyclerview.widget.RecyclerView>
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/tokofood_icon_recycler_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:clipToPadding="false"
+        android:layout_marginTop="@dimen/spacing_lvl3"
+        android:layout_marginBottom="@dimen/spacing_lvl4"
+        android:orientation="horizontal"/>
+
+    <include
+        android:id="@+id/tokofood_icon_shimmering"
+        layout="@layout/partial_tokofood_shimmering_icons"
+        />
+
+</FrameLayout>
+
+
