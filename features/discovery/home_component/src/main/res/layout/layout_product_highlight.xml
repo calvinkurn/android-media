@@ -28,7 +28,7 @@
             app:layout_constraintEnd_toEndOf="parent"/>
 
         <com.tokopedia.unifyprinciples.Typography
-            app:typographyType="display_1"
+            app:typographyType="display_2"
             app:typographyWeight="bold"
             android:layout_marginTop="8dp"
             android:id="@+id/deals_channel_title"
