@@ -20,6 +20,7 @@ import com.tokopedia.tokofood.common.minicartwidget.view.MiniCartUiModel
 import com.tokopedia.tokofood.common.presentation.UiEvent
 import com.tokopedia.tokofood.common.presentation.uimodel.UpdateParam
 import com.tokopedia.tokofood.common.util.Result
+import dagger.Lazy
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
@@ -35,10 +36,10 @@ import kotlin.coroutines.CoroutineContext
 @ExperimentalCoroutinesApi
 class MultipleFragmentsViewModel @Inject constructor(
     private val savedStateHandle: SavedStateHandle,
-    private val loadCartTokoFoodUseCase: LoadCartTokoFoodUseCase,
-    private val addToCartTokoFoodUseCase: AddToCartTokoFoodUseCase,
-    private val updateCartTokoFoodUseCase: UpdateCartTokoFoodUseCase,
-    private val removeCartTokoFoodUseCase: RemoveCartTokoFoodUseCase
+    private val loadCartTokoFoodUseCase: Lazy<LoadCartTokoFoodUseCase>,
+    private val addToCartTokoFoodUseCase: Lazy<AddToCartTokoFoodUseCase>,
+    private val updateCartTokoFoodUseCase: Lazy<UpdateCartTokoFoodUseCase>,
+    private val removeCartTokoFoodUseCase: Lazy<RemoveCartTokoFoodUseCase>
 ) : ViewModel(), CoroutineScope {
 
     private val cartDataState = MutableStateFlow<CheckoutTokoFoodData?>(null)
@@ -98,7 +99,7 @@ class MultipleFragmentsViewModel @Inject constructor(
             cartDataValidationState.emit(UiEvent(state = UiEvent.EVENT_LOADING_DIALOG))
             val paramShopId = shopId ?: this@MultipleFragmentsViewModel.shopId
             val removeCartParam = getProductParamById(productId, cartId, paramShopId)
-            removeCartTokoFoodUseCase(removeCartParam).collect {
+            removeCartTokoFoodUseCase.get()(removeCartParam).collect {
                 if (it.isSuccess()) {
                     loadCartList(source)
                     cartDataValidationState.emit(
@@ -144,7 +145,7 @@ class MultipleFragmentsViewModel @Inject constructor(
             cartDataValidationState.emit(UiEvent(state = UiEvent.EVENT_LOADING_DIALOG))
             val paramShopId = shopId ?: this@MultipleFragmentsViewModel.shopId
             val removeCartParam = getUnavailableProductsParam(paramShopId)
-            removeCartTokoFoodUseCase(removeCartParam).collect {
+            removeCartTokoFoodUseCase.get()(removeCartParam).collect {
                 if (it.isSuccess()) {
                     loadCartList(source)
                     cartDataValidationState.emit(
@@ -165,7 +166,7 @@ class MultipleFragmentsViewModel @Inject constructor(
     fun updateNotes(updateParam: UpdateParam, source: String) {
         launchCatchError(block = {
             cartDataValidationState.emit(UiEvent(state = UiEvent.EVENT_LOADING_DIALOG))
-            updateCartTokoFoodUseCase(updateParam).collect {
+            updateCartTokoFoodUseCase.get()(updateParam).collect {
                 if (it.isSuccess()) {
                     loadCartList(source)
                     cartDataValidationState.emit(
@@ -188,7 +189,7 @@ class MultipleFragmentsViewModel @Inject constructor(
 
     fun updateQuantity(updateParam: UpdateParam, source: String) {
         launchCatchError(block = {
-            updateCartTokoFoodUseCase(updateParam).collect {
+            updateCartTokoFoodUseCase.get()(updateParam).collect {
                 if (it.isSuccess()) {
                     loadCartList(source)
                     cartDataValidationState.emit(
@@ -211,7 +212,7 @@ class MultipleFragmentsViewModel @Inject constructor(
 
     fun updateCart(updateParam: UpdateParam, source: String) {
         launchCatchError(block = {
-            updateCartTokoFoodUseCase(updateParam).collect {
+            updateCartTokoFoodUseCase.get()(updateParam).collect {
                 if (it.isSuccess()) {
                     loadCartList(source)
                     cartDataValidationState.emit(
@@ -234,7 +235,7 @@ class MultipleFragmentsViewModel @Inject constructor(
 
     fun addToCart(updateParam: UpdateParam, source: String) {
         launchCatchError(block = {
-            addToCartTokoFoodUseCase(updateParam).collect {
+            addToCartTokoFoodUseCase.get()(updateParam).collect {
                 if (it.isSuccess()) {
                     if (it.data.bottomSheet.isShowBottomSheet) {
                         cartDataValidationState.emit(
@@ -279,7 +280,7 @@ class MultipleFragmentsViewModel @Inject constructor(
         launchCatchError(block = {
             miniCartLoadingQueue.value = miniCartLoadingQueue.value?.plus(Int.ONE)
             miniCartUiModelState.emit(Result.Loading())
-            loadCartTokoFoodUseCase(source).collect {
+            loadCartTokoFoodUseCase.get()(source).collect {
                 cartDataState.emit(it.data)
                 setMiniCartValue(it.data)
             }

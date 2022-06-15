@@ -33,6 +33,7 @@ import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.Visitab
 import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.mapper.TokoFoodPurchaseUiModelMapper
 import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.uimodel.*
 import com.tokopedia.utils.lifecycle.SingleLiveEvent
+import dagger.Lazy
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -48,10 +49,10 @@ import javax.inject.Inject
 
 @FlowPreview
 class TokoFoodPurchaseViewModel @Inject constructor(
-    private val keroEditAddressUseCase: KeroEditAddressUseCase,
-    private val keroGetAddressUseCase: KeroGetAddressUseCase,
-    private val checkoutTokoFoodUseCase: CheckoutTokoFoodUseCase,
-    private val checkoutGeneralTokoFoodUseCase: CheckoutGeneralTokoFoodUseCase,
+    private val keroEditAddressUseCase: Lazy<KeroEditAddressUseCase>,
+    private val keroGetAddressUseCase: Lazy<KeroGetAddressUseCase>,
+    private val checkoutTokoFoodUseCase: Lazy<CheckoutTokoFoodUseCase>,
+    private val checkoutGeneralTokoFoodUseCase: Lazy<CheckoutGeneralTokoFoodUseCase>,
     val dispatcher: CoroutineDispatchers)
     : BaseViewModel(dispatcher.main) {
 
@@ -137,7 +138,7 @@ class TokoFoodPurchaseViewModel @Inject constructor(
 
     fun loadData() {
         launchCatchError(block = {
-            checkoutTokoFoodUseCase(SOURCE).collect {
+            checkoutTokoFoodUseCase.get()(SOURCE).collect {
                 if (it.isEmptyProduct()) {
                     _uiEvent.value = PurchaseUiEvent(
                         state = PurchaseUiEvent.EVENT_EMPTY_PRODUCTS,
@@ -172,7 +173,7 @@ class TokoFoodPurchaseViewModel @Inject constructor(
                     if (cacheAddressId.isEmpty()) {
                         // Check pinpoint remotely if cache address id is empty
                         val remoteAddressId = it.data.userAddress.addressId
-                        keroGetAddressUseCase.execute(remoteAddressId)?.secondAddress?.isNotEmpty().let { hasPinpointRemotely ->
+                        keroGetAddressUseCase.get().execute(remoteAddressId)?.secondAddress?.isNotEmpty().let { hasPinpointRemotely ->
                             if (hasPinpointRemotely == true) {
                                 _uiEvent.value = PurchaseUiEvent(
                                     state = PurchaseUiEvent.EVENT_SUCCESS_LOAD_PURCHASE_PAGE,
@@ -206,7 +207,7 @@ class TokoFoodPurchaseViewModel @Inject constructor(
 
     fun loadDataPartial() {
         launchCatchError(block = {
-            checkoutTokoFoodUseCase(SOURCE).collect {
+            checkoutTokoFoodUseCase.get()(SOURCE).collect {
                 if (it.isEmptyProduct()) {
                     _uiEvent.value = PurchaseUiEvent(
                         state = PurchaseUiEvent.EVENT_EMPTY_PRODUCTS,
@@ -547,7 +548,7 @@ class TokoFoodPurchaseViewModel @Inject constructor(
                 launchCatchError(
                     block = {
                         val isSuccess = withContext(dispatcher.io) {
-                            keroEditAddressUseCase.execute(addressId, latitude, longitude)
+                            keroEditAddressUseCase.get().execute(addressId, latitude, longitude)
                         }
                         if (isSuccess) {
                             _isAddressHasPinpoint.value = addressId to (latitude.isNotEmpty() && longitude.isNotEmpty())
@@ -603,7 +604,7 @@ class TokoFoodPurchaseViewModel @Inject constructor(
     fun checkoutGeneral() {
         launchCatchError(block = {
             checkoutTokoFoodResponse.value?.let { checkoutResponse ->
-                checkoutGeneralTokoFoodUseCase(checkoutResponse).collect { response ->
+                checkoutGeneralTokoFoodUseCase.get()(checkoutResponse).collect { response ->
                     if (response.checkoutGeneralTokoFood.data.isSuccess()) {
                         _uiEvent.value = PurchaseUiEvent(
                             state = PurchaseUiEvent.EVENT_SUCCESS_CHECKOUT_GENERAL,

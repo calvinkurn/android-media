@@ -307,7 +307,6 @@ class MerchantPageViewModel @Inject constructor(
 
     fun mapProductUiModelToAtcRequestParam(shopId: String, productUiModel: ProductUiModel): UpdateParam {
         return TokoFoodMerchantUiModelMapper.mapProductUiModelToAtcRequestParam(
-                cartId = productUiModel.cartId,
                 shopId = shopId,
                 productUiModels = listOf(productUiModel)
         )
