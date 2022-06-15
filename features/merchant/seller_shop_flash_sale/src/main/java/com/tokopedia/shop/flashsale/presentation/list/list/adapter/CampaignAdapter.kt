@@ -104,8 +104,8 @@ class CampaignAdapter(
         }
 
         private fun handleTimer(campaignStatus: CampaignStatus, startDate: Date) {
-            binding.timer.isVisible = campaignStatus == CampaignStatus.READY_LOCKED
-            if (campaignStatus == CampaignStatus.READY_LOCKED) {
+            binding.timer.isVisible = campaignStatus.isUpcoming()
+            if (campaignStatus.isUpcoming()) {
                 binding.timer.targetDate = startDate.toCalendar()
             }
         }

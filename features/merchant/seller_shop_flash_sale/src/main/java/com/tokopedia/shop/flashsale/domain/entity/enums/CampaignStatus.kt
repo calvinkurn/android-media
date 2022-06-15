@@ -40,7 +40,7 @@ enum class CampaignStatus(val id: Int) : Parcelable {
 
 
 fun CampaignStatus.isUpcoming(): Boolean {
-    return this == CampaignStatus.READY_LOCKED
+    return this == CampaignStatus.READY
 }
 
 fun CampaignStatus.isOngoing(): Boolean {
@@ -52,13 +52,13 @@ fun CampaignStatus.isActive(): Boolean {
 }
 
 fun CampaignStatus.isAvailable(): Boolean {
-    return this == CampaignStatus.IN_SUBMISSION || this == CampaignStatus.IN_REVIEW || this == CampaignStatus.READY
+    return this == CampaignStatus.IN_SUBMISSION || this == CampaignStatus.IN_REVIEW
 }
 
-fun CampaignStatus.isFinished() : Boolean {
+fun CampaignStatus.isFinished(): Boolean {
     return this == CampaignStatus.FINISHED
 }
 
-fun CampaignStatus.isCancelled() : Boolean {
+fun CampaignStatus.isCancelled(): Boolean {
     return this == CampaignStatus.PUBLISHED_CANCELLED || this == CampaignStatus.SUBMISSION_CANCELLED || this == CampaignStatus.REVIEW_CANCELLED || this == CampaignStatus.READY_CANCELLED || this == CampaignStatus.ONGOING_CANCELLATION || this == CampaignStatus.CANCELLED
 }
