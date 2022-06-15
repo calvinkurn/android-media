@@ -17,7 +17,7 @@ import javax.inject.Inject
 
 class TokoFoodPromoViewModel @Inject constructor(
     private val promoListTokoFoodUseCase: Lazy<PromoListTokoFoodUseCase>,
-    val dispatcher: CoroutineDispatchers
+    dispatcher: CoroutineDispatchers
 ) : BaseViewModel(dispatcher.main) {
 
     private val _uiEvent = SingleLiveEvent<UiEvent>()
@@ -34,10 +34,6 @@ class TokoFoodPromoViewModel @Inject constructor(
         get() = _visitables
 
     private val _changeRestrictionMessage = MutableLiveData<String>()
-
-    private fun getVisitablesValue(): MutableList<Visitable<*>> {
-        return visitables.value ?: mutableListOf()
-    }
 
     fun loadData() {
         launchCatchError(block = {
