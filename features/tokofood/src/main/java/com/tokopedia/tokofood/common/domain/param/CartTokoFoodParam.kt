@@ -3,6 +3,7 @@ package com.tokopedia.tokofood.common.domain.param
 import android.annotation.SuppressLint
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.tokofood.common.domain.TokoFoodCartUtil
 
 data class ATCCartTokoFoodParam(
@@ -18,7 +19,27 @@ data class RemoveCartTokoFoodParam(
     @SerializedName("carts")
     @Expose
     val carts: List<RemoveItemTokoFoodParam> = listOf()
-)
+) {
+    companion object {
+
+        @JvmStatic
+        fun getProductParamById(
+            productId: String,
+            cartId: String,
+            shopId: String
+        ): RemoveCartTokoFoodParam {
+            val cartList = listOf(
+                RemoveItemTokoFoodParam(
+                    cartId = cartId.toLongOrZero(),
+                    productId = productId,
+                    shopId = shopId
+                )
+            )
+            return RemoveCartTokoFoodParam(carts = cartList)
+        }
+
+    }
+}
 
 data class CartTokoFoodParam(
     @SerializedName("additional_attributes")
