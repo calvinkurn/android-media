@@ -9,7 +9,9 @@ abstract class RecyclerViewScrollListener(
 ) : RecyclerView.OnScrollListener() {
 
     private val threshold = 2
+    //It enables the data loading from getTopChatHistory -> has Old Message History
     private var hasNextPage = false
+    //It enables the data loading from getBottomChat -> move towards latest msg
     var hasNextAfterPage = false
         get() = field
     private var isLoadingTop = false
