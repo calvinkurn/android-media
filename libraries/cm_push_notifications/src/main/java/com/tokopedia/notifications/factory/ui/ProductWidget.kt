@@ -197,7 +197,10 @@ internal open class ProductWidget(
 
     private fun discountPriceTag(view: RemoteViews) {
         with(product) {
-            if (productActualPrice == null || productPriceDroppedPercentage == null) {
+            val isActualPriceAndPercentOn = productActualPrice.isNullOrEmpty() ||
+                    productPriceDroppedPercentage.isNullOrEmpty() ||
+                    productActualPrice == productCurrentPrice
+            if (isActualPriceAndPercentOn) {
                 view.setViewVisibility(R.id.ll_oldPriceAndDiscount, View.GONE)
             } else {
                 val strikePrice = "<strike>${productActualPrice}</strike>"
