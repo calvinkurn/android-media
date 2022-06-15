@@ -53,8 +53,6 @@ class TokomemberDashGetProgramListUsecase @Inject constructor(graphqlRepository:
     }
 }
 
-//TODO change Int! to Map data type
-
 const val TM_PROGRAM_LIST = """
      query membershipGetProgramList(${'$'}input: MembershipGetListRequest!) {
     membershipGetProgramList(input: ${'$'}input) {

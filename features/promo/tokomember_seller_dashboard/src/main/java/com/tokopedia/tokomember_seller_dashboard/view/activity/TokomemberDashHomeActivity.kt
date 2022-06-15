@@ -36,7 +36,7 @@ class TokomemberDashHomeActivity : AppCompatActivity(), TmProgramDetailCallback 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_tokomember_dash_home)
+        setContentView(R.layout.tm_activity_tokomember_dash_home)
         addFragment(TokomemberDashHomeMainFragment.newInstance(intent.extras), TAG_HOME)
 
         initDagger()

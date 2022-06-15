@@ -17,7 +17,6 @@ import com.tokopedia.tokomember_seller_dashboard.domain.TokomemberCardColorMappe
 import com.tokopedia.tokomember_seller_dashboard.domain.TokomemberDashCardUsecase
 import com.tokopedia.tokomember_seller_dashboard.domain.TokomemberDashEditCardUsecase
 import com.tokopedia.tokomember_seller_dashboard.domain.TokomemberDashGetProgramFormUsecase
-import com.tokopedia.tokomember_seller_dashboard.domain.TokomemberDashPreviewUsecase
 import com.tokopedia.tokomember_seller_dashboard.domain.TokomemberDashUpdateProgramUsecase
 import com.tokopedia.tokomember_seller_dashboard.domain.TokomemeberCardBgUsecase
 import com.tokopedia.tokomember_seller_dashboard.domain.requestparam.ProgramUpdateDataInput
@@ -50,7 +49,6 @@ class TmDashCreateViewModel @Inject constructor(
     private val tokomemberCardColorMapperUsecase: TokomemberCardColorMapperUsecase,
     private val tokomemeberCardBgUsecase: TokomemeberCardBgUsecase,
     private val tokomemberDashEditCardUsecase: TokomemberDashEditCardUsecase,
-    private val tokomemberDashPreviewUsecase: TokomemberDashPreviewUsecase,
     private val tokomemberDashGetProgramFormUsecase: TokomemberDashGetProgramFormUsecase,
     private val tokomemberDashUpdateProgramUsecase: TokomemberDashUpdateProgramUsecase,
     private val tmKuponCreateValidateUsecase: TmKuponCreateValidateUsecase,
@@ -283,7 +281,6 @@ class TmDashCreateViewModel @Inject constructor(
         tokomemeberCardBgUsecase.cancelJobs()
         tokomemberDashCardUsecase.cancelJobs()
         tokomemberDashEditCardUsecase.cancelJobs()
-        tokomemberDashPreviewUsecase.cancelJobs()
         super.onCleared()
     }
 }

@@ -27,14 +27,14 @@
             <com.tokopedia.unifycomponents.ProgressBarUnify
                 android:id="@+id/progressCard"
                 android:layout_width="wrap_content"
-                android:layout_height="4dp"
+                android:layout_height="@dimen/unify_space_4"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <View
                 android:id="@+id/viewBg"
                 android:layout_width="match_parent"
-                android:layout_height="232dp"
+                android:layout_height="@dimen/tm_dash_dp_232"
                 android:background="@color/Unify_NN50"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/progressCard" />
@@ -52,7 +52,7 @@
             <com.tokopedia.unifycomponents.TipsUnify
                 android:id="@+id/tipTokomember"
                 android:layout_width="match_parent"
-                android:layout_height="80dp"
+                android:layout_height="@dimen/tm_dash_dp_80"
                 android:layout_marginStart="@dimen/unify_space_16"
                 android:layout_marginTop="@dimen/unify_space_16"
                 android:layout_marginEnd="@dimen/unify_space_16"
@@ -68,7 +68,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/unify_space_16"
                 android:layout_marginTop="@dimen/unify_space_16"
-                android:text="Warna Kartu"
+                android:text="@string/tm_card_color_title"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tipTokomember"
                 app:typographyType="heading_5"
@@ -87,7 +87,7 @@
             <View
                 android:id="@+id/viewDivider"
                 android:layout_width="match_parent"
-                android:layout_height="8dp"
+                android:layout_height="@dimen/unify_space_8"
                 android:layout_marginTop="@dimen/unify_space_16"
                 android:background="@color/Unify_NN50"
                 app:layout_constraintStart_toStartOf="parent"
@@ -99,7 +99,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/unify_space_16"
                 android:layout_marginTop="@dimen/unify_space_16"
-                android:text="Warna Kartu"
+                android:text="@string/tm_card_bg_title"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/viewDivider"
                 app:typographyType="heading_5"
@@ -119,7 +119,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/unify_space_16"
-                android:text="Buat Kartu"
+                android:text="@string/tm_card_btn_text"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"

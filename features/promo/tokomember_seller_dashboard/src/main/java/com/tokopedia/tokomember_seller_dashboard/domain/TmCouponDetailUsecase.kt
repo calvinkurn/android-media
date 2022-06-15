@@ -3,6 +3,9 @@ package com.tokopedia.tokomember_seller_dashboard.domain
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.tokomember_seller_dashboard.model.TmCouponDetailResponseData
+import com.tokopedia.tokomember_seller_dashboard.util.ANDROID
+import com.tokopedia.tokomember_seller_dashboard.util.SOURCE
+import com.tokopedia.tokomember_seller_dashboard.util.VOUCHER_ID
 import javax.inject.Inject
 
 class TmCouponDetailUsecase @Inject constructor(graphqlRepository: GraphqlRepository): GraphqlUseCase<TmCouponDetailResponseData>(graphqlRepository) {
@@ -23,8 +26,8 @@ class TmCouponDetailUsecase @Inject constructor(graphqlRepository: GraphqlReposi
 
     private fun getRequestParams(voucherId: Int): Map<String, Any> {
         val map = mutableMapOf<String, Any>()
-        map["voucher_id"] = voucherId
-        map["source"] = "android"
+        map[VOUCHER_ID] = voucherId
+        map[SOURCE] = ANDROID
         return map
     }
 }

@@ -1,6 +1,5 @@
 package com.tokopedia.tokomember_seller_dashboard.view.viewmodel
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
@@ -24,7 +23,6 @@ class TmProgramListViewModel @Inject constructor(
 
     fun refreshList(state: Int){
         _tokomemberProgramListLiveData.postValue(state)
-        Log.d("REFRESH_TAG", "refreshList: $state")
     }
 
     fun getProgramList(shopId: Int, cardID: Int, status: Int = -1, page: Int = 1, pageSize: Int = 10){

@@ -28,10 +28,11 @@ class TmCouponUpdateStatusUsecase@Inject constructor(
 
     private fun getRequestParams(voucherStatus: String,voucherId: Int, token: String): Map<String, Any> {
         val req = TMUpdateStatusRequest(voucher_status = voucherStatus, voucher_id = voucherId, token = token, source = "android")
-        return mapOf("merchantVoucherUpdateStatusData" to req)
+        return mapOf(MERCHANT_UPDATE_STATUS_INPUT to req)
     }
 }
 
+const val MERCHANT_UPDATE_STATUS_INPUT = "merchantVoucherUpdateStatusData"
 const val QUERY_TM_COUPON_UPDATE_STATUS = """
     mutation merchantPromotionUpdateStatusMV(${'$'}merchantVoucherUpdateStatusData: mvUpdateStatusRequest!) {
         merchantPromotionUpdateStatusMV(merchantVoucherUpdateStatusData: ${'$'}merchantVoucherUpdateStatusData) {

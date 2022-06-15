@@ -104,6 +104,9 @@ const val ACCORDION_SUBTITLE_PREMIUM= "Cashback Rp10.000"
 const val IDR = "idr"
 const val ANDROID = "android"
 
+const val VOUCHER_ID = "voucher_id"
+const val SOURCE = "source"
+
 const val COUPON_HEADER_TITLE = "Daftar Tokomember"
 const val COUPON_HEADER_TITLE_SINGLE = "Buat Kupon Membership"
 const val COUPON_HEADER_SUBTITLE = "Langkah 3 dari 4"

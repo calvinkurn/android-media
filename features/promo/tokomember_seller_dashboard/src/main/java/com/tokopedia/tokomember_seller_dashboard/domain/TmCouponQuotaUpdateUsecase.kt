@@ -28,9 +28,11 @@ class TmCouponQuotaUpdateUsecase @Inject constructor(
 
     private fun getRequestParams(quota: Int, voucherId: Int, token: String): Map<String, Any> {
         val req = TMUpdateQuotaRequest(quota = quota, voucher_id = voucherId, token = token, source = "android")
-        return mapOf("merchantVoucherUpdateQuotaData" to req)
+        return mapOf(MERCHANT_UPDATE_INPUT to req)
     }
 }
+
+const val MERCHANT_UPDATE_INPUT= "merchantVoucherUpdateQuotaData"
 
 const val QUERY_TM_COUPON_UPDATE_QUOTA = """
     mutation merchantPromotionUpdateMVQuota(${'$'}merchantVoucherUpdateQuotaData: mvUpdateQuotaData!) {

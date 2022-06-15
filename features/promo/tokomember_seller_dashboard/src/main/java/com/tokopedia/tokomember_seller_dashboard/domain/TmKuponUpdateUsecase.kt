@@ -27,10 +27,12 @@ class TmKuponUpdateUsecase @Inject constructor(graphqlRepository: GraphqlReposit
     }
 
     private fun getRequestParams(tmCouponUpdateRequest: TmCouponUpdateRequest): Map<String, Any> {
-        return mapOf("merchantVoucherUpdateData" to tmCouponUpdateRequest)
+        return mapOf( MERCHANT_VOUCHER_UPDATE to tmCouponUpdateRequest)
     }
 
 }
+
+const val MERCHANT_VOUCHER_UPDATE = "merchantVoucherUpdateData"
 
 const val KUPON_UPDATE = """
      mutation merchantPromotionUpdateMV(${'$'}merchantVoucherUpdateData: mvUpdateData!) {

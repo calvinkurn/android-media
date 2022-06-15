@@ -8,7 +8,8 @@
     android:clickable="true"
     android:background="@color/Unify_Background"
     android:measureAllChildren="false"
-    tools:ignore="MissingDefaultResource">
+    tools:ignore="MissingDefaultResource"
+    android:focusable="true">
 
     <include layout="@layout/tm_coupon_creation_shimmer"/>
 
@@ -40,7 +41,7 @@ Biar mudah  cepat, pakai rekomendasi kupon dan minimum pembelian untuk member ka
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/unify_space_16"
                 android:layout_marginTop="@dimen/unify_space_16"
-                android:text="Kupon Membership"
+                android:text="@string/tm_kupon_membership"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/ticker"
                 app:typographyType="display_1"
@@ -49,8 +50,8 @@ Biar mudah  cepat, pakai rekomendasi kupon dan minimum pembelian untuk member ka
             <View
                 android:id="@+id/viewDividerPremiumCouponOne"
                 android:layout_width="match_parent"
-                android:layout_height="2dp"
-                android:layout_marginTop="20dp"
+                android:layout_height="@dimen/unify_space_2"
+                android:layout_marginTop="@dimen/tm_dash_dp_20"
                 android:background="@color/Unify_NN50"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tvTitleKuponMembership" />
@@ -59,34 +60,32 @@ Biar mudah  cepat, pakai rekomendasi kupon dan minimum pembelian untuk member ka
                 android:id="@+id/icPremiumCoupon"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
+                android:layout_marginTop="@dimen/tm_dash_dp_20"
                 app:layout_constraintStart_toStartOf="@id/tvTitleKuponMembership"
                 app:layout_constraintTop_toBottomOf="@+id/viewDividerPremiumCouponOne"
-                app:srcCompat="@drawable/ic_tokomember_premium"/>
+                app:srcCompat="@drawable/tm_ic_tokomember_premium"/>
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tvPremiumTitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Untuk member Premium"
+                android:text="@string/tm_premium_voucher_title"
                 app:typographyType="display_1"
                 android:layout_marginStart="@dimen/unify_space_8"
                 app:layout_constraintStart_toEndOf="@id/icPremiumCoupon"
                 app:layout_constraintTop_toTopOf="@+id/icPremiumCoupon"
                 app:layout_constraintBottom_toTopOf="@id/tvPremiumSubtitle"/>
 
-
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tvPremiumSubtitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 app:typographyType="paragraph_2"
-                android:text="Cashback Rp10.000"
+                android:text="@string/tm_premium_voucher_desc"
                 android:layout_marginStart="@dimen/unify_space_8"
                 app:layout_constraintStart_toEndOf="@id/icPremiumCoupon"
                 app:layout_constraintTop_toBottomOf="@+id/tvPremiumTitle"
                 app:layout_constraintBottom_toBottomOf="@id/icPremiumCoupon"/>
-
 
             <com.tokopedia.iconunify.IconUnify
                 android:layout_width="wrap_content"
@@ -104,16 +103,16 @@ Biar mudah  cepat, pakai rekomendasi kupon dan minimum pembelian untuk member ka
                 android:layout_marginStart="@dimen/unify_space_16"
                 android:layout_marginEnd="@dimen/unify_space_16"
                 android:visibility="gone"
-                app:layout_goneMarginTop="20dp"
-                android:layout_marginTop="20dp"
+                app:layout_goneMarginTop="@dimen/tm_dash_dp_20"
+                android:layout_marginTop="@dimen/tm_dash_dp_20"
                 app:layout_constraintStart_toStartOf="@+id/tvTitleKuponMembership"
                 app:layout_constraintTop_toBottomOf="@+id/icPremiumCoupon"/>
 
             <View
                 android:id="@+id/viewDividerPremiumCoupon"
                 android:layout_width="match_parent"
-                android:layout_height="2dp"
-                android:layout_marginTop="20dp"
+                android:layout_height="@dimen/unify_space_2"
+                android:layout_marginTop="@dimen/tm_dash_dp_20"
                 android:background="@color/Unify_NN50"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tmPremiumCoupon" />
@@ -122,16 +121,16 @@ Biar mudah  cepat, pakai rekomendasi kupon dan minimum pembelian untuk member ka
                 android:id="@+id/icVipCoupon"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
+                android:layout_marginTop="@dimen/tm_dash_dp_20"
                 app:layout_constraintStart_toStartOf="@id/tvTitleKuponMembership"
                 app:layout_constraintTop_toBottomOf="@+id/viewDividerPremiumCoupon"
-                app:srcCompat="@drawable/ic_tokomember_vip"/>
+                app:srcCompat="@drawable/tm_ic_tokomember_vip"/>
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tvVipCouponTitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Untuk member VIP"
+                android:text="@string/tm_vip_voucher_title"
                 android:layout_marginStart="@dimen/unify_space_8"
                 app:typographyType="display_1"
                 app:layout_constraintStart_toEndOf="@+id/icVipCoupon"
@@ -144,7 +143,7 @@ Biar mudah  cepat, pakai rekomendasi kupon dan minimum pembelian untuk member ka
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/unify_space_8"
-                android:text="Cashback Rp10.000"
+                android:text="@string/tm_vip_voucher_desc"
                 app:typographyType="paragraph_2"
                 app:layout_constraintStart_toEndOf="@+id/icVipCoupon"
                 app:layout_constraintTop_toBottomOf="@+id/tvVipCouponTitle"
@@ -168,8 +167,8 @@ Biar mudah  cepat, pakai rekomendasi kupon dan minimum pembelian untuk member ka
                 android:layout_marginStart="@dimen/unify_space_16"
                 android:layout_marginEnd="@dimen/unify_space_16"
                 android:visibility="gone"
-                app:layout_goneMarginTop="20dp"
-                android:layout_marginTop="20dp"
+                app:layout_goneMarginTop="@dimen/tm_dash_dp_20"
+                android:layout_marginTop="@dimen/tm_dash_dp_20"
                 app:layout_constraintTop_toBottomOf="@+id/icVipCoupon"
                 app:layout_constraintStart_toStartOf="@+id/tvTitleKuponMembership"/>
 
@@ -177,7 +176,7 @@ Biar mudah  cepat, pakai rekomendasi kupon dan minimum pembelian untuk member ka
                 android:id="@+id/viewDividerTwo"
                 android:layout_width="match_parent"
                 android:layout_height="8dp"
-                android:layout_marginTop="20dp"
+                android:layout_marginTop="@dimen/tm_dash_dp_20"
                 android:background="@color/Unify_NN50"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tmVipCoupon" />
@@ -187,7 +186,7 @@ Biar mudah  cepat, pakai rekomendasi kupon dan minimum pembelian untuk member ka
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/unify_space_16"
-                android:text="Periode kupon"
+                android:text="@string/tm_period_kupon"
                 app:layout_constraintStart_toStartOf="@id/tvTitleKuponMembership"
                 app:layout_constraintTop_toBottomOf="@+id/viewDividerTwo"
                 app:typographyType="display_2"
@@ -198,7 +197,7 @@ Biar mudah  cepat, pakai rekomendasi kupon dan minimum pembelian untuk member ka
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/unify_space_24"
-                android:text="Masa Berlaku"
+                android:text="@string/tm_chip_date"
                 app:layout_constraintStart_toStartOf="@id/tvTitleKuponMembership"
                 app:layout_constraintTop_toBottomOf="@id/tvTitleProgram"
                 app:typographyType="display_3"
@@ -215,7 +214,7 @@ Biar mudah  cepat, pakai rekomendasi kupon dan minimum pembelian untuk member ka
             <View
                 android:id="@+id/viewDividerThree"
                 android:layout_width="match_parent"
-                android:layout_height="4dp"
+                android:layout_height="@dimen/unify_space_4"
                 android:layout_marginTop="@dimen/unify_space_24"
                 android:background="@color/Unify_NN50"
                 app:layout_constraintStart_toStartOf="parent"
@@ -256,7 +255,7 @@ Biar mudah  cepat, pakai rekomendasi kupon dan minimum pembelian untuk member ka
             <View
                 android:id="@+id/viewDividerFour"
                 android:layout_width="match_parent"
-                android:layout_height="4dp"
+                android:layout_height="@dimen/unify_space_4"
                 android:layout_marginTop="@dimen/unify_space_24"
                 android:background="@color/Unify_NN50"
                 app:layout_constraintStart_toStartOf="parent"
@@ -325,7 +324,7 @@ Biar mudah  cepat, pakai rekomendasi kupon dan minimum pembelian untuk member ka
                         app:typographyType="display_3"
                         app:typographyWeight="bold"
                         android:textColor="@color/Unify_NN950"
-                        android:text="Estimasi Maks. Pengeluaran"
+                        android:text="@string/tm_max_value_label"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
 
@@ -335,7 +334,7 @@ Biar mudah  cepat, pakai rekomendasi kupon dan minimum pembelian untuk member ka
                         app:typographyType="display_3"
                         app:typographyWeight="reguler"
                         android:textColor="@color/Unify_NN600"
-                        android:text="Dipotong dari transaksi selesai"
+                        android:text="@string/tm_min_value_label"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@id/tvMaximumValueLabel" />
 
@@ -343,7 +342,7 @@ Biar mudah  cepat, pakai rekomendasi kupon dan minimum pembelian untuk member ka
                         android:id="@+id/tvTotalTransaction"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Rp2.000.000"
+                        android:text="@string/tm_total_transaction"
                         app:typographyType="display_3"
                         app:typographyWeight="bold"
                         android:textColor="@color/Unify_NN950"
@@ -358,7 +357,7 @@ Biar mudah  cepat, pakai rekomendasi kupon dan minimum pembelian untuk member ka
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/unify_space_16"
-                    android:text="Buat Kupon"
+                    android:text="@string/tm_buat_kupon"
                     app:unifyButtonSize="large"
                     app:unifyButtonType="main"
                     app:unifyButtonVariant="filled" />

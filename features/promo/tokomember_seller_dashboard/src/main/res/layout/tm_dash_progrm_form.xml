@@ -7,7 +7,8 @@
     android:layout_height="match_parent"
     android:background="@color/Unify_Background"
     android:clickable="true"
-    tools:ignore="MissingDefaultResource">
+    tools:ignore="MissingDefaultResource"
+    android:focusable="true">
 
     <include
         layout="@layout/tm_dash_program_shimmer"/>
@@ -19,19 +20,21 @@
         android:animateLayoutChanges="true"
         android:background="@color/Unify_Background"
         android:clickable="true"
-        tools:ignore="MissingDefaultResource">
+        tools:ignore="MissingDefaultResource"
+        android:focusable="true">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/rootProgram"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="@color/Unify_Background"
-            android:clickable="true">
+            android:clickable="true"
+            android:focusable="true">
 
             <com.tokopedia.unifycomponents.ProgressBarUnify
                 android:id="@+id/progressProgram"
                 android:layout_width="wrap_content"
-                android:layout_height="4dp"
+                android:layout_height="@dimen/unify_space_4"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
@@ -41,7 +44,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/unify_space_16"
                 android:layout_marginTop="@dimen/unify_space_12"
-                android:text="Detail informasi"
+                android:text="@string/tm_program_detail_informasi"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/progressProgram"
                 app:typographyType="heading_5"
@@ -52,7 +55,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/unify_space_16"
-                android:text="Detail informasi"
+                android:text="@string/tm_program_durasi"
                 app:layout_constraintStart_toStartOf="@id/tvDetail"
                 app:layout_constraintTop_toBottomOf="@id/tvDetail"
                 app:typographyType="body_3"
@@ -84,7 +87,7 @@
                 <com.tokopedia.unifyprinciples.Typography
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:drawableLeft="@drawable/eta_info"
+                    android:drawableStart="@drawable/eta_info"
                     android:drawablePadding="@dimen/dp_10"
                     android:drawableTint="#2E3137"
                     android:padding="@dimen/spacing_lvl3"
@@ -124,7 +127,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/unify_space_16"
-                android:text="Skema level"
+                android:text="@string/tm_program_skema_level"
                 app:layout_constraintStart_toStartOf="@id/tvDetail"
                 app:layout_constraintTop_toBottomOf="@id/viewDivider"
                 app:typographyType="heading_5"
@@ -132,8 +135,8 @@
 
             <com.tokopedia.iconunify.IconUnify
                 android:id="@+id/iconInfo"
-                android:layout_width="14dp"
-                android:layout_height="14dp"
+                android:layout_width="@dimen/tm_dash_dp_14"
+                android:layout_height="@dimen/tm_dash_dp_14"
                 android:layout_marginStart="@dimen/unify_space_4"
                 app:icon_name="INFORMATION"
                 app:layout_constraintBottom_toBottomOf="@id/tvDetailLevel"
@@ -190,7 +193,7 @@
             <View
                 android:id="@+id/viewDividerTwo"
                 android:layout_width="match_parent"
-                android:layout_height="8dp"
+                android:layout_height="@dimen/unify_space_8"
                 android:layout_marginTop="@dimen/unify_space_16"
                 android:background="@color/Unify_NN50"
                 app:layout_constraintStart_toStartOf="parent"
@@ -203,7 +206,7 @@
                 android:layout_marginStart="@dimen/unify_space_16"
                 android:layout_marginEnd="@dimen/unify_space_16"
                 android:layout_marginBottom="@dimen/unify_space_16"
-                android:text="Buat Program"
+                android:text="@string/tm_buat_program"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
