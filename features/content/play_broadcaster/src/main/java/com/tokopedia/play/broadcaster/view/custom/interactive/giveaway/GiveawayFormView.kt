@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.play.broadcaster.R
@@ -15,10 +16,8 @@ import com.tokopedia.play.broadcaster.databinding.ViewPlayInteractiveTimePickerB
 import com.tokopedia.play.broadcaster.util.extension.millisToMinutes
 import com.tokopedia.play.broadcaster.util.extension.millisToRemainingSeconds
 import com.tokopedia.play.broadcaster.util.extension.showErrorToaster
-import com.tokopedia.play_common.databinding.BottomSheetHeaderBinding
 import com.tokopedia.play_common.util.extension.marginLp
 import com.tokopedia.play_common.view.doOnApplyWindowInsets
-import com.tokopedia.play_common.view.game.giveaway.GiveawayWidgetView
 import com.tokopedia.play_common.view.updatePadding
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -180,7 +179,10 @@ class GiveawayFormView : ConstraintLayout {
         timePickerBinding.tvSheetTitle.text = context.getString(R.string.play_bro_interactive_set_start_duration)
 
         binding.viewGiveaway.showTimer(false)
-        binding.tvBroGiveawayFormNext.setOnClickListener { next() }
+        binding.tvBroGiveawayFormNext.setOnClickListener {
+            mListener?.onClickContinue()
+            next()
+        }
 
         binding.viewGiveaway.getHeader().setOnTextChangedListener {
             setEnabledContinue(shouldEnable = it.isNotBlank())
@@ -188,7 +190,10 @@ class GiveawayFormView : ConstraintLayout {
         binding.viewGiveaway.getHeader().maxLength = MAX_TITLE_LENGTH
 
         binding.icCloseGiveawayForm.setOnClickListener { back() }
-        timePickerBinding.ivSheetClose.setOnClickListener { back() }
+        timePickerBinding.ivSheetClose.setOnClickListener {
+            mListener?.onClickBackSetTimer()
+            back()
+        }
 
         setEnabledContinue(shouldEnable = false)
 
@@ -271,5 +276,8 @@ class GiveawayFormView : ConstraintLayout {
             view: GiveawayFormView,
             data: Data,
         )
+
+        fun onClickBackSetTimer()
+        fun onClickContinue()
     }
 }

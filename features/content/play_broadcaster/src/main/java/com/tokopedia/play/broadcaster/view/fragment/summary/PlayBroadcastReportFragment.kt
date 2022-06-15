@@ -158,7 +158,13 @@ class PlayBroadcastReportFragment @Inject constructor(
     }
 
     override fun onMetricClicked(view: SummaryInfoViewComponent, metricType: TrafficMetricType) {
-         if (metricType.isGameParticipants) viewModel.submitAction(PlayBroadcastSummaryAction.ClickViewLeaderboard)
+         if (metricType.isGameParticipants) {
+             analytic.clickInteractiveParticipantDetail(
+                 channelID = viewModel.channelId,
+                 channelTitle = viewModel.channelTitle,
+             )
+             viewModel.submitAction(PlayBroadcastSummaryAction.ClickViewLeaderboard)
+         }
     }
 
     private fun openInteractiveLeaderboardSheet() {

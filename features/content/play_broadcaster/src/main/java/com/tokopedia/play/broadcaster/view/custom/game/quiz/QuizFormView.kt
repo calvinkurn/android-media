@@ -80,7 +80,6 @@ class QuizFormView : ConstraintLayout {
     init {
         binding.viewGameHeader.type = GameHeaderView.Type.QUIZ
         timePickerBinding.puTimer.infiniteMode = false
-        timePickerBinding.ivSheetClose.setImage(IconUnify.ARROW_BACK)
         timePickerBinding.tvSheetTitle.text = context.getString(R.string.play_bro_quiz_set_duration_title)
 
         binding.tvBroQuizFormNext.setOnClickListener {
@@ -88,6 +87,7 @@ class QuizFormView : ConstraintLayout {
         }
 
         binding.icCloseQuizForm.setOnClickListener {
+            eventBus.emit(Event.Close)
             eventBus.emit(Event.Back)
         }
 
@@ -99,7 +99,16 @@ class QuizFormView : ConstraintLayout {
             eventBus.emit(Event.GiftChanged(it))
         }
 
+        binding.viewQuizGift.setOnClickListener {
+            eventBus.emit(Event.GiftClicked)
+        }
+
+        binding.viewQuizGift.setOnCloseGiftClickListener{
+            eventBus.emit(Event.GiftClosed)
+        }
+
         timePickerBinding.ivSheetClose.setOnClickListener {
+            eventBus.emit(Event.BackSelectDuration)
             eventBus.emit(Event.Back)
         }
 
@@ -295,7 +304,11 @@ class QuizFormView : ConstraintLayout {
         data class GiftChanged(val gift: String): Event
         data class SaveQuizData(val quizFormData: QuizFormDataUiModel): Event
         data class SelectDuration(val duration: Long): Event
+        object GiftClicked : Event
+        object GiftClosed : Event
         object Submit: Event
+        object Close : Event
+        object BackSelectDuration : Event
     }
 
     companion object {

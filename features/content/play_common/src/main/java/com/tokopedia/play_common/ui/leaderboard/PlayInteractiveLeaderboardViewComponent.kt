@@ -27,6 +27,7 @@ import com.tokopedia.play_common.view.requestApplyInsetsWhenAttached
 import com.tokopedia.play_common.view.updatePadding
 import com.tokopedia.play_common.viewcomponent.ViewComponent
 import com.tokopedia.unifycomponents.UnifyButton
+import kotlinx.android.synthetic.main.view_play_interactive_leaderboard.view.*
 
 
 /**
@@ -109,6 +110,12 @@ class PlayInteractiveLeaderboardViewComponent(
         btnRefreshError.rootView.addOnImpressionListener(impressHolder){
             listener.onRefreshButtonImpressed(this)
         }
+    }
+
+    fun clearTopPadding(){
+        rootView.updatePadding(
+            top = 0
+        )
     }
 
     fun setData(leaderboards: List<PlayLeaderboardUiModel>) {

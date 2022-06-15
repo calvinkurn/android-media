@@ -39,9 +39,9 @@ class PlayBroInteractiveBottomSheet @Inject constructor(
     QuizOptionDetailViewComponent.Listener {
 
     private val sheetType
-        get() = arguments?.getString(ARG_TYPE) ?: ""
+        get() = arguments?.getString(ARG_TYPE) ?: Type.UNKNOWN.sheetType
     private val sheetSize
-        get() = arguments?.getString(ARG_SIZE) ?: Size.HALF.toString()
+        get() = arguments?.getString(ARG_SIZE) ?: Size.HALF.tag
 
     private val leaderboardSheetView by viewComponent {
         PlayInteractiveLeaderboardViewComponent(
@@ -74,38 +74,39 @@ class PlayBroInteractiveBottomSheet @Inject constructor(
             requireActivity(),
             parentViewModelFactoryCreator.create(requireActivity())
         )[PlayBroadcastViewModel::class.java]
-
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        leaderboardSheetView.addItemTouchListener(object : RecyclerView.SimpleOnItemTouchListener() {
+        leaderboardSheetView.addItemTouchListener(object :
+            RecyclerView.SimpleOnItemTouchListener() {
             override fun onInterceptTouchEvent(rv: RecyclerView, e: MotionEvent): Boolean {
                 bottomSheet.updateScrollingChild(rv)
                 return false
             }
         })
+        leaderboardSheetView.clearTopPadding()
 
         choiceDetailSheetView.addOnTouchListener { v, _, _, _, _ ->
             bottomSheet.updateScrollingChild(v)
         }
 
-        when (sheetSize) {
-            Size.HALF.toString() -> {
+        when (Size.mapFromString(sheetSize)) {
+            Size.HALF -> {
                 binding.root.layoutParams = binding.root.layoutParams.apply {
                     height = (getScreenHeight() * 0.65f).toInt()
                 }
             }
-            Size.FULL.toString() -> {
+            Size.FULL -> {
                 binding.root.layoutParams = binding.root.layoutParams.apply {
                     height = (getScreenHeight() * 1f).toInt()
                 }
             }
         }
-        if (sheetType.isNotBlank()) {
-            when (sheetType) {
-                Type.QUIZ_DETAIL.toString() -> setupQuizDetail()
-                Type.LEADERBOARD.toString() -> setupLeaderBoard()
-                Type.REPORT.toString() -> setupReport()
+        if (Type.mapFromString(sheetType) != Type.UNKNOWN) {
+            when (Type.mapFromString(sheetType)) {
+                Type.QUIZ_DETAIL -> setupQuizDetail()
+                Type.LEADERBOARD -> setupLeaderBoard()
+                Type.REPORT -> setupReport()
             }
             observeQuizDetail()
         }
@@ -179,8 +180,27 @@ class PlayBroInteractiveBottomSheet @Inject constructor(
 
     private fun showChoiceDetail(dataUiModel: QuizChoiceDetailUiModel) {
         leaderboardSheetView.hide()
-        choiceDetailSheetView.setData(dataUiModel, isOngoingBottomsheet())
+        choiceDetailSheetView.setData(dataUiModel, isQuizDetail())
         choiceDetailSheetView.show()
+        when (Type.mapFromString(sheetType)) {
+            Type.QUIZ_DETAIL -> {
+                analytic.onImpressQuizChoiceDetail(
+                    parentViewModel.channelId,
+                    parentViewModel.channelTitle,
+                    dataUiModel.choice.interactiveId,
+                    dataUiModel.choice.interactiveTitle,
+                )
+            }
+            Type.REPORT -> {
+                analytic.onImpressReportQuizChoiceDetail(
+                    parentViewModel.channelId,
+                    parentViewModel.channelTitle,
+                    dataUiModel.choice.interactiveId,
+                    dataUiModel.choice.interactiveTitle,
+                )
+            }
+        }
+
     }
 
     private fun showErrorChoiceDetail() {
@@ -194,6 +214,28 @@ class PlayBroInteractiveBottomSheet @Inject constructor(
     }
 
     override fun onCloseButtonClicked(view: PlayInteractiveLeaderboardViewComponent) {
+        when (Type.mapFromString(sheetType)) {
+            Type.QUIZ_DETAIL -> {
+                analytic.onClickCloseOngoingQuizBottomSheet(
+                    parentViewModel.channelId,
+                    parentViewModel.channelTitle,
+                    parentViewModel.interactiveId,
+                    parentViewModel.activeInteractiveTitle,
+                )
+            }
+            Type.LEADERBOARD -> {
+                analytic.onClickCloseGameResultBottomsheet(
+                    parentViewModel.channelId,
+                    parentViewModel.channelTitle,
+                )
+            }
+            Type.REPORT -> {
+                analytic.onClickCloseGameResultReport(
+                    parentViewModel.channelId,
+                    parentViewModel.channelTitle,
+                )
+            }
+        }
         dismiss()
     }
 
@@ -204,8 +246,7 @@ class PlayBroInteractiveBottomSheet @Inject constructor(
     ) {
         analytic.onClickChatWinnerIcon(
             parentViewModel.channelId,
-            parentViewModel.interactiveId,
-            parentViewModel.activeInteractiveTitle
+            parentViewModel.channelTitle,
         )
         RouteManager.route(
             requireContext(),
@@ -216,25 +257,72 @@ class PlayBroInteractiveBottomSheet @Inject constructor(
     }
 
     override fun onRefreshButtonClicked(view: PlayInteractiveLeaderboardViewComponent) {
+        if (!isQuizDetail()) {
+            analytic.onClickRefreshGameResult(
+                parentViewModel.channelId,
+                parentViewModel.channelTitle,
+            )
+        }
         parentViewModel.submitAction(PlayBroadcastAction.ClickRefreshQuizDetailBottomSheet)
     }
 
     override fun onChoiceItemClicked(item: QuizChoicesUiModel) {
+        when (Type.mapFromString(sheetType)) {
+            Type.QUIZ_DETAIL -> {
+                analytic.onCLickQuizOptionLive(
+                    parentViewModel.channelId,
+                    parentViewModel.channelTitle,
+                    item.interactiveId,
+                    item.interactiveTitle,
+                )
+            }
+            Type.REPORT -> {
+                analytic.onCLickQuizOptionReport(
+                    parentViewModel.channelId,
+                    parentViewModel.channelTitle,
+                    item.interactiveId,
+                    item.interactiveTitle,
+                )
+            }
+        }
         parentViewModel.submitAction(PlayBroadcastAction.ClickQuizChoiceOption(item))
     }
 
     override fun onRefreshButtonImpressed(view: PlayInteractiveLeaderboardViewComponent) {
-        //TODO("Not yet implemented")
+        analytic.onImpressFailedLeaderboard(parentViewModel.channelId, parentViewModel.channelTitle)
     }
 
     override fun onLeaderBoardImpressed(
         view: PlayInteractiveLeaderboardViewComponent,
         leaderboard: PlayLeaderboardUiModel
     ) {
-        //TODO("Not yet implemented")
+        when (Type.mapFromString(sheetType)) {
+            Type.LEADERBOARD ->
+                analytic.onImpressOngoingLeaderBoard(
+                    parentViewModel.channelId,
+                    parentViewModel.channelTitle,
+                    leaderboard.id,
+                    leaderboard.title,
+                    leaderboard.reward,
+                )
+            Type.REPORT ->
+                analytic.onImpressReportLeaderboard(
+                    parentViewModel.channelId,
+                    parentViewModel.channelTitle,
+                    leaderboard.id,
+                    leaderboard.title,
+                    leaderboard.leaderBoardType.toString().lowercase(),
+                )
+        }
     }
 
     override fun onBackButtonClicked(view: QuizOptionDetailViewComponent) {
+        analytic.onClickBackQuizChoiceDetail(
+            parentViewModel.channelId,
+            parentViewModel.channelTitle,
+            parentViewModel.interactiveId,
+            parentViewModel.activeInteractiveTitle,
+        )
         parentViewModel.submitAction(PlayBroadcastAction.ClickBackOnChoiceDetail)
     }
 
@@ -262,16 +350,17 @@ class PlayBroInteractiveBottomSheet @Inject constructor(
             fragmentManager: FragmentManager,
             classLoader: ClassLoader,
             type: Type,
-            size: Size? = Size.HALF,
+            size: Size,
         ): PlayBroInteractiveBottomSheet {
-            val oldInstance = fragmentManager.findFragmentByTag(TAG) as? PlayBroInteractiveBottomSheet
+            val oldInstance =
+                fragmentManager.findFragmentByTag(TAG) as? PlayBroInteractiveBottomSheet
             return oldInstance ?: (fragmentManager.fragmentFactory.instantiate(
                 classLoader,
                 PlayBroInteractiveBottomSheet::class.java.name,
             ) as PlayBroInteractiveBottomSheet).apply {
                 arguments = Bundle().apply {
-                    putString(ARG_TYPE, type.toString())
-                    putString(ARG_SIZE, size.toString())
+                    putString(ARG_TYPE, type.sheetType)
+                    putString(ARG_SIZE, size.tag)
                 }
             }
         }
@@ -298,16 +387,34 @@ class PlayBroInteractiveBottomSheet @Inject constructor(
         }
     }
 
-    private fun isOngoingBottomsheet() = sheetType == Type.QUIZ_DETAIL.toString()
+    private fun isQuizDetail() = sheetType == Type.QUIZ_DETAIL.sheetType
 
-    enum class Type {
-        LEADERBOARD,
-        QUIZ_DETAIL,
-        REPORT,
+    enum class Type(val sheetType: String) {
+        LEADERBOARD("leaderboard"),
+        QUIZ_DETAIL("quiz_detail"),
+        REPORT("report"),
+        UNKNOWN("");
+
+        companion object {
+            fun mapFromString(sheetType: String): Type {
+                return values().firstOrNull {
+                    it.sheetType == sheetType
+                } ?: UNKNOWN
+            }
+        }
     }
 
-    enum class Size {
-        FULL,
-        HALF
+    enum class Size(val tag: String) {
+        FULL("full"),
+        HALF("half"),
+        UNKNOWN("");
+
+        companion object {
+            fun mapFromString(tag: String): Size {
+                return values().firstOrNull {
+                    it.tag == tag
+                } ?: UNKNOWN
+            }
+        }
     }
 }

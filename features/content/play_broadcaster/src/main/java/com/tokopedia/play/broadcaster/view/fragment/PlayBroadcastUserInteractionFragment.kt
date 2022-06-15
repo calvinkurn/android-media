@@ -122,15 +122,25 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
     /**
      * Interactive
      */
-    private val interactiveActiveView by viewComponentOrNull { InteractiveActiveViewComponent(it, object : InteractiveActiveViewComponent.Listener {
-        override fun onWidgetClicked(view: InteractiveActiveViewComponent) {
-            parentViewModel.submitAction(PlayBroadcastAction.ClickOngoingWidget)
-        }
+    private val interactiveActiveView by viewComponentOrNull {
+        InteractiveActiveViewComponent(it, object : InteractiveActiveViewComponent.Listener {
+            override fun onWidgetClicked(view: InteractiveActiveViewComponent) {
+                if (view.interactiveType == InteractiveActiveViewComponent.InteractiveType.QUIZ){
+                    analytic.onClickOngoingQuiz(
+                        parentViewModel.channelId,
+                        parentViewModel.channelTitle,
+                        parentViewModel.interactiveId,
+                        parentViewModel.activeInteractiveTitle,
+                    )
+                }
+                parentViewModel.submitAction(PlayBroadcastAction.ClickOngoingWidget)
+            }
     }) }
     private val interactiveFinishedView by viewComponentOrNull { InteractiveFinishViewComponent(it) }
 
     private val interactiveGameResultViewComponent by viewComponentOrNull { InteractiveGameResultViewComponent(it, object : InteractiveGameResultViewComponent.Listener {
         override fun onGameResultClicked(view: InteractiveGameResultViewComponent) {
+            analytic.onClickGameResult(parentViewModel.channelId, parentViewModel.channelTitle)
             parentViewModel.submitAction(PlayBroadcastAction.ClickGameResultWidget)
             view.hideCoachMark()
         }
@@ -158,6 +168,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
             override fun onIconClicked() {
                 interactiveGameResultViewComponent?.hideCoachMark()
                 analytic.onClickInteractiveTool(channelId = parentViewModel.channelId)
+                analytic.onClickGameIconButton(channelId = parentViewModel.channelId, channelTitle = parentViewModel.channelTitle)
                 openSelectInteractiveSheet()
             }
         })
@@ -279,6 +290,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
 
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
             quizForm.listen().collect {
+                trackQuizFormEvent(it)
                 parentViewModel.submitAction(
                     when(it) {
                         QuizFormView.Event.Back -> PlayBroadcastAction.ClickBackOnQuiz
@@ -290,9 +302,46 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
                         is QuizFormView.Event.SaveQuizData -> PlayBroadcastAction.SaveQuizData(it.quizFormData)
                         is QuizFormView.Event.SelectDuration -> PlayBroadcastAction.SelectQuizDuration(it.duration)
                         QuizFormView.Event.Submit -> PlayBroadcastAction.SubmitQuizForm
+                        else -> PlayBroadcastAction.Ignore
                     }
                 )
             }
+        }
+    }
+
+    private fun trackQuizFormEvent(event: QuizFormView.Event) {
+        when (event) {
+            QuizFormView.Event.GiftClicked ->
+                analytic.onClickQuizGift(
+                    parentViewModel.channelId,
+                    parentViewModel.channelTitle,
+                )
+            QuizFormView.Event.GiftClosed ->
+                analytic.onClickCloseQuizGift(
+                    parentViewModel.channelId,
+                    parentViewModel.channelTitle,
+                )
+            QuizFormView.Event.Submit ->
+                analytic.onClickStartQuiz(
+                    parentViewModel.channelId,
+                    parentViewModel.channelTitle,
+                )
+            QuizFormView.Event.Close ->
+                analytic.onClickBackQuiz(
+                    parentViewModel.channelId,
+                    parentViewModel.channelTitle
+                )
+            QuizFormView.Event.Next ->
+                analytic.onClickContinueQuiz(
+                    parentViewModel.channelId,
+                    parentViewModel.channelTitle,
+                )
+            QuizFormView.Event.BackSelectDuration ->
+                analytic.onClickBackQuizDuration(
+                    parentViewModel.channelId,
+                    parentViewModel.channelTitle,
+                )
+            else -> {}
         }
     }
 
@@ -837,6 +886,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
             gameIconView.show()
             if (prevState != state) {
                 analytic.onImpressInteractiveTool(parentViewModel.channelId)
+                analytic.onImpressGameIconButton(parentViewModel.channelId,parentViewModel.channelTitle)
             }
             if (!hasPinnedFormView() && !isQuizFormVisible() && onboarding.firstInteractive) {
                 gameIconView.showCoachmark()
@@ -906,6 +956,12 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
                     }
                 )
                 interactiveActiveView?.show()
+                analytic.onImpressOngoingQuizWidget(
+                    parentViewModel.channelId,
+                    parentViewModel.channelTitle,
+                    state.id,
+                    state.title,
+                )
                 interactiveFinishedView?.hide()
             }
             InteractiveUiModel.Quiz.Status.Finished -> {

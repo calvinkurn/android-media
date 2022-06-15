@@ -11,5 +11,7 @@ data class QuizChoicesUiModel(
     val text: String,
     val type: PlayQuizOptionState,
     val isLoading: Boolean = false,
+    val interactiveId: String = "",
+    val interactiveTitle: String = "",
 )
 

@@ -73,7 +73,6 @@ import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
 import java.util.*
 import java.util.concurrent.TimeUnit
-import kotlin.math.max
 
 /**
  * Created by mzennis on 24/05/20.
@@ -393,7 +392,6 @@ class PlayBroadcastViewModel @AssistedInject constructor(
             is PlayBroadcastAction.ClickQuizChoiceOption -> handleChoiceDetail(event.choice)
             PlayBroadcastAction.LoadMoreCurrentChoiceParticipant -> handleLoadMoreParticipant()
             PlayBroadcastAction.ClickGameResultWidget -> handleClickGameResultWidget()
-
             /**
              * Giveaway
              */
@@ -547,6 +545,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
     fun startLiveStream(withTimer: Boolean = true) {
         livePusherMediator.startLiveStreaming(ingestUrl, withTimer)
         getPinnedMessage()
+        displayGameResultWidgetIfHasLeaderBoard()
         if (withTimer) {
             // TODO("find the best way to trigger engagement tools")
             getInteractiveConfig()
@@ -558,7 +557,6 @@ class PlayBroadcastViewModel @AssistedInject constructor(
 
     fun reconnectLiveStream() {
         sendLivePusherState(PlayLiveViewState.Connecting)
-
         fun reconnectJob() {
             viewModelScope.launch {
                 val err = getChannelDetail()
@@ -627,7 +625,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         }
     }
 
-    fun setInteractiveTitle(title: String) {
+    private fun setInteractiveTitle(title: String) {
         getCurrentSetupDataStore().setSetupInteractiveTitle(title)
     }
 
@@ -635,7 +633,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         getCurrentSetupDataStore().setActiveInteractiveTitle(title)
     }
 
-    fun setSelectedInteractiveDuration(durationInMs: Long) {
+    private fun setSelectedInteractiveDuration(durationInMs: Long) {
         getCurrentSetupDataStore().setSelectedInteractiveDuration(durationInMs)
     }
 
@@ -703,15 +701,16 @@ class PlayBroadcastViewModel @AssistedInject constructor(
 
     private fun setupGiveaway(giveaway: InteractiveUiModel.Giveaway) {
         _interactive.value = giveaway
-        if (giveaway.status == InteractiveUiModel.Giveaway.Status.Finished) {
-            displayGameResultWidgetIfHasLeaderBoard()
+        when (giveaway.status) {
+            InteractiveUiModel.Giveaway.Status.Finished -> displayGameResultWidgetIfHasLeaderBoard()
         }
     }
 
     private fun setupQuiz(quiz: InteractiveUiModel.Quiz) {
         _interactive.value = quiz
-        if (quiz.status == InteractiveUiModel.Quiz.Status.Finished) {
-            displayGameResultWidgetIfHasLeaderBoard()
+        when (quiz.status) {
+            InteractiveUiModel.Quiz.Status.Finished -> displayGameResultWidgetIfHasLeaderBoard()
+            InteractiveUiModel.Quiz.Status.Unknown -> stopQuiz()
         }
     }
 
@@ -964,7 +963,13 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         }
     }
 
-    private fun getQuizChoiceDetailData(choiceId: String, index: Int, cursor: String = "") {
+    private fun getQuizChoiceDetailData(
+        choiceId: String,
+        index: Int,
+        cursor: String = "",
+        interactiveId: String,
+        interactiveTitle: String,
+    ) {
         val oldParticipant = when (val state = _quizChoiceDetailState.value) {
             is QuizChoiceDetailStateUiModel.Success -> {
                 if (cursor.isNotBlank()) state.dataUiModel.participants else emptyList()
@@ -977,6 +982,8 @@ class PlayBroadcastViewModel @AssistedInject constructor(
                 choiceIndex = index,
                 choiceId = choiceId,
                 cursor = cursor,
+                interactiveId = interactiveId,
+                interactiveTitle = interactiveTitle
             )
             if (cursor.isNotBlank()) {
                 val updatedQuizChoicesDetailUiModel =
@@ -988,8 +995,12 @@ class PlayBroadcastViewModel @AssistedInject constructor(
                     QuizChoiceDetailStateUiModel.Success(quizChoicesDetailUiModel)
             }
         }) {
-            it.stackTrace
-            _quizChoiceDetailState.value = QuizChoiceDetailStateUiModel.Error(choiceId, index)
+            _quizChoiceDetailState.value = QuizChoiceDetailStateUiModel.Error(
+                choiceId,
+                index,
+                interactiveId,
+                interactiveTitle,
+            )
         }
     }
 
@@ -1010,7 +1021,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
             if (leaderboardSlots.isNotEmpty()) {
                 _uiEvent.emit(PlayBroadcastEvent.ShowInteractiveGameResultWidget(sharedPref.isFirstGameResult()))
                 sharedPref.setNotFirstGameResult()
-                delay(DEFAULT_GAME_RESULT_AUTO_DISMISS)
+                delay(DEFAULT_GAME_RESULT_COACHMARK_AUTO_DISMISS)
                 _uiEvent.emit(PlayBroadcastEvent.DismissGameResultCoachMark)
             }
         }) {
@@ -1270,7 +1281,8 @@ class PlayBroadcastViewModel @AssistedInject constructor(
                 )
                 newInteractive
             }
-
+            setActiveInteractiveTitle("")
+            setInteractiveId("")
             if (interactive.waitingDuration > 0)
                 delay(interactive.waitingDuration)
             else
@@ -1291,6 +1303,8 @@ class PlayBroadcastViewModel @AssistedInject constructor(
                 )
                 interactive
             }
+            setActiveInteractiveTitle("")
+            setInteractiveId("")
             if (interactive.waitingDuration > 0)
                 delay(interactive.waitingDuration)
             else
@@ -1302,8 +1316,20 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         }
     }
 
+    private fun stopQuiz(){
+        setActiveInteractiveTitle("")
+        setInteractiveId("")
+        displayGameResultWidgetIfHasLeaderBoard()
+        _interactive.value = InteractiveUiModel.Unknown
+    }
+
     private fun handleChoiceDetail(choice: QuizChoicesUiModel) {
-        getQuizChoiceDetailData(choiceId = choice.id, index = choice.index)
+        getQuizChoiceDetailData(
+            choiceId = choice.id,
+            index = choice.index,
+            interactiveId = choice.interactiveId,
+            interactiveTitle = choice.interactiveTitle
+        )
     }
 
     private fun handleLoadMoreParticipant() {
@@ -1313,7 +1339,9 @@ class PlayBroadcastViewModel @AssistedInject constructor(
                     getQuizChoiceDetailData(
                         choiceId = state.dataUiModel.choice.id,
                         index = state.dataUiModel.choice.index,
-                        cursor = state.dataUiModel.cursor
+                        cursor = state.dataUiModel.cursor,
+                        interactiveId = state.dataUiModel.choice.interactiveId,
+                        interactiveTitle = state.dataUiModel.choice.interactiveTitle,
                     )
                 }
             }
@@ -1403,7 +1431,9 @@ class PlayBroadcastViewModel @AssistedInject constructor(
             is QuizChoiceDetailStateUiModel.Error -> {
                 getQuizChoiceDetailData(
                     choiceId = state.choiceId,
-                    index = state.index
+                    index = state.index,
+                    interactiveId = state.interactiveId,
+                    interactiveTitle = state.interactiveTitle,
                 )
             }
         }
@@ -1424,11 +1454,15 @@ class PlayBroadcastViewModel @AssistedInject constructor(
                     isMandatory = true,
                 )
             }
-
+            val selectedInitialDurationIfFound =
+                quizConfig.eligibleStartTimeInMs.indexOf(
+                    TimeUnit.MINUTES.toMillis(
+                        DEFAULT_QUIZ_DURATION_PICKER_IN_MINUTE
+                    )
+                ).coerceAtLeast(0)
             _quizFormData.update {
                 QuizFormDataUiModel(
-                    durationInMs = quizConfig.eligibleStartTimeInMs.indexOf(TimeUnit.MINUTES.toMillis(
-                        DEFAULT_QUIZ_DURATION_PICKER_IN_MINUTE)).coerceAtLeast(0).toLong(),
+                    durationInMs = quizConfig.eligibleStartTimeInMs[selectedInitialDurationIfFound],
                     options = initialOptions
                 )
             }
@@ -1522,7 +1556,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
 
         private const val DEFAULT_BEFORE_LIVE_COUNT_DOWN = 5
         private const val DEFAULT_QUIZ_DURATION_PICKER_IN_MINUTE = 5L
-        private const val DEFAULT_GAME_RESULT_AUTO_DISMISS = 5000L
+        private const val DEFAULT_GAME_RESULT_COACHMARK_AUTO_DISMISS = 5000L
         private const val FLAG_END_CURSOR = "-1"
         private const val WEB_SOCKET_SOURCE_PLAY_BROADCASTER = "Broadcaster"
     }

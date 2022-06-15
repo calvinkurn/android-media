@@ -12,6 +12,7 @@ import com.tokopedia.play.broadcaster.view.bottomsheet.PlayBroSelectGameBottomSh
 import com.tokopedia.play.broadcaster.view.bottomsheet.PlayInteractiveLeaderBoardBottomSheet
 import com.tokopedia.play.broadcaster.view.bottomsheet.PlayBroInteractiveBottomSheet
 import com.tokopedia.play.broadcaster.view.fragment.*
+import com.tokopedia.play.broadcaster.view.fragment.dialog.InteractiveSetupDialogFragment
 import com.tokopedia.play.broadcaster.view.fragment.factory.PlayBroadcastFragmentFactory
 import com.tokopedia.play.broadcaster.view.fragment.summary.PlayBroadcastSummaryFragment
 import com.tokopedia.play.broadcaster.view.fragment.summary.PlayBroadcastPostVideoFragment
@@ -104,4 +105,9 @@ abstract class PlayBroadcastFragmentModule {
     @IntoMap
     @FragmentKey(PlayBroInteractiveBottomSheet::class)
     abstract fun getPlayBroInteractiveBottomSheet(fragment: PlayBroInteractiveBottomSheet) : Fragment
+
+    @Binds
+    @IntoMap
+    @FragmentKey(InteractiveSetupDialogFragment::class)
+    abstract fun getInteractiveSetupDialogFragment(fragment: InteractiveSetupDialogFragment) : Fragment
 }

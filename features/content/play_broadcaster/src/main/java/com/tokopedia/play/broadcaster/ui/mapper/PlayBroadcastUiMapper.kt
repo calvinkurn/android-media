@@ -427,7 +427,7 @@ class PlayBroadcastUiMapper @Inject constructor(
         )
     }
 
-    override fun mapQuizDetail(response: GetInteractiveQuizDetailResponse): QuizDetailDataUiModel {
+    override fun mapQuizDetail(response: GetInteractiveQuizDetailResponse, interactiveId: String): QuizDetailDataUiModel {
         return with(response.playInteractiveQuizDetail) {
             QuizDetailDataUiModel(
                 question = textTransformer.transform(question),
@@ -441,6 +441,7 @@ class PlayBroadcastUiMapper @Inject constructor(
                         participantCount = it.participantCount
                     )
                 },
+                interactiveId = interactiveId,
             )
         }
     }
@@ -459,7 +460,9 @@ class PlayBroadcastUiMapper @Inject constructor(
                         isCorrect = choice.isCorrectAnswer,
                         count = choice.participantCount.toString(),
                         showArrow = true
-                    )
+                    ),
+                    interactiveId = dataUiModel.interactiveId,
+                    interactiveTitle = textTransformer.transform(dataUiModel.question),
                 )
             },
             endsIn = dataUiModel.countDownEnd,
@@ -467,13 +470,15 @@ class PlayBroadcastUiMapper @Inject constructor(
             otherParticipantText = "",
             winners = emptyList(),
             leaderBoardType = LeadeboardType.Quiz,
-            id = "", //TODO() please add Id
+            id = dataUiModel.interactiveId,
         )
     }
 
     override fun mapChoiceDetail(
         response: GetInteractiveQuizChoiceDetailResponse,
-        choiceIndex: Int
+        choiceIndex: Int,
+        interactiveId: String,
+        interactiveTitle: String,
     ): QuizChoiceDetailUiModel {
         return with(response.playInteractiveQuizChoiceDetail) {
             QuizChoiceDetailUiModel(
@@ -486,7 +491,9 @@ class PlayBroadcastUiMapper @Inject constructor(
                         choice.isCorrectAnswer,
                         "${choice.participantCount} Respon",
                         false,
-                    )
+                    ),
+                    interactiveId = interactiveId,
+                    interactiveTitle = interactiveTitle,
                 ),
                 cursor = cursor,
                 winners = winners.map {
@@ -545,14 +552,16 @@ class PlayBroadcastUiMapper @Inject constructor(
                             isCorrect = choice.isCorrectAnswer,
                             count = choice.participantCount.toString(),
                             showArrow = true
-                        )
+                        ),
+                        interactiveId = slot.interactiveId,
+                        interactiveTitle = slot.getSlotTitle()
                     )
                 },
                 otherParticipantText = slot.otherParticipantCountText,
                 otherParticipant = slot.otherParticipantCount.toLong(),
                 reward = textTransformer.transform(slot.reward),
                 leaderBoardType = getLeaderboardType(slot.type),
-                id = "", //TODO() please add id
+                id = slot.interactiveId,
             )
         }
     }

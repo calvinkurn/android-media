@@ -5,6 +5,7 @@ data class QuizDetailDataUiModel(
     val reward:String = "",
     val countDownEnd: Int = 0,
     val choices: List<Choice> = emptyList(),
+    val interactiveId: String = "",
 ) {
     data class Choice(
         val id: String = "",
