@@ -13,6 +13,7 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.seller_shop_flash_sale.R
 import com.tokopedia.seller_shop_flash_sale.databinding.SsfsBottomsheetCampaignDatePickerBinding
+import com.tokopedia.shop.flashsale.common.constant.Constant
 import com.tokopedia.shop.flashsale.common.constant.DateConstant
 import com.tokopedia.shop.flashsale.common.extension.formatTo
 import com.tokopedia.shop.flashsale.common.extension.localFormatTo
@@ -111,13 +112,14 @@ class CampaignDatePickerBottomSheet : BottomSheetUnify() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         observeUpcomingCampaigns()
+        observeCampaignQuota()
         viewModel.getUpcomingCampaigns()
+        viewModel.getCampaignQuota(dateManager.getCurrentMonth(), dateManager.getCurrentYear())
     }
 
     private fun observeUpcomingCampaigns() {
         viewModel.campaigns.observe(viewLifecycleOwner) { result ->
             binding?.loader?.gone()
-
             when (result) {
                 is Success -> {
                     binding?.tpgDateDescription?.visible()
@@ -132,6 +134,22 @@ class CampaignDatePickerBottomSheet : BottomSheetUnify() {
             }
         }
     }
+
+    private fun observeCampaignQuota() {
+        viewModel.campaignQuota.observe(viewLifecycleOwner) { result ->
+            binding?.loader?.gone()
+            when (result) {
+                is Success -> {
+                    val remainingQuota = result.data
+                    handleRemainingQuota(remainingQuota)
+                }
+                is Fail -> {
+                    binding?.root showError result.throwable
+                }
+            }
+        }
+    }
+
 
 
     private fun displayCalendar(campaigns: List<GroupedCampaign>) {
@@ -149,17 +167,6 @@ class CampaignDatePickerBottomSheet : BottomSheetUnify() {
                 .withSelectedDate(selectedDate)
         }
 
-
-        calendar?.onScrollMonthListener = object : CalendarPickerView.OnScrollMonthListener {
-            override fun onScrolled(date: Date) {
-                val monthName = date.formatTo(DateConstant.MONTH)
-                val emptyQuotaWording =
-                    String.format(getString(R.string.sfs_placeholder_empty_quota), monthName)
-                binding?.tpgErrorMessage?.text = emptyQuotaWording
-                binding?.tpgErrorMessage?.visible()
-            }
-
-        }
         calendar?.setOnDateSelectedListener(object : CalendarPickerView.OnDateSelectedListener {
             override fun onDateSelected(date: Date) {
                 showTimePicker(
@@ -212,6 +219,16 @@ class CampaignDatePickerBottomSheet : BottomSheetUnify() {
             delay(DISMISS_BOTTOM_SHEET_DELAY_IN_MILLIS)
             block()
             dismiss()
+        }
+    }
+
+    private fun handleRemainingQuota(remainingQuota : Int) {
+        if (remainingQuota == Constant.ZERO) {
+            val monthName = dateManager.getCurrentDate().formatTo(DateConstant.MONTH)
+            val emptyQuotaWording =
+                String.format(getString(R.string.sfs_placeholder_empty_quota), monthName)
+            binding?.tpgErrorMessage?.text = emptyQuotaWording
+            binding?.tpgErrorMessage?.visible()
         }
     }
 }
