@@ -72,6 +72,7 @@ dependencies {
     implementation rootProject.ext.unifyDependencies.icons
     implementation rootProject.ext.unifyDependencies.empty_state
     implementation rootProject.ext.unifyDependencies.loader_dialog
+    implementation rootProject.ext.unifyDependencies.coach_mark
     implementation rootProject.ext.miscDependencies.chips
 
     implementation projectOrAar(rootProject.ext.libraries.graphql)
