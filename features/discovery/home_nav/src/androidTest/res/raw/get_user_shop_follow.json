@@ -1,0 +1,174 @@
+URL: https://gql.tokopedia.com/graphql/homenav/GetUserShopFollow
+Method: POST
+Protocol: h2
+Status: Complete
+Response: 200
+SSL: Yes
+
+Request time: Wed Jun 15 17:27:12 GMT+07:00 2022
+Response time: Wed Jun 15 17:27:12 GMT+07:00 2022
+Duration: 125 ms
+
+Request size: 946 B
+Response size: -1 B
+Total size: 945 B
+
+---------- Request ----------
+
+x-android: 1
+x-tkpd-clc: GetUserShopFollow-f2ac6e85bb44a78604fe438648603574,
+x-tkpd-gql-query: GetUserShopFollow-f2ac6e85bb44a78604fe438648603574,
+X-Method: POST
+User-Agent: TkpdConsumer/3.150 (Android 11;)
+X-User-ID: 16939915
+Request-Method: POST
+Authorization: TKPDROID AndroidApps:xks6d3tVdTlT7SuipspCVDcO1fw=
+X-Tkpd-App-Version: android-3.150
+X-Tkpd-App-Name: com.tokopedia.tkpd
+Date: Wed, 15 Jun 2022 17:27:12 +0700
+os_version: 30
+Content-Type: application/json; charset=UTF-8
+Content-MD5: 284b6a166929cdb646d5be9ddbb9f923
+x-release-track: production
+X-APP-VERSION: 391100000
+X-Device: android-3.150
+Tkpd-SessionId: ffeh71dAS4G_abhJzYScOs:APA91bE0aC0W3DYNFreTf54sO-P13dlNTIuGnzzaV7x06oLR1idqzqCIgykf8f5kHDgtDwi-0gkeKhK1eMFL6x_jmbIrQBb9ufRXWVqNwseojKA9jArPIy7ubSrrFJS_Fj_IWKygCsPB
+Tkpd-UserId: 16939915
+Fingerprint-Hash: 443ffe697d8b2fb93a61a17787aeed5a
+Accounts-Authorization: Bearer _c-Y_1T3Toi-tNt4BBjigA
+Fingerprint-Data: eyJhbmRyb2lkSWQiOiI3MGVjNGMxNjdkYTc5YWVjIiwiYXZhaWxhYmxlUHJvY2Vzc29yIjoiNCIsImNhcnJpZXIiOiJBbmRyb2lkIiwiY3VycmVudF9vcyI6IjExIiwiZGV2aWNlRHBpIjoiMi42MjUiLCJkZXZpY2VNZW1vcnlDbGFzc0NhcGFjaXR5IjoiMTkyIiwiZGV2aWNlX21hbnVmYWN0dXJlciI6Ikdvb2dsZSIsImRldmljZV9tb2RlbCI6InNka19ncGhvbmVfYXJtNjQiLCJkZXZpY2VfbmFtZSI6InNka19ncGhvbmVfYXJtNjQiLCJkZXZpY2Vfc3lzdGVtIjoiYW5kcm9pZCIsImluc3RhbGxlciI6IiIsImludmFsIjoiRFRfOVh2cGo1YVVQUEhSVFJneHJCUnpVRHhVZThBeF9fY0lIYlZ3STlZNGRKQSIsImlzX2VtdWxhdG9yIjpmYWxzZSwiaXNfamFpbGJyb2tlbl9yb290ZWQiOmZhbHNlLCJpc19uYWthbWEiOiJUUlVFIiwiaXNfdGFibGV0IjpmYWxzZSwiaXN4ODYiOmZhbHNlLCJsYW5ndWFnZSI6ImVuX1VTIiwibG9jYXRpb25fbGF0aXR1ZGUiOiItNi4xNzU3OTQiLCJsb2NhdGlvbl9sb25naXR1ZGUiOiIxMDYuODI2NDU3IiwicGFja2FnZU5hbWUiOiJjb20udG9rb3BlZGlhLnRrcGQiLCJwaWQiOiIiLCJzY3JlZW5fcmVzb2x1dGlvbiI6IjEwODAsMTc5NCIsInNzaWQiOiJcdTAwM2N1bmtub3duIHNzaWRcdTAwM2UiLCJ0aW1lem9uZSI6IkdNVCs3IiwidW5pcXVlX2lkIjoiYzNkYWY0MGQtNzM1ZC00ZmE0LWEyYzMtMDJmNTgxYWJkOWIyIiwidXNlcl9hZ2VudCI6IkRhbHZpay8yLjEuMCAoTGludXg7IFU7IEFuZHJvaWQgMTE7IHNka19ncGhvbmVfYXJtNjQgQnVpbGQvUlNSMS4yMTA3MjIuMDAzKSIsInVzZXJfZG5hbWUiOiJzZGtfZ3Bob25lX2FybTY0IiwidXVpZCI6ImMyZGRkMzhjLWU0NjQtNDlmNS1hMTA2LWFmYTdmZDE5ODlkMiJ9
+X-GA-ID: c3daf40d-735d-4fa4-a2c3-02f581abd9b2
+
+[
+  {
+    "md5": "f2ac6e85bb44a78604fe438648603574",
+    "operationName": null,
+    "query": "query GetUserShopFollow($userID: Int, $perPage: Int){\n              userShopFollow(input:{userID:$userID, perPage:$perPage}){\n                result {\n                  userShopFollowDetail{\n                    shopID\n                    shopName\n                    location\n                    logo\n                    badge{\n                      title\n                      imageURL\n                    }\n                    reputation{\n                      score\n                      tooltip\n                      reputationScore\n                      minBadgeScore\n                      badge\n                      badgeLevel\n                    }\n                  }\n                  haveNext\n                }\n              }\n            }",
+    "variables": {
+      "userID": 16939915,
+      "perPage": 5
+    }
+  }
+]
+
+---------- Response ----------
+
+server: nginx
+date: Wed, 15 Jun 2022 10:27:13 GMT
+content-type: application/json
+vary: Accept-Encoding
+access-control-allow-headers: Content-type, Fingerprint-Data, Fingerprint-Hash, x-user-id, Webview-App-Version, Redirect, Access-Control-Allow-Origin, Content-MD5, Tkpd-UserId, X-Tkpd-UserId, Tkpd-SessionId, X-Device, X-Source, X-Method, X-Date, Authorization, Accounts-Authorization, flight-thirdparty, x-origin, Cshld-SessionID, X-Mitra-Device, x-tkpd-akamai, x-tkpd-lite-service, x-ga-id, x-device, Akamai-Bot, x-tkpd-app-name, x-tkpd-clc, x-return-hmac-md5, queryhash, Event, X-Element-ID, sid_intools, sonic_access_token, Referer, x-tkpd-ht, x-tkpd-htt, X-Auth-Signature, X-Auth-Timestamp, X-Auth-Hash, X-NewRelic-Id
+access-control-allow-methods: GET, HEAD, PUT, PATCH, POST, DELETE
+x-tkpd-beta: 1
+x-tkpd-clc: |
+x-tkpd-gql-dc: gcp
+x-tkpd-srv-go: go-graphql
+access-control-allow-origin: https://m.tokopedia.com
+access-control-allow-credentials: true
+access-control-expose-headers: queryhash
+via: 1.1 google
+alt-svc: h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+
+[
+  {
+    "data": {
+      "userShopFollow": {
+        "result": {
+          "userShopFollowDetail": [
+            {
+              "shopID": "6932612",
+              "shopName": "DDS Infinity",
+              "location": "Jakarta Utara",
+              "logo": "https://images.tokopedia.net/img/cache/215-square/GAnVPX/2021/3/29/d78cfbe1-ea16-4f69-b765-db7e58c78c92.jpg",
+              "badge": {
+                "title": "Power Merchant",
+                "imageURL": "https://images.tokopedia.net/img/goldmerchant/pm_activation/badge/ic-powermerchant-130px.png"
+              },
+              "reputation": {
+                "score": "31597",
+                "tooltip": "31.597 points",
+                "reputationScore": "31.597",
+                "minBadgeScore": "5",
+                "badge": "https://ecs7.tokopedia.net/img/repsys/gold-4.gif",
+                "badgeLevel": "4"
+              }
+            },
+            {
+              "shopID": "832606",
+              "shopName": "Goto Living",
+              "location": "Jakarta Barat",
+              "logo": "https://images.tokopedia.net/img/cache/215-square/GAnVPX/2022/6/1/e0527589-8a62-4e95-84b9-3f9e8a37e786.png",
+              "badge": {
+                "title": "Official Store",
+                "imageURL": "https://images.tokopedia.net/img/official_store/badge_os.png"
+              },
+              "reputation": {
+                "score": "991388",
+                "tooltip": "991.388 points",
+                "reputationScore": "991.388",
+                "minBadgeScore": "5",
+                "badge": "https://ecs7.tokopedia.net/img/repsys/diamond-5.gif",
+                "badgeLevel": "5"
+              }
+            },
+            {
+              "shopID": "10320719",
+              "shopName": "HOP Market",
+              "location": "Jakarta Barat",
+              "logo": "https://images.tokopedia.net/img/cache/215-square/GAnVPX/2022/5/27/f81bd6ed-9cba-4de8-bb06-91962edba3b3.jpg",
+              "badge": {
+                "title": "Official Store",
+                "imageURL": "https://images.tokopedia.net/img/official_store/badge_os.png"
+              },
+              "reputation": {
+                "score": "96913",
+                "tooltip": "96.913 points",
+                "reputationScore": "96.913",
+                "minBadgeScore": "5",
+                "badge": "https://ecs7.tokopedia.net/img/repsys/diamond-1.gif",
+                "badgeLevel": "1"
+              }
+            },
+            {
+              "shopID": "7294350",
+              "shopName": "kenkenjkt",
+              "location": "Jakarta Timur",
+              "logo": "https://images.tokopedia.net/img/cache/215-square/GAnVPX/2021/3/3/bf2b0e0b-a1e5-43b8-92fb-b39ea98cd9ec.jpg",
+              "badge": {
+                "title": "Power Merchant PRO",
+                "imageURL": "https://images.tokopedia.net/img/goldmerchant/pm_activation/badge/Power%20Merchant%20Pro.png"
+              },
+              "reputation": {
+                "score": "554",
+                "tooltip": "554 points",
+                "reputationScore": "554",
+                "minBadgeScore": "5",
+                "badge": "https://ecs7.tokopedia.net/img/repsys/silver-2.gif",
+                "badgeLevel": "2"
+              }
+            },
+            {
+              "shopID": "5343403",
+              "shopName": "M231 Official Store",
+              "location": "Kab. Tangerang",
+              "logo": "https://images.tokopedia.net/img/cache/215-square/GAnVPX/2021/10/9/42f719a3-c712-4a27-bbc9-cf4b293a0214.jpg",
+              "badge": {
+                "title": "Official Store",
+                "imageURL": "https://images.tokopedia.net/img/official_store/badge_os.png"
+              },
+              "reputation": {
+                "score": "68925",
+                "tooltip": "68.925 points",
+                "reputationScore": "68.925",
+                "minBadgeScore": "5",
+                "badge": "https://ecs7.tokopedia.net/img/repsys/diamond-1.gif",
+                "badgeLevel": "1"
+              }
+            }
+          ],
+          "haveNext": true
+        }
+      }
+    }
+  }
+]

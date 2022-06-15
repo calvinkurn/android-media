@@ -1,4 +1,4 @@
-package com.tokopedia.homenav.environment
+package com.tokopedia.homenav.component
 
 import android.app.Activity
 import android.app.Instrumentation
@@ -20,13 +20,12 @@ import com.tokopedia.test.application.util.setupGraphqlMockResponse
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
-import org.junit.Test
 
 /**
  * Created by dhaba
  */
 @CassavaTest
-class InstrumentationHomeMainTestActivity : AppCompatActivity(), HomeNavPerformanceInterface {
+class InstrumentationMainNavAnalyticTestActivity : AppCompatActivity(), HomeNavPerformanceInterface {
     private val navPerformanceMonitoring = PerformanceMonitoring()
     private val navPerformanceCallback = PageLoadTimePerformanceCallback(
             NAV_PAGE_PERFORMANCE_MONITORING_PREPARE_METRICS,
@@ -50,7 +49,8 @@ class InstrumentationHomeMainTestActivity : AppCompatActivity(), HomeNavPerforma
     }
 
     @get:Rule
-    var activityRule = object: IntentsTestRule<InstrumentationHomeMainTestActivity>(InstrumentationHomeMainTestActivity::class.java) {
+    var activityRule = object: IntentsTestRule<InstrumentationMainNavAnalyticTestActivity>(
+        InstrumentationMainNavAnalyticTestActivity::class.java) {
         override fun beforeActivityLaunched() {
             super.beforeActivityLaunched()
             setupGraphqlMockResponse(MainNavMockResponseConfig())
