@@ -7,11 +7,11 @@ object GetAdminManagementInfoListQuery: GqlQueryInterface {
 
     private const val OPERATION_NAME = "GetAdminManagementInfoList"
 
-    private const val SHOP_ID_KEY = "shopId"
+    private const val SHOP_ID_KEY = "shop_id"
 
     private val ADMIN_MANAGEMENT_INFO_LIST_QUERY = """
-        query $OPERATION_NAME(${'$'}shopId: String!) {
-          getAdminManagementInfoList(shop_id: ${'$'}shopId, source: "admin-management-ui", lang: "id", device: "android") {
+        query $OPERATION_NAME(${'$'}shop_id: String!) {
+          getAdminManagementInfoList(shop_id: ${'$'}shop_id, source: "admin-management-ui", lang: "id", device: "android") {
             allPermissionList {
               permissionId
               permissionName
