@@ -60,7 +60,7 @@ class MyShopProductFragment @Inject constructor(
                     viewModel.selectedTagSource,
                     product,
                     position,
-                    false
+                    !viewModel.isUser
                 )
                 viewModel.submitAction(ProductTagAction.ProductSelected(product))
             },
