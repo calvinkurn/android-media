@@ -10,7 +10,7 @@ class SellerCampaignProductListMapper @Inject constructor() {
             success = data.getSellerCampaignProductList.responseHeader.success,
             errorMessage = data.getSellerCampaignProductList.responseHeader.errorMessage,
             productList = data.getSellerCampaignProductList.productList.map { product ->
-               SellerCampaignProductList.ProductList(
+               SellerCampaignProductList.Product(
                    productId = product.productId,
                    parentId = product.parentId,
                    productName = product.productName,

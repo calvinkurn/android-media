@@ -20,6 +20,7 @@ class GetSellerCampaignProductListUseCase @Inject constructor(
 
     companion object {
         private const val REQUEST_PARAM_KEY = "params"
+        private const val ZERO = 0
         private const val QUERY_NAME = "GetSellerCampaignProductList"
         private const val QUERY = """
             query GetSellerCampaignProductList(${'$'}params: GetSellerCampaignProductListRequest!) {
@@ -40,6 +41,26 @@ class GetSellerCampaignProductListUseCase @Inject constructor(
                         stock
                         view_count
                         highlight_product_wording
+                        image_url{
+                            img_100square,
+                            img_200,
+                            img_300,
+                            img_700
+                        },
+                        product_map_data {
+                            product_map_id
+                            campaign_id
+                            product_map_status
+                            product_map_admin_status
+                            original_price
+                            discounted_price
+                            discount_percentage
+                            custom_stock
+                            original_custom_stock
+                            original_stock
+                            campaign_sold_count
+                            max_order
+                        }
                     },
                     total_product,
                     total_product_sold,
@@ -79,9 +100,12 @@ class GetSellerCampaignProductListUseCase @Inject constructor(
         pagination: GetSellerCampaignProductListRequest.Pagination
     ): GraphqlRequest {
         val payload = GetSellerCampaignProductListRequest(
-            campaignId,
-            listType,
-            pagination
+            campaignType = ZERO,
+            listType = listType,
+            pagination = pagination,
+            filter = GetSellerCampaignProductListRequest.Filter(
+                campaignId = campaignId
+            )
         )
         val params = mapOf(REQUEST_PARAM_KEY to payload)
         return GraphqlRequest(

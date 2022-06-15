@@ -85,9 +85,9 @@ data class GetSellerCampaignProductListResponse(
         @SerializedName("product_map_admin_status")
         val productMapAdminStatus: Int = 0,
         @SerializedName("original_price")
-        val originalPrice: Double = 0.0,
+        val originalPrice: Int = 0,
         @SerializedName("discounted_price")
-        val discountedPrice: Double = 0.0,
+        val discountedPrice: Int = 0,
         @SerializedName("discount_percentage")
         val discountPercentage: Int = 0,
         @SerializedName("custom_stock")

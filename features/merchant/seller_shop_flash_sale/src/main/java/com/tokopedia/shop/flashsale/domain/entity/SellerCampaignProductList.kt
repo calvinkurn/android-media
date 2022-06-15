@@ -3,7 +3,7 @@ package com.tokopedia.shop.flashsale.domain.entity
 data class SellerCampaignProductList(
     val success : Boolean = false,
     val errorMessage : List<String> = listOf(),
-    val productList: List<ProductList> = listOf(),
+    val productList: List<Product> = listOf(),
     val totalProduct: Int = 0,
     val totalProductSold: Int = 0,
     val countAcceptedProduct: Int = 0,
@@ -12,7 +12,7 @@ data class SellerCampaignProductList(
     val totalIncomeFormatted: String = "",
     val productFailedCount: Int = 0
 ) {
-    data class ProductList(
+    data class Product(
         val productId: String = "",
         val parentId: String = "",
         val productName: String = "",
@@ -39,8 +39,8 @@ data class SellerCampaignProductList(
         val campaignId: String = "",
         val productMapStatus: Int = 0,
         val productMapAdminStatus: Int = 0,
-        val originalPrice: Double = 0.0,
-        val discountedPrice: Double = 0.0,
+        val originalPrice: Int = 0,
+        val discountedPrice: Int = 0,
         val discountPercentage: Int = 0,
         val customStock: Int = 0,
         val originalCustomStock: Int = 0,
