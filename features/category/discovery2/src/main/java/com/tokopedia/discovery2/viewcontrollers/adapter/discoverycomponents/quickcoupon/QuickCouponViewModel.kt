@@ -87,6 +87,9 @@ class QuickCouponViewModel(val application: Application, private val components:
             if (it) {
                 updateCouponAppliedStatus()
             }
+            else{
+                hideIfPresentInSection()
+            }
             components.isApplicable = it
             couponVisibilityStatus.value = it
         } ?: run {
