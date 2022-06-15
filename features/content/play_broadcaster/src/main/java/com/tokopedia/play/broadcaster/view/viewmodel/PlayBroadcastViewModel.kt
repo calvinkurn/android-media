@@ -545,6 +545,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
     fun startLiveStream(withTimer: Boolean = true) {
         livePusherMediator.startLiveStreaming(ingestUrl, withTimer)
         getPinnedMessage()
+        displayGameResultWidgetIfHasLeaderBoard()
         if (withTimer) {
             // TODO("find the best way to trigger engagement tools")
             getInteractiveConfig()
@@ -556,7 +557,6 @@ class PlayBroadcastViewModel @AssistedInject constructor(
 
     fun reconnectLiveStream() {
         sendLivePusherState(PlayLiveViewState.Connecting)
-
         fun reconnectJob() {
             viewModelScope.launch {
                 val err = getChannelDetail()
@@ -995,7 +995,6 @@ class PlayBroadcastViewModel @AssistedInject constructor(
                     QuizChoiceDetailStateUiModel.Success(quizChoicesDetailUiModel)
             }
         }) {
-            it.stackTrace
             _quizChoiceDetailState.value = QuizChoiceDetailStateUiModel.Error(
                 choiceId,
                 index,
@@ -1022,7 +1021,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
             if (leaderboardSlots.isNotEmpty()) {
                 _uiEvent.emit(PlayBroadcastEvent.ShowInteractiveGameResultWidget(sharedPref.isFirstGameResult()))
                 sharedPref.setNotFirstGameResult()
-                delay(DEFAULT_GAME_RESULT_AUTO_DISMISS)
+                delay(DEFAULT_GAME_RESULT_COACHMARK_AUTO_DISMISS)
                 _uiEvent.emit(PlayBroadcastEvent.DismissGameResultCoachMark)
             }
         }) {
@@ -1557,7 +1556,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
 
         private const val DEFAULT_BEFORE_LIVE_COUNT_DOWN = 5
         private const val DEFAULT_QUIZ_DURATION_PICKER_IN_MINUTE = 5L
-        private const val DEFAULT_GAME_RESULT_AUTO_DISMISS = 5000L
+        private const val DEFAULT_GAME_RESULT_COACHMARK_AUTO_DISMISS = 5000L
         private const val FLAG_END_CURSOR = "-1"
         private const val WEB_SOCKET_SOURCE_PLAY_BROADCASTER = "Broadcaster"
     }
