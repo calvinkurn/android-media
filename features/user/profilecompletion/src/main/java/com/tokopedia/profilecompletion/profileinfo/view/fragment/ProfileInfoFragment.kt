@@ -144,7 +144,7 @@ class ProfileInfoFragment : BaseDaggerFragment(),
         binding?.dividerCloseAccount?.showWithCondition(isUsingRollenceCloseAccount)
         binding?.tgCloseAccount?.showWithCondition(isUsingRollenceCloseAccount)
         if (isUsingRollenceCloseAccount){
-            binding?.tgCloseAccount?.setOnClickListener { loadCheckFinancialAssets() }
+            binding?.tgCloseAccount?.setOnClickListener { checkFinancialAssets() }
         }
     }
 
@@ -699,18 +699,17 @@ class ProfileInfoFragment : BaseDaggerFragment(),
     }
 
     private fun checkFinancialAssetsIsLoading(isLoading: Boolean) {
-        if (loaderCloseAccount == null) {
+        if (isLoading) {
             loaderCloseAccount = LoaderDialog(requireActivity())
-            loaderCloseAccount?.setLoadingText(EMPTY_STRING)
-        }
-
-        if (isLoading)
-            loaderCloseAccount?.show()
-        else
-            loaderCloseAccount?.dialog?.dismiss()
+            loaderCloseAccount?.apply {
+                setLoadingText(EMPTY_STRING)
+                dialog.setOverlayClose(false)
+                show()
+            }
+        } else loaderCloseAccount?.dialog?.dismiss()
     }
 
-    private fun loadCheckFinancialAssets() {
+    private fun checkFinancialAssets() {
         checkFinancialAssetsIsLoading(true)
         viewModel.checkFinancialAssets()
     }
@@ -723,14 +722,9 @@ class ProfileInfoFragment : BaseDaggerFragment(),
     private fun goToCloseAccount() {
         RouteManager.route(
             context,
-            String.format(
-                TOKOPEDIA_WEB_STRING_FORMAT,
-                ApplinkConst.WEBVIEW,
-                //Will delete when production
-                if (GlobalConfig.DEBUG)
-                    "https://1364-staging-feature.tokopedia.com/user/close-account?ld=$PARAM_WEBVIEW_BACK"
-                else TokopediaUrl.getInstance().MOBILEWEB.plus("$TOKOPEDIA_CLOSE_ACCOUNT_PATH?ld=$PARAM_WEBVIEW_BACK")
-            )
+            "${ApplinkConst.WEBVIEW}?${WEBVIEW_PARAM_HIDE_TITLEBAR}&${WEBVIEW_PARAM_BACK_PRESSED_DISABLED}&url=" +
+                    if (GlobalConfig.DEBUG) WEBVIEW_URL_CLOSE_ACCOUNT_DEBUG
+                    else TokopediaUrl.getInstance().MOBILEWEB.plus("$TOKOPEDIA_CLOSE_ACCOUNT_PATH?ld=$PARAM_WEBVIEW_BACK")
         )
     }
 
@@ -751,8 +745,10 @@ class ProfileInfoFragment : BaseDaggerFragment(),
         private const val GENDER_FEMALE = 2
         private const val TAG_BOTTOM_SHEET_CLOSE_ACCOUNT = "bottom sheet close account"
         private const val EMPTY_STRING = ""
+        private const val WEBVIEW_PARAM_HIDE_TITLEBAR = "${com.tokopedia.webview.KEY_TITLEBAR}=false"
+        private const val WEBVIEW_PARAM_BACK_PRESSED_DISABLED = "${com.tokopedia.webview.KEY_BACK_PRESSED_ENABLED}=false"
         private const val PARAM_WEBVIEW_BACK = "TOKOPEDIA://BACK"
-        private const val TOKOPEDIA_WEB_STRING_FORMAT = "%s?titlebar=false&url=%s"
+        private const val WEBVIEW_URL_CLOSE_ACCOUNT_DEBUG = "https://1364-staging-feature.tokopedia.com/user/close-account?ld=$PARAM_WEBVIEW_BACK"
         private const val TOKOPEDIA_CLOSE_ACCOUNT_PATH = "user/close-account"
         private const val ROLLENCE_KEY_CLOSE_ACCOUNT = "close_account"
 

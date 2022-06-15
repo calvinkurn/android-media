@@ -50,8 +50,6 @@ class ProfileViewModel @Inject constructor(
     private val _userFinancialAssets = SingleLiveEvent<Result<CheckUserFinancialAssets>>()
     val userFinancialAssets: LiveData<Result<CheckUserFinancialAssets>> get() = _userFinancialAssets
 
-    private var _loadingUserFinancialAssets = false
-
     fun getProfileInfo() {
         launch (coroutineErrorHandler) {
             try {
@@ -109,17 +107,11 @@ class ProfileViewModel @Inject constructor(
     }
 
     fun checkFinancialAssets() {
-        if (!_loadingUserFinancialAssets) {
-            _loadingUserFinancialAssets = true
-            launchCatchError(coroutineContext, {
-                val response = userFinancialAssetsUseCase(Unit)
-
-                _loadingUserFinancialAssets = false
-                _userFinancialAssets.value = Success(response.checkUserFinancialAssets)
-            }) {
-                _loadingUserFinancialAssets = false
-                _userFinancialAssets.value = Fail(it)
-            }
+        launchCatchError(coroutineContext, {
+            val response = userFinancialAssetsUseCase(Unit)
+            _userFinancialAssets.value = Success(response.checkUserFinancialAssets)
+        }) {
+            _userFinancialAssets.value = Fail(it)
         }
     }
 
