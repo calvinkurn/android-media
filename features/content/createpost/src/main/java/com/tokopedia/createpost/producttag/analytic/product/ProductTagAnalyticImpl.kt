@@ -138,7 +138,7 @@ class ProductTagAnalyticImpl @Inject constructor(
                 KEY_ECOMMERCE to hashMapOf(
                     EVENT_PROMO_VIEW to hashMapOf(
                         KEY_PROMOTIONS to shops.map {
-                            convertToPromotion(it.first, it.second)
+                            convertToPromotion(it.first, it.second + 1)
                         }
                     )
                 )

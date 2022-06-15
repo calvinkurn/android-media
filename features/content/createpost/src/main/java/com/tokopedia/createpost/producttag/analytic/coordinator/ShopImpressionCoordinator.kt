@@ -24,7 +24,7 @@ class ShopImpressionCoordinator @Inject constructor(
     }
 
     fun sendShopImpress() {
-        val finalShop = mShopImpress.distinctBy { it.first.shopId + 1}
+        val finalShop = mShopImpress.distinctBy { it.first.shopId }
 
         if(finalShop.isEmpty()) return
 
