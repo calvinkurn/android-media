@@ -7,6 +7,7 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.ONE
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.shopadmin.common.domain.usecase.GetAdminTypeUseCaseCase
 import com.tokopedia.shopadmin.common.presentation.uimodel.AdminTypeUiModel
 import com.tokopedia.shopadmin.feature.invitationconfirmation.domain.param.InvitationConfirmationParam
@@ -21,6 +22,7 @@ import com.tokopedia.shopadmin.feature.invitationconfirmation.presentation.uimod
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.user.session.UserSessionInterface
 import dagger.Lazy
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -38,6 +40,7 @@ import javax.inject.Inject
 
 class InvitationConfirmationViewModel @Inject constructor(
     private val coroutineDispatchers: CoroutineDispatchers,
+    private val userSession: UserSessionInterface,
     private val getAdminTypeUseCaseCase: Lazy<GetAdminTypeUseCaseCase>,
     private val getShopAdminInfoUseCase: Lazy<GetShopAdminInfoUseCase>,
     private val adminConfirmationRegUseCase: Lazy<AdminConfirmationRegUseCase>,
@@ -73,7 +76,7 @@ class InvitationConfirmationViewModel @Inject constructor(
                 .debounce(DEBOUNCE_DELAY_MILLIS)
                 .flatMapLatest { email ->
                     fetchValidateEmailUseCase(
-                        invitationConfirmationParam.getShopId(),
+                        userSession.shopId,
                         email,
                         invitationConfirmationParam.getShopManageId()
                     ).catch { emit(Fail(it)) }
@@ -96,10 +99,10 @@ class InvitationConfirmationViewModel @Inject constructor(
         })
     }
 
-    fun fetchShopAdminInfo(shopId: Long) {
+    fun fetchShopAdminInfo() {
         launchCatchError(block = {
             val shopAdminInfoData = withContext(coroutineDispatchers.io) {
-                getShopAdminInfoUseCase.get().execute(shopId)
+                getShopAdminInfoUseCase.get().execute(userSession.shopId.toLongOrZero())
             }
             _shopAdminInfo.value = Success(shopAdminInfoData)
         }, onError = {
@@ -107,11 +110,11 @@ class InvitationConfirmationViewModel @Inject constructor(
         })
     }
 
-    fun adminConfirmationReg(userId: String, email: String, acceptBecomeAdmin: Boolean) {
+    fun adminConfirmationReg(acceptBecomeAdmin: Boolean) {
         launchCatchError(block = {
             val confirmationRegResponse = withContext(coroutineDispatchers.io) {
                 adminConfirmationRegUseCase.get().execute(
-                    invitationConfirmationParam.getShopId(), userId,
+                    userSession.shopId, userSession.shopId,
                     acceptBecomeAdmin, invitationConfirmationParam.getShopManageId()
                 )
             }

@@ -111,7 +111,7 @@ class InvitationConfirmationViewModelTest : InvitationConfirmationViewModelTestF
             onGetShopAdminInfoUseCase_thenReturn(shopId, shopAdminInfoUiModel)
 
             //when
-            viewModel.fetchShopAdminInfo(shopId)
+            viewModel.fetchShopAdminInfo()
 
             //then
             verifyGetShopAdminInfoUseCaseCalled(shopId)
@@ -132,7 +132,7 @@ class InvitationConfirmationViewModelTest : InvitationConfirmationViewModelTestF
             onGetShopAdminInfoUseCaseError_thenReturn(shopId, errorException)
 
             //when
-            viewModel.fetchShopAdminInfo(shopId)
+            viewModel.fetchShopAdminInfo()
 
             //then
             verifyGetShopAdminInfoUseCaseCalled(shopId)
@@ -152,7 +152,6 @@ class InvitationConfirmationViewModelTest : InvitationConfirmationViewModelTestF
                     message = "success",
                     acceptBecomeAdmin = acceptBecomeAdmin
                 )
-            invitationConfirmationParam.setShopId(shopId)
             invitationConfirmationParam.setShopManageId(manageID)
             onAdminConfirmationRegUseCase_thenReturn(
                 shopId,
@@ -163,7 +162,7 @@ class InvitationConfirmationViewModelTest : InvitationConfirmationViewModelTestF
             )
 
             //when
-            viewModel.adminConfirmationReg(userId, email, acceptBecomeAdmin)
+            viewModel.adminConfirmationReg(acceptBecomeAdmin)
 
             //then
             verifyAdminConfirmationRegUseCaseCalled(
@@ -186,7 +185,6 @@ class InvitationConfirmationViewModelTest : InvitationConfirmationViewModelTestF
         runBlocking {
             //given
             val errorException = MessageErrorException()
-            invitationConfirmationParam.setShopId(shopId)
             invitationConfirmationParam.setShopManageId(manageID)
             onAdminConfirmationRegUseCaseError_thenReturn(
                 shopId,
@@ -197,7 +195,7 @@ class InvitationConfirmationViewModelTest : InvitationConfirmationViewModelTestF
             )
 
             //when
-            viewModel.adminConfirmationReg(userId, email, acceptBecomeAdmin)
+            viewModel.adminConfirmationReg(acceptBecomeAdmin)
 
             //then
             verifyAdminConfirmationRegUseCaseCalled(
@@ -213,7 +211,6 @@ class InvitationConfirmationViewModelTest : InvitationConfirmationViewModelTestF
     fun `when validateAdminEmail should set live data success`() =
         runBlocking {
             //given
-            invitationConfirmationParam.setShopId(shopId)
             invitationConfirmationParam.setShopManageId(manageID)
 
             val validateAdminEmailUiModel = ValidateAdminEmailUiModel(
@@ -253,7 +250,6 @@ class InvitationConfirmationViewModelTest : InvitationConfirmationViewModelTestF
         runBlocking {
             //given
             val errorException = MessageErrorException()
-            invitationConfirmationParam.setShopId(shopId)
             invitationConfirmationParam.setShopManageId(manageID)
 
             val result = async {

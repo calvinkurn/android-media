@@ -17,7 +17,6 @@ import com.tokopedia.kotlin.extensions.view.afterTextChanged
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.shopadmin.R
 import com.tokopedia.shopadmin.common.constants.AdminImageUrl
@@ -233,7 +232,7 @@ class AdminInvitationConfirmationFragment : BaseDaggerFragment() {
         observe(viewModel.adminType) {
             when (it) {
                 is Success -> {
-                    invitationConfirmationParam.setShopId(it.data.shopID)
+                    setShopId(it.data.shopID)
                     showAdminType(it.data.status)
                 }
                 is Fail -> {
@@ -242,6 +241,12 @@ class AdminInvitationConfirmationFragment : BaseDaggerFragment() {
                     setupToolbar(true)
                 }
             }
+        }
+    }
+
+    private fun setShopId(shopId: String) {
+        if (shopId.isNotBlank()) {
+            userSession.shopId = shopId
         }
     }
 
@@ -268,7 +273,7 @@ class AdminInvitationConfirmationFragment : BaseDaggerFragment() {
         when (adminStatus) {
             AdminStatus.ACTIVE -> navigator.goToShopAccount()
             AdminStatus.WAITING_CONFIRMATION -> {
-                viewModel.fetchShopAdminInfo(invitationConfirmationParam.getShopId().toLongOrZero())
+                viewModel.fetchShopAdminInfo()
             }
             AdminStatus.REJECT -> {
                 val titleRejected =
@@ -486,8 +491,7 @@ class AdminInvitationConfirmationFragment : BaseDaggerFragment() {
     }
 
     private fun adminConfirmationReg(acceptBecomeAdmin: Boolean) {
-        val email = getEmailFromTextField().ifEmpty { userSession.email }.orEmpty()
-        viewModel.adminConfirmationReg(userSession.userId, email, acceptBecomeAdmin)
+        viewModel.adminConfirmationReg(acceptBecomeAdmin)
     }
 
     private fun showLoadingDialog() {

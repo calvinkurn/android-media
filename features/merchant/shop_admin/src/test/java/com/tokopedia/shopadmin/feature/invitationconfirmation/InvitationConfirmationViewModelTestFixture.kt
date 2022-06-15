@@ -14,10 +14,12 @@ import com.tokopedia.shopadmin.feature.invitationconfirmation.presentation.uimod
 import com.tokopedia.shopadmin.feature.invitationconfirmation.presentation.uimodel.UserProfileUpdateUiModel
 import com.tokopedia.shopadmin.feature.invitationconfirmation.presentation.viewmodel.InvitationConfirmationViewModel
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
+import com.tokopedia.user.session.UserSessionInterface
 import dagger.Lazy
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
 import io.mockk.coVerify
+import io.mockk.every
 import io.mockk.impl.annotations.RelaxedMockK
 import io.mockk.unmockkAll
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -48,6 +50,9 @@ abstract class InvitationConfirmationViewModelTestFixture {
     @RelaxedMockK
     lateinit var updateUserProfileUseCase: Lazy<UpdateUserProfileUseCase>
 
+    @RelaxedMockK
+    lateinit var userSession: UserSessionInterface
+
     lateinit var invitationConfirmationParam: InvitationConfirmationParam
 
     protected lateinit var viewModel: InvitationConfirmationViewModel
@@ -55,7 +60,6 @@ abstract class InvitationConfirmationViewModelTestFixture {
     protected val shopId = "1234"
     protected val userId = "1234"
     protected val email = "shopadmin@tokopedia.com"
-    protected val otpToken = "97849"
     protected val acceptBecomeAdmin = true
     protected val manageID = "567456"
 
@@ -63,8 +67,11 @@ abstract class InvitationConfirmationViewModelTestFixture {
     fun setup() {
         MockKAnnotations.init(this)
         invitationConfirmationParam = InvitationConfirmationParamImpl()
+        every { userSession.shopId } returns shopId
+        every { userSession.userId } returns userId
         viewModel = InvitationConfirmationViewModel(
             CoroutineTestDispatchersProvider,
+            userSession,
             getAdminTypeUseCaseCase,
             getShopAdminInfoUseCase,
             adminConfirmationRegUseCase,

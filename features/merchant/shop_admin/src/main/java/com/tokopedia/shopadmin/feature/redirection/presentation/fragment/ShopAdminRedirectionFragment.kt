@@ -23,6 +23,7 @@ import com.tokopedia.shopadmin.feature.redirection.di.component.ShopAdminRedirec
 import com.tokopedia.shopadmin.feature.redirection.presentation.viewmodel.ShopAdminRedirectionViewModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
 
@@ -30,6 +31,9 @@ class ShopAdminRedirectionFragment : BaseDaggerFragment() {
 
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
+
+    @Inject
+    lateinit var userSession: UserSessionInterface
 
     private val viewModel by lazy {
         ViewModelProvider(this, viewModelFactory).get(
@@ -68,12 +72,19 @@ class ShopAdminRedirectionFragment : BaseDaggerFragment() {
         observe(viewModel.adminType) {
             when (it) {
                 is Success -> {
+                    setShopId(it.data.shopID)
                     redirectionShopAdmin(it.data)
                 }
                 is Fail -> {
                     redirectCreateShopIfFail()
                 }
             }
+        }
+    }
+
+    private fun setShopId(shopId: String) {
+        if (shopId.isNotBlank() && shopId != DEFAULT_SHOP_ID_NOT_OPEN) {
+            userSession.shopId = shopId
         }
     }
 
