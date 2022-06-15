@@ -23,7 +23,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:closeButtonVisibility="gone"
-                app:descriptionText="Biar mudah cepat, pakai rekomendasi kupon dan minimum pembelian untuk member kamu!"
+                app:descriptionText="@string/tm_kupon_single_ticker"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:tickerShapeType="full"
@@ -120,7 +120,7 @@
 
             <com.tokopedia.unifycomponents.TextFieldUnify2
                 android:id="@+id/textFieldProgramStartDate"
-                android:layout_width="0dp"
+                android:layout_width="@dimen/tm_dash_dp_0"
                 android:layout_height="wrap_content"
                 android:clickable="false"
                 android:layout_marginTop="@dimen/unify_space_16"
@@ -137,7 +137,7 @@
 
             <com.tokopedia.unifycomponents.TextFieldUnify2
                 android:id="@+id/textFieldProgramStartTime"
-                android:layout_width="0dp"
+                android:layout_width="@dimen/tm_dash_dp_0"
                 android:layout_height="wrap_content"
                 android:clickable="false"
                 android:layout_marginTop="@dimen/unify_space_16"
@@ -155,7 +155,7 @@
             <View
                 android:id="@+id/viewDividerFour"
                 android:layout_width="match_parent"
-                android:layout_height="4dp"
+                android:layout_height="@dimen/tm_dash_dp_4"
                 android:layout_marginTop="@dimen/unify_space_24"
                 android:background="@color/Unify_NN50"
                 app:layout_constraintStart_toStartOf="parent"
@@ -163,7 +163,7 @@
 
             <com.tokopedia.unifycomponents.TextFieldUnify2
                 android:id="@+id/textFieldProgramEndDate"
-                android:layout_width="0dp"
+                android:layout_width="@dimen/tm_dash_dp_0"
                 android:layout_height="wrap_content"
                 android:clickable="false"
                 android:layout_marginTop="@dimen/unify_space_16"
@@ -180,7 +180,7 @@
 
             <com.tokopedia.unifycomponents.TextFieldUnify2
                 android:id="@+id/textFieldProgramEndTime"
-                android:layout_width="0dp"
+                android:layout_width="@dimen/tm_dash_dp_0"
                 android:layout_height="wrap_content"
                 android:clickable="true"
                 android:focusable="true"
@@ -199,7 +199,7 @@
             <View
                 android:id="@+id/viewDividerFive"
                 android:layout_width="match_parent"
-                android:layout_height="8dp"
+                android:layout_height="@dimen/tm_dash_dp_8"
                 android:layout_marginTop="@dimen/unify_space_24"
                 android:background="@color/Unify_NN50"
                 app:layout_constraintStart_toStartOf="parent"

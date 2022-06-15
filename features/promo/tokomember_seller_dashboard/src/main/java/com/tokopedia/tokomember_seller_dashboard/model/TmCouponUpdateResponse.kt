@@ -3,9 +3,8 @@ package com.tokopedia.tokomember_seller_dashboard.model
 import com.google.gson.annotations.SerializedName
 
 data class TmCouponUpdateResponse(
-
-	@SerializedName("data")
-	val data: TmCouponUpdateStatus? = null
+	@SerializedName("merchantPromotionUpdateStatusMV")
+	val data: MerchantPromotionUpdateStatusMV? = null
 )
 
 data class TmCouponUpdateData(
@@ -20,10 +19,6 @@ data class TmCouponUpdateData(
 	val status: String? = null
 )
 
-data class TmCouponUpdateStatus(
-	@SerializedName("merchantPromotionUpdateStatusMV")
-	val data: MerchantPromotionUpdateStatusMV? = null
-)
 
 data class MerchantPromotionUpdateStatusMV(
 

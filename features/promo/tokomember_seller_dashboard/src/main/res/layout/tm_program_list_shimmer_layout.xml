@@ -12,22 +12,22 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp">
+        android:layout_marginTop="@dimen/tm_dash_dp_20">
 
     <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/loader_status"
-        android:layout_width="4dp"
-        android:layout_height="12dp"
-        android:layout_marginTop="8dp"
+        android:layout_width="@dimen/tm_dash_dp_4"
+        android:layout_height="@dimen/tm_dash_dp_12"
+        android:layout_marginTop="@dimen/tm_dash_dp_8"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:loader_corner_radius="8dp"
+        app:loader_corner_radius="@dimen/tm_dash_dp_8"
         app:loader_type="rect"/>
 
         <com.tokopedia.unifycomponents.LoaderUnify
             android:id="@+id/programStatus"
             android:layout_width="wrap_content"
-            android:layout_height="12dp"
+            android:layout_height="@dimen/tm_dash_dp_12"
             android:layout_marginStart="@dimen/unify_space_12"
             android:textColor="@color/Unify_GN500"
             app:layout_constraintBottom_toBottomOf="@id/loader_status"
@@ -36,7 +36,7 @@
             app:typographyType="small"
             app:typographyWeight="bold"
             tools:text="Program Aktif"
-            app:loader_corner_radius="8dp"
+            app:loader_corner_radius="@dimen/tm_dash_dp_8"
             app:loader_type="rect"/>
 
         <com.tokopedia.unifycomponents.LoaderUnify
@@ -44,12 +44,12 @@
             android:layout_width="@dimen/unify_space_40"
             android:layout_height="@dimen/unify_space_40"
             android:background="@drawable/bg_coupon_icon"
-            android:layout_marginTop="@dimen/dp_28"
+            android:layout_marginTop="@dimen/tm_dash_dp_28"
             app:icon_name="PROJECT"
             app:icon_color_light_enable="@color/Unify_G500"
             app:layout_constraintStart_toStartOf="@+id/programStatus"
             app:layout_constraintTop_toBottomOf="@id/programStatus"
-            app:loader_corner_radius="8dp"
+            app:loader_corner_radius="@dimen/tm_dash_dp_8"
             app:loader_type="rect"/>
 
 
@@ -65,21 +65,21 @@
 
             <com.tokopedia.unifycomponents.LoaderUnify
                 android:id="@+id/periodProgram"
-                android:layout_width="80dp"
-                android:layout_height="12dp"
+                android:layout_width="@dimen/tm_dash_dp_80"
+                android:layout_height="@dimen/tm_dash_dp_12"
                 android:layout_marginStart="@dimen/unify_space_12"
                 android:textColor="@color/Unify_NN600"
                 android:text="Periode Program"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="@id/ivTime"
                 app:typographyType="small"
-                app:loader_corner_radius="8dp"
+                app:loader_corner_radius="@dimen/tm_dash_dp_8"
                 app:loader_type="rect"/>
 
             <com.tokopedia.unifycomponents.LoaderUnify
                 android:id="@+id/programStartDate"
-                android:layout_width="96dp"
-                android:layout_height="18dp"
+                android:layout_width="@dimen/tm_dash_dp_96"
+                android:layout_height="@dimen/tm_dash_dp_18"
                 android:layout_marginStart="@dimen/unify_space_12"
                 android:layout_marginTop="@dimen/unify_space_4"
                 android:textColor="@color/Unify_NN950"
@@ -87,21 +87,21 @@
                 app:layout_constraintTop_toTopOf="parent"
                 app:typographyType="heading_5"
                 app:typographyWeight="bold"
-                app:loader_corner_radius="8dp"
+                app:loader_corner_radius="@dimen/tm_dash_dp_8"
                 app:loader_type="rect"/>
 
             <com.tokopedia.unifycomponents.LoaderUnify
                 android:id="@+id/programStartTime"
-                android:layout_width="96dp"
-                android:layout_height="18dp"
-                android:layout_marginTop="4dp"
+                android:layout_width="@dimen/tm_dash_dp_96"
+                android:layout_height="@dimen/tm_dash_dp_18"
+                android:layout_marginTop="@dimen/tm_dash_dp_4"
                 android:layout_marginStart="@dimen/unify_space_12"
                 android:textColor="@color/Unify_NN950"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:typographyType="body_2"
                 app:typographyWeight="reguler"
-                app:loader_corner_radius="8dp"
+                app:loader_corner_radius="@dimen/tm_dash_dp_8"
                 app:loader_type="rect"/>
         </LinearLayout>
 
@@ -118,8 +118,8 @@
 
             <com.tokopedia.unifycomponents.LoaderUnify
                 android:id="@+id/programEndDate"
-                android:layout_width="96dp"
-                android:layout_height="18dp"
+                android:layout_width="@dimen/tm_dash_dp_96"
+                android:layout_height="@dimen/tm_dash_dp_18"
                 android:layout_marginStart="@dimen/unify_space_12"
                 android:layout_marginTop="@dimen/unify_space_4"
                 android:textColor="@color/Unify_NN950"
@@ -127,21 +127,21 @@
                 app:layout_constraintTop_toTopOf="parent"
                 app:typographyType="heading_5"
                 app:typographyWeight="bold"
-                app:loader_corner_radius="8dp"
+                app:loader_corner_radius="@dimen/tm_dash_dp_8"
                 app:loader_type="rect"/>
 
             <com.tokopedia.unifycomponents.LoaderUnify
                 android:id="@+id/programEndTime"
-                android:layout_width="96dp"
-                android:layout_height="18dp"
-                android:layout_marginTop="4dp"
+                android:layout_width="@dimen/tm_dash_dp_96"
+                android:layout_height="@dimen/tm_dash_dp_18"
+                android:layout_marginTop="@dimen/tm_dash_dp_4"
                 android:layout_marginStart="@dimen/unify_space_12"
                 android:textColor="@color/Unify_NN950"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:typographyType="body_2"
                 app:typographyWeight="reguler"
-                app:loader_corner_radius="8dp"
+                app:loader_corner_radius="@dimen/tm_dash_dp_8"
                 app:loader_type="rect"/>
         </LinearLayout>
 
@@ -150,13 +150,13 @@
             android:layout_width="@dimen/unify_space_40"
             android:layout_height="@dimen/unify_space_40"
             android:background="@drawable/bg_coupon_icon"
-            android:layout_marginTop="@dimen/dp_28"
+            android:layout_marginTop="@dimen/tm_dash_dp_28"
             app:icon_name="CLOCK"
             app:icon_color_light_enable="@color/Unify_G500"
             app:layout_constraintCircleRadius="@dimen/dp_10"
             app:layout_constraintStart_toStartOf="@+id/programStatus"
             app:layout_constraintTop_toBottomOf="@id/ivTime"
-            app:loader_corner_radius="8dp"
+            app:loader_corner_radius="@dimen/tm_dash_dp_8"
             app:loader_type="rect"/>
 
         <LinearLayout
@@ -171,8 +171,8 @@
 
             <com.tokopedia.unifycomponents.LoaderUnify
                 android:id="@+id/programMemberLabel"
-                android:layout_width="110dp"
-                android:layout_height="12dp"
+                android:layout_width="@dimen/tm_dash_dp_110"
+                android:layout_height="@dimen/tm_dash_dp_12"
                 android:layout_marginStart="@dimen/unify_space_12"
                 android:layout_marginTop="@dimen/unify_space_4"
                 android:textColor="@color/Unify_NN600"
@@ -180,21 +180,21 @@
                 app:layout_constraintTop_toTopOf="parent"
                 app:typographyType="small"
                 android:text="Tambahan member"
-                app:loader_corner_radius="8dp"
+                app:loader_corner_radius="@dimen/tm_dash_dp_8"
                 app:loader_type="rect"/>
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/programMemberValue"
-                android:layout_width="50dp"
-                android:layout_height="18dp"
-                android:layout_marginTop="4dp"
+                android:layout_width="@dimen/tm_dash_dp_50"
+                android:layout_height="@dimen/tm_dash_dp_18"
+                android:layout_marginTop="@dimen/tm_dash_dp_4"
                 android:layout_marginStart="@dimen/unify_space_12"
                 android:textColor="@color/Unify_NN950"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:typographyType="heading_5"
                 app:typographyWeight="reguler"
-                app:loader_corner_radius="8dp"
+                app:loader_corner_radius="@dimen/tm_dash_dp_8"
                 app:loader_type="rect"/>
         </LinearLayout>
 
@@ -210,8 +210,8 @@
 
             <com.tokopedia.unifycomponents.LoaderUnify
                 android:id="@+id/programMemberTransaksiLabel"
-                android:layout_width="110dp"
-                android:layout_height="12dp"
+                android:layout_width="@dimen/tm_dash_dp_110"
+                android:layout_height="@dimen/tm_dash_dp_12"
                 android:layout_marginStart="@dimen/unify_space_12"
                 android:layout_marginTop="@dimen/unify_space_4"
                 android:textColor="@color/Unify_NN600"
@@ -219,21 +219,21 @@
                 app:layout_constraintTop_toTopOf="parent"
                 app:typographyType="small"
                 android:text="Jumlah transaksi"
-                app:loader_corner_radius="8dp"
+                app:loader_corner_radius="@dimen/tm_dash_dp_8"
                 app:loader_type="rect"/>
 
             <com.tokopedia.unifycomponents.LoaderUnify
                 android:id="@+id/programMemberTransaksivalue"
-                android:layout_width="50dp"
-                android:layout_height="18dp"
-                android:layout_marginTop="4dp"
+                android:layout_width="@dimen/tm_dash_dp_50"
+                android:layout_height="@dimen/tm_dash_dp_18"
+                android:layout_marginTop="@dimen/tm_dash_dp_4"
                 android:layout_marginStart="@dimen/unify_space_12"
                 android:textColor="@color/Unify_NN950"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:typographyType="heading_5"
                 app:typographyWeight="reguler"
-                app:loader_corner_radius="8dp"
+                app:loader_corner_radius="@dimen/tm_dash_dp_8"
                 app:loader_type="rect"/>
         </LinearLayout>
 
@@ -242,22 +242,22 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp">
+        android:layout_marginTop="@dimen/tm_dash_dp_20">
 
     <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/loader_status"
-        android:layout_width="4dp"
-        android:layout_height="12dp"
-        android:layout_marginTop="8dp"
+        android:layout_width="@dimen/tm_dash_dp_4"
+        android:layout_height="@dimen/tm_dash_dp_12"
+        android:layout_marginTop="@dimen/tm_dash_dp_8"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:loader_corner_radius="8dp"
+        app:loader_corner_radius="@dimen/tm_dash_dp_8"
         app:loader_type="rect"/>
 
         <com.tokopedia.unifycomponents.LoaderUnify
             android:id="@+id/programStatus"
             android:layout_width="wrap_content"
-            android:layout_height="12dp"
+            android:layout_height="@dimen/tm_dash_dp_12"
             android:layout_marginStart="@dimen/unify_space_12"
             android:textColor="@color/Unify_GN500"
             app:layout_constraintBottom_toBottomOf="@id/loader_status"
@@ -266,7 +266,7 @@
             app:typographyType="small"
             app:typographyWeight="bold"
             tools:text="Program Aktif"
-            app:loader_corner_radius="8dp"
+            app:loader_corner_radius="@dimen/tm_dash_dp_8"
             app:loader_type="rect"/>
 
         <com.tokopedia.unifycomponents.LoaderUnify
@@ -274,12 +274,12 @@
             android:layout_width="@dimen/unify_space_40"
             android:layout_height="@dimen/unify_space_40"
             android:background="@drawable/bg_coupon_icon"
-            android:layout_marginTop="@dimen/dp_28"
+            android:layout_marginTop="@dimen/tm_dash_dp_28"
             app:icon_name="PROJECT"
             app:icon_color_light_enable="@color/Unify_G500"
             app:layout_constraintStart_toStartOf="@+id/programStatus"
             app:layout_constraintTop_toBottomOf="@id/programStatus"
-            app:loader_corner_radius="8dp"
+            app:loader_corner_radius="@dimen/tm_dash_dp_8"
             app:loader_type="rect"/>
 
 
@@ -295,21 +295,21 @@
 
             <com.tokopedia.unifycomponents.LoaderUnify
                 android:id="@+id/periodProgram"
-                android:layout_width="80dp"
-                android:layout_height="12dp"
+                android:layout_width="@dimen/tm_dash_dp_80"
+                android:layout_height="@dimen/tm_dash_dp_12"
                 android:layout_marginStart="@dimen/unify_space_12"
                 android:textColor="@color/Unify_NN600"
                 android:text="Periode Program"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="@id/ivTime"
                 app:typographyType="small"
-                app:loader_corner_radius="8dp"
+                app:loader_corner_radius="@dimen/tm_dash_dp_8"
                 app:loader_type="rect"/>
 
             <com.tokopedia.unifycomponents.LoaderUnify
                 android:id="@+id/programStartDate"
-                android:layout_width="96dp"
-                android:layout_height="18dp"
+                android:layout_width="@dimen/tm_dash_dp_96"
+                android:layout_height="@dimen/tm_dash_dp_18"
                 android:layout_marginStart="@dimen/unify_space_12"
                 android:layout_marginTop="@dimen/unify_space_4"
                 android:textColor="@color/Unify_NN950"
@@ -317,21 +317,21 @@
                 app:layout_constraintTop_toTopOf="parent"
                 app:typographyType="heading_5"
                 app:typographyWeight="bold"
-                app:loader_corner_radius="8dp"
+                app:loader_corner_radius="@dimen/tm_dash_dp_8"
                 app:loader_type="rect"/>
 
             <com.tokopedia.unifycomponents.LoaderUnify
                 android:id="@+id/programStartTime"
-                android:layout_width="96dp"
-                android:layout_height="18dp"
-                android:layout_marginTop="4dp"
+                android:layout_width="@dimen/tm_dash_dp_96"
+                android:layout_height="@dimen/tm_dash_dp_18"
+                android:layout_marginTop="@dimen/tm_dash_dp_4"
                 android:layout_marginStart="@dimen/unify_space_12"
                 android:textColor="@color/Unify_NN950"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:typographyType="body_2"
                 app:typographyWeight="reguler"
-                app:loader_corner_radius="8dp"
+                app:loader_corner_radius="@dimen/tm_dash_dp_8"
                 app:loader_type="rect"/>
         </LinearLayout>
 
@@ -348,8 +348,8 @@
 
             <com.tokopedia.unifycomponents.LoaderUnify
                 android:id="@+id/programEndDate"
-                android:layout_width="96dp"
-                android:layout_height="18dp"
+                android:layout_width="@dimen/tm_dash_dp_96"
+                android:layout_height="@dimen/tm_dash_dp_18"
                 android:layout_marginStart="@dimen/unify_space_12"
                 android:layout_marginTop="@dimen/unify_space_4"
                 android:textColor="@color/Unify_NN950"
@@ -357,21 +357,21 @@
                 app:layout_constraintTop_toTopOf="parent"
                 app:typographyType="heading_5"
                 app:typographyWeight="bold"
-                app:loader_corner_radius="8dp"
+                app:loader_corner_radius="@dimen/tm_dash_dp_8"
                 app:loader_type="rect"/>
 
             <com.tokopedia.unifycomponents.LoaderUnify
                 android:id="@+id/programEndTime"
-                android:layout_width="96dp"
-                android:layout_height="18dp"
-                android:layout_marginTop="4dp"
+                android:layout_width="@dimen/tm_dash_dp_96"
+                android:layout_height="@dimen/tm_dash_dp_18"
+                android:layout_marginTop="@dimen/tm_dash_dp_4"
                 android:layout_marginStart="@dimen/unify_space_12"
                 android:textColor="@color/Unify_NN950"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:typographyType="body_2"
                 app:typographyWeight="reguler"
-                app:loader_corner_radius="8dp"
+                app:loader_corner_radius="@dimen/tm_dash_dp_8"
                 app:loader_type="rect"/>
         </LinearLayout>
 
@@ -380,13 +380,13 @@
             android:layout_width="@dimen/unify_space_40"
             android:layout_height="@dimen/unify_space_40"
             android:background="@drawable/bg_coupon_icon"
-            android:layout_marginTop="@dimen/dp_28"
+            android:layout_marginTop="@dimen/tm_dash_dp_28"
             app:icon_name="CLOCK"
             app:icon_color_light_enable="@color/Unify_G500"
             app:layout_constraintCircleRadius="@dimen/dp_10"
             app:layout_constraintStart_toStartOf="@+id/programStatus"
             app:layout_constraintTop_toBottomOf="@id/ivTime"
-            app:loader_corner_radius="8dp"
+            app:loader_corner_radius="@dimen/tm_dash_dp_8"
             app:loader_type="rect"/>
 
         <LinearLayout
@@ -401,8 +401,8 @@
 
             <com.tokopedia.unifycomponents.LoaderUnify
                 android:id="@+id/programMemberLabel"
-                android:layout_width="110dp"
-                android:layout_height="12dp"
+                android:layout_width="@dimen/tm_dash_dp_110"
+                android:layout_height="@dimen/tm_dash_dp_12"
                 android:layout_marginStart="@dimen/unify_space_12"
                 android:layout_marginTop="@dimen/unify_space_4"
                 android:textColor="@color/Unify_NN600"
@@ -410,21 +410,21 @@
                 app:layout_constraintTop_toTopOf="parent"
                 app:typographyType="small"
                 android:text="Tambahan member"
-                app:loader_corner_radius="8dp"
+                app:loader_corner_radius="@dimen/tm_dash_dp_8"
                 app:loader_type="rect"/>
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/programMemberValue"
-                android:layout_width="50dp"
-                android:layout_height="18dp"
-                android:layout_marginTop="4dp"
+                android:layout_width="@dimen/tm_dash_dp_50"
+                android:layout_height="@dimen/tm_dash_dp_18"
+                android:layout_marginTop="@dimen/tm_dash_dp_4"
                 android:layout_marginStart="@dimen/unify_space_12"
                 android:textColor="@color/Unify_NN950"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:typographyType="heading_5"
                 app:typographyWeight="reguler"
-                app:loader_corner_radius="8dp"
+                app:loader_corner_radius="@dimen/tm_dash_dp_8"
                 app:loader_type="rect"/>
         </LinearLayout>
 
@@ -440,8 +440,8 @@
 
             <com.tokopedia.unifycomponents.LoaderUnify
                 android:id="@+id/programMemberTransaksiLabel"
-                android:layout_width="110dp"
-                android:layout_height="12dp"
+                android:layout_width="@dimen/tm_dash_dp_110"
+                android:layout_height="@dimen/tm_dash_dp_12"
                 android:layout_marginStart="@dimen/unify_space_12"
                 android:layout_marginTop="@dimen/unify_space_4"
                 android:textColor="@color/Unify_NN600"
@@ -449,21 +449,21 @@
                 app:layout_constraintTop_toTopOf="parent"
                 app:typographyType="small"
                 android:text="Jumlah transaksi"
-                app:loader_corner_radius="8dp"
+                app:loader_corner_radius="@dimen/tm_dash_dp_8"
                 app:loader_type="rect"/>
 
             <com.tokopedia.unifycomponents.LoaderUnify
                 android:id="@+id/programMemberTransaksivalue"
-                android:layout_width="50dp"
-                android:layout_height="18dp"
-                android:layout_marginTop="4dp"
+                android:layout_width="@dimen/tm_dash_dp_50"
+                android:layout_height="@dimen/tm_dash_dp_18"
+                android:layout_marginTop="@dimen/tm_dash_dp_4"
                 android:layout_marginStart="@dimen/unify_space_12"
                 android:textColor="@color/Unify_NN950"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:typographyType="heading_5"
                 app:typographyWeight="reguler"
-                app:loader_corner_radius="8dp"
+                app:loader_corner_radius="@dimen/tm_dash_dp_8"
                 app:loader_type="rect"/>
         </LinearLayout>
 
@@ -472,22 +472,22 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp">
+        android:layout_marginTop="@dimen/tm_dash_dp_20">
 
     <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/loader_status"
-        android:layout_width="4dp"
-        android:layout_height="12dp"
-        android:layout_marginTop="8dp"
+        android:layout_width="@dimen/tm_dash_dp_4"
+        android:layout_height="@dimen/tm_dash_dp_12"
+        android:layout_marginTop="@dimen/tm_dash_dp_8"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:loader_corner_radius="8dp"
+        app:loader_corner_radius="@dimen/tm_dash_dp_8"
         app:loader_type="rect"/>
 
         <com.tokopedia.unifycomponents.LoaderUnify
             android:id="@+id/programStatus"
             android:layout_width="wrap_content"
-            android:layout_height="12dp"
+            android:layout_height="@dimen/tm_dash_dp_12"
             android:layout_marginStart="@dimen/unify_space_12"
             android:textColor="@color/Unify_GN500"
             app:layout_constraintBottom_toBottomOf="@id/loader_status"
@@ -496,7 +496,7 @@
             app:typographyType="small"
             app:typographyWeight="bold"
             tools:text="Program Aktif"
-            app:loader_corner_radius="8dp"
+            app:loader_corner_radius="@dimen/tm_dash_dp_8"
             app:loader_type="rect"/>
 
         <com.tokopedia.unifycomponents.LoaderUnify
@@ -504,12 +504,12 @@
             android:layout_width="@dimen/unify_space_40"
             android:layout_height="@dimen/unify_space_40"
             android:background="@drawable/bg_coupon_icon"
-            android:layout_marginTop="@dimen/dp_28"
+            android:layout_marginTop="@dimen/tm_dash_dp_28"
             app:icon_name="PROJECT"
             app:icon_color_light_enable="@color/Unify_G500"
             app:layout_constraintStart_toStartOf="@+id/programStatus"
             app:layout_constraintTop_toBottomOf="@id/programStatus"
-            app:loader_corner_radius="8dp"
+            app:loader_corner_radius="@dimen/tm_dash_dp_8"
             app:loader_type="rect"/>
 
 
@@ -525,21 +525,21 @@
 
             <com.tokopedia.unifycomponents.LoaderUnify
                 android:id="@+id/periodProgram"
-                android:layout_width="80dp"
-                android:layout_height="12dp"
+                android:layout_width="@dimen/tm_dash_dp_80"
+                android:layout_height="@dimen/tm_dash_dp_12"
                 android:layout_marginStart="@dimen/unify_space_12"
                 android:textColor="@color/Unify_NN600"
                 android:text="Periode Program"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="@id/ivTime"
                 app:typographyType="small"
-                app:loader_corner_radius="8dp"
+                app:loader_corner_radius="@dimen/tm_dash_dp_8"
                 app:loader_type="rect"/>
 
             <com.tokopedia.unifycomponents.LoaderUnify
                 android:id="@+id/programStartDate"
-                android:layout_width="96dp"
-                android:layout_height="18dp"
+                android:layout_width="@dimen/tm_dash_dp_96"
+                android:layout_height="@dimen/tm_dash_dp_18"
                 android:layout_marginStart="@dimen/unify_space_12"
                 android:layout_marginTop="@dimen/unify_space_4"
                 android:textColor="@color/Unify_NN950"
@@ -547,21 +547,21 @@
                 app:layout_constraintTop_toTopOf="parent"
                 app:typographyType="heading_5"
                 app:typographyWeight="bold"
-                app:loader_corner_radius="8dp"
+                app:loader_corner_radius="@dimen/tm_dash_dp_8"
                 app:loader_type="rect"/>
 
             <com.tokopedia.unifycomponents.LoaderUnify
                 android:id="@+id/programStartTime"
-                android:layout_width="96dp"
-                android:layout_height="18dp"
-                android:layout_marginTop="4dp"
+                android:layout_width="@dimen/tm_dash_dp_96"
+                android:layout_height="@dimen/tm_dash_dp_18"
+                android:layout_marginTop="@dimen/tm_dash_dp_4"
                 android:layout_marginStart="@dimen/unify_space_12"
                 android:textColor="@color/Unify_NN950"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:typographyType="body_2"
                 app:typographyWeight="reguler"
-                app:loader_corner_radius="8dp"
+                app:loader_corner_radius="@dimen/tm_dash_dp_8"
                 app:loader_type="rect"/>
         </LinearLayout>
 
@@ -578,8 +578,8 @@
 
             <com.tokopedia.unifycomponents.LoaderUnify
                 android:id="@+id/programEndDate"
-                android:layout_width="96dp"
-                android:layout_height="18dp"
+                android:layout_width="@dimen/tm_dash_dp_96"
+                android:layout_height="@dimen/tm_dash_dp_18"
                 android:layout_marginStart="@dimen/unify_space_12"
                 android:layout_marginTop="@dimen/unify_space_4"
                 android:textColor="@color/Unify_NN950"
@@ -587,21 +587,21 @@
                 app:layout_constraintTop_toTopOf="parent"
                 app:typographyType="heading_5"
                 app:typographyWeight="bold"
-                app:loader_corner_radius="8dp"
+                app:loader_corner_radius="@dimen/tm_dash_dp_8"
                 app:loader_type="rect"/>
 
             <com.tokopedia.unifycomponents.LoaderUnify
                 android:id="@+id/programEndTime"
-                android:layout_width="96dp"
-                android:layout_height="18dp"
-                android:layout_marginTop="4dp"
+                android:layout_width="@dimen/tm_dash_dp_96"
+                android:layout_height="@dimen/tm_dash_dp_18"
+                android:layout_marginTop="@dimen/tm_dash_dp_4"
                 android:layout_marginStart="@dimen/unify_space_12"
                 android:textColor="@color/Unify_NN950"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:typographyType="body_2"
                 app:typographyWeight="reguler"
-                app:loader_corner_radius="8dp"
+                app:loader_corner_radius="@dimen/tm_dash_dp_8"
                 app:loader_type="rect"/>
         </LinearLayout>
 
@@ -610,13 +610,13 @@
             android:layout_width="@dimen/unify_space_40"
             android:layout_height="@dimen/unify_space_40"
             android:background="@drawable/bg_coupon_icon"
-            android:layout_marginTop="@dimen/dp_28"
+            android:layout_marginTop="@dimen/tm_dash_dp_28"
             app:icon_name="CLOCK"
             app:icon_color_light_enable="@color/Unify_G500"
             app:layout_constraintCircleRadius="@dimen/dp_10"
             app:layout_constraintStart_toStartOf="@+id/programStatus"
             app:layout_constraintTop_toBottomOf="@id/ivTime"
-            app:loader_corner_radius="8dp"
+            app:loader_corner_radius="@dimen/tm_dash_dp_8"
             app:loader_type="rect"/>
 
         <LinearLayout
@@ -631,8 +631,8 @@
 
             <com.tokopedia.unifycomponents.LoaderUnify
                 android:id="@+id/programMemberLabel"
-                android:layout_width="110dp"
-                android:layout_height="12dp"
+                android:layout_width="@dimen/tm_dash_dp_110"
+                android:layout_height="@dimen/tm_dash_dp_12"
                 android:layout_marginStart="@dimen/unify_space_12"
                 android:layout_marginTop="@dimen/unify_space_4"
                 android:textColor="@color/Unify_NN600"
@@ -640,21 +640,21 @@
                 app:layout_constraintTop_toTopOf="parent"
                 app:typographyType="small"
                 android:text="Tambahan member"
-                app:loader_corner_radius="8dp"
+                app:loader_corner_radius="@dimen/tm_dash_dp_8"
                 app:loader_type="rect"/>
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/programMemberValue"
-                android:layout_width="50dp"
-                android:layout_height="18dp"
-                android:layout_marginTop="4dp"
+                android:layout_width="@dimen/tm_dash_dp_50"
+                android:layout_height="@dimen/tm_dash_dp_18"
+                android:layout_marginTop="@dimen/tm_dash_dp_4"
                 android:layout_marginStart="@dimen/unify_space_12"
                 android:textColor="@color/Unify_NN950"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:typographyType="heading_5"
                 app:typographyWeight="reguler"
-                app:loader_corner_radius="8dp"
+                app:loader_corner_radius="@dimen/tm_dash_dp_8"
                 app:loader_type="rect"/>
         </LinearLayout>
 
@@ -670,8 +670,8 @@
 
             <com.tokopedia.unifycomponents.LoaderUnify
                 android:id="@+id/programMemberTransaksiLabel"
-                android:layout_width="110dp"
-                android:layout_height="12dp"
+                android:layout_width="@dimen/tm_dash_dp_110"
+                android:layout_height="@dimen/tm_dash_dp_12"
                 android:layout_marginStart="@dimen/unify_space_12"
                 android:layout_marginTop="@dimen/unify_space_4"
                 android:textColor="@color/Unify_NN600"
@@ -679,21 +679,21 @@
                 app:layout_constraintTop_toTopOf="parent"
                 app:typographyType="small"
                 android:text="Jumlah transaksi"
-                app:loader_corner_radius="8dp"
+                app:loader_corner_radius="@dimen/tm_dash_dp_8"
                 app:loader_type="rect"/>
 
             <com.tokopedia.unifycomponents.LoaderUnify
                 android:id="@+id/programMemberTransaksivalue"
-                android:layout_width="50dp"
-                android:layout_height="18dp"
-                android:layout_marginTop="4dp"
+                android:layout_width="@dimen/tm_dash_dp_50"
+                android:layout_height="@dimen/tm_dash_dp_18"
+                android:layout_marginTop="@dimen/tm_dash_dp_4"
                 android:layout_marginStart="@dimen/unify_space_12"
                 android:textColor="@color/Unify_NN950"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:typographyType="heading_5"
                 app:typographyWeight="reguler"
-                app:loader_corner_radius="8dp"
+                app:loader_corner_radius="@dimen/tm_dash_dp_8"
                 app:loader_type="rect"/>
         </LinearLayout>
 
@@ -702,22 +702,22 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp">
+        android:layout_marginTop="@dimen/tm_dash_dp_20">
 
     <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/loader_status"
-        android:layout_width="4dp"
-        android:layout_height="12dp"
-        android:layout_marginTop="8dp"
+        android:layout_width="@dimen/tm_dash_dp_4"
+        android:layout_height="@dimen/tm_dash_dp_12"
+        android:layout_marginTop="@dimen/tm_dash_dp_8"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:loader_corner_radius="8dp"
+        app:loader_corner_radius="@dimen/tm_dash_dp_8"
         app:loader_type="rect"/>
 
         <com.tokopedia.unifycomponents.LoaderUnify
             android:id="@+id/programStatus"
             android:layout_width="wrap_content"
-            android:layout_height="12dp"
+            android:layout_height="@dimen/tm_dash_dp_12"
             android:layout_marginStart="@dimen/unify_space_12"
             android:textColor="@color/Unify_GN500"
             app:layout_constraintBottom_toBottomOf="@id/loader_status"
@@ -726,7 +726,7 @@
             app:typographyType="small"
             app:typographyWeight="bold"
             tools:text="Program Aktif"
-            app:loader_corner_radius="8dp"
+            app:loader_corner_radius="@dimen/tm_dash_dp_8"
             app:loader_type="rect"/>
 
         <com.tokopedia.unifycomponents.LoaderUnify
@@ -734,12 +734,12 @@
             android:layout_width="@dimen/unify_space_40"
             android:layout_height="@dimen/unify_space_40"
             android:background="@drawable/bg_coupon_icon"
-            android:layout_marginTop="@dimen/dp_28"
+            android:layout_marginTop="@dimen/tm_dash_dp_28"
             app:icon_name="PROJECT"
             app:icon_color_light_enable="@color/Unify_G500"
             app:layout_constraintStart_toStartOf="@+id/programStatus"
             app:layout_constraintTop_toBottomOf="@id/programStatus"
-            app:loader_corner_radius="8dp"
+            app:loader_corner_radius="@dimen/tm_dash_dp_8"
             app:loader_type="rect"/>
 
 
@@ -755,21 +755,21 @@
 
             <com.tokopedia.unifycomponents.LoaderUnify
                 android:id="@+id/periodProgram"
-                android:layout_width="80dp"
-                android:layout_height="12dp"
+                android:layout_width="@dimen/tm_dash_dp_80"
+                android:layout_height="@dimen/tm_dash_dp_12"
                 android:layout_marginStart="@dimen/unify_space_12"
                 android:textColor="@color/Unify_NN600"
                 android:text="Periode Program"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="@id/ivTime"
                 app:typographyType="small"
-                app:loader_corner_radius="8dp"
+                app:loader_corner_radius="@dimen/tm_dash_dp_8"
                 app:loader_type="rect"/>
 
             <com.tokopedia.unifycomponents.LoaderUnify
                 android:id="@+id/programStartDate"
-                android:layout_width="96dp"
-                android:layout_height="18dp"
+                android:layout_width="@dimen/tm_dash_dp_96"
+                android:layout_height="@dimen/tm_dash_dp_18"
                 android:layout_marginStart="@dimen/unify_space_12"
                 android:layout_marginTop="@dimen/unify_space_4"
                 android:textColor="@color/Unify_NN950"
@@ -777,21 +777,21 @@
                 app:layout_constraintTop_toTopOf="parent"
                 app:typographyType="heading_5"
                 app:typographyWeight="bold"
-                app:loader_corner_radius="8dp"
+                app:loader_corner_radius="@dimen/tm_dash_dp_8"
                 app:loader_type="rect"/>
 
             <com.tokopedia.unifycomponents.LoaderUnify
                 android:id="@+id/programStartTime"
-                android:layout_width="96dp"
-                android:layout_height="18dp"
-                android:layout_marginTop="4dp"
+                android:layout_width="@dimen/tm_dash_dp_96"
+                android:layout_height="@dimen/tm_dash_dp_18"
+                android:layout_marginTop="@dimen/tm_dash_dp_4"
                 android:layout_marginStart="@dimen/unify_space_12"
                 android:textColor="@color/Unify_NN950"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:typographyType="body_2"
                 app:typographyWeight="reguler"
-                app:loader_corner_radius="8dp"
+                app:loader_corner_radius="@dimen/tm_dash_dp_8"
                 app:loader_type="rect"/>
         </LinearLayout>
 
@@ -808,8 +808,8 @@
 
             <com.tokopedia.unifycomponents.LoaderUnify
                 android:id="@+id/programEndDate"
-                android:layout_width="96dp"
-                android:layout_height="18dp"
+                android:layout_width="@dimen/tm_dash_dp_96"
+                android:layout_height="@dimen/tm_dash_dp_18"
                 android:layout_marginStart="@dimen/unify_space_12"
                 android:layout_marginTop="@dimen/unify_space_4"
                 android:textColor="@color/Unify_NN950"
@@ -817,21 +817,21 @@
                 app:layout_constraintTop_toTopOf="parent"
                 app:typographyType="heading_5"
                 app:typographyWeight="bold"
-                app:loader_corner_radius="8dp"
+                app:loader_corner_radius="@dimen/tm_dash_dp_8"
                 app:loader_type="rect"/>
 
             <com.tokopedia.unifycomponents.LoaderUnify
                 android:id="@+id/programEndTime"
-                android:layout_width="96dp"
-                android:layout_height="18dp"
-                android:layout_marginTop="4dp"
+                android:layout_width="@dimen/tm_dash_dp_96"
+                android:layout_height="@dimen/tm_dash_dp_18"
+                android:layout_marginTop="@dimen/tm_dash_dp_4"
                 android:layout_marginStart="@dimen/unify_space_12"
                 android:textColor="@color/Unify_NN950"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:typographyType="body_2"
                 app:typographyWeight="reguler"
-                app:loader_corner_radius="8dp"
+                app:loader_corner_radius="@dimen/tm_dash_dp_8"
                 app:loader_type="rect"/>
         </LinearLayout>
 
@@ -840,13 +840,13 @@
             android:layout_width="@dimen/unify_space_40"
             android:layout_height="@dimen/unify_space_40"
             android:background="@drawable/bg_coupon_icon"
-            android:layout_marginTop="@dimen/dp_28"
+            android:layout_marginTop="@dimen/tm_dash_dp_28"
             app:icon_name="CLOCK"
             app:icon_color_light_enable="@color/Unify_G500"
             app:layout_constraintCircleRadius="@dimen/dp_10"
             app:layout_constraintStart_toStartOf="@+id/programStatus"
             app:layout_constraintTop_toBottomOf="@id/ivTime"
-            app:loader_corner_radius="8dp"
+            app:loader_corner_radius="@dimen/tm_dash_dp_8"
             app:loader_type="rect"/>
 
         <LinearLayout
@@ -861,8 +861,8 @@
 
             <com.tokopedia.unifycomponents.LoaderUnify
                 android:id="@+id/programMemberLabel"
-                android:layout_width="110dp"
-                android:layout_height="12dp"
+                android:layout_width="@dimen/tm_dash_dp_110"
+                android:layout_height="@dimen/tm_dash_dp_12"
                 android:layout_marginStart="@dimen/unify_space_12"
                 android:layout_marginTop="@dimen/unify_space_4"
                 android:textColor="@color/Unify_NN600"
@@ -870,21 +870,21 @@
                 app:layout_constraintTop_toTopOf="parent"
                 app:typographyType="small"
                 android:text="Tambahan member"
-                app:loader_corner_radius="8dp"
+                app:loader_corner_radius="@dimen/tm_dash_dp_8"
                 app:loader_type="rect"/>
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/programMemberValue"
-                android:layout_width="50dp"
-                android:layout_height="18dp"
-                android:layout_marginTop="4dp"
+                android:layout_width="@dimen/tm_dash_dp_50"
+                android:layout_height="@dimen/tm_dash_dp_18"
+                android:layout_marginTop="@dimen/tm_dash_dp_4"
                 android:layout_marginStart="@dimen/unify_space_12"
                 android:textColor="@color/Unify_NN950"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:typographyType="heading_5"
                 app:typographyWeight="reguler"
-                app:loader_corner_radius="8dp"
+                app:loader_corner_radius="@dimen/tm_dash_dp_8"
                 app:loader_type="rect"/>
         </LinearLayout>
 
@@ -900,8 +900,8 @@
 
             <com.tokopedia.unifycomponents.LoaderUnify
                 android:id="@+id/programMemberTransaksiLabel"
-                android:layout_width="110dp"
-                android:layout_height="12dp"
+                android:layout_width="@dimen/tm_dash_dp_110"
+                android:layout_height="@dimen/tm_dash_dp_12"
                 android:layout_marginStart="@dimen/unify_space_12"
                 android:layout_marginTop="@dimen/unify_space_4"
                 android:textColor="@color/Unify_NN600"
@@ -909,21 +909,21 @@
                 app:layout_constraintTop_toTopOf="parent"
                 app:typographyType="small"
                 android:text="Jumlah transaksi"
-                app:loader_corner_radius="8dp"
+                app:loader_corner_radius="@dimen/tm_dash_dp_8"
                 app:loader_type="rect"/>
 
             <com.tokopedia.unifycomponents.LoaderUnify
                 android:id="@+id/programMemberTransaksivalue"
-                android:layout_width="50dp"
-                android:layout_height="18dp"
-                android:layout_marginTop="4dp"
+                android:layout_width="@dimen/tm_dash_dp_50"
+                android:layout_height="@dimen/tm_dash_dp_18"
+                android:layout_marginTop="@dimen/tm_dash_dp_4"
                 android:layout_marginStart="@dimen/unify_space_12"
                 android:textColor="@color/Unify_NN950"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:typographyType="heading_5"
                 app:typographyWeight="reguler"
-                app:loader_corner_radius="8dp"
+                app:loader_corner_radius="@dimen/tm_dash_dp_8"
                 app:loader_type="rect"/>
         </LinearLayout>
 
@@ -932,22 +932,22 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp">
+        android:layout_marginTop="@dimen/tm_dash_dp_20">
 
     <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/loader_status"
-        android:layout_width="4dp"
-        android:layout_height="12dp"
-        android:layout_marginTop="8dp"
+        android:layout_width="@dimen/tm_dash_dp_4"
+        android:layout_height="@dimen/tm_dash_dp_12"
+        android:layout_marginTop="@dimen/tm_dash_dp_8"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:loader_corner_radius="8dp"
+        app:loader_corner_radius="@dimen/tm_dash_dp_8"
         app:loader_type="rect"/>
 
         <com.tokopedia.unifycomponents.LoaderUnify
             android:id="@+id/programStatus"
             android:layout_width="wrap_content"
-            android:layout_height="12dp"
+            android:layout_height="@dimen/tm_dash_dp_12"
             android:layout_marginStart="@dimen/unify_space_12"
             android:textColor="@color/Unify_GN500"
             app:layout_constraintBottom_toBottomOf="@id/loader_status"
@@ -956,7 +956,7 @@
             app:typographyType="small"
             app:typographyWeight="bold"
             tools:text="Program Aktif"
-            app:loader_corner_radius="8dp"
+            app:loader_corner_radius="@dimen/tm_dash_dp_8"
             app:loader_type="rect"/>
 
         <com.tokopedia.unifycomponents.LoaderUnify
@@ -964,12 +964,12 @@
             android:layout_width="@dimen/unify_space_40"
             android:layout_height="@dimen/unify_space_40"
             android:background="@drawable/bg_coupon_icon"
-            android:layout_marginTop="@dimen/dp_28"
+            android:layout_marginTop="@dimen/tm_dash_dp_28"
             app:icon_name="PROJECT"
             app:icon_color_light_enable="@color/Unify_G500"
             app:layout_constraintStart_toStartOf="@+id/programStatus"
             app:layout_constraintTop_toBottomOf="@id/programStatus"
-            app:loader_corner_radius="8dp"
+            app:loader_corner_radius="@dimen/tm_dash_dp_8"
             app:loader_type="rect"/>
 
 
@@ -985,21 +985,21 @@
 
             <com.tokopedia.unifycomponents.LoaderUnify
                 android:id="@+id/periodProgram"
-                android:layout_width="80dp"
-                android:layout_height="12dp"
+                android:layout_width="@dimen/tm_dash_dp_80"
+                android:layout_height="@dimen/tm_dash_dp_12"
                 android:layout_marginStart="@dimen/unify_space_12"
                 android:textColor="@color/Unify_NN600"
                 android:text="Periode Program"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="@id/ivTime"
                 app:typographyType="small"
-                app:loader_corner_radius="8dp"
+                app:loader_corner_radius="@dimen/tm_dash_dp_8"
                 app:loader_type="rect"/>
 
             <com.tokopedia.unifycomponents.LoaderUnify
                 android:id="@+id/programStartDate"
-                android:layout_width="96dp"
-                android:layout_height="18dp"
+                android:layout_width="@dimen/tm_dash_dp_96"
+                android:layout_height="@dimen/tm_dash_dp_18"
                 android:layout_marginStart="@dimen/unify_space_12"
                 android:layout_marginTop="@dimen/unify_space_4"
                 android:textColor="@color/Unify_NN950"
@@ -1007,21 +1007,21 @@
                 app:layout_constraintTop_toTopOf="parent"
                 app:typographyType="heading_5"
                 app:typographyWeight="bold"
-                app:loader_corner_radius="8dp"
+                app:loader_corner_radius="@dimen/tm_dash_dp_8"
                 app:loader_type="rect"/>
 
             <com.tokopedia.unifycomponents.LoaderUnify
                 android:id="@+id/programStartTime"
-                android:layout_width="96dp"
-                android:layout_height="18dp"
-                android:layout_marginTop="4dp"
+                android:layout_width="@dimen/tm_dash_dp_96"
+                android:layout_height="@dimen/tm_dash_dp_18"
+                android:layout_marginTop="@dimen/tm_dash_dp_4"
                 android:layout_marginStart="@dimen/unify_space_12"
                 android:textColor="@color/Unify_NN950"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:typographyType="body_2"
                 app:typographyWeight="reguler"
-                app:loader_corner_radius="8dp"
+                app:loader_corner_radius="@dimen/tm_dash_dp_8"
                 app:loader_type="rect"/>
         </LinearLayout>
 
@@ -1038,8 +1038,8 @@
 
             <com.tokopedia.unifycomponents.LoaderUnify
                 android:id="@+id/programEndDate"
-                android:layout_width="96dp"
-                android:layout_height="18dp"
+                android:layout_width="@dimen/tm_dash_dp_96"
+                android:layout_height="@dimen/tm_dash_dp_18"
                 android:layout_marginStart="@dimen/unify_space_12"
                 android:layout_marginTop="@dimen/unify_space_4"
                 android:textColor="@color/Unify_NN950"
@@ -1047,21 +1047,21 @@
                 app:layout_constraintTop_toTopOf="parent"
                 app:typographyType="heading_5"
                 app:typographyWeight="bold"
-                app:loader_corner_radius="8dp"
+                app:loader_corner_radius="@dimen/tm_dash_dp_8"
                 app:loader_type="rect"/>
 
             <com.tokopedia.unifycomponents.LoaderUnify
                 android:id="@+id/programEndTime"
-                android:layout_width="96dp"
-                android:layout_height="18dp"
-                android:layout_marginTop="4dp"
+                android:layout_width="@dimen/tm_dash_dp_96"
+                android:layout_height="@dimen/tm_dash_dp_18"
+                android:layout_marginTop="@dimen/tm_dash_dp_4"
                 android:layout_marginStart="@dimen/unify_space_12"
                 android:textColor="@color/Unify_NN950"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:typographyType="body_2"
                 app:typographyWeight="reguler"
-                app:loader_corner_radius="8dp"
+                app:loader_corner_radius="@dimen/tm_dash_dp_8"
                 app:loader_type="rect"/>
         </LinearLayout>
 
@@ -1070,13 +1070,13 @@
             android:layout_width="@dimen/unify_space_40"
             android:layout_height="@dimen/unify_space_40"
             android:background="@drawable/bg_coupon_icon"
-            android:layout_marginTop="@dimen/dp_28"
+            android:layout_marginTop="@dimen/tm_dash_dp_28"
             app:icon_name="CLOCK"
             app:icon_color_light_enable="@color/Unify_G500"
             app:layout_constraintCircleRadius="@dimen/dp_10"
             app:layout_constraintStart_toStartOf="@+id/programStatus"
             app:layout_constraintTop_toBottomOf="@id/ivTime"
-            app:loader_corner_radius="8dp"
+            app:loader_corner_radius="@dimen/tm_dash_dp_8"
             app:loader_type="rect"/>
 
         <LinearLayout
@@ -1091,8 +1091,8 @@
 
             <com.tokopedia.unifycomponents.LoaderUnify
                 android:id="@+id/programMemberLabel"
-                android:layout_width="110dp"
-                android:layout_height="12dp"
+                android:layout_width="@dimen/tm_dash_dp_110"
+                android:layout_height="@dimen/tm_dash_dp_12"
                 android:layout_marginStart="@dimen/unify_space_12"
                 android:layout_marginTop="@dimen/unify_space_4"
                 android:textColor="@color/Unify_NN600"
@@ -1100,21 +1100,21 @@
                 app:layout_constraintTop_toTopOf="parent"
                 app:typographyType="small"
                 android:text="Tambahan member"
-                app:loader_corner_radius="8dp"
+                app:loader_corner_radius="@dimen/tm_dash_dp_8"
                 app:loader_type="rect"/>
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/programMemberValue"
-                android:layout_width="50dp"
-                android:layout_height="18dp"
-                android:layout_marginTop="4dp"
+                android:layout_width="@dimen/tm_dash_dp_50"
+                android:layout_height="@dimen/tm_dash_dp_18"
+                android:layout_marginTop="@dimen/tm_dash_dp_4"
                 android:layout_marginStart="@dimen/unify_space_12"
                 android:textColor="@color/Unify_NN950"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:typographyType="heading_5"
                 app:typographyWeight="reguler"
-                app:loader_corner_radius="8dp"
+                app:loader_corner_radius="@dimen/tm_dash_dp_8"
                 app:loader_type="rect"/>
         </LinearLayout>
 
@@ -1130,8 +1130,8 @@
 
             <com.tokopedia.unifycomponents.LoaderUnify
                 android:id="@+id/programMemberTransaksiLabel"
-                android:layout_width="110dp"
-                android:layout_height="12dp"
+                android:layout_width="@dimen/tm_dash_dp_110"
+                android:layout_height="@dimen/tm_dash_dp_12"
                 android:layout_marginStart="@dimen/unify_space_12"
                 android:layout_marginTop="@dimen/unify_space_4"
                 android:textColor="@color/Unify_NN600"
@@ -1139,21 +1139,21 @@
                 app:layout_constraintTop_toTopOf="parent"
                 app:typographyType="small"
                 android:text="Jumlah transaksi"
-                app:loader_corner_radius="8dp"
+                app:loader_corner_radius="@dimen/tm_dash_dp_8"
                 app:loader_type="rect"/>
 
             <com.tokopedia.unifycomponents.LoaderUnify
                 android:id="@+id/programMemberTransaksivalue"
-                android:layout_width="50dp"
-                android:layout_height="18dp"
-                android:layout_marginTop="4dp"
+                android:layout_width="@dimen/tm_dash_dp_50"
+                android:layout_height="@dimen/tm_dash_dp_18"
+                android:layout_marginTop="@dimen/tm_dash_dp_4"
                 android:layout_marginStart="@dimen/unify_space_12"
                 android:textColor="@color/Unify_NN950"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:typographyType="heading_5"
                 app:typographyWeight="reguler"
-                app:loader_corner_radius="8dp"
+                app:loader_corner_radius="@dimen/tm_dash_dp_8"
                 app:loader_type="rect"/>
         </LinearLayout>
 

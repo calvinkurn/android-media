@@ -78,9 +78,9 @@ class TokomemberDashProgramDetailFragment : BaseDaggerFragment() {
         tvTransactionCount.text = membershipGetProgramForm?.programForm?.analytics?.trxCount
         tvIncome.text = membershipGetProgramForm?.programForm?.analytics?.totalIncome
         tvName.text = membershipGetProgramForm?.programForm?.name
-        tvTransactionPremium.text = membershipGetProgramForm?.programForm?.programAttributes?.firstOrNull()?.minimumTransaction.toString()
+        tvTransactionPremium.text = membershipGetProgramForm?.programForm?.tierLevels?.firstOrNull()?.threshold.toString()
         tvMemberCountPremium.text = membershipGetProgramForm?.levelInfo?.levelList?.firstOrNull()?.totalMember
-        tvTransactionVip.text = membershipGetProgramForm?.programForm?.programAttributes?.getOrNull(1)?.minimumTransaction.toString()
+        tvTransactionVip.text = membershipGetProgramForm?.programForm?.tierLevels?.getOrNull(1)?.threshold.toString()
         tvMemberCountVip.text = membershipGetProgramForm?.levelInfo?.levelList?.getOrNull(1)?.totalMember
 
         childFragmentManager.beginTransaction().add(R.id.frameCouponList, TokomemberDashCouponFragment.newInstance(arguments), tag).addToBackStack(tag).commit()

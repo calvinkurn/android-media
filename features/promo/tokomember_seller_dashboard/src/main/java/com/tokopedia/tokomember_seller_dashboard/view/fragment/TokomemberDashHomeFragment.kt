@@ -17,11 +17,11 @@ import com.tokopedia.carousel.CarouselUnify
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.tokomember_seller_dashboard.R
 import com.tokopedia.tokomember_seller_dashboard.di.component.DaggerTokomemberDashComponent
-import com.tokopedia.tokomember_seller_dashboard.model.Cta
 import com.tokopedia.tokomember_seller_dashboard.model.TickerItem
 import com.tokopedia.tokomember_seller_dashboard.model.TmIntroBottomsheetModel
 import com.tokopedia.tokomember_seller_dashboard.tracker.TmTracker
 import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_IS_SHOW_BS
+import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_SHOP_ID
 import com.tokopedia.tokomember_seller_dashboard.util.TmPrefManager
 import com.tokopedia.tokomember_seller_dashboard.util.TokoLiveDataResult
 import com.tokopedia.tokomember_seller_dashboard.view.customview.BottomSheetClickListener
@@ -56,29 +56,34 @@ class TokomemberDashHomeFragment : BaseDaggerFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        tmTracker = TmTracker()
-        tmTracker?.viewHomeTabsSection(shopId.toString())
-
-        renderTicker(null)
-        Glide.with(flShop)
-            .asDrawable()
-            .load("https://ecs7.tokopedia.net/cards/ray2-f.png")
-            .into(object : CustomTarget<Drawable>(){
-                override fun onResourceReady(resource: Drawable, transition: Transition<in Drawable>?) {
-                    flShop.background = resource
-                }
-                override fun onLoadCleared(placeholder: Drawable?) {
-
-                }
-            })
-        ivShopIcon.loadImage("https://images.tokopedia.net/img/seller_no_logo_0.png")
-        tvShopName.text = "desynila7"
+//        renderTicker(null)
+//        Glide.with(flShop)
+//            .asDrawable()
+//            .load("https://ecs7.tokopedia.net/cards/ray2-f.png")
+//            .into(object : CustomTarget<Drawable>(){
+//                override fun onResourceReady(resource: Drawable, transition: Transition<in Drawable>?) {
+//                    flShop.background = resource
+//                }
+//                override fun onLoadCleared(placeholder: Drawable?) {
+//
+//                }
+//            })
 
         observeViewModel()
-        tokomemberDashHomeViewmodel.getHomePageData(6553698, 3827)
-        prefManager = context?.let { it1 -> TmPrefManager(it1) }
-        prefManager?.cardId = 3668
-        prefManager?.shopId = 6551183
+        arguments?.getInt(
+            BUNDLE_SHOP_ID)?.let { shopId ->
+            arguments?.getInt(
+            BUNDLE_SHOP_ID)?.let { cardId ->
+            tokomemberDashHomeViewmodel.getHomePageData(
+                shopId,
+                cardId
+            )
+                this@TokomemberDashHomeFragment.shopId = shopId
+        }
+        }
+
+        tmTracker = TmTracker()
+        tmTracker?.viewHomeTabsSection(shopId.toString())
 
         isShowBs = arguments?.getBoolean(BUNDLE_IS_SHOW_BS, false) == true
 
@@ -126,8 +131,8 @@ class TokomemberDashHomeFragment : BaseDaggerFragment() {
                     tvShopName.text = it.data?.membershipGetSellerAnalyticsTopSection?.shopProfile?.shop?.name
                     renderTicker(it.data?.membershipGetSellerAnalyticsTopSection?.ticker)
                     val prefManager = context?.let { it1 -> TmPrefManager(it1) }
-                    prefManager?.cardId = it.data?.membershipGetSellerAnalyticsTopSection?.shopProfile?.homeCard?.shopID
-                    prefManager?.shopId = it.data?.membershipGetSellerAnalyticsTopSection?.shopProfile?.homeCard?.id
+                    prefManager?.shopId = it.data?.membershipGetSellerAnalyticsTopSection?.shopProfile?.homeCard?.shopID
+                    prefManager?.cardId = it.data?.membershipGetSellerAnalyticsTopSection?.shopProfile?.homeCard?.id
                 }
                 TokoLiveDataResult.STATUS.ERROR->{
 
@@ -136,11 +141,7 @@ class TokomemberDashHomeFragment : BaseDaggerFragment() {
         })
     }
 
-    private fun renderTicker(ticker: List<TickerItem?>?) {
-        val list = ArrayList<TickerItem>()
-        list.add(TickerItem(Cta(appLink = "tokopedia://rewards", text = "Pelajari TokoMember"), title = "Mau lebih mengenal TokoMember?", description = "Yuk, cari tahu cara kerja TokoMember dan berbagai keuntungan yang bisa kamu dapatkan di sini!", iconImageUrl = "https://images.tokopedia.net/img/retention/tokomember/seller/homepage/ticker/card/Intro.png"))
-        list.add(TickerItem(Cta(appLink = "tokopedia://rewards", text = "Pelajari TokoMember"), title = "Cek cara pakai Statistik TokoMember, yuk!", description = "Lihat cara baca data yang ditampilkan di halaman ini, biar kamu bisa atur strategi penjualan dengan TokoMember!", iconImageUrl = "https://images.tokopedia.net/img/retention/tokomember/seller/homepage/ticker/graph/Graph.png"))
-        list.add(TickerItem(Cta(appLink = "tokopedia://rewards", text = "Pelajari TokoMember"), title = "Cek cara pakai Statistik TokoMember, yuk!", description = "Lihat cara baca data yang ditampilkan di halaman ini, biar kamu bisa atur strategi penjualan dengan TokoMember!", iconImageUrl = "https://images.tokopedia.net/img/retention/tokomember/seller/homepage/ticker/graph/Graph.png"))
+    private fun renderTicker(list: List<TickerItem?>?) {
         val itemParam = { view: View, data: Any ->
             val ivTicker = view.findViewById<ImageUnify>(R.id.ivTicker)
             val tvTickerTitle = view.findViewById<Typography>(R.id.tvTickerTitle)

@@ -64,5 +64,6 @@
     <string name="tm_type_kupon">Type Kupon</string>
     <string name="tm_jenis_cashback">Jenis Cashback</string>
     <string name="tm_kupon_title_single">Tampilan Kupon</string>
+    <string name="tm_kupon_single_ticker">Biar mudah cepat, pakai rekomendasi kupon dan minimum pembelian untuk member kamu!</string>
 
 </resources>

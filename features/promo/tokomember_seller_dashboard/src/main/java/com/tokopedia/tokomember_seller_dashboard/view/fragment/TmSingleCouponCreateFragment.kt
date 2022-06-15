@@ -1,5 +1,6 @@
 package com.tokopedia.tokomember_seller_dashboard.view.fragment
 
+import android.annotation.SuppressLint
 import android.graphics.Color
 import android.os.Bundle
 import android.text.Html
@@ -22,6 +23,7 @@ import com.tokopedia.datepicker.datetimepicker.DateTimePickerUnify
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.toIntSafely
 import com.tokopedia.loaderdialog.LoaderDialog
 import com.tokopedia.mediauploader.common.state.UploadResult
 import com.tokopedia.tokomember_common_widget.callbacks.ChipGroupCallback
@@ -45,7 +47,6 @@ import com.tokopedia.tokomember_seller_dashboard.util.ACTION_EDIT
 import com.tokopedia.tokomember_seller_dashboard.util.ANDROID
 import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_PROGRAM_DATA
 import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_SHOP_AVATAR
-import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_SHOP_ID
 import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_SHOP_NAME
 import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_VOUCHER_ID
 import com.tokopedia.tokomember_seller_dashboard.util.COUPON_CASHBACK_PREVIEW
@@ -86,6 +87,7 @@ import com.tokopedia.tokomember_seller_dashboard.util.UPDATE
 import com.tokopedia.tokomember_seller_dashboard.view.activity.TmDashCreateActivity
 import com.tokopedia.tokomember_seller_dashboard.view.activity.TokomemberDashIntroActivity
 import com.tokopedia.tokomember_seller_dashboard.view.customview.BottomSheetClickListener
+import com.tokopedia.tokomember_seller_dashboard.view.customview.TmSingleCouponView
 import com.tokopedia.tokomember_seller_dashboard.view.customview.TokomemberBottomsheet
 import com.tokopedia.tokomember_seller_dashboard.view.viewmodel.TmDashCreateViewModel
 import com.tokopedia.tokomember_seller_dashboard.view.viewmodel.TmProgramListViewModel
@@ -164,13 +166,13 @@ class TmSingleCouponCreateFragment : BaseDaggerFragment() {
         shopAvatar = arguments?.getString(BUNDLE_SHOP_AVATAR)?:""
         fromEdit = arguments?.getBoolean(ACTION_EDIT)?:false
         programData = arguments?.getParcelable(BUNDLE_PROGRAM_DATA)
+        prefManager = context?.let { it1 -> TmPrefManager(it1) }
         if(fromEdit){
             voucherId = arguments?.getInt(BUNDLE_VOUCHER_ID)?:0
             tokomemberDashCreateViewModel.getInitialCouponData(UPDATE,"")
         }
         else{
             tokomemberDashCreateViewModel.getInitialCouponData(CREATE,"")
-            prefManager = context?.let { it1 -> TmPrefManager(it1) }
             prefManager?.shopId?.let { it ->
                 prefManager?.cardId?.let { it1 ->
                     tmProgramListViewModel?.getProgramList(it, it1)
@@ -279,7 +281,17 @@ class TmSingleCouponCreateFragment : BaseDaggerFragment() {
                 TokoLiveDataResult.STATUS.SUCCESS -> {
                     errorState.isPreValidateVipError = false
                     if (it.data?.voucherValidationPartial?.header?.messages?.size == 1){
-                        tokomemberDashCreateViewModel.validateProgram(prefManager?.shopId.toString(),TmDateUtil.getTimeInMillis(programData?.timeWindow?.startTime?:""),TmDateUtil.getTimeInMillisEnd(programData?.timeWindow?.endTime?:""),"")
+                        val startTime = if(tmCouponStartDateUnix != null){
+                            tmCouponStartDateUnix?.timeInMillis?.div(1000).toString()
+                        } else{
+                            TmDateUtil.getTimeMillisForCouponValidate(programData?.timeWindow?.startTime.toString())
+                        }
+                        val endTime = if(tmCouponEndDateUnix != null){
+                            tmCouponEndDateUnix?.timeInMillis?.div(1000).toString()
+                        } else{
+                            TmDateUtil.getTimeMillisForCouponValidateEnd(programData?.timeWindow?.endTime.toString())
+                        }
+                        tokomemberDashCreateViewModel.validateProgram(prefManager?.shopId.toString(), startTime, endTime,"")
                     }
                     else {
                         handleProgramValidateError(it.data?.voucherValidationPartial?.data?.validationError,"premium")
@@ -324,7 +336,7 @@ class TmSingleCouponCreateFragment : BaseDaggerFragment() {
                     when(it.data){
                         is UploadResult.Success ->{
                             if(fromEdit) {
-                                updateCoupon()
+                                updateCoupon(it.data.uploadId)
                             }
                             else{
                                 //TODO create coupon mutation
@@ -403,11 +415,21 @@ class TmSingleCouponCreateFragment : BaseDaggerFragment() {
         tokomemberDashCreateViewModel.tmCouponUpdateLiveData.observe(viewLifecycleOwner, {
             when (it.status) {
                 TokoLiveDataResult.STATUS.SUCCESS -> {
-                    // Back to coupon list
-                    closeLoadingDialog()
-                    setButtonState()
-                    activity?.finish()
-                    tmCouponListRefreshCallback?.refreshCouponList()
+                    if(it.data?.merchantPromotionCreateMV?.status == 200) {
+                        // Back to coupon list
+                        closeLoadingDialog()
+                        setButtonState()
+                        activity?.finish()
+                        tmCouponListRefreshCallback?.refreshCouponList()
+                    }
+                    else{
+                        closeLoadingDialog()
+                        setButtonState()
+                        view?.let { it1 -> it.data?.merchantPromotionCreateMV?.message?.let { it2 ->
+                            Toaster.build(it1,
+                                it2, Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR ).show()
+                        } }
+                    }
                 }
                 TokoLiveDataResult.STATUS.LOADING ->{
 
@@ -434,7 +456,8 @@ class TmSingleCouponCreateFragment : BaseDaggerFragment() {
         })
     }
 
-    private fun updateCoupon() {
+    private fun updateCoupon(uploadId: String) {
+        val tmSingleCouponData = customViewSingleCoupon.getSingleCouponData()
         errorState.isUploadPremium = false
         //Handle success
         val level = if(selectedChipPositionLevel == 0){
@@ -484,22 +507,21 @@ class TmSingleCouponCreateFragment : BaseDaggerFragment() {
             ).replace(" WIB", "")
         }
         val dateStart = if(tmCouponStartDateUnix != null){
-            TmDateUtil.getTimeFromUnix(
+            TmDateUtil.getDateFromUnix(
                 tmCouponStartDateUnix!!
             )
         }
         else{
             programData?.timeWindow?.startTime?.substringBefore("T")
         }
-        val maxCashBack = textFieldMaxCashback.editText.text.toString().replace(".", "").toInt()
         val tmCouponUpdateRequest = TmCouponUpdateRequest(
             benefitMax = tmCouponDetail?.voucherDiscountAmtMax,
             targetBuyer = 3,
-            image = "it.data.uploadId",
+            image = uploadId,
             code = "",
             minPurchase = tmCouponDetail?.voucherMinimumAmt,
             minimumTierLevel = level,
-            benefitPercent = tmCouponDetail?.voucherDiscountAmt,
+            benefitPercent = tmSingleCouponData.cashBackPercentage,
             hourEnd = hourEnd,
             dateEnd = dateEnd,
             hourStart = hourStart,
@@ -509,9 +531,9 @@ class TmSingleCouponCreateFragment : BaseDaggerFragment() {
             couponName = tmCouponDetail?.voucherName,
             token = token,
             benefitType = benefitType,
-            benefitIdr = maxCashBack * textFieldQuota.editText.text.toString().toInt(),
+            benefitIdr = CurrencyFormatHelper.convertRupiahToInt(tmSingleCouponData.maxCashback) * tmSingleCouponData.quota.toInt(),
             imagePortrait = tmCouponDetail?.voucherImagePortrait,
-            quota = textFieldQuota.editText.text.toString().toInt(),
+            quota = tmSingleCouponData.quota.toInt(),
             isPublic = tmCouponDetail?.isPublic,
             voucherId = tmCouponDetail?.voucherId,
             couponType = couponType,
@@ -570,11 +592,17 @@ class TmSingleCouponCreateFragment : BaseDaggerFragment() {
         }
         chipGroupKuponType.setDefaultSelection(selectedChipPositionKupon)
 
-        chipGroupCashbackType.setCallback(object : ChipGroupCallback {
-            override fun chipSelected(position: Int) {
-                selectedChipPositionCashback = position
-            }
-        })
+//        chipGroupCashbackType.setCallback(object : ChipGroupCallback {
+//            override fun chipSelected(position: Int) {
+//                selectedChipPositionCashback = position
+//                if(selectedChipPositionCashback == 0){
+//                    textFieldPercentCashback.hide()
+//                }
+//                if(selectedChipPositionCashback == 1){
+//                    textFieldPercentCashback.show()
+//                }
+//            }
+//        })
 
         if(data?.voucherDiscountType == COUPON_DISCOUNT_TYPE_IDR){
             selectedChipPositionCashback = 0
@@ -583,7 +611,6 @@ class TmSingleCouponCreateFragment : BaseDaggerFragment() {
         if(data?.voucherDiscountType == COUPON_DISCOUNT_TYPE_PERCENT){
             selectedChipPositionCashback = 1
             textFieldPercentCashback.show()
-
         }
         chipGroupCashbackType.setDefaultSelection(selectedChipPositionCashback)
 
@@ -661,9 +688,9 @@ class TmSingleCouponCreateFragment : BaseDaggerFragment() {
         val bottomSheet = TokomemberBottomsheet.createInstance(bundle)
         bottomSheet.setUpBottomSheetListener(object : BottomSheetClickListener {
             override fun onButtonClick(errorCount: Int) {
+                prefManager?.shopId?.let { TmDashCreateActivity.openActivity(it, activity, CreateScreenType.PROGRAM, ProgramActionType.CREATE_FROM_COUPON, null, null) }
                 bottomSheet.dismiss()
                 activity?.finish()
-                prefManager?.shopId?.let { TmDashCreateActivity.openActivity(it, activity, CreateScreenType.PROGRAM, ProgramActionType.CREATE, null, null) }
             }
         })
         bottomSheet.show(childFragmentManager,"")
@@ -857,6 +884,22 @@ class TmSingleCouponCreateFragment : BaseDaggerFragment() {
     private fun renderSingleCoupon() {
         tvLevelMember.show()
         chipGroupLevel.show()
+
+        initTotalTransactionAmount()
+    }
+    private fun initTotalTransactionAmount() {
+        customViewSingleCoupon?.setMaxTransactionListener(object : TmSingleCouponView.MaxTransactionListener{
+            override fun onQuotaCashbackChange() {
+                setTotalTransactionAmount()
+            }
+        })
+    }
+
+    @SuppressLint("SetTextI18n")
+    private fun setTotalTransactionAmount() {
+        val interMediateVipData = customViewSingleCoupon?.getSingleCouponData()
+        textFieldMaxCashback.editText.setText("Rp" + CurrencyFormatHelper.convertToRupiah(
+                    (CurrencyFormatHelper.convertRupiahToInt(interMediateVipData?.maxCashback ?: "") * interMediateVipData?.quota.toIntSafely()).toString()))
     }
 
     private fun clickDatePicker(textField: TextFieldUnify2, type: Int) {

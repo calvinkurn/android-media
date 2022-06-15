@@ -25,9 +25,20 @@ import com.tokopedia.tokomember_seller_dashboard.model.CardTemplate
 import com.tokopedia.tokomember_seller_dashboard.model.MembershipGetProgramForm
 import com.tokopedia.tokomember_seller_dashboard.model.TmCouponPreviewData
 import com.tokopedia.tokomember_seller_dashboard.tracker.TmTracker
-import com.tokopedia.tokomember_seller_dashboard.util.*
+import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_CARD_ID
+import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_CARD_ID_IN_TOOLS
+import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_COUPON_CREATE_DATA
+import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_COUPON_PREVIEW_DATA
+import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_CREATE_SCREEN_TYPE
+import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_PROGRAM_ID
+import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_PROGRAM_ID_IN_TOOLS
+import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_PROGRAM_TYPE
+import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_SHOP_ID
+import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_SHOP_NAME
+import com.tokopedia.tokomember_seller_dashboard.util.LOADING_TEXT
 import com.tokopedia.tokomember_seller_dashboard.util.TmDateUtil.setDate
 import com.tokopedia.tokomember_seller_dashboard.util.TmDateUtil.setTime
+import com.tokopedia.tokomember_seller_dashboard.util.TokoLiveDataResult
 import com.tokopedia.tokomember_seller_dashboard.view.activity.TokomemberDashHomeActivity
 import com.tokopedia.tokomember_seller_dashboard.view.adapter.TmCouponPreviewAdapter
 import com.tokopedia.tokomember_seller_dashboard.view.viewmodel.TmDashCreateViewModel
@@ -81,7 +92,7 @@ class TmDashPreviewFragment : BaseDaggerFragment() {
         arguments?.getInt(BUNDLE_PROGRAM_TYPE, 0)?.let {
             programActionType = it
         }
-        if (programActionType == ProgramActionType.CREATE_FROM_COUPON) {
+        if (programActionType == ProgramActionType.CREATE_FROM_COUPON || programActionType == ProgramActionType.EXTEND) {
             carouselPreview.hide()
             tmDashCreateViewModel.getProgramInfo(
                 arguments?.getInt(BUNDLE_PROGRAM_ID_IN_TOOLS) ?: 0,

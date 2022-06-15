@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import com.tokopedia.utils.date.toDate
 import java.text.SimpleDateFormat
 import java.util.*
+import kotlin.math.absoluteValue
 
 object TmDateUtil {
 
@@ -14,7 +15,7 @@ object TmDateUtil {
 
     @SuppressLint("SimpleDateFormat")
     fun getDateFromUnix(calendar: Calendar): String {
-        return SimpleDateFormat("yyyy-mm-dd").format(calendar.time)
+        return SimpleDateFormat("yyyy-MM-dd").format(calendar.time)
     }
 
     fun setDate(time: String): String {
@@ -65,6 +66,17 @@ object TmDateUtil {
         return requireTime
     }
 
+    fun getTimeDuration(startTime: String, endTime: String): Int {
+        val parseStartTime = SimpleDateFormat("yyyy-MM-dd" , Locale("id","ID")).parse(startTime)
+        val parseEndTime = SimpleDateFormat("yyyy-MM-dd" , Locale("id","ID")).parse(endTime)
+        val cal = Calendar.getInstance()
+        cal.setTime(parseStartTime)
+        val startMonth = cal.get(Calendar.MONTH)
+        cal.setTime(parseEndTime)
+        val endMonth = cal.get(Calendar.MONTH)
+        return endMonth.minus(startMonth).absoluteValue
+    }
+
     @SuppressLint("SimpleDateFormat")
     fun convertDuration(time: String):String{
         //+00 to match Format Z , BE support up to 2 character of Z
@@ -74,7 +86,7 @@ object TmDateUtil {
             calendar.time = it
         }
         var requireTime = SimpleDateFormat("yyyy-MM-dd HH:mm:ss Z" , Locale("id","ID")).format(calendar.time)
-        requireTime = requireTime.substring(0, time.length-2)
+        requireTime = requireTime.substring(0, requireTime.length-2)
         return requireTime
     }
 
@@ -115,5 +127,38 @@ object TmDateUtil {
         } catch (e: Exception) {
             "0"
         }
+    }
+
+    fun getDateForCouponProgram(dateStr: String): String {
+        return dateStr.substringBefore(" ")
+    }
+
+    fun getTimeMillisForCouponValidate(dateInput: String): String{
+        //replace z by +0700
+        var dateStr = dateInput.replace("T", "")
+        dateStr = dateStr.replace("Z", " +0700")
+
+        val parseTime = SimpleDateFormat("yyyy-MM-ddHH:mm:ss Z" , Locale("id","ID"))
+        parseTime.timeZone = TimeZone.getTimeZone("UTC")
+        val date = parseTime.parse(dateStr)
+        return (date?.time?.div(1000)).toString()
+    }
+
+    fun getTimeMillisForCouponValidateEnd(dateInput: String): String{
+        //replace z by +0700
+        var dateStr = dateInput.replace("T", "")
+        dateStr = dateStr.replace("Z", " +0700")
+
+        val parseTime = SimpleDateFormat("yyyy-MM-ddHH:mm:ss Z" , Locale("id","ID"))
+        parseTime.timeZone = TimeZone.getTimeZone("UTC")
+        val date = parseTime.parse(dateStr)
+        (date?.time?.div(1000)).toString()
+
+        val calendar = Calendar.getInstance(Locale("id","ID"))
+        date?.let {
+            calendar.time = it
+            calendar.add(Calendar.HOUR,-1)
+        }
+        return (calendar.timeInMillis/1000).toString()
     }
 }

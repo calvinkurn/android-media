@@ -98,10 +98,17 @@ class TmAddQuotaBottomsheet: BottomSheetUnify() {
         tmCouponViewModel.tmCouponQuotaUpdateLiveData.observe(viewLifecycleOwner, {
             when(it.status){
                 TokoLiveDataResult.STATUS.SUCCESS ->{
-                    if(it.data?.merchantPromotionUpdateMVQuota?.data?.status == "success"){
+                    if(it.data?.merchantPromotionUpdateMVQuota?.data?.status == "200") {
                         tmCouponListRefreshCallback.refreshCouponList()
                         dismiss()
                     }
+                    else{
+                        view?.let { it1 -> it.data?.merchantPromotionUpdateMVQuota?.message?.let { it2 ->
+                            Toaster.build(it1,
+                                it2, Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR).show()
+                        } }
+                    }
+
                 }
                 TokoLiveDataResult.STATUS.LOADING ->{
 

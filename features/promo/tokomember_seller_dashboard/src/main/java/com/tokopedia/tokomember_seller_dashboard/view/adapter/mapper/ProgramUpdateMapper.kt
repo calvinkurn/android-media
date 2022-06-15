@@ -18,12 +18,22 @@ object ProgramUpdateMapper {
         cardIdCreate:Int = 0
     ): ProgramUpdateDataInput {
         var actionType = ""
+        val startTime = if(programType == ProgramActionType.CANCEL){
+            membershipGetProgramForm?.programForm?.timeWindow?.startTime
+        }
+        else{
+            convertDuration(membershipGetProgramForm?.programForm?.timeWindow?.startTime ?: "")
+        }
+        val endTime = if(programType == ProgramActionType.CANCEL){
+            membershipGetProgramForm?.programForm?.timeWindow?.endTime
+        }
+        else{
+            addDuration(membershipGetProgramForm?.programForm?.timeWindow?.startTime ?: "", periodInMonth)
+        }
         val timeWindow = TimeWindow(
             id = 0,
-            startTime = convertDuration(
-                membershipGetProgramForm?.programForm?.timeWindow?.startTime ?: ""
-            ),
-            endTime = addDuration(membershipGetProgramForm?.programForm?.timeWindow?.startTime ?: "", periodInMonth),
+            startTime = startTime,
+            endTime = endTime,
             periodInMonth = periodInMonth,
       //      startTimeMillis = getTimeInMillis(membershipGetProgramForm?.programForm?.timeWindow?.startTime ?: ""),
 //            endTimeMillis = getTimeInMillis(addDuration(membershipGetProgramForm?.programForm?.timeWindow?.startTime ?: "", periodInMonth))

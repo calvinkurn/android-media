@@ -4,6 +4,7 @@ import android.app.Activity.RESULT_OK
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.text.Html
 import android.text.InputType
 import android.view.LayoutInflater
 import android.view.View
@@ -19,7 +20,7 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.toIntSafely
-import com.tokopedia.tokomember_common_widget.TokomemberLoaderDialog
+import com.tokopedia.loaderdialog.LoaderDialog
 import com.tokopedia.tokomember_common_widget.callbacks.ChipGroupCallback
 import com.tokopedia.tokomember_common_widget.util.CreateScreenType
 import com.tokopedia.tokomember_common_widget.util.ProgramActionType
@@ -65,6 +66,7 @@ import com.tokopedia.tokomember_seller_dashboard.view.customview.BottomSheetClic
 import com.tokopedia.tokomember_seller_dashboard.view.customview.TokomemberBottomsheet
 import com.tokopedia.tokomember_seller_dashboard.view.viewmodel.TmDashCreateViewModel
 import com.tokopedia.unifycomponents.ProgressBarUnify
+import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.text.currency.NumberTextWatcher
 import kotlinx.android.synthetic.main.tm_dash_program_form_container.*
 import kotlinx.android.synthetic.main.tm_dash_progrm_form.*
@@ -92,6 +94,7 @@ class TmProgramFragment : BaseDaggerFragment(), ChipGroupCallback ,
     private var programUpdateResponse = ProgramUpdateDataInput()
     private var tmTracker: TmTracker? = null
     private var programCreationId = 0
+    private var loaderDialog: LoaderDialog?=null
 
     @Inject
     lateinit var viewModelFactory: dagger.Lazy<ViewModelProvider.Factory>
@@ -187,6 +190,7 @@ class TmProgramFragment : BaseDaggerFragment(), ChipGroupCallback ,
     }
 
     private fun handleErrorOnUpdate() {
+        closeLoadingDialog()
         val title = when(errorCount){
             0-> ERROR_CREATING_TITLE
             else -> ERROR_CREATING_TITLE_RETRY
@@ -482,7 +486,7 @@ class TmProgramFragment : BaseDaggerFragment(), ChipGroupCallback ,
             periodInMonth = it
         }
         if(programActionType == ProgramActionType.EDIT){
-            context?.let { TokomemberLoaderDialog.showLoaderDialog(it, TM_PROGRAM_EDIT_DIALOG_TITLE) }
+            openLoadingDialog()
         }
         programUpdateResponse = ProgramUpdateMapper.formToUpdateMapper(
             membershipGetProgramForm,
@@ -576,4 +580,19 @@ class TmProgramFragment : BaseDaggerFragment(), ChipGroupCallback ,
             activity?.finish()
         }
     }
+
+    private fun openLoadingDialog(){
+
+        loaderDialog = context?.let { LoaderDialog(it) }
+        loaderDialog?.loaderText?.apply {
+            setType(Typography.DISPLAY_2)
+        }
+        loaderDialog?.setLoadingText(Html.fromHtml(TM_PROGRAM_EDIT_DIALOG_TITLE))
+        loaderDialog?.show()
+    }
+
+    private fun closeLoadingDialog(){
+        loaderDialog?.dialog?.dismiss()
+    }
+
 }

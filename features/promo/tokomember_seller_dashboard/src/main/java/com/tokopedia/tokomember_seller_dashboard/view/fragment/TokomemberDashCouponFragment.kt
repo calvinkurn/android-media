@@ -34,6 +34,7 @@ import com.tokopedia.tokomember_seller_dashboard.view.activity.TmDashCreateActiv
 import com.tokopedia.tokomember_seller_dashboard.view.adapter.TmCouponAdapter
 import com.tokopedia.tokomember_seller_dashboard.view.viewmodel.TmCouponViewModel
 import com.tokopedia.unifycomponents.ChipsUnify
+import com.tokopedia.unifycomponents.Toaster
 import kotlinx.android.synthetic.main.tm_dash_coupon_fragment.viewFlipperCoupon
 import kotlinx.android.synthetic.main.tm_dash_coupon_list.*
 import kotlinx.android.synthetic.main.tm_layout_no_access.*
@@ -314,7 +315,15 @@ class TokomemberDashCouponFragment : BaseDaggerFragment(), TmCouponActions, Sort
 
                 }
                 TokoLiveDataResult.STATUS.SUCCESS ->{
-                    refreshCouponList()
+                    if(it.data?.data?.merchantPromotionUpdateStatusMV?.status == "200") {
+                        refreshCouponList()
+                    }
+                    else{
+
+                        view?.let { it1 -> it.data?.data?.message?.let { it2 ->
+                            Toaster.build(it1,
+                                it2, Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR).show()
+                        } }                    }
                 }
                 TokoLiveDataResult.STATUS.ERROR ->{
 
