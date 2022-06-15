@@ -26,9 +26,7 @@ data class AccountHeaderDataModel(
 ) : MainNavVisitable, ImpressHolder() {
     override fun id(): Any = id
 
-    override fun isContentTheSame(visitable: MainNavVisitable): Boolean {
-        return this == visitable
-    }
+    override fun isContentTheSame(visitable: MainNavVisitable): Boolean = false
 
     override fun type(factory: MainNavTypeFactory): Int {
         return factory.type(this)

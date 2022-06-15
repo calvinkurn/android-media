@@ -133,7 +133,7 @@ class CameraViewComponent(
 
     fun isTakingVideo() = cameraView.isTakingVideo
 
-    fun hasFlashFeatureOnCamera() = flashList.isNotEmpty()
+    fun hasFlashFeatureOnCamera() = flashList.size > 1
 
     fun hasFrontCamera() = cameraView
         .cameraOptions

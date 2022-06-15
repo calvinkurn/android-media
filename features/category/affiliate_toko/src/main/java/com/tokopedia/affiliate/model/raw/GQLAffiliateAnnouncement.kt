@@ -1,28 +1,29 @@
 package com.tokopedia.affiliate.model.raw
 
-val GQL_Affiliate_Announcement: String = """query getAffiliateAnnouncement(){
-getAffiliateAnnouncement() {
-    Data {
-      Status
-      Type
-      AnnouncementTitle
-      AnnouncementDescription
-      CtaText
-      CtaLink {
-        DesktopURL
-        MobileURL
-        AndroidURL
-        IosURL
-      }
-      Error {
-        ErrorType
-        Message
+val GQL_Affiliate_Announcement: String = """query getAffiliateAnnouncementV2(){
+    getAffiliateAnnouncementV2(){
+        Data{
+        Status
+      TickerType
+      TickerData {
+        AnnouncementTitle
+        AnnouncementDescription
         CtaText
-        CtaLink {
+        CtaLink{
+          IosURL
+          AndroidURL
           DesktopURL
           MobileURL
-          AndroidURL
+        }
+      }
+      Error {
+        Message
+        CtaText
+        CtaLink{
           IosURL
+          AndroidURL
+          DesktopURL
+          MobileURL
         }
       }
     }

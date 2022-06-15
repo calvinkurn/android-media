@@ -494,12 +494,13 @@ class DigitalPDPAnalytics {
         cartId: String,
         productId: String,
         productName: String,
-        price: String
+        price: String,
+        channelId: String,
     ){
 
         val eventDataLayer = Bundle().apply {
             putString(TrackAppUtils.EVENT_ACTION, CLICK_LANJUT_BAYAR)
-            putString(TrackAppUtils.EVENT_LABEL, "${categoryName} - ${operatorName}")
+            putString(TrackAppUtils.EVENT_LABEL, "${categoryName} - ${operatorName} - ${channelId}")
             putParcelableArrayList(ITEMS, mapperAtcToItemList(
                 categoryId, categoryName, cartId, operatorName, productId, productName, price
             ))
