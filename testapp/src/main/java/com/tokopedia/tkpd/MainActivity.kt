@@ -125,6 +125,6 @@ class MainActivity : AppCompatActivity() {
         /*
          * Put your default applink here
          */
-        return ApplinkConstInternalUserPlatform.NEW_PROFILE_INFO
+        return ""
     }
 }
