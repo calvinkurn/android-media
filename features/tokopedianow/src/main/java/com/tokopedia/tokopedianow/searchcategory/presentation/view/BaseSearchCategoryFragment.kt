@@ -1119,11 +1119,12 @@ abstract class BaseSearchCategoryFragment:
          */
 
         val needToShowOnBoardBottomSheet = getViewModel().needToShowOnBoardBottomSheet(sharedPref.get20mBottomSheetOnBoardShown())
-        if (needToShowOnBoardBottomSheet) {
-            show20mOnBoardBottomSheet()
-        } else if (!data.warehouseId.toLongOrZero().isZero()) {
-            showSwitcherToaster(data.serviceType)
-        } else { /* do nothing */ }
+        val isOoc = data.warehouseId.toLongOrZero().isZero()
+        when {
+            isOoc -> return
+            needToShowOnBoardBottomSheet -> show20mOnBoardBottomSheet()
+            else -> showSwitcherToaster(data.serviceType)
+        }
     }
 
     private fun show20mOnBoardBottomSheet() {
