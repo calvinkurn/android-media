@@ -101,6 +101,8 @@ class ShopReviewFragment : ReadReviewFragment() {
         super.onSuccessGetRatingAndTopic(ratingAndTopics)
         if (ratingOnlyContainer?.isVisible.orFalse()) {
             nestedScrollViewContainer?.visible()
+        } else {
+            nestedScrollViewContainer?.gone()
         }
     }
 
@@ -108,6 +110,8 @@ class ShopReviewFragment : ReadReviewFragment() {
         super.onSuccessGetShopRatingAndTopic(shopRatingAndTopics)
         if (ratingOnlyContainer?.isVisible.orFalse()) {
             nestedScrollViewContainer?.visible()
+        } else {
+            nestedScrollViewContainer?.gone()
         }
     }
 
