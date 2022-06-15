@@ -8,6 +8,7 @@ import com.tokopedia.logger.ServerLogger
 import com.tokopedia.logger.utils.Priority
 import com.tokopedia.notifications.inApp.ruleEngine.storage.entities.inappdata.CMInApp
 import com.tokopedia.notifications.model.BaseNotificationModel
+import com.tokopedia.notifications.model.PayloadExtra
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
 import timber.log.Timber
@@ -60,6 +61,10 @@ object IrisAnalyticsEvents {
     private const val INAPP_TYPE = "inapp_type"
     private const val LABEL = "eventlabel"
     private const val SHOP_ID = "shop_id"
+    private const val CAMPAIGN_NAME = "campaign_name"
+    private const val JOURNEY_ID = "journey_id"
+    private const val JOURNEY_NAME = "journey_name"
+    private const val SESSION_ID = "session_id_cm"
 
     private const val AMPLIFICATION = "amplification"
 
@@ -132,7 +137,7 @@ object IrisAnalyticsEvents {
             values[IS_SILENT] = false
         }
         values[EVENT_MESSAGE_ID] = baseNotificationModel.campaignUserToken?.let { it } ?: ""
-
+        addTrackingExtras(eventName, baseNotificationModel.payloadExtra, values)
         return values
 
     }
@@ -222,8 +227,50 @@ object IrisAnalyticsEvents {
         values[INAPP_TYPE] = cmInApp.type.let { cmInApp.type } ?: ""
         values[EVENT_MESSAGE_ID] = cmInApp.campaignUserToken?.let { it } ?: ""
 
+        addTrackingExtras(eventName, cmInApp.payloadExtra, values)
         return values
 
+    }
+
+
+    private fun addTrackingExtras(eventName: String,
+                                  payloadExtra: PayloadExtra?,
+                                  values: HashMap<String, Any>){
+        payloadExtra?.let {
+            it.campaignName?.let {cmpName ->
+                values[CAMPAIGN_NAME] = cmpName
+            }
+
+            it.journeyId?.let {journeyId ->
+                values[JOURNEY_ID] = journeyId
+            }
+
+            it.journeyName?.let { journeyName ->
+                values[JOURNEY_NAME] = journeyName
+            }
+            it.sessionId?.let { sessionId ->
+                setSessionId(eventName, values, sessionId)
+            }
+        }
+    }
+
+    private fun setSessionId(eventName : String,
+                             values : HashMap<String, Any>,
+                             sessionId : String){
+
+        val allowedEvents = listOf(
+            INAPP_RECEIVED,
+            INAPP_CLICKED,
+            INAPP_DISMISSED,
+            PUSH_RECEIVED,
+            PUSH_CLICKED,
+            PUSH_DISMISSED,
+            DEVICE_NOTIFICATION_OFF
+        )
+
+        if (eventName in allowedEvents) {
+            values[SESSION_ID] = sessionId
+        }
     }
 
     private fun checkEventAndAddShopId(

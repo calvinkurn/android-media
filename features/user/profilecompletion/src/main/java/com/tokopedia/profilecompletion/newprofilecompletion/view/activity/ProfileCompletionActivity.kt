@@ -20,47 +20,65 @@ import com.tokopedia.profilecompletion.newprofilecompletion.view.fragment.Profil
 /**
  * @author by nisie on 6/19/17.
  */
-class ProfileCompletionActivity : BaseSimpleActivity(), HasComponent<ProfileCompletionSettingComponent> {
+class ProfileCompletionActivity : BaseSimpleActivity(),
+    HasComponent<ProfileCompletionSettingComponent> {
 
     override fun getNewFragment(): Fragment? {
-        val bundle = Bundle()
-        if (intent.extras != null) {
-            bundle.putAll(intent.extras)
-        }
-        return ProfileCompletionFragment.createInstance()
+	val bundle = Bundle()
+	if (intent.extras != null) {
+	    bundle.putAll(intent.extras)
+	}
+	return ProfileCompletionFragment.createInstance()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        initView()
+	super.onCreate(savedInstanceState)
+	initView()
     }
 
     private fun initView() {
-        supportActionBar?.setBackgroundDrawable(ColorDrawable(MethodChecker.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_Background)))
-        toolbar.setTitleTextColor(MethodChecker.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_N500))
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            toolbar.elevation = 10f
-        }
-        toolbar.setPadding(toolbar.paddingLeft, toolbar.paddingTop, 30, toolbar.paddingBottom)
+	supportActionBar?.setBackgroundDrawable(
+	    ColorDrawable(
+		MethodChecker.getColor(
+		    this,
+		    com.tokopedia.unifyprinciples.R.color.Unify_Background
+		)
+	    )
+	)
+	toolbar.setTitleTextColor(
+	    MethodChecker.getColor(
+		this,
+		com.tokopedia.unifyprinciples.R.color.Unify_N500
+	    )
+	)
+	if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+	    toolbar.elevation = 10f
+	}
+	toolbar.setPadding(toolbar.paddingLeft, toolbar.paddingTop, 30, toolbar.paddingBottom)
 
-        val upArrow = ContextCompat.getDrawable(this, R.drawable.profilecompletion_ic_action_back)
-        if (upArrow != null) {
-            upArrow.setColorFilter(MethodChecker.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_N500), PorterDuff.Mode.SRC_ATOP)
-            supportActionBar?.setHomeAsUpIndicator(upArrow)
-        }
+	val upArrow = ContextCompat.getDrawable(this, R.drawable.profilecompletion_ic_action_back)
+	if (upArrow != null) {
+	    upArrow.setColorFilter(
+		MethodChecker.getColor(
+		    this,
+		    com.tokopedia.unifyprinciples.R.color.Unify_N500
+		), PorterDuff.Mode.SRC_ATOP
+	    )
+	    supportActionBar?.setHomeAsUpIndicator(upArrow)
+	}
     }
 
     fun onFinishedForm() {
-        val fragment = ProfileCompletionFinishedFragment.createInstance()
-        val fragmentTransaction = supportFragmentManager.beginTransaction()
-        fragmentTransaction.replace(parentViewResourceID, fragment, fragment.javaClass.simpleName)
-        fragmentTransaction.commit()
+	val fragment = ProfileCompletionFinishedFragment.createInstance()
+	val fragmentTransaction = supportFragmentManager.beginTransaction()
+	fragmentTransaction.replace(parentViewResourceID, fragment, fragment.javaClass.simpleName)
+	fragmentTransaction.commit()
     }
 
     override fun getComponent(): ProfileCompletionSettingComponent {
-        return DaggerProfileCompletionSettingComponent.builder()
-                .baseAppComponent((application as BaseMainApplication).baseAppComponent)
-                .profileCompletionSettingModule(ProfileCompletionSettingModule(this))
-                .build()
+	return DaggerProfileCompletionSettingComponent.builder()
+	    .baseAppComponent((application as BaseMainApplication).baseAppComponent)
+	    .profileCompletionSettingModule(ProfileCompletionSettingModule(this))
+	    .build()
     }
 }

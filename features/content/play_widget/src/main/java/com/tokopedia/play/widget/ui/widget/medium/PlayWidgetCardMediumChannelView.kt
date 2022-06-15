@@ -13,9 +13,7 @@ import android.widget.TextView
 import com.google.android.exoplayer2.ui.PlayerView
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.iconunify.IconUnify
-import com.tokopedia.kotlin.extensions.view.addOneTimeGlobalLayoutListener
-import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.play.widget.R
 import com.tokopedia.play.widget.player.PlayVideoPlayer
 import com.tokopedia.play.widget.player.PlayVideoPlayerReceiver
@@ -56,6 +54,7 @@ class PlayWidgetCardMediumChannelView : FrameLayout, PlayVideoPlayerReceiver {
     private val llLoadingContainer: LinearLayout
     private val loaderLoading: LoaderUnify
     private val ivGiveaway: ImageView
+    private val ivPromoLabel: IconUnify
 
     private var mPlayer: PlayVideoPlayer? = null
     private var mListener: Listener? = null
@@ -83,6 +82,7 @@ class PlayWidgetCardMediumChannelView : FrameLayout, PlayVideoPlayerReceiver {
         llLoadingContainer = view.findViewById(R.id.ll_loading_container)
         loaderLoading = view.findViewById(R.id.loader_loading)
         ivGiveaway = view.findViewById(R.id.iv_giveaway)
+        ivPromoLabel = llPromoDetail.findViewById(R.id.promo_image)
 
         compositeTouchDelegate = PlayWidgetCompositeTouchDelegate(view)
         view.touchDelegate = compositeTouchDelegate
@@ -132,11 +132,16 @@ class PlayWidgetCardMediumChannelView : FrameLayout, PlayVideoPlayerReceiver {
 
         setOnClickListener {
             mListener?.onChannelClicked(it, data)
+            mListener?.onLabelPromoClicked(this, data)
         }
 
         ivAction.setOnClickListener {
             mListener?.onMenuActionButtonClicked(this, data)
         }
+
+        llPromoDetail.isVisibleOnTheScreen(onViewVisible = {
+            mListener?.onLabelPromoImpressed(this, data)
+        }, onViewNotVisible = {})
     }
 
     private fun setActiveModel(model: PlayWidgetChannelUiModel) {
@@ -181,18 +186,25 @@ class PlayWidgetCardMediumChannelView : FrameLayout, PlayVideoPlayerReceiver {
                 tvOnlyLive.visibility = View.GONE
             }
             is PlayWidgetPromoType.Default -> {
+                setPromoLabelIcon(promoType.isRilisanSpesial)
                 tvOnlyLive.visibility = View.GONE
 
                 tvPromoDetail.text = promoType.promoText
                 llPromoDetail.visibility = View.VISIBLE
             }
             is PlayWidgetPromoType.LiveOnly -> {
+                setPromoLabelIcon(promoType.isRilisanSpesial)
                 tvOnlyLive.visibility = View.VISIBLE
 
                 tvPromoDetail.text = promoType.promoText
                 llPromoDetail.visibility = View.VISIBLE
             }
         }.exhaustive
+    }
+
+    private fun setPromoLabelIcon(isRilisanSpesial: Boolean){
+        if(isRilisanSpesial) ivPromoLabel.setImage(newIconId = IconUnify.ROCKET, newLightEnable = MethodChecker.getColor(context, unifyR.color.Unify_Static_White), newDarkEnable = MethodChecker.getColor(context, unifyR.color.Unify_Static_White))
+        else ivPromoLabel.setImage(newIconId = IconUnify.PROMO, newLightEnable = MethodChecker.getColor(context, unifyR.color.Unify_Static_White), newDarkEnable = MethodChecker.getColor(context, unifyR.color.Unify_Static_White))
     }
 
     override fun setPlayer(player: PlayVideoPlayer?) {
@@ -255,5 +267,14 @@ class PlayWidgetCardMediumChannelView : FrameLayout, PlayVideoPlayerReceiver {
             view: View,
             item: PlayWidgetChannelUiModel
         ) {}
+        fun onLabelPromoClicked(
+            view: View,
+            item: PlayWidgetChannelUiModel
+        )
+
+        fun onLabelPromoImpressed(
+            view: View,
+            item: PlayWidgetChannelUiModel
+        )
     }
 }

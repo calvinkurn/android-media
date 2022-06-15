@@ -1,0 +1,144 @@
+{
+  "readme": "Comparison widget view, click shop, click product, and view all",
+  "mode": "exact",
+  "query": [
+    {
+      "event": "view_item_list",
+      "eventCategory": "product detail page",
+      "eventAction": "impression - product recommendation",
+      "eventLabel": ".* - .*",
+      "businessUnit": "home & browse",
+      "currentSite": "tokopediamarketplace",
+      "item_list": ".*",
+      "items": [
+        {
+          "quantity": ".*",
+          "item_id": ".*",
+          "shopName": ".*",
+          "index": ".*",
+          "item_name": ".*",
+          "item_brand": ".*",
+          "item_category": ".*/.*/.*",
+          "dimension83": ".*",
+          "category_id": ".*",
+          "price": ".*",
+          "dimension40": ".* - .* - .* - .* - .*",
+          "shopId": ".*",
+          "shopType": ".*",
+          "item_variant": ".*"
+        }
+      ],
+      "userId": ".*",
+      "sessionIris": ".*"
+    },
+    {
+      "event": "view_item_list",
+      "eventCategory": "product detail page",
+      "eventAction": "impression - product recommendation - non login",
+      "eventLabel": ".* - .*",
+      "businessUnit": "home & browse",
+      "currentSite": "tokopediamarketplace",
+      "item_list": "",
+      "items": [
+        {
+          "quantity": ".*",
+          "item_id": ".*",
+          "shopName": ".*",
+          "index": ".*",
+          "item_name": ".*",
+          "item_brand": ".*",
+          "item_category": ".*/.*/.*",
+          "dimension83": ".*",
+          "category_id": ".*",
+          "price": ".*",
+          "dimension40": ".* - .* - .* - .* - .*",
+          "shopId": ".*",
+          "shopType": ".*",
+          "item_variant": ".*"
+        }
+      ],
+      "userId": "",
+      "sessionIris": ".*"
+    },
+    {
+      "event": "clickPDP",
+      "eventCategory": "product detail page",
+      "eventAction": "click - see more comparison - non login",
+      "eventLabel": ".* - .* - comparison widget",
+      "businessUnit": "home & browse",
+      "currentSite": "tokopediamarketplace",
+      "userId": "",
+      "sessionIris": ".*",
+      "clientId": ".*"
+    },
+    {
+      "event": "clickPDP",
+      "eventCategory": "product detail page",
+      "eventAction": "click - see more comparison",
+      "eventLabel": ".* - .* - comparison widget",
+      "businessUnit": "home & browse",
+      "currentSite": "tokopediamarketplace",
+      "userId": ".*",
+      "sessionIris": ".*",
+      "clientId": ".*"
+    },
+    {
+      "event": "select_content",
+      "eventCategory": "product detail page",
+      "eventAction": "click - product recommendation",
+      "eventLabel": ".* - .*",
+      "businessUnit": "home & browse",
+      "currentSite": "tokopediamarketplace",
+      "item_list": "/product - .* - rekomendasi untuk anda - .* - comparison widget - .*",
+      "items": [
+        {
+          "quantity": ".*",
+          "item_id": ".*",
+          "shopName": ".*",
+          "index": ".*",
+          "item_name": ".*",
+          "item_brand": ".*",
+          "item_category": ".*/.*/.*",
+          "dimension83": ".*",
+          "category_id": ".*",
+          "price": ".*",
+          "dimension40": ".*",
+          "shopId": ".*",
+          "shopType": ".*",
+          "item_variant": ".*"
+        }
+      ],
+      "userId": ".*",
+      "sessionIris": ".*"
+    },
+    {
+      "event": "select_content",
+      "eventCategory": "product detail page",
+      "eventAction": "click - product recommendation - non login",
+      "eventLabel": ".* - .*",
+      "businessUnit": "home & browse",
+      "currentSite": "tokopediamarketplace",
+      "item_list": "/product - .* - non login - rekomendasi untuk anda - .* - comparison widget - .*",
+      "items": [
+        {
+          "quantity": ".*",
+          "item_id": ".*",
+          "shopName": ".*",
+          "index": ".*",
+          "item_name": ".*",
+          "item_brand": ".*",
+          "item_category": ".*/.*/.*",
+          "dimension83": ".*",
+          "category_id": ".*",
+          "price": ".*",
+          "dimension40": ".*",
+          "shopId": ".*",
+          "shopType": ".*",
+          "item_variant": ".*"
+        }
+      ],
+      "userId": "",
+      "sessionIris": ".*"
+    }
+  ]
+}

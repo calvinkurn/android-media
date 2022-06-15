@@ -6,15 +6,13 @@
         android:allowBackup="true"
         android:label="@string/app_name"
         android:supportsRtl="true">
-        <activity
-            android:name="com.tokopedia.createpost.view.activity.CreatePostLandingActivity"
-            android:exported="true" />
+
         <activity
             android:name="com.tokopedia.createpost.view.activity.CreatePostActivity"
             android:label="@string/cp_title_create_post"
             android:launchMode="singleTask"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.White"
+            android:theme="@style/Theme.WhiteUnify"
             android:windowSoftInputMode="stateAlwaysHidden"
             android:exported="false">
             <intent-filter>
@@ -53,13 +51,13 @@
             android:name="com.tokopedia.createpost.view.activity.CreatePostMediaPreviewActivity"
             android:label="@string/cp_title_edit"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.White"
+            android:theme="@style/Theme.WhiteUnify"
             android:windowSoftInputMode="stateAlwaysHidden" />
         <activity
             android:name="com.tokopedia.createpost.view.plist.ShopProductListActivity"
             android:label="@string/cp_title_edit"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.White"
+            android:theme="@style/Theme.WhiteUnify"
             android:windowSoftInputMode="stateAlwaysHidden"
             android:exported="false">
             <intent-filter>
@@ -79,7 +77,7 @@
             android:label="@string/cp_title_create_post"
             android:launchMode="singleTask"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.White"
+            android:theme="@style/Theme.WhiteUnify"
             android:windowSoftInputMode="stateAlwaysHidden"
             android:exported="false">
             <intent-filter>

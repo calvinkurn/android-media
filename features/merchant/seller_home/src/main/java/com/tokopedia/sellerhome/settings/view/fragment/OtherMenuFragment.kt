@@ -59,7 +59,6 @@ import com.tokopedia.sellerhome.common.errorhandler.SellerHomeErrorHandler
 import com.tokopedia.sellerhome.di.component.DaggerSellerHomeComponent
 import com.tokopedia.sellerhome.settings.analytics.SettingFreeShippingTracker
 import com.tokopedia.sellerhome.settings.analytics.SettingPerformanceTracker
-import com.tokopedia.sellerhome.settings.analytics.SettingShopOperationalTracker
 import com.tokopedia.sellerhome.settings.view.activity.MenuSettingActivity
 import com.tokopedia.sellerhome.settings.view.adapter.OtherMenuAdapter
 import com.tokopedia.sellerhome.settings.view.adapter.uimodel.OtherMenuShopShareData
@@ -126,9 +125,6 @@ class OtherMenuFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTypeF
 
     @Inject
     lateinit var freeShippingTracker: SettingFreeShippingTracker
-
-    @Inject
-    lateinit var shopOperationalTracker: SettingShopOperationalTracker
 
     @Inject
     lateinit var settingPerformanceTracker: SettingPerformanceTracker
@@ -268,8 +264,6 @@ class OtherMenuFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTypeF
     override fun goToSettings() {
         startActivity(Intent(context, MenuSettingActivity::class.java))
     }
-
-    override fun getIsMVCProductEnabled(): Boolean = getIsProductCouponEnabled()
 
     override fun getRecyclerView(): RecyclerView? = getRecyclerView(view)
 
@@ -884,14 +878,6 @@ class OtherMenuFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTypeF
         return urlString.split("/").toMutableList().also { list ->
             list[list.lastIndex] = replacementValue
         }.joinToString("/")
-    }
-
-    private fun getIsProductCouponEnabled(): Boolean {
-        return try {
-            remoteConfig.getBoolean(RemoteConfigKey.ENABLE_MVC_PRODUCT, true)
-        } catch (ex: Exception) {
-            false
-        }
     }
 
     private fun View.showToasterError(errorMessage: String, onRetryAction: () -> Unit) {

@@ -98,7 +98,7 @@ class NotificationTypeFactoryImpl constructor(
                 item.isTypeDefault() -> NormalNotificationViewHolder.LAYOUT
                 item.isTypeSingleProduct() -> SingleProductNotificationViewHolder.LAYOUT
                 item.isCarouselProduct() -> CarouselProductNotificationViewHolder.LAYOUT
-                item.isBanner() -> BannerNotificationTitleViewHolder.LAYOUT
+                item.isBanner() -> BannerNotificationViewHolder.LAYOUT
                 else -> NormalNotificationViewHolder.LAYOUT
             }
         }
@@ -156,7 +156,7 @@ class NotificationTypeFactoryImpl constructor(
             LoadMoreViewHolder.LAYOUT -> LoadMoreViewHolder(
                     view, loadMoreListener
             )
-            BannerNotificationTitleViewHolder.LAYOUT -> BannerNotificationTitleViewHolder(
+            BannerNotificationViewHolder.LAYOUT -> BannerNotificationViewHolder(
                     view, notificationListener
             )
             SingleProductNotificationViewHolder.LAYOUT -> SingleProductNotificationViewHolder(

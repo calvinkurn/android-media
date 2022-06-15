@@ -48,6 +48,8 @@ object ApplinkConstInternalMarketplace {
     const val PRODUCT_DETAIL_DOMAIN = "$INTERNAL_MARKETPLACE/product-detail/{shop_domain}/{product_key}/"
     const val PRODUCT_DETAIL_DOMAIN_WITH_AFFILIATE = "$INTERNAL_MARKETPLACE/product-detail/{shop_domain}/{product_key}/?aff={affiliate_string}&aff_unique_id={affiliate_uuid}"
 
+    const val PRODUCT_DETAIL_EDUCATIONAL = "$INTERNAL_MARKETPLACE/product-edu/{type}/"
+
     // AtcVariantActivity
     @JvmField
     val ATC_VARIANT = "$INTERNAL_MARKETPLACE/atc-variant/{product_id}/{shop_id}/" +
@@ -66,6 +68,9 @@ object ApplinkConstInternalMarketplace {
 
     // ReviewCredibilityActivity
     const val REVIEW_CREDIBILITY = "$INTERNAL_MARKETPLACE/review/credibility/{userId}/{source}/"
+
+    // DetailedReviewMediaGalleryActivity
+    const val REVIEW_MEDIA_GALLERY = "$INTERNAL_MARKETPLACE/review/media-gallery"
 
     // StockReminderActivity
     const val STOCK_REMINDER_BASE = "$INTERNAL_MARKETPLACE/stock-reminder/"
@@ -194,7 +199,7 @@ object ApplinkConstInternalMarketplace {
     // PowerMerchantSubscribeActivity
     const val POWER_MERCHANT_SUBSCRIBE = "$INTERNAL_MARKETPLACE/power-merchant-subscribe"
 
-    // BenefitPackageActivity
+    // MembershipDetailActivity
     const val PM_BENEFIT_PACKAGE = "$INTERNAL_MARKETPLACE/pm-benefit-package"
 
     const val GOLD_MERCHANT_REDIRECT = "$INTERNAL_MARKETPLACE/gold-merchant-redirect"
@@ -276,4 +281,14 @@ object ApplinkConstInternalMarketplace {
 
     const val SHOP_MVC_LOCKED_TO_PRODUCT = "$INTERNAL_MARKETPLACE/shop/widget/voucher/shop_id/{shop_id}/{voucher_id}/"
 
+    /**
+     * Go to chat list
+     */
+    const val TOPCHAT = "$INTERNAL_MARKETPLACE/topchat"
+
+    /**
+     * Go to chatroom with the provided {message_id}
+     * If you want to use {shopId} to chatroom use external applink
+     */
+    const val TOPCHAT_ROOM = "$INTERNAL_MARKETPLACE/topchat/{message_id}"
 }

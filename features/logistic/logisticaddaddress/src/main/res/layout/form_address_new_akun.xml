@@ -8,10 +8,9 @@
 
     <com.tokopedia.unifycomponents.TextFieldUnify
         android:id="@+id/et_nama_penerima"
-        style="@style/HintTextInputLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:text_field_label="Nama Penerima"
+        app:text_field_label="@string/field_nama_penerima"
         app:text_field_counter="50"/>
 
     <LinearLayout
@@ -41,11 +40,11 @@
 
     <com.tokopedia.unifycomponents.TextFieldUnify
         android:id="@+id/et_nomor_hp"
-        style="@style/HintTextInputLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/unify_space_32"
-        app:text_field_label="Nomor Hp"
+        android:layout_marginTop="32dp"
+        app:text_field_label="@string/field_nomor_hp"
+        app:text_field_counter="15"
         app:text_field_input_type="number"/>
 
 </LinearLayout>

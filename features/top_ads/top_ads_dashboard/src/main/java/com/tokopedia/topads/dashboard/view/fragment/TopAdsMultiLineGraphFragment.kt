@@ -13,7 +13,6 @@ import com.tokopedia.topads.dashboard.R
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant
 import com.tokopedia.topads.dashboard.data.model.beranda.TopadsWidgetSummaryStatisticsModel
 import com.tokopedia.topads.dashboard.data.utils.ChartXAxisLabelFormatter
-import kotlinx.android.synthetic.main.topads_statistics_graph_fragment.*
 import java.text.SimpleDateFormat
 
 class TopAdsMultiLineGraphFragment : TkpdBaseV4Fragment() {
@@ -24,19 +23,17 @@ class TopAdsMultiLineGraphFragment : TkpdBaseV4Fragment() {
     override fun getScreenName(): String = javaClass.simpleName
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?,
     ): View? {
         return inflater.inflate(R.layout.topads_statistics_graph_fragment, container, false)
     }
-
-    private data class StatsData(val data: Float, val dataStr: String, val date: String)
 
     fun setValue(cells: List<TopadsWidgetSummaryStatisticsModel.TopadsWidgetSummaryStatistics.WidgetSummaryStatistics.Cell>) {
         this.cells = cells
     }
 
     fun showLineGraph(items: List<MultiLineGraph>) {
-        with(lineGraphView) {
+        view?.findViewById<LineChartView>(R.id.lineGraphView)?.apply {
             init(getLineChartConfig())
             setDataForMultipleLine(items)
             invalidateChart()
@@ -45,7 +42,7 @@ class TopAdsMultiLineGraphFragment : TkpdBaseV4Fragment() {
 
     private fun setDataForMultipleLine(items: List<MultiLineGraph>) {
         val dataSets = items.map { getDataForSingleLine(it) }
-        lineGraphView?.setDataSets(*dataSets.toTypedArray())
+        view?.findViewById<LineChartView>(R.id.lineGraphView)?.setDataSets(*dataSets.toTypedArray())
     }
 
     private fun getDataForSingleLine(item: MultiLineGraph): LineChartData {
@@ -104,8 +101,8 @@ class TopAdsMultiLineGraphFragment : TkpdBaseV4Fragment() {
         )
 
         return LineChartConfig.create {
-            xAnimationDuration { 200 }
-            yAnimationDuration { 200 }
+            xAnimationDuration { ANIMATION_DURATION }
+            yAnimationDuration { ANIMATION_DURATION }
             tooltipEnabled { true }
             chartLineMode { LineChartView.LINE_MODE_CURVE }
 
@@ -133,4 +130,9 @@ class TopAdsMultiLineGraphFragment : TkpdBaseV4Fragment() {
     }
 
     data class MultiLineGraph(val id: Int, val color: Int)
+    private data class StatsData(val data: Float, val dataStr: String, val date: String)
+
+    companion object {
+        private const val ANIMATION_DURATION = 200
+    }
 }

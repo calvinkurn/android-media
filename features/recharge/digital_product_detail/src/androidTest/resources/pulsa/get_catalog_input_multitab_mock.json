@@ -1,0 +1,385 @@
+[
+  {
+    "data": {
+      "rechargeCatalogProductInputMultiTab": {
+        "productInputs": [
+          {
+            "label": "pdp2022_pulsa INPUT",
+            "needEnquiry": false,
+            "isShowingProduct": true,
+            "enquiryFields": [],
+            "product": {
+              "id": 6,
+              "name": "product_id",
+              "text": "Input Nominal",
+              "placeholder": "Input Nominal",
+              "validations": [],
+              "dataCollections": [
+                {
+                  "name": "Promo Spesial Buat Kamu",
+                  "cluster_type": "MCCM",
+                  "products": [
+                    {
+                      "id": "1111",
+                      "attributes": {
+                        "status": 1,
+                        "product_labels": [],
+                        "desc": "Rp 30.000",
+                        "detail": "Rp 30.000",
+                        "detail_url": "",
+                        "detail_url_text": "",
+                        "info": "Rp30.000",
+                        "price": "Rp30.000",
+                        "price_plain": 3000,
+                        "detail_compact": "Rp 30.000",
+                        "category_id": 55,
+                        "operator_id": 5,
+                        "product_descriptions": [],
+                        "custom_attributes": [],
+                        "promo": {
+                          "id": "0",
+                          "bonus_text": "",
+                          "new_price": "Rp30.000",
+                          "new_price_plain": 30000,
+                          "value_text": "",
+                          "discount": "0%"
+                        }
+                      }
+                    }
+                  ]
+                },
+                {
+                  "name": "",
+                  "cluster_type": "",
+                  "products": [
+                    {
+                      "id": "1135",
+                      "attributes": {
+                        "status": 1,
+                        "product_labels": [
+                          "Xtra Quota di myXL"
+                        ],
+                        "desc": "5.000",
+                        "detail": "Masa Aktif 7 hari. Dapatkan Xtra kuota hingga 200MB dengan melakukan claim pada aplikasi myXL",
+                        "detail_url": "https://www.tokopedia.com/promo/digital-xl-5",
+                        "detail_url_text": "",
+                        "info": "Rp 6.000",
+                        "price": "Rp6.000",
+                        "price_plain": 6000,
+                        "detail_compact": "Masa Aktif 7 hari. Dapatkan Xtra kuota hingga 200MB dengan melakukan claim pada aplikasi myXL",
+                        "category_id": 1,
+                        "operator_id": 5,
+                        "product_descriptions": [],
+                        "custom_attributes": [],
+                        "promo": {
+                          "id": "0",
+                          "bonus_text": "",
+                          "new_price": "Rp5.800",
+                          "new_price_plain": 5800,
+                          "value_text": "",
+                          "discount": "3%"
+                        }
+                      }
+                    },
+                    {
+                      "id": "1136",
+                      "attributes": {
+                        "status": 1,
+                        "product_labels": [
+                          "Xtra Quota di myXL"
+                        ],
+                        "desc": "10.000",
+                        "detail": "Masa Aktif 15 Hari. Dapatkan Xtra kuota hingga 200MB dengan malakukan claim pada aplikasi myXL",
+                        "detail_url": "https://www.tokopedia.com/promo/digital-xl-5",
+                        "detail_url_text": "",
+                        "info": "Rp 11.500",
+                        "price": "Rp11.500",
+                        "price_plain": 11500,
+                        "detail_compact": "Masa Aktif 15 Hari. Dapatkan Xtra kuota hingga 200MB dengan malakukan claim pada aplikasi myXL",
+                        "category_id": 1,
+                        "operator_id": 5,
+                        "product_descriptions": [],
+                        "custom_attributes": [],
+                        "promo": null
+                      }
+                    },
+                    {
+                      "id": "1137",
+                      "attributes": {
+                        "status": 1,
+                        "product_labels": [
+                          "Xtra Quota di myXL"
+                        ],
+                        "desc": "15.000",
+                        "detail": "Masa berlaku 20 hari. Dapatkan Xtra kuota hingga 200MB dengan malakukan claim pada aplikasi myXL",
+                        "detail_url": "https://www.tokopedia.com/promo/digital-xl-5",
+                        "detail_url_text": "",
+                        "info": "Rp 15.500",
+                        "price": "Rp15.500",
+                        "price_plain": 15500,
+                        "detail_compact": "Masa berlaku 20 hari. Dapatkan Xtra kuota hingga 200MB dengan malakukan claim pada aplikasi myXL",
+                        "category_id": 1,
+                        "operator_id": 5,
+                        "product_descriptions": [],
+                        "custom_attributes": [],
+                        "promo": null
+                      }
+                    },
+                    {
+                      "id": "30",
+                      "attributes": {
+                        "status": 1,
+                        "product_labels": [
+                          "Xtra Quota di myXL"
+                        ],
+                        "desc": "25.000",
+                        "detail": "Masa berlaku 30 hari. Dapatkan Xtra kuota hingga 1GB dengan malakukan claim pada aplikasi myXL",
+                        "detail_url": "https://www.tokopedia.com/promo/digital-xl-5",
+                        "detail_url_text": "",
+                        "info": "Rp 25.000",
+                        "price": "Rp25.000",
+                        "price_plain": 25000,
+                        "detail_compact": "Masa berlaku 30 hari. Dapatkan Xtra kuota hingga 1GB dengan malakukan claim pada aplikasi myXL",
+                        "category_id": 1,
+                        "operator_id": 5,
+                        "product_descriptions": [],
+                        "custom_attributes": [],
+                        "promo": null
+                      }
+                    },
+                    {
+                      "id": "278",
+                      "attributes": {
+                        "status": 1,
+                        "product_labels": [
+                          "Xtra Quota di myXL"
+                        ],
+                        "desc": "30.000",
+                        "detail": "Masa aktif 35 hari. Dapatkan Xtra kuota hingga 1GB dengan malakukan claim pada aplikasi myXL.",
+                        "detail_url": "https://www.tokopedia.com/promo/digital-xl-5",
+                        "detail_url_text": "",
+                        "info": "Rp30.000",
+                        "price": "Rp30.000",
+                        "price_plain": 30000,
+                        "detail_compact": "Masa aktif 35 hari. Dapatkan Xtra kuota hingga 1GB dengan malakukan claim pada aplikasi myXL.",
+                        "category_id": 1,
+                        "operator_id": 5,
+                        "product_descriptions": [],
+                        "custom_attributes": [],
+                        "promo": null
+                      }
+                    },
+                    {
+                      "id": "31",
+                      "attributes": {
+                        "status": 1,
+                        "product_labels": [
+                          "Xtra Quota di myXL"
+                        ],
+                        "desc": "50.000",
+                        "detail": "Masa berlaku 45 hari. Dapatkan Xtra kuota hingga 2GB dengan malakukan claim pada aplikasi myXL",
+                        "detail_url": "https://www.tokopedia.com/promo/digital-xl-5",
+                        "detail_url_text": "",
+                        "info": "Rp 49.500",
+                        "price": "Rp50.000",
+                        "price_plain": 50000,
+                        "detail_compact": "Masa berlaku 45 hari. Dapatkan Xtra kuota hingga 2GB dengan malakukan claim pada aplikasi myXL",
+                        "category_id": 1,
+                        "operator_id": 5,
+                        "product_descriptions": [],
+                        "custom_attributes": [],
+                        "promo": {
+                          "id": "0",
+                          "bonus_text": "",
+                          "new_price": "Rp49.500",
+                          "new_price_plain": 49500,
+                          "value_text": "",
+                          "discount": "1%"
+                        }
+                      }
+                    },
+                    {
+                      "id": "32",
+                      "attributes": {
+                        "status": 1,
+                        "product_labels": [
+                          "Xtra Quota di myXL"
+                        ],
+                        "desc": "100.000",
+                        "detail": "Masa berlaku 60 hari. Dapatkan Xtra kuota hingga 10GB dengan malakukan claim pada aplikasi myXL",
+                        "detail_url": "https://www.tokopedia.com/promo/digital-xl-5",
+                        "detail_url_text": "",
+                        "info": "Rp 99.500",
+                        "price": "Rp100.000",
+                        "price_plain": 100000,
+                        "detail_compact": "Masa berlaku 60 hari. Dapatkan Xtra kuota hingga 10GB dengan malakukan claim pada aplikasi myXL",
+                        "category_id": 1,
+                        "operator_id": 5,
+                        "product_descriptions": [],
+                        "custom_attributes": [],
+                        "promo": {
+                          "id": "0",
+                          "bonus_text": "",
+                          "new_price": "Rp99.500",
+                          "new_price_plain": 99500,
+                          "value_text": "",
+                          "discount": "1%"
+                        }
+                      }
+                    },
+                    {
+                      "id": "347",
+                      "attributes": {
+                        "status": 1,
+                        "product_labels": [
+                          "Xtra Quota di myXL"
+                        ],
+                        "desc": "150.000",
+                        "detail": "Masa berlaku 90 hari. Dapatkan Xtra kuota hingga 10GB dengan malakukan claim pada aplikasi myXL.",
+                        "detail_url": "https://www.tokopedia.com/promo/digital-xl-5",
+                        "detail_url_text": "",
+                        "info": "Rp 148.500",
+                        "price": "Rp150.000",
+                        "price_plain": 150000,
+                        "detail_compact": "Masa berlaku 90 hari. Dapatkan Xtra kuota hingga 10GB dengan malakukan claim pada aplikasi myXL.",
+                        "category_id": 1,
+                        "operator_id": 5,
+                        "product_descriptions": [],
+                        "custom_attributes": [],
+                        "promo": {
+                          "id": "0",
+                          "bonus_text": "",
+                          "new_price": "Rp148.500",
+                          "new_price_plain": 148500,
+                          "value_text": "",
+                          "discount": "1%"
+                        }
+                      }
+                    },
+                    {
+                      "id": "22",
+                      "attributes": {
+                        "status": 1,
+                        "product_labels": [
+                          "Xtra Quota di myXL"
+                        ],
+                        "desc": "200.000",
+                        "detail": "Masa berlaku 120 hari. Dapatkan Xtra kuota hingga 10GB dengan malakukan claim pada aplikasi myXL",
+                        "detail_url": "https://www.tokopedia.com/promo/digital-xl-5",
+                        "detail_url_text": "",
+                        "info": "Rp 198.500",
+                        "price": "Rp200.000",
+                        "price_plain": 200000,
+                        "detail_compact": "Masa berlaku 120 hari. Dapatkan Xtra kuota hingga 10GB dengan malakukan claim pada aplikasi myXL",
+                        "category_id": 1,
+                        "operator_id": 5,
+                        "product_descriptions": [],
+                        "custom_attributes": [],
+                        "promo": {
+                          "id": "0",
+                          "bonus_text": "",
+                          "new_price": "Rp198.500",
+                          "new_price_plain": 198500,
+                          "value_text": "",
+                          "discount": "1%"
+                        }
+                      }
+                    },
+                    {
+                      "id": "35",
+                      "attributes": {
+                        "status": 1,
+                        "product_labels": [
+                          "Xtra Quota di myXL"
+                        ],
+                        "desc": "300.000",
+                        "detail": "Masa berlaku 180 hari. Dapatkan Xtra kuota hingga 10GB dengan malakukan claim pada aplikasi myXL.",
+                        "detail_url": "https://www.tokopedia.com/promo/digital-xl-5",
+                        "detail_url_text": "",
+                        "info": "Rp 296.000",
+                        "price": "Rp300.000",
+                        "price_plain": 300000,
+                        "detail_compact": "Masa berlaku 180 hari. Dapatkan Xtra kuota hingga 10GB dengan malakukan claim pada aplikasi myXL.",
+                        "category_id": 1,
+                        "operator_id": 5,
+                        "product_descriptions": [],
+                        "custom_attributes": [],
+                        "promo": {
+                          "id": "0",
+                          "bonus_text": "",
+                          "new_price": "Rp296.000",
+                          "new_price_plain": 296000,
+                          "value_text": "",
+                          "discount": "1%"
+                        }
+                      }
+                    },
+                    {
+                      "id": "36",
+                      "attributes": {
+                        "status": 1,
+                        "product_labels": [
+                          "Xtra Quota di myXL"
+                        ],
+                        "desc": "500.000",
+                        "detail": "Masa berlaku 240 hari. Dapatkan Xtra kuota hingga 10GB dengan malakukan claim pada aplikasi myXL.",
+                        "detail_url": "https://www.tokopedia.com/promo/digital-xl-5",
+                        "detail_url_text": "",
+                        "info": "Rp495.000",
+                        "price": "Rp500.000",
+                        "price_plain": 500000,
+                        "detail_compact": "Masa berlaku 240 hari. Dapatkan Xtra kuota hingga 10GB dengan malakukan claim pada aplikasi myXL.",
+                        "category_id": 1,
+                        "operator_id": 5,
+                        "product_descriptions": [],
+                        "custom_attributes": [],
+                        "promo": {
+                          "id": "0",
+                          "bonus_text": "",
+                          "new_price": "Rp495.000",
+                          "new_price_plain": 495000,
+                          "value_text": "",
+                          "discount": "1%"
+                        }
+                      }
+                    },
+                    {
+                      "id": "37",
+                      "attributes": {
+                        "status": 1,
+                        "product_labels": [
+                          "Xtra Quota di myXL"
+                        ],
+                        "desc": "1.000.000",
+                        "detail": "Masa berlaku 360 hari. Dapatkan Xtra kuota hingga 10GB dengan malakukan claim pada aplikasi myXL.",
+                        "detail_url": "https://www.tokopedia.com/promo/digital-xl-5",
+                        "detail_url_text": "",
+                        "info": "Rp995.000",
+                        "price": "Rp1.000.000",
+                        "price_plain": 1000000,
+                        "detail_compact": "Masa berlaku 360 hari. Dapatkan Xtra kuota hingga 10GB dengan malakukan claim pada aplikasi myXL.",
+                        "category_id": 1,
+                        "operator_id": 5,
+                        "product_descriptions": [],
+                        "custom_attributes": [],
+                        "promo": {
+                          "id": "0",
+                          "bonus_text": "",
+                          "new_price": "Rp995.000",
+                          "new_price_plain": 995000,
+                          "value_text": "",
+                          "discount": "1%"
+                        }
+                      }
+                    }
+                  ]
+                }
+              ]
+            },
+            "filterTagComponents": []
+          }
+        ]
+      }
+    }
+  }
+]

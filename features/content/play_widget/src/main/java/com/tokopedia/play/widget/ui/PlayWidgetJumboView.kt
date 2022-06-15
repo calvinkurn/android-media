@@ -82,7 +82,6 @@ class PlayWidgetJumboView : FrameLayout, IPlayWidgetView {
                 position
             )
         }
-
     }
 
     private val adapter = PlayWidgetJumboAdapter(

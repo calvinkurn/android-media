@@ -7,8 +7,8 @@ import com.tokopedia.vouchercreation.product.create.domain.entity.CouponUiModel
 import com.tokopedia.vouchercreation.product.create.domain.usecase.GetMostSoldProductsUseCase
 import com.tokopedia.vouchercreation.product.share.domain.entity.ShopWithTopProducts
 import com.tokopedia.vouchercreation.shop.voucherlist.domain.usecase.ShopBasicDataUseCase
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.async
+import kotlinx.coroutines.coroutineScope
 import javax.inject.Inject
 
 class GetShopAndTopProductsUseCase @Inject constructor(
@@ -22,25 +22,23 @@ class GetShopAndTopProductsUseCase @Inject constructor(
         private const val EMPTY_STRING = ""
     }
 
-    suspend fun execute(
-        scope: CoroutineScope,
-        couponUiModel: CouponUiModel
-    ): ShopWithTopProducts {
+    suspend fun execute(couponUiModel: CouponUiModel): ShopWithTopProducts {
+        return coroutineScope {
+            val coupon = mapper.map(couponUiModel)
 
-        val coupon = mapper.map(couponUiModel)
+            val shopDeferred = async { getShopBasicDataUseCase.executeOnBackground() }
+            val shop = shopDeferred.await()
 
-        val shopDeferred = scope.async { getShopBasicDataUseCase.executeOnBackground() }
-        val shop = shopDeferred.await()
+            val productIds = coupon.productIds.map { it.parentProductId }
+            val productsDeferred = async { getMostSoldProducts(productIds) }
+            val products = productsDeferred.await()
 
-        val productIds = coupon.productIds.map { it.parentProductId }
-        val productsDeferred = scope.async { getMostSoldProducts(productIds) }
-        val products = productsDeferred.await()
+            val productImageUrls = products.data.map {
+                getImageUrlOrEmpty(it.pictures)
+            }
 
-        val productImageUrls = products.data.map {
-            getImageUrlOrEmpty(it.pictures)
+            return@coroutineScope ShopWithTopProducts(productImageUrls, shop)
         }
-
-        return ShopWithTopProducts(productImageUrls, shop)
     }
 
     private suspend fun getMostSoldProducts(productIds: List<Long>): GetProductsByProductIdResponse.GetProductListData {

@@ -6,6 +6,11 @@ import com.tokopedia.logger.utils.Priority
 object ProductManageAdapterLogger {
 
     object MethodName {
+        const val SHOW_LOADING = "showLoading"
+        const val HIDE_LOADING = "hideLoading"
+        const val REMOVE_ERROR_NETWORK = "removeErrorNetwork"
+        const val ADD_ELEMENT = "addElement"
+        const val CLEAR_ALL_ELEMENTS = "clearAllElements"
         const val UPDATE_PRODUCT = "updateProduct"
         const val REMOVE_AND_UPDATE_LAYOUT = "removeEmptyAndUpdateLayout"
         const val CHECK_ALL_PRODUCTS = "checkAllProducts"

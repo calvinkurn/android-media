@@ -7,12 +7,8 @@ import com.tokopedia.discovery2.ComponentNames
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.discoverymapper.DiscoveryDataMapper
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.SupervisorJob
-import kotlin.coroutines.CoroutineContext
 
-class DynamicCategoryViewModel(application: Application, components: ComponentsItem, val position: Int) : DiscoveryBaseViewModel(), CoroutineScope {
+class DynamicCategoryViewModel(application: Application, components: ComponentsItem, val position: Int) : DiscoveryBaseViewModel() {
     private val componentData: MutableLiveData<ArrayList<ComponentsItem>> = MutableLiveData()
 
     init {
@@ -24,8 +20,5 @@ class DynamicCategoryViewModel(application: Application, components: ComponentsI
     fun getComponentLiveData(): LiveData<ArrayList<ComponentsItem>> {
         return componentData
     }
-
-    override val coroutineContext: CoroutineContext
-        get() = Dispatchers.Main + SupervisorJob()
 
 }

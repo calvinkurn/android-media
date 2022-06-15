@@ -51,12 +51,12 @@ class GraphqlRepositoryStub : GraphqlRepository {
                         mapOf(),
                         false
                 )
-                it.contains("wallet_app_get_account_balance") && requests.firstOrNull()?.variables!!["partnerCode"] == "OVO" -> GraphqlResponse(
+                it.contains("walletappGetAccountBalance") && requests.firstOrNull()?.variables!!["partnerCode"] == "OVO" -> GraphqlResponse(
                         mapOf(BalanceAndPointDataModel::class.java to provideOvoBalanceAndPointDataModelSuccess()),
                         mapOf(),
                         false
                 )
-                it.contains("wallet_app_get_account_balance") && requests.firstOrNull()?.variables!!["partnerCode"] == "PEMUDA" -> GraphqlResponse(
+                it.contains("walletappGetAccountBalance") && requests.firstOrNull()?.variables!!["partnerCode"] == "PEMUDA" -> GraphqlResponse(
                         mapOf(BalanceAndPointDataModel::class.java to provideGopayBalanceAndPointDataModelSuccess()),
                         mapOf(),
                         false

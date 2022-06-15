@@ -17,11 +17,11 @@ data class InitiateVoucherPage(
 
 data class InitiateVoucherPageData(
         @SerializedName("shop_id")
-        val shopId: Int = 0,
+        val shopId: String = "",
         @SerializedName("token")
         val token: String = "",
         @SerializedName("user_id")
-        val userId: Int = 0,
+        val userId: String = "",
         @SerializedName("access_token")
         val accessToken: String = "",
         @SerializedName("upload_app_url")

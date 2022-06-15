@@ -178,6 +178,8 @@ public interface ShipmentContract {
         void sendEnhancedEcommerceAnalyticsCheckout(Map<String, Object> stringObjectMap,
                                                     Map<String, String> tradeInCustomDimension,
                                                     String transactionId,
+                                                    String userId,
+                                                    boolean promoFlag,
                                                     String eventCategory,
                                                     String eventAction,
                                                     String eventLabel);

@@ -156,6 +156,7 @@ object AddEditProductMapper {
             weight = productDraft.shipmentInputModel.weight
             weightUnit = productDraft.shipmentInputModel.weightUnit
             cplModel.shipmentServicesIds = productDraft.shipmentInputModel.cpl.shipmentServicesIds
+            isUsingParentWeight = !productInputModel.variantInputModel.hasVariant()
         }
         productInputModel.draftId = productDraft.draftId
         return productInputModel

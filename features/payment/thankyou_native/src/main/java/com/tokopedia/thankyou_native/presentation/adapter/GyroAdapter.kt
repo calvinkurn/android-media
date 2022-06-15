@@ -5,6 +5,7 @@ import com.tokopedia.abstraction.base.view.adapter.adapter.BaseAdapter
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.thankyou_native.presentation.adapter.factory.GyroRecommendationFactory
 import com.tokopedia.thankyou_native.presentation.adapter.model.GyroRecommendationListItem
+import com.tokopedia.thankyou_native.presentation.adapter.model.GyroTokomemberItem
 
 class GyroAdapter(private val visitableList: ArrayList<Visitable<*>>,
                   private val typeFactory: GyroRecommendationFactory) :
@@ -22,14 +23,18 @@ class GyroAdapter(private val visitableList: ArrayList<Visitable<*>>,
                 it.isVisited = true
                 typeFactory.listener.onItemDisplayed(it, holder.adapterPosition)
             }
+            if (it is GyroTokomemberItem && !it.isVisited) {
+                it.isVisited = true
+                typeFactory.listener.onItemDisplayed(it, holder.adapterPosition)
+            }
         }
     }
 
 }
 
 interface GyroAdapterListener {
-    fun onItemDisplayed(gyroRecommendationListItem: GyroRecommendationListItem, position: Int)
-    fun onItemClicked(gyroRecommendationListItem: GyroRecommendationListItem, position: Int)
+    fun onItemDisplayed(gyroRecommendationItem: Visitable<*>, position: Int)
+    fun onItemClicked(gyroRecommendationItem: Visitable<*>, position: Int)
     fun openAppLink(appLink: String)
     fun openWebUrl(url: String)
 }

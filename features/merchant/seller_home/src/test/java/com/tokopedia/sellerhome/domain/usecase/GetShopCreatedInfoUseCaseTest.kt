@@ -1,7 +1,7 @@
 package com.tokopedia.sellerhome.domain.usecase
 
-import com.tokopedia.abstraction.common.network.exception.MessageErrorException
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.sellerhome.domain.mapper.ShopInfoMapper
 import com.tokopedia.sellerhome.domain.model.GetShopInfoResponse
 import com.tokopedia.sellerhome.utils.TestHelper
@@ -76,7 +76,7 @@ class GetShopCreatedInfoUseCaseTest {
         } returns errorResponse
 
         expectedException.expect(MessageErrorException::class.java)
-        val actualShopInfo: ShopInfoUiModel? = getShopInfoUseCase.executeOnBackground()
+        val actualShopInfo: ShopInfoUiModel = getShopInfoUseCase.executeOnBackground()
 
         coVerify {
             gqlRepository.response(any(), any())

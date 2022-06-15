@@ -40,6 +40,7 @@ class GetProductVariantAggregatorUseCase @Inject constructor(
                     basicInfo {
                           shopID
                           shopName
+                          defaultMediaURL
                           category {
                             id
                             name

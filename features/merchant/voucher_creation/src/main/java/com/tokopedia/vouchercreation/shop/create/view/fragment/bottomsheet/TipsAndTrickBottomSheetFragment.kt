@@ -1,8 +1,9 @@
 package com.tokopedia.vouchercreation.shop.create.view.fragment.bottomsheet
 
-import android.content.Context
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import androidx.annotation.StringRes
 import androidx.fragment.app.DialogFragment
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -10,40 +11,30 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.kotlin.extensions.view.toBlankOrString
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.utils.lifecycle.autoClearedNullable
 import com.tokopedia.vouchercreation.R
 import com.tokopedia.vouchercreation.common.analytics.VoucherCreationAnalyticConstant
 import com.tokopedia.vouchercreation.common.analytics.VoucherCreationTracking
 import com.tokopedia.vouchercreation.common.di.component.DaggerVoucherCreationComponent
+import com.tokopedia.vouchercreation.databinding.MvcVoucherBottomSheetViewBinding
 import com.tokopedia.vouchercreation.shop.create.data.source.TipsAndTrickStaticDataSource
 import com.tokopedia.vouchercreation.shop.create.view.adapter.vouchertarget.VoucherTipsAdapter
 import com.tokopedia.vouchercreation.shop.create.view.enums.VoucherCreationStep
-import kotlinx.android.synthetic.main.mvc_voucher_bottom_sheet_view.*
 import javax.inject.Inject
 
-class TipsAndTrickBottomSheetFragment : BottomSheetUnify(), VoucherBottomView {
+class TipsAndTrickBottomSheetFragment : BottomSheetUnify() {
 
     companion object {
 
         const val TAG = "TipsAndTrickBottomSheet"
 
-        fun createInstance(context: Context) : TipsAndTrickBottomSheetFragment {
-            return TipsAndTrickBottomSheetFragment().apply {
-                context.run {
-                    val view = View.inflate(this, R.layout.mvc_voucher_bottom_sheet_view, null)
-                    setChild(view)
-                    setStyle(DialogFragment.STYLE_NORMAL, R.style.DialogStyle)
-                    bottomSheetViewTitle = getString(R.string.mvc_create_tips_bottomsheet_title).toBlankOrString()
-                }
-            }
-        }
+        fun createInstance() : TipsAndTrickBottomSheetFragment = TipsAndTrickBottomSheetFragment()
     }
+
+    private var binding by autoClearedNullable<MvcVoucherBottomSheetViewBinding>()
 
     @Inject
     lateinit var userSession: UserSessionInterface
-
-    private val linearLayoutManager by lazy {
-        LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
-    }
 
     private val voucherTipsAdapter by lazy {
         context?.run {
@@ -59,11 +50,27 @@ class TipsAndTrickBottomSheetFragment : BottomSheetUnify(), VoucherBottomView {
         super.onCreate(savedInstanceState)
     }
 
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        initBottomSheet()
+        return super.onCreateView(inflater, container, savedInstanceState)
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         if (isAdded) {
             initView()
         }
+    }
+
+    private fun initBottomSheet() {
+        binding = MvcVoucherBottomSheetViewBinding.inflate(LayoutInflater.from(context))
+        setChild(binding?.root)
+        setStyle(DialogFragment.STYLE_NORMAL, R.style.DialogStyle)
+        setTitle(getString(R.string.mvc_create_tips_bottomsheet_title).toBlankOrString())
     }
 
     private fun initInjector() {
@@ -75,8 +82,8 @@ class TipsAndTrickBottomSheetFragment : BottomSheetUnify(), VoucherBottomView {
 
     private fun initView() {
         view?.setupBottomSheetChildNoMargin()
-        voucherTipsRecyclerView?.run {
-            layoutManager = linearLayoutManager
+        binding?.voucherTipsRecyclerView?.run {
+            layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
             adapter = voucherTipsAdapter
         }
     }
@@ -113,5 +120,4 @@ class TipsAndTrickBottomSheetFragment : BottomSheetUnify(), VoucherBottomView {
         )
     }
 
-    override var bottomSheetViewTitle: String? = null
 }
