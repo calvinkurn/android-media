@@ -210,6 +210,7 @@ class TokoFoodPurchaseProductViewHolder(private val viewBinding: ItemPurchasePro
                     val quantity = p0.toString().toIntOrZero()
                     if (quantity != element.quantity) {
                         element.quantity = quantity
+                        element.isQuantityChanged = true
                         listener.onQuantityChanged()
                     }
                 }

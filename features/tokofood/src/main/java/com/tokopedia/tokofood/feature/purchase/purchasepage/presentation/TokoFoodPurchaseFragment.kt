@@ -479,10 +479,11 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
                                 viewBinding?.recyclerViewPurchase?.post {
                                     viewModel.updateNotes(product)
                                 }
-                                showToaster(
-                                    context?.getString(R.string.text_purchase_success_notes).orEmpty(),
-                                    getOkayMessage()
-                                )
+
+                                val toasterMessage = product.message.takeIf { cartMessage ->
+                                    cartMessage.isNotBlank()
+                                } ?: context?.getString(R.string.text_purchase_success_notes).orEmpty()
+                                showToaster(toasterMessage, getOkayMessage())
                             }
                         }
                     }
@@ -491,14 +492,15 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
                             viewBinding?.recyclerViewPurchase?.post {
                                 viewModel.updateCartId(updateParams, cartTokoFoodData)
                             }
+
+                            val toasterMessage = cartTokoFoodData.message.takeIf { cartMessage ->
+                                cartMessage.isNotBlank()
+                            } ?: context?.getString(R.string.text_purchase_success_quantity).orEmpty()
+                            showToaster(toasterMessage, getOkayMessage())
                         }
                         viewBinding?.recyclerViewPurchase?.post {
                             viewModel.refreshPartialCartInformation()
                         }
-                        showToaster(
-                            context?.getString(R.string.text_purchase_success_quantity).orEmpty(),
-                            getOkayMessage()
-                        )
                     }
                     UiEvent.EVENT_SUCCESS_LOAD_CART -> {
 

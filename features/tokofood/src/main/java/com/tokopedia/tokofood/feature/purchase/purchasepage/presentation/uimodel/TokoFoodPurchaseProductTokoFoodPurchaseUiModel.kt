@@ -21,6 +21,7 @@ data class TokoFoodPurchaseProductTokoFoodPurchaseUiModel(
         var minQuantity: Int = 0,
         var maxQuantity: Int = 0,
         var cartId: String = "",
+        var isQuantityChanged: Boolean = false,
         val variantsParam: List<UpdateProductVariantParam> = listOf(),
         val variants: List<CheckoutTokoFoodProductVariant> = listOf()
 ) : Visitable<TokoFoodPurchaseAdapterTypeFactory>, BaseTokoFoodPurchaseUiModel() {

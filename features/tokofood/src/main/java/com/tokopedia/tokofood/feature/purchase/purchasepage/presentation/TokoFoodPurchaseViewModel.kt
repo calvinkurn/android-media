@@ -3,6 +3,7 @@ package com.tokopedia.tokofood.feature.purchase.purchasepage.presentation
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
@@ -30,6 +31,8 @@ import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.Visitab
 import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.VisitableDataHelper.getUiModel
 import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.VisitableDataHelper.getUiModelIndex
 import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.VisitableDataHelper.getUnavailableReasonUiModel
+import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.VisitableDataHelper.getUpdatedCartId
+import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.VisitableDataHelper.isLastAvailableProduct
 import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.mapper.TokoFoodPurchaseUiModelMapper
 import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.uimodel.*
 import com.tokopedia.utils.lifecycle.SingleLiveEvent
@@ -106,6 +109,9 @@ class TokoFoodPurchaseViewModel @Inject constructor(
                     }
                 }
                 .collect {
+                    _visitables.value?.filterIsInstance<TokoFoodPurchaseProductTokoFoodPurchaseUiModel>()?.forEach { productUiModel ->
+                        productUiModel.isQuantityChanged = false
+                    }
                     _updateQuantityStateFlow.emit(it)
                 }
         }
@@ -299,7 +305,7 @@ class TokoFoodPurchaseViewModel @Inject constructor(
                     TokoFoodPurchaseUiModelMapper.mapCheckoutResponseToUiModels(
                         lastResponse,
                         lastResponse.isEnabled(),
-                        !_isAddressHasPinpoint.value.second
+                        false
                     ).toMutableList()
                 }
                 _uiEvent.value = PurchaseUiEvent(
@@ -333,21 +339,19 @@ class TokoFoodPurchaseViewModel @Inject constructor(
 
     fun deleteProduct(productId: String, previousCartId: String) {
         refreshPartialCartInformation()
-        val toBeDeletedProduct = getVisitablesValue().getProductById(productId, previousCartId)
+        val dataList = getVisitablesValue()
+        val toBeDeletedProduct = dataList.getProductById(productId, previousCartId)
         if (toBeDeletedProduct != null) {
             val toBeDeleteItems = mutableListOf<Visitable<*>>()
-            val dataList = getVisitablesValue()
             toBeDeleteItems.add(toBeDeletedProduct.second)
 
-            if (isLastAvailableProduct()) {
+            if (dataList.isLastAvailableProduct()) {
                 var from = toBeDeletedProduct.first - 2
                 val tickerShopErrorData = getVisitablesValue().getTickerErrorShopLevelUiModel()
                 if (tickerShopErrorData != null) {
                     from = toBeDeletedProduct.first - 3
                 }
-                var to = toBeDeletedProduct.first
-                if (from < Int.ZERO) from = Int.ZERO
-                if (to >= dataList.size) to = dataList.size - Int.ONE
+                val to = toBeDeletedProduct.first
                 val availableHeaderAndDivider = dataList.subList(from, to).toMutableList()
                 toBeDeleteItems.addAll(availableHeaderAndDivider)
             }
@@ -357,33 +361,7 @@ class TokoFoodPurchaseViewModel @Inject constructor(
     }
 
     private fun List<Visitable<*>>.hasRemainingProduct(): Boolean {
-        loop@ for (data in this) {
-            when (data) {
-                is TokoFoodPurchaseProductTokoFoodPurchaseUiModel -> {
-                    return true
-                }
-                is TokoFoodPurchasePromoTokoFoodPurchaseUiModel -> {
-                    return false
-                }
-            }
-        }
-        return false
-    }
-
-    private fun isLastAvailableProduct(): Boolean {
-        val dataList = getVisitablesValue()
-        var count = Int.ZERO
-        loop@ for (data in dataList) {
-            when {
-                data is TokoFoodPurchaseProductTokoFoodPurchaseUiModel && data.isAvailable -> {
-                    count++
-                }
-                (data is TokoFoodPurchaseProductTokoFoodPurchaseUiModel && !data.isAvailable) || data is TokoFoodPurchasePromoTokoFoodPurchaseUiModel -> {
-                    break@loop
-                }
-            }
-        }
-        return count == 1
+        return any { it is TokoFoodPurchaseProductTokoFoodPurchaseUiModel }
     }
 
     fun validateBulkDelete() {
@@ -403,16 +381,19 @@ class TokoFoodPurchaseViewModel @Inject constructor(
             unavailableSectionItems.add(it.second)
         }
         val unavailableProducts = getVisitablesValue().getAllUnavailableProducts()
-        var indexOfUnavailableHeaderDivider = unavailableProducts.first - 3
-        var indexOfFirstUnavailableProduct = unavailableProducts.first
-        if (indexOfUnavailableHeaderDivider < Int.ZERO) indexOfUnavailableHeaderDivider = Int.ZERO
-        if (indexOfFirstUnavailableProduct >= dataList.size) indexOfFirstUnavailableProduct = dataList.size - Int.ONE
-        val unavailableSectionDividerHeaderAndReason = dataList.subList(indexOfUnavailableHeaderDivider, indexOfFirstUnavailableProduct)
-        unavailableSectionItems.addAll(unavailableSectionDividerHeaderAndReason)
-        unavailableSectionItems.addAll(unavailableProducts.second)
         val accordionUiModel = getVisitablesValue().getAccordionUiModel()
+        val unavailableProductIndex = unavailableProducts.first.takeIf { it > RecyclerView.NO_POSITION }
+        unavailableProductIndex?.let {
+            val indexOfUnavailableHeaderDivider = it - 3
+            val unavailableSectionDividerHeaderAndReason = dataList.subList(
+                indexOfUnavailableHeaderDivider,
+                it
+            )
+            unavailableSectionItems.addAll(unavailableSectionDividerHeaderAndReason)
+            unavailableSectionItems.addAll(unavailableProducts.second)
+        }
         accordionUiModel?.let {
-            val accordionDivider = dataList.get(accordionUiModel.first - Int.ONE)
+            val accordionDivider = dataList[accordionUiModel.first - Int.ONE]
             unavailableSectionItems.add(accordionDivider)
             unavailableSectionItems.add(it.second)
         }
@@ -445,11 +426,9 @@ class TokoFoodPurchaseViewModel @Inject constructor(
         dataList[mAccordionData.first] = newAccordionUiModel
         val unavailableReasonData = getVisitablesValue().getUnavailableReasonUiModel()
         unavailableReasonData?.let { mUnavailableReasonData ->
-            var from = mUnavailableReasonData.first + 2
-            var to = mAccordionData.first - 1
+            val from = mUnavailableReasonData.first + 2
+            val to = mAccordionData.first - 1
             tmpCollapsedUnavailableItems.clear()
-            if (from < Int.ZERO) from = Int.ZERO
-            if (to >= dataList.size) to = dataList.size - 1
             tmpCollapsedUnavailableItems = dataList.subList(from, to).toMutableList()
         }
         dataList.removeAll(tmpCollapsedUnavailableItems)
@@ -499,21 +478,8 @@ class TokoFoodPurchaseViewModel @Inject constructor(
         updateParam.productList.forEach { param ->
             getVisitablesValue().getProductByUpdateParam(param)?.let { productData ->
                 productData.second.let { product ->
-                    cartData.carts.find { cartData ->
-                        cartData.productId == product.id && cartData.getMetadata()?.variants?.any { cartVariant ->
-                            var isSameVariants = false
-                            run checkVariant@ {
-                                product.variantsParam.forEach { productVariant ->
-                                    if (cartVariant.variantId == productVariant.variantId && cartVariant.optionId == productVariant.optionId) {
-                                        isSameVariants = true
-                                        return@checkVariant
-                                    }
-                                }
-                            }
-                            isSameVariants
-                        } == true
-                    }?.let {
-                        (visitables.value?.getOrNull(productData.first) as? TokoFoodPurchaseProductTokoFoodPurchaseUiModel)?.cartId = it.cartId
+                    product.getUpdatedCartId(cartData)?.let { cartId ->
+                        (visitables.value?.getOrNull(productData.first) as? TokoFoodPurchaseProductTokoFoodPurchaseUiModel)?.cartId = cartId
                     }
                 }
             }
@@ -524,7 +490,7 @@ class TokoFoodPurchaseViewModel @Inject constructor(
         viewModelScope.launch {
             val dataList = getVisitablesValue()
                 .filterIsInstance<TokoFoodPurchaseProductTokoFoodPurchaseUiModel>()
-                .filter { it.isAvailable && it.isEnabled }
+                .filter { it.isAvailable && it.isEnabled && it.isQuantityChanged }
             _updateQuantityState.emit(dataList)
         }
     }
