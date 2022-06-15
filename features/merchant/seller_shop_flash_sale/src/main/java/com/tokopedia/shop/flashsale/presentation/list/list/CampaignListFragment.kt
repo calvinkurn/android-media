@@ -35,7 +35,6 @@ import com.tokopedia.shop.flashsale.presentation.cancelation.CancelCampaignBotto
 import com.tokopedia.shop.flashsale.presentation.creation.information.CampaignInformationActivity
 import com.tokopedia.shop.flashsale.presentation.draft.bottomsheet.DraftListBottomSheet
 import com.tokopedia.shop.flashsale.presentation.draft.uimodel.DraftItemModel
-import com.tokopedia.shop.flashsale.presentation.list.container.CampaignListContainerFragment
 import com.tokopedia.shop.flashsale.presentation.list.dialog.showNoCampaignQuotaDialog
 import com.tokopedia.shop.flashsale.presentation.list.list.adapter.CampaignAdapter
 import com.tokopedia.shop.flashsale.presentation.list.list.bottomsheet.MoreMenuBottomSheet
@@ -169,9 +168,14 @@ class CampaignListFragment : BaseSimpleListFragment<CampaignAdapter, CampaignUiM
                 ::onDraftClicked
             )
         }
+        binding?.btnCreateCampaignEmptyState?.setOnClickListener {
+            handleCreateCampaign()
+        }
+        binding?.btnNavigateToFirstActiveCampaign?.setOnClickListener {
+            onNavigateToActiveCampaignTab()
+        }
         setupSearchBar()
         setupScrollListener()
-        setupTabChangeListener()
     }
 
     private fun setupSearchBar() {
@@ -227,9 +231,7 @@ class CampaignListFragment : BaseSimpleListFragment<CampaignAdapter, CampaignUiM
             when (result) {
                 is Success -> {
                     viewModel.setCampaignDrafts(result.data.drafts)
-                    handleDraftCount(result.data.drafts.size)
-                    displayRemainingQuota(result.data.remainingQuota)
-                    checkCampaignEligibility(result.data.remainingQuota, result.data.shopInfo)
+                    handleCampaignPrerequisiteData(result.data.drafts.size, result.data.remainingQuota)
                 }
                 is Fail -> {
                     binding?.root showError result.throwable
@@ -298,23 +300,8 @@ class CampaignListFragment : BaseSimpleListFragment<CampaignAdapter, CampaignUiM
         this.onNavigateToActiveCampaignTab = onNavigateToActiveCampaignTab
     }
 
-    private fun setupTabChangeListener() {
-        val listener = object : CampaignListContainerFragment.TabChangeListener {
-            override fun onTabChanged() {
-                if (totalCampaign == ZERO) {
-                    showEmptyState()
-                    binding?.cardView?.gone()
-                } else {
-                    hideEmptyState()
-                    binding?.cardView?.visible()
-                }
-            }
-        }
-        (parentFragment as? CampaignListContainerFragment)?.setTabChangeListener(listener)
-    }
-
     private val onCampaignClicked: (CampaignUiModel, Int) -> Unit = { campaign, position ->
-
+        //TODO: Navigate to campaign detail
     }
 
     private val onOverflowMenuClicked: (CampaignUiModel) -> Unit = { campaign ->
@@ -424,52 +411,6 @@ class CampaignListFragment : BaseSimpleListFragment<CampaignAdapter, CampaignUiM
         }
     }
 
-    private fun showEmptyState() {
-        binding?.searchBar?.gone()
-        binding?.recyclerView?.gone()
-
-        val buttonWording = if (tabPosition == TAB_POSITION_FIRST) {
-            getString(R.string.sfs_create_campaign)
-        } else {
-            getString(R.string.sfs_monitor_campaign)
-        }
-
-        val buttonOnClickAction =  if (tabPosition == TAB_POSITION_FIRST) {
-            { handleCreateCampaign() }
-        } else {
-            { onNavigateToActiveCampaignTab() }
-        }
-
-        binding?.btnCreateCampaignEmptyState?.visible()
-        binding?.btnCreateCampaignEmptyState?.text = buttonWording
-        binding?.btnCreateCampaignEmptyState?.setOnClickListener { buttonOnClickAction() }
-
-        binding?.emptyState?.visible()
-        binding?.emptyState?.setImageUrl(EMPTY_STATE_IMAGE_URL)
-
-        val title = if (tabPosition == TAB_POSITION_FIRST) {
-            getString(R.string.sfs_no_active_campaign_title)
-        } else {
-            getString(R.string.sfs_no_campaign_history_title)
-        }
-
-        binding?.emptyState?.setTitle(title)
-
-        val description = if (tabPosition == TAB_POSITION_FIRST) {
-            getString(R.string.sfs_no_active_campaign_description)
-        } else {
-            getString(R.string.sfs_no_campaign_history_description)
-        }
-
-        binding?.emptyState?.setDescription(description)
-    }
-
-    private fun hideEmptyState() {
-        binding?.emptyState?.gone()
-        binding?.btnCreateCampaignEmptyState?.gone()
-        binding?.tpgRemainingQuotaEmptyState?.gone()
-    }
-
     private fun doOnDelayFinished(block: () -> Unit) {
         CoroutineScope(Dispatchers.Main).launch {
             delay(SCROLL_DISTANCE_DELAY_IN_MILLIS)
@@ -477,29 +418,85 @@ class CampaignListFragment : BaseSimpleListFragment<CampaignAdapter, CampaignUiM
         }
     }
 
-    private fun handleDraftCount(draftCount: Int) {
-        val wording = String.format(getString(R.string.sfs_placeholder_draft), draftCount)
-        binding?.btnDraft?.text = wording
-        binding?.btnDraft?.isVisible = draftCount.isMoreThanZero()
-    }
+    private fun handleCampaignPrerequisiteData(draftCount: Int, remainingQuota: Int) {
+        val hasDraft = draftCount.isMoreThanZero()
+        val hasCampaign = totalCampaign.isMoreThanZero()
+        val draftWording = String.format(getString(R.string.sfs_placeholder_draft), draftCount)
 
-    private fun displayRemainingQuota(remainingQuota: Int) {
-        val counter = if (remainingQuota.isMoreThanZero()) {
+        binding?.btnDraft?.text = draftWording
+        binding?.btnDraft?.isVisible = hasDraft
+        binding?.cardView?.isVisible = hasDraft || hasCampaign
+
+        val quotaCounter = if (remainingQuota.isMoreThanZero()) {
             remainingQuota
         } else {
             ZERO
         }
-        val wording = String.format(
-            getString(R.string.sfs_placeholder_remaining_quota),
-            counter
-        )
 
-        binding?.tpgRemainingQuota?.text = wording
+        val quotaWording = String.format(
+            getString(R.string.sfs_placeholder_remaining_quota),
+            quotaCounter
+        )
+        binding?.tpgRemainingQuota?.text = quotaWording
         binding?.tpgRemainingQuota?.visible()
 
-        val shouldVisible = tabPosition == TAB_POSITION_FIRST && totalCampaign == ZERO
-        binding?.tpgRemainingQuotaEmptyState?.isVisible = shouldVisible
-        binding?.tpgRemainingQuotaEmptyState?.text = wording
+        if (tabPosition == TAB_POSITION_FIRST) {
+            handleFirstTabEmptyState(hasCampaign, hasDraft, quotaCounter)
+        } else {
+            handleSecondTabEmptyState(hasCampaign)
+        }
+
+    }
+
+    private fun handleFirstTabEmptyState(hasCampaign : Boolean, hasDraft : Boolean, remainingQuota: Int) {
+        binding?.btnNavigateToFirstActiveCampaign?.gone()
+
+        val quotaCounter = if (remainingQuota.isMoreThanZero()) {
+            remainingQuota
+        } else {
+            ZERO
+        }
+
+        val quotaWording = String.format(
+            getString(R.string.sfs_placeholder_remaining_quota),
+            quotaCounter
+        )
+
+        if (hasCampaign || hasDraft) {
+            binding?.tpgRemainingQuotaEmptyState?.gone()
+            binding?.btnCreateCampaignEmptyState?.gone()
+        } else {
+            binding?.tpgRemainingQuotaEmptyState?.visible()
+            binding?.btnCreateCampaignEmptyState?.visible()
+            binding?.tpgRemainingQuotaEmptyState?.text = quotaWording
+        }
+
+        binding?.searchBar?.isVisible = hasCampaign
+        binding?.recyclerView?.isVisible = hasCampaign
+
+        binding?.emptyState?.isVisible = !hasCampaign
+        binding?.emptyState?.setImageUrl(EMPTY_STATE_IMAGE_URL)
+        binding?.emptyState?.setTitle(getString(R.string.sfs_no_active_campaign_title))
+        binding?.emptyState?.setDescription( getString(R.string.sfs_no_active_campaign_description))
+    }
+
+    private fun handleSecondTabEmptyState(hasCampaign: Boolean) {
+        binding?.btnCreateCampaignEmptyState?.gone()
+        binding?.tpgRemainingQuotaEmptyState?.gone()
+
+        if (hasCampaign) {
+            binding?.btnNavigateToFirstActiveCampaign?.gone()
+        } else {
+            binding?.btnNavigateToFirstActiveCampaign?.visible()
+        }
+
+        binding?.searchBar?.isVisible = hasCampaign
+        binding?.recyclerView?.isVisible = hasCampaign
+
+        binding?.emptyState?.isVisible = !hasCampaign
+        binding?.emptyState?.setImageUrl(EMPTY_STATE_IMAGE_URL)
+        binding?.emptyState?.setTitle(getString(R.string.sfs_no_campaign_history_title))
+        binding?.emptyState?.setDescription( getString(R.string.sfs_no_campaign_history_description))
     }
 
     private fun checkCampaignEligibility(remainingQuota: Int, shopInfo: ShopInfo) {

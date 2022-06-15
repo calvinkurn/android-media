@@ -41,7 +41,6 @@ class CampaignListContainerFragment : BaseDaggerFragment() {
     companion object {
         private const val DELAY_IN_MILLIS: Long = 400
         private const val TAB_POSITION_FIRST = 0
-        private const val TAB_POSITION_SECOND = 1
         private const val BUNDLE_KEY_AUTO_FOCUS_TAB_POSITION = "auto_focus_tab_position"
 
         @JvmStatic
@@ -59,8 +58,6 @@ class CampaignListContainerFragment : BaseDaggerFragment() {
     private val autoFocusTabPosition by lazy {
         arguments?.getInt(BUNDLE_KEY_AUTO_FOCUS_TAB_POSITION).orZero()
     }
-
-    private var listener: TabChangeListener? = null
 
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
@@ -137,7 +134,6 @@ class CampaignListContainerFragment : BaseDaggerFragment() {
                 override fun onPageSelected(position: Int) {
                     super.onPageSelected(position)
                     viewModel.setSelectedTabPosition(position)
-                    listener?.onTabChanged()
                 }
             })
         }
@@ -180,15 +176,6 @@ class CampaignListContainerFragment : BaseDaggerFragment() {
             tabsUnify.getUnifyTabLayout().slideUp()
             alignRecyclerViewToTabsBottom()
         }
-    }
-
-
-    fun setTabChangeListener(listener: TabChangeListener) {
-        this.listener = listener
-    }
-
-    interface TabChangeListener {
-        fun onTabChanged()
     }
 
     private fun displayTabs(tabs: List<TabMeta>) {
