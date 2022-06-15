@@ -94,6 +94,11 @@ import com.tokopedia.product.detail.common.ProductDetailCommonConstant.PARAM_APP
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant.PARAM_APPLINK_SHOP_ID
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant.RQUEST_CODE_ACTIVATE_GOPAY
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant.RQUEST_CODE_UPDATE_FINTECH_WIDGET
+import com.tokopedia.product.detail.common.ProductEducationalHelper
+import com.tokopedia.product.detail.common.ProductTrackingConstant
+import com.tokopedia.product.detail.common.SingleClick
+import com.tokopedia.product.detail.common.VariantConstant
+import com.tokopedia.product.detail.common.VariantPageSource
 import com.tokopedia.product.detail.common.bottomsheet.OvoFlashDealsBottomSheet
 import com.tokopedia.product.detail.common.data.model.aggregator.ProductVariantResult
 import com.tokopedia.product.detail.common.data.model.bebasongkir.BebasOngkir
@@ -906,6 +911,16 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
         RouteManager.route(context, url)
     }
 
+    override fun goToEducational(url: String) {
+        val context = context ?: return
+        ProductEducationalHelper.goToEducationalBottomSheet(
+            context,
+            url,
+            productId ?: "",
+            viewModel.getDynamicProductInfoP1?.basic?.shopID ?: ""
+        )
+    }
+
     override fun showCustomInfoCoachMark(componentName: String, viewTarget: View) {
         if (componentName == ProductDetailConstant.HAMPERS_INFO) {
             pdpCoachmarkHelper?.showCoachMarkHampers(viewTarget)
@@ -1405,28 +1420,45 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
         }
     }
 
+    private fun isUsingAddRemoveWishlistV2(context: Context): Boolean {
+        return WishlistV2RemoteConfigRollenceUtil.isUsingAddRemoveWishlistV2(context)
+    }
+
+    private fun trackingEventSuccessRemoveFromWishlist(componentTrackDataModel: ComponentTrackDataModel) {
+        DynamicProductDetailTracking.Click.eventPDPRemoveToWishlist(viewModel.getDynamicProductInfoP1, componentTrackDataModel)
+    }
+
+    private fun trackingEventSuccessAddToWishlist(componentTrackDataModel: ComponentTrackDataModel) {
+        viewModel.getDynamicProductInfoP1?.let { productInfo ->
+            DynamicProductDetailTracking.Moengage.eventPDPWishlistAppsFyler(productInfo)
+            DynamicProductDetailTracking.Click.eventPDPAddToWishlist(productInfo, componentTrackDataModel)
+        }
+    }
+
     override fun onFabWishlistClicked(isActive: Boolean, componentTrackDataModel: ComponentTrackDataModel) {
         val productInfo = viewModel.getDynamicProductInfoP1
         if (viewModel.isUserSessionActive) {
             if (isActive) {
-                productInfo?.basic?.productID?.let {
-                    if (context?.let { context ->
-                            WishlistV2RemoteConfigRollenceUtil.isUsingAddRemoveWishlistV2(context)
-                        } == true) removeWishlistV2(it)
-                    else removeWishlist(it)
-                    DynamicProductDetailTracking.Click.eventPDPRemoveToWishlist(viewModel.getDynamicProductInfoP1, componentTrackDataModel)
+                productInfo?.basic?.productID?.let { productId ->
+                    context?.let { context ->
+                        if (isUsingAddRemoveWishlistV2(context)) {
+                            removeWishlistV2(productId, componentTrackDataModel)
+                        } else {
+                            removeWishlist(productId)
+                            trackingEventSuccessRemoveFromWishlist(componentTrackDataModel)
+                        }
+                    }
                 }
-
             } else {
                 productInfo?.basic?.productID?.let {
-                    if (context?.let { context ->
-                            WishlistV2RemoteConfigRollenceUtil.isUsingAddRemoveWishlistV2(context)
-                        } == true) addWishlistV2()
-                    else addWishList()
-                    productInfo.let {
-                        DynamicProductDetailTracking.Moengage.eventPDPWishlistAppsFyler(it)
+                    context?.let { context ->
+                        if (isUsingAddRemoveWishlistV2(context)) {
+                            addWishlistV2(componentTrackDataModel)
+                        } else {
+                            addWishList()
+                            trackingEventSuccessAddToWishlist(componentTrackDataModel)
+                        }
                     }
-                    DynamicProductDetailTracking.Click.eventPDPAddToWishlist(viewModel.getDynamicProductInfoP1, componentTrackDataModel)
                 }
             }
         } else {
@@ -3825,7 +3857,7 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
             ?: "", onSuccessAddWishlist = this::onSuccessAddWishlist, onErrorAddWishList = this::onErrorAddWishList)
     }
 
-    private fun addWishlistV2() {
+    private fun addWishlistV2(componentTrackDataModel: ComponentTrackDataModel) {
         viewModel.addWishListV2(viewModel.getDynamicProductInfoP1?.basic?.productID
             ?: "", object: WishlistV2ActionListener{
             override fun onErrorAddWishList(throwable: Throwable, productId: String) {
@@ -3844,7 +3876,10 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
                         AddRemoveWishlistV2Handler.showAddToWishlistV2SuccessToaster(result, it, v)
                     }
                 }
-                if(result.success) updateFabIcon(productId, true)
+                if(result.success) {
+                    updateFabIcon(productId, true)
+                    trackingEventSuccessAddToWishlist(componentTrackDataModel)
+                }
             }
 
             override fun onErrorRemoveWishlist(throwable: Throwable, productId: String) {}
@@ -3873,7 +3908,10 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
             onErrorRemoveWishList = this::onErrorRemoveWishList)
     }
 
-    private fun removeWishlistV2(productId: String) {
+    private fun removeWishlistV2(
+        productId: String,
+        componentTrackDataModel: ComponentTrackDataModel
+    ) {
         viewModel.removeWishListV2(productId,
             object: WishlistV2ActionListener{
                 override fun onErrorAddWishList(throwable: Throwable, productId: String) {}
@@ -3898,7 +3936,10 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
                             AddRemoveWishlistV2Handler.showRemoveWishlistV2SuccessToaster(result, context, v)
                         }
                     }
-                    if (result.success) updateFabIcon(productId, false)
+                    if (result.success) {
+                        updateFabIcon(productId, false)
+                        trackingEventSuccessRemoveFromWishlist(componentTrackDataModel)
+                    }
                 }
 
             })
