@@ -56,8 +56,9 @@ interface ProductListSectionContract {
         fun trackWishlistRecommendationProductNonLoginUser()
         fun trackWishlistProduct(wishlistTrackingModel: WishlistTrackingModel)
         fun updateWishlistStatus(productId: String?, isWishlisted: Boolean)
-        fun showMessageSuccessWishlistAction(isWishlisted: Boolean)
-        fun showMessageFailedWishlistAction(isWishlisted: Boolean)
+        fun hitWishlistClickUrl(productCardOptionsModel: ProductCardOptionsModel)
+        fun showMessageSuccessWishlistAction(wishlistResult: ProductCardOptionsModel.WishlistResult)
+        fun showMessageFailedWishlistAction(wishlistResult: ProductCardOptionsModel.WishlistResult)
         val previousKeyword: String
         val isLandingPage: Boolean
         fun logWarning(message: String?, throwable: Throwable?)
@@ -113,6 +114,10 @@ interface ProductListSectionContract {
         fun trackEventClickInspirationCarouselGridItem(product: InspirationCarouselDataView.Option.Product)
         fun trackEventClickInspirationCarouselListItem(product: InspirationCarouselDataView.Option.Product)
         fun trackEventClickInspirationCarouselChipsItem(product: InspirationCarouselDataView.Option.Product)
+        fun openBottomsheetMultipleOptionsQuickFilter(filter: Filter)
+        fun applyDropdownQuickFilter(optionList: List<Option>?)
+        fun trackEventClickDropdownQuickFilter(filterTitle: String)
+        fun trackEventApplyDropdownQuickFilter(optionList: List<Option>?)
     }
 
     interface Presenter : CustomerPresenter<View>{
@@ -133,7 +138,7 @@ interface ProductListSectionContract {
         fun handleWishlistAction(productCardOptionsModel: ProductCardOptionsModel?)
         fun onProductImpressed(item: ProductItemDataView?, adapterPosition: Int)
         fun onProductClick(item: ProductItemDataView?, adapterPosition: Int)
-        val quickFilterOptionList: List<Option>
+        val quickFilterList: List<Filter>
         fun getProductCount(mapParameter: Map<String, String>?)
         fun openFilterPage(searchParameter: Map<String, Any>?)
         val isBottomSheetFilterEnabled: Boolean
@@ -161,5 +166,6 @@ interface ProductListSectionContract {
         )
         fun closeLastFilter(searchParameter: Map<String, Any>)
         fun shopAdsImpressionCount(impressionCount: Int)
+        fun onApplyDropdownQuickFilter(optionList: List<Option>?)
     }
 }

@@ -22,7 +22,7 @@ class GetUohOrdersNavUseCase (
         this.isMePageUsingRollenceVariant = isMePageUsingRollenceVariant
     }
 
-    init {
+    private fun prepareGql() {
         val query = """
             query GetOrderHistory(${'$'}input:UOHOrdersRequest!){
               uohOrders(input:${'$'}input) {
@@ -66,6 +66,7 @@ class GetUohOrdersNavUseCase (
 
     override suspend fun executeOnBackground(): List<NavProductOrder> {
         return try {
+            prepareGql()
             val responseData = Success(graphqlUseCase.executeOnBackground().uohOrders?:UohOrders())
             val navProductList = mutableListOf<NavProductOrder>()
             responseData.data.orders?.map {

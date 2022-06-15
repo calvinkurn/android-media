@@ -58,5 +58,6 @@ annotation class AccessId {
         const val DISCUSSION = 14005
         const val REVIEW = 14011
         const val SHOP_SCORE = 14006
+        const val VIEW_SLASH_PRICE = 75
     }
 }

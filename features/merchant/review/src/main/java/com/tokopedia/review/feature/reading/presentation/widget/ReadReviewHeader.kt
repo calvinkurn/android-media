@@ -296,7 +296,7 @@ class ReadReviewHeader : BaseCustomView {
         }
     }
 
-    fun updateFilterWithImage() {
+    fun updateFilterWithMedia() {
         sortFilter?.chipItems?.firstOrNull()?.toggleSelected()
     }
 

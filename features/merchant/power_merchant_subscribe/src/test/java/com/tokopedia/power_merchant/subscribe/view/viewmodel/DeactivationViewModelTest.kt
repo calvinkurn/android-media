@@ -3,6 +3,7 @@ package com.tokopedia.power_merchant.subscribe.view.viewmodel
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.gm.common.data.source.cloud.model.PMCancellationQuestionnaireAnswerModel
 import com.tokopedia.gm.common.domain.interactor.DeactivatePMUseCase
+import com.tokopedia.gm.common.presentation.model.DeactivationResultUiModel
 import com.tokopedia.power_merchant.subscribe.domain.usecase.GetPMDeactivationQuestionnaireUseCase
 import com.tokopedia.power_merchant.subscribe.view.model.DeactivationQuestionnaireUiModel
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
@@ -10,7 +11,6 @@ import com.tokopedia.unit.test.ext.verifyErrorEquals
 import com.tokopedia.unit.test.ext.verifySuccessEquals
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
-import dagger.Lazy
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
 import io.mockk.impl.annotations.RelaxedMockK
@@ -19,9 +19,9 @@ import kotlinx.coroutines.runBlocking
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
+import org.mockito.ArgumentMatchers.anyBoolean
 import org.mockito.ArgumentMatchers.anyInt
 import org.mockito.ArgumentMatchers.anyString
-import org.mockito.ArgumentMatchers.anyBoolean
 
 /**
  * Created By @ilhamsuaib on 21/04/21
@@ -46,16 +46,17 @@ class DeactivationViewModelTest {
         MockKAnnotations.init(this)
 
         viewModel = DeactivationViewModel(
-                Lazy { getPmDeactivationQuestionnaireUseCase },
-                Lazy { deactivatePMUseCase },
-                CoroutineTestDispatchersProvider
+            { getPmDeactivationQuestionnaireUseCase },
+            { deactivatePMUseCase },
+            CoroutineTestDispatchersProvider
         )
     }
 
     @Test
     fun `when get pm questionnaire list should return success`() = runBlocking {
         val pmTire = anyInt()
-        getPmDeactivationQuestionnaireUseCase.params = GetPMDeactivationQuestionnaireUseCase.createParams(anyString(), pmTire)
+        getPmDeactivationQuestionnaireUseCase.params =
+            GetPMDeactivationQuestionnaireUseCase.createParams(anyString(), pmTire)
 
         val result = DeactivationQuestionnaireUiModel()
 
@@ -73,7 +74,8 @@ class DeactivationViewModelTest {
     @Test
     fun `when get pm questionnaire list should return failed`() = runBlocking {
         val pmTire = anyInt()
-        getPmDeactivationQuestionnaireUseCase.params = GetPMDeactivationQuestionnaireUseCase.createParams(anyString(), pmTire)
+        getPmDeactivationQuestionnaireUseCase.params =
+            GetPMDeactivationQuestionnaireUseCase.createParams(anyString(), pmTire)
 
         val exception = Throwable()
 
@@ -91,37 +93,34 @@ class DeactivationViewModelTest {
     @Test
     fun `when submit deactivation PM should return success`() = runBlocking {
         val questionsData = mutableListOf<PMCancellationQuestionnaireAnswerModel>()
-        val currentShopTire = anyInt()
-        val nextShopTire = anyInt()
-        deactivatePMUseCase.params = DeactivatePMUseCase.createRequestParam(questionsData, currentShopTire, nextShopTire)
+        val result = DeactivationResultUiModel("")
+        deactivatePMUseCase.params = DeactivatePMUseCase.createRequestParam(questionsData)
 
         coEvery {
             deactivatePMUseCase.executeOnBackground()
-        } returns true
+        } returns result
 
-        viewModel.submitPmDeactivation(questionsData, currentShopTire, nextShopTire)
+        viewModel.submitPmDeactivation(questionsData)
 
-        val expectedResult = Success(true)
+        val expectedResult = Success(result)
 
-        viewModel.isSuccessDeactivate.verifySuccessEquals(expectedResult)
+        viewModel.pmDeactivateStatus.verifySuccessEquals(expectedResult)
     }
 
     @Test
     fun `when submit deactivation PM should return failed`() = runBlocking {
         val questionsData = mutableListOf<PMCancellationQuestionnaireAnswerModel>()
-        val currentShopTire = 2
-        val nextShopTire = 1
-        deactivatePMUseCase.params = DeactivatePMUseCase.createRequestParam(questionsData, currentShopTire, nextShopTire)
+        deactivatePMUseCase.params = DeactivatePMUseCase.createRequestParam(questionsData)
 
         val error = Throwable()
         coEvery {
             deactivatePMUseCase.executeOnBackground()
         } throws error
 
-        viewModel.submitPmDeactivation(questionsData, currentShopTire, nextShopTire)
+        viewModel.submitPmDeactivation(questionsData)
 
         val expectedResult = Fail(error)
 
-        viewModel.isSuccessDeactivate.verifyErrorEquals(expectedResult)
+        viewModel.pmDeactivateStatus.verifyErrorEquals(expectedResult)
     }
 }
