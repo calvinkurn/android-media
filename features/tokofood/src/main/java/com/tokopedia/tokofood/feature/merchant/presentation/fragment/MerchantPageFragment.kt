@@ -38,6 +38,7 @@ import com.tokopedia.tokofood.common.presentation.listener.HasViewModel
 import com.tokopedia.tokofood.common.presentation.uimodel.UpdateParam
 import com.tokopedia.tokofood.common.presentation.viewmodel.MultipleFragmentsViewModel
 import com.tokopedia.tokofood.common.util.Constant
+import com.tokopedia.tokofood.common.util.TokofoodExt.showErrorToaster
 import com.tokopedia.tokofood.databinding.FragmentMerchantPageLayoutBinding
 import com.tokopedia.tokofood.feature.merchant.analytics.MerchantPageAnalytics
 import com.tokopedia.tokofood.feature.merchant.common.util.MerchantShareComponentUtil
@@ -455,7 +456,9 @@ class MerchantPageFragment : BaseMultiFragment(),
             activityViewModel?.cartDataValidationFlow?.collect {
                 when (it.state) {
                     UiEvent.EVENT_SUCCESS_LOAD_CART -> {}
-                    UiEvent.EVENT_FAILED_ADD_TO_CART -> {}
+                    UiEvent.EVENT_FAILED_ADD_TO_CART -> {
+                        view?.showErrorToaster(it.throwable?.message.orEmpty())
+                    }
                     UiEvent.EVENT_SUCCESS_ADD_TO_CART -> {
                         (it.data as? Pair<*, *>)?.let { pair ->
                             (pair.first as? UpdateParam)?.productList?.firstOrNull()
