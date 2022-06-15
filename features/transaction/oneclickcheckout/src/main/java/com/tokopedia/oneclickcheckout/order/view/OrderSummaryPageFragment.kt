@@ -54,12 +54,10 @@ import com.tokopedia.logisticcart.shipping.features.shippingcourierocc.ShippingC
 import com.tokopedia.logisticcart.shipping.features.shippingcourierocc.ShippingCourierOccBottomSheetListener
 import com.tokopedia.logisticcart.shipping.features.shippingduration.view.ShippingDurationBottomsheet
 import com.tokopedia.logisticcart.shipping.features.shippingduration.view.ShippingDurationBottomsheetListener
-import com.tokopedia.logisticcart.shipping.features.shippingdurationocc.ShippingDurationOccBottomSheet
-import com.tokopedia.logisticcart.shipping.features.shippingdurationocc.ShippingDurationOccBottomSheetListener
-import com.tokopedia.logisticcart.shipping.model.CourierItemData
 import com.tokopedia.logisticcart.shipping.model.LogisticPromoUiModel
 import com.tokopedia.logisticcart.shipping.model.RatesViewModelType
 import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel
+import com.tokopedia.logisticcart.shipping.model.ShippingRecommendationData
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.oneclickcheckout.R
 import com.tokopedia.oneclickcheckout.address.AddressListBottomSheet
@@ -1347,7 +1345,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
             }
         }
 
-        override fun chooseDuration(isDurationError: Boolean, currentSpId: String, list: ArrayList<RatesViewModelType>) {
+        override fun chooseDuration(isDurationError: Boolean, currentSpId: String, shippingRecommendationData: ShippingRecommendationData) {
             if (viewModel.orderTotal.value.buttonState != OccButtonState.LOADING) {
                 if (isDurationError) {
                     orderSummaryAnalytics.eventClickUbahWhenDurationError(userSession.get().userId)
@@ -1356,15 +1354,6 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
                 }
                 activity?.let {
                     ShippingDurationBottomsheet().show(it, parentFragmentManager, object : ShippingDurationBottomsheetListener {
-//                        override fun onDurationChosen(serviceData: ServiceData, selectedServiceId: Int, selectedShippingCourierUiModel: ShippingCourierUiModel, flagNeedToSetPinpoint: Boolean) {
-//                            orderSummaryAnalytics.eventClickSelectedDurationOptionNew(selectedShippingCourierUiModel.productData.shipperProductId.toString(), userSession.get().userId)
-//                            viewModel.chooseDuration(selectedServiceId, selectedShippingCourierUiModel, flagNeedToSetPinpoint)
-//                        }
-//
-//                        override fun onLogisticPromoClicked(data: LogisticPromoUiModel) {
-//                            onLogisticPromoClick(data)
-//                        }
-
                         override fun onShippingDurationChoosen(
                             shippingCourierUiModels: List<ShippingCourierUiModel>?,
                             selectedCourier: ShippingCourierUiModel?,
@@ -1384,32 +1373,33 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
 
                         override fun onLogisticPromoChosen(
                             shippingCourierUiModels: List<ShippingCourierUiModel>?,
-                            courierData: CourierItemData?,
+                            courierData: ShippingCourierUiModel?,
                             recipientAddressModel: RecipientAddressModel?,
                             cartPosition: Int,
                             serviceData: ServiceData?,
                             flagNeedToSetPinpoint: Boolean,
                             promoCode: String?,
-                            selectedServiceId: Int
+                            selectedServiceId: Int,
+                            logisticPromo: LogisticPromoUiModel
                         ) {
-                            onLogisticPromoClick(data)
+                            onLogisticPromoClick(logisticPromo)
                         }
 
                         override fun onNoCourierAvailable(message: String?) {
-                            TODO("Not yet implemented")
+                            // no op
                         }
 
                         override fun onShippingDurationButtonCloseClicked() {
-                            TODO("Not yet implemented")
+                            // no op
                         }
 
                         override fun onShowDurationListWithCourierPromo(
                             isCourierPromo: Boolean,
                             duration: String?
                         ) {
-                            TODO("Not yet implemented")
+                            // no op
                         }
-                    }, list, 0, true)
+                    }, shippingRecommendationData, 0, true)
                 }
             }
         }

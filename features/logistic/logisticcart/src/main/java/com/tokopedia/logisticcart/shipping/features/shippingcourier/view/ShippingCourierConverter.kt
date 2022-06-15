@@ -107,4 +107,20 @@ class ShippingCourierConverter @Inject constructor() {
         }
         return courierItemData
     }
+
+    fun convertToCourierItemData(shippingCourierUiModel: ShippingCourierUiModel, data: LogisticPromoUiModel): CourierItemData {
+        val courierData = convertToCourierItemData(shippingCourierUiModel)
+        courierData.logPromoCode = data.promoCode
+        courierData.logPromoMsg = data.disableText
+        courierData.discountedRate = data.discountedRate
+        courierData.shippingRate = data.shippingRate
+        courierData.benefitAmount = data.benefitAmount
+        courierData.promoTitle = data.title
+        courierData.isHideShipperName = data.hideShipperName
+        courierData.shipperName = data.shipperName
+        courierData.etaText = data.etaData.textEta
+        courierData.etaErrorCode = data.etaData.errorCode
+        courierData.freeShippingChosenCourierTitle = data.freeShippingChosenCourierTitle
+        return courierData
+    }
 }

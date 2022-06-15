@@ -364,22 +364,12 @@ class ShippingDurationBottomsheet : ShippingDurationContract.View, ShippingDurat
             showErrorPage(activity!!.getString(R.string.logistic_promo_serviceid_mismatch_message))
             return
         }
-        courierData.logPromoCode = data.promoCode
-        courierData.logPromoMsg = data.disableText
-        courierData.discountedRate = data.discountedRate
-        courierData.shippingRate = data.shippingRate
-        courierData.benefitAmount = data.benefitAmount
-        courierData.promoTitle = data.title
-        courierData.isHideShipperName = data.hideShipperName
-        courierData.shipperName = data.shipperName
-        courierData.etaText = data.etaData.textEta
-        courierData.etaErrorCode = data.etaData.errorCode
-        courierData.freeShippingChosenCourierTitle = data.freeShippingChosenCourierTitle
         try {
             shippingDurationBottomsheetListener?.onLogisticPromoChosen(
-                    serviceData.shippingCourierViewModelList, courierData,
-                    mRecipientAddress, mCartPosition,
-                    serviceData.serviceData, false, data.promoCode, data.serviceId)
+                serviceData.shippingCourierViewModelList, courierData,
+                mRecipientAddress, mCartPosition,
+                serviceData.serviceData, false, data.promoCode, data.serviceId, data
+            )
         } catch (e: Exception) {
             e.printStackTrace()
         }

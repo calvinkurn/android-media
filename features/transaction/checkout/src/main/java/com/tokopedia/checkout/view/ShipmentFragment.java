@@ -43,6 +43,7 @@ import com.tokopedia.checkout.analytics.CheckoutTradeInAnalytics;
 import com.tokopedia.checkout.analytics.CornerAnalytics;
 import com.tokopedia.checkout.domain.mapper.ShipmentAddOnMapper;
 import com.tokopedia.logisticcart.shipping.features.shippingcourier.view.ShippingCourierConverter;
+import com.tokopedia.logisticcart.shipping.model.LogisticPromoUiModel;
 import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.PopUpData;
 import com.tokopedia.checkout.domain.model.checkout.Prompt;
 import com.tokopedia.checkout.view.uimodel.CrossSellModel;
@@ -188,6 +189,9 @@ import static com.tokopedia.purchase_platform.common.constant.PromoConstantKt.AR
 import static com.tokopedia.purchase_platform.common.constant.PromoConstantKt.ARGS_FINISH_ERROR;
 import static com.tokopedia.purchase_platform.common.constant.PromoConstantKt.ARGS_PROMO_ERROR;
 import static com.tokopedia.purchase_platform.common.constant.PromoConstantKt.PAGE_CHECKOUT;
+
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * @author Irfan Khoirul on 23/04/18.
@@ -1966,14 +1970,15 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     }
 
     @Override
-    public void onLogisticPromoChosen(List<ShippingCourierUiModel> shippingCourierUiModels,
-                                      CourierItemData courierData, RecipientAddressModel recipientAddressModel,
-                                      int cartPosition, ServiceData serviceData, boolean flagNeedToSetPinpoint,
-                                      String promoCode, int selectedServiceId) {
+    public void onLogisticPromoChosen(@Nullable List<ShippingCourierUiModel> shippingCourierUiModels,
+                                      @Nullable ShippingCourierUiModel courierData, @Nullable RecipientAddressModel recipientAddressModel,
+                                      int cartPosition, @Nullable ServiceData serviceData, boolean flagNeedToSetPinpoint,
+                                      @Nullable String promoCode, int selectedServiceId, @NotNull LogisticPromoUiModel logisticPromo) {
         setStateLoadingCourierStateAtIndex(cartPosition, true);
-        onShippingDurationChoosen(shippingCourierUiModels, courierData, recipientAddressModel,
+        CourierItemData courierItemData = shippingCourierConverter.convertToCourierItemData(courierData, logisticPromo);
+        onShippingDurationChoosen(shippingCourierUiModels, courierItemData, recipientAddressModel,
                 cartPosition, selectedServiceId, serviceData, flagNeedToSetPinpoint,
-                false, false);
+                false, false, false);
         String cartString = shipmentAdapter.getShipmentCartItemModelByIndex(cartPosition).getCartString();
         if (!flagNeedToSetPinpoint) {
             ShipmentCartItemModel shipmentCartItemModel = shipmentAdapter.getShipmentCartItemModelByIndex(cartPosition);
