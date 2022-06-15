@@ -123,8 +123,11 @@ interface PlayBroadcastMapper {
         response: GetInteractiveQuizChoiceDetailResponse,
         choiceIndex: Int,
         interactiveId: String,
-        interactiveTitle:String,
+        interactiveTitle: String,
     ): QuizChoiceDetailUiModel
 
-    fun mapLeaderBoardWithSlot(response: GetSellerLeaderboardSlotResponse, allowChat: Boolean): List<PlayLeaderboardUiModel>
+    fun mapLeaderBoardWithSlot(
+        response: GetSellerLeaderboardSlotResponse,
+        allowChat: Boolean,
+    ): List<PlayLeaderboardUiModel>
 }

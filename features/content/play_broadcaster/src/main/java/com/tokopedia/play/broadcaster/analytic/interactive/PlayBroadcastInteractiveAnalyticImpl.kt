@@ -14,7 +14,7 @@ import javax.inject.Inject
 class PlayBroadcastInteractiveAnalyticImpl @Inject constructor(
     private val userSession: UserSessionInterface
 ) : PlayBroadcastInteractiveAnalytic {
-    val shopId: String = userSession.shopId
+    private val shopId: String = userSession.shopId
 
     override fun onImpressInteractiveTool(channelId: String) {
         TrackApp.getInstance().gtm.sendGeneralEvent(

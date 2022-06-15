@@ -41,14 +41,14 @@ val currentSite: String
         KEY_TRACK_CURRENT_SITE_MARKETPLACE
     }
 
-val KEY_TRACK_CLICK_EVENT: String
+internal val KEY_TRACK_CLICK_EVENT: String
     get() = if (GlobalConfig.isSellerApp()) {
         KEY_TRACK_CLICK_EVENT_SELLER
     } else {
         KEY_TRACK_CLICK_EVENT_MARKETPLACE
     }
 
-val KEY_TRACK_VIEW_EVENT: String
+internal val KEY_TRACK_VIEW_EVENT: String
     get() = if (GlobalConfig.isSellerApp()) {
         KEY_TRACK_VIEW_EVENT_SELLER
     } else {

@@ -43,13 +43,14 @@ class PlayBroadcastInteractiveRepositoryImpl @Inject constructor(
     private val dispatchers: CoroutineDispatchers,
 ) : PlayBroadcastInteractiveRepository {
 
-    override suspend fun getInteractiveConfig(): InteractiveConfigUiModel = withContext(dispatchers.io) {
-        val response = getInteractiveConfigUseCase.apply {
-            setRequestParams(GetInteractiveConfigUseCase.createParams(userSession.shopId))
-        }.executeOnBackground()
+    override suspend fun getInteractiveConfig(): InteractiveConfigUiModel =
+        withContext(dispatchers.io) {
+            val response = getInteractiveConfigUseCase.apply {
+                setRequestParams(GetInteractiveConfigUseCase.createParams(userSession.shopId))
+            }.executeOnBackground()
 
-        return@withContext mapper.mapInteractiveConfig(response)
-    }
+            return@withContext mapper.mapInteractiveConfig(response)
+        }
 
     override suspend fun getCurrentInteractive(channelId: String): InteractiveUiModel =
         withContext(dispatchers.io) {
@@ -111,14 +112,28 @@ class PlayBroadcastInteractiveRepositoryImpl @Inject constructor(
         }
 
     override suspend fun getInteractiveQuizChoiceDetail(
-        choiceIndex: Int, choiceId: String, cursor: String, interactiveId: String, interactiveTitle:String
+        choiceIndex: Int,
+        choiceId: String,
+        cursor: String,
+        interactiveId: String,
+        interactiveTitle: String,
     ): QuizChoiceDetailUiModel =
         withContext(dispatchers.io) {
             val response = getInteractiveQuizChoiceDetailsUseCase.apply {
-                setRequestParams(GetInteractiveQuizChoiceDetailsUseCase.createParams(choiceId, cursor))
+                setRequestParams(
+                    GetInteractiveQuizChoiceDetailsUseCase.createParams(
+                        choiceId,
+                        cursor,
+                    )
+                )
             }.executeOnBackground()
 
-            return@withContext mapper.mapChoiceDetail(response, choiceIndex, interactiveId, interactiveTitle)
+            return@withContext mapper.mapChoiceDetail(
+                response,
+                choiceIndex,
+                interactiveId,
+                interactiveTitle,
+            )
         }
 
     override suspend fun getSellerLeaderboardWithSlot(
