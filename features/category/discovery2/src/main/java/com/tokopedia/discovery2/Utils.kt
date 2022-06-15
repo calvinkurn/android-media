@@ -94,7 +94,6 @@ class Utils {
         const val RPC_PAGE__SIZE = "rpc_page_size"
         const val RPC_NEXT_PAGE = "rpc_next_page"
         const val DARK_MODE = "dark_mode"
-        private const val DEFAULT_HEX_CODE = "#FFFFFF"
 
 
         fun extractDimension(url: String?, dimension: String = "height"): Int? {
@@ -288,17 +287,16 @@ class Utils {
             }
         }
 
-        fun getValidHexCode(color: String?): String {
+        fun getValidHexCode(context: Context, color: String?): String {
             if (color.isNullOrEmpty()) {
-                return DEFAULT_HEX_CODE
+                return context.resources.getString(com.tokopedia.unifyprinciples.R.color.Unify_Background)
             }
             val regex = "^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3}|[A-Fa-f0-9]{8})$"
             val pattern: Pattern = Pattern.compile(regex)
             return if(pattern.matcher(color).matches())
                 color
             else
-                DEFAULT_HEX_CODE
-
+                context.resources.getString(com.tokopedia.unifyprinciples.R.color.Unify_Background)
         }
 
         fun setTimerBoxDynamicBackground(view: View, color: Int) {

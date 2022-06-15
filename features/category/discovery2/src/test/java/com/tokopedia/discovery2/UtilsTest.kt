@@ -186,16 +186,18 @@ class UtilsTest {
 
     @Test
     fun `getValidHexCode Color`(){
+        val context: Context = mockk()
         val defaultColor = "#FFFFFF"
         val hexcode = "#564843"
         val hexcode8 = "#FFF"
         val hexcodeinvalid = "#FLF"
         val hexcode3 = "#12564843"
-        Assert.assertEquals(Utils.getValidHexCode(hexcode), hexcode)
-        Assert.assertEquals(Utils.getValidHexCode(""), defaultColor)
-        Assert.assertEquals(Utils.getValidHexCode(hexcode3), hexcode3)
-        Assert.assertEquals(Utils.getValidHexCode(hexcode8), hexcode8)
-        Assert.assertEquals(Utils.getValidHexCode(hexcodeinvalid), defaultColor)
+        every { context.resources.getString(any()) } returns  defaultColor
+        Assert.assertEquals(Utils.getValidHexCode(context, hexcode), hexcode)
+        Assert.assertEquals(Utils.getValidHexCode(context, ""), defaultColor)
+        Assert.assertEquals(Utils.getValidHexCode(context, hexcode3), hexcode3)
+        Assert.assertEquals(Utils.getValidHexCode(context, hexcode8), hexcode8)
+        Assert.assertEquals(Utils.getValidHexCode(context, hexcodeinvalid), defaultColor)
     }
 
 
