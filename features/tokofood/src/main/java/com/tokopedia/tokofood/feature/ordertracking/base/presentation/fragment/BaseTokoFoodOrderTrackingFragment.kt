@@ -175,6 +175,10 @@ class BaseTokoFoodOrderTrackingFragment :
         fetchOrderDetail()
     }
 
+    override fun onInvoiceOrderClicked(invoiceNumber: String, invoiceUrl: String) {
+        navigator.goToPrintInvoicePage(invoiceUrl, invoiceNumber)
+    }
+
     override val parentPool: RecyclerView.RecycledViewPool
         get() = binding?.rvOrderTracking?.recycledViewPool ?: RecyclerView.RecycledViewPool()
 
