@@ -504,6 +504,8 @@ class PlayViewModel @AssistedInject constructor(
 
     private val gson by lazy { Gson() }
 
+    private var delayJob: Job? = null
+
     init {
         videoStateProcessor.addStateListener(videoStateListener)
         videoStateProcessor.addStateListener(videoPerformanceListener)
@@ -1596,6 +1598,8 @@ class PlayViewModel @AssistedInject constructor(
                 }
             }
             is UserWinnerStatus -> {
+                delayJob?.cancel()
+
                 val interactive = _interactive.value.interactive
                 val isFinished = when (interactive) {
                     is InteractiveUiModel.Giveaway -> {
@@ -1761,9 +1765,11 @@ class PlayViewModel @AssistedInject constructor(
             if (!isRewardAvailable) {
                 showLeaderBoard(interactiveId = interactiveType.id)
             } else {
-                delay(interactive.interactive.waitingDuration)
-                if(isFinished) {
-                    if(winnerStatus == null) showLeaderBoard(interactiveId = interactiveType.id) else processWinnerStatus(winnerStatus, interactiveType)
+                delayJob = viewModelScope.launch(dispatchers.computation) {
+                    delay(interactive.interactive.waitingDuration)
+                    if(isFinished) {
+                        if(winnerStatus == null) showLeaderBoard(interactiveId = interactiveType.id) else processWinnerStatus(winnerStatus, interactiveType)
+                    }
                 }
             }
             /**
