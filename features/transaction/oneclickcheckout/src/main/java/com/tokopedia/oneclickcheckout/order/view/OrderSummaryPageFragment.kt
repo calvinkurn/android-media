@@ -52,8 +52,11 @@ import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.Servi
 import com.tokopedia.logisticCommon.domain.usecase.GetAddressCornerUseCase
 import com.tokopedia.logisticcart.shipping.features.shippingcourierocc.ShippingCourierOccBottomSheet
 import com.tokopedia.logisticcart.shipping.features.shippingcourierocc.ShippingCourierOccBottomSheetListener
+import com.tokopedia.logisticcart.shipping.features.shippingduration.view.ShippingDurationBottomsheet
+import com.tokopedia.logisticcart.shipping.features.shippingduration.view.ShippingDurationBottomsheetListener
 import com.tokopedia.logisticcart.shipping.features.shippingdurationocc.ShippingDurationOccBottomSheet
 import com.tokopedia.logisticcart.shipping.features.shippingdurationocc.ShippingDurationOccBottomSheetListener
+import com.tokopedia.logisticcart.shipping.model.CourierItemData
 import com.tokopedia.logisticcart.shipping.model.LogisticPromoUiModel
 import com.tokopedia.logisticcart.shipping.model.RatesViewModelType
 import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel
@@ -1351,16 +1354,63 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
                 } else if (currentSpId.isNotEmpty()) {
                     orderSummaryAnalytics.eventClickArrowToChangeDurationOption(currentSpId, userSession.get().userId)
                 }
-                ShippingDurationOccBottomSheet().showBottomSheet(this@OrderSummaryPageFragment, list, object : ShippingDurationOccBottomSheetListener {
-                    override fun onDurationChosen(serviceData: ServiceData, selectedServiceId: Int, selectedShippingCourierUiModel: ShippingCourierUiModel, flagNeedToSetPinpoint: Boolean) {
-                        orderSummaryAnalytics.eventClickSelectedDurationOptionNew(selectedShippingCourierUiModel.productData.shipperProductId.toString(), userSession.get().userId)
-                        viewModel.chooseDuration(selectedServiceId, selectedShippingCourierUiModel, flagNeedToSetPinpoint)
-                    }
+                activity?.let {
+                    ShippingDurationBottomsheet().show(it, parentFragmentManager, object : ShippingDurationBottomsheetListener {
+//                        override fun onDurationChosen(serviceData: ServiceData, selectedServiceId: Int, selectedShippingCourierUiModel: ShippingCourierUiModel, flagNeedToSetPinpoint: Boolean) {
+//                            orderSummaryAnalytics.eventClickSelectedDurationOptionNew(selectedShippingCourierUiModel.productData.shipperProductId.toString(), userSession.get().userId)
+//                            viewModel.chooseDuration(selectedServiceId, selectedShippingCourierUiModel, flagNeedToSetPinpoint)
+//                        }
+//
+//                        override fun onLogisticPromoClicked(data: LogisticPromoUiModel) {
+//                            onLogisticPromoClick(data)
+//                        }
 
-                    override fun onLogisticPromoClicked(data: LogisticPromoUiModel) {
-                        onLogisticPromoClick(data)
-                    }
-                })
+                        override fun onShippingDurationChoosen(
+                            shippingCourierUiModels: List<ShippingCourierUiModel>?,
+                            selectedCourier: ShippingCourierUiModel?,
+                            recipientAddressModel: RecipientAddressModel?,
+                            cartPosition: Int,
+                            selectedServiceId: Int,
+                            serviceData: ServiceData?,
+                            flagNeedToSetPinpoint: Boolean,
+                            isDurationClick: Boolean,
+                            isClearPromo: Boolean
+                        ) {
+                            selectedCourier?.let { courier ->
+                                orderSummaryAnalytics.eventClickSelectedDurationOptionNew(courier.toString(), userSession.get().userId)
+                                viewModel.chooseDuration(selectedServiceId, courier, flagNeedToSetPinpoint)
+                            }
+                        }
+
+                        override fun onLogisticPromoChosen(
+                            shippingCourierUiModels: List<ShippingCourierUiModel>?,
+                            courierData: CourierItemData?,
+                            recipientAddressModel: RecipientAddressModel?,
+                            cartPosition: Int,
+                            serviceData: ServiceData?,
+                            flagNeedToSetPinpoint: Boolean,
+                            promoCode: String?,
+                            selectedServiceId: Int
+                        ) {
+                            onLogisticPromoClick(data)
+                        }
+
+                        override fun onNoCourierAvailable(message: String?) {
+                            TODO("Not yet implemented")
+                        }
+
+                        override fun onShippingDurationButtonCloseClicked() {
+                            TODO("Not yet implemented")
+                        }
+
+                        override fun onShowDurationListWithCourierPromo(
+                            isCourierPromo: Boolean,
+                            duration: String?
+                        ) {
+                            TODO("Not yet implemented")
+                        }
+                    }, list, 0, true)
+                }
             }
         }
 

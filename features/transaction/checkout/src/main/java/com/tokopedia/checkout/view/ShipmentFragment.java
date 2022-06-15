@@ -42,6 +42,7 @@ import com.tokopedia.checkout.analytics.CheckoutEgoldAnalytics;
 import com.tokopedia.checkout.analytics.CheckoutTradeInAnalytics;
 import com.tokopedia.checkout.analytics.CornerAnalytics;
 import com.tokopedia.checkout.domain.mapper.ShipmentAddOnMapper;
+import com.tokopedia.logisticcart.shipping.features.shippingcourier.view.ShippingCourierConverter;
 import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.PopUpData;
 import com.tokopedia.checkout.domain.model.checkout.Prompt;
 import com.tokopedia.checkout.view.uimodel.CrossSellModel;
@@ -243,6 +244,8 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     CheckoutTradeInAnalytics checkoutTradeInAnalytics;
     @Inject
     CheckoutEgoldAnalytics checkoutEgoldAnalytics;
+    @Inject
+    ShippingCourierConverter shippingCourierConverter;
 
     SaveInstanceCacheManager saveInstanceCacheManager;
     TickerAnnouncementHolderData savedTickerAnnouncementModel;
@@ -2013,7 +2016,8 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     }
 
     @Override
-    public void onShippingDurationChoosen(List<ShippingCourierUiModel> shippingCourierUiModels, CourierItemData courierItemData, RecipientAddressModel recipientAddressModel, int cartPosition, int selectedServiceId, ServiceData serviceData, boolean flagNeedToSetPinpoint, boolean isDurationClick, boolean isClearPromo) {
+    public void onShippingDurationChoosen(List<ShippingCourierUiModel> shippingCourierUiModels, ShippingCourierUiModel selectedCourier, RecipientAddressModel recipientAddressModel, int cartPosition, int selectedServiceId, ServiceData serviceData, boolean flagNeedToSetPinpoint, boolean isDurationClick, boolean isClearPromo) {
+        CourierItemData courierItemData = shippingCourierConverter.convertToCourierItemData(selectedCourier);
         onShippingDurationChoosen(shippingCourierUiModels, courierItemData, recipientAddressModel,
                 cartPosition, selectedServiceId, serviceData,
                 flagNeedToSetPinpoint, isDurationClick, isClearPromo, false);

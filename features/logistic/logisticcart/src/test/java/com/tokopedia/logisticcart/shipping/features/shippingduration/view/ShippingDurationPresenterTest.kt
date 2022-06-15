@@ -22,7 +22,6 @@ class ShippingDurationPresenterTest {
     private val ratesUseCase: GetRatesUseCase = mockk(relaxed = true)
     private val ratesApiUseCase: GetRatesApiUseCase = mockk(relaxed = true)
     private val responseConverter: RatesResponseStateConverter = mockk()
-    private val courierConverter: ShippingCourierConverter = mockk(relaxed = true)
     val view: ShippingDurationContract.View = mockk(relaxed = true)
     lateinit var presenter: ShippingDurationPresenter
 
@@ -34,7 +33,7 @@ class ShippingDurationPresenterTest {
     @Before
     fun setup() {
         presenter = ShippingDurationPresenter(ratesUseCase, ratesApiUseCase,
-                responseConverter, courierConverter)
+                responseConverter)
     }
 
     @Test
@@ -204,25 +203,25 @@ class ShippingDurationPresenterTest {
         assertEquals(productsShipping.filter { product -> product.any { item -> item.promoCode.isEmpty() } }.size, productsShipping.size)
     }
 
-    @Test
-    fun `When get courier item data trigger courier converter Then courier converter is called`() {
-        // Given
-        val courierModelWithOneRecc: List<ShippingCourierUiModel> = listOf(
-                ShippingCourierUiModel().apply {
-                    productData = ProductData().apply {
-                        isRecommend = true
-                    }
-                }
-        )
-
-        // When
-        presenter.getCourierItemData(courierModelWithOneRecc)
-
-        // Then
-        verify {
-            courierConverter.convertToCourierItemData(any())
-        }
-    }
+//    @Test
+//    fun `When get courier item data trigger courier converter Then courier converter is called`() {
+//        // Given
+//        val courierModelWithOneRecc: List<ShippingCourierUiModel> = listOf(
+//                ShippingCourierUiModel().apply {
+//                    productData = ProductData().apply {
+//                        isRecommend = true
+//                    }
+//                }
+//        )
+//
+//        // When
+//        presenter.getCourierItemData(courierModelWithOneRecc)
+//
+//        // Then
+//        verify {
+//            courierConverter.convertToCourierItemData(any())
+//        }
+//    }
 
     @Test
     fun `When get courier item data return null Then null is returned`() {
@@ -240,26 +239,26 @@ class ShippingDurationPresenterTest {
         assertNull(actual)
     }
 
-    @Test
-    fun `When get courier item data with id trigger courier converter Then courier converter is called`() {
-        // Given
-        val spId = 24
-        val courierModelWithId: List<ShippingCourierUiModel> = listOf(
-                ShippingCourierUiModel().apply {
-                    productData = ProductData().apply {
-                        shipperProductId = spId
-                    }
-                }
-        )
-
-        // When
-        presenter.getCourierItemDataById(spId, courierModelWithId)
-
-        // Then
-        verify {
-            courierConverter.convertToCourierItemData(any())
-        }
-    }
+//    @Test
+//    fun `When get courier item data with id trigger courier converter Then courier converter is called`() {
+//        // Given
+//        val spId = 24
+//        val courierModelWithId: List<ShippingCourierUiModel> = listOf(
+//                ShippingCourierUiModel().apply {
+//                    productData = ProductData().apply {
+//                        shipperProductId = spId
+//                    }
+//                }
+//        )
+//
+//        // When
+//        presenter.getCourierItemDataById(spId, courierModelWithId)
+//
+//        // Then
+//        verify {
+//            courierConverter.convertToCourierItemData(any())
+//        }
+//    }
 
     @Test
     fun `When get courier item data with id return null Then null is returned`() {
