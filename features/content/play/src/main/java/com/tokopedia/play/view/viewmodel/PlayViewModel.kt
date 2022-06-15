@@ -1598,7 +1598,7 @@ class PlayViewModel @AssistedInject constructor(
                 }
             }
             is UserWinnerStatus -> {
-                delayJob?.cancel()
+                if(delayJob?.isActive == true) delayJob?.cancel()
 
                 val interactive = _interactive.value.interactive
                 val isFinished = when (interactive) {
