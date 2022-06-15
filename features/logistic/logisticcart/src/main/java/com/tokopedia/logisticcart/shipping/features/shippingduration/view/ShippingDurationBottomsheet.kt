@@ -48,6 +48,7 @@ class ShippingDurationBottomsheet : ShippingDurationContract.View, ShippingDurat
 
     private var isDisableCourierPromo = false
     private var isDisableOrderPrioritas = false
+    private var isOcc = false
     private var mCartPosition = -1
 
     private var mRecipientAddress: RecipientAddressModel? = null
@@ -66,6 +67,7 @@ class ShippingDurationBottomsheet : ShippingDurationContract.View, ShippingDurat
 
     private var mIsCorner = false
 
+    /* Checkout */
     fun show(activity: Activity,
              fragmentManager: FragmentManager,
              shippingDurationBottomsheetListener: ShippingDurationBottomsheetListener?,
@@ -86,24 +88,7 @@ class ShippingDurationBottomsheet : ShippingDurationContract.View, ShippingDurat
                 isDisableOrderPrioritas, isTradeInDropOff, isFulFillment, preOrderTime, mvc)
         initBottomSheet(activity)
         initView(activity)
-        bottomSheet?.show(fragmentManager, this.javaClass.simpleName)
-    }
-
-    fun show(
-        activity: Activity,
-        fragmentManager: FragmentManager,
-        shippingDurationBottomsheetListener: ShippingDurationBottomsheetListener?,
-        shippingRecommendationData: ShippingRecommendationData,
-        cartPosition: Int,
-        isDisableOrderPrioritas: Boolean
-    ) {
-        this.activity = activity
-        this.shippingDurationBottomsheetListener = shippingDurationBottomsheetListener
-        initBottomSheet(activity, shippingRecommendationData)
-        initView(activity)
-        // todo move to other fun
-        mCartPosition = cartPosition
-        this.isDisableOrderPrioritas = isDisableOrderPrioritas
+        isOcc = false
         bottomSheet?.show(fragmentManager, this.javaClass.simpleName)
     }
 
@@ -129,6 +114,42 @@ class ShippingDurationBottomsheet : ShippingDurationContract.View, ShippingDurat
         }
     }
 
+    private fun initData(shipmentDetailData: ShipmentDetailData, selectedServiceId: Int, shopShipmentList: List<ShopShipment>, recipientAddressModel: RecipientAddressModel, cartPosition: Int, codHistory: Int, isLeasing: Boolean, pslCode: String, products: ArrayList<Product>, cartString: String, isDisableOrderPrioritas: Boolean, isTradeInDropOff: Boolean, isFulFillment: Boolean, preOrderTime: Int, mvc: String) {
+        bundle = Bundle()
+        bundle?.putParcelable(ARGUMENT_SHIPMENT_DETAIL_DATA, shipmentDetailData)
+        bundle?.putParcelableArrayList(ARGUMENT_SHOP_SHIPMENT_LIST, ArrayList(shopShipmentList))
+        bundle?.putParcelable(ARGUMENT_RECIPIENT_ADDRESS_MODEL, recipientAddressModel)
+        bundle?.putInt(ARGUMENT_CART_POSITION, cartPosition)
+        bundle?.putInt(ARGUMENT_SELECTED_SERVICE_ID, selectedServiceId)
+        bundle?.putInt(ARGUMENT_COD_HISTORY, codHistory)
+        bundle?.putBoolean(ARGUMENT_IS_LEASING, isLeasing)
+        bundle?.putString(ARGUMENT_PSL_CODE, pslCode)
+        bundle?.putParcelableArrayList(ARGUMENT_PRODUCTS, products)
+        bundle?.putString(ARGUMENT_CART_STRING, cartString)
+        bundle?.putBoolean(ARGUMENT_DISABLE_ORDER_PRIORITAS, isDisableOrderPrioritas)
+        bundle?.putBoolean(ARGUMENT_IS_TRADE_IN_DROP_OFF, isTradeInDropOff)
+        bundle?.putBoolean(ARGUMENT_IS_FULFILLMENT, isFulFillment)
+        bundle?.putInt(ARGUMENT_PO_TIME, preOrderTime)
+        bundle?.putString(ARGUMENT_MVC, mvc)
+    }
+
+    /* OCC */
+    fun show(
+        activity: Activity,
+        fragmentManager: FragmentManager,
+        shippingDurationBottomsheetListener: ShippingDurationBottomsheetListener?,
+        shippingRecommendationData: ShippingRecommendationData,
+        cartPosition: Int,
+        isDisableOrderPrioritas: Boolean
+    ) {
+        this.activity = activity
+        this.shippingDurationBottomsheetListener = shippingDurationBottomsheetListener
+        initBottomSheet(activity, shippingRecommendationData)
+        initView(activity)
+        initData(cartPosition, isDisableOrderPrioritas)
+        bottomSheet?.show(fragmentManager, this.javaClass.simpleName)
+    }
+
     private fun initBottomSheet(activity: Activity, shippingRecommendationData: ShippingRecommendationData) {
         bottomSheet = BottomSheetUnify()
         bottomSheet?.showCloseIcon = true
@@ -152,24 +173,10 @@ class ShippingDurationBottomsheet : ShippingDurationContract.View, ShippingDurat
         }
     }
 
-
-    private fun initData(shipmentDetailData: ShipmentDetailData, selectedServiceId: Int, shopShipmentList: List<ShopShipment>, recipientAddressModel: RecipientAddressModel, cartPosition: Int, codHistory: Int, isLeasing: Boolean, pslCode: String, products: ArrayList<Product>, cartString: String, isDisableOrderPrioritas: Boolean, isTradeInDropOff: Boolean, isFulFillment: Boolean, preOrderTime: Int, mvc: String) {
-        bundle = Bundle()
-        bundle?.putParcelable(ARGUMENT_SHIPMENT_DETAIL_DATA, shipmentDetailData)
-        bundle?.putParcelableArrayList(ARGUMENT_SHOP_SHIPMENT_LIST, ArrayList(shopShipmentList))
-        bundle?.putParcelable(ARGUMENT_RECIPIENT_ADDRESS_MODEL, recipientAddressModel)
-        bundle?.putInt(ARGUMENT_CART_POSITION, cartPosition)
-        bundle?.putInt(ARGUMENT_SELECTED_SERVICE_ID, selectedServiceId)
-        bundle?.putInt(ARGUMENT_COD_HISTORY, codHistory)
-        bundle?.putBoolean(ARGUMENT_IS_LEASING, isLeasing)
-        bundle?.putString(ARGUMENT_PSL_CODE, pslCode)
-        bundle?.putParcelableArrayList(ARGUMENT_PRODUCTS, products)
-        bundle?.putString(ARGUMENT_CART_STRING, cartString)
-        bundle?.putBoolean(ARGUMENT_DISABLE_ORDER_PRIORITAS, isDisableOrderPrioritas)
-        bundle?.putBoolean(ARGUMENT_IS_TRADE_IN_DROP_OFF, isTradeInDropOff)
-        bundle?.putBoolean(ARGUMENT_IS_FULFILLMENT, isFulFillment)
-        bundle?.putInt(ARGUMENT_PO_TIME, preOrderTime)
-        bundle?.putString(ARGUMENT_MVC, mvc)
+    private fun initData(cartPosition: Int, isDisableOrderPrioritas: Boolean) {
+        mCartPosition = cartPosition
+        this.isDisableOrderPrioritas = isDisableOrderPrioritas
+        this.isOcc = true
     }
 
     private fun initializeInjector() {
@@ -309,7 +316,7 @@ class ShippingDurationBottomsheet : ShippingDurationContract.View, ShippingDurat
                                            cartPosition: Int, serviceData: ServiceData) {
         var flagNeedToSetPinpoint = false
         var selectedServiceId = 0
-        if (isToogleYearEndPromotionOn()) {
+        if (isToogleYearEndPromotionOn() && !isOcc) {
             if (serviceData.error != null && serviceData.error.errorId == ErrorProductData.ERROR_PINPOINT_NEEDED &&
                     !TextUtils.isEmpty(serviceData.error.errorMessage)) {
                 flagNeedToSetPinpoint = true
@@ -344,11 +351,15 @@ class ShippingDurationBottomsheet : ShippingDurationContract.View, ShippingDurat
     }
 
     override fun isToogleYearEndPromotionOn(): Boolean {
-        if (activity != null) {
-            val remoteConfig: RemoteConfig = FirebaseRemoteConfigImpl(activity)
-            return remoteConfig.getBoolean("mainapp_enable_year_end_promotion")
+        if (isOcc) {
+            return false
+        } else {
+            if (activity != null) {
+                val remoteConfig: RemoteConfig = FirebaseRemoteConfigImpl(activity)
+                return remoteConfig.getBoolean("mainapp_enable_year_end_promotion")
+            }
+            return false
         }
-        return false
     }
 
     override fun onLogisticPromoClicked(data: LogisticPromoUiModel) {

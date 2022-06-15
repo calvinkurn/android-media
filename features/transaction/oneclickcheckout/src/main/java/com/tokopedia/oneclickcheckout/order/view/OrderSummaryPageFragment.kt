@@ -1384,21 +1384,6 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
                         ) {
                             onLogisticPromoClick(logisticPromo)
                         }
-
-                        override fun onNoCourierAvailable(message: String?) {
-                            // no op
-                        }
-
-                        override fun onShippingDurationButtonCloseClicked() {
-                            // no op
-                        }
-
-                        override fun onShowDurationListWithCourierPromo(
-                            isCourierPromo: Boolean,
-                            duration: String?
-                        ) {
-                            // no op
-                        }
                     }, shippingRecommendationData, 0, true)
                 }
             }
