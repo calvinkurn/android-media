@@ -1365,9 +1365,10 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
                             isDurationClick: Boolean,
                             isClearPromo: Boolean
                         ) {
-                            selectedCourier?.let { courier ->
-                                orderSummaryAnalytics.eventClickSelectedDurationOptionNew(courier.toString(), userSession.get().userId)
-                                viewModel.chooseDuration(selectedServiceId, courier, flagNeedToSetPinpoint)
+                            if (selectedCourier != null && serviceData != null) {
+                                orderSummaryAnalytics.eventClickSelectedDurationOptionNew(selectedCourier.toString(), userSession.get().userId)
+                                val serviceId = if (flagNeedToSetPinpoint) selectedServiceId else serviceData.serviceId
+                                viewModel.chooseDuration(serviceId, selectedCourier, flagNeedToSetPinpoint)
                             }
                         }
 

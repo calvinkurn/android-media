@@ -161,6 +161,7 @@ class ShippingDurationBottomsheet : ShippingDurationContract.View, ShippingDurat
         bottomSheet?.setShowListener {
             chooseCourierTracePerformance = PerformanceMonitoring.start(CHOOSE_COURIER_TRACE)
             presenter?.attachView(this)
+            hideLoading()
             setupRecyclerView(mCartPosition)
             showData(shippingRecommendationData.shippingDurationUiModels, shippingRecommendationData.listLogisticPromo, shippingRecommendationData.preOrderModel)
         }
@@ -257,7 +258,9 @@ class ShippingDurationBottomsheet : ShippingDurationContract.View, ShippingDurat
 
     override fun showData(serviceDataList: List<ShippingDurationUiModel>, promoViewModelList: List<LogisticPromoUiModel>, preOrderModel: PreOrderModel?) {
         shippingDurationAdapter?.setShippingDurationViewModels(serviceDataList, promoViewModelList, isDisableOrderPrioritas, preOrderModel)
-       if (promoViewModelList.any { it.etaData.textEta.isEmpty() && it.etaData.errorCode == 1 }) shippingDurationAdapter!!.initiateShowcase()
+        if (!isOcc) {
+            if (promoViewModelList.any { it.etaData.textEta.isEmpty() && it.etaData.errorCode == 1 }) shippingDurationAdapter!!.initiateShowcase()
+        }
 
         val hasCourierPromo = checkHasCourierPromo(serviceDataList)
         if (hasCourierPromo) {
