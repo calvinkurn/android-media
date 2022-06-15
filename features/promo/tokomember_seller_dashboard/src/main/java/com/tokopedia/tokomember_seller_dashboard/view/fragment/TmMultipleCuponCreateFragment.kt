@@ -42,7 +42,6 @@ import com.tokopedia.tokomember_seller_dashboard.util.TmDateUtil.getTimeInMillis
 import com.tokopedia.tokomember_seller_dashboard.util.TmDateUtil.getTimeInMillisEnd
 import com.tokopedia.tokomember_seller_dashboard.util.TmDateUtil.setDate
 import com.tokopedia.tokomember_seller_dashboard.tracker.TmTracker
-import com.tokopedia.tokomember_seller_dashboard.util.TmDateUtil.setTime
 import com.tokopedia.tokomember_seller_dashboard.util.TmDateUtil.setTimeEnd
 import com.tokopedia.tokomember_seller_dashboard.view.activity.TokomemberDashIntroActivity
 import com.tokopedia.tokomember_seller_dashboard.view.adapter.model.TmCouponListItemPreview
@@ -474,10 +473,16 @@ class TmMultipleCuponCreateFragment : BaseDaggerFragment() {
         bottomSheet.setUpBottomSheetListener(object : BottomSheetClickListener {
             override fun onButtonClick(errorCount: Int) {
                 when (errorCount) {
-                    0 -> tmDashCreateViewModel.validateProgram("", "", "","")
+                    0 -> tmDashCreateViewModel.validateProgram(  arguments?.getInt(
+                        BUNDLE_SHOP_ID
+                    ).toString(),
+                        getTimeInMillis(manualStartTimeProgram),
+                        getTimeInMillisEnd(manualEndTimeProgram),
+                        SOURCE_MULTIPLE_COUPON_CREATE)
                     else -> {
                         (TokomemberDashIntroActivity.openActivity(
-                            0, "", "",
+                            arguments?.getInt(BUNDLE_SHOP_ID) ?: 0,arguments?.getString(BUNDLE_SHOP_AVATAR)?:"" ,arguments?.getString(
+                                BUNDLE_SHOP_NAME)?:"",
                             false,
                             context
                         ))
@@ -669,12 +674,10 @@ class TmMultipleCuponCreateFragment : BaseDaggerFragment() {
             tmVipCoupon?.post {
                 val coupon = tmPremiumCoupon.getCouponView()
                 val file =  TmFileUtil.saveBitMap(ctx, coupon)
-                if (file != null) {
-                    tmCouponListPremiumItemPreview = TmCouponListItemPreview(
-                        file.absolutePath, "Premium", couponPremiumData?.quota ?: ""
-                    )
-                    tmDashCreateViewModel.uploadImagePremium(file)
-                }
+                tmCouponListPremiumItemPreview = TmCouponListItemPreview(
+                    file.absolutePath, "Premium", couponPremiumData?.quota ?: ""
+                )
+                tmDashCreateViewModel.uploadImagePremium(file)
             }
         }
     }
@@ -684,12 +687,10 @@ class TmMultipleCuponCreateFragment : BaseDaggerFragment() {
             tmVipCoupon?.post {
                 val coupon = tmVipCoupon.getCouponView()
                val file =  TmFileUtil.saveBitMap(ctx, coupon)
-                if (file != null) {
-                    tmCouponListVipItemPreview = TmCouponListItemPreview(
-                        file.absolutePath, "VIP", couponVip?.quota ?: ""
-                    )
-                    tmDashCreateViewModel.uploadImageVip(file)
-                }
+                tmCouponListVipItemPreview = TmCouponListItemPreview(
+                    file.absolutePath, "VIP", couponVip?.quota ?: ""
+                )
+                tmDashCreateViewModel.uploadImageVip(file)
             }
         }
     }

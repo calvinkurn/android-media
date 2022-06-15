@@ -13,11 +13,7 @@ import com.tokopedia.header.HeaderUnify
 import com.tokopedia.tokomember_seller_dashboard.R
 import com.tokopedia.tokomember_seller_dashboard.callbacks.TmProgramDetailCallback
 import com.tokopedia.tokomember_seller_dashboard.di.component.DaggerTokomemberDashComponent
-import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_IS_SHOW_BS
-import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_PROGRAM_ID
-import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_SHOP_ID
-import com.tokopedia.tokomember_seller_dashboard.util.REFRESH
-import com.tokopedia.tokomember_seller_dashboard.util.REQUEST_CODE_REFRESH
+import com.tokopedia.tokomember_seller_dashboard.util.*
 import com.tokopedia.tokomember_seller_dashboard.view.fragment.TokomemberDashHomeMainFragment
 import com.tokopedia.tokomember_seller_dashboard.view.fragment.TokomemberDashHomeMainFragment.Companion.TAG_HOME
 import com.tokopedia.tokomember_seller_dashboard.view.fragment.TokomemberDashProgramDetailFragment
@@ -77,10 +73,11 @@ class TokomemberDashHomeActivity : AppCompatActivity(), TmProgramDetailCallback 
     }
 
     companion object{
-        fun openActivity(shopId: Int, context: Context? , isShowBs:Boolean = false){
+        fun openActivity(shopId: Int, cardID:Int, context: Context? , isShowBs:Boolean = false){
             context?.let {
                 val intent = Intent(it, TokomemberDashHomeActivity::class.java)
                 intent.putExtra(BUNDLE_SHOP_ID, shopId)
+                intent.putExtra(BUNDLE_CARD_ID, cardID)
                 intent.putExtra(BUNDLE_IS_SHOW_BS, isShowBs)
                 it.startActivity(intent)
             }
