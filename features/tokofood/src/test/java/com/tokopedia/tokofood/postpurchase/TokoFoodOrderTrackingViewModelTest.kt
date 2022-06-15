@@ -197,182 +197,182 @@ class TokoFoodOrderTrackingViewModelTest : TokoFoodOrderTrackingViewModelTestFix
         }
     }
 
-    @Test
-    fun `when fetchOrderLiveTracking then cancelled order should return set live data success`() {
-        runBlocking {
-            val jsonOrderStatusResponse =
-                JsonResourcesUtil.createSuccessResponse<TokoFoodOrderStatusResponse>(
-                    ORDER_TRACKING_CANCELLED
-                ).tokofoodOrderDetail
+//    @Test
+//    fun `when fetchOrderLiveTracking then cancelled order should return set live data success`() {
+//        runBlocking {
+//            val jsonOrderStatusResponse =
+//                JsonResourcesUtil.createSuccessResponse<TokoFoodOrderStatusResponse>(
+//                    ORDER_TRACKING_CANCELLED
+//                ).tokofoodOrderDetail
+//
+//            val orderStatusResultUiModel =
+//                tokoFoodOrderStatusMapper.mapToOrderStatusLiveTrackingUiModel(
+//                    jsonOrderStatusResponse
+//                )
+//
+//            val jsonResponse = JsonResourcesUtil.createSuccessResponse<TokoFoodOrderDetailResponse>(
+//                ORDER_TRACKING_SUCCESS
+//            ).tokofoodOrderDetail
+//
+//            val orderDetailResultUiModel =
+//                tokoFoodOrderDetailMapper.mapToOrderDetailResultUiModel(jsonResponse)
+//
+//            coEvery {
+//                getTokoFoodOrderStatusUseCase.get().execute(ORDER_ID_DUMMY)
+//            } returns orderStatusResultUiModel
+//
+//            coEvery {
+//                getTokoFoodOrderDetailUseCase.get().execute(ORDER_ID_DUMMY)
+//            } returns orderDetailResultUiModel
+//
+//            viewModel.updateOrderId(ORDER_ID_DUMMY)
+//            delay(5000L)
+//
+//            assertEquals(ORDER_ID_DUMMY, viewModel.getOrderId())
+//
+//            coVerify {
+//                getTokoFoodOrderStatusUseCase.get().execute(ORDER_ID_DUMMY)
+//            }
+//
+//            val actualResult =
+//                (viewModel.orderCompletedLiveTracking.observeAwaitValue() as Success).data
+//            assertEquals(orderDetailResultUiModel.orderStatusKey, actualResult.orderStatusKey)
+//            assertEquals(orderDetailResultUiModel.orderDetailList, actualResult.orderDetailList)
+//            assertEquals(orderDetailResultUiModel.foodItemList, actualResult.foodItemList)
+//
+//            coVerify {
+//                getTokoFoodOrderDetailUseCase.get().execute(ORDER_ID_DUMMY)
+//            }
+//
+//            viewModel.viewModelScope.coroutineContext.cancelChildren()
+//        }
+//    }
+//
+//    @Test
+//    fun `when fetchOrderLiveTracking then cancelled order should return set live data error`() {
+//        runBlocking {
+//            val jsonOrderStatusResponse =
+//                JsonResourcesUtil.createSuccessResponse<TokoFoodOrderStatusResponse>(
+//                    ORDER_TRACKING_CANCELLED
+//                ).tokofoodOrderDetail
+//
+//            val orderStatusResultUiModel =
+//                tokoFoodOrderStatusMapper.mapToOrderStatusLiveTrackingUiModel(
+//                    jsonOrderStatusResponse
+//                )
+//
+//            coEvery {
+//                getTokoFoodOrderStatusUseCase.get().execute(ORDER_ID_DUMMY)
+//            } returns orderStatusResultUiModel
+//
+//            val errorException = MessageErrorException()
+//
+//            coEvery {
+//                getTokoFoodOrderDetailUseCase.get().execute(ORDER_ID_DUMMY)
+//            } throws errorException
+//
+//            viewModel.updateOrderId(ORDER_ID_DUMMY)
+//            delay(5000L)
+//
+//            val actualResult = (viewModel.orderCompletedLiveTracking.observeAwaitValue() as Fail)
+//            assertEquals(errorException::class.java, actualResult.throwable::class.java)
+//
+//            coVerify {
+//                getTokoFoodOrderStatusUseCase.get().execute(ORDER_ID_DUMMY)
+//            }
+//
+//            viewModel.viewModelScope.coroutineContext.cancelChildren()
+//        }
+//    }
 
-            val orderStatusResultUiModel =
-                tokoFoodOrderStatusMapper.mapToOrderStatusLiveTrackingUiModel(
-                    jsonOrderStatusResponse
-                )
-
-            val jsonResponse = JsonResourcesUtil.createSuccessResponse<TokoFoodOrderDetailResponse>(
-                ORDER_TRACKING_SUCCESS
-            ).tokofoodOrderDetail
-
-            val orderDetailResultUiModel =
-                tokoFoodOrderDetailMapper.mapToOrderDetailResultUiModel(jsonResponse)
-
-            coEvery {
-                getTokoFoodOrderStatusUseCase.get().execute(ORDER_ID_DUMMY)
-            } returns orderStatusResultUiModel
-
-            coEvery {
-                getTokoFoodOrderDetailUseCase.get().execute(ORDER_ID_DUMMY)
-            } returns orderDetailResultUiModel
-
-            viewModel.updateOrderId(ORDER_ID_DUMMY)
-            delay(5000L)
-
-            assertEquals(ORDER_ID_DUMMY, viewModel.getOrderId())
-
-            val actualResult =
-                (viewModel.orderCompletedLiveTracking.observeAwaitValue() as Success).data
-            assertEquals(orderDetailResultUiModel.orderStatusKey, actualResult.orderStatusKey)
-            assertEquals(orderDetailResultUiModel.orderDetailList, actualResult.orderDetailList)
-            assertEquals(orderDetailResultUiModel.foodItemList, actualResult.foodItemList)
-
-            coVerify {
-                getTokoFoodOrderStatusUseCase.get().execute(ORDER_ID_DUMMY)
-            }
-
-            coVerify {
-                getTokoFoodOrderDetailUseCase.get().execute(ORDER_ID_DUMMY)
-            }
-
-            viewModel.viewModelScope.coroutineContext.cancelChildren()
-        }
-    }
-
-    @Test
-    fun `when fetchOrderLiveTracking then cancelled order should return set live data error`() {
-        runBlocking {
-            val jsonOrderStatusResponse =
-                JsonResourcesUtil.createSuccessResponse<TokoFoodOrderStatusResponse>(
-                    ORDER_TRACKING_CANCELLED
-                ).tokofoodOrderDetail
-
-            val orderStatusResultUiModel =
-                tokoFoodOrderStatusMapper.mapToOrderStatusLiveTrackingUiModel(
-                    jsonOrderStatusResponse
-                )
-
-            coEvery {
-                getTokoFoodOrderStatusUseCase.get().execute(ORDER_ID_DUMMY)
-            } returns orderStatusResultUiModel
-
-            val errorException = MessageErrorException()
-
-            coEvery {
-                getTokoFoodOrderDetailUseCase.get().execute(ORDER_ID_DUMMY)
-            } throws errorException
-
-            viewModel.updateOrderId(ORDER_ID_DUMMY)
-            delay(5000L)
-
-            val actualResult = (viewModel.orderCompletedLiveTracking.observeAwaitValue() as Fail)
-            assertEquals(errorException::class.java, actualResult.throwable::class.java)
-
-            coVerify {
-                getTokoFoodOrderStatusUseCase.get().execute(ORDER_ID_DUMMY)
-            }
-
-            viewModel.viewModelScope.coroutineContext.cancelChildren()
-        }
-    }
-
-    @Test
-    fun `when fetchOrderLiveTracking then success order should return set live data success`() {
-        runBlocking {
-            val jsonOrderStatusResponse =
-                JsonResourcesUtil.createSuccessResponse<TokoFoodOrderStatusResponse>(
-                    ORDER_TRACKING_SUCCESS
-                ).tokofoodOrderDetail
-
-            val orderStatusResultUiModel =
-                tokoFoodOrderStatusMapper.mapToOrderStatusLiveTrackingUiModel(
-                    jsonOrderStatusResponse
-                )
-
-            val jsonResponse = JsonResourcesUtil.createSuccessResponse<TokoFoodOrderDetailResponse>(
-                ORDER_TRACKING_SUCCESS
-            ).tokofoodOrderDetail
-
-            val orderDetailResultUiModel =
-                tokoFoodOrderDetailMapper.mapToOrderDetailResultUiModel(jsonResponse)
-
-            coEvery {
-                getTokoFoodOrderStatusUseCase.get().execute(ORDER_ID_DUMMY)
-            } returns orderStatusResultUiModel
-
-            coEvery {
-                getTokoFoodOrderDetailUseCase.get().execute(ORDER_ID_DUMMY)
-            } returns orderDetailResultUiModel
-
-            viewModel.updateOrderId(ORDER_ID_DUMMY)
-            delay(5000L)
-
-            assertEquals(ORDER_ID_DUMMY, viewModel.getOrderId())
-
-            coVerify {
-                getTokoFoodOrderStatusUseCase.get().execute(ORDER_ID_DUMMY)
-            }
-
-            coVerify {
-                getTokoFoodOrderDetailUseCase.get().execute(ORDER_ID_DUMMY)
-            }
-
-            val actualResult =
-                (viewModel.orderCompletedLiveTracking.observeAwaitValue() as Success).data
-            assertEquals(orderDetailResultUiModel.orderStatusKey, actualResult.orderStatusKey)
-            assertEquals(orderDetailResultUiModel.orderDetailList, actualResult.orderDetailList)
-            assertEquals(orderDetailResultUiModel.foodItemList, actualResult.foodItemList)
-            assertEquals(viewModel.getMerchantData()?.merchantId, orderDetailResultUiModel.merchantData.merchantId)
-            assertEquals(viewModel.getMerchantData()?.merchantName, orderDetailResultUiModel.merchantData.merchantName)
-
-            viewModel.viewModelScope.coroutineContext.cancelChildren()
-        }
-    }
-
-    @Test
-    fun `when fetchOrderLiveTracking then success order should return set live data error`() {
-        runBlocking {
-            val jsonOrderStatusResponse =
-                JsonResourcesUtil.createSuccessResponse<TokoFoodOrderStatusResponse>(
-                    ORDER_TRACKING_SUCCESS
-                ).tokofoodOrderDetail
-
-            val orderStatusResultUiModel =
-                tokoFoodOrderStatusMapper.mapToOrderStatusLiveTrackingUiModel(
-                    jsonOrderStatusResponse
-                )
-
-            val errorException = MessageErrorException()
-
-            coEvery {
-                getTokoFoodOrderStatusUseCase.get().execute(ORDER_ID_DUMMY)
-            } returns orderStatusResultUiModel
-
-            coEvery {
-                getTokoFoodOrderDetailUseCase.get().execute(ORDER_ID_DUMMY)
-            } throws errorException
-
-            viewModel.updateOrderId(ORDER_ID_DUMMY)
-            delay(5000L)
-
-            coVerify {
-                getTokoFoodOrderStatusUseCase.get().execute(ORDER_ID_DUMMY)
-            }
-
-            val actualResult = (viewModel.orderCompletedLiveTracking.observeAwaitValue() as Fail)
-            assertEquals(errorException::class.java, actualResult.throwable::class.java)
-
-
-            viewModel.viewModelScope.coroutineContext.cancelChildren()
-        }
-    }
+//    @Test
+//    fun `when fetchOrderLiveTracking then success order should return set live data success`() {
+//        runBlocking {
+//            val jsonOrderStatusResponse =
+//                JsonResourcesUtil.createSuccessResponse<TokoFoodOrderStatusResponse>(
+//                    ORDER_TRACKING_SUCCESS
+//                ).tokofoodOrderDetail
+//
+//            val orderStatusResultUiModel =
+//                tokoFoodOrderStatusMapper.mapToOrderStatusLiveTrackingUiModel(
+//                    jsonOrderStatusResponse
+//                )
+//
+//            val jsonResponse = JsonResourcesUtil.createSuccessResponse<TokoFoodOrderDetailResponse>(
+//                ORDER_TRACKING_SUCCESS
+//            ).tokofoodOrderDetail
+//
+//            val orderDetailResultUiModel =
+//                tokoFoodOrderDetailMapper.mapToOrderDetailResultUiModel(jsonResponse)
+//
+//            coEvery {
+//                getTokoFoodOrderStatusUseCase.get().execute(ORDER_ID_DUMMY)
+//            } returns orderStatusResultUiModel
+//
+//            coEvery {
+//                getTokoFoodOrderDetailUseCase.get().execute(ORDER_ID_DUMMY)
+//            } returns orderDetailResultUiModel
+//
+//            viewModel.updateOrderId(ORDER_ID_DUMMY)
+//            delay(5000L)
+//
+//            assertEquals(ORDER_ID_DUMMY, viewModel.getOrderId())
+//
+//            coVerify {
+//                getTokoFoodOrderStatusUseCase.get().execute(ORDER_ID_DUMMY)
+//            }
+//
+//            coVerify {
+//                getTokoFoodOrderDetailUseCase.get().execute(ORDER_ID_DUMMY)
+//            }
+//
+//            val actualResult =
+//                (viewModel.orderCompletedLiveTracking.observeAwaitValue() as Success).data
+//            assertEquals(orderDetailResultUiModel.orderStatusKey, actualResult.orderStatusKey)
+//            assertEquals(orderDetailResultUiModel.orderDetailList, actualResult.orderDetailList)
+//            assertEquals(orderDetailResultUiModel.foodItemList, actualResult.foodItemList)
+//            assertEquals(viewModel.getMerchantData()?.merchantId, orderDetailResultUiModel.merchantData.merchantId)
+//            assertEquals(viewModel.getMerchantData()?.merchantName, orderDetailResultUiModel.merchantData.merchantName)
+//
+//            viewModel.viewModelScope.coroutineContext.cancelChildren()
+//        }
+//    }
+//
+//    @Test
+//    fun `when fetchOrderLiveTracking then success order should return set live data error`() {
+//        runBlocking {
+//            val jsonOrderStatusResponse =
+//                JsonResourcesUtil.createSuccessResponse<TokoFoodOrderStatusResponse>(
+//                    ORDER_TRACKING_SUCCESS
+//                ).tokofoodOrderDetail
+//
+//            val orderStatusResultUiModel =
+//                tokoFoodOrderStatusMapper.mapToOrderStatusLiveTrackingUiModel(
+//                    jsonOrderStatusResponse
+//                )
+//
+//            val errorException = MessageErrorException()
+//
+//            coEvery {
+//                getTokoFoodOrderStatusUseCase.get().execute(ORDER_ID_DUMMY)
+//            } returns orderStatusResultUiModel
+//
+//            coEvery {
+//                getTokoFoodOrderDetailUseCase.get().execute(ORDER_ID_DUMMY)
+//            } throws errorException
+//
+//            viewModel.updateOrderId(ORDER_ID_DUMMY)
+//            delay(5000L)
+//
+//            coVerify {
+//                getTokoFoodOrderStatusUseCase.get().execute(ORDER_ID_DUMMY)
+//            }
+//
+//            val actualResult = (viewModel.orderCompletedLiveTracking.observeAwaitValue() as Fail)
+//            assertEquals(errorException::class.java, actualResult.throwable::class.java)
+//
+//
+//            viewModel.viewModelScope.coroutineContext.cancelChildren()
+//        }
+//    }
 }

@@ -386,9 +386,6 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
                 PurchaseUiEvent.EVENT_SUCCESS_VALIDATE_CONSENT -> {
                     onSuccessAgreeConsent()
                 }
-                PurchaseUiEvent.EVENT_FAILED_VALIDATE_CONSENT -> {
-                    it.throwable?.let { throwable -> showToasterError(throwable) }
-                }
                 PurchaseUiEvent.EVENT_SUCCESS_CHECKOUT_GENERAL -> {
                     consentBottomSheet?.dismiss()
                     viewModel.setPaymentButtonLoading(false)
@@ -1017,7 +1014,7 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
     }
 
     override fun onSuccessAgreeConsent() {
-        viewModel.setConsentAgreed()
+        viewModel.setConsentAgreed(true)
         viewModel.checkoutGeneral()
     }
 

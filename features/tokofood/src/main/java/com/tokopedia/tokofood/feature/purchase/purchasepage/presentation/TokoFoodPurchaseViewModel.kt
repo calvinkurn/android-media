@@ -540,31 +540,24 @@ class TokoFoodPurchaseViewModel @Inject constructor(
     }
 
     fun checkUserConsent() {
-        launchCatchError(block = {
-            if (isConsentAgreed.value) {
-                _uiEvent.value = PurchaseUiEvent(state = PurchaseUiEvent.EVENT_SUCCESS_VALIDATE_CONSENT)
-            } else {
-                checkoutTokoFoodResponse.value?.data?.checkoutConsentBottomSheet?.let { userConsent ->
-                    if (userConsent.isShowBottomsheet) {
-                        _uiEvent.value = PurchaseUiEvent(
-                            state = PurchaseUiEvent.EVENT_SUCCESS_GET_CONSENT,
-                            data = userConsent
-                        )
-                    } else {
-                        _uiEvent.value = PurchaseUiEvent(state = PurchaseUiEvent.EVENT_SUCCESS_VALIDATE_CONSENT)
-                    }
+        if (isConsentAgreed.value) {
+            _uiEvent.value = PurchaseUiEvent(state = PurchaseUiEvent.EVENT_SUCCESS_VALIDATE_CONSENT)
+        } else {
+            checkoutTokoFoodResponse.value?.data?.checkoutConsentBottomSheet?.let { userConsent ->
+                if (userConsent.isShowBottomsheet) {
+                    _uiEvent.value = PurchaseUiEvent(
+                        state = PurchaseUiEvent.EVENT_SUCCESS_GET_CONSENT,
+                        data = userConsent
+                    )
+                } else {
+                    _uiEvent.value = PurchaseUiEvent(state = PurchaseUiEvent.EVENT_SUCCESS_VALIDATE_CONSENT)
                 }
             }
-        }, onError = {
-            _uiEvent.value = PurchaseUiEvent(
-                state = PurchaseUiEvent.EVENT_FAILED_VALIDATE_CONSENT,
-                throwable = it
-            )
-        })
+        }
     }
 
-    fun setConsentAgreed() {
-        isConsentAgreed.value = true
+    fun setConsentAgreed(isAgreed: Boolean) {
+        isConsentAgreed.value = isAgreed
     }
 
     fun checkoutGeneral() {
@@ -601,10 +594,8 @@ class TokoFoodPurchaseViewModel @Inject constructor(
         val dataList = getVisitablesValue().toMutableList().apply {
             getUiModel<TokoFoodPurchaseTotalAmountTokoFoodPurchaseUiModel>()?.let { pair ->
                 val (totalAmountIndex, uiModel) = pair
-                if (totalAmountIndex >= Int.ZERO) {
-                    removeAt(totalAmountIndex)
-                    add(totalAmountIndex, uiModel.copy(isButtonLoading = isLoading))
-                }
+                removeAt(totalAmountIndex)
+                add(totalAmountIndex, uiModel.copy(isButtonLoading = isLoading))
             }
         }
         _visitables.value = dataList
