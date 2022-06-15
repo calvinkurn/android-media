@@ -114,7 +114,10 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener {
         )
 
         binding?.apply {
-            vpManageAddress.adapter = activity?.let { ManageAddressVIewPagerAdapter(it, pages) }
+
+            val tabAdapter = activity?.let { ManageAddressVIewPagerAdapter(it, pages) }
+            vpManageAddress.adapter = tabAdapter
+            vpManageAddress.isUserInputEnabled = false
             TabsUnifyMediator(tlManageAddress, vpManageAddress) { tab, position ->
                 tab.setCustomText(pages[position].first)
             }
