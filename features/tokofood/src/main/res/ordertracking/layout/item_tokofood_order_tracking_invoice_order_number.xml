@@ -25,9 +25,8 @@
         app:layout_constraintTop_toTopOf="@id/tvInvoiceNumberLabel"
         app:layout_constraintBottom_toBottomOf="@id/tvInvoiceNumberLabel"
         app:layout_constraintEnd_toEndOf="parent"
-        app:typographyType="body_3"
-        app:typographyWeight="reguler"
-        android:textColor="@color/Unify_NN950"
+        app:typographyType="heading_6"
+        android:textColor="@color/Unify_G500"
         android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp"
         tools:text="INV/20181011/XVI/X/55069657"/>

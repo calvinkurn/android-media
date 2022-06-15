@@ -15,7 +15,6 @@ import com.tokopedia.tokofood.common.analytics.TokoFoodAnalytics.EVENT_ACTION_VI
 import com.tokopedia.tokofood.common.analytics.TokoFoodAnalytics.EVENT_ACTION_VIEW_CATEGORY_ICONS
 import com.tokopedia.tokofood.common.analytics.TokoFoodAnalytics.EVENT_ACTION_VIEW_CATEGORY_WIDGET
 import com.tokopedia.tokofood.common.analytics.TokoFoodAnalytics.EVENT_ACTION_VIEW_LEGO_SIX
-import com.tokopedia.tokofood.common.analytics.TokoFoodAnalytics.EVENT_ACTION_VIEW_MERCHANT_LIST
 import com.tokopedia.tokofood.common.analytics.TokoFoodAnalyticsConstants
 import com.tokopedia.tokofood.common.analytics.TokoFoodAnalyticsConstants.ADD_TO_CART
 import com.tokopedia.tokofood.common.analytics.TokoFoodAnalyticsConstants.EMPTY_DATA
@@ -144,16 +143,6 @@ class TokoFoodHomeAnalytics: BaseTrackerConst() {
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(SELECT_CONTENT, eventDataLayer)
     }
 
-    fun impressMerchant(userId: String?, destinationId: String?, merchant: Merchant, horizontalPosition: Int) {
-        val eventDataLayer = Bundle().apply {
-            putString(TrackAppUtils.EVENT_ACTION,  EVENT_ACTION_VIEW_MERCHANT_LIST)
-            putString(TrackAppUtils.EVENT_LABEL, "")
-        }
-        eventDataLayer.putParcelableArrayList(Promotion.KEY, getPromotionMerchant(merchant, horizontalPosition))
-        eventDataLayer.viewItem(userId, destinationId)
-        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(VIEW_ITEM, eventDataLayer)
-    }
-
     fun openScreenHomePage(userId: String?, destinationId: String?, isLoggenInStatus: Boolean) {
         val eventDataLayer = Bundle().apply {
             putString(SCREEN_NAME, HOME_PAGE)
@@ -254,7 +243,7 @@ class TokoFoodHomeAnalytics: BaseTrackerConst() {
                 Bundle().apply {
                     putString(Promotion.CREATIVE_NAME, "${it.imageUrl} - ${it.applink}")
                     putString(Promotion.CREATIVE_SLOT, (position + Int.ONE).toString())
-                    putString(Promotion.ITEM_ID, "${it.name} - ${it.categoryId}")
+                    putString(Promotion.ITEM_ID, "${it.name} - ${it.id}")
                     putString(Promotion.ITEM_NAME, "$GOFOOD_PAGENAME - ${TokoFoodHomeLayoutType.CATEGORY_WIDGET} - ${channelModel.verticalPosition + Int.ONE} - ${channelModel.channelHeader.name}")
                 }
             }

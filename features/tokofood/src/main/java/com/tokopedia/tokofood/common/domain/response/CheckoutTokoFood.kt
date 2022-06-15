@@ -104,6 +104,10 @@ data class CheckoutTokoFoodData(
     }
 
     fun isPromoPopupType(): Boolean = popupMessageType == POPUP_TYPE_PROMO
+
+    fun getProductListFromCart(): List<CheckoutTokoFoodProduct> {
+        return availableSection.products.plus(unavailableSection.products)
+    }
 }
 
 data class CheckoutTokoFoodShop(

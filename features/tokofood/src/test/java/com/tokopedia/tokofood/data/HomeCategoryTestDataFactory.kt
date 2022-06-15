@@ -12,7 +12,6 @@ import com.tokopedia.localizationchooseaddress.domain.response.GetStateChosenAdd
 import com.tokopedia.logisticCommon.data.response.EligibleForAddressFeature
 import com.tokopedia.logisticCommon.data.response.KeroAddrIsEligibleForAddressFeatureData
 import com.tokopedia.logisticCommon.data.response.KeroAddrIsEligibleForAddressFeatureResponse
-import com.tokopedia.tokofood.feature.home.domain.constanta.TokoFoodHomeStaticLayoutId
 import com.tokopedia.tokofood.feature.home.domain.constanta.TokoFoodHomeStaticLayoutId.Companion.CHOOSE_ADDRESS_WIDGET_ID
 import com.tokopedia.tokofood.feature.home.domain.constanta.TokoFoodHomeStaticLayoutId.Companion.EMPTY_STATE_NO_ADDRESS
 import com.tokopedia.tokofood.feature.home.domain.constanta.TokoFoodHomeStaticLayoutId.Companion.EMPTY_STATE_NO_PIN_POINT
@@ -46,7 +45,6 @@ import com.tokopedia.tokofood.feature.home.presentation.uimodel.TokoFoodHomeUSPU
 import com.tokopedia.tokofood.feature.home.presentation.uimodel.TokoFoodListUiModel
 import com.tokopedia.tokofood.feature.home.presentation.uimodel.TokoFoodMerchantListUiModel
 import com.tokopedia.tokofood.feature.home.presentation.uimodel.TokoFoodProgressBarUiModel
-import com.tokopedia.tokofood.feature.merchant.domain.model.response.TokoFoodTickerDetail
 import com.tokopedia.tokofood.feature.purchase.purchasepage.domain.model.response.KeroEditAddress
 import com.tokopedia.tokofood.feature.purchase.purchasepage.domain.model.response.KeroEditAddressData
 import com.tokopedia.tokofood.feature.purchase.purchasepage.domain.model.response.KeroEditAddressResponse
@@ -152,7 +150,7 @@ fun createKeroEditAddressResponseFail(): KeroEditAddressResponse {
 }
 
 fun createHomeTickerDataModel(tickers: List<TickerData> = listOf(createTickerData())): TokoFoodHomeTickerUiModel {
-    return TokoFoodHomeTickerUiModel(id = TICKER_WIDGET_ID, tickers = tickers, TokoFoodLayoutState.SHOW)
+    return TokoFoodHomeTickerUiModel(id = TICKER_WIDGET_ID, tickers = tickers)
 }
 
 fun createTickerData(
@@ -321,6 +319,15 @@ fun createMerchantListResponse(): TokoFoodMerchantListResponse {
                 )
             ),
             nextPageKey = "2"
+        )
+    )
+}
+
+fun createMerchantListEmptyResponse(): TokoFoodMerchantListResponse {
+    return TokoFoodMerchantListResponse(
+        data = TokoFoodMerchantList(
+            merchants = listOf(),
+            nextPageKey = ""
         )
     )
 }

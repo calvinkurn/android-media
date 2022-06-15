@@ -8,8 +8,10 @@ import com.tokopedia.tokofood.R
 import com.tokopedia.tokofood.databinding.ItemTokofoodOrderTrackingInvoiceOrderNumberBinding
 import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.InvoiceOrderNumberUiModel
 
-class InvoiceOrderNumberViewHolder(view: View) :
-    BaseOrderTrackingViewHolder<InvoiceOrderNumberUiModel>(view) {
+class InvoiceOrderNumberViewHolder(
+    view: View,
+    private val listener: Listener
+) : BaseOrderTrackingViewHolder<InvoiceOrderNumberUiModel>(view) {
 
     companion object {
         @LayoutRes
@@ -23,6 +25,7 @@ class InvoiceOrderNumberViewHolder(view: View) :
             setInvoiceNumber(element.invoiceNumber)
             setOrderNumber(element.goFoodOrderNumber)
             setPaymentDate(element.paymentDate)
+            setInvoiceNumberClickListener(element)
         }
     }
 
@@ -47,6 +50,14 @@ class InvoiceOrderNumberViewHolder(view: View) :
         tvInvoiceNumberValue.text = invoiceNumber
     }
 
+    private fun ItemTokofoodOrderTrackingInvoiceOrderNumberBinding.setInvoiceNumberClickListener(
+        element: InvoiceOrderNumberUiModel
+    ) {
+        tvInvoiceNumberValue.setOnClickListener {
+            listener.onInvoiceOrderClicked(element.invoiceNumber, element.invoiceUrl)
+        }
+    }
+
     private fun ItemTokofoodOrderTrackingInvoiceOrderNumberBinding.setOrderNumber(orderNumber: String) {
         if (orderNumber.isNotEmpty()) {
             tvOrderNumberLabel.show()
@@ -62,4 +73,7 @@ class InvoiceOrderNumberViewHolder(view: View) :
         tvPaymentDateValue.text = paymentDate
     }
 
+    interface Listener {
+        fun onInvoiceOrderClicked(invoiceNumber: String, invoiceUrl: String)
+    }
 }

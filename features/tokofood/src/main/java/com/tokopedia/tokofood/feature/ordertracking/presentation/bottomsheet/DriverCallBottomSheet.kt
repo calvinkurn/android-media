@@ -101,7 +101,7 @@ class DriverCallBottomSheet : BottomSheetUnify() {
 
         private const val DRIVER_PHONE_NUMBER_KEY = "driverPhoneNumber"
         private const val IS_CALLABLE_KEY = "isCallable"
-        const val TEL_PREFIX = "tel"
+        private const val TEL_PREFIX = "tel"
 
         val TAG: String = DriverCallBottomSheet::class.java.simpleName
     }

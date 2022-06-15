@@ -4,6 +4,13 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
+    <ImageView
+        android:id="@+id/img_usp"
+        android:layout_width="match_parent"
+        android:layout_height="180dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        />
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_usp"
         android:layout_width="match_parent"
@@ -11,6 +18,8 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginStart="@dimen/spacing_lvl4"
+        android:layout_marginEnd="@dimen/spacing_lvl4"
         />
 
     <com.tokopedia.unifyprinciples.Typography
@@ -23,17 +32,14 @@
         app:layout_constraintBottom_toBottomOf="parent"
         android:layout_marginBottom="@dimen/layout_lvl9"
         android:layout_marginTop="@dimen/spacing_lvl4"
+        android:layout_marginStart="@dimen/spacing_lvl4"
+        android:layout_marginEnd="@dimen/spacing_lvl4"
         app:typographyType="body_3"
         android:textColor="@color/Unify_NN700"
         android:textColorLink="@color/Unify_G500"
         android:linksClickable="true"
         />
 
-    <ImageView
-        android:id="@+id/img_usp"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_constraintBottom_toBottomOf="parent"
-        />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

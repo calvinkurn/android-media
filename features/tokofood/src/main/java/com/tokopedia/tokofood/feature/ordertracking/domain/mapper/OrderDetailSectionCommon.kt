@@ -39,6 +39,7 @@ abstract class OrderDetailSectionCommon {
     ): InvoiceOrderNumberUiModel {
         return InvoiceOrderNumberUiModel(
             invoiceNumber = invoice.invoiceNumber,
+            invoiceUrl = invoice.invoiceURL,
             goFoodOrderNumber = invoice.gofoodOrderNumber.orEmpty(),
             paymentDate = paymentDate
         )
@@ -114,7 +115,7 @@ abstract class OrderDetailSectionCommon {
         stepperStatusList = mapToStepperStatusList(orderStatus.status),
         statusKey = orderStatus.status,
         orderStatusTitle = orderStatus.title,
-        orderStatusSubTitle = orderStatus.subtitle.orEmpty(),
+        orderStatusSubTitle = orderStatus.subtitle,
         lottieUrl = getOrderStatusLottieUrl(orderStatus.status)
     )
 

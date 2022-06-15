@@ -4,6 +4,7 @@ import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.tokofood.data.createLoadMoreState
 import com.tokopedia.tokofood.data.createLoadingCategoryState
 import com.tokopedia.tokofood.data.createMerchantListEmptyPageResponse
+import com.tokopedia.tokofood.data.createMerchantListEmptyResponse
 import com.tokopedia.tokofood.data.createMerchantListModel1
 import com.tokopedia.tokofood.data.createMerchantListModel2
 import com.tokopedia.tokofood.data.createMerchantListResponse
@@ -33,7 +34,7 @@ class TokoFoodCategoryViewModelTest: TokoFoodCategoryViewModelTestFixture() {
 
     @Test
     fun `when getting categoryLayout should run and give the success result`() {
-        onGetMerchantList_thenReturn(createMerchantListResponse())
+        onGetMerchantList_thenReturn(createMerchantListEmptyPageResponse(), pageKey = "1")
 
         viewModel.getCategoryLayout(LocalCacheModel())
 
@@ -41,6 +42,17 @@ class TokoFoodCategoryViewModelTest: TokoFoodCategoryViewModelTestFixture() {
             createMerchantListModel1(),
             createMerchantListModel2()
         ), TokoFoodLayoutState.SHOW)
+
+        verifyGetCategoryLayoutResponseSuccess(expectedResult)
+    }
+
+    @Test
+    fun `when getting categoryLayout but the data is empty should show empty state and give the success result`() {
+        onGetMerchantList_thenReturn(createMerchantListEmptyResponse())
+
+        viewModel.getCategoryLayout(LocalCacheModel())
+
+        val expectedResult = TokoFoodListUiModel(items = viewModel.categoryLayoutItemList, TokoFoodLayoutState.SHOW)
 
         verifyGetCategoryLayoutResponseSuccess(expectedResult)
     }

@@ -7,11 +7,13 @@ import androidx.fragment.app.FragmentManager
 import com.tokopedia.abstraction.R
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseMultiFragActivity
+import com.tokopedia.applink.internal.ApplinkConstInternalTokoFood
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.tokofood.common.di.DaggerTokoFoodComponent
 import com.tokopedia.tokofood.common.presentation.listener.HasViewModel
 import com.tokopedia.tokofood.common.presentation.viewmodel.MultipleFragmentsViewModel
 import com.tokopedia.tokofood.common.util.TokofoodRouteManager
+import com.tokopedia.tokofood.feature.home.analytics.TokoFoodHomePageLoadTimeMonitoring
 import com.tokopedia.tokofood.feature.home.presentation.fragment.TokoFoodHomeFragment
 import javax.inject.Inject
 
@@ -20,8 +22,11 @@ class BaseTokofoodActivity : BaseMultiFragActivity(), HasViewModel<MultipleFragm
     @Inject
     lateinit var viewModel: MultipleFragmentsViewModel
 
+    var pageLoadTimeMonitoring: TokoFoodHomePageLoadTimeMonitoring? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        initPerformanceMonitoring()
         initInjector()
         viewModel.onRestoreSavednstanceState()
     }
@@ -73,5 +78,12 @@ class BaseTokofoodActivity : BaseMultiFragActivity(), HasViewModel<MultipleFragm
             .baseAppComponent((applicationContext as BaseMainApplication).baseAppComponent)
             .build()
             .inject(this)
+    }
+
+    private fun initPerformanceMonitoring() {
+        if (intent.data != null && intent.data.toString().equals(ApplinkConstInternalTokoFood.HOME)){
+            pageLoadTimeMonitoring = TokoFoodHomePageLoadTimeMonitoring()
+            pageLoadTimeMonitoring?.initPerformanceMonitoring()
+        }
     }
 }

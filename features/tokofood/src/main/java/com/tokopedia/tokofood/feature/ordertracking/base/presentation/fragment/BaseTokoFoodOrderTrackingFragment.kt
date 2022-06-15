@@ -19,6 +19,7 @@ import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.kotlin.extensions.view.removeObservers
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.tokofood.common.util.TokofoodErrorLogger
+import com.tokopedia.tokofood.common.util.TokofoodExt.showErrorToaster
 import com.tokopedia.tokofood.databinding.FragmentTokofoodOrderTrackingBinding
 import com.tokopedia.tokofood.feature.ordertracking.analytics.TokoFoodPostPurchaseAnalytics
 import com.tokopedia.tokofood.feature.ordertracking.di.component.TokoFoodOrderTrackingComponent
@@ -42,7 +43,6 @@ import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.Tempora
 import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.ToolbarLiveTrackingUiModel
 import com.tokopedia.tokofood.feature.ordertracking.presentation.viewholder.TrackingWrapperUiModel
 import com.tokopedia.tokofood.feature.ordertracking.presentation.viewmodel.TokoFoodOrderTrackingViewModel
-import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.lifecycle.autoClearedNullable
@@ -175,6 +175,10 @@ class BaseTokoFoodOrderTrackingFragment :
         fetchOrderDetail()
     }
 
+    override fun onInvoiceOrderClicked(invoiceNumber: String, invoiceUrl: String) {
+        navigator.goToPrintInvoicePage(invoiceUrl, invoiceNumber)
+    }
+
     override val parentPool: RecyclerView.RecycledViewPool
         get() = binding?.rvOrderTracking?.recycledViewPool ?: RecyclerView.RecycledViewPool()
 
@@ -236,7 +240,7 @@ class BaseTokoFoodOrderTrackingFragment :
                         TokofoodErrorLogger.ErrorType.ERROR_DRIVER_PHONE_NUMBER,
                         TokofoodErrorLogger.ErrorDescription.ERROR_DRIVER_PHONE_NUMBER
                     )
-                    showErrorToaster("")
+                    view?.showErrorToaster("")
                 }
             }
         }
@@ -327,12 +331,20 @@ class BaseTokoFoodOrderTrackingFragment :
     ) {
         binding?.run {
             if (orderStatus in listOf(OrderStatusType.COMPLETED, OrderStatusType.CANCELLED)) {
-                updateViewsOrderCompleted(
-                    actionButtonsUiModel,
-                    toolbarLiveTrackingUiModel,
-                    orderStatus,
-                    merchantData
-                )
+                if (orderStatus == OrderStatusType.COMPLETED) {
+                    updateViewsOrderCompleted(
+                        actionButtonsUiModel,
+                        toolbarLiveTrackingUiModel,
+                        orderStatus,
+                        merchantData
+                    )
+                } else {
+                    updateViewsOrderLiveTracking(
+                        actionButtonsUiModel,
+                        toolbarLiveTrackingUiModel,
+                        orderStatus
+                    )
+                }
             } else {
                 orderLiveTrackingFragment = TokoFoodOrderLiveTrackingFragment(
                     binding,
@@ -342,11 +354,6 @@ class BaseTokoFoodOrderTrackingFragment :
                     toolbarHandler
                 )
                 orderLiveTrackingFragment?.let { lifecycle.addObserver(it) }
-                updateViewsOrderLiveTracking(
-                    actionButtonsUiModel,
-                    toolbarLiveTrackingUiModel,
-                    orderStatus
-                )
             }
         }
     }
@@ -387,7 +394,7 @@ class BaseTokoFoodOrderTrackingFragment :
         merchantData: MerchantDataUiModel
     ) {
         binding?.run {
-            containerOrderTrackingHelpButton.hide()
+            containerOrderTrackingHelpButton.show()
             containerOrderTrackingActionsButton.apply {
                 setOrderTrackingNavigator(navigator)
                 setupActionButtons(
@@ -405,19 +412,6 @@ class BaseTokoFoodOrderTrackingFragment :
             isEnabled = true
             setOnRefreshListener {
                 fetchOrderDetail()
-            }
-        }
-    }
-
-    private fun showErrorToaster(errorMessage: String) {
-        if (errorMessage.isNotBlank()) {
-            view?.let {
-                Toaster.build(
-                    it,
-                    text = errorMessage,
-                    duration = Toaster.LENGTH_SHORT,
-                    type = Toaster.TYPE_ERROR
-                ).show()
             }
         }
     }

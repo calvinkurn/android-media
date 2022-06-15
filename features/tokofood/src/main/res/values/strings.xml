@@ -23,6 +23,9 @@
     <string name="home_share_title">GoFood kini hadir di Tokopedia!</string>
     <string name="home_share_desc">Jelajahi berbagai pilihan restoran dengan menu-menu kesukaanmu. Banyak promonya, cepat sampainya.</string>
     <string name="home_share_tn_title">GoFood</string>
+    <string name="home_category_empty_state_title">Yah, belum ada apa apa disini</string>
+    <string name="home_category_empty_state_desc">Yuk, cek kategori lain untuk temukan resto yang kamu incar.</string>
+    <string name="home_category_empty_state_try_again">Coba Lagi</string>
     <!-- Mini Cart -->
     <string name="minicart_order">Pesan (%d)</string>
 
@@ -93,6 +96,11 @@
     <string name="desc_merchant_food_share">Coba cek ini, deh: %1s %2s %3s di Tokopedia. Bisa langsung sampai, lho.</string>
     <string name="og_desc_merchant_page_share">Jajan dari %1s sekarang bisa di Tokopedia! Checkout cepat, bisa langsung sampai.</string>
     <string name="og_desc_merchant_food_share">Jajan "%1s" %2s jadi makin mudah di Tokopedia! Pesan hari ini, tiba hari ini.</string>
+    <string name="title_change_merchant_label">Mau pesan dari resto ini aja?</string>
+    <string name="desc_change_merchant_label">Boleh, kok. Tapi, menu yang kamu pilih dari resto sebelumnya akan terhapus, ya.</string>
+    <string name="btn_confirm_order_change_merchant">Iya, Pesan</string>
+    <string name="btn_cancel_order_change_merchant">Nggak Jadi</string>
+
 
     <!-- Order Tracking -->
     <string name="order_tracking_invoice_number_label">No. Invoice</string>

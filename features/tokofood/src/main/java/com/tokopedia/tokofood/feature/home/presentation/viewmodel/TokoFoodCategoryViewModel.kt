@@ -6,12 +6,14 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.tokofood.feature.home.domain.constanta.TokoFoodLayoutState
 import com.tokopedia.tokofood.feature.home.domain.mapper.TokoFoodCategoryMapper.addErrorState
 import com.tokopedia.tokofood.feature.home.domain.mapper.TokoFoodCategoryMapper.addLoadingCategoryIntoList
 import com.tokopedia.tokofood.feature.home.domain.mapper.TokoFoodCategoryMapper.addProgressBar
+import com.tokopedia.tokofood.feature.home.domain.mapper.TokoFoodCategoryMapper.mapCategoryEmptyLayout
 import com.tokopedia.tokofood.feature.home.domain.mapper.TokoFoodCategoryMapper.mapCategoryLayoutList
 import com.tokopedia.tokofood.feature.home.domain.mapper.TokoFoodCategoryMapper.removeProgressBar
 import com.tokopedia.tokofood.feature.home.domain.usecase.TokoFoodMerchantListUseCase
@@ -37,7 +39,7 @@ class TokoFoodCategoryViewModel @Inject constructor(
     private val _categoryLayoutList = MutableLiveData<Result<TokoFoodListUiModel>>()
     private val _categoryLoadMore = MutableLiveData<Result<TokoFoodListUiModel>>()
 
-    private val categoryLayoutItemList :MutableList<Visitable<*>> = mutableListOf()
+    val categoryLayoutItemList :MutableList<Visitable<*>> = mutableListOf()
     private var pageKey = INITIAL_PAGE_KEY_MERCHANT
 
     companion object {
@@ -78,7 +80,11 @@ class TokoFoodCategoryViewModel @Inject constructor(
             }
 
             setPageKey(categoryResponse.data.nextPageKey)
-            categoryLayoutItemList.mapCategoryLayoutList(categoryResponse.data.merchants)
+            if (categoryResponse.data.merchants.isNotEmpty()) {
+                categoryLayoutItemList.mapCategoryLayoutList(categoryResponse.data.merchants)
+            } else {
+                categoryLayoutItemList.mapCategoryEmptyLayout()
+            }
             val data = TokoFoodListUiModel(
                 items = categoryLayoutItemList,
                 state = TokoFoodLayoutState.SHOW
@@ -142,7 +148,7 @@ class TokoFoodCategoryViewModel @Inject constructor(
     }
 
     private fun shouldLoadMore(containsLastItemIndex: Int, itemCount: Int): Boolean {
-        val lastItemIndex = itemCount - 1
+        val lastItemIndex = itemCount - Int.ONE
         val scrolledToLastItem = (containsLastItemIndex == lastItemIndex
                 && containsLastItemIndex.isMoreThanZero())
         val hasNextPage = pageKey.isNotEmpty()
@@ -150,13 +156,7 @@ class TokoFoodCategoryViewModel @Inject constructor(
         val isLoading = layoutList.firstOrNull { it is TokoFoodProgressBarUiModel } != null
         val isError = layoutList.firstOrNull { it is TokoFoodErrorStateUiModel } != null
 
-        return scrolledToLastItem
-                &&
-                hasNextPage
-                &&
-                !isLoading
-                &&
-                !isError
+        return scrolledToLastItem && hasNextPage && !isLoading && !isError
     }
 
 }

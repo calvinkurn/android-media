@@ -55,7 +55,7 @@ class MultipleFragmentsViewModel @Inject constructor(
 
     private val miniCartLoadingQueue = MutableLiveData(-Int.ONE)
 
-    private val shopId: String
+    val shopId: String
         get() = cartDataState.value?.shop?.shopId.orEmpty()
 
     companion object {
@@ -108,6 +108,26 @@ class MultipleFragmentsViewModel @Inject constructor(
                             data = cartId to it.data
                         )
                     )
+                }
+            }
+        }, onError = {
+            cartDataValidationState.emit(
+                UiEvent(
+                    state = UiEvent.EVENT_FAILED_DELETE_PRODUCT,
+                    throwable = it
+                )
+            )
+        })
+    }
+
+    fun deleteAllAtcAndAddProduct(updateParam: UpdateParam, source: String) {
+        launchCatchError(block = {
+            cartDataValidationState.emit(UiEvent(state = UiEvent.EVENT_LOADING_DIALOG))
+            val removeCartParam = getProductParamByIdList()
+            if (removeCartParam.carts.isNotEmpty()) {
+                removeCartTokoFoodUseCase(removeCartParam).collect {
+                    loadCartList(source)
+                    addToCart(updateParam, source)
                 }
             }
         }, onError = {
@@ -267,10 +287,12 @@ class MultipleFragmentsViewModel @Inject constructor(
         }, onError = {
             miniCartLoadingQueue.value?.minus(Int.ONE)
             miniCartUiModelState.emit(Result.Failure(it))
-            cartDataValidationState.emit(UiEvent(
-                state = UiEvent.EVENT_FAILED_LOAD_CART,
-                throwable = it
-            ))
+            cartDataValidationState.emit(
+                UiEvent(
+                    state = UiEvent.EVENT_FAILED_LOAD_CART,
+                    throwable = it
+                )
+            )
         })
     }
 
@@ -303,6 +325,17 @@ class MultipleFragmentsViewModel @Inject constructor(
                 shopId = shopId
             )
         )
+        return RemoveCartTokoFoodParam(carts = cartList)
+    }
+
+    private fun getProductParamByIdList(): RemoveCartTokoFoodParam {
+        val cartList = cartDataState.value?.getProductListFromCart()?.map {
+            RemoveItemTokoFoodParam(
+                cartId = it.cartId.toLongOrZero(),
+                productId = it.productId,
+                shopId = shopId
+            )
+        }.orEmpty()
         return RemoveCartTokoFoodParam(carts = cartList)
     }
 

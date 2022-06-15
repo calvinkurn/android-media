@@ -7,10 +7,35 @@ import com.tokopedia.tokofood.common.analytics.TokoFoodAnalyticsConstants
 import com.tokopedia.tokofood.common.analytics.TokoFoodAnalyticsConstants.EMPTY_DATA
 import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFoodData
 import com.tokopedia.tokofood.feature.home.domain.data.Merchant
+import com.tokopedia.track.builder.BaseTrackerBuilder
 import com.tokopedia.track.builder.util.BaseTrackerConst
 import com.tokopedia.track.constant.TrackerConstant
 
 object TokoFoodHomeCategoryCommonAnalytics: BaseTrackerConst() {
+
+    fun impressMerchant(userId: String?, destinationId: String?, merchant: Merchant, horizontalPosition: Int, isHome: Boolean): Map<String, Any> {
+        val trackingBuilder = BaseTrackerBuilder()
+        val merchantAddress = if (merchant.addressLocality.isNotEmpty()) merchant.addressLocality else EMPTY_DATA
+        val listPromotions = arrayListOf(
+            Promotion(
+                creative = "",
+                position = (horizontalPosition + Int.ONE).toString(),
+                id = "${merchant.id} - ${merchant.name}",
+                name = "$merchantAddress - ${merchant.etaFmt} - ${merchant.distanceFmt} - ${merchant.ratingFmt}"
+            )
+        )
+        return trackingBuilder.constructBasicPromotionView(
+            event = Event.PROMO_VIEW,
+            eventAction = TokoFoodAnalytics.EVENT_ACTION_VIEW_MERCHANT_LIST,
+            eventLabel = "",
+            eventCategory = if (isHome) TokoFoodAnalytics.EVENT_CATEGORY_HOME_PAGE else TokoFoodAnalytics.EVENT_CATEGORY_CATEGORY_PAGE,
+            promotions = listPromotions)
+            .appendBusinessUnit(TokoFoodAnalytics.PHYSICAL_GOODS)
+            .appendCurrentSite(TokoFoodAnalytics.TOKOPEDIA_MARKETPLACE)
+            .appendUserId(userId ?: EMPTY_DATA)
+            .appendCustomKeyValue(TokoFoodAnalyticsConstants.DESTINATION_ID, destinationId ?: EMPTY_DATA)
+            .build()
+    }
 
     fun getItemATC(data: CheckoutTokoFoodData): ArrayList<Bundle> {
         val itemBundles = arrayListOf<Bundle>()
