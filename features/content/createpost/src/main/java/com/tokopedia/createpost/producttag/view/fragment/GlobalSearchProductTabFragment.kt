@@ -54,7 +54,7 @@ class GlobalSearchProductTabFragment @Inject constructor(
                     viewModel.selectedTagSource,
                     product,
                     position,
-                    true
+                    false
                 )
                 viewModel.submitAction(ProductTagAction.ProductSelected(product))
             },
@@ -130,7 +130,7 @@ class GlobalSearchProductTabFragment @Inject constructor(
     private fun setupAnalytic() {
         impressionCoordinator.setInitialData(
             viewModel.selectedTagSource,
-            true,
+            false,
         )
     }
 

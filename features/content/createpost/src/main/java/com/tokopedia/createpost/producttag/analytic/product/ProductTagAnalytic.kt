@@ -24,14 +24,14 @@ interface ProductTagAnalytic {
     fun impressProductCard(
         source: ProductTagSource,
         products: List<Pair<ProductUiModel, Int>>,
-        isGlobalSearch: Boolean
+        isEntryPoint: Boolean
     )
 
     fun clickProductCard(
         source: ProductTagSource,
         product: ProductUiModel,
         position: Int,
-        isGlobalSearch: Boolean
+        isEntryPoint: Boolean
     )
 
     fun clickSearchBar(source: ProductTagSource)

@@ -106,7 +106,7 @@ class LastTaggedProductFragment @Inject constructor(
     private fun setupAnalytic() {
         impressionCoordinator.setInitialData(
             viewModel.selectedTagSource,
-            false,
+            true,
         )
     }
 
