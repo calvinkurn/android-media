@@ -1,5 +1,6 @@
 package com.tokopedia.tokofood.feature.merchant.presentation.fragment
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
@@ -19,6 +20,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseMultiFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.tokofood.DeeplinkMapperTokoFood
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.kotlin.extensions.view.hide
@@ -27,6 +29,7 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.tokofood.R
 import com.tokopedia.tokofood.common.constants.ShareComponentConstants
+import com.tokopedia.tokofood.common.domain.response.CartTokoFoodBottomSheet
 import com.tokopedia.tokofood.common.domain.response.CartTokoFoodData
 import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFoodData
 import com.tokopedia.tokofood.common.presentation.UiEvent
@@ -79,7 +82,7 @@ class MerchantPageFragment : BaseMultiFragment(),
     CategoryFilterBottomSheet.CategoryFilterListener,
     ProductDetailBottomSheet.Listener,
     ProductDetailBottomSheet.OnProductDetailClickListener,
-    ShareBottomsheetListener {
+    ShareBottomsheetListener, PhoneNumberVerificationBottomSheet.OnButtonCtaClickListener {
 
     private var parentActivity: HasViewModel<MultipleFragmentsViewModel>? = null
 
@@ -105,24 +108,20 @@ class MerchantPageFragment : BaseMultiFragment(),
         viewModelProvider.get(MerchantPageViewModel::class.java)
     }
 
-    private var merchantId: String = ""
-
-    private var productId: String = ""
-
     private val merchantShareComponentUtil: MerchantShareComponentUtil? by lazy(LazyThreadSafetyMode.NONE) {
         context?.let { MerchantShareComponentUtil(it) }
     }
 
-    private var universalShareBottomSheet: UniversalShareBottomSheet? = null
+    private var merchantId: String = ""
+    private var productId: String = ""
+    private var filterNameSelected: String = ""
 
+    private var universalShareBottomSheet: UniversalShareBottomSheet? = null
     private var merchantInfoBottomSheet: MerchantInfoBottomSheet? = null
     private var orderNoteBottomSheet: OrderNoteBottomSheet? = null
     private var customOrderDetailBottomSheet: CustomOrderDetailBottomSheet? = null
-
     private var carouselAdapter: MerchantPageCarouselAdapter? = null
     private var productListAdapter: ProductListAdapter? = null
-
-    private var filterNameSelected: String = ""
 
     private var merchantShareComponent: MerchantShareComponent? = null
 
@@ -142,23 +141,11 @@ class MerchantPageFragment : BaseMultiFragment(),
         productId = uri.getQueryParameter(DeeplinkMapperTokoFood.PARAM_PRODUCT_ID) ?: ""
         setHasOptionsMenu(true)
         initInjector()
-
         // handle negative case #1 non-login
-        if (!userSession.isLoggedIn) {
-            goToLoginPage()
-        }
-        context?.run {
-            ChooseAddressUtils.getLocalizingAddressData(this).let { addressData ->
-                when {
-                    addressData.address_id.isBlank() -> {
-                        navigateToNewFragment(ManageLocationFragment.createInstance(EMPTY_STATE_NO_ADDRESS))
-                    }
-                    addressData.latLong.isBlank() -> {
-                        navigateToNewFragment(ManageLocationFragment.createInstance(EMPTY_STATE_NO_PIN_POINT))
-                    }
-                    else -> { }
-                }
-            }
+        if (!userSession.isLoggedIn) { goToLoginPage() }
+        else {
+            // handle negative case: no-address,no-pinpoint
+            validateAddressData()
         }
     }
 
@@ -234,6 +221,20 @@ class MerchantPageFragment : BaseMultiFragment(),
         collectFlow()
         fetchMerchantData()
         initializeMiniCartWidget()
+
+
+        val x = CartTokoFoodData(
+                bottomSheet = CartTokoFoodBottomSheet(
+                        title = "title", description = "desc", imageUrl = "https://images.tokopedia.net/img/ic-tokofood_home_no_pin_poin.png"
+                )
+        )
+        val bottomSheet = PhoneNumberVerificationBottomSheet.createInstance(
+                bottomSheetData = x.bottomSheet,
+                clickListener = this@MerchantPageFragment
+        )
+        bottomSheet.show(childFragmentManager)
+
+
     }
 
     private fun setBackgroundDefaultColor() {
@@ -436,7 +437,10 @@ class MerchantPageFragment : BaseMultiFragment(),
                         renderProductList(finalProductListItems)
                         setCategoryPlaceholder()
                     } else {
-                        navigateToNewFragment(ManageLocationFragment.createInstance(EMPTY_STATE_OUT_OF_COVERAGE))
+                        navigateToNewFragment(ManageLocationFragment.createInstance(
+                                negativeCaseId = EMPTY_STATE_OUT_OF_COVERAGE,
+                                merchantId = merchantId
+                        ))
                     }
                 }
                 is Fail -> {
@@ -464,6 +468,13 @@ class MerchantPageFragment : BaseMultiFragment(),
                             (pair.first as? UpdateParam)?.productList?.firstOrNull()
                                 ?.let { requestParam ->
                                     (pair.second as? CartTokoFoodData)?.let { cartTokoFoodData ->
+                                        if (cartTokoFoodData.bottomSheet.isShowBottomSheet) {
+                                            val bottomSheet = PhoneNumberVerificationBottomSheet.createInstance(
+                                                    bottomSheetData = cartTokoFoodData.bottomSheet,
+                                                    clickListener = this@MerchantPageFragment
+                                            )
+                                            bottomSheet.show(childFragmentManager)
+                                        }
                                         cartTokoFoodData.carts.firstOrNull { data -> data.productId == requestParam.productId }
                                             ?.let { cartTokoFood ->
                                                 val cardPositions = viewModel.productMap[requestParam.productId]
@@ -972,6 +983,12 @@ class MerchantPageFragment : BaseMultiFragment(),
         activityViewModel?.updateQuantity(updateParam, SOURCE)
     }
 
+    override fun onButtonCtaClickListener(appLink: String) {
+        var applicationLink = ApplinkConstInternalGlobal.ADD_PHONE
+        if (appLink.isNotEmpty()) applicationLink = appLink
+        context?.run { RouteManager.route(this, applicationLink) }
+    }
+
     private fun navigateToOrderCustomizationPage(
         cartId: String,
         productListItem: ProductListItem,
@@ -1012,8 +1029,39 @@ class MerchantPageFragment : BaseMultiFragment(),
         }
     }
 
+    private fun validateAddressData() {
+        context?.run {
+            ChooseAddressUtils.getLocalizingAddressData(this).let { addressData ->
+                when {
+                    addressData.address_id.isBlank() -> {
+                        navigateToNewFragment(ManageLocationFragment.createInstance(
+                                negativeCaseId = EMPTY_STATE_NO_ADDRESS,
+                                merchantId = merchantId
+                        ))
+                    }
+                    addressData.latLong.isBlank() -> {
+                        navigateToNewFragment(ManageLocationFragment.createInstance(
+                                negativeCaseId = EMPTY_STATE_NO_PIN_POINT,
+                                merchantId = merchantId
+                        ))
+                    }
+                    else -> {}
+                }
+            }
+        }
+    }
+
+    private fun onResultFromLogin(resultCode: Int, data: Intent?) {
+        if (resultCode == Activity.RESULT_OK) {
+            validateAddressData()
+        }
+    }
+
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
+        when (requestCode) {
+            REQUEST_CODE_LOGIN -> onResultFromLogin(resultCode, data)
+        }
     }
 
     companion object {
