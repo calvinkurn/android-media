@@ -6,6 +6,7 @@ import com.tokopedia.review.feature.inbox.history.data.ProductrevFeedbackHistory
 import com.tokopedia.review.feature.inbox.history.data.ProductrevFeedbackHistoryResponseWrapper
 import com.tokopedia.review.utils.verifyReviewErrorEquals
 import com.tokopedia.review.utils.verifyReviewSuccessEquals
+import com.tokopedia.unit.test.ext.getOrAwaitValue
 import io.mockk.coEvery
 import io.mockk.coVerify
 import org.junit.Assert
@@ -26,6 +27,7 @@ class ReviewHistoryViewModelTest : ReviewHistoryViewModelTestFixture() {
 
         verifyGetReviewHistoryUseCaseExecuted()
         verifyReviewListSuccessEquals(expectedViewState)
+        Assert.assertTrue(viewModel.reviewHistoryList.getOrAwaitValue().isEmpty())
     }
 
     @Test
@@ -41,6 +43,7 @@ class ReviewHistoryViewModelTest : ReviewHistoryViewModelTestFixture() {
 
         verifyGetReviewHistoryUseCaseExecuted()
         verifyReviewListErrorEquals(expectedViewState)
+        Assert.assertTrue(viewModel.reviewHistoryList.getOrAwaitValue().isEmpty())
     }
 
     @Test
@@ -56,6 +59,7 @@ class ReviewHistoryViewModelTest : ReviewHistoryViewModelTestFixture() {
 
         verifyGetReviewHistoryUseCaseExecuted()
         verifyReviewListSuccessEquals(expectedViewState)
+        Assert.assertTrue(viewModel.reviewHistoryList.getOrAwaitValue().isEmpty())
     }
 
     @Test
@@ -71,6 +75,7 @@ class ReviewHistoryViewModelTest : ReviewHistoryViewModelTestFixture() {
 
         verifyGetReviewHistoryUseCaseExecuted()
         verifyReviewListErrorEquals(expectedViewState)
+        Assert.assertTrue(viewModel.reviewHistoryList.getOrAwaitValue().isEmpty())
     }
 
     @Test

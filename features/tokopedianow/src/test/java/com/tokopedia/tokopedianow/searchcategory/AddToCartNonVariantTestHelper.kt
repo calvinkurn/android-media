@@ -12,7 +12,9 @@ import com.tokopedia.cartcommon.data.response.updatecart.Data
 import com.tokopedia.cartcommon.data.response.updatecart.UpdateCartV2Data
 import com.tokopedia.cartcommon.domain.usecase.DeleteCartUseCase
 import com.tokopedia.cartcommon.domain.usecase.UpdateCartUseCase
+import com.tokopedia.minicart.common.domain.data.MiniCartItem
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
+import com.tokopedia.minicart.common.domain.data.getMiniCartItemProduct
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
 import com.tokopedia.network.exception.ResponseErrorException
 import com.tokopedia.recommendation_widget_common.data.RecommendationEntity
@@ -218,7 +220,7 @@ class AddToCartNonVariantTestHelper(
     private fun getAvailableProductAndQuantity(): Pair<Int, ProductItemDataView> {
         val productItemList = baseViewModel.visitableListLiveData.value!!.getProductItemList()
         val productIdToATC = PRODUCT_ID_NON_VARIANT_ATC
-        val productInMiniCart = miniCartItems.find { it.productId == productIdToATC }!!
+        val productInMiniCart = miniCartItems.getMiniCartItemProduct(productIdToATC)!!
 
         val productCurrentQuantity = productInMiniCart.quantity
         val productInVisitable = productItemList.find { it.id == productIdToATC }!!
@@ -234,7 +236,7 @@ class AddToCartNonVariantTestHelper(
 
     fun `add to cart to decrease quantity success`() {
         val productIdToATC = PRODUCT_ID_NON_VARIANT_ATC
-        val productInMiniCart = miniCartItems.find { it.productId == productIdToATC }!!
+        val productInMiniCart = miniCartItems.getMiniCartItemProduct(productIdToATC)!!
         val productUpdatedQuantity = productInMiniCart.quantity - 3
 
         `Given view setup to update quantity`(productIdToATC, productUpdatedQuantity)
@@ -272,8 +274,8 @@ class AddToCartNonVariantTestHelper(
             productId: String,
             updatedQuantity: Int
     ) {
-        updatedMiniCartData.miniCartItems.forEach {
-            if (it.productId == productId)
+        updatedMiniCartData.miniCartItems.values.forEach {
+            if (it is MiniCartItem.MiniCartItemProduct && it.productId == productId)
                 it.quantity = updatedQuantity
         }
     }
@@ -332,7 +334,7 @@ class AddToCartNonVariantTestHelper(
 
     fun `add to cart to increase quantity success`() {
         val productIdToATC = PRODUCT_ID_NON_VARIANT_ATC
-        val productInMiniCart = miniCartItems.find { it.productId == productIdToATC }!!
+        val productInMiniCart = miniCartItems.getMiniCartItemProduct(productIdToATC)!!
         val productUpdatedQuantity = productInMiniCart.quantity + 3
 
         `Given view setup to update quantity`(productIdToATC, productUpdatedQuantity)
@@ -367,7 +369,7 @@ class AddToCartNonVariantTestHelper(
 
         val productItemList = baseViewModel.visitableListLiveData.value!!.getProductItemList()
         val productIdToATC = PRODUCT_ID_NON_VARIANT_ATC
-        val productInMiniCart = miniCartItems.find { it.productId == productIdToATC }!!
+        val productInMiniCart = miniCartItems.getMiniCartItemProduct(productIdToATC)!!
 
         val productUpdatedQuantity = productInMiniCart.quantity - 3
         val productInVisitable = productItemList.find { it.id == productIdToATC }!!
@@ -443,7 +445,7 @@ class AddToCartNonVariantTestHelper(
         `Given view setup to delete`(productId)
 
         val productItemList = baseViewModel.visitableListLiveData.value!!.getProductItemList()
-        val productInMiniCart = miniCartItems.find { it.productId == productId }!!
+        val productInMiniCart = miniCartItems.getMiniCartItemProduct(productId)!!
         val productInVisitable = productItemList.find { it.id == productId }!!
 
         `When handle cart event product non variant`(productInVisitable, 0)
@@ -527,7 +529,7 @@ class AddToCartNonVariantTestHelper(
         `Given view setup to delete`(productIdToATC)
 
         val productItemList = baseViewModel.visitableListLiveData.value!!.getProductItemList()
-        val productInMiniCart = miniCartItems.find { it.productId == productIdToATC }!!
+        val productInMiniCart = miniCartItems.getMiniCartItemProduct(productIdToATC)!!
         val productInVisitable = productItemList.find { it.id == productIdToATC }!!
         val currentQuantity = productInVisitable.nonVariantATC!!.quantity
 
@@ -716,7 +718,7 @@ class AddToCartNonVariantTestHelper(
             recommendationItemForATC: RecommendationItem,
     ) = miniCartSimplifiedData
             .miniCartItems
-            .find { it.productId == recommendationItemForATC.productId.toString() }
+            .getMiniCartItemProduct(recommendationItemForATC.productId.toString())
             ?.quantity
             ?: 0
 
@@ -724,7 +726,7 @@ class AddToCartNonVariantTestHelper(
         val recommendationWidgets = recommendationWidgetList
         val miniCartData = miniCartSimplifiedData
         val productId = PRODUCT_ID_NON_VARIANT_ATC
-        val productInMiniCart = miniCartData.miniCartItems.find { it.productId == productId }!!
+        val productInMiniCart = miniCartItems.getMiniCartItemProduct(productId)!!
         val updatedQuantity = productInMiniCart.quantity - 3
 
         `Given view setup to update quantity recom item`(
@@ -788,7 +790,7 @@ class AddToCartNonVariantTestHelper(
         val recommendationWidgets = recommendationWidgetList
         val miniCartData = miniCartSimplifiedData
         val productId = PRODUCT_ID_NON_VARIANT_ATC
-        val productInMiniCart = miniCartData.miniCartItems.find { it.productId == productId }!!
+        val productInMiniCart = miniCartItems.getMiniCartItemProduct(productId)!!
         val updatedQty = productInMiniCart.quantity + 3
         `Given view setup to update quantity recom item`(
                 recommendationWidgets,
@@ -837,9 +839,7 @@ class AddToCartNonVariantTestHelper(
                 updateQty,
         )
 
-        val productInMiniCart = miniCartData.miniCartItems.find {
-            it.productId == recommendationItemForATC.productId.toString()
-        }!!
+        val productInMiniCart = miniCartItems.getMiniCartItemProduct(recommendationItemForATC.productId.toString())!!
         val expectedErrorMessage = responseErrorException.message!!
         val expectedRefreshMiniCartCount = 1
         `Then verify behavior update quantity recom item`(
@@ -856,7 +856,7 @@ class AddToCartNonVariantTestHelper(
         val recommendationWidgets = recommendationWidgetList
         val miniCartData = miniCartSimplifiedData
         val productId = PRODUCT_ID_NON_VARIANT_ATC
-        val productInMiniCart = miniCartData.getMiniCartItemByProductId(productId)!!
+        val productInMiniCart = miniCartData.miniCartItems.getMiniCartItemProduct(productId)!!
 
         `Given delete cart use case will be successful`(deleteCartResponse)
         `Given get mini cart simplified use case will be successful`(miniCartData)
@@ -899,7 +899,7 @@ class AddToCartNonVariantTestHelper(
         val recommendationWidgets = recommendationWidgetList
         val miniCartData = miniCartSimplifiedData
         val productId = PRODUCT_ID_NON_VARIANT_ATC
-        val productInMiniCart = miniCartData.getMiniCartItemByProductId(productId)!!
+        val productInMiniCart = miniCartData.miniCartItems.getMiniCartItemProduct(productId)!!
 
         `Given delete cart use case will fail`()
         `Given get mini cart simplified use case will be successful`(miniCartData)

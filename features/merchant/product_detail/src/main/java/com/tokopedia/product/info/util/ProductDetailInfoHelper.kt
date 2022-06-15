@@ -57,7 +57,7 @@ object ProductDetailInfoHelper {
             return ProductInfoParcelData(
                     productId = basic.productID,
                     shopId = basic.shopID,
-                    productTitle = data.name,
+                    productTitle = data.parentName,
                     productImageUrl = data.getProductImageUrl() ?: "",
                     variantGuideline = variantGuideLine,
                     discussionCount = productInfoP1.basic.stats.countTalk.toIntOrZero(),
