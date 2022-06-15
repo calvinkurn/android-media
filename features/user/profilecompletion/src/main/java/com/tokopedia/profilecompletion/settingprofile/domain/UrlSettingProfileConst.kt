@@ -7,7 +7,7 @@ import com.tokopedia.url.TokopediaUrl
  * ade.hadian@tokopedia.com
  */
 
-object UrlSettingProfileConst{
+object UrlSettingProfileConst {
 
     const val HTTPS = "https"
     const val OTP_PATH_URL = "otp"

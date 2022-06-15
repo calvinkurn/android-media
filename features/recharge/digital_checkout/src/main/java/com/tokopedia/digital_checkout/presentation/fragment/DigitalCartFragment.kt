@@ -47,6 +47,7 @@ import com.tokopedia.digital_checkout.utils.DeviceUtil
 import com.tokopedia.digital_checkout.utils.DigitalCurrencyUtil.getStringIdrFormat
 import com.tokopedia.digital_checkout.utils.PromoDataUtil.mapToStatePromoCheckout
 import com.tokopedia.digital_checkout.utils.analytics.DigitalAnalytics
+import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.loadImageDrawable
@@ -371,11 +372,12 @@ class DigitalCartFragment : BaseDaggerFragment(), MyBillsActionListener,
     }
 
     private fun showError(error: Throwable) {
+        hideContent()
         val (errMsg, errCode) = ErrorHandler.getErrorMessagePair(
             requireContext(), error, ErrorHandler.Builder().build()
         )
         if (viewEmptyState != null) {
-            viewEmptyState.setPrimaryCTAClickListener {
+            viewEmptyState.setActionClickListener {
                 viewEmptyState.visibility = View.GONE
                 loadData()
             }
@@ -383,24 +385,16 @@ class DigitalCartFragment : BaseDaggerFragment(), MyBillsActionListener,
             if (errMsg == ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION_FULL || errMsg == ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION
                 || errMsg == ErrorNetMessage.MESSAGE_ERROR_TIMEOUT
             ) {
-                viewEmptyState.setTitle(getString(com.tokopedia.globalerror.R.string.noConnectionTitle))
-                viewEmptyState.setImageDrawable(resources.getDrawable(com.tokopedia.globalerror.R.drawable.unify_globalerrors_connection))
-                viewEmptyState.setDescription(
-                    "${getString(com.tokopedia.globalerror.R.string.noConnectionDesc)} Kode Error: ($errCode)"
-                )
+                viewEmptyState.setType(GlobalError.NO_CONNECTION)
             } else if (errMsg == ErrorNetMessage.MESSAGE_ERROR_SERVER || errMsg == ErrorNetMessage.MESSAGE_ERROR_DEFAULT) {
-                viewEmptyState.setTitle(getString(com.tokopedia.globalerror.R.string.error500Title))
-                viewEmptyState.setImageDrawable(resources.getDrawable(com.tokopedia.globalerror.R.drawable.unify_globalerrors_500))
-                viewEmptyState.setDescription(
-                    "${getString(com.tokopedia.globalerror.R.string.error500Desc)} Kode Error: ($errCode)"
-                )
+                viewEmptyState.setType(GlobalError.SERVER_ERROR)
             } else {
-                viewEmptyState.setTitle(getString(R.string.digital_checkout_empty_state_title))
-                viewEmptyState.setImageUrl(getString(R.string.digital_cart_default_error_img_url))
-                viewEmptyState.setDescription("${errMsg}. Kode Error: ($errCode)")
+                viewEmptyState.errorTitle.text = getString(R.string.digital_checkout_empty_state_title)
+                viewEmptyState.errorIllustration.loadImage(getString(R.string.digital_cart_default_error_img_url))
+                viewEmptyState.errorDescription.text = "${errMsg}. Kode Error: ($errCode)"
             }
 
-            viewEmptyState.setPrimaryCTAText(getString(R.string.digital_checkout_empty_state_btn))
+            viewEmptyState.errorAction.text = getString(R.string.digital_checkout_empty_state_btn)
             viewEmptyState.visibility = View.VISIBLE
         }
     }
@@ -437,7 +431,6 @@ class DigitalCartFragment : BaseDaggerFragment(), MyBillsActionListener,
 
     private fun closeViewWithMessageAlert(error: Throwable) {
         loaderCheckout.visibility = View.GONE
-
         if (cartPassData?.isFromPDP == true) {
             val intent = Intent()
             intent.putExtra(DigitalExtraParam.EXTRA_MESSAGE, error)
@@ -807,6 +800,7 @@ class DigitalCartFragment : BaseDaggerFragment(), MyBillsActionListener,
 
         private const val SUBSCRIPTION_BOTTOM_SHEET_TAG = "SUBSCRIPTION_BOTTOM_SHEET_TAG"
         private const val LEADING_MARGIN_SPAN = 16
+
 
         fun newInstance(
             passData: DigitalCheckoutPassData?,

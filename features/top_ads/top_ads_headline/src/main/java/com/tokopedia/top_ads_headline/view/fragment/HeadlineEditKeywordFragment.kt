@@ -59,7 +59,7 @@ import com.tokopedia.topads.common.view.adapter.tips.viewmodel.TipsUiModel
 import com.tokopedia.topads.common.view.adapter.tips.viewmodel.TipsUiSortModel
 import com.tokopedia.topads.common.view.sheet.TipsListSheet
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.android.synthetic.main.fragment_headline_edit_keyword.*
+import com.tokopedia.unifyprinciples.Typography
 import javax.inject.Inject
 
 const val KEYWORD_POSITIVE = "keywordPositive"
@@ -71,8 +71,14 @@ const val ADDED_KEYWORDS = "addedKeywords"
 const val EDITED_KEYWORDS = "editedKeywords"
 const val DELETED_KEYWORDS = "deletedKeywords"
 
-class HeadlineEditKeywordFragment : BaseDaggerFragment(), HeadlineEditAdKeywordViewHolder.OnHeadlineAdEditItemClick,
-        HeadlineEditEmptyAdKeywordViewHolder.OnHeadlineEmptyKeywordButtonClick {
+class HeadlineEditKeywordFragment : BaseDaggerFragment(),
+    HeadlineEditAdKeywordViewHolder.OnHeadlineAdEditItemClick,
+    HeadlineEditEmptyAdKeywordViewHolder.OnHeadlineEmptyKeywordButtonClick {
+
+    private var txtKeywordCounter: Typography? = null
+    private var addKeyword: Typography? = null
+    private var recyclerView: RecyclerView? = null
+
     private var keywordType: String = ""
     private lateinit var recyclerviewScrollListener: EndlessRecyclerViewScrollListener
     private lateinit var layoutManager: LinearLayoutManager
@@ -121,15 +127,24 @@ class HeadlineEditKeywordFragment : BaseDaggerFragment(), HeadlineEditAdKeywordV
             keywordType = getString(KEYWORD_TYPE) ?: ""
             groupId = getInt(GROUP_ID)
         }
-        viewModel = ViewModelProvider(this, viewModelFactory).get(HeadlineEditKeywordViewModel::class.java)
+        viewModel =
+            ViewModelProvider(this, viewModelFactory).get(HeadlineEditKeywordViewModel::class.java)
         activity?.let {
-            sharedEditHeadlineViewModel = ViewModelProvider(it, viewModelFactory).get(SharedEditHeadlineViewModel::class.java)
+            sharedEditHeadlineViewModel =
+                ViewModelProvider(it, viewModelFactory).get(SharedEditHeadlineViewModel::class.java)
         }
         adapter = KeywordListAdapter(this, this)
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(resources.getLayout(R.layout.fragment_headline_edit_keyword), container, false)
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?,
+    ): View? {
+        val view = inflater.inflate(resources.getLayout(R.layout.fragment_headline_edit_keyword),
+            container, false)
+        txtKeywordCounter = view.findViewById(R.id.keyword_counter)
+        addKeyword = view.findViewById(R.id.add_keyword)
+        recyclerView = view.findViewById(R.id.recyclerView)
+        return view
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -137,17 +152,20 @@ class HeadlineEditKeywordFragment : BaseDaggerFragment(), HeadlineEditAdKeywordV
         setUpObservers()
         fetchNextPage()
         setAdapter()
-        add_keyword.setCompoundDrawablesWithIntrinsicBounds(R.drawable.topads_plus_add_keyword, 0, 0, 0)
-        add_keyword.setOnClickListener {
+        addKeyword?.setCompoundDrawablesWithIntrinsicBounds(com.tokopedia.topads.common.R.drawable.topads_plus_add_keyword,
+            0, 0, 0)
+        addKeyword?.setOnClickListener {
             onCtaBtnClick()
         }
     }
 
     private fun openNegativeAdKeywordActivity() {
-        val intent = RouteManager.getIntent(context, ApplinkConstInternalTopAds.TOPADS_NEGATIVE_KEYWORD_EDIT)?.apply {
-            putParcelableArrayListExtra(RESTORED_DATA, restoreNegativeKeywords)
-            putStringArrayListExtra(CURRENT_LIST, getCurrentItems())
-        }
+        val intent =
+            RouteManager.getIntent(context, ApplinkConstInternalTopAds.TOPADS_NEGATIVE_KEYWORD_EDIT)
+                ?.apply {
+                    putParcelableArrayListExtra(RESTORED_DATA, restoreNegativeKeywords)
+                    putStringArrayListExtra(CURRENT_LIST, getCurrentItems())
+                }
         startActivityForResult(intent, NEGATIVE_KEYWORD_REQUEST_CODE)
     }
 
@@ -159,7 +177,7 @@ class HeadlineEditKeywordFragment : BaseDaggerFragment(), HeadlineEditAdKeywordV
         startActivityForResult(intent, POSITIVE_KEYWORD_REQUEST_CODE)
     }
 
-    private fun getCurrentItems(): ArrayList<String>? {
+    private fun getCurrentItems(): ArrayList<String> {
         val list: ArrayList<String> = arrayListOf()
         adapter.getItems().forEach {
             if (it is HeadlineEditAdKeywordModel) {
@@ -170,27 +188,29 @@ class HeadlineEditKeywordFragment : BaseDaggerFragment(), HeadlineEditAdKeywordV
     }
 
     private fun setUpObservers() {
-        sharedEditHeadlineViewModel?.getEditHeadlineAdLiveData()?.observe(viewLifecycleOwner, Observer {
-            stepperModel = it
-            setUpKeywords()
-        })
+        sharedEditHeadlineViewModel?.getEditHeadlineAdLiveData()
+            ?.observe(viewLifecycleOwner, Observer {
+                stepperModel = it
+                setUpKeywords()
+            })
     }
 
     private fun setAdapter() {
         layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
         recyclerviewScrollListener = onRecyclerViewListener()
-        recyclerView.isNestedScrollingEnabled = false
-        recyclerView.adapter = adapter
-        recyclerView.layoutManager = layoutManager
-        recyclerView.addItemDecoration(SpaceItemDecoration(LinearLayoutManager.VERTICAL))
-        recyclerView.addOnScrollListener(recyclerviewScrollListener)
-        recyclerView.addOnItemTouchListener(object : RecyclerView.OnItemTouchListener {
+        recyclerView?.isNestedScrollingEnabled = false
+        recyclerView?.adapter = adapter
+        recyclerView?.layoutManager = layoutManager
+        recyclerView?.addItemDecoration(SpaceItemDecoration(LinearLayoutManager.VERTICAL))
+        recyclerView?.addOnScrollListener(recyclerviewScrollListener)
+        recyclerView?.addOnItemTouchListener(object : RecyclerView.OnItemTouchListener {
             override fun onTouchEvent(rv: RecyclerView, e: MotionEvent) {
             }
 
             override fun onInterceptTouchEvent(rv: RecyclerView, e: MotionEvent): Boolean {
                 when (e.action) {
-                    MotionEvent.ACTION_MOVE -> rv.parent.parent.parent.parent.requestDisallowInterceptTouchEvent(true)
+                    MotionEvent.ACTION_MOVE -> rv.parent.parent.parent.parent.requestDisallowInterceptTouchEvent(
+                        true)
                 }
                 return false
             }
@@ -210,7 +230,11 @@ class HeadlineEditKeywordFragment : BaseDaggerFragment(), HeadlineEditAdKeywordV
     }
 
     private fun fetchNextPage() {
-        viewModel.getAdKeyword(userSession.shopId, groupId, cursor, this::onSuccessKeyword, keywordType = keywordType)
+        viewModel.getAdKeyword(userSession.shopId,
+            groupId,
+            cursor,
+            this::onSuccessKeyword,
+            keywordType = keywordType)
     }
 
     private fun onSuccessKeyword(data: List<GetKeywordResponse.KeywordsItem>, cursor: String) {
@@ -225,13 +249,14 @@ class HeadlineEditKeywordFragment : BaseDaggerFragment(), HeadlineEditAdKeywordV
     }
 
     private fun getRestoredNegativeKeywords() {
-        selectedKeywordsList.filter { it.type == KEYWORD_TYPE_NEGATIVE_PHRASE || it.type == KEYWORD_TYPE_NEGATIVE_EXACT }.let {
-            restoreNegativeKeywords.clear()
-            it.forEach { item ->
-                item.isChecked = true
-                restoreNegativeKeywords.add(item)
+        selectedKeywordsList.filter { it.type == KEYWORD_TYPE_NEGATIVE_PHRASE || it.type == KEYWORD_TYPE_NEGATIVE_EXACT }
+            .let {
+                restoreNegativeKeywords.clear()
+                it.forEach { item ->
+                    item.isChecked = true
+                    restoreNegativeKeywords.add(item)
+                }
             }
-        }
     }
 
     private fun getKeywordUiModels(data: List<GetKeywordResponse.KeywordsItem>): java.util.ArrayList<KeywordUiModel> {
@@ -240,16 +265,24 @@ class HeadlineEditKeywordFragment : BaseDaggerFragment(), HeadlineEditAdKeywordV
             if (result.status != -1) {
                 val keywordSubType: String = getKeywordSearchTitle(result.type)
                 if (keywordType == KEYWORD_POSITIVE && (result.type == KEYWORD_TYPE_PHRASE || result.type == KEYWORD_TYPE_EXACT)) {
-                    keywordUiModels.add(HeadlineEditAdKeywordModel(result.tag, keywordSubType,
-                            advertisingCost = Utils.convertToCurrency(result.priceBid.toLong()), priceBid = result.priceBid,
-                            maximumBid = stepperModel?.maxBid
-                                    ?: "0", minimumBid = stepperModel?.minBid ?: "0"))
+                    keywordUiModels.add(HeadlineEditAdKeywordModel(result.tag,
+                        keywordSubType,
+                        advertisingCost = Utils.convertToCurrency(result.priceBid.toLong()),
+                        priceBid = result.priceBid,
+                        maximumBid = stepperModel?.maxBid
+                            ?: "0",
+                        minimumBid = stepperModel?.minBid ?: "0"))
                 } else if (keywordType == KEYWORD_NEGATIVE &&
-                        (result.type == KEYWORD_TYPE_NEGATIVE_PHRASE || result.type == KEYWORD_TYPE_NEGATIVE_EXACT)) {
-                    keywordUiModels.add(HeadlineEditAdKeywordModel(result.tag, keywordSubType,
-                            advertisingCost = Utils.convertToCurrency(result.priceBid.toLong()), priceBid = result.priceBid, isNegativeKeyword = true,
-                            maximumBid = stepperModel?.maxBid
-                                    ?: "0", minimumBid = stepperModel?.minBid ?: "0"))
+                    (result.type == KEYWORD_TYPE_NEGATIVE_PHRASE || result.type == KEYWORD_TYPE_NEGATIVE_EXACT)
+                ) {
+                    keywordUiModels.add(HeadlineEditAdKeywordModel(result.tag,
+                        keywordSubType,
+                        advertisingCost = Utils.convertToCurrency(result.priceBid.toLong()),
+                        priceBid = result.priceBid,
+                        isNegativeKeyword = true,
+                        maximumBid = stepperModel?.maxBid
+                            ?: "0",
+                        minimumBid = stepperModel?.minBid ?: "0"))
                 }
             }
         }
@@ -262,13 +295,15 @@ class HeadlineEditKeywordFragment : BaseDaggerFragment(), HeadlineEditAdKeywordV
         if (keywordUiModels.isEmpty()) {
             if (keywordType == KEYWORD_POSITIVE) {
                 keywordUiModels.add(HeadlineEditEmptyAdKeywordModel(R.string.topads_headline_edit_keyword_empty_kata_kunci_header,
-                        R.string.topads_headline_edit_keyword_empty_kata_kunci_subheader, R.string.topads_headline_edit_keyword_empty_kata_kunci_cta))
+                    R.string.topads_headline_edit_keyword_empty_kata_kunci_subheader,
+                    R.string.topads_headline_edit_keyword_empty_kata_kunci_cta))
             } else {
                 keywordUiModels.add(HeadlineEditEmptyAdKeywordModel(R.string.topads_headline_edit_keyword_empty_kata_kunci_negatif_header,
-                        R.string.topads_headline_edit_keyword_empty_kata_kunci_negatif_subheader, R.string.topads_headline_edit_keyword_empty_kata_kunci_negatif_cta))
+                    R.string.topads_headline_edit_keyword_empty_kata_kunci_negatif_subheader,
+                    R.string.topads_headline_edit_keyword_empty_kata_kunci_negatif_cta))
             }
         }
-        keyword_counter.text = keywordCounter
+        txtKeywordCounter?.text = keywordCounter
         return keywordUiModels
     }
 
@@ -289,16 +324,18 @@ class HeadlineEditKeywordFragment : BaseDaggerFragment(), HeadlineEditAdKeywordV
     private fun showEmptyView(isEmpty: Boolean) {
         if (isEmpty) {
             (parentFragment as EditAdCostFragment).hideToolTip(View.GONE)
-            keyword_counter.hide()
-            add_keyword.hide()
+            txtKeywordCounter?.hide()
+            addKeyword?.hide()
         } else {
             (parentFragment as EditAdCostFragment).hideToolTip(View.VISIBLE)
-            keyword_counter.show()
-            add_keyword.show()
+            txtKeywordCounter?.show()
+            addKeyword?.show()
             if (keywordType == KEYWORD_POSITIVE) {
-                add_keyword.text = getString(R.string.topads_headline_edit_keyword_empty_kata_kunci_cta)
+                addKeyword?.text =
+                    getString(R.string.topads_headline_edit_keyword_empty_kata_kunci_cta)
             } else {
-                add_keyword.text = getString(R.string.topads_headline_edit_keyword_empty_kata_kunci_negatif_cta)
+                addKeyword?.text =
+                    getString(R.string.topads_headline_edit_keyword_empty_kata_kunci_negatif_cta)
             }
         }
     }
@@ -308,13 +345,16 @@ class HeadlineEditKeywordFragment : BaseDaggerFragment(), HeadlineEditAdKeywordV
     }
 
     private fun showConfirmationDialog(keywordModel: HeadlineEditAdKeywordModel) {
-        val dialog = DialogUnify(requireContext(), DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE)
+        val dialog =
+            DialogUnify(requireContext(), DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE)
         if (keywordType == KEYWORD_POSITIVE) {
             dialog.setTitle(getString(R.string.topads_headline_edit_keyword_delete_kata_kunci_title))
-            dialog.setDescription(getString(R.string.topads_headline_edit_keyword_delete_kata_kunci_description, keywordModel.keywordName))
+            dialog.setDescription(getString(R.string.topads_headline_edit_keyword_delete_kata_kunci_description,
+                keywordModel.keywordName))
         } else {
             dialog.setTitle(getString(R.string.topads_headline_edit_keyword_delete_kata_kunci_negatif_title))
-            dialog.setDescription(getString(R.string.topads_headline_edit_keyword_delete_kata_kunci_negatif_description, keywordModel.keywordName))
+            dialog.setDescription(getString(R.string.topads_headline_edit_keyword_delete_kata_kunci_negatif_description,
+                keywordModel.keywordName))
         }
         dialog.setPrimaryCTAText(getString(com.tokopedia.topads.common.R.string.topads_common_batal))
         dialog.setSecondaryCTAText(getString(com.tokopedia.topads.common.R.string.topads_common_ya))
@@ -329,11 +369,14 @@ class HeadlineEditKeywordFragment : BaseDaggerFragment(), HeadlineEditAdKeywordV
     }
 
     private fun deleteKeyword(keywordModel: HeadlineEditAdKeywordModel) {
-        val deletedItem: GetKeywordResponse.KeywordsItem? = selectedKeywordsList.find { keyword -> keyword.tag == keywordModel.keywordName }
+        val deletedItem: GetKeywordResponse.KeywordsItem? =
+            selectedKeywordsList.find { keyword -> keyword.tag == keywordModel.keywordName }
         selectedKeywordsList.remove(deletedItem)
         if (keywordType == KEYWORD_POSITIVE) {
-            val removedItem = stepperModel?.selectedKeywords?.find { it.keyword == keywordModel.keywordName }
-            val removedManualItem = stepperModel?.manualSelectedKeywords?.find { it.keyword == keywordModel.keywordName }
+            val removedItem =
+                stepperModel?.selectedKeywords?.find { it.keyword == keywordModel.keywordName }
+            val removedManualItem =
+                stepperModel?.manualSelectedKeywords?.find { it.keyword == keywordModel.keywordName }
             stepperModel?.selectedKeywords?.remove(removedItem)
             stepperModel?.manualSelectedKeywords?.remove(removedManualItem)
         } else {
@@ -349,31 +392,39 @@ class HeadlineEditKeywordFragment : BaseDaggerFragment(), HeadlineEditAdKeywordV
     }
 
     private fun updateCounter(itemCount: Int) {
-        val keywordCount = keyword_counter.text
-        val spaceIndex = keywordCount.indexOf(' ')
-        if (spaceIndex != -1) {
-            keyword_counter.text = keywordCount.replaceRange(0 until spaceIndex, itemCount.toString())
+        val keywordCount = txtKeywordCounter?.text
+        val spaceIndex = keywordCount?.indexOf(' ')
+        if (spaceIndex != null && spaceIndex != -1) {
+            txtKeywordCounter?.text =
+                keywordCount.replaceRange(0 until spaceIndex, itemCount.toString())
         }
     }
 
     override fun onSearchTypeClick(keywordModel: HeadlineEditAdKeywordModel) {
         val tipsList: ArrayList<TipsUiModel> = ArrayList()
         tipsList.apply {
-            add(TipsUiSortModel(R.string.topads_headline_broad_sort_type_header, R.string.topads_headline_broad_sort_type_subheader, keywordModel.searchType.equals(
+            add(TipsUiSortModel(R.string.topads_headline_broad_sort_type_header,
+                R.string.topads_headline_broad_sort_type_subheader,
+                keywordModel.searchType.equals(
                     getString(R.string.topads_headline_broad_sort_type_header), true
-            )))
-            add(TipsUiSortModel(R.string.topads_headline_specific_sort_type_header, R.string.topads_headline_specific_sort_type_subheader, keywordModel.searchType.equals(
+                )))
+            add(TipsUiSortModel(R.string.topads_headline_specific_sort_type_header,
+                R.string.topads_headline_specific_sort_type_subheader,
+                keywordModel.searchType.equals(
                     getString(R.string.topads_headline_specific_sort_type_header), true
-            )))
+                )))
         }
         val tipsSortListSheet = context?.let { it1 ->
-            TipsListSheet.newInstance(it1, tipsList = tipsList, itemDecoration = DividerItemDecoration(context, LinearLayoutManager.VERTICAL))
+            TipsListSheet.newInstance(it1,
+                tipsList = tipsList,
+                itemDecoration = DividerItemDecoration(context, LinearLayoutManager.VERTICAL))
         }
         tipsSortListSheet?.setTitle(getString(R.string.topads_headline_sort_type_title))
         tipsSortListSheet?.showHeader = true
         tipsSortListSheet?.showKnob = false
 
-        tipsSortListSheet?.setOnUiSortItemClickListener(sortItemClick = object : TipsUiSortViewHolder.OnUiSortItemClick {
+        tipsSortListSheet?.setOnUiSortItemClickListener(sortItemClick = object :
+            TipsUiSortViewHolder.OnUiSortItemClick {
             override fun onItemClick(sortModel: TipsUiSortModel) {
                 tipsSortListSheet.getTipsList().forEach { model ->
                     if (model is TipsUiSortModel && model == sortModel) {
@@ -392,25 +443,28 @@ class HeadlineEditKeywordFragment : BaseDaggerFragment(), HeadlineEditAdKeywordV
     override fun onEditPriceBid(isEnabled: Boolean, keywordModel: HeadlineEditAdKeywordModel) {
         saveButtonState?.setButtonState(isEnabled)
         if (isEnabled) {
-            selectedKeywordsList.find { keyword -> keyword.tag == keywordModel.keywordName && keyword.priceBid != keywordModel.priceBid }?.let {
-                it.priceBid = keywordModel.priceBid
-            }
+            selectedKeywordsList.find { keyword -> keyword.tag == keywordModel.keywordName && keyword.priceBid != keywordModel.priceBid }
+                ?.let {
+                    it.priceBid = keywordModel.priceBid
+                }
         }
     }
 
     private fun changeSearchStatus(keywordModel: HeadlineEditAdKeywordModel, searchType: String) {
         if (searchType.equals(getString(R.string.topads_headline_broad_sort_type_header), false)) {
-            selectedKeywordsList.find { keyword -> keyword.tag == keywordModel.keywordName }?.type = if (keywordType == KEYWORD_POSITIVE) {
-                KEYWORD_TYPE_PHRASE
-            } else {
-                KEYWORD_TYPE_NEGATIVE_PHRASE
-            }
+            selectedKeywordsList.find { keyword -> keyword.tag == keywordModel.keywordName }?.type =
+                if (keywordType == KEYWORD_POSITIVE) {
+                    KEYWORD_TYPE_PHRASE
+                } else {
+                    KEYWORD_TYPE_NEGATIVE_PHRASE
+                }
         } else {
-            selectedKeywordsList.find { keyword -> keyword.tag == keywordModel.keywordName }?.type = if (keywordType == KEYWORD_POSITIVE) {
-                KEYWORD_TYPE_EXACT
-            } else {
-                KEYWORD_TYPE_NEGATIVE_EXACT
-            }
+            selectedKeywordsList.find { keyword -> keyword.tag == keywordModel.keywordName }?.type =
+                if (keywordType == KEYWORD_POSITIVE) {
+                    KEYWORD_TYPE_EXACT
+                } else {
+                    KEYWORD_TYPE_NEGATIVE_EXACT
+                }
         }
         keywordModel.searchType = searchType
         val position = adapter.getItems().indexOf(keywordModel)
@@ -457,17 +511,20 @@ class HeadlineEditKeywordFragment : BaseDaggerFragment(), HeadlineEditAdKeywordV
         }
         data?.getParcelableArrayListExtra<KeywordDataItem>(ADDED_KEYWORDS)?.let {
             it.forEach { data ->
-                selectedKeywordsList.add(GetKeywordResponse.KeywordsItem(tag = data.keyword, priceBid = data.bidSuggest))
+                selectedKeywordsList.add(GetKeywordResponse.KeywordsItem(tag = data.keyword,
+                    priceBid = data.bidSuggest))
             }
         }
-        data?.getParcelableExtra<HeadlineAdStepperModel>(BaseStepperActivity.STEPPER_MODEL_EXTRA)?.let {
-            stepperModel = it
-        }
+        data?.getParcelableExtra<HeadlineAdStepperModel>(BaseStepperActivity.STEPPER_MODEL_EXTRA)
+            ?.let {
+                stepperModel = it
+            }
         setUpKeywords(selectedKeywordsList)
     }
 
     private fun getDataForNegativeKeywordActivity(data: Intent?) {
-        val selected = data?.getParcelableArrayListExtra<GetKeywordResponse.KeywordsItem>(SELECTED_KEYWORD)
+        val selected =
+            data?.getParcelableArrayListExtra<GetKeywordResponse.KeywordsItem>(SELECTED_KEYWORD)
         data?.getParcelableArrayListExtra<GetKeywordResponse.KeywordsItem>(RESTORED_DATA)?.let {
             restoreNegativeKeywords = it
         }
@@ -494,20 +551,22 @@ class HeadlineEditKeywordFragment : BaseDaggerFragment(), HeadlineEditAdKeywordV
         val tempList = ArrayList<GetKeywordResponse.KeywordsItem>()
         tempList.addAll(selectedKeywordsList)
         viewModel.getSelectedKeywords().forEach {
-            val item = selectedKeywordsList.find { keywordsItem -> keywordsItem.tag == it.tag }?.let { keywordItem ->
-                if (it.type != keywordItem.type) {
-                    val tempKeywordDataItem = keywordItem.copy(type = if (keywordItem.type == KEYWORD_TYPE_PHRASE) {
-                        KEYWORD_TYPE_EXACT
-                    } else {
-                        KEYWORD_TYPE_PHRASE
-                    })
-                    list.add(getKeywordOperation(tempKeywordDataItem, ACTION_DELETE))
-                    list.add(getKeywordOperation(keywordItem, ACTION_CREATE))
-                } else if (it.priceBid != keywordItem.priceBid) {
-                    list.add(getKeywordOperation(keywordItem, ACTION_EDIT))
+            val item = selectedKeywordsList.find { keywordsItem -> keywordsItem.tag == it.tag }
+                ?.let { keywordItem ->
+                    if (it.type != keywordItem.type) {
+                        val tempKeywordDataItem =
+                            keywordItem.copy(type = if (keywordItem.type == KEYWORD_TYPE_PHRASE) {
+                                KEYWORD_TYPE_EXACT
+                            } else {
+                                KEYWORD_TYPE_PHRASE
+                            })
+                        list.add(getKeywordOperation(tempKeywordDataItem, ACTION_DELETE))
+                        list.add(getKeywordOperation(keywordItem, ACTION_CREATE))
+                    } else if (it.priceBid != keywordItem.priceBid) {
+                        list.add(getKeywordOperation(keywordItem, ACTION_EDIT))
+                    }
+                    commonItems.add(keywordItem)
                 }
-                commonItems.add(keywordItem)
-            }
             if (item == null) {
                 list.add(getKeywordOperation(it, ACTION_DELETE))
             }
@@ -519,16 +578,19 @@ class HeadlineEditKeywordFragment : BaseDaggerFragment(), HeadlineEditAdKeywordV
         return list
     }
 
-    private fun getKeywordOperation(it: GetKeywordResponse.KeywordsItem, action: String): TopAdsManageHeadlineInput.Operation.Group.KeywordOperation {
+    private fun getKeywordOperation(
+        it: GetKeywordResponse.KeywordsItem,
+        action: String,
+    ): TopAdsManageHeadlineInput.Operation.Group.KeywordOperation {
         return TopAdsManageHeadlineInput.Operation.Group.KeywordOperation(
-                action = action,
-                keyword = TopAdsManageHeadlineInput.Operation.Group.KeywordOperation.Keyword().apply {
-                    id = it.keywordId
-                    priceBid = it.priceBid.toLong()
-                    tag = it.tag
-                    status = ACTIVE_STATUS
-                    type = getKeywordSearchType(it.type)
-                })
+            action = action,
+            keyword = TopAdsManageHeadlineInput.Operation.Group.KeywordOperation.Keyword().apply {
+                id = it.keywordId
+                priceBid = it.priceBid.toLong()
+                tag = it.tag
+                status = ACTIVE_STATUS
+                type = getKeywordSearchType(it.type)
+            })
     }
 
     private fun getKeywordSearchType(type: Int): String {

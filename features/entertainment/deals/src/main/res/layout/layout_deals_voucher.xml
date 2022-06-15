@@ -5,7 +5,6 @@
     android:layout_height="wrap_content"
     android:id="@+id/voucher_deals_layout"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:background="@color/Unify_Background"
     android:layout_marginLeft="@dimen/spacing_lvl3"
     android:layout_marginRight="@dimen/spacing_lvl3"
     android:paddingTop="@dimen/spacing_lvl2"
@@ -29,7 +28,8 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             app:srcCompat="@drawable/bg_deals_shimmer_home_bg"
-            android:scaleType="centerCrop" />
+            android:scaleType="centerCrop"
+            android:contentDescription="@string/deals_image_brand_content_description"/>
 
     </androidx.cardview.widget.CardView>
 

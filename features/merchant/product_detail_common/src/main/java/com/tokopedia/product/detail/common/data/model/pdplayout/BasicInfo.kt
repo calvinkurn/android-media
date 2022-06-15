@@ -58,7 +58,9 @@ data class BasicInfo(
         @SerializedName("totalStockFmt")
         val totalStockFmt: String = "",
         @SerializedName("isGiftable")
-        val isGiftable: Boolean = false
+        val isGiftable: Boolean = false,
+        @SerializedName("defaultMediaURL")
+        val defaultMediaUrl: String = ""
 ) {
     fun getDefaultOngkirDouble(): Double = defaultOngkirEstimation.toDoubleOrNull()
             ?: DEFAULT_PRICE_MINIMUM_SHIPPING

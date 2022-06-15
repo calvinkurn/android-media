@@ -1,5 +1,6 @@
 package com.tokopedia.vouchercreation.common.domain.model
 
+import android.annotation.SuppressLint
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.vouchercreation.common.base.VoucherSource
@@ -11,6 +12,7 @@ import com.tokopedia.vouchercreation.shop.create.view.uimodel.voucherreview.Vouc
 import com.tokopedia.vouchercreation.shop.voucherlist.model.ui.VoucherUiModel
 
 class UpdateVoucherParam (
+        @SuppressLint("Invalid Data Type")
         @SerializedName("voucher_id")
         @Expose
         val voucherId: Int = 0,

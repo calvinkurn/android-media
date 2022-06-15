@@ -6,31 +6,44 @@ import com.tokopedia.kotlin.extensions.view.getResDrawable
 import com.tokopedia.topads.common.data.response.nongroupItem.WithoutGroupDataItem
 import com.tokopedia.topads.dashboard.R
 import com.tokopedia.topads.dashboard.view.adapter.non_group_item.viewmodel.NonGroupItemsEmptyModel
-import kotlinx.android.synthetic.main.topads_dash_group_empty_state.view.*
+import com.tokopedia.unifycomponents.ImageUnify
+import com.tokopedia.unifycomponents.UnifyButton
+import com.tokopedia.unifyprinciples.Typography
 
 /**
  * Created by Pika on 2/6/20.
  */
 
-class NonGroupItemsEmptyViewHolder(val view: View) : NonGroupItemsViewHolder<NonGroupItemsEmptyModel>(view) {
+class NonGroupItemsEmptyViewHolder(val view: View) :
+    NonGroupItemsViewHolder<NonGroupItemsEmptyModel>(view) {
+
+    private val imageEmpty: ImageUnify? = view.findViewById(R.id.image_empty)
+    private val textTitle: Typography? = view.findViewById(R.id.text_title)
+    private val textDesc: Typography? = view.findViewById(R.id.text_desc)
+    private val btnSubmit: UnifyButton? = view.findViewById(R.id.btn_submit)
 
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.topads_dash_group_empty_state
     }
 
-    override fun bind(item: NonGroupItemsEmptyModel, selectedMode: Boolean, fromSearch: Boolean, statsData: MutableList<WithoutGroupDataItem>) {
+    override fun bind(
+        item: NonGroupItemsEmptyModel, selectedMode: Boolean, fromSearch: Boolean,
+        statsData: MutableList<WithoutGroupDataItem>,
+    ) {
         item.let {
-            view.btn_submit.visibility = View.GONE
+            btnSubmit?.visibility = View.GONE
             if (!fromSearch) {
-                view.text_title.text = view.context.getString(R.string.topads_dash_empty_non_group_title)
-                view.text_desc.text = view.context.getString(R.string.topads_dash_empty_non_group_desc)
-                view.btn_submit.text = view.context.getString(R.string.topads_dash_empty_non_group_butt)
+                textTitle?.text =
+                    view.context.getString(R.string.topads_dash_empty_non_group_title)
+                textDesc?.text = view.context.getString(R.string.topads_dash_empty_non_group_desc)
+                btnSubmit?.text = view.context.getString(R.string.topads_dash_empty_non_group_butt)
             } else {
-                view.text_title.text = view.context.getString(R.string.topads_dash_non_group_no_search_result_title)
-                view.text_desc.text = view.context.getString(R.string.topads_empty_on_search_desc)
+                textTitle?.text =
+                    view.context.getString(R.string.topads_dash_non_group_no_search_result_title)
+                textDesc?.text = view.context.getString(R.string.topads_empty_on_search_desc)
             }
-            view.image_empty.setImageDrawable(view.context.getResDrawable(com.tokopedia.topads.common.R.drawable.no_products))
+            imageEmpty?.setImageDrawable(view.context.getResDrawable(com.tokopedia.topads.common.R.drawable.no_products))
         }
     }
 

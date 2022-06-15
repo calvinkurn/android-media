@@ -61,7 +61,6 @@ import com.tokopedia.vouchercreation.shop.voucherlist.domain.model.ShopBasicData
 import com.tokopedia.vouchercreation.shop.voucherlist.model.ui.VoucherUiModel
 import com.tokopedia.vouchercreation.shop.voucherlist.view.widget.CancelVoucherDialog
 import com.tokopedia.vouchercreation.shop.voucherlist.view.widget.sharebottomsheet.ShareVoucherBottomSheet
-import kotlinx.android.synthetic.main.fragment_mvc_voucher_detail.*
 import javax.inject.Inject
 
 /**
@@ -120,12 +119,12 @@ class VoucherDetailFragment : BaseDetailFragment(), DownloadHelper.DownloadHelpe
     }
 
     private val generalExpenseBottomSheet by lazy {
-        GeneralExpensesInfoBottomSheetFragment.createInstance(context)
+        GeneralExpensesInfoBottomSheetFragment.createInstance()
     }
 
     private val termsAndConditionBottomSheet by lazy {
         context?.run {
-            TermsAndConditionBottomSheetFragment.createInstance(this).apply {
+            TermsAndConditionBottomSheetFragment.createInstance().apply {
                 setCloseClickListener {
                     this.dismiss()
                 }
@@ -383,7 +382,7 @@ class VoucherDetailFragment : BaseDetailFragment(), DownloadHelper.DownloadHelpe
                         voucherUiModel = result.data
                         sendOpenScreenTracking()
                         renderVoucherDetailInformation(result.data)
-                        rvMvcVoucherDetail?.setOnLayoutListenerReady()
+                        baseBinding?.rvMvcVoucherDetail?.setOnLayoutListenerReady()
                     }
                     is Fail -> {
                         clearAllData()

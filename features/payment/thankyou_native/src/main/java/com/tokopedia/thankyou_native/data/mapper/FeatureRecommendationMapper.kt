@@ -2,11 +2,13 @@ package com.tokopedia.thankyou_native.data.mapper
 
 import com.google.gson.Gson
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.thankyou_native.domain.model.FeatureEngineData
 import com.tokopedia.thankyou_native.domain.model.FeatureEngineItem
-import com.tokopedia.thankyou_native.presentation.adapter.model.GyroRecommendation
-import com.tokopedia.thankyou_native.presentation.adapter.model.GyroRecommendationListItem
-import com.tokopedia.thankyou_native.presentation.adapter.model.TopAdsRequestParams
+import com.tokopedia.thankyou_native.domain.model.ThanksPageData
+import com.tokopedia.thankyou_native.presentation.adapter.model.*
+import com.tokopedia.tokomember.model.MembershipOrderData
+import com.tokopedia.tokomember.trackers.TokomemberSource
 import org.json.JSONObject
 
 object FeatureRecommendationMapper {
@@ -31,6 +33,62 @@ object FeatureRecommendationMapper {
             }
         }
         return null
+    }
+
+    fun isTokomemberWidgetShow(engineData: FeatureEngineData?): Boolean {
+        if (engineData != null && !engineData.featureEngineItem.isNullOrEmpty()) {
+            engineData.featureEngineItem.forEach { featureEngineItem ->
+                try {
+                    val jsonObject = JSONObject(featureEngineItem.detail)
+                    if (jsonObject[KEY_TYPE].toString().equals(TYPE_TOKOMEMBER, true)){
+                        return true
+                    }
+                } catch (e: Exception) { }
+            }
+        }
+        return false
+    }
+
+    fun getTokomemberRequestParams(thanksPageData: ThanksPageData, engineData: FeatureEngineData): TokoMemberRequestParam {
+        val shopParams = ArrayList<MembershipOrderData>()
+        var amount: Float
+        var shopId = 0
+        var isFirstElement = false
+        var sectionSubTitle = ""
+        var sectionTitle = ""
+
+        thanksPageData.shopOrder.forEach {
+            amount = 0F
+            it.purchaseItemList.forEach { orderItem ->
+                amount += orderItem.totalPrice
+            }
+            shopId = it.storeId.toIntOrZero()
+            shopParams.add(MembershipOrderData(shopId, amount))
+        }
+        if (!engineData.featureEngineItem.isNullOrEmpty()) {
+            engineData.featureEngineItem.forEachIndexed { i, featureEngineItem ->
+                try {
+                    val jsonObject = JSONObject(featureEngineItem.detail)
+                    if (jsonObject[KEY_TYPE].toString().equals(TYPE_TOKOMEMBER, true)){
+                        if (i == 0) {
+                            isFirstElement = true
+                            sectionTitle = jsonObject[KEY_TITLE].toString()
+                            sectionSubTitle = jsonObject[KEY_SUBTITLE].toString()
+                        }
+                    }
+                } catch (e: Exception) { }
+            }
+        }
+        return TokoMemberRequestParam (
+            pageType = PaymentPageMapper.getPaymentPageType(thanksPageData.pageType),
+            source = TokomemberSource.THANK_YOU,
+            paymentID = thanksPageData.paymentID,
+            orderData = shopParams,
+            shopID = shopId,
+            isFirstElement = isFirstElement,
+            sectionTitle = sectionTitle,
+            sectionSubtitle = sectionSubTitle
+        )
     }
 
     fun getFeatureList(engineData: FeatureEngineData?): GyroRecommendation? {
@@ -79,7 +137,10 @@ object FeatureRecommendationMapper {
     }
 
     private const val KEY_TYPE = "type"
+    private const val KEY_TITLE = "section_title"
+    private const val KEY_SUBTITLE = "section_desc"
     private const val TYPE_LIST = "list"
+    const val TYPE_TOKOMEMBER = "tokomember"
     private const val TYPE_TDN_USER = "tdn_user"
     const val TYPE_TDN_PRODUCT = "tdn_product"
 

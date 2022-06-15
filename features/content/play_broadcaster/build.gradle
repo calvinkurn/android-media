@@ -137,6 +137,7 @@ dependencies {
         exclude group: 'com.google.android.gms'
         exclude group: 'com.google.firebase'
     }
+    androidTestImplementation projectOrAar(rootProject.ext.features.playTest)
 }
 
 project.ext {

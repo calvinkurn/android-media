@@ -38,6 +38,8 @@ val GQL_Affiliate_Transaction_History: String = """query getAffiliateTransaction
             UpdatedAt
             UpdatedAtFormatted
             HasDetail
+            CommissionType
+            PageType
         }
     }
 }

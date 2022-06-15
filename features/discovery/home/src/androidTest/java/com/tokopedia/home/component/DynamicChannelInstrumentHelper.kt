@@ -55,6 +55,9 @@ const val ANALYTIC_VALIDATOR_QUERY_FILE_NAME_REMINDER_WIDGET_SALAM = "tracker/ho
 const val ANALYTIC_VALIDATOR_QUERY_FILE_NAME_BANNER_CAROUSEL = "tracker/home/banner_carousel.json"
 const val ANALYTIC_VALIDATOR_QUERY_FILE_NAME_MERCHANT_VOUCHER = "tracker/home/merchant_voucher_widget.json"
 const val ANALYTIC_VALIDATOR_QUERY_FILE_NAME_SPECIAL_RELEASE = "tracker/home/special_release.json"
+const val ANALYTIC_VALIDATOR_QUERY_FILE_NAME_CUE_WIDGET_CATEGORY = "tracker/home/cue_widget_category.json"
+const val ANALYTIC_VALIDATOR_QUERY_FILE_NAME_CAMPAIGN_WIDGET = "tracker/home/campaign_widget.json"
+const val ANALYTIC_VALIDATOR_QUERY_FILE_NAME_VPS_WIDGET = "tracker/home/vps_widget.json"
 
 private const val CHOOSE_ADDRESS_PREFERENCE_NAME = "coahmark_choose_address"
 private const val CHOOSE_ADDRESS_EXTRA_IS_COACHMARK = "EXTRA_IS_COACHMARK"
@@ -252,8 +255,17 @@ fun actionOnBannerCarouselWidget(viewHolder: RecyclerView.ViewHolder, itemPositi
     clickOnEachItemRecyclerView(viewHolder.itemView, R.id.rv_banner, 0)
 }
 
-fun actionOnMerchantVoucherWidget(viewHolder: RecyclerView.ViewHolder) {
+fun actionOnMerchantVoucherWidget(viewHolder: RecyclerView.ViewHolder, itemPosition: Int) {
+    clickLihatSemuaButtonIfAvailable(viewHolder.itemView, itemPosition)
     clickOnEachItemRecyclerViewMerchantVoucher(viewHolder.itemView, R.id.home_component_mvc_rv, 0)
+}
+
+fun actionOnCueWidgetCategory(viewHolder: RecyclerView.ViewHolder, itemPosition: Int) {
+    clickOnEachItemRecyclerView(viewHolder.itemView, R.id.home_component_cue_category_rv, 0)
+}
+
+fun actionOnVpsWidget(viewHolder: RecyclerView.ViewHolder, itemPosition: Int) {
+    clickOnEachItemRecyclerView(viewHolder.itemView, R.id.home_component_vps_rv, 0)
 }
 
 fun clickOnEachItemRecyclerViewMerchantVoucher(view: View, recyclerViewId: Int, fixedItemPositionLimit: Int) {
@@ -321,6 +333,10 @@ fun actionOnSpecialReleaseWidget(viewHolder: RecyclerView.ViewHolder, itemPositi
     clickOnEachItemRecyclerView(viewHolder.itemView, R.id.home_component_special_release_rv, 0)
 }
 
+fun actionOnCampaignWidget(viewHolder: RecyclerView.ViewHolder, itemPosition: Int) {
+    clickLihatSemuaButtonIfAvailable(viewHolder.itemView, itemPosition)
+    clickOnEachItemRecyclerView(viewHolder.itemView, R.id.recycler_view, 0)
+}
 
 private fun clickAllProductCardRechargeBUWidget(){
     waitForData()

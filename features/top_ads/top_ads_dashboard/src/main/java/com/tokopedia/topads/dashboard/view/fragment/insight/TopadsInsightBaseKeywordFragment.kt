@@ -5,7 +5,10 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.kotlin.extensions.view.getResDrawable
 import com.tokopedia.topads.common.data.util.Utils
@@ -17,8 +20,9 @@ import com.tokopedia.topads.dashboard.di.TopAdsDashboardComponent
 import com.tokopedia.topads.dashboard.view.activity.TopAdsKeywordInsightsActivity
 import com.tokopedia.topads.dashboard.view.adapter.insight.TopAdsKeywordInsightAdapter
 import com.tokopedia.topads.dashboard.view.presenter.TopAdsDashboardPresenter
-import kotlinx.android.synthetic.main.topads_dash_group_empty_state.view.*
-import kotlinx.android.synthetic.main.topads_dash_insight_keword_layout.*
+import com.tokopedia.unifycomponents.ImageUnify
+import com.tokopedia.unifycomponents.SearchBarUnify
+import com.tokopedia.unifyprinciples.Typography
 import javax.inject.Inject
 
 /**
@@ -26,6 +30,12 @@ import javax.inject.Inject
  */
 
 class TopadsInsightBaseKeywordFragment : BaseDaggerFragment() {
+
+    private var swipeRefreshLayout: SwipeRefreshLayout? = null
+    private var searchBar: SearchBarUnify? = null
+    private var keywordList: RecyclerView? = null
+    private var txtSearch: Typography? = null
+
     private lateinit var adapter: TopAdsKeywordInsightAdapter
     private var listOfKeys: MutableList<String> = mutableListOf()
     private lateinit var keyData: HashMap<String, KeywordInsightDataMain>
@@ -59,23 +69,30 @@ class TopadsInsightBaseKeywordFragment : BaseDaggerFragment() {
         startActivity(intent)
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.topads_dash_insight_keword_layout, container, false)
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?,
+    ): View? {
+        val view = inflater.inflate(R.layout.topads_dash_insight_keword_layout, container, false)
+        swipeRefreshLayout = view.findViewById(R.id.swipe_refresh_layout)
+        searchBar = view.findViewById(R.id.searchBar)
+        keywordList = view.findViewById(R.id.keyword_list)
+        txtSearch = view.findViewById(R.id.txtSearch)
+        return view
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         loadData()
-        swipe_refresh_layout.setOnRefreshListener {
+        swipeRefreshLayout?.setOnRefreshListener {
             loadData()
         }
-        keyword_list.adapter = adapter
-        keyword_list.layoutManager = LinearLayoutManager(context)
-        Utils.setSearchListener(searchBar, context, view, ::searchAction)
+        keywordList?.adapter = adapter
+        keywordList?.layoutManager = LinearLayoutManager(context)
+        searchBar?.let { Utils.setSearchListener(it, context, view, ::searchAction) }
     }
 
     private fun onSuccessGetInsightData(response: InsightKeyData) {
-        swipe_refresh_layout.isRefreshing = false
+        swipeRefreshLayout?.isRefreshing = false
         val data: HashMap<String, KeywordInsightDataMain> = response.data
         keyData = data
         listOfKeys.clear()
@@ -91,14 +108,15 @@ class TopadsInsightBaseKeywordFragment : BaseDaggerFragment() {
     }
 
     private fun setEmpty() {
-        emptyViewKeyword?.image_empty?.setImageDrawable(context?.getResDrawable(com.tokopedia.topads.common.R.drawable.ill_success))
-        emptyViewKeyword?.visibility = View.VISIBLE
-        keyword_list?.visibility = View.GONE
+        view?.findViewById<ImageUnify>(R.id.image_empty)
+            ?.setImageDrawable(context?.getResDrawable(com.tokopedia.topads.common.R.drawable.ill_success))
+        view?.findViewById<ConstraintLayout>(R.id.emptyViewKeyword)?.visibility = View.VISIBLE
+        keywordList?.visibility = View.GONE
         searchBar?.visibility = View.GONE
     }
 
     private fun loadData() {
-        swipe_refresh_layout?.isEnabled = true
+        swipeRefreshLayout?.isEnabled = true
         adapter.items.clear()
         adapter.notifyDataSetChanged()
         topAdsDashboardPresenter.getInsight(resources, ::onSuccessGetInsightData)
@@ -107,7 +125,7 @@ class TopadsInsightBaseKeywordFragment : BaseDaggerFragment() {
     private fun searchAction() {
         val list: MutableList<KeywordInsightDataMain> = mutableListOf()
         listOfKeys.clear()
-        val search = searchBar.searchBarTextField.text.toString()
+        val search = searchBar?.searchBarTextField?.text.toString()
         keyData.forEach {
             if (it.value.name.contains(search)) {
                 list.add(it.value)
@@ -116,12 +134,13 @@ class TopadsInsightBaseKeywordFragment : BaseDaggerFragment() {
         }
         (parentFragment as TopAdsRecommendationFragment).setCount(list.size, 2)
         if (list.isEmpty()) {
-            keyword_list.visibility = View.GONE
-            txtSearch.visibility = View.VISIBLE
-            txtSearch.text = String.format(resources.getString(R.string.topads_insight_search_text), search)
+            keywordList?.visibility = View.GONE
+            txtSearch?.visibility = View.VISIBLE
+            txtSearch?.text =
+                String.format(resources.getString(R.string.topads_insight_search_text), search)
         } else {
-            keyword_list.visibility = View.VISIBLE
-            txtSearch.visibility = View.GONE
+            keywordList?.visibility = View.VISIBLE
+            txtSearch?.visibility = View.GONE
         }
         adapter.items.clear()
         adapter.items.addAll(list)

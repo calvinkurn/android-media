@@ -29,82 +29,85 @@ class PinCompleteFragment : BaseDaggerFragment() {
     lateinit var trackingPinUtil: TrackingPinUtil
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        ColorUtils.setBackgroundColor(context, activity)
+	super.onCreate(savedInstanceState)
+	ColorUtils.setBackgroundColor(context, activity)
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
-        val view = inflater.inflate(R.layout.fragment_complete_pin, container, false)
-        return view
+    override fun onCreateView(
+	inflater: LayoutInflater, container: ViewGroup?,
+	savedInstanceState: Bundle?
+    ): View? {
+	val view = inflater.inflate(R.layout.fragment_complete_pin, container, false)
+	return view
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
+	super.onViewCreated(view, savedInstanceState)
 
-        ImageHandler.LoadImage(completeImage, COMPLETE_PICT_URL)
-        btnComplete.setOnClickListener {
-            trackingPinUtil.trackClickFinishButton()
-            activity?.let {
-                if (arguments?.getInt(ApplinkConstInternalGlobal.PARAM_SOURCE) == SOURCE_FORGOT_PIN_2FA) {
-                    val intent = Intent().putExtras(requireArguments())
-                    intent.flags = Intent.FLAG_ACTIVITY_FORWARD_RESULT
-                    it.setResult(Activity.RESULT_OK, intent)
-                } else {
-                    it.setResult(Activity.RESULT_OK)
-                }
-                it.finish()
-            }
-        }
-        initViews()
+	ImageHandler.LoadImage(completeImage, COMPLETE_PICT_URL)
+	btnComplete.setOnClickListener {
+	    trackingPinUtil.trackClickFinishButton()
+	    activity?.let {
+		if (arguments?.getInt(ApplinkConstInternalGlobal.PARAM_SOURCE) == SOURCE_FORGOT_PIN_2FA) {
+		    val intent = Intent().putExtras(requireArguments())
+		    intent.flags = Intent.FLAG_ACTIVITY_FORWARD_RESULT
+		    it.setResult(Activity.RESULT_OK, intent)
+		} else {
+		    it.setResult(Activity.RESULT_OK)
+		}
+		it.finish()
+	    }
+	}
+	initViews()
     }
 
     private fun initViews() {
-        when (arguments?.getInt(ApplinkConstInternalGlobal.PARAM_SOURCE)) {
-            SOURCE_CHANGE_PIN -> {
-                titleComplete.text = getString(R.string.change_pin_success)
-                setToolbarTitle(resources.getString(R.string.title_change_pin))
-            }
-            SOURCE_FORGOT_PIN, SOURCE_FORGOT_PIN_2FA -> {
-                titleComplete.text = getString(R.string.change_pin_success)
-                setToolbarTitle(resources.getString(R.string.change_pin_title_setting))
-            }
-        }
+	when (arguments?.getInt(ApplinkConstInternalGlobal.PARAM_SOURCE)) {
+	    SOURCE_CHANGE_PIN -> {
+		titleComplete.text = getString(R.string.change_pin_success)
+		setToolbarTitle(resources.getString(R.string.title_change_pin))
+	    }
+	    SOURCE_FORGOT_PIN, SOURCE_FORGOT_PIN_2FA -> {
+		titleComplete.text = getString(R.string.change_pin_success)
+		setToolbarTitle(resources.getString(R.string.change_pin_title_setting))
+	    }
+	}
     }
 
     private fun setToolbarTitle(title: String) {
-        if (activity is PinCompleteActivity) {
-            (activity as PinCompleteActivity).supportActionBar?.title = title
-        }
+	if (activity is PinCompleteActivity) {
+	    (activity as PinCompleteActivity).supportActionBar?.title = title
+	}
     }
 
     override fun onStart() {
-        super.onStart()
-        trackingPinUtil.trackScreen(screenName)
+	super.onStart()
+	trackingPinUtil.trackScreen(screenName)
     }
 
     override fun getScreenName(): String = SCREEN_POPUP_PIN_SUCCESS
 
     override fun initInjector() {
-        getComponent(ProfileCompletionSettingComponent::class.java).inject(this)
+	getComponent(ProfileCompletionSettingComponent::class.java).inject(this)
     }
 
     fun onBackPressed() {
-        trackingPinUtil.trackClickBackButtonSuccess()
+	trackingPinUtil.trackClickBackButtonSuccess()
     }
 
     companion object {
-        const val COMPLETE_PICT_URL = "https://ecs7.tokopedia.net/android/user/success_update_pin.png"
+	const val COMPLETE_PICT_URL =
+	    "https://ecs7.tokopedia.net/android/user/success_update_pin.png"
 
-        const val SOURCE_ADD_PIN = 1
-        const val SOURCE_CHANGE_PIN = 2
-        const val SOURCE_FORGOT_PIN = 3
-        const val SOURCE_FORGOT_PIN_2FA = 4
+	const val SOURCE_ADD_PIN = 1
+	const val SOURCE_CHANGE_PIN = 2
+	const val SOURCE_FORGOT_PIN = 3
+	const val SOURCE_FORGOT_PIN_2FA = 4
 
-        fun createInstance(bundle: Bundle): PinCompleteFragment {
-            val fragment = PinCompleteFragment()
-            fragment.arguments = bundle
-            return fragment
-        }
+	fun createInstance(bundle: Bundle): PinCompleteFragment {
+	    val fragment = PinCompleteFragment()
+	    fragment.arguments = bundle
+	    return fragment
+	}
     }
 }

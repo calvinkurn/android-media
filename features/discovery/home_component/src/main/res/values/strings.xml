@@ -25,6 +25,7 @@
     <string name="content_desc_featured_brand_icon">featured brand icon</string>
     <string name="content_desc_featured_brand_image">featured brand image</string>
     <string name="content_desc_merchant_background">Background merchant voucher</string>
+    <string name="content_desc_cue_widget">Featured Cue Widget</string>
 
     <string name="content_desc_campaign_image">campaign image</string>
 
@@ -37,4 +38,6 @@
 
     <string name="special_release_item_tag_special_release">Rilisan Spesial mulai</string>
     <string name="special_release_item_tag_fs_toko">Flash Sale s.d.</string>
+
+    <string name="content_desc_vps_widget">VPS Widget Image</string>
 </resources>

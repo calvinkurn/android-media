@@ -3,6 +3,7 @@ package com.tokopedia.cart.domain.usecase
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.cart.data.model.response.shopgroupsimplified.CartData
 import com.tokopedia.cart.data.model.response.shopgroupsimplified.ShopGroupSimplifiedGqlResponse
+import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
@@ -27,12 +28,13 @@ class GetCartRevampV3UseCase @Inject constructor(@ApplicationContext private val
         )
     }
 
+    @GqlQuery(QUERY_CART_REVAMP, CART_REVAMP_V3_QUERY)
     override suspend fun executeOnBackground(): CartData {
         if (params == null) {
             throw RuntimeException("Parameter is null!")
         }
 
-        val request = GraphqlRequest(getQueryCartRevampV3(), ShopGroupSimplifiedGqlResponse::class.java, params)
+        val request = GraphqlRequest(CartRevampQuery(), ShopGroupSimplifiedGqlResponse::class.java, params)
         val response = graphqlRepository.response(listOf(request)).getSuccessData<ShopGroupSimplifiedGqlResponse>()
 
         if (response.shopGroupSimplifiedResponse.status == "OK") {
@@ -43,12 +45,14 @@ class GetCartRevampV3UseCase @Inject constructor(@ApplicationContext private val
     }
 
     companion object {
-        const val PARAM_KEY_LANG = "lang"
+        private const val PARAM_KEY_LANG = "lang"
         const val PARAM_KEY_SELECTED_CART_ID = "selected_cart_id"
-        const val PARAM_KEY_ADDITIONAL = "additional_params"
+        private const val PARAM_KEY_ADDITIONAL = "additional_params"
         const val PARAM_KEY_STATE = "state"
 
-        const val PARAM_VALUE_ID = "id"
+        private const val PARAM_VALUE_ID = "id"
+
+        private const val QUERY_CART_REVAMP = "CartRevampQuery"
     }
 
 }

@@ -10,7 +10,7 @@ import com.tokopedia.profilecompletion.addpin.data.AddChangePinData
  */
 
 data class ResetPinResponse(
-        @SerializedName("reset_pin")
-        @Expose
-        var data: AddChangePinData = AddChangePinData()
+    @SerializedName("reset_pin")
+    @Expose
+    var data: AddChangePinData = AddChangePinData()
 )

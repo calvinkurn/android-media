@@ -110,7 +110,6 @@ class PlayBroadcastActivity : BaseActivity(), PlayBaseCoordinator {
         setContentView(R.layout.activity_play_broadcast)
         isRecreated = (savedInstanceState != null)
 
-        initStreamer()
         initView()
 
         if (savedInstanceState != null) {
@@ -345,7 +344,10 @@ class PlayBroadcastActivity : BaseActivity(), PlayBaseCoordinator {
     fun isRequiredPermissionGranted() = permissionHelper.isAllPermissionsGranted(permissions)
 
     fun startPreview() {
-        if (permissionHelper.isPermissionGranted(Manifest.permission.CAMERA)) viewModel.startPreview(surfaceView)
+        if (permissionHelper.isPermissionGranted(Manifest.permission.CAMERA)) {
+            initStreamer()
+            viewModel.startPreview(surfaceView)
+        }
     }
 
     fun stopPreview() {

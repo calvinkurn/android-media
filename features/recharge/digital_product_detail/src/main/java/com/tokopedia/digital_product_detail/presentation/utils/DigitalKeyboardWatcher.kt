@@ -9,7 +9,7 @@ import java.lang.ref.WeakReference
 
 class DigitalKeyboardWatcher(private val threshold: Int = 100) {
 
-    private var isKeyboardOpened: Boolean = false
+    var isKeyboardOpened: Boolean = false
 
     private lateinit var globalLayoutListener: ViewTreeObserver.OnGlobalLayoutListener
 

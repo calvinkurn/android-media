@@ -18,6 +18,7 @@ import com.tokopedia.discovery.common.manager.ProductCardOptionsWishlistCallback
 import com.tokopedia.discovery.common.manager.handleProductCardOptionsActivityResult
 import com.tokopedia.discovery.common.manager.showProductCardOptions
 import com.tokopedia.discovery.common.model.ProductCardOptionsModel
+import com.tokopedia.kotlin.extensions.view.displayTextOrHide
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
@@ -107,7 +108,7 @@ class MarketPlaceRecommendation : BaseCustomView, IRecommendationView {
         this.paymentId = thanksPageData.paymentID
         this.fragment = fragment
         startViewModelObserver()
-        viewModel.loadRecommendationData()
+        viewModel.loadRecommendationData(thanksPageData)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -134,6 +135,7 @@ class MarketPlaceRecommendation : BaseCustomView, IRecommendationView {
     private fun addResultToUI(data: ProductRecommendationData) {
         tvTitle.text = data.title
         tvTitle.visible()
+        tvSubtitle.displayTextOrHide(data.subtitle.orEmpty())
         setupRecyclerView(data.thankYouProductCardModelList, data.maxHeight)
         adapter.notifyDataSetChanged()
     }
