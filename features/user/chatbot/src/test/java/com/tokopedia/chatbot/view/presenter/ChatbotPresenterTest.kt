@@ -2,9 +2,12 @@ package com.tokopedia.chatbot.view.presenter
 
 import android.content.Intent
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import com.tokopedia.chat_common.domain.SendWebsocketParam
+import com.tokopedia.chat_common.domain.pojo.invoiceattachment.InvoiceLinkPojo
 import com.tokopedia.chatbot.data.chatactionbubble.ChatActionBubbleViewModel
 import com.tokopedia.chatbot.data.imageupload.ChatbotUploadImagePojo
 import com.tokopedia.chatbot.data.newsession.TopBotNewSessionResponse
+import com.tokopedia.chatbot.data.quickreply.QuickReplyViewModel
 import com.tokopedia.chatbot.data.uploadsecure.CheckUploadSecureResponse
 import com.tokopedia.chatbot.domain.mapper.ChatBotWebSocketMessageMapper
 import com.tokopedia.chatbot.domain.pojo.submitchatcsat.ChipSubmitChatCsatInput
@@ -171,14 +174,14 @@ class ChatbotPresenterTest {
 
         presenter.checkUploadSecure("", Intent())
 
-        verify{
+        verify {
             view.loadChatHistory()
         }
 
     }
 
     @Test
-    fun `checkForSession when new session`(){
+    fun `checkForSession when new session`() {
 
         val response = mockk<TopBotNewSessionResponse>(relaxed = true)
 
@@ -192,7 +195,7 @@ class ChatbotPresenterTest {
 
         presenter.checkForSession("")
 
-        verify{
+        verify {
             view.startNewSession()
         }
 
@@ -213,55 +216,56 @@ class ChatbotPresenterTest {
 
         presenter.checkForSession("")
 
-        verify{
+        verify {
             view.loadChatHistory()
         }
 
     }
 
     @Test
-    fun `sendRating success`(){
-        val params = mapOf<String,Any>()
+    fun `sendRating success`() {
+        val params = mapOf<String, Any>()
         mockkConstructor(SendRatingSubscriber::class)
         mockkObject(SendChatRatingUseCase)
 
         every {
-             SendChatRatingUseCase.generateParam(
-                any(), any(), any())
+            SendChatRatingUseCase.generateParam(
+                any(), any(), any()
+            )
         } returns params
 
         every {
-            sendChatRatingUseCase.execute(any(),any())
+            sendChatRatingUseCase.execute(any(), any())
         } just runs
 
-        presenter.sendRating("",1,"",{},{})
+        presenter.sendRating("", 1, "", {}, {})
 
         verify {
-            sendChatRatingUseCase.execute(any(),any())
+            sendChatRatingUseCase.execute(any(), any())
         }
 
     }
 
     @Test
-    fun `submitChatCsat success`(){
+    fun `submitChatCsat success`() {
 
         mockkConstructor(SendRatingReasonSubscriber::class)
         mockkObject(SendRatingReasonUseCase)
 
         every {
-            chipSubmitChatCsatUseCase.execute(any(),any())
+            chipSubmitChatCsatUseCase.execute(any(), any())
         } just runs
 
-        presenter.submitChatCsat(ChipSubmitChatCsatInput(),{},{})
+        presenter.submitChatCsat(ChipSubmitChatCsatInput(), {}, {})
 
         verify {
-            chipSubmitChatCsatUseCase.execute(any(),any())
+            chipSubmitChatCsatUseCase.execute(any(), any())
         }
     }
 
     @Test
-    fun `sendReasonRating success`(){
-        val params = mapOf<String,Any>()
+    fun `sendReasonRating success`() {
+        val params = mapOf<String, Any>()
         mockkConstructor(SendRatingReasonSubscriber::class)
         mockkObject(SendRatingReasonUseCase)
 
@@ -272,24 +276,14 @@ class ChatbotPresenterTest {
         } returns params
 
         every {
-            sendRatingReasonUseCase.execute(any(),any())
+            sendRatingReasonUseCase.execute(any(), any())
         } just runs
 
-        presenter.sendReasonRating("","","",{},{})
+        presenter.sendReasonRating("", "", "", {}, {})
 
         verify {
-            sendRatingReasonUseCase.execute(any(),any())
+            sendRatingReasonUseCase.execute(any(), any())
         }
-
-    }
-
-    @Test
-    fun `loadPrevious with empty messageId`(){
-
-    }
-
-    @Test
-    fun `loadPrevious for success`(){
 
     }
 
@@ -297,35 +291,258 @@ class ChatbotPresenterTest {
     //checkLinkForRedirection,hitGqlforOptionList,OnClickLeaveQueue,uploadImageSecureUpload,
     //uploadImages,loadPrevious,getExistingChat,leaveQueue,
 
-   // DONe - submitChatCsat,sendReasonRating
+    // DONe - submitChatCsat,sendReasonRating
 
     /******************************* Socket Related Unit Tests************************************/
 
-    //sendUploadedImageToWebsocket,sendMessageWithWebsocket,sendQuickReplyInvoice,sendQuickReply,
-    //sendInvoiceAttachment,sendReadEventWebSocket,sendReadEvent,
-
     @Test
-    fun `sendActionBubble success`(){
+    fun `sendActionBubble success`() {
         mockkObject(RxWebSocket)
         mockkObject(SendChatbotWebsocketParam)
 
         every {
-            SendChatbotWebsocketParam.generateParamSendBubbleAction(any(), any(),
-                any(), any())
+            SendChatbotWebsocketParam.generateParamSendBubbleAction(
+                any(), any(),
+                any(), any()
+            )
         } returns mockk(relaxed = true)
 
         every {
-            RxWebSocket.send(SendChatbotWebsocketParam.generateParamSendBubbleAction(any(), any(),
-                any(), any()),any())
+            RxWebSocket.send(
+                SendChatbotWebsocketParam.generateParamSendBubbleAction(
+                    any(), any(),
+                    any(), any()
+                ), any()
+            )
         } just runs
 
-        presenter.sendActionBubble("", ChatActionBubbleViewModel(),"","")
+        presenter.sendActionBubble("", ChatActionBubbleViewModel(), "", "")
 
         verify {
-            RxWebSocket.send(SendChatbotWebsocketParam.generateParamSendBubbleAction(any(), any(),
-                any(), any()),any())
+            RxWebSocket.send(
+                SendChatbotWebsocketParam.generateParamSendBubbleAction(
+                    any(), any(),
+                    any(), any()
+                ), any()
+            )
         }
 
     }
+
+    @Test
+    fun `sendQuickReplyInvoice success`() {
+        mockkObject(RxWebSocket)
+        mockkObject(SendChatbotWebsocketParam)
+
+        every {
+            SendChatbotWebsocketParam.generateParamSendQuickReplyEventArticle(
+                any(),
+                any(),
+                any(),
+                any(),
+                any(),
+                any()
+            )
+        } returns mockk(relaxed = true)
+
+        every {
+            RxWebSocket.send(
+                SendChatbotWebsocketParam.generateParamSendQuickReplyEventArticle(
+                    any(),
+                    any(),
+                    any(),
+                    any(),
+                    any(),
+                    any()
+                ), any()
+            )
+        } just runs
+
+        presenter.sendQuickReplyInvoice("123", QuickReplyViewModel("", "", ""), "", "", "", "")
+
+        verify {
+            RxWebSocket.send(
+                SendChatbotWebsocketParam.generateParamSendQuickReplyEventArticle(
+                    any(),
+                    any(),
+                    any(),
+                    any(),
+                    any(),
+                    any()
+                ), any()
+            )
+        }
+    }
+
+    @Test
+    fun `sendQuickReply success`() {
+        mockkObject(RxWebSocket)
+        mockkObject(SendChatbotWebsocketParam)
+
+        every {
+            SendChatbotWebsocketParam.generateParamSendQuickReply(
+                any(),
+                any(), any(), any()
+            )
+        } returns mockk(relaxed = true)
+
+        every {
+            RxWebSocket.send(
+                SendChatbotWebsocketParam.generateParamSendQuickReply(
+                    any(),
+                    any(), any(), any()
+                ), any()
+            )
+        } just runs
+
+        presenter.sendQuickReply("123", QuickReplyViewModel("", "", ""), "", "")
+
+        verify {
+            RxWebSocket.send(
+                SendChatbotWebsocketParam.generateParamSendQuickReply(
+                    any(),
+                    any(), any(), any()
+                ), any()
+            )
+        }
+
+    }
+
+    @Test
+    fun `sendInvoiceAttachment success when it is article Entry`() {
+        mockkObject(RxWebSocket)
+        mockkObject(SendChatbotWebsocketParam)
+
+        every {
+            SendChatbotWebsocketParam.generateParamInvoiceSendByArticle(
+                any(),
+                any(),
+                any(),
+                any(),
+                any()
+            )
+        } returns mockk(relaxed = true)
+
+        every {
+            RxWebSocket.send(
+                SendChatbotWebsocketParam.generateParamInvoiceSendByArticle(
+                    any(),
+                    any(),
+                    any(),
+                    any(),
+                    any()
+                ), any()
+            )
+        } just runs
+
+        presenter.sendInvoiceAttachment("123", InvoiceLinkPojo(), "", "", true, "")
+
+
+        verify {
+            RxWebSocket.send(
+                SendChatbotWebsocketParam.generateParamInvoiceSendByArticle(
+                    any(),
+                    any(),
+                    any(),
+                    any(),
+                    any()
+                ), any()
+            )
+        }
+
+    }
+
+    @Test
+    fun `sendInvoiceAttachment success when it is not article Entry`() {
+        mockkObject(RxWebSocket)
+        mockkObject(SendChatbotWebsocketParam)
+
+        every {
+            SendChatbotWebsocketParam.generateParamSendInvoice(any(), any(), any(), any())
+        } returns mockk(relaxed = true)
+
+        every {
+            RxWebSocket.send(
+                SendChatbotWebsocketParam.generateParamSendInvoice(
+                    any(),
+                    any(),
+                    any(),
+                    any()
+                ), any()
+            )
+        } just runs
+
+        presenter.sendInvoiceAttachment("123", InvoiceLinkPojo(), "", "", false, "")
+
+
+        verify {
+            RxWebSocket.send(
+                SendChatbotWebsocketParam.generateParamSendInvoice(
+                    any(),
+                    any(),
+                    any(),
+                    any()
+                ), any()
+            )
+        }
+
+    }
+
+    @Test
+    fun `sendReadEvent success`() {
+        mockkObject(RxWebSocket)
+        mockkObject(SendWebsocketParam)
+
+        every {
+            SendWebsocketParam.getReadMessage(any())
+        } returns mockk(relaxed = true)
+
+        every {
+            RxWebSocket.send(SendWebsocketParam.getReadMessage(any()), any())
+        } just runs
+
+        presenter.sendReadEvent("")
+
+        verify {
+            RxWebSocket.send(SendWebsocketParam.getReadMessage(any()), any())
+        }
+
+    }
+
+    @Test
+    fun `sendMessageWithWebsocket success`() {
+        mockkObject(RxWebSocket)
+        mockkObject(SendWebsocketParam)
+
+        every {
+            SendWebsocketParam.generateParamSendMessage(any(), any(), any(), any())
+        } returns mockk(relaxed = true)
+
+        every {
+            RxWebSocket.send(
+                SendWebsocketParam.generateParamSendMessage(
+                    any(),
+                    any(),
+                    any(),
+                    any()
+                ), any()
+            )
+        }
+
+        presenter.sendMessageWithWebsocket("", "", "", "")
+
+        verify {
+            RxWebSocket.send(
+                SendWebsocketParam.generateParamSendMessage(
+                    any(),
+                    any(),
+                    any(),
+                    any()
+                ), any()
+            )
+        }
+
+    }
+
 
 }
