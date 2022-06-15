@@ -5,6 +5,7 @@ import com.tokopedia.tokofood.feature.ordertracking.presentation.adapter.OrderTr
 
 class InvoiceOrderNumberUiModel(
     val invoiceNumber: String,
+    val invoiceUrl: String,
     val goFoodOrderNumber: String,
     val paymentDate: String
 ) : BaseOrderTrackingTypeFactory {
