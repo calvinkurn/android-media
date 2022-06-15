@@ -26,11 +26,10 @@ import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.empty_state.EmptyStateUnify
 import com.tokopedia.globalerror.GlobalError
-import com.tokopedia.gm.common.utils.PMShopScoreInterruptHelper
+import com.tokopedia.gm.common.utils.CoachMarkPrefHelper
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.kotlin.model.ImpressHolder
-import com.tokopedia.media.loader.loadImageWithoutPlaceholder
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.seller.active.common.plt.LoadTimeMonitoringActivity
@@ -57,21 +56,21 @@ import com.tokopedia.sellerhome.analytic.performance.SellerHomePerformanceMonito
 import com.tokopedia.sellerhome.analytic.performance.SellerHomePerformanceMonitoringConstant.SELLER_HOME_TABLE_TRACE
 import com.tokopedia.sellerhome.common.FragmentType
 import com.tokopedia.sellerhome.common.SellerHomeConst
-import com.tokopedia.sellerhome.common.errorhandler.SellerHomeErrorHandler
 import com.tokopedia.sellerhome.common.config.SellerHomeRemoteConfig
+import com.tokopedia.sellerhome.common.errorhandler.SellerHomeErrorHandler
+import com.tokopedia.sellerhome.common.newrelic.SellerHomeNewRelic
 import com.tokopedia.sellerhome.databinding.FragmentSahBinding
 import com.tokopedia.sellerhome.di.component.HomeDashboardComponent
 import com.tokopedia.sellerhome.domain.model.PROVINCE_ID_EMPTY
 import com.tokopedia.sellerhome.domain.model.ShippingLoc
-import com.tokopedia.sellerhome.common.newrelic.SellerHomeNewRelic
 import com.tokopedia.sellerhome.view.FragmentChangeCallback
 import com.tokopedia.sellerhome.view.SellerHomeDiffUtilCallback
 import com.tokopedia.sellerhome.view.activity.SellerHomeActivity
+import com.tokopedia.sellerhome.view.customview.NotificationDotBadge
 import com.tokopedia.sellerhome.view.model.ShopShareDataUiModel
 import com.tokopedia.sellerhome.view.viewhelper.SellerHomeLayoutManager
 import com.tokopedia.sellerhome.view.viewhelper.ShopShareHelper
 import com.tokopedia.sellerhome.view.viewmodel.SellerHomeViewModel
-import com.tokopedia.sellerhome.view.customview.NotificationDotBadge
 import com.tokopedia.sellerhomecommon.common.DateFilterUtil
 import com.tokopedia.sellerhomecommon.common.EmptyLayoutException
 import com.tokopedia.sellerhomecommon.common.WidgetListener
@@ -148,7 +147,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
     lateinit var newRelic: SellerHomeNewRelic
 
     @Inject
-    lateinit var pmShopScoreInterruptHelper: PMShopScoreInterruptHelper
+    lateinit var coachMarkPrefHelper: CoachMarkPrefHelper
 
     @Inject
     lateinit var shopShareHelper: ShopShareHelper
@@ -187,6 +186,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
     private var emptyState: EmptyStateUnify? = null
 
     private var recommendationWidgetView: View? = null
+    private var announcementWidgetView: View? = null
     private var navigationOtherMenuView: View? = null
     private val coachMark: CoachMark2? by lazy {
         context?.let {
@@ -195,6 +195,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
             } else null
         }
     }
+    private var rebateCoachMark: CoachMark2? = null
     private var universalShareBottomSheet: UniversalShareBottomSheet? = null
     private var shopShareData: ShopShareDataUiModel? = null
     private var shopImageFilePath: String = ""
@@ -651,6 +652,16 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         SellerHomeTracking.sendAnnouncementClickEvent(element)
     }
 
+    override fun showAnnouncementWidgetCoachMark(element: AnnouncementWidgetUiModel, view: View) {
+        val isEligibleCoachMark = !coachMarkPrefHelper.getRebateCoachMarkStatus()
+        if (isEligibleCoachMark && element.dataKey == CoachMarkPrefHelper.REBATE_ANNOUNCEMENT_DATA_KEY) {
+            if (this.announcementWidgetView == null) {
+                this.announcementWidgetView = view
+            }
+            showRebateCoachMark()
+        }
+    }
+
     override fun sendMilestoneMissionImpressionEvent(
         mission: BaseMilestoneMissionUiModel,
         position: Int
@@ -754,16 +765,35 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         sellerHomeViewModel.getWidgetLayout(deviceHeight)
     }
 
+    private fun showRebateCoachMark() {
+        if (rebateCoachMark == null) {
+            rebateCoachMark = CoachMark2(requireContext())
+        }
+        rebateCoachMark?.let { coachMark ->
+            val coachMarkItems by getCoachMarkRebateProgram()
+            if (coachMarkItems.isNotEmpty()) {
+                coachMark.simpleCloseIcon?.setOnClickListener {
+                    coachMarkPrefHelper.saveRebateCoachMarkFlag()
+                    coachMark.dismissCoachMark()
+                }
+                coachMark.isDismissed = false
+                coachMark.showCoachMark(coachMarkItems)
+            }
+        }
+    }
+
     private fun showCoachMarkShopScore() {
         val coachMarkItems by getCoachMarkItems()
         val isEligibleShowRecommendationCoachMark =
-            !pmShopScoreInterruptHelper.getRecommendationCoachMarkStatus()
+            !coachMarkPrefHelper.getRecommendationCoachMarkStatus()
         if (isEligibleShowRecommendationCoachMark) {
             if (coachMarkItems.isNotEmpty()) {
                 coachMark?.onFinishListener = {
-                    pmShopScoreInterruptHelper.saveRecommendationCoachMarkFlag()
+                    coachMarkPrefHelper.saveRecommendationCoachMarkFlag()
+                    coachMark?.coachMarkItem?.clear()
                 }
                 coachMark?.isDismissed = false
+                coachMark?.coachMarkItem?.clear()
                 coachMark?.showCoachMark(coachMarkItems)
             }
         }
@@ -864,6 +894,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
             setOnVerticalScrollListener {
                 requestVisibleWidgetsData()
                 handleCoachMarkVisibility()
+                handleRebateCoachMark()
             }
         }
         recyclerView?.run {
@@ -2006,7 +2037,10 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
                     adapter.notifyDataSetChanged()
                 }
             } catch (notifyException: Exception) {
-                SellerHomeErrorHandler.logException(notifyException, SellerHomeErrorHandler.UPDATE_WIDGET_ERROR)
+                SellerHomeErrorHandler.logException(
+                    notifyException,
+                    SellerHomeErrorHandler.UPDATE_WIDGET_ERROR
+                )
             }
             SellerHomeErrorHandler.logException(e, SellerHomeErrorHandler.UPDATE_WIDGET_ERROR)
         }
@@ -2059,7 +2093,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
 
     private fun setRecommendationCoachMarkEligibility() {
         val isEligibleShowRecommendationCoachMark =
-            !pmShopScoreInterruptHelper.getRecommendationCoachMarkStatus()
+            !coachMarkPrefHelper.getRecommendationCoachMarkStatus()
         if (isEligibleShowRecommendationCoachMark) {
             scrollToRecommendationWidget()
         }
@@ -2076,13 +2110,36 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         }
     }
 
+    private fun handleRebateCoachMark() {
+        val isEligibleCoachMark = !coachMarkPrefHelper.getRebateCoachMarkStatus()
+        if (isEligibleCoachMark) {
+            if (rebateCoachMark == null) {
+                rebateCoachMark = CoachMark2(requireContext())
+            }
+
+            getSellerHomeLayoutManager()?.let { layoutManager ->
+                val rebateAnnouncementWidget = adapter.data.indexOfFirst {
+                    it is AnnouncementWidgetUiModel && it.dataKey == CoachMarkPrefHelper.REBATE_ANNOUNCEMENT_DATA_KEY
+                }
+                val firstVisibleIndex = layoutManager.findFirstVisibleItemPosition()
+                val lastVisibleIndex = layoutManager.findLastCompletelyVisibleItemPosition()
+                if (rebateAnnouncementWidget != RecyclerView.NO_POSITION
+                    && rebateAnnouncementWidget in firstVisibleIndex..lastVisibleIndex
+                ) {
+                    showRebateCoachMark()
+                } else {
+                    rebateCoachMark?.dismissCoachMark()
+                }
+            }
+        }
+    }
+
     private fun handleCoachMarkVisibility() {
-        val recommendationWidgetCoachMarkIndex = 0
+        val recommendationWidgetCoachMarkIndex = Int.ZERO
         if (coachMark?.currentIndex != recommendationWidgetCoachMarkIndex) return
 
-        val layoutManager = recyclerView?.layoutManager as? SellerHomeLayoutManager
-        layoutManager?.let {
-            if (coachMark?.isDismissed == true) {
+        getSellerHomeLayoutManager()?.let { layoutManager ->
+            if (coachMark?.isDismissed.orFalse()) {
                 val firstRecommendationWidget =
                     adapter.data.indexOfFirst { it is RecommendationWidgetUiModel }
                 val firstVisibleIndex = layoutManager.findFirstVisibleItemPosition()
@@ -2103,6 +2160,27 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
                     }
                 }
             }
+        }
+    }
+
+    private fun getSellerHomeLayoutManager(): SellerHomeLayoutManager? {
+        return recyclerView?.layoutManager as? SellerHomeLayoutManager
+    }
+
+    private fun getCoachMarkRebateProgram(): Lazy<ArrayList<CoachMark2Item>> {
+        return lazy {
+            val coachMarkItems = arrayListOf<CoachMark2Item>()
+            announcementWidgetView?.let { view ->
+                coachMarkItems.add(
+                    CoachMark2Item(
+                        anchorView = view,
+                        title = getString(R.string.sah_rebate_coach_mark_title),
+                        description = getString(R.string.sah_rebate_coach_mark_description),
+                        position = CoachMark2.POSITION_BOTTOM
+                    )
+                )
+            }
+            return@lazy coachMarkItems
         }
     }
 

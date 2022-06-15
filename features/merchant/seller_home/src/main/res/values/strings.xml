@@ -155,6 +155,8 @@
     <string name="sah_content_desc_image_widget_error">image widget error</string>
     <string name="sah_recommendation_coach_mark_title">Lihat Performa Toko di Home</string>
     <string name="sah_recommendation_coach_mark_description">Cek semua update dan kendala tokomu di sini dan baca tips untuk meningkatkan Performamu, ya!</string>
+    <string name="sah_rebate_coach_mark_title">Sebagai Power Merchant PRO, kamu bisa ikutan Program Reward, lho!</string>
+    <string name="sah_rebate_coach_mark_description">Pantau terus kemajuan tokomu dalam mencapai target di tiap periode dan dapatkan Reward-nya.</string>
     <string name="sah_other_menu_coach_mark_title">Lihat detail Performamu di sini, ya!</string>
     <string name="sah_other_menu_coach_mark_description">Cek level, skor, dan status tokomu lebih lanjut dari menu Lainnya lalu pilih Performa Toko.</string>
     <string name="settings_operational_hour_open">BUKA</string>

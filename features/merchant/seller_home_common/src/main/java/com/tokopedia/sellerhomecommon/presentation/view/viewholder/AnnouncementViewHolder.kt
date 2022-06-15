@@ -79,6 +79,8 @@ class AnnouncementViewHolder(
             root.addOnImpressionListener(element.impressHolder) {
                 listener.sendAnnouncementImpressionEvent(element)
             }
+
+            listener.showAnnouncementWidgetCoachMark(element, itemView)
         }
     }
 
@@ -99,5 +101,7 @@ class AnnouncementViewHolder(
         fun sendAnnouncementImpressionEvent(element: AnnouncementWidgetUiModel) {}
 
         fun sendAnnouncementClickEvent(element: AnnouncementWidgetUiModel) {}
+
+        fun showAnnouncementWidgetCoachMark(element: AnnouncementWidgetUiModel, view: View) {}
     }
 }
