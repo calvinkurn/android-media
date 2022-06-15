@@ -43,6 +43,6 @@ object TokoFoodCategoryMapper {
     }
 
     fun MutableList<Visitable<*>>.mapCategoryEmptyLayout() {
-        add(TokoFoodCategoryEmptyStateUiModel())
+        add(TokoFoodCategoryEmptyStateUiModel(id = TokoFoodHomeStaticLayoutId.EMPTY_STATE_CATEGORY_PAGE))
     }
 }
