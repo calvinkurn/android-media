@@ -14,7 +14,7 @@ data class GetCampaignProductResponse(
 
     data class GetCampaignProduct(
         @SerializedName("Products")
-        val products: List<Product> = listOf(),
+        val products: List<Product> = emptyList(),
 
         @SerializedName("TotalProduct")
         val totalProduct: Int = 0,
