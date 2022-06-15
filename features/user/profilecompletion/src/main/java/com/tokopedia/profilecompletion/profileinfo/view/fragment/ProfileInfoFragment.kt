@@ -19,6 +19,7 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.globalerror.ReponseStatus
@@ -725,8 +726,10 @@ class ProfileInfoFragment : BaseDaggerFragment(),
             String.format(
                 TOKOPEDIA_WEB_STRING_FORMAT,
                 ApplinkConst.WEBVIEW,
-                "https://1364-staging-feature.tokopedia.com/user/close-account"
-                //TokopediaUrl.getInstance().MOBILEWEB.plus(TOKOPEDIA_CLOSE_ACCOUNT_PATH)
+                //Will delete when production
+                if (GlobalConfig.DEBUG)
+                    "https://1364-staging-feature.tokopedia.com/user/close-account?ld=$PARAM_WEBVIEW_BACK"
+                else TokopediaUrl.getInstance().MOBILEWEB.plus("$TOKOPEDIA_CLOSE_ACCOUNT_PATH?ld=$PARAM_WEBVIEW_BACK")
             )
         )
     }
@@ -748,8 +751,8 @@ class ProfileInfoFragment : BaseDaggerFragment(),
         private const val GENDER_FEMALE = 2
         private const val TAG_BOTTOM_SHEET_CLOSE_ACCOUNT = "bottom sheet close account"
         private const val EMPTY_STRING = ""
+        private const val PARAM_WEBVIEW_BACK = "TOKOPEDIA://BACK"
         private const val TOKOPEDIA_WEB_STRING_FORMAT = "%s?titlebar=false&url=%s"
-        //private const val TOKOPEDIA_WEB_STRING_FORMAT = "%s?url=%s"
         private const val TOKOPEDIA_CLOSE_ACCOUNT_PATH = "user/close-account"
         private const val ROLLENCE_KEY_CLOSE_ACCOUNT = "close_account"
 
