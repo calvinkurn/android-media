@@ -78,12 +78,12 @@ class GiveawayFormView : ConstraintLayout {
 
     override fun setVisibility(visibility: Int) {
         super.setVisibility(visibility)
-        if(visibility == View.VISIBLE) {
-            scope.launch {
-                delay(SHOW_KEYBOARD_DELAY)
-                binding.viewGiveaway.getHeader().setFocus(true)
-            }
-        }
+        if(visibility == View.VISIBLE) setHeaderFocusDelayed()
+    }
+
+    override fun onAttachedToWindow() {
+        super.onAttachedToWindow()
+        setHeaderFocusDelayed()
     }
 
     override fun onDetachedFromWindow() {
@@ -146,6 +146,15 @@ class GiveawayFormView : ConstraintLayout {
                 durationInMs = mEligibleDurations[timePickerBinding.puTimer.activeIndex],
             ),
         )
+    }
+
+    private fun setHeaderFocusDelayed() {
+        scope.launch {
+            delay(SHOW_KEYBOARD_DELAY)
+            if (binding.viewGiveaway.getHeader().isEditable) {
+                binding.viewGiveaway.getHeader().setFocus(true)
+            }
+        }
     }
 
     private fun isLoading() = timePickerBinding.btnApply.isLoading
