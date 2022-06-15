@@ -32,7 +32,7 @@ import com.tokopedia.usercomponents.userconsent.ui.adapter.UserConsentPurposeAda
 import com.tokopedia.usercomponents.userconsent.ui.adapter.UserConsentPurposeViewHolder
 import javax.inject.Inject
 
-class UserConsentWidget : FrameLayout {
+class UserConsentWidget : FrameLayout, UserConsentPurposeViewHolder.UserConsentPurposeListener {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -101,28 +101,7 @@ class UserConsentWidget : FrameLayout {
             }
 
             multipleConsent.apply {
-                userConsentPurposeAdapter = UserConsentPurposeAdapter(object : UserConsentPurposeViewHolder.UserConsentPurposeListener {
-                    override fun onCheckedChange(
-                        isChecked: Boolean,
-                        purposeDataModel: UserConsentCollectionDataModel.CollectionPointDataModel.PurposeDataModel
-                    ) {
-                        userConsentActionClickListener?.onCheckedChange(isChecked)
-                        userConsentAnalytics.trackOnPurposeCheckOnOptional(isChecked, purposeDataModel)
-
-                        if (purposeDataModel.attribute.alwaysMandatory == MANDATORY) {
-                            viewBinding.buttonAction.isEnabled = isChecked
-                        } else {
-                            val isAllChecked = userConsentPurposeAdapter?.listCheckBoxView?.all {
-                                it.isChecked
-                            }
-
-                            if (isAllChecked == true) {
-                                viewBinding.buttonAction.isEnabled = true
-                            }
-                        }
-                    }
-                })
-
+                userConsentPurposeAdapter = UserConsentPurposeAdapter(this@UserConsentWidget)
                 recyclerPurposes.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
             }
         }
@@ -247,13 +226,13 @@ class UserConsentWidget : FrameLayout {
 
             if (collection?.attributes?.policyNoticeType == TERM_CONDITION) {
                 descriptionPurposes.text = userConsentDescription?.generateTermConditionSinglePurposeText(
-                    collection?.attributes?.collectionPointPurposeRequirement == MANDATORY,
+                    collection?.attributes?.collectionPointStatementOnlyFlag == CHECKLIST,
                     collection?.attributes?.policyNoticeTnCPageID.orEmpty(),
                     purposeText
                 )
             } else if (collection?.attributes?.policyNoticeType == TERM_CONDITION_POLICY) {
                 descriptionPurposes.text = userConsentDescription?.generateTermConditionPolicySinglePurposeText(
-                    collection?.attributes?.collectionPointPurposeRequirement == MANDATORY,
+                    collection?.attributes?.collectionPointStatementOnlyFlag == CHECKLIST,
                     collection?.attributes?.policyNoticeTnCPageID.orEmpty(),
                     collection?.attributes?.policyNoticePolicyPageID.orEmpty(),
                     purposeText
@@ -310,7 +289,7 @@ class UserConsentWidget : FrameLayout {
 
     private fun showError(throwable: Throwable) {
         viewBinding?.consentError?.apply {
-            title?.text = resources.getString(com.tokopedia.usercomponents.R.string.user_consent_failed_load_collection)
+            title?.text = resources.getString(R.string.user_consent_failed_load_collection)
             refreshBtn?.setOnClickListener {
                 consentCollectionParam?.let { param ->
                     viewModel?.getConsentCollection(param)
@@ -319,6 +298,24 @@ class UserConsentWidget : FrameLayout {
         }?.show()
 
         userConsentActionClickListener?.onFailed(throwable)
+    }
+
+    override fun onCheckedChange(
+        isChecked: Boolean,
+        purposeDataModel: UserConsentCollectionDataModel.CollectionPointDataModel.PurposeDataModel,
+    ) {
+        userConsentActionClickListener?.onCheckedChange(isChecked)
+        userConsentAnalytics.trackOnPurposeCheckOnOptional(isChecked, purposeDataModel)
+
+        if (purposeDataModel.attribute.alwaysMandatory == MANDATORY) {
+            viewBinding?.buttonAction?.isEnabled = isChecked
+        } else {
+            val isAllChecked = userConsentPurposeAdapter?.listCheckBoxView?.all {
+                it.isChecked
+            }
+
+            viewBinding?.buttonAction?.isEnabled = isAllChecked == true
+        }
     }
 
     override fun invalidate() {
