@@ -52,7 +52,6 @@
                 android:layout_width="188dp"
                 android:layout_height="8dp"
                 app:loader_type="rect"
-                app:loader_corner_radius="0dp"
                 android:layout_marginStart="16dp"
                 android:layout_marginVertical="20dp"/>
 
