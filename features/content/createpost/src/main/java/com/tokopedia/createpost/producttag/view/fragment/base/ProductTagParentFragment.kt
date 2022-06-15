@@ -131,6 +131,14 @@ class ProductTagParentFragment @Inject constructor(
             clickBreadcrumb()
         }
 
+        binding.icCcProductTagChevron2.setOnClickListener {
+            clickBreadcrumb()
+        }
+
+        binding.tvCcProductTagProductSource2.setOnClickListener {
+            clickBreadcrumb()
+        }
+
         showBreadcrumb(viewModel.isUser)
         showCoachmarkGlobalTag(viewModel.isShowCoachmarkGlobalTag)
     }

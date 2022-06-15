@@ -273,14 +273,7 @@ class ProductTagViewModel @AssistedInject constructor(
 
     private fun handleClickBreadcrumb() {
         viewModelScope.launch {
-            when(_productTagSourceStack.value.size) {
-                1 -> {
-                    _uiEvent.emit(ProductTagUiEvent.ShowSourceBottomSheet)
-                }
-                2 -> {
-                    _productTagSourceStack.setValue { removeLast() }
-                }
-            }
+            _uiEvent.emit(ProductTagUiEvent.ShowSourceBottomSheet)
             sharedPref.setNotFirstGlobalTag()
         }
     }
@@ -336,11 +329,8 @@ class ProductTagViewModel @AssistedInject constructor(
     }
 
     private fun handleSelectProductTagSource(source: ProductTagSource) {
-        if(_productTagSourceStack.value.size == 1) {
-            val finalSource = if(isNeedToShowDefaultSource(source)) ProductTagSource.LastTagProduct
-                                else source
-            _productTagSourceStack.setValue { setOf(finalSource) }
-        }
+        val finalSource = if(isNeedToShowDefaultSource(source)) ProductTagSource.LastTagProduct else source
+        _productTagSourceStack.setValue { setOf(finalSource) }
     }
 
     private fun handleProductSelected(product: ProductUiModel) {
