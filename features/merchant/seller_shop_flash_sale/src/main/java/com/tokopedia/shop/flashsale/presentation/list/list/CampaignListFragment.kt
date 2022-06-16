@@ -116,6 +116,7 @@ class CampaignListFragment : BaseSimpleListFragment<CampaignAdapter, CampaignUiM
     private val viewModel by lazy { viewModelProvider.get(CampaignListViewModel::class.java) }
     private var onScrollDown: () -> Unit = {}
     private var onScrollUp: () -> Unit = {}
+    private var onEmptyState: () -> Unit = {}
     private var onNavigateToActiveCampaignTab: () -> Unit = {}
     private var shareComponentBottomSheet: UniversalShareBottomSheet? = null
 
@@ -403,6 +404,13 @@ class CampaignListFragment : BaseSimpleListFragment<CampaignAdapter, CampaignUiM
             handleSecondTabEmptyState(hasCampaign)
         }
 
+        if (totalCampaign == ZERO) {
+            onEmptyState()
+        } else {
+            binding?.searchBar?.gone()
+            onScrollDown()
+        }
+
     }
 
     private fun handleFirstTabEmptyState(hasCampaign : Boolean, hasDraft : Boolean, remainingQuota: Int) {
@@ -629,5 +637,9 @@ class CampaignListFragment : BaseSimpleListFragment<CampaignAdapter, CampaignUiM
     private fun routeToPmSubscribePage() {
         val intent = RouteManager.getIntent(context, POWER_MERCHANT_SUBSCRIBE)
         startActivity(intent)
+    }
+
+    fun setOnEmptyState(onEmptyState : () -> Unit) {
+        this.onEmptyState = onEmptyState
     }
 }

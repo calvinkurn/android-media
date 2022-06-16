@@ -178,6 +178,13 @@ class CampaignListContainerFragment : BaseDaggerFragment() {
         }
     }
 
+    private val onEmptyState : () -> Unit = {
+        binding?.run {
+            tabsUnify.getUnifyTabLayout().visible()
+            alignRecyclerViewToTabsBottom()
+        }
+    }
+
     private fun displayTabs(tabs: List<TabMeta>) {
         val fragments = createFragments(tabs)
         val pagerAdapter =
@@ -207,6 +214,7 @@ class CampaignListContainerFragment : BaseDaggerFragment() {
             fragment.setOnScrollDownListener { onRecyclerViewScrollDown() }
             fragment.setOnScrollUpListener { onRecyclerViewScrollUp() }
             fragment.setOnNavigateToActiveCampaignListener { focusTo(TAB_POSITION_FIRST) }
+            fragment.setOnEmptyState { onEmptyState() }
 
             val tabName = "${tab.name} (${tab.totalCampaign})"
             pages.add(Pair(tabName, fragment))
