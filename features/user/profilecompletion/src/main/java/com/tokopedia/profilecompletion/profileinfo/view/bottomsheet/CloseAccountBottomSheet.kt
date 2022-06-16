@@ -1,12 +1,10 @@
 package com.tokopedia.profilecompletion.profileinfo.view.bottomsheet
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.profilecompletion.databinding.LayoutBottomsheetCloseAccountBinding
 import com.tokopedia.profilecompletion.profileinfo.data.Detail
 import com.tokopedia.unifycomponents.BottomSheetUnify
@@ -39,43 +37,25 @@ class CloseAccountBottomSheet(private val detail: Detail) : BottomSheetUnify() {
 
     private fun setViewRequireLabel1(isShow: Boolean) {
         bindingChild?.apply {
-            if (isShow) {
-                tgRequirementDesc1.show()
-                tgRequirementDesc1Center.hide()
-                labelRequirementCheck1.show()
-            } else {
-                tgRequirementDesc1.hide()
-                tgRequirementDesc1Center.show()
-                labelRequirementCheck1.hide()
-            }
+            tgRequirementDesc1.showWithCondition(isShow)
+            tgRequirementDesc1Center.showWithCondition(!isShow)
+            labelRequirementCheck1.showWithCondition(isShow)
         }
     }
 
     private fun setViewRequireLabel2(isShow: Boolean) {
         bindingChild?.apply {
-            if (isShow) {
-                tgRequirementDesc2.show()
-                tgRequirementDesc2Center.hide()
-                labelRequirementCheck2.show()
-            } else {
-                tgRequirementDesc2.hide()
-                tgRequirementDesc2Center.show()
-                labelRequirementCheck2.hide()
-            }
+            tgRequirementDesc2.showWithCondition(isShow)
+            tgRequirementDesc2Center.showWithCondition(!isShow)
+            labelRequirementCheck2.showWithCondition(isShow)
         }
     }
 
     private fun setViewRequireLabel3(isShow: Boolean) {
         bindingChild?.apply {
-            if (isShow) {
-                tgRequirementDesc3.show()
-                tgRequirementDesc3Center.hide()
-                labelRequirementCheck3.show()
-            } else {
-                tgRequirementDesc3.hide()
-                tgRequirementDesc3Center.show()
-                labelRequirementCheck3.hide()
-            }
+            tgRequirementDesc3.showWithCondition(isShow)
+            tgRequirementDesc3Center.showWithCondition(!isShow)
+            labelRequirementCheck3.showWithCondition(isShow)
         }
     }
 
