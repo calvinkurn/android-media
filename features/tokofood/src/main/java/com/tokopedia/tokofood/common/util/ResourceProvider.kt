@@ -31,4 +31,8 @@ class ResourceProvider @Inject constructor(@ApplicationContext val context: Cont
     fun getOpsHoursTitle(): String? {
         return getString(R.string.text_ops_hour_title)
     }
+
+    fun getOutOfStockWording(): String? {
+        return getString(R.string.text_out_of_stock)
+    }
 }

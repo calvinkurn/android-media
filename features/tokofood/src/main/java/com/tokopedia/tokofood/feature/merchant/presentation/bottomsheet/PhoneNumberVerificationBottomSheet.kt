@@ -18,6 +18,7 @@ class PhoneNumberVerificationBottomSheet(private val clickListener: OnButtonCtaC
 
     companion object {
         private const val BUNDLE_KEY_BOTTOM_SHEET_DATA = "BOTTOM_SHEET_DATA"
+        private const val TAG = "PhoneNumberVerificationBottomSheet"
 
         @JvmStatic
         fun createInstance(bottomSheetData: CartTokoFoodBottomSheet,
@@ -63,6 +64,6 @@ class PhoneNumberVerificationBottomSheet(private val clickListener: OnButtonCtaC
     }
 
     fun show(fragmentManager: FragmentManager) {
-        showNow(fragmentManager, this::class.java.simpleName)
+        showNow(fragmentManager, TAG)
     }
 }

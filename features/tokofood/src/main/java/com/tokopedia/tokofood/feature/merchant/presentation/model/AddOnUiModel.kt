@@ -17,7 +17,8 @@ data class AddOnUiModel(
         var selectedAddOns: List<String> = listOf(),
         val maxQty: Int = 0,
         val minQty: Int = 0,
-        val options: List<OptionUiModel> = listOf()
+        val options: List<OptionUiModel> = listOf(),
+        val outOfStockWording: String = ""
 ) : Parcelable {
     @IgnoredOnParcel
     val isMultipleMandatory = minQty > Int.ONE
@@ -26,11 +27,8 @@ data class AddOnUiModel(
     val addOnItems = options
             .filter { it.isVisible }
             .map { optionUiModel ->
-
                 var description = optionUiModel.priceFmt
-                if (optionUiModel.isOutOfStock) description = "Stock habis"
-
-
+                if (optionUiModel.isOutOfStock) description = outOfStockWording
                 ListItemUnify(
                         title = optionUiModel.name,
                         description = description

@@ -198,7 +198,8 @@ class MerchantPageViewModel @Inject constructor(
                 isRequired = variant.isRequired,
                 maxQty = variant.maxQty,
                 minQty = variant.minQty,
-                options = mapOptionDetailsToOptionUiModels(variant.maxQty, variant.options)
+                options = mapOptionDetailsToOptionUiModels(variant.maxQty, variant.options),
+                outOfStockWording = resourceProvider.getOutOfStockWording().orEmpty()
         )
     }
 

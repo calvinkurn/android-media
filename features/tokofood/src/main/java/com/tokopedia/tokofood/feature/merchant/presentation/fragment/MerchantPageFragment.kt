@@ -1119,6 +1119,7 @@ class MerchantPageFragment : BaseMultiFragment(),
         if (resultCode == Activity.RESULT_OK) {
             validateAddressData()
         }
+        // TODO implement the negative cases for login page use case
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
