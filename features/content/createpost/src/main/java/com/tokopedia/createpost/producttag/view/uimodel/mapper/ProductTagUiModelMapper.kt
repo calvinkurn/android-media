@@ -105,7 +105,7 @@ class ProductTagUiModelMapper @Inject constructor() {
                         priceOriginal = 0.0,
                         priceOriginalFmt = it.originalPrice,
                         priceDiscount = 0.0,
-                        priceDiscountFmt = "",
+                        priceDiscountFmt = if(it.discountPercentage != 0.0) it.price else "",
                         totalSold = 0,
                         totalSoldFmt = it.countSold,
                         isBebasOngkir = it.freeOngkir.isActive,
