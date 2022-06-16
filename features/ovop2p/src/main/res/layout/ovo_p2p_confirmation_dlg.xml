@@ -13,7 +13,7 @@
         android:layout_marginLeft="@dimen/unify_space_24"
         android:layout_marginTop="@dimen/unify_space_24"
         android:text="@string/ovop2p_conf_trnsfr"
-        android:textColor="@color/dms_ovop2p_clr_4c2a86"
+        android:textColor="@color/ovop2p_dms_clr_4c2a86"
         android:textSize="@dimen/ovop2p_sp16"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -24,7 +24,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/ovop2p_dp30"
         android:text="@string/ovop2p_pnrm"
-        android:textColor="@color/dms_ovop2p_clr_6b767e"
+        android:textColor="@color/ovop2p_dms_clr_6b767e"
         android:textSize="@dimen/ovop2p_sp12"
         app:layout_constraintStart_toStartOf="@+id/txtv_trnsfr"
         app:layout_constraintTop_toBottomOf="@+id/txtv_trnsfr" />
@@ -44,7 +44,7 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/unify_space_2"
         tools:text="Juwita Restianisa"
-        android:textColor="@color/dms_ovop2p_clr_2d263b"
+        android:textColor="@color/ovop2p_dms_clr_2d263b"
         android:textSize="@dimen/ovop2p_sp16"
         android:visibility="gone"
         app:layout_constraintStart_toEndOf="@+id/rcvr_img"
@@ -56,7 +56,7 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/unify_space_2"
         tools:text="082332443770"
-        android:textColor="@color/dms_ovop2p_clr_6b767e"
+        android:textColor="@color/ovop2p_dms_clr_6b767e"
         android:textSize="@dimen/ovop2p_sp12"
         app:layout_constraintStart_toEndOf="@+id/rcvr_img"
         app:layout_constraintTop_toBottomOf="@+id/rcvr_name" />
@@ -68,7 +68,7 @@
         android:layout_marginTop="@dimen/ovop2p_dp28"
         android:lineSpacingExtra="@dimen/ovop2p_sp12"
         android:text="@string/ovop2p_sumdan"
-        android:textColor="@color/dms_ovop2p_clr_6b767e"
+        android:textColor="@color/ovop2p_dms_clr_6b767e"
         android:textSize="@dimen/ovop2p_sp12"
         app:layout_constraintStart_toStartOf="@+id/rcvr_img"
         app:layout_constraintTop_toBottomOf="@+id/rcvr_no" />
@@ -79,7 +79,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/unify_space_4"
         android:text="@string/ovop2p_ovocsh"
-        android:textColor="@color/dms_ovop2p_clr_2d263b"
+        android:textColor="@color/ovop2p_dms_clr_2d263b"
         android:textSize="@dimen/ovop2p_sp16"
         app:layout_constraintStart_toStartOf="@+id/trnsfr_mode"
         app:layout_constraintTop_toBottomOf="@+id/trnsfr_mode" />
@@ -91,7 +91,7 @@
         android:layout_marginTop="@dimen/ovop2p_dp28"
         android:lineSpacingExtra="@dimen/ovop2p_sp12"
         android:text="@string/ovop2p_nmnl"
-        android:textColor="@color/dms_ovop2p_clr_6b767e"
+        android:textColor="@color/ovop2p_dms_clr_6b767e"
         android:textSize="@dimen/ovop2p_sp12"
         app:layout_constraintStart_toStartOf="@+id/trnsfr_mode_val"
         app:layout_constraintTop_toBottomOf="@+id/trnsfr_mode_val" />
@@ -102,7 +102,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/unify_space_4"
         tools:text="Rp13.000"
-        android:textColor="@color/dms_ovop2p_clr_2d263b"
+        android:textColor="@color/ovop2p_dms_clr_2d263b"
         android:textSize="@dimen/ovop2p_sp18"
         app:layout_constraintStart_toStartOf="@+id/amt_ttl"
         app:layout_constraintTop_toBottomOf="@+id/amt_ttl" />
@@ -114,7 +114,7 @@
         android:layout_marginTop="@dimen/ovop2p_dp28"
         android:lineSpacingExtra="@dimen/ovop2p_sp12"
         android:text="@string/ovop2p_psn"
-        android:textColor="@color/dms_ovop2p_clr_6b767e"
+        android:textColor="@color/ovop2p_dms_clr_6b767e"
         android:textSize="@dimen/ovop2p_sp12"
         app:layout_constraintStart_toStartOf="@+id/trnsfr_amt"
         app:layout_constraintTop_toBottomOf="@+id/trnsfr_amt" />
@@ -126,7 +126,7 @@
         android:layout_marginTop="@dimen/unify_space_4"
         android:lineSpacingExtra="@dimen/ovop2p_sp8"
         android:text="@string/ovop2p_terkas"
-        android:textColor="@color/dms_ovop2p_clr_2d263b"
+        android:textColor="@color/ovop2p_dms_clr_2d263b"
         android:textSize="@dimen/ovop2p_sp16"
         app:layout_constraintStart_toStartOf="@+id/msg_ttl"
         app:layout_constraintTop_toBottomOf="@+id/msg_ttl" />
@@ -159,7 +159,7 @@
         android:gravity="center_horizontal"
         android:padding="@dimen/ovop2p_dp5"
         android:text="@string/ovop2p_btlkn"
-        android:textColor="@color/dms_ovop2p_clr_06b3ba"
+        android:textColor="@color/ovop2p_dms_clr_06b3ba"
         android:textSize="@dimen/ovop2p_sp14"
         app:layout_constraintTop_toBottomOf="@+id/proceed_dlg" />
 

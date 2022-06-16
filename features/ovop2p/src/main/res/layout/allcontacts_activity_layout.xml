@@ -22,7 +22,7 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/unify_space_16"
         android:text="@string/ovop2p_trnsfe_to"
-        android:textColor="@color/dms_ovop2p_clr_06b3ba"
+        android:textColor="@color/ovop2p_dms_clr_06b3ba"
         app:layout_constraintBottom_toBottomOf="@+id/scanqr_imgvw"
         app:layout_constraintStart_toEndOf="@id/scanqr_imgvw"
         app:layout_constraintTop_toTopOf="@+id/scanqr_imgvw" />
@@ -32,7 +32,7 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/unify_space_2"
         android:layout_marginTop="@dimen/unify_space_16"
-        android:background="@color/dms_ovop2p_clr_dee0e2"
+        android:background="@color/ovop2p_dms_clr_dee0e2"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/scanqr_imgvw" />
 

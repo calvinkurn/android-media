@@ -59,7 +59,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/unify_space_24"
-                android:textColor="@color/dms_ovop2p_clr_6b767e"
+                android:textColor="@color/ovop2p_dms_clr_6b767e"
                 android:textSize="@dimen/ovop2p_sp12"
                 app:layout_constraintStart_toStartOf="@id/search_no"
                 app:layout_constraintTop_toBottomOf="@id/search_no"
@@ -83,7 +83,7 @@
                 android:layout_marginTop="@dimen/ovop2p_dp7"
                 android:paddingTop="@dimen/unify_space_16"
                 android:text="@string/ovop2p_ovocsh"
-                android:textColor="@color/dms_ovop2p_clr_2d263b"
+                android:textColor="@color/ovop2p_dms_clr_2d263b"
                 android:textSize="@dimen/ovop2p_sp14"
                 app:layout_constraintStart_toEndOf="@id/ovo_logo"
                 app:layout_constraintTop_toBottomOf="@+id/src_fnd" />
@@ -97,7 +97,7 @@
                 android:paddingTop="@dimen/unify_space_2"
                 android:paddingBottom="@dimen/unify_space_16"
                 android:text="@string/ovop2p_sal"
-                android:textColor="@color/dms_ovop2p_clr_8c949b"
+                android:textColor="@color/ovop2p_dms_clr_8c949b"
                 android:textSize="@dimen/ovop2p_sp12"
                 app:layout_constraintStart_toEndOf="@+id/ovo_logo"
                 app:layout_constraintTop_toBottomOf="@+id/ovo_cash" />
@@ -115,7 +115,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/unify_space_0"
                 android:layout_marginTop="@dimen/unify_space_40"
-                android:background="@color/dms_ovop2p_clr_f8f8f8"
+                android:background="@color/ovop2p_dms_clr_f8f8f8"
                 app:layout_constraintBottom_toBottomOf="@+id/amt_err_txtv"
                 app:layout_constraintTop_toBottomOf="@+id/cntnr_vw" />
 
@@ -126,7 +126,7 @@
                 android:paddingLeft="@dimen/ovop2p_dp10"
                 android:paddingTop="@dimen/unify_space_16"
                 android:text="@string/ovop2p_nomtra"
-                android:textColor="@color/dms_ovop2p_clr_6b767e"
+                android:textColor="@color/ovop2p_dms_clr_6b767e"
                 android:textSize="@dimen/ovop2p_sp12"
                 app:layout_constraintStart_toStartOf="@+id/search_no"
                 app:layout_constraintTop_toTopOf="@+id/cntnr_vw_amt" />
@@ -138,7 +138,7 @@
                 android:paddingLeft="@dimen/ovop2p_dp10"
                 android:paddingTop="@dimen/ovop2p_dp10"
                 android:text="@string/ovop2p_symb_rp"
-                android:textColor="@color/dms_ovop2p_clr_2d263b"
+                android:textColor="@color/ovop2p_dms_clr_2d263b"
                 android:textSize="@dimen/ovop2p_sp24"
                 app:layout_constraintStart_toStartOf="@+id/search_no"
                 app:layout_constraintTop_toBottomOf="@+id/nmnl_trnsfr" />
@@ -152,8 +152,8 @@
                 android:maxLength="18"
                 android:paddingTop="@dimen/ovop2p_dp10"
                 android:paddingBottom="@dimen/unify_space_16"
-                android:textColor="@color/dms_ovop2p_clr_2d263b"
-                android:textColorHint="@color/dms_ovop2p_clr_2d263b"
+                android:textColor="@color/ovop2p_dms_clr_2d263b"
+                android:textColorHint="@color/ovop2p_dms_clr_2d263b"
                 android:textSize="@dimen/ovop2p_sp24"
                 android:theme="@style/editTextTheme"
                 app:layout_constraintEnd_toEndOf="@+id/cntnr_vw"
@@ -166,7 +166,7 @@
                 android:layout_height="wrap_content"
                 android:paddingLeft="@dimen/ovop2p_dp10"
                 android:text="@string/ovop2p_err"
-                android:textColor="@color/dms_ovop2p_clr_dd191d"
+                android:textColor="@color/ovop2p_dms_clr_dd191d"
                 android:textSize="@dimen/ovop2p_sp12"
                 android:visibility="gone"
                 app:layout_constraintStart_toStartOf="@+id/search_no"
@@ -188,7 +188,7 @@
                     android:layout_height="wrap_content"
                     android:hint="@string/ovop2p_psn_opt"
                     android:maxLength="25"
-                    android:textColor="@color/dms_ovop2p_clr_6b767e"
+                    android:textColor="@color/ovop2p_dms_clr_6b767e"
                     android:textSize="@dimen/ovop2p_sp16"
                     android:theme="@style/msgEditTextTheme" />
             </com.google.android.material.textfield.TextInputLayout>
