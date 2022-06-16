@@ -101,6 +101,7 @@ class ShippingDurationAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() 
                 mData[position] as LogisticPromoUiModel,
                 shippingDurationAdapterListener
             )
+            is NotifierViewHolder -> holder.bindData(mData[position] as NotifierModel)
         }
     }
 

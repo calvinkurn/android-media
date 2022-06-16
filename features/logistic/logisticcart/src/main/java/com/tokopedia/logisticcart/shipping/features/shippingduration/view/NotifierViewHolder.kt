@@ -3,6 +3,7 @@ package com.tokopedia.logisticcart.shipping.features.shippingduration.view
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.logisticcart.R
+import com.tokopedia.logisticcart.shipping.model.NotifierModel
 import com.tokopedia.unifycomponents.ticker.Ticker
 
 class NotifierViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
@@ -13,7 +14,7 @@ class NotifierViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
         @JvmStatic val LAYOUT = R.layout.item_notifier
     }
 
-    fun bindData() {
-        tickerNotifier.setTextDescription(itemView.context.getString(R.string.label_hardcoded_courier_ticker_logistic))
+    fun bindData(data: NotifierModel) {
+        data.text.let { tickerNotifier.setTextDescription(it) }
     }
 }
