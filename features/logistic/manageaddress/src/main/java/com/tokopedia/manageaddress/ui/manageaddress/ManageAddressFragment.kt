@@ -118,7 +118,7 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener {
             vpManageAddress.adapter = tabAdapter
             vpManageAddress.isUserInputEnabled = false
             TabsUnifyMediator(tlManageAddress, vpManageAddress) { tab, position ->
-                tab.setCustomText(fragmentPage()[position].first)
+                tab.setCustomText(fragmentPage().getOrNull(position)?.first ?: getString(R.string.tablayout_label_main))
             }
         }
     }
