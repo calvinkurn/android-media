@@ -22,8 +22,8 @@ import com.tokopedia.logisticCommon.data.entity.address.SaveAddressDataModel
 import com.tokopedia.manageaddress.R
 import com.tokopedia.manageaddress.databinding.FragmentManageAddressBinding
 import com.tokopedia.manageaddress.di.ManageAddressComponent
-import com.tokopedia.manageaddress.ui.manageaddress.mainaddress.MainAddressFragment
 import com.tokopedia.manageaddress.ui.manageaddress.fromfriend.FromFriendFragment
+import com.tokopedia.manageaddress.ui.manageaddress.mainaddress.MainAddressFragment
 import com.tokopedia.manageaddress.util.ManageAddressConstant
 import com.tokopedia.manageaddress.util.ManageAddressConstant.DEFAULT_ERROR_MESSAGE
 import com.tokopedia.manageaddress.util.ManageAddressConstant.EXTRA_QUERY
@@ -104,7 +104,6 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener {
 
         initView()
         setSearchView(viewModel.savedQuery)
-
     }
 
     private fun initView() {
@@ -115,7 +114,6 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener {
         }
 
         binding?.apply {
-
             tabAdapter = activity?.let { ManageAddressViewPagerAdapter(it, fragmentPage()) }
             vpManageAddress.adapter = tabAdapter
             vpManageAddress.isUserInputEnabled = false
@@ -157,7 +155,10 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener {
     private fun fragmentPage(): List<Pair<String, Fragment>> {
         return listOf(
             Pair(getString(R.string.tablayout_label_main), MainAddressFragment.newInstance(bundleData())),
-            Pair(getString(R.string.tablayout_label_from_friend), FromFriendFragment())
+            Pair(
+                getString(R.string.tablayout_label_from_friend),
+                FromFriendFragment.newInstance(viewModel.savedQuery)
+            )
         )
     }
 
@@ -246,8 +247,6 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener {
 
             searchBarPlaceholder = getString(R.string.label_find_address)
         }
-
-
     }
 
     private fun openFormAddAddressView() {
