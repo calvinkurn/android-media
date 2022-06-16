@@ -4,6 +4,5 @@ import com.tokopedia.shop.flashsale.domain.entity.CampaignUiModel
 
 data class CampaignPrerequisiteData(
     val drafts: List<CampaignUiModel>,
-    val remainingQuota: Int,
-    val isEligible : Boolean
+    val remainingQuota: Int
 )

@@ -28,7 +28,7 @@ import com.tokopedia.shop.flashsale.common.share_component.ShareComponentInstanc
 import com.tokopedia.shop.flashsale.di.component.DaggerShopFlashSaleComponent
 import com.tokopedia.shop.flashsale.domain.entity.CampaignMeta
 import com.tokopedia.shop.flashsale.domain.entity.CampaignUiModel
-import com.tokopedia.shop.flashsale.domain.entity.aggregate.CampaignPrerequisiteData
+import com.tokopedia.shop.flashsale.domain.entity.aggregate.CampaignCreationEligibility
 import com.tokopedia.shop.flashsale.domain.entity.aggregate.ShareComponentMetadata
 import com.tokopedia.shop.flashsale.presentation.cancelation.CancelCampaignBottomSheet
 import com.tokopedia.shop.flashsale.presentation.creation.information.CampaignInformationActivity
@@ -138,6 +138,7 @@ class CampaignListFragment : BaseSimpleListFragment<CampaignAdapter, CampaignUiM
         observeCampaigns()
         observeCampaignPrerequisiteData()
         observeShareComponentMetadata()
+        observeCampaignCreationEligibility()
     }
 
     override fun onResume() {
@@ -148,14 +149,16 @@ class CampaignListFragment : BaseSimpleListFragment<CampaignAdapter, CampaignUiM
 
     private fun setupView() {
         binding?.btnCreateCampaign?.setOnClickListener {
-            validateSellerEligibility(viewModel.getPrerequisiteData())
+            binding?.btnCreateCampaign.showLoading()
+            viewModel.validateCampaignCreationEligibility()
         }
 
         binding?.btnDraft?.setOnClickListener {
-            showExceedMaxAllowedDraftBottomSheet(viewModel.getPrerequisiteData().drafts)
+            showDraftListBottomSheet(viewModel.getCampaignDrafts())
         }
         binding?.btnCreateCampaignEmptyState?.setOnClickListener {
-            validateSellerEligibility(viewModel.getPrerequisiteData())
+            binding?.btnCreateCampaignEmptyState.showLoading()
+            viewModel.validateCampaignCreationEligibility()
         }
         binding?.btnNavigateToFirstActiveCampaign?.setOnClickListener {
             onNavigateToActiveCampaignTab()
@@ -217,7 +220,7 @@ class CampaignListFragment : BaseSimpleListFragment<CampaignAdapter, CampaignUiM
             when (result) {
                 is Success -> {
                     binding?.loader?.gone()
-                    viewModel.setPrerequisiteData(result.data)
+                    viewModel.setCampaignDrafts(result.data.drafts)
                     handleCampaignPrerequisiteData(result.data.drafts.size, result.data.remainingQuota)
                 }
                 is Fail -> {
@@ -260,7 +263,21 @@ class CampaignListFragment : BaseSimpleListFragment<CampaignAdapter, CampaignUiM
             }
         }
     }
+    private fun observeCampaignCreationEligibility() {
+        viewModel.creationEligibility.observe(viewLifecycleOwner) { result ->
+            binding?.btnCreateCampaignEmptyState.stopLoading()
+            binding?.btnCreateCampaign.stopLoading()
 
+            when (result) {
+                is Success -> {
+                    handleEligibilityResult(result.data)
+                }
+                is Fail -> {
+                    binding?.root showError result.throwable
+                }
+            }
+        }
+    }
 
     fun setOnScrollDownListener(onScrollDown: () -> Unit = {}) {
         this.onScrollDown = onScrollDown
@@ -447,7 +464,9 @@ class CampaignListFragment : BaseSimpleListFragment<CampaignAdapter, CampaignUiM
         binding?.emptyState?.setDescription( getString(R.string.sfs_no_campaign_history_description))
     }
 
-    private fun validateSellerEligibility(data: CampaignPrerequisiteData) {
+    private fun handleEligibilityResult(data: CampaignCreationEligibility) {
+        val drafts = viewModel.getCampaignDrafts()
+
         if (!data.isEligible) {
             showIneligibleAccess(requireActivity())
             return
@@ -458,8 +477,8 @@ class CampaignListFragment : BaseSimpleListFragment<CampaignAdapter, CampaignUiM
             return
         }
 
-        if (data.drafts.size >= MAX_DRAFT_COUNT) {
-            showExceedMaxAllowedDraftBottomSheet(data.drafts)
+        if (drafts.size >= MAX_DRAFT_COUNT) {
+            showDraftListBottomSheet(drafts)
             return
         }
 
@@ -596,7 +615,7 @@ class CampaignListFragment : BaseSimpleListFragment<CampaignAdapter, CampaignUiM
         dialog.show()
     }
 
-    private fun showExceedMaxAllowedDraftBottomSheet(drafts : List<CampaignUiModel>) {
+    private fun showDraftListBottomSheet(drafts : List<CampaignUiModel>) {
         DraftListBottomSheet.showUsingCampaignUiModel(
             childFragmentManager,
             drafts,
