@@ -213,7 +213,7 @@ open class ProductAttachmentUiModel protected constructor(
     }
 
     private fun getField(): String {
-        return if (blastId != "0") {
+        return if (blastId.isNotEmpty() && blastId != "0") {
             "/broadcast"
         } else {
             "/chat"
@@ -225,11 +225,7 @@ open class ProductAttachmentUiModel protected constructor(
     }
 
     fun fromBroadcast(): Boolean {
-        return blastId != "0"
-    }
-
-    fun isFlashSaleProduct(): Boolean {
-        return campaignId == "-10000"
+        return (blastId.isNotEmpty() && blastId != "0")
     }
 
     fun isProductCampaign(): Boolean {
