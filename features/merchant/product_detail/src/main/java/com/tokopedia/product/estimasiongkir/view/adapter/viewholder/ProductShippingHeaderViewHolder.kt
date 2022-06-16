@@ -63,7 +63,6 @@ class ProductShippingHeaderViewHolder(view: View,
             element.freeOngkirPrice,
             element.shouldShowTxtTokoNow(),
             element.freeOngkirTokoNowText,
-            element.freeOngkirPriceOriginal,
             element.freeOngkirDesc,
             element.isFreeOngkirQuotaEmpty,
             element.freeOngkirEtas
@@ -111,7 +110,6 @@ class ProductShippingHeaderViewHolder(view: View,
         freeOngkirPrice: String,
         shouldShowTxtTokoNow: Boolean,
         freeOngkirTokoNowText: String,
-        freeOngkirPriceOriginal: Double,
         freeOngkirDesc: String,
         isFreeOngkirQuotaEmpty: Boolean,
         freeOngkirEtas: List<FreeShipping.Eta>
@@ -143,7 +141,42 @@ class ProductShippingHeaderViewHolder(view: View,
 
         txtTokoNow?.hide()
 
-//        if(freeOngkirEtas.size > 2){
+        if (freeOngkirEtas.size > 1) renderMultipleBoEta(
+            freeOngkirEtas,
+            isFreeOngkir,
+            isFreeOngkirQuotaEmpty
+        )
+        else renderSingleBoEta(freeOngkirEtas.firstOrNull(), isFreeOngkir, isFreeOngkirQuotaEmpty)
+    }
+
+    private fun renderSingleBoEta(
+        freeOngkirEta: FreeShipping.Eta?,
+        isFreeOngkir: Boolean,
+        isFreeOngkirQuotaEmpty: Boolean
+    ) {
+        if (freeOngkirEta == null) return
+        val freeOngkirPrice = freeOngkirEta.shippingPrice
+        val freeOngkirEstimation = freeOngkirEta.etaText
+        val freeOngkirPriceOriginal = freeOngkirEta.rawShippingRate
+
+        txtFreeOngkirPrice?.shouldShowWithAction(isFreeOngkir && !isFreeOngkirQuotaEmpty && freeOngkirPrice.isNotEmpty()) {
+            txtFreeOngkirPrice.text = freeOngkirPrice
+        }
+        txtFreeOngkirEstimation?.shouldShowWithAction(isFreeOngkir && freeOngkirEstimation.isNotEmpty()) {
+            txtFreeOngkirEstimation.text = freeOngkirEstimation
+        }
+
+        txtFreeOngkirPriceOriginal?.showIfWithBlock(isFreeOngkir && !isFreeOngkirQuotaEmpty && freeOngkirPriceOriginal > 0) {
+            text = freeOngkirPriceOriginal.getCurrencyFormatted()
+            paintFlags = Paint.STRIKE_THRU_TEXT_FLAG
+        }
+    }
+
+    private fun renderMultipleBoEta(
+        freeOngkirEtas: List<FreeShipping.Eta>,
+        isFreeOngkir: Boolean,
+        isFreeOngkirQuotaEmpty: Boolean
+    ) {
         freeOngkirEtas.forEach { eta ->
             val etaView = ViewFreeShippingEtaBinding.inflate(itemView.context.layoutInflater)
 
