@@ -379,7 +379,7 @@ class ShopShowcaseAddFragment : BaseDaggerFragment(), HasComponent<ShopShowcaseA
                 if (!isActionEdit) {
                     showcaseAddAdapter?.getSelectedProductList()?.map {
                         if (it is ShowcaseProduct) {
-                            addShopShowcaseParam.productIDs.add(it.productId)
+                            addShopShowcaseParam.productIdList.add(it.productId)
                         }
                     }
                     createShopShowcase(addShopShowcaseParam)
