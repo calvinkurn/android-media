@@ -615,6 +615,14 @@ data class SearchProductModel(
             @Expose
             val isShowTopAds: Boolean = false,
 
+            @SerializedName("componentId")
+            @Expose
+            val componentId: String = "",
+
+            @SerializedName("tracking_option")
+            @Expose
+            val trackingOption: Int = 0,
+
             @SerializedName("list")
             @Expose
             val globalNavItems: List<GlobalNavItem> = ArrayList()
@@ -659,7 +667,11 @@ data class SearchProductModel(
 
             @SerializedName("logo_url")
             @Expose
-            val logoUrl: String = ""
+            val logoUrl: String = "",
+
+            @SerializedName("componentId")
+            @Expose
+            val componentId: String = "",
     )
 
     data class SearchInspirationCarousel(

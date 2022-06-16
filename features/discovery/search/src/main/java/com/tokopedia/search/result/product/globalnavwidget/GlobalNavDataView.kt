@@ -2,8 +2,10 @@ package com.tokopedia.search.result.product.globalnavwidget
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.analyticconstant.DataLayer
+import com.tokopedia.discovery.common.analytics.SearchComponentTracking
+import com.tokopedia.discovery.common.analytics.searchComponentTracking
 import com.tokopedia.kotlin.model.ImpressHolder
-import com.tokopedia.search.result.domain.model.SearchProductModel.GlobalNavItem
+import com.tokopedia.search.result.domain.model.SearchProductModel
 import com.tokopedia.search.result.domain.model.SearchProductModel.GlobalSearchNavigation
 import com.tokopedia.search.result.presentation.view.typefactory.ProductListTypeFactory
 
@@ -18,7 +20,18 @@ class GlobalNavDataView(
     val seeAllUrl: String = "",
     val isShowTopAds: Boolean = false,
     val itemList: List<Item> = listOf(),
-): Visitable<ProductListTypeFactory?>, ImpressHolder() {
+    val componentId: String = "",
+    val trackingOption: Int = 0,
+    val dimension90: String = "",
+): Visitable<ProductListTypeFactory?>, ImpressHolder(),
+    SearchComponentTracking by searchComponentTracking(
+        trackingOption = trackingOption,
+        keyword = keyword,
+        valueName = title,
+        componentId = componentId,
+        applink = seeAllApplink,
+        dimension90 = dimension90,
+    ) {
 
     override fun type(typeFactory: ProductListTypeFactory?): Int {
         return typeFactory?.type(this) ?: 0
@@ -37,7 +50,18 @@ class GlobalNavDataView(
         val backgroundUrl: String = "",
         val logoUrl: String = "",
         val position: Int = 0,
-    ) {
+        val componentId: String = "",
+        val trackingOption: Int = 0,
+        val keyword: String = "",
+        val dimension90: String = "",
+    ) : SearchComponentTracking by searchComponentTracking(
+        trackingOption = trackingOption,
+        keyword = keyword,
+        valueName = name,
+        componentId = componentId,
+        applink = applink,
+        dimension90 = dimension90,
+    )  {
 
         fun getGlobalNavItemAsObjectDataLayer(creativeName: String?): Any {
             return DataLayer.mapOf(
@@ -50,7 +74,10 @@ class GlobalNavDataView(
     }
 
     companion object {
-        fun create(globalSearchNavigation: GlobalSearchNavigation): GlobalNavDataView? {
+        fun create(
+            globalSearchNavigation: GlobalSearchNavigation,
+            dimension90: String,
+        ): GlobalNavDataView? {
             val data = globalSearchNavigation.data
             if (data.globalNavItems.isEmpty()) return null
 
@@ -63,11 +90,19 @@ class GlobalNavDataView(
                 seeAllApplink = data.seeAllApplink,
                 seeAllUrl = data.seeAllUrl,
                 isShowTopAds = data.isShowTopAds,
-                itemList = convertToViewModel(data.globalNavItems)
+                componentId = data.componentId,
+                trackingOption = data.trackingOption,
+                itemList = convertToViewModel(data, dimension90),
+                dimension90 = dimension90,
             )
         }
 
-        private fun convertToViewModel(globalNavItems: List<GlobalNavItem>): List<Item> {
+        private fun convertToViewModel(
+            data: SearchProductModel.GlobalNavData,
+            dimension90: String,
+        ): List<Item> {
+            val globalNavItems = data.globalNavItems
+
             return globalNavItems.mapIndexed { index, globalNavItem ->
                 val position = index + 1
 
@@ -83,6 +118,10 @@ class GlobalNavDataView(
                     globalNavItem.backgroundUrl,
                     globalNavItem.logoUrl,
                     position,
+                    globalNavItem.componentId,
+                    data.trackingOption,
+                    data.keyword,
+                    dimension90,
                 )
             }
         }

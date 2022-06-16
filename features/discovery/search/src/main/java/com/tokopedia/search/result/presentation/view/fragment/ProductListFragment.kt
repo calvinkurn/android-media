@@ -403,7 +403,7 @@ class ProductListFragment: BaseDaggerFragment(),
             productListener = this,
             tickerListener = this,
             suggestionListener = this,
-            globalNavListener = GlobalNavListenerDelegate(trackingQueue, activity),
+            globalNavListener = GlobalNavListenerDelegate(trackingQueue, activity, iris),
             bannerAdsListener = this,
             emptyStateListener = EmptyStateListenerDelegate(
                 activity,

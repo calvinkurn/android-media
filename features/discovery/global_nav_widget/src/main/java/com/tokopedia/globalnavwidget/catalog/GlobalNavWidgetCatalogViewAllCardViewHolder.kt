@@ -25,7 +25,7 @@ class GlobalNavWidgetCatalogViewAllCardViewHolder(
 
     internal fun bind() {
         setTitleSize()
-        bindCta()
+        bindViewAllCardClick()
     }
 
     private fun setTitleSize() {
@@ -35,7 +35,7 @@ class GlobalNavWidgetCatalogViewAllCardViewHolder(
         }
     }
 
-    private fun bindCta() {
+    private fun bindViewAllCardClick() {
         val text = context.getString(R.string.catalog_global_nav_view_all_cta)
         binding?.globalNavCatalogViewAllCard?.setCta(text) {
             globalNavWidgetListener.onClickSeeAll(globalNavWidgetModel)
