@@ -1,8 +1,6 @@
 package com.tokopedia.tokofood.feature.ordertracking.domain.mapper
 
-import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.ONE
-import com.tokopedia.tokofood.feature.ordertracking.domain.constants.DriverInfoIcon
 import com.tokopedia.tokofood.feature.ordertracking.domain.model.TokoFoodOrderDetailResponse
 import com.tokopedia.tokofood.feature.ordertracking.presentation.adapter.BaseOrderTrackingTypeFactory
 import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.AddonVariantItemUiModel
@@ -90,13 +88,7 @@ open class BaseOrderDetailSectionResult: OrderDetailSectionCommon() {
         karma: List<TokoFoodOrderDetailResponse.TokofoodOrderDetail.DriverDetails.Karma>
     ): List<DriverInformationUiModel> {
         return karma.map {
-            val icon = when (it.icon) {
-                DriverInfoIcon.VACCINE -> IconUnify.VACCINE
-                DriverInfoIcon.TERMOMETER -> IconUnify.TEMPERATURE
-                DriverInfoIcon.TELEPON -> IconUnify.CALL
-                else -> null
-            }
-            DriverInformationUiModel(iconInformation = icon, informationName = it.message)
+            DriverInformationUiModel(iconInformationUrl = it.icon, informationName = it.message)
         }
     }
 
