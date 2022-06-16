@@ -33,6 +33,6 @@ class ManageAddressViewPagerAdapter(fragmentActivity: FragmentActivity, private 
      * handle differential of fragment so its allow fragment to recreate for search
      */
     override fun getItemId(position: Int): Long {
-        return _pages[position].second.hashCode().toLong()
+        return _pages.getOrNull(position)?.second.hashCode().toLong()
     }
 }
