@@ -23,30 +23,14 @@ class ProductCardViewHolder(
     interface OnProductCardItemClickListener {
         fun onProductCardClicked(productListItem: ProductListItem, cardPositions: Pair<Int, Int>)
         fun onAtcButtonClicked(productListItem: ProductListItem, cardPositions: Pair<Int, Int>)
-        fun onAddNoteButtonClicked(
-            productId: String,
-            orderNote: String,
-            cardPositions: Pair<Int, Int>
-        )
-
+        fun onAddNoteButtonClicked(productId: String, orderNote: String, cardPositions: Pair<Int, Int>)
         fun onDeleteButtonClicked(cartId: String, productId: String, cardPositions: Pair<Int, Int>)
-        fun onIncreaseQtyButtonClicked(
-            productId: String,
-            quantity: Int,
-            cardPositions: Pair<Int, Int>
-        )
-
-        fun onDecreaseQtyButtonClicked(
-            productId: String,
-            quantity: Int,
-            cardPositions: Pair<Int, Int>
-        )
-
+        fun onIncreaseQtyButtonClicked(productId: String, quantity: Int, cardPositions: Pair<Int, Int>)
+        fun onDecreaseQtyButtonClicked(productId: String, quantity: Int, cardPositions: Pair<Int, Int>)
         fun onImpressProductCard(productListItem: ProductListItem, position: Int)
     }
 
     private var context: Context? = null
-
     private var productListItem: ProductListItem? = null
 
     init {
@@ -54,10 +38,9 @@ class ProductCardViewHolder(
         binding.root.setOnClickListener {
             // open product bottom sheet
             val dataSetPosition = binding.root.getTag(R.id.dataset_position) as Int
-            val productUiModel = binding.root.getTag(R.id.product_ui_model) as ProductUiModel
             productListItem?.let { productListItem ->
                 clickListener.onProductCardClicked(
-                    productListItem,
+                    productListItem = productListItem,
                     cardPositions = Pair(dataSetPosition, adapterPosition)
                 )
             }
@@ -66,7 +49,7 @@ class ProductCardViewHolder(
             val dataSetPosition = binding.root.getTag(R.id.dataset_position) as Int
             productListItem?.let { productListItem ->
                 clickListener.onAtcButtonClicked(
-                    productListItem,
+                    productListItem = productListItem,
                     cardPositions = Pair(dataSetPosition, adapterPosition)
                 )
             }
@@ -103,27 +86,16 @@ class ProductCardViewHolder(
             val productUiModel = binding.root.getTag(R.id.product_ui_model) as ProductUiModel
             val dataSetPosition = binding.root.getTag(R.id.dataset_position) as Int
             val quantity = binding.qeuProductQtyEditor.getValue()
-            if (quantity.isZero()) {
-                clickListener.onDeleteButtonClicked(
-                    cartId = productUiModel.cartId,
-                    productId = productUiModel.id,
-                    cardPositions = Pair(dataSetPosition, adapterPosition)
-                )
-            } else {
-                clickListener.onDecreaseQtyButtonClicked(
+            binding.qeuProductQtyEditor.subtractButton.isEnabled = quantity != Int.ONE
+            clickListener.onDecreaseQtyButtonClicked(
                     productId = productUiModel.id,
                     quantity = quantity,
                     cardPositions = Pair(dataSetPosition, adapterPosition)
-                )
-            }
+            )
         }
     }
 
-    fun bindData(
-        productListItem: ProductListItem,
-        productUiModel: ProductUiModel,
-        dataSetPosition: Int
-    ) {
+    fun bindData(productListItem: ProductListItem, productUiModel: ProductUiModel, dataSetPosition: Int) {
         // bind product ui model and data set position
         this.productListItem = productListItem
         bindImpressionProductListener(productListItem, dataSetPosition)
@@ -136,8 +108,7 @@ class ProductCardViewHolder(
         context?.run {
             // disabled condition
             if (productUiModel.isShopClosed) {
-                val greyColor =
-                    ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_NN400)
+                val greyColor = ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_NN400)
                 binding.productName.setTextColor(greyColor)
                 binding.productSummary.setTextColor(greyColor)
                 binding.productPrice.setTextColor(greyColor)
@@ -146,14 +117,10 @@ class ProductCardViewHolder(
             }
             // product is already added to cart
             if (productUiModel.isAtc) {
-                val greenColor =
-                    ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_GN50)
+                val greenColor = ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_GN50)
                 binding.productCell.setCardBackgroundColor(greenColor)
             } else {
-                val whiteColor = ContextCompat.getColor(
-                    this,
-                    com.tokopedia.unifyprinciples.R.color.Unify_Static_White
-                )
+                val whiteColor = ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_Static_White)
                 binding.productCell.setCardBackgroundColor(whiteColor)
             }
         }
@@ -190,6 +157,7 @@ class ProductCardViewHolder(
                 }
             }
             // set order detail quantity
+            binding.qeuProductQtyEditor.subtractButton.isEnabled = productUiModel.orderQty != Int.ONE
             binding.qeuProductQtyEditor.setValue(productUiModel.orderQty)
         }
         // atc button wording e.g. Pesan or 2 Pesanan
@@ -198,8 +166,7 @@ class ProductCardViewHolder(
             val orderCount = customOrderCount.toString()
             binding.atcButton.text = context?.run { this.getString(com.tokopedia.tokofood.R.string.text_orders, orderCount) }
         } else {
-            binding.atcButton.text =
-                context?.run { getString(com.tokopedia.tokofood.R.string.action_order) }
+            binding.atcButton.text = context?.run { getString(com.tokopedia.tokofood.R.string.action_order) }
         }
     }
 

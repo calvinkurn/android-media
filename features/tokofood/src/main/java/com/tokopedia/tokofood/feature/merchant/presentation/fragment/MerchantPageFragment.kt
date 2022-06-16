@@ -1,6 +1,8 @@
 package com.tokopedia.tokofood.feature.merchant.presentation.fragment
 
+import android.app.Activity
 import android.content.Context
+import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -23,6 +25,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseMultiFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.tokofood.DeeplinkMapperTokoFood
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.kotlin.extensions.view.hide
@@ -31,6 +34,7 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.tokofood.R
 import com.tokopedia.tokofood.common.constants.ShareComponentConstants
+import com.tokopedia.tokofood.common.domain.response.CartTokoFoodBottomSheet
 import com.tokopedia.tokofood.common.domain.response.CartTokoFoodData
 import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFoodData
 import com.tokopedia.tokofood.common.presentation.UiEvent
@@ -47,6 +51,10 @@ import com.tokopedia.tokofood.feature.merchant.domain.model.response.TokoFoodMer
 import com.tokopedia.tokofood.feature.merchant.domain.model.response.TokoFoodTickerDetail
 import com.tokopedia.tokofood.feature.merchant.presentation.adapter.MerchantPageCarouselAdapter
 import com.tokopedia.tokofood.feature.merchant.presentation.adapter.ProductListAdapter
+import com.tokopedia.tokofood.feature.merchant.presentation.bottomsheet.*
+import com.tokopedia.tokofood.feature.merchant.presentation.fragment.ManageLocationFragment.Companion.EMPTY_STATE_NO_ADDRESS
+import com.tokopedia.tokofood.feature.merchant.presentation.fragment.ManageLocationFragment.Companion.EMPTY_STATE_NO_PIN_POINT
+import com.tokopedia.tokofood.feature.merchant.presentation.fragment.ManageLocationFragment.Companion.EMPTY_STATE_OUT_OF_COVERAGE
 import com.tokopedia.tokofood.feature.merchant.presentation.bottomsheet.CategoryFilterBottomSheet
 import com.tokopedia.tokofood.feature.merchant.presentation.bottomsheet.ChangeMerchantBottomSheet
 import com.tokopedia.tokofood.feature.merchant.presentation.bottomsheet.CustomOrderDetailBottomSheet
@@ -93,7 +101,8 @@ class MerchantPageFragment : BaseMultiFragment(),
     ProductDetailBottomSheet.Listener,
     ProductDetailBottomSheet.OnProductDetailClickListener,
     ShareBottomsheetListener,
-    ChangeMerchantBottomSheet.ChangeMerchantListener {
+    ChangeMerchantBottomSheet.ChangeMerchantListener,
+    PhoneNumberVerificationBottomSheet.OnButtonCtaClickListener{
 
     private var parentActivity: HasViewModel<MultipleFragmentsViewModel>? = null
 
@@ -119,24 +128,20 @@ class MerchantPageFragment : BaseMultiFragment(),
         viewModelProvider.get(MerchantPageViewModel::class.java)
     }
 
-    private var merchantId: String = ""
-
-    private var productId: String = ""
-
     private val merchantShareComponentUtil: MerchantShareComponentUtil? by lazy(LazyThreadSafetyMode.NONE) {
         context?.let { MerchantShareComponentUtil(it) }
     }
 
-    private var universalShareBottomSheet: UniversalShareBottomSheet? = null
+    private var merchantId: String = ""
+    private var productId: String = ""
+    private var filterNameSelected: String = ""
 
+    private var universalShareBottomSheet: UniversalShareBottomSheet? = null
     private var merchantInfoBottomSheet: MerchantInfoBottomSheet? = null
     private var orderNoteBottomSheet: OrderNoteBottomSheet? = null
     private var customOrderDetailBottomSheet: CustomOrderDetailBottomSheet? = null
-
     private var carouselAdapter: MerchantPageCarouselAdapter? = null
     private var productListAdapter: ProductListAdapter? = null
-
-    private var filterNameSelected: String = ""
 
     private var merchantShareComponent: MerchantShareComponent? = null
 
@@ -156,6 +161,12 @@ class MerchantPageFragment : BaseMultiFragment(),
         productId = uri.getQueryParameter(DeeplinkMapperTokoFood.PARAM_PRODUCT_ID) ?: ""
         setHasOptionsMenu(true)
         initInjector()
+        // handle negative case #1 non-login
+        if (!userSession.isLoggedIn) { goToLoginPage() }
+        else {
+            // handle negative case: no-address,no-pinpoint
+            validateAddressData()
+        }
     }
 
     private fun initInjector() {
@@ -217,6 +228,7 @@ class MerchantPageFragment : BaseMultiFragment(),
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        setupAppBarLayoutListener()
         setBackgroundDefaultColor()
         setupMerchantLogo()
         setupMerchantProfileCarousel()
@@ -332,6 +344,7 @@ class MerchantPageFragment : BaseMultiFragment(),
 
     private fun hideLoader() {
         binding?.shimmeringMerchantPage?.root?.hide()
+        binding?.merchantInfoViewGroup?.show()
     }
 
     private fun shareMerchantPage(
@@ -399,40 +412,41 @@ class MerchantPageFragment : BaseMultiFragment(),
 
     private fun observeLiveData() {
         viewModel.getMerchantDataResult.observe(viewLifecycleOwner, { result ->
-            hideLoader()
             when (result) {
                 is Success -> {
-                    binding?.merchantInfoViewGroup?.show()
-                    setupAppBarLayoutListener()
                     val merchantData = result.data.tokofoodGetMerchantData
-                    // render ticker data if not empty
-                    val tickerData = merchantData.ticker
-                    if (!viewModel.isTickerDetailEmpty(tickerData)) {
-                        renderTicker(tickerData)
+                    val isDeliverable = merchantData.merchantProfile.deliverable
+                    if (isDeliverable) {
+                        hideLoader()
+                        // render ticker data if not empty
+                        val tickerData = merchantData.ticker
+                        if (!viewModel.isTickerDetailEmpty(tickerData)) {
+                            renderTicker(tickerData)
+                        }
+                        // render merchant logo, name, categories, carousel
+                        val merchantProfile = merchantData.merchantProfile
+                        renderMerchantProfile(merchantProfile)
+                        // setup merchant info bottom sheet
+                        val name = merchantProfile.name
+                        val address = merchantProfile.address
+                        val merchantOpsHours = viewModel.mapOpsHourDetailsToMerchantOpsHours(merchantProfile.opsHourDetail)
+                        setupMerchantInfoBottomSheet(name, address, merchantOpsHours)
+                        // render product list
+                        val isShopClosed = merchantProfile.opsHourFmt.isWarning
+                        val foodCategories = merchantData.categories
+                        val productListItems = viewModel.mapFoodCategoriesToProductListItems(isShopClosed, foodCategories)
+                        // set default category filter selection
+                        filterNameSelected = productListItems.firstOrNull()?.productCategory?.title.orEmpty()
+                        val finalProductListItems = viewModel.applyProductSelection(productListItems, viewModel.selectedProducts)
+                        renderProductList(finalProductListItems)
+                        renderProductList(finalProductListItems)
+                        setCategoryPlaceholder(filterNameSelected)
+                    } else {
+                        navigateToNewFragment(ManageLocationFragment.createInstance(
+                                negativeCaseId = EMPTY_STATE_OUT_OF_COVERAGE,
+                                merchantId = merchantId
+                        ))
                     }
-                    // render merchant logo, name, categories, carousel
-                    val merchantProfile = merchantData.merchantProfile
-                    renderMerchantProfile(merchantProfile)
-                    // setup merchant info bottom sheet
-                    val name = merchantProfile.name
-                    val address = merchantProfile.address
-                    val merchantOpsHours =
-                        viewModel.mapOpsHourDetailsToMerchantOpsHours(merchantProfile.opsHourDetail)
-                    setupMerchantInfoBottomSheet(name, address, merchantOpsHours)
-                    // render product list
-                    val isShopClosed = merchantProfile.opsHourFmt.isWarning
-                    val foodCategories = merchantData.categories
-                    val productListItems =
-                        viewModel.mapFoodCategoriesToProductListItems(isShopClosed, foodCategories)
-                    // set default category filter selection
-                    filterNameSelected =
-                        productListItems.firstOrNull()?.productCategory?.title.orEmpty()
-                    val finalProductListItems = viewModel.applyProductSelection(
-                        productListItems,
-                        viewModel.selectedProducts
-                    )
-                    renderProductList(finalProductListItems)
-                    setCategoryPlaceholder(filterNameSelected)
                 }
                 is Fail -> {
 
@@ -464,6 +478,13 @@ class MerchantPageFragment : BaseMultiFragment(),
                             (pair.first as? UpdateParam)?.productList?.firstOrNull()
                                 ?.let { requestParam ->
                                     (pair.second as? CartTokoFoodData)?.let { cartTokoFoodData ->
+                                        if (cartTokoFoodData.bottomSheet.isShowBottomSheet) {
+                                            val bottomSheet = PhoneNumberVerificationBottomSheet.createInstance(
+                                                    bottomSheetData = cartTokoFoodData.bottomSheet,
+                                                    clickListener = this@MerchantPageFragment
+                                            )
+                                            bottomSheet.show(childFragmentManager)
+                                        }
                                         cartTokoFoodData.carts.firstOrNull { data -> data.productId == requestParam.productId }
                                             ?.let { cartTokoFood ->
                                                 val cardPositions =
@@ -552,9 +573,7 @@ class MerchantPageFragment : BaseMultiFragment(),
                                             view = view,
                                             text = getString(com.tokopedia.tokofood.R.string.text_note_saved_message),
                                             duration = Toaster.LENGTH_SHORT,
-                                            type = Toaster.TYPE_NORMAL,
-                                            actionText = getString(com.tokopedia.tokofood.R.string.action_merchant_ok)
-                                        ).show()
+                                            type = Toaster.TYPE_NORMAL).show()
                                     }
                                 }
                         }
@@ -586,6 +605,13 @@ class MerchantPageFragment : BaseMultiFragment(),
                                                         this
                                                     )
                                                 )
+                                            }
+                                            view?.let { view ->
+                                                Toaster.build(
+                                                        view = view,
+                                                        text = getString(com.tokopedia.tokofood.R.string.text_product_removed),
+                                                        duration = Toaster.LENGTH_SHORT,
+                                                        type = Toaster.TYPE_NORMAL).show()
                                             }
                                         }
                                     }
@@ -710,7 +736,7 @@ class MerchantPageFragment : BaseMultiFragment(),
             this.tickerType = TYPE_WARNING
             this.tickerShape = SHAPE_FULL
             this.closeButtonVisibility = View.GONE
-            this.tickerTitle = tickerTitle
+            this.tickerTitle = tickerData.title
             this.setTextDescription(tickerData.subtitle)
             this.show()
         }
@@ -719,11 +745,15 @@ class MerchantPageFragment : BaseMultiFragment(),
     private fun renderMerchantProfile(merchantProfile: TokoFoodMerchantProfile) {
         val imageUrl = merchantProfile.imageURL ?: ""
         if (imageUrl.isNotBlank()) binding?.iuMerchantLogo?.setImageUrl(imageUrl)
+        if (merchantProfile.closeWarning?.isNotBlank() == true) {
+            binding?.tpgMerchantCloseWarning?.text = merchantProfile.closeWarning
+            binding?.tpgMerchantCloseWarning?.show()
+            binding?.tpgDotDivider?.show()
+        }
         binding?.tpgMerchantName?.text = merchantProfile.name
         binding?.tpgMerchantCategory?.text = merchantProfile.merchantCategories.joinToString()
         val carouselData = viewModel.mapMerchantProfileToCarouselData(merchantProfile)
         carouselAdapter?.setCarouselData(carouselData)
-        // TODO: add close in xxx
     }
 
     private fun setupMerchantInfoBottomSheet(
@@ -1019,6 +1049,12 @@ class MerchantPageFragment : BaseMultiFragment(),
         activityViewModel?.updateQuantity(updateParam, SOURCE)
     }
 
+    override fun onButtonCtaClickListener(appLink: String) {
+        var applicationLink = ApplinkConstInternalGlobal.ADD_PHONE
+        if (appLink.isNotEmpty()) applicationLink = appLink
+        context?.run { RouteManager.route(this, applicationLink) }
+    }
+
     private fun navigateToOrderCustomizationPage(
         cartId: String,
         productListItem: ProductListItem,
@@ -1050,9 +1086,53 @@ class MerchantPageFragment : BaseMultiFragment(),
 
     private fun getProductItemList() = productListAdapter?.getProductListItems().orEmpty()
 
+    private fun goToLoginPage() {
+        context?.run {
+            val intent = RouteManager.getIntent(this, ApplinkConst.LOGIN)
+            startActivityForResult(intent, REQUEST_CODE_LOGIN)
+        }
+    }
+
+    private fun validateAddressData() {
+        context?.run {
+            ChooseAddressUtils.getLocalizingAddressData(this).let { addressData ->
+                when {
+                    addressData.address_id.isBlank() -> {
+                        navigateToNewFragment(ManageLocationFragment.createInstance(
+                                negativeCaseId = EMPTY_STATE_NO_ADDRESS,
+                                merchantId = merchantId
+                        ))
+                    }
+                    addressData.latLong.isBlank() -> {
+                        navigateToNewFragment(ManageLocationFragment.createInstance(
+                                negativeCaseId = EMPTY_STATE_NO_PIN_POINT,
+                                merchantId = merchantId
+                        ))
+                    }
+                    else -> {}
+                }
+            }
+        }
+    }
+
+    private fun onResultFromLogin(resultCode: Int, data: Intent?) {
+        if (resultCode == Activity.RESULT_OK) {
+            validateAddressData()
+        }
+        // TODO implement the negative cases for login page use case
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        when (requestCode) {
+            REQUEST_CODE_LOGIN -> onResultFromLogin(resultCode, data)
+        }
+    }
+
     companion object {
         const val SHARE = "share"
 
+        private const val REQUEST_CODE_LOGIN = 123
         private const val SOURCE = "merchant_page"
 
         fun createInstance(): MerchantPageFragment {

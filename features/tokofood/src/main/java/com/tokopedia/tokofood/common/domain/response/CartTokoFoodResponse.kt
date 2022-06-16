@@ -1,5 +1,6 @@
 package com.tokopedia.tokofood.common.domain.response
 
+import android.os.Parcelable
 import com.google.gson.Gson
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
@@ -7,6 +8,7 @@ import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.tokofood.common.domain.TokoFoodCartUtil
 import com.tokopedia.tokofood.common.domain.metadata.CartMetadataTokoFood
 import com.tokopedia.tokofood.common.domain.metadata.CartMetadataTokoFoodWithVariant
+import kotlinx.parcelize.Parcelize
 
 data class AddToCartTokoFoodResponse(
     @SerializedName("add_to_cart_general")
@@ -99,6 +101,7 @@ data class CartTokoFood(
 
 }
 
+@Parcelize
 data class CartTokoFoodBottomSheet(
     @SerializedName("is_show_bottomsheet")
     @Expose
@@ -115,8 +118,9 @@ data class CartTokoFoodBottomSheet(
     @SerializedName("buttons")
     @Expose
     val buttons: List<CartTokoFoodBottomSheetButton> = listOf()
-)
+) : Parcelable
 
+@Parcelize
 data class CartTokoFoodBottomSheetButton(
     @SerializedName("text")
     @Expose
@@ -130,4 +134,4 @@ data class CartTokoFoodBottomSheetButton(
     @SerializedName("link")
     @Expose
     val link: String = ""
-)
+) : Parcelable

@@ -61,10 +61,11 @@
 
                 <com.tokopedia.unifyprinciples.Typography
                     android:id="@+id/tpg_merchant_name"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="84dp"
                     android:layout_marginTop="17dp"
+                    android:layout_marginEnd="@dimen/unify_space_16"
                     android:ellipsize="end"
                     android:maxLines="1"
                     app:layout_constraintStart_toStartOf="parent"
@@ -72,13 +73,35 @@
                     app:typographyType="heading_4" />
 
                 <com.tokopedia.unifyprinciples.Typography
+                    android:id="@+id/tpg_merchant_close_warning"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/Unify_RN600"
+                    android:visibility="gone"
+                    app:layout_constraintStart_toStartOf="@id/tpg_merchant_name"
+                    app:layout_constraintTop_toBottomOf="@id/tpg_merchant_name"
+                    app:typographyType="display_3"
+                    app:typographyWeight="bold"
+                    tools:text="Tutup dalam 10 menit" />
+
+                <com.tokopedia.unifyprinciples.Typography
+                    android:id="@+id/tpg_dot_divider"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/text_dot_separator"
+                    android:textColor="@color/Unify_NN600"
+                    android:visibility="gone"
+                    app:layout_constraintStart_toEndOf="@id/tpg_merchant_close_warning"
+                    app:layout_constraintTop_toBottomOf="@id/tpg_merchant_name" />
+
+                <com.tokopedia.unifyprinciples.Typography
                     android:id="@+id/tpg_merchant_category"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textColor="@color/Unify_NN600"
-                    app:layout_constraintStart_toStartOf="@id/tpg_merchant_name"
+                    app:layout_constraintStart_toEndOf="@id/tpg_dot_divider"
                     app:layout_constraintTop_toBottomOf="@id/tpg_merchant_name"
-                    app:typographyType="heading_6" />
+                    app:typographyType="display_3" />
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/rv_merchant_info_carousel"
