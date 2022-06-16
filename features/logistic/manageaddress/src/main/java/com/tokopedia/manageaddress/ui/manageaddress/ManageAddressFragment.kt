@@ -115,13 +115,6 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener {
             bundle.putAll(arguments)
         }
 
-
-        val pages = listOf(
-            Pair(getString(R.string.tablayout_label_main), MainAddressFragment.newInstance(bundle)),
-            Pair(getString(R.string.tablayout_label_from_friend),
-                FromFriendFragment.newInstance(binding?.searchInputView?.searchBarTextField?.text.toString()))
-        )
-
         binding?.apply {
 
             tabAdapter = activity?.let { ManageAddressViewPagerAdapter(it, fragmentPage()) }

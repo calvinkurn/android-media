@@ -783,7 +783,7 @@ class MainAddressFragment : BaseDaggerFragment(), ManageAddressItemAdapter.MainA
         }
         return null
     }
-    
+
     override fun onShareAddressClicked(peopleAddress: RecipientAddressModel) {
         showShareAddressBottomSheet(peopleAddress.id)
     }
@@ -825,8 +825,4 @@ class MainAddressFragment : BaseDaggerFragment(), ManageAddressItemAdapter.MainA
         )
     }
 
-    interface MainAddressListener {
-        fun visibilitySearchInput(show: Boolean)
-        fun initSearchText(searchKey: String)
-    }
 }
