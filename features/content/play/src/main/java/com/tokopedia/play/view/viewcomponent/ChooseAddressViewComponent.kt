@@ -31,7 +31,9 @@ class ChooseAddressViewComponent(
 
         override fun getLocalizingAddressHostSourceBottomSheet(): String = ADDRESS_WIDGET_SOURCE
 
-        override fun onLocalizingAddressLoginSuccessBottomSheet() {}
+        override fun onLocalizingAddressLoginSuccessBottomSheet() {
+            listener.onAddressUpdated(this@ChooseAddressViewComponent)
+        }
 
         override fun onDismissChooseAddressBottomSheet() {
             hideBottomSheet()
