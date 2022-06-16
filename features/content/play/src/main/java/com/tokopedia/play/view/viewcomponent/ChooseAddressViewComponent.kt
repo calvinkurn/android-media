@@ -62,10 +62,8 @@ class ChooseAddressViewComponent(
     }
 
     private fun getBottomSheet() : ChooseAddressBottomSheet {
-        if(!::chooseAddressBottomSheet.isInitialized) {
-            chooseAddressBottomSheet = ChooseAddressBottomSheet()
-            chooseAddressBottomSheet.setListener(insideListener)
-        }
+        chooseAddressBottomSheet = ChooseAddressBottomSheet()
+        chooseAddressBottomSheet.setListener(insideListener)
         return chooseAddressBottomSheet
     }
 
