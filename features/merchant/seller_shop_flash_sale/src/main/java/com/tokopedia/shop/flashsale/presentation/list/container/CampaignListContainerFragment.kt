@@ -17,6 +17,7 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.seller_shop_flash_sale.databinding.SsfsFragmentCampaignListContainerBinding
+import com.tokopedia.shop.flashsale.common.constant.Constant
 import com.tokopedia.shop.flashsale.common.extension.doOnDelayFinished
 import com.tokopedia.shop.flashsale.common.extension.showError
 import com.tokopedia.shop.flashsale.common.extension.slideDown
@@ -101,7 +102,7 @@ class CampaignListContainerFragment : BaseDaggerFragment() {
                     binding?.loader?.gone()
                     binding?.groupContent?.visible()
                     binding?.globalError?.gone()
-
+                    viewModel.storeTabsMetadata(result.data)
                     displayTabs(result.data)
                 }
                 is Fail -> {
@@ -127,11 +128,11 @@ class CampaignListContainerFragment : BaseDaggerFragment() {
             viewPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
                 override fun onPageSelected(position: Int) {
                     super.onPageSelected(position)
+                    handleSelectedTabAppearance(position)
                 }
             })
         }
     }
-
 
 
     private fun displayError(throwable: Throwable) {
@@ -143,12 +144,6 @@ class CampaignListContainerFragment : BaseDaggerFragment() {
         }
 
     }
-
-    private fun getCurrentTabPosition(): Int {
-        val tabLayout = binding?.tabsUnify?.getUnifyTabLayout()
-        return tabLayout?.selectedTabPosition.orZero()
-    }
-
 
     private fun reload() {
         binding?.loader?.visible()
@@ -259,4 +254,18 @@ class CampaignListContainerFragment : BaseDaggerFragment() {
         }
 
     }
+
+    private fun handleSelectedTabAppearance(position: Int) {
+        try {
+            val tabs = viewModel.getStoredTabsMetadata()
+            val selectedTab = tabs[position]
+            if (selectedTab.totalCampaign == Constant.ZERO) {
+                binding?.tabsUnify?.getUnifyTabLayout().slideUp()
+                alignRecyclerViewToTabsBottom()
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
+
 }
