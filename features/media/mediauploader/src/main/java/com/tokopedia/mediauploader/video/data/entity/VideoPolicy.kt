@@ -14,14 +14,6 @@ data class VideoPolicy(
     @Expose @SerializedName("retry_interval") var retryInterval: Int? = null,
 ) {
 
-    /**
-     * from: .mp4, .mov, .mkv
-     * to: mp4,mov,mkv
-     */
-    val allowedExtension = extension
-        .split(",")
-        .map { it.drop(DELIMETER_DROP_FIRST) }
-
     fun thresholdSizeOfVideo(): Int {
         return thresholdSize?: THRESHOLD_VIDEO_FILE_SIZE
     }
@@ -39,8 +31,6 @@ data class VideoPolicy(
     }
 
     companion object {
-        private const val DELIMETER_DROP_FIRST = 1
-
         private const val THRESHOLD_VIDEO_FILE_SIZE = 10
         private const val THRESHOLD_LARGE_CHUNK_SIZE = 5
         private const val THRESHOLD_RETRY_INTERVAL = 5

@@ -43,11 +43,11 @@ class VideoUploaderManager @Inject constructor(
                 !file.exists() -> {
                     UploadResult.Error(FILE_NOT_FOUND)
                 }
-                !videoPolicy.allowedExtension.contains(filePath.fileExtension().lowercase()) -> {
-                    UploadResult.Error(formatNotAllowedMessage(videoPolicy.extension))
-                }
                 file.isMaxFileSize(maxFileSize) -> {
                     UploadResult.Error(maxFileSizeMessage(maxFileSize))
+                }
+                !allowedExt(filePath, videoPolicy.extension) -> {
+                    UploadResult.Error(formatNotAllowedMessage(videoPolicy.extension))
                 }
                 else -> {
                     isSimpleUpload = file.length() <= maxSizeOfSimpleUpload.mbToBytes()
