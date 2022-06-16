@@ -32,8 +32,8 @@ class TokoFoodPurchaseTotalAmountViewHolder(private val viewBinding: ItemPurchas
                         totalAmountPurchase.isTotalAmountLoading = false
                     }
                     totalAmountPurchase.amountCtaView.isEnabled = true
-                    totalAmountPurchase.setCtaText(getString(R.string.text_purchase_choose_payment))
-                    totalAmountPurchase.setLabelTitle(getString(R.string.text_purchase_payment_total))
+                    totalAmountPurchase.setCtaText(getString(com.tokopedia.tokofood.R.string.text_purchase_choose_payment))
+                    totalAmountPurchase.setLabelTitle(getString(com.tokopedia.tokofood.R.string.text_purchase_payment_total))
                     val totalAmountString = CurrencyFormatUtil.convertPriceValueToIdrFormat(element.totalAmount, false).removeDecimalSuffix()
                     totalAmountPurchase.setAmount(totalAmountString)
                     totalAmountPurchase.amountCtaView.setOnClickListener {
@@ -45,9 +45,9 @@ class TokoFoodPurchaseTotalAmountViewHolder(private val viewBinding: ItemPurchas
                 }
                 else -> {
                     totalAmountPurchase.amountCtaView.isEnabled = false
-                    totalAmountPurchase.setCtaText(getString(R.string.text_purchase_choose_payment))
-                    totalAmountPurchase.setLabelTitle(getString(R.string.text_purchase_payment_total))
-                    totalAmountPurchase.setAmount(getString(R.string.text_purchase_dash))
+                    totalAmountPurchase.setCtaText(getString(com.tokopedia.tokofood.R.string.text_purchase_choose_payment))
+                    totalAmountPurchase.setLabelTitle(getString(com.tokopedia.tokofood.R.string.text_purchase_payment_total))
+                    totalAmountPurchase.setAmount(getString(com.tokopedia.tokofood.R.string.text_purchase_dash))
                 }
             }
         }

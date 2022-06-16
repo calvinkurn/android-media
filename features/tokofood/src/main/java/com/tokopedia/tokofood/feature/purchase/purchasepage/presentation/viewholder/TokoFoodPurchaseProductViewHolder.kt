@@ -145,9 +145,9 @@ class TokoFoodPurchaseProductViewHolder(private val viewBinding: ItemPurchasePro
             if (element.variants.isEmpty()) {
                 addNotesButton.text =
                     if (isNoteBlank) {
-                        getString(R.string.text_purchase_add_notes)
+                        getString(com.tokopedia.tokofood.R.string.text_purchase_add_notes)
                     } else {
-                        getString(R.string.text_purchase_change_notes)
+                        getString(com.tokopedia.tokofood.R.string.text_purchase_change_notes)
                     }
                 addNotesButton.setOnClickListener {
                     listener.onTextChangeNotesClicked(element)
@@ -155,9 +155,9 @@ class TokoFoodPurchaseProductViewHolder(private val viewBinding: ItemPurchasePro
             } else {
                 addNotesButton.text =
                     if (isNoteBlank) {
-                        getString(R.string.text_purchase_add_notes_and_variant)
+                        getString(com.tokopedia.tokofood.R.string.text_purchase_add_notes_and_variant)
                     } else {
-                        getString(R.string.text_purchase_change_notes_and_variant)
+                        getString(com.tokopedia.tokofood.R.string.text_purchase_change_notes_and_variant)
                     }
                 addNotesButton.setOnClickListener {
                     listener.onTextChangeNoteAndVariantClicked(element)

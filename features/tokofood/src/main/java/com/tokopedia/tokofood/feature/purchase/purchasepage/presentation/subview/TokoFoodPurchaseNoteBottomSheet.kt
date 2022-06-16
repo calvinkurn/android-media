@@ -56,7 +56,7 @@ class TokoFoodPurchaseNoteBottomSheet(private val currentNote: String? = null,
     }
 
     private fun initializeBottomSheet(viewBinding: LayoutBottomSheetPurchaseNotesBinding) {
-        setTitle(context?.getString(R.string.text_purchase_order_notes).orEmpty())
+        setTitle(context?.getString(com.tokopedia.tokofood.R.string.text_purchase_order_notes).orEmpty())
         showCloseIcon = true
         showHeader = true
         isDragable = true

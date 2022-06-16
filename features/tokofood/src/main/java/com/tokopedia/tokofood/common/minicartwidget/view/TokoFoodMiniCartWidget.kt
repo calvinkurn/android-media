@@ -29,7 +29,7 @@ class TokoFoodMiniCartWidget @JvmOverloads constructor(
     set(value) {
         viewBinding?.totalAmountMiniCart?.setCtaText(
             context?.getString(
-                R.string.minicart_order,
+                com.tokopedia.tokofood.R.string.minicart_order,
                 value
             ).orEmpty()
         )
