@@ -920,22 +920,33 @@ class OfficialStoreHomeViewModelTest {
     }
 
     @Test
-    fun given_get_data_error_when_load_first_data_then_set_error_value() {
-        runBlocking {
-            val error = NullPointerException()
-            val prefixUrl = "prefix"
-            val slug = "slug"
-            val category = createCategory(prefixUrl, slug)
-            val channelType = "$prefixUrl$slug"
+    fun given_performance_monitoring_error_when_load_first_data_then_set_error_value() {
+        val error = MessageErrorException()
+        val prefixUrl = "prefix"
+        val slug = "slug"
+        val category = createCategory(prefixUrl, slug)
+        val channelType = "$prefixUrl$slug"
+        val osBanners = OfficialStoreBanners()
+        val osBenefits = OfficialStoreBenefits()
+        val osFeatured = OfficialStoreFeaturedShop()
+        val osDynamicChannel = mutableListOf<OfficialStoreChannel>()
 
-            onGetOfficialStoreData_thenReturn(error)
-            onSetupDynamicChannelParams_thenCompleteWith(channelType)
+        onGetOfficialStoreBanners_thenReturn(osBanners)
+        onGetOfficialStoreBenefits_thenReturn(osBenefits)
+        onGetOfficialStoreFeaturedShop_thenReturn(osFeatured)
+        onGetDynamicChannel_thenReturn(osDynamicChannel)
+        onSetupDynamicChannelParams_thenCompleteWith(channelType)
 
-            viewModel.loadFirstData(category, "")
-            val expectedError = Fail(NullPointerException())
+        viewModel.loadFirstData(category, "",
+            onBannerCacheStartLoad = { throw error },
+            onBannerCacheStopLoad = { throw error },
+            onBannerCloudStartLoad = { throw error },
+            onBannerCloudStopLoad = { throw error }
+        )
+        val expectedError = Fail(error)
 
-            verifyLiveDataValueError(expectedError)
-            verifyDynamicChannelParamsEquals(channelType)
-        }
+        assert(viewModel.officialStoreBannersResult.value?.second == expectedError)
+        assert(viewModel.officialStoreBenefitsResult.value == expectedError)
+        assert(viewModel.officialStoreFeaturedShopResult.value == expectedError)
     }
 }
