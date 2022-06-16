@@ -270,7 +270,7 @@ open class BaseChatAdapter(adapterTypeFactory: BaseChatTypeFactoryImpl) :
     }
 
     companion object {
-        protected const val SECONDS: Long = 1000000
+        const val SECONDS: Long = 1000000
         private const val ITEM_COUNT = 10
     }
 
