@@ -60,10 +60,6 @@ object RollenceKey {
     const val WISHLIST_V2_VARIANT = "experiment_variant"
     const val ADD_REMOVE_WISHLIST_V2 = "addremove_wishlistv2"
 
-    // advanced search negative keywords
-    const val SEARCH_ADVANCED_KEYWORD_ADV_NEG = "keyword_adv_neg"
-    const val SEARCH_ADVANCED_NEGATIVE_NO_ADS = "negative_no_ads"
-
     // Fulfillment Rebranding
     const val FULFILLMENT_REBRANDING = "fulfill_rebranding"
 
@@ -74,7 +70,14 @@ object RollenceKey {
     const val SEARCH_VIDEO_WIDGET = "VideoWidget"
     const val SEARCH_VIDEO_WIDGET_VARIANT = "experiment_variant"
 
+    // Typo Correction
+    const val SEARCH_TYPO_CORRECTION_ADS = "typo_correction_ads2"
+    const val SEARCH_TYPO_CORRECTION_ADS_VARIANT = "typo2"
+
     // Global Menu (Me Page)
     const val ME_PAGE_REVAMP = "Navigation_Mepage"
     const val ME_PAGE_REVAMP_VARIANT = "Mepage_Variant"
+
+    // Review
+    const val CREATE_REVIEW_MEDIA_PICKER_EXPERIMENT_NAME = "review_video"
 }

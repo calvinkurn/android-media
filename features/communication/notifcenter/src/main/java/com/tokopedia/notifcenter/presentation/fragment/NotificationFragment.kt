@@ -578,7 +578,7 @@ open class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTyp
         if (product.isVariant) {
             showAtcVariantHelper(
                 product.productId,
-                product.shop.id.toString(),
+                product.shop.id,
                 product.shop.isTokonow
             )
         } else {
@@ -595,7 +595,7 @@ open class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTyp
         if (product.isVariant) {
             showAtcVariantHelper(
                 product.productId,
-                product.shop.id.toString(),
+                product.shop.id,
                 product.shop.isTokonow
             )
         } else {
@@ -712,9 +712,6 @@ open class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTyp
                         ) {
                             view?.let { v ->
                                 AddRemoveWishlistV2Handler.showAddToWishlistV2SuccessToaster(result, context, v)
-                            }
-                            if (product.isTopads) {
-                                product.imageUrl
                             }
                         }
 

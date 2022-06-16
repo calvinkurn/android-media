@@ -96,11 +96,11 @@ class SearchProductFirstPageGqlUseCase(
 
     @GqlQuery("QuickFilter", QUICK_FILTER_QUERY)
     private fun createQuickFilterRequest(query: String, params: String) =
-            GraphqlRequest(
-                    QuickFilter(),
-                    QuickFilterModel::class.java,
-                    mapOf(GQL.KEY_QUERY to query, GQL.KEY_PARAMS to params)
-            )
+        GraphqlRequest(
+            QuickFilter(),
+            QuickFilterModel::class.java,
+            mapOf(GQL.KEY_QUERY to query, GQL.KEY_PARAMS to params)
+        )
 
     private fun MutableList<GraphqlRequest>.addGlobalNavRequest(requestParams: RequestParams, query: String, params: String) {
         if (!requestParams.isSkipGlobalNav()) {

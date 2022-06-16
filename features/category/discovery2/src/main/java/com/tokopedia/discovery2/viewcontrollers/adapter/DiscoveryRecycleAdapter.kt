@@ -19,6 +19,7 @@ import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.prod
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.shimmer.ShimmerCalendarViewHolder
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.shimmer.ShimmerProductCardViewHolder
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.shopbannerinfinite.ShopBannerInfiniteItemViewHolder
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.shopcarditem.ShopCardItemViewHolder
 import com.tokopedia.discovery2.viewcontrollers.adapter.factory.ComponentsList
 import com.tokopedia.discovery2.viewcontrollers.adapter.factory.DiscoveryHomeFactory
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
@@ -107,6 +108,7 @@ class DiscoveryRecycleAdapter(private val fragment: Fragment, private val parent
                 is CalendarWidgetItemViewHolder -> false
                 is ShimmerCalendarViewHolder -> false
                 is ShopBannerInfiniteItemViewHolder -> false
+                is ShopCardItemViewHolder -> false
                 is MasterProductCardItemViewHolder -> template == LIST
                 is ShimmerProductCardViewHolder -> template == LIST
                 else -> true

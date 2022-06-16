@@ -281,6 +281,7 @@ public class RemoteConfigKey {
     public static final String ANDROID_EMBRACE_CONFIG = "android_customerapp_embrace_config";
 
     public static final String ENABLE_MVC_PRODUCT = "android_enable_mvc_product";
+    public static final String ENABLE_SLASH_PRICE = "android_enable_slash_price";
 
     public static final String ENABLE_THEMATIC_WIDGET_SHOP = "android_enable_thematic_widget_shop";
 
@@ -291,4 +292,10 @@ public class RemoteConfigKey {
     public static final String PRODUCT_CARD_ENABLE_INTERACTION = "android_product_card_enable_interaction";
 
     public static final String ENABLE_PRODUCT_CARD_VIEWSTUB = "android_mainapp_enable_product_card_viewstub";
+
+    public static final String ENABLE_OLD_BUNDLE_SELECTION_PAGE = "android_enable_old_bundle_selection_page";
+
+    public static final String ENABLE_INIT_NR_IN_ACTIVITY = "android_mainapp_init_nr_in_activity";
+
+    public static final String ENABLE_SHOP_DISCOUNT = "app_android_enable_shop_discount";
 }

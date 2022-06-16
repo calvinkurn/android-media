@@ -3,6 +3,7 @@ package com.tokopedia.product.detail.data.model.datamodel
 import android.os.Bundle
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.product.detail.common.productThousandFormatted
+import com.tokopedia.product.detail.data.util.ProductDetailConstant
 import com.tokopedia.product.detail.view.adapter.factory.DynamicProductDetailAdapterFactory
 
 /**
@@ -17,6 +18,7 @@ data class ProductMiniSocialProofDataModel(
         var talkCount: Int = 0,
         var wishlistCount: Int = 0,
         var buyerPhotosCount: Int = 0,
+        var buyerPhotoStaticText: String = ProductDetailConstant.BUYER_IMAGE_TEXT,
         var itemSoldFmt: String = "",
         var shouldRenderSocialProof: Boolean = false,
         var socialProofData: List<ProductMiniSocialProofItemDataModel> = emptyList()
@@ -74,23 +76,61 @@ data class ProductMiniSocialProofDataModel(
     }
 
     fun setSocialProofData() {
-        if(shouldShowSingleViewSocialProof()) {
+        if (shouldShowSingleViewSocialProof()) {
             socialProofData = listOf(firstPositionData(ProductMiniSocialProofItemType.ProductMiniSocialProofSingleText))
             return
         }
         val socialProofBuilder = mutableListOf(firstPositionData(ProductMiniSocialProofItemType.ProductMiniSocialProofText))
-        appendChipIfNotZero(ratingCount.toFloat(), RATING, socialProofBuilder, rating.toString())
-        appendChipIfNotZero(buyerPhotosCount.toFloat(), BUYER_PHOTOS, socialProofBuilder)
-        appendChipIfNotZero(talkCount.toFloat(), TALK, socialProofBuilder)
+        appendChipIfNotZero(
+                count = ratingCount.toFloat(),
+                type = RATING,
+                list = socialProofBuilder,
+                ratingTitle = rating.toString())
+
+        appendChipIfNotZero(
+                count = buyerPhotosCount.toFloat(),
+                type = BUYER_PHOTOS,
+                list = socialProofBuilder,
+                buyerPhotosTitle = buyerPhotoStaticText)
+
+        appendChipIfNotZero(
+                count = talkCount.toFloat(),
+                type = TALK,
+                list = socialProofBuilder)
+
         socialProofData = socialProofBuilder.take(MAX_SOCIAL_PROOF_ITEM)
     }
 
-    private fun appendChipIfNotZero(count: Float?, type: String, list: MutableList<ProductMiniSocialProofItemDataModel>, ratingTitle: String = ""): MutableList<ProductMiniSocialProofItemDataModel> {
-        if(count != 0F) {
-            if(type == RATING) {
-                list.add(ProductMiniSocialProofItemDataModel(type,count?.productThousandFormatted() ?: "", ProductMiniSocialProofItemType.ProductMiniSocialProofChip, ratingTitle))
-            } else {
-                list.add(ProductMiniSocialProofItemDataModel(type, count?.productThousandFormatted() ?: "", ProductMiniSocialProofItemType.ProductMiniSocialProofChip))
+    private fun appendChipIfNotZero(count: Float?,
+                                    type: String,
+                                    list: MutableList<ProductMiniSocialProofItemDataModel>,
+                                    ratingTitle: String = "",
+                                    buyerPhotosTitle: String = ""): MutableList<ProductMiniSocialProofItemDataModel> {
+        if (count != 0F) {
+            when (type) {
+                RATING -> {
+                    list.add(ProductMiniSocialProofItemDataModel(
+                            key = type,
+                            formattedCount = count?.productThousandFormatted() ?: "",
+                            type = ProductMiniSocialProofItemType.ProductMiniSocialProofChip,
+                            reviewTitle = ratingTitle)
+                    )
+                }
+                BUYER_PHOTOS -> {
+                    list.add(ProductMiniSocialProofItemDataModel(
+                            key = type,
+                            formattedCount = count?.productThousandFormatted() ?: "",
+                            type = ProductMiniSocialProofItemType.ProductMiniSocialProofChip,
+                            buyerPhotosTitle = buyerPhotosTitle)
+                    )
+                }
+                else -> {
+                    list.add(ProductMiniSocialProofItemDataModel(
+                            key = type,
+                            formattedCount = count?.productThousandFormatted() ?: "",
+                            type = ProductMiniSocialProofItemType.ProductMiniSocialProofChip)
+                    )
+                }
             }
         }
         return list

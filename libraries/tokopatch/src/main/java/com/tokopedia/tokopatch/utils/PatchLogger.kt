@@ -59,7 +59,7 @@ class PatchLogger : PatchCallBack {
     }
 
     override fun onPatchApplied(context: Context, result: Boolean, patch: Patch) {
-        if (result && patch.debug) {
+        if (patch.debug) {
             Log.v(TAG, "Applied patch: " + patch.name)
         } else {
             ServerLogger.log(
