@@ -21,7 +21,9 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.ZERO
+import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.setMargin
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.review.R
 import com.tokopedia.review.common.extension.collectLatestWhenResumed
@@ -33,6 +35,7 @@ import com.tokopedia.review.feature.media.gallery.detailed.di.DetailedReviewMedi
 import com.tokopedia.review.feature.media.gallery.detailed.di.qualifier.DetailedReviewMediaGalleryViewModelFactory
 import com.tokopedia.review.feature.media.gallery.detailed.presentation.bottomsheet.ActionMenuBottomSheet
 import com.tokopedia.review.feature.media.gallery.detailed.presentation.uistate.ActionMenuBottomSheetUiState
+import com.tokopedia.review.feature.media.gallery.detailed.presentation.uistate.MediaCounterUiState
 import com.tokopedia.review.feature.media.gallery.detailed.presentation.uistate.OrientationUiState
 import com.tokopedia.review.feature.media.gallery.detailed.presentation.viewmodel.SharedReviewMediaGalleryViewModel
 import com.tokopedia.review.feature.media.player.controller.presentation.fragment.ReviewMediaPlayerControllerFragment
@@ -153,7 +156,7 @@ class DetailedReviewMediaGalleryActivity : AppCompatActivity(), CoroutineScope {
         autoHideOverlayHandler.restartTimerIfAlreadyStarted()
         return if (
             e != null && !e.isAboveCloseButton() && !e.isAboveKebabButton() &&
-            !e.isAboveController() && !e.isAboveReviewDetail() &&
+            !e.isAboveController() && !e.isAboveReviewDetail() && !e.isAboveCounter() &&
             gestureDetector?.onTouchEvent(e) == true
         ) {
             true
@@ -225,6 +228,7 @@ class DetailedReviewMediaGalleryActivity : AppCompatActivity(), CoroutineScope {
     private fun setupMainLayout() {
         setupBackground()
         binding?.setupToolbar()
+        binding?.setupCounter()
     }
 
     private fun enableFullscreen() {
@@ -292,6 +296,10 @@ class DetailedReviewMediaGalleryActivity : AppCompatActivity(), CoroutineScope {
         icReviewMediaGalleryKebab.setOnClickListener {
             sharedReviewMediaGalleryViewModel.showActionMenuBottomSheet()
         }
+    }
+
+    private fun ActivityDetailedReviewMediaGalleryBinding.setupCounter() {
+        layoutReviewMediaGalleryItemCounter.setBackgroundResource(R.drawable.bg_review_media_gallery_item_counter)
     }
 
     private fun collectToolbarUiStateUpdate() {
@@ -379,6 +387,33 @@ class DetailedReviewMediaGalleryActivity : AppCompatActivity(), CoroutineScope {
         }
     }
 
+    private fun collectMediaCounterUpdate() {
+        collectLatestWhenResumed(sharedReviewMediaGalleryViewModel.mediaCounterUiState) {
+            when (it) {
+                is MediaCounterUiState.Hidden -> {
+                    binding?.layoutReviewMediaGalleryItemCounter?.gone()
+                }
+                is MediaCounterUiState.Loading -> {
+                    binding?.layoutReviewMediaGalleryItemCounter?.show()
+                    binding?.loaderReviewMediaGalleryItemCounter?.show()
+                    binding?.tvReviewMediaGalleryItemCounter?.gone()
+                }
+                is MediaCounterUiState.Showing -> {
+                    binding?.layoutReviewMediaGalleryItemCounter?.show()
+                    binding?.loaderReviewMediaGalleryItemCounter?.gone()
+                    binding?.tvReviewMediaGalleryItemCounter?.run {
+                        text = buildString {
+                            append(it.count)
+                            append("/")
+                            append(it.total)
+                        }
+                        show()
+                    }
+                }
+            }
+        }
+    }
+
     private fun initUiStateCollectors() {
         collectToolbarUiStateUpdate()
         collectOrientationUiStateUpdate()
@@ -386,6 +421,7 @@ class DetailedReviewMediaGalleryActivity : AppCompatActivity(), CoroutineScope {
         collectToasterQueue()
         collectToasterActionClickEvent()
         collectOverlayVisibilityUpdate()
+        collectMediaCounterUpdate()
     }
 
     private fun MotionEvent.isAboveCloseButton(): Boolean {
@@ -408,6 +444,12 @@ class DetailedReviewMediaGalleryActivity : AppCompatActivity(), CoroutineScope {
 
     private fun MotionEvent.isAboveReviewDetail(): Boolean {
         return binding?.fragmentReviewDetail?.let { reviewDetail ->
+            intersectWith(reviewDetail, AUTO_HIDE_TOUCH_CLICKABLE_MARGIN.toPx().toLong())
+        } ?: false
+    }
+
+    private fun MotionEvent.isAboveCounter(): Boolean {
+        return binding?.layoutReviewMediaGalleryItemCounter?.let { reviewDetail ->
             intersectWith(reviewDetail, AUTO_HIDE_TOUCH_CLICKABLE_MARGIN.toPx().toLong())
         } ?: false
     }

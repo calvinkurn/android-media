@@ -18,6 +18,7 @@ import com.tokopedia.review.feature.media.gallery.detailed.presentation.activity
 import com.tokopedia.review.feature.media.gallery.detailed.presentation.uimodel.DetailedReviewActionMenuUiModel
 import com.tokopedia.review.feature.media.gallery.detailed.presentation.uimodel.ToasterUiModel
 import com.tokopedia.review.feature.media.gallery.detailed.presentation.uistate.ActionMenuBottomSheetUiState
+import com.tokopedia.review.feature.media.gallery.detailed.presentation.uistate.MediaCounterUiState
 import com.tokopedia.review.feature.media.gallery.detailed.presentation.uistate.OrientationUiState
 import com.tokopedia.reviewcommon.feature.media.gallery.detailed.domain.model.ProductrevGetReviewMedia
 import com.tokopedia.reviewcommon.feature.media.gallery.detailed.util.ReviewMediaGalleryRouter
@@ -141,6 +142,31 @@ class SharedReviewMediaGalleryViewModel @Inject constructor(
         scope = this,
         started = SharingStarted.WhileSubscribed(FLOW_TIMEOUT_MILLIS),
         initialValue = ActionMenuBottomSheetUiState.Hidden(emptyList(), "", "")
+    )
+
+    val mediaCounterUiState = combine(
+        _detailedReviewMediaResult,
+        _currentMediaItem,
+        _overlayVisibility
+    ) { detailedReviewMediaResult, currentMediaItem, overlayVisibility ->
+        val isShowingLoading = currentMediaItem is LoadingStateItemUiModel
+        val currentPos = currentMediaItem?.mediaNumber.orZero()
+        val totalMedia = detailedReviewMediaResult?.detail?.mediaCount.orZero().toInt()
+        if (overlayVisibility) {
+            if (isShowingLoading) {
+                MediaCounterUiState.Loading
+            } else if (currentPos.isMoreThanZero() && totalMedia.isMoreThanZero()) {
+                MediaCounterUiState.Showing(currentPos, totalMedia)
+            } else {
+                MediaCounterUiState.Hidden
+            }
+        } else {
+            MediaCounterUiState.Hidden
+        }
+    }.stateIn(
+        scope = this,
+        started = SharingStarted.WhileSubscribed(FLOW_TIMEOUT_MILLIS),
+        initialValue = MediaCounterUiState.Hidden
     )
 
     private var loadMoreDetailedReviewMediaJob: Job? = null
