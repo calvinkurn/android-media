@@ -11,6 +11,7 @@ import com.tokopedia.play.view.type.PlayChannelType
 import com.tokopedia.play.view.type.VideoOrientation
 import com.tokopedia.play.view.uimodel.PlayUpcomingUiModel
 import com.tokopedia.play.view.uimodel.recom.*
+import com.tokopedia.play.view.uimodel.recom.interactive.LeaderboardUiModel
 import com.tokopedia.play.view.uimodel.recom.realtimenotif.PlayRealTimeNotificationConfig
 import com.tokopedia.play.view.uimodel.recom.tagitem.ProductUiModel
 import com.tokopedia.play.view.uimodel.recom.tagitem.TagItemUiModel
@@ -18,7 +19,6 @@ import com.tokopedia.play.view.uimodel.recom.tagitem.VoucherUiModel
 import com.tokopedia.play.view.uimodel.recom.types.PlayStatusType
 import com.tokopedia.play_common.model.PlayBufferControl
 import com.tokopedia.play_common.model.result.ResultState
-import com.tokopedia.play_common.model.ui.PlayLeaderboardWrapperUiModel
 import com.tokopedia.play_common.transformer.HtmlTextTransformer
 import javax.inject.Inject
 
@@ -44,21 +44,21 @@ class PlayChannelDetailsWithRecomMapper @Inject constructor(
                         it.config.realTimeNotif
                     ),
                     videoInfo = mapVideoInfo(it.video),
+                    emptyBottomSheetInfo = mapEmptyBottomSheet(it)
                 ),
-                partnerInfo = mapPartnerInfo(it.partner),
+                partnerInfo = mapPartnerInfo(it.partner, it.config.hasFollowButton),
                 likeInfo = mapLikeInfo(it.config.feedLikeParam, it.config.multipleLikeConfig),
                 channelReportInfo = mapChannelReportInfo(it.id, extraParams),
                 pinnedInfo = mapPinnedInfo(it.pinnedMessage),
                 quickReplyInfo = mapQuickReply(it.quickReplies),
                 videoMetaInfo = if(it.airTime == PlayUpcomingUiModel.COMING_SOON) emptyVideoMetaInfo() else mapVideoMeta(it.video, it.id, it.title, extraParams),
-                leaderboardInfo = mapLeaderboardInfo(),
+                leaderboard = mapLeaderboardInfo(),
                 upcomingInfo = mapUpcoming(it.title, it.airTime, it.config.reminder.isSet, it.coverUrl, it.startTime),
                 tagItems = mapTagItems(it.config),
                 status = mapStatus(it.config, it.title),
             )
         }
     }
-
     private fun mapChannelInfo(data: ChannelDetailsWithRecomResponse.Data) = PlayChannelInfoUiModel(
             id = data.id,
             channelType = getChannelType(data.isLive, data.airTime),
@@ -74,14 +74,17 @@ class PlayChannelDetailsWithRecomMapper @Inject constructor(
         else PlayChannelType.VOD
     }
 
-    private fun mapPartnerInfo(partnerResponse: ChannelDetailsWithRecomResponse.Partner) = PlayPartnerInfo(
+    private fun mapPartnerInfo(partnerResponse: ChannelDetailsWithRecomResponse.Partner, isFollowBtnShown: Boolean) = PlayPartnerInfo(
         id = partnerResponse.id.toLongOrZero(),
         name = htmlTextTransformer.transform(partnerResponse.name),
         type = PartnerType.getTypeByValue(partnerResponse.type),
-        status = PlayPartnerFollowStatus.Unknown,
+        status = getFollowStatus(isFollowBtnShown),
         iconUrl = partnerResponse.thumbnailUrl,
         badgeUrl = partnerResponse.badgeUrl,
+        appLink = partnerResponse.appLink
     )
+
+    private fun getFollowStatus(isFollowBtnShown: Boolean) = if (isFollowBtnShown) PlayPartnerFollowStatus.Followable(PartnerFollowableStatus.Unknown) else PlayPartnerFollowStatus.NotFollowable
 
     private fun mapLikeInfo(
         feedLikeParamResponse: ChannelDetailsWithRecomResponse.FeedLikeParam,
@@ -227,7 +230,7 @@ class PlayChannelDetailsWithRecomMapper @Inject constructor(
         else PlayStatusType.Active
     }
 
-    private fun mapLeaderboardInfo() = PlayLeaderboardWrapperUiModel.Unknown
+    private fun mapLeaderboardInfo() = LeaderboardUiModel.Empty
 
     private fun mapUpcoming(title: String, airTime: String, isReminderSet: Boolean, coverUrl: String, startTime: String) =
         PlayUpcomingUiModel(
@@ -272,6 +275,10 @@ class PlayChannelDetailsWithRecomMapper @Inject constructor(
     ) = FreezeUiModel(
         title = String.format(freezeDataResponse.title, title),
     )
+
+    private fun mapEmptyBottomSheet(data: ChannelDetailsWithRecomResponse.Data) = with(data.config.emptyBottomSheet){
+        PlayEmptyBottomSheetInfoUiModel(header = headerText, body = bodyText, button = redirectButtonText, partnerAppLink = data.partner.appLink, imageUrl = imageUrl)
+    }
 
     companion object {
         private const val MS_PER_SECOND = 1000

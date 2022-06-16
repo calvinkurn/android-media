@@ -5,31 +5,33 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
-    <com.elyeproj.loaderviewlibrary.LoaderImageView
+    <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/loader1"
         android:layout_width="0dp"
         android:layout_height="64dp"
         android:layout_marginTop="4dp"
         android:layout_marginStart="4dp"
         android:layout_marginEnd="4dp"
-        app:corners="16"
+        app:loader_corner_radius="8dp"
+        app:loader_type="rect"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/loader2"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toTopOf="@+id/loader3"/>
-    <com.elyeproj.loaderviewlibrary.LoaderImageView
+    <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/loader2"
         android:layout_width="0dp"
         android:layout_height="64dp"
         android:layout_marginTop="4dp"
         android:layout_marginStart="4dp"
         android:layout_marginEnd="4dp"
-        app:corners="16"
+        app:loader_corner_radius="8dp"
+        app:loader_type="rect"
         app:layout_constraintStart_toEndOf="@+id/loader1"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toTopOf="@+id/loader4"/>
-    <com.elyeproj.loaderviewlibrary.LoaderImageView
+    <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/loader3"
         android:layout_width="0dp"
         android:layout_height="64dp"
@@ -37,12 +39,13 @@
         android:layout_marginStart="4dp"
         android:layout_marginEnd="4dp"
         android:layout_marginBottom="4dp"
-        app:corners="16"
+        app:loader_corner_radius="8dp"
+        app:loader_type="rect"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/loader4"
         app:layout_constraintTop_toBottomOf="@+id/loader1"
         app:layout_constraintBottom_toBottomOf="parent"/>
-    <com.elyeproj.loaderviewlibrary.LoaderImageView
+    <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/loader4"
         android:layout_width="0dp"
         android:layout_height="64dp"
@@ -50,7 +53,8 @@
         android:layout_marginStart="4dp"
         android:layout_marginEnd="4dp"
         android:layout_marginBottom="4dp"
-        app:corners="16"
+        app:loader_corner_radius="8dp"
+        app:loader_type="rect"
         app:layout_constraintStart_toEndOf="@+id/loader3"
         app:layout_constraintTop_toBottomOf="@+id/loader2"
         app:layout_constraintBottom_toBottomOf="parent"

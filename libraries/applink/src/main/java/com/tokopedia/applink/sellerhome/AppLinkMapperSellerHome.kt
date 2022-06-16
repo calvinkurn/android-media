@@ -1,10 +1,9 @@
 package com.tokopedia.applink.sellerhome
 
 import android.net.Uri
-import com.tokopedia.applink.DeeplinkMapper
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.UriUtil
-import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.applink.order.DeeplinkMapperOrder
 import com.tokopedia.applink.order.DeeplinkMapperOrder.FILTER_CANCELLATION_REQUEST
@@ -130,7 +129,7 @@ object AppLinkMapperSellerHome {
         return if (GlobalConfig.isSellerApp() || shouldRedirectToSellerApp(uri)) {
             ApplinkConstInternalSellerapp.SELLER_HOME_CHAT
         } else {
-            ApplinkConstInternalGlobal.TOPCHAT
+            ApplinkConstInternalMarketplace.TOPCHAT
         }
     }
 

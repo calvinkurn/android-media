@@ -24,11 +24,12 @@ import com.tokopedia.topads.debit.autotopup.data.model.AutoTopUpStatus
 import com.tokopedia.topads.debit.autotopup.view.activity.TopAdsEditAutoTopUpActivity
 import com.tokopedia.topads.debit.autotopup.view.viewmodel.TopAdsAutoTopUpViewModel
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.unifycomponents.CardUnify
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.list.ListItemUnify
 import com.tokopedia.unifycomponents.list.ListUnify
 import com.tokopedia.usecase.coroutines.Success
-import kotlinx.android.synthetic.main.topads_dash_topup_nominal_sheet.*
+import com.tokopedia.unifyprinciples.Typography
 import javax.inject.Inject
 
 /**
@@ -37,11 +38,17 @@ import javax.inject.Inject
 
 class TopAdsChooseNominalBottomSheet : BottomSheetUnify() {
 
+    private var suggestAutoTopUp: CardUnify? = null
+    private var statusTitle: Typography? = null
+    private var onBoarding: UnifyButton? = null
+    private var listGroup: ListUnify? = null
+    private var bonusTxt: Typography? = null
+    private var saveButton: UnifyButton? = null
+
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
     private var creditData: CreditResponse? = null
     private var bonus = 1.0
-    private var contentView: View? = null
     private var isTopUp = false
     var onSaved: ((positionSelected: Int) -> Unit)? = null
     var onSavedAutoTopUp: ((positionSelected: Int) -> Unit)? = null
@@ -58,7 +65,11 @@ class TopAdsChooseNominalBottomSheet : BottomSheetUnify() {
         fun newInstance() = TopAdsChooseNominalBottomSheet()
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?,
+    ): View? {
         initInjector()
         initChildLayout()
         return super.onCreateView(inflater, container, savedInstanceState)
@@ -66,15 +77,26 @@ class TopAdsChooseNominalBottomSheet : BottomSheetUnify() {
 
     private fun initInjector() {
         DaggerTopAdsDashboardComponent.builder()
-                .baseAppComponent((activity?.application as BaseMainApplication).baseAppComponent).build().inject(this)
+            .baseAppComponent((activity?.application as BaseMainApplication).baseAppComponent)
+            .build().inject(this)
     }
 
     private fun initChildLayout() {
-        contentView = View.inflate(context, R.layout.topads_dash_topup_nominal_sheet, null)
+        val contentView = View.inflate(context, R.layout.topads_dash_topup_nominal_sheet, null)
         showCloseIcon = false
         clearContentPadding = true
         isDragable = true
         setChild(contentView)
+        initView(contentView)
+    }
+
+    private fun initView(view: View) {
+        suggestAutoTopUp = view.findViewById(R.id.suggestAutoTopUp)
+        statusTitle = view.findViewById(R.id.status_title)
+        onBoarding = view.findViewById(R.id.onBoarding)
+        listGroup = view.findViewById(R.id.listGroup)
+        bonusTxt = view.findViewById(R.id.bonusTxt)
+        saveButton = view.findViewById(R.id.saveButton)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -97,7 +119,7 @@ class TopAdsChooseNominalBottomSheet : BottomSheetUnify() {
             saveButton?.buttonVariant = UnifyButton.Variant.FILLED
             saveButton?.text = resources.getString(R.string.label_add_credit)
         } else {
-            bonusTxt.visibility = View.VISIBLE
+            bonusTxt?.visibility = View.VISIBLE
         }
         viewModel.getAutoTopUpStatus.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
             when (it) {
@@ -142,8 +164,8 @@ class TopAdsChooseNominalBottomSheet : BottomSheetUnify() {
         list1.run {
             val selectedItem = this.getItemAtPosition(position) as ListItemUnify
             list.filter { it.getShownRadioButton()?.isChecked ?: false }
-                    .filterNot { it == selectedItem }
-                    .onEach { it.getShownRadioButton()?.isChecked = false }
+                .filterNot { it == selectedItem }
+                .onEach { it.getShownRadioButton()?.isChecked = false }
             selectedItem.getShownRadioButton()?.isChecked = true
             setBonus(position)
         }
@@ -158,9 +180,12 @@ class TopAdsChooseNominalBottomSheet : BottomSheetUnify() {
         autoTopUpData = data
         bonus = data.statusBonus
         context?.let {
-            status_title.text = MethodChecker.fromHtml(String.format(it.getString(R.string.topads_auto_topup_widget), "$bonus%"))
+            statusTitle?.text =
+                MethodChecker.fromHtml(String.format(it.getString(R.string.topads_auto_topup_widget),
+                    "$bonus%"))
         }
-        val isAutoTopUpActive = (data.status.toIntOrZero()) != TopAdsDashboardConstant.AUTO_TOPUP_INACTIVE
+        val isAutoTopUpActive =
+            (data.status.toIntOrZero()) != TopAdsDashboardConstant.AUTO_TOPUP_INACTIVE
         if (!isAutoTopUpActive && isTopUp) {
             showAutoAdsOption()
         }
@@ -197,7 +222,7 @@ class TopAdsChooseNominalBottomSheet : BottomSheetUnify() {
     }
 
     private fun showAutoAdsOption() {
-        suggestAutoTopUp.visibility = View.VISIBLE
+        suggestAutoTopUp?.visibility = View.VISIBLE
         onBoarding?.setOnClickListener {
             startActivity(Intent(context, TopAdsEditAutoTopUpActivity::class.java))
         }
@@ -205,15 +230,18 @@ class TopAdsChooseNominalBottomSheet : BottomSheetUnify() {
 
     private fun setBonus(position: Int) {
         context?.let {
-            bonusTxt.text = Html.fromHtml(String.format(it.getString(R.string.topads_dash_bonus_String_bottomsheet), "$bonus%",
-                    convertToCurrency(calculatePercentage((autoTopUpData?.availableNominals?.get(position)?.priceFmt
-                            ?: "").removeCommaRawString(), bonus).toLong())))
+            bonusTxt?.text =
+                Html.fromHtml(String.format(it.getString(R.string.topads_dash_bonus_String_bottomsheet),
+                    "$bonus%",
+                    convertToCurrency(calculatePercentage((autoTopUpData?.availableNominals?.get(
+                        position)?.priceFmt ?: "").removeCommaRawString(), bonus).toLong())))
 
         }
     }
 
-    fun show(fragmentManager: FragmentManager,
-             data: CreditResponse?, isTopUp: Boolean, position: Int) {
+    fun show(
+        fragmentManager: FragmentManager, data: CreditResponse?, isTopUp: Boolean, position: Int,
+    ) {
         this.creditData = data
         this.isTopUp = isTopUp
         this.defPosition = position

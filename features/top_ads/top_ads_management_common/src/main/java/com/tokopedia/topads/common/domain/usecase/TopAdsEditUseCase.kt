@@ -1,11 +1,12 @@
 package com.tokopedia.topads.common.domain.usecase
 
 import com.google.gson.reflect.TypeToken
+import com.tokopedia.common.network.coroutines.RestRequestInteractor
+import com.tokopedia.common.network.coroutines.repository.RestRepository
 import com.tokopedia.common.network.data.model.CacheType
 import com.tokopedia.common.network.data.model.RequestType
 import com.tokopedia.common.network.data.model.RestCacheStrategy
 import com.tokopedia.common.network.data.model.RestRequest
-import com.tokopedia.common.network.domain.RestRequestUseCase
 import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.network.data.model.response.DataResponse
@@ -22,6 +23,7 @@ import com.tokopedia.topads.common.data.raw.EDIT_GROUP_QUERY
 import com.tokopedia.topads.common.data.response.FinalAdResponse
 import com.tokopedia.topads.common.data.response.GroupEditInput
 import com.tokopedia.topads.common.data.response.TopadsManagePromoGroupProductInput
+import com.tokopedia.topads.common.data.response.groupitem.GroupStatisticsResponse
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.user.session.UserSessionInterface
 import java.util.*
@@ -33,38 +35,41 @@ import javax.inject.Inject
 
 @GqlQuery("EditGroupQuery", EDIT_GROUP_QUERY)
 
-class TopAdsEditUseCase @Inject constructor(val userSession: UserSessionInterface) : RestRequestUseCase() {
+class TopAdsEditUseCase @Inject constructor(private val userSession: UserSessionInterface) {
 
-    fun setParam(dataProduct: MutableList<GroupEditInput.Group.AdOperationsItem>?, dataGroup: HashMap<String, Any?>?) : RequestParams {
+    private val cacheStrategy by lazy { RestCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build() }
 
-        var requestParams = RequestParams.create()
+    private val restRepository: RestRepository by lazy { RestRequestInteractor.getInstance().restRepository }
 
+    suspend fun execute(requestParams: RequestParams?): FinalAdResponse {
+        val token = object : TypeToken<DataResponse<FinalAdResponse>>() {}.type
+        val request = GraphqlRequest(
+            EditGroupQuery.GQL_QUERY, FinalAdResponse::class.java, requestParams?.parameters)
+        val restRequest = RestRequest.Builder(TopAdsCommonConstant.TOPADS_GRAPHQL_TA_URL, token)
+            .setBody(request)
+            .setCacheStrategy(cacheStrategy)
+            .setRequestType(RequestType.POST)
+            .build()
+        return restRepository.getResponse(restRequest)
+            .getData<DataResponse<FinalAdResponse>>().data
+    }
+
+
+    fun setParam(
+        dataProduct: MutableList<GroupEditInput.Group.AdOperationsItem>?,
+        dataGroup: HashMap<String, Any?>?,
+    ): RequestParams {
+        val requestParams = RequestParams.create()
         val variable: HashMap<String, Any> = HashMap()
         variable[INPUT] = convertToParam(dataProduct, dataGroup)
         requestParams.putAll(variable)
         return requestParams
-
     }
 
-    private val cacheStrategy: RestCacheStrategy = RestCacheStrategy
-            .Builder(CacheType.ALWAYS_CLOUD).build()
-
-
-    override fun buildRequest(requestParams: RequestParams?): MutableList<RestRequest> {
-        val tempRequest = java.util.ArrayList<RestRequest>()
-        val token = object : TypeToken<DataResponse<FinalAdResponse>>() {}.type
-
-        var request: GraphqlRequest = GraphqlRequest(EditGroupQuery.GQL_QUERY, FinalAdResponse::class.java, requestParams?.parameters)
-        val restReferralRequest = RestRequest.Builder(TopAdsCommonConstant.TOPADS_GRAPHQL_TA_URL, token)
-                .setBody(request)
-                .setCacheStrategy(cacheStrategy)
-                .setRequestType(RequestType.POST)
-                .build()
-        tempRequest.add(restReferralRequest)
-        return tempRequest
-    }
-
-    private fun convertToParam(dataProduct: MutableList<GroupEditInput.Group.AdOperationsItem>?, dataGroup: HashMap<String, Any?>?): TopadsManagePromoGroupProductInput {
+    private fun convertToParam(
+        dataProduct: MutableList<GroupEditInput.Group.AdOperationsItem>?,
+        dataGroup: HashMap<String, Any?>?,
+    ): TopadsManagePromoGroupProductInput {
         val priceBidGroup = dataGroup?.get(PARAM_PRICE_BID) as? Int
         val dailyBudgetGroup = dataGroup?.get(PARAM_DAILY_BUDGET) as? Double
         val groupId = dataGroup?.get(PARAM_GROUP_Id) as String
@@ -75,13 +80,13 @@ class TopAdsEditUseCase @Inject constructor(val userSession: UserSessionInterfac
             groupID = groupId
             source = PARAM_RECOM_EDIT_SOURCE
             groupInput = GroupEditInput(
-                    action = PARAM_EDIT_OPTION,
-                    group = GroupEditInput.Group(
-                            adOperations = dataProduct,
-                            type = groupType,
-                            name = null,
-                            dailyBudget = dailyBudgetGroup,
-                    )
+                action = PARAM_EDIT_OPTION,
+                group = GroupEditInput.Group(
+                    adOperations = dataProduct,
+                    type = groupType,
+                    name = null,
+                    dailyBudget = dailyBudgetGroup,
+                )
             )
         }
 

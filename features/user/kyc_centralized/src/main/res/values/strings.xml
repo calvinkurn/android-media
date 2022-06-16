@@ -57,11 +57,13 @@
     <string name="face_subtitle_kyc">Tunjukkan bagian depan kartu identitas dengan posisi di bawah dagu tanpa menutupi wajah.</string>
     <string name="face_button_kyc">Mulai Foto</string>
 
-    <string name="camera_ktp_title">Verifikasi Data Diri</string>
-    <string name="camera_ktp_subtitle">Posisikan KTP di dalam bingkai,\npastikan informasi di foto terlihat jelas</string>
+    <string name="camera_ktp_title">Foto KTP</string>
+    <string name="camera_ktp_subtitle">Pastikan KTP kamu terlihat jelas di dalam bingkai foto ini.</string>
+    <string name="camera_ktp_subtitle_preview">Pastikan informasi di foto ini sudah terlihat jelas, ya.</string>
 
-    <string name="camera_face_title">Ambil Foto Diri Bersama KTP</string>
-    <string name="camera_face_subtitle">Pastikan wajah Anda dan KTP berada dalam area panduan.</string>
+    <string name="camera_face_title">Foto Wajah &amp; KTP</string>
+    <string name="camera_face_subtitle">Pastikan wajah dan KTP kamu terlihat jelas di dalam bingkai foto ini.</string>
+    <string name="camera_face_subtitle_preview">Pastikan wajah dan KTP kamu sudah terlihat jelas, ya.</string>
 
     <string name="change_button">Ubah</string>
     <string name="form_final_info">Dengan klik “Kirim Dokumen” saya menyetujui syarat &amp; ketentuan yang berlaku</string>

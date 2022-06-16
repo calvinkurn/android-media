@@ -232,7 +232,7 @@
         android:focusable="true"
         android:orientation="vertical">
 
-        <ProgressBar
+        <com.tokopedia.unifycomponents.LoaderUnify
             android:id="@+id/prog_bar"
             android:layout_width="40dp"
             android:layout_height="40dp"

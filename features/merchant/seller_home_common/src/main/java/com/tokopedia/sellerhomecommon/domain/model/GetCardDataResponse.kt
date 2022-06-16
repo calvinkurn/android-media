@@ -27,6 +27,9 @@ data class CardDataModel(
         @SerializedName("description")
         val description: String?,
         @Expose
+        @SerializedName("descriptionSecondary")
+        val secondaryDescription: String?,
+        @Expose
         @SerializedName("errorMsg")
         val errorMsg: String?,
         @Expose

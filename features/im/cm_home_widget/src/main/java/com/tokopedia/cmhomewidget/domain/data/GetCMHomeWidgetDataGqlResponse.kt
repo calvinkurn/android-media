@@ -39,6 +39,9 @@ data class CMHomeWidgetData(
     @SerializedName("campaign_id")
     @Expose
     val campaignId: String,
+    @SerializedName("session_id")
+    @Expose
+    val sessionId: String?,
     @SerializedName("widget_title")
     @Expose
     val widgetTitle: String?,

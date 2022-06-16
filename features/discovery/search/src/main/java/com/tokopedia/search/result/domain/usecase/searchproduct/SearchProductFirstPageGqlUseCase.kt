@@ -10,11 +10,11 @@ import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.search.result.domain.model.GlobalSearchNavigationModel
+import com.tokopedia.search.result.domain.model.LastFilterModel
 import com.tokopedia.search.result.domain.model.QuickFilterModel
 import com.tokopedia.search.result.domain.model.SearchInspirationCarouselModel
 import com.tokopedia.search.result.domain.model.SearchInspirationWidgetModel
 import com.tokopedia.search.result.domain.model.SearchProductModel
-import com.tokopedia.search.result.domain.model.LastFilterModel
 import com.tokopedia.search.utils.SearchLogger
 import com.tokopedia.search.utils.UrlParamUtils
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsImageViewUseCase
@@ -96,11 +96,11 @@ class SearchProductFirstPageGqlUseCase(
 
     @GqlQuery("QuickFilter", QUICK_FILTER_QUERY)
     private fun createQuickFilterRequest(query: String, params: String) =
-            GraphqlRequest(
-                    QuickFilter(),
-                    QuickFilterModel::class.java,
-                    mapOf(GQL.KEY_QUERY to query, GQL.KEY_PARAMS to params)
-            )
+        GraphqlRequest(
+            QuickFilter(),
+            QuickFilterModel::class.java,
+            mapOf(GQL.KEY_QUERY to query, GQL.KEY_PARAMS to params)
+        )
 
     private fun MutableList<GraphqlRequest>.addGlobalNavRequest(requestParams: RequestParams, query: String, params: String) {
         if (!requestParams.isSkipGlobalNav()) {
@@ -346,6 +346,7 @@ class SearchProductFirstPageGqlUseCase(
                                     productWishlistUrl
                                     productViewUrl
                                 }
+                                customvideo_url
                             }
                         }
                     }

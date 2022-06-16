@@ -83,6 +83,9 @@ class DealsCategoryViewModelTest {
         //then
         val curatedData = viewModel.observableChips.value
         assertEquals(curatedData, mockFilterChip)
+        val categories = viewModel.observableCategories.value
+        assertEquals(mockCuratedData.eventChildCategory.categories[0], categories?.get(0))
+        assertEquals(mockCuratedData.eventChildCategory.categories.size, categories?.size)
     }
 
     @Test

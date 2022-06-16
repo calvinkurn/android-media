@@ -11,7 +11,8 @@ data class TopadsHeadlineUiModel(
     var topadsHeadLinePage: Int = 0,
     var productId: String = "",
     var type: String = "",
-    var name: String = ""
+    var name: String = "",
+    var isHeadlineDataFetched: Boolean = false
 ) : DynamicPdpDataModel {
 
     override val impressHolder: ImpressHolder = ImpressHolder()

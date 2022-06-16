@@ -17,6 +17,7 @@ import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.review.R
@@ -101,6 +102,8 @@ class ShopReviewFragment : ReadReviewFragment() {
         super.onSuccessGetRatingAndTopic(ratingAndTopics)
         if (ratingOnlyContainer?.isVisible.orFalse()) {
             nestedScrollViewContainer?.visible()
+        } else {
+            nestedScrollViewContainer?.gone()
         }
     }
 
@@ -108,6 +111,8 @@ class ShopReviewFragment : ReadReviewFragment() {
         super.onSuccessGetShopRatingAndTopic(shopRatingAndTopics)
         if (ratingOnlyContainer?.isVisible.orFalse()) {
             nestedScrollViewContainer?.visible()
+        } else {
+            nestedScrollViewContainer?.gone()
         }
     }
 
@@ -123,15 +128,29 @@ class ShopReviewFragment : ReadReviewFragment() {
         }
     }
 
-    override fun showError() {
-        super.showError()
+    override fun showFilteredEmpty() {
+        super.showFilteredEmpty()
+        emptyStateContainer?.apply {
+            emptyStateImage?.setImageUrl(EMPTY_FILTERED_STATE_IMAGE_URL)
+            show()
+        }
+        nestedScrollViewContainer?.visible()
+    }
+
+    override fun hideFilteredEmpty() {
+        super.hideFilteredEmpty()
+        nestedScrollViewContainer?.gone()
+    }
+
+    override fun showError(throwable: Throwable) {
+        super.showError(throwable)
         nestedScrollViewContainer?.visible()
     }
 
     override fun onFailGetProductReviews(throwable: Throwable) {
         logToCrashlytics(throwable)
         if (currentPage == Int.ZERO) {
-            showError()
+            showError(throwable)
         } else {
             showErrorToaster(getString(R.string.review_reading_connection_error)) {
                 loadData(currentPage)

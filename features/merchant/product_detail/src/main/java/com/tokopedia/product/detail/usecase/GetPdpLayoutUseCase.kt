@@ -51,6 +51,7 @@ open class GetPdpLayoutUseCase @Inject constructor(private val gqlUseCase: Multi
                   isLeasing
                   isBlacklisted
                   totalStockFmt
+                  defaultMediaURL
                   menu {
                     id
                     name
@@ -103,6 +104,7 @@ open class GetPdpLayoutUseCase @Inject constructor(private val gqlUseCase: Multi
                         description
                         videoURLAndroid
                         isAutoplay
+                        variantOptionID
                       }
                       videos {
                         source
@@ -111,6 +113,7 @@ open class GetPdpLayoutUseCase @Inject constructor(private val gqlUseCase: Multi
             		}
             		... on pdpDataProductContent {
                       name
+                      parentName
                       isCOD
                       price {
                         value
@@ -185,6 +188,8 @@ open class GetPdpLayoutUseCase @Inject constructor(private val gqlUseCase: Multi
                         title
                         subtitle
                         applink
+                        infoLink
+                        icon
                         showAtFront
                         isAnnotation
                       }

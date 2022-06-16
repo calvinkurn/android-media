@@ -7,9 +7,9 @@ import com.tokopedia.sellerorder.detail.data.model.SetDelivered
 import com.tokopedia.sellerorder.detail.data.model.SetDeliveredResponse
 import com.tokopedia.sellerorder.detail.data.model.SomDetailOrder
 import com.tokopedia.sellerorder.detail.data.model.SomReasonRejectData
-import com.tokopedia.sellerorder.detail.domain.SomGetOrderDetailUseCase
-import com.tokopedia.sellerorder.detail.domain.SomReasonRejectUseCase
-import com.tokopedia.sellerorder.detail.domain.SomSetDeliveredUseCase
+import com.tokopedia.sellerorder.detail.domain.usecase.SomGetOrderDetailUseCase
+import com.tokopedia.sellerorder.detail.domain.usecase.SomReasonRejectUseCase
+import com.tokopedia.sellerorder.detail.domain.usecase.SomSetDeliveredUseCase
 import com.tokopedia.sellerorder.detail.presentation.viewmodel.SomDetailViewModel
 import com.tokopedia.shop.common.domain.interactor.AuthorizeAccessUseCase
 import com.tokopedia.usecase.coroutines.Fail
@@ -161,11 +161,11 @@ class SomDetailViewModelTest : SomOrderBaseViewModelTest<SomDetailViewModel>() {
     fun getReasonReject_shouldReturnSuccess() = coroutineTestRule.runBlockingTest {
         //given
         coEvery {
-            somReasonRejectUseCase.execute(any(), any())
+            somReasonRejectUseCase.execute(any())
         } returns Success(SomReasonRejectData.Data(listSomRejectReason = listReasonReject))
 
         //when
-        viewModel.getRejectReasons("")
+        viewModel.getRejectReasons()
 
         //then
         assert(viewModel.rejectReasonResult.value is Success)
@@ -176,11 +176,11 @@ class SomDetailViewModelTest : SomOrderBaseViewModelTest<SomDetailViewModel>() {
     fun getReasonReject_shouldReturnFail() = coroutineTestRule.runBlockingTest {
         //given
         coEvery {
-            somReasonRejectUseCase.execute(any(), any())
+            somReasonRejectUseCase.execute(any())
         } returns Fail(Throwable())
 
         //when
-        viewModel.getRejectReasons("")
+        viewModel.getRejectReasons()
 
         //then
         assert(viewModel.rejectReasonResult.value is Fail)
@@ -190,11 +190,11 @@ class SomDetailViewModelTest : SomOrderBaseViewModelTest<SomDetailViewModel>() {
     fun getReasonReject_ifThrowableThrown_shouldReturnFail() = coroutineTestRule.runBlockingTest {
         //given
         coEvery {
-            somReasonRejectUseCase.execute(any(), any())
+            somReasonRejectUseCase.execute(any())
         } throws Throwable()
 
         //when
-        viewModel.getRejectReasons("")
+        viewModel.getRejectReasons()
 
         //then
         assert(viewModel.rejectReasonResult.value is Fail)
@@ -204,11 +204,11 @@ class SomDetailViewModelTest : SomOrderBaseViewModelTest<SomDetailViewModel>() {
     fun getReasonReject_msgShouldNotReturnEmpty() = coroutineTestRule.runBlockingTest {
         //given
         coEvery {
-            somReasonRejectUseCase.execute(any(), any())
+            somReasonRejectUseCase.execute(any())
         } returns Success(SomReasonRejectData.Data(listSomRejectReason = listReasonReject))
 
         //when
-        viewModel.getRejectReasons("")
+        viewModel.getRejectReasons()
 
         //then
         assert(viewModel.rejectReasonResult.value is Success)
@@ -220,11 +220,11 @@ class SomDetailViewModelTest : SomOrderBaseViewModelTest<SomDetailViewModel>() {
     fun setDelivered_shouldReturnSuccess() = coroutineTestRule.runBlockingTest {
         //given
         coEvery {
-            somSetDeliveredUseCase.execute(any(), any(), any())
+            somSetDeliveredUseCase.execute(any(), any())
         } returns Success(SetDeliveredResponse(SetDelivered(success = 1)))
 
         //when
-        viewModel.setDelivered("", "", "")
+        viewModel.setDelivered("", "")
 
         //then
         assert(viewModel.setDelivered.value is Success)
@@ -235,11 +235,11 @@ class SomDetailViewModelTest : SomOrderBaseViewModelTest<SomDetailViewModel>() {
     fun setDelivered_shouldReturnFail() = coroutineTestRule.runBlockingTest {
         //given
         coEvery {
-            somSetDeliveredUseCase.execute(any(), any(), any())
+            somSetDeliveredUseCase.execute(any(), any())
         } returns Fail(Throwable())
 
         //when
-        viewModel.setDelivered("", "", "")
+        viewModel.setDelivered("", "")
 
         //then
         assert(viewModel.setDelivered.value is Fail)
@@ -249,11 +249,11 @@ class SomDetailViewModelTest : SomOrderBaseViewModelTest<SomDetailViewModel>() {
     fun setDelivered_ifThrowableThrown_shouldReturnFail() = coroutineTestRule.runBlockingTest {
         //given
         coEvery {
-            somSetDeliveredUseCase.execute(any(), any(), any())
+            somSetDeliveredUseCase.execute(any(), any())
         } throws Throwable()
 
         //when
-        viewModel.setDelivered("", "", "")
+        viewModel.setDelivered("", "")
 
         //then
         assert(viewModel.setDelivered.value is Fail)
@@ -263,11 +263,11 @@ class SomDetailViewModelTest : SomOrderBaseViewModelTest<SomDetailViewModel>() {
     fun setDelivered_msgShouldNotReturnEmpty() = coroutineTestRule.runBlockingTest {
         //given
         coEvery {
-            somSetDeliveredUseCase.execute(any(), any(), any())
+            somSetDeliveredUseCase.execute(any(), any())
         } returns Success(SetDeliveredResponse(SetDelivered(message = listMsg)))
 
         //when
-        viewModel.setDelivered("", "", "")
+        viewModel.setDelivered("", "")
 
         //then
         assert(viewModel.setDelivered.value is Success)

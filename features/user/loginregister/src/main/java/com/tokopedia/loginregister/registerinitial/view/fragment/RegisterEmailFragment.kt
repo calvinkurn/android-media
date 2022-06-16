@@ -159,7 +159,9 @@ open class RegisterEmailFragment : BaseDaggerFragment() {
             } else if (registerRequestDataResult is Fail) {
                 val throwable = registerRequestDataResult.throwable
                 dismissLoadingProgress()
-                val errorMessage = ErrorHandler.getErrorMessage(context, throwable)
+                val errorMessage = ErrorHandler.getErrorMessage(context, throwable, ErrorHandler.Builder().apply {
+                    className = RegisterEmailFragment::class.java.name
+                }.build())
                 if(throwable is MessageErrorException){
                     throwable.message?.run {
                         if(this.contains(ALREADY_REGISTERED)){

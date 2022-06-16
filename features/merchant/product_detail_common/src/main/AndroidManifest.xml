@@ -1,2 +1,11 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.tokopedia.product.detail.common" />
+    package="com.tokopedia.product.detail.common">
+
+    <application>
+        <activity
+            android:name=".view.ProductDetailGalleryActivity"
+            android:label="@string/pdp_common_gallery_label"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White" />
+    </application>
+</manifest>

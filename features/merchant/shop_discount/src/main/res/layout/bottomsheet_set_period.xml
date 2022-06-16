@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingBottom="@dimen/unify_space_16">
+
+    <ScrollView
+        android:id="@+id/content"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        tools:visibility="visible">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/unify_space_16"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="@dimen/unify_space_16">
+
+            <com.tokopedia.unifycomponents.ChipsUnify
+                android:id="@+id/chipOneYearPeriod"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                app:centerText="true"
+                app:chipSize="medium"
+                app:chipText="@string/sd_one_year_ahead"
+                app:chipType="normal"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <com.tokopedia.unifycomponents.ChipsUnify
+                android:id="@+id/chipSixMonthPeriod"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/unify_space_8"
+                android:layout_marginTop="12dp"
+                app:centerText="true"
+                app:chipSize="medium"
+                app:chipText="@string/sd_six_month_ahead"
+                app:chipType="normal"
+                app:layout_constraintStart_toEndOf="@id/chipOneYearPeriod"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <com.tokopedia.unifycomponents.ChipsUnify
+                android:id="@+id/chipOneMonthPeriod"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/unify_space_8"
+                app:centerText="true"
+                app:chipSize="medium"
+                app:chipText="@string/sd_one_month_ahead"
+                app:chipType="normal"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/chipOneYearPeriod" />
+
+            <com.tokopedia.unifycomponents.ChipsUnify
+                android:id="@+id/chipCustomSelection"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/unify_space_8"
+                android:layout_marginTop="@dimen/unify_space_8"
+                app:centerText="true"
+                app:chipSize="medium"
+                app:chipText="@string/sd_custom_selection"
+                app:chipType="normal"
+                app:layout_constraintStart_toEndOf="@id/chipOneMonthPeriod"
+                app:layout_constraintTop_toBottomOf="@id/chipSixMonthPeriod" />
+
+            <com.tokopedia.unifycomponents.TextFieldUnify2
+                android:id="@+id/tfuStartDate"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/unify_space_16"
+                android:layout_marginEnd="@dimen/unify_space_4"
+                app:layout_constraintEnd_toStartOf="@+id/tfuEndDate"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/chipOneMonthPeriod"
+                app:unify_text_field_label="@string/sd_start_date"
+                app:unify_text_field_label_static="true" />
+
+            <com.tokopedia.unifycomponents.TextFieldUnify2
+                android:id="@+id/tfuEndDate"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/unify_space_4"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toEndOf="@+id/tfuStartDate"
+                app:layout_constraintTop_toTopOf="@+id/tfuStartDate"
+                app:unify_text_field_label="@string/sd_end_date"
+                app:unify_text_field_label_static="true" />
+
+            <com.tokopedia.unifycomponents.DividerUnify
+                android:id="@+id/divider"
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/unify_space_2"
+                android:layout_marginTop="@dimen/unify_space_16"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tfuStartDate" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </ScrollView>
+
+    <com.tokopedia.unifycomponents.UnifyButton
+        android:id="@+id/btnApply"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/content"
+        android:layout_marginStart="@dimen/unify_space_16"
+        android:layout_marginTop="@dimen/unify_space_16"
+        android:layout_marginEnd="@dimen/unify_space_16"
+        android:text="@string/sd_apply"
+        android:visibility="gone"
+        app:unifyButtonRightLoader="false"
+        app:unifyButtonSize="large"
+        app:unifyButtonType="main"
+        app:unifyButtonVariant="filled"
+        tools:visibility="visible" />
+
+    <com.tokopedia.unifycomponents.LoaderUnify
+        android:id="@+id/loader"
+        android:layout_width="@dimen/unify_space_64"
+        android:layout_height="@dimen/unify_space_64"
+        android:layout_centerInParent="true"
+        android:layout_gravity="center"
+        android:layout_marginStart="@dimen/unify_space_16"
+        android:layout_marginTop="@dimen/unify_space_16"
+        android:layout_marginEnd="@dimen/unify_space_16"
+        android:layout_marginBottom="@dimen/unify_space_16"
+        app:loader_type="circular" />
+
+</RelativeLayout>

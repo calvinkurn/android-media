@@ -21,6 +21,9 @@ data class AdditionalInfo(
         val usageSummaries: List<UsageSummaries> = emptyList(),
 
         @field:SerializedName("promo_sp_ids")
-        val promoSpIds: List<PromoSpId> = emptyList()
+        val promoSpIds: List<PromoSpId> = emptyList(),
+
+        @field:SerializedName("poml_auto_applied")
+        val pomlAutoApplied: Boolean = false,
 
 )

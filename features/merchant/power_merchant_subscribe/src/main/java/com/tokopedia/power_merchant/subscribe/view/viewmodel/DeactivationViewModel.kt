@@ -10,6 +10,7 @@ import com.tokopedia.gm.common.domain.interactor.DeactivatePMUseCase
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.power_merchant.subscribe.domain.usecase.GetPMDeactivationQuestionnaireUseCase
 import com.tokopedia.power_merchant.subscribe.view.model.DeactivationQuestionnaireUiModel
+import com.tokopedia.gm.common.presentation.model.DeactivationResultUiModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -35,12 +36,12 @@ class DeactivationViewModel @Inject constructor(
         _pmDeactivationQuestionnaireData
     }
 
-    private val _isSuccessDeactivate by lazy {
-        MutableLiveData<Result<Boolean>>()
+    private val _pmDeactivateStatus by lazy {
+        MutableLiveData<Result<DeactivationResultUiModel>>()
     }
 
-    val isSuccessDeactivate: LiveData<Result<Boolean>> by lazy {
-        _isSuccessDeactivate
+    val pmDeactivateStatus: LiveData<Result<DeactivationResultUiModel>> by lazy {
+        _pmDeactivateStatus
     }
 
     fun getPMCancellationQuestionnaireData(pmTireType: Int, isFirstLoad: Boolean) {
@@ -56,15 +57,15 @@ class DeactivationViewModel @Inject constructor(
         })
     }
 
-    fun submitPmDeactivation(questionData: MutableList<PMCancellationQuestionnaireAnswerModel>, currentShopTire: Int, nextShopTire: Int) {
+    fun submitPmDeactivation(questionData: MutableList<PMCancellationQuestionnaireAnswerModel>) {
         launchCatchError(block = {
-            deactivatePmUseCase.get().params = DeactivatePMUseCase.createRequestParam(questionData, currentShopTire, nextShopTire)
+            deactivatePmUseCase.get().params = DeactivatePMUseCase.createRequestParam(questionData)
             val result = Success(withContext(dispatchers.io) {
                 deactivatePmUseCase.get().executeOnBackground()
             })
-            _isSuccessDeactivate.value = result
+            _pmDeactivateStatus.value = result
         }, onError = {
-            _isSuccessDeactivate.value = Fail(it)
+            _pmDeactivateStatus.value = Fail(it)
         })
     }
 }

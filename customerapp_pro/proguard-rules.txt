@@ -246,6 +246,10 @@
 -keepnames class com.tokopedia.review.feature.reading.presentation.fragment.ShopReviewFragment
 -keepnames class com.tokopedia.shop_showcase.shop_showcase_tab.presentation.fragment.ShopPageShowcaseFragment
 
+# feed_shop
+-keepnames class com.tokopedia.feed_shop.shop.view.fragment.FeedShopFragment
+-keep class com.tokopedia.feed_shop.shop.view.fragment.FeedShopFragment
+
 # Hansel proguard rules
 -dontwarn io.hansel.**
 -keep class io.hansel.**{*;}

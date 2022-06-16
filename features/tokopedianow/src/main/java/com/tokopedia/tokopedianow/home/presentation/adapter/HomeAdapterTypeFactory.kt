@@ -23,11 +23,12 @@ import com.tokopedia.tokopedianow.common.viewholder.TokoNowEmptyStateOocViewHold
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowProductCardViewHolder.TokoNowProductCardListener
 import com.tokopedia.tokopedianow.home.presentation.uimodel.*
 import com.tokopedia.tokopedianow.home.presentation.view.listener.DynamicLegoBannerCallback
+import com.tokopedia.tokopedianow.home.presentation.view.listener.HomeLeftCarouselAtcCallback
 import com.tokopedia.tokopedianow.home.presentation.viewholder.*
 import com.tokopedia.tokopedianow.home.presentation.viewholder.HomeEducationalInformationWidgetViewHolder.HomeEducationalInformationListener
 import com.tokopedia.tokopedianow.home.presentation.viewholder.HomeProductRecomViewHolder.HomeProductRecomListener
 import com.tokopedia.tokopedianow.home.presentation.viewholder.HomeQuestSequenceWidgetViewHolder.HomeQuestSequenceWidgetListener
-import com.tokopedia.tokopedianow.home.presentation.viewholder.HomeSharingEducationWidgetViewHolder.HomeSharingEducationListener
+import com.tokopedia.tokopedianow.home.presentation.viewholder.HomeSharingWidgetViewHolder.HomeSharingListener
 
 class HomeAdapterTypeFactory(
     private val tokoNowView: TokoNowView? = null,
@@ -37,14 +38,15 @@ class HomeAdapterTypeFactory(
     private val bannerComponentListener: BannerComponentListener? = null,
     private val homeProductRecomListener: HomeProductRecomListener? = null,
     private val tokoNowProductCardListener: TokoNowProductCardListener? = null,
-    private val homeSharingEducationListener: HomeSharingEducationListener? = null,
+    private val homeSharingEducationListener: HomeSharingListener? = null,
     private val homeEducationalInformationListener: HomeEducationalInformationListener? = null,
     private val serverErrorListener: TokoNowServerErrorViewHolder.ServerErrorListener? = null,
     private val tokoNowEmptyStateOocListener: TokoNowEmptyStateOocListener? = null,
     private val homeQuestSequenceWidgetListener : HomeQuestSequenceWidgetListener? = null,
-    private val mixLeftComponentListener: MixLeftComponentListener? = null,
     private val dynamicLegoBannerCallback: DynamicLegoBannerCallback? = null,
-    private val homeSwitcherListener: HomeSwitcherViewHolder.HomeSwitcherListener? = null
+    private val homeSwitcherListener: HomeSwitcherViewHolder.HomeSwitcherListener? = null,
+    private val homeLeftCarouselAtcListener: HomeLeftCarouselAtcCallback? = null,
+    private val homeLeftCarouselListener: MixLeftComponentListener? = null,
 ):  BaseAdapterTypeFactory(),
     HomeTypeFactory,
     HomeComponentTypeFactory,
@@ -63,11 +65,11 @@ class HomeAdapterTypeFactory(
     // endregion
 
     // region TokoNow Home Component
+    override fun type(uiModel: HomeSharingWidgetUiModel): Int = HomeSharingWidgetViewHolder.LAYOUT
     override fun type(uiModel: HomeTickerUiModel): Int = HomeTickerViewHolder.LAYOUT
     override fun type(uiModel: HomeProductRecomUiModel): Int = HomeProductRecomViewHolder.LAYOUT
     override fun type(uiModel: HomeEmptyStateUiModel): Int = HomeEmptyStateViewHolder.LAYOUT
     override fun type(uiModel: HomeLoadingStateUiModel): Int = HomeLoadingStateViewHolder.LAYOUT
-    override fun type(uiModel: HomeSharingEducationWidgetUiModel): Int = HomeSharingEducationWidgetViewHolder.LAYOUT
     override fun type(uiModel: HomeEducationalInformationWidgetUiModel): Int = HomeEducationalInformationWidgetViewHolder.LAYOUT
     override fun type(uiModel: HomeProgressBarUiModel): Int = HomeProgressBarViewHolder.LAYOUT
     override fun type(uiModel: HomeQuestSequenceWidgetUiModel): Int = HomeQuestSequenceWidgetViewHolder.LAYOUT
@@ -75,6 +77,7 @@ class HomeAdapterTypeFactory(
     override fun type(uiModel: HomeQuestTitleUiModel): Int = HomeQuestTitleViewHolder.LAYOUT
     override fun type(uiModel: HomeQuestAllClaimedWidgetUiModel): Int = HomeQuestAllClaimedWidgetViewHolder.LAYOUT
     override fun type(uiModel: HomeSwitcherUiModel): Int = HomeSwitcherViewHolder.LAYOUT
+    override fun type(uiModel: HomeLeftCarouselAtcUiModel): Int = HomeLeftCarouselAtcViewHolder.LAYOUT
     // endregion
 
     // region Global Home Component
@@ -109,7 +112,7 @@ class HomeAdapterTypeFactory(
             HomeProductRecomViewHolder.LAYOUT -> HomeProductRecomViewHolder(view, tokoNowView, homeProductRecomListener)
             HomeEmptyStateViewHolder.LAYOUT -> HomeEmptyStateViewHolder(view, tokoNowView)
             HomeLoadingStateViewHolder.LAYOUT -> HomeLoadingStateViewHolder(view)
-            HomeSharingEducationWidgetViewHolder.LAYOUT -> HomeSharingEducationWidgetViewHolder(view, homeSharingEducationListener)
+            HomeSharingWidgetViewHolder.LAYOUT -> HomeSharingWidgetViewHolder(view, homeSharingEducationListener)
             HomeEducationalInformationWidgetViewHolder.LAYOUT -> HomeEducationalInformationWidgetViewHolder(view, homeEducationalInformationListener)
             HomeProgressBarViewHolder.LAYOUT -> HomeProgressBarViewHolder(view)
             HomeQuestSequenceWidgetViewHolder.LAYOUT -> HomeQuestSequenceWidgetViewHolder(view, homeQuestSequenceWidgetListener)
@@ -117,6 +120,7 @@ class HomeAdapterTypeFactory(
             HomeQuestTitleViewHolder.LAYOUT -> HomeQuestTitleViewHolder(view, homeQuestSequenceWidgetListener)
             HomeQuestAllClaimedWidgetViewHolder.LAYOUT -> HomeQuestAllClaimedWidgetViewHolder(view, homeQuestSequenceWidgetListener)
             HomeSwitcherViewHolder.LAYOUT -> HomeSwitcherViewHolder(view, homeSwitcherListener)
+            HomeLeftCarouselAtcViewHolder.LAYOUT -> HomeLeftCarouselAtcViewHolder(view, homeLeftCarouselAtcListener, tokoNowView)
             // endregion
 
             // region Global Home Component
@@ -127,7 +131,7 @@ class HomeAdapterTypeFactory(
                 BannerComponentViewHolder(view, bannerComponentListener, null)
             }
             MixLeftComponentViewHolder.LAYOUT -> {
-                MixLeftComponentViewHolder(view, mixLeftComponentListener, null)
+                MixLeftComponentViewHolder(view, homeLeftCarouselListener, null)
             }
             // endregion
             else -> super.createViewHolder(view, type)

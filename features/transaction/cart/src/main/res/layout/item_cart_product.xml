@@ -300,6 +300,7 @@
             app:layout_constraintStart_toEndOf="@+id/v_bundling_product_separator"
             app:layout_constraintTop_toBottomOf="@+id/iu_image_product"
             app:unify_text_field_label="@string/cart_label_text_field_notes"
+            app:unify_text_field_label_static="true"
             tools:layout_height="32dp"
             tools:visibility="visible" />
 

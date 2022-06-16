@@ -11,6 +11,7 @@ import com.tokopedia.play.broadcaster.ui.mapper.PlayBroadcastMapper
 import com.tokopedia.play.broadcaster.ui.model.*
 import com.tokopedia.play.broadcaster.ui.model.campaign.ProductTagSectionUiModel
 import com.tokopedia.play.broadcaster.ui.model.product.ProductUiModel
+import com.tokopedia.play.broadcaster.ui.model.result.NetworkState
 import com.tokopedia.play.broadcaster.ui.model.tag.PlayTagUiModel
 import com.tokopedia.play.broadcaster.ui.state.ChannelSummaryUiState
 import com.tokopedia.play.broadcaster.ui.state.LiveReportUiState
@@ -20,6 +21,7 @@ import com.tokopedia.play.broadcaster.util.error.DefaultErrorThrowable
 import com.tokopedia.play.broadcaster.view.state.CoverSetupState
 import com.tokopedia.play_common.domain.UpdateChannelUseCase
 import com.tokopedia.play_common.model.result.NetworkResult
+import com.tokopedia.play_common.model.result.map
 import com.tokopedia.play_common.types.PlayChannelStatusType
 import com.tokopedia.play_common.util.datetime.PlayDateTimeFormatter
 import com.tokopedia.play_common.util.extension.setValue
@@ -33,9 +35,9 @@ import kotlinx.coroutines.flow.*
 /**
  * @author by jessica on 27/05/20
  */
-
 class PlayBroadcastSummaryViewModel @AssistedInject constructor(
-    @Assisted val channelId: String,
+    @Assisted("channelId") val channelId: String,
+    @Assisted("channelTitle") val channelTitle: String,
     @Assisted val productSectionList: List<ProductTagSectionUiModel>,
     @Assisted private val summaryLeaderboardInfo: SummaryLeaderboardInfo,
     private val dispatcher: CoroutineDispatchers,
@@ -51,21 +53,19 @@ class PlayBroadcastSummaryViewModel @AssistedInject constructor(
     @AssistedFactory
     interface Factory {
         fun create(
-            channelId: String,
+            @Assisted("channelId") channelId: String,
+            @Assisted("channelTitle") channelTitle: String,
             productSectionList: List<ProductTagSectionUiModel>,
             summaryLeaderboardInfo: SummaryLeaderboardInfo,
         ): PlayBroadcastSummaryViewModel
     }
-
-    val channelTitle: String
-        get() = _channelSummary.value.title
 
     val shopName: String
         get() = userSession.shopName
 
     private val _channelSummary = MutableStateFlow(ChannelSummaryUiModel.empty())
     private val _trafficMetric = MutableStateFlow<NetworkResult<List<TrafficMetricUiModel>>>(NetworkResult.Loading)
-    private val _tags = MutableStateFlow<Set<String>>(emptySet())
+    private val _tags = MutableStateFlow<NetworkResult<Set<String>>>(NetworkResult.Loading)
     private val _selectedTags = MutableStateFlow<Set<String>>(emptySet())
 
     private val _channelSummaryUiState = _channelSummary.map {
@@ -85,14 +85,22 @@ class PlayBroadcastSummaryViewModel @AssistedInject constructor(
     private val _tagUiState = combine(
         _tags, _selectedTags,
     ) { tags, selectedTags ->
-        TagUiState(
-            tags = tags.map {
-                PlayTagUiModel(
-                    tag = it,
-                    isChosen = selectedTags.contains(it)
+        when(tags) {
+            is NetworkResult.Loading -> NetworkResult.Loading
+            is NetworkResult.Fail -> NetworkResult.Fail(tags.error)
+            is NetworkResult.Success -> {
+                NetworkResult.Success(
+                    TagUiState(
+                        tags = tags.data.map {
+                            PlayTagUiModel(
+                                tag = it,
+                                isChosen = selectedTags.contains(it)
+                            )
+                        },
+                    )
                 )
-            },
-        )
+            }
+        }
     }
 
     val uiState: Flow<PlayBroadcastSummaryUiState> = combine(
@@ -132,6 +140,7 @@ class PlayBroadcastSummaryViewModel @AssistedInject constructor(
             is PlayBroadcastSummaryAction.SetCover -> handleSetCover(action.cover)
             is PlayBroadcastSummaryAction.ToggleTag -> handleToggleTag(action.tagUiModel)
             PlayBroadcastSummaryAction.ClickPostVideoNow -> handleClickPostVideoNow()
+            PlayBroadcastSummaryAction.RefreshLoadTag -> handleRefreshLoadTag()
         }
     }
 
@@ -215,6 +224,10 @@ class PlayBroadcastSummaryViewModel @AssistedInject constructor(
         }
     }
 
+    private fun handleRefreshLoadTag() {
+        getTags()
+    }
+
     /** Fetch Area */
     private fun fetchLiveTraffic() {
         viewModelScope.launchCatchError(context = dispatcher.io, block = {
@@ -269,12 +282,16 @@ class PlayBroadcastSummaryViewModel @AssistedInject constructor(
 
     private fun getTags() {
         viewModelScope.launchCatchError(context = dispatcher.main, block = {
+            _tags.value = NetworkResult.Loading
+
             val response = getRecommendedChannelTagsUseCase.apply {
                 setChannelId(channelId)
             }.executeOnBackground()
 
-            _tags.value = response.recommendedTags.tags.toSet()
-        }) {}
+            _tags.value = NetworkResult.Success(response.recommendedTags.tags.toSet())
+        }) {
+            _tags.value = NetworkResult.Fail(it)
+        }
     }
 
     private suspend fun saveTag() {
@@ -301,6 +318,7 @@ class PlayBroadcastSummaryViewModel @AssistedInject constructor(
     private fun convertDate(raw: String): String =
         PlayDateTimeFormatter.formatDate(raw, outputPattern = PlayDateTimeFormatter.dMMMMyyyy)
 
+    @Suppress("MagicNumber")
     private fun isEligiblePostVideo(duration: String): Boolean {
         return try {
             val split = duration.split(":")

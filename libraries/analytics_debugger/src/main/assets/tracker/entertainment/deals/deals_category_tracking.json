@@ -112,18 +112,19 @@
       "sessionIris" : ".+",
       "userId" : ".*",
       "businessUnit" : "travel & entertainment"
-    }, {
-      "event" : "clickDeals",
-      "eventCategory" : "digital - deals",
-      "eventAction" : "apply filter - category page",
-      "eventLabel" : "deals - filter  - .+",
-      "screenName" : "/deals/",
-      "category" : "deals",
-      "currentSite" : "tokopediadigitaldeals",
-      "clientId" : ".+",
-      "sessionIris" : ".+",
-      "userId" : ".*",
-      "businessUnit" : "travel & entertainment"
+    },
+    {
+      "event": "clickDeals",
+      "eventCategory": "digital - deals",
+      "eventAction": "apply filter - category page",
+      "eventLabel": "deals - filter  - .+",
+      "screenName": "/deals/",
+      "category": "deals",
+      "currentSite": "tokopediadigitaldeals",
+      "clientId": ".+",
+      "sessionIris": ".+",
+      "userId": ".*",
+      "businessUnit": "travel & entertainment"
     }
   ]
 }

@@ -42,6 +42,7 @@ data class CartItemHolderData(
         var productCashBack: String = "",
         var quantity: Int = 0,
         var notes: String = "",
+        var placeholderNote: String = "",
         var maxNotesLength: Int = 0,
         var isBundlingItem: Boolean = false,
         var isMultipleBundleProduct: Boolean = false,
@@ -56,6 +57,7 @@ data class CartItemHolderData(
         var originalBundleQuantity: Int = 0,
         var editBundleApplink: String = "",
         var bundleIconUrl: String = "",
+        var bundleGrayscaleIconUrl: String = "",
         var bundleLabelQuantity: Int = 0,
 
         // Analytics data

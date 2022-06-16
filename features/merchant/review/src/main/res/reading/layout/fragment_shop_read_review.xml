@@ -45,9 +45,54 @@
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/read_review_recycler_view"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:visibility="gone"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/rating_only_container"
+            app:layout_constraintVertical_chainStyle="spread" />
+
+
+        <androidx.core.widget.NestedScrollView
+            android:id="@+id/rating_only_container"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:visibility="gone"
+            app:layout_constraintTop_toBottomOf="@id/read_review_recycler_view"
+            app:layout_constraintVertical_chainStyle="spread"
+            app:layout_constraintBottom_toBottomOf="parent">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+                <com.tokopedia.review.feature.reading.presentation.widget.ReadReviewRatingOnlyEmptyState
+                    android:id="@+id/read_review_rating_only"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:visibility="gone" />
+
+                <include
+                    android:id="@+id/shop_read_review_list_empty"
+                    layout="@layout/partial_read_review_empty_filtered"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:visibility="gone"
+                    />
+
+                <com.tokopedia.globalerror.GlobalError
+                    android:id="@+id/read_review_network_error"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/Unify_Background"
+                    android:gravity="center"
+                    android:visibility="gone"
+                    app:globalerrors_type="NO_CONNECTION"
+                    android:layout_marginTop="8dp" />
+
+            </LinearLayout>
+
+        </androidx.core.widget.NestedScrollView>
 
         <include
             android:id="@+id/read_review_list_only_loading"
@@ -64,47 +109,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:visibility="gone" />
-
-    <androidx.core.widget.NestedScrollView
-        android:id="@+id/rating_only_container"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:visibility="gone"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent">
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical">
-
-            <com.tokopedia.review.feature.reading.presentation.widget.ReadReviewRatingOnlyEmptyState
-                android:id="@+id/read_review_rating_only"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:visibility="gone" />
-
-            <include
-                android:id="@+id/shop_read_review_list_empty"
-                layout="@layout/partial_read_review_empty_filtered"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:visibility="gone"
-                />
-
-            <com.tokopedia.globalerror.GlobalError
-                android:id="@+id/read_review_network_error"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@color/Unify_Background"
-                android:gravity="center"
-                android:visibility="visible"
-                app:globalerrors_type="NO_CONNECTION"
-                android:layout_marginTop="8dp" />
-
-        </LinearLayout>
-
-    </androidx.core.widget.NestedScrollView>
 
     <com.tokopedia.unifycomponents.floatingbutton.FloatingButtonUnify
         android:id="@+id/read_review_go_to_top_fab"

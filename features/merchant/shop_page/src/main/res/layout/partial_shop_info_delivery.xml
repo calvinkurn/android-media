@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     android:padding="16dp">
 
-    <com.tokopedia.shop.common.view.ShopPageLabelView
+    <com.tokopedia.shop_widget.common.customview.ShopPageLabelView
         android:id="@+id/labelViewLogisticTitle"
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_50"

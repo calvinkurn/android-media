@@ -13,6 +13,7 @@ data class CardDataUiModel(
     override val showWidget: Boolean = false,
     override val lastUpdated: LastUpdatedUiModel = LastUpdatedUiModel(),
     val description: String = "",
+    val secondaryDescription: String = "",
     val state: State = State.NORMAL,
     val value: String = "",
     var previousValue: String? = null

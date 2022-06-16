@@ -27,14 +27,18 @@ import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.prod
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.productcardliststate.EmptyStateViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.productcardliststate.ErrorLoadViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.productcardrevamp.ProductCardRevampViewModel
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.productcardsingle.ProductCardSingleViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.productcardsprintsalecarousel.ProductCardSprintSaleCarouselViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.quickcoupon.QuickCouponViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.quickfilter.QuickFilterViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.shopcard.ShopCardViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.section.SectionViewModel
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.shopbannerinfinite.ShopBannerInfiniteViewModel
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.shopcardinfinite.ShopCardInfiniteViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.tabs.TabsViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.tokopoints.TokopointsViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.topadsheadline.TopAdsHeadlineViewModel
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.topquest.TopQuestViewModel
 import dagger.Subcomponent
 
 
@@ -75,5 +79,9 @@ interface UIWidgetComponent {
     fun inject(bannerCarouselViewModel: BannerCarouselViewModel)
     fun inject(myCouponViewModel: MyCouponViewModel)
     fun inject(myCouponItemViewModel: MyCouponItemViewModel)
+    fun inject(viewModel: ProductCardSingleViewModel)
+    fun inject(shopBannerInfiniteViewModel: ShopBannerInfiniteViewModel)
+    fun inject(viewModel: TopQuestViewModel)
+    fun inject(shopCardInfiniteViewModel: ShopCardInfiniteViewModel)
 
 }

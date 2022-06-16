@@ -4,22 +4,88 @@ import android.content.Context
 import android.text.Spanned
 import android.util.AttributeSet
 import android.view.View
+import android.widget.ImageView
 import androidx.annotation.IdRes
 import androidx.appcompat.widget.AppCompatImageView
+import androidx.cardview.widget.CardView
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
+import com.tokopedia.kotlin.extensions.view.showWithCondition
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.media.loader.loadIcon
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.media.loader.loadImageCircle
 import com.tokopedia.media.loader.loadImageRounded
 import com.tokopedia.shopwidget.R
 import com.tokopedia.unifycomponents.BaseCustomView
+import com.tokopedia.unifycomponents.Label
+import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.unifyprinciples.Typography
-import kotlinx.android.synthetic.main.shopwidget_shop_card_layout.view.*
+import kotlin.LazyThreadSafetyMode.NONE
 
-class ShopCardView: BaseCustomView {
+class ShopCardView : BaseCustomView {
+    private val shopWidgetCardViewShopCard: CardView? by lazy(NONE) {
+        findViewById(R.id.shopWidgetCardViewShopCard)
+    }
+    private val shopWidgetConstraintLayoutShopCard: ConstraintLayout? by lazy(NONE) {
+        findViewById(R.id.shopWidgetConstraintLayoutShopCard)
+    }
+    private val shopWidgetImageViewShopAvatar: ImageView? by lazy(NONE) {
+        findViewById(R.id.shopWidgetImageViewShopAvatar)
+    }
+    private val shopWidgetButtonSeeShop: UnifyButton by lazy(NONE) {
+        findViewById(R.id.shopWidgetButtonSeeShop)
+    }
+    private val shopWidgetImageViewShopBadge: ImageView? by lazy(NONE) {
+        findViewById(R.id.shopWidgetImageViewShopBadge)
+    }
+    private val shopWidgetTextViewShopName: Typography? by lazy(NONE) {
+        findViewById(R.id.shopWidgetTextViewShopName)
+    }
+    private val shopWidgetTextViewShopLocation: Typography? by lazy(NONE) {
+        findViewById(R.id.shopWidgetTextViewShopLocation)
+    }
+    private val shopWidgetImageViewShopReputation: ImageView? by lazy(NONE) {
+        findViewById(R.id.shopWidgetImageViewShopReputation)
+    }
+    private val shopWidgetLabelVoucherFreeShipping: Label? by lazy(NONE) {
+        findViewById(R.id.shopWidgetLabelVoucherFreeShipping)
+    }
+    private val shopWidgetLabelVoucherCashback: Label? by lazy(NONE) {
+        findViewById(R.id.shopWidgetLabelVoucherCashback)
+    }
+    private val shopWidgetImageViewShopItemProductImage1: AppCompatImageView? by lazy(NONE) {
+        findViewById(R.id.shopWidgetImageViewShopItemProductImage1)
+    }
+    private val shopWidgetTextViewShopItemProductPrice1: Typography? by lazy(NONE) {
+        findViewById(R.id.shopWidgetTextViewShopItemProductPrice1)
+    }
+    private val shopWidgetImageViewShopItemProductImage2: AppCompatImageView? by lazy(NONE) {
+        findViewById(R.id.shopWidgetImageViewShopItemProductImage2)
+    }
+    private val shopWidgetTextViewShopItemProductPrice2: Typography? by lazy(NONE) {
+        findViewById(R.id.shopWidgetTextViewShopItemProductPrice2)
+    }
+    private val shopWidgetImageViewShopItemProductImage3: AppCompatImageView? by lazy(NONE) {
+        findViewById(R.id.shopWidgetImageViewShopItemProductImage3)
+    }
+    private val shopWidgetTextViewShopItemProductPrice3: Typography? by lazy(NONE) {
+        findViewById(R.id.shopWidgetTextViewShopItemProductPrice3)
+    }
+    private val shopWidgetTextViewShopHasNoProduct: Typography? by lazy(NONE) {
+        findViewById(R.id.shopWidgetTextViewShopHasNoProduct)
+    }
+    private val shopWidgetConstraintLayoutShopStatus: ConstraintLayout? by lazy(NONE) {
+        findViewById(R.id.shopWidgetConstraintLayoutShopStatus)
+    }
+    private val shopWidgetTextViewShopStatus: Typography? by lazy(NONE) {
+        findViewById(R.id.shopWidgetTextViewShopStatus)
+    }
 
     constructor(context: Context) : super(context) {
         init()
@@ -102,7 +168,7 @@ class ShopCardView: BaseCustomView {
 
     private fun initImageShopReputation(shopCardModel: ShopCardModel) {
         shopWidgetImageViewShopReputation?.shouldShowWithAction(shopCardModel.reputationImageUri.isNotEmpty()) {
-            shopWidgetImageViewShopReputation.loadIcon(shopCardModel.reputationImageUri)
+            shopWidgetImageViewShopReputation?.loadIcon(shopCardModel.reputationImageUri)
         }
     }
 
@@ -206,7 +272,7 @@ class ShopCardView: BaseCustomView {
             shopCardListener: ShopCardListener
     ) {
         imageViewShopItemProductImage?.loadImageRounded(productPreviewItem.imageUrl, 6.toPx().toFloat()) {
-            setPlaceHolder(R.drawable.media_placeholder_grey)
+            setPlaceHolder(com.tokopedia.media.loader.R.drawable.media_placeholder_grey)
         }
 
         productPreviewItem.impressHolder?.let { impressHolder ->

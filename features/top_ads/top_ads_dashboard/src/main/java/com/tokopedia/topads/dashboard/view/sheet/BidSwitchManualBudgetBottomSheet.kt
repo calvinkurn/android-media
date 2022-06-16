@@ -5,7 +5,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
-import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.topads.common.data.util.Utils.addBidValidationListener
 import com.tokopedia.topads.common.data.util.Utils.removeCommaRawString
 import com.tokopedia.topads.common.view.sheet.InfoBottomSheet
@@ -17,24 +16,24 @@ import com.tokopedia.unifyprinciples.Typography
 
 class BidSwitchManualBudgetBottomSheet(
     private val maxBid: String, private val minBid: String, private val suggestedBid: String,
-    private val isWhiteListUser: Boolean, private val onSaveClicked: (String, String) -> Unit,
+    private val onSaveClicked: (String, String) -> Unit, private val trackerListener: TrackerListener? = null,
 ) : BottomSheetUnify() {
 
     private val infoBottomSheet by lazy(LazyThreadSafetyMode.NONE) {
-        InfoBottomSheet(InfoBottomSheet.TYPE_DASAR, true)
+        InfoBottomSheet(InfoBottomSheet.TYPE_DASAR)
     }
     private var txtRecommendasiTitle: Typography? = null
     private var tfPencarian: TextFieldUnify? = null
     private var tfRecommendasi: TextFieldUnify? = null
     private var btnSave: UnifyButton? = null
 
+    private var isDismissedAfterSave = false
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        if (!isWhiteListUser) {
-            tfRecommendasi?.invisible()
-            txtRecommendasiTitle?.invisible()
-        }
+        isDismissedAfterSave = false
+
         tfRecommendasi?.textFieldInput?.setText(suggestedBid)
         tfPencarian?.textFieldInput?.setText(suggestedBid)
 
@@ -47,7 +46,15 @@ class BidSwitchManualBudgetBottomSheet(
                 tfPencarian?.textFieldInput?.text.toString().removeCommaRawString(),
                 tfRecommendasi?.textFieldInput?.text.toString().removeCommaRawString()
             )
+            trackerListener?.bidChangeToManualLanjuktanClicked()
+
+            isDismissedAfterSave = true
             dismiss()
+        }
+
+        setOnDismissListener {
+            if(!isDismissedAfterSave)
+                trackerListener?.bidChangeToManualDismissed()
         }
 
         tfPencarian?.addBidValidationListener(minBid, maxBid, suggestedBid) { isError ->
@@ -74,7 +81,9 @@ class BidSwitchManualBudgetBottomSheet(
         btnSave = view.findViewById(R.id.btn_save_bid_switch_bs)
         txtRecommendasiTitle = view.findViewById(R.id.txtRecommendasiTitle)
 
-        setTitle(resources.getString(com.tokopedia.topads.common.R.string.topads_common_manual_dialog_title))
+        context?.resources?.apply {
+            setTitle(getString(com.tokopedia.topads.common.R.string.topads_common_manual_dialog_title))
+        }
 
         val drawableRight = context?.let {
             ContextCompat.getDrawable(
@@ -87,6 +96,11 @@ class BidSwitchManualBudgetBottomSheet(
         setAction(drawableRight) {
             infoBottomSheet.show(childFragmentManager)
         }
+    }
+
+    interface TrackerListener {
+        fun bidChangeToManualLanjuktanClicked()
+        fun bidChangeToManualDismissed()
     }
 
 }
