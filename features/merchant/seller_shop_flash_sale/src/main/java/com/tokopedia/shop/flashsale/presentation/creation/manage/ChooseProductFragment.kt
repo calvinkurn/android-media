@@ -1,5 +1,7 @@
 package com.tokopedia.shop.flashsale.presentation.creation.manage
 
+import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -14,10 +16,9 @@ import com.tokopedia.shop.flashsale.common.constant.ChooseProductConstant.PRODUC
 import com.tokopedia.shop.flashsale.common.customcomponent.BaseSimpleListFragment
 import com.tokopedia.shop.flashsale.common.extension.*
 import com.tokopedia.shop.flashsale.di.component.DaggerShopFlashSaleComponent
-import com.tokopedia.shop.flashsale.domain.entity.enums.PageMode
-import com.tokopedia.shop.flashsale.presentation.creation.information.CampaignInformationFragment
 import com.tokopedia.shop.flashsale.presentation.creation.manage.adapter.ReserveProductAdapter
 import com.tokopedia.shop.flashsale.presentation.creation.manage.model.ReserveProductModel
+import com.tokopedia.shop.flashsale.presentation.creation.manage.model.SelectedProductModel
 import com.tokopedia.shop.flashsale.presentation.creation.manage.viewmodel.ChooseProductViewModel
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import kotlinx.coroutines.DelicateCoroutinesApi
@@ -137,25 +138,52 @@ class ChooseProductFragment : BaseSimpleListFragment<ReserveProductAdapter, Rese
         animateScrollDebounce.invoke(yScrollAmount)
     }
 
-    private fun onSelectedItemChanges(selectedItem: MutableList<String>) {
-        binding?.tvSelectedProduct?.text =
-            getString(R.string.chooseproduct_selected_product_suffix, selectedItem.size)
+    private fun onSelectedItemChanges(selectedItem: MutableList<SelectedProductModel>) {
+        viewModel.setSelectedItems(selectedItem)
     }
 
     private fun setupObservers() {
         setupReserveProductListObserver()
         setupErrorsObserver()
+        setupSelectionItemsObserver()
+        setupIsSelectionValidObserver()
+        setupIsAddProductSuccessObserver()
+    }
+
+    private fun setupIsAddProductSuccessObserver() {
+        viewModel.isAddProductSuccess.observe(viewLifecycleOwner) {
+            binding?.btnSave?.isLoading = false
+            if (it) {
+                activity?.setResult(Activity.RESULT_OK, Intent())
+                activity?.finish()
+            }
+        }
     }
 
     private fun setupErrorsObserver() {
         viewModel.errors.observe(viewLifecycleOwner) {
             showGetListError(it)
+            binding?.btnSave?.isLoading = false
         }
     }
 
     private fun setupReserveProductListObserver() {
         viewModel.reserveProductList.observe(viewLifecycleOwner) {
             renderList(it, hasNextPage = it.size == getPerPage())
+        }
+    }
+
+    private fun setupSelectionItemsObserver() {
+        viewModel.selectedItems.observe(viewLifecycleOwner) {
+            binding?.tvSelectedProduct?.text =
+                getString(R.string.chooseproduct_selected_product_suffix, it.size)
+            setupButtonSave(it)
+        }
+    }
+
+    private fun setupIsSelectionValidObserver() {
+        viewModel.isSelectionValid.observe(viewLifecycleOwner) {
+            binding?.btnSave?.isEnabled = it
         }
     }
 
@@ -167,6 +195,19 @@ class ChooseProductFragment : BaseSimpleListFragment<ReserveProductAdapter, Rese
                 loadInitialData()
             }
             return@setOnEditorActionListener false
+        }
+    }
+
+    private fun setupButtonSave(selectedProduct: List<SelectedProductModel>) {
+        if (selectedProduct.isEmpty()) {
+            binding?.btnSave?.text = getString(R.string.chooseproduct_save_button_text_empty)
+        } else {
+            binding?.btnSave?.text = getString(R.string.chooseproduct_save_button_text, selectedProduct.size)
+        }
+
+        binding?.btnSave?.setOnClickListener {
+            viewModel.addProduct(campaignId)
+            binding?.btnSave?.isLoading = true
         }
     }
 

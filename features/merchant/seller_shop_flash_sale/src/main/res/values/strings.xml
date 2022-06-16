@@ -198,5 +198,7 @@
     <string name="chooseproduct_search_empty_desc">Coba gunakan kata kunci lain atau filter yang berbeda, ya.</string>
     <string name="chooseproduct_product_empty">Oops, kamu belum memiliki produk terdaftar</string>
     <string name="chooseproduct_product_empty_desc">Yuk, mulai tambah produkmu untuk didaftarkan ke campaign. </string>
+    <string name="chooseproduct_save_button_text">Tambah %d Produk</string>
+    <string name="chooseproduct_save_button_text_empty">Tambah Produk</string>
 
 </resources>

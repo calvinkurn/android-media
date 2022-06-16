@@ -33,8 +33,8 @@ class ReserveProductViewHolder(
             tvSku.text = "SKU: " + if (item.sku.isBlank()) "-" else item.sku
             tvStock.text = "Total stok: ${item.stock}"
             tvProductPrice.text = item.price.getCurrencyFormatted()
-            labelVariantCount.text = "${item.variantCount} Varian Produk"
-            labelVariantCount.isVisible = item.variantCount.isMoreThanZero()
+            labelVariantCount.text = "${item.variant.size} Varian Produk"
+            labelVariantCount.isVisible = item.variant.size.isMoreThanZero()
             checkboxItem.isChecked = item.isSelected
             root.setOnClickListener {
                 checkboxItem.isChecked = !checkboxItem.isChecked

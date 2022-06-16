@@ -1,6 +1,5 @@
 package com.tokopedia.shop.flashsale.presentation.list.list
 
-import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -31,17 +30,16 @@ import com.tokopedia.shop.flashsale.domain.entity.CampaignMeta
 import com.tokopedia.shop.flashsale.domain.entity.CampaignUiModel
 import com.tokopedia.shop.flashsale.domain.entity.ShopInfo
 import com.tokopedia.shop.flashsale.domain.entity.aggregate.ShareComponentMetadata
-import com.tokopedia.shop.flashsale.domain.entity.enums.PageMode
 import com.tokopedia.shop.flashsale.domain.entity.enums.CampaignStatus
+import com.tokopedia.shop.flashsale.domain.entity.enums.PageMode
+import com.tokopedia.shop.flashsale.presentation.cancelation.CancelCampaignBottomSheet
+import com.tokopedia.shop.flashsale.presentation.creation.information.CampaignInformationActivity
+import com.tokopedia.shop.flashsale.presentation.draft.bottomsheet.DraftListBottomSheet
 import com.tokopedia.shop.flashsale.presentation.list.container.CampaignListContainerFragment
 import com.tokopedia.shop.flashsale.presentation.list.dialog.showNoCampaignQuotaDialog
 import com.tokopedia.shop.flashsale.presentation.list.list.adapter.CampaignAdapter
 import com.tokopedia.shop.flashsale.presentation.list.list.bottomsheet.MoreMenuBottomSheet
 import com.tokopedia.shop.flashsale.presentation.list.list.listener.RecyclerViewScrollListener
-import com.tokopedia.shop.flashsale.presentation.creation.information.CampaignInformationActivity
-import com.tokopedia.shop.flashsale.presentation.cancelation.CancelCampaignBottomSheet
-import com.tokopedia.shop.flashsale.presentation.creation.manage.ChooseProductActivity
-import com.tokopedia.shop.flashsale.presentation.draft.bottomsheet.DraftListBottomSheet
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.universal_sharing.view.bottomsheet.SharingUtil
 import com.tokopedia.universal_sharing.view.bottomsheet.UniversalShareBottomSheet
@@ -148,8 +146,6 @@ class CampaignListFragment : BaseSimpleListFragment<CampaignAdapter, CampaignUiM
         observeCampaignPrerequisiteData()
         observeShareComponentMetadata()
         viewModel.getCampaignPrerequisiteData()
-
-        ChooseProductActivity.start(requireContext(), "762195")
     }
 
     private fun setupView() {
