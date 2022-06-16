@@ -48,30 +48,26 @@ class MoreMenuBottomSheet : BottomSheetUnify() {
     private val availableCampaignMoreMenu = listOf(
         CampaignListMoreMenu(R.string.sfs_share, R.drawable.ic_sfs_share) { onShareCampaignMenuSelected() },
         CampaignListMoreMenu(R.string.sfs_edit, R.drawable.ic_sfs_edit) { onEditCampaignMenuSelected() },
-        CampaignListMoreMenu(R.string.sfs_cancel, R.drawable.ic_sfs_cancel) { onCancelMenuSelected(campaignId, campaignName, campaignStatus) },
+        CampaignListMoreMenu(R.string.sfs_cancel, R.drawable.ic_sfs_cancel) { onCancelMenuSelected() },
         CampaignListMoreMenu(R.string.sfs_view_detail, R.drawable.ic_sfs_detail) { onViewCampaignDetailMenuSelected() },
     )
 
     private val upcomingCampaignMoreMenu = listOf(
         CampaignListMoreMenu(R.string.sfs_share, R.drawable.ic_sfs_share) { onShareCampaignMenuSelected() },
-        CampaignListMoreMenu(R.string.sfs_cancel, R.drawable.ic_sfs_cancel) { onCancelMenuSelected(campaignId, campaignName, campaignStatus) },
+        CampaignListMoreMenu(R.string.sfs_cancel, R.drawable.ic_sfs_cancel) { onCancelMenuSelected() },
         CampaignListMoreMenu(R.string.sfs_view_detail, R.drawable.ic_sfs_detail) { onViewCampaignDetailMenuSelected() },
     )
 
     private val ongoingCampaignMoreMenu = listOf(
         CampaignListMoreMenu(R.string.sfs_share, R.drawable.ic_sfs_share) { onShareCampaignMenuSelected() },
-        CampaignListMoreMenu(R.string.sfs_stop, R.drawable.ic_sfs_cancel) { onCancelMenuSelected(campaignId, campaignName, campaignStatus) },
+        CampaignListMoreMenu(R.string.sfs_stop, R.drawable.ic_sfs_cancel) { onCancelMenuSelected() },
         CampaignListMoreMenu(R.string.sfs_view_detail, R.drawable.ic_sfs_detail) { onViewCampaignDetailMenuSelected() },
     )
 
     private var onViewCampaignDetailMenuSelected: () -> Unit = {}
     private var onEditCampaignMenuSelected: () -> Unit = {}
     private var onShareCampaignMenuSelected: () -> Unit = {}
-    private var onCancelMenuSelected: (
-        campaignId: Long,
-        campaignName: String,
-        campaignStatus: CampaignStatus?
-    ) -> Unit = { _: Long, _: String, _: CampaignStatus? -> }
+    private var onCancelMenuSelected: () -> Unit = {}
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -125,11 +121,7 @@ class MoreMenuBottomSheet : BottomSheetUnify() {
         this.onEditCampaignMenuSelected = onEditCampaignMenuSelected
     }
 
-    fun setOnCancelCampaignMenuSelected(onCancelMenuSelected: (
-        campaignId: Long,
-        campaignName: String,
-        campaignStatus: CampaignStatus?
-    ) -> Unit) {
+    fun setOnCancelCampaignMenuSelected(onCancelMenuSelected: () -> Unit) {
         this.onCancelMenuSelected = onCancelMenuSelected
     }
 

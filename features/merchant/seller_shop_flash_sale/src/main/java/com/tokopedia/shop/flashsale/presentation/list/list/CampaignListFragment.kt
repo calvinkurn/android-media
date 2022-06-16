@@ -30,7 +30,6 @@ import com.tokopedia.shop.flashsale.domain.entity.CampaignMeta
 import com.tokopedia.shop.flashsale.domain.entity.CampaignUiModel
 import com.tokopedia.shop.flashsale.domain.entity.aggregate.CampaignPrerequisiteData
 import com.tokopedia.shop.flashsale.domain.entity.aggregate.ShareComponentMetadata
-import com.tokopedia.shop.flashsale.domain.entity.enums.CampaignStatus
 import com.tokopedia.shop.flashsale.presentation.cancelation.CancelCampaignBottomSheet
 import com.tokopedia.shop.flashsale.presentation.creation.information.CampaignInformationActivity
 import com.tokopedia.shop.flashsale.presentation.draft.bottomsheet.DraftListBottomSheet
@@ -38,17 +37,12 @@ import com.tokopedia.shop.flashsale.presentation.draft.uimodel.DraftItemModel
 import com.tokopedia.shop.flashsale.presentation.list.list.adapter.CampaignAdapter
 import com.tokopedia.shop.flashsale.presentation.list.list.bottomsheet.MoreMenuBottomSheet
 import com.tokopedia.shop.flashsale.presentation.list.list.listener.RecyclerViewScrollListener
-import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.universal_sharing.view.bottomsheet.SharingUtil
 import com.tokopedia.universal_sharing.view.bottomsheet.UniversalShareBottomSheet
 import com.tokopedia.universal_sharing.view.model.ShareModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.lifecycle.autoClearedNullable
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class CampaignListFragment : BaseSimpleListFragment<CampaignAdapter, CampaignUiModel>() {
@@ -116,7 +110,7 @@ class CampaignListFragment : BaseSimpleListFragment<CampaignAdapter, CampaignUiM
     private val viewModel by lazy { viewModelProvider.get(CampaignListViewModel::class.java) }
     private var onScrollDown: () -> Unit = {}
     private var onScrollUp: () -> Unit = {}
-    private var onEmptyState: () -> Unit = {}
+    private var onCancelCampaignSuccess: () -> Unit = {}
     private var onNavigateToActiveCampaignTab: () -> Unit = {}
     private var shareComponentBottomSheet: UniversalShareBottomSheet? = null
 
@@ -191,13 +185,13 @@ class CampaignListFragment : BaseSimpleListFragment<CampaignAdapter, CampaignUiM
             recyclerView.addOnScrollListener(
                 RecyclerViewScrollListener(
                     onScrollDown = {
-                        doOnDelayFinished {
+                        doOnDelayFinished(SCROLL_DISTANCE_DELAY_IN_MILLIS) {
                             onScrollDown()
                             handleScrollDownEvent()
                         }
                     },
                     onScrollUp = {
-                        doOnDelayFinished {
+                        doOnDelayFinished(SCROLL_DISTANCE_DELAY_IN_MILLIS) {
                             onScrollUp()
                             handleScrollUpEvent()
                         }
@@ -372,13 +366,6 @@ class CampaignListFragment : BaseSimpleListFragment<CampaignAdapter, CampaignUiM
         adapter?.hideLoading()
     }
 
-    private fun doOnDelayFinished(block: () -> Unit) {
-        CoroutineScope(Dispatchers.Main).launch {
-            delay(SCROLL_DISTANCE_DELAY_IN_MILLIS)
-            block()
-        }
-    }
-
     private fun handleCampaignPrerequisiteData(draftCount: Int, remainingQuota: Int) {
         val hasDraft = draftCount.isMoreThanZero()
         val hasCampaign = totalCampaign.isMoreThanZero()
@@ -486,9 +473,7 @@ class CampaignListFragment : BaseSimpleListFragment<CampaignAdapter, CampaignUiM
             campaign.status
         )
         bottomSheet.setOnViewCampaignMenuSelected {}
-        bottomSheet.setOnCancelCampaignMenuSelected { id: Long, title: String, status: CampaignStatus? ->
-            handleCancelCampaign(campaign.thematicParticipation, campaign.isCancellable, id, title, status)
-        }
+        bottomSheet.setOnCancelCampaignMenuSelected { handleCancelCampaign(campaign) }
         bottomSheet.setOnShareCampaignMenuSelected {
             showLoaderDialog()
             viewModel.getShareComponentMetadata(campaign.campaignId)
@@ -559,32 +544,22 @@ class CampaignListFragment : BaseSimpleListFragment<CampaignAdapter, CampaignUiM
         loaderDialog.dialog.dismiss()
     }
 
-    private fun handleCancelCampaign(
-        isParticipatingThematicCampaign: Boolean,
-        isCancellable: Boolean,
-        id: Long,
-        title: String,
-        status: CampaignStatus?
-    ) {
-        if (isParticipatingThematicCampaign && isCancellable) {
+    private fun handleCancelCampaign(campaign: CampaignUiModel) {
+        if (campaign.thematicParticipation) {
             binding?.cardView showError getString(R.string.sfs_cannot_cancel_campaign)
             return
         }
 
-        showCancelCampaignBottomSheet(id, title, status)
+        showCancelCampaignBottomSheet(campaign)
     }
 
-    private fun showCancelCampaignBottomSheet(id: Long, title: String, status: CampaignStatus?) {
-        val toasterActionText = getString(R.string.action_oke)
-        val toasterMessage = getString(R.string.cancelcampaign_message_success, title)
-        val bottomSheet = CancelCampaignBottomSheet(id, title, status) {
-            Toaster.build(view ?: return@CancelCampaignBottomSheet, toasterMessage,
-                Toaster.LENGTH_SHORT, actionText = toasterActionText
-            ).show()
-            view?.post {
-                clearAllData()
-                getCampaigns(FIRST_PAGE)
-            }
+    private fun showCancelCampaignBottomSheet(campaign: CampaignUiModel) {
+        val bottomSheet = CancelCampaignBottomSheet(
+            campaign.campaignId,
+            campaign.campaignName,
+            campaign.status
+        ) {
+            showCancelCampaignSuccess(campaign)
         }
         bottomSheet.show(childFragmentManager)
     }
@@ -630,12 +605,22 @@ class CampaignListFragment : BaseSimpleListFragment<CampaignAdapter, CampaignUiM
         )
     }
 
+    private fun showCancelCampaignSuccess(campaign: CampaignUiModel) {
+        val toasterMessage = String.format(getString(R.string.cancelcampaign_message_success), campaign.campaignName)
+        binding?.root showToaster toasterMessage
+
+        binding?.loader?.visible()
+        getCampaigns(FIRST_PAGE)
+
+        onCancelCampaignSuccess()
+    }
+
     private fun routeToPmSubscribePage() {
         val intent = RouteManager.getIntent(context, POWER_MERCHANT_SUBSCRIBE)
         startActivity(intent)
     }
 
-    fun setOnEmptyState(onEmptyState : () -> Unit) {
-        this.onEmptyState = onEmptyState
+    fun setOnCancelCampaignSuccess(onCancelCampaignSuccess : () -> Unit) {
+        this.onCancelCampaignSuccess = onCancelCampaignSuccess
     }
 }

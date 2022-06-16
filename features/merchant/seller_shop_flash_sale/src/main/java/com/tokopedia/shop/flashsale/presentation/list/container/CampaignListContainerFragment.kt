@@ -17,6 +17,7 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.seller_shop_flash_sale.databinding.SsfsFragmentCampaignListContainerBinding
+import com.tokopedia.shop.flashsale.common.extension.doOnDelayFinished
 import com.tokopedia.shop.flashsale.common.extension.showError
 import com.tokopedia.shop.flashsale.common.extension.slideDown
 import com.tokopedia.shop.flashsale.common.extension.slideUp
@@ -30,21 +31,19 @@ import com.tokopedia.unifycomponents.setCustomText
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.lifecycle.autoClearedNullable
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class CampaignListContainerFragment : BaseDaggerFragment() {
 
     companion object {
         private const val DELAY_IN_MILLIS: Long = 400
-        private const val TAB_POSITION_FIRST = 0
+        private const val FIRST_TAB = 0
+        private const val SECOND_TAB = 1
         private const val BUNDLE_KEY_AUTO_FOCUS_TAB_POSITION = "auto_focus_tab_position"
+        private const val REFRESH_CAMPAIGN_DELAY_DURATION_IN_MILLIS : Long = 1_000
 
         @JvmStatic
-        fun newInstance(autoFocusTabPosition: Int = TAB_POSITION_FIRST): CampaignListContainerFragment {
+        fun newInstance(autoFocusTabPosition: Int = FIRST_TAB): CampaignListContainerFragment {
             return CampaignListContainerFragment().apply {
                 val bundle = Bundle()
                 bundle.putInt(BUNDLE_KEY_AUTO_FOCUS_TAB_POSITION, autoFocusTabPosition)
@@ -116,11 +115,6 @@ class CampaignListContainerFragment : BaseDaggerFragment() {
 
     }
 
-    override fun onResume() {
-        super.onResume()
-        viewModel.setSelectedTabPosition(getCurrentTabPosition())
-    }
-
     private fun setupView() {
         binding?.run {
             header.setNavigationOnClickListener { activity?.finish() }
@@ -133,7 +127,6 @@ class CampaignListContainerFragment : BaseDaggerFragment() {
             viewPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
                 override fun onPageSelected(position: Int) {
                     super.onPageSelected(position)
-                    viewModel.setSelectedTabPosition(position)
                 }
             })
         }
@@ -178,13 +171,6 @@ class CampaignListContainerFragment : BaseDaggerFragment() {
         }
     }
 
-    private val onEmptyState : () -> Unit = {
-        binding?.run {
-            tabsUnify.getUnifyTabLayout().visible()
-            alignRecyclerViewToTabsBottom()
-        }
-    }
-
     private fun displayTabs(tabs: List<TabMeta>) {
         val fragments = createFragments(tabs)
         val pagerAdapter =
@@ -196,7 +182,12 @@ class CampaignListContainerFragment : BaseDaggerFragment() {
 
             TabsUnifyMediator(tabsUnify, viewPager) { tab, currentPosition ->
                 tab.setCustomText(fragments[currentPosition].first)
-                focusTo(autoFocusTabPosition)
+
+                val targetTabPosition = viewModel.getAutoFocusTabPosition()
+                if (currentPosition == targetTabPosition) {
+                    focusTo(targetTabPosition)
+                }
+
             }
         }
     }
@@ -213,8 +204,8 @@ class CampaignListContainerFragment : BaseDaggerFragment() {
             )
             fragment.setOnScrollDownListener { onRecyclerViewScrollDown() }
             fragment.setOnScrollUpListener { onRecyclerViewScrollUp() }
-            fragment.setOnNavigateToActiveCampaignListener { focusTo(TAB_POSITION_FIRST) }
-            fragment.setOnEmptyState { onEmptyState() }
+            fragment.setOnNavigateToActiveCampaignListener { focusTo(FIRST_TAB) }
+            fragment.setOnCancelCampaignSuccess { handleCancelCampaignSuccess() }
 
             val tabName = "${tab.name} (${tab.totalCampaign})"
             pages.add(Pair(tabName, fragment))
@@ -251,15 +242,21 @@ class CampaignListContainerFragment : BaseDaggerFragment() {
     }
 
 
+    private fun handleCancelCampaignSuccess() {
+        //Add some spare time caused by Backend write operation delay
+        doOnDelayFinished(REFRESH_CAMPAIGN_DELAY_DURATION_IN_MILLIS) {
+            viewModel.setAutoFocusTabPosition(SECOND_TAB)
+            viewModel.getTabsMeta()
+        }
+    }
+
     private fun focusTo(tabPosition : Int) {
         //Add some spare time to make sure tabs are successfully drawn before select and focusing to a tab
-        CoroutineScope(Dispatchers.Main).launch {
-            delay(DELAY_IN_MILLIS)
+        doOnDelayFinished(DELAY_IN_MILLIS) {
             val tabLayout = binding?.tabsUnify?.getUnifyTabLayout()
             val tab = tabLayout?.getTabAt(tabPosition)
             tab?.select()
         }
 
     }
-
 }
