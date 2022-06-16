@@ -3,6 +3,7 @@ package com.tokopedia.play.view.viewcomponent
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.localizationchooseaddress.ui.bottomsheet.ChooseAddressBottomSheet
 import com.tokopedia.play.R
@@ -14,7 +15,8 @@ import com.tokopedia.unifycomponents.UnifyButton
  */
 class ChooseAddressViewComponent(
     container: ViewGroup,
-    private val listener: Listener
+    private val listener: Listener,
+    private val fragmentManager: FragmentManager,
 ) : ViewComponent(container, R.id.view_play_widget_address) {
 
     private lateinit var chooseAddressBottomSheet: ChooseAddressBottomSheet
@@ -50,7 +52,7 @@ class ChooseAddressViewComponent(
 
     private fun openBottomSheet() {
         if (!getBottomSheet().isAdded)
-            getBottomSheet().showNow(listener.getFragmentForAddress(this@ChooseAddressViewComponent).childFragmentManager, PLAY_CHOOSE_ADDRESS_TAG)
+            getBottomSheet().showNow(fragmentManager, PLAY_CHOOSE_ADDRESS_TAG)
     }
 
     private fun hideBottomSheet() {
@@ -71,7 +73,6 @@ class ChooseAddressViewComponent(
     }
 
     interface Listener {
-        fun getFragmentForAddress(view: ChooseAddressViewComponent) : Fragment
         fun onAddressUpdated(view: ChooseAddressViewComponent)
         fun onInfoClicked(view: ChooseAddressViewComponent)
     }

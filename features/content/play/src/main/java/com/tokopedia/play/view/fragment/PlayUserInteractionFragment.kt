@@ -162,7 +162,7 @@ class PlayUserInteractionFragment @Inject constructor(
     ) }
     private val productSeeMoreView by viewComponentOrNull(isEagerInit = true) { ProductSeeMoreViewComponent(it, R.id.view_product_see_more, this) }
     private val kebabMenuView by viewComponentOrNull(isEagerInit = true) { KebabMenuViewComponent(it, R.id.view_kebab_menu, this) }
-    private val chooseAddressView by viewComponentOrNull { ChooseAddressViewComponent(it, this) }
+    private val chooseAddressView by viewComponentOrNull { ChooseAddressViewComponent(it, this, childFragmentManager) }
 
     /**
      * Interactive
@@ -1806,9 +1806,6 @@ class PlayUserInteractionFragment @Inject constructor(
 
         playViewModel.submitAction(SendWarehouseId(isOOC = localCache.isOutOfCoverage(), id = warehouseId.toString()))
     }
-
-    override fun getFragmentForAddress(view: ChooseAddressViewComponent): Fragment = this
-
 
     override fun onAddressUpdated(view: ChooseAddressViewComponent) {
         initAddress()
