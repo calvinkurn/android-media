@@ -1,5 +1,6 @@
 package com.tokopedia.affiliate.ui.viewholder
 
+import android.graphics.Color
 import android.view.View
 import android.widget.ImageView
 import androidx.annotation.LayoutRes
@@ -24,14 +25,13 @@ class AffiliatePromotionShopItemVH(
     private enum class AdditionalInfoType(val type: Int) {
         COMMISSION_AMOUNT_TYPE(1),
         DISCOUNT_PERCENTAGE_TYPE(2),
-        SLASHED_PRICE_TYPE(3),
-        FINAL_PRICE_TYPE(4),
-        PRODUCT_STOCK_TYPE(5)
+        PER_GOOD_SOLD(6),
     }
 
     private enum class FooterType(val type: Int) {
-        SHOP(1),
         RATING(2),
+        ITEM_SOLD(3),
+        LOCATION(4)
     }
 
     private enum class MessageType(val type: Int) {
@@ -54,7 +54,15 @@ class AffiliatePromotionShopItemVH(
             getAdditionalDataFromType(it, AdditionalInfoType.COMMISSION_AMOUNT_TYPE)?.let { info ->
                 itemView.findViewById<Typography>(R.id.textViewAdditionalInfo1).apply {
                     visible()
-                    text = info
+                    text = info.htmlText
+                    if(info.color?.isNotEmpty() == true) setTextColor(Color.parseColor(info.color))
+                }
+            }
+            getAdditionalDataFromType(it, AdditionalInfoType.PER_GOOD_SOLD)?.let { info ->
+                itemView.findViewById<Typography>(R.id.textViewAdditionalInfo2).apply {
+                    visible()
+                    text = info.htmlText
+                    if(info.color?.isNotEmpty() == true) setTextColor(Color.parseColor(info.color))
                 }
             }
             getAdditionalDataFromType(
@@ -69,23 +77,26 @@ class AffiliatePromotionShopItemVH(
                     )
                 }
             }
-            getFooterDataFromType(it, FooterType.RATING)?.let { footer ->
-                itemView.findViewById<Typography>(R.id.textViewRatingFooter).apply {
+
+            getFooterDataFromType(it, FooterType.LOCATION)?.let { footer ->
+                itemView.findViewById<Typography>(R.id.textViewFooterLocation).apply {
+                    visible()
+                    text = footer.footerText
+                }
+            }
+            getFooterDataFromType(it, FooterType.ITEM_SOLD)?.let { footer ->
+                itemView.findViewById<Typography>(R.id.textViewItemSold).apply {
                     visible()
                     itemView.findViewById<Typography>(R.id.ratingDivider).visible()
                     text = footer.footerText
                 }
             }
-            getFooterDataFromType(it, FooterType.SHOP)?.let { footer ->
-                itemView.findViewById<Typography>(R.id.textViewFooter).apply {
-                    visible()
-                    text = footer.footerText
-                }
-            }
             getMessageDataFromType(it, MessageType.OVERLAY_IMAGE_TYPE)?.let { message ->
                 itemView.findViewById<Label>(R.id.labelProductStatus).apply {
-                    visible()
-                    text = message
+                    if(message.isNotEmpty()){
+                        visible()
+                        text = message
+                    }
                 }
             }
         }
@@ -103,13 +114,12 @@ class AffiliatePromotionShopItemVH(
                 sendClickEvent(element?.promotionItem)
                 promotionClickInterface?.onPromotionClick(
                     element?.promotionItem?.productID ?: "",
-                    "",
                     element?.promotionItem?.title ?: "",
                     element?.promotionItem?.image?.androidURL ?: "",
                     element?.promotionItem?.cardUrl ?: "",
-                    "",
                     adapterPosition, commission,
-                    getStatus(element?.promotionItem)
+                    getStatus(element?.promotionItem),
+                    element?.promotionItem?.type
                 )
             }
             if (element?.promotionItem?.status?.isLinkGenerationAllowed == false) {
@@ -150,8 +160,8 @@ class AffiliatePromotionShopItemVH(
     private fun getAdditionalDataFromType(
         item: AffiliateSearchData.SearchAffiliate.Data.Card.Item,
         type: AdditionalInfoType
-    ): String? {
-        return (item.additionalInformation?.find { it?.type == type.type })?.htmlText
+    ): AffiliateSearchData.SearchAffiliate.Data.Card.Item.AdditionalInformation? {
+        return (item.additionalInformation?.find { it?.type == type.type })
     }
 
     private fun getFooterDataFromType(

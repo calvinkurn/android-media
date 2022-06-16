@@ -49,6 +49,7 @@ class AffiliatePromotionBottomSheet : BottomSheetUnify(), ShareButtonInterface ,
     private var currentServiceFormat = ""
     private var commission = ""
     private var status = ""
+    private var type = ""
     private var originScreen = ORIGIN_PROMOSIKAN
     private var url: String? = null
     private var identifier: String? = null
@@ -80,6 +81,7 @@ class AffiliatePromotionBottomSheet : BottomSheetUnify(), ShareButtonInterface ,
         private const val KEY_ORIGIN = "KEY_ORIGIN"
         private const val KEY_LINK_GEN_ENABLED = "KEY_LINK_GEN_ENABLED"
         private const val KEY_STATUS = "KEY_STATUS"
+        private const val KEY_TYPE = "KEY_TYPE"
         private const val PERNAH_DIBELI = "pernah dibeli"
         private const val PERNAH_DILIHAT = "pernah dilihat"
 
@@ -92,23 +94,24 @@ class AffiliatePromotionBottomSheet : BottomSheetUnify(), ShareButtonInterface ,
 
         fun newInstance(bottomSheetType : SheetType, bottomSheetInterface : AffiliatePromotionBottomSheetInterface?,
                         idArray : ArrayList<Int>?,
-                        productId : String, productName: String, productImage: String,
-                        productUrl: String, productIdentifier: String, origin : Int = ORIGIN_PROMOSIKAN,
-                        isLinkGenerationEnabled :Boolean = true,commission: String = "",status: String = ""): AffiliatePromotionBottomSheet {
+                        itemId : String, itemName: String, itemImage: String,
+                        itemUrl: String, productIdentifier: String, origin : Int = ORIGIN_PROMOSIKAN,
+                        isLinkGenerationEnabled :Boolean = true, commission: String = "", status: String = "",type: String? = "pdp"): AffiliatePromotionBottomSheet {
             return AffiliatePromotionBottomSheet().apply {
                 sheetType = bottomSheetType
                 affiliatePromotionBottomSheetInterface = bottomSheetInterface
                 selectedIds = idArray ?: arrayListOf()
                 arguments = Bundle().apply {
-                    putString(KEY_PRODUCT_ID,productId)
-                    putString(KEY_PRODUCT_NAME, productName)
-                    putString(KEY_PRODUCT_IMAGE, productImage)
-                    putString(KEY_PRODUCT_URL, productUrl)
+                    putString(KEY_PRODUCT_ID,itemId)
+                    putString(KEY_PRODUCT_NAME, itemName)
+                    putString(KEY_PRODUCT_IMAGE, itemImage)
+                    putString(KEY_PRODUCT_URL, itemUrl)
                     putString(KEY_PRODUCT_IDENTIFIER, productIdentifier)
                     putInt(KEY_ORIGIN,origin)
                     putBoolean(KEY_LINK_GEN_ENABLED,isLinkGenerationEnabled)
                     putString(KEY_COMMISON_PRICE,commission)
                     putString(KEY_STATUS,status)
+                    putString(KEY_TYPE,type)
                 }
             }
         }
@@ -152,6 +155,7 @@ class AffiliatePromotionBottomSheet : BottomSheetUnify(), ShareButtonInterface ,
                 isLinkGenerationEnabled = bundle.getBoolean(KEY_LINK_GEN_ENABLED)
                 commission = bundle.getString(KEY_COMMISON_PRICE,"")
                 status = bundle.getString(KEY_STATUS,"")
+                type = bundle.getString(KEY_TYPE,"pdp")
             }
 
             if(sheetType == SheetType.ADD_SOCIAL){
@@ -255,41 +259,51 @@ class AffiliatePromotionBottomSheet : BottomSheetUnify(), ShareButtonInterface ,
     }
 
     private fun sendClickPGevent(linkID: String?, currentServiceFormat: String, state: String) {
-        var eventAction = ""
-        var eventCategory = ""
+        if(type == "pdp") {
+            var eventAction = ""
+            var eventCategory = ""
 
-        var eventLabel = ""
-        eventLabel = if(status == AffiliateAnalytics.LabelKeys.SUCCESS ) {
-            if(originScreen == ORIGIN_PROMOSIKAN) "$productId - $linkID - $currentServiceFormat - $status - $state"
-            else "$productId - $linkID - $currentServiceFormat - $state"
-        } else {
-            if(originScreen == ORIGIN_PROMOSIKAN) "$productId - $currentServiceFormat - $status - $state"
-            else "$productId - $currentServiceFormat - $state"
-        }
-        when(originScreen){
-            ORIGIN_HOME -> {
-                eventAction = AffiliateAnalytics.ActionKeys.CLICK_SALIN_LINK_PRODUK_YANG_DIPROMOSIKAN
-                eventCategory = AffiliateAnalytics.CategoryKeys.AFFILIATE_HOME_PAGE_BOTTOM_SHEET
+            var eventLabel = ""
+            eventLabel = if (status == AffiliateAnalytics.LabelKeys.SUCCESS) {
+                if (originScreen == ORIGIN_PROMOSIKAN) "$productId - $linkID - $currentServiceFormat - $status - $state"
+                else "$productId - $linkID - $currentServiceFormat - $state"
+            } else {
+                if (originScreen == ORIGIN_PROMOSIKAN) "$productId - $currentServiceFormat - $status - $state"
+                else "$productId - $currentServiceFormat - $state"
             }
-            ORIGIN_HOME_GENERATED -> {
-                eventAction = AffiliateAnalytics.ActionKeys.CLICK_SALIN_LINK_DAFTAR_LINK_PRODUK
-                eventCategory = AffiliateAnalytics.CategoryKeys.AFFILIATE_HOME_PAGE_BOTTOM_SHEET
-            }
-            ORIGIN_PERNAH_DIBELI_PROMOSIKA -> {
-                eventAction = AffiliateAnalytics.ActionKeys.CLICK_SALIN_LINK_PERNAH_DIABEL
-                eventCategory = AffiliateAnalytics.CategoryKeys.AFFILIATE_PROMOSIKAN_BOTTOM_SHEET
+            when (originScreen) {
+                ORIGIN_HOME -> {
+                    eventAction =
+                        AffiliateAnalytics.ActionKeys.CLICK_SALIN_LINK_PRODUK_YANG_DIPROMOSIKAN
+                    eventCategory = AffiliateAnalytics.CategoryKeys.AFFILIATE_HOME_PAGE_BOTTOM_SHEET
+                }
+                ORIGIN_HOME_GENERATED -> {
+                    eventAction = AffiliateAnalytics.ActionKeys.CLICK_SALIN_LINK_DAFTAR_LINK_PRODUK
+                    eventCategory = AffiliateAnalytics.CategoryKeys.AFFILIATE_HOME_PAGE_BOTTOM_SHEET
+                }
+                ORIGIN_PERNAH_DIBELI_PROMOSIKA -> {
+                    eventAction = AffiliateAnalytics.ActionKeys.CLICK_SALIN_LINK_PERNAH_DIABEL
+                    eventCategory =
+                        AffiliateAnalytics.CategoryKeys.AFFILIATE_PROMOSIKAN_BOTTOM_SHEET
 
+                }
+                ORIGIN_TERAKHIR_DILIHAT -> {
+                    eventAction = AffiliateAnalytics.ActionKeys.CLICK_SALIN_LINK_PERNAH_DILIHAT
+                    eventCategory =
+                        AffiliateAnalytics.CategoryKeys.AFFILIATE_PROMOSIKAN_BOTTOM_SHEET
+                }
+                ORIGIN_PROMOSIKAN -> {
+                    eventAction = AffiliateAnalytics.ActionKeys.CLICK_SALIN_LINK_RESULT_PAGE
+                    eventCategory =
+                        AffiliateAnalytics.CategoryKeys.AFFILIATE_PROMOSIKAN_BOTTOM_SHEET
+                }
             }
-            ORIGIN_TERAKHIR_DILIHAT -> {
-                eventAction = AffiliateAnalytics.ActionKeys.CLICK_SALIN_LINK_PERNAH_DILIHAT
-                eventCategory = AffiliateAnalytics.CategoryKeys.AFFILIATE_PROMOSIKAN_BOTTOM_SHEET
-            }
-            ORIGIN_PROMOSIKAN -> {
-                eventAction = AffiliateAnalytics.ActionKeys.CLICK_SALIN_LINK_RESULT_PAGE
-                eventCategory = AffiliateAnalytics.CategoryKeys.AFFILIATE_PROMOSIKAN_BOTTOM_SHEET
-            }
+            AffiliateAnalytics.sendEvent(AffiliateAnalytics.EventKeys.CLICK_PG,
+                eventAction,
+                eventCategory,
+                eventLabel,
+                userSessionInterface.userId)
         }
-        AffiliateAnalytics.sendEvent(AffiliateAnalytics.EventKeys.CLICK_PG,eventAction,eventCategory,eventLabel,userSessionInterface.userId)
     }
 
     private fun loading(stop: Boolean) {
@@ -322,7 +336,7 @@ class AffiliatePromotionBottomSheet : BottomSheetUnify(), ShareButtonInterface ,
     override fun onShareButtonClick(name : String?, id: Int?, serviceFormat :String?) {
         currentName = name
         currentServiceFormat = serviceFormat ?: ""
-        affiliatePromotionBSViewModel.affiliateGenerateLink(id, url, identifier)
+        affiliatePromotionBSViewModel.affiliateGenerateLink(id, url, identifier,type)
     }
 
     private fun onSaveSocialButtonClicked() {

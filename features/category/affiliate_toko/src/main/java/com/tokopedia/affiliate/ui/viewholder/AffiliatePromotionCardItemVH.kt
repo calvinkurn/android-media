@@ -41,13 +41,12 @@ class AffiliatePromotionCardItemVH(itemView: View, private val promotionClickInt
             setOnClickListener {
                 sendClickEvent(element?.promotionItem)
                 promotionClickInterface?.onPromotionClick( element?.promotionItem?.productID ?: "",
-                        "",
                         element?.promotionItem?.title ?: "",
                         element?.promotionItem?.image?.androidURL ?:"",
                         element?.promotionItem?.cardUrl ?: "",
-                        "",
                          adapterPosition,commission,
-                         getStatus(element?.promotionItem)
+                         getStatus(element?.promotionItem),
+                        element?.promotionItem?.type
                 )
             }
             if(element?.promotionItem?.status?.isLinkGenerationAllowed == false){

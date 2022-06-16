@@ -83,7 +83,6 @@
             app:typographyType="small"
             app:typographyWeight="bold"
             tools:text="Komisi hingga 5%"
-            android:textColor="@color/Unify_G500"
             tools:visibility="visible" />
 
 
@@ -138,13 +137,13 @@
             android:background="@color/Unify_N700_32"
             android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="@id/textViewRating"
-            app:layout_constraintEnd_toStartOf="@+id/textViewRatingFooter"
+            app:layout_constraintEnd_toStartOf="@+id/textViewItemSold"
             app:layout_constraintStart_toEndOf="@+id/textViewRating"
             app:layout_constraintTop_toTopOf="@id/textViewRating"
             tools:visibility="visible" />
 
         <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/textViewRatingFooter"
+            android:id="@+id/textViewItemSold"
             android:layout_width="0dp"
             android:layout_height="@dimen/product_card_text_view_integrity_height"
             android:ellipsize="end"
@@ -168,14 +167,14 @@
             android:contentDescription="@string/content_desc_imageLocation"
             android:gravity="center"
             android:tint="@color/Unify_NN300"
-            app:layout_constraintBottom_toBottomOf="@id/textViewFooter"
+            app:layout_constraintBottom_toBottomOf="@id/textViewFooterLocation"
             app:layout_constraintStart_toStartOf="@id/imageRating"
             app:layout_constraintTop_toBottomOf="@id/imageRating"
             app:srcCompat="@drawable/ic_location_grey"
             tools:visibility="visible" />
 
         <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/textViewFooter"
+            android:id="@+id/textViewFooterLocation"
             android:layout_width="0dp"
             android:layout_height="@dimen/product_card_text_shop_location_height"
             android:layout_marginStart="2dp"

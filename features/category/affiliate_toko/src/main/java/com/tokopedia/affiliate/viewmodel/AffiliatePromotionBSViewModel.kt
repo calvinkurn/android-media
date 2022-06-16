@@ -17,11 +17,11 @@ class AffiliatePromotionBSViewModel @Inject constructor(
     private var errorMessage = MutableLiveData<String>()
     private var loading = MutableLiveData<Boolean>()
 
-    fun affiliateGenerateLink(id: Int?, url: String?, identifier: String?) {
+    fun affiliateGenerateLink(id: Int?, url: String?, identifier: String?,type:String) {
         loading.value = true
         launchCatchError(block = {
             loading.value = false
-            generateLinkData.value = affiliateGenerateLinkUseCase.affiliateGenerateLink(id, url, identifier)
+            generateLinkData.value = affiliateGenerateLinkUseCase.affiliateGenerateLink(id, url, identifier,type)
         }, onError = {
             loading.value = false
             errorMessage.value = it.localizedMessage

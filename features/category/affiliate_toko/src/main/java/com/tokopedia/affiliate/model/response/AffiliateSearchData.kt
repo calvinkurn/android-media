@@ -52,7 +52,10 @@ data class AffiliateSearchData(
                     @SerializedName("title")
                     var title: String?,
                     @SerializedName("titleEmblem")
-                    var titleEmblem: String?
+                    var titleEmblem: String?,
+
+                    //custom Attribute
+                    var type: String?
                 ) {
                     data class AdditionalInformation(
                         @SerializedName("color")

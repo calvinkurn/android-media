@@ -275,9 +275,10 @@ class AffiliatePromoFragment : AffiliateBaseFragment<AffiliatePromoViewModel>(),
         } else {
             affiliateSearchData.searchAffiliate?.data?.cards?.firstOrNull()?.let { cards ->
                 showData(false)
-
+                view?.findViewById<Typography>(R.id.promotion_card_title)?.text = cards.title
                 cards.items?.forEach {
                     it?.let {
+                        it.type = cards.pageType
                         if (cards.pageType == "pdp") {
                             adapter.addElement(AffiliatePromotionCardModel(it))
                         } else {
@@ -368,28 +369,28 @@ class AffiliatePromoFragment : AffiliateBaseFragment<AffiliatePromoViewModel>(),
     }
 
     override fun onPromotionClick(
-        productId: String,
-        shopId: String,
-        productName: String,
-        productImage: String,
-        productUrl: String,
-        productIdentifier: String,
+        itemID: String,
+        itemName: String,
+        itemImage: String,
+        itemURL: String,
         position: Int,
         commison: String,
-        status: String
+        status: String,
+        type: String?
     ) {
         AffiliatePromotionBottomSheet.newInstance(
             AffiliatePromotionBottomSheet.Companion.SheetType.LINK_GENERATION,
             null,
             null,
-            productId,
-            productName,
-            productImage,
-            productUrl,
-            productIdentifier,
+            itemID,
+            itemName,
+            itemImage,
+            itemURL,
+            "",
             AffiliatePromotionBottomSheet.ORIGIN_PROMOSIKAN,
             commission = commison,
-            status = status
+            status = status,
+            type = type
         ).show(childFragmentManager, "")
     }
 
