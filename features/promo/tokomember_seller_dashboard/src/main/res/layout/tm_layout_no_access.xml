@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:padding="@dimen/spacing_lvl4"
+    android:orientation="vertical">
+
+    <com.tokopedia.sortfilter.SortFilter
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:visibility="gone"
+        android:id="@+id/filter_error"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:sort_filter_relationship="AND"
+        app:sort_filter_type="advanced" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:gravity="center_horizontal"
+        android:orientation="vertical">
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:layout_width="280dp"
+        android:layout_height="210dp"
+        android:layout_marginTop="12dp"
+        android:id="@+id/iv_error" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/tv_heading_error"
+        app:typographyType="heading_2"
+        android:layout_marginTop="16dp"
+        android:text="@string/tm_layout_no_access_title"/>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/tv_desc_error"
+        android:layout_marginTop="8dp"
+        android:gravity="center_horizontal"
+        android:text="@string/tm_layout_no_access_desc"
+        app:typographyType="body_1" />
+
+    <com.tokopedia.unifycomponents.UnifyButton
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/btn_error"
+        android:layout_marginTop="24dp"
+        android:layout_marginBottom="@dimen/unify_space_16"
+        app:unifyButtonSize="large"
+        android:text="@string/tm_layout_no_access_cta" />
+
+    </LinearLayout>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

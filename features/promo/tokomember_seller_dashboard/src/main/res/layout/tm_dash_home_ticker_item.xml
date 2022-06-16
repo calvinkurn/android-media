@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.tokopedia.unifycomponents.CardUnify xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/viewFlipperIntro"
+    android:layout_width="328dp"
+    android:layout_height="wrap_content">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="@dimen/tm_dash_dp_14">
+
+        <com.tokopedia.unifycomponents.ImageUnify
+            android:id="@+id/ivTicker"
+            android:layout_width="@dimen/tm_dash_dp_50"
+            android:layout_height="@dimen/unify_space_40"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"/>
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tvTickerTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/Unify_NN950"
+            app:typographyWeight="bold"
+            android:layout_marginStart="@dimen/unify_space_12"
+            app:layout_constraintStart_toEndOf="@id/ivTicker"
+            app:layout_constraintTop_toTopOf="@id/ivTicker"
+            app:typographyType="display_3" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tvTickerDesc"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:maxWidth="@dimen/tm_dash_dp_230"
+            android:textColor="@color/Unify_NN600"
+            app:typographyWeight="reguler"
+            app:layout_constraintTop_toBottomOf="@id/tvTickerTitle"
+            app:layout_constraintStart_toStartOf="@id/tvTickerTitle"
+            app:typographyType="paragraph_3" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tvTickerCta"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/Unify_GN500"
+            app:typographyWeight="bold"
+            app:layout_constraintTop_toBottomOf="@id/tvTickerDesc"
+            app:layout_constraintStart_toStartOf="@id/tvTickerDesc"
+            app:typographyType="display_3" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</com.tokopedia.unifycomponents.CardUnify>

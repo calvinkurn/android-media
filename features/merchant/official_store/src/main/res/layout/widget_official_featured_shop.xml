@@ -2,7 +2,8 @@
 <FrameLayout xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    xmlns:android="http://schemas.android.com/apk/res/android">
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
     <ImageView
         android:id="@+id/image_featured_shop"
         android:adjustViewBounds="true"
@@ -10,9 +11,11 @@
         android:layout_height="wrap_content"
         tools:ignore="ContentDescription" />
 
-    <com.elyeproj.loaderviewlibrary.LoaderImageView
+    <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/image_featured_loading"
         android:layout_gravity="center"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        app:loader_corner_radius="0dp"
+        app:loader_type="rect"/>
 </FrameLayout>

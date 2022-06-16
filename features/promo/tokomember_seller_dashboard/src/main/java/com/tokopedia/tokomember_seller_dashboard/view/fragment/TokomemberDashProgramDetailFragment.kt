@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
+import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.tokomember_seller_dashboard.R
 import com.tokopedia.tokomember_seller_dashboard.di.component.DaggerTokomemberDashComponent
@@ -14,9 +15,8 @@ import com.tokopedia.tokomember_seller_dashboard.model.MembershipGetProgramForm
 import com.tokopedia.tokomember_seller_dashboard.util.ACTION_DETAIL
 import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_PROGRAM_ID
 import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_SHOP_ID
-import com.tokopedia.tokomember_seller_dashboard.view.viewmodel.TokomemberDashCreateViewModel
-import com.tokopedia.usecase.coroutines.Fail
-import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.tokomember_seller_dashboard.util.TokoLiveDataResult
+import com.tokopedia.tokomember_seller_dashboard.view.viewmodel.TmDashCreateViewModel
 import kotlinx.android.synthetic.main.tm_dash_program_detail_fragment.*
 import javax.inject.Inject
 
@@ -27,11 +27,11 @@ class TokomemberDashProgramDetailFragment : BaseDaggerFragment() {
 
     @Inject
     lateinit var viewModelFactory: dagger.Lazy<ViewModelProvider.Factory>
-    private val tokomemberDashCreateViewModel: TokomemberDashCreateViewModel by lazy(
+    private val tmDashCreateViewModel: TmDashCreateViewModel by lazy(
         LazyThreadSafetyMode.NONE
     ) {
         val viewModelProvider = ViewModelProvider(this, viewModelFactory.get())
-        viewModelProvider.get(TokomemberDashCreateViewModel::class.java)
+        viewModelProvider.get(TmDashCreateViewModel::class.java)
     }
 
     override fun onAttach(context: Context) {
@@ -56,17 +56,17 @@ class TokomemberDashProgramDetailFragment : BaseDaggerFragment() {
         super.onViewCreated(view, savedInstanceState)
 
         observeViewModel()
-        tokomemberDashCreateViewModel.getProgramInfo(programId, shopId, ACTION_DETAIL, TM_PROGRAM_FORM)
+        tmDashCreateViewModel.getProgramInfo(programId, shopId, ACTION_DETAIL, TM_PROGRAM_FORM)
         setHeader()
     }
 
     private fun observeViewModel() {
-        tokomemberDashCreateViewModel.tokomemberProgramResultLiveData.observe(viewLifecycleOwner,{
-            when(it){
-                is Success -> {
-                    setMainUi(it.data.membershipGetProgramForm)
+        tmDashCreateViewModel.tmProgramResultLiveData.observe(viewLifecycleOwner,{
+            when(it.status){
+                TokoLiveDataResult.STATUS.SUCCESS -> {
+                    setMainUi(it.data?.membershipGetProgramForm)
                 }
-                is Fail -> {
+                TokoLiveDataResult.STATUS.ERROR -> {
 
                 }
             }
@@ -78,10 +78,12 @@ class TokomemberDashProgramDetailFragment : BaseDaggerFragment() {
         tvTransactionCount.text = membershipGetProgramForm?.programForm?.analytics?.trxCount
         tvIncome.text = membershipGetProgramForm?.programForm?.analytics?.totalIncome
         tvName.text = membershipGetProgramForm?.programForm?.name
-        tvTransactionPremium.text = membershipGetProgramForm?.programForm?.programAttributes?.firstOrNull()?.minimumTransaction.toString()
+        tvTransactionPremium.text = membershipGetProgramForm?.programForm?.tierLevels?.firstOrNull()?.threshold.toString()
         tvMemberCountPremium.text = membershipGetProgramForm?.levelInfo?.levelList?.firstOrNull()?.totalMember
-        tvTransactionVip.text = membershipGetProgramForm?.programForm?.programAttributes?.getOrNull(1)?.minimumTransaction.toString()
+        tvTransactionVip.text = membershipGetProgramForm?.programForm?.tierLevels?.getOrNull(1)?.threshold.toString()
         tvMemberCountVip.text = membershipGetProgramForm?.levelInfo?.levelList?.getOrNull(1)?.totalMember
+
+        childFragmentManager.beginTransaction().add(R.id.frameCouponList, TokomemberDashCouponFragment.newInstance(arguments), tag).addToBackStack(tag).commit()
 
     }
 
@@ -95,7 +97,7 @@ class TokomemberDashProgramDetailFragment : BaseDaggerFragment() {
     override fun getScreenName() = ""
 
     override fun initInjector() {
-        DaggerTokomemberDashComponent.builder().build().inject(this)
+        DaggerTokomemberDashComponent.builder().baseAppComponent((activity?.application as BaseMainApplication).baseAppComponent).build().inject(this)
     }
 
     companion object {

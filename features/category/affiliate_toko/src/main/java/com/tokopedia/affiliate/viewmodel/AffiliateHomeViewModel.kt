@@ -3,24 +3,32 @@ package com.tokopedia.affiliate.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.affiliate.NO_UI_METRICS
 import com.tokopedia.affiliate.PAGE_ZERO
+import com.tokopedia.affiliate.TOTAL_ITEMS_METRIC_TYPE
 import com.tokopedia.affiliate.adapter.AffiliateAdapterTypeFactory
 import com.tokopedia.affiliate.model.pojo.AffiliateDateFilterData
 import com.tokopedia.affiliate.model.pojo.AffiliateDatePickerData
 import com.tokopedia.affiliate.model.pojo.AffiliateUserPerformaData
 import com.tokopedia.affiliate.model.response.AffiliateAnnouncementData
+import com.tokopedia.affiliate.model.response.AffiliateAnnouncementDataV2
 import com.tokopedia.affiliate.model.response.AffiliatePerformanceListData
 import com.tokopedia.affiliate.model.response.AffiliateUserPerformaListItemData
 import com.tokopedia.affiliate.model.response.AffiliateValidateUserData
 import com.tokopedia.affiliate.ui.bottomsheet.AffiliateBottomDatePicker
-import com.tokopedia.affiliate.ui.viewholder.viewmodel.*
-import com.tokopedia.affiliate.usecase.*
+import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateDateFilterModel
+import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateNoPromoItemFoundModel
+import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliatePerformaSharedProductCardsModel
+import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateUserPerformanceListModel
+import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateUserPerformanceModel
+import com.tokopedia.affiliate.usecase.AffiliateAnnouncementUseCase
+import com.tokopedia.affiliate.usecase.AffiliatePerformanceDataUseCase
+import com.tokopedia.affiliate.usecase.AffiliateUserPerformanceUseCase
+import com.tokopedia.affiliate.usecase.AffiliateValidateUserStatusUseCase
 import com.tokopedia.affiliate.utils.DateUtils
 import com.tokopedia.basemvvm.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.user.session.UserSessionInterface
-import java.text.SimpleDateFormat
-import java.util.*
 import javax.inject.Inject
 import kotlin.collections.ArrayList
 
@@ -34,21 +42,25 @@ class AffiliateHomeViewModel @Inject constructor(
     private var shimmerVisibility = MutableLiveData<Boolean>()
     private var dataPlatformShimmerVisibility = MutableLiveData<Boolean>()
     private var progressBar = MutableLiveData<Boolean>()
-    private var validateUserdata = MutableLiveData<AffiliateValidateUserData>()
-    private var affiliateAnnouncement = MutableLiveData<AffiliateAnnouncementData>()
+    private var affiliateAnnouncement = MutableLiveData<AffiliateAnnouncementDataV2>()
     private var affiliateDataList = MutableLiveData<ArrayList<Visitable<AffiliateAdapterTypeFactory>>>()
     private var totalItemsCount = MutableLiveData<Int>()
+    private var validateUserdata = MutableLiveData<AffiliateValidateUserData>()
     private var errorMessage = MutableLiveData<Throwable>()
-    private var affiliateErrorMessage = MutableLiveData<Throwable>()
     private var rangeChanged = MutableLiveData<Boolean>()
     private var showProductCount = true
     private var lastID = "0"
+    private var firstTime = true
+    private var selectedDateRange = AffiliateBottomDatePicker.THIRTY_DAYS
+    private var selectedDateMessage = DateUtils().getMessage(selectedDateRange)
+
+    private var selectedDateValue = "30"
 
     fun getAffiliateValidateUser() {
         launchCatchError(block = {
-            progressBar.value = true
             validateUserdata.value =
                 affiliateValidateUseCaseUseCase.validateUserStatus(userSessionInterface.email)
+            progressBar.value = false
         }, onError = {
             progressBar.value = false
             it.printStackTrace()
@@ -58,18 +70,25 @@ class AffiliateHomeViewModel @Inject constructor(
 
     fun getAnnouncementInformation() {
         launchCatchError(block = {
-            progressBar.value = true
             affiliateAnnouncement.value =
                 affiliateAffiliateAnnouncementUseCase.getAffiliateAnnouncement()
         }, onError = {
-            progressBar.value = false
             it.printStackTrace()
-            affiliateErrorMessage.value = it
         })
     }
 
     fun getAffiliatePerformance(page: Int) {
         launchCatchError(block = {
+            if(firstTime) affiliateUserPerformanceUseCase.getAffiliateFilter()?.let { filters ->
+                filters.data?.getAffiliateDateFilter?.forEach { filter->
+                    if(filter?.filterType == "LastThirtyDays"){
+                        filter.filterDescription?.let { selectedDateMessage = it }
+                        filter.filterValue?.let { selectedDateValue = it }
+                        filter.filterTitle?.let { selectedDateRange = it }
+                    }
+                }
+                firstTime = false
+            }
             var performanceList: AffiliateUserPerformaListItemData? = null
             if (page == PAGE_ZERO) {
                 dataPlatformShimmerVisibility.value = true
@@ -152,20 +171,15 @@ class AffiliateHomeViewModel @Inject constructor(
         affiliatePerfomanceResponse?.getAffiliatePerformance?.data?.userData?.let { userData ->
             userData.metrics = userData.metrics.sortedBy { metrics -> metrics?.order }
             userData.metrics.forEach { metrics ->
-                if (metrics?.order == 0) {
+                if (metrics?.metricType == TOTAL_ITEMS_METRIC_TYPE) {
                     totalItemsCount.value = metrics.metricValue?.toInt()
-                } else {
+                } else if(metrics?.order != NO_UI_METRICS) {
                     performaTempList.add(AffiliateUserPerformanceListModel(metrics))
                 }
             }
         }
         return performaTempList
     }
-
-    private var selectedDateRange = AffiliateBottomDatePicker.THIRTY_DAYS
-    private var selectedDateMessage = DateUtils().getMessage(selectedDateRange)
-
-    private var selectedDateValue = "30"
 
     fun getSelectedDate(): String {
         return selectedDateRange
@@ -184,9 +198,8 @@ class AffiliateHomeViewModel @Inject constructor(
     fun getDataShimmerVisibility(): LiveData<Boolean> = dataPlatformShimmerVisibility
     fun getRangeChanged(): LiveData<Boolean> = rangeChanged
     fun getErrorMessage(): LiveData<Throwable> = errorMessage
-    fun getAffiliateErrorMessage(): LiveData<Throwable> = affiliateErrorMessage
     fun getValidateUserdata(): LiveData<AffiliateValidateUserData> = validateUserdata
-    fun getAffiliateAnnouncement(): LiveData<AffiliateAnnouncementData> = affiliateAnnouncement
+    fun getAffiliateAnnouncement(): LiveData<AffiliateAnnouncementDataV2> = affiliateAnnouncement
     fun getAffiliateItemCount(): LiveData<Int> = totalItemsCount
     fun getAffiliateDataItems(): LiveData<ArrayList<Visitable<AffiliateAdapterTypeFactory>>> =
         affiliateDataList

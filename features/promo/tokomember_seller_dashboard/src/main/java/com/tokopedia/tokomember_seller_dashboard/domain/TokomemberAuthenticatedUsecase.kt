@@ -31,6 +31,8 @@ const val IS_AUTHENTICATED = """
         userShopInfo {
             info {
               shop_id
+              shop_name
+              shop_avatar
             }
         }
     }

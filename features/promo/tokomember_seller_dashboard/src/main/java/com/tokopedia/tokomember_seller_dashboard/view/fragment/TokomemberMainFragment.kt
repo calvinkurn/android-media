@@ -4,28 +4,36 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
+import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.tokomember_seller_dashboard.R
 import com.tokopedia.tokomember_seller_dashboard.di.component.DaggerTokomemberDashComponent
 import com.tokopedia.tokomember_seller_dashboard.model.CheckEligibility
+import com.tokopedia.tokomember_seller_dashboard.tracker.TmTracker
 import com.tokopedia.tokomember_seller_dashboard.view.activity.TokomemberDashHomeActivity
 import com.tokopedia.tokomember_seller_dashboard.view.activity.TokomemberDashIntroActivity
-import com.tokopedia.tokomember_seller_dashboard.view.viewmodel.TokomemberEligibilityViewModel
+import com.tokopedia.tokomember_seller_dashboard.view.viewmodel.TmEligibilityViewModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import kotlinx.android.synthetic.main.tm_dash_intro_container.*
+import kotlinx.android.synthetic.main.tm_layout_no_access.*
 import javax.inject.Inject
 
 class TokomemberMainFragment : BaseDaggerFragment() {
 
     private var shopId = 0
+    private var shopName = ""
+    private var shopAvatar = ""
+    private var tmTracker: TmTracker? = null
 
     @Inject
     lateinit var viewModelFactory: dagger.Lazy<ViewModelProvider.Factory>
-    private val tokomemberEligibilityViewModel: TokomemberEligibilityViewModel by lazy(LazyThreadSafetyMode.NONE) {
+    private val tmEligibilityViewModel: TmEligibilityViewModel by lazy(LazyThreadSafetyMode.NONE) {
         val viewModelProvider = ViewModelProvider(this, viewModelFactory.get())
-        viewModelProvider.get(TokomemberEligibilityViewModel::class.java)
+        viewModelProvider.get(TmEligibilityViewModel::class.java)
     }
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -39,23 +47,50 @@ class TokomemberMainFragment : BaseDaggerFragment() {
         super.onViewCreated(view, savedInstanceState)
 
         observeViewModel()
-        tokomemberEligibilityViewModel.getSellerInfo()
+        tmEligibilityViewModel.getSellerInfo()
+        tmTracker = TmTracker()
+        btn_error.setOnClickListener {
+            Toast.makeText(context, "Not allowed", Toast.LENGTH_SHORT).show()
+            tmTracker?.clickBackHomeBSNoAccess(shopId.toString())
+        }
     }
 
     private fun observeViewModel() {
 
-        tokomemberEligibilityViewModel.sellerInfoResultLiveData.observe(viewLifecycleOwner, {
+        tmEligibilityViewModel.sellerInfoResultLiveData.observe(viewLifecycleOwner, {
             when (it) {
                 is Success -> {
                     shopId = it.data.userShopInfo?.info?.shopId.toIntOrZero()
-                    tokomemberEligibilityViewModel.checkEligibility(shopId, true)
+                    shopAvatar = it.data.userShopInfo?.info?.shopAvatar?:""
+                    shopName = it.data.userShopInfo?.info?.shopName?:""
+                    tmEligibilityViewModel.getOnboardingInfo(shopId)
                 }
                 is Fail -> {
                 }
             }
         })
 
-        tokomemberEligibilityViewModel.eligibilityCheckResultLiveData.observe(viewLifecycleOwner, {
+        tmEligibilityViewModel.tokomemberOnboardingResultLiveData.observe(viewLifecycleOwner,{
+          when(it) {
+              is Success -> {
+                  if (it.data.membershipGetSellerOnboarding?.resultStatus?.code == "200"){
+                      if (it.data.membershipGetSellerOnboarding?.sellerHomeContent?.isShowContent == true){
+                          tmEligibilityViewModel.checkEligibility(shopId, true)
+                      } else{
+                          TokomemberDashHomeActivity.openActivity(shopId,it.data.membershipGetSellerOnboarding?.cardID?.toIntOrZero()?:0, context)
+                          activity?.finish()
+                      }
+                  } else{
+                      viewFlipperIntro?.displayedChild = 2
+                      tmTracker?.viewBSNoAccess(shopId.toString())
+                  }
+              }
+              is Fail -> {
+              }
+          }
+        })
+
+        tmEligibilityViewModel.eligibilityCheckResultLiveData.observe(viewLifecycleOwner, {
             when(it){
                 is Success ->{
                     checkEligibility(it.data)
@@ -68,32 +103,24 @@ class TokomemberMainFragment : BaseDaggerFragment() {
     }
 
     private fun checkEligibility(data: CheckEligibility?) {
-        if(data?.eligibilityCheckData?.isEligible == true)
-        {
-            if (data.eligibilityCheckData.message.title.isNullOrEmpty() and data.eligibilityCheckData.message.subtitle.isNullOrEmpty())
-            {
-         //       TokomemberDashHomeActivity.openActivity(shopId, context)
-              TokomemberDashIntroActivity.openActivity(shopId, context = context)
-                activity?.finish()
-                // redirect to dashboard
-            }
-            else{
-                TokomemberDashIntroActivity.openActivity(shopId, context = context)
-                activity?.finish()
-                // redirect to intro page
-            }
-        }
-        else{
-            TokomemberDashIntroActivity.openActivity(shopId, true, context)
+        if (data?.eligibilityCheckData?.isEligible == true) {
+            TokomemberDashIntroActivity.openActivity(
+                shopId,
+                shopAvatar,
+                shopName,
+                context = context
+            )
             activity?.finish()
-            // redirect to intro page + bottomsheet
+        } else {
+            TokomemberDashIntroActivity.openActivity(shopId, shopAvatar, shopName, true, context)
+            activity?.finish()
         }
     }
 
     override fun getScreenName() = ""
 
     override fun initInjector() {
-        DaggerTokomemberDashComponent.builder().build().inject(this)
+        DaggerTokomemberDashComponent.builder().baseAppComponent((activity?.application as BaseMainApplication).baseAppComponent).build().inject(this)
     }
 
     companion object {

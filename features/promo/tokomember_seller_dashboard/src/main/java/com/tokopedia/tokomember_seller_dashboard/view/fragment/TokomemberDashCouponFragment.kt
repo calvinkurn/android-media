@@ -7,30 +7,47 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.filter.bottomsheet.SortFilterBottomSheet
 import com.tokopedia.filter.bottomsheet.filtergeneraldetail.FilterGeneralDetailBottomSheet
 import com.tokopedia.filter.common.data.Filter
 import com.tokopedia.filter.common.data.Option
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.getIconUnifyDrawable
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.sortfilter.SortFilterItem
+import com.tokopedia.tokomember_common_widget.util.CreateScreenType
 import com.tokopedia.tokomember_seller_dashboard.R
-import com.tokopedia.tokomember_seller_dashboard.callbacks.ProgramActions
+import com.tokopedia.tokomember_seller_dashboard.callbacks.TmCouponActions
+import com.tokopedia.tokomember_seller_dashboard.callbacks.TmCouponListRefreshCallback
 import com.tokopedia.tokomember_seller_dashboard.di.component.DaggerTokomemberDashComponent
 import com.tokopedia.tokomember_seller_dashboard.model.VouchersItem
+import com.tokopedia.tokomember_seller_dashboard.util.ADD_QUOTA
+import com.tokopedia.tokomember_seller_dashboard.util.DELETE
+import com.tokopedia.tokomember_seller_dashboard.util.EDIT
+import com.tokopedia.tokomember_seller_dashboard.util.STOP
+import com.tokopedia.tokomember_seller_dashboard.util.TokoLiveDataResult
+import com.tokopedia.tokomember_seller_dashboard.view.activity.TmDashCreateActivity
 import com.tokopedia.tokomember_seller_dashboard.view.adapter.TmCouponAdapter
 import com.tokopedia.tokomember_seller_dashboard.view.viewmodel.TmCouponViewModel
 import com.tokopedia.unifycomponents.ChipsUnify
-import com.tokopedia.usecase.coroutines.Fail
-import com.tokopedia.usecase.coroutines.Success
-import kotlinx.android.synthetic.main.tm_dash_coupon_fragment.*
+import com.tokopedia.unifycomponents.Toaster
+import kotlinx.android.synthetic.main.tm_dash_coupon_fragment.viewFlipperCoupon
+import kotlinx.android.synthetic.main.tm_dash_coupon_list.*
+import kotlinx.android.synthetic.main.tm_layout_no_access.*
 import javax.inject.Inject
 
-class TokomemberDashCouponFragment : BaseDaggerFragment(), ProgramActions, SortFilterBottomSheet.Callback{
 
-    private var voucherStatus = ""
+class TokomemberDashCouponFragment : BaseDaggerFragment(), TmCouponActions, SortFilterBottomSheet.Callback,
+    TmCouponListRefreshCallback {
+
+    private var voucherStatus = "1,2,3,4"
     private var voucherType = 0
+    private var voucherIdToUpdate = 0
+    private var voucherStatusToUpdate = ""
     private var selectedType = "0"
     private lateinit var selectedStatus: StringBuilder
     private var selectedStatusList = arrayListOf<String>()
@@ -65,10 +82,10 @@ class TokomemberDashCouponFragment : BaseDaggerFragment(), ProgramActions, SortF
 
             val options = ArrayList<Option>()
 
-            options.add(Option(name = "Semua Status", key = "Semua Status", value = "0", inputType = Option.INPUT_TYPE_RADIO, inputState = "true"))
-            options.add(Option(name = "Aktif", key = "Aktif", value = "2", inputType = Option.INPUT_TYPE_CHECKBOX))
-            options.add(Option(name = "Belum Aktif", key = "Belum Aktif", value = "1", inputType = Option.INPUT_TYPE_CHECKBOX))
-            options.add(Option(name = "Sudah Berakhir", key = "Sudah Berakhir", value = "4", inputType = Option.INPUT_TYPE_CHECKBOX))
+            options.add(Option(name = "Semua Status", key = "Semua Status", value = "1,2,3,4", inputType = Option.INPUT_TYPE_RADIO, inputState = "true"))
+            options.add(Option(name = "Aktif", key = "Aktif", value = "2", inputType = Option.INPUT_TYPE_RADIO))
+            options.add(Option(name = "Belum Aktif", key = "Belum Aktif", value = "1", inputType = Option.INPUT_TYPE_RADIO))
+            options.add(Option(name = "Sudah Berakhir", key = "Sudah Berakhir", value = "4", inputType = Option.INPUT_TYPE_RADIO))
             options.forEach {
                 val cs: CharSequence = it.value
 //                if(selectedStatus.contains(cs.toString(), false)){
@@ -78,7 +95,7 @@ class TokomemberDashCouponFragment : BaseDaggerFragment(), ProgramActions, SortF
             }
             val cs: CharSequence = "0"
 //            if(selectedStatus.contains(cs.toString(), false)){
-            if(selectedStatusList.contains("0")){
+            if(voucherStatus.contains("1,2,3,4")){
                 options[0].inputState = "true"
             }
             else{
@@ -110,19 +127,29 @@ class TokomemberDashCouponFragment : BaseDaggerFragment(), ProgramActions, SortF
 //                            }
                         }
 //                        selectedStatus = selectedStatus.removeRange(selectedStatus.length - 1, selectedStatus.length) as StringBuilder
-                        if(selectedStatusList.isNullOrEmpty()){
+//                        if(selectedStatusList.isNullOrEmpty()){
+//                            filterStatus.type = ChipsUnify.TYPE_NORMAL
+//                        }
+//                        else{
+//                            filterStatus.type = ChipsUnify.TYPE_SELECTED
+//                        }
+                        voucherStatus = selectedStatusList.toString().replace("[", "")
+                        voucherStatus = voucherStatus.replace("]", "")
+                        voucherStatus = voucherStatus.replace(" ", "")
+                        if(voucherStatus == "1,2,3,4"){
                             filterStatus.type = ChipsUnify.TYPE_NORMAL
                         }
                         else{
                             filterStatus.type = ChipsUnify.TYPE_SELECTED
                         }
-                        voucherStatus = selectedStatusList.toString().replace("[", "")
-                        voucherStatus = voucherStatus.replace("]", "")
-                        voucherStatus = voucherStatus.replace(" ", "")
-                        tmCouponViewModel.getCouponList(voucherStatus, selectedType.toInt())
-                        Toast.makeText(context, selectedStatusList.toString(), Toast.LENGTH_SHORT).show()
+                        if(selectedType.toInt() == 0){
+                            tmCouponViewModel.getCouponList(voucherStatus, null)
+                        }
+                        else {
+                            tmCouponViewModel.getCouponList(voucherStatus, selectedType.toInt())
+                        }
                     }
-                },
+                }
             )
 //            filterStatus.type = if(filterStatus.type == ChipsUnify.TYPE_NORMAL) {
 //                ChipsUnify.TYPE_SELECTED
@@ -184,7 +211,12 @@ class TokomemberDashCouponFragment : BaseDaggerFragment(), ProgramActions, SortF
                         else{
                             filterType.type = ChipsUnify.TYPE_SELECTED
                         }
-                        tmCouponViewModel.getCouponList(voucherStatus, selectedType.toInt())
+                        if(selectedType.toInt() == 0){
+                            tmCouponViewModel.getCouponList(voucherStatus, null)
+                        }
+                        else {
+                            tmCouponViewModel.getCouponList(voucherStatus, selectedType.toInt())
+                        }
                     }
                 },
             )
@@ -197,8 +229,11 @@ class TokomemberDashCouponFragment : BaseDaggerFragment(), ProgramActions, SortF
         }
         filterData.add(filterType)
         filter.addItem(filterData)
-        filter.addItem(filterData)
         filter.parentListener = {
+            Toast.makeText(context, "Type", Toast.LENGTH_SHORT).show()
+        }
+        filter_error.addItem(filterData)
+        filter_error.parentListener = {
             Toast.makeText(context, "Type", Toast.LENGTH_SHORT).show()
         }
         rv_coupon.apply {
@@ -206,24 +241,92 @@ class TokomemberDashCouponFragment : BaseDaggerFragment(), ProgramActions, SortF
             adapter = tmCouponAdapter
         }
 
+        btn_create_coupon.setOnClickListener {
+            TmDashCreateActivity.openActivity(activity, CreateScreenType.COUPON_SINGLE, null, this, edit = false)
+        }
+
         observeViewModel()
-        tmCouponViewModel.getCouponList(voucherStatus, voucherType)
+        if(selectedType.toInt() == 0){
+            tmCouponViewModel.getCouponList(voucherStatus, null)
+        }
+        else {
+            tmCouponViewModel.getCouponList(voucherStatus, selectedType.toInt())
+        }
+
+        setEmptyCouponListData()
     }
 
-    private fun filterClick() {
-
+    private fun setEmptyCouponListData() {
+        tv_heading_error.text = "Buat kupon TokoMember dulu, yuk!"
+        tv_desc_error.text = "Semakin menarik kupon yang kamu buat, semakin banyak jumlah transaksi yang didapatkan dari member tokomu."
+        btn_error.text = "Buat Kupon"
+        btn_error.setOnClickListener {
+            TmDashCreateActivity.openActivity(activity, CreateScreenType.COUPON_SINGLE, null, this, edit = false)
+        }
     }
 
     private fun observeViewModel() {
 
         tmCouponViewModel.couponListLiveData.observe(viewLifecycleOwner, {
-            when (it) {
-                is Success -> {
-                    tmCouponAdapter.vouchersItemList.clear()
-                    tmCouponAdapter.vouchersItemList = it.data.merchantPromotionGetMVList?.data?.vouchers as ArrayList<VouchersItem>
-                    tmCouponAdapter.notifyDataSetChanged()
+            when (it.status) {
+                TokoLiveDataResult.STATUS.LOADING ->{
+                    viewFlipperCoupon.displayedChild = 0
+                    filter_error.hide()
                 }
-                is Fail -> {
+                TokoLiveDataResult.STATUS.SUCCESS ->{
+                    if(it.data?.merchantPromotionGetMVList?.data?.vouchers.isNullOrEmpty()){
+                        viewFlipperCoupon.displayedChild = 2
+                        filter_error.show()
+                    }
+                    else {
+
+                        filter_error.hide()
+                        viewFlipperCoupon.displayedChild = 1
+                        tmCouponAdapter.vouchersItemList.clear()
+                        tmCouponAdapter.vouchersItemList = it.data?.merchantPromotionGetMVList?.data?.vouchers as ArrayList<VouchersItem>
+                        tmCouponAdapter.notifyDataSetChanged()
+                    }
+                }
+                TokoLiveDataResult.STATUS.ERROR-> {
+
+                }
+            }
+        })
+
+        tmCouponViewModel.tmCouponInitialLiveData.observe(viewLifecycleOwner, {
+            when(it.status){
+                TokoLiveDataResult.STATUS.LOADING ->{
+
+                }
+                TokoLiveDataResult.STATUS.SUCCESS ->{
+                    it.data?.getInitiateVoucherPage?.data?.token?.let { it1 ->
+                        tmCouponViewModel.updateStatus(voucherId = voucherIdToUpdate, status = voucherStatusToUpdate, token = it1)
+                    }
+                }
+                TokoLiveDataResult.STATUS.ERROR ->{
+
+                }
+            }
+        })
+
+        tmCouponViewModel.tmCouponUpdateLiveData.observe(viewLifecycleOwner, {
+            when(it.status){
+                TokoLiveDataResult.STATUS.LOADING ->{
+
+                }
+                TokoLiveDataResult.STATUS.SUCCESS ->{
+                    if(it.data?.data?.merchantPromotionUpdateStatusMV?.status == "200") {
+                        refreshCouponList()
+                    }
+                    else{
+
+                        view?.let { it1 -> it.data?.data?.message?.let { it2 ->
+                            Toaster.build(it1,
+                                it2, Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR).show()
+                        } }                    }
+                }
+                TokoLiveDataResult.STATUS.ERROR ->{
+
                 }
             }
         })
@@ -232,17 +335,13 @@ class TokomemberDashCouponFragment : BaseDaggerFragment(), ProgramActions, SortF
     override fun getScreenName() = ""
 
     override fun initInjector() {
-        DaggerTokomemberDashComponent.builder().build().inject(this)
+        DaggerTokomemberDashComponent.builder().baseAppComponent((activity?.application as BaseMainApplication).baseAppComponent).build().inject(this)
     }
 
     companion object {
-        fun newInstance(): TokomemberDashCouponFragment {
-            return TokomemberDashCouponFragment()
+        fun newInstance(bundle: Bundle?) = TokomemberDashCouponFragment().apply {
+            arguments = bundle
         }
-    }
-
-    override fun option(type: String, programId: Int, shopId: Int) {
-
     }
 
     override fun onApplySortFilter(applySortFilterModel: SortFilterBottomSheet.ApplySortFilterModel) {
@@ -250,7 +349,61 @@ class TokomemberDashCouponFragment : BaseDaggerFragment(), ProgramActions, SortF
     }
 
     override fun getResultCount(mapParameter: Map<String, String>) {
-        mapParameter
+
+    }
+
+    override fun option(type: String, voucherId: String, couponType: String, currentQuota: Int) {
+        when(type){
+            DELETE ->{
+                val dialog = context?.let { DialogUnify(it, DialogUnify.VERTICAL_ACTION, DialogUnify.NO_IMAGE) }
+                dialog?.setTitle("Yakin batalkan Kupon?")
+                dialog?.setDescription("Pengaturan yang dibuat akan hilang kalau kamu batalkan proses pengaturan TokoMember, lho.")
+                dialog?.setPrimaryCTAText("Lanjutkan")
+                dialog?.setSecondaryCTAText("Batalkan Kupon")
+                dialog?.setPrimaryCTAClickListener {
+                        voucherIdToUpdate = voucherId.toInt()
+                        voucherStatusToUpdate = DELETE
+                        tmCouponViewModel.getInitialCouponData("update", couponType.lowercase())
+                        dialog.dismiss()
+                }
+                dialog?.setSecondaryCTAClickListener {
+                    dialog.dismiss()
+                }
+                dialog?.show()
+            }
+            EDIT ->{
+                TmDashCreateActivity.openActivity(activity, CreateScreenType.COUPON_SINGLE, voucherId.toInt(), this, edit = true)
+            }
+            STOP ->{
+                val dialog = context?.let { DialogUnify(it, DialogUnify.VERTICAL_ACTION, DialogUnify.NO_IMAGE) }
+                dialog?.setTitle("Yakin batalkan Kupon?")
+                dialog?.setDescription("Pengaturan yang dibuat akan hilang kalau kamu batalkan proses pengaturan TokoMember, lho.")
+                dialog?.setPrimaryCTAText("Lanjutkan")
+                dialog?.setSecondaryCTAText("Batalkan Kupon")
+                dialog?.setPrimaryCTAClickListener {
+                    voucherIdToUpdate = voucherId.toInt()
+                    voucherStatusToUpdate = STOP
+                    tmCouponViewModel.getInitialCouponData("update", couponType.lowercase())
+                    dialog.dismiss()
+                }
+                dialog?.setSecondaryCTAClickListener {
+                    dialog.dismiss()
+                }
+                dialog?.show()
+            }
+            ADD_QUOTA ->{
+                TmAddQuotaBottomsheet.show(childFragmentManager, voucherId, currentQuota, couponType, this)
+            }
+        }
+    }
+
+    override fun refreshCouponList() {
+        if(selectedType.toInt() == 0){
+            tmCouponViewModel.getCouponList(voucherStatus, null)
+        }
+        else {
+            tmCouponViewModel.getCouponList(voucherStatus, selectedType.toInt())
+        }
     }
 
 }

@@ -1,20 +1,22 @@
 package com.tokopedia.tokomember_seller_dashboard.domain
 
+import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
-import com.tokopedia.tokomember_seller_dashboard.model.ProgramList
+import com.tokopedia.tokomember_seller_dashboard.model.TmDashHomeResponse
 import javax.inject.Inject
 
 class TokomemberDashHomeUsecase @Inject constructor(graphqlRepository: GraphqlRepository) :
-    GraphqlUseCase<ProgramList>(graphqlRepository) {
+    GraphqlUseCase<TmDashHomeResponse>(graphqlRepository) {
 
+    @GqlQuery("tm_home", TM_HOME)
     fun getHomeData(
-        success: (ProgramList) -> Unit,
+        success: (TmDashHomeResponse) -> Unit,
         onFail: (Throwable) -> Unit,
         shopId: Int, cardID: Int, status: Int, page: Int, pageSize: Int
     ){
-        this.setTypeClass(ProgramList::class.java)
-        this.setRequestParams(getRequestParams(shopId, cardID, status, page, pageSize))
+        this.setTypeClass(TmDashHomeResponse::class.java)
+        this.setRequestParams(getRequestParams(shopId))
         this.setGraphqlQuery(TM_HOME)
         execute({
             success(it)
@@ -23,37 +25,73 @@ class TokomemberDashHomeUsecase @Inject constructor(graphqlRepository: GraphqlRe
         })
     }
 
-    private fun getRequestParams(shopId: Int, cardID: Int, status: Int, page: Int, pageSize: Int): Map<String, Any> {
-
-//        return mapOf(PROGRAM_ID to programID , SHOP_ID to shopId, ACTION_TYPE to actionType )
-        return mapOf()
+    private fun getRequestParams(shopId: Int): Map<String, Any> {
+        return mapOf(SHOP_ID to shopId)
     }
 
     companion object {
-        const val PROGRAM_ID = "programID"
         const val SHOP_ID = "shopID"
-        const val ACTION_TYPE = "actionType"
 
     }
 }
 
 const val TM_HOME = """
-     query membershipGetProgramForm(${'$'}programID: Int! , ${'$'}shopID: Int! , ${'$'}actionType: String!) {
-    membershipGetProgramForm(programID: ${'$'}programID, shopID: ${'$'}shopID , actionType: ${'$'}actionType) {
-    resultStatus {
-      code
-      message
-      reason
+    query membershipGetSellerAnalyticsTopSection(${'$'}shopID: Int!) {
+        membershipGetSellerAnalyticsTopSection(shopID: ${'$'}shopID) {
+            ticker {
+              id
+              title
+              description
+              iconImageUrl
+              isDismissable
+              cta {
+                text
+                url
+                urlMobile
+                appLink
+                type
+                icon
+                isShown
+                isDisabled
+                position
+              }
+            }
+            shopProfile{
+              card {
+                id
+                shopID
+                name
+                intro
+                limit
+                status
+                index
+                parentIDs
+                tierGroupID
+                numberOfLevel
+                numberOfLevelStr
+              }
+              shop {
+                id
+                name
+                url
+                appLink
+                type
+                avatar
+                shopStatusIconUrl
+              }
+              cardTemplate {
+                id
+                cardID
+                backgroundImgUrl
+                backgroundColor
+                fontColor
+              }
+            }
+            resultStatus {
+              code
+              message
+              reason
+            }
+        }
     }
-    programForm {
-      tierLevels {
-        tierGroupID
-      }
-    }
-    timePeriodList {
-      name
-      months
-    }
-  }
-}
 """

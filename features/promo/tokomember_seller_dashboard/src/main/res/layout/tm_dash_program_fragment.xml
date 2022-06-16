@@ -1,10 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ViewFlipper xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/Unify_Background"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/viewFlipperIntro">
+    android:id="@+id/viewFlipperProgramList">
+
+    <include layout="@layout/tm_program_list_shimmer_layout"/>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
     <androidx.recyclerview.widget.RecyclerView
         android:layout_width="match_parent"
@@ -12,9 +19,9 @@
         android:id="@+id/rv_program"
         tools:itemCount="6"
         tools:listitem="@layout/tm_dash_program_item"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginStart="@dimen/unify_space_16"
+        android:layout_marginEnd="@dimen/unify_space_16"
+        android:layout_marginTop="@dimen/unify_space_16"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>
@@ -22,12 +29,16 @@
     <com.tokopedia.unifycomponents.UnifyButton
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Buat Program"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginBottom="8dp"
+        android:id="@+id/btnCreateProgram"
+        android:text="@string/tm_buat_program"
+        android:layout_marginStart="@dimen/unify_space_16"
+        android:layout_marginEnd="@dimen/unify_space_16"
+        android:layout_marginBottom="@dimen/unify_space_8"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    <include layout="@layout/tm_layout_no_access"/>
+
+</ViewFlipper>

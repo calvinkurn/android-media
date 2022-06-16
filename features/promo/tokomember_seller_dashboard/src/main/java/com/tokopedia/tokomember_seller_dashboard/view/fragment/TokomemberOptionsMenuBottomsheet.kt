@@ -11,11 +11,16 @@ import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.tokomember_seller_dashboard.R
 import com.tokopedia.tokomember_seller_dashboard.callbacks.ProgramActions
+import com.tokopedia.tokomember_seller_dashboard.callbacks.TmCouponActions
 import com.tokopedia.tokomember_seller_dashboard.model.Actions
 import com.tokopedia.tokomember_seller_dashboard.model.TripleDotsItem
+import com.tokopedia.tokomember_seller_dashboard.util.ADD_QUOTA
 import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_OPTION_MENU
 import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_PROGRAM_ID
 import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_SHOP_ID
+import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_VOUCHER_ID
+import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_VOUCHER_QUOTA
+import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_VOUCHER_TYPE
 import com.tokopedia.tokomember_seller_dashboard.util.CANCEL
 import com.tokopedia.tokomember_seller_dashboard.util.DELETE
 import com.tokopedia.tokomember_seller_dashboard.util.DUPLICATE
@@ -35,12 +40,24 @@ class TokomemberOptionsMenuBottomsheet: BottomSheetUnify() {
     private var tripleDotsList: List<TripleDotsItem?>? = null
     private var shopId = 0
     private var programId = 0
+    private var voucherId = ""
+    private var voucherType = ""
+    private var voucherQuota = 0
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
 
         arguments?.getString(BUNDLE_OPTION_MENU)?.let {
             tripleDotsList = Gson().fromJson(it, Actions::class.java).tripleDots
+        }
+        arguments?.getString(BUNDLE_VOUCHER_ID)?.let {
+            voucherId = it
+        }
+        arguments?.getString(BUNDLE_VOUCHER_TYPE)?.let {
+            voucherType = it
+        }
+        arguments?.getInt(BUNDLE_VOUCHER_QUOTA)?.let {
+            voucherQuota = it
         }
         arguments?.getInt(BUNDLE_SHOP_ID)?.let {
             shopId = it
@@ -91,6 +108,9 @@ class TokomemberOptionsMenuBottomsheet: BottomSheetUnify() {
                 it?.type.equals(DUPLICATE) -> {
                     it?.text?.let { it1 -> addOptionItem(it1, IconUnify.COPY, DUPLICATE) }
                 }
+                it?.type.equals(ADD_QUOTA) -> {
+                    it?.text?.let { it1 -> addOptionItem(it1, IconUnify.ADD_CIRCLE, ADD_QUOTA) }
+                }
             }
         }
 
@@ -105,6 +125,9 @@ class TokomemberOptionsMenuBottomsheet: BottomSheetUnify() {
             parentFragment?.let{
                 if(it is ProgramActions){
                     it.option(type, shopId = shopId, programId = programId)
+                }
+                if(it is TmCouponActions){
+                    it.option(type, voucherId = voucherId, voucherType, voucherQuota)
                 }
             }
             dismiss()
@@ -124,7 +147,7 @@ class TokomemberOptionsMenuBottomsheet: BottomSheetUnify() {
 
         const val TAG = "TM_DASH_OPTIONS_MENU_BOTTOM_SHEET"
         private lateinit var programActions: ProgramActions
-
+        private lateinit var tmCouponActions: TmCouponActions
 
         fun show(
             actions: String,
@@ -141,6 +164,26 @@ class TokomemberOptionsMenuBottomsheet: BottomSheetUnify() {
                 arguments = bundle
             }
             this.programActions = programActions
+            tokomemberIntroBottomsheet.show(childFragmentManager, TAG)
+        }
+
+        fun show(
+            actions: String,
+            childFragmentManager: FragmentManager,
+            tmCouponActions: TmCouponActions,
+            voucherId: String,
+            voucherType: String,
+            voucherQuota: Int
+        ){
+            val bundle = Bundle()
+            bundle.putString(BUNDLE_OPTION_MENU, actions)
+            bundle.putString(BUNDLE_VOUCHER_ID, voucherId)
+            bundle.putString(BUNDLE_VOUCHER_TYPE, voucherType)
+            bundle.putInt(BUNDLE_VOUCHER_QUOTA, voucherQuota)
+            val tokomemberIntroBottomsheet = TokomemberOptionsMenuBottomsheet().apply {
+                arguments = bundle
+            }
+            this.tmCouponActions = tmCouponActions
             tokomemberIntroBottomsheet.show(childFragmentManager, TAG)
         }
     }

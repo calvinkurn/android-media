@@ -110,16 +110,18 @@ class DigitalRecommendationWidget @JvmOverloads constructor(context: Context, at
         return Bundle().apply {
             putParcelable(SAVED_ADDITIONAL_TRACK_DATA, additionalTrackingData)
             putSerializable(SAVED_PAGE, page)
+            putParcelable(SUPER_STATE, super.onSaveInstanceState())
         }
     }
 
     override fun onRestoreInstanceState(state: Parcelable?) {
-        super.onRestoreInstanceState(state)
-        state?.let {
-            val bundle = it as Bundle
-            additionalTrackingData = bundle.getParcelable(SAVED_ADDITIONAL_TRACK_DATA)
-            page = bundle.getSerializable(SAVED_PAGE) as DigitalRecommendationPage
+        var viewState = state
+        if (viewState is Bundle) {
+            additionalTrackingData = viewState.getParcelable(SAVED_ADDITIONAL_TRACK_DATA)
+            page = viewState.getSerializable(SAVED_PAGE) as DigitalRecommendationPage
+            viewState = viewState.getParcelable(SUPER_STATE)
         }
+        super.onRestoreInstanceState(viewState)
     }
 
     private fun onItemBinding(element: DigitalRecommendationItemUnifyModel, position: Int) {
@@ -241,6 +243,7 @@ class DigitalRecommendationWidget @JvmOverloads constructor(context: Context, at
     companion object {
         private const val SAVED_ADDITIONAL_TRACK_DATA = "SAVED_ADDITIONAL_TRACK_DATA"
         private const val SAVED_PAGE = "SAVED_PAGE"
+        private const val SUPER_STATE = "superState"
     }
 
 }

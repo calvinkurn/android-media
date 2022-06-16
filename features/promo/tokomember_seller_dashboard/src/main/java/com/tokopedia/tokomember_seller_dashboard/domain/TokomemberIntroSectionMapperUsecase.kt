@@ -1,6 +1,5 @@
 package com.tokopedia.tokomember_seller_dashboard.domain
 
-
 import com.tokopedia.tokomember_seller_dashboard.model.MembershipData
 import com.tokopedia.tokomember_seller_dashboard.view.adapter.mapper.TokomemberIntroMapper
 import com.tokopedia.tokomember_seller_dashboard.view.adapter.model.TokomemberIntroItem

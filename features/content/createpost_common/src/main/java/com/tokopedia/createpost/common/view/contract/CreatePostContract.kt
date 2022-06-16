@@ -22,7 +22,7 @@ interface CreatePostContract {
 
         fun onSuccessGetContentForm(feedContentForm: FeedContentForm, isFromTemplateToken: Boolean)
 
-        fun onErrorGetContentForm(message: String)
+        fun onErrorGetContentForm(message: String, throwable: Throwable?)
 
         fun onErrorNoQuota()
 

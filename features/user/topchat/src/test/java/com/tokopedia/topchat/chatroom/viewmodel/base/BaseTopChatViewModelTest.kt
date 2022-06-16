@@ -5,7 +5,7 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartOccMultiUseCase
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase
 import com.tokopedia.chat_common.domain.pojo.ChatSocketPojo
-import com.tokopedia.chatbot.domain.mapper.TopChatRoomWebSocketMessageMapper
+import com.tokopedia.topchat.chatroom.domain.mapper.TopChatRoomWebSocketMessageMapper
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.seamless_login_common.domain.usecase.SeamlessLoginUsecase
 import com.tokopedia.shop.common.domain.interactor.ToggleFavouriteShopUseCase
@@ -19,6 +19,8 @@ import com.tokopedia.topchat.common.websocket.*
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
+import com.tokopedia.wishlistcommon.domain.AddToWishlistV2UseCase
+import com.tokopedia.wishlistcommon.domain.DeleteWishlistV2UseCase
 import io.mockk.*
 import io.mockk.impl.annotations.MockK
 import io.mockk.impl.annotations.RelaxedMockK
@@ -89,6 +91,12 @@ abstract class BaseTopChatViewModelTest {
 
     @RelaxedMockK
     lateinit var removeWishListUseCase: RemoveWishListUseCase
+
+    @RelaxedMockK
+    lateinit var addToWishlistV2UseCase: AddToWishlistV2UseCase
+
+    @RelaxedMockK
+    lateinit var deleteWishlistV2UseCase: DeleteWishlistV2UseCase
 
     @RelaxedMockK
     lateinit var getChatUseCase: GetChatUseCase
@@ -170,6 +178,8 @@ abstract class BaseTopChatViewModelTest {
             getChatTokoNowWarehouseUseCase,
             addWishListUseCase,
             removeWishListUseCase,
+            addToWishlistV2UseCase,
+            deleteWishlistV2UseCase,
             getChatUseCase,
             unsendReplyUseCase,
             dispatchers,

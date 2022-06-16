@@ -13,7 +13,8 @@ data class TokomemberShopCardModel(
     var numberOfLevel : Int = 0,
     var fontColor : String ="",
     var backgroundColor: String ="",
-    var backgroundImgUrl:String=""
+    var backgroundImgUrl:String="",
+    var shopIconUrl:String = ""
 ):Parcelable
 
 data class TokomemberProgramCardModel(

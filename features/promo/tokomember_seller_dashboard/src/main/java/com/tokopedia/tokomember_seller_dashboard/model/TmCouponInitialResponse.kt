@@ -82,3 +82,9 @@ data class HeaderCouponInitial(
 	@SerializedName("process_time")
 	val processTime: Double? = null
 )
+
+data class TMCouponInitialRequest(
+	val Action: String,
+	val TargetBuyer: Int,
+	val CouponType: String,
+)

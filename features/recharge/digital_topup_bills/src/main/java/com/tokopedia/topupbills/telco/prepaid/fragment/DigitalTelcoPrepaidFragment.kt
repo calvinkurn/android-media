@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.ViewTreeObserver
 import android.widget.LinearLayout
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
@@ -70,7 +71,7 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
     private lateinit var buyWidget: TopupBillsCheckoutWidget
     private lateinit var sharedModelPrepaid: SharedTelcoPrepaidViewModel
     private lateinit var telcoTabViewModel: TelcoTabViewModel
-    private lateinit var loadingShimmering: LinearLayout
+    private lateinit var loadingShimmering: ConstraintLayout
     private lateinit var viewPager: ViewPager2
     private lateinit var tabLayout: TabsUnify
     private lateinit var separator: View

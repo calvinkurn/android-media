@@ -9,6 +9,7 @@ import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.viewpager.widget.ViewPager
+import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.header.HeaderUnify
 import com.tokopedia.iconunify.IconUnify
@@ -90,9 +91,9 @@ class TokomemberDashHomeMainFragment : BaseDaggerFragment() {
         homeTabs.getUnifyTabLayout().setupWithViewPager(homeViewPager)
 
         var adapter = TokomemberDashHomeViewpagerAdapter(childFragmentManager)
-        adapter.addFragment(TokomemberDashHomeFragment.newInstance(), "Home")
+        adapter.addFragment(TokomemberDashHomeFragment.newInstance(arguments), "Home")
         adapter.addFragment(TokomemberDashProgramListFragment.newInstance(arguments), "Program")
-        adapter.addFragment(TokomemberDashCouponFragment.newInstance(), "Kupon Tokomember")
+        adapter.addFragment(TokomemberDashCouponFragment.newInstance(arguments), "Kupon Tokomember")
 
         homeViewPager.adapter = adapter
 
@@ -101,7 +102,7 @@ class TokomemberDashHomeMainFragment : BaseDaggerFragment() {
     override fun getScreenName() = ""
 
     override fun initInjector() {
-        DaggerTokomemberDashComponent.builder().build().inject(this)
+        DaggerTokomemberDashComponent.builder().baseAppComponent((activity?.application as BaseMainApplication).baseAppComponent).build().inject(this)
     }
 
     companion object {

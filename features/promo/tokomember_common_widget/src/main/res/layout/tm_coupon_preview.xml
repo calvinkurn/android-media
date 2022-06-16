@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="108dp"
+    android:background="@drawable/tm_coupon_skeleton">
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/ivShopAvatar"
+        android:layout_width="58dp"
+        android:layout_height="58dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="@dimen/unify_space_16"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvShopName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="36dp"
+        android:layout_marginTop="@dimen/unify_space_8"
+        android:alpha="0.6"
+        android:textColor="@color/Unify_N0"
+        app:layout_constraintStart_toEndOf="@id/ivShopAvatar"
+        app:layout_constraintTop_toTopOf="parent"
+        app:typographyType="display_3" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvCouponType"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="36dp"
+        android:layout_marginTop="@dimen/unify_space_2"
+        android:textColor="@color/Unify_N0"
+        app:layout_constraintStart_toEndOf="@id/ivShopAvatar"
+        app:layout_constraintTop_toBottomOf="@id/tvShopName"
+        app:typographyType="heading_2" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvCouponBenefit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/unify_space_2"
+        android:layout_margin="@dimen/unify_space_4"
+        android:textColor="@color/Unify_N0"
+        app:layout_constraintStart_toEndOf="@id/tvCouponType"
+        app:layout_constraintTop_toBottomOf="@id/tvShopName"
+        app:typographyType="heading_2" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvCouponHingga"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="36dp"
+        android:layout_marginTop="@dimen/unify_space_4"
+        android:textColor="@color/Unify_N0"
+        app:layout_constraintStart_toEndOf="@id/ivShopAvatar"
+        app:layout_constraintTop_toBottomOf="@id/tvCouponType"
+        app:typographyType="display_3"
+        app:typographyWeight="bold" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvCouponValue"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/Unify_N0"
+        android:layout_marginStart="@dimen/unify_space_4"
+        app:layout_constraintStart_toEndOf="@id/tvCouponHingga"
+        app:layout_constraintTop_toBottomOf="@id/tvCouponType"
+        app:layout_goneMarginStart="36dp"
+        app:typographyType="heading_1"
+        app:typographyWeight="bold" />
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:layout_width="22dp"
+        android:layout_height="22dp"
+        app:layout_constraintBottom_toBottomOf="@id/tvCouponValue"
+        app:layout_constraintStart_toEndOf="@id/tvCouponValue"
+        app:layout_constraintTop_toTopOf="@id/tvCouponValue"
+        app:srcCompat="@drawable/tm_oupon_rb" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

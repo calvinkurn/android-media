@@ -7,14 +7,14 @@ import com.tokopedia.tokomember_seller_dashboard.model.*
 import javax.inject.Inject
 
 class TokomemberDashEditCardUsecase @Inject constructor(graphqlRepository: GraphqlRepository) :
-    GraphqlUseCase<MembershipCreateEditCard>(graphqlRepository) {
+    GraphqlUseCase<MembershipCreateEditCardResponse>(graphqlRepository) {
 
     fun modifyShopCard(
-        success: (MembershipCreateEditCard) -> Unit,
+        success: (MembershipCreateEditCardResponse) -> Unit,
         onFail: (Throwable) -> Unit,
         cardModifyInput: TmCardModifyInput
     ){
-        this.setTypeClass(MembershipCreateEditCard::class.java)
+        this.setTypeClass(MembershipCreateEditCardResponse::class.java)
         this.setRequestParams(getRequestParams(cardModifyInput))
         this.setGraphqlQuery(TM_CARD_MODIFY)
         execute({
@@ -29,21 +29,8 @@ class TokomemberDashEditCardUsecase @Inject constructor(graphqlRepository: Graph
     }
 
     companion object {
-        const val ID = "id"
-        const val IS_MERCHANT_CARD = "isMerchantCard"
-        const val FONT_COLOR = "fontColor"
-        const val BACKGROUND_URL = "backgroundImgUrl"
-        const val SHOP_ID = "shopID"
-        const val CARD_ID = "cardID"
-        const val CARD = "card"
-        const val PARAM = "param"
-        const val PAGE_INFO = "pageInfo"
         const val INPUT = "input"
         const val NAME = "name"
-        const val TIER_GROUP_ID = "tierGroupID"
-        const val NUMBER_OF_LEVEL = "numberOfLevel"
-        const val API_VERSION = "3.0"
-
     }
 }
 

@@ -3,9 +3,7 @@ package com.tokopedia.tokomember_seller_dashboard.domain
 import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
-import com.tokopedia.tokomember_seller_dashboard.domain.requestparam.TmCouponCreateRequest
 import com.tokopedia.tokomember_seller_dashboard.model.TmCouponInitialResponse
-import com.tokopedia.tokomember_seller_dashboard.model.TmKuponCreateMVResponse
 import javax.inject.Inject
 
 class TmKuponInitialUsecase @Inject constructor(graphqlRepository: GraphqlRepository) :
@@ -15,9 +13,12 @@ class TmKuponInitialUsecase @Inject constructor(graphqlRepository: GraphqlReposi
     fun getInitialCoupon(
         success: (TmCouponInitialResponse) -> Unit,
         onFail: (Throwable) -> Unit,
+        actionType: String,
+        couponType: String
     ) {
         this.setTypeClass(TmCouponInitialResponse::class.java)
         this.setGraphqlQuery(TmKuponInitial.GQL_QUERY)
+        setRequestParams(getRequestParams(actionType, couponType))
         this.execute({
             success(it)
         }, {
@@ -25,7 +26,19 @@ class TmKuponInitialUsecase @Inject constructor(graphqlRepository: GraphqlReposi
         })
     }
 
+    private fun getRequestParams(action: String, couponType: String): Map<String, Any> {
+        val reqMap = mutableMapOf<String, Any>()
+        reqMap[ACTION] = action
+        reqMap[TARGET_BUYER] = 3
+        reqMap[COUPON_TYPE] = couponType
+        return reqMap
+    }
+
 }
+
+const val ACTION = "Action"
+const val TARGET_BUYER = "TargetBuyer"
+const val COUPON_TYPE = "CouponType"
 
 const val KUPON_INITIAL = """
     

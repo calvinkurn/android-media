@@ -170,10 +170,9 @@ open class PickerActivity : BaseActivity()
 
     private fun initView() {
         if (hasPermissionGranted) {
-            navigateByPageType()
+            onPageViewByType()
         } else {
-            navToolbar.onToolbarThemeChanged(ToolbarTheme.Solid)
-            container.open(FragmentType.PERMISSION)
+            onPermissionPageView()
         }
     }
 
@@ -199,30 +198,23 @@ open class PickerActivity : BaseActivity()
                 }
             ) {
                 navToolbar.showContinueButtonAs(
-                    medias.isNotEmpty()
+                    medias.isNotEmpty() && param.get().isMultipleSelectionType()
                 )
             }
         }
     }
 
-    private fun navigateByPageType() {
+    private fun onPageViewByType() {
         when (param.get().pageType()) {
-            PageType.CAMERA -> {
-                navToolbar.onToolbarThemeChanged(ToolbarTheme.Transparent)
-                container.open(FragmentType.CAMERA)
-            }
-            PageType.GALLERY -> {
-                navToolbar.onToolbarThemeChanged(ToolbarTheme.Solid)
-                container.open(FragmentType.GALLERY)
-            }
+            // single page -> camera
+            PageType.CAMERA -> onCameraPageView()
+            // single page -> gallery
+            PageType.GALLERY -> onGalleryPageView()
+            // multiple page -> by index
             else -> {
-                navToolbar.onToolbarThemeChanged(ToolbarTheme.Transparent)
-
-                // display the tab navigation
                 bottomNavTab.setupView()
 
-                // start position of tab
-                bottomNavTab.onStartPositionChanged(
+                bottomNavTab.navigateToIndexOf(
                     PickerUiConfig.startPageIndex
                 )
             }
@@ -250,14 +242,60 @@ open class PickerActivity : BaseActivity()
         finish()
     }
 
-    private fun onEditorIntent(data: PickerResult) {} // no-op
+    private fun onEditorIntent(data: PickerResult) {
+        /*
+        * TODO: we didn't supported the editor yet,
+        *  need to change after editor developed on Q3.
+        *  */
+        onFinishIntent(data)
+    }
+
+    private fun onPermissionPageView() {
+        navToolbar.onToolbarThemeChanged(ToolbarTheme.Solid)
+        container.open(FragmentType.PERMISSION)
+    }
+
+    private fun onCameraPageView() {
+        navToolbar.onToolbarThemeChanged(ToolbarTheme.Transparent)
+        container.open(FragmentType.CAMERA)
+    }
+
+    private fun onGalleryPageView() {
+        navToolbar.onToolbarThemeChanged(ToolbarTheme.Solid)
+        container.open(FragmentType.GALLERY)
+    }
 
     override fun onPermissionGranted() {
-        navigateByPageType()
+        onPageViewByType()
+    }
+
+    override fun onCameraTabSelected(isDirectClick: Boolean) {
+        container.resetBottomNavMargin()
+        onCameraPageView()
+
+        if (isDirectClick) {
+            pickerAnalytics.clickCameraTab()
+        }
+    }
+
+    override fun onGalleryTabSelected(isDirectClick: Boolean) {
+        container.addBottomNavMargin()
+        onGalleryPageView()
+
+        if (isDirectClick) {
+            pickerAnalytics.clickGalleryTab()
+        }
     }
 
     override fun dispatchTouchEvent(ev: MotionEvent?): Boolean {
-        container.cameraFragment()?.gestureDetector?.onTouchEvent(ev)
+        container.cameraFragment().run {
+            val cameraFragment = this
+
+            if (cameraFragment != null && cameraFragment.isAdded) {
+                cameraFragment.gestureDetector.onTouchEvent(ev)
+            }
+        }
+
         return super.dispatchTouchEvent(ev)
     }
 
@@ -282,26 +320,6 @@ open class PickerActivity : BaseActivity()
 
     override fun onCameraThumbnailClicked() {
         onContinueClicked()
-    }
-
-    override fun onCameraTabSelected(isDirectClick: Boolean) {
-        container.open(FragmentType.CAMERA)
-        navToolbar.onToolbarThemeChanged(ToolbarTheme.Transparent)
-        container.resetBottomNavMargin()
-
-        if (isDirectClick) {
-            pickerAnalytics.clickCameraTab()
-        }
-    }
-
-    override fun onGalleryTabSelected(isDirectClick: Boolean) {
-        container.open(FragmentType.GALLERY)
-        navToolbar.onToolbarThemeChanged(ToolbarTheme.Solid)
-        container.addBottomNavMargin()
-
-        if (isDirectClick) {
-            pickerAnalytics.clickGalleryTab()
-        }
     }
 
     override fun tabVisibility(isShown: Boolean) {

@@ -10,5 +10,5 @@ import com.tokopedia.topads.common.data.response.groupitem.DataItem
  */
 
 abstract class GroupItemsViewHolder<in T>(view: View) : RecyclerView.ViewHolder(view) {
-    open fun bind(item: T, selectedMode: Boolean, fromSearch: Boolean, statsData: MutableList<DataItem>, countList: MutableList<CountDataItem>){}
+    open fun bind(item: T, selectedMode: Boolean, fromSearch: Boolean, statsData: MutableMap<String, DataItem>, countList: MutableList<CountDataItem>){}
 }

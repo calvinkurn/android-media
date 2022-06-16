@@ -61,6 +61,10 @@ data class FeedXCard(
     var appLink: String = "",
     @SerializedName("webLink")
     var webLink: String = "",
+    @SerializedName("appLinkProductList")
+    var appLinkProductList: String = "",
+    @SerializedName("webLinkProductList")
+    var webLinkProductList: String = "",
     @SerializedName("actionButtonLabel")
     var actionButtonLabel: String = "",
     @SerializedName("actionButtonOperationWeb")
@@ -78,6 +82,7 @@ data class FeedXCard(
     val impressHolder: ImpressHolder = ImpressHolder(),
     //Active carousel index
     var lastCarouselIndex : Int = 0,
+    var isAsgcColorChangedToGreen: Boolean = false,
     //Topads
     val isTopAds: Boolean = false,
     val shopId: String = "",
@@ -114,6 +119,8 @@ data class FeedXCard(
             deletable = deletable,
             appLink = appLink,
             webLink = webLink,
+            webLinkProductList = webLinkProductList,
+            appLinkProductList = appLinkProductList,
             actionButtonLabel = actionButtonLabel,
             actionButtonOperationApp = actionButtonOperationApp,
             actionButtonOperationWeb = actionButtonOperationWeb,

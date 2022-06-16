@@ -3,20 +3,21 @@ package com.tokopedia.tokomember_seller_dashboard.domain
 import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
-import com.tokopedia.tokomember_seller_dashboard.domain.requestparam.TmCouponCreateRequest
-import com.tokopedia.tokomember_seller_dashboard.model.TmKuponCreateMVResponse
+import com.tokopedia.tokomember_seller_dashboard.domain.requestparam.TmMerchantCouponUnifyRequest
+import com.tokopedia.tokomember_seller_dashboard.model.CouponCreateMultiple
 import javax.inject.Inject
 
 class TmKuponCreateUsecase @Inject constructor(graphqlRepository: GraphqlRepository) :
-    GraphqlUseCase<TmKuponCreateMVResponse>(graphqlRepository) {
+    GraphqlUseCase<CouponCreateMultiple>(graphqlRepository) {
 
     @GqlQuery("TmKuponCreate", KUPON_CREATE)
     fun createKupon(
-        success: (TmKuponCreateMVResponse) -> Unit,
+        success: (CouponCreateMultiple) -> Unit,
         onFail: (Throwable) -> Unit,
-        tmCouponCreateRequest: TmCouponCreateRequest,
+        tmMerchantCouponUnifyRequest: TmMerchantCouponUnifyRequest,
     ) {
-        this.setTypeClass(TmKuponCreateMVResponse::class.java)
+        this.setTypeClass(CouponCreateMultiple::class.java)
+        this.setRequestParams(getRequestParams(tmMerchantCouponUnifyRequest))
         this.setGraphqlQuery(TmKuponCreate.GQL_QUERY)
         this.execute({
             success(it)
@@ -25,11 +26,17 @@ class TmKuponCreateUsecase @Inject constructor(graphqlRepository: GraphqlReposit
         })
     }
 
+    private fun getRequestParams(tmMerchantCouponUnifyRequest: TmMerchantCouponUnifyRequest): Map<String, Any> {
+        return mapOf(MERCHANT_COUPON_MULTIPLE_INPUT to tmMerchantCouponUnifyRequest)
+    }
+
 }
 
+const val MERCHANT_COUPON_MULTIPLE_INPUT = "merchantVoucherMultipleData"
+
 const val KUPON_CREATE = """
-     mutation merchantPromotionCreateMV(${'$'}merchantVoucherData: MVCreateData!) {
-  merchantPromotionCreateMV(merchantVoucherData: ${'$'}merchantVoucherData) {
+     mutation merchantPromotionCreateMultipleMV(${'$'}merchantVoucherMultipleData: mvCreateMultipleData!) {
+  merchantPromotionCreateMultipleMV(merchantVoucherMultipleData: ${'$'}merchantVoucherMultipleData) {
   status
   message
   process_time

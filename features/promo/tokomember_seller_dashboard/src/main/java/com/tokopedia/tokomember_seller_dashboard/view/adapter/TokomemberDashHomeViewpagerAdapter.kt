@@ -6,8 +6,8 @@ import androidx.fragment.app.FragmentStatePagerAdapter
 
 class TokomemberDashHomeViewpagerAdapter(fm: FragmentManager) : FragmentStatePagerAdapter(fm, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
 
-    private final var fragmentList: ArrayList<Fragment> = ArrayList()
-    private final var fragmentTitleList: ArrayList<String> = ArrayList()
+    var fragmentList: ArrayList<Fragment> = ArrayList()
+    var fragmentTitleList: ArrayList<String> = ArrayList()
 
     // returns which item is selected from arraylist of fragments.
     override fun getItem(position: Int): Fragment {

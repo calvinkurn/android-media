@@ -18,7 +18,7 @@ data class ProgramUpdateDataInput(
 	var actionType: String? = null,
 	@Expose
 	@SerializedName("timeWindow")
-	val timeWindow: TimeWindow? = null,
+	var timeWindow: TimeWindow? = null,
 	@Expose
 	@SerializedName("apiVersion")
 	val apiVersion: String? = null,
@@ -27,7 +27,7 @@ data class ProgramUpdateDataInput(
 	var programAttributes: List<ProgramAttributesItem?>? = null,
 	@Expose
 	@SerializedName("cardID")
-	val cardID: Int? = 0,
+	var cardID: Int? = 0,
 	@Expose
 	@SerializedName("name")
 	val name: String? = null,
@@ -52,7 +52,7 @@ data class TimeWindow(
 	var id: Int? = 0,
 	@Expose
 	@SerializedName("endTime")
-	val endTime: String? = null
+	val endTime: String? = null,
 ) : Parcelable
 
 @Parcelize
@@ -71,7 +71,7 @@ data class TierLevelsItem(
 	val activeTime: Int? = 0,
 	@Expose
 	@SerializedName("name")
-	val name: String? = null,
+	var name: String? = null,
 	@Expose
 	@SerializedName("threshold")
     var threshold: Int? = null,

@@ -59,7 +59,6 @@ class GetPMGradeBenefitInfoUseCase @Inject constructor(
                 current_pm_grade {
                   shop_level
                   grade_name
-                  image_badge_url
                   image_badge_background_mobile_url
                 }
                 current_benefit_list {
@@ -72,7 +71,6 @@ class GetPMGradeBenefitInfoUseCase @Inject constructor(
                   shop_level
                   shop_score_min
                   grade_name
-                  image_badge_url
                 }
                 next_benefit_list {
                   benefit_name

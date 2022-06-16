@@ -7,10 +7,6 @@ import javax.inject.Inject
 class ChooseAddressPresenterDelegate @Inject constructor(
     private val chooseAddressView: ChooseAddressView
 ) {
-
-    @Deprecated("isEnableChooseAddress is always true")
-    val isEnableChooseAddress = chooseAddressView.isChooseAddressWidgetEnabled
-
     private var chooseAddressData: LocalCacheModel? = null
 
     fun updateChooseAddress(onChooseAddressUpdated: () -> Unit = { }) {

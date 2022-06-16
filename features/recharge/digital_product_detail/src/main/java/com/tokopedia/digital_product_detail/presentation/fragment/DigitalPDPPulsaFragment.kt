@@ -10,6 +10,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.ViewTreeObserver
 import android.view.inputmethod.InputMethodManager
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
@@ -183,7 +184,7 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
                 }
 
                 override fun onKeyboardHidden() {
-                    binding?.rechargePdpPulsaClientNumberWidget?.setClearable()
+                    // do nothing
                 }
             })
         }
@@ -365,7 +366,8 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
                         atcData.data.cartId,
                         viewModel.digitalCheckoutPassData.productId.toString(),
                         viewModel.selectedGridProduct.denomData.title,
-                        atcData.data.priceProduct
+                        atcData.data.priceProduct,
+                        atcData.data.channelId,
                     )
                     navigateToCart(atcData.data.categoryId)
                 }
@@ -384,11 +386,10 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
         viewModel.clientNumberValidatorMsg.observe(viewLifecycleOwner, { msg ->
             binding?.rechargePdpPulsaClientNumberWidget?.run {
                 setLoading(false)
+                showClearIcon()
                 if (msg.isEmpty()) {
-                    showIndicatorIcon()
                     clearErrorState()
                 } else {
-                    hideIndicatorIcon(shouldShowClearIcon = true)
                     setErrorInputField(msg)
                     onHideBuyWidget()
                 }
@@ -467,14 +468,14 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
     }
 
     private fun onSuccessGetPrefill(prefill: PrefillModel) {
-        inputNumberActionType = InputNumberActionType.NOTHING
         binding?.rechargePdpPulsaClientNumberWidget?.run {
             if (clientNumber.isNotEmpty()) {
-                setInputNumber(clientNumber, true)
+                setInputNumber(clientNumber)
             } else {
                 if (isInputFieldEmpty()) {
                     setContactName(prefill.clientName)
-                    setInputNumber(prefill.clientNumber, true)
+                    setInputNumber(prefill.clientNumber)
+                    inputNumberActionType = InputNumberActionType.NOTHING
                 }
             }
         }
@@ -679,10 +680,15 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
                 selectedInitialPosition = null
             }
             if (denomGrid.listDenomData.isNotEmpty()) {
+                val colorHexInt = ContextCompat.getColor(requireContext(), com.tokopedia.unifyprinciples.R.color.Unify_N0)
+                val colorHexString = "#${Integer.toHexString(colorHexInt)}"
+
                 it.rechargePdpPulsaPromoWidget.show()
                 it.rechargePdpPulsaPromoWidget.renderMCCMGrid(
-                    this, denomGrid,
-                    getString(com.tokopedia.unifyprinciples.R.color.Unify_N0), selectedInitialPosition
+                    this,
+                    denomGrid,
+                    colorHexString,
+                    selectedInitialPosition
                 )
             } else {
                 it.rechargePdpPulsaPromoWidget.hide()
@@ -833,7 +839,7 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
 
         binding?.rechargePdpPulsaClientNumberWidget?.run {
             setContactName(clientName)
-            setInputNumber(clientNumber, true)
+            setInputNumber(clientNumber)
         }
     }
 
@@ -901,7 +907,7 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
         if (!clientNumber.isNullOrEmpty()) {
             binding?.rechargePdpPulsaClientNumberWidget?.run {
                 inputNumberActionType = InputNumberActionType.NOTHING
-                setInputNumber(clientNumber, true)
+                setInputNumber(clientNumber)
             }
         }
 
@@ -941,8 +947,10 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
                 override fun onGlobalLayout() {
                     binding?.rechargePdpPulsaClientNumberWidget?.viewTreeObserver?.removeOnGlobalLayoutListener(this)
                     binding?.run {
-                        val dynamicPadding = rechargePdpPulsaClientNumberWidget.height.pxToDp(
-                            resources.displayMetrics) + extraPadding
+                        val defaultPadding: Int = context?.resources?.displayMetrics?.let {
+                            rechargePdpPulsaClientNumberWidget.height.pxToDp(it)
+                        } ?: 0
+                        val dynamicPadding = defaultPadding + extraPadding
                         rechargePdpPulsaSvContainer.setPadding(0, dynamicPadding, 0, 0)
                     }
                 }
@@ -992,12 +1000,7 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
     }
 
     override fun isKeyboardShown(): Boolean {
-        context?.let {
-            val inputMethodManager =
-                it.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-            return inputMethodManager.isAcceptingText
-        }
-        return false
+        return keyboardWatcher.isKeyboardOpened
     }
     //endregion
 

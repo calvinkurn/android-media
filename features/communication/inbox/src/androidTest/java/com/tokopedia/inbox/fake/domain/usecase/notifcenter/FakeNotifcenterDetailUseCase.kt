@@ -152,8 +152,55 @@ class FakeNotifcenterDetailUseCase(
             }
         }
 
+    val defaultNotificationsUnread: NotifcenterDetailResponse
+        get() {
+            return alterResponseOf(R.raw.notifcenter_detail_v3) {
+                val newList = it.getAsJsonObject(NOTIFCENTER_DETAIL_V3).getAsJsonArray(NEW_LIST)
+                newList.get(0).asJsonObject.apply {
+                    addProperty(READ_STATUS, 1)
+                }
+            }
+        }
+
+    fun getAlteredFilterPinResponse(
+        typeLink: Int = 0,
+        sectionId: String,
+        isShowExpire: Boolean = false
+    ): NotifcenterDetailResponse {
+        return alterResponseOf(R.raw.notifcenter_detail_v3) {
+            val newList = it.getAsJsonObject(NOTIFCENTER_DETAIL_V3).getAsJsonArray(NEW_LIST)
+            newList.get(0).asJsonObject.apply {
+                addProperty(IS_PINNED, true)
+                addProperty(PINNED_TEXT, "Di-pin sampai 02 Mei 2022")
+                addProperty(READ_STATUS, 1)
+                addProperty(IS_SHOW_EXPIRED, isShowExpire)
+                addProperty(SECTION_ID, sectionId)
+                addProperty(TYPE_LINK, typeLink)
+            }
+            it.getAsJsonObject(NOTIFCENTER_DETAIL_V3)
+                .getAsJsonArray(LIST)[0] = newList.get(0)
+            it.getAsJsonObject(NOTIFCENTER_DETAIL_V3).getAsJsonArray(NEW_LIST).removeAll { true }
+        }
+    }
+
     private fun getNewExpiredTime(extendedTime: Long): Long {
         return (System.currentTimeMillis() / UNIX_DIVIDER) + extendedTime
+    }
+
+    fun getNotificationPinResponse(
+        isShowExpire: Boolean = false,
+        typeLink: Int = 0
+    ): NotifcenterDetailResponse {
+        return alterResponseOf(R.raw.notifcenter_detail_v3) {
+            val newList = it.getAsJsonObject(NOTIFCENTER_DETAIL_V3).getAsJsonArray(NEW_LIST)
+            newList.get(0).asJsonObject.apply {
+                addProperty(IS_PINNED, true)
+                addProperty(PINNED_TEXT, "Di-pin sampai 02 Mei 2022")
+                addProperty(READ_STATUS, 1)
+                addProperty(IS_SHOW_EXPIRED, isShowExpire)
+                addProperty(TYPE_LINK, typeLink)
+            }
+        }
     }
 
     init {
@@ -202,9 +249,18 @@ class FakeNotifcenterDetailUseCase(
         private const val WIDGET = "widget"
         private const val MESSAGE = "message"
         private const val EXPIRE_TIME_UNIX = "expire_time_unix"
+        private const val IS_PINNED = "is_pinned"
+        private const val PINNED_TEXT = "pinned_text"
+        private const val READ_STATUS = "read_status"
+        private const val IS_SHOW_EXPIRED = "is_show_expire"
+        private const val TYPE_LINK = "type_link"
+        private const val SECTION_ID = "section_id"
 
         private const val THREE_HOURS = 10000L
         private const val THREE_DAYS = 240000L
         private const val UNIX_DIVIDER = 1000L
+
+        const val SECTION_TYPE_INFO = "for_you"
+        const val SECTION_TYPE_PROMO = "promotion"
     }
 }

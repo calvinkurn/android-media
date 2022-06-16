@@ -49,6 +49,9 @@ class ProductDetailGalleryActivity : AppCompatActivity() {
     private fun processData(data: ProductDetailGallery) {
         val isAutoPlay = DeviceConnectionInfo.isConnectWifi(this)
 
+        val arrayDrawable = data.generateImageGalleryItems(isAutoPlay)
+        if (arrayDrawable.isEmpty()) return finish()
+
         val selectedPosition = data.getSelectedPosition()
         currentPosition = selectedPosition
 
@@ -56,7 +59,7 @@ class ProductDetailGalleryActivity : AppCompatActivity() {
 
         imageGallery.apply {
             setImages(
-                arrayDrawable = data.generateImageGalleryItems(isAutoPlay),
+                arrayDrawable = arrayDrawable,
                 defaultIndex = selectedPosition.takeIf { it > -1 } ?: 0
             )
 

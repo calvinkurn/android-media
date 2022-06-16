@@ -15,7 +15,6 @@
         android:id="@+id/channel_image_1"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        app:corners="8"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintDimensionRatio="1:1"

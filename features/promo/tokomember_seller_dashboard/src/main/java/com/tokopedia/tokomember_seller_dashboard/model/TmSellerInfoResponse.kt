@@ -18,7 +18,13 @@ data class UserShopInfo(
 data class Info(
     @Expose
     @SerializedName("shop_id")
-    val shopId: String? = null
+    val shopId: String? = null,
+    @Expose
+    @SerializedName("shop_name")
+    val shopName: String? = null,
+    @Expose
+    @SerializedName("shop_avatar")
+    val shopAvatar: String? = null
 )
 
 data class SellerData(

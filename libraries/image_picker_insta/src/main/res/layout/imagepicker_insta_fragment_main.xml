@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/imagepicker_insta_empty_bg">
+    android:background="@color/Unify_Background">
 
     <com.tokopedia.imagepicker_insta.common.ui.toolbar.ImagePickerCommonToolbar
         android:id="@+id/toolbar_common"
@@ -37,7 +37,7 @@
             android:id="@+id/selected_image_view"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:background="@color/Unify_NN50"
+            android:background="@color/Unify_Background"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -57,7 +57,7 @@
             android:id="@+id/middle_section"
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_56"
-            android:background="@color/Unify_Static_White"
+            android:background="@color/Unify_Background"
             android:gravity="center_vertical"
             android:orientation="horizontal"
 
@@ -79,6 +79,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/imagepicker_insta_loading"
+                    android:textColor="@color/Unify_NN950"
                     app:typographyType="body_2"
                     app:typographyWeight="bold" />
 
@@ -105,7 +106,7 @@
             android:id="@+id/rv"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:background="@color/Unify_Static_White"
+            android:background="@color/Unify_Background"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintStart_toStartOf="parent"

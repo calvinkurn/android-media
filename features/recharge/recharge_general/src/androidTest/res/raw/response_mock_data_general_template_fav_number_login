@@ -1,63 +1,70 @@
 [
   {
     "data": {
-      "recharge_favorite_number": {
-        "list": [
+      "digiPersoGetPersonalizedItems": {
+        "trackingData": {
+          "userType": "new user"
+        },
+        "items": [
           {
-            "client_number": "087855813789",
-            "label": "Tes2",
-            "product_id": 30,
-            "operator_id": 5,
-            "category_id": 1
+            "id": 1,
+            "title": "111122223333",
+            "subtitle": "",
+            "mediaURL": "https://ecs7.tokopedia.net/img/cache/100-square/attachment/2021/2/3/22166894/22166894_5ecb2ca6-481d-4b9b-9d17-f0e14a1d618e.jpg",
+            "trackingData": {
+              "clientNumber": "111122223333",
+              "lastOrderDate": "20200717040948",
+              "totalTransaction": "1",
+              "productID": "176",
+              "operatorID": "6",
+              "categoryID": "3",
+              "operatorName": "Token Listrik"
+            }
           },
           {
-            "client_number": "08121111111",
-            "label": "Tes",
-            "product_id": 70,
-            "operator_id": 12,
-            "category_id": 1
+            "id": 2,
+            "title": "Nomor Siapa 4",
+            "subtitle": "102111106111",
+            "mediaURL": "https://ecs7.tokopedia.net/img/attachment/2021/2/3/22166894/22166894_1f0cccd4-9eae-4681-80f1-8c2a80ff0931.jpg",
+            "trackingData": {
+              "clientNumber": "102111106111",
+              "lastOrderDate": "20200213135311",
+              "totalTransaction": "2",
+              "productID": "291",
+              "operatorID": "18",
+              "categoryID": "3",
+              "operatorName": "Tagihan Listrik"
+            }
           },
           {
-            "client_number": "08121111112",
-            "label": "",
-            "product_id": 68,
-            "operator_id": 12,
-            "category_id": 1
+            "id": 3,
+            "title": "111111111111",
+            "subtitle": "",
+            "mediaURL": "https://ecs7.tokopedia.net/img/cache/100-square/attachment/2021/2/3/22166894/22166894_5ecb2ca6-481d-4b9b-9d17-f0e14a1d618e.jpg",
+            "trackingData": {
+              "clientNumber": "111111111111",
+              "lastOrderDate": "20190618140309",
+              "totalTransaction": "8",
+              "productID": "182",
+              "operatorID": "6",
+              "categoryID": "3",
+              "operatorName": "Token Listrik"
+            }
           },
           {
-            "client_number": "0811111111111",
-            "label": "",
-            "product_id": 70,
-            "operator_id": 12,
-            "category_id": 1
-          },
-          {
-            "client_number": "081911111111",
-            "label": "",
-            "product_id": 1137,
-            "operator_id": 5,
-            "category_id": 1
-          },
-          {
-            "client_number": "087786807105",
-            "label": "",
-            "product_id": 31,
-            "operator_id": 5,
-            "category_id": 1
-          },
-          {
-            "client_number": "087889514776",
-            "label": "",
-            "product_id": 30,
-            "operator_id": 5,
-            "category_id": 1
-          },
-          {
-            "client_number": "081908878591",
-            "label": "",
-            "product_id": 32,
-            "operator_id": 5,
-            "category_id": 1
+            "id": 4,
+            "title": "test ubah nama",
+            "subtitle": "111111111112",
+            "mediaURL": "https://ecs7.tokopedia.net/img/cache/100-square/attachment/2021/2/3/22166894/22166894_5ecb2ca6-481d-4b9b-9d17-f0e14a1d618e.jpg",
+            "trackingData": {
+              "clientNumber": "111111111112",
+              "lastOrderDate": "20180925170814",
+              "totalTransaction": "1",
+              "productID": "182",
+              "operatorID": "6",
+              "categoryID": "3",
+              "operatorName": "Token Listrik"
+            }
           }
         ]
       }

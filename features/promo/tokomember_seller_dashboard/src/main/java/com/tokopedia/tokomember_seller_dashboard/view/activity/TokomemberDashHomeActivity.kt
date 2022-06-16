@@ -8,14 +8,12 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.viewpager.widget.ViewPager
+import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.header.HeaderUnify
 import com.tokopedia.tokomember_seller_dashboard.R
 import com.tokopedia.tokomember_seller_dashboard.callbacks.TmProgramDetailCallback
 import com.tokopedia.tokomember_seller_dashboard.di.component.DaggerTokomemberDashComponent
-import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_PROGRAM_ID
-import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_SHOP_ID
-import com.tokopedia.tokomember_seller_dashboard.util.REFRESH
-import com.tokopedia.tokomember_seller_dashboard.util.REQUEST_CODE_REFRESH
+import com.tokopedia.tokomember_seller_dashboard.util.*
 import com.tokopedia.tokomember_seller_dashboard.view.fragment.TokomemberDashHomeMainFragment
 import com.tokopedia.tokomember_seller_dashboard.view.fragment.TokomemberDashHomeMainFragment.Companion.TAG_HOME
 import com.tokopedia.tokomember_seller_dashboard.view.fragment.TokomemberDashProgramDetailFragment
@@ -38,14 +36,14 @@ class TokomemberDashHomeActivity : AppCompatActivity(), TmProgramDetailCallback 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_tokomember_dash_home)
+        setContentView(R.layout.tm_activity_tokomember_dash_home)
         addFragment(TokomemberDashHomeMainFragment.newInstance(intent.extras), TAG_HOME)
 
         initDagger()
     }
 
     private fun initDagger() {
-        DaggerTokomemberDashComponent.create().inject(this)
+        DaggerTokomemberDashComponent.builder().baseAppComponent((application as BaseMainApplication).baseAppComponent).build().inject(this)
     }
 
     override fun onBackPressed() {
@@ -63,7 +61,7 @@ class TokomemberDashHomeActivity : AppCompatActivity(), TmProgramDetailCallback 
 
     fun addFragment(fragment: Fragment, tag: String) {
         supportFragmentManager.beginTransaction()
-            .add(R.id.container_home, fragment, tag)
+            .replace(R.id.container_home, fragment, tag)
             .addToBackStack(tag).commit()
     }
 
@@ -75,10 +73,12 @@ class TokomemberDashHomeActivity : AppCompatActivity(), TmProgramDetailCallback 
     }
 
     companion object{
-        fun openActivity(shopId: Int, context: Context?){
+        fun openActivity(shopId: Int, cardID:Int, context: Context? , isShowBs:Boolean = false){
             context?.let {
                 val intent = Intent(it, TokomemberDashHomeActivity::class.java)
                 intent.putExtra(BUNDLE_SHOP_ID, shopId)
+                intent.putExtra(BUNDLE_CARD_ID, cardID)
+                intent.putExtra(BUNDLE_IS_SHOW_BS, isShowBs)
                 it.startActivity(intent)
             }
         }

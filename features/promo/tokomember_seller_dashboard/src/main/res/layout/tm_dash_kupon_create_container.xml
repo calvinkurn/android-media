@@ -17,7 +17,12 @@
         app:subtitle="Langkah 3 dari 4"
         app:title="Buat Kupon" />
 
+    <com.tokopedia.unifycomponents.ProgressBarUnify
+        android:id="@+id/progressKupon"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/unify_space_4"/>
+
     <include
-        layout="@layout/tm_dash_kupon_create" />
+        layout="@layout/tm_dash_kupon_create_multiple" />
 
 </LinearLayout>

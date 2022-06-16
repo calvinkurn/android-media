@@ -12,19 +12,6 @@ class TokomemeberCardBgUsecase @Inject constructor() : UseCase<TokomemberCardBgI
     private lateinit var colorCOde: String
     private  var pattern = arrayListOf<String>()
 
-
-    fun getCardBgData(
-        cardData: CardData?,
-        onSuccess: (TokomemberCardBgItem) -> Unit,
-        onError: (Throwable) -> Unit
-    ) {
-        this.cardData = cardData ?: return
-        execute({
-            if (!it.tokoVisitableCardBg.isNullOrEmpty())
-                onSuccess(it)
-        }, { onError(it) })
-    }
-
     fun getCardBgDataN(
         cardData: CardData?,
         colorCOde: String,
@@ -42,11 +29,6 @@ class TokomemeberCardBgUsecase @Inject constructor() : UseCase<TokomemberCardBgI
         }, { onError(it) })
     }
 
-    /* override suspend fun executeOnBackground(): TokomemberCardBgItem {
-        val gyroRecommendation = TokomemberCardMapper.getBackgroundData(cardData)
-        gyroRecommendation.let { return it }
-        return TokomemberCardBgItem(arrayListOf())
-    }*/
 
     override suspend fun executeOnBackground(): TokomemberCardBgItem {
         val gyroRecommendation = TokomemberCardMapper.getBackground(cardData.membershipGetCardForm?.cardTemplateImageList as ArrayList<CardTemplateImageListItem>, colorCOde, pattern)

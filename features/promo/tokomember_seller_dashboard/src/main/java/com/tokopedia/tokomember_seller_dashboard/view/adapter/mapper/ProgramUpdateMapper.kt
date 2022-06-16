@@ -2,28 +2,48 @@ package com.tokopedia.tokomember_seller_dashboard.view.adapter.mapper
 
 import com.tokopedia.kotlin.extensions.view.toIntSafely
 import com.tokopedia.tokomember_common_widget.util.ProgramActionType
+import com.tokopedia.tokomember_seller_dashboard.domain.requestparam.ProgramAttributesItem
 import com.tokopedia.tokomember_seller_dashboard.domain.requestparam.ProgramUpdateDataInput
 import com.tokopedia.tokomember_seller_dashboard.domain.requestparam.TimeWindow
 import com.tokopedia.tokomember_seller_dashboard.model.MembershipGetProgramForm
-import com.tokopedia.utils.date.toDate
-import java.text.SimpleDateFormat
-import java.util.*
+import com.tokopedia.tokomember_seller_dashboard.util.TmDateUtil.addDuration
+import com.tokopedia.tokomember_seller_dashboard.util.TmDateUtil.convertDuration
 
 object ProgramUpdateMapper {
 
     fun formToUpdateMapper(
         membershipGetProgramForm: MembershipGetProgramForm?,
         programType: Int,
-        periodInMonth: Int
+        periodInMonth: Int,
+        cardIdCreate:Int = 0
     ): ProgramUpdateDataInput {
         var actionType = ""
-        val timeWindow = TimeWindow(id = 0, startTime = membershipGetProgramForm?.programForm?.timeWindow?.startTime, endTime = membershipGetProgramForm?.programForm?.timeWindow?.endTime, periodInMonth = periodInMonth)
+        val startTime = if(programType == ProgramActionType.CANCEL){
+            membershipGetProgramForm?.programForm?.timeWindow?.startTime
+        }
+        else{
+            convertDuration(membershipGetProgramForm?.programForm?.timeWindow?.startTime ?: "")
+        }
+        val endTime = if(programType == ProgramActionType.CANCEL){
+            membershipGetProgramForm?.programForm?.timeWindow?.endTime
+        }
+        else{
+            addDuration(membershipGetProgramForm?.programForm?.timeWindow?.startTime ?: "", periodInMonth)
+        }
+        val timeWindow = TimeWindow(
+            id = 0,
+            startTime = startTime,
+            endTime = endTime,
+            periodInMonth = periodInMonth,
+      //      startTimeMillis = getTimeInMillis(membershipGetProgramForm?.programForm?.timeWindow?.startTime ?: ""),
+//            endTimeMillis = getTimeInMillis(addDuration(membershipGetProgramForm?.programForm?.timeWindow?.startTime ?: "", periodInMonth))
+        )
         val programAttributes = membershipGetProgramForm?.programForm?.programAttributes
         programAttributes.apply {
             this?.forEach {
                 it?.isUseMultiplier = true
                 it?.multiplierRates = 1
-                it?.minimumTransaction = 5000
+                it?.minimumTransaction = 50000
             }
         }
         val tierLevels = membershipGetProgramForm?.programForm?.tierLevels
@@ -31,8 +51,10 @@ object ProgramUpdateMapper {
             this.forEach{
                 it?.metadata = "metadata"
             }
+            this.getOrNull(0)?.name = "Premium"
+            this.getOrNull(1)?.name = "VIP"
         }
-        var programUpdateResponse = ProgramUpdateDataInput(
+        val programUpdateResponse = ProgramUpdateDataInput(
             id = membershipGetProgramForm?.programForm?.id.toIntSafely(),
             cardID = membershipGetProgramForm?.programForm?.cardID,
             name = membershipGetProgramForm?.programForm?.name,
@@ -51,17 +73,42 @@ object ProgramUpdateMapper {
                         it?.id = 0
                     }
                 }
-                programAttributes.apply {
-                    this?.forEach {
-                        it?.id = 0
-                        it?.programID = 0
-                        it?.tierLevelID = 0
-                    }
-                }
+                val programAttributeListItem = ProgramAttributesItem(
+                    isUseMultiplier = true,
+                    multiplierRates = 1,
+                    minimumTransaction = 50000,
+                    id = 0,
+                    programID = 0,
+                    tierLevelID = 0,
+                )
                 programUpdateResponse.apply {
                     this.tierLevels = tierLevels
-                    this.programAttributes = programAttributes
+                    this.programAttributes = listOf(programAttributeListItem,programAttributeListItem)
                     this.actionType = actionType
+                    this.cardID = cardIdCreate
+                }
+            }
+            ProgramActionType.CREATE_FROM_COUPON ->{
+                timeWindow.id = 0
+                actionType = "create"
+                tierLevels.apply {
+                    this?.forEach {
+                        it?.id = 0
+                    }
+                }
+                val programAttributeListItem = ProgramAttributesItem(
+                    isUseMultiplier = true,
+                    multiplierRates = 1,
+                    minimumTransaction = 50000,
+                    id = 0,
+                    programID = 0,
+                    tierLevelID = 0,
+                )
+                programUpdateResponse.apply {
+                    this.tierLevels = tierLevels
+                    this.programAttributes = listOf(programAttributeListItem,programAttributeListItem)
+                    this.actionType = actionType
+                    this.cardID = cardIdCreate
                 }
             }
             ProgramActionType.EXTEND ->{
@@ -84,26 +131,6 @@ object ProgramUpdateMapper {
             }
         }
         return programUpdateResponse
-    }
-
-    fun setDate(time: String): String {
-        val selectedTime = time.substringBefore(" ")
-        val date = selectedTime.toDate("yyyy-MM-dd")
-        val day = SimpleDateFormat("dd").format(date)
-        val month = SimpleDateFormat("MMMM").format(date)
-        val year = selectedTime.substringBefore("-")
-        return "$day $month $year"
-    }
-
-    fun setTime(time: String): String {
-        val selectedTime  = time.substringAfter(" ").substringBefore(" ").substringBeforeLast(":")
-        return "$selectedTime WIB"
-    }
-
-    fun convertDateTime(t: Date): String {
-        var time = SimpleDateFormat("yyyy-MM-dd HH:mm:ss Z").format(t)
-        time = time.substring(0, time.length-2)
-        return time
     }
 
 }

@@ -8,19 +8,24 @@ import com.tokopedia.tokomember_common_widget.util.CashbackType.Companion.PERCEN
 import com.tokopedia.tokomember_common_widget.util.CouponType.Companion.CASHBACK
 import com.tokopedia.tokomember_common_widget.util.CouponType.Companion.DISCOUNT
 import com.tokopedia.tokomember_common_widget.util.CouponType.Companion.SHIPPING
+import com.tokopedia.tokomember_common_widget.util.CreateScreenType.Companion.CARD
+import com.tokopedia.tokomember_common_widget.util.CreateScreenType.Companion.COUPON_MULTIPLE
+import com.tokopedia.tokomember_common_widget.util.CreateScreenType.Companion.COUPON_MULTIPLE_BUAT
+import com.tokopedia.tokomember_common_widget.util.CreateScreenType.Companion.COUPON_SINGLE
+import com.tokopedia.tokomember_common_widget.util.CreateScreenType.Companion.PREVIEW
+import com.tokopedia.tokomember_common_widget.util.CreateScreenType.Companion.PREVIEW_BUAT
+import com.tokopedia.tokomember_common_widget.util.CreateScreenType.Companion.PROGRAM
 import com.tokopedia.tokomember_common_widget.util.MemberType.Companion.PREMIUM
 import com.tokopedia.tokomember_common_widget.util.MemberType.Companion.VIP
 import com.tokopedia.tokomember_common_widget.util.ProgramActionType.Companion.CANCEL
 import com.tokopedia.tokomember_common_widget.util.ProgramActionType.Companion.CREATE
+import com.tokopedia.tokomember_common_widget.util.ProgramActionType.Companion.CREATE_BUAT
+import com.tokopedia.tokomember_common_widget.util.ProgramActionType.Companion.CREATE_FROM_COUPON
 import com.tokopedia.tokomember_common_widget.util.ProgramActionType.Companion.DETAIL
 import com.tokopedia.tokomember_common_widget.util.ProgramActionType.Companion.EDIT
 import com.tokopedia.tokomember_common_widget.util.ProgramActionType.Companion.EXTEND
 import com.tokopedia.tokomember_common_widget.util.ProgramDateType.Companion.AUTO
 import com.tokopedia.tokomember_common_widget.util.ProgramDateType.Companion.MANUAL
-import com.tokopedia.tokomember_common_widget.util.ProgramScreenType.Companion.CARD
-import com.tokopedia.tokomember_common_widget.util.ProgramScreenType.Companion.COUPON
-import com.tokopedia.tokomember_common_widget.util.ProgramScreenType.Companion.PREVIEW
-import com.tokopedia.tokomember_common_widget.util.ProgramScreenType.Companion.PROGRAM
 
 @Retention(AnnotationRetention.SOURCE)
 @IntDef(PREMIUM, VIP)
@@ -41,25 +46,30 @@ annotation class AnimationType {
 }
 
 @Retention(AnnotationRetention.SOURCE)
-@IntDef(CREATE, DETAIL, EXTEND, EDIT, CANCEL)
+@IntDef(CREATE, CREATE_BUAT, CREATE_FROM_COUPON, DETAIL, EXTEND, EDIT, CANCEL)
 annotation class ProgramActionType {
     companion object {
         const val CREATE = 0
-        const val DETAIL = 1
-        const val EXTEND = 2
-        const val EDIT = 3
-        const val CANCEL = 4
+        const val CREATE_BUAT = 1
+        const val CREATE_FROM_COUPON = 2
+        const val DETAIL = 3
+        const val EXTEND = 4
+        const val EDIT = 5
+        const val CANCEL = 6
     }
 }
 
 @Retention(AnnotationRetention.SOURCE)
-@IntDef(CARD, PROGRAM, COUPON, PREVIEW)
-annotation class ProgramScreenType {
+@IntDef(CARD, PROGRAM, COUPON_SINGLE, COUPON_MULTIPLE, COUPON_MULTIPLE_BUAT, PREVIEW, PREVIEW_BUAT)
+annotation class CreateScreenType {
     companion object {
         const val CARD = 0
         const val PROGRAM = 1
-        const val COUPON = 2
-        const val PREVIEW = 3
+        const val COUPON_SINGLE = 2
+        const val COUPON_MULTIPLE = 3
+        const val COUPON_MULTIPLE_BUAT = 4
+        const val PREVIEW = 5
+        const val PREVIEW_BUAT = 6
     }
 }
 
@@ -67,9 +77,9 @@ annotation class ProgramScreenType {
 @IntDef(SHIPPING, DISCOUNT, CASHBACK)
 annotation class CouponType {
     companion object {
-        const val SHIPPING = 0
-        const val DISCOUNT = 1
-        const val CASHBACK = 2
+        const val CASHBACK = 0
+        const val SHIPPING = 1
+        const val DISCOUNT = 2
     }
 }
 

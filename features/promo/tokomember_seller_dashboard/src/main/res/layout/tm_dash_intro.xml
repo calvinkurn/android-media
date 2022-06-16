@@ -27,7 +27,7 @@
                 <com.tokopedia.unifycomponents.ImageUnify
                     android:id="@+id/ivBg"
                     android:layout_width="match_parent"
-                    android:layout_height="310dp"
+                    android:layout_height="@dimen/tm_dash_dp_310"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
                     app:srcCompat="@drawable/tm_intro_bg" />
@@ -37,21 +37,21 @@
                     android:layout_width="match_parent"
                     android:layout_height="184dp"
                     android:layout_below="@id/ivBg"
-                    android:layout_marginStart="16dp"
-                    android:layout_marginTop="-80dp"
-                    android:layout_marginEnd="16dp"
+                    android:layout_marginStart="@dimen/unify_space_16"
+                    android:layout_marginTop="@dimen/tm_dash_dp_minus_80"
+                    android:layout_marginEnd="@dimen/unify_space_16"
                     android:alpha="0.2"
                     android:background="@drawable/tm_video_selector"
                     android:visibility="visible" />
 
-                <com.tokopedia.tokomember_seller_dashboard.view.customview.TokomemberVideoView
+                <com.tokopedia.tokomember_seller_dashboard.view.customview.TmVideoView
                     android:id="@+id/frame_video"
                     android:layout_width="match_parent"
                     android:layout_height="184dp"
                     android:layout_below="@id/ivBg"
-                    android:layout_marginStart="16dp"
-                    android:layout_marginTop="-80dp"
-                    android:layout_marginEnd="16dp"
+                    android:layout_marginStart="@dimen/unify_space_16"
+                    android:layout_marginTop="@dimen/tm_dash_dp_minus_80"
+                    android:layout_marginEnd="@dimen/unify_space_16"
                     android:visibility="visible"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/ivBg" />
@@ -105,7 +105,7 @@
                         <com.tokopedia.unifyprinciples.Typography
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Tokomember"
+                            android:text="@string/tm_tokomember"
                             android:textColor="@color/Unify_GN500"
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintStart_toEndOf="@id/ivIconTokomember"
@@ -119,7 +119,7 @@
                     android:id="@+id/tvTitle"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="2dp"
+                    android:layout_marginTop="@dimen/unify_space_2"
                     android:layout_marginEnd="@dimen/unify_space_16"
                     android:textColor="@color/Unify_N0"
                     app:layout_constraintEnd_toEndOf="parent"

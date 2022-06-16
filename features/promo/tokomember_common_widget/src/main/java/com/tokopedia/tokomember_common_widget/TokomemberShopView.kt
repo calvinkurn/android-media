@@ -5,12 +5,15 @@ import android.util.AttributeSet
 import android.view.View
 import com.tokopedia.unifyprinciples.Typography
 import android.widget.FrameLayout
+import androidx.core.content.ContextCompat
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.tokomember_common_widget.model.TokomemberShopCardModel
 import com.tokopedia.tokomember_common_widget.util.MemberType
 import com.tokopedia.unifycomponents.ImageUnify
 import kotlinx.android.synthetic.main.tm_shop_view.view.*
 
+const val PREMIUM = "Premium"
+const val VIP = "VIP"
 class TokomemberShopView @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
@@ -69,17 +72,20 @@ class TokomemberShopView @JvmOverloads constructor(
         tvShopName.text = mCardShopName
         tvShopMemberName.text = tokomemberShopViewModel.shopMemberName
         shopType = tokomemberShopViewModel.shopType
+        ivShopIcon.loadImage(tokomemberShopViewModel.shopIconUrl)
         ivShopContainer.loadImage(mBackgroundImageUrl)
 
         when(shopType){
             MemberType.PREMIUM ->{
                 containerBadge.background = context?.getDrawable(R.drawable.tm_dash_badge_premium)
-                tvShopType.text = "Premium"
+                tvShopType.text = PREMIUM
+                tvShopType.setTextColor(ContextCompat.getColor(context,com.tokopedia.unifyprinciples.R.color.Unify_Static_White))
             }
 
             MemberType.VIP ->{
                 containerBadge.background = context?.getDrawable(R.drawable.tm_dash_badge_vip)
-                tvShopType.text = "VIP"
+                tvShopType.text = VIP
+                tvShopType.setTextColor(ContextCompat.getColor(context,com.tokopedia.unifyprinciples.R.color.Unify_Y400))
             }
         }
     }

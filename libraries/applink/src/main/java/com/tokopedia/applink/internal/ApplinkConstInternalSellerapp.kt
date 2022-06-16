@@ -86,7 +86,16 @@ object ApplinkConstInternalSellerapp {
     const val SELLER_FEEDBACK = "$INTERNAL_SELLERAPP/seller-feedback"
 
     const val REVIEW_REMINDER = "$INTERNAL_SELLERAPP/review-reminder"
-
     //AdminRestrictionActivity
     const val ADMIN_RESTRICTION = "$INTERNAL_SELLERAPP/admin-restriction"
+    const val PARAM_ARTICLE_URL = "article_url"
+
+    //ShopDiscount
+    const val SHOP_DISCOUNT = "$INTERNAL_SELLERAPP/shop-discount"
+    const val SHOP_DISCOUNT_MANAGE_DISCOUNT = "$INTERNAL_SELLERAPP/shop-discount/manage-discount"
+    const val SHOP_DISCOUNT_MANAGE_PRODUCT_DISCOUNT = "$INTERNAL_SELLERAPP/shop-discount/manage-discount/product"
+    const val SHOP_DISCOUNT_MANAGE_PRODUCT_VARIANT_DISCOUNT = "$INTERNAL_SELLERAPP/shop-discount/manage-discount/product/variant"
+    const val SHOP_DISCOUNT_MANAGE_PRODUCT_MULTI_LOC_DISCOUNT = "$INTERNAL_SELLERAPP/shop-discount/manage-discount/product/multi-loc"
+
+    const val TOKOMEMBER = "$INTERNAL_SELLERAPP/tokomember"
 }

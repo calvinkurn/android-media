@@ -146,8 +146,6 @@ class ShopCardViewModel(val application: Application, val components: Components
         return shopCardDataLoadState
     }
 
-    fun isUserLoggedIn() = UserSession(application)
-
     fun isLastPage(): Boolean {
         return !Utils.nextPageAvailable(components, SHOP_PER_PAGE)
     }
@@ -160,8 +158,6 @@ class ShopCardViewModel(val application: Application, val components: Components
         }
         return null
     }
-
-    fun getPageSize() = SHOP_PER_PAGE
 
     override fun refreshProductCarouselError() {
         getShopList()?.let {

@@ -1,58 +1,56 @@
 {
-  "status": {
-    "error_code": 0,
-    "message": "OK"
-  },
-  "header": {
-    "total_data": 1,
-    "process_time": 0.01219585,
-    "meta": {
-      "ab_test": "N",
-      "display": "banner"
-    },
-    "pagination": {
-      "kind": "scroll",
-      "next_page_token": "abc"
-    }
-  },
-  "data": [
-    {
-      "id": 74297634,
-      "banner": {
-        "name": "",
-        "images": [
-          {
-            "image_dimension": {
-              "dimen_id": 3,
-              "height": 400,
-              "width": 1200
+  "topadsDisplayBannerAdsV3":{
+    "data":[
+      {
+        "id":148995954,
+        "ad_ref_key":"",
+        "ad_view_url":"https://ta.tokopedia.com/promo/v1/views/8a-xgVY2gmUEH_ed6_jO6_17bm-xgVY789CBUstRbm-FQRo2PcB5QiUEHZFiPcBWgZUEH_yOH_Jao_KFoiFircV7qmUEUMBWy3PBraN7QfW5rcujq3JXQMu7bfBWgaYBg1BRujj5HsnaHi47bpUFbpyR63VBypU7b_KaosHWoAgjgmOxo31Nb3yRgAoMgcgxgsn7HaNkrcribm-src7i6sJabm-xgVYpyfYagZUEHs1dbsHRHprRo_rdosU7Hp1DUSHp9fh5gaUEUMuNZSuiHsuk3Bo-ojBWu_Coucra33OGq1h1u_uo8jV7_jzo8V22HAzgHj7h_VPVouBW39PquOVR3jzSHV22Z9o-QjNkysoGQVKaZSBiHfzE3Bo-ojBkZ_VvepzE_S2oH7NEu_ovzVBN_jzoH1B2PfBsHjNfyfO3gMHauMxsQ1N5Z325q1Oku_-HqBuE_92S81Y1u_-6uV1F_S208jBXHA7ibm-Orfua9fBjUstiH_rRHAraHsraUiFirfuprfB5QBY2gmUEUMzSPcxHqMzX1RPA_I2hgcBZzjYfPunEeuCC6_VizS1WquYVzIuFojhhzuPzeM4RqRgIzBz9uBBx9Rr797NxQS2Vq_-zopP7buCHg7zy8IBWzMOR8MPjHArfHfgVysPWQuzBQfWwrJYygMPc63hoPVzXu1HfgJ2SypCee7OJyBoX1sBSraO1zuuD837Rr7zvqMDaZjYvyszJrcHN_3xuoMYBoBtibm-xQcri6i-iy3NXg9-wy3zpUiFiQSuWyMua9fYM9fVjraUEHZFiQSuWyMua9fVjrOYag9Ji6sJDUMNwyfVXgcBjy9zB9fVjraUEHpr7bm-fg9-pq3YXUstiPsUibm-SQfVD9fBjUsthwe?page\u003d1\u0026t\u003dandroid\u0026sid\u003ddgthLjdnSwCLzqdiRFOvuP%3AAPA91bFu-i_EDup6LqEWQBo7kvGFTWVYa_w4_NanzEi2Q77t-PLgDXxymFmwzgd0763fEb7mmTeok_pOXfgF9lMtTnUC6dJgc0PCMDbSnR9gs-TEUlym7sDOjk2JOOb4Dpc9MhU6oe6Z\u0026uid\u003d177072272\u0026src\u003dinbox",
+        "ad_click_url":"https://ta.tokopedia.com/promo/v1/clicks/8a-xgVY2gmUEH_ed6_jO6_17bm-xgVY789CBUstRbm-FQRo2PcB5QiUEHZFiPcBWgZUEH_yOH_Jao_KFoiFiy3zwrfo5rM1i6sUO6mdpopHRop1R6AyaoAHObm-pHOYDQfri6i-B812OysUOqB2_Z_g-Qu1F_uzSHBBWZMBHuV1O_92CPJNJ_9xqq_n73_-oH1h9z_ugQuBR3BPzPO2JgpCqq1BpZ3N6qMUpZMhyHj2Nysoj8B2_Z_g-qjjh_7H78jNE__o68B1p_7zg81NJ__V-q9P2yp-6PMoWuMgsHBgtyfO6Q7BkQfBoqB1a_c2u8jOEgRBvuV1a_BzuHJNEqR2-QsnYUiFiP9oBrBY2gmUEUsJRopnRHsURHiUDUSoBrRo2QfNwq3ei6i-jgRzt_c2jQBoRe7hEr3z21jgvPSue6jVee_jhyjgOb3Bwz1zOrAgHr1u911-5ofWfz7g1uOggyuYRoVY6y3NEz3ja1_rRPmOe_cPJ3IxNQ1gWPR2SgAnRosoMz3URQ3O1g3Y09RCv3cgSzsBD_9z1QBuAoMzGgfHF1Joozc-_QBUNgRHWuJuuQIBWoRoJ_f20Hj2v_fU7zICs61Otu_g5g_gqUiFiy3hSUstiyMVXQMua9fVjraUDUMNOQ3-BrBY5gBYxgIHi6sJDUMNOQ3-BrBYxgIowrMuhUsthbm-X9foxQMz2gcV7guYxgIHi6sHRomFiPMuarfB5QiUEUSyaUiFigfYxQVY2gmUEH97?uid\u003d177072272\u0026src\u003dinbox\u0026page\u003d1\u0026t\u003dandroid\u0026sid\u003ddgthLjdnSwCLzqdiRFOvuP%3AAPA91bFu-i_EDup6LqEWQBo7kvGFTWVYa_w4_NanzEi2Q77t-PLgDXxymFmwzgd0763fEb7mmTeok_pOXfgF9lMtTnUC6dJgc0PCMDbSnR9gs-TEUlym7sDOjk2JOOb4Dpc9MhU6oe6Z\u0026r\u003dhttps%3A%2F%2Fwww.tokopedia.com%2Fjimmyandmartin\u0026click_ad_type\u003d1",
+        "applinks":"tokopedia://shop/5704308",
+        "banner":{
+          "Name":"",
+          "Position":0,
+          "Images":[
+            {
+              "Dimension":{
+                "Id":3,
+                "Height":400,
+                "Width":1200
+              },
+              "Url":"https://images.tokopedia.net/img/jdvdtx/2022/4/20/1d2b0573-4a1d-40c4-8464-49d29b430287.jpg"
+            }
+          ],
+          "CategoryIDs":[
+
+          ],
+          "Shop":{
+            "ShopID":5704308,
+            "ShopName":"Jimmy and Martin",
+            "ShopImage":{
+              "cover":"",
+              "cover_ecs":"",
+              "s_ecs":"",
+              "s_url":"",
+              "xs_ecs":"",
+              "xs_url":""
             },
-            "full_ecs": "https://ecs7.tokopedia.net/img/attachment/2021/5/6/24841854/24841854_1f97c89f-2e73-4308-96f4-95074928aa6e.jpg"
-          }
-        ],
-        "shop": {
-          "id": 1,
-          "name": "AQUA Official Store",
-          "domain": "aqua-store",
-          "tagline": "Kebaikan Alam, Kebaikan Hidup",
-          "city": "Kab. Tangerang",
-          "shop_is_official": true,
-          "power_merchant": true,
-          "power_merchant_badge": true,
-          "image_shop": {
-            "cover": "",
-            "s_url": "",
-            "xs_url": "",
-            "cover_ecs": "",
-            "s_ecs": "",
-            "xs_ecs": ""
+            "ShopDomain":"jimmyandmartin",
+            "ShopTagline":"From Mill to People",
+            "ShopCityName":"Kota Bandung",
+            "ShopIsOfficial":true,
+            "IsPowerMerchant":false,
+            "IsPowerMerchantBadge":true
           }
         }
-      },
-      "ad_click_url": "https://ta.tokopedia.com/promo/v1/clicks/8a-xgVY2gmUEopea6_rfHpeDUMVj9RzNrc1i6srDUSC5rfB7q3YXUsthbm-7q3OBUsthosn76_KRHAydbm-xgVYpyfYagZUEHs17bsH7osnd6AjhHAKp6AJObm-pHOYDQfri6i-B812OysUOqB2_Z_g-qB2D3BzcQVBEqcxHu71a_32CPJNI3_uoepn7_3OgH7h1z_z68BuE3uzqQJY9z9xgq1BpZ3N6qMUpZMhyHj2Nysoj8B2_Z_g-qjjh_jH78jNJ39PvzcrO_uzCoJOEgRx617BpZ3N6qMUpZMhyH7ND3uxGqMVAZ_g-qjjh_3j7H7Y139xo8MDp_uzg8jY1gpC6e7tNUiFiP9oBrBY2gmUEUsHfosnfoAHibm-pg9opq3YX9fBjUstiyRKf6cUheRzeZ1jEeuCC6_VizugwyMzqgSJNruCmb9xUQs-EHpzsyO-zo17d8_Bs69CMruzirJBNH1VD_R-G3uoc_1WEQuYIy9oEQ7gp33o_gu2gb3-1u3-jyfohQurdQIPe1ugDq_omH3gAqBPXeuoEou2B1JoFqfKNq1ukyuPkyuC5PjVqZO2BQMYRP347z7OJosxtQOUibm-xQcri6i-iy3NXg9-wy3zpUiFiQSuWyMua9fYM9fVjraUEHZFiQSuWyMua9fVjrOYag9Ji6sJDUMNwyfVXgcBjy9zB9fVjraUEHZFiPMuarfB5QiUEUSyaUS7?t=android&sid=cx68b1CtPII%3AAPA91bEV_bdZfq9qPB-xHn2z34ccRQ5M8y9c9pfqTbpIy1AlOrJYSFMKzm_GaszoFsYcSeZY-bTUbdccqmW8lwPQVli3B1fCjWnASz5ZePCpkh9iEjaWjaPovAZKZenowuo4GMD68hoR&src=inbox&page=1&click_ad_type=1&uid=3660643&r=https%3A%2F%2Fwww.tokopedia.com%2Faqua-store",
-      "ad_view_url": "https://ta.tokopedia.com/promo/v1/views/8a-xgVY2gmUEopea6_rfHpeDUMVj9RzNrc1i6srDUSC5rfB7q3YXUsthbm-7q3OBUsthosn76_KRHAydbm-Fy9ztUstig3opoaN7QfW5rcujq3JXQMu7bfBWgaYxPIzxyfxWg3N7bpUFHsn5H_J5Hi4OHAjd6_Uh6m4OHAjd6_Uh6VYsypH7yfoiyi7a63U7b_zjy_yWy_CxgZ7FH_eNoAeFgce7HMyXqSCSUiFiyRCWUsthHiFiy3zwrfo5rM1i6sUOomdpoAyF6AKNH_ndHpKhoZFirpowQcYSUstig9BGP3Uao32q17jfZ32qQV21zMhg8Mxt_VPVHjOke9z6zOjO_1HFoJOW3_oHuJ17_S2u8BB13Mhvu7ud33B-r7BX_M2iH72D3A-G83UpgI2q17jfZ32-H1NAoI26zVBR_7zSo1O1e_zo8MPd_Bo-r7BX_M2iH72D3Ao6QVByZM2xe7jfZ32-H1O2oAovuVBd_920H7O1392vucrF_joG6ZUDUSupg9-wq3ei6iUposyFosepUiFirfuprfB5QBY2gmUEUModosxiH1o71JB-6jVee_jhyju39f-j3Mgh69VeeiOdZcda8sH7yfoZ1_uo6IjNypBFgSV1ySC-8_VCQJYaZBB_zjOb8MOwzfVp8MYcrOBs1fuq3ZOiuVuigcosr3O96chR1VV3QcjpesVMef29QjV_8suqguCArcWt63BVqMV9qMVeQRgC3jWqg3N5PRu5oJPozAydqcYZUiFiy3hSUstiyMVXQMua9fVjraUDUMNOQ3-BrBY5gBYxgIHi6sJDUMNOQ3-BrBYxgIowrMuhUsthbm-X9foxQMz2gcV7guYxgIHi6sJDUSgBrSo2Qfdi6i-fHi-Y?sid=cx68b1CtPII%3AAPA91bEV_bdZfq9qPB-xHn2z34ccRQ5M8y9c9pfqTbpIy1AlOrJYSFMKzm_GaszoFsYcSeZY-bTUbdccqmW8lwPQVli3B1fCjWnASz5ZePCpkh9iEjaWjaPovAZKZenowuo4GMD68hoR&uid=3660643&src=inbox&page=1&t=android",
-      "redirect": "https://www.tokopedia.com/aqua-store",
-      "applinks": "tokopedia://shop/2918636"
+      }
+    ],
+    "header":{
+      "total_data":1,
+      "pagination":{
+        "kind":"scroll",
+        "next_page_token":"8a-pyR-5QchwPsJi6SDiQcVpPVYaQRri6sVYwe",
+        "current_page":"1"
+      }
     }
-  ]
+  }
 }

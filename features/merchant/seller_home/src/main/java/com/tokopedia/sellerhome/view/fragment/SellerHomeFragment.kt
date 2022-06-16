@@ -133,11 +133,6 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         private const val DEFAULT_HEIGHT_DP = 720f
         private const val RV_TOP_POSITION = 0
         private const val TICKER_FIRST_INDEX = 0
-
-        private const val GRADIENT_LEFT_URL =
-            "https://images.tokopedia.net/img/android/others/ic_sah_ramadhan_gradient_left.png"
-        private const val GRADIENT_RIGHT_URL =
-            "https://images.tokopedia.net/img/android/others/ic_sah_ramadhan_gradient_right.png"
     }
 
     @Inject
@@ -370,15 +365,24 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
     override fun onRemoveWidget(position: Int) {}
 
     override fun sendCardImpressionEvent(model: CardWidgetUiModel) {
-        val cardValue = model.data?.value ?: "0"
+        val cardValue = model.data?.value ?: Int.ZERO.toString()
         val state = model.data?.state?.name.orEmpty()
-        SellerHomeTracking.sendImpressionCardEvent(model.dataKey, state, cardValue)
+        val isSingle = model.data?.secondaryDescription.isNullOrBlank()
+        SellerHomeTracking.sendImpressionCardEvent(
+            dataKey = model.dataKey,
+            state = state,
+            cardValue = cardValue,
+            isSingle = isSingle
+        )
     }
 
     override fun sendCardClickTracking(model: CardWidgetUiModel) {
+        val isSingle = model.data?.secondaryDescription.isNullOrBlank()
         SellerHomeTracking.sendClickCardEvent(
-            model.dataKey,
-            model.data?.state?.name.orEmpty(), model.data?.value ?: "0"
+            dataKey = model.dataKey,
+            state = model.data?.state?.name.orEmpty(),
+            cardValue = model.data?.value ?: Int.ZERO.toString(),
+            isSingle = isSingle
         )
     }
 
@@ -445,6 +449,10 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         item: RecommendationItemUiModel
     ) {
         SellerHomeTracking.sendRecommendationItemClickEvent(element.dataKey, item)
+    }
+
+    override fun sendRecommendationTickerCtaClickEvent(element: RecommendationWidgetUiModel) {
+        SellerHomeTracking.sendRecommendationTickerCtaClickEvent(element)
     }
 
     override fun showRecommendationWidgetCoachMark(view: View) {
@@ -875,7 +883,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
 
         setupEmptyState()
         setRecyclerViewLayoutAnimation()
-        setupRamadhanBackgroundGradient()
+        setViewBackground()
     }
 
     private fun setupEmptyState() {
@@ -1194,8 +1202,6 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
                     setOnErrorGetLayout(result.throwable)
                 }
             }
-
-            isFirstLoad = false
         })
 
         setProgressBarVisibility(true)
@@ -1283,8 +1289,10 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
                                 newWidget.apply {
                                     data = oldWidget.data.also {
                                         if (it is LastUpdatedDataInterface && newData != null) {
-                                            it.lastUpdated.lastUpdatedInMillis = newData.lastUpdated.lastUpdatedInMillis
-                                            it.lastUpdated.needToUpdated = newData.lastUpdated.needToUpdated
+                                            it.lastUpdated.lastUpdatedInMillis =
+                                                newData.lastUpdated.lastUpdatedInMillis
+                                            it.lastUpdated.needToUpdated =
+                                                newData.lastUpdated.needToUpdated
                                         }
                                     }
                                     isLoaded = oldWidget.isLoaded
@@ -1513,8 +1521,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
                 is Success -> {
                     stopCustomMetric(
                         SellerHomePerformanceMonitoringConstant.SELLER_HOME_TICKER_TRACE,
-                        it.data.firstOrNull()?.isFromCache
-                            ?: false
+                        it.data.firstOrNull()?.isFromCache.orFalse()
                     )
                     onSuccessGetTickers(it.data)
                 }
@@ -1584,6 +1591,16 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
                     userSession.deviceId.orEmpty()
                 )
             }
+        }
+    }
+
+    private fun setViewBackground() = binding?.run {
+        val isOfficialStore = userSession.isShopOfficialStore
+        val isPowerMerchant = userSession.isPowerMerchantIdle || userSession.isGoldMerchant
+        when {
+            isOfficialStore -> viewBgShopStatus.setBackgroundResource(R.drawable.sah_shop_state_bg_official_store)
+            isPowerMerchant -> viewBgShopStatus.setBackgroundResource(R.drawable.sah_shop_state_bg_power_merchant)
+            else -> viewBgShopStatus.setBackgroundColor(root.context.getResColor(android.R.color.transparent))
         }
     }
 
@@ -1984,7 +2001,13 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
             adapter.data.addAll(newWidgets)
             diffUtilResult.dispatchUpdatesTo(adapter)
         } catch (e: Exception) {
-            adapter.notifyDataSetChanged()
+            try {
+                recyclerView?.post {
+                    adapter.notifyDataSetChanged()
+                }
+            } catch (notifyException: Exception) {
+                SellerHomeErrorHandler.logException(notifyException, SellerHomeErrorHandler.UPDATE_WIDGET_ERROR)
+            }
             SellerHomeErrorHandler.logException(e, SellerHomeErrorHandler.UPDATE_WIDGET_ERROR)
         }
     }
@@ -2135,13 +2158,6 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         }
         updateWidgets(widgets)
         getWidgetsData(similarWidget)
-    }
-
-    private fun setupRamadhanBackgroundGradient() {
-        binding?.run {
-            ivSahRamadhanBgLeft.loadImageWithoutPlaceholder(GRADIENT_LEFT_URL)
-            ivSahRamadhanBgRight.loadImageWithoutPlaceholder(GRADIENT_RIGHT_URL)
-        }
     }
 
     interface Listener {

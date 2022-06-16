@@ -1,5 +1,6 @@
 package com.tokopedia.vouchercreation.product.list.domain.model.response
 
+import android.annotation.SuppressLint
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.network.data.model.response.Header
@@ -39,6 +40,7 @@ data class VariantValidationData(
         @Expose val productId: String = "",
         @SerializedName("product_name")
         @Expose val productName: String = "",
+        @SuppressLint("Invalid Data Type")
         @SerializedName("price")
         @Expose val price: Int = 0,
         @SerializedName("price_fmt")

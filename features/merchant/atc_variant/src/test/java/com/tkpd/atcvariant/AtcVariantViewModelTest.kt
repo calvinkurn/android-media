@@ -21,11 +21,9 @@ import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.wishlist.common.listener.WishListActionListener
-import io.mockk.coEvery
-import io.mockk.coVerify
-import io.mockk.every
-import io.mockk.slot
-import io.mockk.verify
+import com.tokopedia.wishlistcommon.data.response.AddToWishlistV2Response
+import com.tokopedia.wishlistcommon.listener.WishlistV2ActionListener
+import io.mockk.*
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert
 import org.junit.Test
@@ -849,32 +847,40 @@ class AtcVariantViewModelTest : BaseAtcVariantViewModelTest() {
         Assert.assertEquals(defaultItem, data?.defaultItem)
         Assert.assertEquals(items, data?.items)
         Assert.assertEquals(selectedId, data?.selectedId)
+        Assert.assertEquals(ProductDetailGallery.Page.VariantBottomSheet, data?.page)
     }
 
     @Test
-    fun `variant image clicked fallback test with almost everything null`(){
+    fun `variant image clicked fallback test with empty images and available default image`(){
         val imageUrl = "url1234"
         val productId = "2147818570"
         val userId = "123"
         val mainImageTag = "some tag"
 
-        val defaultItem = ProductDetailGallery.Item(
-            id = "",
-            url = imageUrl,
-            tag = mainImageTag,
-            type = ProductDetailGallery.Item.Type.Image
-        )
-        val items = emptyList<ProductDetailGallery.Item>()
-        val selectedId = null
+        viewModel.onVariantImageClicked(imageUrl, productId, userId, mainImageTag)
+
+        val data = viewModel.variantImagesData.value
+
+        Assert.assertEquals(imageUrl, data?.defaultItem?.url)
+        Assert.assertEquals(emptyList<ProductDetailGallery.Item>(), data?.items)
+        Assert.assertEquals(ProductDetailGallery.Page.VariantBottomSheet, data?.page)
+    }
+
+    @Test
+    fun `variant image clicked fallback test with empty images and empty default image`(){
+        val imageUrl = ""
+        val productId = "2147818570"
+        val userId = "123"
+        val mainImageTag = "some tag"
 
         viewModel.onVariantImageClicked(imageUrl, productId, userId, mainImageTag)
 
         val data = viewModel.variantImagesData.value
 
-        Assert.assertEquals(defaultItem, data?.defaultItem)
-        Assert.assertEquals(items, data?.items)
-        Assert.assertEquals(selectedId, data?.selectedId)
+        Assert.assertEquals(null, data)
     }
+
+
     //endregion
 
     private fun verifyAtcUsecase(verifyAtc: Boolean = false, verifyOcs: Boolean = false, verifyOcc: Boolean = false, verifyUpdateAtc: Boolean = false) {
@@ -898,5 +904,35 @@ class AtcVariantViewModelTest : BaseAtcVariantViewModelTest() {
         coVerify(inverse = inverseUpdateAtc) {
             updateCartUseCase.executeOnBackground()
         }
+    }
+
+    @Test
+    fun `verify add to wishlistv2 returns success` () {
+        val productId = "123"
+        val resultWishlistAddV2 = AddToWishlistV2Response.Data.WishlistAddV2(success = true)
+
+        every { addToWishlistV2UseCase.setParams(any(), any()) } just Runs
+        coEvery { addToWishlistV2UseCase.executeOnBackground() } returns Success(resultWishlistAddV2)
+
+        val mockListener: WishlistV2ActionListener = mockk(relaxed = true)
+        viewModel.addWishlistV2(productId, "", mockListener)
+
+        verify { addToWishlistV2UseCase.setParams(productId, "") }
+        coVerify { addToWishlistV2UseCase.executeOnBackground() }
+    }
+
+    @Test
+    fun `verify add to wishlistv2 returns fail` () {
+        val productId = "123"
+        val mockThrowable = mockk<Throwable>("fail")
+
+        every { addToWishlistV2UseCase.setParams(any(), any()) } just Runs
+        coEvery { addToWishlistV2UseCase.executeOnBackground() } returns Fail(mockThrowable)
+
+        val mockListener: WishlistV2ActionListener = mockk(relaxed = true)
+        viewModel.addWishlistV2(productId, "", mockListener)
+
+        verify { addToWishlistV2UseCase.setParams(productId, "") }
+        coVerify { addToWishlistV2UseCase.executeOnBackground() }
     }
 }

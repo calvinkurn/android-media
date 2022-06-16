@@ -1,16 +1,58 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/viewFlipperIntro">
 
-    <com.tokopedia.tokomember_common_widget.TokomemberShopView
-        android:layout_width="match_parent"
+    <FrameLayout
+        android:id="@+id/flShop"
+        android:layout_width="@dimen/tm_dash_dp_296"
+        android:layout_height="@dimen/tm_dash_dp_106"
+        android:layout_marginTop="@dimen/spacing_lvl4"
+        android:background="@drawable/tm_bg_round_home"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:layout_marginTop="@dimen/unify_space_8"
+            android:orientation="horizontal">
+
+            <com.tokopedia.unifycomponents.ImageUnify
+                android:id="@+id/ivShopIcon"
+                android:layout_width="@dimen/tm_dash_dp_50"
+                android:layout_height="@dimen/unify_space_40"
+                android:layout_marginStart="@dimen/unify_space_12"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/tvShopName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/unify_space_12"
+                android:text="@string/tm_shop_name"
+                android:textColor="@color/Unify_N0"
+                app:layout_constraintBottom_toBottomOf="@id/ivShopIcon"
+                app:layout_constraintStart_toEndOf="@id/ivShopIcon"
+                app:layout_constraintTop_toTopOf="@id/ivShopIcon"
+                app:typographyType="heading_5" />
+
+        </LinearLayout>
+
+    </FrameLayout>
+
+    <com.tokopedia.carousel.CarouselUnify
+        android:layout_width="@dimen/tm_dash_dp_328"
         android:layout_height="wrap_content"
-        android:background="@color/Unify_GN100"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        android:layout_marginTop="@dimen/spacing_lvl4"
+        android:id="@+id/carouselTicker"
+        app:layout_constraintTop_toBottomOf="@id/flShop"
+        app:layout_constraintStart_toStartOf="@id/flShop"
+        app:layout_constraintEnd_toEndOf="@id/flShop"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
