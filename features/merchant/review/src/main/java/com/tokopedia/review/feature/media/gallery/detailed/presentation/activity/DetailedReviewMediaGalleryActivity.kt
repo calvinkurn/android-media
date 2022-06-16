@@ -58,7 +58,7 @@ class DetailedReviewMediaGalleryActivity : AppCompatActivity(), CoroutineScope {
         const val TOASTER_KEY_ERROR_GET_REVIEW_MEDIA = "ERROR_GET_REVIEW_MEDIA"
         const val KEY_CACHE_MANAGER_ID = "cacheManagerId"
         const val AUTO_HIDE_OVERLAY_DURATION = 5000L
-        const val AUTO_HIDE_TOUCH_CLICKABLE_MARGIN = 8
+        const val AUTO_HIDE_TOUCH_CLICKABLE_MARGIN = 16
     }
 
     @Inject
