@@ -1,8 +1,15 @@
 package com.tokopedia.recharge_credit_card.viewmodel
 
+import android.os.Message
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.common.topupbills.favoritepdp.domain.model.AutoCompleteModel
+import com.tokopedia.common.topupbills.favoritepdp.domain.model.FavoriteChipModel
+import com.tokopedia.common.topupbills.favoritepdp.domain.model.PrefillModel
+import com.tokopedia.common.topupbills.favoritepdp.domain.repository.RechargeFavoriteNumberRepository
+import com.tokopedia.common.topupbills.favoritepdp.util.FavoriteNumberType
 import com.tokopedia.graphql.GraphqlConstant
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
@@ -11,31 +18,52 @@ import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.recharge_component.result.RechargeNetworkResult
+import com.tokopedia.recharge_credit_card.datamodel.RechargeCCBankList
+import com.tokopedia.recharge_credit_card.datamodel.RechargeCCBankListReponse
+import com.tokopedia.recharge_credit_card.datamodel.RechargeCCCatalogPrefix
+import com.tokopedia.recharge_credit_card.datamodel.RechargeCCMenuDetailResponse
+import com.tokopedia.recharge_credit_card.datamodel.RechargeCreditCard
+import com.tokopedia.recharge_credit_card.datamodel.RuleModel
+import com.tokopedia.recharge_credit_card.datamodel.TickerCreditCard
 import com.tokopedia.recharge_credit_card.datamodel.*
+import com.tokopedia.recharge_credit_card.util.RechargeCCConst
+import com.tokopedia.recharge_credit_card.util.RechargeCCUtil
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
-class RechargeCCViewModel @Inject constructor(private val graphqlRepository: GraphqlRepository,
-                                              private val dispatcher: CoroutineDispatcher)
-    : BaseViewModel(dispatcher) {
+class RechargeCCViewModel @Inject constructor(
+    private val graphqlRepository: GraphqlRepository,
+    private val dispatcher: CoroutineDispatcher,
+    private val rechargeFavoriteNumberRepo: RechargeFavoriteNumberRepository
+) : BaseViewModel(dispatcher) {
+
+    var prefixData: RechargeCCCatalogPrefix = RechargeCCCatalogPrefix()
 
     val rechargeCCBankList = MutableLiveData<RechargeCCBankList>()
     val errorCCBankList = MutableLiveData<Throwable>()
     val tickers = MutableLiveData<List<TickerCreditCard>>()
 
     private val _rechargeCreditCard = MutableLiveData<RechargeCreditCard>()
-    private val _errorPrefix = MutableLiveData<Throwable>()
-    private val _bankNotSupported = MutableLiveData<Throwable>()
-    private val _rule = MutableLiveData<List<RuleModel>>()
+    private val _prefixSelect = MutableLiveData<RechargeNetworkResult<RechargeCCCatalogPrefix>>()
+    private val _prefixValidation = MutableLiveData<Boolean>()
+    private val _favoriteChipsData = MutableLiveData<RechargeNetworkResult<List<FavoriteChipModel>>>()
+    private val _autoCompleteData = MutableLiveData<RechargeNetworkResult<List<AutoCompleteModel>>>()
+    private val _prefillData = MutableLiveData<RechargeNetworkResult<PrefillModel>>()
 
     val creditCardSelected: LiveData<RechargeCreditCard> = _rechargeCreditCard
-    val errorPrefix: LiveData<Throwable> = _errorPrefix
-    val bankNotSupported: LiveData<Throwable> = _bankNotSupported
-    val rule: LiveData<List<RuleModel>> = _rule
+    val prefixSelect: LiveData<RechargeNetworkResult<RechargeCCCatalogPrefix>> = _prefixSelect
+    val prefixValidation: LiveData<Boolean> = _prefixValidation
+    val favoriteChipsData: LiveData<RechargeNetworkResult<List<FavoriteChipModel>>> = _favoriteChipsData
+    val autoCompleteData: LiveData<RechargeNetworkResult<List<AutoCompleteModel>>> = _autoCompleteData
+    val prefillData: LiveData<RechargeNetworkResult<PrefillModel>> = _prefillData
 
-    private var foundPrefix: Boolean = false
     var categoryName: String = ""
+
+    var validatorJob: Job? = null
 
     fun getMenuDetail(rawQuery: String, menuId: String) {
         launchCatchError(block = {
@@ -83,47 +111,85 @@ class RechargeCCViewModel @Inject constructor(private val graphqlRepository: Gra
         }
     }
 
-    fun getPrefixes(rawQuery: String, creditCard: String, menuId: String) {
+    fun getPrefixes(rawQuery: String, menuId: String) {
         launchCatchError(block = {
             val mapParam = mutableMapOf<String, Any>()
             mapParam[MENU_ID] = menuId.toInt()
 
-            val data = withContext(dispatcher) {
+            prefixData = withContext(dispatcher) {
                 val graphqlRequest = GraphqlRequest(rawQuery, RechargeCCCatalogPrefix::class.java, mapParam)
                 graphqlRepository.response(listOf(graphqlRequest),
                         GraphqlCacheStrategy.Builder(CacheType.CACHE_FIRST)
                                 .setExpiryTime(GraphqlConstant.ExpiryTimes.MINUTE_1.`val`() * 10).build())
-            }.getSuccessData<RechargeCCCatalogPrefix>()
+            }.getSuccessData()
 
-            if (data.prefixSelect.prefixes.isNotEmpty()) {
-                data.prefixSelect.prefixes.map {
-                    if (creditCard.startsWith(it.value)) {
-                        val validations = data.prefixSelect.validations.map { validation ->
-                            RuleModel(
-                                validation.title,
-                                validation.message,
-                                validation.rule
-                            )
-                        }
-                        _rule.postValue(validations)
-                        foundPrefix = true
-                        return@map _rechargeCreditCard.postValue(RechargeCreditCard(
-                                it.operator.id,
-                                it.operator.attribute.defaultProductId,
-                                it.operator.attribute.imageUrl,
-                                it.operator.attribute.name
-                        ))
+            _prefixSelect.postValue(RechargeNetworkResult.Success(prefixData))
+        }) {
+            _prefixSelect.postValue(RechargeNetworkResult.Fail(it))
+        }
+    }
+
+    fun setFavoriteNumberLoading(){
+        _favoriteChipsData.value = RechargeNetworkResult.Loading
+    }
+
+    fun getFavoriteNumbers(categoryIds: List<Int>, favoriteNumberTypes: List<FavoriteNumberType>) {
+        launchCatchError(block = {
+            val data = rechargeFavoriteNumberRepo.getFavoriteNumbers(favoriteNumberTypes, categoryIds)
+            for (type in favoriteNumberTypes) {
+                when (type) {
+                    FavoriteNumberType.PREFILL -> {
+                        _prefillData.postValue(RechargeNetworkResult.Success(data.prefill))
+                    }
+                    FavoriteNumberType.CHIP -> {
+                        _favoriteChipsData.postValue(RechargeNetworkResult.Success(data.favoriteChips))
+                    }
+                    FavoriteNumberType.LIST -> {
+                        _autoCompleteData.postValue(RechargeNetworkResult.Success(data.autoCompletes))
                     }
                 }
-            } else {
-                _bankNotSupported.postValue(MessageErrorException(""))
-            }
-
-            if (!foundPrefix) {
-                _bankNotSupported.postValue(MessageErrorException(""))
             }
         }) {
-            _errorPrefix.postValue(it)
+            // this section is not reachable due to no fail scenario
+        }
+    }
+
+    fun checkPrefixNumber(creditCard: String) {
+        var isPrefixFound = false
+        if (prefixData.prefixSelect.prefixes.isNotEmpty()) {
+            prefixData.prefixSelect.prefixes.map {
+                if (creditCard.startsWith(it.value)) {
+                    isPrefixFound = true
+                    _rechargeCreditCard.postValue(
+                        RechargeCreditCard(
+                            it.operator.id,
+                            it.operator.attribute.defaultProductId,
+                            it.operator.attribute.imageUrl,
+                            it.operator.attribute.name
+                        )
+                    )
+                }
+            }
+        }
+        if (!isPrefixFound) {
+            _rechargeCreditCard.postValue(RechargeCreditCard())
+        }
+    }
+
+    fun cancelValidatorJob() {
+        validatorJob?.cancel()
+    }
+
+    fun validateCCNumber(creditCard: String) {
+        validatorJob = launchCatchError(block = {
+            var isValid = false
+            prefixData.prefixSelect.validations.forEach { validation ->
+                isValid = creditCard.matches(validation.rule.toRegex())
+            }
+            delay(RechargeCCConst.VALIDATOR_DELAY_TIME)
+            _prefixValidation.postValue(isValid)
+        }) {
+
         }
     }
 

@@ -5,7 +5,7 @@ import com.tokopedia.digital_product_detail.domain.repository.RechargeAddToCartR
 import com.tokopedia.digital_product_detail.domain.repository.RechargeCatalogMenuDetailRepository
 import com.tokopedia.digital_product_detail.domain.repository.RechargeCatalogPrefixSelectRepository
 import com.tokopedia.digital_product_detail.domain.repository.RechargeCatalogProductInputMultiTabRepository
-import com.tokopedia.digital_product_detail.domain.repository.RechargeFavoriteNumberRepository
+import com.tokopedia.common.topupbills.favoritepdp.domain.repository.RechargeFavoriteNumberRepository
 import com.tokopedia.digital_product_detail.domain.repository.RechargeRecommendationRepository
 import javax.inject.Inject
 

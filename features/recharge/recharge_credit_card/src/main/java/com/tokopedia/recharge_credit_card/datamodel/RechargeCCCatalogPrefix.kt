@@ -6,7 +6,8 @@ import com.google.gson.annotations.SerializedName
 class RechargeCCCatalogPrefix(
         @SerializedName("rechargeCatalogPrefixSelect")
         @Expose
-        val prefixSelect: CatalogPrefixSelect = CatalogPrefixSelect())
+        val prefixSelect: CatalogPrefixSelect = CatalogPrefixSelect()
+)
 
 class CatalogPrefixSelect(
         @SerializedName("text")

@@ -4,7 +4,19 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlResponse
-import com.tokopedia.recharge_credit_card.datamodel.*
+import com.tokopedia.recharge_credit_card.datamodel.CatalogOperator
+import com.tokopedia.recharge_credit_card.datamodel.CatalogPrefixAttributes
+import com.tokopedia.recharge_credit_card.datamodel.CatalogPrefixSelect
+import com.tokopedia.recharge_credit_card.datamodel.CatalogPrefixs
+import com.tokopedia.recharge_credit_card.datamodel.RechargeCCBank
+import com.tokopedia.recharge_credit_card.datamodel.RechargeCCBankList
+import com.tokopedia.recharge_credit_card.datamodel.RechargeCCBankListReponse
+import com.tokopedia.recharge_credit_card.datamodel.RechargeCCCatalogPrefix
+import com.tokopedia.recharge_credit_card.datamodel.RechargeCCMenuDetail
+import com.tokopedia.recharge_credit_card.datamodel.RechargeCCMenuDetailResponse
+import com.tokopedia.recharge_credit_card.datamodel.RechargeCreditCard
+import com.tokopedia.recharge_credit_card.datamodel.TickerCreditCard
+import com.tokopedia.recharge_credit_card.datamodel.Validation
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
 import io.mockk.impl.annotations.MockK
@@ -105,7 +117,9 @@ class RechargeCCViewModelTest {
         tickers.add(TickerCreditCard(2, "test2", "desc2", "warning"))
 
         val result = HashMap<Type, Any>()
-        result[RechargeCCMenuDetailResponse::class.java] = RechargeCCMenuDetailResponse(RechargeCCMenuDetail(tickers = tickers))
+        result[RechargeCCMenuDetailResponse::class.java] = RechargeCCMenuDetailResponse(
+            RechargeCCMenuDetail(tickers = tickers)
+        )
         val gqlResponse = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
 
         coEvery { graphqlRepository.response(any(), any()) } returns gqlResponse
@@ -125,7 +139,9 @@ class RechargeCCViewModelTest {
         val tickers = mutableListOf<TickerCreditCard>()
 
         val result = HashMap<Type, Any>()
-        result[RechargeCCMenuDetailResponse::class.java] = RechargeCCMenuDetailResponse(RechargeCCMenuDetail(tickers = tickers))
+        result[RechargeCCMenuDetailResponse::class.java] = RechargeCCMenuDetailResponse(
+            RechargeCCMenuDetail(tickers = tickers)
+        )
         val gqlResponse = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
 
         coEvery { graphqlRepository.response(any(), any()) } returns gqlResponse
@@ -165,10 +181,16 @@ class RechargeCCViewModelTest {
     fun getPrefix_PrefixesNotEmpty_SuccessGetPrefix() {
         //given
         val prefixes = mutableListOf<CatalogPrefixs>()
-        prefixes.add(CatalogPrefixs("1", "1234",
-                CatalogOperator("12", CatalogPrefixAttributes("image1", "14"))))
-        prefixes.add(CatalogPrefixs("2", "4567",
-                CatalogOperator("13", CatalogPrefixAttributes("image2", "15"))))
+        prefixes.add(
+            CatalogPrefixs("1", "1234",
+                CatalogOperator("12", CatalogPrefixAttributes("image1", "14"))
+            )
+        )
+        prefixes.add(
+            CatalogPrefixs("2", "4567",
+                CatalogOperator("13", CatalogPrefixAttributes("image2", "15"))
+            )
+        )
 
         val rechargeCCSelected = RechargeCreditCard("13", "15", "image2")
 
@@ -178,10 +200,12 @@ class RechargeCCViewModelTest {
         )
 
         val result = HashMap<Type, Any>()
-        result[RechargeCCCatalogPrefix::class.java] = RechargeCCCatalogPrefix(CatalogPrefixSelect(
+        result[RechargeCCCatalogPrefix::class.java] = RechargeCCCatalogPrefix(
+            CatalogPrefixSelect(
             prefixes = prefixes,
             validations = validations
-        ))
+        )
+        )
         val gqlResponse = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
 
         coEvery { graphqlRepository.response(any(), any()) } returns gqlResponse
@@ -231,10 +255,16 @@ class RechargeCCViewModelTest {
     fun getPrefix_PrefixNotFound_FailedBankNotSupported() {
         //given
         val prefixes = mutableListOf<CatalogPrefixs>()
-        prefixes.add(CatalogPrefixs("1", "1234",
-                CatalogOperator("12", CatalogPrefixAttributes("image1", "14"))))
-        prefixes.add(CatalogPrefixs("2", "4567",
-                CatalogOperator("13", CatalogPrefixAttributes("image2", "15"))))
+        prefixes.add(
+            CatalogPrefixs("1", "1234",
+                CatalogOperator("12", CatalogPrefixAttributes("image1", "14"))
+            )
+        )
+        prefixes.add(
+            CatalogPrefixs("2", "4567",
+                CatalogOperator("13", CatalogPrefixAttributes("image2", "15"))
+            )
+        )
 
         val rechargeCCSelected = RechargeCreditCard("13", "15", "image2")
 

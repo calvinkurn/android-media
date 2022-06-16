@@ -4,6 +4,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
+import com.tokopedia.common.topupbills.favoritepdp.data.repository.RechargeFavoriteNumberRepositoryImpl
+import com.tokopedia.common.topupbills.favoritepdp.domain.repository.RechargeFavoriteNumberRepository
 import com.tokopedia.recharge_credit_card.viewmodel.RechargeCCViewModel
 import com.tokopedia.recharge_credit_card.viewmodel.RechargeSubmitCCViewModel
 import dagger.Binds
@@ -26,4 +28,8 @@ abstract class RechargeCCViewModelModule {
     @IntoMap
     @ViewModelKey(RechargeSubmitCCViewModel::class)
     internal abstract fun rechargeSubmitCCViewModel(customViewModel: RechargeSubmitCCViewModel): ViewModel
+
+    @Binds
+    @RechargeCCScope
+    abstract fun bindRechargeFavoriteNumberRepository(repo: RechargeFavoriteNumberRepositoryImpl): RechargeFavoriteNumberRepository
 }

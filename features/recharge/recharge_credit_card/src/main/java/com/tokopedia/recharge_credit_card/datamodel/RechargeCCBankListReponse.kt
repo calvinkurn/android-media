@@ -6,13 +6,14 @@ import com.google.gson.annotations.SerializedName
 class RechargeCCBankListReponse(
         @SerializedName("rechargePCIDSSSignature")
         @Expose
-        val rechargeCCBankList: RechargeCCBankList = RechargeCCBankList())
+        val rechargeCCBankList: RechargeCCBankList = RechargeCCBankList()
+)
 
 class RechargeCCBankList(
-        @SerializedName("bank_list")
+    @SerializedName("bank_list")
         @Expose
         val bankList: List<RechargeCCBank> = listOf(),
-        @SerializedName("message_error")
+    @SerializedName("message_error")
         @Expose
         val messageError: String = "")
 

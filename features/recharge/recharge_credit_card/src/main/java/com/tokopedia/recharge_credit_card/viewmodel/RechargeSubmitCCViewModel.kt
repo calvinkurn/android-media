@@ -15,11 +15,7 @@ import com.tokopedia.recharge_credit_card.datamodel.RechargeCCSignatureReponse
 import com.tokopedia.recharge_credit_card.usecase.RechargeSubmitCcUseCase
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
-import okhttp3.internal.http2.ConnectionShutdownException
-import java.io.InterruptedIOException
 import java.lang.reflect.Type
-import java.net.SocketException
-import java.net.UnknownHostException
 import javax.inject.Inject
 
 class RechargeSubmitCCViewModel @Inject constructor(private val graphqlRepository: GraphqlRepository,

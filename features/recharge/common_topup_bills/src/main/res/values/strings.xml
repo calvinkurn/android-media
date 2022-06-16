@@ -81,6 +81,7 @@
     <string name="common_topup_autocomplete_empty_desc">Coba ketik %s-nya aja, deh.</string>
     <string name="common_topup_autocomplete_unit_nomor_hp">nomor HP</string>
     <string name="common_topup_autocomplete_unit_nomor_meter">nomor meter</string>
+    <string name="common_topup_autocomplete_unit_nomor_kartu">nomor kartu</string>
     <string name="common_topup_contact_empty_desc">Coba masukan kata kunci atau nomor yang lain ya</string>
     <string name="common_topup_contact_empty_title">Yah, gaada yang sesuai</string>
 </resources>
