@@ -517,7 +517,7 @@ class OfficialStoreHomeViewModelTest {
     }
 
     @Test
-    fun given_get_headlineAds_success_then_pass_to_view() {
+    fun given_get_headlineAds_success_when_get_osDynamicChannel_featured_shop_then_pass_to_view() {
         val prefixUrl = "prefix"
         val slug = "slug"
         val category = createCategory(prefixUrl, slug)
@@ -557,7 +557,7 @@ class OfficialStoreHomeViewModelTest {
     }
 
     @Test
-    fun given_get_headlineAds_empty_list_then_pass_error_to_view() {
+    fun given_get_headlineAds_empty_list_when_get_osDynamicChannel_featured_shop_then_pass_error_to_view() {
         val prefixUrl = "prefix"
         val slug = "slug"
         val category = createCategory(prefixUrl, slug)
@@ -582,7 +582,7 @@ class OfficialStoreHomeViewModelTest {
     }
 
     @Test
-    fun given_get_headlineAds_error_then_pass_error_to_view() {
+    fun given_get_headlineAds_error_when_get_osDynamicChannel_featured_shop_then_pass_error_to_view() {
         val prefixUrl = "prefix"
         val slug = "slug"
         val category = createCategory(prefixUrl, slug)
@@ -886,7 +886,7 @@ class OfficialStoreHomeViewModelTest {
     }
 
     @Test
-    fun given_get_bestSelling_then_fetch_recomData_success_should_pass_to_view() {
+    fun given_get_recomData_success_when_get_osDynamicChannel_bestSelling_then_pass_to_view() {
         val prefixUrl = "prefix"
         val slug = "slug"
         val category = createCategory(prefixUrl, slug)
@@ -921,7 +921,7 @@ class OfficialStoreHomeViewModelTest {
     }
 
     @Test
-    fun given_get_bestSelling_then_fetch_recomData_error_should_set_error_value() {
+    fun given_get_recomData_error_when_get_osDynamicChannel_bestSelling_then_set_error_value() {
         val prefixUrl = "prefix"
         val slug = "slug"
         val category = createCategory(prefixUrl, slug)
