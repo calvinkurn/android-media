@@ -613,7 +613,7 @@ class CampaignListFragment : BaseSimpleListFragment<CampaignAdapter, CampaignUiM
         val dialog = DialogUnify(context, DialogUnify.VERTICAL_ACTION, DialogUnify.NO_IMAGE)
         dialog.setTitle(context.getString(R.string.sfs_ineligible_access_title))
         dialog.setDescription(context.getString(R.string.sfs_ineligible_access_description))
-        dialog.setPrimaryCTAText(context.getString(R.string.no_campaign_quota_primary_cta_text))
+        dialog.setPrimaryCTAText(context.getString(R.string.sfs_subscribe_pm_pro))
         dialog.setSecondaryCTAText(context.getString(R.string.no_campaign_quota_secondary_cta_text))
 
         dialog.setPrimaryCTAClickListener {

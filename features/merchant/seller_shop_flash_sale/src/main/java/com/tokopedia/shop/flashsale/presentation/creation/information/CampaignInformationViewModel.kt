@@ -31,6 +31,7 @@ class CampaignInformationViewModel @Inject constructor(
 ) : BaseViewModel(dispatchers.main) {
 
     companion object {
+        private const val MIN_HEX_COLOR_LENGTH = 6
         private const val MIN_CAMPAIGN_NAME_LENGTH = 5
         private const val ONE_HOUR = 1
     }
@@ -83,6 +84,7 @@ class CampaignInformationViewModel @Inject constructor(
     sealed class ValidationResult {
         object LapsedStartDate : ValidationResult()
         object LapsedTeaserStartDate : ValidationResult()
+        object InvalidHexColor : ValidationResult()
         object Valid : ValidationResult()
     }
 
@@ -124,6 +126,11 @@ class CampaignInformationViewModel @Inject constructor(
 
         if (selection.startDate.before(now)) {
             _areInputValid.value = ValidationResult.LapsedStartDate
+            return
+        }
+
+        if(selection.firstColor.length < MIN_HEX_COLOR_LENGTH || selection.secondColor.length < MIN_HEX_COLOR_LENGTH) {
+            _areInputValid.value = ValidationResult.InvalidHexColor
             return
         }
 

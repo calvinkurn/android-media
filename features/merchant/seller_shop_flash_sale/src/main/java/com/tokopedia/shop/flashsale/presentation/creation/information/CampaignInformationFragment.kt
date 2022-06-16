@@ -263,14 +263,8 @@ class CampaignInformationFragment : BaseDaggerFragment() {
 
             tauHexColor.setMaxLength(HEX_COLOR_TEXT_FIELD_MAX_LENGTH)
             tauHexColor.textInputLayout.editText?.doOnTextChanged { text ->
-                if (text.length == HEX_COLOR_TEXT_FIELD_MAX_LENGTH) {
-                    binding?.btnApply?.visible()
-                } else {
-                    binding?.btnApply?.invisible()
-                }
+                handleHexColor(text)
             }
-
-
         }
     }
 
@@ -378,6 +372,11 @@ class CampaignInformationFragment : BaseDaggerFragment() {
                 showLapsedTeaserTicker()
                 hideLapsedScheduleTicker()
             }
+            CampaignInformationViewModel.ValidationResult.InvalidHexColor -> {
+                hideLapsedTeaserTicker()
+                hideLapsedScheduleTicker()
+                binding?.root showError getString(R.string.sfs_invalid_hex_color)
+            }
             CampaignInformationViewModel.ValidationResult.Valid -> {
                 hideLapsedTeaserTicker()
                 hideLapsedScheduleTicker()
@@ -392,6 +391,7 @@ class CampaignInformationFragment : BaseDaggerFragment() {
                     viewModel.updateCampaign(selection, campaignId)
                 }
             }
+
         }
     }
 
@@ -422,7 +422,7 @@ class CampaignInformationFragment : BaseDaggerFragment() {
     }
 
     private fun handleContentSwitcher(hexColorOptionSelected: Boolean) {
-        val isHexColorTextFieldFilled = binding?.tauHexColor?.editText?.text.toString().trim().length == HEX_COLOR_TEXT_FIELD_MAX_LENGTH
+        val isHexColorTextFieldFilled = binding?.tauHexColor?.editText?.text.toString().trim().isValidHexColor()
         binding?.recyclerView?.isVisible = !hexColorOptionSelected
         binding?.groupHexColorPicker?.isVisible = hexColorOptionSelected
 
@@ -431,15 +431,9 @@ class CampaignInformationFragment : BaseDaggerFragment() {
         } else {
             binding?.btnApply?.invisible()
         }
-
-        if (hexColorOptionSelected) {
-            val hexColor = binding?.tauHexColor?.editText?.text.toString().trim().toHexColor()
-            viewModel.setSelectedColor(Gradient(hexColor, hexColor, isSelected = true))
-        }
     }
 
     private fun handleSelectedColor(selectedGradient: Gradient) {
-        viewModel.setSelectedColor(selectedGradient)
         val allGradients = adapter.snapshot()
         val updatedColorSelection = viewModel.markColorAsSelected(selectedGradient, allGradients)
         adapter.submit(updatedColorSelection)
@@ -449,6 +443,19 @@ class CampaignInformationFragment : BaseDaggerFragment() {
         binding?.imgHexColorPreview?.setBackgroundResource(R.drawable.sfs_shape_rounded_color)
 
         binding?.cardView?.visible()
+        viewModel.setSelectedColor(selectedGradient)
+    }
+
+    private fun handleHexColor(text: String) {
+        if (text.isNotEmpty()) {
+            val hexColor = text.toHexColor()
+
+            if (hexColor.isValidHexColor()) {
+                binding?.btnApply?.visible()
+            } else {
+                binding?.btnApply?.invisible()
+            }
+        }
     }
 
     private fun displayStartDatePicker() {
@@ -465,7 +472,6 @@ class CampaignInformationFragment : BaseDaggerFragment() {
         }
         bottomSheet.show(childFragmentManager, bottomSheet.tag)
     }
-
 
     private fun displayEndDatePicker() {
         val startDate = viewModel.getSelectedStartDate().advanceMinuteBy(THIRTY_MINUTE)

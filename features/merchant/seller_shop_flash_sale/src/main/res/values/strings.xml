@@ -39,6 +39,7 @@
     <string name="sfs_cannot_cancel_campaign">Campaign yang masuk ke partisipasi event tidak dapat dibatalkan.</string>
     <string name="sfs_ineligible_access_title">Kamu tidak memiliki kuota untuk membuat Flash Sale Toko</string>
     <string name="sfs_ineligible_access_description">Upgrade tokomu ke Power Merchant PRO untuk dapat kuota Flash Sale  Toko, ya.</string>
+    <string name="sfs_subscribe_pm_pro">Daftar PM Pro</string>
 
     <string name="sfs_search_result_not_found_title">Campaign yang kamu cari tidak ditemukan.</string>
     <string name="sfs_search_result_not_found_description">Coba kata kunci lain, ya.</string>
@@ -92,6 +93,7 @@
     <string name="sfs_placeholder_empty_quota">Kuota campaign di Bulan %s habis. Pilih jadwal di bulan lain, ya.</string>
     <string name="sfs_placeholder_campaign_count">%s Campaign</string>
     <string name="sfs_hashtag">#</string>
+    <string name="sfs_invalid_hex_color">Format kode hexa yang dipilih tidak valid</string>
 
     <string name="sfs_green_dot">Indikator campaign aktif</string>
 

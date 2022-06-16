@@ -24,6 +24,15 @@ fun String.toDate(inputFormat: String): Date {
     }
 }
 
+fun String.isValidHexColor(): Boolean {
+    return try {
+        Color.parseColor(this)
+        true
+    } catch (e: Exception) {
+        false
+    }
+}
+
 fun String.toColor(): Int {
     return try {
         Color.parseColor(this)
