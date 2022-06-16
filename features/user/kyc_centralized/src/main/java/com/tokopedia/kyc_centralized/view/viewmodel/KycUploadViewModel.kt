@@ -262,7 +262,7 @@ class KycUploadViewModel @Inject constructor(
             "encryptionTimeFileFace" to "${encryptionTimeFileFace}ms",
             "ktpFileSize" to if (fileKtp.isNotEmpty()) "${FileUtil.getFileSizeInKb(fileKtp)}Kb" else "-",
             "faceFileSize" to if (fileFace.isNotEmpty()) "${FileUtil.getFileSizeInKb(fileFace)}Kb" else "-",
-            "message" to message.take(1000)
+            "message" to message.take(LIMIT_MESSAGE)
         ))
     }
 
@@ -274,5 +274,7 @@ class KycUploadViewModel @Inject constructor(
         private const val SUCCESS = "Success"
         private const val FAIL = "Fail"
         private const val ERROR_HEADER = "ErrorHeader"
+
+        private const val LIMIT_MESSAGE = 1000
     }
 }
