@@ -194,6 +194,7 @@ class AdminInvitationConfirmationFragment : BaseDaggerFragment() {
             hideLoading()
             when (it) {
                 is Success -> {
+                    userSession.shopName = it.data.shopName
                     invitationConfirmationParam.setShopManageId(it.data.shopManageId)
                     inflateInvitationShopAdminInfo(it.data)
                 }
