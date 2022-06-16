@@ -80,7 +80,6 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener {
 
     var tabAdapter: ManageAddressViewPagerAdapter? = null
 
-
     override fun getScreenName(): String = ""
 
     override fun initInjector() {
