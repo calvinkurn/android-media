@@ -55,6 +55,7 @@ class DetailedReviewMediaGalleryActivity : AppCompatActivity(), CoroutineScope {
         const val TOASTER_KEY_ERROR_GET_REVIEW_MEDIA = "ERROR_GET_REVIEW_MEDIA"
         const val KEY_CACHE_MANAGER_ID = "cacheManagerId"
         const val AUTO_HIDE_OVERLAY_DURATION = 5000L
+        const val AUTO_HIDE_TOUCH_CLICKABLE_MARGIN = 8
     }
 
     @Inject
@@ -389,25 +390,25 @@ class DetailedReviewMediaGalleryActivity : AppCompatActivity(), CoroutineScope {
 
     private fun MotionEvent.isAboveCloseButton(): Boolean {
         return binding?.icReviewMediaGalleryClose?.let { closeButton ->
-            intersectWith(closeButton)
+            intersectWith(closeButton, AUTO_HIDE_TOUCH_CLICKABLE_MARGIN.toPx().toLong())
         } ?: false
     }
 
     private fun MotionEvent.isAboveKebabButton(): Boolean {
         return binding?.icReviewMediaGalleryKebab?.let { kebabButton ->
-            intersectWith(kebabButton)
+            intersectWith(kebabButton, AUTO_HIDE_TOUCH_CLICKABLE_MARGIN.toPx().toLong())
         } ?: false
     }
 
     private fun MotionEvent.isAboveController(): Boolean {
         return binding?.fragmentReviewGalleryController?.let { controller ->
-            intersectWith(controller)
+            intersectWith(controller, AUTO_HIDE_TOUCH_CLICKABLE_MARGIN.toPx().toLong())
         } ?: false
     }
 
     private fun MotionEvent.isAboveReviewDetail(): Boolean {
         return binding?.fragmentReviewDetail?.let { reviewDetail ->
-            intersectWith(reviewDetail)
+            intersectWith(reviewDetail, AUTO_HIDE_TOUCH_CLICKABLE_MARGIN.toPx().toLong())
         } ?: false
     }
 

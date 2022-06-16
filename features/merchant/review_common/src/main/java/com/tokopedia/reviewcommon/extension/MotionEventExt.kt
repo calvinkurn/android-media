@@ -2,10 +2,11 @@ package com.tokopedia.reviewcommon.extension
 
 import android.view.MotionEvent
 import android.view.View
+import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.isVisible
 
-fun MotionEvent.intersectWith(view: View, extraSizePx: Long = 50L): Boolean {
-    return if (view.isVisible) {
+fun MotionEvent.intersectWith(view: View, extraSizePx: Long): Boolean {
+    return if (view.isVisible && view.height.isMoreThanZero() && view.width.isMoreThanZero()) {
         val viewCoordinate = IntArray(2).also {
             view.getLocationOnScreen(it)
         }
