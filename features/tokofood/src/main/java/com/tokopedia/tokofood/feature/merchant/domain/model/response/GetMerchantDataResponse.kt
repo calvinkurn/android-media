@@ -44,6 +44,8 @@ data class TokoFoodMerchantProfile(
         @Expose val longitude: String = "",
         @SerializedName("imageURL")
         @Expose val imageURL: String? = "",
+        @SerializedName("closeWarning")
+        @Expose val closeWarning: String? = "",
         @SerializedName("merchantCategories")
         @Expose val merchantCategories: List<String> = listOf(),
         @SerializedName("rating")
@@ -58,6 +60,8 @@ data class TokoFoodMerchantProfile(
         @Expose val distance: Double = 0.0,
         @SerializedName("distanceFmt")
         @Expose val distanceFmt: TokoFoodFmtWarningContent = TokoFoodFmtWarningContent(),
+        @SerializedName("deliverable")
+        @Expose val deliverable: Boolean = false,
         @SerializedName("eta")
         @Expose val eta: Int = 0,
         @SerializedName("etaFmt")
@@ -143,7 +147,9 @@ data class TokoFoodCatalogVariantOptionDetail(
         @SerializedName("price")
         @Expose val price: Double = 0.0,
         @SerializedName("priceFmt")
-        @Expose val priceFmt: String = ""
+        @Expose val priceFmt: String = "",
+        @SerializedName("status")
+        @Expose val status: Int
 ) : Parcelable
 
 data class TokoFoodCategoryCatalog(

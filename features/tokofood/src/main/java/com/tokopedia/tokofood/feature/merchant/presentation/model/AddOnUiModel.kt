@@ -17,28 +17,30 @@ data class AddOnUiModel(
         var selectedAddOns: List<String> = listOf(),
         val maxQty: Int = 0,
         val minQty: Int = 0,
-        val options: List<OptionUiModel> = listOf()
+        val options: List<OptionUiModel> = listOf(),
+        val outOfStockWording: String = ""
 ) : Parcelable {
     @IgnoredOnParcel
     val isMultipleMandatory = minQty > Int.ONE
 
     @IgnoredOnParcel
-    val addOnItems = options.map { optionUiModel ->
-        ListItemUnify(
-                title = optionUiModel.name,
-                description = optionUiModel.priceFmt
-        ).apply {
-            when (optionUiModel.selectionControlType) {
-                SelectionControlType.SINGLE_SELECTION -> {
-                    setVariant(null, ListItemUnify.RADIO_BUTTON, null)
-                }
-                SelectionControlType.MULTIPLE_SELECTION -> {
-                    setVariant(null, ListItemUnify.CHECKBOX, null)
+    val addOnItems = options
+            .filter { it.isVisible }
+            .map { optionUiModel ->
+                var description = optionUiModel.priceFmt
+                if (optionUiModel.isOutOfStock) description = outOfStockWording
+                ListItemUnify(
+                        title = optionUiModel.name,
+                        description = description
+                ).apply {
+                    when (optionUiModel.selectionControlType) {
+                        SelectionControlType.SINGLE_SELECTION -> {
+                            setVariant(null, ListItemUnify.RADIO_BUTTON, null)
+                        }
+                        SelectionControlType.MULTIPLE_SELECTION -> {
+                            setVariant(null, ListItemUnify.CHECKBOX, null)
+                        }
+                    }
                 }
             }
-        }
-    }
-
-//    @IgnoredOnParcel
-//    var selectedAddOns = options.filter { it.isSelected }.map { it.name }
 }
