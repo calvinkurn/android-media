@@ -715,7 +715,9 @@ class ProfileInfoFragment : BaseDaggerFragment(),
                 dialog.setOverlayClose(false)
                 show()
             }
-        } else loaderCloseAccount?.dialog?.dismiss()
+        } else {
+            loaderCloseAccount?.dialog?.dismiss()
+        }
     }
 
     private fun checkFinancialAssets() {
