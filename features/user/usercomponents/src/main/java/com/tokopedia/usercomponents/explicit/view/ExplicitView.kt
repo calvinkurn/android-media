@@ -56,7 +56,14 @@ open class ExplicitView : CardUnify2, ExplicitAction {
         initView()
     }
 
-    constructor(context: Context, attrs: AttributeSet?, templateName: String, pageName: String, pagePath: String, pageType: String) : super(
+    constructor(
+        context: Context,
+        attrs: AttributeSet?,
+        templateName: String,
+        pageName: String,
+        pagePath: String,
+        pageType: String
+    ) : super(
         context,
         attrs
     ) {
@@ -165,7 +172,7 @@ open class ExplicitView : CardUnify2, ExplicitAction {
 
     private fun initListener() {
         bindingQuestion?.root?.setOnClickListener {
-            if (bindingQuestion?.imgShimmer?.isVisible == false){
+            if (bindingQuestion?.imgShimmer?.isVisible == false) {
                 explicitAnalytics.trackClickCard(pageName, templateName, pagePath, pageType)
             }
         }

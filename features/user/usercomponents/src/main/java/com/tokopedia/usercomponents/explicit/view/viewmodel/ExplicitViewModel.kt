@@ -65,7 +65,8 @@ class ExplicitViewModel @Inject constructor(
             templateId = template.id
             templateName = template.name
             sections.first().sectionId = template.sections.first().sectionID
-            sections.first().questions.first().questionId = template.sections.first().questions.first().questionId
+            sections.first().questions.first().questionId =
+                template.sections.first().questions.first().questionId
         }
 
         val options = template.sections.first().questions.first().property.options

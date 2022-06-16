@@ -1,5 +1,6 @@
 package com.tokopedia.usercomponents.explicit.domain
 
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.graphql.coroutines.data.extensions.request
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
@@ -9,7 +10,7 @@ import com.tokopedia.usercomponents.explicit.domain.model.UpdateStateParam
 import javax.inject.Inject
 
 class UpdateStateUseCase @Inject constructor(
-    private val repository: GraphqlRepository,
+    @ApplicationContext val repository: GraphqlRepository,
     dispatchers: CoroutineDispatchers
 ) : CoroutineUseCase<UpdateStateParam, UpdateStateDataModel>(dispatchers.io) {
     override fun graphqlQuery(): String =

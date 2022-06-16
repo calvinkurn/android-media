@@ -6,7 +6,7 @@ import javax.inject.Inject
 
 class ExplicitAnalytics @Inject constructor() {
 
-    fun trackClickCard(source: String, template: String, pagePath: String, pageType: String){
+    fun trackClickCard(source: String, template: String, pagePath: String, pageType: String) {
         val data = TrackAppUtils.gtmData(
             EVENT_VIEW_ACCOUNT_IRIS,
             CATEGORY_EXPLICIT_WIDGET,
@@ -18,7 +18,12 @@ class ExplicitAnalytics @Inject constructor() {
         sendData(data)
     }
 
-    fun trackClickPositifButton(source: String, template: String, pagePath: String, pageType: String){
+    fun trackClickPositifButton(
+        source: String,
+        template: String,
+        pagePath: String,
+        pageType: String
+    ) {
         val data = TrackAppUtils.gtmData(
             EVENT_VIEW_ACCOUNT,
             CATEGORY_EXPLICIT_WIDGET,
@@ -30,7 +35,12 @@ class ExplicitAnalytics @Inject constructor() {
         sendData(data)
     }
 
-    fun trackClickNegatifButton(source: String, template: String, pagePath: String, pageType: String){
+    fun trackClickNegatifButton(
+        source: String,
+        template: String,
+        pagePath: String,
+        pageType: String
+    ) {
         val data = TrackAppUtils.gtmData(
             EVENT_VIEW_ACCOUNT,
             CATEGORY_EXPLICIT_WIDGET,
@@ -42,7 +52,12 @@ class ExplicitAnalytics @Inject constructor() {
         sendData(data)
     }
 
-    fun trackClickDismissButton(source: String, template: String, pagePath: String, pageType: String){
+    fun trackClickDismissButton(
+        source: String,
+        template: String,
+        pagePath: String,
+        pageType: String
+    ) {
         val data = TrackAppUtils.gtmData(
             EVENT_VIEW_ACCOUNT,
             CATEGORY_EXPLICIT_WIDGET,
@@ -67,7 +82,7 @@ class ExplicitAnalytics @Inject constructor() {
         return "$variable1 - $variable2"
     }
 
-    private fun sendData(data: Map<String, Any>){
+    private fun sendData(data: Map<String, Any>) {
         TrackApp.getInstance().gtm.sendGeneralEvent(data)
     }
 
