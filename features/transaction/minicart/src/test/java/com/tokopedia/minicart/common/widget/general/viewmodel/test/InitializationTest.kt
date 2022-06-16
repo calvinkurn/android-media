@@ -3,6 +3,7 @@ package com.tokopedia.minicart.common.widget.general.viewmodel.test
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.minicart.chatlist.MiniCartChatListUiModelMapper
+import com.tokopedia.minicart.common.analytics.MiniCartAnalytics
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListUseCase
 import com.tokopedia.minicart.common.domain.usecase.MiniCartSource
@@ -65,6 +66,18 @@ class InitializationTest {
 
         //then
         assert(viewModel.currentSource == source)
+    }
+
+    @Test
+    fun `WHEN initialize currentPage THEN currentPage should be updated accordingly`() {
+        //given
+        val page = MiniCartAnalytics.Page.HOME_PAGE
+
+        //when
+        viewModel.currentPage = MiniCartAnalytics.Page.HOME_PAGE
+
+        //then
+        assert(viewModel.currentPage == page)
     }
 
     @Test
