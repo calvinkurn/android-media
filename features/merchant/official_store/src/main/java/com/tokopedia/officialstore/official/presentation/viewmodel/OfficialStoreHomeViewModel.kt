@@ -408,10 +408,6 @@ class OfficialStoreHomeViewModel @Inject constructor(
         }
     }
 
-    fun isLoggedIn() = userSessionInterface.isLoggedIn
-
-    fun getUserId() = userSessionInterface.userId
-
     fun resetIsFeatureShopAllowed() {
         isFeaturedShopAllowed = false
     }

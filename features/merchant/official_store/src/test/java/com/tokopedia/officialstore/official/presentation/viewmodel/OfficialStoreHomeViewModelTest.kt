@@ -501,22 +501,6 @@ class OfficialStoreHomeViewModelTest {
     }
 
     @Test
-    fun given_user_session_logged_in__when_call_isLoggedIn__should_return_true() {
-        val isLoggedIn = true
-        onGetUserSessionIsLoggedIn_thenReturn(isLoggedIn)
-
-        verifyIsLoggedInEquals(true)
-    }
-
-    @Test
-    fun given_user_session_logged_out__when_call_isLoggedIn__should_return_false() {
-        val isLoggedIn = false
-        onGetUserSessionIsLoggedIn_thenReturn(isLoggedIn)
-
-        verifyIsLoggedInEquals(false)
-    }
-
-    @Test
     fun given_get_headlineAds_success_when_get_osDynamicChannel_featured_shop_then_pass_to_view() {
         val prefixUrl = "prefix"
         val slug = "slug"
@@ -615,15 +599,6 @@ class OfficialStoreHomeViewModelTest {
 
 
     // ===================================== //
-    private fun verifyIsLoggedInEquals(expectedLoggedInStatus: Boolean) {
-        val actualLoggedInStatus = viewModel.isLoggedIn()
-        assertEquals(expectedLoggedInStatus, actualLoggedInStatus)
-    }
-
-    private fun onGetUserSessionIsLoggedIn_thenReturn(loggedIn: Boolean) {
-        every { userSessionInterface.isLoggedIn } returns loggedIn
-    }
-
     private fun onGetOfficialStoreBanners_thenReturn(osBanners: OfficialStoreBanners) {
         coEvery { getOfficialStoreBannersUseCase.executeOnBackground(any()) } returns osBanners
     }
@@ -945,9 +920,22 @@ class OfficialStoreHomeViewModelTest {
     }
 
     @Test
-    fun test_get_userId(){
-        val userId = "123"
-        every { userSessionInterface.userId } returns userId
-        assertEquals(viewModel.getUserId(), userId)
+    fun given_get_data_error_when_load_first_data_then_set_error_value() {
+        runBlocking {
+            val error = NullPointerException()
+            val prefixUrl = "prefix"
+            val slug = "slug"
+            val category = createCategory(prefixUrl, slug)
+            val channelType = "$prefixUrl$slug"
+
+            onGetOfficialStoreData_thenReturn(error)
+            onSetupDynamicChannelParams_thenCompleteWith(channelType)
+
+            viewModel.loadFirstData(category, "")
+            val expectedError = Fail(NullPointerException())
+
+            verifyLiveDataValueError(expectedError)
+            verifyDynamicChannelParamsEquals(channelType)
+        }
     }
 }

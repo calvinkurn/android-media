@@ -75,7 +75,6 @@ import com.tokopedia.wishlistcommon.data.response.DeleteWishlistV2Response
 import com.tokopedia.wishlistcommon.listener.WishlistV2ActionListener
 import com.tokopedia.wishlistcommon.util.AddRemoveWishlistV2Handler
 import com.tokopedia.wishlistcommon.util.WishlistV2CommonConsts.TOASTER_RED
-import com.tokopedia.wishlistcommon.util.WishlistV2RemoteConfigRollenceUtil
 import com.tokopedia.wishlist_common.R as Rwishlist
 import java.util.*
 import javax.inject.Inject
@@ -349,7 +348,7 @@ class OfficialHomeFragment :
     override fun onProductImpression(item: RecommendationItem) {
         tracking?.eventImpressionProductRecommendation(
                 item,
-                viewModel.isLoggedIn(),
+                isLogin(),
                 category?.title.toString(),
                 PRODUCT_RECOMMENDATION_TITLE_SECTION,
                 item.position.toString()
@@ -357,7 +356,7 @@ class OfficialHomeFragment :
     }
 
     override fun onWishlistClick(item: RecommendationItem, isAddWishlist: Boolean, callback: (Boolean, Throwable?) -> Unit) {
-        if (viewModel.isLoggedIn()) {
+        if (isLogin()) {
             if (isAddWishlist) {
                 viewModel.addWishlist(item, callback)
             } else {
@@ -370,14 +369,14 @@ class OfficialHomeFragment :
         tracking?.eventClickWishlist(
                 category?.title.toEmptyStringIfNull(),
                 isAddWishlist,
-                viewModel.isLoggedIn(),
+                isLogin(),
                 item.productId,
                 item.isTopAds
         )
     }
 
     override fun onWishlistV2Click(item: RecommendationItem, isAddWishlist: Boolean) {
-        if (viewModel.isLoggedIn()) {
+        if (isLogin()) {
             if (isAddWishlist) {
                 viewModel.addWishlistV2(item, object: WishlistV2ActionListener{
                     override fun onErrorAddWishList(throwable: Throwable, productId: String) {
@@ -437,7 +436,7 @@ class OfficialHomeFragment :
         tracking?.eventClickWishlist(
             category?.title.toEmptyStringIfNull(),
             isAddWishlist,
-            viewModel.isLoggedIn(),
+            isLogin(),
             item.productId,
             item.isTopAds
         )
@@ -635,7 +634,7 @@ class OfficialHomeFragment :
                 channel,
                 grid,
                 position.toString(),
-                viewModel.isLoggedIn()
+                isLogin()
         )
     }
 
@@ -655,7 +654,7 @@ class OfficialHomeFragment :
                 channel,
                 grid,
                 position.toString(),
-                viewModel.isLoggedIn()
+                isLogin()
         )
         RouteManager.route(context, applink)
     }
@@ -708,8 +707,8 @@ class OfficialHomeFragment :
                 channel,
                 grid,
                 position.toString(),
-                viewModel.isLoggedIn(),
-                viewModel.getUserId()
+                isLogin(),
+                getUserId()
         )
     }
 
@@ -755,8 +754,8 @@ class OfficialHomeFragment :
                 channel,
                 grid,
                 position,
-                viewModel.isLoggedIn(),
-                viewModel.getUserId()
+                isLogin(),
+                getUserId()
         )
         RouteManager.route(context, applink)
     }
@@ -769,7 +768,7 @@ class OfficialHomeFragment :
                 url = shopData.imageUrl.orEmpty(),
                 additionalInformation = shopData.additionalInformation.orEmpty(),
                 featuredBrandId = shopData.featuredBrandId.orEmpty(),
-                isLogin = viewModel.isLoggedIn(),
+                isLogin = isLogin(),
                 shopId = shopData.shopId.orEmpty()
         )
     }
@@ -782,7 +781,7 @@ class OfficialHomeFragment :
                 url = shopData.url.orEmpty(),
                 additionalInformation = shopData.additionalInformation.orEmpty(),
                 featuredBrandId = shopData.featuredBrandId.orEmpty(),
-                isLogin = viewModel.isLoggedIn(),
+                isLogin = isLogin(),
                 shopId = shopData.shopId.orEmpty(),
                 campaignCode = shopData.campaignCode.orEmpty()
         )
@@ -1108,7 +1107,7 @@ class OfficialHomeFragment :
         tracking?.eventClickWishlist(
                 category?.title.toEmptyStringIfNull(),
                 !productCardOptionsModel.isWishlisted,
-                viewModel.isLoggedIn(),
+                isLogin(),
                 productCardOptionsModel.productId.toLongOrZero(),
                 productCardOptionsModel.isTopAds
         )
@@ -1225,7 +1224,7 @@ class OfficialHomeFragment :
                 item,
                 position.toString(),
                 PRODUCT_RECOMMENDATION_TITLE_SECTION,
-                viewModel.isLoggedIn(),
+                isLogin(),
                 category?.title.toString()
         )
     }
