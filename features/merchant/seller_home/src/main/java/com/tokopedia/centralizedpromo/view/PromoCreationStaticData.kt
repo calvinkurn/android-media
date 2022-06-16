@@ -78,6 +78,14 @@ object PromoCreationStaticData {
 
                 ),
                 PromoCreationUiModel(
+                    R.drawable.ic_sah_tokomember,
+                    resourceProvider.getPromoCreationTitleTokoMember(),
+                    resourceProvider.getPromoCreationDescriptionTokoMember(),
+                    "",
+                    ApplinkConst.SellerApp.TOKOMEMBER,
+                    resourceProvider.getPromoCreationLabelTokoMember()
+                ),
+                PromoCreationUiModel(
                     R.drawable.ic_broadcast_chat,
                     resourceProvider.getPromoCreationTitleBroadcastChat(),
                     resourceProvider.getPromoCreationDescriptionBroadcastChat(),
@@ -136,18 +144,6 @@ object PromoCreationStaticData {
                 )
             )
         }
-
-        promoItems.add(
-            PromoCreationUiModel(
-                R.drawable.ic_sah_tokomember,
-                resourceProvider.getPromoCreationTitleTokoMember(),
-                resourceProvider.getPromoCreationDescriptionTokoMember(),
-                "",
-                "",
-                resourceProvider.getPromoCreationLabelTokoMember()
-            )
-        )
-
         return PromoCreationListUiModel(
             items = promoItems,
             errorMessage = ""
