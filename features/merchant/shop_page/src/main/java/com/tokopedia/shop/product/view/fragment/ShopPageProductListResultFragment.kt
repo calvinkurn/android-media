@@ -868,6 +868,18 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
         return getSelectedEtalaseChip()
     }
 
+    override fun onProductAtcNonVariantQuantityEditorChanged(
+        shopHomeProductViewModel: ShopProductUiModel,
+        quantity: Int
+    ) {
+    }
+
+    override fun onProductAtcVariantClick(shopHomeProductViewModel: ShopProductUiModel) {
+    }
+
+    override fun onProductAtcDefaultClick(shopHomeProductViewModel: ShopProductUiModel) {
+    }
+
     private fun getProductIntent(productId: String, attribution: String?, listNameOfProduct: String): Intent? {
         return if (context != null) {
             val bundle = Bundle()

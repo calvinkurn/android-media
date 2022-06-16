@@ -4,7 +4,7 @@ import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
-import com.tokopedia.productcard.ProductCardGridView
+import com.tokopedia.productcard.ATCNonVariantListener
 import com.tokopedia.shop.R
 import com.tokopedia.shop.product.utils.mapper.ShopPageProductListMapper
 import com.tokopedia.shop.product.view.datamodel.ShopProductUiModel
@@ -52,6 +52,25 @@ class ShopProductItemListViewHolder(
                 shopProductImpressionListener?.onProductImpression(shopProductUiModel, shopTrackType, adapterPosition)
             }
         })
+
+        productCardView?.setAddToCartNonVariantClickListener(object : ATCNonVariantListener {
+            override fun onQuantityChanged(quantity: Int) {
+                shopProductClickedListener?.onProductAtcNonVariantQuantityEditorChanged(
+                    shopProductUiModel,
+                    quantity
+                )
+            }
+        })
+
+        productCardView?.setAddVariantClickListener {
+            shopProductClickedListener?.onProductAtcVariantClick(
+                shopProductUiModel
+            )
+        }
+
+        productCardView?.setAddToCartOnClickListener {
+            shopProductClickedListener?.onProductAtcDefaultClick(shopProductUiModel)
+        }
     }
 
 }

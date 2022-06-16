@@ -530,12 +530,6 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         })
     }
 
-    private fun updateProductCardQuantity() {
-
-        shopHomeAdapter.asd()
-
-    }
-
     override fun getRecyclerViewResourceId(): Int {
         return R.id.recycler_view
     }
