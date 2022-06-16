@@ -18,7 +18,7 @@ class ManageAddressViewPagerAdapter(fragmentActivity: FragmentActivity, private 
     }
 
     override fun createFragment(position: Int): Fragment {
-        return _pages[position].second
+        return _pages.getOrNull(position)?.second ?: ManageAddressFragment()
     }
 
     override fun getItemCount(): Int = _pages.size
