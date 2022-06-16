@@ -2267,7 +2267,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             if (activity != null) {
                 shippingCourierBottomsheet = new ShippingCourierBottomsheet();
                 shippingCourierBottomsheet.show(activity, getFragmentManager(), this,
-                        shippingCourierUiModels, recipientAddressModel, cartPosition);
+                        shippingCourierUiModels, recipientAddressModel, cartPosition, false);
                 if (shippingCourierUiModels != null) {
                     checkHasCourierPromo(shippingCourierUiModels);
                 }

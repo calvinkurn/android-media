@@ -52,13 +52,10 @@ import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.Servi
 import com.tokopedia.logisticCommon.domain.usecase.GetAddressCornerUseCase
 import com.tokopedia.logisticcart.shipping.features.shippingcourier.view.ShippingCourierBottomsheet
 import com.tokopedia.logisticcart.shipping.features.shippingcourier.view.ShippingCourierBottomsheetListener
-import com.tokopedia.logisticcart.shipping.features.shippingcourierocc.ShippingCourierOccBottomSheet
-import com.tokopedia.logisticcart.shipping.features.shippingcourierocc.ShippingCourierOccBottomSheetListener
 import com.tokopedia.logisticcart.shipping.features.shippingduration.view.ShippingDurationBottomsheet
 import com.tokopedia.logisticcart.shipping.features.shippingduration.view.ShippingDurationBottomsheetListener
 import com.tokopedia.logisticcart.shipping.model.CourierItemData
 import com.tokopedia.logisticcart.shipping.model.LogisticPromoUiModel
-import com.tokopedia.logisticcart.shipping.model.RatesViewModelType
 import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemModel
 import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel
 import com.tokopedia.logisticcart.shipping.model.ShippingRecommendationData
@@ -1350,11 +1347,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
                             viewModel.reloadRates()
                             orderSummaryAnalytics.eventClickRefreshOnCourierSection(shipmentCartItemModel.shopId.toString())
                         }
-
-//                        override fun onLogisticPromoClicked(data: LogisticPromoUiModel) {
-//                            onLogisticPromoClick(data)
-//                        }
-                    }, list, null, 0)
+                    }, list, null, 0, true)
                 }
             }
         }

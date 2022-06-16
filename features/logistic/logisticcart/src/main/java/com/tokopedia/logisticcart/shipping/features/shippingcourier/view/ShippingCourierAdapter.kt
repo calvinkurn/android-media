@@ -3,6 +3,7 @@ package com.tokopedia.logisticcart.shipping.features.shippingcourier.view
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.logisticCommon.data.constant.CourierConstant
 import com.tokopedia.logisticcart.shipping.features.shippingduration.view.PreOrderViewHolder
 import com.tokopedia.logisticcart.shipping.model.*
 
@@ -16,17 +17,27 @@ class ShippingCourierAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private var shippingCourierAdapterListener: ShippingCourierAdapterListener? = null
     private var cartPosition = 0
 
-    fun setShippingCourierViewModels(shippingCourierUiModels: List<ShippingCourierUiModel>, preOrderModel: PreOrderModel?) {
+    fun setShippingCourierViewModels(shippingCourierUiModels: List<ShippingCourierUiModel>, preOrderModel: PreOrderModel?, isOcc: Boolean) {
         this.data = shippingCourierUiModels.filter {courier -> !courier.productData.isUiRatesHidden}.toMutableList()
         if (preOrderModel?.display == true) {
             preOrderModel.let { this.data.add(0, it) }
-            if (shippingCourierUiModels[0].serviceData.serviceName == INSTAN_VIEW_TYPE) this.data.add(1, NotifierModel())
-            if (shippingCourierUiModels[0].serviceData.serviceName == SAME_DAY_VIEW_TYPE) this.data.add(1, NotifierModelSameDay())
+            setNotifierModel(shippingCourierUiModels[0], 1, isOcc)
         } else {
-            if (shippingCourierUiModels[0].serviceData.serviceName == INSTAN_VIEW_TYPE) this.data.add(0, NotifierModel())
-            if (shippingCourierUiModels[0].serviceData.serviceName == SAME_DAY_VIEW_TYPE) this.data.add(0, NotifierModelSameDay())
+            setNotifierModel(shippingCourierUiModels[0], 0, isOcc)
         }
         notifyDataSetChanged()
+    }
+
+    private fun setNotifierModel(shippingCourierUiModel: ShippingCourierUiModel, index: Int, isOcc: Boolean) {
+        if (isOcc && shippingCourierUiModel.productData.shipperId in CourierConstant.INSTANT_SAMEDAY_COURIER) {
+            this.data.add(index, NotifierModel())
+        } else {
+            if (shippingCourierUiModel.serviceData.serviceName == INSTAN_VIEW_TYPE) {
+                this.data.add(index, NotifierModel())
+            } else if (shippingCourierUiModel.serviceData.serviceName == SAME_DAY_VIEW_TYPE) {
+                this.data.add(index, NotifierModelSameDay())
+            }
+        }
     }
 
     fun setShippingCourierAdapterListener(shippingCourierAdapterListener: ShippingCourierAdapterListener?) {

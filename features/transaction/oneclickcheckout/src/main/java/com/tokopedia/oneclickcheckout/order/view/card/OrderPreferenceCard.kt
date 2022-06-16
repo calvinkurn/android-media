@@ -321,17 +321,6 @@ class OrderPreferenceCard(val binding: CardOrderPreferenceBinding, private val l
                     val shippingRecommendationData = shipment.shippingRecommendationData
                     if (shippingRecommendationData != null) {
                         val courierList: List<ShippingCourierUiModel> = shippingRecommendationData.shippingDurationUiModels.find { it.isSelected }?.shippingCourierViewModelList ?: listOf()
-//                        for (shippingDurationViewModel in shippingRecommendationData.shippingDurationUiModels) {
-//                            if (shippingDurationViewModel.isSelected) {
-//                                if (shippingDurationViewModel.shippingCourierViewModelList.isNotEmpty() && isCourierInstantOrSameday(shippingDurationViewModel.shippingCourierViewModelList[0].productData.shipperId)) {
-//                                    list.add(NotifierModel())
-//                                }
-//                                val filteredList = shippingDurationViewModel.shippingCourierViewModelList
-//                                    .filter { !it.productData.isUiRatesHidden }
-//                                list.addAll(filteredList)
-//                                break
-//                            }
-//                        }
                         listener.chooseCourier(shipping, ArrayList(courierList))
                     }
                 }
@@ -351,17 +340,6 @@ class OrderPreferenceCard(val binding: CardOrderPreferenceBinding, private val l
                     val shippingRecommendationData = shipment.shippingRecommendationData
                     if (shippingRecommendationData != null) {
                         val courierList: List<ShippingCourierUiModel> = shippingRecommendationData.shippingDurationUiModels.find { it.isSelected }?.shippingCourierViewModelList ?: listOf()
-//                        for (shippingDurationViewModel in shippingRecommendationData.shippingDurationUiModels) {
-//                            if (shippingDurationViewModel.isSelected) {
-//                                if (shippingDurationViewModel.shippingCourierViewModelList.isNotEmpty() && isCourierInstantOrSameday(shippingDurationViewModel.shippingCourierViewModelList[0].productData.shipperId)) {
-//                                    list.add(NotifierModel())
-//                                }
-//                                val filteredList = shippingDurationViewModel.shippingCourierViewModelList
-//                                    .filter { !it.productData.isUiRatesHidden }
-//                                list.addAll(filteredList)
-//                                break
-//                            }
-//                        }
                         listener.chooseCourier(shipping, ArrayList(courierList))
                     }
                 }
