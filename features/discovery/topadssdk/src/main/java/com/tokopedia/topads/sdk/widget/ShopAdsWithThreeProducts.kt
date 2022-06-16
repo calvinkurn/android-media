@@ -11,10 +11,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.topads.sdk.R
@@ -117,7 +114,7 @@ class ShopAdsWithThreeProducts : BaseCustomView {
         items.cpm?.cpmShop?.imageShop?.let { it1 ->
             shopImage?.addOnImpressionListener(it1) {
                 impressionListener?.let {
-                    it.onImpressionHeadlineAdsItem(0, items)
+                    it.onImpressionHeadlineAdsItem(Int.ZERO, items)
                     topAdsUrlHitter.hitImpressionUrl(
                         this::class.java.name,
                         items.cpm.cpmImage.fullUrl,
@@ -269,7 +266,7 @@ class ShopAdsWithThreeProducts : BaseCustomView {
         return ProductCardModel(
             productImageUrl = product.imageProduct.imageUrl,
             productName = product.name,
-            discountPercentage = if (product.campaign.discountPercentage != 0) "${product.campaign.discountPercentage}%" else "",
+            discountPercentage = if (product.campaign.discountPercentage != Int.ZERO) "${product.campaign.discountPercentage}%" else "",
             slashedPrice = product.campaign.originalPrice,
             formattedPrice = product.priceFormat,
             reviewCount = product.countReviewFormat.toIntOrZero(),
@@ -316,18 +313,18 @@ class ShopAdsWithThreeProducts : BaseCustomView {
         return object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
-                if (layoutManager?.findFirstVisibleItemPosition() == 0 && dx != 0) {
+                if (layoutManager?.findFirstVisibleItemPosition() == Int.ZERO && dx != Int.ZERO) {
                     val firstView =
                         layoutManager?.let { it.findViewByPosition(it.findFirstVisibleItemPosition()) }
                     firstView?.let {
                         val distanceFromLeft = it.left
                         val translateX = distanceFromLeft * 0.2f
-                        if (translateX <= 0) {
+                        if (translateX <= Int.ZERO) {
                             firstCardBackground?.translationX = translateX
-                            if (distanceFromLeft <= 0) {
+                            if (distanceFromLeft <= Int.ZERO) {
                                 val itemSize = it.width.toFloat()
                                 val alpha = (abs(distanceFromLeft).toFloat() / itemSize * 0.80f)
-                                firstCardBackground?.alpha = 1 - alpha
+                                firstCardBackground?.alpha = Int.ONE - alpha
                             }
                         } else {
                             firstCardBackground?.translationX = 0f
@@ -389,7 +386,7 @@ class ShopAdsWithThreeProducts : BaseCustomView {
         if (merchantVouchers.isNotEmpty()) linearLayoutMerchantVoucher?.show()
 
         merchantVouchers.forEachIndexed { index, voucher ->
-            val isFirstItem = index == 0
+            val isFirstItem = index == Int.ZERO
             val labelVoucher = createLabelVoucher(context, voucher, isFirstItem)
 
             linearLayoutMerchantVoucher?.addView(labelVoucher)
@@ -405,7 +402,7 @@ class ShopAdsWithThreeProducts : BaseCustomView {
             ViewGroup.LayoutParams.WRAP_CONTENT,
             ViewGroup.LayoutParams.WRAP_CONTENT
         )
-        layoutParams.marginStart = if (isFirstItem) 0 else 4.toPx()
+        layoutParams.marginStart = if (isFirstItem) Int.ZERO else 4.toPx()
 
         val labelVoucher = context?.let { Label(it) }
 

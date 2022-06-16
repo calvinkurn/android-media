@@ -72,4 +72,5 @@
     <dimen name="sdk_dp_10">10dp</dimen>
     <dimen name="sdk_dp_112">112dp</dimen>
     <dimen name="sdk_dp_300">300dp</dimen>
+    <dimen name="sdk_dp_36">36dp</dimen>
 </resources>

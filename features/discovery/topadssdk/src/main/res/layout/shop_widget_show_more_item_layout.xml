@@ -23,7 +23,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/unify_space_12"
         android:layout_marginEnd="@dimen/unify_space_12"
-        android:text="Lihat Produk Lainnya"
+        android:text="@string/see_more_txt"
         android:textColor="@color/Unify_N0"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
