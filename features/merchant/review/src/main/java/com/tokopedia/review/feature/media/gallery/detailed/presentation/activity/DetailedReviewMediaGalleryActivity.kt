@@ -364,9 +364,10 @@ class DetailedReviewMediaGalleryActivity : AppCompatActivity(), CoroutineScope {
         collectWhenResumed(
             combine(
                 sharedReviewMediaGalleryViewModel.overlayVisibility,
-                sharedReviewMediaGalleryViewModel.orientationUiState
-            ) { overlayVisibility, orientationUiState ->
-                overlayVisibility && orientationUiState.isLandscape()
+                sharedReviewMediaGalleryViewModel.orientationUiState,
+                sharedReviewMediaGalleryViewModel.isPlayingVideo
+            ) { overlayVisibility, orientationUiState, isPlayingVideo ->
+                overlayVisibility && orientationUiState.isLandscape() && isPlayingVideo
             }
         ) { startAutoHideTimer ->
             if (startAutoHideTimer) {

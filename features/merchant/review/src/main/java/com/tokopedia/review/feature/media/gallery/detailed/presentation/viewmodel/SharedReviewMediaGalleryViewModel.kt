@@ -36,6 +36,7 @@ import kotlinx.coroutines.flow.distinctUntilChangedBy
 import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.flow.updateAndGet
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 import kotlin.math.ceil
@@ -100,6 +101,9 @@ class SharedReviewMediaGalleryViewModel @Inject constructor(
     private val _overlayVisibility = MutableStateFlow(true)
     val overlayVisibility: StateFlow<Boolean>
         get() = _overlayVisibility
+    private val _isPlayingVideo = MutableStateFlow(false)
+    val isPlayingVideo: StateFlow<Boolean>
+        get() = _isPlayingVideo
     private val _toggleLikeRequest = MutableStateFlow<Pair<String, Int>?>(null)
     private val _detailedReviewActionMenu = _currentReviewDetail.mapLatest {
         if (it?.isReportable == true) {
@@ -463,5 +467,14 @@ class SharedReviewMediaGalleryViewModel @Inject constructor(
 
     fun hideOverlay() {
         _overlayVisibility.update { false }
+    }
+
+    fun updateIsPlayingVideo(playing: Boolean) {
+        val isPausing = !_isPlayingVideo.updateAndGet {
+            playing
+        }
+        if (isPausing) {
+            _overlayVisibility.value = true
+        }
     }
 }
