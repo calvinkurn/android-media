@@ -77,6 +77,7 @@ import com.tokopedia.chatbot.view.presenter.ChatbotPresenter.companion.LIVE_CHAT
 import com.tokopedia.chatbot.view.presenter.ChatbotPresenter.companion.OPEN_CSAT
 import com.tokopedia.chatbot.view.presenter.ChatbotPresenter.companion.QUERY_SORCE_TYPE
 import com.tokopedia.chatbot.view.presenter.ChatbotPresenter.companion.UPDATE_TOOLBAR
+import com.tokopedia.chatbot.view.util.isInDarkMode
 import com.tokopedia.common.network.data.model.RestResponse
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.imageuploader.domain.UploadImageUseCase
@@ -277,25 +278,15 @@ class ChatbotPresenter @Inject constructor(
     private fun updateToolbar(tool: ToolbarAttributes?) {
 
         var profileImage = ""
-        val nightModeFlags: Int =  view.context.resources.configuration.uiMode and
-                Configuration.UI_MODE_NIGHT_MASK
-        when (nightModeFlags) {
-            Configuration.UI_MODE_NIGHT_YES -> {
-                tool?.profileImageDark?.let {
-                    profileImage = it
-                }
-            }
-            Configuration.UI_MODE_NIGHT_NO -> {
-                tool?.profileImage?.let {
-                    profileImage = it
-                }
-            }
-            else -> {
-                tool?.profileImage?.let {
-                    profileImage = it
-                }
-            }
 
+        tool?.profileImage?.let {
+            profileImage = it
+        }
+
+        if (view.isInDarkMode()) {
+            tool?.profileImageDark?.let {
+                profileImage = it
+            }
         }
 
         view.updateToolbar(tool?.profileName,profileImage, tool?.badgeImage)

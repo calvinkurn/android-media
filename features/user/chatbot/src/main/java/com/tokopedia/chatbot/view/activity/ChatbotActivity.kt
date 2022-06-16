@@ -18,6 +18,7 @@ import com.tokopedia.chat_common.view.viewmodel.ChatRoomHeaderUiModel
 import com.tokopedia.chatbot.R
 import com.tokopedia.chatbot.data.toolbarpojo.ToolbarAttributes
 import com.tokopedia.chatbot.view.fragment.ChatbotFragment
+import com.tokopedia.chatbot.view.util.isInDarkMode
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.pushnotif.PushNotification
@@ -92,19 +93,13 @@ class ChatbotActivity : BaseChatToolbarActivity() {
         super.setupToolbar()
         val userAvatar = findViewById<ImageView>(R.id.user_avatar)
         userAvatar.apply {
-            if (darkModeEnabled(userAvatar)){
+            if (userAvatar.isInDarkMode()){
                 setImageResource(R.drawable.ic_tanya_dark_mode)
             } else {
                 setImageResource(R.drawable.chatbot_avatar)
             }
         }
         (findViewById<TextView>(R.id.title)).text = getString(R.string.cb_bot_toolbar_title)
-    }
-
-    private fun darkModeEnabled(view: ImageView): Boolean {
-        val nightModeFlags: Int =  view.context.resources.configuration.uiMode and
-                Configuration.UI_MODE_NIGHT_MASK
-        return nightModeFlags == UI_MODE_NIGHT_YES
     }
 
     fun upadateToolbar(profileName: String?, profileImage: String?, badgeImage: ToolbarAttributes.BadgeImage?) {

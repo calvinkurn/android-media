@@ -11,9 +11,11 @@ import com.tokopedia.chatbot.R
 import com.tokopedia.chatbot.domain.pojo.senderinfo.SenderInfoData
 import com.tokopedia.chatbot.util.ViewUtil
 import com.tokopedia.chatbot.view.adapter.viewholder.listener.ChatbotAdapterListener
+import com.tokopedia.chatbot.view.util.isInDarkMode
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.unifycomponents.ImageUnify
+import com.tokopedia.unifycomponents.setImage
 import com.tokopedia.unifyprinciples.Typography
 
 class LeftChatMessageViewHolder(
@@ -55,30 +57,13 @@ class LeftChatMessageViewHolder(
 
     private fun bindSenderInfo(senderInfoData: SenderInfoData) {
 
-        val nightModeFlags: Int = itemView.context.resources.configuration.uiMode and
-                Configuration.UI_MODE_NIGHT_MASK
-        when (nightModeFlags) {
-            Configuration.UI_MODE_NIGHT_YES -> {
-                senderInfoData.iconDarkUrl?.let {
-                    senderAvatar?.setImageUrl(it)
-                }
+        senderInfoData.iconUrl?.let {
+            senderAvatar?.setImageUrl(it)
+        }
+        if (itemView.isInDarkMode()) {
+            senderInfoData.iconDarkUrl?.let {
+                senderAvatar?.setImageUrl(it)
             }
-            Configuration.UI_MODE_NIGHT_NO -> {
-                senderInfoData.iconUrl?.let {
-                    senderAvatar?.setImageUrl(it)
-                }
-            }
-            Configuration.UI_MODE_NIGHT_UNDEFINED -> {
-                senderInfoData.iconUrl?.let {
-                    senderAvatar?.setImageUrl(it)
-                }
-            }
-            else -> {
-                senderInfoData.iconUrl?.let {
-                    senderAvatar?.setImageUrl(it)
-                }
-            }
-
         }
 
         senderAvatar?.show()
