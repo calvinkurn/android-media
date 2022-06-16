@@ -1133,14 +1133,14 @@ class TokoNowHomeFragment: Fragment(),
                     userId = it.userId,
                     whIdOrigin = it.whIdOrigin,
                     whIdDestination = it.whIdDestination,
-                    isNow15 = it.isNow15
+                    is20mSwitcher = it.is20mSwitcher
                 )
             } else {
                 analytics.sendClickSwitcherWidget(
                     userId = it.userId,
                     whIdOrigin = it.whIdOrigin,
                     whIdDestination = it.whIdDestination,
-                    isNow15 = it.isNow15
+                    is20mSwitcher = it.is20mSwitcher
                 )
             }
         }
