@@ -1,6 +1,7 @@
 package com.tokopedia.epharmacy.ui.activity
 
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.app.BaseMainApplication
@@ -10,6 +11,8 @@ import com.tokopedia.epharmacy.R
 import com.tokopedia.epharmacy.di.DaggerEPharmacyComponent
 import com.tokopedia.epharmacy.di.EPharmacyComponent
 import com.tokopedia.epharmacy.ui.fragment.UploadPrescriptionFragment
+import com.tokopedia.epharmacy.utils.EXTRA_CHECKOUT_ID
+import com.tokopedia.epharmacy.utils.EXTRA_ORDER_ID
 import com.tokopedia.epharmacy.utils.MEDIA_PICKER_REQUEST_CODE
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
@@ -20,6 +23,9 @@ class EPharmacyActivity : BaseSimpleActivity(), HasComponent<EPharmacyComponent>
 
     @Inject
     lateinit var userSession: UserSessionInterface
+
+    private var orderId = ""
+    private var checkoutId = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         ePharmacyComponent.inject(this)
@@ -32,7 +38,21 @@ class EPharmacyActivity : BaseSimpleActivity(), HasComponent<EPharmacyComponent>
     override fun getParentViewResourceID(): Int = R.id.e_pharmacy_parent_view
 
     override fun getNewFragment(): Fragment {
-        return UploadPrescriptionFragment.newInstance(Bundle())
+        orderId = if (intent.hasExtra(EXTRA_ORDER_ID))
+            intent.getStringExtra(EXTRA_ORDER_ID) ?: ""
+        else {
+            val pathSegments = Uri.parse(intent.data?.path ?: "").pathSegments
+            if (pathSegments.size > 0) pathSegments[0]?.split("-")?.lastOrNull()?.trim() ?: "" else ""
+        }
+
+        checkoutId = if(intent.hasExtra(EXTRA_CHECKOUT_ID)){
+            intent.getStringExtra(EXTRA_CHECKOUT_ID) ?: ""
+        }else ""
+
+        return UploadPrescriptionFragment.newInstance(Bundle().apply {
+            putString(EXTRA_ORDER_ID,orderId)
+            putString(EXTRA_CHECKOUT_ID,checkoutId)
+        })
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

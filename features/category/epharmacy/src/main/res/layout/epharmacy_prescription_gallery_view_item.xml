@@ -11,7 +11,7 @@
         android:layout_height="wrap_content">
 
         <com.tokopedia.unifycomponents.ImageUnify
-            android:id="@+id/image"
+            android:id="@+id/prescription_image"
             android:layout_width="@dimen/unify_space_64"
             android:layout_height="@dimen/unify_space_64"
             app:layout_constraintTop_toTopOf="parent"
@@ -28,6 +28,8 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:icon_name="CLEAR"
+            android:visibility="gone"
+            tools:visibility="visible"
             />
 
         <com.tokopedia.iconunify.IconUnify
@@ -62,6 +64,19 @@
             android:visibility="gone"
             tools:visibility="gone"
             />
+
+        <com.tokopedia.unifycomponents.LoaderUnify
+            android:id="@+id/prescription_loader"
+            android:layout_width="@dimen/unify_space_32"
+            android:layout_height="@dimen/unify_space_32"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:visibility="gone"
+            tools:visibility="visible"
+            />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </com.tokopedia.unifycomponents.CardUnify2>

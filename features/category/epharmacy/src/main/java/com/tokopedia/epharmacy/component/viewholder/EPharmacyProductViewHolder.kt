@@ -31,8 +31,8 @@ class EPharmacyProductViewHolder(private val view: View,
             productText.text = name ?: ""
             productQuantity.text = quantity.toString()
             productImageUnify.loadImage(productImage)
-//            storeNameText.text = storeName ?: ""
-//            storeLocationText.text = storeLocation ?: ""
+            storeNameText.text = shopName ?: ""
+            storeLocationText.text = shopLocation ?: ""
         }
     }
 }

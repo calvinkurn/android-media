@@ -27,6 +27,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.track)
     implementation projectOrAar(rootProject.ext.libraries.webview)
     implementation projectOrAar(rootProject.ext.libraries.usersession)
+    implementation projectOrAar(rootProject.ext.libraries.commonNetwork)
 
     implementation projectOrAar(rootProject.ext.features.medialoader)
     implementation projectOrAar(rootProject.ext.features.mediauploader)
@@ -39,6 +40,8 @@ dependencies {
     implementation rootProject.ext.unifyDependencies.global_error
     implementation rootProject.ext.tkpdInternalLibDependencies.analyticConstants
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
+    implementation rootProject.ext.miscDependencies.cameraView
+    implementation rootProject.ext.networkDependencies.glide
 
 
     implementation rootProject.ext.supportLibDependencies.constraintLayout

@@ -53,23 +53,23 @@ data class PrescriptionImage(
     @SerializedName("expired_at")
     val expiredAt: String?,
     @SerializedName("prescription_id")
-    val prescriptionId: String?,
+    var prescriptionId: String?,
     @SerializedName("reject_reason")
     val rejectReason: String?,
     @SerializedName("status")
     val status: String?,
     @SerializedName("is_uploading")
-    val isUploading: Boolean = false,
+    var isUploading: Boolean = false,
     @SerializedName("is_upload_success")
-    val isUploadSuccess: Boolean = false,
+    var isUploadSuccess: Boolean = false,
     @SerializedName("is_deletable")
-    val isDeletable: Boolean = false,
+    var isDeletable: Boolean = false,
     @SerializedName("is_upload_failed")
-    val isUploadFailed: Boolean = false,
+    var isUploadFailed: Boolean = false,
     @SerializedName("view_type")
-    val viewType: Int = GALLERY_IMAGE_VIEW_TYPE,
+    var viewType: Int = GALLERY_IMAGE_VIEW_TYPE,
     @SerializedName("local_path")
-    val localPath: String = ""
+    var localPath: String? = ""
 )
 
 data class EPharmacyProduct(
@@ -84,7 +84,15 @@ data class EPharmacyProduct(
     @SerializedName("quantity")
     val quantity: Int?,
     @SerializedName("item_weight")
-    val itemWeight: Int?
+    val itemWeight: Int?,
+    @SerializedName("shop_id")
+    var shopId: String?,
+    @SerializedName("store_name")
+    var shopName: String?,
+    @SerializedName("store_location")
+    var shopLocation: String?,
+    @SerializedName("store_type")
+    var shopType: String?,
 )
 
 data class Header(

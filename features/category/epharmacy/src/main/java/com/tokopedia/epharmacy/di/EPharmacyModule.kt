@@ -2,8 +2,11 @@ package com.tokopedia.epharmacy.di
 
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
+import com.tokopedia.common.network.coroutines.RestRequestInteractor
+import com.tokopedia.common.network.coroutines.repository.RestRepository
 import com.tokopedia.epharmacy.di.qualifier.CoroutineBackgroundDispatcher
 import com.tokopedia.epharmacy.di.qualifier.CoroutineMainDispatcher
+import com.tokopedia.epharmacy.usecase.UploadPrescriptionUseCase
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.domain.GraphqlUseCase
@@ -13,6 +16,8 @@ import dagger.Module
 import dagger.Provides
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
+import okhttp3.Interceptor
+import okhttp3.logging.HttpLoggingInterceptor
 
 @Module
 class EPharmacyModule {
@@ -38,4 +43,21 @@ class EPharmacyModule {
         return GraphqlInteractor.getInstance().graphqlRepository
     }
 
+    @Provides
+    fun provideInterceptors(loggingInterceptor: HttpLoggingInterceptor): MutableList<Interceptor> {
+        return mutableListOf(loggingInterceptor)
+    }
+
+    @Provides
+    fun provideRestRepository(interceptors: MutableList<Interceptor>,
+                              @ApplicationContext context: Context): RestRepository {
+        return RestRequestInteractor.getInstance().restRepository.apply {
+            updateInterceptors(interceptors, context)
+        }
+    }
+
+    @Provides
+    fun provideEPharmacyUploadPrescriptionUseCase(restRepository: RestRepository): UploadPrescriptionUseCase {
+        return UploadPrescriptionUseCase(restRepository)
+    }
 }

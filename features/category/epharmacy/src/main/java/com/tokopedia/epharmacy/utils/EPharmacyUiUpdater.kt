@@ -5,6 +5,11 @@ import com.tokopedia.epharmacy.component.model.EPharmacyPrescriptionDataModel
 
 class EPharmacyUiUpdater(var mapOfData: MutableMap<String, BaseEPharmacyDataModel>) {
 
+    init {
+        updateModel(EPharmacyPrescriptionDataModel(PRESCRIPTION_COMPONENT,
+            PRESCRIPTION_COMPONENT, arrayListOf()))
+    }
+
     val prescriptionInfoMap: EPharmacyPrescriptionDataModel?
         get() = mapOfData[PRESCRIPTION_COMPONENT] as? EPharmacyPrescriptionDataModel
 

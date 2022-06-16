@@ -48,7 +48,6 @@ class UploadPrescriptionFragment : BaseDaggerFragment() , EPharmacyListener {
     private var ePharmacyToolTipText : Typography? = null
     private var ePharmacyRecyclerView : RecyclerView? = null
     private var fotoResepButton : UnifyButton? = null
-    private var doneButton : UnifyButton? = null
 
     @Inject
     lateinit var viewModelFactory: dagger.Lazy<ViewModelProvider.Factory>
@@ -67,6 +66,10 @@ class UploadPrescriptionFragment : BaseDaggerFragment() , EPharmacyListener {
 
     private val ePharmacyAdapterFactory by lazy(LazyThreadSafetyMode.NONE) { EPharmacyAdapterFactoryImpl(this) }
 
+    private var orderId = ""
+    private var checkoutId = ""
+    private var prescriptionImagesCount = 0
+
     private val ePharmacyAdapter by lazy(LazyThreadSafetyMode.NONE) {
         val asyncDifferConfig: AsyncDifferConfig<BaseEPharmacyDataModel> = AsyncDifferConfig.Builder(
             EPharmacyDetailDiffUtil()
@@ -74,8 +77,6 @@ class UploadPrescriptionFragment : BaseDaggerFragment() , EPharmacyListener {
             .build()
         EPharmacyAdapter(asyncDifferConfig, ePharmacyAdapterFactory)
     }
-
-    private var prescriptionImages = arrayListOf<PrescriptionImage?>()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -91,16 +92,18 @@ class UploadPrescriptionFragment : BaseDaggerFragment() , EPharmacyListener {
         setUpObservers()
         initViews(view)
         initData()
-        uploadPrescriptionViewModel.getEPharmacyDetail("0")
+        uploadPrescriptionViewModel.getEPharmacyDetail(orderId)
     }
 
     private fun initArguments() {
-
+        orderId = arguments?.getString(EXTRA_ORDER_ID,"") ?: ""
+        checkoutId = arguments?.getString(EXTRA_CHECKOUT_ID,"") ?: ""
     }
 
     private fun setUpObservers() {
         observerEPharmacyDetail()
         observeButtonData()
+        observePrescriptionImages()
     }
 
     private fun initViews(view: View) {
@@ -108,7 +111,6 @@ class UploadPrescriptionFragment : BaseDaggerFragment() , EPharmacyListener {
             ePharmacyToolTipText = findViewById(R.id.tooltip)
             ePharmacyRecyclerView = findViewById(R.id.epharmacy_rv)
             fotoResepButton = findViewById(R.id.foto_resep_button)
-            doneButton = findViewById(R.id.selesai_button)
         }
     }
 
@@ -116,19 +118,12 @@ class UploadPrescriptionFragment : BaseDaggerFragment() , EPharmacyListener {
         setupRecyclerView()
         renderToolTip()
         renderFotoResepButton()
-        renderDoneButton()
     }
 
     private fun setupRecyclerView() {
         ePharmacyRecyclerView?.apply {
             layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
             adapter = ePharmacyAdapter
-        }
-    }
-
-    private fun renderDoneButton() {
-        doneButton?.setOnClickListener {
-            onClickDoneButton()
         }
     }
 
@@ -152,15 +147,19 @@ class UploadPrescriptionFragment : BaseDaggerFragment() , EPharmacyListener {
     }
 
     private fun renderFotoResepButton() {
+        setCameraDrawableOnButton()
+        fotoResepButton?.setOnClickListener {
+            onClickFotoResepButton()
+        }
+    }
+
+    private fun setCameraDrawableOnButton(){
         MethodChecker.getDrawable(context,com.tokopedia.iconunify.R.drawable.iconunify_camera)?.let {
             DrawableCompat.setTint(
                 DrawableCompat.wrap(it),
                 MethodChecker.getColor(context,com.tokopedia.unifyprinciples.R.color.Green_G500)
             )
             fotoResepButton?.setDrawable(it, UnifyButton.DrawablePosition.LEFT)
-        }
-        fotoResepButton?.setOnClickListener {
-            onClickFotoResepButton()
         }
     }
 
@@ -170,6 +169,10 @@ class UploadPrescriptionFragment : BaseDaggerFragment() , EPharmacyListener {
 
     private fun onClickFotoResepButton() {
         openMediaPicker(MAX_MEDIA_ITEM)
+    }
+
+    private fun onClickSelesaiButton(){
+
     }
 
     private fun openMediaPicker(withMaxMediaItems: Int) {
@@ -189,13 +192,7 @@ class UploadPrescriptionFragment : BaseDaggerFragment() , EPharmacyListener {
             MEDIA_PICKER_REQUEST_CODE -> {
                 if(resultCode == Activity.RESULT_OK && data != null){
                     val result = MediaPicker.result(data)
-                    result.originalPaths.forEach { localPathOfImage ->
-                        prescriptionImages.add(PrescriptionImage("","","","",
-                            "SELECTED",true,false,true,
-                            false, GALLERY_IMAGE_VIEW_TYPE,localPathOfImage
-                        ))
-                    }
-                    setNewPrescriptionData()
+                    uploadPrescriptionViewModel.addSelectedPrescriptionImages(result.originalPaths)
                 }
             }else -> super.onActivityResult(requestCode, resultCode, data)
         }
@@ -203,7 +200,7 @@ class UploadPrescriptionFragment : BaseDaggerFragment() , EPharmacyListener {
 
     private fun setNewPrescriptionData() {
         ePharmacyUiUpdater.updateModel(EPharmacyPrescriptionDataModel(PRESCRIPTION_COMPONENT,
-            PRESCRIPTION_COMPONENT,prescriptionImages))
+            PRESCRIPTION_COMPONENT,(uploadPrescriptionViewModel.prescriptionImages.value)))
         reloadPrescriptionUI()
     }
 
@@ -236,9 +233,14 @@ class UploadPrescriptionFragment : BaseDaggerFragment() , EPharmacyListener {
                 }
                 is Fail -> {
                     fotoResepButton?.hide()
-                    doneButton?.hide()
                 }
             }
+        }
+    }
+
+    private fun observePrescriptionImages() {
+        uploadPrescriptionViewModel.prescriptionImages.observe(viewLifecycleOwner){
+            setNewPrescriptionData()
         }
     }
 
@@ -252,10 +254,11 @@ class UploadPrescriptionFragment : BaseDaggerFragment() , EPharmacyListener {
         it.data.listOfComponents.forEach { component ->
             if(component.name() == PRESCRIPTION_COMPONENT){
                 (component as? EPharmacyPrescriptionDataModel)?.prescriptions?.let {
-                    prescriptionImages = it
+                    uploadPrescriptionViewModel.onSuccessGetPrescriptionImages(it)
                 }
+            }else {
+                ePharmacyUiUpdater.updateModel(component)
             }
-            ePharmacyUiUpdater.updateModel(component)
         }
         updateUi()
     }
@@ -267,14 +270,19 @@ class UploadPrescriptionFragment : BaseDaggerFragment() , EPharmacyListener {
 
     private fun updateButtonUI(result: Success<List<EpharmacyButton?>>) {
         result.data.firstOrNull()?.let {
-            if(it.type == "primary"){
-
+            fotoResepButton?.text = it.text
+            fotoResepButton?.buttonSize = UnifyButton.Size.LARGE
+            fotoResepButton?.show()
+            if(it.type == EPharmacyButtonType.PRIMARY.type){
+                ePharmacyToolTipText?.show()
+                fotoResepButton?.buttonVariant = UnifyButton.Variant.GHOST
+                setCameraDrawableOnButton()
             }else {
-
+                fotoResepButton?.buttonVariant = UnifyButton.Variant.FILLED
+                fotoResepButton?.setDrawable(null, UnifyButton.DrawablePosition.LEFT)
             }
         } ?: kotlin.run {
             fotoResepButton?.hide()
-            doneButton?.hide()
         }
     }
 
@@ -291,12 +299,14 @@ class UploadPrescriptionFragment : BaseDaggerFragment() , EPharmacyListener {
         fun newInstance(bundle: Bundle): UploadPrescriptionFragment {
             val fragment = UploadPrescriptionFragment()
             fragment.arguments = bundle
+
             return fragment
         }
     }
 
     override fun onCameraClick() {
-        openMediaPicker((MAX_MEDIA_ITEM + ERROR_MAX_MEDIA_ITEM) - (prescriptionImages.size - 1))
+        openMediaPicker((MAX_MEDIA_ITEM + ERROR_MAX_MEDIA_ITEM)
+                - (uploadPrescriptionViewModel.prescriptionImages.value?.size ?: 0 - 1))
     }
 
     override fun onPrescriptionImageClick(adapterPosition: Int, image: PrescriptionImage) {
@@ -308,25 +318,11 @@ class UploadPrescriptionFragment : BaseDaggerFragment() , EPharmacyListener {
     }
 
     private fun removeImageFromPrescriptions(adapterPosition: Int) {
-        prescriptionImages.removeAt(adapterPosition)
-        setNewPrescriptionData()
+        uploadPrescriptionViewModel.removePrescriptionImageAt(adapterPosition)
     }
 
     override fun onPrescriptionReLoadButtonClick(adapterPosition: Int, image: PrescriptionImage) {
-        uploadImageWithPath(image.localPath)
-    }
-
-    private fun uploadImageWithPath(localPath: String) {
-        val base64Image = getBase64Image(localPath)
-        uploadImageToServer(base64Image)
-    }
-
-    private fun getBase64Image(localPath: String): Int {
-        return 1
-    }
-
-    private fun uploadImageToServer(base64Image: Int) {
-
+        uploadPrescriptionViewModel.uploadImageWithPath((adapterPosition + 1) ,image.localPath ?: "")
     }
 
 }
