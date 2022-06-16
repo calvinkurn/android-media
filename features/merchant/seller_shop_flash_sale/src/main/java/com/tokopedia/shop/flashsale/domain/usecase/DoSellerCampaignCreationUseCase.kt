@@ -19,7 +19,7 @@ import com.tokopedia.shop.flashsale.domain.entity.CampaignCreationResult
 import com.tokopedia.shop.flashsale.domain.entity.enums.Action
 import com.tokopedia.shop.flashsale.domain.entity.enums.CampaignType
 import com.tokopedia.shop.flashsale.domain.entity.enums.PaymentType
-import java.util.*
+import java.util.Date
 import javax.inject.Inject
 
 
@@ -115,13 +115,13 @@ class DoSellerCampaignCreationUseCase @Inject constructor(
         val campaignName: String,
         val scheduledStart: Date,
         val scheduledEnd: Date,
-        val teaserDate : Date,
+        val teaserDate: Date,
         val campaignRelation: List<Long> = emptyList(),
         val isCampaignRuleSubmit: Boolean = false,
         val firstColor: String,
         val secondColor: String,
         val showTeaser: Boolean = false,
-        val paymentType: PaymentType
+        val paymentType: PaymentType,
     )
 
 }

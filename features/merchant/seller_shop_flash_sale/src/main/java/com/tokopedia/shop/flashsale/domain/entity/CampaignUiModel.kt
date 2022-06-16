@@ -21,7 +21,12 @@ data class CampaignUiModel(
     val endDate: Date,
     val gradientColor: Gradient,
     val useUpcomingWidget: Boolean,
-    val paymentType : PaymentType
+    val upcomingDate: Date,
+    val paymentType: PaymentType,
+    val isUniqueBuyer: Boolean,
+    val isCampaignRelation: Boolean,
+    val relatedCampaigns: List<RelatedCampaign> = emptyList(),
+    val isCampaignRuleSubmit: Boolean,
 ) {
     data class ProductSummary(
         val totalItem: Int,

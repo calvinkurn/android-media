@@ -16,21 +16,25 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModelProvider
 import com.beloo.widget.chipslayoutmanager.ChipsLayoutManager
+import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.seller_shop_flash_sale.R
 import com.tokopedia.seller_shop_flash_sale.databinding.SsfsFragmentCampaignRuleBinding
 import com.tokopedia.shop.flashsale.common.extension.disable
 import com.tokopedia.shop.flashsale.common.extension.enable
+import com.tokopedia.shop.flashsale.common.extension.showError
+import com.tokopedia.shop.flashsale.common.extension.showLoading
+import com.tokopedia.shop.flashsale.common.extension.stopLoading
 import com.tokopedia.shop.flashsale.common.extension.toBulletSpan
 import com.tokopedia.shop.flashsale.di.component.DaggerShopFlashSaleComponent
 import com.tokopedia.shop.flashsale.domain.entity.MerchantCampaignTNC
 import com.tokopedia.shop.flashsale.domain.entity.RelatedCampaign
-import com.tokopedia.shop.flashsale.domain.entity.enums.PageMode
 import com.tokopedia.shop.flashsale.domain.entity.enums.PaymentType
 import com.tokopedia.shop.flashsale.presentation.creation.rule.adapter.OnRemoveRelatedCampaignListener
 import com.tokopedia.shop.flashsale.presentation.creation.rule.adapter.RelatedCampaignAdapter
@@ -39,9 +43,13 @@ import com.tokopedia.shop.flashsale.presentation.creation.rule.bottomsheet.Buyer
 import com.tokopedia.shop.flashsale.presentation.creation.rule.bottomsheet.ChoosePaymentMethodBottomSheet
 import com.tokopedia.shop.flashsale.presentation.creation.rule.bottomsheet.MerchantCampaignTNCBottomSheet
 import com.tokopedia.shop.flashsale.presentation.creation.rule.bottomsheet.PaymentMethodBottomSheet
+import com.tokopedia.shop.flashsale.presentation.list.container.CampaignListActivity
 import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.toPx
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Result
+import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
 
@@ -50,15 +58,15 @@ class CampaignRuleFragment : BaseDaggerFragment(),
     MerchantCampaignTNCBottomSheet.ConfirmationClickListener {
 
     companion object {
-        private const val BUNDLE_KEY_PAGE_MODE = "page_mode"
+        private const val BUNDLE_KEY_CAMPAIGN_ID = "campaign_id"
         private const val FOURTH_STEP = 4
         private const val RELATED_CAMPAIGN_OFFSET_DP = 8
 
         @JvmStatic
-        fun newInstance(): CampaignRuleFragment {
+        fun newInstance(campaignId: Long): CampaignRuleFragment {
             return CampaignRuleFragment().apply {
                 arguments = Bundle().apply {
-                    putParcelable(BUNDLE_KEY_PAGE_MODE, pageMode)
+                    putLong(BUNDLE_KEY_CAMPAIGN_ID, campaignId)
                 }
             }
         }
@@ -67,7 +75,7 @@ class CampaignRuleFragment : BaseDaggerFragment(),
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
 
-    private val pageMode: PageMode? by lazy { arguments?.getParcelable(BUNDLE_KEY_PAGE_MODE) }
+    private val campaignId by lazy { arguments?.getLong(BUNDLE_KEY_CAMPAIGN_ID) }
 
     private val viewModelProvider by lazy { ViewModelProvider(this, viewModelFactory) }
     private val viewModel by lazy { viewModelProvider.get(CampaignRuleViewModel::class.java) }
@@ -75,6 +83,8 @@ class CampaignRuleFragment : BaseDaggerFragment(),
     private var binding by autoClearedNullable<SsfsFragmentCampaignRuleBinding>()
 
     private var relatedCampaignAdapter: RelatedCampaignAdapter? = null
+
+    private var errorToaster: Snackbar? = null
 
     private val tncCheckboxChangeListener = object : CompoundButton.OnCheckedChangeListener {
         override fun onCheckedChanged(buttonView: CompoundButton?, isChecked: Boolean) {
@@ -105,7 +115,14 @@ class CampaignRuleFragment : BaseDaggerFragment(),
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        initCampaignDetail()
         setUpView()
+    }
+
+    private fun initCampaignDetail() {
+        val campaignId = campaignId ?: return
+        binding?.loader?.visible()
+        viewModel.getCampaignDetail(campaignId)
     }
 
     private fun setUpView() {
@@ -114,6 +131,7 @@ class CampaignRuleFragment : BaseDaggerFragment(),
         setUpUniqueAccountTips()
         setUpTNCText()
         setUpRelatedCampaignRecyclerView()
+        observeCampaign()
         observeSelectedPaymentMethod()
         observeUniqueAccountSelected()
         observeCampaignRelationSelected()
@@ -122,6 +140,7 @@ class CampaignRuleFragment : BaseDaggerFragment(),
         observeTNCClickEvent()
         observeTNCConfirmationClick()
         observeCampaignCreationAllowed()
+        observeSaveDraftState()
     }
 
     private fun setUpToolbar() {
@@ -168,6 +187,11 @@ class CampaignRuleFragment : BaseDaggerFragment(),
 
         binding.checboxCampaignRuleTnc.setOnCheckedChangeListener(tncCheckboxChangeListener)
 
+        binding.btnSaveDraft.setOnClickListener {
+            showSaveDraftButtonLoading()
+            viewModel.saveCampaignCreationDraft()
+        }
+
         childFragmentManager.registerFragmentLifecycleCallbacks(object :
             FragmentManager.FragmentLifecycleCallbacks() {
             override fun onFragmentResumed(fm: FragmentManager, f: Fragment) {
@@ -179,7 +203,7 @@ class CampaignRuleFragment : BaseDaggerFragment(),
         }, false)
     }
 
-    private fun getTNCText() : SpannableString? {
+    private fun getTNCText(): SpannableString? {
         val context = context ?: return null
         val tncText = getText(R.string.campaign_rule_tnc_checkbox_label) as SpannedString
         val styledSpans = tncText.getSpans(0, tncText.length, StyleSpan::class.java)
@@ -254,9 +278,9 @@ class CampaignRuleFragment : BaseDaggerFragment(),
     }
 
     private fun observeUniqueAccountSelected() {
-        viewModel.requireUniqueAccount.observe(viewLifecycleOwner) {
+        viewModel.isUniqueBuyer.observe(viewLifecycleOwner) {
             when (it) {
-                true -> onUniqueAccountRequired()
+                false -> onUniqueAccountRequired()
                 else -> onUniqueAccountNotRequired()
             }
         }
@@ -267,6 +291,7 @@ class CampaignRuleFragment : BaseDaggerFragment(),
         binding.chipsUniqueAccountYes.chipType = ChipsUnify.TYPE_NORMAL
         binding.chipsUniqueAccountNo.chipType = ChipsUnify.TYPE_SELECTED
         binding.tipsUniqueAccount.visible()
+        binding.groupAllowCampaignRelation.visible()
     }
 
     private fun onUniqueAccountNotRequired() {
@@ -274,13 +299,15 @@ class CampaignRuleFragment : BaseDaggerFragment(),
         binding.chipsUniqueAccountYes.chipType = ChipsUnify.TYPE_SELECTED
         binding.chipsUniqueAccountNo.chipType = ChipsUnify.TYPE_NORMAL
         binding.tipsUniqueAccount.hide()
+        binding.groupAllowCampaignRelation.hide()
+        binding.groupChoosePreviousCampaign.hide()
     }
 
     private fun observeCampaignRelationSelected() {
-        viewModel.allowCampaignRelation.observe(viewLifecycleOwner) {
+        viewModel.isCampaignRelation.observe(viewLifecycleOwner) {
             when (it) {
-                true -> onCampaignRelationAllowed()
-                else -> onCampaignRelationDisallowed()
+                true -> renderNotCampaignRelation()
+                else -> renderCampaignRelation()
             }
         }
         viewModel.isRelatedCampaignButtonActive.observe(viewLifecycleOwner) {
@@ -299,14 +326,14 @@ class CampaignRuleFragment : BaseDaggerFragment(),
         }
     }
 
-    private fun onCampaignRelationAllowed() {
+    private fun renderNotCampaignRelation() {
         val binding = binding ?: return
         binding.chipsCampaignRelationYes.chipType = ChipsUnify.TYPE_SELECTED
         binding.chipsCampaignRelationNo.chipType = ChipsUnify.TYPE_NORMAL
         binding.groupChoosePreviousCampaign.hide()
     }
 
-    private fun onCampaignRelationDisallowed() {
+    private fun renderCampaignRelation() {
         val binding = binding ?: return
         binding.chipsCampaignRelationYes.chipType = ChipsUnify.TYPE_NORMAL
         binding.chipsCampaignRelationNo.chipType = ChipsUnify.TYPE_SELECTED
@@ -427,5 +454,75 @@ class CampaignRuleFragment : BaseDaggerFragment(),
     private fun disableCampaignCreationButton() {
         val binding = binding ?: return
         binding.btnCreateCampaign.disable()
+    }
+
+    private fun observeCampaign() {
+        viewModel.campaign.observe(viewLifecycleOwner) { result ->
+            when (result) {
+                is Success -> showCampaignRuleInputForm()
+                is Fail -> showError(result.throwable)
+            }
+        }
+    }
+
+    private fun showCampaignRuleInputForm() {
+        val binding = binding ?: return
+        binding.cardButtonWrapper.visible()
+        binding.wrapperCampaignRuleContent.visible()
+        binding.loader.hide()
+    }
+
+    private fun showError(throwable: Throwable) {
+        val binding = binding ?: return
+        binding.cardButtonWrapper.hide()
+        binding.wrapperCampaignRuleContent.hide()
+        binding.loader.hide()
+        val errorMessage = ErrorHandler.getErrorMessage(context, throwable)
+        errorToaster = Toaster.build(
+            binding.root,
+            text = errorMessage,
+            duration = Toaster.LENGTH_INDEFINITE,
+            type = Toaster.TYPE_ERROR,
+            actionText = getString(com.tokopedia.abstraction.R.string.title_try_again),
+            clickListener = { onCampaignErrorActionClicked() }
+        ).also {
+            it.show()
+        }
+    }
+
+    private fun onCampaignErrorActionClicked() {
+        binding?.loader?.visible()
+        viewModel.reFetchCampaignDetail()
+    }
+
+    private fun observeSaveDraftState() {
+        viewModel.saveDraftState.observe(viewLifecycleOwner) {
+            renderSaveDraftState(it)
+        }
+    }
+
+    private fun renderSaveDraftState(result: Result<Unit>) {
+        when (result) {
+            is Success -> {
+                goToCampaignListPage()
+            }
+            is Fail -> {
+                binding?.root showError result.throwable
+                hideSaveDraftButtonLoading()
+            }
+        }
+    }
+
+    private fun showSaveDraftButtonLoading() {
+        binding?.btnSaveDraft.showLoading()
+    }
+
+    private fun hideSaveDraftButtonLoading() {
+        binding?.btnSaveDraft.stopLoading()
+    }
+
+    private fun goToCampaignListPage() {
+        val context = context ?: return
+        CampaignListActivity.start(context, isClearTop = true)
     }
 }

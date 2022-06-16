@@ -1,6 +1,7 @@
 package com.tokopedia.shop.flashsale.data.response
 
 
+import android.annotation.SuppressLint
 import com.google.gson.annotations.SerializedName
 
 data class GetSellerCampaignListResponse(
@@ -29,7 +30,7 @@ data class GetSellerCampaignListResponse(
             @SerializedName("campaign_name")
             val campaignName: String = "",
             @SerializedName("campaign_relation_data")
-            val campaignRelationData: List<Any> = listOf(),
+            val campaignRelationData: List<CampaignRelationData> = emptyList(),
             @SerializedName("end_date")
             val endDate: Long = 0,
             @SerializedName("gradient_color")
@@ -69,7 +70,7 @@ data class GetSellerCampaignListResponse(
             @SerializedName("thematic_participation")
             val thematicParticipation: Boolean = false,
             @SerializedName("use_upcoming_widget")
-            val useUpcomingWidget: Boolean = false
+            val useUpcomingWidget: Boolean = false,
         ) {
             data class GradientColor(
                 @SerializedName("first_color")
@@ -92,6 +93,15 @@ data class GetSellerCampaignListResponse(
                 @SerializedName("visible_product_count")
                 val visibleProductCount: Int = 0
             )
+
+            data class CampaignRelationData(
+                @SuppressLint("Invalid Data Type")
+                @SerializedName("id")
+                val id: Long,
+                @SerializedName("name")
+                val name: String,
+            )
+
         }
     }
 }

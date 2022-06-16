@@ -22,7 +22,7 @@ data class GetSellerCampaignListRequest(
 
     data class Filter(
         @SuppressLint("Invalid Data Type") @SerializedName("status_id") val status_id: List<Int>,
-        @SuppressLint("Invalid Data Type") @SerializedName("campaign_id") val campaign_id: Long,
+        @SuppressLint("Invalid Data Type") @SerializedName("campaign_id") val campaignId: Long,
         @SerializedName("campaign_name") val campaignName: String,
         @SerializedName("thematic_participation") val thematicParticipation: Boolean
     )

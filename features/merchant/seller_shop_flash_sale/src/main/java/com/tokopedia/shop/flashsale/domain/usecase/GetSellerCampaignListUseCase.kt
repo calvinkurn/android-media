@@ -101,7 +101,7 @@ class GetSellerCampaignListUseCase @Inject constructor(
         rows: Int,
         offset: Int,
         statusId: List<Int> = emptyList(),
-        campaignId: Long = 0,
+        campaignId: Long = ZERO.toLong(),
         campaignName: String = EMPTY_STRING,
         thematicParticipation: Boolean = false
     ): CampaignMeta {
@@ -126,7 +126,7 @@ class GetSellerCampaignListUseCase @Inject constructor(
         rows: Int,
         offset: Int,
         statusId: List<Int> = emptyList(),
-        campaignId: Long = 0,
+        campaignId: Long = ZERO.toLong(),
         campaignName: String = EMPTY_STRING,
         thematicParticipation: Boolean = false
     ): GraphqlRequest {
