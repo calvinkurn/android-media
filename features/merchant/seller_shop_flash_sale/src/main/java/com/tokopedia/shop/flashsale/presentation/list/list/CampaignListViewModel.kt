@@ -7,10 +7,8 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.shop.flashsale.common.extension.digitsOnly
 import com.tokopedia.shop.flashsale.common.extension.isNumber
 import com.tokopedia.shop.flashsale.domain.entity.CampaignMeta
-import com.tokopedia.shop.flashsale.domain.entity.CampaignUiModel
 import com.tokopedia.shop.flashsale.domain.entity.aggregate.CampaignPrerequisiteData
 import com.tokopedia.shop.flashsale.domain.entity.aggregate.ShareComponentMetadata
-import com.tokopedia.shop.flashsale.domain.usecase.GetSellerCampaignEligibilityUseCase
 import com.tokopedia.shop.flashsale.domain.usecase.GetSellerCampaignListUseCase
 import com.tokopedia.shop.flashsale.domain.usecase.aggregate.GetCampaignPrerequisiteDataUseCase
 import com.tokopedia.shop.flashsale.domain.usecase.aggregate.GetShareComponentMetadataUseCase
@@ -24,8 +22,7 @@ class CampaignListViewModel @Inject constructor(
     private val dispatchers: CoroutineDispatchers,
     private val getSellerCampaignListUseCase: GetSellerCampaignListUseCase,
     private val getCampaignPrerequisiteDataUseCase: GetCampaignPrerequisiteDataUseCase,
-    private val getShareComponentMetadataUseCase: GetShareComponentMetadataUseCase,
-    private val getSellerCampaignEligibilityUseCase: GetSellerCampaignEligibilityUseCase
+    private val getShareComponentMetadataUseCase: GetShareComponentMetadataUseCase
 ) : BaseViewModel(dispatchers.main) {
 
     private val _campaigns = MutableLiveData<Result<CampaignMeta>>()
@@ -40,12 +37,7 @@ class CampaignListViewModel @Inject constructor(
     val shareComponentMetadata: LiveData<Result<ShareComponentMetadata>>
         get() = _shareComponentMetadata
 
-
-    private val _sellerEligibility = MutableLiveData<Result<Boolean>>()
-    val sellerEligibility: LiveData<Result<Boolean>>
-        get() = _sellerEligibility
-
-    private var drafts : List<CampaignUiModel> = emptyList()
+    private var prerequisiteData = CampaignPrerequisiteData(emptyList(), remainingQuota = 0, isEligible = false)
 
     fun getCampaigns(
         rows: Int,
@@ -101,25 +93,11 @@ class CampaignListViewModel @Inject constructor(
 
     }
 
-    fun getSellerEligibility() {
-        launchCatchError(
-            dispatchers.io,
-            block = {
-                val metadata = getSellerCampaignEligibilityUseCase.execute()
-                _sellerEligibility.postValue(Success(metadata))
-            },
-            onError = { error ->
-                _sellerEligibility.postValue(Fail(error))
-            }
-        )
-
+    fun setPrerequisiteData(prerequisiteData : CampaignPrerequisiteData) {
+        this.prerequisiteData = prerequisiteData
     }
 
-    fun setCampaignDrafts(drafts : List<CampaignUiModel>) {
-        this.drafts = drafts
-    }
-
-    fun getCampaignDrafts(): List<CampaignUiModel> {
-        return drafts
+    fun getPrerequisiteData() : CampaignPrerequisiteData {
+        return prerequisiteData
     }
 }

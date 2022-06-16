@@ -1,5 +1,6 @@
 package com.tokopedia.shop.flashsale.presentation.list.list
 
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -12,6 +13,7 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.applink.ApplinkConst.SellerApp.POWER_MERCHANT_SUBSCRIBE
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.linker.model.LinkerShareResult
 import com.tokopedia.loaderdialog.LoaderDialog
@@ -20,22 +22,19 @@ import com.tokopedia.seller_shop_flash_sale.databinding.SsfsFragmentCampaignList
 import com.tokopedia.shop.flashsale.common.constant.Constant.EMPTY_STRING
 import com.tokopedia.shop.flashsale.common.constant.Constant.FIRST_PAGE
 import com.tokopedia.shop.flashsale.common.constant.Constant.ZERO
-import com.tokopedia.shop.flashsale.common.constant.ShopInfoConstant.OFFICIAL_STORE_ID
-import com.tokopedia.shop.flashsale.common.constant.ShopInfoConstant.POWER_MERCHANT_PRO_ID
 import com.tokopedia.shop.flashsale.common.customcomponent.BaseSimpleListFragment
 import com.tokopedia.shop.flashsale.common.extension.*
 import com.tokopedia.shop.flashsale.common.share_component.ShareComponentInstanceBuilder
 import com.tokopedia.shop.flashsale.di.component.DaggerShopFlashSaleComponent
 import com.tokopedia.shop.flashsale.domain.entity.CampaignMeta
 import com.tokopedia.shop.flashsale.domain.entity.CampaignUiModel
-import com.tokopedia.shop.flashsale.domain.entity.ShopInfo
+import com.tokopedia.shop.flashsale.domain.entity.aggregate.CampaignPrerequisiteData
 import com.tokopedia.shop.flashsale.domain.entity.aggregate.ShareComponentMetadata
 import com.tokopedia.shop.flashsale.domain.entity.enums.CampaignStatus
 import com.tokopedia.shop.flashsale.presentation.cancelation.CancelCampaignBottomSheet
 import com.tokopedia.shop.flashsale.presentation.creation.information.CampaignInformationActivity
 import com.tokopedia.shop.flashsale.presentation.draft.bottomsheet.DraftListBottomSheet
 import com.tokopedia.shop.flashsale.presentation.draft.uimodel.DraftItemModel
-import com.tokopedia.shop.flashsale.presentation.list.dialog.showNoCampaignQuotaDialog
 import com.tokopedia.shop.flashsale.presentation.list.list.adapter.CampaignAdapter
 import com.tokopedia.shop.flashsale.presentation.list.list.bottomsheet.MoreMenuBottomSheet
 import com.tokopedia.shop.flashsale.presentation.list.list.listener.RecyclerViewScrollListener
@@ -144,7 +143,6 @@ class CampaignListFragment : BaseSimpleListFragment<CampaignAdapter, CampaignUiM
         observeCampaigns()
         observeCampaignPrerequisiteData()
         observeShareComponentMetadata()
-        observeSellerEligibility()
     }
 
     override fun onResume() {
@@ -155,21 +153,14 @@ class CampaignListFragment : BaseSimpleListFragment<CampaignAdapter, CampaignUiM
 
     private fun setupView() {
         binding?.btnCreateCampaign?.setOnClickListener {
-            binding?.btnCreateCampaign?.isLoading = true
-            binding?.btnCreateCampaign?.loadingText = getString(R.string.sfs_please_wait)
-            viewModel.getSellerEligibility()
+            validateSellerEligibility(viewModel.getPrerequisiteData())
         }
 
         binding?.btnDraft?.setOnClickListener {
-            DraftListBottomSheet.showUsingCampaignUiModel(
-                childFragmentManager,
-                viewModel.getCampaignDrafts(),
-                ::onDeleteDraftSuccess,
-                ::onDraftClicked
-            )
+            showExceedMaxAllowedDraftBottomSheet(viewModel.getPrerequisiteData().drafts)
         }
         binding?.btnCreateCampaignEmptyState?.setOnClickListener {
-            handleCreateCampaign()
+            validateSellerEligibility(viewModel.getPrerequisiteData())
         }
         binding?.btnNavigateToFirstActiveCampaign?.setOnClickListener {
             onNavigateToActiveCampaignTab()
@@ -230,10 +221,12 @@ class CampaignListFragment : BaseSimpleListFragment<CampaignAdapter, CampaignUiM
         viewModel.campaignPrerequisiteData.observe(viewLifecycleOwner) { result ->
             when (result) {
                 is Success -> {
-                    viewModel.setCampaignDrafts(result.data.drafts)
+                    binding?.loader?.gone()
+                    viewModel.setPrerequisiteData(result.data)
                     handleCampaignPrerequisiteData(result.data.drafts.size, result.data.remainingQuota)
                 }
                 is Fail -> {
+                    binding?.loader?.gone()
                     binding?.root showError result.throwable
                 }
             }
@@ -273,20 +266,6 @@ class CampaignListFragment : BaseSimpleListFragment<CampaignAdapter, CampaignUiM
         }
     }
 
-    private fun observeSellerEligibility() {
-        viewModel.sellerEligibility.observe(viewLifecycleOwner) { result ->
-            when (result) {
-                is Success -> {
-                    binding?.btnCreateCampaign?.isLoading = false
-                    handleSellerEligibility(result.data)
-                }
-                is Fail -> {
-                    binding?.btnCreateCampaign?.isLoading = false
-                    binding?.root showError result.throwable
-                }
-            }
-        }
-    }
 
     fun setOnScrollDownListener(onScrollDown: () -> Unit = {}) {
         this.onScrollDown = onScrollDown
@@ -378,28 +357,6 @@ class CampaignListFragment : BaseSimpleListFragment<CampaignAdapter, CampaignUiM
     private fun handleScrollUpEvent() {
         binding?.searchBar.slideUp()
         binding?.cardView.slideUp()
-    }
-
-    private fun handleCreateCampaign() {
-        val campaignDrafts = viewModel.getCampaignDrafts()
-        if (campaignDrafts.size >= MAX_DRAFT_COUNT) {
-            DraftListBottomSheet.showUsingCampaignUiModel(
-                childFragmentManager,
-                campaignDrafts,
-                ::onDeleteDraftSuccess,
-                ::onDraftClicked
-            )
-        } else {
-            CampaignInformationActivity.start(requireActivity())
-        }
-    }
-
-    private fun handleSellerEligibility(isEligible : Boolean) {
-        if (isEligible) {
-            handleCreateCampaign()
-        } else {
-            routeToPmSubscribePage()
-        }
     }
 
     private fun displayCampaigns(data: CampaignMeta) {
@@ -499,15 +456,23 @@ class CampaignListFragment : BaseSimpleListFragment<CampaignAdapter, CampaignUiM
         binding?.emptyState?.setDescription( getString(R.string.sfs_no_campaign_history_description))
     }
 
-    private fun checkCampaignEligibility(remainingQuota: Int, shopInfo: ShopInfo) {
-        val shopTierId = shopInfo.shopTierId
-        if (remainingQuota == ZERO
-            && shopTierId != POWER_MERCHANT_PRO_ID
-            && shopTierId != OFFICIAL_STORE_ID) {
-            showNoCampaignQuotaDialog(requireActivity()) {
-                routeToPmSubscribePage()
-            }
+    private fun validateSellerEligibility(data: CampaignPrerequisiteData) {
+        if (!data.isEligible) {
+            showIneligibleAccess(requireActivity())
+            return
         }
+
+        if (data.remainingQuota == ZERO) {
+            showCampaignQuotaEmptyDialog(requireActivity())
+            return
+        }
+
+        if (data.drafts.size >= MAX_DRAFT_COUNT) {
+            showExceedMaxAllowedDraftBottomSheet(data.drafts)
+            return
+        }
+
+        CampaignInformationActivity.start(requireActivity())
     }
 
     private fun displayMoreMenuBottomSheet(campaign: CampaignUiModel) {
@@ -605,11 +570,6 @@ class CampaignListFragment : BaseSimpleListFragment<CampaignAdapter, CampaignUiM
         showCancelCampaignBottomSheet(id, title, status)
     }
 
-    private fun routeToPmSubscribePage() {
-        val intent = RouteManager.getIntent(context, POWER_MERCHANT_SUBSCRIBE)
-        startActivity(intent)
-    }
-
     private fun showCancelCampaignBottomSheet(id: Long, title: String, status: CampaignStatus?) {
         val toasterActionText = getString(R.string.action_oke)
         val toasterMessage = getString(R.string.cancelcampaign_message_success, title)
@@ -623,5 +583,51 @@ class CampaignListFragment : BaseSimpleListFragment<CampaignAdapter, CampaignUiM
             }
         }
         bottomSheet.show(childFragmentManager)
+    }
+
+    private fun showCampaignQuotaEmptyDialog(context: Context){
+        val dialog = DialogUnify(context, DialogUnify.VERTICAL_ACTION, DialogUnify.NO_IMAGE)
+        dialog.setTitle(context.getString(R.string.no_campaign_quota_title))
+        dialog.setDescription(context.getString(R.string.no_campaign_quota_description))
+        dialog.setPrimaryCTAText(context.getString(R.string.no_campaign_quota_primary_cta_text))
+        dialog.setSecondaryCTAText(context.getString(R.string.no_campaign_quota_secondary_cta_text))
+
+        dialog.setPrimaryCTAClickListener {
+            routeToPmSubscribePage()
+        }
+        dialog.setSecondaryCTAClickListener {
+            dialog.dismiss()
+        }
+        dialog.show()
+    }
+
+    private fun showIneligibleAccess(context: Context){
+        val dialog = DialogUnify(context, DialogUnify.VERTICAL_ACTION, DialogUnify.NO_IMAGE)
+        dialog.setTitle(context.getString(R.string.sfs_ineligible_access_title))
+        dialog.setDescription(context.getString(R.string.sfs_ineligible_access_description))
+        dialog.setPrimaryCTAText(context.getString(R.string.no_campaign_quota_primary_cta_text))
+        dialog.setSecondaryCTAText(context.getString(R.string.no_campaign_quota_secondary_cta_text))
+
+        dialog.setPrimaryCTAClickListener {
+            routeToPmSubscribePage()
+        }
+        dialog.setSecondaryCTAClickListener {
+            dialog.dismiss()
+        }
+        dialog.show()
+    }
+
+    private fun showExceedMaxAllowedDraftBottomSheet(drafts : List<CampaignUiModel>) {
+        DraftListBottomSheet.showUsingCampaignUiModel(
+            childFragmentManager,
+            drafts,
+            ::onDeleteDraftSuccess,
+            ::onDraftClicked
+        )
+    }
+
+    private fun routeToPmSubscribePage() {
+        val intent = RouteManager.getIntent(context, POWER_MERCHANT_SUBSCRIBE)
+        startActivity(intent)
     }
 }
