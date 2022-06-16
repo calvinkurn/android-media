@@ -57,7 +57,6 @@ object SomConsts {
     const val KEY_RESPOND_TO_CANCELLATION = "respond_to_cancellations"
     const val KEY_PRINT_AWB = "print"
     const val KEY_ORDER_EXTENSION_REQUEST = "request_extend_order"
-    // todo need to confirm key
     const val KEY_RESCHEDULE_PICKUP = "reschedule_pickup"
 
     const val KEY_BATALKAN_PESANAN = "reject_shipping"
