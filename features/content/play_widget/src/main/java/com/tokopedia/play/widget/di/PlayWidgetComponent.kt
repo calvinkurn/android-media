@@ -1,7 +1,7 @@
 package com.tokopedia.play.widget.di
 
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
-import com.tokopedia.play.widget.analytic.global.PlayWidgetGlobalAnalytic
+import com.tokopedia.play.widget.analytic.PlayWidgetGlobalAnalytic
 import dagger.Component
 
 /**
