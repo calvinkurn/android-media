@@ -262,7 +262,7 @@ class KycUploadViewModel @Inject constructor(
             "encryptionTimeFileFace" to "${encryptionTimeFileFace}ms",
             "ktpFileSize" to if (fileKtp.isNotEmpty()) "${FileUtil.getFileSizeInKb(fileKtp)}Kb" else "-",
             "faceFileSize" to if (fileFace.isNotEmpty()) "${FileUtil.getFileSizeInKb(fileFace)}Kb" else "-",
-            "message" to message
+            "message" to message.take(1000)
         ))
     }
 
