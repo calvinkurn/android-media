@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
@@ -29,6 +30,7 @@ import com.tokopedia.topads.sdk.shopwidgetthreeproducts.adapter.ShopWidgetAdapte
 import com.tokopedia.topads.sdk.shopwidgetthreeproducts.factory.ShopWidgetFactoryImpl
 import com.tokopedia.topads.sdk.shopwidgetthreeproducts.listener.ShopWidgetAddToCartClickListener
 import com.tokopedia.topads.sdk.shopwidgetthreeproducts.model.*
+import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.topads.sdk.widget.TopAdsBannerView.Companion.escapeHTML
 import com.tokopedia.unifycomponents.*
 import com.tokopedia.unifyprinciples.Typography
@@ -53,6 +55,11 @@ class ShopAdsWithThreeProducts : BaseCustomView {
     private var firstCardBackground: ConstraintLayout? = null
     private var bodyContainer: ConstraintLayout? = null
     private var shopWidgetRootLayout: ConstraintLayout? = null
+    private var widgetHeader: View? = null
+
+    private val topAdsUrlHitter: TopAdsUrlHitter by lazy {
+        TopAdsUrlHitter(context)
+    }
 
     constructor(context: Context) : super(context) {
         init()
@@ -97,6 +104,30 @@ class ShopAdsWithThreeProducts : BaseCustomView {
             shopAdsWithThreeProductModel.items.cpm.cpmShop,
             shopAdsWithThreeProductModel.variant
         )
+        setShopImpression(
+            shopAdsWithThreeProductModel.items,
+            shopAdsWithThreeProductModel.impressionListener
+        )
+    }
+
+    private fun setShopImpression(
+        items: CpmData,
+        impressionListener: TopAdsItemImpressionListener?
+    ) {
+        items.cpm?.cpmShop?.imageShop?.let { it1 ->
+            shopImage?.addOnImpressionListener(it1) {
+                impressionListener?.let {
+                    it.onImpressionHeadlineAdsItem(0, items)
+                    topAdsUrlHitter.hitImpressionUrl(
+                        this::class.java.name,
+                        items.cpm.cpmImage.fullUrl,
+                        "",
+                        "",
+                        ""
+                    )
+                }
+            }
+        }
     }
 
     private fun initAdapterAndList(
@@ -120,6 +151,7 @@ class ShopAdsWithThreeProducts : BaseCustomView {
     }
 
     private fun setBackgroundAsFirstCard(cta: String, slogan: String, shopWidgetImageUrl: String) {
+        firstCardBackground?.alpha = 1f
         btnLihat?.text = cta
         adsDescription?.text = escapeHTML(slogan)
         setShopWidgetImage(shopWidgetImageUrl)
@@ -271,6 +303,7 @@ class ShopAdsWithThreeProducts : BaseCustomView {
         shopWidgetRootLayout = findViewById(R.id.shopWidgetRootLayout)
         linearLayoutMerchantVoucher = findViewById(R.id.linearLayoutMerchantVoucher)
         recyclerView = findViewById(R.id.productList)
+        widgetHeader = findViewById(R.id.widgetHeader)
 
         initialTranslationOnBackground()
     }
@@ -313,6 +346,20 @@ class ShopAdsWithThreeProducts : BaseCustomView {
         setShopBadge(shopAdsWithThreeProductModel.shopBadge)
         setShopImage(shopAdsWithThreeProductModel.shopImageUrl)
         setMerchantVoucher(shopAdsWithThreeProductModel.merchantVouchers)
+        widgetHeader?.setOnClickListener {
+            shopAdsWithThreeProductModel.topAdsBannerClickListener?.onBannerAdsClicked(
+                1,
+                shopAdsWithThreeProductModel.applink,
+                shopAdsWithThreeProductModel.items
+            )
+            topAdsUrlHitter.hitClickUrl(
+                this::class.java.name,
+                shopAdsWithThreeProductModel.items.adClickUrl,
+                "",
+                "",
+                ""
+            )
+        }
     }
 
     private fun setShopWidgetImage(shopWidgetImageUrl: String) {
