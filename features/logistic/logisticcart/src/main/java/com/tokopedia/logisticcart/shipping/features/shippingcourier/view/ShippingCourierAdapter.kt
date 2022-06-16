@@ -4,6 +4,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.logisticCommon.data.constant.CourierConstant
+import com.tokopedia.logisticcart.shipping.features.shippingduration.view.NotifierViewHolder
 import com.tokopedia.logisticcart.shipping.features.shippingduration.view.PreOrderViewHolder
 import com.tokopedia.logisticcart.shipping.model.*
 
@@ -30,7 +31,7 @@ class ShippingCourierAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private fun setNotifierModel(shippingCourierUiModel: ShippingCourierUiModel, index: Int, isOcc: Boolean) {
         if (isOcc && shippingCourierUiModel.productData.shipperId in CourierConstant.INSTANT_SAMEDAY_COURIER) {
-            this.data.add(index, NotifierModel())
+            this.data.add(index, NotifierOccModel())
         } else {
             if (shippingCourierUiModel.serviceData.serviceName == INSTAN_VIEW_TYPE) {
                 this.data.add(index, NotifierModel())
@@ -52,6 +53,7 @@ class ShippingCourierAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         is PreOrderModel -> PreOrderViewHolder.LAYOUT
         is NotifierModel -> NotifierViewHolderInstant.LAYOUT
         is NotifierModelSameDay -> NotifierViewHolderSameDay.LAYOUT
+        is NotifierOccModel -> NotifierViewHolder.LAYOUT
         else -> ShippingCourierViewHolder.ITEM_VIEW_SHIPMENT_COURIER
     }
 
@@ -61,6 +63,7 @@ class ShippingCourierAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
             PreOrderViewHolder.LAYOUT -> PreOrderViewHolder(view)
             NotifierViewHolderInstant.LAYOUT -> NotifierViewHolderInstant(view)
             NotifierViewHolderSameDay.LAYOUT -> NotifierViewHolderSameDay(view)
+            NotifierViewHolder.LAYOUT -> NotifierViewHolder(view)
             else -> ShippingCourierViewHolder(view, cartPosition)
         }
     }
@@ -75,6 +78,7 @@ class ShippingCourierAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
             is ShippingCourierViewHolder -> holder.bindData(data[position] as ShippingCourierUiModel, shippingCourierAdapterListener, position == itemCount -1)
             is NotifierViewHolderSameDay -> holder.bindData()
             is NotifierViewHolderInstant -> holder.bindData()
+            is NotifierViewHolder -> holder.bindData()
         }
     }
 
