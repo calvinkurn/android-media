@@ -27,6 +27,7 @@ import com.tokopedia.topchat.chatroom.view.onboarding.SrwOnBoarding
 import com.tokopedia.topchat.common.data.Resource
 import com.tokopedia.topchat.common.data.Status
 import com.tokopedia.topchat.common.util.ViewUtil
+import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.unifyprinciples.Typography
 
 class SrwFrameLayout : FrameLayout {
@@ -126,15 +127,18 @@ class SrwFrameLayout : FrameLayout {
     private fun initBackground() {
         bgExpanded = ViewUtil.generateBackgroundWithShadow(
             this,
-            com.tokopedia.unifyprinciples.R.color.Unify_Background,
-            R.dimen.dp_topchat_20,
-            R.dimen.dp_topchat_0,
-            R.dimen.dp_topchat_20,
-            R.dimen.dp_topchat_20,
-            com.tokopedia.unifyprinciples.R.color.Unify_N700_20,
-            R.dimen.dp_topchat_2,
-            R.dimen.dp_topchat_2,
-            Gravity.CENTER
+            backgroundColor = com.tokopedia.unifyprinciples.R.color.Unify_Background,
+            topLeftRadius = R.dimen.dp_topchat_0,
+//            topLeftRadius = R.dimen.dp_topchat_20,
+            topRightRadius = R.dimen.dp_topchat_20,
+//            topRightRadius = R.dimen.dp_topchat_0,
+            bottomLeftRadius = R.dimen.dp_topchat_20,
+            bottomRightRadius = R.dimen.dp_topchat_20,
+            shadowColor = com.tokopedia.unifyprinciples.R.color.Unify_N700_20,
+            elevation = R.dimen.dp_topchat_2,
+            shadowRadius = R.dimen.dp_topchat_2,
+            strokeColor = com.tokopedia.unifyprinciples.R.color.Unify_Background,
+            shadowGravity = Gravity.CENTER
         )
         srwContentContainer?.background = bgExpanded
     }
@@ -228,6 +232,20 @@ class SrwFrameLayout : FrameLayout {
         hideSrwContent()
     }
 
+    fun setSrwTitleVisibility(shouldShow: Boolean) {
+        if (shouldShow) {
+            titleContainer?.show()
+        } else {
+            titleContainer?.hide()
+        }
+    }
+
+    fun setContentMargin(left: Int = 0, top: Int = 0, right: Int = 0, bottom: Int = 0) {
+        val params = LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT)
+        params.setMargins(left.toPx(), top.toPx(), right.toPx(), bottom.toPx())
+        srwContentContainer?.layoutParams = params
+    }
+
     private fun showSrwContent() {
         val isPreviouslyVisible = srwContentContainer?.isVisible == true
         if (!isPreviouslyVisible) {
@@ -244,7 +262,6 @@ class SrwFrameLayout : FrameLayout {
         if (listener?.shouldShowOnBoarding() == true) {
             titleContainer?.let {
                 onBoarding.show(context, it)
-
             }
         }
     }

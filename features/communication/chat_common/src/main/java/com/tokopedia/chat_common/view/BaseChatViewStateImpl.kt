@@ -264,9 +264,9 @@ abstract class BaseChatViewStateImpl(
     }
 
     protected fun showReplyBox(replyable: Boolean) {
-        val visibilityState = if (replyable) View.VISIBLE else View.GONE
-        actionBox.visibility = visibilityState
-        replyBox.visibility = visibilityState
+//        val visibilityState = if (replyable) View.VISIBLE else View.GONE
+//        actionBox.visibility = visibilityState
+//        replyBox.visibility = visibilityState
     }
 
 

@@ -135,6 +135,11 @@
 
         </RelativeLayout>
 
+        <com.tokopedia.topchat.chatroom.view.custom.ChatTextAreaLayout
+            android:id="@+id/layout_chat_text_area"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
         <LinearLayout
             android:id="@+id/add_comment_area"
             android:layout_width="match_parent"

@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    tools:parentTag="androidx.constraintlayout.widget.ConstraintLayout">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/layout_tab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        android:layout_marginTop="8dp"
+        android:layout_marginStart="18dp">
+
+        <View
+            android:id="@+id/textarea_tab_bg"
+            android:layout_width="120dp"
+            android:layout_height="63dp"
+            app:layout_constraintLeft_toLeftOf="@id/guideline"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:background="@drawable/bg_text_area_tab_inactive" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_textarea_tab"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toTopOf="@id/textarea_tab_bg"
+            app:layout_constraintLeft_toLeftOf="@id/textarea_tab_bg"
+            app:layout_constraintRight_toRightOf="@id/textarea_tab_bg"
+            android:layout_marginTop="8dp"
+            android:gravity="center"
+            android:text="Tulis Pesan"/>
+
+        <View
+            android:id="@+id/srw_tab_bg"
+            android:layout_width="120dp"
+            android:layout_height="63dp"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:background="@drawable/bg_text_area_tab_active"
+            android:gravity="center_horizontal"
+            android:text="Smart Reply"/>
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_srw_tab"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toTopOf="@id/srw_tab_bg"
+            app:layout_constraintLeft_toLeftOf="@id/srw_tab_bg"
+            app:layout_constraintRight_toRightOf="@id/srw_tab_bg"
+            android:layout_marginTop="8dp"
+            android:gravity="center"
+            android:text="Smart Reply"/>
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guideline"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="0.485" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <View
+        android:id="@+id/divider_tab"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        android:layout_marginTop="42dp"
+        android:background="@color/Unify_Background"
+        app:layout_constraintTop_toTopOf="parent"/>
+
+    <com.tokopedia.topchat.chatroom.view.custom.SrwFrameLayout
+        android:id="@+id/rv_srw"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/divider_tab"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginBottom="16dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        tools:layout_height="150dp"
+        tools:visibility="gone"/>
+
+    <com.tokopedia.topchat.chatroom.view.custom.ComposeMessageAreaConstraintLayout
+        android:id="@+id/reply_box"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/divider_tab"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="16dp"
+        android:visibility="gone"
+        tools:visibility="visible"/>
+
+</merge>
