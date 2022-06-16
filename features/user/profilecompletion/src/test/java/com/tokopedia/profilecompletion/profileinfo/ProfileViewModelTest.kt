@@ -73,21 +73,35 @@ class ProfileViewModelTest {
     private val dummyProfileFeed = ProfileFeedResponse()
     private val dummyUploadResultSuccess = UploadResult.Success("123", "")
     private val dummyUploadResultFailed = UploadResult.Error("")
-    private val dummySaveProfilePictureSuccess = SaveProfilePictureResponse(SaveProfilePictureData(
-        "", emptyList(), SaveProfilePictureInnerData(imageUrl = dummyImageUrl, isSuccess = 1)))
-    private val dummySaveProfilePictureFailed = SaveProfilePictureResponse(SaveProfilePictureData(
-        "", listOf(dummyErrorMsg), SaveProfilePictureInnerData(imageUrl = "", isSuccess = 0)))
+    private val dummySaveProfilePictureSuccess = SaveProfilePictureResponse(
+        SaveProfilePictureData(
+            "", emptyList(), SaveProfilePictureInnerData(imageUrl = dummyImageUrl, isSuccess = 1)
+        )
+    )
+    private val dummySaveProfilePictureFailed = SaveProfilePictureResponse(
+        SaveProfilePictureData(
+            "", listOf(dummyErrorMsg), SaveProfilePictureInnerData(imageUrl = "", isSuccess = 0)
+        )
+    )
     private val dummyProfileUIModel = ProfileInfoUiModel(
         profileInfoData = dummyProfileInfo.profileInfoData,
         profileRoleData = dummyProfilerole.profileRole,
         profileFeedData = dummyProfileFeed.profileFeedData
     )
 
-        @Before
+    @Before
     fun before() {
         MockKAnnotations.init(this)
-        viewModel = ProfileViewModel(profileInfoUsecase, profileRoleUsecase, profileFeedInfoUsecase,
-            uploaderUsecase, saveProfilePictureUsecase, userFinancialAssetsUseCase, userSession, CoroutineTestDispatchersProvider)
+        viewModel = ProfileViewModel(
+            profileInfoUsecase,
+            profileRoleUsecase,
+            profileFeedInfoUsecase,
+            uploaderUsecase,
+            saveProfilePictureUsecase,
+            userFinancialAssetsUseCase,
+            userSession,
+            CoroutineTestDispatchersProvider
+        )
         viewModel.profileInfoUiData.observeForever(profileInfoObserver)
         viewModel.errorMessage.observeForever(errorMessageObserver)
         viewModel.saveImageProfileResponse.observeForever(savePhotoObserver)
@@ -246,7 +260,7 @@ class ProfileViewModelTest {
     }
 
     @Test
-    fun `get financial assets - success`(){
+    fun `get financial assets then response success`() {
         val data = UserFinancialAssetsData()
         val expected = Success(data.checkUserFinancialAssets)
 
@@ -260,7 +274,7 @@ class ProfileViewModelTest {
     }
 
     @Test
-    fun `get financial assets - failed`(){
+    fun `get financial assets then response failed`() {
         val throwable = Throwable()
         val expected = Fail(throwable)
 

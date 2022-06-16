@@ -10,7 +10,7 @@ import javax.inject.Inject
 class UserFinancialAssetsUseCase @Inject constructor(
     private val graphqlRepository: GraphqlRepository,
     dispatcher: CoroutineDispatchers
-) : CoroutineUseCase<Unit, UserFinancialAssetsData>(dispatcher.io){
+) : CoroutineUseCase<Unit, UserFinancialAssetsData>(dispatcher.io) {
     override fun graphqlQuery(): String =
         """
             query {
