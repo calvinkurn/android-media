@@ -19,15 +19,15 @@ class TokoFoodPurchaseProductListHeaderViewHolder(private val viewBinding: ItemP
         with(viewBinding) {
             textProductListHeader.text =
                 if (element.isAvailableHeader) {
-                    itemView.context?.getString(R.string.text_purchase_order_list)
+                    itemView.context?.getString(com.tokopedia.tokofood.R.string.text_purchase_order_list)
                 } else {
                     element.title
                 }
             addAnotherProductButton.text =
                 if (element.isAvailableHeader) {
-                    itemView.context?.getString(R.string.text_purchase_add_order)
+                    itemView.context?.getString(com.tokopedia.tokofood.R.string.text_purchase_add_order)
                 } else {
-                    itemView.context?.getString(R.string.text_purchase_delete)
+                    itemView.context?.getString(com.tokopedia.tokofood.R.string.text_purchase_delete)
                 }
             addAnotherProductButton.setOnClickListener {
                 if (element.isAvailableHeader) {

@@ -28,7 +28,7 @@ class BaseTokofoodActivity : BaseMultiFragActivity(), HasViewModel<MultipleFragm
         super.onCreate(savedInstanceState)
         initPerformanceMonitoring()
         initInjector()
-        viewModel.onRestoreSavednstanceState()
+        viewModel.onRestoreSavedInstanceState()
     }
 
     override fun getRootFragment(): Fragment {

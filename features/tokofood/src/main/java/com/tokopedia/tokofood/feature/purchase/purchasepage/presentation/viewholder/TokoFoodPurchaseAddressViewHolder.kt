@@ -28,7 +28,7 @@ class TokoFoodPurchaseAddressViewHolder(private val viewBinding: ItemPurchaseAdd
                 labelMainAddress.gone()
             }
             val addressAndPhone = itemView.context?.getString(
-                R.string.text_purchase_address_phone,
+                com.tokopedia.tokofood.R.string.text_purchase_address_phone,
                 element.addressName,
                 element.receiverPhone
             ).orEmpty()

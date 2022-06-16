@@ -47,7 +47,7 @@ class TokoFoodPurchaseShippingViewHolder(private val viewBinding: ItemPurchaseSh
             containerPinpoint.show()
             containerShipping.gone()
             containerLoading.gone()
-            val noPinpointFullInformation = itemView.context.getString(R.string.text_purchase_message_need_pinpoint)
+            val noPinpointFullInformation = itemView.context.getString(com.tokopedia.tokofood.R.string.text_purchase_message_need_pinpoint)
             textNoPinpoint.text = MethodChecker.fromHtml(noPinpointFullInformation)
             textNoPinpoint.setOnClickListener {
                 listener.onTextSetPinpointClicked()
@@ -72,7 +72,7 @@ class TokoFoodPurchaseShippingViewHolder(private val viewBinding: ItemPurchaseSh
         var shippingInfo = courierName
         if (shippingPriceFmt.isNotEmpty()) {
             shippingInfo += String.SPACE + itemView.context.getString(
-                R.string.text_purchase_shipping_price,
+                com.tokopedia.tokofood.R.string.text_purchase_shipping_price,
                 shippingPriceFmt
             )
         }

@@ -19,6 +19,8 @@ import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.tokofood.R
 import com.tokopedia.tokofood.databinding.ItemPurchaseProductBinding
 import com.tokopedia.tokofood.databinding.SubItemPurchaseAddOnBinding
+import com.tokopedia.tokofood.feature.purchase.DISABLED_ALPHA
+import com.tokopedia.tokofood.feature.purchase.ENABLED_ALPHA
 import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.TokoFoodPurchaseActionListener
 import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.uimodel.TokoFoodPurchaseProductTokoFoodPurchaseUiModel
 
@@ -143,9 +145,9 @@ class TokoFoodPurchaseProductViewHolder(private val viewBinding: ItemPurchasePro
             if (element.variants.isEmpty()) {
                 addNotesButton.text =
                     if (isNoteBlank) {
-                        getString(R.string.text_purchase_add_notes)
+                        getString(com.tokopedia.tokofood.R.string.text_purchase_add_notes)
                     } else {
-                        getString(R.string.text_purchase_change_notes)
+                        getString(com.tokopedia.tokofood.R.string.text_purchase_change_notes)
                     }
                 addNotesButton.setOnClickListener {
                     listener.onTextChangeNotesClicked(element)
@@ -153,9 +155,9 @@ class TokoFoodPurchaseProductViewHolder(private val viewBinding: ItemPurchasePro
             } else {
                 addNotesButton.text =
                     if (isNoteBlank) {
-                        getString(R.string.text_purchase_add_notes_and_variant)
+                        getString(com.tokopedia.tokofood.R.string.text_purchase_add_notes_and_variant)
                     } else {
-                        getString(R.string.text_purchase_change_notes_and_variant)
+                        getString(com.tokopedia.tokofood.R.string.text_purchase_change_notes_and_variant)
                     }
                 addNotesButton.setOnClickListener {
                     listener.onTextChangeNoteAndVariantClicked(element)
@@ -210,6 +212,7 @@ class TokoFoodPurchaseProductViewHolder(private val viewBinding: ItemPurchasePro
                     val quantity = p0.toString().toIntOrZero()
                     if (quantity != element.quantity) {
                         element.quantity = quantity
+                        element.isQuantityChanged = true
                         listener.onQuantityChanged()
                     }
                 }
@@ -253,9 +256,6 @@ class TokoFoodPurchaseProductViewHolder(private val viewBinding: ItemPurchasePro
 
     companion object {
         val LAYOUT = R.layout.item_purchase_product
-
-        private const val ENABLED_ALPHA = 1.0f
-        private const val DISABLED_ALPHA = 0.5f
 
         private const val SIXTEEN_MARGIN_PX = 16
     }

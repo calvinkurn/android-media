@@ -229,6 +229,10 @@ class TokoFoodOrderTrackingViewModelTest : TokoFoodOrderTrackingViewModelTestFix
 
             assertEquals(ORDER_ID_DUMMY, viewModel.getOrderId())
 
+            coVerify {
+                getTokoFoodOrderStatusUseCase.get().execute(ORDER_ID_DUMMY)
+            }
+
             val actualResult =
                 (viewModel.orderCompletedLiveTracking.observeAwaitValue() as Success).data
             assertEquals(orderDetailResultUiModel.orderStatusKey, actualResult.orderStatusKey)

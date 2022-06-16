@@ -79,11 +79,11 @@ class TokoFoodPurchaseAdapterTypeFactory(private val listener: TokoFoodPurchaseA
             }
             TokoFoodPurchaseDividerViewHolder.LAYOUT -> {
                 val viewBinding = ItemPurchaseDividerBinding.inflate(LayoutInflater.from(parent.context), parent as ViewGroup, false)
-                TokoFoodPurchaseDividerViewHolder(viewBinding, listener)
+                TokoFoodPurchaseDividerViewHolder(viewBinding)
             }
             TokoFoodPurchaseGeneralTickerViewHolder.LAYOUT -> {
                 val viewBinding = ItemPurchaseGeneralTickerBinding.inflate(LayoutInflater.from(parent.context), parent as ViewGroup, false)
-                TokoFoodPurchaseGeneralTickerViewHolder(viewBinding, listener)
+                TokoFoodPurchaseGeneralTickerViewHolder(viewBinding)
             }
             TokoFoodPurchaseProductListHeaderViewHolder.LAYOUT -> {
                 val viewBinding = ItemPurchaseProductListHeaderBinding.inflate(LayoutInflater.from(parent.context), parent as ViewGroup, false)

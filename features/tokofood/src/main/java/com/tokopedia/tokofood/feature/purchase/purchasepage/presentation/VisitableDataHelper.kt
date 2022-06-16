@@ -1,6 +1,9 @@
 package com.tokopedia.tokofood.feature.purchase.purchasepage.presentation
 
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.kotlin.extensions.view.ONE
+import com.tokopedia.tokofood.common.domain.response.CartTokoFoodData
 import com.tokopedia.tokofood.common.presentation.uimodel.UpdateProductParam
 import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.uimodel.*
 
@@ -103,12 +106,12 @@ object VisitableDataHelper {
     }
 
     fun MutableList<Visitable<*>>.getAllUnavailableProducts(): Pair<Int, List<TokoFoodPurchaseProductTokoFoodPurchaseUiModel>> {
-        var firstItemIndex = -1
+        var firstItemIndex = RecyclerView.NO_POSITION
         val unavailableProducts = mutableListOf<TokoFoodPurchaseProductTokoFoodPurchaseUiModel>()
         loop@ for ((index, data) in this.withIndex()) {
             when {
                 data is TokoFoodPurchaseProductTokoFoodPurchaseUiModel && !data.isAvailable -> {
-                    if (firstItemIndex == -1) firstItemIndex = index
+                    if (firstItemIndex == RecyclerView.NO_POSITION) firstItemIndex = index
                     unavailableProducts.add(data)
                 }
                 data is TokoFoodPurchaseAccordionTokoFoodPurchaseUiModel || data is TokoFoodPurchasePromoTokoFoodPurchaseUiModel -> {
@@ -129,6 +132,33 @@ object VisitableDataHelper {
             }
         }
         return partiallyLoadedModels
+    }
+
+
+    fun MutableList<Visitable<*>>.isLastAvailableProduct(): Boolean {
+        val count = this.count { it is TokoFoodPurchaseProductTokoFoodPurchaseUiModel && it.isAvailable }
+        return count == Int.ONE
+    }
+
+    fun TokoFoodPurchaseProductTokoFoodPurchaseUiModel.getUpdatedCartId(cartTokoFoodData: CartTokoFoodData): String? {
+        return cartTokoFoodData.carts.find { cartData ->
+            cartData.productId == this.id && cartData.getMetadata()?.variants?.let { variants ->
+                var isSameVariants = true
+                run checkVariant@ {
+                    variants.forEach { variant ->
+                        this.variantsParam.any { productVariant ->
+                            variant.variantId == productVariant.variantId && variant.optionId == productVariant.optionId
+                        }.let { isAnyVariantSame ->
+                            if (!isAnyVariantSame) {
+                                isSameVariants = false
+                                return@checkVariant
+                            }
+                        }
+                    }
+                }
+                variants.isEmpty() || isSameVariants && variants.size == this.variantsParam.size
+            } != false
+        }?.cartId
     }
 
 }

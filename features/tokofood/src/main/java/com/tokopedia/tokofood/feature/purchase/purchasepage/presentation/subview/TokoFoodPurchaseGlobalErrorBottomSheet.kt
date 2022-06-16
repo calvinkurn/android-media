@@ -91,7 +91,7 @@ class TokoFoodPurchaseGlobalErrorBottomSheet : BottomSheetUnify() {
                     listener?.onRetry()
                 }
             } else {
-                layoutGlobalError.errorAction.text = context?.getString(R.string.text_purchase_to_homepage).orEmpty()
+                layoutGlobalError.errorAction.text = context?.getString(com.tokopedia.tokofood.R.string.text_purchase_to_homepage).orEmpty()
                 layoutGlobalError.setActionClickListener {
                     dismiss()
                     listener?.onGoToHome()

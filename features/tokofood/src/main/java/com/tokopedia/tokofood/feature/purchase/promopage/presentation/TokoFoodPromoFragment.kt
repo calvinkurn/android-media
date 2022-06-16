@@ -22,6 +22,7 @@ import com.tokopedia.abstraction.base.view.fragment.IBaseMultiFragment
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.globalerror.GlobalError
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.loader.loadImage
@@ -68,6 +69,8 @@ class TokoFoodPromoFragment : BaseListFragment<Visitable<*>, TokoFoodPromoAdapte
     private var toolbar: TokoFoodPromoToolbar? = null
 
     companion object {
+        const val RV_DIRECTION_UP = -1
+
         const val HAS_ELEVATION = 6
         const val NO_ELEVATION = 0
 
@@ -181,7 +184,7 @@ class TokoFoodPromoFragment : BaseListFragment<Visitable<*>, TokoFoodPromoAdapte
 
             toolbar?.let {
                 viewBinding?.toolbarPurchasePromo?.addView(toolbar)
-                it.setContentInsetsAbsolute(0, 0);
+                it.setContentInsetsAbsolute(Int.ZERO, Int.ZERO)
                 (activity as AppCompatActivity).setSupportActionBar(viewBinding?.toolbarPurchasePromo)
             }
 
@@ -210,7 +213,7 @@ class TokoFoodPromoFragment : BaseListFragment<Visitable<*>, TokoFoodPromoAdapte
             }
 
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                if (recyclerView.canScrollVertically(-1)) {
+                if (recyclerView.canScrollVertically(RV_DIRECTION_UP)) {
                     setToolbarShadowVisibility(true)
                 } else {
                     setToolbarShadowVisibility(false)
@@ -276,7 +279,7 @@ class TokoFoodPromoFragment : BaseListFragment<Visitable<*>, TokoFoodPromoAdapte
         viewBinding?.let {
             it.totalAmountPurchasePromo.amountCtaView.isEnabled = true
             it.totalAmountPurchasePromo.setCtaText(
-                context?.getString(R.string.text_purchase_use_promo, fragmentUiModel.promoCount).orEmpty())
+                context?.getString(com.tokopedia.tokofood.R.string.text_purchase_use_promo, fragmentUiModel.promoCount).orEmpty())
             it.totalAmountPurchasePromo.setLabelTitle(fragmentUiModel.promoTitle)
             it.totalAmountPurchasePromo.setAmount(fragmentUiModel.promoAmountStr)
             it.totalAmountPurchasePromo.amountCtaView.setOnClickListener {

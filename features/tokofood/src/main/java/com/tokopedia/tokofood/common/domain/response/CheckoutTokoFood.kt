@@ -4,7 +4,11 @@ import android.annotation.SuppressLint
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.kotlin.extensions.view.EMPTY
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.tokofood.common.domain.TokoFoodCartUtil
+import com.tokopedia.tokofood.common.domain.param.RemoveCartTokoFoodParam
+import com.tokopedia.tokofood.common.domain.param.RemoveItemTokoFoodParam
+import com.tokopedia.tokofood.common.minicartwidget.view.MiniCartUiModel
 
 data class CheckoutTokoFoodResponse(
     @SerializedName("cart_list_tokofood")
@@ -105,6 +109,30 @@ data class CheckoutTokoFoodData(
 
     fun isPromoPopupType(): Boolean = popupMessageType == POPUP_TYPE_PROMO
 
+
+    fun getMiniCartUiModel(): MiniCartUiModel {
+        return MiniCartUiModel(
+            shopName = shop.name,
+            totalPrice = shoppingSummary.total.cost,
+            totalPriceFmt = summaryDetail.totalPrice,
+            totalProductQuantity = summaryDetail.totalItems
+        )
+    }
+
+    fun getRemoveUnavailableCartParam(shopId: String): RemoveCartTokoFoodParam {
+        val cartList = unavailableSection.products.map {
+            it.mapToRemoveItemParam(shopId)
+        }
+        return RemoveCartTokoFoodParam(cartList)
+    }
+
+    fun getRemoveAllCartParam(shopId: String): RemoveCartTokoFoodParam {
+        val cartList = getProductListFromCart().map {
+            it.mapToRemoveItemParam(shopId)
+        }
+        return RemoveCartTokoFoodParam(carts = cartList)
+    }
+
     fun getProductListFromCart(): List<CheckoutTokoFoodProduct> {
         return availableSection.products.plus(unavailableSection.products)
     }
@@ -182,6 +210,9 @@ data class CheckoutTokoFoodProduct(
     @SerializedName("product_id")
     @Expose
     val productId: String = "",
+    @SerializedName("category_id")
+    @Expose
+    val categoryId: String = "",
     @SerializedName("name")
     @Expose
     val productName: String = "",
@@ -216,7 +247,15 @@ data class CheckoutTokoFoodProduct(
     @SerializedName("variants")
     @Expose
     val variants: List<CheckoutTokoFoodProductVariant> = listOf()
-)
+) {
+    fun mapToRemoveItemParam(shopId: String): RemoveItemTokoFoodParam {
+        return RemoveItemTokoFoodParam(
+            cartId = cartId.toLongOrZero(),
+            productId = productId,
+            shopId = shopId
+        )
+    }
+}
 
 data class CheckoutTokoFoodProductVariant(
     @SerializedName("variant_id")

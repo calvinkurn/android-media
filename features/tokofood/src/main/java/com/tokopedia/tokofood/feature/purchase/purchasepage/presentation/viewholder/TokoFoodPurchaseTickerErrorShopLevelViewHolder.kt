@@ -34,7 +34,7 @@ class TokoFoodPurchaseTickerErrorShopLevelViewHolder(private val viewBinding: It
     }
 
     private fun String.appendWithSeeAction(): String {
-        return itemView.context?.getString(R.string.text_purchase_ticker_unavailable_product, this).orEmpty()
+        return itemView.context?.getString(com.tokopedia.tokofood.R.string.text_purchase_ticker_unavailable_product, this).orEmpty()
     }
 
 }

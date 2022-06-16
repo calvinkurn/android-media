@@ -35,6 +35,7 @@ import com.tokopedia.common.payment.PaymentConstant
 import com.tokopedia.common.payment.model.PaymentPassData
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.globalerror.GlobalError
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.loaderdialog.LoaderDialog
@@ -245,9 +246,9 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
 
             toolbar = tokoFoodPurchaseToolbar
 
-            toolbar?.let {
+            toolbar?.let { toolbar ->
                 viewBinding?.toolbarPurchase?.addView(toolbar)
-                it.setContentInsetsAbsolute(0, 0);
+                toolbar.setContentInsetsAbsolute(Int.ZERO, Int.ZERO);
                 (activity as AppCompatActivity).setSupportActionBar(viewBinding?.toolbarPurchase)
             }
 
@@ -276,7 +277,7 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
             }
 
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                if (recyclerView.canScrollVertically(-1)) {
+                if (recyclerView.canScrollVertically(RV_DIRECTION_UP)) {
                     setToolbarShadowVisibility(true)
                 } else {
                     setToolbarShadowVisibility(false)
@@ -386,9 +387,6 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
                 PurchaseUiEvent.EVENT_SUCCESS_VALIDATE_CONSENT -> {
                     onSuccessAgreeConsent()
                 }
-                PurchaseUiEvent.EVENT_FAILED_VALIDATE_CONSENT -> {
-                    it.throwable?.let { throwable -> showToasterError(throwable) }
-                }
                 PurchaseUiEvent.EVENT_SUCCESS_CHECKOUT_GENERAL -> {
                     consentBottomSheet?.dismiss()
                     viewModel.setPaymentButtonLoading(false)
@@ -481,10 +479,11 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
                                 viewBinding?.recyclerViewPurchase?.post {
                                     viewModel.updateNotes(product)
                                 }
-                                showToaster(
-                                    context?.getString(R.string.text_purchase_success_notes).orEmpty(),
-                                    getOkayMessage()
-                                )
+
+                                val toasterMessage = product.message.takeIf { cartMessage ->
+                                    cartMessage.isNotBlank()
+                                } ?: context?.getString(com.tokopedia.tokofood.R.string.text_purchase_success_notes).orEmpty()
+                                showToaster(toasterMessage, getOkayMessage())
                             }
                         }
                     }
@@ -493,14 +492,15 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
                             viewBinding?.recyclerViewPurchase?.post {
                                 viewModel.updateCartId(updateParams, cartTokoFoodData)
                             }
+
+                            val toasterMessage = cartTokoFoodData.message.takeIf { cartMessage ->
+                                cartMessage.isNotBlank()
+                            } ?: context?.getString(com.tokopedia.tokofood.R.string.text_purchase_success_quantity).orEmpty()
+                            showToaster(toasterMessage, getOkayMessage())
                         }
                         viewBinding?.recyclerViewPurchase?.post {
                             viewModel.refreshPartialCartInformation()
                         }
-                        showToaster(
-                            context?.getString(R.string.text_purchase_success_quantity).orEmpty(),
-                            getOkayMessage()
-                        )
                     }
                     UiEvent.EVENT_SUCCESS_LOAD_CART -> {
 
@@ -624,9 +624,9 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
             setType(GlobalError.PAGE_NOT_FOUND)
             errorIllustration.loadImage(NO_PINPOINT_URL)
             errorIllustration.adjustViewBounds = true
-            errorTitle.text = context?.getString(R.string.text_purchase_no_pinpoint).orEmpty()
-            errorDescription.text = context?.getString(R.string.text_purchase_pinpoint_benefit).orEmpty()
-            errorAction.text = context?.getString(R.string.text_purchase_set_pinpoint).orEmpty()
+            errorTitle.text = context?.getString(com.tokopedia.tokofood.R.string.text_purchase_no_pinpoint).orEmpty()
+            errorDescription.text = context?.getString(com.tokopedia.tokofood.R.string.text_purchase_pinpoint_benefit).orEmpty()
+            errorAction.text = context?.getString(com.tokopedia.tokofood.R.string.text_purchase_set_pinpoint).orEmpty()
             setActionClickListener {
                 viewModel.validateSetPinpoint()
             }
@@ -655,10 +655,10 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
     private fun showBulkDeleteConfirmationDialog(productCount: Int) {
         activity?.let {
             DialogUnify(it, DialogUnify.VERTICAL_ACTION, DialogUnify.NO_IMAGE).apply {
-                setTitle(getString(R.string.text_purchase_delete_item, productCount.toString()))
-                setDescription(getString(R.string.text_purchase_delete_all))
-                setPrimaryCTAText(getString(R.string.text_purchase_delete))
-                setSecondaryCTAText(getString(R.string.text_purchase_back))
+                setTitle(getString(com.tokopedia.tokofood.R.string.text_purchase_delete_item, productCount.toString()))
+                setDescription(getString(com.tokopedia.tokofood.R.string.text_purchase_delete_all))
+                setPrimaryCTAText(getString(com.tokopedia.tokofood.R.string.text_purchase_delete))
+                setSecondaryCTAText(getString(com.tokopedia.tokofood.R.string.text_purchase_back))
                 setPrimaryCTAClickListener {
                     activityViewModel?.deleteUnavailableProducts(SOURCE)
                     dismiss()
@@ -672,7 +672,7 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
 
     private fun onSuccessRemoveProduct(productCount: Int) {
         showToaster(
-            context?.getString(R.string.text_purchase_success_delete, productCount).orEmpty(),
+            context?.getString(com.tokopedia.tokofood.R.string.text_purchase_success_delete, productCount).orEmpty(),
             getOkayMessage()
         )
     }
@@ -746,7 +746,7 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
 
     private fun onResultFromChangeAddress(intent: Intent?) {
         showToaster(
-            context?.getString(R.string.text_purchase_success_edit_address).orEmpty(),
+            context?.getString(com.tokopedia.tokofood.R.string.text_purchase_success_edit_address).orEmpty(),
             getOkayMessage()
         )
         intent?.getParcelableExtra<ChosenAddressModel>(CheckoutConstant.EXTRA_SELECTED_ADDRESS_DATA)?.let { chosenAddressModel ->
@@ -873,12 +873,12 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
         } ?: throwable.message.orEmpty()
     }
 
-    private fun getOkayMessage(): String = context?.getString(R.string.text_purchase_okay).orEmpty()
+    private fun getOkayMessage(): String = context?.getString(com.tokopedia.tokofood.R.string.text_purchase_okay).orEmpty()
 
     private fun showDefaultCheckoutGeneralError(message: String? = null) {
         val errorMessage =
-            message ?: context?.getString(R.string.text_purchase_failed_to_payment).orEmpty()
-        val actionMessage = context?.getString(R.string.text_purchase_try_again).orEmpty()
+            message ?: context?.getString(com.tokopedia.tokofood.R.string.text_purchase_failed_to_payment).orEmpty()
+        val actionMessage = context?.getString(com.tokopedia.tokofood.R.string.text_purchase_try_again).orEmpty()
         showToasterError(errorMessage, actionMessage) {
             viewModel.setPaymentButtonLoading(true)
             viewModel.checkoutGeneral()
@@ -1018,7 +1018,7 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
     }
 
     override fun onSuccessAgreeConsent() {
-        viewModel.setConsentAgreed()
+        viewModel.setConsentAgreed(true)
         viewModel.checkoutGeneral()
     }
 
@@ -1029,6 +1029,8 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
     }
 
     companion object {
+        const val RV_DIRECTION_UP = -1
+
         const val HAS_ELEVATION = 6
         const val NO_ELEVATION = 0
 

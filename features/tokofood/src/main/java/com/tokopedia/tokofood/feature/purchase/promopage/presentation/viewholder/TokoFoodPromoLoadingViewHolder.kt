@@ -4,7 +4,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.LoadingViewholder
 import com.tokopedia.tokofood.R
 import com.tokopedia.tokofood.databinding.ItemTokofoodPromoLoadingBinding
 
-class TokoFoodPromoLoadingViewHolder(private val viewBinding: ItemTokofoodPromoLoadingBinding)
+class TokoFoodPromoLoadingViewHolder(viewBinding: ItemTokofoodPromoLoadingBinding)
     : LoadingViewholder(viewBinding.root) {
 
     companion object {

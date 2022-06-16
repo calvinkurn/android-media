@@ -3,11 +3,9 @@ package com.tokopedia.tokofood.feature.purchase.promopage.presentation.viewholde
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.tokofood.R
 import com.tokopedia.tokofood.databinding.ItemTokofoodPromoTickerBinding
-import com.tokopedia.tokofood.feature.purchase.promopage.presentation.TokoFoodPromoActionListener
 import com.tokopedia.tokofood.feature.purchase.promopage.presentation.uimodel.TokoFoodPromoTickerUiModel
 
-class TokoFoodPromoTickerViewHolder(private val viewBinding: ItemTokofoodPromoTickerBinding,
-                                    private val listener: TokoFoodPromoActionListener)
+class TokoFoodPromoTickerViewHolder(private val viewBinding: ItemTokofoodPromoTickerBinding)
     : AbstractViewHolder<TokoFoodPromoTickerUiModel>(viewBinding.root) {
 
     companion object {
