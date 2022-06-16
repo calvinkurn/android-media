@@ -60,7 +60,7 @@ class MyShopProductFragment @Inject constructor(
                     viewModel.selectedTagSource,
                     product,
                     position,
-                    !viewModel.isUser
+                    true
                 )
                 viewModel.submitAction(ProductTagAction.ProductSelected(product))
             },
@@ -134,7 +134,7 @@ class MyShopProductFragment @Inject constructor(
     private fun setupAnalytic() {
         impressionCoordinator.setInitialData(
             viewModel.selectedTagSource,
-            false,
+            true,
         )
     }
 

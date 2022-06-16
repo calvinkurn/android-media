@@ -50,7 +50,7 @@ class LastTaggedProductFragment @Inject constructor(
                     viewModel.selectedTagSource,
                     product,
                     position,
-                    false
+                    true
                 )
                 viewModel.submitAction(ProductTagAction.ProductSelected(product))
             },
