@@ -170,7 +170,7 @@ class TmDashPreviewFragment : BaseDaggerFragment() {
                         view?.let { v ->
                             Toaster.build(
                                 v,
-                                it.data?.merchantPromotionCreateMultipleMV?.message ?: "",
+                                it.data.merchantPromotionCreateMultipleMV?.message ?: "",
                                 Toaster.LENGTH_LONG,
                                 Toaster.TYPE_ERROR
                             )
@@ -308,8 +308,8 @@ class TmDashPreviewFragment : BaseDaggerFragment() {
     @SuppressLint("SetTextI18n")
     private fun renderCouponList(tmCouponPreviewData: TmCouponPreviewData) {
         initRecyclerView()
-        tvCouponMulaiValue.text = tmCouponPreviewData.startDate +","+ tmCouponPreviewData.startTime
-        tvCouponBerakhirValue.text = tmCouponPreviewData.endDate +","+ tmCouponPreviewData.endTime
+        tvCouponMulaiValue.text = tmCouponPreviewData.startDate +","+ tmCouponPreviewData.startTime + "WIB"
+        tvCouponBerakhirValue.text = tmCouponPreviewData.endDate +","+ tmCouponPreviewData.endTime + "WIB"
         tvMaxTransactionValue.text = "Rp${CurrencyFormatHelper.convertToRupiah(tmCouponPreviewData.maxValue)}"
     }
 

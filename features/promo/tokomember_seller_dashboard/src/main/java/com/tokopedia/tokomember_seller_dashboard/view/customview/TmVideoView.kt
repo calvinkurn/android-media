@@ -9,7 +9,9 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.tokomember_seller_dashboard.R
+import com.tokopedia.tokomember_seller_dashboard.util.TM_THUMBNAIL_VIDEO
 import com.tokopedia.tokomember_seller_dashboard.view.videoplayer.TokomemberDashVideoPlayer
 import com.tokopedia.tokomember_seller_dashboard.view.videoplayer.VideoStateListener
 import kotlinx.android.synthetic.main.tm_dash_video_view.view.*
@@ -31,6 +33,7 @@ class TmVideoView @JvmOverloads constructor(
 
     init {
         View.inflate(context, R.layout.tm_dash_video_view, this)
+        videoPreviewImage.loadImage(TM_THUMBNAIL_VIDEO)
         setClicks()
     }
 

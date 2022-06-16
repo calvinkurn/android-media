@@ -26,6 +26,8 @@ class TokomemeberCardBgUsecase @Inject constructor() : UseCase<TokomemberCardBgI
         execute({
             if (!it.tokoVisitableCardBg.isNullOrEmpty())
                 onSuccess(it)
+            else
+                onSuccess(TokomemberCardBgItem())
         }, { onError(it) })
     }
 

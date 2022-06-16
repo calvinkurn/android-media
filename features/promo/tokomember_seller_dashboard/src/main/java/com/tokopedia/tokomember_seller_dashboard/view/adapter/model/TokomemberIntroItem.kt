@@ -5,7 +5,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.tokomember_seller_dashboard.view.adapter.factory.TokomemberIntroFactory
 
 data class TokomemberIntroItem(
-    var tokoVisitable : ArrayList<Visitable<*>>
+    var tokoVisitable : ArrayList<Visitable<*>> = ArrayList()
 )
 
 open class TokomemberIntroModel {

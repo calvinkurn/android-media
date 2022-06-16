@@ -148,3 +148,8 @@ const val COUPON_DISCOUNT_TYPE_PERCENT = 2
 const val SOURCE_MULTIPLE_COUPON_CREATE = "TokoMember-Create"
 const val SOURCE_MULTIPLE_COUPON_EXTEND = "TokoMember-Extend"
 const val SOURCE_SINGLE_COUPON_CREATE = "TokoMember-Voucher"
+
+const val TM_CARD_DIALOG_TITLE = "Yakin batalkan pengaturan?"
+const val TM_CARD_DIALOG_DESC = "Pengaturan yang dibuat akan hilang kalau kamu batalkan proses pembuatan TokoMember, lho."
+const val TM_CARD_DIALOG_CTA_PRIMARY = "Lanjut"
+const val TM_CARD_DIALOG_CTA_SECONDARY = "Batalkan Pengaturan"

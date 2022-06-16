@@ -1,59 +1,64 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/viewFlipperCoupon"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@color/Unify_Background"
-    android:id="@+id/viewFlipperCoupon">
+    android:orientation="vertical">
 
-        <androidx.core.widget.NestedScrollView
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_alignTop="@id/btn_create_coupon"
-                android:layout_alignParentTop="true">
+            android:layout_height="wrap_content">
 
             <com.tokopedia.sortfilter.SortFilter
-        android:layout_height="wrap_content"
+                android:id="@+id/filter"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/unify_space_16"
+                android:layout_marginTop="@dimen/unify_space_16"
+                android:layout_marginEnd="@dimen/unify_space_16"
+                android:visibility="visible"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:sort_filter_relationship="AND"
+                app:sort_filter_type="advanced" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rv_coupon"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/unify_space_16"
+                android:layout_marginTop="@dimen/unify_space_16"
+                android:layout_marginEnd="@dimen/unify_space_16"
+                android:layout_marginBottom="@dimen/unify_space_32"
+                android:visibility="visible"
+                app:layout_behavior="@string/appbar_scrolling_view_behavior"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/filter" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/cc"
         android:layout_width="match_parent"
-        android:id="@+id/filter"
-        android:layout_marginStart="@dimen/unify_space_16"
-        android:layout_marginEnd="@dimen/unify_space_16"
-        android:layout_marginTop="@dimen/unify_space_16"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:sort_filter_relationship="AND"
-        app:sort_filter_type="advanced" />
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/rv_coupon"
-        android:layout_marginTop="@dimen/unify_space_16"
-        android:layout_marginStart="@dimen/unify_space_16"
-        android:layout_marginEnd="@dimen/unify_space_16"
-        android:layout_marginBottom="@dimen/unify_space_32"
-        app:layout_constraintTop_toBottomOf="@id/filter"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
-
-        </androidx.core.widget.NestedScrollView>
+        android:layout_gravity="bottom"
+        android:background="@android:color/transparent"
+        android:orientation="vertical">
 
         <com.tokopedia.unifycomponents.UnifyButton
+            android:id="@+id/btn_create_coupon"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
-            android:id="@+id/btn_create_coupon"
+            android:layout_margin="@dimen/unify_space_16"
             android:text="@string/tm_kupon_add"
-            android:layout_marginStart="@dimen/unify_space_16"
-            android:layout_marginEnd="@dimen/unify_space_16"
-            android:layout_marginBottom="@dimen/unify_space_16"/>
+            app:layout_constraintBottom_toBottomOf="parent" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</LinearLayout>
 
 
-</RelativeLayout>

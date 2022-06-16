@@ -15,11 +15,11 @@ open class TokomemberProgramModel {
 }
 
 data class TokomemberCardColorItem(
-    var tokoVisitableCardColor: ArrayList<Visitable<*>>,
+    var tokoVisitableCardColor: ArrayList<Visitable<*>> = ArrayList()
 )
 
 data class TokomemberCardBgItem(
-    var tokoVisitableCardBg: ArrayList<Visitable<*>>
+    var tokoVisitableCardBg: ArrayList<Visitable<*>> = ArrayList()
 )
 
 open class TokomemberCardBgModel {

@@ -18,6 +18,8 @@ class TokomemberIntroSectionMapperUsecase @Inject constructor() : UseCase<Tokome
         execute({
             if (!it.tokoVisitable.isNullOrEmpty())
                 onSuccess(it)
+            else
+                onSuccess(TokomemberIntroItem())
         }, { onError(it) })
     }
 

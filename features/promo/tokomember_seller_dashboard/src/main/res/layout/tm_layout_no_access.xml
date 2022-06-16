@@ -35,6 +35,7 @@
         android:layout_height="wrap_content"
         android:id="@+id/tv_heading_error"
         app:typographyType="heading_2"
+        android:gravity="center"
         android:layout_marginTop="16dp"
         android:text="@string/tm_layout_no_access_title"/>
 

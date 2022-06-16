@@ -32,7 +32,6 @@ object TmExpandView {
             }
         }
 
-        // Expansion speed of 1dp/ms
         a.interpolator  = UnifyMotion.EASE_OUT
         a.duration = 200L
         v.startAnimation(a)
@@ -56,7 +55,6 @@ object TmExpandView {
             }
         }
 
-        // Collapse speed of 1dp/ms
         a.interpolator  = UnifyMotion.EASE_OUT
         a.duration = 200L
         v.startAnimation(a)

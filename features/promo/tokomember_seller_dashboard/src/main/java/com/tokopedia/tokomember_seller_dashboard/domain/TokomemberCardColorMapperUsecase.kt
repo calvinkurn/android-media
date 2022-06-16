@@ -18,6 +18,8 @@ class TokomemberCardColorMapperUsecase @Inject constructor() : UseCase<Tokomembe
         execute({
             if (!it.tokoVisitableCardColor.isNullOrEmpty())
                 onSuccess(it)
+            else
+                onSuccess(TokomemberCardColorItem())
         }, { onError(it) })
     }
 

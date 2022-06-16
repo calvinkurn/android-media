@@ -18,20 +18,8 @@ import com.tokopedia.tokomember_common_widget.util.ProgramActionType
 import com.tokopedia.tokomember_seller_dashboard.R
 import com.tokopedia.tokomember_seller_dashboard.callbacks.TmCouponListRefreshCallback
 import com.tokopedia.tokomember_seller_dashboard.callbacks.TmOpenFragmentCallback
-import com.tokopedia.tokomember_seller_dashboard.util.ACTION_EDIT
-import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_CREATE_SCREEN_TYPE
-import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_PROGRAM_ID
-import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_PROGRAM_TYPE
-import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_SHOP_ID
-import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_VOUCHER_ID
-import com.tokopedia.tokomember_seller_dashboard.util.TM_DIALOG_CANCEL_CTA_PRIMARY_COUPON
-import com.tokopedia.tokomember_seller_dashboard.util.TM_DIALOG_CANCEL_CTA_PRIMARY_PROGRAM
-import com.tokopedia.tokomember_seller_dashboard.util.TM_DIALOG_CANCEL_CTA_SECONDARY_COUPON
-import com.tokopedia.tokomember_seller_dashboard.util.TM_DIALOG_CANCEL_CTA_SECONDARY_PROGRAM
-import com.tokopedia.tokomember_seller_dashboard.util.TM_DIALOG_CANCEL_DESC_COUPON
-import com.tokopedia.tokomember_seller_dashboard.util.TM_DIALOG_CANCEL_DESC_PROGRAM
-import com.tokopedia.tokomember_seller_dashboard.util.TM_DIALOG_CANCEL_TITLE_COUPON
-import com.tokopedia.tokomember_seller_dashboard.util.TM_DIALOG_CANCEL_TITLE_PROGRAM
+import com.tokopedia.tokomember_seller_dashboard.tracker.TmTracker
+import com.tokopedia.tokomember_seller_dashboard.util.*
 import com.tokopedia.tokomember_seller_dashboard.view.fragment.TmCreateCardFragment
 import com.tokopedia.tokomember_seller_dashboard.view.fragment.TmDashPreviewFragment
 import com.tokopedia.tokomember_seller_dashboard.view.fragment.TmMultipleCuponCreateFragment
@@ -41,11 +29,12 @@ import com.tokopedia.tokomember_seller_dashboard.view.fragment.TmSingleCouponCre
 class TmDashCreateActivity : AppCompatActivity(), TmOpenFragmentCallback {
 
     private var screenType: Int = 0
+    private var tmTracker : TmTracker ? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.tm_dash_create_activity)
-
+        tmTracker = TmTracker()
         intent.extras?.getInt(BUNDLE_CREATE_SCREEN_TYPE, CARD)?.let {
             screenType = it
         }
@@ -88,32 +77,71 @@ class TmDashCreateActivity : AppCompatActivity(), TmOpenFragmentCallback {
                             setDescription(TM_DIALOG_CANCEL_DESC_PROGRAM)
                             setPrimaryCTAText(TM_DIALOG_CANCEL_CTA_PRIMARY_PROGRAM)
                             setSecondaryCTAText(TM_DIALOG_CANCEL_CTA_SECONDARY_PROGRAM)
+                            setPrimaryCTAClickListener {
+                                dismiss()
+                            }
+                            setSecondaryCTAClickListener {
+                                dismiss()
+                                finish()
+                            }
                         }
                         COUPON_SINGLE -> {
                             setTitle(TM_DIALOG_CANCEL_TITLE_COUPON)
                             setDescription(TM_DIALOG_CANCEL_DESC_COUPON)
                             setPrimaryCTAText(TM_DIALOG_CANCEL_CTA_PRIMARY_COUPON)
                             setSecondaryCTAText(TM_DIALOG_CANCEL_CTA_SECONDARY_COUPON)
+                            setPrimaryCTAClickListener {
+                                dismiss()
+                            }
+                            setSecondaryCTAClickListener {
+                                dismiss()
+                                finish()
+                            }
                         }
                         COUPON_MULTIPLE -> {
                             setTitle(TM_DIALOG_CANCEL_TITLE_COUPON)
                             setDescription(TM_DIALOG_CANCEL_DESC_COUPON)
                             setPrimaryCTAText(TM_DIALOG_CANCEL_CTA_PRIMARY_COUPON)
                             setSecondaryCTAText(TM_DIALOG_CANCEL_CTA_SECONDARY_COUPON)
+                            setPrimaryCTAClickListener {
+                                dismiss()
+                            }
+                            setSecondaryCTAClickListener {
+                                dismiss()
+                                finish()
+                            }
                         }
                         COUPON_MULTIPLE_BUAT -> {
                             setTitle(TM_DIALOG_CANCEL_TITLE_COUPON)
                             setDescription(TM_DIALOG_CANCEL_DESC_COUPON)
                             setPrimaryCTAText(TM_DIALOG_CANCEL_CTA_PRIMARY_COUPON)
                             setSecondaryCTAText(TM_DIALOG_CANCEL_CTA_SECONDARY_COUPON)
+                            setPrimaryCTAClickListener {
+                                dismiss()
+                            }
+                            setSecondaryCTAClickListener {
+                                dismiss()
+                                finish()
+                            }
                         }
-                    }
-                    setPrimaryCTAClickListener {
-                        dismiss()
-                    }
-                    setSecondaryCTAClickListener {
-                        dismiss()
-                        finish()
+                        CARD -> {
+                            if( supportFragmentManager.fragments[0] is TmCreateCardFragment){
+                                val shopId  = supportFragmentManager.fragments[0].arguments?.getInt(BUNDLE_SHOP_ID).toString()
+                                setTitle(TM_CARD_DIALOG_TITLE)
+                                setDescription(TM_CARD_DIALOG_DESC)
+                                setPrimaryCTAText(TM_CARD_DIALOG_CTA_PRIMARY)
+                                setSecondaryCTAText(TM_CARD_DIALOG_CTA_SECONDARY)
+                                setPrimaryCTAClickListener {
+                                    tmTracker?.clickCardCancelPrimary(shopId)
+                                    dismiss()
+                                }
+                                setSecondaryCTAClickListener {
+                                    tmTracker?.clickCardCancelSecondary(shopId)
+                                    dismiss()
+                                    finish()
+                                }
+                            }
+                        }
                     }
                 }
                 dialogCancel.show()

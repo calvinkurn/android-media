@@ -32,40 +32,16 @@ import com.tokopedia.tokomember_seller_dashboard.model.MembershipGetProgramForm
 import com.tokopedia.tokomember_seller_dashboard.model.ProgramThreshold
 import com.tokopedia.tokomember_seller_dashboard.model.TmIntroBottomsheetModel
 import com.tokopedia.tokomember_seller_dashboard.tracker.TmTracker
-import com.tokopedia.tokomember_seller_dashboard.util.ACTION_CREATE
-import com.tokopedia.tokomember_seller_dashboard.util.ACTION_DETAIL
-import com.tokopedia.tokomember_seller_dashboard.util.ACTION_EDIT
-import com.tokopedia.tokomember_seller_dashboard.util.ACTION_EXTEND
-import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_CARD_ID
-import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_CARD_ID_IN_TOOLS
-import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_EDIT_PROGRAM
-import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_PROGRAM_ID
-import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_PROGRAM_ID_IN_TOOLS
-import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_PROGRAM_TYPE
-import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_SHOP_AVATAR
-import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_SHOP_ID
-import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_SHOP_NAME
-import com.tokopedia.tokomember_seller_dashboard.util.DATE_DESC
-import com.tokopedia.tokomember_seller_dashboard.util.DATE_TITLE
-import com.tokopedia.tokomember_seller_dashboard.util.ERROR_CREATING_CTA
-import com.tokopedia.tokomember_seller_dashboard.util.ERROR_CREATING_CTA_RETRY
-import com.tokopedia.tokomember_seller_dashboard.util.ERROR_CREATING_DESC
-import com.tokopedia.tokomember_seller_dashboard.util.ERROR_CREATING_TITLE
-import com.tokopedia.tokomember_seller_dashboard.util.ERROR_CREATING_TITLE_RETRY
-import com.tokopedia.tokomember_seller_dashboard.util.PROGRAM_CTA
-import com.tokopedia.tokomember_seller_dashboard.util.PROGRAM_CTA_EDIT
-import com.tokopedia.tokomember_seller_dashboard.util.REFRESH
-import com.tokopedia.tokomember_seller_dashboard.util.TM_PROGRAM_EDIT_DIALOG_TITLE
-import com.tokopedia.tokomember_seller_dashboard.util.TM_PROGRAM_MIN_PURCHASE_ERROR
+import com.tokopedia.tokomember_seller_dashboard.util.*
 import com.tokopedia.tokomember_seller_dashboard.util.TmDateUtil.convertDateTime
 import com.tokopedia.tokomember_seller_dashboard.util.TmDateUtil.setDate
-import com.tokopedia.tokomember_seller_dashboard.util.TokoLiveDataResult
 import com.tokopedia.tokomember_seller_dashboard.view.activity.TokomemberDashIntroActivity
 import com.tokopedia.tokomember_seller_dashboard.view.adapter.mapper.ProgramUpdateMapper
 import com.tokopedia.tokomember_seller_dashboard.view.customview.BottomSheetClickListener
 import com.tokopedia.tokomember_seller_dashboard.view.customview.TokomemberBottomsheet
 import com.tokopedia.tokomember_seller_dashboard.view.viewmodel.TmDashCreateViewModel
 import com.tokopedia.unifycomponents.ProgressBarUnify
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.text.currency.NumberTextWatcher
 import kotlinx.android.synthetic.main.tm_dash_program_form_container.*
@@ -170,8 +146,9 @@ class TmProgramFragment : BaseDaggerFragment(), ChipGroupCallback ,
                     if(it.data?.membershipCreateEditProgram?.resultStatus?.code=="200"){
                         programCreationId = it?.data.membershipCreateEditProgram.programSeller?.id?:0
                         onProgramUpdateSuccess()
-                    }
-                    else{
+                    } else if (it.data?.membershipCreateEditProgram?.resultStatus?.code=="50001"){
+                        view?.let { v-> Toaster.build(v," Coba Lagi" , Toaster.LENGTH_LONG , Toaster.TYPE_ERROR ).show() }
+                    } else{
                         handleErrorOnUpdate()
                     }
                 }
@@ -199,9 +176,8 @@ class TmProgramFragment : BaseDaggerFragment(), ChipGroupCallback ,
             0-> ERROR_CREATING_CTA
             else -> ERROR_CREATING_CTA_RETRY
         }
-        //TODO remote res
         val bundle = Bundle()
-        val tmIntroBottomsheetModel = TmIntroBottomsheetModel(title, ERROR_CREATING_DESC , "https://images.tokopedia.net/img/android/res/singleDpi/quest_widget_nonlogin_banner.png", cta , errorCount = errorCount)
+        val tmIntroBottomsheetModel = TmIntroBottomsheetModel(title, ERROR_CREATING_DESC , TM_ERROR_GEN, cta , errorCount = errorCount)
         bundle.putString(TokomemberBottomsheet.ARG_BOTTOMSHEET, Gson().toJson(tmIntroBottomsheetModel))
         val bottomsheet = TokomemberBottomsheet.createInstance(bundle)
         bottomsheet.setUpBottomSheetListener(this)
@@ -277,10 +253,10 @@ class TmProgramFragment : BaseDaggerFragment(), ChipGroupCallback ,
             }
 
             val dialog = context?.let { DialogUnify(it, DialogUnify.VERTICAL_ACTION, DialogUnify.NO_IMAGE) }
-            dialog?.setTitle("Yakin batalkan program?")
-            dialog?.setDescription("Pengaturan yang dibuat akan hilang kalau kamu batalkan proses pengaturan TokoMember, lho.")
-            dialog?.setPrimaryCTAText("Lanjut")
-            dialog?.setSecondaryCTAText("Batalkan Program")
+            dialog?.setTitle(TM_DIALOG_CANCEL_TITLE_PROGRAM)
+            dialog?.setDescription(TM_DIALOG_CANCEL_DESC_PROGRAM)
+            dialog?.setPrimaryCTAText(TM_DIALOG_CANCEL_CTA_PRIMARY_PROGRAM )
+            dialog?.setSecondaryCTAText(TM_DIALOG_CANCEL_CTA_SECONDARY_PROGRAM)
             dialog?.setPrimaryCTAClickListener {
                 tmTracker?.clickProgramCreationCancelPopupPrimary(arguments?.getInt(BUNDLE_SHOP_ID).toString())
                 dialog.dismiss()
@@ -492,7 +468,8 @@ class TmProgramFragment : BaseDaggerFragment(), ChipGroupCallback ,
             membershipGetProgramForm,
             arguments?.getInt(BUNDLE_PROGRAM_TYPE) ?: 0,
             periodInMonth,
-            arguments?.getInt(BUNDLE_CARD_ID) ?: 0
+            arguments?.getInt(BUNDLE_CARD_ID) ?: 0,
+            arguments?.getInt(BUNDLE_CARD_ID_IN_TOOLS)?:0
         )
         tmDashCreateViewModel.updateProgram(programUpdateResponse)
     }

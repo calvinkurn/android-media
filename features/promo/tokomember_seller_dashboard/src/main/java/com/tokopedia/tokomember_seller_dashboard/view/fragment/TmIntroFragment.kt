@@ -21,20 +21,16 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.gson.Gson
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.tokomember_seller_dashboard.R
 import com.tokopedia.tokomember_seller_dashboard.di.component.DaggerTokomemberDashComponent
 import com.tokopedia.tokomember_seller_dashboard.model.MembershipData
 import com.tokopedia.tokomember_seller_dashboard.model.TmIntroBottomsheetModel
 import com.tokopedia.tokomember_seller_dashboard.tracker.TmTracker
-import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_CARD_ID
-import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_OPEN_BS
-import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_SHOP_AVATAR
-import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_SHOP_ID
-import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_SHOP_NAME
-import com.tokopedia.tokomember_seller_dashboard.util.TM_NOT_ELIGIBLE_CTA
-import com.tokopedia.tokomember_seller_dashboard.util.TM_NOT_ELIGIBLE_DESC
-import com.tokopedia.tokomember_seller_dashboard.util.TM_NOT_ELIGIBLE_TITLE
+import com.tokopedia.tokomember_seller_dashboard.util.*
 import com.tokopedia.tokomember_seller_dashboard.view.activity.TmDashCreateActivity
 import com.tokopedia.tokomember_seller_dashboard.view.adapter.TmIntroAdapter
 import com.tokopedia.tokomember_seller_dashboard.view.adapter.factory.TokomemberIntroFactory
@@ -88,9 +84,11 @@ class TmIntroFragment : BaseDaggerFragment(),
         super.onViewCreated(view, savedInstanceState)
         viewFlipperIntro = view.findViewById(R.id.viewFlipperIntro)
         rootView = view.findViewById(R.id.rootView)
+        ivBg.loadImage(TM_INTRO_BG)
         hideStatusBar()
         observeViewModel()
         renderHeader()
+        renderButton()
         arguments?.getInt(BUNDLE_SHOP_ID, 0)?.let {
             tmTracker?.viewIntroPage(it.toString())
             tmIntroViewModel.getIntroInfo(it)
@@ -133,12 +131,11 @@ class TmIntroFragment : BaseDaggerFragment(),
     private fun populateUI(membershipData: MembershipData) {
 
         if(openBS){
-            //TODO use remote request
             val bundle = Bundle()
             val tmIntroBottomsheetModel = TmIntroBottomsheetModel(
                 TM_NOT_ELIGIBLE_TITLE,
                 TM_NOT_ELIGIBLE_DESC,
-                "https://images.tokopedia.net/img/android/res/singleDpi/quest_widget_nonlogin_banner.png",
+                TM_SELLER_NO_OS,
                 TM_NOT_ELIGIBLE_CTA
             )
             bundle.putString(TokomemberBottomsheet.ARG_BOTTOMSHEET, Gson().toJson(tmIntroBottomsheetModel))
@@ -148,6 +145,7 @@ class TmIntroFragment : BaseDaggerFragment(),
                     arguments?.getInt(BUNDLE_SHOP_ID, 0)?.let {
                         tmTracker?.clickButtonBsNonOs(it.toString())
                     }
+                    RouteManager.route(context,String.format("%s?url=%s", ApplinkConst.WEBVIEW,TM_SELLER_INTRO_EDU))
                     bottomSheet.dismiss()
                 }
             })
@@ -169,6 +167,12 @@ class TmIntroFragment : BaseDaggerFragment(),
          setVideoView(
             videoUrl?:"")
 
+    }
+
+    private fun renderButton(){
+        btnWebview.setOnClickListener {
+            RouteManager.route(context,String.format("%s?url=%s", ApplinkConst.WEBVIEW,TM_SELLER_INTRO_EDU))
+        }
     }
 
     private fun animateViews(){

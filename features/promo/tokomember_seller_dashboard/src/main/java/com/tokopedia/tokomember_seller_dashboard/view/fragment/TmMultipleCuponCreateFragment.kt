@@ -253,12 +253,6 @@ class TmMultipleCuponCreateFragment : BaseDaggerFragment() {
                 TokoLiveDataResult.STATUS.SUCCESS -> {
                     if (it.data?.membershipValidateBenefit?.resultStatus?.code == "200") {
                         errorState.isValidateCouponError = false
-                        if (!tmPremiumCoupon.isVisible) {
-                            icArrowPremium.performClick()
-                        }
-                        if (!tmVipCoupon.isVisible) {
-                            icArrowVip.performClick()
-                        }
                         uploadImageVip()
                         closeLoadingDialog()
                     } else {
@@ -291,9 +285,9 @@ class TmMultipleCuponCreateFragment : BaseDaggerFragment() {
                         is UploadResult.Error -> {
                             closeLoadingDialog()
                             setButtonState()
-                            view?.let { it1 ->
+                            view?.let { v ->
                                 Toaster.build(
-                                    it1,
+                                    v,
                                     it.data.message,
                                     Toaster.TYPE_ERROR,
                                     Toaster.LENGTH_LONG
@@ -306,9 +300,9 @@ class TmMultipleCuponCreateFragment : BaseDaggerFragment() {
                     errorState.isUploadPremium = true
                     setButtonState()
                     closeLoadingDialog()
-                    view?.let { it1 ->
+                    view?.let { v ->
                         Toaster.build(
-                            it1,
+                            v,
                             RETRY,
                             Toaster.TYPE_ERROR,
                             Toaster.LENGTH_LONG
@@ -327,15 +321,14 @@ class TmMultipleCuponCreateFragment : BaseDaggerFragment() {
                         is UploadResult.Success -> {
                             errorState.isUploadVipError = false
                             tmCouponVipUploadId = it.data.uploadId
-                            closeLoadingDialog()
                             openPreviewPage()
                         }
                         is UploadResult.Error -> {
                             closeLoadingDialog()
                             setButtonState()
-                            view?.let { it1 ->
+                            view?.let { v ->
                                 Toaster.build(
-                                    it1,
+                                    v,
                                     it.data.message,
                                     Toaster.TYPE_ERROR,
                                     Toaster.LENGTH_LONG
@@ -348,9 +341,9 @@ class TmMultipleCuponCreateFragment : BaseDaggerFragment() {
                     errorState.isUploadVipError = true
                     setButtonState()
                     closeLoadingDialog()
-                    view?.let { it1 ->
+                    view?.let { v ->
                         Toaster.build(
-                            it1,
+                            v,
                             RETRY,
                             Toaster.TYPE_ERROR,
                             Toaster.LENGTH_LONG
@@ -426,11 +419,10 @@ class TmMultipleCuponCreateFragment : BaseDaggerFragment() {
     private fun handleProgramPreValidateError() {
         setButtonState()
         val bundle = Bundle()
-        //TODO remote res
         val tmIntroBottomSheetModel = TmIntroBottomsheetModel(
             PROGRAM_VALIDATION_ERROR_TITLE,
             PROGRAM_VALIDATION_ERROR_DESC,
-            "https://images.tokopedia.net/img/android/res/singleDpi/quest_widget_nonlogin_banner.png",
+            TM_ERROR_PROGRAM,
             PROGRAM_VALIDATION_CTA_TEXT
         )
         bundle.putString(
@@ -456,12 +448,11 @@ class TmMultipleCuponCreateFragment : BaseDaggerFragment() {
             0 -> ERROR_CREATING_CTA
             else -> ERROR_CREATING_CTA_RETRY
         }
-        //TODO remote res
         val bundle = Bundle()
         val tmIntroBottomSheetModel = TmIntroBottomsheetModel(
             title,
             ERROR_CREATING_DESC,
-            "https://images.tokopedia.net/img/android/res/singleDpi/quest_widget_nonlogin_banner.png",
+            TM_ERROR_GEN,
             cta,
             errorCount = retryCount
         )
@@ -534,6 +525,7 @@ class TmMultipleCuponCreateFragment : BaseDaggerFragment() {
         bundle.putParcelable(BUNDLE_COUPON_PREVIEW_DATA, tmCouponPreviewData)
         bundle.putParcelable(BUNDLE_COUPON_CREATE_DATA, tmMerchantCouponCreateData)
         tmOpenFragmentCallback.openFragment(CreateScreenType.PREVIEW, bundle)
+        closeLoadingDialog()
     }
 
     private fun initTotalTransactionAmount() {
@@ -552,13 +544,13 @@ class TmMultipleCuponCreateFragment : BaseDaggerFragment() {
 
     @SuppressLint("SetTextI18n")
     private fun setTotalTransactionAmount() {
-        val interMediatePremiumData = tmPremiumCoupon?.getSingleCouponData()
-        val interMediateVipData = tmVipCoupon?.getSingleCouponData()
+        couponPremiumData = tmPremiumCoupon?.getSingleCouponData()
+        couponVip = tmVipCoupon?.getSingleCouponData()
         tvTotalTransaction.text = "Rp" + CurrencyFormatHelper.convertToRupiah(
-            ((CurrencyFormatHelper.convertRupiahToInt(interMediatePremiumData?.maxCashback ?: "") *
-                    interMediatePremiumData?.quota.toIntSafely()) +
-                    (CurrencyFormatHelper.convertRupiahToInt(interMediateVipData?.maxCashback ?: "") *
-                            interMediateVipData?.quota.toIntSafely())).toString())
+            ((CurrencyFormatHelper.convertRupiahToInt(couponPremiumData?.maxCashback ?: "") *
+                    couponPremiumData?.quota.toIntSafely()) +
+                    (CurrencyFormatHelper.convertRupiahToInt(couponVip?.maxCashback ?: "") *
+                            couponVip?.quota.toIntSafely())).toString())
     }
 
     private fun renderHeader() {
@@ -588,7 +580,7 @@ class TmMultipleCuponCreateFragment : BaseDaggerFragment() {
     private fun renderButton() {
 
         val webViewTnc = View.inflate(context,R.layout.tm_dash_tnc_coupon_creation,null)
-        webViewTnc.webview.loadUrl("https://www.tokopedia.com/help/article/a-0837?refid=pg-11")
+        webViewTnc.webview.loadUrl(TM_TNC)
         val bottomSheetUnify = BottomSheetUnify()
         bottomSheetUnify.apply {
             setTitle(TERNS_AND_CONDITION)
@@ -602,7 +594,7 @@ class TmMultipleCuponCreateFragment : BaseDaggerFragment() {
         val ss = SpannableString(COUPON_TERMS_CONDITION)
         val clickableSpan: ClickableSpan = object : ClickableSpan() {
             override fun onClick(textView: View) {
-                RouteManager.route(context,String.format("%s?url=%s", ApplinkConst.WEBVIEW, "https://www.tokopedia.com/help/article/a-0837?refid=pg-11"))
+                RouteManager.route(context,String.format("%s?url=%s", ApplinkConst.WEBVIEW, TM_TNC))
                // bottomSheetUnify.show(childFragmentManager, "")
             }
 
@@ -631,8 +623,6 @@ class TmMultipleCuponCreateFragment : BaseDaggerFragment() {
             }
             it.isEnabled = false
             it.isClickable = false
-            couponPremiumData = tmPremiumCoupon?.getSingleCouponData()
-            couponVip = tmVipCoupon?.getSingleCouponData()
             preValidateCouponPremium(couponPremiumData)
         }
     }
@@ -696,6 +686,9 @@ class TmMultipleCuponCreateFragment : BaseDaggerFragment() {
     }
 
     private fun renderMultipleCoupon() {
+
+        setTotalTransactionAmount()
+        tvTotalTransaction.text
         tmPremiumCoupon?.setShopData(shopName, shopAvatar)
         tmVipCoupon?.setShopData(shopName, shopAvatar)
 

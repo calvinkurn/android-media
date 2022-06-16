@@ -15,7 +15,8 @@ object ProgramUpdateMapper {
         membershipGetProgramForm: MembershipGetProgramForm?,
         programType: Int,
         periodInMonth: Int,
-        cardIdCreate:Int = 0
+        cardIdCreate:Int = 0,
+        inToolsCardId:Int = 0,
     ): ProgramUpdateDataInput {
         var actionType = ""
         val startTime = if(programType == ProgramActionType.CANCEL){
@@ -35,8 +36,6 @@ object ProgramUpdateMapper {
             startTime = startTime,
             endTime = endTime,
             periodInMonth = periodInMonth,
-      //      startTimeMillis = getTimeInMillis(membershipGetProgramForm?.programForm?.timeWindow?.startTime ?: ""),
-//            endTimeMillis = getTimeInMillis(addDuration(membershipGetProgramForm?.programForm?.timeWindow?.startTime ?: "", periodInMonth))
         )
         val programAttributes = membershipGetProgramForm?.programForm?.programAttributes
         programAttributes.apply {
@@ -85,7 +84,7 @@ object ProgramUpdateMapper {
                     this.tierLevels = tierLevels
                     this.programAttributes = listOf(programAttributeListItem,programAttributeListItem)
                     this.actionType = actionType
-                    this.cardID = cardIdCreate
+                    this.cardID = inToolsCardId
                 }
             }
             ProgramActionType.CREATE_FROM_COUPON ->{

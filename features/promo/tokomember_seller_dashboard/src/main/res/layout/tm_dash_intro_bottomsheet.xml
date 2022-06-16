@@ -18,12 +18,13 @@
         android:id="@+id/img_bottom_sheet" />
 
     <com.tokopedia.unifyprinciples.Typography
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/tv_heading"
+        android:gravity="center_horizontal"
         app:typographyType="heading_2"
-        android:layout_marginTop="@dimen/unify_space_16"
-        android:text="@string/tm_bs_initial_title"/>
+        android:text="@string/tm_bs_initial_title"
+        android:layout_marginTop="@dimen/unify_space_16" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:layout_width="wrap_content"

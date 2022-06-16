@@ -35,7 +35,6 @@
         app:layout_constraintTop_toBottomOf="@id/header_program_detail"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:background="@drawable/tm_intro_bg"
         android:orientation="vertical">
 
         <com.tokopedia.unifyprinciples.Typography

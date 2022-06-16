@@ -20,7 +20,6 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.carousel.CarouselUnify
-import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.loaderdialog.LoaderDialog
 import com.tokopedia.promoui.common.dpToPx
@@ -66,7 +65,6 @@ import javax.inject.Inject
 
 class TmCreateCardFragment : BaseDaggerFragment(), TokomemberCardColorAdapterListener,
     TokomemberCardBgAdapterListener, BottomSheetClickListener {
-
 
     private var tmTracker: TmTracker? = null
     private lateinit var tmOpenFragmentCallback: TmOpenFragmentCallback
@@ -117,6 +115,7 @@ class TmCreateCardFragment : BaseDaggerFragment(), TokomemberCardColorAdapterLis
         super.onViewCreated(view, savedInstanceState)
         tmTracker = TmTracker()
         observeViewModel()
+        shopID = arguments?.getInt(BUNDLE_SHOP_ID)?:0
         tmDashCreateViewModel.getCardInfo(arguments?.getInt(BUNDLE_CARD_ID)?:0)
         renderHeader()
         tipTokomember.setOnClickListener {
@@ -179,8 +178,8 @@ class TmCreateCardFragment : BaseDaggerFragment(), TokomemberCardColorAdapterLis
                     openLoadingDialog()
                 }
                  TokoLiveDataResult.STATUS.SUCCESS -> {
-                     if(it.data?.membershipCreateEditCard?.resultStatus?.code != "200") {
-                         inToolsCardId = it.data?.membershipCreateEditCard?.intoolsCard?.id ?: 0
+                     if(it.data?.membershipCreateEditCard?.resultStatus?.code == "200") {
+                         inToolsCardId = it.data.membershipCreateEditCard.intoolsCard?.id ?: 0
                          closeLoadingDialog()
                          openProgramCreationPage()
                      } else{
@@ -213,8 +212,7 @@ class TmCreateCardFragment : BaseDaggerFragment(), TokomemberCardColorAdapterLis
             else -> ERROR_CREATING_CTA_RETRY
         }
         val bundle = Bundle()
-        //TODO use remote res
-        val tmIntroBottomSheetModel = TmIntroBottomsheetModel(title, ERROR_CREATING_DESC , "https://images.tokopedia.net/img/android/res/singleDpi/quest_widget_nonlogin_banner.png", cta , errorCount = retryCount)
+        val tmIntroBottomSheetModel = TmIntroBottomsheetModel(title, ERROR_CREATING_DESC , TM_ERROR_GEN, cta , errorCount = retryCount)
         bundle.putString(TokomemberBottomsheet.ARG_BOTTOMSHEET, Gson().toJson(tmIntroBottomSheetModel))
         val bottomSheet = TokomemberBottomsheet.createInstance(bundle)
         bottomSheet.setUpBottomSheetListener(this)
@@ -250,19 +248,18 @@ class TmCreateCardFragment : BaseDaggerFragment(), TokomemberCardColorAdapterLis
     private fun renderCardUi(data: CardDataTemplate) {
         tmTracker?.clickCardCreationButton(shopID.toString())
         containerViewFlipper.displayedChild = DATA
-        shopID = data.card?.shopID?:0
         renderCardCarousel(data)
         btnContinueCard?.setOnClickListener {
             mTmCardModifyInput =  TmCardModifyInput(
                 apiVersion = "3.0.0",
                 isMerchantCard = true,
-                intoolsShop = IntoolsShop(id = data.card?.shopID),
+                intoolsShop = IntoolsShop(id = shopID),
                 cardTemplate = CardTemplate(
                     fontColor = "#FFFFFF",
                     backgroundImgUrl = shopViewPremium?.getCardBackgroundImageUrl()
                 ),
                 card = Card(
-                    shopID = data.card?.shopID,
+                    shopID = arguments?.getInt(BUNDLE_SHOP_ID),
                     name = shopViewPremium?.getCardShopName(),
                     numberOfLevel = 2
                 )
@@ -312,21 +309,7 @@ class TmCreateCardFragment : BaseDaggerFragment(), TokomemberCardColorAdapterLis
             subtitle = HEADER_DESC
             isShowBackButton = true
             setNavigationOnClickListener {
-                tmTracker?.clickCardCreationBack(shopID.toString())
-                val dialog = context?.let { DialogUnify(it, DialogUnify.VERTICAL_ACTION, DialogUnify.NO_IMAGE) }
-                dialog?.setTitle("Yakin batalkan pengaturan?")
-                dialog?.setDescription("Pengaturan yang dibuat akan hilang kalau kamu batalkan proses pembuatan TokoMember, lho.")
-                dialog?.setPrimaryCTAText("Lanjut")
-                dialog?.setSecondaryCTAText("Batalkan Pengaturan")
-                dialog?.setPrimaryCTAClickListener {
-                    tmTracker?.clickCardCancelPrimary(shopID.toString())
-                    dialog.dismiss()
-                }
-                dialog?.setSecondaryCTAClickListener {
-                    tmTracker?.clickCardCancelSecondary(shopID.toString())
-                    activity?.onBackPressed()
-                }
-                dialog?.show()
+                activity?.onBackPressed()
             }
         }
         progressCard?.apply {
@@ -341,12 +324,12 @@ class TmCreateCardFragment : BaseDaggerFragment(), TokomemberCardColorAdapterLis
             shopViewPremium = TokomemberShopView(it)
             shopViewVip = TokomemberShopView(it)
             tmShopCardModel = TokomemberShopCardModel(
-                shopName = data.card?.name ?: "",
+                shopName = arguments?.getString(BUNDLE_SHOP_NAME)?:"",
                 numberOfLevel = data.card?.numberOfLevel ?: 0,
                 backgroundColor = data.cardTemplate?.backgroundColor ?: "",
                 backgroundImgUrl = data.cardTemplate?.backgroundImgUrl ?: "",
                 shopType = 0,
-                shopIconUrl = data.shopAvatar
+                shopIconUrl = arguments?.getString(BUNDLE_SHOP_AVATAR)?:""
             )
             shopViewPremium?.apply {
                 setShopCardData(tmShopCardModel)

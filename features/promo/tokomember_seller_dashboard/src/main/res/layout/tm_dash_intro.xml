@@ -29,8 +29,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/tm_dash_dp_310"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:srcCompat="@drawable/tm_intro_bg" />
+                    app:layout_constraintTop_toTopOf="parent" />
 
                 <View
                     android:id="@+id/viewBgSelector"

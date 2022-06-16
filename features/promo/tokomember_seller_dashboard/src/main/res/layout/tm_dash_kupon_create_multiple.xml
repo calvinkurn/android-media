@@ -11,7 +11,7 @@
     tools:ignore="MissingDefaultResource"
     android:focusable="true">
 
-    <include layout="@layout/tm_coupon_creation_shimmer"/>
+   <include layout="@layout/tm_coupon_creation_shimmer"/>
 
     <androidx.core.widget.NestedScrollView
         android:id="@+id/scrollContainer"
