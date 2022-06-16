@@ -65,7 +65,6 @@ object ShopPageHomeMapper {
         shopProduct: ShopProduct,
         isMyOwnProduct: Boolean,
         isEnableDirectPurchase: Boolean,
-        productInCart: Int
     ): ShopHomeProductUiModel =
         with(shopProduct) {
             ShopHomeProductUiModel().also {
@@ -93,7 +92,6 @@ object ShopPageHomeMapper {
                 it.labelGroupList =
                     labelGroupList.map { labelGroup -> mapToLabelGroupViewModel(labelGroup) }
                 it.isEnableDirectPurchase = isEnableDirectPurchase
-                it.productInCart = productInCart
             }
         }
 

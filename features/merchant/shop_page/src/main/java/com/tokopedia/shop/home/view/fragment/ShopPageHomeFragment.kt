@@ -9,6 +9,7 @@ import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
+import android.util.SparseIntArray
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -140,8 +141,6 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.utils.view.binding.viewBinding
 import com.tokopedia.wishlistcommon.util.AddRemoveWishlistV2Handler
-import com.tokopedia.wishlistcommon.util.WishlistV2CommonConsts
-import com.tokopedia.wishlistcommon.util.WishlistV2CommonConsts.OPEN_WISHLIST
 import com.tokopedia.youtube_common.data.model.YoutubeVideoDetailModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
@@ -169,7 +168,8 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         ShopHomeCardDonationListener,
         MultipleProductBundleListener,
         SingleProductBundleListener,
-        ShopHomeProductListSellerEmptyListener {
+        ShopHomeProductListSellerEmptyListener,
+        ShopHomeListener {
 
     companion object {
         const val KEY_SHOP_ID = "SHOP_ID"
@@ -279,6 +279,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
     private var staggeredGridLayoutManager: StaggeredGridLayoutManager? = null
     private val shopHomeAdapter: ShopHomeAdapter
         get() = adapter as ShopHomeAdapter
+    private val shopHomeWidgetCarouselPositionSavedState = SparseIntArray()
 
     private val shopHomeAdapterTypeFactory by lazy {
         val userSession = UserSession(context)
@@ -301,7 +302,8 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
             multipleProductBundleListener = this,
             singleProductBundleListener = this,
             thematicWidgetListener = thematicWidgetProductClickListenerImpl(),
-            shopHomeProductListSellerEmptyListener = this
+            shopHomeProductListSellerEmptyListener = this,
+            shopHomeListener = this
         )
     }
 
@@ -522,12 +524,15 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
     private fun observeShopPageMiniCartSharedViewModel() {
         shopPageMiniCartSharedViewModel?.miniCartSimplifiedData?.observe(viewLifecycleOwner, {
             viewModel?.setMiniCartData(it)
-            updateProductGridListProductInCartData()
+            val listWidgetData = shopHomeAdapter.data.toMutableList()
+            if(listWidgetData.isNotEmpty())
+                viewModel?.getShopWidgetDataWithUpdatedQuantity(it, listWidgetData)
         })
     }
 
-    private fun updateProductGridListProductInCartData() {
-//        shopHomeAdapter.asd()
+    private fun updateProductCardQuantity() {
+
+        shopHomeAdapter.asd()
 
     }
 
@@ -829,7 +834,16 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         observePlayWidget()
         observePlayWidgetReminderEvent()
         observePlayWidgetReminder()
-        observeAddToCartLiveData()
+        observeAddCartLiveData()
+        observeUpdateCartLiveData()
+        observeDeleteCartLiveData()
+        observeUpdatedShopHomeWidgetQuantityData()
+    }
+
+    private fun observeUpdatedShopHomeWidgetQuantityData() {
+        viewModel?.updatedShopHomeWidgetQuantityData?.observe(viewLifecycleOwner, {
+            shopHomeAdapter.submitList(it.toList())
+        })
     }
 
     private fun sendEmbraceBreadCrumbLogger(
@@ -1382,9 +1396,11 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
     private fun getListWidgetLayoutToLoad(lastCompletelyVisibleItemPosition: Int): MutableList<ShopPageHomeWidgetLayoutUiModel.WidgetLayout> {
         return if (listWidgetLayout.isNotEmpty()) {
             if (shopHomeAdapter.isLoadFirstWidgetContentData()) {
+                val toIndex = ShopUtil.getActualPositionFromIndex(lastCompletelyVisibleItemPosition)
+                    .takeIf { it <= listWidgetLayout.size } ?: listWidgetLayout.size
                 listWidgetLayout.subList(
                     LIST_WIDGET_LAYOUT_START_INDEX,
-                    ShopUtil.getActualPositionFromIndex(lastCompletelyVisibleItemPosition)
+                    toIndex
                 )
             } else {
                 val toIndex = LOAD_WIDGET_ITEM_PER_PAGE.takeIf { it <= listWidgetLayout.size }
@@ -2052,10 +2068,17 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         )
     }
 
-    override fun onProductAtcNonVariantQuantityEditorChanged(
-        shopHomeProductViewModel: ShopHomeProductUiModel,
-        quantity: Int
-    ) {
+    override fun onProductAtcDefaultClick(shopHomeProductViewModel: ShopHomeProductUiModel) {
+        if (isLogin) {
+            if (isOwner) {
+                val sellerViewAtcErrorMessage = getString(R.string.shop_page_seller_atc_error_message)
+                showErrorToast(sellerViewAtcErrorMessage)
+            } else {
+                handleAtcFlow(shopHomeProductViewModel.id.orEmpty(), Int.ONE, shopId)
+            }
+        } else {
+            redirectToLoginPage()
+        }
     }
 
     override fun onProductAtcVariantClick(shopHomeProductViewModel: ShopHomeProductUiModel) {
@@ -2077,14 +2100,12 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
 //                }
     }
 
-    override fun onProductAtcDefaultClick(shopHomeProductViewModel: ShopHomeProductUiModel) {
+    override fun onProductAtcNonVariantQuantityEditorChanged(
+        shopHomeProductViewModel: ShopHomeProductUiModel,
+        quantity: Int
+    ) {
         if (isLogin) {
-            if (isOwner) {
-                val sellerViewAtcErrorMessage = getString(R.string.shop_page_seller_atc_error_message)
-                showErrorToast(sellerViewAtcErrorMessage)
-            } else {
-                handleAtcFlow(shopHomeProductViewModel.id.orEmpty(), Int.ONE, shopId)
-            }
+            handleAtcFlow(shopHomeProductViewModel.id.orEmpty(), quantity, shopId)
         } else {
             redirectToLoginPage()
         }
@@ -2094,8 +2115,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         viewModel?.handleAtcFlow(
             productId,
             quantity,
-            shopId,
-            (parentFragment as? NewShopPageFragment)?.getMiniCartSimplifiedData()
+            shopId
         )
     }
 
@@ -3387,6 +3407,9 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         return (parentFragment as? NewShopPageFragment)?.getSelectedTabName().orEmpty()
     }
 
+    override fun getWidgetCarouselPositionSavedState(): SparseIntArray {
+        return shopHomeWidgetCarouselPositionSavedState
+    }
 
     //region play widget
     /**
@@ -3549,7 +3572,7 @@ shopHomeAdapter.itemCount
         }
     }
 
-    private fun observeAddToCartLiveData() {
+    private fun observeAddCartLiveData() {
         viewModel?.miniCartAdd?.observe(viewLifecycleOwner, {
             when (it) {
                 is Success -> {
@@ -3560,6 +3583,34 @@ shopHomeAdapter.itemCount
                 }
                 is Fail -> {
                     showErrorToast(it.throwable.message.orEmpty())
+                }
+            }
+        })
+    }
+
+    private fun observeUpdateCartLiveData() {
+        viewModel?.miniCartUpdate?.observe(viewLifecycleOwner, {
+            when (it) {
+                is Success -> {
+                    updateMiniCartWidget()
+                }
+                is Fail -> {
+                    showErrorToast(it.throwable.message.orEmpty())
+                }
+            }
+        })
+    }
+
+    private fun observeDeleteCartLiveData() {
+        viewModel?.miniCartRemove?.observe(viewLifecycleOwner, {
+            when (it) {
+                is Success -> {
+                    updateMiniCartWidget()
+                    showToastSuccess(it.data.second)
+                }
+                is Fail -> {
+                    val message = it.throwable.message.orEmpty()
+                    showErrorToast(message)
                 }
             }
         })

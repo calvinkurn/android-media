@@ -20,6 +20,7 @@ import com.tokopedia.shop.R
 import com.tokopedia.shop.databinding.ItemShopHomeProductCarouselBinding
 import com.tokopedia.shop.home.util.mapper.ShopPageHomeMapper
 import com.tokopedia.shop.home.view.listener.ShopHomeCarouselProductListener
+import com.tokopedia.shop.home.view.listener.ShopHomeListener
 import com.tokopedia.shop.home.view.model.ShopHomeCarousellProductUiModel
 import com.tokopedia.shop.home.view.model.ShopHomeCarousellProductUiModel.Companion.IS_ATC
 import com.tokopedia.shop.home.view.model.ShopHomeProductUiModel
@@ -30,8 +31,9 @@ import com.tokopedia.utils.view.binding.viewBinding
  */
 
 class ShopHomeCarousellProductViewHolder(
-        itemView: View,
-        val shopHomeCarouselProductListener: ShopHomeCarouselProductListener
+    itemView: View,
+    val shopHomeCarouselProductListener: ShopHomeCarouselProductListener,
+    val shopHomeListener: ShopHomeListener
 ) : AbstractViewHolder<ShopHomeCarousellProductUiModel>(itemView) {
 
     companion object {
@@ -48,12 +50,6 @@ class ShopHomeCarousellProductViewHolder(
 
     init {
         initView()
-    }
-
-    override fun onViewRecycled() {
-        val carouselScrollPosition = recyclerView?.getCurrentPosition() ?: 0
-        shopHomeCarousellProductUiModel?.rvPosition = carouselScrollPosition
-        super.onViewRecycled()
     }
 
     private fun initView() {
@@ -100,7 +96,8 @@ class ShopHomeCarousellProductViewHolder(
     private fun bindShopProductCarousel(shopHomeProductViewModelList: List<ShopHomeProductUiModel>) {
         recyclerView?.isNestedScrollingEnabled = false
         recyclerView?.bindCarouselProductCardViewGrid(
-                productCardModelList = shopHomeProductViewModelList.map {
+            scrollToPosition = getScrollPosition(),
+            productCardModelList = shopHomeProductViewModelList.map {
                     ShopPageHomeMapper.mapToProductCardModel(
                             isHasAtc(),
                             false,
@@ -108,7 +105,6 @@ class ShopHomeCarousellProductViewHolder(
                             false
                     )
                 },
-            scrollToPosition = shopHomeCarousellProductUiModel?.rvPosition.orZero(),
                 carouselProductCardOnItemAddToCartListener = object : CarouselProductCardListener.OnItemAddToCartListener {
                     override fun onItemAddToCart(productCardModel: ProductCardModel, carouselProductCardPosition: Int) {
                         val shopProductViewModel = shopHomeProductViewModelList.getOrNull(carouselProductCardPosition)
@@ -194,5 +190,16 @@ class ShopHomeCarousellProductViewHolder(
 
     private fun isHasAtc(): Boolean {
         return (shopHomeCarousellProductUiModel?.header?.isATC ?: 0) == IS_ATC
+    }
+
+    fun saveScrollPosition() {
+        shopHomeListener.getWidgetCarouselPositionSavedState().put(
+            adapterPosition,
+            recyclerView?.getCurrentPosition().orZero()
+        )
+    }
+
+    private fun getScrollPosition(): Int {
+        return shopHomeListener.getWidgetCarouselPositionSavedState().get(adapterPosition)
     }
 }

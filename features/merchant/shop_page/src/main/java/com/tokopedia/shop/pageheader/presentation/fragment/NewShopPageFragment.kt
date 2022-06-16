@@ -718,7 +718,6 @@ class NewShopPageFragment :
 
     private fun observeMiniCartSimplifiedData() {
      shopViewModel?.miniCartSimplifiedData?.observe(viewLifecycleOwner, {
-            refreshCartCounterData()
 //            updateProductListQuantityOnHomeTab(it)
 //         updateProductListQuantityOnProductTab(it)
 //            rvProductList?.invalidateItemDecorations()
@@ -1242,6 +1241,8 @@ class NewShopPageFragment :
         setShopName()
         checkIfChooseAddressWidgetDataUpdated()
         screenShotDetector?.start()
+        refreshCartCounterData()
+        updateMiniCartWidget()
     }
 
     private fun checkIfChooseAddressWidgetDataUpdated() {
@@ -2643,10 +2644,6 @@ class NewShopPageFragment :
 
     override fun onCartItemsUpdated(miniCartSimplifiedData: MiniCartSimplifiedData) {
         shopPageMiniCartSharedViewModel?.updateSharedMiniCartData(miniCartSimplifiedData)
-    }
-
-    fun getMiniCartSimplifiedData(): MiniCartSimplifiedData? {
-        return shopViewModel?.miniCartSimplifiedData?.value
     }
 
     fun updateMiniCartWidget() {

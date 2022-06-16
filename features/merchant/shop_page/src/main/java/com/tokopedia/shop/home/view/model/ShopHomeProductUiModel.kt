@@ -51,6 +51,7 @@ class ShopHomeProductUiModel : Visitable<BaseAdapterTypeFactory>, ImpressHolder 
     var isEnableDirectPurchase: Boolean = false
     var productInCart: Int = 0
     var isVariant: Boolean = false
+    var isNewData: Boolean = false
 
     override fun type(typeFactory: BaseAdapterTypeFactory): Int {
         return when(typeFactory){

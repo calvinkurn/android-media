@@ -617,7 +617,7 @@ class ShopHomeAdapter(
 
     private fun getNewVisitableItems() = visitables.toMutableList()
 
-    private fun submitList(newList: List<Visitable<*>>) {
+    fun submitList(newList: List<Visitable<*>>) {
         val currentRecyclerViewState: Parcelable? = recyclerView?.layoutManager?.onSaveInstanceState()
         val diffCallback = ShopPageHomeDiffUtilCallback(visitables, newList)
         val diffResult = DiffUtil.calculateDiff(diffCallback)
@@ -653,20 +653,24 @@ class ShopHomeAdapter(
 //        }
         newList.filterIsInstance<ShopHomeCarousellProductUiModel>()
             .onEachIndexed { index, shopHomeCarousellProductUiModel ->
-                (recyclerView?.findViewHolderForAdapterPosition(index) as? ShopHomeCarousellProductViewHolder)?.bind(
-                    shopHomeCarousellProductUiModel
-//                    shopHomeCarousellProductUiModel.copy().apply {
-//                        productList.onEach {
-//                            it.productInCart = 30
-//                        }
-//                    }
-                )
-//                shopHomeCarousellProductUiModel.productList.onEach {
-//                    it.productInCart = 20
-//                }.also {
-//                    shopHomeCarousellProductUiModel.isNewData = true
-//                }
+//                (recyclerView?.findViewHolderForAdapterPosition(index) as? ShopHomeCarousellProductViewHolder)?.bind(
+//                    shopHomeCarousellProductUiModel
+////                    shopHomeCarousellProductUiModel.copy().apply {
+////                        productList.onEach {
+////                            it.productInCart = 30
+////                        }
+////                    }
+//                )
+                shopHomeCarousellProductUiModel.productList.onEach {
+                    it.productInCart = 20
+                }.also {
+                    shopHomeCarousellProductUiModel.isNewData = true
+                }
             }
-//        submitList(newList)
+        submitList(newList)
+    }
+
+    fun getAllShopHomeWidgetData(){
+
     }
 }
