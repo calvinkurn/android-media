@@ -43,11 +43,11 @@ class TokoFoodPromoAdapterTypeFactory(private val listener: TokoFoodPromoActionL
         return when (viewType) {
             TokoFoodPromoEligibilityHeaderViewHolder.LAYOUT -> {
                 val viewBinding = ItemTokofoodPromoListAvailabilityHeaderBinding.inflate(LayoutInflater.from(parent.context), parent as ViewGroup, false)
-                TokoFoodPromoEligibilityHeaderViewHolder(viewBinding, listener)
+                TokoFoodPromoEligibilityHeaderViewHolder(viewBinding)
             }
             TokoFoodPromoHeaderViewHolder.LAYOUT -> {
                 val viewBinding = ItemTokofoodPromoListHeaderBinding.inflate(LayoutInflater.from(parent.context), parent as ViewGroup, false)
-                TokoFoodPromoHeaderViewHolder(viewBinding, listener)
+                TokoFoodPromoHeaderViewHolder(viewBinding)
             }
             TokoFoodPromoItemViewHolder.LAYOUT -> {
                 val viewBinding = ItemTokofoodPromoCardBinding.inflate(LayoutInflater.from(parent.context), parent as ViewGroup, false)
@@ -55,7 +55,7 @@ class TokoFoodPromoAdapterTypeFactory(private val listener: TokoFoodPromoActionL
             }
             TokoFoodPromoTickerViewHolder.LAYOUT -> {
                 val viewBinding = ItemTokofoodPromoTickerBinding.inflate(LayoutInflater.from(parent.context), parent as ViewGroup, false)
-                TokoFoodPromoTickerViewHolder(viewBinding, listener)
+                TokoFoodPromoTickerViewHolder(viewBinding)
             }
             TokoFoodPurchaseLoadingViewHolder.LAYOUT -> {
                 val viewBinding = ItemTokofoodPromoLoadingBinding.inflate(LayoutInflater.from(parent.context), parent as ViewGroup, false)

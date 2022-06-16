@@ -6,8 +6,7 @@ import com.tokopedia.tokofood.databinding.ItemTokofoodPromoListHeaderBinding
 import com.tokopedia.tokofood.feature.purchase.promopage.presentation.TokoFoodPromoActionListener
 import com.tokopedia.tokofood.feature.purchase.promopage.presentation.uimodel.TokoFoodPromoHeaderUiModel
 
-class TokoFoodPromoHeaderViewHolder(private val viewBinding: ItemTokofoodPromoListHeaderBinding,
-                                    private val listener: TokoFoodPromoActionListener)
+class TokoFoodPromoHeaderViewHolder(private val viewBinding: ItemTokofoodPromoListHeaderBinding)
     : AbstractViewHolder<TokoFoodPromoHeaderUiModel>(viewBinding.root) {
 
     companion object {

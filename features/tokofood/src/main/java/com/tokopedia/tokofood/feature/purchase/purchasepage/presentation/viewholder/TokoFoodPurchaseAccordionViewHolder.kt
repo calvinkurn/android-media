@@ -13,16 +13,19 @@ class TokoFoodPurchaseAccordionViewHolder(private val viewBinding: ItemPurchaseA
 
     companion object {
         val LAYOUT = R.layout.item_purchase_accordion
+
+        private const val COLLAPSED_ROTATION = 0f
+        private const val UNCOLLAPSED_ROTATION = 180f
     }
 
     override fun bind(element: TokoFoodPurchaseAccordionTokoFoodPurchaseUiModel) {
         with(viewBinding) {
             if (element.isCollapsed) {
                 textAccordion.text = itemView.context.getString(R.string.text_purchase_show_less)
-                imageChevron.rotation = 0f
+                imageChevron.rotation = COLLAPSED_ROTATION
             } else {
                 textAccordion.text = itemView.context.getString(R.string.text_purchase_show_all)
-                imageChevron.rotation = 180f
+                imageChevron.rotation = UNCOLLAPSED_ROTATION
             }
             itemView.setOnClickListener {
                 listener.onToggleShowHideUnavailableItemsClicked()

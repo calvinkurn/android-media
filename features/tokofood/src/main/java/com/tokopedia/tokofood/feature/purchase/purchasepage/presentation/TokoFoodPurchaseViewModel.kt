@@ -134,7 +134,7 @@ class TokoFoodPurchaseViewModel @Inject constructor(
 
     fun getNextItems(currentIndex: Int, count: Int): List<Visitable<*>> {
         val dataList = getVisitablesValue()
-        val from = currentIndex + 1
+        val from = currentIndex + Int.ONE
         val to = from + count
         if (from > dataList.size || to >= dataList.size) {
             return emptyList()
@@ -346,10 +346,10 @@ class TokoFoodPurchaseViewModel @Inject constructor(
             toBeDeleteItems.add(toBeDeletedProduct.second)
 
             if (dataList.isLastAvailableProduct()) {
-                var from = toBeDeletedProduct.first - 2
+                var from = toBeDeletedProduct.first - INDEX_BEFORE_FROM_HEADER
                 val tickerShopErrorData = getVisitablesValue().getTickerErrorShopLevelUiModel()
                 if (tickerShopErrorData != null) {
-                    from = toBeDeletedProduct.first - 3
+                    from = toBeDeletedProduct.first - INDEX_BEFORE_FROM_TICKER
                 }
                 val to = toBeDeletedProduct.first
                 val availableHeaderAndDivider = dataList.subList(from, to).toMutableList()
@@ -384,7 +384,7 @@ class TokoFoodPurchaseViewModel @Inject constructor(
         val accordionUiModel = getVisitablesValue().getAccordionUiModel()
         val unavailableProductIndex = unavailableProducts.first.takeIf { it > RecyclerView.NO_POSITION }
         unavailableProductIndex?.let {
-            val indexOfUnavailableHeaderDivider = it - 3
+            val indexOfUnavailableHeaderDivider = it - INDEX_BEFORE_FROM_DIVIDER
             val unavailableSectionDividerHeaderAndReason = dataList.subList(
                 indexOfUnavailableHeaderDivider,
                 it
@@ -426,8 +426,8 @@ class TokoFoodPurchaseViewModel @Inject constructor(
         dataList[mAccordionData.first] = newAccordionUiModel
         val unavailableReasonData = getVisitablesValue().getUnavailableReasonUiModel()
         unavailableReasonData?.let { mUnavailableReasonData ->
-            val from = mUnavailableReasonData.first + 2
-            val to = mAccordionData.first - 1
+            val from = mUnavailableReasonData.first + INDEX_AFTER_FROM_UNAVAILABLE_SECTION
+            val to = mAccordionData.first - INDEX_BEFORE_FROM_UNAVAILABLE_ACCORDION
             tmpCollapsedUnavailableItems.clear()
             tmpCollapsedUnavailableItems = dataList.subList(from, to).toMutableList()
         }
@@ -439,14 +439,14 @@ class TokoFoodPurchaseViewModel @Inject constructor(
                                           mAccordionData: Pair<Int, TokoFoodPurchaseAccordionTokoFoodPurchaseUiModel>) {
         newAccordionUiModel.isCollapsed = false
         dataList[mAccordionData.first] = newAccordionUiModel
-        val index = mAccordionData.first - 1
+        val index = mAccordionData.first - INDEX_BEFORE_FROM_UNAVAILABLE_ACCORDION
         dataList.addAll(index, tmpCollapsedUnavailableItems.toMutableList())
         tmpCollapsedUnavailableItems.clear()
     }
 
     fun scrollToUnavailableItem() {
         val dataList = getVisitablesValue()
-        var targetIndex = -1
+        var targetIndex = RecyclerView.NO_POSITION
         loop@ for ((index, data) in dataList.withIndex()) {
             if (data is TokoFoodPurchaseProductListHeaderTokoFoodPurchaseUiModel && !data.isAvailableHeader) {
                 targetIndex = index
@@ -454,7 +454,7 @@ class TokoFoodPurchaseViewModel @Inject constructor(
             }
         }
 
-        if (targetIndex > -1) {
+        if (targetIndex > RecyclerView.NO_POSITION) {
             _uiEvent.value = PurchaseUiEvent(
                     state = PurchaseUiEvent.EVENT_SCROLL_TO_UNAVAILABLE_ITEMS,
                     data = targetIndex
@@ -625,6 +625,12 @@ class TokoFoodPurchaseViewModel @Inject constructor(
         const val TOTO_LONGITUDE = "106.8184023"
 
         private const val UPDATE_QUANTITY_DEBOUCE_TIME = 1000L
+
+        private const val INDEX_BEFORE_FROM_HEADER = 2
+        private const val INDEX_BEFORE_FROM_TICKER = 3
+        private const val INDEX_BEFORE_FROM_DIVIDER = 3
+        private const val INDEX_BEFORE_FROM_UNAVAILABLE_ACCORDION = 1
+        private const val INDEX_AFTER_FROM_UNAVAILABLE_SECTION = 2
     }
 
 }

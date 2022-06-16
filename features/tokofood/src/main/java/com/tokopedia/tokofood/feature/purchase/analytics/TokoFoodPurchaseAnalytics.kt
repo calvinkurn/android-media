@@ -1,6 +1,7 @@
 package com.tokopedia.tokofood.feature.purchase.analytics
 
 import android.os.Bundle
+import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.tokofood.common.analytics.TokoFoodAnalytics
 import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFoodData
 import com.tokopedia.track.TrackApp
@@ -73,7 +74,7 @@ object TokoFoodPurchaseAnalytics: BaseTrackerConst() {
             .setEvent(TokoFoodAnalytics.EVENT_VIEW_PG_IRIS)
             .setEventAction(TokoFoodAnalytics.EVENT_ACTION_VIEW_PROMO_PAGE)
             .setEventCategory(TokoFoodAnalytics.EVENT_CATEGORY_PROMO_PAGE)
-            .setEventLabel("")
+            .setEventLabel(String.EMPTY)
             .setBusinessUnit(TokoFoodAnalytics.PHYSICAL_GOODS)
             .setCurrentSite(TokoFoodAnalytics.TOKOPEDIA_MARKETPLACE)
             .build()

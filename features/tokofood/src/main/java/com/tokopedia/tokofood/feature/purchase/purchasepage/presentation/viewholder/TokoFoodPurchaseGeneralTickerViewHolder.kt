@@ -7,8 +7,7 @@ import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.TokoFoo
 import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.uimodel.TokoFoodPurchaseGeneralTickerTokoFoodPurchaseUiModel
 import com.tokopedia.unifycomponents.ticker.Ticker
 
-class TokoFoodPurchaseGeneralTickerViewHolder(private val viewBinding: ItemPurchaseGeneralTickerBinding,
-                                              private val listener: TokoFoodPurchaseActionListener)
+class TokoFoodPurchaseGeneralTickerViewHolder(private val viewBinding: ItemPurchaseGeneralTickerBinding)
     : AbstractViewHolder<TokoFoodPurchaseGeneralTickerTokoFoodPurchaseUiModel>(viewBinding.root) {
 
     companion object {

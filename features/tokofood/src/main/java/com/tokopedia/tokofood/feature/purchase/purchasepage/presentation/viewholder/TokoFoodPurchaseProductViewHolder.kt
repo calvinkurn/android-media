@@ -19,6 +19,8 @@ import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.tokofood.R
 import com.tokopedia.tokofood.databinding.ItemPurchaseProductBinding
 import com.tokopedia.tokofood.databinding.SubItemPurchaseAddOnBinding
+import com.tokopedia.tokofood.feature.purchase.DISABLED_ALPHA
+import com.tokopedia.tokofood.feature.purchase.ENABLED_ALPHA
 import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.TokoFoodPurchaseActionListener
 import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.uimodel.TokoFoodPurchaseProductTokoFoodPurchaseUiModel
 
@@ -254,9 +256,6 @@ class TokoFoodPurchaseProductViewHolder(private val viewBinding: ItemPurchasePro
 
     companion object {
         val LAYOUT = R.layout.item_purchase_product
-
-        private const val ENABLED_ALPHA = 1.0f
-        private const val DISABLED_ALPHA = 0.5f
 
         private const val SIXTEEN_MARGIN_PX = 16
     }

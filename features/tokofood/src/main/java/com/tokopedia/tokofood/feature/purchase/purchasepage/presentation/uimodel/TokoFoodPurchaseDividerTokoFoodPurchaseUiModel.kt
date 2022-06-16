@@ -3,10 +3,8 @@ package com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.uimode
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.adapter.TokoFoodPurchaseAdapterTypeFactory
 
-data class TokoFoodPurchaseDividerTokoFoodPurchaseUiModel(
-        var id: String = "",
-        var height: Int = 0
-) : Visitable<TokoFoodPurchaseAdapterTypeFactory>, BaseTokoFoodPurchaseUiModel() {
+class TokoFoodPurchaseDividerTokoFoodPurchaseUiModel :
+    Visitable<TokoFoodPurchaseAdapterTypeFactory>, BaseTokoFoodPurchaseUiModel() {
 
     override fun type(typeFactory: TokoFoodPurchaseAdapterTypeFactory): Int {
         return typeFactory.type(this)

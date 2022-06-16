@@ -1,5 +1,6 @@
 package com.tokopedia.tokofood.feature.purchase.purchasepage.presentation
 
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.tokofood.common.domain.response.CartTokoFoodData
@@ -105,12 +106,12 @@ object VisitableDataHelper {
     }
 
     fun MutableList<Visitable<*>>.getAllUnavailableProducts(): Pair<Int, List<TokoFoodPurchaseProductTokoFoodPurchaseUiModel>> {
-        var firstItemIndex = -1
+        var firstItemIndex = RecyclerView.NO_POSITION
         val unavailableProducts = mutableListOf<TokoFoodPurchaseProductTokoFoodPurchaseUiModel>()
         loop@ for ((index, data) in this.withIndex()) {
             when {
                 data is TokoFoodPurchaseProductTokoFoodPurchaseUiModel && !data.isAvailable -> {
-                    if (firstItemIndex == -1) firstItemIndex = index
+                    if (firstItemIndex == RecyclerView.NO_POSITION) firstItemIndex = index
                     unavailableProducts.add(data)
                 }
                 data is TokoFoodPurchaseAccordionTokoFoodPurchaseUiModel || data is TokoFoodPurchasePromoTokoFoodPurchaseUiModel -> {

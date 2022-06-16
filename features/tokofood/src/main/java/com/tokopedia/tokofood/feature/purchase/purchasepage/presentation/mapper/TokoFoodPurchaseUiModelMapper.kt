@@ -53,7 +53,7 @@ object TokoFoodPurchaseUiModelMapper {
             } else {
                 add(mapGeneralTickerUiModel(tickerErrorMessage, true))
             }
-            add(TokoFoodPurchaseDividerTokoFoodPurchaseUiModel(id = "1"))
+            add(TokoFoodPurchaseDividerTokoFoodPurchaseUiModel())
             add(mapAddressUiModel(response.data.userAddress))
             val shouldShippingShown =
                 response.data.shipping.name.isNotEmpty() || response.data.shipping.eta.isNotEmpty()
@@ -67,7 +67,7 @@ object TokoFoodPurchaseUiModelMapper {
                 )
             }
             if (response.data.availableSection.products.isNotEmpty()) {
-                add(TokoFoodPurchaseDividerTokoFoodPurchaseUiModel(id = "2"))
+                add(TokoFoodPurchaseDividerTokoFoodPurchaseUiModel())
                 add(mapProductListHeaderUiModel(isEnabled))
                 response.data.errorsUnblocking.takeIf { it.isNotEmpty() }?.let { message ->
                     add(mapTickerErrorShopLevelUiModel(isEnabled, message))
@@ -77,20 +77,20 @@ object TokoFoodPurchaseUiModelMapper {
                 })
             }
             response.data.unavailableSection.products.takeIf { it.isNotEmpty() }?.let { unavailableProducts ->
-                add(TokoFoodPurchaseDividerTokoFoodPurchaseUiModel(id = "3"))
+                add(TokoFoodPurchaseDividerTokoFoodPurchaseUiModel())
                 add(mapProductListHeaderUiModel(isEnabled, response.data.unavailableSectionHeader))
                 add(mapProductUnavailableReasonUiModel(isEnabled, response.data.unavailableSection.title))
                 addAll(unavailableProducts.map { mapProductUiModel(it, isEnabled, false) })
-                add(TokoFoodPurchaseDividerTokoFoodPurchaseUiModel(id = "4"))
+                add(TokoFoodPurchaseDividerTokoFoodPurchaseUiModel())
                 add(mapAccordionUiModel(isEnabled))
             }
             if (isEnabled) {
                 if (shouldPromoShown) {
-                    add(TokoFoodPurchaseDividerTokoFoodPurchaseUiModel(id = "5"))
+                    add(TokoFoodPurchaseDividerTokoFoodPurchaseUiModel())
                     add(mapPromoUiModel(response.data.promo))
                 }
                 if (shouldSummaryShown) {
-                    add(TokoFoodPurchaseDividerTokoFoodPurchaseUiModel(id = "6"))
+                    add(TokoFoodPurchaseDividerTokoFoodPurchaseUiModel())
                     val isBottomTickerError = response.data.errorTickers.bottom.message.isNotEmpty()
                     val bottomTickerMessage =
                         if (isBottomTickerError) {
@@ -106,7 +106,7 @@ object TokoFoodPurchaseUiModelMapper {
                     )
                 }
             }
-            add(TokoFoodPurchaseDividerTokoFoodPurchaseUiModel(id = "7"))
+            add(TokoFoodPurchaseDividerTokoFoodPurchaseUiModel())
             add(mapTotalAmountUiModel(isEnabled && shouldSummaryShown, response.data.shoppingSummary.total))
         }
     }

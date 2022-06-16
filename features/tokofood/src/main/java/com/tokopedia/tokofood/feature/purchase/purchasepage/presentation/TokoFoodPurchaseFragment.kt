@@ -35,6 +35,7 @@ import com.tokopedia.common.payment.PaymentConstant
 import com.tokopedia.common.payment.model.PaymentPassData
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.globalerror.GlobalError
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.loaderdialog.LoaderDialog
@@ -245,9 +246,9 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
 
             toolbar = tokoFoodPurchaseToolbar
 
-            toolbar?.let {
+            toolbar?.let { toolbar ->
                 viewBinding?.toolbarPurchase?.addView(toolbar)
-                it.setContentInsetsAbsolute(0, 0);
+                toolbar.setContentInsetsAbsolute(Int.ZERO, Int.ZERO);
                 (activity as AppCompatActivity).setSupportActionBar(viewBinding?.toolbarPurchase)
             }
 
@@ -276,7 +277,7 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
             }
 
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                if (recyclerView.canScrollVertically(-1)) {
+                if (recyclerView.canScrollVertically(RV_DIRECTION_UP)) {
                     setToolbarShadowVisibility(true)
                 } else {
                     setToolbarShadowVisibility(false)
@@ -1025,6 +1026,8 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
     }
 
     companion object {
+        const val RV_DIRECTION_UP = -1
+
         const val HAS_ELEVATION = 6
         const val NO_ELEVATION = 0
 
