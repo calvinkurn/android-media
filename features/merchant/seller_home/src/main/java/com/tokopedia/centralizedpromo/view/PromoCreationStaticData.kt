@@ -70,6 +70,14 @@ object PromoCreationStaticData {
                 } else {
                     ApplinkConstInternalSellerapp.ADMIN_RESTRICTION
                 }
+            ),
+            PromoCreationUiModel(
+                R.drawable.ic_sah_tokomember,
+                resourceProvider.getPromoCreationTitleTokoMember(),
+                resourceProvider.getPromoCreationDescriptionTokoMember(),
+                "",
+                "",
+                resourceProvider.getPromoCreationLabelTokoMember()
             )
         )
 
