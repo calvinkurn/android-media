@@ -400,6 +400,7 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
                 PurchaseUiEvent.EVENT_FAILED_CHECKOUT_GENERAL_BOTTOMSHEET -> {
                     consentBottomSheet?.dismiss()
                     viewModel.setPaymentButtonLoading(false)
+                    loadData()
                     val globalErrorType = it.data as? Int
                     if (globalErrorType == null) {
                         showDefaultCheckoutGeneralError()
@@ -419,6 +420,7 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
                 PurchaseUiEvent.EVENT_FAILED_CHECKOUT_GENERAL_TOASTER -> {
                     consentBottomSheet?.dismiss()
                     viewModel.setPaymentButtonLoading(false)
+                    loadData()
                     (it.data as? CheckoutGeneralTokoFoodData)?.let { checkoutData ->
                         val errorMetadata = checkoutData.getErrorMetadataObject()
                         when {
