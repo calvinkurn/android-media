@@ -9,12 +9,14 @@ import androidx.test.espresso.intent.matcher.IntentMatchers
 import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.cassavatest.CassavaTestRule
+import com.tokopedia.homenav.mock.MainNavMockResponseConfig
 import com.tokopedia.homenav.util.MainNavRecyclerViewIdlingResource
 import com.tokopedia.homenav.view.activity.HomeNavActivity
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.remoteconfig.RollenceKey
 import com.tokopedia.test.application.annotations.CassavaTest
 import com.tokopedia.test.application.util.InstrumentationAuthHelper
+import com.tokopedia.test.application.util.setupGraphqlMockResponse
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -31,6 +33,7 @@ class HomeNavAnalyticTest {
         HomeNavActivity::class.java) {
         override fun beforeActivityLaunched() {
             super.beforeActivityLaunched()
+            setupGraphqlMockResponse(MainNavMockResponseConfig())
             setupAbTestRemoteConfig()
         }
     }
