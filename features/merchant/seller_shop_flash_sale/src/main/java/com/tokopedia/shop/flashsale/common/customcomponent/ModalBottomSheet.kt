@@ -19,6 +19,7 @@ open class ModalBottomSheet: BottomSheetUnify() {
     }
 
     var modalWidthRatio = MODAL_WIDTH_RATIO
+    var modalMarginPercentage = MODAL_MARGIN_PERCENTAGE
     var useWideModal = false
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -47,7 +48,7 @@ open class ModalBottomSheet: BottomSheetUnify() {
         val bsHeight = bsLayout.measuredHeight
         val screenHeight = getScreenHeight()
         val diffHeight = screenHeight - bsHeight
-        val topBottomMargin = (diffHeight * MODAL_MARGIN_PERCENTAGE).toIntSafely()
+        val topBottomMargin = (diffHeight * modalMarginPercentage).toIntSafely()
 
         bsLayout.setMargin(Int.ZERO, topBottomMargin, Int.ZERO, topBottomMargin)
         (bsLayout.layoutParams as FrameLayout.LayoutParams).gravity = Gravity.CENTER

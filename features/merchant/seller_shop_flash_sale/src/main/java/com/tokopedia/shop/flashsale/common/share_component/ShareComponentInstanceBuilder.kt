@@ -109,7 +109,7 @@ class ShareComponentInstanceBuilder @Inject constructor(
 
             addImageGeneratorData(
                 key = ImageGeneratorConstants.ImageGeneratorKeys.BADGE,
-                value = shopBadge //validateShopType(shopData.badge.Title) [official, pm, pro, none]
+                value = shopBadge
             )
 
             val date: String = if (isOngoing) {

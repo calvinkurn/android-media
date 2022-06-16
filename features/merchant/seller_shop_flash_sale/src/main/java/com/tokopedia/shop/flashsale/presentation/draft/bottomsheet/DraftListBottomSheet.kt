@@ -82,7 +82,10 @@ class DraftListBottomSheet(
         rvDraft?.adapter = DraftListAdapter().apply {
             setItems(draftItemModel.list)
             setDeleteIconClickListener(::onDeleteIconClick)
-            setOnDraftClick { selectedDraft -> onDraftClicked(selectedDraft) }
+            setOnDraftClick { selectedDraft ->
+                onDraftClicked(selectedDraft)
+                dismiss()
+            }
         }
     }
 

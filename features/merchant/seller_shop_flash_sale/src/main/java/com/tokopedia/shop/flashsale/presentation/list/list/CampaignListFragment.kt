@@ -1,5 +1,6 @@
 package com.tokopedia.shop.flashsale.presentation.list.list
 
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -12,6 +13,7 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.applink.ApplinkConst.SellerApp.POWER_MERCHANT_SUBSCRIBE
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.linker.model.LinkerShareResult
 import com.tokopedia.loaderdialog.LoaderDialog
@@ -20,37 +22,27 @@ import com.tokopedia.seller_shop_flash_sale.databinding.SsfsFragmentCampaignList
 import com.tokopedia.shop.flashsale.common.constant.Constant.EMPTY_STRING
 import com.tokopedia.shop.flashsale.common.constant.Constant.FIRST_PAGE
 import com.tokopedia.shop.flashsale.common.constant.Constant.ZERO
-import com.tokopedia.shop.flashsale.common.constant.ShopInfoConstant.OFFICIAL_STORE_ID
-import com.tokopedia.shop.flashsale.common.constant.ShopInfoConstant.POWER_MERCHANT_PRO_ID
 import com.tokopedia.shop.flashsale.common.customcomponent.BaseSimpleListFragment
 import com.tokopedia.shop.flashsale.common.extension.*
 import com.tokopedia.shop.flashsale.common.share_component.ShareComponentInstanceBuilder
 import com.tokopedia.shop.flashsale.di.component.DaggerShopFlashSaleComponent
 import com.tokopedia.shop.flashsale.domain.entity.CampaignMeta
 import com.tokopedia.shop.flashsale.domain.entity.CampaignUiModel
-import com.tokopedia.shop.flashsale.domain.entity.ShopInfo
+import com.tokopedia.shop.flashsale.domain.entity.aggregate.CampaignCreationEligibility
 import com.tokopedia.shop.flashsale.domain.entity.aggregate.ShareComponentMetadata
-import com.tokopedia.shop.flashsale.domain.entity.enums.CampaignStatus
 import com.tokopedia.shop.flashsale.presentation.cancelation.CancelCampaignBottomSheet
 import com.tokopedia.shop.flashsale.presentation.creation.information.CampaignInformationActivity
 import com.tokopedia.shop.flashsale.presentation.draft.bottomsheet.DraftListBottomSheet
 import com.tokopedia.shop.flashsale.presentation.draft.uimodel.DraftItemModel
-import com.tokopedia.shop.flashsale.presentation.list.container.CampaignListContainerFragment
-import com.tokopedia.shop.flashsale.presentation.list.dialog.showNoCampaignQuotaDialog
 import com.tokopedia.shop.flashsale.presentation.list.list.adapter.CampaignAdapter
 import com.tokopedia.shop.flashsale.presentation.list.list.bottomsheet.MoreMenuBottomSheet
 import com.tokopedia.shop.flashsale.presentation.list.list.listener.RecyclerViewScrollListener
-import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.universal_sharing.view.bottomsheet.SharingUtil
 import com.tokopedia.universal_sharing.view.bottomsheet.UniversalShareBottomSheet
 import com.tokopedia.universal_sharing.view.model.ShareModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.lifecycle.autoClearedNullable
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class CampaignListFragment : BaseSimpleListFragment<CampaignAdapter, CampaignUiModel>() {
@@ -118,6 +110,7 @@ class CampaignListFragment : BaseSimpleListFragment<CampaignAdapter, CampaignUiM
     private val viewModel by lazy { viewModelProvider.get(CampaignListViewModel::class.java) }
     private var onScrollDown: () -> Unit = {}
     private var onScrollUp: () -> Unit = {}
+    private var onCancelCampaignSuccess: () -> Unit = {}
     private var onNavigateToActiveCampaignTab: () -> Unit = {}
     private var shareComponentBottomSheet: UniversalShareBottomSheet? = null
 
@@ -145,7 +138,7 @@ class CampaignListFragment : BaseSimpleListFragment<CampaignAdapter, CampaignUiM
         observeCampaigns()
         observeCampaignPrerequisiteData()
         observeShareComponentMetadata()
-        observeSellerEligibility()
+        observeCampaignCreationEligibility()
     }
 
     override fun onResume() {
@@ -156,22 +149,22 @@ class CampaignListFragment : BaseSimpleListFragment<CampaignAdapter, CampaignUiM
 
     private fun setupView() {
         binding?.btnCreateCampaign?.setOnClickListener {
-            binding?.btnCreateCampaign?.isLoading = true
-            binding?.btnCreateCampaign?.loadingText = getString(R.string.sfs_please_wait)
-            viewModel.getSellerEligibility()
+            binding?.btnCreateCampaign.showLoading()
+            viewModel.validateCampaignCreationEligibility()
         }
 
         binding?.btnDraft?.setOnClickListener {
-            DraftListBottomSheet.showUsingCampaignUiModel(
-                childFragmentManager,
-                viewModel.getCampaignDrafts(),
-                ::onDeleteDraftSuccess,
-                ::onDraftClicked
-            )
+            showDraftListBottomSheet(viewModel.getCampaignDrafts())
+        }
+        binding?.btnCreateCampaignEmptyState?.setOnClickListener {
+            binding?.btnCreateCampaignEmptyState.showLoading()
+            viewModel.validateCampaignCreationEligibility()
+        }
+        binding?.btnNavigateToFirstActiveCampaign?.setOnClickListener {
+            onNavigateToActiveCampaignTab()
         }
         setupSearchBar()
         setupScrollListener()
-        setupTabChangeListener()
     }
 
     private fun setupSearchBar() {
@@ -195,13 +188,13 @@ class CampaignListFragment : BaseSimpleListFragment<CampaignAdapter, CampaignUiM
             recyclerView.addOnScrollListener(
                 RecyclerViewScrollListener(
                     onScrollDown = {
-                        doOnDelayFinished {
+                        doOnDelayFinished(SCROLL_DISTANCE_DELAY_IN_MILLIS) {
                             onScrollDown()
                             handleScrollDownEvent()
                         }
                     },
                     onScrollUp = {
-                        doOnDelayFinished {
+                        doOnDelayFinished(SCROLL_DISTANCE_DELAY_IN_MILLIS) {
                             onScrollUp()
                             handleScrollUpEvent()
                         }
@@ -226,12 +219,12 @@ class CampaignListFragment : BaseSimpleListFragment<CampaignAdapter, CampaignUiM
         viewModel.campaignPrerequisiteData.observe(viewLifecycleOwner) { result ->
             when (result) {
                 is Success -> {
+                    binding?.loader?.gone()
                     viewModel.setCampaignDrafts(result.data.drafts)
-                    handleDraftCount(result.data.drafts.size)
-                    displayRemainingQuota(result.data.remainingQuota)
-                    checkCampaignEligibility(result.data.remainingQuota, result.data.shopInfo)
+                    handleCampaignPrerequisiteData(result.data.drafts.size, result.data.remainingQuota)
                 }
                 is Fail -> {
+                    binding?.loader?.gone()
                     binding?.root showError result.throwable
                 }
             }
@@ -270,16 +263,16 @@ class CampaignListFragment : BaseSimpleListFragment<CampaignAdapter, CampaignUiM
             }
         }
     }
+    private fun observeCampaignCreationEligibility() {
+        viewModel.creationEligibility.observe(viewLifecycleOwner) { result ->
+            binding?.btnCreateCampaignEmptyState.stopLoading()
+            binding?.btnCreateCampaign.stopLoading()
 
-    private fun observeSellerEligibility() {
-        viewModel.sellerEligibility.observe(viewLifecycleOwner) { result ->
             when (result) {
                 is Success -> {
-                    binding?.btnCreateCampaign?.isLoading = false
-                    handleSellerEligibility(result.data)
+                    handleEligibilityResult(result.data)
                 }
                 is Fail -> {
-                    binding?.btnCreateCampaign?.isLoading = false
                     binding?.root showError result.throwable
                 }
             }
@@ -298,23 +291,8 @@ class CampaignListFragment : BaseSimpleListFragment<CampaignAdapter, CampaignUiM
         this.onNavigateToActiveCampaignTab = onNavigateToActiveCampaignTab
     }
 
-    private fun setupTabChangeListener() {
-        val listener = object : CampaignListContainerFragment.TabChangeListener {
-            override fun onTabChanged() {
-                if (totalCampaign == ZERO) {
-                    showEmptyState()
-                    binding?.cardView?.gone()
-                } else {
-                    hideEmptyState()
-                    binding?.cardView?.visible()
-                }
-            }
-        }
-        (parentFragment as? CampaignListContainerFragment)?.setTabChangeListener(listener)
-    }
-
     private val onCampaignClicked: (CampaignUiModel, Int) -> Unit = { campaign, position ->
-
+        //TODO: Navigate to campaign detail
     }
 
     private val onOverflowMenuClicked: (CampaignUiModel) -> Unit = { campaign ->
@@ -377,6 +355,7 @@ class CampaignListFragment : BaseSimpleListFragment<CampaignAdapter, CampaignUiM
     }
 
     override fun onDataEmpty() {
+        adapter?.hideLoading()
     }
 
     override fun onGetListError(message: String) {
@@ -393,124 +372,117 @@ class CampaignListFragment : BaseSimpleListFragment<CampaignAdapter, CampaignUiM
         binding?.cardView.slideUp()
     }
 
-    private fun handleCreateCampaign() {
-        val campaignDrafts = viewModel.getCampaignDrafts()
-        if (campaignDrafts.size >= MAX_DRAFT_COUNT) {
-            DraftListBottomSheet.showUsingCampaignUiModel(
-                childFragmentManager,
-                campaignDrafts,
-                ::onDeleteDraftSuccess,
-                ::onDraftClicked
-            )
-        } else {
-            CampaignInformationActivity.start(requireActivity())
-        }
-    }
-
-    private fun handleSellerEligibility(isEligible : Boolean) {
-        if (isEligible) {
-            handleCreateCampaign()
-        } else {
-            routeToPmSubscribePage()
-        }
-    }
-
     private fun displayCampaigns(data: CampaignMeta) {
         if (data.campaigns.size.isMoreThanZero()) {
             binding?.groupNoSearchResult?.gone()
             renderList(data.campaigns, data.campaigns.size == getPerPage())
-        } else {
+        } else if (data.campaigns.isEmpty() && adapter?.itemCount == ZERO) {
             binding?.groupNoSearchResult?.visible()
         }
+
+        adapter?.hideLoading()
     }
 
-    private fun showEmptyState() {
-        binding?.searchBar?.gone()
-        binding?.recyclerView?.gone()
+    private fun handleCampaignPrerequisiteData(draftCount: Int, remainingQuota: Int) {
+        val hasDraft = draftCount.isMoreThanZero()
+        val hasCampaign = totalCampaign.isMoreThanZero()
+        val draftWording = String.format(getString(R.string.sfs_placeholder_draft), draftCount)
 
-        val buttonWording = if (tabPosition == TAB_POSITION_FIRST) {
-            getString(R.string.sfs_create_campaign)
-        } else {
-            getString(R.string.sfs_monitor_campaign)
-        }
+        binding?.btnDraft?.text = draftWording
+        binding?.btnDraft?.isVisible = hasDraft
+        binding?.cardView?.isVisible = hasDraft || hasCampaign
 
-        val buttonOnClickAction =  if (tabPosition == TAB_POSITION_FIRST) {
-            { handleCreateCampaign() }
-        } else {
-            { onNavigateToActiveCampaignTab() }
-        }
-
-        binding?.btnCreateCampaignEmptyState?.visible()
-        binding?.btnCreateCampaignEmptyState?.text = buttonWording
-        binding?.btnCreateCampaignEmptyState?.setOnClickListener { buttonOnClickAction() }
-
-        binding?.emptyState?.visible()
-        binding?.emptyState?.setImageUrl(EMPTY_STATE_IMAGE_URL)
-
-        val title = if (tabPosition == TAB_POSITION_FIRST) {
-            getString(R.string.sfs_no_active_campaign_title)
-        } else {
-            getString(R.string.sfs_no_campaign_history_title)
-        }
-
-        binding?.emptyState?.setTitle(title)
-
-        val description = if (tabPosition == TAB_POSITION_FIRST) {
-            getString(R.string.sfs_no_active_campaign_description)
-        } else {
-            getString(R.string.sfs_no_campaign_history_description)
-        }
-
-        binding?.emptyState?.setDescription(description)
-    }
-
-    private fun hideEmptyState() {
-        binding?.emptyState?.gone()
-        binding?.btnCreateCampaignEmptyState?.gone()
-        binding?.tpgRemainingQuotaEmptyState?.gone()
-    }
-
-    private fun doOnDelayFinished(block: () -> Unit) {
-        CoroutineScope(Dispatchers.Main).launch {
-            delay(SCROLL_DISTANCE_DELAY_IN_MILLIS)
-            block()
-        }
-    }
-
-    private fun handleDraftCount(draftCount: Int) {
-        val wording = String.format(getString(R.string.sfs_placeholder_draft), draftCount)
-        binding?.btnDraft?.text = wording
-        binding?.btnDraft?.isVisible = draftCount.isMoreThanZero()
-    }
-
-    private fun displayRemainingQuota(remainingQuota: Int) {
-        val counter = if (remainingQuota.isMoreThanZero()) {
+        val quotaCounter = if (remainingQuota.isMoreThanZero()) {
             remainingQuota
         } else {
             ZERO
         }
-        val wording = String.format(
-            getString(R.string.sfs_placeholder_remaining_quota),
-            counter
-        )
 
-        binding?.tpgRemainingQuota?.text = wording
+        val quotaWording = String.format(
+            getString(R.string.sfs_placeholder_remaining_quota),
+            quotaCounter
+        )
+        binding?.tpgRemainingQuota?.text = quotaWording
         binding?.tpgRemainingQuota?.visible()
 
-        val shouldVisible = tabPosition == TAB_POSITION_FIRST && totalCampaign == ZERO
-        binding?.tpgRemainingQuotaEmptyState?.isVisible = shouldVisible
-        binding?.tpgRemainingQuotaEmptyState?.text = wording
+        if (tabPosition == TAB_POSITION_FIRST) {
+            handleFirstTabEmptyState(hasCampaign, hasDraft, quotaCounter)
+        } else {
+            handleSecondTabEmptyState(hasCampaign)
+        }
+
     }
 
-    private fun checkCampaignEligibility(remainingQuota: Int, shopInfo: ShopInfo) {
-        val shopTierId = shopInfo.shopTierId
-        if (remainingQuota == ZERO
-            && shopTierId != POWER_MERCHANT_PRO_ID
-            && shopTierId != OFFICIAL_STORE_ID) {
-            showNoCampaignQuotaDialog(requireActivity()) {
-                routeToPmSubscribePage()
-            }
+    private fun handleFirstTabEmptyState(hasCampaign : Boolean, hasDraft : Boolean, remainingQuota: Int) {
+        binding?.btnNavigateToFirstActiveCampaign?.gone()
+
+        val quotaCounter = if (remainingQuota.isMoreThanZero()) {
+            remainingQuota
+        } else {
+            ZERO
         }
+
+        val quotaWording = String.format(
+            getString(R.string.sfs_placeholder_remaining_quota),
+            quotaCounter
+        )
+
+        if (hasCampaign || hasDraft) {
+            binding?.tpgRemainingQuotaEmptyState?.gone()
+            binding?.btnCreateCampaignEmptyState?.gone()
+        } else {
+            binding?.tpgRemainingQuotaEmptyState?.visible()
+            binding?.btnCreateCampaignEmptyState?.visible()
+            binding?.tpgRemainingQuotaEmptyState?.text = quotaWording
+        }
+
+        binding?.searchBar?.isVisible = hasCampaign
+        binding?.recyclerView?.isVisible = hasCampaign
+
+        binding?.emptyState?.isVisible = !hasCampaign
+        binding?.emptyState?.setImageUrl(EMPTY_STATE_IMAGE_URL)
+        binding?.emptyState?.setTitle(getString(R.string.sfs_no_active_campaign_title))
+        binding?.emptyState?.setDescription( getString(R.string.sfs_no_active_campaign_description))
+    }
+
+    private fun handleSecondTabEmptyState(hasCampaign: Boolean) {
+        binding?.btnCreateCampaignEmptyState?.gone()
+        binding?.tpgRemainingQuotaEmptyState?.gone()
+
+        if (hasCampaign) {
+            binding?.btnNavigateToFirstActiveCampaign?.gone()
+        } else {
+            binding?.btnNavigateToFirstActiveCampaign?.visible()
+        }
+
+        binding?.searchBar?.isVisible = hasCampaign
+        binding?.recyclerView?.isVisible = hasCampaign
+
+        binding?.emptyState?.isVisible = !hasCampaign
+        binding?.emptyState?.setImageUrl(EMPTY_STATE_IMAGE_URL)
+        binding?.emptyState?.setTitle(getString(R.string.sfs_no_campaign_history_title))
+        binding?.emptyState?.setDescription( getString(R.string.sfs_no_campaign_history_description))
+    }
+
+    private fun handleEligibilityResult(data: CampaignCreationEligibility) {
+        val drafts = viewModel.getCampaignDrafts()
+
+        if (!data.isEligible) {
+            showIneligibleAccess(requireActivity())
+            return
+        }
+
+        if (data.remainingQuota == ZERO) {
+            showCampaignQuotaEmptyDialog(requireActivity())
+            return
+        }
+
+        if (drafts.size >= MAX_DRAFT_COUNT) {
+            showDraftListBottomSheet(drafts)
+            return
+        }
+
+        CampaignInformationActivity.start(requireActivity())
     }
 
     private fun displayMoreMenuBottomSheet(campaign: CampaignUiModel) {
@@ -520,9 +492,7 @@ class CampaignListFragment : BaseSimpleListFragment<CampaignAdapter, CampaignUiM
             campaign.status
         )
         bottomSheet.setOnViewCampaignMenuSelected {}
-        bottomSheet.setOnCancelCampaignMenuSelected { id: Long, title: String, status: CampaignStatus? ->
-            handleCancelCampaign(campaign.thematicParticipation, campaign.isCancellable, id, title, status)
-        }
+        bottomSheet.setOnCancelCampaignMenuSelected { handleCancelCampaign(campaign) }
         bottomSheet.setOnShareCampaignMenuSelected {
             showLoaderDialog()
             viewModel.getShareComponentMetadata(campaign.campaignId)
@@ -593,19 +563,75 @@ class CampaignListFragment : BaseSimpleListFragment<CampaignAdapter, CampaignUiM
         loaderDialog.dialog.dismiss()
     }
 
-    private fun handleCancelCampaign(
-        isParticipatingThematicCampaign: Boolean,
-        isCancellable: Boolean,
-        id: Long,
-        title: String,
-        status: CampaignStatus?
-    ) {
-        if (isParticipatingThematicCampaign && isCancellable) {
+    private fun handleCancelCampaign(campaign: CampaignUiModel) {
+        if (campaign.thematicParticipation) {
             binding?.cardView showError getString(R.string.sfs_cannot_cancel_campaign)
             return
         }
 
-        showCancelCampaignBottomSheet(id, title, status)
+        showCancelCampaignBottomSheet(campaign)
+    }
+
+    private fun showCancelCampaignBottomSheet(campaign: CampaignUiModel) {
+        val bottomSheet = CancelCampaignBottomSheet(
+            campaign.campaignId,
+            campaign.campaignName,
+            campaign.status
+        ) {
+            showCancelCampaignSuccess(campaign)
+        }
+        bottomSheet.show(childFragmentManager)
+    }
+
+    private fun showCampaignQuotaEmptyDialog(context: Context){
+        val dialog = DialogUnify(context, DialogUnify.VERTICAL_ACTION, DialogUnify.NO_IMAGE)
+        dialog.setTitle(context.getString(R.string.no_campaign_quota_title))
+        dialog.setDescription(context.getString(R.string.no_campaign_quota_description))
+        dialog.setPrimaryCTAText(context.getString(R.string.no_campaign_quota_primary_cta_text))
+        dialog.setSecondaryCTAText(context.getString(R.string.no_campaign_quota_secondary_cta_text))
+
+        dialog.setPrimaryCTAClickListener {
+            routeToPmSubscribePage()
+        }
+        dialog.setSecondaryCTAClickListener {
+            dialog.dismiss()
+        }
+        dialog.show()
+    }
+
+    private fun showIneligibleAccess(context: Context){
+        val dialog = DialogUnify(context, DialogUnify.VERTICAL_ACTION, DialogUnify.NO_IMAGE)
+        dialog.setTitle(context.getString(R.string.sfs_ineligible_access_title))
+        dialog.setDescription(context.getString(R.string.sfs_ineligible_access_description))
+        dialog.setPrimaryCTAText(context.getString(R.string.sfs_subscribe_pm_pro))
+        dialog.setSecondaryCTAText(context.getString(R.string.no_campaign_quota_secondary_cta_text))
+
+        dialog.setPrimaryCTAClickListener {
+            routeToPmSubscribePage()
+        }
+        dialog.setSecondaryCTAClickListener {
+            dialog.dismiss()
+        }
+        dialog.show()
+    }
+
+    private fun showDraftListBottomSheet(drafts : List<CampaignUiModel>) {
+        DraftListBottomSheet.showUsingCampaignUiModel(
+            childFragmentManager,
+            drafts,
+            ::onDeleteDraftSuccess,
+            ::onDraftClicked
+        )
+    }
+
+    private fun showCancelCampaignSuccess(campaign: CampaignUiModel) {
+        val toasterMessage = String.format(getString(R.string.cancelcampaign_message_success), campaign.campaignName)
+        binding?.root showToaster toasterMessage
+
+        binding?.loader?.visible()
+        getCampaigns(FIRST_PAGE)
+
+        onCancelCampaignSuccess()
     }
 
     private fun routeToPmSubscribePage() {
@@ -613,18 +639,7 @@ class CampaignListFragment : BaseSimpleListFragment<CampaignAdapter, CampaignUiM
         startActivity(intent)
     }
 
-    private fun showCancelCampaignBottomSheet(id: Long, title: String, status: CampaignStatus?) {
-        val toasterActionText = getString(R.string.action_oke)
-        val toasterMessage = getString(R.string.cancelcampaign_message_success, title)
-        val bottomSheet = CancelCampaignBottomSheet(id, title, status) {
-            Toaster.build(view ?: return@CancelCampaignBottomSheet, toasterMessage,
-                Toaster.LENGTH_SHORT, actionText = toasterActionText
-            ).show()
-            view?.post {
-                clearAllData()
-                getCampaigns(FIRST_PAGE)
-            }
-        }
-        bottomSheet.show(childFragmentManager)
+    fun setOnCancelCampaignSuccess(onCancelCampaignSuccess : () -> Unit) {
+        this.onCancelCampaignSuccess = onCancelCampaignSuccess
     }
 }

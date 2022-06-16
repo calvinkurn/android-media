@@ -17,6 +17,8 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.seller_shop_flash_sale.databinding.SsfsFragmentCampaignListContainerBinding
+import com.tokopedia.shop.flashsale.common.constant.Constant
+import com.tokopedia.shop.flashsale.common.extension.doOnDelayFinished
 import com.tokopedia.shop.flashsale.common.extension.showError
 import com.tokopedia.shop.flashsale.common.extension.slideDown
 import com.tokopedia.shop.flashsale.common.extension.slideUp
@@ -30,22 +32,19 @@ import com.tokopedia.unifycomponents.setCustomText
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.lifecycle.autoClearedNullable
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class CampaignListContainerFragment : BaseDaggerFragment() {
 
     companion object {
         private const val DELAY_IN_MILLIS: Long = 400
-        private const val TAB_POSITION_FIRST = 0
-        private const val TAB_POSITION_SECOND = 1
+        private const val FIRST_TAB = 0
+        private const val SECOND_TAB = 1
         private const val BUNDLE_KEY_AUTO_FOCUS_TAB_POSITION = "auto_focus_tab_position"
+        private const val REFRESH_CAMPAIGN_DELAY_DURATION_IN_MILLIS : Long = 1_000
 
         @JvmStatic
-        fun newInstance(autoFocusTabPosition: Int = TAB_POSITION_FIRST): CampaignListContainerFragment {
+        fun newInstance(autoFocusTabPosition: Int = FIRST_TAB): CampaignListContainerFragment {
             return CampaignListContainerFragment().apply {
                 val bundle = Bundle()
                 bundle.putInt(BUNDLE_KEY_AUTO_FOCUS_TAB_POSITION, autoFocusTabPosition)
@@ -59,8 +58,6 @@ class CampaignListContainerFragment : BaseDaggerFragment() {
     private val autoFocusTabPosition by lazy {
         arguments?.getInt(BUNDLE_KEY_AUTO_FOCUS_TAB_POSITION).orZero()
     }
-
-    private var listener: TabChangeListener? = null
 
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
@@ -105,7 +102,7 @@ class CampaignListContainerFragment : BaseDaggerFragment() {
                     binding?.loader?.gone()
                     binding?.groupContent?.visible()
                     binding?.globalError?.gone()
-
+                    viewModel.storeTabsMetadata(result.data)
                     displayTabs(result.data)
                 }
                 is Fail -> {
@@ -117,11 +114,6 @@ class CampaignListContainerFragment : BaseDaggerFragment() {
             }
         }
 
-    }
-
-    override fun onResume() {
-        super.onResume()
-        viewModel.setSelectedTabPosition(getCurrentTabPosition())
     }
 
     private fun setupView() {
@@ -136,13 +128,11 @@ class CampaignListContainerFragment : BaseDaggerFragment() {
             viewPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
                 override fun onPageSelected(position: Int) {
                     super.onPageSelected(position)
-                    viewModel.setSelectedTabPosition(position)
-                    listener?.onTabChanged()
+                    handleSelectedTabAppearance(position)
                 }
             })
         }
     }
-
 
 
     private fun displayError(throwable: Throwable) {
@@ -154,12 +144,6 @@ class CampaignListContainerFragment : BaseDaggerFragment() {
         }
 
     }
-
-    private fun getCurrentTabPosition(): Int {
-        val tabLayout = binding?.tabsUnify?.getUnifyTabLayout()
-        return tabLayout?.selectedTabPosition.orZero()
-    }
-
 
     private fun reload() {
         binding?.loader?.visible()
@@ -182,15 +166,6 @@ class CampaignListContainerFragment : BaseDaggerFragment() {
         }
     }
 
-
-    fun setTabChangeListener(listener: TabChangeListener) {
-        this.listener = listener
-    }
-
-    interface TabChangeListener {
-        fun onTabChanged()
-    }
-
     private fun displayTabs(tabs: List<TabMeta>) {
         val fragments = createFragments(tabs)
         val pagerAdapter =
@@ -202,7 +177,12 @@ class CampaignListContainerFragment : BaseDaggerFragment() {
 
             TabsUnifyMediator(tabsUnify, viewPager) { tab, currentPosition ->
                 tab.setCustomText(fragments[currentPosition].first)
-                focusTo(autoFocusTabPosition)
+
+                val targetTabPosition = viewModel.getAutoFocusTabPosition()
+                if (currentPosition == targetTabPosition) {
+                    focusTo(targetTabPosition)
+                }
+
             }
         }
     }
@@ -219,7 +199,8 @@ class CampaignListContainerFragment : BaseDaggerFragment() {
             )
             fragment.setOnScrollDownListener { onRecyclerViewScrollDown() }
             fragment.setOnScrollUpListener { onRecyclerViewScrollUp() }
-            fragment.setOnNavigateToActiveCampaignListener { focusTo(TAB_POSITION_FIRST) }
+            fragment.setOnNavigateToActiveCampaignListener { focusTo(FIRST_TAB) }
+            fragment.setOnCancelCampaignSuccess { handleCancelCampaignSuccess() }
 
             val tabName = "${tab.name} (${tab.totalCampaign})"
             pages.add(Pair(tabName, fragment))
@@ -256,15 +237,35 @@ class CampaignListContainerFragment : BaseDaggerFragment() {
     }
 
 
+    private fun handleCancelCampaignSuccess() {
+        //Add some spare time caused by Backend write operation delay
+        doOnDelayFinished(REFRESH_CAMPAIGN_DELAY_DURATION_IN_MILLIS) {
+            viewModel.setAutoFocusTabPosition(SECOND_TAB)
+            viewModel.getTabsMeta()
+        }
+    }
+
     private fun focusTo(tabPosition : Int) {
         //Add some spare time to make sure tabs are successfully drawn before select and focusing to a tab
-        CoroutineScope(Dispatchers.Main).launch {
-            delay(DELAY_IN_MILLIS)
+        doOnDelayFinished(DELAY_IN_MILLIS) {
             val tabLayout = binding?.tabsUnify?.getUnifyTabLayout()
             val tab = tabLayout?.getTabAt(tabPosition)
             tab?.select()
         }
 
+    }
+
+    private fun handleSelectedTabAppearance(position: Int) {
+        try {
+            val tabs = viewModel.getStoredTabsMetadata()
+            val selectedTab = tabs[position]
+            if (selectedTab.totalCampaign == Constant.ZERO) {
+                binding?.tabsUnify?.getUnifyTabLayout().slideUp()
+                alignRecyclerViewToTabsBottom()
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
     }
 
 }

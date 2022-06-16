@@ -1,15 +1,19 @@
 package com.tokopedia.shop.flashsale.presentation.creation.information
 
+import android.content.Context
 import android.os.Bundle
 import android.text.InputType
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.OnBackPressedCallback
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
+import com.tokopedia.coachmark.CoachMark2
+import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.seller_shop_flash_sale.R
@@ -20,6 +24,7 @@ import com.tokopedia.shop.flashsale.common.constant.QuantityPickerConstant
 import com.tokopedia.shop.flashsale.common.constant.QuantityPickerConstant.CAMPAIGN_TEASER_MULTIPLIED_STEP_SIZE
 import com.tokopedia.shop.flashsale.common.constant.QuantityPickerConstant.CAMPAIGN_TEASER_NORMAL_STEP_SIZE
 import com.tokopedia.shop.flashsale.common.extension.*
+import com.tokopedia.shop.flashsale.common.preference.SharedPreferenceDataStore
 import com.tokopedia.shop.flashsale.common.util.DateManager
 import com.tokopedia.shop.flashsale.common.util.doOnTextChanged
 import com.tokopedia.shop.flashsale.di.component.DaggerShopFlashSaleComponent
@@ -29,11 +34,15 @@ import com.tokopedia.shop.flashsale.domain.entity.enums.CampaignStatus
 import com.tokopedia.shop.flashsale.domain.entity.enums.PageMode
 import com.tokopedia.shop.flashsale.presentation.creation.information.adapter.GradientColorAdapter
 import com.tokopedia.shop.flashsale.presentation.creation.information.bottomsheet.CampaignDatePickerBottomSheet
+import com.tokopedia.shop.flashsale.presentation.creation.information.bottomsheet.CampaignTeaserInformationBottomSheet
+import com.tokopedia.shop.flashsale.presentation.creation.information.bottomsheet.ForbiddenWordsInformationBottomSheet
+import com.tokopedia.shop.flashsale.presentation.creation.information.dialog.BackConfirmationDialog
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.lifecycle.autoClearedNullable
-import java.util.Date
+import java.util.*
 import javax.inject.Inject
+import kotlin.collections.ArrayList
 
 
 class CampaignInformationFragment : BaseDaggerFragment() {
@@ -72,6 +81,9 @@ class CampaignInformationFragment : BaseDaggerFragment() {
     @Inject
     lateinit var dateManager: DateManager
 
+    @Inject
+    lateinit var sharedPreference: SharedPreferenceDataStore
+
     private val viewModelProvider by lazy { ViewModelProvider(this, viewModelFactory) }
     private val viewModel by lazy { viewModelProvider.get(CampaignInformationViewModel::class.java) }
 
@@ -83,6 +95,16 @@ class CampaignInformationFragment : BaseDaggerFragment() {
             .baseAppComponent((activity?.applicationContext as? BaseMainApplication)?.baseAppComponent)
             .build()
             .inject(this)
+    }
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        val callback: OnBackPressedCallback = object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                showBackToPreviousPageConfirmation()
+            }
+        }
+        requireActivity().onBackPressedDispatcher.addCallback(this, callback)
     }
 
     override fun onCreateView(
@@ -97,12 +119,14 @@ class CampaignInformationFragment : BaseDaggerFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupView()
+        setFragmentToUnifyBgColor()
         observeValidationResult()
         observeCampaignCreation()
         observeCampaignUpdate()
         observeCampaignDetail()
         observeSaveDraft()
         handlePageMode()
+        handleCoachMark()
     }
 
     private fun observeValidationResult() {
@@ -199,6 +223,20 @@ class CampaignInformationFragment : BaseDaggerFragment() {
         setupClickListeners()
         setupTextFields()
         setupDatePicker()
+        setupScrollListener()
+    }
+
+    private fun setupScrollListener() {
+        binding?.scrollView?.isVerticalScrollBarEnabled = false
+        binding?.scrollView?.isHorizontalScrollBarEnabled = false
+        binding?.scrollView?.viewTreeObserver?.addOnScrollChangedListener {
+            val scrollY = binding?.scrollView?.scrollY.orZero()
+            if (scrollY.isScrollUp()) {
+                binding?.cardView?.visible()
+            } else {
+                binding?.cardView?.invisible()
+            }
+        }
     }
 
     private fun setupRecyclerView() {
@@ -211,6 +249,9 @@ class CampaignInformationFragment : BaseDaggerFragment() {
     private fun setupToolbar() {
         binding?.header?.headerSubTitle =
             String.format(getString(R.string.sfs_placeholder_step_counter), FIRST_STEP)
+        binding?.header?.setNavigationOnClickListener {
+            showBackToPreviousPageConfirmation()
+        }
     }
 
     private fun setupTextFields() {
@@ -222,14 +263,8 @@ class CampaignInformationFragment : BaseDaggerFragment() {
 
             tauHexColor.setMaxLength(HEX_COLOR_TEXT_FIELD_MAX_LENGTH)
             tauHexColor.textInputLayout.editText?.doOnTextChanged { text ->
-                if (text.length == HEX_COLOR_TEXT_FIELD_MAX_LENGTH) {
-                    binding?.btnApply?.visible()
-                } else {
-                    binding?.btnApply?.invisible()
-                }
+                handleHexColor(text)
             }
-
-
         }
     }
 
@@ -239,7 +274,10 @@ class CampaignInformationFragment : BaseDaggerFragment() {
             btnCreateCampaign.setOnClickListener {
                 viewModel.validateInput(getCurrentSelection(), Date())
             }
-            btnApply.setOnClickListener { handleApplyButtonClick() }
+            btnApply.setOnClickListener {
+                handleApplyButtonClick()
+                binding?.cardView?.visible()
+            }
 
             quantityEditor.editText.inputType = InputType.TYPE_NULL
             quantityEditor.setValueChangedListener { newValue, oldValue, _ ->
@@ -253,6 +291,12 @@ class CampaignInformationFragment : BaseDaggerFragment() {
 
             contentSwitcher.setOnCheckedChangeListener { _, isChecked ->
                 handleContentSwitcher(isChecked)
+            }
+            imgCampaignNameHelper.setOnClickListener {
+                ForbiddenWordsInformationBottomSheet().show(childFragmentManager)
+            }
+            imgCampaignTeaserHelper.setOnClickListener {
+                CampaignTeaserInformationBottomSheet().show(childFragmentManager)
             }
         }
     }
@@ -290,6 +334,13 @@ class CampaignInformationFragment : BaseDaggerFragment() {
         }
     }
 
+    private fun handleCoachMark() {
+        val shouldShowCoachMark = !sharedPreference.isCampaignInfoCoachMarkDismissed()
+        if (shouldShowCoachMark) {
+            showCoachMark()
+        }
+    }
+
     private fun handleCampaignNameValidationResult(validationResult: CampaignInformationViewModel.CampaignNameValidationResult) {
         when (validationResult) {
             CampaignInformationViewModel.CampaignNameValidationResult.CampaignNameIsEmpty -> {
@@ -321,6 +372,11 @@ class CampaignInformationFragment : BaseDaggerFragment() {
                 showLapsedTeaserTicker()
                 hideLapsedScheduleTicker()
             }
+            CampaignInformationViewModel.ValidationResult.InvalidHexColor -> {
+                hideLapsedTeaserTicker()
+                hideLapsedScheduleTicker()
+                binding?.root showError getString(R.string.sfs_invalid_hex_color)
+            }
             CampaignInformationViewModel.ValidationResult.Valid -> {
                 hideLapsedTeaserTicker()
                 hideLapsedScheduleTicker()
@@ -335,6 +391,7 @@ class CampaignInformationFragment : BaseDaggerFragment() {
                     viewModel.updateCampaign(selection, campaignId)
                 }
             }
+
         }
     }
 
@@ -365,19 +422,18 @@ class CampaignInformationFragment : BaseDaggerFragment() {
     }
 
     private fun handleContentSwitcher(hexColorOptionSelected: Boolean) {
-        val isHexColorTextFieldFilled = binding?.tauHexColor?.editText?.text.toString().trim().length == HEX_COLOR_TEXT_FIELD_MAX_LENGTH
+        val isHexColorTextFieldFilled = binding?.tauHexColor?.editText?.text.toString().trim().isValidHexColor()
         binding?.recyclerView?.isVisible = !hexColorOptionSelected
         binding?.groupHexColorPicker?.isVisible = hexColorOptionSelected
-        binding?.btnApply?.isVisible = hexColorOptionSelected && isHexColorTextFieldFilled
 
-        if (hexColorOptionSelected) {
-            val hexColor = binding?.tauHexColor?.editText?.text.toString().trim().toHexColor()
-            viewModel.setSelectedColor(Gradient(hexColor, hexColor, isSelected = true))
+        if (hexColorOptionSelected && isHexColorTextFieldFilled) {
+            binding?.btnApply?.visible()
+        } else {
+            binding?.btnApply?.invisible()
         }
     }
 
     private fun handleSelectedColor(selectedGradient: Gradient) {
-        viewModel.setSelectedColor(selectedGradient)
         val allGradients = adapter.snapshot()
         val updatedColorSelection = viewModel.markColorAsSelected(selectedGradient, allGradients)
         adapter.submit(updatedColorSelection)
@@ -385,6 +441,21 @@ class CampaignInformationFragment : BaseDaggerFragment() {
         binding?.tauHexColor?.editText?.setText("")
         binding?.btnApply?.invisible()
         binding?.imgHexColorPreview?.setBackgroundResource(R.drawable.sfs_shape_rounded_color)
+
+        binding?.cardView?.visible()
+        viewModel.setSelectedColor(selectedGradient)
+    }
+
+    private fun handleHexColor(text: String) {
+        if (text.isNotEmpty()) {
+            val hexColor = text.toHexColor()
+
+            if (hexColor.isValidHexColor()) {
+                binding?.btnApply?.visible()
+            } else {
+                binding?.btnApply?.invisible()
+            }
+        }
     }
 
     private fun displayStartDatePicker() {
@@ -401,7 +472,6 @@ class CampaignInformationFragment : BaseDaggerFragment() {
         }
         bottomSheet.show(childFragmentManager, bottomSheet.tag)
     }
-
 
     private fun displayEndDatePicker() {
         val startDate = viewModel.getSelectedStartDate().advanceMinuteBy(THIRTY_MINUTE)
@@ -535,9 +605,10 @@ class CampaignInformationFragment : BaseDaggerFragment() {
 
         binding?.recyclerView?.isVisible = !isUsingHexColor
         binding?.groupHexColorPicker?.isVisible = isUsingHexColor
-        binding?.btnApply?.isVisible = isUsingHexColor
+
 
         if (isUsingHexColor) {
+            binding?.btnApply?.visible()
             binding?.contentSwitcher?.isChecked = true
             binding?.tauHexColor?.editText?.setText(campaign.gradientColor.first.removeHexColorPrefix())
             binding?.imgHexColorPreview?.setBackgroundFromGradient(campaign.gradientColor)
@@ -545,8 +616,51 @@ class CampaignInformationFragment : BaseDaggerFragment() {
             val colors = viewModel.deselectAllColor(adapter.snapshot())
             adapter.submit(colors)
         } else {
+            binding?.btnApply?.invisible()
             val colors = viewModel.markColorAsSelected(campaign.gradientColor, adapter.snapshot())
             adapter.submit(colors)
         }
     }
+
+    private fun showBackToPreviousPageConfirmation() {
+        val dialog = BackConfirmationDialog(requireActivity())
+        dialog.setOnPrimaryActionClick { requireActivity().finish() }
+        dialog.setOnSecondaryActionClick {  }
+        dialog.setOnThirdActionClick { validateDraft() }
+        dialog.show()
+    }
+
+
+    private fun showCoachMark() {
+        val coachMark = CoachMark2(requireActivity())
+        coachMark.enableClipping = true
+        coachMark.showCoachMark(populateCoachMarkItems(), null)
+        coachMark.onFinishListener = {
+            sharedPreference.markCampaignInfoCoachMarkComplete()
+        }
+        coachMark.onDismissListener = {
+            sharedPreference.markCampaignInfoCoachMarkComplete()
+        }
+    }
+
+    private fun populateCoachMarkItems(): ArrayList<CoachMark2Item> {
+        val firstAnchorView = binding?.btnCreateCampaign ?: return arrayListOf()
+        val secondAnchorView = binding?.btnDraft ?: return arrayListOf()
+
+        return arrayListOf(
+            CoachMark2Item(
+                firstAnchorView,
+                getString(R.string.sfs_coachmark_first),
+                ""
+            ),
+            CoachMark2Item(
+                secondAnchorView,
+                getString(R.string.sfs_coachmark_second),
+                ""
+            ),
+        )
+    }
+
+
+
 }
