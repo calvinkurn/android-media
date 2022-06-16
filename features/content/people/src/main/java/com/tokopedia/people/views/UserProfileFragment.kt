@@ -406,6 +406,18 @@ class UserProfileFragment : BaseDaggerFragment(),
                             refreshLandingPageData()
                         }
                     }
+                    is NullPointerException ->{
+                        container?.displayedChild = PAGE_ERROR
+                        globalError?.setType(PAGE_NOT_FOUND)
+                        globalError?.errorAction?.text = WORDING_GO_TO_HOMEPAGE
+                        globalError?.errorSecondaryAction?.gone()
+                        globalError?.show()
+
+                        globalError?.setActionClickListener {
+                            goToHomePage()
+                        }
+
+                    }
                     is RuntimeException -> {
                         when (it.localizedMessage?.toIntOrNull()) {
                             ReponseStatus.NOT_FOUND -> {
@@ -817,6 +829,12 @@ class UserProfileFragment : BaseDaggerFragment(),
     override fun getScreenName(): String {
         return ""
     }
+    private fun goToHomePage() {
+        val intent = RouteManager.getIntent(context, ApplinkConst.HOME)
+        intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
+        startActivity(intent)
+        activity?.finish()
+    }
 
     override fun onResume() {
         super.onResume()
@@ -969,6 +987,7 @@ class UserProfileFragment : BaseDaggerFragment(),
         const val EXTRA_FOLLOW_UNFOLLOW_STATUS = "follow_unfollow_status"
         const val EXTRA_VALUE_IS_FOLLOWED = "is_followed"
         const val EXTRA_VALUE_IS_NOT_FOLLOWED = "is_not_followed"
+        const val WORDING_GO_TO_HOMEPAGE = "Ke Homepage"
         private const val LOADING = -94567
 
         const val PAGE_CONTENT = 0
