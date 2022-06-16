@@ -4,6 +4,7 @@ import com.tokopedia.play.broadcaster.domain.model.GetChannelResponse
 import com.tokopedia.play.broadcaster.domain.usecase.*
 import com.tokopedia.play.broadcaster.model.UiModelBuilder
 import com.tokopedia.play.broadcaster.robot.PlayBroadcastSummaryViewModelRobot
+import com.tokopedia.play.broadcaster.ui.event.PlayBroadcastSummaryEvent
 import com.tokopedia.play.broadcaster.ui.mapper.PlayBroadcastUiMapper
 import com.tokopedia.play.broadcaster.ui.model.SummaryLeaderboardInfo
 import com.tokopedia.play.broadcaster.ui.model.TrafficMetricType
@@ -90,7 +91,6 @@ class PlayBroadcastSummaryViewModelTest {
         coEvery { mockGetLiveStatisticsUseCase.executeOnBackground() } returns mockLiveStats
 
         val robot = PlayBroadcastSummaryViewModelRobot(
-            summaryLeaderboardInfo = SummaryLeaderboardInfo(true, mockTotalInteractiveParticipant),
             dispatcher = testDispatcher,
             getLiveStatisticsUseCase = mockGetLiveStatisticsUseCase,
             getChannelUseCase = mockGetChannelUseCase,
@@ -159,6 +159,8 @@ class PlayBroadcastSummaryViewModelTest {
                 isEligiblePostVideo.assertFalse()
             }
         }
+
+//                    is PlayBroadcastSummaryEvent.VideoUnder60Seconds
     }
 
     @Test
