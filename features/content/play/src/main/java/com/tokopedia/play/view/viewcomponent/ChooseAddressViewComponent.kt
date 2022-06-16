@@ -2,7 +2,6 @@ package com.tokopedia.play.view.viewcomponent
 
 import android.view.ViewGroup
 import android.widget.TextView
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.localizationchooseaddress.ui.bottomsheet.ChooseAddressBottomSheet
@@ -30,7 +29,7 @@ class ChooseAddressViewComponent(
             listener.onAddressUpdated(this@ChooseAddressViewComponent)
         }
 
-        override fun getLocalizingAddressHostSourceBottomSheet(): String = "play"
+        override fun getLocalizingAddressHostSourceBottomSheet(): String = ADDRESS_WIDGET_SOURCE
 
         override fun onLocalizingAddressLoginSuccessBottomSheet() {}
 
@@ -70,6 +69,7 @@ class ChooseAddressViewComponent(
 
     companion object {
         private const val PLAY_CHOOSE_ADDRESS_TAG = "PLAY_ADDRESS"
+        private const val ADDRESS_WIDGET_SOURCE = "play"
     }
 
     interface Listener {
