@@ -64,6 +64,7 @@ class CouponPreviewFragment: BaseDaggerFragment() {
         private const val COUPON_START_DATE_OFFSET_IN_HOUR = 3
         private const val EMPTY_STATE_REMOTE_IMAGE_URL = "https://images.tokopedia.net/img/android/campaign/voucher_creation/DilarangMasukImage.png"
         private const val ERROR_MESSAGE_CODE_EXCEED_MAX_COUPON_CREATION_LIMIT = "Kupon Aktif maksimal"
+        private const val MARGIN_BUTTON = 24
 
         fun newInstance(
             onNavigateToCouponInformationPage: () -> Unit,
@@ -838,7 +839,7 @@ class CouponPreviewFragment: BaseDaggerFragment() {
 
     private fun updateButtonConstraint() {
         val set = ConstraintSet()
-        val margin = 24
+        val margin = MARGIN_BUTTON
         set.clone(binding.layout)
         set.connect(
             binding.btnPreviewCouponImage.id,
