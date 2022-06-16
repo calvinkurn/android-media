@@ -166,6 +166,13 @@ class MyShopProductFragment @Inject constructor(
         binding.sbShopProduct.searchBarTextField.setOnEditorActionListener { textView, actionId, keyEvent ->
             if(actionId == EditorInfo.IME_ACTION_SEARCH) {
                 val query = binding.sbShopProduct.searchBarTextField.text.toString()
+
+                impressionCoordinator.sendProductImpress()
+                impressionCoordinator.setInitialData(
+                    viewModel.selectedTagSource,
+                    query.isEmpty()
+                )
+
                 submitQuery(query)
 
                 true
