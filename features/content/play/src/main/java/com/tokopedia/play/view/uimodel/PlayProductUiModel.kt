@@ -1,9 +1,6 @@
 package com.tokopedia.play.view.uimodel
 
-import com.tokopedia.play.view.type.OriginalPrice
-import com.tokopedia.play.view.type.OutOfStock
-import com.tokopedia.play.view.type.ProductPrice
-import com.tokopedia.play.view.type.ProductStock
+import com.tokopedia.play.view.type.*
 
 /**
  * Created by jegul on 03/03/20
@@ -34,7 +31,7 @@ sealed class PlayProductUiModel {
                     price = OriginalPrice("", 0.0),
                     minQty = 0,
                     isFreeShipping = false,
-                    applink = null,
+                    applink = null
                 )
         }
     }

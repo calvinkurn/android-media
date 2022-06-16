@@ -12,6 +12,7 @@ data class AddToCartOccMultiRequestParams(
     companion object {
         const val SOURCE_PDP = "pdp"
         const val SOURCE_MINICART = "minicart"
+        const val SOURCE_FINTECH = "fintech"
     }
 }
 

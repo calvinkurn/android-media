@@ -1,7 +1,7 @@
 package com.tokopedia.kyc_centralized.domain
 
 import com.tokopedia.kyc_centralized.KycUrl.KYC_PARAMS
-import com.tokopedia.kyc_centralized.data.model.response.KycData
+import com.tokopedia.kyc_centralized.data.model.response.KycResponse
 import com.tokopedia.kyc_centralized.data.repository.KycUploadImagesRepository
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
@@ -11,7 +11,7 @@ import java.io.File
 import javax.inject.Inject
 
 class KycUploadUseCase @Inject constructor(private val livenessUploadImagesRepository: KycUploadImagesRepository) {
-    suspend fun uploadImages(ktpPath: String, facePath: String, tkpdProjectId: String): KycData {
+    suspend fun uploadImages(ktpPath: String, facePath: String, tkpdProjectId: String): KycResponse {
         val ktpFile = File(ktpPath)
         val faceFile = File(facePath)
 

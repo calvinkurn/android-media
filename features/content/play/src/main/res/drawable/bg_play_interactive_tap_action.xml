@@ -1,86 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ripple
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:color="@color/Unify_Static_White"
-    >
+<ripple xmlns:android="http://schemas.android.com/apk/res/android" android:color="@color/Unify_Static_White">
     <item>
         <shape android:shape="oval">
-            <size
-                android:width="@dimen/play_interactive_tap_action"
-                android:height="@dimen/play_interactive_tap_action" />
-            <solid
-                android:color="@color/Unify_Static_White_20"
-                />
-            <corners android:radius="@dimen/play_interactive_common_radius" />
+            <size android:width="@dimen/play_interactive_tap_action" android:height="@dimen/play_interactive_tap_action"/>
+            <solid android:color="@color/Unify_Static_White_20"/>
+            <corners android:radius="@dimen/play_interactive_common_radius"/>
         </shape>
     </item>
-
-    <item
-        android:left="@dimen/play_offset_6"
-        android:right="@dimen/play_offset_6"
-        android:top="@dimen/play_offset_6"
-        android:bottom="@dimen/play_offset_6">
-        <shape
-            android:shape="oval"
-            >
-            <size
-                android:width="@dimen/play_interactive_tap_action"
-                android:height="@dimen/play_interactive_tap_action"
-                />
-            <solid
-                android:color="@color/play_dms_transparent"
-                />
-            <stroke
-                android:width="@dimen/play_interactive_tap_inside_stroke_width"
-                android:color="@color/Unify_Static_White_20"
-                />
+    <item android:left="@dimen/play_offset_6" android:right="@dimen/play_offset_6" android:top="@dimen/play_offset_6" android:bottom="@dimen/play_offset_6">
+        <shape android:shape="oval">
+            <size android:width="@dimen/play_interactive_tap_action" android:height="@dimen/play_interactive_tap_action"/>
+            <solid android:color="@color/play_dms_transparent"/>
+            <stroke android:width="@dimen/play_interactive_tap_inside_stroke_width" android:color="@color/Unify_Static_White_20"/>
         </shape>
     </item>
-
-    <item
-        android:left="@dimen/play_offset_12"
-        android:right="@dimen/play_offset_12"
-        android:top="@dimen/play_offset_12"
-        android:bottom="@dimen/play_offset_12"
-        >
-        <shape
-            android:shape="oval"
-            >
-            <size
-                android:width="@dimen/play_interactive_tap_action"
-                android:height="@dimen/play_interactive_tap_action"
-                />
-            <gradient
-                android:startColor="@color/play_dms_interactive_live_bg_1"
-                android:endColor="@color/play_dms_interactive_live_bg_2"
-                android:angle="-90"
-                />
-            <corners
-                android:radius="@dimen/play_interactive_common_radius"
-                />
+    <item android:left="@dimen/play_offset_12" android:right="@dimen/play_offset_12" android:top="@dimen/play_offset_12" android:bottom="@dimen/play_offset_12">
+        <shape android:shape="oval">
+            <size android:width="@dimen/play_interactive_tap_action" android:height="@dimen/play_interactive_tap_action"/>
+            <gradient android:startColor="@color/play_dms_interactive_live_bg_1" android:endColor="@color/play_dms_interactive_live_bg_2" android:angle="-90"/>
+            <corners android:radius="@dimen/play_interactive_common_radius"/>
         </shape>
     </item>
-
-    <item
-        android:left="@dimen/play_offset_18"
-        android:right="@dimen/play_offset_18"
-        android:top="@dimen/play_offset_18"
-        android:bottom="@dimen/play_offset_18">
-        <shape
-            android:shape="oval"
-            >
-            <size
-                android:width="@dimen/play_interactive_tap_action"
-                android:height="@dimen/play_interactive_tap_action"
-                />
-            <solid
-                android:color="@color/play_dms_transparent"
-                />
-            <stroke
-                android:width="@dimen/play_interactive_tap_inside_stroke_width"
-                android:color="@color/Unify_Static_White_20"
-                />
+    <item android:left="@dimen/play_offset_18" android:right="@dimen/play_offset_18" android:top="@dimen/play_offset_18" android:bottom="@dimen/play_offset_18">
+        <shape android:shape="oval">
+            <size android:width="@dimen/play_interactive_tap_action" android:height="@dimen/play_interactive_tap_action"/>
+            <solid android:color="@color/play_dms_transparent"/>
+            <stroke android:width="@dimen/play_interactive_tap_inside_stroke_width" android:color="@color/Unify_Static_White_20"/>
         </shape>
     </item>
-
 </ripple>

@@ -138,6 +138,31 @@ class MasterProductCardItemViewModel(val application: Application, val component
         } ?: ProductCardOptionsModel()
     }
 
+    fun getThreeDotsWishlistOptionsModel():ProductCardOptionsModel {
+        return components.data?.firstOrNull()?.let {
+            ProductCardOptionsModel(
+                hasWishlist = true,
+                hasVisitShop = true,
+                hasShareProduct = true,
+                isWishlisted = it.isWishList,
+                productId = it.productId.toString(),
+                isTopAds = it.isTopads ?: false,
+                topAdsWishlistUrl = it.wishlistUrl ?: "",
+                productPosition = position,
+                shop = ProductCardOptionsModel.Shop(
+                    it.shopId ?: "",
+                    it.shopName ?: "",
+                    it.shopURLDesktop ?: ""
+                ),
+                productName = it.name ?: "",
+                productImageUrl = it.imageUrlMobile ?: "",
+                productUrl = it.productURLDesktop ?: "",
+                formattedPrice = it.price ?: "",
+
+            )
+        } ?: ProductCardOptionsModel()
+    }
+
 
     fun getTemplateType() = components.properties?.template ?: GRID
     fun getShowLoginData(): LiveData<Boolean> = showLoginLiveData

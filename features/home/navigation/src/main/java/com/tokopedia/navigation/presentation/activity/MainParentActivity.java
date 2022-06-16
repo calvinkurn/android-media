@@ -29,6 +29,7 @@ import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.RestrictTo;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.fragment.app.Fragment;
@@ -82,6 +83,7 @@ import com.tokopedia.navigation.presentation.di.GlobalNavComponent;
 import com.tokopedia.navigation.presentation.di.GlobalNavModule;
 import com.tokopedia.navigation.presentation.presenter.MainParentPresenter;
 import com.tokopedia.navigation.presentation.view.MainParentView;
+import com.tokopedia.navigation.util.MainParentServerLogger;
 import com.tokopedia.navigation_common.listener.AllNotificationListener;
 import com.tokopedia.navigation_common.listener.CartNotifyListener;
 import com.tokopedia.navigation_common.listener.FragmentListener;
@@ -101,6 +103,7 @@ import com.tokopedia.showcase.ShowCaseBuilder;
 import com.tokopedia.showcase.ShowCaseDialog;
 import com.tokopedia.showcase.ShowCaseObject;
 import com.tokopedia.showcase.ShowCasePreference;
+import com.tokopedia.telemetry.ITelemetryActivity;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.unifycomponents.Toaster;
 import com.tokopedia.user.session.UserSession;
@@ -117,6 +120,7 @@ import java.util.Map;
 import javax.inject.Inject;
 
 import dagger.Lazy;
+import rx.android.BuildConfig;
 
 /**
  * Created by meta on 19/06/18.
@@ -131,7 +135,8 @@ public class MainParentActivity extends BaseActivity implements
         HomePerformanceMonitoringListener,
         OfficialStorePerformanceMonitoringListener,
         IBottomClickListener,
-        MainParentStateListener
+        MainParentStateListener,
+        ITelemetryActivity
 {
 
     public static final String MO_ENGAGE_COUPON_CODE = "coupon_code";
@@ -148,6 +153,7 @@ public class MainParentActivity extends BaseActivity implements
     public static final int WISHLIST_MENU = 3;
     public static final String DEFAULT_NO_SHOP = "0";
     public static final String BROADCAST_FEED = "BROADCAST_FEED";
+    public static final String FEED_IS_VISIBLE = "FEED_IS_VISIBLE";
     public static final String BROADCAST_VISIBLITY = "BROADCAST_VISIBILITY";
     public static final String PARAM_BROADCAST_NEW_FEED = "PARAM_BROADCAST_NEW_FEED";
     public static final String PARAM_BROADCAST_NEW_FEED_CLICKED = "PARAM_BROADCAST_NEW_FEED_CLICKED";
@@ -195,6 +201,7 @@ public class MainParentActivity extends BaseActivity implements
     public static final String PARAM_HOME = "home";
     public static final String PARAM_ACTIVITY_WISHLIST_V2 = "activity_wishlist_v2";
     private static final String ENABLE_REVAMP_WISHLIST_V2 = "android_revamp_wishlist_v2";
+    private static final String SUFFIX_ALPHA = "-alpha";
 
     ArrayList<BottomMenu> menu = new ArrayList<>();
 
@@ -222,7 +229,7 @@ public class MainParentActivity extends BaseActivity implements
     private Handler handler = new Handler();
     private FrameLayout fragmentContainer;
     private boolean isFirstNavigationImpression = false;
-    private boolean useNewInbox = false;
+    private boolean isFeedClickedFortheFirstTime = true;
     private boolean useNewNotificationOnNewInbox = false;
     private RemoteConfigInstance remoteConfigInstance;
 
@@ -235,6 +242,8 @@ public class MainParentActivity extends BaseActivity implements
     private PageLoadTimePerformanceCallback mainParentPageLoadTimePerformanceCallback;
 
     private boolean isOsExperiment;
+
+    private String embracePageName = "";
 
     public static Intent start(Context context) {
         return new Intent(context, MainParentActivity.class)
@@ -265,7 +274,6 @@ public class MainParentActivity extends BaseActivity implements
 
         super.onCreate(savedInstanceState);
         initInjector();
-        initInboxAbTest();
         presenter.get().setView(this);
         if (savedInstanceState != null) {
             presenter.get().setIsRecurringApplink(savedInstanceState.getBoolean(IS_RECURRING_APPLINK, false));
@@ -292,18 +300,7 @@ public class MainParentActivity extends BaseActivity implements
     private void runRiskWorker() {
         // Most of workers do nothing if it has already succeed previously.
         SubmitDeviceWorker.Companion.scheduleWorker(getApplicationContext(), false);
-        DataVisorWorker.Companion.scheduleWorker(getApplicationContext(), false);
         AppAuthWorker.Companion.scheduleWorker(getApplicationContext(), false);
-    }
-
-    private void initInboxAbTest() {
-        try {
-            useNewInbox = RemoteConfigInstance.getInstance().getABTestPlatform().getString(
-                    RollenceKey.KEY_AB_INBOX_REVAMP, RollenceKey.VARIANT_OLD_INBOX
-            ).equals(RollenceKey.VARIANT_NEW_INBOX);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
     }
 
     private void installDFonBackground() {
@@ -318,10 +315,14 @@ public class MainParentActivity extends BaseActivity implements
         if (userSession.get().hasShop()) {
             moduleNameList.add(DeeplinkDFMapper.DF_MERCHANT_SELLER);
         }
+        moduleNameList.add(DeeplinkDFMapper.DF_DIGITAL);
         moduleNameList.add(DeeplinkDFMapper.DF_TRAVEL);
         moduleNameList.add(DeeplinkDFMapper.DF_ENTERTAINMENT);
         moduleNameList.add(DeeplinkDFMapper.DF_TOKOPEDIA_NOW);
-        moduleNameList.add(DeeplinkDFMapper.DF_MERCHANT_REVIEW);
+        moduleNameList.add(DeeplinkDFMapper.DF_MERCHANT_NONLOGIN);
+        if (BuildConfig.VERSION_NAME.endsWith(SUFFIX_ALPHA) && remoteConfig.get().getBoolean(RemoteConfigKey.ENABLE_APLHA_OBSERVER, true)) {
+            moduleNameList.add(DeeplinkDFMapper.DF_ALPHA_TESTING);
+        }
         DFInstaller.installOnBackground(this.getApplication(), moduleNameList, "Home");
     }
 
@@ -604,6 +605,7 @@ public class MainParentActivity extends BaseActivity implements
             Fragment currentFrag = manager.findFragmentByTag(backStateName);
             if (currentFrag != null && manager.getFragments().size() > 0) {
                 showSelectedFragment(fragment, manager, ft);
+
             } else {
                 ft.add(R.id.container, fragment, backStateName); // add fragment if there re not registered on fragmentManager
                 showSelectedFragment(fragment, manager, ft);
@@ -882,9 +884,6 @@ public class MainParentActivity extends BaseActivity implements
             if (fragment instanceof AllNotificationListener && notification != null) {
                 int totalInbox = notification.getTotalInbox();
                 int totalNotification = notification.getTotalNotif();
-                if (useNewInbox) {
-                    totalInbox = notification.totalNewInbox;
-                }
                 if (useNewNotificationOnNewInbox) {
                     totalNotification = notification.totalNotificationOnNewInbox;
                 }
@@ -971,7 +970,8 @@ public class MainParentActivity extends BaseActivity implements
         return cache.getBoolean(GlobalNavConstant.Cache.KEY_IS_FIRST_TIME, false);
     }
 
-    private void checkAppUpdateAndInApp() {
+    @Override
+    public void checkAppUpdateAndInApp() {
         if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             // if download finished or flexible update is in progress, we do not need to show the update dialog
             AppUpdateManagerWrapper.checkUpdateInFlexibleProgressOrCompleted(this, isOnProgress -> {
@@ -1146,7 +1146,7 @@ public class MainParentActivity extends BaseActivity implements
                         shortcutInfos.add(wishlistShortcut);
                     }
 
-                    Intent digitalIntent = RouteManager.getIntent(MainParentActivity.this, ApplinkConst.DIGITAL_SUBHOMEPAGE_HOME);
+                    Intent digitalIntent = RouteManager.getIntent(MainParentActivity.this, ApplinkConst.RECHARGE_SUBHOMEPAGE_HOME_NEW);
                     digitalIntent.setAction(Intent.ACTION_VIEW);
                     digitalIntent.putExtras(args);
 
@@ -1318,31 +1318,42 @@ public class MainParentActivity extends BaseActivity implements
             currentFragment.setUserVisibleHint(false);
         }
         this.currentSelectedFragmentPosition = position;
+        String pageName = "";
+        String pageTitle = "";
+        if (menu.size() > index) {
+            pageTitle = menu.get(index).getTitle();
+        }
+
+        if (pageTitle.equals(getResources().getString(R.string.home))) {
+            pageName = "/";
+        } else if (pageTitle.equals(getResources().getString(R.string.official))) {
+            pageName = PAGE_OS_HOMEPAGE;
+        } else if (pageTitle.equals(getResources().getString(R.string.feed))) {
+            if (isFeedClickedFortheFirstTime) {
+                isFeedClickedFortheFirstTime = false;
+                globalNavAnalytics.get().userVisitsFeed(Boolean.toString(userSession.get().isLoggedIn()), userSession.get().getUserId());
+            }
+            pageName = PAGE_FEED;
+        } else if (pageTitle.equals(getResources().getString(R.string.uoh))) {
+            pageName = PAGE_DAFTAR_TRANSAKSI;
+        } else if (pageTitle.equals(getResources().getString(R.string.wishlist))) {
+            pageName = PAGE_WISHLIST;
+        }
+
         if (!isFirstNavigationImpression) {
-            String pageName = "";
-                if (menu.get(index).getTitle().equals(getResources().getString(R.string.home))) {
-                    pageName = "/";
-                } else if (menu.get(index).getTitle().equals(getResources().getString(R.string.official))) {
-                    pageName = PAGE_OS_HOMEPAGE;
-                } else if (menu.get(index).getTitle().equals(getResources().getString(R.string.feed))) {
-                   globalNavAnalytics.get().userVisitsFeed(Boolean.toString(userSession.get().isLoggedIn()), userSession.get().getUserId());
-                    pageName = PAGE_FEED;
-                } else if (menu.get(index).getTitle().equals(getResources().getString(R.string.uoh))) {
-                    pageName = PAGE_DAFTAR_TRANSAKSI;
-                } else if (menu.get(index).getTitle().equals(getResources().getString(R.string.wishlist))) {
-                    pageName = PAGE_WISHLIST;
-                }
-                globalNavAnalytics.get().eventBottomNavigationDrawer(pageName, menu.get(index).getTitle(), userSession.get().getUserId());
+            globalNavAnalytics.get().eventBottomNavigationDrawer(pageName, menu.get(index).getTitle(), userSession.get().getUserId());
         }
         isFirstNavigationImpression = false;
 
         if (!menu.get(index).getTitle().equals(getResources().getString(R.string.feed)) ) {
+            isFeedClickedFortheFirstTime = true;
             Intent intent = new Intent(BROADCAST_VISIBLITY);
             LocalBroadcastManager.getInstance(getContext().getApplicationContext()).sendBroadcast(intent);
         }
         else{
             presenter.get().getNotificationData();
             Intent intent = new Intent(BROADCAST_FEED);
+            intent.putExtra(FEED_IS_VISIBLE, true);
             LocalBroadcastManager.getInstance(getContext().getApplicationContext()).sendBroadcast(intent);
         }
 
@@ -1368,6 +1379,8 @@ public class MainParentActivity extends BaseActivity implements
             this.currentFragment = fragment;
             selectFragment(fragment);
         }
+        this.embracePageName = pageTitle;
+        MainParentServerLogger.Companion.sendEmbraceBreadCrumb(embracePageName);
         return true;
     }
 
@@ -1380,6 +1393,11 @@ public class MainParentActivity extends BaseActivity implements
     @Override
     public boolean isOsExperiment() {
         return isOsExperiment;
+    }
+
+    @Override
+    public String currentVisibleFragment() {
+        return embracePageName;
     }
 
     public void populateBottomNavigationView() {
@@ -1410,5 +1428,11 @@ public class MainParentActivity extends BaseActivity implements
 
         startActivities(new Intent[]{intentHome, intentNewUser});
         finish();
+    }
+
+    @NonNull
+    @Override
+    public String getTelemetrySectionName() {
+        return "home";
     }
 }

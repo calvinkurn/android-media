@@ -13,6 +13,7 @@ object ChannelMapper {
             type = response.type,
             layout = response.layout,
             pageName = response.pageName,
+            widgetParam = response.widgetParam,
             channelHeader = ChannelHeader(
                 response.header.id,
                 response.header.name,

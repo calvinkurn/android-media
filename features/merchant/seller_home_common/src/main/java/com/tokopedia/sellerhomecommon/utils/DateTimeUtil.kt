@@ -11,13 +11,16 @@ import java.util.concurrent.TimeUnit
 
 object DateTimeUtil {
 
-    const val FORMAT_DD_MM_YYYY = "dd-MM-yyyy"
     const val FORMAT_DD_MMM_YYYY = "dd MMM yyyy"
+    const val FORMAT_HH_MM = "HH:mm"
+    const val FORMAT_DD_MM_YYYY = "dd-MM-yyyy"
     const val FORMAT_MMMM_YYYY = "MMMM yyyy"
     const val FORMAT_DD_MMM = "dd MMM"
     const val FORMAT_DD = "dd"
     const val FORMAT_MMM = "MMM"
     const val FORMAT_HOUR_24 = "HH:00"
+    const val ZERO = 0
+    val ONE_DAY_MILLIS: Long = TimeUnit.DAYS.toMillis(1)
     private const val DEFAULT_TIME_MILLIS = 0L
 
     fun getLocale(): Locale {
@@ -56,14 +59,20 @@ object DateTimeUtil {
     }
 
     fun getNPastDaysTimestamp(daysBefore: Long): Long {
-        return Calendar.getInstance(getLocale()).timeInMillis.minus(TimeUnit.DAYS.toMillis(daysBefore))
+        return Calendar.getInstance(getLocale()).timeInMillis.minus(
+            TimeUnit.DAYS.toMillis(
+                daysBefore
+            )
+        )
     }
 
     fun getNNextDaysTimestamp(days: Long): Long {
         return Calendar.getInstance(getLocale()).timeInMillis.plus(TimeUnit.DAYS.toMillis(days))
     }
 
-    fun getFormattedDate(daysBefore: Long, format: String) = format(getNPastDaysTimestamp(daysBefore), format)
+    fun getFormattedDate(daysBefore: Long, format: String): String {
+        return format(getNPastDaysTimestamp(daysBefore), format)
+    }
 
     fun getTimeInMillis(dateStr: String, format: String): Long {
         val sdf = SimpleDateFormat(format, getLocale())

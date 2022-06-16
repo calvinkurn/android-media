@@ -38,7 +38,7 @@ class PltSellerHomePerformanceTest {
                 createMockModelConfig(),
                 listOf(
                     "getNotifications", "getShopInfoMoengage", "shopInfoByID",
-                    "goldGetPMOSStatus", "GetSellerDashboardLayout", "getCardWidgetData",
+                    "goldGetPMOSStatus", "GetSellerDashboardLayout", "fetchCardWidgetData",
                     "getLineGraphData", "getCarouselWidgetData", "getPostWidgetData",
                     "getProgressData", "getBarChartData", "getPieChartData", "getTableData",
                     "getTicker"

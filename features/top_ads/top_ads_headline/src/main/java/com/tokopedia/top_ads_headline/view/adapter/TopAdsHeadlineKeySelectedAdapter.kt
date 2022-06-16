@@ -7,25 +7,35 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.top_ads_headline.R
 import com.tokopedia.topads.common.data.response.KeywordDataItem
 import com.tokopedia.topads.common.data.util.Utils
+import com.tokopedia.unifycomponents.TextFieldUnify
+import com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
 import com.tokopedia.utils.text.currency.NumberTextWatcher
-import kotlinx.android.synthetic.main.topads_headline_keyword_item.view.*
+import com.tokopedia.unifyprinciples.Typography
 
 /**
  * Created by Pika on 6/10/20.
  */
 
-class TopAdsHeadlineKeySelectedAdapter(private val onCheck: ((position: Int, keywordDataItem: KeywordDataItem) -> Unit),
-                                       private val onBidChange: ((enable: Boolean, keywordDataItem: KeywordDataItem) -> Unit)) : RecyclerView.Adapter<TopAdsHeadlineKeySelectedAdapter.ViewHolder>() {
+class TopAdsHeadlineKeySelectedAdapter(
+    private val onCheck: ((position: Int, keywordDataItem: KeywordDataItem) -> Unit),
+    private val onBidChange: ((enable: Boolean, keywordDataItem: KeywordDataItem) -> Unit),
+) : RecyclerView.Adapter<TopAdsHeadlineKeySelectedAdapter.ViewHolder>() {
 
     var items: MutableList<KeywordDataItem> = mutableListOf()
     private var minBid = "0"
     private var maxBid = "0"
     private var suggestedBid = "0"
 
-    inner class ViewHolder(val view: View) : RecyclerView.ViewHolder(view)
+    inner class ViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
+        val keywordName: Typography? = view.findViewById(R.id.keywordName)
+        val keywordDesc: Typography? = view.findViewById(R.id.keywordDesc)
+        val checkBox: CheckboxUnify? = view.findViewById(R.id.checkBox)
+        val keywordBid: TextFieldUnify? = view.findViewById(R.id.keywordBid)
+    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val v = LayoutInflater.from(parent.context).inflate(R.layout.topads_headline_keyword_item, parent, false)
+        val v = LayoutInflater.from(parent.context)
+            .inflate(R.layout.topads_headline_keyword_item, parent, false)
         return ViewHolder(v)
     }
 
@@ -34,14 +44,14 @@ class TopAdsHeadlineKeySelectedAdapter(private val onCheck: ((position: Int, key
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.view.checkBox.isChecked = true
-        holder.view.keywordName.text = items[holder.adapterPosition].keyword
-        holder.view.keywordBid.textFieldInput.setText(Utils.convertToCurrency(items[holder.adapterPosition].bidSuggest.toLong()))
-        holder.view.keywordDesc.visibility = View.GONE
+        holder.checkBox?.isChecked = true
+        holder.keywordName?.text = items[holder.adapterPosition].keyword
+        holder.keywordBid?.textFieldInput?.setText(Utils.convertToCurrency(items[holder.adapterPosition].bidSuggest.toLong()))
+        holder.keywordDesc?.visibility = View.GONE
         holder.view.setOnClickListener {
-            holder.view.checkBox.isChecked = !holder.view.checkBox.isChecked
+            holder.checkBox?.isChecked = holder.checkBox?.isChecked == false
             if (holder.adapterPosition != RecyclerView.NO_POSITION) {
-                items[holder.adapterPosition].onChecked = holder.view.checkBox.isChecked
+                items[holder.adapterPosition].onChecked = holder.checkBox?.isChecked == true
                 onCheck(holder.adapterPosition, items[holder.adapterPosition])
             }
         }
@@ -49,7 +59,8 @@ class TopAdsHeadlineKeySelectedAdapter(private val onCheck: ((position: Int, key
     }
 
     private fun setBidInfo(holder: ViewHolder) {
-        holder.view.keywordBid.textFieldInput.addTextChangedListener(object : NumberTextWatcher(holder.view.keywordBid.textFieldInput, "0") {
+        holder.keywordBid?.textFieldInput?.addTextChangedListener(object :
+            NumberTextWatcher(holder.keywordBid.textFieldInput, "0") {
 
             override fun onNumberChanged(number: Double) {
                 super.onNumberChanged(number)
@@ -57,28 +68,31 @@ class TopAdsHeadlineKeySelectedAdapter(private val onCheck: ((position: Int, key
                 items[holder.adapterPosition].bidSuggest = result.toString()
                 when {
                     result < minBid.toDouble() -> {
-                        holder.view.keywordBid.setError(true)
-                        holder.view.keywordBid.setMessage(String.format(holder.view.context.getString(R.string.topads_common_min_bid), minBid))
+                        holder.keywordBid.setError(true)
+                        holder.keywordBid.setMessage(String.format(holder.view.context.getString(
+                            com.tokopedia.topads.common.R.string.topads_common_min_bid), minBid))
                         onBidChange(false, items[holder.adapterPosition])
                     }
                     result < suggestedBid.toDouble() -> {
-                        holder.view.keywordBid.setError(false)
-                        holder.view.keywordBid.setMessage(String.format(holder.view.context.getString(R.string.topads_common_recom_bid), suggestedBid))
+                        holder.keywordBid.setError(false)
+                        holder.keywordBid.setMessage(String.format(holder.view.context.getString(
+                            com.tokopedia.topads.common.R.string.topads_common_recom_bid), suggestedBid))
                         onBidChange(true, items[holder.adapterPosition])
                     }
                     result > maxBid.toDouble() -> {
-                        holder.view.keywordBid.setError(true)
-                        holder.view.keywordBid.setMessage(String.format(holder.view.context.getString(R.string.topads_common_max_bid), maxBid))
+                        holder.keywordBid.setError(true)
+                        holder.keywordBid.setMessage(String.format(holder.view.context.getString(
+                            com.tokopedia.topads.common.R.string.topads_common_max_bid), maxBid))
                         onBidChange(false, items[holder.adapterPosition])
                     }
                     result % 50 != 0 -> {
-                        holder.view.keywordBid.setError(true)
-                        holder.view.keywordBid.setMessage(holder.view.context.getString(R.string.error_bid_multiple_50))
+                        holder.keywordBid.setError(true)
+                        holder.keywordBid.setMessage(holder.view.context.getString(com.tokopedia.topads.common.R.string.error_bid_multiple_50))
                         onBidChange(false, items[holder.adapterPosition])
                     }
                     else -> {
-                        holder.view.keywordBid.setError(false)
-                        holder.view.keywordBid.setMessage("")
+                        holder.keywordBid.setError(false)
+                        holder.keywordBid.setMessage("")
                         onBidChange(true, items[holder.adapterPosition])
                     }
                 }

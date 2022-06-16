@@ -60,6 +60,7 @@
     <dimen name="mvc_dimen_1dp">1dp</dimen>
     <dimen name="mvc_dimen_2dp">2dp</dimen>
     <dimen name="mvc_dimen_3dp">3dp</dimen>
+    <dimen name="mvc_dimen_5dp">5dp</dimen>
     <dimen name="mvc_dimen_6dp">6dp</dimen>
     <dimen name="mvc_dimen_10dp">10dp</dimen>
     <dimen name="mvc_dimen_11dp">11dp</dimen>
@@ -69,13 +70,20 @@
     <dimen name="mvc_dimen_24dp">24dp</dimen>
     <dimen name="mvc_dimen_26dp">26dp</dimen>
     <dimen name="mvc_dimen_30dp">30dp</dimen>
+    <dimen name="mvc_dimen_32dp">32dp</dimen>
+    <dimen name="mvc_dimen_34dp">34dp</dimen>
     <dimen name="mvc_dimen_35dp">35dp</dimen>
+    <dimen name="mvc_dimen_40dp">40dp</dimen>
+    <dimen name="mvc_dime_56dp">56dp</dimen>
+    <dimen name="mvc_dime_60dp">60dp</dimen>
     <dimen name="mvc_dimen_100dp">100dp</dimen>
     <dimen name="mvc_dimen_120dp">120dp</dimen>
     <dimen name="mvc_dimen_140dp">140dp</dimen>
     <dimen name="mvc_dimen_174dp">174dp</dimen>
+    <dimen name="mvc_dimen_210dp">210dp</dimen>
     <dimen name="mvc_dimen_215dp">215dp</dimen>
     <dimen name="mvc_dimen_240dp">240dp</dimen>
+    <dimen name="mvc_dimen_280dp">280dp</dimen>
 
     <!-- font size -->
     <dimen name="mvc_create_target_description_line_spacing">4sp</dimen>

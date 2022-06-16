@@ -1,59 +1,37 @@
-package com.tokopedia.pdpsimulation.common.helper
+package com.tokopedia.pdpsimulation.paylater.helper
 
 import android.os.Bundle
 import androidx.fragment.app.FragmentManager
-import com.tokopedia.pdpsimulation.common.listener.PdpSimulationCallback
-import com.tokopedia.pdpsimulation.creditcard.presentation.registration.bottomsheet.CreditCardRegistrationBottomSheet
-import com.tokopedia.pdpsimulation.creditcard.presentation.registration.bottomsheet.CreditCardsListBottomSheet
-import com.tokopedia.pdpsimulation.creditcard.presentation.simulation.bottomsheet.CreditCardAvailableBanksBottomSheet
-import com.tokopedia.pdpsimulation.paylater.presentation.detail.bottomsheet.PayLaterActionStepsBottomSheet
-import com.tokopedia.pdpsimulation.paylater.presentation.detail.bottomsheet.PayLaterAdditionalFeeInfo
-import com.tokopedia.pdpsimulation.paylater.presentation.detail.bottomsheet.PayLaterFaqBottomSheet
-import com.tokopedia.pdpsimulation.paylater.presentation.detail.bottomsheet.PayLaterTokopediaGopayBottomsheet
-
+import com.tokopedia.pdpsimulation.paylater.presentation.bottomsheet.PayLaterActionStepsBottomSheet
+import com.tokopedia.pdpsimulation.paylater.presentation.bottomsheet.PayLaterInstallmentFeeInfo
+import com.tokopedia.pdpsimulation.paylater.presentation.bottomsheet.PayLaterTokopediaGopayBottomsheet
 
 class BottomSheetNavigator(val childFragmentManager: FragmentManager) {
 
     fun <T : Any> showBottomSheet(
         modelClass: Class<T>,
         bundle: Bundle,
-        pdpSimulationCallback: PdpSimulationCallback,
-        productId: String
+        productId: String? = null
     ) {
         when {
-
-
             modelClass.isAssignableFrom(PayLaterActionStepsBottomSheet::class.java) -> {
                 PayLaterActionStepsBottomSheet.show(
                     bundle,
-                    pdpSimulationCallback,
                     childFragmentManager
                 )
             }
 
-            modelClass.isAssignableFrom(PayLaterFaqBottomSheet::class.java) ->
-                PayLaterFaqBottomSheet.show(bundle, pdpSimulationCallback, childFragmentManager)
-
-            modelClass.isAssignableFrom(PayLaterAdditionalFeeInfo::class.java) ->
-                PayLaterAdditionalFeeInfo.show(pdpSimulationCallback, childFragmentManager)
+            modelClass.isAssignableFrom(PayLaterInstallmentFeeInfo::class.java) ->
+                PayLaterInstallmentFeeInfo.show(bundle, childFragmentManager)
 
             modelClass.isAssignableFrom(PayLaterTokopediaGopayBottomsheet::class.java) -> {
                 bundle.putString(productID, productId)
                 PayLaterTokopediaGopayBottomsheet.show(
                     bundle,
-                    pdpSimulationCallback,
                     childFragmentManager
                 )
             }
 
-            modelClass.isAssignableFrom(CreditCardsListBottomSheet::class.java) ->
-                CreditCardsListBottomSheet.show(bundle, pdpSimulationCallback, childFragmentManager)
-
-            modelClass.isAssignableFrom(CreditCardRegistrationBottomSheet::class.java) ->
-                CreditCardRegistrationBottomSheet.show(pdpSimulationCallback, childFragmentManager)
-
-            modelClass.isAssignableFrom(CreditCardAvailableBanksBottomSheet::class.java) ->
-                CreditCardAvailableBanksBottomSheet.show(bundle, childFragmentManager)
         }
     }
 

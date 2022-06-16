@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -16,6 +17,7 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.common.topupbills.data.constant.TelcoComponentName
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.sortfilter.SortFilter
 import com.tokopedia.sortfilter.SortFilterItem
@@ -51,7 +53,7 @@ class DigitalTelcoProductFragment : BaseDaggerFragment(), DigitalTelcoProductWid
     private lateinit var sharedModelPrepaid: SharedTelcoPrepaidViewModel
     private lateinit var selectedOperatorName: String
     private lateinit var shimmeringGridLayout: LinearLayout
-    private lateinit var shimmeringListLayout: LinearLayout
+    private lateinit var shimmeringListLayout: ConstraintLayout
     private lateinit var sortFilter: SortFilter
     private lateinit var titleFilterResult: TextView
 
@@ -95,12 +97,13 @@ class DigitalTelcoProductFragment : BaseDaggerFragment(), DigitalTelcoProductWid
         shimmeringListLayout = view.findViewById(R.id.telco_shimmering_product_list)
         sortFilter = view.findViewById(R.id.telco_sort_filter)
         titleFilterResult = view.findViewById(R.id.telco_title_filter_result)
+
         return view
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
+        loadEmptyStateImage()
         arguments?.let { it ->
             titleProduct = it.getString(TITLE_PAGE) ?: ""
             productType = it.getInt(PRODUCT_TYPE)
@@ -390,6 +393,11 @@ class DigitalTelcoProductFragment : BaseDaggerFragment(), DigitalTelcoProductWid
         }
     }
 
+    private fun loadEmptyStateImage() {
+        val imageView = emptyStateProductView.findViewById<ImageView>(R.id.telco_image_empty)
+        imageView.loadImage(EMPTY_STATE_IMG_URL)
+    }
+
     override fun onDestroy() {
         sortFilter.removeAllViews()
         super.onDestroy()
@@ -406,6 +414,8 @@ class DigitalTelcoProductFragment : BaseDaggerFragment(), DigitalTelcoProductWid
         const val TITLE_PAGE = "title_page"
         const val OPERATOR_NAME = "operator_name"
         const val CATEGORY_ID = "category_id"
+
+        const val EMPTY_STATE_IMG_URL = "https://images.tokopedia.net/img/telco_globalerrors_404.png"
 
         fun newInstance(bundle: Bundle): Fragment {
             val fragment = DigitalTelcoProductFragment()

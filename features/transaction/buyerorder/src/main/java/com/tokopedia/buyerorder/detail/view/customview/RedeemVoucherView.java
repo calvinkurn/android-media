@@ -33,10 +33,13 @@ public class RedeemVoucherView extends LinearLayout {
     private Items item;
     private SetTapActionDeals setTapActionDeals;
     private FrameLayout retryLoadingView;
+    private View divider;
     private Body body;
     private int mPos;
     OrderListDetailPresenter presenter;
     private ItemsAdapter.SetEventDetails setEventDetails;
+    private Boolean isOMP = false;
+    private Boolean isLastItem = false;
 
     public RedeemVoucherView(Context context) {
         super(context);
@@ -53,7 +56,7 @@ public class RedeemVoucherView extends LinearLayout {
         initView();
     }
 
-    public RedeemVoucherView(Context context, int voucherNumber, ActionButton actionButton, Items item, Body body, OrderListDetailPresenter presenter, int position, SetTapActionDeals setTapActionDeals, ItemsAdapter.SetEventDetails setEventDetails) {
+    public RedeemVoucherView(Context context, int voucherNumber, ActionButton actionButton, Items item, Body body, OrderListDetailPresenter presenter, int position, SetTapActionDeals setTapActionDeals, ItemsAdapter.SetEventDetails setEventDetails, Boolean isOMP, Boolean isLastItem) {
         super(context);
         this.context = context;
         this.voucherCount = voucherNumber;
@@ -64,6 +67,8 @@ public class RedeemVoucherView extends LinearLayout {
         this.mPos = position;
         this.setTapActionDeals = setTapActionDeals;
         this.setEventDetails = setEventDetails;
+        this.isOMP = isOMP;
+        this.isLastItem = isLastItem;
         initView();
     }
 
@@ -72,6 +77,8 @@ public class RedeemVoucherView extends LinearLayout {
         voucherNumber = view.findViewById(R.id.voucher_code_title_deals);
         redeemVoucher = view.findViewById(R.id.redeem_btn_deals);
         retryLoadingView = view.findViewById(R.id.loading_view_retry);
+        divider = view.findViewById(R.id.divider_voucher);
+
         if (actionButton.getControl().equalsIgnoreCase("refresh")) {
             renderRetryButton(actionButton);
         } else {
@@ -91,6 +98,12 @@ public class RedeemVoucherView extends LinearLayout {
                 setTapActionDeals.tapActionClicked(redeemVoucher, actionButton, item, OmsDetailFragment.RETRY_COUNT, mPos);
             }
         });
+
+        if (isLastItem){
+            divider.setVisibility(GONE);
+        }else{
+            divider.setVisibility(VISIBLE);
+        }
     }
 
     private void renderRedeemButton(ActionButton actionButton) {
@@ -99,8 +112,12 @@ public class RedeemVoucherView extends LinearLayout {
         redeemVoucher.setText(actionButton.getLabel());
         if (!TextUtils.isEmpty(actionButton.getHeader())) {
             Header header = actionButton.getHeaderObject();
-            if (header != null && !TextUtils.isEmpty(header.getItemLabel())) {
-                voucherNumber.setText(header.getItemLabel());
+            if (header != null && (!TextUtils.isEmpty(header.getItemLabel()) || !TextUtils.isEmpty(header.getItem_label()))) {
+                if (isOMP){
+                    voucherNumber.setText(header.getItem_label());
+                } else {
+                    voucherNumber.setText(header.getItemLabel());
+                }
             }
         }else {
             if (voucherCount > 0) {

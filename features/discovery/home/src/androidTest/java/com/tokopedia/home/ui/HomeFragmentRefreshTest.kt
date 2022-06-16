@@ -121,6 +121,7 @@ class HomeFragmentRefreshTest {
 
     @Test
     fun test_onresume_when_elapsed_below_three_minutes_then_do_partial_refresh() {
+        dataChangedCount = 0
         onView(withId(R.id.home_fragment_recycler_view)).check(matches(isDisplayed()))
         /**
          * Setup adapter data observer to observe data changes

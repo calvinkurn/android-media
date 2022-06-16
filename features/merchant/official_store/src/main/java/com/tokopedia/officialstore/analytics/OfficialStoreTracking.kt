@@ -3,6 +3,7 @@ package com.tokopedia.officialstore.analytics
 import android.content.Context
 import android.os.Bundle
 import android.text.TextUtils
+import com.tokopedia.analytic_constant.Event
 import com.tokopedia.analyticconstant.DataLayer
 import com.tokopedia.home_component.model.ChannelGrid
 import com.tokopedia.home_component.model.ChannelModel
@@ -15,6 +16,10 @@ import com.tokopedia.officialstore.official.data.model.dynamic_channel.Grid
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
+import com.tokopedia.track.builder.BaseTrackerBuilder
+import com.tokopedia.track.builder.util.BaseTrackerConst
+import com.tokopedia.track.builder.util.BaseTrackerConst.Promotion.Companion.ITEM_ID
+import com.tokopedia.track.builder.util.BaseTrackerConst.Promotion.Companion.ITEM_NAME
 import com.tokopedia.track.interfaces.ContextAnalytics
 import com.tokopedia.trackingoptimizer.TrackingQueue
 
@@ -36,90 +41,87 @@ class OfficialStoreTracking(context: Context) {
 
     private var trackingIris = IrisAnalytics.getInstance(context)
 
-    private val EVENT = "event"
-    private val EVENT_CATEGORY = "eventCategory"
-    private val EVENT_ACTION = "eventAction"
-    private val EVENT_LABEL = "eventLabel"
-    private val EVENT_ATTRIBUTION = "attribution"
-    private val EVENT_LABEL_POPULAR_BRANDS = "%s - %s - %s"
-    private val IMPRESSION_BANNER = "impression banner"
-    private val EVENT_POPULAR_BRANDS = "%s - %s"
-    private val PROMOTIONS_ID_POPULAR_BRANDS = "%s_%s"
-    private val PROMOTIONS = "promotions"
-    private val PROMOTIONS_NAME_POPULAR_BRANDS = "%s%s - %s - %s"
-    private val CLICK_BANNER = "click banner"
+    companion object{
+        private const val EVENT = "event"
+        private const val EVENT_CATEGORY = "eventCategory"
+        private const val EVENT_ACTION = "eventAction"
+        private const val EVENT_LABEL = "eventLabel"
+        private const val EVENT_ATTRIBUTION = "attribution"
+        private const val EVENT_LABEL_POPULAR_BRANDS = "%s - %s - %s"
+        private const val IMPRESSION_BANNER = "impression banner"
+        private const val EVENT_POPULAR_BRANDS = "%s - %s"
+        private const val PROMOTIONS_ID_POPULAR_BRANDS = "%s_%s"
+        private const val PROMOTIONS = "promotions"
+        private const val PROMOTIONS_NAME_POPULAR_BRANDS = "%s%s - %s - %s"
+        private const val CLICK_BANNER = "click banner"
+        private const val ATTRIBUTION = "attribution"
+        private const val AFFINITY_LABEL = "affinityLabel"
+        private const val CATEGORY_ID = "categoryId"
+        private const val SHOP_ID = "shopId"
+        private const val ECOMMERCE = "ecommerce"
+        private const val CLICK = "click"
+        private const val IMPRESSION = "impression"
+        private const val ECOMMERCE_IMPRESSIONS = "impressions"
+        private const val ECOMMERCE_CURRENCY_CODE = "currencyCode"
+        private const val FIELD_BUSINESS_UNIT = "businessUnit"
+        private const val FIELD_CURRENT_SITE = "currentSite"
+        private const val USER_ID = "userId"
+        private const val REFERENCE_POPULAR_BRANDS = "reference: row 18"
+        private const val CLICK_HOMEPAGE = "clickHomepage"
+        private const val CLICK_OS_MICROSITE = "clickOSMicrosite"
+        private const val PROMO_CLICK = "promoClick"
+        private const val PROMO_VIEW = "promoView"
+        private const val CATEGORY = "category"
+        private const val CAMPAIGN_CODE = "campaignCode"
+        private const val OS_MICROSITE = "os microsite - "
+        private const val ALL_BRANDS = "all brands"
+        private const val VIEW_ALL = "view all"
+        private const val FIELD_PRODUCTS = "products"
+        private const val FIELD_PRODUCT_NAME = "name"
+        private const val FIELD_PRODUCT_ID = "id"
+        private const val FIELD_PRODUCT_PRICE = "price"
+        private const val FIELD_PRODUCT_BRAND = "brand"
+        private const val FIELD_PRODUCT_VARIANT = "variant"
+        private const val FIELD_PRODUCT_CATEGORY = "category"
+        private const val FIELD_PRODUCT_LIST = "list"
+        private const val FIELD_PRODUCT_POSITION = "position"
+        private const val FIELD_ACTION_FIELD = "actionField"
+        private const val FIELD_DIMENSION_38 = "dimension38"
+        private const val FIELD_PRODUCT_CREATIVE = "creative"
+        private const val VALUE_NONE_OTHER = "none / other"
+        private const val VALUE_NONE = "none"
+        private const val VALUE_IDR = "IDR"
+        private const val VALUE_NON_LOGIN = ""
+        private const val VALUE_NON_LOGIN_NEW = "non login"
+        private const val VALUE_LOGIN_NEW = "login"
+        private const val VALUE_DYNAMIC_MIX_TOP_CAROUSEL = "dynamic channel top carousel"
+        private const val VALUE_DYNAMIC_MIX_LEFT_CAROUSEL = "dynamic channel left carousel"
+        private const val VALUE_BUSINESS_UNIT_DEFAULT = "home & browse"
+        private const val VALUE_CURRENT_SITE_DEFAULT = "tokopediamarketplace"
+        private const val EVENT_PRODUCT_VIEW = "productView"
+        private const val EVENT_PRODUCT_CLICK = "productClick"
+        private const val PRODUCT_EVENT_ACTION = "product recommendation"
+        private const val SLASH_OFFICIAL_STORE = "/official-store"
+        private const val SLASH_OFFICIAL_STORE_WITHOUT_CATEGORY = "/official-store/"
+        private const val SKEL_APPLINK = "{&data}"
+        private const val SKEL_APPLINK_DATA = "&data"
+        private const val POPULAR_BRANDS = "popular brands"
+        private const val RADIX_10 = 10
+        const val OS_MICROSITE_SINGLE = "os microsite"
 
-    private val ATTRIBUTION = "attribution"
-    private val AFFINITY_LABEL = "affinityLabel"
-    private val CATEGORY_ID = "categoryId"
-    private val SHOP_ID = "shopId"
-    private val ECOMMERCE = "ecommerce"
-    private val CLICK = "click"
-    private val IMPRESSION = "impression"
-    private val ECOMMERCE_IMPRESSIONS = "impressions"
-    private val ECOMMERCE_CURRENCY_CODE = "currencyCode"
-    private val FIELD_BUSINESS_UNIT = "businessUnit"
-    private val FIELD_CURRENT_SITE = "currentSite"
-    private val USER_ID = "userId"
-    private val REFERENCE_POPULAR_BRANDS = "reference: row 18"
-
-    private val CLICK_OS_MICROSITE = "clickOSMicrosite"
-    private val PROMO_CLICK = "promoClick"
-    private val PROMO_VIEW = "promoView"
-    private val CATEGORY = "category"
-
-    private val CAMPAIGN_CODE = "campaignCode"
-
-    private val OS_MICROSITE = "os microsite - "
-    private val OS_MICROSITE_SINGLE = "os microsite"
-
-    private val ALL_BRANDS = "all brands"
-    private val VIEW_ALL = "view all"
-
-    private val FIELD_PRODUCTS = "products"
-    private val FIELD_PRODUCT_NAME = "name"
-    private val FIELD_PRODUCT_ID = "id"
-    private val FIELD_PRODUCT_PRICE = "price"
-    private val FIELD_PRODUCT_BRAND = "brand"
-    private val FIELD_PRODUCT_VARIANT = "variant"
-    private val FIELD_PRODUCT_CATEGORY = "category"
-    private val FIELD_PRODUCT_LIST = "list"
-    private val FIELD_PRODUCT_QUANTITY = "quantity"
-    private val FIELD_PRODUCT_POSITION = "position"
-    private val FIELD_ACTION_FIELD = "actionField"
-    private val FIELD_CATEGORY_ID = "category_id"
-    private val FIELD_SHOP_ID = "shop_id"
-    private val FIELD_SHOP_TYPE = "shop_type"
-    private val FIELD_SHOP_NAME = "shop_name"
-    private val FIELD_DIMENSION_38 = "dimension38"
-    private val FIELD_PRODUCT_CREATIVE = "creative"
-
-    private val VALUE_NONE_OTHER = "none / other"
-    private val VALUE_NONE = "none"
-    private val VALUE_IDR = "IDR"
-    private val VALUE_EMPTY = ""
-    private val VALUE_NON_LOGIN = ""
-    private val VALUE_NON_LOGIN_NEW = "non login"
-    private val VALUE_LOGIN_NEW = "login"
-    private val VALUE_DYNAMIC_MIX_TOP_CAROUSEL = "dynamic channel top carousel"
-    private val VALUE_DYNAMIC_MIX_LEFT_CAROUSEL = "dynamic channel left carousel"
-    private val VALUE_BUSINESS_UNIT_DEFAULT = "home & browse"
-    private val VALUE_CURRENT_SITE_DEFAULT = "tokopediamarketplace"
-
-
-    private val EVENT_PRODUCT_VIEW = "productView"
-    private val EVENT_PRODUCT_CLICK = "productClick"
-
-
-    private val PRODUCT_EVENT_ACTION = "product recommendation"
-
-    private val EVENT_CATEGORY_RECOMMENDATION_PAGE_WITH_PRODUCT_ID = "recommendation page with product id"
-    private val SLASH_OFFICIAL_STORE = "/official-store"
-    private val SLASH_OFFICIAL_STORE_WITHOUT_CATEGORY = "/official-store/"
-    private val SKEL_APPLINK = "{&data}"
-    private val SKEL_APPLINK_DATA = "&data"
-
-    private val POPULAR_BRANDS = "popular brands"
+        const val FORMAT_DASH_TWO_VALUES = "%s - %s"
+        const val FORMAT_DASH_THREE_VALUES = "%s - %s - %s"
+        const val FORMAT_DASH_FOUR_VALUES = "%s - %s - %s - %s"
+        const val FORMAT_UNDERSCORE_TWO_VALUES = "%s_%s"
+        const val FORMAT_ITEM_NAME = "${SLASH_OFFICIAL_STORE}/%s - %s"
+        const val FORMAT_ITEM_NAME_FOUR_VALUES = "${SLASH_OFFICIAL_STORE}/%s - %s - %s - %s"
+        const val FORMAT_ITEM_LIST = "${SLASH_OFFICIAL_STORE}/%s - %s - %s"
+        const val FORMAT_CLICK_VIEW_ALL = "click view all on %s"
+        const val FORMAT_CLICK_VIEW_ALL_CARD = "click view all card on %s"
+        private const val VALUE_SLIDER_BANNER = "slider banner"
+        private const val VALUE_PRODUCT_IMPRESSION = "$IMPRESSION product"
+        private const val VALUE_PRODUCT_CLICK = "$CLICK product"
+    }
 
     fun sendScreen(categoryName: String) {
         val screenName = "/official-store/$categoryName"
@@ -182,60 +184,49 @@ class OfficialStoreTracking(context: Context) {
     }
 
     fun eventClickBanner(categoryName: String, bannerPosition: Int,
-                         bannerItem: com.tokopedia.officialstore.official.data.model.Banner) {
-        val data = DataLayer.mapOf(
-                EVENT, PROMO_CLICK,
-                EVENT_CATEGORY, "$OS_MICROSITE$categoryName",
-                EVENT_ACTION, "banner - $CLICK",
-                EVENT_LABEL, "$CLICK banner",
-                CAMPAIGN_CODE, bannerItem.campaignCode,
-                ATTRIBUTION, bannerItem.galaxyAttribution,
-                AFFINITY_LABEL, bannerItem.persona,
-                CATEGORY_ID, bannerItem.categoryPersona,
-                SHOP_ID, bannerItem.brandId,
-                ECOMMERCE, DataLayer.mapOf(
-                PROMO_CLICK, DataLayer.mapOf(
-                "promotions",DataLayer.listOf(
-                DataLayer.mapOf(
-                        "id", bannerItem.bannerId,
-                        "name", "/official-store/$categoryName - slider banner",
-                        "position", "$bannerPosition",
-                        "creative", bannerItem.title,
-                        "creative_url", bannerItem.applink,
-                        "promo_id", null,
-                        "promo_code", null
-                        )
-                    )
-                )
+                         bannerItem: com.tokopedia.officialstore.official.data.model.Banner, userId: String) {
+        val bundle = Bundle().apply {
+            putString(EVENT, Event.SELECT_CONTENT)
+            putString(EVENT_CATEGORY, OS_MICROSITE_SINGLE)
+            putString(EVENT_ACTION, FORMAT_DASH_TWO_VALUES.format(CLICK_BANNER, VALUE_SLIDER_BANNER))
+            putString(EVENT_LABEL, FORMAT_DASH_TWO_VALUES.format(VALUE_SLIDER_BANNER, categoryName))
+            putString(USER_ID, userId)
+            putString(FIELD_BUSINESS_UNIT, VALUE_BUSINESS_UNIT_DEFAULT)
+            putString(FIELD_CURRENT_SITE, VALUE_CURRENT_SITE_DEFAULT)
+            val promotions = arrayListOf(
+                Bundle().apply {
+                    putString(BaseTrackerConst.Promotion.CREATIVE_NAME, bannerItem.title)
+                    putString(BaseTrackerConst.Promotion.CREATIVE_SLOT, (bannerPosition+1).toString())
+                    putString(ITEM_ID, bannerItem.bannerId)
+                    putString(ITEM_NAME, FORMAT_ITEM_NAME.format(categoryName, VALUE_SLIDER_BANNER))
+                }
             )
-        )
-        tracker.sendEnhanceEcommerceEvent(data as HashMap<String, Any>)
+            putParcelableArrayList(BaseTrackerConst.Promotion.KEY, promotions)
+        }
+        tracker.sendEnhanceEcommerceEvent(PROMO_CLICK, bundle)
     }
 
     fun eventImpressionBanner(categoryName: String, bannerPosition: Int,
-                              bannerItem: com.tokopedia.officialstore.official.data.model.Banner) {
-        val data = DataLayer.mapOf(
-                EVENT, PROMO_VIEW,
-                EVENT_CATEGORY, "$OS_MICROSITE$categoryName",
-                EVENT_ACTION, "banner - $IMPRESSION",
-                EVENT_LABEL, "$IMPRESSION of banner",
-                ECOMMERCE, DataLayer.mapOf(
-                PROMO_VIEW, DataLayer.mapOf(
-                "promotions",DataLayer.listOf(
-                DataLayer.mapOf(
-                        "id", bannerItem.bannerId,
-                        "name", "/official-store/$categoryName - slider banner",
-                        "position", "$bannerPosition",
-                        "creative", bannerItem.title,
-                        "creative_url", bannerItem.applink,
-                        "promo_id", null,
-                        "promo_code", null
-                        )
-                    )
-                )
+                              bannerItem: com.tokopedia.officialstore.official.data.model.Banner, userId: String) {
+        val trackerBuilder = BaseTrackerBuilder().apply {
+            constructBasicPromotionView(
+                event = PROMO_VIEW,
+                eventCategory = OS_MICROSITE_SINGLE,
+                eventAction = FORMAT_DASH_TWO_VALUES.format(IMPRESSION_BANNER, VALUE_SLIDER_BANNER),
+                eventLabel = FORMAT_DASH_TWO_VALUES.format(VALUE_SLIDER_BANNER, categoryName),
+                promotions = listOf(BaseTrackerConst.Promotion(
+                    creative = bannerItem.title,
+                    position = bannerPosition.toString(),
+                    name = FORMAT_ITEM_NAME.format(categoryName, VALUE_SLIDER_BANNER),
+                    id = bannerItem.bannerId,
+                    creativeUrl = bannerItem.applink
+                ))
             )
-        )
-        trackingQueue.putEETracking(data as HashMap<String, Any>)
+                .appendUserId(userId)
+                .appendBusinessUnit(VALUE_BUSINESS_UNIT_DEFAULT)
+                .appendCurrentSite(VALUE_CURRENT_SITE_DEFAULT)
+        }.build() as HashMap<String, Any>
+        trackingQueue.putEETracking(trackerBuilder)
     }
 
     fun eventClickAllBanner(categoryName: String) {
@@ -339,7 +330,7 @@ class OfficialStoreTracking(context: Context) {
         val eventLabelFirstFormat = "$CLICK $VIEW_ALL"
         val trackerClickAllFeaturedBrand = TrackAppUtils
             .gtmData(
-                CLICK_OS_MICROSITE,
+                CLICK_HOMEPAGE,
                 OS_MICROSITE_SINGLE,
                 eventAction,
                 EVENT_POPULAR_BRANDS.format(eventLabelFirstFormat, categoryName)
@@ -865,12 +856,13 @@ class OfficialStoreTracking(context: Context) {
             DynamicChannelLayout.LAYOUT_MIX_LEFT -> VALUE_DYNAMIC_MIX_LEFT_CAROUSEL
             else -> ""
         }
-        val eventAction = "$IMPRESSION on product $valueDynamicMix"
+        val eventAction = FORMAT_DASH_TWO_VALUES.format(VALUE_PRODUCT_IMPRESSION, valueDynamicMix)
+        val eventLabel = FORMAT_DASH_FOUR_VALUES.format(valueDynamicMix, channel.id, channel.channelHeader.name, categoryName)
         val data = DataLayer.mapOf(
                 EVENT, EVENT_PRODUCT_VIEW,
                 EVENT_CATEGORY, OS_MICROSITE_SINGLE,
                 EVENT_ACTION, eventAction,
-                EVENT_LABEL, channel.id + " - " + categoryName,
+                EVENT_LABEL, eventLabel,
                 FIELD_BUSINESS_UNIT, VALUE_BUSINESS_UNIT_DEFAULT,
                 FIELD_CURRENT_SITE, VALUE_CURRENT_SITE_DEFAULT,
                 USER_ID, userId,
@@ -882,7 +874,8 @@ class OfficialStoreTracking(context: Context) {
                                     productItem,
                                     productPosition,
                                     isLogin,
-                                    valueDynamicMix
+                                    valueDynamicMix,
+                                    FORMAT_ITEM_LIST.format(categoryName, valueDynamicMix, channel.channelHeader.name)
                         )
                     )
                 )
@@ -919,14 +912,17 @@ class OfficialStoreTracking(context: Context) {
             gridData: ChannelGrid,
             position: String,
             isLogin: Boolean,
-            valueDynamicMix: String
+            valueDynamicMix: String,
+            itemList: String = "",
     ): MutableMap<String, Any> {
-        val list = mutableListOf(SLASH_OFFICIAL_STORE)
-        if (!isLogin)
-            list.add(VALUE_NON_LOGIN)
-        if (valueDynamicMix.isNotEmpty())
-            list.add(valueDynamicMix)
-        val listKeyValue = TextUtils.join(" - ", list)
+        val listKeyValue = itemList.ifEmpty {
+            val list = mutableListOf(SLASH_OFFICIAL_STORE)
+            if (!isLogin)
+                list.add(VALUE_NON_LOGIN)
+            if (valueDynamicMix.isNotEmpty())
+                list.add(valueDynamicMix)
+            TextUtils.join(" - ", list)
+        }
         return DataLayer.mapOf(
                 FIELD_PRODUCT_NAME, gridData.name,
                 FIELD_PRODUCT_ID, gridData.id.toString(),
@@ -1002,12 +998,13 @@ class OfficialStoreTracking(context: Context) {
             list.add(VALUE_NON_LOGIN_NEW)
         else list.add(VALUE_LOGIN_NEW)
         val listKeyValue = TextUtils.join(" - ", list)
-        val eventAction = "$CLICK on product $valueDynamicMix"
+        val eventAction = FORMAT_DASH_TWO_VALUES.format(VALUE_PRODUCT_CLICK, valueDynamicMix)
+        val eventLabel = FORMAT_DASH_THREE_VALUES.format(channel.id, channel.channelHeader.name, categoryName)
         val data = DataLayer.mapOf(
                 EVENT, EVENT_PRODUCT_CLICK,
                 EVENT_CATEGORY, OS_MICROSITE_SINGLE,
                 EVENT_ACTION, eventAction,
-                EVENT_LABEL, channel.id + " - " + categoryName,
+                EVENT_LABEL, eventLabel,
                 FIELD_BUSINESS_UNIT, VALUE_BUSINESS_UNIT_DEFAULT,
                 FIELD_CURRENT_SITE, VALUE_CURRENT_SITE_DEFAULT,
                 USER_ID, userId,
@@ -1051,12 +1048,17 @@ class OfficialStoreTracking(context: Context) {
             DynamicChannelLayout.LAYOUT_MIX_LEFT -> VALUE_DYNAMIC_MIX_LEFT_CAROUSEL
             else -> ""
         }
-        val eventActionValue = "click view all card on $valueDynamicMix"
+        val eventLabel = when(channel.layout){
+            DynamicChannelLayout.LAYOUT_MIX_TOP -> FORMAT_DASH_TWO_VALUES.format(channel.id, categoryName)
+            DynamicChannelLayout.LAYOUT_MIX_LEFT -> FORMAT_DASH_THREE_VALUES.format(channel.id, channel.channelHeader.name, categoryName)
+            else -> ""
+        }
+        val eventActionValue = FORMAT_CLICK_VIEW_ALL_CARD.format(valueDynamicMix)
         tracker.sendGeneralEvent(DataLayer.mapOf(
-                EVENT, CLICK_OS_MICROSITE,
+                EVENT, CLICK_HOMEPAGE,
                 EVENT_CATEGORY, OS_MICROSITE_SINGLE,
                 EVENT_ACTION, eventActionValue,
-                EVENT_LABEL, channel.id + " - " + categoryName,
+                EVENT_LABEL, eventLabel,
                 EVENT_ATTRIBUTION, channel.channelBanner.attribution,
                 FIELD_BUSINESS_UNIT, VALUE_BUSINESS_UNIT_DEFAULT,
                 FIELD_CURRENT_SITE, VALUE_CURRENT_SITE_DEFAULT
@@ -1069,12 +1071,17 @@ class OfficialStoreTracking(context: Context) {
             DynamicChannelLayout.LAYOUT_MIX_LEFT -> VALUE_DYNAMIC_MIX_LEFT_CAROUSEL
             else -> ""
         }
-        val eventActionValue = "click view all on $valueDynamicMix"
+        val eventLabel = when(channel.layout){
+            DynamicChannelLayout.LAYOUT_MIX_TOP -> FORMAT_DASH_TWO_VALUES.format(channel.id, categoryName)
+            DynamicChannelLayout.LAYOUT_MIX_LEFT -> FORMAT_DASH_THREE_VALUES.format(channel.id, channel.channelHeader.name, categoryName)
+            else -> ""
+        }
+        val eventActionValue = FORMAT_CLICK_VIEW_ALL.format(valueDynamicMix)
         tracker.sendGeneralEvent(DataLayer.mapOf(
-                EVENT, CLICK_OS_MICROSITE,
+                EVENT, CLICK_HOMEPAGE,
                 EVENT_CATEGORY, OS_MICROSITE_SINGLE,
                 EVENT_ACTION, eventActionValue,
-                EVENT_LABEL, channel.id + " - " + categoryName,
+                EVENT_LABEL, eventLabel,
                 EVENT_ATTRIBUTION, channel.channelBanner.attribution,
                 FIELD_BUSINESS_UNIT, VALUE_BUSINESS_UNIT_DEFAULT,
                 FIELD_CURRENT_SITE, VALUE_CURRENT_SITE_DEFAULT
@@ -1106,7 +1113,7 @@ class OfficialStoreTracking(context: Context) {
         val eventDataLayer = Bundle()
         eventDataLayer.putParcelableArrayList("promotions", createMixLeftEcommerceDataLayer(
                 channelId = channel.id,
-                categoryName = categoryName.toLowerCase(),
+                categoryName = categoryName.lowercase(),
                 headerName = channel.header?.name.orEmpty(),
                 bannerPosition = bannerPosition,
                 creative = channel.name,
@@ -1120,7 +1127,7 @@ class OfficialStoreTracking(context: Context) {
         eventDataLayer.putString(EVENT_ACTION, "$CLICK banner $VALUE_DYNAMIC_MIX_LEFT_CAROUSEL")
         eventDataLayer.putString(EVENT_LABEL, channel.id)
         eventDataLayer.putString(CATEGORY_ID, channel.categoryPersona)
-        eventDataLayer.putString(CAMPAIGN_CODE, "${channel.campaignCode.orEmpty()}")
+        eventDataLayer.putString(CAMPAIGN_CODE, "channel.campaignCode")
 
         tracker.sendEnhanceEcommerceEvent("select_content", eventDataLayer)
     }
@@ -1133,12 +1140,12 @@ class OfficialStoreTracking(context: Context) {
         eventDataLayer.putString(EVENT_ACTION, "$IMPRESSION banner $VALUE_DYNAMIC_MIX_LEFT_CAROUSEL")
         eventDataLayer.putString(EVENT_LABEL, channel.id)
         eventDataLayer.putParcelableArrayList("promotions", createMixLeftEcommerceDataLayer(
-                channelId = channel.id,
-                categoryName = categoryName.toLowerCase(),
-                headerName = channel.header?.name.orEmpty(),
-                bannerPosition = bannerPosition,
-                creative = channel.name,
-                creativeUrl = channel.banner?.applink.orEmpty()
+            channelId = channel.id,
+            categoryName = categoryName.lowercase(),
+            headerName = channel.header?.name.orEmpty(),
+            bannerPosition = bannerPosition,
+            creative = channel.name,
+            creativeUrl = channel.banner?.applink.orEmpty()
         ))
 
         tracker.sendEnhanceEcommerceEvent("view_item", eventDataLayer)
@@ -1153,9 +1160,4 @@ class OfficialStoreTracking(context: Context) {
         promotion.putString("creative_url", creativeUrl)
         return arrayListOf(promotion)
     }
-
-    companion object {
-        private const val RADIX_10 = 10
-    }
-
 }

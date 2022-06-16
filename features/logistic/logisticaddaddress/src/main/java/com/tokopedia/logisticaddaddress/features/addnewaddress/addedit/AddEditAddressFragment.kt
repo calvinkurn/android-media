@@ -80,11 +80,9 @@ class AddEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback, AddEdit
     private lateinit var labelAlamatChipsLayoutManager: ChipsLayoutManager
     private var staticDimen8dp: Int? = 0
     private lateinit var labelAlamatChipsAdapter: LabelAlamatChipsAdapter
-    private val FINISH_PINPOINT_FLAG = 8888
-    private val MINIMUM_CHARACTER = 9
     private var getView: View? = null
     private var getSavedInstanceState: Bundle? = null
-    private var labelAlamatList: Array<String> = emptyArray()
+    private var labelAlamatList: Array<Pair<String, Boolean>> = emptyArray()
     private var isLatitudeNotEmpty: Boolean? = false
     private var isLongitudeNotEmpty: Boolean? = false
     private var isFullFlow: Boolean = true
@@ -108,6 +106,13 @@ class AddEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback, AddEdit
         const val REQUEST_CODE_CONTACT_PICKER = 99
         const val PREFERENCES_NAME = "add_address_preferences"
         const val ADDRESS_CONTACT_HAS_SHOWN = "address_show_coach_mark"
+        private const val FINISH_PINPOINT_FLAG = 8888
+        private const val MIN_CHAR_POSTAL_ADDRESS = 5
+        private const val MIN_CHAR_DEFAULT = 9
+        private const val MAX_CHAR_ADDRESS = 175
+        private const val BTN_MAP_NORMAL_WIDTH = 450
+        private const val BTN_MAP_MISMATCH_WIDTH = 550
+        private const val ZOOM_MAP = 15f
 
         @JvmStatic
         fun newInstance(extra: Bundle): AddEditAddressFragment {
@@ -404,7 +409,7 @@ class AddEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback, AddEdit
 
                 override fun afterTextChanged(s: Editable) {
                     val filterList = labelAlamatList.filter {
-                        it.contains("$s", true)
+                        it.first.contains("$s", true)
                     }
                     labelAlamatChipsAdapter.submitList(filterList)
                 }
@@ -476,7 +481,7 @@ class AddEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback, AddEdit
             if (field.isNotEmpty()) field += ", "
             field += "kode pos"
         }
-        if (et_kode_pos_mismatch?.text?.length ?: 0 < 5) {
+        if (et_kode_pos_mismatch?.text?.length ?: 0 < MIN_CHAR_POSTAL_ADDRESS) {
             validated = false
             setWrapperError(et_kode_pos_mismatch_wrapper, getString(R.string.validate_kode_pos_length))
             if (field.isNotEmpty()) field += ", "
@@ -488,7 +493,7 @@ class AddEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback, AddEdit
             if (field.isNotEmpty()) field += ", "
             field += "alamat"
         }
-        if (et_alamat_mismatch?.text?.length ?: 0 < 5) {
+        if (et_alamat_mismatch?.text?.length ?: 0 < MIN_CHAR_POSTAL_ADDRESS) {
             validated = false
             setWrapperError(et_alamat_mismatch_wrapper, getString(R.string.validate_alamat_length))
             if (field.isNotEmpty()) field += ", "
@@ -529,7 +534,7 @@ class AddEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback, AddEdit
             field += "no ponsel"
         }
 
-        if (et_phone?.text?.length ?: 0 < MINIMUM_CHARACTER) {
+        if (et_phone?.text?.length ?: 0 < MIN_CHAR_DEFAULT) {
             validated = false
             setWrapperError(et_phone_wrapper, getString(R.string.validate_no_ponsel_less_char))
             if (field.isNotEmpty()) field += ", "
@@ -580,7 +585,7 @@ class AddEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback, AddEdit
             }
 
             override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
-                if (s.isNotEmpty() && s.length < 9) {
+                if (s.isNotEmpty() && s.length < MIN_CHAR_DEFAULT) {
                     setWrapperError(wrapper, textWatcher)
                 } else {
                     setWrapperError(wrapper, null)
@@ -604,16 +609,16 @@ class AddEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback, AddEdit
                     var info = ""
                     val strLength = s.toString().length
                     when {
-                        strLength < 5 -> {
-                            countCharLeft = 5 - strLength
+                        strLength < MIN_CHAR_POSTAL_ADDRESS -> {
+                            countCharLeft = MIN_CHAR_POSTAL_ADDRESS - strLength
                             info = "$countCharLeft karakter lagi diperlukan"
                         }
-                        strLength > 4 -> {
-                            countCharLeft = 175 - strLength
+                        strLength >= MIN_CHAR_POSTAL_ADDRESS -> {
+                            countCharLeft = MAX_CHAR_ADDRESS - strLength
                             info = "$countCharLeft karakter tersisa"
 
                         }
-                        strLength == 175 -> info = ""
+                        strLength == MAX_CHAR_ADDRESS -> info = ""
                     }
                     tv_alamat_info_mismatch.text = info
                 }
@@ -683,7 +688,7 @@ class AddEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback, AddEdit
         btn_map.apply {
             text = getString(R.string.change_pinpoint)
             val params = btn_map.layoutParams
-            params.width = 450
+            params.width = BTN_MAP_NORMAL_WIDTH
             btn_map.layoutParams = params
             setOnClickListener {
                 hideKeyboard()
@@ -702,7 +707,7 @@ class AddEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback, AddEdit
         btn_map.apply {
             text = getString(R.string.define_pinpoint)
             val params = btn_map.layoutParams
-            params.width = 550
+            params.width = BTN_MAP_MISMATCH_WIDTH
             btn_map.layoutParams = params
             setOnClickListener {
                 hideKeyboard()
@@ -725,7 +730,7 @@ class AddEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback, AddEdit
         btn_map.apply {
             text = getString(R.string.change_pinpoint)
             val params = btn_map.layoutParams
-            params.width = 450
+            params.width = BTN_MAP_NORMAL_WIDTH
             btn_map.layoutParams = params
             setOnClickListener {
                 hideKeyboard()
@@ -816,7 +821,7 @@ class AddEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback, AddEdit
 
     private fun showLabelAlamatList() {
         val res: Resources = resources
-        labelAlamatList = res.getStringArray(R.array.labelAlamatList)
+        labelAlamatList = res.getStringArray(R.array.labelAlamatList).map { Pair(it, false) }.toTypedArray()
 
         rv_label_alamat_chips.visibility = View.VISIBLE
         ViewCompat.setLayoutDirection(rv_label_alamat_chips, ViewCompat.LAYOUT_DIRECTION_LTR)
@@ -934,7 +939,7 @@ class AddEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback, AddEdit
     private fun moveMap(latLng: LatLng) {
         val cameraPosition = CameraPosition.Builder()
                 .target(latLng)
-                .zoom(15f)
+                .zoom(ZOOM_MAP)
                 .bearing(0f)
                 .build()
 

@@ -1,14 +1,4 @@
-<vector xmlns:android="http://schemas.android.com/apk/res/android"
-    android:width="12dp"
-    android:height="12dp"
-    android:viewportWidth="12"
-    android:viewportHeight="12">
-    <path
-        android:fillColor="@color/Unify_G500"
-        android:fillType="evenOdd"
-        android:pathData="M0,6C0,2.6863 2.6863,0 6,0C9.3137,0 12,2.6863 12,6C12,9.3137 9.3137,12 6,12C2.6863,12 0,9.3137 0,6Z" />
-    <path
-        android:fillColor="@color/Unify_N0"
-        android:fillType="evenOdd"
-        android:pathData="M8.0004,5.4212L5.612,7.813C5.3934,8.0316 5.0353,8.0319 4.8163,7.8133L3.9211,6.9205C3.7022,6.7022 3.692,6.3542 3.8983,6.148C4.1041,5.9421 4.4521,5.9518 4.6715,6.1705L5.2141,6.7105L7.2508,4.6712C7.4694,4.4522 7.817,4.4421 8.0233,4.648C8.2291,4.8542 8.2194,5.2022 8.0004,5.4212Z" />
+<vector xmlns:android="http://schemas.android.com/apk/res/android" android:width="12dp" android:height="12dp" android:viewportWidth="12" android:viewportHeight="12">
+    <path android:fillColor="@color/Unify_G500" android:fillType="evenOdd" android:pathData="M0 6c0-3.314 2.686-6 6-6s6 2.686 6 6-2.686 6-6 6-6-2.686-6-6z"/>
+    <path android:fillColor="@color/Unify_N0" android:fillType="evenOdd" android:pathData="M8 5.421L5.612 7.813c-0.219 0.219-0.577 0.219-0.796 0L3.921 6.92C3.702 6.702 3.692 6.354 3.898 6.148 4.104 5.942 4.452 5.952 4.671 6.17l0.543 0.54 2.037-2.039c0.218-0.219 0.566-0.229 0.772-0.023C8.23 4.854 8.22 5.202 8 5.421z"/>
 </vector>

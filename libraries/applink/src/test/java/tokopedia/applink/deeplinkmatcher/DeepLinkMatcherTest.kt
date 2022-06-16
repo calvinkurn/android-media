@@ -82,6 +82,7 @@ import tokopedia.applink.util.DeepLinkUrlConstant.SALE_LINK_URL
 import tokopedia.applink.util.DeepLinkUrlConstant.SEARCH_LINK_URL
 import tokopedia.applink.util.DeepLinkUrlConstant.SERU_LINK_URL
 import tokopedia.applink.util.DeepLinkUrlConstant.SHOP_LINK_URL
+import tokopedia.applink.util.DeepLinkUrlConstant.SHOP_MVC_LOCKED_TO_PRODUCT_LINK_URL
 import tokopedia.applink.util.DeepLinkUrlConstant.TOKO_POINTS_LINK_URL
 import tokopedia.applink.util.DeepLinkUrlConstant.TRAVEL_ENTERTAINMENT_LINK_URL
 import tokopedia.applink.util.DeepLinkUrlConstant.TRAVEL_ENTERTAINTMENT_DETAIL_LINK_URL
@@ -322,6 +323,11 @@ class DeepLinkMatcherTest: DeepLinkMatcherTestFixture() {
     @Test
     fun `check link url of shop then should return SHOP`() {
         assertEqualsDeepLinkMatcher(SHOP, SHOP_LINK_URL)
+    }
+
+    @Test
+    fun `check link url of shop mvc locked to product then should return SHOP`() {
+        assertEqualsDeepLinkMatcher(SHOP, SHOP_MVC_LOCKED_TO_PRODUCT_LINK_URL)
     }
 
     @Test

@@ -13,6 +13,7 @@ import com.tokopedia.cartcommon.data.response.deletecart.RemoveFromCartData
 import com.tokopedia.cartcommon.data.response.updatecart.Data
 import com.tokopedia.cartcommon.data.response.updatecart.UpdateCartV2Data
 import com.tokopedia.product.detail.common.data.model.aggregator.AggregatorMiniCartUiModel
+import com.tokopedia.product.detail.common.data.model.pdplayout.ProductDetailGallery
 import com.tokopedia.product.detail.common.getCurrencyFormatted
 import com.tokopedia.shop.common.domain.interactor.model.favoriteshop.DataFollowShop
 import com.tokopedia.shop.common.domain.interactor.model.favoriteshop.FollowShop
@@ -20,6 +21,8 @@ import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.wishlist.common.listener.WishListActionListener
+import com.tokopedia.wishlistcommon.data.response.AddToWishlistV2Response
+import com.tokopedia.wishlistcommon.listener.WishlistV2ActionListener
 import io.mockk.*
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert
@@ -84,13 +87,13 @@ class AtcVariantViewModelTest : BaseAtcVariantViewModelTest() {
         val aggregatorParams = generateParamsVariantFulfilled("2147818569", true)
 
         coEvery {
-            aggregatorMiniCartUseCase.executeOnBackground(any(), any(), any(), any(), any(), any(), true)
+            aggregatorMiniCartUseCase.executeOnBackground(any(), any(), any(), any(), any(), any(), true, any())
         } returns AggregatorMiniCartUiModel()
 
         viewModel.decideInitialValue(aggregatorParams, true)
 
         coVerify(inverse = true) {
-            aggregatorMiniCartUseCase.executeOnBackground(any(), any(), any(), any(), any(), any(), true)
+            aggregatorMiniCartUseCase.executeOnBackground(any(), any(), any(), any(), any(), any(), true, any())
         }
 
         val visitablesData = (viewModel.initialData.value as Success).data
@@ -127,13 +130,13 @@ class AtcVariantViewModelTest : BaseAtcVariantViewModelTest() {
         val aggregatorParams = generateParamsVariantFulfilled("2147818569", false)
 
         coEvery {
-            aggregatorMiniCartUseCase.executeOnBackground(any(), any(), any(), any(), any(), any(), false)
+            aggregatorMiniCartUseCase.executeOnBackground(any(), any(), any(), any(), any(), any(), true, any())
         } returns AggregatorMiniCartUiModel()
 
         viewModel.decideInitialValue(aggregatorParams, true)
 
         coVerify(inverse = true) {
-            aggregatorMiniCartUseCase.executeOnBackground(any(), any(), any(), any(), any(), any(), false)
+            aggregatorMiniCartUseCase.executeOnBackground(any(), any(), any(), any(), any(), any(), true, any())
         }
     }
 
@@ -142,13 +145,13 @@ class AtcVariantViewModelTest : BaseAtcVariantViewModelTest() {
         val aggregatorParams = generateParamsVariantFulfilled("2147818569", true, true)
 
         coEvery {
-            aggregatorMiniCartUseCase.executeOnBackground(any(), any(), any(), any(), any(), any(), true)
+            aggregatorMiniCartUseCase.executeOnBackground(any(), any(), any(), any(), any(), any(), true, any())
         } returns AggregatorMiniCartUiModel()
 
         viewModel.decideInitialValue(aggregatorParams, true)
 
         coVerify {
-            aggregatorMiniCartUseCase.executeOnBackground(any(), any(), any(), any(), any(), any(), true)
+            aggregatorMiniCartUseCase.executeOnBackground(any(), any(), any(), any(), any(), any(), true, any())
         }
 
         Assert.assertEquals(viewModel.getActivityResultData().shouldRefreshPreviousPage, true)
@@ -805,6 +808,79 @@ class AtcVariantViewModelTest : BaseAtcVariantViewModelTest() {
         Assert.assertEquals(captureParams.captured.getString("shopID", ""), "12345")
         Assert.assertEquals(captureParams.captured.getString("action", ""), "follow")
     }
+
+    @Test
+    fun `variant image clicked will post gallery data value`(){
+        val imageUrl = "url1234"
+        val productId = "2147818570"
+        val userId = "123"
+        val mainImageTag = "some tag"
+        val type = ProductDetailGallery.Item.Type.Image
+
+        decideSuccessValueHitGqlAggregator("2147818569", true)
+
+        val defaultItem = ProductDetailGallery.Item(
+            id = "",
+            url = imageUrl,
+            tag = mainImageTag,
+            type = type
+        )
+
+        val optionIds = listOf("254079", "254080","254081", "254082" ,"254083")
+        val tags = listOf("Biru", "Merah", "Kuning", "Hijau", "Ungu")
+        val expectedUrl = "https://images.tokopedia.net/img/cache/700/VqbcmM/2021/5/27/f4f95629-5b09-423c-a1c2-58691e1a2f30.jpg"
+
+        val items = optionIds.mapIndexed{ index, optionId ->
+            ProductDetailGallery.Item(
+                id = optionId,
+                url = expectedUrl,
+                tag = tags.getOrNull(index),
+                type = ProductDetailGallery.Item.Type.Image
+            )
+        }
+        val selectedId = "254079"
+
+        viewModel.onVariantImageClicked(imageUrl, productId, userId, mainImageTag)
+
+        val data = viewModel.variantImagesData.value
+
+        Assert.assertEquals(defaultItem, data?.defaultItem)
+        Assert.assertEquals(items, data?.items)
+        Assert.assertEquals(selectedId, data?.selectedId)
+        Assert.assertEquals(ProductDetailGallery.Page.VariantBottomSheet, data?.page)
+    }
+
+    @Test
+    fun `variant image clicked fallback test with empty images and available default image`(){
+        val imageUrl = "url1234"
+        val productId = "2147818570"
+        val userId = "123"
+        val mainImageTag = "some tag"
+
+        viewModel.onVariantImageClicked(imageUrl, productId, userId, mainImageTag)
+
+        val data = viewModel.variantImagesData.value
+
+        Assert.assertEquals(imageUrl, data?.defaultItem?.url)
+        Assert.assertEquals(emptyList<ProductDetailGallery.Item>(), data?.items)
+        Assert.assertEquals(ProductDetailGallery.Page.VariantBottomSheet, data?.page)
+    }
+
+    @Test
+    fun `variant image clicked fallback test with empty images and empty default image`(){
+        val imageUrl = ""
+        val productId = "2147818570"
+        val userId = "123"
+        val mainImageTag = "some tag"
+
+        viewModel.onVariantImageClicked(imageUrl, productId, userId, mainImageTag)
+
+        val data = viewModel.variantImagesData.value
+
+        Assert.assertEquals(null, data)
+    }
+
+
     //endregion
 
     private fun verifyAtcUsecase(verifyAtc: Boolean = false, verifyOcs: Boolean = false, verifyOcc: Boolean = false, verifyUpdateAtc: Boolean = false) {
@@ -828,5 +904,35 @@ class AtcVariantViewModelTest : BaseAtcVariantViewModelTest() {
         coVerify(inverse = inverseUpdateAtc) {
             updateCartUseCase.executeOnBackground()
         }
+    }
+
+    @Test
+    fun `verify add to wishlistv2 returns success` () {
+        val productId = "123"
+        val resultWishlistAddV2 = AddToWishlistV2Response.Data.WishlistAddV2(success = true)
+
+        every { addToWishlistV2UseCase.setParams(any(), any()) } just Runs
+        coEvery { addToWishlistV2UseCase.executeOnBackground() } returns Success(resultWishlistAddV2)
+
+        val mockListener: WishlistV2ActionListener = mockk(relaxed = true)
+        viewModel.addWishlistV2(productId, "", mockListener)
+
+        verify { addToWishlistV2UseCase.setParams(productId, "") }
+        coVerify { addToWishlistV2UseCase.executeOnBackground() }
+    }
+
+    @Test
+    fun `verify add to wishlistv2 returns fail` () {
+        val productId = "123"
+        val mockThrowable = mockk<Throwable>("fail")
+
+        every { addToWishlistV2UseCase.setParams(any(), any()) } just Runs
+        coEvery { addToWishlistV2UseCase.executeOnBackground() } returns Fail(mockThrowable)
+
+        val mockListener: WishlistV2ActionListener = mockk(relaxed = true)
+        viewModel.addWishlistV2(productId, "", mockListener)
+
+        verify { addToWishlistV2UseCase.setParams(productId, "") }
+        coVerify { addToWishlistV2UseCase.executeOnBackground() }
     }
 }

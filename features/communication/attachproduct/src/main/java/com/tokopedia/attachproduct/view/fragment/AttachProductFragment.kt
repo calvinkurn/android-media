@@ -40,17 +40,18 @@ import com.tokopedia.attachproduct.view.viewmodel.AttachProductViewModel
 import com.tokopedia.track.TrackApp
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.utils.view.binding.viewBinding
 import java.util.*
 import javax.inject.Inject
 
 /**
  * Created by Hendri on 13/02/18.
  */
-class AttachProductFragment : BaseListFragment<AttachProductItemUiModel, AttachProductListAdapterTypeFactory>(), CheckableInteractionListenerWithPreCheckedAction, AttachProductContract.View {
+class AttachProductFragment :
+    BaseListFragment<AttachProductItemUiModel, AttachProductListAdapterTypeFactory>(),
+    CheckableInteractionListenerWithPreCheckedAction, AttachProductContract.View {
 
-    private var _binding: FragmentAttachProductBinding? = null
-
-    private val binding get() = _binding!!
+    private val binding: FragmentAttachProductBinding? by viewBinding()
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -77,7 +78,8 @@ class AttachProductFragment : BaseListFragment<AttachProductItemUiModel, AttachP
     }
 
     override fun initInjector() {
-            DaggerAttachProductComponent.builder().attachProductModule(AttachProductModule(requireContext())).baseAppComponent(
+        DaggerAttachProductComponent.builder()
+            .attachProductModule(AttachProductModule(requireContext())).baseAppComponent(
             (requireActivity().application as BaseMainApplication).baseAppComponent
         ).build().inject(this)
     }
@@ -95,16 +97,30 @@ class AttachProductFragment : BaseListFragment<AttachProductItemUiModel, AttachP
             isSeller = savedInstanceState.getBoolean(IS_SELLER, false)
             shopId = savedInstanceState.getString(SHOP_ID, "")
             source = savedInstanceState.getString(SOURCE, "")
-            maxChecked = savedInstanceState.getInt(MAX_CHECKED, AttachProductActivity.MAX_CHECKED_DEFAULT)
+            maxChecked =
+                savedInstanceState.getInt(MAX_CHECKED, AttachProductActivity.MAX_CHECKED_DEFAULT)
             hiddenProducts = savedInstanceState.getStringArrayList(HIDDEN_PRODUCTS)
         } else if (arguments != null) {
             isSeller = requireArguments().getBoolean(IS_SELLER, false)
             source = requireArguments().getString(SOURCE, "")
-            maxChecked = requireArguments().getInt(MAX_CHECKED, AttachProductActivity.MAX_CHECKED_DEFAULT)
+            maxChecked =
+                requireArguments().getInt(MAX_CHECKED, AttachProductActivity.MAX_CHECKED_DEFAULT)
             hiddenProducts = requireArguments().getStringArrayList(HIDDEN_PRODUCTS)
         }
         updateButtonBasedOnChecked(adapter.checkedCount)
+        setupListeners()
         initObserver()
+    }
+
+    private fun setupListeners() {
+        binding?.sendButtonAttachProduct?.setOnClickListener { sendButtonClicked() }
+        binding?.swipeRefreshLayout?.setOnRefreshListener {
+            if (binding?.searchInputView?.searchBarTextField?.text.toString().isEmpty()) {
+                viewModel.clearCache()
+            }
+            loadInitialData()
+        }
+        updateButtonBasedOnChecked(0)
     }
 
     private fun setupWarehouseId() {
@@ -116,26 +132,28 @@ class AttachProductFragment : BaseListFragment<AttachProductItemUiModel, AttachP
     }
 
     private fun initSearchBar() {
-        binding.searchInputView.searchBarTextField.addTextChangedListener(object : TextWatcher {
+        binding?.searchInputView?.searchBarTextField?.addTextChangedListener(object : TextWatcher {
             var timer: Timer? = null
             override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {}
             override fun afterTextChanged(s: Editable) {
                 timer = Timer()
-                timer!!.schedule(object : TimerTask() {
+                timer?.schedule(object : TimerTask() {
                     override fun run() {
-                        val mainHandler = Handler(binding.searchInputView.getContext().mainLooper)
-                        val myRunnable = Runnable { onSearchTextChanged(s.toString()) }
-                        mainHandler.post(myRunnable)
+                        binding?.searchInputView?.context?.mainLooper?.let {
+                            val mainHandler = Handler(it)
+                            val myRunnable = Runnable { onSearchTextChanged(s.toString()) }
+                            mainHandler.post(myRunnable)
+                        }
                     }
-                }, 300)
+                }, DELAY)
             }
         })
-        binding.searchInputView.searchBarTextField.setOnEditorActionListener { v: TextView?, actionId: Int, event: KeyEvent? ->
+        binding?.searchInputView?.searchBarTextField?.setOnEditorActionListener { v: TextView?, actionId: Int, event: KeyEvent? ->
             if (actionId == EditorInfo.IME_ACTION_SEARCH) {
-                binding.searchInputView.clearFocus()
+                binding?.searchInputView?.clearFocus()
                 val `in` = requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-                `in`.hideSoftInputFromWindow(binding.searchInputView.getWindowToken(), 0)
+                `in`.hideSoftInputFromWindow(binding?.searchInputView?.windowToken, 0)
 
                 onSearchSubmitted()
                 return@setOnEditorActionListener true
@@ -153,17 +171,12 @@ class AttachProductFragment : BaseListFragment<AttachProductItemUiModel, AttachP
         outState.putStringArrayList(HIDDEN_PRODUCTS, hiddenProducts)
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        _binding = FragmentAttachProductBinding.inflate(inflater, container, false)
-        binding.sendButtonAttachProduct.setOnClickListener { sendButtonClicked() }
-        binding.swipeRefreshLayout.setOnRefreshListener{
-            if (binding.searchInputView.searchBarTextField.text.toString().isEmpty()) {
-                viewModel.clearCache()
-            }
-            loadInitialData()
-        }
-        updateButtonBasedOnChecked(0)
-        return binding.root
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        return inflater.inflate(R.layout.fragment_attach_product, container, false)
     }
 
     override fun onStart() {
@@ -177,7 +190,7 @@ class AttachProductFragment : BaseListFragment<AttachProductItemUiModel, AttachP
 
     private fun onSearchSubmitted() {
         KeyboardHandler.DropKeyboard(activity, view)
-        if (binding.searchInputView.searchBarTextField.text.toString().isNotEmpty()) {
+        if (binding?.searchInputView?.searchBarTextField?.text?.isEmpty() == false) {
             loadInitialData()
         }
     }
@@ -226,20 +239,20 @@ class AttachProductFragment : BaseListFragment<AttachProductItemUiModel, AttachP
 
     override fun loadData(page: Int) {
         if (activityContract != null) {
-            if (binding.searchInputView.searchBarTextField.text.toString().isEmpty()
-                    && viewModel.cacheList.isNotEmpty()) {
-                val page = (viewModel.cacheList.size / 10) + 1
+            if (binding?.searchInputView?.searchBarTextField?.text.isNullOrEmpty()
+                && viewModel.cacheList.isNotEmpty()
+            ) {
+                val page = (viewModel.cacheList.size / CACHE_DIVIDER) + ADD_INDEX
                 viewModel.loadProductData(
                     "",
                     shopId,
                     page, warehouseId
                 )
-            }
-            else {
+            } else {
                 viewModel.loadProductData(
-                    binding.searchInputView.searchBarTextField.text.toString(),
-                shopId,
-                page, warehouseId
+                    binding?.searchInputView?.searchBarTextField?.text.toString(),
+                    shopId,
+                    page, warehouseId
                 )
             }
         } else if (activity != null) {
@@ -267,7 +280,10 @@ class AttachProductFragment : BaseListFragment<AttachProductItemUiModel, AttachP
         val isCurrentlyChecked = isChecked(position)
         val willCheckedStatusChanged = isCurrentlyChecked xor checked
         return if (adapter.checkedCount >= maxChecked && willCheckedStatusChanged && !isCurrentlyChecked) {
-            val message = getString(R.string.string_attach_product_warning_max_product_format, maxChecked.toString())
+            val message = getString(
+                R.string.string_attach_product_warning_max_product_format,
+                maxChecked.toString()
+            )
             NetworkErrorHelper.showSnackbar(activity, message)
             false
         } else {
@@ -289,9 +305,9 @@ class AttachProductFragment : BaseListFragment<AttachProductItemUiModel, AttachP
 
     override fun addProductToList(products: List<AttachProductItemUiModel>, hasNextPage: Boolean) {
         if (products.isNotEmpty()) {
-            binding.sendButtonAttachProduct.visibility = View.VISIBLE
+            binding?.sendButtonAttachProduct?.visibility = View.VISIBLE
         } else {
-            binding.sendButtonAttachProduct.visibility = View.VISIBLE
+            binding?.sendButtonAttachProduct?.visibility = View.VISIBLE
         }
         removeHiddenProducts(products.toMutableList())
         renderList(products, hasNextPage)
@@ -299,7 +315,7 @@ class AttachProductFragment : BaseListFragment<AttachProductItemUiModel, AttachP
 
     override fun hideAllLoadingIndicator() {
         hideLoading()
-        binding.swipeRefreshLayout.isRefreshing = false
+        binding?.swipeRefreshLayout?.isRefreshing = false
     }
 
     override fun showErrorMessage(throwable: Throwable) {
@@ -308,8 +324,12 @@ class AttachProductFragment : BaseListFragment<AttachProductItemUiModel, AttachP
     }
 
     override fun updateButtonBasedOnChecked(checkedCount: Int) {
-        binding.sendButtonAttachProduct.text = getString(R.string.string_attach_product_send_button_text, checkedCount.toString(), maxChecked.toString())
-        binding.sendButtonAttachProduct.isEnabled = checkedCount in 1..maxChecked
+        binding?.sendButtonAttachProduct?.text = getString(
+            R.string.string_attach_product_send_button_text,
+            checkedCount.toString(),
+            maxChecked.toString()
+        )
+        binding?.sendButtonAttachProduct?.isEnabled = checkedCount in 1..maxChecked
     }
 
     private fun sendButtonClicked() {
@@ -323,15 +343,18 @@ class AttachProductFragment : BaseListFragment<AttachProductItemUiModel, AttachP
 
     override fun getEmptyDataViewModel(): Visitable<*> {
         val emptyResultViewModel = EmptyResultViewModel()
-        if (TextUtils.isEmpty(binding.searchInputView.searchBarTextField.text)) {
+        if (binding?.searchInputView?.searchBarTextField?.text.isNullOrEmpty()) {
             if (isSeller) {
-                emptyResultViewModel.content = getString(R.string.string_attach_product_my_empty_product)
+                emptyResultViewModel.content =
+                    getString(R.string.string_attach_product_my_empty_product)
             } else {
-                emptyResultViewModel.content = getString(R.string.string_attach_product_empty_product)
+                emptyResultViewModel.content =
+                    getString(R.string.string_attach_product_empty_product)
             }
             emptyResultViewModel.iconRes = R.drawable.bg_attach_product_empty_result
         } else {
-            emptyResultViewModel.content = getString(R.string.string_attach_product_search_not_found)
+            emptyResultViewModel.content =
+                getString(R.string.string_attach_product_search_not_found)
             emptyResultViewModel.iconRes = R.drawable.ic_attach_product_empty_search
         }
         if (isSeller) {
@@ -383,12 +406,7 @@ class AttachProductFragment : BaseListFragment<AttachProductItemUiModel, AttachP
     }
 
     override fun setShopName(shopName: String) {
-        activityContract!!.setShopName(shopName)
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        _binding = null
+        activityContract?.setShopName(shopName)
     }
 
     companion object {
@@ -397,6 +415,10 @@ class AttachProductFragment : BaseListFragment<AttachProductItemUiModel, AttachP
         private const val MAX_CHECKED = "max_checked"
         private const val HIDDEN_PRODUCTS = "hidden_products"
         private const val SHOP_ID = "shop_id"
+
+        private const val DELAY = 300L
+        private const val CACHE_DIVIDER = 10
+        private const val ADD_INDEX = 1
 
         @JvmStatic
         fun newInstance(

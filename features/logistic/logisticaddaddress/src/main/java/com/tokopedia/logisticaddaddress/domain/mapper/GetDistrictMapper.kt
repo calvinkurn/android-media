@@ -16,6 +16,9 @@ class GetDistrictMapper @Inject constructor() {
                 return GetDistrictDataUiModel(
                     title = this.title,
                     formattedAddress = this.formattedAddress,
+                    districtName = this.districtName,
+                    provinceName = this.provinceName,
+                    cityName = this.cityName,
                     latitude = this.latitude,
                     longitude = this.longitude,
                     districtId = this.districtId,

@@ -27,6 +27,8 @@ class FlightFilterModel(
         var journeyId: String = "",
         var isSeatDistancing: Boolean = false,
         var isFreeRapidTest: Boolean = false,
+        var freeRapidTestLabel: String = "",
+        var seatDistancingLabel: String = "",
         var canFilterSeatDistancing: Boolean = false,
         var canFilterFreeRapidTest: Boolean = false,
         var departureArrivalTime: String = ""
@@ -71,6 +73,8 @@ class FlightFilterModel(
             this.journeyId = it.journeyId
             this.isSeatDistancing = it.isSeatDistancing
             this.isFreeRapidTest = it.isFreeRapidTest
+            this.freeRapidTestLabel = it.freeRapidTestLabel
+            this.seatDistancingLabel = it.seatDistancingLabel
             this.canFilterSeatDistancing = it.canFilterSeatDistancing
             this.canFilterFreeRapidTest = it.canFilterFreeRapidTest
         }

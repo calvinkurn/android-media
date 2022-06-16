@@ -12,20 +12,20 @@
     <string name="path_activation_ovo">/activation</string>
 
     <string name="path_saldo_deposit">/saldo</string>
+    <string name="path_transaction_fee_download">/transaction-fee-download</string>
     <string name="path_saldo_intro">/saldo-intro</string>
     <string name="path_paylater" translatable="false">/paylater</string>
+    <string name="path_optimized_checkout" translatable="false">/opt-checkout</string>
+    <string name="path_activation_gopay" translatable="false">/activate_gopay</string>
+
     <string name="path_home_credit_register">/home-credit-register</string>
 
-    <string name="path_upgrade">/upgrade</string>
-    <string name="path_upgrade_status">/upgradestatus</string>
 
     <string name="applink_saldo_deposit_title">Saldo</string>
     <string name="applink_saldo_intro_title">Saldo Intro</string>
     <string name="applink_wallet_title">Ovo</string>
     <string name="ovo_pay_with_qr_title">Ovo Pay with QR</string>
     <string name="applink_pay_later_title">Pay Later</string>
-
-
 <!--    // lanayana -->
 
 

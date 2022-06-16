@@ -142,6 +142,84 @@ object TopChatAnalyticsKt {
         )
     }
 
+    fun eventVoucherThumbnailClicked(sourceVoucher: String, voucherId: Int) {
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+            createGeneralEvent(
+                event = Event.CLICK_COMMUNICATION,
+                category = Category.CHAT_DETAIL,
+                action = Action.CLICK_SHOP_VOUCHER_THUMBNAIL,
+                label = "$sourceVoucher - $voucherId",
+                businessUnit = COMMUNICATION_MEDIA,
+                currentSite = CURRENT_SITE_TOKOPEDIA
+            )
+        )
+    }
+
+    fun eventViewVoucher(sourceVoucher: String, voucherId: Int) {
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+            createGeneralEvent(
+                event = Event.VIEW_COMMUNICATION_IRIS,
+                category = Category.CHAT_DETAIL,
+                action = Action.VIEW_VOUCHER_THUMBNAIL,
+                label = "$sourceVoucher - $voucherId",
+                businessUnit = COMMUNICATION_MEDIA,
+                currentSite = CURRENT_SITE_TOKOPEDIA
+            )
+        )
+    }
+
+    fun eventViewProductBundling(firstProductId: String, bundleId: String) {
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+            createGeneralEvent(
+                event = Event.VIEW_COMMUNICATION_IRIS,
+                category = Category.CHAT_DETAIL,
+                action = Action.VIEW_BUNDLING_PRODUCT_CARD,
+                label = "$firstProductId - $bundleId",
+                businessUnit = COMMUNICATION_MEDIA,
+                currentSite = CURRENT_SITE_TOKOPEDIA
+            )
+        )
+    }
+
+    fun eventClickProductBundlingCta(firstProductId: String, bundleId: String) {
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+            createGeneralEvent(
+                event = Event.CLICK_COMMUNICATION,
+                category = Category.CHAT_DETAIL,
+                action = Action.CLICK_BUNDLING_PRODUCT_CTA,
+                label = "$firstProductId - $bundleId",
+                businessUnit = COMMUNICATION_MEDIA,
+                currentSite = CURRENT_SITE_TOKOPEDIA
+            )
+        )
+    }
+
+    fun eventViewSrwOnBoarding() {
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+            createGeneralEvent(
+                event = Event.VIEW_COMMUNICATION_IRIS,
+                category = Category.CHAT_DETAIL,
+                action = Action.VIEW_SRW_ONBOARDING,
+                label = "",
+                businessUnit = COMMUNICATION_MEDIA,
+                currentSite = CURRENT_SITE_TOKOPEDIA
+            )
+        )
+    }
+
+    fun eventClickCloseSrwOnBoarding() {
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+            createGeneralEvent(
+                event = Event.CLICK_COMMUNICATION,
+                category = Category.CHAT_DETAIL,
+                action = Action.CLICK_CLOSE_SRW_ONBOARDING,
+                label = "",
+                businessUnit = COMMUNICATION_MEDIA,
+                currentSite = CURRENT_SITE_TOKOPEDIA
+            )
+        )
+    }
+
     private fun createGeneralEvent(
         event: String,
         category: String,
@@ -169,6 +247,8 @@ object TopChatAnalyticsKt {
 
     object Event {
         const val CHAT_DETAIL = "clickChatDetail"
+        const val CLICK_COMMUNICATION = "clickCommunication"
+        const val VIEW_COMMUNICATION_IRIS = "viewCommunicationIris"
     }
 
     object Category {
@@ -181,6 +261,12 @@ object TopChatAnalyticsKt {
         const val CLICK_CONFIRM_DELETE_MSG = "click confirm delete message"
         const val CLICK_CLOSE_REPLY_BUUBLE_PREVIEW = "click close preview replied bubble chat above keyboard"
         const val CLICK_REPLY_BUBBLE = "click view parent replied bubble chat"
+        const val CLICK_SHOP_VOUCHER_THUMBNAIL = "click shop voucher thumbnail"
+        const val VIEW_VOUCHER_THUMBNAIL = "view voucher thumbnail"
+        const val VIEW_SRW_ONBOARDING = "view on srw onboarding"
+        const val CLICK_CLOSE_SRW_ONBOARDING = "click close on srw onboarding"
+        const val VIEW_BUNDLING_PRODUCT_CARD = "view on bundling product card"
+        const val CLICK_BUNDLING_PRODUCT_CTA = "click on bundling product card"
     }
 
     //Event Name

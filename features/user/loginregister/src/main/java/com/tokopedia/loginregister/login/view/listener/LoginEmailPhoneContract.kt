@@ -90,8 +90,6 @@ interface LoginEmailPhoneContract {
 
         fun onGetDynamicBannerError(throwable: Throwable)
 
-        fun goToFingerprintRegisterPage()
-
         fun getFingerprintConfig(): Boolean
 
         fun routeToVerifyPage(phoneNumber: String, requestCode: Int, otpType: Int)

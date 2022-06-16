@@ -5,11 +5,22 @@ import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
 import com.tokopedia.vouchercreation.common.di.scope.VoucherCreationScope
-import com.tokopedia.vouchercreation.create.view.viewmodel.*
-import com.tokopedia.vouchercreation.detail.view.viewmodel.VoucherDetailViewModel
-import com.tokopedia.vouchercreation.voucherlist.view.viewmodel.ChangeVoucherPeriodViewModel
-import com.tokopedia.vouchercreation.voucherlist.view.viewmodel.EditQuotaViewModel
-import com.tokopedia.vouchercreation.voucherlist.view.viewmodel.VoucherListViewModel
+import com.tokopedia.vouchercreation.product.create.view.viewmodel.*
+import com.tokopedia.vouchercreation.product.create.view.viewmodel.CouponSettingViewModel
+import com.tokopedia.vouchercreation.product.preview.CouponPreviewViewModel
+import com.tokopedia.vouchercreation.product.create.view.viewmodel.CreateCouponDetailViewModel
+import com.tokopedia.vouchercreation.product.detail.view.viewmodel.CouponDetailViewModel
+import com.tokopedia.vouchercreation.product.voucherlist.view.viewmodel.CouponListViewModel
+import com.tokopedia.vouchercreation.product.list.view.viewmodel.AddProductViewModel
+import com.tokopedia.vouchercreation.product.list.view.viewmodel.ManageProductViewModel
+import com.tokopedia.vouchercreation.product.preview.CouponImagePreviewViewModel
+import com.tokopedia.vouchercreation.product.update.period.UpdateCouponPeriodViewModel
+import com.tokopedia.vouchercreation.product.update.quota.UpdateCouponQuotaViewModel
+import com.tokopedia.vouchercreation.shop.create.view.viewmodel.*
+import com.tokopedia.vouchercreation.shop.detail.view.viewmodel.VoucherDetailViewModel
+import com.tokopedia.vouchercreation.shop.voucherlist.view.viewmodel.ChangeVoucherPeriodViewModel
+import com.tokopedia.vouchercreation.shop.voucherlist.view.viewmodel.EditQuotaViewModel
+import com.tokopedia.vouchercreation.shop.voucherlist.view.viewmodel.VoucherListViewModel
 import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap
@@ -80,4 +91,59 @@ abstract class VoucherCreationViewModelModule {
     @IntoMap
     @ViewModelKey(EditQuotaViewModel::class)
     internal abstract fun provideEditQuotaViewModel(editQuotaViewModel: EditQuotaViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(CouponSettingViewModel::class)
+    internal abstract fun provideCouponSettingViewModel(editQuotaViewModel: CouponSettingViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(CouponPreviewViewModel::class)
+    internal abstract fun provideProductCouponPreviewViewModel(couponPreviewViewModel: CouponPreviewViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(CreateCouponDetailViewModel::class)
+    internal abstract fun provideCreateCouponDetailViewModel(createCouponDetailViewModel: CreateCouponDetailViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(CouponListViewModel::class)
+    internal abstract fun provideCouponListViewModel(couponListViewModel: CouponListViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(CouponImagePreviewViewModel::class)
+    internal abstract fun provideCouponPreviewViewModel(couponPreviewViewModel: CouponImagePreviewViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(BroadcastCouponViewModel::class)
+    internal abstract fun provideBroadcastCouponViewModel(broadcastCouponViewModel: BroadcastCouponViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(CouponDetailViewModel::class)
+    internal abstract fun provideCouponDetailViewModel(couponDetailViewModel: CouponDetailViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(AddProductViewModel::class)
+    internal abstract fun provideAddProductViewModel(addProductViewModel: AddProductViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(ManageProductViewModel::class)
+    internal abstract fun provideManageProductViewModel(manageProductViewModel: ManageProductViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(UpdateCouponQuotaViewModel::class)
+    internal abstract fun provideUpdateCouponQuotaViewModel(updateCouponQuotaViewModel: UpdateCouponQuotaViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(UpdateCouponPeriodViewModel::class)
+    internal abstract fun provideUpdateCouponPeriodViewModel(updateCouponPeriodViewModel: UpdateCouponPeriodViewModel): ViewModel
 }

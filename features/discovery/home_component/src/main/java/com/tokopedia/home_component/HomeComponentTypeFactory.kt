@@ -21,4 +21,8 @@ interface HomeComponentTypeFactory {
     fun type(featuredBrandDataModel: FeaturedBrandDataModel): Int
     fun type(questWidgetModel: QuestWidgetModel): Int
     fun type(campaignWidgetDataModel: CampaignWidgetDataModel): Int = 0
+    fun type(merchantVoucherDataModel: MerchantVoucherDataModel): Int = 0
+    fun type(specialReleaseDataModel: SpecialReleaseDataModel): Int = 0
+    fun type(cueCategoryDataModel: CueCategoryDataModel): Int = 0
+    fun type(vpsDataModel: VpsDataModel): Int = 0
 }

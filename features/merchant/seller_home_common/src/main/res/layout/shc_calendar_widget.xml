@@ -76,7 +76,6 @@
             android:id="@+id/rvShcCalendar"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tvShcCalendarTitle"
@@ -90,10 +89,30 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
-            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/rvShcCalendar" />
+
+        <androidx.constraintlayout.widget.Barrier
+            android:id="@+id/barrierShcCalendar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:barrierDirection="bottom"
+            app:constraint_referenced_ids="pageControlShcCalendar, rvShcCalendar, shcCalendarWidgetEmptyState" />
+
+        <com.tokopedia.sellerhomecommon.presentation.view.customview.LastUpdatedView
+            android:id="@+id/luvShcCalendar"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/barrierShcCalendar"
+            app:layout_constraintVertical_bias="1"
+            tools:layout_constraintTop_toBottomOf="@+id/pageControlShcCalendar" />
 
         <include
             android:id="@+id/shcCalendarWidgetLoadingState"

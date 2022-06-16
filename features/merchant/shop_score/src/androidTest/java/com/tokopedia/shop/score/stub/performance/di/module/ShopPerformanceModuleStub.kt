@@ -2,7 +2,7 @@ package com.tokopedia.shop.score.stub.performance.di.module
 
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
-import com.tokopedia.gm.common.domain.interactor.GetShopInfoPeriodUseCase
+import com.tokopedia.gm.common.domain.interactor.GetShopCreatedInfoUseCase
 import com.tokopedia.gm.common.domain.mapper.ShopScoreCommonMapper
 import com.tokopedia.shop.score.common.ShopScorePrefManager
 import com.tokopedia.shop.score.performance.di.scope.ShopPerformanceScope
@@ -13,7 +13,7 @@ import com.tokopedia.shop.score.stub.common.graphql.repository.GraphqlRepository
 import com.tokopedia.shop.score.stub.common.util.ShopScorePrefManagerStub
 import com.tokopedia.shop.score.stub.performance.domain.mapper.ShopScoreCommonMapperStub
 import com.tokopedia.shop.score.stub.performance.domain.mapper.ShopScoreMapperStub
-import com.tokopedia.shop.score.stub.performance.domain.usecase.GetShopInfoPeriodUseCaseStub
+import com.tokopedia.shop.score.stub.performance.domain.usecase.GetShopCreatedInfoUseCaseStub
 import com.tokopedia.shop.score.stub.performance.domain.usecase.GetShopPerformanceUseCaseStub
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
@@ -27,8 +27,8 @@ class ShopPerformanceModuleStub {
     fun provideShopInfoPeriodUseCaseStub(
         graphqlRepositoryStub: GraphqlRepositoryStub,
         shopScoreCommonMapper: ShopScoreCommonMapper
-    ): GetShopInfoPeriodUseCase {
-        return GetShopInfoPeriodUseCaseStub(graphqlRepositoryStub, shopScoreCommonMapper)
+    ): GetShopCreatedInfoUseCase {
+        return GetShopCreatedInfoUseCaseStub(graphqlRepositoryStub, shopScoreCommonMapper)
     }
 
     @ShopPerformanceScope

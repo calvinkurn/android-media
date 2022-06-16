@@ -35,11 +35,14 @@ object AtcVariantMapper {
         })?.toMutableMap() ?: mutableMapOf()
     }
 
-    fun mapVariantIdentifierWithDefaultSelectedToHashMap(variantData: ProductVariant?, selectedOptionIds: List<String>): MutableMap<String, String> {
+    fun mapVariantIdentifierWithDefaultSelectedToHashMap(variantData: ProductVariant?,
+                                                         selectedOptionIds: List<String>?)
+            : MutableMap<String, String> {
+
         val hashMap: MutableMap<String, String> = mutableMapOf()
 
         variantData?.variants?.mapIndexed { index, variant ->
-            hashMap[variant.pv.toString()] = selectedOptionIds.getOrNull(index) ?: "0"
+            hashMap[variant.pv.toString()] = selectedOptionIds?.getOrNull(index) ?: "0"
         }
 
         return hashMap

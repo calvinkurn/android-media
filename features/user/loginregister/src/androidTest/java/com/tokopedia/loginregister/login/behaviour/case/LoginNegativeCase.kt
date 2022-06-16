@@ -1,17 +1,19 @@
 package com.tokopedia.loginregister.login.behaviour.case
 
 import androidx.test.espresso.Espresso.onView
-import androidx.test.espresso.action.ViewActions
-import androidx.test.espresso.assertion.ViewAssertions.matches
-import androidx.test.espresso.matcher.ViewMatchers
-import androidx.test.espresso.matcher.ViewMatchers.withEffectiveVisibility
+import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
+import androidx.test.espresso.matcher.ViewMatchers.withText
 import com.tokopedia.loginregister.R
 import com.tokopedia.loginregister.login.behaviour.base.LoginBase
 import com.tokopedia.loginregister.login.domain.pojo.RegisterCheckData
 import com.tokopedia.loginregister.login.domain.pojo.RegisterCheckPojo
 import com.tokopedia.sessioncommon.data.*
+import com.tokopedia.test.application.annotations.UiTest
+import org.hamcrest.Matchers.allOf
+import org.hamcrest.Matchers.containsString
 import org.junit.Test
 
+@UiTest
 class LoginNegativeCase: LoginBase() {
 
     @Test
@@ -122,10 +124,7 @@ class LoginNegativeCase: LoginBase() {
             clickSubmit()
         }
 
-        onView(ViewMatchers.withSubstring(errorMsg))
-            .check(matches(withEffectiveVisibility(
-                ViewMatchers.Visibility.VISIBLE
-            )))
+        onView(allOf(withText(containsString(errorMsg)), isDisplayed()))
     }
 
     @Test

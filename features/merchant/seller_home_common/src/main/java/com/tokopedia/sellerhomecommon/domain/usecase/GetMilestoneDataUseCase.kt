@@ -1,5 +1,6 @@
 package com.tokopedia.sellerhomecommon.domain.usecase
 
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlRequest
@@ -12,8 +13,11 @@ import com.tokopedia.usecase.RequestParams
 
 class GetMilestoneDataUseCase(
     private val gqlRepository: GraphqlRepository,
-    private val mapper: MilestoneMapper
-) : BaseGqlUseCase<List<MilestoneDataUiModel>>() {
+    milestoneMapper: MilestoneMapper,
+    dispatchers: CoroutineDispatchers
+) : CloudAndCacheGraphqlUseCase<GetMilestoneDataResponse, List<MilestoneDataUiModel>>(
+    gqlRepository, milestoneMapper, dispatchers, GqlGetMilestoneData.QUERY, false
+) {
 
     companion object {
         private const val DATA_KEYS = "dataKeys"
@@ -26,6 +30,13 @@ class GetMilestoneDataUseCase(
         }
     }
 
+    override val classType: Class<GetMilestoneDataResponse>
+        get() = GetMilestoneDataResponse::class.java
+
+    override suspend fun executeOnBackground(requestParams: RequestParams, includeCache: Boolean) {
+        super.executeOnBackground(requestParams, includeCache).also { isFirstLoad = false }
+    }
+
     override suspend fun executeOnBackground(): List<MilestoneDataUiModel> {
         val gqlRequest = GraphqlRequest(
             GqlGetMilestoneData, GetMilestoneDataResponse::class.java,
@@ -33,17 +44,12 @@ class GetMilestoneDataUseCase(
         )
         val gqlResponse = gqlRepository.response(listOf(gqlRequest), cacheStrategy)
 
-        val gqlErrors = gqlResponse.getError(GetMilestoneDataResponse::class.java)
+        val gqlErrors = gqlResponse.getError(classType)
         if (gqlErrors.isNullOrEmpty()) {
-            val response: GetMilestoneDataResponse? = gqlResponse.getData<GetMilestoneDataResponse>(
-                GetMilestoneDataResponse::class.java
-            )
+            val response = gqlResponse.getData<GetMilestoneDataResponse>(classType)
             response?.let {
                 val isFromCache = cacheStrategy.type == CacheType.CACHE_ONLY
-                return mapper.mapMilestoneResponseToUiModel(
-                    it.fetchMilestoneWidgetData?.data.orEmpty(),
-                    isFromCache
-                )
+                return mapper.mapRemoteDataToUiData(it, isFromCache)
             }
             throw NullPointerException("milestone widget data can not be null")
         } else {

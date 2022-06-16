@@ -1,7 +1,0 @@
-package com.tokopedia.vouchercreation.create.view.adapter.vouchertype
-
-import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
-import com.tokopedia.vouchercreation.common.view.VoucherCommonTypeFactory
-import com.tokopedia.vouchercreation.create.view.typefactory.vouchertype.PromotionTypeItemAdapterFactory
-
-class PromotionTypeInputAdapter(adapterTypeFactory: PromotionTypeItemAdapterFactory) : BaseListAdapter<VoucherCommonTypeFactory, PromotionTypeItemAdapterFactory>(adapterTypeFactory)

@@ -112,9 +112,14 @@ internal class SearchProductLoadMoreTest: ProductListPresenterTestFixtures() {
         verifyOrder {
             productListView.isAnyFilterActive
 
-            verifyShowLoading(productListView)
+            verifyShowLoading(productListView, performanceMonitoring)
 
-            verifyProcessingData(productListView, searchProductModelFirstPage, slot())
+            verifyProcessingData(
+                productListView,
+                performanceMonitoring,
+                searchProductModelFirstPage,
+                slot()
+            )
 
             productListView.updateScrollListener()
 
@@ -161,9 +166,14 @@ internal class SearchProductLoadMoreTest: ProductListPresenterTestFixtures() {
         verifyOrder {
             productListView.isAnyFilterActive
 
-            verifyShowLoading(productListView)
+            verifyShowLoading(productListView, performanceMonitoring)
 
-            verifyProcessingData(productListView, searchProductModelFirstPage, slot())
+            verifyProcessingData(
+                productListView,
+                performanceMonitoring,
+                searchProductModelFirstPage,
+                slot()
+            )
 
             productListView.updateScrollListener()
 

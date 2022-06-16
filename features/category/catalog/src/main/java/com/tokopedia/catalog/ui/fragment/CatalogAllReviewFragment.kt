@@ -115,7 +115,7 @@ class CatalogAllReviewFragment : BaseViewModelFragment<CatalogAllReviewsViewMode
         catalogAdapter = CatalogReviewAdapter(arrayListOf(),catalogDetailListener,
             true, catalogName, catalogId)
         initRecyclerView()
-        catalogAllReviewsViewModel.getAllReviews(catalogId,CatalogConstant.STAR,CatalogConstant.ZERO_VALUE)
+        catalogAllReviewsViewModel.getAllReviews(catalogId,CatalogConstant.STAR,CatalogConstant.ZERO_VALUE.toString())
     }
 
     private fun onError(e: Throwable) {
@@ -130,7 +130,7 @@ class CatalogAllReviewFragment : BaseViewModelFragment<CatalogAllReviewsViewMode
             }
             setOnClickListener {
                 hideGlobalError()
-                catalogAllReviewsViewModel.getAllReviews(catalogId,CatalogConstant.STAR,CatalogConstant.ZERO_VALUE)
+                catalogAllReviewsViewModel.getAllReviews(catalogId,CatalogConstant.STAR,CatalogConstant.ZERO_VALUE.toString())
             }
         }
     }

@@ -68,7 +68,7 @@ class MilestoneViewHolder(
     override fun bind(element: MilestoneWidgetUiModel) {
         val data = element.data
         when {
-            data == null -> showLoadingState(element)
+            data == null || element.showLoadingState -> showLoadingState(element)
             data.error.isNotBlank() -> showErrorState(element)
             else -> setOnSuccess(element)
         }
@@ -99,6 +99,10 @@ class MilestoneViewHolder(
                 setOnCloseWidgetClicked(element)
             }
             showCloseWidgetButton(element)
+            setupLastUpdatedInfo(element)
+
+            horLineShcMilestoneBtm.isVisible = luvShcMilestone.isVisible
+                    || tvShcMilestoneCta.isVisible
 
             itemView.addOnImpressionListener(element.impressHolder) {
                 listener.sendMilestoneWidgetImpressionEvent(element)
@@ -106,6 +110,23 @@ class MilestoneViewHolder(
                 setupCountDownTimer(element)
             }
         }
+    }
+
+    private fun setupLastUpdatedInfo(element: MilestoneWidgetUiModel) {
+        with(successStateBinding.luvShcMilestone) {
+            element.data?.lastUpdated?.let { lastUpdated ->
+                isVisible = lastUpdated.isEnabled
+                setLastUpdated(lastUpdated.lastUpdatedInMillis)
+                setRefreshButtonVisibility(lastUpdated.needToUpdated)
+                setRefreshButtonClickListener {
+                    refreshWidget(element)
+                }
+            }
+        }
+    }
+
+    private fun refreshWidget(element: MilestoneWidgetUiModel) {
+        listener.onReloadWidget(element)
     }
 
     private fun setOnCloseWidgetClicked(element: MilestoneWidgetUiModel) {
@@ -197,21 +218,19 @@ class MilestoneViewHolder(
 
     private fun setupCountDownTimer(element: MilestoneWidgetUiModel) {
         val data = element.data ?: return
-        with(successStateBinding) {
-            val now = Date().time
-            val diffMillis = data.deadlineMillis.minus(now)
-            val nineDaysMillis = TimeUnit.DAYS.toMillis(NINE_CONST)
-            val fourDaysMillis = TimeUnit.DAYS.toMillis(FOUR_CONST)
-            val oneDaysMillis = TimeUnit.DAYS.toMillis(ONE_CONST)
+        val now = Date().time
+        val diffMillis = data.deadlineMillis.minus(now)
+        val nineDaysMillis = TimeUnit.DAYS.toMillis(NINE_CONST)
+        val fourDaysMillis = TimeUnit.DAYS.toMillis(FOUR_CONST)
+        val oneDaysMillis = TimeUnit.DAYS.toMillis(ONE_CONST)
 
-            when {
-                diffMillis < oneDaysMillis -> setupCountDownTimer(data.deadlineMillis)
-                diffMillis in oneDaysMillis until fourDaysMillis -> showTimerLastFourDays(data.deadlineMillis)
-                diffMillis in (fourDaysMillis.plus(LAST_ONE)) until nineDaysMillis -> {
-                    showTimerLastNineDays(data.deadlineMillis)
-                }
-                diffMillis > nineDaysMillis -> showTimerMoreThanNineDays(data.deadlineMillis)
+        when {
+            diffMillis < oneDaysMillis -> setupCountDownTimer(data.deadlineMillis)
+            diffMillis in oneDaysMillis until fourDaysMillis -> showTimerLastFourDays(data.deadlineMillis)
+            diffMillis in (fourDaysMillis.plus(LAST_ONE)) until nineDaysMillis -> {
+                showTimerLastNineDays(data.deadlineMillis)
             }
+            diffMillis > nineDaysMillis -> showTimerMoreThanNineDays(data.deadlineMillis)
         }
     }
 
@@ -384,7 +403,7 @@ class MilestoneViewHolder(
             containerShcMilestoneError.visible()
             tvShcMilestoneErrorStateTitle.text = element.title
             btnMilestoneError.setOnClickListener {
-                listener.reloadMilestoneWidget(element)
+                listener.onReloadWidget(element)
             }
 
             imgMilestoneOnError.loadImage(com.tokopedia.globalerror.R.drawable.unify_globalerrors_connection)
@@ -411,8 +430,6 @@ class MilestoneViewHolder(
 
     interface Listener : BaseViewHolderListener {
 
-        fun reloadMilestoneWidget(model: MilestoneWidgetUiModel) {}
-
         fun onMilestoneMissionActionClickedListener(
             element: MilestoneWidgetUiModel,
             mission: BaseMilestoneMissionUiModel,
@@ -429,6 +446,7 @@ class MilestoneViewHolder(
         }
 
         fun sendMilestoneWidgetCtaClickEvent() {}
+
         fun sendMilestoneWidgetMinimizeClickEvent() {}
     }
 }

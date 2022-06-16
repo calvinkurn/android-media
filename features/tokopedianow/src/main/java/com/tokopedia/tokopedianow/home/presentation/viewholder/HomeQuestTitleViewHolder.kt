@@ -14,6 +14,7 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.common.constant.ConstantUrl.QUEST_DETAIL_PRODUCTION_URL
 import com.tokopedia.tokopedianow.common.constant.ConstantUrl.QUEST_DETAIL_STAGING_URL
+import com.tokopedia.tokopedianow.common.util.ImageUtil.setBackgroundImage
 import com.tokopedia.tokopedianow.databinding.ItemTokopedianowQuestTitleWidgetBinding
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeQuestTitleUiModel
 import com.tokopedia.url.Env
@@ -26,6 +27,7 @@ class HomeQuestTitleViewHolder(
 ): AbstractViewHolder<HomeQuestTitleUiModel>(itemView) {
 
     companion object {
+        private const val BG_QUEST_TITLE = "https://images.tokopedia.net/img/android/tokonow/bg_quest_title.png"
         @LayoutRes
         val LAYOUT = R.layout.item_tokopedianow_quest_title_widget
     }
@@ -42,7 +44,9 @@ class HomeQuestTitleViewHolder(
     }
 
     private fun hideShimmering() {
-        binding?.container?.setBackgroundResource(R.drawable.tokopedianow_bg_quest_title)
+        binding?.container?.apply {
+            setBackgroundImage(context, BG_QUEST_TITLE, binding?.container)
+        }
         binding?.questTitleWidgetShimmering?.root?.hide()
     }
 

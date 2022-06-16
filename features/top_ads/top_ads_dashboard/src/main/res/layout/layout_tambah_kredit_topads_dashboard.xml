@@ -1,0 +1,77 @@
+<com.tokopedia.unifycomponents.CardUnify xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="@dimen/spacing_lvl2"
+    app:card_type="shadow"
+    app:layout_constraintEnd_toEndOf="parent"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintTop_toBottomOf="@id/hari_ini">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingVertical="@dimen/unify_space_12">
+
+        <com.tokopedia.unifycomponents.ImageUnify
+            android:id="@+id/creditHistoryImage"
+            android:layout_width="@dimen/layout_lvl4"
+            android:layout_height="@dimen/layout_lvl4"
+            android:layout_marginStart="@dimen/unify_space_12"
+            android:src="@drawable/iconunify_wallet"
+            android:tint="@color/Unify_NN900"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/credit_topads"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/spacing_lvl3"
+            android:text="@string/topads_dash_desc_credit_label"
+            app:layout_constraintStart_toEndOf="@id/creditHistoryImage"
+            app:layout_constraintTop_toTopOf="@id/creditHistoryImage"
+            app:layout_constraintBottom_toTopOf="@id/creditAmount"
+            app:typographyType="small" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/creditAmount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/credit_topads"
+            android:layout_marginStart="@dimen/spacing_lvl3"
+            android:textColor="@color/black"
+            app:layout_constraintStart_toEndOf="@id/creditHistoryImage"
+            app:layout_constraintTop_toBottomOf="@id/credit_topads"
+            app:layout_constraintBottom_toBottomOf="@id/creditHistoryImage"
+            app:typographyType="heading_6"
+            app:typographyWeight="bold"
+            tools:text="Rp 10.000.0000" />
+
+        <com.tokopedia.unifycomponents.ImageUnify
+            android:id="@+id/btnRefreshCredits"
+            android:layout_width="@dimen/unify_space_12"
+            android:layout_height="@dimen/unify_space_12"
+            android:layout_marginStart="@dimen/spacing_lvl2"
+            android:layout_toEndOf="@id/creditAmount"
+            android:src="@drawable/topads_dash_auto_debit"
+            app:layout_constraintBottom_toBottomOf="@id/creditAmount"
+            app:layout_constraintStart_toEndOf="@id/creditAmount"
+            app:layout_constraintTop_toTopOf="@id/creditAmount" />
+
+        <com.tokopedia.unifycomponents.UnifyButton
+            android:id="@+id/addCredit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/spacing_lvl3"
+            android:text="@string/label_add_credit"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:unifyButtonSize="small"
+            app:unifyButtonType="main"
+            app:unifyButtonVariant="ghost" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</com.tokopedia.unifycomponents.CardUnify>

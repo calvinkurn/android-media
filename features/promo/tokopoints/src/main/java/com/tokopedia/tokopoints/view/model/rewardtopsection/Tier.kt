@@ -5,8 +5,11 @@ import com.google.gson.annotations.SerializedName
 data class Tier(
 
 	@SerializedName("nameDesc")
-	val nameDesc: String? = null,
+	var nameDesc: String? = null,
 
 	@SerializedName("id")
-	val id: Int? = null
+	val id: Int? = null,
+
+	@SerializedName("eggImageHomepageURL")
+	val imageURL: String? = null
 )

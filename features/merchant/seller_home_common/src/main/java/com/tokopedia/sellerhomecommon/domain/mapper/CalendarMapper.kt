@@ -1,6 +1,7 @@
 package com.tokopedia.sellerhomecommon.domain.mapper
 
 import com.tokopedia.sellerhomecommon.common.const.ShcConst
+import com.tokopedia.sellerhomecommon.data.WidgetLastUpdatedSharedPrefInterface
 import com.tokopedia.sellerhomecommon.domain.model.CalendarEventModel
 import com.tokopedia.sellerhomecommon.domain.model.GetCalendarDataResponse
 import com.tokopedia.sellerhomecommon.presentation.model.CalendarDataUiModel
@@ -15,7 +16,10 @@ import kotlin.math.abs
  * Created by @ilhamsuaib on 07/02/22.
  */
 
-class CalendarMapper @Inject constructor() :
+class CalendarMapper @Inject constructor(
+    lastUpdatedSharedPref: WidgetLastUpdatedSharedPrefInterface,
+    lastUpdatedEnabled: Boolean
+) : BaseWidgetMapper(lastUpdatedSharedPref, lastUpdatedEnabled),
     BaseResponseMapper<GetCalendarDataResponse, List<CalendarDataUiModel>> {
 
     companion object {
@@ -32,7 +36,8 @@ class CalendarMapper @Inject constructor() :
                 error = data.errorMsg,
                 isFromCache = isFromCache,
                 showWidget = data.showWidget,
-                eventGroups = getEventGroups(data.events)
+                eventGroups = getEventGroups(data.events),
+                lastUpdated = getLastUpdatedMillis(data.dataKey, isFromCache)
             )
         }
     }

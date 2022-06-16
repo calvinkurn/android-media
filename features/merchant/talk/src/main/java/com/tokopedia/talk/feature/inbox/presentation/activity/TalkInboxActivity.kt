@@ -9,8 +9,8 @@ import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceCallback
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
+import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.talk.common.analytics.TalkPerformanceMonitoringConstants
 import com.tokopedia.talk.common.analytics.TalkPerformanceMonitoringListener
@@ -129,12 +129,12 @@ class TalkInboxActivity : BaseSimpleActivity(), TalkPerformanceMonitoringListene
 
     override fun onBackPressed() {
         if(isTaskRoot) {
-            goToSellerHome()
+            goToHome()
         }
         super.onBackPressed()
     }
 
-    private fun goToSellerHome() {
-        RouteManager.route(this, ApplinkConstInternalSellerapp.SELLER_HOME)
+    private fun goToHome() {
+        RouteManager.route(this, ApplinkConst.HOME)
     }
 }

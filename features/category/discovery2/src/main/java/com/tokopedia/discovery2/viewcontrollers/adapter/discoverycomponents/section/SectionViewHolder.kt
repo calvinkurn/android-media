@@ -31,6 +31,11 @@ class SectionViewHolder(itemView: View, val fragment: Fragment) :
     override fun setUpObservers(lifecycleOwner: LifecycleOwner?) {
         super.setUpObservers(lifecycleOwner)
         lifecycleOwner?.let {
+            viewModel.hideSection.observe(it,{ shouldHideSection ->
+                if(shouldHideSection){
+                    (fragment as DiscoveryFragment).handleHideSection(viewModel.getSectionID())
+                }
+            })
             viewModel.getSyncPageLiveData().observe(it, { shouldSync ->
                 if (shouldSync)
                     (fragment as DiscoveryFragment).reSync()
@@ -54,6 +59,7 @@ class SectionViewHolder(itemView: View, val fragment: Fragment) :
     override fun removeObservers(lifecycleOwner: LifecycleOwner?) {
         super.removeObservers(lifecycleOwner)
         lifecycleOwner?.let {
+            viewModel.hideSection.removeObservers(it)
             viewModel.getSyncPageLiveData().removeObservers(it)
             viewModel.hideShimmerLD.removeObservers(it)
             viewModel.showErrorState.removeObservers(it)

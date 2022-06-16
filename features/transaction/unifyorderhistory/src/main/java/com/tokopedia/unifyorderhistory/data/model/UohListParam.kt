@@ -39,4 +39,15 @@ data class UohListParam(
 
         @SerializedName("IsSortAsc")
         var isSortAsc: Boolean = false
-    )
+    ) {
+
+        fun hasActiveFilter(): Boolean {
+                return createTime.isNotBlank() ||
+                        createTimeEnd.isNotBlank() ||
+                        createTimeStart.isNotBlank() ||
+                        searchableText.isNotBlank() ||
+                        status.isNotBlank() ||
+                        verticalCategory.isNotBlank() ||
+                        verticalID.isNotBlank()
+        }
+}

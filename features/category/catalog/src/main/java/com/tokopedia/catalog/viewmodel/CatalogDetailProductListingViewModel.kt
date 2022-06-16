@@ -6,9 +6,11 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.catalog.adapter.factory.CatalogTypeFactory
 import com.tokopedia.catalog.model.raw.CatalogProductItem
 import com.tokopedia.catalog.model.raw.ProductListResponse
+import com.tokopedia.catalog.ui.fragment.CatalogDetailProductListingFragment
 import com.tokopedia.catalog.usecase.listing.CatalogDynamicFilterUseCase
 import com.tokopedia.catalog.usecase.listing.CatalogGetProductListUseCase
 import com.tokopedia.catalog.usecase.listing.CatalogQuickFilterUseCase
+import com.tokopedia.catalog.viewholder.products.CatalogForYouContainerDataModel
 import com.tokopedia.discovery.common.model.SearchParameter
 import com.tokopedia.filter.common.data.DynamicFilterModel
 import com.tokopedia.filter.common.data.Option
@@ -26,7 +28,7 @@ class CatalogDetailProductListingViewModel
                     private val getProductListUseCase: CatalogGetProductListUseCase) : ViewModel() {
 
     val mProductList = MutableLiveData<Result<List<CatalogProductItem>>>()
-    val mProductCount = MutableLiveData<String>()
+    val mProductCount = MutableLiveData<Int>()
     val mQuickFilterModel = MutableLiveData<Result<DynamicFilterModel>>()
     val mDynamicFilterModel = MutableLiveData<Result<DynamicFilterModel>>()
 
@@ -45,23 +47,22 @@ class CatalogDetailProductListingViewModel
     var isPagingAllowed: Boolean = true
     var catalogUrl = ""
     var catalogName = ""
+    var catalogId = ""
+    var categoryId = ""
+    var brand  = ""
+    var comparisonCardIsAdded = false
+    var lastSeenProductPosition = 0
 
     val list: ArrayList<Visitable<CatalogTypeFactory>> = ArrayList()
 
     fun fetchProductListing(params: RequestParams) {
+        comparisonCardIsAdded = pageCount != 0
         getProductListUseCase.execute(params, object : Subscriber<ProductListResponse>() {
             override fun onNext(productListResponse: ProductListResponse?) {
                 productListResponse?.let { productResponse ->
-                    (productResponse.searchProduct)?.let { searchProduct ->
-                        searchProduct.data.catalogProductItemList.let { productList ->
-                            mProductList.value = Success((productList) as List<CatalogProductItem>)
-                            list.addAll(productList as ArrayList<Visitable<CatalogTypeFactory>>)
-                            pageCount++
-                        }
-                        mProductCount.value = searchProduct.data.totalData.toString()
-                    }
+                    processProductListResponse(productResponse)
                 }
-
+                addCatalogForYouCard()
             }
 
             override fun onCompleted() {
@@ -69,9 +70,21 @@ class CatalogDetailProductListingViewModel
             }
 
             override fun onError(e: Throwable) {
+                addCatalogForYouCard()
                 mProductList.value = Fail(e)
             }
         })
+    }
+
+    private fun processProductListResponse(productResponse : ProductListResponse){
+        (productResponse.searchProduct)?.let { searchProduct ->
+            searchProduct.data.catalogProductItemList.let { productList ->
+                mProductList.value = Success((productList) as List<CatalogProductItem>)
+                list.addAll(productList as ArrayList<Visitable<CatalogTypeFactory>>)
+                pageCount++
+            }
+            mProductCount.value = searchProduct.data.totalData
+        }
     }
 
     fun fetchQuickFilters(params: RequestParams) {
@@ -103,6 +116,17 @@ class CatalogDetailProductListingViewModel
                 mDynamicFilterModel.value = (Fail(e))
             }
         })
+    }
+
+    private fun addCatalogForYouCard() {
+        if (!comparisonCardIsAdded){
+            comparisonCardIsAdded = true
+            if(list.size - 1 >= CatalogDetailProductListingFragment.MORE_CATALOG_WIDGET_INDEX){
+                list.add(CatalogDetailProductListingFragment.MORE_CATALOG_WIDGET_INDEX,CatalogForYouContainerDataModel() as Visitable<CatalogTypeFactory>)
+            }else {
+                list.add(CatalogForYouContainerDataModel() as Visitable<CatalogTypeFactory>)
+            }
+        }
     }
 
     fun getDynamicFilterData(): MutableLiveData<Result<DynamicFilterModel>> {

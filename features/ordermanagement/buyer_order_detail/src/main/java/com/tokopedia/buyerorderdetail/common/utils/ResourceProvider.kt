@@ -63,6 +63,10 @@ class ResourceProvider @Inject constructor() {
         return R.string.message_awb_copied
     }
 
+    fun getCopyMessageDropshipper(): Int {
+        return R.string.message_dropshipper_copied
+    }
+
     fun getReceiverAddressLabel(): Int {
         return R.string.label_address
     }
@@ -71,7 +75,7 @@ class ResourceProvider @Inject constructor() {
         return R.string.label_awb_number
     }
 
-    fun getDropshipLabel(): Int {
+    fun getDropshipperLabel(): Int {
         return R.string.label_dropshipper
     }
 
@@ -81,6 +85,10 @@ class ResourceProvider @Inject constructor() {
 
     fun getCopyLabelAwb(): Int {
         return R.string.copy_label_awb_number
+    }
+
+    fun getCopyLabelDropshipper(): Int {
+        return R.string.copy_label_dropship
     }
 
     fun composeDriverTippingInfoDescription(

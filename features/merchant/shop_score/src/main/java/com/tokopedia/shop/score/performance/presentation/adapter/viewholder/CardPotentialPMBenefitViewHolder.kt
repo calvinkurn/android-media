@@ -29,7 +29,7 @@ class CardPotentialPMBenefitViewHolder(
         itemPotentialPMBenefitAdapter = ItemPotentialPMBenefitAdapter(itemRegularMerchantListener)
         binding?.run {
             setPotentialPMBenefitAdapter(element)
-            root.setOnClickListener {
+            tvSsCtaNonEligiblePm.setOnClickListener {
                 itemRegularMerchantListener.onRMSectionToPMPage()
             }
         }

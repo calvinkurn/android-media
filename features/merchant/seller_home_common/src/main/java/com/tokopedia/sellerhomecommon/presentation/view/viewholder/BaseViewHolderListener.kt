@@ -18,4 +18,6 @@ interface BaseViewHolderListener {
     fun getIsShouldRemoveWidget(): Boolean
 
     fun onRemoveWidget(position: Int)
+
+    fun onReloadWidget(widget: BaseWidgetUiModel<*>) {}
 }

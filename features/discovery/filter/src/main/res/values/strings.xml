@@ -16,6 +16,7 @@
     <string name="choose_category">Pilih Kategori</string>
     <string name="error_get_local_dynamic_filter">Gagal memproses data Filter</string>
     <string name="bottom_sheet_filter_finish_button_template_text">Tampilkan %s produk</string>
+    <string name="bottom_sheet_filter_finish_button_no_count">Tampilkan produk</string>
 
     <string name="title_category">Kategori</string>
     <string name="title_sort_but">Urutkan</string>
@@ -46,4 +47,6 @@
     <string name="content_desc_filterSeeAll">button lihat semua filter</string>
     <string name="content_desc_iconNew">icon new</string>
     <string name="content_desc_ratingView">rating view</string>
+    <string name="content_desc_filter_colorSample">color sample</string>
+    <string name="content_desc_filter_optionIcon">option icon</string>
 </resources>

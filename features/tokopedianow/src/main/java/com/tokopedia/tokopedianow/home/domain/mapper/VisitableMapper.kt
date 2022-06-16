@@ -22,7 +22,7 @@ object VisitableMapper {
         return firstOrNull { it.layout?.getVisitableId() == visitableId }?.let { indexOf(it) }
     }
 
-    private fun Visitable<*>.getVisitableId(): String? {
+    fun Visitable<*>.getVisitableId(): String? {
         return when (this) {
             is HomeLayoutUiModel -> visitableId
             is HomeComponentVisitable -> visitableId()

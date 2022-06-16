@@ -3,13 +3,15 @@ package com.tokopedia.shop_showcase.viewmodel.shopshowcasemanagement
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.shop.common.graphql.data.shopetalase.ShopShowcaseListSellerResponse
 import com.tokopedia.shop.common.graphql.domain.usecase.shopetalase.GetShopEtalaseUseCase
-import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.shop_showcase.shop_showcase_add.data.model.AddShopShowcaseParam
 import com.tokopedia.shop_showcase.shop_showcase_add.data.model.AddShopShowcaseResponse
 import com.tokopedia.shop_showcase.shop_showcase_add.domain.usecase.CreateShopShowcaseUseCase
-import com.tokopedia.shop_showcase.shop_showcase_management.data.model.GetShopProductsResponse
-import com.tokopedia.shop_showcase.shop_showcase_management.domain.GetShopShowcaseTotalProductUseCase
 import com.tokopedia.shop_showcase.shop_showcase_management.presentation.viewmodel.ShopShowcasePickerViewModel
+import com.tokopedia.shop_showcase.shop_showcase_product_add.data.model.Product
+import com.tokopedia.shop_showcase.shop_showcase_product_add.domain.mapper.ProductMapper
+import com.tokopedia.shop_showcase.shop_showcase_product_add.domain.model.GetProductListFilter
+import com.tokopedia.shop_showcase.shop_showcase_product_add.domain.usecase.GetProductListUseCase
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import io.mockk.*
@@ -24,6 +26,7 @@ import kotlinx.coroutines.runBlocking
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
+import org.mockito.ArgumentMatchers
 
 @ExperimentalCoroutinesApi
 class ShopShowcasePickerViewModelTest {
@@ -32,7 +35,7 @@ class ShopShowcasePickerViewModelTest {
     lateinit var getShopEtalaseUseCase: GetShopEtalaseUseCase
 
     @RelaxedMockK
-    lateinit var getShopShowcaseTotalProductUseCase: GetShopShowcaseTotalProductUseCase
+    lateinit var getProductListUseCase: GetProductListUseCase
 
     @RelaxedMockK
     lateinit var createShopShowcaseUseCase: CreateShopShowcaseUseCase
@@ -47,7 +50,7 @@ class ShopShowcasePickerViewModelTest {
         MockKAnnotations.init(this)
         viewModel = ShopShowcasePickerViewModel(
                 getShopEtalaseUseCase,
-                getShopShowcaseTotalProductUseCase,
+                getProductListUseCase,
                 createShopShowcaseUseCase,
                 CoroutineTestDispatchersProvider
         )
@@ -93,32 +96,22 @@ class ShopShowcasePickerViewModelTest {
     @Test
     fun `when get total product should return success`() {
         runBlocking {
-            val shopId = "123456"
-            val page = 1
-            val perPage = 15
-            val fkeyword = ""
-            val sort = 0
-            val fmenu = "etalase"
 
-            coEvery {
-                getShopShowcaseTotalProductUseCase.executeOnBackground()
-            } returns GetShopProductsResponse()
+            val productList = listOf<Product>()
+            val productMapper = ProductMapper()
+            val showCaseProductList = productMapper.mapToUIModel(productList)
+            coEvery { getProductListUseCase.executeOnBackground() } returns showCaseProductList
 
-            viewModel.getTotalProduct(
-                    shopId = shopId,
-                    page = page,
-                    perPage = perPage,
-                    sortId = sort,
-                    etalase = fmenu,
-                    search = fkeyword
+            val productListFilter = GetProductListFilter(perPage = 1)
+            viewModel.getTotalProducts(
+                    shopId = "123",
+                    filter = productListFilter
             )
 
-            coVerify {
-                getShopShowcaseTotalProductUseCase.executeOnBackground()
-            }
+            coVerify { getProductListUseCase.executeOnBackground() }
 
-            val expectedResponse = Success(GetShopProductsResponse())
-            val actualResponse = viewModel.getShopProductResponse.value as Success<GetShopProductsResponse>
+            val expectedResponse = Success(ArgumentMatchers.anyInt())
+            val actualResponse = viewModel.shopTotalProduct.value as Success<Int>
             assertEquals(expectedResponse, actualResponse)
         }
     }
@@ -126,31 +119,16 @@ class ShopShowcasePickerViewModelTest {
     @Test
     fun `Get total product Fail Scenario`() {
         runBlocking {
-            val shopId = "123456"
-            val page = 1
-            val perPage = 15
-            val fkeyword = ""
-            val sort = 0
-            val fmenu = "etalase"
+            coEvery { getProductListUseCase.executeOnBackground() } throws Exception()
 
-            coEvery {
-                getShopShowcaseTotalProductUseCase.executeOnBackground()
-            } throws Exception()
-
-            viewModel.getTotalProduct(
-                    shopId = shopId,
-                    page = page,
-                    perPage = perPage,
-                    sortId = sort,
-                    etalase = fmenu,
-                    search = fkeyword
+            val productListFilter = GetProductListFilter(perPage = 1)
+            viewModel.getTotalProducts(
+                    shopId = "123",
+                    filter = productListFilter
             )
 
-            coVerify {
-                getShopShowcaseTotalProductUseCase.executeOnBackground()
-            }
-
-            assertTrue(viewModel.getShopProductResponse.value is Fail)
+            coVerify { getProductListUseCase.executeOnBackground() }
+            assertTrue(viewModel.shopTotalProduct.value is Fail)
         }
     }
 

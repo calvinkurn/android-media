@@ -57,6 +57,7 @@ class SingleProductAttachmentContainer : ConstraintLayout {
     private var sellerStockCount: Typography? = null
     private var sellerFullfilment: LinearLayout? = null
     private var sellerFullfilmentImage: ImageView? = null
+    private var sellerFulfillmentDesc: Typography? = null
     private var btnUpdateStockContainer: LinearLayout? = null
     private var btnUpdateStock: UnifyButton? = null
     private var footerContainer: LinearLayout? = null
@@ -147,6 +148,7 @@ class SingleProductAttachmentContainer : ConstraintLayout {
         sellerStockCount = findViewById(R.id.tp_seller_stock_count)
         sellerFullfilment = findViewById(R.id.ll_seller_fullfilment)
         sellerFullfilmentImage = findViewById(R.id.iv_seller_fullfilment)
+        sellerFulfillmentDesc = findViewById(R.id.tp_seller_fullfilment)
         btnUpdateStockContainer = findViewById(R.id.ll_seller_update_stock)
         btnUpdateStock = findViewById(R.id.btn_update_stock)
         footerContainer = findViewById(R.id.ll_footer)
@@ -404,6 +406,7 @@ class SingleProductAttachmentContainer : ConstraintLayout {
             sellerFullfilmentImage?.loadImage(product.urlTokocabang) {
                 fitCenter()
             }
+            sellerFulfillmentDesc?.text = product.descTokoCabang
         } else {
             sellerFullfilment?.hide()
         }

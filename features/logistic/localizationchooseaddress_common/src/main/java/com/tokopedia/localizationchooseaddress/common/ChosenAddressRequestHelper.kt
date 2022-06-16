@@ -9,7 +9,6 @@ import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.kotlin.extensions.view.toZeroStringIfNullOrBlank
 import com.tokopedia.localizationchooseaddress.domain.model.LocalWarehouseModel
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
-import com.tokopedia.usecase.RequestParams
 import kotlinx.parcelize.Parcelize
 import javax.inject.Inject
 
@@ -67,11 +66,6 @@ class ChosenAddressRequestHelper @Inject constructor(@ApplicationContext private
         return context
     }
 
-    fun addChosenAddressParam(requestParams: RequestParams): RequestParams {
-        requestParams.putObject(KEY_CHOSEN_ADDRESS, getChosenAddress())
-        return requestParams
-    }
-
     fun getChosenAddress(): ChosenAddress {
         ChooseAddressUtils.getLocalizingAddressData(getContext()).let {
             val addressId = it.address_id.toZeroStringIfNullOrBlank()
@@ -83,8 +77,8 @@ class ChosenAddressRequestHelper @Inject constructor(@ApplicationContext private
                 postalCode = it.postal_code,
                 geolocation = it.latLong,
                 tokonow = ChosenAddressTokonow(
-                    shopId = it.shop_id,
-                    warehouseId = it.warehouse_id,
+                    shopId = it.shop_id.toZeroStringIfNullOrBlank(),
+                    warehouseId = it.warehouse_id.toZeroStringIfNullOrBlank(),
                     warehouses = it.warehouses,
                     serviceType = it.service_type
                 )

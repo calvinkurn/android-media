@@ -427,4 +427,46 @@ class CommonTopupBillsAnalytics {
             )
         )
     }
+
+    fun eventClickMenuFavoriteNumberDelete(categoryName: String, operatorName: String, loyaltyStatus: String, userId: String) {
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+            DataLayer.mapOf(
+                TrackAppUtils.EVENT, Event.CLICK_DIGITAL,
+                TrackAppUtils.EVENT_CATEGORY, Category.DIGITAL_PDP_FAVORITE_NUMBER,
+                TrackAppUtils.EVENT_ACTION, Action.FAVNUMBER_CLICK_DELETE_ON_KEBAB_MENU,
+                TrackAppUtils.EVENT_LABEL, "${categoryName}_${operatorName}_${loyaltyStatus}",
+                DigitalTrackingConst.Label.BUSINESS_UNIT, DigitalTrackingConst.Value.RECHARGE_BU,
+                DigitalTrackingConst.Label.CURRENTSITE, DigitalTrackingConst.Value.RECHARGE_SITE,
+                DigitalTrackingConst.Label.USER_ID, userId
+            )
+        )
+    }
+
+    fun eventClickMenuFavoriteNumberModify(categoryName: String, operatorName: String, loyaltyStatus: String, userId: String) {
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+            DataLayer.mapOf(
+                TrackAppUtils.EVENT, Event.CLICK_DIGITAL,
+                TrackAppUtils.EVENT_CATEGORY, Category.DIGITAL_PDP_FAVORITE_NUMBER,
+                TrackAppUtils.EVENT_ACTION, Action.FAVNUMBER_CLICK_UBAH_NAMA_ON_KEBAB_MENU,
+                TrackAppUtils.EVENT_LABEL, "${categoryName}_${operatorName}_${loyaltyStatus}",
+                DigitalTrackingConst.Label.BUSINESS_UNIT, DigitalTrackingConst.Value.RECHARGE_BU,
+                DigitalTrackingConst.Label.CURRENTSITE, DigitalTrackingConst.Value.RECHARGE_SITE,
+                DigitalTrackingConst.Label.USER_ID, userId
+            )
+        )
+    }
+
+    fun eventClickMenuCancelFavoriteNumberModify(categoryName: String, operatorName: String, loyaltyStatus: String, userId: String) {
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+            DataLayer.mapOf(
+                TrackAppUtils.EVENT, Event.CLICK_DIGITAL,
+                TrackAppUtils.EVENT_CATEGORY, Category.DIGITAL_PDP_FAVORITE_NUMBER,
+                TrackAppUtils.EVENT_ACTION, Action.FAVNUMBER_CLICK_X_ON_KEBAB_MENU,
+                TrackAppUtils.EVENT_LABEL, "${categoryName}_${operatorName}_${loyaltyStatus}",
+                DigitalTrackingConst.Label.BUSINESS_UNIT, DigitalTrackingConst.Value.RECHARGE_BU,
+                DigitalTrackingConst.Label.CURRENTSITE, DigitalTrackingConst.Value.RECHARGE_SITE,
+                DigitalTrackingConst.Label.USER_ID, userId
+            )
+        )
+    }
 }

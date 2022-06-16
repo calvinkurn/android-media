@@ -17,4 +17,8 @@ object DeeplinkMapperLogistic {
         val orderId = uri.getQueryParameter(QUERY_PARAM_ORDER_ID) ?: uri.pathSegments.last()
         return ApplinkConstInternalLogistic.RESCHEDULE_PICKUP.replace("{order_id}", orderId)
     }
+
+    fun getRegisteredNavigationPod(deepLink: String): String {
+        return deepLink.replace(HEADER_TEMPLATE, ApplinkConstInternalLogistic.INTERNAL_LOGISTIC)
+    }
 }

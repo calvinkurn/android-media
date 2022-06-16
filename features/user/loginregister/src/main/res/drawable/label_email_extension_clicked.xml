@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <selector xmlns:android="http://schemas.android.com/apk/res/android" xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingDefaultResource">
-  <item>
-    <shape android:shape="rectangle">
-      <corners android:radius="12dp" />
-      <solid android:color="@color/Unify_G100" />
-      <stroke android:width="1dp" android:color="@color/Unify_G400" />
-    </shape>
-  </item>
+    <item>
+        <shape android:shape="rectangle">
+            <corners android:radius="12dp"/>
+            <solid android:color="@color/Unify_G100"/>
+            <stroke android:width="1dp" android:color="@color/Unify_G400"/>
+        </shape>
+    </item>
 </selector>

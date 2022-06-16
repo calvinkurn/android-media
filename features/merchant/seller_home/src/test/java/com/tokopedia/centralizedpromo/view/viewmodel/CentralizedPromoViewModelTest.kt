@@ -1,11 +1,18 @@
 package com.tokopedia.centralizedpromo.view.viewmodel
 
 import android.content.Context
+import android.content.SharedPreferences
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.centralizedpromo.analytic.CentralizedPromoTracking
 import com.tokopedia.centralizedpromo.common.util.CentralizedPromoResourceProvider
-import com.tokopedia.centralizedpromo.domain.usecase.*
+import com.tokopedia.centralizedpromo.domain.usecase.CheckNonTopAdsUserUseCase
+import com.tokopedia.centralizedpromo.domain.usecase.GetChatBlastSellerMetadataUseCase
+import com.tokopedia.centralizedpromo.domain.usecase.GetOnGoingPromotionUseCase
+import com.tokopedia.centralizedpromo.domain.usecase.SellerHomeGetWhiteListedUserUseCase
+import com.tokopedia.centralizedpromo.domain.usecase.SlashPriceEligibleUseCase
+import com.tokopedia.centralizedpromo.domain.usecase.VoucherCashbackEligibleUseCase
+import com.tokopedia.centralizedpromo.view.FirstPromoDataSource
 import com.tokopedia.centralizedpromo.view.LayoutType
 import com.tokopedia.centralizedpromo.view.PromoCreationStaticData
 import com.tokopedia.centralizedpromo.view.model.*
@@ -48,6 +55,12 @@ class CentralizedPromoViewModelTest {
 
     @RelaxedMockK
     lateinit var voucherCashbackEligibleUseCase: VoucherCashbackEligibleUseCase
+
+    @RelaxedMockK
+    lateinit var slashPriceEligibleUseCase: SlashPriceEligibleUseCase
+
+    @RelaxedMockK
+    lateinit var sharedPref: SharedPreferences
 
     @RelaxedMockK
     lateinit var checkNonTopAdsUserUseCase: CheckNonTopAdsUserUseCase
@@ -105,9 +118,11 @@ class CentralizedPromoViewModelTest {
             getOnGoingPromotionUseCase,
             getChatBlastSellerMetadataUseCase,
             voucherCashbackEligibleUseCase,
+            slashPriceEligibleUseCase,
             checkNonTopAdsUserUseCase,
             sellerHomeGetWhiteListedUserUseCase,
             remoteConfig,
+            sharedPref,
             coroutineTestRule.dispatchers
         )
     }
@@ -179,6 +194,10 @@ class CentralizedPromoViewModelTest {
         } returns false
 
         coEvery {
+            slashPriceEligibleUseCase.execute(any())
+        } returns false
+
+        coEvery {
             checkNonTopAdsUserUseCase.execute(any())
         } returns true
 
@@ -188,6 +207,10 @@ class CentralizedPromoViewModelTest {
 
         coEvery {
             remoteConfig.getBoolean(RemoteConfigKey.FREE_SHIPPING_FEATURE_DISABLED, true)
+        } returns true
+
+        coEvery {
+            remoteConfig.getBoolean(RemoteConfigKey.ENABLE_SLASH_PRICE, true)
         } returns true
 
         every {
@@ -206,7 +229,7 @@ class CentralizedPromoViewModelTest {
 
         assert(result != null && result is Success &&
                 result.data is PromoCreationListUiModel &&
-                (result.data as PromoCreationListUiModel).items[1].extra == "200 kuota gratis")
+                (result.data as PromoCreationListUiModel).items[3].extra == "200 kuota gratis")
     }
 
     @Test
@@ -224,6 +247,10 @@ class CentralizedPromoViewModelTest {
         } returns true
 
         coEvery {
+            slashPriceEligibleUseCase.execute(any())
+        } returns true
+
+        coEvery {
             checkNonTopAdsUserUseCase.execute(any())
         } returns true
 
@@ -239,7 +266,7 @@ class CentralizedPromoViewModelTest {
 
         assert(result != null && result is Success &&
                 result.data is PromoCreationListUiModel &&
-                (result.data as PromoCreationListUiModel).items[1].extra.isEmpty())
+                (result.data as PromoCreationListUiModel).items[2].extra.isEmpty())
     }
 
     @Test
@@ -257,11 +284,19 @@ class CentralizedPromoViewModelTest {
         } returns true
 
         coEvery {
+            slashPriceEligibleUseCase.execute(any())
+        } returns true
+
+        coEvery {
             checkNonTopAdsUserUseCase.execute(any())
         } returns true
 
         coEvery {
             sellerHomeGetWhiteListedUserUseCase.executeQuery()
+        } returns true
+
+        coEvery {
+            remoteConfig.getBoolean(RemoteConfigKey.ENABLE_SLASH_PRICE, true)
         } returns true
 
         viewModel.getLayoutData(LayoutType.PROMO_CREATION)
@@ -272,7 +307,7 @@ class CentralizedPromoViewModelTest {
 
         assert(result != null && result is Success &&
                 result.data is PromoCreationListUiModel &&
-                (result.data as PromoCreationListUiModel).items[1].extra.isEmpty())
+                (result.data as PromoCreationListUiModel).items[2].extra.isEmpty())
     }
 
     @Test
@@ -290,11 +325,19 @@ class CentralizedPromoViewModelTest {
         } returns true
 
         coEvery {
+            slashPriceEligibleUseCase.execute(any())
+        } returns true
+
+        coEvery {
             checkNonTopAdsUserUseCase.execute(any())
         } returns false
 
         coEvery {
             sellerHomeGetWhiteListedUserUseCase.executeQuery()
+        } returns true
+
+        coEvery {
+            remoteConfig.getBoolean(RemoteConfigKey.ENABLE_SLASH_PRICE, true)
         } returns true
 
         viewModel.getLayoutData(LayoutType.PROMO_CREATION)
@@ -309,9 +352,339 @@ class CentralizedPromoViewModelTest {
 
         assert(result != null && result is Success &&
                 result.data is PromoCreationListUiModel &&
-                (result.data as PromoCreationListUiModel).items[0].applink == ApplinkConst.CustomerApp.TOPADS_DASHBOARD
+                (result.data as PromoCreationListUiModel).items[2].applink == ApplinkConst.CustomerApp.TOPADS_DASHBOARD
         )
     }
+
+    @Test
+    fun `When voucher cashback sharedPref returns true but eligible, should not return create voucher applink`() = runBlocking {
+        // Given
+        coEvery {
+            getChatBlastSellerMetadataUseCase.executeOnBackground()
+        } returns ChatBlastSellerMetadataUiModel(0, 1)
+        coEvery {
+            remoteConfig.getBoolean(RemoteConfigKey.FREE_SHIPPING_FEATURE_DISABLED, true)
+        } returns false
+        coEvery {
+            voucherCashbackEligibleUseCase.execute(any())
+        } returns true
+        coEvery {
+            slashPriceEligibleUseCase.execute(any())
+        } returns true
+        coEvery {
+            checkNonTopAdsUserUseCase.execute(any())
+        } returns false
+        coEvery {
+            sellerHomeGetWhiteListedUserUseCase.executeQuery()
+        } returns true
+        coEvery {
+            sharedPref.getBoolean(FirstPromoDataSource.IS_MVC_FIRST_TIME, true)
+        } returns true
+        coEvery {
+            sharedPref.getBoolean(FirstPromoDataSource.IS_TOKOPEDIA_PLAY_FIRST_TIME, true)
+        } returns true
+        coEvery {
+            remoteConfig.getBoolean(RemoteConfigKey.ENABLE_SLASH_PRICE, true)
+        } returns true
+
+        // When
+        viewModel.getLayoutData(LayoutType.PROMO_CREATION)
+
+        viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
+
+        // Then
+        val result = viewModel.getLayoutResultLiveData.value?.get(LayoutType.PROMO_CREATION)
+        val expectedApplink = "tokopedia-android-internal://sellerapp/create-voucher"
+        assert(((result as? Success)?.data as? PromoCreationListUiModel)?.items?.get(3)?.applink != expectedApplink)
+    }
+
+    @Test
+    fun `When voucher cashback sharedPref returns false but eligible, should return create voucher applink`() = runBlocking {
+        // Given
+        coEvery {
+            getChatBlastSellerMetadataUseCase.executeOnBackground()
+        } returns ChatBlastSellerMetadataUiModel(0, 1)
+        coEvery {
+            remoteConfig.getBoolean(RemoteConfigKey.FREE_SHIPPING_FEATURE_DISABLED, true)
+        } returns false
+        coEvery {
+            voucherCashbackEligibleUseCase.execute(any())
+        } returns true
+        coEvery {
+            slashPriceEligibleUseCase.execute(any())
+        } returns true
+        coEvery {
+            checkNonTopAdsUserUseCase.execute(any())
+        } returns false
+        coEvery {
+            sellerHomeGetWhiteListedUserUseCase.executeQuery()
+        } returns true
+        coEvery {
+            sharedPref.getBoolean(FirstPromoDataSource.IS_MVC_FIRST_TIME, true)
+        } returns false
+        coEvery {
+            remoteConfig.getBoolean(RemoteConfigKey.ENABLE_SLASH_PRICE, true)
+        } returns true
+
+        // When
+        viewModel.getLayoutData(LayoutType.PROMO_CREATION)
+
+        viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
+
+        // Then
+        val result = viewModel.getLayoutResultLiveData.value?.get(LayoutType.PROMO_CREATION)
+        val expectedApplink = "tokopedia-android-internal://sellerapp/create-voucher"
+        assert(((result as? Success)?.data as? PromoCreationListUiModel)?.items?.get(4)?.applink == expectedApplink)
+    }
+
+    @Test
+    fun `When voucher product sharedPref returns true, should not return create voucher product applink`() = runBlocking {
+        // Given
+        coEvery {
+            getChatBlastSellerMetadataUseCase.executeOnBackground()
+        } returns ChatBlastSellerMetadataUiModel(0, 1)
+        coEvery {
+            remoteConfig.getBoolean(RemoteConfigKey.FREE_SHIPPING_FEATURE_DISABLED, true)
+        } returns false
+        coEvery {
+            voucherCashbackEligibleUseCase.execute(any())
+        } returns true
+        coEvery {
+            slashPriceEligibleUseCase.execute(any())
+        } returns true
+        coEvery {
+            checkNonTopAdsUserUseCase.execute(any())
+        } returns false
+        coEvery {
+            sellerHomeGetWhiteListedUserUseCase.executeQuery()
+        } returns true
+        coEvery {
+            sharedPref.getBoolean(FirstPromoDataSource.IS_PRODUCT_COUPON_FIRST_TIME, true)
+        } returns true
+        coEvery {
+            remoteConfig.getBoolean(RemoteConfigKey.ENABLE_MVC_PRODUCT, true)
+        } returns true
+        coEvery {
+            remoteConfig.getBoolean(RemoteConfigKey.ENABLE_SLASH_PRICE, true)
+        } returns true
+
+        // When
+        viewModel.getLayoutData(LayoutType.PROMO_CREATION)
+
+        viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
+
+        // Then
+        val result = viewModel.getLayoutResultLiveData.value?.get(LayoutType.PROMO_CREATION)
+        val expectedApplink = "sellerapp://create-voucher-product"
+        assert(((result as? Success)?.data as? PromoCreationListUiModel)?.items?.get(5)?.applink != expectedApplink)
+    }
+
+    @Test
+    fun `When voucher product sharedPref returns false, should return create voucher product applink`() = runBlocking {
+        // Given
+        coEvery {
+            getChatBlastSellerMetadataUseCase.executeOnBackground()
+        } returns ChatBlastSellerMetadataUiModel(0, 1)
+        coEvery {
+            remoteConfig.getBoolean(RemoteConfigKey.FREE_SHIPPING_FEATURE_DISABLED, true)
+        } returns false
+        coEvery {
+            voucherCashbackEligibleUseCase.execute(any())
+        } returns true
+        coEvery {
+            slashPriceEligibleUseCase.execute(any())
+        } returns true
+        coEvery {
+            checkNonTopAdsUserUseCase.execute(any())
+        } returns false
+        coEvery {
+            sellerHomeGetWhiteListedUserUseCase.executeQuery()
+        } returns true
+        coEvery {
+            sharedPref.getBoolean(FirstPromoDataSource.IS_PRODUCT_COUPON_FIRST_TIME, true)
+        } returns false
+        coEvery {
+            remoteConfig.getBoolean(RemoteConfigKey.ENABLE_MVC_PRODUCT, true)
+        } returns true
+        coEvery {
+            remoteConfig.getBoolean(RemoteConfigKey.ENABLE_SLASH_PRICE, true)
+        } returns true
+
+        // When
+        viewModel.getLayoutData(LayoutType.PROMO_CREATION)
+
+        viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
+
+        // Then
+        val result = viewModel.getLayoutResultLiveData.value?.get(LayoutType.PROMO_CREATION)
+        val expectedApplink = "sellerapp://create-voucher-product"
+        assert(((result as? Success)?.data as? PromoCreationListUiModel)?.items?.get(6)?.applink == expectedApplink)
+    }
+
+    @Test
+    fun `When voucher product is disabled, should not show the entry point`() = runBlocking {
+        // Given
+        coEvery {
+            getChatBlastSellerMetadataUseCase.executeOnBackground()
+        } returns ChatBlastSellerMetadataUiModel(0, 1)
+        coEvery {
+            remoteConfig.getBoolean(RemoteConfigKey.FREE_SHIPPING_FEATURE_DISABLED, true)
+        } returns false
+        coEvery {
+            voucherCashbackEligibleUseCase.execute(any())
+        } returns true
+        coEvery {
+            slashPriceEligibleUseCase.execute(any())
+        } returns true
+        coEvery {
+            checkNonTopAdsUserUseCase.execute(any())
+        } returns false
+        coEvery {
+            sellerHomeGetWhiteListedUserUseCase.executeQuery()
+        } returns true
+        coEvery {
+            sharedPref.getBoolean(FirstPromoDataSource.IS_PRODUCT_COUPON_FIRST_TIME, true)
+        } returns false
+        coEvery {
+            remoteConfig.getBoolean(RemoteConfigKey.ENABLE_MVC_PRODUCT, true)
+        } returns false
+        coEvery {
+            remoteConfig.getBoolean(RemoteConfigKey.ENABLE_SLASH_PRICE, true)
+        } returns true
+
+        // When
+        viewModel.getLayoutData(LayoutType.PROMO_CREATION)
+
+        viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
+
+        // Then
+        val result = viewModel.getLayoutResultLiveData.value?.get(LayoutType.PROMO_CREATION)
+        assert(((result as? Success)?.data as? PromoCreationListUiModel)?.items?.size?.equals(7) == false)
+    }
+
+    @Test
+    fun `When voucher product isEnabled key throw exception, should not show the entry point`() = runBlocking {
+        // Given
+        coEvery {
+            getChatBlastSellerMetadataUseCase.executeOnBackground()
+        } returns ChatBlastSellerMetadataUiModel(0, 1)
+        coEvery {
+            remoteConfig.getBoolean(RemoteConfigKey.FREE_SHIPPING_FEATURE_DISABLED, true)
+        } returns false
+        coEvery {
+            voucherCashbackEligibleUseCase.execute(any())
+        } returns true
+        coEvery {
+            slashPriceEligibleUseCase.execute(any())
+        } returns true
+        coEvery {
+            checkNonTopAdsUserUseCase.execute(any())
+        } returns false
+        coEvery {
+            sellerHomeGetWhiteListedUserUseCase.executeQuery()
+        } returns true
+        coEvery {
+            sharedPref.getBoolean(FirstPromoDataSource.IS_PRODUCT_COUPON_FIRST_TIME, true)
+        } returns false
+        coEvery {
+            remoteConfig.getBoolean(RemoteConfigKey.ENABLE_MVC_PRODUCT, true)
+        } throws MessageErrorException()
+        coEvery {
+            remoteConfig.getBoolean(RemoteConfigKey.ENABLE_SLASH_PRICE, true)
+        } returns true
+
+        // When
+        viewModel.getLayoutData(LayoutType.PROMO_CREATION)
+
+        viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
+
+        // Then
+        val result = viewModel.getLayoutResultLiveData.value?.get(LayoutType.PROMO_CREATION)
+        assert(((result as? Success)?.data as? PromoCreationListUiModel)?.items?.size?.equals(7) == false)
+    }
+
+    @Test
+    fun `When slash price is disabled, should not show the entry point`() = runBlocking {
+        // Given
+        coEvery {
+            getChatBlastSellerMetadataUseCase.executeOnBackground()
+        } returns ChatBlastSellerMetadataUiModel(0, 1)
+        coEvery {
+            remoteConfig.getBoolean(RemoteConfigKey.FREE_SHIPPING_FEATURE_DISABLED, true)
+        } returns false
+        coEvery {
+            voucherCashbackEligibleUseCase.execute(any())
+        } returns true
+        coEvery {
+            slashPriceEligibleUseCase.execute(any())
+        } returns true
+        coEvery {
+            checkNonTopAdsUserUseCase.execute(any())
+        } returns false
+        coEvery {
+            sellerHomeGetWhiteListedUserUseCase.executeQuery()
+        } returns true
+        coEvery {
+            sharedPref.getBoolean(FirstPromoDataSource.IS_PRODUCT_COUPON_FIRST_TIME, true)
+        } returns false
+        coEvery {
+            remoteConfig.getBoolean(RemoteConfigKey.ENABLE_MVC_PRODUCT, true)
+        } returns true
+        coEvery {
+            remoteConfig.getBoolean(RemoteConfigKey.ENABLE_SLASH_PRICE, true)
+        } returns false
+
+        // When
+        viewModel.getLayoutData(LayoutType.PROMO_CREATION)
+
+        viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
+
+        // Then
+        val result = viewModel.getLayoutResultLiveData.value?.get(LayoutType.PROMO_CREATION)
+        assert(((result as? Success)?.data as? PromoCreationListUiModel)?.items?.size?.equals(7) == false)
+    }
+
+    @Test
+    fun `When slash price isEnabled key throw exception, should not show the entry point`() = runBlocking {
+        // Given
+        coEvery {
+            getChatBlastSellerMetadataUseCase.executeOnBackground()
+        } returns ChatBlastSellerMetadataUiModel(0, 1)
+        coEvery {
+            remoteConfig.getBoolean(RemoteConfigKey.FREE_SHIPPING_FEATURE_DISABLED, true)
+        } returns false
+        coEvery {
+            voucherCashbackEligibleUseCase.execute(any())
+        } returns true
+        coEvery {
+            slashPriceEligibleUseCase.execute(any())
+        } returns true
+        coEvery {
+            checkNonTopAdsUserUseCase.execute(any())
+        } returns false
+        coEvery {
+            sellerHomeGetWhiteListedUserUseCase.executeQuery()
+        } returns true
+        coEvery {
+            sharedPref.getBoolean(FirstPromoDataSource.IS_PRODUCT_COUPON_FIRST_TIME, true)
+        } returns false
+        coEvery {
+            remoteConfig.getBoolean(RemoteConfigKey.ENABLE_MVC_PRODUCT, true)
+        } returns true
+        coEvery {
+            remoteConfig.getBoolean(RemoteConfigKey.ENABLE_SLASH_PRICE, true)
+        } throws MessageErrorException()
+
+        // When
+        viewModel.getLayoutData(LayoutType.PROMO_CREATION)
+
+        viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
+
+        // Then
+        val result = viewModel.getLayoutResultLiveData.value?.get(LayoutType.PROMO_CREATION)
+        assert(((result as? Success)?.data as? PromoCreationListUiModel)?.items?.size?.equals(7) == false)
+    }
+
 
     @Test
     fun `Failed get layout data for promo creation`() = runBlocking {
@@ -332,6 +705,19 @@ class CentralizedPromoViewModelTest {
     fun `When get voucher cashback eligiblity fail, get layout data should also fails`() = runBlocking {
         coEvery {
             voucherCashbackEligibleUseCase.execute(any())
+        } throws MessageErrorException()
+
+        viewModel.getLayoutData(LayoutType.PROMO_CREATION)
+
+        val result = viewModel.getLayoutResultLiveData.value?.get(LayoutType.PROMO_CREATION)
+
+        assert(result is Fail)
+    }
+
+    @Test
+    fun `When get slash price eligiblity fail, get layout data should also fails`() = runBlocking {
+        coEvery {
+            slashPriceEligibleUseCase.execute(any())
         } throws MessageErrorException()
 
         viewModel.getLayoutData(LayoutType.PROMO_CREATION)

@@ -31,68 +31,68 @@ class ProfileCompletionQueryModule {
     @IntoMap
     @StringKey(ProfileCompletionQueryConstant.MUTATION_CHANGE_NAME)
     fun provideRawMutationChangeName(@ProfileCompletionContext context: Context): String =
-            GraphqlHelper.loadRawString(context.resources, R.raw.mutation_change_name)
+	GraphqlHelper.loadRawString(context.resources, R.raw.mutation_change_name)
 
     @Provides
     fun provideChangeNameGraphQlUseCase(graphqlRepository: GraphqlRepository)
-            : GraphqlUseCase<ChangeNamePojo> = GraphqlUseCase(graphqlRepository)
+	    : GraphqlUseCase<ChangeNamePojo> = GraphqlUseCase(graphqlRepository)
 
     @ProfileCompletionSettingScope
     @Provides
     @IntoMap
     @StringKey(ProfileCompletionQueryConstant.MUTATION_CHANGE_GENDER)
     fun provideRawMutationChangeGender(@ProfileCompletionContext context: Context): String =
-            GraphqlHelper.loadRawString(context.resources, R.raw.mutation_change_gender)
+	GraphqlHelper.loadRawString(context.resources, R.raw.mutation_change_gender)
 
     @Provides
     fun provideChangeGenderGraphQlUseCase(graphqlRepository: GraphqlRepository)
-            : GraphqlUseCase<ChangeGenderPojo> = GraphqlUseCase(graphqlRepository)
+	    : GraphqlUseCase<ChangeGenderPojo> = GraphqlUseCase(graphqlRepository)
 
     @ProfileCompletionSettingScope
     @Provides
     @IntoMap
     @StringKey(ProfileCompletionQueryConstant.MUTATION_CHECK_EMAIL)
     fun provideRawMutationCheckEmail(@ProfileCompletionContext context: Context): String =
-            GraphqlHelper.loadRawString(context.resources, R.raw.mutation_check_email)
+	GraphqlHelper.loadRawString(context.resources, R.raw.mutation_check_email)
 
 
     @Provides
     fun provideCheckEmailGraphQlUseCase(graphqlRepository: GraphqlRepository)
-            : GraphqlUseCase<CheckEmailPojo> = GraphqlUseCase(graphqlRepository)
+	    : GraphqlUseCase<CheckEmailPojo> = GraphqlUseCase(graphqlRepository)
 
     @ProfileCompletionSettingScope
     @Provides
     @IntoMap
     @StringKey(ProfileCompletionQueryConstant.MUTATION_ADD_EMAIL)
     fun provideRawMutationAddEmail(@ProfileCompletionContext context: Context): String =
-            GraphqlHelper.loadRawString(context.resources, R.raw.mutation_add_email)
+	GraphqlHelper.loadRawString(context.resources, R.raw.mutation_add_email)
 
 
     @Provides
     fun provideAddEmailGraphQlUseCase(graphqlRepository: GraphqlRepository)
-            : GraphqlUseCase<AddEmailPojo> = GraphqlUseCase(graphqlRepository)
+	    : GraphqlUseCase<AddEmailPojo> = GraphqlUseCase(graphqlRepository)
 
     @ProfileCompletionSettingScope
     @Provides
     @IntoMap
     @StringKey(ProfileCompletionQueryConstant.MUTATION_ADD_PHONE)
     fun provideRawMutationAddPhone(@ProfileCompletionContext context: Context): String =
-            GraphqlHelper.loadRawString(context.resources, R.raw.mutation_add_phone)
+	GraphqlHelper.loadRawString(context.resources, R.raw.mutation_add_phone)
 
     @Provides
     fun provideAddPhoneGraphQlUseCase(graphqlRepository: GraphqlRepository)
-            : GraphqlUseCase<AddPhonePojo> = GraphqlUseCase(graphqlRepository)
+	    : GraphqlUseCase<AddPhonePojo> = GraphqlUseCase(graphqlRepository)
 
     @ProfileCompletionSettingScope
     @Provides
     @IntoMap
     @StringKey(ProfileCompletionQueryConstant.MUTATION_CHECK_PHONE)
     fun provideRawMutationCheckPhone(@ProfileCompletionContext context: Context): String =
-            GraphqlHelper.loadRawString(context.resources, R.raw.mutation_check_phone)
+	GraphqlHelper.loadRawString(context.resources, R.raw.mutation_check_phone)
 
     @Provides
     fun provideCheckPhoneGraphQlUseCase(graphqlRepository: GraphqlRepository)
-            : GraphqlUseCase<CheckPhonePojo> = GraphqlUseCase(graphqlRepository)
+	    : GraphqlUseCase<CheckPhonePojo> = GraphqlUseCase(graphqlRepository)
 
 
     @ProfileCompletionSettingScope
@@ -100,117 +100,122 @@ class ProfileCompletionQueryModule {
     @IntoMap
     @StringKey(ProfileCompletionQueryConstant.MUTATION_ADD_BOD)
     fun provideRawMutationAddBod(@ProfileCompletionContext context: Context): String =
-            GraphqlHelper.loadRawString(context.resources, R.raw.mutation_add_bod)
+	GraphqlHelper.loadRawString(context.resources, R.raw.mutation_add_bod)
 
     @Provides
     fun provideAddBodUseCase(graphqlRepository: GraphqlRepository)
-            : GraphqlUseCase<UserProfileCompletionUpdateBodData> = GraphqlUseCase(graphqlRepository)
+	    : GraphqlUseCase<UserProfileCompletionUpdateBodData> = GraphqlUseCase(graphqlRepository)
 
     @ProfileCompletionSettingScope
     @Provides
     @IntoMap
     @StringKey(ProfileCompletionQueryConstant.QUERY_PROFILE_COMPLETION)
     fun provideRawQueryProfileCompletion(@ProfileCompletionContext context: Context): String =
-            GraphqlHelper.loadRawString(context.resources, R.raw.query_user_profile_completion)
+	GraphqlHelper.loadRawString(context.resources, R.raw.query_user_profile_completion)
 
 
     @Provides
     fun provideUserProfileInfoUseCase(graphqlRepository: GraphqlRepository)
-            : GraphqlUseCase<UserProfileInfoData> = GraphqlUseCase<UserProfileInfoData>(graphqlRepository).apply {
-        setTypeClass(UserProfileInfoData::class.java)
-    }
+	    : GraphqlUseCase<UserProfileInfoData> =
+	GraphqlUseCase<UserProfileInfoData>(graphqlRepository).apply {
+	    setTypeClass(UserProfileInfoData::class.java)
+	}
 
     @Provides
     @IntoMap
     @StringKey(ProfileCompletionQueryConstant.QUERY_PROFILE_ROLE)
     fun provideRawQueryProfileRole(@ProfileCompletionContext context: Context): String =
-            GraphqlHelper.loadRawString(context.resources, R.raw.query_user_profile_role)
+	GraphqlHelper.loadRawString(context.resources, R.raw.query_user_profile_role)
 
 
     @Provides
     fun provideUserProfileRoleUseCase(graphqlRepository: GraphqlRepository)
-            : GraphqlUseCase<UserProfileRoleData> = GraphqlUseCase<UserProfileRoleData>(graphqlRepository).apply {
-        setTypeClass(UserProfileRoleData::class.java)
-    }
+	    : GraphqlUseCase<UserProfileRoleData> =
+	GraphqlUseCase<UserProfileRoleData>(graphqlRepository).apply {
+	    setTypeClass(UserProfileRoleData::class.java)
+	}
 
     @Provides
     @IntoMap
     @StringKey(ProfileCompletionQueryConstant.MUTATION_USER_VALIDATE)
     fun provideRawQueryUserValidate(@ProfileCompletionContext context: Context): String =
-            GraphqlHelper.loadRawString(context.resources, R.raw.mutation_user_profile_completion_validate)
+	GraphqlHelper.loadRawString(
+	    context.resources,
+	    R.raw.mutation_user_profile_completion_validate
+	)
 
 
     @Provides
     fun provideUserValidateGraphQlUseCase(graphqlRepository: GraphqlRepository)
-            : GraphqlUseCase<UserValidatePojo> = GraphqlUseCase(graphqlRepository)
+	    : GraphqlUseCase<UserValidatePojo> = GraphqlUseCase(graphqlRepository)
 
     @Provides
     @IntoMap
     @StringKey(ProfileCompletionQueryConstant.MUTATION_CREATE_PIN)
     fun provideRawMutationCreatePin(@ProfileCompletionContext context: Context): String =
-            GraphqlHelper.loadRawString(context.resources, R.raw.mutation_create_pin)
+	GraphqlHelper.loadRawString(context.resources, R.raw.mutation_create_pin)
 
     @Provides
     fun provideAddPinGraphQlUseCase(graphqlRepository: GraphqlRepository)
-            : GraphqlUseCase<AddPinPojo> = GraphqlUseCase(graphqlRepository)
+	    : GraphqlUseCase<AddPinPojo> = GraphqlUseCase(graphqlRepository)
 
     @Provides
     @IntoMap
     @StringKey(ProfileCompletionQueryConstant.MUTATION_UPDATE_PIN)
     fun provideRawMutationUpdatePin(@ProfileCompletionContext context: Context): String =
-            GraphqlHelper.loadRawString(context.resources, R.raw.mutation_update_pin)
+	GraphqlHelper.loadRawString(context.resources, R.raw.mutation_update_pin)
 
     @Provides
     fun provideUpdatePinGraphQlUseCase(graphqlRepository: GraphqlRepository)
-            : GraphqlUseCase<ChangePinPojo> = GraphqlUseCase(graphqlRepository)
+	    : GraphqlUseCase<ChangePinPojo> = GraphqlUseCase(graphqlRepository)
 
     @Provides
     @IntoMap
     @StringKey(ProfileCompletionQueryConstant.QUERY_CHECK_PIN)
     fun provideRawQueryCheckPin(@ProfileCompletionContext context: Context): String =
-            GraphqlHelper.loadRawString(context.resources, R.raw.query_check_pin)
+	GraphqlHelper.loadRawString(context.resources, R.raw.query_check_pin)
 
     @Provides
     fun provideCheckPinGraphQlUseCase(graphqlRepository: GraphqlRepository)
-            : GraphqlUseCase<CheckPinPojo> = GraphqlUseCase(graphqlRepository)
+	    : GraphqlUseCase<CheckPinPojo> = GraphqlUseCase(graphqlRepository)
 
     @Provides
     @IntoMap
     @StringKey(ProfileCompletionQueryConstant.QUERY_GET_STATUS_PIN)
     fun provideRawQueryGetStatusPin(@ProfileCompletionContext context: Context): String =
-            GraphqlHelper.loadRawString(context.resources, R.raw.query_get_status_pin)
+	GraphqlHelper.loadRawString(context.resources, R.raw.query_get_status_pin)
 
 
     @Provides
     fun provideStatusPinGraphQlUseCase(graphqlRepository: GraphqlRepository)
-            : GraphqlUseCase<StatusPinPojo> = GraphqlUseCase(graphqlRepository)
+	    : GraphqlUseCase<StatusPinPojo> = GraphqlUseCase(graphqlRepository)
 
     @Provides
     @IntoMap
     @StringKey(ProfileCompletionQueryConstant.QUERY_VALIDATE_PIN)
     fun provideRawQueryValidatePin(@ProfileCompletionContext context: Context): String =
-            GraphqlHelper.loadRawString(context.resources, R.raw.query_validate_pin)
+	GraphqlHelper.loadRawString(context.resources, R.raw.query_validate_pin)
 
 
     @Provides
     fun provideValidatePinGraphQlUseCase(graphqlRepository: GraphqlRepository)
-            : GraphqlUseCase<ValidatePinPojo> = GraphqlUseCase(graphqlRepository)
+	    : GraphqlUseCase<ValidatePinPojo> = GraphqlUseCase(graphqlRepository)
 
     @Provides
     @IntoMap
     @StringKey(ProfileCompletionQueryConstant.QUERY_SKIP_OTP_PIN)
     fun provideRawQuerySkipOtpPin(@ProfileCompletionContext context: Context): String =
-            GraphqlHelper.loadRawString(context.resources, R.raw.query_skip_otp_pin)
+	GraphqlHelper.loadRawString(context.resources, R.raw.query_skip_otp_pin)
 
 
     @Provides
     fun provideSkipOtpPinGraphQlUseCase(graphqlRepository: GraphqlRepository)
-            : GraphqlUseCase<SkipOtpPinPojo> = GraphqlUseCase(graphqlRepository)
+	    : GraphqlUseCase<SkipOtpPinPojo> = GraphqlUseCase(graphqlRepository)
 
     @Provides
     @IntoMap
     @StringKey(ProfileCompletionQueryConstant.MUTATION_RESET_PIN)
     fun provideRawQueryResetPin(@ProfileCompletionContext context: Context): String =
-            GraphqlHelper.loadRawString(context.resources, R.raw.mutation_reset_pin)
+	GraphqlHelper.loadRawString(context.resources, R.raw.mutation_reset_pin)
 
 }

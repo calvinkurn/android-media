@@ -351,7 +351,7 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
         fetchAndRenderProductSuggestion()
     }
 
-    override fun onErrorGetContentForm(message: String) {
+    override fun onErrorGetContentForm(message: String, throwable: Throwable?) {
         layout_default_caption.gone()
         action_bottom.gone()
         NetworkErrorHelper.showEmptyState(context, main_view, message) {

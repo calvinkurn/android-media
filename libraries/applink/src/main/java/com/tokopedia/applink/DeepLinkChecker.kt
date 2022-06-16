@@ -61,6 +61,7 @@ object DeepLinkChecker {
     const val LOGIN_BY_QR = 39
     const val POWER_MERCHANT = 40
     const val SALDO_DEPOSIT = 41
+    const val SNAPSHOT = 42
 
     private val deeplinkMatcher: DeeplinkMatcher by lazy { DeeplinkMatcher() }
 

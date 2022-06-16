@@ -13,9 +13,14 @@ import com.tokopedia.catalog.usecase.listing.CatalogCategoryProductUseCase
 import com.tokopedia.catalog.usecase.listing.CatalogDynamicFilterUseCase
 import com.tokopedia.catalog.usecase.listing.CatalogGetProductListUseCase
 import com.tokopedia.catalog.usecase.listing.CatalogQuickFilterUseCase
+import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
+import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.domain.GraphqlUseCase
+import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
+import com.tokopedia.wishlistcommon.domain.AddToWishlistV2UseCase
+import com.tokopedia.wishlistcommon.domain.DeleteWishlistV2UseCase
 import dagger.Module
 import dagger.Provides
 
@@ -105,6 +110,18 @@ class CatalogUseCaseModule {
 
     @CatalogScope
     @Provides
+    fun addWishListV2UseCase(@ApplicationContext graphqlRepository: GraphqlRepository): AddToWishlistV2UseCase {
+        return AddToWishlistV2UseCase(graphqlRepository)
+    }
+
+    @CatalogScope
+    @Provides
+    fun deleteWishListV2UseCase(@ApplicationContext graphqlRepository: GraphqlRepository): DeleteWishlistV2UseCase {
+        return DeleteWishlistV2UseCase(graphqlRepository)
+    }
+
+    @CatalogScope
+    @Provides
     fun getCatalogAllReviewUseCase(catalogAllReviewRepository: CatalogAllReviewRepository): CatalogAllReviewUseCase {
         return CatalogAllReviewUseCase(catalogAllReviewRepository)
     }
@@ -114,4 +131,8 @@ class CatalogUseCaseModule {
     fun getCatalogComparisonProductUseCase(catalogComparisonProductRepository: CatalogComparisonProductRepository): CatalogComparisonProductUseCase {
         return CatalogComparisonProductUseCase(catalogComparisonProductRepository)
     }
+
+    @CatalogScope
+    @Provides
+    fun providesTrackingQueue(@ApplicationContext context: Context): TrackingQueue = TrackingQueue(context)
 }

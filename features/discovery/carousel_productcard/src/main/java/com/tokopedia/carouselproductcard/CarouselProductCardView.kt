@@ -9,15 +9,24 @@ import android.view.ViewGroup
 import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.carouselproductcard.CarouselProductCardListener.*
+import com.tokopedia.carouselproductcard.CarouselProductCardListener.OnATCNonVariantClickListener
+import com.tokopedia.carouselproductcard.CarouselProductCardListener.OnAddVariantClickListener
+import com.tokopedia.carouselproductcard.CarouselProductCardListener.OnItemAddToCartListener
+import com.tokopedia.carouselproductcard.CarouselProductCardListener.OnItemClickListener
+import com.tokopedia.carouselproductcard.CarouselProductCardListener.OnItemImpressedListener
+import com.tokopedia.carouselproductcard.CarouselProductCardListener.OnItemThreeDotsClickListener
+import com.tokopedia.carouselproductcard.CarouselProductCardListener.OnSeeMoreClickListener
 import com.tokopedia.carouselproductcard.helper.StartSnapHelper
 import com.tokopedia.productcard.ProductCardLifecycleObserver
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.productcard.utils.getMaxHeightForGridView
 import com.tokopedia.productcard.utils.getMaxHeightForListView
 import com.tokopedia.unifycomponents.BaseCustomView
-import kotlinx.android.synthetic.main.carousel_product_card_layout.view.*
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.isActive
+import kotlinx.coroutines.launch
 
 class CarouselProductCardView : BaseCustomView, CoroutineScope, CarouselProductCardInternalListener {
 
@@ -30,6 +39,9 @@ class CarouselProductCardView : BaseCustomView, CoroutineScope, CarouselProductC
     override var productCardLifecycleObserver: ProductCardLifecycleObserver? = null
 
     override val coroutineContext = masterJob + Dispatchers.Main
+    private val carouselProductCardRecyclerView: RecyclerView by lazy(LazyThreadSafetyMode.NONE) {
+        findViewById(R.id.carouselProductCardRecyclerView)
+    }
 
     constructor(context: Context): super(context) {
         init(null)

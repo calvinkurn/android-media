@@ -200,6 +200,17 @@ class PostTagView @JvmOverloads constructor(
         return isProductDotVisible
 
     }
+    fun hideExpandedViewIfShown(): Boolean {
+        val isProductDotVisible = productTagDot.isVisible
+
+        if (productTagDot.isVisible) {
+            productTagDot.gone()
+        } else if (finalPointerView.isVisible && productTagExpandedView.isVisible) {
+            hideBubbleViewWithAnimation(productTagExpandedView, position, finalPointerView)
+        }
+        return isProductDotVisible
+
+    }
 
     fun getExpandedViewVisibility(): Boolean {
         return productTagExpandedView.isVisible

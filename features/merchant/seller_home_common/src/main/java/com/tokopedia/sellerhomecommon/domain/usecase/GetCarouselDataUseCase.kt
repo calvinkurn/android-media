@@ -1,12 +1,12 @@
 package com.tokopedia.sellerhomecommon.domain.usecase
 
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlRequest
-import com.tokopedia.graphql.data.model.GraphqlResponse
+import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.sellerhomecommon.domain.gqlquery.GqlGetCarouselData
 import com.tokopedia.sellerhomecommon.domain.mapper.CarouselMapper
 import com.tokopedia.sellerhomecommon.domain.model.DataKeyModel
 import com.tokopedia.sellerhomecommon.domain.model.DynamicParameterModel
@@ -19,28 +19,12 @@ import com.tokopedia.usecase.RequestParams
  */
 
 class GetCarouselDataUseCase(
-        gqlRepository: GraphqlRepository,
-        mapper: CarouselMapper,
-        dispatchers: CoroutineDispatchers
+    gqlRepository: GraphqlRepository,
+    mapper: CarouselMapper,
+    dispatchers: CoroutineDispatchers
 ) : CloudAndCacheGraphqlUseCase<GetCarouselDataResponse, List<CarouselDataUiModel>>(
-        gqlRepository, mapper, dispatchers, GetCarouselDataResponse::class.java, QUERY, false) {
-
-    override suspend fun executeOnBackground(requestParams: RequestParams, includeCache: Boolean) {
-        super.executeOnBackground(requestParams, includeCache).also { isFirstLoad = false }
-    }
-
-    override suspend fun executeOnBackground(): List<CarouselDataUiModel> {
-        val gqlRequest = GraphqlRequest(QUERY, GetCarouselDataResponse::class.java, params.parameters)
-        val gqlResponse: GraphqlResponse = graphqlRepository.response(listOf(gqlRequest), cacheStrategy)
-
-        val errors: List<GraphqlError>? = gqlResponse.getError(GetCarouselDataResponse::class.java)
-        if (errors.isNullOrEmpty()) {
-            val data = gqlResponse.getData<GetCarouselDataResponse>()
-            return mapper.mapRemoteDataToUiData(data, cacheStrategy.type == CacheType.CACHE_ONLY)
-        } else {
-            throw MessageErrorException(errors.joinToString(", ") { it.message })
-        }
-    }
+    gqlRepository, mapper, dispatchers, GqlGetCarouselData.QUERY, false
+) {
 
     companion object {
 
@@ -49,41 +33,43 @@ class GetCarouselDataUseCase(
         private const val DEFAULT_LIMIT = 5
 
         fun getRequestParams(
-                dataKey: List<String>,
-                pageNumber: Int = DEFAULT_PAGE_NUMBER,
-                limits: Int = DEFAULT_LIMIT
+            dataKey: List<String>,
+            pageNumber: Int = DEFAULT_PAGE_NUMBER,
+            limits: Int = DEFAULT_LIMIT
         ): RequestParams {
             val dataKeys = dataKey.map {
                 DataKeyModel(
-                        key = it,
-                        jsonParams = DynamicParameterModel(
-                                page = pageNumber,
-                                limit = limits
-                        ).toJsonString()
+                    key = it,
+                    jsonParams = DynamicParameterModel(
+                        page = pageNumber,
+                        limit = limits
+                    ).toJsonString()
                 )
             }
             return RequestParams.create().apply {
                 putObject(DATA_KEYS, dataKeys)
             }
         }
+    }
 
-        private val QUERY = """
-            query getCarouselWidgetData(${'$'}dataKeys: [dataKey!]!) {
-              fetchCarouselWidgetData(dataKeys: ${'$'}dataKeys) {
-                data {
-                  dataKey
-                  items {
-                    ID
-                    URL
-                    CreativeName
-                    AppLink
-                    FeaturedMediaURL
-                  }
-                  errorMsg
-                  showWidget
-                }
-              }
-            }
-        """.trimIndent()
+    override val classType: Class<GetCarouselDataResponse>
+        get() = GetCarouselDataResponse::class.java
+
+    override suspend fun executeOnBackground(requestParams: RequestParams, includeCache: Boolean) {
+        super.executeOnBackground(requestParams, includeCache).also { isFirstLoad = false }
+    }
+
+    override suspend fun executeOnBackground(): List<CarouselDataUiModel> {
+        val gqlRequest = GraphqlRequest(GqlGetCarouselData, classType, params.parameters)
+        val gqlResponse = graphqlRepository.response(listOf(gqlRequest), cacheStrategy)
+
+        val errors: List<GraphqlError>? = gqlResponse.getError(classType)
+        if (errors.isNullOrEmpty()) {
+            val data = gqlResponse.getData<GetCarouselDataResponse>()
+            val isFromCache = cacheStrategy.type == CacheType.CACHE_ONLY
+            return mapper.mapRemoteDataToUiData(data, isFromCache)
+        } else {
+            throw MessageErrorException(errors.firstOrNull()?.message.orEmpty())
+        }
     }
 }

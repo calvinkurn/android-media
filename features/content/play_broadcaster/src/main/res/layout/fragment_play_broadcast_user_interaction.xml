@@ -75,7 +75,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/spacing_lvl4"
-            app:layout_constraintBottom_toTopOf="@id/fl_product_tag"
+            app:layout_constraintBottom_toTopOf="@id/iv_share_link"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             />
@@ -97,34 +97,27 @@
             app:layout_constraintTop_toBottomOf="@id/fl_max_height_chat"
             app:layout_constraintBottom_toTopOf="@id/pinned_msg_view"
             app:layout_constraintEnd_toStartOf="@id/iv_share_link"
-            app:layout_constraintStart_toStartOf="@id/fl_product_tag"
+            app:layout_constraintStart_toStartOf="@id/icon_product"
             />
 
-        <FrameLayout
-            android:id="@+id/fl_product_tag"
-            android:layout_width="@dimen/layout_lvl5"
-            android:layout_height="@dimen/layout_lvl5"
-            android:layout_marginStart="@dimen/spacing_lvl4"
-            android:background="@drawable/bg_play_light_gray_circle"
+        <com.tokopedia.play.broadcaster.view.custom.ProductIconView
+            android:id="@+id/icon_product"
+            android:layout_width="@dimen/layout_lvl4"
+            android:layout_height="@dimen/layout_lvl4"
+            android:layout_marginStart="@dimen/play_dp_20"
             app:layout_constraintBottom_toBottomOf="@id/iv_share_link"
-            app:layout_constraintStart_toStartOf="parent">
-
-            <androidx.appcompat.widget.AppCompatImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                app:srcCompat="@drawable/ic_play_inventory_disabled" />
-
-        </FrameLayout>
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@id/iv_share_link"
+            />
 
         <FrameLayout
             android:id="@+id/view_play_interactive"
             android:layout_width="@dimen/layout_lvl0"
             android:layout_height="wrap_content"
             app:layout_constraintWidth_default="wrap"
-            app:layout_constraintBottom_toBottomOf="@id/fl_product_tag"
+            app:layout_constraintBottom_toBottomOf="@id/iv_share_link"
             app:layout_constraintEnd_toStartOf="@id/iv_share_link"
-            app:layout_constraintStart_toEndOf="@id/fl_product_tag"
+            app:layout_constraintStart_toEndOf="@id/icon_product"
             />
 
         <androidx.appcompat.widget.AppCompatImageView

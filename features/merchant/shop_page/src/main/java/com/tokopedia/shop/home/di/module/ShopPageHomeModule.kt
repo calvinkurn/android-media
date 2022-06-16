@@ -14,8 +14,7 @@ import com.tokopedia.play.widget.di.PlayWidgetModule
 import com.tokopedia.play.widget.domain.PlayWidgetReminderUseCase
 import com.tokopedia.play.widget.domain.PlayWidgetUpdateChannelUseCase
 import com.tokopedia.play.widget.domain.PlayWidgetUseCase
-import com.tokopedia.play.widget.ui.mapper.PlayWidgetMapper
-import com.tokopedia.play.widget.ui.type.PlayWidgetSize
+import com.tokopedia.play.widget.ui.mapper.PlayWidgetUiMapper
 import com.tokopedia.play.widget.util.PlayWidgetConnectionUtil
 import com.tokopedia.play.widget.util.PlayWidgetTools
 import com.tokopedia.shop.analytic.ShopPageHomeTracking
@@ -28,6 +27,8 @@ import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
+import com.tokopedia.wishlistcommon.domain.AddToWishlistV2UseCase
+import com.tokopedia.wishlistcommon.domain.DeleteWishlistV2UseCase
 import com.tokopedia.youtube_common.domain.usecase.GetYoutubeVideoDetailUseCase
 import dagger.Lazy
 import dagger.Module
@@ -96,6 +97,18 @@ class ShopPageHomeModule {
 
     @ShopPageHomeScope
     @Provides
+    fun provideAddToWishListV2UseCase(graphqlRepository: GraphqlRepository): AddToWishlistV2UseCase {
+        return AddToWishlistV2UseCase(graphqlRepository)
+    }
+
+    @ShopPageHomeScope
+    @Provides
+    fun provideRemoveFromWishListV2UseCase(graphqlRepository: GraphqlRepository): DeleteWishlistV2UseCase {
+        return DeleteWishlistV2UseCase(graphqlRepository)
+    }
+
+    @ShopPageHomeScope
+    @Provides
     fun provideGetYoutubeVideoUseCase(restRepository: RestRepository): GetYoutubeVideoDetailUseCase {
         return GetYoutubeVideoDetailUseCase(restRepository)
     }
@@ -131,14 +144,14 @@ class ShopPageHomeModule {
     fun providePlayWidget(playWidgetUseCase: PlayWidgetUseCase,
                           playWidgetReminderUseCase: Lazy<PlayWidgetReminderUseCase>,
                           playWidgetUpdateChannelUseCase: Lazy<PlayWidgetUpdateChannelUseCase>,
-                          mapperProviders: Map<PlayWidgetSize, @JvmSuppressWildcards PlayWidgetMapper>,
+                          mapper: PlayWidgetUiMapper,
                           connectionUtil: PlayWidgetConnectionUtil,
     ): PlayWidgetTools {
         return PlayWidgetTools(
             playWidgetUseCase,
             playWidgetReminderUseCase,
             playWidgetUpdateChannelUseCase,
-            mapperProviders,
+            mapper,
             connectionUtil
         )
     }

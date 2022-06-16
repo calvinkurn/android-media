@@ -70,18 +70,6 @@
                     android:layout_height="wrap_content" />
             </LinearLayout>
 
-            <LinearLayout
-                android:id="@+id/bottom_view_membership"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_alignParentBottom="true"
-                android:layout_gravity="bottom"
-                android:orientation="vertical"
-                android:visibility="gone">
-
-                <include layout="@layout/tp_bottomview_membership" />
-            </LinearLayout>
-
         </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
         <com.tokopedia.tokopoints.view.customview.ServerErrorView

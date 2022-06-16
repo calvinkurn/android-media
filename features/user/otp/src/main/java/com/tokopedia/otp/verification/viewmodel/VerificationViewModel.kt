@@ -4,15 +4,24 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.encryption.security.RsaUtils
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.logger.ServerLogger
+import com.tokopedia.logger.utils.Priority
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.otp.common.idling_resource.TkpdIdlingResource
+import com.tokopedia.otp.verification.domain.data.OtpConstant
 import com.tokopedia.otp.verification.domain.data.OtpRequestData
 import com.tokopedia.otp.verification.domain.data.OtpValidateData
 import com.tokopedia.otp.verification.domain.pojo.OtpModeListData
 import com.tokopedia.otp.verification.domain.usecase.*
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey
+import com.tokopedia.sessioncommon.constants.SessionConstants
+import com.tokopedia.sessioncommon.data.KeyData
+import com.tokopedia.sessioncommon.data.pin.PinStatusParam
+import com.tokopedia.sessioncommon.domain.usecase.CheckPinHashV2UseCase
+import com.tokopedia.sessioncommon.domain.usecase.GeneratePublicKeyUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -24,16 +33,18 @@ import javax.inject.Inject
  */
 
 open class VerificationViewModel @Inject constructor(
-        private val getVerificationMethodUseCase: GetVerificationMethodUseCase,
-        private val getVerificationMethodUseCase2FA: GetVerificationMethodUseCase2FA,
-        private val getVerificationMethodInactivePhoneUseCase: GetVerificationMethodInactivePhoneUseCase,
-        private val otpValidateUseCase: OtpValidateUseCase,
-        private val otpValidateUseCase2FA: OtpValidateUseCase2FA,
-        private val sendOtpUseCase: SendOtpUseCase,
-        private val sendOtpUseCase2FA: SendOtp2FAUseCase,
-        private val userSession: UserSessionInterface,
-        private val remoteConfig: RemoteConfig,
-        dispatcherProvider: CoroutineDispatchers
+    private val getVerificationMethodUseCase: GetVerificationMethodUseCase,
+    private val getVerificationMethodUseCase2FA: GetVerificationMethodUseCase2FA,
+    private val getVerificationMethodInactivePhoneUseCase: GetVerificationMethodInactivePhoneUseCase,
+    private val checkPinHashV2UseCase: CheckPinHashV2UseCase,
+    private val generatePublicKeyUseCase: GeneratePublicKeyUseCase,
+    private val otpValidateUseCase: OtpValidateUseCase,
+    private val otpValidateUseCase2FA: OtpValidateUseCase2FA,
+    private val sendOtpUseCase: SendOtpUseCase,
+    private val sendOtpUseCase2FA: SendOtp2FAUseCase,
+    private val userSession: UserSessionInterface,
+    private val remoteConfig: RemoteConfig,
+    dispatcherProvider: CoroutineDispatchers
 ) : BaseViewModel(dispatcherProvider.main) {
 
     private val _getVerificationMethodResult = MutableLiveData<Result<OtpModeListData>>()
@@ -192,16 +203,18 @@ open class VerificationViewModel @Inject constructor(
     }
 
     fun otpValidate2FA(
-            otpType: String,
-            validateToken: String,
-            userIdEnc: String,
-            mode: String,
-            code: String,
-            msisdn: String = ""
+        otpType: String,
+        validateToken: String,
+        userIdEnc: String,
+        mode: String,
+        code: String,
+        msisdn: String = "",
+        userId: Int,
+        usePinV2: Boolean = false
     ) {
         launchCatchError(coroutineContext, {
             TkpdIdlingResource.increment()
-            val params = otpValidateUseCase2FA.getParams(
+            var params = otpValidateUseCase2FA.getParams(
                 otpType = otpType,
                 validateToken = validateToken,
                 userIdEnc = userIdEnc,
@@ -209,6 +222,14 @@ open class VerificationViewModel @Inject constructor(
                 code = code,
                 msisdn = msisdn
             )
+
+            if(usePinV2 && isNeedHash(id = userId.toString(), type = "userid")) {
+                val keyData = getPublicKey()
+                val encryptedPin = RsaUtils.encryptWithSalt(code, keyData.key.replace("=", ""), salt = OtpConstant.PIN_V2_SALT)
+                if(encryptedPin.isNotEmpty()) {
+                    params = combineWithV2param(params, hashedPin = encryptedPin, usePinHash = true, hash = keyData.hash)
+                }
+            }
 
             val data = otpValidateUseCase2FA.getData(params).data
             when {
@@ -241,11 +262,21 @@ open class VerificationViewModel @Inject constructor(
             mode: String,
             signature: String,
             timeUnix: String,
-            userId: Int
+            userId: Int,
+            usePinV2: Boolean = false
     ) {
         launchCatchError(coroutineContext, {
             TkpdIdlingResource.increment()
-            val params = otpValidateUseCase.getParams(code, otpType, msisdn, fpData, getSL, email, mode, signature, timeUnix, userId)
+            var params = otpValidateUseCase.getParams(code, otpType, msisdn, fpData, getSL, email, mode, signature, timeUnix, userId)
+            if(mode == OtpConstant.OtpMode.PIN && usePinV2) {
+                if(isNeedHash(msisdn.ifEmpty { email }, if(msisdn.isNotEmpty()) "phone" else "email")) {
+                    val keyData = getPublicKey()
+                    val encryptedPin = RsaUtils.encryptWithSalt(code, keyData.key.replace("=", ""), salt = OtpConstant.PIN_V2_SALT)
+                    if(encryptedPin.isNotEmpty()) {
+                        params = combineWithV2param(params, hashedPin = encryptedPin, usePinHash = true, hash = keyData.hash)
+                    }
+                }
+            }
             val data = otpValidateUseCase.getData(params).data
             when {
                 data.success -> {
@@ -267,14 +298,43 @@ open class VerificationViewModel @Inject constructor(
         })
     }
 
+    fun combineWithV2param(oldParam: Map<String, Any>,
+                                   hashedPin: String,
+                                   usePinHash: Boolean,
+                                   hash: String
+    ): Map<String, Any> {
+        val newMap: MutableMap<String, Any> = mutableMapOf()
+        newMap.putAll(oldParam)
+        newMap[OtpValidateUseCase.PARAM_CODE] = ""
+        newMap[OtpValidateUseCase.PARAM_PIN] = hashedPin
+        newMap[OtpValidateUseCase.PARAM_PIN_HASH] = hash
+        newMap[OtpValidateUseCase.PARAM_USE_PIN_HASH] = usePinHash
+        return newMap
+    }
+
+    suspend fun isNeedHash(id: String, type: String): Boolean {
+        val param = PinStatusParam(id = id, type = type)
+        return checkPinHashV2UseCase(param).data.isNeedHash
+    }
+
+    suspend fun getPublicKey(): KeyData {
+        generatePublicKeyUseCase.setParams(SessionConstants.GenerateKeyModule.PIN_V2.value)
+        return generatePublicKeyUseCase.executeOnBackground().keyData
+    }
+
     public override fun onCleared() {
         val clear = remoteConfig.getBoolean(RemoteConfigKey.PRE_OTP_LOGIN_CLEAR, true)
         if(clear) {
             //if user interrupted login / register otp flow (not done), delete the token
             if(!done && isLoginRegisterFlow) {
                 userSession.setToken(null, null, null)
+                ServerLogger.log(Priority.P2, "BUYER_FLOW_LOGIN", mapOf("type" to "token_cleared_during_verification"))
             }
         }
         super.onCleared()
+    }
+
+    companion object {
+        const val VALIDATE_PIN_V2_ROLLENCE = "pdh_val_and"
     }
 }

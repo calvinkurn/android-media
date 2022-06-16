@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/header"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/Unify_Background"
+    android:layout_marginBottom="@dimen/unify_space_12"
+    android:paddingStart="16dp"
+    android:paddingEnd="16dp"
+    tools:targetApi="lollipop"
+    tools:visibility="visible">
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/product_detail_back_icon"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:paddingTop="@dimen/unify_space_8"
+        android:paddingBottom="@dimen/unify_space_4"
+        android:paddingEnd="@dimen/dp_11"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/imagepicker_insta_com_back" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/shopHeader"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:maxLines="1"
+        android:text="@string/feed_play_header_text"
+        android:textColor="@color/Unify_NN950"
+        android:layout_marginTop="@dimen/unify_space_12"
+        android:layout_marginBottom="@dimen/unify_space_12"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/product_detail_back_icon"
+        app:layout_constraintTop_toTopOf="parent"
+        app:typographyType="heading_4"
+        app:typographyWeight="reguler"
+        tools:text="Semua Barang Terbaru"
+        tools:visibility="visible" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

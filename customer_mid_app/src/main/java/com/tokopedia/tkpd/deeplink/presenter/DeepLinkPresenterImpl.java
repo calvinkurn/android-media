@@ -84,6 +84,8 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
     private static final String PARAM_EXTRA_REVIEW = "rating";
     private static final String PARAM_EXTRA_UTM_SOURCE = "utm_source";
     private static final String PARAM_BOOL_FALSE = "false";
+    private static final int SHOP_MVC_LOCKED_TO_PRODUCT_TOTAL_SEGMENT = 3;
+    private static final int SHOP_MVC_LOCKED_TO_PRODUCT_VOUCHER_SEGMENT = 1;
 
     private final Activity context;
     private final DeepLinkView viewListener;
@@ -134,7 +136,7 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
             processAFlistener();
         } else {
             List<String> linkSegment = uriData.getPathSegments();
-            String screenName;
+            String screenName = "";
             int type = DeepLinkChecker.getDeepLinkType(context, uriData.toString());
             Timber.d("FCM wvlogin deeplink type " + type);
             boolean keepActivityOn = false;
@@ -176,18 +178,15 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                     keepActivityOn = true;
                     if (linkSegment.size() >= 2
                             && (linkSegment.get(1).equals("info") || isEtalase(linkSegment) || isShopHome(linkSegment) || isShopReview(linkSegment) || isShopProduct(linkSegment) || isShopFeed(linkSegment))) {
-                        openShopInfo(linkSegment, uriData, defaultBundle);
-                        screenName = AppScreen.SCREEN_SHOP_INFO;
+                        openShopInfo(linkSegment, uriData, defaultBundle, isAmp);
                     } else {
-                        openProduct(linkSegment, uriData);
-                        screenName = AppScreen.SCREEN_PRODUCT_INFO;
+                        openProduct(linkSegment, uriData, isAmp);
                     }
                     break;
                 case DeepLinkChecker.ETALASE:
                 case DeepLinkChecker.SHOP:
                     keepActivityOn = true;
-                    openShopInfo(linkSegment, uriData, defaultBundle);
-                    screenName = AppScreen.SCREEN_SHOP_INFO;
+                    openShopInfo(linkSegment, uriData, defaultBundle, isAmp);
                     break;
                 case DeepLinkChecker.ACCOUNTS:
                     if (!uriData.getPath().contains("activation")) {
@@ -202,10 +201,6 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                 case DeepLinkChecker.SIMILAR_PRODUCT:
                     openSimilarProduct(linkSegment, uriData, defaultBundle);
                     screenName = AppScreen.SCREEN_SIMILAR_PRODUCT;
-                    break;
-                case DeepLinkChecker.OTHER:
-                    prepareOpenWebView(uriData);
-                    screenName = AppScreen.SCREEN_DEEP_LINK;
                     break;
                 case DeepLinkChecker.INVOICE:
                     openInvoice(uriData);
@@ -256,10 +251,6 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                     openOrderList(uriData);
                     screenName = "";
                     break;
-                case DeepLinkChecker.DEALS:
-                    prepareOpenWebView(uriData);
-                    screenName = AppScreen.DEALS_PAGE;
-                    break;
                 case DeepLinkChecker.TRAVEL_HOMEPAGE:
                     openTravelHomepage(linkSegment, uriData, defaultBundle);
                     screenName = "";
@@ -280,13 +271,15 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                     openPowerMechant(uriData);
                     screenName = "";
                     break;
+                case DeepLinkChecker.DEALS:
+                case DeepLinkChecker.OTHER:
                 default:
                     prepareOpenWebView(uriData);
-                    screenName = AppScreen.SCREEN_DEEP_LINK;
+                    screenName = uriData.getPath();
                     break;
             }
-            sendCampaignGTM(activity, uriData.toString(), screenName, isAmp);
             if (!keepActivityOn && context != null) {
+                sendCampaignGTM(activity, uriData.toString(), screenName, isAmp);
                 context.finish();
             }
         }
@@ -506,16 +499,17 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
         }
     }
 
-    private void openShopInfo(final List<String> linkSegment, final Uri uriData, Bundle bundle) {
+    private void openShopInfo(final List<String> linkSegment, final Uri uriData, Bundle bundle, boolean isAmp) {
         gqlGetShopIdByDomainUseCaseRx.execute(
                 GqlGetShopIdByDomainUseCaseRx.createParams(linkSegment.get(0)),
-                getOpenShopInfoSubscriber(linkSegment, uriData, bundle)
+                getOpenShopInfoSubscriber(linkSegment, uriData, bundle, isAmp)
         );
     }
 
     private Subscriber<String> getOpenShopInfoSubscriber(final List<String> linkSegment,
                                                          final Uri uriData,
-                                                         Bundle bundle) {
+                                                         Bundle bundle,
+                                                         boolean isAmp) {
         return new Subscriber<String>() {
             @Override
             public void onCompleted() {
@@ -529,6 +523,7 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                         crashlytics.recordException(new RuntimeException(e));
                     }
                     prepareOpenWebView(uriData);
+                    sendCampaignGTM(context, uriData.toString(), uriData.getPath(), isAmp);
                 }
                 if (e instanceof ResponseV4ErrorException) {
                     Map<String, String> messageMap = new HashMap<>();
@@ -579,13 +574,20 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                                     bundle,
                                     ApplinkConst.SHOP_FEED,
                                     shopId);
+                        } else  if(isShopMvcLockedToProduct(linkSegment)) {
+                          String voucherId = linkSegment.get(2);
+                          RouteManager.route(context,
+                                  bundle,
+                                  ApplinkConst.SHOP_MVC_LOCKED_TO_PRODUCT,
+                                  shopId,
+                                  voucherId);
                         } else {
                             Intent intent = RouteManager.getIntent(context, ApplinkConst.SHOP,
                                     shopId);
                             intent.putExtras(bundle);
                             context.startActivity(intent);
                         }
-
+                        sendCampaignGTM(context, uriData.toString(), AppScreen.SCREEN_SHOP_INFO, isAmp);
                         context.finish();
                     } else {
                         Map<String, String> messageMap = new HashMap<>();
@@ -596,6 +598,7 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                         if (!GlobalConfig.DEBUG) {
                             crashlytics.recordException(new ShopNotFoundException(linkSegment.get(0)));
                         }
+                        sendCampaignGTM(context, uriData.toString(), uriData.getPath(), isAmp);
                         prepareOpenWebView(uriData);
                     }
                 }
@@ -639,6 +642,15 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
         return lastSegment.equalsIgnoreCase("feed");
     }
 
+    private boolean isShopMvcLockedToProduct(List<String> linkSegment) {
+        if (linkSegment.size() == SHOP_MVC_LOCKED_TO_PRODUCT_TOTAL_SEGMENT) {
+            String segment = linkSegment.get(SHOP_MVC_LOCKED_TO_PRODUCT_VOUCHER_SEGMENT);
+            return segment.equalsIgnoreCase("voucher");
+        } else {
+            return false;
+        }
+    }
+
     private void openHomeRecommendation(final List<String> linkSegment, final Uri uriData, Bundle bundle) {
         String internalSource = uriData.getQueryParameter("search_ref");
         String source = uriData.getQueryParameter("ref");
@@ -665,15 +677,15 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
         context.finish();
     }
 
-    private void openProduct(final List<String> linkSegment, final Uri uriData) {
+    private void openProduct(final List<String> linkSegment, final Uri uriData, boolean isAmp) {
         gqlGetShopIdByDomainUseCaseRx.execute(
                 GqlGetShopIdByDomainUseCaseRx.createParams(linkSegment.get(0)),
-                getOpenProductSubscriber(linkSegment, uriData)
+                getOpenProductSubscriber(linkSegment, uriData, isAmp)
         );
     }
 
     private Subscriber<String> getOpenProductSubscriber(final List<String> linkSegment,
-                                                        final Uri uriData) {
+                                                        final Uri uriData, boolean isAmp) {
         return new Subscriber<String>() {
             @Override
             public void onCompleted() {
@@ -687,6 +699,7 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                         crashlytics.recordException(new RuntimeException(e));
                     }
                     RouteManager.route(context, ApplinkConstInternalGlobal.WEBVIEW, uriData.toString());
+                    sendCampaignGTM(context, uriData.toString(), uriData.getPath(), isAmp);
                     context.finish();
                 }
                 if (e instanceof ResponseV4ErrorException) {
@@ -727,6 +740,8 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                                 affiliateUUID);
                         productIntent.putExtra("layoutID", layoutTesting);
                         productIntent.setData(uriData);
+
+                        sendCampaignGTM(context, uriData.toString(), AppScreen.SCREEN_PRODUCT_INFO, isAmp);
                         context.startActivity(productIntent);
                     } else {
                         Map<String, String> messageMap = new HashMap<>();
@@ -739,6 +754,7 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                             crashlytics.recordException(new ShopNotFoundException(linkSegment.get(0)));
                             crashlytics.recordException(new ProductNotFoundException(linkSegment.get(0) + "/" + linkSegment.get(1)));
                         }
+                        sendCampaignGTM(context, uriData.toString(), uriData.getPath(), isAmp);
                         RouteManager.route(context, ApplinkConstInternalGlobal.WEBVIEW, uriData.toString());
                     }
                     context.finish();

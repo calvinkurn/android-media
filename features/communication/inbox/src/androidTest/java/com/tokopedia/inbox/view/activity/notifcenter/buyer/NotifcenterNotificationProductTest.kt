@@ -19,10 +19,12 @@ import com.tokopedia.inbox.view.activity.base.notifcenter.InboxNotifcenterTest
 import com.tokopedia.notifcenter.R
 import com.tokopedia.notifcenter.data.entity.notification.NotifcenterDetailResponse
 import com.tokopedia.notifcenter.data.entity.notification.ProductData
+import com.tokopedia.test.application.annotations.UiTest
 import com.tokopedia.test.application.matcher.RecyclerViewMatcher
 import org.hamcrest.Matchers.not
 import org.junit.Test
 
+@UiTest
 class NotifcenterNotificationProductTest : InboxNotifcenterTest() {
 
     @Test

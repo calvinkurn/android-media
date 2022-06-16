@@ -1,11 +1,20 @@
 package com.tokopedia.tokopedianow.util
 
+import com.tokopedia.tokopedianow.util.TestUtils.getPrivateField
 import java.lang.reflect.Method
 
 object TestUtils {
 
     inline fun <reified T>Any.getPrivateField(name: String): T {
         return this::class.java.getDeclaredField(name).let {
+            it.isAccessible = true
+            return@let it.get(this) as T
+        }
+    }
+
+    inline fun <reified T>Any.getParentPrivateField(name: String): T {
+        val superClass = this::class.java.superclass
+        return superClass.getDeclaredField(name).let {
             it.isAccessible = true
             return@let it.get(this) as T
         }

@@ -6,7 +6,7 @@ import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.vouchercreation.common.base.BaseGqlUseCase
 import com.tokopedia.vouchercreation.common.domain.model.UpdateVoucherParam
-import com.tokopedia.vouchercreation.voucherlist.domain.model.UpdateVoucherResponse
+import com.tokopedia.vouchercreation.shop.voucherlist.domain.model.UpdateVoucherResponse
 import javax.inject.Inject
 
 class UpdateVoucherUseCase @Inject constructor(private val gqlRepository: GraphqlRepository) : BaseGqlUseCase<Boolean>()  {

@@ -3,14 +3,16 @@ package com.tokopedia.discovery2.viewcontrollers.decorator
 import android.graphics.Canvas
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.tokopedia.discovery2.viewcontrollers.adapter.DiscoveryRecycleAdapter
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
 import com.tokopedia.discovery2.viewcontrollers.customview.StickyHeadRecyclerView
 import kotlinx.android.synthetic.main.sticky_header_recycler_view.view.*
 
 class HeaderItemDecoration(
-        val parent: StickyHeadRecyclerView,
-        private val isHeader: (itemPosition: Int) -> Boolean
+    val parent: StickyHeadRecyclerView,
+    private val isHeader: (itemPosition: Int) -> Boolean,
+    private val notifySection: (currentSectionId: String) -> Unit
 ) : RecyclerView.ItemDecoration() {
 
 
@@ -26,11 +28,17 @@ class HeaderItemDecoration(
 
     override fun onDrawOver(c: Canvas, parent: RecyclerView, state: RecyclerView.State) {
         super.onDrawOver(c, parent, state)
-        val topChild = parent.getChildAt(0) ?: return
 
-        var topChildPosition = parent.getChildAdapterPosition(topChild)
+        val firstItem =
+            (parent.layoutManager as? StaggeredGridLayoutManager)?.findFirstVisibleItemPositions(
+                null
+            )?.first()
+        val topChildPosition = if (firstItem != null) firstItem else {
+            val topChild = parent.getChildAt(0) ?: return
+            parent.getChildAdapterPosition(topChild)
+        }
 
-        if (topChildPosition == RecyclerView.NO_POSITION) {
+        if (topChildPosition <= RecyclerView.NO_POSITION) {
             return
         }
 
@@ -48,6 +56,11 @@ class HeaderItemDecoration(
         if (parent.adapter == null) {
             return null
         }
+        if (itemPosition < getRecyclerAdapter().currentList.size)
+            getRecyclerAdapter().currentList[itemPosition].parentSectionId?.let {
+                if (it.isNotEmpty())
+                    notifySection(it)
+            }
 
         val headerPosition = getHeaderPositionForItem(itemPosition)
         if (headerPosition == RecyclerView.NO_POSITION) return null

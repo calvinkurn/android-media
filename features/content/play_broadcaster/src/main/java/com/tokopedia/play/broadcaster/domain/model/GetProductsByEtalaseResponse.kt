@@ -1,5 +1,6 @@
 package com.tokopedia.play.broadcaster.domain.model
 
+import android.annotation.SuppressLint
 import com.google.gson.annotations.SerializedName
 
 /**
@@ -46,13 +47,25 @@ data class GetProductsByEtalaseResponse(
                 val stock: Int = 0,
 
                 @SerializedName("pictures")
-                val pictures: List<Picture> = emptyList()
+                val pictures: List<Picture> = emptyList(),
+
+                @SuppressLint("Invalid Data Type")
+                @SerializedName("price")
+                val price: Price = Price(),
         )
 
         data class Picture(
 
                 @SerializedName("urlThumbnail")
                 val urlThumbnail: String = ""
+        )
+
+        data class Price(
+                @SerializedName("min")
+                val min: Double? = 0.0,
+
+                @SerializedName("max")
+                val max: Double? = 0.0,
         )
 
         data class Meta(

@@ -22,20 +22,27 @@ class GetProductDetailBottomSheetUseCase @Inject constructor(private val graphql
     : UseCase<PdpGetDetailBottomSheet>() {
 
     companion object {
-        fun createParams(productId: String, shopId: String): RequestParams = RequestParams.create().apply {
+        fun createParams(productId: String,
+                         shopId: String,
+                         parentId: String,
+                         isGiftable: Boolean): RequestParams = RequestParams.create().apply {
             putString(ProductDetailCommonConstant.PRODUCT_ID_PARAM, productId)
             putString(ProductDetailCommonConstant.SHOP_ID_PARAM, shopId)
+            putString(ProductDetailCommonConstant.PARENT_ID_PARAM, parentId)
+            putBoolean(ProductDetailCommonConstant.GIFTABLE_PARAM, isGiftable)
         }
 
         val QUERY = """
-            query PdpGetDetailBottomSheet(${'$'}productId:String,${'$'}shopId:String,${'$'}catalogId:String){
-              pdpGetDetailBottomSheet(productID:${'$'}productId, shopID:${'$'}shopId, catalogID:${'$'}catalogId){
+            query PdpGetDetailBottomSheet(${'$'}productId:String,${'$'}shopId:String,${'$'}catalogId:String, ${'$'}isGiftable:Boolean, ${'$'}parentId:String){
+              pdpGetDetailBottomSheet(productID:${'$'}productId, shopID:${'$'}shopId, catalogID:${'$'}catalogId, isGiftable:${'$'}isGiftable, parentID:${'$'}parentId){
                 bottomsheetData{
                   title
                   componentName
                   isApplink
                   isShowable
                   value
+                  applink
+                  icon
                 }
                 dataShopNotes{
                   shopNotesData{

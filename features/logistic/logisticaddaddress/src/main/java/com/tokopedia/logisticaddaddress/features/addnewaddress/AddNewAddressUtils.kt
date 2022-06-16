@@ -3,6 +3,7 @@ package com.tokopedia.logisticaddaddress.features.addnewaddress
 import android.annotation.TargetApi
 import android.app.Activity
 import android.content.Context
+import android.content.pm.PackageManager
 import android.location.LocationManager
 import android.os.Build
 import android.provider.Settings
@@ -12,11 +13,18 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
+import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import com.google.android.gms.location.*
+import com.google.android.gms.location.LocationRequest
+import com.google.android.gms.location.LocationServices
+import com.google.android.gms.location.LocationSettingsRequest
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.logisticaddaddress.R
 import com.tokopedia.logisticaddaddress.common.AddressConstants
+import com.tokopedia.logisticaddaddress.utils.AddAddressConstant.PERMISSION_DENIED
+import com.tokopedia.logisticaddaddress.utils.AddAddressConstant.PERMISSION_DONT_ASK_AGAIN
+import com.tokopedia.logisticaddaddress.utils.AddAddressConstant.PERMISSION_GRANTED
+import com.tokopedia.logisticaddaddress.utils.AddAddressConstant.PERMISSION_NOT_DEFINED
 import kotlin.math.abs
 
 
@@ -24,6 +32,11 @@ import kotlin.math.abs
  * Created by fwidjaja on 2019-06-22.
  */
 object AddNewAddressUtils {
+
+    private const val MAX_LINES = 5
+    private const val LOCATION_REQUEST_INTERVAL = 10000L
+    private const val COORDINATE_THRESHOLD = 0.00001
+    private const val LOCATION_REQUEST_FASTEST_INTERVAL = 2000L
 
     @JvmStatic
     fun showToastError(message: String, view: View, activity: Activity) {
@@ -37,7 +50,7 @@ object AddNewAddressUtils {
         snackbar.view.background = ContextCompat.getDrawable(activity, R.drawable.bg_snackbar_error)
         snackbarTextView?.setTextColor(ContextCompat.getColor(activity, com.tokopedia.unifyprinciples.R.color.Unify_N700_44))
         snackbarActionButton?.setTextColor(ContextCompat.getColor(activity, com.tokopedia.unifyprinciples.R.color.Unify_N700_68))
-        snackbarTextView?.maxLines = 5
+        snackbarTextView?.maxLines = MAX_LINES
         snackbar.setAction(activity.getString(R.string.label_action_snackbar_close)) { }.show()
     }
 
@@ -88,8 +101,8 @@ object AddNewAddressUtils {
     fun getLocationRequest() : LocationRequest {
         val locationRequest = LocationRequest.create()
         locationRequest.priority = LocationRequest.PRIORITY_HIGH_ACCURACY
-        locationRequest.interval = 10 * 1000
-        locationRequest.fastestInterval = 2 * 1000
+        locationRequest.interval = LOCATION_REQUEST_INTERVAL
+        locationRequest.fastestInterval = LOCATION_REQUEST_FASTEST_INTERVAL
         return locationRequest
     }
 
@@ -105,11 +118,29 @@ object AddNewAddressUtils {
     }
 
     fun hasDefaultCoordinate(lat: Double, long: Double, exact: Boolean = false): Boolean {
-        val threshold = 0.00001
+        val threshold = COORDINATE_THRESHOLD
         val diffLat = lat - AddressConstants.DEFAULT_LAT
         val diffLong = long - AddressConstants.DEFAULT_LONG
 
         return if (exact) (diffLat == 0.0 && diffLong == 0.0)
         else (abs(diffLat) < threshold && abs(diffLong) < threshold)
+    }
+
+    fun getPermissionStateFromResult(activity: Activity, context: Context, permissions: Array<out String>) : Int {
+        var state = PERMISSION_NOT_DEFINED
+        for (permission in permissions) {
+            state = when {
+                ContextCompat.checkSelfPermission(context, permission) == PackageManager.PERMISSION_GRANTED -> {
+                    PERMISSION_GRANTED
+                }
+                ActivityCompat.shouldShowRequestPermissionRationale(activity, permission)  -> {
+                    PERMISSION_DENIED
+                }
+                else -> {
+                    PERMISSION_DONT_ASK_AGAIN
+                }
+            }
+        }
+        return state
     }
 }

@@ -21,6 +21,8 @@ import com.tokopedia.notifcenter.data.state.Resource
 import com.tokopedia.notifcenter.data.uimodel.NotificationTopAdsBannerUiModel
 import com.tokopedia.notifcenter.data.uimodel.NotificationUiModel
 import com.tokopedia.notifcenter.domain.*
+import com.tokopedia.notifcenter.presentation.viewmodel.NotificationViewModel.Companion.CLEAR_ALL_NOTIF_TYPE
+import com.tokopedia.notifcenter.presentation.viewmodel.NotificationViewModel.Companion.DEFAULT_SHOP_ID
 import com.tokopedia.notifcenter.presentation.viewmodel.NotificationViewModel.Companion.getRecommendationVisitables
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.recommendation_widget_common.data.RecommendationEntity
@@ -39,6 +41,11 @@ import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.wishlist.common.listener.WishListActionListener
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
+import com.tokopedia.wishlistcommon.data.response.AddToWishlistV2Response
+import com.tokopedia.wishlistcommon.data.response.DeleteWishlistV2Response
+import com.tokopedia.wishlistcommon.domain.AddToWishlistV2UseCase
+import com.tokopedia.wishlistcommon.domain.DeleteWishlistV2UseCase
+import com.tokopedia.wishlistcommon.listener.WishlistV2ActionListener
 import io.mockk.*
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.runBlocking
@@ -67,6 +74,8 @@ class NotificationViewModelTest {
     private val userSessionInterface: UserSessionInterface = mockk(relaxed = true)
     private val addToCartUseCase: AddToCartUseCase = mockk(relaxed = true)
     private val notifOrderListUseCase: NotifOrderListUseCase = mockk(relaxed = true)
+    private val addToWishlistV2UseCase: AddToWishlistV2UseCase = mockk(relaxed = true)
+    private val deleteWishlistV2UseCase: DeleteWishlistV2UseCase = mockk(relaxed = true)
 
     private val dispatcher = CoroutineTestDispatchersProvider
 
@@ -89,8 +98,10 @@ class NotificationViewModelTest {
             topAdsImageViewUseCase,
             getRecommendationUseCase,
             addWishListUseCase,
-            topAdsWishlishedUseCase,
             removeWishListUseCase,
+            addToWishlistV2UseCase,
+            deleteWishlistV2UseCase,
+            topAdsWishlishedUseCase,
             userSessionInterface,
             addToCartUseCase,
             notifOrderListUseCase,
@@ -663,6 +674,66 @@ class NotificationViewModelTest {
     }
 
     @Test
+    fun `verify add to wishlistV2 returns success` () {
+        val recommItem = RecommendationItem(isTopAds = false, productId = 12L)
+        val resultWishlistAddV2 = AddToWishlistV2Response.Data.WishlistAddV2(success = true)
+
+        every { addToWishlistV2UseCase.setParams(any(), any()) } just Runs
+        coEvery { addToWishlistV2UseCase.executeOnBackground() } returns Success(resultWishlistAddV2)
+
+        val mockListener: WishlistV2ActionListener = mockk(relaxed = true)
+        viewModel.addWishlistV2(recommItem, mockListener)
+
+        verify { addToWishlistV2UseCase.setParams(recommItem.productId.toString(), userSessionInterface.userId) }
+        coVerify { addToWishlistV2UseCase.executeOnBackground() }
+    }
+
+    @Test
+    fun `verify add to wishlistV2 returns fail` () {
+        val recommItem = RecommendationItem(isTopAds = false, productId = 12L)
+        val mockThrowable = mockk<Throwable>("fail")
+
+        every { addToWishlistV2UseCase.setParams(any(), any()) } just Runs
+        coEvery { addToWishlistV2UseCase.executeOnBackground() } returns Fail(mockThrowable)
+
+        val mockListener: WishlistV2ActionListener = mockk(relaxed = true)
+        viewModel.addWishlistV2(recommItem, mockListener)
+
+        verify { addToWishlistV2UseCase.setParams(recommItem.productId.toString(), userSessionInterface.userId) }
+        coVerify { addToWishlistV2UseCase.executeOnBackground() }
+    }
+
+    @Test
+    fun `verify remove wishlistV2 returns success`(){
+        val recommItem = RecommendationItem(isTopAds = false, productId = 12L)
+        val resultWishlistRemoveV2 = DeleteWishlistV2Response.Data.WishlistRemoveV2(success = true)
+
+        every { deleteWishlistV2UseCase.setParams(any(), any()) } just Runs
+        coEvery { deleteWishlistV2UseCase.executeOnBackground() } returns Success(resultWishlistRemoveV2)
+
+        val mockListener: WishlistV2ActionListener = mockk(relaxed = true)
+        viewModel.removeWishlistV2(recommItem, mockListener)
+
+        verify { deleteWishlistV2UseCase.setParams(recommItem.productId.toString(), userSessionInterface.userId) }
+        coVerify { deleteWishlistV2UseCase.executeOnBackground() }
+    }
+
+    @Test
+    fun `verify remove wishlistV2 returns fail`(){
+        val recommItem = RecommendationItem(isTopAds = false, productId = 12L)
+        val mockThrowable = mockk<Throwable>("fail")
+
+        every { deleteWishlistV2UseCase.setParams(any(), any()) } just Runs
+        coEvery { deleteWishlistV2UseCase.executeOnBackground() } returns Fail(mockThrowable)
+
+        val mockListener: WishlistV2ActionListener = mockk(relaxed = true)
+        viewModel.removeWishlistV2(recommItem, mockListener)
+
+        verify { deleteWishlistV2UseCase.setParams(recommItem.productId.toString(), userSessionInterface.userId) }
+        coVerify { deleteWishlistV2UseCase.executeOnBackground() }
+    }
+
+    @Test
     fun normal_wishlist_should_call_onSuccessAddWishlist_when_success() {
         // given
         val expectedResultId = "123"
@@ -896,6 +967,25 @@ class NotificationViewModelTest {
         val expectedValue = Resource.success(clearNotifCounterResponse)
         val flow = flow { emit(expectedValue) }
         every { clearNotifUseCase.clearNotifCounter(role) } returns flow
+
+        // when
+        viewModel.clearNotifCounter(role)
+        viewModel.clearNotif.observeForever(clearNotifObserver)
+
+        // then
+        verify {
+            clearNotifObserver.onChanged(expectedValue)
+        }
+    }
+
+    @Test
+    fun clearNotifCounter_reset_type_zero_when_user_does_not_have_shop() {
+        // Given
+        val role = RoleType.BUYER
+        val expectedValue = Resource.success(clearNotifCounterResponse)
+        val flow = flow { emit(expectedValue) }
+        every { clearNotifUseCase.clearNotifCounter(CLEAR_ALL_NOTIF_TYPE) } returns flow
+        every { userSessionInterface.shopId } returns DEFAULT_SHOP_ID
 
         // when
         viewModel.clearNotifCounter(role)

@@ -34,7 +34,10 @@ object CatalogDetailMapper {
 
                 CatalogConstant.CATALOG_PRODUCT_LIST -> {
                     listOfComponents.add(CatalogProductsContainerDataModel(name = component.name, type = component.type,
-                            catalogId = catalogGetDetailModular.basicInfo.id, catalogUrl = catalogGetDetailModular.basicInfo.url))
+                            catalogId = catalogGetDetailModular.basicInfo.id, catalogName = catalogGetDetailModular.basicInfo.name ?: "",
+                            catalogUrl = catalogGetDetailModular.basicInfo.url,
+                            categoryId= catalogGetDetailModular.basicInfo.departmentID, catalogBrand = catalogGetDetailModular.basicInfo.brand
+                        ))
                 }
 
                 CatalogConstant.VIDEO -> {

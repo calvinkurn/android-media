@@ -42,6 +42,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.commonNetwork)
     implementation projectOrAar(rootProject.ext.libraries.utils)
     implementation projectOrAar(rootProject.ext.libraries.remoteConfig)
+    implementation projectOrAar(rootProject.ext.libraries.encryption)
 
     implementation rootProject.ext.tkpdInternalLibDependencies.url
     implementation projectOrAar(rootProject.ext.libraries.graphql)
@@ -54,6 +55,7 @@ dependencies {
 
     implementation rootProject.ext.miscDependencies.viewModelKtx
     implementation rootProject.ext.miscDependencies.lifeCycleExtentions
+    implementation projectOrAar(rootProject.ext.libraries.logger)
     kapt rootProject.ext.miscDependencies.lifeCycleRuntime
 
     implementation rootProject.ext.supportLibDependencies.recyclerViewV7

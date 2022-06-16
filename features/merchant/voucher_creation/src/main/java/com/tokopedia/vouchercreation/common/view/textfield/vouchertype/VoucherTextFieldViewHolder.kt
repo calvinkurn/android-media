@@ -11,23 +11,25 @@ import com.tokopedia.kotlin.extensions.view.toBlankOrString
 import com.tokopedia.unifycomponents.TextFieldUnify
 import com.tokopedia.utils.text.currency.CurrencyFormatHelper
 import com.tokopedia.utils.text.currency.NumberTextWatcher
+import com.tokopedia.utils.view.binding.viewBinding
 import com.tokopedia.vouchercreation.R
-import com.tokopedia.vouchercreation.create.view.enums.PromotionType
-import kotlinx.android.synthetic.main.mvc_textfield.view.*
+import com.tokopedia.vouchercreation.databinding.MvcTextfieldBinding
+import com.tokopedia.vouchercreation.shop.create.view.enums.PromotionType
 
 class VoucherTextFieldViewHolder(itemView: View) : AbstractViewHolder<VoucherTextFieldUiModel>(itemView) {
 
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.mvc_textfield
-
     }
+
+    private val binding: MvcTextfieldBinding? by viewBinding()
 
     private var minAlertErrorMessage: String = ""
     private var maxAlertErrorMessage: String = ""
 
     override fun bind(element: VoucherTextFieldUiModel) {
-        itemView.mvcInputTextField?.run {
+        binding?.mvcInputTextField?.run {
             // Fix blank color when dark mode activated.
             textFiedlLabelText.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Neutral_N700_68))
             textFieldInput.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Neutral_N700))

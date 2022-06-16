@@ -15,7 +15,6 @@ import com.tokopedia.oneclickcheckout.order.view.model.OccPrompt
 import com.tokopedia.oneclickcheckout.order.view.model.OccPromptButton
 import com.tokopedia.oneclickcheckout.order.view.model.OccToasterAction
 import com.tokopedia.oneclickcheckout.order.view.model.OccUIMessage
-import java.util.*
 import javax.inject.Inject
 
 class UpdateCartOccUseCase @Inject constructor(@ApplicationContext private val graphqlRepository: GraphqlRepository,
@@ -46,9 +45,9 @@ class UpdateCartOccUseCase @Inject constructor(@ApplicationContext private val g
     }
 
     private fun mapPrompt(promptResponse: OccPromptResponse): OccPrompt {
-        return OccPrompt(promptResponse.type.toLowerCase(Locale.ROOT), promptResponse.title,
+        return OccPrompt(promptResponse.type.lowercase(), promptResponse.title,
                 promptResponse.description, promptResponse.imageUrl, promptResponse.buttons.map {
-            OccPromptButton(it.text, it.link, it.action.toLowerCase(Locale.ROOT), it.color.toLowerCase(Locale.ROOT))
+            OccPromptButton(it.text, it.link, it.action.lowercase(), it.color.lowercase())
         })
     }
 

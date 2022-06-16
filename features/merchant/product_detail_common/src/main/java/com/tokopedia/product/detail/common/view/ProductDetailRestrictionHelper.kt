@@ -9,51 +9,58 @@ import com.tokopedia.unifycomponents.toPx
  */
 object ProductDetailRestrictionHelper {
 
-    const val RESTRICTION_CATEGORIES_PADDING_BOTTOM = 8
-    const val CAMPAIGN_TIER_PADDING_BOTTOM = 16
+    private const val RESTRICTION_CATEGORIES_PADDING_BOTTOM = 8
+    private const val CAMPAIGN_TIER_PADDING_BOTTOM = 16
 
-    fun renderNplUi(reData: RestrictionData?,
-                    isShopOwner: Boolean,
-                    isFavoriteShop: Boolean,
-                    nplView: PartialButtonShopFollowersView?) {
+    fun renderRestrictionUi(reData: RestrictionData?,
+                            isShopOwner: Boolean,
+                            isFavoriteShop: Boolean,
+                            reView: PartialButtonShopFollowersView?) {
 
         if (reData == null) {
-            nplView?.setupVisibility = false
+            reView?.setupVisibility = false
             return
         }
 
         when {
             reData.restrictionExclusiveType() -> {
                 renderExclusiveBottomSheet(reData = reData,
-                        nplExclusiveView = nplView)
+                        nplExclusiveView = reView)
             }
             reData.restrictionShopFollowersType() -> {
                 renderNplButtonShopFollowers(
                         reData = reData,
                         isFavoriteShop = isFavoriteShop,
                         isShopOwner = isShopOwner,
-                        shopFollowersView = nplView
+                        shopFollowersView = reView
                 )
             }
             reData.restrictionCategoriesType() -> {
-                renderRestrictionCategories(
+                renderCommonRestrictionView(
                         reData = reData,
                         isShopOwner = isShopOwner,
-                        shopFollowersView = nplView
+                        shopFollowersView = reView
+                )
+            }
+            reData.restrictionGamificationType() -> {
+                renderCommonRestrictionView(
+                        reData = reData,
+                        isShopOwner = isShopOwner,
+                        shopFollowersView = reView
                 )
             }
             else -> {
-                nplView?.setupVisibility = false
+                reView?.setupVisibility = false
             }
         }
     }
 
-    //region restriction categories
-    private fun renderRestrictionCategories(reData: RestrictionData,
+    //region common restriction view such as categories and gamification
+    private fun renderCommonRestrictionView(reData: RestrictionData,
                                             isShopOwner: Boolean,
                                             shopFollowersView: PartialButtonShopFollowersView?) {
         val shouldShow = !reData.isEligible
-        if (shouldShow && !isShopOwner && reData.restrictionCategoriesType()) {
+        if (shouldShow && !isShopOwner) {
             if (shopFollowersView?.view?.isShown == false) {
                 shopFollowersView.view.translationY = 100.toPx().toFloat()
             }
@@ -67,6 +74,7 @@ object ProductDetailRestrictionHelper {
                     alreadyFollowShop = false,
                     centerImage = true,
                     buttonLabel = buttonLabel,
+                    hideButton = buttonLabel.isEmpty(),
                     iconUrl = badgeUrl,
                     customPaddingBottom = RESTRICTION_CATEGORIES_PADDING_BOTTOM)
         }

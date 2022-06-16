@@ -14,7 +14,7 @@ public class KMNumbers {
 
     public static final NavigableMap<Long, String> suffixes = new TreeMap<>();
     public static final String FORMAT_2_DOUBLE = "%.2f";
-    public static final String SUFFIX_FORMAT = "%s%s";
+    public static final String SUFFIX_FORMAT = "%s %s";
     public static final String RUPIAH_FORMAT = "Rp%s";
     public static final String PERCENT_FORMAT = "%s%%";
     private static final Locale locale = new Locale("in", "ID");

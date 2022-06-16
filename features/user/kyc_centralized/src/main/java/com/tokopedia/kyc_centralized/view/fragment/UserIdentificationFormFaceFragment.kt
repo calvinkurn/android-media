@@ -8,23 +8,24 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.airbnb.lottie.LottieComposition
 import com.airbnb.lottie.LottieCompositionFactory
-import com.tokopedia.abstraction.base.app.BaseMainApplication
-import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toEmptyStringIfNull
+import com.tokopedia.kyc_centralized.KycConstant.PADDING_0_5F
+import com.tokopedia.kyc_centralized.KycConstant.PADDING_16
+import com.tokopedia.kyc_centralized.KycConstant.PADDING_ZERO
 import com.tokopedia.kyc_centralized.R
-import com.tokopedia.kyc_centralized.di.DaggerUserIdentificationCommonComponent
 import com.tokopedia.kyc_centralized.di.UserIdentificationCommonComponent
 import com.tokopedia.kyc_centralized.util.ImageEncryptionUtil
 import com.tokopedia.kyc_centralized.view.activity.UserIdentificationCameraActivity.Companion.createIntent
 import com.tokopedia.kyc_centralized.view.activity.UserIdentificationFormActivity
 import com.tokopedia.kyc_centralized.view.model.UserIdentificationStepperModel
 import com.tokopedia.kyc_centralized.view.viewmodel.KycUploadViewModel
-import com.tokopedia.media.loader.loadImage
 import com.tokopedia.kyc_centralized.view.viewmodel.KycUploadViewModel.Companion.KYC_IV_KTP_CACHE
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -107,7 +108,7 @@ class UserIdentificationFormFaceFragment :
             goToKycSelfie()
         }
         setExampleImages()
-        onboardingImage?.visibility = View.GONE
+        layoutSecurity?.hide()
         if (activity is UserIdentificationFormActivity) {
             (activity as UserIdentificationFormActivity)
                 .updateToolbarTitle(getString(R.string.title_kyc_form_selfie))
@@ -126,6 +127,7 @@ class UserIdentificationFormFaceFragment :
             analytics?.eventClickNextSelfiePage()
             goToKycLiveness()
         }
+        layoutSecurity?.show()
 
         setLottieAnimation()
     }
@@ -141,20 +143,26 @@ class UserIdentificationFormFaceFragment :
     }
 
     private fun setExampleImages() {
-        correctImage?.visibility = View.VISIBLE
-        wrongImage?.visibility = View.VISIBLE
-        correctImage?.loadImage(KycUrl.SELFIE_OK)
-        wrongImage?.loadImage(KycUrl.SELFIE_FAIL)
+        onboardingImage?.apply {
+            val scale = resources.displayMetrics.density
+            setPadding(
+                PADDING_ZERO,
+                (PADDING_16 * scale + PADDING_0_5F).toInt(),
+                PADDING_ZERO,
+                PADDING_ZERO
+            )
+            loadImage(KycUrl.SCAN_SELFIE)
+            show()
+        }
     }
 
     private fun goToKycSelfie() {
-        val intent = createIntent(context, UserIdentificationCameraFragment.PARAM_VIEW_MODE_FACE)
-        intent.putExtra(ApplinkConstInternalGlobal.PARAM_PROJECT_ID, projectId)
+        val intent = context?.let { createIntent(it, UserIdentificationCameraFragment.PARAM_VIEW_MODE_FACE, projectId) }
         startActivityForResult(intent, KYCConstant.REQUEST_CODE_CAMERA_FACE)
     }
 
     private fun goToKycLiveness() {
-        val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.LIVENESS_DETECTION)
+        val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.LIVENESS_DETECTION, projectId.toString())
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_KTP_PATH, stepperModel?.ktpFile)
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_PROJECT_ID, projectId)
         startActivityForResult(intent, KYCConstant.REQUEST_CODE_CAMERA_FACE)
@@ -166,11 +174,12 @@ class UserIdentificationFormFaceFragment :
     }
 
     companion object {
-        fun createInstance(): Fragment {
-            val fragment: Fragment = UserIdentificationFormFaceFragment()
-            val args = Bundle()
-            fragment.arguments = args
-            return fragment
+        fun createInstance(kycType: String): Fragment {
+            return UserIdentificationFormFaceFragment().apply {
+                arguments = Bundle().apply {
+                    putString(ApplinkConstInternalGlobal.PARAM_KYC_TYPE, kycType)
+                }
+            }
         }
     }
 

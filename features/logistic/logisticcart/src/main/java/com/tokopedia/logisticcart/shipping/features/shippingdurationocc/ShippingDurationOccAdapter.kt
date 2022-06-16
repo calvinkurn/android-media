@@ -4,9 +4,11 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.logisticcart.shipping.features.shippingduration.view.ArmyViewHolder
+import com.tokopedia.logisticcart.shipping.features.shippingduration.view.DividerViewHolder
 import com.tokopedia.logisticcart.shipping.features.shippingduration.view.NotifierViewHolder
 import com.tokopedia.logisticcart.shipping.features.shippingduration.view.ShippingDurationAdapterListener
 import com.tokopedia.logisticcart.shipping.features.shippingduration.view.ShippingDurationViewHolder
+import com.tokopedia.logisticcart.shipping.model.DividerModel
 import com.tokopedia.logisticcart.shipping.model.LogisticPromoUiModel
 import com.tokopedia.logisticcart.shipping.model.RatesViewModelType
 import com.tokopedia.logisticcart.shipping.model.ShippingDurationUiModel
@@ -17,6 +19,7 @@ class ShippingDurationOccAdapter(private val list: List<RatesViewModelType>, pri
         private const val SHIPPING_DURATION_VIEW_HOLDER_TYPE = 1
         private const val ARMY_VIEW_HOLDER_TYPE = 3
         private const val NOTIFIER_VIEW_HOLDER_TYPE = 4
+        private const val DIVIDER_VIEW_HOLDER_TYPE = 5
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
@@ -24,6 +27,7 @@ class ShippingDurationOccAdapter(private val list: List<RatesViewModelType>, pri
         return when (viewType) {
             SHIPPING_DURATION_VIEW_HOLDER_TYPE -> ShippingDurationViewHolder(view, 0)
             ARMY_VIEW_HOLDER_TYPE -> ArmyViewHolder(view)
+            DIVIDER_VIEW_HOLDER_TYPE -> DividerViewHolder(view)
             else -> NotifierViewHolder(view)
         }
     }
@@ -32,6 +36,7 @@ class ShippingDurationOccAdapter(private val list: List<RatesViewModelType>, pri
         return when (viewType) {
             SHIPPING_DURATION_VIEW_HOLDER_TYPE -> ShippingDurationViewHolder.ITEM_VIEW_SHIPMENT_DURATION
             ARMY_VIEW_HOLDER_TYPE -> ArmyViewHolder.LAYOUT
+            DIVIDER_VIEW_HOLDER_TYPE -> DividerViewHolder.LAYOUT
             else -> NotifierViewHolder.LAYOUT
         }
     }
@@ -51,6 +56,7 @@ class ShippingDurationOccAdapter(private val list: List<RatesViewModelType>, pri
         return when (list[position]) {
             is ShippingDurationUiModel -> SHIPPING_DURATION_VIEW_HOLDER_TYPE
             is LogisticPromoUiModel -> ARMY_VIEW_HOLDER_TYPE
+            is DividerModel -> DIVIDER_VIEW_HOLDER_TYPE
             else -> NOTIFIER_VIEW_HOLDER_TYPE
         }
     }

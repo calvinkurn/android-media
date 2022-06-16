@@ -280,6 +280,41 @@
               ]
             }
           ],
+          "promo_stackings": [{
+            "is_promo": 0,
+            "promo_code": "",
+            "title": "",
+            "shipper_id": 0,
+            "shipper_product_id": 0,
+            "shipper_name": "",
+            "shipper_desc": "",
+            "promo_detail": "",
+            "benefit_desc": "",
+            "point_change": 0,
+            "user_point": 0,
+            "promo_tnc_html": "",
+            "shipper_disable_text": "",
+            "service_id": 0,
+            "is_applied": 0,
+            "image_url": "",
+            "discounted_rate": 0,
+            "shipping_rate": 0,
+            "benefit_amount": 0,
+            "disabled": false,
+            "hide_shipper_name": false,
+            "cod": {
+              "is_cod_available": 0,
+              "cod_text": "",
+              "cod_price": 0,
+              "formatted_price": "",
+              "tnc_text": "",
+              "tnc_link": ""
+            },
+            "eta": {
+              "text_eta": "",
+              "error_code": 1
+            }
+          }],
           "promo_stacking": {
             "is_promo": 0,
             "promo_code": "",

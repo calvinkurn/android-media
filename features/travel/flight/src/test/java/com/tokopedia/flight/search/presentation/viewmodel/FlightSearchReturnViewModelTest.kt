@@ -276,7 +276,7 @@ class FlightSearchReturnViewModelTest {
     fun onFlightSelectFromDetail_nullRoutes_notValidReturnJourney() {
         // given
         coEvery { flightSearchJourneyByIdUseCase.execute(any()) } returnsMany listOf(DEPARTURE_JOURNEY, FlightJourneyModel(
-                "", "DummyId", true, false, "BTJ",
+                "", "DummyId", "Free rapid Test", "", "BTJ",
                 "Bandara International Sultan Iskandar Muda", "",
                 "10.00", 111111, "CGK", "12.40",
                 "Bandara International Soekarno Hatta", "",
@@ -324,7 +324,7 @@ class FlightSearchReturnViewModelTest {
     fun onFlightSelectFromDetail_emptyRoutes_notValidReturnJourney() {
         // given
         coEvery { flightSearchJourneyByIdUseCase.execute(any()) } returnsMany listOf(DEPARTURE_JOURNEY, FlightJourneyModel(
-                "", "DummyId", true, true, "BTJ",
+                "", "DummyId", "Free Rapid Test", "Seat Distancing", "BTJ",
                 "Bandara International Sultan Iskandar Muda", "",
                 "10.00", 111111, "CGK", "12.40",
                 "Bandara International Soekarno Hatta", "",

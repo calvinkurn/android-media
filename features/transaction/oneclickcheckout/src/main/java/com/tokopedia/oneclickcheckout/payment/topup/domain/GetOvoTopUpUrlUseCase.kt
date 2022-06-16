@@ -3,7 +3,7 @@ package com.tokopedia.oneclickcheckout.payment.topup.domain
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.oneclickcheckout.common.DEFAULT_ERROR_MESSAGE
-import com.tokopedia.oneclickcheckout.payment.data.OvoTopUpUrlGqlResponse
+import com.tokopedia.oneclickcheckout.payment.topup.data.OvoTopUpUrlGqlResponse
 import javax.inject.Inject
 
 class GetOvoTopUpUrlUseCase @Inject constructor(private val graphqlUseCase: GraphqlUseCase<OvoTopUpUrlGqlResponse>) {

@@ -109,6 +109,7 @@ class OrderSummaryPageActivityRevampTest {
                 assertSummary(
                         productPrice = "Rp100.000",
                         shippingPrice = "Rp15.000",
+                        insurancePrice = "Rp0",
                         paymentFee = "Rp1.000",
                         totalPrice = "Rp116.000"
                 )
@@ -364,6 +365,7 @@ class OrderSummaryPageActivityRevampTest {
                         productPrice = "Rp100.000",
                         shippingPrice = "Rp0",
                         isBbo = true,
+                        insurancePrice = "Rp0",
                         paymentFee = "Rp1.000",
                         totalPrice = "Rp101.000"
                 )
@@ -409,6 +411,7 @@ class OrderSummaryPageActivityRevampTest {
                         productPrice = "Rp100.000",
                         shippingPrice = "Rp0",
                         isBbo = true,
+                        insurancePrice = "Rp0",
                         paymentFee = "Rp1.000",
                         totalPrice = "Rp101.000"
                 )
@@ -437,6 +440,7 @@ class OrderSummaryPageActivityRevampTest {
                         productPrice = "Rp100.000",
                         shippingPrice = "Rp38.000",
                         isBbo = false,
+                        insurancePrice = "Rp0",
                         paymentFee = "Rp1.000",
                         totalPrice = "Rp139.000"
                 )
@@ -559,6 +563,7 @@ class OrderSummaryPageActivityRevampTest {
                 assertSummary(
                         productPrice = "Rp100.000",
                         shippingPrice = "Rp38.000",
+                        insurancePrice = "Rp0",
                         paymentFee = "Rp1.000",
                         totalPrice = "Rp139.000"
                 )

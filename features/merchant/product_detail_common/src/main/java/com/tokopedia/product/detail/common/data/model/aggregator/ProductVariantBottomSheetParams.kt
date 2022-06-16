@@ -16,6 +16,7 @@ data class ProductVariantBottomSheetParams(
         var shopId: String = "",
         var dismissAfterTransaction: Boolean = false,
         var saveAfterClose: Boolean = true,
+        var extParams:String = "",
 
         /**
          * PDP only
@@ -23,7 +24,7 @@ data class ProductVariantBottomSheetParams(
         var pdpSession: String = "",
         // only be used in AtcVariantViewModel, dont use this except from AtcVariantViewModel
         var variantAggregator: ProductVariantAggregatorUiData = ProductVariantAggregatorUiData(),
-        var miniCartData: Map<String, MiniCartItem>? = null,
+        var miniCartData: Map<String, MiniCartItem.MiniCartItemProduct>? = null,
         var alreadyFollowShop: Boolean = false,
 
         //Basic info pdp

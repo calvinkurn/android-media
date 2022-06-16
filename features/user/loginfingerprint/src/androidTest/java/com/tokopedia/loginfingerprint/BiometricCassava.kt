@@ -3,6 +3,7 @@ package com.tokopedia.loginfingerprint
 import androidx.test.rule.ActivityTestRule
 import com.tokopedia.cassavatest.CassavaTestRule
 import com.tokopedia.loginfingerprint.view.activity.VerifyFingerprintActivity
+import com.tokopedia.test.application.annotations.CassavaTest
 import com.tokopedia.test.application.util.InstrumentationAuthHelper
 import org.junit.Before
 import org.junit.Rule
@@ -12,6 +13,7 @@ import org.junit.Test
  * Created by Yoris on 09/09/21.
  */
 
+@CassavaTest
 class BiometricCassava {
 
     @get:Rule

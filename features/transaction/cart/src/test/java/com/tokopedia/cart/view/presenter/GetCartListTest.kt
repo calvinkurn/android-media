@@ -31,7 +31,7 @@ class GetCartListTest : BaseCartTest() {
         verifyOrder {
             view.renderLoadGetCartDataFinish()
             view.renderInitialGetCartListDataSuccess(cartData)
-            view.stopCartPerformanceTrace()
+            view.stopCartPerformanceTrace(true)
         }
     }
 
@@ -53,7 +53,7 @@ class GetCartListTest : BaseCartTest() {
         // THEN
         verify {
             view.renderErrorInitialGetCartListData(exception)
-            view.stopCartPerformanceTrace()
+            view.stopCartPerformanceTrace(false)
         }
     }
 
@@ -76,7 +76,7 @@ class GetCartListTest : BaseCartTest() {
         verify {
             view.renderLoadGetCartDataFinish()
             view.renderInitialGetCartListDataSuccess(cartData)
-            view.stopCartPerformanceTrace()
+            view.stopCartPerformanceTrace(true)
         }
     }
 
@@ -98,7 +98,7 @@ class GetCartListTest : BaseCartTest() {
         // THEN
         verify {
             view.renderErrorInitialGetCartListData(exception)
-            view.stopCartPerformanceTrace()
+            view.stopCartPerformanceTrace(false)
         }
     }
 
@@ -121,7 +121,7 @@ class GetCartListTest : BaseCartTest() {
         verifyOrder {
             view.renderLoadGetCartDataFinish()
             view.renderInitialGetCartListDataSuccess(cartData)
-            view.stopCartPerformanceTrace()
+            view.stopCartPerformanceTrace(true)
         }
     }
 

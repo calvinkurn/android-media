@@ -9,5 +9,6 @@ class AffiliatePortfolioUrlInputData (
     var errorContent:String?,
     var isError:Boolean,
     var isFocus : Boolean ? = false,
-    var regex : String? = null
+    var regex : String? = null,
+    var firstTime : Boolean? = true,
     )

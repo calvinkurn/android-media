@@ -6,7 +6,7 @@ import com.tokopedia.play.fake.FakePlayShareExperience
 import com.tokopedia.play.model.PlayChannelDataModelBuilder
 import com.tokopedia.play.model.PlayPartnerInfoModelBuilder
 import com.tokopedia.play.robot.play.createPlayViewModelRobot
-import com.tokopedia.play.util.isEqualTo
+import com.tokopedia.play.util.assertEqualTo
 import com.tokopedia.play.util.isEqualToIgnoringFields
 import com.tokopedia.play.util.share.PlayShareExperience
 import com.tokopedia.play.view.uimodel.action.*
@@ -25,7 +25,6 @@ import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import org.junit.runner.notification.RunListener
 
 /**
  * Created By : Jonathan Darwin on December 16, 2021
@@ -95,7 +94,7 @@ class PlayViewModelShareExperienceTest {
             /** Verify */
             verify { mockPlayNewAnalytic.clickShareButton(channelId, partnerId, channelType) }
 
-            event.last().isEqualTo(mockEvent)
+            event.last().assertEqualTo(mockEvent)
         }
     }
 
@@ -126,7 +125,7 @@ class PlayViewModelShareExperienceTest {
                 submitAction(CopyLinkAction)
             }
 
-            event[0].isEqualTo(mockCopyEvent)
+            event[0].assertEqualTo(mockCopyEvent)
             event[1].isEqualToIgnoringFields(mockShowInfoEvent, ShowInfoEvent::message)
         }
     }
@@ -162,7 +161,7 @@ class PlayViewModelShareExperienceTest {
             /** Verify */
             verify { mockPlayNewAnalytic.impressShareBottomSheet(channelId, partnerId, channelType) }
 
-            event.last().isEqualTo(mockEvent)
+            event.last().assertEqualTo(mockEvent)
         }
     }
 
@@ -194,7 +193,7 @@ class PlayViewModelShareExperienceTest {
             }
 
             /** Verify */
-            event[0].isEqualTo(mockCopyEvent)
+            event[0].assertEqualTo(mockCopyEvent)
             event[1].isEqualToIgnoringFields(mockShowInfoEvent, ShowInfoEvent::message)
         }
     }
@@ -229,7 +228,6 @@ class PlayViewModelShareExperienceTest {
     fun `when user take screenshot & custom share is allowed, it should emit event to open bottom sheet`() {
         /** Prepare */
         every { mockPlayNewAnalytic.takeScreenshotForSharing(any(), any(), any()) } returns Unit
-        coEvery { mockPlayNewAnalytic.impressShareBottomSheet(any(), any(), any()) } returns Unit
         coEvery { mockPlayShareExperience.isCustomSharingAllow() } returns true
 
         val mockEvent = OpenSharingOptionEvent(
@@ -256,9 +254,8 @@ class PlayViewModelShareExperienceTest {
 
             /** Verify */
             verify { mockPlayNewAnalytic.takeScreenshotForSharing(channelId, partnerId, channelType) }
-            verify { mockPlayNewAnalytic.impressShareBottomSheet(channelId, partnerId, channelType) }
 
-            event.last().isEqualTo(mockEvent)
+            event.last().assertEqualTo(mockEvent)
         }
     }
 
@@ -296,8 +293,8 @@ class PlayViewModelShareExperienceTest {
             /** Verify */
             verify { mockPlayNewAnalytic.clickSharingOption(channelId, partnerId, channelType, shareModel.socialMediaName, false) }
 
-            event[0].isEqualTo(mockCloseBottomSheet)
-            event[1].isEqualTo(mockEvent)
+            event[0].assertEqualTo(mockCloseBottomSheet)
+            event[1].assertEqualTo(mockEvent)
         }
     }
 
@@ -332,8 +329,8 @@ class PlayViewModelShareExperienceTest {
             /** Verify */
             verify { mockPlayNewAnalytic.clickSharingOption(channelId, partnerId, channelType, shareModel.socialMediaName, false) }
 
-            event[0].isEqualTo(mockCloseBottomSheet)
-            event[1].isEqualTo(mockErrorGenerateLink)
+            event[0].assertEqualTo(mockCloseBottomSheet)
+            event[1].assertEqualTo(mockErrorGenerateLink)
         }
     }
 

@@ -8,6 +8,7 @@ import com.tokopedia.play.helper.ClassBuilder
 import com.tokopedia.play.model.PlayMapperBuilder
 import com.tokopedia.play.util.CastPlayerHelper
 import com.tokopedia.play.util.channel.state.PlayViewerChannelStateProcessor
+import com.tokopedia.play.util.chat.ChatStreams
 import com.tokopedia.play.util.share.PlayShareExperience
 import com.tokopedia.play.util.timer.TimerFactory
 import com.tokopedia.play.util.video.buffer.PlayViewerVideoBufferGovernor
@@ -57,6 +58,7 @@ class PlayViewModelRobot2(
     timerFactory: TimerFactory,
     castPlayerHelper: CastPlayerHelper,
     playShareExperience: PlayShareExperience,
+    chatStreamsFactory: ChatStreams.Factory,
 ) : Closeable {
 
     val viewModel: PlayViewModel = PlayViewModel(
@@ -65,11 +67,9 @@ class PlayViewModelRobot2(
         videoStateProcessorFactory,
         channelStateProcessorFactory,
         videoBufferGovernorFactory,
-        getSocketCredentialUseCase,
         getReportSummariesUseCase,
-        trackVisitChannelBroadcasterUseCase,
         PlayMapperBuilder().buildSocketMapper(),
-        ClassBuilder().getPlayUiModelMapper(),
+        ClassBuilder().getPlayUiModelMapper(userSession),
         userSession,
         dispatchers,
         remoteConfig,
@@ -80,7 +80,8 @@ class PlayViewModelRobot2(
         playAnalytic,
         timerFactory,
         castPlayerHelper,
-        playShareExperience
+        playShareExperience,
+        chatStreamsFactory,
     )
 
     fun createPage(channelData: PlayChannelData) {
@@ -101,6 +102,10 @@ class PlayViewModelRobot2(
 
     fun setUserId(userId: String) {
         every { userSession.userId } returns userId
+    }
+
+    fun sendChat(message: String) {
+        viewModel.sendChat(message)
     }
 
     fun recordState(fn: suspend PlayViewModelRobot2.() -> Unit): PlayViewerNewUiState {
@@ -185,6 +190,7 @@ fun createPlayViewModelRobot(
     timerFactory: TimerFactory = mockk(relaxed = true),
     castPlayerHelper: CastPlayerHelper = mockk(relaxed = true),
     playShareExperience: PlayShareExperience = mockk(relaxed = true),
+    chatStreamsFactory: ChatStreams.Factory = mockk(relaxed = true),
     fn: PlayViewModelRobot2.() -> Unit = {}
 ): PlayViewModelRobot2 {
     return PlayViewModelRobot2(
@@ -207,5 +213,6 @@ fun createPlayViewModelRobot(
         timerFactory = timerFactory,
         castPlayerHelper = castPlayerHelper,
         playShareExperience = playShareExperience,
+        chatStreamsFactory = chatStreamsFactory,
     ).apply(fn)
 }

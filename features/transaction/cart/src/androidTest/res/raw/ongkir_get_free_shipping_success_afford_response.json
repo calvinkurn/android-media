@@ -1,0 +1,28 @@
+[
+  {
+    "data": {
+      "ongkirGetFreeShipping": {
+        "freeshipping": {
+          "is_promo": 1,
+          "promo_code": "EKSCEPATINTRA",
+          "shipper_product_id": 18,
+          "image_url": "https://images.tokopedia.net/img/restriction-engine/bebas-ongkir/BO_reguler.png",
+          "discounted_rate": 0,
+          "shipping_rate": 10000,
+          "benefit_amount": 20000,
+          "min_transaction": 0,
+          "bo_type": 1,
+          "benefit_class": "intra",
+          "bo_weight": {
+            "is_bo_weight": false,
+            "shipping_subsidy": 0
+          },
+          "texts": {
+            "ticker_cart": "Ongkirmu Rp0 \u003cs\u003eRp10000\u003c/s\u003e karena Bebas Ongkir!",
+            "ticker_progressive": "Ongkirmu Rp0 \u003cs\u003eRp10000\u003c/s\u003e karena \u003cb\u003egratis ongkir!\u003c/b\u003e"
+          }
+        }
+      }
+    }
+  }
+]

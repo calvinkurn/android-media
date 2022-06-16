@@ -11,11 +11,7 @@
     <string name="ent_home_page_promo">Promo</string>
     <string name="ent_home_page_mulai_dari">Mulai dari</string>
     <string name="ent_home_page_coach_mark_title_1">Temukan banyak hal seru</string>
-    <string name="ent_home_page_coach_mark_title_2">LIhat kegiatan yang kamu simpan</string>
-    <string name="ent_home_page_coach_mark_title_3">Simpan acara favorit</string>
     <string name="ent_home_page_coach_mark_desc_1">Mulai dari konser, taman hiburan, sampai kegiatan menarik di berbagai lokasi.</string>
-    <string name="ent_home_page_coach_mark_desc_2">Buka Wishlist dan beli tiketnya sebelum kehabisan!</string>
-    <string name="ent_home_page_coach_mark_desc_3">Biar nggak repot cari ulang, masukkan kegiatannya ke Wishlist!</string>
 
     <string name="ent_search_title"><![CDATA[Search Event]]></string>
     <string name="ent_search_search_first_time_first_heading">Siap berburu kegiatan seru?</string>
@@ -27,12 +23,10 @@
     <string name="ent_search_oops">Oops, kayaknya kamu nyasar</string>
     <string name="ent_search_intip_kategori">Yang kamu cari nggak ada disini. Jangan panik, coba intip kategori lainnya</string>
     <string name="ent_search_reset_filter">Reset Filter</string>
-    <string name="ent_search_event_location"><![CDATA[Lokasi]]></string>
     <string name="ent_search_black_circle">\u0020\u25CF %1$s</string>
     <string name="ent_search_empty_state_body">Coba ubah kata kuncimu buat cari ulang, yuk!</string>
     <string name="ent_search_empty_state_heading">Yaah, yang kamu cari nggak ketemu</string>
     <string name="ent_search_placeholder">Cari kegiatan atau lokasi</string>
-    <string name="ent_search_error_message">Terjadi kesalahan. Coba lagi</string>
 
     <string name="ent_pdp_title_form">Data Pemesan</string>
     <string name="ent_pdp_ubah">Ubah</string>
@@ -48,11 +42,8 @@
     <string name="ent_pdp_ticket_recommended">Cek Tanggal Lain</string>
     <string name="ent_pdp_ticket_change_date">Ubah Tanggal</string>
     <string name="ent_pdp_ticket_sold_out">SUDAH HABIS</string>
-    <string name="ent_pdp_date_txt">%s</string>
     <string name="ent_default_totalPrice">Rp0</string>
-    <string name="ent_error_network_message">Terjadi kesalahan. Coba lagi</string>
     <string name="ent_error_value_exceeded">Maks. pembelian barang ini %s item, Kurangi</string>
-    <string name="ent_error_value_under_min">Min. pembelian produk ini adalah %s barang.\nYuk, atur ulang pembelianmu</string>
     <string name="ent_pdp_see_all">Lihat Semua</string>
     <string name="ent_pdp_facilities">Fasilitas</string>
     <string name="ent_pdp_see_map">Lihat Peta  ></string>
@@ -61,7 +52,6 @@
     <string name="ent_pdp_harga_tiket">Harga Tiket</string>
     <string name="ent_pdp_cek_tiket">Cek Tiket</string>
     <string name="ent_pdp_about_this">Tentang Kegiatan Ini</string>
-    <string name="ent_pdp_choose_date">Pilih Tanggal Kunjungan</string>
     <string name="ent_pdp_share_title">Event %s</string>
     <string name="ent_pdp_share_web_link">events/detail/%s</string>
     <string name="ent_pdp_share_app_link">tokopedia://events/detail/%s</string>
@@ -90,12 +80,6 @@
 
     <string name="ent_pdp_form_ticker_warn_text">Pastikan data pemesan sudah benar, karena e-tiket akan dikirim ke kontak tercantum.</string>
     <string name="ent_pdp_form_ticket_submit_text">Simpan</string>
-    <string name="ent_pdp_form_txtTuan">Tuan</string>
-    <string name="ent_pdp_form_txtNyonya">Nyonya</string>
-    <string name="ent_pdp_form_txtNona">Nona</string>
-    <string name="ent_pdp_form_txtSapaan">Sapaan</string>
-    <string name="ent_pdp_form_error_empty_value_msg">%s belum diisi</string>
-    <string name="ent_pdp_form_error_regex_msg">%s belum sesuai format</string>
     <string name="ent_pdp_form_toaster_click_msg">Oke</string>
     <string name="ent_pdp_form_date_picker_placeholder">dd/mm/yyyy</string>
 
@@ -123,7 +107,6 @@
     <string name="ent_checkout_data_tambahan_filled_data">Ubah</string>
     <string name="ent_checkout_data_tambahan_item_title">%s |</string>
     <string name="ent_checkout_data_tambahan_item_value">&#160; %s</string>
-    <string name="ent_form_data_bottomsheet">Pilih %s</string>
     <string name="ent_checkout_data_nullable_form">Data belum diisi</string>
     <string name="ent_bottomsheet_placeholder">Cari %s</string>
     <string name="ent_pdp_form_error_all_msg">%s belum diisi</string>

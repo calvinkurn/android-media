@@ -60,7 +60,9 @@ class AllBrandGroupHeaderViewHolder(itemView: View) : AbstractViewHolder<AllBran
             it.headerList = headerList
             it.selectedPosition = element.selectedChip
             it.lastTimeChipsClicked = element.lastTimeChipsClicked
-            it.notifyDataSetChanged()
+            if (!recyclerViewBrandHeader.isComputingLayout) {
+                it.notifyDataSetChanged()
+            }
         }
         recyclerViewBrandHeader.adapter = adapter
     }

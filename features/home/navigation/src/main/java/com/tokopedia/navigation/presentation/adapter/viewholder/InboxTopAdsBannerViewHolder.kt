@@ -74,7 +74,7 @@ class InboxTopAdsBannerViewHolder constructor(
         val LAYOUT = R.layout.item_inbox_top_ads_banner
 
         const val SOURCE = "5"
-        const val ADS_COUNT = 1
+        const val ADS_COUNT = 2
         const val DIMEN_ID = 3
 
         @JvmStatic

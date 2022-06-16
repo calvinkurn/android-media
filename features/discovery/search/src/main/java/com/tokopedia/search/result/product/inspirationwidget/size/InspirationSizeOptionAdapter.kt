@@ -9,7 +9,7 @@ class InspirationSizeOptionAdapter(
 ): RecyclerView.Adapter<RecyclerView.ViewHolder>()  {
 
     private val itemList = mutableListOf<InspirationSizeOptionDataView>()
-    private var inspirationSizedataView: InspirationSizeDataView? = null
+    private var inspirationSizeDataView: InspirationSizeDataView? = null
 
     fun setItemList(itemList: List<InspirationSizeOptionDataView>) {
         this.itemList.clear()
@@ -18,8 +18,8 @@ class InspirationSizeOptionAdapter(
         notifyItemRangeInserted(0, itemList.size)
     }
 
-    fun setInspirationSizeDataView(dataview: InspirationSizeDataView) {
-        inspirationSizedataView = dataview
+    fun setInspirationSizeDataView(dataView: InspirationSizeDataView) {
+        inspirationSizeDataView = dataView
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {

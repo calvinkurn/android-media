@@ -16,13 +16,14 @@ abstract class CloudAndCacheGraphqlUseCase<R : Any, U : Any> constructor(
     protected val graphqlRepository: GraphqlRepository,
     protected val mapper: BaseResponseMapper<R, U>,
     private val dispatchers: CoroutineDispatchers,
-    private val classType: Class<R>,
     private val graphqlQuery: String,
     private val doQueryHash: Boolean
 ) : BaseGqlUseCase<U>() {
 
     private var results: MutableSharedFlow<U> = MutableSharedFlow(replay = 1)
     var collectingResult: Boolean = false
+
+    abstract val classType: Class<R>
 
     private suspend fun getCachedResponse(request: GraphqlRequest): U? {
         try {

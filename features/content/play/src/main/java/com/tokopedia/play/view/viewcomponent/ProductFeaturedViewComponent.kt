@@ -11,6 +11,7 @@ import com.tokopedia.play.ui.productfeatured.adapter.ProductFeaturedAdapter
 import com.tokopedia.play.ui.productfeatured.itemdecoration.ProductFeaturedItemDecoration
 import com.tokopedia.play.view.custom.ProductFeaturedRecyclerView
 import com.tokopedia.play.view.uimodel.PlayProductUiModel
+import com.tokopedia.play.view.uimodel.recom.tagitem.ProductSectionUiModel
 import com.tokopedia.play_common.viewcomponent.ViewComponent
 
 /**
@@ -56,7 +57,7 @@ class ProductFeaturedViewComponent(
         rvProductFeatured.addOnScrollListener(scrollListener)
     }
 
-    fun setFeaturedProducts(products: List<PlayProductUiModel>, maxProducts: Int) {
+    fun setFeaturedProducts(products: List<ProductSectionUiModel>, maxProducts: Int) {
         if (products != adapter.getItems()) invalidateItemDecorations()
 
         val featuredItems = getFinalFeaturedItems(products, maxProducts)
@@ -85,6 +86,10 @@ class ProductFeaturedViewComponent(
         rvProductFeatured.setFadingEndBounds(width)
     }
 
+    fun setTransparent(isTransparent: Boolean) {
+        rootView.alpha = if (isTransparent) 0f else 1f
+    }
+
     private fun invalidateItemDecorations() {
         try {
             rvProductFeatured.post {
@@ -93,8 +98,11 @@ class ProductFeaturedViewComponent(
         } catch (ignored: IllegalStateException) {}
     }
 
-    private fun getFinalFeaturedItems(products: List<PlayProductUiModel>, maxProducts: Int): List<PlayProductUiModel> {
-        return products.take(maxProducts)
+    private fun getFinalFeaturedItems(products: List<ProductSectionUiModel>, maxProducts: Int): List<PlayProductUiModel> {
+        return products
+            .filterIsInstance<ProductSectionUiModel.Section>()
+            .flatMap { it.productList }
+            .take(maxProducts)
     }
 
     private fun getPlaceholder() = List(TOTAL_PLACEHOLDER) { PlayProductUiModel.Placeholder }

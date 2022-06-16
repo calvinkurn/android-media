@@ -65,7 +65,6 @@ class ProductItemInfoBottomSheet : BottomSheetUnify() {
             dismiss()
         }
 
-        (rvPosttag.adapter as PostTagAdapter).notifyDataSetChanged()
         setCloseClickListener {
             dismissedByClosing = true
             closeClicked?.invoke()
@@ -91,6 +90,8 @@ class ProductItemInfoBottomSheet : BottomSheetUnify() {
                 isFollowed,
                 mediaType
                )
+        if (rvPosttag != null && rvPosttag.adapter != null && rvPosttag.adapter is PostTagAdapter)
+            (rvPosttag.adapter as PostTagAdapter).notifyDataSetChanged()
     }
 
     private fun mapPostTag(postTagItemList: List<FeedXProduct>): MutableList<BasePostTagViewModel> {

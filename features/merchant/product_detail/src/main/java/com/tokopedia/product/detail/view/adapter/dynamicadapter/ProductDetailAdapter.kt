@@ -75,7 +75,7 @@ class ProductDetailAdapter(asyncDifferConfig: AsyncDifferConfig<DynamicPdpDataMo
         }
         if (holder is ContentWidgetViewHolder &&
             holder.adapterPosition < currentList.size &&
-            (currentList[holder.adapterPosition] as? ContentWidgetDataModel)?.playWidgetUiModel == PlayWidgetUiModel.Placeholder) {
+            (currentList[holder.adapterPosition] as? ContentWidgetDataModel)?.playWidgetState?.isLoading == true) {
             listener?.loadPlayWidget()
         }
     }
@@ -108,6 +108,10 @@ class ProductDetailAdapter(asyncDifferConfig: AsyncDifferConfig<DynamicPdpDataMo
 
     fun showError(data: PageErrorDataModel) {
         submitList(listOf(data))
+    }
+
+    fun getComponentPositionByName(componentName: String): Int {
+        return currentList.indexOfFirst { it.name() == componentName }
     }
 
     private fun isLoading(): Boolean {

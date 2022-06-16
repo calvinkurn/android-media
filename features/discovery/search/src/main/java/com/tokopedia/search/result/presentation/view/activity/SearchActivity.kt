@@ -16,7 +16,6 @@ import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
-import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceCallback
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery
@@ -33,8 +32,9 @@ import com.tokopedia.search.result.presentation.view.adapter.SearchSectionPagerA
 import com.tokopedia.search.result.presentation.view.listener.QuickFilterElevation
 import com.tokopedia.search.result.presentation.view.listener.RedirectionListener
 import com.tokopedia.search.result.presentation.view.listener.SearchNavigationListener
-import com.tokopedia.search.result.presentation.view.listener.SearchPerformanceMonitoringListener
 import com.tokopedia.search.result.presentation.viewmodel.SearchViewModel
+import com.tokopedia.search.result.product.performancemonitoring.SEARCH_RESULT_TRACE
+import com.tokopedia.search.result.product.performancemonitoring.searchProductPerformanceMonitoring
 import com.tokopedia.search.result.shop.presentation.viewmodel.SearchShopViewModel
 import com.tokopedia.search.result.shop.presentation.viewmodel.SearchShopViewModelFactoryModule
 import com.tokopedia.search.utils.SearchLogger
@@ -43,6 +43,7 @@ import com.tokopedia.searchbar.data.HintData
 import com.tokopedia.searchbar.navigation_component.NavToolbar
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
 import com.tokopedia.searchbar.navigation_component.icons.IconList
+import com.tokopedia.telemetry.ITelemetryActivity
 import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
@@ -51,10 +52,11 @@ import javax.inject.Inject
 import javax.inject.Named
 
 class SearchActivity : BaseActivity(),
-        RedirectionListener,
-        SearchNavigationListener,
-        SearchPerformanceMonitoringListener,
-        HasComponent<BaseAppComponent> {
+    RedirectionListener,
+    SearchNavigationListener,
+    PageLoadTimePerformanceInterface by searchProductPerformanceMonitoring(),
+    HasComponent<BaseAppComponent>,
+    ITelemetryActivity{
 
     private var searchNavigationToolbar: NavToolbar? = null
     private var container: MotionLayout? = null
@@ -69,7 +71,6 @@ class SearchActivity : BaseActivity(),
     private var shopTabTitle = ""
     private var autocompleteApplink = ""
     private var searchNavigationClickListener: SearchNavigationListener.ClickListener? = null
-    private var pageLoadTimePerformanceMonitoring: PageLoadTimePerformanceInterface? = null
 
     @Inject
     lateinit var userSession: UserSessionInterface
@@ -90,11 +91,9 @@ class SearchActivity : BaseActivity(),
     private lateinit var searchShopViewModel: SearchShopViewModel // initialized in initViewModel
     private lateinit var searchParameter: SearchParameter // initialized in getExtrasFromIntent
 
-    val pltPerformanceResultData
-        get() = pageLoadTimePerformanceMonitoring?.getPltPerformanceData()
-
     override fun onCreate(savedInstanceState: Bundle?) {
-        startPerformanceMonitoring()
+        startMonitoring(SEARCH_RESULT_TRACE)
+        startPreparePagePerformanceMonitoring()
 
         super.onCreate(savedInstanceState)
         setContentView(R.layout.search_activity_search)
@@ -104,21 +103,6 @@ class SearchActivity : BaseActivity(),
         initActivityOnCreate()
         proceed()
         handleIntent()
-    }
-
-    override fun startPerformanceMonitoring() {
-        pageLoadTimePerformanceMonitoring = PageLoadTimePerformanceCallback(
-                SearchConstant.SEARCH_RESULT_PLT_PREPARE_METRICS,
-                SearchConstant.SEARCH_RESULT_PLT_NETWORK_METRICS,
-                SearchConstant.SEARCH_RESULT_PLT_RENDER_METRICS,
-                0,
-                0,
-                0,
-                0,
-                null
-        )
-        pageLoadTimePerformanceMonitoring?.startMonitoring(SearchConstant.SEARCH_RESULT_TRACE)
-        pageLoadTimePerformanceMonitoring?.startPreparePagePerformanceMonitoring()
     }
 
     private fun setStatusBarColor() {
@@ -501,34 +485,6 @@ class SearchActivity : BaseActivity(),
         RouteManager.route(this, url, *parameter)
     }
 
-    override fun startPreparePagePerformanceMonitoring() {
-        pageLoadTimePerformanceMonitoring?.startPreparePagePerformanceMonitoring()
-    }
-
-    override fun stopPreparePagePerformanceMonitoring() {
-        pageLoadTimePerformanceMonitoring?.stopPreparePagePerformanceMonitoring()
-    }
-
-    override fun startNetworkRequestPerformanceMonitoring() {
-        pageLoadTimePerformanceMonitoring?.startNetworkRequestPerformanceMonitoring()
-    }
-
-    override fun stopNetworkRequestPerformanceMonitoring() {
-        pageLoadTimePerformanceMonitoring?.stopNetworkRequestPerformanceMonitoring()
-    }
-
-    override fun startRenderPerformanceMonitoring() {
-        pageLoadTimePerformanceMonitoring?.startRenderPerformanceMonitoring()
-    }
-
-    override fun stopRenderPerformanceMonitoring() {
-        pageLoadTimePerformanceMonitoring?.stopRenderPerformanceMonitoring()
-    }
-
-    override fun stopPerformanceMonitoring() {
-        pageLoadTimePerformanceMonitoring?.stopMonitoring()
-    }
-
     override fun updateSearchParameter(searchParameter: SearchParameter?) {
         if (searchParameter == null) return
 
@@ -540,4 +496,6 @@ class SearchActivity : BaseActivity(),
     private fun updateKeyword() {
         setToolbarTitle()
     }
+
+    override fun getTelemetrySectionName() = "search"
 }

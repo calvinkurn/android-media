@@ -5,22 +5,19 @@ import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUse
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
-import com.tokopedia.network.exception.MessageErrorException
-import com.tokopedia.officialstore.GQLQueryConstant.QUERY_OFFICIAL_STORE_CATEGORIES
 import com.tokopedia.officialstore.category.data.model.OfficialStoreCategories
+import com.tokopedia.officialstore.official.di.query.OSCategoriesQuery
 import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject
-import javax.inject.Named
 
 class GetOfficialStoreCategoriesUseCase @Inject constructor(
-        private val graphqlUseCase: MultiRequestGraphqlUseCase,
-        @Named(QUERY_OFFICIAL_STORE_CATEGORIES) val query: String
+        private val graphqlUseCase: MultiRequestGraphqlUseCase
 ): UseCase<OfficialStoreCategories>() {
 
     private var doQueryHashing : Boolean = false
 
     override suspend fun executeOnBackground(): OfficialStoreCategories {
-        val gqlRequest = GraphqlRequest(query, OfficialStoreCategories.Response::class.java)
+        val gqlRequest = GraphqlRequest(OSCategoriesQuery(), OfficialStoreCategories.Response::class.java)
         gqlRequest.isDoQueryHash = doQueryHashing
         graphqlUseCase.clearRequest()
         graphqlUseCase.addRequest(gqlRequest)

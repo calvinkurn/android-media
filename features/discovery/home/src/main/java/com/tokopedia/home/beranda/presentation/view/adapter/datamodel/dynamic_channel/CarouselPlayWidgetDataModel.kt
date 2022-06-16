@@ -5,6 +5,7 @@ import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
 import com.tokopedia.home.beranda.presentation.view.adapter.HomeVisitable
 import com.tokopedia.home.beranda.presentation.view.adapter.factory.HomeTypeFactory
 import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.play.widget.ui.PlayWidgetState
 import com.tokopedia.play.widget.ui.model.PlayWidgetUiModel
 
 /**
@@ -12,7 +13,7 @@ import com.tokopedia.play.widget.ui.model.PlayWidgetUiModel
  */
 data class CarouselPlayWidgetDataModel(
         val homeChannel: DynamicHomeChannel.Channels,
-        val widgetUiModel: PlayWidgetUiModel = PlayWidgetUiModel.Placeholder
+        val widgetState: PlayWidgetState = PlayWidgetState(isLoading = true)
 ) : HomeVisitable {
 
     private val visitableId = "play_carousel"
@@ -50,7 +51,7 @@ data class CarouselPlayWidgetDataModel(
                     && homeChannel.name == obj.homeChannel.name
                     && homeChannel.header.name == obj.homeChannel.header.name
                     && homeChannel.header.applink == obj.homeChannel.header.applink
-                    && widgetUiModel == obj.widgetUiModel
+                    && widgetState == obj.widgetState
         }
         return false
     }

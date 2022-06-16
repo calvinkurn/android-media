@@ -41,10 +41,14 @@ data class OrderProfileAddress(
     internal val isMainAddress: Boolean
         get() = status == STATUS_MAIN_ADDRESS
 
+    internal val isAddressActive: Boolean
+        get() = status == STATUS_ADDRESS_ACTIVE
+
     internal val hasNoPinpoint: Boolean
         get() = longitude.isEmpty() || latitude.isEmpty()
 
     companion object {
+        private const val STATUS_ADDRESS_ACTIVE = 1
         private const val STATUS_MAIN_ADDRESS = 2
         const val STATE_OCC_ADDRESS_ID_NOT_MATCH = 211
     }

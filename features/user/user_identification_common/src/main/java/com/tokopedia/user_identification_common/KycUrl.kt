@@ -8,6 +8,7 @@ object KycUrl {
     const val KTP_FAIL = "https://ecs7.tokopedia.net/img/android/others/ktp_fail.png"
     const val SELFIE_OK = "https://ecs7.tokopedia.net/img/android/others/selfie_ok.png"
     const val SELFIE_FAIL = "https://ecs7.tokopedia.net/img/android/others/selfie_fail.png"
+    const val SCAN_SELFIE = "https://images.tokopedia.net/img/android/user/kyc_centralized/img_selfie.png"
     const val SCAN_KTP = "https://ecs7.tokopedia.net/android/others/account_verification_ktp_onboarding.png"
     const val SCAN_FACE = "https://ecs7.tokopedia.net/lottie/scanning_the_face.json"
     const val KTP_VERIF_OK = "https://ecs7.tokopedia.net/img/android/others/account_verification_ktp_success_small.png"

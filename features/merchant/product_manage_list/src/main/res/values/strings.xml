@@ -53,6 +53,9 @@
     <string name="product_manage_set_promo_ads_menu">Iklankan Produk</string>
     <string name="product_manage_see_promo_ads_menu">Lihat Performa Iklan</string>
     <string name="product_manage_create_broadcast_chat">Buat Broadcast Chat</string>
+    <string name="product_manage_create_product_coupon">Buat Kupon Produk</string>
+    <string name="product_manage_title_detail_product_suspend">Produkmu terindikasi pelanggaran mengenai pembatalan pesanan dengan detail:</string>
+    <string name="product_manage_step_detail_product_suspend">Lakukan langkah berikut untuk menyelesaikan:</string>
 
     <string name="product_stock_reminder_toaster_success_desc">Pengingat stok \"%1$s\" berhasil dipasang.</string>
     <string name="product_stock_reminder_toaster_success_remove_desc">Pengingat stok \"%1$s\" berhasil dinonaktifkan.</string>
@@ -125,6 +128,7 @@
     <string name="product_manage_add_etalase">Tambah Etalase</string>
     <string name="product_manage_etalase_search_hint">Cari nama etalase</string>
     <string name="product_manage_stock_information">Informasi Stok</string>
+    <string name="product_manage_suspend_title">Pelanggaran produk</string>
 
     <string name="product_manage_list_empty_search">Oops, produk yang kamu cari tidak ditemukan.</string>
     <string name="product_manage_list_empty_product">Kata orang, jutaan mimpi berawal dari satu langkah kecil. Tambah produk pertamamu.</string>
@@ -144,15 +148,14 @@
     <string name="product_manage_campaign_stock_redirection_desc">Gunakan aplikasi Tokopedia Seller untuk lihat alokasi stok produk untuk campaign di tokomu.</string>
 
     <string name="product_manage_violation_ticker_message">Diduga ada pelanggaran</string>
-    <string name="product_manage_violation_button_text">Lihat Detail</string>
+    <string name="product_manage_suspend_ticker_message">Terindikasi terlalu sering terjadi pembatalan.</string>
+    <string name="product_manage_violation_or_suspend_button_text">Lihat Detail</string>
 
     <string name="product_manage_max_count">%s+</string>
+    <string name="product_manage_new_tag">BARU</string>
 
-    <string name="popup_tips_trick_clickable">baru di sini.</string>
-    <string name="popup_label_static">Produk pertamamu siap</string>
-    <string name="popup_label_static_second">dijual!</string>
-    <string name="popup_label_tips_trick">Masih bingung? Cek tip &amp; trik penjual</string>
-    <string name="popup_label_tips_trick_second">baru di sini.</string>
+    <string name="popup_tips_trick_clickable">Masih bingung? Cek tip &amp; trik penjual baru di sini.</string>
+    <string name="popup_label_static">Produk pertamamu siap dijual!</string>
 
     <string name="title_activity_manage_product">Daftar Produk</string>
     <string name="title_add_product">TAMBAH PRODUK</string>

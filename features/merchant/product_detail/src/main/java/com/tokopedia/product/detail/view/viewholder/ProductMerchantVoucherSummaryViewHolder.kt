@@ -48,8 +48,8 @@ class ProductMerchantVoucherSummaryViewHolder(val view: View, val listener:Dynam
 
     private fun setMerchantVoucher(animatedInfos: List<AnimatedInfos>, shopId: String, productId: String) {
         merchantVoucher?.setData(MvcData(animatedInfos), shopId, MvcSource.PDP,{
-            listener.onMerchantVoucherSummaryClicked(shopId, MvcSource.PDP)
-        }, productId = productId)
+            listener.onMerchantVoucherSummaryClicked(shopId, MvcSource.PDP, productId = productId)
+        })
         merchantVoucher?.show()
     }
 

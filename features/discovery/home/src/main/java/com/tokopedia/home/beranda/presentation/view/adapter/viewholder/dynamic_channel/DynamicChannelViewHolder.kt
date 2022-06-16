@@ -60,6 +60,7 @@ abstract class DynamicChannelViewHolder(itemView: View,
         const val TYPE_CATEGORY_WIDGET = 15
         const val TYPE_2_GRID_LEGO = 16
         const val TYPE_CATEGORY_WIDGET_V2 = 17
+        const val TYPE_MERCHANT_VOUCHER = 18
 
         fun getLayoutType(channels: DynamicHomeChannel.Channels): Int {
             when(channels.layout) {
@@ -79,6 +80,7 @@ abstract class DynamicChannelViewHolder(itemView: View,
                 DynamicHomeChannel.Channels.LAYOUT_LIST_CAROUSEL -> return TYPE_RECOMMENDATION_LIST
                 DynamicHomeChannel.Channels.LAYOUT_CATEGORY_WIDGET_V2 -> return TYPE_CATEGORY_WIDGET_V2
                 DynamicHomeChannel.Channels.LAYOUT_CATEGORY_WIDGET -> return TYPE_CATEGORY_WIDGET
+                DynamicHomeChannel.Channels.LAYOUT_MERCHANT_VOUCHER -> return TYPE_MERCHANT_VOUCHER
             }
             return TYPE_CURATED
         }
@@ -160,7 +162,7 @@ abstract class DynamicChannelViewHolder(itemView: View,
             channelTitle?.visibility = View.VISIBLE
             channelTitle?.setTextColor(
                     if (channel.header.textColor.isNotEmpty()) Color.parseColor(channel.header.textColor).invertIfDarkMode(itemView.context)
-                    else ContextCompat.getColor(context, R.color.Unify_N700).invertIfDarkMode(itemView.context)
+                    else ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700).invertIfDarkMode(itemView.context)
             )
         } else {
             channelTitleContainer.visibility = View.GONE
@@ -184,7 +186,7 @@ abstract class DynamicChannelViewHolder(itemView: View,
             channelSubtitle?.visibility = View.VISIBLE
             channelSubtitle?.setTextColor(
                     if (channel.header.textColor.isNotEmpty()) Color.parseColor(channel.header.textColor).invertIfDarkMode(itemView.context)
-                    else ContextCompat.getColor(context, R.color.Unify_N700).invertIfDarkMode(itemView.context)
+                    else ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700).invertIfDarkMode(itemView.context)
             )
         } else {
             channelSubtitle?.visibility = View.GONE

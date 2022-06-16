@@ -2,7 +2,11 @@ package com.tokopedia.checkout.view.presenter
 
 import com.google.gson.Gson
 import com.tokopedia.checkout.analytics.CheckoutAnalyticsPurchaseProtection
-import com.tokopedia.checkout.domain.usecase.*
+import com.tokopedia.checkout.domain.usecase.ChangeShippingAddressGqlUseCase
+import com.tokopedia.checkout.domain.usecase.CheckoutGqlUseCase
+import com.tokopedia.checkout.domain.usecase.GetShipmentAddressFormV3UseCase
+import com.tokopedia.checkout.domain.usecase.ReleaseBookingUseCase
+import com.tokopedia.checkout.domain.usecase.SaveShipmentStateGqlUseCase
 import com.tokopedia.checkout.view.ShipmentContract
 import com.tokopedia.checkout.view.ShipmentPresenter
 import com.tokopedia.checkout.view.converter.ShipmentDataConverter
@@ -107,6 +111,52 @@ class ShipmentPresenterEgoldTest {
     }
 
     @Test
+    fun `GIVEN eligible egold WHEN set shipment cost model THEN should update egold value`() {
+        // Given
+        val expectedEgoldValue = 250L
+        presenter.egoldAttributeModel = EgoldAttributeModel().apply {
+            isEligible = true
+            isTiering = false
+            minEgoldRange = 50
+            maxEgoldRange = 1000
+        }
+
+        // When
+        presenter.shipmentCostModel = ShipmentCostModel().apply {
+            totalPrice = 99750.0
+        }
+
+        // Then
+        verify {
+            view.renderDataChanged()
+        }
+        assert(presenter.egoldAttributeModel.buyEgoldValue == expectedEgoldValue)
+    }
+
+    @Test
+    fun `GIVEN ineligible egold WHEN set shipment cost model THEN should update egold value`() {
+        // Given
+        val expectedEgoldValue = 0L
+        presenter.egoldAttributeModel = EgoldAttributeModel().apply {
+            isEligible = false
+            isTiering = false
+            minEgoldRange = 50
+            maxEgoldRange = 1000
+        }
+
+        // When
+        presenter.shipmentCostModel = ShipmentCostModel().apply {
+            totalPrice = 99750.0
+        }
+
+        // Then
+        verify(inverse = true) {
+            view.renderDataChanged()
+        }
+        assert(presenter.egoldAttributeModel.buyEgoldValue == expectedEgoldValue)
+    }
+
+    @Test
     fun `WHEN calculate egold value without tiering THEN should correctly calculated`() {
         // Given
         val expectedEgoldValue = 250L
@@ -172,4 +222,46 @@ class ShipmentPresenterEgoldTest {
         assert(presenter.egoldAttributeModel.buyEgoldValue == expectedEgoldValue)
     }
 
+    @Test
+    fun `GIVEN no match minimum total amount WHEN calculate egold value with tiering THEN should result 0 egold value`() {
+        // Given
+        val expectedEgoldValue = 0L
+        presenter.shipmentCostModel = ShipmentCostModel().apply {
+            totalPrice = 300.0
+        }
+        presenter.egoldAttributeModel = EgoldAttributeModel().apply {
+            isTiering = true
+            minEgoldRange = 50
+            maxEgoldRange = 1000
+            egoldTieringModelArrayList = arrayListOf<EgoldTieringModel>().apply {
+                add(EgoldTieringModel().apply {
+                    minTotalAmount = 500
+                    minAmount = 2000
+                    maxAmount = 5999
+                    basisAmount = 4000
+                })
+                add(EgoldTieringModel().apply {
+                    minTotalAmount = 98001
+                    minAmount = 2000
+                    maxAmount = 11999
+                    basisAmount = 10000
+                })
+                add(EgoldTieringModel().apply {
+                    minTotalAmount = 998001
+                    minAmount = 2000
+                    maxAmount = 51999
+                    basisAmount = 50000
+                })
+            }
+        }
+
+        // When
+        presenter.updateEgoldBuyValue()
+
+        // Then
+        verify {
+            view.renderDataChanged()
+        }
+        assert(presenter.egoldAttributeModel.buyEgoldValue == expectedEgoldValue)
+    }
 }

@@ -66,6 +66,20 @@ class ChatbotImageUploadViewHolder(itemView: View?,
             com.tokopedia.unifyprinciples.R.color.Unify_G200,
             getStrokeWidthSenderDimenRes()
     )
+    private val bgOpposite = ViewUtil.generateBackgroundWithShadow(
+        view = chatBalloon,
+        backgroundColor = com.tokopedia.unifyprinciples.R.color.Unify_N0,
+        topLeftRadius = com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
+        topRightRadius = com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
+        bottomLeftRadius = com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
+        bottomRightRadius = com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
+        shadowColor = com.tokopedia.unifyprinciples.R.color.Unify_N700_20,
+        elevation =  R.dimen.dp_chatbot_2,
+        shadowRadius =  R.dimen.dp_chatbot_1,
+        shadowGravity = Gravity.CENTER,
+        strokeColor = com.tokopedia.unifyprinciples.R.color.Unify_N0,
+        strokeWidth = getStrokeWidthSenderDimenRes()
+    )
 
     private val attachmentUnify get() = attachment as? ImageUnify
 
@@ -76,13 +90,16 @@ class ChatbotImageUploadViewHolder(itemView: View?,
         if (element == null) return
         super.bind(element)
         chatStatus?.let { bindChatReadStatus(element, it) }
-        bindBackground()
+        bindBackground(element.isSender)
         cancelUpload?.setOnClickListener { listener.onImageUploadCancelClicked(element) }
         setHeaderDate(element)
     }
 
-    private fun bindBackground() {
-        chatBalloon?.background = bgSender
+    private fun bindBackground(sender: Boolean) {
+        if (sender)
+            chatBalloon?.background = bgSender
+        else
+            chatBalloon?.background = bgOpposite
     }
 
     override fun bindImageAttachment(element: ImageUploadUiModel) {

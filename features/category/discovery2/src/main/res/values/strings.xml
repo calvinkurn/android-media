@@ -7,6 +7,7 @@
     <string name="time_separator">:</string>
     <string name="default_timer_value">00</string>
     <string name="lihat_semua">Lihat Semua</string>
+    <string name="disco_lihat">Lihat</string>
     <string name="discovery">Discovery</string>
     <string name="klaim">Klaim</string>
     <string name="discovery_please_log_in">Please Log in</string>
@@ -58,6 +59,7 @@
     <string name="discovery_filter_reset">Reset Filter</string>
     <string name="discovery_msg_success_remove_wishlist">Sukses menghapus wishlist</string>
     <string name="discovery_msg_success_add_wishlist">Sukses menambah wishlist</string>
+    <string name="discovery_msg_success_add_wishlist_CTA">Lihat Wishlist</string>
     <string name="discovery_msg_error_add_wishlist">Error menambah wishlist</string>
     <string name="discovery_msg_error_remove_wishlist">Error menghapus wishlist</string>
     <string name="discovery_top_to_bottom">Top to bottom</string>
@@ -65,9 +67,13 @@
     <string name="choose_address_title">Bisa pilih alamat pengirimanmu dulu</string>
     <string name="choose_address_description">Biar pengalaman belanjamu lebih asyik dan mudah.</string>
     <string name="discovery_product_empty_state_title">Bagian ini gagal ditampilkan</string>
+    <string name="discovery_product_network_state_title">Koneksi internetmu terganggu!</string>
     <string name="discovery_product_empty_state_description">Sambil kami perbaiki, lihat-lihat dulu ke atas atau coba lagi.</string>
+    <string name="discovery_product_network_state_description">Pastikan internet lancar dengan cek paket data atau WiFi kamu.</string>
+    <string name="discovery_mvc_list_empty_state_description">Kamu bisa lihat bagian lainnya dulu atau coba lagi.</string>
     <string name="discovery_section_empty_state_description">Klik ikon sebelah untuk coba lagi.</string>
     <string name="discovery_error_500_action">Coba Lagi</string>
+    <string name="discovery_open_network_setting">Ke Pengaturan</string>
     <string name="discovery_product_stock_color">#1e31353b</string>
     <string name="share">share</string>
     <string name="discovery_button_event_expired">Sudah Berakhir</string>
@@ -79,4 +85,5 @@
     <string name="discovery_calendar_push_unsubscribe">Pengingat berhasil dibatalkan.</string>
     <string name="discovery_calendar_push_action">Oke</string>
     <string name="discovery_calendar_line">────</string>
+    <string name="discovery_this_section_is_still_empty">Oops, bagian ini masih kosong.</string>
 </resources>

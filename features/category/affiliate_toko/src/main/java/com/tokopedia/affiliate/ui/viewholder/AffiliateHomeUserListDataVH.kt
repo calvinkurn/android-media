@@ -1,6 +1,7 @@
 package com.tokopedia.affiliate.ui.viewholder
 
 import android.view.View
+import android.widget.RelativeLayout
 import androidx.annotation.LayoutRes
 import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
@@ -24,6 +25,8 @@ class AffiliateHomeUserListDataVH(
         @JvmField
         @LayoutRes
         var LAYOUT = R.layout.affiliate_performa_item
+        const val ROTATION_90  = 90f
+        const val ROTATION_270  = 270f
     }
 
     override fun bind(element: AffiliateUserPerformanceListModel?) {
@@ -33,8 +36,8 @@ class AffiliateHomeUserListDataVH(
     }
 
     private fun initClickListener(element: AffiliateUserPerformanceListModel?) {
-        itemView.setOnClickListener {
-            onPerformaGridClick?.onInfoClick(element?.data?.metricTitle,element?.data?.tooltip?.description)
+        itemView.findViewById<RelativeLayout>(R.id.cta_container).setOnClickListener {
+            onPerformaGridClick?.onInfoClick(element?.data?.metricTitle,element?.data?.tooltip?.description,element?.data?.tooltip?.metrics,element?.data?.metricType,element?.data?.tooltip?.ticker)
         }
     }
 
@@ -58,7 +61,7 @@ class AffiliateHomeUserListDataVH(
                         setImage(
                             newLightEnable = MethodChecker.getColor(itemView.context,com.tokopedia.unifyprinciples.R.color.Unify_GN500)
                         )
-                        rotation = 90f
+                        rotation = ROTATION_90
                     }
                 }
                 metricIntValue < 0 ->{
@@ -68,7 +71,7 @@ class AffiliateHomeUserListDataVH(
                         setImage(
                             newLightEnable = MethodChecker.getColor(itemView.context,com.tokopedia.unifyprinciples.R.color.Unify_RN500)
                         )
-                        rotation = 270f
+                        rotation = ROTATION_270
                     }
                 }
             }

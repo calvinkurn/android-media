@@ -3,7 +3,11 @@ package com.tokopedia.discovery2
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
-import android.graphics.*
+import android.graphics.BlendMode
+import android.graphics.BlendModeColorFilter
+import android.graphics.Color
+import android.graphics.Outline
+import android.graphics.PorterDuff
 import android.net.Uri
 import android.os.Build
 import android.text.Html
@@ -11,6 +15,8 @@ import android.util.DisplayMetrics
 import android.view.View
 import android.view.ViewOutlineProvider
 import androidx.annotation.RequiresApi
+import com.google.firebase.crashlytics.FirebaseCrashlytics
+import com.tkpd.atcvariant.BuildConfig
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.datamapper.discoComponentQuery
@@ -19,6 +25,10 @@ import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.toZeroIfNull
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.minicart.common.domain.data.MiniCartItem
+import com.tokopedia.minicart.common.domain.data.MiniCartItemKey
+import com.tokopedia.minicart.common.domain.data.MiniCartItemType
+import com.tokopedia.minicart.common.domain.data.getMiniCartItemParentProduct
+import com.tokopedia.minicart.common.domain.data.getMiniCartItemProduct
 import com.tokopedia.user.session.UserSession
 import java.text.ParseException
 import java.text.SimpleDateFormat
@@ -42,6 +52,11 @@ const val LABEL_PRICE = "price"
 const val PDP_APPLINK = "tokopedia://product/"
 const val TIME_DISPLAY_FORMAT = "%1$02d"
 const val DEFAULT_TIME_DATA: Long = 0
+const val CONSTANT_10_e = 1e1
+const val CONSTANT_0 = 0
+const val CONSTANT_10 = 10
+const val CONSTANT_11 = 11
+const val CONSTANT_19 = 19
 
 class Utils {
 
@@ -73,8 +88,10 @@ class Utils {
         const val SECTION_ID = "section_id"
         private const val COUNT_ONLY = "count_only"
         private const val RPC_USER_ID = "rpc_UserID"
-        private const val RPC_PAGE_NUMBER = "rpc_page_number"
-        private const val RPC_PAGE__SIZE = "rpc_page_size"
+        const val RPC_PAGE_NUMBER = "rpc_page_number"
+        const val RPC_PAGE__SIZE = "rpc_page_size"
+        const val RPC_NEXT_PAGE = "rpc_next_page"
+        const val DARK_MODE = "dark_mode"
 
 
         fun extractDimension(url: String?, dimension: String = "height"): Int? {
@@ -116,7 +133,7 @@ class Utils {
             else -> ""
         }
 
-        private fun getDecimalFormatted(currentViewCount: Double) = floor(currentViewCount * 1e1) / 1e1
+        private fun getDecimalFormatted(currentViewCount: Double) = floor(currentViewCount * CONSTANT_10_e) / CONSTANT_10_e
 
         private fun getDisplayValue(convertedValue: Double, text: String, notifyMeText: String): String {
             return if (convertedValue > VIEW_LIMIT) {
@@ -252,9 +269,9 @@ class Utils {
         }
 
         fun parseFlashSaleDate(saleTime: String?): String {
-            if (!saleTime.isNullOrEmpty() && saleTime.length >= 19) {
-                val date = saleTime.substring(0, 10)
-                val time = saleTime.substring(11, 19)
+            if (!saleTime.isNullOrEmpty() && saleTime.length >= CONSTANT_19) {
+                val date = saleTime.substring(CONSTANT_0, CONSTANT_10)
+                val time = saleTime.substring(CONSTANT_11, CONSTANT_19)
                 return "${date}T${time}"
             }
             return ""
@@ -327,6 +344,7 @@ class Utils {
                 ?: (component.getComponentsItem()?.size.isMoreThanZero()
                         && component.getComponentsItem()?.size?.rem(productPerPage) == 0)
         }
+
         fun getUserId(context: Context?): String {
             return context?.let { UserSession(it).userId } ?: ""
         }
@@ -364,16 +382,16 @@ class Utils {
         }
 
         fun updateProductAddedInCart(products:List<ComponentsItem>,
-                                             map: Map<String, MiniCartItem>?) {
+                                             map: Map<MiniCartItemKey, MiniCartItem>?) {
             if (map == null) return
             products.forEach { componentsItem ->
                 componentsItem.data?.firstOrNull()?.let { dataItem ->
-                    if (dataItem.hasATC && !dataItem.parentProductId.isNullOrEmpty() && map.containsKey(dataItem.parentProductId)) {
-                        map[dataItem.parentProductId]?.quantity?.let { quantity ->
+                    if (dataItem.hasATC && !dataItem.parentProductId.isNullOrEmpty() && map.containsKey(MiniCartItemKey(dataItem.parentProductId ?: "", type = MiniCartItemType.PARENT))) {
+                        map.getMiniCartItemParentProduct(dataItem.parentProductId ?: "")?.totalQuantity?.let { quantity ->
                             dataItem.quantity = quantity
                         }
-                    }else if (dataItem.hasATC && !dataItem.productId.isNullOrEmpty() && map.containsKey(dataItem.productId)) {
-                        map[dataItem.productId]?.quantity?.let { quantity ->
+                    }else if (dataItem.hasATC && !dataItem.productId.isNullOrEmpty() && map.containsKey(MiniCartItemKey(dataItem.productId ?: ""))) {
+                        map.getMiniCartItemProduct(dataItem.productId ?: "")?.quantity?.let { quantity ->
                             dataItem.quantity = quantity
                         }
                     }
@@ -389,6 +407,14 @@ class Utils {
                 }
             }
             return parentComponentPosition
+        }
+
+        fun logException(t: Throwable) {
+            if (!BuildConfig.DEBUG) {
+                FirebaseCrashlytics.getInstance().recordException(Exception(t))
+            } else {
+                t.printStackTrace()
+            }
         }
     }
 }

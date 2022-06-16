@@ -27,10 +27,14 @@ import com.tokopedia.abstraction.base.view.webview.FilePickerInterface;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
+import com.tokopedia.common.payment.PaymentConstant;
+import com.tokopedia.common.payment.PaymentLoggingClient;
 import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.logger.ServerLogger;
 import com.tokopedia.logger.utils.Priority;
 import com.tokopedia.oms.R;
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
+import com.tokopedia.remoteconfig.RemoteConfig;
 
 import java.io.ByteArrayOutputStream;
 import java.util.HashMap;
@@ -59,6 +63,7 @@ public class ScroogeActivity extends AppCompatActivity implements FilePickerInte
     public static final String CUST_OVERLAY_URL = "imgurl";
     private static final String CUST_HEADER = "header_text";
 
+    private RemoteConfig remoteConfig;
     private WebView mWebView;
     private ProgressBar mProgress;
     private Toolbar mToolbar;
@@ -90,6 +95,7 @@ public class ScroogeActivity extends AppCompatActivity implements FilePickerInte
         title = getIntent().getStringExtra(EXTRA_TITLE);
 
         setContentView(R.layout.activity_scrooge_web_view);
+        remoteConfig = new FirebaseRemoteConfigImpl(this);
 
         initUI();
 
@@ -136,8 +142,16 @@ public class ScroogeActivity extends AppCompatActivity implements FilePickerInte
 
         mProgress.setIndeterminate(true);
 
-        webChromeWebviewClient = new CommonWebViewClient(this, mProgress);
+        if (isPaymentJSLoggingEnabled())
+            webChromeWebviewClient = new PaymentLoggingClient(this, mProgress);
+        else
+            webChromeWebviewClient = new CommonWebViewClient(this, mProgress);
+
         setupWebView(this.mWebView);
+    }
+
+    private boolean isPaymentJSLoggingEnabled() {
+        return remoteConfig.getBoolean(PaymentConstant.KEY_ENABLE_JS_LOGGIN, false);
     }
 
     /**

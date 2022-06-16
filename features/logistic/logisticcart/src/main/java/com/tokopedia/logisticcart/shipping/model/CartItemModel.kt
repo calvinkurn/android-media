@@ -1,6 +1,7 @@
 package com.tokopedia.logisticcart.shipping.model
 
 import android.os.Parcelable
+import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnsDataModel
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
@@ -15,6 +16,7 @@ data class CartItemModel(
         var originalPrice: Double = 0.0,
         var currency: Int = 0,
         var variant: String = "",
+        var variantParentId: String = "",
         var weightUnit: Int = 0,
         var weight: Double = 0.0,
         var weightFmt: String = "",
@@ -66,5 +68,11 @@ data class CartItemModel(
         var bundleSlashPriceLabel: String = "",
         var bundleOriginalPrice: Long = 0L,
         var bundleQuantity: Int = 0,
-        var bundleIconUrl: String = ""
+        var bundleIconUrl: String = "",
+        var addOnProductLevelModel: AddOnsDataModel = AddOnsDataModel(),
+        var addOnDefaultFrom: String = "",
+        var addOnDefaultTo: String = "",
+        var isTokoCabang: Boolean = false,
+        var cartString: String = "",
+        var warehouseId: String = ""
 ) : Parcelable

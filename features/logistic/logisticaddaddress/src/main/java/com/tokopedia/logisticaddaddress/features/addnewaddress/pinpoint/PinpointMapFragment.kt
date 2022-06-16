@@ -389,6 +389,11 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapView, OnMapReadyCal
         }
     }
 
+    override fun onStart() {
+        super.onStart()
+        binding?.mapView?.onStart()
+    }
+
     override fun onPause() {
         super.onPause()
         binding?.mapView?.onPause()

@@ -13,6 +13,7 @@ import com.tokopedia.notifcenter.data.entity.notification.NotificationDetailResp
 import com.tokopedia.notifcenter.data.entity.notification.ProductData
 import com.tokopedia.notifcenter.data.entity.orderlist.NotifOrderListResponse
 import com.tokopedia.notifcenter.data.entity.orderlist.NotifOrderListUiModel
+import com.tokopedia.notifcenter.data.model.NotifTopAdsHeadline
 import com.tokopedia.notifcenter.data.uimodel.*
 import com.tokopedia.notifcenter.presentation.adapter.common.NotificationAdapterListener
 import com.tokopedia.notifcenter.presentation.adapter.typefactory.notification.NotificationTypeFactory
@@ -21,6 +22,7 @@ import com.tokopedia.notifcenter.presentation.adapter.viewholder.notification.v3
 import com.tokopedia.notifcenter.presentation.adapter.viewholder.notification.v3.payload.PayloadBumpReminderState
 import com.tokopedia.notifcenter.presentation.adapter.viewholder.notification.v3.payload.PayloadOrderList
 import com.tokopedia.notifcenter.presentation.adapter.viewholder.notification.v3.payload.PayloadWishlistState
+import com.tokopedia.topads.sdk.domain.model.CpmModel
 
 class NotificationAdapter constructor(
         private val typeFactory: NotificationTypeFactory,
@@ -35,6 +37,9 @@ class NotificationAdapter constructor(
     private val carouselViewPool = RecyclerView.RecycledViewPool()
     private val widgetTimeline = RecyclerView.RecycledViewPool()
     private val orderWidgetPool = RecyclerView.RecycledViewPool()
+    private var recommendationTitlePosition: Int? = null
+    var shopAdsWidgetAdded = false
+        private set
 
     interface Listener {
         fun hasFilter(): Boolean
@@ -188,8 +193,20 @@ class NotificationAdapter constructor(
 
     fun addRecomProducts(recommendations: List<Visitable<*>>) {
         val currentItemSize = visitables.size
-        if (visitables.addAll(recommendations)) {
-            notifyItemRangeInserted(currentItemSize, recommendations.size)
+        recommendations.forEach { item ->
+            visitables.add(item)
+            if (item is RecommendationTitleUiModel) recommendationTitlePosition = visitables.size
+        }
+        notifyItemRangeInserted(currentItemSize, recommendations.size)
+    }
+
+    fun addShopAds(cpmModel: CpmModel) {
+        recommendationTitlePosition?.let {
+            val shopAdsPosition = it + (cpmModel.data?.firstOrNull()?.cpm?.position ?: SHOPADS_POSITION_8)
+            if (shopAdsPosition <= visitables.size) {
+                visitables.add(shopAdsPosition, NotifTopAdsHeadline(cpmModel))
+                shopAdsWidgetAdded = true
+            }
         }
     }
 
@@ -292,6 +309,10 @@ class NotificationAdapter constructor(
             val payload = PayloadWishlistState(productData, notification)
             notifyItemChanged(itemPosition, payload)
         }
+    }
+
+    companion object {
+        private const val SHOPADS_POSITION_8 = 8
     }
 
 }

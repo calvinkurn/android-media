@@ -65,10 +65,10 @@
             android:layout_marginTop="-5dp"
             android:layout_height="@dimen/dp_25"/>
 
-        <com.tokopedia.design.component.Tabs
+        <com.tokopedia.unifycomponents.TabsUnify
             android:id="@+id/tab_layout"
             android:layout_width="match_parent"
-            android:layout_height="40dp"
+            android:layout_height="wrap_content"
             android:visibility="visible"
             app:layout_scrollFlags="enterAlways"
             app:tabMode="fixed"

@@ -9,5 +9,6 @@ interface MvcDetailViewContract {
     fun getWidgetImpression():WidgetImpression
     fun getMvcTracker():MvcTracker?
     fun getShopId():String
+    fun getProductId():String
     @MvcSource fun getMvcSource():Int
 }

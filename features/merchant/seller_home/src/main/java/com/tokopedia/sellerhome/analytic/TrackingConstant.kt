@@ -15,6 +15,7 @@ object TrackingConstant {
     const val IS_LOGGED_IN_STATUS = "isLoggedInStatus"
     const val CURRENT_SITE = "currentSite"
     const val USER_ID = "userId"
+    const val SHOP_ID = "shopId"
     const val BUSINESS_UNIT = "businessUnit"
 
     //event
@@ -45,6 +46,7 @@ object TrackingConstant {
     const val CLICK_WIDGET_BANNER = "click widget banner"
     const val IMPRESSION_WIDGET_BANNER = "impression widget banner"
     const val SEE_MORE = "see more"
+    const val HYPERLINK = "hyperlink"
     const val CLICK_NOTIFICATION = "click notification"
     const val CLICK_HOME = "click home"
     const val CLICK_PRODUCT = "click product"
@@ -95,7 +97,8 @@ object TrackingConstant {
     const val TOKOPEDIA_MARKETPLACE = "tokopediamarketplace"
     const val PHYSICAL_GOODS = "physical goods"
     const val PHYSICAL_GOODS_CAPITALIZED = "Physical Goods"
-    const val NONE = "none"
+    const val SINGLE = "single"
+    const val MULTIPLE = "multiple"
     const val EMPTY = "empty"
     const val NOT_EMPTY = "not empty"
     const val EMPTY_STATE = "emptystate"
@@ -110,13 +113,10 @@ object TrackingConstant {
 
     //performance
     const val CLICK_SHOP_SCORE = "clickShopScore"
-    const val ACTION_CLICK_LEARN_MORE = "click - pelajari selengkapnya"
     const val ACTION_SHOP_SCORE = "click - performa toko"
     const val ACTION_SHOP_SCORE_NEW_SELLER = "click - performa"
-    const val IMPRESS_LEARN_MORE = "impression - pelajari selengkapnya"
     const val IMPRESS_ACTION_SHOP_SCORE_NEW_SELLER = "impression - performa"
     const val IMPRESS_ACTION_SHOP_SCORE = "impression - performa toko"
-    const val CATEGORY_COMMUNICATION_PERIOD_HOME = "communication period - home"
     const val CATEGORY_SHOP_SCORE_NEW_SELLER = "toko saya"
     const val CATEGORY_SHOP_SCORE = "lainnya"
     const val NEW_SELLER = "new seller -"

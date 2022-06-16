@@ -1,35 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
-<selector xmlns:android="http://schemas.android.com/apk/res/android" >
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:state_selected="true">
-        <shape android:shape="rectangle" >
-            <solid android:color="@color/Unify_G100" />
-            <stroke
-                android:width="@dimen/telco_space_1"
-                android:color="@color/Unify_G500"/>
-            <corners android:radius="@dimen/layout_lvl1" />
+        <shape android:shape="rectangle">
+            <solid android:color="@color/Unify_G100"/>
+            <stroke android:width="@dimen/telco_space_1" android:color="@color/Unify_G500"/>
+            <corners android:radius="@dimen/layout_lvl1"/>
         </shape>
     </item>
     <item android:state_selected="false">
         <shape android:shape="rectangle">
-            <stroke
-                android:width="@dimen/telco_space_1"
-                android:color="@color/Unify_N0"/>
+            <stroke android:width="@dimen/telco_space_1" android:color="@color/Unify_N0"/>
             <corners android:radius="@dimen/layout_lvl1"/>
         </shape>
     </item>
     <item android:state_enabled="false">
         <shape android:shape="rectangle">
-            <stroke
-                android:width="@dimen/telco_space_1"
-                android:color="@color/Unify_N50"/>
+            <stroke android:width="@dimen/telco_space_1" android:color="@color/Unify_N50"/>
             <corners android:radius="@dimen/layout_lvl1"/>
         </shape>
     </item>
     <item android:state_enabled="true">
         <shape android:shape="rectangle">
-            <stroke
-                android:width="@dimen/telco_space_1"
-                android:color="@color/Unify_N0"/>
+            <stroke android:width="@dimen/telco_space_1" android:color="@color/Unify_N0"/>
             <corners android:radius="@dimen/layout_lvl1"/>
         </shape>
     </item>

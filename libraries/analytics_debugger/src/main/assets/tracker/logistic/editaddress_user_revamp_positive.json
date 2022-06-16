@@ -1,0 +1,56 @@
+{
+  "mode": "subset",
+  "query": [
+    {
+      "eventCategory": "edit address page",
+      "eventAction": "view edit address page new",
+      "eventLabel": ".*"
+    },
+    {
+      "eventCategory": "edit address page",
+      "eventAction": "click field alamat",
+      "eventLabel": ".*"
+    },
+    {
+      "eventCategory": "edit address page",
+      "eventAction": "click field nomor hp",
+      "eventLabel": ".*"
+    },
+    {
+      "eventCategory": "edit address page",
+      "eventAction": "click field nama penerima",
+      "eventLabel": ".*"
+    },
+    {
+      "eventCategory": "edit address page",
+      "eventAction": "click atur pinpoint",
+      "eventLabel": ".*"
+    },
+    {
+      "eventCategory": "edit address, pinpoint page",
+      "eventAction": "click cari ulang alamat",
+      "eventLabel": ".*"
+    },
+    {
+      "eventCategory": "edit address, search page",
+      "eventAction": "click field cari lokasi",
+      "eventLabel": ".*"
+    },
+    {
+      "eventCategory": "edit address, search page",
+      "eventAction": "click dropdown suggestion alamat",
+      "eventLabel": ".*"
+    },
+    {
+      "eventCategory": "edit address, pinpoint page",
+      "eventAction": "click pilih lokasi ini",
+      "eventLabel": ".*"
+    },
+    {
+      "eventCategory": "edit address page",
+      "eventAction": "click button simpan - edit address new",
+      "eventLabel": ".*"
+    }
+  ],
+  "readme": "Logistic Edit Address Revamp"
+}

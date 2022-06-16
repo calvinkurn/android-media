@@ -9,7 +9,9 @@ import android.widget.LinearLayout
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.play.broadcaster.R
@@ -20,15 +22,16 @@ import com.tokopedia.play.broadcaster.ui.viewholder.PlayCoverCameraViewHolder
 import com.tokopedia.play.broadcaster.ui.viewholder.PlayCoverProductViewHolder
 import com.tokopedia.play.broadcaster.util.bottomsheet.PlayBroadcastDialogCustomizer
 import com.tokopedia.play.broadcaster.view.adapter.PlayCoverProductAdapter
+import com.tokopedia.play.broadcaster.view.fragment.setup.cover.PlayCoverSetupFragment
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayCoverSetupViewModel
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import kotlinx.coroutines.flow.collectLatest
 import javax.inject.Inject
 
 /**
  * @author by furqan on 03/06/2020
  */
 class PlayCoverImageChooserBottomSheet @Inject constructor(
-        private val viewModelFactory: ViewModelFactory,
         private val analytic: PlayBroadcastAnalytic,
         private val dialogCustomizer: PlayBroadcastDialogCustomizer
 ) : BottomSheetUnify() {
@@ -68,7 +71,8 @@ class PlayCoverImageChooserBottomSheet @Inject constructor(
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        viewModel = ViewModelProviders.of(requireParentFragment(), viewModelFactory).get(PlayCoverSetupViewModel::class.java)
+        val parent = requireParentFragment() as PlayCoverSetupFragment
+        viewModel = ViewModelProvider(parent, parent.getViewModelFactory()).get(PlayCoverSetupViewModel::class.java)
         initBottomSheet()
     }
 
@@ -177,9 +181,14 @@ class PlayCoverImageChooserBottomSheet @Inject constructor(
      * Observe
      */
     private fun observeSelectedProduct() {
-        viewModel.observableSelectedProducts.observe(viewLifecycleOwner) {
-            pdpCoverAdapter.setItemsAndAnimateChanges(listOf(CarouselCoverUiModel.Camera) + it)
+        viewLifecycleOwner.lifecycleScope.launchWhenStarted {
+            viewModel.productList.collectLatest {
+                pdpCoverAdapter.setItemsAndAnimateChanges(
+                    listOf(CarouselCoverUiModel.Camera) + it.map(CarouselCoverUiModel::Product)
+                )
+            }
         }
+
     }
 
     interface Listener {

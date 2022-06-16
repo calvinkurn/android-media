@@ -12,14 +12,11 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlin.coroutines.CoroutineContext
 
-class CarouselBannerViewModel(application: Application, components: ComponentsItem, val position: Int) : DiscoveryBaseViewModel(), CoroutineScope {
+class CarouselBannerViewModel(application: Application, components: ComponentsItem, val position: Int) : DiscoveryBaseViewModel() {
 
     private val componentData: MutableLiveData<ComponentsItem> = MutableLiveData()
     private val listData: MutableLiveData<ArrayList<ComponentsItem>> = MutableLiveData()
     private val seeAllButton: MutableLiveData<String> = MutableLiveData()
-
-    override val coroutineContext: CoroutineContext
-        get() = Dispatchers.Main + SupervisorJob()
 
     init {
         componentData.value = components
