@@ -84,7 +84,6 @@ class PlayBroInteractiveInitViewModelTest {
             channelRepo = mockRepo,
             sharedPref = mockSharedPref,
         )
-
         robot.use {
             val events = robot.recordEvent {
                 it.getViewModel().submitAction(PlayBroadcastAction.CreateGiveaway("Giveaway",1000L))
@@ -106,7 +105,6 @@ class PlayBroInteractiveInitViewModelTest {
             channelRepo = mockRepo,
             sharedPref = mockSharedPref,
         )
-        Assertions.assertThat(true)
         robot.use {
             val events = robot.recordEvent {
                 it.getViewModel().submitAction(PlayBroadcastAction.CreateGiveaway("Giveaway",1000L))
