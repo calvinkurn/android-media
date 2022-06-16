@@ -29,6 +29,7 @@ import com.tokopedia.play.extensions.isAnyShown
 import com.tokopedia.play.extensions.isCouponSheetsShown
 import com.tokopedia.play.extensions.isKeyboardShown
 import com.tokopedia.play.extensions.isProductSheetsShown
+import com.tokopedia.play.ui.toolbar.model.PartnerType
 import com.tokopedia.play.util.observer.DistinctObserver
 import com.tokopedia.play.util.withCache
 import com.tokopedia.play.view.contract.PlayFragmentContract
@@ -548,7 +549,8 @@ class PlayBottomSheetFragment @Inject constructor(
                                 BottomInsetsType.VariantSheet
                             } else BottomInsetsType.ProductSheet //TEMPORARY
 
-                            val (wording, route, toaster) = if(event.product.isTokoNow)
+                            val partnerTokoNow = playViewModel.latestCompleteChannelData.partnerInfo.type == PartnerType.Tokonow
+                            val (wording, route, toaster) = if(event.product.isTokoNow && partnerTokoNow)
                                 Triple(getString(R.string.play_add_to_cart_message_success_tokonow), getString(R.string.play_tokonow_minicart_applink), getString(R.string.play_toaster_tokonow_wording))
                             else Triple(getString(R.string.play_add_to_cart_message_success), ApplinkConstInternalMarketplace.CART, getString(R.string.play_toaster_global_wording))
 
