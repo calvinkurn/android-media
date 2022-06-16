@@ -20,10 +20,7 @@ import com.tokopedia.tokomember_seller_dashboard.di.component.DaggerTokomemberDa
 import com.tokopedia.tokomember_seller_dashboard.model.TickerItem
 import com.tokopedia.tokomember_seller_dashboard.model.TmIntroBottomsheetModel
 import com.tokopedia.tokomember_seller_dashboard.tracker.TmTracker
-import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_IS_SHOW_BS
-import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_SHOP_ID
-import com.tokopedia.tokomember_seller_dashboard.util.TmPrefManager
-import com.tokopedia.tokomember_seller_dashboard.util.TokoLiveDataResult
+import com.tokopedia.tokomember_seller_dashboard.util.*
 import com.tokopedia.tokomember_seller_dashboard.view.customview.BottomSheetClickListener
 import com.tokopedia.tokomember_seller_dashboard.view.customview.TokomemberBottomsheet
 import com.tokopedia.tokomember_seller_dashboard.view.viewmodel.TokomemberDashHomeViewmodel
@@ -89,9 +86,10 @@ class TokomemberDashHomeFragment : BaseDaggerFragment() {
 
         if(isShowBs){
             val bundle = Bundle()
-            val tmIntroBottomsheetModel = TmIntroBottomsheetModel("Yay, semua sudah siap!", "Sambil menunggu member gabung, cek perkembangan program TokoMember kamu\n" +
-                    "di menu Home." , "https://images.tokopedia.net/img/android/res/singleDpi/quest_widget_nonlogin_banner.png", "Balik ke Home\n" +
-                    "\n" , errorCount = 0)
+            val tmIntroBottomsheetModel = TmIntroBottomsheetModel(
+                TM_PREVIEW_BS_TITLE, TM_PREVIEW_BS_DESC,
+                TM_SUCCESS_HAPPY, TM_PREVIEW_BS_CTA_PRIMARY, errorCount = 0
+            )
             bundle.putString(TokomemberBottomsheet.ARG_BOTTOMSHEET, Gson().toJson(tmIntroBottomsheetModel))
             val bottomsheet = TokomemberBottomsheet.createInstance(bundle)
             bottomsheet.setUpBottomSheetListener(object : BottomSheetClickListener{

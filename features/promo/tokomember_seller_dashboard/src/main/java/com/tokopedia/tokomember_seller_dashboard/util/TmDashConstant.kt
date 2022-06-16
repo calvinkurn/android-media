@@ -153,3 +153,7 @@ const val TM_CARD_DIALOG_TITLE = "Yakin batalkan pengaturan?"
 const val TM_CARD_DIALOG_DESC = "Pengaturan yang dibuat akan hilang kalau kamu batalkan proses pembuatan TokoMember, lho."
 const val TM_CARD_DIALOG_CTA_PRIMARY = "Lanjut"
 const val TM_CARD_DIALOG_CTA_SECONDARY = "Batalkan Pengaturan"
+
+const val TM_PREVIEW_BS_TITLE = "Yay, semua sudah siap!"
+const val TM_PREVIEW_BS_DESC = "Sambil menunggu member gabung, cek perkembangan program TokoMember kamu di menu Home."
+const val TM_PREVIEW_BS_CTA_PRIMARY = "Balik ke Home"

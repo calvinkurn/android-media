@@ -212,7 +212,7 @@ class TmCreateCardFragment : BaseDaggerFragment(), TokomemberCardColorAdapterLis
             else -> ERROR_CREATING_CTA_RETRY
         }
         val bundle = Bundle()
-        val tmIntroBottomSheetModel = TmIntroBottomsheetModel(title, ERROR_CREATING_DESC , TM_ERROR_GEN, cta , errorCount = retryCount)
+        val tmIntroBottomSheetModel = TmIntroBottomsheetModel(title, ERROR_CREATING_DESC , "", cta , errorCount = retryCount)
         bundle.putString(TokomemberBottomsheet.ARG_BOTTOMSHEET, Gson().toJson(tmIntroBottomSheetModel))
         val bottomSheet = TokomemberBottomsheet.createInstance(bundle)
         bottomSheet.setUpBottomSheetListener(this)

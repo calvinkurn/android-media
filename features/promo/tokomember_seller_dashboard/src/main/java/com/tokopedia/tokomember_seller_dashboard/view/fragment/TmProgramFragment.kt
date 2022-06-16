@@ -177,7 +177,7 @@ class TmProgramFragment : BaseDaggerFragment(), ChipGroupCallback ,
             else -> ERROR_CREATING_CTA_RETRY
         }
         val bundle = Bundle()
-        val tmIntroBottomsheetModel = TmIntroBottomsheetModel(title, ERROR_CREATING_DESC , TM_ERROR_GEN, cta , errorCount = errorCount)
+        val tmIntroBottomsheetModel = TmIntroBottomsheetModel(title, ERROR_CREATING_DESC , "", cta , errorCount = errorCount)
         bundle.putString(TokomemberBottomsheet.ARG_BOTTOMSHEET, Gson().toJson(tmIntroBottomsheetModel))
         val bottomsheet = TokomemberBottomsheet.createInstance(bundle)
         bottomsheet.setUpBottomSheetListener(this)

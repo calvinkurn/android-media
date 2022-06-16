@@ -452,7 +452,7 @@ class TmMultipleCuponCreateFragment : BaseDaggerFragment() {
         val tmIntroBottomSheetModel = TmIntroBottomsheetModel(
             title,
             ERROR_CREATING_DESC,
-            TM_ERROR_GEN,
+            "",
             cta,
             errorCount = retryCount
         )

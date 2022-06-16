@@ -45,18 +45,22 @@ class TokomemberBottomsheet : BottomSheetUnify() {
     }
 
    private fun setData() {
-        val tmIntroBottomSheetModel = Gson().fromJson(
-            arguments?.getString(ARG_BOTTOMSHEET, ""),
-            TmIntroBottomsheetModel::class.java
-        )
-        tvHeading.text = tmIntroBottomSheetModel.title
-        tvDesc.text = tmIntroBottomSheetModel.desc
-        imgBottomsheet.loadImage(tmIntroBottomSheetModel.image)
-        btnProceed.text = tmIntroBottomSheetModel.ctaName
-        btnProceed.setOnClickListener {
-            dismiss()
-            mBottomSheetClickListener?.onButtonClick(tmIntroBottomSheetModel.errorCount)
-        }
+       val tmIntroBottomSheetModel = Gson().fromJson(
+           arguments?.getString(ARG_BOTTOMSHEET, ""),
+           TmIntroBottomsheetModel::class.java
+       )
+       tvHeading.text = tmIntroBottomSheetModel.title
+       tvDesc.text = tmIntroBottomSheetModel.desc
+       if (tmIntroBottomSheetModel.image.isEmpty()) {
+           imgBottomsheet.setImageResource(com.tokopedia.globalerror.R.drawable.unify_globalerrors_500)
+       } else {
+           imgBottomsheet.loadImage(tmIntroBottomSheetModel.image)
+       }
+       btnProceed.text = tmIntroBottomSheetModel.ctaName
+       btnProceed.setOnClickListener {
+           dismiss()
+           mBottomSheetClickListener?.onButtonClick(tmIntroBottomSheetModel.errorCount)
+       }
     }
 
     private fun setDefaultParams() {

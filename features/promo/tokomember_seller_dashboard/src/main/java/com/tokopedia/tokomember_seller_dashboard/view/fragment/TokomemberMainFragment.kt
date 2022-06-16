@@ -9,10 +9,12 @@ import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.tokomember_seller_dashboard.R
 import com.tokopedia.tokomember_seller_dashboard.di.component.DaggerTokomemberDashComponent
 import com.tokopedia.tokomember_seller_dashboard.model.CheckEligibility
 import com.tokopedia.tokomember_seller_dashboard.tracker.TmTracker
+import com.tokopedia.tokomember_seller_dashboard.util.TM_SELLER_NO_OS
 import com.tokopedia.tokomember_seller_dashboard.view.activity.TokomemberDashHomeActivity
 import com.tokopedia.tokomember_seller_dashboard.view.activity.TokomemberDashIntroActivity
 import com.tokopedia.tokomember_seller_dashboard.view.viewmodel.TmEligibilityViewModel
@@ -49,6 +51,7 @@ class TokomemberMainFragment : BaseDaggerFragment() {
         observeViewModel()
         tmEligibilityViewModel.getSellerInfo()
         tmTracker = TmTracker()
+        iv_error.loadImage(TM_SELLER_NO_OS)
         btn_error.setOnClickListener {
             Toast.makeText(context, "Not allowed", Toast.LENGTH_SHORT).show()
             tmTracker?.clickBackHomeBSNoAccess(shopId.toString())
