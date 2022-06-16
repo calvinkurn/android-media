@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <com.tokopedia.unifyprinciples.Typography
-    app:typographyType="display_2"
+    app:typographyType="display_1"
     app:typographyWeight="bold"
     android:id="@+id/channel_title"
     android:layout_marginLeft="16dp"
