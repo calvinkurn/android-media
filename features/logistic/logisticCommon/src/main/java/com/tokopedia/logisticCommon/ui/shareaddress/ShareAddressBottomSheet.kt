@@ -11,7 +11,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
-import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.app.BaseMainApplication
@@ -48,7 +47,8 @@ class ShareAddressBottomSheet : BottomSheetUnify(),
     }
 
     private var isRequestAddress: Boolean = false
-    private var mListener: Listener? = null
+    private var mShareAddressListener: ShareAddressListener? = null
+    private var mRequestAddressListener: RequestAddressListener? = null
 
     override fun getComponent(): RequestShareAddressComponent {
         return DaggerRequestShareAddressComponent.builder()
@@ -75,7 +75,7 @@ class ShareAddressBottomSheet : BottomSheetUnify(),
                 is Success -> {
                     val response = it.data.shareAddressResponse
                     if (response.isSuccess) {
-                        mListener?.onSuccessRequestAddress()
+                        mRequestAddressListener?.onSuccessRequestAddress()
                     } else {
                         binding.etInputEmailNoHp.setMessage(response.error)
                         binding.etInputEmailNoHp.setError(true)
@@ -142,28 +142,40 @@ class ShareAddressBottomSheet : BottomSheetUnify(),
 
     private fun setBtnShare() {
         binding.btnShare.apply {
-            if(isRequestAddress) {
-                text = getString(R.string.share_address_bottom_sheet_btn_send)
-                setOnClickListener {
-                    requestShareAddress()
-                }
+            text = if (isRequestAddress) {
+                getString(R.string.share_address_bottom_sheet_btn_send)
             } else {
-                text = getString(R.string.share_address_bottom_sheet_btn_share)
-                setOnClickListener {
-                    mListener?.onClickShareAddress()
-                }
+                getString(R.string.share_address_bottom_sheet_btn_share)
+            }
+
+            setOnClickListener {
+                onClickShareButton()
             }
         }
     }
 
-    private fun requestShareAddress() {
-        viewModel.requestShareAddress(
-            RequestShareAddress(
-                userId = userSession.userId,
-                phone = binding.etInputEmailNoHp.textFieldInput.text.toString(),
-                email = ""
+    private fun onClickShareButton() {
+        var email: String? = null
+        var phone: String? = null
+        val inputText = binding.etInputEmailNoHp.textFieldInput.text.toString()
+
+        if (viewModel.isEmailValid(inputText)) {
+            email = inputText
+        } else {
+            phone = inputText
+        }
+
+        if (isRequestAddress) {
+            viewModel.requestShareAddress(
+                RequestShareAddress(
+                    userId = userSession.userId,
+                    phone = phone ?: "",
+                    email = email ?: ""
+                )
             )
-        )
+        } else {
+            mShareAddressListener?.onClickShareAddress(email, phone)
+        }
     }
 
     private fun setShareButtonEnabled(isEnabled: Boolean) {
@@ -253,32 +265,32 @@ class ShareAddressBottomSheet : BottomSheetUnify(),
         setChild(binding.root)
     }
 
-    fun show(manager: FragmentManager?) {
-        manager?.run {
-            super.show(this, TAG_SHARE_ADDRESS)
-        }
-    }
-
     private fun showToaster(errorMessage: String) {
         view?.let {
             Toaster.build(it, errorMessage, Toaster.LENGTH_SHORT, type = Toaster.TYPE_NORMAL).show()
         }
     }
 
-    interface Listener {
-        fun onSuccessRequestAddress()
+    interface ShareAddressListener {
+        fun onClickShareAddress(email: String?, phone: String?)
+    }
 
-        fun onClickShareAddress()
+    interface RequestAddressListener {
+        fun onSuccessRequestAddress()
     }
 
     companion object {
         const val TAG_SHARE_ADDRESS = "ShareAddressBottomSheet"
         const val REQUEST_CODE_CONTACT_PICKER = 99
 
-        fun newInstance(isRequestAddress: Boolean, listener: Listener): ShareAddressBottomSheet {
+        fun newInstance(
+            isRequestAddress: Boolean, shareAddressListener: ShareAddressListener? = null,
+            requestAddressListener: RequestAddressListener? = null
+        ): ShareAddressBottomSheet {
             return ShareAddressBottomSheet().apply {
                 this.isRequestAddress = isRequestAddress
-                this.mListener = listener
+                this.mShareAddressListener = shareAddressListener
+                this.mRequestAddressListener = requestAddressListener
             }
         }
     }

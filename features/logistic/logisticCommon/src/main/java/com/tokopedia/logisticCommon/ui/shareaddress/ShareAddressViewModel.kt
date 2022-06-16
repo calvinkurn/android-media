@@ -30,4 +30,8 @@ class ShareAddressViewModel @Inject constructor(
             mutableRequestShareAddressResponse.value = Fail(it)
         })
     }
+
+    fun isEmailValid(email: String): Boolean {
+        return android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()
+    }
 }
