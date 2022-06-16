@@ -156,7 +156,6 @@ class TopAdsDashGroupFragment : BaseDaggerFragment() {
             val intent = Intent(context, TopAdsGroupDetailViewActivity::class.java)
             intent.putExtra(TopAdsDashboardConstant.GROUP_ID, id)
             intent.putExtra(TopAdsDashboardConstant.PRICE_SPEND, priceSpent)
-            intent.putExtra(IS_AUTO_BID_TOGGLE_ENABLED, arguments?.getBoolean(IS_AUTO_BID_TOGGLE_ENABLED))
             intent.component = ComponentName(SELLER_PACKAGENAME, TopAdsGroupDetailViewActivity::class.java.name)
             startActivityForResult(intent, GROUP_UPDATED)
         } else {
