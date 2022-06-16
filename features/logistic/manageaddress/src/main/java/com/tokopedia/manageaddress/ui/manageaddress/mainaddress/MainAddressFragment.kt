@@ -782,12 +782,8 @@ class MainAddressFragment : BaseDaggerFragment(), ManageAddressItemAdapter.MainA
             }
         }
         return null
-    private var mainAddressListener: MainAddressListener? = null
-
-    fun setListener(listener: MainAddressListener) {
-        this.mainAddressListener = listener
     }
-
+    
     override fun onShareAddressClicked(peopleAddress: RecipientAddressModel) {
         showShareAddressBottomSheet(peopleAddress.id)
     }
@@ -804,7 +800,8 @@ class MainAddressFragment : BaseDaggerFragment(), ManageAddressItemAdapter.MainA
             isRequestAddress = false,
             shareAddressListener = shareAddressListener
         )
-        bottomSheetShareAddress?.show(parentFragmentManager,
+        bottomSheetShareAddress?.show(
+            parentFragmentManager,
             ShareAddressBottomSheet.TAG_SHARE_ADDRESS
         )
     }
@@ -822,7 +819,8 @@ class MainAddressFragment : BaseDaggerFragment(), ManageAddressItemAdapter.MainA
                 }
             }
         )
-        bottomSheetConfirmationShareAddress?.show(parentFragmentManager,
+        bottomSheetConfirmationShareAddress?.show(
+            parentFragmentManager,
             ShareAddressConfirmationBottomSheet.TAG_SHARE_ADDRESS_CONFIRMATION
         )
     }
