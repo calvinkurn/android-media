@@ -1040,7 +1040,7 @@ open class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAd
         emptyFilteredState?.show()
     }
 
-    private fun hideFilteredEmpty() {
+    open fun hideFilteredEmpty() {
         emptyFilteredState?.hide()
     }
 

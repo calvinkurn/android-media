@@ -17,6 +17,7 @@ import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.review.R
@@ -125,6 +126,20 @@ class ShopReviewFragment : ReadReviewFragment() {
             emptyStateSubtitle?.text = getString(R.string.review_reading_empty_review_shop_page_subtitle)
             visible()
         }
+    }
+
+    override fun showFilteredEmpty() {
+        super.showFilteredEmpty()
+        emptyStateContainer?.apply {
+            emptyStateImage?.setImageUrl(EMPTY_FILTERED_STATE_IMAGE_URL)
+            show()
+        }
+        nestedScrollViewContainer?.visible()
+    }
+
+    override fun hideFilteredEmpty() {
+        super.hideFilteredEmpty()
+        nestedScrollViewContainer?.gone()
     }
 
     override fun showError(throwable: Throwable) {
