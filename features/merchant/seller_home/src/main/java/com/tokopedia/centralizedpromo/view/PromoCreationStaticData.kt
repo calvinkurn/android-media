@@ -76,29 +76,36 @@ object PromoCreationStaticData {
                         ApplinkConst.CustomerApp.TOPADS_DASHBOARD
                     }
 
-                ),
-                PromoCreationUiModel(
-                    R.drawable.ic_broadcast_chat,
-                    resourceProvider.getPromoCreationTitleBroadcastChat(),
-                    resourceProvider.getPromoCreationDescriptionBroadcastChat(),
-                    broadcastChatExtra,
-                    String.format("%s?url=%s", ApplinkConst.WEBVIEW, broadcastChatUrl)
-                ),
-                PromoCreationUiModel(
-                    R.drawable.ic_voucher_cashback,
-                    resourceProvider.getPromoCreationTitleMerchantVoucher(),
-                    resourceProvider.getPromoCreationDescriptionMerchantVoucher(),
-                    "",
-                    if (isVoucherCashbackEligible) {
-                        if (isVoucherCashbackFirstTime) {
-                            getFirstTimeApplink(SellerHomeApplinkConst.TYPE_VOUCHER_CASHBACK)
-                        } else {
-                            ApplinkConstInternalSellerapp.CREATE_VOUCHER
-                        }
+            ),
+            PromoCreationUiModel(
+                R.drawable.ic_broadcast_chat,
+                resourceProvider.getPromoCreationTitleBroadcastChat(),
+                resourceProvider.getPromoCreationDescriptionBroadcastChat(),
+                broadcastChatExtra,
+                String.format("%s?url=%s", ApplinkConst.WEBVIEW, broadcastChatUrl)
+            ),
+            PromoCreationUiModel(
+                R.drawable.ic_voucher_cashback,
+                resourceProvider.getPromoCreationTitleMerchantVoucher(),
+                resourceProvider.getPromoCreationDescriptionMerchantVoucher(),
+                "",
+                if (isVoucherCashbackEligible) {
+                    if (isVoucherCashbackFirstTime) {
+                        getFirstTimeApplink(SellerHomeApplinkConst.TYPE_VOUCHER_CASHBACK)
                     } else {
-                        ApplinkConstInternalSellerapp.ADMIN_RESTRICTION
+                        ApplinkConstInternalSellerapp.CREATE_VOUCHER
                     }
-                )
+                } else {
+                    ApplinkConstInternalSellerapp.ADMIN_RESTRICTION
+                }
+            ),
+            PromoCreationUiModel(
+                R.drawable.ic_sah_tokomember,
+                resourceProvider.getPromoCreationTitleTokoMember(),
+                resourceProvider.getPromoCreationDescriptionTokoMember(),
+                "",
+                "",
+                resourceProvider.getPromoCreationLabelTokoMember()
             )
         )
 
