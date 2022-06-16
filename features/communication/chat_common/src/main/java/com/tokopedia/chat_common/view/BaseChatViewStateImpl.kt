@@ -234,7 +234,7 @@ abstract class BaseChatViewStateImpl(
     open fun scrollToBottom() {
         val onNext = Action1<Long> { recyclerView.scrollToPosition(0) }
         val onError = Action1<Throwable> { it.printStackTrace() }
-        Observable.timer(250, TimeUnit.MILLISECONDS)
+        Observable.timer(SCROLL_DELAY, TimeUnit.MILLISECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(onNext, onError)
     }
@@ -355,5 +355,6 @@ abstract class BaseChatViewStateImpl(
 
     companion object {
         const val KEYBOARD_OFFSET = 100
+        private const val SCROLL_DELAY: Long = 250
     }
 }
