@@ -43,7 +43,7 @@ class ReschedulePickupResultDialog(private val context: Context, private val lis
         binding?.run {
             titleDialogReschedule.text = context.getString(R.string.title_failed_reschedule_pickup_dialog)
             descriptionDialogReschedule.text = error
-            ivReschedule.setImageResource(R.drawable.ic_som_bulk_fail)
+            ivReschedule.setImageResource(R.drawable.ic_logisticseller_reschedulepickup_fail)
         }
         dialogUnify?.setPrimaryCTAText(context.getString(R.string.title_cta_error_reschedule_pickup))
     }
@@ -52,7 +52,7 @@ class ReschedulePickupResultDialog(private val context: Context, private val lis
         binding?.run {
             titleDialogReschedule.text = context.getString(R.string.title_reschedule_pickup_success_dialog)
             descriptionDialogReschedule.text = HtmlLinkHelper(context, message).spannedString
-            ivReschedule.setImageResource(R.drawable.ic_som_bulk_success)
+            ivReschedule.setImageResource(R.drawable.ic_logisticseller_recshedulepickup_success)
         }
         dialogUnify?.setPrimaryCTAText(context.getString(R.string.title_reschedule_pickup_button_dialog))
     }
