@@ -280,7 +280,10 @@ class CampaignInformationFragment : BaseDaggerFragment() {
             btnCreateCampaign.setOnClickListener {
                 viewModel.validateInput(getCurrentSelection(), Date())
             }
-            btnApply.setOnClickListener { handleApplyButtonClick() }
+            btnApply.setOnClickListener {
+                handleApplyButtonClick()
+                binding?.cardView?.visible()
+            }
 
             quantityEditor.editText.inputType = InputType.TYPE_NULL
             quantityEditor.setValueChangedListener { newValue, oldValue, _ ->
@@ -422,7 +425,12 @@ class CampaignInformationFragment : BaseDaggerFragment() {
         val isHexColorTextFieldFilled = binding?.tauHexColor?.editText?.text.toString().trim().length == HEX_COLOR_TEXT_FIELD_MAX_LENGTH
         binding?.recyclerView?.isVisible = !hexColorOptionSelected
         binding?.groupHexColorPicker?.isVisible = hexColorOptionSelected
-        binding?.btnApply?.isVisible = hexColorOptionSelected && isHexColorTextFieldFilled
+
+        if (hexColorOptionSelected && isHexColorTextFieldFilled) {
+            binding?.btnApply?.visible()
+        } else {
+            binding?.btnApply?.invisible()
+        }
 
         if (hexColorOptionSelected) {
             val hexColor = binding?.tauHexColor?.editText?.text.toString().trim().toHexColor()
@@ -591,9 +599,10 @@ class CampaignInformationFragment : BaseDaggerFragment() {
 
         binding?.recyclerView?.isVisible = !isUsingHexColor
         binding?.groupHexColorPicker?.isVisible = isUsingHexColor
-        binding?.btnApply?.isVisible = isUsingHexColor
+
 
         if (isUsingHexColor) {
+            binding?.btnApply?.visible()
             binding?.contentSwitcher?.isChecked = true
             binding?.tauHexColor?.editText?.setText(campaign.gradientColor.first.removeHexColorPrefix())
             binding?.imgHexColorPreview?.setBackgroundFromGradient(campaign.gradientColor)
@@ -601,6 +610,7 @@ class CampaignInformationFragment : BaseDaggerFragment() {
             val colors = viewModel.deselectAllColor(adapter.snapshot())
             adapter.submit(colors)
         } else {
+            binding?.btnApply?.invisible()
             val colors = viewModel.markColorAsSelected(campaign.gradientColor, adapter.snapshot())
             adapter.submit(colors)
         }
