@@ -344,6 +344,7 @@ class CampaignListFragment : BaseSimpleListFragment<CampaignAdapter, CampaignUiM
     }
 
     override fun onDataEmpty() {
+        adapter?.hideLoading()
     }
 
     override fun onGetListError(message: String) {
@@ -364,9 +365,11 @@ class CampaignListFragment : BaseSimpleListFragment<CampaignAdapter, CampaignUiM
         if (data.campaigns.size.isMoreThanZero()) {
             binding?.groupNoSearchResult?.gone()
             renderList(data.campaigns, data.campaigns.size == getPerPage())
-        } else {
+        } else if (data.campaigns.isEmpty() && adapter?.itemCount == ZERO) {
             binding?.groupNoSearchResult?.visible()
         }
+
+        adapter?.hideLoading()
     }
 
     private fun doOnDelayFinished(block: () -> Unit) {
@@ -402,13 +405,6 @@ class CampaignListFragment : BaseSimpleListFragment<CampaignAdapter, CampaignUiM
             handleFirstTabEmptyState(hasCampaign, hasDraft, quotaCounter)
         } else {
             handleSecondTabEmptyState(hasCampaign)
-        }
-
-        if (totalCampaign == ZERO) {
-            onEmptyState()
-        } else {
-            binding?.searchBar?.gone()
-            onScrollDown()
         }
 
     }
