@@ -314,7 +314,9 @@ class UserConsentWidget : FrameLayout, UserConsentPurposeViewHolder.UserConsentP
                 it.isChecked
             }
 
-            viewBinding?.buttonAction?.isEnabled = isAllChecked == true
+            if (isAllChecked == true) {
+                viewBinding?.buttonAction?.isEnabled = true
+            }
         }
     }
 
