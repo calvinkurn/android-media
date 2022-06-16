@@ -3,6 +3,7 @@ package com.tokopedia.recharge_credit_card
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
+import android.os.Parcelable
 import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
@@ -18,6 +19,10 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConsInternalDigital
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
+import com.tokopedia.common.topupbills.favoritepage.view.activity.TopupBillsPersoFavoriteNumberActivity
+import com.tokopedia.common.topupbills.favoritepage.view.activity.TopupBillsPersoSavedNumberActivity
+import com.tokopedia.common.topupbills.favoritepage.view.activity.TopupBillsPersoSavedNumberActivity.Companion.EXTRA_CALLBACK_CLIENT_NUMBER
+import com.tokopedia.common.topupbills.favoritepage.view.model.TopupBillsSavedNumber
 import com.tokopedia.common.topupbills.favoritepdp.domain.model.AutoCompleteModel
 import com.tokopedia.common.topupbills.favoritepdp.domain.model.FavoriteChipModel
 import com.tokopedia.common.topupbills.favoritepdp.domain.model.PrefillModel
@@ -29,6 +34,8 @@ import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
+import com.tokopedia.recharge_component.listener.ClientNumberAutoCompleteListener
+import com.tokopedia.recharge_component.listener.ClientNumberFilterChipListener
 import com.tokopedia.recharge_component.listener.ClientNumberInputFieldListener
 import com.tokopedia.recharge_component.model.client_number.InputFieldType
 import com.tokopedia.recharge_component.result.RechargeNetworkResult
@@ -45,6 +52,7 @@ import com.tokopedia.recharge_credit_card.di.RechargeCCInstance
 import com.tokopedia.recharge_credit_card.util.RechargeCCConst
 import com.tokopedia.recharge_credit_card.util.RechargeCCConst.DEFAULT_MAX_CC_LENGTH
 import com.tokopedia.recharge_credit_card.util.RechargeCCConst.DEFAULT_MIN_CC_LENGTH
+import com.tokopedia.recharge_credit_card.util.RechargeCCConst.REQUEST_CODE_FAVORITE_NUMBER
 import com.tokopedia.recharge_credit_card.util.RechargeCCGqlQuery
 import com.tokopedia.recharge_credit_card.util.RechargeCCUtil
 import com.tokopedia.recharge_credit_card.viewmodel.RechargeCCViewModel
@@ -62,6 +70,8 @@ import javax.inject.Inject
 class RechargeCCFragment :
     BaseDaggerFragment(),
     ClientNumberInputFieldListener,
+    ClientNumberFilterChipListener,
+    ClientNumberAutoCompleteListener,
     RechargeCCClientNumberWidget.CreditCardActionListener
 {
 
@@ -141,6 +151,8 @@ class RechargeCCFragment :
             setInputFieldType(InputFieldType.CreditCard)
             setInputFieldStaticLabel(context.getString(R.string.cc_label_input_number))
             setInputFieldListener(this@RechargeCCFragment)
+            setFilterChipListener(this@RechargeCCFragment)
+            setAutoCompleteListener(this@RechargeCCFragment)
             setCreditCardATCListener(this@RechargeCCFragment)
         }
 
@@ -177,6 +189,7 @@ class RechargeCCFragment :
     private fun observeData() {
         rechargeCCViewModel.creditCardSelected.observe(viewLifecycleOwner, Observer {
             if (it.defaultProductId.isEmpty() && it.operatorId.isEmpty()) {
+                cc_widget_client_number.setLoading(false)
                 cc_widget_client_number.setErrorInputField(
                     getString(R.string.cc_bank_is_not_supported))
             }
@@ -209,7 +222,6 @@ class RechargeCCFragment :
                             enablePrimaryButton()
                         }
                     }
-                } else {
                 }
             }
         })
@@ -479,6 +491,47 @@ class RechargeCCFragment :
     }
     //endregion
 
+    //region FilterChipListener
+    override fun onClickIcon(isSwitchChecked: Boolean) {
+        // isSwitchChecked is not used here
+        navigateToFavoriteNumberPage(
+            cc_widget_client_number.getInputNumber(),
+            arrayListOf(categoryId),
+            rechargeCCViewModel.categoryName,
+            rechargeCCViewModel.loyaltyStatus
+        )
+    }
+
+    override fun onShowFilterChip(isLabeled: Boolean) {
+        // TODO: [Misael] mungkin tracker
+    }
+
+    override fun onClickFilterChip(isLabeled: Boolean, operatorId: String) {
+        // TODO: [Misael] mungkin tracker
+    }
+    //endregion
+
+    //region AutoCompleteListener
+    override fun onClickAutoComplete(isFavoriteContact: Boolean) {
+        // TODO: [Misael] mungkin tracker
+    }
+    //endregion
+
+    private fun navigateToFavoriteNumberPage(
+        clientNumber: String,
+        dgCategoryIds: ArrayList<String>,
+        categoryName: String,
+        loyaltyStatus: String,
+    ) {
+        context?.let {
+            val intent = TopupBillsPersoFavoriteNumberActivity.createInstance(
+                it, clientNumber, dgCategoryIds, arrayListOf(), categoryName, loyaltyStatus
+            )
+            val requestCode = RechargeCCConst.REQUEST_CODE_FAVORITE_NUMBER
+            startActivityForResult(intent, requestCode)
+        }
+    }
+
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         when (requestCode) {
@@ -505,7 +558,44 @@ class RechargeCCFragment :
                     instantCheckout()
                 }
             }
+
+            REQUEST_CODE_FAVORITE_NUMBER -> {
+                if (data != null) {
+                    if (data != null) {
+                        val orderClientNumber =
+                            data.getParcelableExtra<Parcelable>(EXTRA_CALLBACK_CLIENT_NUMBER) as TopupBillsSavedNumber
+
+                        handleCallbackFavoriteNumber(
+                            orderClientNumber.clientName,
+                            orderClientNumber.clientNumber,
+                            orderClientNumber.operatorId,
+                            orderClientNumber.inputNumberActionTypeIndex,
+                        )
+                    } else {
+                        handleCallbackAnySavedNumberCancel()
+                    }
+                    getFavoriteNumbers(
+                        listOf(
+                            FavoriteNumberType.CHIP,
+                            FavoriteNumberType.LIST
+                        )
+                    )
+                }
+            }
         }
+    }
+
+    private fun handleCallbackFavoriteNumber(
+        clientName: String,
+        clientNumber: String,
+        operatorId: String,
+        inputNumberActionTypeIndex: Int
+    ) {
+
+    }
+
+    private fun handleCallbackAnySavedNumberCancel() {
+        cc_widget_client_number.clearFocusAutoComplete()
     }
 
     override fun onDestroyView() {

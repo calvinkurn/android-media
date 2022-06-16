@@ -113,8 +113,8 @@ class RechargeCCViewModelTest {
     fun getMenuDetail_TickersNotEmpty_SuccessGetTicker() {
         //given
         val tickers = mutableListOf<TickerCreditCard>()
-        tickers.add(TickerCreditCard(1, "test1", "desc1", "info"))
-        tickers.add(TickerCreditCard(2, "test2", "desc2", "warning"))
+        tickers.add(TickerCreditCard("1", "test1", "desc1", "info"))
+        tickers.add(TickerCreditCard("2", "test2", "desc2", "warning"))
 
         val result = HashMap<Type, Any>()
         result[RechargeCCMenuDetailResponse::class.java] = RechargeCCMenuDetailResponse(
@@ -211,7 +211,7 @@ class RechargeCCViewModelTest {
         coEvery { graphqlRepository.response(any(), any()) } returns gqlResponse
 
         //when
-        rechargeCCViewModel.getPrefixes("", "45678910", "169")
+        rechargeCCViewModel.getPrefixes("", "169")
 
         //then
         val actualData = rechargeCCViewModel.creditCardSelected
@@ -243,7 +243,7 @@ class RechargeCCViewModelTest {
         coEvery { graphqlRepository.response(any(), any()) } returns gqlResponse
 
         //when
-        rechargeCCViewModel.getPrefixes("", "45678910", "169")
+        rechargeCCViewModel.getPrefixes("", "169")
 
         //then
         val actualData = rechargeCCViewModel.bankNotSupported
@@ -275,7 +275,7 @@ class RechargeCCViewModelTest {
         coEvery { graphqlRepository.response(any(), any()) } returns gqlResponse
 
         //when
-        rechargeCCViewModel.getPrefixes("", "", "169")
+        rechargeCCViewModel.getPrefixes("", "169")
 
         //then
         val actualData = rechargeCCViewModel.bankNotSupported
@@ -295,7 +295,7 @@ class RechargeCCViewModelTest {
 
         coEvery { graphqlRepository.response(any(), any()) } returns gqlResponse
         //when
-        rechargeCCViewModel.getPrefixes("", "", "169")
+        rechargeCCViewModel.getPrefixes("", "169")
 
         //then
         val actualData = rechargeCCViewModel.errorPrefix

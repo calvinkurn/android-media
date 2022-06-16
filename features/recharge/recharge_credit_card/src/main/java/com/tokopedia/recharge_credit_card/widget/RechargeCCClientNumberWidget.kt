@@ -200,6 +200,7 @@ class RechargeCCClientNumberWidget @JvmOverloads constructor(@NotNull context: C
             }
 
             sortFilterItem.listener = {
+                clearErrorState()
                 setContactName(number.clientName)
                 setInputNumber(number.clientNumber)
 

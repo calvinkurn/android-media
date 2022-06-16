@@ -62,6 +62,7 @@ class RechargeCCViewModel @Inject constructor(
     val prefillData: LiveData<RechargeNetworkResult<PrefillModel>> = _prefillData
 
     var categoryName: String = ""
+    var loyaltyStatus: String = ""
 
     var validatorJob: Job? = null
 
@@ -78,6 +79,8 @@ class RechargeCCViewModel @Inject constructor(
             }.getSuccessData<RechargeCCMenuDetailResponse>()
 
             categoryName = data.menuDetail.menuName
+            loyaltyStatus = data.menuDetail.userPerso.loyaltyStatus
+
             if (data.menuDetail.tickers.isNotEmpty()) {
                 tickers.postValue(data.menuDetail.tickers)
             } else {
