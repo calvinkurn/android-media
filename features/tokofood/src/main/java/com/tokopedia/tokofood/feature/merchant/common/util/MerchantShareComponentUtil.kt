@@ -89,7 +89,7 @@ class MerchantShareComponentUtil(
             id = merchantId,
             pageName = ShareComponentConstants.TOKOFOOD,
             previewTitle = tokoFoodMerchantProfile?.name.orEmpty(),
-            previewThumbnail = tokoFoodMerchantProfile?.imageURL.orEmpty(),
+            previewThumbnail = MERCHANT_THUMBNAIL_URL,
             txtDesc = context?.getString(
                 com.tokopedia.tokofood.R.string.desc_merchant_page_share,
                 tokoFoodMerchantProfile?.name.orEmpty()
@@ -104,7 +104,8 @@ class MerchantShareComponentUtil(
             ogDesc = context?.getString(
                 com.tokopedia.tokofood.R.string.og_desc_merchant_page_share,
                 tokoFoodMerchantProfile?.name.orEmpty()
-            ).orEmpty()
+            ).orEmpty(),
+            ogImage = MERCHANT_THUMBNAIL_URL
         )
     }
 
@@ -117,7 +118,7 @@ class MerchantShareComponentUtil(
             id = productUiModel.id,
             pageName = ShareComponentConstants.TOKOFOOD,
             previewTitle = productUiModel.name,
-            previewThumbnail = productUiModel.imageURL,
+            previewThumbnail = FOOD_THUMBNAIL_URL,
             txtDesc = context?.getString(
                 com.tokopedia.tokofood.R.string.desc_merchant_food_share,
                 productUiModel.name,
@@ -134,7 +135,13 @@ class MerchantShareComponentUtil(
                 com.tokopedia.tokofood.R.string.og_desc_merchant_food_share,
                 productUiModel.name,
                 tokoFoodMerchantProfile?.name.orEmpty()
-            ).orEmpty()
+            ).orEmpty(),
+            ogImage = FOOD_THUMBNAIL_URL
         )
+    }
+
+    companion object {
+        const val FOOD_THUMBNAIL_URL = "https://images.tokopedia.net/img/tokofood/food_share.png"
+        const val MERCHANT_THUMBNAIL_URL = "https://images.tokopedia.net/img/tokofood/merchant_share.png"
     }
 }
