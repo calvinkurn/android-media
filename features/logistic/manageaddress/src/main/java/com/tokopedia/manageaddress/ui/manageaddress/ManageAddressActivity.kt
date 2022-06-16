@@ -12,8 +12,7 @@ import com.tokopedia.manageaddress.di.DaggerManageAddressComponent
 import com.tokopedia.manageaddress.di.ManageAddressComponent
 import com.tokopedia.manageaddress.ui.manageaddress.mainaddress.MainAddressFragment
 
-class ManageAddressActivity : BaseActivity(), HasComponent<ManageAddressComponent>, ManageAddressFragment.ManageAddressListener,
-    MainAddressFragment.MainAddressListener {
+class ManageAddressActivity : BaseActivity(), HasComponent<ManageAddressComponent>, ManageAddressFragment.ManageAddressListener {
 
     private var binding: ActivityManageAddressBinding? = null
 
@@ -26,7 +25,6 @@ class ManageAddressActivity : BaseActivity(), HasComponent<ManageAddressComponen
     override fun onAttachFragment(fragment: Fragment) {
         when (fragment) {
             is ManageAddressFragment -> fragment.setListener(this)
-            is MainAddressFragment -> fragment.setListener(this)
         }
     }
 
@@ -82,23 +80,4 @@ class ManageAddressActivity : BaseActivity(), HasComponent<ManageAddressComponen
         }
         return null
     }
-
-    private fun getManageAddressFragment(): ManageAddressFragment? {
-        val fragments = supportFragmentManager.fragments
-        fragments.forEach { currentFragment ->
-            if (currentFragment != null && currentFragment.isVisible && currentFragment is ManageAddressFragment) {
-                return currentFragment
-            }
-        }
-        return null
-    }
-
-    override fun visibilitySearchInput(show: Boolean) {
-        getManageAddressFragment()?.searchInputVisibility(show)
-    }
-
-    override fun initSearchText(searchKey: String) {
-        getManageAddressFragment()?.setSearchView(searchKey)
-    }
-
 }
