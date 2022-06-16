@@ -71,7 +71,7 @@ class HomeNavAnalyticTest {
     }
 
     @Test
-    fun testComponentProductHighlight() {
+    fun testComponentFavoriteShop() {
         initTest()
     }
 
