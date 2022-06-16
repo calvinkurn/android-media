@@ -78,19 +78,19 @@ object PromoCreationStaticData {
 
                 ),
                 PromoCreationUiModel(
+                    R.drawable.ic_broadcast_chat,
+                    resourceProvider.getPromoCreationTitleBroadcastChat(),
+                    resourceProvider.getPromoCreationDescriptionBroadcastChat(),
+                    broadcastChatExtra,
+                    String.format("%s?url=%s", ApplinkConst.WEBVIEW, broadcastChatUrl)
+                ),
+                PromoCreationUiModel(
                     R.drawable.ic_sah_tokomember,
                     resourceProvider.getPromoCreationTitleTokoMember(),
                     resourceProvider.getPromoCreationDescriptionTokoMember(),
                     "",
                     ApplinkConst.SellerApp.TOKOMEMBER,
                     resourceProvider.getPromoCreationLabelTokoMember()
-                ),
-                PromoCreationUiModel(
-                    R.drawable.ic_broadcast_chat,
-                    resourceProvider.getPromoCreationTitleBroadcastChat(),
-                    resourceProvider.getPromoCreationDescriptionBroadcastChat(),
-                    broadcastChatExtra,
-                    String.format("%s?url=%s", ApplinkConst.WEBVIEW, broadcastChatUrl)
                 ),
                 PromoCreationUiModel(
                     R.drawable.ic_voucher_cashback,
