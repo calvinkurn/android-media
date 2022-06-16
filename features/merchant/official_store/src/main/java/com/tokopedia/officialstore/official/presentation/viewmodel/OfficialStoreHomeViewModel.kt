@@ -136,7 +136,7 @@ class OfficialStoreHomeViewModel @Inject constructor(
                       onBannerCacheStopLoad: () -> Unit = {},
                       onBannerCloudStartLoad: () -> Unit = {},
                       onBannerCloudStopLoad: () -> Unit = {}) {
-        launch {
+        launchCatchError(block = {
             val categoryId = category?.categoryId?.toIntOrNull() ?: 0
             currentSlug = "${category?.prefixUrl}${category?.slug}"
             currentSlugDC = category?.slug ?: ""
@@ -150,6 +150,10 @@ class OfficialStoreHomeViewModel @Inject constructor(
             _officialStoreFeaturedShopResult.value = getOfficialStoreFeaturedShop(categoryId)
 
             getOfficialStoreDynamicChannel(currentSlug, location)
+        }) {
+            _officialStoreBannersResult.value = Pair(true, Fail(it))
+            _officialStoreBenefitResult.value = Fail(it)
+            _officialStoreFeaturedShopResult.value = Fail(it)
         }
     }
 
