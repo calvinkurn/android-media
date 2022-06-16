@@ -38,7 +38,7 @@ class ExplicitViewModelTest {
     }
 
     @Test
-    fun `get question - success - widget not active`() {
+    fun `get question then success and response widget not active`() {
         val templateName = "food_preference"
         val data = QuestionDataModel()
         val expected = Pair(false, null)
@@ -53,7 +53,7 @@ class ExplicitViewModelTest {
     }
 
     @Test
-    fun `get question - success - options is empty`() {
+    fun `get question then success and response options is empty`() {
         val templateName = "food_preference"
         val data = QuestionDataModel(
             ExplicitprofileGetQuestion(
@@ -85,7 +85,7 @@ class ExplicitViewModelTest {
     }
 
     @Test
-    fun `get question - success - sections is empty`() {
+    fun `get question then success and response sections is empty`() {
         val templateName = "food_preference"
         val data = QuestionDataModel(
             ExplicitprofileGetQuestion(
@@ -111,7 +111,7 @@ class ExplicitViewModelTest {
     }
 
     @Test
-    fun `get question - success - questions is empty`() {
+    fun `get question then success and response questions is empty`() {
         val templateName = "food_preference"
         val data = QuestionDataModel(
             ExplicitprofileGetQuestion(
@@ -133,7 +133,7 @@ class ExplicitViewModelTest {
     }
 
     @Test
-    fun `get question - success - widget active`() {
+    fun `get question then success and response widget active`() {
         val templateName = "food_preference"
         val data = QuestionDataModel(
             ExplicitprofileGetQuestion(ActiveConfig(value = true))
@@ -151,7 +151,7 @@ class ExplicitViewModelTest {
     }
 
     @Test
-    fun `get question - failed - throwable`() {
+    fun `get question then failed and response throwable`() {
         val templateName = "food_preference"
         val data = Throwable()
 
@@ -165,7 +165,7 @@ class ExplicitViewModelTest {
     }
 
     @Test
-    fun `send answer - positif button - success`() {
+    fun `user click positif button and app send answer then response success`() {
         val answer = true
         val data = AnswerDataModel()
         val message = data.explicitprofileSaveMultiAnswers.message
@@ -182,7 +182,7 @@ class ExplicitViewModelTest {
     }
 
     @Test
-    fun `send answer - positif button - failed`() {
+    fun `user click positif button and app send answer then response failed`() {
         val answer = true
         val data = Throwable()
         val param = InputParam()
@@ -197,7 +197,7 @@ class ExplicitViewModelTest {
     }
 
     @Test
-    fun `send answer - negatif button - success`() {
+    fun `user click negatif button and app send answer then response success`() {
         val answer = false
         val data = AnswerDataModel()
         val message = data.explicitprofileSaveMultiAnswers.message
@@ -214,7 +214,7 @@ class ExplicitViewModelTest {
     }
 
     @Test
-    fun `send answer - negatif button - failed`() {
+    fun `user click negatif button and app send answer then response failed`() {
         val answer = false
         val data = Throwable()
         val param = InputParam()
@@ -229,7 +229,7 @@ class ExplicitViewModelTest {
     }
 
     @Test
-    fun `get question - success - loading false`() {
+    fun `get question then success and loading variable is false`() {
         val templateName = "food_preference"
         val data = QuestionDataModel(
             ExplicitprofileGetQuestion(ActiveConfig(value = true))
@@ -245,7 +245,7 @@ class ExplicitViewModelTest {
     }
 
     @Test
-    fun `update state just call once`()  {
+    fun `send update state and make sure update state only call once then response success`()  {
         val preferenceUpdateState = UpdateStateParam()
 
         viewModel.updateState()
@@ -256,7 +256,7 @@ class ExplicitViewModelTest {
     }
 
     @Test
-    fun `update state just call once - error`()  {
+    fun `send update state and make sure update state only call once then response error`()  {
         val preferenceUpdateState = UpdateStateParam()
         val data = Throwable()
 
