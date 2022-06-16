@@ -93,11 +93,9 @@ class BannerTimerViewModel(val application: Application, val components: Compone
         val saleStartDate = components.data?.firstOrNull()?.startDate ?: ""
         val saleEndDate = components.data?.firstOrNull()?.endDate ?: ""
         if (Utils.isFutureSaleOngoing(saleStartDate = saleStartDate, saleEndDate = saleEndDate, TIMER_DATE_FORMAT)) {
-            if (Utils.getElapsedTime(saleEndDate) <= DEFAULT_TIME_DATA) {
-                this@BannerTimerViewModel.syncData.value = true
-            }
+            this@BannerTimerViewModel.syncData.value = true
         } else {
-            if (Utils.getElapsedTime(saleStartDate) <= DEFAULT_TIME_DATA) {
+            if (Utils.getElapsedTime(saleEndDate) <= DEFAULT_TIME_DATA) {
                 this@BannerTimerViewModel.syncData.value = true
             }
         }
