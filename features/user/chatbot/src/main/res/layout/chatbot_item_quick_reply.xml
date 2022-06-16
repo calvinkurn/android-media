@@ -8,25 +8,25 @@
     android:background="@color/chatbot_dms_chat_background"
     android:layout_marginLeft="2dp">
 
-    <TextView
+    <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/dummy"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         tools:text="" />
 
-    <TextView
+    <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:minHeight="@dimen/dp_32"
+        android:minHeight="@dimen/unify_space_32"
         android:gravity="center"
         android:background="@drawable/interactive_label_template_chat"
-        android:paddingTop="8dp"
-        android:paddingBottom="8dp"
-        android:paddingLeft="10dp"
-        android:paddingRight="10dp"
+        android:paddingTop="@dimen/unify_space_8"
+        android:paddingBottom="@dimen/unify_space_8"
+        android:paddingLeft="@dimen/dp_chatbot_10"
+        android:paddingRight="@dimen/dp_chatbot_10"
         android:singleLine="true"
-        android:textSize="@dimen/sp_12"
+        android:textSize="@dimen/unify_font_12"
         android:textColor="@color/Unify_G400"
         tools:text="Maafm" />
 

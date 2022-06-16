@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-                                            xmlns:app="http://schemas.android.com/apk/res-auto"
-                                            xmlns:tools="http://schemas.android.com/tools"
-                                            android:layout_width="match_parent"
-                                            android:layout_height="wrap_content"
-                                            android:clipToPadding="true"
-                                            app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:clipToPadding="true"
+    app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -27,9 +27,9 @@
                 android:contentDescription="@string/close"
                 android:focusable="true"
                 android:padding="16dp"
-                app:srcCompat="@drawable/ic_close_default"/>
+                app:srcCompat="@drawable/ic_close_default" />
 
-            <TextView
+            <com.tokopedia.unifyprinciples.Typography
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
@@ -39,18 +39,20 @@
                 android:textAlignment="center"
                 android:textColor="@color/Unify_N700_68"
                 android:textSize="16sp"/>
+
         </LinearLayout>
 
         <View
             android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="@color/Unify_N100"/>
+            android:layout_height="@dimen/dp_chatbot_1"
+            android:background="@color/Unify_N100" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/reason_rv"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            tools:listitem="@layout/item_reason"
-            />
+            tools:listitem="@layout/item_reason" />
+
     </LinearLayout>
+
 </androidx.core.widget.NestedScrollView>

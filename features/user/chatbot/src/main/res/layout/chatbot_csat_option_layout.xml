@@ -13,7 +13,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/chatbot_ticker"
         android:layout_marginTop="@dimen/spacing_lvl3"
-        app:cardCornerRadius="12dp"
+        app:cardCornerRadius="@dimen/unify_space_12"
         app:cardBackgroundColor="@color/chatbot_dms_date_indicator_bg"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
@@ -63,7 +63,7 @@
 
     <LinearLayout
         android:id="@+id/custom_chat_layout_container"
-        android:layout_width="0dp"
+        android:layout_width="@dimen/unify_space_0"
         android:layout_height="wrap_content"
         android:layout_gravity="right|center_vertical"
         android:layout_marginStart="@dimen/unify_space_12"
@@ -89,7 +89,7 @@
 
     <com.tokopedia.unifycomponents.CardUnify
         android:id="@+id/chat_csat_option_list_container"
-        android:layout_width="0dp"
+        android:layout_width="@dimen/unify_space_0"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_chatbot_3"
         app:layout_constraintLeft_toLeftOf="@id/custom_chat_layout_container"
