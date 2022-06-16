@@ -8,8 +8,4 @@ class UserConsentDebugActivity: BaseSimpleActivity() {
     override fun getNewFragment(): Fragment? {
         return null
     }
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-    }
 }
