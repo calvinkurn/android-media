@@ -12,7 +12,7 @@ import dagger.Component
     dependencies = [BaseAppComponent::class],
     modules = [PlayWidgetInternalModule::class],
 )
-interface PlayWidgetComponent {
+internal interface PlayWidgetComponent {
 
     fun getGlobalAnalyticFactory(): PlayWidgetGlobalAnalytic.Factory
 }
