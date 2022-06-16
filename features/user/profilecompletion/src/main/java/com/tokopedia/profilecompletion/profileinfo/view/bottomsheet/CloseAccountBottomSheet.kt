@@ -11,7 +11,7 @@ import com.tokopedia.profilecompletion.databinding.LayoutBottomsheetCloseAccount
 import com.tokopedia.profilecompletion.profileinfo.data.Detail
 import com.tokopedia.unifycomponents.BottomSheetUnify
 
-class CloseAccountBottomSheet(private val detail: Detail): BottomSheetUnify() {
+class CloseAccountBottomSheet(private val detail: Detail) : BottomSheetUnify() {
 
     private var _bindingChild: LayoutBottomsheetCloseAccountBinding? = null
     private val bindingChild get() = _bindingChild
@@ -39,7 +39,7 @@ class CloseAccountBottomSheet(private val detail: Detail): BottomSheetUnify() {
 
     private fun setViewRequireLabel1(isShow: Boolean) {
         bindingChild?.apply {
-            if (isShow){
+            if (isShow) {
                 tgRequirementDesc1.show()
                 tgRequirementDesc1Center.hide()
                 labelRequirementCheck1.show()
@@ -53,7 +53,7 @@ class CloseAccountBottomSheet(private val detail: Detail): BottomSheetUnify() {
 
     private fun setViewRequireLabel2(isShow: Boolean) {
         bindingChild?.apply {
-            if (isShow){
+            if (isShow) {
                 tgRequirementDesc2.show()
                 tgRequirementDesc2Center.hide()
                 labelRequirementCheck2.show()
@@ -67,7 +67,7 @@ class CloseAccountBottomSheet(private val detail: Detail): BottomSheetUnify() {
 
     private fun setViewRequireLabel3(isShow: Boolean) {
         bindingChild?.apply {
-            if (isShow){
+            if (isShow) {
                 tgRequirementDesc3.show()
                 tgRequirementDesc3Center.hide()
                 labelRequirementCheck3.show()

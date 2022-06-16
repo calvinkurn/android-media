@@ -17,6 +17,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.view.DateFormatUtils
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConsInternalHome
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.config.GlobalConfig
@@ -143,7 +144,7 @@ class ProfileInfoFragment : BaseDaggerFragment(),
         val isUsingRollenceCloseAccount = isUsingRollenceCloseAccount()
         binding?.dividerCloseAccount?.showWithCondition(isUsingRollenceCloseAccount)
         binding?.tgCloseAccount?.showWithCondition(isUsingRollenceCloseAccount)
-        if (isUsingRollenceCloseAccount){
+        if (isUsingRollenceCloseAccount) {
             binding?.tgCloseAccount?.setOnClickListener { checkFinancialAssets() }
         }
     }
@@ -723,8 +724,7 @@ class ProfileInfoFragment : BaseDaggerFragment(),
         RouteManager.route(
             context,
             "${ApplinkConst.WEBVIEW}?${WEBVIEW_PARAM_HIDE_TITLEBAR}&${WEBVIEW_PARAM_BACK_PRESSED_DISABLED}&url=" +
-                    if (GlobalConfig.DEBUG) WEBVIEW_URL_CLOSE_ACCOUNT_DEBUG
-                    else TokopediaUrl.getInstance().MOBILEWEB.plus("$TOKOPEDIA_CLOSE_ACCOUNT_PATH?ld=$PARAM_WEBVIEW_BACK")
+                    TokopediaUrl.getInstance().MOBILEWEB.plus("$TOKOPEDIA_CLOSE_ACCOUNT_PATH?ld=$PARAM_WEBVIEW_BACK&ld_success=$PARAM_WEBVIEW_HOME")
         )
     }
 
@@ -748,7 +748,7 @@ class ProfileInfoFragment : BaseDaggerFragment(),
         private const val WEBVIEW_PARAM_HIDE_TITLEBAR = "${com.tokopedia.webview.KEY_TITLEBAR}=false"
         private const val WEBVIEW_PARAM_BACK_PRESSED_DISABLED = "${com.tokopedia.webview.KEY_BACK_PRESSED_ENABLED}=false"
         private const val PARAM_WEBVIEW_BACK = "TOKOPEDIA://BACK"
-        private const val WEBVIEW_URL_CLOSE_ACCOUNT_DEBUG = "https://1364-staging-feature.tokopedia.com/user/close-account?ld=$PARAM_WEBVIEW_BACK"
+        private const val PARAM_WEBVIEW_HOME = ApplinkConsInternalHome.HOME_NAVIGATION
         private const val TOKOPEDIA_CLOSE_ACCOUNT_PATH = "user/close-account"
         private const val ROLLENCE_KEY_CLOSE_ACCOUNT = "close_account"
 
