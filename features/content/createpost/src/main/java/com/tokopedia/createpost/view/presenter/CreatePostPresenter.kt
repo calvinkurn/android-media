@@ -11,6 +11,7 @@ import com.tokopedia.createpost.view.subscriber.GetContentFormSubscriber
 import com.tokopedia.createpost.common.view.type.ShareType
 import com.tokopedia.createpost.common.view.viewmodel.ProductSuggestionItem
 import com.tokopedia.createpost.domain.entity.GetContentFormDomain
+import com.tokopedia.createpost.domain.usecase.GetFeedForEditUseCase
 import com.tokopedia.feedcomponent.data.pojo.profileheader.ProfileHeaderData
 import com.tokopedia.feedcomponent.domain.usecase.GetDynamicFeedUseCase
 import com.tokopedia.feedcomponent.domain.usecase.GetProfileHeaderUseCase
@@ -36,9 +37,9 @@ import kotlin.coroutines.CoroutineContext
  */
 class CreatePostPresenter @Inject constructor(
     private val userSession: UserSessionInterface,
-    private val getContentFormUseCase: UseCase<GetContentFormDomain>,
-    private val getFeedUseCase: UseCase<FeedDetail?>,
-    private val getProfileHeaderUseCase: GraphqlUseCase,
+    private val getContentFormUseCase: GetContentFormUseCase,
+    private val getFeedUseCase: GetFeedForEditUseCase,
+    private val getProfileHeaderUseCase: GetProfileHeaderUseCase,
     private val twitterManager: TwitterManager,
     private val getProductSuggestionUseCase: GetProductSuggestionUseCase,
     private val getShopFavoriteStatusUseCase: GQLGetShopFavoriteStatusUseCase

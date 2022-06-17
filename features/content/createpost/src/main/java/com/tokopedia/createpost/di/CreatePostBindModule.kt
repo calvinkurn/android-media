@@ -18,17 +18,17 @@ import dagger.Module
 @Module(includes = [CreatePostCommonModule::class])
 abstract class CreatePostBindModule {
 
-    @Binds
-    @CreatePostScope
-    abstract fun bindGetContentFormUseCase(usecase: GetContentFormUseCase): UseCase<GetContentFormDomain>
-
-    @Binds
-    @CreatePostScope
-    abstract fun bindGetFeedUseCase(usecase: GetFeedForEditUseCase): UseCase<FeedDetail?>
-
-    @Binds
-    @CreatePostScope
-    abstract fun bindGetProfileHeaderUserCase(usecase: GetProfileHeaderUseCase): GraphqlUseCase
+//    @Binds
+//    @CreatePostScope
+//    abstract fun bindGetContentFormUseCase(usecase: GetContentFormUseCase): UseCase<GetContentFormDomain>
+//
+//    @Binds
+//    @CreatePostScope
+//    abstract fun bindGetFeedUseCase(usecase: GetFeedForEditUseCase): UseCase<FeedDetail?>
+//
+//    @Binds
+//    @CreatePostScope
+//    abstract fun bindGetProfileHeaderUserCase(usecase: GetProfileHeaderUseCase): GraphqlUseCase
 
     /**
      * TODO: will uncomment this later when these 2 dependencies can be be mocked
