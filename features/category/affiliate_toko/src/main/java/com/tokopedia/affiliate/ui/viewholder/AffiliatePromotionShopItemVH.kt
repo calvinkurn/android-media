@@ -5,7 +5,12 @@ import android.view.View
 import android.widget.ImageView
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.affiliate.*
+import com.tokopedia.affiliate.ALMOST_OOS
+import com.tokopedia.affiliate.AVAILABLE
+import com.tokopedia.affiliate.AffiliateAnalytics
+import com.tokopedia.affiliate.EMPTY_STOCK
+import com.tokopedia.affiliate.PRODUCT_INACTIVE
+import com.tokopedia.affiliate.SHOP_INACTIVE
 import com.tokopedia.affiliate.interfaces.PromotionClickInterface
 import com.tokopedia.affiliate.model.response.AffiliateSearchData
 import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliatePromotionShopModel
@@ -17,32 +22,27 @@ import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSession
+import java.util.*
 
 class AffiliatePromotionShopItemVH(
     itemView: View,
     private val promotionClickInterface: PromotionClickInterface?
 ) : AbstractViewHolder<AffiliatePromotionShopModel>(itemView) {
-    private enum class AdditionalInfoType(val type: Int) {
-        COMMISSION_AMOUNT_TYPE(1),
-        DISCOUNT_PERCENTAGE_TYPE(2),
-        PER_GOOD_SOLD(6),
-    }
 
-    private enum class FooterType(val type: Int) {
-        RATING(2),
-        ITEM_SOLD(3),
-        LOCATION(4)
-    }
-
-    private enum class MessageType(val type: Int) {
-        OVERLAY_IMAGE_TYPE(1)
-    }
 
     companion object {
         @JvmField
         @LayoutRes
         var LAYOUT = R.layout.affiliate_promotion_shop_card_item_layout
 
+        const val COMMISSION_AMOUNT_TYPE = 1
+        const val DISCOUNT_PERCENTAGE_TYPE = 2
+        const val PER_GOOD_SOLD = 6
+
+        const val OVERLAY_IMAGE_TYPE = 1
+
+        const val ITEM_SOLD = 3
+        const val LOCATION = 4
     }
 
     override fun bind(element: AffiliatePromotionShopModel?) {
@@ -51,14 +51,14 @@ class AffiliatePromotionShopItemVH(
             itemView.findViewById<ImageView>(R.id.imageTitleEmblem).loadImage(it.titleEmblem)
             itemView.findViewById<Typography>(R.id.textViewTitle).text = it.title
             itemView.findViewById<Typography>(R.id.textViewRating).text = it.rating.toString()
-            getAdditionalDataFromType(it, AdditionalInfoType.COMMISSION_AMOUNT_TYPE)?.let { info ->
+            getAdditionalDataFromType(it, COMMISSION_AMOUNT_TYPE)?.let { info ->
                 itemView.findViewById<Typography>(R.id.textViewAdditionalInfo1).apply {
                     visible()
                     text = info.htmlText
                     if (info.color?.isNotEmpty() == true) setTextColor(Color.parseColor(info.color))
                 }
             }
-            getAdditionalDataFromType(it, AdditionalInfoType.PER_GOOD_SOLD)?.let { info ->
+            getAdditionalDataFromType(it, PER_GOOD_SOLD)?.let { info ->
                 itemView.findViewById<Typography>(R.id.textViewAdditionalInfo2).apply {
                     visible()
                     text = info.htmlText
@@ -67,31 +67,32 @@ class AffiliatePromotionShopItemVH(
             }
             getAdditionalDataFromType(
                 it,
-                AdditionalInfoType.DISCOUNT_PERCENTAGE_TYPE
+                DISCOUNT_PERCENTAGE_TYPE
             )?.let { info ->
                 itemView.findViewById<Typography>(R.id.textViewAdditionalInfo2).apply {
                     visible()
                     text = String.format(
+                        Locale.getDefault(),
                         "/%s",
                         info
                     )
                 }
             }
 
-            getFooterDataFromType(it, FooterType.LOCATION)?.let { footer ->
+            getFooterDataFromType(it, LOCATION)?.let { footer ->
                 itemView.findViewById<Typography>(R.id.textViewFooterLocation).apply {
                     visible()
                     text = footer.footerText
                 }
             }
-            getFooterDataFromType(it, FooterType.ITEM_SOLD)?.let { footer ->
+            getFooterDataFromType(it, ITEM_SOLD)?.let { footer ->
                 itemView.findViewById<Typography>(R.id.textViewItemSold).apply {
                     visible()
                     itemView.findViewById<Typography>(R.id.ratingDivider).visible()
                     text = footer.footerText
                 }
             }
-            getMessageDataFromType(it, MessageType.OVERLAY_IMAGE_TYPE)?.let { message ->
+            getMessageDataFromType(it, OVERLAY_IMAGE_TYPE)?.let { message ->
                 itemView.findViewById<Label>(R.id.labelProductStatus).apply {
                     if (message.isNotEmpty()) {
                         visible()
@@ -159,22 +160,22 @@ class AffiliatePromotionShopItemVH(
 
     private fun getAdditionalDataFromType(
         item: AffiliateSearchData.SearchAffiliate.Data.Card.Item,
-        type: AdditionalInfoType
+        type: Int
     ): AffiliateSearchData.SearchAffiliate.Data.Card.Item.AdditionalInformation? {
-        return (item.additionalInformation?.find { it?.type == type.type })
+        return (item.additionalInformation?.find { it?.type == type })
     }
 
     private fun getFooterDataFromType(
         item: AffiliateSearchData.SearchAffiliate.Data.Card.Item,
-        type: FooterType
+        type: Int
     ): AffiliateSearchData.SearchAffiliate.Data.Card.Item.Footer? {
-        return (item.footer?.find { it?.footerType == type.type })
+        return (item.footer?.find { it?.footerType == type })
     }
 
     private fun getMessageDataFromType(
         item: AffiliateSearchData.SearchAffiliate.Data.Card.Item,
-        type: MessageType
+        type: Int
     ): String? {
-        return (item.status?.messages?.find { it?.messageType == type.type })?.title
+        return (item.status?.messages?.find { it?.messageType == type })?.title
     }
 }

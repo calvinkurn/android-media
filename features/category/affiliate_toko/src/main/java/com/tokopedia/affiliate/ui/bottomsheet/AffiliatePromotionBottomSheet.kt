@@ -14,7 +14,17 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.affiliate.*
+import com.tokopedia.affiliate.AFFILIATE_INSTAGRAM_REGEX
+import com.tokopedia.affiliate.AFFILIATE_TIKTOK_REGEX
+import com.tokopedia.affiliate.AFFILIATE_TWITTER_REGEX
+import com.tokopedia.affiliate.AFFILIATE_YT_REGEX
+import com.tokopedia.affiliate.AffiliateAnalytics
+import com.tokopedia.affiliate.FACEBOOK_DEFAULT
+import com.tokopedia.affiliate.INSTAGRAM_DEFAULT
+import com.tokopedia.affiliate.TIKTOK_DEFAULT
+import com.tokopedia.affiliate.TWITTER_DEFAULT
+import com.tokopedia.affiliate.WWW
+import com.tokopedia.affiliate.YOUTUBE_DEFAULT
 import com.tokopedia.affiliate.adapter.AffiliateAdapter
 import com.tokopedia.affiliate.adapter.AffiliateAdapterFactory
 import com.tokopedia.affiliate.adapter.AffiliateAdapterTypeFactory
@@ -88,15 +98,23 @@ class AffiliatePromotionBottomSheet : BottomSheetUnify(), ShareButtonInterface, 
         private const val KEY_LINK_GEN_ENABLED = "KEY_LINK_GEN_ENABLED"
         private const val KEY_STATUS = "KEY_STATUS"
         private const val KEY_TYPE = "KEY_TYPE"
-        private const val PERNAH_DIBELI = "pernah dibeli"
-        private const val PERNAH_DILIHAT = "pernah dilihat"
 
         const val ORIGIN_PROMOSIKAN = 1
         const val ORIGIN_HOME = 2
-        const val ORIGIN_PORTFOLIO = 3
         const val ORIGIN_PERNAH_DIBELI_PROMOSIKA = 4
         const val ORIGIN_TERAKHIR_DILIHAT = 5
         const val ORIGIN_HOME_GENERATED = 6
+
+        const val OTHERS_ID = 0
+        const val FACEBOOK_ID = 1
+        const val INSTAGRAM_ID = 3
+        const val LINE_ID = 4
+        const val TIKTOK_ID = 9
+        const val TWITTER_ID = 10
+        const val WEBSITE_BLOG_ID = 11
+        const val WHATSAPP_ID = 12
+        const val YOUTUBE_ID = 13
+
 
         fun newInstance(
             bottomSheetType: SheetType,
@@ -208,7 +226,7 @@ class AffiliatePromotionBottomSheet : BottomSheetUnify(), ShareButtonInterface, 
                 "Instagram",
                 IconUnify.INSTAGRAM,
                 "instagram",
-                3,
+                INSTAGRAM_ID,
                 sheetType,
                 "Contoh: instagram.com/tokopedia",
                 false,
@@ -218,12 +236,12 @@ class AffiliatePromotionBottomSheet : BottomSheetUnify(), ShareButtonInterface, 
                 INSTAGRAM_DEFAULT
             ),
             AffiliateShareModel(
-                "Tiktok", IconUnify.TIKTOK, "tiktok", 9, sheetType,
+                "Tiktok", IconUnify.TIKTOK, "tiktok", TIKTOK_ID, sheetType,
                 "Contoh: tiktok.com/tokopedia", false, isChecked = false, isLinkGenerationEnabled,
                 AFFILIATE_TIKTOK_REGEX, TIKTOK_DEFAULT
             ),
             AffiliateShareModel(
-                "YouTube", IconUnify.YOUTUBE, "youtube", 13, sheetType,
+                "YouTube", IconUnify.YOUTUBE, "youtube", YOUTUBE_ID, sheetType,
                 "Contoh: youtube.com/tokopedia", false, isChecked = false, isLinkGenerationEnabled,
                 AFFILIATE_YT_REGEX, YOUTUBE_DEFAULT
             ),
@@ -231,7 +249,7 @@ class AffiliatePromotionBottomSheet : BottomSheetUnify(), ShareButtonInterface, 
                 "Facebook",
                 IconUnify.FACEBOOK,
                 "facebook",
-                1,
+                FACEBOOK_ID,
                 sheetType,
                 "Contoh: facebook.com/tokopedia",
                 false,
@@ -240,7 +258,7 @@ class AffiliatePromotionBottomSheet : BottomSheetUnify(), ShareButtonInterface, 
                 defaultText = FACEBOOK_DEFAULT
             ),
             AffiliateShareModel(
-                "Twitter", IconUnify.TWITTER, "twitter", 10, sheetType,
+                "Twitter", IconUnify.TWITTER, "twitter", TWITTER_ID, sheetType,
                 "Contoh: twitter.com/tokopedia", false, isChecked = false, isLinkGenerationEnabled,
                 AFFILIATE_TWITTER_REGEX, TWITTER_DEFAULT
             ),
@@ -248,7 +266,7 @@ class AffiliatePromotionBottomSheet : BottomSheetUnify(), ShareButtonInterface, 
                 "Website/Blog",
                 IconUnify.GLOBE,
                 "website",
-                11,
+                WEBSITE_BLOG_ID,
                 sheetType,
                 "Contoh: tokopedia.com/tokopedia",
                 false,
@@ -268,13 +286,13 @@ class AffiliatePromotionBottomSheet : BottomSheetUnify(), ShareButtonInterface, 
         } else {
             (listVisitable as ArrayList<Visitable<AffiliateAdapterTypeFactory>>).add(
                 AffiliateShareModel(
-                    "WhatsApp", IconUnify.WHATSAPP, "whatsapp", 12, sheetType,
+                    "WhatsApp", IconUnify.WHATSAPP, "whatsapp", WHATSAPP_ID, sheetType,
                     "", false, isChecked = false, isLinkGenerationEnabled
                 )
             )
             (listVisitable as ArrayList<Visitable<AffiliateAdapterTypeFactory>>).add(
                 AffiliateShareModel(
-                    "Line", IconUnify.LINE, "line", 4, sheetType,
+                    "Line", IconUnify.LINE, "line", LINE_ID, sheetType,
                     "", false, isChecked = false, isLinkGenerationEnabled
                 )
             )
@@ -282,7 +300,7 @@ class AffiliatePromotionBottomSheet : BottomSheetUnify(), ShareButtonInterface, 
 
         (listVisitable as ArrayList<Visitable<AffiliateAdapterTypeFactory>>).add(
             AffiliateShareModel(
-                "Lainnya", null, "others", 0, sheetType,
+                "Lainnya", null, "others", OTHERS_ID, sheetType,
                 "Contoh: yourwebsite.com", false, isChecked = false, isLinkGenerationEnabled
             )
         )
@@ -444,9 +462,9 @@ class AffiliatePromotionBottomSheet : BottomSheetUnify(), ShareButtonInterface, 
 
     private fun onSaveSocialButtonClicked() {
         val checkedSocialList = arrayListOf<AffiliateShareModel>()
-        for (vistitable in listVisitable) {
-            if (vistitable is AffiliateShareModel && vistitable.isChecked) {
-                checkedSocialList.add(vistitable)
+        for (visitable in listVisitable) {
+            if (visitable is AffiliateShareModel && visitable.isChecked) {
+                checkedSocialList.add(visitable)
             }
         }
         affiliatePromotionBottomSheetInterface?.onButtonClick(checkedSocialList)
@@ -461,8 +479,8 @@ class AffiliatePromotionBottomSheet : BottomSheetUnify(), ShareButtonInterface, 
 
     private fun checkForAtLeastOneSelected() {
         var count = 0
-        for (vistitable in listVisitable) {
-            if ((vistitable is AffiliateShareModel) && vistitable.isChecked) {
+        for (visitable in listVisitable) {
+            if ((visitable is AffiliateShareModel) && visitable.isChecked) {
                 count += 1
             }
         }
