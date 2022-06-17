@@ -54,7 +54,6 @@ import com.tokopedia.tokofood.feature.home.presentation.adapter.CustomLinearLayo
 import com.tokopedia.tokofood.feature.home.presentation.adapter.TokoFoodCategoryAdapter
 import com.tokopedia.tokofood.feature.home.presentation.adapter.TokoFoodCategoryAdapterTypeFactory
 import com.tokopedia.tokofood.feature.home.presentation.adapter.TokoFoodListDiffer
-import com.tokopedia.tokofood.feature.home.presentation.adapter.viewholder.TokoFoodCategoryEmptyStateViewHolder
 import com.tokopedia.tokofood.feature.home.presentation.adapter.viewholder.TokoFoodErrorStateViewHolder
 import com.tokopedia.tokofood.feature.home.presentation.adapter.viewholder.TokoFoodMerchantListViewHolder
 import com.tokopedia.tokofood.feature.home.presentation.uimodel.TokoFoodListUiModel
@@ -71,9 +70,7 @@ import javax.inject.Inject
 class TokoFoodCategoryFragment: BaseDaggerFragment(),
     IBaseMultiFragment,
     TokoFoodMerchantListViewHolder.TokoFoodMerchantListListener,
-    TokoFoodErrorStateViewHolder.TokoFoodErrorStateListener,
-    TokoFoodCategoryEmptyStateViewHolder.TokoFoodCategoryEmptyStateListener
-{
+    TokoFoodErrorStateViewHolder.TokoFoodErrorStateListener {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -228,10 +225,6 @@ class TokoFoodCategoryFragment: BaseDaggerFragment(),
         trackingQueue.putEETracking(
             TokoFoodHomeCategoryCommonAnalytics.impressMerchant(userSession.userId,
             localCacheModel?.district_id, merchant, horizontalPosition, isHome = false) as HashMap<String, Any>)
-    }
-
-    override fun onCategoryEmptyStateClickedAgain() {
-
     }
 
     private fun onRefreshLayout() {

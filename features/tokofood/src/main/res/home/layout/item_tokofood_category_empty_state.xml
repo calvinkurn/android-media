@@ -5,7 +5,6 @@
     android:layout_gravity="center"
     app:unifyEmptyStateCTAFullWidth="false"
     app:unifyEmptyStateOrientation="vertical"
-    app:unifyEmptyStatePrimaryCTAText="@string/home_category_empty_state_try_again"
     app:unifyEmptyStateTitle="@string/home_category_empty_state_title"
     app:unifyEmptyStateDescription="@string/home_category_empty_state_desc"
     app:unifyEmptyStateType="page"
