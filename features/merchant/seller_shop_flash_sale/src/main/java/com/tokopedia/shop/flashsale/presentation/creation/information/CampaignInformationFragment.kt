@@ -39,6 +39,7 @@ import com.tokopedia.shop.flashsale.presentation.creation.information.bottomshee
 import com.tokopedia.shop.flashsale.presentation.creation.information.bottomsheet.ForbiddenWordsInformationBottomSheet
 import com.tokopedia.shop.flashsale.presentation.creation.information.dialog.BackConfirmationDialog
 import com.tokopedia.shop.flashsale.presentation.creation.manage.ChooseProductActivity
+import com.tokopedia.shop.flashsale.presentation.creation.manage.ManageProductActivity
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.lifecycle.autoClearedNullable
@@ -650,7 +651,7 @@ class CampaignInformationFragment : BaseDaggerFragment() {
 
     private fun handleFirstStepOfCampaignCreationSuccess(result: CampaignCreationResult) {
         if (result.isSuccess) {
-            ChooseProductActivity.start(requireActivity(), result.campaignId.toString())
+            ManageProductActivity.start(requireActivity(), result.campaignId)
         } else {
             showErrorTicker(result.errorTitle, result.errorDescription)
         }
