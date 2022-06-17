@@ -2,12 +2,13 @@ package com.tokopedia.homenav.component
 
 import android.app.Activity
 import android.app.Instrumentation
+import android.util.Log
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.espresso.IdlingRegistry
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.matcher.IntentMatchers
 import androidx.test.espresso.intent.rule.IntentsTestRule
-import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.cassavatest.CassavaTestRule
 import com.tokopedia.homenav.mock.MainNavMockResponseConfig
 import com.tokopedia.homenav.util.MainNavRecyclerViewIdlingResource
@@ -15,12 +16,18 @@ import com.tokopedia.homenav.view.activity.HomeNavActivity
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.remoteconfig.RollenceKey
 import com.tokopedia.test.application.annotations.CassavaTest
+import com.tokopedia.test.application.espresso_component.CommonActions
 import com.tokopedia.test.application.util.InstrumentationAuthHelper
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
+import com.tokopedia.homenav.R
+import com.tokopedia.homenav.mainnav.view.adapter.viewholder.MainNavListAdapter
+import com.tokopedia.homenav.mainnav.view.datamodel.favoriteshop.FavoriteShopListDataModel
+import com.tokopedia.test.application.assertion.topads.TopAdsVerificationTestReportUtil
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
+import kotlin.reflect.KClass
 
 /**
  * Created by dhaba
@@ -66,18 +73,70 @@ class HomeNavAnalyticTest {
 
     private fun initTest() {
         InstrumentationAuthHelper.clearUserSession()
+        waitForData()
         login()
         waitForData()
     }
 
     @Test
     fun testComponentFavoriteShop() {
-        initTest()
+        login()
+        waitForData()
+        doActivityTestByModelClass(
+            delayBeforeRender = 2000,
+            dataModelClass = FavoriteShopListDataModel::class
+        ) { viewHolder: RecyclerView.ViewHolder, i: Int ->
+            clickOnEachShop(viewHolder)
+        }
+        addDebugEnd()
+        hasPassedAnalytics(cassavaTestRule, ANALYTIC_VALIDATOR_QUERY_FILE_NAME_FAVORITE_SHOP)
+    }
+
+    fun clickOnEachShop(viewHolder: RecyclerView.ViewHolder) {
+        CommonActions.clickOnEachItemRecyclerView(viewHolder.itemView, R.id.favorite_shop_rv, 0)
+
     }
 
     private fun login() {
         InstrumentationAuthHelper.loginInstrumentationTestTopAdsUser()
         InstrumentationAuthHelper.loginToAnUser(activityRule.activity.application)
+    }
+
+    private fun scrollHomeRecyclerViewToPosition(homeRecyclerView: RecyclerView, position: Int) {
+        val layoutManager = homeRecyclerView.layoutManager as LinearLayoutManager
+        activityRule.runOnUiThread { layoutManager.scrollToPositionWithOffset   (position, 400) }
+    }
+
+    private fun logTestMessage(message: String) {
+        TopAdsVerificationTestReportUtil.writeTopAdsVerificatorLog(activityRule.activity, message)
+        Log.d(TAG, message)
+    }
+
+    private fun endActivityTest() {
+        activityRule.activity.moveTaskToBack(true)
+        logTestMessage("Done UI Test")
+        waitForLoadCassavaAssert()
+    }
+
+    private fun <T: Any> doActivityTestByModelClass(
+        delayBeforeRender: Long = 2000L,
+        dataModelClass : KClass<T>,
+        predicate: (T?) -> Boolean = {true},
+        isTypeClass: (viewHolder: RecyclerView.ViewHolder, itemClickLimit: Int)-> Unit) {
+        val homeRecyclerView = activityRule.activity.findViewById<RecyclerView>(R.id.recycler_view)
+        val homeRecycleAdapter = homeRecyclerView.adapter as? MainNavListAdapter
+
+        val visitableList = homeRecycleAdapter?.currentList?: listOf()
+        val targetModel = visitableList.find { it.javaClass.simpleName == dataModelClass.simpleName && predicate.invoke(it as? T) }
+        val targetModelIndex = visitableList.indexOf(targetModel)
+
+        targetModelIndex.let { targetModelIndex->
+            scrollHomeRecyclerViewToPosition(homeRecyclerView, targetModelIndex)
+            if (delayBeforeRender > 0) Thread.sleep(delayBeforeRender)
+            val targetModelViewHolder = homeRecyclerView.findViewHolderForAdapterPosition(targetModelIndex)
+            targetModelViewHolder?.let { targetModelViewHolder-> isTypeClass.invoke(targetModelViewHolder, targetModelIndex) }
+        }
+        endActivityTest()
     }
 
     private fun setupAbTestRemoteConfig() {
