@@ -9,6 +9,7 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.localizationchooseaddress.ui.bottomsheet.ChooseAddressBottomSheet
 import com.tokopedia.play.R
 import com.tokopedia.unifyprinciples.R as unifyR
+import com.tokopedia.unifycomponents.R as unifyCompR
 import com.tokopedia.play_common.viewcomponent.ViewComponent
 import com.tokopedia.unifycomponents.UnifyButton
 
@@ -76,8 +77,8 @@ class ChooseAddressViewComponent(
 
     private fun setupButtonView() {
         val bg = GradientDrawable().apply {
-            cornerRadius = ctx.resources.getDimension(unifyR.dimen.layout_lvl1)
-            setStroke(1, MethodChecker.getColor(ctx, unifyR.color.Unify_G500))
+            cornerRadius = ctx.resources.getDimensionPixelSize(unifyR.dimen.layout_lvl1).toFloat()
+            setStroke(ctx.resources.getDimensionPixelSize(unifyCompR.dimen.button_stroke_width), MethodChecker.getColor(ctx, unifyR.color.Unify_G500))
         }
         btnChoose.background = bg
     }
