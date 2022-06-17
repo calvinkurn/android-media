@@ -93,7 +93,7 @@
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@id/header_layout">
 
-        <TextView
+        <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_empty_state_hint"
             style="@style/TextView.Title"
             app:layout_constraintLeft_toLeftOf="parent"
@@ -104,7 +104,8 @@
             app:layout_constraintHorizontal_bias="0"
             android:layout_width="wrap_content"
             android:ellipsize="end"
-            android:lineSpacingExtra="@dimen/sp_6"
+            android:lineSpacingExtra="6sp"
+            app:typographyType="body_1"
             android:singleLine="true"
             android:textColor="@color/Unify_N700_96"
             tools:text="@string/empty_state_hint_text" />
@@ -158,7 +159,7 @@
             android:layout_height="@dimen/dp_210"
             android:layout_gravity="center" />
 
-        <TextView
+        <com.tokopedia.unifyprinciples.Typography
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
@@ -166,19 +167,19 @@
             android:gravity="center"
             android:text="@string/title_empty_state"
             android:textColor="@color/Unify_N700_96"
-            android:textSize="@dimen/sp_20"
-            android:textStyle="bold" />
+            app:typographyType="heading_2" />
 
-        <TextView
+        <com.tokopedia.unifyprinciples.Typography
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_marginTop="16dp"
             android:gravity="center"
-            android:lineSpacingExtra="@dimen/sp_6"
+            android:lineSpacingExtra="6sp"
             android:text="@string/subtitle_empty_state"
             android:textColor="@color/Unify_N700_68"
-            android:textSize="@dimen/sp_12" />
+            app:typographyType="body_2" />
+
     </LinearLayout>
 
     <com.tokopedia.empty_state.EmptyStateUnify
