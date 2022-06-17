@@ -3,13 +3,31 @@ package com.tokopedia.shop.flashsale.data.mapper
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.shop.flashsale.common.constant.DateConstant
-import com.tokopedia.shop.flashsale.common.extension.formatTo
 import com.tokopedia.shop.flashsale.common.extension.epochToDate
+import com.tokopedia.shop.flashsale.common.extension.formatTo
 import com.tokopedia.shop.flashsale.data.response.GetSellerCampaignListResponse
+import com.tokopedia.shop.flashsale.data.response.GetSellerCampaignListResponse.GetSellerCampaignList.Campaign.CampaignRelationData
 import com.tokopedia.shop.flashsale.domain.entity.CampaignMeta
 import com.tokopedia.shop.flashsale.domain.entity.CampaignUiModel
 import com.tokopedia.shop.flashsale.domain.entity.Gradient
-import com.tokopedia.shop.flashsale.domain.entity.enums.*
+import com.tokopedia.shop.flashsale.domain.entity.RelatedCampaign
+import com.tokopedia.shop.flashsale.domain.entity.enums.CAMPAIGN_STATUS_ID_CANCELLED
+import com.tokopedia.shop.flashsale.domain.entity.enums.CAMPAIGN_STATUS_ID_DRAFT
+import com.tokopedia.shop.flashsale.domain.entity.enums.CAMPAIGN_STATUS_ID_FINISHED
+import com.tokopedia.shop.flashsale.domain.entity.enums.CAMPAIGN_STATUS_ID_IN_REVIEW
+import com.tokopedia.shop.flashsale.domain.entity.enums.CAMPAIGN_STATUS_ID_IN_SUBMISSION
+import com.tokopedia.shop.flashsale.domain.entity.enums.CAMPAIGN_STATUS_ID_ONGOING
+import com.tokopedia.shop.flashsale.domain.entity.enums.CAMPAIGN_STATUS_ID_ONGOING_CANCELLATION
+import com.tokopedia.shop.flashsale.domain.entity.enums.CAMPAIGN_STATUS_ID_READY
+import com.tokopedia.shop.flashsale.domain.entity.enums.CAMPAIGN_STATUS_ID_READY_LOCKED
+import com.tokopedia.shop.flashsale.domain.entity.enums.CAMPAIGN_STATUS_PUBLISH_CANCELLED
+import com.tokopedia.shop.flashsale.domain.entity.enums.CAMPAIGN_STATUS_READY_CANCELLED
+import com.tokopedia.shop.flashsale.domain.entity.enums.CAMPAIGN_STATUS_REVIEW_CANCELLED
+import com.tokopedia.shop.flashsale.domain.entity.enums.CAMPAIGN_STATUS_SUBMISSION_CANCELLED
+import com.tokopedia.shop.flashsale.domain.entity.enums.CampaignStatus
+import com.tokopedia.shop.flashsale.domain.entity.enums.PAYMENT_TYPE_INSTANT
+import com.tokopedia.shop.flashsale.domain.entity.enums.PAYMENT_TYPE_REGULAR
+import com.tokopedia.shop.flashsale.domain.entity.enums.PaymentType
 import javax.inject.Inject
 
 class SellerCampaignListMapper @Inject constructor() {
@@ -40,7 +58,12 @@ class SellerCampaignListMapper @Inject constructor() {
                 it.endDate.epochToDate(),
                 Gradient(it.gradientColor.firstColor, it.gradientColor.secondColor, true),
                 it.useUpcomingWidget,
-                it.paymentType.toPaymentType()
+                it.reviewEndDate.epochToDate(),
+                it.paymentType.toPaymentType(),
+                it.isUniqueBuyer,
+                it.isCampaignRelation,
+                it.campaignRelationData.toRelatedCampaign(),
+                it.isCampaignRuleSubmit,
             )
         }
         return CampaignMeta(
@@ -49,6 +72,10 @@ class SellerCampaignListMapper @Inject constructor() {
             data.getSellerCampaignList.totalCampaignFinished,
             campaigns
         )
+    }
+
+    private fun List<CampaignRelationData>?.toRelatedCampaign(): List<RelatedCampaign> {
+        return this?.map { RelatedCampaign(it.id, it.name) } ?: emptyList()
     }
 
     private fun Int.convert(): CampaignStatus {
@@ -74,11 +101,11 @@ class SellerCampaignListMapper @Inject constructor() {
         }
     }
 
-    private fun Int.toPaymentType() : PaymentType {
-        return when(this) {
+    private fun Int.toPaymentType(): PaymentType {
+        return when (this) {
             PAYMENT_TYPE_INSTANT -> PaymentType.INSTANT
             PAYMENT_TYPE_REGULAR -> PaymentType.REGULAR
-            else ->  PaymentType.INSTANT
+            else -> PaymentType.INSTANT
         }
     }
 

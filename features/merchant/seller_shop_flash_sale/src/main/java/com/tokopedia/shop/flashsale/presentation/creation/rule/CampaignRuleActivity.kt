@@ -5,18 +5,18 @@ import android.content.Intent
 import android.os.Bundle
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.seller_shop_flash_sale.R
-import com.tokopedia.shop.flashsale.domain.entity.enums.PageMode
 
 class CampaignRuleActivity : BaseSimpleActivity() {
 
     companion object {
-        private const val BUNDLE_KEY_PAGE_MODE = "page_mode"
+        private const val BUNDLE_KEY_CAMPAIGN_ID = "campaign_id"
+        private const val INVALID_CAMPAIGN_ID = -1L
 
         @JvmStatic
-        fun start(context: Context, mode: PageMode) {
+        fun start(context: Context, campaignId: Long) {
             val starter = Intent(context, CampaignRuleActivity::class.java).apply {
                 val extras = Bundle().apply {
-                    putParcelable(BUNDLE_KEY_PAGE_MODE, mode)
+                    putLong(BUNDLE_KEY_CAMPAIGN_ID, campaignId)
                 }
                 putExtras(extras)
             }
@@ -24,16 +24,17 @@ class CampaignRuleActivity : BaseSimpleActivity() {
         }
     }
 
-    private val pageMode by lazy {
-        intent?.extras?.getParcelable(BUNDLE_KEY_PAGE_MODE) as? PageMode ?: PageMode.CREATE
+    private val campaignId by lazy {
+        intent?.extras?.getLong(BUNDLE_KEY_CAMPAIGN_ID) ?: INVALID_CAMPAIGN_ID
     }
 
     override fun getLayoutRes() = R.layout.ssfs_activity_campaign_rule
-    override fun getNewFragment() = CampaignRuleFragment.newInstance()
+    override fun getNewFragment() = CampaignRuleFragment.newInstance(campaignId)
     override fun getParentViewResourceID() = R.id.container
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        if (INVALID_CAMPAIGN_ID == campaignId) finish()
         setContentView(R.layout.ssfs_activity_campaign_rule)
     }
 }
