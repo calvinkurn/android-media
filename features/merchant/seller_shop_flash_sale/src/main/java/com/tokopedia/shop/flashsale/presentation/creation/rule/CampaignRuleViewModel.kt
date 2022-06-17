@@ -286,7 +286,10 @@ class CampaignRuleViewModel @Inject constructor(
         launchCatchError(
             dispatchers.io,
             block = {
-                val param = getCampaignCreationParam(campaignData)
+                val param = getCampaignCreationParam(
+                    campaignData,
+                    CampaignAction.Update(campaignId)
+                )
                 val result = doSellerCampaignCreationUseCase.execute(param)
                 if (result.isSuccess) {
                     _saveDraftState.postValue(Success(Unit))
@@ -300,12 +303,15 @@ class CampaignRuleViewModel @Inject constructor(
         )
     }
 
-    private fun getCampaignCreationParam(campaignData: CampaignUiModel): DoSellerCampaignCreationUseCase.Param {
+    private fun getCampaignCreationParam(
+        campaignData: CampaignUiModel,
+        action: CampaignAction
+    ): DoSellerCampaignCreationUseCase.Param {
         val campaignRelations = getCampaignRelationIds(campaignId)
         val selectedPaymentType = selectedPaymentType.value ?: campaignData.paymentType
         val isCampaignRuleSubmit = isTNCConfirmed.value == true
         return DoSellerCampaignCreationUseCase.Param(
-            action = CampaignAction.Update(campaignId),
+            action = action,
             campaignName = campaignData.campaignName,
             scheduledStart = campaignData.startDate,
             scheduledEnd = campaignData.endDate,
