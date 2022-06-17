@@ -1,4 +1,4 @@
-package com.tokopedia.logisticseller.reschedulepickup.data.model
+package com.tokopedia.logisticseller.reschedulepickup.data.param
 
 import com.google.gson.annotations.SerializedName
 

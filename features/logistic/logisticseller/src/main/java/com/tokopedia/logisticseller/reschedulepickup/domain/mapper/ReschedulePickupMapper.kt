@@ -1,15 +1,15 @@
-package com.tokopedia.logisticseller.reschedulepickup.data.mapper
+package com.tokopedia.logisticseller.reschedulepickup.domain.mapper
 
-import com.tokopedia.logisticseller.reschedulepickup.data.model.GetReschedulePickupParam
-import com.tokopedia.logisticseller.reschedulepickup.data.model.GetReschedulePickupResponse
-import com.tokopedia.logisticseller.reschedulepickup.data.model.RescheduleDayOptionModel
-import com.tokopedia.logisticseller.reschedulepickup.data.model.RescheduleDetailModel
-import com.tokopedia.logisticseller.reschedulepickup.data.model.RescheduleOptionsModel
-import com.tokopedia.logisticseller.reschedulepickup.data.model.RescheduleReasonOptionModel
-import com.tokopedia.logisticseller.reschedulepickup.data.model.RescheduleTimeOptionModel
-import com.tokopedia.logisticseller.reschedulepickup.data.model.SaveRescheduleModel
-import com.tokopedia.logisticseller.reschedulepickup.data.model.SaveReschedulePickupParam
-import com.tokopedia.logisticseller.reschedulepickup.data.model.SaveReschedulePickupResponse
+import com.tokopedia.logisticseller.reschedulepickup.data.param.GetReschedulePickupParam
+import com.tokopedia.logisticseller.reschedulepickup.data.response.GetReschedulePickupResponse
+import com.tokopedia.logisticseller.reschedulepickup.ui.model.RescheduleDayOptionModel
+import com.tokopedia.logisticseller.reschedulepickup.ui.model.RescheduleDetailModel
+import com.tokopedia.logisticseller.reschedulepickup.ui.model.RescheduleOptionsModel
+import com.tokopedia.logisticseller.reschedulepickup.ui.model.RescheduleReasonOptionModel
+import com.tokopedia.logisticseller.reschedulepickup.ui.model.RescheduleTimeOptionModel
+import com.tokopedia.logisticseller.reschedulepickup.ui.model.SaveRescheduleModel
+import com.tokopedia.logisticseller.reschedulepickup.data.param.SaveReschedulePickupParam
+import com.tokopedia.logisticseller.reschedulepickup.data.response.SaveReschedulePickupResponse
 
 object ReschedulePickupMapper {
     fun mapToGetReschedulePickupParam(orderIds: List<String>): GetReschedulePickupParam {

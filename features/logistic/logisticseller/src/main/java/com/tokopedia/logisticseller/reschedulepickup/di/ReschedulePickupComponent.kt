@@ -2,7 +2,7 @@ package com.tokopedia.logisticseller.reschedulepickup.di
 
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.abstraction.common.di.scope.ActivityScope
-import com.tokopedia.logisticseller.reschedulepickup.presentation.fragment.ReschedulePickupFragment
+import com.tokopedia.logisticseller.reschedulepickup.ui.ReschedulePickupFragment
 import dagger.Component
 
 @ActivityScope

@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/Unify_Background"
-    tools:context="com.tokopedia.logisticseller.reschedulepickup.presentation.fragment.ReschedulePickupFragment">
+    tools:context="com.tokopedia.logisticseller.reschedulepickup.ui.ReschedulePickupFragment">
 
     <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/loader_reschedule_pickup"

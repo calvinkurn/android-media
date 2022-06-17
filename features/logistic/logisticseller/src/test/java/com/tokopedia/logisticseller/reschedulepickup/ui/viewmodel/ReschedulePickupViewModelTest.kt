@@ -1,11 +1,12 @@
-package com.tokopedia.logisticseller.reschedulepickup.presentation.viewmodel
+package com.tokopedia.logisticseller.reschedulepickup.ui.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.tokopedia.logisticseller.reschedulepickup.data.model.GetReschedulePickupResponse
-import com.tokopedia.logisticseller.reschedulepickup.data.model.RescheduleTimeOptionModel
-import com.tokopedia.logisticseller.reschedulepickup.data.model.SaveReschedulePickupResponse
-import com.tokopedia.logisticseller.reschedulepickup.domain.GetReschedulePickupUseCase
-import com.tokopedia.logisticseller.reschedulepickup.domain.SaveReschedulePickupUseCase
+import com.tokopedia.logisticseller.reschedulepickup.data.response.GetReschedulePickupResponse
+import com.tokopedia.logisticseller.reschedulepickup.ui.model.RescheduleTimeOptionModel
+import com.tokopedia.logisticseller.reschedulepickup.data.response.SaveReschedulePickupResponse
+import com.tokopedia.logisticseller.reschedulepickup.domain.usecase.GetReschedulePickupUseCase
+import com.tokopedia.logisticseller.reschedulepickup.domain.usecase.SaveReschedulePickupUseCase
+import com.tokopedia.logisticseller.reschedulepickup.ui.ReschedulePickupViewModel
 import com.tokopedia.unit.test.rule.CoroutineTestRule
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success

@@ -1,4 +1,4 @@
-package com.tokopedia.logisticseller.reschedulepickup.presentation.dialog
+package com.tokopedia.logisticseller.reschedulepickup.ui.dialog
 
 import android.content.Context
 import android.view.LayoutInflater

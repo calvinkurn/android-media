@@ -1,4 +1,4 @@
-package com.tokopedia.logisticseller.reschedulepickup.presentation.fragment
+package com.tokopedia.logisticseller.reschedulepickup.ui
 
 import android.app.Activity
 import android.content.Context
@@ -31,18 +31,17 @@ import com.tokopedia.logisticseller.R
 import com.tokopedia.logisticseller.common.LogisticSellerConst
 import com.tokopedia.logisticseller.databinding.FragmentReschedulePickupBinding
 import com.tokopedia.network.utils.ErrorHandler
-import com.tokopedia.logisticseller.reschedulepickup.data.model.RescheduleDayOptionModel
-import com.tokopedia.logisticseller.reschedulepickup.data.model.RescheduleDetailModel
-import com.tokopedia.logisticseller.reschedulepickup.data.model.RescheduleReasonOptionModel
-import com.tokopedia.logisticseller.reschedulepickup.data.model.RescheduleTimeOptionModel
+import com.tokopedia.logisticseller.reschedulepickup.ui.model.RescheduleDayOptionModel
+import com.tokopedia.logisticseller.reschedulepickup.ui.model.RescheduleDetailModel
+import com.tokopedia.logisticseller.reschedulepickup.ui.model.RescheduleReasonOptionModel
+import com.tokopedia.logisticseller.reschedulepickup.ui.model.RescheduleTimeOptionModel
 import com.tokopedia.logisticseller.reschedulepickup.di.DaggerReschedulePickupComponent
 import com.tokopedia.logisticseller.reschedulepickup.di.ReschedulePickupComponent
-import com.tokopedia.logisticseller.reschedulepickup.presentation.bottomsheet.RescheduleDayBottomSheet
-import com.tokopedia.logisticseller.reschedulepickup.presentation.bottomsheet.RescheduleReasonBottomSheet
-import com.tokopedia.logisticseller.reschedulepickup.presentation.bottomsheet.RescheduleTimeBottomSheet
-import com.tokopedia.logisticseller.reschedulepickup.presentation.dialog.ReschedulePickupResultDialog
-import com.tokopedia.logisticseller.reschedulepickup.presentation.dialog.ReschedulePickupLoadingDialog
-import com.tokopedia.logisticseller.reschedulepickup.presentation.viewmodel.ReschedulePickupViewModel
+import com.tokopedia.logisticseller.reschedulepickup.ui.bottomsheet.RescheduleDayBottomSheet
+import com.tokopedia.logisticseller.reschedulepickup.ui.bottomsheet.RescheduleReasonBottomSheet
+import com.tokopedia.logisticseller.reschedulepickup.ui.bottomsheet.RescheduleTimeBottomSheet
+import com.tokopedia.logisticseller.reschedulepickup.ui.dialog.ReschedulePickupResultDialog
+import com.tokopedia.logisticseller.reschedulepickup.ui.dialog.ReschedulePickupLoadingDialog
 import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail

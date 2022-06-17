@@ -1,4 +1,4 @@
-package com.tokopedia.logisticseller.reschedulepickup.data.model
+package com.tokopedia.logisticseller.reschedulepickup.data.response
 
 import android.annotation.SuppressLint
 import com.google.gson.annotations.SerializedName

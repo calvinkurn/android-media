@@ -1,16 +1,16 @@
-package com.tokopedia.logisticseller.reschedulepickup.presentation.viewmodel
+package com.tokopedia.logisticseller.reschedulepickup.ui
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.logisticseller.reschedulepickup.data.mapper.ReschedulePickupMapper
-import com.tokopedia.logisticseller.reschedulepickup.data.model.RescheduleDetailModel
-import com.tokopedia.logisticseller.reschedulepickup.data.model.RescheduleTimeOptionModel
-import com.tokopedia.logisticseller.reschedulepickup.data.model.SaveRescheduleModel
-import com.tokopedia.logisticseller.reschedulepickup.domain.GetReschedulePickupUseCase
-import com.tokopedia.logisticseller.reschedulepickup.domain.SaveReschedulePickupUseCase
+import com.tokopedia.logisticseller.reschedulepickup.domain.mapper.ReschedulePickupMapper
+import com.tokopedia.logisticseller.reschedulepickup.ui.model.RescheduleDetailModel
+import com.tokopedia.logisticseller.reschedulepickup.ui.model.RescheduleTimeOptionModel
+import com.tokopedia.logisticseller.reschedulepickup.ui.model.SaveRescheduleModel
+import com.tokopedia.logisticseller.reschedulepickup.domain.usecase.GetReschedulePickupUseCase
+import com.tokopedia.logisticseller.reschedulepickup.domain.usecase.SaveReschedulePickupUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success

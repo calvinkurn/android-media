@@ -1,4 +1,4 @@
-package com.tokopedia.logisticseller.reschedulepickup.data.model
+package com.tokopedia.logisticseller.reschedulepickup.ui.model
 
 data class SaveRescheduleModel(
     val success: Boolean = false,

@@ -1,4 +1,4 @@
-package com.tokopedia.logisticseller.reschedulepickup.domain
+package com.tokopedia.logisticseller.reschedulepickup.domain.usecase
 
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
@@ -7,8 +7,8 @@ import com.tokopedia.graphql.coroutines.data.extensions.request
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.domain.coroutine.CoroutineUseCase
 import com.tokopedia.logisticseller.common.LogisticSellerConst
-import com.tokopedia.logisticseller.reschedulepickup.data.model.GetReschedulePickupParam
-import com.tokopedia.logisticseller.reschedulepickup.data.model.GetReschedulePickupResponse
+import com.tokopedia.logisticseller.reschedulepickup.data.param.GetReschedulePickupParam
+import com.tokopedia.logisticseller.reschedulepickup.data.response.GetReschedulePickupResponse
 import javax.inject.Inject
 
 @GqlQuery(

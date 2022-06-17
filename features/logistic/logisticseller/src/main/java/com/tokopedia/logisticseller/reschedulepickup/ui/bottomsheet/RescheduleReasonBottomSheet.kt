@@ -1,4 +1,4 @@
-package com.tokopedia.logisticseller.reschedulepickup.presentation.bottomsheet
+package com.tokopedia.logisticseller.reschedulepickup.ui.bottomsheet
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -7,7 +7,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
 import com.tokopedia.logisticseller.R
 import com.tokopedia.logisticseller.databinding.BottomsheetRescheduleReasonBinding
-import com.tokopedia.logisticseller.reschedulepickup.data.model.RescheduleReasonOptionModel
+import com.tokopedia.logisticseller.reschedulepickup.ui.model.RescheduleReasonOptionModel
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.list.ListItemUnify
 import com.tokopedia.utils.lifecycle.autoCleared

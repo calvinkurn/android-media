@@ -1,4 +1,4 @@
-package com.tokopedia.logisticseller.reschedulepickup.presentation.bottomsheet
+package com.tokopedia.logisticseller.reschedulepickup.ui.bottomsheet
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -6,18 +6,18 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
 import com.tokopedia.logisticseller.R
-import com.tokopedia.logisticseller.databinding.BottomsheetRescheduleDayBinding
-import com.tokopedia.logisticseller.reschedulepickup.data.model.RescheduleDayOptionModel
+import com.tokopedia.logisticseller.databinding.BottomsheetRescheduleTimeBinding
+import com.tokopedia.logisticseller.reschedulepickup.ui.model.RescheduleTimeOptionModel
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.list.ListItemUnify
 import com.tokopedia.utils.lifecycle.autoCleared
 
-class RescheduleDayBottomSheet(
-    private val dayOptions: List<RescheduleDayOptionModel>,
-    private val listener: ChooseDayListener
+class RescheduleTimeBottomSheet(
+    private val timeOption: List<RescheduleTimeOptionModel>,
+    private val listener: ChooseTimeListener
 ) : BottomSheetUnify() {
 
-    private var binding by autoCleared<BottomsheetRescheduleDayBinding>()
+    private var binding by autoCleared<BottomsheetRescheduleTimeBinding>()
 
     init {
         setCloseClickListener {
@@ -29,8 +29,8 @@ class RescheduleDayBottomSheet(
         }
     }
 
-    interface ChooseDayListener {
-        fun onDayChosen(dayChosen: RescheduleDayOptionModel)
+    interface ChooseTimeListener {
+        fun onTimeChosen(timeChosen: RescheduleTimeOptionModel)
     }
 
     override fun onCreateView(
@@ -43,7 +43,7 @@ class RescheduleDayBottomSheet(
     }
 
     private fun initChildLayout() {
-        binding = BottomsheetRescheduleDayBinding.inflate(LayoutInflater.from(context))
+        binding = BottomsheetRescheduleTimeBinding.inflate(LayoutInflater.from(context))
         setChild(binding.root)
     }
 
@@ -53,16 +53,16 @@ class RescheduleDayBottomSheet(
     }
 
     private fun setupView() {
-        setTitle(getString(R.string.title_reschedule_day_bottomsheet))
+        setTitle(getString(R.string.title_reschedule_time_bottomsheet))
         val listWidgetData = ArrayList<ListItemUnify>().apply {
-            addAll(dayOptions.map { day -> ListItemUnify(title = day.day, description = "") })
+            addAll(timeOption.map { time -> ListItemUnify(title = time.formattedTime, description = "") })
         }
 
-        binding.rvDay.run {
+        binding.rvTime.run {
             setData(listWidgetData)
             onLoadFinish {
                 setOnItemClickListener { adapterView, view, index, l ->
-                    listener.onDayChosen(dayOptions[index])
+                    listener.onTimeChosen(timeOption[index])
                     dismiss()
                 }
             }
