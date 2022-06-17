@@ -325,6 +325,7 @@ class PlayBroadcastSummaryViewModel @AssistedInject constructor(
     private fun convertDate(raw: String): String =
         PlayDateTimeFormatter.formatDate(raw, outputPattern = PlayDateTimeFormatter.dMMMMyyyy)
 
+    @Suppress("MagicNumber")
     private fun isEligiblePostVideo(duration: String): Boolean {
         return try {
             val split = duration.split(":")

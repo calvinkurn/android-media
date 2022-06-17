@@ -92,7 +92,7 @@ class PlayBottomSheetFragment @Inject constructor(
     private val leaderboardSheetView by viewComponent { PlayInteractiveLeaderboardViewComponent(it, this) }
     private val couponSheetView by viewComponent { ShopCouponSheetViewComponent(it, this) }
 
-    private val offset16 by lazy { resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl4) }
+    private val offset16 by lazy { context?.resources?.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl4) ?: 0 }
 
     private lateinit var playViewModel: PlayViewModel
     private lateinit var viewModel: PlayBottomSheetViewModel

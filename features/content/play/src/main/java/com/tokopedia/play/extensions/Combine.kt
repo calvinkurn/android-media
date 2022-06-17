@@ -6,6 +6,7 @@ import kotlinx.coroutines.flow.combine
 /**
  * Created by jegul on 22/07/21
  */
+@Suppress("MagicNumber")
 fun <T1, T2, T3, T4, T5, T6, R> combine(
         flow: Flow<T1>,
         flow2: Flow<T2>,
@@ -24,7 +25,7 @@ fun <T1, T2, T3, T4, T5, T6, R> combine(
             args[5] as T6,
     )
 }
-
+@Suppress("MagicNumber")
 fun <T1, T2, T3, T4, T5, T6, T7, R> combine(
         flow: Flow<T1>,
         flow2: Flow<T2>,
@@ -45,7 +46,7 @@ fun <T1, T2, T3, T4, T5, T6, T7, R> combine(
             args[6] as T7,
     )
 }
-
+@Suppress("MagicNumber")
 fun <T1, T2, T3, T4, T5, T6, T7, T8, R> combine(
         flow: Flow<T1>,
         flow2: Flow<T2>,
@@ -68,7 +69,7 @@ fun <T1, T2, T3, T4, T5, T6, T7, T8, R> combine(
             args[7] as T8,
     )
 }
-
+@Suppress("MagicNumber")
 fun <T1, T2, T3, T4, T5, T6, T7, T8, T9, R> combine(
         flow: Flow<T1>,
         flow2: Flow<T2>,
@@ -93,7 +94,7 @@ fun <T1, T2, T3, T4, T5, T6, T7, T8, T9, R> combine(
             args[8] as T9,
     )
 }
-
+@Suppress("MagicNumber")
 fun <T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, R> combine(
         flow: Flow<T1>,
         flow2: Flow<T2>,
@@ -126,7 +127,7 @@ fun <T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, R> combine(
                 args[10] as T11,
         )
 }
-
+@Suppress("MagicNumber")
 fun <T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, R> combine(
         flow: Flow<T1>,
         flow2: Flow<T2>,
@@ -161,7 +162,7 @@ fun <T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, R> combine(
                 args[11] as T12,
         )
 }
-
+@Suppress("MagicNumber")
 fun <T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, R> combine(
         flow: Flow<T1>,
         flow2: Flow<T2>,
@@ -198,7 +199,7 @@ fun <T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, R> combine(
                 args[12] as T13,
         )
 }
-
+@Suppress("MagicNumber")
 fun <T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, R> combine(
         flow: Flow<T1>,
         flow2: Flow<T2>,
@@ -237,7 +238,7 @@ fun <T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, R> combine(
                 args[13] as T14,
         )
 }
-
+@Suppress("MagicNumber")
 fun <T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, R> combine(
         flow: Flow<T1>,
         flow2: Flow<T2>,
@@ -278,7 +279,7 @@ fun <T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, R> combin
                 args[14] as T15,
         )
 }
-
+@Suppress("MagicNumber")
 fun <T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, R> combine(
         flow: Flow<T1>,
         flow2: Flow<T2>,

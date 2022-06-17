@@ -59,6 +59,7 @@
             android:visibility="gone"
             android:background="@drawable/bg_play_circle_winner"
             app:layout_constraintStart_toStartOf="@id/img_winner"
+            android:background="@drawable/bg_play_circle_winner"
             app:layout_constraintTop_toTopOf="@id/img_winner"
             tools:visibility="visible"
             />

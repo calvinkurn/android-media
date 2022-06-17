@@ -212,6 +212,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         )
     }
 
+    @Suppress("MagicNumber")
     private val _quizFormUiState = combine(
         _quizFormData, _quizFormState, _quizIsNeedToUpdateUI,
     ) { quizFormData, quizFormState, quizIsNeedToUpdateUI ->

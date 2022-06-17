@@ -14,6 +14,7 @@ data class ProductCardOptionsModel(
         var productId: String = "",
         var isTopAds: Boolean = false,
         var topAdsWishlistUrl: String = "",
+        var topAdsClickUrl: String = "",
         var isRecommendation: Boolean = false,
         var productPosition: Int = 0,
         var screenName: String = "",
@@ -76,6 +77,7 @@ data class ProductCardOptionsModel(
             parcel.readString() ?: "",
             parcel.readByte() != 0.toByte(),
             parcel.readString() ?: "",
+            parcel.readString() ?: "",
             parcel.readByte() != 0.toByte(),
             parcel.readInt(),
             parcel.readString() ?: "",
@@ -100,6 +102,7 @@ data class ProductCardOptionsModel(
         parcel.writeString(productId)
         parcel.writeByte(if (isTopAds) 1 else 0)
         parcel.writeString(topAdsWishlistUrl)
+        parcel.writeString(topAdsClickUrl)
         parcel.writeByte(if (isRecommendation) 1 else 0)
         parcel.writeInt(productPosition)
         parcel.writeString(screenName)
@@ -135,17 +138,32 @@ data class ProductCardOptionsModel(
     data class WishlistResult(
             var isUserLoggedIn: Boolean = false,
             var isSuccess: Boolean = false,
-            var isAddWishlist: Boolean = false
+            var isAddWishlist: Boolean = false,
+            var isUsingWishlistV2: Boolean = false,
+            var messageV2: String = "",
+            var toasterColorV2: String = "",
+            var ctaTextV2: String = "",
+            var ctaActionV2: String = ""
     ): Parcelable {
         constructor(parcel: Parcel) : this(
                 parcel.readByte() != 0.toByte(),
                 parcel.readByte() != 0.toByte(),
-                parcel.readByte() != 0.toByte())
+                parcel.readByte() != 0.toByte(),
+            parcel.readByte() != 0.toByte(),
+                parcel.readString() ?: "",
+            parcel.readString() ?: "",
+            parcel.readString() ?: "",
+                      parcel.readString() ?: "")
 
         override fun writeToParcel(parcel: Parcel, flags: Int) {
             parcel.writeByte(if (isUserLoggedIn) 1 else 0)
             parcel.writeByte(if (isSuccess) 1 else 0)
             parcel.writeByte(if (isAddWishlist) 1 else 0)
+            parcel.writeByte(if (isUsingWishlistV2) 1 else 0)
+            parcel.writeString(messageV2)
+            parcel.writeString(toasterColorV2)
+            parcel.writeString(ctaTextV2)
+            parcel.writeString(ctaActionV2)
         }
 
         override fun describeContents(): Int {

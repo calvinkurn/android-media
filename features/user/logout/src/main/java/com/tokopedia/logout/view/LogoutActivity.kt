@@ -43,6 +43,7 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.user.session.util.EncoderDecoder
 import kotlinx.android.synthetic.main.activity_logout.*
 import javax.inject.Inject
 
@@ -243,9 +244,16 @@ class LogoutActivity : BaseSimpleActivity(), HasComponent<LogoutComponent> {
     }
 
     private fun saveLoginReminderData() {
-        getSharedPreferences(STICKY_LOGIN_REMINDER_PREF, Context.MODE_PRIVATE)?.edit()?.apply {
-            putString(KEY_USER_NAME, userSession.name).apply()
-            putString(KEY_PROFILE_PICTURE, userSession.profilePicture).apply()
+        try {
+            val encryptedUsername = EncoderDecoder.Encrypt(userSession.name, UserSession.KEY_IV)
+            val encryptedProfilePicture = EncoderDecoder.Encrypt(userSession.profilePicture, UserSession.KEY_IV)
+
+            getSharedPreferences(STICKY_LOGIN_REMINDER_PREF, Context.MODE_PRIVATE)?.edit()?.apply {
+                putString(KEY_USER_NAME, encryptedUsername).apply()
+                putString(KEY_PROFILE_PICTURE, encryptedProfilePicture).apply()
+            }
+        } catch (e: Exception) {
+            //skip save login reminder data
         }
     }
 

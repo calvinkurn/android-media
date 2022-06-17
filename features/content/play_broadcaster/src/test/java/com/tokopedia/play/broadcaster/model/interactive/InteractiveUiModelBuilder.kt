@@ -152,4 +152,18 @@ class InteractiveUiModelBuilder {
         listOfChoices = listOfChoices,
         reward = reward,
     )
+
+    fun buildCurrentInteractiveModel(
+        id: String = "",
+        type: InteractiveType = InteractiveType.Unknown,
+        title: String = "",
+        timeStatus: PlayInteractiveTimeStatus = PlayInteractiveTimeStatus.Unknown,
+        endGameDelayInMs: Long = 0L
+    ) = PlayCurrentInteractiveModel(
+        id = id,
+        type = type,
+        title = title,
+        timeStatus = timeStatus,
+        endGameDelayInMs = endGameDelayInMs,
+    )
 }

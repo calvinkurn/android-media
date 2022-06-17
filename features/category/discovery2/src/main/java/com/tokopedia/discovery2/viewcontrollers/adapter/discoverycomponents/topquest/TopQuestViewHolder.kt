@@ -6,17 +6,22 @@ import androidx.lifecycle.LifecycleOwner
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.discovery2.R
 import com.tokopedia.discovery2.analytics.TopQuestWidgetAnalytics
+import com.tokopedia.discovery2.di.getSubComponent
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
 import com.tokopedia.discovery2.viewcontrollers.fragment.DiscoveryFragment
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.quest_widget.constants.QuestWidgetLocations
 import com.tokopedia.quest_widget.listeners.QuestWidgetCallbacks
+import com.tokopedia.quest_widget.listeners.QuestWidgetStatusCallback
 import com.tokopedia.quest_widget.tracker.QuestSource
 import com.tokopedia.quest_widget.tracker.QuestTrackerImpl
+import com.tokopedia.quest_widget.util.LiveDataResult
 import com.tokopedia.quest_widget.view.QuestWidgetView
 
 class TopQuestViewHolder(itemView: View, val fragment: Fragment) :
-    AbstractViewHolder(itemView, fragment.viewLifecycleOwner), QuestWidgetCallbacks {
+    AbstractViewHolder(itemView, fragment.viewLifecycleOwner), QuestWidgetCallbacks, QuestWidgetStatusCallback {
 
     private lateinit var viewModel: TopQuestViewModel
     private val questWidget: QuestWidgetView = itemView.findViewById(R.id.questWidget)
@@ -24,10 +29,12 @@ class TopQuestViewHolder(itemView: View, val fragment: Fragment) :
     init {
         questWidget.setupListeners(this)
         questWidget.setTrackerImpl(getAnalytics())
+        questWidget.setQuestWidgetStatusCallback(this)
     }
 
     override fun bindView(discoveryBaseViewModel: DiscoveryBaseViewModel) {
         viewModel = discoveryBaseViewModel as TopQuestViewModel
+        getSubComponent().inject(viewModel)
         questWidget.getQuestList(
             page = "${QuestWidgetLocations.DISCO}-${viewModel.components.pageEndPoint}",
             source = QuestSource.DISCO,
@@ -66,6 +73,21 @@ class TopQuestViewHolder(itemView: View, val fragment: Fragment) :
                     )
                 }
             })
+            viewModel.hideSectionLD.observe(it, { sectionId ->
+                (fragment as DiscoveryFragment).handleHideSection(sectionId)
+            })
+            viewModel.shouldHideWidget.observe(it, { shouldHideWidget ->
+                if (shouldHideWidget) {
+                    questWidget.hide()
+                } else {
+                    questWidget.show()
+                }
+            })
+            viewModel.getSyncPageLiveData().observe(it, { shouldSync->
+                if(shouldSync){
+                    (fragment as DiscoveryFragment).reSync()
+                }
+            })
         }
     }
 
@@ -74,10 +96,17 @@ class TopQuestViewHolder(itemView: View, val fragment: Fragment) :
         lifecycleOwner?.let {
             viewModel.navigateData.removeObservers(it)
             viewModel.updateQuestData.removeObservers(it)
+            viewModel.hideSectionLD.removeObservers(it)
+            viewModel.shouldHideWidget.removeObservers(it)
+            viewModel.getSyncPageLiveData().removeObservers(it)
         }
     }
 
     private fun getAnalytics(): QuestTrackerImpl {
         return TopQuestWidgetAnalytics((fragment as DiscoveryFragment).getDiscoveryAnalytics())
+    }
+
+    override fun getQuestWidgetStatus(status: LiveDataResult.STATUS) {
+            viewModel.handleWidgetStatus(status)
     }
 }

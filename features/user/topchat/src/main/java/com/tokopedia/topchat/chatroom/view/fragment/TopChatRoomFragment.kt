@@ -131,7 +131,6 @@ import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
-import com.tokopedia.wishlist.common.listener.WishListActionListener
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.util.*
@@ -148,6 +147,16 @@ import com.tokopedia.remoteconfig.abtest.AbTestPlatform
 import com.tokopedia.topchat.chatroom.view.bottomsheet.TopchatBottomSheetBuilder.MENU_ID_DELETE_BUBBLE
 import com.tokopedia.topchat.chatroom.view.uimodel.product_bundling.ProductBundlingUiModel
 import com.tokopedia.topchat.common.analytics.TopChatAnalyticsKt
+import com.tokopedia.unifycomponents.Toaster.TYPE_ERROR
+import com.tokopedia.unifycomponents.Toaster.TYPE_NORMAL
+import com.tokopedia.wishlist.common.listener.WishListActionListener
+import com.tokopedia.wishlistcommon.data.response.AddToWishlistV2Response
+import com.tokopedia.wishlistcommon.data.response.DeleteWishlistV2Response
+import com.tokopedia.wishlistcommon.listener.WishlistV2ActionListener
+import com.tokopedia.wishlistcommon.util.AddRemoveWishlistV2Handler
+import com.tokopedia.wishlistcommon.util.WishlistV2CommonConsts.OPEN_WISHLIST
+import com.tokopedia.wishlistcommon.util.WishlistV2CommonConsts.TOASTER_RED
+import com.tokopedia.wishlistcommon.util.WishlistV2RemoteConfigRollenceUtil
 
 /**
  * @author : Steven 29/11/18
@@ -1913,6 +1922,13 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     }
 
     private fun requestNetworkAddToWishList(productId: String, success: () -> Unit) {
+        context?.let {
+            if (WishlistV2RemoteConfigRollenceUtil.isUsingAddRemoveWishlistV2(it)) addToWishlistV2(productId, success)
+            else addToWishlist(productId, success)
+        }
+    }
+
+    private fun addToWishlist(productId: String, success: () -> Unit) {
         viewModel.addToWishList(productId, session.userId, object : WishListActionListener {
             override fun onErrorRemoveWishlist(errorMessage: String?, productId: String?) {}
             override fun onSuccessRemoveWishlist(productId: String?) {}
@@ -1942,6 +1958,30 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         }
     }
 
+    private fun addToWishlistV2(productId: String, success: () -> Unit) {
+        viewModel.addToWishListV2(productId, session.userId, object : WishlistV2ActionListener {
+            override fun onErrorAddWishList(throwable: Throwable, productId: String) {
+                view?.let { v ->
+                    Toaster.build(v, ErrorHandler.getErrorMessage(context, throwable), Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR).show()
+                }
+            }
+
+            override fun onSuccessAddWishlist(
+                result: AddToWishlistV2Response.Data.WishlistAddV2,
+                productId: String
+            ) {
+                context?.let { context ->
+                    view?.let { v ->
+                        AddRemoveWishlistV2Handler.showAddToWishlistV2SuccessToaster(result, context, v)
+                    }
+                }
+            }
+
+            override fun onErrorRemoveWishlist(throwable: Throwable, productId: String) {}
+            override fun onSuccessRemoveWishlist(result: DeleteWishlistV2Response.Data.WishlistRemoveV2, productId: String) { }
+        })
+    }
+
     private fun goToWishList() {
         val intent = RouteManager.getIntent(context, ApplinkConst.NEW_WISHLIST)
         startActivity(intent)
@@ -1949,6 +1989,13 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
 
     override fun onClickRemoveFromWishList(productId: String, success: () -> Unit) {
         analytics.eventClickRemoveFromWishList(productId)
+        context?.let {
+            if (WishlistV2RemoteConfigRollenceUtil.isUsingAddRemoveWishlistV2(it)) removeFromWishlistV2(productId)
+            else removeFromWishlist(productId, success)
+        }
+    }
+
+    private fun removeFromWishlist(productId: String, success: () -> Unit) {
         viewModel.removeFromWishList(productId, session.userId, object : WishListActionListener {
             override fun onSuccessAddWishlist(productId: String?) {}
             override fun onErrorAddWishList(errorMessage: String?, productId: String?) {}
@@ -1974,6 +2021,31 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
                         Toaster.LENGTH_SHORT,
                         Toaster.TYPE_ERROR
                     )
+                }
+            }
+        })
+    }
+
+    private fun removeFromWishlistV2(productId: String) {
+        viewModel.removeFromWishListV2(productId, session.userId, object : WishlistV2ActionListener {
+            override fun onErrorAddWishList(throwable: Throwable, productId: String) {}
+            override fun onSuccessAddWishlist(result: AddToWishlistV2Response.Data.WishlistAddV2, productId: String) {}
+
+            override fun onErrorRemoveWishlist(throwable: Throwable, productId: String) {
+                view?.let {
+                    val errorMsg = ErrorHandler.getErrorMessage(context, throwable)
+                    AddRemoveWishlistV2Handler.showWishlistV2ErrorToaster(errorMsg, it)
+                }
+            }
+
+            override fun onSuccessRemoveWishlist(
+                result: DeleteWishlistV2Response.Data.WishlistRemoveV2,
+                productId: String
+            ) {
+                context?.let { context ->
+                    view?.let { v ->
+                        AddRemoveWishlistV2Handler.showRemoveWishlistV2SuccessToaster(result, context, v)
+                    }
                 }
             }
         })
@@ -2715,6 +2787,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         lifecycleScope.launch(Dispatchers.IO) {
             sellerReviewHelper.saveMessageId(messageId)
         }
+        Toaster.onCTAClick = View.OnClickListener { }
     }
 
     protected open fun uploadImage(image: ImageUploadServiceModel) {
