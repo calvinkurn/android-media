@@ -11,14 +11,17 @@ class GetSellerCampaignDetailUseCase @Inject constructor(
     repository: GraphqlRepository,
     private val getSellerCampaignListUseCase: GetSellerCampaignListUseCase,
 ) : GraphqlUseCase<CampaignUiModel>(repository) {
+    companion object {
+        const val ONE = 1
+    }
 
     suspend fun execute(
-        campaignId: Int,
+        campaignId: Long,
     ): CampaignUiModel {
         return coroutineScope {
             val campaignList = getSellerCampaignListUseCase.execute(
-                    rows = Constant.ZERO,
-                    offset = Constant.ZERO,
+                    rows = ONE,
+                    offset = Constant.FIRST_PAGE,
                     campaignId = campaignId,
                 )
             campaignList.campaigns.first()

@@ -9,6 +9,7 @@ import com.tokopedia.shop.flashsale.common.extension.dateOnly
 import com.tokopedia.shop.flashsale.domain.entity.CampaignUiModel
 import com.tokopedia.shop.flashsale.domain.entity.GroupedCampaign
 import com.tokopedia.shop.flashsale.domain.entity.enums.CampaignStatus
+import com.tokopedia.shop.flashsale.domain.usecase.GetSellerCampaignAttributeUseCase
 import com.tokopedia.shop.flashsale.domain.usecase.GetSellerCampaignListUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -18,21 +19,30 @@ import javax.inject.Inject
 
 class CampaignDataPickerViewModel @Inject constructor(
     private val dispatchers: CoroutineDispatchers,
-    private val getSellerCampaignListUseCase: GetSellerCampaignListUseCase
+    private val getSellerCampaignListUseCase: GetSellerCampaignListUseCase,
+    private val getSellerCampaignAttributeUseCase: GetSellerCampaignAttributeUseCase
 ) : BaseViewModel(dispatchers.main) {
+
+    companion object {
+        private const val CAMPAIGN_TO_FETCH = 100
+    }
 
     private val _campaigns = MutableLiveData<Result<List<GroupedCampaign>>>()
     val campaigns: LiveData<Result<List<GroupedCampaign>>>
         get() = _campaigns
+
+    private val _campaignQuota = MutableLiveData<Result<Int>>()
+    val campaignQuota: LiveData<Result<Int>>
+        get() = _campaignQuota
 
     fun getUpcomingCampaigns() {
         launchCatchError(
             dispatchers.io,
             block = {
                 val campaigns = getSellerCampaignListUseCase.execute(
-                    rows = 100,
+                    rows = CAMPAIGN_TO_FETCH,
                     offset = Constant.FIRST_PAGE,
-                    statusId = listOf(CampaignStatus.UPCOMING.id, CampaignStatus.IN_SUBMISSION.id)
+                    statusId = listOf(CampaignStatus.READY_LOCKED.id, CampaignStatus.IN_SUBMISSION.id)
                 )
                 val groupedCampaign = groupByDate(campaigns.campaigns)
                 _campaigns.postValue(Success(groupedCampaign))
@@ -43,6 +53,25 @@ class CampaignDataPickerViewModel @Inject constructor(
         )
 
     }
+
+    fun getCampaignQuota(month : Int, year: Int) {
+        launchCatchError(
+            dispatchers.io,
+            block = {
+                val campaignAttribute = getSellerCampaignAttributeUseCase.execute(
+                    month = month,
+                    year = year
+                )
+
+                _campaignQuota.postValue(Success(campaignAttribute.remainingCampaignQuota))
+            },
+            onError = { error ->
+                _campaignQuota.postValue(Fail(error))
+            }
+        )
+
+    }
+
 
 
     private fun groupByDate(campaigns: List<CampaignUiModel>): List<GroupedCampaign> {

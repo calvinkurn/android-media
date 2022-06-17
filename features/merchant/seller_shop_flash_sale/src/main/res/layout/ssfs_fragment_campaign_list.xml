@@ -12,6 +12,8 @@
         android:layout_marginStart="@dimen/unify_space_16"
         android:layout_marginTop="@dimen/unify_space_8"
         android:layout_marginEnd="@dimen/unify_space_16"
+        android:visibility="gone"
+        tools:visibility="visible"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -52,9 +54,21 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/unify_space_8"
-        android:layout_marginTop="@dimen/unify_space_16"
         android:layout_marginEnd="@dimen/unify_space_16"
         android:text="@string/sfs_create_campaign"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="@id/emptyState"
+        app:layout_constraintStart_toStartOf="@+id/emptyState"
+        app:layout_constraintTop_toBottomOf="@id/emptyState"
+        app:unifyButtonSize="medium" />
+
+    <com.tokopedia.unifycomponents.UnifyButton
+        android:id="@+id/btnNavigateToFirstActiveCampaign"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/unify_space_8"
+        android:layout_marginEnd="@dimen/unify_space_16"
+        android:text="@string/sfs_monitor_campaign"
         android:visibility="gone"
         app:layout_constraintEnd_toEndOf="@id/emptyState"
         app:layout_constraintStart_toStartOf="@+id/emptyState"
@@ -80,7 +94,6 @@
         android:id="@+id/loader"
         android:layout_width="@dimen/unify_space_48"
         android:layout_height="@dimen/unify_space_48"
-        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -91,6 +104,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         app:cardElevation="@dimen/unify_space_8"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -155,6 +169,7 @@
         android:text="@string/sfs_search_result_not_found_title"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
+        tools:visibility="gone"
         app:layout_constraintTop_toBottomOf="@id/searchBar"
         app:typographyType="heading_4" />
 
@@ -164,6 +179,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/unify_space_4"
+        tools:visibility="gone"
         android:text="@string/sfs_search_result_not_found_description"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -175,6 +191,7 @@
         android:layout_width="wrap_content"
         android:visibility="gone"
         android:layout_height="wrap_content"
+        tools:visibility="gone"
         app:constraint_referenced_ids="tpgNoSearchResultTitle,tpgNoSearchResultDescription" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

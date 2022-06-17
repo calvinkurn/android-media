@@ -1,0 +1,41 @@
+package com.tokopedia.shop.flashsale.presentation.creation.manage.mapper
+
+import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.shop.flashsale.data.request.DoSellerCampaignProductSubmissionRequest
+import com.tokopedia.shop.flashsale.data.response.GetSellerCampaignValidatedProductListResponse
+import com.tokopedia.shop.flashsale.presentation.creation.manage.model.ReserveProductModel
+import com.tokopedia.shop.flashsale.presentation.creation.manage.model.SelectedProductModel
+
+object ReserveProductMapper {
+
+    private const val ADD_PRODUCT_DEFAULT_VALUE = 0L
+
+    fun mapFromProduct(product: GetSellerCampaignValidatedProductListResponse.Product) =
+        ReserveProductModel (
+            productId = product.productId,
+            productName = product.productName,
+            imageUrl = product.pictures.firstOrNull {
+                it.urlThumbnail.isNotBlank()
+            }?.urlThumbnail.orEmpty(),
+            sku = product.sku,
+            price = product.price,
+            variant = product.variantChildsIds,
+            stock = product.stock
+        )
+
+    fun mapToProductData(product: SelectedProductModel) = DoSellerCampaignProductSubmissionRequest.ProductData(
+        productId = product.productId.toLongOrNull().orZero(),
+        customStock = ADD_PRODUCT_DEFAULT_VALUE,
+        finalPrice = ADD_PRODUCT_DEFAULT_VALUE
+    )
+
+
+    fun mapFromProductList(
+        productList: List<GetSellerCampaignValidatedProductListResponse.Product>
+    ) = productList.map { mapFromProduct(it) }
+
+    fun mapToProductDataList(reserveProductList: List<SelectedProductModel>?) = reserveProductList
+        ?.filter { it.parentProductId == null } // filter only parent product
+        ?.map { mapToProductData(it) }
+        .orEmpty()
+}

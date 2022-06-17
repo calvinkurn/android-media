@@ -2,6 +2,7 @@ package com.tokopedia.shop.flashsale.presentation.creation.information.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.isVisible
@@ -11,8 +12,19 @@ import com.tokopedia.shop.flashsale.domain.entity.Gradient
 
 class GradientColorAdapter : RecyclerView.Adapter<GradientColorAdapter.GradientViewHolder>() {
 
-    private var gradients: MutableList<Gradient> = mutableListOf()
     private var onGradientClicked: (Gradient) -> Unit = {}
+
+    private val differCallback = object : DiffUtil.ItemCallback<Gradient>() {
+        override fun areItemsTheSame(oldItem: Gradient, newItem: Gradient): Boolean {
+            return oldItem.isSelected == newItem.isSelected
+        }
+
+        override fun areContentsTheSame(oldItem: Gradient, newItem: Gradient): Boolean {
+            return oldItem == newItem
+        }
+    }
+
+    private val differ = AsyncListDiffer(this, differCallback)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): GradientViewHolder {
         val binding =
@@ -21,24 +33,11 @@ class GradientColorAdapter : RecyclerView.Adapter<GradientColorAdapter.GradientV
     }
 
     override fun getItemCount(): Int {
-        return gradients.size
+        return differ.currentList.size
     }
 
     override fun onBindViewHolder(holder: GradientViewHolder, position: Int) {
-        holder.bind(gradients[position])
-    }
-
-    fun submit(newGradients: List<Gradient>) {
-        val callback = DiffUtilCallback(gradients, newGradients)
-        val diffResult = DiffUtil.calculateDiff(callback)
-
-        diffResult.dispatchUpdatesTo(this)
-        gradients.clear()
-        gradients.addAll(newGradients)
-    }
-
-    fun getItems(): List<Gradient> {
-        return gradients
+        holder.bind(differ.currentList[position])
     }
 
     fun setOnGradientClicked(onGradientClicked: (Gradient) -> Unit) {
@@ -56,24 +55,11 @@ class GradientColorAdapter : RecyclerView.Adapter<GradientColorAdapter.GradientV
         }
     }
 
-    inner class DiffUtilCallback(
-        private val oldList: List<Gradient>,
-        private val newList: List<Gradient>
-    ) : DiffUtil.Callback() {
-        override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
-            val oldItem = oldList[oldItemPosition]
-            val newItem = newList[newItemPosition]
-            return oldItem.isSelected == newItem.isSelected
-        }
-
-        override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
-            return oldList[oldItemPosition] == newList[newItemPosition]
-        }
-
-        override fun getOldListSize() = oldList.size
-
-        override fun getNewListSize() = newList.size
-
+    fun submit(newGradients: List<Gradient>) {
+        differ.submitList(newGradients)
     }
 
+    fun snapshot(): List<Gradient> {
+        return differ.currentList
+    }
 }

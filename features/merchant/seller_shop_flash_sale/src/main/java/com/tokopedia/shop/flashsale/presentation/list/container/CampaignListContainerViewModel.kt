@@ -17,12 +17,12 @@ class CampaignListContainerViewModel @Inject constructor(
     private val getSellerCampaignListMetaUseCase: GetSellerCampaignListMetaUseCase
 ) : BaseViewModel(dispatchers.main) {
 
-    private var selectedTabPosition = 0
+    private var autoFocusTabPosition = 0
+    private var storedTabsMetadata : List<TabMeta> = emptyList()
 
     private val _tabsMeta = MutableLiveData<Result<List<TabMeta>>>()
     val tabsMeta: LiveData<Result<List<TabMeta>>>
         get() = _tabsMeta
-
 
     fun getTabsMeta() {
         launchCatchError(
@@ -38,11 +38,19 @@ class CampaignListContainerViewModel @Inject constructor(
 
     }
 
-    fun setSelectedTabPosition(selectedTabPosition: Int) {
-        this.selectedTabPosition = selectedTabPosition
+    fun storeTabsMetadata(tabsMetadata : List<TabMeta>) {
+        this.storedTabsMetadata = tabsMetadata
     }
 
-    fun getSelectedTabPosition(): Int {
-        return selectedTabPosition
+    fun getStoredTabsMetadata(): List<TabMeta> {
+        return storedTabsMetadata
+    }
+
+    fun setAutoFocusTabPosition(selectedTabPosition: Int) {
+        this.autoFocusTabPosition = selectedTabPosition
+    }
+
+    fun getAutoFocusTabPosition(): Int {
+        return autoFocusTabPosition
     }
 }

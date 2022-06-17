@@ -1,6 +1,7 @@
 package com.tokopedia.shop.flashsale.data.response
 
 
+import android.annotation.SuppressLint
 import com.google.gson.annotations.SerializedName
 
 data class GetSellerCampaignListResponse(
@@ -10,36 +11,30 @@ data class GetSellerCampaignListResponse(
     data class GetSellerCampaignList(
         @SerializedName("campaign")
         val campaign: List<Campaign> = listOf(),
-        @SerializedName("response_header")
-        val responseHeader: ResponseHeader = ResponseHeader(),
+        @SerializedName("enable_rules")
+        val enableRules: Boolean = false,
+        @SerializedName("server_time")
+        val serverTime: Int = 0,
         @SerializedName("total_campaign")
         val totalCampaign: Int = 0,
         @SerializedName("total_campaign_active")
         val totalCampaignActive: Int = 0,
         @SerializedName("total_campaign_finished")
-        val totalCampaignFinished: Int = 0
+        val totalCampaignFinished: Int = 0,
+        @SerializedName("use_restriction_engine")
+        val useRestrictionEngine: Boolean = false
     ) {
         data class Campaign(
-            @SerializedName("bitmask_is_set")
-            val bitmaskIsSet: Boolean = false,
             @SerializedName("campaign_id")
             val campaignId: String = "",
             @SerializedName("campaign_name")
             val campaignName: String = "",
-            @SerializedName("campaign_type_id")
-            val campaignTypeId: String = "",
-            @SerializedName("campaign_type_name")
-            val campaignTypeName: String = "",
-            @SerializedName("cover_img")
-            val coverImg: String = "",
+            @SerializedName("campaign_relation_data")
+            val campaignRelationData: List<CampaignRelationData> = emptyList(),
             @SerializedName("end_date")
             val endDate: Long = 0,
-            @SerializedName("etalase_prefix")
-            val etalasePrefix: String = "",
-            @SerializedName("finished_widget_time")
-            val finishedWidgetTime: Long = 0,
-            @SerializedName("finished_widget_time_in_mins")
-            val finishedWidgetTimeInMins: Int = 0,
+            @SerializedName("gradient_color")
+            val gradientColor: GradientColor = GradientColor(),
             @SerializedName("is_campaign_relation")
             val isCampaignRelation: Boolean = false,
             @SerializedName("is_campaign_rule_submit")
@@ -56,18 +51,14 @@ data class GetSellerCampaignListResponse(
             val notifyMeCount: Int = 0,
             @SerializedName("payment_type")
             val paymentType: Int = 0,
-            @SerializedName("redirect_url")
-            val redirectUrl: String = "",
-            @SerializedName("redirect_url_app")
-            val redirectUrlApp: String = "",
+            @SerializedName("product_summary")
+            val productSummary: ProductSummary = ProductSummary(),
             @SerializedName("review_end_date")
             val reviewEndDate: Long = 0,
             @SerializedName("review_start_date")
             val reviewStartDate: Long = 0,
             @SerializedName("start_date")
             val startDate: Long = 0,
-            @SerializedName("status_detail")
-            val statusDetail: String = "",
             @SerializedName("status_id")
             val statusId: String = "",
             @SerializedName("status_text")
@@ -80,9 +71,14 @@ data class GetSellerCampaignListResponse(
             val thematicParticipation: Boolean = false,
             @SerializedName("use_upcoming_widget")
             val useUpcomingWidget: Boolean = false,
-            @SerializedName("product_summary")
-            val productSummary: ProductSummary = ProductSummary()
         ) {
+            data class GradientColor(
+                @SerializedName("first_color")
+                val firstColor: String = "",
+                @SerializedName("second_color")
+                val secondColor: String = ""
+            )
+
             data class ProductSummary(
                 @SerializedName("total_item")
                 val totalItem: Int = 0,
@@ -98,15 +94,14 @@ data class GetSellerCampaignListResponse(
                 val visibleProductCount: Int = 0
             )
 
-        }
+            data class CampaignRelationData(
+                @SuppressLint("Invalid Data Type")
+                @SerializedName("id")
+                val id: Long,
+                @SerializedName("name")
+                val name: String,
+            )
 
-        data class ResponseHeader(
-            @SerializedName("processTime")
-            val processTime: Double = 0.0,
-            @SerializedName("status")
-            val status: String = "",
-            @SerializedName("success")
-            val success: Boolean = false
-        )
+        }
     }
 }

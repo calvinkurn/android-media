@@ -37,6 +37,9 @@
     <string name="sfs_stop">Hentikan</string>
     <string name="sfs_draft_deleted">Draft campaign berhasil dihapus.</string>
     <string name="sfs_cannot_cancel_campaign">Campaign yang masuk ke partisipasi event tidak dapat dibatalkan.</string>
+    <string name="sfs_ineligible_access_title">Kamu tidak memiliki kuota untuk membuat Flash Sale Toko</string>
+    <string name="sfs_ineligible_access_description">Upgrade tokomu ke Power Merchant PRO untuk dapat kuota Flash Sale  Toko, ya.</string>
+    <string name="sfs_subscribe_pm_pro">Daftar PM Pro</string>
 
     <string name="sfs_search_result_not_found_title">Campaign yang kamu cari tidak ditemukan.</string>
     <string name="sfs_search_result_not_found_description">Coba kata kunci lain, ya.</string>
@@ -90,6 +93,7 @@
     <string name="sfs_placeholder_empty_quota">Kuota campaign di Bulan %s habis. Pilih jadwal di bulan lain, ya.</string>
     <string name="sfs_placeholder_campaign_count">%s Campaign</string>
     <string name="sfs_hashtag">#</string>
+    <string name="sfs_invalid_hex_color">Format kode hexa yang dipilih tidak valid</string>
 
     <string name="sfs_green_dot">Indikator campaign aktif</string>
 
@@ -192,6 +196,18 @@
     <string name="campaign_rule_previous_campaign_item_removed">Campaign berhasil dihapus</string>
     <string name="campaign_rule_previous_campaign_item_removed_cta">@string/action_oke</string>
     <string name="campaign_rule_tnc_checkbox_label">Saya menyetujui <b>Syarat &amp; Ketentuan Pembeli</b></string>
+
+    <!--Product List Page-->
+    <string name="chooseproduct_page_title">Pilih Produk</string>
+    <string name="chooseproduct_search_placeholdertext">Cari produk atau SKU</string>
+    <string name="chooseproduct_selected_product_suffix">%d Produk Terpilih</string>
+    <string name="chooseproduct_selected_product_initial">0 Produk Terpilih</string>
+    <string name="chooseproduct_search_empty">Oops, produk tidak ditemukan</string>
+    <string name="chooseproduct_search_empty_desc">Coba gunakan kata kunci lain atau filter yang berbeda, ya.</string>
+    <string name="chooseproduct_product_empty">Oops, kamu belum memiliki produk terdaftar</string>
+    <string name="chooseproduct_product_empty_desc">Yuk, mulai tambah produkmu untuk didaftarkan ke campaign. </string>
+    <string name="chooseproduct_save_button_text">Tambah %d Produk</string>
+    <string name="chooseproduct_save_button_text_empty">Tambah Produk</string>
 
     <!--Manage Product-->
     <string name="manage_product_complete_product_info_warning_label">Klik <b>Ubah</b> untuk melengkapi informasi produk ini, ya.</string>

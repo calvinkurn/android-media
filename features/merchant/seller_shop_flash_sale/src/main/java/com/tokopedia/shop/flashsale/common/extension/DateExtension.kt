@@ -4,7 +4,6 @@ import com.tokopedia.shop.flashsale.common.constant.LocaleConstant
 import java.text.SimpleDateFormat
 import java.util.*
 
-private const val EMPTY_STRING = ""
 
 fun Date.formatTo(desiredOutputFormat: String, locale: Locale = LocaleConstant.INDONESIA): String {
     return try {
@@ -13,17 +12,7 @@ fun Date.formatTo(desiredOutputFormat: String, locale: Locale = LocaleConstant.I
         val output = outputFormat.format(this)
         output
     } catch (e: Exception) {
-        EMPTY_STRING
-    }
-}
-
-fun Date.localFormatTo(desiredOutputFormat: String, locale: Locale = LocaleConstant.INDONESIA): String {
-    return try {
-        val outputFormat = SimpleDateFormat(desiredOutputFormat, locale)
-        val output = outputFormat.format(this)
-        output
-    } catch (e: Exception) {
-        EMPTY_STRING
+        ""
     }
 }
 
@@ -93,3 +82,14 @@ fun Date.extractMinute(): Int {
     calendar.time = this
     return calendar.get(Calendar.MINUTE)
 }
+
+fun Date.localFormatTo(desiredOutputFormat: String, locale: Locale = LocaleConstant.INDONESIA): String {
+    return try {
+        val outputFormat = SimpleDateFormat(desiredOutputFormat, locale)
+        val output = outputFormat.format(this)
+        output
+    } catch (e: Exception) {
+        ""
+    }
+}
+
