@@ -26,6 +26,8 @@ import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.header.HeaderUnify
+import com.tokopedia.kotlin.extensions.view.isZero
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.shop.common.graphql.data.shopopen.ValidateShopDomainSuggestionResult
 import com.tokopedia.shop.open.R
@@ -290,7 +292,11 @@ class ShopOpenRevampInputShopFragment : BaseDaggerFragment(),
             when (it) {
                 is Success -> {
                     if (!it.data.validateDomainShopName.isValid) {
-                        val errorMessage = it.data.validateDomainShopName.error.message
+                        val errorMessage = if(isShopDomainSuggestionShown()) {
+                            it.data.validateDomainShopName.error.message
+                        } else {
+                            getString(R.string.open_shop_revamp_error_domain_already_taken)
+                        }
                         validateDomainName(
                                 isError = true,
                                 hintMessage = errorMessage
@@ -323,6 +329,10 @@ class ShopOpenRevampInputShopFragment : BaseDaggerFragment(),
                 }
             }
         })
+    }
+
+    private fun isShopDomainSuggestionShown(): Boolean {
+        return !adapter?.itemCount.isZero()
     }
 
     private fun observeCreateShopData() {
