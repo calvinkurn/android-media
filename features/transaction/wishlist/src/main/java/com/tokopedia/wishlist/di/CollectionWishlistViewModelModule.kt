@@ -4,20 +4,20 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
-import com.tokopedia.wishlist.view.viewmodel.WishlistV2CollectionViewModel
+import com.tokopedia.wishlist.view.viewmodel.CollectionWishlistViewModel
 import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap
 
 @Module
-abstract class WishlistV2CollectionViewModelModule {
-    @WishlistV2Scope
+abstract class CollectionWishlistViewModelModule {
+    @CollectionWishlistScope
     @Binds
     internal abstract fun bindViewModelFactory(viewModelFactory: ViewModelFactory): ViewModelProvider.Factory
 
-    @WishlistV2Scope
+    @CollectionWishlistScope
     @Binds
     @IntoMap
-    @ViewModelKey(WishlistV2CollectionViewModel::class)
-    internal abstract fun wishlistV2CollectionViewModel(viewModel: WishlistV2CollectionViewModel): ViewModel
+    @ViewModelKey(CollectionWishlistViewModel::class)
+    internal abstract fun collectionWishlistViewModel(viewModel: CollectionWishlistViewModel): ViewModel
 }
