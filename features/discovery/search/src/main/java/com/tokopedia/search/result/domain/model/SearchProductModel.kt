@@ -618,7 +618,7 @@ data class SearchProductModel(
             @Expose
             val isShowTopAds: Boolean = false,
 
-            @SerializedName("componentId")
+            @SerializedName("component_id")
             @Expose
             val componentId: String = "",
 
@@ -676,7 +676,7 @@ data class SearchProductModel(
             @Expose
             val logoUrl: String = "",
 
-            @SerializedName("componentId")
+            @SerializedName("component_id")
             @Expose
             val componentId: String = "",
     )
