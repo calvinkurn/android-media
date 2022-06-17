@@ -1,11 +1,15 @@
 package com.tokopedia.play.view.viewcomponent
 
+import android.content.Context
+import android.graphics.drawable.GradientDrawable
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.fragment.app.FragmentManager
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.localizationchooseaddress.ui.bottomsheet.ChooseAddressBottomSheet
 import com.tokopedia.play.R
+import com.tokopedia.unifyprinciples.R as unifyR
+import com.tokopedia.unifycomponents.R as unifyCompR
 import com.tokopedia.play_common.viewcomponent.ViewComponent
 import com.tokopedia.unifycomponents.UnifyButton
 
@@ -40,6 +44,8 @@ class ChooseAddressViewComponent(
         }
     }
 
+    private val ctx: Context get() = rootView.context
+
     init {
         btnChoose.setOnClickListener {
             openBottomSheet()
@@ -49,15 +55,17 @@ class ChooseAddressViewComponent(
         tvInfo.setOnClickListener {
             listener.onInfoClicked(this@ChooseAddressViewComponent)
         }
+
+        setupButtonView()
     }
 
     private fun openBottomSheet() {
-        if (!getBottomSheet().isAdded)
+        if (!getBottomSheet().isVisible)
             getBottomSheet().showNow(fragmentManager, PLAY_CHOOSE_ADDRESS_TAG)
     }
 
     private fun hideBottomSheet() {
-        if (getBottomSheet().isAdded)
+        if (getBottomSheet().isVisible)
             getBottomSheet().dismiss()
     }
 
@@ -65,6 +73,14 @@ class ChooseAddressViewComponent(
         chooseAddressBottomSheet = ChooseAddressBottomSheet()
         chooseAddressBottomSheet.setListener(insideListener)
         return chooseAddressBottomSheet
+    }
+
+    private fun setupButtonView() {
+        val bg = GradientDrawable().apply {
+            cornerRadius = ctx.resources.getDimensionPixelSize(unifyR.dimen.layout_lvl1).toFloat()
+            setStroke(ctx.resources.getDimensionPixelSize(unifyCompR.dimen.button_stroke_width), MethodChecker.getColor(ctx, unifyR.color.Unify_G500))
+        }
+        btnChoose.background = bg
     }
 
     companion object {
