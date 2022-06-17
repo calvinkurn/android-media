@@ -15,7 +15,6 @@ fun Long.toDate(): Date {
 fun Long.epochToDate(): Date {
     val calendar = Calendar.getInstance()
     calendar.time = Date(this * EPOCH_TO_MILLIS_MULTIPLIER)
-    calendar.timeZone = TimeZone.getTimeZone("GMT")
     return calendar.time
 }
 

@@ -5,18 +5,22 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
-import com.tokopedia.seller_shop_flash_sale.R
+import com.tokopedia.seller_shop_flash_sale.databinding.SsfsDialogShopClosedBinding
 import com.tokopedia.shop.flashsale.common.customcomponent.ModalBottomSheet
-import com.tokopedia.unifycomponents.UnifyButton
+import com.tokopedia.utils.lifecycle.autoClearedNullable
 
-class ShopClosedDialog : ModalBottomSheet() {
+class ShopClosedDialog(
+    private var primaryCTAAction: (() -> Unit)? = null,
+    private var secondaryCTAAction: (() -> Unit)? = null
+) : ModalBottomSheet() {
 
     companion object {
         const val TAG = "ShopClosedDialog"
+        const val CUSTOM_MODAL_WIDTH_RATIO = 0.9
+        private const val SHOP_CLOSED_IMAGE_URL =
+            "https://images.tokopedia.net/img/android/campaign/flash-sale-toko/creation_2_shop_close_illustration.png"
     }
 
-    var primaryCTAAction: () -> Unit = {}
-    var secondaryCTAAction: () -> Unit = {}
 
     init {
         setCloseClickListener {
@@ -24,30 +28,21 @@ class ShopClosedDialog : ModalBottomSheet() {
         }
     }
 
-    private var primaryCTA: UnifyButton? = null
-    private var secondaryCTA: UnifyButton? = null
+    private var binding by autoClearedNullable<SsfsDialogShopClosedBinding>()
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        initChildLayout()
+        binding = SsfsDialogShopClosedBinding.inflate(inflater, container, false)
+        setChild(binding?.root)
         return super.onCreateView(inflater, container, savedInstanceState)
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-    }
-
-    private fun initChildLayout() {
-        overlayClickDismiss = true
-        MODAL_WIDTH_RATIO = 0.9
-        val contentView: View? = View.inflate(context, R.layout.ssfs_dialog_shop_closed, null)
-        primaryCTA = contentView?.findViewById(R.id.btn_buka_toko)
-        secondaryCTA = contentView?.findViewById(R.id.btn_batal)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         initContent()
-        setChild(contentView)
     }
 
     fun show(manager: FragmentManager?) {
@@ -57,12 +52,17 @@ class ShopClosedDialog : ModalBottomSheet() {
     }
 
     private fun initContent() {
+        overlayClickDismiss = true
+        modalWidthRatio = CUSTOM_MODAL_WIDTH_RATIO
         showCloseIcon = false
-        primaryCTA?.setOnClickListener {
-            primaryCTAAction.invoke()
-        }
-        secondaryCTA?.setOnClickListener {
-            secondaryCTAAction.invoke()
+        binding?.run {
+            iuShopCloseIllustration.setImageUrl(SHOP_CLOSED_IMAGE_URL)
+            btnBukaToko.setOnClickListener {
+                primaryCTAAction?.invoke()
+            }
+            btnBatal.setOnClickListener {
+                secondaryCTAAction?.invoke() ?: dismiss()
+            }
         }
     }
 }

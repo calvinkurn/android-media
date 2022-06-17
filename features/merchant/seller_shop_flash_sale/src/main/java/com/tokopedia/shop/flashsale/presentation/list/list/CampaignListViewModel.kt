@@ -4,15 +4,16 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.shop.flashsale.common.extension.combineResultWith
+import com.tokopedia.shop.flashsale.common.extension.digitsOnly
+import com.tokopedia.shop.flashsale.common.extension.isNumber
 import com.tokopedia.shop.flashsale.domain.entity.CampaignMeta
 import com.tokopedia.shop.flashsale.domain.entity.CampaignUiModel
-import com.tokopedia.shop.flashsale.domain.entity.ShopInfo
+import com.tokopedia.shop.flashsale.domain.entity.aggregate.CampaignCreationEligibility
 import com.tokopedia.shop.flashsale.domain.entity.aggregate.CampaignPrerequisiteData
 import com.tokopedia.shop.flashsale.domain.entity.aggregate.ShareComponentMetadata
 import com.tokopedia.shop.flashsale.domain.usecase.GetSellerCampaignListUseCase
-import com.tokopedia.shop.flashsale.domain.usecase.ShopInfoByIdQueryUseCase
 import com.tokopedia.shop.flashsale.domain.usecase.aggregate.GetCampaignPrerequisiteDataUseCase
+import com.tokopedia.shop.flashsale.domain.usecase.aggregate.ValidateCampaignCreationEligibilityUseCase
 import com.tokopedia.shop.flashsale.domain.usecase.aggregate.GetShareComponentMetadataUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -24,7 +25,8 @@ class CampaignListViewModel @Inject constructor(
     private val dispatchers: CoroutineDispatchers,
     private val getSellerCampaignListUseCase: GetSellerCampaignListUseCase,
     private val getCampaignPrerequisiteDataUseCase: GetCampaignPrerequisiteDataUseCase,
-    private val getShareComponentMetadataUseCase: GetShareComponentMetadataUseCase
+    private val getShareComponentMetadataUseCase: GetShareComponentMetadataUseCase,
+    private val validateCampaignCreationEligibility: ValidateCampaignCreationEligibilityUseCase
 ) : BaseViewModel(dispatchers.main) {
 
     private val _campaigns = MutableLiveData<Result<CampaignMeta>>()
@@ -39,13 +41,17 @@ class CampaignListViewModel @Inject constructor(
     val shareComponentMetadata: LiveData<Result<ShareComponentMetadata>>
         get() = _shareComponentMetadata
 
+    private val _sellerEligibility = MutableLiveData<Result<CampaignCreationEligibility>>()
+    val creationEligibility: LiveData<Result<CampaignCreationEligibility>>
+        get() = _sellerEligibility
+
     private var drafts : List<CampaignUiModel> = emptyList()
 
     fun getCampaigns(
         rows: Int,
         offset: Int,
         statusId: List<Int>,
-        campaignName: String
+        campaignName : String,
     ) {
         launchCatchError(
             dispatchers.io,
@@ -54,7 +60,8 @@ class CampaignListViewModel @Inject constructor(
                     rows = rows,
                     offset = offset,
                     statusId = statusId,
-                    campaignName = campaignName
+                    campaignId = if (campaignName.isNumber()) campaignName.digitsOnly() else 0,
+                    campaignName = if (campaignName.isNumber()) "" else campaignName
                 )
                 _campaigns.postValue(Success(campaigns))
             },
@@ -88,6 +95,20 @@ class CampaignListViewModel @Inject constructor(
             },
             onError = { error ->
                 _shareComponentMetadata.postValue(Fail(error))
+            }
+        )
+
+    }
+
+    fun validateCampaignCreationEligibility() {
+        launchCatchError(
+            dispatchers.io,
+            block = {
+                val metadata = validateCampaignCreationEligibility.execute()
+                _sellerEligibility.postValue(Success(metadata))
+            },
+            onError = { error ->
+                _sellerEligibility.postValue(Fail(error))
             }
         )
 

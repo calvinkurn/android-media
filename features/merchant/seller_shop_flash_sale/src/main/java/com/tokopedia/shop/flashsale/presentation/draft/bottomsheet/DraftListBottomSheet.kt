@@ -20,7 +20,8 @@ import com.tokopedia.unifyprinciples.Typography
 
 class DraftListBottomSheet(
     private val draftItemModel: DraftUiModel = DraftUiModel(),
-    private val onDeleteDraftSuccess: () -> Unit = {}
+    private val onDeleteDraftSuccess: () -> Unit = {},
+    private val onDraftClicked : (DraftItemModel) -> Unit = {}
 ): BottomSheetUnify() {
 
     companion object {
@@ -28,11 +29,13 @@ class DraftListBottomSheet(
 
         fun showUsingCampaignUiModel(manager: FragmentManager?,
             campaignUiModelList: List<CampaignUiModel>,
-            onDeleteDraftSuccess: () -> Unit = {}
+            onDeleteDraftSuccess: () -> Unit = {},
+            onDraftClicked : (DraftItemModel) -> Unit = {}
         ) {
             DraftListBottomSheet(
                 DraftUiModelMapper.convertFromCampaignUiModel(campaignUiModelList),
-                onDeleteDraftSuccess
+                onDeleteDraftSuccess,
+                onDraftClicked
             ).show(manager)
         }
     }
@@ -79,6 +82,10 @@ class DraftListBottomSheet(
         rvDraft?.adapter = DraftListAdapter().apply {
             setItems(draftItemModel.list)
             setDeleteIconClickListener(::onDeleteIconClick)
+            setOnDraftClick { selectedDraft ->
+                onDraftClicked(selectedDraft)
+                dismiss()
+            }
         }
     }
 

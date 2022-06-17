@@ -9,11 +9,11 @@ class DoSellerCampaignCreationMapper @Inject constructor() {
 
     fun map(response: DoSellerCampaignCreationResponse): CampaignCreationResult {
         return CampaignCreationResult(
-            response.campaignId.toLongOrZero(),
-            response.isSuccess,
-            response.totalProductFailed,
-            response.sellerCampaignErrorCreation.errorDescription,
-            response.sellerCampaignErrorCreation.errorTitle
+            response.doSellerCampaignCreation.campaignId.toLongOrZero(),
+            response.doSellerCampaignCreation.isSuccess,
+            response.doSellerCampaignCreation.totalProductFailed,
+            response.doSellerCampaignCreation.sellerCampaignErrorCreation.errorDescription,
+            response.doSellerCampaignCreation.sellerCampaignErrorCreation.errorTitle
         )
 
     }

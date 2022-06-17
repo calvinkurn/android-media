@@ -1,19 +1,30 @@
 package com.tokopedia.shop.flashsale.presentation.creation.information.adapter
 
-import android.graphics.drawable.GradientDrawable
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.recyclerview.widget.AsyncListDiffer
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.seller_shop_flash_sale.databinding.SsfsItemColorBinding
-import com.tokopedia.shop.flashsale.common.constant.Constant
-import com.tokopedia.shop.flashsale.common.extension.toColor
+import com.tokopedia.shop.flashsale.common.extension.setBackgroundFromGradient
 import com.tokopedia.shop.flashsale.domain.entity.Gradient
-import com.tokopedia.seller_shop_flash_sale.R
 
 class GradientColorAdapter : RecyclerView.Adapter<GradientColorAdapter.GradientViewHolder>() {
 
-    private var gradients: MutableList<Gradient> = mutableListOf()
     private var onGradientClicked: (Gradient) -> Unit = {}
+
+    private val differCallback = object : DiffUtil.ItemCallback<Gradient>() {
+        override fun areItemsTheSame(oldItem: Gradient, newItem: Gradient): Boolean {
+            return oldItem.isSelected == newItem.isSelected
+        }
+
+        override fun areContentsTheSame(oldItem: Gradient, newItem: Gradient): Boolean {
+            return oldItem == newItem
+        }
+    }
+
+    private val differ = AsyncListDiffer(this, differCallback)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): GradientViewHolder {
         val binding =
@@ -22,16 +33,15 @@ class GradientColorAdapter : RecyclerView.Adapter<GradientColorAdapter.GradientV
     }
 
     override fun getItemCount(): Int {
-        return gradients.size
+        return differ.currentList.size
     }
 
     override fun onBindViewHolder(holder: GradientViewHolder, position: Int) {
-        holder.bind(gradients[position])
+        holder.bind(differ.currentList[position])
     }
 
-    fun submit(items: List<Gradient>) {
-        this.gradients = items.toMutableList()
-        notifyItemRangeChanged(Constant.ZERO, items.size)
+    fun setOnGradientClicked(onGradientClicked: (Gradient) -> Unit) {
+        this.onGradientClicked = onGradientClicked
     }
 
     inner class GradientViewHolder(
@@ -39,17 +49,17 @@ class GradientColorAdapter : RecyclerView.Adapter<GradientColorAdapter.GradientV
     ) : RecyclerView.ViewHolder(binding.root) {
 
         fun bind(gradient: Gradient) {
-            val colors = intArrayOf(gradient.first.toColor(), gradient.first.toColor())
-            val drawable =
-                GradientDrawable(GradientDrawable.Orientation.TOP_BOTTOM, colors)
-            drawable.cornerRadius = binding.imgColor.context.resources.getDimension(R.dimen.sfs_corner_radius)
-            binding.imgColor.background = drawable
-
+            binding.imgColor.setBackgroundFromGradient(gradient)
+            binding.imgCheckmark.isVisible = gradient.isSelected
             binding.root.setOnClickListener { onGradientClicked(gradient) }
         }
     }
 
-    fun setOnGradientClicked(onGradientClicked: (Gradient) -> Unit) {
-        this.onGradientClicked = onGradientClicked
+    fun submit(newGradients: List<Gradient>) {
+        differ.submitList(newGradients)
+    }
+
+    fun snapshot(): List<Gradient> {
+        return differ.currentList
     }
 }

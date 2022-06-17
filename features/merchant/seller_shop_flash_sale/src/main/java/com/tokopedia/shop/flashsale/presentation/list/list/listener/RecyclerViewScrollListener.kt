@@ -1,6 +1,7 @@
 package com.tokopedia.shop.flashsale.presentation.list.list.listener
 
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.shop.flashsale.common.extension.isScrollUp
 
 class RecyclerViewScrollListener(
     private val onScrollDown: () -> Unit = {},
@@ -36,9 +37,5 @@ class RecyclerViewScrollListener(
                 previousScroll = Scroll.DOWN
             }
         }
-    }
-
-    private fun Int.isScrollUp() : Boolean {
-        return this <= 0
     }
 }

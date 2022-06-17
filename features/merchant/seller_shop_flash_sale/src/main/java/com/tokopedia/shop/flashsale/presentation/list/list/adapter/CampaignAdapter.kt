@@ -1,6 +1,5 @@
 package com.tokopedia.shop.flashsale.presentation.list.list.adapter
 
-import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.annotation.ColorRes
@@ -12,9 +11,10 @@ import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.seller_shop_flash_sale.R
 import com.tokopedia.seller_shop_flash_sale.R.color.*
 import com.tokopedia.seller_shop_flash_sale.databinding.SsfsItemCampaignBinding
+import com.tokopedia.shop.flashsale.common.constant.Constant
 import com.tokopedia.shop.flashsale.common.extension.toCalendar
 import com.tokopedia.shop.flashsale.domain.entity.CampaignUiModel
-import com.tokopedia.shop.flashsale.domain.entity.enums.CampaignStatus
+import com.tokopedia.shop.flashsale.domain.entity.enums.*
 import com.tokopedia.unifyprinciples.Typography
 import java.util.*
 
@@ -38,28 +38,27 @@ class CampaignAdapter(
     }
 
     override fun onBindViewHolder(holder: CampaignViewHolder, position: Int) {
-        campaigns.getOrNull(position)?.let { campaign ->
-            val isLoading = isLoading && (position == campaigns.lastIndex)
-            holder.bind(
-                position,
-                campaign,
-                onCampaignClicked,
-                onOverflowMenuClicked,
-                isLoading
-            )
-        }
+        val campaign = campaigns[position]
+        val isLoading = isLoading && (position == campaigns.lastIndex)
+        holder.bind(
+            position,
+            campaign,
+            onCampaignClicked,
+            onOverflowMenuClicked,
+            isLoading
+        )
     }
 
-    @SuppressLint("NotifyDataSetChanged")
-    fun addData(items: List<CampaignUiModel>) {
-        this.campaigns.addAll(items)
-        notifyDataSetChanged()
-    }
-
-    @SuppressLint("NotifyDataSetChanged")
-    fun clearData() {
+    fun clearAll() {
         this.campaigns = mutableListOf()
-        notifyDataSetChanged()
+        notifyItemRangeRemoved(Constant.FIRST_PAGE, campaigns.size)
+    }
+
+    fun submit(newCampaigns: List<CampaignUiModel>) {
+        val oldItemsSize = campaigns.size
+        campaigns.addAll(newCampaigns)
+        notifyItemRangeChanged(oldItemsSize, campaigns.size)
+        hideLoading()
     }
 
     fun showLoading() {
@@ -71,8 +70,10 @@ class CampaignAdapter(
 
     fun hideLoading() {
         isLoading = false
+        if (itemCount.isMoreThanZero()) {
+            notifyItemChanged(campaigns.lastIndex)
+        }
     }
-
 
     inner class CampaignViewHolder(private val binding: SsfsItemCampaignBinding) :
         RecyclerView.ViewHolder(binding.root) {
@@ -97,46 +98,44 @@ class CampaignAdapter(
             binding.tpgReminderCount.text = campaign.notifyMeCount.toString()
             binding.tpgSoldCount.text = campaign.summary.soldItem.toString()
             binding.loader.isVisible = isLoading
-            binding.imgMore.isVisible = shouldEnableMoreMenu(campaign.status)
+            binding.imgMore.isVisible = campaign.status.isActive()
             handleTimer(campaign.status, campaign.startDate)
             handleCampaignStatusIndicator(campaign.status)
         }
 
         private fun handleTimer(campaignStatus: CampaignStatus, startDate: Date) {
-            binding.timer.isVisible = campaignStatus == CampaignStatus.UPCOMING
-            if (campaignStatus == CampaignStatus.UPCOMING) {
+            binding.timer.isVisible = campaignStatus.isUpcoming()
+            if (campaignStatus.isUpcoming()) {
                 binding.timer.targetDate = startDate.toCalendar()
             }
         }
 
         private fun handleCampaignStatusIndicator(campaignStatus: CampaignStatus) {
-            when (campaignStatus) {
-                CampaignStatus.UPCOMING -> {
+            when {
+                campaignStatus.isUpcoming() -> {
                     binding.tpgCampaignStatus.setStatus(R.string.sfs_upcoming)
                     binding.tpgCampaignStatus.textColor(Unify_YN400)
                     binding.imgCampaignStatusIndicator.setImageResource(R.drawable.ic_sfs_campaign_indicator_upcoming)
                 }
-                CampaignStatus.AVAILABLE -> {
+                campaignStatus.isAvailable() -> {
                     binding.tpgCampaignStatus.setStatus(R.string.sfs_available)
                     binding.tpgCampaignStatus.textColor(Unify_NN600)
                     binding.imgCampaignStatusIndicator.setImageResource(R.drawable.ic_sfs_campaign_indicator_available)
                 }
-                CampaignStatus.ONGOING -> {
+                campaignStatus.isOngoing() -> {
                     binding.tpgCampaignStatus.setStatus(R.string.sfs_ongoing)
                     binding.tpgCampaignStatus.textColor(Unify_GN500)
                     binding.imgCampaignStatusIndicator.setImageResource(R.drawable.ic_sfs_campaign_indicator_ongoing)
                 }
-                CampaignStatus.FINISHED -> {
+                campaignStatus.isFinished() -> {
                     binding.tpgCampaignStatus.setStatus(R.string.sfs_finished)
                     binding.tpgCampaignStatus.textColor(Unify_NN400)
                     binding.imgCampaignStatusIndicator.setImageResource(R.drawable.ic_sfs_campaign_indicator_finished)
                 }
-                CampaignStatus.CANCELLED, CampaignStatus.ONGOING_CANCELLATION -> {
+                campaignStatus.isCancelled() -> {
                     binding.tpgCampaignStatus.setStatus(R.string.sfs_cancelled)
                     binding.tpgCampaignStatus.textColor(Unify_RN500)
                     binding.imgCampaignStatusIndicator.setImageResource(R.drawable.ic_sfs_campaign_indicator_cancelled)
-                }
-                CampaignStatus.DRAFT -> {
                 }
             }
         }
@@ -150,10 +149,5 @@ class CampaignAdapter(
             val color = ContextCompat.getColor(this.context, resourceId)
             this.setTextColor(color)
         }
-
-        private fun shouldEnableMoreMenu(campaignStatus: CampaignStatus): Boolean {
-            return campaignStatus == CampaignStatus.UPCOMING || campaignStatus == CampaignStatus.AVAILABLE || campaignStatus == CampaignStatus.ONGOING
-        }
-
     }
 }

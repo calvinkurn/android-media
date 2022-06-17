@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
 import com.tokopedia.shop.flashsale.di.scope.ShopFlashSaleScope
+import com.tokopedia.shop.flashsale.presentation.creation.information.CampaignInformationViewModel
 import com.tokopedia.shop.flashsale.presentation.creation.information.bottomsheet.CampaignDataPickerViewModel
 import com.tokopedia.shop.flashsale.presentation.creation.manage.viewmodel.ChooseProductViewModel
 import com.tokopedia.shop.flashsale.presentation.creation.rule.CampaignRuleViewModel
@@ -46,6 +47,11 @@ abstract class ShopFlashSaleViewModelModule {
     @IntoMap
     @ViewModelKey(CampaignDataPickerViewModel::class)
     internal abstract fun provideCampaignDatePickerBottomSheet(viewModel: CampaignDataPickerViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(CampaignInformationViewModel::class)
+    internal abstract fun provideCampaignInformationViewModel(viewModel: CampaignInformationViewModel): ViewModel
 
     @Binds
     @IntoMap

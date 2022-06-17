@@ -9,35 +9,60 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.calendar.CalendarPickerView
 import com.tokopedia.calendar.Legend
-import com.tokopedia.calendar.SubTitle
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.seller_shop_flash_sale.R
 import com.tokopedia.seller_shop_flash_sale.databinding.SsfsBottomsheetCampaignDatePickerBinding
+import com.tokopedia.shop.flashsale.common.constant.Constant
+import com.tokopedia.shop.flashsale.common.constant.DateConstant
+import com.tokopedia.shop.flashsale.common.extension.formatTo
+import com.tokopedia.shop.flashsale.common.extension.localFormatTo
+import com.tokopedia.shop.flashsale.common.extension.showError
 import com.tokopedia.shop.flashsale.common.util.DateManager
 import com.tokopedia.shop.flashsale.di.component.DaggerShopFlashSaleComponent
+import com.tokopedia.shop.flashsale.domain.entity.GroupedCampaign
+import com.tokopedia.shop.flashsale.presentation.creation.information.TimePickerHandler
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.lifecycle.autoClearedNullable
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import java.util.*
 import javax.inject.Inject
 
 class CampaignDatePickerBottomSheet : BottomSheetUnify() {
 
     companion object {
-        private const val BUNDLE_KEY_TITLE = "title"
+        private const val BUNDLE_KEY_SELECTED_DATE = "selected_date"
+        private const val BUNDLE_KEY_MINIMUM_DATE = "minimum_date"
+        private const val DISMISS_BOTTOM_SHEET_DELAY_IN_MILLIS: Long = 500
 
         @JvmStatic
-        fun newInstance(): CampaignDatePickerBottomSheet {
+        fun newInstance(
+            selectedDate: Date,
+            minimumDate: Date
+        ): CampaignDatePickerBottomSheet {
             return CampaignDatePickerBottomSheet().apply {
                 arguments = Bundle().apply {
-                    putString(BUNDLE_KEY_TITLE, "")
+                    putSerializable(BUNDLE_KEY_SELECTED_DATE, selectedDate)
+                    putSerializable(BUNDLE_KEY_MINIMUM_DATE, minimumDate)
                 }
             }
         }
-
     }
 
-    private val title by lazy { arguments?.getString(BUNDLE_KEY_TITLE).orEmpty() }
     private var binding by autoClearedNullable<SsfsBottomsheetCampaignDatePickerBinding>()
+    private var onDateTimePicked: (Date) -> Unit = {}
+    private val selectedDate by lazy {
+        arguments?.getSerializable(BUNDLE_KEY_SELECTED_DATE) as? Date ?: Date()
+    }
 
+    private val minimumDate by lazy {
+        arguments?.getSerializable(BUNDLE_KEY_MINIMUM_DATE) as? Date ?: Date()
+    }
 
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
@@ -86,38 +111,124 @@ class CampaignDatePickerBottomSheet : BottomSheetUnify() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        observeSelectedDate()
-        setupView()
-        viewModel.validateInput()
+        observeUpcomingCampaigns()
+        observeCampaignQuota()
+        viewModel.getUpcomingCampaigns()
+        viewModel.getCampaignQuota(dateManager.getCurrentMonth(), dateManager.getCurrentYear())
     }
 
-    private fun setupView() {
-        setupCalendar()
-
-
+    private fun observeUpcomingCampaigns() {
+        viewModel.campaigns.observe(viewLifecycleOwner) { result ->
+            binding?.loader?.gone()
+            when (result) {
+                is Success -> {
+                    binding?.tpgDateDescription?.visible()
+                    binding?.unifyCalendar?.visible()
+                    displayCalendar(result.data)
+                }
+                is Fail -> {
+                    binding?.tpgDateDescription?.gone()
+                    binding?.unifyCalendar?.gone()
+                    binding?.root showError result.throwable
+                }
+            }
+        }
     }
 
-    private fun setupCalendar() {
-        val startDate = dateManager.getMinimumCampaignStartDate()
+    private fun observeCampaignQuota() {
+        viewModel.campaignQuota.observe(viewLifecycleOwner) { result ->
+            binding?.loader?.gone()
+            when (result) {
+                is Success -> {
+                    val remainingQuota = result.data
+                    handleRemainingQuota(remainingQuota)
+                }
+                is Fail -> {
+                    binding?.root showError result.throwable
+                }
+            }
+        }
+    }
+
+
+
+    private fun displayCalendar(campaigns: List<GroupedCampaign>) {
+        val legends = campaigns.map { campaign ->
+            val campaignCountWording =
+                String.format(getString(R.string.sfs_placeholder_campaign_count), campaign.count)
+            Legend(campaign.date, campaignCountWording)
+        }
+
         val endDate = dateManager.getMaximumCampaignEndDate()
-        val subtitles = arrayListOf(SubTitle(startDate, "Merdeka", "#EF4C60"))
-
-
         val calendar = binding?.unifyCalendar?.calendarPickerView
         calendar?.run {
-            init(startDate, endDate, listOf(Legend(startDate, "Ready")))
+            init(minimumDate, endDate, legends)
                 .inMode(CalendarPickerView.SelectionMode.SINGLE)
-                .withSelectedDate(Date())
-                .withSubTitles(subtitles)
+                .withSelectedDate(selectedDate)
         }
+
+        calendar?.setOnDateSelectedListener(object : CalendarPickerView.OnDateSelectedListener {
+            override fun onDateSelected(date: Date) {
+                showTimePicker(
+                    date,
+                    selectedDate,
+                    minimumDate,
+                    onTimePicked = { dateTime -> doOnDelayFinished { onDateTimePicked(dateTime) } }
+                )
+            }
+
+            override fun onDateUnselected(date: Date) {
+
+            }
+
+        })
 
     }
 
-    private fun observeSelectedDate() {
-        viewModel.areInputValid.observe(viewLifecycleOwner) {
+    fun setOnDateTimePicked(onDatePicked: (Date) -> Unit) {
+        this.onDateTimePicked = onDatePicked
+    }
 
+    fun showTimePicker(
+        selectedDateFromCalendar: Date,
+        defaultDate: Date,
+        minimumDate: Date,
+        onTimePicked: (Date) -> Unit
+    ) {
+        val title = getString(R.string.sfs_select_campaign_time)
+        val info = String.format(
+            getString(R.string.sfs_placeholder_selected_date),
+            selectedDateFromCalendar.localFormatTo(DateConstant.DATE)
+        )
+        val buttonWording = getString(R.string.sfs_apply)
+        val param = TimePickerHandler.Param(
+            selectedDateFromCalendar,
+            defaultDate,
+            minimumDate,
+            title,
+            info,
+            buttonWording
+        )
+
+        val timePickerHandler = TimePickerHandler(param)
+        timePickerHandler.show(requireActivity(), childFragmentManager, onTimePicked)
+    }
+
+    private fun doOnDelayFinished(block: () -> Unit) {
+        CoroutineScope(Dispatchers.Main).launch {
+            delay(DISMISS_BOTTOM_SHEET_DELAY_IN_MILLIS)
+            block()
+            dismiss()
         }
     }
 
-
+    private fun handleRemainingQuota(remainingQuota : Int) {
+        if (remainingQuota == Constant.ZERO) {
+            val monthName = dateManager.getCurrentDate().formatTo(DateConstant.MONTH)
+            val emptyQuotaWording =
+                String.format(getString(R.string.sfs_placeholder_empty_quota), monthName)
+            binding?.tpgErrorMessage?.text = emptyQuotaWording
+            binding?.tpgErrorMessage?.visible()
+        }
+    }
 }

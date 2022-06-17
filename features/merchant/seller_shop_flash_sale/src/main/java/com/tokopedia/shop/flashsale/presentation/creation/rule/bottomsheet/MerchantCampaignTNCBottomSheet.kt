@@ -17,7 +17,7 @@ import com.tokopedia.seller_shop_flash_sale.databinding.SsfsBottomSheetMerchantC
 import com.tokopedia.shop.flashsale.common.extension.setNumberedText
 import com.tokopedia.shop.flashsale.di.component.DaggerShopFlashSaleComponent
 import com.tokopedia.shop.flashsale.domain.entity.MerchantCampaignTNC
-import com.tokopedia.shop.flashsale.domain.entity.MerchantCampaignTNC.*
+import com.tokopedia.shop.flashsale.domain.entity.MerchantCampaignTNC.TncRequest
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -63,6 +63,8 @@ class MerchantCampaignTNCBottomSheet : BottomSheetUnify() {
     private var tncRequest: TncRequest = TncRequest()
     private var showTickerAndButton: Boolean? = true
 
+    private var listener: ConfirmationClickListener? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setupDependencyInjection()
@@ -86,7 +88,7 @@ class MerchantCampaignTNCBottomSheet : BottomSheetUnify() {
                 it.campaignId,
                 it.isUniqueBuyer,
                 it.isCampaignRelation,
-                it.paymentProfile
+                it.paymentType
             )
         }
         setupObserver()
@@ -113,7 +115,7 @@ class MerchantCampaignTNCBottomSheet : BottomSheetUnify() {
 
     @SuppressLint("ResourcePackage")
     private fun populateData(data: MerchantCampaignTNC) {
-        setTitle(getString(R.string.title_tnc_bottom_sheet))
+        setTitle(getString(R.string.tnc_title_bottom_sheet))
         binding?.run {
             tgTncContent.setNumberedText(
                 data.messages
@@ -129,6 +131,7 @@ class MerchantCampaignTNCBottomSheet : BottomSheetUnify() {
                 }
             }
             btnAgree.setOnClickListener {
+                listener?.onTNCConfirmationClicked()
                 dismiss()
             }
         }
@@ -146,5 +149,13 @@ class MerchantCampaignTNCBottomSheet : BottomSheetUnify() {
                 }
             }
         }
+    }
+
+    fun setConfirmationClickListener(listener: ConfirmationClickListener) {
+        this.listener = listener
+    }
+
+    interface ConfirmationClickListener {
+        fun onTNCConfirmationClicked()
     }
 }

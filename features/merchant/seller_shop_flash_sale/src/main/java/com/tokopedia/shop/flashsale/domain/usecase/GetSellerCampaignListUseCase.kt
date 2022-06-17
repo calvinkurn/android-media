@@ -65,6 +65,10 @@ class GetSellerCampaignListUseCase @Inject constructor(
                   is_unique_buyer
                   is_campaign_relation
                   is_campaign_rule_submit
+                  gradient_color {
+                     first_color
+                     second_color
+                  }
                   is_shareable
                   bitmask_is_set
                   notify_me_count
@@ -97,7 +101,7 @@ class GetSellerCampaignListUseCase @Inject constructor(
         rows: Int,
         offset: Int,
         statusId: List<Int> = emptyList(),
-        campaignId: Int = ZERO,
+        campaignId: Long = 0,
         campaignName: String = EMPTY_STRING,
         thematicParticipation: Boolean = false
     ): CampaignMeta {
@@ -122,7 +126,7 @@ class GetSellerCampaignListUseCase @Inject constructor(
         rows: Int,
         offset: Int,
         statusId: List<Int> = emptyList(),
-        campaignId: Int = ZERO,
+        campaignId: Long = 0,
         campaignName: String = EMPTY_STRING,
         thematicParticipation: Boolean = false
     ): GraphqlRequest {

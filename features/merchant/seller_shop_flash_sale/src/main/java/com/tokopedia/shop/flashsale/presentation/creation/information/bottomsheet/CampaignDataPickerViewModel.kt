@@ -1,21 +1,82 @@
 package com.tokopedia.shop.flashsale.presentation.creation.information.bottomsheet
 
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.utils.lifecycle.SingleLiveEvent
+import com.tokopedia.shop.flashsale.common.constant.Constant
+import com.tokopedia.shop.flashsale.common.extension.dateOnly
+import com.tokopedia.shop.flashsale.domain.entity.CampaignUiModel
+import com.tokopedia.shop.flashsale.domain.entity.GroupedCampaign
+import com.tokopedia.shop.flashsale.domain.entity.enums.CampaignStatus
+import com.tokopedia.shop.flashsale.domain.usecase.GetSellerCampaignAttributeUseCase
+import com.tokopedia.shop.flashsale.domain.usecase.GetSellerCampaignListUseCase
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Result
+import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.usecase.launch_cache_error.launchCatchError
 import javax.inject.Inject
 
 class CampaignDataPickerViewModel @Inject constructor(
-    private val dispatchers: CoroutineDispatchers
+    private val dispatchers: CoroutineDispatchers,
+    private val getSellerCampaignListUseCase: GetSellerCampaignListUseCase,
+    private val getSellerCampaignAttributeUseCase: GetSellerCampaignAttributeUseCase
 ) : BaseViewModel(dispatchers.main) {
 
-    private val _areInputValid = SingleLiveEvent<Boolean>()
-    val areInputValid: LiveData<Boolean>
-        get() = _areInputValid
+    companion object {
+        private const val CAMPAIGN_TO_FETCH = 100
+    }
+
+    private val _campaigns = MutableLiveData<Result<List<GroupedCampaign>>>()
+    val campaigns: LiveData<Result<List<GroupedCampaign>>>
+        get() = _campaigns
+
+    private val _campaignQuota = MutableLiveData<Result<Int>>()
+    val campaignQuota: LiveData<Result<Int>>
+        get() = _campaignQuota
+
+    fun getUpcomingCampaigns() {
+        launchCatchError(
+            dispatchers.io,
+            block = {
+                val campaigns = getSellerCampaignListUseCase.execute(
+                    rows = CAMPAIGN_TO_FETCH,
+                    offset = Constant.FIRST_PAGE,
+                    statusId = listOf(CampaignStatus.READY_LOCKED.id, CampaignStatus.IN_SUBMISSION.id)
+                )
+                val groupedCampaign = groupByDate(campaigns.campaigns)
+                _campaigns.postValue(Success(groupedCampaign))
+            },
+            onError = { error ->
+                _campaigns.postValue(Fail(error))
+            }
+        )
+
+    }
+
+    fun getCampaignQuota(month : Int, year: Int) {
+        launchCatchError(
+            dispatchers.io,
+            block = {
+                val campaignAttribute = getSellerCampaignAttributeUseCase.execute(
+                    month = month,
+                    year = year
+                )
+
+                _campaignQuota.postValue(Success(campaignAttribute.remainingCampaignQuota))
+            },
+            onError = { error ->
+                _campaignQuota.postValue(Fail(error))
+            }
+        )
+
+    }
 
 
-    fun validateInput() {
 
+    private fun groupByDate(campaigns: List<CampaignUiModel>): List<GroupedCampaign> {
+        return campaigns
+            .groupBy { it.startDate.dateOnly() }
+            .map { GroupedCampaign(it.key, it.value.size) }
     }
 }
