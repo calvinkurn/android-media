@@ -103,7 +103,6 @@ class TradeInHomePageActivity : BaseViewModelActivity<TradeInHomePageVM>(),
         super.onCreate(savedInstanceState)
         supportActionBar?.hide()
         setObservers()
-        viewModel.setLaku6(this)
         viewModel.checkLogin()
     }
 
@@ -195,11 +194,13 @@ class TradeInHomePageActivity : BaseViewModelActivity<TradeInHomePageVM>(),
     }
 
     private fun setUpEducationalFragment() {
+        viewModel.setLaku6(this)
+
         val newFragment = TradeInEducationalPageFragment.getFragmentInstance()
         (newFragment as TradeInEducationalPageFragment).setUpTradeInClick(this)
         supportFragmentManager.beginTransaction()
             .replace(parentViewResourceID, newFragment, newFragment.tag)
-            .commit()
+            .commitAllowingStateLoss()
         tradeInAnalytics.openEducationalScreen()
     }
 

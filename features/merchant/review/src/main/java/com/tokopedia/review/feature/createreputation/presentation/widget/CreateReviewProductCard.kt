@@ -2,80 +2,116 @@ package com.tokopedia.review.feature.createreputation.presentation.widget
 
 import android.content.Context
 import android.util.AttributeSet
-import android.view.View
-import androidx.appcompat.widget.AppCompatImageView
-import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.constraintlayout.widget.ConstraintSet
+import android.view.LayoutInflater
+import android.view.animation.AccelerateInterpolator
+import androidx.transition.Fade
+import androidx.transition.TransitionManager
+import com.tokopedia.kotlin.extensions.view.ZERO
+import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.media.loader.loadImage
-import com.tokopedia.review.R
+import com.tokopedia.review.databinding.WidgetCreateReviewProductCardBinding
 import com.tokopedia.review.feature.createreputation.model.ProductData
-import com.tokopedia.unifycomponents.BaseCustomView
-import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.review.feature.createreputation.presentation.uistate.CreateReviewProductCardUiState
 
-
-class CreateReviewProductCard : BaseCustomView {
+class CreateReviewProductCard @JvmOverloads constructor(
+    context: Context,
+    attrs: AttributeSet? = null,
+    defStyleAttr: Int = Int.ZERO
+) : BaseCreateReviewCustomView<WidgetCreateReviewProductCardBinding>(context, attrs, defStyleAttr) {
 
     companion object {
-        private const val PRODUCT_NAME_MAX_LINES_WITH_VARIANT = 1
+        private const val TRANSITION_DURATION = 300L
     }
 
-    private var productImage: AppCompatImageView? = null
-    private var productName: Typography? = null
-    private var productVariant: Typography? = null
-    private var constraintLayout: ConstraintLayout? = null
+    private val transitionHandler = TransitionHandler()
 
-    constructor(context: Context): super(context) {
-        init()
-    }
-    constructor(context: Context, attrs: AttributeSet): super(context, attrs) {
-        init()
+    override val binding = WidgetCreateReviewProductCardBinding.inflate(LayoutInflater.from(context), this, true)
+
+    private fun showLoading() {
+        transitionHandler.transitionToShowLoading()
     }
 
-    constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int): super(context, attrs, defStyleAttr) {
-        init()
+    private fun WidgetCreateReviewProductCardBinding.showProductCard(
+        uiState: CreateReviewProductCardUiState.Showing
+    ) {
+        transitionHandler.transitionToShowProductCard()
+        setupProductCard(uiState.productData)
     }
 
-    fun setProduct(product: ProductData) {
-        with(product) {
-            productImage?.loadImage(productImageURL)
-            showProductName(productName)
-            showProductVariant(productVariant.variantName)
+    private fun WidgetCreateReviewProductCardBinding.setupProductCard(
+        productData: ProductData
+    ) {
+        with(layoutProductCard) {
+            reviewFormProductName.run {
+                text = productData.productName
+                showWithCondition(productData.productName.isNotBlank())
+            }
+            reviewFormProductVariant.run {
+                text = productData.productVariant.variantName
+                showWithCondition(productData.productVariant.variantName.isNotBlank())
+            }
+            reviewFormProductImage.loadImage(productData.productImageURL)
         }
     }
 
-    private fun init() {
-        View.inflate(context, R.layout.widget_create_review_product_card, this)
-        bindViews()
-    }
-
-    private fun bindViews() {
-        productImage = findViewById(R.id.review_form_product_image)
-        productName = findViewById(R.id.review_form_product_name)
-        productVariant = findViewById(R.id.review_form_product_variant)
-        constraintLayout = findViewById(R.id.review_form_product_card_layout)
-    }
-
-    private fun showProductName(name: String) {
-        productName?.apply {
-            text = name
-            show()
+    fun updateUi(uiState: CreateReviewProductCardUiState) {
+        when(uiState) {
+            is CreateReviewProductCardUiState.Loading -> {
+                showLoading()
+                animateShow()
+            }
+            is CreateReviewProductCardUiState.Showing -> {
+                binding.showProductCard(uiState)
+                animateShow()
+            }
         }
     }
 
-    private fun showProductVariant(variant: String) {
-        if(variant.isBlank()) return
-        productVariant?.apply {
-            text = context.getString(R.string.review_pending_variant, variant)
-            show()
+    private inner class TransitionHandler {
+        private val fadeTransition by lazy(LazyThreadSafetyMode.NONE) {
+            Fade().apply {
+                duration = TRANSITION_DURATION
+                addTarget(binding.layoutProductCard.root)
+                addTarget(binding.layoutProductCardLoading.root)
+                interpolator = AccelerateInterpolator()
+            }
         }
-        productName?.apply {
-            maxLines = PRODUCT_NAME_MAX_LINES_WITH_VARIANT
-            constraintLayout?.let {
-                val constraintSet = ConstraintSet()
-                constraintSet.clone(constraintLayout)
-                constraintSet.clear(R.id.review_form_product_name, ConstraintSet.BOTTOM)
-                constraintSet.applyTo(constraintLayout)
+
+        private fun WidgetCreateReviewProductCardBinding.showLoadingLayout() {
+            layoutProductCardLoading.root.show()
+        }
+
+        private fun WidgetCreateReviewProductCardBinding.hideLoadingLayout() {
+            layoutProductCardLoading.root.gone()
+        }
+
+        private fun WidgetCreateReviewProductCardBinding.showProductCardLayout() {
+            layoutProductCard.root.show()
+        }
+
+        private fun WidgetCreateReviewProductCardBinding.hideProductCardLayout() {
+            layoutProductCard.root.gone()
+        }
+
+        private fun WidgetCreateReviewProductCardBinding.beginDelayedTransition() {
+            TransitionManager.beginDelayedTransition(root, fadeTransition)
+        }
+
+        fun transitionToShowProductCard() {
+            with(binding) {
+                beginDelayedTransition()
+                hideLoadingLayout()
+                showProductCardLayout()
+            }
+        }
+
+        fun transitionToShowLoading() {
+            with(binding) {
+                beginDelayedTransition()
+                hideProductCardLayout()
+                showLoadingLayout()
             }
         }
     }
