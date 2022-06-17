@@ -1,12 +1,14 @@
 package com.tokopedia.feedplus.data.pojo;
 
+import android.annotation.SuppressLint;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 public class TagsFeedKol {
   @SerializedName("id")
   @Expose
-  private Integer id;
+  private String id;
 
   @SerializedName("type")
   @Expose
@@ -16,6 +18,7 @@ public class TagsFeedKol {
   @Expose
   private String link;
 
+  @SuppressLint("Invalid Data Type")
   @SerializedName("price")
   @Expose
   private String price;
@@ -36,7 +39,7 @@ public class TagsFeedKol {
   @Expose
   private String captionEng;
 
-  public void setId(Integer id) {
+  public void setId(String id) {
     this.id = id;
   }
 
@@ -68,7 +71,7 @@ public class TagsFeedKol {
     this.captionEng = captionEng;
   }
 
-  public Integer getId() {
+  public String getId() {
     return this.id;
   }
 

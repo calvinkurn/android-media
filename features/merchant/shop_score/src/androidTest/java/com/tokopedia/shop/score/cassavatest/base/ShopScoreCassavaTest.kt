@@ -73,12 +73,6 @@ open class ShopScoreCassavaTest : BaseShopScoreTest() {
         validate(CLICK_TICKER_PENALTY_PATH)
     }
 
-    protected fun clickRegularMerchantSection() {
-        activityRule.activity.scrollTo<ItemStatusRMUiModel>()
-        onIdView(R.id.tv_see_all_benefit_pm).isViewDisplayed().onClick()
-        validate(CLICK_REGULAR_MERCHANT_SECTION_PATH)
-    }
-
     protected fun clickWatchVideoNewSeller() {
         onIdView(R.id.ic_video_shop_performance_learn).isViewDisplayed().onClick()
         validate(CLICK_WATCH_VIDEO_NEW_SELLER_PATH)
