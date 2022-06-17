@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.widget.NestedScrollView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -86,7 +87,7 @@ class ShopReviewFragment : ReadReviewFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         showShopPageReviewHeader()
-        setupRecyclerViewOnScrollListener()
+        setupRecyclerView()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -135,11 +136,27 @@ class ShopReviewFragment : ReadReviewFragment() {
             show()
         }
         nestedScrollViewContainer?.visible()
+        view?.let {
+            getRecyclerView(it)?.apply {
+                val newLayoutParams = (layoutParams as ConstraintLayout.LayoutParams).apply {
+                    height = ViewGroup.LayoutParams.WRAP_CONTENT
+                }
+                layoutParams = newLayoutParams
+            }
+        }
     }
 
     override fun hideFilteredEmpty() {
         super.hideFilteredEmpty()
         nestedScrollViewContainer?.gone()
+        view?.let {
+            getRecyclerView(it)?.apply {
+                val newLayoutParams = (layoutParams as ConstraintLayout.LayoutParams).apply {
+                    height = Int.ZERO
+                }
+                layoutParams = newLayoutParams
+            }
+        }
     }
 
     override fun showError(throwable: Throwable) {
@@ -160,9 +177,11 @@ class ShopReviewFragment : ReadReviewFragment() {
 
     override fun hasInitialSwipeRefresh(): Boolean = false
 
-    private fun setupRecyclerViewOnScrollListener() {
+    private fun setupRecyclerView() {
         view?.let {
             val recyclerView = getRecyclerView(it) ?: return
+
+            // setup listeners
             recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
 
                 override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
