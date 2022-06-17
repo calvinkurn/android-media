@@ -557,7 +557,7 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
             viewModel.updateQuantityStateFlow
                 .collect { param ->
                     param?.let {
-                        activityViewModel?.updateQuantity(it, SOURCE)
+                        activityViewModel?.updateQuantity(it, SOURCE, false)
                     }
                 }
         }
@@ -660,7 +660,7 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
                 setPrimaryCTAText(getString(com.tokopedia.tokofood.R.string.text_purchase_delete))
                 setSecondaryCTAText(getString(com.tokopedia.tokofood.R.string.text_purchase_back))
                 setPrimaryCTAClickListener {
-                    activityViewModel?.deleteUnavailableProducts(SOURCE)
+                    activityViewModel?.deleteUnavailableProducts()
                     dismiss()
                 }
                 setSecondaryCTAClickListener {
@@ -965,7 +965,9 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
         activityViewModel?.deleteProduct(
             productId = element.id,
             cartId = element.cartId,
-            source = SOURCE)
+            source = SOURCE,
+            shouldRefreshCart = false
+        )
     }
 
     override fun onTextChangeNotesClicked(element: TokoFoodPurchaseProductTokoFoodPurchaseUiModel) {
@@ -977,7 +979,7 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
                                 listOf(element.copy(notes = notes)),
                                 shopId
                             )
-                        activityViewModel?.updateNotes(updateParam, SOURCE)
+                        activityViewModel?.updateNotes(updateParam, SOURCE, false)
                     }
                 }
         )

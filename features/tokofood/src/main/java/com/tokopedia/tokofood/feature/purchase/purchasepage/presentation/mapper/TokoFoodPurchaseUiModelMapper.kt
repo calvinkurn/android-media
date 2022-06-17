@@ -279,7 +279,7 @@ object TokoFoodPurchaseUiModelMapper {
         variants.forEach { variant ->
             variant.options.forEach { option ->
                 if (option.isSelected) {
-                    pairList.add("${variant.name}: ${option.name}" to UpdateProductVariantParam(variant.name, option.optionId))
+                    pairList.add("${variant.name}: ${option.name}" to UpdateProductVariantParam(variant.variantId, option.optionId))
                 }
             }
         }
