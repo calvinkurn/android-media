@@ -120,8 +120,8 @@ class UserConsentWidget : FrameLayout, UserConsentPurposeViewHolder.UserConsentP
         val typedArray = context.theme.obtainStyledAttributes(
             attributeSet,
             R.styleable.UserConsentWidget,
-            NUMBER_ZERO,
-            NUMBER_ZERO
+            0,
+            0
         )
 
         actionText = typedArray.getString(R.styleable.UserConsentWidget_actionText)
@@ -149,7 +149,7 @@ class UserConsentWidget : FrameLayout, UserConsentPurposeViewHolder.UserConsentP
                     is UserConsentStateResult.Success -> {
                         setLoader(false)
                         result.data?.let { data ->
-                            collection = data.collectionPoints[NUMBER_ZERO]
+                            collection = data.collectionPoints.first()
                             onSuccessGetConsentCollection()
                         }
                     }
@@ -195,7 +195,7 @@ class UserConsentWidget : FrameLayout, UserConsentPurposeViewHolder.UserConsentP
     private fun renderSinglePurpose() {
         var purposeText = ""
         if (collection?.purposes?.size.orZero() == NUMBER_ONE) {
-            purposeText = collection?.purposes?.get(NUMBER_ZERO)?.description.orEmpty()
+            purposeText = collection?.purposes?.first()?.description.orEmpty()
         } else {
             collection?.purposes?.forEachIndexed { index, purposeDataModel ->
                 purposeText += when(index) {
@@ -356,7 +356,6 @@ class UserConsentWidget : FrameLayout, UserConsentPurposeViewHolder.UserConsentP
     }
 
     companion object {
-        private const val NUMBER_ZERO = 0
         private const val NUMBER_ONE = 1
         private const val NUMBER_TWO = 2
     }

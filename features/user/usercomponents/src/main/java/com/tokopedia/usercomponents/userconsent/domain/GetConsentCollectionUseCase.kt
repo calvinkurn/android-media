@@ -1,15 +1,16 @@
 package com.tokopedia.usercomponents.userconsent.domain
 
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.graphql.coroutines.data.extensions.request
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.domain.coroutine.CoroutineUseCase
-import kotlinx.coroutines.Dispatchers
 import javax.inject.Inject
 
 class GetConsentCollectionUseCase @Inject constructor(
-    @ApplicationContext private val repository: GraphqlRepository
-): CoroutineUseCase<ConsentCollectionParam, ConsentCollectionResponse>(Dispatchers.IO) {
+    @ApplicationContext private val repository: GraphqlRepository,
+    dispatchers: CoroutineDispatchers
+): CoroutineUseCase<ConsentCollectionParam, ConsentCollectionResponse>(dispatchers.io) {
 
     override suspend fun execute(params: ConsentCollectionParam): ConsentCollectionResponse {
         return repository.request(graphqlQuery(), params)
