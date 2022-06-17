@@ -34,7 +34,7 @@ class InsertWebSocketLogUseCase @Inject constructor(
                 event = it.event,
                 message = it.message,
                 timestamp = System.currentTimeMillis(),
-                whId = it.generalInfo.warehouseId,
+                warehouseId = it.generalInfo.warehouseId,
             )
             webSocketLogRespository.insert(request)
         }

@@ -71,7 +71,7 @@
             android:id="@+id/tv_websocket_detail_log_gc_token_label"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/spacing_lvl3"
+            android:layout_marginTop="@dimen/spacing_lvl2"
             android:ellipsize="end"
             android:maxLines="1"
             android:text="@string/websocket_log_gc_token_label"

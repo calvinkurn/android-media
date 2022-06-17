@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import androidx.fragment.app.Fragment
 import com.tokopedia.analyticsdebugger.R
 import com.tokopedia.unifyprinciples.Typography
@@ -19,7 +18,7 @@ class WebSocketDetailLoggingFragment: Fragment() {
     private lateinit var tvChannelID: Typography
     private lateinit var tvGcToken: Typography
     private lateinit var tvMessage: Typography
-    private lateinit var tvWarehouseId: TextView
+    private lateinit var tvWarehouseId: Typography
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -51,7 +50,7 @@ class WebSocketDetailLoggingFragment: Fragment() {
             tvChannelID.text = it.getString(EXTRA_CHANNEL_ID)
             tvGcToken.text = it.getString(EXTRA_GC_TOKEN)
             tvMessage.text = it.getString(EXTRA_MESSAGE)
-            tvWarehouseId.text = it.getString(EXTRA_WH_ID)
+            tvWarehouseId.text = it.getString(EXTRA_WAREHOUSE_ID)
         }
     }
 
@@ -61,6 +60,6 @@ class WebSocketDetailLoggingFragment: Fragment() {
         const val EXTRA_CHANNEL_ID = "EXTRA_CHANNEL_ID"
         const val EXTRA_GC_TOKEN = "EXTRA_GC_TOKEN"
         const val EXTRA_MESSAGE = "EXTRA_MESSAGE"
-        const val EXTRA_WH_ID = "EXTRA_WH_ID"
+        const val EXTRA_WAREHOUSE_ID = "EXTRA_WAREHOUSE_ID"
     }
 }

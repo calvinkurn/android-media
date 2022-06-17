@@ -173,7 +173,7 @@ class WebSocketLoggingFragment: Fragment() {
                 WebSocketDetailLoggingFragment.EXTRA_CHANNEL_ID to it.generalInfo.channelId,
                 WebSocketDetailLoggingFragment.EXTRA_GC_TOKEN to it.generalInfo.gcToken,
                 WebSocketDetailLoggingFragment.EXTRA_MESSAGE to it.message,
-                WebSocketDetailLoggingFragment.EXTRA_WH_ID to it.generalInfo.warehouseId
+                WebSocketDetailLoggingFragment.EXTRA_WAREHOUSE_ID to it.generalInfo.warehouseId
             )
             findNavController().navigate(R.id.action_webSocketLoggingFragment_to_webSocketDetailLoggingFragment, bundle)
         }
