@@ -62,49 +62,19 @@ class KycUploadViewModel @Inject constructor(
                 Timber.d("$LIVENESS_TAG: Start uploading")
 
                 if(isKtpFileUsingEncryption) {
-                    try {
-                        val startTime = System.currentTimeMillis()
-                        kycSharedPreference.getByteArrayCache(KYC_IV_KTP_CACHE)?.let { ivKey ->
-                            finalKtp = decryptImage(ktpPath, ivKey, KYC_IV_KTP_CACHE)
-                        }
-                        encryptionTimeKtp = System.currentTimeMillis() - startTime
-                    } catch (e: Exception) {
-                        val message = "$FAILED_ENCRYPTION : on decrypt file KTP; error: ${e.message}"
-                        sendLoadTimeUploadLog(
-                            type = FAIL,
-                            uploadTime = System.currentTimeMillis() - startTimeLog,
-                            encryptionTimeFileKtp = encryptionTimeKtp,
-                            encryptionTimeFileFace = encryptionTimeFace,
-                            fileKtp = finalKtp,
-                            fileFace = finalFace,
-                            message = message
-                        )
-                        _kycResponse.postValue(Fail(Throwable(message)))
-                        return@withContext
+                    val startTime = System.currentTimeMillis()
+                    kycSharedPreference.getByteArrayCache(KYC_IV_KTP_CACHE)?.let { ivKey ->
+                        finalKtp = decryptImage(ktpPath, ivKey, KYC_IV_KTP_CACHE)
                     }
+                    encryptionTimeKtp = System.currentTimeMillis() - startTime
                 }
 
                 if (isFaceFileUsingEncryption) {
-                    try {
-                        val startTime = System.currentTimeMillis()
-                        kycSharedPreference.getByteArrayCache(KYC_IV_FACE_CACHE)?.let { ivKey ->
-                            finalFace = decryptImage(facePath, ivKey, KYC_IV_FACE_CACHE)
-                        }
-                        encryptionTimeFace = System.currentTimeMillis() - startTime
-                    } catch (e: Exception) {
-                        val message = "$FAILED_ENCRYPTION : on decrypt file Selfie/Liveness; error: ${e.message}"
-                        sendLoadTimeUploadLog(
-                            type = FAIL,
-                            uploadTime = System.currentTimeMillis() - startTimeLog,
-                            encryptionTimeFileKtp = encryptionTimeKtp,
-                            encryptionTimeFileFace = encryptionTimeFace,
-                            fileKtp = finalKtp,
-                            fileFace = finalFace,
-                            message = message
-                        )
-                        _kycResponse.postValue(Fail(Throwable(message)))
-                        return@withContext
+                    val startTime = System.currentTimeMillis()
+                    kycSharedPreference.getByteArrayCache(KYC_IV_FACE_CACHE)?.let { ivKey ->
+                        finalFace = decryptImage(facePath, ivKey, KYC_IV_FACE_CACHE)
                     }
+                    encryptionTimeFace = System.currentTimeMillis() - startTime
                 }
 
                 when {
