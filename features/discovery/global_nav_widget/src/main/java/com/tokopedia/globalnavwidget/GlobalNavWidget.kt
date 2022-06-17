@@ -27,11 +27,14 @@ class GlobalNavWidget: BaseCustomView {
     private val globalNavTitleLayout: LinearLayout? by lazy(NONE) {
         findViewById(R.id.globalNavTitleLayout)
     }
-    private val globalNavTitle: Typography?? by lazy(NONE) {
+    private val globalNavTitle: Typography? by lazy(NONE) {
         findViewById(R.id.globalNavTitle)
     }
     private val globalNavSeeAllButton: Typography? by lazy(NONE) {
         findViewById(R.id.globalNavSeeAllButton)
+    }
+    private val globalNavInfo: Typography? by lazy(NONE) {
+        findViewById(R.id.globalNavInfo)
     }
     private val globalNavPillRecyclerView: RecyclerView? by lazy(NONE) {
         findViewById(R.id.globalNavPillRecyclerView)
@@ -121,6 +124,7 @@ class GlobalNavWidget: BaseCustomView {
 
     private fun hideGlobalNavListContainer() {
         globalNavTitleLayout?.visibility = View.GONE
+        globalNavInfo?.visibility = View.GONE
         globalNavCardRecyclerView?.visibility = View.GONE
         globalNavPillRecyclerView?.visibility = View.GONE
     }
@@ -236,6 +240,8 @@ class GlobalNavWidget: BaseCustomView {
     private fun handleGlobalNav(globalNavWidgetModel: GlobalNavWidgetModel, globalNavWidgetListener: GlobalNavWidgetListener) {
         setBackground(globalNavWidgetModel.background)
         setGlobalNavTitle(globalNavWidgetModel.title)
+        setGlobalNavInfo(globalNavWidgetModel.info)
+        setSeeAllText(globalNavWidgetModel.navTemplate)
         setSeeAllButtonListener(globalNavWidgetModel, globalNavWidgetListener)
         setGlobalNavContent(globalNavWidgetModel, globalNavWidgetListener)
     }
@@ -244,7 +250,23 @@ class GlobalNavWidget: BaseCustomView {
         globalNavTitle?.text = MethodChecker.fromHtml(title)
     }
 
-    private fun setSeeAllButtonListener(globalNavWidgetModel: GlobalNavWidgetModel, globalNavWidgetListener: GlobalNavWidgetListener) {
+    private fun setGlobalNavInfo(info: String) {
+        globalNavInfo?.shouldShowWithAction(info.isNotEmpty()) {
+            it.text = info
+        }
+    }
+
+    private fun setSeeAllText(navTemplate: String) {
+        if (navTemplate == GlobalNavWidgetConstant.NAV_TEMPLATE_CATALOG)
+            globalNavSeeAllButton?.text = context.getString(R.string.global_nav_see_catalog)
+        else
+            globalNavSeeAllButton?.text = context.getString(R.string.global_nav_see_all_text)
+    }
+
+    private fun setSeeAllButtonListener(
+        globalNavWidgetModel: GlobalNavWidgetModel,
+        globalNavWidgetListener: GlobalNavWidgetListener
+    ) {
         val shouldShowSeeAllButton = globalNavWidgetModel.clickSeeAllApplink.isNotEmpty()
 
         globalNavSeeAllButton?.shouldShowWithAction(shouldShowSeeAllButton) { globalNavSeeAllButton ->

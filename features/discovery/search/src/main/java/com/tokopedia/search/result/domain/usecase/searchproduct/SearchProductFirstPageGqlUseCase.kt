@@ -272,6 +272,7 @@ class SearchProductFirstPageGqlUseCase(
                         show_topads
                         tracking_option
                         component_id
+                        info
                         list {
                             category_name
                             name

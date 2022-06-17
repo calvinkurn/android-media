@@ -628,7 +628,11 @@ data class SearchProductModel(
 
             @SerializedName("list")
             @Expose
-            val globalNavItems: List<GlobalNavItem> = ArrayList()
+            val globalNavItems: List<GlobalNavItem> = ArrayList(),
+
+            @SerializedName("info")
+            @Expose
+            val info: String = "",
     )
 
     data class GlobalNavItem(

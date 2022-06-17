@@ -23,6 +23,7 @@ class GlobalNavDataView(
     val componentId: String = "",
     val trackingOption: Int = 0,
     val dimension90: String = "",
+    val info: String = "",
 ): Visitable<ProductListTypeFactory?>, ImpressHolder(),
     SearchComponentTracking by searchComponentTracking(
         trackingOption = trackingOption,
@@ -94,6 +95,7 @@ class GlobalNavDataView(
                 trackingOption = data.trackingOption,
                 itemList = convertToViewModel(data, dimension90),
                 dimension90 = dimension90,
+                info = data.info
             )
         }
 
