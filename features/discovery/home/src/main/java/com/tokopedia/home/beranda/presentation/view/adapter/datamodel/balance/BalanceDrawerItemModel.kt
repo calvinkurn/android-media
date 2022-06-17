@@ -33,8 +33,6 @@ data class BalanceDrawerItemModel(
 
         const val TYPE_REWARDS = 4
 
-        const val TYPE_WALLET_OVO = 5
-
         const val TYPE_WALLET_WITH_TOPUP = 6
 
         const val TYPE_WALLET_OTHER = 7

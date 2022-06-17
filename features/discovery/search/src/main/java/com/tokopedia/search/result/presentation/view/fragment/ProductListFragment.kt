@@ -39,6 +39,7 @@ import com.tokopedia.discovery.common.utils.Dimension90Utils
 import com.tokopedia.discovery.common.utils.URLParser
 import com.tokopedia.filter.bottomsheet.SortFilterBottomSheet
 import com.tokopedia.filter.bottomsheet.SortFilterBottomSheet.ApplySortFilterModel
+import com.tokopedia.filter.bottomsheet.filtergeneraldetail.FilterGeneralDetailBottomSheet
 import com.tokopedia.filter.common.data.DynamicFilterModel
 import com.tokopedia.filter.common.data.Filter
 import com.tokopedia.filter.common.data.Option
@@ -1096,15 +1097,17 @@ class ProductListFragment: BaseDaggerFragment(),
     }
 
     private fun setSortFilterNewNotification(items: List<SortFilterItem>) {
-        val quickFilterOptionList = presenter?.quickFilterOptionList ?: listOf()
+        val quickFilterList = presenter?.quickFilterList ?: listOf()
         for (i in items.indices) {
-            if (i >= quickFilterOptionList.size) break
+            if (i >= quickFilterList.size) break
             val item = items[i]
-            val quickFilterOption = quickFilterOptionList[i]
+            val quickFilter = quickFilterList[i]
 
-            sortFilterItemShowNew(item, quickFilterOption.isNew)
+            sortFilterItemShowNew(item, isFilterHasNewOption(quickFilter))
         }
     }
+
+    private fun isFilterHasNewOption(filter: Filter): Boolean = filter.options.all { it.isNew }
 
     private fun sortFilterItemShowNew(item: SortFilterItem, isNew: Boolean) {
         item.refChipUnify.showNewNotification = isNew
@@ -2069,6 +2072,50 @@ class ProductListFragment: BaseDaggerFragment(),
         productListAdapter?.removeLastFilterWidget()
 
         presenter?.closeLastFilter(searchParameterMap)
+    }
+    //endregion
+
+    //region dropdown quick filter
+    override fun openBottomsheetMultipleOptionsQuickFilter(filter: Filter) {
+        val filterDetailCallback = object: FilterGeneralDetailBottomSheet.Callback {
+            override fun onApplyButtonClicked(optionList: List<Option>?) {
+                presenter?.onApplyDropdownQuickFilter(optionList)
+            }
+        }
+
+        setupActiveOptionsQuickFilter(filter)
+
+        FilterGeneralDetailBottomSheet().show(
+            parentFragmentManager,
+            filter,
+            filterDetailCallback,
+            getString(R.string.search_quick_filter_dropdown_apply_button_text)
+        )
+    }
+
+    private fun setupActiveOptionsQuickFilter(filter: Filter) {
+        filter.options.forEach {
+            it.inputState = isFilterSelected(it).toString()
+        }
+    }
+
+    override fun applyDropdownQuickFilter(optionList: List<Option>?) {
+        filterController.setFilter(optionList)
+
+        val queryParams = filterController.getParameter().addFilterOrigin()
+        refreshSearchParameter(queryParams)
+
+        updateLastFilter()
+
+        reloadData()
+    }
+
+    override fun trackEventClickDropdownQuickFilter(filterTitle: String) {
+        SearchTracking.trackEventClickDropdownQuickFilter(filterTitle)
+    }
+
+    override fun trackEventApplyDropdownQuickFilter(optionList: List<Option>?) {
+        SearchTracking.trackEventApplyDropdownQuickFilter(optionList)
     }
     //endregion
 }

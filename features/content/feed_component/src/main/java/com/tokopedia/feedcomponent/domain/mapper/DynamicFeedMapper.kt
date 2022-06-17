@@ -82,7 +82,7 @@ class DynamicFeedMapper @Inject constructor() : Func1<GraphqlResponse, DynamicFe
         feedQuery?.let {
             for (feed in it.feedv2.data) {
                 val templateData: TemplateData = it.feedv2.included.template.firstOrNull { templateData ->
-                    templateData.id == feed.template
+                    templateData.id == feed.template.toString()
                 } ?: break
 
                 when (feed.type) {
@@ -207,9 +207,9 @@ class DynamicFeedMapper @Inject constructor() : Func1<GraphqlResponse, DynamicFe
                         card.media.firstOrNull()?.type ?: "",
                         card.header.avatarTitle,
                         AUTHOR_TOPADS_SHOP,
-                        card.header.followCta.authorID.toIntOrNull() ?: 0,
+                        card.header.followCta.authorID ,
                         index,
-                        feed.tracking.topads.getOrNull(index)?.id.toIntOrZero()
+                        feed.tracking.topads.getOrNull(index)?.id?:""
                 ))
                 card.tracking.firstOrNull()?.let { tracking ->
                     trackingList.add(TrackingViewModel(
@@ -252,7 +252,7 @@ class DynamicFeedMapper @Inject constructor() : Func1<GraphqlResponse, DynamicFe
                     card.media.firstOrNull()?.type ?: "",
                     card.header.avatarTitle,
                     card.header.followCta.authorType,
-                    card.header.followCta.authorID.toIntOrNull() ?: 0,
+                    card.header.followCta.authorID,
                     index
             )
 

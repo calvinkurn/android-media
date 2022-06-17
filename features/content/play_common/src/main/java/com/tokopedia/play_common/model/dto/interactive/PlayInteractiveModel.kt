@@ -8,7 +8,7 @@ import kotlin.contracts.contract
  * Created by jegul on 07/07/21
  */
 data class PlayCurrentInteractiveModel(
-        val id: Long = 0L,
+        val id: String = "",
         val type: InteractiveType = InteractiveType.Unknown,
         val title: String = "",
         val timeStatus: PlayInteractiveTimeStatus = PlayInteractiveTimeStatus.Unknown,
@@ -17,6 +17,7 @@ data class PlayCurrentInteractiveModel(
 
 enum class InteractiveType(val type: Int) {
     QuickTap(0),
+    Quiz(1),
     Unknown(-1);
 
     companion object {

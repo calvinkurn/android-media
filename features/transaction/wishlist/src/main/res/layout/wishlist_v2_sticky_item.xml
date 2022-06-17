@@ -78,14 +78,18 @@
         android:visibility="gone">
 
         <com.tokopedia.unifycomponents.CardUnify2
-            android:layout_width="match_parent"
+            android:id="@+id/card_wishlist_v2_sticky_deletion"
+            android:layout_width="wrap_content"
             android:layout_height="82dp"
             app:cardBackgroundColor="@color/Unify_Background"
-            app:cardCornerRadius="4dp"
             app:contentPaddingBottom="12dp"
             app:contentPaddingLeft="16dp"
             app:contentPaddingRight="16dp"
-            app:contentPaddingTop="12dp">
+            app:contentPaddingTop="12dp"
+            app:cardCornerRadius="8dp"
+            app:cardElevation="4dp"
+            app:cardPreventCornerOverlap="false"
+            android:layout_margin="4dp">
 
             <RelativeLayout
                 android:layout_width="match_parent"
