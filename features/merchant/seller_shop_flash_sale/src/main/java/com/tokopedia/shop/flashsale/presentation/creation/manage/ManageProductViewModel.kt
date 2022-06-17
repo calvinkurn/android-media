@@ -26,6 +26,9 @@ class ManageProductViewModel @Inject constructor(
     companion object {
         private const val ROWS = 50
         private const val OFFSET = 0
+        private const val MIN_CAMPAIGN_STOCK = 1
+        private const val MIN_CAMPAIGN_DISCOUNTED_PRICE = 100
+        private const val MAX_CAMPAIGN_DISCOUNT_PERCENTAGE = 0.99
     }
 
     private val _products = MutableLiveData<Result<SellerCampaignProductList>>()
@@ -58,7 +61,7 @@ class ManageProductViewModel @Inject constructor(
     fun getProductErrorMessage(productMapData: SellerCampaignProductList.ProductMapData): String {
         var errorMsg = ""
         val maxDiscountedPrice =
-            (productMapData.originalPrice * ManageProductListAdapter.ManageProductListViewHolder.MAX_CAMPAIGN_DISCOUNT_PERCENTAGE).toInt()
+            (productMapData.originalPrice * MAX_CAMPAIGN_DISCOUNT_PERCENTAGE).toInt()
                 .convertRupiah()
         when {
             productMapData.discountedPrice > productMapData.originalPrice -> {
@@ -68,10 +71,10 @@ class ManageProductViewModel @Inject constructor(
                     productMapData.customStock > productMapData.originalStock -> {
                         errorMsg += ManageProductErrorMessage.OTHER.errorMsg
                     }
-                    productMapData.discountedPrice < ManageProductListAdapter.ManageProductListViewHolder.MIN_CAMPAIGN_DISCOUNTED_PRICE -> {
+                    productMapData.discountedPrice < MIN_CAMPAIGN_DISCOUNTED_PRICE -> {
                         errorMsg += ManageProductErrorMessage.OTHER.errorMsg
                     }
-                    productMapData.customStock < ManageProductListAdapter.ManageProductListViewHolder.MIN_CAMPAIGN_STOCK -> {
+                    productMapData.customStock < MIN_CAMPAIGN_STOCK -> {
                         errorMsg += ManageProductErrorMessage.OTHER.errorMsg
                     }
                     productMapData.maxOrder > productMapData.customStock -> {
@@ -84,10 +87,10 @@ class ManageProductViewModel @Inject constructor(
                 errorMsg =
                     ManageProductErrorMessage.MAX_CAMPAIGN_STOCK.errorMsg + "${productMapData.originalStock}"
                 when {
-                    productMapData.discountedPrice < ManageProductListAdapter.ManageProductListViewHolder.MIN_CAMPAIGN_DISCOUNTED_PRICE -> {
+                    productMapData.discountedPrice < MIN_CAMPAIGN_DISCOUNTED_PRICE -> {
                         errorMsg += ManageProductErrorMessage.OTHER.errorMsg
                     }
-                    productMapData.customStock < ManageProductListAdapter.ManageProductListViewHolder.MIN_CAMPAIGN_STOCK -> {
+                    productMapData.customStock < MIN_CAMPAIGN_STOCK -> {
                         errorMsg += ManageProductErrorMessage.OTHER.errorMsg
                     }
                     productMapData.maxOrder > productMapData.customStock -> {
@@ -96,10 +99,10 @@ class ManageProductViewModel @Inject constructor(
                 }
             }
 
-            productMapData.discountedPrice < ManageProductListAdapter.ManageProductListViewHolder.MIN_CAMPAIGN_DISCOUNTED_PRICE -> {
+            productMapData.discountedPrice < MIN_CAMPAIGN_DISCOUNTED_PRICE -> {
                 errorMsg = ManageProductErrorMessage.MIN_CAMPAIGN_DISCOUNTED_PRICE.errorMsg
                 when {
-                    productMapData.customStock < ManageProductListAdapter.ManageProductListViewHolder.MIN_CAMPAIGN_STOCK -> {
+                    productMapData.customStock < MIN_CAMPAIGN_STOCK -> {
                         errorMsg += ManageProductErrorMessage.OTHER.errorMsg
                     }
                     productMapData.maxOrder > productMapData.customStock -> {
@@ -108,7 +111,7 @@ class ManageProductViewModel @Inject constructor(
                 }
             }
 
-            productMapData.customStock < ManageProductListAdapter.ManageProductListViewHolder.MIN_CAMPAIGN_STOCK -> {
+            productMapData.customStock < MIN_CAMPAIGN_STOCK -> {
                 errorMsg = ManageProductErrorMessage.MIN_CAMPAIGN_STOCK.errorMsg
                 when {
                     productMapData.maxOrder > productMapData.customStock -> {

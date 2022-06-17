@@ -57,12 +57,6 @@ class ManageProductListAdapter(
     class ManageProductListViewHolder(private val binding: SsfsItemManageProductBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
-        companion object {
-            const val MIN_CAMPAIGN_STOCK = 1
-            const val MIN_CAMPAIGN_DISCOUNTED_PRICE = 100
-            const val MAX_CAMPAIGN_DISCOUNT_PERCENTAGE = 0.99
-        }
-
         fun bind(
             product: Product,
             onEditClicked: () -> Unit,
