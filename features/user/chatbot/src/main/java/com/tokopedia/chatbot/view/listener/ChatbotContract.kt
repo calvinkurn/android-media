@@ -64,6 +64,10 @@ interface ChatbotContract {
         fun uploadUsingOldMechanism(data: Intent)
 
         fun sendInvoiceForArticle()
+
+        fun onSuccessGetTickerData(tickerData: TickerData)
+
+        fun onError2(throwable: Throwable)
     }
 
     interface Presenter : BaseChatContract.Presenter<View> {
@@ -102,8 +106,7 @@ interface ChatbotContract {
                              onError: (Throwable) -> Unit,
                              onSuccess: (String) -> Unit)
 
-        fun showTickerData(onError: (Throwable) -> Unit,
-                           onSuccesGetTickerData: (TickerData) -> Unit)
+        fun showTickerData()
 
         fun sendActionBubble(messageId: String, selected: ChatActionBubbleViewModel,
                              startTime: String,

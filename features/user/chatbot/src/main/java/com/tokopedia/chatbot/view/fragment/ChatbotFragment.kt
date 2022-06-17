@@ -588,18 +588,16 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
     }
 
     private fun showTicker() {
-        presenter.showTickerData(onError(), onSuccesGetTickerData())
+        presenter.showTickerData()
     }
 
-    private fun onSuccesGetTickerData(): (TickerData) -> Unit {
-        return {
-            if (!it.items.isNullOrEmpty()) {
-                ticker.show()
-                if (it.items.size > 1) {
-                    showMultiTicker(it)
-                } else if (it.items.size == 1) {
-                    showSingleTicker(it)
-                }
+    override fun onSuccessGetTickerData(tickerData: TickerData) {
+        if (!tickerData.items.isNullOrEmpty()) {
+            ticker.show()
+            if (tickerData.items.size > 1) {
+                showMultiTicker(tickerData)
+            } else if (tickerData.items.size == 1) {
+                showSingleTicker(tickerData)
             }
         }
     }
@@ -722,8 +720,24 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
     private fun onError(): (Throwable) -> Unit {
         return {
             if (view != null) {
-                Toaster.make(view!!, ErrorHandler.getErrorMessage(view!!.context, it), Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR)
+                Toaster.make(
+                    view!!,
+                    ErrorHandler.getErrorMessage(view!!.context, it),
+                    Snackbar.LENGTH_LONG,
+                    Toaster.TYPE_ERROR
+                )
             }
+        }
+    }
+
+    override fun onError2(throwable: Throwable){
+        if (view != null) {
+            Toaster.build(
+                requireView(),
+                ErrorHandler.getErrorMessage(requireView().context, throwable),
+                Snackbar.LENGTH_LONG,
+                Toaster.TYPE_ERROR
+            ).show()
         }
     }
 

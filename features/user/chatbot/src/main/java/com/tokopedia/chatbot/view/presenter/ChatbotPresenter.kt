@@ -24,7 +24,6 @@ import com.tokopedia.chat_common.domain.SendWebsocketParam
 import com.tokopedia.chat_common.domain.pojo.ChatSocketPojo
 import com.tokopedia.chat_common.domain.pojo.invoiceattachment.InvoiceLinkPojo
 import com.tokopedia.chat_common.presenter.BaseChatPresenter
-import com.tokopedia.chatbot.ChatbotConstant
 import com.tokopedia.chatbot.ChatbotConstant.ChatbotUnification.ARTICLE_ID
 import com.tokopedia.chatbot.ChatbotConstant.ChatbotUnification.ARTICLE_TITLE
 import com.tokopedia.chatbot.ChatbotConstant.ChatbotUnification.CODE
@@ -48,6 +47,7 @@ import com.tokopedia.chatbot.ChatbotConstant.ImageUpload.MINIMUM_WIDTH
 import com.tokopedia.chatbot.R
 import com.tokopedia.chatbot.data.ConnectionDividerViewModel
 import com.tokopedia.chatbot.data.TickerData.TickerData
+import com.tokopedia.chatbot.data.TickerData.TickerDataResponse
 import com.tokopedia.chatbot.data.chatactionbubble.ChatActionBubbleViewModel
 import com.tokopedia.chatbot.data.helpfullquestion.HelpFullQuestionsViewModel
 import com.tokopedia.chatbot.data.imageupload.ChatbotUploadImagePojo
@@ -55,6 +55,7 @@ import com.tokopedia.chatbot.data.invoice.AttachInvoiceSingleViewModel
 import com.tokopedia.chatbot.data.network.ChatbotUrl
 import com.tokopedia.chatbot.data.newsession.TopBotNewSessionResponse
 import com.tokopedia.chatbot.data.quickreply.QuickReplyViewModel
+import com.tokopedia.chatbot.data.rating.ChatRatingViewModel
 import com.tokopedia.chatbot.data.seprator.ChatSepratorViewModel
 import com.tokopedia.chatbot.data.toolbarpojo.ToolbarAttributes
 import com.tokopedia.chatbot.data.uploadsecure.UploadSecureResponse
@@ -355,6 +356,14 @@ class ChatbotPresenter @Inject constructor(
         sendChatRatingUseCase.execute(SendChatRatingUseCase.generateParam(
                 messageId, rating, timestamp), SendRatingSubscriber(onError, onSuccess))
     }
+
+//    private fun onSendRatingSuccess(sendRatingPojo: SendRatingPojo, rating: Int, element: ChatRatingViewModel) {
+//        view.onSuccessSendRating(rating, element)
+//    }
+//
+//    private fun onSendRatingError(throwable: Throwable) {
+//        view.onError(throwable)
+//    }
 
     override fun sendReasonRating(messageId: String, reason: String, timestamp: String,
                                   onError: (Throwable) -> Unit,
@@ -726,7 +735,6 @@ class ChatbotPresenter @Inject constructor(
         sendRatingReasonUseCase.unsubscribe()
         submitCsatRatingUseCase.unsubscribe()
         leaveQueueUseCase.unsubscribe()
-        getTickerDataUseCase.unsubscribe()
         chipGetChatRatingListUseCase.unsubscribe()
         chipSubmitHelpfulQuestionsUseCase.unsubscribe()
         chipSubmitChatCsatUseCase.unsubscribe()
@@ -734,8 +742,22 @@ class ChatbotPresenter @Inject constructor(
         super.detachView()
     }
 
-    override fun showTickerData(onError: (Throwable) -> Unit, onSuccesGetTickerData: (TickerData) -> Unit) {
-        getTickerDataUseCase.execute(TickerDataSubscriber(onError,onSuccesGetTickerData))
+    override fun showTickerData() {
+        getTickerDataUseCase.cancelJobs()
+        getTickerDataUseCase.getTickerData(
+            ::onSuccessGetTickerData,
+            ::onErrorGetTickerData
+        )
+    }
+
+    private fun onErrorGetTickerData(throwable: Throwable) {
+        view.onError2(throwable)
+    }
+
+    private fun onSuccessGetTickerData(tickerData: TickerDataResponse) {
+        tickerData?.chipGetActiveTickerV4?.data?.let { tickerData ->
+            view.onSuccessGetTickerData(tickerData)
+        }
     }
 
     override fun getActionBubbleforNoTrasaction(): ChatActionBubbleViewModel {

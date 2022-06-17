@@ -1,15 +1,15 @@
 package com.tokopedia.chatbot.domain.gqlqueries
 
-import com.tokopedia.chatbot.domain.gqlqueries.queries.GQL_INBOX_LIST
+import com.tokopedia.chatbot.domain.gqlqueries.queries.GET_TICKER_DATA
 import com.tokopedia.gql_query_annotation.GqlQueryInterface
 
-class InboxTicketListQuery : GqlQueryInterface {
+class GetTickerDataQuery : GqlQueryInterface {
     override fun getOperationNameList(): List<String> {
         return emptyList()
     }
 
     override fun getQuery(): String {
-        return GQL_INBOX_LIST
+        return GET_TICKER_DATA
     }
 
     override fun getTopOperationName(): String {

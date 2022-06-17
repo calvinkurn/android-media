@@ -1,4 +1,4 @@
-package com.tokopedia.chatbot.domain.gqlqueries
+package com.tokopedia.chatbot.domain.gqlqueries.queries
 
 
 const val GQL_INBOX_LIST =
