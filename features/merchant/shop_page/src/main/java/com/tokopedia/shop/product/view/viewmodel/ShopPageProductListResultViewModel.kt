@@ -2,6 +2,7 @@ package com.tokopedia.shop.product.view.viewmodel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.filter.common.data.DynamicFilterModel
 import com.tokopedia.kotlin.extensions.coroutines.asyncCatchError
@@ -22,12 +23,23 @@ import com.tokopedia.shop.common.graphql.domain.usecase.shopetalase.GetShopEtala
 import com.tokopedia.shop.common.util.ShopUtil
 import com.tokopedia.shop.common.view.model.ShopProductFilterParameter
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
+import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase
+import com.tokopedia.cartcommon.data.request.updatecart.UpdateCartRequest
+import com.tokopedia.cartcommon.data.response.updatecart.UpdateCartV2Data
+import com.tokopedia.cartcommon.domain.usecase.DeleteCartUseCase
+import com.tokopedia.cartcommon.domain.usecase.UpdateCartUseCase
+import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.shop.common.data.model.RestrictionEngineModel
 import com.tokopedia.shop.common.data.source.cloud.model.followstatus.FollowStatus
 import com.tokopedia.shop.common.domain.interactor.GetFollowStatusUseCase
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
+import com.tokopedia.minicart.common.domain.data.MiniCartItem
+import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
+import com.tokopedia.minicart.common.domain.data.getMiniCartItemProduct
 import com.tokopedia.shop.common.data.model.ShopPageGetHomeType
 import com.tokopedia.shop.common.domain.interactor.GqlShopPageGetHomeType
+import com.tokopedia.shop.common.util.ShopUtil.setElement
 import com.tokopedia.shop.product.data.source.cloud.model.ShopProductFilterInput
 import com.tokopedia.shop.product.domain.interactor.GqlGetShopProductUseCase
 import com.tokopedia.shop.product.utils.mapper.ShopPageProductListMapper
@@ -58,7 +70,10 @@ class ShopPageProductListResultViewModel @Inject constructor(private val userSes
                                                              private val restrictionEngineNplUseCase: RestrictionEngineNplUseCase,
                                                              private val toggleFavouriteShopUseCase: Lazy<ToggleFavouriteShopUseCase>,
                                                              private val getFollowStatusUseCase: GetFollowStatusUseCase,
-                                                             private val getShopHomeTypeUseCase: GqlShopPageGetHomeType
+                                                             private val getShopHomeTypeUseCase: GqlShopPageGetHomeType,
+                                                             private val addToCartUseCase: AddToCartUseCase,
+                                                             private val updateCartUseCase: UpdateCartUseCase,
+                                                             private val deleteCartUseCase: DeleteCartUseCase
 ) : BaseViewModel(dispatcherProvider.main) {
 
     fun isMyShop(shopId: String) = userSession.shopId == shopId
@@ -84,6 +99,24 @@ class ShopPageProductListResultViewModel @Inject constructor(private val userSes
         get() = _restrictionEngineData
 
     private var shopSortList = mutableListOf<ShopProductSortModel>()
+    val miniCartData: LiveData<MiniCartSimplifiedData>
+        get() = _miniCartData
+    private val _miniCartData = MutableLiveData<MiniCartSimplifiedData>()
+    val miniCartAdd: LiveData<Result<AddToCartDataModel>>
+        get() = _miniCartAdd
+    private val _miniCartAdd = MutableLiveData<Result<AddToCartDataModel>>()
+
+    val miniCartUpdate: LiveData<Result<UpdateCartV2Data>>
+        get() = _miniCartUpdate
+    private val _miniCartUpdate = MutableLiveData<Result<UpdateCartV2Data>>()
+
+    val miniCartRemove: LiveData<Result<Pair<String, String>>>
+        get() = _miniCartRemove
+    private val _miniCartRemove = MutableLiveData<Result<Pair<String,String>>>()
+
+    val updatedShopProductListQuantityData: LiveData<MutableList<Visitable<*>>>
+        get() = _updatedShopProductListQuantityData
+    private val _updatedShopProductListQuantityData = MutableLiveData<MutableList<Visitable<*>>>()
 
     fun getShop(shopId: String, shopDomain: String = "", isRefresh: Boolean = false) {
         if (shopId.toIntOrZero() == 0 && shopDomain == "") return
@@ -440,5 +473,167 @@ class ShopPageProductListResultViewModel @Inject constructor(private val userSes
         return shopSortList.firstOrNull {
             it.value == sortId
         }?.name.orEmpty()
+    }
+
+    fun updateMiniCartData(miniCartSimplifiedData: MiniCartSimplifiedData) {
+        _miniCartData.postValue(miniCartSimplifiedData)
+    }
+
+    fun handleAtcFlow(productId: String, quantity: Int, shopId: String) {
+        val miniCartItem = getMiniCartItem(miniCartData.value, productId)
+        when {
+            miniCartItem == null -> addItemToCart(productId, shopId, quantity)
+            quantity.isZero() -> removeItemCart(miniCartItem)
+            else -> updateItemCart(miniCartItem, quantity)
+        }
+    }
+
+    private fun getMiniCartItem(
+        miniCartSimplifiedData: MiniCartSimplifiedData?,
+        productId: String
+    ): MiniCartItem.MiniCartItemProduct? {
+        val items = miniCartSimplifiedData?.miniCartItems.orEmpty()
+        return items.getMiniCartItemProduct(productId)
+    }
+
+    private fun addItemToCart(
+        productId: String,
+        shopId: String,
+        quantity: Int
+    ) {
+        val addToCartRequestParams =
+            AddToCartUseCase.getMinimumParams(
+                productId = productId,
+                shopId = shopId,
+                quantity = quantity
+            )
+        addToCartUseCase.setParams(addToCartRequestParams)
+        addToCartUseCase.execute({
+//            trackAddToCart(
+//                it.data.cartId,
+//                it.data.productId.toString(),
+//                it.data.quantity,
+//                MvcLockedToProductAddToCartTracker.AtcType.ADD
+//            )
+            _miniCartAdd.postValue(Success(it))
+        }, {
+            _miniCartAdd.postValue(Fail(it))
+        })
+    }
+
+    private fun updateItemCart(
+        miniCartItem: MiniCartItem.MiniCartItemProduct,
+        quantity: Int
+    ) {
+        val existingQuantity = miniCartItem.quantity
+        miniCartItem.quantity = quantity
+        val cartId = miniCartItem.cartId
+        val updateCartRequest = UpdateCartRequest(
+            cartId = cartId,
+            quantity = miniCartItem.quantity,
+            notes = miniCartItem.notes
+        )
+        updateCartUseCase.setParams(
+            updateCartRequestList = listOf(updateCartRequest),
+            source = UpdateCartUseCase.VALUE_SOURCE_UPDATE_QTY_NOTES,
+        )
+        updateCartUseCase.execute({
+//            val atcType = if(quantity < existingQuantity){
+//                MvcLockedToProductAddToCartTracker.AtcType.UPDATE_REMOVE
+//            } else {
+//                MvcLockedToProductAddToCartTracker.AtcType.UPDATE_ADD
+//            }
+//            trackAddToCart(
+//                miniCartItem.cartId,
+//                miniCartItem.productId,
+//                miniCartItem.quantity,
+//                atcType
+//            )
+            _miniCartUpdate.value = Success(it)
+        }, {
+            _miniCartUpdate.postValue(Fail(it))
+        })
+    }
+
+    private fun removeItemCart(miniCartItem: MiniCartItem.MiniCartItemProduct) {
+        deleteCartUseCase.setParams(
+            cartIdList = listOf(miniCartItem.cartId)
+        )
+        deleteCartUseCase.execute({
+            val productId = miniCartItem.productId
+            val data = Pair(productId, it.data.message.joinToString(separator = ", "))
+//            trackAddToCart(
+//                miniCartItem.cartId,
+//                miniCartItem.productId,
+//                miniCartItem.quantity,
+//                MvcLockedToProductAddToCartTracker.AtcType.REMOVE
+//            )
+            _miniCartRemove.postValue(Success(data))
+        }, {
+            _miniCartRemove.postValue(Fail(it))
+        })
+    }
+
+    fun getShopProductDataWithUpdatedQuantity(
+        miniCartSimplifiedData: MiniCartSimplifiedData?,
+        listProductTabWidget: MutableList<Visitable<*>>
+    ) {
+        updateProductCardQuantity(miniCartSimplifiedData, listProductTabWidget)
+        _updatedShopProductListQuantityData.postValue(listProductTabWidget)
+    }
+
+    private fun updateProductCardQuantity(
+        miniCartSimplifiedData: MiniCartSimplifiedData?,
+        listProductTabWidget: MutableList<Visitable<*>>
+    ) {
+        listProductTabWidget.forEachIndexed { index, productTabWidget ->
+            when(productTabWidget){
+                is ShopProductUiModel -> {
+                    updateShopProductUiModelQuantity(productTabWidget, miniCartSimplifiedData).let {
+                        listProductTabWidget.setElement(index, it)
+                    }
+                }
+            }
+        }
+    }
+
+    private fun updateShopProductUiModelQuantity(
+        productModel: ShopProductUiModel,
+        miniCartSimplifiedData: MiniCartSimplifiedData?
+    ): ShopProductUiModel {
+        val matchedMiniCartItem = getMatchedMiniCartItem(
+            productModel.id.orEmpty(),
+            miniCartSimplifiedData
+        )
+        if (matchedMiniCartItem != null && !matchedMiniCartItem.isError) {
+            if(matchedMiniCartItem.quantity != productModel.productInCart) {
+                productModel.productInCart = matchedMiniCartItem.quantity
+                productModel.isNewData = true
+            } else {
+                productModel.isNewData = false
+            }
+        } else {
+            if(!productModel.productInCart.isZero()) {
+                productModel.productInCart = 0
+                productModel.isNewData = true
+            } else {
+                productModel.productInCart = 0
+                productModel.isNewData = false
+            }
+        }
+        return productModel
+    }
+
+        private fun getMatchedMiniCartItem(
+        productId: String,
+        miniCartData: MiniCartSimplifiedData?
+    ): MiniCartItem.MiniCartItemProduct? {
+//        val isVariant = productUiModel.isVariant
+//        if (isVariant) {
+//            return miniCartData.miniCartItems.values.firstOrNull {
+//                it is MiniCartItem.MiniCartItemProduct && (it.productId == productUiModel.productID || productUiModel.childIDs.contains(it.productId))
+//            } as? MiniCartItem.MiniCartItemProduct
+//        }
+        return miniCartData?.miniCartItems?.getMiniCartItemProduct(productId)
     }
 }

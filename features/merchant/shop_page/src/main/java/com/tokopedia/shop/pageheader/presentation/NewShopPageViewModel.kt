@@ -480,8 +480,4 @@ class NewShopPageViewModel @Inject constructor(
         return useCase.executeOnBackground()
     }
 
-    fun setMiniCartData(miniCart: MiniCartSimplifiedData) {
-        _miniCartSimplifiedData.postValue(miniCart)
-    }
-
 }

@@ -714,21 +714,6 @@ class NewShopPageFragment :
                 }
             }
         })
-        observeMiniCartSimplifiedData()
-    }
-
-    private fun observeMiniCartSimplifiedData() {
-     shopViewModel?.miniCartSimplifiedData?.observe(viewLifecycleOwner, {
-//            updateProductListQuantityOnHomeTab(it)
-//         updateProductListQuantityOnProductTab(it)
-//            rvProductList?.invalidateItemDecorations()
-//            adapter.updateProductListDataWithMiniCartData(it)
-            if (it.isShowMiniCartWidget) {
-                showMiniCartWidget()
-            } else {
-                hideMiniCartWidget()
-            }
-        })
     }
 
     private fun refreshCartCounterData() {
@@ -977,6 +962,7 @@ class NewShopPageFragment :
             observeShopProductFilterParameterSharedViewModel()
             observeShopPageFollowingStatusSharedViewModel()
             observeShopPageFeedTabSharedViewModel()
+            observeShopPageMiniCartSharedViewModel()
             getInitialData()
             inflateViewStub()
             initViews(view)
@@ -1024,6 +1010,17 @@ class NewShopPageFragment :
                 FAB_ACTION_SETUP -> setupShopPageFab(shopPageFeedTabSharedViewModel?.shopPageFabConfig ?: ShopPageFabConfig())
                 FAB_ACTION_SHOW -> showShopPageFab()
                 FAB_ACTION_HIDE -> hideShopPageFab()
+            }
+        })
+    }
+
+    private fun observeShopPageMiniCartSharedViewModel() {
+        shopPageMiniCartSharedViewModel?.miniCartSimplifiedData?.observe(viewLifecycleOwner, {
+            refreshCartCounterData()
+            if (it.isShowMiniCartWidget) {
+                showMiniCartWidget()
+            } else {
+                hideMiniCartWidget()
             }
         })
     }

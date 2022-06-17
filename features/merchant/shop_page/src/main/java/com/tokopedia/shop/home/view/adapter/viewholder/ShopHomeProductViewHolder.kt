@@ -88,11 +88,11 @@ open class ShopHomeProductViewHolder(
                 shopHomeEndlessProductListener?.onProductAtcDefaultClick(shopHomeProductViewModel)
             }
         }
-
-        productCard?.setThreeDotsOnClickListener {
-            shopHomeProductViewModel?.let {
-                shopHomeEndlessProductListener?.onThreeDotsAllProductClicked(it)
-            }
-        }
+//
+//        productCard?.setThreeDotsOnClickListener {
+//            shopHomeProductViewModel?.let {
+//                shopHomeEndlessProductListener?.onThreeDotsAllProductClicked(it)
+//            }
+//        }
     }
 }

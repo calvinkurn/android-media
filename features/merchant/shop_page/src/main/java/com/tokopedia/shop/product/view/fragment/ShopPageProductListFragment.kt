@@ -1766,7 +1766,7 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
     }
 
     private fun handleAtcFlow(productId: String, quantity: Int, shopId: String) {
-        viewModel?.handleAtcFlow(
+        viewModel.handleAtcFlow(
             productId,
             quantity,
             shopId
