@@ -20,6 +20,7 @@ import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.play.R
 import com.tokopedia.play.analytic.PlayAnalytic
+import com.tokopedia.play.analytic.PlayNewAnalytic
 import com.tokopedia.play.analytic.ProductAnalyticHelper
 import com.tokopedia.play.extensions.isAnyShown
 import com.tokopedia.play.extensions.isCouponSheetsShown
@@ -73,6 +74,7 @@ import javax.inject.Inject
 class PlayBottomSheetFragment @Inject constructor(
         private val viewModelFactory: ViewModelProvider.Factory,
         private val analytic: PlayAnalytic,
+        private val newAnalytic: PlayNewAnalytic,
 ): TkpdBaseV4Fragment(),
         PlayFragmentContract,
         ProductSheetViewComponent.Listener,
@@ -241,11 +243,11 @@ class PlayBottomSheetFragment @Inject constructor(
 
     override fun onRefreshButtonClicked(view: PlayInteractiveLeaderboardViewComponent) {
         playViewModel.submitAction(RefreshLeaderboard)
-        analytic.clickRefreshLeaderBoard(interactiveId = playViewModel.interactiveData.id, shopId = playViewModel.partnerId.toString())
+        newAnalytic.clickRefreshLeaderBoard(interactiveId = playViewModel.interactiveData.id, shopId = playViewModel.partnerId.toString(), channelId = playViewModel.channelId)
     }
 
     override fun onRefreshButtonImpressed(view: PlayInteractiveLeaderboardViewComponent) {
-        analytic.impressRefreshLeaderBoard(shopId = playViewModel.partnerId.toString(), interactiveId = playViewModel.interactiveData.id)
+        newAnalytic.impressRefreshLeaderBoard(shopId = playViewModel.partnerId.toString(), interactiveId = playViewModel.interactiveData.id, channelId = playViewModel.channelId)
     }
 
     override fun onLeaderBoardImpressed(
@@ -253,7 +255,7 @@ class PlayBottomSheetFragment @Inject constructor(
         leaderboard: PlayLeaderboardUiModel
     ) {
         if (leaderboard.leaderBoardType != LeadeboardType.Quiz) return
-        analytic.impressLeaderBoard(shopId = playViewModel.partnerId.toString(), interactiveId = leaderboard.id)
+        newAnalytic.impressLeaderBoard(shopId = playViewModel.partnerId.toString(), interactiveId = leaderboard.id, channelId = playViewModel.channelId)
     }
 
     /**

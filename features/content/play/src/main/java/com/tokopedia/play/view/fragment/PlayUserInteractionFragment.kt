@@ -25,10 +25,7 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.play.PLAY_KEY_CHANNEL_ID
 import com.tokopedia.play.R
-import com.tokopedia.play.analytic.CastAnalyticHelper
-import com.tokopedia.play.analytic.PlayAnalytic
-import com.tokopedia.play.analytic.PlayPiPAnalytic
-import com.tokopedia.play.analytic.ProductAnalyticHelper
+import com.tokopedia.play.analytic.*
 import com.tokopedia.play.animation.PlayDelayFadeOutAnimation
 import com.tokopedia.play.animation.PlayFadeInAnimation
 import com.tokopedia.play.animation.PlayFadeInFadeOutAnimation
@@ -105,6 +102,7 @@ class PlayUserInteractionFragment @Inject constructor(
     private val multipleLikesIconCacheStorage: MultipleLikesIconCacheStorage,
     private val castAnalyticHelper: CastAnalyticHelper,
     private val performanceClassConfig: PerformanceClassConfig,
+    private val newAnalytic: PlayNewAnalytic,
 ) :
         TkpdBaseV4Fragment(),
         PlayMoreActionBottomSheet.Listener,
@@ -518,7 +516,7 @@ class PlayUserInteractionFragment @Inject constructor(
     override fun onWidgetClicked(view: InteractiveActiveViewComponent) {
         playViewModel.submitAction(
             PlayViewerNewAction.StartPlayingInteractive)
-            analytic.clickActiveInteractive(interactiveId = playViewModel.interactiveData.id, shopId = playViewModel.partnerId.toString(), interactiveType = playViewModel.interactiveData)
+            newAnalytic.clickActiveInteractive(interactiveId = playViewModel.interactiveData.id, shopId = playViewModel.partnerId.toString(), interactiveType = playViewModel.interactiveData, channelId = playViewModel.channelId)
     }
     //endregion
 
@@ -1506,7 +1504,7 @@ class PlayUserInteractionFragment @Inject constructor(
                 )
                 interactiveActiveView?.show()
                 interactiveFinishView?.hide()
-                analytic.impressActiveInteractive(shopId = playViewModel.partnerId.toString(), interactiveId = state.id)
+                newAnalytic.impressActiveInteractive(shopId = playViewModel.partnerId.toString(), interactiveId = state.id, channelId = playViewModel.channelId)
             }
             InteractiveUiModel.Quiz.Status.Finished -> {
                 interactiveActiveView?.hide()
@@ -1545,7 +1543,7 @@ class PlayUserInteractionFragment @Inject constructor(
         if (state.shouldShow) {
             interactiveResultView?.show()
             if(playViewModel.interactiveData is InteractiveUiModel.Unknown) return
-            analytic.impressWinnerBadge(shopId = playViewModel.partnerId.toString(), interactiveId = playViewModel.interactiveData.id)
+            newAnalytic.impressWinnerBadge(shopId = playViewModel.partnerId.toString(), interactiveId = playViewModel.interactiveData.id, channelId = playViewModel.channelId)
         }
         else interactiveResultView?.hide()
     }
@@ -1770,10 +1768,12 @@ class PlayUserInteractionFragment @Inject constructor(
 
     override fun onGameResultClicked(view: InteractiveGameResultViewComponent) {
         playViewModel.submitAction(InteractiveGameResultBadgeClickedAction(bottomSheetMaxHeight))
-        analytic.clickWinnerBadge(
+        newAnalytic.clickWinnerBadge(
             shopId = playViewModel.partnerId.toString(),
             interactiveId = playViewModel.interactiveData.id,
-            interactiveType = playViewModel.interactiveData
+            interactiveType = playViewModel.interactiveData,
+            channelId = playViewModel.channelId,
+            channelType = playViewModel.channelType
         )
     }
 
