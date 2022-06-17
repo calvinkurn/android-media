@@ -34,6 +34,7 @@ import com.tokopedia.shop.flashsale.presentation.cancelation.CancelCampaignBotto
 import com.tokopedia.shop.flashsale.presentation.creation.information.CampaignInformationActivity
 import com.tokopedia.shop.flashsale.presentation.draft.bottomsheet.DraftListBottomSheet
 import com.tokopedia.shop.flashsale.presentation.draft.uimodel.DraftItemModel
+import com.tokopedia.shop.flashsale.presentation.list.container.CampaignListContainerFragment
 import com.tokopedia.shop.flashsale.presentation.list.list.adapter.CampaignAdapter
 import com.tokopedia.shop.flashsale.presentation.list.list.bottomsheet.MoreMenuBottomSheet
 import com.tokopedia.shop.flashsale.presentation.list.list.listener.RecyclerViewScrollListener
@@ -45,7 +46,8 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
 
-class CampaignListFragment : BaseSimpleListFragment<CampaignAdapter, CampaignUiModel>() {
+class CampaignListFragment : BaseSimpleListFragment<CampaignAdapter, CampaignUiModel>(),
+    CampaignListContainerFragment.CancelCampaignListener {
 
     companion object {
         private const val BUNDLE_KEY_TAB_POSITION = "tab_position"
@@ -54,7 +56,8 @@ class CampaignListFragment : BaseSimpleListFragment<CampaignAdapter, CampaignUiM
         private const val PAGE_SIZE = 10
         private const val MAX_DRAFT_COUNT = 3
         private const val TAB_POSITION_FIRST = 0
-        private const val SCROLL_DISTANCE_DELAY_IN_MILLIS: Long = 300
+        private const val SCROLL_DISTANCE_DELAY_IN_MILLIS: Long = 100
+        private const val REFRESH_CAMPAIGN_DELAY_DURATION_IN_MILLIS : Long = 3_000
         private const val EMPTY_STATE_IMAGE_URL =
             "https://images.tokopedia.net/img/android/campaign/flash-sale-toko/ic_no_active_campaign.png"
         private const val DRAFT_SERVER_SAVING_DURATION = 1000L
@@ -120,6 +123,12 @@ class CampaignListFragment : BaseSimpleListFragment<CampaignAdapter, CampaignUiM
             .baseAppComponent((activity?.applicationContext as? BaseMainApplication)?.baseAppComponent)
             .build()
             .inject(this)
+    }
+
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        (parentFragment as? CampaignListContainerFragment)?.setCancelCampaignListener(this)
     }
 
     override fun onCreateView(
@@ -399,7 +408,7 @@ class CampaignListFragment : BaseSimpleListFragment<CampaignAdapter, CampaignUiM
         if (data.campaigns.size.isMoreThanZero()) {
             binding?.groupNoSearchResult?.gone()
             renderList(data.campaigns, data.campaigns.size == getPerPage())
-        } else if (data.campaigns.isEmpty() && adapter?.itemCount == ZERO) {
+        } else if (data.campaigns.isEmpty() && adapter?.itemCount == ZERO && !isFirstLoad) {
             binding?.groupNoSearchResult?.visible()
         }
 
@@ -652,10 +661,12 @@ class CampaignListFragment : BaseSimpleListFragment<CampaignAdapter, CampaignUiM
         val toasterMessage = String.format(getString(R.string.cancelcampaign_message_success), campaign.campaignName)
         binding?.root showToaster toasterMessage
 
-        binding?.loader?.visible()
-        getCampaigns(FIRST_PAGE)
-
-        onCancelCampaignSuccess()
+        //Add some spare time caused by Backend write operation delay
+        doOnDelayFinished(REFRESH_CAMPAIGN_DELAY_DURATION_IN_MILLIS) {
+            binding?.loader?.visible()
+            getCampaigns(FIRST_PAGE)
+            onCancelCampaignSuccess()
+        }
     }
 
     private fun routeToPmSubscribePage() {
@@ -665,5 +676,9 @@ class CampaignListFragment : BaseSimpleListFragment<CampaignAdapter, CampaignUiM
 
     fun setOnCancelCampaignSuccess(onCancelCampaignSuccess : () -> Unit) {
         this.onCancelCampaignSuccess = onCancelCampaignSuccess
+    }
+
+    override fun onCampaignCancelled() {
+        getCampaigns(FIRST_PAGE)
     }
 }

@@ -38,14 +38,12 @@ import com.tokopedia.shop.flashsale.presentation.creation.information.bottomshee
 import com.tokopedia.shop.flashsale.presentation.creation.information.bottomsheet.CampaignTeaserInformationBottomSheet
 import com.tokopedia.shop.flashsale.presentation.creation.information.bottomsheet.ForbiddenWordsInformationBottomSheet
 import com.tokopedia.shop.flashsale.presentation.creation.information.dialog.BackConfirmationDialog
-import com.tokopedia.shop.flashsale.presentation.creation.manage.ChooseProductActivity
 import com.tokopedia.shop.flashsale.presentation.creation.manage.ManageProductActivity
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import java.util.*
 import javax.inject.Inject
-import kotlin.collections.ArrayList
 
 
 class CampaignInformationFragment : BaseDaggerFragment() {
