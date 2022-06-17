@@ -1,17 +1,13 @@
 package com.tokopedia.play.broadcaster.viewmodel.quiz
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.tokopedia.play.broadcaster.domain.model.interactive.PostInteractiveCreateSessionResponse
 import com.tokopedia.play.broadcaster.domain.repository.PlayBroadcastRepository
 import com.tokopedia.play.broadcaster.model.UiModelBuilder
-import com.tokopedia.play.broadcaster.pusher.mediator.PusherMediator
 import com.tokopedia.play.broadcaster.robot.PlayBroadcastViewModelRobot
 import com.tokopedia.play.broadcaster.ui.action.PlayBroadcastAction
 import com.tokopedia.play.broadcaster.ui.event.PlayBroadcastEvent
-import com.tokopedia.play.broadcaster.ui.model.game.quiz.QuizChoiceDetailUiModel
-import com.tokopedia.play.broadcaster.ui.model.game.quiz.QuizDetailDataUiModel
+import com.tokopedia.play.broadcaster.ui.model.game.quiz.QuizChoiceDetailStateUiModel
 import com.tokopedia.play.broadcaster.ui.model.game.quiz.QuizDetailStateUiModel
-import com.tokopedia.play.broadcaster.ui.model.game.quiz.QuizFormDataUiModel
 import com.tokopedia.play.broadcaster.util.assertEqualTo
 import com.tokopedia.play.broadcaster.util.preference.HydraSharedPreferences
 import com.tokopedia.play_common.model.dto.interactive.InteractiveUiModel
@@ -20,13 +16,10 @@ import com.tokopedia.play_common.view.game.quiz.PlayQuizOptionState
 import com.tokopedia.unit.test.rule.CoroutineTestRule
 import io.mockk.coEvery
 import io.mockk.coJustRun
-import io.mockk.every
 import io.mockk.mockk
-import kotlinx.coroutines.runBlocking
 import org.assertj.core.api.Assertions
 import org.junit.Rule
 import org.junit.Test
-import java.util.*
 
 class PlayBroQuizViewModelTest {
 
@@ -132,7 +125,46 @@ class PlayBroQuizViewModelTest {
     }
 
     @Test
-    fun `when user click on game result widget should emit event show Leaderboard BottomSheet`(){
+    fun `when user click back on quiz choice detail participant bottom sheet should return Quiz Choice Detail Empty model`() {
+        coEvery { mockRepo.getChannelConfiguration() } returns mockConfig
+        val robot = PlayBroadcastViewModelRobot(
+            dispatchers = testDispatcher,
+            channelRepo = mockRepo,
+        )
+        robot.use {
+            val state = it.recordState {
+                getConfig()
+                getViewModel().submitAction(PlayBroadcastAction.ClickBackOnChoiceDetail)
+            }
+            Assertions.assertThat(state.quizBottomSheetUiState.quizChoiceDetailState).isInstanceOf(
+                QuizChoiceDetailStateUiModel.Empty::class.java
+            )
+        }
+    }
+
+    @Test
+    fun `when user dismiss play bro interactive bottom sheet should return Quiz Detail Empty and Quiz Choice Detail Empty model`() {
+        coEvery { mockRepo.getChannelConfiguration() } returns mockConfig
+        val robot = PlayBroadcastViewModelRobot(
+            dispatchers = testDispatcher,
+            channelRepo = mockRepo,
+        )
+        robot.use {
+            val state = it.recordState {
+                getConfig()
+                getViewModel().submitAction(PlayBroadcastAction.DismissQuizDetailBottomSheet)
+            }
+            Assertions.assertThat(state.quizBottomSheetUiState.quizChoiceDetailState).isInstanceOf(
+                QuizChoiceDetailStateUiModel.Empty::class.java
+            )
+            Assertions.assertThat(state.quizBottomSheetUiState.quizDetailState).isInstanceOf(
+                QuizDetailStateUiModel.Empty::class.java
+            )
+        }
+    }
+
+    @Test
+    fun `when user click on game result widget should emit event show Leaderboard BottomSheet`() {
         coEvery { mockRepo.getChannelConfiguration() } returns mockConfig
         val robot = PlayBroadcastViewModelRobot(
             dispatchers = testDispatcher,
