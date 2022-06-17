@@ -24,6 +24,7 @@
         android:layout_marginStart="@dimen/layout_lvl1"
         android:layout_marginEnd="@dimen/layout_lvl1"
         android:maxLines="1"
+        android:ellipsize="end"
         app:layout_constraintBottom_toTopOf="@id/read_review_product_variant_name"
         app:layout_constraintEnd_toStartOf="@id/read_review_product_info_three_dots"
         app:layout_constraintStart_toEndOf="@id/read_review_product_image"
