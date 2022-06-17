@@ -41,6 +41,7 @@ import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import javax.inject.Inject
+import com.tokopedia.abstraction.R as abstractionR
 
 /**
 * Created By : Jonathan Darwin on April 25, 2022
@@ -180,7 +181,7 @@ class ProductTagParentFragment @Inject constructor(
                     is ProductTagUiEvent.ShowError -> {
                         Toaster.build(
                             binding.root,
-                            text = getString(R.string.default_request_error_unknown),
+                            text = getString(abstractionR.string.default_request_error_unknown),
                             type = Toaster.TYPE_ERROR,
                             duration = Toaster.LENGTH_LONG,
                             actionText = if(it.action != null) getString(R.string.feed_content_coba_lagi_text) else "",
