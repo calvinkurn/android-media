@@ -1,57 +1,58 @@
 package com.tokopedia.usercomponents.userconsent.ui
 
-import android.content.Context
 import android.graphics.Typeface
 import android.text.SpannableString
 import android.text.TextPaint
 import android.text.style.ClickableSpan
 import android.view.View
-import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
-import com.tokopedia.usercomponents.R
 import com.tokopedia.usercomponents.userconsent.analytics.UserConsentAnalytics
 import com.tokopedia.usercomponents.userconsent.common.UserConsentCollectionDataModel
-import com.tokopedia.usercomponents.userconsent.common.UserConsentConst
 import com.tokopedia.usercomponents.userconsent.common.UserConsentConst.PRIVACY
 
+interface UserConsentDescriptionDelegate {
+    val textTermCondition: String
+    val textPolicy: String
+    val textAgreementSingleTncOptional: String
+    val textAgreementSingleTncMandatory: String
+    val textAgreementSingleTncPolicyOptional: String
+    val textAgreementSingleTncPolicyMandatory: String
+    val textAgreementMultiTnc: String
+    val textAgreementMultiTncPolicy: String
+    val unifyG500: Int
+
+    fun openConsentPageDetail(pageId: String, type: String = "1", tab: String = "")
+}
+
 class UserConsentDescription constructor(
-    private val context: Context,
+    private val delegate: UserConsentDescriptionDelegate,
     private val collectionDataModel: UserConsentCollectionDataModel.CollectionPointDataModel
 ) {
 
     private val userConsentAnalytics = UserConsentAnalytics()
 
-    private val textTermCondition by lazy {
-        context.resources.getString(R.string.user_consent_term_condition)
-    }
-
-    private val textPolicy by lazy {
-        context.resources.getString(R.string.user_consent_policy)
-    }
-
     fun generateTermConditionSinglePurposeText(
         isChecklist: Boolean,
-        policyNoticeTnCPageID: String,
         purposeText: String
     ): SpannableString {
         val message = if(isChecklist) {
-            context.resources.getString(R.string.user_consent_agreement_single_purpose_term_condition)
+            delegate.textAgreementSingleTncOptional
         } else {
-            context.resources.getString(R.string.user_consent_agreement_single_purpose_term_condition_mandatory)
+            delegate.textAgreementSingleTncMandatory
         }
 
-        return SpannableString(String.format(message, textTermCondition, purposeText)).apply {
+        return SpannableString(String.format(message, delegate.textTermCondition, purposeText)).apply {
             setSpan(
                 createClickableSpannable {
-                    collectionDataModel.purposes.let {
-                        userConsentAnalytics.trackOnTnCHyperLinkClicked(it)
-                    }
+                    with(collectionDataModel) {
+                        purposes.let {
+                            userConsentAnalytics.trackOnTnCHyperLinkClicked(it)
+                        }
 
-                    openConsentPageDetail(policyNoticeTnCPageID)
+                        delegate.openConsentPageDetail(attributes.policyNoticeTnCPageID)
+                    }
                 },
-                this.indexOf(textTermCondition),
-                this.indexOf(textTermCondition) + textTermCondition.length,
+                this.indexOf(delegate.textTermCondition),
+                this.indexOf(delegate.textTermCondition) + delegate.textTermCondition.length,
                 0
             )
         }
@@ -59,94 +60,97 @@ class UserConsentDescription constructor(
 
     fun generateTermConditionPolicySinglePurposeText(
         isChecklist: Boolean,
-        policyNoticeTnCPageID: String,
-        policyNoticePolicyPageID: String,
         purposeText: String
     ): SpannableString {
         val message = if (isChecklist) {
-            context.resources.getString(R.string.user_consent_agreement_single_purpose_term_condition_policy)
+            delegate.textAgreementSingleTncPolicyOptional
         } else {
-            context.resources.getString(R.string.user_consent_agreement_single_purpose_term_condition_policy_mandatory)
+            delegate.textAgreementSingleTncPolicyMandatory
         }
 
-        return SpannableString(String.format(message, textTermCondition, textPolicy, purposeText)).apply {
+        return SpannableString(String.format(message, delegate.textTermCondition, delegate.textPolicy, purposeText)).apply {
             setSpan(
                 createClickableSpannable {
-                    collectionDataModel.purposes.let {
-                        userConsentAnalytics.trackOnTnCHyperLinkClicked(it)
-                    }
+                    with(collectionDataModel) {
+                        purposes.let {
+                            userConsentAnalytics.trackOnTnCHyperLinkClicked(it)
+                        }
 
-                    openConsentPageDetail(policyNoticeTnCPageID)
+                        delegate.openConsentPageDetail(attributes.policyNoticeTnCPageID)
+                    }
                 },
-                this.indexOf(textTermCondition),
-                this.indexOf(textTermCondition) + textTermCondition.length,
+                this.indexOf(delegate.textTermCondition),
+                this.indexOf(delegate.textTermCondition) + delegate.textTermCondition.length,
                 0
             )
 
             setSpan(
                 createClickableSpannable {
-                    collectionDataModel.purposes.let {
-                        userConsentAnalytics.trackOnPolicyHyperLinkClicked(it)
+                    with(collectionDataModel) {
+                        purposes.let {
+                            userConsentAnalytics.trackOnPolicyHyperLinkClicked(it)
+                        }
+
+                        delegate.openConsentPageDetail(attributes.policyNoticePolicyPageID, tab = PRIVACY)
                     }
-
-                    openConsentPageDetail(policyNoticePolicyPageID, tab = PRIVACY)
                 },
-                this.indexOf(textPolicy),
-                this.indexOf(textPolicy) + textPolicy.length,
-                0
-            )
-        }
-    }
-
-    fun generateTermConditionMultipleOptionalPurposeText(
-        policyNoticeTnCPageID: String
-    ): SpannableString {
-        val message = context.resources.getString(R.string.user_consent_agreement_multiple_purpose_term_condition_optional)
-        return SpannableString(String.format(message, textTermCondition)).apply {
-            setSpan(
-                createClickableSpannable {
-                    collectionDataModel.purposes.let {
-                        userConsentAnalytics.trackOnTnCHyperLinkClicked(it)
-                    }
-
-                    openConsentPageDetail(policyNoticeTnCPageID)
-                },
-                this.indexOf(textTermCondition),
-                this.indexOf(textTermCondition) + textTermCondition.length,
+                this.indexOf(delegate.textPolicy),
+                this.indexOf(delegate.textPolicy) + delegate.textPolicy.length,
                 0
             )
         }
     }
 
-    fun generateTermConditionPolicyMultipleOptionalPurposeText(
-        policyNoticeTnCPageID: String,
-        policyNoticePolicyPageID: String
-    ): SpannableString {
-        val message = context.resources.getString(R.string.user_consent_agreement_multiple_purpose_term_condition_policy_optional)
-        return SpannableString(String.format(message, textTermCondition, textPolicy)).apply {
+    fun generateTermConditionMultipleOptionalPurposeText(): SpannableString {
+        val message = delegate.textAgreementMultiTnc
+        return SpannableString(String.format(message, delegate.textTermCondition)).apply {
             setSpan(
                 createClickableSpannable {
-                    collectionDataModel.purposes.let {
-                        userConsentAnalytics.trackOnTnCHyperLinkClicked(it)
-                    }
+                    with(collectionDataModel) {
+                        purposes.let {
+                            userConsentAnalytics.trackOnTnCHyperLinkClicked(it)
+                        }
 
-                    openConsentPageDetail(policyNoticeTnCPageID)
+                        delegate.openConsentPageDetail(attributes.policyNoticeTnCPageID)
+                    }
                 },
-                this.indexOf(textTermCondition),
-                this.indexOf(textTermCondition) + textTermCondition.length,
+                this.indexOf(delegate.textTermCondition),
+                this.indexOf(delegate.textTermCondition) + delegate.textTermCondition.length,
+                0
+            )
+        }
+    }
+
+    fun generateTermConditionPolicyMultipleOptionalPurposeText(): SpannableString {
+        val message = delegate.textAgreementMultiTncPolicy
+        return SpannableString(String.format(message, delegate.textTermCondition, delegate.textPolicy)).apply {
+            setSpan(
+                createClickableSpannable {
+                    with(collectionDataModel) {
+                        purposes.let {
+                            userConsentAnalytics.trackOnTnCHyperLinkClicked(it)
+                        }
+
+                        delegate.openConsentPageDetail(attributes.policyNoticeTnCPageID)
+                    }
+                },
+                this.indexOf(delegate.textTermCondition),
+                this.indexOf(delegate.textTermCondition) + delegate.textTermCondition.length,
                 0
             )
 
             setSpan(
                 createClickableSpannable {
-                    collectionDataModel.purposes.let {
-                        userConsentAnalytics.trackOnPolicyHyperLinkClicked(it)
-                    }
+                    with(collectionDataModel) {
+                        purposes.let {
+                            userConsentAnalytics.trackOnPolicyHyperLinkClicked(it)
+                        }
 
-                    openConsentPageDetail(policyNoticePolicyPageID, tab = PRIVACY)
+                        delegate.openConsentPageDetail(attributes.policyNoticePolicyPageID, tab = PRIVACY)
+                    }
                 },
-                this.indexOf(textPolicy),
-                this.indexOf(textPolicy) + textPolicy.length,
+                this.indexOf(delegate.textPolicy),
+                this.indexOf(delegate.textPolicy) + delegate.textPolicy.length,
                 0
             )
         }
@@ -154,20 +158,11 @@ class UserConsentDescription constructor(
 
     private fun createClickableSpannable(action: () -> Unit): ClickableSpan {
         return object : ClickableSpan() {
-            override fun onClick(widget: View) {
-                action.invoke()
-            }
-
+            override fun onClick(widget: View) { action.invoke() }
             override fun updateDrawState(ds: TextPaint) {
                 ds.typeface = Typeface.create(Typeface.DEFAULT, Typeface.BOLD)
-                ds.color = MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G500)
+                ds.color = delegate.unifyG500
             }
         }
-    }
-
-    private fun openConsentPageDetail(pageId: String, type: String = "1", tab: String = "") {
-        val url = String.format(UserConsentConst.URL_CONSENT_DETAIL, pageId, type, tab)
-        val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.WEBVIEW, url)
-        context.startActivity(intent)
     }
 }

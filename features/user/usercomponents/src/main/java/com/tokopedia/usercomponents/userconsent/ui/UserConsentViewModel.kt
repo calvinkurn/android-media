@@ -1,7 +1,6 @@
 package com.tokopedia.usercomponents.userconsent.ui
 
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
@@ -13,7 +12,7 @@ import com.tokopedia.utils.lifecycle.SingleLiveEvent
 import javax.inject.Inject
 
 class UserConsentViewModel @Inject constructor(
-    private val getUserConsentCollectionUseCase: GetConsentCollectionUseCase,
+    private val getUserConsentCollection: GetConsentCollectionUseCase,
     dispatchers: CoroutineDispatchers
 ) : BaseViewModel(dispatchers.main) {
 
@@ -25,13 +24,13 @@ class UserConsentViewModel @Inject constructor(
         launchCatchError(coroutineContext, {
             _consentCollection.value = UserConsentStateResult.Loading()
 
-            val response = getUserConsentCollectionUseCase(consentCollectionParam)
+            val response = getUserConsentCollection(consentCollectionParam)
 
             if (response.data.success && response.data.collectionPoints.isNotEmpty()) {
                 _consentCollection.value = UserConsentStateResult.Success(response.data)
             } else {
                 val message = if (response.data.errorMessages.isNotEmpty()) {
-                    response.data.errorMessages[0]
+                    response.data.errorMessages.first()
                 } else {
                     GENERAL_ERROR
                 }

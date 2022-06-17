@@ -10,29 +10,32 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelStoreOwner
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.app.BaseMainApplication
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.usercomponents.R
 import com.tokopedia.usercomponents.databinding.UiUserConsentBinding
 import com.tokopedia.usercomponents.userconsent.analytics.UserConsentAnalytics
-import com.tokopedia.usercomponents.userconsent.common.UserConsentCollectionDataModel
+import com.tokopedia.usercomponents.userconsent.common.*
 import com.tokopedia.usercomponents.userconsent.common.UserConsentConst.CHECKLIST
 import com.tokopedia.usercomponents.userconsent.common.UserConsentConst.MANDATORY
 import com.tokopedia.usercomponents.userconsent.common.UserConsentConst.NO_CHECKLIST
 import com.tokopedia.usercomponents.userconsent.common.UserConsentConst.OPTIONAL
 import com.tokopedia.usercomponents.userconsent.common.UserConsentConst.TERM_CONDITION
 import com.tokopedia.usercomponents.userconsent.common.UserConsentConst.TERM_CONDITION_POLICY
-import com.tokopedia.usercomponents.userconsent.common.UserConsentPayload
-import com.tokopedia.usercomponents.userconsent.common.UserConsentPurposeUiModel
-import com.tokopedia.usercomponents.userconsent.common.UserConsentStateResult
 import com.tokopedia.usercomponents.userconsent.di.DaggerUserConsentComponent
 import com.tokopedia.usercomponents.userconsent.domain.ConsentCollectionParam
 import com.tokopedia.usercomponents.userconsent.ui.adapter.UserConsentPurposeAdapter
 import com.tokopedia.usercomponents.userconsent.ui.adapter.UserConsentPurposeViewHolder
 import javax.inject.Inject
 
-class UserConsentWidget : FrameLayout, UserConsentPurposeViewHolder.UserConsentPurposeListener {
+class UserConsentWidget : FrameLayout,
+    UserConsentPurposeViewHolder.UserConsentPurposeListener,
+    UserConsentDescriptionDelegate
+{
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -161,7 +164,7 @@ class UserConsentWidget : FrameLayout, UserConsentPurposeViewHolder.UserConsentP
     private fun onSuccessGetConsentCollection() {
         collection?.let {
             userConsentAnalytics.trackOnConsentView(it.purposes)
-            userConsentDescription = UserConsentDescription(context, it)
+            userConsentDescription = UserConsentDescription(this, it)
         }
 
         renderView()
@@ -227,14 +230,11 @@ class UserConsentWidget : FrameLayout, UserConsentPurposeViewHolder.UserConsentP
             if (collection?.attributes?.policyNoticeType == TERM_CONDITION) {
                 descriptionPurposes.text = userConsentDescription?.generateTermConditionSinglePurposeText(
                     collection?.attributes?.collectionPointStatementOnlyFlag == CHECKLIST,
-                    collection?.attributes?.policyNoticeTnCPageID.orEmpty(),
                     purposeText
                 )
             } else if (collection?.attributes?.policyNoticeType == TERM_CONDITION_POLICY) {
                 descriptionPurposes.text = userConsentDescription?.generateTermConditionPolicySinglePurposeText(
                     collection?.attributes?.collectionPointStatementOnlyFlag == CHECKLIST,
-                    collection?.attributes?.policyNoticeTnCPageID.orEmpty(),
-                    collection?.attributes?.policyNoticePolicyPageID.orEmpty(),
                     purposeText
                 )
             }
@@ -247,14 +247,9 @@ class UserConsentWidget : FrameLayout, UserConsentPurposeViewHolder.UserConsentP
         if (collection?.purposes?.size.orZero() > NUMBER_ONE) {
             viewBinding?.multipleConsent?.apply {
                 if (collection?.attributes?.policyNoticeType == TERM_CONDITION) {
-                    textMainDescription.text = userConsentDescription?.generateTermConditionMultipleOptionalPurposeText(
-                        collection?.attributes?.policyNoticeTnCPageID.orEmpty()
-                    )
+                    textMainDescription.text = userConsentDescription?.generateTermConditionMultipleOptionalPurposeText()
                 } else if (collection?.attributes?.policyNoticeType == TERM_CONDITION_POLICY) {
-                    textMainDescription.text = userConsentDescription?.generateTermConditionPolicyMultipleOptionalPurposeText(
-                        collection?.attributes?.policyNoticeTnCPageID.orEmpty(),
-                        collection?.attributes?.policyNoticePolicyPageID.orEmpty()
-                    )
+                    textMainDescription.text = userConsentDescription?.generateTermConditionPolicyMultipleOptionalPurposeText()
                 }
 
                 textMainDescription.movementMethod = LinkMovementMethod.getInstance()
@@ -329,6 +324,31 @@ class UserConsentWidget : FrameLayout, UserConsentPurposeViewHolder.UserConsentP
 
         viewBinding?.buttonAction?.isEnabled = false
         userConsentPurposeAdapter?.clearAllItems()
+    }
+
+    override val textTermCondition: String
+        get() = context?.resources?.getString(R.string.user_consent_term_condition).orEmpty()
+    override val textPolicy: String
+        get() = context?.resources?.getString(R.string.user_consent_policy).orEmpty()
+    override val textAgreementSingleTncOptional: String
+        get() = context?.resources?.getString(R.string.user_consent_agreement_single_purpose_term_condition).orEmpty()
+    override val textAgreementSingleTncMandatory: String
+        get() = context?.resources?.getString(R.string.user_consent_agreement_single_purpose_term_condition_mandatory).orEmpty()
+    override val textAgreementSingleTncPolicyOptional: String
+        get() = context?.resources?.getString(R.string.user_consent_agreement_single_purpose_term_condition_policy).orEmpty()
+    override val textAgreementSingleTncPolicyMandatory: String
+        get() = context?.resources?.getString(R.string.user_consent_agreement_single_purpose_term_condition_policy_mandatory).orEmpty()
+    override val textAgreementMultiTnc: String
+        get() = context?.resources?.getString(R.string.user_consent_agreement_multiple_purpose_term_condition_optional).orEmpty()
+    override val textAgreementMultiTncPolicy: String
+        get() = context?.resources?.getString(R.string.user_consent_agreement_multiple_purpose_term_condition_policy_optional).orEmpty()
+    override val unifyG500: Int
+        get() = MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G500)
+
+    override fun openConsentPageDetail(pageId: String, type: String, tab: String) {
+        val url = String.format(UserConsentConst.URL_CONSENT_DETAIL, pageId, type, tab)
+        val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.WEBVIEW, url)
+        context.startActivity(intent)
     }
 
     fun load(
