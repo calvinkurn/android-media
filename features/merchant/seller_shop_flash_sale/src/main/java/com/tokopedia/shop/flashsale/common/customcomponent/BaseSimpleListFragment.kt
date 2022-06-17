@@ -8,11 +8,16 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.listener.EndlessLayoutManagerListener
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.unifycomponents.Toaster
 
 abstract class BaseSimpleListFragment<T: RecyclerView.Adapter<*>, F>: BaseDaggerFragment() {
+
+    companion object {
+        private const val DEFAULT_FIRST_PAGE = 1
+    }
 
     var adapter: T? = null
     var recyclerView: RecyclerView? = null
@@ -35,6 +40,7 @@ abstract class BaseSimpleListFragment<T: RecyclerView.Adapter<*>, F>: BaseDagger
     abstract fun onHideLoading()
     abstract fun onDataEmpty()
     abstract fun onGetListError(message: String)
+    abstract fun onScrolled(xScrollAmount: Int, yScrollAmount: Int)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -52,23 +58,21 @@ abstract class BaseSimpleListFragment<T: RecyclerView.Adapter<*>, F>: BaseDagger
         }
 
         enableLoadMore()
-
-        swipeToRefresh = getSwipeRefreshLayout(view)
-        swipeToRefresh?.setOnRefreshListener { onSwipeRefresh() }
+        setupSwipeToRefreshLayout(view)
         recyclerView?.adapter = adapter
-
         loadInitialData()
+    }
+
+    private fun setupSwipeToRefreshLayout(view: View) {
+        val loaderColor = MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G500)
+        swipeToRefresh = getSwipeRefreshLayout(view)
+        swipeToRefresh?.setColorSchemeColors(loaderColor)
+        swipeToRefresh?.setOnRefreshListener { onSwipeRefresh() }
     }
 
     private fun onSwipeRefresh() {
         swipeToRefresh?.isRefreshing = true
         loadInitialData()
-    }
-
-    fun loadInitialData() {
-        clearAllData()
-        showLoading()
-        loadData(1)
     }
 
     private fun enableLoadMore() {
@@ -86,6 +90,11 @@ abstract class BaseSimpleListFragment<T: RecyclerView.Adapter<*>, F>: BaseDagger
 
     private fun createEndlessRecyclerViewListener(): EndlessRecyclerViewScrollListener {
         return object : EndlessRecyclerViewScrollListener(recyclerView?.layoutManager) {
+            override fun onScrolled(view: RecyclerView, dx: Int, dy: Int) {
+                super.onScrolled(view, dx, dy)
+                onScrolled(dx, dy)
+            }
+
             override fun onLoadMore(page: Int, totalItemsCount: Int) {
                 showLoading()
                 loadData(page)
@@ -140,6 +149,12 @@ abstract class BaseSimpleListFragment<T: RecyclerView.Adapter<*>, F>: BaseDagger
             Toaster.build(it, message, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR,
                 getString(com.tokopedia.baselist.R.string.retry_label), listener).show()
         }
+    }
+
+    fun loadInitialData() {
+        clearAllData()
+        showLoading()
+        loadData(DEFAULT_FIRST_PAGE)
     }
 
     fun renderList(list: List<F>, hasNextPage: Boolean) {

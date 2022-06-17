@@ -10,6 +10,9 @@
             android:name="com.tokopedia.shop.flashsale.presentation.creation.manage.ManageProductActivity"
             android:exported="false" />
         <activity
+            android:name="com.tokopedia.shop.flashsale.presentation.creation.manage.ChooseProductActivity"
+            android:exported="false" />
+        <activity
             android:name="com.tokopedia.shop.flashsale.presentation.creation.highlight.ManageHighlightedProductActivity"
             android:exported="false" />
         <activity
