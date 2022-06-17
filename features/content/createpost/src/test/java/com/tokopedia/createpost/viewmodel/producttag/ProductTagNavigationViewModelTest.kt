@@ -88,7 +88,7 @@ class ProductTagNavigationViewModelTest {
     }
 
     @Test
-    fun `when user click breadcrumb but the stack is more than 1, it should pop the most top fragment from stack`() {
+    fun `when user click breadcrumb but the stack is more than 1, it should still open select product tag source bottomsheet`() {
         val selectedShop = shopModelBuilder.buildUiModel()
 
         val robot = ProductTagViewModelRobot(
@@ -105,11 +105,11 @@ class ProductTagNavigationViewModelTest {
             }
 
             /** Test State */
-            robot.recordState {
+            robot.recordStateAndEvent {
                 submitAction(ProductTagAction.ClickBreadcrumb)
-            }.andThen {
-                productTagSource.productTagSourceStack.size.assertEqualTo(1)
-                verify{ mockSharedPref.setNotFirstGlobalTag() }
+            }.andThen { state, events ->
+                state.productTagSource.productTagSourceStack.size.assertEqualTo(2)
+                events.last().assertEqualTo(ProductTagUiEvent.ShowSourceBottomSheet)
             }
         }
     }
@@ -235,33 +235,6 @@ class ProductTagNavigationViewModelTest {
             }.andThen {
                 productTagSource.productTagSourceStack.size.assertEqualTo(1)
                 productTagSource.productTagSourceStack.first().assertEqualTo(ProductTagSource.LastPurchase)
-            }
-        }
-    }
-
-    @Test
-    fun `when user try to select product tag source when the stack is more than 1, it should not emit any new state`() {
-        val selectedShop = shopModelBuilder.buildUiModel()
-        val query = "pokemon"
-
-        val robot = ProductTagViewModelRobot(
-            dispatcher = testDispatcher,
-            repo = mockRepo,
-            sharedPref = mockSharedPref,
-        )
-
-        robot.use {
-            robot.recordState {
-                /** Building up stack */
-                submitAction(ProductTagAction.SetDataFromAutoComplete(ProductTagSource.GlobalSearch, query, "", ""))
-                submitAction(ProductTagAction.ShopSelected(selectedShop))
-
-                /** Select another tag source */
-                submitAction(ProductTagAction.SelectProductTagSource(ProductTagSource.LastTagProduct))
-            }.andThen {
-                productTagSource.productTagSourceStack.size.assertEqualTo(2)
-                productTagSource.productTagSourceStack.first().assertEqualTo(ProductTagSource.GlobalSearch)
-                productTagSource.productTagSourceStack.last().assertEqualTo(ProductTagSource.Shop)
             }
         }
     }
