@@ -83,7 +83,9 @@ object TokoFoodPurchaseUiModelMapper {
                 add(mapProductUnavailableReasonUiModel(isEnabled, response.data.unavailableSection.title))
                 addAll(unavailableProducts.map { mapProductUiModel(it, isEnabled, false) })
                 add(TokoFoodPurchaseDividerTokoFoodPurchaseUiModel())
-                add(mapAccordionUiModel(isEnabled))
+                if (unavailableProducts.size > Int.ONE) {
+                    add(mapAccordionUiModel(isEnabled))
+                }
             }
             if (isEnabled) {
                 if (shouldPromoShown) {
