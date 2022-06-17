@@ -1,11 +1,12 @@
 package com.tokopedia.logisticseller.reschedulepickup.data.param
 
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.graphql.data.GqlParam
 
 data class SaveReschedulePickupParam(
     @SerializedName("input")
     val input: MpLogisticInsertReschedulePickupInputs = MpLogisticInsertReschedulePickupInputs(),
-) {
+) : GqlParam {
     data class MpLogisticInsertReschedulePickupInputs(
         @SerializedName("order_ids")
         val orderIds: List<String> = listOf(),
@@ -15,5 +16,5 @@ data class SaveReschedulePickupParam(
         val time: String = "",
         @SerializedName("reason")
         val reason: String = "",
-    )
+    ) : GqlParam
 }
