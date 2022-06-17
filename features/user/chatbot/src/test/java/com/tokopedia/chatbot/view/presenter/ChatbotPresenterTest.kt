@@ -287,12 +287,6 @@ class ChatbotPresenterTest {
 
     }
 
-
-    //checkLinkForRedirection,hitGqlforOptionList,OnClickLeaveQueue,uploadImageSecureUpload,
-    //uploadImages,loadPrevious,getExistingChat,leaveQueue,
-
-    // DONe - submitChatCsat,sendReasonRating
-
     /******************************* Socket Related Unit Tests************************************/
 
     @Test
@@ -527,7 +521,7 @@ class ChatbotPresenterTest {
                     any()
                 ), any()
             )
-        }
+        } just runs
 
         presenter.sendMessageWithWebsocket("", "", "", "")
 
