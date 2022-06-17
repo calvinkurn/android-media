@@ -12,9 +12,10 @@ import com.tokopedia.shop.flashsale.domain.entity.aggregate.CampaignCreationElig
 import com.tokopedia.shop.flashsale.domain.entity.aggregate.CampaignPrerequisiteData
 import com.tokopedia.shop.flashsale.domain.entity.aggregate.ShareComponentMetadata
 import com.tokopedia.shop.flashsale.domain.usecase.GetSellerCampaignListUseCase
+import com.tokopedia.shop.flashsale.domain.usecase.aggregate.GenerateCampaignBannerUseCase
 import com.tokopedia.shop.flashsale.domain.usecase.aggregate.GetCampaignPrerequisiteDataUseCase
-import com.tokopedia.shop.flashsale.domain.usecase.aggregate.ValidateCampaignCreationEligibilityUseCase
 import com.tokopedia.shop.flashsale.domain.usecase.aggregate.GetShareComponentMetadataUseCase
+import com.tokopedia.shop.flashsale.domain.usecase.aggregate.ValidateCampaignCreationEligibilityUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -26,7 +27,8 @@ class CampaignListViewModel @Inject constructor(
     private val getSellerCampaignListUseCase: GetSellerCampaignListUseCase,
     private val getCampaignPrerequisiteDataUseCase: GetCampaignPrerequisiteDataUseCase,
     private val getShareComponentMetadataUseCase: GetShareComponentMetadataUseCase,
-    private val validateCampaignCreationEligibility: ValidateCampaignCreationEligibilityUseCase
+    private val validateCampaignCreationEligibility: ValidateCampaignCreationEligibilityUseCase,
+    private val generateCampaignBannerUseCase: GenerateCampaignBannerUseCase
 ) : BaseViewModel(dispatchers.main) {
 
     private val _campaigns = MutableLiveData<Result<CampaignMeta>>()
@@ -37,6 +39,10 @@ class CampaignListViewModel @Inject constructor(
     val campaignPrerequisiteData: LiveData<Result<CampaignPrerequisiteData>>
         get() = _campaignPrerequisiteData
 
+    private val _shareComponentThumbnailImageUrl = MutableLiveData<Result<String>>()
+    val shareComponentThumbnailImageUrl: LiveData<Result<String>>
+        get() = _shareComponentThumbnailImageUrl
+
     private val _shareComponentMetadata = MutableLiveData<Result<ShareComponentMetadata>>()
     val shareComponentMetadata: LiveData<Result<ShareComponentMetadata>>
         get() = _shareComponentMetadata
@@ -45,13 +51,15 @@ class CampaignListViewModel @Inject constructor(
     val creationEligibility: LiveData<Result<CampaignCreationEligibility>>
         get() = _sellerEligibility
 
-    private var drafts : List<CampaignUiModel> = emptyList()
+    private var drafts: List<CampaignUiModel> = emptyList()
+    private var campaignId: Long = 0
+    private var thumbnailImageUrl = ""
 
     fun getCampaigns(
         rows: Int,
         offset: Int,
         statusId: List<Int>,
-        campaignName : String,
+        campaignName: String,
     ) {
         launchCatchError(
             dispatchers.io,
@@ -86,6 +94,19 @@ class CampaignListViewModel @Inject constructor(
 
     }
 
+    fun getShareComponentThumbnailImageUrl(campaignId: Long) {
+        launchCatchError(
+            dispatchers.io,
+            block = {
+                val metadata = generateCampaignBannerUseCase.execute(campaignId)
+                _shareComponentThumbnailImageUrl.postValue(Success(metadata))
+            },
+            onError = { error ->
+                _shareComponentThumbnailImageUrl.postValue(Fail(error))
+            }
+        )
+    }
+
     fun getShareComponentMetadata(campaignId: Long) {
         launchCatchError(
             dispatchers.io,
@@ -97,7 +118,6 @@ class CampaignListViewModel @Inject constructor(
                 _shareComponentMetadata.postValue(Fail(error))
             }
         )
-
     }
 
     fun validateCampaignCreationEligibility() {
@@ -114,11 +134,27 @@ class CampaignListViewModel @Inject constructor(
 
     }
 
-    fun setCampaignDrafts(drafts : List<CampaignUiModel>) {
+    fun setCampaignDrafts(drafts: List<CampaignUiModel>) {
         this.drafts = drafts
     }
 
     fun getCampaignDrafts(): List<CampaignUiModel> {
         return drafts
+    }
+
+    fun setSelectedCampaignId(campaignId: Long) {
+        this.campaignId = campaignId
+    }
+
+    fun getSelectedCampaignId(): Long {
+        return campaignId
+    }
+
+    fun setThumbnailImageUrl(thumbnailImageUrl: String) {
+        this.thumbnailImageUrl = thumbnailImageUrl
+    }
+
+    fun getThumbnailImageUrl(): String {
+        return thumbnailImageUrl
     }
 }

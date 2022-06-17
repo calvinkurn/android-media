@@ -138,6 +138,7 @@ class CampaignListFragment : BaseSimpleListFragment<CampaignAdapter, CampaignUiM
         observeCampaigns()
         observeCampaignPrerequisiteData()
         observeShareComponentMetadata()
+        observeShareComponentThumbnailImage()
         observeCampaignCreationEligibility()
     }
 
@@ -248,13 +249,29 @@ class CampaignListFragment : BaseSimpleListFragment<CampaignAdapter, CampaignUiM
         }
     }
 
+
+    private fun observeShareComponentThumbnailImage() {
+        viewModel.shareComponentThumbnailImageUrl.observe(viewLifecycleOwner) { result ->
+            when (result) {
+                is Success -> {
+                    viewModel.setThumbnailImageUrl(result.data)
+                    viewModel.getShareComponentMetadata(viewModel.getSelectedCampaignId())
+                }
+                is Fail -> {
+                    dismissLoaderDialog()
+                    binding?.root showError result.throwable
+                }
+            }
+        }
+    }
+
     private fun observeShareComponentMetadata() {
         viewModel.shareComponentMetadata.observe(viewLifecycleOwner) { result ->
             when (result) {
                 is Success -> {
                     dismissLoaderDialog()
                     val metadata = result.data
-                    displayShareBottomSheet(metadata)
+                    displayShareBottomSheet(viewModel.getThumbnailImageUrl(), metadata)
                 }
                 is Fail -> {
                     dismissLoaderDialog()
@@ -292,10 +309,12 @@ class CampaignListFragment : BaseSimpleListFragment<CampaignAdapter, CampaignUiM
     }
 
     private val onCampaignClicked: (CampaignUiModel, Int) -> Unit = { campaign, position ->
+        viewModel.setSelectedCampaignId(campaign.campaignId)
         //TODO: Navigate to campaign detail
     }
 
     private val onOverflowMenuClicked: (CampaignUiModel) -> Unit = { campaign ->
+        viewModel.setSelectedCampaignId(campaign.campaignId)
         displayMoreMenuBottomSheet(campaign)
     }
 
@@ -499,13 +518,13 @@ class CampaignListFragment : BaseSimpleListFragment<CampaignAdapter, CampaignUiM
         bottomSheet.setOnCancelCampaignMenuSelected { handleCancelCampaign(campaign) }
         bottomSheet.setOnShareCampaignMenuSelected {
             showLoaderDialog()
-            viewModel.getShareComponentMetadata(campaign.campaignId)
+            viewModel.getShareComponentThumbnailImageUrl(campaign.campaignId)
         }
         bottomSheet.setOnEditCampaignMenuSelected {}
         bottomSheet.show(childFragmentManager, bottomSheet.tag)
     }
 
-    private fun displayShareBottomSheet(metadata: ShareComponentMetadata) {
+    private fun displayShareBottomSheet(thumbnailImageUrl : String, metadata: ShareComponentMetadata, ) {
         val param = ShareComponentInstanceBuilder.Param(
             metadata.banner.shop.name,
             metadata.banner.shop.logo,
@@ -522,6 +541,7 @@ class CampaignListFragment : BaseSimpleListFragment<CampaignAdapter, CampaignUiM
         )
 
         shareComponentBottomSheet = shareComponentInstanceBuilder.build(
+            thumbnailImageUrl,
             param,
             onShareOptionClick = ::handleShareOptionClick,
             onCloseOptionClicked = {}
