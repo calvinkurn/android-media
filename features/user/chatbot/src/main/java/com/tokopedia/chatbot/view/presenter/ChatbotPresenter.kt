@@ -53,6 +53,7 @@ import com.tokopedia.chatbot.data.helpfullquestion.HelpFullQuestionsViewModel
 import com.tokopedia.chatbot.data.imageupload.ChatbotUploadImagePojo
 import com.tokopedia.chatbot.data.invoice.AttachInvoiceSingleViewModel
 import com.tokopedia.chatbot.data.network.ChatbotUrl
+import com.tokopedia.chatbot.data.newsession.TopBotNewSessionResponse
 import com.tokopedia.chatbot.data.quickreply.QuickReplyViewModel
 import com.tokopedia.chatbot.data.seprator.ChatSepratorViewModel
 import com.tokopedia.chatbot.data.toolbarpojo.ToolbarAttributes
@@ -746,20 +747,24 @@ class ChatbotPresenter @Inject constructor(
     }
 
     override fun checkForSession(messageId: String) {
-        val params = getTopBotNewSessionUseCase.createRequestParams(messageId)
-        launchCatchError(
-            block = {
-                val response = getTopBotNewSessionUseCase.getTobBotUserSession(params)
-                val isNewSession = response.topBotGetNewSession.isNewSession
-                val isTypingBlocked = response.topBotGetNewSession.isTypingBlocked
-                handleNewSession(isNewSession)
-                handleReplyBox(isTypingBlocked)
-            },
-            onError = {
-                view.loadChatHistory()
-                view.enableTyping()
-            }
+        getTopBotNewSessionUseCase.cancelJobs()
+        getTopBotNewSessionUseCase.getTopBotUserSession(
+            ::getTopBotNewSessionSuccess,
+            ::getTopBotNewSessionFailure,
+            messageId
         )
+    }
+
+    private fun getTopBotNewSessionFailure(throwable: Throwable) {
+        view.loadChatHistory()
+        view.enableTyping()
+    }
+
+    private fun getTopBotNewSessionSuccess(topBotNewSessionResponse: TopBotNewSessionResponse) {
+        val isNewSession =  topBotNewSessionResponse.topBotGetNewSession.isNewSession
+        val isTypingBlocked = topBotNewSessionResponse.topBotGetNewSession.isTypingBlocked
+        handleNewSession(isNewSession)
+        handleReplyBox(isTypingBlocked)
     }
 
     private fun handleReplyBox(isTypingBlocked: Boolean) {
