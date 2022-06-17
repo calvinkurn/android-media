@@ -25,7 +25,7 @@ import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
 import javax.inject.Inject
 
-@DelicateCoroutinesApi
+@OptIn(DelicateCoroutinesApi::class)
 class ChooseProductFragment : BaseSimpleListFragment<ReserveProductAdapter, ReserveProductModel>() {
 
     companion object {
