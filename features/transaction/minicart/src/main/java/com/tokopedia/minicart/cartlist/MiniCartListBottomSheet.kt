@@ -79,6 +79,10 @@ class MiniCartListBottomSheet @Inject constructor(private var miniCartListDecora
 
     private var isShow: Boolean = false
 
+    // temporary variable to handle case edit bundle
+    // this is useful if there are multiple same bundleId in cart
+    private var toBeDeletedBundleGroupId = ""
+
     @Inject
     lateinit var miniCartChatListBottomSheet: MiniCartChatListBottomSheet
 
@@ -119,9 +123,9 @@ class MiniCartListBottomSheet @Inject constructor(private var miniCartListDecora
             val oldBundleId = data?.getStringExtra(KEY_OLD_BUNDLE_ID) ?: ""
             val newBundleId = data?.getStringExtra(KEY_NEW_BUNLDE_ID) ?: ""
             val isChangeVariant = data?.getBooleanExtra(KEY_IS_CHANGE_VARIANT, false) ?: false
-            if ((oldBundleId.isNotBlank() && newBundleId.isNotBlank() && oldBundleId != newBundleId) || isChangeVariant) {
+            if (((oldBundleId.isNotBlank() && newBundleId.isNotBlank() && oldBundleId != newBundleId) || isChangeVariant) && toBeDeletedBundleGroupId.isNotEmpty()) {
                 val list = viewModel?.miniCartListBottomSheetUiModel?.value?.visitables ?: emptyList()
-                val deletedItems = list.filter { it is MiniCartProductUiModel && it.isBundlingItem && it.bundleId == oldBundleId }
+                val deletedItems = list.filter { it is MiniCartProductUiModel && it.isBundlingItem && it.bundleId == oldBundleId && it.bundleGroupId == toBeDeletedBundleGroupId }
                 if (deletedItems.isNotEmpty()) {
                     viewModel?.deleteMultipleCartItems(deletedItems as List<MiniCartProductUiModel>, isFromEditBundle = true)
                 }
@@ -665,6 +669,7 @@ class MiniCartListBottomSheet @Inject constructor(private var miniCartListDecora
         bottomSheet?.context?.let {
             val intent = RouteManager.getIntentNoFallback(it, element.editBundleApplink) ?: return
             analytics.eventClickChangeProductBundle()
+            toBeDeletedBundleGroupId = element.bundleGroupId
             bottomSheet?.startActivityForResult(intent, REQUEST_EDIT_BUNDLE)
         }
     }
