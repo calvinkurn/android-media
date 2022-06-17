@@ -18,7 +18,6 @@ import com.tokopedia.shop.flashsale.common.customcomponent.BaseSimpleListFragmen
 import com.tokopedia.shop.flashsale.common.extension.showError
 import com.tokopedia.shop.flashsale.di.component.DaggerShopFlashSaleComponent
 import com.tokopedia.shop.flashsale.domain.entity.SellerCampaignProductList
-import com.tokopedia.shop.flashsale.presentation.creation.information.CampaignInformationFragment
 import com.tokopedia.shop.flashsale.presentation.creation.manage.adapter.ManageProductListAdapter
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -113,7 +112,7 @@ class ManageProductFragment :
                 activity?.finish()
             }
             tpgAddProduct.setOnClickListener {
-                showProductListPage()
+                showChooseProductPage()
             }
         }
     }
@@ -170,7 +169,7 @@ class ManageProductFragment :
 
             emptyState.setImageUrl(EMPTY_STATE_IMAGE_URL)
             emptyState.setPrimaryCTAClickListener {
-                showProductListPage()
+                showChooseProductPage()
             }
         }
     }
@@ -204,7 +203,7 @@ class ManageProductFragment :
     }
 
     @OptIn(DelicateCoroutinesApi::class)
-    private fun showProductListPage(){
+    private fun showChooseProductPage(){
         val context = context ?: return
         val intent = Intent(context, ChooseProductActivity::class.java).apply {
             putExtra(ChooseProductActivity.BUNDLE_KEY_CAMPAIGN_ID, campaignId.toString())
