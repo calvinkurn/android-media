@@ -551,7 +551,7 @@ class VerificationViewModelTest {
         val otpType = "123"
         val validateToken = "abc123"
         val userIdEnc = "advasd"
-        val mode = "pin"
+        val mode = "PIN"
         val code = "1"
         val msisdn = "08123123"
         val uid = 0
