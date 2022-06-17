@@ -28,6 +28,7 @@ import com.tokopedia.kotlin.extensions.orTrue
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.review.BuildConfig
 import com.tokopedia.review.R
 import com.tokopedia.review.ReviewInstance
@@ -263,6 +264,7 @@ open class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAd
                 } else {
                     goToTopFab?.show()
                 }
+                reviewHeader?.sortFilterDivider?.showWithCondition(firstCompletelyVisibleItemPosition == 0)
             }
         }
     }
@@ -997,7 +999,7 @@ open class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAd
             Toaster.build(
                 it,
                 message,
-                Toaster.toasterLength,
+                Toaster.LENGTH_INDEFINITE,
                 Toaster.TYPE_ERROR,
                 getString(R.string.review_refresh)
             ) { action.invoke() }.show()

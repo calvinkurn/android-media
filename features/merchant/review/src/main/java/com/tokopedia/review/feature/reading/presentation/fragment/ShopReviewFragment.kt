@@ -203,7 +203,7 @@ class ShopReviewFragment : ReadReviewFragment() {
         Toaster.build(
                 requireView(),
                 message,
-                Toaster.toasterLength,
+                Toaster.LENGTH_INDEFINITE,
                 Toaster.TYPE_ERROR,
                 getString(R.string.review_refresh)
         ) { action.invoke() }.show()
