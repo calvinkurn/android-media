@@ -99,20 +99,14 @@ class CampaignAdapter(
             binding.tpgSoldCount.text = campaign.summary.soldItem.toString()
             binding.loader.isVisible = isLoading
             binding.imgMore.isVisible = campaign.status.isActive()
-            handleTimer(campaign.status, campaign.startDate)
-            handleCampaignStatusIndicator(campaign.status)
+            binding.timer.isVisible = campaign.status.isUpcoming()
+            handleCampaignStatusIndicator(campaign.status, campaign.startDate)
         }
 
-        private fun handleTimer(campaignStatus: CampaignStatus, startDate: Date) {
-            binding.timer.isVisible = campaignStatus.isUpcoming()
-            if (campaignStatus.isUpcoming()) {
-                binding.timer.targetDate = startDate.toCalendar()
-            }
-        }
-
-        private fun handleCampaignStatusIndicator(campaignStatus: CampaignStatus) {
+        private fun handleCampaignStatusIndicator(campaignStatus: CampaignStatus, startDate: Date) {
             when {
                 campaignStatus.isUpcoming() -> {
+                    binding.timer.targetDate = startDate.toCalendar()
                     binding.tpgCampaignStatus.setStatus(R.string.sfs_upcoming)
                     binding.tpgCampaignStatus.textColor(Unify_YN400)
                     binding.imgCampaignStatusIndicator.setImageResource(R.drawable.ic_sfs_campaign_indicator_upcoming)

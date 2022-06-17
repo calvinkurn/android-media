@@ -40,7 +40,7 @@ enum class CampaignStatus(val id: Int) : Parcelable {
 
 
 fun CampaignStatus.isUpcoming(): Boolean {
-    return this == CampaignStatus.READY
+    return this == CampaignStatus.READY || this == CampaignStatus.READY_LOCKED
 }
 
 fun CampaignStatus.isOngoing(): Boolean {
