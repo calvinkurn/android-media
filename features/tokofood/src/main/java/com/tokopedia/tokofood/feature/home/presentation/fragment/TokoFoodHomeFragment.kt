@@ -706,11 +706,12 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
     }
 
     private fun hasNoAddress(): Boolean {
-        return userSession.isLoggedIn && localCacheModel?.address_id.isNullOrEmpty()
+        return userSession.isLoggedIn && (localCacheModel?.address_id.isNullOrEmpty() || localCacheModel?.address_id == "0")
     }
 
     private fun hasNoPinPoin(): Boolean {
-        return userSession.isLoggedIn && !localCacheModel?.address_id.isNullOrEmpty()
+        return userSession.isLoggedIn &&
+                (!localCacheModel?.address_id.isNullOrEmpty() || localCacheModel?.address_id != "0")
                 && (localCacheModel?.lat.isNullOrEmpty() || localCacheModel?.long.isNullOrEmpty() ||
                 localCacheModel?.lat.equals(EMPTY_LOCATION) || localCacheModel?.long.equals(EMPTY_LOCATION))
     }
