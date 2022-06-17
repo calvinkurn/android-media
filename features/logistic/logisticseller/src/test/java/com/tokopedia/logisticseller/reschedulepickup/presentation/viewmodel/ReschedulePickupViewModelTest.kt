@@ -49,7 +49,7 @@ class ReschedulePickupViewModelTest {
                         GetReschedulePickupResponse.Data.MpLogisticGetReschedulePickup.DataItem()
                     )
                 ))
-            coEvery { getReschedulePickupUseCase.execute(any()) } returns response
+            coEvery { getReschedulePickupUseCase(any()) } returns response
             //when
             reschedulePickupViewModel.getReschedulePickupDetail("12345")
             // then
@@ -61,7 +61,7 @@ class ReschedulePickupViewModelTest {
         coroutineTestRule.runBlockingTest {
             //given
             val response = GetReschedulePickupResponse.Data()
-            coEvery { getReschedulePickupUseCase.execute(any()) } returns response
+            coEvery { getReschedulePickupUseCase(any()) } returns response
 
             //when
             reschedulePickupViewModel.getReschedulePickupDetail("12345")
@@ -75,7 +75,7 @@ class ReschedulePickupViewModelTest {
     fun `when get Reschedule Pickup Detail then throws error`() =
         coroutineTestRule.runBlockingTest {
             //given
-            coEvery { getReschedulePickupUseCase.execute(any()) } throws defaultThrowable
+            coEvery { getReschedulePickupUseCase(any()) } throws defaultThrowable
             //when
             reschedulePickupViewModel.getReschedulePickupDetail("12345")
             // then
@@ -86,7 +86,7 @@ class ReschedulePickupViewModelTest {
     fun `when save reschedule pickup then returns success`() =
         coroutineTestRule.runBlockingTest {
             //given
-            coEvery { saveReschedulePickupUseCase.execute(any()) } returns SaveReschedulePickupResponse.Data()
+            coEvery { saveReschedulePickupUseCase(any()) } returns SaveReschedulePickupResponse.Data()
             //when
             reschedulePickupViewModel.saveReschedule("12345", "2022-02-02", RescheduleTimeOptionModel(), "reason")
             // then
@@ -97,7 +97,7 @@ class ReschedulePickupViewModelTest {
     fun `when save reschedule pickup then throws error`() =
         coroutineTestRule.runBlockingTest {
             //given
-            coEvery { saveReschedulePickupUseCase.execute(any()) } throws defaultThrowable
+            coEvery { saveReschedulePickupUseCase(any()) } throws defaultThrowable
             //when
             reschedulePickupViewModel.saveReschedule("12345", "2022-02-02", RescheduleTimeOptionModel(), "reason")
             // then
