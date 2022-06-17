@@ -159,7 +159,7 @@ class ProductTagParentFragment @Inject constructor(
                         val data = Intent().apply {
                             putExtra(RESULT_PRODUCT_ID, product.id)
                             putExtra(RESULT_PRODUCT_NAME, product.name)
-                            putExtra(RESULT_PRODUCT_PRICE, product.priceFmt)
+                            putExtra(RESULT_PRODUCT_PRICE, if(product.isDiscount) product.priceDiscountFmt else product.priceFmt)
                             putExtra(RESULT_PRODUCT_IMAGE, product.coverURL)
                             putExtra(RESULT_PRODUCT_PRICE_ORIGINAL_FMT, product.priceOriginalFmt)
                             putExtra(RESULT_PRODUCT_PRICE_DISCOUNT_FMT, product.discountFmt)
