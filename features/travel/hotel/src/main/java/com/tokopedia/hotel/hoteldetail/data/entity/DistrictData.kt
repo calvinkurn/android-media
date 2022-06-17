@@ -11,10 +11,10 @@ import kotlinx.android.parcel.Parcelize
 @Parcelize
 class DistrictData(@SerializedName("id")
                    @Expose
-                   val id: Long = 0,
+                   val id: String = "0",
                    @SerializedName("cityId")
                    @Expose
-                   val cityId: Long = 0,
+                   val cityId: String = "0",
                    @SerializedName("latitude")
                    @Expose
                    val latitude: Double = 0.0,

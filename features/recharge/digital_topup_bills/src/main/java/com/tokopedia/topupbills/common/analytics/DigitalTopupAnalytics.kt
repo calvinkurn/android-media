@@ -10,12 +10,14 @@ import com.tokopedia.common.topupbills.data.constant.TelcoComponentName
 import com.tokopedia.common.topupbills.view.model.TopupBillsTrackPromo
 import com.tokopedia.common.topupbills.view.model.TopupBillsTrackRecentTransaction
 import com.tokopedia.common_digital.common.constant.DigitalTrackingConst
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.topupbills.common.analytics.DigitalTopupEventTracking.Additional.Companion.REGULAR_PRODUCT
 import com.tokopedia.topupbills.common.analytics.DigitalTopupEventTracking.Additional.Companion.SPECIAL_PROMO
 import com.tokopedia.topupbills.telco.data.TelcoProduct
 import com.tokopedia.topupbills.telco.prepaid.model.DigitalTrackProductTelco
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
+import java.lang.NumberFormatException
 
 
 /**
@@ -88,7 +90,7 @@ class DigitalTopupAnalytics {
         ))
     }
 
-    fun eventClickSeeMore(categoryId: Int) {
+    fun eventClickSeeMore(categoryId: String) {
         TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
                 DigitalTopupEventTracking.Event.CLICK_HOMEPAGE,
                 DigitalTopupEventTracking.Category.DIGITAL_HOMEPAGE,
@@ -97,7 +99,7 @@ class DigitalTopupAnalytics {
         ))
     }
 
-    fun eventCloseDetailProduct(categoryId: Int) {
+    fun eventCloseDetailProduct(categoryId: String) {
         TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
                 DigitalTopupEventTracking.Event.CLICK_HOMEPAGE,
                 DigitalTopupEventTracking.Category.DIGITAL_HOMEPAGE,
@@ -617,10 +619,14 @@ class DigitalTopupAnalytics {
                 DigitalTopupEventTracking.Additional.USER_ID, userId,
             )
         )
-    }
+     }
 
     private fun getTrackingCategoryName(categoryId: Int): String {
-        return getCategoryName(categoryId).toLowerCase()
+        return getCategoryName(categoryId).lowercase()
+    }
+
+    private fun getTrackingCategoryName(categoryId: String): String {
+        return getCategoryName(categoryId.toIntOrZero()).lowercase()
     }
 
     fun getCategoryName(categoryId: Int): String {
