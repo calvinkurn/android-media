@@ -971,7 +971,7 @@ open class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAd
         if (currentPage == 0) {
             showError(throwable)
         } else {
-            showToasterError(throwable.getErrorMessage(context)) {
+            showToasterError(getString(R.string.review_reading_connection_error)) {
                 loadData(
                     currentPage
                 )
