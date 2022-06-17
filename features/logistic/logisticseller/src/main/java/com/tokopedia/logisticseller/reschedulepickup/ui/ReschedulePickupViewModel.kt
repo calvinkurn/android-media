@@ -20,7 +20,7 @@ class ReschedulePickupViewModel @Inject constructor(
     dispatcher: CoroutineDispatchers,
     private val getReschedulePickupUseCase: GetReschedulePickupUseCase,
     private val saveReschedulePickupUseCase: SaveReschedulePickupUseCase
-) : BaseViewModel(dispatcher.io) {
+) : BaseViewModel(dispatcher.main) {
     private val _reschedulePickupDetail = MutableLiveData<Result<RescheduleDetailModel>>()
     val reschedulePickupDetail: LiveData<Result<RescheduleDetailModel>>
         get() = _reschedulePickupDetail
@@ -33,12 +33,12 @@ class ReschedulePickupViewModel @Inject constructor(
             block = {
                 val response = getReschedulePickupUseCase(ReschedulePickupMapper.mapToGetReschedulePickupParam(listOf(orderId)))
                 if (response.mpLogisticGetReschedulePickup.data.isNotEmpty()) {
-                    _reschedulePickupDetail.postValue(Success(ReschedulePickupMapper.mapToRescheduleDetailModel(response.mpLogisticGetReschedulePickup)))
+                    _reschedulePickupDetail.value = Success(ReschedulePickupMapper.mapToRescheduleDetailModel(response.mpLogisticGetReschedulePickup))
                 } else {
-                    _reschedulePickupDetail.postValue(Fail(Throwable("Data Reschedule Pickup tidak ditemukan")))
+                    _reschedulePickupDetail.value = Fail(Throwable("Data Reschedule Pickup tidak ditemukan"))
                 }
             },
-            onError = { _reschedulePickupDetail.postValue(Fail(it)) }
+            onError = { _reschedulePickupDetail.value = Fail(it) }
         )
     }
 
@@ -46,10 +46,10 @@ class ReschedulePickupViewModel @Inject constructor(
         launchCatchError(
             block = {
                 val response = saveReschedulePickupUseCase(ReschedulePickupMapper.mapToSaveReschedulePickupParam(orderId, date, time.time, reason))
-                _saveRescheduleDetail.postValue(Success(ReschedulePickupMapper.mapToSaveRescheduleModel(response, time.etaPickup, orderId)))
+                _saveRescheduleDetail.value = Success(ReschedulePickupMapper.mapToSaveRescheduleModel(response, time.etaPickup, orderId))
             },
             onError = {
-                _saveRescheduleDetail.postValue(Fail(it))
+                _saveRescheduleDetail.value = Fail(it)
             }
         )
     }
