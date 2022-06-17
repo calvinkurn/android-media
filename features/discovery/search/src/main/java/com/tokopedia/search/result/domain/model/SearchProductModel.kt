@@ -162,6 +162,7 @@ data class SearchProductModel(
             @Expose
             val query: String = "",
 
+            @SuppressLint("Invalid Data Type")
             @SerializedName("typeId")
             @Expose
             val typeId: Int = 0,
@@ -384,6 +385,7 @@ data class SearchProductModel(
             @Expose
             val price: String = "",
 
+            @SuppressLint("Invalid Data Type")
             @SerializedName("priceInt")
             @Expose
             val priceInt: Int = 0,
@@ -396,6 +398,7 @@ data class SearchProductModel(
             @Expose
             val categoryBreadcrumb: String = "",
 
+            @SuppressLint("Invalid Data Type")
             @SerializedName("categoryId")
             @Expose
             val categoryId: Int = 0,
