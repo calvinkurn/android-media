@@ -34,6 +34,7 @@ open class PersistentButton() : Parcelable {
     var isAppLogo: Boolean = false
 
     @SerializedName(CMConstant.PayloadKeys.ELEMENT_ID)
+    @Expose
     var element_id: String? = ""
 
     protected constructor(`in`: Parcel) : this() {
