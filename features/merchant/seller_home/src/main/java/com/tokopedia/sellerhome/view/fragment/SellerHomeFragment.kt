@@ -290,13 +290,16 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
     override fun onHiddenChanged(hidden: Boolean) {
         super.onHiddenChanged(hidden)
 
-        if (!hidden) {
+        if (hidden) {
+            rebateCoachMark?.dismissCoachMark()
+        } else {
             SellerHomeTracking.sendScreen(screenName)
             view?.post {
                 requestVisibleWidgetsData()
             }
             recyclerView?.post {
                 resetWidgetImpressionHolder()
+                showRebateCoachMark()
             }
         }
     }
