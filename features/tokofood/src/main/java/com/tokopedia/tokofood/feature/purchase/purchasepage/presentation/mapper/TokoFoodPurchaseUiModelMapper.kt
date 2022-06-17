@@ -7,6 +7,7 @@ import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFoodProductVari
 import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFoodPromo
 import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFood
 import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFoodProductVariantOption
+import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFoodProductVariantSelectionRules
 import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFoodShipping
 import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFoodShop
 import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFoodShoppingTotal
@@ -353,20 +354,25 @@ object TokoFoodPurchaseUiModelMapper {
             isRequired = this.rules.selectionRules.isRequired,
             maxQty = this.rules.selectionRules.maxQuantity,
             minQty = this.rules.selectionRules.minQuantity,
-            options = mapOptionDetailsToOptionUiModels(this.rules.selectionRules.maxQuantity, this.options)
+            options = mapOptionDetailsToOptionUiModels(this.rules.selectionRules, this.options)
         )
     }
 
-    private fun mapOptionDetailsToOptionUiModels(maxQty: Int, optionDetails: List<CheckoutTokoFoodProductVariantOption>): List<OptionUiModel> {
+    private fun mapOptionDetailsToOptionUiModels(selectionRules: CheckoutTokoFoodProductVariantSelectionRules, optionDetails: List<CheckoutTokoFoodProductVariantOption>): List<OptionUiModel> {
         return optionDetails.map { optionDetail ->
             OptionUiModel(
-                    isSelected = optionDetail.isSelected,
+                    isSelected = optionDetail.isSelected && !optionDetail.isOutOfStock(),
                     id = optionDetail.optionId,
                     status = optionDetail.status,
                     name = optionDetail.name,
                     price = optionDetail.price,
                     priceFmt = optionDetail.priceFmt,
-                    selectionControlType = if (maxQty > Int.ONE) SelectionControlType.MULTIPLE_SELECTION else SelectionControlType.SINGLE_SELECTION
+                    selectionControlType = when {
+                        selectionRules.type == CheckoutTokoFoodProductVariantSelectionRules.SELECT_MANY -> SelectionControlType.MULTIPLE_SELECTION
+                        selectionRules.type == CheckoutTokoFoodProductVariantSelectionRules.SELECT_ONE -> SelectionControlType.SINGLE_SELECTION
+                        selectionRules.maxQuantity > Int.ONE -> SelectionControlType.MULTIPLE_SELECTION
+                        else -> SelectionControlType.SINGLE_SELECTION
+                    }
             )
         }
     }
