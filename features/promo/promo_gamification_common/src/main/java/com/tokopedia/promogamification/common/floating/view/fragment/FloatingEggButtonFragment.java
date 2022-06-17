@@ -44,6 +44,7 @@ import com.tokopedia.abstraction.common.utils.HexValidator;
 import com.tokopedia.promogamification.common.CoreGamificationEventTracking;
 import com.tokopedia.promogamification.common.R;
 import com.tokopedia.promogamification.common.applink.ApplinkUtil;
+import com.tokopedia.promogamification.common.constants.TrackerConstants;
 import com.tokopedia.promogamification.common.di.CommonGamificationComponent;
 import com.tokopedia.promogamification.common.di.CommonGamificationComponentInstance;
 import com.tokopedia.promogamification.common.floating.data.entity.FloatingCtaEntity;
@@ -52,6 +53,10 @@ import com.tokopedia.promogamification.common.floating.listener.OnDragTouchListe
 import com.tokopedia.promogamification.common.floating.view.contract.FloatingEggContract;
 import com.tokopedia.promogamification.common.floating.view.presenter.FloatingEggPresenter;
 import com.tokopedia.track.TrackApp;
+import com.tokopedia.track.TrackAppUtils;
+import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
+
 import javax.inject.Inject;
 import dagger.Lazy;
 import timber.log.Timber;
@@ -60,6 +65,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Map;
 
 /**
  * Created by hendry on 28/03/18.
@@ -112,6 +118,9 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment implements Flo
     long timeRemainingSeconds;
     boolean isShowTime = false;
     int screenHeight = 0;
+    private int tokenId;
+    private String tokenName;
+    private UserSession userSession;
 
     public static FloatingEggButtonFragment newInstance() {
         return new FloatingEggButtonFragment();
@@ -128,6 +137,9 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment implements Flo
         tvFloatingTimer = view.findViewById(R.id.tv_floating_timer);
         minimizeButtonLeft = view.findViewById(R.id.minimize_img_left);
         vgFloatingEgg.setVisibility(View.GONE);
+
+
+        userSession = new UserSession(getContext());
 
         initMinimizeIcon();
         prepareScreenHeight();
@@ -155,18 +167,14 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment implements Flo
         if (minimizeButtonLeft.getRotation() == newAngleOfMinimizeBtn) {
             shiftEggTowardsLeftOrRight(newAngleOfMinimizeBtn, oldAngleOfMinimizeBtn, vgFloatingEgg.getX(),
                     vgFloatingEgg.getX() - vgFloatingEgg.getWidth() + minimizeButtonLeft.getWidth());
-            if (isRight)
-                isMinimized = false;
-            else
-                isMinimized = true;
+            isMinimized = !isRight;
         } else {
             shiftEggTowardsLeftOrRight(oldAngleOfMinimizeBtn, newAngleOfMinimizeBtn, vgFloatingEgg.getX(),
                     vgFloatingEgg.getX() + vgFloatingEgg.getWidth() - minimizeButtonLeft.getWidth());
-            if (isRight)
-                isMinimized = true;
-            else
-                isMinimized = false;
+            isMinimized = isRight;
         }
+        // hide tracker
+        trackingEggHide(tokenId, tokenName, isMinimized);
     }
 
     private void shiftEggTowardsLeftOrRight(float oldAngle, float newAngle, float oldX, float newX) {
@@ -467,6 +475,8 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment implements Flo
     @Override
     public void onSuccessGetToken(GamiFloatingButtonEntity tokenData) {
         sumTokenString = tokenData.getSumTokenStr();
+        tokenId = tokenData.getId();
+        tokenName = tokenData.getName();
 
         FloatingCtaEntity tokenFloating = tokenData.getCta();
         final String pageUrl = tokenFloating.getUrl();
@@ -758,21 +768,46 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment implements Flo
     }
 
     private void trackingEggImpression(int idToken, String name) {
-        TrackApp.getInstance().getGTM().sendGeneralEvent(
+        Map<String, Object> map = TrackAppUtils.gtmData(
                 CoreGamificationEventTracking.Event.VIEW_LUCKY_EGG,
                 CoreGamificationEventTracking.Category.CLICK_LUCKY_EGG,
                 CoreGamificationEventTracking.Action.IMPRESSION_LUCKY_EGG,
                 idToken + "_" + name);
 
+        map.put(TrackerConstants.BUSINESS_UNIT_KEY, TrackerConstants.BUSINESS_UNIT_VALUE);
+        map.put(TrackerConstants.CURRENT_SITE_KEY, TrackerConstants.CURRENT_SITE_VALUE);
+        map.put(TrackerConstants.USER_ID_KEY, userSession.getUserId());
+        TrackApp.getInstance().getGTM().sendGeneralEvent(map);
     }
 
     private void trackingEggClick(int idToken, String name) {
-        TrackApp.getInstance().getGTM().sendGeneralEvent(
+        Map<String, Object> map = TrackAppUtils.gtmData(
                 CoreGamificationEventTracking.Event.CLICK_LUCKY_EGG,
                 CoreGamificationEventTracking.Category.CLICK_LUCKY_EGG,
                 CoreGamificationEventTracking.Action.CLICK_LUCKY_EGG,
-                idToken + "_" + name
-        );
+                idToken + "_" + name);
+
+        map.put(TrackerConstants.BUSINESS_UNIT_KEY, TrackerConstants.BUSINESS_UNIT_VALUE);
+        map.put(TrackerConstants.CURRENT_SITE_KEY, TrackerConstants.CURRENT_SITE_VALUE);
+        map.put(TrackerConstants.USER_ID_KEY, userSession.getUserId());
+        TrackApp.getInstance().getGTM().sendGeneralEvent(map);
+    }
+
+    private void trackingEggHide(int idToken, String name, boolean isMinimized) {
+        String label = "_hide";
+        if(!isMinimized){
+            label = "_show";
+        }
+        Map<String, Object> map = TrackAppUtils.gtmData(
+                CoreGamificationEventTracking.Event.CLICK_LUCKY_EGG,
+                CoreGamificationEventTracking.Category.CLICK_LUCKY_EGG,
+                CoreGamificationEventTracking.Action.HIDE_LUCKY_EGG,
+                idToken + "_" + name + label);
+
+        map.put(TrackerConstants.BUSINESS_UNIT_KEY, TrackerConstants.BUSINESS_UNIT_VALUE);
+        map.put(TrackerConstants.CURRENT_SITE_KEY, TrackerConstants.CURRENT_SITE_VALUE);
+        map.put(TrackerConstants.USER_ID_KEY, userSession.getUserId());
+        TrackApp.getInstance().getGTM().sendGeneralEvent(map);
     }
 
     public View getEgg() {

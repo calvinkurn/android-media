@@ -15,7 +15,6 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.base.app.BaseMainApplication
-import com.tokopedia.encryption.security.AeadEncryptor
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
@@ -51,6 +50,13 @@ import com.tokopedia.usercomponents.stickylogin.di.DaggerStickyLoginComponent
 import com.tokopedia.usercomponents.stickylogin.di.module.StickyLoginModule
 import com.tokopedia.usercomponents.stickylogin.domain.data.StickyLoginTickerDataModel
 import com.tokopedia.usercomponents.stickylogin.view.viewModel.StickyLoginViewModel
+import com.tokopedia.unifycomponents.ImageUnify
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.user.session.UserSession
+import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.user.session.util.EncoderDecoder
+import com.tokopedia.usercomponents.stickylogin.di.DaggerStickyLoginComponent
 import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
 import kotlinx.coroutines.*
 import java.util.concurrent.TimeUnit
@@ -66,9 +72,6 @@ class StickyLoginView : FrameLayout, CoroutineScope, DarkModeListener {
     @Inject
     lateinit var userSession: UserSessionInterface
     private var remoteConfig: RemoteConfig? = null
-
-    @Inject
-    lateinit var aeadEncryptor: AeadEncryptor
 
     private var viewBinding = LayoutWidgetStickyLoginBinding.inflate(LayoutInflater.from(context), this)
 
@@ -401,8 +404,8 @@ class StickyLoginView : FrameLayout, CoroutineScope, DarkModeListener {
             val encryptedName = getPrefLoginReminder(context).getString(KEY_USER_NAME, "")
             val encryptedProfilePicture = getPrefLoginReminder(context).getString(KEY_PROFILE_PICTURE, "")
 
-            val name = aeadEncryptor.decrypt(encryptedName ?: "", null)
-            val profilePicture = aeadEncryptor.decrypt(encryptedProfilePicture ?: "", null)
+            val name = EncoderDecoder.Decrypt(encryptedName ?: "", UserSession.KEY_IV)
+            val profilePicture = EncoderDecoder.Decrypt(encryptedProfilePicture ?: "", UserSession.KEY_IV)
 
             viewBinding.layoutStickyContent.setContent("$TEXT_RE_LOGIN $name")
 
