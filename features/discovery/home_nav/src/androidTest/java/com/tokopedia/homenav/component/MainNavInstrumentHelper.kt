@@ -18,9 +18,14 @@ import org.hamcrest.Matchers
  */
 const val ANALYTIC_VALIDATOR_QUERY_FILE_NAME_FAVORITE_SHOP = "tracker/home_nav/favorite_shop.json"
 const val ANALYTIC_VALIDATOR_QUERY_FILE_NAME_ORDER_TRANSACTION = "tracker/home_nav/order_transaction.json"
+const val ANALYTIC_VALIDATOR_QUERY_FILE_NAME_WISHLIST = "tracker/home_nav/wishlist.json"
 
 fun clickOnEachShop(viewHolder: RecyclerView.ViewHolder) {
     CommonActions.clickOnEachItemRecyclerView(viewHolder.itemView, R.id.favorite_shop_rv, 0)
+}
+
+fun clickOnWishlist(viewHolder: RecyclerView.ViewHolder) {
+    CommonActions.clickOnEachItemRecyclerView(viewHolder.itemView, R.id.wishlist_rv, 0)
 }
 
 fun clickOnOrderHistory(viewHolder: RecyclerView.ViewHolder) {

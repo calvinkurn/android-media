@@ -22,6 +22,7 @@ import com.tokopedia.homenav.R
 import com.tokopedia.homenav.mainnav.view.adapter.viewholder.MainNavListAdapter
 import com.tokopedia.homenav.mainnav.view.datamodel.TransactionListItemDataModel
 import com.tokopedia.homenav.mainnav.view.datamodel.favoriteshop.FavoriteShopListDataModel
+import com.tokopedia.homenav.mainnav.view.datamodel.wishlist.WishlistDataModel
 import com.tokopedia.test.application.assertion.topads.TopAdsVerificationTestReportUtil
 import org.junit.After
 import org.junit.Before
@@ -89,6 +90,26 @@ class HomeNavAnalyticTest {
             hasPassedAnalytics(
                 cassavaTestRule,
                 ANALYTIC_VALIDATOR_QUERY_FILE_NAME_ORDER_TRANSACTION
+            )
+        }
+    }
+
+    @Test
+    fun testComponentWishlist() {
+        mainNavCassavaTest {
+            login()
+            waitForData()
+            doActivityTestByModelClass(
+                delayBeforeRender = 2000,
+                dataModelClass = WishlistDataModel::class
+            ) { viewHolder: RecyclerView.ViewHolder, i: Int ->
+                clickOnWishlist(viewHolder)
+            }
+        } validateAnalytics {
+            addDebugEnd()
+            hasPassedAnalytics(
+                cassavaTestRule,
+                ANALYTIC_VALIDATOR_QUERY_FILE_NAME_WISHLIST
             )
         }
     }
