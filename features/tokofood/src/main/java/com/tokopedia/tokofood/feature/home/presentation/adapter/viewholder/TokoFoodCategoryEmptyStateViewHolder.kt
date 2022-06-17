@@ -10,8 +10,7 @@ import com.tokopedia.tokofood.databinding.ItemTokofoodCategoryEmptyStateBinding
 import com.tokopedia.tokofood.feature.home.presentation.uimodel.TokoFoodCategoryEmptyStateUiModel
 
 class TokoFoodCategoryEmptyStateViewHolder(
-    view: View,
-    private val listener: TokoFoodCategoryEmptyStateListener?
+    view: View
 ) : AbstractViewHolder<TokoFoodCategoryEmptyStateUiModel>(view) {
 
     companion object {
@@ -24,13 +23,6 @@ class TokoFoodCategoryEmptyStateViewHolder(
     override fun bind(element: TokoFoodCategoryEmptyStateUiModel?) {
         with(binding) {
             categoryEmptyState.emptyStateImageID.loadImage(ImageUrl.Category.IV_CATEGORY_EMPTY_STATE_URL)
-            categoryEmptyState.setPrimaryCTAClickListener {
-                listener?.onCategoryEmptyStateClickedAgain()
-            }
         }
-    }
-
-    interface TokoFoodCategoryEmptyStateListener {
-        fun onCategoryEmptyStateClickedAgain()
     }
 }

@@ -17,8 +17,7 @@ import com.tokopedia.tokofood.feature.home.presentation.uimodel.TokoFoodProgress
 
 class TokoFoodCategoryAdapterTypeFactory(
     private val merchantListListener: TokoFoodMerchantListViewHolder.TokoFoodMerchantListListener? = null,
-    private val errorStateListener: TokoFoodErrorStateViewHolder.TokoFoodErrorStateListener? = null,
-    private val emptyStateListener: TokoFoodCategoryEmptyStateViewHolder.TokoFoodCategoryEmptyStateListener? = null
+    private val errorStateListener: TokoFoodErrorStateViewHolder.TokoFoodErrorStateListener? = null
 ):  BaseAdapterTypeFactory(),
     TokoFoodCategoryTypeFactory,
     TokoFoodMerchantListTypeFactory,
@@ -37,7 +36,7 @@ class TokoFoodCategoryAdapterTypeFactory(
             TokoFoodProgressBarViewHolder.LAYOUT -> TokoFoodProgressBarViewHolder(view)
             TokoFoodErrorStateViewHolder.LAYOUT -> TokoFoodErrorStateViewHolder(view, errorStateListener)
             TokoFoodCategoryLoadingViewHolder.LAYOUT -> TokoFoodCategoryLoadingViewHolder(view)
-            TokoFoodCategoryEmptyStateViewHolder.LAYOUT -> TokoFoodCategoryEmptyStateViewHolder(view, emptyStateListener)
+            TokoFoodCategoryEmptyStateViewHolder.LAYOUT -> TokoFoodCategoryEmptyStateViewHolder(view)
             else -> super.createViewHolder(view, type)
         }
     }
