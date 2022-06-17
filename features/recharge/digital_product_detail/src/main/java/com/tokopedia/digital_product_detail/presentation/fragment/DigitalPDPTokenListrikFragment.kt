@@ -306,7 +306,8 @@ class DigitalPDPTokenListrikFragment : BaseDaggerFragment(),
                         atcData.data.cartId,
                         viewModel.digitalCheckoutPassData.productId.toString(),
                         viewModel.selectedGridProduct.denomData.title,
-                        atcData.data.priceProduct
+                        atcData.data.priceProduct,
+                        atcData.data.channelId,
                     )
                     navigateToCart(atcData.data.categoryId)
                 }
@@ -767,8 +768,10 @@ class DigitalPDPTokenListrikFragment : BaseDaggerFragment(),
                 override fun onGlobalLayout() {
                     binding?.rechargePdpTokenListrikClientNumberWidget?.viewTreeObserver?.removeOnGlobalLayoutListener(this)
                     binding?.run {
-                        val dynamicPadding = rechargePdpTokenListrikClientNumberWidget.height.pxToDp(
-                            resources.displayMetrics) + extraPadding
+                        val defaultPadding: Int = context?.resources?.displayMetrics?.let {
+                            rechargePdpTokenListrikClientNumberWidget.height.pxToDp(it)
+                        } ?: 0
+                        val dynamicPadding = defaultPadding + extraPadding
                         rechargePdpTokenListrikSvContainer.setPadding(0, dynamicPadding, 0, 0)
                     }
                 }

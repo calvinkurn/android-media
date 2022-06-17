@@ -11,6 +11,7 @@ import com.tokopedia.discovery2.data.DataItem
 import com.tokopedia.discovery2.data.Level
 import com.tokopedia.discovery2.data.quickcouponresponse.ClickCouponData
 import com.tokopedia.discovery2.datamapper.getComponent
+import com.tokopedia.discovery2.viewcontrollers.adapter.factory.ComponentsList
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.product.detail.common.ProductTrackingConstant.Tracking.KEY_ECOMMERCE
 import com.tokopedia.quest_widget.tracker.Tracker
@@ -1956,8 +1957,13 @@ open class DiscoveryAnalytics(pageType: String = DISCOVERY_DEFAULT_PAGE_TYPE,
     override fun trackShopCardImpression(componentsItems: ComponentsItem) {
         val list = ArrayList<Map<String, Any>>()
         val shopMap = HashMap<String, Any>()
+        val shopName = if(componentsItems.parentComponentName == ComponentsList.ShopCardInfinite.componentName){
+            SHOP_CARD_INFINITE
+        }else{
+            SHOP_CARD_BANNER
+        }
         componentsItems.data?.firstOrNull()?.let {
-            shopMap[KEY_NAME] = "/discovery/${removedDashPageIdentifier} - ${pageType} - ${getParentPosition(componentsItems) + 1} - ${componentsItems.properties?.shopInfo ?: ""} - - $SHOP_CARD_BANNER"
+            shopMap[KEY_NAME] = "/discovery/${removedDashPageIdentifier} - ${pageType} - ${getParentPosition(componentsItems) + 1} - ${componentsItems.properties?.shopInfo ?: ""} - - $shopName"
             shopMap[KEY_ID] = "${componentsItems.parentComponentId}_${componentsItems.data?.firstOrNull()?.shopId}"
             shopMap[KEY_POSITION] = "${componentsItems.position + 1}"
             shopMap[KEY_CREATIVE] = (componentsItems.creativeName ?: EMPTY_STRING)
@@ -1983,8 +1989,13 @@ open class DiscoveryAnalytics(pageType: String = DISCOVERY_DEFAULT_PAGE_TYPE,
     override fun trackEventClickShopCard(componentsItems: ComponentsItem) {
         val list = ArrayList<Map<String, Any>>()
         val shopMap = HashMap<String, Any>()
+        val shopName = if(componentsItems.parentComponentName == ComponentsList.ShopCardInfinite.componentName){
+            SHOP_CARD_INFINITE
+        }else{
+            SHOP_CARD_BANNER
+        }
         componentsItems.data?.firstOrNull().let {
-            shopMap[KEY_NAME] = "/discovery/${removedDashPageIdentifier} - ${pageType} - ${getParentPosition(componentsItems) + 1} - ${componentsItems.properties?.shopInfo ?: ""} - - $SHOP_CARD_BANNER"
+            shopMap[KEY_NAME] = "/discovery/${removedDashPageIdentifier} - ${pageType} - ${getParentPosition(componentsItems) + 1} - ${componentsItems.properties?.shopInfo ?: ""} - - $shopName"
             shopMap[KEY_ID] = "${componentsItems.parentComponentId}_${componentsItems.data?.firstOrNull()?.shopId}"
             shopMap[KEY_POSITION] = "${componentsItems.position + 1}"
             shopMap[KEY_CREATIVE] = (componentsItems.data?.firstOrNull()?.creativeName
@@ -1997,7 +2008,7 @@ open class DiscoveryAnalytics(pageType: String = DISCOVERY_DEFAULT_PAGE_TYPE,
                 EVENT_PROMO_CLICK to mapOf(
                         KEY_PROMOTIONS to list))
         val map = createGeneralEvent(eventName = EVENT_PROMO_CLICK,
-                eventAction = ACTION_SHOP_CARD_CLICK, eventLabel = "$SHOP_CARD_BANNER - - ${componentsItems.data?.firstOrNull()?.shopId}")
+                eventAction = ACTION_SHOP_CARD_CLICK, eventLabel = "$shopName - - ${componentsItems.data?.firstOrNull()?.shopId}")
         map[KEY_E_COMMERCE] = eCommerce
         map[PAGE_TYPE] = pageType
         map[PAGE_PATH] = removedDashPageIdentifier

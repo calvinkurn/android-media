@@ -14,6 +14,7 @@ import com.tokopedia.wishlist.common.subscriber.RemoveWishListSubscriber;
 import java.util.HashMap;
 import java.util.Map;
 
+@Deprecated /*this use case will be deleted, use DeleteWishlistV2UseCase from new depencendy : implementation projectOrAar(rootProject.ext.features.wishlistCommonV2) */
 public class RemoveWishListUseCase {
 
     private static final String PARAM_USER_ID = "userID";
