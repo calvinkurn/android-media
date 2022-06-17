@@ -142,11 +142,12 @@ class ManageProductFragment :
     private fun displayProducts(productList: SellerCampaignProductList) {
         binding?.cardIncompleteProductInfo?.gone()
         productList.productList.forEach { product ->
-            when{
+            when {
                 !isProductInfoComplete(product.productMapData) -> {
                     binding?.cardIncompleteProductInfo?.visible()
                 }
             }
+            product.errorMessage = viewModel.getProductErrorMessage(product.productMapData)
         }
         manageProductListAdapter.clearAll()
         renderList(productList.productList, false)
@@ -184,7 +185,7 @@ class ManageProductFragment :
         }
     }
 
-    private fun showLoader(){
+    private fun showLoader() {
         binding?.apply {
             loader.visible()
             cardIncompleteProductInfo.gone()
@@ -196,14 +197,14 @@ class ManageProductFragment :
         }
     }
 
-    private fun hideLoader(){
+    private fun hideLoader() {
         binding?.apply {
             loader.gone()
         }
     }
 
     @OptIn(DelicateCoroutinesApi::class)
-    private fun showChooseProductPage(){
+    private fun showChooseProductPage() {
         val context = context ?: return
         val intent = Intent(context, ChooseProductActivity::class.java).apply {
             putExtra(ChooseProductActivity.BUNDLE_KEY_CAMPAIGN_ID, campaignId.toString())
@@ -213,7 +214,7 @@ class ManageProductFragment :
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        when(resultCode) {
+        when (resultCode) {
             Activity.RESULT_OK -> {
                 showLoader()
                 Timer("Retrieving", false).schedule(DELAY) {

@@ -4,13 +4,18 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.shop.flashsale.common.extension.convertRupiah
 import com.tokopedia.shop.flashsale.data.request.GetSellerCampaignProductListRequest
 import com.tokopedia.shop.flashsale.domain.entity.SellerCampaignProductList
+import com.tokopedia.shop.flashsale.domain.entity.enums.ManageProductErrorMessage
 import com.tokopedia.shop.flashsale.domain.usecase.GetSellerCampaignProductListUseCase
+import com.tokopedia.shop.flashsale.presentation.creation.manage.adapter.ManageProductListAdapter
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
+import java.text.NumberFormat
+import java.util.*
 import javax.inject.Inject
 
 class ManageProductViewModel @Inject constructor(
@@ -30,7 +35,7 @@ class ManageProductViewModel @Inject constructor(
     fun getProducts(
         campaignId: Long,
         listType: Int
-    ){
+    ) {
         launchCatchError(
             dispatchers.io,
             block = {
@@ -49,4 +54,75 @@ class ManageProductViewModel @Inject constructor(
             }
         )
     }
+
+    fun getProductErrorMessage(productMapData: SellerCampaignProductList.ProductMapData): String {
+        var errorMsg = ""
+        val maxDiscountedPrice =
+            (productMapData.originalPrice * ManageProductListAdapter.ManageProductListViewHolder.MAX_CAMPAIGN_DISCOUNT_PERCENTAGE).toInt()
+                .convertRupiah()
+        when {
+            productMapData.discountedPrice > productMapData.originalPrice -> {
+                errorMsg =
+                    ManageProductErrorMessage.MAX_CAMPAIGN_DISCOUNTED_PRICE.errorMsg + maxDiscountedPrice
+                when {
+                    productMapData.customStock > productMapData.originalStock -> {
+                        errorMsg += ManageProductErrorMessage.OTHER.errorMsg
+                    }
+                    productMapData.discountedPrice < ManageProductListAdapter.ManageProductListViewHolder.MIN_CAMPAIGN_DISCOUNTED_PRICE -> {
+                        errorMsg += ManageProductErrorMessage.OTHER.errorMsg
+                    }
+                    productMapData.customStock < ManageProductListAdapter.ManageProductListViewHolder.MIN_CAMPAIGN_STOCK -> {
+                        errorMsg += ManageProductErrorMessage.OTHER.errorMsg
+                    }
+                    productMapData.maxOrder > productMapData.customStock -> {
+                        errorMsg += ManageProductErrorMessage.OTHER.errorMsg
+                    }
+                }
+            }
+
+            productMapData.customStock > productMapData.originalStock -> {
+                errorMsg =
+                    ManageProductErrorMessage.MAX_CAMPAIGN_STOCK.errorMsg + "${productMapData.originalStock}"
+                when {
+                    productMapData.discountedPrice < ManageProductListAdapter.ManageProductListViewHolder.MIN_CAMPAIGN_DISCOUNTED_PRICE -> {
+                        errorMsg += ManageProductErrorMessage.OTHER.errorMsg
+                    }
+                    productMapData.customStock < ManageProductListAdapter.ManageProductListViewHolder.MIN_CAMPAIGN_STOCK -> {
+                        errorMsg += ManageProductErrorMessage.OTHER.errorMsg
+                    }
+                    productMapData.maxOrder > productMapData.customStock -> {
+                        errorMsg += ManageProductErrorMessage.OTHER.errorMsg
+                    }
+                }
+            }
+
+            productMapData.discountedPrice < ManageProductListAdapter.ManageProductListViewHolder.MIN_CAMPAIGN_DISCOUNTED_PRICE -> {
+                errorMsg = ManageProductErrorMessage.MIN_CAMPAIGN_DISCOUNTED_PRICE.errorMsg
+                when {
+                    productMapData.customStock < ManageProductListAdapter.ManageProductListViewHolder.MIN_CAMPAIGN_STOCK -> {
+                        errorMsg += ManageProductErrorMessage.OTHER.errorMsg
+                    }
+                    productMapData.maxOrder > productMapData.customStock -> {
+                        errorMsg += ManageProductErrorMessage.OTHER.errorMsg
+                    }
+                }
+            }
+
+            productMapData.customStock < ManageProductListAdapter.ManageProductListViewHolder.MIN_CAMPAIGN_STOCK -> {
+                errorMsg = ManageProductErrorMessage.MIN_CAMPAIGN_STOCK.errorMsg
+                when {
+                    productMapData.maxOrder > productMapData.customStock -> {
+                        errorMsg += ManageProductErrorMessage.OTHER.errorMsg
+                    }
+                }
+            }
+
+            productMapData.maxOrder > productMapData.customStock -> {
+                errorMsg += ManageProductErrorMessage.MAX_CAMPAIGN_ORDER.errorMsg
+            }
+        }
+
+        return errorMsg
+    }
+
 }

@@ -7,14 +7,10 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.seller_shop_flash_sale.R
 import com.tokopedia.seller_shop_flash_sale.databinding.SsfsItemManageProductBinding
-import com.tokopedia.shop.flashsale.common.constant.Constant
-import com.tokopedia.shop.flashsale.domain.entity.SellerCampaignProductList
+import com.tokopedia.shop.flashsale.common.extension.convertRupiah
 import com.tokopedia.shop.flashsale.domain.entity.SellerCampaignProductList.Product
-import com.tokopedia.shop.flashsale.domain.entity.enums.ManageProductErrorMessage
 import com.tokopedia.shop.flashsale.presentation.creation.manage.ManageProductFragment.Companion.isProductInfoComplete
 import com.tokopedia.unifyprinciples.Typography
-import java.text.NumberFormat
-import java.util.*
 
 class ManageProductListAdapter(
     private val onEditClicked: () -> Unit,
@@ -96,10 +92,10 @@ class ManageProductListAdapter(
                 when {
                     isProductInfoComplete(product.productMapData) -> {
                         when {
-                            handleErrorMessage(product.productMapData).isNotEmpty() -> {
+                            product.errorMessage.isNotEmpty() -> {
                                 labelBelumLengkap.invisible()
                                 tpgErrorCopy.visible()
-                                tpgErrorCopy.text = handleErrorMessage(product.productMapData)
+                                tpgErrorCopy.text = product.errorMessage
                             }
                             else -> {
                                 labelBelumLengkap.gone()
@@ -158,82 +154,6 @@ class ManageProductListAdapter(
             } else {
                 this.gone()
             }
-        }
-
-        private fun Int.convertRupiah(): String {
-            val localId = Locale("in", "ID")
-            val formatter = NumberFormat.getCurrencyInstance(localId)
-            return formatter.format(this)
-        }
-
-        private fun handleErrorMessage(productMapData: SellerCampaignProductList.ProductMapData): String {
-            var errorMsg = ""
-            val maxDiscountedPrice =
-                (productMapData.originalPrice * MAX_CAMPAIGN_DISCOUNT_PERCENTAGE).toInt()
-                    .convertRupiah()
-            when {
-                productMapData.discountedPrice > productMapData.originalPrice -> {
-                    errorMsg =
-                        ManageProductErrorMessage.MAX_CAMPAIGN_DISCOUNTED_PRICE.errorMsg + maxDiscountedPrice
-                    when {
-                        productMapData.customStock > productMapData.originalStock -> {
-                            errorMsg += ManageProductErrorMessage.OTHER.errorMsg
-                        }
-                        productMapData.discountedPrice < MIN_CAMPAIGN_DISCOUNTED_PRICE -> {
-                            errorMsg += ManageProductErrorMessage.OTHER.errorMsg
-                        }
-                        productMapData.customStock < MIN_CAMPAIGN_STOCK -> {
-                            errorMsg += ManageProductErrorMessage.OTHER.errorMsg
-                        }
-                        productMapData.maxOrder > productMapData.customStock -> {
-                            errorMsg += ManageProductErrorMessage.OTHER.errorMsg
-                        }
-                    }
-                }
-
-                productMapData.customStock > productMapData.originalStock -> {
-                    errorMsg =
-                        ManageProductErrorMessage.MAX_CAMPAIGN_STOCK.errorMsg + "${productMapData.originalStock}"
-                    when {
-                        productMapData.discountedPrice < MIN_CAMPAIGN_DISCOUNTED_PRICE -> {
-                            errorMsg += ManageProductErrorMessage.OTHER.errorMsg
-                        }
-                        productMapData.customStock < MIN_CAMPAIGN_STOCK -> {
-                            errorMsg += ManageProductErrorMessage.OTHER.errorMsg
-                        }
-                        productMapData.maxOrder > productMapData.customStock -> {
-                            errorMsg += ManageProductErrorMessage.OTHER.errorMsg
-                        }
-                    }
-                }
-
-                productMapData.discountedPrice < MIN_CAMPAIGN_DISCOUNTED_PRICE -> {
-                    errorMsg = ManageProductErrorMessage.MIN_CAMPAIGN_DISCOUNTED_PRICE.errorMsg
-                    when {
-                        productMapData.customStock < MIN_CAMPAIGN_STOCK -> {
-                            errorMsg += ManageProductErrorMessage.OTHER.errorMsg
-                        }
-                        productMapData.maxOrder > productMapData.customStock -> {
-                            errorMsg += ManageProductErrorMessage.OTHER.errorMsg
-                        }
-                    }
-                }
-
-                productMapData.customStock < MIN_CAMPAIGN_STOCK -> {
-                    errorMsg = ManageProductErrorMessage.MIN_CAMPAIGN_STOCK.errorMsg
-                    when {
-                        productMapData.maxOrder > productMapData.customStock -> {
-                            errorMsg += ManageProductErrorMessage.OTHER.errorMsg
-                        }
-                    }
-                }
-
-                productMapData.maxOrder > productMapData.customStock -> {
-                    errorMsg += ManageProductErrorMessage.MAX_CAMPAIGN_ORDER.errorMsg
-                }
-            }
-
-            return errorMsg
         }
     }
 }
