@@ -45,7 +45,7 @@ class ReschedulePickupViewModel @Inject constructor(
     fun saveReschedule(orderId: String, date: String, time: RescheduleTimeOptionModel, reason: String) {
         launchCatchError(
             block = {
-                val response = saveReschedulePickupUseCase.execute(ReschedulePickupMapper.mapToSaveReschedulePickupParam(orderId, date, time.time, reason))
+                val response = saveReschedulePickupUseCase(ReschedulePickupMapper.mapToSaveReschedulePickupParam(orderId, date, time.time, reason))
                 _saveRescheduleDetail.postValue(Success(ReschedulePickupMapper.mapToSaveRescheduleModel(response, time.etaPickup, orderId)))
             },
             onError = {
