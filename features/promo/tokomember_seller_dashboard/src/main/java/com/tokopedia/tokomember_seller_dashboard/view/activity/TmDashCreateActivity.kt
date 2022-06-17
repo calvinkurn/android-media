@@ -19,7 +19,25 @@ import com.tokopedia.tokomember_seller_dashboard.R
 import com.tokopedia.tokomember_seller_dashboard.callbacks.TmCouponListRefreshCallback
 import com.tokopedia.tokomember_seller_dashboard.callbacks.TmOpenFragmentCallback
 import com.tokopedia.tokomember_seller_dashboard.tracker.TmTracker
-import com.tokopedia.tokomember_seller_dashboard.util.*
+import com.tokopedia.tokomember_seller_dashboard.util.ACTION_EDIT
+import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_CARD_ID
+import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_CREATE_SCREEN_TYPE
+import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_PROGRAM_ID
+import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_PROGRAM_TYPE
+import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_SHOP_ID
+import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_VOUCHER_ID
+import com.tokopedia.tokomember_seller_dashboard.util.TM_CARD_DIALOG_CTA_PRIMARY
+import com.tokopedia.tokomember_seller_dashboard.util.TM_CARD_DIALOG_CTA_SECONDARY
+import com.tokopedia.tokomember_seller_dashboard.util.TM_CARD_DIALOG_DESC
+import com.tokopedia.tokomember_seller_dashboard.util.TM_CARD_DIALOG_TITLE
+import com.tokopedia.tokomember_seller_dashboard.util.TM_DIALOG_CANCEL_CTA_PRIMARY_COUPON
+import com.tokopedia.tokomember_seller_dashboard.util.TM_DIALOG_CANCEL_CTA_PRIMARY_PROGRAM
+import com.tokopedia.tokomember_seller_dashboard.util.TM_DIALOG_CANCEL_CTA_SECONDARY_COUPON
+import com.tokopedia.tokomember_seller_dashboard.util.TM_DIALOG_CANCEL_CTA_SECONDARY_PROGRAM
+import com.tokopedia.tokomember_seller_dashboard.util.TM_DIALOG_CANCEL_DESC_COUPON
+import com.tokopedia.tokomember_seller_dashboard.util.TM_DIALOG_CANCEL_DESC_PROGRAM
+import com.tokopedia.tokomember_seller_dashboard.util.TM_DIALOG_CANCEL_TITLE_COUPON
+import com.tokopedia.tokomember_seller_dashboard.util.TM_DIALOG_CANCEL_TITLE_PROGRAM
 import com.tokopedia.tokomember_seller_dashboard.view.fragment.TmCreateCardFragment
 import com.tokopedia.tokomember_seller_dashboard.view.fragment.TmDashPreviewFragment
 import com.tokopedia.tokomember_seller_dashboard.view.fragment.TmMultipleCuponCreateFragment
@@ -168,7 +186,8 @@ class TmDashCreateActivity : AppCompatActivity(), TmOpenFragmentCallback {
             screenType: Int,
             programActionType: Int = ProgramActionType.CREATE,
             requestCode: Int?,
-            programId: Int?
+            programId: Int?,
+            cardId: Int = 0
         ){
             activity?.let {
                 val intent = Intent(it, TmDashCreateActivity::class.java)
@@ -176,6 +195,7 @@ class TmDashCreateActivity : AppCompatActivity(), TmOpenFragmentCallback {
                 intent.putExtra(BUNDLE_CREATE_SCREEN_TYPE, screenType)
                 intent.putExtra(BUNDLE_PROGRAM_TYPE, programActionType)
                 intent.putExtra(BUNDLE_PROGRAM_ID, programId)
+                intent.putExtra(BUNDLE_CARD_ID, cardId)
                 requestCode?.let {
                     ActivityCompat.startActivityForResult(activity, intent, requestCode, intent.extras)
                 } ?:  it.startActivity(intent)

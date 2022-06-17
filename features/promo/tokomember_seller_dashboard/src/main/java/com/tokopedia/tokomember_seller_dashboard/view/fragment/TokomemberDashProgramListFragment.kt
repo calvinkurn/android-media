@@ -14,6 +14,7 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.loaderdialog.LoaderDialog
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.tokomember_common_widget.util.CreateScreenType
 import com.tokopedia.tokomember_common_widget.util.ProgramActionType
 import com.tokopedia.tokomember_seller_dashboard.R
@@ -110,7 +111,7 @@ class TokomemberDashProgramListFragment : BaseDaggerFragment(), ProgramActions {
         tmTracker?.viewProgramListTabSection(arguments?.getInt(BUNDLE_SHOP_ID).toString())
 
         btnCreateProgram.setOnClickListener {
-            TmDashCreateActivity.openActivity(shopId, activity, CreateScreenType.PROGRAM, ProgramActionType.CREATE_BUAT, null, null, )
+            TmDashCreateActivity.openActivity(shopId, activity, CreateScreenType.PROGRAM, ProgramActionType.CREATE_BUAT, null, null, cardId)
             tmTracker?.clickProgramListButton(shopId.toString())
         }
         setEmptyProgramListData()
@@ -226,6 +227,7 @@ class TokomemberDashProgramListFragment : BaseDaggerFragment(), ProgramActions {
                 dialog?.setSecondaryCTAText("Batalkan Program")
                 dialog?.setPrimaryCTAClickListener {
                     tmDashCreateViewModel.getProgramInfo(programId,shopId, ACTION_CANCEL)
+                    dialog.dismiss()
                 }
                 dialog?.setSecondaryCTAClickListener {
                     dialog.dismiss()
@@ -248,6 +250,7 @@ class TokomemberDashProgramListFragment : BaseDaggerFragment(), ProgramActions {
     }
 
     private fun setEmptyProgramListData() {
+        iv_error.loadImage("https://images.tokopedia.net/img/android/res/singleDpi/tm_empty_coupon.png")
         tv_heading_error.text = "Buat program TokoMember, yuk!"
         tv_desc_error.text = "Program yang menarik bisa bikin member lebih sering berbelanja di tokomu."
         btn_error.text = "Buat Program TokoMember"

@@ -1,11 +1,15 @@
 package com.tokopedia.tokomember_seller_dashboard.view.fragment
 
 import android.content.Context
+import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
+import com.bumptech.glide.Glide
+import com.bumptech.glide.request.target.CustomTarget
+import com.bumptech.glide.request.transition.Transition
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.tokomember_seller_dashboard.R
@@ -15,6 +19,7 @@ import com.tokopedia.tokomember_seller_dashboard.model.MembershipGetProgramForm
 import com.tokopedia.tokomember_seller_dashboard.util.ACTION_DETAIL
 import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_PROGRAM_ID
 import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_SHOP_ID
+import com.tokopedia.tokomember_seller_dashboard.util.TM_DETAIL_BG
 import com.tokopedia.tokomember_seller_dashboard.util.TokoLiveDataResult
 import com.tokopedia.tokomember_seller_dashboard.view.viewmodel.TmDashCreateViewModel
 import kotlinx.android.synthetic.main.tm_dash_program_detail_fragment.*
@@ -55,6 +60,17 @@ class TokomemberDashProgramDetailFragment : BaseDaggerFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        Glide.with(linear_top)
+            .asDrawable()
+            .load(TM_DETAIL_BG)
+            .into(object : CustomTarget<Drawable>(){
+                override fun onResourceReady(resource: Drawable, transition: Transition<in Drawable>?) {
+                    linear_top.background = resource
+                }
+                override fun onLoadCleared(placeholder: Drawable?) {
+
+                }
+            })
         observeViewModel()
         tmDashCreateViewModel.getProgramInfo(programId, shopId, ACTION_DETAIL, TM_PROGRAM_FORM)
         setHeader()

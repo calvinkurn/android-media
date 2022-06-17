@@ -92,7 +92,7 @@ class TmDashPreviewFragment : BaseDaggerFragment() {
         arguments?.getInt(BUNDLE_PROGRAM_TYPE, 0)?.let {
             programActionType = it
         }
-        if (programActionType == ProgramActionType.CREATE_FROM_COUPON || programActionType == ProgramActionType.EXTEND) {
+        if (programActionType == ProgramActionType.CREATE_FROM_COUPON || programActionType == ProgramActionType.CREATE_BUAT || programActionType == ProgramActionType.EXTEND) {
             carouselPreview.hide()
             tmDashCreateViewModel.getProgramInfo(
                 arguments?.getInt(BUNDLE_PROGRAM_ID_IN_TOOLS) ?: 0,

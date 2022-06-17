@@ -79,6 +79,8 @@ import com.tokopedia.tokomember_seller_dashboard.util.TERMS
 import com.tokopedia.tokomember_seller_dashboard.util.TERNS_AND_CONDITION
 import com.tokopedia.tokomember_seller_dashboard.util.TIME_DESC
 import com.tokopedia.tokomember_seller_dashboard.util.TIME_TITLE
+import com.tokopedia.tokomember_seller_dashboard.util.TM_ERROR_GEN
+import com.tokopedia.tokomember_seller_dashboard.util.TM_ERROR_PROGRAM
 import com.tokopedia.tokomember_seller_dashboard.util.TmDateUtil
 import com.tokopedia.tokomember_seller_dashboard.util.TmFileUtil
 import com.tokopedia.tokomember_seller_dashboard.util.TmPrefManager
@@ -173,12 +175,12 @@ class TmSingleCouponCreateFragment : BaseDaggerFragment() {
         }
         else{
             tokomemberDashCreateViewModel.getInitialCouponData(CREATE,"")
-            prefManager?.shopId?.let { it ->
-                prefManager?.cardId?.let { it1 ->
-                    tmProgramListViewModel?.getProgramList(it, it1)
-                }
-            }
             renderSingleCoupon()
+        }
+        prefManager?.shopId?.let { it ->
+            prefManager?.cardId?.let { it1 ->
+                tmProgramListViewModel?.getProgramList(it, it1)
+            }
         }
     }
 
@@ -209,13 +211,10 @@ class TmSingleCouponCreateFragment : BaseDaggerFragment() {
                             it.data?.membershipGetProgramList?.programSellerList?.forEach { item ->
                                 if (item?.status == 4 || item?.status == 3) {
                                     //check if starttime < current time
-                                    if (TmDateUtil.getTimeInMillis(item.timeWindow?.startTime, "yyyy-MM-dd HH:mm:ss").toLong() > Date().time) {
+                                    if (TmDateUtil.getTimeInMillis(item.timeWindow?.startTime, "yyyy-MM-dd HH:mm:ss").toLong() > DateUtil.getCurrentDate().time.div(1000)) {
                                         startTime = item.timeWindow?.startTime
                                         endTime = item.timeWindow?.endTime
                                         return@time
-                                    }
-                                    else{
-                                        view?.let { it1 -> Toaster.build(it1, "Select proper start time", Toaster.TYPE_ERROR, Toaster.LENGTH_LONG).show() }
                                     }
                                 }
                             }
@@ -237,10 +236,11 @@ class TmSingleCouponCreateFragment : BaseDaggerFragment() {
                             }
                             else{
                                 view?.let { it1 -> Toaster.build(it1, "Select proper start time", Toaster.TYPE_ERROR, Toaster.LENGTH_LONG).show() }
-
                             }
                         }
-                        renderProgram()
+                        if(!fromEdit) {
+                            renderProgram()
+                        }
                     }
                     else{
                         view?.let { it1 -> Toaster.build(it1, "No program found", Toaster.TYPE_ERROR, Toaster.LENGTH_LONG).show() }
@@ -259,12 +259,14 @@ class TmSingleCouponCreateFragment : BaseDaggerFragment() {
                 }
                 TokoLiveDataResult.STATUS.SUCCESS -> {
                     containerViewFlipper.displayedChild = 0
-                    if(fromEdit){
-                        token = it.data?.getInitiateVoucherPage?.data?.token
-                        getCouponDetails()
+                    token = it.data?.getInitiateVoucherPage?.data?.token
+                    tmCouponDetail = TmCouponDetailData()
+                    tmCouponDetail?.apply {
+                        voucherImagePortrait = it.data?.getInitiateVoucherPage?.data?.imgBannerIgPost
+                        voucherImageSquare = it.data?.getInitiateVoucherPage?.data?.imgBannerIgStory
                     }
-                    else{
-                        token = it.data?.getInitiateVoucherPage?.data?.token
+                    if(fromEdit){
+                        getCouponDetails()
                     }
                 }
                 TokoLiveDataResult.STATUS.ERROR -> {
@@ -339,25 +341,24 @@ class TmSingleCouponCreateFragment : BaseDaggerFragment() {
                                 updateCoupon(it.data.uploadId)
                             }
                             else{
-                                //TODO create coupon mutation
-                                    if(token != null && tmCouponDetail?.voucherImagePortrait != null && tmCouponDetail?.voucherImageSquare != null && tmCouponDetail?.voucherDiscountAmtMax != null) {
-                                        val tmMerchantCouponCreateData =
-                                            TmCouponCreateMapper.mapCreateDataSingle(
-                                                couponPremiumData = couponPremiumData,
-                                                tmCouponPremiumUploadId = it.data.uploadId,
-                                                tmStartDateUnix = tmCouponStartDateUnix,
-                                                tmEndDateUnix = tmCouponEndDateUnix,
-                                                tmStartTimeUnix = tmCouponStartTimeUnix,
-                                                tmEndTimeUnix = tmCouponEndTimeUnix,
-                                                token = token!!,
-                                                imagePortrait = tmCouponDetail?.voucherImagePortrait!!,
-                                                imageSquare = tmCouponDetail?.voucherImageSquare!!,
-                                                maximumBenefit = tmCouponDetail?.voucherDiscountAmtMax!!
-                                            )
-                                        tokomemberDashCreateViewModel.createCoupon(
-                                            tmMerchantCouponCreateData
+                                if (token != null && tmCouponDetail?.voucherImagePortrait != null && tmCouponDetail?.voucherImageSquare != null && couponPremiumData?.maxCashback != null) {
+                                    val tmMerchantCouponCreateData =
+                                        TmCouponCreateMapper.mapCreateDataSingle(
+                                            couponPremiumData = couponPremiumData,
+                                            tmCouponPremiumUploadId = it.data.uploadId,
+                                            tmStartDateUnix = tmCouponStartDateUnix,
+                                            tmEndDateUnix = tmCouponEndDateUnix,
+                                            tmStartTimeUnix = tmCouponStartTimeUnix,
+                                            tmEndTimeUnix = tmCouponEndTimeUnix,
+                                            token = token!!,
+                                            imagePortrait = tmCouponDetail?.voucherImagePortrait!!,
+                                            imageSquare = tmCouponDetail?.voucherImageSquare!!,
+                                            maximumBenefit = couponPremiumData?.maxCashback.toIntSafely()
                                         )
-                                    }
+                                    tokomemberDashCreateViewModel.createCoupon(
+                                        tmMerchantCouponCreateData
+                                    )
+                                }
                             }
                         }
                         is UploadResult.Error ->{
@@ -385,12 +386,12 @@ class TmSingleCouponCreateFragment : BaseDaggerFragment() {
         tokomemberDashCreateViewModel.tmCouponDetaillLiveData.observe(viewLifecycleOwner, {
             when(it.status){
                 TokoLiveDataResult.STATUS.SUCCESS ->{
-                    programData = ProgramUpdateDataInput()
-                    programData?.apply {
-                        val startTime = it.data?.merchantPromotionGetMVDataByID?.data?.voucherStartTime
-                        val endTime = it.data?.merchantPromotionGetMVDataByID?.data?.voucherFinishTime
-                        timeWindow = TimeWindow(startTime = startTime, endTime = endTime)
-                    }
+//                    programData = ProgramUpdateDataInput()
+//                    programData?.apply {
+//                        val startTime = it.data?.merchantPromotionGetMVDataByID?.data?.voucherStartTime
+//                        val endTime = it.data?.merchantPromotionGetMVDataByID?.data?.voucherFinishTime
+//                        timeWindow = TimeWindow(startTime = startTime, endTime = endTime)
+//                    }
                     tmCouponDetail = it.data?.merchantPromotionGetMVDataByID?.data
                     renderUIForEdit(it.data?.merchantPromotionGetMVDataByID?.data)
                     renderProgram()
@@ -451,6 +452,7 @@ class TmSingleCouponCreateFragment : BaseDaggerFragment() {
                 }
                 is Fail -> {
                     //handleError
+                    handleProgramValidateServerError()
                 }
             }
         })
@@ -683,7 +685,12 @@ class TmSingleCouponCreateFragment : BaseDaggerFragment() {
     private fun handleProgramPreValidateError(){
         setButtonState()
         val bundle = Bundle()
-        val tmIntroBottomSheetModel = TmIntroBottomsheetModel(PROGRAM_VALIDATION_ERROR_TITLE, PROGRAM_VALIDATION_ERROR_DESC , "https://images.tokopedia.net/img/android/res/singleDpi/quest_widget_nonlogin_banner.png", PROGRAM_VALIDATION_CTA_TEXT )
+        val tmIntroBottomSheetModel = TmIntroBottomsheetModel(
+            PROGRAM_VALIDATION_ERROR_TITLE,
+            PROGRAM_VALIDATION_ERROR_DESC ,
+            TM_ERROR_PROGRAM,
+            PROGRAM_VALIDATION_CTA_TEXT
+        )
         bundle.putString(TokomemberBottomsheet.ARG_BOTTOMSHEET, Gson().toJson(tmIntroBottomSheetModel))
         val bottomSheet = TokomemberBottomsheet.createInstance(bundle)
         bottomSheet.setUpBottomSheetListener(object : BottomSheetClickListener {
@@ -697,7 +704,6 @@ class TmSingleCouponCreateFragment : BaseDaggerFragment() {
     }
 
     private fun handleProgramValidateServerError(){
-
         val title = when(retryCount){
             0-> ERROR_CREATING_TITLE
             else -> ERROR_CREATING_TITLE_RETRY
@@ -707,7 +713,12 @@ class TmSingleCouponCreateFragment : BaseDaggerFragment() {
             else -> ERROR_CREATING_CTA_RETRY
         }
         val bundle = Bundle()
-        val tmIntroBottomsheetModel = TmIntroBottomsheetModel(title, ERROR_CREATING_DESC , "https://images.tokopedia.net/img/android/res/singleDpi/quest_widget_nonlogin_banner.png", cta , errorCount = retryCount)
+        val tmIntroBottomsheetModel = TmIntroBottomsheetModel(
+            title,
+            ERROR_CREATING_DESC,
+            TM_ERROR_GEN,
+            cta,
+            errorCount = retryCount)
         bundle.putString(TokomemberBottomsheet.ARG_BOTTOMSHEET, Gson().toJson(tmIntroBottomsheetModel))
         val bottomsheet = TokomemberBottomsheet.createInstance(bundle)
         bottomsheet.setUpBottomSheetListener(object : BottomSheetClickListener{
@@ -878,6 +889,7 @@ class TmSingleCouponCreateFragment : BaseDaggerFragment() {
                 textFieldProgramEndTime.iconContainer.isEnabled = true
             }
         }
+        setTotalTransactionAmount()
 
     }
 
@@ -898,8 +910,8 @@ class TmSingleCouponCreateFragment : BaseDaggerFragment() {
     @SuppressLint("SetTextI18n")
     private fun setTotalTransactionAmount() {
         val interMediateVipData = customViewSingleCoupon?.getSingleCouponData()
-        textFieldMaxCashback.editText.setText("Rp" + CurrencyFormatHelper.convertToRupiah(
-                    (CurrencyFormatHelper.convertRupiahToInt(interMediateVipData?.maxCashback ?: "") * interMediateVipData?.quota.toIntSafely()).toString()))
+        textFieldSingleMaxTransaction.text = "Rp" + CurrencyFormatHelper.convertToRupiah(
+            (CurrencyFormatHelper.convertRupiahToInt(interMediateVipData?.maxCashback ?: "") * interMediateVipData?.quota.toIntSafely()).toString())
     }
 
     private fun clickDatePicker(textField: TextFieldUnify2, type: Int) {

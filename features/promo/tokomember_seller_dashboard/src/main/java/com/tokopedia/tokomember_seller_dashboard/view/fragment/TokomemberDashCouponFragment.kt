@@ -18,6 +18,7 @@ import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.tokomember_common_widget.util.CreateScreenType
 import com.tokopedia.tokomember_seller_dashboard.R
@@ -29,6 +30,7 @@ import com.tokopedia.tokomember_seller_dashboard.util.ADD_QUOTA
 import com.tokopedia.tokomember_seller_dashboard.util.DELETE
 import com.tokopedia.tokomember_seller_dashboard.util.EDIT
 import com.tokopedia.tokomember_seller_dashboard.util.STOP
+import com.tokopedia.tokomember_seller_dashboard.util.TM_EMPTY_COUPON
 import com.tokopedia.tokomember_seller_dashboard.util.TokoLiveDataResult
 import com.tokopedia.tokomember_seller_dashboard.view.activity.TmDashCreateActivity
 import com.tokopedia.tokomember_seller_dashboard.view.adapter.TmCouponAdapter
@@ -257,6 +259,7 @@ class TokomemberDashCouponFragment : BaseDaggerFragment(), TmCouponActions, Sort
     }
 
     private fun setEmptyCouponListData() {
+        iv_error.loadImage(TM_EMPTY_COUPON)
         tv_heading_error.text = "Buat kupon TokoMember dulu, yuk!"
         tv_desc_error.text = "Semakin menarik kupon yang kamu buat, semakin banyak jumlah transaksi yang didapatkan dari member tokomu."
         btn_error.text = "Buat Kupon"

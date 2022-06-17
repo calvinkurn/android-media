@@ -32,9 +32,38 @@ import com.tokopedia.tokomember_seller_dashboard.model.MembershipGetProgramForm
 import com.tokopedia.tokomember_seller_dashboard.model.ProgramThreshold
 import com.tokopedia.tokomember_seller_dashboard.model.TmIntroBottomsheetModel
 import com.tokopedia.tokomember_seller_dashboard.tracker.TmTracker
-import com.tokopedia.tokomember_seller_dashboard.util.*
+import com.tokopedia.tokomember_seller_dashboard.util.ACTION_CREATE
+import com.tokopedia.tokomember_seller_dashboard.util.ACTION_DETAIL
+import com.tokopedia.tokomember_seller_dashboard.util.ACTION_EDIT
+import com.tokopedia.tokomember_seller_dashboard.util.ACTION_EXTEND
+import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_CARD_ID
+import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_CARD_ID_IN_TOOLS
+import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_EDIT_PROGRAM
+import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_PROGRAM_ID
+import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_PROGRAM_ID_IN_TOOLS
+import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_PROGRAM_TYPE
+import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_SHOP_AVATAR
+import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_SHOP_ID
+import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_SHOP_NAME
+import com.tokopedia.tokomember_seller_dashboard.util.DATE_DESC
+import com.tokopedia.tokomember_seller_dashboard.util.DATE_TITLE
+import com.tokopedia.tokomember_seller_dashboard.util.ERROR_CREATING_CTA
+import com.tokopedia.tokomember_seller_dashboard.util.ERROR_CREATING_CTA_RETRY
+import com.tokopedia.tokomember_seller_dashboard.util.ERROR_CREATING_DESC
+import com.tokopedia.tokomember_seller_dashboard.util.ERROR_CREATING_TITLE
+import com.tokopedia.tokomember_seller_dashboard.util.ERROR_CREATING_TITLE_RETRY
+import com.tokopedia.tokomember_seller_dashboard.util.PROGRAM_CTA
+import com.tokopedia.tokomember_seller_dashboard.util.PROGRAM_CTA_EDIT
+import com.tokopedia.tokomember_seller_dashboard.util.REFRESH
+import com.tokopedia.tokomember_seller_dashboard.util.TM_DIALOG_CANCEL_CTA_PRIMARY_PROGRAM
+import com.tokopedia.tokomember_seller_dashboard.util.TM_DIALOG_CANCEL_CTA_SECONDARY_PROGRAM
+import com.tokopedia.tokomember_seller_dashboard.util.TM_DIALOG_CANCEL_DESC_PROGRAM
+import com.tokopedia.tokomember_seller_dashboard.util.TM_DIALOG_CANCEL_TITLE_PROGRAM
+import com.tokopedia.tokomember_seller_dashboard.util.TM_PROGRAM_EDIT_DIALOG_TITLE
+import com.tokopedia.tokomember_seller_dashboard.util.TM_PROGRAM_MIN_PURCHASE_ERROR
 import com.tokopedia.tokomember_seller_dashboard.util.TmDateUtil.convertDateTime
 import com.tokopedia.tokomember_seller_dashboard.util.TmDateUtil.setDate
+import com.tokopedia.tokomember_seller_dashboard.util.TokoLiveDataResult
 import com.tokopedia.tokomember_seller_dashboard.view.activity.TokomemberDashIntroActivity
 import com.tokopedia.tokomember_seller_dashboard.view.adapter.mapper.ProgramUpdateMapper
 import com.tokopedia.tokomember_seller_dashboard.view.customview.BottomSheetClickListener
@@ -273,6 +302,19 @@ class TmProgramFragment : BaseDaggerFragment(), ChipGroupCallback ,
                 btnCreateProgram.text = PROGRAM_CTA
                 headerProgram?.apply {
                     title = HEADER_TITLE_CREATE
+                    subtitle = HEADER_TITLE_DESC
+                    isShowBackButton = true
+                }
+                progressProgram?.apply {
+                    progressBarColorType = ProgressBarUnify.COLOR_GREEN
+                    progressBarHeight = ProgressBarUnify.SIZE_SMALL
+                    setValue(50, false)
+                }
+            }
+            ProgramActionType.CREATE_BUAT ->{
+                btnCreateProgram.text = PROGRAM_CTA
+                headerProgram?.apply {
+                    title = HEADER_TITLE_CREATE_BUAT
                     subtitle = HEADER_TITLE_DESC
                     isShowBackButton = true
                 }
@@ -528,6 +570,7 @@ class TmProgramFragment : BaseDaggerFragment(), ChipGroupCallback ,
         const val MAX_YEAR = 10
         const val MIN_YEAR = -90
         const val HEADER_TITLE_CREATE = "Daftar TokoMember"
+        const val HEADER_TITLE_CREATE_BUAT = "Buat Program"
         const val HEADER_TITLE_DESC = "Langkah 2 dari 4"
         const val HEADER_TITLE_EXTEND = "Perpanjang TokoMember"
         const val HEADER_TITLE_EDIT =  "Ubah Program"
