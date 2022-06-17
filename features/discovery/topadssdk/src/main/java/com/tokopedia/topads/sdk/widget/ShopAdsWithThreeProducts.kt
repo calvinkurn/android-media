@@ -346,7 +346,7 @@ class ShopAdsWithThreeProducts : BaseCustomView {
         widgetHeader?.setOnClickListener {
             shopAdsWithThreeProductModel.topAdsBannerClickListener?.onBannerAdsClicked(
                 1,
-                shopAdsWithThreeProductModel.applink,
+                shopAdsWithThreeProductModel.shopApplink,
                 shopAdsWithThreeProductModel.items
             )
             topAdsUrlHitter.hitClickUrl(
