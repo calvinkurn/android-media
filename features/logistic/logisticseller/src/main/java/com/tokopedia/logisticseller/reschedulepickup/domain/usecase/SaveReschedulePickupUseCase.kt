@@ -6,7 +6,6 @@ import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.data.extensions.request
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.domain.coroutine.CoroutineUseCase
-import com.tokopedia.logisticseller.common.LogisticSellerConst
 import com.tokopedia.logisticseller.reschedulepickup.data.param.SaveReschedulePickupParam
 import com.tokopedia.logisticseller.reschedulepickup.data.response.SaveReschedulePickupResponse
 import javax.inject.Inject
@@ -25,8 +24,7 @@ class SaveReschedulePickupUseCase @Inject constructor(
     }
 
     override suspend fun execute(params: SaveReschedulePickupParam): SaveReschedulePickupResponse.Data {
-        val param = mapOf(LogisticSellerConst.PARAM_INPUT to params)
-        return repository.request(SaveReschedulePickupMutation(), param)
+        return repository.request(SaveReschedulePickupMutation(), params)
     }
 
     companion object {

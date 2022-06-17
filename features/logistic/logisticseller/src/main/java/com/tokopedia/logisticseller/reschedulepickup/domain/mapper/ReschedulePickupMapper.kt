@@ -12,10 +12,12 @@ import com.tokopedia.logisticseller.reschedulepickup.data.param.SaveReschedulePi
 import com.tokopedia.logisticseller.reschedulepickup.data.response.SaveReschedulePickupResponse
 
 object ReschedulePickupMapper {
+    private const val ORDER_ID_SEPARATOR = "~"
+    private const val INSERT_SUCCESS_STATUS = "200"
     fun mapToGetReschedulePickupParam(orderIds: List<String>): GetReschedulePickupParam {
         return GetReschedulePickupParam(
             input = GetReschedulePickupParam.MpLogisticGetReschedulePickupInputs(
-                orderIds = orderIds.joinToString("~")
+                orderIds = orderIds.joinToString(ORDER_ID_SEPARATOR)
             )
         )
     }
@@ -69,12 +71,19 @@ object ReschedulePickupMapper {
         time: String,
         reason: String
     ): SaveReschedulePickupParam {
-        return SaveReschedulePickupParam(listOf(orderId), date, time, reason)
+        return SaveReschedulePickupParam(
+            input = SaveReschedulePickupParam.MpLogisticInsertReschedulePickupInputs(
+                orderIds = listOf(orderId),
+                date = date,
+                time = time,
+                reason = reason
+            )
+        )
     }
 
     fun mapToSaveRescheduleModel(data: SaveReschedulePickupResponse.Data, etaPickup: String, orderId: String): SaveRescheduleModel {
         return SaveRescheduleModel(
-            success = data.mpLogisticInsertReschedulePickup.status == "200" && data.mpLogisticInsertReschedulePickup.errors.isEmpty(),
+            success = data.mpLogisticInsertReschedulePickup.status == INSERT_SUCCESS_STATUS && data.mpLogisticInsertReschedulePickup.errors.isEmpty(),
             message = mapSaveRescheduleMessage(data, orderId),
             status = data.mpLogisticInsertReschedulePickup.status,
             etaPickup = etaPickup,
@@ -82,8 +91,8 @@ object ReschedulePickupMapper {
         )
     }
 
-    fun mapSaveRescheduleMessage(data: SaveReschedulePickupResponse.Data, orderId: String) : String {
-        return if (data.mpLogisticInsertReschedulePickup.status == "200" && data.mpLogisticInsertReschedulePickup.errors.isNotEmpty()) {
+    private fun mapSaveRescheduleMessage(data: SaveReschedulePickupResponse.Data, orderId: String) : String {
+        return if (data.mpLogisticInsertReschedulePickup.status == INSERT_SUCCESS_STATUS && data.mpLogisticInsertReschedulePickup.errors.isNotEmpty()) {
             data.mpLogisticInsertReschedulePickup.errors.first().replaceFirst("$orderId: ", "")
         } else data.mpLogisticInsertReschedulePickup.message
     }
