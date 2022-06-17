@@ -64,8 +64,6 @@ interface ChatbotContract {
         fun uploadUsingOldMechanism(data: Intent)
 
         fun sendInvoiceForArticle()
-
-        fun isArticleDataSent(dataSentState : Boolean)
     }
 
     interface Presenter : BaseChatContract.Presenter<View> {

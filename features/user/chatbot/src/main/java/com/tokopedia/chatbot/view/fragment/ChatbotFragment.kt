@@ -419,7 +419,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
 
     }
 
-    override fun isArticleDataSent(dataSentState: Boolean) {
+    private fun isArticleDataSent(dataSentState: Boolean) {
         isArticleDataSent = dataSentState
     }
 
