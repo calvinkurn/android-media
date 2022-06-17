@@ -55,7 +55,20 @@ class PlayBroQuizViewModelTest {
         title = "quiz",
         waitingDuration = 15,
         duration = 180,
-        choices = emptyList()
+        choices = listOf(
+            QuizChoicesUiModel(
+                0,
+                "1",
+                "AAAA",
+                PlayQuizOptionState.Participant('A', true, "0", false)
+            ),
+            QuizChoicesUiModel(
+                1,
+                "2",
+                "BBBB",
+                PlayQuizOptionState.Participant('B', false, "0", false)
+            )
+        )
     )
     @Test
     fun `when user successfully create new quiz, it should return quiz model`() {
@@ -115,6 +128,22 @@ class PlayBroQuizViewModelTest {
                 getViewModel().submitAction(PlayBroadcastAction.InputQuizTitle(question))
             }
             state.quizForm.quizFormData.title.assertEqualTo(question)
+        }
+    }
+
+    @Test
+    fun `when user click on game result widget should emit event show Leaderboard BottomSheet`(){
+        coEvery { mockRepo.getChannelConfiguration() } returns mockConfig
+        val robot = PlayBroadcastViewModelRobot(
+            dispatchers = testDispatcher,
+            channelRepo = mockRepo,
+        )
+        robot.use {
+            val events = it.recordEvent {
+                getConfig()
+                getViewModel().submitAction(PlayBroadcastAction.ClickGameResultWidget)
+            }
+            events.last().assertEqualTo(PlayBroadcastEvent.ShowLeaderboardBottomSheet)
         }
     }
 }
