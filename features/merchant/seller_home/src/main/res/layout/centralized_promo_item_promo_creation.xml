@@ -47,7 +47,7 @@
                 android:id="@+id/newTagLabel"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                tools:labelTitle="Berhasil"
+                tools:labelTitle="Baru"
                 app:labelType="highlight_dark_red"
                 android:layout_marginStart="4dp"
                 tools:visibility="visible"
