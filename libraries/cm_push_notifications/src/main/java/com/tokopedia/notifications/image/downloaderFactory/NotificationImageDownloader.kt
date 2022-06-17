@@ -70,6 +70,7 @@ abstract class NotificationImageDownloader(val baseNotificationModel: BaseNotifi
             val whereToDraw = RectF(startX, 0F,
                     endX, canvas.height.toFloat())
             canvas.drawBitmap(bitmap, frameToDraw, whereToDraw, Paint())
+            bitmap.recycle()
             return resizedBitmap
         }else if (ratio > 2F){
             val expectedHeight = bitmap.width.toFloat()/2F
@@ -82,6 +83,7 @@ abstract class NotificationImageDownloader(val baseNotificationModel: BaseNotifi
             val frameToDraw = Rect(0, 0, bitmap.width, bitmap.height)
             val whereToDraw = RectF(0F, topY, canvas.width.toFloat(), bottomY)
             canvas.drawBitmap(bitmap, frameToDraw, whereToDraw, Paint())
+            bitmap.recycle()
             return resizedBitmap
         }
         return bitmap
