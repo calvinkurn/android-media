@@ -18,11 +18,12 @@ class RechargeRecommendationRepositoryImpl @Inject constructor(
         clientNumbers: List<String>,
         dgCategoryIds: List<Int>,
         dgOperatorIds: List<Int>,
-        isBigRecommendation: Boolean
+        channelName: String,
+        isBigRecommendation: Boolean,
     ): RecommendationWidgetModel = withContext(dispatchers.io) {
 
         val data = getRechargeRecommendationUseCase.apply {
-            createParams(clientNumbers, dgCategoryIds, dgOperatorIds)
+            createParams(clientNumbers, dgCategoryIds, dgOperatorIds, channelName)
         }.executeOnBackground()
 
         return@withContext mapper.mapDigiPersoToRecommendation(data.recommendationData, isBigRecommendation)

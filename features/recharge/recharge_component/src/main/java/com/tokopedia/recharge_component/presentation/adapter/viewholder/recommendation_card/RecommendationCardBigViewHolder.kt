@@ -21,7 +21,6 @@ class RecommendationCardBigViewHolder(
             with(binding){
                 imgRechargeRecommendationCardBig.loadImage(recommendation.imageUrl)
                 tgTitleRechargeRecommendationCardBig.text = recommendation.title
-                tgProductTypeRechargeRecommendationCardBig.text = recommendation.productType
                 tgExpiredRechargeRecommendationCardBig.text = recommendation.productExpired
                 tgPriceRechargeRecommendationCardBig.text = recommendation.price
 
@@ -38,6 +37,25 @@ class RecommendationCardBigViewHolder(
                         show()
                         text = recommendation.discount
                     } else hide()
+                }
+
+                viewSeparatorTypeRechargeRecommendationCardBig.run {
+                    if (recommendation.productExpired.isNotEmpty() &&
+                        recommendation.productType.isNotEmpty()) {
+                        show()
+                    } else {
+                        hide()
+                    }
+                }
+
+                tgProductTypeRechargeRecommendationCardBig.run {
+                    text = recommendation.productType
+                    if (recommendation.productType.isNotEmpty() ||
+                        recommendation.productExpired.isNotEmpty()) {
+                        show()
+                    } else {
+                        hide()
+                    }
                 }
 
                 root.setOnClickListener {
