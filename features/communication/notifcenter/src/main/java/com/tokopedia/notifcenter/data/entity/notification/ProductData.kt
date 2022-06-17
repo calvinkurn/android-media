@@ -13,8 +13,6 @@ data class ProductData(
         val countReview: Int = 0,
         @SerializedName("currency")
         val currency: String = "",
-        @SerializedName("department_id")
-        val departmentId: Long = 0,
         @SerializedName("image_url")
         val imageUrl: String = "",
         @SerializedName("is_buyable")

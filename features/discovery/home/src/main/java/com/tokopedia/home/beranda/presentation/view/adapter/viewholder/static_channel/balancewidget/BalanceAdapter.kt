@@ -13,7 +13,6 @@ import android.view.ViewGroup
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import android.widget.ImageView
-import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
@@ -34,7 +33,6 @@ import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.Ba
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceDrawerItemModel.Companion.TYPE_WALLET_APP_LINKED
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceDrawerItemModel.Companion.TYPE_WALLET_APP_NOT_LINKED
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceDrawerItemModel.Companion.TYPE_WALLET_OTHER
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceDrawerItemModel.Companion.TYPE_WALLET_OVO
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceDrawerItemModel.Companion.TYPE_WALLET_PENDING_CASHBACK
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceDrawerItemModel.Companion.TYPE_WALLET_WITH_TOPUP
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceTagAttribute
@@ -408,8 +406,7 @@ class BalanceAdapter(
             if (element?.state != STATE_LOADING) {
                 //error state using shimmering
                 element?.defaultIconRes?.let {
-                    if (element.drawerItemType == TYPE_WALLET_OVO ||
-                        element.drawerItemType == TYPE_WALLET_PENDING_CASHBACK ||
+                    if (element.drawerItemType == TYPE_WALLET_PENDING_CASHBACK ||
                         element.drawerItemType == TYPE_WALLET_WITH_TOPUP ||
                         element.drawerItemType == TYPE_WALLET_OTHER
                     ) {
@@ -585,7 +582,6 @@ class BalanceAdapter(
                     TYPE_FREE_ONGKIR -> bboAction.invoke()
                     TYPE_COUPON -> couponsAction.invoke()
                     TYPE_REWARDS -> rewardsAction.invoke()
-                    TYPE_WALLET_OVO -> ovoWalletAction.invoke()
                     TYPE_WALLET_WITH_TOPUP -> walletTopupAction.invoke()
                     TYPE_WALLET_OTHER -> walletOtherAction.invoke()
                     TYPE_WALLET_PENDING_CASHBACK -> walletPendingAction.invoke()

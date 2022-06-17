@@ -34,7 +34,7 @@
             android:layout_gravity="center_vertical"
             app:srcCompat="@drawable/ic_notifsetting_seller" />
 
-        <TextView
+        <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/txt_title"
             android:layout_width="0dp"
             android:layout_height="wrap_content"

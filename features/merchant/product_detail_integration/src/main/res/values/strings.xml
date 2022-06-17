@@ -1,0 +1,6 @@
+<resources>
+    <string name="pdp_common_educational_title">Product Educational</string>
+    <string name="pdp_educational_error_title">Oops, info gagal ditampilkan</string>
+    <string name="pdp_educational_error_desc">Coba muat ulang untuk lihat infonya, yuk. Pastikan juga internetmu lancar, ya.</string>
+    <string name="pdp_educational_error_btn">Coba Lagi</string>
+</resources>
