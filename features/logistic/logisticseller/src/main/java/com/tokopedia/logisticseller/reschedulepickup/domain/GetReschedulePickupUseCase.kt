@@ -1,27 +1,33 @@
 package com.tokopedia.logisticseller.reschedulepickup.domain
 
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.gql_query_annotation.GqlQuery
-import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
+import com.tokopedia.graphql.coroutines.data.extensions.request
+import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import com.tokopedia.graphql.domain.coroutine.CoroutineUseCase
 import com.tokopedia.logisticseller.common.LogisticSellerConst
 import com.tokopedia.logisticseller.reschedulepickup.data.model.GetReschedulePickupParam
 import com.tokopedia.logisticseller.reschedulepickup.data.model.GetReschedulePickupResponse
 import javax.inject.Inject
 
-class GetReschedulePickupUseCase @Inject constructor(private val useCase: GraphqlUseCase<GetReschedulePickupResponse.Data>) {
+@GqlQuery(
+    GetReschedulePickupUseCase.GetReschedulePickupQuery,
+    GetReschedulePickupUseCase.MP_LOGISTIC_GET_RESCHEDULE_PICKUP
+)
+class GetReschedulePickupUseCase @Inject constructor(
+    @ApplicationContext private val repository: GraphqlRepository,
+    dispatcher: CoroutineDispatchers
+) : CoroutineUseCase<GetReschedulePickupParam, GetReschedulePickupResponse.Data>(dispatcher.io) {
 
-    init {
-        useCase.setTypeClass(GetReschedulePickupResponse.Data::class.java)
+    override fun graphqlQuery(): String {
+        return MP_LOGISTIC_GET_RESCHEDULE_PICKUP
     }
 
-    @GqlQuery(GetReschedulePickupQuery, MP_LOGISTIC_GET_RESCHEDULE_PICKUP)
-    suspend fun execute(param: GetReschedulePickupParam): GetReschedulePickupResponse.Data {
-        useCase.setGraphqlQuery(GetReschedulePickupQuery())
-        useCase.setRequestParams(generateParam(param))
-        return useCase.executeOnBackground()
-    }
 
-    private fun generateParam(param: GetReschedulePickupParam): Map<String, Any?> {
-        return mapOf(LogisticSellerConst.PARAM_INPUT to param)
+    override suspend fun execute(params: GetReschedulePickupParam): GetReschedulePickupResponse.Data {
+        val param = mapOf(LogisticSellerConst.PARAM_INPUT to params)
+        return repository.request(GetReschedulePickupQuery(), param)
     }
 
     companion object {
