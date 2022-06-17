@@ -112,8 +112,6 @@ dari Feed.</string>
 
     <!--Toaster -->
     <string name="feed_go_to_cart">Lihat Keranjang</string>
-    <string name="feed_go_to_wishlist">Lihat Wishlist</string>
-    <string name="feed_added_to_wishlist">Sukses menambah wishlist.</string>
     <string name="feed_added_to_cart">Barang berhasil ditambahkan.</string>
 
 

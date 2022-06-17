@@ -17,7 +17,7 @@ data class ProductTagging(
 
     data class Product(
             @SerializedName("id")
-            val id: Long,
+            val id: String,
 
             @SerializedName("image_url")
             val imageUrl: String,

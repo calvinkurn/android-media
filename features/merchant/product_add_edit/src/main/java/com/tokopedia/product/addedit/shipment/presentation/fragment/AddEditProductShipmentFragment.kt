@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.EditorInfo
 import android.widget.RadioGroup
 import androidx.activity.OnBackPressedCallback
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -382,6 +383,7 @@ class AddEditProductShipmentFragment:
 
     private fun setupWeightInput() {
         tfWeightAmount.setModeToNumberInput()
+        tfWeightAmount?.textFieldInput?.imeOptions = EditorInfo.IME_ACTION_DONE
         tfWeightAmount?.textFieldInput?.afterTextChanged {
             validateInputWeight(it)
         }
@@ -575,7 +577,7 @@ class AddEditProductShipmentFragment:
     }
 
     private fun applyShipmentInputModel(inputModel: ShipmentInputModel) {
-        tfWeightAmount.setText(if (inputModel.weight.isZero()) "" else inputModel.weight.toString())
+        tfWeightAmount.setText(if (inputModel.weight.isZero()) "" else inputModel.weight.getNumberFormatted())
 
         applyInsuranceValue(inputModel.isMustInsurance)
 

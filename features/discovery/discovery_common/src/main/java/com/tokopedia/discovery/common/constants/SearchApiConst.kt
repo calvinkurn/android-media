@@ -77,6 +77,7 @@ class SearchApiConst {
         const val TYPO = "typo"
         const val IS_FULFILLMENT = "is_fulfillment"
         const val GIFTING = "gift"
+        const val IS_TYPO_CORRECTED = "is_typo_corrected"
         const val FROM = "from"
         const val PAGE_SOURCE = "page_source"
 

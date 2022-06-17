@@ -4,9 +4,9 @@ import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
 data class FavoriteShops(
-    @SerializedName("totalCount")
+    @SerializedName("haveNext")
     @Expose
-    val totalCount: String? = "",
+    val hasNext: Boolean? = false,
     @SerializedName("userShopFollowDetail")
     @Expose
     val shops: List<Shop>? = listOf()

@@ -110,9 +110,9 @@ open class SubmitPostUseCaseNew @Inject constructor(
         return Func1 { graphqlResponse -> graphqlResponse.getData(SubmitPostData::class.java) }
     }
 
-    private fun getInputType(type: String): String {
-        return if (type == TYPE_CONTENT_SHOP) INPUT_TYPE_CONTENT else type
-    }
+    private fun getInputType(type: String) =
+        if (type == TYPE_CONTENT_SHOP) INPUT_TYPE_CONTENT else type
+
 
     protected open fun getContentSubmitInput(requestParams: RequestParams,
                                              mediumList: List<SubmitPostMedium>): ContentSubmitInput {
