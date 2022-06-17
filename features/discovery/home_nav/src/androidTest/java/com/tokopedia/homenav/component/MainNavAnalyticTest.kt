@@ -20,6 +20,7 @@ import com.tokopedia.test.application.util.InstrumentationAuthHelper
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
 import com.tokopedia.homenav.R
 import com.tokopedia.homenav.mainnav.view.adapter.viewholder.MainNavListAdapter
+import com.tokopedia.homenav.mainnav.view.datamodel.TransactionListItemDataModel
 import com.tokopedia.homenav.mainnav.view.datamodel.favoriteshop.FavoriteShopListDataModel
 import com.tokopedia.test.application.assertion.topads.TopAdsVerificationTestReportUtil
 import org.junit.After
@@ -70,6 +71,26 @@ class HomeNavAnalyticTest {
     @After
     fun tearDown() {
         IdlingRegistry.getInstance().unregister(mainNavRecyclerViewIdlingResource)
+    }
+
+    @Test
+    fun testComponentOrderHistory() {
+        mainNavCassavaTest {
+            login()
+            waitForData()
+            doActivityTestByModelClass(
+                delayBeforeRender = 2000,
+                dataModelClass = TransactionListItemDataModel::class
+            ) { viewHolder: RecyclerView.ViewHolder, i: Int ->
+                clickOnOrderHistory(viewHolder)
+            }
+        } validateAnalytics {
+            addDebugEnd()
+            hasPassedAnalytics(
+                cassavaTestRule,
+                ANALYTIC_VALIDATOR_QUERY_FILE_NAME_ORDER_TRANSACTION
+            )
+        }
     }
 
     @Test

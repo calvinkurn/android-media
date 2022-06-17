@@ -20,7 +20,7 @@ internal open class MainNavMockResponseConfig : MockModelConfig() {
         const val KEY_CONTAINS_MAINNAV_SHOP_INFO = "getShopInfo"
         const val KEY_CONTAINS_MAINNAV_GET_WISHLIST = "GetWishlist"
         const val KEY_CONTAINS_MAINNAV_GET_USER_SHOP_FOLLOW = "GetUserShopFollow"
-        const val KEY_CONTAINS_MAINNAV_PRODUCT_REV_WAIT_FOR_FEEDBACK = "productRevWaitForFeedback"
+        const val KEY_CONTAINS_MAINNAV_PRODUCT_REV_WAIT_FOR_FEEDBACK = "productrevWaitForFeedback"
     }
 
     override fun createMockModel(context: Context): MockModelConfig {
@@ -38,6 +38,7 @@ internal open class MainNavMockResponseConfig : MockModelConfig() {
 
         addMockResponse(
             KEY_CONTAINS_MAINNAV_PAYMENT_LIST,
+//            getRawString(context, R.raw.response_success_mock_mainnav_payment_query),
             getRawString(context, R.raw.response_success_mock_mainnav_payment_list),
             FIND_BY_CONTAINS
         )
