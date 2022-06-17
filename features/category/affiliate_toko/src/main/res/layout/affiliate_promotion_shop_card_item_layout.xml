@@ -56,8 +56,7 @@
             android:contentDescription="@string/content_desc_imageShop"
             app:layout_constraintBottom_toBottomOf="@id/textViewTitle"
             app:layout_constraintStart_toEndOf="@id/imageMain"
-            app:layout_constraintTop_toTopOf="@id/imageMain"
-            app:srcCompat="@drawable/ic_official_store" />
+            app:layout_constraintTop_toTopOf="@id/imageMain" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/textViewTitle"
