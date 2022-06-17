@@ -32,4 +32,7 @@ data class WebSocketLogEntity (
 
     @ColumnInfo(name = "timestamp")
     val timestamp: Long,
+
+    @ColumnInfo(name = "warehouse_id")
+    val whId: String,
 )
