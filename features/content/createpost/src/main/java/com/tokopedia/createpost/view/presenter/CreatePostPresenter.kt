@@ -30,16 +30,18 @@ import kotlinx.coroutines.Job
 import rx.Subscriber
 import timber.log.Timber
 import javax.inject.Inject
+import javax.inject.Named
 import kotlin.coroutines.CoroutineContext
+import com.tokopedia.createpost.common.DI_GET_PROFILE_HEADER_USER_CASE
 
 /**
  * @author by milhamj on 9/26/18.
  */
 class CreatePostPresenter @Inject constructor(
     private val userSession: UserSessionInterface,
-    private val getContentFormUseCase: GetContentFormUseCase,
-    private val getFeedUseCase: GetFeedForEditUseCase,
-    private val getProfileHeaderUseCase: GetProfileHeaderUseCase,
+    private val getContentFormUseCase: UseCase<GetContentFormDomain>,
+    private val getFeedUseCase: UseCase<FeedDetail?>,
+    @Named(DI_GET_PROFILE_HEADER_USER_CASE) private val getProfileHeaderUseCase: GraphqlUseCase,
     private val twitterManager: TwitterManager,
     private val getProductSuggestionUseCase: GetProductSuggestionUseCase,
     private val getShopFavoriteStatusUseCase: GQLGetShopFavoriteStatusUseCase
