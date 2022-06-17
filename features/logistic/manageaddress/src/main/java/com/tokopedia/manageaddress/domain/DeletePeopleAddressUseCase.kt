@@ -1,39 +1,30 @@
 package com.tokopedia.manageaddress.domain
 
-import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.graphql.coroutines.data.extensions.request
+import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import com.tokopedia.graphql.domain.coroutine.CoroutineUseCase
 import com.tokopedia.manageaddress.domain.response.DeletePeopleAddressGqlResponse
-import com.tokopedia.manageaddress.util.ManageAddressConstant.DEFAULT_ERROR_MESSAGE
-import com.tokopedia.manageaddress.util.ManageAddressConstant.STATUS_OK
-import com.tokopedia.manageaddress.util.ManageAddressConstant.SUCCESS
-import com.tokopedia.network.exception.MessageErrorException
 import javax.inject.Inject
 
-class DeletePeopleAddressUseCase @Inject constructor(private val graphqlUseCase: GraphqlUseCase<DeletePeopleAddressGqlResponse>) {
+class DeletePeopleAddressUseCase @Inject constructor(
+    @ApplicationContext private val repository: GraphqlRepository,
+    dispatcher: CoroutineDispatchers
 
-    fun execute(inputAddressId: Int, onSuccess: (String) -> Unit, onError: (Throwable) -> Unit) {
-        graphqlUseCase.setGraphqlQuery(QUERY)
-        graphqlUseCase.setRequestParams(mapOf(PARAM_KEY to inputAddressId))
-        graphqlUseCase.setTypeClass(DeletePeopleAddressGqlResponse::class.java)
-        graphqlUseCase.execute({ response: DeletePeopleAddressGqlResponse ->
-            if(response.response.status.equals(STATUS_OK, true))  {
-                if(response.response.data.success == 1) {
-                    onSuccess(SUCCESS)
-                } else {
-                    onError(MessageErrorException(DEFAULT_ERROR_MESSAGE))
-                }
-            } else {
-                onError(MessageErrorException(DEFAULT_ERROR_MESSAGE))
-            }
-        }, {
-            throwable: Throwable -> onError(throwable)
-        })
+) : CoroutineUseCase<Int, DeletePeopleAddressGqlResponse>(dispatcher.io) {
 
-    }
+    override fun graphqlQuery() = QUERY
 
-    companion object{
-        const val PARAM_KEY = "inputAddressId"
+    override suspend fun execute(params: Int): DeletePeopleAddressGqlResponse =
+        repository.request(graphqlQuery(), createParams(params))
 
-        val QUERY = """
+    private fun createParams(params: Int): Map<String, Any> = mapOf(PARAM_KEY to params)
+
+    companion object {
+        private const val PARAM_KEY = "inputAddressId"
+
+        private val QUERY = """
             mutation deleteAddress(${"$"}inputAddressId: Int!) {
               kero_remove_address(addr_id: ${"$"}inputAddressId) {
                     data{

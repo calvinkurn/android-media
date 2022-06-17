@@ -18,6 +18,8 @@ import com.tokopedia.manageaddress.domain.SetDefaultPeopleAddressUseCase
 import com.tokopedia.manageaddress.domain.mapper.EligibleAddressFeatureMapper
 import com.tokopedia.manageaddress.domain.model.EligibleForAddressFeatureModel
 import com.tokopedia.manageaddress.domain.model.ManageAddressState
+import com.tokopedia.manageaddress.util.ManageAddressConstant.DEFAULT_ERROR_MESSAGE
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -114,14 +116,17 @@ class ManageAddressViewModel @Inject constructor(
         )
     }
 
-    fun deletePeopleAddress(id: String, prevState: Int, localChosenAddrId: Long, isWhiteListChosenAddress: Boolean) {
-        deletePeopleAddressUseCase.execute(id.toInt(), {
-            _resultRemovedAddress.value = ManageAddressState.Success("Success")
-            isClearData = true
-            getStateChosenAddress("address")
-        },  {
-            _addressList.value  = ManageAddressState.Fail(it, "")
-        })
+    fun deletePeopleAddress(id: String) {
+        viewModelScope.launch {
+            try {
+                deletePeopleAddressUseCase(id.toInt())
+                _resultRemovedAddress.value = ManageAddressState.Success("Success")
+                isClearData = true
+                getStateChosenAddress("address")
+            } catch (e: Exception) {
+                _addressList.value = ManageAddressState.Fail(MessageErrorException(DEFAULT_ERROR_MESSAGE), "")
+            }
+        }
     }
 
     fun setDefaultPeopleAddress(id: String, setAsStateChosenAddress: Boolean, prevState: Int, localChosenAddrId: Long, isWhiteListChosenAddress: Boolean) {

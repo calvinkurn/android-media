@@ -618,7 +618,7 @@ class MainAddressFragment : BaseDaggerFragment(), ManageAddressItemAdapter.MainA
                 bottomSheetLainnya?.dismiss()
             }
             btnHapusAlamat.setOnClickListener {
-                viewModel.deletePeopleAddress(data.id, prevState, getChosenAddrId(), true)
+                viewModel.deletePeopleAddress(data.id)
                 bottomSheetLainnya?.dismiss()
                 isFromDeleteAddress = true
             }

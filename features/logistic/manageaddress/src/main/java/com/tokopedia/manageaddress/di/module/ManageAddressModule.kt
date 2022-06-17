@@ -16,7 +16,7 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 
 @Module
-object ManageAddressModule  {
+object ManageAddressModule {
 
     @Provides
     fun provideGraphQlRepository(): GraphqlRepository =
@@ -27,13 +27,13 @@ object ManageAddressModule  {
 
     @Provides
     @ActivityScope
-    fun provideDeletePeopleAddressUseCase(@ApplicationContext repository: GraphqlRepository): DeletePeopleAddressUseCase =
-            DeletePeopleAddressUseCase(GraphqlUseCase(repository))
+    fun provideDeletePeopleAddressUseCase(@ApplicationContext repository: GraphqlRepository) =
+        GraphqlUseCase<GraphqlUseCase<DeletePeopleAddressUseCase>>(repository)
 
     @Provides
     @ActivityScope
     fun provideSetDefaultPeopleAddressUseCase(@ApplicationContext repository: GraphqlRepository): SetDefaultPeopleAddressUseCase =
-            SetDefaultPeopleAddressUseCase(GraphqlUseCase(repository))
+        SetDefaultPeopleAddressUseCase(GraphqlUseCase(repository))
 
     @Provides
     @ActivityScope
