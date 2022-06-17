@@ -50,13 +50,7 @@ import com.tokopedia.usercomponents.stickylogin.di.DaggerStickyLoginComponent
 import com.tokopedia.usercomponents.stickylogin.di.module.StickyLoginModule
 import com.tokopedia.usercomponents.stickylogin.domain.data.StickyLoginTickerDataModel
 import com.tokopedia.usercomponents.stickylogin.view.viewModel.StickyLoginViewModel
-import com.tokopedia.unifycomponents.ImageUnify
-import com.tokopedia.usecase.coroutines.Fail
-import com.tokopedia.usecase.coroutines.Success
-import com.tokopedia.user.session.UserSession
-import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.user.session.util.EncoderDecoder
-import com.tokopedia.usercomponents.stickylogin.di.DaggerStickyLoginComponent
 import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
 import kotlinx.coroutines.*
 import java.util.concurrent.TimeUnit
