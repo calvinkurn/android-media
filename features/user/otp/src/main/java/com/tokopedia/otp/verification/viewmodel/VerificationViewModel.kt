@@ -243,20 +243,22 @@ open class VerificationViewModel @Inject constructor(
                 msisdn = msisdn
             )
 
-            if (usePinV2 && mode == OtpConstant.OtpMode.PIN && isNeedHash(id = userId.toString(), type = SessionConstants.CheckPinType.USER_ID.value)) {
-                val keyData = getPublicKey()
-                val encryptedPin = RsaUtils.encryptWithSalt(
-                    code,
-                    keyData.key,
-                    salt = OtpConstant.PIN_V2_SALT
-                )
-                if (encryptedPin.isNotEmpty()) {
-                    params = combineWithV2param(
-                        params,
-                        hashedPin = encryptedPin,
-                        usePinHash = true,
-                        hash = keyData.hash
+            if (usePinV2 && mode == OtpConstant.OtpMode.PIN) {
+                if(isNeedHash(id = userId.toString(), type = SessionConstants.CheckPinType.USER_ID.value)) {
+                    val keyData = getPublicKey()
+                    val encryptedPin = RsaUtils.encryptWithSalt(
+                        code,
+                        keyData.key,
+                        salt = OtpConstant.PIN_V2_SALT
                     )
+                    if (encryptedPin.isNotEmpty()) {
+                        params = combineWithV2param(
+                            params,
+                            hashedPin = encryptedPin,
+                            usePinHash = true,
+                            hash = keyData.hash
+                        )
+                    }
                 }
             }
 
