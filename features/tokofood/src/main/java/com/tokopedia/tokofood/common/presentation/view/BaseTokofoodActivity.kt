@@ -8,6 +8,7 @@ import com.tokopedia.abstraction.R
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseMultiFragActivity
 import com.tokopedia.applink.internal.ApplinkConstInternalTokoFood
+import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.tokofood.common.di.DaggerTokoFoodComponent
 import com.tokopedia.tokofood.common.presentation.listener.HasViewModel
@@ -69,7 +70,27 @@ class BaseTokofoodActivity : BaseMultiFragActivity(), HasViewModel<MultipleFragm
             }
             ft.commit()
         } else {
-            supportFragmentManager.popBackStack(fragmentName, FragmentManager.POP_BACK_STACK_INCLUSIVE)
+            try {
+                var destinationFragmentIndex = -1
+                val backStackCount = supportFragmentManager.backStackEntryCount
+                for (i in Int.ZERO until backStackCount) {
+                    supportFragmentManager.getBackStackEntryAt(i).name.let { existedFragmentName ->
+                        if (fragmentName == existedFragmentName) {
+                            destinationFragmentIndex = i
+                        }
+                    }
+                }
+                val popStackCount = backStackCount - destinationFragmentIndex - Int.ONE
+                if (popStackCount > Int.ZERO) {
+                    repeat(popStackCount) {
+                        supportFragmentManager.popBackStack()
+                    }
+                } else {
+                    supportFragmentManager.popBackStack(fragmentName, FragmentManager.POP_BACK_STACK_INCLUSIVE)
+                }
+            } catch (ex: Exception) {
+                supportFragmentManager.popBackStack(fragmentName, FragmentManager.POP_BACK_STACK_INCLUSIVE)
+            }
         }
     }
 
