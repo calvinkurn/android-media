@@ -52,12 +52,12 @@ class ChooseAddressViewComponent(
     }
 
     private fun openBottomSheet() {
-        if (!getBottomSheet().isAdded)
+        if (!getBottomSheet().isVisible)
             getBottomSheet().showNow(fragmentManager, PLAY_CHOOSE_ADDRESS_TAG)
     }
 
     private fun hideBottomSheet() {
-        if (getBottomSheet().isAdded)
+        if (getBottomSheet().isVisible)
             getBottomSheet().dismiss()
     }
 
