@@ -27,10 +27,7 @@ import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.play.PLAY_KEY_CHANNEL_ID
 import com.tokopedia.play.R
-import com.tokopedia.play.analytic.CastAnalyticHelper
-import com.tokopedia.play.analytic.PlayAnalytic
-import com.tokopedia.play.analytic.PlayPiPAnalytic
-import com.tokopedia.play.analytic.ProductAnalyticHelper
+import com.tokopedia.play.analytic.*
 import com.tokopedia.play.animation.PlayDelayFadeOutAnimation
 import com.tokopedia.play.animation.PlayFadeInAnimation
 import com.tokopedia.play.animation.PlayFadeInFadeOutAnimation
@@ -107,7 +104,8 @@ class PlayUserInteractionFragment @Inject constructor(
     private val multipleLikesIconCacheStorage: MultipleLikesIconCacheStorage,
     private val castAnalyticHelper: CastAnalyticHelper,
     private val performanceClassConfig: PerformanceClassConfig,
-) :
+    private val newAnalytic: PlayNewAnalytic,
+    ) :
         TkpdBaseV4Fragment(),
         PlayMoreActionBottomSheet.Listener,
         PlayFragmentContract,

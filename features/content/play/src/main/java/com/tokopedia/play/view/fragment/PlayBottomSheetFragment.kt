@@ -24,6 +24,7 @@ import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.play.R
 import com.tokopedia.play.analytic.PlayAnalytic
+import com.tokopedia.play.analytic.PlayNewAnalytic
 import com.tokopedia.play.analytic.ProductAnalyticHelper
 import com.tokopedia.play.extensions.isAnyShown
 import com.tokopedia.play.extensions.isCouponSheetsShown
@@ -68,9 +69,10 @@ import javax.inject.Inject
  * Created by jegul on 06/03/20
  */
 class PlayBottomSheetFragment @Inject constructor(
-        private val viewModelFactory: ViewModelProvider.Factory,
-        private val analytic: PlayAnalytic,
-): TkpdBaseV4Fragment(),
+    private val viewModelFactory: ViewModelProvider.Factory,
+    private val analytic: PlayAnalytic,
+    private val newAnalytic: PlayNewAnalytic,
+    ): TkpdBaseV4Fragment(),
         PlayFragmentContract,
         ProductSheetViewComponent.Listener,
         VariantSheetViewComponent.Listener,
