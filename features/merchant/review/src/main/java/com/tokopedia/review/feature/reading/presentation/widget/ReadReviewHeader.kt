@@ -54,6 +54,7 @@ class ReadReviewHeader : BaseCustomView {
         init()
     }
 
+    var sortFilterDivider: DividerUnify? = null
     private var rating: ReadReviewRating? = null
     private var satisfactionRate: Typography? = null
     private var ratingAndReviewCount: Typography? = null
@@ -137,6 +138,7 @@ class ReadReviewHeader : BaseCustomView {
                 configPaddingForVisibleSortFilterPrefix()
             }
         }
+        sortFilterDivider = findViewById(R.id.sort_filter_divider)
         seeAll = findViewById(R.id.read_review_see_all)
         topicLeft = findViewById(R.id.read_review_highlighted_topic_left)
         topicRight = findViewById(R.id.read_review_highlighted_topic_right)
