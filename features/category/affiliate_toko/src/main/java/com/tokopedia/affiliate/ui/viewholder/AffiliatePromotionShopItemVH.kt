@@ -55,14 +55,14 @@ class AffiliatePromotionShopItemVH(
                 itemView.findViewById<Typography>(R.id.textViewAdditionalInfo1).apply {
                     visible()
                     text = info.htmlText
-                    if(info.color?.isNotEmpty() == true) setTextColor(Color.parseColor(info.color))
+                    if (info.color?.isNotEmpty() == true) setTextColor(Color.parseColor(info.color))
                 }
             }
             getAdditionalDataFromType(it, AdditionalInfoType.PER_GOOD_SOLD)?.let { info ->
                 itemView.findViewById<Typography>(R.id.textViewAdditionalInfo2).apply {
                     visible()
                     text = info.htmlText
-                    if(info.color?.isNotEmpty() == true) setTextColor(Color.parseColor(info.color))
+                    if (info.color?.isNotEmpty() == true) setTextColor(Color.parseColor(info.color))
                 }
             }
             getAdditionalDataFromType(
@@ -93,7 +93,7 @@ class AffiliatePromotionShopItemVH(
             }
             getMessageDataFromType(it, MessageType.OVERLAY_IMAGE_TYPE)?.let { message ->
                 itemView.findViewById<Label>(R.id.labelProductStatus).apply {
-                    if(message.isNotEmpty()){
+                    if (message.isNotEmpty()) {
                         visible()
                         text = message
                     }
@@ -113,7 +113,7 @@ class AffiliatePromotionShopItemVH(
             setOnClickListener {
                 sendClickEvent(element?.promotionItem)
                 promotionClickInterface?.onPromotionClick(
-                    element?.promotionItem?.productID ?: "",
+                    element?.promotionItem?.itemId ?: "",
                     element?.promotionItem?.title ?: "",
                     element?.promotionItem?.image?.androidURL ?: "",
                     element?.promotionItem?.cardUrl ?: "",

@@ -40,7 +40,7 @@ class AffiliatePromotionCardItemVH(itemView: View, private val promotionClickInt
             }
             setOnClickListener {
                 sendClickEvent(element?.promotionItem)
-                promotionClickInterface?.onPromotionClick( element?.promotionItem?.productID ?: "",
+                promotionClickInterface?.onPromotionClick( element?.promotionItem?.itemId ?: "",
                         element?.promotionItem?.title ?: "",
                         element?.promotionItem?.image?.androidURL ?:"",
                         element?.promotionItem?.cardUrl ?: "",

@@ -55,7 +55,8 @@ data class AffiliateSearchData(
                     var titleEmblem: String?,
 
                     //custom Attribute
-                    var type: String?
+                    var type: String?,
+                    var itemId: String
                 ) {
                     data class AdditionalInformation(
                         @SerializedName("color")

@@ -279,6 +279,7 @@ class AffiliatePromoFragment : AffiliateBaseFragment<AffiliatePromoViewModel>(),
                 cards.items?.forEach {
                     it?.let {
                         it.type = cards.pageType
+                        it.itemId = cards.itemID.toString()
                         if (cards.pageType == "pdp") {
                             adapter.addElement(AffiliatePromotionCardModel(it))
                         } else {
