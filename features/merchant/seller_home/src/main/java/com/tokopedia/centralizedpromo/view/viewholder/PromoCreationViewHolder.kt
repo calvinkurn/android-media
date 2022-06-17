@@ -7,6 +7,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.centralizedpromo.analytic.CentralizedPromoTracking
 import com.tokopedia.centralizedpromo.view.model.PromoCreationUiModel
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.sellerhome.R
 import com.tokopedia.sellerhome.R.layout.centralized_promo_item_promo_creation
@@ -32,6 +33,15 @@ class PromoCreationViewHolder(view: View?) : AbstractViewHolder<PromoCreationUiM
             ImageHandler.loadImageWithId(ivRecommendedPromo, element.imageDrawable)
             tvRecommendedPromoTitle.text = element.title
             tvRecommendedPromoDescription.text = element.description
+
+            newTagLabel.run {
+                if (element.tagLabel.isNotBlank()) {
+                    show()
+                    setLabel(element.tagLabel)
+                } else {
+                    hide()
+                }
+            }
 
             if (element.extra.isNotBlank()) {
                 tvRecommendedPromoExtra.text = element.extra
