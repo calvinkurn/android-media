@@ -243,7 +243,7 @@ open class VerificationViewModel @Inject constructor(
                 msisdn = msisdn
             )
 
-            if (usePinV2 && isNeedHash(id = userId.toString(), type = SessionConstants.CheckPinType.USER_ID.value)) {
+            if (usePinV2 && mode == OtpConstant.OtpMode.PIN && isNeedHash(id = userId.toString(), type = SessionConstants.CheckPinType.USER_ID.value)) {
                 val keyData = getPublicKey()
                 val encryptedPin = RsaUtils.encryptWithSalt(
                     code,
