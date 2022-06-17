@@ -17,6 +17,6 @@ data class DriverSectionUiModel(
 }
 
 data class DriverInformationUiModel(
-    val iconInformation: Int?,
+    val iconInformationUrl: String,
     val informationName: String
 )
