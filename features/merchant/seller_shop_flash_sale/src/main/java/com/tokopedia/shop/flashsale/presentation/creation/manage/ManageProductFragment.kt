@@ -1,6 +1,7 @@
 package com.tokopedia.shop.flashsale.presentation.creation.manage
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,10 +12,12 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
+import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.seller_shop_flash_sale.R
 import com.tokopedia.seller_shop_flash_sale.databinding.SsfsFragmentManageProductBinding
 import com.tokopedia.shop.flashsale.common.customcomponent.BaseSimpleListFragment
+import com.tokopedia.shop.flashsale.common.extension.showError
 import com.tokopedia.shop.flashsale.di.component.DaggerShopFlashSaleComponent
 import com.tokopedia.shop.flashsale.domain.entity.SellerCampaignProductList
 import com.tokopedia.shop.flashsale.domain.entity.enums.PageMode
@@ -24,7 +27,8 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
 
-class ManageProductFragment : BaseSimpleListFragment<ManageProductListAdapter, SellerCampaignProductList.Product>() {
+class ManageProductFragment :
+    BaseSimpleListFragment<ManageProductListAdapter, SellerCampaignProductList.Product>() {
 
     companion object {
         private const val BUNDLE_KEY_PAGE_MODE = "page_mode"
@@ -33,11 +37,22 @@ class ManageProductFragment : BaseSimpleListFragment<ManageProductListAdapter, S
         private const val EMPTY_STATE_IMAGE_URL =
             "https://images.tokopedia.net/img/android/campaign/flash-sale-toko/ic_no_active_campaign.png"
 
+        fun isProductInfoComplete(productMapData: SellerCampaignProductList.ProductMapData): Boolean {
+            return when {
+                productMapData.discountedPrice.isZero() -> false
+                productMapData.discountPercentage.isZero() -> false
+                productMapData.originalCustomStock.isZero() -> false
+                productMapData.customStock.isZero() -> false
+                productMapData.maxOrder.isZero() -> false
+                else -> true
+            }
+        }
+
         @JvmStatic
-        fun newInstance(): ManageProductFragment {
+        fun newInstance(campaignId: String): ManageProductFragment {
             return ManageProductFragment().apply {
                 arguments = Bundle().apply {
-                    putParcelable(BUNDLE_KEY_PAGE_MODE, pageMode)
+                    putString(ManageProductActivity.BUNDLE_KEY_CAMPAIGN_ID, campaignId)
                 }
             }
         }
@@ -49,8 +64,9 @@ class ManageProductFragment : BaseSimpleListFragment<ManageProductListAdapter, S
     private val viewModelProvider by lazy { ViewModelProvider(this, viewModelFactory) }
     private val viewModel by lazy { viewModelProvider.get(ManageProductViewModel::class.java) }
     private var binding by autoClearedNullable<SsfsFragmentManageProductBinding>()
-    private val pageMode: PageMode? by lazy { arguments?.getParcelable(BUNDLE_KEY_PAGE_MODE) }
-
+    private val campaignId by lazy {
+        arguments?.getString(ManageProductActivity.BUNDLE_KEY_CAMPAIGN_ID).orEmpty()
+    }
     private val manageProductListAdapter by lazy {
         ManageProductListAdapter(
             onEditClicked = {
@@ -83,12 +99,11 @@ class ManageProductFragment : BaseSimpleListFragment<ManageProductListAdapter, S
         super.onViewCreated(view, savedInstanceState)
         setupView()
         observeProductList()
-        viewModel.getProducts(793350,0)
+        viewModel.getProducts(campaignId.toLong(), 0)
     }
 
 
-
-    private fun setupView(){
+    private fun setupView() {
         binding?.apply {
             header.headerSubTitle = String.format(
                 getString(R.string.sfs_placeholder_step_counter),
@@ -97,9 +112,9 @@ class ManageProductFragment : BaseSimpleListFragment<ManageProductListAdapter, S
         }
     }
 
-    private fun observeProductList(){
+    private fun observeProductList() {
         viewModel.products.observe(viewLifecycleOwner) { result ->
-            when(result) {
+            when (result) {
                 is Success -> {
                     if (result.data.productList.size.isMoreThanZero()) {
                         binding?.recyclerViewProduct?.visible()
@@ -111,11 +126,19 @@ class ManageProductFragment : BaseSimpleListFragment<ManageProductListAdapter, S
                 is Fail -> {
 
                 }
-             }
+            }
         }
     }
 
     private fun displayProducts(productList: List<SellerCampaignProductList.Product>) {
+        binding?.cardIncompleteProductInfo?.gone()
+        productList.forEach { product ->
+            when{
+                !isProductInfoComplete(product.productMapData) -> {
+                    binding?.cardIncompleteProductInfo?.visible()
+                }
+            }
+        }
         renderList(productList, false)
         binding?.apply {
             tpgProductCount.text = String.format(
@@ -125,7 +148,7 @@ class ManageProductFragment : BaseSimpleListFragment<ManageProductListAdapter, S
         }
     }
 
-    private fun showEmptyState(){
+    private fun showEmptyState() {
         binding?.apply {
             emptyState.visible()
             cardIncompleteProductInfo.gone()
@@ -141,7 +164,7 @@ class ManageProductFragment : BaseSimpleListFragment<ManageProductListAdapter, S
         }
     }
 
-    private fun hideEmptyState(){
+    private fun hideEmptyState() {
         binding?.apply {
             emptyState.gone()
         }
@@ -167,17 +190,21 @@ class ManageProductFragment : BaseSimpleListFragment<ManageProductListAdapter, S
         adapter?.submit(list)
     }
 
-    override fun loadData(page: Int) { }
+    override fun loadData(page: Int) {}
 
     override fun clearAdapterData() {
         adapter?.clearAll()
     }
 
-    override fun onShowLoading() { }
+    override fun onShowLoading() {}
 
-    override fun onHideLoading() { }
+    override fun onHideLoading() {}
 
-    override fun onDataEmpty() { }
+    override fun onDataEmpty() {
+        hideEmptyState()
+    }
 
-    override fun onGetListError(message: String) { }
+    override fun onGetListError(message: String) {
+        view?.showError(message)
+    }
 }

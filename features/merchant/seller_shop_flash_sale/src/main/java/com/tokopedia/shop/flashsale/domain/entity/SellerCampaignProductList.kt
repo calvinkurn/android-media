@@ -8,7 +8,7 @@ data class SellerCampaignProductList(
     val totalProductSold: Int = 0,
     val countAcceptedProduct: Int = 0,
     val totalProductQty: Int = 0,
-    val totalIncome: Double = 0.0,
+    val totalIncome: Int = 0,
     val totalIncomeFormatted: String = "",
     val productFailedCount: Int = 0
 ) {
@@ -18,7 +18,7 @@ data class SellerCampaignProductList(
         val productName: String = "",
         val productUrl: String = "",
         val productSku: String = "",
-        val price: Double = 0.0,
+        val price: Int = 0,
         val formattedPrice: String = "",
         val imageUrl: ImageUrl = ImageUrl(),
         val productMapData: ProductMapData = ProductMapData(),

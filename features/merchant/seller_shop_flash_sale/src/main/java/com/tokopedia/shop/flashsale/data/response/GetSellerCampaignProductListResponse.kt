@@ -20,7 +20,7 @@ data class GetSellerCampaignProductListResponse(
         @SerializedName("total_product_qty")
         val totalProductQty: Int = 0,
         @SerializedName("total_income")
-        val totalIncome: Double = 0.0,
+        val totalIncome: Int = 0,
         @SerializedName("total_income_formatted")
         val totalIncomeFormatted: String = "",
         @SerializedName("product_failed_count")

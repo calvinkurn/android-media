@@ -4,16 +4,17 @@ import android.graphics.Paint
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.invisible
-import com.tokopedia.kotlin.extensions.view.isMoreThanZero
-import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.seller_shop_flash_sale.R
 import com.tokopedia.seller_shop_flash_sale.databinding.SsfsItemManageProductBinding
 import com.tokopedia.shop.flashsale.common.constant.Constant
 import com.tokopedia.shop.flashsale.domain.entity.SellerCampaignProductList
 import com.tokopedia.shop.flashsale.domain.entity.SellerCampaignProductList.Product
+import com.tokopedia.shop.flashsale.domain.entity.enums.ManageProductErrorMessage
+import com.tokopedia.shop.flashsale.presentation.creation.manage.ManageProductFragment.Companion.isProductInfoComplete
 import com.tokopedia.unifyprinciples.Typography
+import java.text.NumberFormat
+import java.util.*
 
 class ManageProductListAdapter(
     private val onEditClicked: () -> Unit,
@@ -25,7 +26,7 @@ class ManageProductListAdapter(
     override fun onCreateViewHolder(
         parent: ViewGroup,
         viewType: Int
-    ): ManageProductListAdapter.ManageProductListViewHolder {
+    ): ManageProductListViewHolder {
         val binding =
             SsfsItemManageProductBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return ManageProductListViewHolder(binding)
@@ -36,7 +37,7 @@ class ManageProductListAdapter(
     }
 
     override fun onBindViewHolder(
-        holder: ManageProductListAdapter.ManageProductListViewHolder,
+        holder: ManageProductListViewHolder,
         position: Int
     ) {
         val product = products[position]
@@ -58,8 +59,14 @@ class ManageProductListAdapter(
         notifyItemChanged(oldItemSize, products.size)
     }
 
-    inner class ManageProductListViewHolder(private val binding: SsfsItemManageProductBinding) :
+    class ManageProductListViewHolder(private val binding: SsfsItemManageProductBinding) :
         RecyclerView.ViewHolder(binding.root) {
+
+        companion object {
+            const val MIN_CAMPAIGN_STOCK = 1
+            const val MIN_CAMPAIGN_DISCOUNTED_PRICE = 100
+            const val MAX_CAMPAIGN_DISCOUNT_PERCENTAGE = 0.99
+        }
 
         fun bind(
             product: Product,
@@ -70,31 +77,42 @@ class ManageProductListAdapter(
                 imageProductItem.setImageUrl(product.imageUrl.img200)
                 tpgProductName.text = product.productName
 
-                if (product.productMapData.discountPercentage.isMoreThanZero()) {
-                    labelDiscount.visible()
-                    tpgDiscountedPrice.visible()
-                    tpgDiscountedPrice.text = "Rp ${product.productMapData.discountedPrice}"
-                    labelDiscount.text = "${product.productMapData.discountPercentage}%"
-                    tpgOriginalPrice.text = product.formattedPrice
-                    tpgOriginalPrice.paintFlags = Paint.STRIKE_THRU_TEXT_FLAG
-                } else {
-                    labelDiscount.gone()
-                    tpgDiscountedPrice.gone()
-                    tpgOriginalPrice.text = product.formattedPrice
+                when {
+                    product.productMapData.discountPercentage.isMoreThanZero() -> {
+                        labelDiscount.visible()
+                        tpgDiscountedPrice.visible()
+                        tpgDiscountedPrice.text =
+                            product.productMapData.discountedPrice.convertRupiah()
+                        labelDiscount.text = "${product.productMapData.discountPercentage}%"
+                        tpgOriginalPrice.text = product.formattedPrice
+                        tpgOriginalPrice.paintFlags = Paint.STRIKE_THRU_TEXT_FLAG
+                    }
+                    else -> {
+                        labelDiscount.gone()
+                        tpgDiscountedPrice.gone()
+                        tpgOriginalPrice.text = product.formattedPrice
+                    }
                 }
 
-                if (isProductInfoComplete(product.productMapData)) {
-                    if (!getErrorMessage(product.productMapData).isNullOrEmpty()) {
-                        labelBelumLengkap.invisible()
-                        tpgErrorCopy.visible()
-                        tpgErrorCopy.text = getErrorMessage(product.productMapData)
-                    } else {
-                        labelBelumLengkap.gone()
-                        tpgErrorCopy.gone()
+
+                when {
+                    isProductInfoComplete(product.productMapData) -> {
+                        when {
+                            handleErrorMessage(product.productMapData).isNotEmpty() -> {
+                                labelBelumLengkap.invisible()
+                                tpgErrorCopy.visible()
+                                tpgErrorCopy.text = handleErrorMessage(product.productMapData)
+                            }
+                            else -> {
+                                labelBelumLengkap.gone()
+                                tpgErrorCopy.gone()
+                            }
+                        }
                     }
-                } else {
-                    labelBelumLengkap.visible()
-                    tpgErrorCopy.invisible()
+                    else -> {
+                        labelBelumLengkap.visible()
+                        tpgErrorCopy.invisible()
+                    }
                 }
 
                 tpgStockProduct.setOriginalStock(product.productMapData.originalStock)
@@ -111,14 +129,6 @@ class ManageProductListAdapter(
             }
         }
 
-        private fun handleProductLocationStatus(warehouses: List<SellerCampaignProductList.WarehouseData>) {
-            if (warehouses.size.isMoreThanZero()) {
-
-            } else {
-
-            }
-        }
-
         private fun Typography.setOriginalStock(originalStock: Int) {
             this.text = String.format(
                 context.getString(R.string.manage_product_item_stock_at_seller_location_label),
@@ -129,11 +139,13 @@ class ManageProductListAdapter(
         private fun Typography.setCampaignStock(campaignStock: Int) {
             if (campaignStock.isMoreThanZero()) {
                 this.visible()
+                binding.tpgSeparator.visible()
                 this.text = String.format(
                     context.getString(R.string.manage_product_item_campaign_stock_label),
                     campaignStock
                 )
             } else {
+                binding.tpgSeparator.gone()
                 this.gone()
             }
         }
@@ -150,55 +162,77 @@ class ManageProductListAdapter(
             }
         }
 
-        private fun isProductInfoComplete(productMapData: SellerCampaignProductList.ProductMapData): Boolean {
-            return if (productMapData.discountedPrice == 0) {
-                false
-            } else if (productMapData.discountPercentage == 0) {
-                false
-            } else if (productMapData.originalCustomStock == 0) {
-                false
-            } else if (productMapData.customStock == 0) {
-                false
-            } else productMapData.maxOrder != 0
+        private fun Int.convertRupiah(): String {
+            val localId = Locale("in", "ID")
+            val formatter = NumberFormat.getCurrencyInstance(localId)
+            return formatter.format(this)
         }
 
-        private fun getErrorMessage(productMapData: SellerCampaignProductList.ProductMapData): String {
+        private fun handleErrorMessage(productMapData: SellerCampaignProductList.ProductMapData): String {
             var errorMsg = ""
+            val maxDiscountedPrice =
+                (productMapData.originalPrice * MAX_CAMPAIGN_DISCOUNT_PERCENTAGE).toInt()
+                    .convertRupiah()
+            when {
+                productMapData.discountedPrice > productMapData.originalPrice -> {
+                    errorMsg =
+                        ManageProductErrorMessage.MAX_CAMPAIGN_DISCOUNTED_PRICE.errorMsg + maxDiscountedPrice
+                    when {
+                        productMapData.customStock > productMapData.originalStock -> {
+                            errorMsg += ManageProductErrorMessage.OTHER.errorMsg
+                        }
+                        productMapData.discountedPrice < MIN_CAMPAIGN_DISCOUNTED_PRICE -> {
+                            errorMsg += ManageProductErrorMessage.OTHER.errorMsg
+                        }
+                        productMapData.customStock < MIN_CAMPAIGN_STOCK -> {
+                            errorMsg += ManageProductErrorMessage.OTHER.errorMsg
+                        }
+                        productMapData.maxOrder > productMapData.customStock -> {
+                            errorMsg += ManageProductErrorMessage.OTHER.errorMsg
+                        }
+                    }
+                }
 
-            if (productMapData.discountedPrice > productMapData.originalPrice) {
-                errorMsg = "Harga campaign Maks. Rp ${productMapData.originalPrice * 0.99}"
-                if (productMapData.customStock > productMapData.originalStock) {
-                    errorMsg += "dan terjadi kesalahan lainnya"
-                } else if (productMapData.discountedPrice < 100) {
-                    errorMsg += "dan terjadi kesalahan lainnya"
-                } else if (productMapData.customStock < 1) {
-                    errorMsg += "dan terjadi kesalahan lainnya"
-                } else if (productMapData.maxOrder > productMapData.customStock) {
-                    errorMsg += "dan terjadi kesalahan lainnya"
+                productMapData.customStock > productMapData.originalStock -> {
+                    errorMsg =
+                        ManageProductErrorMessage.MAX_CAMPAIGN_STOCK.errorMsg + "${productMapData.originalStock}"
+                    when {
+                        productMapData.discountedPrice < MIN_CAMPAIGN_DISCOUNTED_PRICE -> {
+                            errorMsg += ManageProductErrorMessage.OTHER.errorMsg
+                        }
+                        productMapData.customStock < MIN_CAMPAIGN_STOCK -> {
+                            errorMsg += ManageProductErrorMessage.OTHER.errorMsg
+                        }
+                        productMapData.maxOrder > productMapData.customStock -> {
+                            errorMsg += ManageProductErrorMessage.OTHER.errorMsg
+                        }
+                    }
                 }
-            } else if (productMapData.customStock > productMapData.originalStock) {
-                errorMsg = "Stok campaign Maks. ${productMapData.originalStock}"
-                if (productMapData.discountedPrice < 100) {
-                    errorMsg += "dan terjadi kesalahan lainnya"
-                } else if (productMapData.customStock < 1) {
-                    errorMsg += "dan terjadi kesalahan lainnya"
-                } else if (productMapData.maxOrder > productMapData.customStock) {
-                    errorMsg += "dan terjadi kesalahan lainnya"
+
+                productMapData.discountedPrice < MIN_CAMPAIGN_DISCOUNTED_PRICE -> {
+                    errorMsg = ManageProductErrorMessage.MIN_CAMPAIGN_DISCOUNTED_PRICE.errorMsg
+                    when {
+                        productMapData.customStock < MIN_CAMPAIGN_STOCK -> {
+                            errorMsg += ManageProductErrorMessage.OTHER.errorMsg
+                        }
+                        productMapData.maxOrder > productMapData.customStock -> {
+                            errorMsg += ManageProductErrorMessage.OTHER.errorMsg
+                        }
+                    }
                 }
-            } else if (productMapData.discountedPrice < 100) {
-                errorMsg = "Harga campaign Min. Rp 100"
-                if (productMapData.customStock < 1) {
-                    errorMsg += "dan terjadi kesalahan lainnya"
-                } else if (productMapData.maxOrder > productMapData.customStock) {
-                    errorMsg += "dan terjadi kesalahan lainnya"
+
+                productMapData.customStock < MIN_CAMPAIGN_STOCK -> {
+                    errorMsg = ManageProductErrorMessage.MIN_CAMPAIGN_STOCK.errorMsg
+                    when {
+                        productMapData.maxOrder > productMapData.customStock -> {
+                            errorMsg += ManageProductErrorMessage.OTHER.errorMsg
+                        }
+                    }
                 }
-            } else if (productMapData.customStock < 1) {
-                errorMsg = "Stok campaign Min. 1"
-                if (productMapData.maxOrder > productMapData.customStock) {
-                    errorMsg += "dan terjadi kesalahan lainnya"
+
+                productMapData.maxOrder > productMapData.customStock -> {
+                    errorMsg += ManageProductErrorMessage.MAX_CAMPAIGN_ORDER.errorMsg
                 }
-            } else if (productMapData.maxOrder > productMapData.customStock){
-                errorMsg = "Maksimum pembelian tidak boleh melebihi stok utama"
             }
 
             return errorMsg

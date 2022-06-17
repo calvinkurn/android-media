@@ -16,7 +16,7 @@ class SellerCampaignProductListMapper @Inject constructor() {
                    productName = product.productName,
                    productUrl = product.productUrl,
                    productSku = product.productSku,
-                   price = product.price,
+                   price = product.price.toInt(),
                    formattedPrice = product.formattedPrice,
                    imageUrl = SellerCampaignProductList.ImageUrl(
                        img100Square = product.imageUrl.img100Square,

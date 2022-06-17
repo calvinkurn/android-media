@@ -11,25 +11,29 @@ import com.tokopedia.shop.flashsale.domain.entity.enums.PageMode
 class ManageProductActivity : BaseSimpleActivity() {
 
     companion object {
-        private const val BUNDLE_KEY_PAGE_MODE = "page_mode"
+        const val BUNDLE_KEY_CAMPAIGN_ID = "campaignId"
 
         @JvmStatic
-        fun start(context: Context, mode: PageMode) {
-            val starter = Intent(context, ManageProductActivity::class.java).apply {
+        fun start(context: Context, campaignId: String) {
+            val intent = Intent(context, ManageProductActivity::class.java).apply {
                 val extras = Bundle().apply {
-                    putParcelable(BUNDLE_KEY_PAGE_MODE, mode)
+                    putExtra(BUNDLE_KEY_CAMPAIGN_ID, campaignId)
                 }
                 putExtras(extras)
             }
-            context.startActivity(starter)
+            context.startActivity(intent)
         }
+    }
+
+    private val campaignId by lazy {
+        intent?.getStringExtra(BUNDLE_KEY_CAMPAIGN_ID).orEmpty()
     }
 
     override fun getLayoutRes(): Int = R.layout.ssfs_activity_manage_product
 
     override fun getParentViewResourceID() = R.id.container
 
-    override fun getNewFragment(): Fragment = ManageProductFragment.newInstance()
+    override fun getNewFragment(): Fragment = ManageProductFragment.newInstance(campaignId)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
