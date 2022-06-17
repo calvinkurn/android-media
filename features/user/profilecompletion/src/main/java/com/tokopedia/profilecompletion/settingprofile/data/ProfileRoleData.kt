@@ -1,6 +1,5 @@
 package com.tokopedia.profilecompletion.settingprofile.data
 
-import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
 /**
@@ -10,18 +9,13 @@ import com.google.gson.annotations.SerializedName
 
 data class ProfileRoleData(
     @SerializedName("isAllowedChangeDob")
-    @Expose
     var isAllowedChangeDob: Boolean = false,
     @SerializedName("isAllowedChangeName")
-    @Expose
     var isAllowedChangeName: Boolean = false,
     @SerializedName("isAllowedChangeGender")
-    @Expose
     var isAllowedChangeGender: Boolean = false,
     @SerializedName("chancesChangeName")
-    @Expose
     var chancesChangeName: String = "0",
     @SerializedName("chancesChangeGender")
-    @Expose
     var chancesChangeGender: String = "0"
 )

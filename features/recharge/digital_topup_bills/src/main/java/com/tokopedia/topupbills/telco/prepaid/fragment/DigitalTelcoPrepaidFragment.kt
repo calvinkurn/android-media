@@ -239,8 +239,8 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
         generateCheckoutPassData(
                 telcoClientNumberWidget.getInputNumber(),
                 if (telcoProduct.attributes.productPromo != null) "1" else "0",
-                telcoProduct.attributes.categoryId.toString(),
-                telcoProduct.attributes.operatorId.toString(),
+                telcoProduct.attributes.categoryId,
+                telcoProduct.attributes.operatorId,
                 telcoProduct.id,
                 telcoProduct.isSpecialProductPromo())
     }
@@ -822,9 +822,9 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
         generateCheckoutPassData(
                 topupBillsRecommendation.clientNumber,
                 "0",
-                topupBillsRecommendation.categoryId.toString(),
-                topupBillsRecommendation.operatorId.toString(),
-                topupBillsRecommendation.productId.toString()
+                topupBillsRecommendation.categoryId,
+                topupBillsRecommendation.operatorId,
+                topupBillsRecommendation.productId
         )
 
         if (userSession.isLoggedIn) {

@@ -130,7 +130,7 @@ class PlayBroadcastUiMapper(
 
     override fun mapProductTag(productTag: ProductTagging): List<ProductData> = productTag.productList.map {
         ProductData(
-                id = it.id.toString(),
+                id = it.id,
                 name = it.name,
                 imageUrl = it.imageUrl,
                 originalImageUrl = it.imageUrl,

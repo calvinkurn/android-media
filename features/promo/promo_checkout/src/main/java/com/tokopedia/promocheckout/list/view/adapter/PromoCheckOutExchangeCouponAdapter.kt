@@ -19,8 +19,6 @@ import com.tokopedia.promocheckout.widget.ImageUtil
 
 class PromoCheckOutExchangeCouponAdapter(items: ArrayList<CatalogListItem>, listener: ListenerCouponExchange) : RecyclerView.Adapter<PromoCheckOutExchangeCouponAdapter.ViewHolder>() {
 
-    private val CATALOG_TYPE_FLASH_SALE = 3
-
     interface ListenerCouponExchange {
         fun onClickRedeemCoupon(catalogId: Int?, slug: String?, title: String, creativeName: String, position: Int)
     }
@@ -176,7 +174,7 @@ class PromoCheckOutExchangeCouponAdapter(items: ArrayList<CatalogListItem>, list
         }
 
         holder.imgBanner.setOnClickListener { v ->
-            mListener.onClickRedeemCoupon(item.id, item.slug, item.title ?: "", item.imageURL
+            mListener.onClickRedeemCoupon(item.id?.toIntOrNull(), item.slug, item.title ?: "", item.imageURL
                     ?: "", position)
 
         }
@@ -192,5 +190,9 @@ class PromoCheckOutExchangeCouponAdapter(items: ArrayList<CatalogListItem>, list
     }
 
     override fun onViewAttachedToWindow(holder: ViewHolder) {
+    }
+
+    companion object {
+        private const val CATALOG_TYPE_FLASH_SALE = 3
     }
 }
