@@ -186,11 +186,11 @@ open class ExplicitView : CardUnify2, ExplicitAction {
         bindingSuccess?.imgSuccessDismiss?.setOnClickListener { onDismiss() }
 
         bindingQuestion?.btnPositifAction?.setOnClickListener {
-            onButtonPositifClicked()
+            onButtonPositiveClicked()
         }
 
         bindingQuestion?.btnNegatifAction?.setOnClickListener {
-            onButtonNegatifClicked()
+            onButtonNegativeClicked()
         }
 
         bindingFailed?.containerLocalLoad?.refreshBtn?.setOnClickListener {
@@ -247,7 +247,7 @@ open class ExplicitView : CardUnify2, ExplicitAction {
         replaceView(bindingQuestion?.root)
     }
 
-    override fun onButtonPositifClicked() {
+    override fun onButtonPositiveClicked() {
         explicitAnalytics.trackClickPositifButton(pageName, templateName, pagePath, pageType)
         bindingQuestion?.apply {
             btnPositifAction.isLoading = true
@@ -257,7 +257,7 @@ open class ExplicitView : CardUnify2, ExplicitAction {
         saveAnswer()
     }
 
-    override fun onButtonNegatifClicked() {
+    override fun onButtonNegativeClicked() {
         explicitAnalytics.trackClickNegatifButton(pageName, templateName, pagePath, pageType)
         bindingQuestion?.apply {
             btnNegatifAction.isLoading = true
