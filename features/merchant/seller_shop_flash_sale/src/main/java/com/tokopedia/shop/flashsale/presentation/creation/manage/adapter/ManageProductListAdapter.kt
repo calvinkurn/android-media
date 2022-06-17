@@ -49,14 +49,13 @@ class ManageProductListAdapter(
     }
 
     fun clearAll() {
-        this.products = mutableListOf()
-        notifyItemRangeRemoved(Constant.FIRST_PAGE, products.size)
+        products.clear()
+        notifyDataSetChanged()
     }
 
     fun submit(newProducts: List<Product>) {
-        val oldItemSize = products.size
         products.addAll(newProducts)
-        notifyItemChanged(oldItemSize, products.size)
+        notifyDataSetChanged()
     }
 
     class ManageProductListViewHolder(private val binding: SsfsItemManageProductBinding) :
@@ -93,7 +92,6 @@ class ManageProductListAdapter(
                         tpgOriginalPrice.text = product.formattedPrice
                     }
                 }
-
 
                 when {
                     isProductInfoComplete(product.productMapData) -> {

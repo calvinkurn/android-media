@@ -1,7 +1,8 @@
 package com.tokopedia.shop.flashsale.presentation.creation.manage
 
+import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,30 +11,33 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
-import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.isMoreThanZero
-import com.tokopedia.kotlin.extensions.view.isZero
-import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.seller_shop_flash_sale.R
 import com.tokopedia.seller_shop_flash_sale.databinding.SsfsFragmentManageProductBinding
 import com.tokopedia.shop.flashsale.common.customcomponent.BaseSimpleListFragment
 import com.tokopedia.shop.flashsale.common.extension.showError
 import com.tokopedia.shop.flashsale.di.component.DaggerShopFlashSaleComponent
 import com.tokopedia.shop.flashsale.domain.entity.SellerCampaignProductList
-import com.tokopedia.shop.flashsale.domain.entity.enums.PageMode
+import com.tokopedia.shop.flashsale.presentation.creation.information.CampaignInformationFragment
 import com.tokopedia.shop.flashsale.presentation.creation.manage.adapter.ManageProductListAdapter
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.lifecycle.autoClearedNullable
+import kotlinx.coroutines.DelicateCoroutinesApi
+import java.util.*
 import javax.inject.Inject
+import kotlin.concurrent.schedule
 
 class ManageProductFragment :
     BaseSimpleListFragment<ManageProductListAdapter, SellerCampaignProductList.Product>() {
 
     companion object {
-        private const val BUNDLE_KEY_PAGE_MODE = "page_mode"
+        private const val BUNDLE_KEY_CAMPAIGN_ID = "campaignId"
         private const val SECOND_STEP = 2
         private const val PAGE_SIZE = 50
+        private const val LIST_TYPE = 0
+        private const val DELAY = 1000L
+        private const val REQUEST_CODE = 123
         private const val EMPTY_STATE_IMAGE_URL =
             "https://images.tokopedia.net/img/android/campaign/flash-sale-toko/ic_no_active_campaign.png"
 
@@ -49,10 +53,10 @@ class ManageProductFragment :
         }
 
         @JvmStatic
-        fun newInstance(campaignId: String): ManageProductFragment {
+        fun newInstance(campaignId: Long): ManageProductFragment {
             return ManageProductFragment().apply {
                 arguments = Bundle().apply {
-                    putString(ManageProductActivity.BUNDLE_KEY_CAMPAIGN_ID, campaignId)
+                    putLong(ManageProductActivity.BUNDLE_KEY_CAMPAIGN_ID, campaignId)
                 }
             }
         }
@@ -64,9 +68,7 @@ class ManageProductFragment :
     private val viewModelProvider by lazy { ViewModelProvider(this, viewModelFactory) }
     private val viewModel by lazy { viewModelProvider.get(ManageProductViewModel::class.java) }
     private var binding by autoClearedNullable<SsfsFragmentManageProductBinding>()
-    private val campaignId by lazy {
-        arguments?.getString(ManageProductActivity.BUNDLE_KEY_CAMPAIGN_ID).orEmpty()
-    }
+    private val campaignId by lazy { arguments?.getLong(BUNDLE_KEY_CAMPAIGN_ID).orZero() }
     private val manageProductListAdapter by lazy {
         ManageProductListAdapter(
             onEditClicked = {
@@ -99,9 +101,7 @@ class ManageProductFragment :
         super.onViewCreated(view, savedInstanceState)
         setupView()
         observeProductList()
-        viewModel.getProducts(campaignId.toLong(), 0)
     }
-
 
     private fun setupView() {
         binding?.apply {
@@ -109,41 +109,52 @@ class ManageProductFragment :
                 getString(R.string.sfs_placeholder_step_counter),
                 SECOND_STEP
             )
+            header.setNavigationOnClickListener {
+                activity?.finish()
+            }
+            tpgAddProduct.setOnClickListener {
+                showProductListPage()
+            }
         }
     }
 
     private fun observeProductList() {
         viewModel.products.observe(viewLifecycleOwner) { result ->
+            showLoader()
             when (result) {
                 is Success -> {
+                    hideLoader()
                     if (result.data.productList.size.isMoreThanZero()) {
-                        binding?.recyclerViewProduct?.visible()
-                        displayProducts(result.data.productList)
+                        displayProducts(result.data)
+                        hideEmptyState()
                     } else {
                         showEmptyState()
                     }
                 }
                 is Fail -> {
-
+                    hideLoader()
+                    showEmptyState()
+                    result.throwable.localizedMessage?.let { view.showError(it) }
                 }
             }
         }
     }
 
-    private fun displayProducts(productList: List<SellerCampaignProductList.Product>) {
+    private fun displayProducts(productList: SellerCampaignProductList) {
         binding?.cardIncompleteProductInfo?.gone()
-        productList.forEach { product ->
+        productList.productList.forEach { product ->
             when{
                 !isProductInfoComplete(product.productMapData) -> {
                     binding?.cardIncompleteProductInfo?.visible()
                 }
             }
         }
-        renderList(productList, false)
+        manageProductListAdapter.clearAll()
+        renderList(productList.productList, false)
         binding?.apply {
             tpgProductCount.text = String.format(
                 getString(R.string.manage_product_placeholder_product_count),
-                productList.count()
+                productList.totalProduct
             )
         }
     }
@@ -158,8 +169,8 @@ class ManageProductFragment :
             cardBottomButtonGroup.gone()
 
             emptyState.setImageUrl(EMPTY_STATE_IMAGE_URL)
-            emptyState.setOnClickListener {
-
+            emptyState.setPrimaryCTAClickListener {
+                showProductListPage()
             }
         }
     }
@@ -167,6 +178,49 @@ class ManageProductFragment :
     private fun hideEmptyState() {
         binding?.apply {
             emptyState.gone()
+            tpgProductCount.visible()
+            tpgAddProduct.visible()
+            recyclerViewProduct.visible()
+            cardBottomButtonGroup.visible()
+        }
+    }
+
+    private fun showLoader(){
+        binding?.apply {
+            loader.visible()
+            cardIncompleteProductInfo.gone()
+            tpgProductCount.gone()
+            tpgAddProduct.gone()
+            emptyState.gone()
+            recyclerViewProduct.gone()
+            cardBottomButtonGroup.gone()
+        }
+    }
+
+    private fun hideLoader(){
+        binding?.apply {
+            loader.gone()
+        }
+    }
+
+    @OptIn(DelicateCoroutinesApi::class)
+    private fun showProductListPage(){
+        val context = context ?: return
+        val intent = Intent(context, ChooseProductActivity::class.java).apply {
+            putExtra(ChooseProductActivity.BUNDLE_KEY_CAMPAIGN_ID, campaignId.toString())
+        }
+        startActivityForResult(intent, REQUEST_CODE)
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        when(resultCode) {
+            Activity.RESULT_OK -> {
+                showLoader()
+                Timer("Retrieving", false).schedule(DELAY) {
+                    viewModel.getProducts(campaignId, LIST_TYPE)
+                }
+            }
         }
     }
 
@@ -190,7 +244,9 @@ class ManageProductFragment :
         adapter?.submit(list)
     }
 
-    override fun loadData(page: Int) {}
+    override fun loadData(page: Int) {
+        viewModel.getProducts(campaignId, LIST_TYPE)
+    }
 
     override fun clearAdapterData() {
         adapter?.clearAll()
@@ -201,10 +257,14 @@ class ManageProductFragment :
     override fun onHideLoading() {}
 
     override fun onDataEmpty() {
-        hideEmptyState()
+        showEmptyState()
     }
 
     override fun onGetListError(message: String) {
         view?.showError(message)
+    }
+
+    override fun onScrolled(xScrollAmount: Int, yScrollAmount: Int) {
+
     }
 }
