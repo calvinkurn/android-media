@@ -18,6 +18,11 @@ class ManageProductViewModel @Inject constructor(
     private val getSellerCampaignProductListUseCase: GetSellerCampaignProductListUseCase
 ) : BaseViewModel(dispatchers.main) {
 
+    companion object {
+        private const val ROWS = 50
+        private const val OFFSET = 0
+    }
+
     private val _products = MutableLiveData<Result<SellerCampaignProductList>>()
     val products: LiveData<Result<SellerCampaignProductList>>
         get() = _products
@@ -33,8 +38,8 @@ class ManageProductViewModel @Inject constructor(
                     campaignId = campaignId,
                     listType = listType,
                     GetSellerCampaignProductListRequest.Pagination(
-                        50,
-                        0
+                        ROWS,
+                        OFFSET
                     )
                 )
                 _products.postValue(Success(campaigns))
