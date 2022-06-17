@@ -230,15 +230,10 @@ class TokoNowCategoryViewModel @Inject constructor (
 
     override fun onViewCreated(source: MiniCartSource?) {
         when(externalServiceType) {
-            ServiceType.NOW_20M -> {
-                setUserPreference(ServiceType.NOW_15M)
-            }
-            ServiceType.NOW_2H -> {
-                setUserPreference(ServiceType.NOW_2H)
-            }
-            else -> {
-                super.onViewCreated(source)
-            }
+            if (chooseAddressData?.service_type == ServiceType.NOW_15M) ServiceType.NOW_20M else ServiceType.NOW_2H -> super.onViewCreated(source)
+            ServiceType.NOW_20M -> setUserPreference(ServiceType.NOW_15M)
+            ServiceType.NOW_2H -> setUserPreference(ServiceType.NOW_2H)
+            else ->  super.onViewCreated(source)
         }
     }
 

@@ -656,18 +656,13 @@ class TokoNowHomeFragment: Fragment(),
             - 15m still used in LCA and BE as 20m service type.
          */
 
-        when(externalServiceType) {
-            NOW_20M -> {
-                localCacheModel?.apply {
-                    viewModelTokoNow.switchService(this, NOW_15M)
-                }
+        localCacheModel?.apply {
+            when(externalServiceType) {
+                if (service_type == NOW_15M) NOW_20M else NOW_2H -> loadLayout()
+                NOW_20M -> viewModelTokoNow.switchService(this, NOW_15M)
+                NOW_2H ->  viewModelTokoNow.switchService(this, NOW_2H)
+                else -> loadLayout()
             }
-            NOW_2H -> {
-                localCacheModel?.apply {
-                    viewModelTokoNow.switchService(this, NOW_2H)
-                }
-            }
-            else -> loadLayout()
         }
     }
 
