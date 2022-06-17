@@ -56,8 +56,8 @@
     <string name="sfs_placeholder_draft">Draft (%s)</string>
 
     <!--Share Component-->
-    <string name="sfs_share_title_upcoming">Segera hadir, Flash Sale dari %s di \@Tokopedia. Mulai %s pukul %s</string>
-    <string name="sfs_share_title_ongoing">Kejar penawaran eksklusif di Flash Sale dari %s hanya di \@Tokopedia. Hanya sampai %s pukul %s!</string>
+    <string name="sfs_share_thumbnail_title_upcoming">Segera hadir, Flash Sale dari %s di \@Tokopedia. Mulai %s pukul %s</string>
+    <string name="sfs_share_thumbnail_title_ongoing">Kejar penawaran eksklusif di Flash Sale dari %s hanya di \@Tokopedia. Hanya sampai %s pukul %s!</string>
 
     <string name="sfs_share_outgoing_title">Flash Sale dari %s</string>
     <string name="sfs_share_outgoing_description_upcoming">Dapatkan harga spesial dari %s selama stok tersedia. Yuk, pasang pengingatnya!</string>
