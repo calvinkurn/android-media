@@ -192,11 +192,11 @@ data class SerializedNotificationData(
     var sessionId: String?,
 
     @Expose
-    @SerializedName(PayloadExtraDataKey.GROUP_ID)
+    @SerializedName(GROUP_ID)
     var groupId: String?,
 
     @Expose
-    @SerializedName(PayloadExtraDataKey.GROUP_NAME)
+    @SerializedName(GROUP_NAME)
     var groupName: String?,
 
     @SerializedName(NOTIFICATION_CHANNEL)

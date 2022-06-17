@@ -107,6 +107,8 @@ object PayloadConverter {
         model.webHookParam = data.getString(WEBHOOK_PARAM)
 
         model.payloadExtra = getPayloadExtras(data)
+        model.groupId = data.getString(GROUP_ID)
+        model.groupName = data.getString(GROUP_NAME)
 
         return model
     }
@@ -218,6 +220,8 @@ object PayloadConverter {
         model.webHookParam = data.webHookParam
 
         model.payloadExtra = getPayloadExtras(data)
+        model.groupId = data.groupId
+        model.groupName = data.groupName
         return model
     }
 
@@ -397,8 +401,7 @@ object PayloadConverter {
             journeyId = data.getString(PayloadExtraDataKey.JOURNEY_ID, null),
             journeyName = data.getString(PayloadExtraDataKey.JOURNEY_NAME, null),
             sessionId = data.getString(PayloadExtraDataKey.SESSION_ID, null),
-            groupId = data.getString(PayloadExtraDataKey.GROUP_ID, null),
-            groupName = data.getString(PayloadExtraDataKey.GROUP_NAME, null)
+
         )
     }
 
@@ -408,8 +411,6 @@ object PayloadConverter {
             journeyId = data.journeyId,
             journeyName = data.journeyName,
             sessionId = data.sessionId,
-            groupId = data.groupId,
-            groupName = data.groupName
         )
     }
 }
