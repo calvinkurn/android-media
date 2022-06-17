@@ -26,7 +26,8 @@ class ChangeMerchantBottomSheet : BottomSheetUnify() {
         savedInstanceState: Bundle?
     ): View? {
         binding = BottomsheetChangeMerchantLayoutBinding.inflate(inflater, container, false)
-        return binding?.root
+        setChild(binding?.root)
+        return super.onCreateView(inflater, container, savedInstanceState)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -58,7 +59,7 @@ class ChangeMerchantBottomSheet : BottomSheetUnify() {
 
     private fun setBtnCancelOrder() {
         binding?.btnCancelOrder?.setOnClickListener {
-            dismissAllowingStateLoss()
+            dismiss()
         }
     }
 
@@ -67,7 +68,7 @@ class ChangeMerchantBottomSheet : BottomSheetUnify() {
             updateParam?.let { updateParam ->
                 changeMerchantListener?.changeMerchantConfirmAddToCart(updateParam)
             }
-            dismissAllowingStateLoss()
+            dismiss()
         }
     }
 
