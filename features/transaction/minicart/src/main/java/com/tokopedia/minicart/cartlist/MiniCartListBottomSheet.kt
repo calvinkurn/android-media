@@ -599,8 +599,8 @@ class MiniCartListBottomSheet @Inject constructor(private var miniCartListDecora
         updateCart()
     }
 
-    override fun onNotesChanged(productId: String, isBundlingItem: Boolean, bundleId: String, newNotes: String) {
-        viewModel?.updateProductNotes(productId, isBundlingItem, bundleId, newNotes)
+    override fun onNotesChanged(productId: String, isBundlingItem: Boolean, bundleId: String, bundleGroupId: String, newNotes: String) {
+        viewModel?.updateProductNotes(productId, isBundlingItem, bundleId, bundleGroupId, newNotes)
         updateCart()
     }
 
