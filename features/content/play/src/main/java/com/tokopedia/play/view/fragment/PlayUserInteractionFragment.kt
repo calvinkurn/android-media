@@ -1811,7 +1811,20 @@ class PlayUserInteractionFragment @Inject constructor(
     }
 
     override fun onInfoClicked(view: ChooseAddressViewComponent) {
+        newAnalytic.clickInfoAddressWidget(channelId, channelType = playViewModel.channelType)
         playViewModel.submitAction(OpenFooterUserReport(getString(R.string.play_tokonow_info_weblink)))
+    }
+
+    override fun onImpressedAddressWidget(view: ChooseAddressViewComponent) {
+        newAnalytic.impressAddressWidget(channelId, channelType = playViewModel.channelType)
+    }
+
+    override fun onImpressedBtnChoose(view: ChooseAddressViewComponent) {
+        newAnalytic.impressChooseAddress(channelId, channelType = playViewModel.channelType)
+    }
+
+    override fun onBtnChooseClicked(view: ChooseAddressViewComponent) {
+        newAnalytic.clickChooseAddress(channelId, channelType = playViewModel.channelType)
     }
 
     override fun onGameResultClicked(view: InteractiveGameResultViewComponent) {

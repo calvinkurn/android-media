@@ -141,6 +141,10 @@ class ProductSectionViewHolder(
         btnInfo.setOnClickListener {
             listener.onInformationClicked(item)
         }
+
+        btnInfo.addOnImpressionListener(item.impressHolder){
+            listener.onInformationImpressed()
+        }
     }
 
     private fun setupBackground(background: ProductSectionUiModel.Section.BackgroundUiModel) {
@@ -213,6 +217,7 @@ class ProductSectionViewHolder(
         fun onReminderClicked(section: ProductSectionUiModel.Section)
         fun onReminderImpressed(section: ProductSectionUiModel.Section)
         fun onInformationClicked(section: ProductSectionUiModel.Section)
+        fun onInformationImpressed()
     }
 }
 

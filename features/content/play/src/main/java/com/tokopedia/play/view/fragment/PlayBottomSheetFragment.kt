@@ -9,7 +9,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
@@ -19,8 +18,6 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalTokopediaNow
 import com.tokopedia.kotlin.extensions.view.orZero
-import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
-import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.play.R
 import com.tokopedia.play.analytic.PlayAnalytic
@@ -609,7 +606,12 @@ class PlayBottomSheetFragment @Inject constructor(
     override fun onInformationClicked(
         view: ProductSheetViewComponent
     ) {
+        newAnalytic.clickInfoNow(channelId = playViewModel.channelId, channelType = playViewModel.channelType)
         openPageByApplink(ApplinkConstInternalTokopediaNow.EDUCATIONAL_INFO , pipMode = false)
+    }
+
+    override fun onInformationImpressed(view: ProductSheetViewComponent) {
+        newAnalytic.impressInfoNow(channelId = playViewModel.channelId, channelType = playViewModel.channelType)
     }
 
     /**

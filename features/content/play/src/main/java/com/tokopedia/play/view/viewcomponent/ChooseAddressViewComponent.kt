@@ -6,6 +6,8 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.fragment.app.FragmentManager
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
+import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.localizationchooseaddress.ui.bottomsheet.ChooseAddressBottomSheet
 import com.tokopedia.play.R
 import com.tokopedia.unifyprinciples.R as unifyR
@@ -45,6 +47,7 @@ class ChooseAddressViewComponent(
     }
 
     private val ctx: Context get() = rootView.context
+    private val trackingField = ImpressHolder()
 
     init {
         btnChoose.setOnClickListener {
@@ -57,10 +60,19 @@ class ChooseAddressViewComponent(
         }
 
         setupButtonView()
+
+        rootView.addOnImpressionListener(trackingField){
+            listener.onImpressedAddressWidget(this@ChooseAddressViewComponent)
+        }
+
+        btnChoose.addOnImpressionListener(trackingField) {
+            listener.onImpressedBtnChoose(this@ChooseAddressViewComponent)
+        }
     }
 
     private fun openBottomSheet() {
         if (!getBottomSheet().isVisible)
+            listener.onBtnChooseClicked(this@ChooseAddressViewComponent)
             getBottomSheet().showNow(fragmentManager, PLAY_CHOOSE_ADDRESS_TAG)
     }
 
@@ -91,5 +103,8 @@ class ChooseAddressViewComponent(
     interface Listener {
         fun onAddressUpdated(view: ChooseAddressViewComponent)
         fun onInfoClicked(view: ChooseAddressViewComponent)
+        fun onImpressedAddressWidget(view: ChooseAddressViewComponent)
+        fun onImpressedBtnChoose(view: ChooseAddressViewComponent)
+        fun onBtnChooseClicked(view: ChooseAddressViewComponent)
     }
 }

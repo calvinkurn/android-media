@@ -92,6 +92,10 @@ class ProductSheetViewComponent(
             listener.onInformationClicked(this@ProductSheetViewComponent)
         }
 
+        override fun onInformationImpressed() {
+            listener.onInformationImpressed(this@ProductSheetViewComponent)
+        }
+
         override fun onProductChanged() {
             listener.onProductCountChanged(this@ProductSheetViewComponent)
         }
@@ -251,5 +255,6 @@ class ProductSheetViewComponent(
         fun onReminderClicked(view: ProductSheetViewComponent, productSectionUiModel: ProductSectionUiModel.Section)
         fun onReminderImpressed(view: ProductSheetViewComponent, section: ProductSectionUiModel.Section)
         fun onInformationClicked(view: ProductSheetViewComponent)
+        fun onInformationImpressed(view: ProductSheetViewComponent)
     }
 }
