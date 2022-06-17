@@ -208,5 +208,18 @@
     <string name="chooseproduct_product_empty_desc">Yuk, mulai tambah produkmu untuk didaftarkan ke campaign. </string>
     <string name="chooseproduct_save_button_text">Tambah %d Produk</string>
     <string name="chooseproduct_save_button_text_empty">Tambah Produk</string>
-  
+
+    <!--Manage Product-->
+    <string name="manage_product_complete_product_info_warning_label">Klik <b>Ubah</b> untuk melengkapi informasi produk ini, ya.</string>
+    <string name="manage_product_ubah_label">Ubah</string>
+    <string name="manage_product_separator_label">|</string>
+    <string name="manage_product">Kelola Produk</string>
+    <string name="manage_product_incomplete_product_info_label">Beberapa produk memiliki info yang belum lengkap. Lengkapi dulu, ya!</string>
+    <string name="manage_product_placeholder_product_count">(%s Produk)</string>
+    <string name="manage_product_add_product_label">Tambah Produk</string>
+    <string name="manage_product_item_stock_at_seller_location_label">Stok: <b>%s</b> di lokasi seller</string>
+    <string name="manage_product_item_campaign_stock_label">Stok campaign: <b>%s</b></string>
+    <string name="manage_product_item_max_buy_label">Maks. Pembelian: <b>%s</b></string>
+    <string name="manage_product_continue_label">Lanjut</string>
+    <string name="manage_product_save_draft_label">Simpan Draft</string>
 </resources>
