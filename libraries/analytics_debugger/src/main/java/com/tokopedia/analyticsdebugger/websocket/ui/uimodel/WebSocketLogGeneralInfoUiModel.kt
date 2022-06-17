@@ -6,5 +6,6 @@ package com.tokopedia.analyticsdebugger.websocket.ui.uimodel
 data class WebSocketLogGeneralInfoUiModel(
     val source: String = "",
     val channelId: String = "",
+    val warehouseId: String = "",
     val gcToken: String = "",
 )

@@ -19,6 +19,7 @@ class WebSocketDetailLoggingFragment: Fragment() {
     private lateinit var tvChannelID: Typography
     private lateinit var tvGcToken: Typography
     private lateinit var tvMessage: Typography
+    private lateinit var tvWarehouseId: TextView
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -40,6 +41,7 @@ class WebSocketDetailLoggingFragment: Fragment() {
         tvChannelID = view.findViewById(R.id.tv_websocket_detail_log_channel_id)
         tvGcToken = view.findViewById(R.id.tv_websocket_detail_log_gc_token)
         tvMessage = view.findViewById(R.id.tv_websocket_detail_log_message)
+        tvWarehouseId = view.findViewById(R.id.tv_websocket_detail_warehouse_id)
     }
 
     private fun setData() {
@@ -49,6 +51,7 @@ class WebSocketDetailLoggingFragment: Fragment() {
             tvChannelID.text = it.getString(EXTRA_CHANNEL_ID)
             tvGcToken.text = it.getString(EXTRA_GC_TOKEN)
             tvMessage.text = it.getString(EXTRA_MESSAGE)
+            tvWarehouseId.text = it.getString(EXTRA_WH_ID)
         }
     }
 
@@ -58,5 +61,6 @@ class WebSocketDetailLoggingFragment: Fragment() {
         const val EXTRA_CHANNEL_ID = "EXTRA_CHANNEL_ID"
         const val EXTRA_GC_TOKEN = "EXTRA_GC_TOKEN"
         const val EXTRA_MESSAGE = "EXTRA_MESSAGE"
+        const val EXTRA_WH_ID = "EXTRA_WH_ID"
     }
 }
