@@ -26,8 +26,7 @@ class GetReschedulePickupUseCase @Inject constructor(
 
 
     override suspend fun execute(params: GetReschedulePickupParam): GetReschedulePickupResponse.Data {
-        val param = mapOf(LogisticSellerConst.PARAM_INPUT to params)
-        return repository.request(GetReschedulePickupQuery(), param)
+        return repository.request(GetReschedulePickupQuery(), params)
     }
 
     companion object {

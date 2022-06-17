@@ -14,7 +14,9 @@ import com.tokopedia.logisticseller.reschedulepickup.data.response.SaveReschedul
 object ReschedulePickupMapper {
     fun mapToGetReschedulePickupParam(orderIds: List<String>): GetReschedulePickupParam {
         return GetReschedulePickupParam(
-            orderIds = orderIds.joinToString("~")
+            input = GetReschedulePickupParam.MpLogisticGetReschedulePickupInputs(
+                orderIds = orderIds.joinToString("~")
+            )
         )
     }
 
