@@ -32,14 +32,14 @@ internal open class MainNavMockResponseConfig : MockModelConfig() {
 
         addMockResponse(
             KEY_CONTAINS_MAINNAV_ORDER_LIST,
-            getRawString(context, R.raw.response_success_mock_mainnav_orderlist_list),
+            getRawString(context, R.raw.response_success_mock_mainnav_get_order_history),
             FIND_BY_CONTAINS
         )
 
         addMockResponse(
             KEY_CONTAINS_MAINNAV_PAYMENT_LIST,
-//            getRawString(context, R.raw.response_success_mock_mainnav_payment_query),
-            getRawString(context, R.raw.response_success_mock_mainnav_payment_list),
+            getRawString(context, R.raw.response_success_mock_mainnav_payment_query),
+//            getRawString(context, R.raw.response_success_mock_mainnav_payment_list),
             FIND_BY_CONTAINS
         )
 
