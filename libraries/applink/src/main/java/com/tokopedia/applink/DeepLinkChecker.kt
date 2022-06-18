@@ -225,7 +225,6 @@ object DeepLinkChecker {
 
     // function for enable Hansel
 
-    // com.tokopedia.catalog.ui.activity.CatalogDetailPageActivity
     private fun getCatalogDetailClassName() = "com.tokopedia.catalog.ui.activity.CatalogDetailPageActivity"
 
     private fun getHotIntent(context: Context, url: String): Intent {
