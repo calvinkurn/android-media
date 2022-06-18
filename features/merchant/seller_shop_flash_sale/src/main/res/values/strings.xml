@@ -37,6 +37,8 @@
     <string name="sfs_stop">Hentikan</string>
     <string name="sfs_draft_deleted">Draft campaign berhasil dihapus.</string>
     <string name="sfs_cannot_cancel_campaign">Campaign yang masuk ke partisipasi event tidak dapat dibatalkan.</string>
+    <string name="sfs_cannot_stop_campaign">Campaign yang masuk ke partisipasi event tidak dapat dihentikan.</string>
+    <string name="sfs_cannot_edit_campaign">Campaign yang masuk ke partisipasi event hanya bisa diedit di versi desktop.</string>
     <string name="sfs_ineligible_access_title">Kamu tidak memiliki kuota untuk membuat Flash Sale Toko</string>
     <string name="sfs_ineligible_access_description">Upgrade tokomu ke Power Merchant PRO untuk dapat kuota Flash Sale  Toko, ya.</string>
     <string name="sfs_subscribe_pm_pro">Daftar PM Pro</string>

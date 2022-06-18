@@ -30,6 +30,8 @@ import com.tokopedia.shop.flashsale.domain.entity.CampaignMeta
 import com.tokopedia.shop.flashsale.domain.entity.CampaignUiModel
 import com.tokopedia.shop.flashsale.domain.entity.aggregate.CampaignCreationEligibility
 import com.tokopedia.shop.flashsale.domain.entity.aggregate.ShareComponentMetadata
+import com.tokopedia.shop.flashsale.domain.entity.enums.CampaignStatus
+import com.tokopedia.shop.flashsale.domain.entity.enums.isOngoing
 import com.tokopedia.shop.flashsale.presentation.cancelation.CancelCampaignBottomSheet
 import com.tokopedia.shop.flashsale.presentation.creation.information.CampaignInformationActivity
 import com.tokopedia.shop.flashsale.presentation.draft.bottomsheet.DraftListBottomSheet
@@ -518,18 +520,14 @@ class CampaignListFragment : BaseSimpleListFragment<CampaignAdapter, CampaignUiM
     }
 
     private fun displayMoreMenuBottomSheet(campaign: CampaignUiModel) {
-        val bottomSheet = MoreMenuBottomSheet.newInstance(
-            campaign.campaignId,
-            campaign.campaignName,
-            campaign.status
-        )
+        val bottomSheet = MoreMenuBottomSheet.newInstance(campaign.campaignName, campaign.status)
         bottomSheet.setOnViewCampaignMenuSelected {}
         bottomSheet.setOnCancelCampaignMenuSelected { handleCancelCampaign(campaign) }
         bottomSheet.setOnShareCampaignMenuSelected {
             showLoaderDialog()
             viewModel.getShareComponentThumbnailImageUrl(campaign.campaignId)
         }
-        bottomSheet.setOnEditCampaignMenuSelected {}
+        bottomSheet.setOnEditCampaignMenuSelected { handleEditCampaign(campaign) }
         bottomSheet.show(childFragmentManager, bottomSheet.tag)
     }
 
@@ -598,11 +596,21 @@ class CampaignListFragment : BaseSimpleListFragment<CampaignAdapter, CampaignUiM
 
     private fun handleCancelCampaign(campaign: CampaignUiModel) {
         if (campaign.thematicParticipation) {
-            binding?.cardView showError getString(R.string.sfs_cannot_cancel_campaign)
+            val errorWording = findCancelCampaignErrorWording(campaign.status)
+            binding?.cardView showError errorWording
             return
         }
 
         showCancelCampaignBottomSheet(campaign)
+    }
+
+    private fun handleEditCampaign(campaign: CampaignUiModel) {
+        if (campaign.thematicParticipation) {
+            binding?.cardView showError getString(R.string.sfs_cannot_edit_campaign)
+            return
+        }
+
+        CampaignInformationActivity.startUpdateMode(requireActivity(), campaign.campaignId)
     }
 
     private fun showCancelCampaignBottomSheet(campaign: CampaignUiModel) {
@@ -666,6 +674,14 @@ class CampaignListFragment : BaseSimpleListFragment<CampaignAdapter, CampaignUiM
             binding?.loader?.visible()
             getCampaigns(FIRST_PAGE)
             onCancelCampaignSuccess()
+        }
+    }
+
+    private fun findCancelCampaignErrorWording(campaignStatus: CampaignStatus): String {
+        return if (campaignStatus.isOngoing()) {
+            getString(R.string.sfs_cannot_stop_campaign)
+        } else {
+            getString(R.string.sfs_cannot_cancel_campaign)
         }
     }
 
