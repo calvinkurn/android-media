@@ -23,19 +23,19 @@ import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.product.manage.ProductManageInstance
 import com.tokopedia.product.manage.R
+import com.tokopedia.product.manage.common.feature.list.analytics.ProductManageTracking
 import com.tokopedia.product.manage.common.util.ProductManageListErrorHandler
 import com.tokopedia.product.manage.databinding.FragmentStockReminderBinding
 import com.tokopedia.product.manage.feature.list.constant.ProductManageListConstant.EXTRA_RESULT_STATUS
+import com.tokopedia.product.manage.feature.stockreminder.constant.StockReminderConst.REMINDER_ACTIVE
 import com.tokopedia.product.manage.feature.stockreminder.data.source.cloud.query.param.ProductWarehouseParam
 import com.tokopedia.product.manage.feature.stockreminder.data.source.cloud.response.createupdateresponse.CreateStockReminderResponse
-import com.tokopedia.product.manage.feature.stockreminder.data.source.cloud.response.createupdateresponse.UpdateStockReminderResponse
 import com.tokopedia.product.manage.feature.stockreminder.data.source.cloud.response.getresponse.GetStockReminderResponse
-import com.tokopedia.product.manage.feature.stockreminder.data.source.cloud.response.getresponse.ProductWareHouse
 import com.tokopedia.product.manage.feature.stockreminder.di.DaggerStockReminderComponent
 import com.tokopedia.product.manage.feature.stockreminder.view.adapter.ProductStockReminderAdapter
 import com.tokopedia.product.manage.feature.stockreminder.view.adapter.ProductStockReminderAdapterFactoryImpl
 import com.tokopedia.product.manage.feature.stockreminder.view.adapter.ProductStockReminderViewHolder
-import com.tokopedia.product.manage.feature.stockreminder.view.bottomsheet.SetAtOnceStockReminderBottomSheet
+import com.tokopedia.product.manage.feature.stockreminder.view.bottomsheet.SetStockForVariantSelectionReminderBottomSheet
 import com.tokopedia.product.manage.feature.stockreminder.view.bottomsheet.StockRemainingInfoBottomSheet
 import com.tokopedia.product.manage.feature.stockreminder.view.bottomsheet.VariantSelectionStockReminderBottomSheet
 import com.tokopedia.product.manage.feature.stockreminder.view.data.ProductStockReminderUiModel
@@ -59,6 +59,8 @@ class StockReminderFragment : BaseDaggerFragment(),
         private const val ARG_PRODUCT_ID = "product_id"
         private const val ARG_PRODUCT_NAME = "product_name"
         private const val ARG_IS_VARIANT = "isVariant"
+        private const val TOGGLE_ACTIVE = "active"
+        private const val TOGGLE_NOT_ACTIVE = "not active"
 
         fun createInstance(productId: Long, productName: String, isVariant: Boolean): Fragment {
             val fragment = StockReminderFragment()
@@ -161,10 +163,6 @@ class StockReminderFragment : BaseDaggerFragment(),
             viewLifecycleOwner,
             createStockReminderObserver()
         )
-        viewModel.updateStockReminderLiveData.observe(
-            viewLifecycleOwner,
-            updateStockReminderObserver()
-        )
         getStockReminder()
 
         binding?.clEditAll?.showWithCondition(isVariant)
@@ -179,34 +177,21 @@ class StockReminderFragment : BaseDaggerFragment(),
             showVariantSelectionBottomSheet()
         }
 
-
         binding?.btnSaveReminder?.setOnClickListener {
-//            binding?.qeStock?.clearFocus()
-//            if (binding?.swStockReminder?.isChecked == true) {
-//                if (threshold == 0) {
-//                    threshold = binding?.qeStock?.getValue()
-//            createStockReminder()
-//                } else {
-//                    threshold = binding?.qeStock?.getValue()
-//                    updateStockReminder()
-//                }
-//            } else {
-//                threshold = 0
-            updateStockReminder()
-//            }
-//
-//            toggleStateChecked?.let { state ->
-//                if (state) {
-//                    ProductManageTracking.eventToggleReminderSave(TOGGLE_ACTIVE)
-//                } else {
-//                    ProductManageTracking.eventToggleReminderSave(TOGGLE_NOT_ACTIVE)
-//                }
-//            }
+            createStockReminder()
+            val isReminderActive =
+                updateWarehouseParam.firstOrNull() { it.thresholdStatus == REMINDER_ACTIVE.toString() }
+            if (isReminderActive != null) {
+                ProductManageTracking.eventToggleReminderSave(TOGGLE_ACTIVE)
+            } else {
+                ProductManageTracking.eventToggleReminderSave(TOGGLE_NOT_ACTIVE)
+            }
         }
 
         binding?.clRemainingStock?.setOnClickListener {
             showRemainingStockBottomSheet()
         }
+
     }
 
     private fun createAdapter(): BaseAdapter<ProductStockReminderAdapterFactoryImpl> {
@@ -274,13 +259,6 @@ class StockReminderFragment : BaseDaggerFragment(),
 
     private fun createStockReminder() {
         viewModel.createStockReminder(
-            userSession.shopId,
-            updateWarehouseParam
-        )
-    }
-
-    private fun updateStockReminder() {
-        viewModel.updateStockReminder(
             userSession.shopId,
             updateWarehouseParam
         )
@@ -390,37 +368,6 @@ class StockReminderFragment : BaseDaggerFragment(),
             }
         }
 
-    private fun updateStockReminderObserver() =
-        Observer<Result<UpdateStockReminderResponse>> { stockReminderData ->
-            when (stockReminderData) {
-                is Success -> {
-                    doResultIntent()
-                }
-                is Fail -> {
-                    binding?.layout?.let { layout ->
-                        Toaster.build(
-                            layout,
-                            getString(com.tokopedia.product.manage.common.R.string.product_stock_reminder_toaster_failed_desc),
-                            Snackbar.LENGTH_LONG,
-                            Toaster.TYPE_ERROR,
-                            getString(R.string.product_stock_reminder_toaster_action_text),
-                            clickListener = {
-                                updateStockReminder()
-                            }
-                        ).show()
-                        ProductManageListErrorHandler.logExceptionToCrashlytics(stockReminderData.throwable)
-                        ProductManageListErrorHandler.logExceptionToServer(
-                            errorTag = ProductManageListErrorHandler.PRODUCT_MANAGE_TAG,
-                            throwable = stockReminderData.throwable,
-                            errorType =
-                            ProductManageListErrorHandler.ProductManageMessage.UPDATE_STOCK_REMINDER_ERROR,
-                            deviceId = userSession.deviceId.orEmpty()
-                        )
-                    }
-                }
-            }
-        }
-
     private fun getTicker(): List<TickerData> {
         if (userSession.isMultiLocationShop) {
             return listOf(
@@ -459,13 +406,14 @@ class StockReminderFragment : BaseDaggerFragment(),
     }
 
     private fun showSetOnceStockReminderBottomSheet(selection: List<ProductStockReminderUiModel>) {
-        val setAtOnceStockReminderBottomSheet = SetAtOnceStockReminderBottomSheet(
-            childFragmentManager
-        )
-        setAtOnceStockReminderBottomSheet.setOnApplyListener { stockReminder, reminderStatus ->
+        val setStockForVariantSelectionReminderBottomSheet =
+            SetStockForVariantSelectionReminderBottomSheet(
+                childFragmentManager
+            )
+        setStockForVariantSelectionReminderBottomSheet.setOnApplyListener { stockReminder, reminderStatus ->
             updateFromBulkSetting(stockReminder, reminderStatus, selection)
         }
-        setAtOnceStockReminderBottomSheet.show()
+        setStockForVariantSelectionReminderBottomSheet.show()
 
     }
 

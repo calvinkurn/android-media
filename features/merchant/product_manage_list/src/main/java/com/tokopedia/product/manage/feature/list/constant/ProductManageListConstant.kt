@@ -57,4 +57,7 @@ object ProductManageListConstant {
 
     const val BROADCAST_CHAT_CREATE = "https://m.tokopedia.com/broadcast-chat/create"
 
+    const val HAS_STOCK_ALERT_STATUS = true
+    const val STOCK_ALERT_ACTIVE = true
+
 }

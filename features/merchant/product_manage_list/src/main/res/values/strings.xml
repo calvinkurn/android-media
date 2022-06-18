@@ -216,4 +216,14 @@
     <string name="product_manage_no_access_description">Hubungi pemilik toko untuk bisa mengakses halaman ini, ya.</string>
     <string name="product_manage_refresh_page">Refresh Halaman</string>
     <string name="label_all">Semua</string>
+
+    <string name="content_coach_mark_more_option_title">Sudah coba pakai Pengingat Stok?</string>
+    <string name="content_coach_mark_more_option_desc">Yuk, pakai fitur ini supaya kamu bisa diingatkan oleh Tokopedia saat stok produk tinggal sedikit.</string>
+    <string name="content_coach_mark_flag_stock_reminder_title">Pengingat Stok sudah terpasang! 🎉</string>
+    <string name="content_coach_mark_flag_stock_reminder_desc">Gambar lonceng ini menandakan kalau kamu berhasil memasang Pengingat Stok untuk produk terkait.</string>
+    <string name="content_coach_mark_stock_reminder_menu_title">Klik di sini untuk pakai Pengingat Stok</string>
+    <string name="content_coach_mark_stock_reminder_menu_desc">Cara pakainya mudah banget, lho! Kamu tinggal atur batas min. stok dan aktifkan fiturnya.</string>
+    <string name="content_coach_mark_nav_home_stock_reminder_title">Dapatkan notifikasi terkait stokmu</string>
+    <string name="content_coach_mark_nav_home_stock_reminder_desc">Kamu akan menerima notifikasi saat stok produk menipis lewat ikon lonceng di Home. Selain itu, kamu juga akan diingatkan lewat email.</string>
+
 </resources>

@@ -13,22 +13,20 @@ import com.tokopedia.kotlin.extensions.orTrue
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.product.manage.R
 import com.tokopedia.product.manage.databinding.BottomSheetSetAtOnceStockReminderBinding
+import com.tokopedia.product.manage.feature.stockreminder.constant.StockReminderConst.EMPTY_INPUT_STOCK
+import com.tokopedia.product.manage.feature.stockreminder.constant.StockReminderConst.MINIMUM_STOCK
+import com.tokopedia.product.manage.feature.stockreminder.constant.StockReminderConst.MAXIMUM_STOCK
+import com.tokopedia.product.manage.feature.stockreminder.constant.StockReminderConst.REMINDER_ACTIVE
+import com.tokopedia.product.manage.feature.stockreminder.constant.StockReminderConst.REMINDER_INACTIVE
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 
-class SetAtOnceStockReminderBottomSheet(
+class SetStockForVariantSelectionReminderBottomSheet(
     private val fm: FragmentManager? = null
 ) : BottomSheetUnify() {
 
     companion object {
-        private val TAG: String = SetAtOnceStockReminderBottomSheet::class.java.simpleName
-
-        private const val REMINDER_ACTIVE = 2
-        private const val REMINDER_INACTIVE = 1
-
-        private const val MINIMUM_STOCK = 5
-        private const val MAXIMUM_STOCK = 999999
-        private const val EMPTY_INPUT_STOCK = 0
+        private val TAG: String = SetStockForVariantSelectionReminderBottomSheet::class.java.simpleName
     }
 
     private var textChangeListener: TextWatcher? = null
@@ -57,7 +55,7 @@ class SetAtOnceStockReminderBottomSheet(
         super.onViewStateRestored(savedInstanceState)
         savedInstanceState?.run {
             parentFragment?.childFragmentManager?.beginTransaction()
-                ?.remove(this@SetAtOnceStockReminderBottomSheet)?.commit()
+                ?.remove(this@SetStockForVariantSelectionReminderBottomSheet)?.commit()
         }
     }
 

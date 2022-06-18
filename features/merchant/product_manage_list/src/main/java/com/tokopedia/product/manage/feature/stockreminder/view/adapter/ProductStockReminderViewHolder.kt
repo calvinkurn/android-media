@@ -12,6 +12,11 @@ import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.product.manage.R
 import com.tokopedia.product.manage.databinding.ItemStockReminderBinding
 import com.tokopedia.product.manage.feature.stockreminder.view.data.ProductStockReminderUiModel
+import com.tokopedia.product.manage.feature.stockreminder.constant.StockReminderConst.EMPTY_INPUT_STOCK
+import com.tokopedia.product.manage.feature.stockreminder.constant.StockReminderConst.MINIMUM_STOCK
+import com.tokopedia.product.manage.feature.stockreminder.constant.StockReminderConst.MAXIMUM_STOCK
+import com.tokopedia.product.manage.feature.stockreminder.constant.StockReminderConst.REMINDER_ACTIVE
+import com.tokopedia.product.manage.feature.stockreminder.constant.StockReminderConst.REMINDER_INACTIVE
 import com.tokopedia.utils.view.binding.viewBinding
 
 class ProductStockReminderViewHolder(
@@ -22,13 +27,6 @@ class ProductStockReminderViewHolder(
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.item_stock_reminder
-
-        private const val REMINDER_ACTIVE = 2
-        private const val REMINDER_INACTIVE = 1
-
-        private const val MINIMUM_STOCK = 5
-        private const val MAXIMUM_STOCK = 999999
-        private const val EMPTY_INPUT_STOCK = 0
     }
 
     private var textChangeListener: TextWatcher? = null

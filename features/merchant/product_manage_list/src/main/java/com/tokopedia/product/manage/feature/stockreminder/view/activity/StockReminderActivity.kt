@@ -5,11 +5,10 @@ import android.os.Bundle
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.product.manage.R
 import com.tokopedia.product.manage.databinding.ActivityStockReminderBinding
-import com.tokopedia.product.manage.feature.stockreminder.constant.AppScreen
+import com.tokopedia.product.manage.feature.stockreminder.constant.StockReminderConst
 import com.tokopedia.product.manage.feature.stockreminder.view.fragment.StockReminderFragment
 
 class StockReminderActivity : BaseSimpleActivity() {
@@ -47,7 +46,7 @@ class StockReminderActivity : BaseSimpleActivity() {
         setupView()
     }
 
-    override fun getScreenName(): String = AppScreen.SCREEN_STOCK_REMINDER
+    override fun getScreenName(): String = StockReminderConst.SCREEN_STOCK_REMINDER
 
     override fun getParentViewResourceID(): Int = R.id.parent_view
 

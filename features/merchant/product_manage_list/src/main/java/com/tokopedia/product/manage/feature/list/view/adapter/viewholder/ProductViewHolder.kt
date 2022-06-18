@@ -4,6 +4,7 @@ import android.graphics.PorterDuff
 import android.view.View
 import androidx.annotation.LayoutRes
 import androidx.core.content.ContextCompat
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.image.ImageHandler.loadImageFitCenter
 import com.tokopedia.kotlin.extensions.orFalse
@@ -51,6 +52,12 @@ class ProductViewHolder(
         showCampaignCountText(product)
 
         setOnClickListeners(product)
+
+        if (binding?.imageStockReminder?.isVisible.orTrue()) {
+            listener.onFinishBindProductStockReminder()
+        } else if (binding?.btnMoreOptions?.isVisible.orTrue() && adapterPosition.orZero() == 0) {
+            listener.onFinishBindMoreOption()
+        }
     }
 
     private fun setTitleAndPrice(product: ProductUiModel) {
@@ -122,6 +129,8 @@ class ProductViewHolder(
             binding?.btnEditPrice?.showWithCondition(product.isNotViolation() && product.isNotSuspendLevelTwoUntilFour())
             binding?.btnEditStock?.showWithCondition(product.isNotViolation() && product.isNotSuspendLevelTwoUntilFour())
             binding?.btnMoreOptions?.showWithCondition(product.isNotViolation() && product.isNotSuspendLevelTwoUntilFour())
+
+
         }
 
         binding?.btnEditPrice?.isEnabled = product.hasEditPriceAccess()
@@ -168,6 +177,7 @@ class ProductViewHolder(
                         || binding?.imageStockReminder?.isVisible.orFalse()
                         || binding?.imageStockAlertActive?.isVisible.orFalse()
             )
+
     }
 
     private fun showStockAlertActiveImage(product: ProductUiModel) {
@@ -320,5 +330,8 @@ class ProductViewHolder(
         fun onClickEditVariantPriceButton(product: ProductUiModel)
         fun onClickEditVariantStockButton(product: ProductUiModel)
         fun onClickContactCsButton(product: ProductUiModel)
+        fun onFinishBindMoreOption()
+        fun onFinishBindProductStockReminder()
+
     }
 }
