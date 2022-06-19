@@ -10,9 +10,12 @@ import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.product.manage.R
-import com.tokopedia.product.manage.databinding.ItemStockReminderBinding
+import com.tokopedia.product.manage.databinding.ItemProductStockReminderBinding
 import com.tokopedia.product.manage.feature.stockreminder.constant.StockReminderConst
+import com.tokopedia.product.manage.feature.stockreminder.constant.StockReminderConst.MAXIMUM_STOCK
 import com.tokopedia.product.manage.feature.stockreminder.constant.StockReminderConst.MINIMUM_STOCK
+import com.tokopedia.product.manage.feature.stockreminder.constant.StockReminderConst.REMINDER_ACTIVE
+import com.tokopedia.product.manage.feature.stockreminder.constant.StockReminderConst.REMINDER_INACTIVE
 import com.tokopedia.product.manage.feature.stockreminder.view.data.ProductStockReminderUiModel
 
 class ProductStockReminderAdapter(
@@ -26,7 +29,7 @@ class ProductStockReminderAdapter(
         parent: ViewGroup,
         viewType: Int
     ): ProductStockReminderViewHolder {
-        val binding = ItemStockReminderBinding.inflate(
+        val binding = ItemProductStockReminderBinding.inflate(
             LayoutInflater.from(parent.context),
             parent,
             false
@@ -50,7 +53,7 @@ class ProductStockReminderAdapter(
         notifyDataSetChanged()
     }
 
-    inner class ProductStockReminderViewHolder(private val binding: ItemStockReminderBinding) :
+    inner class ProductStockReminderViewHolder(private val binding: ItemProductStockReminderBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
 
@@ -128,17 +131,17 @@ class ProductStockReminderAdapter(
 
         fun validateMinMaxStock(stock: Int) {
             when {
-                stock < StockReminderConst.MINIMUM_STOCK -> {
+                stock < MINIMUM_STOCK -> {
                     binding.qeStock.errorMessageText = itemView.resources.getString(
                         R.string.product_stock_reminder_min_stock_error,
-                        StockReminderConst.MINIMUM_STOCK
+                        MINIMUM_STOCK
                     )
                     isValid = false
                 }
-                stock > StockReminderConst.MAXIMUM_STOCK -> {
+                stock > MAXIMUM_STOCK -> {
                     binding.qeStock.errorMessageText = itemView.resources.getString(
                         R.string.product_stock_reminder_max_stock_error,
-                        StockReminderConst.MAXIMUM_STOCK.getNumberFormatted()
+                        MAXIMUM_STOCK.getNumberFormatted()
                     )
                     isValid = false
                 }
@@ -191,9 +194,10 @@ class ProductStockReminderAdapter(
 
         private fun toggleQuantityEditorBtn(stock: Int) {
             val enableAddBtn = stock < binding.qeStock.maxValue.orZero()
-
+            val enableSubstractBtn = stock > Int.ZERO
             binding.qeStock.run {
                 addButton.isEnabled = enableAddBtn
+                subtractButton.isEnabled = enableSubstractBtn
             }
         }
 
@@ -209,13 +213,13 @@ class ProductStockReminderAdapter(
                 if (binding.swStockReminder.isChecked.orFalse()) {
                     listener.onChangeStockReminder(
                         productId, stock,
-                        StockReminderConst.REMINDER_ACTIVE, isValid
+                        REMINDER_ACTIVE
                     )
                 } else {
                     isValid = true
                     listener.onChangeStockReminder(
                         productId, stock,
-                        StockReminderConst.REMINDER_INACTIVE, isValid
+                        REMINDER_INACTIVE
                     )
                 }
             }
@@ -223,6 +227,6 @@ class ProductStockReminderAdapter(
     }
 
     interface ProductStockReminderListener {
-        fun onChangeStockReminder(productId: String, stock: Int, status: Int, isValid: Boolean)
+        fun onChangeStockReminder(productId: String, stock: Int, status: Int)
     }
 }

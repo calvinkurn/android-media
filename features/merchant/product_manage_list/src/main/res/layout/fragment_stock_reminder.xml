@@ -131,7 +131,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tvLabelStatus"
-        tools:listitem="@layout/item_stock_reminder"/>
+        tools:listitem="@layout/item_product_stock_reminder"/>
 
     <androidx.cardview.widget.CardView
         android:id="@+id/cardSaveBtn"

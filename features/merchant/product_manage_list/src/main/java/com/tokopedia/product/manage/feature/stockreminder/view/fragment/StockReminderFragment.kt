@@ -27,7 +27,9 @@ import com.tokopedia.product.manage.common.feature.list.analytics.ProductManageT
 import com.tokopedia.product.manage.common.util.ProductManageListErrorHandler
 import com.tokopedia.product.manage.databinding.FragmentStockReminderBinding
 import com.tokopedia.product.manage.feature.list.constant.ProductManageListConstant.EXTRA_RESULT_STATUS
+import com.tokopedia.product.manage.feature.stockreminder.constant.StockReminderConst.MINIMUM_STOCK
 import com.tokopedia.product.manage.feature.stockreminder.constant.StockReminderConst.REMINDER_ACTIVE
+import com.tokopedia.product.manage.feature.stockreminder.constant.StockReminderConst.REMINDER_INACTIVE
 import com.tokopedia.product.manage.feature.stockreminder.data.source.cloud.query.param.ProductWarehouseParam
 import com.tokopedia.product.manage.feature.stockreminder.data.source.cloud.response.createupdateresponse.CreateStockReminderResponse
 import com.tokopedia.product.manage.feature.stockreminder.data.source.cloud.response.getresponse.GetStockReminderResponse
@@ -133,12 +135,15 @@ class StockReminderFragment : BaseDaggerFragment(),
     override fun onChangeStockReminder(
         productId: String,
         stock: Int,
-        status: Int,
-        isValid: Boolean
+        status: Int
     ) {
         updateProductWareHouseList(productId) {
             it.copy(threshold = stock.toString(), thresholdStatus = status.toString())
         }
+        val isValid =
+            getProductWareHouseList().firstOrNull() { it.threshold < MINIMUM_STOCK.toString()
+                    && it.thresholdStatus == REMINDER_ACTIVE.toString() } == null
+
         binding?.btnSaveReminder?.isEnabled = isValid
 
 
@@ -193,7 +198,7 @@ class StockReminderFragment : BaseDaggerFragment(),
 
     }
 
-    private fun createAdapter(): ProductStockReminderAdapter{
+    private fun createAdapter(): ProductStockReminderAdapter {
         return ProductStockReminderAdapter(this)
     }
 
