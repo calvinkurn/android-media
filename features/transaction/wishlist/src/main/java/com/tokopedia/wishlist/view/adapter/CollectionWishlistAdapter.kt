@@ -4,9 +4,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.tokopedia.wishlist.data.model.CollectionWishlistTypeLayoutData
-import com.tokopedia.wishlist.data.model.WishlistV2TypeLayoutData
 import com.tokopedia.wishlist.databinding.CollectionWishlistCreateItemBinding
 import com.tokopedia.wishlist.databinding.CollectionWishlistItemBinding
 import com.tokopedia.wishlist.databinding.CollectionWishlistTickerItemBinding
@@ -21,6 +19,7 @@ import com.tokopedia.wishlist.view.fragment.CollectionWishlistFragment
 class CollectionWishlistAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private var actionListener: ActionListener? = null
     private var listTypeData = mutableListOf<CollectionWishlistTypeLayoutData>()
+    private var isTickerCloseClicked = false
 
     companion object {
         const val LAYOUT_COLLECTION_TICKER = 0
@@ -37,7 +36,7 @@ class CollectionWishlistAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>(
         this.actionListener = collectionWishlistFragment
     }
 
-    init { setHasStableIds(true) }
+    /*init { setHasStableIds(true) }*/
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return when (viewType) {
@@ -74,7 +73,7 @@ class CollectionWishlistAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>(
             val element = listTypeData[position]
             when (element.typeLayout) {
                 TYPE_COLLECTION_TICKER -> {
-                    (holder as CollectionWishlistTickerItemViewHolder).bind(element)
+                    (holder as CollectionWishlistTickerItemViewHolder).bind(element, isTickerCloseClicked)
                 }
                 TYPE_COLLECTION_ITEM -> {
                     (holder as CollectionWishlistItemViewHolder).bind(element)
@@ -103,5 +102,14 @@ class CollectionWishlistAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>(
         listTypeData.clear()
         listTypeData.addAll(list)
         notifyDataSetChanged()
+    }
+
+    fun hideTicker() {
+        isTickerCloseClicked = true
+        notifyItemChanged(0)
+    }
+
+    fun resetTicker() {
+        isTickerCloseClicked = false
     }
 }

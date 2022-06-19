@@ -1,10 +1,12 @@
 package com.tokopedia.wishlist.view.adapter.viewholder
 
+import android.widget.GridLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.wishlist.data.model.CollectionWishlistTypeLayoutData
 import com.tokopedia.wishlist.data.model.response.CollectionWishlistResponse
 import com.tokopedia.wishlist.databinding.CollectionWishlistCreateItemBinding
 import com.tokopedia.wishlist.util.WishlistV2Consts.CREATE_NEW_COLLECTION_BG_IMAGE
+import com.tokopedia.wishlist.util.WishlistV2Utils
 import com.tokopedia.wishlist.view.adapter.CollectionWishlistAdapter
 
 class CollectionWishlistCreateViewHolder(
@@ -13,6 +15,11 @@ class CollectionWishlistCreateViewHolder(
 ) : RecyclerView.ViewHolder(binding.root) {
         fun bind(item: CollectionWishlistTypeLayoutData) {
             if (item.dataObject is CollectionWishlistResponse.Data.GetWishlistCollections.WishlistCollectionResponseData.Placeholder) {
+                val params: GridLayout.LayoutParams = GridLayout.LayoutParams(binding.rlCreateWishlistCollection.layoutParams)
+                params.width = WishlistV2Utils.toDp(154)
+                params.height = WishlistV2Utils.toDp(154)
+                binding.rlCreateWishlistCollection.layoutParams = params
+
                 binding.labelNewCollection.text = item.dataObject.text
                 if (item.dataObject.action == CREATE_COLLECTION) {
                     binding.wishlistCollectionCreateNew.setImageUrl(CREATE_NEW_COLLECTION_BG_IMAGE)

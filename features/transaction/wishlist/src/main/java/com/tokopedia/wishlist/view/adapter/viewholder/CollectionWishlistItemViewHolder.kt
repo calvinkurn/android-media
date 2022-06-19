@@ -5,6 +5,7 @@ import android.widget.ImageView
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.unifycomponents.CardUnify2
 import com.tokopedia.wishlist.data.model.CollectionWishlistTypeLayoutData
 import com.tokopedia.wishlist.data.model.response.CollectionWishlistResponse
 import com.tokopedia.wishlist.databinding.CollectionWishlistItemBinding
@@ -19,8 +20,11 @@ class CollectionWishlistItemViewHolder(
 ) : RecyclerView.ViewHolder(binding.root) {
         fun bind(item: CollectionWishlistTypeLayoutData) {
             if (item.dataObject is CollectionWishlistResponse.Data.GetWishlistCollections.WishlistCollectionResponseData.CollectionsItem) {
+                binding.cardCollectionItem.cardType = CardUnify2.TYPE_SHADOW
                 binding.collectionTitle.text = item.dataObject.name
                 binding.collectionDesc.text = "${item.dataObject.totalItem} ${item.dataObject.itemText}"
+                if (item.dataObject.name == SEMUA_WISHLIST) binding.collectionKebabMenu.gone()
+                else binding.collectionKebabMenu.visible()
                 when (item.dataObject.images.size) {
                     TOTAL_IMG_4 -> {
                         binding.singleCollectionItem.gone()
@@ -33,16 +37,26 @@ class CollectionWishlistItemViewHolder(
                     TOTAL_IMG_3 -> {
                         binding.singleCollectionItem.gone()
                         binding.glCollectionItem.visible()
-                        val params: GridLayout.LayoutParams = GridLayout.LayoutParams(binding.imgCollection1.layoutParams)
-                        params.rowSpec = GridLayout.spec(SPEC_0, SPEC_2)
-                        params.height = WishlistV2Utils.toDp(MERGE_SIZE)
+                        val params1: GridLayout.LayoutParams = GridLayout.LayoutParams(binding.imgCollection1.layoutParams)
+                        params1.rowSpec = GridLayout.spec(SPEC_0, SPEC_2)
+                        params1.height = WishlistV2Utils.toDp(MERGE_SIZE)
+                        params1.setMargins(0, 0, WishlistV2Utils.toDp(3), 0)
                         binding.imgCollection1.apply {
-                            layoutParams = params
+                            layoutParams = params1
                             setImageUrl(item.dataObject.images[0])
                             scaleType = ImageView.ScaleType.CENTER_CROP
                         }
-                        binding.imgCollection2.setImageUrl(item.dataObject.images[1])
-                        binding.imgCollection3.setImageUrl(item.dataObject.images[2])
+                        val params2: GridLayout.LayoutParams = GridLayout.LayoutParams(binding.imgCollection2.layoutParams)
+                        params2.setMargins(0, 0, 0, WishlistV2Utils.toDp(3))
+                        binding.imgCollection2.apply {
+                            layoutParams = params2
+                            setImageUrl(item.dataObject.images[1])
+                            scaleType = ImageView.ScaleType.CENTER_CROP
+                        }
+                        binding.imgCollection3.apply {
+                            setImageUrl(item.dataObject.images[2])
+                            scaleType = ImageView.ScaleType.CENTER_CROP
+                        }
                         binding.imgCollection4.gone()
                     }
                     TOTAL_IMG_2 -> {
@@ -51,6 +65,7 @@ class CollectionWishlistItemViewHolder(
                         val params1: GridLayout.LayoutParams = GridLayout.LayoutParams(binding.imgCollection1.layoutParams)
                         params1.rowSpec = GridLayout.spec(SPEC_0, SPEC_2)
                         params1.height = WishlistV2Utils.toDp(MERGE_SIZE)
+                        params1.setMargins(0, 0, WishlistV2Utils.toDp(3), 0)
                         binding.imgCollection1.apply {
                             layoutParams = params1
                             setImageUrl(item.dataObject.images[0])
@@ -85,5 +100,6 @@ class CollectionWishlistItemViewHolder(
         const val TOTAL_IMG_3 = 3
         const val TOTAL_IMG_4 = 4
         const val MERGE_SIZE = 154
+        const val SEMUA_WISHLIST = "Semua Wishlist"
     }
 }

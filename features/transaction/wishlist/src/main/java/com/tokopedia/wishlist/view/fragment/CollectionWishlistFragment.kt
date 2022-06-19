@@ -140,9 +140,14 @@ class CollectionWishlistFragment : BaseDaggerFragment(), CollectionWishlistAdapt
         binding?.run {
             swipeRefreshLayout.isEnabled = true
             swipeRefreshLayout.setOnRefreshListener {
-                // setRefreshing()
+                doRefresh()
             }
         }
+    }
+
+    private fun doRefresh() {
+        getWishlistCollections()
+        collectionAdapter.resetTicker()
     }
 
     private fun getWishlistCollections() {
@@ -228,7 +233,7 @@ class CollectionWishlistFragment : BaseDaggerFragment(), CollectionWishlistAdapt
     }*/
 
     override fun onCloseTicker() {
-        println("++ close ticker")
+        collectionAdapter.hideTicker()
     }
 
     override fun onCreateNewCollection() {

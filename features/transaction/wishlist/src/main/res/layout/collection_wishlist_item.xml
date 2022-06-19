@@ -1,94 +1,106 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.tokopedia.unifycomponents.CardUnify2 xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    xmlns:tools="http://schemas.android.com/tools"
-    app:cardCornerRadius="8dp">
+    android:layout_marginBottom="14dp"
+    android:orientation="vertical">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <com.tokopedia.unifycomponents.CardUnify2
+        android:id="@+id/card_collection_item"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        app:cardCornerRadius="8dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
-        <com.tokopedia.unifycomponents.ImageUnify
-            android:id="@+id/single_collection_item"
-            android:layout_width="154dp"
-            android:layout_height="154dp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"/>
-
-        <GridLayout
-            android:id="@+id/gl_collection_item"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:columnCount="2"
-            android:rowCount="2"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
-
-            <com.tokopedia.unifycomponents.ImageUnify
-                android:id="@+id/img_collection_1"
-                android:layout_width="77dp"
-                android:layout_height="77dp"
-                app:unify_image_corner_radius="0"
-                app:unify_image_type="rect"
-                android:layout_marginEnd="3dp"
-                android:layout_marginBottom="3dp"/>
-
-            <com.tokopedia.unifycomponents.ImageUnify
-                android:id="@+id/img_collection_2"
-                android:layout_width="77dp"
-                android:layout_height="77dp"
-                app:unify_image_corner_radius="0"
-                app:unify_image_type="rect"/>
-
-            <com.tokopedia.unifycomponents.ImageUnify
-                android:id="@+id/img_collection_3"
-                android:layout_width="77dp"
-                android:layout_height="77dp"
-                app:unify_image_corner_radius="0"
-                app:unify_image_type="rect"/>
-
-            <com.tokopedia.unifycomponents.ImageUnify
-                android:id="@+id/img_collection_4"
-                android:layout_width="77dp"
-                android:layout_height="77dp"
-                app:unify_image_corner_radius="0"
-                app:unify_image_type="rect"/>
-
-        </GridLayout>
-
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/collection_title"
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/gl_collection_item"
-            android:layout_marginTop="8dp"
-            app:typographyType="body_2"
-            app:typographyWeight="bold"
-            tools:text="Semua Wishlist"/>
+            android:layout_height="wrap_content">
 
-        <com.tokopedia.iconunify.IconUnify
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@id/collection_title"
-            app:layout_constraintBottom_toBottomOf="@id/collection_title"
-            app:icon_name="MENU_KEBAB_VERTICAL"/>
+            <com.tokopedia.unifycomponents.ImageUnify
+                android:id="@+id/single_collection_item"
+                android:layout_width="154dp"
+                android:layout_height="154dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"/>
 
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/collection_desc"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:typographyWeight="reguler"
-            app:typographyType="body_3"
-            tools:text="80 barang"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/collection_title"/>
+            <GridLayout
+                android:id="@+id/gl_collection_item"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:columnCount="2"
+                android:rowCount="2"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+                <com.tokopedia.unifycomponents.ImageUnify
+                    android:id="@+id/img_collection_1"
+                    android:layout_width="77dp"
+                    android:layout_height="77dp"
+                    app:unify_image_corner_radius="0"
+                    app:unify_image_type="rect"
+                    android:layout_marginEnd="3dp"
+                    android:layout_marginBottom="3dp"/>
 
-</com.tokopedia.unifycomponents.CardUnify2>
+                <com.tokopedia.unifycomponents.ImageUnify
+                    android:id="@+id/img_collection_2"
+                    android:layout_width="77dp"
+                    android:layout_height="77dp"
+                    app:unify_image_corner_radius="0"
+                    app:unify_image_type="rect"/>
+
+                <com.tokopedia.unifycomponents.ImageUnify
+                    android:id="@+id/img_collection_3"
+                    android:layout_width="77dp"
+                    android:layout_height="77dp"
+                    app:unify_image_corner_radius="0"
+                    app:unify_image_type="rect"/>
+
+                <com.tokopedia.unifycomponents.ImageUnify
+                    android:id="@+id/img_collection_4"
+                    android:layout_width="77dp"
+                    android:layout_height="77dp"
+                    app:unify_image_corner_radius="0"
+                    app:unify_image_type="rect"/>
+
+            </GridLayout>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </com.tokopedia.unifycomponents.CardUnify2>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/collection_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/card_collection_item"
+        android:layout_marginTop="8dp"
+        app:typographyType="body_2"
+        app:typographyWeight="bold"
+        tools:text="Semua Wishlist"/>
+
+    <com.tokopedia.iconunify.IconUnify
+        android:id="@+id/collection_kebab_menu"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/collection_title"
+        app:layout_constraintBottom_toBottomOf="@id/collection_title"
+        app:icon_name="MENU_KEBAB_VERTICAL"/>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/collection_desc"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:typographyWeight="reguler"
+        app:typographyType="body_3"
+        tools:text="80 barang"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/collection_title"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
