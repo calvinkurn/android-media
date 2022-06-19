@@ -166,7 +166,7 @@ open class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListen
     private var fpmBuyer: PerformanceMonitoring? = null
     private var trackingQueue: TrackingQueue? = null
     private var widgetTitle: String = ""
-    var topAdsHeadlineUiModel:TopadsHeadlineUiModel? = null
+    private var topAdsHeadlineUiModel:TopadsHeadlineUiModel? = null
     private var isShowHomeAccountTokopoints = false
     private var isShowDarkModeToggle = false
     private var isShowScreenRecorder = false

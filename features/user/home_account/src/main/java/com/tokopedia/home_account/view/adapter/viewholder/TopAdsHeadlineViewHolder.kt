@@ -14,7 +14,7 @@ import com.tokopedia.topads.sdk.domain.model.CpmModel
 import com.tokopedia.topads.sdk.utils.*
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.view.binding.viewBinding
-private const val HEADLINE_POSITION = 13
+
 class TopAdsHeadlineViewHolder(view: View, private  val shopAdsNewPositionCallback: (Int, CpmModel) -> Unit, private val userSession: UserSessionInterface) :
     BaseViewHolder(view) {
 
@@ -85,5 +85,6 @@ class TopAdsHeadlineViewHolder(view: View, private  val shopAdsNewPositionCallba
         val LAYOUT = R.layout.item_topads_headline
 
         const val TOPADS_HEADLINE_VALUE_SRC = "account"
+        const val HEADLINE_POSITION = 13
     }
 }
