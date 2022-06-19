@@ -33,8 +33,6 @@ import com.tokopedia.product.manage.feature.stockreminder.data.source.cloud.resp
 import com.tokopedia.product.manage.feature.stockreminder.data.source.cloud.response.getresponse.GetStockReminderResponse
 import com.tokopedia.product.manage.feature.stockreminder.di.DaggerStockReminderComponent
 import com.tokopedia.product.manage.feature.stockreminder.view.adapter.ProductStockReminderAdapter
-import com.tokopedia.product.manage.feature.stockreminder.view.adapter.ProductStockReminderAdapterFactoryImpl
-import com.tokopedia.product.manage.feature.stockreminder.view.adapter.ProductStockReminderViewHolder
 import com.tokopedia.product.manage.feature.stockreminder.view.bottomsheet.SetStockForVariantSelectionReminderBottomSheet
 import com.tokopedia.product.manage.feature.stockreminder.view.bottomsheet.StockRemainingInfoBottomSheet
 import com.tokopedia.product.manage.feature.stockreminder.view.bottomsheet.VariantSelectionStockReminderBottomSheet
@@ -53,7 +51,7 @@ import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
 
 class StockReminderFragment : BaseDaggerFragment(),
-    ProductStockReminderViewHolder.ProductStockReminderListener {
+    ProductStockReminderAdapter.ProductStockReminderListener {
 
     companion object {
         private const val ARG_PRODUCT_ID = "product_id"
@@ -78,7 +76,7 @@ class StockReminderFragment : BaseDaggerFragment(),
     private var warehouseId: String? = null
 
     private var isVariant: Boolean = false
-    private var adapter: BaseAdapter<ProductStockReminderAdapterFactoryImpl>? = null
+    private var adapter: ProductStockReminderAdapter? = null
 
     private val updateWarehouseParam = ArrayList<ProductWarehouseParam>()
 
@@ -143,6 +141,7 @@ class StockReminderFragment : BaseDaggerFragment(),
         }
         binding?.btnSaveReminder?.isEnabled = isValid
 
+
     }
 
     private fun checkLogin() {
@@ -194,8 +193,8 @@ class StockReminderFragment : BaseDaggerFragment(),
 
     }
 
-    private fun createAdapter(): BaseAdapter<ProductStockReminderAdapterFactoryImpl> {
-        return ProductStockReminderAdapter(ProductStockReminderAdapterFactoryImpl(this))
+    private fun createAdapter(): ProductStockReminderAdapter{
+        return ProductStockReminderAdapter(this)
     }
 
     private fun setupAdapterProduct() {
@@ -300,7 +299,7 @@ class StockReminderFragment : BaseDaggerFragment(),
             is Success -> {
                 val product = productData.data
                 dataProducts = ArrayList(product)
-                adapter?.addElement(product)
+                adapter?.setItems(product)
                 setListProductWarehouse(product)
             }
             is Fail -> {
@@ -456,8 +455,8 @@ class StockReminderFragment : BaseDaggerFragment(),
         }
 
         dataProducts = newDataProduct
-        adapter?.clearAllElements()
-        adapter?.addElement(newDataProduct)
+        adapter?.clearItems()
+        adapter?.setItems(newDataProduct)
         binding?.btnSaveReminder?.isEnabled = selection.isNotEmpty()
 
     }

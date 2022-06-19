@@ -1,7 +1,228 @@
 package com.tokopedia.product.manage.feature.stockreminder.view.adapter
 
-import com.tokopedia.abstraction.base.view.adapter.adapter.BaseAdapter
+import android.text.Editable
+import android.text.TextWatcher
+import android.view.LayoutInflater
+import android.view.ViewGroup
+import android.view.inputmethod.EditorInfo
+import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
+import com.tokopedia.kotlin.extensions.orFalse
+import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.product.manage.R
+import com.tokopedia.product.manage.databinding.ItemStockReminderBinding
+import com.tokopedia.product.manage.feature.stockreminder.constant.StockReminderConst
+import com.tokopedia.product.manage.feature.stockreminder.constant.StockReminderConst.MINIMUM_STOCK
+import com.tokopedia.product.manage.feature.stockreminder.view.data.ProductStockReminderUiModel
 
 class ProductStockReminderAdapter(
-    adapterFactoryImpl: ProductStockReminderAdapterFactoryImpl
-) : BaseAdapter<ProductStockReminderAdapterFactoryImpl>(adapterFactoryImpl)
+    private val listener: ProductStockReminderListener
+) : RecyclerView.Adapter<ProductStockReminderAdapter.ProductStockReminderViewHolder>() {
+
+    private var dataProducts: List<ProductStockReminderUiModel> = emptyList()
+
+
+    override fun onCreateViewHolder(
+        parent: ViewGroup,
+        viewType: Int
+    ): ProductStockReminderViewHolder {
+        val binding = ItemStockReminderBinding.inflate(
+            LayoutInflater.from(parent.context),
+            parent,
+            false
+        )
+        return ProductStockReminderViewHolder(binding)
+    }
+
+    override fun onBindViewHolder(holder: ProductStockReminderViewHolder, position: Int) {
+        holder.bind(dataProducts[position])
+    }
+
+    override fun getItemCount() = dataProducts.size
+
+    fun setItems(data: List<ProductStockReminderUiModel>) {
+        this.dataProducts = data
+        notifyDataSetChanged()
+    }
+
+    fun clearItems() {
+        this.dataProducts = emptyList()
+        notifyDataSetChanged()
+    }
+
+    inner class ProductStockReminderViewHolder(private val binding: ItemStockReminderBinding) :
+        RecyclerView.ViewHolder(binding.root) {
+
+
+        private var textChangeListener: TextWatcher? = null
+
+        private var isValid = false
+
+        private var firstStateChecked = false
+
+        fun bind(product: ProductStockReminderUiModel) {
+            binding.tvProductName.text = product.productName
+            setupStatusSwitch(product)
+            setupStockEditorText(product)
+            setAddButtonClickListener()
+            setSubtractButtonClickListener()
+            firstStateChecked = true
+
+        }
+
+        private fun setupStatusSwitch(product: ProductStockReminderUiModel) {
+            binding.swStockReminder.setOnCheckedChangeListener { _, _ ->
+                val stockLimit = binding.qeStock.getValue().orZero()
+                validateMinMaxStock(stockLimit)
+                notifyChange(product.id, stockLimit)
+            }
+            binding.swStockReminder.isChecked =
+                product.stockAlertStatus == StockReminderConst.REMINDER_ACTIVE
+        }
+
+        private fun setupStockEditorText(product: ProductStockReminderUiModel) {
+            binding.qeStock.editText.run {
+                textChangeListener = createTextChangeListener(product)
+                addTextChangedListener(textChangeListener)
+            }
+
+            binding.qeStock.setValue(product.stockAlertCount)
+
+            binding.qeStock.run {
+                editText.setOnEditorActionListener { _, actionId, _ ->
+                    if (actionId == EditorInfo.IME_ACTION_DONE) {
+                        clearFocus()
+                        KeyboardHandler.DropKeyboard(itemView.context, this)
+                    }
+                    true
+                }
+            }
+        }
+
+        private fun createTextChangeListener(product: ProductStockReminderUiModel): TextWatcher {
+            return object : TextWatcher {
+                override fun afterTextChanged(editor: Editable?) {
+                    val input = editor.toString()
+                    val stock = if (input.isNotEmpty()) {
+                        input.toInt()
+                    } else {
+                        StockReminderConst.EMPTY_INPUT_STOCK
+                    }
+                    validateMinMaxStock(stock)
+                    toggleQuantityEditorBtn(stock)
+                    notifyChange(product.id, stock)
+                }
+
+                override fun beforeTextChanged(
+                    s: CharSequence?,
+                    start: Int,
+                    count: Int,
+                    after: Int
+                ) {
+                }
+
+                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                }
+            }
+        }
+
+        fun validateMinMaxStock(stock: Int) {
+            when {
+                stock < StockReminderConst.MINIMUM_STOCK -> {
+                    binding.qeStock.errorMessageText = itemView.resources.getString(
+                        R.string.product_stock_reminder_min_stock_error,
+                        StockReminderConst.MINIMUM_STOCK
+                    )
+                    isValid = false
+                }
+                stock > StockReminderConst.MAXIMUM_STOCK -> {
+                    binding.qeStock.errorMessageText = itemView.resources.getString(
+                        R.string.product_stock_reminder_max_stock_error,
+                        StockReminderConst.MAXIMUM_STOCK.getNumberFormatted()
+                    )
+                    isValid = false
+                }
+                else -> {
+                    binding.qeStock.errorMessageText = String.EMPTY
+                    isValid = true
+                }
+            }
+        }
+
+        private fun setAddButtonClickListener() {
+            binding.qeStock.run {
+                addButton.setOnClickListener {
+                    val input = editText.text.toString()
+
+                    var stock = if (input.isNotEmpty()) {
+                        input.toInt()
+                    } else {
+                        StockReminderConst.EMPTY_INPUT_STOCK
+                    }
+
+                    stock++
+
+                    if (stock <= binding.qeStock.maxValue.orZero()) {
+                        editText.setText(stock.getNumberFormatted())
+                    }
+                }
+            }
+        }
+
+        private fun setSubtractButtonClickListener() {
+            binding.qeStock.run {
+                subtractButton.setOnClickListener {
+                    val input = editText.text.toString()
+
+                    var stock = if (input.isNotEmpty()) {
+                        input.toInt()
+                    } else {
+                        StockReminderConst.EMPTY_INPUT_STOCK
+                    }
+
+                    stock--
+
+                    if (stock > StockReminderConst.EMPTY_INPUT_STOCK) {
+                        editText.setText(stock.getNumberFormatted())
+                    }
+                }
+            }
+        }
+
+        private fun toggleQuantityEditorBtn(stock: Int) {
+            val enableAddBtn = stock < binding.qeStock.maxValue.orZero()
+
+            binding.qeStock.run {
+                addButton.isEnabled = enableAddBtn
+            }
+        }
+
+        private fun String.toInt(): Int {
+            return replace(".", "").toIntOrZero()
+        }
+
+        private fun notifyChange(
+            productId: String,
+            stock: Int
+        ) {
+            if (firstStateChecked) {
+                if (binding.swStockReminder.isChecked.orFalse()) {
+                    listener.onChangeStockReminder(
+                        productId, stock,
+                        StockReminderConst.REMINDER_ACTIVE, isValid
+                    )
+                } else {
+                    isValid = true
+                    listener.onChangeStockReminder(
+                        productId, stock,
+                        StockReminderConst.REMINDER_INACTIVE, isValid
+                    )
+                }
+            }
+        }
+    }
+
+    interface ProductStockReminderListener {
+        fun onChangeStockReminder(productId: String, stock: Int, status: Int, isValid: Boolean)
+    }
+}

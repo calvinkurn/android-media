@@ -8,7 +8,6 @@ import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.product.manage.R
 import com.tokopedia.product.manage.databinding.BottomSheetVariantStockReminderSelectionBinding
-import com.tokopedia.product.manage.feature.stockreminder.data.source.cloud.query.param.ProductWarehouseParam
 import com.tokopedia.product.manage.feature.stockreminder.view.adapter.GroupVariantEditSelectAdapter
 import com.tokopedia.product.manage.feature.stockreminder.view.data.GroupVariantProductStockReminderUiModel
 import com.tokopedia.product.manage.feature.stockreminder.view.data.ProductStockReminderUiModel

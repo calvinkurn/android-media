@@ -247,7 +247,7 @@ open class ProductManageFragment :
     private var currentPositionStockReminderCoachMark: Int = -1
     private var navigationHomeMenuView: View? = null
     private var haveSetReminder = -1
-    private var haveShowCoachMoreOption = false
+    private var haveShowCoachFlagStockReminder = false
 
     private val stockInfoBottomSheet by lazy { StockInformationBottomSheet(childFragmentManager) }
 
@@ -383,7 +383,7 @@ open class ProductManageFragment :
                         && product.stockAlertActive != STOCK_ALERT_ACTIVE && !CoachMarkPreference.hasShown(
                             requireContext(),
                             SHARED_PREF_STOCK_REMINDER_FLAG_COACH_MARK
-                        )
+                        ) && !haveShowCoachFlagStockReminder
                     ) {
                         productManageLayoutManager?.findViewByPosition(it)
                             ?.findViewById<IconUnify>(R.id.imageStockReminder)?.takeIf {
@@ -3385,6 +3385,7 @@ open class ProductManageFragment :
                 recyclerView?.addOnScrollListener(recyclerViewScrollListener)
                 coachMarkStockReminder?.stepButtonTextLastChild =
                     activity?.resources?.getString(com.tokopedia.abstraction.R.string.label_done).orEmpty()
+                haveShowCoachFlagStockReminder = true
                 coachMarkStockReminder?.showCoachMark(
                     step = getCoachMarkFlagStockReminder(item),
                     index = 0
