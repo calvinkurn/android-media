@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_marginTop="@dimen/dp_3"
     android:layout_marginRight="2dp"
     android:background="@color/chatbot_dms_chat_background"
@@ -26,7 +27,8 @@
         android:paddingLeft="@dimen/dp_chatbot_10"
         android:paddingRight="@dimen/dp_chatbot_10"
         android:singleLine="true"
-        android:textSize="@dimen/unify_font_12"
+        app:typographyType="display_3"
+        app:typographyWeight="bold"
         android:textColor="@color/Unify_G400"
         tools:text="Maafm" />
 
