@@ -14,12 +14,10 @@ import android.os.Looper
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.LayoutInflater
-import android.view.MenuItem
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -136,7 +134,6 @@ import com.tokopedia.sellerorder.list.presentation.models.SomListOrderUiModel
 import com.tokopedia.sellerorder.list.presentation.models.SomListTickerUiModel
 import com.tokopedia.sellerorder.list.presentation.models.WaitingPaymentCounter
 import com.tokopedia.sellerorder.list.presentation.viewmodels.SomListViewModel
-import com.tokopedia.sellerorder.list.presentation.widget.DottedNotification
 import com.tokopedia.sellerorder.requestpickup.data.model.SomProcessReqPickup
 import com.tokopedia.sellerorder.waitingpaymentorder.presentation.activity.WaitingPaymentOrderActivity
 import com.tokopedia.unifycomponents.BottomSheetUnify
@@ -430,6 +427,7 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
     ): View? {
         setHasOptionsMenu(false)
         somListBinding = FragmentSomListBinding.inflate(inflater, container, false)
+        somListHeaderBinding = somListBinding?.somListToolbar
         return somListBinding?.root
     }
 
@@ -923,26 +921,6 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
     override fun onPrintButtonClicked(markAsPrinted: Boolean) {
         goToPrintAwb(activity, view, getSelectedOrderIds(), markAsPrinted)
         SomAnalytics.eventClickYesOnBulkPrintAwb(userSession.userId)
-    }
-
-    override fun onMenuItemClick(item: MenuItem?): Boolean {
-        return if ((item?.itemId == R.id.som_list_action_waiting_payment_order) && viewModel.waitingPaymentCounterResult.value !is Fail) {
-            goToWaitingPaymentOrderListPage()
-            val waitingPaymentOrderCounterResult = viewModel.waitingPaymentCounterResult.value
-            if (waitingPaymentOrderCounterResult is Success) {
-                SomAnalytics.eventClickWaitingPaymentOrderCard(
-                    tabActive,
-                    waitingPaymentOrderCounterResult.data.amount,
-                    userSession.userId,
-                    userSession.shopId
-                )
-            }
-            isWaitingPaymentOrderPageOpened = true
-            updateToolbarMenu()
-            true
-        } else {
-            false
-        }
     }
 
     override fun onScrollToTop() {
@@ -2282,46 +2260,36 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
     }
 
     private fun showWaitingPaymentOrderListMenuShimmer() {
-        somListBinding?.run {
+        somListHeaderBinding?.run {
             if (canDisplayOrderData) {
-                somListToolbar.menu?.findItem(R.id.som_list_action_waiting_payment_order_shimmer)?.isVisible = true
-                somListToolbar.menu?.findItem(R.id.som_list_action_waiting_payment_order)?.isVisible = false
+                loaderSomListMenuWaitingPayment.show()
+                icSomListMenuWaitingPayment.gone()
+                icSomListMenuWaitingPaymentDot.gone()
             }
         }
     }
 
     private fun showWaitingPaymentOrderListMenu() {
-        somListBinding?.run {
-            somListToolbar.menu?.findItem(R.id.som_list_action_waiting_payment_order_shimmer)?.isVisible = false
-            somListToolbar.menu?.findItem(R.id.som_list_action_waiting_payment_order)?.apply {
-                icon = DottedNotification(
-                    root.context,
-                    R.drawable.ic_som_list_waiting_payment_button_icon,
-                    false
-                )
-                isVisible = true
-            }
+        somListHeaderBinding?.run {
+            loaderSomListMenuWaitingPayment.gone()
+            icSomListMenuWaitingPayment.show()
+            icSomListMenuWaitingPaymentDot.gone()
         }
     }
 
     private fun showDottedWaitingPaymentOrderListMenu() {
-        somListBinding?.run {
-            somListToolbar.menu?.findItem(R.id.som_list_action_waiting_payment_order_shimmer)?.isVisible = false
-            somListToolbar.menu?.findItem(R.id.som_list_action_waiting_payment_order)?.apply {
-                icon = DottedNotification(
-                    root.context,
-                    R.drawable.ic_som_list_waiting_payment_button_icon,
-                    true
-                )
-                isVisible = true
-            }
+        somListHeaderBinding?.run {
+            loaderSomListMenuWaitingPayment.gone()
+            icSomListMenuWaitingPayment.show()
+            icSomListMenuWaitingPaymentDot.show()
         }
     }
 
     private fun hideWaitingPaymentOrderListMenu() {
-        somListBinding?.run {
-            somListToolbar.menu?.findItem(R.id.som_list_action_waiting_payment_order_shimmer)?.isVisible = false
-            somListToolbar.menu?.findItem(R.id.som_list_action_waiting_payment_order)?.isVisible = false
+        somListHeaderBinding?.run {
+            loaderSomListMenuWaitingPayment.gone()
+            icSomListMenuWaitingPayment.gone()
+            icSomListMenuWaitingPaymentDot.gone()
         }
     }
 
@@ -2875,8 +2843,8 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
                     )
                 )
             }
-            if (somListBinding?.somListToolbar?.menu?.findItem(R.id.som_list_action_waiting_payment_order)?.isVisible == true) {
-                activity?.findViewById<View>(R.id.som_list_action_waiting_payment_order)?.let {
+            if (somListHeaderBinding?.icSomListMenuWaitingPayment?.isVisible == true) {
+                somListHeaderBinding?.icSomListMenuWaitingPayment?.let {
                     add(
                         CoachMark2Item(
                             it,
@@ -3207,37 +3175,29 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
         order.cancelRequest == 1 && order.cancelRequestStatus != 0
 
     private fun setupToolbar() {
-        activity?.run {
-            (this as? AppCompatActivity)?.run {
-                supportActionBar?.hide()
-                somListBinding?.somListToolbar?.run {
-                    inflateMenu(R.menu.menu_som_list)
-                    title = context?.resources?.getString(getSomListResTitle()).orEmpty()
-                    isShowBackButton = showBackButton()
-                    setOnMenuItemClickListener(this@SomListFragment)
-                    setNavigationOnClickListener {
-                        onBackPressed()
-                    }
-                    somListHeaderBinding = SomListHeaderBinding.inflate(
-                        layoutInflater,
-                        null,
-                        false
-                    ).apply {
-                        customView(root)
-                    }
-                }
-                updateToolbarMenu()
-                tryReshowCoachMark()
+        (activity as? AppCompatActivity)?.supportActionBar?.hide()
+        somListHeaderBinding?.icSomListNavigationBack?.run {
+            showWithCondition(showBackButton())
+            setOnClickListener {
+                onFragmentBackPressed()
             }
         }
-    }
-
-    private fun getSomListResTitle(): Int {
-        return if (GlobalConfig.isSellerApp()) {
-            R.string.title_som_list_sa
-        } else {
-            R.string.title_som_list
+        somListHeaderBinding?.icSomListMenuWaitingPayment?.setOnClickListener {
+            goToWaitingPaymentOrderListPage()
+            val waitingPaymentOrderCounterResult = viewModel.waitingPaymentCounterResult.value
+            if (waitingPaymentOrderCounterResult is Success) {
+                SomAnalytics.eventClickWaitingPaymentOrderCard(
+                    tabActive,
+                    waitingPaymentOrderCounterResult.data.amount,
+                    userSession.userId,
+                    userSession.shopId
+                )
+            }
+            isWaitingPaymentOrderPageOpened = true
+            updateToolbarMenu()
         }
+        updateToolbarMenu()
+        tryReshowCoachMark()
     }
 
     private fun showBackButton(): Boolean = !GlobalConfig.isSellerApp()

@@ -220,8 +220,8 @@ class SomListFragment : com.tokopedia.sellerorder.list.presentation.fragments.So
             somListBinding?.sortFilterSomList?.let {
                 add(CoachMark2Item(it, getString(R.string.som_list_coachmark_sort_filter_title), getString(R.string.som_list_coachmark_sort_filter_description)))
             }
-            if (somListBinding?.somListToolbar?.menu?.findItem(R.id.som_list_action_waiting_payment_order)?.isVisible == true) {
-                activity?.findViewById<View>(R.id.som_list_action_waiting_payment_order)?.let {
+            if (somListHeaderBinding?.icSomListMenuWaitingPayment?.isVisible == true) {
+                somListHeaderBinding?.icSomListMenuWaitingPayment?.let {
                     add(CoachMark2Item(it, getString(R.string.som_list_coachmark_waiting_payment_title), getString(R.string.som_list_coachmark_waiting_payment_description)))
                 }
             }
