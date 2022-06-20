@@ -68,6 +68,8 @@ interface ChatbotContract {
         fun onSuccessGetTickerData(tickerData: TickerData)
 
         fun onError2(throwable: Throwable)
+
+        fun onSuccessSubmitCsatRating(msg : String)
     }
 
     interface Presenter : BaseChatContract.Presenter<View> {
@@ -102,9 +104,8 @@ interface ChatbotContract {
         fun sendReasonRating(messageId: String, reason: String, timestamp: String,
                              onError: (Throwable) -> Unit,
                              onSuccess: (String) -> Unit)
-        fun submitCsatRating(inputItem: InputItem,
-                             onError: (Throwable) -> Unit,
-                             onSuccess: (String) -> Unit)
+
+        fun submitCsatRating(inputItem: InputItem)
 
         fun showTickerData()
 

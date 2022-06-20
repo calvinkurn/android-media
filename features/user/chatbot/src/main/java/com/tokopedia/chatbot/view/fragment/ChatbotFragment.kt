@@ -887,8 +887,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
         input.timestamp = data?.getStringExtra("time_stamp")
         input.triggerRuleType = csatAttributes?.triggerRuleType
 
-        presenter.submitCsatRating(input, onError(),
-                onSuccessSubmitCsatRating())
+        presenter.submitCsatRating(input)
     }
 
     private fun getFilters(data: Intent?, reasonList: List<String?>?): String? {
@@ -904,14 +903,12 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
         return ""
     }
 
-    private fun onSuccessSubmitCsatRating(): (String) -> Unit {
+    override fun onSuccessSubmitCsatRating(msg : String) {
         hideCsatRatingView()
-        return { str ->
-            view?.let {
-                Toaster.showNormalWithAction(it, str, Snackbar.LENGTH_LONG, SNACK_BAR_TEXT_OK, View.OnClickListener { })
-            }
-            list_quick_reply.show()
+        view?.let {
+            Toaster.showNormalWithAction(it, msg, Snackbar.LENGTH_LONG, SNACK_BAR_TEXT_OK, View.OnClickListener { })
         }
+        list_quick_reply.show()
     }
 
     private fun onPickedAttachImage(resultCode: Int, data: Intent?) {

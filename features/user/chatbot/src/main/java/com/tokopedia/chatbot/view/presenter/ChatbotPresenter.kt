@@ -64,6 +64,7 @@ import com.tokopedia.chatbot.domain.mapper.ChatBotWebSocketMessageMapper
 import com.tokopedia.chatbot.domain.mapper.ChatbotGetExistingChatMapper.Companion.SHOW_TEXT
 import com.tokopedia.chatbot.domain.pojo.chatrating.SendRatingPojo
 import com.tokopedia.chatbot.domain.pojo.csatRating.csatInput.InputItem
+import com.tokopedia.chatbot.domain.pojo.csatRating.csatResponse.SubmitCsatGqlResponse
 import com.tokopedia.chatbot.domain.pojo.csatRating.websocketCsatRatingResponse.WebSocketCsatResponse
 import com.tokopedia.chatbot.domain.pojo.livechatdivider.LiveChatDividerAttributes
 import com.tokopedia.chatbot.domain.pojo.quickreply.QuickReplyAttachmentAttributes
@@ -146,9 +147,22 @@ class ChatbotPresenter @Inject constructor(
         const val QUERY_SORCE_TYPE = "Apps"
     }
 
-    override fun submitCsatRating(inputItem: InputItem, onError: (Throwable) -> Unit, onSuccess: (String) -> Unit) {
-        submitCsatRatingUseCase.execute(SubmitCsatRatingUseCase.generateParam(inputItem
-        ), SubmitCsatRatingSubscriber(onError, onSuccess))
+    override fun submitCsatRating(inputItem: InputItem) {
+        submitCsatRatingUseCase.cancelJobs()
+
+        submitCsatRatingUseCase.submitCsatRating(
+            ::onSuccessSubmitCsatRating,
+            ::onErrorSubmitCsatRating,
+            inputItem
+        )
+    }
+
+    fun onSuccessSubmitCsatRating(submitCsatGqlResponse: SubmitCsatGqlResponse) {
+        view.onSuccessSubmitCsatRating(submitCsatGqlResponse.submitRatingCSAT?.data?.message.toString())
+    }
+
+    private fun onErrorSubmitCsatRating(throwable: Throwable) {
+        view.onError2(throwable)
     }
 
     override fun clearText() {
@@ -733,7 +747,6 @@ class ChatbotPresenter @Inject constructor(
         getExistingChatUseCase.unsubscribe()
         sendChatRatingUseCase.unsubscribe()
         sendRatingReasonUseCase.unsubscribe()
-        submitCsatRatingUseCase.unsubscribe()
         leaveQueueUseCase.unsubscribe()
         chipGetChatRatingListUseCase.unsubscribe()
         chipSubmitHelpfulQuestionsUseCase.unsubscribe()
