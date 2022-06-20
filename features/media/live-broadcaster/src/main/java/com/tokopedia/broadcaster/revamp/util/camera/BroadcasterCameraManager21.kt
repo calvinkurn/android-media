@@ -16,7 +16,9 @@ class BroadcasterCameraManager21(private val context: Context) : BroadcasterCame
     override fun getCameraList(): List<BroadcasterCamera> {
         return try {
             val cameraManager = context.getSystemService(Context.CAMERA_SERVICE) as CameraManager
-            return cameraManager.cameraIdList.mapNotNull { getCamera(it) }
+            return cameraManager.cameraIdList
+                .mapNotNull { getCamera(it) }
+                .distinctBy { it.lensFacing }
         } catch (e: CameraAccessException) {
             emptyList()
         }

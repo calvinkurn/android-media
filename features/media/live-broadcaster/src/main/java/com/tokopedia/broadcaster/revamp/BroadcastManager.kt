@@ -140,9 +140,9 @@ class BroadcastManager: Broadcaster, Streamer.Listener, BroadcasterAdaptiveBitra
         val videoConfig = BroadcasterUtil.getVideoConfig()
 
         // get default camera id
-        val activeCamera = cameraManager.getCameraList()
-            .firstOrNull { it.lensFacing == BroadcasterCamera.LENS_FACING_FRONT } ?:
-        cameraManager.getCameraList().first()
+        val activeCamera = cameraList.firstOrNull {
+            it.lensFacing == BroadcasterCamera.LENS_FACING_FRONT
+        } ?: cameraManager.getCameraList().first()
 
         // video resolution for stream and mp4 recording,
         // larix uses same resolution for camera preview and stream to simplify setup
