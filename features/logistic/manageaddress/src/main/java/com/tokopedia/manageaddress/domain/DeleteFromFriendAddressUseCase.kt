@@ -20,7 +20,7 @@ open class DeleteFromFriendAddressUseCase @Inject constructor(
     override fun graphqlQuery(): String = ""
 
     private fun createParams(params: String): Map<String, Any> = mapOf(
-        PARAM_ADDRESS_ID to params
+        PARAM_ADDRESS_ID to params,
     )
 
     companion object {

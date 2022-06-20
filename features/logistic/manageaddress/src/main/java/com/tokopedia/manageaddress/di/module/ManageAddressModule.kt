@@ -6,8 +6,8 @@ import com.tokopedia.abstraction.common.di.scope.ActivityScope
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
-import com.tokopedia.manageaddress.domain.DeletePeopleAddressUseCase
-import com.tokopedia.manageaddress.domain.SetDefaultPeopleAddressUseCase
+import com.tokopedia.manageaddress.domain.usecase.DeletePeopleAddressUseCase
+import com.tokopedia.manageaddress.domain.usecase.SetDefaultPeopleAddressUseCase
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
@@ -28,12 +28,12 @@ object ManageAddressModule {
     @Provides
     @ActivityScope
     fun provideDeletePeopleAddressUseCase(@ApplicationContext repository: GraphqlRepository) =
-        GraphqlUseCase<GraphqlUseCase<DeletePeopleAddressUseCase>>(repository)
+        GraphqlUseCase<DeletePeopleAddressUseCase>(repository)
 
     @Provides
     @ActivityScope
-    fun provideSetDefaultPeopleAddressUseCase(@ApplicationContext repository: GraphqlRepository): SetDefaultPeopleAddressUseCase =
-        SetDefaultPeopleAddressUseCase(GraphqlUseCase(repository))
+    fun provideSetDefaultPeopleAddressUseCase(@ApplicationContext repository: GraphqlRepository) =
+        GraphqlUseCase<SetDefaultPeopleAddressUseCase>(repository)
 
     @Provides
     @ActivityScope

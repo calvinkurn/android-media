@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.localizationchooseaddress.data.repository.ChooseAddressRepository
 import com.tokopedia.localizationchooseaddress.domain.mapper.ChooseAddressMapper
 import com.tokopedia.localizationchooseaddress.domain.model.ChosenAddressModel
@@ -13,11 +14,12 @@ import com.tokopedia.logisticCommon.data.entity.address.Token
 import com.tokopedia.logisticCommon.domain.model.AddressListModel
 import com.tokopedia.logisticCommon.domain.usecase.EligibleForAddressUseCase
 import com.tokopedia.logisticCommon.domain.usecase.GetAddressCornerUseCase
-import com.tokopedia.manageaddress.domain.DeletePeopleAddressUseCase
-import com.tokopedia.manageaddress.domain.SetDefaultPeopleAddressUseCase
+import com.tokopedia.manageaddress.domain.usecase.DeletePeopleAddressUseCase
 import com.tokopedia.manageaddress.domain.mapper.EligibleAddressFeatureMapper
+import com.tokopedia.manageaddress.domain.model.DefaultAddressParam
 import com.tokopedia.manageaddress.domain.model.EligibleForAddressFeatureModel
 import com.tokopedia.manageaddress.domain.model.ManageAddressState
+import com.tokopedia.manageaddress.domain.usecase.SetDefaultPeopleAddressUseCase
 import com.tokopedia.manageaddress.util.ManageAddressConstant.DEFAULT_ERROR_MESSAGE
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.usecase.coroutines.Fail
@@ -71,71 +73,79 @@ class ManageAddressViewModel @Inject constructor(
     fun searchAddress(query: String, prevState: Int, localChosenAddrId: Long, isWhiteListChosenAddress: Boolean) {
         _addressList.value = ManageAddressState.Loading
         compositeSubscription.add(
-                getPeopleAddressUseCase.execute(query, prevState = prevState,
-                        localChosenAddrId = localChosenAddrId, isWhitelistChosenAddress = isWhiteListChosenAddress)
-                        .subscribe(object: rx.Observer<AddressListModel> {
-                            override fun onError(it: Throwable?) {
-                                _addressList.value = ManageAddressState.Fail(it, "")
-                            }
+            getPeopleAddressUseCase.execute(
+                query, prevState = prevState,
+                localChosenAddrId = localChosenAddrId, isWhitelistChosenAddress = isWhiteListChosenAddress
+            )
+                .subscribe(object : rx.Observer<AddressListModel> {
+                    override fun onError(it: Throwable?) {
+                        _addressList.value = ManageAddressState.Fail(it, "")
+                    }
 
-                            override fun onNext(addressModel: AddressListModel) {
-                                page = 1
-                                token = addressModel.token
-                                savedQuery = query
-                                canLoadMore = true
-                                _addressList.value = ManageAddressState.Success(addressModel)
-                            }
+                    override fun onNext(addressModel: AddressListModel) {
+                        page = 1
+                        token = addressModel.token
+                        savedQuery = query
+                        canLoadMore = true
+                        _addressList.value = ManageAddressState.Success(addressModel)
+                    }
 
-                            override fun onCompleted() {
-                                //no-op
-                            }
-                        })
+                    override fun onCompleted() {
+                        //no-op
+                    }
+                })
         )
     }
 
     fun loadMore(prevState: Int, localChosenAddrId: Long, isWhitelistChosenAddress: Boolean) {
         _addressList.value = ManageAddressState.Loading
         compositeSubscription.add(
-                getPeopleAddressUseCase.loadMore(savedQuery, page + 1, prevState, localChosenAddrId, isWhitelistChosenAddress)
-                        .subscribe(object: rx.Observer<AddressListModel> {
-                            override fun onError(it: Throwable?) {
-                                _addressList.value = ManageAddressState.Fail(it, "")
-                            }
+            getPeopleAddressUseCase.loadMore(savedQuery, page + 1, prevState, localChosenAddrId, isWhitelistChosenAddress)
+                .subscribe(object : rx.Observer<AddressListModel> {
+                    override fun onError(it: Throwable?) {
+                        _addressList.value = ManageAddressState.Fail(it, "")
+                    }
 
-                            override fun onNext(addressModel: AddressListModel) {
-                                page++
-                                isClearData = false
-                                if(addressModel.listAddress.isEmpty()) canLoadMore = false
-                                _addressList.value = ManageAddressState.Success(addressModel)
-                            }
+                    override fun onNext(addressModel: AddressListModel) {
+                        page++
+                        isClearData = false
+                        if (addressModel.listAddress.isEmpty()) canLoadMore = false
+                        _addressList.value = ManageAddressState.Success(addressModel)
+                    }
 
-                            override fun onCompleted() {
-                                //no-op
-                            }
-                        })
+                    override fun onCompleted() {
+                        //no-op
+                    }
+                })
         )
     }
 
     fun deletePeopleAddress(id: String) {
-        viewModelScope.launch {
-            try {
-                deletePeopleAddressUseCase(id.toInt())
-                _resultRemovedAddress.value = ManageAddressState.Success("Success")
-                isClearData = true
-                getStateChosenAddress("address")
-            } catch (e: Exception) {
-                _addressList.value = ManageAddressState.Fail(MessageErrorException(DEFAULT_ERROR_MESSAGE), "")
-            }
-        }
+        viewModelScope.launchCatchError(block = {
+            deletePeopleAddressUseCase(id.toInt())
+            _resultRemovedAddress.value = ManageAddressState.Success("Success")
+            isClearData = true
+            getStateChosenAddress("address")
+        }, onError = {
+            _addressList.value = ManageAddressState.Fail(MessageErrorException(DEFAULT_ERROR_MESSAGE), "")
+        })
     }
 
-    fun setDefaultPeopleAddress(id: String, setAsStateChosenAddress: Boolean, prevState: Int, localChosenAddrId: Long, isWhiteListChosenAddress: Boolean) {
-        setDefaultPeopleAddressUseCase.execute(id.toInt(), setAsStateChosenAddress = setAsStateChosenAddress, onSuccess = {
+    fun setDefaultPeopleAddress(
+        id: String,
+        setAsStateChosenAddress: Boolean,
+        prevState: Int,
+        localChosenAddrId: Long,
+        isWhiteListChosenAddress: Boolean
+    ) {
+        viewModelScope.launchCatchError(block = {
+            val defaultAddressParam = DefaultAddressParam(id.toLong(), setAsStateChosenAddress)
+            setDefaultPeopleAddressUseCase(defaultAddressParam)
             _setDefault.value = ManageAddressState.Success("Success")
             isClearData = true
             searchAddress("", prevState, localChosenAddrId, isWhiteListChosenAddress)
         }, onError = {
-            _setDefault.value  = ManageAddressState.Fail(it, "")
+            _addressList.value = ManageAddressState.Fail(MessageErrorException(DEFAULT_ERROR_MESSAGE), "")
         })
     }
 
