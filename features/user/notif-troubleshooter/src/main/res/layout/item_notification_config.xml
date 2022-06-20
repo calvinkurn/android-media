@@ -28,14 +28,14 @@
         app:layout_constraintTop_toTopOf="parent"
         tools:visibility="visible" />
 
-    <TextView
+    <com.tokopedia.unifyprinciples.Typography
+        app:typographyType="display_1"
         android:id="@+id/txt_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:gravity="center_vertical"
         android:textColor="@color/Unify_N700_96"
-        android:textSize="@dimen/sp_16"
-        android:layout_marginStart="8dp"
+        android:layout_marginStart="@dimen/unify_space_8"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toEndOf="@+id/img_status"
         app:layout_constraintTop_toTopOf="parent"
@@ -44,9 +44,9 @@
     <com.tokopedia.unifycomponents.UnifyButton
         android:id="@+id/btn_action"
         android:layout_width="@dimen/dp_88"
-        android:layout_height="24dp"
+        android:layout_height="@dimen/unify_space_24"
         android:text="@string/btn_notif_test_play"
-        android:layout_marginStart="8dp"
+        android:layout_marginStart="@dimen/unify_space_8"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toEndOf="@+id/txt_title"
         app:layout_constraintTop_toTopOf="parent"

@@ -12,12 +12,12 @@
         android:layout_height="wrap_content"
         android:adjustViewBounds="true"/>
 
-    <TextView
+    <com.tokopedia.unifyprinciples.Typography
+        app:typographyType="body_2"
         android:id="@+id/txtMessage"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:lineSpacingExtra="@dimen/sp_6"
-        android:layout_margin="16dp"
+        android:layout_margin="@dimen/unify_space_16"
         android:text="@string/notif_bottomsheet_info"
         android:textColor="@color/Unify_N700_68"
         app:layout_constraintEnd_toEndOf="parent"
