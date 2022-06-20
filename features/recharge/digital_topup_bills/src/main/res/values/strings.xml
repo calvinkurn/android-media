@@ -1,7 +1,6 @@
 <resources>
     <string name="app_name">digital_topup_bills</string>
 
-    <string name="digital_title_prepaid_page">Prabayar</string>
     <string name="digital_title_postpaid_page">Pascabayar</string>
     <string name="digital_title_fav_number">Nomor Favorit</string>
     <string name="digital_hint_input_numbers">Contoh 081234567890</string>

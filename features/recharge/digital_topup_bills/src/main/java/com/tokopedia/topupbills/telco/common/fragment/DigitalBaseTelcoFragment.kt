@@ -49,7 +49,7 @@ import com.tokopedia.topupbills.telco.common.activity.BaseTelcoActivity
 import com.tokopedia.topupbills.telco.common.di.DigitalTelcoComponent
 import com.tokopedia.topupbills.telco.common.model.TelcoTabItem
 import com.tokopedia.topupbills.telco.common.viewmodel.SharedTelcoViewModel
-import com.tokopedia.topupbills.telco.prepaid.widget.DigitalClientNumberWidget
+import com.tokopedia.topupbills.telco.common.widget.DigitalClientNumberWidget
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerData
@@ -426,11 +426,11 @@ abstract class DigitalBaseTelcoFragment : BaseTopupBillsFragment() {
         var idTab = 1L
         if (recom.isNotEmpty()) {
             viewModel.setRecommendationTelco(recom)
-            listMenu.add(TelcoTabItem(null, TelcoComponentName.RECENTS, idTab++))
+            listMenu.add(TelcoTabItem(TelcoComponentName.RECENTS, idTab++))
         }
         if (promo.isNotEmpty()) {
             viewModel.setPromoTelco(promo)
-            listMenu.add(TelcoTabItem(null, TelcoComponentName.PROMO, idTab++))
+            listMenu.add(TelcoTabItem(TelcoComponentName.PROMO, idTab++))
         }
 
         viewModel.setTitleMenu(listMenu.size < 2)

@@ -11,7 +11,6 @@ import androidx.test.espresso.action.ViewActions.*
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.ActivityResultMatchers.hasResultCode
 import androidx.test.espresso.contrib.ActivityResultMatchers.hasResultData
-import androidx.test.espresso.contrib.RecyclerViewActions.actionOnItemAtPosition
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.Intents.intended
 import androidx.test.espresso.intent.matcher.IntentMatchers
@@ -32,7 +31,6 @@ import com.tokopedia.common.topupbills.view.model.search.TopupBillsSearchNumberD
 import com.tokopedia.common_digital.product.presentation.model.ClientNumberType
 import com.tokopedia.test.application.matcher.RecyclerViewMatcher
 import com.tokopedia.topupbills.searchnumber.view.DigitalSearchNumberActivity
-import com.tokopedia.topupbills.telco.prepaid.adapter.viewholder.TelcoProductViewHolder
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.core.AllOf
 import org.junit.Rule
@@ -79,7 +77,6 @@ class DigitalSearchNumberActivityTest {
         show_contents_search_number_page()
         type_new_client_number()
         search_existing_favorite_number()
-        click_favorite_number()
     }
 
     fun show_contents_search_number_page() {
@@ -114,13 +111,6 @@ class DigitalSearchNumberActivityTest {
         onView(withId(R.id.telco_search_number_contact_picker)).perform(click())
         intended(AllOf.allOf(hasData(ContactsContract.CommonDataKinds.Phone.CONTENT_URI),
             hasAction(Intent.ACTION_PICK)))
-    }
-
-    fun click_favorite_number() {
-        Intents.intending(anyIntent()).respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, stubSearchNumberActivityResult()))
-        val viewInteraction = onView(AllOf.allOf(ViewMatchers.isDisplayingAtLeast(30), withId(R.id.telco_search_number_rv))).check(matches(isDisplayed()))
-        viewInteraction.perform(actionOnItemAtPosition<TelcoProductViewHolder>(0, click()))
-        validateIntentExtraParam()
     }
 
     private fun clickClearSearchBar() {
