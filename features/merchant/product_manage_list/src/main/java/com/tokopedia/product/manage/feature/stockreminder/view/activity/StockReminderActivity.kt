@@ -50,6 +50,14 @@ class StockReminderActivity : BaseSimpleActivity() {
 
     override fun getParentViewResourceID(): Int = R.id.parent_view
 
+    override fun onBackPressed() {
+        fragment?.let {
+            if (it is StockReminderFragment) {
+                it.onBackPressed()
+            }
+        }
+    }
+
     private fun setupView() {
         binding?.header?.run {
             setNavigationOnClickListener {

@@ -12,14 +12,15 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.snackbar.Snackbar
-import com.tokopedia.abstraction.base.view.adapter.adapter.BaseAdapter
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
+import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.globalerror.GlobalError
+import com.tokopedia.kotlin.extensions.orTrue
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.product.manage.ProductManageInstance
 import com.tokopedia.product.manage.R
@@ -29,7 +30,6 @@ import com.tokopedia.product.manage.databinding.FragmentStockReminderBinding
 import com.tokopedia.product.manage.feature.list.constant.ProductManageListConstant.EXTRA_RESULT_STATUS
 import com.tokopedia.product.manage.feature.stockreminder.constant.StockReminderConst.MINIMUM_STOCK
 import com.tokopedia.product.manage.feature.stockreminder.constant.StockReminderConst.REMINDER_ACTIVE
-import com.tokopedia.product.manage.feature.stockreminder.constant.StockReminderConst.REMINDER_INACTIVE
 import com.tokopedia.product.manage.feature.stockreminder.data.source.cloud.query.param.ProductWarehouseParam
 import com.tokopedia.product.manage.feature.stockreminder.data.source.cloud.response.createupdateresponse.CreateStockReminderResponse
 import com.tokopedia.product.manage.feature.stockreminder.data.source.cloud.response.getresponse.GetStockReminderResponse
@@ -80,7 +80,11 @@ class StockReminderFragment : BaseDaggerFragment(),
     private var isVariant: Boolean = false
     private var adapter: ProductStockReminderAdapter? = null
 
-    private val updateWarehouseParam = ArrayList<ProductWarehouseParam>()
+    val updateWarehouseParam = ArrayList<ProductWarehouseParam>()
+
+    var firstReminderSet = false
+    var currentReminderSet = false
+
 
     private var dataProducts: ArrayList<ProductStockReminderUiModel>? = null
 
@@ -141,8 +145,10 @@ class StockReminderFragment : BaseDaggerFragment(),
             it.copy(threshold = stock.toString(), thresholdStatus = status.toString())
         }
         val isValid =
-            getProductWareHouseList().firstOrNull() { it.threshold < MINIMUM_STOCK.toString()
-                    && it.thresholdStatus == REMINDER_ACTIVE.toString() } == null
+            getProductWareHouseList().firstOrNull() {
+                it.threshold > MINIMUM_STOCK.toString()
+                        && it.thresholdStatus == REMINDER_ACTIVE.toString()
+            } == null
 
         binding?.btnSaveReminder?.isEnabled = isValid
 
@@ -306,6 +312,8 @@ class StockReminderFragment : BaseDaggerFragment(),
                 dataProducts = ArrayList(product)
                 adapter?.setItems(product)
                 setListProductWarehouse(product)
+                firstReminderSet =
+                    dataProducts?.firstOrNull() { it.stockAlertStatus == REMINDER_ACTIVE } != null
             }
             is Fail -> {
                 binding?.cardSaveBtn?.visibility = View.GONE
@@ -466,4 +474,38 @@ class StockReminderFragment : BaseDaggerFragment(),
 
     }
 
+
+    private fun showExitConfirmationDialog() {
+        if (binding?.btnSaveReminder?.isEnabled.orTrue()) {
+            val dialog =
+                DialogUnify(requireContext(), DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE)
+            dialog.show()
+            dialog.setTitle(
+                activity?.resources?.getString(R.string.product_reminder_exit_title).orEmpty()
+            )
+            dialog.setDescription(
+                activity?.resources?.getString(R.string.product_reminder_exit_desc).orEmpty()
+            )
+            dialog.setPrimaryCTAText(
+                activity?.resources?.getString(R.string.product_reminder_exit_cta_primary).orEmpty()
+            )
+            dialog.setPrimaryCTAClickListener {
+                dialog.dismiss()
+            }
+            dialog.setSecondaryCTAText(
+                activity?.resources?.getString(R.string.product_reminder_exit_cta_secondaru)
+                    .orEmpty()
+            )
+            dialog.setSecondaryCTAClickListener {
+                dialog.dismiss()
+                activity?.finish()
+            }
+        } else {
+            activity?.finish()
+        }
+    }
+
+    fun onBackPressed() {
+        showExitConfirmationDialog()
+    }
 }

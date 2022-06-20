@@ -78,6 +78,11 @@
     <string name="product_stock_reminder_info_stock_remain">Sisa Stok</string>
     <string name="product_stock_reminder_info_stock_remain_desc">Disarankan isi batas min. stok setidaknya 5x jumlah minimum pemesanan supaya penjualan terus lancar.</string>
 
+    <string name="product_reminder_exit_title">Keluar dari halaman ini?.</string>
+    <string name="product_reminder_exit_desc">Pengaturan Pengingat Stok akan hilang jika kamu keluar dari halaman ini.</string>
+    <string name="product_reminder_exit_cta_primary">Ya, Keluar</string>
+    <string name="product_reminder_exit_cta_secondaru">Tidak</string>
+
     <string name="label_apply">Terapkan</string>
 
     <string name="product_manage_search_hint">Cari produk atau SKU</string>
