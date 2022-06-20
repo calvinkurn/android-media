@@ -14,6 +14,7 @@ import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.linker.LinkerManager
 import com.tokopedia.linker.model.LinkerData.NOW_TYPE
 import com.tokopedia.minicart.common.analytics.MiniCartAnalytics
+import com.tokopedia.minicart.common.domain.usecase.MiniCartSource
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.viewutil.RecomPageConstant.TOKONOW_CLP
 import com.tokopedia.recommendation_widget_common.widget.carousel.RecommendationCarouselData
@@ -201,6 +202,9 @@ class TokoNowCategoryFragment:
     override val miniCartWidgetPageName: MiniCartAnalytics.Page
         get() = MiniCartAnalytics.Page.CATEGORY_PAGE
 
+    override val miniCartWidgetSource: MiniCartSource
+        get() = MiniCartSource.TokonowCategoryPage
+
     override fun onAisleClick(categoryAisleItemDataView: CategoryAisleItemDataView) {
         CategoryTracking.sendAisleClickEvent(getViewModel().categoryL1, categoryAisleItemDataView.id)
 
@@ -275,6 +279,12 @@ class TokoNowCategoryFragment:
         }
     }
 
+    override fun trackingEventLabel(): String = tokoNowCategoryViewModel.getCurrentCategoryId(
+        categoryIdLvl1 = tokoNowCategoryViewModel.categoryL1,
+        categoryIdLvl2 = categoryIdLvl2,
+        categoryIdLvl3 = categoryIdLvl3
+    )
+
     private fun createShareHomeTokonow(): ShareTokonow {
         return ShareTokonow(
             thumbNailImage = TokoNowHomeFragment.THUMBNAIL_AND_OG_IMAGE_SHARE_URL,
@@ -311,7 +321,8 @@ class TokoNowCategoryFragment:
             userId = userSession.userId,
             categoryIdLvl1 = tokoNowCategoryViewModel.categoryL1,
             categoryIdLvl2 = categoryIdLvl2,
-            categoryIdLvl3 = categoryIdLvl3
+            categoryIdLvl3 = categoryIdLvl3,
+            currentCategoryId = tokoNowCategoryViewModel.getCurrentCategoryId(tokoNowCategoryViewModel.categoryL1, categoryIdLvl2, categoryIdLvl3)
         )
         shareClicked(shareCategoryTokonow)
     }

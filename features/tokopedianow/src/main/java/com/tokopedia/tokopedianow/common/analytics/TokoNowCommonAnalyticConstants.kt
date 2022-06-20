@@ -42,6 +42,7 @@ object TokoNowCommonAnalyticConstants {
         const val KEY_DIMENSION_49 = "dimension49"
         const val KEY_DIMENSION_40 = "dimension40"
         const val KEY_DIMENSION_45 = "dimension45"
+        const val KEY_DIMENSION_90 = "dimension90"
         const val KEY_QUANTITY = "quantity"
         const val KEY_SHOP_ID = "shop_id"
         const val KEY_SHOP_NAME = "shop_name"
@@ -49,6 +50,8 @@ object TokoNowCommonAnalyticConstants {
         const val KEY_USER_ID = "userId"
         const val KEY_PRODUCT_ID = "productId"
         const val KEY_CATEGORY_ID = "category_id"
+        const val KEY_CHANNEL_ID = "channelId"
+        const val KEY_CAMPAIGN_CODE = "campaignCode"
         const val KEY_PAGE_SOURCE = "pageSource"
         const val KEY_INDEX = "index"
         const val KEY_ITEMS = "items"
@@ -75,8 +78,6 @@ object TokoNowCommonAnalyticConstants {
         const val KEY_PRODUCTS = "products"
         const val KEY_IS_LOGGED_IN_STATUS = "isLoggedInStatus"
         const val KEY_WAREHOUSE_ID = "warehouseId"
-        const val KEY_CHANNEL_ID = "channelId"
-        const val KEY_CAMPAIGN_CODE = "campaignCode"
     }
 
     object VALUE {

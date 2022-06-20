@@ -9,10 +9,12 @@ import com.tokopedia.logisticCommon.data.repository.KeroRepository
 import com.tokopedia.logisticCommon.data.response.AutoCompleteResponse
 import com.tokopedia.logisticCommon.data.response.GetDistrictBoundaryResponse
 import com.tokopedia.logisticCommon.data.response.GetDistrictResponse
+import com.tokopedia.logisticCommon.data.response.KeroAddrGetDistrictCenterResponse
 import com.tokopedia.logisticaddaddress.domain.mapper.DistrictBoundaryMapper
 import com.tokopedia.logisticaddaddress.domain.mapper.GetDistrictMapper
 import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.district_boundary.DistrictBoundaryResponseUiModel
 import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.get_district.GetDistrictDataUiModel
+import com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.uimodel.DistrictCenterUiModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -42,8 +44,8 @@ class PinpointNewPageViewModelTest {
 
     private val autofillDistrictDataObserver: Observer<Result<KeroMapsAutofill>> = mockk(relaxed = true)
     private val districtLocationObserver: Observer<Result<GetDistrictDataUiModel>> = mockk(relaxed = true)
-    private val autoCompleteDataObserver: Observer<Result<AutoCompleteResponse>> = mockk(relaxed = true)
     private val districtBoundaryObserver: Observer<Result<DistrictBoundaryResponseUiModel>> = mockk(relaxed = true)
+    private val districtCenterObserver: Observer<Result<DistrictCenterUiModel>> = mockk(relaxed = true)
 
     private val defaultThrowable = Throwable("test error")
 
@@ -52,9 +54,9 @@ class PinpointNewPageViewModelTest {
         Dispatchers.setMain(TestCoroutineDispatcher())
         pinpointNewPageViewModel = PinpointNewPageViewModel(repo, getDistrictMapper, districtBoundaryMapper)
         pinpointNewPageViewModel.autofillDistrictData.observeForever(autofillDistrictDataObserver)
-        pinpointNewPageViewModel.autoCompleteData.observeForever(autoCompleteDataObserver)
         pinpointNewPageViewModel.districtLocation.observeForever(districtLocationObserver)
         pinpointNewPageViewModel.districtBoundary.observeForever(districtBoundaryObserver)
+        pinpointNewPageViewModel.districtCenter.observeForever(districtCenterObserver)
     }
 
     @Test
@@ -69,20 +71,6 @@ class PinpointNewPageViewModelTest {
         coEvery { repo.getDistrictGeocode(any()) } throws defaultThrowable
         pinpointNewPageViewModel.getDistrictData(1134.5, -6.4214)
         verify { autofillDistrictDataObserver.onChanged(match { it is Fail }) }
-    }
-
-    @Test
-    fun `Get AutoComplete Data Success`() {
-        coEvery { repo.getAutoComplete(any(), any()) } returns AutoCompleteResponse()
-        pinpointNewPageViewModel.getAutoComplete("Setiabudi")
-        verify { autoCompleteDataObserver.onChanged(match { it is Success }) }
-    }
-
-    @Test
-    fun `Get AutoComplete Data Fail`() {
-        coEvery { repo.getAutoComplete(any(), any()) } throws defaultThrowable
-        pinpointNewPageViewModel.getAutoComplete("Setiabudi")
-        verify { autoCompleteDataObserver.onChanged(match { it is Fail }) }
     }
 
     @Test
@@ -112,6 +100,21 @@ class PinpointNewPageViewModelTest {
         coEvery { repo.getDistrictBoundaries(any()) } throws defaultThrowable
         pinpointNewPageViewModel.getDistrictBoundaries(11986)
         verify { districtBoundaryObserver.onChanged(match { it is Fail }) }
+    }
+
+    @Test
+    fun `Get District Center by District ID Success`() {
+        coEvery { repo.getDistrictCenter(any()) } returns KeroAddrGetDistrictCenterResponse.Data()
+        pinpointNewPageViewModel.getDistrictCenter(11986)
+        verify { districtCenterObserver.onChanged(match { it is Success }) }
+    }
+
+
+    @Test
+    fun `Get District Center by District ID Fail`() {
+        coEvery { repo.getDistrictCenter(any()) } throws defaultThrowable
+        pinpointNewPageViewModel.getDistrictCenter(11986)
+        verify { districtCenterObserver.onChanged(match { it is Fail }) }
     }
 
     @Test

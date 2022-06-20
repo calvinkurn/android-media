@@ -7,6 +7,7 @@ import java.util.concurrent.TimeUnit
 
 class PlayLikeBubblesManager(
     private val scope: CoroutineScope,
+    private val maxBubbles: Int,
 ) {
 
     private var mView: PlayLikeBubblesView? = null
@@ -81,7 +82,7 @@ class PlayLikeBubblesManager(
         prioritize: Boolean,
     ) {
         synchronized(bubbles) {
-            if (bubbles.size > MAX_BUBBLES_ON_SCREEN) {
+            if (bubbles.size > maxBubbles) {
                 if (prioritize) bubbles.removeFirst()
                 else return@synchronized
             }
@@ -112,8 +113,6 @@ class PlayLikeBubblesManager(
 
     companion object {
         private const val DEFAULT_DELAY = 300L
-
-        private const val MAX_BUBBLES_ON_SCREEN = 30
 
         private const val FULL_FPS = 60
     }

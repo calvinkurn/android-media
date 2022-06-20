@@ -117,6 +117,36 @@ class MultipleFragmentsViewModelTest: MultipleFragmentsViewModelTestFixture() {
     }
 
     @Test
+    fun `when deleteProduct and should not refresh cart, should not call load cart`() {
+        runBlocking {
+            val response = CartTokoFoodResponse(
+                status = TokoFoodCartUtil.SUCCESS_STATUS,
+                data = CartTokoFoodData(
+                    success = TokoFoodCartUtil.SUCCESS_STATUS_INT
+                )
+            )
+            val productId = "123"
+            val cartId = "123"
+            val shopId = ""
+            val param = RemoveCartTokoFoodParam.getProductParamById(productId, cartId, shopId)
+            onRemoveCart_shouldReturn(param, response)
+
+            collectFromSharedFlow(
+                whenAction = {
+                    viewModel.deleteProduct(productId, cartId, SOURCE, shouldRefreshCart = false)
+                },
+                then = {
+                    coVerify(exactly = 0) {
+                        loadCartTokoFoodUseCase.get()
+                    }
+                    val expectedUiModelState = UiEvent.EVENT_SUCCESS_DELETE_PRODUCT
+                    assertEquals(expectedUiModelState, it)
+                }
+            )
+        }
+    }
+
+    @Test
     fun `when deleteProduct and failed, should set ui event state to failed delete`() {
         runBlocking {
             val productId = "123"
@@ -230,7 +260,7 @@ class MultipleFragmentsViewModelTest: MultipleFragmentsViewModelTestFixture() {
 
             collectFromSharedFlow(
                 whenAction = {
-                    viewModel.deleteUnavailableProducts(SOURCE, successResponse.cartListTokofood.data.shop.shopId)
+                    viewModel.deleteUnavailableProducts()
                 },
                 then = {
                     val expectedUiEventState = UiEvent.EVENT_SUCCESS_DELETE_UNAVAILABLE_PRODUCTS
@@ -243,7 +273,7 @@ class MultipleFragmentsViewModelTest: MultipleFragmentsViewModelTestFixture() {
     @Test
     fun `when deleteUnavailableProducts but no cart data, should do nothing`() {
         runBlocking {
-            viewModel.deleteUnavailableProducts(SOURCE)
+            viewModel.deleteUnavailableProducts()
 
             coVerify(exactly = 0) {
                 removeCartTokoFoodUseCase.get()
@@ -271,7 +301,7 @@ class MultipleFragmentsViewModelTest: MultipleFragmentsViewModelTestFixture() {
 
             collectFromSharedFlow(
                 whenAction = {
-                    viewModel.deleteUnavailableProducts(SOURCE)
+                    viewModel.deleteUnavailableProducts()
                 },
                 then = {
                     val expectedUiEventState = UiEvent.EVENT_FAILED_DELETE_PRODUCT
@@ -300,6 +330,35 @@ class MultipleFragmentsViewModelTest: MultipleFragmentsViewModelTestFixture() {
                     viewModel.updateNotes(updateParam, SOURCE)
                 },
                 then = {
+                    val expectedUiEventState = UiEvent.EVENT_SUCCESS_UPDATE_NOTES
+                    assertEquals(expectedUiEventState, it)
+                }
+            )
+        }
+    }
+
+    @Test
+    fun `when updateNotes and should not refresh cart, should not call load cart`() {
+        runBlocking {
+            val successResponse =
+                JsonResourcesUtil.createSuccessResponse<MiniCartTokoFoodResponse>(
+                    PURCHASE_SUCCESS_MINI_CART_JSON
+                )
+            onLoadCartList_shouldReturn(successResponse.cartListTokofood)
+
+            val updateParam = UpdateParam()
+            onUpdateCart_shouldReturn(updateParam, getSuccessUpdateCartResponse())
+
+            viewModel.loadInitial(SOURCE)
+
+            collectFromSharedFlow(
+                whenAction = {
+                    viewModel.updateNotes(updateParam, SOURCE, false)
+                },
+                then = {
+                    coVerify(exactly = 1) {
+                        loadCartTokoFoodUseCase.get()
+                    }
                     val expectedUiEventState = UiEvent.EVENT_SUCCESS_UPDATE_NOTES
                     assertEquals(expectedUiEventState, it)
                 }
@@ -352,6 +411,35 @@ class MultipleFragmentsViewModelTest: MultipleFragmentsViewModelTestFixture() {
                     viewModel.updateQuantity(updateParam, SOURCE)
                 },
                 then = {
+                    val expectedUiEventState = UiEvent.EVENT_SUCCESS_UPDATE_QUANTITY
+                    assertEquals(expectedUiEventState, it)
+                }
+            )
+        }
+    }
+
+    @Test
+    fun `when updateQuantity but should not refresh cart, should not load cart list`() {
+        runBlocking {
+            val successResponse =
+                JsonResourcesUtil.createSuccessResponse<MiniCartTokoFoodResponse>(
+                    PURCHASE_SUCCESS_MINI_CART_JSON
+                )
+            onLoadCartList_shouldReturn(successResponse.cartListTokofood)
+
+            val updateParam = UpdateParam()
+            onUpdateCart_shouldReturn(updateParam, getSuccessUpdateCartResponse())
+
+            viewModel.loadInitial(SOURCE)
+
+            collectFromSharedFlow(
+                whenAction = {
+                    viewModel.updateQuantity(updateParam, SOURCE, false)
+                },
+                then = {
+                    coVerify(exactly = 1) {
+                        loadCartTokoFoodUseCase.get()
+                    }
                     val expectedUiEventState = UiEvent.EVENT_SUCCESS_UPDATE_QUANTITY
                     assertEquals(expectedUiEventState, it)
                 }

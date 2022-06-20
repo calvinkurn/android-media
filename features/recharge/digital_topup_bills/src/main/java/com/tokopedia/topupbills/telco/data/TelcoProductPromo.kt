@@ -12,7 +12,7 @@ import kotlinx.android.parcel.Parcelize
 data class TelcoProductPromo(
         @SerializedName("id")
         @Expose
-        val id: Int = 0,
+        val id: String = "0",
         @SerializedName("bonus_text")
         @Expose
         val bonusText: String = "",

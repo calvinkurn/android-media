@@ -12,16 +12,19 @@ class MiniCartAccordionViewHolder(private val viewBinding: ItemMiniCartAccordion
 
     companion object {
         val LAYOUT = R.layout.item_mini_cart_accordion
+
+        private const val CHEVRON_ROTATION_0 = 0f
+        private const val CHEVRON_ROTATION_180 = 180f
     }
 
     override fun bind(element: MiniCartAccordionUiModel) {
         with(viewBinding) {
             if (element.isCollapsed) {
                 textAccordion.text = element.showMoreWording
-                imageChevron.rotation = 0f
+                imageChevron.rotation = CHEVRON_ROTATION_0
             } else {
                 textAccordion.text = element.showLessWording
-                imageChevron.rotation = 180f
+                imageChevron.rotation = CHEVRON_ROTATION_180
             }
             itemView.setOnClickListener {
                 listener.onToggleShowHideUnavailableItemsClicked()

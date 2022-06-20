@@ -318,7 +318,7 @@ fun createMerchantListResponse(): TokoFoodMerchantListResponse {
                     isClosed = true
                 )
             ),
-            nextPageKey = "2"
+            nextPageKey = "1"
         )
     )
 }

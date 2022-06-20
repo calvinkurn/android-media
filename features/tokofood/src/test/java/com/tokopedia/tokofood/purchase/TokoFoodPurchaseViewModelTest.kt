@@ -111,14 +111,14 @@ class TokoFoodPurchaseViewModelTest : TokoFoodPurchaseViewModelTestFixture() {
 
             val expectedFragmentUiModel =
                 TokoFoodPurchaseUiModelMapper.mapShopInfoToUiModel(successResponse.cartListTokofood.data.shop)
-            val expectedVisitables =
+            val expectedVisitablesCount =
                 TokoFoodPurchaseUiModelMapper.mapCheckoutResponseToUiModels(
                     successResponse.cartListTokofood,
                     successResponse.cartListTokofood.isEnabled(),
                     !isHasPinpoint
-                )
+                ).size
             assertEquals(expectedFragmentUiModel, viewModel.fragmentUiModel.value)
-            assertEquals(expectedVisitables, viewModel.visitables.value)
+            assertEquals(expectedVisitablesCount, viewModel.visitables.value?.size)
         }
     }
 

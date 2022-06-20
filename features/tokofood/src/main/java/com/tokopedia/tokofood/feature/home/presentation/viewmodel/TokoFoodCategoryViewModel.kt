@@ -43,7 +43,7 @@ class TokoFoodCategoryViewModel @Inject constructor(
     private var pageKey = INITIAL_PAGE_KEY_MERCHANT
 
     companion object {
-        private const val INITIAL_PAGE_KEY_MERCHANT = "1"
+        private const val INITIAL_PAGE_KEY_MERCHANT = "0"
     }
 
     fun getLoadingState() {

@@ -4,8 +4,7 @@ import android.content.res.Resources
 import android.graphics.Rect
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
-import com.elyeproj.loaderviewlibrary.LoaderTextView
-import com.tokopedia.unifycomponents.toPx
+import com.tokopedia.unifycomponents.LoaderUnify
 
 class RequestExtensionInfoItemDecoration : RecyclerView.ItemDecoration() {
 
@@ -15,7 +14,7 @@ class RequestExtensionInfoItemDecoration : RecyclerView.ItemDecoration() {
     }
 
     override fun getItemOffsets(outRect: Rect, view: View, parent: RecyclerView, state: RecyclerView.State) {
-        val margin = if (view is LoaderTextView) VERTICAL_MARGIN_BETWEEN_SHIMMER else VERTICAL_MARGIN_BETWEEN_VIEW
+        val margin = if (view is LoaderUnify) VERTICAL_MARGIN_BETWEEN_SHIMMER else VERTICAL_MARGIN_BETWEEN_VIEW
         view.setupVerticalMargins(margin.toPx())
     }
 

@@ -26,6 +26,7 @@ import com.tokopedia.play.broadcaster.view.state.PlayLiveViewState
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastViewModel
 import com.tokopedia.play.broadcaster.view.viewmodel.factory.PlayBroadcastViewModelFactory
 import com.tokopedia.play_common.model.result.NetworkResult
+import com.tokopedia.play_common.model.ui.PlayLeaderboardUiModel
 import com.tokopedia.play_common.model.ui.PlayWinnerUiModel
 import com.tokopedia.play_common.ui.leaderboard.adapter.PlayInteractiveLeaderboardAdapter
 import com.tokopedia.play_common.ui.leaderboard.viewholder.PlayInteractiveLeaderboardViewHolder
@@ -58,6 +59,10 @@ class PlayInteractiveLeaderBoardBottomSheet @Inject constructor(
                 winner.id,
                 winner.topChatMessage
             )
+        }
+
+        override fun onLeaderBoardImpressed(leaderboard: PlayLeaderboardUiModel) {
+            //TODO() [Bro] add tracker if any
         }
     })
     private val leaderboardAdapterObserver = object : RecyclerView.AdapterDataObserver() {

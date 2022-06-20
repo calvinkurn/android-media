@@ -1,7 +1,6 @@
 package com.tokopedia.tokofood.home
 
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
-import com.tokopedia.tokofood.common.util.Result
 import com.tokopedia.tokofood.data.createChooseAddress
 import com.tokopedia.tokofood.data.createDynamicIconsResponse
 import com.tokopedia.tokofood.data.createDynamicLegoBannerDataModel
@@ -24,23 +23,16 @@ import com.tokopedia.tokofood.data.createUSPModel
 import com.tokopedia.tokofood.data.createUSPResponse
 import com.tokopedia.tokofood.feature.home.domain.constanta.TokoFoodHomeStaticLayoutId
 import com.tokopedia.tokofood.feature.home.domain.constanta.TokoFoodHomeStaticLayoutId.Companion.CHOOSE_ADDRESS_WIDGET_ID
-import com.tokopedia.tokofood.feature.home.domain.constanta.TokoFoodHomeStaticLayoutId.Companion.EMPTY_STATE_OUT_OF_COVERAGE
-import com.tokopedia.tokofood.feature.home.domain.constanta.TokoFoodHomeStaticLayoutId.Companion.ERROR_STATE
 import com.tokopedia.tokofood.feature.home.domain.constanta.TokoFoodHomeStaticLayoutId.Companion.MERCHANT_TITLE
-import com.tokopedia.tokofood.feature.home.domain.constanta.TokoFoodHomeStaticLayoutId.Companion.PROGRESS_BAR
 import com.tokopedia.tokofood.feature.home.domain.constanta.TokoFoodLayoutItemState
 import com.tokopedia.tokofood.feature.home.domain.constanta.TokoFoodLayoutState.Companion.LOAD_MORE
-import com.tokopedia.tokofood.feature.home.domain.constanta.TokoFoodLayoutState.Companion.SHOW
 import com.tokopedia.tokofood.feature.home.domain.constanta.TokoFoodLayoutState.Companion.UPDATE
 import com.tokopedia.tokofood.feature.home.presentation.fragment.TokoFoodHomeFragment.Companion.SOURCE
-import com.tokopedia.tokofood.feature.home.presentation.uimodel.TokoFoodErrorStateUiModel
 import com.tokopedia.tokofood.feature.home.presentation.uimodel.TokoFoodHomeChooseAddressWidgetUiModel
-import com.tokopedia.tokofood.feature.home.presentation.uimodel.TokoFoodHomeEmptyStateLocationUiModel
 import com.tokopedia.tokofood.feature.home.presentation.uimodel.TokoFoodHomeMerchantTitleUiModel
 import com.tokopedia.tokofood.feature.home.presentation.uimodel.TokoFoodItemUiModel
 import com.tokopedia.tokofood.feature.home.presentation.uimodel.TokoFoodListUiModel
 import org.junit.Test
-import java.lang.NullPointerException
 
 class TokoFoodHomeViewModelTest: TokoFoodHomeViewModelTestFixture() {
 
@@ -459,7 +451,7 @@ class TokoFoodHomeViewModelTest: TokoFoodHomeViewModelTestFixture() {
 
         verifyGetHomeLayoutResponseSuccess(expectedResponse)
 
-        onGetMerchantList_thenReturn(createMerchantListResponse(), pageKey = "2")
+        onGetMerchantList_thenReturn(createMerchantListResponse(), pageKey = "1")
         viewModel.onScrollProductList(containLastItemIndex, itemCount, LocalCacheModel())
 
         val nextExpectedResponse = TokoFoodListUiModel(

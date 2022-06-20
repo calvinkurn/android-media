@@ -5,8 +5,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginStart="@dimen/spacing_lvl1"
-    android:layout_marginEnd="@dimen/spacing_lvl1">
+    android:layout_marginStart="2dp"
+    android:layout_marginEnd="2dp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -15,25 +15,26 @@
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tvTitleNonEligiblePowerMerchant"
-            android:layout_width="@dimen/layout_lvl0"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/spacing_lvl4"
+            android:layout_marginStart="16dp"
             android:layout_marginTop="12dp"
-            android:layout_marginEnd="@dimen/spacing_lvl4"
+            android:layout_marginEnd="16dp"
             android:text="@string/title_non_eligible_status_power_merchant"
             android:textColor="@color/Unify_N700_96"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:typographyType="heading_4" />
+            app:typographyType="body_2"
+            app:typographyWeight="bold" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tvDescNonEligiblePowerMerchant"
-            android:layout_width="@dimen/layout_lvl0"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/spacing_lvl4"
+            android:layout_marginStart="16dp"
             android:layout_marginTop="@dimen/spacing_lvl3"
-            android:layout_marginEnd="@dimen/spacing_lvl4"
+            android:layout_marginEnd="16dp"
             android:text="@string/desc_rm_not_eligible_all"
             android:textColor="@color/Unify_N700_68"
             app:layout_constraintEnd_toEndOf="parent"
@@ -43,11 +44,11 @@
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_shop_pm_potential"
-            android:layout_width="@dimen/layout_lvl0"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/spacing_lvl4"
+            android:layout_marginStart="16dp"
             android:layout_marginTop="12dp"
-            android:layout_marginEnd="@dimen/spacing_lvl4"
+            android:layout_marginEnd="16dp"
             android:text="@string/title_item_rm_section_not_eligible_all"
             android:textColor="@color/Unify_N700_96"
             app:layout_constraintEnd_toEndOf="parent"
@@ -57,13 +58,40 @@
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv_shop_pm_potential_benefit"
-            android:layout_width="@dimen/layout_lvl0"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="16dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="@id/tv_shop_pm_potential"
             app:layout_constraintTop_toBottomOf="@id/tv_shop_pm_potential"
+            app:layout_constraintVertical_bias="0"
+            tools:itemCount="3"
             tools:listitem="@layout/item_potential_pm_benefit" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tvSsCtaNonEligiblePm"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="10dp"
+            android:text="@string/see_all_benefit"
+            android:textColor="@color/Unify_GN500"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/rv_shop_pm_potential_benefit"
+            app:typographyType="body_2"
+            app:typographyWeight="bold" />
+
+        <com.tokopedia.iconunify.IconUnify
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_marginStart="4dp"
+            app:icon_name="CHEVRON_RIGHT"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/tvSsCtaNonEligiblePm"
+            app:layout_constraintTop_toTopOf="@+id/tvSsCtaNonEligiblePm" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

@@ -335,6 +335,8 @@ data class CheckoutTokoFoodProductVariantOption(
         // Deleted item.
         const val DELETED = 4
     }
+
+    fun isOutOfStock(): Boolean = status == OUT_OF_STOCK
 }
 
 data class CheckoutTokoFoodShipping(
