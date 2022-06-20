@@ -16,6 +16,7 @@ import com.tokopedia.usercomponents.explicit.domain.model.OptionsItem
 import com.tokopedia.usercomponents.explicit.domain.model.Property
 import com.tokopedia.usercomponents.explicit.domain.model.UpdateStateParam
 import com.tokopedia.usercomponents.explicit.domain.model.Template
+import com.tokopedia.utils.lifecycle.SingleLiveEvent
 import javax.inject.Inject
 
 class ExplicitViewModel @Inject constructor(
@@ -25,14 +26,17 @@ class ExplicitViewModel @Inject constructor(
     dispatchers: CoroutineDispatchers
 ) : BaseViewModel(dispatchers.main) {
 
-    private val _explicitContent = MutableLiveData<Result<Pair<Boolean, Property?>>>()
+    private val _explicitContent = SingleLiveEvent<Result<Pair<Boolean, Property?>>>()
     val explicitContent: LiveData<Result<Pair<Boolean, Property?>>> get() = _explicitContent
 
-    private val _statusSaveAnswer = MutableLiveData<Result<String>>()
+    private val _statusSaveAnswer = SingleLiveEvent<Result<String>>()
     val statusSaveAnswer: LiveData<Result<String>> get() = _statusSaveAnswer
 
-    private val _isQuestionLoading = MutableLiveData<Boolean>()
+    private val _isQuestionLoading = SingleLiveEvent<Boolean>()
     val isQuestionLoading: LiveData<Boolean> get() = _isQuestionLoading
+
+    private val _statusUpdateState = SingleLiveEvent<Boolean>()
+    val statusUpdateState: LiveData<Boolean> get() = _statusUpdateState
 
     private val preferenceAnswer = InputParam()
     private val preferenceUpdateState = UpdateStateParam()
@@ -96,7 +100,10 @@ class ExplicitViewModel @Inject constructor(
     fun updateState() {
         launchCatchError(coroutineContext, {
             updateStateUseCase(preferenceUpdateState)
-        }, {})
+            _statusUpdateState.value = true
+        }, {
+            _statusUpdateState.value = false
+        })
     }
 
 }

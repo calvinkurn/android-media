@@ -32,7 +32,7 @@ import com.tokopedia.usercomponents.explicit.domain.model.Property
 import com.tokopedia.usercomponents.explicit.view.viewmodel.ExplicitViewModel
 import javax.inject.Inject
 
-open class ExplicitView : CardUnify2, ExplicitAction {
+class ExplicitView : CardUnify2, ExplicitAction {
 
     @Inject
     lateinit var explicitAnalytics: ExplicitAnalytics
@@ -50,6 +50,9 @@ open class ExplicitView : CardUnify2, ExplicitAction {
     private var pagePath = ""
     private var pageType = ""
     private var preferenceAnswer: Boolean? = null
+
+    private var onWidgetDismissListener: OnWidgetDismissListener? = null
+    private var onWidgetFinishListener: OnWidgetFinishListener? = null
 
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs) {
         checkAttribute(attrs)
@@ -157,6 +160,10 @@ open class ExplicitView : CardUnify2, ExplicitAction {
             if (it) {
                 onLoading()
             }
+        }
+
+        viewModel?.statusUpdateState?.observe(lifecycleOwner) {
+            onWidgetFinishListener?.onFinish()
         }
     }
 
@@ -276,6 +283,7 @@ open class ExplicitView : CardUnify2, ExplicitAction {
     override fun onDismiss() {
         this.hide()
         onCleared()
+        onWidgetDismissListener?.onDismiss()
     }
 
     override fun onFailed() {
@@ -342,9 +350,28 @@ open class ExplicitView : CardUnify2, ExplicitAction {
         viewModel?.explicitContent?.removeObservers(lifecycleOwner)
         viewModel?.statusSaveAnswer?.removeObservers(lifecycleOwner)
         viewModel?.isQuestionLoading?.removeObservers(lifecycleOwner)
+        viewModel?.statusUpdateState?.removeObservers(lifecycleOwner)
         removeAllViews()
         bindingFailed = null
         bindingQuestion = null
         bindingSuccess = null
+    }
+
+    fun setOnWidgetDismissListener(listener: OnWidgetDismissListener) {
+        onWidgetDismissListener = listener
+    }
+
+    fun setOnWidgetFinishListener(listener: OnWidgetFinishListener) {
+        onWidgetFinishListener = listener
+    }
+
+    companion object {
+        interface OnWidgetDismissListener{
+            fun onDismiss()
+        }
+
+        interface OnWidgetFinishListener{
+            fun onFinish()
+        }
     }
 }

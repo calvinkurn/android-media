@@ -271,4 +271,32 @@ class ExplicitViewModelTest {
         }
     }
 
+    @Test
+    fun `send update state then response error`()  {
+        val preferenceUpdateState = UpdateStateParam()
+        val data = Throwable()
+
+        coEvery {
+            updateStateUseCase(preferenceUpdateState)
+        } throws data
+        viewModel.updateState()
+
+        val result = viewModel.statusUpdateState.value
+        assertTrue(false == result)
+    }
+
+    @Test
+    fun `send update state then response success`()  {
+        val preferenceUpdateState = UpdateStateParam()
+        val data = UpdateStateDataModel()
+
+        coEvery {
+            updateStateUseCase(preferenceUpdateState)
+        } returns data
+        viewModel.updateState()
+
+        val result = viewModel.statusUpdateState.value
+        assertTrue(true == result)
+    }
+
 }
