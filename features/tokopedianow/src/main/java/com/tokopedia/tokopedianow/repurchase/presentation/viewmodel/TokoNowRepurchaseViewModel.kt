@@ -337,7 +337,7 @@ class TokoNowRepurchaseViewModel @Inject constructor(
                 ) {
                     ServiceType.NOW_2H
                 } else {
-                    ServiceType.NOW_15M
+                    ServiceType.NOW_20M
                 }
 
                 val setUserPreference = setUserPreferenceUseCase.execute(it, serviceType)

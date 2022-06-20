@@ -1675,7 +1675,7 @@ class TokoNowRepurchaseViewModelTest: TokoNowRepurchaseViewModelTestFixture() {
 
         verifySetUserPreferenceUseCaseCalled(
             localCacheModel = localCacheModel,
-            serviceType = "15m"
+            serviceType = "20m"
         )
 
         viewModel.setUserPreference
@@ -1708,7 +1708,7 @@ class TokoNowRepurchaseViewModelTest: TokoNowRepurchaseViewModelTestFixture() {
 
         verifySetUserPreferenceUseCaseCalled(
             localCacheModel = localCacheModel,
-            serviceType = "15m"
+            serviceType = "20m"
         )
 
         viewModel.setUserPreference

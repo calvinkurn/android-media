@@ -649,20 +649,11 @@ class TokoNowHomeFragment: Fragment(),
     }
 
     private fun switchServiceOrLoadLayout() {
-        /*
-           Note :
-            - There are 2 types of external service we'll receive, those are 20m and 2h.
-            - 20m will be changed to 15m temporarily.
-            - 15m still used in LCA and BE as 20m service type.
-         */
-
         localCacheModel?.apply {
-            when(externalServiceType) {
-                if (service_type == NOW_15M) NOW_20M else NOW_2H -> loadLayout()
-                NOW_20M -> viewModelTokoNow.switchService(this, NOW_15M)
-                NOW_2H ->  viewModelTokoNow.switchService(this, NOW_2H)
-                else -> loadLayout()
-            }
+            viewModelTokoNow.switchServiceOrLoadLayout(
+                externalServiceType = externalServiceType,
+                localCacheModel = this
+            )
         }
     }
 

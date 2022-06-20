@@ -2624,7 +2624,7 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
         val localCacheModel = LocalCacheModel(
             service_type = "2h"
         )
-        val intendedServiceType = "15m"
+        val intendedServiceType = "20m"
         val error = NullPointerException()
 
         onSetUserPreference_thenReturn(error)
@@ -2635,7 +2635,7 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
 
         verifySetUserPreferenceUseCaseCalled(
             localCacheModel = localCacheModel,
-            serviceType = "15m"
+            serviceType = "20m"
         )
 
         viewModel.setUserPreference
@@ -2688,6 +2688,142 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
             isWarehouseIdZero = true
         )
         assertEquals(false, result)
+    }
+
+    @Test
+    fun `given current serviceType 2h and external serviceType 20m when switchService success should switch service to 15m`() {
+        val currentServiceType = "2h"
+
+        val localCacheModel = LocalCacheModel(
+            service_type = currentServiceType
+        )
+
+        val userPreferenceData = SetUserPreferenceData(
+            shopId = "1",
+            warehouseId = "3",
+            serviceType = "2h",
+            warehouses = listOf(
+                WarehouseData(
+                    warehouseId = "2",
+                    serviceType = "15m"
+                ),
+                WarehouseData(
+                    warehouseId = "3",
+                    serviceType = "2h"
+                )
+            )
+        )
+
+        onSetUserPreference_thenReturn(userPreferenceData)
+
+        viewModel.switchServiceOrLoadLayout("20m", localCacheModel)
+
+        val expectedResult = Success(SetUserPreferenceData(
+            shopId = "1",
+            warehouseId = "3",
+            serviceType = "2h",
+            warehouses = listOf(
+                WarehouseData(
+                    warehouseId = "2",
+                    serviceType = "15m"
+                ),
+                WarehouseData(
+                    warehouseId = "3",
+                    serviceType = "2h"
+                )
+            )
+        ))
+
+        verifySetUserPreferenceUseCaseCalled(
+            localCacheModel = localCacheModel,
+            serviceType = "20m"
+        )
+
+        viewModel.setUserPreference
+            .verifySuccessEquals(expectedResult)
+    }
+
+    @Test
+    fun `given current serviceType 15m and external serviceType 2h when switchService success should switch service to 2h`() {
+        val currentServiceType = "15m"
+
+        val localCacheModel = LocalCacheModel(
+            service_type = currentServiceType
+        )
+
+        val userPreferenceData = SetUserPreferenceData(
+            shopId = "1",
+            warehouseId = "2",
+            serviceType = "15m",
+            warehouses = listOf(
+                WarehouseData(
+                    warehouseId = "2",
+                    serviceType = "15m"
+                ),
+                WarehouseData(
+                    warehouseId = "3",
+                    serviceType = "2h"
+                )
+            )
+        )
+
+        onSetUserPreference_thenReturn(userPreferenceData)
+
+        viewModel.switchServiceOrLoadLayout("2h", localCacheModel)
+
+        val expectedResult = Success(SetUserPreferenceData(
+            shopId = "1",
+            warehouseId = "2",
+            serviceType = "15m",
+            warehouses = listOf(
+                WarehouseData(
+                    warehouseId = "2",
+                    serviceType = "15m"
+                ),
+                WarehouseData(
+                    warehouseId = "3",
+                    serviceType = "2h"
+                )
+            )
+        ))
+
+        verifySetUserPreferenceUseCaseCalled(
+            localCacheModel = localCacheModel,
+            serviceType = "2h"
+        )
+
+        viewModel.setUserPreference
+            .verifySuccessEquals(expectedResult)
+    }
+
+    @Test
+    fun `when external serviceType empty should not switch service`() {
+        val currentServiceType = "15m"
+
+        val localCacheModel = LocalCacheModel(
+            service_type = currentServiceType
+        )
+
+        viewModel.switchServiceOrLoadLayout("", localCacheModel)
+
+        val expectedResponse = createLoadingState()
+
+        verifyGetHomeLayoutResponseSuccess(expectedResponse)
+    }
+
+    @Test
+    fun `when external serviceType equals to current serviceType should not switch service`() {
+        val currentServiceType = "2h"
+
+        val localCacheModel = LocalCacheModel(
+            service_type = currentServiceType
+        )
+
+        viewModel.switchServiceOrLoadLayout("2h", localCacheModel)
+
+        val expectedResponse = createLoadingState()
+
+        verifyGetHomeLayoutResponseSuccess(expectedResponse)
     }
 
     @Test
@@ -2818,7 +2954,7 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
 
         verifySetUserPreferenceUseCaseCalled(
             localCacheModel = localCacheModel,
-            serviceType = "15m"
+            serviceType = "20m"
         )
 
         viewModel.setUserPreference
@@ -2840,7 +2976,7 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
 
         verifySetUserPreferenceUseCaseCalled(
             localCacheModel = localCacheModel,
-            serviceType = "15m"
+            serviceType = "20m"
         )
 
         viewModel.setUserPreference

@@ -89,7 +89,7 @@ class CategorySwitchServiceTest: CategoryTestFixtures() {
         `When view reload page`()
         `When switch service called`()
 
-        `Then verify user preference use case called`(localCacheModel, "15m")
+        `Then verify user preference use case called`(localCacheModel, "20m")
         `Then verify the data`(userPreferenceResponse.data)
     }
 
@@ -148,7 +148,7 @@ class CategorySwitchServiceTest: CategoryTestFixtures() {
         `When view reload page`()
         `When switch service called`()
 
-        `Then verify user preference use case called`(localCacheModel, "15m")
+        `Then verify user preference use case called`(localCacheModel, "20m")
         `Then verify the data`(Throwable(message = "something went right"))
     }
 
