@@ -294,7 +294,7 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
     private void doTopAdsOperation(Uri uriData) {
         Uri.Builder newUri = uriData.buildUpon().appendQueryParameter("uid", userSession.getUserId());
         String redirectionUrl = uriData.getQueryParameter("r");
-        new TopAdsUrlHitter(context).hitClickUrl(this.getClass().getCanonicalName(), newUri.toString(),"","","")
+        new TopAdsUrlHitter(context).hitClickUrl(this.getClass().getCanonicalName(), newUri.toString(),"","","");
     }
 
     private void openSaldoDeposit() {
