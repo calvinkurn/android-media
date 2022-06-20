@@ -247,7 +247,7 @@ class PlayViewModel @AssistedInject constructor(
     private val _addressUiState = combine(_partnerInfo, _warehouseInfo){ partnerInfo, warehouseInfo ->
         AddressWidgetUiState(
             warehouseInfo = warehouseInfo,
-            shouldShow = true
+            shouldShow = partnerInfo.type == PartnerType.Tokonow && warehouseInfo.isOOC && (channelType.isLive || channelType.isVod)
         )
     }
 
