@@ -104,7 +104,7 @@ class ShopProductFragment @Inject constructor(
     private fun setupAnalytic() {
         impressionCoordinator.setInitialData(
             viewModel.selectedTagSource,
-            false,
+            isEntryPoint = false,
         )
     }
 

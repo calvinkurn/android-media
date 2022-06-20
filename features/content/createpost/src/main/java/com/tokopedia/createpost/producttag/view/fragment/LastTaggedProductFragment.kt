@@ -50,7 +50,7 @@ class LastTaggedProductFragment @Inject constructor(
                     viewModel.selectedTagSource,
                     product,
                     position,
-                    true
+                    isEntryPoint = true,
                 )
                 viewModel.submitAction(ProductTagAction.ProductSelected(product))
             },
@@ -106,7 +106,7 @@ class LastTaggedProductFragment @Inject constructor(
     private fun setupAnalytic() {
         impressionCoordinator.setInitialData(
             viewModel.selectedTagSource,
-            true,
+            isEntryPoint = true,
         )
     }
 

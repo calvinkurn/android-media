@@ -47,7 +47,7 @@ class LastPurchasedProductFragment @Inject constructor(
                     viewModel.selectedTagSource,
                     product,
                     position,
-                    true
+                    isEntryPoint = true,
                 )
                 viewModel.submitAction(ProductTagAction.ProductSelected(product))
              },

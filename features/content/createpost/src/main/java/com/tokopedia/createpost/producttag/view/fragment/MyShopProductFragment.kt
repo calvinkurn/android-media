@@ -60,7 +60,7 @@ class MyShopProductFragment @Inject constructor(
                     viewModel.selectedTagSource,
                     product,
                     position,
-                    viewModel.myShopQuery.isEmpty()
+                    isEntryPoint = viewModel.myShopQuery.isEmpty()
                 )
                 viewModel.submitAction(ProductTagAction.ProductSelected(product))
             },
@@ -134,7 +134,7 @@ class MyShopProductFragment @Inject constructor(
     private fun setupAnalytic() {
         impressionCoordinator.setInitialData(
             viewModel.selectedTagSource,
-            true,
+            isEntryPoint = true,
         )
     }
 
@@ -170,7 +170,7 @@ class MyShopProductFragment @Inject constructor(
                 impressionCoordinator.sendProductImpress()
                 impressionCoordinator.setInitialData(
                     viewModel.selectedTagSource,
-                    query.isEmpty()
+                    isEntryPoint = query.isEmpty(),
                 )
 
                 submitQuery(query)
