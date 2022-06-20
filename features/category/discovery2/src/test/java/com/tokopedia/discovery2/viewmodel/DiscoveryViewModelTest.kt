@@ -1,18 +1,26 @@
 package com.tokopedia.discovery2.viewmodel
 
+import android.content.Context
 import android.net.Uri
 import android.os.Bundle
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.DeeplinkMapper
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase
 import com.tokopedia.cartcommon.domain.usecase.DeleteCartUseCase
 import com.tokopedia.cartcommon.domain.usecase.UpdateCartUseCase
+import com.tokopedia.discovery.common.utils.URLParser
 import com.tokopedia.discovery2.CONSTANT_0
 import com.tokopedia.discovery2.CONSTANT_11
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.data.PageInfo
+import com.tokopedia.discovery2.data.customtopchatdatamodel.ChatExistingChat
+import com.tokopedia.discovery2.data.customtopchatdatamodel.CustomChatResponse
 import com.tokopedia.discovery2.data.productcarditem.DiscoATCRequestParams
 import com.tokopedia.discovery2.datamapper.DiscoveryPageData
+import com.tokopedia.discovery2.usecase.CustomTopChatUseCase
 import com.tokopedia.discovery2.usecase.discoveryPageUseCase.DiscoveryDataUseCase
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity
 import com.tokopedia.discovery2.viewmodel.livestate.GoToAgeRestriction
@@ -49,6 +57,11 @@ class DiscoveryViewModelTest {
     private lateinit var pageLoadTimePerformanceInterface: PageLoadTimePerformanceInterface
 
     private lateinit var viewModel: DiscoveryViewModel
+    private var context: Context = mockk()
+
+    private val customTopChatUseCase: CustomTopChatUseCase by lazy {
+        mockk()
+    }
 
     @Before
     @Throws(Exception::class)
@@ -73,6 +86,10 @@ class DiscoveryViewModelTest {
                 userSessionInterface,
                 trackingQueue,
                 pageLoadTimePerformanceInterface))
+
+        mockkConstructor(RouteManager::class)
+        mockkConstructor(URLParser::class)
+        mockkObject(DeeplinkMapper)
     }
 
     /**************************** test for addProductToCart() *******************************************/
@@ -227,6 +244,7 @@ class DiscoveryViewModelTest {
         val pageInfo: PageInfo = mockk(relaxed = true)
         val localCacheModel: LocalCacheModel = mockk(relaxed = true)
         coEvery { pageInfo.redirectionUrl } returns "tokopedia://discovery/test-campaign-7"
+        coEvery { pageInfo.showChooseAddress } returns true
         coEvery { discoveryPageData.pageInfo } returns pageInfo
         coEvery {
             discoveryDataUseCase.getDiscoveryPageDataUseCase(any(),any(),any())
@@ -235,6 +253,7 @@ class DiscoveryViewModelTest {
         viewModel.getDiscoveryData(mutableMapOf(),localCacheModel)
 
         TestCase.assertEquals(viewModel.getDiscoveryLiveStateData().value , RouteToApplink("tokopedia://discovery/test-campaign-7"))
+        TestCase.assertEquals(viewModel.checkAddressVisibility().value,true)
     }
 
     @Test
@@ -353,11 +372,80 @@ class DiscoveryViewModelTest {
         TestCase.assertEquals(viewModel.getShareUTM(pageInfo), "-0")
     }
 
+    /**************************** test for getMiniCart() *******************************************/
+    @Test
+    fun `test for getMiniCart`() {
+        val shopIds : ArrayList<String> = arrayListOf("1","2")
+        every { userSessionInterface.isLoggedIn } returns true
+
+        viewModel.getMiniCart(shopIds, "2")
+
+        verify { getMiniCartListSimplifiedUseCase.setParams(any(),any()) }
+    }
+
+    /**************************** test for getScrollDepth() *******************************************/
+    @Test
+    fun `test for getScrollDepth when range is greater than 0`() {
+        viewModel.getScrollDepth(offset = 2, extent = 2, range = 2)
+
+        TestCase.assertEquals( viewModel.getScrollDepth(offset = 2, extent = 2, range = 2),200)
+    }
+
+    @Test
+    fun `test for getScrollDepth when range is smaller than 0`() {
+        viewModel.getScrollDepth(offset = 2, extent = 2, range = -2)
+
+        TestCase.assertEquals( viewModel.getScrollDepth(offset = 2, extent = 2, range = -2),0)
+    }
+
+    /**************************** test for updateScroll() *******************************************/
+    @Test
+    fun `test for updateScroll`() {
+        viewModel.updateScroll(100,100,2,true)
+
+        TestCase.assertEquals( viewModel.scrollState.value != null,true)
+    }
+
+    /**************************** test for resetScroll() *******************************************/
+    @Test
+    fun `test for resetScroll`() {
+        viewModel.resetScroll()
+
+        TestCase.assertEquals( viewModel.scrollState.value == null,true)
+    }
+
+    /**************************** test for openCustomTopChat() *******************************************/
+//    @Test
+//    fun `test for openCustomTopChat when isLoggedIn is false`() {
+//        every { userSessionInterface.isLoggedIn } returns false
+//
+//        viewModel.openCustomTopChat(context = context, appLinks = "tokopedia://discovery/test-campaign-2", shopId = 2)
+//
+//        verify { RouteManager.route(context, ApplinkConst.LOGIN) }
+//    }
+
+//    @Test
+//    fun `test for openCustomTopChat when isLoggedIn is true`() {
+//        viewModel.customTopChatUseCase = customTopChatUseCase
+//        val customChatResponse : CustomChatResponse = mockk(relaxed = true)
+//        val chatExistingChat: ChatExistingChat = mockk(relaxed = true)
+//        every { customChatResponse.chatExistingChat } returns chatExistingChat
+//        every { chatExistingChat.messageId } returns 1
+//        every { userSessionInterface.isLoggedIn } returns true
+//        coEvery { customTopChatUseCase.getCustomTopChatMessageId(any())} returns customChatResponse
+//
+//        viewModel.openCustomTopChat(context = context, appLinks = "tokopedia://discovery/test-campaign-7", shopId = 23)
+//
+//        verify { RouteManager.route(context, ApplinkConst.LOGIN) }
+//    }
+
     @After
     @Throws(Exception::class)
     fun tearDown() {
         Dispatchers.resetMain()
-
+        unmockkConstructor(RouteManager::class)
+        unmockkConstructor(URLParser::class)
+        unmockkObject(DeeplinkMapper)
         com.tokopedia.discovery2.datamapper.discoComponentQuery = null
     }
 
