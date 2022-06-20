@@ -322,7 +322,7 @@ class UploadPrescriptionFragment : BaseDaggerFragment() , EPharmacyListener {
     }
 
     override fun onPrescriptionReLoadButtonClick(adapterPosition: Int, image: PrescriptionImage) {
-        uploadPrescriptionViewModel.uploadImageWithPath((adapterPosition + 1) ,image.localPath ?: "")
+        uploadPrescriptionViewModel.reUploadPrescriptionImage((adapterPosition) ,image.localPath ?: "")
     }
 
 }

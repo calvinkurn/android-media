@@ -5,7 +5,9 @@ import com.tokopedia.common.network.coroutines.usecase.RestRequestUseCase
 import com.tokopedia.common.network.data.model.RequestType
 import com.tokopedia.common.network.data.model.RestRequest
 import com.tokopedia.common.network.data.model.RestResponse
+import com.tokopedia.epharmacy.network.request.UploadPrescriptionRequest
 import com.tokopedia.epharmacy.network.response.EPharmacyPrescriptionUploadResponse
+import com.tokopedia.user.session.UserSessionInterface
 import java.lang.reflect.Type
 import javax.inject.Inject
 
@@ -17,25 +19,19 @@ class UploadPrescriptionUseCase @Inject constructor(
     private var id = ""
     override suspend fun executeOnBackground(): Map<Type, RestResponse> {
         val restRequest = RestRequest.Builder(ENDPOINT_URL, EPharmacyPrescriptionUploadResponse::class.java)
-            .setQueryParams(queryParams = generateRequestParam())
-            .setRequestType(RequestType.GET)
+            .setBody(getUploadPrescriptionBody())
+            .setRequestType(RequestType.POST)
             .build()
         restRequestList.clear()
         restRequestList.add(restRequest)
         return repository.getResponses(restRequestList)
     }
 
-    private fun generateRequestParam(): Map<String, Any> {
-        val requestParamMap = mutableMapOf<String, Any>()
-        requestParamMap[KEY_PRESCRIPTION] = arrayListOf<Any>().apply {
-            mutableMapOf<String,Any>().apply {
-                put(KEY_ID,id)
-                put(KEY_DATA,base64Image)
-                put(KEY_FORMAT,KEY_FORMAT_VALUE)
-                put(KEY_SOURCE,KEY_SOURCE_VALUE)
-            }
-        }
-        return requestParamMap
+    private fun getUploadPrescriptionBody(): UploadPrescriptionRequest{
+        return UploadPrescriptionRequest(arrayListOf(
+            UploadPrescriptionRequest.PrescriptionRequest(
+            base64Image,"", KEY_FORMAT_VALUE,id, KEY_SOURCE_VALUE
+        )))
     }
 
     fun setBase64Image(id : String, imageBase64: String) {
@@ -47,12 +43,7 @@ class UploadPrescriptionUseCase @Inject constructor(
     }
 
     companion object {
-        const val ENDPOINT_URL = "https://api-staging.tokopedia.com/epharmacy/"
-        const val KEY_PRESCRIPTION="prescriptions"
-        const val KEY_ID="id"
-        const val KEY_DATA="data"
-        const val KEY_FORMAT="format"
-        const val KEY_SOURCE="source"
+        const val ENDPOINT_URL = "https://api-staging.tokopedia.com/epharmacy/prescription/upload"
         const val KEY_FORMAT_VALUE=""
         const val KEY_SOURCE_VALUE="BUYER"
     }

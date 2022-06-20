@@ -11,6 +11,7 @@ import com.tokopedia.epharmacy.component.BaseEPharmacyDataModel
 import com.tokopedia.epharmacy.component.model.EPharmacyDataModel
 import com.tokopedia.epharmacy.component.model.EPharmacyPrescriptionDataModel
 import com.tokopedia.epharmacy.component.model.EPharmacyProductDataModel
+import com.tokopedia.epharmacy.component.model.EPharmacyStaticInfoDataModel
 import com.tokopedia.epharmacy.di.qualifier.CoroutineBackgroundDispatcher
 import com.tokopedia.epharmacy.network.response.EPharmacyDataResponse
 import com.tokopedia.epharmacy.network.response.EPharmacyPrescriptionUploadResponse
@@ -29,6 +30,7 @@ import com.tokopedia.usecase.launch_cache_error.launchCatchError
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
 import java.io.ByteArrayOutputStream
+import java.lang.Exception
 import java.lang.reflect.Type
 import javax.inject.Inject
 
@@ -97,47 +99,71 @@ class UploadPrescriptionViewModel @Inject constructor(
 
     fun addSelectedPrescriptionImages(originalPaths: List<String>) {
         _prescriptionImages.value.let {
-            originalPaths.forEach { path ->
-                it?.add(PrescriptionImage("","","","",
-                    EPharmacyPrescriptionStatus.SELECTED.status,
-                    true,
-                    false,
-                    true,
-                    false, GALLERY_IMAGE_VIEW_TYPE,path
-                ))
-                // Fire corresponding coroutines for upload
-                uploadImageWithPath((_prescriptionImages.value?.size ?: 0 + 1),path)
+            originalPaths.forEach { localPath ->
+                changeToLoadingState(it,localPath)
+                uploadImageWithPath((_prescriptionImages.value?.size ?: 0) - 1,localPath)
             }
 
             _prescriptionImages.postValue(it)
         }
     }
 
-    fun uploadImageWithPath(uniquePositionId : Int ,path: String) {
-        // coroutine use case
-        // await callback
-        // save in pres images and post value
+    fun reUploadPrescriptionImage(uniquePositionId : Int ,localPath: String) {
+        _prescriptionImages.value?.let {
+            changeToLoadingState(it,uniquePositionId)
+            uploadImageWithPath(uniquePositionId, localPath)
+            _prescriptionImages.postValue(it)
+        }
+    }
 
+    private fun changeToLoadingState(arrayList: ArrayList<PrescriptionImage?>?, localPath :String) {
+        arrayList?.add(PrescriptionImage("","","","",
+            EPharmacyPrescriptionStatus.SELECTED.status,
+            isUploading = true,
+            isUploadSuccess = false,
+            isDeletable = true,
+            isUploadFailed = false, GALLERY_IMAGE_VIEW_TYPE, localPath
+        ))
+    }
+
+    private fun changeToLoadingState(arrayList: ArrayList<PrescriptionImage?>?, position  :Int) {
+        arrayList?.get(position)?.apply {
+            isUploadSuccess = false
+            isUploading = true
+            isUploadFailed = false
+        }
+        _prescriptionImages.postValue(arrayList)
+    }
+
+    private fun uploadImageWithPath(uniquePositionId : Int, path: String) {
         launchCatchError(block = {
-            val base64Image = getBase64OfPrescriptionImage(path)
-            uploadImageToServer(uniquePositionId,base64Image)
+            uploadImageToServer(uniquePositionId, path)
         }, onError = {
-
+            uploadFailed(uniquePositionId , it)
         })
 
     }
 
-    private suspend fun getBase64OfPrescriptionImage(localPath: String): String {
-        val prescriptionImageBitmap: Bitmap = BitmapFactory.decodeFile(localPath)
-        val prescriptionByteArrayOutputStream = ByteArrayOutputStream()
-        prescriptionImageBitmap.compress(Bitmap.CompressFormat.JPEG, 100, prescriptionByteArrayOutputStream)
-        val byteArrayImage = prescriptionByteArrayOutputStream.toByteArray()
-        prescriptionImageBitmap.recycle()
-        return Base64.encodeToString(byteArrayImage, Base64.DEFAULT)
+    private fun getBase64OfPrescriptionImage(localFilePath: String): String {
+        return try {
+            val prescriptionImageBitmap: Bitmap = BitmapFactory.decodeFile(localFilePath)
+            val prescriptionByteArrayOutputStream = ByteArrayOutputStream()
+            prescriptionImageBitmap.compress(
+                Bitmap.CompressFormat.JPEG,
+                100,
+                prescriptionByteArrayOutputStream
+            )
+            val byteArrayImage = prescriptionByteArrayOutputStream.toByteArray()
+            prescriptionImageBitmap.recycle()
+            Base64.encodeToString(byteArrayImage, Base64.DEFAULT)
+        }catch (e : Exception){
+            ""
+        }
     }
 
-    private suspend fun uploadImageToServer(uniquePositionId : Int, base64Image: String) {
-        launchCatchError(block = {
+    private suspend fun uploadImageToServer(uniquePositionId: Int, localFilePath : String) {
+        val base64Image = getBase64OfPrescriptionImage(localFilePath)
+        if (base64Image.isNotBlank()){
             uploadPrescriptionUseCase.setBase64Image(uniquePositionId.toString(),base64Image)
             val result = withContext(dispatcher) {
                 convertToYoutubeResponse(uploadPrescriptionUseCase.executeOnBackground())
@@ -154,14 +180,18 @@ class UploadPrescriptionViewModel @Inject constructor(
                 }
             }
             _prescriptionImages.postValue(_prescriptionImages.value)
-        }, onError = {
-            _prescriptionImages.value?.get(uniquePositionId)?.apply {
-                isUploadSuccess = false
-                isUploading = false
-                isUploadFailed = true
-            }
-            _prescriptionImages.postValue(_prescriptionImages.value)
-        })
+        }else {
+
+        }
+    }
+
+    private fun uploadFailed(uniquePositionId : Int, exception : Throwable){
+        _prescriptionImages.value?.get(uniquePositionId)?.apply {
+            isUploadSuccess = false
+            isUploading = false
+            isUploadFailed = true
+        }
+        _prescriptionImages.postValue(_prescriptionImages.value)
     }
 
     private fun convertToYoutubeResponse(typeRestResponseMap: Map<Type, RestResponse>):  EPharmacyPrescriptionUploadResponse{

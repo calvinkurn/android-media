@@ -9,6 +9,7 @@ const val ERROR_MAX_MEDIA_ITEM = 2
 
 const val MEDIA_PICKER_REQUEST_CODE = 1020
 
+const val STATIC_INFO_COMPONENT = "static info component"
 const val PRESCRIPTION_COMPONENT = "prescription component"
 const val POSITION_PRESCRIPTION_COMPONENT = 0
 

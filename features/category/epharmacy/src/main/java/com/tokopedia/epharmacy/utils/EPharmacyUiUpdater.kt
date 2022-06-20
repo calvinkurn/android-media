@@ -2,10 +2,15 @@ package com.tokopedia.epharmacy.utils
 
 import com.tokopedia.epharmacy.component.BaseEPharmacyDataModel
 import com.tokopedia.epharmacy.component.model.EPharmacyPrescriptionDataModel
+import com.tokopedia.epharmacy.component.model.EPharmacyStaticInfoDataModel
 
 class EPharmacyUiUpdater(var mapOfData: MutableMap<String, BaseEPharmacyDataModel>) {
 
     init {
+        updateModel(
+            EPharmacyStaticInfoDataModel(STATIC_INFO_COMPONENT,
+                STATIC_INFO_COMPONENT)
+        )
         updateModel(EPharmacyPrescriptionDataModel(PRESCRIPTION_COMPONENT,
             PRESCRIPTION_COMPONENT, arrayListOf()))
     }

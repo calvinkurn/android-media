@@ -8,10 +8,16 @@ import com.tokopedia.epharmacy.adapters.EPharmacyListener
 import com.tokopedia.epharmacy.component.BaseEPharmacyDataModel
 import com.tokopedia.epharmacy.component.model.EPharmacyPrescriptionDataModel
 import com.tokopedia.epharmacy.component.model.EPharmacyProductDataModel
+import com.tokopedia.epharmacy.component.model.EPharmacyStaticInfoDataModel
 import com.tokopedia.epharmacy.component.viewholder.EPharmacyPrescriptionViewHolder
 import com.tokopedia.epharmacy.component.viewholder.EPharmacyProductViewHolder
+import com.tokopedia.epharmacy.component.viewholder.EPharmacyStaticInfoViewHolder
 
 class EPharmacyAdapterFactoryImpl(private val ePharmacyListener: EPharmacyListener?) : BaseAdapterTypeFactory() , EPharmacyAdapterFactory {
+
+    override fun type(data: EPharmacyStaticInfoDataModel): Int {
+        return EPharmacyStaticInfoViewHolder.LAYOUT
+    }
 
     override fun type(data: EPharmacyPrescriptionDataModel): Int {
         return EPharmacyPrescriptionViewHolder.LAYOUT
@@ -23,6 +29,7 @@ class EPharmacyAdapterFactoryImpl(private val ePharmacyListener: EPharmacyListen
 
     override fun createViewHolder(view: View, type: Int): AbstractViewHolder<*> {
         return when (type){
+            EPharmacyStaticInfoViewHolder.LAYOUT -> EPharmacyStaticInfoViewHolder(view, ePharmacyListener)
             EPharmacyPrescriptionViewHolder.LAYOUT -> EPharmacyPrescriptionViewHolder(view, ePharmacyListener)
             EPharmacyProductViewHolder.LAYOUT -> EPharmacyProductViewHolder(view, ePharmacyListener)
             else -> super.createViewHolder(view,type)

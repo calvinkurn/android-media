@@ -55,16 +55,16 @@ class EPharmacyPrescriptionGalleryItemViewHolder(private val viewItem: View) : R
     }
 
     private fun renderImageUi(model: PrescriptionImage) {
-        model.data?.let {
-            val imgByteArray: ByteArray = Base64.decode(it, Base64.DEFAULT)
+        if(!model.data.isNullOrBlank()){
+            val imgByteArray: ByteArray = Base64.decode(model.data, Base64.DEFAULT)
             Glide.with(viewItem.context)
                 .asBitmap()
                 .load(imgByteArray)
                 .into(image)
-        }
-
-        model.localPath?.let {
-            image.loadImage(it)
+        }else {
+            model.localPath?.let {
+                image.loadImage(it)
+            }
         }
     }
 
