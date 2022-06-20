@@ -27,7 +27,7 @@ class SomListGetFilterListUseCase @Inject constructor(
         val errors = gqlResponse.getError(SomListFilterResponse.Data::class.java)
         if (errors.isNullOrEmpty()) {
             val response = gqlResponse.getData<SomListFilterResponse.Data>()
-            return mapper.mapResponseToUiModel(response.orderFilterSom, useCache)
+            return mapper.mapResponseToUiModel(response, useCache)
         } else {
             throw RuntimeException(errors.joinToString(", ") { it.message })
         }
@@ -51,6 +51,11 @@ class SomListGetFilterListUseCase @Inject constructor(
                     is_checked
                   }
                 }
+              }
+              orderTypeList {
+                id
+                key
+                name
               }
               status
             }

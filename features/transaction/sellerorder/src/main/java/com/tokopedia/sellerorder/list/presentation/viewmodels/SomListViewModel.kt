@@ -7,18 +7,49 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.orZero
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.sellerorder.common.domain.model.SomRejectRequestParam
-import com.tokopedia.sellerorder.common.domain.usecase.*
+import com.tokopedia.sellerorder.common.domain.usecase.SomAcceptOrderUseCase
+import com.tokopedia.sellerorder.common.domain.usecase.SomEditRefNumUseCase
+import com.tokopedia.sellerorder.common.domain.usecase.SomRejectCancelOrderUseCase
+import com.tokopedia.sellerorder.common.domain.usecase.SomRejectOrderUseCase
+import com.tokopedia.sellerorder.common.domain.usecase.SomValidateOrderUseCase
 import com.tokopedia.sellerorder.common.presenter.viewmodel.SomOrderBaseViewModel
 import com.tokopedia.sellerorder.common.util.BulkRequestPickupStatus
 import com.tokopedia.sellerorder.common.util.SomConsts
+import com.tokopedia.sellerorder.filter.presentation.model.SomFilterUiModel
 import com.tokopedia.sellerorder.list.domain.model.SomListBulkGetBulkAcceptOrderStatusParam
 import com.tokopedia.sellerorder.list.domain.model.SomListGetOrderListParam
 import com.tokopedia.sellerorder.list.domain.model.SomListGetTickerParam
-import com.tokopedia.sellerorder.list.domain.usecases.*
-import com.tokopedia.sellerorder.list.presentation.models.*
+import com.tokopedia.sellerorder.list.domain.usecases.SomListBulkAcceptOrderUseCase
+import com.tokopedia.sellerorder.list.domain.usecases.SomListBulkRequestPickupUseCase
+import com.tokopedia.sellerorder.list.domain.usecases.SomListGetBulkAcceptOrderStatusUseCase
+import com.tokopedia.sellerorder.list.domain.usecases.SomListGetFilterListUseCase
+import com.tokopedia.sellerorder.list.domain.usecases.SomListGetMultiShippingStatusUseCase
+import com.tokopedia.sellerorder.list.domain.usecases.SomListGetOrderListUseCase
+import com.tokopedia.sellerorder.list.domain.usecases.SomListGetTickerUseCase
+import com.tokopedia.sellerorder.list.domain.usecases.SomListGetTopAdsCategoryUseCase
+import com.tokopedia.sellerorder.list.domain.usecases.SomListGetWaitingPaymentUseCase
+import com.tokopedia.sellerorder.list.presentation.models.AllFailEligible
+import com.tokopedia.sellerorder.list.presentation.models.AllNotEligible
+import com.tokopedia.sellerorder.list.presentation.models.AllSuccess
+import com.tokopedia.sellerorder.list.presentation.models.AllValidationFail
+import com.tokopedia.sellerorder.list.presentation.models.BulkRequestPickupResultState
+import com.tokopedia.sellerorder.list.presentation.models.FailRetry
+import com.tokopedia.sellerorder.list.presentation.models.MultiShippingStatusUiModel
+import com.tokopedia.sellerorder.list.presentation.models.NotEligibleAndFail
+import com.tokopedia.sellerorder.list.presentation.models.OptionalOrderData
+import com.tokopedia.sellerorder.list.presentation.models.PartialSuccess
+import com.tokopedia.sellerorder.list.presentation.models.PartialSuccessNotEligible
+import com.tokopedia.sellerorder.list.presentation.models.PartialSuccessNotEligibleFail
+import com.tokopedia.sellerorder.list.presentation.models.RefreshOrder
+import com.tokopedia.sellerorder.list.presentation.models.ServerFail
+import com.tokopedia.sellerorder.list.presentation.models.SomListBulkAcceptOrderStatusUiModel
+import com.tokopedia.sellerorder.list.presentation.models.SomListBulkAcceptOrderUiModel
+import com.tokopedia.sellerorder.list.presentation.models.SomListBulkRequestPickupUiModel
+import com.tokopedia.sellerorder.list.presentation.models.SomListFilterUiModel
+import com.tokopedia.sellerorder.list.presentation.models.SomListOrderUiModel
+import com.tokopedia.sellerorder.list.presentation.models.WaitingPaymentCounter
 import com.tokopedia.shop.common.constant.AccessId
 import com.tokopedia.shop.common.domain.interactor.AuthorizeAccessUseCase
 import com.tokopedia.unifycomponents.ticker.TickerData
@@ -31,7 +62,6 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
-import kotlin.collections.ArrayList
 
 class SomListViewModel @Inject constructor(
     somAcceptOrderUseCase: SomAcceptOrderUseCase,
@@ -179,6 +209,8 @@ class SomListViewModel @Inject constructor(
     }
 
     private var getOrderListParams = SomListGetOrderListParam()
+    private var somFilterUiModelList: MutableList<SomFilterUiModel> = mutableListOf()
+    private var orderTypeFilterFromAppLink: Long = 0L
 
     var isMultiSelectEnabled: Boolean = false
     var containsFailedRefreshOrder: Boolean = false
@@ -492,6 +524,12 @@ class SomListViewModel @Inject constructor(
             launchCatchError(context = dispatcher.main, block = {
                 if (_canShowOrderData.value == true) {
                     val result = somListGetFilterListUseCase.executeOnBackground(true)
+                    val currentFilterData = _filterResult.value?.let {
+                        if (it is Success) {
+                            it.data
+                        } else null
+                    }
+                    result.mergeWithCurrent(currentFilterData, orderTypeFilterFromAppLink)
                     result.refreshOrder = refreshOrders
                     _filterResult.value = Success(result)
                 }
@@ -500,6 +538,12 @@ class SomListViewModel @Inject constructor(
         launchCatchError(context = dispatcher.main, block = {
             if (_canShowOrderData.value == true) {
                 val result = somListGetFilterListUseCase.executeOnBackground(false)
+                val currentFilterData = _filterResult.value?.let {
+                    if (it is Success) {
+                        it.data
+                    } else null
+                }
+                result.mergeWithCurrent(currentFilterData, orderTypeFilterFromAppLink)
                 result.refreshOrder = refreshOrders
                 _filterResult.value = Success(result)
             }
@@ -615,6 +659,33 @@ class SomListViewModel @Inject constructor(
         this.getOrderListParams.orderTypeList = orderTypes
     }
 
+    fun addOrderTypeFilter(orderType: Long) {
+        this.getOrderListParams.orderTypeList.add(orderType)
+        somFilterUiModelList.find {
+            it.nameFilter == SomConsts.FILTER_TYPE_ORDER
+        }?.somFilterData?.find { it.id == orderType }?.isSelected = true
+        _filterResult.value?.let {
+            if (it is Success) {
+                it.data.orderTypeList.find { it.id == orderType }?.isChecked = true
+            }
+        }
+    }
+
+    fun removeOrderTypeFilter(orderType: Long) {
+        this.getOrderListParams.orderTypeList.remove(orderType)
+        if (orderType == orderTypeFilterFromAppLink) {
+            orderTypeFilterFromAppLink = 0L
+        }
+        somFilterUiModelList.find {
+            it.nameFilter == SomConsts.FILTER_TYPE_ORDER
+        }?.somFilterData?.find { it.id == orderType }?.isSelected = false
+        _filterResult.value?.let {
+            if (it is Success) {
+                it.data.orderTypeList.find { it.id == orderType }?.isChecked = false
+            }
+        }
+    }
+
     fun setSortOrderBy(value: Long) {
         this.getOrderListParams.sortBy = value
     }
@@ -643,5 +714,79 @@ class SomListViewModel @Inject constructor(
                 _isOrderManageEligible.postValue(Fail(it))
             }
         )
+    }
+
+    fun updateSomListFilterUi(somFilterUiModelList: List<SomFilterUiModel>) {
+        this.somFilterUiModelList.clear()
+        this.somFilterUiModelList.addAll(somFilterUiModelList)
+        _filterResult.value?.let {
+            if (it is Success) {
+                it.data.orderTypeList.forEach { somListOrderTypeFilter ->
+                    somListOrderTypeFilter.isChecked = somFilterUiModelList.find {
+                        it.nameFilter == SomConsts.FILTER_TYPE_ORDER
+                    }?.somFilterData?.find {
+                        it.key == somListOrderTypeFilter.key
+                    }?.isSelected ?: somListOrderTypeFilter.isChecked
+                }
+            }
+        }
+    }
+
+    fun clearSomListFilterUi() {
+        updateSomListFilterUi(emptyList())
+    }
+
+    fun getSelectedSort(): Long? {
+        return this.somFilterUiModelList.find {
+            it.nameFilter == SomConsts.FILTER_SORT
+        }?.somFilterData?.find {
+            it.isSelected
+        }?.id
+    }
+
+    fun getSomFilterUi() = somFilterUiModelList
+
+    fun getPreselectedOrderTypeFilters(): List<Long> {
+        return _filterResult.value?.let {
+            if (it is Success) {
+                it.data.orderTypeList.mapNotNull { if (it.isChecked) it.id else null }
+            } else emptyList()
+        }.orEmpty()
+    }
+
+    fun isSortByAppliedManually(): Boolean {
+        return this.somFilterUiModelList.any {
+            it.nameFilter == SomConsts.FILTER_SORT && it.somFilterData.any {
+                it.isSelected
+            }
+        }
+    }
+
+    fun getSelectedFilterKeys() = somFilterUiModelList.filter {
+        it.nameFilter != SomConsts.FILTER_STATUS_ORDER
+    }.map { it.somFilterData.filter { it.isSelected }.map { it.key } }.flatten()
+
+    fun isStatusFilterAppliedFromAdvancedFilter(): Boolean {
+        return somFilterUiModelList.any {
+            it.nameFilter == SomConsts.FILTER_STATUS_ORDER && it.somFilterData.any { chips ->
+                chips.isSelected
+            }
+        }
+    }
+
+    fun deselectAllStatusFilterFromAdvancedFilter() {
+        somFilterUiModelList.find {
+            it.nameFilter == SomConsts.FILTER_STATUS_ORDER
+        }?.somFilterData?.forEach {
+            it.isSelected = false
+        }
+    }
+
+    fun getOrderTypeFilterFromAppLink(): Long {
+        return orderTypeFilterFromAppLink
+    }
+
+    fun setOrderTypeFilterFromAppLink(id: Long) {
+        orderTypeFilterFromAppLink = id
     }
 }

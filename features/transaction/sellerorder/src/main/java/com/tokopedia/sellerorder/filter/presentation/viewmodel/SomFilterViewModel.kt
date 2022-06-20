@@ -14,8 +14,6 @@ import com.tokopedia.sellerorder.common.util.SomConsts.FILTER_STATUS_ORDER
 import com.tokopedia.sellerorder.common.util.SomConsts.FILTER_TYPE_ORDER
 import com.tokopedia.sellerorder.common.util.Utils
 import com.tokopedia.sellerorder.common.util.Utils.formatDate
-import com.tokopedia.sellerorder.filter.domain.mapper.GetSomFilterMapper.getIsRequestCancelApplied
-import com.tokopedia.sellerorder.filter.domain.mapper.GetSomFilterMapper.getShouldSelectRequestCancelFilter
 import com.tokopedia.sellerorder.filter.domain.usecase.GetSomOrderFilterUseCase
 import com.tokopedia.sellerorder.filter.presentation.model.BaseSomFilter
 import com.tokopedia.sellerorder.filter.presentation.model.SomFilterChipsUiModel
@@ -47,20 +45,6 @@ class SomFilterViewModel @Inject constructor(dispatcher: CoroutineDispatchers,
     private var somFilterUiModel = mutableListOf<SomFilterUiModel>()
     private var somListGetOrderListParam: SomListGetOrderListParam = SomListGetOrderListParam()
     private var somFilterDate: SomFilterDateUiModel? = null
-    private var isRequestCancelFilterApplied: Boolean = false
-
-    private fun shouldSelectRequestCancelFilter() {
-        if (isRequestCancelFilterApplied) {
-            somFilterUiModel.getShouldSelectRequestCancelFilter(
-                    ChipsUnify.TYPE_NORMAL,
-                    ::updateFilterManySelected,
-                    ::updateParamSom)
-        }
-    }
-
-    private fun updateIsRequestCancelFilterApplied() {
-        isRequestCancelFilterApplied = somFilterUiModel.getIsRequestCancelApplied()
-    }
 
     @Throws(NoSuchElementException::class)
     private fun getSomFilterDate(result: List<BaseSomFilter>): SomFilterDateUiModel {
@@ -106,6 +90,14 @@ class SomFilterViewModel @Inject constructor(dispatcher: CoroutineDispatchers,
         }
     }
 
+    private fun selectPreselectedOrderTypeFilters(preselectedOrderTypeFilters: List<Long>) {
+        somFilterUiModel.find {
+            it.nameFilter == SomConsts.FILTER_TYPE_ORDER
+        }?.somFilterData?.forEach {
+            it.isSelected = preselectedOrderTypeFilters.contains(it.id) || it.isSelected
+        }
+    }
+
     private fun deselectCorrespondingFilterItems(nameFilter: String) {
         getSomFilterUiModelItems(nameFilter).forEach { it.isSelected = false }
     }
@@ -118,12 +110,6 @@ class SomFilterViewModel @Inject constructor(dispatcher: CoroutineDispatchers,
         val selected = chipType == ChipsUnify.TYPE_SELECTED
         getSomFilterUiModelItems(nameFilter).getOrNull(position)?.isSelected = !selected
     }
-
-    fun setIsRequestCancelFilterApplied(value: Boolean) {
-        isRequestCancelFilterApplied = value
-    }
-
-    fun isRequestCancelFilterApplied() = isRequestCancelFilterApplied
 
     fun getSomFilterUiModel() = somFilterUiModel
 
@@ -138,7 +124,7 @@ class SomFilterViewModel @Inject constructor(dispatcher: CoroutineDispatchers,
         this.somListGetOrderListParam = somListGetOrderListParam
     }
 
-    fun getSomFilterData(orderStatus: String, date: String) {
+    fun getSomFilterData(orderStatus: String, date: String, preselectedOrderTypeFilters: List<Long>) {
         launchCatchError(block = {
             val result = getSomOrderFilterUseCase.execute()
             val somFilterResult = result.filterIsInstance<SomFilterUiModel>()
@@ -149,12 +135,11 @@ class SomFilterViewModel @Inject constructor(dispatcher: CoroutineDispatchers,
             }
 
             if (somFilterUiModel.isEmpty()) {
-                somFilterUiModel.clear()
                 somFilterUiModel.addAll(somFilterResult)
             }
 
             selectOrderStatusFilter(orderStatus)
-            shouldSelectRequestCancelFilter()
+            selectPreselectedOrderTypeFilters(preselectedOrderTypeFilters)
             val somFilterVisitable = mutableListOf<BaseSomFilter>()
             somFilterVisitable.addAll(somFilterUiModel)
             somFilterVisitable.add(somFilterDate)
@@ -170,7 +155,6 @@ class SomFilterViewModel @Inject constructor(dispatcher: CoroutineDispatchers,
             deselectCorrespondingFilterItems(idFilter)
             updateCorrespondingFilterItemSelectedState(idFilter, position, chipType)
             val chipsUiModelList = getSomFilterUiModelItems(idFilter)
-            updateIsRequestCancelFilterApplied()
             _updateFilterSelected.postValue(Success(Pair(chipsUiModelList, idFilter)))
         }
     }
@@ -179,7 +163,6 @@ class SomFilterViewModel @Inject constructor(dispatcher: CoroutineDispatchers,
         launch {
             updateCorrespondingFilterItemSelectedState(idFilter, position, chipType)
             val chipsUiModelList = getSomFilterUiModelItems(idFilter)
-            updateIsRequestCancelFilterApplied()
             _updateFilterSelected.postValue(Success(Pair(chipsUiModelList, idFilter)))
         }
     }
@@ -189,7 +172,6 @@ class SomFilterViewModel @Inject constructor(dispatcher: CoroutineDispatchers,
         launch {
             updateSomFilterUiModel(idFilter, somSubFilterList)
             val chipsUiModelList = getSomFilterUiModelItems(idFilter)
-            updateIsRequestCancelFilterApplied()
             _updateFilterSelected.postValue(Success(Pair(chipsUiModelList, idFilter)))
         }
     }

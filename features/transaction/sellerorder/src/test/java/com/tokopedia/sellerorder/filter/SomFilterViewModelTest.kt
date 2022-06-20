@@ -6,6 +6,7 @@ import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.sellerorder.common.util.SomConsts
 import com.tokopedia.sellerorder.common.util.Utils
+import com.tokopedia.sellerorder.filter.presentation.bottomsheet.SomFilterBottomSheet
 import com.tokopedia.sellerorder.filter.presentation.model.BaseSomFilter
 import com.tokopedia.sellerorder.filter.presentation.model.SomFilterDateUiModel
 import com.tokopedia.sellerorder.filter.presentation.model.SomFilterUiModel
@@ -73,7 +74,11 @@ class SomFilterViewModelTest : SomFilterViewModelTestFixture() {
             getSomOrderFilterUseCase.execute()
         } returns mockSomFilterUiModel
         coroutineTestRule.runBlockingTest {
-            somFilterViewModel.getSomFilterData(mockIdFilter, "")
+            somFilterViewModel.getSomFilterData(
+                mockIdFilter,
+                "",
+                arguments?.getLongArray(SomFilterBottomSheet.KEY_PRESELECTED_ORDER_TYPE_FILTERS)?.toList().orEmpty()
+            )
         }
         val filterResult = somFilterViewModel.filterResult.observeAwaitValue() as Success
         val actual = filterResult.data.filterIsInstance<SomFilterDateUiModel>().first().date
@@ -88,7 +93,11 @@ class SomFilterViewModelTest : SomFilterViewModelTestFixture() {
             getSomOrderFilterUseCase.execute()
         } returns mockSomFilterUiModel
         coroutineTestRule.runBlockingTest {
-            somFilterViewModel.getSomFilterData(mockIdFilter, expected)
+            somFilterViewModel.getSomFilterData(
+                mockIdFilter,
+                expected,
+                arguments?.getLongArray(SomFilterBottomSheet.KEY_PRESELECTED_ORDER_TYPE_FILTERS)?.toList().orEmpty()
+            )
         }
         val filterResult = somFilterViewModel.filterResult.observeAwaitValue() as Success
         val actual = filterResult.data.filterIsInstance<SomFilterDateUiModel>().first().date
@@ -104,7 +113,11 @@ class SomFilterViewModelTest : SomFilterViewModelTestFixture() {
             getSomOrderFilterUseCase.execute()
         } returns mockSomFilterUiModel
         coroutineTestRule.runBlockingTest {
-            somFilterViewModel.getSomFilterData(mockIdFilter, mockDate)
+            somFilterViewModel.getSomFilterData(
+                mockIdFilter,
+                mockDate,
+                arguments?.getLongArray(SomFilterBottomSheet.KEY_PRESELECTED_ORDER_TYPE_FILTERS)?.toList().orEmpty()
+            )
         }
         somFilterViewModel.filterResult.observeAwaitValue()
         assertNotEquals(currentFilterData, somFilterViewModel.getSomFilterUiModel())
@@ -120,7 +133,11 @@ class SomFilterViewModelTest : SomFilterViewModelTestFixture() {
             getSomOrderFilterUseCase.execute()
         } returns mockSomFilterUiModel
         coroutineTestRule.runBlockingTest {
-            somFilterViewModel.getSomFilterData(mockIdFilter, mockDate)
+            somFilterViewModel.getSomFilterData(
+                mockIdFilter,
+                mockDate,
+                arguments?.getLongArray(SomFilterBottomSheet.KEY_PRESELECTED_ORDER_TYPE_FILTERS)?.toList().orEmpty()
+            )
         }
         somFilterViewModel.filterResult.observeAwaitValue()
         assertEquals(currentFilterData, somFilterViewModel.getSomFilterUiModel())
@@ -135,7 +152,11 @@ class SomFilterViewModelTest : SomFilterViewModelTestFixture() {
             getSomOrderFilterUseCase.execute()
         } returns mockSomFilterUiModel
         coroutineTestRule.runBlockingTest {
-            somFilterViewModel.getSomFilterData(mockIdFilter, mockDate)
+            somFilterViewModel.getSomFilterData(
+                mockIdFilter,
+                mockDate,
+                arguments?.getLongArray(SomFilterBottomSheet.KEY_PRESELECTED_ORDER_TYPE_FILTERS)?.toList().orEmpty()
+            )
         }
         somFilterViewModel.filterResult.observeAwaitValue()
         val actual = somFilterViewModel.getSomFilterUiModel().find {
@@ -154,7 +175,11 @@ class SomFilterViewModelTest : SomFilterViewModelTestFixture() {
             getSomOrderFilterUseCase.execute()
         } returns mockSomFilterUiModel
         coroutineTestRule.runBlockingTest {
-            somFilterViewModel.getSomFilterData("", mockDate)
+            somFilterViewModel.getSomFilterData(
+                "",
+                mockDate,
+                arguments?.getLongArray(SomFilterBottomSheet.KEY_PRESELECTED_ORDER_TYPE_FILTERS)?.toList().orEmpty()
+            )
         }
         somFilterViewModel.filterResult.observeAwaitValue()
         val actual = somFilterViewModel.getSomFilterUiModel()
@@ -170,7 +195,11 @@ class SomFilterViewModelTest : SomFilterViewModelTestFixture() {
         } returns getMockSomFilterList()
         somFilterViewModel.setIsRequestCancelFilterApplied(mockCancelFilterApplied)
         coroutineTestRule.runBlockingTest {
-            somFilterViewModel.getSomFilterData(mockIdFilter, mockDate)
+            somFilterViewModel.getSomFilterData(
+                mockIdFilter,
+                mockDate,
+                arguments?.getLongArray(SomFilterBottomSheet.KEY_PRESELECTED_ORDER_TYPE_FILTERS)?.toList().orEmpty()
+            )
         }
         somFilterViewModel.filterResult.observeAwaitValue()
         coVerify {
@@ -191,7 +220,11 @@ class SomFilterViewModelTest : SomFilterViewModelTestFixture() {
         } returns getMockSomFilterList()
         somFilterViewModel.setIsRequestCancelFilterApplied(mockCancelFilterApplied)
         coroutineTestRule.runBlockingTest {
-            somFilterViewModel.getSomFilterData(mockIdFilter, mockDate)
+            somFilterViewModel.getSomFilterData(
+                mockIdFilter,
+                mockDate,
+                arguments?.getLongArray(SomFilterBottomSheet.KEY_PRESELECTED_ORDER_TYPE_FILTERS)?.toList().orEmpty()
+            )
         }
         somFilterViewModel.filterResult.observeAwaitValue()
         coVerify {
@@ -207,7 +240,11 @@ class SomFilterViewModelTest : SomFilterViewModelTestFixture() {
     fun `when get som filter data should return fail`() = coroutineTestRule.runBlockingTest {
         val exception = NullPointerException()
         coEvery { getSomOrderFilterUseCase.execute() } coAnswers { throw exception }
-        somFilterViewModel.getSomFilterData(mockIdFilter, mockDate)
+        somFilterViewModel.getSomFilterData(
+            mockIdFilter,
+            mockDate,
+            arguments?.getLongArray(SomFilterBottomSheet.KEY_PRESELECTED_ORDER_TYPE_FILTERS)?.toList().orEmpty()
+        )
         val expectedFail = Fail(exception)
         somFilterViewModel.filterResult.verifyErrorEquals(expectedFail)
     }
@@ -224,7 +261,11 @@ class SomFilterViewModelTest : SomFilterViewModelTestFixture() {
             getSomOrderFilterUseCase.execute()
         } returns mockSomFilterUiModels
         coroutineTestRule.runBlockingTest {
-            somFilterViewModel.getSomFilterData(previouslySelectedFilterItem.name, mockDate)
+            somFilterViewModel.getSomFilterData(
+                previouslySelectedFilterItem.name,
+                mockDate,
+                arguments?.getLongArray(SomFilterBottomSheet.KEY_PRESELECTED_ORDER_TYPE_FILTERS)?.toList().orEmpty()
+            )
         }
         somFilterViewModel.filterResult.observeAwaitValue()
         coroutineTestRule.runBlockingTest {
@@ -249,7 +290,11 @@ class SomFilterViewModelTest : SomFilterViewModelTestFixture() {
             getSomOrderFilterUseCase.execute()
         } returns mockSomFilterUiModels
         coroutineTestRule.runBlockingTest {
-            somFilterViewModel.getSomFilterData(previouslySelectedFilterItem.name, mockDate)
+            somFilterViewModel.getSomFilterData(
+                previouslySelectedFilterItem.name,
+                mockDate,
+                arguments?.getLongArray(SomFilterBottomSheet.KEY_PRESELECTED_ORDER_TYPE_FILTERS)?.toList().orEmpty()
+            )
         }
         somFilterViewModel.filterResult.observeAwaitValue()
         coroutineTestRule.runBlockingTest {
@@ -274,7 +319,11 @@ class SomFilterViewModelTest : SomFilterViewModelTestFixture() {
             getSomOrderFilterUseCase.execute()
         } returns mockSomFilterUiModels
         coroutineTestRule.runBlockingTest {
-            somFilterViewModel.getSomFilterData(previouslySelectedFilterItem.name, mockDate)
+            somFilterViewModel.getSomFilterData(
+                previouslySelectedFilterItem.name,
+                mockDate,
+                arguments?.getLongArray(SomFilterBottomSheet.KEY_PRESELECTED_ORDER_TYPE_FILTERS)?.toList().orEmpty()
+            )
         }
         somFilterViewModel.filterResult.observeAwaitValue()
         coroutineTestRule.runBlockingTest {
@@ -294,7 +343,11 @@ class SomFilterViewModelTest : SomFilterViewModelTestFixture() {
             getSomOrderFilterUseCase.execute()
         } returns mockSomFilterUiModels
         coroutineTestRule.runBlockingTest {
-            somFilterViewModel.getSomFilterData("", mockDate)
+            somFilterViewModel.getSomFilterData(
+                "",
+                mockDate,
+                arguments?.getLongArray(SomFilterBottomSheet.KEY_PRESELECTED_ORDER_TYPE_FILTERS)?.toList().orEmpty()
+            )
         }
         somFilterViewModel.filterResult.observeAwaitValue()
         coroutineTestRule.runBlockingTest {
@@ -323,7 +376,11 @@ class SomFilterViewModelTest : SomFilterViewModelTestFixture() {
             getSomOrderFilterUseCase.execute()
         } returns mockSomFilterUiModels
         coroutineTestRule.runBlockingTest {
-            somFilterViewModel.getSomFilterData(previouslySelectedFilterItem.name, mockDate)
+            somFilterViewModel.getSomFilterData(
+                previouslySelectedFilterItem.name,
+                mockDate,
+                arguments?.getLongArray(SomFilterBottomSheet.KEY_PRESELECTED_ORDER_TYPE_FILTERS)?.toList().orEmpty()
+            )
         }
         somFilterViewModel.filterResult.observeAwaitValue()
         coroutineTestRule.runBlockingTest {
@@ -349,7 +406,11 @@ class SomFilterViewModelTest : SomFilterViewModelTestFixture() {
             getSomOrderFilterUseCase.execute()
         } returns mockSomFilterUiModels
         coroutineTestRule.runBlockingTest {
-            somFilterViewModel.getSomFilterData(previouslySelectedFilterItem.name, mockDate)
+            somFilterViewModel.getSomFilterData(
+                previouslySelectedFilterItem.name,
+                mockDate,
+                arguments?.getLongArray(SomFilterBottomSheet.KEY_PRESELECTED_ORDER_TYPE_FILTERS)?.toList().orEmpty()
+            )
         }
         somFilterViewModel.filterResult.observeAwaitValue()
         coroutineTestRule.runBlockingTest {
@@ -376,7 +437,11 @@ class SomFilterViewModelTest : SomFilterViewModelTestFixture() {
             getSomOrderFilterUseCase.execute()
         } returns mockSomFilterUiModels
         coroutineTestRule.runBlockingTest {
-            somFilterViewModel.getSomFilterData(previouslySelectedFilterItem.name, mockDate)
+            somFilterViewModel.getSomFilterData(
+                previouslySelectedFilterItem.name,
+                mockDate,
+                arguments?.getLongArray(SomFilterBottomSheet.KEY_PRESELECTED_ORDER_TYPE_FILTERS)?.toList().orEmpty()
+            )
         }
         somFilterViewModel.filterResult.observeAwaitValue()
         coroutineTestRule.runBlockingTest {
@@ -396,7 +461,11 @@ class SomFilterViewModelTest : SomFilterViewModelTestFixture() {
             getSomOrderFilterUseCase.execute()
         } returns mockSomFilterUiModels
         coroutineTestRule.runBlockingTest {
-            somFilterViewModel.getSomFilterData("", mockDate)
+            somFilterViewModel.getSomFilterData(
+                "",
+                mockDate,
+                arguments?.getLongArray(SomFilterBottomSheet.KEY_PRESELECTED_ORDER_TYPE_FILTERS)?.toList().orEmpty()
+            )
         }
         somFilterViewModel.filterResult.observeAwaitValue()
         coroutineTestRule.runBlockingTest {
@@ -423,7 +492,11 @@ class SomFilterViewModelTest : SomFilterViewModelTestFixture() {
             getSomOrderFilterUseCase.execute()
         } returns mockSomFilterUiModels
         coroutineTestRule.runBlockingTest {
-            somFilterViewModel.getSomFilterData("", mockDate)
+            somFilterViewModel.getSomFilterData(
+                "",
+                mockDate,
+                arguments?.getLongArray(SomFilterBottomSheet.KEY_PRESELECTED_ORDER_TYPE_FILTERS)?.toList().orEmpty()
+            )
         }
         somFilterViewModel.filterResult.observeAwaitValue()
         mockSomSubFilter.forEach {
@@ -449,7 +522,11 @@ class SomFilterViewModelTest : SomFilterViewModelTestFixture() {
             getSomOrderFilterUseCase.execute()
         } returns mockSomFilterUiModels
         coroutineTestRule.runBlockingTest {
-            somFilterViewModel.getSomFilterData("", mockDate)
+            somFilterViewModel.getSomFilterData(
+                "",
+                mockDate,
+                arguments?.getLongArray(SomFilterBottomSheet.KEY_PRESELECTED_ORDER_TYPE_FILTERS)?.toList().orEmpty()
+            )
         }
         somFilterViewModel.filterResult.observeAwaitValue()
         mockSomSubFilter.forEach {
@@ -476,7 +553,11 @@ class SomFilterViewModelTest : SomFilterViewModelTestFixture() {
             getSomOrderFilterUseCase.execute()
         } returns mockSomFilterUiModels
         coroutineTestRule.runBlockingTest {
-            somFilterViewModel.getSomFilterData("", mockDate)
+            somFilterViewModel.getSomFilterData(
+                "",
+                mockDate,
+                arguments?.getLongArray(SomFilterBottomSheet.KEY_PRESELECTED_ORDER_TYPE_FILTERS)?.toList().orEmpty()
+            )
         }
         somFilterViewModel.filterResult.observeAwaitValue()
         coroutineTestRule.runBlockingTest {
@@ -509,7 +590,11 @@ class SomFilterViewModelTest : SomFilterViewModelTestFixture() {
             getSomOrderFilterUseCase.execute()
         } returns mockSomFilterUiModels
         coroutineTestRule.runBlockingTest {
-            somFilterViewModel.getSomFilterData("", mockDate)
+            somFilterViewModel.getSomFilterData(
+                "",
+                mockDate,
+                arguments?.getLongArray(SomFilterBottomSheet.KEY_PRESELECTED_ORDER_TYPE_FILTERS)?.toList().orEmpty()
+            )
         }
         somFilterViewModel.filterResult.observeAwaitValue()
         coroutineTestRule.runBlockingTest {
@@ -542,7 +627,11 @@ class SomFilterViewModelTest : SomFilterViewModelTestFixture() {
             getSomOrderFilterUseCase.execute()
         } returns mockSomFilterUiModels
         coroutineTestRule.runBlockingTest {
-            somFilterViewModel.getSomFilterData("", mockDate)
+            somFilterViewModel.getSomFilterData(
+                "",
+                mockDate,
+                arguments?.getLongArray(SomFilterBottomSheet.KEY_PRESELECTED_ORDER_TYPE_FILTERS)?.toList().orEmpty()
+            )
         }
         somFilterViewModel.filterResult.observeAwaitValue()
         coroutineTestRule.runBlockingTest {
@@ -575,7 +664,11 @@ class SomFilterViewModelTest : SomFilterViewModelTestFixture() {
             getSomOrderFilterUseCase.execute()
         } returns mockSomFilterUiModels
         coroutineTestRule.runBlockingTest {
-            somFilterViewModel.getSomFilterData("", mockDate)
+            somFilterViewModel.getSomFilterData(
+                "",
+                mockDate,
+                arguments?.getLongArray(SomFilterBottomSheet.KEY_PRESELECTED_ORDER_TYPE_FILTERS)?.toList().orEmpty()
+            )
         }
         somFilterViewModel.filterResult.observeAwaitValue()
         coroutineTestRule.runBlockingTest {
@@ -608,7 +701,11 @@ class SomFilterViewModelTest : SomFilterViewModelTestFixture() {
             getSomOrderFilterUseCase.execute()
         } returns mockSomFilterUiModels
         coroutineTestRule.runBlockingTest {
-            somFilterViewModel.getSomFilterData("", mockDate)
+            somFilterViewModel.getSomFilterData(
+                "",
+                mockDate,
+                arguments?.getLongArray(SomFilterBottomSheet.KEY_PRESELECTED_ORDER_TYPE_FILTERS)?.toList().orEmpty()
+            )
         }
         somFilterViewModel.filterResult.observeAwaitValue()
         coroutineTestRule.runBlockingTest {
@@ -637,7 +734,11 @@ class SomFilterViewModelTest : SomFilterViewModelTestFixture() {
             getSomOrderFilterUseCase.execute()
         } returns mockSomFilterUiModels
         coroutineTestRule.runBlockingTest {
-            somFilterViewModel.getSomFilterData("", mockDate)
+            somFilterViewModel.getSomFilterData(
+                "",
+                mockDate,
+                arguments?.getLongArray(SomFilterBottomSheet.KEY_PRESELECTED_ORDER_TYPE_FILTERS)?.toList().orEmpty()
+            )
         }
         somFilterViewModel.filterResult.observeAwaitValue()
         coroutineTestRule.runBlockingTest {
@@ -667,7 +768,11 @@ class SomFilterViewModelTest : SomFilterViewModelTestFixture() {
             getSomOrderFilterUseCase.execute()
         } returns mockSomFilterUiModels
         coroutineTestRule.runBlockingTest {
-            somFilterViewModel.getSomFilterData("", mockDate)
+            somFilterViewModel.getSomFilterData(
+                "",
+                mockDate,
+                arguments?.getLongArray(SomFilterBottomSheet.KEY_PRESELECTED_ORDER_TYPE_FILTERS)?.toList().orEmpty()
+            )
         }
         somFilterViewModel.filterResult.observeAwaitValue()
         somFilterViewModel.resetFilterSelected()
@@ -692,7 +797,11 @@ class SomFilterViewModelTest : SomFilterViewModelTestFixture() {
                 getSomOrderFilterUseCase.execute()
             } returns mockSomFilterUiModels
             coroutineTestRule.runBlockingTest {
-                somFilterViewModel.getSomFilterData("", mockDate)
+                somFilterViewModel.getSomFilterData(
+                    "",
+                    mockDate,
+                    arguments?.getLongArray(SomFilterBottomSheet.KEY_PRESELECTED_ORDER_TYPE_FILTERS)?.toList().orEmpty()
+                )
             }
             somFilterViewModel.filterResult.observeAwaitValue()
             somFilterViewModel.resetFilterSelected()

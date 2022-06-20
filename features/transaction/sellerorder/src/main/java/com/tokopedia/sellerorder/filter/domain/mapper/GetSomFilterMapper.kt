@@ -1,6 +1,5 @@
 package com.tokopedia.sellerorder.filter.domain.mapper
 
-import com.tokopedia.applink.order.DeeplinkMapperOrder
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.sellerorder.common.util.SomConsts.ALREADY_PRINT
 import com.tokopedia.sellerorder.common.util.SomConsts.ALREADY_PRINT_LABEL
@@ -84,24 +83,6 @@ object GetSomFilterMapper {
         return mutableListOf<SomFilterChipsUiModel>().apply {
             typeList.map {
                 add(SomFilterChipsUiModel(id = it.id, key = it.key.orEmpty(), name = it.name.orEmpty(), idFilter = FILTER_TYPE_ORDER))
-            }
-        }
-    }
-
-    fun List<SomFilterUiModel>.getIsRequestCancelApplied(): Boolean {
-        return find { it.nameFilter == FILTER_TYPE_ORDER }?.somFilterData?.find {
-            it.id == DeeplinkMapperOrder.FILTER_CANCELLATION_REQUEST.toLong()
-        }?.isSelected ?: false
-    }
-
-    fun List<SomFilterUiModel>.getShouldSelectRequestCancelFilter(chipsType: String,
-                                                                  updateFilterManySelected: (String, String, Int) -> Unit,
-                                                                  updateParamSom: (String) -> Unit) {
-        val section = this.find { it.nameFilter == FILTER_TYPE_ORDER }
-        section?.somFilterData?.indexOfFirst { it.id == DeeplinkMapperOrder.FILTER_CANCELLATION_REQUEST.toLong() }?.let {
-            section.somFilterData[it].run {
-                updateFilterManySelected.invoke(idFilter, chipsType, it)
-                updateParamSom.invoke(idFilter)
             }
         }
     }
