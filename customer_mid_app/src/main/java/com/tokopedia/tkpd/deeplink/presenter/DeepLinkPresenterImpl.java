@@ -59,6 +59,7 @@ import java.net.URL;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.inject.Inject;
 
@@ -292,11 +293,21 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
     }
 
     private void doTopAdsOperation(Uri uriData) {
-        Uri.Builder newUri = uriData.buildUpon().appendQueryParameter("uid", userSession.getUserId());
+        Uri newUri = replaceUriParameter(uriData, userSession.getUserId());
         String redirectionUrl = uriData.getQueryParameter("r");
         new TopAdsUrlHitter(context).hitClickUrl(this.getClass().getCanonicalName(), newUri.toString(),"","","");
     }
 
+    private static Uri replaceUriParameter(Uri uri, String newValue) {
+        final Set<String> params = uri.getQueryParameterNames();
+        final Uri.Builder newUri = uri.buildUpon().clearQuery();
+        for (String param : params) {
+            newUri.appendQueryParameter(param,
+                    param.equals("uid") ? newValue : uri.getQueryParameter(param));
+        }
+
+        return newUri.build();
+    }
     private void openSaldoDeposit() {
         RouteManager.route(context, ApplinkConst.SALDO);
     }
