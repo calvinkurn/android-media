@@ -48,6 +48,6 @@ internal class ShopCpmViewHolder(
     }
 
     private fun initCpmModel(shopCpmDataView: ShopCpmDataView) {
-        binding?.adsBannerViewSearchShop?.displayAds(shopCpmDataView.cpmModel)
+        binding?.adsBannerViewSearchShop?.displayHeadlineAds(shopCpmDataView.cpmModel)
     }
 }

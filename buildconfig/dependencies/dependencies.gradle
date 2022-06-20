@@ -18,6 +18,9 @@ ext {
     biometricVersion = "1.1.0"
     appCompatVersion = '1.2.0-rc01'
     supportLibraryVersion = '1.1.0-rc01'
+    dataStoreVersion = '1.0.0'
+    protobufLiteVersion = '3.19.1'
+    googleTinkVersion = '1.6.1'
     exifInterfaceVersion = '1.2.0'
     androidxCoreVersion = '1.3.2'
     supportLegacyLibraryVersion = '1.0.0'
@@ -112,7 +115,7 @@ ext {
     unifyIconVersion = '0.0.4'
     unifyIconsVersion = '1.0.22'
     unifyPrinciplesVersion = '1.4.0'
-    unifyComponentsVersion = '1.2.0'
+    unifyComponentsVersion = '1.2.8'
     unifyCoachMarkVersion = '1.2.16'
     unifyCalendarVersion = '1.2.0'
     unifyBannerVersion = '1.0.4'
@@ -123,7 +126,7 @@ ext {
     unifyPinVersion = '1.0.5'
     unifyEmptyStateVersion = '1.0.11.1'
     unifyGlobalErrorVersion = '1.0.17'
-    unifyHeaderVersion = '1.1.5'
+    unifyHeaderVersion = '1.1.10'
     unifySortFilterVersion = '1.1.3.1'
     unifyIconNotificationVersion = '1.0.0'
     unifyCarouselVersion = '1.0.4'
@@ -131,8 +134,8 @@ ext {
     unifyAccordionVersion = '1.1.4-beta-1' // to-do update into stable version
     unifyTotalAmountVersion = '1.0.6'
     unifyExplorePromoVersion = '1.0.2'
-    unifyImageGalleryVersion = '1.0.3'
-    unifyViewAllCardVersion = '1.0.4'
+    unifyImageGalleryVersion = '1.0.4'
+    unifyViewAllCardVersion = '1.0.5'
 
     gradlePlugin = [
             crashlytics   : "com.google.firebase:firebase-crashlytics-gradle:${crashlyticsGradleVersion}",
@@ -245,8 +248,8 @@ ext {
             chips                 : 'com.beloo.widget:ChipsLayoutManager:0.3.7@aar',
             roundCornerProgressBar: 'com.akexorcist:RoundCornerProgressBar:2.0.3',
             lottie                : "com.airbnb.android:lottie:$lottieVersion",
-            loaderviewlibrary     : "com.elyeproj.libraries:loaderviewlibrary:1.5.0@aar",
             hansel                : "io.hansel.preprocessor:preprocessor:9.1.5",
+            protobuf              : "com.google.protobuf:protobuf-gradle-plugin:0.8.12",
             autopatchbase         : "com.tokopedia.patch:core:1.0.0",
             apacheLang            : "org.apache.commons:commons-lang3:3.0",
             ucrop                 : "com.github.yalantis:ucrop:2.2.2",
@@ -280,7 +283,7 @@ ext {
             archCoreCommon        : "androidx.arch.core:core-common:$archCoreVersion",
             traceroute            : "com.tokopedia.traceroute:traceroute:1.0.1@aar",
             twitter               : "org.twitter4j:twitter4j-core:$twitter4JVersion",
-            laku6Sdk              : "com.gitlab.Laku6:laku6-trade-in-sdk-android:2.3.7",
+            laku6Sdk              : "com.gitlab.Laku6:laku6-trade-in-sdk-android:2.5.10",
             androidjunit5         : "de.mannodermaus.gradle.plugins:android-junit5:1.7.1.1",
             rootbeer              : "com.scottyab:rootbeer-lib:0.0.7",
             viewPager2            : "androidx.viewpager2:viewpager2:$viewPager2",
@@ -293,6 +296,9 @@ ext {
             transition            : "androidx.transition:transition:$transitionVersion",
             newRelic              : "com.newrelic.agent.android:android-agent:$newRelicVersion",
             biometric             : "androidx.biometric:biometric:$biometricVersion",
+            dataStore             : "androidx.datastore:datastore:$dataStoreVersion",
+            googleTink            : "com.google.crypto.tink:tink-android:$googleTinkVersion",
+            protobufLite          : "com.google.protobuf:protobuf-javalite:$protobufLiteVersion",
             embraceSdk            : "io.embrace:embrace-android-sdk:$embraceVersion",
             embraceSwazzler       : "io.embrace:embrace-swazzler:$embraceVersion",
             window                : "androidx.window:window:$windowVersion",

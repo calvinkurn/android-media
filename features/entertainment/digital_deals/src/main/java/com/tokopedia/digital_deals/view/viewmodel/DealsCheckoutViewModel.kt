@@ -32,7 +32,7 @@ class DealsCheckoutViewModel @Inject constructor(
       val dealsCheckoutInstantResponse: LiveData<DealsCheckoutInstantResponse>
             get() = dealsCheckoutInstantResponseMutable
 
-      fun checkoutGeneral(checkoutParam: DealCheckoutGeneral) {
+      fun checkoutGeneral(checkoutParam: DealsGeneral) {
             launchCatchError(block = {
                   val params = mapOf(PARAM to checkoutParam)
                   val data = withContext(dispatcher.io) {
@@ -46,7 +46,7 @@ class DealsCheckoutViewModel @Inject constructor(
             }
       }
 
-      fun checkoutGeneralInstant(checkoutParam: DealCheckoutGeneralInstant) {
+      fun checkoutGeneralInstant(checkoutParam: DealsInstant) {
             launchCatchError(block = {
                   val params = mapOf(PARAM to checkoutParam)
                   val data = withContext(dispatcher.io) {
@@ -62,24 +62,41 @@ class DealsCheckoutViewModel @Inject constructor(
 
       fun mapCheckoutDeals(dealsDetail: DealsDetailsResponse, verify: EventVerifyResponse, promoCodes: List<String>):
               DealCheckoutGeneral {
-            val checkoutGeneral = DealCheckoutGeneral()
+          val checkoutGeneral = DealCheckoutGeneral()
+          val cartInfo = CartInfo(Gson().toJson(mapToIntMetaData(verify.metadata)), dealsDetail?.checkoutDataType ?: DEFAULT_CHECKOUT_DATA_TYPE)
+          checkoutGeneral.carts.businessType = dealsDetail?.checkoutBusinessType
+          checkoutGeneral.carts.cartInfo.add(0, cartInfo)
+          checkoutGeneral.carts.promoCodes = promoCodes
+          return checkoutGeneral
+      }
+
+        fun mapCheckoutDeals(dealsDetail: DealsDetailsResponse, verify: EventVerifyResponse): DealCheckoutGeneralNoPromo {
+            val checkoutGeneral = DealCheckoutGeneralNoPromo()
             val cartInfo = CartInfo(Gson().toJson(mapToIntMetaData(verify.metadata)), dealsDetail?.checkoutDataType ?: DEFAULT_CHECKOUT_DATA_TYPE)
             checkoutGeneral.carts.businessType = dealsDetail?.checkoutBusinessType
             checkoutGeneral.carts.cartInfo.add(0, cartInfo)
-            checkoutGeneral.carts.promoCodes = promoCodes
             return checkoutGeneral
-      }
+        }
 
       fun mapCheckoutDealsInstant(dealsDetail: DealsDetailsResponse, verify: EventVerifyResponse, promoCodes: List<String>):
               DealCheckoutGeneralInstant {
-            val checkoutGeneral = DealCheckoutGeneralInstant()
+          val checkoutGeneral = DealCheckoutGeneralInstant()
+          val cartInfo = CartInfo(Gson().toJson(mapToIntMetaData(verify.metadata)), dealsDetail?.checkoutDataType ?: DEFAULT_CHECKOUT_DATA_TYPE)
+          checkoutGeneral.carts.businessType = dealsDetail?.checkoutBusinessType
+          checkoutGeneral.carts.cartInfo.add(0, cartInfo)
+          checkoutGeneral.carts.promoCodes = promoCodes
+          checkoutGeneral.gatewayCode = verify.gatewayCode
+          return checkoutGeneral
+      }
+
+        fun mapCheckoutDealsInstant(dealsDetail: DealsDetailsResponse, verify: EventVerifyResponse): DealCheckoutGeneralInstantNoPromo {
+            val checkoutGeneral = DealCheckoutGeneralInstantNoPromo()
             val cartInfo = CartInfo(Gson().toJson(mapToIntMetaData(verify.metadata)), dealsDetail?.checkoutDataType ?: DEFAULT_CHECKOUT_DATA_TYPE)
             checkoutGeneral.carts.businessType = dealsDetail?.checkoutBusinessType
             checkoutGeneral.carts.cartInfo.add(0, cartInfo)
-            checkoutGeneral.carts.promoCodes = promoCodes
             checkoutGeneral.gatewayCode = verify.gatewayCode
             return checkoutGeneral
-      }
+        }
 
       fun getMetaDataString(verify: EventVerifyResponse): String {
             return Gson().toJson(mapToIntMetaData(verify.metadata))
@@ -115,7 +132,7 @@ class DealsCheckoutViewModel @Inject constructor(
                           email = it.email,
                           endTime = it.endTime,
                           error = it.error,
-                          flagId = it.flagId.toInt(),
+                          flagId = it.flagId.toIntOrZero(),
                           id = it.id.toInt(),
                           invoiceId = it.invoiceId.toInt(),
                           invoiceItemId = it.invoiceItemId.toInt(),

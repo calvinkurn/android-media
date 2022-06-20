@@ -99,20 +99,12 @@ class ShopOpenRevampQuisionerFragment :
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_shop_open_revamp_quisioner, container, false)
-        loading = view.findViewById(R.id.loading)
-        btnNext = view.findViewById(R.id.next_button_quisioner_page)
-        recyclerView = view.findViewById(R.id.recycler_view_questions_list)
-        layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
-        adapter = ShopOpenRevampQuisionerAdapter(this)
-        recyclerView?.layoutManager = layoutManager
-        recyclerView?.adapter = adapter
-        btnNext.isEnabled = false
-
         return view
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        initView(view)
         setupToolbarActions(view)
         shopOpenRevampTracking?.sendScreenNameTracker(ScreenNameTracker.SCREEN_SHOP_SURVEY)
         setupPreconditions()
@@ -183,6 +175,17 @@ class ShopOpenRevampQuisionerFragment :
     override fun onResume() {
         super.onResume()
         closeKeyboard()
+    }
+
+    private fun initView(view: View) {
+        recyclerView = view.findViewById(R.id.recycler_view_questions_list)
+        loading = view.findViewById(R.id.loading)
+        btnNext = view.findViewById(R.id.next_button_quisioner_page)
+        layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+        adapter = ShopOpenRevampQuisionerAdapter(this)
+        recyclerView?.layoutManager = layoutManager
+        recyclerView?.adapter = adapter
+        btnNext.isEnabled = false
     }
 
     private fun setupToolbarActions(view: View?) {

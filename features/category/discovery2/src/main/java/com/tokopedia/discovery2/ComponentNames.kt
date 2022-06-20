@@ -89,6 +89,7 @@ enum class ComponentNames(val componentName: String) {
 
     CarouselErrorLoad("carousel_error_load"),
     ProductListErrorLoad("product_list_error_load"),
+    ProductListNetworkErrorLoad("product_list_network_error_load"),
 
     //Category Best Seller
     CategoryBestSeller("product-card-horizontal-scroll"),
@@ -123,6 +124,8 @@ enum class ComponentNames(val componentName: String) {
     MyCouponItem("my_coupon_item"),
 
     BannerInfinite("banner_infinite"),
-    BannerInfiniteItem("banner_infinite_item")
+    BannerInfiniteItem("banner_infinite_item"),
+
+    ShopCardInfinite("shop_card_infinite")
 
 }

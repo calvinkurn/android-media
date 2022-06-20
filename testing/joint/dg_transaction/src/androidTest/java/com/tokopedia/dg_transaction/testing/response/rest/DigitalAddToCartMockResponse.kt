@@ -25,7 +25,8 @@ class DigitalAddToCartMockResponse: MockRestResponse<ResponseCartData>() {
                 price = "Rp22.500",
                 pricePlain = 22500.0,
                 smsState = "",
-                userId = "17211378"
+                userId = "17211378",
+                channelId = "1"
             ),
             relationships = RelationshipsCart(
                 category = RelationshipsCart.Category(
@@ -37,7 +38,7 @@ class DigitalAddToCartMockResponse: MockRestResponse<ResponseCartData>() {
                 product = RelationshipsCart.Product(
                     data = RelationshipsCart.RelationData(type = "product", id = "2069")
                 )
-            )
+            ),
         )
     }
 }

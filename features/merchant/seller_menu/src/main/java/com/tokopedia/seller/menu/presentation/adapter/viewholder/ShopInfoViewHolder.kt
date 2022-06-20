@@ -31,6 +31,8 @@ import com.tokopedia.seller.menu.common.view.uimodel.base.ShopType
 import com.tokopedia.seller.menu.common.view.uimodel.shopinfo.*
 import com.tokopedia.seller.menu.presentation.uimodel.ShopInfoUiModel
 import com.tokopedia.unifycomponents.LocalLoad
+import com.tokopedia.unifycomponents.ticker.Ticker
+import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSessionInterface
 import java.util.*
@@ -56,6 +58,8 @@ class ShopInfoViewHolder(
         private const val TAB_PM_PARAM = "tab"
         private const val TAB_PM = "pm"
         private const val TAB_PM_PRO = "pm_pro"
+        private const val TICKER_TYPE_WARNING = "warning"
+        private const val TICKER_TYPE_DANGER = "danger"
     }
 
     private val context by lazy { itemView.context }
@@ -113,8 +117,45 @@ class ShopInfoViewHolder(
                     }
                 }
                 showShopScore(uiModel)
+                showTicker(
+                    uiModel.shopInfo.shopStatusUiModel
+                        ?.userShopInfoWrapper?.userShopInfoUiModel?.statusInfoUiModel
+                )
             }
         }
+    }
+
+    private fun showTicker(statusInfoUiModel: UserShopInfoWrapper.UserShopInfoUiModel.StatusInfoUiModel?) {
+        binding.successTickerShopInfoLayout.run {
+            val title = statusInfoUiModel?.statusTitle.orEmpty()
+            val message = statusInfoUiModel?.statusMessage.orEmpty()
+
+            if (title.isNotEmpty() && message.isNotEmpty()) {
+                tickerShopInfo.tickerTitle = title.parseAsHtml().toString()
+                tickerShopInfo.setHtmlDescription(message)
+                val tickerType: Int = when (statusInfoUiModel?.tickerType) {
+                    TICKER_TYPE_DANGER -> Ticker.TYPE_ERROR
+                    TICKER_TYPE_WARNING -> Ticker.TYPE_WARNING
+                    else -> Ticker.TYPE_ANNOUNCEMENT
+                }
+                tickerShopInfo.tickerType = tickerType
+                tickerShopInfo.setDescriptionClickEvent(object : TickerCallback {
+                    override fun onDescriptionViewClick(linkUrl: CharSequence) {
+                        RouteManager.route(context, linkUrl.toString())
+
+                    }
+
+                    override fun onDismiss() {
+                    }
+
+                })
+                tickerShopInfo.show()
+            } else {
+                tickerShopInfo.hide()
+            }
+
+        }
+
     }
 
     private fun setDotVisibility(shopFollowers: Long) {
@@ -226,7 +267,8 @@ class ShopInfoViewHolder(
 
     private fun setShopStatusType(shopStatusUiModel: ShopStatusUiModel) {
         val shopType = shopStatusUiModel.userShopInfoWrapper.shopType
-        val pmProEligibleIcon = shopStatusUiModel.userShopInfoWrapper.userShopInfoUiModel?.getPowerMerchantProEligibleIcon()
+        val pmProEligibleIcon =
+            shopStatusUiModel.userShopInfoWrapper.userShopInfoUiModel?.getPowerMerchantProEligibleIcon()
         val itemView: View? = shopType?.getLayoutRes()?.let {
             LayoutInflater.from(context).inflate(it, null, false)
         }
@@ -428,7 +470,8 @@ class ShopInfoViewHolder(
     ) {
         eligiblePmIconView.hide()
         regularMerchantStatus.run {
-            text = context.resources.getString(com.tokopedia.seller.menu.common.R.string.setting_verified)
+            text =
+                context.resources.getString(com.tokopedia.seller.menu.common.R.string.setting_verified)
             setTextColor(
                 ContextCompat.getColor(
                     context,
@@ -449,7 +492,8 @@ class ShopInfoViewHolder(
             setImage(pmIcon)
         }
         regularMerchantStatus.run {
-            text = context.resources.getString(com.tokopedia.seller.menu.common.R.string.setting_verifikasi)
+            text =
+                context.resources.getString(com.tokopedia.seller.menu.common.R.string.setting_verifikasi)
             setTextColor(
                 ContextCompat.getColor(
                     context,
@@ -638,7 +682,7 @@ class ShopInfoViewHolder(
     }
 
     private fun ShopType?.getLayoutRes(): Int {
-        return when(this) {
+        return when (this) {
             is RegularMerchant -> R.layout.setting_shop_status_regular
             is PowerMerchantStatus -> R.layout.setting_shop_status_pm
             is PowerMerchantProStatus -> R.layout.setting_shop_status_pm_pro

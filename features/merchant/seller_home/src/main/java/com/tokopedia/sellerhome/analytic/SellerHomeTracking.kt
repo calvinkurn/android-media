@@ -683,6 +683,45 @@ object SellerHomeTracking {
         TrackingHelper.sendGeneralEvent(eventMap)
     }
 
+    fun sendRecommendationTickerCtaClickEvent(element: RecommendationWidgetUiModel) {
+        val score = element.data?.progressBar?.bar?.value.orZero()
+        val level = element.data?.progressLevel?.bar?.value.orZero()
+        val numOfNegativeRecommendation = getNumberOfRecommendationByType(
+            element.data
+                ?.recommendation?.recommendations, RecommendationItemUiModel.TYPE_NEGATIVE
+        )
+        val numOfPositiveRecommendation = getNumberOfRecommendationByType(
+            element.data
+                ?.recommendation?.recommendations, RecommendationItemUiModel.TYPE_POSITIVE
+        )
+        val numOfNoDataRecommendation = getNumberOfRecommendationByType(
+            element.data
+                ?.recommendation?.recommendations, RecommendationItemUiModel.TYPE_NO_DATA
+        )
+        val tickerStatus = if (element.data?.ticker?.text.isNullOrBlank()) "off" else "on"
+        val tickerLabel = "ticker $tickerStatus"
+        val eventLabel = arrayOf(
+            element.dataKey, score, level, numOfNegativeRecommendation,
+            numOfPositiveRecommendation, numOfNoDataRecommendation,
+            tickerLabel
+        ).joinToString(" - ")
+
+        val eventMap = createEventMap(
+            event = TrackingConstant.CLICK_PG,
+            category = arrayOf(
+                TrackingConstant.SELLER_APP,
+                TrackingConstant.HOME
+            ).joinToString(" - "),
+            action = arrayOf(
+                TrackingConstant.CLICK_WIDGET_RECOMMENDATION,
+                TrackingConstant.HYPERLINK
+            ).joinToString(" - "),
+            label = eventLabel,
+            currentSite = TrackingConstant.TOKOPEDIA_MARKETPLACE
+        )
+        TrackingHelper.sendGeneralEvent(eventMap)
+    }
+
     fun sendRecommendationImpressionEvent(element: RecommendationWidgetUiModel) {
         val score = element.data?.progressBar?.bar?.value.orZero()
         val level = element.data?.progressLevel?.bar?.value.orZero()

@@ -141,11 +141,11 @@ import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilderFlag
 import com.tokopedia.searchbar.navigation_component.icons.IconList
 import com.tokopedia.searchbar.navigation_component.listener.NavRecyclerViewScrollListener
-import com.tokopedia.stickylogin.common.StickyLoginConstant
-import com.tokopedia.stickylogin.common.helper.isRegisteredFromStickyLogin
-import com.tokopedia.stickylogin.common.helper.saveIsRegisteredFromStickyLogin
-import com.tokopedia.stickylogin.view.StickyLoginAction
-import com.tokopedia.stickylogin.view.StickyLoginView
+import com.tokopedia.usercomponents.stickylogin.common.StickyLoginConstant
+import com.tokopedia.usercomponents.stickylogin.common.helper.isRegisteredFromStickyLogin
+import com.tokopedia.usercomponents.stickylogin.common.helper.saveIsRegisteredFromStickyLogin
+import com.tokopedia.usercomponents.stickylogin.view.StickyLoginAction
+import com.tokopedia.usercomponents.stickylogin.view.StickyLoginView
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.track.TrackApp
 import com.tokopedia.trackingoptimizer.TrackingQueue
@@ -162,6 +162,7 @@ import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
 import com.tokopedia.weaver.WeaveInterface
 import com.tokopedia.weaver.Weaver
 import com.tokopedia.weaver.Weaver.Companion.executeWeaveCoRoutineWithFirebase
+import com.tokopedia.wishlistcommon.util.AddRemoveWishlistV2Handler
 import dagger.Lazy
 import kotlinx.coroutines.FlowPreview
 import rx.Observable
@@ -414,7 +415,9 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         getPageLoadTimeCallback()?.startCustomMetric(HomePerformanceConstant.KEY_PERFORMANCE_ON_CREATE_HOME)
         beautyFestEvent = BEAUTY_FEST_NOT_SET
         fragmentCreatedForFirstTime = true
-        searchBarTransitionRange = resources.getDimensionPixelSize(R.dimen.home_revamp_searchbar_transition_range)
+        context?.run {
+            searchBarTransitionRange = resources.getDimensionPixelSize(R.dimen.home_revamp_searchbar_transition_range)
+        }
         startToTransitionOffset = 1f.toDpInt()
         getPageLoadTimeCallback()?.stopCustomMetric(HomePerformanceConstant.KEY_PERFORMANCE_ON_CREATE_HOME)
     }
@@ -1157,6 +1160,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         if (::playWidgetCoordinator.isInitialized) {
             playWidgetCoordinator.onDestroy()
         }
+        Toaster.onCTAClick = View.OnClickListener { }
     }
 
     override fun onDestroy() {
@@ -1446,11 +1450,13 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     }
 
     private fun adjustHomeBackgroundHeight() {
-        val layoutParams = backgroundViewImage.layoutParams
-        layoutParams.height =
+        context?.run {
+            val layoutParams = backgroundViewImage.layoutParams
+            layoutParams.height =
                 resources.getDimensionPixelSize(R.dimen.home_background_balance_small_with_choose_address)
-        backgroundViewImage.layoutParams = layoutParams
-        loaderHeaderImage.layoutParams = layoutParams
+            backgroundViewImage.layoutParams = layoutParams
+            loaderHeaderImage.layoutParams = layoutParams
+        }
     }
 
     private fun setData(data: List<Visitable<*>>, isCache: Boolean) {
@@ -1629,6 +1635,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
             SpecialReleaseComponentCallback(context, this),
             MerchantVoucherComponentCallback(this),
             CueWidgetComponentCallback(this),
+            VpsWidgetComponentCallback(this)
             CategoryWidgetV2Callback(context, this)
         )
         val asyncDifferConfig = AsyncDifferConfig.Builder(HomeVisitableDiffUtil())
@@ -2426,22 +2433,61 @@ open class HomeRevampFragment : BaseDaggerFragment(),
             if (wishlistResult.isSuccess) {
                 recommendationWishlistItem?.isWishlist = !(recommendationWishlistItem?.isWishlist
                         ?: false)
-                showToasterWithAction(
-                        message = if (wishlistResult.isAddWishlist) getString(com.tokopedia.topads.sdk.R.string.msg_success_add_wishlist) else getString(com.tokopedia.topads.sdk.R.string.msg_success_remove_wishlist),
-                        typeToaster = TYPE_NORMAL,
-                        actionText = getString(R.string.go_to_wishlist),
-                        clickListener = View.OnClickListener {
-                            RouteManager.route(context, ApplinkConst.WISHLIST)
+
+                if (wishlistResult.isAddWishlist) {
+                    if (wishlistResult.isUsingWishlistV2) showToasterSuccessWishlistV2(wishlistResult)
+                    else showToasterSuccessWishlist()
+                } else {
+                    if (wishlistResult.isUsingWishlistV2) {
+                        context?.let { context ->
+                            view?.let { v ->
+                                AddRemoveWishlistV2Handler.showRemoveWishlistV2SuccessToaster(wishlistResult, context, v)
+                            }
                         }
-                )
+                    } else {
+                        showToasterWithAction(
+                            message = getString(com.tokopedia.wishlist_common.R.string.on_success_remove_from_wishlist_msg),
+                            typeToaster = TYPE_NORMAL,
+                            actionText = getString(com.tokopedia.wishlist_common.R.string.cta_success_remove_from_wishlist),
+                            clickListener = View.OnClickListener {})
+                    }
+                }
             } else {
-                showToaster(
-                        message = if (wishlistResult.isAddWishlist) getString(com.tokopedia.topads.sdk.R.string.msg_error_add_wishlist) else getString(com.tokopedia.topads.sdk.R.string.msg_error_remove_wishlist),
+                if (wishlistResult.isUsingWishlistV2) {
+                    var msg = if (wishlistResult.isAddWishlist) getString(com.tokopedia.wishlist_common.R.string.on_failed_add_to_wishlist_msg) else getString(com.tokopedia.wishlist_common.R.string.on_failed_remove_from_wishlist_msg)
+                    if (wishlistResult.messageV2.isNotEmpty()) msg = wishlistResult.messageV2
+
+                    context?.let { context ->
+                        AddRemoveWishlistV2Handler.showWishlistV2ErrorToasterWithCta(msg,
+                            wishlistResult.ctaTextV2, wishlistResult.ctaActionV2, root, context)
+                    }
+                } else {
+                    showToaster(
+                        message = if (wishlistResult.isAddWishlist) getString(com.tokopedia.wishlist_common.R.string.on_failed_add_to_wishlist_msg) else getString(com.tokopedia.wishlist_common.R.string.on_failed_remove_from_wishlist_msg),
                         typeToaster = TYPE_ERROR
-                )
+                    )
+                }
             }
         } else {
             RouteManager.route(context, ApplinkConst.LOGIN)
+        }
+    }
+
+    private fun showToasterSuccessWishlist() {
+        showToasterWithAction(
+            message = getString(com.tokopedia.wishlist_common.R.string.on_success_add_to_wishlist_msg),
+            typeToaster = TYPE_NORMAL,
+            actionText = getString(com.tokopedia.wishlist_common.R.string.cta_success_add_to_wishlist),
+            clickListener = View.OnClickListener {
+                RouteManager.route(context, ApplinkConst.WISHLIST)
+            })
+    }
+
+    private fun showToasterSuccessWishlistV2(wishlistResult: ProductCardOptionsModel.WishlistResult) {
+        context?.let { context ->
+            view?.let { v ->
+                AddRemoveWishlistV2Handler.showAddToWishlistV2SuccessToaster(wishlistResult, context, v)
+            }
         }
     }
 
@@ -2483,11 +2529,11 @@ open class HomeRevampFragment : BaseDaggerFragment(),
 
     override val homeMainToolbarHeight: Int
         get() {
-            var height = resources.getDimensionPixelSize(R.dimen.default_toolbar_status_height)
-            context?.let {
+            var height = requireActivity().resources.getDimensionPixelSize(R.dimen.default_toolbar_status_height)
+            context?.let { context ->
                 navToolbar?.let {
                     height = navToolbar?.height
-                        ?: resources.getDimensionPixelSize(R.dimen.default_toolbar_status_height)
+                        ?: context.resources.getDimensionPixelSize(R.dimen.default_toolbar_status_height)
                     height += 8f.toDpInt()
                 }
             }
