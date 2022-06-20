@@ -14,13 +14,16 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.minicart.common.domain.data.MiniCartItem
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
+import com.tokopedia.minicart.common.domain.data.getMiniCartItemProduct
 import com.tokopedia.shop_widget.mvc_locked_to_product.analytic.model.MvcLockedToProductAddToCartTracker
 import com.tokopedia.shop_widget.mvc_locked_to_product.domain.model.MvcLockedToProductRequest
 import com.tokopedia.shop_widget.mvc_locked_to_product.domain.model.MvcLockedToProductResponse
 import com.tokopedia.shop_widget.mvc_locked_to_product.domain.usecase.MvcLockedToProductUseCase
 import com.tokopedia.shop_widget.mvc_locked_to_product.util.MvcLockedToProductMapper
 import com.tokopedia.shop_widget.mvc_locked_to_product.util.MvcLockedToProductUtil
-import com.tokopedia.shop_widget.mvc_locked_to_product.view.uimodel.*
+import com.tokopedia.shop_widget.mvc_locked_to_product.view.uimodel.MvcLockedToProductGridProductUiModel
+import com.tokopedia.shop_widget.mvc_locked_to_product.view.uimodel.MvcLockedToProductLayoutUiModel
+import com.tokopedia.shop_widget.mvc_locked_to_product.view.uimodel.MvcLockedToProductRequestUiModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -184,7 +187,7 @@ class MvcLockedToProductViewModel @Inject constructor(
         _mvcAddToCartTracker.postValue(mvcLockedToProductAddToCartTracker)
     }
 
-    private fun removeItemCart(miniCartItem: MiniCartItem) {
+    private fun removeItemCart(miniCartItem: MiniCartItem.MiniCartItemProduct) {
         deleteCartUseCase.setParams(
             cartIdList = listOf(miniCartItem.cartId)
         )
@@ -204,7 +207,7 @@ class MvcLockedToProductViewModel @Inject constructor(
     }
 
     private fun updateItemCart(
-        miniCartItem: MiniCartItem,
+        miniCartItem: MiniCartItem.MiniCartItemProduct,
         quantity: Int
     ) {
         val existingQuantity = miniCartItem.quantity
@@ -237,8 +240,8 @@ class MvcLockedToProductViewModel @Inject constructor(
         })
     }
 
-    private fun getMiniCartItem(productId: String): MiniCartItem? {
+    private fun getMiniCartItem(productId: String): MiniCartItem.MiniCartItemProduct? {
         val items = miniCartSimplifiedData.value?.miniCartItems.orEmpty()
-        return items.firstOrNull { it.productId == productId }
+        return items.getMiniCartItemProduct(productId)
     }
 }

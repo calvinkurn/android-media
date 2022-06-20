@@ -23,6 +23,7 @@ import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.logger.ServerLogger
 import com.tokopedia.logger.utils.Priority
 import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.seamless_login_common.domain.usecase.SeamlessLoginUsecase
 import com.tokopedia.seamless_login_common.subscriber.SeamlessLoginSubscriber
@@ -67,6 +68,9 @@ import com.tokopedia.websocket.WebSocketResponse
 import com.tokopedia.wishlist.common.listener.WishListActionListener
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
+import com.tokopedia.wishlistcommon.domain.AddToWishlistV2UseCase
+import com.tokopedia.wishlistcommon.domain.DeleteWishlistV2UseCase
+import com.tokopedia.wishlistcommon.listener.WishlistV2ActionListener
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.collect
@@ -101,6 +105,8 @@ open class TopChatViewModel @Inject constructor(
     private val tokoNowWHUsecase: GetChatTokoNowWarehouseUseCase,
     private var addWishListUseCase: AddWishListUseCase,
     private var removeWishListUseCase: RemoveWishListUseCase,
+    private var addToWishlistV2UseCase: AddToWishlistV2UseCase,
+    private var deleteWishlistV2UseCase: DeleteWishlistV2UseCase,
     private var getChatUseCase: GetChatUseCase,
     private var unsendReplyUseCase: UnsendReplyUseCase,
     private val dispatcher: CoroutineDispatchers,
@@ -776,10 +782,42 @@ open class TopChatViewModel @Inject constructor(
         addWishListUseCase.createObservable(productId, userId, wishlistActionListener)
     }
 
+    fun addToWishListV2(
+        productId: String,
+        userId: String,
+        wishlistActionListener: WishlistV2ActionListener
+    ) {
+        launch(dispatcher.main) {
+            addToWishlistV2UseCase.setParams(productId, userId)
+            val result = withContext(dispatcher.io) { addToWishlistV2UseCase.executeOnBackground() }
+            if (result is Success) {
+                wishlistActionListener.onSuccessAddWishlist(result.data, productId)
+            } else {
+                val error = (result as Fail).throwable
+                wishlistActionListener.onErrorAddWishList(error, productId)
+            }
+        }
+    }
+
     fun removeFromWishList(
         productId: String, userId: String, wishListActionListener: WishListActionListener
     ) {
         removeWishListUseCase.createObservable(productId, userId, wishListActionListener)
+    }
+
+    fun removeFromWishListV2(
+        productId: String, userId: String, wishListActionListener: WishlistV2ActionListener
+    ) {
+        launch(dispatcher.main) {
+            deleteWishlistV2UseCase.setParams(productId, userId)
+            val result = withContext(dispatcher.io) { deleteWishlistV2UseCase.executeOnBackground() }
+            if (result is Success) {
+                wishListActionListener.onSuccessRemoveWishlist(result.data, productId)
+            } else {
+                val error = (result as Fail).throwable
+                wishListActionListener.onErrorRemoveWishlist(error, productId)
+            }
+        }
     }
 
     fun getExistingChat(messageId: String, isInit: Boolean = false) {

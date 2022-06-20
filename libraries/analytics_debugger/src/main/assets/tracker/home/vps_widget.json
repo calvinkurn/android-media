@@ -1,0 +1,45 @@
+{
+  "readme": "VPS widget impression and click",
+  "mode": "exact",
+  "query": [
+    {
+      "event": "view_item",
+      "eventAction": "lego banner 4 image auto v2 impression",
+      "eventCategory": "homepage",
+      "eventLabel": "",
+      "businessUnit": "home & browse",
+      "currentSite": "tokopediamarketplace",
+      "promotions": [
+        {
+          "creative_name": ".*",
+          "creative_slot": ".*",
+          "item_id": ".*_.*_.*_.*",
+          "item_name": "/ - p.* - lego banner 4 image auto v2 - .*",
+          "creative_url": ""
+        }
+      ],
+      "userId": ".*",
+      "sessionIris": ".*"
+    },
+    {
+      "event": "select_content",
+      "eventAction": "lego banner 4 image auto v2 click",
+      "eventCategory": "homepage",
+      "eventLabel": ".* - .*",
+      "businessUnit": "home & browse",
+      "campaignCode": ".*",
+      "currentSite": "tokopediamarketplace",
+      "promotions": [
+        {
+          "creative_name": ".*",
+          "creative_slot": ".*",
+          "item_id": ".*_.*_.*_.*",
+          "item_name": "/ - p.* - lego banner 4 image auto v2 - .*"
+        }
+      ],
+      "userId": ".*",
+      "sessionIris": ".*",
+      "clientId": ".*"
+    }
+  ]
+}
