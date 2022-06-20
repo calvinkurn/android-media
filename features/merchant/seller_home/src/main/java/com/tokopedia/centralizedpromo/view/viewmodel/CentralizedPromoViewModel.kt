@@ -10,6 +10,7 @@ import com.tokopedia.centralizedpromo.domain.usecase.CheckNonTopAdsUserUseCase
 import com.tokopedia.centralizedpromo.domain.usecase.GetChatBlastSellerMetadataUseCase
 import com.tokopedia.centralizedpromo.domain.usecase.GetOnGoingPromotionUseCase
 import com.tokopedia.centralizedpromo.domain.usecase.SellerHomeGetWhiteListedUserUseCase
+import com.tokopedia.centralizedpromo.domain.usecase.SlashPriceEligibleUseCase
 import com.tokopedia.centralizedpromo.domain.usecase.VoucherCashbackEligibleUseCase
 import com.tokopedia.centralizedpromo.view.FirstPromoDataSource
 import com.tokopedia.centralizedpromo.view.LayoutType
@@ -30,6 +31,7 @@ class CentralizedPromoViewModel @Inject constructor(
     private val getOnGoingPromotionUseCase: GetOnGoingPromotionUseCase,
     private val getChatBlastSellerMetadataUseCase: GetChatBlastSellerMetadataUseCase,
     private val voucherCashbackEligibleUseCase: VoucherCashbackEligibleUseCase,
+    private val slashPriceEligibleUseCase: SlashPriceEligibleUseCase,
     private val checkNonTopAdsUserUseCase: CheckNonTopAdsUserUseCase,
     private val sellerHomeGetWhiteListedUserUseCase: SellerHomeGetWhiteListedUserUseCase,
     private val remoteConfig: FirebaseRemoteConfigImpl,
@@ -109,6 +111,12 @@ class CentralizedPromoViewModel @Inject constructor(
             val isProductCouponEnabledDeffered = async {
                 getIsProductCouponEnabled()
             }
+            val isSlashPriceEnabledDeffered = async {
+                getIsSlashPriceEnabled()
+            }
+            val isSlashPriceEligibleDeffered = async {
+                slashPriceEligibleUseCase.execute(userSession.shopId)
+            }
 
             val isNonTopAdsUserDeferred = async {
                 checkNonTopAdsUserUseCase.execute(userSession.shopId)
@@ -130,6 +138,8 @@ class CentralizedPromoViewModel @Inject constructor(
             val isProductCouponFirstTime = isProductCouponFirstTimeDeferred.await()
             val isTokopediaPlayFirstTime = isTokopediaPlayFirstTimeDeferred.await()
             val isProductCouponEnabled = isProductCouponEnabledDeffered.await()
+            val isSlashPriceEnabled = isSlashPriceEnabledDeffered.await()
+            val isSlashPriceEligible = isSlashPriceEligibleDeffered.await()
             Success(
                 PromoCreationStaticData.provideStaticData(
                     resourceProvider,
@@ -141,7 +151,9 @@ class CentralizedPromoViewModel @Inject constructor(
                     isVoucherCashbackFirstTime,
                     isProductCouponFirstTime,
                     isTokopediaPlayFirstTime,
-                    isProductCouponEnabled
+                    isProductCouponEnabled,
+                    isSlashPriceEnabled,
+                    isSlashPriceEligible
                 )
             )
         } catch (t: Throwable) {
@@ -164,6 +176,14 @@ class CentralizedPromoViewModel @Inject constructor(
     private fun getIsProductCouponEnabled(): Boolean {
         return try {
             remoteConfig.getBoolean(RemoteConfigKey.ENABLE_MVC_PRODUCT, true)
+        } catch (ex: Exception) {
+            false
+        }
+    }
+
+    private fun getIsSlashPriceEnabled(): Boolean {
+        return try {
+            remoteConfig.getBoolean(RemoteConfigKey.ENABLE_SLASH_PRICE, true)
         } catch (ex: Exception) {
             false
         }

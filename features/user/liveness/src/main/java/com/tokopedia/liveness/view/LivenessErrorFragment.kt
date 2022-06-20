@@ -1,6 +1,7 @@
 package com.tokopedia.liveness.view
 
 import ai.advance.liveness.lib.Detector
+import ai.advance.liveness.lib.Detector.DetectionFailedType.FACEMISSING
 import ai.advance.liveness.lib.Detector.DetectionFailedType.TIMEOUT
 import android.app.Activity
 import android.os.Bundle
@@ -65,6 +66,11 @@ class LivenessErrorFragment: BaseDaggerFragment(), OnBackListener {
             TIMEOUT -> {
                 setViews(getString(R.string.liveness_failed_reason_timeout_title),
                     getString(R.string.liveness_failed_reason_timeout),
+                    LivenessConstants.SCAN_FACE_FAIL_TIME)
+            }
+            FACEMISSING,  -> {
+                setViews(getString(R.string.liveness_failed_reason_face_missing_title),
+                    getString(R.string.liveness_failed_reason_face_missing_description),
                     LivenessConstants.SCAN_FACE_FAIL_TIME)
             }
             else -> {

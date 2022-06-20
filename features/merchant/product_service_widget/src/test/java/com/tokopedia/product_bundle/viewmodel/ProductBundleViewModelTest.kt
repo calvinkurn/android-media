@@ -256,11 +256,11 @@ class ProductBundleViewModelTest: ProductBundleViewModelTestFixture() {
     @Test
     fun `when mapBundleDetailsToProductDetails data provided then should return correct value`() = coroutineTestRule.runBlockingTest {
         viewModel.parentProductID = 123
-        val productDetailList1 = viewModel.mapBundleDetailsToProductDetails("2323", 2323, listOf(
+        val productDetailList1 = viewModel.mapBundleDetailsToProductDetails("2323", "2323", listOf(
             ProductBundleDetail(productId = 222)
         ))
 
-        val productDetailList2 = viewModel.mapBundleDetailsToProductDetails("2323", 2323, listOf(
+        val productDetailList2 = viewModel.mapBundleDetailsToProductDetails("2323", "2323", listOf(
             ProductBundleDetail(selectedVariantId = "1234", productId = 123)
         ))
 
@@ -373,7 +373,7 @@ class ProductBundleViewModelTest: ProductBundleViewModelTestFixture() {
     @Test
     fun `when getBundleInfo expect return correct value`() = coroutineTestRule.runBlockingTest {
         // negative case
-        viewModel.getBundleInfo(123)
+        viewModel.getBundleInfo(123, "1")
         val pageStateError = viewModel.pageState.getOrAwaitValue()
         val getBundleInfoResultFail = viewModel.getBundleInfoResult.getOrAwaitValue()
 
@@ -382,7 +382,7 @@ class ProductBundleViewModelTest: ProductBundleViewModelTestFixture() {
             getBundleInfoUseCase.executeOnBackground()
         } returns GetBundleInfoResponse()
 
-        viewModel.getBundleInfo(123)
+        viewModel.getBundleInfo(123, "1")
         coVerify { getBundleInfoUseCase.executeOnBackground() }
         val pageStateSuccess = viewModel.pageState.getOrAwaitValue()
         val getBundleInfoResultSuccess = viewModel.getBundleInfoResult.getOrAwaitValue()
@@ -468,8 +468,8 @@ class ProductBundleViewModelTest: ProductBundleViewModelTestFixture() {
 
     @Test
     fun `when getBundleInfo using 0 product id expect setParams with list of Bundle`() = coroutineTestRule.runBlockingTest {
-        viewModel.getBundleInfo(0)
-        coVerify { getBundleInfoUseCase.setParams(any(), any(), any(), any(), listOf(Bundle(ID = "0"))) }
+        viewModel.getBundleInfo(0, "1")
+        coVerify { getBundleInfoUseCase.setParams(any(), any(), any(), any(), listOf(Bundle(ID = "0", WarehouseID = "1"))) }
     }
 
     @Test

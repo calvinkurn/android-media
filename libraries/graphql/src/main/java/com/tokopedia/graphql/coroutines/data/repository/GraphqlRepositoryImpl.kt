@@ -1,6 +1,5 @@
 package com.tokopedia.graphql.coroutines.data.repository
 
-import android.text.TextUtils
 import android.util.Log
 import com.google.gson.JsonSyntaxException
 import com.tokopedia.graphql.CommonUtils
@@ -8,9 +7,7 @@ import com.tokopedia.graphql.GraphqlConstant
 import com.tokopedia.graphql.coroutines.data.source.GraphqlCacheDataStore
 import com.tokopedia.graphql.coroutines.data.source.GraphqlCloudDataStore
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
-import com.tokopedia.graphql.data.GraphqlClient
 import com.tokopedia.graphql.data.model.*
-import com.tokopedia.graphql.util.CacheHelper
 import com.tokopedia.graphql.util.LoggingUtils
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -120,7 +117,7 @@ class GraphqlRepositoryImpl @Inject constructor(
                     errors[typeOfT] =
                         CommonUtils.fromJson(error, Array<GraphqlError>::class.java).toList()
                 }
-                LoggingUtils.logGqlSuccessRate(operationName, "1")
+                LoggingUtils.logGqlSuccessRateBasedOnStatusCode(operationName, httpStatusCode)
                 LoggingUtils.logGqlParseSuccess("kt", requests.toString())
             } catch (jse: JsonSyntaxException) {
                 LoggingUtils.logGqlSuccessRate(operationName, "0")

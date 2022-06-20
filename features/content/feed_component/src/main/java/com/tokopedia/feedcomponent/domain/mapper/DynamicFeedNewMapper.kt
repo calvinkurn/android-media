@@ -124,7 +124,7 @@ object DynamicFeedNewMapper {
                 tagsType,
                 feed.appLink,
                 authorId,
-                feed.id.toIntOrZero(),
+                feed.id,
                 feed.media.size,
                 recomId
         )
