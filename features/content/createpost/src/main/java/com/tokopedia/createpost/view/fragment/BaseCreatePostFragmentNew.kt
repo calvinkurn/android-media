@@ -153,6 +153,8 @@ abstract class BaseCreatePostFragmentNew : BaseDaggerFragment(),
                 iconUrl = it.thumbnail,
                 badge = it.badge,
                 type = it.type,
+                hasUsername = feedContentForm.hasUsername,
+                hasAcceptTnc = feedContentForm.hasAcceptTnc,
             )
         }
 

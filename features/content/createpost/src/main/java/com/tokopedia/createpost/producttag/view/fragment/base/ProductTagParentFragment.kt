@@ -41,6 +41,7 @@ import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import javax.inject.Inject
+import com.tokopedia.abstraction.R as abstractionR
 
 /**
 * Created By : Jonathan Darwin on April 25, 2022
@@ -131,6 +132,14 @@ class ProductTagParentFragment @Inject constructor(
             clickBreadcrumb()
         }
 
+        binding.icCcProductTagChevron2.setOnClickListener {
+            clickBreadcrumb()
+        }
+
+        binding.tvCcProductTagProductSource2.setOnClickListener {
+            clickBreadcrumb()
+        }
+
         showBreadcrumb(viewModel.isUser)
         showCoachmarkGlobalTag(viewModel.isShowCoachmarkGlobalTag)
     }
@@ -151,7 +160,7 @@ class ProductTagParentFragment @Inject constructor(
                         val data = Intent().apply {
                             putExtra(RESULT_PRODUCT_ID, product.id)
                             putExtra(RESULT_PRODUCT_NAME, product.name)
-                            putExtra(RESULT_PRODUCT_PRICE, product.priceFmt)
+                            putExtra(RESULT_PRODUCT_PRICE, if(product.isDiscount) product.priceDiscountFmt else product.priceFmt)
                             putExtra(RESULT_PRODUCT_IMAGE, product.coverURL)
                             putExtra(RESULT_PRODUCT_PRICE_ORIGINAL_FMT, product.priceOriginalFmt)
                             putExtra(RESULT_PRODUCT_PRICE_DISCOUNT_FMT, product.discountFmt)
@@ -172,7 +181,7 @@ class ProductTagParentFragment @Inject constructor(
                     is ProductTagUiEvent.ShowError -> {
                         Toaster.build(
                             binding.root,
-                            text = getString(R.string.default_request_error_unknown),
+                            text = getString(abstractionR.string.default_request_error_unknown),
                             type = Toaster.TYPE_ERROR,
                             duration = Toaster.LENGTH_LONG,
                             actionText = if(it.action != null) getString(R.string.feed_content_coba_lagi_text) else "",
@@ -203,7 +212,7 @@ class ProductTagParentFragment @Inject constructor(
 
                 binding.icCcProductTagChevron1.setImage(IconUnify.CHEVRON_DOWN)
                 binding.tvCcProductTagProductSource.text = getProductTagSourceText(firstSource)
-                if(firstSource == ProductTagSource.MyShop && userSession.shopAvatar.isNotEmpty()) {
+                if(firstSource == ProductTagSource.MyShop && viewModel.shopBadge.isNotEmpty()) {
                     binding.imgCcProductTagShopBadge1.setImageUrl(viewModel.shopBadge)
                     binding.imgCcProductTagShopBadge1.show()
                     binding.icCcProductTagShopBadge1.hide()

@@ -60,7 +60,7 @@ class MyShopProductFragment @Inject constructor(
                     viewModel.selectedTagSource,
                     product,
                     position,
-                    false
+                    isEntryPoint = viewModel.myShopQuery.isEmpty()
                 )
                 viewModel.submitAction(ProductTagAction.ProductSelected(product))
             },
@@ -134,7 +134,7 @@ class MyShopProductFragment @Inject constructor(
     private fun setupAnalytic() {
         impressionCoordinator.setInitialData(
             viewModel.selectedTagSource,
-            false,
+            isEntryPoint = true,
         )
     }
 
@@ -166,6 +166,13 @@ class MyShopProductFragment @Inject constructor(
         binding.sbShopProduct.searchBarTextField.setOnEditorActionListener { textView, actionId, keyEvent ->
             if(actionId == EditorInfo.IME_ACTION_SEARCH) {
                 val query = binding.sbShopProduct.searchBarTextField.text.toString()
+
+                impressionCoordinator.sendProductImpress()
+                impressionCoordinator.setInitialData(
+                    viewModel.selectedTagSource,
+                    isEntryPoint = query.isEmpty(),
+                )
+
                 submitQuery(query)
 
                 true

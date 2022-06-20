@@ -322,34 +322,33 @@ class CreatePostActivityNew : BaseSimpleActivity(), CreateContentPostCommonListe
         else mFeedAccountList.firstOrNull { it.id == selectedFeedAccountId }
             ?: mFeedAccountList.first()
 
-        val createPostViewModel =
-            (intent?.extras?.get(CreatePostViewModel.TAG) as CreatePostViewModel?)
-       createPostViewModel?.let {
-           if (it.isEditState){
-               selectedFeedAccount = findAccountByAuthorIdOfPost(mFeedAccountList, it.editAuthorId)
-           }
-       }
+        val createPostViewModel = (intent?.extras?.get(CreatePostViewModel.TAG) as CreatePostViewModel?)
+        createPostViewModel?.let {
+               if (it.isEditState){
+                   selectedFeedAccount = findAccountByAuthorIdOfPost(mFeedAccountList, it.editAuthorId)
+            }
+        }
 
         toolbarCommon.apply {
             icon = selectedFeedAccount.iconUrl
             title = getString(R.string.feed_content_post_sebagai)
             subtitle = selectedFeedAccount.name
             createPostViewModel?.let {
-                showHideExpandIcon(!it.isEditState)
-                if (!it.isEditState)
-                    setClickListenerToOpenBottomSheet()
+                val isAllowSwitchAccount = mFeedAccountList.size > 1 && mFeedAccountList.find { acc -> acc.isUserPostEligible } != null
+
+                if (!it.isEditState && isAllowSwitchAccount)
+                    setOnAccountClickListener {
+                        feedAccountAnalytic.clickAccountInfo()
+                        FeedAccountTypeBottomSheet
+                            .getFragment(supportFragmentManager, classLoader)
+                            .showNow(supportFragmentManager)
+                    }
+                else setOnAccountClickListener(null)
             }
 
 
             setOnBackClickListener {
                 onBackPressed()
-            }
-
-            setOnAccountClickListener {
-                feedAccountAnalytic.clickAccountInfo()
-                FeedAccountTypeBottomSheet
-                    .getFragment(supportFragmentManager, classLoader)
-                    .showNow(supportFragmentManager)
             }
 
             visibility = View.VISIBLE

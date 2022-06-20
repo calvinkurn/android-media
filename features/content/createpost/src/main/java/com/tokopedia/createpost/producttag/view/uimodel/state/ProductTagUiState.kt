@@ -52,7 +52,7 @@ data class GlobalSearchProductUiState(
     val sortFilters: DynamicFilterModel,
     val state: PagedState,
     val param: SearchParamUiModel,
-    val suggestion: String,
+    val suggestion: SuggestionUiModel,
     val ticker: TickerUiModel,
 )
 

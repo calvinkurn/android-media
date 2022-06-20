@@ -14,14 +14,14 @@ class ProductImpressionCoordinator @Inject constructor(
     private val mProductImpress = mutableListOf<Pair<ProductUiModel, Int>>()
 
     private var mTagSource: ProductTagSource = ProductTagSource.Unknown
-    private var mIsGlobalSearch: Boolean = false
+    private var mIsEntryPoint: Boolean = false
 
     fun setInitialData(
         source: ProductTagSource,
-        isGlobalSearch: Boolean,
+        isEntryPoint: Boolean,
     ) {
         mTagSource = source
-        mIsGlobalSearch = isGlobalSearch
+        mIsEntryPoint = isEntryPoint
     }
 
     fun saveProductImpress(productImpress: List<Pair<ProductUiModel, Int>>) {
@@ -40,7 +40,7 @@ class ProductImpressionCoordinator @Inject constructor(
             analytic.impressProductCard(
                 mTagSource,
                 finalProduct,
-                mIsGlobalSearch,
+                mIsEntryPoint,
             )
         }
 

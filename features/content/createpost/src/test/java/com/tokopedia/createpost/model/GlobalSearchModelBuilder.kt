@@ -14,7 +14,7 @@ class GlobalSearchModelBuilder {
         size: Int = 5,
         hasNextPage: Boolean = true,
         nextCursor: String = "1",
-        suggestion: String = "",
+        suggestion: SuggestionUiModel = SuggestionUiModel(),
         ticker: TickerUiModel = TickerUiModel(),
     ): PagedGlobalSearchProductResponse {
         return PagedGlobalSearchProductResponse(
@@ -136,6 +136,16 @@ class GlobalSearchModelBuilder {
             value = "value$it",
         )
     }
+
+    fun buildSuggestionModel(
+        text: String = "Do you mean \"pokemon\"?",
+        query: String = "q=pokemon",
+        suggestion: String = "pokemon",
+    ) = SuggestionUiModel(
+        text = text,
+        query = query,
+        suggestion = suggestion,
+    )
 
     fun buildTickerModel(
         text: String = "This is ticker",

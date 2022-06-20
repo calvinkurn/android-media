@@ -105,7 +105,7 @@ class ProductTagUiModelMapper @Inject constructor() {
                         priceOriginal = 0.0,
                         priceOriginalFmt = it.originalPrice,
                         priceDiscount = 0.0,
-                        priceDiscountFmt = "",
+                        priceDiscountFmt = if(it.discountPercentage != 0.0) it.price else "",
                         totalSold = 0,
                         totalSoldFmt = it.countSold,
                         isBebasOngkir = it.freeOngkir.isActive,
@@ -124,7 +124,11 @@ class ProductTagUiModelMapper @Inject constructor() {
                 keywordProcess = response.wrapper.header.keywordProcess,
                 componentId = response.wrapper.header.componentId,
             ),
-            suggestion = response.wrapper.data.suggestion.text,
+            suggestion = SuggestionUiModel(
+                text = response.wrapper.data.suggestion.text,
+                query = response.wrapper.data.suggestion.query,
+                suggestion = response.wrapper.data.suggestion.suggestion,
+            ),
             ticker = TickerUiModel(
                 text = response.wrapper.data.ticker.text,
                 query = response.wrapper.data.ticker.query,

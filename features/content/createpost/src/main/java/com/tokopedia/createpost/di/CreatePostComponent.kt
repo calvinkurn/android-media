@@ -18,7 +18,6 @@ import dagger.Component
 @Component(
     modules = [
         CreatePostModule::class,
-        CreatePostBindModule::class,
         ViewModelModule::class,
         ContentCreationProductTagBindModule::class,
         ContentCreationProductTagModule::class,

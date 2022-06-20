@@ -12,6 +12,12 @@ data class GetContentFormDomain(
     data class FeedContentForm(
         @SerializedName("authors")
         val authors: List<Author> = emptyList(),
+
+        @SerializedName("has_username")
+        val hasUsername: Boolean = false,
+
+        @SerializedName("has_accept_tnc")
+        val hasAcceptTnc: Boolean = false,
     )
 
     data class Author(

@@ -48,6 +48,7 @@ class ProductTagCardAdapter(
 
         data class Suggestion(
             val text: String,
+            val onSuggestionClicked: () -> Unit,
         ) : Model
 
         data class Ticker(

@@ -2856,9 +2856,6 @@ class FeedPlusFragment : BaseDaggerFragment(),
         if (model.postList.isNotEmpty()) {
             setLastCursorOnFirstPage(model.cursor)
             setFirstPageCursor(model.firstPageCursor)
-            parentFragment?.let {
-                (it as FeedPlusContainerFragment).showCreatePostOnBoarding()
-            }
             swipe_refresh_layout.isEnabled = true
             trackFeedImpression(model.postList)
             adapter.clearData()

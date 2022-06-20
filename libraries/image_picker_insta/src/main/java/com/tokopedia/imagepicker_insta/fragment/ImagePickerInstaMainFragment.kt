@@ -303,25 +303,6 @@ class ImagePickerInstaMainFragment : PermissionFragment(), ImagePickerFragmentCo
             TrackerProvider.tracker?.onBackButtonFromPicker()
             activity?.finish()
         }
-        toolbarCommon.setOnAccountClickListener {
-            openFeedAccountBottomSheet()
-        }
-
-        toolbarCommon.getToolbarParentView().addOneTimeGlobalLayoutListener {
-            coachMark = CoachMark2(activity as Context)
-
-            coachMarkItem.add(
-                CoachMark2Item(
-                    toolbarCommon.getToolbarParentView(),
-                    getString(R.string.imagepicker_coachmark_header),
-                    getString(R.string.imagepicker_coachmark_text),
-                    CoachMark2.POSITION_BOTTOM
-                )
-            )
-            if (Prefs.getShouldShowCoachMarkValue(activity as Context))
-            showFabCoachMark()
-        }
-        toolbarCommon.setClickListenerToOpenBottomSheet()
 
         (activity as ImagePickerInstaActivity).run {
             setSupportActionBar(toolbarCommon)
@@ -515,6 +496,35 @@ class ImagePickerInstaMainFragment : PermissionFragment(), ImagePickerFragmentCo
             viewModel.selectedFeedAccount.collectLatest {
                 toolbarCommon.subtitle = it.name
                 toolbarCommon.icon = it.iconUrl
+            }
+        }
+
+        viewLifecycleOwner.lifecycleScope.launchWhenStarted {
+            viewModel.feedAccountListState.collectLatest {
+                if(viewModel.isAllowChangeAccount) {
+                    toolbarCommon.getToolbarParentView().addOneTimeGlobalLayoutListener {
+                        coachMark = CoachMark2(requireContext())
+
+                        coachMarkItem.add(
+                            CoachMark2Item(
+                                toolbarCommon.getToolbarParentView(),
+                                getString(R.string.imagepicker_coachmark_header),
+                                getString(R.string.imagepicker_coachmark_text),
+                                CoachMark2.POSITION_BOTTOM
+                            )
+                        )
+
+                        if (Prefs.getShouldShowCoachMarkValue(requireContext()))
+                            showFabCoachMark()
+                    }
+
+                    toolbarCommon.setOnAccountClickListener {
+                        openFeedAccountBottomSheet()
+                    }
+                }
+                else {
+                    toolbarCommon.setOnAccountClickListener(null)
+                }
             }
         }
 

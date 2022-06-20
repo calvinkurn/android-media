@@ -45,7 +45,7 @@ data class ProductUiModel(
         shopBadgeList = shopBadge.map { ProductCardModel.ShopBadge(it.isActive, it.badgeUrl) },
         discountPercentage = if(isDiscount) discountFmt else "",
         slashedPrice = if(isDiscount) priceOriginalFmt else "",
-        formattedPrice = priceFmt,
+        formattedPrice = if(isDiscount) priceDiscountFmt else priceFmt,
         countSoldRating = star,
         labelGroupList = listOf(
             ProductCardModel.LabelGroup(

@@ -30,6 +30,9 @@ internal class ProductTagCardViewHolder private constructor() {
 
         fun bind(item: ProductTagCardAdapter.Model.Suggestion) {
             binding.tvSuggestion.text = HtmlCompat.fromHtml(item.text, HtmlCompat.FROM_HTML_MODE_LEGACY)
+            binding.tvSuggestion.setOnClickListener {
+                item.onSuggestionClicked()
+            }
         }
 
         companion object {

@@ -153,6 +153,74 @@ class GlobalSearchProductViewModelTest {
     }
 
     @Test
+    fun `when user click suggestion, it should reload products & shops with the new suggestion query`() {
+
+        robot.use {
+            val suggestedQuery = "pokemon red"
+
+            val mockSuggestion = globalSearchModelBuilder.buildSuggestionModel(suggestion = suggestedQuery)
+            val mockResponse = globalSearchModelBuilder.buildResponseModel(
+                suggestion = mockSuggestion,
+            )
+            val mockShopResponse = globalSearchModelBuilder.buildShopResponseModel()
+
+            coEvery { mockRepo.searchAceProducts(any()) } returns mockResponse
+            coEvery { mockRepo.searchAceShops(any()) } returns mockShopResponse
+
+            it.setup {
+                submitAction(ProductTagAction.LoadGlobalSearchProduct)
+                submitAction(ProductTagAction.LoadGlobalSearchShop)
+            }
+
+            it.recordState {
+                submitAction(ProductTagAction.SuggestionClicked)
+            }.andThen {
+                globalSearchProduct.state.isSuccess()
+                globalSearchProduct.products.assertEqualTo(mockResponse.pagedData.dataList)
+                globalSearchProduct.param.prevQuery.assertEqualTo(query)
+                globalSearchProduct.param.query.assertEqualTo(suggestedQuery)
+
+                globalSearchShop.param.prevQuery.assertEqualTo(query)
+                globalSearchShop.param.query.assertEqualTo(suggestedQuery)
+            }
+        }
+    }
+
+    @Test
+    fun `when user click suggestion but suggestion query is empty, it should not reload products & shops`() {
+
+        robot.use {
+            val suggestedQuery = ""
+
+            val mockSuggestion = globalSearchModelBuilder.buildSuggestionModel(suggestion = suggestedQuery)
+            val mockResponse = globalSearchModelBuilder.buildResponseModel(
+                suggestion = mockSuggestion,
+            )
+            val mockShopResponse = globalSearchModelBuilder.buildShopResponseModel()
+
+            coEvery { mockRepo.searchAceProducts(any()) } returns mockResponse
+            coEvery { mockRepo.searchAceShops(any()) } returns mockShopResponse
+
+            it.setup {
+                submitAction(ProductTagAction.LoadGlobalSearchProduct)
+                submitAction(ProductTagAction.LoadGlobalSearchShop)
+            }
+
+            it.recordState {
+                submitAction(ProductTagAction.SuggestionClicked)
+            }.andThen {
+                globalSearchProduct.state.isSuccess()
+                globalSearchProduct.products.assertEqualTo(mockResponse.pagedData.dataList)
+                globalSearchProduct.param.prevQuery.assertEmpty()
+                globalSearchProduct.param.query.assertEqualTo(query)
+
+                globalSearchShop.param.prevQuery.assertEmpty()
+                globalSearchShop.param.query.assertEqualTo(query)
+            }
+        }
+    }
+
+    @Test
     fun `when user click ticker, it should reload products with the new param`() {
 
         robot.use {

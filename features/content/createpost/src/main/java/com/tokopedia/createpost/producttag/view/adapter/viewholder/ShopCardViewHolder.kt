@@ -38,6 +38,10 @@ internal class ShopCardViewHolder private constructor() {
                 btnSeeShop.setOnClickListener {
                     onSelected(item.shop, adapterPosition)
                 }
+
+                root.setOnClickListener {
+                    onSelected(item.shop, adapterPosition)
+                }
             }
         }
 

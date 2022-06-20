@@ -52,13 +52,13 @@ class ProductTagAnalyticImpl @Inject constructor(
     override fun impressProductCard(
         source: ProductTagSource,
         products: List<Pair<ProductUiModel, Int>>,
-        isGlobalSearch: Boolean
+        isEntryPoint: Boolean
     ) {
         trackingQueue.putEETracking(
             EventModel(
                 event = EVENT_PRODUCT_VIEW,
                 category = VAL_EVENT_CATEGORY,
-                action = if(isGlobalSearch) "impression - product card" else "impression - entry point product card",
+                action = if(isEntryPoint) "impression - entry point product card" else "impression - product card",
                 label = "${source.labelAnalytic} - ${userSession.shopId} - ${products.firstOrNull()?.first?.id ?: 0}"
             ),
             hashMapOf(
@@ -82,13 +82,13 @@ class ProductTagAnalyticImpl @Inject constructor(
         source: ProductTagSource,
         product: ProductUiModel,
         position: Int,
-        isGlobalSearch: Boolean
+        isEntryPoint: Boolean
     ) {
         trackingQueue.putEETracking(
             EventModel(
                 event = EVENT_PRODUCT_CLICK,
                 category = VAL_EVENT_CATEGORY,
-                action = if(isGlobalSearch) "click - product card" else "click - entry point product card",
+                action = if(isEntryPoint) "click - entry point product card" else "click - product card",
                 label = "${source.labelAnalytic} - ${userSession.shopId} - ${product.id}"
             ),
             hashMapOf(
@@ -138,7 +138,7 @@ class ProductTagAnalyticImpl @Inject constructor(
                 KEY_ECOMMERCE to hashMapOf(
                     EVENT_PROMO_VIEW to hashMapOf(
                         KEY_PROMOTIONS to shops.map {
-                            convertToPromotion(it.first, it.second)
+                            convertToPromotion(it.first, it.second + 1)
                         }
                     )
                 )

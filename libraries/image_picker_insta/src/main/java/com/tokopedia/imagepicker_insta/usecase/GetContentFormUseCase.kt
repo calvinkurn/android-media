@@ -40,6 +40,8 @@ class GetContentFormUseCase @Inject constructor(
                   thumbnail
                   badge
                 }
+                has_username
+                has_accept_tnc
               }
             }
         """

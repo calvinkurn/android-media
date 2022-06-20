@@ -35,4 +35,10 @@ data class FeedContentForm(
 
     @SerializedName("productTagSources")
     val productTagSources: List<String> = emptyList(),
+
+    @SerializedName("has_username")
+    val hasUsername: Boolean = false,
+
+    @SerializedName("has_accept_tnc")
+    val hasAcceptTnc: Boolean = false,
 )

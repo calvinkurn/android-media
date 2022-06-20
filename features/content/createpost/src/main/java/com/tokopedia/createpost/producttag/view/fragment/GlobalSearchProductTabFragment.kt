@@ -54,7 +54,7 @@ class GlobalSearchProductTabFragment @Inject constructor(
                     viewModel.selectedTagSource,
                     product,
                     position,
-                    true
+                    isEntryPoint = false
                 )
                 viewModel.submitAction(ProductTagAction.ProductSelected(product))
             },
@@ -130,7 +130,7 @@ class GlobalSearchProductTabFragment @Inject constructor(
     private fun setupAnalytic() {
         impressionCoordinator.setInitialData(
             viewModel.selectedTagSource,
-            true,
+            isEntryPoint = false,
         )
     }
 
@@ -244,7 +244,13 @@ class GlobalSearchProductTabFragment @Inject constructor(
     @OptIn(ExperimentalStdlibApi::class)
     private fun updateAdapterData(currState: GlobalSearchProductUiState, showLoading: Boolean) {
         val finalProducts = buildList {
-            if(currState.suggestion.isNotEmpty()) add(ProductTagCardAdapter.Model.Suggestion(text = currState.suggestion))
+            if(currState.suggestion.text.isNotEmpty()) add(
+                ProductTagCardAdapter.Model.Suggestion(
+                    text = currState.suggestion.text,
+                    onSuggestionClicked = { viewModel.submitAction(ProductTagAction.SuggestionClicked) },
+                )
+            )
+
             if(currState.ticker.text.isNotEmpty())
                 add(
                     ProductTagCardAdapter.Model.Ticker(

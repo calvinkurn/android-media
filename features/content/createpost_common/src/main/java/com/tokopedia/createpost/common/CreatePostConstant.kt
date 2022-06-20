@@ -18,5 +18,6 @@ const val TYPE_EDIT = "edit"
 const val TYPE_CREATE_POST = "create_post"
 const val TYPE_DRAFT = "draft"
 const val TOKEN = "token"
+const val DI_GET_PROFILE_HEADER_USER_CASE = "GetProfileHeaderUseCase"
 
 typealias SuggestionItemHandler = (ProductSuggestionItem) -> Unit
