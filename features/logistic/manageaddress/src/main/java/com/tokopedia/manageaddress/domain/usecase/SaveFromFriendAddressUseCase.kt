@@ -1,4 +1,4 @@
-package com.tokopedia.manageaddress.domain
+package com.tokopedia.manageaddress.domain.usecase
 
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
