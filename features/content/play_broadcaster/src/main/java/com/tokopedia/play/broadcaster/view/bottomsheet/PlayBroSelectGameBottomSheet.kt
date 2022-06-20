@@ -71,7 +71,7 @@ class PlayBroSelectGameBottomSheet @Inject constructor(
 
     private fun setupView() {
         binding.root.layoutParams = binding.root.layoutParams.apply {
-            height = (getScreenHeight() * 0.65f).toInt()
+            height = (getScreenHeight() * HEIGHT_MULTIPLIER).toInt()
         }
 
         binding.rvGame.apply {
@@ -113,6 +113,8 @@ class PlayBroSelectGameBottomSheet @Inject constructor(
     }
 
     companion object {
+        private const val HEIGHT_MULTIPLIER = 0.65f
+
         private const val TAG = "SelectGameBottomSheet"
         private const val KEY_QUIZ_ANALYTIC = "quiz"
 

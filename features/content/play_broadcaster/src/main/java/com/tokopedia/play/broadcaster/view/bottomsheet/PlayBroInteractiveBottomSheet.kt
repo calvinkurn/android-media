@@ -93,7 +93,7 @@ class PlayBroInteractiveBottomSheet @Inject constructor(
         when (Size.mapFromString(sheetSize)) {
             Size.HALF -> {
                 binding.root.layoutParams = binding.root.layoutParams.apply {
-                    height = (getScreenHeight() * 0.65f).toInt()
+                    height = (getScreenHeight() * HEIGHT_MULTIPLIER).toInt()
                 }
             }
             Size.FULL -> {
@@ -341,6 +341,8 @@ class PlayBroInteractiveBottomSheet @Inject constructor(
 
 
     companion object {
+        private const val HEIGHT_MULTIPLIER = 0.65f
+
         private const val ARG_TYPE = "ARG_TYPE"
         private const val ARG_SIZE = "ARG_SIZE"
         private const val ADDITIONAL_ARG = "&source=tx_ask_buyer"

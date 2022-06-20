@@ -45,24 +45,24 @@ data class GetInteractiveConfigResponse(
     data class QuizConfig(
         /** TODO: gonna change default value after gql is ready on prod */
         @SerializedName("isActive")
-        val isActive: Boolean = true,
+        val isActive: Boolean = false,
 
         @SerializedName("maxTitleLength")
-        val maxTitleLength: Int = 30,
+        val maxTitleLength: Int = 0,
 
         @SerializedName("maxChoicesCount")
-        val maxChoicesCount: Int = 3,
+        val maxChoicesCount: Int = 0,
 
         @SerializedName("minChoicesCount")
-        val minChoicesCount: Int = 2,
+        val minChoicesCount: Int = 0,
 
         @SerializedName("maxRewardLength")
-        val maxRewardLength: Int = 30,
+        val maxRewardLength: Int = 0,
 
         @SerializedName("maxChoiceLength")
-        val maxChoiceLength: Int = 30,
+        val maxChoiceLength: Int = 0,
 
         @SerializedName("quizDurationsInSeconds")
-        val quizDurationsInSeconds: List<Int> = listOf(3, 5),
+        val quizDurationsInSeconds: List<Int> = emptyList(),
     )
 }

@@ -253,6 +253,7 @@ class PlayBroadcastMockMapper : PlayBroadcastMapper {
             buttonTitle = bannedEvent.btnText
     )
 
+    @Suppress("MagicNumber")
     override fun mapInteractiveConfig(response: GetInteractiveConfigResponse) = InteractiveConfigUiModel(
         giveawayConfig = GiveawayConfigUiModel(
             isActive = true,

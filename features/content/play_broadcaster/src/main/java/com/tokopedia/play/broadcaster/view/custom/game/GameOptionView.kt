@@ -126,12 +126,16 @@ class GameOptionView : ConstraintLayout {
             val view = viewCreator()
             addView(view)
             view.apply {
-                scaleX = 0.5f
-                scaleY = 0.5f
+                scaleX = SCALE_MULTIPLIER
+                scaleY = SCALE_MULTIPLIER
                 val lp = FrameLayout.LayoutParams(previewWidth, previewHeight)
                 lp.gravity = Gravity.CENTER
                 layoutParams = lp
             }
         } else firstChild
+    }
+
+    companion object {
+        private const val SCALE_MULTIPLIER = 0.5f
     }
 }
