@@ -83,7 +83,7 @@
             android:layout_height="@dimen/cm_home_widget_dp_36"
             android:layout_marginTop="@dimen/unify_space_12"
             android:layout_marginBottom="@dimen/unify_space_8"
-            android:background="#BFC9D9"
+            android:background="@color/Unify_NN300"
             app:layout_constraintBottom_toTopOf="@+id/btn_cm_home_widget_payment"
             app:layout_constraintEnd_toEndOf="@id/guideline2"
             app:layout_constraintStart_toEndOf="@id/guideline2"

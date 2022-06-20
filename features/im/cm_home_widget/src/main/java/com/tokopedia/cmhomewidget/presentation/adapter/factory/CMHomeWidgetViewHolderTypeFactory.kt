@@ -21,4 +21,6 @@ interface CMHomeWidgetViewHolderTypeFactory : AdapterTypeFactory {
     ): AbstractViewHolder<*>
 
     fun type(cmHomeWidgetPaymentData: CMHomeWidgetPaymentData): Int
+
+    fun type(cmHomeWidgetPaymentCardShimmerData: CMHomeWidgetPaymentCardShimmerData): Int
 }
