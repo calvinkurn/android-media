@@ -20,8 +20,6 @@ private const val BUBBLE_ANIMATION_POINTER_DURATION = 100L
 private const val LIHAT_PRODUK_SHRINKED_WIDTH = 32
 private const val LIHAT_PRODUK_SHRINKED_WIDTH_FLOAT = 32F
 private const val LIHAT_PRODUK_EXPANDED_WIDTH_FLOAT = 125F
-private const val LIHAT_PRODUK_VOD_EXPANDED_WIDTH_FLOAT = 125F
-private const val LIHAT_PRODUK_VOD_SHRINKED_WIDTH_FLOAT = 32F
 private const val COLOR_CHANGE_ANIMATION_DURATION_CTA_BTN = 250L
 private const val POINTER_ACTUAL_WIDTH = 79
 
@@ -173,7 +171,7 @@ fun showViewWithSlideAnimation(view: ViewGroup) {
 }
 
 fun showViewWithAnimation(layoutLihatProdukParent: View, context: Context) {
-    val expandedWidthInDp = 125F
+    val expandedWidthInDp = LIHAT_PRODUK_EXPANDED_WIDTH_FLOAT
     val anim = ValueAnimator.ofInt(
         layoutLihatProdukParent.measuredWidth,
         convertDpToPixel(expandedWidthInDp, context)
@@ -189,7 +187,7 @@ fun showViewWithAnimation(layoutLihatProdukParent: View, context: Context) {
     anim.start()
 }
 fun showViewWithAnimationVOD(layoutLihatProdukParent: View, context: Context) {
-    val expandedWidthInDp = LIHAT_PRODUK_VOD_EXPANDED_WIDTH_FLOAT
+    val expandedWidthInDp = LIHAT_PRODUK_EXPANDED_WIDTH_FLOAT
     val anim = ValueAnimator.ofInt(
         layoutLihatProdukParent.measuredWidth,
         convertDpToPixel(expandedWidthInDp, context)
@@ -205,9 +203,9 @@ fun showViewWithAnimationVOD(layoutLihatProdukParent: View, context: Context) {
     anim.start()
 }
 fun hideViewWithAnimationVod(layoutLihatProdukParent: View, context: Context) {
-    val expandedWidthDp = LIHAT_PRODUK_VOD_EXPANDED_WIDTH_FLOAT
-    val shrinkedWidthDp = LIHAT_PRODUK_VOD_SHRINKED_WIDTH_FLOAT
-    if (layoutLihatProdukParent.width.toDp() >= LIHAT_PRODUK_VOD_SHRINKED_WIDTH_FLOAT){
+    val expandedWidthDp = LIHAT_PRODUK_EXPANDED_WIDTH_FLOAT
+    val shrinkedWidthDp = LIHAT_PRODUK_SHRINKED_WIDTH_FLOAT
+    if (layoutLihatProdukParent.width.toDp() >= LIHAT_PRODUK_SHRINKED_WIDTH_FLOAT){
         val anim = ValueAnimator.ofInt(convertDpToPixel(expandedWidthDp, context), convertDpToPixel(shrinkedWidthDp, context))
         anim.cancel()
         anim.addUpdateListener { valueAnimator ->
