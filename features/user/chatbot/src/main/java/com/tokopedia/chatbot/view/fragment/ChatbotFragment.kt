@@ -16,6 +16,7 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.LinearLayout
+import android.widget.Toast
 import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -730,7 +731,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
         }
     }
 
-    override fun onError2(throwable: Throwable){
+    override fun onError2(throwable: Throwable) {
         if (view != null) {
             Toaster.build(
                 requireView(),
@@ -857,13 +858,13 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
             reasonCode = data.getStringExtra(SELECTED_ITEMS) ?: ""
 
         }
-        presenter.submitChatCsat(input, onsubmitingChatCsatSuccess, onError())
+        presenter.submitChatCsat(input)
     }
 
-    private val onsubmitingChatCsatSuccess: (String) -> Unit = { message ->
+    override fun onSuccessSubmitChatCsat(msg : String) {
         view?.let {
             csatOptionsViewModel?.let { it -> getViewState()?.hideCsatOptionList(it) }
-            Toaster.make(it, message, Snackbar.LENGTH_LONG, Toaster.TYPE_NORMAL, SNACK_BAR_TEXT_OK)
+            Toaster.build(it,msg,Snackbar.LENGTH_LONG,Toaster.TYPE_NORMAL, SNACK_BAR_TEXT_OK)
         }
     }
 

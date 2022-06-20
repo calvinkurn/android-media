@@ -70,6 +70,8 @@ interface ChatbotContract {
         fun onError2(throwable: Throwable)
 
         fun onSuccessSubmitCsatRating(msg : String)
+
+        fun onSuccessSubmitChatCsat(msg : String)
     }
 
     interface Presenter : BaseChatContract.Presenter<View> {
@@ -124,9 +126,7 @@ interface ChatbotContract {
 
         fun hitGqlforOptionList(selectedValue: Int, model: HelpFullQuestionsViewModel?)
 
-        fun submitChatCsat(input: ChipSubmitChatCsatInput,
-                           onsubmitingChatCsatSuccess: (String) -> Unit,
-                           onError: (Throwable) -> Unit)
+        fun submitChatCsat(input: ChipSubmitChatCsatInput)
 
         fun cancelImageUpload()
 

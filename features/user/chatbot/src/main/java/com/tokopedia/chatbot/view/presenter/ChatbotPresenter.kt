@@ -67,6 +67,7 @@ import com.tokopedia.chatbot.domain.pojo.csatRating.websocketCsatRatingResponse.
 import com.tokopedia.chatbot.domain.pojo.livechatdivider.LiveChatDividerAttributes
 import com.tokopedia.chatbot.domain.pojo.quickreply.QuickReplyAttachmentAttributes
 import com.tokopedia.chatbot.domain.pojo.submitchatcsat.ChipSubmitChatCsatInput
+import com.tokopedia.chatbot.domain.pojo.submitchatcsat.ChipSubmitChatCsatResponse
 import com.tokopedia.chatbot.domain.pojo.submitoption.SubmitOptionInput
 import com.tokopedia.chatbot.domain.pojo.submitoption.SubmitOptionListResponse
 import com.tokopedia.chatbot.domain.subscriber.*
@@ -713,11 +714,24 @@ class ChatbotPresenter @Inject constructor(
         return input
     }
 
-    override fun submitChatCsat(input: ChipSubmitChatCsatInput,
-                                onsubmitingChatCsatSuccess: (String) -> Unit,
-                                onError: (Throwable) -> Unit) {
-        chipSubmitChatCsatUseCase.execute(chipSubmitChatCsatUseCase.generateParam(input),
-                ChipSubmitChatCsatSubscriber(onsubmitingChatCsatSuccess, onError))
+    override fun submitChatCsat(input: ChipSubmitChatCsatInput) {
+//        chipSubmitChatCsatUseCase.execute(chipSubmitChatCsatUseCase.generateParam(input),
+//                ChipSubmitChatCsatSubscriber(onsubmitingChatCsatSuccess, onError))
+
+        chipSubmitChatCsatUseCase.cancelJobs()
+        chipSubmitChatCsatUseCase.chipSubmitChatCsat(
+            ::onSuccessSubmitChatCsat,
+            ::onFailureSubmitChatCsat,
+            input
+        )
+    }
+
+    private fun onSuccessSubmitChatCsat(chipSubmitChatCsatResponse: ChipSubmitChatCsatResponse) {
+        view.onSuccessSubmitChatCsat(chipSubmitChatCsatResponse?.chipSubmitChatCSAT?.csatSubmitData?.toasterMessage ?: "")
+    }
+
+    private fun onFailureSubmitChatCsat(throwable: Throwable) {
+        view.onError2(throwable)
     }
 
     override fun checkLinkForRedirection(invoiceRefNum: String,
@@ -761,7 +775,6 @@ class ChatbotPresenter @Inject constructor(
         sendRatingReasonUseCase.unsubscribe()
         leaveQueueUseCase.unsubscribe()
         chipGetChatRatingListUseCase.unsubscribe()
-        chipSubmitChatCsatUseCase.unsubscribe()
         job.cancel()
         super.detachView()
     }
