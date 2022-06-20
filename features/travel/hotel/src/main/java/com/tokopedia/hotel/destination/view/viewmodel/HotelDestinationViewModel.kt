@@ -88,7 +88,7 @@ class HotelDestinationViewModel @Inject constructor(
         }
     }
 
-        fun getLocationFromUpdates(fusedLocationProviderClient: FusedLocationProviderClient) {
+    fun getLocationFromUpdates(fusedLocationProviderClient: FusedLocationProviderClient) {
         locationRequest = LocationRequest.create()
         locationRequest.priority = LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY
         locationRequest.interval = LOCATION_REQUEST_INTERVAL
