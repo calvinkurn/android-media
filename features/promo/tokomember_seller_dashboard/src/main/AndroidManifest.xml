@@ -9,7 +9,7 @@
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
                 <data
-                    android:host="@string/path_tokomember"
+                    android:host="@string/host_sellerapp"
                     android:path="@string/path_tokomember"
                     android:scheme="@string/internal_scheme" />
             </intent-filter>
