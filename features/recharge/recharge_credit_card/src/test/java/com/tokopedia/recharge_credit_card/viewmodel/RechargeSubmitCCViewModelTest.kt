@@ -197,6 +197,52 @@ class RechargeSubmitCCViewModelTest {
         assertEquals(errorGql.message, actualData.value?.message)
     }
 
+    @Test
+    fun submitCreditCard_CompleteDataParam_HasDefaultEmptyValue() {
+        //given
+        val mapParam = hashMapOf<String, String>()
+        mapParam[RechargeSubmitCCViewModel.PARAM_ACTION] = RechargeSubmitCCViewModel.VALUE_ACTION
+        mapParam[RechargeSubmitCCViewModel.PARAM_CLIENT_NUMBER] = "4111111111111111"
+        mapParam[RechargeSubmitCCViewModel.PARAM_OPERATOR_ID] = "85"
+        mapParam[RechargeSubmitCCViewModel.PARAM_PRODUCT_ID] = "2695"
+        mapParam[RechargeSubmitCCViewModel.PARAM_USER_ID] = "17211378"
+
+        val ccRedirectUrl = CCRedirectUrlResponse(data = CCRedirectUrl("", "www.tokopedia.com"))
+        val token = object : TypeToken<CCRedirectUrlResponse>() {}.type
+        val response = RestResponse(ccRedirectUrl, 200, false)
+        val submitCcResponse = mapOf<Type, RestResponse>(token to response)
+
+        coEvery { rechargeSubmitCcUseCase.setMapParam(mapParam) } returns mockk()
+        coEvery { rechargeSubmitCcUseCase.executeOnBackground() } returns submitCcResponse
+
+        rechargeSubmitViewModel.submitCreditCard(mapParam)
+
+        val actualData = rechargeSubmitViewModel.redirectUrl
+        assertNotNull(actualData)
+        assertEquals(ccRedirectUrl.data, actualData.value)
+        assertEquals(mapParam[RechargeSubmitCCViewModel.PARAM_CLIENT_NUMBER], actualData.value?.clientNumber)
+        assertEquals(mapParam[RechargeSubmitCCViewModel.PARAM_OPERATOR_ID], actualData.value?.operatorId)
+        assertEquals(mapParam[RechargeSubmitCCViewModel.PARAM_PRODUCT_ID], actualData.value?.productId)
+    }
+
+    @Test
+    fun submitCreditCard_NullDataResponse_GetDefaultCCRedirectUrl() {
+        //given
+        val mapParam = hashMapOf<String, String>()
+        val token = object : TypeToken<CCRedirectUrlResponse>() {}.type
+        val submitCcResponse = mapOf<Type, RestResponse?>(token to null)
+
+        coEvery { rechargeSubmitCcUseCase.setMapParam(mapParam) } returns mockk()
+        coEvery { rechargeSubmitCcUseCase.executeOnBackground() } returns submitCcResponse
+
+        rechargeSubmitViewModel.submitCreditCard(mapParam)
+
+        val actualData = rechargeSubmitViewModel.errorSubmitCreditCard
+        val expectedData = CCRedirectUrl()
+        assertNotNull(actualData)
+        assertEquals(expectedData.messageError, actualData.value?.message)
+    }
+
     //========================================= CREATE MAP PARAM =====================================
 
     @Test
@@ -218,6 +264,33 @@ class RechargeSubmitCCViewModelTest {
         val resultMapParam = rechargeSubmitViewModel.createMapParam(clientNumber, operatorId, productId, userId)
 
         //then
+        assertNotNull(resultMapParam)
+        assertEquals(resultMapParam, mapParam)
+    }
+
+    @Test
+    fun createMaskedMapParam_successCreate_GetMapParam() {
+        //given
+        val clientNumber = "4111111111111111"
+        val operatorId = "85"
+        val productId = "2695"
+        val userId = "17211378"
+        val token = "token_identifier"
+
+        val mapParam = mutableMapOf<String, String>()
+        mapParam[RechargeSubmitCCViewModel.PARAM_ACTION] = RechargeSubmitCCViewModel.VALUE_ACTION
+        mapParam[RechargeSubmitCCViewModel.PARAM_MASKED_NUMBER] = clientNumber
+        mapParam[RechargeSubmitCCViewModel.PARAM_OPERATOR_ID] = operatorId
+        mapParam[RechargeSubmitCCViewModel.PARAM_PRODUCT_ID] = productId
+        mapParam[RechargeSubmitCCViewModel.PARAM_USER_ID] = userId
+        mapParam[RechargeSubmitCCViewModel.PARAM_TOKEN] = token
+
+        // when
+        val resultMapParam = rechargeSubmitViewModel.createMaskedMapParam(
+            clientNumber, operatorId, productId, userId, token
+        )
+
+        // then
         assertNotNull(resultMapParam)
         assertEquals(resultMapParam, mapParam)
     }

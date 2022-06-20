@@ -12,6 +12,8 @@ data class TopupBillsPersoFavNumberItem(
     val mediaUrl: String = "",
     @SerializedName("title")
     val title: String = "",
+    @SerializedName("token")
+    val token: String = "",
     @SerializedName("subtitle")
     val subtitle: String = "",
     @SerializedName("trackingData")

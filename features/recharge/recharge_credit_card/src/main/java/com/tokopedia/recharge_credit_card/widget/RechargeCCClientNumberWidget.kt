@@ -12,7 +12,7 @@ import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import androidx.core.content.ContextCompat
 import com.tokopedia.common.topupbills.view.adapter.TopupBillsAutoCompleteAdapter
-import com.tokopedia.common.topupbills.view.model.TopupBillsAutoCompleteContactDataView
+import com.tokopedia.common.topupbills.view.model.TopupBillsAutoCompleteContactModel
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.getDimens
 import com.tokopedia.kotlin.extensions.view.hide
@@ -134,8 +134,10 @@ class RechargeCCClientNumberWidget @JvmOverloads constructor(@NotNull context: C
                         if (s?.isEmpty() == true) hideClearIcon() else showClearIcon()
                         // if manual input
                         var isManualInput = false
+                        var haha = mInputFieldListener?.isKeyboardShown()
                         if (abs(before - count) == 1 && mInputFieldListener?.isKeyboardShown() == true) {
                             isManualInput = true
+                            mCreditCardActionListener?.onManualInput()
                         }
                         setLoading(s?.toString()?.isNotEmpty() == true)
                         disablePrimaryButton()
@@ -153,9 +155,10 @@ class RechargeCCClientNumberWidget @JvmOverloads constructor(@NotNull context: C
 
                 setOnItemClickListener { _, _, position, _ ->
                     val item = autoCompleteAdapter?.getItem(position)
-                    if (item is TopupBillsAutoCompleteContactDataView) {
+                    if (item is TopupBillsAutoCompleteContactModel) {
+                        hideSoftKeyboard()
                         setContactName(item.name)
-                        mAutoCompleteListener?.onClickAutoComplete(item.name.isNotEmpty())
+                        mAutoCompleteListener?.onClickAutoComplete(item)
                     }
                 }
             }
@@ -201,13 +204,14 @@ class RechargeCCClientNumberWidget @JvmOverloads constructor(@NotNull context: C
 
             sortFilterItem.listener = {
                 clearErrorState()
+                hideSoftKeyboard()
                 setContactName(number.clientName)
                 setInputNumber(number.clientNumber)
 
                 if (number.clientName.isEmpty()) {
-                    mFilterChipListener?.onClickFilterChip(false, number.operatorId)
+                    mFilterChipListener?.onClickFilterChip(false, number)
                 } else {
-                    mFilterChipListener?.onClickFilterChip(true, number.operatorId)
+                    mFilterChipListener?.onClickFilterChip(true, number)
                 }
                 clearFocusAutoComplete()
             }
@@ -251,7 +255,7 @@ class RechargeCCClientNumberWidget @JvmOverloads constructor(@NotNull context: C
     fun setAutoCompleteList(suggestions: List<RechargeClientNumberAutoCompleteModel>) {
         autoCompleteAdapter?.updateItems(
             suggestions.map {
-                TopupBillsAutoCompleteContactDataView(it.clientName, it.clientNumber)
+                TopupBillsAutoCompleteContactModel(it.clientName, it.clientNumber, it.token)
             }.toMutableList())
     }
 
@@ -402,6 +406,7 @@ class RechargeCCClientNumberWidget @JvmOverloads constructor(@NotNull context: C
 
     interface CreditCardActionListener {
         fun onClickNextButton(clientNumber: String)
+        fun onManualInput()
     }
 
     companion object {

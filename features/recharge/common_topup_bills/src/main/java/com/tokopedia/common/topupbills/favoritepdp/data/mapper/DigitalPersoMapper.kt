@@ -24,7 +24,8 @@ class DigitalPersoMapper @Inject constructor() {
 
         return PrefillModel(
             clientName = persoPrefillData.subtitle,
-            clientNumber = persoPrefillData.title
+            clientNumber = persoPrefillData.title,
+            token = persoPrefillData.token,
         )
     }
 
@@ -37,7 +38,8 @@ class DigitalPersoMapper @Inject constructor() {
 
             AutoCompleteModel(
                 clientName = clientName,
-                clientNumber = clientNumber
+                clientNumber = clientNumber,
+                token = it.token,
             )
         }
     }
@@ -52,7 +54,8 @@ class DigitalPersoMapper @Inject constructor() {
             FavoriteChipModel(
                 clientName = clientName,
                 clientNumber = clientNumber,
-                operatorId = it.trackingData.operatorId
+                operatorId = it.trackingData.operatorId,
+                token = it.token,
             )
         }
     }

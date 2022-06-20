@@ -20,13 +20,13 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConsInternalDigital
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.common.topupbills.favoritepage.view.activity.TopupBillsPersoFavoriteNumberActivity
-import com.tokopedia.common.topupbills.favoritepage.view.activity.TopupBillsPersoSavedNumberActivity
 import com.tokopedia.common.topupbills.favoritepage.view.activity.TopupBillsPersoSavedNumberActivity.Companion.EXTRA_CALLBACK_CLIENT_NUMBER
 import com.tokopedia.common.topupbills.favoritepage.view.model.TopupBillsSavedNumber
 import com.tokopedia.common.topupbills.favoritepdp.domain.model.AutoCompleteModel
 import com.tokopedia.common.topupbills.favoritepdp.domain.model.FavoriteChipModel
 import com.tokopedia.common.topupbills.favoritepdp.domain.model.PrefillModel
 import com.tokopedia.common.topupbills.favoritepdp.util.FavoriteNumberType
+import com.tokopedia.common.topupbills.view.model.TopupBillsAutoCompleteContactModel
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData
 import com.tokopedia.common_digital.common.constant.DigitalExtraParam
 import com.tokopedia.common_digital.common.util.DigitalKeyboardWatcher
@@ -38,6 +38,7 @@ import com.tokopedia.recharge_component.listener.ClientNumberAutoCompleteListene
 import com.tokopedia.recharge_component.listener.ClientNumberFilterChipListener
 import com.tokopedia.recharge_component.listener.ClientNumberInputFieldListener
 import com.tokopedia.recharge_component.model.client_number.InputFieldType
+import com.tokopedia.recharge_component.model.client_number.RechargeClientNumberChipModel
 import com.tokopedia.recharge_component.result.RechargeNetworkResult
 import com.tokopedia.recharge_credit_card.RechargeCCActivity.Companion.PARAM_CLIENT_NUMBER
 import com.tokopedia.recharge_credit_card.RechargeCCActivity.Companion.PARAM_IDENTIFIER
@@ -74,7 +75,6 @@ class RechargeCCFragment :
     ClientNumberAutoCompleteListener,
     RechargeCCClientNumberWidget.CreditCardActionListener
 {
-
     private lateinit var rechargeCCViewModel: RechargeCCViewModel
     private lateinit var rechargeSubmitCCViewModel: RechargeSubmitCCViewModel
     private lateinit var saveInstanceManager: SaveInstanceCacheManager
@@ -96,6 +96,7 @@ class RechargeCCFragment :
     private var categoryId: String = ""
     private var menuId: String = ""
     private var checkoutPassDataState: DigitalCheckoutPassData? = null
+    private var token: String = ""
 
     override fun getScreenName(): String {
         return ""
@@ -137,6 +138,7 @@ class RechargeCCFragment :
         super.onViewCreated(view, savedInstanceState)
 
         initializedViewModel()
+        setupKeyboardWatcher()
         getDataBundle()
         getTickerData()
         getFavoriteNumbers(
@@ -164,6 +166,20 @@ class RechargeCCFragment :
         }
         observeData()
         creditCardAnalytics.impressionInitialPage(userSession.userId)
+    }
+
+    private fun setupKeyboardWatcher() {
+        cc_widget_client_number.rootView?.let {
+            keyboardWatcher.listen(it, object : DigitalKeyboardWatcher.Listener {
+                override fun onKeyboardShown(estimatedKeyboardHeight: Int) {
+                    // do nothing
+                }
+
+                override fun onKeyboardHidden() {
+                    // do nothing
+                }
+            })
+        }
     }
 
     private fun getDataBundle() {
@@ -385,8 +401,13 @@ class RechargeCCFragment :
     private fun submitCreditCard(categoryId: String, operatorId: String, productId: String, clientNumber: String) {
         showLoading()
         if (userSession.isLoggedIn) {
-            val mapParam = rechargeSubmitCCViewModel.createMapParam(clientNumber, operatorId, productId,
+            val mapParam = if (token.isNotEmpty() && clientNumber.isMasked()) {
+                rechargeSubmitCCViewModel.createMaskedMapParam(clientNumber, operatorId, productId,
+                    userSession.userId, token)
+            } else {
+                rechargeSubmitCCViewModel.createMapParam(clientNumber, operatorId, productId,
                     userSession.userId)
+            }
 
             rechargeSubmitCCViewModel.postCreditCard(RechargeCCGqlQuery.rechargeCCSignature, categoryId, mapParam)
         } else {
@@ -409,9 +430,9 @@ class RechargeCCFragment :
     private fun onSuccessGetFavoriteChips(favoriteChips: List<FavoriteChipModel>) {
         cc_widget_client_number.run {
             val dummChips = listOf(
-                FavoriteChipModel("misael", "4111111111111112", "0"),
-                FavoriteChipModel("", "4111111111111111", "0"),
-                FavoriteChipModel("", "081208120813", "0"),
+                FavoriteChipModel("misael", "4111111111111112", "0", "token"),
+                FavoriteChipModel("", "4111111111111111", "0", "token"),
+                FavoriteChipModel("", "081208120813", "0", "token"),
             )
             setFilterChipShimmer(false, dummChips.isEmpty())
             setFavoriteNumber(
@@ -420,8 +441,13 @@ class RechargeCCFragment :
     }
 
     private fun onSuccessGetAutoComplete(autoComplete: List<AutoCompleteModel>) {
+        val dummChips = listOf(
+            AutoCompleteModel("misael", "4111111111111112", "token"),
+            AutoCompleteModel("", "4111111111111111", "token"),
+            AutoCompleteModel("", "081208120813", "token"),
+        )
         cc_widget_client_number.setAutoCompleteList(
-            RechargeCCMapper.mapAutoCompletesToWidgetModels(autoComplete))
+            RechargeCCMapper.mapAutoCompletesToWidgetModels(dummChips))
     }
 
     private fun onSuccessGetPrefill(prefill: PrefillModel) {
@@ -430,6 +456,7 @@ class RechargeCCFragment :
             cc_widget_client_number.run {
                 setContactName(prefill.clientName)
                 setInputNumber(prefill.clientNumber)
+                token = prefill.token
             }
         }
     }
@@ -470,6 +497,10 @@ class RechargeCCFragment :
         )
         dialogConfirmation()
     }
+
+    override fun onManualInput() {
+        token = ""
+    }
     //endregion
 
     //region ClientNumberInputFieldListener
@@ -506,14 +537,16 @@ class RechargeCCFragment :
         // TODO: [Misael] mungkin tracker
     }
 
-    override fun onClickFilterChip(isLabeled: Boolean, operatorId: String) {
+    override fun onClickFilterChip(isLabeled: Boolean, favorite: RechargeClientNumberChipModel) {
         // TODO: [Misael] mungkin tracker
+        token = favorite.token
     }
     //endregion
 
     //region AutoCompleteListener
-    override fun onClickAutoComplete(isFavoriteContact: Boolean) {
+    override fun onClickAutoComplete(favorite: TopupBillsAutoCompleteContactModel) {
         // TODO: [Misael] mungkin tracker
+        token = favorite.token
     }
     //endregion
 

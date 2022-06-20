@@ -1,6 +1,6 @@
 package com.tokopedia.common.topupbills.view.model
 
-class TopupBillsAutoCompleteEmptyDataView: TopupBillsAutoComplete {
+class TopupBillsAutoCompleteEmptyModel: TopupBillsAutoComplete {
     override fun getViewType(): TopupBillsAutoCompleteView {
         return TopupBillsAutoCompleteView.EMPTY_STATE
     }

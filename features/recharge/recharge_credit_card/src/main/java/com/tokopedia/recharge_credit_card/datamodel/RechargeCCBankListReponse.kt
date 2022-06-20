@@ -3,13 +3,13 @@ package com.tokopedia.recharge_credit_card.datamodel
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
-class RechargeCCBankListReponse(
+data class RechargeCCBankListReponse(
         @SerializedName("rechargePCIDSSSignature")
         @Expose
         val rechargeCCBankList: RechargeCCBankList = RechargeCCBankList()
 )
 
-class RechargeCCBankList(
+data class RechargeCCBankList(
     @SerializedName("bank_list")
         @Expose
         val bankList: List<RechargeCCBank> = listOf(),
@@ -17,7 +17,7 @@ class RechargeCCBankList(
         @Expose
         val messageError: String = "")
 
-class RechargeCCBank(
+data class RechargeCCBank(
         @SerializedName("name")
         @Expose
         val name: String = "",

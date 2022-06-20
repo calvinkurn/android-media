@@ -5,7 +5,7 @@ import com.tokopedia.common.topupbills.favoritecommon.data.TopupBillsPersoFavNum
 import com.tokopedia.common.topupbills.favoritepage.view.model.TopupBillsPersoFavNumberDataView
 import com.tokopedia.common.topupbills.favoritecommon.view.model.contact.TopupBillsContactDataView
 import com.tokopedia.common.topupbills.view.model.TopupBillsAutoComplete
-import com.tokopedia.common.topupbills.view.model.TopupBillsAutoCompleteContactDataView
+import com.tokopedia.common.topupbills.view.model.TopupBillsAutoCompleteContactModel
 import com.tokopedia.common.topupbills.view.model.search.TopupBillsSearchNumberDataModel
 
 object FavoriteNumberDataMapper {
@@ -37,7 +37,7 @@ object FavoriteNumberDataMapper {
             } else {
                 "" to it.title
             }
-            TopupBillsAutoCompleteContactDataView(clientName, clientNumber)
+            TopupBillsAutoCompleteContactModel(clientName, clientNumber)
         }
     }
 

@@ -84,6 +84,18 @@ class RechargeSubmitCCViewModel @Inject constructor(private val graphqlRepositor
         return mapParam
     }
 
+    fun createMaskedMapParam(clientNumber: String, operatorId: String,
+                       productId: String, userId: String, token: String): HashMap<String, String> {
+        val mapParam = HashMap<String, String>()
+        mapParam[PARAM_ACTION] = VALUE_ACTION
+        mapParam[PARAM_MASKED_NUMBER] = clientNumber
+        mapParam[PARAM_OPERATOR_ID] = operatorId
+        mapParam[PARAM_PRODUCT_ID] = productId
+        mapParam[PARAM_USER_ID] = userId
+        mapParam[PARAM_TOKEN] = token
+        return mapParam
+    }
+
     fun createPcidssParamFromApplink(clientNumber: String, operatorId: String,
                                      productId: String, userId: String, signature: String, token: String): HashMap<String, String> {
         val mapParam = HashMap<String, String>()

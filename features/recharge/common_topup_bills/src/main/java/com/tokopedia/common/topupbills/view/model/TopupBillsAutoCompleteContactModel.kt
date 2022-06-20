@@ -1,9 +1,10 @@
 package com.tokopedia.common.topupbills.view.model
 
 
-class TopupBillsAutoCompleteContactDataView(
+class TopupBillsAutoCompleteContactModel(
     val name: String,
-    val phoneNumber: String
+    val phoneNumber: String,
+    val token: String = "",
 ): TopupBillsAutoComplete {
 
     override fun getViewType(): TopupBillsAutoCompleteView {

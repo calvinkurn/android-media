@@ -16,4 +16,6 @@ fun Resources.getColorFromResources(context: Context, @ColorRes resId: Int): Int
     }
 }
 
-fun String.toEditable(): Editable =  Editable.Factory.getInstance().newEditable(this)
+internal fun String.toEditable(): Editable =  Editable.Factory.getInstance().newEditable(this)
+
+internal fun String.isMasked(): Boolean = this.contains("*")

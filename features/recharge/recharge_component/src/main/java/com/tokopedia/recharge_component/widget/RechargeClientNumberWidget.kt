@@ -16,7 +16,7 @@ import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import androidx.core.content.ContextCompat
 import com.tokopedia.common.topupbills.view.adapter.TopupBillsAutoCompleteAdapter
-import com.tokopedia.common.topupbills.view.model.TopupBillsAutoCompleteContactDataView
+import com.tokopedia.common.topupbills.view.model.TopupBillsAutoCompleteContactModel
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.kotlin.extensions.view.getDimens
@@ -128,9 +128,9 @@ class RechargeClientNumberWidget @JvmOverloads constructor(@NotNull context: Con
 
                 setOnItemClickListener { _, _, position, _ ->
                     val item = autoCompleteAdapter?.getItem(position)
-                    if (item is TopupBillsAutoCompleteContactDataView) {
+                    if (item is TopupBillsAutoCompleteContactModel) {
                         setContactName(item.name)
-                        mAutoCompleteListener?.onClickAutoComplete(item.name.isNotEmpty())
+                        mAutoCompleteListener?.onClickAutoComplete(item)
                     }
                 }
             }
@@ -177,9 +177,9 @@ class RechargeClientNumberWidget @JvmOverloads constructor(@NotNull context: Con
                 setInputNumber(number.clientNumber)
 
                 if (number.clientName.isEmpty()) {
-                    mFilterChipListener?.onClickFilterChip(false, number.operatorId)
+                    mFilterChipListener?.onClickFilterChip(false, number)
                 } else {
-                    mFilterChipListener?.onClickFilterChip(true, number.operatorId)
+                    mFilterChipListener?.onClickFilterChip(true, number)
                 }
                 clearFocusAutoComplete()
             }
@@ -223,7 +223,7 @@ class RechargeClientNumberWidget @JvmOverloads constructor(@NotNull context: Con
     fun setAutoCompleteList(suggestions: List<RechargeClientNumberAutoCompleteModel>) {
         autoCompleteAdapter?.updateItems(
             suggestions.map {
-                TopupBillsAutoCompleteContactDataView(it.clientName, it.clientNumber)
+                TopupBillsAutoCompleteContactModel(it.clientName, it.clientNumber)
             }.toMutableList())
     }
 

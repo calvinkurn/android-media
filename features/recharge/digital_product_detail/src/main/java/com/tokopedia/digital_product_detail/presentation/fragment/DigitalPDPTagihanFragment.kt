@@ -63,6 +63,8 @@ import com.tokopedia.recharge_component.listener.RechargeSimplifyWidgetListener
 import com.tokopedia.recharge_component.model.client_number.InputFieldType
 import com.tokopedia.recharge_component.model.InputNumberActionType
 import com.tokopedia.common.topupbills.favoritepdp.domain.model.MenuDetailModel
+import com.tokopedia.common.topupbills.view.model.TopupBillsAutoCompleteContactModel
+import com.tokopedia.recharge_component.model.client_number.RechargeClientNumberChipModel
 import com.tokopedia.recharge_component.result.RechargeNetworkResult
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.ticker.Ticker
@@ -769,9 +771,9 @@ class DigitalPDPTagihanFragment : BaseDaggerFragment(),
 
     //region AutoCompleteListener
 
-    override fun onClickAutoComplete(isFavoriteContact: Boolean) {
+    override fun onClickAutoComplete(favorite: TopupBillsAutoCompleteContactModel) {
         inputNumberActionType = InputNumberActionType.AUTOCOMPLETE
-        if (isFavoriteContact) {
+        if (favorite.name.isNotEmpty()) {
             digitalPDPAnalytics.clickFavoriteContactAutoComplete(
                 DigitalPDPCategoryUtil.getCategoryName(categoryId),
                 viewModel.operatorData.attributes.name,
@@ -807,7 +809,7 @@ class DigitalPDPTagihanFragment : BaseDaggerFragment(),
         }
     }
 
-    override fun onClickFilterChip(isLabeled: Boolean, operatorId: String) {
+    override fun onClickFilterChip(isLabeled: Boolean, favorite: RechargeClientNumberChipModel) {
         inputNumberActionType = InputNumberActionType.CHIP
         if (isLabeled) {
             digitalPDPAnalytics.clickFavoriteContactChips(

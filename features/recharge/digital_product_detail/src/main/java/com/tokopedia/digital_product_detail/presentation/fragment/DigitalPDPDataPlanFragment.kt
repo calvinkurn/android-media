@@ -86,6 +86,8 @@ import com.tokopedia.recharge_component.model.denom.DenomData
 import com.tokopedia.recharge_component.model.denom.DenomWidgetEnum
 import com.tokopedia.recharge_component.model.denom.DenomWidgetModel
 import com.tokopedia.common.topupbills.favoritepdp.domain.model.MenuDetailModel
+import com.tokopedia.common.topupbills.view.model.TopupBillsAutoCompleteContactModel
+import com.tokopedia.recharge_component.model.client_number.RechargeClientNumberChipModel
 import com.tokopedia.recharge_component.model.recommendation_card.RecommendationCardWidgetModel
 import com.tokopedia.recharge_component.model.recommendation_card.RecommendationWidgetModel
 import com.tokopedia.recharge_component.result.RechargeNetworkResult
@@ -1162,7 +1164,7 @@ class DigitalPDPDataPlanFragment :
         }
     }
 
-    override fun onClickFilterChip(isLabeled: Boolean, operatorId: String) {
+    override fun onClickFilterChip(isLabeled: Boolean, favorite: RechargeClientNumberChipModel) {
         inputNumberActionType = InputNumberActionType.CHIP
         if (isLabeled) {
             onHideBuyWidget()
@@ -1205,9 +1207,9 @@ class DigitalPDPDataPlanFragment :
     //endregion
 
     //region ClientNumberAutoCompleteListener
-    override fun onClickAutoComplete(isFavoriteContact: Boolean) {
+    override fun onClickAutoComplete(favorite: TopupBillsAutoCompleteContactModel) {
         inputNumberActionType = InputNumberActionType.AUTOCOMPLETE
-        if (isFavoriteContact) {
+        if (favorite.name.isNotEmpty()) {
             digitalPDPAnalytics.clickFavoriteContactAutoComplete(
                 DigitalPDPCategoryUtil.getCategoryName(categoryId),
                 operator.attributes.name,

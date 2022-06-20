@@ -11,7 +11,8 @@ object RechargeCCMapper {
             RechargeClientNumberChipModel(
                 clientName = chip.clientName,
                 clientNumber = chip.clientNumber,
-                operatorId = chip.operatorId
+                operatorId = chip.operatorId,
+                token = chip.token,
             )
         }
     }
@@ -20,7 +21,8 @@ object RechargeCCMapper {
         return autoCompleteModels.map { autoComplete ->
             RechargeClientNumberAutoCompleteModel(
                 clientName = autoComplete.clientName,
-                clientNumber = autoComplete.clientNumber
+                clientNumber = autoComplete.clientNumber,
+                token = autoComplete.token,
             )
         }
     }
