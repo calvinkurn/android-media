@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
+        android:id="@+id/checbox_related_campaign"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/unify_space_2"
+        app:layout_constraintBaseline_toBaselineOf="@+id/tg_related_campaign_name"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tg_related_campaign_name"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/unify_space_16"
+        android:layout_marginBottom="@dimen/unify_space_16"
+        android:maxLines="1"
+        android:textColor="@color/Unify_NN950"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toEndOf="@+id/checbox_related_campaign"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintWidth_max="115dp"
+        app:typographyType="paragraph_2"
+        tools:text="@tools:sample/full_names" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tg_related_campaign_code"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/unify_space_8"
+        android:ellipsize="middle"
+        android:textColor="@color/Unify_NN600"
+        android:singleLine="true"
+        app:layout_constraintBaseline_toBaselineOf="@+id/tg_related_campaign_name"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/tg_related_campaign_name"
+        app:typographyType="paragraph_3"
+        tools:text="@tools:sample/lorem/random" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

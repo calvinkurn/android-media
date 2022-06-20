@@ -1,7 +1,6 @@
 package com.tokopedia.shop.flashsale.presentation.creation.rule.bottomsheet
 
 import android.annotation.SuppressLint
-import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -33,7 +32,6 @@ class MerchantCampaignTNCBottomSheet : BottomSheetUnify() {
 
         @JvmStatic
         fun createInstance(
-            context: Context,
             showTickerAndButton: Boolean,
             tncRequest: TncRequest
         ): MerchantCampaignTNCBottomSheet =
@@ -42,12 +40,6 @@ class MerchantCampaignTNCBottomSheet : BottomSheetUnify() {
                     putParcelable(KEY_TNC_REQUEST, tncRequest)
                     putBoolean(KEY_SHOW_TICKER_AND_BUTTON, showTickerAndButton)
                 }
-                val view = View.inflate(
-                    context,
-                    R.layout.ssfs_bottom_sheet_merchant_campaign_tnc,
-                    null
-                )
-                setChild(view)
             }
 
     }
