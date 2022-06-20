@@ -9,13 +9,10 @@ import com.tokopedia.shop.flashsale.data.request.GetSellerCampaignProductListReq
 import com.tokopedia.shop.flashsale.domain.entity.SellerCampaignProductList
 import com.tokopedia.shop.flashsale.domain.entity.enums.ManageProductErrorMessage
 import com.tokopedia.shop.flashsale.domain.usecase.GetSellerCampaignProductListUseCase
-import com.tokopedia.shop.flashsale.presentation.creation.manage.adapter.ManageProductListAdapter
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
-import java.text.NumberFormat
-import java.util.*
 import javax.inject.Inject
 
 class ManageProductViewModel @Inject constructor(
@@ -45,7 +42,7 @@ class ManageProductViewModel @Inject constructor(
                 val campaigns = getSellerCampaignProductListUseCase.execute(
                     campaignId = campaignId,
                     listType = listType,
-                    GetSellerCampaignProductListRequest.Pagination(
+                    pagination = GetSellerCampaignProductListRequest.Pagination(
                         ROWS,
                         OFFSET
                     )

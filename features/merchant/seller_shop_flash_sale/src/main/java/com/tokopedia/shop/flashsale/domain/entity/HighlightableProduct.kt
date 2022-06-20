@@ -1,0 +1,14 @@
+package com.tokopedia.shop.flashsale.domain.entity
+
+data class HighlightableProduct(
+    val id: String,
+    val name: String,
+    val imageUrl: String,
+    val originalPrice: String,
+    val discountedPrice: String,
+    val discountPercentage: String,
+    val disabled: Boolean,
+    val isSelected: Boolean = false,
+    val disableClick: Boolean = false,
+    val selectedAtMillis: Long = 0
+)

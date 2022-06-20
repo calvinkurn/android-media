@@ -42,6 +42,8 @@
     <string name="sfs_ineligible_access_title">Kamu tidak memiliki kuota untuk membuat Flash Sale Toko</string>
     <string name="sfs_ineligible_access_description">Upgrade tokomu ke Power Merchant PRO untuk dapat kuota Flash Sale  Toko, ya.</string>
     <string name="sfs_subscribe_pm_pro">Daftar PM Pro</string>
+    <string name="sfs_campaign_cancelled">%s berhasil dibatalkan.</string>
+    <string name="sfs_campaign_stopped">%s berhasil dihentikan.</string>
 
     <string name="sfs_search_result_not_found_title">Campaign yang kamu cari tidak ditemukan.</string>
     <string name="sfs_search_result_not_found_description">Coba kata kunci lain, ya.</string>
@@ -224,4 +226,7 @@
     <string name="manage_product_item_max_buy_label">Maks. Pembelian: <b>%s</b></string>
     <string name="manage_product_continue_label">Lanjut</string>
     <string name="manage_product_save_draft_label">Simpan Draft</string>
+
+    <string name="sfs_search_product">Cari produk</string>
+    <string name="sfs_manage_highlight">Atur Highlight</string>
 </resources>

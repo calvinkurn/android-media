@@ -410,7 +410,7 @@ class CampaignListFragment : BaseSimpleListFragment<CampaignAdapter, CampaignUiM
         if (data.campaigns.size.isMoreThanZero()) {
             binding?.groupNoSearchResult?.gone()
             renderList(data.campaigns, data.campaigns.size == getPerPage())
-        } else if (data.campaigns.isEmpty() && adapter?.itemCount == ZERO && !isFirstLoad) {
+        } else if (data.campaigns.isEmpty() && adapter?.itemCount == ZERO) {
             binding?.groupNoSearchResult?.visible()
         }
 
@@ -477,6 +477,8 @@ class CampaignListFragment : BaseSimpleListFragment<CampaignAdapter, CampaignUiM
         binding?.emptyState?.setImageUrl(EMPTY_STATE_IMAGE_URL)
         binding?.emptyState?.setTitle(getString(R.string.sfs_no_active_campaign_title))
         binding?.emptyState?.setDescription( getString(R.string.sfs_no_active_campaign_description))
+
+        binding?.groupNoSearchResult?.gone()
     }
 
     private fun handleSecondTabEmptyState(hasCampaign: Boolean) {
@@ -496,6 +498,8 @@ class CampaignListFragment : BaseSimpleListFragment<CampaignAdapter, CampaignUiM
         binding?.emptyState?.setImageUrl(EMPTY_STATE_IMAGE_URL)
         binding?.emptyState?.setTitle(getString(R.string.sfs_no_campaign_history_title))
         binding?.emptyState?.setDescription( getString(R.string.sfs_no_campaign_history_description))
+
+        binding?.groupNoSearchResult?.gone()
     }
 
     private fun handleEligibilityResult(data: CampaignCreationEligibility) {
@@ -610,6 +614,7 @@ class CampaignListFragment : BaseSimpleListFragment<CampaignAdapter, CampaignUiM
             return
         }
 
+        //ManageHighlightedProductActivity.start(requireActivity(), campaign.campaignId)
         CampaignInformationActivity.startUpdateMode(requireActivity(), campaign.campaignId)
     }
 
@@ -666,7 +671,7 @@ class CampaignListFragment : BaseSimpleListFragment<CampaignAdapter, CampaignUiM
     }
 
     private fun showCancelCampaignSuccess(campaign: CampaignUiModel) {
-        val toasterMessage = String.format(getString(R.string.cancelcampaign_message_success), campaign.campaignName)
+        val toasterMessage = String.format(findCancelCampaignSuccessWording(campaign.status), campaign.campaignName)
         binding?.root showToaster toasterMessage
 
         //Add some spare time caused by Backend write operation delay
@@ -682,6 +687,14 @@ class CampaignListFragment : BaseSimpleListFragment<CampaignAdapter, CampaignUiM
             getString(R.string.sfs_cannot_stop_campaign)
         } else {
             getString(R.string.sfs_cannot_cancel_campaign)
+        }
+    }
+
+    private fun findCancelCampaignSuccessWording(campaignStatus: CampaignStatus): String {
+        return if (campaignStatus.isOngoing()) {
+            getString(R.string.sfs_campaign_stopped)
+        } else {
+            getString(R.string.sfs_campaign_cancelled)
         }
     }
 

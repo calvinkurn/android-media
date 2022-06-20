@@ -85,10 +85,11 @@ class GetSellerCampaignProductListUseCase @Inject constructor(
 
     suspend fun execute(
         campaignId: Long,
+        productName: String = "",
         listType: Int,
         pagination: GetSellerCampaignProductListRequest.Pagination
     ): SellerCampaignProductList {
-        val request = buildRequest(campaignId, listType, pagination)
+        val request = buildRequest(campaignId, productName, listType, pagination)
         val response = repository.response(listOf(request))
         val data = response.getSuccessData<GetSellerCampaignProductListResponse>()
         return mapper.map(data)
@@ -96,6 +97,7 @@ class GetSellerCampaignProductListUseCase @Inject constructor(
 
     private fun buildRequest(
         campaignId: Long,
+        productName: String,
         listType: Int,
         pagination: GetSellerCampaignProductListRequest.Pagination
     ): GraphqlRequest {
@@ -104,7 +106,8 @@ class GetSellerCampaignProductListUseCase @Inject constructor(
             listType = listType,
             pagination = pagination,
             filter = GetSellerCampaignProductListRequest.Filter(
-                campaignId = campaignId
+                campaignId = campaignId,
+                productName = productName
             )
         )
         val params = mapOf(REQUEST_PARAM_KEY to payload)
