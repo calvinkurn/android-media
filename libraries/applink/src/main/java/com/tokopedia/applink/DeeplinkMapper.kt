@@ -15,6 +15,7 @@ import com.tokopedia.applink.constant.DeeplinkConstant
 import com.tokopedia.applink.content.DeeplinkMapperContent
 import com.tokopedia.applink.content.DeeplinkMapperContent.getContentCreatePostDeepLink
 import com.tokopedia.applink.content.DeeplinkMapperContent.getKolDeepLink
+import com.tokopedia.applink.content.DeeplinkMapperContent.getWebHostWebViewLink
 import com.tokopedia.applink.digital.DeeplinkMapperDigital
 import com.tokopedia.applink.digital.DeeplinkMapperDigital.getRegisteredNavigationDigital
 import com.tokopedia.applink.digitaldeals.DeeplinkMapperDeals.getRegisteredNavigationDeals
