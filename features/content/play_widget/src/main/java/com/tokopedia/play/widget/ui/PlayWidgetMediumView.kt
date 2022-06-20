@@ -200,6 +200,7 @@ class PlayWidgetMediumView : ConstraintLayout, IPlayWidgetView {
     /**
      * Setup view
      */
+    @Suppress("MagicNumber")
     private fun setupView(view: View) {
         recyclerViewItem.addItemDecoration(PlayWidgetCardMediumItemDecoration(context))
         recyclerViewItem.layoutManager = layoutManager
