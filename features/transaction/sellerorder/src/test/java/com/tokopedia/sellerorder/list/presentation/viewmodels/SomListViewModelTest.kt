@@ -2355,27 +2355,6 @@ class SomListViewModelTest : SomOrderBaseViewModelTest<SomListViewModel>() {
         assertEquals("new_order", viewModel.getTabActive())
     }
 
-    @Test
-    fun getSelectedFilterKeysFromAdvancedFilter_shouldReturnSelectedOrderStatusFilterKeys() {
-        val somFilterUiModelList = GetSomFilterMapper.mapToSomFilterVisitable(
-            TestHelper.createSuccessResponse(
-                SomFilterViewModelTestFixture.SOM_FILTER_SUCCESS_RESPONSE
-            )
-        ).filterIsInstance<SomFilterUiModel>().apply {
-            find {
-                it.nameFilter == SomConsts.FILTER_STATUS_ORDER
-            }?.somFilterData?.find {
-                it.key == "new_order"
-            }?.apply {
-                isSelected = true
-                childStatus.forEach { it.isChecked = true }
-            }
-        }
-        getFiltersFromCloud_shouldSuccess()
-        viewModel.updateSomFilterUiModelList(somFilterUiModelList)
-        assertEquals(listOf("new_order"), viewModel.getSelectedFilterKeysFromAdvancedFilter())
-    }
-
     private fun doSuccessBulkAcceptOrder(
         orderIds: List<String>
     ) = coroutineTestRule.runBlockingTest {

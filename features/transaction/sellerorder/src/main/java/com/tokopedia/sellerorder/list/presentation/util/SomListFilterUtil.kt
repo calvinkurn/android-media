@@ -65,10 +65,4 @@ object SomListFilterUtil {
             } else null
         }
     }
-
-    fun getSelectedOrderStatusFilterKeys(somFilterUiModelList: MutableList<SomFilterUiModel>): List<String> {
-        return somFilterUiModelList.filter {
-            it.nameFilter == SomConsts.FILTER_STATUS_ORDER
-        }.map { it.somFilterData.filter { it.isSelected }.map { it.key } }.flatten()
-    }
 }

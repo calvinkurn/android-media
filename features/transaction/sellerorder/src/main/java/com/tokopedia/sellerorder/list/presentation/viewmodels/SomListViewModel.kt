@@ -710,10 +710,6 @@ class SomListViewModel @Inject constructor(
         return getOrderListParams.orderTypeList.toList()
     }
 
-    fun getSelectedFilterKeysFromAdvancedFilter(): List<String> {
-        return SomListFilterUtil.getSelectedOrderStatusFilterKeys(somFilterUiModelList)
-    }
-
     fun setTabActiveFromAppLink(tab: String) {
         tabActiveFromAppLink = tab
     }
