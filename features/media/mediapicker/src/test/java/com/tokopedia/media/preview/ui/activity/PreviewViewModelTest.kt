@@ -5,8 +5,8 @@ import com.tokopedia.media.preview.managers.ImageCompressionManager
 import com.tokopedia.media.preview.managers.SaveToGalleryManager
 import com.tokopedia.picker.common.PickerResult
 import com.tokopedia.picker.common.uimodel.MediaUiModel
-import com.tokopedia.picker.common.util.getFileFormatByMimeType
-import com.tokopedia.picker.common.util.wrapper.PickerFile
+import com.tokopedia.picker.common.utils.getFileFormatByMimeType
+import com.tokopedia.picker.common.utils.wrapper.PickerFile
 import com.tokopedia.unit.test.rule.CoroutineTestRule
 import io.mockk.clearAllMocks
 import io.mockk.every

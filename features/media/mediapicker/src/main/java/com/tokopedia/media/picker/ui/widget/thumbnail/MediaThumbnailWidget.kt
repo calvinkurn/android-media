@@ -12,7 +12,7 @@ import com.tokopedia.media.databinding.WidgetMediaThumbnailBinding
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.picker.common.uimodel.MediaUiModel
 import com.tokopedia.media.picker.ui.widget.layout.SquareFrameLayout
-import com.tokopedia.picker.common.util.wrapper.PickerFile
+import com.tokopedia.picker.common.utils.wrapper.PickerFile
 import com.tokopedia.media.R as mediaResources
 import com.tokopedia.unifyprinciples.Typography.Companion.BODY_3
 import com.tokopedia.unifyprinciples.Typography.Companion.SMALL

@@ -1,5 +1,5 @@
 @file:Suppress("SameParameterValue")
-package com.tokopedia.picker.common.util
+package com.tokopedia.picker.common.utils
 
 import android.content.Context
 import android.graphics.Bitmap

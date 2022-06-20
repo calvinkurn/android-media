@@ -3,7 +3,7 @@ package com.tokopedia.media.picker.data.entity
 import android.content.ContentUris
 import android.net.Uri
 import android.provider.MediaStore
-import com.tokopedia.picker.common.util.wrapper.PickerFile
+import com.tokopedia.picker.common.utils.wrapper.PickerFile
 
 data class Media(
     val id: Long,

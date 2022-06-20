@@ -2,8 +2,8 @@ package com.tokopedia.media.preview.managers
 
 import android.content.Context
 import android.os.Environment
-import com.tokopedia.picker.common.util.wrapper.PickerFile
-import com.tokopedia.picker.common.util.wrapper.PickerFile.Companion.asPickerFile
+import com.tokopedia.picker.common.utils.wrapper.PickerFile
+import com.tokopedia.picker.common.utils.wrapper.PickerFile.Companion.asPickerFile
 import com.tokopedia.utils.file.PublicFolderUtil
 import java.io.File
 

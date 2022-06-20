@@ -20,7 +20,7 @@ import com.tokopedia.media.R
 import com.tokopedia.media.picker.utils.exceptionHandler
 import com.tokopedia.picker.common.PickerParam
 import com.tokopedia.picker.common.basecomponent.UiComponent
-import com.tokopedia.picker.common.util.FileCamera
+import com.tokopedia.picker.common.utils.FileCamera
 
 class CameraViewComponent(
     private val param: PickerParam,

@@ -15,6 +15,7 @@ interface PickerActivityContract : ValidationListener, ToasterListener {
      */
     fun mediaSelected(): List<MediaUiModel>
 
+    fun onGetVideoDuration(media: MediaUiModel): Int
     fun onCameraThumbnailClicked()
     fun onEmptyStateActionClicked()
 }

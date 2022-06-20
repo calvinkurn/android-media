@@ -14,7 +14,7 @@ import com.tokopedia.media.picker.ui.fragment.OnMediaClickListener
 import com.tokopedia.media.picker.ui.fragment.OnMediaSelectedListener
 import com.tokopedia.media.picker.ui.adapter.utils.MediaDiffUtil
 import com.tokopedia.picker.common.uimodel.MediaUiModel
-import com.tokopedia.picker.common.util.wrapper.PickerFile
+import com.tokopedia.picker.common.utils.wrapper.PickerFile
 import com.tokopedia.utils.view.binding.viewBinding
 
 class GalleryAdapter(

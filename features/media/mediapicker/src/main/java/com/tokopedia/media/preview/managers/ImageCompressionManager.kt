@@ -1,8 +1,8 @@
 package com.tokopedia.media.preview.managers
 
 import android.content.Context
-import com.tokopedia.picker.common.util.ImageCompressor
-import com.tokopedia.picker.common.util.wrapper.PickerFile.Companion.asPickerFile
+import com.tokopedia.picker.common.utils.ImageCompressor
+import com.tokopedia.picker.common.utils.wrapper.PickerFile.Companion.asPickerFile
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 

@@ -36,7 +36,8 @@ import com.tokopedia.picker.common.uimodel.MediaUiModel
 import com.tokopedia.picker.common.uimodel.MediaUiModel.Companion.safeRemove
 import com.tokopedia.picker.common.uimodel.MediaUiModel.Companion.toUiModel
 import com.tokopedia.picker.common.mapper.humanize
-import com.tokopedia.picker.common.util.wrapper.PickerFile.Companion.asPickerFile
+import com.tokopedia.picker.common.utils.VideoDurationRetriever
+import com.tokopedia.picker.common.utils.wrapper.PickerFile.Companion.asPickerFile
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.utils.file.cleaner.InternalStorageCleaner.cleanUpInternalStorageIfNeeded
 import com.tokopedia.utils.image.ImageProcessingUtil
@@ -268,6 +269,11 @@ open class PickerActivity : BaseActivity()
         onPageViewByType()
     }
 
+    override fun onGetVideoDuration(media: MediaUiModel): Int {
+        val file = media.file?: return 0
+        return VideoDurationRetriever.get(applicationContext, file)
+    }
+
     override fun onCameraTabSelected(isDirectClick: Boolean) {
         container.resetBottomNavMargin()
         onCameraPageView()
@@ -345,13 +351,11 @@ open class PickerActivity : BaseActivity()
     }
 
     override fun isMinVideoDuration(model: MediaUiModel): Boolean {
-        val duration = model.file?.videoDuration(applicationContext)?: 0
-        return duration <= param.get().minVideoDuration()
+        return onGetVideoDuration(model) <= param.get().minVideoDuration()
     }
 
     override fun isMaxVideoDuration(model: MediaUiModel): Boolean {
-        val duration = model.file?.videoDuration(applicationContext)?: 0
-        return duration > param.get().maxVideoDuration()
+        return onGetVideoDuration(model) > param.get().maxVideoDuration()
     }
 
     override fun isMaxVideoSize(model: MediaUiModel): Boolean {

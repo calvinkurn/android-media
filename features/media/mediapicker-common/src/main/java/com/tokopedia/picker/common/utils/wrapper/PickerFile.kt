@@ -1,14 +1,11 @@
-package com.tokopedia.picker.common.util.wrapper
+package com.tokopedia.picker.common.utils.wrapper
 
 import android.content.Context
 import android.graphics.BitmapFactory
-import android.media.MediaMetadataRetriever
-import android.media.MediaMetadataRetriever.METADATA_KEY_DURATION
-import android.net.Uri
 import android.webkit.MimeTypeMap
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.picker.common.mapper.humanize
-import com.tokopedia.picker.common.util.getFileFormatByMimeType
+import com.tokopedia.picker.common.utils.VideoDurationRetriever
+import com.tokopedia.picker.common.utils.getFileFormatByMimeType
 import java.io.File
 
 class PickerFile constructor(
@@ -61,23 +58,7 @@ class PickerFile constructor(
     }
 
     fun readableVideoDuration(context: Context?): String {
-        return videoDuration(context).humanize()
-    }
-
-    fun videoDuration(context: Context?): Int {
-        val uri = Uri.fromFile(this)
-
-        return try {
-            with(MediaMetadataRetriever()) {
-                setDataSource(context, uri)
-                val durationData = extractMetadata(METADATA_KEY_DURATION)
-                release()
-
-                durationData.toIntOrZero()
-            }
-        } catch (e: Throwable) {
-            0
-        }
+        return VideoDurationRetriever.get(context, this).humanize()
     }
 
     /*

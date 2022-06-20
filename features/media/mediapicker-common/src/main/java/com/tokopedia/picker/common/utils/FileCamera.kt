@@ -1,4 +1,4 @@
-package com.tokopedia.picker.common.util
+package com.tokopedia.picker.common.utils
 
 import android.graphics.Bitmap
 import com.otaliastudios.cameraview.CameraUtils

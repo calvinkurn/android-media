@@ -12,11 +12,10 @@ import com.tokopedia.picker.common.*
 import com.tokopedia.picker.common.databinding.ActivityPickerDebugBinding
 import com.tokopedia.picker.common.uimodel.MediaUiModel
 import com.tokopedia.picker.common.uimodel.MediaUiModel.Companion.toUiModel
-import com.tokopedia.picker.common.util.wrapper.PickerFile
+import com.tokopedia.picker.common.utils.wrapper.PickerFile
 import com.tokopedia.picker.widget.drawerselector.DebugDrawerActionType
 import com.tokopedia.picker.widget.drawerselector.DebugDrawerSelectionWidget
 import com.tokopedia.utils.view.binding.viewBinding
-import java.io.File
 
 class DebugPickerActivity : AppCompatActivity(), DebugDrawerSelectionWidget.Listener {
 

@@ -2,7 +2,7 @@ package com.tokopedia.picker.common.uimodel
 
 import android.net.Uri
 import android.os.Parcelable
-import com.tokopedia.picker.common.util.wrapper.PickerFile
+import com.tokopedia.picker.common.utils.wrapper.PickerFile
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
