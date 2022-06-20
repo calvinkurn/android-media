@@ -144,8 +144,8 @@ object TokoFoodMerchantUiModelMapper {
             val isSelected = filterNameSelected == it.title
             CategoryFilterListUiModel(
                 categoryUiModel = CategoryUiModel(
-                    it.key,
-                    it.title
+                    key = it.key,
+                    title = it.title
                 ), it.subtitle, isSelected
             )
         }
