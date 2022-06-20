@@ -59,8 +59,7 @@ class ChooseRelatedCampaignViewModel @Inject constructor(
                     val previousCampaigns = mapToRelatedCampaignItem(result)
                     ChooseRelatedCampaignResult.Success(
                         keyword,
-                        previousCampaigns,
-                        isMaxSelectable
+                        previousCampaigns
                     )
                 }
             } catch (e: Throwable) {
@@ -96,11 +95,12 @@ class ChooseRelatedCampaignViewModel @Inject constructor(
         campaigns: List<CampaignUiModel>
     ): List<RelatedCampaignItem> {
         val selectedCampaigns = _selectedCampaigns.value ?: emptyList()
+        val isMaxSelected = isMaxSelectable
         return campaigns.map {
             val isSelected = selectedCampaigns.any { selectedCampaign ->
                 selectedCampaign.id == it.campaignId
             }
-            RelatedCampaignItem(it.campaignId, it.campaignName, isSelected)
+            RelatedCampaignItem(it.campaignId, it.campaignName, isSelected, isMaxSelected)
         }
     }
 
