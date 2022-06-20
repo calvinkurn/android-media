@@ -21,7 +21,6 @@ import com.tokopedia.home_component.util.FPM_CATEGORY_WIDGET_ITEM
 import com.tokopedia.home_component.util.loadImageWithoutPlaceholder
 import com.tokopedia.home_component.util.toDpInt
 import com.tokopedia.home_component.visitable.CategoryWidgetV2DataModel
-import com.tokopedia.home_component.visitable.MerchantVoucherDataModel
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.unifyprinciples.Typography
 
