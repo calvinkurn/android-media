@@ -62,6 +62,7 @@ import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.toko
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.topadsheadline.TopAdsHeadlineViewModelTest
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.topquest.TopQuestViewModelTest
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.youtubeview.YouTubeViewViewModelTest
+import com.tokopedia.discovery2.viewmodel.DiscoveryViewModelTest
 import org.junit.runner.RunWith
 import org.junit.runners.Suite
 
@@ -133,6 +134,7 @@ import org.junit.runners.Suite
         ShopBannerInfiniteItemModelTest::class,
         CategoryBestSellerViewModelTest::class,
         ShopCardInfiniteModelTest::class,
+        DiscoveryViewModelTest::class,
 )
 
 
