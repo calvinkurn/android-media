@@ -80,7 +80,7 @@
 
         <com.tokopedia.unifyprinciples.Typography
             android:text="@string/play_interactive_winner_chat"
-            android:textColor="@color/green_500"
+            android:textColor="@color/Unify_GN500"
             android:id="@+id/tv_winner_chat"
             android:layout_width="0dp"
             android:layout_height="@dimen/layout_lvl3"
