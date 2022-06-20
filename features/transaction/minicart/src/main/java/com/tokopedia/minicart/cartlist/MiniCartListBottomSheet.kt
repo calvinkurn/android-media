@@ -124,9 +124,9 @@ class MiniCartListBottomSheet @Inject constructor(private var miniCartListDecora
             val newBundleId = data?.getStringExtra(KEY_NEW_BUNLDE_ID) ?: ""
             val isChangeVariant = data?.getBooleanExtra(KEY_IS_CHANGE_VARIANT, false) ?: false
             if (((oldBundleId.isNotBlank() && newBundleId.isNotBlank() && oldBundleId != newBundleId) || isChangeVariant) && toBeDeletedBundleGroupId.isNotEmpty()) {
-                toBeDeletedBundleGroupId = ""
                 val list = viewModel?.miniCartListBottomSheetUiModel?.value?.visitables ?: emptyList()
                 val deletedItems = list.filter { it is MiniCartProductUiModel && it.isBundlingItem && it.bundleId == oldBundleId && it.bundleGroupId == toBeDeletedBundleGroupId }
+                toBeDeletedBundleGroupId = ""
                 if (deletedItems.isNotEmpty()) {
                     viewModel?.deleteMultipleCartItems(deletedItems as List<MiniCartProductUiModel>, isFromEditBundle = true)
                 }
