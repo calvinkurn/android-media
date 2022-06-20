@@ -710,16 +710,8 @@ class SomListViewModel @Inject constructor(
         return getOrderListParams.orderTypeList.toList()
     }
 
-    fun getSelectedFilterKeys() = somFilterUiModelList.filter {
-        it.nameFilter != SomConsts.FILTER_STATUS_ORDER
-    }.map { it.somFilterData.filter { it.isSelected }.map { it.key } }.flatten()
-
-    fun deselectAllStatusFilterFromAdvancedFilter() {
-        GetSomFilterMapper.deselectAllOrderStatusFilters(somFilterUiModelList)
-    }
-
-    fun updateSelectedStatusOrderFilterOnSomFilter(status: SomListFilterUiModel.Status) {
-        SomListFilterUtil.updateSelectedStatusOrderFilter(somFilterUiModelList, status)
+    fun getSelectedFilterKeysFromAdvancedFilter(): List<String> {
+        return SomListFilterUtil.getSelectedOrderStatusFilterKeys(somFilterUiModelList)
     }
 
     fun setTabActiveFromAppLink(tab: String) {

@@ -596,7 +596,7 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
         }
         somListOrderStatusFilterTab?.getSelectedFilterStatus().let {
             val selectedFilterKeys = arrayListOf<String>()
-            selectedFilterKeys.addAll(viewModel.getSelectedFilterKeys().orEmpty())
+            selectedFilterKeys.addAll(viewModel.getSelectedFilterKeysFromAdvancedFilter())
             if (it.isNullOrBlank()) {
                 selectedFilterKeys.add(Int.ZERO, STATUS_ALL_ORDER)
             } else {
@@ -625,8 +625,6 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
         }
         if (fromClickTab) {
             viewModel.setStatusOrderFilter(status.id)
-            viewModel.updateSelectedStatusOrderFilterOnSomFilter(status)
-            viewModel.deselectAllStatusFilterFromAdvancedFilter()
             setDefaultSortByValue()
             SomAnalytics.eventClickStatusFilter(status.id.map { it.toString() }, status.status)
         } else {
