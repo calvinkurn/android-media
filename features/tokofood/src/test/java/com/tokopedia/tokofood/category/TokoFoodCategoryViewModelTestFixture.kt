@@ -67,7 +67,7 @@ abstract class TokoFoodCategoryViewModelTestFixture {
         option: Int = 0,
         sortBy: Int = 0,
         cuisine: String = "",
-        pageKey: String = "1"
+        pageKey: String = "0"
     ) {
         coEvery { tokoFoodMerchantListUseCase.execute(
             localCacheModel = localCacheModel,
@@ -84,7 +84,7 @@ abstract class TokoFoodCategoryViewModelTestFixture {
         option: Int = 0,
         sortBy: Int = 0,
         cuisine: String = "",
-        pageKey: String = "1"
+        pageKey: String = "0"
     ) {
         coEvery { tokoFoodMerchantListUseCase.execute(
             localCacheModel = localCacheModel,
