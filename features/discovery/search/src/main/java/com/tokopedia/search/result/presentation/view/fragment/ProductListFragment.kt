@@ -1995,10 +1995,15 @@ class ProductListFragment: BaseDaggerFragment(),
     }
 
     override fun setProductCount(productCountText: String?) {
-        sortFilterBottomSheet?.setResultCountText(String.format(
+        val resultCountText = if (productCountText.isNullOrBlank()) {
+            getString(com.tokopedia.filter.R.string.bottom_sheet_filter_finish_button_no_count)
+        } else {
+            String.format(
                 getString(com.tokopedia.filter.R.string.bottom_sheet_filter_finish_button_template_text),
                 productCountText
-        ))
+            )
+        }
+        sortFilterBottomSheet?.setResultCountText(resultCountText)
     }
     //endregion
 
