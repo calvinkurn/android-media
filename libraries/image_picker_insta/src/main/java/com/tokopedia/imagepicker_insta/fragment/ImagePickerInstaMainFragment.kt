@@ -503,7 +503,7 @@ class ImagePickerInstaMainFragment : PermissionFragment(), ImagePickerFragmentCo
             viewModel.feedAccountListState.collectLatest {
                 if(viewModel.isAllowChangeAccount) {
                     toolbarCommon.getToolbarParentView().addOneTimeGlobalLayoutListener {
-                        coachMark = CoachMark2(activity as Context)
+                        coachMark = CoachMark2(requireContext())
 
                         coachMarkItem.add(
                             CoachMark2Item(
