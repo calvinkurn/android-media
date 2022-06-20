@@ -2,13 +2,8 @@ package com.tokopedia.tokomember_seller_dashboard
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
-import com.tokopedia.tokomember_seller_dashboard.domain.TokomemberCardColorMapperUsecase
-import com.tokopedia.tokomember_seller_dashboard.domain.TokomemberDashCardUsecase
-import com.tokopedia.tokomember_seller_dashboard.domain.TokomemberDashEditCardUsecase
-import com.tokopedia.tokomember_seller_dashboard.domain.TokomemberDashGetProgramFormUsecase
-import com.tokopedia.tokomember_seller_dashboard.domain.TokomemberDashPreviewUsecase
-import com.tokopedia.tokomember_seller_dashboard.domain.TokomemberDashUpdateProgramUsecase
-import com.tokopedia.tokomember_seller_dashboard.domain.TokomemeberCardBgUsecase
+import com.tokopedia.mediauploader.UploaderUseCase
+import com.tokopedia.tokomember_seller_dashboard.domain.*
 import com.tokopedia.tokomember_seller_dashboard.domain.requestparam.ProgramUpdateDataInput
 import com.tokopedia.tokomember_seller_dashboard.domain.requestparam.TmCardModifyInput
 import com.tokopedia.tokomember_seller_dashboard.model.CardData
@@ -50,7 +45,14 @@ class TokomemberCreateViewModelTest {
     private val tokomemberCardColorMapperUsecase =
         mockk<TokomemberCardColorMapperUsecase>(relaxed = true)
     private val tokomemeberCardBgUsecase = mockk<TokomemeberCardBgUsecase>(relaxed = true)
-    private val tokomemberDashPreviewUsecase = mockk<TokomemberDashPreviewUsecase>(relaxed = true)
+
+    private val tmKuponCreateValidateUsecase =  mockk<TmKuponCreateValidateUsecase>(relaxed = true)
+    private val tmKuponCreateUsecase = mockk<TmKuponCreateUsecase>(relaxed = true)
+    private val tmKuponUpdateUsecase = mockk<TmKuponUpdateUsecase>(relaxed = true)
+    private val tmKuponProgramValidateUsecase = mockk<TmKuponProgramValidateUsecase>(relaxed = true)
+    private val tmKuponInitialUsecase = mockk<TmKuponInitialUsecase>(relaxed = true)
+    private val uploaderUseCase = mockk<UploaderUseCase>(relaxed = true)
+    private val tmCouponDetailUsecase = mockk<TmCouponDetailUsecase>(relaxed = true)
 
     private val editCardObserver: Observer<TokoLiveDataResult<MembershipCreateEditCard>> = mockk(relaxed = true)
 
@@ -61,9 +63,16 @@ class TokomemberCreateViewModelTest {
             tokomemberCardColorMapperUsecase,
             tokomemeberCardBgUsecase,
             tokomemberDashEditCardUsecase,
-            tokomemberDashPreviewUsecase,
             tokomemberDashGetProgramFormUsecase,
-            tokomemberDashUpdateProgramUsecase, dispatcher
+            tokomemberDashUpdateProgramUsecase,
+            tmKuponCreateValidateUsecase,
+            tmKuponCreateUsecase,
+            tmKuponUpdateUsecase,
+            tmKuponProgramValidateUsecase,
+            tmKuponInitialUsecase,
+            uploaderUseCase,
+            tmCouponDetailUsecase,
+            dispatcher
         )
     }
 
@@ -89,7 +98,7 @@ class TokomemberCreateViewModelTest {
         } returns data.membershipGetCardForm?.cardTemplateImageList
 
         Assert.assertEquals(
-            (viewModel.tokomemberCardResultLiveData.value as Success).data,
+            (viewModel.tmCardResultLiveData.value as TokoLiveDataResult).data,
             cardData
         )
     }
@@ -103,7 +112,7 @@ class TokomemberCreateViewModelTest {
         }
         viewModel.getCardInfo(0)
         Assert.assertEquals(
-            (viewModel.tokomemberCardResultLiveData.value as Fail).throwable,
+            (viewModel.tmCardResultLiveData.value as Fail).throwable,
             mockThrowable
         )
     }
@@ -119,7 +128,7 @@ class TokomemberCreateViewModelTest {
         viewModel.getProgramInfo(0,0,"","")
 
         Assert.assertEquals(
-            (viewModel.tokomemberProgramResultLiveData.value as Success).data,
+            (viewModel.tmProgramResultLiveData.value as TokoLiveDataResult).data,
             data
         )
     }
@@ -133,7 +142,7 @@ class TokomemberCreateViewModelTest {
         }
         viewModel.getProgramInfo(0,0,"","")
         Assert.assertEquals(
-            (viewModel.tokomemberProgramResultLiveData.value as Fail).throwable,
+            (viewModel.tmProgramResultLiveData.value as Fail).throwable,
             mockThrowable
         )
     }
@@ -149,7 +158,7 @@ class TokomemberCreateViewModelTest {
         viewModel.updateProgram(ProgramUpdateDataInput())
 
         Assert.assertEquals(
-            (viewModel.tokomemberProgramUpdateResultLiveData.value as Success).data,
+            (viewModel.tokomemberProgramUpdateResultLiveData.value as TokoLiveDataResult).data,
             data
         )
     }
