@@ -513,9 +513,11 @@ class ImagePickerInstaMainFragment : PermissionFragment(), ImagePickerFragmentCo
                                 CoachMark2.POSITION_BOTTOM
                             )
                         )
-                        if (Prefs.getShouldShowCoachMarkValue(activity as Context))
+
+                        if (Prefs.getShouldShowCoachMarkValue(requireContext()))
                             showFabCoachMark()
                     }
+
                     toolbarCommon.setOnAccountClickListener {
                         openFeedAccountBottomSheet()
                     }
