@@ -88,7 +88,7 @@ class SuggestionDoubleLineViewHolder(
                 setSearchQueryStartIndexInKeyword(item.data)
                 bindBoldTextTitle(item.data)
             }
-            item.isBoldSquareType() -> bindAllBoldTextTitle(item.data)
+            item.isBoldSquareType() || item.isCurated() -> bindAllBoldTextTitle(item.data)
             else -> bindNormalTextTitle(item.data)
         }
     }

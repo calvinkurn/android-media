@@ -13,10 +13,12 @@ import com.tokopedia.autocompletecomponent.R
 import com.tokopedia.autocompletecomponent.databinding.LayoutAutocompleteSingleLineItemBinding
 import com.tokopedia.autocompletecomponent.suggestion.BaseSuggestionDataView
 import com.tokopedia.autocompletecomponent.suggestion.SuggestionListener
+import com.tokopedia.autocompletecomponent.suggestion.TYPE_CURATED
 import com.tokopedia.autocompletecomponent.util.safeSetSpan
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
+import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.view.binding.viewBinding
 import java.util.*
 
@@ -45,25 +47,27 @@ class SuggestionSingleLineViewHolder(
     }
 
     private fun bindTextTitle(item: BaseSuggestionDataView){
-        val startIndex = indexOfSearchQuery(item.title, item.searchTerm)
-        if (startIndex == -1) {
-            binding?.singleLineTitle?.text = item.title
+        val highlightedTitle = SpannableString(item.title)
+        if(item.type == TYPE_CURATED){
+            binding?.singleLineTitle?.setWeight(Typography.BOLD)
         } else {
-            val highlightedTitle = SpannableString(item.title)
-            highlightedTitle.safeSetSpan(
-                StyleSpan(Typeface.BOLD),
-                0,
-                startIndex,
-                Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
-            )
-            highlightedTitle.safeSetSpan(
-                StyleSpan(Typeface.BOLD),
-                startIndex + item.searchTerm.length,
-                highlightedTitle.length,
-                Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
-            )
-            binding?.singleLineTitle?.text = highlightedTitle
+            val startIndex = indexOfSearchQuery(item.title, item.searchTerm)
+            if (startIndex != -1) {
+                highlightedTitle.safeSetSpan(
+                    StyleSpan(Typeface.BOLD),
+                    0,
+                    startIndex,
+                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+                )
+                highlightedTitle.safeSetSpan(
+                    StyleSpan(Typeface.BOLD),
+                    startIndex + item.searchTerm.length,
+                    highlightedTitle.length,
+                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+                )
+            }
         }
+        binding?.singleLineTitle?.text = highlightedTitle
     }
 
     private fun indexOfSearchQuery(displayName: String, searchTerm: String): Int {

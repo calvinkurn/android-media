@@ -9,6 +9,7 @@ import com.tokopedia.autocompletecomponent.R
 import com.tokopedia.autocompletecomponent.databinding.LayoutAutocompleteDoubleLineWithoutImageItemBinding
 import com.tokopedia.autocompletecomponent.suggestion.BaseSuggestionDataView
 import com.tokopedia.autocompletecomponent.suggestion.SuggestionListener
+import com.tokopedia.autocompletecomponent.suggestion.TYPE_CURATED
 import com.tokopedia.kotlin.extensions.view.setTextAndCheckShow
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.view.binding.viewBinding
@@ -31,6 +32,7 @@ class SuggestionDoubleLineWithoutImageViewHolder(
     }
 
     private fun bindTitle(item: BaseSuggestionDataView) {
+        if(item.type == TYPE_CURATED) binding?.autocompleteSuggestionDoubleLineWithoutImageTitle?.setWeight(Typography.BOLD)
         binding?.autocompleteSuggestionDoubleLineWithoutImageTitle?.setTextAndCheckShow(item.title)
     }
 
