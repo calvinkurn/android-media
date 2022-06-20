@@ -1225,15 +1225,18 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
     override fun onProductItemClicked(wishlistItem: WishlistV2Response.Data.WishlistV2.Item, position: Int) {
         WishlistV2Analytics.clickProductCard(wishlistItem, userSession.userId, position)
         activity?.let {
-            val intent = RouteManager.getIntent(it, ApplinkConstInternalMarketplace.PRODUCT_DETAIL, wishlistItem.id)
-            startActivity(intent)
+            RouteManager.route(it, wishlistItem.url)
         }
     }
 
-    override fun onProductRecommItemClicked(productId: String) {
+    override fun onProductRecommItemClicked(recommItem: RecommendationItem) {
         activity?.let {
-            val intent = RouteManager.getIntent(it, ApplinkConstInternalMarketplace.PRODUCT_DETAIL, productId)
-            startActivity(intent)
+            if (recommItem.appUrl.isNotEmpty()) {
+                RouteManager.route(it, recommItem.appUrl)
+            } else {
+                val intent = RouteManager.getIntent(it, ApplinkConstInternalMarketplace.PRODUCT_DETAIL, recommItem.productId.toString())
+                startActivity(intent)
+            }
         }
     }
 
@@ -1317,7 +1320,11 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
             )
         }
         activity?.let {
-            val intent = RouteManager.getIntent(it, ApplinkConstInternalMarketplace.PRODUCT_DETAIL, recommendationItem.productId.toString())
+            val intent = if (recommendationItem.appUrl.isNotEmpty()) {
+                RouteManager.getIntent(it, recommendationItem.appUrl)
+            } else {
+                RouteManager.getIntent(it, ApplinkConstInternalMarketplace.PRODUCT_DETAIL, recommendationItem.productId.toString())
+            }
             startActivity(intent)
         }
     }
