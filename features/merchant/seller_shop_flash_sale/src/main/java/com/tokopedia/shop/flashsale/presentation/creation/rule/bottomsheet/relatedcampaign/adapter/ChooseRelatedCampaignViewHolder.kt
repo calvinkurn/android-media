@@ -36,9 +36,9 @@ class ChooseRelatedCampaignViewHolder(
     }
 
     @SuppressWarnings("ResourcePackage")
-    fun bind(data: RelatedCampaignItem, isMaxSelected: Boolean) {
+    fun bind(data: RelatedCampaignItem) {
         binding.checboxRelatedCampaign.isChecked = data.isSelected
-        if (isMaxSelected && !data.isSelected) {
+        if (data.isNotSelectable) {
             disableClickListener()
         } else {
             enableClickListener()

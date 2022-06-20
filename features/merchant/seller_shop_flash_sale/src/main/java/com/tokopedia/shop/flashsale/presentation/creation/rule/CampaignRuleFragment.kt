@@ -188,7 +188,7 @@ class CampaignRuleFragment : BaseDaggerFragment(),
             viewModel.onDisallowCampaignRelation()
         }
 
-        binding.checboxCampaignRuleTnc.setOnCheckedChangeListener(tncCheckboxChangeListener)
+        binding.checkboxCampaignRuleTnc.setOnCheckedChangeListener(tncCheckboxChangeListener)
 
         binding.btnSaveDraft.setOnClickListener {
             showSaveDraftButtonLoading()
@@ -234,7 +234,7 @@ class CampaignRuleFragment : BaseDaggerFragment(),
 
     private fun setUpTNCText() {
         val binding = binding ?: return
-        binding.checboxCampaignRuleTnc.text = getTNCText()
+        binding.checkboxCampaignRuleTnc.text = getTNCText()
     }
 
     private fun observeSelectedPaymentMethod() {
@@ -450,14 +450,14 @@ class CampaignRuleFragment : BaseDaggerFragment(),
 
     private fun checkTNCCheckbox() {
         val binding = binding ?: return
-        binding.checboxCampaignRuleTnc.setOnCheckedChangeListener(null)
-        binding.checboxCampaignRuleTnc.isChecked = true
-        binding.checboxCampaignRuleTnc.setOnCheckedChangeListener(tncCheckboxChangeListener)
+        binding.checkboxCampaignRuleTnc.setOnCheckedChangeListener(null)
+        binding.checkboxCampaignRuleTnc.isChecked = true
+        binding.checkboxCampaignRuleTnc.setOnCheckedChangeListener(tncCheckboxChangeListener)
     }
 
     private fun unCheckTNCCheckbox() {
         val binding = binding ?: return
-        binding.checboxCampaignRuleTnc.isChecked = false
+        binding.checkboxCampaignRuleTnc.isChecked = false
     }
 
     private fun observeCampaignCreationAllowed() {

@@ -147,7 +147,7 @@ class ChooseRelatedCampaignBottomSheet : BottomSheetUnify(),
 
     private fun renderSuccessResult(result: ChooseRelatedCampaignResult.Success) {
         hideLoading()
-        showCampaignList(result.relatedCampaigns, result.isMaxSelected)
+        showCampaignList(result.relatedCampaigns)
     }
 
     private fun renderFailResult(result: ChooseRelatedCampaignResult.Fail) {
@@ -155,8 +155,8 @@ class ChooseRelatedCampaignBottomSheet : BottomSheetUnify(),
         showErrorMessage(result.error)
     }
 
-    private fun showCampaignList(campaigns: List<RelatedCampaignItem>, isMaxSelectable: Boolean) {
-        adapter?.submitList(campaigns, isMaxSelectable)
+    private fun showCampaignList(campaigns: List<RelatedCampaignItem>) {
+        adapter?.submitList(campaigns)
     }
 
     private fun showEmptyResult() {

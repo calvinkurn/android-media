@@ -11,8 +11,6 @@ class ChooseRelatedCampaignAdapter(
     itemDiffer: DiffUtil.ItemCallback<RelatedCampaignItem> = PreviousCampaignItemDiffCallback()
 ) : ListAdapter<RelatedCampaignItem, ChooseRelatedCampaignViewHolder>(itemDiffer) {
 
-    private var isMaxSelectable: Boolean = false
-
     override fun onCreateViewHolder(
         parent: ViewGroup,
         viewType: Int
@@ -30,11 +28,6 @@ class ChooseRelatedCampaignAdapter(
     }
 
     override fun onBindViewHolder(holder: ChooseRelatedCampaignViewHolder, position: Int) {
-        holder.bind(getItem(position), isMaxSelectable)
-    }
-
-    fun submitList(list: List<RelatedCampaignItem>?, isMaxSelectable: Boolean) {
-        this.isMaxSelectable = isMaxSelectable
-        submitList(list)
+        holder.bind(getItem(position))
     }
 }

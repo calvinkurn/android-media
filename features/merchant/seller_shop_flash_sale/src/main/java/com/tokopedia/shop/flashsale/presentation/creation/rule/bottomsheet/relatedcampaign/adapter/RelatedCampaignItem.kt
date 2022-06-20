@@ -7,5 +7,9 @@ import kotlinx.parcelize.Parcelize
 data class RelatedCampaignItem(
     val id: Long,
     val name: String,
-    val isSelected: Boolean
-) : Parcelable
+    val isSelected: Boolean,
+    val isMaxSelected: Boolean = false
+) : Parcelable {
+    val isNotSelectable: Boolean
+        get() = isMaxSelected && !isSelected
+}

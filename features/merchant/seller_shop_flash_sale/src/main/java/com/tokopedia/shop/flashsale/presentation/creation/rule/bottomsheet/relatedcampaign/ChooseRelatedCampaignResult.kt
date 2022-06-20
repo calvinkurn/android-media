@@ -8,7 +8,6 @@ sealed class ChooseRelatedCampaignResult {
     data class Success(
         val keyword: String,
         val relatedCampaigns: List<RelatedCampaignItem>,
-        val isMaxSelected: Boolean,
     ) : ChooseRelatedCampaignResult()
 
     data class Fail(val error: Throwable) : ChooseRelatedCampaignResult()

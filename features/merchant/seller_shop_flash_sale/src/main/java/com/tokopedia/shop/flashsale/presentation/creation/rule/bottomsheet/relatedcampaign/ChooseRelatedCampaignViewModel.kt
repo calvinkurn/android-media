@@ -109,13 +109,16 @@ class ChooseRelatedCampaignViewModel @Inject constructor(
         if (previousCampaignsResult is ChooseRelatedCampaignResult.Success) {
             val newValue = !relatedCampaign.isSelected
             updateSelectedCampaigns(newValue, relatedCampaign)
+            val isMaxSelected = isMaxSelectable
 
             val newList = previousCampaignsResult.relatedCampaigns.map {
                 if (it.id == relatedCampaign.id) {
-                    it.copy(isSelected = newValue)
-                } else it
+                    it.copy(isSelected = newValue, isMaxSelected = isMaxSelected)
+                } else it.copy(isMaxSelected = isMaxSelected)
             }
-            val newResult = previousCampaignsResult.copy(relatedCampaigns = newList)
+            val newResult = previousCampaignsResult.copy(
+                relatedCampaigns = newList,
+            )
             _relatedCampaignsResult.postValue(newResult)
         }
     }
@@ -128,7 +131,7 @@ class ChooseRelatedCampaignViewModel @Inject constructor(
         _selectedCampaigns.value = if (isSelected) {
             selectedCampaigns + relatedCampaign
         } else {
-            selectedCampaigns - relatedCampaign
+            selectedCampaigns.filter { it.id != relatedCampaign.id }
         }
     }
 
