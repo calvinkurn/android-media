@@ -6,6 +6,7 @@ import java.util.*
 import java.util.concurrent.TimeUnit
 
 private const val WIB_TIME_OFFSET = 7
+private const val ONE_MONTH_OFFSET = 1
 
 fun Date.formatTo(desiredOutputFormat: String, locale: Locale = LocaleConstant.INDONESIA): String {
     return try {
@@ -85,6 +86,18 @@ fun Date.extractMinute(): Int {
     return calendar.get(Calendar.MINUTE)
 }
 
+fun Date.extractMonth(): Int {
+    val calendar = Calendar.getInstance()
+    calendar.time = this
+    return calendar.get(Calendar.MONTH) + ONE_MONTH_OFFSET
+}
+
+fun Date.extractYear(): Int {
+    val calendar = Calendar.getInstance()
+    calendar.time = this
+    return calendar.get(Calendar.YEAR)
+}
+
 fun Date.localFormatTo(desiredOutputFormat: String, locale: Locale = LocaleConstant.INDONESIA): String {
     return try {
         val outputFormat = SimpleDateFormat(desiredOutputFormat, locale)
@@ -110,6 +123,5 @@ fun Date.minuteDifference(): Long {
 
     val differenceInMillis = calendar.timeInMillis - now.timeInMillis
 
-    val diff = TimeUnit.MILLISECONDS.toMinutes(differenceInMillis)
-    return diff
+    return TimeUnit.MILLISECONDS.toMinutes(differenceInMillis)
 }

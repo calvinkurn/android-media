@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    android:id="@+id/container"
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/container"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -22,12 +21,11 @@
         android:id="@+id/loader"
         android:layout_width="@dimen/unify_space_48"
         android:layout_height="@dimen/unify_space_48"
-        android:visibility="gone"
-        tools:visibility="visible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/header" />
+        app:layout_constraintTop_toBottomOf="@+id/header"
+        tools:visibility="visible" />
 
 
     <ScrollView
@@ -77,7 +75,7 @@
                 app:layout_constraintGuide_percent="0.5" />
 
             <com.tokopedia.unifycomponents.ticker.Ticker
-                android:id="@+id/tickerLapsedSchedule"
+                android:id="@+id/tickerErrorMessage"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/unify_space_16"
@@ -105,7 +103,7 @@
                 android:layout_marginEnd="@dimen/unify_space_8"
                 app:layout_constraintEnd_toStartOf="@+id/guideline2"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tickerLapsedSchedule"
+                app:layout_constraintTop_toBottomOf="@+id/tickerErrorMessage"
                 app:unify_text_field_label="@string/sfs_schedule_start_date"
                 app:unify_text_field_label_static="true" />
 
@@ -118,7 +116,7 @@
                 android:layout_marginEnd="@dimen/unify_space_16"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="@+id/guideline2"
-                app:layout_constraintTop_toBottomOf="@+id/tickerLapsedSchedule"
+                app:layout_constraintTop_toBottomOf="@+id/tickerErrorMessage"
                 app:unify_text_field_label="@string/sfs_schedule_end_date"
                 app:unify_text_field_label_static="true"
                 app:unify_text_field_message="@string/sfs_min_duration" />
@@ -323,10 +321,10 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         app:cardElevation="@dimen/unify_space_8"
-        tools:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent">
+        app:layout_constraintStart_toStartOf="parent"
+        tools:visibility="gone">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -365,5 +363,12 @@
         </androidx.constraintlayout.widget.ConstraintLayout>
 
     </androidx.cardview.widget.CardView>
+
+    <androidx.constraintlayout.widget.Group
+        android:id="@+id/groupContent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:constraint_referenced_ids="cardView,scrollView" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

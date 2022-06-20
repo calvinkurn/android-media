@@ -96,9 +96,11 @@
     <string name="sfs_select_campaign_time">Pilih jam campaign</string>
     <string name="sfs_placeholder_selected_date">Tanggal terpilih: %s</string>
     <string name="sfs_placeholder_empty_quota">Kuota campaign di Bulan %s habis. Pilih jadwal di bulan lain, ya.</string>
+    <string name="sfs_placeholder_empty_current_month_quota">Kuotamu di Bulan %s sudah habis</string>
     <string name="sfs_placeholder_campaign_count">%s Campaign</string>
     <string name="sfs_hashtag">#</string>
     <string name="sfs_invalid_hex_color">Format kode hexa yang dipilih tidak valid</string>
+    <string name="sfs_create_campaign_on_another_period">Buat campaign di bulan lain, ya.</string>
 
     <string name="sfs_green_dot">Indikator campaign aktif</string>
 

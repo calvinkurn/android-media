@@ -125,6 +125,7 @@ class CampaignInformationFragment : BaseDaggerFragment() {
         observeCampaignCreation()
         observeCampaignUpdate()
         observeCampaignDetail()
+        observeCampaignQuota()
         observeSaveDraft()
         handlePageMode()
         handleCoachMark()
@@ -186,16 +187,31 @@ class CampaignInformationFragment : BaseDaggerFragment() {
         viewModel.campaignDetail.observe(viewLifecycleOwner) { result ->
             when(result) {
                 is Success -> {
-                    binding?.loader?.gone()
-                    binding?.scrollView?.visible()
-                    binding?.cardView?.visible()
+                    binding?.groupContent?.visible()
                     displayCampaignDetail(result.data)
                 }
                 is Fail -> {
-                    binding?.loader?.gone()
-                    binding?.scrollView?.gone()
-                    binding?.cardView?.gone()
-                    binding?.cardView showError result.throwable
+                    binding?.groupContent?.gone()
+                    binding?.root showError result.throwable
+                }
+            }
+        }
+    }
+
+
+    private fun observeCampaignQuota() {
+        viewModel.campaignQuota.observe(viewLifecycleOwner) { result ->
+            binding?.loader?.gone()
+            when (result) {
+                is Success -> {
+                    binding?.groupContent?.visible()
+                    val remainingQuota = result.data
+                    viewModel.setRemainingQuota(remainingQuota)
+                    handleRemainingQuota(remainingQuota)
+                }
+                is Fail -> {
+                    binding?.groupContent?.gone()
+                    binding?.root showError result.throwable
                 }
             }
         }
@@ -311,11 +327,11 @@ class CampaignInformationFragment : BaseDaggerFragment() {
     }
 
     private fun handlePageMode() {
+        if (pageMode == PageMode.CREATE) {
+            viewModel.getCampaignQuota(dateManager.getCurrentMonth(), dateManager.getCurrentYear())
+        }
+
         if (pageMode == PageMode.UPDATE) {
-            binding?.loader?.visible()
-            binding?.btnCreateCampaign?.enable()
-            binding?.scrollView?.gone()
-            binding?.cardView?.gone()
             viewModel.getCampaignDetail(campaignId)
         }
     }
@@ -351,22 +367,25 @@ class CampaignInformationFragment : BaseDaggerFragment() {
 
     private fun handleValidationResult(validationResult: CampaignInformationViewModel.ValidationResult) {
         when (validationResult) {
+            CampaignInformationViewModel.ValidationResult.NoRemainingQuota -> {
+                handleRemainingQuota(viewModel.getRemainingQuota())
+            }
             CampaignInformationViewModel.ValidationResult.LapsedStartDate -> {
-                showLapsedScheduleTicker()
+                showErrorTicker(getString(R.string.sfs_error_message_schedule_lapsed_title), getString(R.string.sfs_error_message_schedule_lapsed_description))
                 hideLapsedTeaserTicker()
             }
             CampaignInformationViewModel.ValidationResult.LapsedTeaserStartDate -> {
                 showLapsedTeaserTicker()
-                hideLapsedScheduleTicker()
+                hideErrorTicker()
             }
             CampaignInformationViewModel.ValidationResult.InvalidHexColor -> {
                 hideLapsedTeaserTicker()
-                hideLapsedScheduleTicker()
+                hideErrorTicker()
                 binding?.root showError getString(R.string.sfs_invalid_hex_color)
             }
             CampaignInformationViewModel.ValidationResult.Valid -> {
                 hideLapsedTeaserTicker()
-                hideLapsedScheduleTicker()
+                hideErrorTicker()
 
                 binding?.btnCreateCampaign?.enable()
                 binding?.btnCreateCampaign.showLoading()
@@ -455,7 +474,7 @@ class CampaignInformationFragment : BaseDaggerFragment() {
             binding?.tauStartDate?.editText?.setText(newStartDate.localFormatTo(DateConstant.DATE_TIME_MINUTE_LEVEL))
             adjustEndDate()
             adjustQuantityPicker(newStartDate)
-
+            viewModel.getCampaignQuota(newStartDate.extractMonth(), newStartDate.extractYear())
         }
         bottomSheet.show(childFragmentManager, bottomSheet.tag)
     }
@@ -502,6 +521,7 @@ class CampaignInformationFragment : BaseDaggerFragment() {
         val firstColor = viewModel.getColor().first
         val secondColor = viewModel.getColor().second
         val paymentType = viewModel.getPaymentType()
+        val remainingQuota = viewModel.getRemainingQuota()
 
         return CampaignInformationViewModel.Selection(
             binding?.tauCampaignName?.editText?.text.toString().trim(),
@@ -511,7 +531,8 @@ class CampaignInformationFragment : BaseDaggerFragment() {
             teaserDate,
             firstColor,
             secondColor,
-            paymentType
+            paymentType,
+            remainingQuota
         )
     }
 
@@ -538,20 +559,14 @@ class CampaignInformationFragment : BaseDaggerFragment() {
         binding?.tauCampaignName?.setMessage(Constant.EMPTY_STRING)
     }
 
-    private fun showLapsedScheduleTicker() {
-        binding?.tickerLapsedSchedule?.visible()
-        binding?.tickerLapsedSchedule?.tickerTitle = getString(R.string.sfs_error_message_schedule_lapsed_title)
-        binding?.tickerLapsedSchedule?.setTextDescription(getString(R.string.sfs_error_message_schedule_lapsed_description))
-    }
-
     private fun showErrorTicker(title : String, description : String) {
-        binding?.tickerLapsedSchedule?.visible()
-        binding?.tickerLapsedSchedule?.tickerTitle = title
-        binding?.tickerLapsedSchedule?.setTextDescription(description)
+        binding?.tickerErrorMessage?.visible()
+        binding?.tickerErrorMessage?.tickerTitle = title
+        binding?.tickerErrorMessage?.setTextDescription(description)
     }
 
-    private fun hideLapsedScheduleTicker() {
-        binding?.tickerLapsedSchedule?.gone()
+    private fun hideErrorTicker() {
+        binding?.tickerErrorMessage?.gone()
     }
 
     private fun showLapsedTeaserTicker() {
@@ -664,4 +679,16 @@ class CampaignInformationFragment : BaseDaggerFragment() {
         }
     }
 
+    private fun handleRemainingQuota(remainingQuota: Int) {
+        if (remainingQuota == Constant.ZERO) {
+            val monthName = viewModel.getSelectedStartDate().formatTo(DateConstant.MONTH)
+            val title = String.format(
+                getString(R.string.sfs_placeholder_empty_current_month_quota),
+                monthName
+            )
+            showErrorTicker(title, getString(R.string.sfs_create_campaign_on_another_period))
+        } else {
+            hideErrorTicker()
+        }
+    }
 }
