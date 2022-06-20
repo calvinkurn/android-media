@@ -82,11 +82,9 @@ class StockReminderFragment : BaseDaggerFragment(),
 
     val updateWarehouseParam = ArrayList<ProductWarehouseParam>()
 
-    var firstReminderSet = false
-    var currentReminderSet = false
-
-
     private var dataProducts: ArrayList<ProductStockReminderUiModel>? = null
+
+    private var dataFirstProducts: ArrayList<ProductStockReminderUiModel>? = null
 
     @Inject
     lateinit var userSession: UserSessionInterface
@@ -146,13 +144,16 @@ class StockReminderFragment : BaseDaggerFragment(),
         }
         val isValid =
             getProductWareHouseList().firstOrNull() {
-                it.threshold > MINIMUM_STOCK.toString()
+                it.threshold < MINIMUM_STOCK.toString()
                         && it.thresholdStatus == REMINDER_ACTIVE.toString()
             } == null
 
-        binding?.btnSaveReminder?.isEnabled = isValid
+        val haveChanges =
+            dataFirstProducts?.firstOrNull { it.id == productId && it.stockAlertStatus != status } != null
 
+        val enableBtnSave = (isValid && haveChanges)
 
+        binding?.btnSaveReminder?.isEnabled = enableBtnSave
     }
 
     private fun checkLogin() {
@@ -310,10 +311,9 @@ class StockReminderFragment : BaseDaggerFragment(),
             is Success -> {
                 val product = productData.data
                 dataProducts = ArrayList(product)
+                dataFirstProducts = ArrayList(product)
                 adapter?.setItems(product)
                 setListProductWarehouse(product)
-                firstReminderSet =
-                    dataProducts?.firstOrNull() { it.stockAlertStatus == REMINDER_ACTIVE } != null
             }
             is Fail -> {
                 binding?.cardSaveBtn?.visibility = View.GONE
