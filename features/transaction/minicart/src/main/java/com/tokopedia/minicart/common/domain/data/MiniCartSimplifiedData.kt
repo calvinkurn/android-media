@@ -64,19 +64,6 @@ sealed class MiniCartItem {
             var products: Map<MiniCartItemKey, MiniCartItemProduct> = emptyMap()
     ): MiniCartItem()
 
-    data class MiniCartItemBundle(
-            var isError: Boolean = false,
-            var bundleId: String = "",
-            var bundleGroupId: String = "",
-            var bundleTitle: String = "",
-            var bundlePrice: Long = 0L,
-            var bundleSlashPriceLabel: String = "",
-            var bundleOriginalPrice: Long = 0L,
-            var bundleQuantity: Int = 0,
-            var bundleLabelQuantity: Int = 0,
-            var bundleMultiplier: Int = 0
-    ): MiniCartItem()
-
     data class MiniCartItemProduct(
             var isError: Boolean = false,
             var cartId: String = "",
