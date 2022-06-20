@@ -9,6 +9,15 @@ import com.tokopedia.shop.flashsale.presentation.creation.manage.model.SelectedP
 object ReserveProductMapper {
 
     private const val ADD_PRODUCT_DEFAULT_VALUE = 0L
+    private const val SHOP_STATUS_OPEN = 1
+    private const val SHOP_STATUS_CLOSED = 2
+    private const val SHOP_STATUS_OTHER = 0
+
+    enum class ShopStatusEnum(val type: Int) {
+        OPEN(SHOP_STATUS_OPEN),
+        CLOSED(SHOP_STATUS_CLOSED),
+        OTHER(SHOP_STATUS_OTHER)
+    }
 
     fun mapFromProduct(product: GetSellerCampaignValidatedProductListResponse.Product) =
         ReserveProductModel (
@@ -29,7 +38,6 @@ object ReserveProductMapper {
         finalPrice = ADD_PRODUCT_DEFAULT_VALUE
     )
 
-
     fun mapFromProductList(
         productList: List<GetSellerCampaignValidatedProductListResponse.Product>
     ) = productList.map { mapFromProduct(it) }
@@ -38,4 +46,12 @@ object ReserveProductMapper {
         ?.filter { it.parentProductId == null } // filter only parent product
         ?.map { mapToProductData(it) }
         .orEmpty()
+
+    fun mapToShopStatusEnum(shopStatus: Int): ShopStatusEnum {
+        return when(shopStatus) {
+            ShopStatusEnum.OPEN.type -> ShopStatusEnum.OPEN
+            ShopStatusEnum.CLOSED.type -> ShopStatusEnum.CLOSED
+            else -> ShopStatusEnum.OTHER
+        }
+    }
 }

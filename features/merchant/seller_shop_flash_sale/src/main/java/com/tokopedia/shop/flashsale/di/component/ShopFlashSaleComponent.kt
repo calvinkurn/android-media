@@ -1,6 +1,7 @@
 package com.tokopedia.shop.flashsale.di.component
 
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
+import com.tokopedia.shop.common.di.ShopCommonModule
 import com.tokopedia.shop.flashsale.di.module.ShopFlashSaleModule
 import com.tokopedia.shop.flashsale.di.module.ShopFlashSaleViewModelModule
 import com.tokopedia.shop.flashsale.di.scope.ShopFlashSaleScope
@@ -8,9 +9,9 @@ import com.tokopedia.shop.flashsale.presentation.creation.highlight.ManageHighli
 import com.tokopedia.shop.flashsale.presentation.creation.information.CampaignInformationActivity
 import com.tokopedia.shop.flashsale.presentation.creation.information.CampaignInformationFragment
 import com.tokopedia.shop.flashsale.presentation.creation.information.bottomsheet.CampaignDatePickerBottomSheet
+import com.tokopedia.shop.flashsale.presentation.creation.manage.ChooseProductFragment
 import com.tokopedia.shop.flashsale.presentation.creation.manage.ManageProductActivity
 import com.tokopedia.shop.flashsale.presentation.creation.manage.ManageProductFragment
-import com.tokopedia.shop.flashsale.presentation.creation.manage.ChooseProductFragment
 import com.tokopedia.shop.flashsale.presentation.creation.rule.CampaignRuleActivity
 import com.tokopedia.shop.flashsale.presentation.creation.rule.CampaignRuleFragment
 import com.tokopedia.shop.flashsale.presentation.creation.rule.bottomsheet.MerchantCampaignTNCBottomSheet
@@ -22,7 +23,7 @@ import dagger.Component
 
 @ShopFlashSaleScope
 @Component(
-    modules = [ShopFlashSaleModule::class, ShopFlashSaleViewModelModule::class],
+    modules = [ShopFlashSaleModule::class, ShopFlashSaleViewModelModule::class, ShopCommonModule::class],
     dependencies = [BaseAppComponent::class]
 )
 interface ShopFlashSaleComponent {
