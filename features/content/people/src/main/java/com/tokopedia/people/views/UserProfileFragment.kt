@@ -409,7 +409,7 @@ class UserProfileFragment : BaseDaggerFragment(),
                     is NullPointerException ->{
                         container?.displayedChild = PAGE_ERROR
                         globalError?.setType(PAGE_NOT_FOUND)
-                        globalError?.errorAction?.text = WORDING_GO_TO_HOMEPAGE
+                        globalError?.errorAction?.text = getString(com.tokopedia.people.R.string.up_error_page_sec_btn_txt)
                         globalError?.errorSecondaryAction?.gone()
                         globalError?.show()
 
@@ -987,7 +987,6 @@ class UserProfileFragment : BaseDaggerFragment(),
         const val EXTRA_FOLLOW_UNFOLLOW_STATUS = "follow_unfollow_status"
         const val EXTRA_VALUE_IS_FOLLOWED = "is_followed"
         const val EXTRA_VALUE_IS_NOT_FOLLOWED = "is_not_followed"
-        const val WORDING_GO_TO_HOMEPAGE = "Ke Homepage"
         private const val LOADING = -94567
 
         const val PAGE_CONTENT = 0

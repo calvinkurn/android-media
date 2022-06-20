@@ -21,8 +21,8 @@
 
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/like_anim"
-        android:layout_width="@dimen/dp_64"
-        android:layout_height="@dimen/dp_64"
+        android:layout_width="@dimen/unify_space_64"
+        android:layout_height="@dimen/unify_space_64"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -43,7 +43,7 @@
         android:drawableTint="@color/feed_dms_produk_tag_heading_color"
         android:gravity="center_vertical|start"
         android:ellipsize="end"
-        android:minWidth="@dimen/dp_32"
+        android:minWidth="@dimen/unify_space_32"
         app:drawableLeftCompat="@drawable/feed_ic_product_large"
         android:paddingStart="@dimen/feed_component_dp_7"
         android:paddingEnd="@dimen/unify_space_2"
