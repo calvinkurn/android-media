@@ -23,6 +23,8 @@ const val ANALYTIC_VALIDATOR_QUERY_FILE_NAME_FAVORITE_SHOP = "tracker/home_nav/f
 const val ANALYTIC_VALIDATOR_QUERY_FILE_NAME_ORDER_TRANSACTION =
     "tracker/home_nav/order_transaction.json"
 const val ANALYTIC_VALIDATOR_QUERY_FILE_NAME_WISHLIST = "tracker/home_nav/wishlist.json"
+const val ANALYTIC_VALIDATOR_QUERY_FILE_NAME_SHOP_AFFILIATE = "tracker/home_nav/shop_affiliate.json"
+const val ANALYTIC_VALIDATOR_QUERY_FILE_NAME_MENU_CATEGORY = "tracker/home_nav/menu_category.json"
 
 fun clickOnEachShop(viewHolder: RecyclerView.ViewHolder) {
     CommonActions.clickOnEachItemRecyclerView(viewHolder.itemView, R.id.favorite_shop_rv, 0)
@@ -113,6 +115,10 @@ fun clickOnEachItemRecyclerViewOrderHistory(
                 ViewActions.click()
             )
         )
+}
+
+fun clickOnShopAndAffiliate(viewHolder: RecyclerView.ViewHolder) {
+    clickOnEachItemRecyclerViewOrderHistory(viewHolder.itemView, R.id.recycler_seller, 0)
 }
 
 private fun clickOnViewChild(viewId: Int) = object : ViewAction {

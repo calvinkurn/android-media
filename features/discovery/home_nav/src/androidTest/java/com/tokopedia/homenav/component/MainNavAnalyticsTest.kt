@@ -21,6 +21,7 @@ import com.tokopedia.test.application.util.setupGraphqlMockResponse
 import com.tokopedia.homenav.R
 import com.tokopedia.homenav.mainnav.view.adapter.viewholder.MainNavListAdapter
 import com.tokopedia.homenav.mainnav.view.datamodel.TransactionListItemDataModel
+import com.tokopedia.homenav.mainnav.view.datamodel.account.AccountHeaderDataModel
 import com.tokopedia.homenav.mainnav.view.datamodel.favoriteshop.FavoriteShopListDataModel
 import com.tokopedia.homenav.mainnav.view.datamodel.wishlist.WishlistDataModel
 import com.tokopedia.test.application.assertion.topads.TopAdsVerificationTestReportUtil
@@ -130,6 +131,26 @@ class MainNavAnalyticsTest {
             hasPassedAnalytics(
                 cassavaTestRule,
                 ANALYTIC_VALIDATOR_QUERY_FILE_NAME_FAVORITE_SHOP
+            )
+        }
+    }
+
+    @Test
+    fun testComponentShopAndAffiliate() {
+        mainNavCassavaTest {
+            login()
+            waitForData()
+            doActivityTestByModelClass(
+                delayBeforeRender = 2000,
+                dataModelClass = AccountHeaderDataModel::class
+            ) { viewHolder: RecyclerView.ViewHolder, i: Int ->
+                clickOnShopAndAffiliate(viewHolder)
+            }
+        } validateAnalytics {
+            addDebugEnd()
+            hasPassedAnalytics(
+                cassavaTestRule,
+                ANALYTIC_VALIDATOR_QUERY_FILE_NAME_SHOP_AFFILIATE
             )
         }
     }
