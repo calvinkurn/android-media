@@ -138,6 +138,7 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        viewModel.resetValues()
         setBackground()
         initializeToolbar()
         initializeRecyclerViewScrollListener()
@@ -150,11 +151,6 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
         collectTrackerLoadCheckoutData()
         collectTrackerPaymentCheckoutData()
         loadData()
-    }
-
-    override fun onStop() {
-        super.onStop()
-        viewModel.resetValues()
     }
 
     override fun getFragmentToolbar(): Toolbar? {

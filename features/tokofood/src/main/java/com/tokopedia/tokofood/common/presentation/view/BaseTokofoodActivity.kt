@@ -100,8 +100,13 @@ class BaseTokofoodActivity : BaseMultiFragActivity(), HasViewModel<MultipleFragm
     private fun moveToExistedFragment(destinationFragmentName: String) {
         try {
             val backStackCount = supportFragmentManager.backStackEntryCount
-            val destinationFragmentIndex = getDestinationFragmentIndex(backStackCount, destinationFragmentName)
-            popBackStackUntilDestination(backStackCount, destinationFragmentIndex, destinationFragmentName)
+            if (backStackCount <= Int.ONE) {
+                // Means that the fragment is existed but not yet added into the back stack.
+                supportFragmentManager.popBackStack()
+            } else {
+                val destinationFragmentIndex = getDestinationFragmentIndex(backStackCount, destinationFragmentName)
+                popBackStackUntilDestination(backStackCount, destinationFragmentIndex, destinationFragmentName)
+            }
         } catch (ex: Exception) {
             popDestinationBackStack(destinationFragmentName)
         }
