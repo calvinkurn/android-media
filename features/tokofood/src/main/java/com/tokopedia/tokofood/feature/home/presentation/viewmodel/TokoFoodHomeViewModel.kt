@@ -42,16 +42,15 @@ import com.tokopedia.tokofood.feature.home.domain.usecase.TokoFoodMerchantListUs
 import com.tokopedia.tokofood.feature.home.presentation.uimodel.TokoFoodErrorStateUiModel
 import com.tokopedia.tokofood.feature.home.presentation.uimodel.TokoFoodHomeEmptyStateLocationUiModel
 import com.tokopedia.tokofood.feature.home.presentation.uimodel.TokoFoodHomeIconsUiModel
-import com.tokopedia.tokofood.feature.home.presentation.uimodel.TokoFoodItemUiModel
 import com.tokopedia.tokofood.feature.home.presentation.uimodel.TokoFoodHomeLayoutUiModel
 import com.tokopedia.tokofood.feature.home.presentation.uimodel.TokoFoodHomeTickerUiModel
-import com.tokopedia.tokofood.feature.home.presentation.uimodel.TokoFoodListUiModel
 import com.tokopedia.tokofood.feature.home.presentation.uimodel.TokoFoodHomeUSPUiModel
+import com.tokopedia.tokofood.feature.home.presentation.uimodel.TokoFoodItemUiModel
+import com.tokopedia.tokofood.feature.home.presentation.uimodel.TokoFoodListUiModel
 import com.tokopedia.tokofood.feature.home.presentation.uimodel.TokoFoodProgressBarUiModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
-import java.lang.NullPointerException
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -91,7 +90,7 @@ class TokoFoodHomeViewModel @Inject constructor(
     private var hasTickerBeenRemoved = false
 
     companion object {
-        private const val INITIAL_PAGE_KEY_MERCHANT = "1"
+        private const val INITIAL_PAGE_KEY_MERCHANT = "0"
     }
 
     fun updatePinPoin(addressId: String, latitude: String, longitude: String) {
