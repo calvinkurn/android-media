@@ -41,6 +41,7 @@ import kotlin.random.Random
  */
 class PlayBroadcastMockMapper : PlayBroadcastMapper {
 
+    @Suppress("MagicNumber")
     override fun mapEtalaseList(etalaseList: List<ShopEtalaseModel>): List<EtalaseContentUiModel> {
         return List(6) {
             EtalaseContentUiModel(
@@ -53,6 +54,7 @@ class PlayBroadcastMockMapper : PlayBroadcastMapper {
         }
     }
 
+    @Suppress("MagicNumber")
     override fun mapProductList(
         productsResponse: GetProductsByEtalaseResponse.GetProductListData,
         isSelectedHandler: (String) -> Boolean,
@@ -82,6 +84,7 @@ class PlayBroadcastMockMapper : PlayBroadcastMapper {
         }
     }
 
+    @Suppress("MagicNumber")
     override fun mapSearchSuggestionList(keyword: String, productsResponse: GetProductsByEtalaseResponse.GetProductListData): List<SearchSuggestionUiModel> {
         return List(keyword.length) {
             val suggestionText = " ${keyword.substring(0, it + 1)}"
@@ -97,6 +100,7 @@ class PlayBroadcastMockMapper : PlayBroadcastMapper {
         }
     }
 
+    @Suppress("MagicNumber")
     override fun mapLiveFollowers(response: GetLiveFollowersResponse): FollowerDataUiModel {
         return FollowerDataUiModel(
                 List(3) {
@@ -153,6 +157,7 @@ class PlayBroadcastMockMapper : PlayBroadcastMapper {
         return emptyList()
     }
 
+    @Suppress("MagicNumber")
     override fun mapConfiguration(config: Config): ConfigurationUiModel {
         return ConfigurationUiModel(
             streamAllowed = true,
@@ -277,6 +282,7 @@ class PlayBroadcastMockMapper : PlayBroadcastMapper {
         ),
     )
 
+    @Suppress("MagicNumber")
     override fun mapInteractiveSession(response: PostInteractiveCreateSessionResponse,
                                        title: String,
                                        durationInMs: Long): InteractiveSessionUiModel {
