@@ -52,7 +52,8 @@ class UserShopInfoMapper @Inject constructor(private val userSession: UserSessio
                 statusInfoUiModel = UserShopInfoWrapper.UserShopInfoUiModel.StatusInfoUiModel(
                     statusTitle = shopInfoByIDResult?.statusInfo?.statusTitle.orEmpty(),
                     statusMessage = shopInfoByIDResult?.statusInfo?.statusMessage.orEmpty(),
-                    tickerType = shopInfoByIDResult?.statusInfo?.tickerType.orEmpty()
+                    tickerType = shopInfoByIDResult?.statusInfo?.tickerType.orEmpty(),
+                    shopStatus = shopInfoByIDResult?.statusInfo?.shopStatus.orZero()
                 )
             )
         )
