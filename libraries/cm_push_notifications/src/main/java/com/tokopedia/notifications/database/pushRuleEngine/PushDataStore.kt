@@ -37,7 +37,7 @@ class PushDataStore(private val baseNotificationDao: BaseNotificationDao) : IPus
         }
     }
 
-    override suspend fun getNotificationByGroup(groupId: String, groupName: String): List<BaseNotificationModel> {
+    override suspend fun getNotificationByGroup(groupId: Int, groupName: String): List<BaseNotificationModel> {
         return try {
             baseNotificationDao.getNotificationByGroup(groupId, groupName)
         } catch (e: Exception) {

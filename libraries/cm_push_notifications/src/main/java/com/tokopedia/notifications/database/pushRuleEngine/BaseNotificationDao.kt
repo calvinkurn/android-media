@@ -29,6 +29,6 @@ abstract class BaseNotificationDao {
     abstract fun getNotification(): List<BaseNotificationModel>
 
     @Query("SELECT * FROM BaseNotificationModel WHERE groupId = :groupId AND groupName = :groupName")
-    abstract fun getNotificationByGroup(groupId: String, groupName: String): List<BaseNotificationModel>
+    abstract fun getNotificationByGroup(groupId: Int, groupName: String): List<BaseNotificationModel>
 
 }

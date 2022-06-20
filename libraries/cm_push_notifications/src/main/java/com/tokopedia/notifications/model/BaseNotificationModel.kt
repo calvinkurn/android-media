@@ -163,7 +163,7 @@ data class BaseNotificationModel(
         var pushPayloadExtra: PushPayloadExtra? = null,
 
         @ColumnInfo(name = "groupId")
-        var groupId : String? = null,
+        var groupId : Int? = 0,
 
         @ColumnInfo(name = "groupName")
         var groupName : String? = null

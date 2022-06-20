@@ -73,7 +73,11 @@ abstract class BaseNotification internal constructor(
 
             builder.setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
             builder.setSmallIcon(drawableIcon)
-            setGroup(builder)
+            baseNotificationModel.groupId?.let { id ->
+                baseNotificationModel.groupName?.let { grpName ->
+                    setGroup(builder, id, grpName)
+                }
+            }
             setSoundProperties(builder)
             setNotificationIcon(builder)
             return builder
@@ -96,18 +100,26 @@ abstract class BaseNotification internal constructor(
 
             builder.setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
             builder.setSmallIcon(drawableIcon)
-            baseNotificationModel.payloadExtra?.groupId?.let {
-                setGroup(builder, it)
+            baseNotificationModel.groupId?.let { id ->
+                baseNotificationModel.groupName?.let { grpName ->
+                    setGroup(builder, id, grpName)
+                }
             }
             setSoundProperties(builder)
             return builder
         }
 
-    private fun setGroup(builder: NotificationCompat.Builder, groupId: String) {
+    private fun setGroup(builder: NotificationCompat.Builder, groupId: Int, groupName: String) {
         val isNougatAndAbove = Build.VERSION.SDK_INT >= Build.VERSION_CODES.N
-        builder.setGroup(groupId)
+        val groupKey = groupId.toString() + groupName
+        builder.setGroup(groupKey)
         if (!isNougatAndAbove) {
-            builder.setGroupSummary(true)
+            builder.setStyle(NotificationCompat.InboxStyle()
+                    .addLine("Alex Faarborg Check this out")
+                    .addLine("Jeff Chang Launch Party")
+                    .setBigContentTitle("2 new messages")
+                    .setSummaryText("janedoe@example.com"))
+                    .setGroupSummary(true)
         }
     }
 

@@ -107,7 +107,7 @@ object PayloadConverter {
         model.webHookParam = data.getString(WEBHOOK_PARAM)
 
         model.payloadExtra = getPayloadExtras(data)
-        model.groupId = data.getString(GROUP_ID)
+        model.groupId = data.getInt(GROUP_ID)
         model.groupName = data.getString(GROUP_NAME)
 
         return model

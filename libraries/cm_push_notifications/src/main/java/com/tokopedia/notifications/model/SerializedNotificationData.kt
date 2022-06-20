@@ -193,11 +193,11 @@ data class SerializedNotificationData(
 
     @Expose
     @SerializedName(GROUP_ID)
-    var groupId: String?,
+    var groupId: Int? = 0,
 
     @Expose
     @SerializedName(GROUP_NAME)
-    var groupName: String?,
+    var groupName: String? = null,
 
     @SerializedName(NOTIFICATION_CHANNEL)
     @Expose
