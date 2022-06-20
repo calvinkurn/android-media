@@ -4,6 +4,7 @@ import androidx.lifecycle.viewModelScope
 import com.tokopedia.play.broadcaster.data.config.ChannelConfigStore
 import com.tokopedia.play.broadcaster.domain.usecase.*
 import com.tokopedia.play.broadcaster.domain.usecase.interactive.GetInteractiveSummaryLivestreamUseCase
+import com.tokopedia.play.broadcaster.domain.usecase.interactive.GetSellerLeaderboardUseCase
 import com.tokopedia.play.broadcaster.ui.action.PlayBroadcastSummaryAction
 import com.tokopedia.play.broadcaster.ui.event.PlayBroadcastSummaryEvent
 import com.tokopedia.play.broadcaster.ui.mapper.PlayBroadcastMapper
@@ -29,9 +30,9 @@ class PlayBroadcastSummaryViewModelRobot(
     channelId: String = "123",
     channelTitle: String = "Test 123",
     productSectionList: List<ProductTagSectionUiModel> = emptyList(),
-    summaryLeaderboardInfo: SummaryLeaderboardInfo = SummaryLeaderboardInfo(false, "0"),
     private val dispatcher: CoroutineTestDispatchers = CoroutineTestDispatchers,
     getLiveStatisticsUseCase: GetLiveStatisticsUseCase = mockk(relaxed = true),
+    getSellerLeaderboardUseCase: GetSellerLeaderboardUseCase = mockk(relaxed = true),
     updateChannelUseCase: PlayBroadcastUpdateChannelUseCase = mockk(relaxed = true),
     userSession: UserSessionInterface = mockk(relaxed = true),
     playBroadcastMapper: PlayBroadcastMapper = PlayBroadcastUiMapper(TestHtmlTextTransformer()),
@@ -45,7 +46,7 @@ class PlayBroadcastSummaryViewModelRobot(
         channelId = channelId,
         channelTitle = channelTitle,
         productSectionList = productSectionList,
-        summaryLeaderboardInfo = summaryLeaderboardInfo,
+        getSellerLeaderboardUseCase = getSellerLeaderboardUseCase,
         dispatcher = dispatcher,
         getLiveStatisticsUseCase = getLiveStatisticsUseCase,
         updateChannelUseCase = updateChannelUseCase,
