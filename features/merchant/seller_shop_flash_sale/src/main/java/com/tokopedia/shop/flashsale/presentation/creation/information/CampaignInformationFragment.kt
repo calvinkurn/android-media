@@ -644,8 +644,8 @@ class CampaignInformationFragment : BaseDaggerFragment() {
             renderSelectedColor(campaign)
         }
 
-        viewModel.setSelectedStartDate(campaign.startDate)
-        viewModel.setSelectedEndDate(campaign.endDate)
+        viewModel.setSelectedStartDate(campaign.startDate.removeTimeZone())
+        viewModel.setSelectedEndDate(campaign.endDate.removeTimeZone())
         viewModel.setShowTeaser(campaign.useUpcomingWidget)
         viewModel.setSelectedColor(campaign.gradientColor)
         viewModel.setPaymentType(campaign.paymentType)
