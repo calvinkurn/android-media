@@ -128,14 +128,15 @@ class CampaignInformationViewModel @Inject constructor(
         return CampaignNameValidationResult.Valid
     }
 
-    fun validateInput(selection: Selection, now: Date) {
-        if (selection.showTeaser && selection.teaserDate.before(now)) {
-            _areInputValid.value = ValidationResult.LapsedTeaserStartDate
+    fun validateInput(mode: PageMode, selection: Selection, now: Date) {
+        if (mode == PageMode.CREATE && selection.remainingQuota == Int.ZERO) {
+            _areInputValid.value = ValidationResult.NoRemainingQuota
             return
         }
 
-        if (selection.remainingQuota == Int.ZERO) {
-            _areInputValid.value = ValidationResult.NoRemainingQuota
+
+        if (selection.showTeaser && selection.teaserDate.before(now)) {
+            _areInputValid.value = ValidationResult.LapsedTeaserStartDate
             return
         }
 
@@ -144,7 +145,7 @@ class CampaignInformationViewModel @Inject constructor(
             return
         }
 
-        if(selection.firstColor.length < MIN_HEX_COLOR_LENGTH || selection.secondColor.length < MIN_HEX_COLOR_LENGTH) {
+        if (selection.firstColor.length < MIN_HEX_COLOR_LENGTH || selection.secondColor.length < MIN_HEX_COLOR_LENGTH) {
             _areInputValid.value = ValidationResult.InvalidHexColor
             return
         }
@@ -348,5 +349,11 @@ class CampaignInformationViewModel @Inject constructor(
 
     fun isUsingHexColor(firstColor : String, secondColor : String) : Boolean {
         return firstColor == secondColor
+    }
+
+    fun findUpcomingTimeDifferenceInHour(startDate : Date, upcomingDate : Date) : Int {
+        val differenceInMillis = startDate.time - upcomingDate.time
+        val differenceInHour = TimeUnit.MILLISECONDS.toHours(differenceInMillis)
+        return differenceInHour.toInt()
     }
 }

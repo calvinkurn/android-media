@@ -65,7 +65,7 @@ class CampaignInformationFragment : BaseDaggerFragment() {
         private const val THIRTY_MINUTE = 30
         private const val CAMPAIGN_NAME_MAX_LENGTH = 15
         private const val LEARN_MORE_CTA_TEXT_LENGTH = 8
-        private const val REDIRECT_TO_PREVIOUS_PAGE_DELAY : Long = 2_000
+        private const val REDIRECT_TO_PREVIOUS_PAGE_DELAY : Long = 1_500
 
 
         @JvmStatic
@@ -290,7 +290,7 @@ class CampaignInformationFragment : BaseDaggerFragment() {
         binding?.run {
             btnDraft.setOnClickListener { validateDraft() }
             btnCreateCampaign.setOnClickListener {
-                viewModel.validateInput(getCurrentSelection(), Date())
+                viewModel.validateInput(pageMode, getCurrentSelection(), Date())
             }
             btnApply.setOnClickListener {
                 handleApplyButtonClick()
@@ -384,6 +384,7 @@ class CampaignInformationFragment : BaseDaggerFragment() {
     private fun handleValidationResult(validationResult: CampaignInformationViewModel.ValidationResult) {
         when (validationResult) {
             CampaignInformationViewModel.ValidationResult.NoRemainingQuota -> {
+                hideLapsedTeaserTicker()
                 handleRemainingQuota(viewModel.getRemainingQuota())
             }
             CampaignInformationViewModel.ValidationResult.LapsedStartDate -> {
@@ -633,6 +634,12 @@ class CampaignInformationFragment : BaseDaggerFragment() {
             tauEndDate.isEnabled = isEditDateEnabled
 
             switchTeaser.isChecked = campaign.useUpcomingWidget
+            val upcomingTimeInHours = viewModel.findUpcomingTimeDifferenceInHour(
+                campaign.startDate.removeTimeZone(),
+                campaign.upcomingDate.removeTimeZone()
+            )
+            quantityEditor.editText.setText(upcomingTimeInHours.toString())
+            quantityEditor.maxValue = upcomingTimeInHours
             handleSwitchTeaser(campaign.useUpcomingWidget)
             renderSelectedColor(campaign)
         }
@@ -717,15 +724,28 @@ class CampaignInformationFragment : BaseDaggerFragment() {
     }
 
     private fun handleSaveCampaignDraftSuccess(result: CampaignCreationResult) {
-        binding?.root showToaster getString(R.string.sfs_saved_as_draft)
+        if (result.isSuccess) {
+            binding?.root showToaster getString(R.string.sfs_saved_as_draft)
+        }
+
         //Add some spare time caused by Backend write operation delay
         doOnDelayFinished(REDIRECT_TO_PREVIOUS_PAGE_DELAY) {
             if (result.isSuccess) {
                 requireActivity().finish()
             } else {
-                showErrorTicker(result.errorTitle, result.errorDescription)
+                displaySaveDraftError(result)
             }
         }
+
+    }
+
+    private fun displaySaveDraftError(result: CampaignCreationResult) {
+        if (result.errorTitle.isNotEmpty()) {
+            showErrorTicker(result.errorTitle, result.errorDescription)
+            return
+        }
+
+        binding?.root showError result.errorMessage
     }
 
     private fun handleRemainingQuota(remainingQuota: Int) {
