@@ -2624,7 +2624,7 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
         val localCacheModel = LocalCacheModel(
             service_type = "2h"
         )
-        val intendedServiceType = "20m"
+        val intendedServiceType = "15m"
         val error = NullPointerException()
 
         onSetUserPreference_thenReturn(error)
@@ -2635,7 +2635,7 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
 
         verifySetUserPreferenceUseCaseCalled(
             localCacheModel = localCacheModel,
-            serviceType = "20m"
+            serviceType = "15m"
         )
 
         viewModel.setUserPreference
@@ -2954,7 +2954,7 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
 
         verifySetUserPreferenceUseCaseCalled(
             localCacheModel = localCacheModel,
-            serviceType = "20m"
+            serviceType = "15m"
         )
 
         viewModel.setUserPreference
@@ -2976,7 +2976,7 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
 
         verifySetUserPreferenceUseCaseCalled(
             localCacheModel = localCacheModel,
-            serviceType = "20m"
+            serviceType = "15m"
         )
 
         viewModel.setUserPreference

@@ -1231,7 +1231,7 @@ abstract class BaseSearchCategoryViewModel(
             ) {
                 ServiceType.NOW_2H
             } else {
-                ServiceType.NOW_20M
+                ServiceType.NOW_15M
             }
 
             setUserPreference(serviceType)

@@ -457,8 +457,7 @@ class TokoNowHomeViewModel @Inject constructor(
             - 20m will be changed to 15m temporarily.
             - 15m still used in LCA and BE as 20m service type.
          */
-
-        val currentServiceType = if (localCacheModel.service_type == ServiceType.NOW_15M) ServiceType.NOW_20M else ServiceType.NOW_2H
+        val currentServiceType = localCacheModel.getServiceType()
 
         if (externalServiceType != currentServiceType && externalServiceType.isNotBlank()) {
             switchService(localCacheModel, externalServiceType)
@@ -485,7 +484,7 @@ class TokoNowHomeViewModel @Inject constructor(
             ) {
                 ServiceType.NOW_2H
             } else {
-                ServiceType.NOW_20M
+                ServiceType.NOW_15M
             }
 
             val userPreference = setUserPreferenceUseCase.execute(localCacheModel, serviceType)

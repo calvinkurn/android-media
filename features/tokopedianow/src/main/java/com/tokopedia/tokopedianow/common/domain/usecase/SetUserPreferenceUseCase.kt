@@ -27,7 +27,7 @@ class SetUserPreferenceUseCase @Inject constructor(graphqlRepository: GraphqlRep
 
     suspend fun execute(localCacheModel: LocalCacheModel, serviceType: String): SetUserPreferenceData {
         graphql.apply {
-            val currentServiceType = if (serviceType == NOW_20M) NOW_15M else NOW_2H
+            val serviceTypeParam = if (serviceType == NOW_20M) NOW_15M else serviceType
 
             val warehouses = localCacheModel.warehouses.map {
                 WarehouseData(
@@ -37,13 +37,13 @@ class SetUserPreferenceUseCase @Inject constructor(graphqlRepository: GraphqlRep
             }
 
             val shopId = localCacheModel.shop_id
-            val warehouse = warehouses.firstOrNull { it.serviceType == currentServiceType }
+            val warehouse = warehouses.firstOrNull { it.serviceType == serviceTypeParam }
             val warehouseId = warehouse?.warehouseId?.getOrDefaultZeroString()
 
             val requestParams = RequestParams().apply {
                 putString(PARAM_SHOP_ID, shopId)
                 putString(PARAM_WAREHOUSE_ID, warehouseId)
-                putString(PARAM_SERVICE_TYPE, currentServiceType)
+                putString(PARAM_SERVICE_TYPE, serviceTypeParam)
                 putObject(PARAM_WAREHOUSES, warehouses)
             }.parameters
 
