@@ -2,8 +2,10 @@ package com.tokopedia.profilecompletion.common
 
 import android.content.Context
 import android.content.SharedPreferences
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
+import javax.inject.Inject
 
-class PinPreference(val context: Context) {
+class PinPreference @Inject constructor(@ApplicationContext val context: Context) {
     private val PREF_NAME = "temp_pin_pref"
 
     private val KEY_TEMP_PIN = "temp_pin_flow"
@@ -14,6 +16,10 @@ class PinPreference(val context: Context) {
 
     fun setTempPin(pin: String) {
         sharedPreferences.edit().putString(KEY_TEMP_PIN, pin).apply()
+    }
+
+    fun clearTempPin() {
+        sharedPreferences.edit().remove(KEY_TEMP_PIN).apply()
     }
 
     fun setTempConfirmationPin(confirmationPin: String) {
