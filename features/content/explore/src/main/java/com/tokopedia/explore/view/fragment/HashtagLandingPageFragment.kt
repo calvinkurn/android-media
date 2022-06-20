@@ -144,7 +144,7 @@ class HashtagLandingPageFragment : BaseDaggerFragment(), HashtagLandingItemAdapt
             view?.let {
                 Toaster.build(
                     it, message, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR,
-                    getString(R.string.retry_label)
+                    getString(com.tokopedia.abstraction.R.string.retry_label)
                 ) { loadData(false) }
             }?.show()
         }
@@ -204,14 +204,14 @@ class HashtagLandingPageFragment : BaseDaggerFragment(), HashtagLandingItemAdapt
         /** uncomment this when the result of explore post could differentiate whether the creator is shop **/
         //activity?.let { RouteManager.route(it,
         // if (isShopPost)ApplinkConst.SHOP else ApplinkConst.PROFILE, post.userId.toString()) }
-        feedAnalytics.eventHashtagPageClickNameAvatar(post.userId.toString())
+        feedAnalytics.eventHashtagPageClickNameAvatar(post.userId)
     }
 
     override fun onUserNameClick(post: PostKol) {
         /** uncomment this when the result of explore post could differentiate whether the creator is shop **/
         //activity?.let { RouteManager.route(it,
         // if (isShopPost)ApplinkConst.SHOP else ApplinkConst.PROFILE, post.userId.toString()) }
-        feedAnalytics.eventHashtagPageClickNameAvatar(post.userId.toString())
+        feedAnalytics.eventHashtagPageClickNameAvatar(post.userId)
     }
 
     override fun onImageFirstTimeSeen(post: PostKol, position: Int) {

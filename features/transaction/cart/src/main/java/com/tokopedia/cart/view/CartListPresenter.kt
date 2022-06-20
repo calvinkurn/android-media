@@ -66,12 +66,19 @@ import com.tokopedia.recommendation_widget_common.presentation.model.Recommendat
 import com.tokopedia.seamless_login_common.domain.usecase.SeamlessLoginUsecase
 import com.tokopedia.topads.sdk.view.adapter.viewmodel.banner.BannerShopProductViewModel
 import com.tokopedia.usecase.RequestParams
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.currency.CurrencyFormatUtil
 import com.tokopedia.wishlist.common.listener.WishListActionListener
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import com.tokopedia.wishlist.common.usecase.GetWishlistUseCase
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
+import com.tokopedia.wishlistcommon.data.WishlistV2Params
+import com.tokopedia.wishlistcommon.domain.AddToWishlistV2UseCase
+import com.tokopedia.wishlistcommon.domain.DeleteWishlistV2UseCase
+import com.tokopedia.wishlistcommon.domain.GetWishlistV2UseCase
+import com.tokopedia.wishlistcommon.listener.WishlistV2ActionListener
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
@@ -90,13 +97,16 @@ class CartListPresenter @Inject constructor(private val getCartRevampV3UseCase: 
                                             private val updateCartUseCase: UpdateCartUseCase,
                                             private val compositeSubscription: CompositeSubscription,
                                             private val addWishListUseCase: AddWishListUseCase,
+                                            private val addToWishlistV2UseCase: AddToWishlistV2UseCase,
                                             private val addCartToWishlistUseCase: AddCartToWishlistUseCase,
                                             private val removeWishListUseCase: RemoveWishListUseCase,
+                                            private val deleteWishlistV2UseCase: DeleteWishlistV2UseCase,
                                             private val updateAndReloadCartUseCase: UpdateAndReloadCartUseCase,
                                             private val userSessionInterface: UserSessionInterface,
                                             private val clearCacheAutoApplyStackUseCase: OldClearCacheAutoApplyStackUseCase,
                                             private val getRecentViewUseCase: GetRecommendationUseCase,
                                             private val getWishlistUseCase: GetWishlistUseCase,
+                                            private val getWishlistV2UseCase: GetWishlistV2UseCase,
                                             private val getRecommendationUseCase: GetRecommendationUseCase,
                                             private val addToCartUseCase: AddToCartUseCase,
                                             private val addToCartExternalUseCase: AddToCartExternalUseCase,
@@ -155,6 +165,7 @@ class CartListPresenter @Inject constructor(private val getCartRevampV3UseCase: 
 
         private const val QUERY_APP_CLIENT_ID = "{app_client_id}"
         private val REGEX_NUMBER = "[^0-9]".toRegex()
+        private val SOURCE_CART = "cart"
     }
 
     override fun attachView(view: ICartListView) {
@@ -748,8 +759,34 @@ class CartListPresenter @Inject constructor(private val getCartRevampV3UseCase: 
         return Triple(totalItemQty, pricePair, subtotalCashback)
     }
 
+    override fun processAddToWishlistV2(productId: String, userId: String, wishListActionListener: WishlistV2ActionListener) {
+        launch(dispatchers.main) {
+            addToWishlistV2UseCase.setParams(productId, userId)
+            val result = withContext(dispatchers.io) { addToWishlistV2UseCase.executeOnBackground() }
+            if (result is Success) {
+                wishListActionListener.onSuccessAddWishlist(result.data, productId)
+            } else {
+                val error = (result as Fail).throwable
+                wishListActionListener.onErrorAddWishList(error, productId)
+            }
+        }
+    }
+
     override fun processAddToWishlist(productId: String, userId: String, wishListActionListener: WishListActionListener) {
         addWishListUseCase.createObservable(productId, userId, wishListActionListener)
+    }
+
+    override fun processRemoveFromWishlistV2(productId: String, userId: String, wishListActionListener: WishlistV2ActionListener) {
+        launch(dispatchers.main) {
+            deleteWishlistV2UseCase.setParams(productId, userId)
+            val result = withContext(dispatchers.io) { deleteWishlistV2UseCase.executeOnBackground() }
+            if (result is Success) {
+                wishListActionListener.onSuccessRemoveWishlist(result.data, productId)
+            } else {
+                val error = (result as Fail).throwable
+                wishListActionListener.onErrorRemoveWishlist(error, productId)
+            }
+        }
     }
 
     override fun processRemoveFromWishlist(productId: String, userId: String, wishListActionListener: WishListActionListener) {
@@ -1322,9 +1359,44 @@ class CartListPresenter @Inject constructor(private val getCartRevampV3UseCase: 
         requestParams.putAll(variables)
 
         compositeSubscription.add(
-                getWishlistUseCase.createObservable(requestParams)
-                        .subscribe(GetWishlistSubscriber(view))
+            getWishlistUseCase.createObservable(requestParams)
+                .subscribe(GetWishlistSubscriber(view))
         )
+    }
+
+    override fun processGetWishlistV2Data() {
+        val requestParams = WishlistV2Params().apply {
+            source = SOURCE_CART
+            lca?.let { address ->
+                wishlistChosenAddress = WishlistV2Params.WishlistChosenAddress(
+                    districtId = address.district_id,
+                    cityId = address.city_id,
+                    latitude = address.lat,
+                    longitude = address.long,
+                    postalCode = address.postal_code,
+                    addressId = address.address_id
+                )
+            }
+        }
+
+        launch(dispatchers.main) {
+            getWishlistV2UseCase.setParams(requestParams)
+            val result = withContext(dispatchers.io) { getWishlistV2UseCase.executeOnBackground() }
+            if (result is Success) {
+                view?.let {
+                    if (result.data.items.isNotEmpty()) {
+                        it.renderWishlistV2(result.data.items, true)
+                    }
+                    it.setHasTriedToLoadWishList()
+                    it.stopAllCartPerformanceTrace()
+                }
+            } else {
+                val error = (result as Fail).throwable
+                Timber.d(error)
+                view?.setHasTriedToLoadWishList()
+                view?.stopAllCartPerformanceTrace()
+            }
+        }
     }
 
     override fun processGetRecommendationData(page: Int, allProductIds: List<String>) {

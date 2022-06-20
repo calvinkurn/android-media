@@ -1,5 +1,6 @@
 package com.tokopedia.play.broadcaster.domain.model.campaign
 
+import android.annotation.SuppressLint
 import com.google.gson.annotations.SerializedName
 
 /**
@@ -36,6 +37,7 @@ data class GetProductTagSummarySectionResponse(
         @SerializedName("imageURL")
         val imageURL: String = "",
 
+        @SuppressLint("Invalid Data Type")
         @SerializedName("price")
         val price: String = "",
 
