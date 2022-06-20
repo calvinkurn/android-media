@@ -1,7 +1,7 @@
 package com.tokopedia.sellerhomecommon.domain.mapper
 
 import com.tokopedia.kotlin.extensions.orFalse
-import com.tokopedia.kotlin.extensions.view.toZeroIfNull
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.sellerhomecommon.data.WidgetLastUpdatedSharedPrefInterface
 import com.tokopedia.sellerhomecommon.domain.model.GetProgressDataResponse
 import com.tokopedia.sellerhomecommon.presentation.model.LastUpdatedUiModel
@@ -23,6 +23,7 @@ class ProgressMapper @Inject constructor(
     companion object {
         private const val GOOD = "GOOD"
         private const val WARNING = "WARNING"
+        private const val MAX_VALUE = 100
     }
 
     override fun mapRemoteDataToUiData(
@@ -33,8 +34,8 @@ class ProgressMapper @Inject constructor(
             ProgressDataUiModel(
                 valueTxt = it.valueText.orEmpty(),
                 maxValueTxt = it.maxValueText.orEmpty(),
-                value = it.value.toZeroIfNull(),
-                maxValue = it.maxValue.toZeroIfNull(),
+                value = getProgressValue(it.value.orZero(), it.maxValue.orZero()),
+                maxValue = MAX_VALUE,
                 colorState = mapState(it.state),
                 error = it.errorMessage.orEmpty(),
                 subtitle = it.subtitle.orEmpty(),
@@ -54,6 +55,10 @@ class ProgressMapper @Inject constructor(
                 }
             )
         }
+    }
+
+    private fun getProgressValue(value: Long, maxValue: Long): Int {
+        return value.times(MAX_VALUE).div(maxValue).toInt()
     }
 
     private fun convertToMilliseconds(updateDate: String): Long {

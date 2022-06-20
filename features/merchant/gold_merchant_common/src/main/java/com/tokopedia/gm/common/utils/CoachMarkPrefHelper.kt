@@ -13,9 +13,11 @@ class CoachMarkPrefHelper @Inject constructor(
 ) {
 
     companion object {
-        const val REBATE_ANNOUNCEMENT_DATA_KEY = "rebateMVPAnnouncement"
+        const val REBATE_MVP_DATA_KEY = "rebateMVPAnnouncement"
+        const val REBATE_ULTIMATE_DATA_KEY = "rebateWidget"
         const val KEY_RECOMMENDATION_COACH_MARK = "key_recommendation_coach_mark"
-        const val KEY_REBATE_COACH_MARK = "key_rebate_coach_mark"
+        const val KEY_REBATE_MVP_COACH_MARK = "rebate_mvp_coach_mark_key"
+        const val KEY_REBATE_ULTIMATE_COACH_MARK = "rebate_ultimate_coach_mark_key"
     }
 
     fun saveRecommendationCoachMarkFlag() {
@@ -26,12 +28,20 @@ class CoachMarkPrefHelper @Inject constructor(
         return getBoolean(KEY_RECOMMENDATION_COACH_MARK, false)
     }
 
-    fun saveRebateCoachMarkFlag() {
-        saveBoolean(KEY_REBATE_COACH_MARK, true)
+    fun saveRebateCoachMarkMvpFlag() {
+        saveBoolean(KEY_REBATE_MVP_COACH_MARK, true)
     }
 
-    fun getRebateCoachMarkStatus(): Boolean {
-        return getBoolean(KEY_REBATE_COACH_MARK, false)
+    fun getRebateCoachMarkMvpStatus(): Boolean {
+        return getBoolean(KEY_REBATE_MVP_COACH_MARK, false)
+    }
+
+    fun saveRebateCoachMarkUltimateFlag() {
+        saveBoolean(KEY_REBATE_ULTIMATE_COACH_MARK, true)
+    }
+
+    fun getRebateCoachMarkUltimateStatus(): Boolean {
+        return getBoolean(KEY_REBATE_ULTIMATE_COACH_MARK, false)
     }
 
     private fun saveBoolean(key: String, value: Boolean) {

@@ -18,6 +18,7 @@ import com.tokopedia.sellerhomecommon.R
 import com.tokopedia.sellerhomecommon.databinding.ShcProgressCardWidgetBinding
 import com.tokopedia.sellerhomecommon.presentation.model.ProgressWidgetUiModel
 import com.tokopedia.sellerhomecommon.presentation.view.customview.ShopScorePMWidget
+import com.tokopedia.sellerhomecommon.utils.DateTimeUtil
 import com.tokopedia.sellerhomecommon.utils.setUnifyDrawableEnd
 import com.tokopedia.unifycomponents.NotificationUnify
 
@@ -69,6 +70,7 @@ class ProgressViewHolder(
 
     private fun onSuccessLoadData(element: ProgressWidgetUiModel) {
         showSuccessState(element)
+        listener.showProgressBarCoachMark(element.dataKey, itemView)
     }
 
     private fun showLoadingState() {
@@ -113,13 +115,20 @@ class ProgressViewHolder(
         with(binding.shcProgressSuccessState.tvShcProgressLastUpdated) {
             element.data?.lastUpdated?.let { lastUpdated ->
                 isVisible = lastUpdated.isEnabled
-                setLastUpdated(lastUpdated.lastUpdatedInMillis)
+                setLastUpdated(getLastUpdateFmt(lastUpdated.lastUpdatedInMillis))
                 setRefreshButtonVisibility(lastUpdated.needToUpdated)
                 setRefreshButtonClickListener {
                     refreshWidget(element)
                 }
             }
         }
+    }
+
+    private fun getLastUpdateFmt(lastUpdatedInMillis: Long): String {
+        val lastUpdateStr = DateTimeUtil.format(
+            lastUpdatedInMillis, DateTimeUtil.FORMAT_DD_MMM_YYYY
+        )
+        return itemView.context.getString(R.string.shc_last_updated, lastUpdateStr)
     }
 
     private fun refreshWidget(element: ProgressWidgetUiModel) {
@@ -244,5 +253,7 @@ class ProgressViewHolder(
         fun sendProgressImpressionEvent(dataKey: String, stateColor: String, valueScore: Int) {}
 
         fun sendProgressCtaClickEvent(dataKey: String, stateColor: String, valueScore: Int) {}
+
+        fun showProgressBarCoachMark(dataKey: String, view: View) {}
     }
 }

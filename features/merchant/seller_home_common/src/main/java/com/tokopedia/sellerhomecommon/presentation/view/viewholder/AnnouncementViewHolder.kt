@@ -80,7 +80,7 @@ class AnnouncementViewHolder(
                 listener.sendAnnouncementImpressionEvent(element)
             }
 
-            listener.showAnnouncementWidgetCoachMark(element, itemView)
+            listener.showAnnouncementWidgetCoachMark(element.dataKey, itemView)
         }
     }
 
@@ -102,6 +102,6 @@ class AnnouncementViewHolder(
 
         fun sendAnnouncementClickEvent(element: AnnouncementWidgetUiModel) {}
 
-        fun showAnnouncementWidgetCoachMark(element: AnnouncementWidgetUiModel, view: View) {}
+        fun showAnnouncementWidgetCoachMark(dataKey: String, view: View) {}
     }
 }

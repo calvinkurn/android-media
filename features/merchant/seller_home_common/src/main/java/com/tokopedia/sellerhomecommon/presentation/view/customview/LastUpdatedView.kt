@@ -45,6 +45,12 @@ class LastUpdatedView : LinearLayout {
         }
     }
 
+    fun setLastUpdated(lastUpdatedFmt: String) {
+        binding?.run {
+            tvShcLastUpdated.text = lastUpdatedFmt.parseAsHtml()
+        }
+    }
+
     fun setRefreshButtonVisibility(shouldShow: Boolean) {
         binding?.icShcRefreshLastUpdated?.isVisible = shouldShow
     }

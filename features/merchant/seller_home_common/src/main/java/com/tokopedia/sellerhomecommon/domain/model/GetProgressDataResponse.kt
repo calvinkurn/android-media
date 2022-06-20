@@ -31,10 +31,10 @@ data class ProgressDataModel(
     val maxValueText: String?,
     @Expose
     @SerializedName("value")
-    val value: Int?,
+    val value: Long?,
     @Expose
     @SerializedName("maxValue")
-    val maxValue: Int?,
+    val maxValue: Long?,
     @Expose
     @SerializedName("state")
     val state: String?,

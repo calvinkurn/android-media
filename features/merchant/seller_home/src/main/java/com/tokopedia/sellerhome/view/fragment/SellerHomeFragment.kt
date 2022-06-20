@@ -186,7 +186,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
     private var emptyState: EmptyStateUnify? = null
 
     private var recommendationWidgetView: View? = null
-    private var announcementWidgetView: View? = null
+    private var rebateWidgetView: View? = null
     private var navigationOtherMenuView: View? = null
     private val coachMark: CoachMark2? by lazy {
         context?.let {
@@ -309,7 +309,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         menu.clear()
         inflater.inflate(R.menu.sah_menu_home_toolbar, menu)
 
-        for (i in 0 until menu.size()) {
+        for (i in Int.ZERO until menu.size()) {
             menu.getItem(i)?.let { menuItem ->
                 menuItem.actionView?.setOnClickListener {
                     onOptionsItemSelected(menuItem)
@@ -655,13 +655,41 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         SellerHomeTracking.sendAnnouncementClickEvent(element)
     }
 
-    override fun showAnnouncementWidgetCoachMark(element: AnnouncementWidgetUiModel, view: View) {
-        val isEligibleCoachMark = !coachMarkPrefHelper.getRebateCoachMarkStatus()
-        if (isEligibleCoachMark && element.dataKey == CoachMarkPrefHelper.REBATE_ANNOUNCEMENT_DATA_KEY) {
-            if (this.announcementWidgetView == null) {
-                this.announcementWidgetView = view
+    override fun showAnnouncementWidgetCoachMark(dataKey: String, view: View) {
+        val isEligibleCoachMark = !coachMarkPrefHelper.getRebateCoachMarkMvpStatus() &&
+                coachMarkPrefHelper.getRecommendationCoachMarkStatus()
+        if (isEligibleCoachMark && dataKey == CoachMarkPrefHelper.REBATE_MVP_DATA_KEY) {
+            if (this.rebateWidgetView == null) {
+                this.rebateWidgetView = view
+
+                rebateCoachMark = CoachMark2(requireContext()).apply {
+                    simpleCloseIcon?.setOnClickListener {
+                        coachMarkPrefHelper.saveRebateCoachMarkMvpFlag()
+                        rebateWidgetView = null
+                        dismissCoachMark()
+                    }
+                }
+                showRebateCoachMark()
             }
-            showRebateCoachMark()
+        }
+    }
+
+    override fun showProgressBarCoachMark(dataKey: String, view: View) {
+        val isEligibleCoachMark = !coachMarkPrefHelper.getRebateCoachMarkUltimateStatus() &&
+                coachMarkPrefHelper.getRecommendationCoachMarkStatus()
+        if (isEligibleCoachMark && dataKey == CoachMarkPrefHelper.REBATE_ULTIMATE_DATA_KEY) {
+            if (this.rebateWidgetView == null) {
+                this.rebateWidgetView = view
+
+                rebateCoachMark = CoachMark2(requireContext()).apply {
+                    simpleCloseIcon?.setOnClickListener {
+                        coachMarkPrefHelper.saveRebateCoachMarkUltimateFlag()
+                        rebateWidgetView = null
+                        dismissCoachMark()
+                    }
+                }
+                showRebateCoachMark()
+            }
         }
     }
 
@@ -769,16 +797,9 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
     }
 
     private fun showRebateCoachMark() {
-        if (rebateCoachMark == null) {
-            rebateCoachMark = CoachMark2(requireContext())
-        }
         rebateCoachMark?.let { coachMark ->
-            val coachMarkItems by getCoachMarkRebateProgram()
+            val coachMarkItems = getCoachMarkRebateProgram()
             if (coachMarkItems.isNotEmpty()) {
-                coachMark.simpleCloseIcon?.setOnClickListener {
-                    coachMarkPrefHelper.saveRebateCoachMarkFlag()
-                    coachMark.dismissCoachMark()
-                }
                 coachMark.isDismissed = false
                 coachMark.showCoachMark(coachMarkItems)
             }
@@ -2114,25 +2135,24 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
     }
 
     private fun handleRebateCoachMark() {
-        val isEligibleCoachMark = !coachMarkPrefHelper.getRebateCoachMarkStatus()
-        if (isEligibleCoachMark) {
-            if (rebateCoachMark == null) {
-                rebateCoachMark = CoachMark2(requireContext())
-            }
+        if (rebateWidgetView == null) return
 
-            getSellerHomeLayoutManager()?.let { layoutManager ->
-                val rebateAnnouncementWidget = adapter.data.indexOfFirst {
-                    it is AnnouncementWidgetUiModel && it.dataKey == CoachMarkPrefHelper.REBATE_ANNOUNCEMENT_DATA_KEY
-                }
-                val firstVisibleIndex = layoutManager.findFirstVisibleItemPosition()
-                val lastVisibleIndex = layoutManager.findLastCompletelyVisibleItemPosition()
-                if (rebateAnnouncementWidget != RecyclerView.NO_POSITION
-                    && rebateAnnouncementWidget in firstVisibleIndex..lastVisibleIndex
-                ) {
-                    showRebateCoachMark()
-                } else {
-                    rebateCoachMark?.dismissCoachMark()
-                }
+        getSellerHomeLayoutManager()?.let { layoutManager ->
+            val rebateWidget = adapter.data.indexOfFirst {
+                val isRebateMvp = it.dataKey == CoachMarkPrefHelper.REBATE_MVP_DATA_KEY
+                        && !coachMarkPrefHelper.getRebateCoachMarkMvpStatus()
+                val isRebateUltimate = !coachMarkPrefHelper.getRebateCoachMarkUltimateStatus() &&
+                        it.dataKey == CoachMarkPrefHelper.REBATE_ULTIMATE_DATA_KEY
+                return@indexOfFirst isRebateMvp || isRebateUltimate
+            }
+            val firstVisibleIndex = layoutManager.findFirstVisibleItemPosition()
+            val lastVisibleIndex = layoutManager.findLastCompletelyVisibleItemPosition()
+            if (rebateWidget != RecyclerView.NO_POSITION
+                && rebateWidget in firstVisibleIndex..lastVisibleIndex
+            ) {
+                showRebateCoachMark()
+            } else {
+                rebateCoachMark?.dismissCoachMark()
             }
         }
     }
@@ -2170,21 +2190,19 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         return recyclerView?.layoutManager as? SellerHomeLayoutManager
     }
 
-    private fun getCoachMarkRebateProgram(): Lazy<ArrayList<CoachMark2Item>> {
-        return lazy {
-            val coachMarkItems = arrayListOf<CoachMark2Item>()
-            announcementWidgetView?.let { view ->
-                coachMarkItems.add(
-                    CoachMark2Item(
-                        anchorView = view,
-                        title = getString(R.string.sah_rebate_coach_mark_title),
-                        description = getString(R.string.sah_rebate_coach_mark_description),
-                        position = CoachMark2.POSITION_BOTTOM
-                    )
+    private fun getCoachMarkRebateProgram(): ArrayList<CoachMark2Item> {
+        val coachMarkItems = arrayListOf<CoachMark2Item>()
+        rebateWidgetView?.let { view ->
+            coachMarkItems.add(
+                CoachMark2Item(
+                    anchorView = view,
+                    title = view.context.getString(R.string.sah_rebate_coach_mark_title),
+                    description = view.context.getString(R.string.sah_rebate_coach_mark_description),
+                    position = CoachMark2.POSITION_BOTTOM
                 )
-            }
-            return@lazy coachMarkItems
+            )
         }
+        return coachMarkItems
     }
 
     private fun getCoachMarkItems(): Lazy<ArrayList<CoachMark2Item>> {
