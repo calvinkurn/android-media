@@ -1994,8 +1994,8 @@ class ProductListFragment: BaseDaggerFragment(),
         presenter?.getProductCount(mapParameter)
     }
 
-    override fun setProductCount(productCountText: String?) {
-        val resultCountText = if (productCountText.isNullOrBlank()) {
+    private fun getFilterCountText(productCountText: String?): String =
+        if (productCountText.isNullOrBlank()) {
             getString(com.tokopedia.filter.R.string.bottom_sheet_filter_finish_button_no_count)
         } else {
             String.format(
@@ -2003,7 +2003,9 @@ class ProductListFragment: BaseDaggerFragment(),
                 productCountText
             )
         }
-        sortFilterBottomSheet?.setResultCountText(resultCountText)
+
+    override fun setProductCount(productCountText: String?) {
+        sortFilterBottomSheet?.setResultCountText(getFilterCountText(productCountText))
     }
     //endregion
 
