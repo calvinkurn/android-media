@@ -1630,7 +1630,7 @@
           "deeplink_variable": "ApplinkConstInternalGlobal.MANAGE_NAME"
      }, 
      {
-          "destination_activity": "com.tokopedia.liveness.view.activity.LivenessActivity", 
+          "destination_activity": "com.tokopedia.liveness.view.LivenessActivity", 
           "deeplink": "tokopedia-android-internal://global/liveness-detection", 
           "deeplink_variable": ""
      }, 
