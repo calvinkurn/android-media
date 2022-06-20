@@ -1,11 +1,15 @@
 package com.tokopedia.discovery2.viewmodel
 
+import android.net.Uri
 import android.os.Bundle
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase
 import com.tokopedia.cartcommon.domain.usecase.DeleteCartUseCase
 import com.tokopedia.cartcommon.domain.usecase.UpdateCartUseCase
+import com.tokopedia.discovery2.CONSTANT_0
+import com.tokopedia.discovery2.CONSTANT_11
+import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.data.PageInfo
 import com.tokopedia.discovery2.data.productcarditem.DiscoATCRequestParams
 import com.tokopedia.discovery2.datamapper.DiscoveryPageData
@@ -93,35 +97,28 @@ class DiscoveryViewModelTest {
         verify { addToCartUseCase.execute(any(),any()) }
     }
 
-//    @Test
-//    fun `test for addProductToCart when isGeneralCartATC is true and quantity is 0 and isGeneralCartATC is false`() {
-//        val discoATCRequestParams: DiscoATCRequestParams = mockk(relaxed = true)
-//        every { discoATCRequestParams.productId } returns "1"
-//        every { discoATCRequestParams.shopId } returns "1"
-//        every { discoATCRequestParams.quantity } returns 0
-//        every { discoATCRequestParams.parentPosition } returns 1
-//        every { discoATCRequestParams.isGeneralCartATC } returns false
-//
-//        val miniCartSimplifiedData: MiniCartSimplifiedData = mockk(relaxed = true)
-//        val miniCartItemKey: MiniCartItemKey = mockk(relaxed = true)
-//        every { miniCartItemKey.id } returns "1"
-//        val miniCartItem : MiniCartItem = mockk(relaxed = true)
-//        val mapItem : Map<MiniCartItemKey, MiniCartItem> = mockk(relaxed = true)
-////        val mapItem : Map<MiniCartItemKey, MiniCartItem> = mapOf(miniCartItemKey to miniCartItem)
-//        every { viewModel.miniCartSimplifiedData?.miniCartItems } returns mapItem
-//        every { viewModel.miniCartSimplifiedData } returns miniCartSimplifiedData
-//
-//        println(mapItem.size)
-//        println(viewModel.miniCartSimplifiedData)
-//        println(viewModel.miniCartSimplifiedData?.miniCartItems)
-//        println(viewModel.miniCartSimplifiedData?.miniCartItems?.size)
-//        println(viewModel.miniCartSimplifiedData?.miniCartItems?.getMiniCartItemProduct("1"))
-//
-//        viewModel.addProductToCart(discoATCRequestParams)
-//
-//        verify { deleteCartUseCase.execute(any(),any()) }
-//
-//    }
+    @Test
+    fun `test for addProductToCart when isGeneralCartATC is true and quantity is 0 and isGeneralCartATC is false`() {
+        val discoATCRequestParams: DiscoATCRequestParams = mockk(relaxed = true)
+        every { discoATCRequestParams.productId } returns "1"
+        every { discoATCRequestParams.shopId } returns "1"
+        every { discoATCRequestParams.quantity } returns 0
+        every { discoATCRequestParams.parentPosition } returns 1
+        every { discoATCRequestParams.isGeneralCartATC } returns false
+
+        val miniCartSimplifiedData: MiniCartSimplifiedData = mockk(relaxed = true)
+        val miniCartItemKey: MiniCartItemKey = mockk(relaxed = true)
+        every { miniCartItemKey.id } returns "1"
+        val miniCartItem : MiniCartItem = mockk(relaxed = true)
+        val mapItem : Map<MiniCartItemKey, MiniCartItem> = mapOf(miniCartItemKey to miniCartItem)
+        every { viewModel.miniCartSimplifiedData } returns miniCartSimplifiedData
+        every { viewModel.miniCartSimplifiedData?.miniCartItems } returns mapItem
+
+        viewModel.addProductToCart(discoATCRequestParams)
+
+        verify { addToCartUseCase.execute(any(),any()) }
+
+    }
 
     /**************************** test for getQueryParameterMapFromBundle() *******************************************/
     @Test
@@ -219,6 +216,7 @@ class DiscoveryViewModelTest {
         viewModel.getQueryParameterMapFromBundle(bundle)
 
         TestCase.assertEquals(viewModel.getQueryParameterMapFromBundle(bundle), map)
+        com.tokopedia.discovery2.datamapper.discoComponentQuery = null
     }
 
 
@@ -267,6 +265,92 @@ class DiscoveryViewModelTest {
         viewModel.getDiscoveryData(mutableMapOf(),localCacheModel)
 
         TestCase.assertEquals(viewModel.getDiscoveryPageInfo().value != null, true)
+    }
+
+    /**************************** test for getMapOfQueryParameter() *******************************************/
+    @Test
+    fun `test for getMapOfQueryParameter`() {
+        val uri: Uri = mockk(relaxed = true)
+        every { uri.getQueryParameter(DiscoveryActivity.SOURCE) } returns "a"
+        every { uri.getQueryParameter(DiscoveryActivity.COMPONENT_ID) } returns "b"
+        every { uri.getQueryParameter(DiscoveryActivity.ACTIVE_TAB) } returns "c"
+        every { uri.getQueryParameter(DiscoveryActivity.TARGET_COMP_ID) } returns "d"
+        every { uri.getQueryParameter(DiscoveryActivity.PRODUCT_ID) } returns "e"
+        every { uri.getQueryParameter(DiscoveryActivity.PIN_PRODUCT) } returns "f"
+        every { uri.getQueryParameter(DiscoveryActivity.EMBED_CATEGORY) } returns "g"
+        every { uri.getQueryParameter(DiscoveryActivity.RECOM_PRODUCT_ID) } returns "h"
+        every { uri.getQueryParameter(DiscoveryActivity.CATEGORY_ID) } returns "i"
+
+        val map : MutableMap<String, String?> = mutableMapOf(
+                DiscoveryActivity.SOURCE to "a",
+                DiscoveryActivity.COMPONENT_ID to "b",
+                DiscoveryActivity.ACTIVE_TAB to "c",
+                DiscoveryActivity.TARGET_COMP_ID to "d",
+                DiscoveryActivity.PRODUCT_ID to "e",
+                DiscoveryActivity.PIN_PRODUCT to "f",
+                DiscoveryActivity.EMBED_CATEGORY to "g",
+                DiscoveryActivity.RECOM_PRODUCT_ID to "h",
+                DiscoveryActivity.CATEGORY_ID to "i"
+        )
+
+        viewModel.getMapOfQueryParameter(uri)
+
+        TestCase.assertEquals(viewModel.getMapOfQueryParameter(uri), map)
+    }
+
+    /**************************** test for scrollToPinnedComponent() *******************************************/
+    @Test
+    fun `test for scrollToPinnedComponent when componentList is non empty`() {
+        val componentsItem: ComponentsItem = mockk(relaxed = true)
+        every { componentsItem.id } returns "2"
+        val list = ArrayList<ComponentsItem>()
+        list.add(componentsItem)
+
+        viewModel.scrollToPinnedComponent(list,"2")
+
+        TestCase.assertEquals(viewModel.scrollToPinnedComponent(list,"2"), 0)
+    }
+
+    @Test
+    fun `test for scrollToPinnedComponent when componentList is empty`() {
+        val list : ArrayList<ComponentsItem> = arrayListOf()
+
+        viewModel.scrollToPinnedComponent(list,"2")
+
+        TestCase.assertEquals(viewModel.scrollToPinnedComponent(list,"2"), -1)
+    }
+
+    /**************************** test for getShareUTM() *******************************************/
+    @Test
+    fun `test for getShareUTM when campaignCode is not empty`() {
+        val pageInfo: PageInfo = mockk(relaxed = true)
+        val campCode = "PG_17 June 22_Kejar Diskon Tokopedia 17 Juni 2022 14:00-16:00_764002"
+        every { pageInfo.campaignCode } returns campCode
+
+        viewModel.getShareUTM(pageInfo)
+
+        TestCase.assertEquals(viewModel.getShareUTM(pageInfo), "-${campCode.substring(CONSTANT_0, CONSTANT_11)}")
+    }
+
+    @Test
+    fun `test for getShareUTM when campaignCode is empty`() {
+        val pageInfo: PageInfo = mockk(relaxed = true)
+        val campCode = ""
+        every { pageInfo.campaignCode } returns campCode
+
+        viewModel.getShareUTM(pageInfo)
+
+        TestCase.assertEquals(viewModel.getShareUTM(pageInfo), "-0")
+    }
+
+    @Test
+    fun `test for getShareUTM when campaignCode is null`() {
+        val pageInfo: PageInfo = mockk(relaxed = true)
+        every { pageInfo.campaignCode } returns null
+
+        viewModel.getShareUTM(pageInfo)
+
+        TestCase.assertEquals(viewModel.getShareUTM(pageInfo), "-0")
     }
 
     @After
