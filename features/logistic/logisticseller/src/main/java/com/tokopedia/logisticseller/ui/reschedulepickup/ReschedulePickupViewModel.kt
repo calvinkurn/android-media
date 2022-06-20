@@ -18,8 +18,8 @@ import javax.inject.Inject
 
 class ReschedulePickupViewModel @Inject constructor(
     dispatcher: CoroutineDispatchers,
-    private val getReschedulePickupUseCase: GetReschedulePickupUseCase,
-    private val saveReschedulePickupUseCase: SaveReschedulePickupUseCase
+    private val getReschedulePickup: GetReschedulePickupUseCase,
+    private val saveReschedulePickup: SaveReschedulePickupUseCase
 ) : BaseViewModel(dispatcher.main) {
     private val _reschedulePickupDetail = MutableLiveData<Result<RescheduleDetailModel>>()
     val reschedulePickupDetail: LiveData<Result<RescheduleDetailModel>>
@@ -31,7 +31,7 @@ class ReschedulePickupViewModel @Inject constructor(
     fun getReschedulePickupDetail(orderId: String) {
         launchCatchError(
             block = {
-                val response = getReschedulePickupUseCase(ReschedulePickupMapper.mapToGetReschedulePickupParam(listOf(orderId)))
+                val response = getReschedulePickup(ReschedulePickupMapper.mapToGetReschedulePickupParam(listOf(orderId)))
                 if (response.mpLogisticGetReschedulePickup.data.isNotEmpty()) {
                     _reschedulePickupDetail.value = Success(ReschedulePickupMapper.mapToRescheduleDetailModel(response.mpLogisticGetReschedulePickup))
                 } else {
@@ -45,7 +45,7 @@ class ReschedulePickupViewModel @Inject constructor(
     fun saveReschedule(orderId: String, date: String, time: RescheduleTimeOptionModel, reason: String) {
         launchCatchError(
             block = {
-                val response = saveReschedulePickupUseCase(ReschedulePickupMapper.mapToSaveReschedulePickupParam(orderId, date, time.time, reason))
+                val response = saveReschedulePickup(ReschedulePickupMapper.mapToSaveReschedulePickupParam(orderId, date, time.time, reason))
                 _saveRescheduleDetail.value = Success(ReschedulePickupMapper.mapToSaveRescheduleModel(response, time.etaPickup, orderId))
             },
             onError = {
