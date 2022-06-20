@@ -1,6 +1,7 @@
 package com.tokopedia.tokomember_seller_dashboard
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import com.tokopedia.tokomember_seller_dashboard.domain.TmOnBoardingCheckUsecase
 import com.tokopedia.tokomember_seller_dashboard.domain.TokomemberAuthenticatedUsecase
 import com.tokopedia.tokomember_seller_dashboard.domain.TokomemberEligibilityUsecase
 import com.tokopedia.tokomember_seller_dashboard.model.CheckEligibility
@@ -28,12 +29,15 @@ class TmEligibilityViewModelTest {
     private lateinit var viewModel: TmEligibilityViewModel
     private val tokomemberEligibilityUsecase = mockk<TokomemberEligibilityUsecase>(relaxed = true)
     private val tokomemberAuthenticatedUsecase = mockk<TokomemberAuthenticatedUsecase>(relaxed = true)
+    private val tmOnBoardingCheckUsecase = mockk<TmOnBoardingCheckUsecase>(relaxed = true)
+
 
     @Before
     fun setUp() {
         viewModel = TmEligibilityViewModel(
             tokomemberEligibilityUsecase,
             tokomemberAuthenticatedUsecase,
+            tmOnBoardingCheckUsecase,
            dispatcher
         )
     }

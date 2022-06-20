@@ -3,6 +3,7 @@ package com.tokopedia.tokomember_seller_dashboard
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.tokomember_seller_dashboard.domain.TokomemberDashGetProgramListUsecase
 import com.tokopedia.tokomember_seller_dashboard.model.ProgramList
+import com.tokopedia.tokomember_seller_dashboard.util.TokoLiveDataResult
 import com.tokopedia.tokomember_seller_dashboard.view.viewmodel.TmProgramListViewModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -46,7 +47,7 @@ class TmProgramListViewModelTest {
         viewModel.getProgramList(0,0,0,0,0)
 
         Assert.assertEquals(
-            (viewModel.tokomemberProgramListResultLiveData.value as Success).data,
+            (viewModel.tokomemberProgramListResultLiveData.value as TokoLiveDataResult).data,
             data
         )
     }
