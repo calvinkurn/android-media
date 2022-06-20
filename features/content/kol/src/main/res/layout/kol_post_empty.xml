@@ -28,15 +28,16 @@
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="24dp"
             android:layout_marginLeft="@dimen/dp_32" android:layout_marginStart="@dimen/dp_32"
-            android:layout_marginRight="@dimen/dp_32" android:layout_marginEnd="@dimen/dp_32"/>
+            android:layout_marginRight="@dimen/dp_32" android:layout_marginEnd="@dimen/dp_32"
+            android:contentDescription="@string/kol_empty_state_content_desc" />
 
-        <TextView
+        <com.tokopedia.unifyprinciples.Typography
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/empty_kol_post"
             android:fontFamily="sans-serif"
-            android:textColor="@color/font_black_disabled_38"
-            android:textSize="@dimen/sp_16"
+            android:textColor="@color/Unify_N700_32"
+            app:typographyType="display_1"
             android:gravity="center"
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="8dp"

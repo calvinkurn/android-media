@@ -5,7 +5,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.seller_shop_flash_sale.R
 import com.tokopedia.seller_shop_flash_sale.databinding.SsfsBottomsheetMoreMenuBinding
 import com.tokopedia.shop.flashsale.domain.entity.CampaignListMoreMenu
@@ -24,13 +23,11 @@ class MoreMenuBottomSheet : BottomSheetUnify() {
     }
 
     companion object {
-        private const val BUNDLE_KEY_CAMPAIGN_ID = "campaign_id"
         private const val BUNDLE_KEY_CAMPAIGN_NAME = "campaign_name"
         private const val BUNDLE_KEY_CAMPAIGN_STATUS = "campaign_status"
 
-        fun newInstance(campaignId: Long, campaignName: String, campaignStatus: CampaignStatus): MoreMenuBottomSheet {
+        fun newInstance(campaignName: String, campaignStatus: CampaignStatus): MoreMenuBottomSheet {
             val args = Bundle()
-            args.putLong(BUNDLE_KEY_CAMPAIGN_ID, campaignId)
             args.putString(BUNDLE_KEY_CAMPAIGN_NAME, campaignName)
             args.putParcelable(BUNDLE_KEY_CAMPAIGN_STATUS, campaignStatus)
 
@@ -41,7 +38,6 @@ class MoreMenuBottomSheet : BottomSheetUnify() {
     }
 
     private var binding by autoClearedNullable<SsfsBottomsheetMoreMenuBinding>()
-    private val campaignId by lazy { arguments?.getLong(BUNDLE_KEY_CAMPAIGN_ID).orZero() }
     private val campaignName by lazy { arguments?.getString(BUNDLE_KEY_CAMPAIGN_NAME).orEmpty() }
     private val campaignStatus by lazy { arguments?.getParcelable(BUNDLE_KEY_CAMPAIGN_STATUS) as? CampaignStatus  ?: CampaignStatus.CANCELLED }
 

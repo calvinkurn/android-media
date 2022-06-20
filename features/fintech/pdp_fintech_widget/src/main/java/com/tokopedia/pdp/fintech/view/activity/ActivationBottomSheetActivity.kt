@@ -21,6 +21,7 @@ class ActivationBottomSheetActivity : BaseSimpleActivity(), HasComponent<Fintech
     lateinit var pdpWidgetAnalytics: PdpFintechWidgetAnalytics
 
 
+
     override fun getNewFragment(): Fragment? = null
      var bundle: Bundle? = null
 

@@ -1,9 +1,14 @@
 package com.tokopedia.review.feature.inbox.buyerreview.domain.model.inboxdetail
 
+import com.google.gson.annotations.Expose
+import com.google.gson.annotations.SerializedName
+
 /**
  * @author by nisie on 8/23/17.
  */
 class ImageAttachmentDomain constructor(
-    val attachmentId: String, val description: String,
-    val uriThumbnail: String, val uriLarge: String
+    @SerializedName("attachmentIdStr") @Expose val attachmentId: String,
+    @SerializedName("description") @Expose val description: String,
+    @SerializedName("imageThumbnailUrl") @Expose val uriThumbnail: String,
+    @SerializedName("imageUrl") @Expose val uriLarge: String
 )

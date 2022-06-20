@@ -28,6 +28,7 @@ import com.tokopedia.shop.flashsale.common.preference.SharedPreferenceDataStore
 import com.tokopedia.shop.flashsale.common.util.DateManager
 import com.tokopedia.shop.flashsale.common.util.doOnTextChanged
 import com.tokopedia.shop.flashsale.di.component.DaggerShopFlashSaleComponent
+import com.tokopedia.shop.flashsale.domain.entity.CampaignCreationResult
 import com.tokopedia.shop.flashsale.domain.entity.CampaignUiModel
 import com.tokopedia.shop.flashsale.domain.entity.Gradient
 import com.tokopedia.shop.flashsale.domain.entity.enums.CampaignStatus
@@ -37,12 +38,12 @@ import com.tokopedia.shop.flashsale.presentation.creation.information.bottomshee
 import com.tokopedia.shop.flashsale.presentation.creation.information.bottomsheet.CampaignTeaserInformationBottomSheet
 import com.tokopedia.shop.flashsale.presentation.creation.information.bottomsheet.ForbiddenWordsInformationBottomSheet
 import com.tokopedia.shop.flashsale.presentation.creation.information.dialog.BackConfirmationDialog
+import com.tokopedia.shop.flashsale.presentation.creation.manage.ManageProductActivity
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import java.util.*
 import javax.inject.Inject
-import kotlin.collections.ArrayList
 
 
 class CampaignInformationFragment : BaseDaggerFragment() {
@@ -140,12 +141,7 @@ class CampaignInformationFragment : BaseDaggerFragment() {
             when(result) {
                 is Success -> {
                     binding?.btnCreateCampaign?.stopLoading()
-                    if (result.data.isSuccess) {
-                        //TODO: Navigate to next page
-                        binding?.root showToaster "Campaign berhasil dibuat"
-                    } else {
-                        showErrorTicker(result.data.errorTitle, result.data.errorDescription)
-                    }
+                    handleFirstStepOfCampaignCreationSuccess(result.data)
                 }
                 is Fail -> {
                     binding?.btnCreateCampaign?.stopLoading()
@@ -160,12 +156,7 @@ class CampaignInformationFragment : BaseDaggerFragment() {
             when(result) {
                 is Success -> {
                     binding?.btnCreateCampaign?.stopLoading()
-                    if (result.data.isSuccess) {
-                        //TODO: Navigate to next page
-                        binding?.root showToaster "Campaign berhasil diperbaharui"
-                    } else {
-                        showErrorTicker(result.data.errorTitle, result.data.errorDescription)
-                    }
+                    handleFirstStepOfCampaignCreationSuccess(result.data)
                 }
                 is Fail -> {
                     binding?.btnCreateCampaign?.stopLoading()
@@ -180,12 +171,7 @@ class CampaignInformationFragment : BaseDaggerFragment() {
             when(result) {
                 is Success -> {
                     binding?.btnDraft?.stopLoading()
-                    if (result.data.isSuccess) {
-                        binding?.root showToaster "Draft berhasil dibuat"
-                        requireActivity().finish()
-                    } else {
-                        showErrorTicker(result.data.errorTitle, result.data.errorDescription)
-                    }
+                    handleSaveCampaignDraftSuccess(result.data)
                 }
                 is Fail -> {
                     binding?.btnDraft?.stopLoading()
@@ -345,6 +331,7 @@ class CampaignInformationFragment : BaseDaggerFragment() {
         when (validationResult) {
             CampaignInformationViewModel.CampaignNameValidationResult.CampaignNameIsEmpty -> {
                 showError(getString(R.string.sfs_error_message_field_not_filled))
+                binding?.cardView showError getString(R.string.sfs_error_message_incomplete_input)
                 binding?.btnCreateCampaign?.disable()
             }
             CampaignInformationViewModel.CampaignNameValidationResult.CampaignNameBelowMinCharacter -> {
@@ -661,6 +648,20 @@ class CampaignInformationFragment : BaseDaggerFragment() {
         )
     }
 
+    private fun handleFirstStepOfCampaignCreationSuccess(result: CampaignCreationResult) {
+        if (result.isSuccess) {
+            ManageProductActivity.start(requireActivity(), result.campaignId)
+        } else {
+            showErrorTicker(result.errorTitle, result.errorDescription)
+        }
+    }
 
+    private fun handleSaveCampaignDraftSuccess(result: CampaignCreationResult) {
+        if (result.isSuccess) {
+            requireActivity().finish()
+        } else {
+            showErrorTicker(result.errorTitle, result.errorDescription)
+        }
+    }
 
 }

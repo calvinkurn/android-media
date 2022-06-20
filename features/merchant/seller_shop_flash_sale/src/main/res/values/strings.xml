@@ -12,6 +12,7 @@
     <string name="sfs_yes">Ya</string>
     <string name="sfs_no">Tidak</string>
     <string name="sfs_save_as_draft">Simpan Sebagai Draft</string>
+    <string name="sfs_ok">Oke</string>
 
     <!--Campaign List Page-->
     <string name="sfs_your_shop_flash_sale">Flash Sale Toko-mu</string>
@@ -37,9 +38,13 @@
     <string name="sfs_stop">Hentikan</string>
     <string name="sfs_draft_deleted">Draft campaign berhasil dihapus.</string>
     <string name="sfs_cannot_cancel_campaign">Campaign yang masuk ke partisipasi event tidak dapat dibatalkan.</string>
+    <string name="sfs_cannot_stop_campaign">Campaign yang masuk ke partisipasi event tidak dapat dihentikan.</string>
+    <string name="sfs_cannot_edit_campaign">Campaign yang masuk ke partisipasi event hanya bisa diedit di versi desktop.</string>
     <string name="sfs_ineligible_access_title">Kamu tidak memiliki kuota untuk membuat Flash Sale Toko</string>
     <string name="sfs_ineligible_access_description">Upgrade tokomu ke Power Merchant PRO untuk dapat kuota Flash Sale  Toko, ya.</string>
     <string name="sfs_subscribe_pm_pro">Daftar PM Pro</string>
+    <string name="sfs_campaign_cancelled">%s berhasil dibatalkan.</string>
+    <string name="sfs_campaign_stopped">%s berhasil dihentikan.</string>
 
     <string name="sfs_search_result_not_found_title">Campaign yang kamu cari tidak ditemukan.</string>
     <string name="sfs_search_result_not_found_description">Coba kata kunci lain, ya.</string>
@@ -56,8 +61,8 @@
     <string name="sfs_placeholder_draft">Draft (%s)</string>
 
     <!--Share Component-->
-    <string name="sfs_share_title_upcoming">Segera hadir, Flash Sale dari %s di \@Tokopedia. Mulai %s pukul %s</string>
-    <string name="sfs_share_title_ongoing">Kejar penawaran eksklusif di Flash Sale dari %s hanya di \@Tokopedia. Hanya sampai %s pukul %s!</string>
+    <string name="sfs_share_thumbnail_title_upcoming">Segera hadir, Flash Sale dari %s di \@Tokopedia. Mulai %s pukul %s</string>
+    <string name="sfs_share_thumbnail_title_ongoing">Kejar penawaran eksklusif di Flash Sale dari %s hanya di \@Tokopedia. Hanya sampai %s pukul %s!</string>
 
     <string name="sfs_share_outgoing_title">Flash Sale dari %s</string>
     <string name="sfs_share_outgoing_description_upcoming">Dapatkan harga spesial dari %s selama stok tersedia. Yuk, pasang pengingatnya!</string>
@@ -214,4 +219,20 @@
     <string name="chooseproduct_save_button_text">Tambah %d Produk</string>
     <string name="chooseproduct_save_button_text_empty">Tambah Produk</string>
 
+    <!--Manage Product-->
+    <string name="manage_product_complete_product_info_warning_label">Klik <b>Ubah</b> untuk melengkapi informasi produk ini, ya.</string>
+    <string name="manage_product_ubah_label">Ubah</string>
+    <string name="manage_product_separator_label">|</string>
+    <string name="manage_product">Kelola Produk</string>
+    <string name="manage_product_incomplete_product_info_label">Beberapa produk memiliki info yang belum lengkap. Lengkapi dulu, ya!</string>
+    <string name="manage_product_placeholder_product_count">(%s Produk)</string>
+    <string name="manage_product_add_product_label">Tambah Produk</string>
+    <string name="manage_product_item_stock_at_seller_location_label">Stok: <b>%s</b> di lokasi seller</string>
+    <string name="manage_product_item_campaign_stock_label">Stok campaign: <b>%s</b></string>
+    <string name="manage_product_item_max_buy_label">Maks. Pembelian: <b>%s</b></string>
+    <string name="manage_product_continue_label">Lanjut</string>
+    <string name="manage_product_save_draft_label">Simpan Draft</string>
+
+    <string name="sfs_search_product">Cari produk</string>
+    <string name="sfs_manage_highlight">Atur Highlight</string>
 </resources>

@@ -1,9 +1,14 @@
 package com.tokopedia.gm.common.domain.mapper
 
 import com.tokopedia.abstraction.common.utils.view.DateFormatUtils
-import com.tokopedia.gm.common.constant.PMConstant
-import com.tokopedia.gm.common.data.source.cloud.model.*
-import com.tokopedia.gm.common.data.source.local.model.*
+import com.tokopedia.gm.common.data.source.cloud.model.CurrentPmGradeModel
+import com.tokopedia.gm.common.data.source.cloud.model.NextPMGradeModel
+import com.tokopedia.gm.common.data.source.cloud.model.PMGradeBenefitInfoModel
+import com.tokopedia.gm.common.data.source.cloud.model.PMGradeBenefitModel
+import com.tokopedia.gm.common.data.source.local.model.PMCurrentGradeUiModel
+import com.tokopedia.gm.common.data.source.local.model.PMGradeBenefitInfoUiModel
+import com.tokopedia.gm.common.data.source.local.model.PMGradeBenefitUiModel
+import com.tokopedia.gm.common.data.source.local.model.PMNextGradeUiModel
 import com.tokopedia.kotlin.extensions.view.orZero
 import javax.inject.Inject
 
@@ -24,20 +29,6 @@ class PMGradeBenefitInfoMapper @Inject constructor() {
         )
     }
 
-    fun getPMGradeBenefitList(pmGradeBenefitList: List<PmGradeWithBenefitsModel>?): List<PMGradeWithBenefitsUiModel>? {
-        pmGradeBenefitList?.let { list ->
-            return list.map {
-                PMGradeWithBenefitsUiModel(
-                    gradeName = it.gradeName.orEmpty(),
-                    isActive = it.isActive ?: false,
-                    pmTier = it.pmTier ?: PMConstant.PMTierType.POWER_MERCHANT,
-                    benefits = getPMGradeBenefits(it.benefits)
-                )
-            }
-        }
-        return null
-    }
-
     private fun getNextPMGrade(nextPmGrade: NextPMGradeModel?): PMNextGradeUiModel? {
         nextPmGrade?.let {
             return PMNextGradeUiModel(
@@ -45,7 +36,6 @@ class PMGradeBenefitInfoMapper @Inject constructor() {
                 shopScoreMin = it.shopScoreMin.orZero(),
                 shopScoreMax = it.shopScoreMax.orZero(),
                 gradeName = it.gradeName.orEmpty(),
-                imgBadgeUrl = it.imgBadgeUrl.orEmpty(),
                 backgroundUrl = it.backgroundUrl
             )
         }
@@ -73,7 +63,6 @@ class PMGradeBenefitInfoMapper @Inject constructor() {
             return PMCurrentGradeUiModel(
                 gradeName = it.gradeName.orEmpty(),
                 shopLevel = it.shopLevel.orEmpty(),
-                imgBadgeUrl = it.imgBadgeUrl.orEmpty(),
                 backgroundUrl = it.backgroundUrl.orEmpty(),
             )
         }

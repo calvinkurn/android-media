@@ -7,12 +7,12 @@ import com.tokopedia.seller_shop_flash_sale.R
 
 class ResourceProvider @Inject constructor(@ApplicationContext  private val context: Context) {
 
-    fun getUpcomingCampaignWording(): String {
-        return context.getString(R.string.sfs_share_title_upcoming)
+    fun getUpcomingBottomSheetTitle(): String {
+        return context.getString(R.string.sfs_share_thumbnail_title_upcoming)
     }
 
-    fun getOngoingCampaignWording() : String {
-        return context.getString(R.string.sfs_share_title_ongoing)
+    fun getOngoingBottomSheetTitle() : String {
+        return context.getString(R.string.sfs_share_thumbnail_title_ongoing)
     }
 
     fun getOutgoingTitleWording(): String {

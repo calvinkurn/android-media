@@ -28,7 +28,7 @@ class HotelReviewActivity: HotelBaseActivity(), HasComponent<HotelDetailComponen
     }
 
     override fun getNewFragment(): Fragment =
-            HotelReviewFragment.createInstance(intent.getLongExtra(HotelReviewFragment.ARG_PROPERTY_ID, 0))
+            HotelReviewFragment.createInstance(intent.getStringExtra(HotelReviewFragment.ARG_PROPERTY_ID) ?: "0")
 
     override fun getComponent(): HotelDetailComponent =
             DaggerHotelDetailComponent.builder()
@@ -38,8 +38,8 @@ class HotelReviewActivity: HotelBaseActivity(), HasComponent<HotelDetailComponen
     override fun getScreenName(): String = ""
 
     companion object {
-        fun getCallingIntent(context: Context, propertyId: Long): Intent = Intent(context, HotelReviewActivity::class.java)
-                .putExtra(HotelReviewFragment.ARG_PROPERTY_ID,propertyId)
+        fun getCallingIntent(context: Context, propertyId: String): Intent = Intent(context, HotelReviewActivity::class.java)
+                .putExtra(HotelReviewFragment.ARG_PROPERTY_ID, propertyId)
     }
 
     override fun getParentViewResourceID() = com.tokopedia.abstraction.R.id.parent_view

@@ -5,6 +5,8 @@ import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.shop.flashsale.common.constant.DateConstant
 import com.tokopedia.shop.flashsale.common.extension.epochToDate
 import com.tokopedia.shop.flashsale.common.extension.formatTo
+import com.tokopedia.shop.flashsale.common.extension.minuteDifference
+import com.tokopedia.shop.flashsale.common.extension.removeTimeZone
 import com.tokopedia.shop.flashsale.data.response.GetSellerCampaignListResponse
 import com.tokopedia.shop.flashsale.data.response.GetSellerCampaignListResponse.GetSellerCampaignList.Campaign.CampaignRelationData
 import com.tokopedia.shop.flashsale.domain.entity.CampaignMeta
@@ -64,6 +66,7 @@ class SellerCampaignListMapper @Inject constructor() {
                 it.isCampaignRelation,
                 it.campaignRelationData.toRelatedCampaign(),
                 it.isCampaignRuleSubmit,
+                it.startDate.epochToDate().removeTimeZone().minuteDifference()
             )
         }
         return CampaignMeta(

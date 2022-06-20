@@ -15,6 +15,7 @@ import com.tokopedia.topads.sdk.listener.TopAdsAddToCartClickListener
 import com.tokopedia.topads.sdk.listener.TopAdsBannerClickListener
 import com.tokopedia.topads.sdk.listener.TopAdsItemImpressionListener
 import com.tokopedia.topads.sdk.listener.TopAdsShopFollowBtnClickListener
+import com.tokopedia.topads.sdk.shopwidgetthreeproducts.listener.ShopWidgetAddToCartClickListener
 import com.tokopedia.topads.sdk.viewmodel.TopAdsHeadlineViewModel
 import com.tokopedia.unifycomponents.LoaderUnify
 
@@ -44,8 +45,8 @@ class TopAdsHeadlineView @JvmOverloads constructor(context: Context, attrs: Attr
         topAdsHeadlineViewModel.getTopAdsHeadlineData(params, onSuccess, onError)
     }
 
-    fun displayAds(cpmModel: CpmModel) {
-        topadsBannerView.displayAdsWithProductShimmer(cpmModel)
+    fun displayAds(cpmModel: CpmModel, index:Int = 0) {
+        topadsBannerView.displayAdsWithProductShimmer(cpmModel, index = index)
     }
 
     fun setTopAdsBannerClickListener(context: TopAdsBannerClickListener) {
@@ -74,6 +75,10 @@ class TopAdsHeadlineView @JvmOverloads constructor(context: Context, attrs: Attr
 
     fun setAddToCartClickListener(topAdsAddToCartClickListener: TopAdsAddToCartClickListener) {
         topadsBannerView.setAddToCartClickListener(topAdsAddToCartClickListener)
+    }
+
+    fun setShopWidgetAddToCartClickListener(shopWidgetAddToCartClickListener: ShopWidgetAddToCartClickListener) {
+        topadsBannerView.setShopWidgetAddToCartClickListener(shopWidgetAddToCartClickListener)
     }
 
     fun setShowCta(isShowCta: Boolean) {

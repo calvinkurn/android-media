@@ -388,6 +388,9 @@ data class DataItem(
         @SerializedName("labels")
         var labelsGroupList: List<LabelsGroup>? = null,
 
+        @SerializedName("active_product_card")
+        var isActiveProductCard: Boolean? = null,
+
         @SerializedName("carousel_component_id")
         var flashTimerTargetComponent: String = "",
 
@@ -481,6 +484,8 @@ data class DataItem(
         var typeProductCard: String? = "",
 
         var tabName: String? = "",
+
+        var componentPromoName: String? = "",
 
         var hasNotifyMe: Boolean = false,
 

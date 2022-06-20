@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:layout_height="200dp"
+    tools:layout_width="200dp"
+    tools:parentTag="com.tokopedia.play_common.view.RoundedFrameLayout"
+    >
+
+    <com.tokopedia.play_common.view.RemoteImageView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="center"
+        android:scaleType="centerCrop"
+        app:cacheStrategy="resource"
+        app:imageUrl="@string/img_bg_interactive_confetti_small"
+        />
+
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_desc"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:layout_marginStart="@dimen/spacing_lvl2"
+        android:layout_marginTop="@dimen/spacing_lvl3"
+        android:layout_marginEnd="@dimen/spacing_lvl2"
+        android:layout_marginBottom="@dimen/spacing_lvl3"
+        android:textAlignment="center"
+        android:textColor="@color/Unify_Static_White"
+        app:typographyType="heading_6"
+        tools:text="Game telah selesai"
+        tools:textColor="@color/Unify_Static_Black"
+        />
+
+</merge>

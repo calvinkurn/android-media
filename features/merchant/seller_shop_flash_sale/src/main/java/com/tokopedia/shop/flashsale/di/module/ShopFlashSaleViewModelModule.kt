@@ -5,8 +5,10 @@ import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
 import com.tokopedia.shop.flashsale.di.scope.ShopFlashSaleScope
+import com.tokopedia.shop.flashsale.presentation.creation.highlight.ManageHighlightedProductViewModel
 import com.tokopedia.shop.flashsale.presentation.creation.information.CampaignInformationViewModel
 import com.tokopedia.shop.flashsale.presentation.creation.information.bottomsheet.CampaignDataPickerViewModel
+import com.tokopedia.shop.flashsale.presentation.creation.manage.ManageProductViewModel
 import com.tokopedia.shop.flashsale.presentation.creation.manage.viewmodel.ChooseProductViewModel
 import com.tokopedia.shop.flashsale.presentation.creation.rule.CampaignRuleViewModel
 import com.tokopedia.shop.flashsale.presentation.creation.rule.bottomsheet.MerchantCampaignTNCViewModel
@@ -63,6 +65,16 @@ abstract class ShopFlashSaleViewModelModule {
     @IntoMap
     @ViewModelKey(ChooseProductViewModel::class)
     internal abstract fun provideChooseProductViewModel(viewModel: ChooseProductViewModel): ViewModel
+  
+    @Binds
+    @IntoMap
+    @ViewModelKey(ManageProductViewModel::class)
+    internal abstract fun provideManageProductViewModel(viewModel: ManageProductViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(ManageHighlightedProductViewModel::class)
+    internal abstract fun provideManageHighlightedProductViewModel(viewModel: ManageHighlightedProductViewModel): ViewModel
 
     @Binds
     @IntoMap

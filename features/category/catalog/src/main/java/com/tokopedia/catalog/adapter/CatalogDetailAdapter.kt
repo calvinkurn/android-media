@@ -57,6 +57,7 @@ class CatalogDetailAdapter (val context : FragmentActivity, val catalogDetailLis
     }
 
     override fun onViewAttachedToWindow(holder: AbstractViewHolder<*>) {
+        catalogDetailListener.setLastAttachItemPosition(holder.adapterPosition)
         sendWidgetTracking(holder)
         if(holder is CatalogProductsContainerViewHolder){
             catalogDetailListener.hideFloatingLayout()
@@ -82,6 +83,7 @@ class CatalogDetailAdapter (val context : FragmentActivity, val catalogDetailLis
     }
 
     override fun onViewDetachedFromWindow(holder: AbstractViewHolder<*>) {
+        catalogDetailListener.setLastDetachedItemPosition(holder.adapterPosition)
         if(holder is CatalogProductsContainerViewHolder){
             catalogDetailListener.showFloatingLayout()
         }else if(holder is CatalogForYouContainerViewHolder){
