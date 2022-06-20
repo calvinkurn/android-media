@@ -46,6 +46,7 @@ import com.tokopedia.tkpd.deeplink.listener.DeepLinkView;
 import com.tokopedia.tkpd.deeplink.utils.URLParser;
 import com.tokopedia.tkpd.utils.ProductNotFoundException;
 import com.tokopedia.tkpd.utils.ShopNotFoundException;
+import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.url.Env;
 import com.tokopedia.url.TokopediaUrl;
@@ -271,6 +272,11 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                     openPowerMechant(uriData);
                     screenName = "";
                     break;
+                case DeepLinkChecker.TOP_ADS_CLICK_LINK:
+                     doTopAdsOperation(uriData);
+//                     DeepLinkChecker.handleTopAdsLink(uriData.toString(), context, defaultBundle);
+                     screenName = "";
+                     break;
                 case DeepLinkChecker.DEALS:
                 case DeepLinkChecker.OTHER:
                 default:
@@ -283,6 +289,12 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                 context.finish();
             }
         }
+    }
+
+    private void doTopAdsOperation(Uri uriData) {
+        Uri.Builder newUri = uriData.buildUpon().appendQueryParameter("uid", userSession.getUserId());
+        String redirectionUrl = uriData.getQueryParameter("r");
+        new TopAdsUrlHitter(context).hitClickUrl(this.getClass().getCanonicalName(), newUri.toString(),"","","")
     }
 
     private void openSaldoDeposit() {

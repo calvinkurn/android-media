@@ -62,6 +62,7 @@ object DeepLinkChecker {
     const val POWER_MERCHANT = 40
     const val SALDO_DEPOSIT = 41
     const val SNAPSHOT = 42
+    const val TOP_ADS_CLICK_LINK = 43
 
     private val deeplinkMatcher: DeeplinkMatcher by lazy { DeeplinkMatcher() }
 
@@ -134,6 +135,9 @@ object DeepLinkChecker {
         }
         if (!URLUtil.isNetworkUrl(url)) {
             return APPLINK
+        }
+        if (url.contains("ta.tokopedia.com")) {
+            return TOP_ADS_CLICK_LINK
         }
         return try {
             val uriData = Uri.parse(url)
@@ -288,5 +292,14 @@ object DeepLinkChecker {
     private fun getLinkSegment(url: String): List<String> {
         return Uri.parse(url).pathSegments
     }
+
+//    @JvmStatic
+//    fun handleTopAdsLink(url: String, context: Activity, defaultBundle: Bundle) {
+//        val intent = getPromoListIntent(context, url)
+//        if (defaultBundle != null) {
+//            intent.putExtras(defaultBundle)
+//        }
+//        return openIfExist(context, intent)
+//    }
 
 }
