@@ -65,6 +65,7 @@ class CampaignInformationFragment : BaseDaggerFragment() {
         private const val THIRTY_MINUTE = 30
         private const val CAMPAIGN_NAME_MAX_LENGTH = 15
         private const val LEARN_MORE_CTA_TEXT_LENGTH = 8
+        private const val REDIRECT_TO_PREVIOUS_PAGE_DELAY : Long = 2_000
 
 
         @JvmStatic
@@ -716,10 +717,14 @@ class CampaignInformationFragment : BaseDaggerFragment() {
     }
 
     private fun handleSaveCampaignDraftSuccess(result: CampaignCreationResult) {
-        if (result.isSuccess) {
-            requireActivity().finish()
-        } else {
-            showErrorTicker(result.errorTitle, result.errorDescription)
+        binding?.root showToaster getString(R.string.sfs_saved_as_draft)
+        //Add some spare time caused by Backend write operation delay
+        doOnDelayFinished(REDIRECT_TO_PREVIOUS_PAGE_DELAY) {
+            if (result.isSuccess) {
+                requireActivity().finish()
+            } else {
+                showErrorTicker(result.errorTitle, result.errorDescription)
+            }
         }
     }
 

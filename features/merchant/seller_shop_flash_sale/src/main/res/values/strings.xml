@@ -13,6 +13,7 @@
     <string name="sfs_no">Tidak</string>
     <string name="sfs_save_as_draft">Simpan Sebagai Draft</string>
     <string name="sfs_ok">Oke</string>
+    <string name="sfs_saved_as_draft">Campaign disimpan sebagai draft.</string>
 
     <!--Campaign List Page-->
     <string name="sfs_your_shop_flash_sale">Flash Sale Toko-mu</string>
