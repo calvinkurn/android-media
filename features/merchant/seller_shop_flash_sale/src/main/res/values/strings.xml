@@ -202,6 +202,11 @@
     <string name="campaign_rule_previous_campaign_item_removed_cta">@string/action_oke</string>
     <string name="campaign_rule_tnc_checkbox_label">Saya menyetujui <b>Syarat &amp; Ketentuan Pembeli</b></string>
 
+    <string name="choose_related_campaign_title">Pilih campaign sebelumnya</string>
+    <string name="choose_related_campaign_add_campaign_button_label">Tambah Campaign</string>
+    <string name="choose_related_campaign_search_not_found_message">Oops, campaign yang kamu cari tidak ditemukan.</string>
+    <string name="choose_related_campaign_item_campaign_code">#%s</string>
+
     <!--Product List Page-->
     <string name="chooseproduct_page_title">Pilih Produk</string>
     <string name="chooseproduct_search_placeholdertext">Cari produk atau SKU</string>
