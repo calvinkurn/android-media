@@ -34,7 +34,7 @@ class TokoFoodCategoryViewModelTest: TokoFoodCategoryViewModelTestFixture() {
 
     @Test
     fun `when getting categoryLayout should run and give the success result`() {
-        onGetMerchantList_thenReturn(createMerchantListEmptyPageResponse(), pageKey = "1")
+        onGetMerchantList_thenReturn(createMerchantListEmptyPageResponse(), pageKey = "0")
 
         viewModel.getCategoryLayout(LocalCacheModel())
 
@@ -85,8 +85,8 @@ class TokoFoodCategoryViewModelTest: TokoFoodCategoryViewModelTestFixture() {
         val containLastItemIndex = 5
         val itemCount = 6
 
+        onGetMerchantList_thenReturn(createMerchantListResponse(), pageKey = "0")
         onGetMerchantList_thenReturn(createMerchantListResponse(), pageKey = "1")
-        onGetMerchantList_thenReturn(createMerchantListResponse(), pageKey = "2")
 
         viewModel.getCategoryLayout(LocalCacheModel())
         viewModel.onScrollProductList(containLastItemIndex, itemCount, localCacheModel = LocalCacheModel())
@@ -106,8 +106,8 @@ class TokoFoodCategoryViewModelTest: TokoFoodCategoryViewModelTestFixture() {
         val containLastItemIndex = 5
         val itemCount = 6
 
-        onGetMerchantList_thenReturn(createMerchantListResponse(), pageKey = "1")
-        onGetMerchantList_thenReturn(NullPointerException(), pageKey = "2")
+        onGetMerchantList_thenReturn(createMerchantListResponse(), pageKey = "0")
+        onGetMerchantList_thenReturn(NullPointerException(), pageKey = "1")
 
         viewModel.getCategoryLayout(LocalCacheModel())
         viewModel.onScrollProductList(containLastItemIndex, itemCount, localCacheModel = LocalCacheModel())
@@ -120,7 +120,7 @@ class TokoFoodCategoryViewModelTest: TokoFoodCategoryViewModelTestFixture() {
         val containLastItemIndex = 5
         val itemCount = 5
 
-        onGetMerchantList_thenReturn(createMerchantListResponse(), pageKey = "1")
+        onGetMerchantList_thenReturn(createMerchantListResponse(), pageKey = "0")
 
         viewModel.getCategoryLayout(LocalCacheModel())
         viewModel.onScrollProductList(containLastItemIndex, itemCount, localCacheModel = LocalCacheModel())
@@ -138,7 +138,7 @@ class TokoFoodCategoryViewModelTest: TokoFoodCategoryViewModelTestFixture() {
         val containLastItemIndex = -1
         val itemCount = 0
 
-        onGetMerchantList_thenReturn(createMerchantListResponse(), pageKey = "1")
+        onGetMerchantList_thenReturn(createMerchantListResponse(), pageKey = "0")
 
         viewModel.getCategoryLayout(LocalCacheModel())
         viewModel.onScrollProductList(containLastItemIndex, itemCount, localCacheModel = LocalCacheModel())
@@ -156,7 +156,7 @@ class TokoFoodCategoryViewModelTest: TokoFoodCategoryViewModelTestFixture() {
         val containLastItemIndex = 5
         val itemCount = 6
 
-        onGetMerchantList_thenReturn(createMerchantListEmptyPageResponse(), pageKey = "1")
+        onGetMerchantList_thenReturn(createMerchantListEmptyPageResponse(), pageKey = "0")
 
         viewModel.getCategoryLayout(LocalCacheModel())
         viewModel.onScrollProductList(containLastItemIndex, itemCount, localCacheModel = LocalCacheModel())

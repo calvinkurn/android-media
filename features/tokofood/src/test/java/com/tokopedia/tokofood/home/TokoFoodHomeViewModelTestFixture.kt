@@ -255,7 +255,7 @@ abstract class TokoFoodHomeViewModelTestFixture {
     protected fun onGetMerchantList_thenReturn(
         layoutResponse: TokoFoodMerchantListResponse,
         localCacheModel: LocalCacheModel = LocalCacheModel(),
-        pageKey: String = "1"
+        pageKey: String = "0"
     ) {
         coEvery { tokoFoodMerchantListUseCase.execute(localCacheModel = localCacheModel, pageKey = pageKey) } returns layoutResponse
     }
@@ -263,7 +263,7 @@ abstract class TokoFoodHomeViewModelTestFixture {
     protected fun onGetMerchantList_thenReturn(
         error: Throwable,
         localCacheModel: LocalCacheModel = LocalCacheModel(),
-        pageKey: String = "1"
+        pageKey: String = "0"
     ) {
         coEvery { tokoFoodMerchantListUseCase.execute(localCacheModel = localCacheModel, pageKey = pageKey) } throws error
     }
