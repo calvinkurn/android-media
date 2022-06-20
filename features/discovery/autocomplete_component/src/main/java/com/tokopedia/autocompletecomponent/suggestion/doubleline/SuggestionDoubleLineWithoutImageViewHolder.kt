@@ -32,7 +32,6 @@ class SuggestionDoubleLineWithoutImageViewHolder(
     }
 
     private fun bindTitle(item: BaseSuggestionDataView) {
-        if(item.type == TYPE_CURATED) binding?.autocompleteSuggestionDoubleLineWithoutImageTitle?.setWeight(Typography.BOLD)
         binding?.autocompleteSuggestionDoubleLineWithoutImageTitle?.setTextAndCheckShow(item.title)
     }
 
