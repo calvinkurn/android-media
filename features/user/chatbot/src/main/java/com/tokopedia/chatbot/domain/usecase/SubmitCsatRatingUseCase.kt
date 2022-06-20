@@ -1,8 +1,5 @@
 package com.tokopedia.chatbot.domain.usecase
 
-import android.content.res.Resources
-import com.tokopedia.abstraction.common.utils.GraphqlHelper
-import com.tokopedia.chatbot.R
 import com.tokopedia.chatbot.domain.gqlqueries.SubmitCsatRatingQuery
 import com.tokopedia.chatbot.domain.gqlqueries.queries.SUBMIT_CSAT_RATING
 import com.tokopedia.chatbot.domain.pojo.csatRating.csatInput.InputItem
@@ -10,9 +7,6 @@ import com.tokopedia.chatbot.domain.pojo.csatRating.csatResponse.SubmitCsatGqlRe
 import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
-import com.tokopedia.graphql.data.model.GraphqlRequest
-import com.tokopedia.graphql.data.model.GraphqlResponse
-import rx.Subscriber
 import javax.inject.Inject
 
 
