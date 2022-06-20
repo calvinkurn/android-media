@@ -251,7 +251,7 @@ class SomListFragment : com.tokopedia.sellerorder.list.presentation.fragments.So
 
     override fun shouldShowBulkAcceptOrderCoachMark() = somListBinding?.scrollViewErrorState?.isVisible == false &&
             shouldShowCoachMark && coachMarkIndexToShow == bulkProcessCoachMarkItemPosition &&
-            somListBinding?.tvSomListBulk?.isVisible == true && tabActive == SomConsts.STATUS_NEW_ORDER
+            somListBinding?.tvSomListBulk?.isVisible == true && viewModel.getTabActive() == SomConsts.STATUS_NEW_ORDER
 
     private fun notifyOpenOrderDetail(order: SomListOrderUiModel) {
         getOpenedOrder().let { openedOrder ->

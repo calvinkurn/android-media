@@ -1,6 +1,7 @@
 package com.tokopedia.sellerorder.filter.domain.mapper
 
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
+import com.tokopedia.sellerorder.common.util.SomConsts
 import com.tokopedia.sellerorder.common.util.SomConsts.ALREADY_PRINT
 import com.tokopedia.sellerorder.common.util.SomConsts.ALREADY_PRINT_LABEL
 import com.tokopedia.sellerorder.common.util.SomConsts.FILTER_COURIER
@@ -18,6 +19,66 @@ import com.tokopedia.sellerorder.filter.presentation.model.SomFilterDateUiModel
 import com.tokopedia.sellerorder.filter.presentation.model.SomFilterUiModel
 
 object GetSomFilterMapper {
+
+    fun selectOrderStatusFilters(
+        somFilterUiModel: MutableList<SomFilterUiModel>,
+        statusList: List<Int>
+    ) {
+        if (statusList.isNotEmpty()) {
+            somFilterUiModel.find {
+                it.nameFilter == FILTER_STATUS_ORDER
+            }?.somFilterData?.forEach {
+                val isTheSameStatusFilter = it.idList.any {
+                    it in statusList
+                }
+                it.isSelected = isTheSameStatusFilter
+                if (isTheSameStatusFilter) {
+                    it.childStatus.forEach {
+                        it.isChecked = statusList.contains(it.childId.firstOrNull())
+                    }
+                } else {
+                    it.childStatus.forEach {
+                        it.isChecked = true
+                    }
+                }
+            }
+        }
+    }
+
+    fun selectOrderTypeFilters(somFilterUiModel: List<SomFilterUiModel>, preselectedOrderTypeFilters: List<Long>) {
+        somFilterUiModel.find {
+            it.nameFilter == FILTER_TYPE_ORDER
+        }?.somFilterData?.forEach {
+            it.isSelected = preselectedOrderTypeFilters.contains(it.id) || it.isSelected
+        }
+    }
+
+    fun deselectOrderTypeFilters(somFilterUiModel: List<SomFilterUiModel>, orderTypeFilterIds: List<Long>) {
+        val orderTypeFilters = somFilterUiModel.find {
+            it.nameFilter == FILTER_TYPE_ORDER
+        }
+        orderTypeFilterIds.forEach { orderTypeFilterId ->
+            orderTypeFilters?.somFilterData?.find {
+                it.id == orderTypeFilterId
+            }?.isSelected = false
+        }
+    }
+
+    fun selectSortByFilter(somFilterUiModel: MutableList<SomFilterUiModel>, sortBy: Long) {
+        somFilterUiModel.find {
+            it.nameFilter == FILTER_SORT
+        }?.somFilterData?.forEach {
+            it.isSelected = it.id == sortBy
+        }
+    }
+
+    fun deselectAllOrderStatusFilters(somFilterUiModelList: MutableList<SomFilterUiModel>) {
+        somFilterUiModelList.find {
+            it.nameFilter == SomConsts.FILTER_STATUS_ORDER
+        }?.somFilterData?.forEach {
+            it.isSelected = false
+        }
+    }
 
     fun mapToSomFilterVisitable(data: SomFilterResponse): List<BaseSomFilter> {
         return mutableListOf<BaseSomFilter>().apply {

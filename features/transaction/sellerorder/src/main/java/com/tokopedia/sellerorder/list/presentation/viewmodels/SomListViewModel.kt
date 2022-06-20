@@ -17,6 +17,7 @@ import com.tokopedia.sellerorder.common.domain.usecase.SomValidateOrderUseCase
 import com.tokopedia.sellerorder.common.presenter.viewmodel.SomOrderBaseViewModel
 import com.tokopedia.sellerorder.common.util.BulkRequestPickupStatus
 import com.tokopedia.sellerorder.common.util.SomConsts
+import com.tokopedia.sellerorder.filter.domain.mapper.GetSomFilterMapper
 import com.tokopedia.sellerorder.filter.presentation.model.SomFilterUiModel
 import com.tokopedia.sellerorder.list.domain.model.SomListBulkGetBulkAcceptOrderStatusParam
 import com.tokopedia.sellerorder.list.domain.model.SomListGetOrderListParam
@@ -50,6 +51,7 @@ import com.tokopedia.sellerorder.list.presentation.models.SomListBulkRequestPick
 import com.tokopedia.sellerorder.list.presentation.models.SomListFilterUiModel
 import com.tokopedia.sellerorder.list.presentation.models.SomListOrderUiModel
 import com.tokopedia.sellerorder.list.presentation.models.WaitingPaymentCounter
+import com.tokopedia.sellerorder.list.presentation.util.SomListFilterUtil
 import com.tokopedia.shop.common.constant.AccessId
 import com.tokopedia.shop.common.domain.interactor.AuthorizeAccessUseCase
 import com.tokopedia.unifycomponents.ticker.TickerData
@@ -208,9 +210,9 @@ class SomListViewModel @Inject constructor(
         }
     }
 
+    private var tabActiveFromAppLink: String = ""
     private var getOrderListParams = SomListGetOrderListParam()
     private var somFilterUiModelList: MutableList<SomFilterUiModel> = mutableListOf()
-    private var orderTypeFilterFromAppLink: Long = 0L
 
     var isMultiSelectEnabled: Boolean = false
     var containsFailedRefreshOrder: Boolean = false
@@ -524,13 +526,9 @@ class SomListViewModel @Inject constructor(
             launchCatchError(context = dispatcher.main, block = {
                 if (_canShowOrderData.value == true) {
                     val result = somListGetFilterListUseCase.executeOnBackground(true)
-                    val currentFilterData = _filterResult.value?.let {
-                        if (it is Success) {
-                            it.data
-                        } else null
-                    }
-                    result.mergeWithCurrent(currentFilterData, orderTypeFilterFromAppLink)
+                    result.mergeWithCurrent(getOrderListParams, tabActiveFromAppLink)
                     result.refreshOrder = refreshOrders
+                    setTabActiveFromAppLink("")
                     _filterResult.value = Success(result)
                 }
             }, onError = {})
@@ -538,13 +536,9 @@ class SomListViewModel @Inject constructor(
         launchCatchError(context = dispatcher.main, block = {
             if (_canShowOrderData.value == true) {
                 val result = somListGetFilterListUseCase.executeOnBackground(false)
-                val currentFilterData = _filterResult.value?.let {
-                    if (it is Success) {
-                        it.data
-                    } else null
-                }
-                result.mergeWithCurrent(currentFilterData, orderTypeFilterFromAppLink)
+                result.mergeWithCurrent(getOrderListParams, tabActiveFromAppLink)
                 result.refreshOrder = refreshOrders
+                setTabActiveFromAppLink("")
                 _filterResult.value = Success(result)
             }
         }, onError = {
@@ -630,8 +624,9 @@ class SomListViewModel @Inject constructor(
         return (topAdsGetShopInfoSuccess == SomConsts.TOPADS_MANUAL_ADS || topAdsGetShopInfoSuccess == SomConsts.TOPADS_AUTO_ADS)
     }
 
-    fun setStatusOrderFilter(id: List<Int>) {
-        getOrderListParams.statusList = id
+    fun setStatusOrderFilter(ids: List<Int>) {
+        getOrderListParams.statusList = ids
+        SomListFilterUtil.updateStatusOrderFilter(somFilterUiModelList, ids)
         resetNextOrderId()
     }
 
@@ -655,39 +650,19 @@ class SomListViewModel @Inject constructor(
         this.getOrderListParams = getOrderListParams
     }
 
-    fun setOrderTypeFilter(orderTypes: MutableSet<Long>) {
-        this.getOrderListParams.orderTypeList = orderTypes
-    }
-
     fun addOrderTypeFilter(orderType: Long) {
         this.getOrderListParams.orderTypeList.add(orderType)
-        somFilterUiModelList.find {
-            it.nameFilter == SomConsts.FILTER_TYPE_ORDER
-        }?.somFilterData?.find { it.id == orderType }?.isSelected = true
-        _filterResult.value?.let {
-            if (it is Success) {
-                it.data.orderTypeList.find { it.id == orderType }?.isChecked = true
-            }
-        }
+        GetSomFilterMapper.selectOrderTypeFilters(somFilterUiModelList, listOf(orderType))
     }
 
     fun removeOrderTypeFilter(orderType: Long) {
         this.getOrderListParams.orderTypeList.remove(orderType)
-        if (orderType == orderTypeFilterFromAppLink) {
-            orderTypeFilterFromAppLink = 0L
-        }
-        somFilterUiModelList.find {
-            it.nameFilter == SomConsts.FILTER_TYPE_ORDER
-        }?.somFilterData?.find { it.id == orderType }?.isSelected = false
-        _filterResult.value?.let {
-            if (it is Success) {
-                it.data.orderTypeList.find { it.id == orderType }?.isChecked = false
-            }
-        }
+        GetSomFilterMapper.deselectOrderTypeFilters(somFilterUiModelList, listOf(orderType))
     }
 
-    fun setSortOrderBy(value: Long) {
-        this.getOrderListParams.sortBy = value
+    fun setSortOrderBy(sortId: Long) {
+        this.getOrderListParams.sortBy = sortId
+        SomListFilterUtil.selectSomFilterSortBy(somFilterUiModelList, sortId)
     }
 
     fun isRefreshingAllOrder() = getOrderListJob?.isCompleted == false
@@ -716,77 +691,42 @@ class SomListViewModel @Inject constructor(
         )
     }
 
-    fun updateSomListFilterUi(somFilterUiModelList: List<SomFilterUiModel>) {
+    fun updateSomFilterUiModelList(somFilterUiModelList: List<SomFilterUiModel>) {
         this.somFilterUiModelList.clear()
         this.somFilterUiModelList.addAll(somFilterUiModelList)
-        _filterResult.value?.let {
-            if (it is Success) {
-                it.data.orderTypeList.forEach { somListOrderTypeFilter ->
-                    somListOrderTypeFilter.isChecked = somFilterUiModelList.find {
-                        it.nameFilter == SomConsts.FILTER_TYPE_ORDER
-                    }?.somFilterData?.find {
-                        it.key == somListOrderTypeFilter.key
-                    }?.isSelected ?: somListOrderTypeFilter.isChecked
-                }
-            }
-        }
     }
 
-    fun clearSomListFilterUi() {
-        updateSomListFilterUi(emptyList())
+    fun clearSomFilterUiModelList() {
+        updateSomFilterUiModelList(emptyList())
     }
 
-    fun getSelectedSort(): Long? {
-        return this.somFilterUiModelList.find {
-            it.nameFilter == SomConsts.FILTER_SORT
-        }?.somFilterData?.find {
-            it.isSelected
-        }?.id
+    fun getSelectedSort(): Long {
+        return getOrderListParams.sortBy
     }
 
     fun getSomFilterUi() = somFilterUiModelList
 
-    fun getPreselectedOrderTypeFilters(): List<Long> {
-        return _filterResult.value?.let {
-            if (it is Success) {
-                it.data.orderTypeList.mapNotNull { if (it.isChecked) it.id else null }
-            } else emptyList()
-        }.orEmpty()
-    }
-
-    fun isSortByAppliedManually(): Boolean {
-        return this.somFilterUiModelList.any {
-            it.nameFilter == SomConsts.FILTER_SORT && it.somFilterData.any {
-                it.isSelected
-            }
-        }
+    fun getSelectedOrderTypeFilters(): List<Long> {
+        return getOrderListParams.orderTypeList.toList()
     }
 
     fun getSelectedFilterKeys() = somFilterUiModelList.filter {
         it.nameFilter != SomConsts.FILTER_STATUS_ORDER
     }.map { it.somFilterData.filter { it.isSelected }.map { it.key } }.flatten()
 
-    fun isStatusFilterAppliedFromAdvancedFilter(): Boolean {
-        return somFilterUiModelList.any {
-            it.nameFilter == SomConsts.FILTER_STATUS_ORDER && it.somFilterData.any { chips ->
-                chips.isSelected
-            }
-        }
-    }
-
     fun deselectAllStatusFilterFromAdvancedFilter() {
-        somFilterUiModelList.find {
-            it.nameFilter == SomConsts.FILTER_STATUS_ORDER
-        }?.somFilterData?.forEach {
-            it.isSelected = false
-        }
+        GetSomFilterMapper.deselectAllOrderStatusFilters(somFilterUiModelList)
     }
 
-    fun getOrderTypeFilterFromAppLink(): Long {
-        return orderTypeFilterFromAppLink
+    fun updateSelectedStatusOrderFilterOnSomFilter(status: SomListFilterUiModel.Status) {
+        SomListFilterUtil.updateSelectedStatusOrderFilter(somFilterUiModelList, status)
     }
 
-    fun setOrderTypeFilterFromAppLink(id: Long) {
-        orderTypeFilterFromAppLink = id
+    fun setTabActiveFromAppLink(tab: String) {
+        tabActiveFromAppLink = tab
+    }
+
+    fun getTabActive(): String {
+        return SomListFilterUtil.inferTabActive(_filterResult.value, getOrderListParams.statusList) ?: tabActiveFromAppLink
     }
 }

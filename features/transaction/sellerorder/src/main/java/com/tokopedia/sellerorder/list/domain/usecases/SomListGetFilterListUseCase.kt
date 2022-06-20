@@ -51,6 +51,10 @@ class SomListGetFilterListUseCase @Inject constructor(
                     is_checked
                   }
                 }
+                sort_by{
+                  text
+                  value
+                }
               }
               orderTypeList {
                 id

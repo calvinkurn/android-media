@@ -86,21 +86,11 @@ class SomListOrderStatusFilterTab(
         }
     }
 
-    fun getAllStatusCodes(): List<String> {
-        return somListFilterUiModel?.statusList?.find { it.key == SomConsts.STATUS_ALL_ORDER }
-            ?.id?.map { it.toString() }.orEmpty()
-    }
-
     fun shouldShowBulkAction() = (selectedTab?.key == SomConsts.STATUS_NEW_ORDER || selectedTab?.key == SomConsts.KEY_CONFIRM_SHIPPING) && GlobalConfig.isSellerApp()
     fun isNewOrderFilterSelected(): Boolean = selectedTab?.key == SomConsts.STATUS_NEW_ORDER
     fun getSelectedFilterOrderCount(): Int = selectedTab?.amount.orZero()
     fun getSelectedFilterStatus(): String = selectedTab?.key.orEmpty()
     fun getSelectedFilterStatusName(): String = selectedTab?.status.orEmpty()
-    fun selectAllOrderTab() {
-        somListFilterUiModel?.statusList?.find { it.key == SomConsts.STATUS_ALL_ORDER }?.let {
-            selectTab(it)
-        }
-    }
 
     interface Listener {
         fun onClickOrderStatusFilterTab(

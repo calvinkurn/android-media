@@ -10,6 +10,7 @@ class FilterResultMapper @Inject constructor() {
         return SomListFilterUiModel(
             statusList = mapStatusList(resultFilterList.orderFilterSom.statusList),
             orderTypeList = mapOrderTypeList(resultFilterList.orderTypeList),
+            sortByList = mapSortByList(resultFilterList.orderFilterSom.sortByList),
             fromCache = fromCache
         )
     }
@@ -37,7 +38,7 @@ class FilterResultMapper @Inject constructor() {
                 this
             } else {
                 ArrayList<SomListFilterUiModel.Status>().apply {
-                    includeAllStatusOrderFilter(this@run)
+                    includeAllStatusOrderFilter()
                     addAll(this@run)
                 }
             }
@@ -54,20 +55,23 @@ class FilterResultMapper @Inject constructor() {
         }
     }
 
+    private fun mapSortByList(sortByList: List<SomListFilterResponse.Data.OrderFilterSom.SortBy>): List<SomListFilterUiModel.SortBy> {
+        return sortByList.map {
+            SomListFilterUiModel.SortBy(
+                id = it.value
+            )
+        }
+    }
+
     private fun List<SomListFilterUiModel.Status>.containsAllStatusOrderFilter(): Boolean {
         return any { it.key == SomConsts.STATUS_ALL_ORDER }
     }
 
-    private fun ArrayList<SomListFilterUiModel.Status>.includeAllStatusOrderFilter(
-        statuses: List<SomListFilterUiModel.Status>
-    ) {
+    private fun ArrayList<SomListFilterUiModel.Status>.includeAllStatusOrderFilter() {
         add(
             SomListFilterUiModel.Status(
                 key = SomConsts.STATUS_ALL_ORDER,
-                status = SomConsts.STATUS_NAME_ALL_ORDER,
-                id = statuses.map {
-                    it.id
-                }.flatten()
+                status = SomConsts.STATUS_NAME_ALL_ORDER
             )
         )
     }

@@ -67,7 +67,6 @@ class SomFilterBottomSheet : BottomSheetUnify(),
     private var rvSomFilter: RecyclerView? = null
     private var btnShowOrder: UnifyButton? = null
     private var somFilterAdapter: SomFilterAdapter? = null
-    private var orderStatus: String = ""
     private var filterDate: String = ""
     private var isApplyFilter: Boolean = false
     private var statusList = listOf<Int>()
@@ -75,7 +74,6 @@ class SomFilterBottomSheet : BottomSheetUnify(),
     private var somFilterFinishListener: SomFilterFinishListener? = null
     private var somListOrderParam: SomListGetOrderListParam? = null
     private var somFilterUiModelListCopy = listOf<SomFilterUiModel>()
-    private var isStatusFilterAppliedFromAdvancedFilter = false
 
     private var fm: FragmentManager? = null
 
@@ -109,7 +107,7 @@ class SomFilterBottomSheet : BottomSheetUnify(),
     override fun onDismiss(dialog: DialogInterface) {
         super.onDismiss(dialog)
         if (!isApplyFilter) {
-            val cancelWrapper = SomFilterCancelWrapper(orderStatus, statusList, somFilterUiModelListCopy, filterDate)
+            val cancelWrapper = SomFilterCancelWrapper(statusList, somFilterUiModelListCopy, filterDate)
             somFilterFinishListener?.onClickOverlayBottomSheet(cancelWrapper)
         }
     }
@@ -117,19 +115,13 @@ class SomFilterBottomSheet : BottomSheetUnify(),
     private fun getDataFromArgumentOrCacheManager() {
         val cacheManager = context?.let { SaveInstanceCacheManager(it, arguments?.getString(KEY_CACHE_MANAGER_ID)) }
         val somFilterUiModelList = cacheManager?.get(KEY_SOM_FILTER_LIST, SomFilterUiModelWrapper::class.java) ?: SomFilterUiModelWrapper()
-        val preselectedOrderTypeFilters = arguments?.getLongArray(KEY_PRESELECTED_ORDER_TYPE_FILTERS)?.toList().orEmpty()
         somListOrderParam = cacheManager?.get(KEY_SOM_LIST_GET_ORDER_PARAM, SomListGetOrderListParam::class.java)
-        orderStatus = arguments?.getString(KEY_ORDER_STATUS).orEmpty()
         filterDate = arguments?.getString(KEY_FILTER_DATE).orEmpty()
-        isStatusFilterAppliedFromAdvancedFilter = arguments?.getBoolean(KEY_IS_STATUS_FILTER_APPLIED_FROM_ADVANCED, false) ?: false
-        val somFilterUiModelListTransform = somFilterUiModelList.somFilterUiModelList
-            .transformFilterStatus(isStatusFilterAppliedFromAdvancedFilter)
-            .transformFilterOrderType(preselectedOrderTypeFilters)
-        somFilterUiModelListCopy = somFilterUiModelListTransform.copyListParcelable()
+        somFilterUiModelListCopy = somFilterUiModelList.somFilterUiModelList.copyListParcelable()
         val statusListFilter = arguments?.getIntegerArrayList(KEY_ORDER_STATUS_ID_LIST)?.toList()
         statusList = statusListFilter?.copyInt() ?: listOf()
         somListOrderParam?.statusList = statusListFilter ?: listOf()
-        somFilterViewModel.setSomFilterUiModel(somFilterUiModelListTransform)
+        somFilterViewModel.setSomFilterUiModel(somFilterUiModelList.somFilterUiModelList)
         somListOrderParam?.let { somFilterViewModel.setSomListGetOrderListParam(it) }
     }
 
@@ -238,16 +230,20 @@ class SomFilterBottomSheet : BottomSheetUnify(),
         super.onDestroy()
     }
 
-    private fun List<SomFilterUiModel>.transformFilterStatus(isStatusFilterAppliedFromAdvancedFilter: Boolean): List<SomFilterUiModel> {
-        if (!isStatusFilterAppliedFromAdvancedFilter) {
-            this.filter { it.nameFilter == FILTER_STATUS_ORDER }.map {
-                it.somFilterData.map { chips ->
-                    if (chips.childStatus.isNotEmpty()) {
-                        chips.childStatus.map { child ->
-                            if(!child.isChecked) {
-                                child.isChecked = true
-                            }
-                        }
+    private fun List<SomFilterUiModel>.transformFilterOrderStatus(): List<SomFilterUiModel> {
+        if (!somListOrderParam?.statusList.isNullOrEmpty()) {
+            find { it.nameFilter == FILTER_STATUS_ORDER }?.somFilterData?.forEach {
+                val isTheSameStatusFilter = it.idList.any {
+                    it in somListOrderParam?.statusList.orEmpty()
+                }
+                it.isSelected = isTheSameStatusFilter
+                if (isTheSameStatusFilter) {
+                    it.childStatus.forEach {
+                        it.isChecked = somListOrderParam?.statusList.orEmpty().contains(it.childId.firstOrNull())
+                    }
+                } else {
+                    it.childStatus.forEach {
+                        it.isChecked = true
                     }
                 }
             }
@@ -255,15 +251,19 @@ class SomFilterBottomSheet : BottomSheetUnify(),
         return this
     }
 
-    private fun List<SomFilterUiModel>.transformFilterOrderType(
-        preselectedOrderTypeFilters: List<Long>
-    ): List<SomFilterUiModel> {
+    private fun List<SomFilterUiModel>.transformFilterOrderType(): List<SomFilterUiModel> {
         find { it.nameFilter == FILTER_TYPE_ORDER }?.somFilterData?.forEach {
-            it.isSelected = preselectedOrderTypeFilters.contains(it.id)
+            it.isSelected = somListOrderParam?.orderTypeList?.contains(it.id) ?: it.isSelected
         }
         return this
     }
 
+    private fun List<SomFilterUiModel>.transformFilterSort(): List<SomFilterUiModel> {
+        find { it.nameFilter == FILTER_SORT }?.somFilterData?.forEach {
+            it.isSelected = it.id == somListOrderParam?.sortBy
+        }
+        return this
+    }
 
     private fun adjustBottomSheetPadding() {
         bottomSheetWrapper.setPadding(0, 16.toPx(), 0, bottomSheetWrapper.paddingBottom)
@@ -282,7 +282,7 @@ class SomFilterBottomSheet : BottomSheetUnify(),
     private fun loadSomFilterData() {
         somFilterAdapter?.showLoading()
         btnShowOrder?.hide()
-        somFilterViewModel.getSomFilterData(orderStatus, filterDate, arguments?.getLongArray(KEY_PRESELECTED_ORDER_TYPE_FILTERS)?.toList().orEmpty())
+        somFilterViewModel.getSomFilterData(filterDate)
     }
 
     private fun finishSomFilterData() {
@@ -451,31 +451,31 @@ class SomFilterBottomSheet : BottomSheetUnify(),
         const val TITLE_FILTER = "Filter"
         const val SOM_FILTER_BOTTOM_SHEET_TAG = "SomFilterBottomSheetTag"
         const val SOM_FILTER_DATE_BOTTOM_SHEET_TAG = "SomFilterDateBottomSheetTag"
-        const val KEY_ORDER_STATUS = "key_order_status"
         const val KEY_SOM_FILTER_LIST = "key_som_filter_list"
         const val KEY_ORDER_STATUS_ID_LIST = "key_order_status_id_list"
         const val KEY_FILTER_DATE = "key_filter_date"
         const val KEY_SOM_LIST_GET_ORDER_PARAM = "key_som_list_get_order_param"
         const val KEY_CACHE_MANAGER_ID = "key_cache_manager_id"
         const val KEY_PRESELECTED_ORDER_TYPE_FILTERS = "key_preselected_order_type_filters"
-        const val KEY_IS_STATUS_FILTER_APPLIED_FROM_ADVANCED = "key_is_status_filter_applied_from_advanced"
+        const val KEY_PRESELECTED_SORT_FILTER = "key_preselected_sort_filter"
         const val REQUEST_CODE_FILTER_SEE_ALL = 901
         const val RESULT_CODE_FILTER_SEE_ALL = 801
 
-        fun createInstance(orderStatus: String,
-                           isStatusFilterAppliedFromAdvancedFilter: Boolean,
-                           orderStatusIdList: List<Int>,
-                           filterDate: String,
-                           preselectedOrderTypeFilters: List<Long>,
-                           cacheManagerId: String
+        fun createInstance(
+            orderStatusIdList: List<Int>,
+            filterDate: String,
+            preselectedOrderTypeFilters: List<Long>,
+            preselectedSortFilter: Long?,
+            cacheManagerId: String
         ): SomFilterBottomSheet {
             val fragment = SomFilterBottomSheet()
             val args = Bundle()
-            args.putString(KEY_ORDER_STATUS, orderStatus)
-            args.putBoolean(KEY_IS_STATUS_FILTER_APPLIED_FROM_ADVANCED, isStatusFilterAppliedFromAdvancedFilter)
             args.putIntegerArrayList(KEY_ORDER_STATUS_ID_LIST, ArrayList(orderStatusIdList))
             args.putString(KEY_FILTER_DATE, filterDate)
             args.putLongArray(KEY_PRESELECTED_ORDER_TYPE_FILTERS, preselectedOrderTypeFilters.toLongArray())
+            preselectedSortFilter?.let {
+                args.putLong(KEY_PRESELECTED_SORT_FILTER, it)
+            }
             args.putString(KEY_CACHE_MANAGER_ID, cacheManagerId)
             fragment.arguments = args
             return fragment

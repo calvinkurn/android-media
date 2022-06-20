@@ -14,6 +14,7 @@ import com.tokopedia.sellerorder.common.util.SomConsts.FILTER_STATUS_ORDER
 import com.tokopedia.sellerorder.common.util.SomConsts.FILTER_TYPE_ORDER
 import com.tokopedia.sellerorder.common.util.Utils
 import com.tokopedia.sellerorder.common.util.Utils.formatDate
+import com.tokopedia.sellerorder.filter.domain.mapper.GetSomFilterMapper
 import com.tokopedia.sellerorder.filter.domain.usecase.GetSomOrderFilterUseCase
 import com.tokopedia.sellerorder.filter.presentation.model.BaseSomFilter
 import com.tokopedia.sellerorder.filter.presentation.model.SomFilterChipsUiModel
@@ -80,22 +81,16 @@ class SomFilterViewModel @Inject constructor(dispatcher: CoroutineDispatchers,
         getSomFilterUiModel(nameFilter)?.somFilterData = somSubFilterList
     }
 
-    private fun selectOrderStatusFilter(orderStatus: String) {
-        getSomFilterUiModelItems(FILTER_STATUS_ORDER).forEach { chips ->
-            if(chips.name != SomConsts.STATUS_NAME_ALL_ORDER) {
-                chips.isSelected = chips.name == orderStatus
-            } else {
-                chips.isSelected
-            }
-        }
+    private fun selectPreselectedOrderStatusFilter() {
+        GetSomFilterMapper.selectOrderStatusFilters(somFilterUiModel, somListGetOrderListParam.statusList)
     }
 
-    private fun selectPreselectedOrderTypeFilters(preselectedOrderTypeFilters: List<Long>) {
-        somFilterUiModel.find {
-            it.nameFilter == SomConsts.FILTER_TYPE_ORDER
-        }?.somFilterData?.forEach {
-            it.isSelected = preselectedOrderTypeFilters.contains(it.id) || it.isSelected
-        }
+    private fun selectPreselectedOrderTypeFilters() {
+        GetSomFilterMapper.selectOrderTypeFilters(somFilterUiModel, somListGetOrderListParam.orderTypeList.toList())
+    }
+
+    private fun selectPreselectedSortByFilter() {
+        GetSomFilterMapper.selectSortByFilter(somFilterUiModel, somListGetOrderListParam.sortBy)
     }
 
     private fun deselectCorrespondingFilterItems(nameFilter: String) {
@@ -124,7 +119,7 @@ class SomFilterViewModel @Inject constructor(dispatcher: CoroutineDispatchers,
         this.somListGetOrderListParam = somListGetOrderListParam
     }
 
-    fun getSomFilterData(orderStatus: String, date: String, preselectedOrderTypeFilters: List<Long>) {
+    fun getSomFilterData(date: String) {
         launchCatchError(block = {
             val result = getSomOrderFilterUseCase.execute()
             val somFilterResult = result.filterIsInstance<SomFilterUiModel>()
@@ -138,8 +133,9 @@ class SomFilterViewModel @Inject constructor(dispatcher: CoroutineDispatchers,
                 somFilterUiModel.addAll(somFilterResult)
             }
 
-            selectOrderStatusFilter(orderStatus)
-            selectPreselectedOrderTypeFilters(preselectedOrderTypeFilters)
+            selectPreselectedOrderStatusFilter()
+            selectPreselectedOrderTypeFilters()
+            selectPreselectedSortByFilter()
             val somFilterVisitable = mutableListOf<BaseSomFilter>()
             somFilterVisitable.addAll(somFilterUiModel)
             somFilterVisitable.add(somFilterDate)

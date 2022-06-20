@@ -21,7 +21,10 @@ data class SomListFilterResponse(
         data class OrderFilterSom(
             @SerializedName("status_list")
             @Expose
-            val statusList: List<Status> = listOf()
+            val statusList: List<Status> = listOf(),
+            @SerializedName("sort_by")
+            @Expose
+            val sortByList: List<SortBy> = listOf()
         ) {
             data class Status(
                 @SerializedName("child_status")
@@ -63,6 +66,15 @@ data class SomListFilterResponse(
                     val text: String = ""
                 )
             }
+
+            data class SortBy(
+                @SerializedName("text")
+                @Expose
+                val text: String = "",
+                @SerializedName("value")
+                @Expose
+                val value: Long = 0L
+            )
         }
 
         data class OrderType(
