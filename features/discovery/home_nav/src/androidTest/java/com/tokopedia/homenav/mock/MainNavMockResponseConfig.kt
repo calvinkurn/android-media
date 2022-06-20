@@ -39,7 +39,6 @@ internal open class MainNavMockResponseConfig : MockModelConfig() {
         addMockResponse(
             KEY_CONTAINS_MAINNAV_PAYMENT_LIST,
             getRawString(context, R.raw.response_success_mock_mainnav_payment_query),
-//            getRawString(context, R.raw.response_success_mock_mainnav_payment_list),
             FIND_BY_CONTAINS
         )
 

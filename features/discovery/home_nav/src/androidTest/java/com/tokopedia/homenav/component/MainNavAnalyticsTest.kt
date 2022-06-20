@@ -36,7 +36,7 @@ import kotlin.reflect.KClass
 private const val TAG = "HomeNavAnalyticsTest"
 
 @CassavaTest
-class HomeNavAnalyticTest {
+class MainNavAnalyticsTest {
     @get:Rule
     var activityRule = object : IntentsTestRule<HomeNavActivity>(
         HomeNavActivity::class.java
