@@ -116,8 +116,6 @@
     <string name="campaign_teaser_info_title">Informasi Teaser Campaign</string>
 
     <!--no campaign quota dialog box-->
-    <string name="no_campaign_quota_title">Yaah, kuota campaign-mu habis</string>
-    <string name="no_campaign_quota_description">Dapatkan tambahan kuota campaign dengan upgrade keanggotaan tokomu dulu, ya!</string>
     <string name="no_campaign_quota_primary_cta_text">Cek Keanggotaan Toko</string>
     <string name="no_campaign_quota_secondary_cta_text">Kembali</string>
 

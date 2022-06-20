@@ -510,11 +510,6 @@ class CampaignListFragment : BaseSimpleListFragment<CampaignAdapter, CampaignUiM
             return
         }
 
-        if (data.remainingQuota == ZERO) {
-            showCampaignQuotaEmptyDialog(requireActivity())
-            return
-        }
-
         if (drafts.size >= MAX_DRAFT_COUNT) {
             showDraftListBottomSheet(drafts)
             return
@@ -627,22 +622,6 @@ class CampaignListFragment : BaseSimpleListFragment<CampaignAdapter, CampaignUiM
             showCancelCampaignSuccess(campaign)
         }
         bottomSheet.show(childFragmentManager)
-    }
-
-    private fun showCampaignQuotaEmptyDialog(context: Context){
-        val dialog = DialogUnify(context, DialogUnify.VERTICAL_ACTION, DialogUnify.NO_IMAGE)
-        dialog.setTitle(context.getString(R.string.no_campaign_quota_title))
-        dialog.setDescription(context.getString(R.string.no_campaign_quota_description))
-        dialog.setPrimaryCTAText(context.getString(R.string.no_campaign_quota_primary_cta_text))
-        dialog.setSecondaryCTAText(context.getString(R.string.no_campaign_quota_secondary_cta_text))
-
-        dialog.setPrimaryCTAClickListener {
-            routeToPmSubscribePage()
-        }
-        dialog.setSecondaryCTAClickListener {
-            dialog.dismiss()
-        }
-        dialog.show()
     }
 
     private fun showIneligibleAccess(context: Context){
