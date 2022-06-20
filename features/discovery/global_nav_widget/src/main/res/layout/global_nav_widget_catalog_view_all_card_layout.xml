@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.tokopedia.viewallcard.ViewAllCard
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/globalNavCatalogViewAllCard"
+    android:layout_width="144dp"
+    android:layout_height="match_parent"
+    app:view_all_card_unify_title="@string/catalog_global_nav_view_all_title" />
