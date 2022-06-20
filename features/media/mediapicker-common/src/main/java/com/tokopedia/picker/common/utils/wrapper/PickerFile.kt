@@ -2,10 +2,11 @@ package com.tokopedia.picker.common.utils.wrapper
 
 import android.content.Context
 import android.graphics.BitmapFactory
-import android.webkit.MimeTypeMap
 import com.tokopedia.picker.common.mapper.humanize
 import com.tokopedia.picker.common.utils.VideoDurationRetriever
-import com.tokopedia.picker.common.utils.getFileFormatByMimeType
+import com.tokopedia.picker.common.utils.fileExtension
+import com.tokopedia.picker.common.utils.isImageFormat
+import com.tokopedia.picker.common.utils.isVideoFormat
 import java.io.File
 
 class PickerFile constructor(
@@ -16,22 +17,14 @@ class PickerFile constructor(
         if (exists()) delete()
     }
 
-    fun isGif() = extension().equals(
+    fun isGif() = fileExtension(path).equals(
         GIF_EXT,
         ignoreCase = true
     )
 
-    fun isImage() = getFileFormatByMimeType(
-        type = MIME_TYPE_IMAGE,
-        path = path,
-        extension = extension()
-    )
+    fun isImage() = isImageFormat(path)
 
-    fun isVideo() = getFileFormatByMimeType(
-        type = MIME_TYPE_VIDEO,
-        path = path,
-        extension = extension()
-    )
+    fun isVideo() = isVideoFormat(path)
 
     fun isSizeMoreThan(sizeInBytes: Long): Boolean {
         if (!exists()) return false
@@ -71,30 +64,7 @@ class PickerFile constructor(
         return bitmapOptions
     }
 
-    /*
-    * A custom method for getting the file extension.
-    *
-    * @example:
-    * File -> /data/DCIM/Pictures/isfa.jpg
-    *
-    * @return:
-    * jpg
-    * */
-    private fun extension(): String {
-        val extension = MimeTypeMap.getFileExtensionFromUrl(path)
-        if (!extension.isNullOrEmpty()) return extension
-
-        return if (path.contains(".")) {
-            path.substring(path.lastIndexOf(".") + 1, path.length)
-        } else {
-            ""
-        }
-    }
-
     companion object {
-        private const val MIME_TYPE_IMAGE = "image"
-        private const val MIME_TYPE_VIDEO = "video"
-
         private const val GIF_EXT = "gif"
 
         fun File.asPickerFile(): PickerFile {
