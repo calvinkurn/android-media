@@ -46,7 +46,6 @@ import com.tokopedia.chatbot.ChatbotConstant.ImageUpload.MINIMUM_HEIGHT
 import com.tokopedia.chatbot.ChatbotConstant.ImageUpload.MINIMUM_WIDTH
 import com.tokopedia.chatbot.R
 import com.tokopedia.chatbot.data.ConnectionDividerViewModel
-import com.tokopedia.chatbot.data.TickerData.TickerData
 import com.tokopedia.chatbot.data.TickerData.TickerDataResponse
 import com.tokopedia.chatbot.data.chatactionbubble.ChatActionBubbleViewModel
 import com.tokopedia.chatbot.data.helpfullquestion.HelpFullQuestionsViewModel
@@ -55,7 +54,6 @@ import com.tokopedia.chatbot.data.invoice.AttachInvoiceSingleViewModel
 import com.tokopedia.chatbot.data.network.ChatbotUrl
 import com.tokopedia.chatbot.data.newsession.TopBotNewSessionResponse
 import com.tokopedia.chatbot.data.quickreply.QuickReplyViewModel
-import com.tokopedia.chatbot.data.rating.ChatRatingViewModel
 import com.tokopedia.chatbot.data.seprator.ChatSepratorViewModel
 import com.tokopedia.chatbot.data.toolbarpojo.ToolbarAttributes
 import com.tokopedia.chatbot.data.uploadsecure.UploadSecureResponse
@@ -70,6 +68,7 @@ import com.tokopedia.chatbot.domain.pojo.livechatdivider.LiveChatDividerAttribut
 import com.tokopedia.chatbot.domain.pojo.quickreply.QuickReplyAttachmentAttributes
 import com.tokopedia.chatbot.domain.pojo.submitchatcsat.ChipSubmitChatCsatInput
 import com.tokopedia.chatbot.domain.pojo.submitoption.SubmitOptionInput
+import com.tokopedia.chatbot.domain.pojo.submitoption.SubmitOptionListResponse
 import com.tokopedia.chatbot.domain.subscriber.*
 import com.tokopedia.chatbot.domain.usecase.*
 import com.tokopedia.chatbot.view.listener.ChatbotContract
@@ -682,7 +681,20 @@ class ChatbotPresenter @Inject constructor(
 
     override fun hitGqlforOptionList(selectedValue: Int, model: HelpFullQuestionsViewModel?) {
         val input = genrateInput(selectedValue, model)
-        chipSubmitHelpfulQuestionsUseCase.execute(chipSubmitHelpfulQuestionsUseCase.generateParam(input), ChipSubmitHelpfullQuestionsSubscriber(onSubmitError))
+        chipSubmitHelpfulQuestionsUseCase.cancelJobs()
+        chipSubmitHelpfulQuestionsUseCase.chipSubmitHelpfulQuestions(
+            ::onSuccessOptionList,
+            ::onErrorOptionList,
+            input
+        )
+    }
+
+    private fun onSuccessOptionList(submitOptionListResponse: SubmitOptionListResponse) {
+        //Notifying the backend
+    }
+
+    private fun onErrorOptionList(throwable: Throwable) {
+        onSubmitError(throwable)
     }
 
     private val onSubmitError: (Throwable) -> Unit = {
@@ -749,7 +761,6 @@ class ChatbotPresenter @Inject constructor(
         sendRatingReasonUseCase.unsubscribe()
         leaveQueueUseCase.unsubscribe()
         chipGetChatRatingListUseCase.unsubscribe()
-        chipSubmitHelpfulQuestionsUseCase.unsubscribe()
         chipSubmitChatCsatUseCase.unsubscribe()
         job.cancel()
         super.detachView()
