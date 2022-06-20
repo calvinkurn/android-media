@@ -273,7 +273,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         )
     }.stateIn(
         viewModelScope,
-        SharingStarted.WhileSubscribed(5000),
+        SharingStarted.WhileSubscribed(UI_STATE_STOP_TIMEOUT),
         PlayBroadcastUiState.Empty,
     )
 
@@ -1547,6 +1547,8 @@ class PlayBroadcastViewModel @AssistedInject constructor(
     fun getShopName(): String = userSession.shopName
 
     companion object {
+
+        private const val UI_STATE_STOP_TIMEOUT = 5000L
 
         private const val KEY_TITLE = "title"
 

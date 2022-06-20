@@ -142,6 +142,7 @@ class PlayBroadcastMockMapper : PlayBroadcastMapper {
         return TotalLikeUiModel(totalLike = "1234")
     }
 
+    @Suppress("MagicNumber")
     override fun mapNewMetricList(metric: NewMetricList): List<PlayMetricUiModel> {
         return List(10) {
             PlayMetricUiModel(

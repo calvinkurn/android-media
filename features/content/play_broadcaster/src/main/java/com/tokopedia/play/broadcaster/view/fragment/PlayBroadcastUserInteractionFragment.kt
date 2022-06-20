@@ -1,5 +1,6 @@
 package com.tokopedia.play.broadcaster.view.fragment
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -563,6 +564,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
         showToaster(errMessage, Toaster.TYPE_ERROR, duration, actionLabel, actionListener)
     }
 
+    @SuppressLint("ResourceFragmentDetector")
     private fun showToaster(
             message: String,
             type: Int = Toaster.TYPE_NORMAL,
@@ -571,7 +573,9 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
             actionListener: View.OnClickListener = View.OnClickListener { }
     ) {
         if (toasterBottomMargin == 0) {
-            val offset24 = resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl5)
+            val offset24 = resources.getDimensionPixelOffset(
+                com.tokopedia.unifyprinciples.R.dimen.spacing_lvl5
+            )
             toasterBottomMargin = ivShareLink.height + offset24
         }
         view?.showToaster(
