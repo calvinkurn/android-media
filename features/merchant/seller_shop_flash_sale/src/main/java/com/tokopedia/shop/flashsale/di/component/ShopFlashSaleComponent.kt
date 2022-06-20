@@ -4,6 +4,7 @@ import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.shop.flashsale.di.module.ShopFlashSaleModule
 import com.tokopedia.shop.flashsale.di.module.ShopFlashSaleViewModelModule
 import com.tokopedia.shop.flashsale.di.scope.ShopFlashSaleScope
+import com.tokopedia.shop.flashsale.presentation.creation.highlight.ManageHighlightedProductFragment
 import com.tokopedia.shop.flashsale.presentation.creation.information.CampaignInformationActivity
 import com.tokopedia.shop.flashsale.presentation.creation.information.CampaignInformationFragment
 import com.tokopedia.shop.flashsale.presentation.creation.information.bottomsheet.CampaignDatePickerBottomSheet
@@ -43,4 +44,6 @@ interface ShopFlashSaleComponent {
 
     fun inject(activity: ManageProductActivity)
     fun inject(fragment: ManageProductFragment)
+
+    fun inject(fragment: ManageHighlightedProductFragment)
 }

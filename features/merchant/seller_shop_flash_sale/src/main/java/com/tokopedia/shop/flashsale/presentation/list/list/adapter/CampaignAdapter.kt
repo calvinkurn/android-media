@@ -12,11 +12,13 @@ import com.tokopedia.seller_shop_flash_sale.R
 import com.tokopedia.seller_shop_flash_sale.R.color.*
 import com.tokopedia.seller_shop_flash_sale.databinding.SsfsItemCampaignBinding
 import com.tokopedia.shop.flashsale.common.constant.Constant
+import com.tokopedia.shop.flashsale.common.constant.Constant.SIXTY_MINUTE
+import com.tokopedia.shop.flashsale.common.extension.removeTimeZone
 import com.tokopedia.shop.flashsale.common.extension.toCalendar
 import com.tokopedia.shop.flashsale.domain.entity.CampaignUiModel
 import com.tokopedia.shop.flashsale.domain.entity.enums.*
+import com.tokopedia.unifycomponents.timer.TimerUnifySingle
 import com.tokopedia.unifyprinciples.Typography
-import java.util.*
 
 
 class CampaignAdapter(
@@ -99,44 +101,48 @@ class CampaignAdapter(
             binding.tpgSoldCount.text = campaign.summary.soldItem.toString()
             binding.loader.isVisible = isLoading
             binding.imgMore.isVisible = campaign.status.isActive()
-            handleTimer(campaign.status, campaign.startDate)
-            handleCampaignStatusIndicator(campaign.status)
+            binding.timer.isVisible = campaign.status.isUpcoming()
+            handleCampaignStatusIndicator(campaign)
         }
 
-        private fun handleTimer(campaignStatus: CampaignStatus, startDate: Date) {
-            binding.timer.isVisible = campaignStatus.isUpcoming()
-            if (campaignStatus.isUpcoming()) {
-                binding.timer.targetDate = startDate.toCalendar()
-            }
-        }
-
-        private fun handleCampaignStatusIndicator(campaignStatus: CampaignStatus) {
+        private fun handleCampaignStatusIndicator(campaign: CampaignUiModel) {
             when {
-                campaignStatus.isUpcoming() -> {
+                campaign.status.isUpcoming() -> {
                     binding.tpgCampaignStatus.setStatus(R.string.sfs_upcoming)
                     binding.tpgCampaignStatus.textColor(Unify_YN400)
                     binding.imgCampaignStatusIndicator.setImageResource(R.drawable.ic_sfs_campaign_indicator_upcoming)
+                    startTimer(campaign)
                 }
-                campaignStatus.isAvailable() -> {
+                campaign.status.isAvailable() -> {
                     binding.tpgCampaignStatus.setStatus(R.string.sfs_available)
                     binding.tpgCampaignStatus.textColor(Unify_NN600)
                     binding.imgCampaignStatusIndicator.setImageResource(R.drawable.ic_sfs_campaign_indicator_available)
                 }
-                campaignStatus.isOngoing() -> {
+                campaign.status.isOngoing() -> {
                     binding.tpgCampaignStatus.setStatus(R.string.sfs_ongoing)
                     binding.tpgCampaignStatus.textColor(Unify_GN500)
                     binding.imgCampaignStatusIndicator.setImageResource(R.drawable.ic_sfs_campaign_indicator_ongoing)
                 }
-                campaignStatus.isFinished() -> {
+                campaign.status.isFinished() -> {
                     binding.tpgCampaignStatus.setStatus(R.string.sfs_finished)
                     binding.tpgCampaignStatus.textColor(Unify_NN400)
                     binding.imgCampaignStatusIndicator.setImageResource(R.drawable.ic_sfs_campaign_indicator_finished)
                 }
-                campaignStatus.isCancelled() -> {
+                campaign.status.isCancelled() -> {
                     binding.tpgCampaignStatus.setStatus(R.string.sfs_cancelled)
                     binding.tpgCampaignStatus.textColor(Unify_RN500)
                     binding.imgCampaignStatusIndicator.setImageResource(R.drawable.ic_sfs_campaign_indicator_cancelled)
                 }
+            }
+        }
+
+        private fun startTimer(campaign: CampaignUiModel) {
+            if (campaign.relativeTimeDifferenceInMinute >= SIXTY_MINUTE) {
+                binding.timer.timerFormat = TimerUnifySingle.FORMAT_HOUR
+                binding.timer.targetDate = campaign.startDate.removeTimeZone().toCalendar()
+            } else {
+                binding.timer.timerFormat =  TimerUnifySingle.FORMAT_MINUTE
+                binding.timer.targetDate = campaign.startDate.toCalendar()
             }
         }
 

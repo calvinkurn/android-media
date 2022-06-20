@@ -2,6 +2,7 @@ package com.tokopedia.shop.flashsale.common.share_component
 
 import android.text.TextUtils
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.linker.LinkerManager
 import com.tokopedia.linker.LinkerUtils
 import com.tokopedia.linker.interfaces.ShareCallback
@@ -21,7 +22,7 @@ import com.tokopedia.universal_sharing.view.bottomsheet.UniversalShareBottomShee
 import com.tokopedia.universal_sharing.view.bottomsheet.listener.ShareBottomsheetListener
 import com.tokopedia.universal_sharing.view.model.ShareModel
 import com.tokopedia.user.session.UserSessionInterface
-import java.util.*
+import java.util.Date
 import javax.inject.Inject
 
 class ShareComponentInstanceBuilder @Inject constructor(
@@ -30,32 +31,32 @@ class ShareComponentInstanceBuilder @Inject constructor(
 ) {
 
     companion object {
-        private const val UPCOMING_ID = 0
-        private const val ONGOING_ID = 1
-        private const val MAX_PRODUCT_DISPLAYED = 4
-        private const val OVERLOAD_PRODUCT = 3
+        const val UPCOMING_ID = 0
+        const val ONGOING_ID = 1
+        const val MAX_PRODUCT_DISPLAYED = 4
+        const val OVERLOAD_PRODUCT = 3
 
-        private const val FIRST_PRODUCT = 0
-        private const val SECOND_PRODUCT = 1
-        private const val THIRD_PRODUCT = 2
-        private const val FOURTH_PRODUCT = 4
+        const val FIRST_PRODUCT = 0
+        const val SECOND_PRODUCT = 1
+        const val THIRD_PRODUCT = 2
+        const val FOURTH_PRODUCT = 4
 
-        private const val TOTAL_PRODUCT_ONE = 1
-        private const val TOTAL_PRODUCT_TWO = 2
-        private const val TOTAL_PRODUCT_THREE = 3
-        private const val TOTAL_PRODUCT_FOUR = 4
+        const val TOTAL_PRODUCT_ONE = 1
+        const val TOTAL_PRODUCT_TWO = 2
+        const val TOTAL_PRODUCT_THREE = 3
+        const val TOTAL_PRODUCT_FOUR = 4
 
         private const val PAGE_NAME = "ShopFS"
-        private const val THUMBNAIL_IMAGE = ""
 
-        private const val FIRST_SEGMENT = 0
-        private const val SECOND_SEGMENT = 1
+        const val FIRST_SEGMENT = 0
+        const val SECOND_SEGMENT = 1
 
-        private const val QUESTION_MARK = "?"
-        private const val DELIMITER = "."
+        const val QUESTION_MARK = "?"
+        const val DELIMITER = "."
     }
 
     fun build(
+        thumbnailImageUrl : String,
         param: Param,
         onShareOptionClick: (ShareModel, LinkerShareResult, String) -> Unit,
         onCloseOptionClicked: () -> Unit
@@ -79,7 +80,8 @@ class ShareComponentInstanceBuilder @Inject constructor(
             getImageFromMedia(getImageFromMediaFlag = true)
             setMediaPageSourceId(pageSourceId = ImageGeneratorConstants.ImageGeneratorSourceId.FLASH_SALE_TOKO)
 
-            setMetaData(tnTitle = findTitle(param, isOngoing), tnImage = THUMBNAIL_IMAGE)
+            //tnTitle will be displayed on share bottomsheet
+            setMetaData(tnTitle = findBottomSheetTitle(param, isOngoing), tnImage = thumbnailImageUrl)
             setUtmCampaignData(
                 pageName = PAGE_NAME,
                 userId = userSession.userId,
@@ -100,7 +102,6 @@ class ShareComponentInstanceBuilder @Inject constructor(
                 value = param.shopName
             )
 
-            //official, pm, pro, none
             val shopBadge = when {
                 param.isOfficialStore -> "official"
                 param.isPowerMerchant -> "pro"
@@ -172,7 +173,7 @@ class ShareComponentInstanceBuilder @Inject constructor(
                 )
                 addImageGeneratorData(
                     key = ImageGeneratorConstants.ImageGeneratorKeys.PRODUCT_1_DISCOUNT,
-                    value = product?.discountPercentage.toString()
+                    value = product?.discountPercentage.orZero().toString()
                 )
             }
 
@@ -185,15 +186,15 @@ class ShareComponentInstanceBuilder @Inject constructor(
                 )
                 addImageGeneratorData(
                     key = ImageGeneratorConstants.ImageGeneratorKeys.PRODUCT_2_PRICE_BEFORE,
-                    value = product?.originalPrice.toString()
-                )
-                addImageGeneratorData(
-                    key = ImageGeneratorConstants.ImageGeneratorKeys.PRODUCT_2_PRICE_AFTER,
                     value = formatOriginalPrice(product?.originalPrice.toString())
                 )
                 addImageGeneratorData(
+                    key = ImageGeneratorConstants.ImageGeneratorKeys.PRODUCT_2_PRICE_AFTER,
+                    value = formatDiscountPrice(product?.discountedPrice.orEmpty(), isOngoing)
+                )
+                addImageGeneratorData(
                     key = ImageGeneratorConstants.ImageGeneratorKeys.PRODUCT_2_DISCOUNT,
-                    value = product?.discountPercentage.toString()
+                    value = product?.discountPercentage.orZero().toString()
                 )
             }
 
@@ -287,45 +288,7 @@ class ShareComponentInstanceBuilder @Inject constructor(
 
     }
 
-    private fun findTitle(param: Param, isOngoing: Boolean): String {
-        val formattedShopName = MethodChecker.fromHtml(param.shopName).toString()
-        return if (isOngoing) {
-            val formattedEndDate = param.endDate.formatTo(DateConstant.DATE)
-            val formattedEndTime = param.endDate.formatTo(DateConstant.TIME_WIB)
-            String.format(
-                resourceProvider.getOngoingCampaignWording(),
-                formattedShopName,
-                formattedEndDate,
-                formattedEndTime
-            )
-        } else {
-            val formattedEndDate = param.startDate.formatTo(DateConstant.DATE)
-            val formattedEndTime = param.startDate.formatTo(DateConstant.TIME_WIB)
-            String.format(
-                resourceProvider.getUpcomingCampaignWording(),
-                formattedShopName,
-                formattedEndDate,
-                formattedEndTime
-            )
-        }
-    }
 
-    private fun findOutgoingTitle(shopName: String): String {
-        val formattedShopName = MethodChecker.fromHtml(shopName).toString()
-        return String.format(resourceProvider.getOutgoingTitleWording(), formattedShopName)
-    }
-
-    private fun findOutgoingDescription(shopName: String, isOngoing: Boolean): String {
-        val formattedShopName = MethodChecker.fromHtml(shopName).toString()
-        return if (isOngoing) {
-            String.format(resourceProvider.getOutgoingOngoingCampaignWording(), formattedShopName)
-        } else {
-            String.format(
-                resourceProvider.getOutgoingUpcomingCampaignWording(),
-                formattedShopName
-            )
-        }
-    }
 
     private fun handleShareOptionSelection(
         param: Param,
@@ -374,10 +337,9 @@ class ShareComponentInstanceBuilder @Inject constructor(
             campaign = shareModel.campaign
             id = "${userSession.shopId}?page_source=share"
             linkerData.type = LinkerData.SHOP_TYPE
-            name = findOutgoingTitle(shopName)
             uri = "https://www.tokopedia.com/${shopDomain}?page_source=share"
-            ogTitle = findOutgoingTitle(shopName)
-            ogDescription = findOutgoingDescription(shopName, isOngoing)
+            ogTitle = findOutgoingTitle(shopName) //ogTitle will appear on the top of the description
+            ogDescription = findOutgoingDescription(shopName, isOngoing) // ogDescription will appear as the main wording on the social media
             if (!TextUtils.isEmpty(shareModel.ogImgUrl)) {
                 ogImageUrl = shareModel.ogImgUrl
             }
@@ -386,6 +348,48 @@ class ShareComponentInstanceBuilder @Inject constructor(
         val linkerShareData = LinkerShareData()
         linkerShareData.linkerData = linkerData
         return linkerShareData
+    }
+
+    private fun findBottomSheetTitle(param: Param, isOngoing: Boolean): String {
+        val formattedShopName = MethodChecker.fromHtml(param.shopName).toString()
+        return if (isOngoing) {
+            val formattedEndDate = param.endDate.formatTo(DateConstant.DATE)
+            val formattedEndTime = param.endDate.formatTo(DateConstant.TIME_WIB)
+            String.format(
+                resourceProvider.getOngoingBottomSheetTitle(),
+                formattedShopName,
+                formattedEndDate,
+                formattedEndTime
+            )
+        } else {
+            val formattedEndDate = param.startDate.formatTo(DateConstant.DATE)
+            val formattedEndTime = param.startDate.formatTo(DateConstant.TIME_WIB)
+            String.format(
+                resourceProvider.getUpcomingBottomSheetTitle(),
+                formattedShopName,
+                formattedEndDate,
+                formattedEndTime
+            )
+        }
+    }
+
+
+    private fun findOutgoingTitle(shopName: String): String {
+        val formattedShopName = MethodChecker.fromHtml(shopName).toString()
+        return String.format(resourceProvider.getOutgoingTitleWording(), formattedShopName)
+    }
+
+
+    private fun findOutgoingDescription(shopName: String, isOngoing: Boolean): String {
+        val formattedShopName = MethodChecker.fromHtml(shopName).toString()
+        return if (isOngoing) {
+            String.format(resourceProvider.getOutgoingOngoingCampaignWording(), formattedShopName)
+        } else {
+            String.format(
+                resourceProvider.getOutgoingUpcomingCampaignWording(),
+                formattedShopName
+            )
+        }
     }
 
     data class Param(
