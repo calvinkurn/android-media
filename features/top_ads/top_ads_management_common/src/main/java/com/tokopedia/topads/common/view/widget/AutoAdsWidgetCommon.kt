@@ -15,6 +15,7 @@ import android.view.View
 import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.appcompat.content.res.AppCompatResources
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentActivity
@@ -155,7 +156,7 @@ class AutoAdsWidgetCommon(context: Context, attrs: AttributeSet?) : CardUnify(co
 
     private fun getDrwableforNotDeliverd(view: View) {
         val imgBg = view.findViewById<ConstraintLayout>(R.id.auto_ad_status_image)
-        imgBg.background = VectorDrawableCompat.create(resources, R.drawable.topads_common_orange_bg, null)
+        imgBg.background = AppCompatResources.getDrawable(context, R.drawable.topads_common_orange_bg)
     }
 
     private fun setOutOfBudgetView() {
@@ -246,8 +247,7 @@ class AutoAdsWidgetCommon(context: Context, attrs: AttributeSet?) : CardUnify(co
     private fun setSwitchAction(view: View) {
         val switch = view.findViewById<SwitchUnify>(R.id.btn_switch)
         val setting = view.findViewById<ImageView>(R.id.setting)
-        setting.setImageDrawable(VectorDrawableCompat.create(resources,
-            R.drawable.topads_common_setting, null))
+        setting.setImageDrawable(AppCompatResources.getDrawable(context, R.drawable.topads_common_setting))
         switch.isChecked = true
         when (entryPoint) {
             ENTRY_FROM_EDIT_PAGE -> {
@@ -305,7 +305,7 @@ class AutoAdsWidgetCommon(context: Context, attrs: AttributeSet?) : CardUnify(co
             false
         )
         val imgBg = view.findViewById<ConstraintLayout>(R.id.auto_ad_status_image)
-        imgBg.background = VectorDrawableCompat.create(resources,  R.drawable.topads_common_blue_bg, null)
+        imgBg.background = AppCompatResources.getDrawable(context,  R.drawable.topads_common_blue_bg)
         baseLayout?.removeAllViews()
         baseLayout?.addView(view)
     }
@@ -317,7 +317,7 @@ class AutoAdsWidgetCommon(context: Context, attrs: AttributeSet?) : CardUnify(co
             false
         )
         val imgBg = view.findViewById<ConstraintLayout>(R.id.auto_ad_status_image)
-        imgBg.background = VectorDrawableCompat.create(resources,  R.drawable.topads_common_blue_bg, null)
+        imgBg.background = AppCompatResources.getDrawable(context,  R.drawable.topads_common_blue_bg)
         view.findViewById<TextView>(R.id.status_desc).text =
             context.getString(R.string.topads_common_autoads_inprogress_deactivate_desc)
         baseLayout?.removeAllViews()
@@ -329,7 +329,7 @@ class AutoAdsWidgetCommon(context: Context, attrs: AttributeSet?) : CardUnify(co
             R.layout.topads_common_auto_edit_status_active_widget, this, false
         )
         val imgBg = view.findViewById<ConstraintLayout>(R.id.auto_ad_status_image)
-        val drawable = VectorDrawableCompat.create(resources,  R.drawable.topads_common_green_bg, null)
+        val drawable = AppCompatResources.getDrawable(context,  R.drawable.topads_common_green_bg)
         baseLayout?.removeAllViews()
         baseLayout?.addView(view)
         view.let {

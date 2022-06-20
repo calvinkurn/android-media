@@ -5,7 +5,7 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.tokopedianow.home.domain.mapper.LocationParamMapper
 import com.tokopedia.tokopedianow.home.domain.model.TickerResponse
-import com.tokopedia.tokopedianow.home.domain.query.GetTicker.QUERY
+import com.tokopedia.tokopedianow.home.domain.query.GetTicker
 import com.tokopedia.usecase.RequestParams
 import javax.inject.Inject
 
@@ -19,7 +19,7 @@ class GetTickerUseCase @Inject constructor(
     }
 
     init {
-        setGraphqlQuery(QUERY)
+        setGraphqlQuery(GetTicker)
         setTypeClass(TickerResponse::class.java)
     }
 

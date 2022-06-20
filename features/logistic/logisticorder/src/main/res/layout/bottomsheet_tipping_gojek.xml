@@ -59,8 +59,7 @@
                 app:layout_constraintTop_toBottomOf="@id/rv_chips_tip"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:unify_text_field_input_type="number"
-                app:unify_text_field_label="@string/nominal_tip_label"
-                app:unify_text_field_message="@string/nominal_tip_message"/>
+                app:unify_text_field_label="@string/nominal_tip_label" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.core.widget.NestedScrollView>

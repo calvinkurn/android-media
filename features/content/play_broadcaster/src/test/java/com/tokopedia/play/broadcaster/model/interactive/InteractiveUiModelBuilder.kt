@@ -33,6 +33,7 @@ class InteractiveUiModelBuilder {
             winners = buildWinnerList(winnerSize),
             otherParticipantText = "",
             otherParticipant = 0,
+            id = "1"
         )
     }
 
@@ -91,7 +92,7 @@ class InteractiveUiModelBuilder {
     )
 
     fun buildCurrentInteractiveModel(
-        id: Long = 0L,
+        id: String = "",
         type: InteractiveType = InteractiveType.Unknown,
         title: String = "",
         timeStatus: PlayInteractiveTimeStatus = PlayInteractiveTimeStatus.Unknown,

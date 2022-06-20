@@ -118,6 +118,17 @@ object DeeplinkMapperMerchant {
         ).buildUpon().build().toString()
     }
 
+    fun getRegisteredProductEducational(uri: Uri): String {
+        val segments = uri.pathSegments
+        val type = segments.last()
+        return Uri.parse(
+                UriUtil.buildUri(
+                        ApplinkConstInternalMarketplace.PRODUCT_DETAIL_EDUCATIONAL,
+                        type
+                )
+        ).buildUpon().build().toString()
+    }
+
     fun isShopPageDeeplink(uri: Uri?): Boolean {
         return uri?.let {
             val pathSegment = it.pathSegments ?: return false

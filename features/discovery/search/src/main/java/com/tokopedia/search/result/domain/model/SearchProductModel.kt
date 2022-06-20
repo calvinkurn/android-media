@@ -162,6 +162,7 @@ data class SearchProductModel(
             @Expose
             val query: String = "",
 
+            @SuppressLint("Invalid Data Type")
             @SerializedName("typeId")
             @Expose
             val typeId: Int = 0,
@@ -384,6 +385,7 @@ data class SearchProductModel(
             @Expose
             val price: String = "",
 
+            @SuppressLint("Invalid Data Type")
             @SerializedName("priceInt")
             @Expose
             val priceInt: Int = 0,
@@ -396,6 +398,7 @@ data class SearchProductModel(
             @Expose
             val categoryBreadcrumb: String = "",
 
+            @SuppressLint("Invalid Data Type")
             @SerializedName("categoryId")
             @Expose
             val categoryId: Int = 0,
@@ -615,9 +618,21 @@ data class SearchProductModel(
             @Expose
             val isShowTopAds: Boolean = false,
 
+            @SerializedName("component_id")
+            @Expose
+            val componentId: String = "",
+
+            @SerializedName("tracking_option")
+            @Expose
+            val trackingOption: Int = 0,
+
             @SerializedName("list")
             @Expose
-            val globalNavItems: List<GlobalNavItem> = ArrayList()
+            val globalNavItems: List<GlobalNavItem> = ArrayList(),
+
+            @SerializedName("info")
+            @Expose
+            val info: String = "",
     )
 
     data class GlobalNavItem(
@@ -659,7 +674,11 @@ data class SearchProductModel(
 
             @SerializedName("logo_url")
             @Expose
-            val logoUrl: String = ""
+            val logoUrl: String = "",
+
+            @SerializedName("component_id")
+            @Expose
+            val componentId: String = "",
     )
 
     data class SearchInspirationCarousel(

@@ -1,9 +1,10 @@
 package com.tokopedia.topads.common.domain.interactor
 
 import com.google.gson.reflect.TypeToken
+import com.tokopedia.common.network.coroutines.RestRequestInteractor
+import com.tokopedia.common.network.coroutines.repository.RestRepository
 import com.tokopedia.common.network.data.model.RequestType
 import com.tokopedia.common.network.data.model.RestRequest
-import com.tokopedia.common.network.domain.RestRequestUseCase
 import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
@@ -21,16 +22,15 @@ import com.tokopedia.topads.common.data.internal.ParamObject.STATUS
 import com.tokopedia.topads.common.data.response.groupitem.GroupItemResponse
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.user.session.UserSessionInterface
-import java.util.*
 import javax.inject.Inject
-import kotlin.collections.HashMap
 import kotlin.collections.set
 
 /**
  * Created by Pika on 6/9/20.
  */
 
-const val TOP_ADS_GET_GROUP_LIST_QUERY: String = """query GetTopadsDashboardGroups(${'$'}queryInput: GetTopadsDashboardGroupsInputType!) {
+const val TOP_ADS_GET_GROUP_LIST_QUERY: String =
+    """query GetTopadsDashboardGroups(${'$'}queryInput: GetTopadsDashboardGroupsInputType!) {
   GetTopadsDashboardGroups(queryInput: ${'$'}queryInput) {
     separate_statistic
        meta {
@@ -67,9 +67,30 @@ const val TOP_ADS_GET_GROUP_LIST_QUERY: String = """query GetTopadsDashboardGrou
 """
 
 @GqlQuery("GetTopadsGroupDataQuery", TOP_ADS_GET_GROUP_LIST_QUERY)
-class TopAdsGetGroupDataUseCase @Inject constructor(val userSession: UserSessionInterface) : RestRequestUseCase() {
+class TopAdsGetGroupDataUseCase @Inject constructor(private val userSession: UserSessionInterface) {
 
-    fun setParams(search: String, page: Int, sort: String, status: Int?, startDate: String, endDate: String, groupType: Int): RequestParams {
+    private val restRepository: RestRepository by lazy { RestRequestInteractor.getInstance().restRepository }
+
+    suspend fun execute(requestParams: RequestParams?): GroupItemResponse {
+        val token = object : TypeToken<DataResponse<GroupItemResponse>>() {}.type
+        val query = GetTopadsGroupDataQuery.GQL_QUERY
+        val request =
+            GraphqlRequest(query, GroupItemResponse::class.java, requestParams?.parameters)
+        val headers = java.util.HashMap<String, String>()
+        headers["Content-Type"] = "application/json"
+        val restRequest = RestRequest.Builder(TopAdsCommonConstant.TOPADS_GRAPHQL_TA_URL, token)
+            .setBody(request)
+            .setHeaders(headers)
+            .setRequestType(RequestType.POST)
+            .build()
+        return restRepository.getResponse(restRequest)
+            .getData<DataResponse<GroupItemResponse>>().data
+    }
+
+    fun setParams(
+        search: String, page: Int, sort: String, status: Int?,
+        startDate: String, endDate: String, groupType: Int,
+    ): RequestParams {
         val queryMap = HashMap<String, Any?>()
         val requestParams = RequestParams.create()
         queryMap[ParamObject.SHOP_id] = userSession.shopId.toIntOrZero()
@@ -82,21 +103,5 @@ class TopAdsGetGroupDataUseCase @Inject constructor(val userSession: UserSession
         queryMap[GROUP_TYPE] = groupType
         requestParams.putAll(mapOf(QUERY_INPUT to queryMap))
         return requestParams
-    }
-
-    override fun buildRequest(requestParams: RequestParams?): MutableList<RestRequest> {
-        val tempRequest = ArrayList<RestRequest>()
-        val token = object : TypeToken<DataResponse<GroupItemResponse>>() {}.type
-        val query = GetTopadsGroupDataQuery.GQL_QUERY
-        val request = GraphqlRequest(query, GroupItemResponse::class.java, requestParams?.parameters)
-        val headers = java.util.HashMap<String, String>()
-        headers["Content-Type"] = "application/json"
-        val restReferralRequest = RestRequest.Builder(TopAdsCommonConstant.TOPADS_GRAPHQL_TA_URL, token)
-                .setBody(request)
-                .setHeaders(headers)
-                .setRequestType(RequestType.POST)
-                .build()
-        tempRequest.add(restReferralRequest)
-        return tempRequest
     }
 }

@@ -1,12 +1,15 @@
 package com.tokopedia.pdpsimulation.paylater.viewModel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import com.tokopedia.atc_common.domain.model.response.AddToCartOccMultiDataModel
+import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartOccMultiUseCase
 import com.tokopedia.pdpsimulation.common.domain.model.BaseProductDetailClass
 import com.tokopedia.pdpsimulation.common.domain.model.CampaignDetail
 import com.tokopedia.pdpsimulation.common.domain.model.GetProductV3
 import com.tokopedia.pdpsimulation.common.domain.model.Pictures
 import com.tokopedia.pdpsimulation.common.domain.model.ShopDetail
 import com.tokopedia.pdpsimulation.common.domain.usecase.ProductDetailUseCase
+import com.tokopedia.pdpsimulation.paylater.domain.model.Detail
 import com.tokopedia.pdpsimulation.paylater.domain.model.PayLaterAllData
 import com.tokopedia.pdpsimulation.paylater.domain.model.PayLaterGetSimulation
 import com.tokopedia.pdpsimulation.paylater.domain.model.SimulationUiModel
@@ -17,7 +20,9 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import io.mockk.coEvery
 import io.mockk.coVerify
+import io.mockk.invoke
 import io.mockk.mockk
+import io.mockk.verify
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.TestCoroutineDispatcher
 import org.junit.Assert
@@ -34,6 +39,7 @@ class PayLaterViewModelTest {
     private val productDetailUseCase = mockk<ProductDetailUseCase>(relaxed = true)
     private val payLaterSimulationData = mockk<PayLaterSimulationV3UseCase>(relaxed = true)
     private val payLaterUiMapperUseCase = mockk<PayLaterUiMapperUseCase>(relaxed = true)
+    private val addToCartUseCase = mockk<AddToCartOccMultiUseCase>(relaxed = true)
     private val dispatcher = TestCoroutineDispatcher()
     private lateinit var viewModel: PayLaterViewModel
 
@@ -47,6 +53,7 @@ class PayLaterViewModelTest {
                 payLaterSimulationData,
                 productDetailUseCase,
                 payLaterUiMapperUseCase,
+            addToCartUseCase,
                 dispatcher
         )
     }
@@ -197,6 +204,40 @@ class PayLaterViewModelTest {
         viewModel.getPayLaterAvailableDetail(0.0, "0")
         coVerify(exactly = 0) { payLaterUiMapperUseCase.mapResponseToUi(any(), any(), any()) }
         Assert.assertEquals((viewModel.payLaterOptionsDetailLiveData.value as Fail).throwable,mockThrowable)
+    }
+
+
+    @Test
+    fun successAddToCart() {
+        val addToCartMultiDataModel = mockk<AddToCartOccMultiDataModel>(relaxed = true)
+        val detail = mockk<Detail>(relaxed = true)
+        coEvery {
+            addToCartUseCase.execute(captureLambda(), any())
+        } coAnswers {
+            val onSuccess = lambda<(AddToCartOccMultiDataModel) -> Unit>()
+            onSuccess.invoke(addToCartMultiDataModel)
+        }
+        viewModel.shopId = ""
+        viewModel.addProductToCart(detail,"")
+        verify {
+            addToCartUseCase.execute(any(), any())
+        }
+    }
+
+    @Test
+    fun failAddToCart() {
+        val detail = mockk<Detail>(relaxed = true)
+        coEvery {
+            addToCartUseCase.execute(any(), captureLambda())
+        } coAnswers {
+            val onError = lambda<(Throwable) -> Unit>()
+            onError.invoke(mockThrowable)
+        }
+        viewModel.shopId = ""
+        viewModel.addProductToCart(detail,"")
+        verify {
+            addToCartUseCase.execute(any(), any())
+        }
     }
 
 }

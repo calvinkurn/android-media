@@ -13,7 +13,7 @@ public class SendCommentKolData {
     private String typename;
     @SerializedName("id")
     @Expose
-    private Integer id;
+    private String id;
     @SerializedName("user")
     @Expose
     private SendCommentKolUser user;
@@ -32,11 +32,11 @@ public class SendCommentKolData {
         this.typename = typename;
     }
 
-    public Integer getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(String id) {
         this.id = id;
     }
 
