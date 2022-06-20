@@ -103,6 +103,6 @@ class ProfileViewModel @Inject constructor(
     }
 
     companion object {
-        private val SOURCE_ID = "tPxBYm"
+        private const val SOURCE_ID = "tPxBYm"
     }
 }
