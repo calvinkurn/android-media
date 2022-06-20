@@ -331,6 +331,7 @@ class CampaignInformationFragment : BaseDaggerFragment() {
         when (validationResult) {
             CampaignInformationViewModel.CampaignNameValidationResult.CampaignNameIsEmpty -> {
                 showError(getString(R.string.sfs_error_message_field_not_filled))
+                binding?.cardView showError getString(R.string.sfs_error_message_incomplete_input)
                 binding?.btnCreateCampaign?.disable()
             }
             CampaignInformationViewModel.CampaignNameValidationResult.CampaignNameBelowMinCharacter -> {
