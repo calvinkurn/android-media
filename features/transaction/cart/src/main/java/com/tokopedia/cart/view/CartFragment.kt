@@ -3190,6 +3190,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         }
     }
 
+    @SuppressLint("Recycle")
     private fun animateProductImageV2(result: AddToWishlistV2Response.Data.WishlistAddV2) {
         val tmpAnimatedImage = binding?.tmpAnimatedImage ?: return
         var target: Pair<Int, Int>? = null
