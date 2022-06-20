@@ -4,6 +4,7 @@ import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.shop.flashsale.common.constant.Constant
 import com.tokopedia.shop.flashsale.domain.entity.CampaignUiModel
+import com.tokopedia.shop.flashsale.domain.entity.enums.CampaignStatus
 import kotlinx.coroutines.coroutineScope
 import javax.inject.Inject
 
@@ -16,7 +17,13 @@ class GetRelatedCampaignsUseCase @Inject constructor(
     }
 
     private val previousCampaignStatusIds = listOf(
-        4, 5, 6, 7, 8, 13, 14
+        CampaignStatus.IN_SUBMISSION.id,
+        CampaignStatus.IN_REVIEW.id,
+        CampaignStatus.READY.id,
+        CampaignStatus.ONGOING.id,
+        CampaignStatus.FINISHED.id,
+        CampaignStatus.ONGOING_CANCELLATION.id,
+        CampaignStatus.READY_LOCKED.id
     )
 
     suspend fun execute(
