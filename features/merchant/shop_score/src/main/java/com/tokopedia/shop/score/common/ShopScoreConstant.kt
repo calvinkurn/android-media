@@ -36,6 +36,10 @@ object ShopScoreConstant {
     const val SPEED_SENDING_ORDERS_KEY = "median_verified_to_shipping_minute"
     const val PRODUCT_REVIEW_WITH_FOUR_STARS_KEY = "percent_good_rating"
 
+    const val POWER_MERCHANT_IDLE =
+        "https://seller.tokopedia.com/edu/status-power-merchant-pro-tidak-aktif/"
+    const val POWER_MERCHANT_PRO_BENEFITS =
+        "https://seller.tokopedia.com/edu/paket-keuntungan-power-merchant-pro"
     const val READ_TIPS_MORE_INFO_URL =
         "https://seller.tokopedia.com/edu/fitur-pengaturan-stok-produk-terbaru/"
     const val SET_OPERATIONAL_HOUR_SHOP_URL = "https://seller.tokopedia.com/edu/atur-jadwal-toko/"
@@ -60,6 +64,13 @@ object ShopScoreConstant {
         "https://images.tokopedia.net/img/android/gold_merchant_common/il_benefit_PM_PRO_2@3x.png"
     const val PM_PRO_BENEFIT_URL_3 =
         "https://images.tokopedia.net/img/android/gold_merchant_common/il_benefit_pm_pro_3@3x.png"
+
+    const val PM_RECOMMENDATION_URL_1 =
+        "https://images.tokopedia.net/img/android/shop_score/ss_pm_section_recom_1.png"
+    const val PM_RECOMMENDATION_URL_2 =
+        "https://images.tokopedia.net/img/android/shop_score/ss_pm_section_recom_2.png"
+    const val PM_RECOMMENDATION_URL_3 =
+        "https://images.tokopedia.net/img/android/shop_score/ss_pm_section_recom_3.png"
 
     const val IC_HAS_PENALTY_URL =
         "https://images.tokopedia.net/img/android/shop_score/ic_has_penalty.png"
