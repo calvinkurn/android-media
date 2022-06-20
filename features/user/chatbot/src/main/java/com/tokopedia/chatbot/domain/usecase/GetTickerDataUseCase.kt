@@ -39,19 +39,4 @@ class GetTickerDataUseCase @Inject constructor(
         }
     }
 
-//    fun execute(subscriber: Subscriber<GraphqlResponse>) {
-//        val query = GraphqlHelper.loadRawString(resources, R.raw.query_chip_get_active_ticker)
-//        val graphqlRequest = GraphqlRequest(query,
-//                TickerDataResponse::class.java, false)
-//
-//        graphqlUseCase.clearRequest()
-//        graphqlUseCase.addRequest(graphqlRequest)
-//        graphqlUseCase.execute(subscriber)
-//    }
-//
-//
-//    fun unsubscribe() {
-//        graphqlUseCase.unsubscribe()
-//    }
-
 }

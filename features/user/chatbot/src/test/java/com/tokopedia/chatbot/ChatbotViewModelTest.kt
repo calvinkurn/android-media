@@ -5,6 +5,7 @@ import com.tokopedia.chat_common.domain.pojo.GetExistingChatPojo
 import com.tokopedia.chatbot.data.inboxTicketList.InboxTicketListResponse
 import com.tokopedia.chatbot.domain.usecase.TicketListContactUsUsecase
 import com.tokopedia.chatbot.view.viewmodel.ChatbotViewModel
+import com.tokopedia.chatbot.view.viewmodel.TicketListState
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.unit.test.rule.CoroutineTestRule
 import com.tokopedia.usecase.coroutines.Fail
@@ -51,20 +52,41 @@ class ChatbotViewModelTest {
     }
 
     @Test
-    fun `getTicketList success` ()  {
+    fun `getTicketList success if isActive true` ()  {
 
-        val ticketListData = mockk<InboxTicketListResponse>()
+        val ticketListData = mockk<TicketListState.BottomSheetData>()
+        val ticketListData2 = mockk<InboxTicketListResponse>()
 
         coEvery {
             ticketListContactUsUsecase.getTicketList(any(),any())
         } coAnswers {
-            firstArg<(InboxTicketListResponse) -> Unit>().invoke(ticketListData)
+            firstArg<(InboxTicketListResponse) -> Unit>().invoke(ticketListData2)
         }
 
         viewModel.getTicketList()
 
         assertEquals(
-            (viewModel.ticketList.value as Success).data,
+            (viewModel.ticketList.value as TicketListState.BottomSheetData),
+            ticketListData
+        )
+
+    }
+
+    @Test
+    fun `getTicketList success if isActive false` ()  {
+
+        val ticketListData = mockk<TicketListState.ShowContactUs>()
+
+        coEvery {
+            ticketListContactUsUsecase.getTicketList(any(),any())
+        } coAnswers {
+            firstArg<(TicketListState) -> Unit>().invoke(ticketListData)
+        }
+
+        viewModel.getTicketList()
+
+        assertEquals(
+            (viewModel.ticketList.value as TicketListState.ShowContactUs),
             ticketListData
         )
 

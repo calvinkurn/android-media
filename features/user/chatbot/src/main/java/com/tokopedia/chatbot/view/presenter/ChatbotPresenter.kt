@@ -64,6 +64,7 @@ import com.tokopedia.chatbot.domain.pojo.chatrating.SendRatingPojo
 import com.tokopedia.chatbot.domain.pojo.csatRating.csatInput.InputItem
 import com.tokopedia.chatbot.domain.pojo.csatRating.csatResponse.SubmitCsatGqlResponse
 import com.tokopedia.chatbot.domain.pojo.csatRating.websocketCsatRatingResponse.WebSocketCsatResponse
+import com.tokopedia.chatbot.domain.pojo.leavequeue.LeaveQueueResponse
 import com.tokopedia.chatbot.domain.pojo.livechatdivider.LiveChatDividerAttributes
 import com.tokopedia.chatbot.domain.pojo.quickreply.QuickReplyAttachmentAttributes
 import com.tokopedia.chatbot.domain.pojo.submitchatcsat.ChipSubmitChatCsatInput
@@ -321,7 +322,13 @@ class ChatbotPresenter @Inject constructor(
 
     private fun leaveQueue(dividerTime: String): () -> Unit {
         return {
-            leaveQueueUseCase.execute(LeaveQueueUseCase.generateParam(chatResponse.msgId.toString(), Calendar.getInstance().timeInMillis.toString()), LeaveQueueSubscriber(onError(), onSuccess(dividerTime)))
+            leaveQueueUseCase.cancelJobs()
+            leaveQueueUseCase.execute(
+                ::onSuccessLeaveQueue,
+                ::onFailureLeaveQueue,
+                chatResponse.msgId.toString(),
+                Calendar.getInstance().timeInMillis.toString()
+            )
         }
     }
 
@@ -676,8 +683,22 @@ class ChatbotPresenter @Inject constructor(
         }
     }
 
-    fun OnClickLeaveQueue() {
-        leaveQueueUseCase.execute(LeaveQueueUseCase.generateParam(chatResponse.msgId.toString(), Calendar.getInstance().timeInMillis.toString()), LeaveQueueSubscriber(onError(), onSuccess()))
+    fun OnClickLeaveQueue(timestamp: String) {
+        leaveQueueUseCase.cancelJobs()
+        leaveQueueUseCase.execute(
+            ::onSuccessLeaveQueue,
+            ::onFailureLeaveQueue,
+            chatResponse.msgId.toString(),
+            timestamp
+        )
+    }
+
+    private fun onSuccessLeaveQueue(leaveQueueResponse: LeaveQueueResponse) {
+        leaveQueueResponse?.postLeaveQueue?.leaveQueueHeader?.errorCode?.let { errorcode -> onSuccess(errorcode) }
+    }
+
+    private fun onFailureLeaveQueue(throwable: Throwable) {
+        view.showErrorToast(throwable)
     }
 
     override fun hitGqlforOptionList(selectedValue: Int, model: HelpFullQuestionsViewModel?) {
@@ -715,9 +736,6 @@ class ChatbotPresenter @Inject constructor(
     }
 
     override fun submitChatCsat(input: ChipSubmitChatCsatInput) {
-//        chipSubmitChatCsatUseCase.execute(chipSubmitChatCsatUseCase.generateParam(input),
-//                ChipSubmitChatCsatSubscriber(onsubmitingChatCsatSuccess, onError))
-
         chipSubmitChatCsatUseCase.cancelJobs()
         chipSubmitChatCsatUseCase.chipSubmitChatCsat(
             ::onSuccessSubmitChatCsat,
@@ -773,7 +791,6 @@ class ChatbotPresenter @Inject constructor(
         getExistingChatUseCase.unsubscribe()
         sendChatRatingUseCase.unsubscribe()
         sendRatingReasonUseCase.unsubscribe()
-        leaveQueueUseCase.unsubscribe()
         chipGetChatRatingListUseCase.unsubscribe()
         job.cancel()
         super.detachView()

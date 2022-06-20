@@ -119,7 +119,10 @@ import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.chatbot_layout_rating.view.*
 import kotlinx.android.synthetic.main.fragment_chatbot.*
+import java.util.*
 import javax.inject.Inject
+import kotlin.collections.ArrayList
+import kotlin.collections.HashMap
 
 /**
  * @author by nisie on 23/11/18.
@@ -1158,7 +1161,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
     }
 
     override fun onClickLeaveQueue() {
-        presenter.OnClickLeaveQueue()
+        presenter.OnClickLeaveQueue(Calendar.getInstance().timeInMillis.toString())
     }
 
     override fun updateToolbar(profileName: String?, profileImage: String?, badgeImage: ToolbarAttributes.BadgeImage?) {
@@ -1287,7 +1290,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
 
     override fun onBackPressed(): Boolean {
         if (!isBackAllowed) {
-            presenter.OnClickLeaveQueue()
+            presenter.OnClickLeaveQueue(Calendar.getInstance().timeInMillis.toString())
             (activity as? ChatbotActivity)?.finish()
             return true
         }
