@@ -17,9 +17,9 @@ import com.tokopedia.unifycomponents.toDp
 private const val POSITION_TOP = 1
 private const val BUBBLE_MAIN_ANIMATION_DURATION = 300L
 private const val BUBBLE_ANIMATION_POINTER_DURATION = 100L
-private const val LIHAT_PRODUK_SHRINKED_WIDTH = 24
-private const val LIHAT_PRODUK_SHRINKED_WIDTH_FLOAT = 24F
-private const val LIHAT_PRODUK_EXPANDED_WIDTH_FLOAT = 100F
+private const val LIHAT_PRODUK_SHRINKED_WIDTH = 32
+private const val LIHAT_PRODUK_SHRINKED_WIDTH_FLOAT = 32F
+private const val LIHAT_PRODUK_EXPANDED_WIDTH_FLOAT = 125F
 private const val LIHAT_PRODUK_VOD_EXPANDED_WIDTH_FLOAT = 125F
 private const val LIHAT_PRODUK_VOD_SHRINKED_WIDTH_FLOAT = 32F
 private const val COLOR_CHANGE_ANIMATION_DURATION_CTA_BTN = 250L
@@ -173,7 +173,7 @@ fun showViewWithSlideAnimation(view: ViewGroup) {
 }
 
 fun showViewWithAnimation(layoutLihatProdukParent: View, context: Context) {
-    val expandedWidthInDp = 100F
+    val expandedWidthInDp = 125F
     val anim = ValueAnimator.ofInt(
         layoutLihatProdukParent.measuredWidth,
         convertDpToPixel(expandedWidthInDp, context)
