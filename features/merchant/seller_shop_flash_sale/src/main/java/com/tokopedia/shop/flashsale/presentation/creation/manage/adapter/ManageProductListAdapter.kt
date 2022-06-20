@@ -90,18 +90,23 @@ class ManageProductListAdapter(
                                 labelBelumLengkap.invisible()
                                 tpgErrorCopy.visible()
                                 tpgErrorCopy.text = product.errorMessage
+                                tpgCompleteProductInfoDesc.visible()
                             }
                             else -> {
                                 labelBelumLengkap.gone()
                                 tpgErrorCopy.gone()
+                                tpgCompleteProductInfoDesc.gone()
                             }
                         }
                     }
                     else -> {
                         labelBelumLengkap.visible()
                         tpgErrorCopy.invisible()
+                        tpgCompleteProductInfoDesc.visible()
                     }
                 }
+
+
 
                 tpgStockProduct.setOriginalStock(product.productMapData.originalStock)
                 tpgStockCampaign.setCampaignStock(product.productMapData.customStock)
