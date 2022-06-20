@@ -148,7 +148,7 @@ object TmDateUtil {
         var dateStr = dateInput.replace("T", "")
         dateStr = dateStr.replace("Z", " +0700")
 
-        val parseTime = SimpleDateFormat(SIMPLE_DATE_FORMAT, Locale("id", "ID"))
+        val parseTime = SimpleDateFormat("yyyy-MM-dd HH:mm:ss" , Locale("id","ID"))
         parseTime.timeZone = TimeZone.getTimeZone("UTC")
         val date = parseTime.parse(dateStr)
         return (date?.time?.div(1000)).toString()
@@ -159,7 +159,7 @@ object TmDateUtil {
         var dateStr = dateInput.replace("T", "")
         dateStr = dateStr.replace("Z", " +0700")
 
-        val parseTime = SimpleDateFormat(SIMPLE_DATE_FORMAT, Locale("id", "ID"))
+        val parseTime = SimpleDateFormat("yyyy-MM-dd HH:mm:ss" , Locale("id","ID"))
         parseTime.timeZone = TimeZone.getTimeZone("UTC")
         val date = parseTime.parse(dateStr)
         (date?.time?.div(1000)).toString()

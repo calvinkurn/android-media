@@ -43,7 +43,7 @@ data class ProgramUpdateDataInput(
 data class TimeWindow(
 	@Expose
 	@SerializedName("periodInMonth")
-	val periodInMonth: Int? = null,
+    var periodInMonth: Int? = null,
 	@Expose
 	@SerializedName("startTime")
 	val startTime: String? = null,

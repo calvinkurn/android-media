@@ -57,10 +57,10 @@ data class TmCouponDetailData(
 	val voucherDiscountTypeFormatted: String? = null,
 
 	@SerializedName("voucher_discount_amt_max")
-	val voucherDiscountAmtMax: Int? = null,
+	var voucherDiscountAmtMax: Int? = null,
 
 	@SerializedName("voucher_image_portrait")
-	val voucherImagePortrait: String? = null,
+	var voucherImagePortrait: String? = null,
 
 	@SerializedName("voucher_status_formatted")
 	val voucherStatusFormatted: String? = null,
@@ -105,7 +105,7 @@ data class TmCouponDetailData(
 	val voucherQuota: Int? = null,
 
 	@SerializedName("voucher_image_square")
-	val voucherImageSquare: String? = null,
+	var voucherImageSquare: String? = null,
 
 	@SerializedName("vps_bundling_id")
 	val vpsBundlingId: Int? = null,

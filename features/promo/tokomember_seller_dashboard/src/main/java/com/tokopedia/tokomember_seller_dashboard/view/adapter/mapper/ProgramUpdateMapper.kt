@@ -87,6 +87,29 @@ object ProgramUpdateMapper {
                     this.cardID = inToolsCardId
                 }
             }
+            ProgramActionType.CREATE_BUAT ->{
+                timeWindow.id = 0
+                actionType = "create"
+                tierLevels.apply {
+                    this?.forEach {
+                        it?.id = 0
+                    }
+                }
+                val programAttributeListItem = ProgramAttributesItem(
+                    isUseMultiplier = true,
+                    multiplierRates = 1,
+                    minimumTransaction = 50000,
+                    id = 0,
+                    programID = 0,
+                    tierLevelID = 0,
+                )
+                programUpdateResponse.apply {
+                    this.tierLevels = tierLevels
+                    this.programAttributes = listOf(programAttributeListItem,programAttributeListItem)
+                    this.actionType = actionType
+                    this.cardID = cardIdCreate
+                }
+            }
             ProgramActionType.CREATE_FROM_COUPON ->{
                 timeWindow.id = 0
                 actionType = "create"
@@ -126,6 +149,10 @@ object ProgramUpdateMapper {
                 actionType = "cancel"
                 programUpdateResponse.apply {
                     this.actionType = actionType
+                    this.timeWindow?.periodInMonth = null
+                    this.tierLevels = listOf()
+                    this.programAttributes = listOf()
+
                 }
             }
         }

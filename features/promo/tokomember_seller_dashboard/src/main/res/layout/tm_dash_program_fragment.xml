@@ -15,7 +15,10 @@
 
     <androidx.recyclerview.widget.RecyclerView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
+        android:paddingBottom="@dimen/tm_dash_dp_10"
+        app:layout_constraintHeight_default="percent"
+        app:layout_constraintHeight_percent="0.8"
         android:id="@+id/rv_program"
         tools:itemCount="6"
         tools:listitem="@layout/tm_dash_program_item"
@@ -33,7 +36,7 @@
         android:text="@string/tm_buat_program"
         android:layout_marginStart="@dimen/unify_space_16"
         android:layout_marginEnd="@dimen/unify_space_16"
-        android:layout_marginBottom="@dimen/unify_space_8"
+        android:layout_marginBottom="@dimen/tm_dash_dp_96"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>

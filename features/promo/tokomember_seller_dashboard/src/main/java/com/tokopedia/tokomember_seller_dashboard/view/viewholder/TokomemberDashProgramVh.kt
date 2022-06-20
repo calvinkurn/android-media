@@ -69,6 +69,9 @@ class TokomemberDashProgramVh(itemView: View, val fragmentManager: FragmentManag
         if(item.actions?.tripleDots.isNullOrEmpty()){
             optionMenu.hide()
         }
+        else{
+            optionMenu.show()
+        }
 
         itemView.setOnClickListener {
             item.id?.toInt()?.let { it1 -> homeFragmentCallback.openDetailFragment(shopId, it1) }
@@ -105,10 +108,15 @@ class TokomemberDashProgramVh(itemView: View, val fragmentManager: FragmentManag
                 btn_edit.show()
             }
             ACTIVE ->{
+                programStatus.setTextColor(ColorStateList.valueOf(ContextCompat.getColor(itemView.context, R.color.Unify_GN500)))
+                view_status.backgroundTintList = ColorStateList.valueOf(ContextCompat.getColor(itemView.context, R.color.Unify_GN500))
+                btn_edit.hide()
             }
             ACTIVE_OLDER ->{
             }
             ENDED ->{
+                programStatus.setTextColor(ColorStateList.valueOf(ContextCompat.getColor(itemView.context, R.color.Unify_NN400)))
+                view_status.backgroundTintList = ColorStateList.valueOf(ContextCompat.getColor(itemView.context, R.color.Unify_NN400))
             }
             CANCELED ->{
                 programStatus.setTextColor(ColorStateList.valueOf(ContextCompat.getColor(itemView.context, R.color.Unify_NN400)))

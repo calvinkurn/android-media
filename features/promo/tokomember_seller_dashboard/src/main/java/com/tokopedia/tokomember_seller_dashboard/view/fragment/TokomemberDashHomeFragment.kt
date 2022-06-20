@@ -14,6 +14,7 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.carousel.CarouselUnify
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.tokomember_seller_dashboard.R
 import com.tokopedia.tokomember_seller_dashboard.di.component.DaggerTokomemberDashComponent
@@ -66,6 +67,8 @@ class TokomemberDashHomeFragment : BaseDaggerFragment() {
 //                }
 //            })
 
+        iv_home.errorTitle.hide()
+        iv_home.errorDescription.hide()
         observeViewModel()
         arguments?.getInt(
             BUNDLE_SHOP_ID)?.let { shopId ->

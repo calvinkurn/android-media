@@ -244,6 +244,7 @@
                     <com.tokopedia.unifyprinciples.Typography
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:id="@+id/textFieldSingleMaxTransaction"
                         app:typographyType="display_3"
                         app:typographyWeight="bold"
                         android:textColor="@color/Unify_NN950"
