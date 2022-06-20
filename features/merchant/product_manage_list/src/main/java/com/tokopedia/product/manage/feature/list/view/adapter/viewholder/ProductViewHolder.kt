@@ -7,6 +7,7 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.image.ImageHandler.loadImageFitCenter
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.orTrue
 import com.tokopedia.kotlin.extensions.view.*
@@ -55,7 +56,9 @@ class ProductViewHolder(
 
         if (binding?.imageStockReminder?.isVisible.orTrue()) {
             listener.onFinishBindProductStockReminder()
-        } else if (binding?.btnMoreOptions?.isVisible.orTrue() && adapterPosition.orZero() == 0) {
+        } else if (binding?.btnMoreOptions?.isVisible.orTrue() && adapterPosition.orZero() == 0
+            && GlobalConfig.isSellerApp()
+        ) {
             listener.onFinishBindMoreOption()
         }
     }
