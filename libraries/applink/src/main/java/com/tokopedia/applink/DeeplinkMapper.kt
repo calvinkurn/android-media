@@ -56,7 +56,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalTokopediaNow
 import com.tokopedia.applink.internal.ApplinkConstInternalTopAds
 import com.tokopedia.applink.internal.ApplinkConstInternalTravel
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
-import com.tokopedia.applink.marketplace.DeeplinkMapperLogistic
+import com.tokopedia.applink.logistic.DeeplinkMapperLogistic
 import com.tokopedia.applink.marketplace.DeeplinkMapperMarketplace
 import com.tokopedia.applink.marketplace.DeeplinkMapperMarketplace.getRegisteredNavigationMarketplace
 import com.tokopedia.applink.marketplace.DeeplinkMapperMarketplace.getShopPageInternalAppLink
