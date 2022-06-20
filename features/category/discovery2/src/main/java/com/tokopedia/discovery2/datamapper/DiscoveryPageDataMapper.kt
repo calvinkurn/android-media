@@ -131,6 +131,7 @@ class DiscoveryPageDataMapper(
                 listComponents.addAll(parseProductVerticalList(component))
             }
             ComponentNames.BannerInfinite.componentName -> listComponents.addAll(parseProductVerticalList(component,false))
+            ComponentNames.ShopCardInfinite.componentName -> listComponents.addAll(parseProductVerticalList(component,false))
             ComponentNames.ProductCardSprintSaleCarousel.componentName,
             ComponentNames.ProductCardCarousel.componentName -> {
                 addRecomQueryProdID(component)

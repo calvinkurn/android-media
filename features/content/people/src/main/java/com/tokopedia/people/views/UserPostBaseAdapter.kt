@@ -135,7 +135,9 @@ open class UserPostBaseAdapter(
         totalView: String?,
         isReminderSet: Boolean?,
     ) {
-        val selectedData = items.firstOrNull { it.id == channelId } ?: return
+        val selectedData = items
+            .filterIsInstance<PlayPostContentItem>()
+            .firstOrNull { it.id == channelId } ?: return
 
         val currTotalView = selectedData.stats.view.formatted
         val currIsReminderSet = selectedData.configurations.reminder.isSet

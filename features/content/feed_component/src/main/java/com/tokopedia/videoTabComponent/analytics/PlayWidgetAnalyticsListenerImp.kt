@@ -20,6 +20,12 @@ class PlayWidgetAnalyticsListenerImp @Inject constructor(
 
     var filterCategory: String = ""
 
+    private var mOnClickChannelCardListener: ((channelId: String, position: Int) -> Unit)? = null
+
+    fun setOnClickChannelCard(callback: (channelId: String, position: Int) -> Unit) {
+        mOnClickChannelCardListener = callback
+    }
+
     override fun onClickChannelCard(
         view: PlayWidgetJumboView,
         item: PlayWidgetChannelUiModel,
@@ -31,6 +37,7 @@ class PlayWidgetAnalyticsListenerImp @Inject constructor(
             listOf(item.video.coverUrl),
             item.channelType.toString().lowercase(), channelPositionInList
         )
+        mOnClickChannelCardListener?.invoke(item.channelId, channelPositionInList)
     }
 
     override fun onImpressChannelCard(
@@ -59,6 +66,7 @@ class PlayWidgetAnalyticsListenerImp @Inject constructor(
             item.channelId, item.partner.id, listOf(item.video.coverUrl),
             item.channelType.toString().lowercase(), filterCategory, channelPositionInList
         )
+        mOnClickChannelCardListener?.invoke(item.channelId, channelPositionInList)
     }
 
     override fun onImpressChannelCard(
@@ -90,6 +98,7 @@ class PlayWidgetAnalyticsListenerImp @Inject constructor(
                 item.channelType.toString().lowercase(), filterCategory, channelPositionInList
             )
         }
+        mOnClickChannelCardListener?.invoke(item.channelId, channelPositionInList)
     }
 
     override fun onImpressChannelCard(

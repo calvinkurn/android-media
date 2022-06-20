@@ -18,6 +18,12 @@ class FeedPlayVideoDetailPageAnalyticsListener @Inject constructor(
     var entryPoint: String = ""
     private val shopId: String = userSession.shopId
 
+    private var mOnClickChannelCardListener: ((channelId: String, position: Int) -> Unit)? = null
+
+    fun setOnClickChannelCard(callback: (channelId: String, position: Int) -> Unit) {
+        mOnClickChannelCardListener = callback
+    }
+
     companion object{
          const val DEFAULT_FILTER_VALUE = ""
     }
@@ -36,7 +42,7 @@ class FeedPlayVideoDetailPageAnalyticsListener @Inject constructor(
                 entryPoint
             )
 
-
+        mOnClickChannelCardListener?.invoke(item.channelId, channelPositionInList)
     }
 
     override fun onImpressChannelCard(

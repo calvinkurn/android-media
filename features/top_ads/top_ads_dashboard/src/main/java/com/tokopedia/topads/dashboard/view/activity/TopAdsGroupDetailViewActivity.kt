@@ -29,7 +29,6 @@ import com.tokopedia.topads.common.analytics.TopAdsCreateAnalytics
 import com.tokopedia.topads.common.data.internal.ParamObject
 import com.tokopedia.topads.common.data.internal.ParamObject.DAILY_BUDGET
 import com.tokopedia.topads.common.data.internal.ParamObject.GROUPID
-import com.tokopedia.topads.common.data.internal.ParamObject.ISWHITELISTEDUSER
 import com.tokopedia.topads.common.data.model.DataSuggestions
 import com.tokopedia.topads.common.data.response.GroupEditInput
 import com.tokopedia.topads.common.data.response.GroupInfoResponse
@@ -134,7 +133,6 @@ class TopAdsGroupDetailViewActivity : TopAdsBaseDetailActivity(), HasComponent<T
     private var selectedStatisticType: Int = 0
     private var groupId: Int? = 0
     private var priceSpent: String? = "0"
-    private var isWhiteListedUser: Boolean = false
     private var groupStatus: String? = ""
     private var groupName: String? = ""
     private var autoBidStatus: String = ""
@@ -148,7 +146,7 @@ class TopAdsGroupDetailViewActivity : TopAdsBaseDetailActivity(), HasComponent<T
     private var placementType: Int = 0
     private val bidSwitchManualBottomSheet by lazy(LazyThreadSafetyMode.NONE) {
         BidSwitchManualBudgetBottomSheet(maxSuggestKeyword, minSuggestKeyword, suggestedBid,
-            isWhiteListedUser, ::onSaveClickedInManualBottomSheet, trackerImpl)
+            ::onSaveClickedInManualBottomSheet, trackerImpl)
     }
     private val bidInfoBottomSheet by lazy(LazyThreadSafetyMode.NONE) { BidInfoBottomSheet() }
 
@@ -223,7 +221,6 @@ class TopAdsGroupDetailViewActivity : TopAdsBaseDetailActivity(), HasComponent<T
         bundle.putString(GROUP_NAME, groupName)
         bundle.putInt(GROUP_TOTAL, groupTotal)
         bundle.putInt("placementType", placementType)
-        bundle.putBoolean(ISWHITELISTEDUSER, isWhiteListedUser)
         bundle.putString(TopAdsDashboardConstant.GROUP_STRATEGY, autoBidStatus)
         list.add(FragmentTabItem(PRODUK, ProductTabFragment.createInstance(bundle)))
         list.add(FragmentTabItem(KATA_KUNCI, KeywordTabFragment.createInstance(bundle)))
@@ -259,7 +256,6 @@ class TopAdsGroupDetailViewActivity : TopAdsBaseDetailActivity(), HasComponent<T
                     putExtra(TopAdsDashboardConstant.TAB_POSITION, 2)
                     putExtra(TopAdsDashboardConstant.GROUPID, groupId.toString())
                     putExtra(TopAdsDashboardConstant.GROUP_STRATEGY, autoBidStatus)
-                    putExtra(ISWHITELISTEDUSER, isWhiteListedUser)
                 }
                 startActivityForResult(intent, EDIT_GROUP_REQUEST_CODE)
             }
@@ -407,11 +403,7 @@ class TopAdsGroupDetailViewActivity : TopAdsBaseDetailActivity(), HasComponent<T
             } else {
                 bidTypeData?.clear()
                 bidTypeData?.add(TopAdsBidSettingsModel(PRODUCT_SEARCH, bid.toFloat()))
-                if (isWhiteListedUser) {
-                    bidTypeData?.add(TopAdsBidSettingsModel(PRODUCT_BROWSE, rekommendedBid))
-                } else {
-                    bidTypeData?.add(TopAdsBidSettingsModel(PRODUCT_BROWSE, bid.toFloat()))
-                }
+                bidTypeData?.add(TopAdsBidSettingsModel(PRODUCT_BROWSE, rekommendedBid))
             }
             dataMap[BID_TYPE] = bidTypeData
         } catch (e: NumberFormatException) {
@@ -465,19 +457,12 @@ class TopAdsGroupDetailViewActivity : TopAdsBaseDetailActivity(), HasComponent<T
         groupTotal = data.groupTotal.toInt()
         priceDaily = data.daiyBudget
 
-        if(isWhiteListedUser) {
-            editRekomendasiBudget?.visibility = View.VISIBLE
-            perClickRekomendasi?.visibility = View.VISIBLE
-            budgetperclickRekomendasi?.visibility = View.VISIBLE
-            biayaRekommendasi?.visibility = View.VISIBLE
-            biayaPencarian?.text = getString(R.string.topads_dash_biaya_pencarian)
-        } else {
-            editRekomendasiBudget?.visibility = View.GONE
-            perClickRekomendasi?.visibility = View.GONE
-            budgetperclickRekomendasi?.visibility = View.GONE
-            biayaRekommendasi?.visibility = View.GONE
-            biayaPencarian?.text = getString(com.tokopedia.topads.common.R.string.topads_create_bs_title2)
-        }
+        editRekomendasiBudget?.visibility = View.VISIBLE
+        perClickRekomendasi?.visibility = View.VISIBLE
+        budgetperclickRekomendasi?.visibility = View.VISIBLE
+        biayaRekommendasi?.visibility = View.VISIBLE
+        biayaPencarian?.text = getString(R.string.topads_dash_biaya_pencarian)
+
         if(data.strategies.isNotEmpty()) {
             autoBidStatus = data.strategies[0]
             switchAutoBidLayout?.switchToAutomatic()
@@ -582,8 +567,6 @@ class TopAdsGroupDetailViewActivity : TopAdsBaseDetailActivity(), HasComponent<T
     private fun getBundleArguments() {
         groupId = intent?.extras?.getString(GROUP_ID)?.toIntOrZero()
         priceSpent = intent?.extras?.getString(TopAdsDashboardConstant.PRICE_SPEND)
-        isWhiteListedUser = intent?.extras?.getBoolean(ISWHITELISTEDUSER)?:false
-
         if(intent?.extras?.getBoolean(ParamObject.IS_AUTO_BID_TOGGLE_ENABLED) != true){
             switchAutoBidLayout?.hide()
         }

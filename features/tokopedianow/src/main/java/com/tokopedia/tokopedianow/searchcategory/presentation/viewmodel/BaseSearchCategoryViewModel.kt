@@ -1035,8 +1035,9 @@ abstract class BaseSearchCategoryViewModel(
         chooseAddressData?.let {
             val outOfCoverage = it.isOutOfCoverage()
             val showMiniCart = miniCartSimplifiedData.isShowMiniCartWidget
-            miniCartWidgetMutableLiveData.value = miniCartSimplifiedData
-            isShowMiniCartMutableLiveData.value = showMiniCart && !outOfCoverage
+            val isShowMiniCartWidget = showMiniCart && !outOfCoverage
+            miniCartWidgetMutableLiveData.value = miniCartSimplifiedData.copy(isShowMiniCartWidget = isShowMiniCartWidget)
+            isShowMiniCartMutableLiveData.value = isShowMiniCartWidget
         }
     }
 
