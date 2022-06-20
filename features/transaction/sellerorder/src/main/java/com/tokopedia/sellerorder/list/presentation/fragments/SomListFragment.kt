@@ -529,7 +529,7 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
                 isEnabled = true
                 isRefreshing = false
             }
-            somListBinding?.somListLoading?.gone()
+            hideOrderShimmer()
             adapter?.hideLoading()
         }
     }
@@ -1986,7 +1986,7 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
             } else {
                 somListBinding?.run {
                     rvSomList.gone()
-                    somListLoading.show()
+                    showOrderShimmer()
                 }
             }
         }
@@ -2296,7 +2296,7 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
     private fun showGlobalError(throwable: Throwable) {
         dismissCoachMark()
         somListBinding?.run {
-            somListLoading.gone()
+            hideOrderShimmer()
             rvSomList.gone()
             multiEditViews.gone()
         }
@@ -2321,7 +2321,7 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
     private fun showAdminPermissionError() {
         dismissCoachMark()
         somListBinding?.run {
-            somListLoading.gone()
+            hideOrderShimmer()
             rvSomList.gone()
             multiEditViews.gone()
         }
@@ -3201,6 +3201,16 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
     }
 
     private fun showBackButton(): Boolean = !GlobalConfig.isSellerApp()
+
+    private fun showOrderShimmer() {
+        somListBinding?.loaderSomList1?.root?.show()
+        somListBinding?.loaderSomList2?.root?.show()
+    }
+
+    private fun hideOrderShimmer() {
+        somListBinding?.loaderSomList1?.root?.gone()
+        somListBinding?.loaderSomList2?.root?.gone()
+    }
 
     protected fun dismissBottomSheets(): Boolean {
         var bottomSheetDismissed = false

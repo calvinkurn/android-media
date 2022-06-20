@@ -170,16 +170,6 @@
         <!--  start shimmer views  -->
 
         <com.tokopedia.unifycomponents.LoaderUnify
-            android:id="@+id/somListLoading"
-            android:layout_width="@dimen/layout_lvl4"
-            android:layout_height="@dimen/layout_lvl4"
-            app:layout_constraintBottom_toTopOf="@id/containerBtnBulkAction"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/dividerMultiSelect"
-            app:loader_type="circular" />
-
-        <com.tokopedia.unifycomponents.LoaderUnify
             android:id="@+id/sortFilterShimmer1"
             android:layout_width="@dimen/som_list_sort_filter_shimmer_width"
             android:layout_height="@dimen/som_list_sort_filter_shimmer_height"
@@ -229,6 +219,20 @@
             app:layout_constraintTop_toTopOf="@id/sortFilterShimmer1"
             app:loader_corner_radius="16dp"
             app:loader_type="rect" />
+
+        <include
+            android:id="@+id/loaderSomList1"
+            layout="@layout/item_som_list_order_shimmer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@id/dividerMultiSelect" />
+
+        <include
+            android:id="@+id/loaderSomList2"
+            layout="@layout/item_som_list_order_shimmer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@id/loaderSomList1" />
 
         <!--  start error views  -->
 

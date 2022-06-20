@@ -2,8 +2,6 @@ package com.tokopedia.sellerorder.list.presentation.adapter.viewholders
 
 import android.animation.LayoutTransition.CHANGING
 import android.annotation.SuppressLint
-import android.graphics.Color
-import android.graphics.ColorFilter
 import android.graphics.LightingColorFilter
 import android.graphics.Typeface
 import android.os.Bundle
@@ -16,7 +14,14 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.isVisible
+import com.tokopedia.kotlin.extensions.view.loadImageRounded
+import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.kotlin.extensions.view.setMargin
+import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.showWithCondition
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.common.util.SomConsts
 import com.tokopedia.sellerorder.common.util.SomConsts.KEY_ACCEPT_ORDER
@@ -54,6 +59,7 @@ open class SomListOrderViewHolder(
 
     override fun bind(element: SomListOrderUiModel?) {
         if (element != null) {
+            setupOrderPlusRibbon(element)
             setupOrderCard(element)
             // header
             setupStatusIndicator(element)
@@ -92,6 +98,7 @@ open class SomListOrderViewHolder(
                 val oldItem = it.first
                 val newItem = it.second
                 if (oldItem is SomListOrderUiModel && newItem is SomListOrderUiModel) {
+                    setupOrderPlusRibbon(newItem)
                     setupOrderCard(newItem)
                     val oldIsEnded = oldItem.orderStatusId in endedOrderStatusCode
                     val newIsEnded = newItem.orderStatusId in endedOrderStatusCode
@@ -234,24 +241,25 @@ open class SomListOrderViewHolder(
             val deadlineText = element.deadlineText
             val deadlineColor = element.deadlineColor
             if (deadlineText.isNotBlank() && deadlineColor.isNotBlank()) {
-                val filter: ColorFilter = LightingColorFilter(ContextCompat.getColor(root.context, com.tokopedia.unifyprinciples.R.color.Unify_G900), Color.parseColor(deadlineColor))
-                val textBackgroundDrawable = MethodChecker.getDrawable(root.context, R.drawable.bg_due_response_text).apply {
-                    colorFilter = filter
+                val textBackgroundDrawable = if (element.isPlus) {
+                    MethodChecker.getDrawable(root.context, R.drawable.bg_due_response_text_order_plus)
+                } else {
+                    MethodChecker.getDrawable(root.context, R.drawable.bg_due_response_text_order_regular)
                 }
-                val iconBackgroundDrawable = MethodChecker.getDrawable(root.context, R.drawable.bg_due_response_icon).apply {
-                    colorFilter = filter
+                val iconBackgroundDrawable = if (element.isPlus) {
+                    MethodChecker.getDrawable(root.context, R.drawable.bg_due_response_icon_order_plus)
+                } else {
+                    MethodChecker.getDrawable(root.context, R.drawable.bg_due_response_icon_order_regular)
                 }
                 tvSomListDeadline.apply {
                     text = deadlineText
                     background = textBackgroundDrawable
-                    val padding = getDimens(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl2)
-                    setPadding(padding, padding, padding, padding)
+                    setPadding(4.toPx(), 4.toPx(), 8.toPx(), 4.toPx())
                 }
                 icDeadline.apply {
                     background = iconBackgroundDrawable
                     colorFilter = LightingColorFilter(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G900), ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0))
-                    val padding = getDimens(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl2)
-                    setPadding(padding, padding, 0, padding)
+                    setPadding(4.toPx(), 4.toPx(), 0, 4.toPx())
                 }
                 tvSomListResponseLabel.text = composeDeadlineLabel(element.preOrderType != 0)
                 tvSomListResponseLabel.show()
@@ -364,6 +372,13 @@ open class SomListOrderViewHolder(
                 element.isChecked = isChecked
             }
             listener.onCheckChanged()
+        }
+    }
+
+    private fun setupOrderPlusRibbon(element: SomListOrderUiModel) {
+        binding?.icSomListOrderPlusRibbon?.run {
+            loadImage(R.drawable.ic_som_list_order_plus_ribbon)
+            showWithCondition(element.isPlus)
         }
     }
 

@@ -29,6 +29,7 @@ data class SomListOrderUiModel(
         val buyerName: String = "",
         val tickerInfo: TickerInfo = TickerInfo(),
         val buttons: List<Button> = emptyList(),
+        val isPlus: Boolean = false,
         var isChecked: Boolean = false,
         var searchParam: String,
         var isOpen: Boolean = false
