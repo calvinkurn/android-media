@@ -177,10 +177,6 @@ class ProductManageBottomSheet : BottomSheetUnify() {
                         add(CreateBroadcastChat(product))
                     }
 
-                    if(setCashBack) {
-                        add(SetCashBack(product))
-                    }
-
                     if(isFeatured && isPowerMerchantOrOfficialStore && setFeatured) {
                         add(RemoveFeaturedProduct(product))
                     }
