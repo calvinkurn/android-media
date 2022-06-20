@@ -8,7 +8,6 @@ import com.tokopedia.tokofood.R
 import com.tokopedia.tokofood.databinding.TokofoodItemOrderInfoLayoutBinding
 import com.tokopedia.tokofood.feature.merchant.presentation.adapter.AddOnInfoAdapter
 import com.tokopedia.tokofood.feature.merchant.presentation.model.CustomOrderDetail
-import com.tokopedia.tokofood.feature.merchant.presentation.model.ProductUiModel
 
 class OrderDetailViewHolder(
         private val binding: TokofoodItemOrderInfoLayoutBinding,
@@ -24,14 +23,10 @@ class OrderDetailViewHolder(
 
     private var context: Context? = null
 
-    private var addOnInfoAdapter: AddOnInfoAdapter = AddOnInfoAdapter()
+    private var addOnInfoAdapter: AddOnInfoAdapter? = null
 
     init {
         context = binding.root.context
-        binding.rvSelectedAddOns.apply {
-            adapter = addOnInfoAdapter
-            layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
-        }
         binding.tpgEditButton.setOnClickListener {
             val customOrderDetail = binding.root.getTag(R.id.custom_order_detail) as CustomOrderDetail
             clickListener.onEditButtonClicked(cartId = customOrderDetail.cartId)
@@ -55,12 +50,21 @@ class OrderDetailViewHolder(
 
     fun bindData(customOrderDetail: CustomOrderDetail, dataSetPosition: Int) {
         // bind custom order detail and data set position
+        setupAdapter()
         binding.root.setTag(R.id.custom_order_detail, customOrderDetail)
         binding.root.setTag(R.id.dataset_position, dataSetPosition)
         binding.customProductPrice.text = customOrderDetail.subTotalFmt
         binding.notesLabel.isVisible = customOrderDetail.orderNote.isNotBlank()
         binding.tpgOrderNote.text = customOrderDetail.orderNote
         binding.qeuProductQtyEditor.setValue(customOrderDetail.qty)
-        addOnInfoAdapter.setCustomListItems(customOrderDetail.customListItems)
+        addOnInfoAdapter?.setCustomListItems(customOrderDetail.customListItems)
+    }
+
+    private fun setupAdapter() {
+        addOnInfoAdapter = AddOnInfoAdapter()
+        binding.rvSelectedAddOns.apply {
+            adapter = addOnInfoAdapter
+            layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+        }
     }
 }

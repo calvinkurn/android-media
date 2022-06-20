@@ -28,7 +28,9 @@ class OrderDetailAdapter(private val clickListener: OrderDetailViewHolder.OnOrde
 
     @SuppressLint("NotifyDataSetChanged")
     fun setCustomOrderDetails(customOrderDetails: List<CustomOrderDetail>) {
-        this.customOrderDetails = customOrderDetails.toMutableList()
+        if (customOrderDetails.isEmpty()) return
+        this.customOrderDetails.clear()
+        this.customOrderDetails.addAll(customOrderDetails)
         this.notifyDataSetChanged()
     }
 

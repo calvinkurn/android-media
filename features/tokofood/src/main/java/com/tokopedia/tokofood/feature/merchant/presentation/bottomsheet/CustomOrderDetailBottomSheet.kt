@@ -55,6 +55,10 @@ class CustomOrderDetailBottomSheet(private val clickListener: OnCustomOrderDetai
         productUiModel?.run { renderData(this.customOrderDetails) }
     }
 
+    override fun onResume() {
+        super.onResume()
+    }
+
     override fun onDestroyView() {
         binding = null
         super.onDestroyView()
@@ -75,6 +79,11 @@ class CustomOrderDetailBottomSheet(private val clickListener: OnCustomOrderDetai
 
     private fun renderData(customOrderDetails: List<CustomOrderDetail>) {
         adapter.setCustomOrderDetails(customOrderDetails)
+    }
+
+    fun updateProductListUiModel(productUiModel: ProductUiModel) {
+        this.productUiModel = productUiModel.copy()
+        adapter.setCustomOrderDetails(productUiModel.customOrderDetails)
     }
 
     fun setProductUiModel(productUiModel: ProductUiModel) {

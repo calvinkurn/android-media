@@ -34,7 +34,6 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.tokofood.R
 import com.tokopedia.tokofood.common.constants.ShareComponentConstants
-import com.tokopedia.tokofood.common.domain.response.CartTokoFoodBottomSheet
 import com.tokopedia.tokofood.common.domain.response.CartTokoFoodData
 import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFoodData
 import com.tokopedia.tokofood.common.presentation.UiEvent
@@ -51,16 +50,16 @@ import com.tokopedia.tokofood.feature.merchant.domain.model.response.TokoFoodMer
 import com.tokopedia.tokofood.feature.merchant.domain.model.response.TokoFoodTickerDetail
 import com.tokopedia.tokofood.feature.merchant.presentation.adapter.MerchantPageCarouselAdapter
 import com.tokopedia.tokofood.feature.merchant.presentation.adapter.ProductListAdapter
-import com.tokopedia.tokofood.feature.merchant.presentation.bottomsheet.*
-import com.tokopedia.tokofood.feature.merchant.presentation.fragment.ManageLocationFragment.Companion.EMPTY_STATE_NO_ADDRESS
-import com.tokopedia.tokofood.feature.merchant.presentation.fragment.ManageLocationFragment.Companion.EMPTY_STATE_NO_PIN_POINT
-import com.tokopedia.tokofood.feature.merchant.presentation.fragment.ManageLocationFragment.Companion.EMPTY_STATE_OUT_OF_COVERAGE
 import com.tokopedia.tokofood.feature.merchant.presentation.bottomsheet.CategoryFilterBottomSheet
 import com.tokopedia.tokofood.feature.merchant.presentation.bottomsheet.ChangeMerchantBottomSheet
 import com.tokopedia.tokofood.feature.merchant.presentation.bottomsheet.CustomOrderDetailBottomSheet
 import com.tokopedia.tokofood.feature.merchant.presentation.bottomsheet.MerchantInfoBottomSheet
 import com.tokopedia.tokofood.feature.merchant.presentation.bottomsheet.OrderNoteBottomSheet
+import com.tokopedia.tokofood.feature.merchant.presentation.bottomsheet.PhoneNumberVerificationBottomSheet
 import com.tokopedia.tokofood.feature.merchant.presentation.bottomsheet.ProductDetailBottomSheet
+import com.tokopedia.tokofood.feature.merchant.presentation.fragment.ManageLocationFragment.Companion.EMPTY_STATE_NO_ADDRESS
+import com.tokopedia.tokofood.feature.merchant.presentation.fragment.ManageLocationFragment.Companion.EMPTY_STATE_NO_PIN_POINT
+import com.tokopedia.tokofood.feature.merchant.presentation.fragment.ManageLocationFragment.Companion.EMPTY_STATE_OUT_OF_COVERAGE
 import com.tokopedia.tokofood.feature.merchant.presentation.mapper.TokoFoodMerchantUiModelMapper
 import com.tokopedia.tokofood.feature.merchant.presentation.model.CategoryFilterListUiModel
 import com.tokopedia.tokofood.feature.merchant.presentation.model.CustomOrderDetail
@@ -222,6 +221,7 @@ class MerchantPageFragment : BaseMultiFragment(),
 
     override fun onResume() {
         super.onResume()
+        fetchMerchantData()
         initializeMiniCartWidget()
         merchantPageAnalytics.openMerchantPage(merchantId)
     }
@@ -239,7 +239,6 @@ class MerchantPageFragment : BaseMultiFragment(),
         observeLiveData()
         collectCartDataFlow()
         collectFlow()
-        fetchMerchantData()
         initializeMiniCartWidget()
     }
 
@@ -279,7 +278,8 @@ class MerchantPageFragment : BaseMultiFragment(),
 
                 val offset = abs(verticalOffset)
 
-                if (offset >= (appBarLayout.totalScrollRange - binding?.toolbar?.height.orZero())) {
+                if (offset >= (appBarLayout.totalScrollRange - binding?.toolbar?.height.orZero()) &&
+                        productListAdapter?.getProductListItems()?.isNotEmpty() == true) {
                     //collapsed
                     binding?.cardUnifySticky?.show()
                     setToolbarWhiteColor()
@@ -295,8 +295,7 @@ class MerchantPageFragment : BaseMultiFragment(),
     private fun setupCardSticky() {
         binding?.cardUnifySticky?.setOnClickListener {
             val cacheManager = context?.let { SaveInstanceCacheManager(it, true) }
-            val categoryFilter =
-                TokoFoodMerchantUiModelMapper.mapProductListItemToCategoryFilterUiModel(
+            val categoryFilter = TokoFoodMerchantUiModelMapper.mapProductListItemToCategoryFilterUiModel(
                     viewModel.filterList, filterNameSelected
                 )
             cacheManager?.put(
@@ -525,10 +524,12 @@ class MerchantPageFragment : BaseMultiFragment(),
                                                 cardPositions?.run {
                                                     val dataSetPosition =
                                                         viewModel.getDataSetPosition(this)
+                                                    val adapterPosition = viewModel.getAdapterPosition(this)
                                                     val productUiModel =
                                                         productListAdapter?.getProductUiModel(
-                                                            dataSetPosition
+                                                            adapterPosition
                                                         ) ?: ProductUiModel()
+                                                    customOrderDetailBottomSheet?.updateProductListUiModel(productUiModel)
                                                     productListAdapter?.updateProductUiModel(
                                                         cartTokoFood = cartTokoFood,
                                                         dataSetPosition = dataSetPosition,
@@ -707,11 +708,9 @@ class MerchantPageFragment : BaseMultiFragment(),
                     val mLayoutManager = it.layoutManager as? LinearLayoutManager
                     val firstVisibleItemPos =
                         mLayoutManager?.findFirstVisibleItemPosition().orZero()
-                    val productListItem =
-                        productListAdapter?.getProductListItems()?.filterIndexed { position, _ ->
+                    val productListItem = productListAdapter?.getProductListItems()?.filterIndexed { position, _ ->
                             position == firstVisibleItemPos
-                        }
-                            ?.firstOrNull { productItem -> productItem.productCategory.title.isNotBlank() }
+                        }?.firstOrNull { productItem -> productItem.productCategory.title.isNotBlank() }
                     productListItem?.let { productsItem ->
                         filterNameSelected = productsItem.productCategory.title
                         setCategoryPlaceholder(filterNameSelected)
@@ -819,7 +818,7 @@ class MerchantPageFragment : BaseMultiFragment(),
         cardPositions: Pair<Int, Int>
     ) {
         val productUiModel = productListItem.productUiModel
-        if (activityViewModel?.shopId == merchantId) {
+        if (activityViewModel?.shopId.isNullOrBlank() || activityViewModel?.shopId == merchantId) {
             viewModel.productMap[productUiModel.id] = cardPositions
             if (productUiModel.isCustomizable && productUiModel.isAtc) {
                 customOrderDetailBottomSheet?.setProductPosition(cardPositions.first)
@@ -827,7 +826,7 @@ class MerchantPageFragment : BaseMultiFragment(),
                 customOrderDetailBottomSheet?.show(childFragmentManager)
             } else if (productUiModel.isCustomizable) {
                 navigateToOrderCustomizationPage(
-                    cartId = "",
+                    cartId = productListItem.productUiModel.cartId,
                     productListItem = productListItem,
                     cardPositions.first
                 )
