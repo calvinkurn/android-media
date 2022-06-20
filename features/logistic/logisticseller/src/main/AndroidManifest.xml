@@ -3,7 +3,7 @@
     package="com.tokopedia.logisticseller">
     <application>
         <activity
-            android:name="com.tokopedia.logisticseller.reschedulepickup.ui.ReschedulePickupActivity"
+            android:name="com.tokopedia.logisticseller.ui.reschedulepickup.ReschedulePickupActivity"
             android:exported="false"
             android:label="@string/title_reschedule_pickup_activity"
             android:screenOrientation="portrait"
