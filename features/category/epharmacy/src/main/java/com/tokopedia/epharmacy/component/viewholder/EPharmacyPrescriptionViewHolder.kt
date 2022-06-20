@@ -9,7 +9,6 @@ import com.tokopedia.epharmacy.adapters.EPharmacyGalleryAdapter
 import com.tokopedia.epharmacy.adapters.EPharmacyImagesDecoration
 import com.tokopedia.epharmacy.adapters.EPharmacyListener
 import com.tokopedia.epharmacy.component.model.EPharmacyPrescriptionDataModel
-import com.tokopedia.epharmacy.utils.ERROR_MAX_MEDIA_ITEM
 import com.tokopedia.epharmacy.utils.MAX_MEDIA_ITEM
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
@@ -43,7 +42,7 @@ class EPharmacyPrescriptionViewHolder(private val view: View,
                     galleryRV.addItemDecoration(EPharmacyImagesDecoration())
                 galleryRV.adapter =  EPharmacyGalleryAdapter(safePrescriptionArray,
                     ePharmacyListener,
-                    (safePrescriptionArray.size < (MAX_MEDIA_ITEM + ERROR_MAX_MEDIA_ITEM)))
+                    (safePrescriptionArray.size < (MAX_MEDIA_ITEM)))
             }
         }
     }

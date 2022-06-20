@@ -6,6 +6,10 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.epharmacy.R
 import com.tokopedia.epharmacy.adapters.EPharmacyListener
 import com.tokopedia.epharmacy.component.model.EPharmacyProductDataModel
+import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.kotlin.extensions.view.displayTextOrHide
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.unifyprinciples.Typography
 
@@ -13,8 +17,9 @@ class EPharmacyProductViewHolder(private val view: View,
                                  private val ePharmacyListener: EPharmacyListener?) : AbstractViewHolder<EPharmacyProductDataModel>(view) {
 
     private val productText = view.findViewById<Typography>(R.id.product_name)
-    private val storeNameText = view.findViewById<Typography>(R.id.store_name)
-    private val storeLocationText = view.findViewById<Typography>(R.id.store_location)
+    private val shopNameText = view.findViewById<Typography>(R.id.shop_name)
+    private val shopLocationText = view.findViewById<Typography>(R.id.shop_location)
+    private val shopIcon = view.findViewById<IconUnify>(R.id.shop_icon)
     private val productQuantity = view.findViewById<Typography>(R.id.product_quantity)
     private val productImageUnify = view.findViewById<ImageView>(R.id.product_image)
 
@@ -31,8 +36,13 @@ class EPharmacyProductViewHolder(private val view: View,
             productText.text = name ?: ""
             productQuantity.text = quantity.toString()
             productImageUnify.loadImage(productImage)
-            storeNameText.text = shopName ?: ""
-            storeLocationText.text = shopLocation ?: ""
+            shopNameText.displayTextOrHide(shopName ?: "")
+            shopLocationText.displayTextOrHide(shopLocation ?: "")
+            if(shopType.isNullOrBlank()){
+                shopIcon.hide()
+            }else{
+                shopIcon.show()
+            }
         }
     }
 }

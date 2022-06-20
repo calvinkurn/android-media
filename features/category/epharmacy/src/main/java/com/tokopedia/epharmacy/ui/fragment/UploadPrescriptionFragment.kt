@@ -68,7 +68,6 @@ class UploadPrescriptionFragment : BaseDaggerFragment() , EPharmacyListener {
 
     private var orderId = ""
     private var checkoutId = ""
-    private var prescriptionImagesCount = 0
 
     private val ePharmacyAdapter by lazy(LazyThreadSafetyMode.NONE) {
         val asyncDifferConfig: AsyncDifferConfig<BaseEPharmacyDataModel> = AsyncDifferConfig.Builder(
@@ -104,6 +103,7 @@ class UploadPrescriptionFragment : BaseDaggerFragment() , EPharmacyListener {
         observerEPharmacyDetail()
         observeButtonData()
         observePrescriptionImages()
+        observeUploadPrescriptionIdsData()
     }
 
     private fun initViews(view: View) {
@@ -164,15 +164,25 @@ class UploadPrescriptionFragment : BaseDaggerFragment() , EPharmacyListener {
     }
 
     private fun showTnC() {
-
+        EPharmacyWebViewBottomSheet.newInstance("", EPHARMACY_TNC_LINK).show(childFragmentManager,EPharmacyWebViewBottomSheet.TAG)
     }
 
     private fun onClickFotoResepButton() {
-        openMediaPicker(MAX_MEDIA_ITEM)
+        uploadPrescriptionViewModel.buttonLiveData.value?.firstOrNull()?.let { button ->
+            if(button.type == EPharmacyButtonType.SECONDARY.type){
+                onDoneButtonClick()
+            }else {
+                openMediaPicker((MAX_MEDIA_ITEM)
+                        - (uploadPrescriptionViewModel.prescriptionImages.value?.size ?: 0))            }
+        }
     }
 
-    private fun onClickSelesaiButton(){
-
+    private fun onDoneButtonClick(){
+        if(orderId.isNotBlank()){
+            uploadPrescriptionViewModel.uploadPrescriptionIds(UPLOAD_ORDER_ID_KEY,orderId)
+        }else if(checkoutId.isNotBlank()){
+            uploadPrescriptionViewModel.uploadPrescriptionIds(UPLOAD_CHECKOUT_ID_KEY,orderId)
+        }
     }
 
     private fun openMediaPicker(withMaxMediaItems: Int) {
@@ -181,7 +191,8 @@ class UploadPrescriptionFragment : BaseDaggerFragment() , EPharmacyListener {
                 pageSource(PageSource.EPharmacy)
                 modeType(ModeType.IMAGE_ONLY)
                 multipleSelectionMode()
-                maxMediaItem(withMaxMediaItems)
+                maxMediaItem(withMaxMediaItems - 2)
+                maxImageFileSize(4_000_000)
             }
             startActivityForResult(intent, MEDIA_PICKER_REQUEST_CODE)
         }
@@ -208,10 +219,6 @@ class UploadPrescriptionFragment : BaseDaggerFragment() , EPharmacyListener {
         updateUi()
     }
 
-    private fun onClickDoneButton() {
-
-    }
-
     private fun observerEPharmacyDetail(){
         uploadPrescriptionViewModel.productDetailLiveDataResponse.observe(viewLifecycleOwner){
             when (it) {
@@ -225,16 +232,15 @@ class UploadPrescriptionFragment : BaseDaggerFragment() , EPharmacyListener {
         }
     }
 
+    private fun onFailEPharmacyData(it: Fail) {
+        when (it.throwable) {
+
+        }
+    }
+
     private fun observeButtonData() {
         uploadPrescriptionViewModel.buttonLiveData.observe(viewLifecycleOwner){
-            when(it){
-                is Success -> {
-                    updateButtonUI(it)
-                }
-                is Fail -> {
-                    fotoResepButton?.hide()
-                }
-            }
+            updateButtonUI(it)
         }
     }
 
@@ -244,10 +250,40 @@ class UploadPrescriptionFragment : BaseDaggerFragment() , EPharmacyListener {
         }
     }
 
-    private fun onFailEPharmacyData(it: Fail) {
-        when (it.throwable) {
+    private fun observeUploadPrescriptionIdsData() {
+        uploadPrescriptionViewModel.uploadPrescriptionIdsData.observe(viewLifecycleOwner,{
+            when(it){
+                is Success -> {
+                    if(orderId.isNotBlank()){
+                        openOrderPage()
+                    }else if (checkoutId.isNotBlank()) {
+                        sendResultToCheckout()
+                    }
+                }
+                is Fail -> {
 
+                }
+            }
+        })
+    }
+
+    private fun sendResultToCheckout() {
+        Intent().apply {
+            val prescriptionIds = arrayListOf<String>()
+            uploadPrescriptionViewModel.prescriptionImages.value?.let {  presImages ->
+                presImages.forEach { presImage ->
+                    if(presImage?.prescriptionId?.isNotBlank() == true){
+                        prescriptionIds.add(presImage.prescriptionId ?: "")
+                    }
+                }
+            }
+            putExtra(EPHARMACY_PRESCRIPTION_IDS,prescriptionIds)
+            activity?.setResult(EPHARMACY_REQUEST_CODE,this)
         }
+    }
+
+    private fun openOrderPage() {
+
     }
 
     private fun onSuccessEPharmacyData(it: Success<EPharmacyDataModel>) {
@@ -268,21 +304,37 @@ class UploadPrescriptionFragment : BaseDaggerFragment() , EPharmacyListener {
         submitList(newData)
     }
 
-    private fun updateButtonUI(result: Success<List<EpharmacyButton?>>) {
-        result.data.firstOrNull()?.let {
+    private fun updateButtonUI(buttonData: List<EpharmacyButton?>) {
+        buttonData.firstOrNull()?.let {
             fotoResepButton?.text = it.text
             fotoResepButton?.buttonSize = UnifyButton.Size.LARGE
             fotoResepButton?.show()
-            if(it.type == EPharmacyButtonType.PRIMARY.type){
-                ePharmacyToolTipText?.show()
-                fotoResepButton?.buttonVariant = UnifyButton.Variant.GHOST
-                setCameraDrawableOnButton()
-            }else {
-                fotoResepButton?.buttonVariant = UnifyButton.Variant.FILLED
-                fotoResepButton?.setDrawable(null, UnifyButton.DrawablePosition.LEFT)
+            when (it.type) {
+                EPharmacyButtonType.PRIMARY.type -> {
+                    ePharmacyToolTipText?.show()
+                    fotoResepButton?.buttonVariant = UnifyButton.Variant.GHOST
+                    setCameraDrawableOnButton()
+                    fotoResepButton?.isEnabled = true
+                }
+                EPharmacyButtonType.TERTIARY.type -> {
+                    fotoResepButton?.buttonVariant = UnifyButton.Variant.FILLED
+                    fotoResepButton?.isEnabled = false
+                    removeDrawable()
+                }
+                else -> {
+                    fotoResepButton?.buttonVariant = UnifyButton.Variant.FILLED
+                    removeDrawable()
+                    fotoResepButton?.isEnabled = true
+                }
             }
         } ?: kotlin.run {
             fotoResepButton?.hide()
+        }
+    }
+
+    private fun removeDrawable() {
+        if(fotoResepButton?.drawableState?.size?:0 > 0 ){
+            fotoResepButton?.setDrawable(null, UnifyButton.DrawablePosition.LEFT)
         }
     }
 
@@ -305,8 +357,8 @@ class UploadPrescriptionFragment : BaseDaggerFragment() , EPharmacyListener {
     }
 
     override fun onCameraClick() {
-        openMediaPicker((MAX_MEDIA_ITEM + ERROR_MAX_MEDIA_ITEM)
-                - (uploadPrescriptionViewModel.prescriptionImages.value?.size ?: 0 - 1))
+        openMediaPicker((MAX_MEDIA_ITEM)
+                - (uploadPrescriptionViewModel.prescriptionImages.value?.size ?: 0))
     }
 
     override fun onPrescriptionImageClick(adapterPosition: Int, image: PrescriptionImage) {

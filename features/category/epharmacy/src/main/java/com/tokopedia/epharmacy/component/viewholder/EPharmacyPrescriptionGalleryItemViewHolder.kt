@@ -7,6 +7,7 @@ import com.bumptech.glide.Glide
 import com.tokopedia.epharmacy.R
 import com.tokopedia.epharmacy.adapters.EPharmacyListener
 import com.tokopedia.epharmacy.network.response.PrescriptionImage
+import com.tokopedia.epharmacy.utils.EPharmacyPrescriptionStatus
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
@@ -69,15 +70,14 @@ class EPharmacyPrescriptionGalleryItemViewHolder(private val viewItem: View) : R
     }
 
     private fun renderCancelUi(model: PrescriptionImage) {
-        if(model.isDeletable){
+        if(model.status == EPharmacyPrescriptionStatus.APPROVED.status){
+            cancelButton.hide()
+        }else {
             cancelButton.show()
             cancelButton.setOnClickListener {
                 actionListener?.onPrescriptionCrossImageClick(adapterPosition)
             }
-        }else {
-            cancelButton.hide()
         }
-
     }
 
     private fun renderLoaderUi(model: PrescriptionImage) {

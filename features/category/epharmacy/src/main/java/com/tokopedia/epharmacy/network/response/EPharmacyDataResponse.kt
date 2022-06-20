@@ -33,9 +33,9 @@ data class EpharmacyButton(
     @SerializedName("key")
     val key: String?,
     @SerializedName("text")
-    val text: String?,
+    var text: String?,
     @SerializedName("type")
-    val type: String = "primary",
+    var type: String = "primary",
     @SerializedName("applink")
     val appLink: String?,
     @SerializedName("desktop_url")

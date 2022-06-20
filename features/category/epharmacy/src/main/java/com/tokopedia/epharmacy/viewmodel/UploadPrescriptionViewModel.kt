@@ -11,18 +11,13 @@ import com.tokopedia.epharmacy.component.BaseEPharmacyDataModel
 import com.tokopedia.epharmacy.component.model.EPharmacyDataModel
 import com.tokopedia.epharmacy.component.model.EPharmacyPrescriptionDataModel
 import com.tokopedia.epharmacy.component.model.EPharmacyProductDataModel
-import com.tokopedia.epharmacy.component.model.EPharmacyStaticInfoDataModel
 import com.tokopedia.epharmacy.di.qualifier.CoroutineBackgroundDispatcher
-import com.tokopedia.epharmacy.network.response.EPharmacyDataResponse
-import com.tokopedia.epharmacy.network.response.EPharmacyPrescriptionUploadResponse
-import com.tokopedia.epharmacy.network.response.EpharmacyButton
-import com.tokopedia.epharmacy.network.response.PrescriptionImage
+import com.tokopedia.epharmacy.di.qualifier.CoroutineMainDispatcher
+import com.tokopedia.epharmacy.network.response.*
 import com.tokopedia.epharmacy.usecase.GetEPharmacyOrderDetailUseCase
+import com.tokopedia.epharmacy.usecase.PostPrescriptionIdUseCase
 import com.tokopedia.epharmacy.usecase.UploadPrescriptionUseCase
-import com.tokopedia.epharmacy.utils.EPharmacyPrescriptionStatus
-import com.tokopedia.epharmacy.utils.GALLERY_IMAGE_VIEW_TYPE
-import com.tokopedia.epharmacy.utils.PRESCRIPTION_COMPONENT
-import com.tokopedia.epharmacy.utils.PRODUCT_COMPONENT
+import com.tokopedia.epharmacy.utils.*
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -30,21 +25,25 @@ import com.tokopedia.usecase.launch_cache_error.launchCatchError
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
 import java.io.ByteArrayOutputStream
-import java.lang.Exception
 import java.lang.reflect.Type
 import javax.inject.Inject
 
 class UploadPrescriptionViewModel @Inject constructor(
     private val getEPharmacyOrderDetailUseCase: GetEPharmacyOrderDetailUseCase,
     private val uploadPrescriptionUseCase: UploadPrescriptionUseCase,
-    @CoroutineBackgroundDispatcher private val dispatcher: CoroutineDispatcher
-)  : BaseViewModel(dispatcher){
+    private val postPrescriptionIdUseCase: PostPrescriptionIdUseCase,
+    @CoroutineBackgroundDispatcher private val dispatcherBackground: CoroutineDispatcher,
+    @CoroutineMainDispatcher private val dispatcherMain: CoroutineDispatcher
+)  : BaseViewModel(dispatcherBackground){
 
     private val _productDetailLiveData = MutableLiveData<Result<EPharmacyDataModel>>()
     val productDetailLiveDataResponse: LiveData<Result<EPharmacyDataModel>> = _productDetailLiveData
 
-    private val _buttonLiveData = MutableLiveData<Result<List<EpharmacyButton?>>>()
-    val buttonLiveData: LiveData<Result<List<EpharmacyButton?>>> = _buttonLiveData
+    private val _uploadPrescriptionIdsData = MutableLiveData<Result<Boolean>>()
+    val uploadPrescriptionIdsData: LiveData<Result<Boolean>> = _uploadPrescriptionIdsData
+
+    private val _buttonLiveData = MutableLiveData<List<EpharmacyButton?>>()
+    val buttonLiveData: LiveData<List<EpharmacyButton?>> = _buttonLiveData
 
     private val _prescriptionImages = MutableLiveData<ArrayList<PrescriptionImage?>>()
     val prescriptionImages: LiveData<ArrayList<PrescriptionImage?>> = _prescriptionImages
@@ -65,7 +64,7 @@ class UploadPrescriptionViewModel @Inject constructor(
             else {
                 _productDetailLiveData.postValue(Success(mapResponseInDataModel(data)))
                 if(!data.epharmacyButton.isNullOrEmpty()){
-                    _buttonLiveData.postValue(Success(data.epharmacyButton))
+                    _buttonLiveData.postValue(data.epharmacyButton)
                 }
             }
         }
@@ -73,15 +72,20 @@ class UploadPrescriptionViewModel @Inject constructor(
 
     private fun mapResponseInDataModel(data: EPharmacyDataResponse) : EPharmacyDataModel{
         val listOfComponents = arrayListOf<BaseEPharmacyDataModel>()
+        data.prescriptionImages?.forEach { prescriptionImage ->
+            prescriptionImage?.isUploadSuccess = true
+            prescriptionImage?.isDeletable = true
+        }
         val prescriptionDataModel = EPharmacyPrescriptionDataModel(PRESCRIPTION_COMPONENT,
             PRESCRIPTION_COMPONENT, data.prescriptionImages)
         listOfComponents.add(prescriptionDataModel)
-        data.ePharmacyProducts?.forEach { eProduct ->
-            eProduct?.shopId = data.shopId
-            eProduct?.shopName = data.shopName
-            eProduct?.shopLocation = data.shopLocation
-            eProduct?.shopType = data.shopType
-
+        data.ePharmacyProducts?.forEachIndexed { index, eProduct ->
+            if(index == 0 && eProduct?.shopId.isNullOrBlank()){
+                eProduct?.shopId = data.shopId
+                eProduct?.shopName = data.shopName
+                eProduct?.shopLocation = data.shopLocation
+                eProduct?.shopType = data.shopType
+            }
             listOfComponents.add(EPharmacyProductDataModel(PRODUCT_COMPONENT, eProduct?.productId.toString(),
                 eProduct))
         }
@@ -155,7 +159,7 @@ class UploadPrescriptionViewModel @Inject constructor(
             )
             val byteArrayImage = prescriptionByteArrayOutputStream.toByteArray()
             prescriptionImageBitmap.recycle()
-            Base64.encodeToString(byteArrayImage, Base64.DEFAULT)
+            "data:image/jpeg;base64,${Base64.encodeToString(byteArrayImage, Base64.DEFAULT)}"
         }catch (e : Exception){
             ""
         }
@@ -165,7 +169,7 @@ class UploadPrescriptionViewModel @Inject constructor(
         val base64Image = getBase64OfPrescriptionImage(localFilePath)
         if (base64Image.isNotBlank()){
             uploadPrescriptionUseCase.setBase64Image(uniquePositionId.toString(),base64Image)
-            val result = withContext(dispatcher) {
+            val result = withContext(dispatcherBackground) {
                 convertToYoutubeResponse(uploadPrescriptionUseCase.executeOnBackground())
             }
             _prescriptionImages.value?.get(uniquePositionId)?.apply {
@@ -183,6 +187,34 @@ class UploadPrescriptionViewModel @Inject constructor(
         }else {
 
         }
+        withContext(dispatcherMain){
+            checkPrescriptionImages()
+        }
+    }
+
+    private fun checkPrescriptionImages() {
+        var successImagesCount = 0
+        var failedImageCount = 0
+        _prescriptionImages.value?.forEach { presImage ->
+            if(presImage?.status == EPharmacyPrescriptionStatus.APPROVED.status
+                || presImage?.isUploadSuccess == true) {
+                successImagesCount += 1
+            }else if(presImage?.isUploadFailed == true){
+                failedImageCount += 1
+            }
+        }
+        _buttonLiveData.value.let {
+            it?.firstOrNull()?.apply {
+                if(failedImageCount > 0){
+                    text = DONE_TEXT
+                    type = EPharmacyButtonType.TERTIARY.type
+                }else {
+                    text = DONE_TEXT
+                    type = EPharmacyButtonType.SECONDARY.type
+                }
+            }
+            _buttonLiveData.postValue(it)
+        }
     }
 
     private fun uploadFailed(uniquePositionId : Int, exception : Throwable){
@@ -192,6 +224,34 @@ class UploadPrescriptionViewModel @Inject constructor(
             isUploadFailed = true
         }
         _prescriptionImages.postValue(_prescriptionImages.value)
+        checkPrescriptionImages()
+    }
+
+    fun uploadPrescriptionIds(uploadKey: String, id: String) {
+        val prescriptionIds = arrayListOf<String>()
+        _prescriptionImages.value?.forEach { prescriptionImage ->
+            if(!prescriptionImage?.prescriptionId.isNullOrBlank()){
+                prescriptionIds.add(prescriptionImage?.prescriptionId ?: "")
+            }
+        }
+        postPrescriptionIdUseCase.cancelJobs()
+        postPrescriptionIdUseCase.postPrescriptionIds(
+            ::onUploadPrescriptionIdSuccess,
+            ::onUploadPrescriptionIdFail,
+            uploadKey, id ,prescriptionIds
+        )
+    }
+
+    private fun onUploadPrescriptionIdSuccess(data : EPharmacyUploadPrescriptionIdsResponse) {
+        if(data.data?.success == true){
+            _uploadPrescriptionIdsData.postValue(Success(true))
+        }else {
+            _uploadPrescriptionIdsData.postValue(Fail(Throwable(data.error)))
+        }
+    }
+
+    private fun onUploadPrescriptionIdFail(error : Throwable) {
+        _uploadPrescriptionIdsData.postValue(Fail(error))
     }
 
     private fun convertToYoutubeResponse(typeRestResponseMap: Map<Type, RestResponse>):  EPharmacyPrescriptionUploadResponse{

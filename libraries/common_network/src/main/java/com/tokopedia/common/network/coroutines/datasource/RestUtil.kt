@@ -1,6 +1,9 @@
 package com.tokopedia.common.network.coroutines.datasource
 
 import android.content.Context
+import com.facebook.flipper.android.AndroidFlipperClient
+import com.facebook.flipper.plugins.network.FlipperOkhttpInterceptor
+import com.facebook.flipper.plugins.network.NetworkFlipperPlugin
 import com.tokopedia.common.network.data.source.cloud.api.RestApi
 import com.tokopedia.network.NetworkRouter
 import com.tokopedia.network.converter.StringResponseConverter
@@ -20,6 +23,12 @@ object RestUtil {
         val okkHttpBuilder = TkpdOkHttpBuilder(context, OkHttpClient.Builder())
         if (interceptors != null) {
             okkHttpBuilder.addInterceptor(FingerprintInterceptor(context.applicationContext as NetworkRouter, userSession))
+            okkHttpBuilder.addInterceptor(
+                FlipperOkhttpInterceptor(
+                AndroidFlipperClient.getInstance(context).getPlugin(
+                NetworkFlipperPlugin.ID),true)
+            );
+
             for (interceptor in interceptors) {
                 if (interceptor == null) {
                     continue
