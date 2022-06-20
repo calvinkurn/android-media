@@ -1,8 +1,13 @@
 package com.tokopedia.shop.flashsale.presentation.creation.information
 
 import android.content.Context
+import android.graphics.Typeface
 import android.os.Bundle
-import android.text.InputType
+import android.text.*
+import android.text.InputFilter.LengthFilter
+import android.text.method.LinkMovementMethod
+import android.text.style.ClickableSpan
+import android.text.style.StyleSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,6 +17,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.kotlin.extensions.orFalse
@@ -57,6 +63,8 @@ class CampaignInformationFragment : BaseDaggerFragment() {
         private const val ONE_HOUR = 1
         private const val THRESHOLD = 12
         private const val THIRTY_MINUTE = 30
+        private const val CAMPAIGN_NAME_MAX_LENGTH = 15
+        private const val LEARN_MORE_CTA_TEXT_LENGTH = 8
 
 
         @JvmStatic
@@ -185,6 +193,7 @@ class CampaignInformationFragment : BaseDaggerFragment() {
 
     private fun observeCampaignDetail() {
         viewModel.campaignDetail.observe(viewLifecycleOwner) { result ->
+            binding?.loader?.gone()
             when(result) {
                 is Success -> {
                     binding?.groupContent?.visible()
@@ -258,7 +267,13 @@ class CampaignInformationFragment : BaseDaggerFragment() {
 
     private fun setupTextFields() {
         binding?.run {
+            tauCampaignName.textInputLayout.editText?.filters = arrayOf<InputFilter>(
+                LengthFilter(
+                    CAMPAIGN_NAME_MAX_LENGTH
+                )
+            )
             tauCampaignName.textInputLayout.editText?.doOnTextChanged { text ->
+                displayTextLengthCounter()
                 val validationResult = viewModel.validateCampaignName(text)
                 handleCampaignNameValidationResult(validationResult)
             }
@@ -355,7 +370,7 @@ class CampaignInformationFragment : BaseDaggerFragment() {
                 binding?.btnCreateCampaign?.disable()
             }
             CampaignInformationViewModel.CampaignNameValidationResult.CampaignNameHasForbiddenWords -> {
-                showError(getString(R.string.sfs_error_message_forbidden_words))
+                displayForbiddenWordError()
                 binding?.btnCreateCampaign?.disable()
             }
             CampaignInformationViewModel.CampaignNameValidationResult.Valid -> {
@@ -549,14 +564,43 @@ class CampaignInformationFragment : BaseDaggerFragment() {
         viewModel.saveDraft(pageMode, campaignId, getCurrentSelection())
     }
 
+    private fun displayTextLengthCounter() {
+        val length = binding?.tauCampaignName?.editText?.text.toString().trim().length
+        val counterTemplate = String.format(getString(R.string.sfs_placeholder_length_counter), length, CAMPAIGN_NAME_MAX_LENGTH)
+        binding?.tpgNameLengthCounter?.text = counterTemplate
+    }
+
+    private fun displayForbiddenWordError() {
+        val errorMessage = getString(R.string.sfs_error_message_forbidden_words)
+        val spannableString = SpannableString(errorMessage)
+        val clickableSpan: ClickableSpan = object : ClickableSpan() {
+            override fun onClick(textView: View) {
+                ForbiddenWordsInformationBottomSheet().show(childFragmentManager)
+            }
+
+            override fun updateDrawState(ds: TextPaint) {
+                super.updateDrawState(ds)
+                ds.color = MethodChecker.getColor(requireContext(),com.tokopedia.unifyprinciples.R.color.Unify_G500)
+                ds.isUnderlineText = false
+            }
+        }
+
+        val boldSpan = StyleSpan(Typeface.BOLD)
+        spannableString.setSpan(boldSpan, errorMessage.length - LEARN_MORE_CTA_TEXT_LENGTH, errorMessage.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+        spannableString.setSpan(clickableSpan, errorMessage.length - LEARN_MORE_CTA_TEXT_LENGTH, errorMessage.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+        binding?.tpgCampaignNameErrorMessage?.text = spannableString
+        binding?.tpgCampaignNameErrorMessage?.movementMethod = LinkMovementMethod.getInstance()
+        binding?.tpgCampaignNameErrorMessage?.visible()
+    }
+
+
     private fun showError(errorMessage : String) {
-        binding?.tauCampaignName?.isInputError = true
-        binding?.tauCampaignName?.setMessage(errorMessage)
+        binding?.tpgCampaignNameErrorMessage?.text = errorMessage
+        binding?.tpgCampaignNameErrorMessage?.visible()
     }
 
     private fun hideError() {
-        binding?.tauCampaignName?.isInputError = false
-        binding?.tauCampaignName?.setMessage(Constant.EMPTY_STRING)
+        binding?.tpgCampaignNameErrorMessage?.invisible()
     }
 
     private fun showErrorTicker(title : String, description : String) {
