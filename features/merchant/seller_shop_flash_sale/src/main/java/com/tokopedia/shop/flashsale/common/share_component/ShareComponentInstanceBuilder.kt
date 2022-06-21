@@ -81,7 +81,7 @@ class ShareComponentInstanceBuilder @Inject constructor(
             setMediaPageSourceId(pageSourceId = ImageGeneratorConstants.ImageGeneratorSourceId.FLASH_SALE_TOKO)
 
             //tnTitle will be displayed on share bottomsheet
-            setMetaData(tnTitle = findBottomSheetTitle(param, isOngoing), tnImage = thumbnailImageUrl)
+            setMetaData(tnTitle = findOutgoingDescription(param, isOngoing), tnImage = thumbnailImageUrl)
             setUtmCampaignData(
                 pageName = PAGE_NAME,
                 userId = userSession.userId,
@@ -297,15 +297,14 @@ class ShareComponentInstanceBuilder @Inject constructor(
         onShareOptionClick: (ShareModel, LinkerShareResult, String) -> Unit
     ) {
         val linkerShareData: LinkerShareData = generateLinkerInstance(
-            param.shopDomain,
-            param.shopName,
+            param,
             isOngoing,
             shareModel
         )
 
         val shareCallback = object : ShareCallback {
             override fun urlCreated(linkerShareResult: LinkerShareResult?) {
-                val template = findOutgoingDescription(param.shopName, isOngoing)
+                val template = findOutgoingDescription(param, isOngoing)
                 val outgoingText = "$template ${linkerShareResult?.shareUri.orEmpty()}"
                 onShareOptionClick(shareModel, linkerShareResult ?: return, outgoingText)
             }
@@ -325,10 +324,9 @@ class ShareComponentInstanceBuilder @Inject constructor(
     }
 
     private fun generateLinkerInstance(
-        shopDomain: String,
-        shopName: String,
+        param: Param,
         isOngoing: Boolean,
-        shareModel: ShareModel,
+        shareModel: ShareModel
     ): LinkerShareData {
         val linkerData = LinkerData()
         linkerData.apply {
@@ -337,9 +335,9 @@ class ShareComponentInstanceBuilder @Inject constructor(
             campaign = shareModel.campaign
             id = "${userSession.shopId}?page_source=share"
             linkerData.type = LinkerData.SHOP_TYPE
-            uri = "https://www.tokopedia.com/${shopDomain}?page_source=share"
-            ogTitle = findOutgoingTitle(shopName) //ogTitle will appear on the top of the description
-            ogDescription = findOutgoingDescription(shopName, isOngoing) // ogDescription will appear as the main wording on the social media
+            uri = "https://www.tokopedia.com/${param.shopDomain}?page_source=share"
+            ogTitle = findOutgoingTitle(param.shopName) //ogTitle will appear on the top of the description
+            ogDescription = findOutgoingDescription(param, isOngoing) // ogDescription will appear as the main wording on the social media
             if (!TextUtils.isEmpty(shareModel.ogImgUrl)) {
                 ogImageUrl = shareModel.ogImgUrl
             }
@@ -350,13 +348,13 @@ class ShareComponentInstanceBuilder @Inject constructor(
         return linkerShareData
     }
 
-    private fun findBottomSheetTitle(param: Param, isOngoing: Boolean): String {
+    private fun findOutgoingDescription(param: Param, isOngoing: Boolean): String {
         val formattedShopName = MethodChecker.fromHtml(param.shopName).toString()
         return if (isOngoing) {
             val formattedEndDate = param.endDate.formatTo(DateConstant.DATE)
             val formattedEndTime = param.endDate.formatTo(DateConstant.TIME_WIB)
             String.format(
-                resourceProvider.getOngoingBottomSheetTitle(),
+                resourceProvider.getOutgoingOngoingDescription(),
                 formattedShopName,
                 formattedEndDate,
                 formattedEndTime
@@ -365,7 +363,7 @@ class ShareComponentInstanceBuilder @Inject constructor(
             val formattedEndDate = param.startDate.formatTo(DateConstant.DATE)
             val formattedEndTime = param.startDate.formatTo(DateConstant.TIME_WIB)
             String.format(
-                resourceProvider.getUpcomingBottomSheetTitle(),
+                resourceProvider.getOutgoingUpcomingDescription(),
                 formattedShopName,
                 formattedEndDate,
                 formattedEndTime
@@ -377,19 +375,6 @@ class ShareComponentInstanceBuilder @Inject constructor(
     private fun findOutgoingTitle(shopName: String): String {
         val formattedShopName = MethodChecker.fromHtml(shopName).toString()
         return String.format(resourceProvider.getOutgoingTitleWording(), formattedShopName)
-    }
-
-
-    private fun findOutgoingDescription(shopName: String, isOngoing: Boolean): String {
-        val formattedShopName = MethodChecker.fromHtml(shopName).toString()
-        return if (isOngoing) {
-            String.format(resourceProvider.getOutgoingOngoingCampaignWording(), formattedShopName)
-        } else {
-            String.format(
-                resourceProvider.getOutgoingUpcomingCampaignWording(),
-                formattedShopName
-            )
-        }
     }
 
     data class Param(
