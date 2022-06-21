@@ -326,7 +326,7 @@ class AdminInvitationConfirmationFragment : BaseDaggerFragment() {
                 show()
 
                 binding?.headerInvitationConfirmation?.setOnClickListener {
-                    navigator.goToHomeBuyer()
+                    navigator.goToButtonOrToolbarActionPage()
                 }
             }
         }
@@ -384,7 +384,7 @@ class AdminInvitationConfirmationFragment : BaseDaggerFragment() {
         expiredBinding?.run {
             imgInvitationExpires.setImageUrl(AdminImageUrl.IL_INVITATION_EXPIRES)
             btnInvitationExpires.setOnClickListener {
-                navigator.goToHomeBuyer()
+                navigator.goToButtonOrToolbarActionPage()
             }
         }
     }
@@ -395,7 +395,7 @@ class AdminInvitationConfirmationFragment : BaseDaggerFragment() {
             tvInvitationRejectedDesc.text = desc
             imgInvitationRejected.setImageUrl(AdminImageUrl.IL_INVITATION_REJECTED)
             btnInvitationRejected.setOnClickListener {
-                navigator.goToHomeBuyer()
+                navigator.goToButtonOrToolbarActionPage()
             }
         }
     }

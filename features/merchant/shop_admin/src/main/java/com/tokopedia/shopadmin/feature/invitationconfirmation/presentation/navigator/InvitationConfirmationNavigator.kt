@@ -1,7 +1,6 @@
 package com.tokopedia.shopadmin.feature.invitationconfirmation.presentation.navigator
 
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.LifecycleObserver
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.UriUtil
@@ -13,7 +12,7 @@ import com.tokopedia.shopadmin.common.constants.Constants
 
 class InvitationConfirmationNavigator(
     private val fragment: Fragment
-) : LifecycleObserver {
+) {
 
     fun goToInvitationAccepted(shopName: String) {
         val params =
@@ -34,8 +33,13 @@ class InvitationConfirmationNavigator(
         RouteManager.route(fragment.context, appLink)
     }
 
-    fun goToHomeBuyer() {
-        RouteManager.route(fragment.context, ApplinkConst.HOME)
+    fun goToButtonOrToolbarActionPage() {
+        val appLink = if (GlobalConfig.isSellerApp()) {
+            ApplinkConst.LOGIN
+        } else {
+            ApplinkConst.HOME
+        }
+        RouteManager.route(fragment.context, appLink)
     }
 
     fun goToOtp(email: String, phoneNumber: String) {
