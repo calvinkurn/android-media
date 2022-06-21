@@ -57,6 +57,8 @@ class QuizChoicesView : ConstraintLayout {
      */
 
     fun setupView(item: QuizChoicesUiModel) {
+        binding.llQuizOptionRight.tvRespondent.hide()
+        binding.llQuizOptionRight.ivArrow.hide()
         when (item.type) {
             /**
              * Initial state, bg is default and icon is alphabet - please loop through view holder or view or anything nanti
@@ -82,11 +84,22 @@ class QuizChoicesView : ConstraintLayout {
                 getBackground(isDefault = true)
                 getIconOption(isCorrect = item.type.isCorrect)
             }
+            /**
+             * For displaying number of participants in options, if correct = icon is green and the rest is default alphabet
+             */
+            is PlayQuizOptionState.Participant -> {
+                binding.tvQuizQuestion.setTextColor(defaultFontColor)
+                if (item.type.isCorrect)
+                    getIconOption(isCorrect = item.type.isCorrect)
+                else
+                    getIconOption(alphabet = item.type.alphabet)
+                getBackground(isDefault = true)
+                setupResponded(item.type.count)
+                binding.llQuizOptionRight.ivArrow.showWithCondition(item.type.showArrow)
+            }
         }
         binding.tvQuizQuestion.text = item.text
         setupClickable(item.type)
-        binding.llQuizOptionRight.tvRespondent.hide()
-        binding.llQuizOptionRight.ivArrow.hide()
     }
 
     private fun getIconOption(
@@ -137,8 +150,12 @@ class QuizChoicesView : ConstraintLayout {
         binding.root.background = shape
     }
 
-    private fun setupClickable(type: PlayQuizOptionState){
-        binding.root.isClickable = type is PlayQuizOptionState.Default
+    private fun setupClickable(type: PlayQuizOptionState) {
+        binding.root.isClickable = when (type) {
+            is PlayQuizOptionState.Default -> true
+            is PlayQuizOptionState.Participant -> true
+            else -> false
+        }
     }
 
     /***
