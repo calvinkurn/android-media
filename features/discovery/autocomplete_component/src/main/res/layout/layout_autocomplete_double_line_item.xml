@@ -6,7 +6,7 @@
     android:layout_height="@dimen/dp_60"
     android:foreground="?attr/selectableItemBackground">
 
-    <androidx.appcompat.widget.AppCompatImageView
+    <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/iconImage"
         android:contentDescription="@string/content_desc_dl_iconImage"
         android:layout_width="@dimen/dp_32"
