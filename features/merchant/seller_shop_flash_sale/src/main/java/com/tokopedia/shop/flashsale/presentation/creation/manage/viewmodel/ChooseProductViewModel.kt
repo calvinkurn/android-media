@@ -12,6 +12,7 @@ import com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase
 import com.tokopedia.shop.flashsale.common.constant.ChooseProductConstant.PRODUCT_SELECTION_MAX
 import com.tokopedia.shop.flashsale.domain.usecase.DoSellerCampaignProductSubmissionUseCase
 import com.tokopedia.shop.flashsale.domain.usecase.GetSellerCampaignValidatedProductListUseCase
+import com.tokopedia.shop.flashsale.presentation.creation.manage.enums.ShopStatus
 import com.tokopedia.shop.flashsale.presentation.creation.manage.mapper.ReserveProductMapper
 import com.tokopedia.shop.flashsale.presentation.creation.manage.model.ReserveProductModel
 import com.tokopedia.shop.flashsale.presentation.creation.manage.model.SelectedProductModel
@@ -43,8 +44,8 @@ class ChooseProductViewModel @Inject constructor(
     val isAddProductSuccess: LiveData<Boolean>
         get() = _isAddProductSuccess
 
-    private var _shopStatus = MutableLiveData<ReserveProductMapper.ShopStatusEnum>()
-    val shopStatus: LiveData<ReserveProductMapper.ShopStatusEnum>
+    private var _shopStatus = MutableLiveData<ShopStatus>()
+    val shopStatus: LiveData<ShopStatus>
         get() = _shopStatus
 
     val isSelectionValid = Transformations.map(selectedItems) {

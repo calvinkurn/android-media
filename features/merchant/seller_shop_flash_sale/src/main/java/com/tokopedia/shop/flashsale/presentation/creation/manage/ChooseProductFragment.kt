@@ -20,7 +20,7 @@ import com.tokopedia.shop.flashsale.common.extension.*
 import com.tokopedia.shop.flashsale.di.component.DaggerShopFlashSaleComponent
 import com.tokopedia.shop.flashsale.presentation.creation.manage.adapter.ReserveProductAdapter
 import com.tokopedia.shop.flashsale.presentation.creation.manage.dialog.ShopClosedDialog
-import com.tokopedia.shop.flashsale.presentation.creation.manage.mapper.ReserveProductMapper
+import com.tokopedia.shop.flashsale.presentation.creation.manage.enums.ShopStatus
 import com.tokopedia.shop.flashsale.presentation.creation.manage.model.ReserveProductModel
 import com.tokopedia.shop.flashsale.presentation.creation.manage.model.SelectedProductModel
 import com.tokopedia.shop.flashsale.presentation.creation.manage.viewmodel.ChooseProductViewModel
@@ -195,7 +195,7 @@ class ChooseProductFragment : BaseSimpleListFragment<ReserveProductAdapter, Rese
 
     private fun setupShopInfoObserver() {
         viewModel.shopStatus.observe(viewLifecycleOwner) {
-            if (it == ReserveProductMapper.ShopStatusEnum.CLOSED) {
+            if (it == ShopStatus.CLOSED) {
                 ShopClosedDialog(primaryCTAAction = {
                     RouteManager.route(context, ApplinkConstInternalMarketplace.SHOP_SETTINGS_OPERATIONAL_HOURS)
                 }).show(childFragmentManager)

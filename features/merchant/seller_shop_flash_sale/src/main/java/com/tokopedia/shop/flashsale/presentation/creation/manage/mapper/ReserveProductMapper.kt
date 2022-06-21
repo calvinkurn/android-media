@@ -3,21 +3,13 @@ package com.tokopedia.shop.flashsale.presentation.creation.manage.mapper
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.shop.flashsale.data.request.DoSellerCampaignProductSubmissionRequest
 import com.tokopedia.shop.flashsale.data.response.GetSellerCampaignValidatedProductListResponse
+import com.tokopedia.shop.flashsale.presentation.creation.manage.enums.ShopStatus
 import com.tokopedia.shop.flashsale.presentation.creation.manage.model.ReserveProductModel
 import com.tokopedia.shop.flashsale.presentation.creation.manage.model.SelectedProductModel
 
 object ReserveProductMapper {
 
     private const val ADD_PRODUCT_DEFAULT_VALUE = 0L
-    private const val SHOP_STATUS_OPEN = 1
-    private const val SHOP_STATUS_CLOSED = 2
-    private const val SHOP_STATUS_OTHER = 0
-
-    enum class ShopStatusEnum(val type: Int) {
-        OPEN(SHOP_STATUS_OPEN),
-        CLOSED(SHOP_STATUS_CLOSED),
-        OTHER(SHOP_STATUS_OTHER)
-    }
 
     fun mapFromProduct(product: GetSellerCampaignValidatedProductListResponse.Product) =
         ReserveProductModel (
@@ -47,11 +39,11 @@ object ReserveProductMapper {
         ?.map { mapToProductData(it) }
         .orEmpty()
 
-    fun mapToShopStatusEnum(shopStatus: Int): ShopStatusEnum {
+    fun mapToShopStatusEnum(shopStatus: Int): ShopStatus {
         return when(shopStatus) {
-            ShopStatusEnum.OPEN.type -> ShopStatusEnum.OPEN
-            ShopStatusEnum.CLOSED.type -> ShopStatusEnum.CLOSED
-            else -> ShopStatusEnum.OTHER
+            ShopStatus.OPEN.type -> ShopStatus.OPEN
+            ShopStatus.CLOSED.type -> ShopStatus.CLOSED
+            else -> ShopStatus.OTHER
         }
     }
 }
