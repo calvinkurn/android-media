@@ -420,7 +420,7 @@ class ImagePickerInstaMainFragment : PermissionFragment(), ImagePickerFragmentCo
 
     fun setupRv() {
 
-        val columnCount = 3
+        val columnCount = DEFAULT_COLUMN_COUNT
         val lm = GridLayoutManager(context, columnCount)
         rv.layoutManager = lm
         val width = context?.resources?.displayMetrics?.widthPixels ?: 0
@@ -428,7 +428,7 @@ class ImagePickerInstaMainFragment : PermissionFragment(), ImagePickerFragmentCo
 
         imageAdapter = ImageAdapter(imageDataList, contentHeight, this, maxMultiSelect, lm)
         rv.adapter = imageAdapter
-        val itemPadding = 4.toPx().toInt()
+        val itemPadding = DEFAULT_ITEM_PADDING.toPx().toInt()
         rv.addItemDecoration(GridItemDecoration(itemPadding, true))
         rv.itemAnimator = null
     }
@@ -926,5 +926,7 @@ class ImagePickerInstaMainFragment : PermissionFragment(), ImagePickerFragmentCo
         private const val EXTRA_SELECTED_FEED_ACCOUNT_ID = "EXTRA_SELECTED_FEED_ACCOUNT_ID"
         private const val CREATE_POST_REQUEST_CODE = 101
         private const val TAKE_PICT_REQUEST_CODE = 102
+        private const val DEFAULT_COLUMN_COUNT = 3
+        private const val DEFAULT_ITEM_PADDING = 4
     }
 }

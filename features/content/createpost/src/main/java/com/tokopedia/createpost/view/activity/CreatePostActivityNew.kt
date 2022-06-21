@@ -158,6 +158,7 @@ class CreatePostActivityNew : BaseSimpleActivity(), CreateContentPostCommonListe
         const val PARAM_IS_EDIT_STATE = "is_edit_state"
         const val PARAM_MEDIA_PREVIEW = "media_preview"
         const val EXTRA_SELECTED_FEED_ACCOUNT_ID = "EXTRA_SELECTED_FEED_ACCOUNT_ID"
+        private const val DEFAULT_CACHE_DURATION = 7L
 
         var isEditState: Boolean = false
         var isOpenedFromPreview: Boolean = false
@@ -289,7 +290,7 @@ class CreatePostActivityNew : BaseSimpleActivity(), CreateContentPostCommonListe
         cacheManager.put(
             CreatePostViewModel.TAG,
             createPostViewModel,
-            TimeUnit.DAYS.toMillis(7)
+            TimeUnit.DAYS.toMillis(DEFAULT_CACHE_DURATION)
         )
         SubmitPostServiceNew.startService(applicationContext, cacheManager.id!!)
         goToFeed(createPostViewModel)

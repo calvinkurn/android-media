@@ -89,6 +89,8 @@ class CreatePostPreviewFragmentNew : BaseCreatePostFragmentNew(), CreateContentP
         private const val PARAM_PRODUCT_TAG_SOURCE = "product_tag_source"
         private const val PARAM_AUTHOR_ID = "author_id"
         private const val PARAM_AUTHOR_TYPE = "author_type"
+        private const val MAX_PRODUCT_TAG = 5
+        private const val DEFAULT_DELAY = 50L
 
         fun createInstance(bundle: Bundle): Fragment {
             val fragment = CreatePostPreviewFragmentNew()
@@ -181,7 +183,7 @@ class CreatePostPreviewFragmentNew : BaseCreatePostFragmentNew(), CreateContentP
 
         createPostAnalytics.eventClickTagProductIcon(mediaModel.type)
 
-        if (getLatestTotalProductCount() < 5) {
+        if (getLatestTotalProductCount() < MAX_PRODUCT_TAG) {
             removeExtraTagListElement(mediaModel)
             val tagListSize = mediaModel.tags.size
             val imageWidth = ((mediaModel.imageView?.width))?.toFloat() ?: 0f
@@ -286,7 +288,7 @@ class CreatePostPreviewFragmentNew : BaseCreatePostFragmentNew(), CreateContentP
                                             mediaIndex = createPostModel.currentCorouselIndex)
                                     )
 
-                                    if (getLatestTotalProductCount() < 5)
+                                    if (getLatestTotalProductCount() < MAX_PRODUCT_TAG)
                                         openProductTaggingScreen()
                                     return true
                                 }
@@ -499,7 +501,7 @@ class CreatePostPreviewFragmentNew : BaseCreatePostFragmentNew(), CreateContentP
         }
 
         val mediaModel = createPostModel.completeImageList[currentImagePos]
-        if (getLatestTotalProductCount() < 5)
+        if (getLatestTotalProductCount() < MAX_PRODUCT_TAG)
             enableProductIcon()
         if (mediaModel.type == MediaType.VIDEO)
             bindVideo(mediaModel)
@@ -701,7 +703,7 @@ class CreatePostPreviewFragmentNew : BaseCreatePostFragmentNew(), CreateContentP
                                     layout,
                                     feedXMediaTagging,
                                     bitmap)
-                            }, 50)
+                            }, DEFAULT_DELAY)
                         } catch (e: Exception) {
                             Timber.e(e)
                         }

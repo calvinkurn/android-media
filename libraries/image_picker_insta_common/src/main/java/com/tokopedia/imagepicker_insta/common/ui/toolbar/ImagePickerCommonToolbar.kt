@@ -5,7 +5,6 @@ import android.graphics.drawable.ColorDrawable
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import com.tokopedia.iconunify.IconUnify
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -13,6 +12,7 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.imagepicker_insta.common.R
 import com.tokopedia.media.loader.loadImageCircle
 import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.unifyprinciples.R as unifyR
 
 class ImagePickerCommonToolbar @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null
@@ -39,7 +39,7 @@ class ImagePickerCommonToolbar @JvmOverloads constructor(
         setContentInsetsRelative(0,contentInsetEnd)
         setContentInsetsAbsolute(0,contentInsetRight)
 
-        background = ColorDrawable(MethodChecker.getColor(context,R.color.Unify_Background))
+        background = ColorDrawable(MethodChecker.getColor(context, unifyR.color.Unify_Background))
         toolbarIcon  = findViewById(R.id.img_com_toolbar_icon)
         toolbarTitle = findViewById(R.id.img_com_toolbar_title)
         toolbarSubtitle = findViewById(R.id.img_com_toolbar_subtitle)
