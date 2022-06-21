@@ -82,6 +82,7 @@ class QuickCouponViewModelTest {
     fun `test for fetchCouponDetailData when getCouponDetail returns quickCouponDetailResponse`() {
         viewModel.quickCouponUseCase = quickCouponUseCase
         val quickCouponDetailResponse: QuickCouponDetailResponse = mockk(relaxed = true)
+        every { quickCouponDetailResponse.clickCouponData?.isApplicable } returns true
         coEvery {
             quickCouponUseCase.getCouponDetail(componentsItem.pagePath)
         } returns quickCouponDetailResponse

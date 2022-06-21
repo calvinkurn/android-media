@@ -34,9 +34,9 @@ class RechargeOrderDetail(
         @field:SerializedName("payMethod")
         val payMethod: List<MetaData> = emptyList(),
         @field:SerializedName("beforeOrderId")
-        val beforeOrderId: Int = 0,
+        val beforeOrderId: String = "0",
         @field:SerializedName("resolutionId")
-        val resolutionId: Int = 0,
+        val resolutionId: String = "0",
         @field:SerializedName("driverDetails")
         val driverDetails: DriverDetail = DriverDetail(),
         @field:SerializedName("promoCode")
@@ -107,7 +107,7 @@ class Item(
         @field:SerializedName("totalPrice")
         val totalPrice: String = "",
         @field:SerializedName("categoryID")
-        val categoryId: Int = 0,
+        val categoryId: String = "0",
         @field:SerializedName("id")
         val id: String = "",
         @field:SerializedName("imageUrl")
@@ -121,7 +121,7 @@ class Item(
         @field:SerializedName("trackingNumber")
         val trackingNumber: String = "",
         @field:SerializedName("invoiceID")
-        val invoiceId: Int = 0,
+        val invoiceId: String = "0",
         @field:SerializedName("promotionAmount")
         val promotionAmount: String = "",
         @field:SerializedName("metaData")

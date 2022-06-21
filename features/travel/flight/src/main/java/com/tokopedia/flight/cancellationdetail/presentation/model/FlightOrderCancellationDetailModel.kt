@@ -10,7 +10,7 @@ import kotlinx.android.parcel.Parcelize
  */
 @Parcelize
 data class FlightOrderCancellationDetailModel(
-        val refundId: Int = 0,
+        val refundId: String = "0",
         val createTime: String = "",
         val realRefund: String = "",
         val status: Int = 0,

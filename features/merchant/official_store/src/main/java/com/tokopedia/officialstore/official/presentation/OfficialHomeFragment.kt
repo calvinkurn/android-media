@@ -699,7 +699,7 @@ class OfficialHomeFragment :
 
     override fun onMixLeftBannerImpressed(channel: ChannelModel, position: Int) {
         tracking?.trackingQueueObj?.putEETracking(
-                OSMixLeftTracking.eventImpressionMixLeftImageBanner(channel, category?.title.orEmpty(), position) as HashMap<String, Any>)
+                OSMixLeftTracking.eventImpressionMixLeftImageBanner(channel, category?.title.orEmpty(), position, getUserId()) as HashMap<String, Any>)
     }
 
     override fun onFlashSaleCardImpressedComponent(position: Int, grid: ChannelGrid, channel: ChannelModel) {

@@ -92,6 +92,8 @@
     <string name="centralized_promo_promo_creation_voucher_product_description">Atur diskon khusus ke produk-produk tertentu agar semakin cepat laku.</string>
     <string name="centralized_promo_promo_creation_tokopedia_play_title">Tokopedia Play</string>
     <string name="centralized_promo_promo_creation_tokopedia_play_description">Tingkatkan penjualanmu sambil berinteraksi langsung dengan banyak penonton</string>
+    <string name="centralized_promo_promo_creation_slash_price_title">Diskon Toko</string>
+    <string name="centralized_promo_promo_creation_slash_price_description">Tarik banyak pembeli dengan pasang diskon menarik. </string>
 
     <!-- First merchant voucher -->
     <string name="centralized_promo_first_voucher_label">First Voucher</string>
@@ -174,6 +176,7 @@
     <string name="sah_admin_restriction_label">Admin Restriction</string>
     <string name="sah_admin_restriction_title">Oops, kamu nggak punya izin untuk mengakses fitur ini</string>
     <string name="sah_admin_restriction_desc">Hubungi pemilik toko terlebih dulu untuk melanjutkan aktivitas, ya.</string>
+    <string name="sah_admin_restriction_article_desc">Hubungi pemilik toko terlebih dulu untuk melanjutkan aktivitas, ya. &lt;a href="#"&gt;Baca artikelnya&lt;/a&gt;.</string>
     <string name="sah_admin_restriction_button">Oke, Saya Mengerti</string>
     <string name="sah_admin_restriction_message">Oops, kamu tidak punya izin untuk mengakses halaman ini</string>
     
