@@ -5,6 +5,7 @@ import com.tokopedia.home_component.listener.DynamicLegoBannerListener
 import com.tokopedia.home_component.model.ChannelGrid
 import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
+import com.tokopedia.tokofood.common.util.TokofoodRouteManager
 import com.tokopedia.tokofood.feature.home.analytics.TokoFoodHomeAnalytics
 import com.tokopedia.user.session.UserSessionInterface
 
@@ -25,7 +26,7 @@ class TokoFoodHomeLegoComponentCallback(private val view: TokoFoodView,
             val destinationId = ChooseAddressUtils.getLocalizingAddressData(it).district_id
             analytics.clickLego(userSession.userId, destinationId, channelModel, channelGrid, position)
         }
-        RouteManager.route(context, channelGrid.applink)
+        TokofoodRouteManager.routePrioritizeInternal(context, channelGrid.applink)
     }
 
     override fun onClickGridThreeImage(
@@ -38,15 +39,15 @@ class TokoFoodHomeLegoComponentCallback(private val view: TokoFoodView,
             val destinationId = ChooseAddressUtils.getLocalizingAddressData(it).district_id
             analytics.clickBannerWidget(userSession.userId, destinationId, channelModel, channelGrid, position)
         }
-        RouteManager.route(context, channelGrid.applink)
+        TokofoodRouteManager.routePrioritizeInternal(context, channelGrid.applink)
     }
 
     override fun onSeeAllSixImage(channelModel: ChannelModel, position: Int) {
-        RouteManager.route(context, channelModel.channelHeader.applink)
+        TokofoodRouteManager.routePrioritizeInternal(context, channelModel.channelHeader.applink)
     }
 
     override fun onSeeAllThreemage(channelModel: ChannelModel, position: Int) {
-        RouteManager.route(context, channelModel.channelHeader.applink)
+        TokofoodRouteManager.routePrioritizeInternal(context, channelModel.channelHeader.applink)
     }
 
     override fun onChannelImpressionSixImage(channelModel: ChannelModel, parentPosition: Int) {

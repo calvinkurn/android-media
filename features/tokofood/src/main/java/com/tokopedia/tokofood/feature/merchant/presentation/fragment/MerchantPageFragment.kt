@@ -42,6 +42,7 @@ import com.tokopedia.tokofood.common.presentation.uimodel.UpdateParam
 import com.tokopedia.tokofood.common.presentation.viewmodel.MultipleFragmentsViewModel
 import com.tokopedia.tokofood.common.util.Constant
 import com.tokopedia.tokofood.common.util.TokofoodExt.showErrorToaster
+import com.tokopedia.tokofood.common.util.TokofoodRouteManager
 import com.tokopedia.tokofood.databinding.FragmentMerchantPageLayoutBinding
 import com.tokopedia.tokofood.feature.merchant.analytics.MerchantPageAnalytics
 import com.tokopedia.tokofood.feature.merchant.common.util.MerchantShareComponentUtil
@@ -1051,7 +1052,9 @@ class MerchantPageFragment : BaseMultiFragment(),
     override fun onButtonCtaClickListener(appLink: String) {
         var applicationLink = ApplinkConstInternalGlobal.ADD_PHONE
         if (appLink.isNotEmpty()) applicationLink = appLink
-        context?.run { RouteManager.route(this, applicationLink) }
+        context?.run {
+            TokofoodRouteManager.routePrioritizeInternal(this, applicationLink)
+        }
     }
 
     private fun navigateToOrderCustomizationPage(

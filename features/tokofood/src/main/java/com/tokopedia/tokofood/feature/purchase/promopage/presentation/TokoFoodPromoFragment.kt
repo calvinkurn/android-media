@@ -31,6 +31,7 @@ import com.tokopedia.network.exception.ResponseErrorException
 import com.tokopedia.tokofood.R
 import com.tokopedia.tokofood.common.presentation.view.BaseTokofoodActivity
 import com.tokopedia.tokofood.common.util.TokofoodErrorLogger
+import com.tokopedia.tokofood.common.util.TokofoodRouteManager
 import com.tokopedia.tokofood.databinding.LayoutFragmentPurchasePromoBinding
 import com.tokopedia.tokofood.feature.purchase.analytics.TokoFoodPurchaseAnalytics
 import com.tokopedia.tokofood.feature.purchase.promopage.di.DaggerTokoFoodPromoComponent
@@ -313,7 +314,7 @@ class TokoFoodPromoFragment : BaseListFragment<Visitable<*>, TokoFoodPromoAdapte
                         loadData()
                     }
                     PromoListTokoFoodButton.REDIRECT_ACTION -> {
-                        RouteManager.route(context, errorPage.button.link)
+                        TokofoodRouteManager.routePrioritizeInternal(context, errorPage.button.link)
                     }
                     else -> {
 
