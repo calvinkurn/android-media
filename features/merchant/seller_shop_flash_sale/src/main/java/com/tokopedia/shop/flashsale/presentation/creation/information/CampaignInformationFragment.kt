@@ -235,20 +235,6 @@ class CampaignInformationFragment : BaseDaggerFragment() {
         setupClickListeners()
         setupTextFields()
         setupDatePicker()
-        setupScrollListener()
-    }
-
-    private fun setupScrollListener() {
-        binding?.scrollView?.isVerticalScrollBarEnabled = false
-        binding?.scrollView?.isHorizontalScrollBarEnabled = false
-        binding?.scrollView?.viewTreeObserver?.addOnScrollChangedListener {
-            val scrollY = binding?.scrollView?.scrollY.orZero()
-            if (scrollY.isScrollUp()) {
-                binding?.cardView?.visible()
-            } else {
-                binding?.cardView?.invisible()
-            }
-        }
     }
 
     private fun setupRecyclerView() {
@@ -354,7 +340,7 @@ class CampaignInformationFragment : BaseDaggerFragment() {
 
     private fun handleCoachMark() {
         val shouldShowCoachMark = !sharedPreference.isCampaignInfoCoachMarkDismissed()
-        if (shouldShowCoachMark) {
+        if (shouldShowCoachMark && pageMode == PageMode.CREATE) {
             showCoachMark()
         }
     }
