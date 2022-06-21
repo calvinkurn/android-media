@@ -50,6 +50,7 @@ import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.shop
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.shopbannerinfinite.ShopBannerInfiniteModelTest
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.shopcard.ShopCardItemModelTest
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.shopcard.ShopCardModelTest
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.shopcardinfinite.ShopCardInfiniteModelTest
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.sliderbanner.SliderBannerViewModelTest
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.spacing.SpacingViewModelTest
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.tabs.TabsItemViewModelTest
@@ -131,6 +132,7 @@ import org.junit.runners.Suite
         ShopBannerInfiniteModelTest::class,
         ShopBannerInfiniteItemModelTest::class,
         CategoryBestSellerViewModelTest::class,
+        ShopCardInfiniteModelTest::class,
 )
 
 

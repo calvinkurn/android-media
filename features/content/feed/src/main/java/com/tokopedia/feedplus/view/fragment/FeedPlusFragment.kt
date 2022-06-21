@@ -945,7 +945,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
 
         listTopAds.add(
             FeedEnhancedTracking.Promotion(
-                Integer.valueOf(product.adId),
+                product.adId,
                 FeedEnhancedTracking.Promotion
                     .createContentNameTopadsProduct(),
                 if (TextUtils.isEmpty(product.adRefKey))
@@ -954,7 +954,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
                     product.adRefKey,
                 position,
                 product.category.toString(),
-                Integer.valueOf(product.id),
+                product.id,
                 FeedEnhancedTracking.Promotion.TRACKING_EMPTY
             )
         )
@@ -975,13 +975,13 @@ class FeedPlusFragment : BaseDaggerFragment(),
 
         listTopAds.add(
             FeedEnhancedTracking.Promotion(
-                Integer.valueOf(shop.adId),
+                shop.adId,
                 FeedEnhancedTracking.Promotion
                     .createContentNameTopadsShop(),
                 shop.adRefKey,
                 position,
                 FeedEnhancedTracking.Promotion.TRACKING_EMPTY,
-                Integer.valueOf(shop.adId),
+                shop.adId,
                 FeedEnhancedTracking.Promotion.TRACKING_EMPTY
             )
         )
@@ -1403,7 +1403,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
         val newList = adapter.getlist()
         if (newList.size > rowNumber && newList[rowNumber] is DynamicPostUiModel) {
             val item = (newList[rowNumber] as DynamicPostUiModel)
-            item.feedXCard.comments.count = item.feedXCard.comments.count + totalNewComment
+            item.feedXCard.comments.count = totalNewComment
             item.feedXCard.comments.countFmt =
                 (item.feedXCard.comments.count).toString()
         }
@@ -3413,7 +3413,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
 
     override fun onTopAdsViewImpression(bannerId: String, imageUrl: String) {
         analytics.eventTopadsRecommendationImpression(
-            listOf(TrackingRecommendationModel(authorId = bannerId.toIntOrZero())),
+            listOf(TrackingRecommendationModel(authorId = bannerId)),
             userIdInt
         )
         feedViewModel.doTopAdsTracker(imageUrl, "", "", "", false)

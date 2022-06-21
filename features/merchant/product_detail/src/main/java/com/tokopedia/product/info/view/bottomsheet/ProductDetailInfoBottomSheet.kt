@@ -23,12 +23,14 @@ import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.extensions.view.dpToPx
 import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.product.detail.R
+import com.tokopedia.product.detail.common.ProductEducationalHelper
 import com.tokopedia.product.detail.common.data.model.pdplayout.DynamicProductInfoP1
 import com.tokopedia.product.detail.data.model.datamodel.ProductDetailInfoContent
 import com.tokopedia.product.detail.data.model.productinfo.ProductInfoParcelData
 import com.tokopedia.product.detail.data.util.DynamicProductDetailTracking
 import com.tokopedia.product.detail.databinding.BottomSheetProductDetailInfoBinding
 import com.tokopedia.product.detail.di.ProductDetailComponent
+import com.tokopedia.product.detail.tracking.ProductDetailBottomSheetTracking
 import com.tokopedia.product.detail.view.activity.ProductYoutubePlayerActivity
 import com.tokopedia.product.detail.view.util.doSuccessOrFail
 import com.tokopedia.product.detail.view.util.getIntentImagePreviewWithoutDownloadButton
@@ -43,6 +45,7 @@ import com.tokopedia.product.info.view.ProductDetailInfoListener
 import com.tokopedia.product.info.view.adapter.BsProductDetailInfoAdapter
 import com.tokopedia.product.info.view.adapter.ProductDetailInfoAdapterFactoryImpl
 import com.tokopedia.product.info.view.adapter.diffutil.ProductDetailInfoDiffUtil
+import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
@@ -57,6 +60,9 @@ class ProductDetailInfoBottomSheet : BottomSheetUnify(), ProductDetailInfoListen
 
     @Inject
     lateinit var userSession: UserSessionInterface
+
+    @Inject
+    lateinit var trackingQueue: TrackingQueue
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -153,6 +159,26 @@ class ProductDetailInfoBottomSheet : BottomSheetUnify(), ProductDetailInfoListen
 
     override fun goToApplink(url: String) {
         RouteManager.route(context, url)
+    }
+
+    override fun goToEducational(url: String, infoTitle: String, infoValue: String, position: Int) {
+        val context = context ?: return
+        val data = listener?.getPdpDataSource() ?: return
+
+        ProductEducationalHelper.goToEducationalBottomSheet(
+            context,
+            url,
+            data.basic.productID,
+            data.basic.shopID
+        )
+
+        ProductDetailBottomSheetTracking.clickInfoItem(
+            data,
+            userSession.userId,
+            infoTitle,
+            infoValue,
+            position
+        )
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -301,6 +327,26 @@ class ProductDetailInfoBottomSheet : BottomSheetUnify(), ProductDetailInfoListen
                     ?: "")
             startActivity(getIntentImagePreviewWithoutDownloadButton(it, arrayListOf(url)))
         }
+    }
+
+    override fun onImpressInfo(infoTitle: String, infoValue: String, position: Int) {
+        val data = listener?.getPdpDataSource() ?: return
+
+        ProductDetailBottomSheetTracking.impressInfoItem(
+            data,
+            userSession.userId,
+            infoTitle,
+            infoValue,
+            position,
+            trackingQueue
+        )
+    }
+
+    override fun onPause() {
+        if (this::trackingQueue.isInitialized) {
+            trackingQueue.sendAll()
+        }
+        super.onPause()
     }
 }
 

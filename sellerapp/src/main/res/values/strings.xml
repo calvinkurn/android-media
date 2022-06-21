@@ -124,6 +124,7 @@
     <string name="label_product_desc">Deskripsi Produk</string>
     <string name="label_image_preview_pdp">Gambar produk</string>
     <string name="gallery_top_bar_title">Foto dari Pembeli</string>
+    <string name="pdp_common_educational_title">Product Educational</string>
 
     <!-- Order Management History   -->
     <string name="transaction_title_activity_order_history">Detail Status</string>
