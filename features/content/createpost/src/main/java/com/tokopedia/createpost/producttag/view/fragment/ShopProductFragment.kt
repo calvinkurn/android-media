@@ -108,6 +108,7 @@ class ShopProductFragment @Inject constructor(
         )
     }
 
+    @Suppress("ClickableViewAccessibility")
     private fun setupView() {
         layoutManager = object : StaggeredGridLayoutManager(2, RecyclerView.VERTICAL) {
             override fun onLayoutCompleted(state: RecyclerView.State?) {
