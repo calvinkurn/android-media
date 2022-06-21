@@ -6,7 +6,7 @@ import com.google.gson.annotations.SerializedName;
 public class PollingOption {
   @SerializedName("option_id")
   @Expose
-  private Integer optionId;
+  private String optionId;
 
   @SerializedName("option")
   @Expose
@@ -36,7 +36,7 @@ public class PollingOption {
   @Expose
   private String imageOption;
 
-  public void setOptionId(Integer optionId) {
+  public void setOptionId(String optionId) {
     this.optionId = optionId;
   }
 
@@ -68,7 +68,7 @@ public class PollingOption {
     this.imageOption = imageOption;
   }
 
-  public Integer getOptionId() {
+  public String getOptionId() {
     return this.optionId;
   }
 
