@@ -1508,8 +1508,7 @@ open class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListen
         if (productCardOptionsModel.wishlistResult.isAddWishlist) {
             showSuccessAddWishlistV2(productCardOptionsModel.wishlistResult)
             if (productCardOptionsModel.isTopAds) hitWishlistClickUrl(productCardOptionsModel)
-        }
-        else {
+        } else {
             showSuccessRemoveWishlistV2(productCardOptionsModel.wishlistResult)
         }
     }
