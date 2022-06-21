@@ -169,7 +169,10 @@ class ShipmentPresenterValidateUseLogisticPromoTest {
         val shipmentCartItemModel = ShipmentCartItemModel().apply {
             this.cartString = cartString
         }
-        presenter.shipmentCartItemModelList = listOf(shipmentCartItemModel)
+        val shipmentCartItemModel2 = ShipmentCartItemModel().apply {
+            this.cartString = cartString + "2"
+        }
+        presenter.shipmentCartItemModelList = listOf(shipmentCartItemModel2, shipmentCartItemModel)
 
         // When
         val cartPosition = 0
