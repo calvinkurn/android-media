@@ -1352,9 +1352,10 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                 }
             }
         }
-        if (!orderFound) {
+        if (!orderFound && shipmentCartItemModelList != null) {
             // if not voucher order found for attempted apply BO order,
             // then should reset courier and not apply the BO
+            // this should be a rare case
             for (ShipmentCartItemModel shipmentCartItemModel : shipmentCartItemModelList) {
                 if (shipmentCartItemModel.getCartString().equals(cartString)) {
                     if (getView() != null) {
