@@ -16,7 +16,7 @@ class PreviewPagerAdapter constructor(
     override fun instantiateItem(container: ViewGroup, position: Int): Any {
         val item = elements[position]
 
-        val preview = if (item.data.isVideo()) {
+        val preview = if (item.data.file?.isVideo() == true) {
             VideoPreview(context, item.videoPlayer(context))
         } else {
             ImagePreview(context)
