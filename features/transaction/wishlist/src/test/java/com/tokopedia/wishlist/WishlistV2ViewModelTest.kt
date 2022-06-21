@@ -17,7 +17,7 @@ import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.wishlist.data.model.WishlistV2BulkRemoveAdditionalParams
-import com.tokopedia.wishlist.data.model.WishlistV2Params
+import com.tokopedia.wishlistcommon.data.WishlistV2Params
 import com.tokopedia.wishlist.data.model.WishlistV2RecommendationDataModel
 import com.tokopedia.wishlist.data.model.WishlistV2TypeLayoutData
 import com.tokopedia.wishlist.data.model.response.BulkDeleteWishlistV2Response
