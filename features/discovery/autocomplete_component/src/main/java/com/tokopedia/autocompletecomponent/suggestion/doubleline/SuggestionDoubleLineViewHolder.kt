@@ -20,7 +20,7 @@ import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.setTextAndCheckShow
 import com.tokopedia.media.loader.loadImageCircle
 import com.tokopedia.kotlin.extensions.view.showWithCondition
-import com.tokopedia.media.loader.loadImageRounded
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.view.binding.viewBinding
 import java.util.*
@@ -55,10 +55,11 @@ class SuggestionDoubleLineViewHolder(
 
     private fun bindIconImage(item: SuggestionDoubleLineDataDataView) {
         val iconImage = binding?.iconImage ?: return
-        if (item.isBoldSquareType()) {
-            iconImage.loadImageRounded(item.data.imageUrl, itemView.context.resources.getDimension(R.dimen.autocomplete_product_suggestion_image_radius))
-        } else {
+        if (item.data.isCircleImage()) {
             iconImage.loadImageCircle(item.data.imageUrl)
+        } else {
+            iconImage.cornerRadius = 4
+            iconImage.loadImage(item.data.imageUrl)
         }
     }
 
@@ -84,12 +85,16 @@ class SuggestionDoubleLineViewHolder(
 
     private fun bindTextTitle(item: SuggestionDoubleLineDataDataView) {
         when {
-            item.isBoldText() -> {
+            item.data.isBoldAllText() -> {
+                bindAllBoldTextTitle(item.data)
+            }
+            item.data.isBoldPartialText() -> {
                 setSearchQueryStartIndexInKeyword(item.data)
                 bindBoldTextTitle(item.data)
             }
-            item.isBoldSquareType() || item.isCurated() -> bindAllBoldTextTitle(item.data)
-            else -> bindNormalTextTitle(item.data)
+            else -> {
+                bindNormalTextTitle(item.data)
+            }
         }
     }
 

@@ -13,11 +13,12 @@ import com.tokopedia.autocompletecomponent.R
 import com.tokopedia.autocompletecomponent.databinding.LayoutAutocompleteSingleLineItemBinding
 import com.tokopedia.autocompletecomponent.suggestion.BaseSuggestionDataView
 import com.tokopedia.autocompletecomponent.suggestion.SuggestionListener
-import com.tokopedia.autocompletecomponent.suggestion.TYPE_CURATED
 import com.tokopedia.autocompletecomponent.util.safeSetSpan
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
+import com.tokopedia.media.loader.loadImage
+import com.tokopedia.media.loader.loadImageCircle
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.view.binding.viewBinding
 import java.util.*
@@ -42,15 +43,23 @@ class SuggestionSingleLineViewHolder(
 
     private fun bindIconImage(item: BaseSuggestionDataView){
         binding?.iconImage?.let {
-            ImageHandler.loadImage2(it, item.imageUrl, R.drawable.autocomplete_ic_time)
+            if (item.isCircleImage()) {
+                it.loadImageCircle(item.imageUrl)
+            } else {
+                it.cornerRadius = 4
+                it.loadImage(
+                    item.imageUrl,
+                    properties = { setErrorDrawable(R.drawable.autocomplete_ic_time) }
+                )
+            }
         }
     }
 
     private fun bindTextTitle(item: BaseSuggestionDataView){
         val highlightedTitle = SpannableString(item.title)
-        if(item.type == TYPE_CURATED){
+        if(item.isBoldAllText()){
             binding?.singleLineTitle?.setWeight(Typography.BOLD)
-        } else {
+        } else if(item.isBoldPartialText()) {
             val startIndex = indexOfSearchQuery(item.title, item.searchTerm)
             if (startIndex != -1) {
                 highlightedTitle.safeSetSpan(
