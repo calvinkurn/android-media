@@ -28,7 +28,7 @@ import com.tokopedia.product.manage.common.feature.list.analytics.ProductManageT
 import com.tokopedia.product.manage.common.util.ProductManageListErrorHandler
 import com.tokopedia.product.manage.databinding.FragmentStockReminderBinding
 import com.tokopedia.product.manage.feature.list.constant.ProductManageListConstant.EXTRA_RESULT_STATUS
-import com.tokopedia.product.manage.feature.stockreminder.constant.StockReminderConst.MINIMUM_STOCK
+import com.tokopedia.product.manage.feature.stockreminder.constant.StockReminderConst.MINIMUM_STOCK_REMINDER
 import com.tokopedia.product.manage.feature.stockreminder.constant.StockReminderConst.REMINDER_ACTIVE
 import com.tokopedia.product.manage.feature.stockreminder.data.source.cloud.query.param.ProductWarehouseParam
 import com.tokopedia.product.manage.feature.stockreminder.data.source.cloud.response.createupdateresponse.CreateStockReminderResponse
@@ -144,7 +144,7 @@ class StockReminderFragment : BaseDaggerFragment(),
         }
         val isValid =
             getProductWareHouseList().firstOrNull() {
-                it.threshold < MINIMUM_STOCK.toString()
+                it.threshold < MINIMUM_STOCK_REMINDER.toString()
                         && it.thresholdStatus == REMINDER_ACTIVE.toString()
             } == null
 
@@ -501,6 +501,7 @@ class StockReminderFragment : BaseDaggerFragment(),
             )
             dialog.setPrimaryCTAClickListener {
                 dialog.dismiss()
+                activity?.finish()
             }
             dialog.setSecondaryCTAText(
                 activity?.resources?.getString(R.string.product_reminder_exit_cta_secondaru)
@@ -508,7 +509,6 @@ class StockReminderFragment : BaseDaggerFragment(),
             )
             dialog.setSecondaryCTAClickListener {
                 dialog.dismiss()
-                activity?.finish()
             }
         } else {
             activity?.finish()

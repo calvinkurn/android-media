@@ -14,8 +14,8 @@ import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.product.manage.R
 import com.tokopedia.product.manage.databinding.BottomSheetSetAtOnceStockReminderBinding
 import com.tokopedia.product.manage.feature.stockreminder.constant.StockReminderConst.EMPTY_INPUT_STOCK
-import com.tokopedia.product.manage.feature.stockreminder.constant.StockReminderConst.MINIMUM_STOCK
-import com.tokopedia.product.manage.feature.stockreminder.constant.StockReminderConst.MAXIMUM_STOCK
+import com.tokopedia.product.manage.feature.stockreminder.constant.StockReminderConst.MINIMUM_STOCK_REMINDER
+import com.tokopedia.product.manage.feature.stockreminder.constant.StockReminderConst.MAXIMUM_STOCK_REMINDER
 import com.tokopedia.product.manage.feature.stockreminder.constant.StockReminderConst.REMINDER_ACTIVE
 import com.tokopedia.product.manage.feature.stockreminder.constant.StockReminderConst.REMINDER_INACTIVE
 import com.tokopedia.unifycomponents.BottomSheetUnify
@@ -106,7 +106,7 @@ class SetStockForVariantSelectionReminderBottomSheet(
             textChangeListener = createTextChangeListener()
             addTextChangedListener(textChangeListener)
         }
-        binding?.qeStock?.setValue(MINIMUM_STOCK)
+        binding?.qeStock?.setValue(MINIMUM_STOCK_REMINDER)
 
         binding?.qeStock?.run {
             editText.setOnEditorActionListener { _, actionId, _ ->
@@ -142,23 +142,23 @@ class SetStockForVariantSelectionReminderBottomSheet(
 
     private fun validateMinMaxStock(stock: Int) {
         when {
-            stock < MINIMUM_STOCK -> {
+            stock < MINIMUM_STOCK_REMINDER -> {
                 binding?.qeStock?.errorMessageText = activity?.getString(
                     R.string.product_stock_reminder_min_stock_error,
-                    MINIMUM_STOCK
+                    MINIMUM_STOCK_REMINDER
                 ).orEmpty()
             }
-            stock > MAXIMUM_STOCK -> {
+            stock > MAXIMUM_STOCK_REMINDER -> {
                 binding?.qeStock?.errorMessageText = activity?.getString(
                     R.string.product_stock_reminder_max_stock_error,
-                    MAXIMUM_STOCK.getNumberFormatted()
+                    MAXIMUM_STOCK_REMINDER.getNumberFormatted()
                 ).orEmpty()
             }
             else -> {
                 binding?.qeStock?.errorMessageText = String.EMPTY
             }
         }
-        binding?.buttonApply?.isEnabled = !(stock < MINIMUM_STOCK && stock > MAXIMUM_STOCK)
+        binding?.buttonApply?.isEnabled = !(stock < MINIMUM_STOCK_REMINDER && stock > MAXIMUM_STOCK_REMINDER)
 
     }
 

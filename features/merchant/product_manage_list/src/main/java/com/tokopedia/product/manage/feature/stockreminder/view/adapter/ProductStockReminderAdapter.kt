@@ -12,8 +12,8 @@ import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.product.manage.R
 import com.tokopedia.product.manage.databinding.ItemProductStockReminderBinding
 import com.tokopedia.product.manage.feature.stockreminder.constant.StockReminderConst
-import com.tokopedia.product.manage.feature.stockreminder.constant.StockReminderConst.MAXIMUM_STOCK
-import com.tokopedia.product.manage.feature.stockreminder.constant.StockReminderConst.MINIMUM_STOCK
+import com.tokopedia.product.manage.feature.stockreminder.constant.StockReminderConst.MAXIMUM_STOCK_REMINDER
+import com.tokopedia.product.manage.feature.stockreminder.constant.StockReminderConst.MINIMUM_STOCK_REMINDER
 import com.tokopedia.product.manage.feature.stockreminder.constant.StockReminderConst.REMINDER_ACTIVE
 import com.tokopedia.product.manage.feature.stockreminder.constant.StockReminderConst.REMINDER_INACTIVE
 import com.tokopedia.product.manage.feature.stockreminder.view.data.ProductStockReminderUiModel
@@ -131,17 +131,17 @@ class ProductStockReminderAdapter(
 
         fun validateMinMaxStock(stock: Int) {
             when {
-                stock < MINIMUM_STOCK -> {
+                stock < MINIMUM_STOCK_REMINDER -> {
                     binding.qeStock.errorMessageText = itemView.resources.getString(
                         R.string.product_stock_reminder_min_stock_error,
-                        MINIMUM_STOCK
+                        MINIMUM_STOCK_REMINDER
                     )
                     isValid = false
                 }
-                stock > MAXIMUM_STOCK -> {
+                stock > MAXIMUM_STOCK_REMINDER -> {
                     binding.qeStock.errorMessageText = itemView.resources.getString(
                         R.string.product_stock_reminder_max_stock_error,
-                        MAXIMUM_STOCK.getNumberFormatted()
+                        MAXIMUM_STOCK_REMINDER.getNumberFormatted()
                     )
                     isValid = false
                 }
