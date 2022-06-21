@@ -218,7 +218,6 @@ class ShippingDurationPresenterTest {
         // Then
         assertNull(actual)
     }
-    
 
     @Test
     fun `When get courier item data with id return null Then null is returned`() {
