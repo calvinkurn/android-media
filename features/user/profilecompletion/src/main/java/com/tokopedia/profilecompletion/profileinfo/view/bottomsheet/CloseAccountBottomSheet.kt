@@ -36,7 +36,7 @@ class CloseAccountBottomSheet(private val detail: Detail) : BottomSheetUnify() {
         return DaggerProfileCompletionSettingComponent
             .builder()
             .baseAppComponent((application as BaseMainApplication).baseAppComponent)
-            .profileCompletionSettingModule(ProfileCompletionSettingModule(this.requireActivity()))
+            .profileCompletionSettingModule(ProfileCompletionSettingModule(requireActivity()))
             .build()
     }
 
