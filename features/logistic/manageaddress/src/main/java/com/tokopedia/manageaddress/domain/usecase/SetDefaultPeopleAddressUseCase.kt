@@ -7,19 +7,16 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.domain.coroutine.CoroutineUseCase
 import com.tokopedia.manageaddress.domain.model.DefaultAddressParam
 import com.tokopedia.manageaddress.domain.response.SetDefaultPeopleAddressGqlResponse
-import timber.log.Timber
 import javax.inject.Inject
-
 
 class SetDefaultPeopleAddressUseCase @Inject constructor(
     @ApplicationContext private val repository: GraphqlRepository,
     dispatcher: CoroutineDispatchers
 ) : CoroutineUseCase<DefaultAddressParam, SetDefaultPeopleAddressGqlResponse>(dispatcher.io) {
 
-
     override fun graphqlQuery() = QUERY
 
-    override suspend fun execute(params: DefaultAddressParam): SetDefaultPeopleAddressGqlResponse {
+    public override suspend fun execute(params: DefaultAddressParam): SetDefaultPeopleAddressGqlResponse {
         return repository.request(graphqlQuery(), params)
     }
 

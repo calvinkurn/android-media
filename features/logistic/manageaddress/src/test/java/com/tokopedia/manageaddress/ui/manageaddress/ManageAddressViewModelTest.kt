@@ -14,17 +14,16 @@ import com.tokopedia.logisticCommon.data.response.KeroAddrIsEligibleForAddressFe
 import com.tokopedia.logisticCommon.domain.model.AddressListModel
 import com.tokopedia.logisticCommon.domain.usecase.EligibleForAddressUseCase
 import com.tokopedia.logisticCommon.domain.usecase.GetAddressCornerUseCase
-import com.tokopedia.manageaddress.domain.DeletePeopleAddressUseCase
-import com.tokopedia.manageaddress.domain.SetDefaultPeopleAddressUseCase
 import com.tokopedia.manageaddress.domain.model.EligibleForAddressFeatureModel
 import com.tokopedia.manageaddress.domain.model.ManageAddressState
+import com.tokopedia.manageaddress.domain.response.*
+import com.tokopedia.manageaddress.domain.usecase.DeletePeopleAddressUseCase
+import com.tokopedia.manageaddress.domain.usecase.SetDefaultPeopleAddressUseCase
+import com.tokopedia.manageaddress.util.ManageAddressConstant
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
-import io.mockk.coEvery
-import io.mockk.every
-import io.mockk.mockk
-import io.mockk.verify
+import io.mockk.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.TestCoroutineDispatcher
@@ -52,16 +51,34 @@ class ManageAddressViewModelTest {
     private val chosenAddressObserver: Observer<Result<ChosenAddressModel>> = mockk(relaxed = true)
     private val eligibleForAddressFeatureObserver: Observer<Result<EligibleForAddressFeatureModel>> = mockk(relaxed = true)
 
+    private val setDefaultPeopleAddressUseCase = mockk<SetDefaultPeopleAddressUseCase>(relaxed = true)
+
+    private var observerManageAddressState = mockk<Observer<ManageAddressState<String>>>(relaxed = true)
+    private var observerManageAddressStateDefault = mockk<Observer<ManageAddressState<String>>>(relaxed = true)
+    private var observerManageAddressStateAddressList = mockk<Observer<ManageAddressState<AddressListModel>>>(relaxed = true)
+    private var observerResultRemovedAddress = mockk<Observer<ManageAddressState<String>>>(relaxed = true)
+    private val mockThrowable = mockk<Throwable>(relaxed = true)
+
 
     private lateinit var manageAddressViewModel: ManageAddressViewModel
 
     @Before
     fun setUp() {
         Dispatchers.setMain(TestCoroutineDispatcher())
-        manageAddressViewModel = ManageAddressViewModel(getPeopleAddressUseCase, deletePeopleAddressUseCase, setDetaultPeopleAddressUseCase, chooseAddressRepo, chooseAddressMapper, eligibleForAddressUseCase)
+        manageAddressViewModel = ManageAddressViewModel(
+            getPeopleAddressUseCase,
+            deletePeopleAddressUseCase,
+            setDetaultPeopleAddressUseCase,
+            chooseAddressRepo,
+            chooseAddressMapper,
+            eligibleForAddressUseCase
+        )
         manageAddressViewModel.getChosenAddress.observeForever(chosenAddressObserver)
         manageAddressViewModel.setChosenAddress.observeForever(chosenAddressObserver)
         manageAddressViewModel.eligibleForAddressFeature.observeForever(eligibleForAddressFeatureObserver)
+        manageAddressViewModel.setDefault.observeForever(observerManageAddressStateDefault)
+        manageAddressViewModel.addressList.observeForever(observerManageAddressStateAddressList)
+        manageAddressViewModel.resultRemovedAddress.observeForever(observerResultRemovedAddress)
     }
 
     @Test
@@ -89,9 +106,10 @@ class ManageAddressViewModelTest {
     @Test
     fun `Load More Address Success`() {
         val response = AddressListModel()
-        every { getPeopleAddressUseCase.loadMore(any(), any(), any(), any(), any()) } returns Observable.just(response).doOnSubscribe {
-            assertEquals(ManageAddressState.Loading, manageAddressViewModel.addressList.value)
-        }
+        every { getPeopleAddressUseCase.loadMore(any(), any(), any(), any(), any()) } returns Observable.just(response)
+            .doOnSubscribe {
+                assertEquals(ManageAddressState.Loading, manageAddressViewModel.addressList.value)
+            }
 
         manageAddressViewModel.loadMore(-1, -1, true)
 
@@ -108,58 +126,50 @@ class ManageAddressViewModelTest {
         assertEquals(ManageAddressState.Fail(response, ""), manageAddressViewModel.addressList.value)
     }
 
+
     @Test
     fun `Set Default Address Success`() {
-        every {
-            setDetaultPeopleAddressUseCase.execute(any(), any(), any(), any())
-        } answers  {
-            (thirdArg() as ((String) -> Unit)).invoke(success)
-        }
+        val mockDefaultPeopleAddressGqlResponse = spyk(
+            SetDefaultPeopleAddressGqlResponse(
+                SetDefaultPeopleAddressResponse(
+                    status = ManageAddressConstant.STATUS_OK,
+                    data = DefaultPeopleAddressData(success = 1),
+                )
+            )
+        )
 
+        coEvery { setDefaultPeopleAddressUseCase.invoke(any()) } returns mockDefaultPeopleAddressGqlResponse
         manageAddressViewModel.setDefaultPeopleAddress("1", true, -1, -1, true)
+        verify { observerManageAddressStateDefault.onChanged(match { it is ManageAddressState.Success }) }
 
-        assertEquals(ManageAddressState.Success(success), manageAddressViewModel.setDefault.value)
     }
 
     @Test
     fun `Set Default Address Fail`() {
-        val response = Throwable()
-        every {
-            setDetaultPeopleAddressUseCase.execute(any(), any(), any(), any())
-        } answers {
-            (lastArg() as ((Throwable) -> Unit)).invoke(response)
-        }
-
-        manageAddressViewModel.setDefaultPeopleAddress("1", false, 0, 0, true)
-
-        assertEquals(ManageAddressState.Fail(response, ""), manageAddressViewModel.setDefault.value)
+        coEvery { setDetaultPeopleAddressUseCase.invoke(any()) } throws mockThrowable
+        manageAddressViewModel.setDefaultPeopleAddress("1", true, -1, -1, true)
+        verify { observerManageAddressState.onChanged(match { it is ManageAddressState.Fail }) }
     }
 
     @Test
     fun `Delete Address Success`() {
-        every {
-            deletePeopleAddressUseCase.execute(any(), any(), any())
-        }answers {
-            (secondArg() as ((String) -> Unit)).invoke(success)
-        }
+        val mockResponseDeletePeopleAddressGqlResponse = DeletePeopleAddressGqlResponse(
+            DeletePeopleAddressResponse(
+                data = DeletePeopleAddressData(success = 1),
+                status = ManageAddressConstant.STATUS_OK
+            )
+        )
 
-        manageAddressViewModel.deletePeopleAddress("1", -1, -1, true)
-
-        assertEquals(ManageAddressState.Success(success), manageAddressViewModel.resultRemovedAddress.value)
+        coEvery { deletePeopleAddressUseCase.invoke(any()) } returns mockResponseDeletePeopleAddressGqlResponse
+        manageAddressViewModel.deletePeopleAddress("1")
+        verify { observerResultRemovedAddress.onChanged(match { it is ManageAddressState.Success }) }
     }
 
     @Test
     fun `Delete Address Fail`() {
-        val response = Throwable()
-        every {
-            deletePeopleAddressUseCase.execute(any(), any(), any())
-        } answers {
-            (thirdArg() as ((Throwable) -> Unit)).invoke(response)
-        }
-
-        manageAddressViewModel.deletePeopleAddress("1", -1, -1, true)
-
-        assertEquals(ManageAddressState.Fail(response, ""), manageAddressViewModel.addressList.value)
+        coEvery { deletePeopleAddressUseCase.invoke(any()) } throws mockThrowable
+        manageAddressViewModel.deletePeopleAddress("1")
+        verify { observerManageAddressStateAddressList.onChanged(match { it is ManageAddressState.Fail }) }
     }
 
     @Test
@@ -228,7 +238,7 @@ class ManageAddressViewModelTest {
         coEvery {
             eligibleForAddressUseCase.eligibleForAddressFeature(any(), any(), featureId)
         } answers {
-            firstArg<(KeroAddrIsEligibleForAddressFeatureData)-> Unit>().invoke(KeroAddrIsEligibleForAddressFeatureData())
+            firstArg<(KeroAddrIsEligibleForAddressFeatureData) -> Unit>().invoke(KeroAddrIsEligibleForAddressFeatureData())
         }
     }
 
@@ -236,7 +246,7 @@ class ManageAddressViewModelTest {
         coEvery {
             eligibleForAddressUseCase.eligibleForAddressFeature(any(), any(), featureId)
         } answers {
-            secondArg<(Throwable)-> Unit>().invoke(Throwable())
+            secondArg<(Throwable) -> Unit>().invoke(Throwable())
         }
     }
 }

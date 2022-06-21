@@ -14,12 +14,13 @@ import com.tokopedia.logisticCommon.data.entity.address.Token
 import com.tokopedia.logisticCommon.domain.model.AddressListModel
 import com.tokopedia.logisticCommon.domain.usecase.EligibleForAddressUseCase
 import com.tokopedia.logisticCommon.domain.usecase.GetAddressCornerUseCase
-import com.tokopedia.manageaddress.domain.usecase.DeletePeopleAddressUseCase
 import com.tokopedia.manageaddress.domain.mapper.EligibleAddressFeatureMapper
 import com.tokopedia.manageaddress.domain.model.DefaultAddressParam
 import com.tokopedia.manageaddress.domain.model.EligibleForAddressFeatureModel
 import com.tokopedia.manageaddress.domain.model.ManageAddressState
+import com.tokopedia.manageaddress.domain.usecase.DeletePeopleAddressUseCase
 import com.tokopedia.manageaddress.domain.usecase.SetDefaultPeopleAddressUseCase
+import com.tokopedia.manageaddress.util.ManageAddressConstant
 import com.tokopedia.manageaddress.util.ManageAddressConstant.DEFAULT_ERROR_MESSAGE
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.usecase.coroutines.Fail
@@ -31,12 +32,13 @@ import rx.subscriptions.CompositeSubscription
 import javax.inject.Inject
 
 class ManageAddressViewModel @Inject constructor(
-        private val getPeopleAddressUseCase: GetAddressCornerUseCase,
-        private val deletePeopleAddressUseCase: DeletePeopleAddressUseCase,
-        private val setDefaultPeopleAddressUseCase: SetDefaultPeopleAddressUseCase,
-        private val chooseAddressRepo: ChooseAddressRepository,
-        private val chooseAddressMapper: ChooseAddressMapper,
-        private val eligibleForAddressUseCase: EligibleForAddressUseCase) : ViewModel() {
+    private val getPeopleAddressUseCase: GetAddressCornerUseCase,
+    private val deletePeopleAddressUseCase: DeletePeopleAddressUseCase,
+    private val setDefaultPeopleAddressUseCase: SetDefaultPeopleAddressUseCase,
+    private val chooseAddressRepo: ChooseAddressRepository,
+    private val chooseAddressMapper: ChooseAddressMapper,
+    private val eligibleForAddressUseCase: EligibleForAddressUseCase
+) : ViewModel() {
 
     var token: Token? = null
     var savedQuery: String = ""
@@ -122,30 +124,50 @@ class ManageAddressViewModel @Inject constructor(
 
     fun deletePeopleAddress(id: String) {
         viewModelScope.launchCatchError(block = {
-            deletePeopleAddressUseCase(id.toInt())
-            _resultRemovedAddress.value = ManageAddressState.Success("Success")
-            isClearData = true
-            getStateChosenAddress("address")
+            val resultDelete = deletePeopleAddressUseCase(id.toInt())
+            if (resultDelete.response.status.equals(ManageAddressConstant.STATUS_OK, true)) {
+                if (resultDelete.response.data.success == 1) {
+                    _resultRemovedAddress.value = ManageAddressState.Success("Success")
+                    isClearData = true
+                    getStateChosenAddress("address")
+                } else {
+                    _addressList.value = ManageAddressState.Fail(MessageErrorException(DEFAULT_ERROR_MESSAGE), "")
+                }
+            } else {
+                _addressList.value = ManageAddressState.Fail(MessageErrorException(DEFAULT_ERROR_MESSAGE), "")
+            }
+
         }, onError = {
-            _addressList.value = ManageAddressState.Fail(MessageErrorException(DEFAULT_ERROR_MESSAGE), "")
+            _addressList.value = ManageAddressState.Fail(it, it.message.orEmpty())
         })
     }
+
 
     fun setDefaultPeopleAddress(
         id: String,
         setAsStateChosenAddress: Boolean,
         prevState: Int,
         localChosenAddrId: Long,
-        isWhiteListChosenAddress: Boolean
+        isWhiteListChosenAddress: Boolean,
     ) {
+
         viewModelScope.launchCatchError(block = {
+
             val defaultAddressParam = DefaultAddressParam(id.toLong(), setAsStateChosenAddress)
-            setDefaultPeopleAddressUseCase(defaultAddressParam)
-            _setDefault.value = ManageAddressState.Success("Success")
-            isClearData = true
-            searchAddress("", prevState, localChosenAddrId, isWhiteListChosenAddress)
+            val resultDefaultAddress = setDefaultPeopleAddressUseCase(defaultAddressParam)
+            if (resultDefaultAddress.response.status.equals(ManageAddressConstant.STATUS_OK, true)) {
+                if (resultDefaultAddress.response.data.success == 1) {
+                    _setDefault.value = ManageAddressState.Success("Success")
+                    isClearData = true
+                    searchAddress("", prevState, localChosenAddrId, isWhiteListChosenAddress)
+                } else {
+                    _setDefault.value = ManageAddressState.Fail(MessageErrorException(DEFAULT_ERROR_MESSAGE), "")
+                }
+            } else {
+                _setDefault.value = ManageAddressState.Fail(MessageErrorException(DEFAULT_ERROR_MESSAGE), "")
+            }
         }, onError = {
-            _addressList.value = ManageAddressState.Fail(MessageErrorException(DEFAULT_ERROR_MESSAGE), "")
+            _setDefault.value = ManageAddressState.Fail(it, it.message.orEmpty())
         })
     }
 
@@ -166,7 +188,8 @@ class ManageAddressViewModel @Inject constructor(
     fun checkUserEligibilityForAnaRevamp() {
         eligibleForAddressUseCase.eligibleForAddressFeature(
             {
-                _eligibleForAddressFeature.value = Success(EligibleAddressFeatureMapper.mapResponseToModel(it, AddressConstant.ANA_REVAMP_FEATURE_ID, null))
+                _eligibleForAddressFeature.value =
+                    Success(EligibleAddressFeatureMapper.mapResponseToModel(it, AddressConstant.ANA_REVAMP_FEATURE_ID, null))
             },
             {
                 _eligibleForAddressFeature.value = Fail(it)
@@ -178,7 +201,13 @@ class ManageAddressViewModel @Inject constructor(
     fun checkUserEligibilityForEditAddressRevamp(data: RecipientAddressModel) {
         eligibleForAddressUseCase.eligibleForAddressFeature(
             {
-                _eligibleForAddressFeature.value = Success(EligibleAddressFeatureMapper.mapResponseToModel(it, AddressConstant.EDIT_ADDRESS_REVAMP_FEATURE_ID, data))
+                _eligibleForAddressFeature.value = Success(
+                    EligibleAddressFeatureMapper.mapResponseToModel(
+                        it,
+                        AddressConstant.EDIT_ADDRESS_REVAMP_FEATURE_ID,
+                        data
+                    )
+                )
             },
             {
                 _eligibleForAddressFeature.value = Fail(it)
@@ -187,11 +216,11 @@ class ManageAddressViewModel @Inject constructor(
         )
     }
 
-    private val onErrorGetStateChosenAddress = CoroutineExceptionHandler{ _, e ->
+    private val onErrorGetStateChosenAddress = CoroutineExceptionHandler { _, e ->
         _getChosenAddress.value = Fail(e)
     }
 
-    private val onErrorSetStateChosenAddress = CoroutineExceptionHandler{ _, e ->
+    private val onErrorSetStateChosenAddress = CoroutineExceptionHandler { _, e ->
         _setChosenAddress.value = Fail(e)
     }
 
