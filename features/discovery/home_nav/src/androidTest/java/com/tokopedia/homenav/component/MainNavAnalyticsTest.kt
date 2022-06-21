@@ -10,6 +10,7 @@ import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.matcher.IntentMatchers
 import androidx.test.espresso.intent.rule.IntentsTestRule
 import com.tokopedia.cassavatest.CassavaTestRule
+import com.tokopedia.cassavatest.hasAllSuccess
 import com.tokopedia.homenav.mock.MainNavMockResponseConfig
 import com.tokopedia.homenav.util.MainNavRecyclerViewIdlingResource
 import com.tokopedia.homenav.view.activity.HomeNavActivity
@@ -19,12 +20,14 @@ import com.tokopedia.test.application.annotations.CassavaTest
 import com.tokopedia.test.application.util.InstrumentationAuthHelper
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
 import com.tokopedia.homenav.R
+import com.tokopedia.homenav.base.diffutil.holder.HomeNavTitleViewHolder
 import com.tokopedia.homenav.mainnav.view.adapter.viewholder.MainNavListAdapter
 import com.tokopedia.homenav.mainnav.view.datamodel.TransactionListItemDataModel
 import com.tokopedia.homenav.mainnav.view.datamodel.account.AccountHeaderDataModel
 import com.tokopedia.homenav.mainnav.view.datamodel.favoriteshop.FavoriteShopListDataModel
 import com.tokopedia.homenav.mainnav.view.datamodel.wishlist.WishlistDataModel
 import com.tokopedia.test.application.assertion.topads.TopAdsVerificationTestReportUtil
+import org.hamcrest.MatcherAssert
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -153,6 +156,34 @@ class MainNavAnalyticsTest {
                 ANALYTIC_VALIDATOR_QUERY_FILE_NAME_SHOP_AFFILIATE
             )
         }
+    }
+
+    private fun checkViewHolderOnRecyclerView(recyclerView: RecyclerView, position: Int) {
+        when (recyclerView.findViewHolderForAdapterPosition(position)) {
+            is HomeNavTitleViewHolder -> {
+                clickMenu(recyclerView.id, position)
+            }
+        }
+    }
+
+    @Test
+    fun testComponentMenu() {
+        login()
+        waitForData()
+
+        val recyclerView =
+            activityRule.activity.findViewById<RecyclerView>(R.id.recycler_view)
+        val itemCount = recyclerView.adapter?.itemCount ?: 0
+
+        for (i in 0 until itemCount) {
+            checkViewHolderOnRecyclerView(recyclerView, i)
+        }
+
+        waitForData()
+        hasPassedAnalytics(
+            cassavaTestRule,
+            ANALYTIC_VALIDATOR_QUERY_FILE_NAME_MENU_CATEGORY
+        )
     }
 
     private fun login() {

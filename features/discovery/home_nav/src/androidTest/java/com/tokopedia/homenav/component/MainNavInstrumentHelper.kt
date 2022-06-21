@@ -10,6 +10,7 @@ import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.contrib.RecyclerViewActions
 import androidx.test.espresso.matcher.ViewMatchers
 import com.tokopedia.homenav.R
+import com.tokopedia.homenav.base.diffutil.holder.HomeNavTitleViewHolder
 import com.tokopedia.homenav.mainnav.view.adapter.viewholder.orderlist.OrderPaymentRevampViewHolder
 import com.tokopedia.homenav.mainnav.view.adapter.viewholder.orderlist.OrderProductRevampViewHolder
 import com.tokopedia.homenav.mainnav.view.adapter.viewholder.orderlist.OrderReviewViewHolder
@@ -119,6 +120,35 @@ fun clickOnEachItemRecyclerViewOrderHistory(
 
 fun clickOnShopAndAffiliate(viewHolder: RecyclerView.ViewHolder) {
     clickOnEachItemRecyclerViewOrderHistory(viewHolder.itemView, R.id.recycler_seller, 0)
+}
+
+fun clickMenu(recyclerViewId: Int, cardPosition: Int) {
+    Espresso.onView(ViewMatchers.withId(recyclerViewId)).perform(
+        RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(
+            cardPosition,
+            clickOnViewChild(R.id.container_home_nav_title)
+        )
+    )
+}
+
+fun clickOnEachMenu(
+    view: View,
+    recyclerViewId: Int
+) {
+    val childRecyclerView: RecyclerView = view.findViewById(recyclerViewId)
+
+    val childItemCountExcludeViewAllCard = (childRecyclerView.adapter?.itemCount ?: 0) - 1
+    for (i in 0..childItemCountExcludeViewAllCard) {
+        try {
+            when (childRecyclerView.findViewHolderForAdapterPosition(i)) {
+                is HomeNavTitleViewHolder -> {
+                    clickMenu(recyclerViewId, i)
+                }
+            }
+        } catch (e: PerformException) {
+            e.printStackTrace()
+        }
+    }
 }
 
 private fun clickOnViewChild(viewId: Int) = object : ViewAction {

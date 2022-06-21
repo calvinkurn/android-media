@@ -37,3 +37,11 @@ class MainNavCassavaResult {
 fun waitForLoadCassavaAssert() {
     Thread.sleep(2000)
 }
+
+fun waitForData() {
+    Thread.sleep(10000)
+}
+
+fun hasPassedAnalytics(cassavaTestRule: CassavaTestRule, queryFileName: String) {
+    MatcherAssert.assertThat(cassavaTestRule.validate(queryFileName), hasAllSuccess())
+}
