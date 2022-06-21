@@ -132,7 +132,7 @@ class DealsCheckoutViewModel @Inject constructor(
                           email = it.email,
                           endTime = it.endTime,
                           error = it.error,
-                          flagId = it.flagId.toInt(),
+                          flagId = it.flagId.toIntOrZero(),
                           id = it.id.toInt(),
                           invoiceId = it.invoiceId.toInt(),
                           invoiceItemId = it.invoiceItemId.toInt(),
