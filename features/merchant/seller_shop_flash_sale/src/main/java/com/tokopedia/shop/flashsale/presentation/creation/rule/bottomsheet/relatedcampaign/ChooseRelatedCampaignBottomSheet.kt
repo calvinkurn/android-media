@@ -208,7 +208,7 @@ class ChooseRelatedCampaignBottomSheet : BottomSheetUnify(),
     }
 
     private fun showErrorMessage(t: Throwable) {
-        binding?.root showError t
+        binding?.root.showError(t, binding?.btnAddCampaign)
     }
 
     private fun hideEmptyResultMessage() {

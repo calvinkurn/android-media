@@ -12,8 +12,8 @@ import com.tokopedia.shop.flashsale.domain.entity.MerchantCampaignTNC
 import com.tokopedia.shop.flashsale.domain.entity.RelatedCampaign
 import com.tokopedia.shop.flashsale.domain.entity.enums.PaymentType
 import com.tokopedia.shop.flashsale.domain.usecase.DoSellerCampaignCreationUseCase
-import com.tokopedia.shop.flashsale.domain.usecase.GetSellerCampaignAttributeUseCase
 import com.tokopedia.shop.flashsale.domain.usecase.GetSellerCampaignDetailUseCase
+import com.tokopedia.shop.flashsale.domain.usecase.aggregate.ValidateCampaignCreationEligibilityUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -22,12 +22,14 @@ import com.tokopedia.utils.lifecycle.SingleLiveEvent
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
+import java.util.Calendar
+import java.util.concurrent.atomic.AtomicBoolean
 import javax.inject.Inject
 
 class CampaignRuleViewModel @Inject constructor(
     private val getSellerCampaignDetailUseCase: GetSellerCampaignDetailUseCase,
     private val doSellerCampaignCreationUseCase: DoSellerCampaignCreationUseCase,
-    private val getSellerCampaignAttributeUseCase: GetSellerCampaignAttributeUseCase,
+    private val validateCampaignCreationEligibilityUseCase: ValidateCampaignCreationEligibilityUseCase,
     private val dispatchers: CoroutineDispatchers,
 ) : BaseViewModel(dispatchers.main) {
 
@@ -35,6 +37,8 @@ class CampaignRuleViewModel @Inject constructor(
         private const val MAX_RELATED_CAMPAIGN = 10
         private const val INVALID_CAMPAIGN_ID = -1L
     }
+
+    private val isInSaveAction: AtomicBoolean = AtomicBoolean(false)
 
     private val _campaign = MutableLiveData<Result<CampaignUiModel>>()
     val campaign: LiveData<Result<CampaignUiModel>>
@@ -92,9 +96,13 @@ class CampaignRuleViewModel @Inject constructor(
 
     private var campaignId: Long = INVALID_CAMPAIGN_ID
 
-    private val _saveDraftState = MutableLiveData<Result<Unit>>()
-    val saveDraftState: LiveData<Result<Unit>>
-        get() = _saveDraftState
+    private val _saveDraftActionState = MutableLiveData<CampaignRuleActionResult>()
+    val saveDraftActionState: LiveData<CampaignRuleActionResult>
+        get() = _saveDraftActionState
+
+    private val _createCampaignActionState = MutableLiveData<CampaignRuleActionResult>()
+    val createCampaignActionState: LiveData<CampaignRuleActionResult>
+        get() = _createCampaignActionState
 
     private var initialPaymentType: PaymentType? = null
     private var initialUniqueBuyer: Boolean? = null
@@ -298,16 +306,46 @@ class CampaignRuleViewModel @Inject constructor(
         _isTNCConfirmed.value = true
     }
 
+    private fun resetIsInSaveAction() {
+        synchronized(this) {
+            isInSaveAction.set(false)
+        }
+    }
+
+    private fun validateCampaignRuleInput(
+        campaign: CampaignUiModel,
+    ): CampaignRuleValidationResult {
+        val currentDate = Calendar.getInstance().time
+        val validationResult = when {
+            !isSelectedPaymentTypeValid && !isRelatedCampaignValid() -> CampaignRuleValidationResult.BothSectionsInvalid
+            !isSelectedPaymentTypeValid -> CampaignRuleValidationResult.InvalidPaymentMethod
+            !isRelatedCampaignValid() -> CampaignRuleValidationResult.InvalidBuyerOptions
+            isTNCConfirmed.value == false -> CampaignRuleValidationResult.TNCNotAccepted
+            campaign.upcomingDate.before(currentDate) -> CampaignRuleValidationResult.InvalidCampaignTime(
+                campaign.campaignId
+            )
+            else -> CampaignRuleValidationResult.Valid
+        }
+        return validationResult
+    }
+
     fun saveCampaignCreationDraft() {
-        if (isCampaignCreationAllowed.value == false) {
-            _saveDraftState.postValue(Fail(Throwable("Campaign Rule invalid")))
-            return
+        synchronized(this) {
+            if (!isInSaveAction.compareAndSet(false, true)) return
         }
         val campaignValue = campaign.value
         val campaignData = if (campaignValue is Success) campaignValue.data else {
-            _saveDraftState.postValue(Fail(Throwable("Campaign Data not found")))
+            _saveDraftActionState.postValue(CampaignRuleActionResult.DetailNotLoaded)
+            resetIsInSaveAction()
             return
         }
+        val validationResult = validateCampaignRuleInput(campaignData)
+        if (validationResult.isInvalid) {
+            _saveDraftActionState.postValue(CampaignRuleActionResult.ValidationFail(validationResult))
+            resetIsInSaveAction()
+            return
+        }
+        _saveDraftActionState.postValue(CampaignRuleActionResult.Loading)
         launchCatchError(
             dispatchers.io,
             block = {
@@ -317,15 +355,87 @@ class CampaignRuleViewModel @Inject constructor(
                 )
                 val result = doSellerCampaignCreationUseCase.execute(param)
                 if (result.isSuccess) {
-                    _saveDraftState.postValue(Success(Unit))
+                    _saveDraftActionState.postValue(CampaignRuleActionResult.Success)
+                    resetIsInSaveAction()
                 } else {
-                    _saveDraftState.postValue(Fail(Throwable(result.errorDescription)))
+                    _saveDraftActionState.postValue(CampaignRuleActionResult.Fail(Throwable(result.errorDescription)))
+                    resetIsInSaveAction()
                 }
             },
             onError = { error ->
-                _saveDraftState.postValue(Fail(error))
+                _saveDraftActionState.postValue(CampaignRuleActionResult.Fail(error))
+                resetIsInSaveAction()
             }
         )
+    }
+
+    private fun validateCampaignCreation(
+        validAction: suspend (CampaignUiModel) -> Unit
+    ) {
+        synchronized(this) {
+            if (!isInSaveAction.compareAndSet(false, true)) return
+        }
+        val campaignValue = campaign.value
+        val campaignData = if (campaignValue is Success) campaignValue.data else {
+            _createCampaignActionState.postValue(CampaignRuleActionResult.DetailNotLoaded)
+            resetIsInSaveAction()
+            return
+        }
+        val validationResult = validateCampaignRuleInput(campaignData)
+        if (validationResult.isInvalid) {
+            _createCampaignActionState.postValue(
+                CampaignRuleActionResult.ValidationFail(
+                    validationResult
+                )
+            )
+            resetIsInSaveAction()
+            return
+        }
+
+        _createCampaignActionState.postValue(CampaignRuleActionResult.Loading)
+        launchCatchError(
+            dispatchers.io,
+            block = {
+                val eligibilityResult = validateCampaignCreationEligibilityUseCase.execute()
+                if (!eligibilityResult.isEligible) {
+                    _createCampaignActionState.postValue(
+                        CampaignRuleActionResult.ValidationFail(CampaignRuleValidationResult.NotEligible)
+                    )
+                    resetIsInSaveAction()
+                    return@launchCatchError
+                }
+
+                validAction(campaignData)
+            },
+            onError = { error ->
+                _createCampaignActionState.postValue(CampaignRuleActionResult.Fail(error))
+                resetIsInSaveAction()
+            }
+        )
+    }
+
+    fun onCreateCampaignButtonClicked() {
+        validateCampaignCreation {
+            _createCampaignActionState.postValue(CampaignRuleActionResult.ShowConfirmation)
+            resetIsInSaveAction()
+        }
+    }
+
+    fun doCreateCampaign() {
+        validateCampaignCreation { campaignData ->
+            val param = getCampaignCreationParam(
+                campaignData,
+                CampaignAction.Submit(campaignId)
+            )
+            val result = doSellerCampaignCreationUseCase.execute(param)
+            if (result.isSuccess) {
+                _createCampaignActionState.postValue(CampaignRuleActionResult.Success)
+                resetIsInSaveAction()
+            } else {
+                _createCampaignActionState.postValue(CampaignRuleActionResult.Fail(Throwable(result.errorDescription)))
+                resetIsInSaveAction()
+            }
+        }
     }
 
     private fun getCampaignCreationParam(
