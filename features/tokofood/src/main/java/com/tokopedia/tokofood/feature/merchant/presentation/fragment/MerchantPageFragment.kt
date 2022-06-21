@@ -34,7 +34,6 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.tokofood.R
 import com.tokopedia.tokofood.common.constants.ShareComponentConstants
-import com.tokopedia.tokofood.common.domain.response.CartTokoFoodBottomSheet
 import com.tokopedia.tokofood.common.domain.response.CartTokoFoodData
 import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFoodData
 import com.tokopedia.tokofood.common.presentation.UiEvent
@@ -1091,6 +1090,7 @@ class MerchantPageFragment : BaseMultiFragment(),
             val intent = RouteManager.getIntent(this, ApplinkConst.LOGIN)
             startActivityForResult(intent, REQUEST_CODE_LOGIN)
         }
+        viewModel.visitedLoginPage = true
     }
 
     private fun validateAddressData() {
@@ -1118,8 +1118,9 @@ class MerchantPageFragment : BaseMultiFragment(),
     private fun onResultFromLogin(resultCode: Int, data: Intent?) {
         if (resultCode == Activity.RESULT_OK) {
             validateAddressData()
+        } else {
+            activity?.finish()
         }
-        // TODO implement the negative cases for login page use case
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
