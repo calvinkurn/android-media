@@ -30,7 +30,9 @@ import com.tokopedia.wishlist.util.WishlistV2Consts.TYPE_COLLECTION_CREATE
 import com.tokopedia.wishlist.util.WishlistV2Consts.TYPE_COLLECTION_ITEM
 import com.tokopedia.wishlist.util.WishlistV2Consts.TYPE_COLLECTION_TICKER
 import com.tokopedia.wishlist.view.adapter.CollectionWishlistAdapter
+import com.tokopedia.wishlist.view.bottomsheet.WishlistV2CleanerBottomSheet
 import com.tokopedia.wishlist.view.viewmodel.CollectionWishlistViewModel
+import com.tokopedia.wishlistcommon.bottomsheet.AddToCollectionWishlistBottomSheet
 import javax.inject.Inject
 
 
@@ -74,6 +76,7 @@ class CollectionWishlistFragment : BaseDaggerFragment(), CollectionWishlistAdapt
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         checkLogin()
+        showExampleBottomSheet()
     }
 
     private fun checkLogin() {
@@ -85,6 +88,12 @@ class CollectionWishlistFragment : BaseDaggerFragment(), CollectionWishlistAdapt
                 WishlistV2Fragment.REQUEST_CODE_LOGIN
             )
         }
+    }
+
+    private fun showExampleBottomSheet() {
+        val bottomSheetAddToCollectionSample = AddToCollectionWishlistBottomSheet.newInstance()
+        if (bottomSheetAddToCollectionSample.isAdded || childFragmentManager.isStateSaved) return
+        bottomSheetAddToCollectionSample.show(childFragmentManager)
     }
 
     override fun onCreateView(

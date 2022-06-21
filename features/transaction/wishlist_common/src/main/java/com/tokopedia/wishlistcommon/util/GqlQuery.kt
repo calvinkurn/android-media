@@ -227,3 +227,54 @@ package com.tokopedia.wishlistcommon.util
               }
             }
             """
+
+    const val GQL_GET_WISHLIST_COLLECTIONS_BOTTOMSHEET = """
+             query GetWishlistCollectionsBottomsheet(${'$'}params:GetWishlistCollectionsBottomSheetParams){
+              get_wishlist_collections_bottomsheet(params:${'$'}params){
+                status
+                error_message
+                data{
+                  title
+                  title_button{
+                text
+                    image_url
+                    url
+                    action
+                  }
+                  notification
+                  placeholder{
+                text
+                    image_url
+                    url
+                    action
+                  }
+                  main_section{
+                    text
+                    collections{
+                      id
+                      name
+                      total_item
+                      item_text
+                      label
+                      image_url
+                      is_contain_product
+                    }
+                  }
+                  additional_section{
+                    text
+                    collections{
+                      id
+                      name
+                      total_item
+                      item_text
+                      label
+                      image_url
+                      is_contain_product
+                    }
+                  }
+                  total_collection
+                  max_limit_collection
+                  wording_max_limit_collection
+                }
+              }
+            }"""
