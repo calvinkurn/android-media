@@ -52,15 +52,25 @@
                         <androidx.constraintlayout.widget.ConstraintLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content">
-
+                            <com.tokopedia.unifycomponents.ticker.Ticker
+                                android:visibility="gone"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toTopOf="parent"
+                                android:id="@+id/affiliate_announcement_ticker"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                app:descriptionText="Supaya kamu lebih nyaman menggunakan Tokopedia Affiliate. Kembali lagi nanti, ya!"
+                                app:tickerType="announcement"
+                                app:titleText="Saat ini lagi ada pemeliharaan sistem" />
                             <com.tokopedia.unifycomponents.ImageUnify
                                 android:id="@+id/user_image"
-                                android:layout_width="@dimen/dp_48"
-                                android:layout_height="@dimen/dp_48"
+                                android:layout_width="@dimen/unify_space_48"
+                                android:layout_height="@dimen/unify_space_48"
                                 android:layout_marginHorizontal="@dimen/dp_16"
-                                android:layout_marginTop="@dimen/dp_16"
+                                android:layout_marginTop="@dimen/spacing_lvl4"
                                 app:layout_constraintLeft_toLeftOf="parent"
-                                app:layout_constraintTop_toTopOf="parent" />
+                                app:layout_constraintTop_toBottomOf="@id/affiliate_announcement_ticker" />
 
                             <com.tokopedia.unifyprinciples.Typography
                                 android:id="@+id/affiliate_greeting"
@@ -90,31 +100,6 @@
                                 app:typographyWeight="bold"
                                 tools:text="Ana Putri" />
 
-                            <androidx.cardview.widget.CardView
-                                android:id="@+id/affiliate_announcement_ticker_cv"
-                                android:layout_width="0dp"
-                                android:layout_height="wrap_content"
-                                android:layout_marginHorizontal="@dimen/dp_16"
-                                android:layout_marginTop="@dimen/dp_16"
-                                android:visibility="gone"
-                                app:cardCornerRadius="@dimen/dp_8"
-                                app:cardElevation="0dp"
-                                app:layout_constraintEnd_toEndOf="parent"
-                                app:layout_constraintStart_toStartOf="parent"
-                                app:layout_constraintTop_toBottomOf="@id/user_name"
-                                tools:visibility="visible">
-
-                                <com.tokopedia.unifycomponents.ticker.Ticker
-                                    android:id="@+id/affiliate_announcement_ticker"
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    app:closeButtonVisibility="gone"
-                                    app:descriptionText="Supaya kamu lebih nyaman menggunakan Tokopedia Affiliate. Kembali lagi nanti, ya!"
-                                    app:layout_constraintEnd_toEndOf="parent"
-                                    app:layout_constraintStart_toStartOf="parent"
-                                    app:tickerType="announcement"
-                                    app:titleText="Saat ini lagi ada pemeliharaan sistem" />
-                            </androidx.cardview.widget.CardView>
 
                         </androidx.constraintlayout.widget.ConstraintLayout>
                     </com.tokopedia.affiliate.ui.custom.DisallowInterceptView>
@@ -126,7 +111,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/appbar"
-                android:layout_marginTop="@dimen/dp_16"
+                android:layout_marginTop="@dimen/spacing_lvl4"
                 android:paddingBottom="@dimen/unify_space_48"
                 android:layout_marginBottom="@dimen/unify_space_48"
                 android:visibility="visible"
@@ -136,7 +121,7 @@
                     android:id="@+id/products_rv"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/dp_8"
+                    android:layout_marginTop="@dimen/spacing_lvl3"
                     tools:itemCount="4"
                     tools:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                     tools:listitem="@layout/affiliate_vertical_product_card_item_layout"
@@ -150,10 +135,10 @@
     <com.tkpd.remoteresourcerequest.view.DeferredImageView
         android:id="@+id/affiliate_no_product_iv"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_220"
+        android:layout_height="200dp"
         android:background="@color/Unify_N0"
         android:gravity="center"
-        android:paddingTop="@dimen/dp_40"
+        android:paddingTop="@dimen/unify_space_32"
         android:visibility="gone"
         app:completeUrl="https://images.tokopedia.net/img/android/res/singleDpi/affiliate_no_product.png"
         app:imageDpiSupportType="singleDpi"
@@ -165,7 +150,7 @@
         android:id="@+id/home_global_error"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_16"
+        android:layout_marginTop="@dimen/unify_space_16"
         android:background="@color/Unify_N0"
         android:gravity="center"
         android:visibility="gone"
@@ -175,8 +160,8 @@
 
     <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/affiliate_progress_bar"
-        android:layout_width="@dimen/dp_40"
-        android:layout_height="@dimen/dp_40"
+        android:layout_width="@dimen/unify_space_32"
+        android:layout_height="@dimen/unify_space_32"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"

@@ -38,15 +38,18 @@ import com.tokopedia.filter.common.data.Filter
 import com.tokopedia.filter.common.data.Option
 import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.kotlin.extensions.view.setMargin
-import com.tokopedia.kotlin.extensions.view.showWithCondition
-import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.localizationchooseaddress.domain.model.LocalWarehouseModel
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.minicart.common.analytics.MiniCartAnalytics
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
+import com.tokopedia.minicart.common.domain.usecase.MiniCartSource
 import com.tokopedia.minicart.common.widget.MiniCartWidget
 import com.tokopedia.minicart.common.widget.MiniCartWidgetListener
 import com.tokopedia.network.utils.ErrorHandler
@@ -67,17 +70,20 @@ import com.tokopedia.searchbar.navigation_component.icons.IconList.ID_SHARE
 import com.tokopedia.searchbar.navigation_component.listener.NavRecyclerViewScrollListener
 import com.tokopedia.searchbar.navigation_component.util.NavToolbarExt
 import com.tokopedia.tokopedianow.R
-import com.tokopedia.tokopedianow.common.constant.ServiceType.NOW_15M
+import com.tokopedia.tokopedianow.common.bottomsheet.TokoNowOnBoard20mBottomSheet
 import com.tokopedia.tokopedianow.common.constant.ServiceType.NOW_2H
 import com.tokopedia.tokopedianow.common.domain.model.SetUserPreference
 import com.tokopedia.tokopedianow.common.model.TokoNowProductCardUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowRecommendationCarouselUiModel
+import com.tokopedia.tokopedianow.common.util.TokoNowServiceTypeUtil
 import com.tokopedia.tokopedianow.common.util.TokoNowSwitcherUtil.switchService
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowEmptyStateNoResultViewHolder
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowEmptyStateOocViewHolder
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowProductCardViewHolder.TokoNowProductCardListener
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowRecommendationCarouselViewHolder
 import com.tokopedia.tokopedianow.databinding.FragmentTokopedianowSearchCategoryBinding
+import com.tokopedia.tokopedianow.common.util.TokoNowSharedPreference
+import com.tokopedia.tokopedianow.home.presentation.view.listener.OnBoard20mBottomSheetCallback
 import com.tokopedia.tokopedianow.searchcategory.presentation.adapter.SearchCategoryAdapter
 import com.tokopedia.tokopedianow.searchcategory.presentation.customview.CategoryChooserBottomSheet
 import com.tokopedia.tokopedianow.searchcategory.presentation.customview.StickySingleHeaderView
@@ -87,8 +93,8 @@ import com.tokopedia.tokopedianow.searchcategory.presentation.listener.CategoryF
 import com.tokopedia.tokopedianow.searchcategory.presentation.listener.ChooseAddressListener
 import com.tokopedia.tokopedianow.searchcategory.presentation.listener.ProductItemListener
 import com.tokopedia.tokopedianow.searchcategory.presentation.listener.QuickFilterListener
-import com.tokopedia.tokopedianow.searchcategory.presentation.listener.TitleListener
 import com.tokopedia.tokopedianow.searchcategory.presentation.listener.SwitcherWidgetListener
+import com.tokopedia.tokopedianow.searchcategory.presentation.listener.TitleListener
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.ProductItemDataView
 import com.tokopedia.tokopedianow.searchcategory.presentation.typefactory.BaseSearchCategoryTypeFactory
 import com.tokopedia.tokopedianow.searchcategory.presentation.viewmodel.BaseSearchCategoryViewModel
@@ -125,13 +131,17 @@ abstract class BaseSearchCategoryFragment:
     companion object {
         protected const val DEFAULT_SPAN_COUNT = 2
         protected const val REQUEST_CODE_LOGIN = 69
-        private const val DEFAULT_POSITION = 0
+        private const val QUERY_PARAM_SERVICE_TYPE_NOW2H = "?service_type=2h"
+        const val DEFAULT_POSITION = 0
     }
 
     private var binding by autoClearedNullable<FragmentTokopedianowSearchCategoryBinding>()
 
     @Inject
     lateinit var userSession: UserSessionInterface
+
+    @Inject
+    lateinit var sharedPref: TokoNowSharedPreference
 
     protected var searchCategoryAdapter: SearchCategoryAdapter? = null
     protected var endlessScrollListener: EndlessRecyclerViewScrollListener? = null
@@ -160,12 +170,10 @@ abstract class BaseSearchCategoryFragment:
 
     private val searchCategoryToolbarHeight: Int
         get() {
-            val defaultHeight = resources
-                .getDimensionPixelSize(R.dimen.tokopedianow_default_toolbar_status_height)
+            val defaultHeight = context?.resources?.getDimensionPixelSize(R.dimen.tokopedianow_default_toolbar_status_height).orZero()
 
             val height = (navToolbar?.height ?: defaultHeight)
-            val padding =
-                resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3)
+            val padding = context?.resources?.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3).orZero()
 
             return height + padding
         }
@@ -193,7 +201,7 @@ abstract class BaseSearchCategoryFragment:
         configureRecyclerView()
         observeViewModel()
 
-        getViewModel().onViewCreated()
+        getViewModel().onViewCreated(miniCartWidgetSource)
     }
 
     protected open fun findViews(view: View) {
@@ -240,8 +248,7 @@ abstract class BaseSearchCategoryFragment:
     private fun createNavRecyclerViewOnScrollListener(
             navToolbar: NavToolbar,
     ): RecyclerView.OnScrollListener {
-        val toolbarTransitionRangePixel =
-                resources.getDimensionPixelSize(R.dimen.tokopedianow_searchbar_transition_range)
+        val toolbarTransitionRangePixel = context?.resources?.getDimensionPixelSize(R.dimen.tokopedianow_searchbar_transition_range).orZero()
 
         return NavRecyclerViewScrollListener(
                 navToolbar = navToolbar,
@@ -351,7 +358,7 @@ abstract class BaseSearchCategoryFragment:
 
         val params = urlParser.paramKeyValueMap
         params[SearchApiConst.BASE_SRP_APPLINK] = ApplinkConstInternalTokopediaNow.SEARCH
-        params[SearchApiConst.HINT] = resources.getString(R.string.tokopedianow_search_bar_hint)
+        params[SearchApiConst.PLACEHOLDER] = context?.resources?.getString(R.string.tokopedianow_search_bar_hint).orEmpty()
         params[SearchApiConst.PREVIOUS_KEYWORD] = getKeyword()
 
         return params
@@ -371,7 +378,6 @@ abstract class BaseSearchCategoryFragment:
             override fun onGetEventCategory(): String = eventCategory
 
             override fun onSwitchService() {
-                getViewModel().refreshMiniCart()
                 getViewModel().switchService()
             }
         }
@@ -532,10 +538,13 @@ abstract class BaseSearchCategoryFragment:
                 listener = this,
                 autoInitializeData = false,
                 pageName = miniCartWidgetPageName,
+                source = miniCartWidgetSource
         )
     }
 
     abstract val miniCartWidgetPageName: MiniCartAnalytics.Page
+
+    abstract val miniCartWidgetSource: MiniCartSource
 
     abstract fun getViewModel(): BaseSearchCategoryViewModel
 
@@ -797,10 +806,10 @@ abstract class BaseSearchCategoryFragment:
         if (!isVisible) {
             headerBackground?.setImageResource(R.color.tokopedianow_dms_transparent)
         } else {
-            val background = VectorDrawableCompat.create(
-                resources, R.drawable.tokopedianow_ic_header_background, context?.theme
-            )
-            headerBackground?.setImageDrawable(background)
+            context?.resources?.apply {
+                val background = VectorDrawableCompat.create(this, R.drawable.tokopedianow_ic_header_background, context?.theme)
+                headerBackground?.setImageDrawable(background)
+            }
         }
         headerBackground?.showWithCondition(isVisible)
     }
@@ -1050,8 +1059,7 @@ abstract class BaseSearchCategoryFragment:
     }
 
     override fun onClickSwitcherTo15M() {
-        hideContent()
-        getViewModel().setUserPreference(NOW_15M)
+        RouteManager.route(context, ApplinkConstInternalTokopediaNow.HOME)
     }
 
     override fun onClickSwitcherTo2H() {
@@ -1063,28 +1071,83 @@ abstract class BaseSearchCategoryFragment:
         showContent()
         when(result) {
             is Success -> {
-                swipeRefreshLayout
                 context?.apply {
                     //Set user preference data to local cache
-                    ChooseAddressUtils.updateTokoNowData(
-                        context = this,
-                        warehouseId = result.data.warehouseId,
-                        shopId = result.data.shopId,
-                        serviceType = result.data.serviceType,
-                        warehouses = result.data.warehouses.map {
-                            LocalWarehouseModel(
-                                it.warehouseId.toLongOrZero(),
-                                it.serviceType
-                            )
-                        }
+                    updateLocalCacheModel(
+                        data = result.data,
+                        context = this
                     )
 
                     //Refresh the page
                     staggeredGridLayoutManager?.scrollToPosition(DEFAULT_POSITION)
                     refreshLayout()
+
+                    //Show bottomsheet or toaster
+                    showBottomSheetOrToaster(
+                        data = result.data
+                    )
+
+                    //Refresh mini cart
+                    getViewModel().refreshMiniCart()
                 }
             }
-            is Fail -> { /* no op */ }
+            is Fail -> { /* do nothing */ }
+        }
+    }
+
+    private fun updateLocalCacheModel(data: SetUserPreference.SetUserPreferenceData, context: Context) {
+        ChooseAddressUtils.updateTokoNowData(
+            context = context,
+            warehouseId = data.warehouseId,
+            shopId = data.shopId,
+            serviceType = data.serviceType,
+            warehouses = data.warehouses.map {
+                LocalWarehouseModel(
+                    it.warehouseId.toLongOrZero(),
+                    it.serviceType
+                )
+            }
+        )
+    }
+
+    private fun showBottomSheetOrToaster(data: SetUserPreference.SetUserPreferenceData) {
+        /*
+           Note :
+           - Toaster will be shown when switching service type to 2 hours
+           - When switching to 20 minutes, toaster will be shown if only OnBoard20mBottomSheet has been shown before
+         */
+
+        val needToShowOnBoardBottomSheet = getViewModel().needToShowOnBoardBottomSheet(sharedPref.get20mBottomSheetOnBoardShown())
+        val isOoc = data.warehouseId.toLongOrZero().isZero()
+        when {
+            isOoc -> return
+            needToShowOnBoardBottomSheet -> show20mOnBoardBottomSheet()
+            else -> showSwitcherToaster(data.serviceType)
+        }
+    }
+
+    private fun show20mOnBoardBottomSheet() {
+        TokoNowOnBoard20mBottomSheet
+            .newInstance()
+            .show(childFragmentManager, OnBoard20mBottomSheetCallback(
+                onBackTo2hClicked = {
+                    RouteManager.route(context, ApplinkConstInternalTokopediaNow.HOME + QUERY_PARAM_SERVICE_TYPE_NOW2H)
+                },
+                onDismiss = {
+                    sharedPref.set20mBottomSheetOnBoardShown(true)
+                }
+            ))
+    }
+
+    private fun showSwitcherToaster(serviceType: String) {
+        TokoNowServiceTypeUtil.getServiceTypeRes(
+            key = TokoNowServiceTypeUtil.SWITCH_SERVICE_TYPE_TOASTER_RESOURCE_ID,
+            serviceType = serviceType
+        )?.let {
+            showToaster(
+                message = getString(it),
+                toasterType = Toaster.TYPE_NORMAL
+            )
         }
     }
 

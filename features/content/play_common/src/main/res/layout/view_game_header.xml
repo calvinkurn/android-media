@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    tools:parentTag="com.tokopedia.play_common.view.RoundedConstraintLayout"
+    >
+
+    <com.tokopedia.play_common.view.RoundedFrameLayout
+        android:id="@+id/fl_play_game_header"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:paddingTop="@dimen/spacing_lvl5"
+        android:paddingBottom="@dimen/spacing_lvl4"
+        android:paddingLeft="@dimen/spacing_lvl4"
+        android:paddingRight="@dimen/spacing_lvl4"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0"
+        app:rfl_topLeftRadius="@dimen/play_dp_12"
+        app:rfl_topRightRadius="@dimen/play_dp_12"
+        tools:background="@drawable/bg_play_quiz_header"
+        >
+
+        <EditText
+            android:id="@+id/et_play_game_header_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@null"
+            android:gravity="center"
+            android:hint="@string/play_game_header_title_hint"
+            android:imeOptions="actionNext"
+            android:inputType="textCapSentences|textMultiLine"
+            android:textColor="@color/play_dms_quiz_header_title"
+            android:textColorHint="@color/play_dms_quiz_header_title_hint"
+            android:textSize="@dimen/fontSize_lvl6"
+            android:textStyle="bold"
+            />
+
+    </com.tokopedia.play_common.view.RoundedFrameLayout>
+
+    <com.tokopedia.iconunify.IconUnify
+        android:id="@+id/ic_play_game_header_icon"
+        android:layout_width="@dimen/layout_lvl5"
+        android:layout_height="@dimen/layout_lvl5"
+        android:background="@drawable/bg_play_game_circle"
+        android:padding="@dimen/spacing_lvl3"
+        app:layout_constraintBottom_toTopOf="@id/fl_play_game_header"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/fl_play_game_header"
+        />
+
+</merge>

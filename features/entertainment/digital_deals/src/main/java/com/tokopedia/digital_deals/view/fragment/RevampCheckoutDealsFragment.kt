@@ -43,6 +43,7 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.loadImage
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 
 class RevampCheckoutDealsFragment : BaseDaggerFragment() {
 
@@ -146,8 +147,9 @@ class RevampCheckoutDealsFragment : BaseDaggerFragment() {
                 val context = it
                 if (data.checkout.data.success == 0) {
                     view?.let {
-                        Toaster.build(it, data.checkout.data.message, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR,
-                                resources.getString(com.tokopedia.digital_deals.R.string.digital_deals_error_toaster)).show()
+                        Toaster.build(
+                            it, data.checkout.data.message, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR,
+                            it.resources.getString(com.tokopedia.digital_deals.R.string.digital_deals_error_toaster)).show()
                     }
                 } else {
                     val paymentData = data.checkout.data.data.queryString
@@ -167,8 +169,9 @@ class RevampCheckoutDealsFragment : BaseDaggerFragment() {
 
                     } else {
                         view?.let {
-                            Toaster.build(it, data.checkout.data.error, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR,
-                                    resources.getString(com.tokopedia.digital_deals.R.string.digital_deals_error_toaster)).show()
+                            Toaster.build(
+                                it, data.checkout.data.error, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR,
+                                context.resources.getString(com.tokopedia.digital_deals.R.string.digital_deals_error_toaster)).show()
                         }
                     }
                 }
@@ -182,7 +185,7 @@ class RevampCheckoutDealsFragment : BaseDaggerFragment() {
                 if (data.checkout.data.success == 0) {
                     view?.let {
                         Toaster.build(it, data.checkout.data.message, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR,
-                                resources.getString(com.tokopedia.digital_deals.R.string.digital_deals_error_toaster)).show()
+                                it.resources.getString(com.tokopedia.digital_deals.R.string.digital_deals_error_toaster)).show()
                     }
                 } else {
                     RouteManager.route(context, data.checkout.data.data.redirectUrl)
@@ -193,8 +196,10 @@ class RevampCheckoutDealsFragment : BaseDaggerFragment() {
         observe(viewModel.errorGeneralValue) { error ->
             view?.let {
                 hideProgressBar()
-                Toaster.build(it, ErrorHandler.getErrorMessage(context, error), Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR,
-                        resources.getString(com.tokopedia.digital_deals.R.string.digital_deals_error_toaster)).show()
+                Toaster.build(
+                    it, ErrorHandler.getErrorMessage(context, error), Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR,
+                    context?.resources?.getString(com.tokopedia.digital_deals.R.string.digital_deals_error_toaster) ?: ""
+                ).show()
             }
         }
     }
@@ -213,12 +218,12 @@ class RevampCheckoutDealsFragment : BaseDaggerFragment() {
         image_view_brand?.loadImage(dealsDetail.imageWeb)
         tv_brand_name?.text = dealsDetail.brand.title
         tv_deal_details?.text = dealsDetail.displayName
-        tv_expiry_date?.text = resources.getString(com.tokopedia.digital_deals.R.string.valid_through,
+        tv_expiry_date?.text = context?.resources?.getString(com.tokopedia.digital_deals.R.string.valid_through,
                 Utils.convertEpochToString(dealsDetail.saleEndDate)
-        )
+        ) ?: ""
 
         if (dealsDetail.outlets == null || dealsDetail.outlets.isEmpty()) {
-            tv_available_locations?.text = resources.getString(com.tokopedia.digital_deals.R.string.deals_all_indonesia)
+            tv_available_locations?.text = context?.resources?.getString(com.tokopedia.digital_deals.R.string.deals_all_indonesia) ?: ""
         }
 
         if (dealsDetail.mrp != 0 && dealsDetail.mrp != dealsDetail.salesPrice) {
@@ -242,10 +247,10 @@ class RevampCheckoutDealsFragment : BaseDaggerFragment() {
         }
 
         tv_total_amount?.text = Utils.convertToCurrencyString(itemMap.price.toLong() * itemMap.quantity.toLong() + itemMap.commission.toLong())
-        tv_number_vouchers?.text = resources.getString(com.tokopedia.digital_deals.R.string.number_of_vouchers, itemMap.quantity)
+        tv_number_vouchers?.text = context?.resources?.getString(com.tokopedia.digital_deals.R.string.number_of_vouchers, itemMap.quantity) ?: ""
 
         if (dealsDetail.outlets != null && dealsDetail.outlets.size > 0) {
-            tv_no_locations?.text = resources.getString(com.tokopedia.digital_deals.R.string.number_of_locations, dealsDetail.outlets.size)
+            tv_no_locations?.text = context?.resources?.getString(com.tokopedia.digital_deals.R.string.number_of_locations, dealsDetail.outlets.size) ?: ""
         }
 
         tv_email?.setText(userSession.email)
@@ -359,7 +364,7 @@ class RevampCheckoutDealsFragment : BaseDaggerFragment() {
         intent.putExtra(EXTRA_META_DATA, viewModel.getMetaDataString(verifyData))
         intent.putExtra(EXTRA_CATEGORY_NAME, verifyData.metadata.categoryName)
         intent.putExtra(EXTRA_GRAND_TOTAL, verifyData.metadata.totalPrice)
-        intent.putExtra(EXTRA_CATEGORYID, dealsDetail.catalog.digitalCategoryId)
+        intent.putExtra(EXTRA_CATEGORYID, dealsDetail.catalog.digitalCategoryId.toIntOrZero())
         intent.putExtra(EXTRA_PRODUCTID, itemMap.productId)
         startActivityForResult(intent, LOYALTY_ACTIVITY_REQUEST_CODE)
     }
@@ -369,7 +374,7 @@ class RevampCheckoutDealsFragment : BaseDaggerFragment() {
         intent.putExtra(EXTRA_META_DATA, viewModel.getMetaDataString(verifyData))
         intent.putExtra(EXTRA_CATEGORY_NAME, verifyData.metadata.categoryName)
         intent.putExtra(EXTRA_GRAND_TOTAL, verifyData.metadata.totalPrice)
-        intent.putExtra(EXTRA_CATEGORYID, dealsDetail.catalog.digitalCategoryId)
+        intent.putExtra(EXTRA_CATEGORYID, dealsDetail.catalog.digitalCategoryId.toIntOrZero())
         intent.putExtra(EXTRA_PRODUCTID, itemMap.productId)
         intent.putExtra(EXTRA_PROMO_CODE, voucherCode)
         startActivityForResult(intent, LOYALTY_ACTIVITY_REQUEST_CODE)

@@ -4,9 +4,11 @@ import android.net.Uri
 import android.os.Bundle
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.UriUtil
+import com.tokopedia.picker.common.PageSource
 import com.tokopedia.review.common.analytics.ReviewTrackingConstant
 import com.tokopedia.review.common.util.ReviewConstants
 import com.tokopedia.review.feature.createreputation.presentation.uimodel.CreateReviewDialogType
+import com.tokopedia.reviewcommon.extension.appendProductId
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
 import com.tokopedia.trackingoptimizer.TrackingQueue
@@ -852,5 +854,59 @@ object CreateReviewTracking {
 
     private fun Bundle.sendEnhancedEcommerce(eventName: String) {
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(eventName, this)
+    }
+
+    fun trackOpenUniversalMediaPicker(userId: String, shopId: String) {
+        mutableMapOf<String, Any>().appendGeneralEventData(
+            CreateReviewTrackingConstants.EVENT_NAME_CLICK_COMMUNICATION,
+            CreateReviewTrackingConstants.EVENT_CATEGORY_MEDIA_CAMERA,
+            CreateReviewTrackingConstants.EVENT_ACTION_VISIT_CAMERA,
+            String.format(
+                CreateReviewTrackingConstants.EVENT_LABEL_OPEN_MEDIA_PICKER,
+                PageSource.Review, userId, shopId
+            )
+        ).appendBusinessUnit(CreateReviewTrackingConstants.BUSINESS_UNIT_MEDIA)
+            .appendCurrentSite(CreateReviewTrackingConstants.CURRENT_SITE)
+            .appendUserId(userId)
+            .sendGeneralEvent()
+    }
+
+    fun trackErrorSubmitReview(
+        userId: String,
+        errorMessage: String,
+        orderId: String,
+        productId: String,
+        rating: Int,
+        hasReviewText: Boolean,
+        reviewTextLength: Int,
+        mediaCount: Int,
+        anonymous: Boolean,
+        hasIncentive: Boolean,
+        hasTemplate: Boolean,
+        templateUsedCount: Int
+    ) {
+        mutableMapOf<String, Any>().appendGeneralEventData(
+            CreateReviewTrackingConstants.EVENT_NAME_CLICK_PG,
+            CreateReviewTrackingConstants.EVENT_CATEGORY_REVIEW_BOTTOM_SHEET,
+            CreateReviewTrackingConstants.EVENT_ACTION_CLICK_SUBMIT_ERROR,
+            String.format(
+                CreateReviewTrackingConstants.EVENT_LABEL_CLICK_SUBMIT_ERROR,
+                errorMessage,
+                orderId,
+                productId,
+                rating,
+                if (hasReviewText) "filled" else "blank",
+                reviewTextLength,
+                mediaCount,
+                anonymous,
+                hasIncentive,
+                hasTemplate,
+                templateUsedCount
+            )
+        ).appendBusinessUnit(CreateReviewTrackingConstants.BUSINESS_UNIT)
+            .appendCurrentSite(CreateReviewTrackingConstants.CURRENT_SITE)
+            .appendUserId(userId)
+            .appendProductId(productId)
+            .sendGeneralEvent()
     }
 }

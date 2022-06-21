@@ -3,7 +3,6 @@ package com.tokopedia.logisticorder.adapter
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.model.GlideUrl
@@ -11,10 +10,11 @@ import com.bumptech.glide.load.model.LazyHeaders
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.getIconUnifyDrawable
+import com.tokopedia.logisticCommon.util.LogisticImageDeliveryHelper
+import com.tokopedia.logisticCommon.util.LogisticImageDeliveryHelper.loadImagePod
 import com.tokopedia.logisticorder.R
 import com.tokopedia.logisticorder.databinding.AdapterTrackingHistoryViewHolderBinding
 import com.tokopedia.logisticorder.uimodel.TrackHistoryModel
-import com.tokopedia.logisticorder.utils.TrackingPageUtil
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.date.DateUtil
 
@@ -78,19 +78,21 @@ class TrackingHistoryAdapter(private val trackingHistoryData: List<TrackHistoryM
                 } else {
                     if (orderId != null) {
                         imgProof.visibility = View.VISIBLE
-                        val url: String = TrackingPageUtil.getDeliveryImage(data.proof.imageId, orderId, TrackingPageUtil.IMAGE_SMALL_SIZE,
-                                userSession.userId, TrackingPageUtil.DEFAULT_OS_TYPE, userSession.deviceId)
-                        val authKey = String.format("%s %s", TrackingPageUtil.HEADER_VALUE_BEARER, userSession.accessToken)
-                        val newUrl = GlideUrl(url, LazyHeaders.Builder()
-                                .addHeader(TrackingPageUtil.HEADER_KEY_AUTH, authKey)
-                                .build())
-                        Glide.with(itemView.context)
-                                .load(newUrl)
-                                .centerCrop()
-                                .placeholder(itemView.context.getDrawable(R.drawable.ic_image_error))
-                                .error(itemView.context.getDrawable(R.drawable.ic_image_error))
-                                .dontAnimate()
-                                .into(imgProof)
+                        val url = LogisticImageDeliveryHelper.getDeliveryImage(
+                            data.proof.imageId,
+                            orderId,
+                            LogisticImageDeliveryHelper.IMAGE_SMALL_SIZE,
+                            userSession.userId,
+                            LogisticImageDeliveryHelper.DEFAULT_OS_TYPE,
+                            userSession.deviceId)
+
+                        imgProof.loadImagePod(
+                            itemView.context,
+                            userSession.accessToken,
+                            url,
+                            itemView.context.getDrawable(R.drawable.ic_image_error),
+                            itemView.context.getDrawable(R.drawable.ic_image_error))
+
                         imgProof.setOnClickListener { view: View? -> listener.onImageItemClicked(data.proof.imageId, orderId, data.proof.description) }
                     }
                 }

@@ -191,7 +191,7 @@ class SellerMenuFragment : Fragment(), SettingTrackingListener, ShopInfoViewHold
                 }
                 is Fail -> {
                     if (canShowErrorToaster) {
-                        view?.showToasterError(resources.getString(com.tokopedia.seller.menu.common.R.string.setting_toaster_error_message))
+                        view?.showToasterError(activity?.resources?.getString(com.tokopedia.seller.menu.common.R.string.setting_toaster_error_message).orEmpty())
                     }
                     adapter.showShopInfoError()
                     ShopScoreReputationErrorLogger.logToCrashlytic(
