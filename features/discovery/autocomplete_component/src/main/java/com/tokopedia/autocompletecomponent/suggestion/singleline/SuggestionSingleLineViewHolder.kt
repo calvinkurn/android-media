@@ -60,7 +60,7 @@ class SuggestionSingleLineViewHolder(
         val highlightedTitle = SpannableString(item.title)
         if(item.isBoldAllText()){
             binding?.singleLineTitle?.setWeight(Typography.BOLD)
-        } else if(item.isBoldPartialText()) {
+        } else {
             val startIndex = indexOfSearchQuery(item.title, item.searchTerm)
             if (startIndex != -1) {
                 highlightedTitle.safeSetSpan(

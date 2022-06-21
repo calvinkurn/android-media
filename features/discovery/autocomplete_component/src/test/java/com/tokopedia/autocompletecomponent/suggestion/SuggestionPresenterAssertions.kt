@@ -106,24 +106,18 @@ internal fun BaseSuggestionDataView.assertBoldAllText(expectedValue: Boolean) {
     isBoldAllText() shouldBe expectedValue
 }
 
-internal fun BaseSuggestionDataView.assertPartialBoldText(expectedValue: Boolean) {
-    isBoldPartialText() shouldBe expectedValue
-}
-
 internal fun BaseSuggestionDataView.assertCircleImage(expectedValue: Boolean) {
     isCircleImage() shouldBe expectedValue
 }
 
-internal fun Visitable<*>.shouldBeSuggestionDoubleLineDataView(isPartialBold: Boolean = false, isBoldAllText: Boolean = false, isCircle: Boolean = false) {
+internal fun Visitable<*>.shouldBeSuggestionDoubleLineDataView(isBoldAllText: Boolean = false, isCircle: Boolean = false) {
     shouldBeInstanceOf<SuggestionDoubleLineDataDataView>()
-    (this as SuggestionDoubleLineDataDataView).data.assertPartialBoldText(isPartialBold)
     (this as SuggestionDoubleLineDataDataView).data.assertBoldAllText(isBoldAllText)
     (this as SuggestionDoubleLineDataDataView).data.assertCircleImage(isCircle)
 }
 
-internal fun Visitable<*>.shouldBeSuggestionSingleLineDataDataView(isPartialBold: Boolean = false, isBoldAllText: Boolean = false, isCircle: Boolean = false) {
+internal fun Visitable<*>.shouldBeSuggestionSingleLineDataDataView(isBoldAllText: Boolean = false, isCircle: Boolean = false) {
     shouldBeInstanceOf<SuggestionSingleLineDataDataView>()
-    (this as SuggestionSingleLineDataDataView).data.assertPartialBoldText(isPartialBold)
     (this as SuggestionSingleLineDataDataView).data.assertBoldAllText(isBoldAllText)
     (this as SuggestionSingleLineDataDataView).data.assertCircleImage(isCircle)
 }

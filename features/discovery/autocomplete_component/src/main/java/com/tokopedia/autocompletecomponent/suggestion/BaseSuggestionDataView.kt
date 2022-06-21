@@ -79,10 +79,6 @@ class BaseSuggestionDataView(
         "dimension90", dimension90
     )
 
-    fun isBoldPartialText(): Boolean {
-        return type == TYPE_KEYWORD || type == TYPE_SHOP
-    }
-
     fun isBoldAllText(): Boolean {
         return type == TYPE_CURATED
     }

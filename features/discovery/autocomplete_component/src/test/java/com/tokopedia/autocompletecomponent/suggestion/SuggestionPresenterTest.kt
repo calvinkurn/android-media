@@ -89,24 +89,20 @@ internal class SuggestionPresenterTest: SuggestionPresenterTestFixtures() {
     private fun `then verify visitable list`(suggestionUniverse: SuggestionUniverse) {
         val visitableList = slotVisitableList.captured
 
-        visitableList[0].shouldBeSuggestionDoubleLineDataView(isPartialBold = false)
+        visitableList[0].shouldBeSuggestionDoubleLineDataView()
         visitableList[1].shouldBeSuggestionSingleLineDataDataView(
-            isPartialBold = false,
             isBoldAllText = true
         )
         visitableList[2].shouldBeSuggestionSingleLineDataDataView()
         visitableList[3].shouldBeSuggestionSingleLineDataDataView(
-            isPartialBold = true,
             isBoldAllText = false
         )
         visitableList[4].shouldBeSuggestionTitleDataView()
         visitableList[5].shouldBeSuggestionDoubleLineDataView(
-            isPartialBold = true,
             isBoldAllText = false,
             isCircle = true
         )
         visitableList[6].shouldBeSuggestionDoubleLineDataView(
-            isPartialBold = true,
             isBoldAllText = false,
             isCircle = true
         )

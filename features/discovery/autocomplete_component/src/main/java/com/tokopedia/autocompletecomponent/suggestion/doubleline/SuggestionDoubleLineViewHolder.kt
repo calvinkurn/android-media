@@ -88,12 +88,9 @@ class SuggestionDoubleLineViewHolder(
             item.data.isBoldAllText() -> {
                 bindAllBoldTextTitle(item.data)
             }
-            item.data.isBoldPartialText() -> {
+            else -> {
                 setSearchQueryStartIndexInKeyword(item.data)
                 bindBoldTextTitle(item.data)
-            }
-            else -> {
-                bindNormalTextTitle(item.data)
             }
         }
     }
