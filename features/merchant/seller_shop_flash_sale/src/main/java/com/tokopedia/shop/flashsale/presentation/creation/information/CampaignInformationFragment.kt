@@ -39,6 +39,7 @@ import com.tokopedia.shop.flashsale.domain.entity.CampaignUiModel
 import com.tokopedia.shop.flashsale.domain.entity.Gradient
 import com.tokopedia.shop.flashsale.domain.entity.enums.CampaignStatus
 import com.tokopedia.shop.flashsale.domain.entity.enums.PageMode
+import com.tokopedia.shop.flashsale.domain.entity.enums.PaymentType
 import com.tokopedia.shop.flashsale.presentation.creation.information.adapter.GradientColorAdapter
 import com.tokopedia.shop.flashsale.presentation.creation.information.bottomsheet.CampaignDatePickerBottomSheet
 import com.tokopedia.shop.flashsale.presentation.creation.information.bottomsheet.CampaignTeaserInformationBottomSheet
@@ -97,6 +98,20 @@ class CampaignInformationFragment : BaseDaggerFragment() {
 
     private val viewModelProvider by lazy { ViewModelProvider(this, viewModelFactory) }
     private val viewModel by lazy { viewModelProvider.get(CampaignInformationViewModel::class.java) }
+
+    private val defaultState by lazy {
+        CampaignInformationViewModel.Selection(
+            "",
+            dateManager.getDefaultMinimumCampaignStartDate(),
+            dateManager.getDefaultMinimumCampaignStartDate().advanceHourBy(ONE_HOUR),
+            showTeaser = true,
+            dateManager.getDefaultMinimumCampaignStartDate().decreaseHourBy(ONE_HOUR),
+            defaultGradientColor.first,
+            defaultGradientColor.second,
+            PaymentType.INSTANT,
+            Int.ZERO
+        )
+    }
 
     override fun getScreenName(): String =
         CampaignInformationFragment::class.java.canonicalName.orEmpty()
@@ -304,18 +319,14 @@ class CampaignInformationFragment : BaseDaggerFragment() {
     }
 
     private fun setupDatePicker() {
-        val now = dateManager.getDefaultMinimumCampaignStartDate()
-        val defaultStartDate = now.localFormatTo(DateConstant.DATE_TIME_MINUTE_LEVEL)
-        viewModel.setSelectedStartDate(now)
-
-        val endDate = now.advanceHourBy(ONE_HOUR)
-        val defaultEndDate = endDate.localFormatTo(DateConstant.DATE_TIME_MINUTE_LEVEL)
-        viewModel.setSelectedEndDate(endDate)
-
-        adjustQuantityPicker(now)
-
+        viewModel.setSelectedStartDate(defaultState.startDate)
+        viewModel.setSelectedEndDate(defaultState.endDate)
+        adjustQuantityPicker(defaultState.startDate)
 
         binding?.run {
+            val defaultStartDate = defaultState.startDate.localFormatTo(DateConstant.DATE_TIME_MINUTE_LEVEL)
+            val defaultEndDate = defaultState.endDate.localFormatTo(DateConstant.DATE_TIME_MINUTE_LEVEL)
+
             tauStartDate.editText.setText(defaultStartDate)
             tauEndDate.editText.setText(defaultEndDate)
 
@@ -328,10 +339,12 @@ class CampaignInformationFragment : BaseDaggerFragment() {
 
     private fun handlePageMode() {
         if (pageMode == PageMode.CREATE) {
-            viewModel.getCampaignQuota(dateManager.getCurrentMonth(), dateManager.getCurrentYear())
+            viewModel.storeAsDefaultSelection(defaultState)
         }
 
         if (pageMode == PageMode.UPDATE) {
+            binding?.loader?.visible()
+            binding?.groupContent?.gone()
             viewModel.getCampaignDetail(campaignId)
         }
     }
@@ -633,6 +646,20 @@ class CampaignInformationFragment : BaseDaggerFragment() {
         viewModel.setShowTeaser(campaign.useUpcomingWidget)
         viewModel.setSelectedColor(campaign.gradientColor)
         viewModel.setPaymentType(campaign.paymentType)
+
+        viewModel.storeAsDefaultSelection(
+            CampaignInformationViewModel.Selection(
+                campaign.campaignName,
+                campaign.startDate.removeTimeZone(),
+                campaign.endDate.removeTimeZone(),
+                campaign.useUpcomingWidget,
+                campaign.upcomingDate.removeTimeZone(),
+                campaign.gradientColor.first,
+                campaign.gradientColor.second,
+                campaign.paymentType,
+                Int.ZERO
+            )
+        )
     }
 
     private fun renderSelectedColor(campaign: CampaignUiModel) {
@@ -661,6 +688,12 @@ class CampaignInformationFragment : BaseDaggerFragment() {
     }
 
     private fun handleBackConfirmation() {
+        val isDataChanged = viewModel.isDataChanged(viewModel.getDefaultSelection() ?: return, getCurrentSelection())
+        if (!isDataChanged) {
+            requireActivity().finish()
+            return
+        }
+
         if (pageMode == PageMode.CREATE) {
             showCancelCreateCampaignConfirmationDialog()
         } else {
@@ -685,7 +718,6 @@ class CampaignInformationFragment : BaseDaggerFragment() {
 
     private fun showCoachMark() {
         val coachMark = CoachMark2(requireActivity())
-        coachMark.enableClipping = true
         coachMark.showCoachMark(populateCoachMarkItems(), null)
         coachMark.onFinishListener = {
             sharedPreference.markCampaignInfoCoachMarkComplete()
@@ -703,12 +735,14 @@ class CampaignInformationFragment : BaseDaggerFragment() {
             CoachMark2Item(
                 firstAnchorView,
                 getString(R.string.sfs_coachmark_first),
-                ""
+                "",
+                CoachMark2.POSITION_TOP
             ),
             CoachMark2Item(
                 secondAnchorView,
                 getString(R.string.sfs_coachmark_second),
-                ""
+                "",
+                CoachMark2.POSITION_TOP
             ),
         )
     }

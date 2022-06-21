@@ -69,6 +69,7 @@ class CampaignInformationViewModel @Inject constructor(
     private var showTeaser = true
     private var paymentType = PaymentType.INSTANT
     private var remainingQuota = Int.ZERO
+    private var selection : Selection? = null
 
     private val forbiddenWords = listOf(
         "kejar diskon",
@@ -312,6 +313,14 @@ class CampaignInformationViewModel @Inject constructor(
         this.showTeaser = showTeaser
     }
 
+    fun storeAsDefaultSelection(selection : Selection) {
+        this.selection = selection
+    }
+
+    fun getDefaultSelection(): Selection? {
+        return this.selection
+    }
+
     fun markColorAsSelected(selectedGradient: Gradient, gradients: List<Gradient>): List<Gradient> {
         return gradients.map { gradient ->
             if (gradient.first == selectedGradient.first && gradient.second == selectedGradient.second) {
@@ -355,5 +364,9 @@ class CampaignInformationViewModel @Inject constructor(
         val differenceInMillis = startDate.time - upcomingDate.time
         val differenceInHour = TimeUnit.MILLISECONDS.toHours(differenceInMillis)
         return differenceInHour.toInt()
+    }
+
+    fun isDataChanged(previousData : Selection, currentData : Selection): Boolean {
+        return previousData != currentData
     }
 }
