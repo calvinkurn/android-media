@@ -33,6 +33,7 @@ class ProgressViewHolder(
 
     companion object {
         val RES_LAYOUT = R.layout.shc_progress_card_widget
+        private const val MAX_VALUE = 100
     }
 
     private val binding by lazy {
@@ -90,25 +91,18 @@ class ProgressViewHolder(
                 binding.shcProgressSuccessState.tvProgressDescription.text =
                     data?.subtitle?.parseAsHtml()
                 setupLastUpdated(element)
-                setupProgressBar(subtitle, valueTxt, maxValueTxt, value, maxValue, colorState)
+                val mValue = getPercentValue(value, maxValue)
+                setupProgressBar(subtitle, valueTxt, maxValueTxt, mValue, colorState)
                 setupDetails(this)
                 addImpressionTracker(this)
-                showLabel(element.data?.label.orEmpty(), element.data?.iconUrl.orEmpty())
             }
         }
 
         showProgressLayout()
     }
 
-    private fun showLabel(label: String, iconUrl: String) {
-        binding.shcProgressSuccessState.labelShcPmPro.run {
-            if (label.isNotBlank() && iconUrl.isNotBlank()) {
-                visible()
-                setLabel(label, iconUrl)
-            } else {
-                gone()
-            }
-        }
+    private fun getPercentValue(value: Long, maxValue: Long): Int {
+        return value.times(MAX_VALUE).div(maxValue).toInt()
     }
 
     private fun setupLastUpdated(element: ProgressWidgetUiModel) {
@@ -188,14 +182,13 @@ class ProgressViewHolder(
         currentProgressText: String,
         maxProgressText: String,
         currentProgress: Int,
-        maxProgress: Int,
         state: ShopScorePMWidget.State
     ) = with(binding.shcProgressSuccessState.shopScoreProgress) {
         setProgressTitle(progressTitle)
         setCurrentProgressText(currentProgressText)
         setMaxProgressText(maxProgressText)
         setProgressValue(currentProgress)
-        setMaxProgressValue(maxProgress)
+        setMaxProgressValue(MAX_VALUE)
         setProgressColor(state)
     }
 
@@ -250,9 +243,9 @@ class ProgressViewHolder(
 
     interface Listener : BaseViewHolderListener {
 
-        fun sendProgressImpressionEvent(dataKey: String, stateColor: String, valueScore: Int) {}
+        fun sendProgressImpressionEvent(dataKey: String, stateColor: String, valueScore: Long) {}
 
-        fun sendProgressCtaClickEvent(dataKey: String, stateColor: String, valueScore: Int) {}
+        fun sendProgressCtaClickEvent(dataKey: String, stateColor: String, valueScore: Long) {}
 
         fun showProgressBarCoachMark(dataKey: String, view: View) {}
     }

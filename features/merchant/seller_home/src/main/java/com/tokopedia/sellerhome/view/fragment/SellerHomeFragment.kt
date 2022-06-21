@@ -156,7 +156,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
 
     private val deviceDisplayHeight: Float
         get() = try {
-            val dm = resources.displayMetrics
+            val dm = requireActivity().resources.displayMetrics
             dm.heightPixels / dm.density
         } catch (ex: Exception) {
             DEFAULT_HEIGHT_DP
@@ -214,8 +214,6 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         startHomeLayoutNetworkMonitoring()
         startHomeLayoutCustomMetric()
         getWidgetLayout()
-
-        (activity as? SellerHomeActivity)?.attachSellerHomeFragmentChangeCallback(this)
     }
 
     override fun onCreateView(
@@ -534,11 +532,15 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         SellerHomeTracking.sendPostEmptyStateCtaClick(element)
     }
 
-    override fun sendProgressImpressionEvent(dataKey: String, stateColor: String, valueScore: Int) {
+    override fun sendProgressImpressionEvent(
+        dataKey: String,
+        stateColor: String,
+        valueScore: Long
+    ) {
         SellerHomeTracking.sendImpressionProgressBarEvent(dataKey, stateColor, valueScore)
     }
 
-    override fun sendProgressCtaClickEvent(dataKey: String, stateColor: String, valueScore: Int) {
+    override fun sendProgressCtaClickEvent(dataKey: String, stateColor: String, valueScore: Long) {
         SellerHomeTracking.sendClickProgressBarEvent(dataKey, stateColor, valueScore)
     }
 
@@ -570,7 +572,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
     }
 
     override fun sendTableHyperlinkClickEvent(dataKey: String, url: String, isEmpty: Boolean) {
-        SellerHomeTracking.sendTableClickHyperlinkEvent(dataKey, url, isEmpty, userSession.userId)
+        SellerHomeTracking.sendTableClickHyperlinkEvent(dataKey, url, isEmpty)
     }
 
     override fun sendTableEmptyStateCtaClickEvent(element: TableWidgetUiModel) {
@@ -606,7 +608,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
     }
 
     override fun sendMultiLineGraphImpressionEvent(element: MultiLineGraphWidgetUiModel) {
-        SellerHomeTracking.sendMultiLineGraphImpressionEvent(element, userSession.userId)
+        SellerHomeTracking.sendMultiLineGraphImpressionEvent(element)
     }
 
     override fun sendMultiLineGraphMetricClick(
@@ -621,7 +623,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
     }
 
     override fun sendMultiLineGraphEmptyStateCtaClick(element: MultiLineGraphWidgetUiModel) {
-        SellerHomeTracking.sendMultiLineGraphEmptyStateCtaClick(element, userSession.userId)
+        SellerHomeTracking.sendMultiLineGraphEmptyStateCtaClick(element)
     }
 
     override fun sendAnnouncementImpressionEvent(element: AnnouncementWidgetUiModel) {

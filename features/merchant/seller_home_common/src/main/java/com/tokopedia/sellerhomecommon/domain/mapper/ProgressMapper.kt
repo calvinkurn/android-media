@@ -23,7 +23,6 @@ class ProgressMapper @Inject constructor(
     companion object {
         private const val GOOD = "GOOD"
         private const val WARNING = "WARNING"
-        private const val MAX_VALUE = 100
     }
 
     override fun mapRemoteDataToUiData(
@@ -34,16 +33,14 @@ class ProgressMapper @Inject constructor(
             ProgressDataUiModel(
                 valueTxt = it.valueText.orEmpty(),
                 maxValueTxt = it.maxValueText.orEmpty(),
-                value = getProgressValue(it.value.orZero(), it.maxValue.orZero()),
-                maxValue = MAX_VALUE,
+                value = it.value.orZero(),
+                maxValue = it.maxValue.orZero(),
                 colorState = mapState(it.state),
                 error = it.errorMessage.orEmpty(),
                 subtitle = it.subtitle.orEmpty(),
                 dataKey = it.dataKey.orEmpty(),
                 isFromCache = isFromCache,
                 showWidget = it.showWidget.orFalse(),
-                label = it.label.orEmpty(),
-                iconUrl = it.iconUrl.orEmpty(),
                 lastUpdated = if (it.updateInfo.isNullOrBlank()) {
                     getLastUpdatedMillis(it.dataKey.orEmpty(), isFromCache)
                 } else {
@@ -55,10 +52,6 @@ class ProgressMapper @Inject constructor(
                 }
             )
         }
-    }
-
-    private fun getProgressValue(value: Long, maxValue: Long): Int {
-        return value.times(MAX_VALUE).div(maxValue).toInt()
     }
 
     private fun convertToMilliseconds(updateDate: String): Long {

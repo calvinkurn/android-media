@@ -21,25 +21,12 @@
         android:ellipsize="end"
         android:maxLines="2"
         android:textColor="@color/Unify_N700_96"
-        app:layout_constraintEnd_toStartOf="@+id/labelShcPmPro"
-        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintEnd_toStartOf="@+id/notifTagProgress"
+        app:layout_constraintHorizontal_bias="0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:typographyType="heading_5"
         tools:text="Progress Title" />
-
-    <com.tokopedia.sellerhomecommon.presentation.view.customview.PMProLabelView
-        android:id="@+id/labelShcPmPro"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="@id/tvProgressTitle"
-        app:layout_constraintEnd_toStartOf="@+id/notifTagProgress"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/tvProgressTitle"
-        app:layout_constraintTop_toTopOf="@id/tvProgressTitle"
-        tools:layout_width="70dp"
-        tools:visibility="visible" />
 
     <com.tokopedia.unifycomponents.NotificationUnify
         android:id="@+id/notifTagProgress"
@@ -48,8 +35,8 @@
         android:layout_marginStart="4dp"
         app:layout_constraintBottom_toBottomOf="@id/tvProgressTitle"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/labelShcPmPro"
+        app:layout_constraintHorizontal_bias="0"
+        app:layout_constraintStart_toEndOf="@+id/tvProgressTitle"
         app:layout_constraintTop_toTopOf="@id/tvProgressTitle" />
 
     <com.tokopedia.sellerhomecommon.presentation.view.customview.ShopScorePMWidget

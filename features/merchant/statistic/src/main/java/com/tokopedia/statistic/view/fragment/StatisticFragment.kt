@@ -349,11 +349,11 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
         StatisticTracker.sendImpressionPostEvent(element.dataKey)
     }
 
-    override fun sendProgressImpressionEvent(dataKey: String, stateColor: String, valueScore: Int) {
+    override fun sendProgressImpressionEvent(dataKey: String, stateColor: String, valueScore: Long) {
         StatisticTracker.sendImpressionProgressBarEvent(dataKey, stateColor, valueScore)
     }
 
-    override fun sendProgressCtaClickEvent(dataKey: String, stateColor: String, valueScore: Int) {
+    override fun sendProgressCtaClickEvent(dataKey: String, stateColor: String, valueScore: Long) {
         StatisticTracker.sendClickProgressBarEvent(dataKey, stateColor, valueScore)
     }
 
@@ -597,7 +597,7 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
         return try {
             val widget = adapter.data[position]
             return if (isTablet) {
-                val orientation = resources.configuration.orientation
+                val orientation = requireActivity().resources.configuration.orientation
                 val isPortrait = orientation == Configuration.ORIENTATION_PORTRAIT
                 if (isPortrait) {
                     when (widget) {

@@ -52,11 +52,5 @@ data class ProgressDataModel(
     val showWidget: Boolean?,
     @Expose
     @SerializedName("updateInfo")
-    val updateInfo: String?,
-    @Expose
-    @SerializedName("iconUrl")
-    val iconUrl: String?,
-    @Expose
-    @SerializedName("label")
-    val label: String?
+    val updateInfo: String?
 )

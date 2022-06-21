@@ -24,9 +24,7 @@ object GqlGetProgressData : GqlQueryInterface {
               error
               errorMsg
               showWidget
-              iconUrl
               updateInfo
-              label
             }
           }
         }
