@@ -10,7 +10,9 @@ import com.tokopedia.kotlin.extensions.view.removeFirst
 import com.tokopedia.tokofood.common.domain.response.CartTokoFood
 import com.tokopedia.tokofood.databinding.TokofoodCategoryHeaderLayoutBinding
 import com.tokopedia.tokofood.databinding.TokofoodProductCardLayoutBinding
-import com.tokopedia.tokofood.feature.merchant.presentation.enums.ProductListItemType.*
+import com.tokopedia.tokofood.feature.merchant.presentation.enums.ProductListItemType.CATEGORY_HEADER
+import com.tokopedia.tokofood.feature.merchant.presentation.enums.ProductListItemType.PRODUCT_CARD
+import com.tokopedia.tokofood.feature.merchant.presentation.enums.ProductListItemType.values
 import com.tokopedia.tokofood.feature.merchant.presentation.model.CustomOrderDetail
 import com.tokopedia.tokofood.feature.merchant.presentation.model.ProductListItem
 import com.tokopedia.tokofood.feature.merchant.presentation.model.ProductUiModel
@@ -18,8 +20,8 @@ import com.tokopedia.tokofood.feature.merchant.presentation.viewholder.CategoryH
 import com.tokopedia.tokofood.feature.merchant.presentation.viewholder.ProductCardViewHolder
 import com.tokopedia.tokofood.feature.merchant.presentation.viewholder.ProductCardViewHolder.OnProductCardItemClickListener
 
-class ProductListAdapter(private val clickListener: OnProductCardItemClickListener)
-    : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class ProductListAdapter(private val clickListener: OnProductCardItemClickListener) :
+    RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private var productListItems: MutableList<ProductListItem> = mutableListOf()
 
@@ -36,12 +38,12 @@ class ProductListAdapter(private val clickListener: OnProductCardItemClickListen
         return when (values().first { it.type == viewType }) {
             CATEGORY_HEADER -> {
                 val binding = TokofoodCategoryHeaderLayoutBinding
-                        .inflate(LayoutInflater.from(parent.context), parent, false)
+                    .inflate(LayoutInflater.from(parent.context), parent, false)
                 CategoryHeaderViewHolder(binding)
             }
             PRODUCT_CARD -> {
                 val binding = TokofoodProductCardLayoutBinding
-                        .inflate(LayoutInflater.from(parent.context), parent, false)
+                    .inflate(LayoutInflater.from(parent.context), parent, false)
                 ProductCardViewHolder(binding, clickListener)
             }
         }
@@ -78,23 +80,50 @@ class ProductListAdapter(private val clickListener: OnProductCardItemClickListen
     }
 
     fun updateProductUiModel(
-            cartTokoFood: CartTokoFood,
-            dataSetPosition: Int,
-            adapterPosition: Int,
-            customOrderDetail: CustomOrderDetail? = null
+        cartTokoFood: CartTokoFood,
+        dataSetPosition: Int,
+        adapterPosition: Int,
+        customOrderDetail: CustomOrderDetail? = null
     ) {
-        productListItems.getOrNull(dataSetPosition)?.productUiModel.apply {
-            this?.cartId = cartTokoFood.cartId
-            this?.orderQty = cartTokoFood.quantity
-            this?.orderNote = cartTokoFood.getMetadata()?.notes.orEmpty()
-            this?.isAtc = cartTokoFood.quantity.isMoreThanZero()
-            customOrderDetail?.let { this?.customOrderDetails?.add(it) }
+        productListItems.getOrNull(dataSetPosition)?.productUiModel?.apply {
+            cartId = cartTokoFood.cartId
+            orderQty = cartTokoFood.quantity
+            orderNote = cartTokoFood.getMetadata()?.notes.orEmpty()
+            isAtc = cartTokoFood.quantity.isMoreThanZero()
+            customOrderDetail?.let { customOrderDetails.add(it) }
+
+            notifyItemChanged(adapterPosition)
         }
-        notifyItemChanged(adapterPosition)
+    }
+
+    fun updateCartProductUiModel(
+        cartTokoFood: CartTokoFood,
+        dataSetPosition: Int,
+        adapterPosition: Int,
+        customOrderDetail: CustomOrderDetail? = null
+    ) {
+        productListItems.getOrNull(dataSetPosition)?.productUiModel?.apply {
+
+            if (customOrderDetail != null) {
+                val position =
+                    customOrderDetails.indexOfFirst { it.cartId == customOrderDetail.cartId }
+                if (position > RecyclerView.NO_POSITION) {
+
+                    cartId = cartTokoFood.cartId
+                    orderQty = cartTokoFood.quantity
+                    orderNote = cartTokoFood.getMetadata()?.notes.orEmpty()
+                    isAtc = cartTokoFood.quantity.isMoreThanZero()
+
+                    customOrderDetails[position] = customOrderDetail
+                    notifyItemChanged(adapterPosition)
+                }
+            }
+        }
     }
 
     fun updateCustomOrderQty(cartId: String, orderQty: Int, dataSetPosition: Int) {
-        productListItems.getOrNull(dataSetPosition)?.productUiModel?.customOrderDetails?.firstOrNull { it.cartId == cartId }?.qty = orderQty
+        productListItems.getOrNull(dataSetPosition)?.productUiModel?.customOrderDetails?.firstOrNull { it.cartId == cartId }?.qty =
+            orderQty
     }
 
     fun removeCustomOrder(cartId: String, dataSetPosition: Int, adapterPosition: Int) {

@@ -120,7 +120,7 @@ object TokoFoodMerchantUiModelMapper {
     ): List<CustomListItem> {
         val selectedCustomListItems = masterData.toMutableList()
         val optionMap = selectedVariants.groupBy { it.variantId }
-        optionMap.keys.forEach { variantId ->
+        optionMap.keys.forEachIndexed { index, variantId ->
             val selectedOptionIds = optionMap[variantId]?.map { it.optionId } ?: listOf()
             val selectedCustomListItem = selectedCustomListItems.first { it.addOnUiModel?.id == variantId }
             selectedCustomListItem.addOnUiModel?.isSelected = true

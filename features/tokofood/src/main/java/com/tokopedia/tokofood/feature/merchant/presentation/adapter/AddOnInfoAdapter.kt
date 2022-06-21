@@ -32,6 +32,7 @@ class AddOnInfoAdapter : RecyclerView.Adapter<AddOnInfoViewHolder>() {
         val customListItemsTemp = customListItems.filter {
             it.addOnUiModel?.selectedAddOns?.isNotEmpty() == true
         }
+        if (customListItemsTemp.isEmpty()) return
         this.customListItems.clear()
         this.customListItems.addAll(customListItemsTemp)
         notifyDataSetChanged()

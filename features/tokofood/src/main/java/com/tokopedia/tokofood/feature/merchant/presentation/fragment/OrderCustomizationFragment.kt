@@ -16,9 +16,12 @@ import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.tokofood.common.domain.response.CartTokoFoodData
 import com.tokopedia.tokofood.common.presentation.UiEvent
 import com.tokopedia.tokofood.common.presentation.listener.HasViewModel
+import com.tokopedia.tokofood.common.presentation.uimodel.UpdateParam
 import com.tokopedia.tokofood.common.presentation.viewmodel.MultipleFragmentsViewModel
+import com.tokopedia.tokofood.common.util.TokofoodExt.getSuccessUpdateResultPair
 import com.tokopedia.tokofood.databinding.FragmentOrderCustomizationLayoutBinding
 import com.tokopedia.tokofood.feature.merchant.analytics.MerchantPageAnalytics
 import com.tokopedia.tokofood.feature.merchant.di.DaggerMerchantPageComponent
@@ -57,8 +60,10 @@ class OrderCustomizationFragment : BaseMultiFragment(),
             productUiModel: ProductUiModel,
             cartId: String = "",
             merchantId: String = "",
-            cacheManagerId: String? = null
+            cacheManagerId: String? = null,
+            orderCustomizationListener: OrderCustomizationListener? = null
         ) = OrderCustomizationFragment().apply {
+            this.orderCustomizationListener = orderCustomizationListener
             this.arguments = Bundle().apply {
                 putParcelable(BUNDLE_KEY_PRODUCT_UI_MODEL, productUiModel)
                 putString(BUNDLE_KEY_CART_ID, cartId)
@@ -97,6 +102,13 @@ class OrderCustomizationFragment : BaseMultiFragment(),
     private var customListAdapter: CustomListAdapter? = null
 
     private var variantWrapperUiModel: VariantWrapperUiModel? = null
+
+
+    private var orderCustomizationListener: OrderCustomizationListener? = null
+
+    private val productUiModel by lazy {
+        arguments?.getParcelable<ProductUiModel>(BUNDLE_KEY_PRODUCT_UI_MODEL) ?: ProductUiModel()
+    }
 
     override fun getFragmentToolbar(): Toolbar? {
         return binding?.toolbar
@@ -147,7 +159,6 @@ class OrderCustomizationFragment : BaseMultiFragment(),
         observeUpdateCart()
         (activity as AppCompatActivity).setSupportActionBar(binding?.toolbar)
 
-        val productUiModel = arguments?.getParcelable<ProductUiModel>(BUNDLE_KEY_PRODUCT_UI_MODEL)
         val cartId = arguments?.getString(BUNDLE_KEY_CART_ID) ?: ""
         val merchantId = arguments?.getString(BUNDLE_KEY_MERCHANT_ID) ?: ""
 
@@ -156,15 +167,15 @@ class OrderCustomizationFragment : BaseMultiFragment(),
                 getString(com.tokopedia.tokofood.R.string.action_update)
         }
 
-        productUiModel?.run {
+        productUiModel.apply {
 
-            binding?.tpgProductName?.text = productUiModel.name
+            binding?.tpgProductName?.text = name
             binding?.qeuProductQtyEditor?.setValue(orderQty)
 
-            val customListItems = viewModel.getCustomListItems(cartId, productUiModel)
+            val customListItems = viewModel.getCustomListItems(cartId, this)
             customListItems.run { setupCustomList(this) }
 
-            viewModel.baseProductPrice = productUiModel.price
+            viewModel.baseProductPrice = price
 
             // no selections
             if (!isAtc) {
@@ -212,7 +223,7 @@ class OrderCustomizationFragment : BaseMultiFragment(),
                     }
                     val updateParam = viewModel.generateRequestParam(
                         shopId = merchantId,
-                        productUiModel = productUiModel,
+                        productUiModel = this@apply,
                         cartId = cartId,
                         orderNote = this.lastOrNull()?.orderNote.orEmpty(),
                         orderQty = binding?.qeuProductQtyEditor?.getValue() ?: Int.ONE,
@@ -242,13 +253,12 @@ class OrderCustomizationFragment : BaseMultiFragment(),
                 binding?.atcButton?.isLoading = false
                 when (it.state) {
                     UiEvent.EVENT_SUCCESS_ADD_TO_CART -> {
+                        orderCustomizationListener?.onSuccessAddCart(it.data?.getSuccessUpdateResultPair())
                         parentFragmentManager.popBackStack()
                     }
                     UiEvent.EVENT_SUCCESS_UPDATE_CART -> {
+                        orderCustomizationListener?.onSuccessUpdateCart(it.data?.getSuccessUpdateResultPair())
                         parentFragmentManager.popBackStack()
-                    }
-                    UiEvent.EVENT_FAILED_UPDATE_CART -> {
-
                     }
                 }
             }
@@ -312,5 +322,10 @@ class OrderCustomizationFragment : BaseMultiFragment(),
 
     override fun onNoteTextChanged(orderNote: String, dataSetPosition: Int) {
         customListAdapter?.updateOrderNote(orderNote, dataSetPosition)
+    }
+
+    interface OrderCustomizationListener {
+        fun onSuccessAddCart(addCartData: Pair<UpdateParam, CartTokoFoodData>?)
+        fun onSuccessUpdateCart(updateCartData: Pair<UpdateParam, CartTokoFoodData>?)
     }
 }
