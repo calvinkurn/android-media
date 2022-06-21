@@ -56,9 +56,8 @@ class PlayInteractiveAnalyticImpl @Inject constructor(
 
     override fun clickWinnerBadge(shopId: String, interactiveType: InteractiveUiModel, interactiveId: String, channelId: String, channelType: PlayChannelType) {
         val (eventAction, eventLabel) = when(interactiveType){
-            is InteractiveUiModel.Quiz -> Pair("click - hasil game button","$shopId - $channelId - $userId - $interactiveId")
             is InteractiveUiModel.Giveaway -> Pair("click daftar pemenang on engagement tools widget","$channelId - $channelType")
-            else -> Pair("", "")
+            else -> Pair("click - hasil game button","$shopId - $channelId - $userId - $interactiveId")
         }
 
         sendCompleteGeneralEvent(
