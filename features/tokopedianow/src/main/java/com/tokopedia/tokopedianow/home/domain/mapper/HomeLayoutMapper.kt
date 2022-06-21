@@ -21,6 +21,8 @@ import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType.Companion.LE
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType.Companion.MAIN_QUEST
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType.Companion.MIX_LEFT_CAROUSEL
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType.Companion.MIX_LEFT_CAROUSEL_ATC
+import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType.Companion.MEDIUM_PLAY_WIDGET
+import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType.Companion.SMALL_PLAY_WIDGET
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType.Companion.PRODUCT_RECOM
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType.Companion.REPURCHASE_PRODUCT
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType.Companion.SHARING_EDUCATION
@@ -56,6 +58,8 @@ import com.tokopedia.tokopedianow.home.domain.mapper.VisitableMapper.updateItemB
 import com.tokopedia.tokopedianow.home.domain.model.GetRepurchaseResponse.RepurchaseData
 import com.tokopedia.tokopedianow.home.domain.model.HomeLayoutResponse
 import com.tokopedia.tokopedianow.home.domain.mapper.LeftCarouselMapper.mapToLeftCarousel
+import com.tokopedia.tokopedianow.home.domain.mapper.PlayWidgetMapper.mapToMediumPlayWidget
+import com.tokopedia.tokopedianow.home.domain.mapper.PlayWidgetMapper.mapToSmallPlayWidget
 import com.tokopedia.tokopedianow.home.domain.model.HomeRemoveAbleWidget
 import com.tokopedia.tokopedianow.home.presentation.fragment.TokoNowHomeFragment.Companion.SOURCE
 import com.tokopedia.tokopedianow.home.presentation.model.HomeReferralDataModel
@@ -65,6 +69,7 @@ import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLayoutUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLeftCarouselAtcProductCardUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLeftCarouselAtcUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLoadingStateUiModel
+import com.tokopedia.tokopedianow.home.presentation.uimodel.HomePlayWidgetUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeProductRecomUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeProgressBarUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeQuestSequenceWidgetUiModel
@@ -91,7 +96,9 @@ object HomeLayoutMapper {
         SHARING_REFERRAL,
         MAIN_QUEST,
         MIX_LEFT_CAROUSEL,
-        MIX_LEFT_CAROUSEL_ATC
+        MIX_LEFT_CAROUSEL_ATC,
+        MEDIUM_PLAY_WIDGET,
+        SMALL_PLAY_WIDGET
     )
 
     fun MutableList<HomeLayoutItemUiModel>.addLoadingIntoList() {
@@ -274,6 +281,12 @@ object HomeLayoutMapper {
         updateItemById(item.id) {
             val uiModel = mapToRepurchaseUiModel(item, response, miniCartData)
             HomeLayoutItemUiModel(uiModel, HomeLayoutItemState.LOADED)
+        }
+    }
+
+    fun MutableList<HomeLayoutItemUiModel>.mapPlayWidgetData(item: HomePlayWidgetUiModel) {
+        updateItemById(item.id) {
+            HomeLayoutItemUiModel(item, HomeLayoutItemState.LOADED)
         }
     }
 
@@ -599,6 +612,8 @@ object HomeLayoutMapper {
             SHARING_EDUCATION -> mapSharingEducationUiModel(response, notLoadedState, serviceType)
             SHARING_REFERRAL -> mapSharingReferralUiModel(response, notLoadedState, warehouseId)
             MIX_LEFT_CAROUSEL -> mapToLeftCarousel(response, loadedState)
+            MEDIUM_PLAY_WIDGET -> mapToMediumPlayWidget(response, notLoadedState)
+            SMALL_PLAY_WIDGET -> mapToSmallPlayWidget(response, notLoadedState)
             // endregion
             else -> null
         }

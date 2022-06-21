@@ -24,6 +24,7 @@ import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.domain.data.getMiniCartItemProduct
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
 import com.tokopedia.minicart.common.domain.usecase.MiniCartSource
+import com.tokopedia.play.widget.util.PlayWidgetTools
 import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.domain.request.GetRecommendationRequestParam
 import com.tokopedia.tokopedianow.categorylist.domain.model.CategoryResponse
@@ -54,6 +55,7 @@ import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper.addProgres
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper.getItem
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper.mapHomeCategoryGridData
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper.mapHomeLayoutList
+import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper.mapPlayWidgetData
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper.mapProductPurchaseData
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper.mapQuestData
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper.mapSharingEducationData
@@ -90,6 +92,7 @@ import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeQuestSequenceWid
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeTickerUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLeftCarouselAtcProductCardUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLeftCarouselAtcUiModel
+import com.tokopedia.tokopedianow.home.presentation.uimodel.HomePlayWidgetUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeSharingWidgetUiModel.HomeSharingEducationWidgetUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeSharingWidgetUiModel.HomeSharingReferralWidgetUiModel
 import com.tokopedia.usecase.coroutines.Fail
@@ -115,8 +118,9 @@ class TokoNowHomeViewModel @Inject constructor(
     private val getQuestWidgetListUseCase: GetQuestWidgetListUseCase,
     private val setUserPreferenceUseCase: SetUserPreferenceUseCase,
     private val getHomeReferralUseCase: GetHomeReferralUseCase,
+    private val playWidgetTools: PlayWidgetTools,
     private val userSession: UserSessionInterface,
-    dispatchers: CoroutineDispatchers,
+    private val dispatchers: CoroutineDispatchers,
 ) : BaseViewModel(dispatchers.io) {
 
     companion object {
@@ -149,6 +153,8 @@ class TokoNowHomeViewModel @Inject constructor(
         get() = _getReferralResult
     val homeSwitchServiceTracker: LiveData<HomeSwitchServiceTracker>
         get() = _homeSwitchServiceTracker
+    val invalidatePlayImpression: LiveData<Boolean>
+        get() = _invalidatePlayImpression
 
     private val _homeLayoutList = MutableLiveData<Result<HomeLayoutListUiModel>>()
     private val _keywordSearch = MutableLiveData<SearchPlaceholder>()
@@ -163,6 +169,7 @@ class TokoNowHomeViewModel @Inject constructor(
     private val _setUserPreference = MutableLiveData<Result<SetUserPreferenceData>>()
     private val _getReferralResult = MutableLiveData<Result<HomeReferralDataModel>>()
     private val _homeSwitchServiceTracker = MutableLiveData<HomeSwitchServiceTracker>()
+    private val _invalidatePlayImpression = MutableLiveData<Boolean>()
 
     private val homeLayoutItemList = mutableListOf<HomeLayoutItemUiModel>()
     private var miniCartSimplifiedData: MiniCartSimplifiedData? = null
@@ -450,6 +457,22 @@ class TokoNowHomeViewModel @Inject constructor(
         }
     }
 
+    fun autoRefreshPlayWidget(item: HomePlayWidgetUiModel) {
+        launchCatchError(block = {
+            val playWidgetUiModel = getPlayWidget(item, isAutoRefresh = true)
+            homeLayoutItemList.mapPlayWidgetData(playWidgetUiModel)
+
+            val data = HomeLayoutListUiModel(
+                items = getHomeVisitableList(),
+                state = TokoNowLayoutState.UPDATE
+            )
+
+            _homeLayoutList.postValue(Success(data))
+        }, onError = {
+            removeWidget(item.id)
+        })
+    }
+
     /***
      * Switch between NOW 20 minutes/2 hours
      * @param localCacheModel local data from choose address
@@ -532,6 +555,7 @@ class TokoNowHomeViewModel @Inject constructor(
             is HomeSharingEducationWidgetUiModel -> getSharingEducationAsync(item, localCacheModel.warehouse_id).await()
             is HomeSharingReferralWidgetUiModel -> getSharingReferralAsync(item).await()
             is HomeQuestSequenceWidgetUiModel -> getQuestListAsync(item).await()
+            is HomePlayWidgetUiModel -> getPlayWidgetAsync(item).await()
             else -> removeUnsupportedLayout(item)
         }
     }
@@ -649,6 +673,39 @@ class TokoNowHomeViewModel @Inject constructor(
 
     private suspend fun getCategoryList(warehouseId: String): List<CategoryResponse> {
         return getCategoryListUseCase.execute(warehouseId, CATEGORY_LEVEL_DEPTH).data
+    }
+
+    private suspend fun getPlayWidgetAsync(item: HomePlayWidgetUiModel): Deferred<Unit?> {
+        return asyncCatchError(block = {
+            val playWidgetUiModel = getPlayWidget(item, isAutoRefresh = false)
+            homeLayoutItemList.mapPlayWidgetData(playWidgetUiModel)
+
+            val data = HomeLayoutListUiModel(
+                items = getHomeVisitableList(),
+                state = TokoNowLayoutState.UPDATE
+            )
+
+            _invalidatePlayImpression.postValue(true)
+            _homeLayoutList.postValue(Success(data))
+        }) {
+            removeWidget(item.id)
+        }
+    }
+
+    private suspend fun getPlayWidget(
+        item: HomePlayWidgetUiModel,
+        isAutoRefresh: Boolean
+    ): HomePlayWidgetUiModel {
+        val title = item.title
+        val widgetType = item.widgetType
+        val response = playWidgetTools.getWidgetFromNetwork(
+            widgetType = widgetType,
+            coroutineContext = dispatchers.io
+        )
+        val state = playWidgetTools.mapWidgetToModel(response)
+        val model = state.model.copy(title = title)
+        val widgetState = state.copy(model = model)
+        return HomePlayWidgetUiModel(item.id, title, widgetType, widgetState, isAutoRefresh)
     }
 
     private fun addItemToCart(

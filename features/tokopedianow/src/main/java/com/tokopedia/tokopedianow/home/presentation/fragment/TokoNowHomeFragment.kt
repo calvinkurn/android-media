@@ -50,6 +50,11 @@ import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.domain.usecase.MiniCartSource
 import com.tokopedia.minicart.common.widget.MiniCartWidget
 import com.tokopedia.minicart.common.widget.MiniCartWidgetListener
+import com.tokopedia.play.widget.analytic.impression.DefaultImpressionValidator
+import com.tokopedia.play.widget.analytic.impression.ImpressionHelper
+import com.tokopedia.play.widget.ui.PlayWidgetView
+import com.tokopedia.play.widget.ui.coordinator.PlayWidgetCoordinator
+import com.tokopedia.play.widget.ui.listener.PlayWidgetListener
 import com.tokopedia.product.detail.common.AtcVariantHelper
 import com.tokopedia.product.detail.common.VariantPageSource
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
@@ -146,6 +151,7 @@ import com.tokopedia.tokopedianow.home.presentation.view.listener.HomeLeftCarous
 import com.tokopedia.tokopedianow.home.presentation.viewholder.HomeTickerViewHolder
 import com.tokopedia.tokopedianow.home.presentation.viewmodel.TokoNowHomeViewModel
 import com.tokopedia.tokopedianow.common.util.TokoNowSharedPreference
+import com.tokopedia.tokopedianow.home.presentation.uimodel.HomePlayWidgetUiModel
 import com.tokopedia.tokopedianow.home.presentation.view.listener.OnBoard20mBottomSheetCallback
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.Toaster.LENGTH_SHORT
@@ -177,7 +183,8 @@ class TokoNowHomeFragment: Fragment(),
         HomeSharingListener,
         HomeEducationalInformationListener,
         ServerErrorListener,
-        PermissionListener
+        PermissionListener,
+        PlayWidgetListener
 {
 
     companion object {
@@ -215,6 +222,9 @@ class TokoNowHomeFragment: Fragment(),
     @Inject
     lateinit var homeSharedPref: TokoNowSharedPreference
 
+    @Inject
+    lateinit var playWidgetImpressionValidator: DefaultImpressionValidator
+
     private var binding by autoClearedNullable<FragmentTokopedianowHomeBinding>()
 
     private val adapter by lazy {
@@ -235,7 +245,8 @@ class TokoNowHomeFragment: Fragment(),
                 dynamicLegoBannerCallback = createLegoBannerCallback(),
                 homeSwitcherListener = createHomeSwitcherListener(),
                 homeLeftCarouselAtcListener = createLeftCarouselAtcCallback(),
-                homeLeftCarouselListener = createLeftCarouselCallback()
+                homeLeftCarouselListener = createLeftCarouselCallback(),
+                playWidgetCoordinator = createPlayWidgetCoordinator()
             ),
             differ = HomeListDiffer()
         )
@@ -265,6 +276,7 @@ class TokoNowHomeFragment: Fragment(),
     private var hasEducationalInformationAppeared = false
     private var pageLoadTimeMonitoring: HomePageLoadTimeMonitoring? = null
     private var switcherCoachMark: SwitcherCoachMark? = null
+    private var playWidgetCoordinator: PlayWidgetCoordinator? = null
 
     private val homeMainToolbarHeight: Int
         get() {
@@ -404,9 +416,8 @@ class TokoNowHomeFragment: Fragment(),
     override fun onClickChooseAddressWidgetTracker() { }
 
     override fun onCategoryRetried() {
-        val item = adapter.getItem(TokoNowCategoryGridUiModel::class.java)
-        if (item is TokoNowCategoryGridUiModel) {
-            viewModelTokoNow.getCategoryGrid(item, localCacheModel?.warehouse_id.orEmpty())
+        adapter.getItem(TokoNowCategoryGridUiModel::class.java)?.let {
+            viewModelTokoNow.getCategoryGrid(it, localCacheModel?.warehouse_id.orEmpty())
         }
     }
 
@@ -626,6 +637,13 @@ class TokoNowHomeFragment: Fragment(),
         super.onDestroyView()
         if (!SharedPreferencesUtil.isEducationalInformationStopped(activity) && hasEducationalInformationAppeared) {
             SharedPreferencesUtil.setEducationalInformationState(activity)
+        }
+        playWidgetCoordinator?.onDestroy()
+    }
+
+    override fun onWidgetShouldRefresh(view: PlayWidgetView) {
+        adapter.data.filterIsInstance<HomePlayWidgetUiModel>().forEach {
+            viewModelTokoNow.autoRefreshPlayWidget(it)
         }
     }
 
@@ -1142,6 +1160,12 @@ class TokoNowHomeFragment: Fragment(),
                     whIdDestination = it.whIdDestination,
                     isNow15 = it.isNow15
                 )
+            }
+        }
+
+        observe(viewModelTokoNow.invalidatePlayImpression) { invalidate ->
+            if(invalidate) {
+                playWidgetImpressionValidator.invalidate()
             }
         }
     }
@@ -1838,6 +1862,15 @@ class TokoNowHomeFragment: Fragment(),
 
     private fun createLeftCarouselCallback(): MixLeftComponentListener {
         return HomeLeftCarouselCallback(this, analytics)
+    }
+
+    private fun createPlayWidgetCoordinator(): PlayWidgetCoordinator {
+        val playWidgetCoordinator = PlayWidgetCoordinator(this).apply {
+            setImpressionHelper(ImpressionHelper(validator = playWidgetImpressionValidator))
+            setListener(this@TokoNowHomeFragment)
+        }
+        this.playWidgetCoordinator = playWidgetCoordinator
+        return playWidgetCoordinator
     }
 
     override fun onShareOptionClicked(shareModel: ShareModel) {
