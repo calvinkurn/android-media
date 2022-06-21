@@ -73,7 +73,7 @@ class BaseTokofoodActivity : BaseMultiFragActivity(), HasViewModel<MultipleFragm
         val existingFragment = supportFragmentManager.findFragmentByTag(fragmentName)
         if (isSingleTask && existingFragment != null) {
             popExistedFragment(fragmentName)
-            addNewFragment(fragment, false)
+            addNewFragment(fragment, true)
         } else {
             navigateToNewFragment(fragment)
         }
@@ -83,20 +83,29 @@ class BaseTokofoodActivity : BaseMultiFragActivity(), HasViewModel<MultipleFragm
      * Replace current fragment and add to back stack
      *
      * @param   destinationFragment     fragment that we want to navigate into
-     * @param   withAnimation           flag to determine whether we should apply animation when adding fragment
+     * @param   leftToRightAnim         flag to determine whether we should add slide animation from LTR or RTL
      */
     private fun addNewFragment(destinationFragment: Fragment,
-                               withAnimation: Boolean = true) {
+                               leftToRightAnim: Boolean = false) {
         val destinationFragmentName = destinationFragment.javaClass.name
         val fragmentCount = getFragmentCount()
         val ft = supportFragmentManager.beginTransaction()
-        if (fragmentCount > Int.ZERO && withAnimation) {
-            ft.setCustomAnimations(
-                R.anim.slide_in_right,
-                R.anim.slide_out_left,
-                R.anim.slide_in_left,
-                R.anim.slide_out_right
-            )
+        if (fragmentCount > Int.ZERO) {
+            if (leftToRightAnim) {
+                ft.setCustomAnimations(
+                    R.anim.slide_in_left,
+                    R.anim.slide_out_right,
+                    R.anim.slide_in_right,
+                    R.anim.slide_out_left
+                )
+            } else {
+                ft.setCustomAnimations(
+                    R.anim.slide_in_right,
+                    R.anim.slide_out_left,
+                    R.anim.slide_in_left,
+                    R.anim.slide_out_right
+                )
+            }
         }
         ft.replace(
             R.id.frame_content,
