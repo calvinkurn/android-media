@@ -7,7 +7,7 @@ class PromoCheckoutDetailModel {
 
     @SerializedName("id")
     @Expose
-    var id: Int = 0
+    var id: String = "0"
     @SerializedName("expired")
     @Expose
     var expired: String = ""

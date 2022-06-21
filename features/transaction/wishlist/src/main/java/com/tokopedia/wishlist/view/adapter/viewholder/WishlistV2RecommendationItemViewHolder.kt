@@ -17,7 +17,7 @@ class WishlistV2RecommendationItemViewHolder(private val binding: WishlistV2Reco
                 setProductModel(item.dataObject)
 
                 setOnClickListener {
-                    actionListener?.onProductRecommItemClicked(item.recommItem.productId.toString())
+                    actionListener?.onProductRecommItemClicked(item.recommItem)
                 }
 
                 setImageProductViewHintListener(
