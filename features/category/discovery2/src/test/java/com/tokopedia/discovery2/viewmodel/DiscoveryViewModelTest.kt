@@ -415,29 +415,46 @@ class DiscoveryViewModelTest {
     }
 
     /**************************** test for openCustomTopChat() *******************************************/
-//    @Test
-//    fun `test for openCustomTopChat when isLoggedIn is false`() {
-//        every { userSessionInterface.isLoggedIn } returns false
-//
-//        viewModel.openCustomTopChat(context = context, appLinks = "tokopedia://discovery/test-campaign-2", shopId = 2)
-//
-//        verify { RouteManager.route(context, ApplinkConst.LOGIN) }
-//    }
+    @Test
+    fun `test for openCustomTopChat when isLoggedIn is false`() {
+        every { userSessionInterface.isLoggedIn } returns false
+        mockkStatic(RouteManager::class)
+        every { RouteManager.route(any(),any()) } returns true
 
-//    @Test
-//    fun `test for openCustomTopChat when isLoggedIn is true`() {
-//        viewModel.customTopChatUseCase = customTopChatUseCase
-//        val customChatResponse : CustomChatResponse = mockk(relaxed = true)
-//        val chatExistingChat: ChatExistingChat = mockk(relaxed = true)
-//        every { customChatResponse.chatExistingChat } returns chatExistingChat
-//        every { chatExistingChat.messageId } returns 1
-//        every { userSessionInterface.isLoggedIn } returns true
-//        coEvery { customTopChatUseCase.getCustomTopChatMessageId(any())} returns customChatResponse
-//
-//        viewModel.openCustomTopChat(context = context, appLinks = "tokopedia://discovery/test-campaign-7", shopId = 23)
-//
-//        verify { RouteManager.route(context, ApplinkConst.LOGIN) }
-//    }
+        viewModel.openCustomTopChat(context = context, appLinks = "tokopedia://discovery/test-campaign-2", shopId = 2)
+
+        verify { RouteManager.route(context, ApplinkConst.LOGIN) }
+    }
+
+    @Test
+    fun `test for openCustomTopChat when isLoggedIn is true`() {
+        viewModel.customTopChatUseCase = customTopChatUseCase
+        mockkStatic(RouteManager::class)
+        every { RouteManager.route(any(),any()) } returns true
+        val customChatResponse : CustomChatResponse = mockk(relaxed = true)
+        val chatExistingChat: ChatExistingChat = mockk(relaxed = true)
+        every { customChatResponse.chatExistingChat } returns chatExistingChat
+        every { chatExistingChat.messageId } returns 1
+        every { userSessionInterface.isLoggedIn } returns true
+        coEvery { customTopChatUseCase.getCustomTopChatMessageId(any())} returns customChatResponse
+
+        viewModel.openCustomTopChat(context = context, appLinks = "tokopedia://discovery/test-campaign-7", shopId = 23)
+
+        verify { RouteManager.route(any(),any()) }
+    }
+
+    @Test
+    fun `test for openCustomTopChat when isLoggedIn is true and getCustomTopChatMessageId throws Exception`() {
+        viewModel.customTopChatUseCase = customTopChatUseCase
+        mockkStatic(RouteManager::class)
+        every { RouteManager.route(any(),any()) } returns true
+        every { userSessionInterface.isLoggedIn } returns true
+        coEvery { customTopChatUseCase.getCustomTopChatMessageId(any())} throws Exception("error")
+
+        viewModel.openCustomTopChat(context = context, appLinks = "tokopedia://discovery/test-campaign-7", shopId = 23)
+
+        verify(inverse = true) { RouteManager.route(any(),any()) }
+    }
 
     @After
     @Throws(Exception::class)
