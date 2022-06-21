@@ -118,8 +118,8 @@ class OrderSummaryPagePromoProcessor @Inject constructor(private val validateUse
             try {
                 val response = validateUsePromoRevampUseCase.get().setParam(validateUsePromoRequest).executeOnBackground()
                 if (response.status.equals(STATUS_OK, true)) {
-                val (isSuccess, newGlobalEvent) = checkIneligiblePromo(response, orderCart)
-                return@withContext Triple(response, isSuccess, newGlobalEvent)
+                    val (isSuccess, newGlobalEvent) = checkIneligiblePromo(response, orderCart)
+                    return@withContext Triple(response, isSuccess, newGlobalEvent)
                 }
                 return@withContext Triple(null, false, OccGlobalEvent.TriggerRefresh(errorMessage = DEFAULT_LOCAL_ERROR_MESSAGE))
             } catch (t: Throwable) {
