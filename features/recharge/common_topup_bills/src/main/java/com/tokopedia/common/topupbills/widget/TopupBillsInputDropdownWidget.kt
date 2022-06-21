@@ -14,6 +14,7 @@ import com.tokopedia.common.topupbills.R
 import com.tokopedia.common.topupbills.view.model.TopupBillsInputDropdownData
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.media.loader.loadImage
 import kotlinx.android.synthetic.main.view_topup_bills_input_dropdown_bottom_sheet.view.*
 import kotlinx.android.synthetic.main.view_topup_bills_input_dropdown_bottom_sheet_item.view.*
 import org.jetbrains.annotations.NotNull
@@ -98,9 +99,9 @@ class TopupBillsInputDropdownWidget @JvmOverloads constructor(@NotNull context: 
         fun bind(element: TopupBillsInputDropdownData) {
             with(itemView) {
                 vg_input_dropdown_label.text = element.label
-
+                vg_input_dropdown_icon.cornerRadius = 0
                 if (element.icon.isNotEmpty()) {
-                    ImageHandler.LoadImage(vg_input_dropdown_icon, element.icon)
+                    vg_input_dropdown_icon.loadImage(element.icon)
                     vg_input_dropdown_icon.show()
                 } else {
                     vg_input_dropdown_icon.hide()
