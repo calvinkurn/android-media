@@ -64,6 +64,7 @@ data class LocalCacheModel (
         companion object {
                 const val OOC_WAREHOUSE_ID = "0"
                 const val SERVICE_TYPE_15M = "15m"
+                const val SERVICE_TYPE_20M = "20m"
         }
 
         /**
@@ -87,6 +88,10 @@ data class LocalCacheModel (
 
         fun isOutOfCoverage(): Boolean {
                 return warehouse_id.isBlank() || warehouse_id == OOC_WAREHOUSE_ID
+        }
+
+        fun getServiceType(): String {
+                return if (service_type == SERVICE_TYPE_15M) SERVICE_TYPE_20M else service_type
         }
 }
 
