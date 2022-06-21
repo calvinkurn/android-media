@@ -103,7 +103,7 @@ class CampaignInformationFragment : BaseDaggerFragment() {
         CampaignInformationViewModel.Selection(
             "",
             dateManager.getDefaultMinimumCampaignStartDate(),
-            dateManager.getDefaultMinimumCampaignStartDate().advanceHourBy(ONE_HOUR),
+            dateManager.getDefaultMinimumCampaignStartDate().advanceMinuteBy(THIRTY_MINUTE),
             showTeaser = true,
             dateManager.getDefaultMinimumCampaignStartDate().decreaseHourBy(ONE_HOUR),
             defaultGradientColor.first,
