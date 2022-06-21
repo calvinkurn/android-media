@@ -20,6 +20,13 @@ object DeeplinkMapperDigitalConst {
     /**
      * End Template
      */
+    const val OLD_CATEGORY_ID_PULSA = "1"
+    const val OLD_CATEGORY_ID_PAKET_DATA = "2"
+    const val OLD_CATEGORY_ID_ROAMING = "20"
+
+    const val NEW_MENU_ID_PULSA = "289"
+    const val NEW_MENU_ID_PAKET_DATA = "290"
+    const val NEW_MENU_ID_ROAMING = "314"
 
     const val MENU_ID_TELCO_PREPAID = 2
     const val MENU_ID_TELCO_POSTPAID = 3
