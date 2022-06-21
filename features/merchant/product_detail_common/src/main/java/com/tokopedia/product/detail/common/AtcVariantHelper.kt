@@ -195,7 +195,7 @@ enum class VariantPageSource(val source: String) {
     PLAY_PAGESOURCE("play"),
     HOMEPAGE_PAGESOURCE("homepage"),
     DISCOVERY_PAGESOURCE("discovery page"),
-    SHOP_PAGE_PAGESOURCE("shop page - buyer"),
+    SHOP_PAGE_PAGESOURCE("shop-page-buyer"),
     CART_PAGESOURCE("cart"),
     SEARCH_PAGESOURCE("search result"),
     CATEGORY_PAGESOURCE("category page"),
