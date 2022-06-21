@@ -80,7 +80,7 @@ class BaseSuggestionDataView(
     )
 
     fun isBoldAllText(): Boolean {
-        return type == TYPE_CURATED || type == TYPE_BOLD_SQUARE
+        return type == TYPE_CURATED
     }
 
     fun isCircleImage(): Boolean {
