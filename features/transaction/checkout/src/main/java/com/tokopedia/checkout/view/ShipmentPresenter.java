@@ -954,7 +954,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                                                showErrorValidateUseIfAny(validateUsePromoRevampUiModel);
                                                validateBBO(validateUsePromoRevampUiModel);
                                                updateTickerAnnouncementData(validateUsePromoRevampUiModel);
-                                               if (validateUsePromoRevampUiModel.getStatus().equalsIgnoreCase("ERROR") || !validateUsePromoRevampUiModel.getErrorCode().equals(statusCode200)) {
+                                               if (validateUsePromoRevampUiModel.getStatus().equalsIgnoreCase("ERROR")) {
                                                    String message = "";
                                                    if (validateUsePromoRevampUiModel.getMessage().size() > 0) {
                                                        message = validateUsePromoRevampUiModel.getMessage().get(0);
@@ -1274,7 +1274,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                                     updateTickerAnnouncementData(validateUsePromoRevampUiModel);
                                     showErrorValidateUseIfAny(validateUsePromoRevampUiModel);
                                     validateBBOWithSpecificOrder(validateUsePromoRevampUiModel, cartString, promoCode);
-                                    boolean isValidatePromoRevampSuccess = validateUsePromoRevampUiModel.getStatus().equalsIgnoreCase(statusOK) && validateUsePromoRevampUiModel.getErrorCode().equals(statusCode200);
+                                    boolean isValidatePromoRevampSuccess = validateUsePromoRevampUiModel.getStatus().equalsIgnoreCase(statusOK);
                                     if (isValidatePromoRevampSuccess) {
                                         getView().updateButtonPromoCheckout(validateUsePromoRevampUiModel.getPromoUiModel(), true);
                                     } else {
@@ -1407,7 +1407,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                                     updateTickerAnnouncementData(validateUsePromoRevampUiModel);
                                     showErrorValidateUseIfAny(validateUsePromoRevampUiModel);
                                     validateBBO(validateUsePromoRevampUiModel);
-                                    boolean isValidatePromoRevampSuccess = validateUsePromoRevampUiModel.getStatus().equalsIgnoreCase(statusOK) && validateUsePromoRevampUiModel.getErrorCode().equals(statusCode200);
+                                    boolean isValidatePromoRevampSuccess = validateUsePromoRevampUiModel.getStatus().equalsIgnoreCase(statusOK);
                                     if (isValidatePromoRevampSuccess) {
                                         getView().renderPromoCheckoutFromCourierSuccess(validateUsePromoRevampUiModel, itemPosition, noToast);
                                     } else {

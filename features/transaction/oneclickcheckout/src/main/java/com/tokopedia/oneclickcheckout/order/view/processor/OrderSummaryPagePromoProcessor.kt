@@ -4,7 +4,6 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.akamai_bot_lib.exception.AkamaiErrorException
 import com.tokopedia.logisticcart.shipping.model.LogisticPromoUiModel
 import com.tokopedia.oneclickcheckout.common.DEFAULT_LOCAL_ERROR_MESSAGE
-import com.tokopedia.oneclickcheckout.common.STATUS_CODE_200
 import com.tokopedia.oneclickcheckout.common.STATUS_OK
 import com.tokopedia.oneclickcheckout.common.idling.OccIdlingResource
 import com.tokopedia.oneclickcheckout.common.view.model.OccGlobalEvent
@@ -94,7 +93,7 @@ class OrderSummaryPagePromoProcessor @Inject constructor(private val validateUse
         val resultValidateUse = withContext(executorDispatchers.io) {
             try {
                 val response = validateUsePromoRevampUseCase.get().setParam(validateUsePromoRequest).executeOnBackground()
-                if (response.status.equals(STATUS_OK, true) && response.errorCode == STATUS_CODE_200) {
+                if (response.status.equals(STATUS_OK, true)) {
                     val voucherOrderUiModel = response.promoUiModel.voucherOrderUiModels.firstOrNull { it.code == logisticPromoCode }
                     if (voucherOrderUiModel != null && voucherOrderUiModel.messageUiModel.state != "red") {
                         return@withContext Triple(true, response, OccGlobalEvent.Normal)
@@ -118,7 +117,7 @@ class OrderSummaryPagePromoProcessor @Inject constructor(private val validateUse
         val resultValidateUse = withContext(executorDispatchers.io) {
             try {
                 val response = validateUsePromoRevampUseCase.get().setParam(validateUsePromoRequest).executeOnBackground()
-                if (response.status.equals(STATUS_OK, true) && response.errorCode == STATUS_CODE_200) {
+                if (response.status.equals(STATUS_OK, true)) {
                 val (isSuccess, newGlobalEvent) = checkIneligiblePromo(response, orderCart)
                 return@withContext Triple(response, isSuccess, newGlobalEvent)
                 }
