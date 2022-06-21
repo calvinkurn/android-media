@@ -7,8 +7,9 @@ fun Int.isScrollUp() : Boolean {
     return this <= 0
 }
 
-fun Int.convertRupiah(): String {
-    val localId = Locale("in", "ID")
+fun Number.convertRupiah(): String {
+    val localId = Locale("id", "ID")
     val formatter = NumberFormat.getCurrencyInstance(localId)
+    formatter.maximumFractionDigits = 0
     return formatter.format(this)
 }

@@ -1,8 +1,9 @@
 package com.tokopedia.shop.flashsale.presentation.creation.rule
 
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.asFlow
+import androidx.lifecycle.viewModelScope
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.shop.flashsale.domain.entity.CampaignAction
@@ -11,17 +12,22 @@ import com.tokopedia.shop.flashsale.domain.entity.MerchantCampaignTNC
 import com.tokopedia.shop.flashsale.domain.entity.RelatedCampaign
 import com.tokopedia.shop.flashsale.domain.entity.enums.PaymentType
 import com.tokopedia.shop.flashsale.domain.usecase.DoSellerCampaignCreationUseCase
+import com.tokopedia.shop.flashsale.domain.usecase.GetSellerCampaignAttributeUseCase
 import com.tokopedia.shop.flashsale.domain.usecase.GetSellerCampaignDetailUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
 import com.tokopedia.utils.lifecycle.SingleLiveEvent
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class CampaignRuleViewModel @Inject constructor(
     private val getSellerCampaignDetailUseCase: GetSellerCampaignDetailUseCase,
     private val doSellerCampaignCreationUseCase: DoSellerCampaignCreationUseCase,
+    private val getSellerCampaignAttributeUseCase: GetSellerCampaignAttributeUseCase,
     private val dispatchers: CoroutineDispatchers,
 ) : BaseViewModel(dispatchers.main) {
 
@@ -34,23 +40,31 @@ class CampaignRuleViewModel @Inject constructor(
     val campaign: LiveData<Result<CampaignUiModel>>
         get() = _campaign
 
-    private val _selectedPaymentType = MutableLiveData<PaymentType>()
-    val selectedPaymentType: LiveData<PaymentType>
+    private val _selectedPaymentType = MutableLiveData<PaymentType?>(null)
+    val selectedPaymentType: LiveData<PaymentType?>
         get() = _selectedPaymentType
+    private val selectedPaymentTypeFlow = selectedPaymentType.asFlow()
 
-    private val _isUniqueBuyer = MutableLiveData<Boolean>()
-    val isUniqueBuyer: LiveData<Boolean>
+    private val _isUniqueBuyer = MutableLiveData<Boolean?>(null)
+    val isUniqueBuyer: LiveData<Boolean?>
         get() = _isUniqueBuyer
+    private val isUniqueBuyerFlow = isUniqueBuyer.asFlow()
 
-    private val _isCampaignRelation = MutableLiveData<Boolean>()
-    val isCampaignRelation: LiveData<Boolean>
+    private val _isCampaignRelation = MutableLiveData<Boolean?>(null)
+    val isCampaignRelation: LiveData<Boolean?>
         get() = _isCampaignRelation
+    private val isCampaignRelationFlow = isCampaignRelation.asFlow()
 
-    private val _relatedCampaigns = MutableLiveData<List<RelatedCampaign>>()
-    val relatedCampaigns: LiveData<List<RelatedCampaign>>
+    private val _relatedCampaigns = MutableLiveData<List<RelatedCampaign>?>(null)
+    val relatedCampaigns: LiveData<List<RelatedCampaign>?>
         get() = _relatedCampaigns
+    private val relatedCampaignsFlow = relatedCampaigns.asFlow()
 
-    private val _isRelatedCampaignsButtonActive = MediatorLiveData<Boolean>()
+    private val _isRelatedCampaignsVisible = MutableLiveData<Boolean>()
+    val isRelatedCampaignsVisible: LiveData<Boolean>
+        get() = _isRelatedCampaignsVisible
+
+    private val _isRelatedCampaignsButtonActive = MutableLiveData<Boolean>()
     val isRelatedCampaignButtonActive: LiveData<Boolean>
         get() = _isRelatedCampaignsButtonActive
 
@@ -58,9 +72,10 @@ class CampaignRuleViewModel @Inject constructor(
     val isRelatedCampaignRemoved: LiveData<Boolean>
         get() = _isRelatedCampaignRemoved
 
-    private val _isAllInputValid = MediatorLiveData<Boolean>()
+    private val _isAllInputValid = MutableLiveData<Boolean>()
     val isAllInputValid: LiveData<Boolean>
         get() = _isAllInputValid
+    private val isAllInputValidFlow = isAllInputValid.asFlow()
 
     private val _tncClickEvent = SingleLiveEvent<MerchantCampaignTNC.TncRequest>()
     val tncClickEvent: LiveData<MerchantCampaignTNC.TncRequest>
@@ -69,8 +84,9 @@ class CampaignRuleViewModel @Inject constructor(
     private val _isTNCConfirmed = MutableLiveData<Boolean>()
     val isTNCConfirmed: LiveData<Boolean>
         get() = _isTNCConfirmed
+    private val isTNCConfirmedFlow = isTNCConfirmed.asFlow()
 
-    private val _isCampaignCreationAllowed = MediatorLiveData<Boolean>()
+    private val _isCampaignCreationAllowed = MutableLiveData<Boolean>()
     val isCampaignCreationAllowed: LiveData<Boolean>
         get() = _isCampaignCreationAllowed
 
@@ -98,9 +114,10 @@ class CampaignRuleViewModel @Inject constructor(
         }
 
     init {
-        initRelatedCampaignButtonMediator()
-        initInputValidationMediator()
-        initCampaignCreationAllowedMediator()
+        initRelatedCampaignButtonCollector()
+        initRelatedCampaignGroupVisibilityStatusCollector()
+        initInputValidationCollector()
+        initCampaignCreationAllowedCollector()
     }
 
     private fun resetTNCConfirmationStatusIfDataChanged() {
@@ -145,12 +162,28 @@ class CampaignRuleViewModel @Inject constructor(
         fetchCampaignDetail()
     }
 
-    private fun initRelatedCampaignButtonMediator() {
-        _isRelatedCampaignsButtonActive.addSource(_isCampaignRelation) {
-            _isRelatedCampaignsButtonActive.value = it == true
+    private fun initRelatedCampaignButtonCollector() {
+        viewModelScope.launch {
+            combine(
+                isCampaignRelationFlow,
+                relatedCampaignsFlow
+            ) { isRelatedCampaign, relatedCampaigns ->
+                isRelatedCampaign == false
+                        && (relatedCampaigns?.size ?: 0) < MAX_RELATED_CAMPAIGN
+            }
+                .collect { _isRelatedCampaignsButtonActive.postValue(it) }
         }
-        _isRelatedCampaignsButtonActive.addSource(_relatedCampaigns) {
-            _isRelatedCampaignsButtonActive.value = isRelatedCampaignBelowMaximum(it)
+    }
+
+    private fun initRelatedCampaignGroupVisibilityStatusCollector() {
+        viewModelScope.launch {
+            combine(
+                isUniqueBuyerFlow,
+                isCampaignRelationFlow
+            ) { isUniqueBuyer, isCampaignRelation ->
+                isUniqueBuyer == false && isCampaignRelation == false
+            }
+                .collect { _isRelatedCampaignsVisible.postValue(it) }
         }
     }
 
@@ -169,52 +202,47 @@ class CampaignRuleViewModel @Inject constructor(
                 || (isCampaignRelationValue == false && relatedCampaignsValue?.isNotEmpty() == true)
     }
 
-    private fun initInputValidationMediator() {
+    private fun initInputValidationCollector() {
         _isAllInputValid.value = isSelectedPaymentTypeValid
                 && isUniqueAccountValid
                 && isRelatedCampaignValid()
 
-        _isAllInputValid.addSource(selectedPaymentType) {
-            _isAllInputValid.value = it != null
-                    && isUniqueAccountValid
-                    && isRelatedCampaignValid()
-            resetTNCConfirmationStatusIfDataChanged()
-        }
-        _isAllInputValid.addSource(isUniqueBuyer) {
-            _isAllInputValid.value = it != null
-                    && isSelectedPaymentTypeValid
-                    && isRelatedCampaignValid(it)
-            resetTNCConfirmationStatusIfDataChanged()
-        }
-        _isAllInputValid.addSource(isCampaignRelation) {
-            _isAllInputValid.value = isRelatedCampaignValid(isCampaignRelationValue = it)
-                    && isSelectedPaymentTypeValid
-                    && isUniqueAccountValid
-            resetTNCConfirmationStatusIfDataChanged()
-        }
-        _isAllInputValid.addSource(relatedCampaigns) {
-            _isAllInputValid.value = isRelatedCampaignValid(relatedCampaignsValue = it)
-                    && isSelectedPaymentTypeValid
-                    && isUniqueAccountValid
-            resetTNCConfirmationStatusIfDataChanged()
+        viewModelScope.launch {
+            combine(
+                selectedPaymentTypeFlow,
+                isUniqueBuyerFlow,
+                isCampaignRelationFlow,
+                relatedCampaignsFlow,
+                ::validateCampaignRuleInput
+            )
+                .collect { _isAllInputValid.postValue(it) }
         }
     }
 
-    private fun initCampaignCreationAllowedMediator() {
-        _isCampaignCreationAllowed.value =
-            isAllInputValid.value == true && isTNCConfirmed.value == true
-        _isCampaignCreationAllowed.addSource(isAllInputValid) {
-            _isCampaignCreationAllowed.value = it && isTNCConfirmed.value == true
-        }
-        _isCampaignCreationAllowed.addSource(isTNCConfirmed) {
-            _isCampaignCreationAllowed.value = it && isAllInputValid.value == true
-        }
-    }
-
-    private fun isRelatedCampaignBelowMaximum(
-        relatedCampaigns: List<RelatedCampaign>
+    private fun validateCampaignRuleInput(
+        selectedPayment: PaymentType?,
+        isUniqueBuyer: Boolean?,
+        isCampaignRelation: Boolean?,
+        relatedCampaigns: List<RelatedCampaign>?
     ): Boolean {
-        return _isCampaignRelation.value == false && relatedCampaigns.size < MAX_RELATED_CAMPAIGN
+        val validSelectedPayment = selectedPayment != null
+        val validUniqueBuyer = isUniqueBuyer != null
+        val validCampaignRelation = isUniqueBuyer == true
+                || isCampaignRelation == true
+                || (isCampaignRelation == false && relatedCampaigns?.isNotEmpty() == true)
+        resetTNCConfirmationStatusIfDataChanged()
+        return validSelectedPayment && validUniqueBuyer && validCampaignRelation
+    }
+
+    private fun initCampaignCreationAllowedCollector() {
+        _isCampaignCreationAllowed.value = isAllInputValid.value == true
+                && isTNCConfirmed.value == true
+
+        viewModelScope.launch {
+            combine(isAllInputValidFlow, isTNCConfirmedFlow) { isAllInputValid, isTNCConfirmed ->
+                isAllInputValid && isTNCConfirmed
+            }.collect { _isCampaignCreationAllowed.postValue(it) }
+        }
     }
 
     fun onRegularPaymentMethodSelected() {
@@ -235,7 +263,6 @@ class CampaignRuleViewModel @Inject constructor(
 
     fun onAllowCampaignRelation() {
         _isCampaignRelation.value = true
-        _relatedCampaigns.value = emptyList()
     }
 
     fun onDisallowCampaignRelation() {
@@ -247,9 +274,7 @@ class CampaignRuleViewModel @Inject constructor(
         _isRelatedCampaignRemoved.value = true
     }
 
-    fun onRelatedCampaignsChanged(
-        relatedCampaigns: List<RelatedCampaign>
-    ) {
+    fun onRelatedCampaignsChanged(relatedCampaigns: List<RelatedCampaign>) {
         _relatedCampaigns.value = relatedCampaigns
     }
 
@@ -326,15 +351,11 @@ class CampaignRuleViewModel @Inject constructor(
 
     private fun getCampaignRelationIds(campaignId: Long): List<Long> {
         return when {
-            isUniqueBuyer.value == true -> {
-                emptyList()
-            }
+            isUniqueBuyer.value == true -> emptyList()
             isCampaignRelation.value == false -> {
                 relatedCampaigns.value?.map { it.id } ?: emptyList()
             }
-            else -> {
-                listOf(campaignId)
-            }
+            else -> listOf(campaignId)
         }
     }
 }

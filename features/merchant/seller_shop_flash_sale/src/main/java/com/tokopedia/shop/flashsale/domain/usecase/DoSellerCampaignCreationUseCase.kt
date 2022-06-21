@@ -35,6 +35,9 @@ class DoSellerCampaignCreationUseCase @Inject constructor(
             mutation DoSellerCampaignCreation(${'$'}params: DoSellerCampaignCreationRequest!)  {
               doSellerCampaignCreation(params: ${'$'}params){
                 is_success
+                response_header {
+                   errorMessage
+                }
                 campaign_id
                 total_product_failed
                 product_failed {

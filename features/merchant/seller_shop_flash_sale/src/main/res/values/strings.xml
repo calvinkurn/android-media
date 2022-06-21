@@ -13,6 +13,8 @@
     <string name="sfs_no">Tidak</string>
     <string name="sfs_save_as_draft">Simpan Sebagai Draft</string>
     <string name="sfs_ok">Oke</string>
+    <string name="sfs_saved_as_draft">Campaign disimpan sebagai draft.</string>
+    <string name="sfs_placeholder_percent">%d\%%</string>
 
     <!--Campaign List Page-->
     <string name="sfs_your_shop_flash_sale">Flash Sale Toko-mu</string>
@@ -83,7 +85,7 @@
     <string name="sfs_coachmark_first">Isi informasi campaign-mu dan klik lanjut untuk ke tahap berikutnya, ya.</string>
     <string name="sfs_coachmark_second">Jika ingin melengkapi informasi campaign di lain waktu, klik Simpan Draft di sini.</string>
     <string name="sfs_error_message_min_char">Min. 5 huruf</string>
-    <string name="sfs_error_message_forbidden_words">Mengandung kata terlarang.</string>
+    <string name="sfs_error_message_forbidden_words">Mengandung kata terlarang. Pelajari</string>
     <string name="sfs_error_message_field_not_filled">Wajib diisi</string>
     <string name="sfs_error_message_incomplete_input">Info campaign belum lengkap. Lengkapi semua info sebelum lanjut, ya.</string>
     <string name="sfs_error_message_connection_error">Ada gangguan. Coba refresh lagi, ya.</string>
@@ -96,9 +98,12 @@
     <string name="sfs_select_campaign_time">Pilih jam campaign</string>
     <string name="sfs_placeholder_selected_date">Tanggal terpilih: %s</string>
     <string name="sfs_placeholder_empty_quota">Kuota campaign di Bulan %s habis. Pilih jadwal di bulan lain, ya.</string>
+    <string name="sfs_placeholder_empty_current_month_quota">Kuotamu di Bulan %s sudah habis</string>
     <string name="sfs_placeholder_campaign_count">%s Campaign</string>
+    <string name="sfs_placeholder_length_counter">%s/%s</string>
     <string name="sfs_hashtag">#</string>
     <string name="sfs_invalid_hex_color">Format kode hexa yang dipilih tidak valid</string>
+    <string name="sfs_create_campaign_on_another_period">Buat campaign di bulan lain, ya.</string>
 
     <string name="sfs_green_dot">Indikator campaign aktif</string>
 
@@ -114,8 +119,6 @@
     <string name="campaign_teaser_info_title">Informasi Teaser Campaign</string>
 
     <!--no campaign quota dialog box-->
-    <string name="no_campaign_quota_title">Yaah, kuota campaign-mu habis</string>
-    <string name="no_campaign_quota_description">Dapatkan tambahan kuota campaign dengan upgrade keanggotaan tokomu dulu, ya!</string>
     <string name="no_campaign_quota_primary_cta_text">Cek Keanggotaan Toko</string>
     <string name="no_campaign_quota_secondary_cta_text">Kembali</string>
 
@@ -201,6 +204,11 @@
     <string name="campaign_rule_previous_campaign_item_removed">Campaign berhasil dihapus</string>
     <string name="campaign_rule_previous_campaign_item_removed_cta">@string/action_oke</string>
     <string name="campaign_rule_tnc_checkbox_label">Saya menyetujui <b>Syarat &amp; Ketentuan Pembeli</b></string>
+
+    <string name="choose_related_campaign_title">Pilih campaign sebelumnya</string>
+    <string name="choose_related_campaign_add_campaign_button_label">Tambah Campaign</string>
+    <string name="choose_related_campaign_search_not_found_message">Oops, campaign yang kamu cari tidak ditemukan.</string>
+    <string name="choose_related_campaign_item_campaign_code">#%s</string>
 
     <!--Product List Page-->
     <string name="chooseproduct_page_title">Pilih Produk</string>

@@ -5,5 +5,6 @@ data class CampaignCreationResult(
     val isSuccess: Boolean,
     val totalProductFailed: Int,
     val errorDescription: String,
-    val errorTitle: String
+    val errorTitle: String,
+    val errorMessage: String
 )

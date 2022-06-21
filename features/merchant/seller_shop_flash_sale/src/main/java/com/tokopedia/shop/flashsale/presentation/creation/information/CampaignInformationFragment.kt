@@ -1,8 +1,13 @@
 package com.tokopedia.shop.flashsale.presentation.creation.information
 
 import android.content.Context
+import android.graphics.Typeface
 import android.os.Bundle
-import android.text.InputType
+import android.text.*
+import android.text.InputFilter.LengthFilter
+import android.text.method.LinkMovementMethod
+import android.text.style.ClickableSpan
+import android.text.style.StyleSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,6 +17,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.kotlin.extensions.orFalse
@@ -57,6 +63,9 @@ class CampaignInformationFragment : BaseDaggerFragment() {
         private const val ONE_HOUR = 1
         private const val THRESHOLD = 12
         private const val THIRTY_MINUTE = 30
+        private const val CAMPAIGN_NAME_MAX_LENGTH = 15
+        private const val LEARN_MORE_CTA_TEXT_LENGTH = 8
+        private const val REDIRECT_TO_PREVIOUS_PAGE_DELAY : Long = 1_500
 
 
         @JvmStatic
@@ -125,6 +134,7 @@ class CampaignInformationFragment : BaseDaggerFragment() {
         observeCampaignCreation()
         observeCampaignUpdate()
         observeCampaignDetail()
+        observeCampaignQuota()
         observeSaveDraft()
         handlePageMode()
         handleCoachMark()
@@ -184,18 +194,34 @@ class CampaignInformationFragment : BaseDaggerFragment() {
 
     private fun observeCampaignDetail() {
         viewModel.campaignDetail.observe(viewLifecycleOwner) { result ->
+            binding?.loader?.gone()
             when(result) {
                 is Success -> {
-                    binding?.loader?.gone()
-                    binding?.scrollView?.visible()
-                    binding?.cardView?.visible()
+                    binding?.groupContent?.visible()
                     displayCampaignDetail(result.data)
                 }
                 is Fail -> {
-                    binding?.loader?.gone()
-                    binding?.scrollView?.gone()
-                    binding?.cardView?.gone()
-                    binding?.cardView showError result.throwable
+                    binding?.groupContent?.gone()
+                    binding?.root showError result.throwable
+                }
+            }
+        }
+    }
+
+
+    private fun observeCampaignQuota() {
+        viewModel.campaignQuota.observe(viewLifecycleOwner) { result ->
+            binding?.loader?.gone()
+            when (result) {
+                is Success -> {
+                    binding?.groupContent?.visible()
+                    val remainingQuota = result.data
+                    viewModel.setRemainingQuota(remainingQuota)
+                    handleRemainingQuota(remainingQuota)
+                }
+                is Fail -> {
+                    binding?.groupContent?.gone()
+                    binding?.root showError result.throwable
                 }
             }
         }
@@ -209,20 +235,6 @@ class CampaignInformationFragment : BaseDaggerFragment() {
         setupClickListeners()
         setupTextFields()
         setupDatePicker()
-        setupScrollListener()
-    }
-
-    private fun setupScrollListener() {
-        binding?.scrollView?.isVerticalScrollBarEnabled = false
-        binding?.scrollView?.isHorizontalScrollBarEnabled = false
-        binding?.scrollView?.viewTreeObserver?.addOnScrollChangedListener {
-            val scrollY = binding?.scrollView?.scrollY.orZero()
-            if (scrollY.isScrollUp()) {
-                binding?.cardView?.visible()
-            } else {
-                binding?.cardView?.invisible()
-            }
-        }
     }
 
     private fun setupRecyclerView() {
@@ -242,7 +254,13 @@ class CampaignInformationFragment : BaseDaggerFragment() {
 
     private fun setupTextFields() {
         binding?.run {
+            tauCampaignName.textInputLayout.editText?.filters = arrayOf<InputFilter>(
+                LengthFilter(
+                    CAMPAIGN_NAME_MAX_LENGTH
+                )
+            )
             tauCampaignName.textInputLayout.editText?.doOnTextChanged { text ->
+                displayTextLengthCounter()
                 val validationResult = viewModel.validateCampaignName(text)
                 handleCampaignNameValidationResult(validationResult)
             }
@@ -258,7 +276,7 @@ class CampaignInformationFragment : BaseDaggerFragment() {
         binding?.run {
             btnDraft.setOnClickListener { validateDraft() }
             btnCreateCampaign.setOnClickListener {
-                viewModel.validateInput(getCurrentSelection(), Date())
+                viewModel.validateInput(pageMode, getCurrentSelection(), Date())
             }
             btnApply.setOnClickListener {
                 handleApplyButtonClick()
@@ -311,18 +329,18 @@ class CampaignInformationFragment : BaseDaggerFragment() {
     }
 
     private fun handlePageMode() {
+        if (pageMode == PageMode.CREATE) {
+            viewModel.getCampaignQuota(dateManager.getCurrentMonth(), dateManager.getCurrentYear())
+        }
+
         if (pageMode == PageMode.UPDATE) {
-            binding?.loader?.visible()
-            binding?.btnCreateCampaign?.enable()
-            binding?.scrollView?.gone()
-            binding?.cardView?.gone()
             viewModel.getCampaignDetail(campaignId)
         }
     }
 
     private fun handleCoachMark() {
         val shouldShowCoachMark = !sharedPreference.isCampaignInfoCoachMarkDismissed()
-        if (shouldShowCoachMark) {
+        if (shouldShowCoachMark && pageMode == PageMode.CREATE) {
             showCoachMark()
         }
     }
@@ -339,7 +357,7 @@ class CampaignInformationFragment : BaseDaggerFragment() {
                 binding?.btnCreateCampaign?.disable()
             }
             CampaignInformationViewModel.CampaignNameValidationResult.CampaignNameHasForbiddenWords -> {
-                showError(getString(R.string.sfs_error_message_forbidden_words))
+                displayForbiddenWordError()
                 binding?.btnCreateCampaign?.disable()
             }
             CampaignInformationViewModel.CampaignNameValidationResult.Valid -> {
@@ -351,22 +369,26 @@ class CampaignInformationFragment : BaseDaggerFragment() {
 
     private fun handleValidationResult(validationResult: CampaignInformationViewModel.ValidationResult) {
         when (validationResult) {
+            CampaignInformationViewModel.ValidationResult.NoRemainingQuota -> {
+                hideLapsedTeaserTicker()
+                handleRemainingQuota(viewModel.getRemainingQuota())
+            }
             CampaignInformationViewModel.ValidationResult.LapsedStartDate -> {
-                showLapsedScheduleTicker()
+                showErrorTicker(getString(R.string.sfs_error_message_schedule_lapsed_title), getString(R.string.sfs_error_message_schedule_lapsed_description))
                 hideLapsedTeaserTicker()
             }
             CampaignInformationViewModel.ValidationResult.LapsedTeaserStartDate -> {
                 showLapsedTeaserTicker()
-                hideLapsedScheduleTicker()
+                hideErrorTicker()
             }
             CampaignInformationViewModel.ValidationResult.InvalidHexColor -> {
                 hideLapsedTeaserTicker()
-                hideLapsedScheduleTicker()
+                hideErrorTicker()
                 binding?.root showError getString(R.string.sfs_invalid_hex_color)
             }
             CampaignInformationViewModel.ValidationResult.Valid -> {
                 hideLapsedTeaserTicker()
-                hideLapsedScheduleTicker()
+                hideErrorTicker()
 
                 binding?.btnCreateCampaign?.enable()
                 binding?.btnCreateCampaign.showLoading()
@@ -455,7 +477,7 @@ class CampaignInformationFragment : BaseDaggerFragment() {
             binding?.tauStartDate?.editText?.setText(newStartDate.localFormatTo(DateConstant.DATE_TIME_MINUTE_LEVEL))
             adjustEndDate()
             adjustQuantityPicker(newStartDate)
-
+            viewModel.getCampaignQuota(newStartDate.extractMonth(), newStartDate.extractYear())
         }
         bottomSheet.show(childFragmentManager, bottomSheet.tag)
     }
@@ -502,6 +524,7 @@ class CampaignInformationFragment : BaseDaggerFragment() {
         val firstColor = viewModel.getColor().first
         val secondColor = viewModel.getColor().second
         val paymentType = viewModel.getPaymentType()
+        val remainingQuota = viewModel.getRemainingQuota()
 
         return CampaignInformationViewModel.Selection(
             binding?.tauCampaignName?.editText?.text.toString().trim(),
@@ -511,7 +534,8 @@ class CampaignInformationFragment : BaseDaggerFragment() {
             teaserDate,
             firstColor,
             secondColor,
-            paymentType
+            paymentType,
+            remainingQuota
         )
     }
 
@@ -528,30 +552,53 @@ class CampaignInformationFragment : BaseDaggerFragment() {
         viewModel.saveDraft(pageMode, campaignId, getCurrentSelection())
     }
 
+    private fun displayTextLengthCounter() {
+        val length = binding?.tauCampaignName?.editText?.text.toString().trim().length
+        val counterTemplate = String.format(getString(R.string.sfs_placeholder_length_counter), length, CAMPAIGN_NAME_MAX_LENGTH)
+        binding?.tpgNameLengthCounter?.text = counterTemplate
+    }
+
+    private fun displayForbiddenWordError() {
+        val errorMessage = getString(R.string.sfs_error_message_forbidden_words)
+        val spannableString = SpannableString(errorMessage)
+        val clickableSpan: ClickableSpan = object : ClickableSpan() {
+            override fun onClick(textView: View) {
+                ForbiddenWordsInformationBottomSheet().show(childFragmentManager)
+            }
+
+            override fun updateDrawState(ds: TextPaint) {
+                super.updateDrawState(ds)
+                ds.color = MethodChecker.getColor(requireContext(),com.tokopedia.unifyprinciples.R.color.Unify_G500)
+                ds.isUnderlineText = false
+            }
+        }
+
+        val boldSpan = StyleSpan(Typeface.BOLD)
+        spannableString.setSpan(boldSpan, errorMessage.length - LEARN_MORE_CTA_TEXT_LENGTH, errorMessage.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+        spannableString.setSpan(clickableSpan, errorMessage.length - LEARN_MORE_CTA_TEXT_LENGTH, errorMessage.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+        binding?.tpgCampaignNameErrorMessage?.text = spannableString
+        binding?.tpgCampaignNameErrorMessage?.movementMethod = LinkMovementMethod.getInstance()
+        binding?.tpgCampaignNameErrorMessage?.visible()
+    }
+
+
     private fun showError(errorMessage : String) {
-        binding?.tauCampaignName?.isInputError = true
-        binding?.tauCampaignName?.setMessage(errorMessage)
+        binding?.tpgCampaignNameErrorMessage?.text = errorMessage
+        binding?.tpgCampaignNameErrorMessage?.visible()
     }
 
     private fun hideError() {
-        binding?.tauCampaignName?.isInputError = false
-        binding?.tauCampaignName?.setMessage(Constant.EMPTY_STRING)
-    }
-
-    private fun showLapsedScheduleTicker() {
-        binding?.tickerLapsedSchedule?.visible()
-        binding?.tickerLapsedSchedule?.tickerTitle = getString(R.string.sfs_error_message_schedule_lapsed_title)
-        binding?.tickerLapsedSchedule?.setTextDescription(getString(R.string.sfs_error_message_schedule_lapsed_description))
+        binding?.tpgCampaignNameErrorMessage?.invisible()
     }
 
     private fun showErrorTicker(title : String, description : String) {
-        binding?.tickerLapsedSchedule?.visible()
-        binding?.tickerLapsedSchedule?.tickerTitle = title
-        binding?.tickerLapsedSchedule?.setTextDescription(description)
+        binding?.tickerErrorMessage?.visible()
+        binding?.tickerErrorMessage?.tickerTitle = title
+        binding?.tickerErrorMessage?.setTextDescription(description)
     }
 
-    private fun hideLapsedScheduleTicker() {
-        binding?.tickerLapsedSchedule?.gone()
+    private fun hideErrorTicker() {
+        binding?.tickerErrorMessage?.gone()
     }
 
     private fun showLapsedTeaserTicker() {
@@ -573,12 +620,18 @@ class CampaignInformationFragment : BaseDaggerFragment() {
             tauEndDate.isEnabled = isEditDateEnabled
 
             switchTeaser.isChecked = campaign.useUpcomingWidget
+            val upcomingTimeInHours = viewModel.findUpcomingTimeDifferenceInHour(
+                campaign.startDate.removeTimeZone(),
+                campaign.upcomingDate.removeTimeZone()
+            )
+            quantityEditor.editText.setText(upcomingTimeInHours.toString())
+            quantityEditor.maxValue = upcomingTimeInHours
             handleSwitchTeaser(campaign.useUpcomingWidget)
             renderSelectedColor(campaign)
         }
 
-        viewModel.setSelectedStartDate(campaign.startDate)
-        viewModel.setSelectedEndDate(campaign.endDate)
+        viewModel.setSelectedStartDate(campaign.startDate.removeTimeZone())
+        viewModel.setSelectedEndDate(campaign.endDate.removeTimeZone())
         viewModel.setShowTeaser(campaign.useUpcomingWidget)
         viewModel.setSelectedColor(campaign.gradientColor)
         viewModel.setPaymentType(campaign.paymentType)
@@ -658,10 +711,39 @@ class CampaignInformationFragment : BaseDaggerFragment() {
 
     private fun handleSaveCampaignDraftSuccess(result: CampaignCreationResult) {
         if (result.isSuccess) {
-            requireActivity().finish()
-        } else {
-            showErrorTicker(result.errorTitle, result.errorDescription)
+            binding?.root showToaster getString(R.string.sfs_saved_as_draft)
         }
+
+        //Add some spare time caused by Backend write operation delay
+        doOnDelayFinished(REDIRECT_TO_PREVIOUS_PAGE_DELAY) {
+            if (result.isSuccess) {
+                requireActivity().finish()
+            } else {
+                displaySaveDraftError(result)
+            }
+        }
+
     }
 
+    private fun displaySaveDraftError(result: CampaignCreationResult) {
+        if (result.errorTitle.isNotEmpty()) {
+            showErrorTicker(result.errorTitle, result.errorDescription)
+            return
+        }
+
+        binding?.root showError result.errorMessage
+    }
+
+    private fun handleRemainingQuota(remainingQuota: Int) {
+        if (remainingQuota == Constant.ZERO) {
+            val monthName = viewModel.getSelectedStartDate().formatTo(DateConstant.MONTH)
+            val title = String.format(
+                getString(R.string.sfs_placeholder_empty_current_month_quota),
+                monthName
+            )
+            showErrorTicker(title, getString(R.string.sfs_create_campaign_on_another_period))
+        } else {
+            hideErrorTicker()
+        }
+    }
 }

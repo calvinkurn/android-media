@@ -13,7 +13,8 @@ class DoSellerCampaignCreationMapper @Inject constructor() {
             response.doSellerCampaignCreation.isSuccess,
             response.doSellerCampaignCreation.totalProductFailed,
             response.doSellerCampaignCreation.sellerCampaignErrorCreation.errorDescription,
-            response.doSellerCampaignCreation.sellerCampaignErrorCreation.errorTitle
+            response.doSellerCampaignCreation.sellerCampaignErrorCreation.errorTitle,
+            response.doSellerCampaignCreation.responseHeader.errorMessages.joinToString(separator = ",") { it }
         )
 
     }
