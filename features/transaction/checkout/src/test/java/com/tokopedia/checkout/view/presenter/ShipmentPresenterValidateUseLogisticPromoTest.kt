@@ -157,7 +157,10 @@ class ShipmentPresenterValidateUseLogisticPromoTest {
         val promoCode = "promoCode123"
         val promoUiModel = PromoUiModel(
                 globalSuccess = true,
-                voucherOrderUiModels = emptyList()
+                voucherOrderUiModels = listOf(
+                        PromoCheckoutVoucherOrdersItemUiModel(type = "logistic", uniqueId = cartString+"2", code = promoCode, messageUiModel = MessageUiModel(state = "green", text = errorMessage)),
+                        PromoCheckoutVoucherOrdersItemUiModel(type = "merchant", uniqueId = cartString, code = promoCode+"m", messageUiModel = MessageUiModel(state = "green", text = errorMessage)),
+                )
         )
         every { validateUsePromoRevampUseCase.createObservable(any()) } returns Observable.just(
                 ValidateUsePromoRevampUiModel(
