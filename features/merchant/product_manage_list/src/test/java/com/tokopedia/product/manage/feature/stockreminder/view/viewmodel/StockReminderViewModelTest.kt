@@ -1,6 +1,10 @@
 package com.tokopedia.product.manage.feature.stockreminder.view.viewmodel
 
-import com.tokopedia.product.manage.feature.stockreminder.data.source.cloud.query.param.ProductWarehouseParam
+import com.tokopedia.kotlin.extensions.view.EMPTY
+import com.tokopedia.kotlin.extensions.view.ZERO
+import com.tokopedia.product.manage.common.feature.variant.data.model.GetProductV3
+import com.tokopedia.product.manage.common.feature.variant.data.model.Variant
+import com.tokopedia.product.manage.common.feature.variant.data.model.response.GetProductVariantResponse
 import com.tokopedia.product.manage.feature.stockreminder.data.source.cloud.response.createupdateresponse.CreateStockReminderResponse
 import com.tokopedia.product.manage.feature.stockreminder.data.source.cloud.response.createupdateresponse.CreateUpdateDataWrapper
 import com.tokopedia.product.manage.feature.stockreminder.data.source.cloud.response.createupdateresponse.CreateUpdateProduct
@@ -8,6 +12,8 @@ import com.tokopedia.product.manage.feature.stockreminder.data.source.cloud.resp
 import com.tokopedia.product.manage.feature.stockreminder.data.source.cloud.response.getresponse.GetProduct
 import com.tokopedia.product.manage.feature.stockreminder.data.source.cloud.response.getresponse.GetStockReminderResponse
 import com.tokopedia.product.manage.feature.stockreminder.data.source.cloud.response.getresponse.ProductWareHouse
+import com.tokopedia.product.manage.feature.stockreminder.view.data.ProductStockReminderUiModel
+import com.tokopedia.product.manage.feature.stockreminder.view.data.mapper.ProductStockReminderMapper
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import io.mockk.coEvery
@@ -100,6 +106,42 @@ class StockReminderViewModelTest : StockReminderViewModelTestFixture() {
         }
     }
 
+    @Test
+    fun `when get product success should return result`() {
+        runBlocking {
+            val productId = "123"
+            val wareHouseId = "321"
+
+            val variant = Variant(listOf(), listOf(), listOf())
+            val getProductV3 =
+                GetProductV3(productId, String.EMPTY, String.EMPTY, Int.ZERO, Int.ZERO, variant)
+            val getProductVariantResponse = GetProductVariantResponse(getProductV3)
+
+            onGetProduct_thenReturn(productId, wareHouseId, getProductVariantResponse)
+
+            viewModel.getProduct(productId, wareHouseId)
+
+            val expectedResult = Success(ProductStockReminderMapper.mapToProductResult(getProductV3))
+
+            verifyGetProductUseCaseCalled(productId, wareHouseId)
+            verifyGetProduct(expectedResult)
+        }
+    }
+
+    @Test
+    fun `when get product error should set live data fail`() {
+        runBlocking {
+            val productId = "123"
+            val wareHouseId = "321"
+            val error = NullPointerException()
+            onGetProduct_thenThrow(productId, wareHouseId, error)
+
+            viewModel.getProduct(productId, wareHouseId)
+
+            verifyGetProductUseCaseCalled(productId, wareHouseId)
+            verifyGetProductFail()
+        }
+    }
 
     private suspend fun onGetStockReminder_thenReturn(getStockReminderResponse: GetStockReminderResponse) {
         coEvery { stockReminderDataUseCase.executeGetStockReminder() } returns getStockReminderResponse
@@ -115,6 +157,31 @@ class StockReminderViewModelTest : StockReminderViewModelTestFixture() {
 
     private suspend fun onCreateStockReminder_thenThrow(ex: Exception) {
         coEvery { stockReminderDataUseCase.executeCreateStockReminder() } throws ex
+    }
+
+    private suspend fun onGetProduct_thenThrow(
+        productId: String,
+        warehouseId: String, ex: Exception
+    ) {
+        coEvery {
+            stockReminderDataUseCase.executeGetProductStockReminder(
+                productId,
+                warehouseId
+            )
+        } throws ex
+    }
+
+    private suspend fun onGetProduct_thenReturn(
+        productId: String,
+        warehouseId: String,
+        getProductVariantResponse: GetProductVariantResponse
+    ) {
+        coEvery {
+            stockReminderDataUseCase.executeGetProductStockReminder(
+                productId,
+                warehouseId
+            )
+        } returns getProductVariantResponse
     }
 
     private fun verifyGetStockReminderUseCaseCalled() {
@@ -143,5 +210,19 @@ class StockReminderViewModelTest : StockReminderViewModelTestFixture() {
 
     private fun verifyCreateStockReminderFail() {
         assert(viewModel.createStockReminderLiveData.value is Fail)
+    }
+
+    private fun verifyGetProductUseCaseCalled(productId: String, warehouseId: String) {
+        coVerify { stockReminderDataUseCase.executeGetProductStockReminder(productId, warehouseId) }
+    }
+
+    private fun verifyGetProduct(expectedResult: Success<List<ProductStockReminderUiModel>>) {
+        val actualResult =
+            viewModel.getProductLiveData.value as Success<List<ProductStockReminderUiModel>>
+        assertEquals(expectedResult, actualResult)
+    }
+
+    private fun verifyGetProductFail() {
+        assert(viewModel.getProductLiveData.value is Fail)
     }
 }

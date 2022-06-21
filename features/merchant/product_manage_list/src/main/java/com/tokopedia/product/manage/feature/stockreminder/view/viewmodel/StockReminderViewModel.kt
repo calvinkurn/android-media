@@ -8,7 +8,6 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.product.manage.feature.stockreminder.data.source.cloud.query.param.ProductWarehouseParam
 import com.tokopedia.product.manage.feature.stockreminder.data.source.cloud.response.createupdateresponse.CreateStockReminderResponse
 import com.tokopedia.product.manage.feature.stockreminder.data.source.cloud.response.getresponse.GetStockReminderResponse
-import com.tokopedia.product.manage.feature.stockreminder.domain.usecase.GetProductStockReminderUseCase
 import com.tokopedia.product.manage.feature.stockreminder.domain.usecase.StockReminderDataUseCase
 import com.tokopedia.product.manage.feature.stockreminder.view.data.ProductStockReminderUiModel
 import com.tokopedia.product.manage.feature.stockreminder.view.data.mapper.ProductStockReminderMapper
@@ -74,9 +73,7 @@ class StockReminderViewModel @Inject constructor(
     fun getProduct(productId: String, warehouseId: String) {
         showLoading()
         launchCatchError(block = {
-            val requestParams =
-                GetProductStockReminderUseCase.createRequestParams(productId, false, warehouseId)
-            val response = stockReminderDataUseCase.executeGetProductStockReminder(requestParams)
+            val response = stockReminderDataUseCase.executeGetProductStockReminder(productId, warehouseId)
             val product = response.getProductV3
             val data = ProductStockReminderMapper.mapToProductResult(product)
             getProductMutableLiveData.postValue(Success(data))
