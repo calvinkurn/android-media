@@ -20,8 +20,10 @@ class DoSellerCampaignProductSubmissionUseCase @Inject constructor(
 ): GraphqlUseCase<DoSellerCampaignProductSubmissionResponse>(repository) {
 
     companion object {
-        private const val CAMPAIGN_TYPE_SHOP_FLASH_SALE = 0
         private const val REQUEST_PARAM_KEY = "params"
+        const val ACTION_RESERVE = 0
+        const val ACTION_SUBMIT = 1
+        const val ACTION_DELETE = 2
         const val QUERY_NAME = "DoSellerCampaignProductSubmissionQuery"
         const val QUERY = """
             mutation doSellerCampaignProductSubmission(${'$'}params: DoSellerCampaignProductSubmissionRequest!) {
@@ -50,11 +52,12 @@ class DoSellerCampaignProductSubmissionUseCase @Inject constructor(
 
     suspend fun execute(
         campaignId: String,
-        productData: List<DoSellerCampaignProductSubmissionRequest.ProductData>
+        productData: List<DoSellerCampaignProductSubmissionRequest.ProductData>,
+        action: Int = ACTION_RESERVE
     ): Boolean {
         val payload = DoSellerCampaignProductSubmissionRequest(
             campaignId = campaignId.toLongOrNull().orZero(),
-            action = CAMPAIGN_TYPE_SHOP_FLASH_SALE,
+            action = action,
             productData = productData
         )
         val request = buildRequest(payload)

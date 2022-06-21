@@ -12,6 +12,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.loaderdialog.LoaderDialog
 import com.tokopedia.seller_shop_flash_sale.R
 import com.tokopedia.seller_shop_flash_sale.databinding.SsfsFragmentManageProductBinding
 import com.tokopedia.shop.flashsale.common.customcomponent.BaseSimpleListFragment
@@ -68,13 +69,15 @@ class ManageProductFragment :
     private val viewModel by lazy { viewModelProvider.get(ManageProductViewModel::class.java) }
     private var binding by autoClearedNullable<SsfsFragmentManageProductBinding>()
     private val campaignId by lazy { arguments?.getLong(BUNDLE_KEY_CAMPAIGN_ID).orZero() }
+    private val loaderDialog by lazy { context?.let { LoaderDialog(it) } }
     private val manageProductListAdapter by lazy {
         ManageProductListAdapter(
             onEditClicked = {
                 null
             },
             onDeleteClicked = {
-                null
+                loaderDialog?.show()
+                viewModel.removeProducts(campaignId, listOf(it))
             }
         )
     }
@@ -100,6 +103,7 @@ class ManageProductFragment :
         super.onViewCreated(view, savedInstanceState)
         setupView()
         observeProductList()
+        observeRemoveProductsStatus()
     }
 
     private fun setupView() {
@@ -135,6 +139,16 @@ class ManageProductFragment :
                     showEmptyState()
                     result.throwable.localizedMessage?.let { view.showError(it) }
                 }
+            }
+        }
+    }
+
+    private fun observeRemoveProductsStatus() {
+        viewModel.removeProductsStatus.observe(viewLifecycleOwner) {
+            if (it is Success) {
+                loadInitialData()
+            } else if (it is Fail) {
+                view?.showError(it.throwable)
             }
         }
     }
@@ -254,7 +268,9 @@ class ManageProductFragment :
 
     override fun onShowLoading() {}
 
-    override fun onHideLoading() {}
+    override fun onHideLoading() {
+        loaderDialog?.dialog?.hide()
+    }
 
     override fun onDataEmpty() {
         showEmptyState()

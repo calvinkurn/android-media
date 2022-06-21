@@ -56,10 +56,10 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.logger)
     implementation projectOrAar(rootProject.ext.libraries.remoteConfig)
     implementation projectOrAar(rootProject.ext.features.medialoader)
+    implementation projectOrAar(rootProject.ext.features.shopCommon)
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
 
-    implementation rootProject.ext.miscDependencies.loaderviewlibrary
-
+    implementation rootProject.ext.networkDependencies.loggingInterceptor
     implementation rootProject.ext.networkDependencies.glide
 
     implementation rootProject.ext.unifyDependencies.components

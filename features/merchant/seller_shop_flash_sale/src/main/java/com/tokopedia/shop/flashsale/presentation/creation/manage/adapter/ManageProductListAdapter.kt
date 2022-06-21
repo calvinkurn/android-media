@@ -14,7 +14,7 @@ import com.tokopedia.unifyprinciples.Typography
 
 class ManageProductListAdapter(
     private val onEditClicked: () -> Unit,
-    private val onDeleteClicked: () -> Unit
+    private val onDeleteClicked: (product: Product) -> Unit
 ) : RecyclerView.Adapter<ManageProductListAdapter.ManageProductListViewHolder>() {
 
     private var products: MutableList<Product> = mutableListOf()
@@ -60,7 +60,7 @@ class ManageProductListAdapter(
         fun bind(
             product: Product,
             onEditClicked: () -> Unit,
-            onDeleteClicked: () -> Unit
+            onDeleteClicked: (product: Product) -> Unit
         ) {
             binding.apply {
                 imageProductItem.setImageUrl(product.imageUrl.img200)
@@ -112,7 +112,7 @@ class ManageProductListAdapter(
                 }
 
                 iconDeleteProduct.setOnClickListener {
-                    onDeleteClicked.invoke()
+                    onDeleteClicked.invoke(product)
                 }
             }
         }
