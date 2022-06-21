@@ -101,7 +101,7 @@
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintVertical_bias="1.0"
-                app:typographyType="body_3"
+                app:typographyType="display_3"
                 app:typographyWeight="reguler"
                 tools:visibility="gone" />
 
