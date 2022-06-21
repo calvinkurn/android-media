@@ -24,9 +24,11 @@ import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateWithrawalInfoAtt
 import com.tokopedia.affiliate.viewmodel.AffiliateRecyclerViewModel
 import com.tokopedia.affiliate_toko.R
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.DividerUnify
+import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifyprinciples.Typography
 import javax.inject.Inject
 
@@ -36,6 +38,7 @@ class AffiliateRecylerBottomSheet: BottomSheetUnify() {
     private var titleSheet: String = ""
     private var subText: String = ""
     private var filterType: String = ""
+    private var tickerDesc: String = ""
     private var listItem :Any? = null
 
 
@@ -48,9 +51,10 @@ class AffiliateRecylerBottomSheet: BottomSheetUnify() {
         private const val TITLE = "title"
         private const val SUB_TEXT = "subText"
         private const val FILTER_TYPE = "filterType"
+        private const val TICKER_INFO = "tickerInfo"
         const val TYPE_WITHDRAWAL = "withdrawalType"
         const val TYPE_HOME = "homeType"
-        fun newInstance(type: String, title: String?, subText: String?, list: Any?, filterType: String = ""
+        fun newInstance(type: String, title: String?, subText: String?, list: Any?, filterType: String = "",tickerInfo: String? = ""
         ): AffiliateRecylerBottomSheet {
             return AffiliateRecylerBottomSheet().apply {
                 arguments = Bundle().apply {
@@ -58,6 +62,7 @@ class AffiliateRecylerBottomSheet: BottomSheetUnify() {
                     putString(TITLE,title)
                     putString(SUB_TEXT,subText)
                     putString(FILTER_TYPE,filterType)
+                    putString(TICKER_INFO,tickerInfo)
                 }
                 listItem = list
             }
@@ -86,8 +91,18 @@ class AffiliateRecylerBottomSheet: BottomSheetUnify() {
     private fun initDivider() {
         if((listItem as? List<*>)?.isNotEmpty() == true && type == TYPE_HOME && viewModel?.isFeatureWhiteListed() == true) {
             contentView?.findViewById<DividerUnify>(R.id.divider_2)?.show()
+            setTicker()
         }else{
             contentView?.findViewById<DividerUnify>(R.id.divider_2)?.gone()
+        }
+    }
+
+    private fun setTicker() {
+        if(tickerDesc.isNotEmpty()){
+            contentView?.findViewById<Ticker>(R.id.affiliate_metric_announcement_ticker)?.apply {
+                isVisible = true
+                setTextDescription(tickerDesc)
+            }
         }
     }
 
@@ -122,6 +137,7 @@ class AffiliateRecylerBottomSheet: BottomSheetUnify() {
             titleSheet = bundle.getString(TITLE,"")
             subText = bundle.getString(SUB_TEXT,"")
             filterType = bundle.getString(FILTER_TYPE,"")
+            tickerDesc = bundle.getString(TICKER_INFO,"")
         }
     }
 

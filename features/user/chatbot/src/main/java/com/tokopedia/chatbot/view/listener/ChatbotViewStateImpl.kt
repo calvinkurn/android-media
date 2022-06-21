@@ -21,7 +21,7 @@ import com.tokopedia.chat_common.util.IdentifierUtil
 import com.tokopedia.chat_common.view.BaseChatViewStateImpl
 import com.tokopedia.chat_common.view.listener.TypingListener
 import com.tokopedia.chatbot.R
-import com.tokopedia.chatbot.analytics.ChatbotAnalytics.Companion.chatbotAnalytics
+import com.tokopedia.chatbot.analytics.ChatbotAnalytics
 import com.tokopedia.chatbot.data.ConnectionDividerViewModel
 import com.tokopedia.chatbot.data.chatactionbubble.ChatActionSelectionBubbleViewModel
 import com.tokopedia.chatbot.data.csatoptionlist.CsatOptionsViewModel
@@ -40,6 +40,7 @@ import com.tokopedia.chatbot.view.customview.ReasonBottomSheet
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.user.session.UserSessionInterface
+import javax.inject.Inject
 
 /**
  * @author by nisie on 07/12/18.
@@ -61,6 +62,8 @@ class ChatbotViewStateImpl(@NonNull override val view: View,
     private lateinit var rvQuickReply: RecyclerView
     private lateinit var reasonBottomSheet: ReasonBottomSheet
     private lateinit var chatMenuBtn: ImageView
+    @Inject
+    lateinit var chatbotAnalytics: dagger.Lazy<ChatbotAnalytics>
 
     override fun initView() {
         recyclerView = view.findViewById(getRecyclerViewId())
@@ -205,13 +208,13 @@ class ChatbotViewStateImpl(@NonNull override val view: View,
 
     override fun onReceiveQuickReplyEventWithActionButton(visitable: ChatActionSelectionBubbleViewModel) {
         super.onReceiveMessageEvent(visitable)
-        chatbotAnalytics.eventShowView(ACTION_IMRESSION_ACTION_BUTTON)
+        chatbotAnalytics.get().eventShowView(ACTION_IMRESSION_ACTION_BUTTON)
         showQuickReply(visitable.quickReplies)
     }
 
     override fun onReceiveQuickReplyEventWithChatRating(visitable: ChatRatingViewModel) {
         super.onReceiveMessageEvent(visitable)
-        chatbotAnalytics.eventShowView(ACTION_IMRESSION_THUMBS_UP_THUMBS_DOWN)
+        chatbotAnalytics.get().eventShowView(ACTION_IMRESSION_THUMBS_UP_THUMBS_DOWN)
         showQuickReply(visitable.quickReplies)
     }
 

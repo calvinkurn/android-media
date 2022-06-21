@@ -7,6 +7,7 @@
     <string name="path_contactus" translatable="false">/.*\</string>
     <string name="host_contact_us" translatable="false">contact-us</string>
     <string name="path_clear_cache" translatable="false">/clear-cache</string>
+    <string name="host_customercare_inbox_list" translatable="false">customercare-inbox-list</string>
     <string name="applink_title_contact_us" >Contact Us</string>
 
 </resources>

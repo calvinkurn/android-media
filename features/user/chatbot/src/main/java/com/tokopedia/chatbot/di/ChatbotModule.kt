@@ -101,4 +101,9 @@ class ChatbotModule {
         return GraphqlInteractor.getInstance().graphqlRepository
     }
 
+
+    @ChatbotScope
+    @Provides
+    fun provideGraphQlRepository(): GraphqlRepository = GraphqlInteractor.getInstance().graphqlRepository
+
 }

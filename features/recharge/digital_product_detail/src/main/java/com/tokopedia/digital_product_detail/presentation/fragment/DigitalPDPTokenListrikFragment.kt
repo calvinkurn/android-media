@@ -171,7 +171,7 @@ class DigitalPDPTokenListrikFragment : BaseDaggerFragment(),
                 }
 
                 override fun onKeyboardHidden() {
-                    binding?.rechargePdpTokenListrikClientNumberWidget?.setClearable()
+                    // do nothing
                 }
             })
         }
@@ -306,7 +306,8 @@ class DigitalPDPTokenListrikFragment : BaseDaggerFragment(),
                         atcData.data.cartId,
                         viewModel.digitalCheckoutPassData.productId.toString(),
                         viewModel.selectedGridProduct.denomData.title,
-                        atcData.data.priceProduct
+                        atcData.data.priceProduct,
+                        atcData.data.channelId,
                     )
                     navigateToCart(atcData.data.categoryId)
                 }
@@ -325,11 +326,10 @@ class DigitalPDPTokenListrikFragment : BaseDaggerFragment(),
         viewModel.clientNumberValidatorMsg.observe(viewLifecycleOwner, { msg ->
             binding?.rechargePdpTokenListrikClientNumberWidget?.run {
                 setLoading(false)
+                showClearIcon()
                 if (msg.isEmpty()) {
-                    showIndicatorIcon()
                     clearErrorState()
                 } else {
-                    hideIndicatorIcon()
                     setErrorInputField(msg)
                     onHideBuyWidget()
                 }
@@ -570,11 +570,11 @@ class DigitalPDPTokenListrikFragment : BaseDaggerFragment(),
         inputNumberActionType = InputNumberActionType.NOTHING
         binding?.rechargePdpTokenListrikClientNumberWidget?.run {
             if (clientNumber.isNotEmpty()) {
-                setInputNumber(clientNumber, true)
+                setInputNumber(clientNumber)
             } else {
                 if (isInputFieldEmpty()) {
                     setContactName(prefill.clientName)
-                    setInputNumber(prefill.clientNumber, true)
+                    setInputNumber(prefill.clientNumber)
                 }
             }
         }
@@ -768,8 +768,10 @@ class DigitalPDPTokenListrikFragment : BaseDaggerFragment(),
                 override fun onGlobalLayout() {
                     binding?.rechargePdpTokenListrikClientNumberWidget?.viewTreeObserver?.removeOnGlobalLayoutListener(this)
                     binding?.run {
-                        val dynamicPadding = rechargePdpTokenListrikClientNumberWidget.height.pxToDp(
-                            resources.displayMetrics) + extraPadding
+                        val defaultPadding: Int = context?.resources?.displayMetrics?.let {
+                            rechargePdpTokenListrikClientNumberWidget.height.pxToDp(it)
+                        } ?: 0
+                        val dynamicPadding = defaultPadding + extraPadding
                         rechargePdpTokenListrikSvContainer.setPadding(0, dynamicPadding, 0, 0)
                     }
                 }
@@ -787,7 +789,7 @@ class DigitalPDPTokenListrikFragment : BaseDaggerFragment(),
 
         binding?.rechargePdpTokenListrikClientNumberWidget?.run {
             setContactName(clientName)
-            setInputNumber(clientNumber, true)
+            setInputNumber(clientNumber)
         }
     }
 
@@ -1142,7 +1144,7 @@ class DigitalPDPTokenListrikFragment : BaseDaggerFragment(),
                     val scanResult = data.getStringExtra(EXTRA_QR_PARAM)
                     if (!scanResult.isNullOrEmpty()) {
                         binding?.rechargePdpTokenListrikClientNumberWidget?.run {
-                            setInputNumber(scanResult, true)
+                            setInputNumber(scanResult)
                         }
                     }
                 }

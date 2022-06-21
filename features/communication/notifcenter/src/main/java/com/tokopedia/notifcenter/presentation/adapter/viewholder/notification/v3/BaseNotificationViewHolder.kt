@@ -16,6 +16,8 @@ import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toEmptyStringIfNull
 import com.tokopedia.notifcenter.R
 import com.tokopedia.notifcenter.data.uimodel.NotificationUiModel
@@ -30,14 +32,20 @@ abstract class BaseNotificationViewHolder constructor(
 ) : AbstractViewHolder<NotificationUiModel>(itemView) {
 
     protected val container: NotificationConstraintLayout? = itemView?.findViewById(R.id.notification_container)
-    protected val icon: ImageView? = itemView?.findViewById(R.id.iv_icon)
+    private val icon: ImageView? = itemView?.findViewById(R.id.iv_icon)
     protected val type: Typography? = itemView?.findViewById(R.id.txt_notification_type)
     protected val time: Typography? = itemView?.findViewById(R.id.txt_notification_time)
     protected val title: Typography? = itemView?.findViewById(R.id.txt_notification_title)
-    protected val desc: Typography? = itemView?.findViewById(R.id.txt_notification_desc)
+    private val desc: Typography? = itemView?.findViewById(R.id.txt_notification_desc)
+    private val layoutPinTop: View? = itemView?.findViewById(R.id.layout_pin_top)
+    private val tvPinExpired: Typography? = itemView?.findViewById(R.id.tv_pin_expired)
 
-    protected val clickedColor = MethodChecker.getColor(
+    private val unClickedColor = MethodChecker.getColor(
             itemView?.context, R.color.notifcenter_dms_unread_notification
+    )
+
+    private val pinnedColor = MethodChecker.getColor(
+        itemView?.context, com.tokopedia.unifyprinciples.R.color.Unify_YN50
     )
 
     override fun bind(element: NotificationUiModel) {
@@ -49,6 +57,7 @@ abstract class BaseNotificationViewHolder constructor(
         bindTime(element)
         bindClick(element)
         bindRippleBackground()
+        bindPin(element)
         trackSeenNotification(element)
         trackNotificationImpression(element)
     }
@@ -110,7 +119,11 @@ abstract class BaseNotificationViewHolder constructor(
 
     protected open fun bindContainer(element: NotificationUiModel) {
         if (!element.isRead()) {
-            container?.setBackgroundColor(clickedColor)
+            if (element.isPinned) {
+                container?.setBackgroundColor(pinnedColor)
+            } else {
+                container?.setBackgroundColor(unClickedColor)
+            }
         } else {
             container?.background = null
         }
@@ -174,6 +187,35 @@ abstract class BaseNotificationViewHolder constructor(
 
     private fun bindTime(element: NotificationUiModel) {
         time?.text = TimeHelper.getRelativeTimeFromNow(element.createTimeUnixMillis)
+    }
+
+    open fun bindPin(element: NotificationUiModel) {
+        if (element.isPinned) {
+            showPinNotif()
+            bindPinExpired(element, isShow = true)
+        } else {
+            hidePinNotif()
+            bindPinExpired(isShow = false)
+        }
+    }
+
+    protected fun showPinNotif() {
+        layoutPinTop?.show()
+        time?.hide()
+    }
+
+    protected fun hidePinNotif() {
+        layoutPinTop?.hide()
+        time?.show()
+    }
+
+    protected fun bindPinExpired(element: NotificationUiModel? = null, isShow: Boolean) {
+        if (isShow) {
+            tvPinExpired?.show()
+            tvPinExpired?.text = element?.pinnedText?: ""
+        } else {
+            tvPinExpired?.hide()
+        }
     }
 
     private fun getStringResource(stringId: Int): String {

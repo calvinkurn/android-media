@@ -13,13 +13,10 @@ import kotlinx.coroutines.SupervisorJob
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
-class TopAdsHeadlineViewModel (val application: Application, val components: ComponentsItem, val position: Int) : DiscoveryBaseViewModel(), CoroutineScope {
+class TopAdsHeadlineViewModel (val application: Application, val components: ComponentsItem, val position: Int) : DiscoveryBaseViewModel() {
 
     @Inject
     lateinit var topAdsHeadlineRepository: TopAdsHeadlineRepository
-
-    override val coroutineContext: CoroutineContext
-        get() = Dispatchers.Main + SupervisorJob()
 
     fun getHeadlineAdsParam(): String {
         return topAdsHeadlineRepository.getHeadlineAdsParams(components.pageEndPoint, components.data?.get(0)?.paramsMobile ?: "")

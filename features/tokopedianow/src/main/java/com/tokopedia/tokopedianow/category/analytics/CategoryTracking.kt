@@ -670,21 +670,11 @@ object CategoryTracking {
 
     /* Thanos : https://mynakama.tokopedia.com/datatracker/requestdetail/1963 */
 
-    private fun getCurrentCategoryId(categoryIdLvl1: String, categoryIdLvl2: String, categoryIdLvl3: String): String {
-        return if (categoryIdLvl3.isNotBlank() && categoryIdLvl3 != DEFAULT_CATEGORY_ID) {
-            categoryIdLvl3
-        } else if (categoryIdLvl2.isNotBlank() && categoryIdLvl2 != DEFAULT_CATEGORY_ID) {
-            categoryIdLvl2
-        } else {
-            categoryIdLvl1
-        }
-    }
-
     // - 1
-    fun trackClickShareButtonTopNav(userId: String, categoryIdLvl1: String, categoryIdLvl2: String, categoryIdLvl3: String) {
+    fun trackClickShareButtonTopNav(userId: String, categoryIdLvl1: String, categoryIdLvl2: String, categoryIdLvl3: String, currentCategoryId: String) {
         val label = "${categoryIdLvl3.getOrDefaultZeroString()} - ${categoryIdLvl2.getOrDefaultZeroString()} - ${categoryIdLvl1.getOrDefaultZeroString()}"
 
-        val pageSource = "$PAGE_NAME_TOKOPEDIA_NOW.$DEFAULT_NULL_VALUE.$DEFAULT_NULL_VALUE.${getCurrentCategoryId(categoryIdLvl1, categoryIdLvl2, categoryIdLvl3)}"
+        val pageSource = "$PAGE_NAME_TOKOPEDIA_NOW.$DEFAULT_NULL_VALUE.$DEFAULT_NULL_VALUE.$currentCategoryId"
 
         val dataLayer = getDataLayer(
             EVENT_CLICK_COMMUNICATION,

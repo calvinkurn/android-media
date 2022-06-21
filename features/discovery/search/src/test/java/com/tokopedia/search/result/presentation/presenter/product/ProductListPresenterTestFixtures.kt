@@ -6,16 +6,19 @@ import com.tokopedia.discovery.common.constants.SearchConstant
 import com.tokopedia.discovery.common.utils.CoachMarkLocalCache
 import com.tokopedia.filter.common.data.DynamicFilterModel
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
+import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.search.result.domain.model.InspirationCarouselChipsProductModel
 import com.tokopedia.search.result.domain.model.SearchProductModel
 import com.tokopedia.search.result.presentation.ProductListSectionContract
 import com.tokopedia.search.result.presentation.model.ProductItemDataView
 import com.tokopedia.search.result.product.chooseaddress.ChooseAddressPresenterDelegate
 import com.tokopedia.search.result.product.chooseaddress.ChooseAddressView
+import com.tokopedia.search.result.product.requestparamgenerator.RequestParamsGenerator
 import com.tokopedia.search.shouldBe
 import com.tokopedia.search.utils.SchedulersProvider
 import com.tokopedia.topads.sdk.domain.model.CpmData
 import com.tokopedia.topads.sdk.domain.model.Data
+import com.tokopedia.topads.sdk.domain.model.TopAdsModel
 import com.tokopedia.topads.sdk.utils.TopAdsHeadlineHelper
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.usecase.RequestParams
@@ -24,7 +27,6 @@ import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.CapturingSlot
 import io.mockk.every
 import io.mockk.mockk
-import io.mockk.verify
 import org.junit.After
 import org.junit.Before
 import rx.schedulers.Schedulers
@@ -37,7 +39,12 @@ internal open class ProductListPresenterTestFixtures {
 
     protected val productListView = mockk<ProductListSectionContract.View>(relaxed = true)
     protected val searchProductFirstPageUseCase = mockk<UseCase<SearchProductModel>>(relaxed = true)
+    protected open val searchFirstPageUseCase: UseCase<SearchProductModel>
+        get() = searchProductFirstPageUseCase
     protected val searchProductLoadMoreUseCase = mockk<UseCase<SearchProductModel>>(relaxed = true)
+    protected open val searchLoadMoreUseCase: UseCase<SearchProductModel>
+        get() = searchProductLoadMoreUseCase
+    protected val searchProductTopAdsUseCase = mockk<UseCase<TopAdsModel>>(relaxed = true)
     protected val getDynamicFilterUseCase = mockk<UseCase<DynamicFilterModel>>(relaxed = true)
     protected val getProductCountUseCase = mockk<UseCase<String>>(relaxed = true)
     protected val recommendationUseCase = mockk<GetRecommendationUseCase>(relaxed = true)
@@ -50,6 +57,7 @@ internal open class ProductListPresenterTestFixtures {
     protected val topAdsHeadlineHelper = mockk<TopAdsHeadlineHelper>(relaxed = true)
     protected val performanceMonitoring = mockk<PageLoadTimePerformanceInterface>(relaxed = true)
     protected val chooseAddressView = mockk<ChooseAddressView>(relaxed = true)
+    protected val remoteConfigAbTest = mockk<RemoteConfig>(relaxed = true)
     protected val testSchedulersProvider = object : SchedulersProvider {
         override fun io() = Schedulers.immediate()
 
@@ -62,8 +70,8 @@ internal open class ProductListPresenterTestFixtures {
     @Before
     open fun setUp() {
         productListPresenter = ProductListPresenter(
-            searchProductFirstPageUseCase,
-            searchProductLoadMoreUseCase,
+            searchFirstPageUseCase,
+            searchLoadMoreUseCase,
             recommendationUseCase,
             userSession,
             searchCoachMarkLocalCache,
@@ -77,12 +85,9 @@ internal open class ProductListPresenterTestFixtures {
             topAdsHeadlineHelper,
             { performanceMonitoring },
             ChooseAddressPresenterDelegate(chooseAddressView),
+            RequestParamsGenerator(userSession),
         )
         productListPresenter.attachView(productListView)
-
-        verify {
-            chooseAddressView.isChooseAddressWidgetEnabled
-        }
     }
 
     protected fun `Then verify visitable list with product items`(
@@ -127,7 +132,7 @@ internal open class ProductListPresenterTestFixtures {
         return topAdsTemplatePosition
     }
 
-    private fun Visitable<*>.assertTopAdsProduct(topAdsProduct: Data, position: Int) {
+    protected fun Visitable<*>.assertTopAdsProduct(topAdsProduct: Data, position: Int) {
         val productItem = this as ProductItemDataView
 
         productItem.isTopAds shouldBe true
@@ -137,6 +142,7 @@ internal open class ProductListPresenterTestFixtures {
         productItem.topadsTag shouldBe topAdsProduct.tag
         productItem.minOrder shouldBe topAdsProduct.product.productMinimumOrder
         productItem.position shouldBe position
+        productItem.productName shouldBe topAdsProduct.product.name
     }
 
     protected fun Visitable<*>.assertOrganicProduct(

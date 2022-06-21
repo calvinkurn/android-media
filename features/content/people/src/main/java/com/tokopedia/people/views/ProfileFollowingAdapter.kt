@@ -12,8 +12,8 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.library.baseadapter.AdapterCallback
 import com.tokopedia.library.baseadapter.BaseAdapter
-import com.tokopedia.library.baseadapter.BaseItem
 import com.tokopedia.people.R
+import com.tokopedia.people.listener.FollowerFollowingListener
 import com.tokopedia.people.model.ProfileFollowerV2
 import com.tokopedia.people.model.ProfileFollowingListBase
 import com.tokopedia.people.viewmodels.FollowerFollowingViewModel
@@ -26,18 +26,16 @@ open class ProfileFollowingAdapter(
     val viewModel: FollowerFollowingViewModel,
     val callback: AdapterCallback,
     val userSession: UserSession,
-    val fragment: FollowingListingFragment
+    val listener: FollowerFollowingListener
 ) : BaseAdapter<ProfileFollowerV2>(callback) {
 
-    protected var cList: MutableList<BaseItem>? = null
-    public var cursor: String = ""
+    var cursor: String = ""
 
     inner class ViewHolder(view: View) : BaseVH(view) {
         internal var imgProfile: ImageUnify = view.findViewById(R.id.img_profile_image)
         internal var btnAction: UnifyButton = view.findViewById(R.id.btn_action_follow)
         internal var textName: TextView = view.findViewById(R.id.text_display_name)
         internal var textUsername: TextView = view.findViewById(R.id.text_user_name)
-        var isVisited = false
 
         override fun bindView(item: ProfileFollowerV2, position: Int) {
             setData(this, item, position)
@@ -64,6 +62,12 @@ open class ProfileFollowingAdapter(
 
         args[0]?.let { viewModel.getFollowings(it, cursor, PAGE_COUNT) }
     }
+    fun updateFollowUnfollow(position: Int, isFollowed: Boolean) {
+        if (position >= 0 && position < items.size) {
+            items[position].isFollow = isFollowed
+            notifyItemChanged(position)
+        }
+    }
 
     fun onSuccess(data: ProfileFollowingListBase) {
         if (data == null
@@ -77,7 +81,7 @@ open class ProfileFollowingAdapter(
 
         loadCompleted(data.profileFollowings.profileFollower, data)
         cursor = data.profileFollowings.newCursor
-        isLastPage = data.profileFollowings.newCursor.isEmpty();
+        isLastPage = data.profileFollowings.newCursor.isEmpty()
     }
 
     fun onError() {
@@ -91,7 +95,7 @@ open class ProfileFollowingAdapter(
 
         if (item.profile.username.isNotBlank()) {
             holder.textUsername.show()
-            holder.textUsername.text = "@" + item.profile.username
+            holder.textUsername.text = "@${item.profile.username}"
         } else {
             holder.textUsername.hide()
         }
@@ -123,9 +127,9 @@ open class ProfileFollowingAdapter(
                         return@setOnClickListener
                     }
 
-                    if (userSession?.isLoggedIn == false) {
-                        fragment.startActivityForResult(
-                            RouteManager.getIntent(fragment.activity, ApplinkConst.LOGIN),
+                    if (!userSession.isLoggedIn) {
+                        listener.callstartActivityFromFragment(
+                            ApplinkConst.LOGIN,
                             UserProfileFragment.REQUEST_CODE_LOGIN
                         )
                     } else {
@@ -156,9 +160,9 @@ open class ProfileFollowingAdapter(
                         return@setOnClickListener
                     }
 
-                    if (userSession?.isLoggedIn == false) {
-                        fragment.startActivityForResult(
-                            RouteManager.getIntent(fragment.activity, ApplinkConst.LOGIN),
+                    if (!userSession.isLoggedIn) {
+                        listener.callstartActivityFromFragment(
+                            ApplinkConst.LOGIN,
                             UserProfileFragment.REQUEST_CODE_LOGIN
                         )
                     } else {
@@ -173,20 +177,27 @@ open class ProfileFollowingAdapter(
 
         holder.itemView.setOnClickListener { v ->
             UserProfileTracker().clickUserFollowing(userSession.userId, item.profile.userID == userSession.userId)
-            RouteManager.route(itemContext, item.profile.sharelink.applink)
+            val intent = RouteManager.getIntent(
+                itemContext,
+                item.profile.sharelink.applink
+            )
+            intent.putExtra(UserProfileFragment.EXTRA_POSITION_OF_PROFILE, position)
+            listener.callstartActivityFromFragment(
+                intent, UserProfileFragment.REQUEST_CODE_USER_PROFILE
+            )
         }
     }
 
     private fun updateToFollowUi(btnAction: UnifyButton) {
-        btnAction?.text = btnAction.context.getString(R.string.up_lb_following)
-        btnAction?.buttonVariant = UnifyButton.Variant.GHOST
-        btnAction?.buttonType = UnifyButton.Type.ALTERNATE
+        btnAction.text = btnAction.context.getString(R.string.up_lb_following)
+        btnAction.buttonVariant = UnifyButton.Variant.GHOST
+        btnAction.buttonType = UnifyButton.Type.ALTERNATE
     }
 
     private fun updateToUnFollowUi(btnAction: UnifyButton) {
-        btnAction?.text = btnAction.context.getString(R.string.up_btn_text_follow)
-        btnAction?.buttonVariant = UnifyButton.Variant.FILLED
-        btnAction?.buttonType = UnifyButton.Type.MAIN
+        btnAction.text = btnAction.context.getString(R.string.up_btn_text_follow)
+        btnAction.buttonVariant = UnifyButton.Variant.FILLED
+        btnAction.buttonType = UnifyButton.Type.MAIN
     }
 
     override fun onViewAttachedToWindow(vh: RecyclerView.ViewHolder) {

@@ -4,10 +4,20 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.encryption.security.RsaUtils
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
+import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.otp.verification.domain.data.OtpConstant
 import com.tokopedia.profilecompletion.addpin.data.*
+import com.tokopedia.profilecompletion.addpin.data.usecase.CreatePinV2UseCase
+import com.tokopedia.profilecompletion.changepin.data.model.MutatePinV2Data
+import com.tokopedia.profilecompletion.common.model.CheckPinV2Param
+import com.tokopedia.profilecompletion.common.usecase.CheckPinV2UseCase
 import com.tokopedia.profilecompletion.data.ProfileCompletionQueryConstant
+import com.tokopedia.sessioncommon.data.KeyData
+import com.tokopedia.sessioncommon.domain.usecase.CheckPinHashV2UseCase
+import com.tokopedia.sessioncommon.domain.usecase.GeneratePublicKeyUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -20,17 +30,25 @@ import javax.inject.Inject
 
 class AddChangePinViewModel @Inject constructor(
     private val addPinUseCase: GraphqlUseCase<AddPinPojo>,
+    private val createPinV2UseCase: CreatePinV2UseCase,
     private val checkPinUseCase: GraphqlUseCase<CheckPinPojo>,
+    private val checkPinV2UseCase: CheckPinV2UseCase,
     private val getStatusPinUseCase: GraphqlUseCase<StatusPinPojo>,
     private val validatePinUseCase: GraphqlUseCase<ValidatePinPojo>,
     private val skipOtpPinUseCase: GraphqlUseCase<SkipOtpPinPojo>,
     private val rawQueries: Map<String, String>,
+    private val checkPinHashV2UseCase: CheckPinHashV2UseCase,
+    private val generatePublicKeyUseCase: GeneratePublicKeyUseCase,
     dispatcher: CoroutineDispatchers
 ) : BaseViewModel(dispatcher.main) {
 
     private val mutableAddPinResponse = MutableLiveData<Result<AddChangePinData>>()
     val addPinResponse: LiveData<Result<AddChangePinData>>
 	get() = mutableAddPinResponse
+
+    private val mutableMutatePin = MutableLiveData<Result<MutatePinV2Data>>()
+    val mutatePin: LiveData<Result<MutatePinV2Data>>
+	get() = mutableMutatePin
 
     private val mutableCheckPinResponse = MutableLiveData<Result<CheckPinData>>()
     val checkPinResponse: LiveData<Result<CheckPinData>>
@@ -48,6 +66,8 @@ class AddChangePinViewModel @Inject constructor(
     val skipOtpPinResponse: LiveData<Result<SkipOtpPinData>>
 	get() = mutableSkipOtpPinResponse
 
+    var hash = ""
+
     val loadingState = MutableLiveData<Boolean>()
 
     fun addPin(token: String) {
@@ -62,6 +82,20 @@ class AddChangePinViewModel @Inject constructor(
 		onErrorAddPin()
 	    )
 	}
+    }
+
+    fun addPinV2(pin: String, confirmPin: String, validateToken: String) {
+	launchCatchError(block = {
+	    val param = CreatePinV2Param(pin = pin, confirmPin = confirmPin, validateToken = validateToken, hash = hash)
+	    val result = createPinV2UseCase(param).mutatePinV2data
+	    when {
+		result.success -> mutableMutatePin.value = Success(result)
+		result.errors.isNotEmpty() -> mutableMutatePin.value = Fail(MessageErrorException(result.errors[0].message))
+		else -> mutableMutatePin.value = Fail(RuntimeException())
+	    }
+	}, onError = {
+	    mutableMutatePin.value = Fail(it)
+	})
     }
 
     private fun onErrorAddPin(): (Throwable) -> Unit {
@@ -95,6 +129,29 @@ class AddChangePinViewModel @Inject constructor(
 		onErrorCheckPin()
 	    )
 	}
+    }
+
+    fun checkPinV2(pin: String) {
+	launchCatchError(block = {
+	    val keyData = generatePublicKeyUseCase.executeOnBackground().keyData
+	    val encryptedPin = RsaUtils.encryptWithSalt(pin, keyData.key, salt = OtpConstant.PIN_V2_SALT)
+	    hash = keyData.hash
+	    val checkPinParam = CheckPinV2Param(encryptedPin, keyData.hash)
+	    val checkPinResult = checkPinV2UseCase(checkPinParam).data
+	    when {
+		checkPinResult.valid ->  {
+		    mutableCheckPinResponse.value = Success(checkPinResult)
+		}
+		checkPinResult.errorMessage.isNotEmpty() ->  {
+		    mutableCheckPinResponse.value = Success(checkPinResult)
+		}
+		else -> {
+		    mutableCheckPinResponse.value = Fail(RuntimeException())
+		}
+	    }
+	}, onError = {
+	    mutableCheckPinResponse.value = Fail(it)
+	})
     }
 
     private fun onErrorCheckPin(): (Throwable) -> Unit {
@@ -212,6 +269,11 @@ class AddChangePinViewModel @Inject constructor(
 		else -> mutableSkipOtpPinResponse.value = Success(it.data)
 	    }
 	}
+    }
+
+    suspend fun getPublicKey(): KeyData {
+	generatePublicKeyUseCase.setParams("pinv2")
+	return generatePublicKeyUseCase.executeOnBackground().keyData
     }
 
     companion object {

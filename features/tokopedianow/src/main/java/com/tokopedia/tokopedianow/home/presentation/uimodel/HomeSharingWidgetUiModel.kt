@@ -13,11 +13,16 @@ sealed class HomeSharingWidgetUiModel (
         override val state: HomeLayoutItemState = HomeLayoutItemState.NOT_LOADED,
         var slug: String = "",
         var isSender: Boolean = false,
-        var isButtonLoading: Boolean = false,
         var campaignCode: String = "",
         var warehouseId: String = "0",
         var isDisplayed: Boolean = false,
-        var userStatus: String = ""
+        var userStatus: String = "",
+        val ogImage: String = "",
+        val ogTitle: String = "",
+        val ogDescription: String = "",
+        val textDescription: String = "",
+        val sharingUrlParam: String = "",
+        val maxReward: String = ""
     ): HomeSharingWidgetUiModel(
         id,
         state

@@ -8,10 +8,11 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.autocompletecomponent.R
+import com.tokopedia.autocompletecomponent.databinding.SuggestionTopShopWidgetLayoutBinding
 import com.tokopedia.autocompletecomponent.util.getHorizontalShadowOffset
 import com.tokopedia.autocompletecomponent.util.getVerticalShadowOffset
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
-import kotlinx.android.synthetic.main.suggestion_top_shop_widget_layout.view.*
+import com.tokopedia.utils.view.binding.viewBinding
 
 class SuggestionTopShopWidgetViewHolder(
         itemView: View,
@@ -22,6 +23,7 @@ class SuggestionTopShopWidgetViewHolder(
         @LayoutRes
         val LAYOUT = R.layout.suggestion_top_shop_widget_layout
     }
+    private var binding : SuggestionTopShopWidgetLayoutBinding? by viewBinding()
 
     override fun bind(element: SuggestionTopShopWidgetDataView) {
         bindTitle(element)
@@ -29,13 +31,13 @@ class SuggestionTopShopWidgetViewHolder(
     }
 
     private fun bindTitle(element: SuggestionTopShopWidgetDataView) {
-        itemView.suggestionTopShopTitle?.shouldShowWithAction(element.title.isNotEmpty()) {
-            itemView.suggestionTopShopTitle?.text = element.title
+        binding?.suggestionTopShopTitle?.shouldShowWithAction(element.title.isNotEmpty()) {
+            binding?.suggestionTopShopTitle?.text = element.title
         }
     }
 
     private fun bindCards(element: SuggestionTopShopWidgetDataView) {
-        itemView.suggestionTopShopCards?.let {
+        binding?.suggestionTopShopCards?.let {
             it.layoutManager = createLayoutManager()
             it.adapter = createAdapter(element.listSuggestionTopShopCardData)
 
@@ -97,6 +99,7 @@ class SuggestionTopShopWidgetViewHolder(
             outRect.bottom = getBottomOffset()
         }
 
+        @Suppress("MagicNumber")
         private fun getLeftOffset(cardView: CardView, parent: RecyclerView): Int {
             return if (parent.getChildAdapterPosition(cardView) == 0) {
                 left - (cardViewHorizontalOffset / 2)
@@ -109,6 +112,7 @@ class SuggestionTopShopWidgetViewHolder(
             return top - cardViewVerticalOffset
         }
 
+        @Suppress("MagicNumber")
         private fun getRightOffset(cardView: CardView, parent: RecyclerView): Int {
             return if (parent.getChildAdapterPosition(cardView) == (parent.adapter?.itemCount ?: 0) - 1) {
                 right - (cardViewHorizontalOffset / 2)

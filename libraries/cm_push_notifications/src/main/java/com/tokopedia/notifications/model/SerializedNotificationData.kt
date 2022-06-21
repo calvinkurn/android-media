@@ -197,6 +197,10 @@ data class SerializedNotificationData(
 
     @SerializedName(NOTIFICATION_SOUND)
     @Expose
-    var notificationSound: String? = null
+    var notificationSound: String? = null,
+
+    @Expose
+    @SerializedName(IS_REVIEW)
+    var isReviewNotif: Boolean? = false
 
 ) : Parcelable

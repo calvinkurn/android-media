@@ -56,8 +56,9 @@ interface ProductListSectionContract {
         fun trackWishlistRecommendationProductNonLoginUser()
         fun trackWishlistProduct(wishlistTrackingModel: WishlistTrackingModel)
         fun updateWishlistStatus(productId: String?, isWishlisted: Boolean)
-        fun showMessageSuccessWishlistAction(isWishlisted: Boolean)
-        fun showMessageFailedWishlistAction(isWishlisted: Boolean)
+        fun hitWishlistClickUrl(productCardOptionsModel: ProductCardOptionsModel)
+        fun showMessageSuccessWishlistAction(wishlistResult: ProductCardOptionsModel.WishlistResult)
+        fun showMessageFailedWishlistAction(wishlistResult: ProductCardOptionsModel.WishlistResult)
         val previousKeyword: String
         val isLandingPage: Boolean
         fun logWarning(message: String?, throwable: Throwable?)
@@ -107,9 +108,19 @@ interface ProductListSectionContract {
             inspirationCarouselOption: InspirationCarouselDataView.Option,
         )
         fun modifyApplinkToSearchResult(applink: String): String
+        fun trackEventImpressionInspirationCarouselGridItem(product: InspirationCarouselDataView.Option.Product)
+        fun trackEventImpressionInspirationCarouselListItem(product: InspirationCarouselDataView.Option.Product)
+        fun trackEventImpressionInspirationCarouselChipsItem(product: InspirationCarouselDataView.Option.Product)
+        fun trackEventClickInspirationCarouselGridItem(product: InspirationCarouselDataView.Option.Product)
+        fun trackEventClickInspirationCarouselListItem(product: InspirationCarouselDataView.Option.Product)
+        fun trackEventClickInspirationCarouselChipsItem(product: InspirationCarouselDataView.Option.Product)
+        fun openBottomsheetMultipleOptionsQuickFilter(filter: Filter)
+        fun applyDropdownQuickFilter(optionList: List<Option>?)
+        fun trackEventClickDropdownQuickFilter(filterTitle: String)
+        fun trackEventApplyDropdownQuickFilter(optionList: List<Option>?)
     }
 
-    interface Presenter : CustomerPresenter<View> {
+    interface Presenter : CustomerPresenter<View>{
         fun loadMoreData(searchParameter: Map<String, Any>)
         fun loadData(searchParameter: Map<String, Any>)
         val pageComponentId: String
@@ -127,7 +138,7 @@ interface ProductListSectionContract {
         fun handleWishlistAction(productCardOptionsModel: ProductCardOptionsModel?)
         fun onProductImpressed(item: ProductItemDataView?, adapterPosition: Int)
         fun onProductClick(item: ProductItemDataView?, adapterPosition: Int)
-        val quickFilterOptionList: List<Option>
+        val quickFilterList: List<Filter>
         fun getProductCount(mapParameter: Map<String, String>?)
         fun openFilterPage(searchParameter: Map<String, Any>?)
         val isBottomSheetFilterEnabled: Boolean
@@ -137,6 +148,8 @@ interface ProductListSectionContract {
         fun onBroadMatchItemClick(broadMatchItemDataView: BroadMatchItemDataView)
         fun onBroadMatchImpressed(broadMatchDataView: BroadMatchDataView)
         fun onBroadMatchSeeMoreClick(broadMatchDataView: BroadMatchDataView)
+        fun onInspirationCarouselProductImpressed(product: InspirationCarouselDataView.Option.Product)
+        fun onInspirationCarouselProductClick(product: InspirationCarouselDataView.Option.Product)
         fun onThreeDotsClick(item: ProductItemDataView, adapterPosition: Int)
         fun handleChangeView(position: Int, currentLayoutType: SearchConstant.ViewType)
         fun onViewResumed()
@@ -153,5 +166,6 @@ interface ProductListSectionContract {
         )
         fun closeLastFilter(searchParameter: Map<String, Any>)
         fun shopAdsImpressionCount(impressionCount: Int)
+        fun onApplyDropdownQuickFilter(optionList: List<Option>?)
     }
 }

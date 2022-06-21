@@ -235,6 +235,9 @@ public abstract class BaseAdapter<T extends BaseItem> extends RecyclerView.Adapt
      * Method to invoke page loading
      */
     public final void startDataLoading(String ... args) {
+        if (args == null)
+            args = "".split("");
+
         this.args = args;
         if (mCallback != null) {
             if (mCurrentPageIndex == 1) {
@@ -313,7 +316,7 @@ public abstract class BaseAdapter<T extends BaseItem> extends RecyclerView.Adapt
      * @param currentPageIndex
      */
     @CallSuper
-    public void loadData(int currentPageIndex, String ... args) {
+    public void loadData(int currentPageIndex, @Nullable String ... args) {
         setLoading(true);
     }
 

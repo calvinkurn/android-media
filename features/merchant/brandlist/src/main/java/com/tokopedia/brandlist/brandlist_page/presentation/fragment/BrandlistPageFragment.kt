@@ -214,7 +214,6 @@ class BrandlistPageFragment :
             }
 
             isChipSelected = false
-            selectedChip = DEFAULT_SELECTED_CHIPS
             viewModel.resetAllBrandRequestParameter()
             if (recyclerView?.isComputingLayout == false) {
                 adapter?.notifyDataSetChanged()
@@ -315,7 +314,7 @@ class BrandlistPageFragment :
                     val totalBrandsFiltered = if (stateLoadBrands == LoadAllBrandState.LOAD_ALL_BRAND ||
                             stateLoadBrands == LoadAllBrandState.LOAD_INITIAL_ALL_BRAND) totalBrandsNumber else it.data.totalBrands
                     if (recyclerView?.isComputingLayout == false) {
-                        BrandlistPageMapper.resetAllBrandData(adapter)
+                        adapter?.hideLoading()
                     }
 
                     swipeRefreshLayout?.isRefreshing = false

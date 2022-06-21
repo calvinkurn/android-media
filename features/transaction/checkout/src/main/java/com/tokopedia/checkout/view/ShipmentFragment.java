@@ -3313,8 +3313,8 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             } else if (newTokoNowData.isModified()) {
                 ChooseAddressUtils.INSTANCE.updateTokoNowData(
                         activity,
-                        newTokoNowData.getShopId(),
                         newTokoNowData.getWarehouseId(),
+                        newTokoNowData.getShopId(),
                         TokonowWarehouseMapper.INSTANCE.mapWarehousesAddAddressModelToLocal(newTokoNowData.getWarehouses()),
                         newTokoNowData.getServiceType()
                 );

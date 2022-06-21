@@ -1,5 +1,6 @@
 package com.tokopedia.sellerorder.list.domain.mapper
 
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.sellerorder.list.domain.model.SomListGetTickerResponse
 import com.tokopedia.sellerorder.list.presentation.models.SomListTickerUiModel
 import com.tokopedia.unifycomponents.ticker.Ticker
