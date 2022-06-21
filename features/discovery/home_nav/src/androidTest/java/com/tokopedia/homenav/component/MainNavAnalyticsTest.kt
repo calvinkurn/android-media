@@ -35,7 +35,7 @@ import kotlin.reflect.KClass
 /**
  * Created by dhaba
  */
-private const val TAG = "HomeNavAnalyticsTest"
+private const val TAG = "MainNavAnalyticsTest"
 
 @CassavaTest
 class MainNavAnalyticsTest {
