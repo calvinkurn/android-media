@@ -927,7 +927,7 @@ open class SomDetailFragment : BaseDaggerFragment(),
         Intent(activity, SomSeeInvoiceActivity::class.java).apply {
             putExtra(KEY_URL, invoiceUrl)
             putExtra(PARAM_INVOICE, invoice)
-            putExtra(KEY_TITLE, resources.getString(R.string.title_som_invoice))
+            putExtra(KEY_TITLE, requireActivity().getString(R.string.title_som_invoice))
             putExtra(PARAM_ORDER_CODE, detailResponse?.statusCode.toString())
             startActivity(this)
         }
