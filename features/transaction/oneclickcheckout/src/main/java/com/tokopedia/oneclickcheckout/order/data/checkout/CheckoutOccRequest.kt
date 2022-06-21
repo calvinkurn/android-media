@@ -33,10 +33,10 @@ data class ParamCart(
         @SerializedName("feature_type")
         val featureType: Int = FEATURE_TYPE_OCC_MULTI_NON_TOKONOW
 ) {
-        companion object {
-                const val FEATURE_TYPE_OCC_MULTI_NON_TOKONOW = 1
-                const val FEATURE_TYPE_TOKONOW = 11
-        }
+    companion object {
+        const val FEATURE_TYPE_OCC_MULTI_NON_TOKONOW = 1
+        const val FEATURE_TYPE_TOKONOW = 11
+    }
 }
 
 data class ParamData(
@@ -65,7 +65,9 @@ data class ShopProduct(
         @SerializedName("shipping_info")
         val shippingInfo: ShippingInfo = ShippingInfo(),
         @SerializedName("items")
-        val items: List<AddOnItem> = emptyList()
+        val items: List<AddOnItem> = emptyList(),
+        @SerializedName("order_metadata")
+        val orderMetadata: List<OrderMetadata> = emptyList()
 )
 
 data class AddOnItem(
@@ -106,3 +108,14 @@ data class ShippingInfo(
         @SerializedName("checksum")
         val checksum: String = ""
 )
+
+data class OrderMetadata(
+        @SerializedName("key")
+        val key: String = "",
+        @SerializedName("value")
+        val value: String = ""
+) {
+    companion object {
+        const val FREE_SHIPPING_METADATA = "free_shipping_metadata"
+    }
+}

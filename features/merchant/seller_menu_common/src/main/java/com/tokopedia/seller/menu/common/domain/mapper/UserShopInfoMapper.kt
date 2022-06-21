@@ -68,7 +68,7 @@ class UserShopInfoMapper @Inject constructor(private val userSession: UserSessio
             }
             goldPMStatus.powerMerchant.pmTier == PMTier.PRO -> {
                 if (getPowerMerchantNotActive(statusPM)) {
-                    PowerMerchantProStatus.InActive
+                    PowerMerchantStatus.NotActive
                 } else {
                     when (shopGrade) {
                         PMProTier.ADVANCE -> {
