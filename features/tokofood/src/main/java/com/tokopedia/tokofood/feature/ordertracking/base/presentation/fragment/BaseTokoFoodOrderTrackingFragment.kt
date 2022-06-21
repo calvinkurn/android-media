@@ -20,6 +20,7 @@ import com.tokopedia.kotlin.extensions.view.removeObservers
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.tokofood.common.util.TokofoodErrorLogger
 import com.tokopedia.tokofood.common.util.TokofoodExt.showErrorToaster
+import com.tokopedia.tokofood.common.util.TokofoodRouteManager
 import com.tokopedia.tokofood.databinding.FragmentTokofoodOrderTrackingBinding
 import com.tokopedia.tokofood.feature.ordertracking.analytics.TokoFoodPostPurchaseAnalytics
 import com.tokopedia.tokofood.feature.ordertracking.di.component.TokoFoodOrderTrackingComponent
@@ -148,7 +149,9 @@ class BaseTokoFoodOrderTrackingFragment :
     }
 
     override fun onTickerLinkClick(linkUrl: String) {
-        context?.let { RouteManager.route(it, linkUrl) }
+        context?.let {
+            TokofoodRouteManager.routePrioritizeInternal(it, linkUrl)
+        }
     }
 
     override fun onAutoRefreshTempFinishOrder(orderDetailResultUiModel: OrderDetailResultUiModel) {

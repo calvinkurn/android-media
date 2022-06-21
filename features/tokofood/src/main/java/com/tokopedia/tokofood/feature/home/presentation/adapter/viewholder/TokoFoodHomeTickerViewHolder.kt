@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.tokofood.R
+import com.tokopedia.tokofood.common.util.TokofoodRouteManager
 import com.tokopedia.tokofood.databinding.ItemTokofoodTickerBinding
 import com.tokopedia.tokofood.feature.home.presentation.uimodel.TokoFoodHomeTickerUiModel
 import com.tokopedia.unifycomponents.ticker.Ticker
@@ -36,7 +37,7 @@ class TokoFoodHomeTickerViewHolder(
         val context = itemView.context
         val url = linkUrl.toString()
         if (url.startsWith(PREFIX_LINK)) {
-            RouteManager.route(context, url)
+            TokofoodRouteManager.routePrioritizeInternal(context, url)
         } else {
             RouteManager.route(context, "${ApplinkConst.WEBVIEW}?url=${url}")
         }
