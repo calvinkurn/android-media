@@ -159,10 +159,10 @@ class CreatePostPreviewFragmentNew : BaseCreatePostFragmentNew(), CreateContentP
         productAdapter.setList(relatedProducts)
         productAdapter.removeEmpty()
 
-        createPostModel.maxProduct = 5
+        createPostModel.maxProduct = MAX_PRODUCT_TAG
         updateTotalProductTaggedText()
 
-        if (getLatestTotalProductCount() == 5)
+        if (getLatestTotalProductCount() == MAX_PRODUCT_TAG)
             disableProductIcon()
         else
             enableProductIcon()
@@ -604,7 +604,7 @@ class CreatePostPreviewFragmentNew : BaseCreatePostFragmentNew(), CreateContentP
 
         updateTotalProductTaggedText()
 
-        if (getLatestTotalProductCount() == 5)
+        if (getLatestTotalProductCount() == MAX_PRODUCT_TAG)
             disableProductIcon()
 
         if (mediaModel.products.size > 0) {
