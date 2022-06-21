@@ -54,7 +54,6 @@ import com.tokopedia.sellerhome.analytic.performance.SellerHomePerformanceMonito
 import com.tokopedia.sellerhome.analytic.performance.SellerHomePerformanceMonitoringConstant.SELLER_HOME_PROGRESS_TRACE
 import com.tokopedia.sellerhome.analytic.performance.SellerHomePerformanceMonitoringConstant.SELLER_HOME_RECOMMENDATION_TRACE
 import com.tokopedia.sellerhome.analytic.performance.SellerHomePerformanceMonitoringConstant.SELLER_HOME_TABLE_TRACE
-import com.tokopedia.sellerhome.common.FragmentType
 import com.tokopedia.sellerhome.common.SellerHomeConst
 import com.tokopedia.sellerhome.common.config.SellerHomeRemoteConfig
 import com.tokopedia.sellerhome.common.errorhandler.SellerHomeErrorHandler
@@ -63,7 +62,6 @@ import com.tokopedia.sellerhome.databinding.FragmentSahBinding
 import com.tokopedia.sellerhome.di.component.HomeDashboardComponent
 import com.tokopedia.sellerhome.domain.model.PROVINCE_ID_EMPTY
 import com.tokopedia.sellerhome.domain.model.ShippingLoc
-import com.tokopedia.sellerhome.view.FragmentChangeCallback
 import com.tokopedia.sellerhome.view.SellerHomeDiffUtilCallback
 import com.tokopedia.sellerhome.view.activity.SellerHomeActivity
 import com.tokopedia.sellerhome.view.customview.NotificationDotBadge
@@ -112,7 +110,7 @@ import kotlin.coroutines.CoroutineContext
  */
 
 class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFactoryImpl>(),
-    WidgetListener, CoroutineScope, SellerHomeFragmentListener, FragmentChangeCallback {
+    WidgetListener, CoroutineScope, SellerHomeFragmentListener {
 
     companion object {
         @JvmStatic
@@ -185,16 +183,8 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
 
     private var emptyState: EmptyStateUnify? = null
 
-    private var recommendationWidgetView: View? = null
     private var rebateWidgetView: View? = null
     private var navigationOtherMenuView: View? = null
-    private val coachMark: CoachMark2? by lazy {
-        context?.let {
-            if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP) {
-                CoachMark2(it)
-            } else null
-        }
-    }
     private var rebateCoachMark: CoachMark2? = null
     private var universalShareBottomSheet: UniversalShareBottomSheet? = null
     private var shopShareData: ShopShareDataUiModel? = null
@@ -340,14 +330,6 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
 
     override fun loadData(page: Int) {}
 
-    override fun setCurrentFragmentType(fragmentType: Int) {
-        if (fragmentType != FragmentType.HOME) {
-            if (coachMark?.isDismissed == false) {
-                coachMark?.dismissCoachMark()
-            }
-        }
-    }
-
     override fun onTooltipClicked(tooltip: TooltipUiModel) {
         if (!isAdded || context == null) return
         val tooltipBottomSheet =
@@ -457,11 +439,6 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
 
     override fun sendRecommendationTickerCtaClickEvent(element: RecommendationWidgetUiModel) {
         SellerHomeTracking.sendRecommendationTickerCtaClickEvent(element)
-    }
-
-    override fun showRecommendationWidgetCoachMark(view: View) {
-        recommendationWidgetView = view
-        showCoachMarkShopScore()
     }
 
     override fun onScrollToTop() {
@@ -656,8 +633,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
     }
 
     override fun showAnnouncementWidgetCoachMark(dataKey: String, view: View) {
-        val isEligibleCoachMark = !coachMarkPrefHelper.getRebateCoachMarkMvpStatus() &&
-                coachMarkPrefHelper.getRecommendationCoachMarkStatus()
+        val isEligibleCoachMark = !coachMarkPrefHelper.getRebateCoachMarkMvpStatus()
         if (isEligibleCoachMark && dataKey == CoachMarkPrefHelper.REBATE_MVP_DATA_KEY) {
             if (this.rebateWidgetView == null) {
                 this.rebateWidgetView = view
@@ -675,8 +651,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
     }
 
     override fun showProgressBarCoachMark(dataKey: String, view: View) {
-        val isEligibleCoachMark = !coachMarkPrefHelper.getRebateCoachMarkUltimateStatus() &&
-                coachMarkPrefHelper.getRecommendationCoachMarkStatus()
+        val isEligibleCoachMark = !coachMarkPrefHelper.getRebateCoachMarkUltimateStatus()
         if (isEligibleCoachMark && dataKey == CoachMarkPrefHelper.REBATE_ULTIMATE_DATA_KEY) {
             if (this.rebateWidgetView == null) {
                 this.rebateWidgetView = view
@@ -806,23 +781,6 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         }
     }
 
-    private fun showCoachMarkShopScore() {
-        val coachMarkItems by getCoachMarkItems()
-        val isEligibleShowRecommendationCoachMark =
-            !coachMarkPrefHelper.getRecommendationCoachMarkStatus()
-        if (isEligibleShowRecommendationCoachMark) {
-            if (coachMarkItems.isNotEmpty()) {
-                coachMark?.onFinishListener = {
-                    coachMarkPrefHelper.saveRecommendationCoachMarkFlag()
-                    coachMark?.coachMarkItem?.clear()
-                }
-                coachMark?.isDismissed = false
-                coachMark?.coachMarkItem?.clear()
-                coachMark?.showCoachMark(coachMarkItems)
-            }
-        }
-    }
-
     private fun applyCalendarFilter(element: CalendarWidgetUiModel, dateFilter: DateFilterItem) {
         SellerHomeTracking.sendCalendarFilterClickEvent(element, dateFilter)
         val calendarWidgets = mutableListOf<BaseWidgetUiModel<*>>()
@@ -917,7 +875,6 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
 
             setOnVerticalScrollListener {
                 requestVisibleWidgetsData()
-                handleCoachMarkVisibility()
                 handleRebateCoachMark()
             }
         }
@@ -1247,7 +1204,6 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
                 is Success -> {
                     stopLayoutCustomMetric(result.data)
                     setOnSuccessGetLayout(result.data)
-                    setRecommendationCoachMarkEligibility()
                 }
                 is Fail -> {
                     stopCustomMetric(
@@ -2115,25 +2071,6 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
                 this !is DescriptionWidgetUiModel
     }
 
-    private fun setRecommendationCoachMarkEligibility() {
-        val isEligibleShowRecommendationCoachMark =
-            !coachMarkPrefHelper.getRecommendationCoachMarkStatus()
-        if (isEligibleShowRecommendationCoachMark) {
-            scrollToRecommendationWidget()
-        }
-    }
-
-    private fun scrollToRecommendationWidget() {
-        val widgetPosition = adapter.data.indexOfFirst { it is RecommendationWidgetUiModel }
-        if (widgetPosition != RecyclerView.NO_POSITION) {
-            val layoutManager = recyclerView?.layoutManager as? SellerHomeLayoutManager
-            layoutManager?.scrollToPositionWithOffset(widgetPosition, 0)
-            recyclerView?.post {
-                requestVisibleWidgetsData()
-            }
-        }
-    }
-
     private fun handleRebateCoachMark() {
         if (rebateWidgetView == null) return
 
@@ -2157,35 +2094,6 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         }
     }
 
-    private fun handleCoachMarkVisibility() {
-        val recommendationWidgetCoachMarkIndex = Int.ZERO
-        if (coachMark?.currentIndex != recommendationWidgetCoachMarkIndex) return
-
-        getSellerHomeLayoutManager()?.let { layoutManager ->
-            if (coachMark?.isDismissed.orFalse()) {
-                val firstRecommendationWidget =
-                    adapter.data.indexOfFirst { it is RecommendationWidgetUiModel }
-                val firstVisibleIndex = layoutManager.findFirstVisibleItemPosition()
-                val lastVisibleIndex = layoutManager.findLastCompletelyVisibleItemPosition()
-                if ((lastVisibleIndex != RecyclerView.NO_POSITION && lastVisibleIndex == firstRecommendationWidget)
-                    || firstVisibleIndex >= firstRecommendationWidget
-                ) {
-                    showCoachMarkShopScore()
-                }
-            } else {
-                val firstRecommendationWidget =
-                    adapter.data.indexOfFirst { it is RecommendationWidgetUiModel }
-                if (firstRecommendationWidget != RecyclerView.NO_POSITION) {
-                    val firstVisibleIndex = layoutManager.findFirstVisibleItemPosition()
-                    val lastVisibleIndex = layoutManager.findLastVisibleItemPosition()
-                    if (firstRecommendationWidget !in firstVisibleIndex..lastVisibleIndex.minus(1)) {
-                        coachMark?.dismissCoachMark()
-                    }
-                }
-            }
-        }
-    }
-
     private fun getSellerHomeLayoutManager(): SellerHomeLayoutManager? {
         return recyclerView?.layoutManager as? SellerHomeLayoutManager
     }
@@ -2203,33 +2111,6 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
             )
         }
         return coachMarkItems
-    }
-
-    private fun getCoachMarkItems(): Lazy<ArrayList<CoachMark2Item>> {
-        return lazy {
-            val coachMarkItems = arrayListOf<CoachMark2Item>()
-            recommendationWidgetView?.let {
-                coachMarkItems.add(
-                    CoachMark2Item(
-                        anchorView = it,
-                        title = getString(R.string.sah_recommendation_coach_mark_title),
-                        description = getString(R.string.sah_recommendation_coach_mark_description),
-                        position = CoachMark2.POSITION_BOTTOM
-                    )
-                )
-            }
-            navigationOtherMenuView?.let {
-                coachMarkItems.add(
-                    CoachMark2Item(
-                        anchorView = it,
-                        title = getString(R.string.sah_other_menu_coach_mark_title),
-                        description = getString(R.string.sah_other_menu_coach_mark_description),
-                        position = CoachMark2.POSITION_TOP
-                    )
-                )
-            }
-            return@lazy coachMarkItems
-        }
     }
 
     private fun handleMilestoneWidgetFinishedMission(requestCode: Int) {
