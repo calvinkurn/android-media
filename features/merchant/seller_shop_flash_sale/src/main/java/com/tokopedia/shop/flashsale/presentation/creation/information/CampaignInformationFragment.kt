@@ -43,7 +43,8 @@ import com.tokopedia.shop.flashsale.presentation.creation.information.adapter.Gr
 import com.tokopedia.shop.flashsale.presentation.creation.information.bottomsheet.CampaignDatePickerBottomSheet
 import com.tokopedia.shop.flashsale.presentation.creation.information.bottomsheet.CampaignTeaserInformationBottomSheet
 import com.tokopedia.shop.flashsale.presentation.creation.information.bottomsheet.ForbiddenWordsInformationBottomSheet
-import com.tokopedia.shop.flashsale.presentation.creation.information.dialog.BackConfirmationDialog
+import com.tokopedia.shop.flashsale.presentation.creation.information.dialog.CancelCreateCampaignConfirmationDialog
+import com.tokopedia.shop.flashsale.presentation.creation.information.dialog.CancelEditCampaignConfirmationDialog
 import com.tokopedia.shop.flashsale.presentation.creation.manage.ManageProductActivity
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -111,7 +112,7 @@ class CampaignInformationFragment : BaseDaggerFragment() {
         super.onAttach(context)
         val callback: OnBackPressedCallback = object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
-                showBackToPreviousPageConfirmation()
+                handleBackConfirmation()
             }
         }
         requireActivity().onBackPressedDispatcher.addCallback(this, callback)
@@ -245,11 +246,8 @@ class CampaignInformationFragment : BaseDaggerFragment() {
     }
 
     private fun setupToolbar() {
-        binding?.header?.headerSubTitle =
-            String.format(getString(R.string.sfs_placeholder_step_counter), FIRST_STEP)
-        binding?.header?.setNavigationOnClickListener {
-            showBackToPreviousPageConfirmation()
-        }
+        binding?.header?.headerSubTitle = String.format(getString(R.string.sfs_placeholder_step_counter), FIRST_STEP)
+        binding?.header?.setNavigationOnClickListener { handleBackConfirmation() }
     }
 
     private fun setupTextFields() {
@@ -662,11 +660,25 @@ class CampaignInformationFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun showBackToPreviousPageConfirmation() {
-        val dialog = BackConfirmationDialog(requireActivity())
+    private fun handleBackConfirmation() {
+        if (pageMode == PageMode.CREATE) {
+            showCancelCreateCampaignConfirmationDialog()
+        } else {
+            showCancelEditCampaignConfirmationDialog()
+        }
+    }
+
+    private fun showCancelCreateCampaignConfirmationDialog() {
+        val dialog = CancelCreateCampaignConfirmationDialog(requireActivity())
         dialog.setOnPrimaryActionClick { requireActivity().finish() }
-        dialog.setOnSecondaryActionClick {  }
         dialog.setOnThirdActionClick { validateDraft() }
+        dialog.show()
+    }
+
+    private fun showCancelEditCampaignConfirmationDialog() {
+        val dialog = CancelEditCampaignConfirmationDialog(requireActivity())
+        dialog.setOnPrimaryActionClick { requireActivity().finish() }
+        dialog.setOnSecondaryActionClick { validateDraft() }
         dialog.show()
     }
 

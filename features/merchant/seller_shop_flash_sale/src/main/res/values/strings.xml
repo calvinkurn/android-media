@@ -15,6 +15,7 @@
     <string name="sfs_ok">Oke</string>
     <string name="sfs_saved_as_draft">Campaign disimpan sebagai draft.</string>
     <string name="sfs_placeholder_percent">%d\%%</string>
+    <string name="sfs_save_changes">Simpan Perubahan</string>
 
     <!--Campaign List Page-->
     <string name="sfs_your_shop_flash_sale">Flash Sale Toko-mu</string>
@@ -90,9 +91,12 @@
     <string name="sfs_error_message_incomplete_input">Info campaign belum lengkap. Lengkapi semua info sebelum lanjut, ya.</string>
     <string name="sfs_error_message_connection_error">Ada gangguan. Coba refresh lagi, ya.</string>
     <string name="sfs_learn">Pelajari</string>
-    <string name="sfs_delete_confirmation_title">Yakin ingin hapus campaign?</string>
-    <string name="sfs_delete_confirmation_description">Kamu bisa hapus pengaturan campaign yang sudah diisi atau simpan pengaturan sebagai draft.</string>
+    <string name="sfs_cancel_create_campaign_confirmation_title">Yakin ingin hapus campaign?</string>
+    <string name="sfs_cancel_create_campaign_confirmation_description">Kamu bisa hapus pengaturan campaign yang sudah diisi atau simpan pengaturan sebagai draft.</string>
+    <string name="sfs_cancel_edit_campaign_confirmation_title">Yakin ingin keluar?</string>
+    <string name="sfs_cancel_edit_campaign_confirmation_description">Perubahan info campaign tidak akan tersimpan dan campaign-mu akan sama seperti sebelumnya</string>
     <string name="sfs_confirm_delete">Ya, Hapus</string>
+    <string name="sfs_confirm_exit">Ya, Keluar</string>
     <string name="sfs_date_picker_description">Kamu hanya bisa menjadwal maks. 5 campaign tiap bulan dengan maks. durasi 7 hari.</string>
     <string name="sfs_select_campaign_date">Pilih tanggal campaign</string>
     <string name="sfs_select_campaign_time">Pilih jam campaign</string>
