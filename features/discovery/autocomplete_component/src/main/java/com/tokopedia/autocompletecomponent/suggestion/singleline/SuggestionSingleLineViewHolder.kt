@@ -31,6 +31,7 @@ class SuggestionSingleLineViewHolder(
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.layout_autocomplete_single_line_item
+        private const val IMAGE_CORNER_RADIUS = 4
     }
     private var binding: LayoutAutocompleteSingleLineItemBinding? by viewBinding()
 
@@ -46,7 +47,7 @@ class SuggestionSingleLineViewHolder(
             if (item.isCircleImage()) {
                 it.loadImageCircle(item.imageUrl)
             } else {
-                it.cornerRadius = 4
+                it.cornerRadius = IMAGE_CORNER_RADIUS
                 it.loadImage(
                     item.imageUrl,
                     properties = { setErrorDrawable(R.drawable.autocomplete_ic_time) }

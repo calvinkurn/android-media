@@ -34,7 +34,7 @@ class SuggestionDoubleLineViewHolder(
         @LayoutRes
         val LAYOUT = R.layout.layout_autocomplete_double_line_item
 
-        private const val FONT_LEVEL_14_SP = 2
+        private const val IMAGE_CORNER_RADIUS = 4
     }
 
     private var binding: LayoutAutocompleteDoubleLineItemBinding? by viewBinding()
@@ -58,7 +58,7 @@ class SuggestionDoubleLineViewHolder(
         if (item.data.isCircleImage()) {
             iconImage.loadImageCircle(item.data.imageUrl)
         } else {
-            iconImage.cornerRadius = 4
+            iconImage.cornerRadius = IMAGE_CORNER_RADIUS
             iconImage.loadImage(item.data.imageUrl)
         }
     }
