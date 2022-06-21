@@ -47,6 +47,7 @@ import com.tokopedia.profilecompletion.profileinfo.data.ProfileInfoData
 import com.tokopedia.profilecompletion.profileinfo.data.ProfileInfoError
 import com.tokopedia.profilecompletion.profileinfo.data.ProfileInfoUiModel
 import com.tokopedia.profilecompletion.profileinfo.data.Detail
+import com.tokopedia.profilecompletion.profileinfo.tracker.CloseAccountTracker
 import com.tokopedia.profilecompletion.profileinfo.tracker.ProfileInfoTracker
 import com.tokopedia.profilecompletion.profileinfo.tracker.ProfileInfoTracker.Companion.LABEL_ENTRY_POINT_USER_ID
 import com.tokopedia.profilecompletion.profileinfo.view.adapter.ProfileInfoAdapter
@@ -91,6 +92,9 @@ class ProfileInfoFragment : BaseDaggerFragment(),
 
     @Inject
     lateinit var tracker: ProfileInfoTracker
+
+    @Inject
+    lateinit var closeAccountTracker: CloseAccountTracker
 
     private val binding: FragmentProfileInfoBinding? by viewBinding()
 
@@ -153,7 +157,10 @@ class ProfileInfoFragment : BaseDaggerFragment(),
         binding?.dividerCloseAccount?.showWithCondition(isUsingRollenceCloseAccount)
         binding?.tgCloseAccount?.showWithCondition(isUsingRollenceCloseAccount)
         if (isUsingRollenceCloseAccount) {
-            binding?.tgCloseAccount?.setOnClickListener { checkFinancialAssets() }
+            binding?.tgCloseAccount?.setOnClickListener {
+                closeAccountTracker.trackClickCloseAccount(CloseAccountTracker.LABEL_KLIK)
+                checkFinancialAssets()
+            }
         }
     }
 
@@ -209,6 +216,7 @@ class ProfileInfoFragment : BaseDaggerFragment(),
                         goToCloseAccount()
                 }
                 is Fail -> {
+                    closeAccountTracker.trackClickCloseAccount(CloseAccountTracker.LABEL_FAILED)
                     showToasterError(getString(close_account_failed))
                 }
             }
