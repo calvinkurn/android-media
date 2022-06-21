@@ -1,7 +1,8 @@
 package com.tokopedia.autocompletecomponent.suggestion.doubleline
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.autocompletecomponent.suggestion.*
+import com.tokopedia.autocompletecomponent.suggestion.BaseSuggestionDataView
+import com.tokopedia.autocompletecomponent.suggestion.SuggestionAdapterTypeFactory
 
 class SuggestionDoubleLineDataDataView(
     val data: BaseSuggestionDataView = BaseSuggestionDataView()
