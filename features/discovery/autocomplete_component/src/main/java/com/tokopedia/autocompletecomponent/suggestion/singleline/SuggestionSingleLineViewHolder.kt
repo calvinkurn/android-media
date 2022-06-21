@@ -62,7 +62,11 @@ class SuggestionSingleLineViewHolder(
             binding?.singleLineTitle?.setWeight(Typography.BOLD)
         } else {
             val startIndex = indexOfSearchQuery(item.title, item.searchTerm)
-            if (startIndex != -1) {
+            if (startIndex == -1) {
+                binding?.singleLineTitle?.setWeight(Typography.BOLD)
+            }
+            else {
+                binding?.singleLineTitle?.setWeight(Typography.REGULAR)
                 highlightedTitle.safeSetSpan(
                     StyleSpan(Typeface.BOLD),
                     0,

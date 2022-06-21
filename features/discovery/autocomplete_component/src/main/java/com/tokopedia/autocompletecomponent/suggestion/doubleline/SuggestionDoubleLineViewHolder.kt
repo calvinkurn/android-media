@@ -106,10 +106,11 @@ class SuggestionDoubleLineViewHolder(
 
     private fun bindBoldTextTitle(item: BaseSuggestionDataView) {
         val doubleLineTitle = binding?.doubleLineTitle ?: return
-        doubleLineTitle.weightType = Typography.BOLD
         if (searchQueryStartIndexInKeyword == -1) {
+            doubleLineTitle.setWeight(Typography.BOLD)
             doubleLineTitle.text = MethodChecker.fromHtml(item.title)
         } else {
+            doubleLineTitle.setWeight(Typography.REGULAR)
             doubleLineTitle.text = getHighlightedTitle(item)
         }
     }
