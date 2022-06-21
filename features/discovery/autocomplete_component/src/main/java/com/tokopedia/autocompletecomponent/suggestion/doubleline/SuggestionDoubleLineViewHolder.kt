@@ -151,10 +151,6 @@ class SuggestionDoubleLineViewHolder(
         )
     }
 
-    private fun bindNormalTextTitle(item: BaseSuggestionDataView) {
-        binding?.doubleLineTitle?.text = MethodChecker.fromHtml(item.title)
-    }
-
     private fun bindLabel(item: BaseSuggestionDataView) {
         val doubleLineLabel = binding?.doubleLineLabel ?: return
         doubleLineLabel.setTextAndCheckShow(item.label)
