@@ -237,4 +237,20 @@
     <string name="explicit_profile_back_dialog_title">Kamu belum menyimpan perubahan</string>
     <string name="explicit_profile_back_dialog_desc">Perubahan pengaturan preferensi belum kamu simpan. ingin menyimpan dulu?</string>
     <string name="explicit_profile_back_dialog_exit">Tetap keluar</string>
+
+    <!--opt in/out for network-->
+    <string name="title_privacy_account">Privasi Akun</string>
+    <string name="opt_header">Aktifkan Penggunaan Data Akun</string>
+    <string name="opt_desc">Datamu akan dipakai untuk rekomendasi teman yang bisa di-follow di Feed. Cek Data yang Dipakai</string>
+    <string name="opt_bottom_sheet_title">Aktifkan penggunaan data akun?</string>
+    <string name="opt_bottom_sheet_sub_title">Kami akan kasih rekomendasi teman yang bisa di-follow di Feed kamu, berdasarkan datamu di fitur Referral dan Berbagi Alamat.</string>
+    <string name="opt_bottom_sheet_checkbox_desc">Saya telah membaca dan menyetujui Syarat &amp; Ketentuan serta Kebijakan Privasi yang berlaku.</string>
+    <string name="opt_bottom_sheet_button_title">Aktifkan Sekarang</string>
+    <string name="opt_bottom_sheet_header_info_lengkap">Info lengkap</string>
+    <string name="opt_bottom_sheet_header_data_yang_dipakai">Data yang dipakai</string>
+    <string name="opt_dialog_title">Matikan penggunaan data akun?</string>
+    <string name="opt_dialog_sub_title">Kamu nggak akan dapat rekomendasi teman yang mungkin kamu kenal di Feed.</string>
+    <string name="opt_batal">Batal</string>
+    <string name="opt_ya_matikan">Ya, Matikan</string>
+
 </resources>
