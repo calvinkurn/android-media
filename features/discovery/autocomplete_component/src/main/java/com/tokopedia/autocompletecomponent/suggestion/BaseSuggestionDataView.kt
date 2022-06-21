@@ -78,4 +78,16 @@ class BaseSuggestionDataView(
         "list", PRODUCT_LINE_SUGGESTION_ACTION_FIELD,
         "dimension90", dimension90
     )
+
+    fun isBoldPartialText(): Boolean {
+        return type == TYPE_KEYWORD || type == TYPE_SHOP
+    }
+
+    fun isBoldAllText(): Boolean {
+        return type == TYPE_CURATED
+    }
+
+    fun isCircleImage(): Boolean {
+        return type == TYPE_SHOP || type == TYPE_PROFILE
+    }
 }

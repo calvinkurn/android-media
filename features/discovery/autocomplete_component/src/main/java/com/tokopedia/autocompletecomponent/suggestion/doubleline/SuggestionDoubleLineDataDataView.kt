@@ -10,16 +10,4 @@ class SuggestionDoubleLineDataDataView(
     override fun type(typeFactory: SuggestionAdapterTypeFactory): Int {
         return typeFactory.type(this)
     }
-
-    fun isBoldText(): Boolean {
-        return data.type == TYPE_SHOP
-    }
-
-    fun isBoldSquareType(): Boolean {
-        return data.type == TYPE_BOLD_SQUARE
-    }
-
-    fun isCurated(): Boolean {
-        return data.type == TYPE_CURATED
-    }
 }
