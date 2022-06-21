@@ -18,6 +18,7 @@ import com.tokopedia.kotlin.extensions.view.getDimens
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.media.loader.clearImage
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.recharge_credit_card.databinding.WidgetClientNumberWidgetCcBinding
 import com.tokopedia.recharge_component.listener.ClientNumberAutoCompleteListener
@@ -30,6 +31,7 @@ import com.tokopedia.recharge_component.widget.AUTOCOMPLETE_DROPDOWN_VERTICAL_OF
 import com.tokopedia.recharge_component.widget.AUTOCOMPLETE_THRESHOLD
 import com.tokopedia.recharge_component.widget.clearErrorField
 import com.tokopedia.recharge_component.widget.hideClearIconUnify
+import com.tokopedia.recharge_component.widget.isNumeric
 import com.tokopedia.recharge_component.widget.onClickClearIconUnify
 import com.tokopedia.recharge_component.widget.setMainPadding
 import com.tokopedia.recharge_component.widget.showClearIconUnify
@@ -104,7 +106,7 @@ class RechargeCCClientNumberWidget @JvmOverloads constructor(@NotNull context: C
                 addTextChangedListener(object : TextWatcher {
                     override fun afterTextChanged(input: Editable?) {
                         input?.let {
-                            if (it.length <= TOTAL_SYMBOLS) {
+                            if (input.toString().isNumeric() && it.length <= TOTAL_SYMBOLS) {
                                 if (!RechargeCCUtil.isInputCorrect(it, TOTAL_SYMBOLS, DIVIDER_MODULO, DIVIDER)) {
                                     removeTextChangedListener(this)
                                     it.replace(0, it.length, RechargeCCUtil.concatStringWith16D(
@@ -134,7 +136,6 @@ class RechargeCCClientNumberWidget @JvmOverloads constructor(@NotNull context: C
                         if (s?.isEmpty() == true) hideClearIcon() else showClearIcon()
                         // if manual input
                         var isManualInput = false
-                        var haha = mInputFieldListener?.isKeyboardShown()
                         if (abs(before - count) == 1 && mInputFieldListener?.isKeyboardShown() == true) {
                             isManualInput = true
                             mCreditCardActionListener?.onManualInput()

@@ -205,13 +205,15 @@ class RechargeCCFragment :
     private fun observeData() {
         rechargeCCViewModel.creditCardSelected.observe(viewLifecycleOwner, Observer {
             if (it.defaultProductId.isEmpty() && it.operatorId.isEmpty()) {
+                cc_widget_client_number.hideOperatorIcon()
                 cc_widget_client_number.setLoading(false)
                 cc_widget_client_number.setErrorInputField(
                     getString(R.string.cc_bank_is_not_supported))
+            } else {
+                cc_widget_client_number.showOperatorIcon(it.imageUrl)
             }
             operatorIdSelected = it.operatorId
             productIdSelected = it.defaultProductId
-            cc_widget_client_number.showOperatorIcon(it.imageUrl)
         })
 
         rechargeCCViewModel.prefixSelect.observe(viewLifecycleOwner, Observer {
@@ -429,25 +431,15 @@ class RechargeCCFragment :
 
     private fun onSuccessGetFavoriteChips(favoriteChips: List<FavoriteChipModel>) {
         cc_widget_client_number.run {
-            val dummChips = listOf(
-                FavoriteChipModel("misael", "4111111111111112", "0", "token"),
-                FavoriteChipModel("", "4111111111111111", "0", "token"),
-                FavoriteChipModel("", "081208120813", "0", "token"),
-            )
-            setFilterChipShimmer(false, dummChips.isEmpty())
+            setFilterChipShimmer(false, favoriteChips.isEmpty())
             setFavoriteNumber(
-                RechargeCCMapper.mapFavoriteChipsToWidgetModels(dummChips))
+                RechargeCCMapper.mapFavoriteChipsToWidgetModels(favoriteChips))
         }
     }
 
     private fun onSuccessGetAutoComplete(autoComplete: List<AutoCompleteModel>) {
-        val dummChips = listOf(
-            AutoCompleteModel("misael", "4111111111111112", "token"),
-            AutoCompleteModel("", "4111111111111111", "token"),
-            AutoCompleteModel("", "081208120813", "token"),
-        )
         cc_widget_client_number.setAutoCompleteList(
-            RechargeCCMapper.mapAutoCompletesToWidgetModels(dummChips))
+            RechargeCCMapper.mapAutoCompletesToWidgetModels(autoComplete))
     }
 
     private fun onSuccessGetPrefill(prefill: PrefillModel) {
