@@ -132,16 +132,6 @@ class DigitalSearchNumberActivityTest {
         assert(getRecyclerViewItemCount(R.id.telco_search_number_rv) == size)
     }
 
-    private fun validateIntentExtraParam() {
-        assertThat(mActivityRule.activityResult, hasResultCode(Activity.RESULT_OK));
-        assertThat(mActivityRule.activityResult, hasResultData(IntentMatchers.hasExtraWithKey(
-            TopupBillsSearchNumberActivity.EXTRA_CALLBACK_CLIENT_NUMBER
-        )))
-        assertThat(mActivityRule.activityResult, hasResultData(IntentMatchers.hasExtraWithKey(
-            TopupBillsSearchNumberActivity.EXTRA_CALLBACK_INPUT_NUMBER_ACTION_TYPE
-        )))
-    }
-
     private fun getRecyclerViewItemCount(resId: Int): Int {
         val recyclerView = mActivityRule.activity.findViewById<RecyclerView>(resId)
         return recyclerView?.adapter?.itemCount ?: 0

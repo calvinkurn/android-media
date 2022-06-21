@@ -18,7 +18,14 @@ import com.google.android.material.appbar.AppBarLayout
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.common.topupbills.data.*
+import com.tokopedia.common.topupbills.data.TopupBillsEnquiryData
+import com.tokopedia.common.topupbills.data.TopupBillsFavNumber
+import com.tokopedia.common.topupbills.data.TopupBillsFavNumberItem
+import com.tokopedia.common.topupbills.data.TopupBillsMenuDetail
+import com.tokopedia.common.topupbills.data.TopupBillsPromo
+import com.tokopedia.common.topupbills.data.TopupBillsRecommendation
+import com.tokopedia.common.topupbills.data.TopupBillsSeamlessFavNumber
+import com.tokopedia.common.topupbills.data.TopupBillsTicker
 import com.tokopedia.common.topupbills.data.constant.TelcoComponentName
 import com.tokopedia.common.topupbills.data.prefix_select.RechargeCatalogPrefixSelect
 import com.tokopedia.common.topupbills.data.prefix_select.TelcoCatalogPrefixSelect

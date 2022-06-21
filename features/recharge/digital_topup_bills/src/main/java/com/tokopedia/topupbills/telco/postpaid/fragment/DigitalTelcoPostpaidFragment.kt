@@ -14,7 +14,12 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.tabs.TabLayout
 import com.tokopedia.analytics.performance.PerformanceMonitoring
-import com.tokopedia.common.topupbills.data.*
+import com.tokopedia.common.topupbills.data.TelcoEnquiryData
+import com.tokopedia.common.topupbills.data.TopupBillsFavNumber
+import com.tokopedia.common.topupbills.data.TopupBillsFavNumberItem
+import com.tokopedia.common.topupbills.data.TopupBillsRecommendation
+import com.tokopedia.common.topupbills.data.TopupBillsSeamlessFavNumber
+import com.tokopedia.common.topupbills.data.TopupBillsSeamlessFavNumberItem
 import com.tokopedia.common.topupbills.data.constant.TelcoCategoryType
 import com.tokopedia.common.topupbills.data.constant.TelcoComponentName
 import com.tokopedia.common.topupbills.data.prefix_select.RechargePrefix
@@ -45,7 +50,7 @@ import com.tokopedia.unifycomponents.TabsUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
-import kotlinx.android.synthetic.main.fragment_digital_telco_postpaid.*
+import kotlinx.android.synthetic.main.fragment_digital_telco_postpaid.telco_buy_widget
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
@@ -440,7 +445,7 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
                     .clientNumber(postpaidClientNumberWidget.getInputNumber())
                     .isPromo("0")
                     .operatorId(operator.id)
-                    .productId(operator.attributes.defaultProductId.toString())
+                    .productId(operator.attributes.defaultProductId)
                     .utmCampaign(categoryId.toString())
                     .build()
             }
@@ -460,7 +465,7 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
                     val isInputvalid = validatePhoneNumber(operatorData, postpaidClientNumberWidget)
 
                     if (isInputvalid) {
-                        hitTrackingForInputNumber(this)
+                        hitTrackingForInputNumber()
                         postpaidClientNumberWidget.clearErrorState()
                     }
                     postpaidClientNumberWidget.setIconOperator(operator.attributes.imageUrl)
@@ -480,7 +485,7 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
         }
     }
 
-    private fun hitTrackingForInputNumber(selectedOperator: RechargePrefix) {
+    private fun hitTrackingForInputNumber() {
         actionTypeTrackingJob?.cancel()
         actionTypeTrackingJob = lifecycleScope.launch {
             delay(INPUT_ACTION_TYPE_TRACKING_DELAY)
