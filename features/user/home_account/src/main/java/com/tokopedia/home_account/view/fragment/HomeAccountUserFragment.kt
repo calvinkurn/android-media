@@ -105,6 +105,7 @@ import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilderFlag
 import com.tokopedia.searchbar.navigation_component.icons.IconList
 import com.tokopedia.searchbar.navigation_component.listener.NavRecyclerViewScrollListener
+import com.tokopedia.topads.sdk.domain.model.CpmModel
 import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.trackingoptimizer.TrackingQueue
@@ -166,6 +167,7 @@ open class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListen
     private var fpmBuyer: PerformanceMonitoring? = null
     private var trackingQueue: TrackingQueue? = null
     private var widgetTitle: String = ""
+    private var topAdsHeadlineUiModel:TopadsHeadlineUiModel? = null
     private var isShowHomeAccountTokopoints = false
     private var isShowDarkModeToggle = false
     private var isShowScreenRecorder = false
@@ -261,7 +263,7 @@ open class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListen
         balanceAndPointAdapter = HomeAccountBalanceAndPointAdapter(this)
         memberAdapter = HomeAccountMemberAdapter(this)
 
-        adapter = HomeAccountUserAdapter(this, balanceAndPointAdapter, memberAdapter, userSession)
+        adapter = HomeAccountUserAdapter(this, balanceAndPointAdapter, memberAdapter, userSession, shopAdsNewPositionCallback)
         setupList()
         setLoadMore()
         showLoading()
@@ -299,6 +301,16 @@ open class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListen
             binding?.homeAccountUserFragmentSwipeRefresh?.isRefreshing = false
         }
     }
+
+    private val shopAdsNewPositionCallback: (Int, CpmModel) -> Unit = { index, cpmModel ->
+        val position = topAdsHeadlineUiModel?.let { topAdsHeadlineUiModel ->
+            adapter?.getItems()?.let { it.indexOf(topAdsHeadlineUiModel) + index }
+        }
+        position?.let {
+            addItem(TopadsHeadlineUiModel(cpmModel), addSeparator = false, position = it)
+        }
+    }
+
 
     override fun onLinkingAccountClicked(isLinked: Boolean) {
         homeAccountAnalytic.trackClickLinkAccount()
@@ -469,6 +481,8 @@ open class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListen
                 isTopAds = item.isTopAds,
                 topAdsWishlistUrl = item.wishlistUrl,
                 topAdsClickUrl = item.clickUrl,
+                productName = item.name,
+                productImageUrl = item.imageUrl,
                 productPosition = adapterPosition
             )
         )
@@ -846,7 +860,8 @@ open class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListen
     }
 
     private fun addTopAdsHeadLine() {
-        addItem(TopadsHeadlineUiModel(), addSeparator = false)
+        topAdsHeadlineUiModel = TopadsHeadlineUiModel()
+        topAdsHeadlineUiModel?.let { addItem(it, addSeparator = false) }
     }
 
     private fun addRecommendationItem(
@@ -1525,7 +1540,7 @@ open class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListen
         val msg = getString(com.tokopedia.wishlist_common.R.string.on_success_add_to_wishlist_msg)
         val ctaText = getString(com.tokopedia.wishlist_common.R.string.cta_success_add_to_wishlist)
         view?.let {
-            Toaster.build(it, msg, Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL, ctaText) { setOnClickSuccessAddWishlist() }.show()
+            Toaster.build(it, msg, Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL, ctaText) { goToWishlist() }.show()
         }
     }
 
@@ -1534,12 +1549,6 @@ open class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListen
             view?.let { v ->
                 AddRemoveWishlistV2Handler.showAddToWishlistV2SuccessToaster(wishlistResult, context, v)
             }
-        }
-    }
-
-    private fun setOnClickSuccessAddWishlist(): View.OnClickListener {
-        return View.OnClickListener {
-            goToWishlist()
         }
     }
 

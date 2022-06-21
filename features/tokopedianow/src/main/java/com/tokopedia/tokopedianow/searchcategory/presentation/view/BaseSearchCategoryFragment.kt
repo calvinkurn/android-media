@@ -131,7 +131,6 @@ abstract class BaseSearchCategoryFragment:
     companion object {
         protected const val DEFAULT_SPAN_COUNT = 2
         protected const val REQUEST_CODE_LOGIN = 69
-        private const val QUERY_PARAM_SERVICE_TYPE_NOW20M = "?service_type=20m"
         private const val QUERY_PARAM_SERVICE_TYPE_NOW2H = "?service_type=2h"
         const val DEFAULT_POSITION = 0
     }
@@ -1063,7 +1062,7 @@ abstract class BaseSearchCategoryFragment:
     }
 
     override fun onClickSwitcherTo15M() {
-        RouteManager.route(context, ApplinkConstInternalTokopediaNow.HOME + QUERY_PARAM_SERVICE_TYPE_NOW20M)
+        RouteManager.route(context, ApplinkConstInternalTokopediaNow.HOME)
     }
 
     override fun onClickSwitcherTo2H() {

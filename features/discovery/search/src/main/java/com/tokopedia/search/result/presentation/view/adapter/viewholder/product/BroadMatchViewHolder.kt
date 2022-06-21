@@ -79,7 +79,6 @@ class BroadMatchViewHolder(
                     freeOngkir = it.freeOngkirDataView.toProductCardModelFreeOngkir(),
                     isTopAds = it.isOrganicAds,
                     hasThreeDots = it.carouselProductType.hasThreeDots,
-                    cardInteraction = true,
                 )
             },
             carouselProductCardOnItemClickListener = object : CarouselProductCardListener.OnItemClickListener {

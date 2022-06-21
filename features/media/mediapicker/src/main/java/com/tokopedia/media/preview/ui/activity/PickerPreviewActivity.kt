@@ -31,7 +31,6 @@ import com.tokopedia.picker.common.basecomponent.uiComponent
 import com.tokopedia.picker.common.component.NavToolbarComponent
 import com.tokopedia.picker.common.component.ToolbarTheme
 import com.tokopedia.picker.common.uimodel.MediaUiModel
-import com.tokopedia.picker.common.utils.safeFileDelete
 import com.tokopedia.utils.view.binding.viewBinding
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -255,10 +254,10 @@ class PickerPreviewActivity : BaseActivity(), NavToolbarComponent.Listener,
     private fun retakeButtonAction(media: MediaUiModel) {
         binding?.btnRetake?.show()
 
-        val retakeState = if (media.isVideo() && media.isFromPickerCamera) {
+        val retakeState = if (media.file?.isVideo() == true && media.isFromPickerCamera) {
             binding?.btnRetake?.videoMode()
             PREVIEW_RETAKE_RECORDER
-        } else if (!media.isVideo() && media.isFromPickerCamera) {
+        } else if (media.file?.isImage() == true && media.isFromPickerCamera) {
             binding?.btnRetake?.photoMode()
             PREVIEW_RETAKE_CAMMERA
         } else {
@@ -273,7 +272,10 @@ class PickerPreviewActivity : BaseActivity(), NavToolbarComponent.Listener,
     }
 
     private fun onCancelOrRetakeMedia(media: MediaUiModel) {
-        if (media.isFromPickerCamera) safeFileDelete(media.path)
+        if (media.isFromPickerCamera) {
+            media.file?.safeDelete()
+        }
+
         cancelIntent()
     }
 
