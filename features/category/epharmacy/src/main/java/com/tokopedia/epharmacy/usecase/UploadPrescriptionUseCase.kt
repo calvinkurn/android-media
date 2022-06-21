@@ -17,9 +17,12 @@ class UploadPrescriptionUseCase @Inject constructor(
 
     private var base64Image: String = ""
     private var id = ""
+    private var userAccessToken = ""
+
     override suspend fun executeOnBackground(): Map<Type, RestResponse> {
         val restRequest = RestRequest.Builder(ENDPOINT_URL, EPharmacyPrescriptionUploadResponse::class.java)
             .setBody(getUploadPrescriptionBody())
+            .setHeaders(mapOf(HEADER_AUTHORIZATION to "Bearer $userAccessToken"))
             .setRequestType(RequestType.POST)
             .build()
         restRequestList.clear()
@@ -34,17 +37,19 @@ class UploadPrescriptionUseCase @Inject constructor(
         )))
     }
 
-    fun setBase64Image(id : String, imageBase64: String) {
+    fun setBase64Image(id : String, imageBase64: String, accessToken : String) {
         try {
             this.id = id
             this.base64Image = imageBase64
+            this.userAccessToken = accessToken
         } catch (e: NullPointerException) {
         }
     }
 
     companion object {
         const val ENDPOINT_URL = "https://api-staging.tokopedia.com/epharmacy/prescription/upload"
-        const val KEY_FORMAT_VALUE=""
+        const val KEY_FORMAT_VALUE="FILE"
         const val KEY_SOURCE_VALUE="BUYER"
+        const val HEADER_AUTHORIZATION = "Authorization"
     }
 }

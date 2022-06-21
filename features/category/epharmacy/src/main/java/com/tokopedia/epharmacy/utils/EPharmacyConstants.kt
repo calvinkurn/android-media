@@ -24,6 +24,8 @@ const val OPEN_GALLERY_VIEW_TYPE = 3
 const val DONE_TEXT = "Selesai"
 const val UPLOAD_TEXT = "Foto Resep"
 
+const val EPHARMACY_SCREEN_NAME = "epharmacy page"
+
 const val UPLOAD_ORDER_ID_KEY = "order_id"
 const val UPLOAD_CHECKOUT_ID_KEY = "checkout_id"
 

@@ -22,6 +22,7 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
+import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
 import java.io.ByteArrayOutputStream
@@ -35,6 +36,9 @@ class UploadPrescriptionViewModel @Inject constructor(
     @CoroutineBackgroundDispatcher private val dispatcherBackground: CoroutineDispatcher,
     @CoroutineMainDispatcher private val dispatcherMain: CoroutineDispatcher
 )  : BaseViewModel(dispatcherBackground){
+
+    @Inject
+    lateinit var userSession: UserSessionInterface
 
     private val _productDetailLiveData = MutableLiveData<Result<EPharmacyDataModel>>()
     val productDetailLiveDataResponse: LiveData<Result<EPharmacyDataModel>> = _productDetailLiveData
@@ -159,7 +163,7 @@ class UploadPrescriptionViewModel @Inject constructor(
             )
             val byteArrayImage = prescriptionByteArrayOutputStream.toByteArray()
             prescriptionImageBitmap.recycle()
-            "data:image/jpeg;base64,${Base64.encodeToString(byteArrayImage, Base64.DEFAULT)}"
+            Base64.encodeToString(byteArrayImage, Base64.DEFAULT)
         }catch (e : Exception){
             ""
         }
@@ -168,7 +172,7 @@ class UploadPrescriptionViewModel @Inject constructor(
     private suspend fun uploadImageToServer(uniquePositionId: Int, localFilePath : String) {
         val base64Image = getBase64OfPrescriptionImage(localFilePath)
         if (base64Image.isNotBlank()){
-            uploadPrescriptionUseCase.setBase64Image(uniquePositionId.toString(),base64Image)
+            uploadPrescriptionUseCase.setBase64Image(uniquePositionId.toString(),base64Image, userSession.accessToken)
             val result = withContext(dispatcherBackground) {
                 convertToYoutubeResponse(uploadPrescriptionUseCase.executeOnBackground())
             }
@@ -195,9 +199,11 @@ class UploadPrescriptionViewModel @Inject constructor(
     private fun checkPrescriptionImages() {
         var successImagesCount = 0
         var failedImageCount = 0
+        var approvedImages = 0
         _prescriptionImages.value?.forEach { presImage ->
-            if(presImage?.status == EPharmacyPrescriptionStatus.APPROVED.status
-                || presImage?.isUploadSuccess == true) {
+            if(presImage?.status == EPharmacyPrescriptionStatus.APPROVED.status) {
+                approvedImages += 1
+            }else if(presImage?.isUploadSuccess == true) {
                 successImagesCount += 1
             }else if(presImage?.isUploadFailed == true){
                 failedImageCount += 1
@@ -209,8 +215,13 @@ class UploadPrescriptionViewModel @Inject constructor(
                     text = DONE_TEXT
                     type = EPharmacyButtonType.TERTIARY.type
                 }else {
-                    text = DONE_TEXT
-                    type = EPharmacyButtonType.SECONDARY.type
+                    if(approvedImages > 0 && successImagesCount == 0){
+                        text = UPLOAD_TEXT
+                        type = EPharmacyButtonType.PRIMARY.type
+                    }else {
+                        text = DONE_TEXT
+                        type = EPharmacyButtonType.SECONDARY.type
+                    }
                 }
             }
             _buttonLiveData.postValue(it)
@@ -262,6 +273,7 @@ class UploadPrescriptionViewModel @Inject constructor(
         _prescriptionImages.value?.let {
             it.removeAt(index)
             _prescriptionImages.postValue(it)
+            checkPrescriptionImages()
         }
     }
 

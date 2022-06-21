@@ -306,34 +306,32 @@ class UploadPrescriptionFragment : BaseDaggerFragment() , EPharmacyListener {
 
     private fun updateButtonUI(buttonData: List<EpharmacyButton?>) {
         buttonData.firstOrNull()?.let {
-            fotoResepButton?.text = it.text
-            fotoResepButton?.buttonSize = UnifyButton.Size.LARGE
-            fotoResepButton?.show()
             when (it.type) {
                 EPharmacyButtonType.PRIMARY.type -> {
                     ePharmacyToolTipText?.show()
                     fotoResepButton?.buttonVariant = UnifyButton.Variant.GHOST
-                    setCameraDrawableOnButton()
                     fotoResepButton?.isEnabled = true
+                    setCameraDrawableOnButton()
                 }
                 EPharmacyButtonType.TERTIARY.type -> {
                     fotoResepButton?.buttonVariant = UnifyButton.Variant.FILLED
                     fotoResepButton?.isEnabled = false
-                    removeDrawable()
                 }
                 else -> {
                     fotoResepButton?.buttonVariant = UnifyButton.Variant.FILLED
-                    removeDrawable()
                     fotoResepButton?.isEnabled = true
                 }
             }
+            fotoResepButton?.text = it.text
+            fotoResepButton?.buttonSize = UnifyButton.Size.LARGE
+            fotoResepButton?.show()
         } ?: kotlin.run {
             fotoResepButton?.hide()
         }
     }
 
     private fun removeDrawable() {
-        if(fotoResepButton?.drawableState?.size?:0 > 0 ){
+        if(fotoResepButton?.drawableState?.size ?:0 > 0 ){
             fotoResepButton?.setDrawable(null, UnifyButton.DrawablePosition.LEFT)
         }
     }
@@ -342,7 +340,7 @@ class UploadPrescriptionFragment : BaseDaggerFragment() , EPharmacyListener {
         ePharmacyAdapter.submitList(visitableList)
     }
 
-    override fun getScreenName() = ""
+    override fun getScreenName() = EPHARMACY_SCREEN_NAME
 
     override fun initInjector() = getComponent(EPharmacyComponent::class.java).inject(this)
 
