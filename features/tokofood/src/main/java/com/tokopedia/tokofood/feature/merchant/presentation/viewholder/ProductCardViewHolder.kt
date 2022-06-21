@@ -125,8 +125,9 @@ class ProductCardViewHolder(
             }
         }
         // product card attributes
+        binding.productImage.isVisible = productUiModel.imageURL.isNotBlank()
         binding.productImage.setImageUrl(productUiModel.imageURL)
-        binding.tpgOutOfStock.isVisible = productUiModel.isOutOfStock
+        binding.tpgOutOfStock.isVisible = productUiModel.isOutOfStock && productUiModel.imageURL.isNotBlank()
         binding.customIndicatorLabel.isVisible = productUiModel.isCustomizable
         binding.productName.text = productUiModel.name
         binding.productSummary.text = productUiModel.description
