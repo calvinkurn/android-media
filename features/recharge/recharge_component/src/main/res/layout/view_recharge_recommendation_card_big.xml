@@ -49,7 +49,7 @@
             app:layout_constraintBottom_toTopOf="@+id/tg_price_recharge_recommendation_card_big"
             android:layout_marginLeft="@dimen/unify_space_12"
             android:layout_marginTop="@dimen/spacing_lvl1"
-            tools:text=""
+            tools:text="3 GB"
             app:typographyType="body_1"
             android:textColor="@color/Unify_N700_96"
             />
@@ -62,7 +62,6 @@
             android:layout_marginLeft="@dimen/spacing_lvl3"
             android:layout_width="1dp"
             android:layout_height="@dimen/widget_view_separator_recommendation_big_card_height"
-            android:visibility="gone"
             android:background="@color/Unify_N700_96"
             />
 
