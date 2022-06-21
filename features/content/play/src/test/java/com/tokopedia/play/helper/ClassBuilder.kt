@@ -3,6 +3,7 @@ package com.tokopedia.play.helper
 import com.tokopedia.play.view.uimodel.mapper.*
 import com.tokopedia.play_common.model.mapper.PlayChannelInteractiveMapper
 import com.tokopedia.play_common.model.mapper.PlayInteractiveLeaderboardMapper
+import com.tokopedia.play_common.model.mapper.PlayInteractiveMapper
 import com.tokopedia.play_common.transformer.HtmlTextTransformer
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.mockk
@@ -13,24 +14,26 @@ import io.mockk.mockk
 class ClassBuilder {
 
     fun getPlayUiModelMapper(
-            userSession: UserSessionInterface = mockk(relaxed = true),
-            productTagMapper: PlayProductTagUiMapper = PlayProductTagUiMapper(),
-            merchantVoucherMapper: PlayMerchantVoucherUiMapper = PlayMerchantVoucherUiMapper(),
-            chatMapper: PlayChatUiMapper = PlayChatUiMapper(userSession),
-            channelStatusMapper: PlayChannelStatusMapper = PlayChannelStatusMapper(),
-            channelInteractiveMapper: PlayChannelInteractiveMapper = PlayChannelInteractiveMapper(),
-            interactiveLeaderboardMapper: PlayInteractiveLeaderboardMapper = PlayInteractiveLeaderboardMapper(),
-            cartMapper: PlayCartMapper = PlayCartMapper(),
-            playUserReportMapper : PlayUserReportReasoningMapper =  PlayUserReportReasoningMapper()
+        userSession: UserSessionInterface = mockk(relaxed = true),
+        productTagMapper: PlayProductTagUiMapper = PlayProductTagUiMapper(),
+        merchantVoucherMapper: PlayMerchantVoucherUiMapper = PlayMerchantVoucherUiMapper(),
+        chatMapper: PlayChatUiMapper = PlayChatUiMapper(userSession),
+        channelStatusMapper: PlayChannelStatusMapper = PlayChannelStatusMapper(),
+        channelInteractiveMapper: PlayChannelInteractiveMapper = PlayChannelInteractiveMapper(),
+        interactiveMapper: PlayInteractiveMapper = PlayInteractiveMapper(TestHtmlTextTransformer()),
+        interactiveLeaderboardMapper: PlayInteractiveLeaderboardMapper = PlayInteractiveLeaderboardMapper(TestHtmlTextTransformer()),
+        cartMapper: PlayCartMapper = PlayCartMapper(),
+        playUserReportMapper: PlayUserReportReasoningMapper = PlayUserReportReasoningMapper()
     ) = PlayUiModelMapper(
-            productTagMapper = productTagMapper,
-            merchantVoucherMapper = merchantVoucherMapper,
-            chatMapper = chatMapper,
-            channelStatusMapper = channelStatusMapper,
-            channelInteractiveMapper = channelInteractiveMapper,
-            interactiveLeaderboardMapper = interactiveLeaderboardMapper,
-            cartMapper = cartMapper,
-            playUserReportMapper = playUserReportMapper
+        productTagMapper = productTagMapper,
+        merchantVoucherMapper = merchantVoucherMapper,
+        chatMapper = chatMapper,
+        channelStatusMapper = channelStatusMapper,
+        channelInteractiveMapper = channelInteractiveMapper,
+        interactiveMapper = interactiveMapper,
+        interactiveLeaderboardMapper = interactiveLeaderboardMapper,
+        cartMapper = cartMapper,
+        playUserReportMapper = playUserReportMapper
     )
 
     fun getPlayChannelDetailsRecomMapper(
