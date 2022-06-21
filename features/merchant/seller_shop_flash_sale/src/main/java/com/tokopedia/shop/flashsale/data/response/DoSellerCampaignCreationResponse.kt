@@ -8,6 +8,8 @@ data class DoSellerCampaignCreationResponse(
     val doSellerCampaignCreation: DoSellerCampaignCreation = DoSellerCampaignCreation()
 ) {
     data class DoSellerCampaignCreation(
+        @SerializedName("response_header")
+        val responseHeader: ResponseHeader = ResponseHeader(),
         @SerializedName("campaign_id")
         val campaignId: String = "",
         @SerializedName("is_success")
@@ -26,4 +28,9 @@ data class DoSellerCampaignCreationResponse(
             val errorTitle: String = ""
         )
     }
+
+    data class ResponseHeader(
+        @SerializedName("errorMessage")
+        val errorMessages: List<String> = listOf()
+    )
 }

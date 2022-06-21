@@ -43,7 +43,7 @@
         tools:text="Sepatu Kompas " />
 
     <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/tpgPrice"
+        android:id="@+id/tpgDiscountedPrice"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/unify_space_4"
@@ -63,12 +63,12 @@
         android:layout_marginTop="@dimen/unify_space_4"
         android:layout_marginBottom="@dimen/unify_space_16"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="@+id/tpgPrice"
-        app:layout_constraintTop_toBottomOf="@+id/tpgPrice"
+        app:layout_constraintStart_toStartOf="@+id/tpgDiscountedPrice"
+        app:layout_constraintTop_toBottomOf="@+id/tpgDiscountedPrice"
         tools:text="20%" />
 
     <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/tpgDiscountedPrice"
+        android:id="@+id/tpgOriginalPrice"
         android:layout_width="0dp"
         android:layout_marginEnd="@dimen/unify_space_16"
         android:layout_height="wrap_content"
@@ -79,7 +79,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toEndOf="@+id/labelDiscountPercentage"
-        app:layout_constraintTop_toBottomOf="@+id/tpgPrice" />
+        app:layout_constraintTop_toBottomOf="@+id/tpgDiscountedPrice" />
 
     <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/loader"

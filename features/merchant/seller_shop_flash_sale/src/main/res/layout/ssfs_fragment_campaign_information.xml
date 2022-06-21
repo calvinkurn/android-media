@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    android:id="@+id/container"
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/container"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -22,12 +21,11 @@
         android:id="@+id/loader"
         android:layout_width="@dimen/unify_space_48"
         android:layout_height="@dimen/unify_space_48"
-        android:visibility="gone"
-        tools:visibility="visible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/header" />
+        app:layout_constraintTop_toBottomOf="@+id/header"
+        tools:visibility="visible" />
 
 
     <ScrollView
@@ -53,10 +51,36 @@
                 app:layout_constraintEnd_toStartOf="@+id/imgCampaignNameHelper"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:unify_text_field_counter="15"
                 app:unify_text_field_input_type="text"
                 app:unify_text_field_label="@string/sfs_campaign_name"
                 app:unify_text_field_maxline="1" />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/tpgCampaignNameErrorMessage"
+                android:layout_width="0dp"
+                android:layout_marginStart="@dimen/unify_space_8"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="@dimen/unify_space_8"
+                android:layout_marginTop="@dimen/unify_space_2"
+                android:textColor="@color/Unify_RN500"
+                app:layout_constraintEnd_toStartOf="@+id/tpgNameLengthCounter"
+                app:layout_constraintStart_toStartOf="@+id/tauCampaignName"
+                app:layout_constraintTop_toBottomOf="@+id/tauCampaignName"
+                app:typographyType="body_3"
+                tools:text="@string/sfs_error_message_forbidden_words" />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/tpgNameLengthCounter"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="@dimen/unify_space_8"
+                android:layout_marginTop="@dimen/unify_space_2"
+                app:layout_constraintEnd_toEndOf="@+id/tauCampaignName"
+                app:layout_constraintHorizontal_bias="1.0"
+                app:layout_constraintStart_toStartOf="@+id/tauCampaignName"
+                app:layout_constraintTop_toBottomOf="@+id/tauCampaignName"
+                app:typographyType="body_3"
+                tools:text="0/15" />
 
             <com.tokopedia.unifycomponents.ImageUnify
                 android:id="@+id/imgCampaignNameHelper"
@@ -77,18 +101,18 @@
                 app:layout_constraintGuide_percent="0.5" />
 
             <com.tokopedia.unifycomponents.ticker.Ticker
-                android:id="@+id/tickerLapsedSchedule"
+                android:id="@+id/tickerErrorMessage"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/unify_space_16"
-                android:layout_marginTop="@dimen/unify_space_8"
                 android:layout_marginEnd="@dimen/unify_space_16"
                 android:visibility="gone"
+                android:layout_marginTop="@dimen/unify_space_12"
                 app:closeButtonVisibility="gone"
                 app:descriptionText="@string/sfs_error_message_schedule_lapsed_description"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tauCampaignName"
+                app:layout_constraintTop_toBottomOf="@+id/tpgCampaignNameErrorMessage"
                 app:tickerShapeType="loose"
                 app:tickerType="error"
                 app:titleText="@string/sfs_error_message_schedule_lapsed_title"
@@ -105,7 +129,7 @@
                 android:layout_marginEnd="@dimen/unify_space_8"
                 app:layout_constraintEnd_toStartOf="@+id/guideline2"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tickerLapsedSchedule"
+                app:layout_constraintTop_toBottomOf="@+id/tickerErrorMessage"
                 app:unify_text_field_label="@string/sfs_schedule_start_date"
                 app:unify_text_field_label_static="true" />
 
@@ -118,7 +142,7 @@
                 android:layout_marginEnd="@dimen/unify_space_16"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="@+id/guideline2"
-                app:layout_constraintTop_toBottomOf="@+id/tickerLapsedSchedule"
+                app:layout_constraintTop_toBottomOf="@+id/tickerErrorMessage"
                 app:unify_text_field_label="@string/sfs_schedule_end_date"
                 app:unify_text_field_label_static="true"
                 app:unify_text_field_message="@string/sfs_min_duration" />
@@ -323,10 +347,10 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         app:cardElevation="@dimen/unify_space_8"
-        tools:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent">
+        app:layout_constraintStart_toStartOf="parent"
+        tools:visibility="gone">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -365,5 +389,12 @@
         </androidx.constraintlayout.widget.ConstraintLayout>
 
     </androidx.cardview.widget.CardView>
+
+    <androidx.constraintlayout.widget.Group
+        android:id="@+id/groupContent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:constraint_referenced_ids="cardView,scrollView" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
