@@ -310,9 +310,7 @@ class StockReminderFragment : BaseDaggerFragment(),
         when (productData) {
             is Success -> {
                 val product = productData.data
-                dataProducts = ArrayList(product)
-                dataFirstProducts = ArrayList(product)
-                adapter?.setItems(product)
+                setProducts(product)
                 setListProductWarehouse(product)
             }
             is Fail -> {
@@ -335,6 +333,18 @@ class StockReminderFragment : BaseDaggerFragment(),
             }
         }
 
+    }
+
+    private fun setProducts(products: List<ProductStockReminderUiModel>) {
+        dataProducts = ArrayList(products)
+        dataFirstProducts = ArrayList(products)
+        adapter?.setItems(products)
+        if (isVariant){
+            binding?.tvProductName?.text = productName
+            binding?.clGroupProductVariant?.show()
+        }else{
+            binding?.clGroupProductVariant?.gone()
+        }
     }
 
     private fun setListProductWarehouse(data: List<ProductStockReminderUiModel>) {
