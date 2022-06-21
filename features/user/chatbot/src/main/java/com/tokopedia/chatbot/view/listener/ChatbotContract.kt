@@ -67,7 +67,7 @@ interface ChatbotContract {
 
         fun onSuccessGetTickerData(tickerData: TickerData)
 
-        fun onError2(throwable: Throwable)
+        fun onError(throwable: Throwable)
 
         fun onSuccessSubmitCsatRating(msg : String)
 

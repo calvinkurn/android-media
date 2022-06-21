@@ -163,7 +163,7 @@ class ChatbotPresenter @Inject constructor(
     }
 
     private fun onErrorSubmitCsatRating(throwable: Throwable) {
-        view.onError2(throwable)
+        view.onError(throwable)
     }
 
     override fun clearText() {
@@ -749,7 +749,7 @@ class ChatbotPresenter @Inject constructor(
     }
 
     private fun onFailureSubmitChatCsat(throwable: Throwable) {
-        view.onError2(throwable)
+        view.onError(throwable)
     }
 
     override fun checkLinkForRedirection(invoiceRefNum: String,
@@ -805,7 +805,7 @@ class ChatbotPresenter @Inject constructor(
     }
 
     private fun onErrorGetTickerData(throwable: Throwable) {
-        view.onError2(throwable)
+        view.onError(throwable)
     }
 
     private fun onSuccessGetTickerData(tickerData: TickerDataResponse) {
