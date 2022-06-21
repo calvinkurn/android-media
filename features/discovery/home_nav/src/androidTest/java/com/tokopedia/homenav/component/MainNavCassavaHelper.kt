@@ -8,12 +8,10 @@ import org.hamcrest.MatcherAssert
  * Created by dhaba
  */
 
-
 fun mainNavCassavaTest(func: MainNavCassavaHelper.() -> Unit) =
     MainNavCassavaHelper().apply(func)
 
 class MainNavCassavaHelper {
-
     fun waitForData() {
         Thread.sleep(10000)
     }
@@ -21,7 +19,6 @@ class MainNavCassavaHelper {
     infix fun validateAnalytics(func: MainNavCassavaResult.() -> Unit): MainNavCassavaResult {
         return MainNavCassavaResult().apply(func)
     }
-
 }
 class MainNavCassavaResult {
     fun addDebugEnd() {
@@ -31,7 +28,6 @@ class MainNavCassavaResult {
     fun hasPassedAnalytics(cassavaTestRule: CassavaTestRule, queryFileName: String) {
         MatcherAssert.assertThat(cassavaTestRule.validate(queryFileName), hasAllSuccess())
     }
-
 }
 
 fun waitForLoadCassavaAssert() {

@@ -182,6 +182,7 @@ class MainNavAnalyticsTest {
             cassavaTestRule,
             ANALYTIC_VALIDATOR_QUERY_FILE_NAME_MENU_CATEGORY
         )
+        endActivityTest()
     }
 
     private fun login() {
