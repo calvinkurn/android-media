@@ -106,6 +106,7 @@
 
         <ImageView
             android:id="@+id/img_empty_state"
+            android:contentDescription="@string/shop_page_showcase_empty_state_showcase_list"
             android:layout_width="@dimen/dp_280"
             android:layout_height="@dimen/dp_210"
             android:layout_gravity="center" />
