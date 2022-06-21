@@ -49,6 +49,8 @@ class MerchantPageViewModel @Inject constructor(
         private val getMerchantDataUseCase: GetMerchantDataUseCase
 ) : BaseViewModel(dispatchers.main) {
 
+    var visitedLoginPage = false
+
     private val getMerchantDataResultLiveData = SingleLiveEvent<Result<GetMerchantDataResponse>>()
     val getMerchantDataResult: SingleLiveEvent<Result<GetMerchantDataResponse>> get() = getMerchantDataResultLiveData
 

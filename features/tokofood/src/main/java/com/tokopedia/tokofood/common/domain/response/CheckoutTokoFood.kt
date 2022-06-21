@@ -13,13 +13,13 @@ import com.tokopedia.tokofood.common.minicartwidget.view.MiniCartUiModel
 data class CheckoutTokoFoodResponse(
     @SerializedName("cart_list_tokofood")
     @Expose
-    val cartListTokofood: CheckoutTokoFood
+    val cartListTokofood: CheckoutTokoFood = CheckoutTokoFood()
 )
 
 data class MiniCartTokoFoodResponse(
     @SerializedName("mini_cart_tokofood")
     @Expose
-    val cartListTokofood: CheckoutTokoFood
+    val cartListTokofood: CheckoutTokoFood = CheckoutTokoFood()
 )
 
 data class CheckoutTokoFood(

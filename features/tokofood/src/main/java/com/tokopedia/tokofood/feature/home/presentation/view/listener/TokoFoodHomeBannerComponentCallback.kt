@@ -5,6 +5,7 @@ import com.tokopedia.home_component.listener.BannerComponentListener
 import com.tokopedia.home_component.model.ChannelGrid
 import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
+import com.tokopedia.tokofood.common.util.TokofoodRouteManager
 import com.tokopedia.tokofood.feature.home.analytics.TokoFoodHomeAnalytics
 import com.tokopedia.user.session.UserSessionInterface
 
@@ -25,11 +26,11 @@ class TokoFoodHomeBannerComponentCallback(
             val destinationId = ChooseAddressUtils.getLocalizingAddressData(it).district_id
             analytics.clickBannerWidget(userSession.userId, destinationId, channelModel, channelGrid, position)
         }
-        RouteManager.route(context, channelGrid.applink)
+        TokofoodRouteManager.routePrioritizeInternal(context, channelGrid.applink)
     }
 
     override fun onPromoAllClick(channelModel: ChannelModel) {
-        RouteManager.route(context, channelModel.channelHeader.applink)
+        TokofoodRouteManager.routePrioritizeInternal(context, channelModel.channelHeader.applink)
     }
 
     override fun onChannelBannerImpressed(channelModel: ChannelModel, parentPosition: Int) {

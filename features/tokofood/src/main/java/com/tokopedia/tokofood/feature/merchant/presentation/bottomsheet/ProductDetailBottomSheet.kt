@@ -75,14 +75,17 @@ class ProductDetailBottomSheet(private val clickListener: OnProductDetailClickLi
             sentMerchantTracker?.invoke()
             this.cardPositions?.run {
                 if (productUiModel.isCustomizable) {
-                    clickListener.onNavigateToOrderCustomizationPage(cartId = "",
-                        productUiModel = productUiModel, productPosition = first)
+                    clickListener.onNavigateToOrderCustomizationPage(
+                            cartId = "",
+                            productUiModel = productUiModel,
+                            productPosition = first
+                    )
                 }
                 if (!productUiModel.isAtc) {
                     productListItem?.let { productListItem ->
                         clickListener.onAtcButtonClicked(
-                            productListItem = productListItem,
-                            cardPositions = this
+                                productListItem = productListItem,
+                                cardPositions = this
                         )
                     }
                 } else {
@@ -102,7 +105,11 @@ class ProductDetailBottomSheet(private val clickListener: OnProductDetailClickLi
 
     private fun renderData(productUiModel: ProductUiModel) {
         val imageUrl = productUiModel.imageURL
-        if (imageUrl.isNotBlank()) binding?.iuProductImage?.setImageUrl(imageUrl)
+        binding?.cuProductImage?.isVisible = productUiModel.imageURL.isNotBlank()
+        binding?.cuProductImageMarginBottom?.isVisible = productUiModel.imageURL.isNotBlank()
+        binding?.iuProductImage?.setImageUrl(imageUrl)
+        binding?.productImageOverlay?.isVisible = productUiModel.isOutOfStock
+        binding?.tpgOutOfStock?.isVisible = productUiModel.isOutOfStock
         binding?.productNameLabel?.text = productUiModel.name
         binding?.productDescriptionLabel?.text = productUiModel.description
         binding?.productPrice?.text = productUiModel.priceFmt

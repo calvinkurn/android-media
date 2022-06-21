@@ -42,6 +42,7 @@ import com.tokopedia.tokofood.common.presentation.uimodel.UpdateParam
 import com.tokopedia.tokofood.common.presentation.viewmodel.MultipleFragmentsViewModel
 import com.tokopedia.tokofood.common.util.Constant
 import com.tokopedia.tokofood.common.util.TokofoodExt.showErrorToaster
+import com.tokopedia.tokofood.common.util.TokofoodRouteManager
 import com.tokopedia.tokofood.databinding.FragmentMerchantPageLayoutBinding
 import com.tokopedia.tokofood.feature.merchant.analytics.MerchantPageAnalytics
 import com.tokopedia.tokofood.feature.merchant.common.util.MerchantShareComponentUtil
@@ -1090,7 +1091,9 @@ class MerchantPageFragment : BaseMultiFragment(),
     override fun onButtonCtaClickListener(appLink: String) {
         var applicationLink = ApplinkConstInternalGlobal.ADD_PHONE
         if (appLink.isNotEmpty()) applicationLink = appLink
-        context?.run { RouteManager.route(this, applicationLink) }
+        context?.run {
+            TokofoodRouteManager.routePrioritizeInternal(this, applicationLink)
+        }
     }
 
     private fun navigateToOrderCustomizationPage(
@@ -1132,6 +1135,7 @@ class MerchantPageFragment : BaseMultiFragment(),
             val intent = RouteManager.getIntent(this, ApplinkConst.LOGIN)
             startActivityForResult(intent, REQUEST_CODE_LOGIN)
         }
+        viewModel.visitedLoginPage = true
     }
 
     private fun validateAddressData() {
@@ -1163,8 +1167,9 @@ class MerchantPageFragment : BaseMultiFragment(),
     private fun onResultFromLogin(resultCode: Int, data: Intent?) {
         if (resultCode == Activity.RESULT_OK) {
             validateAddressData()
+        } else {
+            activity?.finish()
         }
-        // TODO implement the negative cases for login page use case
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

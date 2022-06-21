@@ -6,23 +6,34 @@ import android.os.Bundle
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseMultiFragActivity
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.tokofood.DeeplinkMapperTokoFood
+import com.tokopedia.tokofood.common.presentation.view.BaseTokofoodActivity
 import com.tokopedia.tokofood.feature.merchant.presentation.fragment.MerchantPageFragment
 import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.TokoFoodPurchaseFragment
 import com.tokopedia.tokofood.feature.home.presentation.fragment.TokoFoodCategoryFragment
 import com.tokopedia.tokofood.feature.home.presentation.fragment.TokoFoodHomeFragment
+import com.tokopedia.tokofood.feature.merchant.presentation.fragment.OrderCustomizationFragment
 
 object TokofoodRouteManager {
 
+    private const val HOST_TOKOFOOD = "food"
+    private const val PATH_HOME = "/home"
+    private const val PATH_MERCHANT = "/merchant"
+    private const val PATH_PURCHASE = "/purchase"
+    private const val PATH_CATEGORY = "/category"
+
     fun mapUriToFragment(uri: Uri): Fragment? {
         // tokopedia://food
-        if (uri.host == "food") {
+        if (uri.host == HOST_TOKOFOOD) {
             val f: Fragment? =
-                when (uri.path) {
-                    "/home" -> TokoFoodHomeFragment.createInstance() // tokopedia://tokofood/home
-                    "/merchant" -> MerchantPageFragment.createInstance() // tokopedia://tokofood/merchant
-                    "/purchase" -> TokoFoodPurchaseFragment.createInstance() // tokopedia://tokofood/purchase
-                    "/category" -> TokoFoodCategoryFragment.createInstance() // tokopedia://tokofood/category
-                    else -> null
+                uri.path?.let { uriPath ->
+                    when {
+                        uriPath.startsWith(PATH_HOME) -> TokoFoodHomeFragment.createInstance() // tokopedia://food/home
+                        uriPath.startsWith(PATH_MERCHANT) -> MerchantPageFragment.createInstance() // tokopedia://food/merchant
+                        uriPath.startsWith(PATH_PURCHASE) -> TokoFoodPurchaseFragment.createInstance() // tokopedia://food/purchase
+                        uriPath.startsWith(PATH_CATEGORY) -> TokoFoodCategoryFragment.createInstance() // tokopedia://food/category
+                        else -> null
+                    }
                 }
             if (f != null) {
                 f.arguments = Bundle().apply {
@@ -39,7 +50,7 @@ object TokofoodRouteManager {
      * If the uriString can be handled in Activity, it will go to new fragment.
      * Otherwise, it will go to Activity
      */
-    fun routePrioritizeInternal(context: Context, uriString: String) {
+    fun routePrioritizeInternal(context: Context?, uriString: String) {
         val activity: BaseMultiFragActivity? = if (context is Fragment) {
             (context.requireActivity() as? BaseMultiFragActivity)
         } else {
@@ -48,12 +59,18 @@ object TokofoodRouteManager {
         if (activity == null) {
             RouteManager.route(context, uriString)
         } else {
-            val uri = Uri.parse(uriString)
+            val initialUri = Uri.parse(uriString)
+            val uri = Uri.parse(DeeplinkMapperTokoFood.mapperInternalApplinkTokoFood(initialUri))
             val f = mapUriToFragment(uri)
-            if (f != null) {
-                activity.navigateToNewFragment(f)
-            } else {
+            if (f == null) {
                 RouteManager.route(activity, uriString)
+            } else {
+                // If the fragment could take new params, we should replace the existed same class fragment with the new one
+                if (f is MerchantPageFragment || f is OrderCustomizationFragment || f is TokoFoodCategoryFragment) {
+                    (activity as? BaseTokofoodActivity)?.navigateToNewFragment(f, true)
+                } else {
+                    activity.navigateToNewFragment(f)
+                }
             }
         }
     }

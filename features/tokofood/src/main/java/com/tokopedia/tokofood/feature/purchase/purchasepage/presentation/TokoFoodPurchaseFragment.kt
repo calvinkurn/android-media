@@ -684,9 +684,7 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
             .buildUpon()
             .appendQueryParameter(DeeplinkMapperTokoFood.PARAM_MERCHANT_ID, merchantId)
             .build()
-        TokofoodRouteManager.mapUriToFragment(merchantPageUri)?.let { merchantPageFragment ->
-            navigateToNewFragment(merchantPageFragment)
-        }
+        TokofoodRouteManager.routePrioritizeInternal(context, merchantPageUri.toString())
     }
 
     private fun scrollToIndex(index: Int) {
@@ -890,7 +888,7 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
                 }
                 CheckoutErrorMetadataDetail.REDIRECT_ACTION -> {
                     context?.let {
-                        RouteManager.route(it, errorDetail.link)
+                        TokofoodRouteManager.routePrioritizeInternal(it, errorDetail.link)
                     }
                 }
                 else -> {
