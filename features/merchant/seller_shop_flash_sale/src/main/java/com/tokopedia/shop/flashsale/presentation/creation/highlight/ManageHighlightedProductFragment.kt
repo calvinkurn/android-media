@@ -20,6 +20,7 @@ import com.tokopedia.shop.flashsale.common.customcomponent.BaseSimpleListFragmen
 import com.tokopedia.shop.flashsale.common.extension.setFragmentToUnifyBgColor
 import com.tokopedia.shop.flashsale.common.extension.showError
 import com.tokopedia.shop.flashsale.common.extension.showLoading
+import com.tokopedia.shop.flashsale.common.extension.showToaster
 import com.tokopedia.shop.flashsale.common.preference.SharedPreferenceDataStore
 import com.tokopedia.shop.flashsale.di.component.DaggerShopFlashSaleComponent
 import com.tokopedia.shop.flashsale.domain.entity.HighlightableProduct
@@ -27,9 +28,7 @@ import com.tokopedia.shop.flashsale.presentation.creation.highlight.adapter.High
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.lifecycle.autoClearedNullable
-import java.util.*
 import javax.inject.Inject
-
 
 class ManageHighlightedProductFragment :
     BaseSimpleListFragment<HighlightedProductAdapter, HighlightableProduct>() {
@@ -38,8 +37,6 @@ class ManageHighlightedProductFragment :
         private const val PAGE_SIZE = 10
         private const val ONE_PRODUCT = 1
         private const val MAX_PRODUCT_SELECTION = 5
-        private const val EMPTY_STATE_IMAGE_URL =
-            "https://images.tokopedia.net/img/android/campaign/flash-sale-toko/ic_no_active_campaign.png"
         private const val BUNDLE_KEY_CAMPAIGN_ID = "campaign_id"
 
         @JvmStatic
@@ -76,8 +73,7 @@ class ManageHighlightedProductFragment :
         )
     }
 
-    override fun getScreenName(): String =
-        ManageHighlightedProductFragment::class.java.canonicalName.orEmpty()
+    override fun getScreenName(): String = ManageHighlightedProductFragment::class.java.canonicalName.orEmpty()
 
     override fun initInjector() {
         DaggerShopFlashSaleComponent.builder()
@@ -113,7 +109,7 @@ class ManageHighlightedProductFragment :
             searchBar.searchBarTextField.setOnEditorActionListener { _, actionId, _ ->
                 if (actionId == EditorInfo.IME_ACTION_SEARCH) {
                     clearAllData()
-                    binding?.emptyState?.gone()
+                    binding?.groupNoSearchResult?.gone()
                     getProducts(Constant.FIRST_PAGE)
                     return@setOnEditorActionListener false
                 }
@@ -158,20 +154,16 @@ class ManageHighlightedProductFragment :
 
     private fun handleProducts(data: List<HighlightableProduct>) {
         val currentItemCount = productAdapter.getItems().size.orZero()
-        val isScrolling = currentItemCount > Int.ZERO
+        val hasData = currentItemCount > Int.ZERO
 
-        if (data.isEmpty() && !isScrolling) {
-            binding?.emptyState?.setImageUrl(EMPTY_STATE_IMAGE_URL)
-            binding?.emptyState?.setTitle(getString(R.string.chooseproduct_search_empty))
-            binding?.emptyState?.setDescription(getString(R.string.chooseproduct_search_empty_desc))
-
+        if (data.isEmpty() && !hasData) {
+            binding?.groupNoSearchResult?.visible()
             binding?.recyclerView?.gone()
-            binding?.emptyState?.visible()
 
         } else {
             renderList(data, data.size >= PAGE_SIZE)
             binding?.recyclerView?.visible()
-            binding?.emptyState?.gone()
+            binding?.groupNoSearchResult?.gone()
         }
     }
 
@@ -201,16 +193,17 @@ class ManageHighlightedProductFragment :
          val nextCounter = currentSelectedProductCount + ONE_PRODUCT
          if (nextCounter > MAX_PRODUCT_SELECTION) {
              untickProduct(selectedProduct)
-             showDisableReason(getString(R.string.sfs_placeholder_empty_quota))
+
          } else {
              val remainingSelection = MAX_PRODUCT_SELECTION - viewModel.getSelectedProductIds().size
 
              if (remainingSelection > Int.ZERO) {
+                 binding?.root showToaster getString(R.string.sfs_successfully_highlighted)
                  tickProduct(selectedProduct)
                  viewModel.addProductToSelection(selectedProduct)
              } else {
                  untickProduct(selectedProduct)
-                 showNoMoreRemainingQuota()
+
              }
          }
 
@@ -229,49 +222,19 @@ class ManageHighlightedProductFragment :
         disableReason: String
     ) {
         val selectedProductCount = viewModel.getSelectedProductIds().size
-        val reachedMaxAllowedSelection = selectedProductCount >= MAX_PRODUCT_SELECTION
-        when {
-            reachedMaxAllowedSelection -> showDisableReason(getString(R.string.sfs_placeholder_empty_quota))
-            isDisabled -> showDisableReason(disableReason)
-            else -> {}
-        }
+
     }
-
-    private fun showDisableReason(disableReason: String) {
-        /* val wording : String = when{
-             disableReason == DISABLED_REASON_PRODUCT_ALREADY_HAS_DISCOUNT -> getString(R.string.sd_product_already_on_discount)
-             disableReason.isNotEmpty() -> disableReason
-             else -> getString(R.string.sd_product_already_on_discount)
-         }
-
-         Toaster.build(
-             binding?.recyclerView ?: return,
-             wording,
-             Snackbar.LENGTH_SHORT,
-             Toaster.TYPE_NORMAL,
-             getString(R.string.sd_ok)
-         ).show()*/
-    }
-
-    private fun showNoMoreRemainingQuota() {
-        /*  Toaster.build(
-              binding?.cardView ?: return,
-              getString(R.string.sd_no_remaining_quota),
-              Snackbar.LENGTH_SHORT,
-              Toaster.TYPE_ERROR,
-              getString(R.string.sd_ok)
-          ).show()*/
-    }
-
 
     private fun tickProduct(selectedProduct: HighlightableProduct) {
-        val updatedProduct = selectedProduct.copy(isSelected = true, selectedAtMillis = Date().time)
-        productAdapter.update(selectedProduct, updatedProduct)
+        val products = adapter?.getItems() ?: return
+        val updatedProduct = viewModel.markAsSelected(selectedProduct, products)
+        productAdapter.submit(updatedProduct)
     }
 
     private fun untickProduct(selectedProduct: HighlightableProduct) {
-        val updatedProduct = selectedProduct.copy(isSelected = false, selectedAtMillis = 0)
-        productAdapter.update(selectedProduct, updatedProduct)
+        val products = adapter?.getItems() ?: return
+        val updatedProduct = viewModel.markAsUnselected(selectedProduct, products)
+        productAdapter.submit(updatedProduct)
     }
 
     override fun createAdapter() = productAdapter

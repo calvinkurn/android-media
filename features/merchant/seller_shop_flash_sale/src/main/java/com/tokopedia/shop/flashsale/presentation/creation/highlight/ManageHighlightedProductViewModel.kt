@@ -11,6 +11,7 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
+import java.util.*
 import javax.inject.Inject
 
 class ManageHighlightedProductViewModel @Inject constructor(
@@ -53,7 +54,8 @@ class ManageHighlightedProductViewModel @Inject constructor(
                         it.productMapData.discountedPrice,
                         it.productMapData.discountPercentage,
                         disabled = false,
-                        isSelected = false
+                        isSelected = it.highlightProductWording.isNotEmpty(),
+                        selectedAtMillis = Date().time
                     )
                 }
                 val sortedProducts = sort(products)
@@ -88,4 +90,35 @@ class ManageHighlightedProductViewModel @Inject constructor(
     fun removeProductFromSelection(product: HighlightableProduct) {
         this.selectedProductIds.remove(product.id)
     }
+
+    fun markAsSelected(
+        selectedProduct: HighlightableProduct,
+        products: List<HighlightableProduct>
+    ): List<HighlightableProduct> {
+        return products
+            .map { product ->
+                if (selectedProduct.id == product.id) {
+                    product.copy(isSelected = true, selectedAtMillis = Date().time)
+                } else {
+                    product
+                }
+            }
+            .sortedByDescending { it.isSelected }
+    }
+
+    fun markAsUnselected(
+        selectedProduct: HighlightableProduct,
+        products: List<HighlightableProduct>
+    ): List<HighlightableProduct> {
+        return products
+            .map { product ->
+                if (selectedProduct.id == product.id) {
+                    product.copy(isSelected = false, selectedAtMillis = 0)
+                } else {
+                    product
+                }
+            }
+            .sortedByDescending { it.isSelected }
+    }
+
 }

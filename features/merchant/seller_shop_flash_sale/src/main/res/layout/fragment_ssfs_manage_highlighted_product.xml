@@ -97,16 +97,36 @@
         android:visibility="gone"
         app:constraint_referenced_ids="searchBar,recyclerView" />
 
-    <com.tokopedia.empty_state.EmptyStateUnify
-        android:id="@+id/emptyState"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tpgNoSearchResultTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:visibility="gone"
-        app:layout_constraintBottom_toTopOf="@+id/cardView"
+        android:layout_marginTop="@dimen/unify_space_32"
+        android:text="@string/sfs_product_not_found"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/searchBar"
-        app:unifyEmptyStateOrientation="vertical"
-        app:unifyEmptyStateType="section" />
+        app:layout_constraintTop_toBottomOf="@id/searchBar"
+        app:typographyType="heading_4" />
+
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tpgNoSearchResultDescription"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/unify_space_4"
+        android:visibility="gone"
+        android:text="@string/sfs_search_result_not_found_description"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tpgNoSearchResultTitle"
+        app:typographyType="body_2" />
+
+    <androidx.constraintlayout.widget.Group
+        android:id="@+id/groupNoSearchResult"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:constraint_referenced_ids="tpgNoSearchResultTitle,tpgNoSearchResultDescription" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

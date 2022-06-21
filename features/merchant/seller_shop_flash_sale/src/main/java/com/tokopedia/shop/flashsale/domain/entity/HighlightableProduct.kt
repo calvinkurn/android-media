@@ -10,5 +10,5 @@ data class HighlightableProduct(
     val disabled: Boolean,
     val isSelected: Boolean = false,
     val disableClick: Boolean = false,
-    val selectedAtMillis: Long = 0
+    val selectedAtMillis: Long
 )

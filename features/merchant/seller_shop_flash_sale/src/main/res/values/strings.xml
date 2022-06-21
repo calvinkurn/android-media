@@ -233,6 +233,11 @@
     <string name="manage_product_continue_label">Lanjut</string>
     <string name="manage_product_save_draft_label">Simpan Draft</string>
 
-    <string name="sfs_search_product">Cari produk</string>
+    <!--Manage Product Highlight -->
     <string name="sfs_manage_highlight">Atur Highlight</string>
+    <string name="sfs_search_product">Cari produk</string>
+    <string name="sfs_product_not_found">Produk yang kamu cari tidak ditemukan.</string>
+    <string name="sfs_successfully_highlighted">Produkmu berhasil di-highlight.</string>
+    <string name="sfs_highlight_product_first_coachmark">Klik di sini untuk memilih produk yang di highlight.</string>
+    <string name="sfs_placeholder_product_order">#%d</string>
 </resources>

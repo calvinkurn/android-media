@@ -24,6 +24,7 @@ class HighlightedProductAdapter(
     companion object {
         private const val ALPHA_DISABLED = 0.5f
         private const val ALPHA_ENABLED = 1.0f
+        private const val ONE = 1
     }
 
     private var products: MutableList<HighlightableProduct> = mutableListOf()
@@ -73,6 +74,12 @@ class HighlightedProductAdapter(
         }
     }
 
+    fun submit(products: List<HighlightableProduct>) {
+        this.products = products.toMutableList()
+        notifyItemRangeChanged(Int.ZERO, products.size)
+    }
+
+
     fun clearData() {
         this.products = mutableListOf()
         notifyItemRangeChanged(Int.ZERO, this.products.size)
@@ -112,6 +119,8 @@ class HighlightedProductAdapter(
             binding.root.setOnClickListener { onProductClicked(product, position) }
             binding.loader.isVisible = isLoading
             binding.tpgOriginalPrice.setPrice(product.originalPrice)
+            binding.tpgProductOrder.isVisible = product.isSelected
+            binding.tpgProductOrder.setPosition(position)
             handleSwitchAppearance(product, onProductSelectionChange)
             handleCardSelectable(product.disableClick, product.disabled)
         }
@@ -140,6 +149,12 @@ class HighlightedProductAdapter(
             this.text = price.convertRupiah()
         }
 
+        private fun Typography.setPosition(position: Int) {
+            val incrementedPosition = position + ONE
+            val formattedPosition = String.format(this.context.getString(R.string.sfs_placeholder_product_order), incrementedPosition)
+            this.text = formattedPosition
+        }
+
         private fun handleCardSelectable(disableClick: Boolean, disabled: Boolean) {
             if (disableClick || disabled) {
                 binding.imgProduct.alpha = ALPHA_DISABLED
@@ -155,5 +170,4 @@ class HighlightedProductAdapter(
         }
 
     }
-
 }
