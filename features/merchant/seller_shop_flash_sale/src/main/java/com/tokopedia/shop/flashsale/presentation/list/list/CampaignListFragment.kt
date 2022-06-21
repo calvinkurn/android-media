@@ -389,7 +389,7 @@ class CampaignListFragment : BaseSimpleListFragment<CampaignAdapter, CampaignUiM
     }
 
     override fun onGetListError(message: String) {
-
+        adapter?.hideLoading()
     }
 
     override fun onScrolled(xScrollAmount: Int, yScrollAmount: Int) {

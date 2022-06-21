@@ -6,7 +6,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import androidx.lifecycle.ViewModelProvider
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
@@ -104,16 +103,9 @@ class ManageHighlightedProductFragment :
     }
 
     private fun setupView() {
-        setupRecyclerView()
         setupButton()
         setupToolbar()
         setupSearchBar()
-    }
-
-    private fun setupRecyclerView() {
-        binding?.recyclerView?.layoutManager =
-            LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
-        binding?.recyclerView?.adapter = productAdapter
     }
 
     private fun setupSearchBar() {
@@ -299,7 +291,7 @@ class ManageHighlightedProductFragment :
     }
 
     private fun getProducts(page: Int) {
-        val offset = if (isFirstLoad || page == 1) {
+        val offset = if (isFirstLoad) {
             Constant.FIRST_PAGE
         } else {
             page * PAGE_SIZE
@@ -327,7 +319,7 @@ class ManageHighlightedProductFragment :
     }
 
     override fun onGetListError(message: String) {
-
+        adapter?.hideLoading()
     }
 
     override fun onScrolled(xScrollAmount: Int, yScrollAmount: Int) {

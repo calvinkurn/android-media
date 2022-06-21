@@ -49,9 +49,9 @@ class ManageHighlightedProductViewModel @Inject constructor(
                         it.productId,
                         it.productName,
                         it.imageUrl.img200,
-                        it.productMapData.originalPrice.toString(),
-                        it.productMapData.discountedPrice.toString(),
-                        it.productMapData.discountPercentage.toString(),
+                        it.productMapData.originalPrice,
+                        it.productMapData.discountedPrice,
+                        it.productMapData.discountPercentage,
                         disabled = false,
                         isSelected = false
                     )
