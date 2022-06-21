@@ -382,8 +382,7 @@ class ShippingDurationBottomsheet : ShippingDurationContract.View, ShippingDurat
             shippingDurationBottomsheetListener?.onLogisticPromoChosen(
                 serviceData.shippingCourierViewModelList, courierData,
                 mRecipientAddress, mCartPosition,
-                serviceData.serviceData, false, data.promoCode, data.serviceId, data
-            )
+                serviceData.serviceData, false, data.promoCode, data.serviceId, data)
         } catch (e: Exception) {
             e.printStackTrace()
         }

@@ -97,10 +97,7 @@ class ShippingDurationAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() 
         when (holder) {
             is PreOrderViewHolder -> holder.bindData(mData[position] as PreOrderModel)
             is ShippingDurationViewHolder -> holder.bindData(mData[position] as ShippingDurationUiModel, shippingDurationAdapterListener, isDisableOrderPrioritas)
-            is ArmyViewHolder -> holder.bindData(
-                mData[position] as LogisticPromoUiModel,
-                shippingDurationAdapterListener
-            )
+            is ArmyViewHolder -> holder.bindData(mData[position] as LogisticPromoUiModel, shippingDurationAdapterListener)
         }
     }
 

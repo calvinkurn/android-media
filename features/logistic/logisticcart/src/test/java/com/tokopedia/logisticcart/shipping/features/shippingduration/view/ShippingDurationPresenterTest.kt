@@ -203,26 +203,6 @@ class ShippingDurationPresenterTest {
         assertEquals(productsShipping.filter { product -> product.any { item -> item.promoCode.isEmpty() } }.size, productsShipping.size)
     }
 
-//    @Test
-//    fun `When get courier item data trigger courier converter Then courier converter is called`() {
-//        // Given
-//        val courierModelWithOneRecc: List<ShippingCourierUiModel> = listOf(
-//                ShippingCourierUiModel().apply {
-//                    productData = ProductData().apply {
-//                        isRecommend = true
-//                    }
-//                }
-//        )
-//
-//        // When
-//        presenter.getCourierItemData(courierModelWithOneRecc)
-//
-//        // Then
-//        verify {
-//            courierConverter.convertToCourierItemData(any())
-//        }
-//    }
-
     @Test
     fun `When get courier item data return null Then null is returned`() {
         // Given
@@ -238,27 +218,7 @@ class ShippingDurationPresenterTest {
         // Then
         assertNull(actual)
     }
-
-//    @Test
-//    fun `When get courier item data with id trigger courier converter Then courier converter is called`() {
-//        // Given
-//        val spId = 24
-//        val courierModelWithId: List<ShippingCourierUiModel> = listOf(
-//                ShippingCourierUiModel().apply {
-//                    productData = ProductData().apply {
-//                        shipperProductId = spId
-//                    }
-//                }
-//        )
-//
-//        // When
-//        presenter.getCourierItemDataById(spId, courierModelWithId)
-//
-//        // Then
-//        verify {
-//            courierConverter.convertToCourierItemData(any())
-//        }
-//    }
+    
 
     @Test
     fun `When get courier item data with id return null Then null is returned`() {
