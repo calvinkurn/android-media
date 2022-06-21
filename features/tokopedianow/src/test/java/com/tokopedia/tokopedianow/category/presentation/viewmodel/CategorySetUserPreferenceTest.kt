@@ -61,12 +61,12 @@ class CategorySetUserPreferenceTest: CategoryTestFixtures() {
     }
 
     @Test
-    fun `when on view created set user preference with external service type 20m should and current service type 15m should show bottomsheet`() {
+    fun `when on view created set user preference with external service type 20m, current service type 15m and warehouse id valid should show bottomsheet`() {
         val currentServiceType = "15m"
         val externalServiceType = "20m"
 
         `Given category view model`(externalServiceType =  externalServiceType)
-        val localCacheModel = LocalCacheModel(service_type = currentServiceType)
+        val localCacheModel = LocalCacheModel(warehouse_id = "123", service_type = currentServiceType)
 
         tokoNowCategoryViewModel.mockSuperClassField("chooseAddressData", localCacheModel)
 
@@ -74,6 +74,22 @@ class CategorySetUserPreferenceTest: CategoryTestFixtures() {
 
         val needToShowOnBoardBottomSheet = tokoNowCategoryViewModel.needToShowOnBoardBottomSheet(has20mBottomSheetBeenShown = false)
         Assert.assertEquals(true, needToShowOnBoardBottomSheet)
+    }
+
+    @Test
+    fun `when on view created set user preference with external service type 20m, current service type 15m and warehouse id not valid should not show bottomsheet`() {
+        val currentServiceType = "15m"
+        val externalServiceType = "20m"
+
+        `Given category view model`(externalServiceType =  externalServiceType)
+        val localCacheModel = LocalCacheModel(warehouse_id = "", service_type = currentServiceType)
+
+        tokoNowCategoryViewModel.mockSuperClassField("chooseAddressData", localCacheModel)
+
+        `When view created`()
+
+        val needToShowOnBoardBottomSheet = tokoNowCategoryViewModel.needToShowOnBoardBottomSheet(has20mBottomSheetBeenShown = false)
+        Assert.assertEquals(false, needToShowOnBoardBottomSheet)
     }
 
     @Test
