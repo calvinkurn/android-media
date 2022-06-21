@@ -14,6 +14,7 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.loadImageRounded
@@ -49,6 +50,8 @@ open class SomListOrderViewHolder(
         val LAYOUT = R.layout.item_som_list_order
 
         const val TOGGLE_SELECTION = "toggle_selection"
+        const val CARD_MARGIN_TOP_ORDER_REGULAR = 0
+        const val CARD_MARGIN_TOP_ORDER_PLUS = 13
 
         private val completedOrderStatusCodes = intArrayOf(690, 691, 695, 698, 699, 700, 701)
         private val cancelledOrderStatusCodes = intArrayOf(0, 4, 6, 10, 11, 15)
@@ -388,6 +391,12 @@ open class SomListOrderViewHolder(
             if (listener.isMultiSelectEnabled()) touchCheckBox(element)
             else listener.onOrderClicked(element)
         }
+        binding?.cardSomOrder?.setMargin(
+            Int.ZERO,
+            if (element.isPlus) CARD_MARGIN_TOP_ORDER_PLUS.toPx() else CARD_MARGIN_TOP_ORDER_REGULAR.toPx(),
+            Int.ZERO,
+            Int.ZERO
+        )
     }
 
     private fun hasActiveRequestCancellation(element: SomListOrderUiModel): Boolean {

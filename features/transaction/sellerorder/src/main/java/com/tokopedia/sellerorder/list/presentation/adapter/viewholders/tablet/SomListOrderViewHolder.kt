@@ -3,7 +3,9 @@ package com.tokopedia.sellerorder.list.presentation.adapter.viewholders.tablet
 import android.animation.ValueAnimator
 import android.os.Bundle
 import android.view.View
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.sellerorder.list.presentation.models.SomListOrderUiModel
 
@@ -57,6 +59,12 @@ class SomListOrderViewHolder(
                 if (listener.isMultiSelectEnabled()) touchCheckBox(element)
                 else listener.onOrderClicked(element)
             }
+            binding?.cardSomOrder?.setMargin(
+                Int.ZERO,
+                if (element.isPlus) CARD_MARGIN_TOP_ORDER_PLUS else CARD_MARGIN_TOP_ORDER_REGULAR,
+                Int.ZERO,
+                Int.ZERO
+            )
         }
     }
 
