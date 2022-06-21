@@ -94,7 +94,7 @@ class ProductTagUiModelMapper @Inject constructor() {
                         webLink = "",
                         appLink = "",
                         star = it.ratingAverage,
-                        price = it.priceInt.toDouble(),
+                        price = it.priceDouble,
                         priceFmt = it.price,
                         isDiscount = it.discountPercentage != 0.0,
                         discount = it.discountPercentage,

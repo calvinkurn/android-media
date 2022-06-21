@@ -68,7 +68,7 @@ data class FeedAceSearchProductResponse(
         val price: String = "",
 
         @SerializedName("priceInt")
-        val priceInt: Long = 0,
+        val priceDouble: Double = 0.0,
 
         @SerializedName("originalPrice")
         val originalPrice: String = "",
