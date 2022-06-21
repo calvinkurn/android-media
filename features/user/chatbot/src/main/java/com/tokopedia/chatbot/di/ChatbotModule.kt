@@ -87,7 +87,6 @@ class ChatbotModule {
         return BaseRepository()
     }
 
-    //TODO why internal and check whether application context is required or not
     @ChatbotScope
     @Provides
     internal fun provideChatbotCacheManager(@ApplicationContext context: Context): ChatbotCacheManager{
@@ -100,10 +99,4 @@ class ChatbotModule {
     fun provideGraphqlRepositoryModule(): GraphqlRepository {
         return GraphqlInteractor.getInstance().graphqlRepository
     }
-
-
-    @ChatbotScope
-    @Provides
-    fun provideGraphQlRepository(): GraphqlRepository = GraphqlInteractor.getInstance().graphqlRepository
-
 }

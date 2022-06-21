@@ -270,29 +270,6 @@ class ChatbotPresenterTest {
 
     @Test
     fun `getTopChat when inputList is not empty success`() {
-        // Given
-//        val expectedResponse = GetExistingChatPojo()
-//        val chatroomViewModel = getExistingChatMapper.map(expectedResponse)
-//        var roomViewModel : ChatroomViewModel? = null
-//
-//
-//        coEvery {
-//            getExistingChatUseCase.getTopChat(any())
-//        } returns expectedResponse
-//
-//        every {
-//            getExistingChatMapper.map(expectedResponse)
-//        } returns chatroomViewModel
-//
-//
-//        // When
-//        presenter.getTopChat("123456",{ a,b ->
-//             roomViewModel = a
-//        }, Unit, {})
-//
-//        assertEquals(
-//            chatroomViewModel, roomViewModel
-//        )
 
         val expectedResponse = GetExistingChatPojo()
         val chatroomViewModel = getExistingChatMapper.map(expectedResponse)
@@ -471,24 +448,6 @@ class ChatbotPresenterTest {
         verify {
             exception.printStackTrace()
         }
-    }
-
-    @Test
-    fun `updateMappedPojo for error`() {
-
-//        val ratings = mockk<ChipGetChatRatingListResponse.ChipGetChatRatingList>(relaxed = true)
-//        var ratingsList : ChipGetChatRatingListResponse.ChipGetChatRatingList? = null
-//        var message : String? = null
-//
-//        every {
-//            ratings.messageError
-//        } returns message
-//
-//        presenter.updateMappedPojo(ChatroomViewModel(),
-//            ChipGetChatRatingListResponse.ChipGetChatRatingList(),{ error ->
-//            message = error
-//        })
-
     }
 
 }
