@@ -10,7 +10,6 @@ import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.matcher.IntentMatchers
 import androidx.test.espresso.intent.rule.IntentsTestRule
 import com.tokopedia.cassavatest.CassavaTestRule
-import com.tokopedia.cassavatest.hasAllSuccess
 import com.tokopedia.homenav.mock.MainNavMockResponseConfig
 import com.tokopedia.homenav.util.MainNavRecyclerViewIdlingResource
 import com.tokopedia.homenav.view.activity.HomeNavActivity
@@ -27,7 +26,6 @@ import com.tokopedia.homenav.mainnav.view.datamodel.account.AccountHeaderDataMod
 import com.tokopedia.homenav.mainnav.view.datamodel.favoriteshop.FavoriteShopListDataModel
 import com.tokopedia.homenav.mainnav.view.datamodel.wishlist.WishlistDataModel
 import com.tokopedia.test.application.assertion.topads.TopAdsVerificationTestReportUtil
-import org.hamcrest.MatcherAssert
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
