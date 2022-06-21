@@ -333,6 +333,10 @@
             android:paddingTop="8dp"
             android:paddingBottom="8dp"
             android:visibility="gone"
+            app:layout_constrainedWidth="true"
+            app:layout_constraintEnd_toStartOf="@+id/text_notes_change"
+            app:layout_constraintHorizontal_bias="0"
+            app:layout_constraintHorizontal_chainStyle="packed"
             app:layout_constraintStart_toEndOf="@id/v_bundling_product_separator"
             app:layout_constraintTop_toBottomOf="@+id/iu_image_product"
             app:typographyType="body_3"
@@ -341,20 +345,23 @@
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/text_notes_change"
-            android:layout_width="40dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
             android:layout_marginStart="8dp"
+            android:paddingStart="2dp"
             android:paddingTop="8dp"
+            android:paddingEnd="2dp"
             android:paddingBottom="8dp"
-            android:text="Ubah"
+            android:text="@string/label_button_change_note"
             android:textColor="@color/Unify_GN500"
             android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="@+id/text_notes_filled"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/text_notes_filled"
             app:layout_constraintTop_toTopOf="@+id/text_notes_filled"
             app:typographyType="body_3"
-            tools:visibility="gone" />
+            tools:visibility="visible" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
