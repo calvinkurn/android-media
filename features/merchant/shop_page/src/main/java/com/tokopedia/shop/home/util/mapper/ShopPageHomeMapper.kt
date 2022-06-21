@@ -68,6 +68,9 @@ object ShopPageHomeMapper {
     ): ShopHomeProductUiModel =
         with(shopProduct) {
             ShopHomeProductUiModel().also {
+                val isVariant = false
+                val minOrder = 1
+                val stock = 10
                 it.id = productId
                 it.name = name
                 it.displayedPrice = price.textIdr
@@ -91,7 +94,10 @@ object ShopPageHomeMapper {
                 it.freeOngkirPromoIcon = freeOngkir.imgUrl
                 it.labelGroupList =
                     labelGroupList.map { labelGroup -> mapToLabelGroupViewModel(labelGroup) }
+                it.minimumOrder = minOrder
+                it.stock = stock
                 it.isEnableDirectPurchase = isEnableDirectPurchase
+                it.isVariant = isVariant
             }
         }
 
@@ -154,7 +160,8 @@ object ShopPageHomeMapper {
         return if (isShopPersonalizationWidgetEnableDirectPurchase(
                 shopHomeProductViewModel.isEnableDirectPurchase,
                 widgetName
-        )) {
+            ) && isProductCardIsNotSoldOut(shopHomeProductViewModel.isSoldOut)
+        ) {
             if (shopHomeProductViewModel.isVariant) {
                 createProductCardWithVariantAtcModel(shopHomeProductViewModel, baseProductCardModel)
             } else {
@@ -170,6 +177,10 @@ object ShopPageHomeMapper {
         } else {
             baseProductCardModel
         }
+    }
+
+    private fun isProductCardIsNotSoldOut(isProductSoldOut: Boolean): Boolean {
+        return !isProductSoldOut
     }
 
     private fun isShopPersonalizationWidgetEnableDirectPurchase(
@@ -214,7 +225,10 @@ object ShopPageHomeMapper {
             addToCartButtonType = UnifyButton.Type.MAIN,
             isWideContent = isWideContent
         )
-        return if (shopHomeProductViewModel.isEnableDirectPurchase) {
+        return if (shopHomeProductViewModel.isEnableDirectPurchase && isProductCardIsNotSoldOut(
+                shopHomeProductViewModel.isSoldOut
+            )
+        ) {
             if (shopHomeProductViewModel.isVariant) {
                 createProductCardWithVariantAtcModel(shopHomeProductViewModel, baseProductCardModel)
             } else {
@@ -260,8 +274,8 @@ object ShopPageHomeMapper {
         return baseProductCardModel.copy(
             nonVariant = ProductCardModel.NonVariant(
                 quantity = shopHomeProductViewModel.productInCart,
-                minQuantity = Int.ONE,
-                maxQuantity = 10
+                minQuantity = shopHomeProductViewModel.minimumOrder,
+                maxQuantity = shopHomeProductViewModel.stock
             ),
             variant = null,
             hasAddToCartButton = false
@@ -309,7 +323,8 @@ object ShopPageHomeMapper {
         return if (isShopCampaignWidgetEnableDirectPurchase(
                 shopHomeProductViewModel.isEnableDirectPurchase,
                 widgetName
-            )) {
+            ) && isProductCardIsNotSoldOut(shopHomeProductViewModel.isSoldOut)
+        ) {
             if (shopHomeProductViewModel.isVariant) {
                 createProductCardWithVariantAtcModel(shopHomeProductViewModel, baseProductCardModel)
             } else {
@@ -627,6 +642,9 @@ object ShopPageHomeMapper {
         isEnableDirectPurchase: Boolean
     ): List<ShopHomeProductUiModel> {
         return listProduct.map {
+            val isVariant = false
+            val minOrder = 1
+            val stock = 10
             ShopHomeProductUiModel().apply {
                 id = it.id
                 name = it.name
@@ -649,7 +667,10 @@ object ShopPageHomeMapper {
                 }
                 labelGroupList =
                     it.labelGroups.map { labelGroup -> mapToLabelGroupViewModel(labelGroup) }
+                minimumOrder = minOrder
+                this.stock = stock
                 this.isEnableDirectPurchase = isEnableDirectPurchase
+                this.isVariant = isVariant
             }
         }
     }
@@ -783,6 +804,8 @@ object ShopPageHomeMapper {
         isEnableDirectPurchase: Boolean
     ): List<ShopHomeProductUiModel> {
         return data.map {
+            val isVariant = false
+            val stock = 10
             ShopHomeProductUiModel().apply {
                 id = it.productID
                 name = it.name
@@ -802,7 +825,9 @@ object ShopPageHomeMapper {
                 categoryBreadcrumbs = it.categoryBreadcrumbs
                 labelGroupList = it.labelGroups.map { mapToLabelGroupViewModel(it) }
                 minimumOrder = it.minimumOrder ?: 1
+                this.stock = stock
                 this.isEnableDirectPurchase = isEnableDirectPurchase
+                this.isVariant = isVariant
             }
         }
     }
@@ -849,6 +874,9 @@ object ShopPageHomeMapper {
         isEnableDirectPurchase: Boolean
     ): ShopHomeProductUiModel =
         ShopHomeProductUiModel().apply {
+            val isVariant = false
+            val stock = 10
+            val minOrder = 1
             id = response.productID.toString()
             name = response.name
             displayedPrice = response.displayPrice
@@ -867,7 +895,10 @@ object ShopPageHomeMapper {
             freeOngkirPromoIcon = response.freeOngkirPromoIcon
             labelGroupList =
                 response.labelGroups.map { labelGroup -> mapToLabelGroupViewModel(labelGroup) }
+            minimumOrder = minOrder
+            this.stock = stock
             this.isEnableDirectPurchase = isEnableDirectPurchase
+            this.isVariant = isVariant
         }
 
     fun mapToGetCampaignNotifyMeUiModel(model: GetCampaignNotifyMeModel): GetCampaignNotifyMeUiModel {

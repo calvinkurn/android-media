@@ -388,7 +388,9 @@ class ShopPageProductListResultViewModel @Inject constructor(private val userSes
                         productListResponse.suggestion.responseCode,
                         productListResponse.suggestion.keywordProcess,
                 )
-        )
+        ).apply {
+            updateProductCardQuantity(miniCartData.value, listShopProductUiModel.toMutableList())
+        }
     }
     private fun isHasNextPage(page: Int, perPage: Int, totalData: Int): Boolean = page * perPage < totalData
 

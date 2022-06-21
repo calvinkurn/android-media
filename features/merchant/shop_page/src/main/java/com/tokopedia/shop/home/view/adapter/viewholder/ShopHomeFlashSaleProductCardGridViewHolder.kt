@@ -54,7 +54,10 @@ class ShopHomeFlashSaleProductCardGridViewHolder(
             }
 
             productCardGrid?.setAddToCartOnClickListener {
-                listener.onProductAtcDefaultClick(shopHomeProductUiModel)
+                listener.onProductAtcDefaultClick(
+                    shopHomeProductUiModel,
+                    shopHomeProductUiModel.minimumOrder
+                )
             }
         }
     }

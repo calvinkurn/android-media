@@ -57,6 +57,9 @@ object ShopPageProductListMapper {
     ): ShopProductUiModel =
             with(shopProduct) {
                 ShopProductUiModel().also {
+                    val isVariant = false
+                    val minimumOrder = 1
+                    val stock = 10
                     it.id = productId
                     it.name = name
                     it.displayedPrice = price.textIdr
@@ -119,6 +122,9 @@ object ShopPageProductListMapper {
                         }
                     }
                     it.isEnableDirectPurchase = isEnableDirectPurchase
+                    it.isVariant = isVariant
+                    it.minimumOrder = minimumOrder
+                    it.stock = stock
                 }
             }
 
@@ -226,15 +232,15 @@ object ShopPageProductListMapper {
                 stockBarPercentage = shopProductUiModel.stockBarPercentage,
                 isWideContent = isWideContent
         )
-        return if(shopProductUiModel.isEnableDirectPurchase){
-            if(shopProductUiModel.productInCart.isZero()){
-                createProductCardWithDefaultAddToCardModel(baseProductCardModel)
+        return if (shopProductUiModel.isEnableDirectPurchase && isProductCardIsNotSoldOut(shopProductUiModel.isSoldOut)) {
+            if (shopProductUiModel.isVariant) {
+                createProductCardWithVariantAtcModel(
+                    shopProductUiModel,
+                    baseProductCardModel
+                )
             } else {
-                if (shopProductUiModel.isVariant) {
-                    createProductCardWithVariantAtcModel(
-                        shopProductUiModel,
-                        baseProductCardModel
-                    )
+                if (shopProductUiModel.productInCart.isZero()) {
+                    createProductCardWithDefaultAddToCardModel(baseProductCardModel)
                 } else {
                     createProductCardWithNonVariantAtcModel(
                         shopProductUiModel,
@@ -242,9 +248,13 @@ object ShopPageProductListMapper {
                     )
                 }
             }
-        } else{
+        } else {
             baseProductCardModel
         }
+    }
+
+    private fun isProductCardIsNotSoldOut(isProductSoldOut: Boolean): Boolean {
+        return !isProductSoldOut
     }
 
     private fun createProductCardWithDefaultAddToCardModel(baseProductCardModel: ProductCardModel): ProductCardModel {
@@ -273,8 +283,8 @@ object ShopPageProductListMapper {
         return baseProductCardModel.copy(
             nonVariant = ProductCardModel.NonVariant(
                 quantity = shopProductUiModel.productInCart,
-                minQuantity = Int.ONE,
-                maxQuantity = 10
+                minQuantity = shopProductUiModel.minimumOrder,
+                maxQuantity = shopProductUiModel.stock
             )
         )
     }

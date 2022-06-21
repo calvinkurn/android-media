@@ -64,6 +64,8 @@ import com.tokopedia.play.widget.ui.listener.PlayWidgetListener
 import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetReminderType
 import com.tokopedia.play.widget.ui.model.ext.hasSuccessfulTranscodedChannel
+import com.tokopedia.product.detail.common.AtcVariantHelper
+import com.tokopedia.product.detail.common.VariantPageSource
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey
@@ -356,7 +358,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         )
         customDimensionShopPage.updateCustomDimensionData(shopId, isOfficialStore, isGoldMerchant)
         staggeredGridLayoutManager = StaggeredGridLayoutManagerWrapper(
-            resources.getInteger(R.integer.span_count_small_grid),
+            context?.resources?.getInteger(R.integer.span_count_small_grid).orZero(),
             StaggeredGridLayoutManager.VERTICAL
         )
         setupPlayWidgetAnalyticListener()
@@ -2062,13 +2064,13 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         )
     }
 
-    override fun onProductAtcDefaultClick(shopHomeProductViewModel: ShopHomeProductUiModel) {
+    override fun onProductAtcDefaultClick(shopHomeProductViewModel: ShopHomeProductUiModel, quantity: Int) {
         if (isLogin) {
             if (isOwner) {
                 val sellerViewAtcErrorMessage = getString(R.string.shop_page_seller_atc_error_message)
                 showErrorToast(sellerViewAtcErrorMessage)
             } else {
-                handleAtcFlow(shopHomeProductViewModel.id.orEmpty(), Int.ONE, shopId)
+                handleAtcFlow(shopHomeProductViewModel.id.orEmpty(), quantity, shopId)
             }
         } else {
             redirectToLoginPage()
@@ -2076,22 +2078,14 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
     }
 
     override fun onProductAtcVariantClick(shopHomeProductViewModel: ShopHomeProductUiModel) {
-        //                if(uiModel.isVariant) {
-//                    AtcVariantHelper.goToAtcVariant(
-//                        context = requireContext(),
-//                        productId = uiModel.productID,
-//                        pageSource = VariantPageSource.SHOP_COUPON_PAGESOURCE,
-//                        shopId = shopId,
-//                        extParams = AtcVariantHelper.generateExtParams(
-//                            mapOf(
-//                                VBS_EXT_PARAMS_PROMO_ID to promoId
-//                            )
-//                        ),
-//                        dismissAfterTransaction = false,
-//                        startActivitResult = this::startActivityForResult
-//                    )
-//                    tracking.sendVbsImpressionTracker(shopId, userId, isSellerView)
-//                }
+        AtcVariantHelper.goToAtcVariant(
+            context = requireContext(),
+            productId = shopHomeProductViewModel.id.orEmpty(),
+            pageSource = VariantPageSource.SHOP_COUPON_PAGESOURCE,
+            shopId = shopId,
+            startActivitResult = this::startActivityForResult
+        )
+//            tracking.sendVbsImpressionTracker(shopId, userId, isSellerView)
     }
 
     override fun onProductAtcNonVariantQuantityEditorChanged(
@@ -3572,7 +3566,8 @@ shopHomeAdapter.itemCount
                 is Success -> {
                     updateMiniCartWidget()
                     showToastSuccess(
-                        it.data.errorMessage.joinToString(separator = ", ")
+                        it.data.data.message.joinToString(separator = ", "),
+                        getString(R.string.shop_page_atc_label_cta)
                     )
                 }
                 is Fail -> {
@@ -3600,7 +3595,10 @@ shopHomeAdapter.itemCount
             when (it) {
                 is Success -> {
                     updateMiniCartWidget()
-                    showToastSuccess(it.data.second)
+                    showToastSuccess(
+                        it.data.second,
+                        getString(R.string.shop_page_atc_label_cta)
+                    )
                 }
                 is Fail -> {
                     val message = it.throwable.message.orEmpty()

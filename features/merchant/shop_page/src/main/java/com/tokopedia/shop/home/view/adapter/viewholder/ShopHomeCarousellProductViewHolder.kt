@@ -109,7 +109,10 @@ class ShopHomeCarousellProductViewHolder(
                     override fun onItemAddToCart(productCardModel: ProductCardModel, carouselProductCardPosition: Int) {
                         val shopProductViewModel = shopHomeProductViewModelList.getOrNull(carouselProductCardPosition)
                                 ?: return
-                        shopHomeCarouselProductListener.onProductAtcDefaultClick(shopProductViewModel)
+                        shopHomeCarouselProductListener.onProductAtcDefaultClick(
+                            shopProductViewModel,
+                            shopProductViewModel.minimumOrder
+                        )
                     }
 
                 },

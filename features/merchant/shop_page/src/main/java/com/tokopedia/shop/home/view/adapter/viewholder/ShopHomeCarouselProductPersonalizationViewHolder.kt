@@ -90,7 +90,10 @@ class ShopHomeCarouselProductPersonalizationViewHolder (
                 ) {
                     val productItem = element.productList.getOrNull(carouselProductCardPosition)
                         ?: return
-                    shopHomeCarouselProductListener.onProductAtcDefaultClick(productItem)
+                    shopHomeCarouselProductListener.onProductAtcDefaultClick(
+                        productItem,
+                        productItem.minimumOrder
+                    )
                 }
             }
 

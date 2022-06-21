@@ -85,7 +85,10 @@ open class ShopHomeProductItemListViewHolder(
             }
 
             productCard?.setAddToCartOnClickListener {
-                shopHomeEndlessProductListener?.onProductAtcDefaultClick(shopHomeProductViewModel)
+                shopHomeEndlessProductListener?.onProductAtcDefaultClick(
+                    shopHomeProductViewModel,
+                    shopHomeProductViewModel.minimumOrder
+                )
             }
 
         }

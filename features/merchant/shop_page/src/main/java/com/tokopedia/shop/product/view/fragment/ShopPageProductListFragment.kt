@@ -45,6 +45,8 @@ import com.tokopedia.merchantvoucher.voucherList.widget.MerchantVoucherListWidge
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.exception.UserNotLoginException
 import com.tokopedia.network.utils.ErrorHandler
+import com.tokopedia.product.detail.common.AtcVariantHelper
+import com.tokopedia.product.detail.common.VariantPageSource
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.shop.R
@@ -577,42 +579,34 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
     }
 
     override fun onProductAtcNonVariantQuantityEditorChanged(
-        shopHomeProductViewModel: ShopProductUiModel,
+        shopProductUiModel: ShopProductUiModel,
         quantity: Int
     ) {
         if (isLogin) {
-            handleAtcFlow(shopHomeProductViewModel.id.orEmpty(), quantity, shopId)
+            handleAtcFlow(shopProductUiModel.id.orEmpty(), quantity, shopId)
         } else {
             redirectToLoginPage()
         }
     }
 
-    override fun onProductAtcVariantClick(shopHomeProductViewModel: ShopProductUiModel) {
-        //                if(uiModel.isVariant) {
-//                    AtcVariantHelper.goToAtcVariant(
-//                        context = requireContext(),
-//                        productId = uiModel.productID,
-//                        pageSource = VariantPageSource.SHOP_COUPON_PAGESOURCE,
-//                        shopId = shopId,
-//                        extParams = AtcVariantHelper.generateExtParams(
-//                            mapOf(
-//                                VBS_EXT_PARAMS_PROMO_ID to promoId
-//                            )
-//                        ),
-//                        dismissAfterTransaction = false,
-//                        startActivitResult = this::startActivityForResult
-//                    )
-//                    tracking.sendVbsImpressionTracker(shopId, userId, isSellerView)
-//                }
+    override fun onProductAtcVariantClick(shopProductUiModel: ShopProductUiModel) {
+        AtcVariantHelper.goToAtcVariant(
+            context = requireContext(),
+            productId = shopProductUiModel.id.orEmpty(),
+            pageSource = VariantPageSource.SHOP_COUPON_PAGESOURCE,
+            shopId = shopId,
+            startActivitResult = this::startActivityForResult
+        )
+//            tracking.sendVbsImpressionTracker(shopId, userId, isSellerView)
     }
 
-    override fun onProductAtcDefaultClick(shopHomeProductViewModel: ShopProductUiModel) {
+    override fun onProductAtcDefaultClick(shopProductUiModel: ShopProductUiModel) {
         if (isLogin) {
             if (isOwner) {
                 val sellerViewAtcErrorMessage = getString(R.string.shop_page_seller_atc_error_message)
                 showToasterError(sellerViewAtcErrorMessage)
             } else {
-                handleAtcFlow(shopHomeProductViewModel.id.orEmpty(), Int.ONE, shopId)
+                handleAtcFlow(shopProductUiModel.id.orEmpty(), Int.ONE, shopId)
             }
         } else {
             redirectToLoginPage()
@@ -1228,7 +1222,8 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
                 is Success -> {
                     updateMiniCartWidget()
                     showToastSuccess(
-                        it.data.errorMessage.joinToString(separator = ", ")
+                        it.data.errorMessage.joinToString(separator = ", "),
+                        getString(R.string.shop_page_atc_label_cta)
                     )
                 }
                 is Fail -> {
@@ -1256,7 +1251,10 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
             when (it) {
                 is Success -> {
                     updateMiniCartWidget()
-                    showToastSuccess(it.data.second)
+                    showToastSuccess(
+                        it.data.second,
+                        getString(R.string.shop_page_atc_label_cta)
+                    )
                 }
                 is Fail -> {
                     val message = it.throwable.message.orEmpty()

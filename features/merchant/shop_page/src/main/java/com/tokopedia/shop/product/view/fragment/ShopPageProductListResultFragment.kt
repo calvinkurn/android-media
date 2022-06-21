@@ -51,6 +51,8 @@ import com.tokopedia.minicart.common.widget.general.MiniCartGeneralWidget
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.exception.UserNotLoginException
 import com.tokopedia.network.utils.ErrorHandler
+import com.tokopedia.product.detail.common.AtcVariantHelper
+import com.tokopedia.product.detail.common.VariantPageSource
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.shop.R
@@ -461,8 +463,8 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
             when (it) {
                 is Success -> {
                     isEnableDirectPurchase = getIsEnableDirectPurchase(it.data.shopHomeType)
-                    onSuccessGetShopInfo(it.data.shopInfo)
                     initMiniCart()
+                    onSuccessGetShopInfo(it.data.shopInfo)
                 }
                 is Fail -> {
                     onErrorGetShopInfo(it.throwable)
@@ -606,10 +608,26 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
     }
 
     private fun hideMiniCartWidget() {
+        recyclerView?.apply {
+            setPadding(
+                paddingLeft,
+                paddingTop,
+                paddingRight,
+                0
+            )
+        }
         miniCart?.hide()
     }
 
     private fun showMiniCartWidget() {
+        recyclerView?.apply {
+            setPadding(
+                paddingLeft,
+                paddingTop,
+                paddingRight,
+                context?.resources?.getDimension(R.dimen.dp_82)?.toInt().orZero()
+            )
+        }
         miniCart?.show()
     }
 
@@ -908,42 +926,34 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
     }
 
     override fun onProductAtcNonVariantQuantityEditorChanged(
-        shopHomeProductViewModel: ShopProductUiModel,
+        shopProductUiModel: ShopProductUiModel,
         quantity: Int
     ) {
         if (isLogin) {
-            handleAtcFlow(shopHomeProductViewModel.id.orEmpty(), quantity, shopId.orEmpty())
+            handleAtcFlow(shopProductUiModel.id.orEmpty(), quantity, shopId.orEmpty())
         } else {
             redirectToLoginPage()
         }
     }
 
-    override fun onProductAtcVariantClick(shopHomeProductViewModel: ShopProductUiModel) {
-        //                if(uiModel.isVariant) {
-//                    AtcVariantHelper.goToAtcVariant(
-//                        context = requireContext(),
-//                        productId = uiModel.productID,
-//                        pageSource = VariantPageSource.SHOP_COUPON_PAGESOURCE,
-//                        shopId = shopId,
-//                        extParams = AtcVariantHelper.generateExtParams(
-//                            mapOf(
-//                                VBS_EXT_PARAMS_PROMO_ID to promoId
-//                            )
-//                        ),
-//                        dismissAfterTransaction = false,
-//                        startActivitResult = this::startActivityForResult
-//                    )
-//                    tracking.sendVbsImpressionTracker(shopId, userId, isSellerView)
-//                }
+    override fun onProductAtcVariantClick(shopProductUiModel: ShopProductUiModel) {
+        AtcVariantHelper.goToAtcVariant(
+            context = requireContext(),
+            productId = shopProductUiModel.id.orEmpty(),
+            pageSource = VariantPageSource.SHOP_COUPON_PAGESOURCE,
+            shopId = shopId.orEmpty(),
+            startActivitResult = this::startActivityForResult
+        )
+//            tracking.sendVbsImpressionTracker(shopId, userId, isSellerView)
     }
 
-    override fun onProductAtcDefaultClick(shopHomeProductViewModel: ShopProductUiModel) {
+    override fun onProductAtcDefaultClick(shopProductUiModel: ShopProductUiModel) {
         if (isLogin) {
             if (isMyShop) {
                 val sellerViewAtcErrorMessage = getString(R.string.shop_page_seller_atc_error_message)
                 showToasterError(sellerViewAtcErrorMessage)
             } else {
-                handleAtcFlow(shopHomeProductViewModel.id.orEmpty(), Int.ONE, shopId.orEmpty())
+                handleAtcFlow(shopProductUiModel.id.orEmpty(), Int.ONE, shopId.orEmpty())
             }
         } else {
             redirectToLoginPage()
@@ -1025,6 +1035,7 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
     private fun showToastSuccess(message: String, ctaText: String = "", ctaAction: View.OnClickListener? = null) {
         activity?.run {
             view?.let{
+                Toaster.toasterCustomBottomHeight = getMiniCartHeight()
                 ctaAction?.let { ctaClickListener ->
                     Toaster.build(it,
                             message,
@@ -1041,6 +1052,10 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
                 ).show()
             }
         }
+    }
+
+    private fun getMiniCartHeight(): Int {
+        return miniCart?.height.orZero() - context?.resources?.getDimension(com.tokopedia.unifyprinciples.R.dimen.unify_space_16)?.toInt().orZero()
     }
 
     private fun showToasterError(message: String) {
@@ -1288,6 +1303,7 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
             loadShopRestrictionInfo()
         }
         checkIfChooseAddressWidgetDataUpdated()
+        updateMiniCartWidget()
     }
 
     private fun checkIfChooseAddressWidgetDataUpdated() {
@@ -1644,7 +1660,8 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
                 is Success -> {
                     updateMiniCartWidget()
                     showToastSuccess(
-                        it.data.errorMessage.joinToString(separator = ", ")
+                        it.data.errorMessage.joinToString(separator = ", "),
+                        getString(R.string.shop_page_atc_label_cta)
                     )
                 }
                 is Fail -> {
@@ -1672,7 +1689,10 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
             when (it) {
                 is Success -> {
                     updateMiniCartWidget()
-                    showToastSuccess(it.data.second)
+                    showToastSuccess(
+                        it.data.second,
+                        getString(R.string.shop_page_atc_label_cta)
+                    )
                 }
                 is Fail -> {
                     val message = it.throwable.message.orEmpty()

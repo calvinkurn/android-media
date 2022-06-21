@@ -22,6 +22,6 @@ interface ShopHomeEndlessProductListener {
 
     fun onProductAtcVariantClick(shopHomeProductViewModel: ShopHomeProductUiModel)
 
-    fun onProductAtcDefaultClick(shopHomeProductViewModel: ShopHomeProductUiModel)
+    fun onProductAtcDefaultClick(shopHomeProductViewModel: ShopHomeProductUiModel, quantity: Int)
 
 }

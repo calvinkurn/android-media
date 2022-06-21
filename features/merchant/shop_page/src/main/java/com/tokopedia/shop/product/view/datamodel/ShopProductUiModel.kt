@@ -46,6 +46,8 @@ class ShopProductUiModel : BaseShopProductViewModel, ImpressHolder {
     var productInCart: Int = 0
     var isVariant: Boolean = false
     var isNewData: Boolean = false
+    var stock: Int = 0
+    var minimumOrder: Int = 0
 
     override fun type(typeFactory: ShopProductAdapterTypeFactory?): Int {
         return typeFactory?.type(this).orZero()

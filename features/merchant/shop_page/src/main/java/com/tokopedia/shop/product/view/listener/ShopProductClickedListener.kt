@@ -10,11 +10,11 @@ interface ShopProductClickedListener {
     fun onProductClicked(shopProductUiModel: ShopProductUiModel, shopTrackType: Int, productPosition: Int)
 
     fun onProductAtcNonVariantQuantityEditorChanged(
-        shopHomeProductViewModel: ShopProductUiModel,
+        shopProductUiModel: ShopProductUiModel,
         quantity: Int
     )
 
-    fun onProductAtcVariantClick(shopHomeProductViewModel: ShopProductUiModel)
+    fun onProductAtcVariantClick(shopProductUiModel: ShopProductUiModel)
 
-    fun onProductAtcDefaultClick(shopHomeProductViewModel: ShopProductUiModel)
+    fun onProductAtcDefaultClick(shopProductUiModel: ShopProductUiModel)
 }

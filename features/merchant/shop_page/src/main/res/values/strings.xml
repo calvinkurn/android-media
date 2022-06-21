@@ -18,6 +18,7 @@
     <string name="shop_page_reload">Muat Ulang</string>
     <string name="shop_page_reload_beginning_of_description">Data tidak berhasil ditampilkan, klik</string>
     <string name="shop_page_reload_end_of_description">untuk coba lagi</string>
+    <string name="shop_page_atc_label_cta">Oke</string>
 
     <!-- Shop Info -->
     <string name="shop_info_title">Shop Info</string>

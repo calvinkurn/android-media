@@ -48,7 +48,10 @@ class ShopHomeFlashSaleProductCardBigGridViewHolder(
             }
 
             productCardBigGrid?.setAddToCartOnClickListener {
-                listener.onProductAtcDefaultClick(shopHomeProductUiModel)
+                listener.onProductAtcDefaultClick(
+                    shopHomeProductUiModel,
+                    shopHomeProductUiModel.minimumOrder
+                )
             }
         }
     }
