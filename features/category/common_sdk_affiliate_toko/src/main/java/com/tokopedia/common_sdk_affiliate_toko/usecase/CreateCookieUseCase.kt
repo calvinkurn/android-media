@@ -1,6 +1,10 @@
 package com.tokopedia.common_sdk_affiliate_toko.usecase
 
-import com.tokopedia.common_sdk_affiliate_toko.model.*
+import com.tokopedia.common_sdk_affiliate_toko.model.AffiliateCookieParams
+import com.tokopedia.common_sdk_affiliate_toko.model.AffiliateSdkPageSource
+import com.tokopedia.common_sdk_affiliate_toko.model.CreateAffiliateCookieRequest
+import com.tokopedia.common_sdk_affiliate_toko.model.CreateAffiliateCookieResponse
+import com.tokopedia.common_sdk_affiliate_toko.model.toCreateCookieAdditionParam
 import com.tokopedia.common_sdk_affiliate_toko.raw.GQL_Create_Cookie
 import com.tokopedia.common_sdk_affiliate_toko.repository.CommonAffiliateRepository
 import com.tokopedia.track.TrackApp
@@ -8,7 +12,7 @@ import javax.inject.Inject
 
 class CreateCookieUseCase @Inject constructor(
     private val commonAffiliateRepository: CommonAffiliateRepository
-){
+) {
     companion object {
         const val INPUT_PARAM = "input"
     }
@@ -31,7 +35,7 @@ class CreateCookieUseCase @Inject constructor(
         return CreateAffiliateCookieRequest(
             param.toCreateCookieAdditionParam(),
             CreateAffiliateCookieRequest.AffiliateDetail(param.affiliateUUID),
-            CreateAffiliateCookieRequest.CookieLevel(if (param.affiliatePageDetail.pageType == AffiliateSdkPageType.PDP) "Product" else "Page"),
+            CreateAffiliateCookieRequest.CookieLevel(if (param.affiliatePageDetail.source is AffiliateSdkPageSource.PDP) "Product" else "Page"),
             CreateAffiliateCookieRequest.Header(
                 TrackApp.getInstance().gtm.irisSessionId,
                 param.uuid,
@@ -45,7 +49,7 @@ class CreateCookieUseCase @Inject constructor(
             ),
             CreateAffiliateCookieRequest.PageDetail(
                 param.affiliatePageDetail.pageId,
-                param.affiliatePageDetail.pageType.ordinal.toString(),
+                param.affiliatePageDetail.source.getType(),
                 param.affiliatePageDetail.siteId,
                 param.affiliatePageDetail.verticalId
             ),
@@ -54,18 +58,18 @@ class CreateCookieUseCase @Inject constructor(
                 androidVersion
             ),
             CreateAffiliateCookieRequest.ProductDetail(
-                param.productInfo.CategoryID,
-                param.productInfo.IsVariant,
-                param.productInfo.StockQty,
+                param.affiliatePageDetail.source.productInfo.CategoryID,
+                param.affiliatePageDetail.source.productInfo.IsVariant,
+                param.affiliatePageDetail.source.productInfo.StockQty,
             ),
-            CreateAffiliateCookieRequest.ShopDetail(param.productInfo.shopId)
+            CreateAffiliateCookieRequest.ShopDetail(param.affiliatePageDetail.source.shopId)
         )
     }
 
-    suspend fun createCookieRequest(
+    internal suspend fun createCookieRequest(
         param: AffiliateCookieParams,
         deviceId: String,
-        androidVersion:String
+        androidVersion: String
     ): CreateAffiliateCookieResponse {
         return commonAffiliateRepository.getGQLData(
             GQL_Create_Cookie,

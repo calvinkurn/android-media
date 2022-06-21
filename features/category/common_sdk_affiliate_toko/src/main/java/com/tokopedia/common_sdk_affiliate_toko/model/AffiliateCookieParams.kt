@@ -1,41 +1,47 @@
 package com.tokopedia.common_sdk_affiliate_toko.model
 
-import com.google.gson.annotations.SerializedName
 
-
-class AffiliateCookieParams(
+internal class AffiliateCookieParams(
     val affiliatePageDetail: AffiliatePageDetail,
     val affiliateChannel: String,
-    val uuid: String,
-    val additionalParam: List<AdditionalParam>,
-    val productInfo: AffiliateSdkProductInfo = AffiliateSdkProductInfo(),
-    val affiliateUUID: String = ""
+    val affiliateUUID: String,
+    val uuid: String = "",
+    val additionalParam: List<AdditionalParam> = emptyList(),
 )
 
-class AdditionalParam(
+ class AdditionalParam(
     var key: String?,
     var value: String?
 )
 
-class AffiliatePageDetail(
-    val pageType: AffiliateSdkPageType,
+ class AffiliatePageDetail(
+    val source: AffiliateSdkPageSource,
     val pageId: String,
     val siteId: String = "1",
     val verticalId: String = "1",
 )
 
-enum class AffiliateSdkPageType {
-    PDP,
-    SHOP,
-    CLP,
-    CAMPAIGN,
-    CATALOG
+sealed class AffiliateSdkPageSource(
+    internal val shopId: String,
+    internal val productInfo: AffiliateSdkProductInfo = AffiliateSdkProductInfo()
+) {
+    internal open fun getType() = ""
+    class PDP(shopId: String, productInfo: AffiliateSdkProductInfo) :
+        AffiliateSdkPageSource(shopId, productInfo) {
+        override fun getType() = "pdp"
+    }
+
+    class Shop(shopId: String) :
+        AffiliateSdkPageSource(shopId) {
+        override fun getType() = "shop"
+
+    }
 }
 
-fun AffiliateCookieParams.toCreateCookieAdditionParam(): List<CreateAffiliateCookieRequest.AdditionalParam> {
+internal fun AffiliateCookieParams.toCreateCookieAdditionParam(): List<CreateAffiliateCookieRequest.AdditionalParam> {
     return additionalParam.map { CreateAffiliateCookieRequest.AdditionalParam(it.key, it.value) }
 }
 
-fun AffiliateCookieParams.toCheckCookieAdditionParam(): List<CheckAffiliateCookieRequest.AdditionalParam> {
+internal fun AffiliateCookieParams.toCheckCookieAdditionParam(): List<CheckAffiliateCookieRequest.AdditionalParam> {
     return additionalParam.map { CheckAffiliateCookieRequest.AdditionalParam(it.key, it.value) }
 }

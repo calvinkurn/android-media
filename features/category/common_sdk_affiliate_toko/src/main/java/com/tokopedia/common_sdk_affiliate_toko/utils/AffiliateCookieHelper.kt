@@ -1,31 +1,40 @@
 package com.tokopedia.common_sdk_affiliate_toko.utils
 
-import android.content.Context
 import android.net.Uri
+import com.tokopedia.common_sdk_affiliate_toko.model.AdditionalParam
 import com.tokopedia.common_sdk_affiliate_toko.model.AffiliateCookieParams
-import com.tokopedia.common_sdk_affiliate_toko.model.AffiliateSdkPageType
+import com.tokopedia.common_sdk_affiliate_toko.model.AffiliatePageDetail
+import com.tokopedia.common_sdk_affiliate_toko.model.AffiliateSdkPageSource
 import com.tokopedia.common_sdk_affiliate_toko.usecase.CheckCookieUseCase
 import com.tokopedia.common_sdk_affiliate_toko.usecase.CreateCookieUseCase
-import com.tokopedia.user.session.UserSession
+import com.tokopedia.user.session.UserSessionInterface
 import timber.log.Timber
 import javax.inject.Inject
-import javax.inject.Singleton
 
 class AffiliateCookieHelper @Inject constructor(
     private val createCookieUseCase: CreateCookieUseCase,
     private val checkCookieUseCase: CheckCookieUseCase,
+    private val userSession: UserSessionInterface
 ) {
-
     private var affiliateUUID: String = ""
 
     suspend fun initCookie(
-        context: Context,
-        params: AffiliateCookieParams,
+        affiliatePageDetail: AffiliatePageDetail,
+        affiliateChannel: String,
+        affiliateUUID: String,
+        uuid: String = "",
+        additionalParam: List<AdditionalParam> = emptyList(),
     ) {
-        val userSession = UserSession(context)
-        when (params.affiliatePageDetail.pageType) {
-            AffiliateSdkPageType.PDP -> {
-                if (params.affiliateUUID.isNotEmpty()) {
+        val params = AffiliateCookieParams(
+            affiliatePageDetail,
+            affiliateChannel,
+            affiliateUUID,
+            uuid,
+            additionalParam
+        )
+        when (affiliatePageDetail.source) {
+            is AffiliateSdkPageSource.PDP -> {
+                if (affiliateUUID.isNotEmpty()) {
                     createCookieUseCase.createCookieRequest(
                         params,
                         userSession.deviceId,
@@ -34,7 +43,7 @@ class AffiliateCookieHelper @Inject constructor(
                 }
             }
             else -> {
-                affiliateUUID = params.affiliateUUID
+                this.affiliateUUID = params.affiliateUUID
                 if (affiliateUUID.isNotEmpty()) {
                     createCookieUseCase.createCookieRequest(
                         params,
@@ -44,7 +53,7 @@ class AffiliateCookieHelper @Inject constructor(
                 } else {
                     try {
                         val response = checkCookieUseCase.checkAffiliateCookie(params)
-                        affiliateUUID = response.affiliateUuId ?: ""
+                        this.affiliateUUID = response.affiliateUuId ?: ""
                     } catch (e: Exception) {
                         Timber.e(e)
                     }
