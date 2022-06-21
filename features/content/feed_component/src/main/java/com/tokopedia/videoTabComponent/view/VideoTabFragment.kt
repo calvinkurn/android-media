@@ -124,6 +124,11 @@ class VideoTabFragment : PlayWidgetListener, BaseDaggerFragment(), PlayWidgetAna
 
     private fun initVar() {
         requireActivity().clearTabMenuPosition()
+
+        playWidgetAnalyticsListenerImp.setOnClickChannelCard { channelId, position ->
+            playFeedVideoTabViewModel.selectedPlayWidgetCard = SelectedPlayWidgetCard(channelId, position)
+        }
+
         playWidgetCoordinator = PlayWidgetCoordinatorVideoTab(this).apply {
             setListener(this@VideoTabFragment)
             setAnalyticListener(playWidgetAnalyticsListenerImp)
@@ -236,9 +241,6 @@ class VideoTabFragment : PlayWidgetListener, BaseDaggerFragment(), PlayWidgetAna
                 playWidgetCoordinator,
                 this@VideoTabFragment,
                 requireActivity(),
-                clickListener = { channelId, position ->
-                    playFeedVideoTabViewModel.selectedPlayWidgetCard = SelectedPlayWidgetCard(channelId, position)
-                }
             ).also {
                 setAdapter(it)
             }
