@@ -16,14 +16,15 @@ import com.tokopedia.loaderdialog.LoaderDialog
 import com.tokopedia.seller_shop_flash_sale.R
 import com.tokopedia.seller_shop_flash_sale.databinding.SsfsFragmentManageProductBinding
 import com.tokopedia.shop.flashsale.common.customcomponent.BaseSimpleListFragment
+import com.tokopedia.shop.flashsale.common.extension.setFragmentToUnifyBgColor
 import com.tokopedia.shop.flashsale.common.extension.showError
 import com.tokopedia.shop.flashsale.di.component.DaggerShopFlashSaleComponent
 import com.tokopedia.shop.flashsale.domain.entity.SellerCampaignProductList
 import com.tokopedia.shop.flashsale.presentation.creation.manage.adapter.ManageProductListAdapter
+import com.tokopedia.shop.flashsale.presentation.creation.manage.dialog.ProductDeleteDialog
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.lifecycle.autoClearedNullable
-import kotlinx.coroutines.DelicateCoroutinesApi
 import java.util.*
 import javax.inject.Inject
 import kotlin.concurrent.schedule
@@ -75,10 +76,7 @@ class ManageProductFragment :
             onEditClicked = {
                 null
             },
-            onDeleteClicked = {
-                loaderDialog?.show()
-                viewModel.removeProducts(campaignId, listOf(it))
-            }
+            onDeleteClicked = ::deleteProduct
         )
     }
 
@@ -101,6 +99,7 @@ class ManageProductFragment :
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        setFragmentToUnifyBgColor()
         setupView()
         observeProductList()
         observeRemoveProductsStatus()
@@ -146,7 +145,7 @@ class ManageProductFragment :
     private fun observeRemoveProductsStatus() {
         viewModel.removeProductsStatus.observe(viewLifecycleOwner) {
             if (it is Success) {
-                loadInitialData()
+                view?.postDelayed({ loadInitialData() }, DELAY)
             } else if (it is Fail) {
                 view?.showError(it.throwable)
             }
@@ -217,13 +216,22 @@ class ManageProductFragment :
         }
     }
 
-    @OptIn(DelicateCoroutinesApi::class)
     private fun showChooseProductPage() {
         val context = context ?: return
         val intent = Intent(context, ChooseProductActivity::class.java).apply {
             putExtra(ChooseProductActivity.BUNDLE_KEY_CAMPAIGN_ID, campaignId.toString())
         }
         startActivityForResult(intent, REQUEST_CODE)
+    }
+
+    private fun deleteProduct(product: SellerCampaignProductList.Product) {
+        ProductDeleteDialog(context ?: return).apply {
+            setOnPrimaryActionClick {
+                loaderDialog?.show()
+                viewModel.removeProducts(campaignId, listOf(product))
+            }
+            show()
+        }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -238,7 +246,7 @@ class ManageProductFragment :
         }
     }
 
-    override fun createAdapter(): ManageProductListAdapter? {
+    override fun createAdapter(): ManageProductListAdapter {
         return manageProductListAdapter
     }
 
