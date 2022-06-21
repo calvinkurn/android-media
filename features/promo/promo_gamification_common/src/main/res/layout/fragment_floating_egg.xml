@@ -10,6 +10,15 @@
         android:id="@+id/vg_floating_egg"
         android:layout_width="@dimen/gami_core_floating_egg_widget_width"
         android:layout_height="@dimen/gami_core_floating_egg_widget_height">
+
+        <com.tokopedia.unifycomponents.ImageUnify
+            android:id="@+id/ivClose"
+            android:visibility="gone"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="20dp"
+            android:layout_gravity="top|end"/>
+
         <FrameLayout
             android:id="@+id/egg_counter_timer"
             android:layout_width="match_parent"

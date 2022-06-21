@@ -8,11 +8,21 @@ import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.promogamification.common.R
 import com.tokopedia.promogamification.common.floating.data.entity.FloatingButtonResponseEntity
 import com.tokopedia.promogamification.common.floating.data.entity.GamiFloatingButtonEntity
+import com.tokopedia.promogamification.common.floating.data.entity.GamiFloatingClickData
 import com.tokopedia.promogamification.common.floating.view.contract.FloatingEggContract
 import com.tokopedia.promotion.common.idling.TkpdIdlingResource
 import com.tokopedia.promotion.common.idling.TkpdIdlingResourceProvider.provideIdlingResource
 import com.tokopedia.user.session.UserSessionInterface
-import io.mockk.*
+import io.mockk.MockKAnnotations
+import io.mockk.coEvery
+import io.mockk.every
+import io.mockk.just
+import io.mockk.mockk
+import io.mockk.mockkStatic
+import io.mockk.runs
+import io.mockk.spyk
+import io.mockk.verify
+import io.mockk.verifyOrder
 import org.junit.Assert
 import org.junit.Before
 import org.junit.Test
@@ -55,6 +65,9 @@ class FloatingEggPresenterTest {
             //Do nothing
         }
 
+        override fun onSuccessClickClose(gamiFloatingClickData: GamiFloatingClickData?) {
+            // Do nothing
+        }
         override fun getResources(): Resources {
             return resources
         }
@@ -79,14 +92,14 @@ class FloatingEggPresenterTest {
 
     @Test
     fun testSubscriberOnComplete() {
-        val subscriber = presenter.subscriber
+        val subscriber = presenter.floatingEggSubscriber
         subscriber.onCompleted()
         Assert.assertEquals(subscriber != null, true)
     }
 
     @Test
     fun testSubscriberOnError() {
-        val subscriber = presenter.subscriber
+        val subscriber = presenter.floatingEggSubscriber
         val exception = Exception()
         if(idlingResource?.countingIdlingResource?.isIdleNow == true){
             idlingResource?.increment()
@@ -98,7 +111,7 @@ class FloatingEggPresenterTest {
 
     @Test
     fun testSubscriberOnNext() {
-        val subscriber = presenter.subscriber
+        val subscriber = presenter.floatingEggSubscriber
         val graphqlResponse: GraphqlResponse = mockk()
         val floatingButtonResponseEntity: FloatingButtonResponseEntity = mockk()
         val gamiFloatingButtonEntity: GamiFloatingButtonEntity = mockk()

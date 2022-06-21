@@ -29,6 +29,8 @@ import android.view.ViewTreeObserver;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.AppCompatImageView;
@@ -41,6 +43,8 @@ import com.bumptech.glide.request.target.ImageViewTarget;
 import com.bumptech.glide.request.transition.Transition;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.HexValidator;
+import com.tokopedia.iconunify.IconUnify;
+import com.tokopedia.iconunify.IconUnifyHelperKt;
 import com.tokopedia.promogamification.common.CoreGamificationEventTracking;
 import com.tokopedia.promogamification.common.R;
 import com.tokopedia.promogamification.common.applink.ApplinkUtil;
@@ -49,11 +53,13 @@ import com.tokopedia.promogamification.common.di.CommonGamificationComponent;
 import com.tokopedia.promogamification.common.di.CommonGamificationComponentInstance;
 import com.tokopedia.promogamification.common.floating.data.entity.FloatingCtaEntity;
 import com.tokopedia.promogamification.common.floating.data.entity.GamiFloatingButtonEntity;
+import com.tokopedia.promogamification.common.floating.data.entity.GamiFloatingClickData;
 import com.tokopedia.promogamification.common.floating.listener.OnDragTouchListener;
 import com.tokopedia.promogamification.common.floating.view.contract.FloatingEggContract;
 import com.tokopedia.promogamification.common.floating.view.presenter.FloatingEggPresenter;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.track.TrackAppUtils;
+import com.tokopedia.unifycomponents.ImageUnify;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 
@@ -91,6 +97,7 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment implements Flo
     private View vgRoot;
     private View vgFloatingEgg;
     private ImageView ivFloatingEgg;
+    private ImageUnify ivClose;
     private TextView tvFloatingCounter;
     private TextView tvFloatingTimer;
 
@@ -121,6 +128,7 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment implements Flo
     private int tokenId;
     private String tokenName;
     private UserSession userSession;
+    private Boolean isPermanent;
 
     public static FloatingEggButtonFragment newInstance() {
         return new FloatingEggButtonFragment();
@@ -136,6 +144,7 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment implements Flo
         tvFloatingCounter = view.findViewById(R.id.tv_floating_counter);
         tvFloatingTimer = view.findViewById(R.id.tv_floating_timer);
         minimizeButtonLeft = view.findViewById(R.id.minimize_img_left);
+        ivClose = view.findViewById(R.id.ivClose);
         vgFloatingEgg.setVisibility(View.GONE);
 
 
@@ -488,6 +497,8 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment implements Flo
 
         needHideFloatingToken = TextUtils.isEmpty(imageUrl);
 
+        isPermanent = tokenData.getPermanent();
+
         if (needHideFloatingToken) {
             hideFLoatingEgg();
         } else {
@@ -585,6 +596,29 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment implements Flo
             } catch (Exception e) {
                 Timber.e(e);
             }
+        }
+        ivClose.setOnClickListener(view -> {
+            floatingEggPresenter.get().clickCloseButton(tokenData.getId());
+            trackingEggClickCLose(tokenId, tokenName);
+        });
+
+        if(!isPermanent){
+            ivClose.setVisibility(View.VISIBLE);
+            ivClose.setImageDrawable(IconUnifyHelperKt.getIconUnifyDrawable(getContext(), IconUnify.CLEAR, null));
+        }
+        else{
+            ivClose.setVisibility(View.GONE);
+        }
+    }
+
+    @Override
+    public void onSuccessClickClose(GamiFloatingClickData gamiFloatingClickData) {
+        if (gamiFloatingClickData.getResultStatus().getCode().equals("200")){
+            Toast.makeText(getContext(), "Closed", Toast.LENGTH_SHORT).show();
+            floatingEggPresenter.get().getGetTokenTokopoints();
+        }
+        else {
+            Toast.makeText(getContext(), "Failed", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -785,6 +819,19 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment implements Flo
                 CoreGamificationEventTracking.Event.CLICK_LUCKY_EGG,
                 CoreGamificationEventTracking.Category.CLICK_LUCKY_EGG,
                 CoreGamificationEventTracking.Action.CLICK_LUCKY_EGG,
+                idToken + "_" + name);
+
+        map.put(TrackerConstants.BUSINESS_UNIT_KEY, TrackerConstants.BUSINESS_UNIT_VALUE);
+        map.put(TrackerConstants.CURRENT_SITE_KEY, TrackerConstants.CURRENT_SITE_VALUE);
+        map.put(TrackerConstants.USER_ID_KEY, userSession.getUserId());
+        TrackApp.getInstance().getGTM().sendGeneralEvent(map);
+    }
+
+    private void trackingEggClickCLose(int idToken, String name) {
+        Map<String, Object> map = TrackAppUtils.gtmData(
+                CoreGamificationEventTracking.Event.CLICK_LUCKY_EGG,
+                CoreGamificationEventTracking.Category.CLICK_LUCKY_EGG,
+                CoreGamificationEventTracking.Action.CLICK_CLOSE_LUCKY_EGG,
                 idToken + "_" + name);
 
         map.put(TrackerConstants.BUSINESS_UNIT_KEY, TrackerConstants.BUSINESS_UNIT_VALUE);
