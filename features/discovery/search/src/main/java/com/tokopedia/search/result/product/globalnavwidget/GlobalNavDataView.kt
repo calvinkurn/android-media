@@ -22,7 +22,7 @@ class GlobalNavDataView(
     val isShowTopAds: Boolean = false,
     val itemList: List<Item> = listOf(),
     val componentId: String = "",
-    val trackingOption: String = "",
+    val trackingOption: String = "0",
     val dimension90: String = "",
     val info: String = "",
 ): Visitable<ProductListTypeFactory?>, ImpressHolder(),
@@ -53,7 +53,7 @@ class GlobalNavDataView(
         val logoUrl: String = "",
         val position: Int = 0,
         val componentId: String = "",
-        val trackingOption: String = "",
+        val trackingOption: String = "0",
         val keyword: String = "",
         val dimension90: String = "",
     ) : SearchComponentTracking by searchComponentTracking(
