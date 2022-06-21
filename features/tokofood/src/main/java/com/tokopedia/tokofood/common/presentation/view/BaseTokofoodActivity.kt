@@ -83,6 +83,7 @@ class BaseTokofoodActivity : BaseMultiFragActivity(), HasViewModel<MultipleFragm
      * Replace current fragment and add to back stack
      *
      * @param   destinationFragment     fragment that we want to navigate into
+     * @param   withAnimation           flag to determine whether we should apply animation when adding fragment
      */
     private fun addNewFragment(destinationFragment: Fragment,
                                withAnimation: Boolean = true) {
@@ -131,6 +132,12 @@ class BaseTokofoodActivity : BaseMultiFragActivity(), HasViewModel<MultipleFragm
         }
     }
 
+    /**
+     * Pop existed fragment in the backstack.
+     * This is used to change the existed fragment to new instance of fragment with the same class name
+     *
+     * @param   destinationFragmentName the name of the destination fragment
+     */
     private fun popExistedFragment(destinationFragmentName: String) {
         try {
             var backStackCount = supportFragmentManager.backStackEntryCount
