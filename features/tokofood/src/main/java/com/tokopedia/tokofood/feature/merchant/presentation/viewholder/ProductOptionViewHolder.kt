@@ -83,8 +83,10 @@ class ProductOptionViewHolder(private val binding: TokofoodItemAddOnItemLayoutBi
                 else -> {
                     {
                         val isChecked = binding.checkboxTokofoodAddOnItem.isChecked
-                        binding.checkboxTokofoodAddOnItem.isChecked = !isChecked
-                        binding.checkboxTokofoodAddOnItem.callOnClick()
+                        if (isChecked || listener.canBeSelected()) {
+                            binding.checkboxTokofoodAddOnItem.isChecked = !isChecked
+                            binding.checkboxTokofoodAddOnItem.callOnClick()
+                        }
                     }
                 }
             }
@@ -108,7 +110,11 @@ class ProductOptionViewHolder(private val binding: TokofoodItemAddOnItemLayoutBi
         binding.checkboxTokofoodAddOnItem.setOnClickListener {
             if (!isOutOfStock) {
                 val isChecked = binding.checkboxTokofoodAddOnItem.isChecked
-                listener.onCheckboxClicked(isChecked, price, index, dataSetPosition)
+                if (isChecked && !listener.canBeSelected()) {
+                    binding.checkboxTokofoodAddOnItem.isChecked = false
+                } else {
+                    listener.onCheckboxClicked(isChecked, price, index, dataSetPosition)
+                }
             }
         }
     }
@@ -125,6 +131,7 @@ class ProductOptionViewHolder(private val binding: TokofoodItemAddOnItemLayoutBi
     interface Listener {
         fun onRadioButtonClicked(isSelected: Boolean, price: Double, index: Int, dataSetPosition: Int)
         fun onCheckboxClicked(isSelected: Boolean, price: Double, index: Int, dataSetPosition: Int)
+        fun canBeSelected(): Boolean
     }
 
     companion object {

@@ -5,6 +5,7 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.isVisible
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.tokofood.R
 import com.tokopedia.tokofood.databinding.TokofoodItemAddOnLayoutBinding
 import com.tokopedia.tokofood.feature.merchant.presentation.adapter.ProductOptionAdapter
@@ -87,6 +88,7 @@ class ProductAddOnViewHolder(
         optionAdapter = ProductOptionAdapter(this@ProductAddOnViewHolder).apply {
             setData(optionItems.onEach {
                 it.dataSetPosition = dataSetPosition
+                it.maxSelected = addOnUiModel.maxQty
             })
         }
         binding.rvAddOnList.run {
@@ -125,6 +127,10 @@ class ProductAddOnViewHolder(
             optionUiModel.isSelected = optionIndex == index
         }
         optionAdapter?.updateData(previousSelectedIndex, optionItems)
+    }
+
+    override fun canBeSelected(): Boolean {
+        return optionItems.count { it.isSelected } < optionItems.firstOrNull()?.maxSelected.orZero()
     }
 
 }

@@ -23,4 +23,6 @@ data class OptionUiModel(
     val isOutOfStock = status == STATUS_OUT_OF_STOCK
     @IgnoredOnParcel
     var dataSetPosition = 0
+    @IgnoredOnParcel
+    var maxSelected = 0
 }
