@@ -1,0 +1,37 @@
+package com.tokopedia.wishlistcommon.view.viewmodel
+
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Result
+import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.wishlistcommon.data.response.GetWishlistCollectionsBottomSheetResponse
+import com.tokopedia.wishlistcommon.domain.GetWishlistCollectionsBottomSheetUseCase
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import javax.inject.Inject
+
+class AddToWishlistCollectionBottomSheetViewModel @Inject constructor(
+    private val dispatcher: CoroutineDispatchers,
+    private val getWishlistCollectionsBottomSheetUseCase: GetWishlistCollectionsBottomSheetUseCase
+) : BaseViewModel(dispatcher.main) {
+
+    private val _collectionsBottomSheet = MutableLiveData<Result<GetWishlistCollectionsBottomSheetResponse.Data.GetWishlistCollectionsBottomsheet>>()
+    val collectionsBottomSheet: LiveData<Result<GetWishlistCollectionsBottomSheetResponse.Data.GetWishlistCollectionsBottomsheet>>
+        get() = _collectionsBottomSheet
+
+    fun getWishlistCollections() {
+        launch(dispatcher.main) {
+            val result =
+                withContext(dispatcher.io) { getWishlistCollectionsBottomSheetUseCase.executeOnBackground() }
+            if (result is Success) {
+                _collectionsBottomSheet.value = result
+            } else {
+                val error = (result as Fail).throwable
+                _collectionsBottomSheet.value = Fail(error)
+            }
+        }
+    }
+}

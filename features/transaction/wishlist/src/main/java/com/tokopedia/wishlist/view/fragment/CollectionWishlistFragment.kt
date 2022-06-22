@@ -1,6 +1,5 @@
 package com.tokopedia.wishlist.view.fragment
 
-import android.content.res.Resources
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -30,9 +29,8 @@ import com.tokopedia.wishlist.util.WishlistV2Consts.TYPE_COLLECTION_CREATE
 import com.tokopedia.wishlist.util.WishlistV2Consts.TYPE_COLLECTION_ITEM
 import com.tokopedia.wishlist.util.WishlistV2Consts.TYPE_COLLECTION_TICKER
 import com.tokopedia.wishlist.view.adapter.CollectionWishlistAdapter
-import com.tokopedia.wishlist.view.bottomsheet.WishlistV2CleanerBottomSheet
 import com.tokopedia.wishlist.view.viewmodel.CollectionWishlistViewModel
-import com.tokopedia.wishlistcommon.bottomsheet.AddToCollectionWishlistBottomSheet
+import com.tokopedia.wishlistcommon.view.bottomsheet.AddToCollectionWishlistBottomSheet
 import javax.inject.Inject
 
 
