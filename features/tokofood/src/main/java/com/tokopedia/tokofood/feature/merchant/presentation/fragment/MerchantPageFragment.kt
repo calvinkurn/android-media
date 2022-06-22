@@ -480,7 +480,7 @@ class MerchantPageFragment : BaseMultiFragment(),
     }
 
     private fun collectFlow() {
-        viewLifecycleOwner.lifecycleScope.launchWhenCreated {
+        viewLifecycleOwner.lifecycleScope.launchWhenStarted {
             activityViewModel?.cartDataValidationFlow?.collect {
                 when (it.state) {
                     UiEvent.EVENT_SUCCESS_LOAD_CART -> {
