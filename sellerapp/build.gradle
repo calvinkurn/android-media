@@ -240,7 +240,6 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.topAdsSdk)
     implementation projectOrAar(rootProject.ext.features.payment)
     implementation projectOrAar(rootProject.ext.features.commonPayment)
-    implementation projectOrAar(rootProject.ext.features.people)
     implementation projectOrAar(rootProject.ext.features.contactUs)
     implementation projectOrAar(rootProject.ext.features.otp)
     implementation projectOrAar(rootProject.ext.features.logout)
