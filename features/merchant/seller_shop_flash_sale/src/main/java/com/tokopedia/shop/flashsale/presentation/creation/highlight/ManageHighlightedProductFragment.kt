@@ -13,14 +13,12 @@ import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.visible
-import com.tokopedia.seller_shop_flash_sale.R
 import com.tokopedia.seller_shop_flash_sale.databinding.FragmentSsfsManageHighlightedProductBinding
 import com.tokopedia.shop.flashsale.common.constant.Constant
 import com.tokopedia.shop.flashsale.common.customcomponent.BaseSimpleListFragment
 import com.tokopedia.shop.flashsale.common.extension.setFragmentToUnifyBgColor
 import com.tokopedia.shop.flashsale.common.extension.showError
 import com.tokopedia.shop.flashsale.common.extension.showLoading
-import com.tokopedia.shop.flashsale.common.extension.showToaster
 import com.tokopedia.shop.flashsale.common.preference.SharedPreferenceDataStore
 import com.tokopedia.shop.flashsale.di.component.DaggerShopFlashSaleComponent
 import com.tokopedia.shop.flashsale.domain.entity.HighlightableProduct
@@ -35,6 +33,7 @@ class ManageHighlightedProductFragment :
 
     companion object {
         private const val PAGE_SIZE = 10
+        private const val ONE_PAGE = 1
         private const val ONE_PRODUCT = 1
         private const val MAX_PRODUCT_SELECTION = 5
         private const val BUNDLE_KEY_CAMPAIGN_ID = "campaign_id"
@@ -237,10 +236,7 @@ class ManageHighlightedProductFragment :
 
     override fun createAdapter() = productAdapter
     override fun getRecyclerView(view: View) = binding?.recyclerView
-    override fun getSwipeRefreshLayout(view: View): SwipeRefreshLayout? {
-        return null
-    }
-
+    override fun getSwipeRefreshLayout(view: View): SwipeRefreshLayout? = null
     override fun getPerPage() = PAGE_SIZE
 
     override fun addElementToAdapter(list: List<HighlightableProduct>) {
@@ -254,9 +250,9 @@ class ManageHighlightedProductFragment :
 
     private fun getProducts(page: Int) {
         val offset = if (isFirstLoad) {
-            Constant.FIRST_PAGE
+            0
         } else {
-            page * PAGE_SIZE
+            (page - ONE_PAGE) * PAGE_SIZE
         }
 
         val searchKeyword = binding?.searchBar?.searchBarTextField?.text.toString().trim()

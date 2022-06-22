@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.shop.flashsale.data.request.GetSellerCampaignProductListRequest
 import com.tokopedia.shop.flashsale.domain.entity.HighlightableProduct
+import com.tokopedia.shop.flashsale.domain.entity.SellerCampaignProductList
 import com.tokopedia.shop.flashsale.domain.usecase.GetSellerCampaignProductListUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -22,13 +23,13 @@ class ManageHighlightedProductViewModel @Inject constructor(
     companion object {
         private const val PAGE_SIZE = 10
         private const val PRODUCT_LIST_TYPE_ID = 0
+        private const val MAX_PRODUCT_SELECTION = 5
     }
 
     private val _products = MutableLiveData<Result<List<HighlightableProduct>>>()
     val products: LiveData<Result<List<HighlightableProduct>>>
         get() = _products
 
-    private var shouldDisableProductSelection = false
     private var selectedProductIds: MutableList<String> = mutableListOf()
 
     fun getProducts(
@@ -39,28 +40,15 @@ class ManageHighlightedProductViewModel @Inject constructor(
         launchCatchError(
             dispatchers.io,
             block = {
-                val campaigns = getSellerCampaignProductListUseCase.execute(
+                val products = getSellerCampaignProductListUseCase.execute(
                     campaignId = campaignId,
                     productName = productName,
                     listType = PRODUCT_LIST_TYPE_ID,
                     pagination = GetSellerCampaignProductListRequest.Pagination(PAGE_SIZE, offset)
                 )
-                val disabled = selectedProductIds.size >= 5
-                val products = campaigns.productList.map {
-                    HighlightableProduct(
-                        it.productId,
-                        it.productName,
-                        it.imageUrl.img200,
-                        it.productMapData.originalPrice,
-                        it.productMapData.discountedPrice,
-                        it.productMapData.discountPercentage,
-                        disabled = disabled,
-                        isSelected = it.highlightProductWording.isNotEmpty(),
-                        selectedAtMillis = Date().time
-                    )
-                }
-                val sortedProducts = sortProductsBySelectionTime(products)
-                _products.postValue(Success(sortedProducts))
+                val updatedProducts = handleProductEnabledState(selectedProductIds.size, products.productList)
+
+                _products.postValue(Success(updatedProducts))
             },
             onError = { error ->
                 _products.postValue(Fail(error))
@@ -68,16 +56,21 @@ class ManageHighlightedProductViewModel @Inject constructor(
         )
     }
 
-    private fun sortProductsBySelectionTime(products: List<HighlightableProduct>): List<HighlightableProduct> {
-        return products.sortedBy { it.selectedAtMillis }
-    }
-
-    fun setDisableProductSelection(shouldDisableProductSelection: Boolean) {
-        this.shouldDisableProductSelection = shouldDisableProductSelection
-    }
-
-    fun shouldDisableProductSelection(): Boolean {
-        return shouldDisableProductSelection
+    private fun handleProductEnabledState(selectedProduct: Int, products: List<SellerCampaignProductList.Product>): List<HighlightableProduct> {
+        val disabled = selectedProduct >= MAX_PRODUCT_SELECTION
+        return products.map {
+            HighlightableProduct(
+                it.productId,
+                it.productName,
+                it.imageUrl.img200,
+                it.productMapData.originalPrice,
+                it.productMapData.discountedPrice,
+                it.productMapData.discountPercentage,
+                disabled = disabled,
+                isSelected = it.highlightProductWording.isNotEmpty(),
+                selectedAtMillis = Date().time
+            )
+        }
     }
 
     fun getSelectedProductIds(): List<String> {

@@ -80,14 +80,17 @@ class HighlightedProductAdapter(
     }
 
     fun showLoading() {
+        isLoading = true
         if (itemCount.isMoreThanZero()) {
-            isLoading = true
             notifyItemChanged(products.lastIndex)
         }
     }
 
     fun hideLoading() {
         isLoading = false
+        if (itemCount.isMoreThanZero()) {
+            notifyItemChanged(products.lastIndex)
+        }
     }
 
     fun getItems(): List<HighlightableProduct> {
@@ -168,16 +171,10 @@ class HighlightedProductAdapter(
     inner class DiffCallback(
         private val oldProductList: List<HighlightableProduct>,
         private val newProductList: List<HighlightableProduct>
-    ) :
-        DiffUtil.Callback() {
+    ) : DiffUtil.Callback() {
 
-        override fun getOldListSize(): Int {
-            return oldProductList.size
-        }
-
-        override fun getNewListSize(): Int {
-            return newProductList.size
-        }
+        override fun getOldListSize() = oldProductList.size
+        override fun getNewListSize() = newProductList.size
 
         override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
             return oldProductList[oldItemPosition].id == newProductList[newItemPosition].id
