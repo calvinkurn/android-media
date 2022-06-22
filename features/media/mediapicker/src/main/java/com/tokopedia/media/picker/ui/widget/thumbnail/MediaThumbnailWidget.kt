@@ -60,8 +60,8 @@ class MediaThumbnailWidget @JvmOverloads constructor(
         binding.txtDuration.text = duration.toReadableFormat()
     }
 
-    fun setThumbnailSelected(isSelected: Boolean){
-        if(isSelected){
+    fun setThumbnailSelected(isSelected: Boolean) {
+        if (isSelected) {
             val paddingSize = resources.getDimension(mediaResources.dimen.picker_thumbnail_selected_padding).toInt()
             val backgroundAsset = MethodChecker.getDrawable(context, mediaResources.drawable.picker_rect_green_selected_thumbnail)
 
