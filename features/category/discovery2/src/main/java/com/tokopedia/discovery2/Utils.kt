@@ -18,9 +18,14 @@ import androidx.annotation.RequiresApi
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.tkpd.atcvariant.BuildConfig
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.discovery2.Constant.QueryParamConstants.RPC_DYNAMIC_SUBTITLE
+import com.tokopedia.discovery2.Constant.QueryParamConstants.RPC_TARGET_TITLE_ID
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.datamapper.discoComponentQuery
 import com.tokopedia.discovery2.datamapper.getComponent
+import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity
+import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.DYNAMIC_SUBTITLE
+import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.TARGET_TITLE_ID
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.toZeroIfNull
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
@@ -222,6 +227,18 @@ class Utils {
                     addressQueryParameterMap[Constant.ChooseAddressQueryParams.RPC_USER_WAREHOUSE_ID] = userAddressData.warehouse_id
             }
             return addressQueryParameterMap
+        }
+
+        fun addQueryParamMap(queryParameterMap: MutableMap<String, String?>): MutableMap<String, String> {
+            val queryParamValues: MutableMap<String,String> = mutableMapOf()
+            if(!queryParameterMap[DYNAMIC_SUBTITLE].isNullOrEmpty()){
+                queryParamValues[RPC_DYNAMIC_SUBTITLE] = queryParameterMap[DYNAMIC_SUBTITLE]!!
+            }
+            if(!queryParameterMap[TARGET_TITLE_ID].isNullOrEmpty()){
+                queryParamValues[RPC_TARGET_TITLE_ID] = queryParameterMap[TARGET_TITLE_ID]!!
+            }
+
+            return queryParamValues
         }
 
         fun isFutureSale(saleStartDate: String, timerFormat: String = TIMER_SPRINT_SALE_DATE_FORMAT): Boolean {
