@@ -8,7 +8,7 @@
         android:id="@+id/btnContinue"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/tm_dash_daftar_gratis"
+        android:text="@string/tm_dash_selengkapnya"
         app:unifyButtonSize="large"
         app:unifyButtonType="main"
         app:layout_constraintBottom_toBottomOf="parent"

@@ -37,7 +37,7 @@ object TokomemberIntroMapper {
 
     private fun getIntroButtonData(): TokomemberIntroButtonItem {
         return TokomemberIntroButtonItem(
-            text = "Daftar Gratis",
+            text = "Pelajari Lebih Lanjut",
             url = ""
         )
     }

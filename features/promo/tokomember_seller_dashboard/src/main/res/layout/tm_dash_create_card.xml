@@ -34,7 +34,7 @@
             <View
                 android:id="@+id/viewBg"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/tm_dash_dp_232"
+                android:layout_height="@dimen/tm_dash_dp_248"
                 android:background="@color/Unify_NN50"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/progressCard" />

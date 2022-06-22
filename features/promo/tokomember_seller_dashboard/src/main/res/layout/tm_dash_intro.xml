@@ -163,10 +163,10 @@
         android:orientation="vertical">
 
         <com.tokopedia.unifycomponents.UnifyButton
-            android:id="@+id/btnWebview"
+            android:id="@+id/btnContinue"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/tm_dash_selengkapnya"
+            android:text="@string/tm_dash_daftar_gratis"
             app:unifyButtonSize="large"
             app:unifyButtonType="main"
             app:unifyButtonVariant="ghost" />

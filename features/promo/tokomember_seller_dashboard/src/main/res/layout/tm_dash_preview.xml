@@ -9,7 +9,9 @@
     tools:ignore="MissingDefaultResource"
     android:focusable="true">
 
+<!--
     <include layout="@layout/tm_dash_preview_shimmer"/>
+-->
 
     <androidx.core.widget.NestedScrollView
         android:id="@+id/scrollContainer"
@@ -41,7 +43,7 @@
             <View
                 android:id="@+id/viewBgPreview"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/tm_dash_dp_232"
+                android:layout_height="@dimen/tm_dash_dp_248"
                 android:background="@color/Unify_NN50"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/progressPreview" />
@@ -91,7 +93,7 @@
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tvProgramMulai"
-                android:layout_width="wrap_content"
+                android:layout_width="@dimen/tm_dash_dp_120"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/tm_dash_dp_26"
                 android:text="@string/tm_program_mulai"
@@ -105,9 +107,9 @@
                 android:id="@+id/tvProgramMulaiValue"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="@dimen/unify_space_16"
                 android:textColor="@color/Unify_NN950"
-                app:layout_constraintEnd_toEndOf="parent"
+                android:layout_marginStart="@dimen/tm_dash_dp_76"
+                app:layout_constraintStart_toEndOf="@+id/tvProgramMulai"
                 app:layout_constraintTop_toBottomOf="@+id/tvProgramMulai"
                 app:layout_constraintTop_toTopOf="@+id/tvProgramMulai"
                 app:typographyType="body_3"
@@ -116,7 +118,7 @@
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tvProgramBerakhir"
-                android:layout_width="wrap_content"
+                android:layout_width="@dimen/tm_dash_dp_120"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/unify_space_16"
                 android:text="@string/tm_program_preview_end"
@@ -130,9 +132,9 @@
                 android:id="@+id/tvProgramBerakhirValue"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="@dimen/unify_space_16"
                 android:textColor="@color/Unify_NN950"
-                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/tvProgramBerakhir"
+                android:layout_marginStart="@dimen/tm_dash_dp_76"
                 app:layout_constraintTop_toBottomOf="@+id/tvProgramBerakhir"
                 app:layout_constraintTop_toTopOf="@+id/tvProgramBerakhir"
                 app:typographyType="body_3"
@@ -162,7 +164,7 @@
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tvProgramMinTransaksiPremium"
-                android:layout_width="@dimen/tm_dash_dp_132"
+                android:layout_width="@dimen/tm_dash_dp_120"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/unify_space_4"
                 android:text="@string/tm_min_transaksi"
@@ -176,8 +178,9 @@
                 android:id="@+id/tvProgramMinTransaksiPremiumValue"
                 android:layout_width="132dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/tm_dash_dp_36"
+                android:layout_marginStart="@dimen/tm_dash_dp_76"
                 android:layout_marginTop="@dimen/unify_space_4"
+                tools:text="Rp10.00000"
                 android:textColor="@color/Unify_NN600"
                 app:layout_constraintStart_toEndOf="@+id/tvProgramMinTransaksiPremium"
                 app:layout_constraintTop_toBottomOf="@+id/tvProgramLevel"
@@ -199,7 +202,7 @@
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tvProgramMinTransaksiVip"
-                android:layout_width="@dimen/tm_dash_dp_132"
+                android:layout_width="@dimen/tm_dash_dp_120"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/unify_space_4"
                 android:text="@string/tm_min_transaksi"
@@ -213,12 +216,13 @@
                 android:id="@+id/tvProgramMinTransaksiVipValue"
                 android:layout_width="@dimen/tm_dash_dp_132"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/tm_dash_dp_36"
+                android:layout_marginStart="@dimen/tm_dash_dp_76"
                 android:layout_marginTop="@dimen/unify_space_4"
                 android:textColor="@color/Unify_NN600"
                 app:layout_constraintStart_toEndOf="@+id/tvProgramMinTransaksiVip"
                 app:layout_constraintTop_toBottomOf="@+id/tvProgramLevelVip"
                 app:typographyType="body_3"
+                tools:text="Rp10.00000"
                 app:typographyWeight="reguler" />
 
             <View
@@ -273,7 +277,7 @@
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tvCouponMulai"
-                android:layout_width="wrap_content"
+                android:layout_width="@dimen/tm_dash_dp_120"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="26dp"
                 android:text="@string/tm_preview_mulai"
@@ -287,9 +291,9 @@
                 android:id="@+id/tvCouponMulaiValue"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="@dimen/unify_space_16"
                 android:textColor="@color/Unify_NN950"
-                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/tvCouponMulai"
+                android:layout_marginStart="76dp"
                 app:layout_constraintTop_toBottomOf="@+id/tvCouponMulai"
                 app:layout_constraintTop_toTopOf="@+id/tvCouponMulai"
                 app:typographyType="body_3"
@@ -298,7 +302,7 @@
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tvCouponBerakhir"
-                android:layout_width="wrap_content"
+                android:layout_width="@dimen/tm_dash_dp_120"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/unify_space_16"
                 android:text="@string/tm_preview_berakhir"
@@ -312,9 +316,9 @@
                 android:id="@+id/tvCouponBerakhirValue"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="@dimen/unify_space_16"
                 android:textColor="@color/Unify_NN950"
-                app:layout_constraintEnd_toEndOf="parent"
+                android:layout_marginStart="76dp"
+                app:layout_constraintStart_toEndOf="@+id/tvCouponBerakhir"
                 app:layout_constraintTop_toBottomOf="@+id/tvCouponBerakhir"
                 app:layout_constraintTop_toTopOf="@+id/tvCouponBerakhir"
                 app:typographyType="body_3"
@@ -352,9 +356,9 @@
                 android:textColor="@color/Unify_NN950"
                 app:typographyType="body_3"
                 app:typographyWeight="reguler"
-                android:layout_marginEnd="@dimen/unify_space_16"
+                android:layout_marginStart="76dp"
+                app:layout_constraintStart_toEndOf="@+id/tvMaxTransaction"
                 app:layout_constraintBottom_toBottomOf="@id/tvMaxTransaction"
-                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="@id/tvMaxTransaction" />
 
             <View

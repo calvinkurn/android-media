@@ -92,7 +92,8 @@ class TmIntroFragment : BaseDaggerFragment(),
         arguments?.getInt(BUNDLE_SHOP_ID, 0)?.let {
             tmTracker?.viewIntroPage(it.toString())
             tmIntroViewModel.getIntroInfo(it)
-            btnWebview.setOnClickListener { _ ->
+            btnContinue.setOnClickListener { _ ->
+                openCreationActivity()
                 tmTracker?.clickIntroLanjut(it.toString())
             }
         }
@@ -127,7 +128,7 @@ class TmIntroFragment : BaseDaggerFragment(),
         })
     }
 
-    @SuppressLint("NotifyDataSetChanged")
+    @SuppressLint("NotifyDataSetChanged", "SetTextI18n")
     private fun populateUI(membershipData: MembershipData) {
 
         if(openBS){
@@ -160,17 +161,24 @@ class TmIntroFragment : BaseDaggerFragment(),
         animateViews()
         val headerData = membershipData.membershipGetSellerOnboarding?.sellerHomeContent?.sellerHomeText
         headerData?.let {
-            tvTitle.text = it.title?.getOrNull(0)
+            var titleText = ""
+            it.title?.forEachIndexed { index, title ->
+                titleText += if (index!= it.title.size-1){
+                    title+"\n"
+                }else{
+                    title
+                }
+            }
+            tvTitle.text = titleText
             tvSubtitle.text = it.subTitle?.getOrNull(0)
         }
         videoUrl = membershipData.membershipGetSellerOnboarding?.sellerHomeContent?.sellerHomeInfo?.infoURL?:""
          setVideoView(
             videoUrl?:"")
-
     }
 
     private fun renderButton(){
-        btnWebview.setOnClickListener {
+        btnContinue.setOnClickListener {
             RouteManager.route(context,String.format("%s?url=%s", ApplinkConst.WEBVIEW,TM_SELLER_INTRO_EDU))
         }
     }
@@ -205,6 +213,10 @@ class TmIntroFragment : BaseDaggerFragment(),
     }
 
     override fun onButtonItemClick(position: Int) {
+        RouteManager.route(context,String.format("%s?url=%s", ApplinkConst.WEBVIEW,TM_SELLER_INTRO_EDU))
+    }
+
+    private fun openCreationActivity() {
         arguments?.getInt(BUNDLE_SHOP_ID, 0)?.let {
             tmTracker?.clickIntroDaftar(it.toString())
         }

@@ -25,6 +25,7 @@
     <dimen name="tm_dash_dp_120">120dp</dimen>
     <dimen name="tm_dash_dp_68">68dp</dimen>
     <dimen name="tm_dash_dp_232">232dp</dimen>
+    <dimen name="tm_dash_dp_248">248dp</dimen>
     <dimen name="tm_dash_dp_80">80dp</dimen>
     <dimen name="tm_dash_dp_96">96dp</dimen>
     <dimen name="tm_dash_dp_56">56dp</dimen>
@@ -42,6 +43,7 @@
     <dimen name="tm_dash_dp_210">210dp</dimen>
     <dimen name="tm_dash_dp_132">132dp</dimen>
     <dimen name="tm_dash_dp_36">36dp</dimen>
+    <dimen name="tm_dash_dp_76">76dp</dimen>
     <dimen name="tm_dash_dp_250">250dp</dimen>
     <dimen name="tm_dash_dp_140">14dp</dimen>
     <dimen name="tm_dash_dp_160">160dp</dimen>

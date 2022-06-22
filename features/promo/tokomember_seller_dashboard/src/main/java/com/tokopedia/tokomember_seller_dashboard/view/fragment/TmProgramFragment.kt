@@ -370,6 +370,7 @@ class TmProgramFragment : BaseDaggerFragment(), ChipGroupCallback ,
             textFieldDuration.editText.setText(
                 "$dayInId, ${currentDate.get(Calendar.DATE)} $month ${currentDate.get(Calendar.YEAR)} "
             )
+            membershipGetProgramForm?.programForm?.timeWindow?.startTime = convertDateTime(currentDate.time)
         }else {
             membershipGetProgramForm?.programForm?.timeWindow?.startTime?.let {
                 selectedTime = it

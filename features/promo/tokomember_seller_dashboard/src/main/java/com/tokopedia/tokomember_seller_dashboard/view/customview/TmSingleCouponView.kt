@@ -14,18 +14,25 @@ import com.tokopedia.tokomember_seller_dashboard.R
 import com.tokopedia.tokomember_seller_dashboard.model.TmSingleCouponData
 import com.tokopedia.tokomember_seller_dashboard.util.*
 import com.tokopedia.tokomember_seller_dashboard.util.COUPON_CASHBACK
+import com.tokopedia.utils.text.currency.CurrencyFormatHelper
 import com.tokopedia.utils.text.currency.NumberTextWatcher
 import kotlinx.android.synthetic.main.tm_dash_single_coupon.view.*
 
-const val QUOTA_DEFAULT = "50"
-const val PERCENTAGE_DEFAULT = "10"
-const val MAX_CASHBACK = "10.000"
-const val MAX_CASHBACK_COUPON = "10000.0"
-const val MIN_TRANSACTION = "10000"
+const val QUOTA_DEFAULT = "100"
+const val PERCENTAGE_DEFAULT = "5"
+const val MAX_CASHBACK = "20.000"
+const val MAX_CASHBACK_COUPON = "20000.0"
+const val MIN_TRANSACTION = "100000"
 const val CHIP_LABEL_RUPIAH = "Rupiah(Rp)"
 const val CHIP_LABEL_PERCENTAGE = "Persentase (%)"
 const val CHIP_LABEL_FREE_SHIPPING = "Gratis Ongkir"
 const val CHIP_LABEL_CASHBACK = "Cashback"
+const val MIN_CASHBACK_CHECK = 10000
+const val MAX_CASHBACK_CHECK = 100000000
+const val MIN_QUOTA_CHECK = 50
+const val MAX_QUOTA_CHECK = 10000
+const val MIN_PERCENTAGE_CHECK = 5
+const val MAX_PERCENTAGE_CHECK = 100
 
 class TmSingleCouponView @JvmOverloads constructor(
     context: Context,
@@ -136,8 +143,27 @@ class TmSingleCouponView @JvmOverloads constructor(
             it.editText.addTextChangedListener(object : NumberTextWatcher(it.editText){
                 override fun onNumberChanged(number: Double) {
                     super.onNumberChanged(number)
-                    maxTransactionListener?.onQuotaCashbackChange()
-                    ivPreviewCoupon.setCouponValue(number.toString())
+                    when {
+                        number < MIN_CASHBACK_CHECK -> {
+                            textFieldMaxCashback.isInputError = true
+                            textFieldMaxCashback.setMessage("Min. Rp10.000")
+                        }
+                        number>= MAX_CASHBACK_CHECK -> {
+                            textFieldMaxCashback.isInputError = true
+                            textFieldMaxCashback.setMessage("Maks. Rp10.000")
+                        }
+                        else -> {
+                            if (number > CurrencyFormatHelper.convertRupiahToInt(textFieldMinTransk.editText.text.toString())) {
+                                textFieldMaxCashback.isInputError = true
+                                textFieldMaxCashback.setMessage("Harus kurang dari min. transaksi.")
+                            }else {
+                                textFieldMaxCashback.isInputError = false
+                                textFieldMaxCashback.setMessage("")
+                                maxTransactionListener?.onQuotaCashbackChange()
+                                ivPreviewCoupon.setCouponValue(number.toString())
+                            }
+                        }
+                    }
                 }
             })
         }
@@ -149,6 +175,20 @@ class TmSingleCouponView @JvmOverloads constructor(
             it.editText.addTextChangedListener(object : NumberTextWatcher(it.editText){
                 override fun onNumberChanged(number: Double) {
                     super.onNumberChanged(number)
+                    when {
+                        number < MIN_CASHBACK_CHECK -> {
+                            textFieldMinTransk.isInputError = true
+                            textFieldMinTransk.setMessage("Min. Rp10.000")
+                        }
+                        number>= MAX_CASHBACK_CHECK -> {
+                            textFieldMinTransk.isInputError = true
+                            textFieldMinTransk.setMessage("Maks. Rp10.000")
+                        }
+                        else -> {
+                            textFieldMinTransk.isInputError = false
+                            textFieldMinTransk.setMessage("")
+                        }
+                    }
                 }
             })
         }
@@ -156,10 +196,22 @@ class TmSingleCouponView @JvmOverloads constructor(
 
     private fun chipCashBackCouponValidation(){
         textFieldPercentCashback.let {
-            it.editText.addTextChangedListener(object : NumberTextWatcher(it.editText){
+            it.editText.addTextChangedListener(object : NumberTextWatcher(it.editText) {
                 override fun onNumberChanged(number: Double) {
                     super.onNumberChanged(number)
-                    ivPreviewCoupon.setCouponBenefit(number.toString())
+                    when {
+                        number < MIN_PERCENTAGE_CHECK -> {
+                            textFieldPercentCashback.isInputError = true
+                            textFieldPercentCashback.setMessage("Min. 5%")
+                        }
+                        number >= MAX_PERCENTAGE_CHECK -> {
+                            textFieldPercentCashback.isInputError = true
+                            textFieldPercentCashback.setMessage("Maks. 100%")
+                        }
+                        else -> {
+                            ivPreviewCoupon.setCouponBenefit(number.toString())
+                        }
+                    }
                 }
             })
         }
@@ -170,7 +222,21 @@ class TmSingleCouponView @JvmOverloads constructor(
             it.editText.addTextChangedListener(object : NumberTextWatcher(it.editText){
                 override fun onNumberChanged(number: Double) {
                     super.onNumberChanged(number)
-                    maxTransactionListener?.onQuotaCashbackChange()
+                    when {
+                        number < MIN_QUOTA_CHECK -> {
+                            textFieldQuota.isInputError = true
+                            textFieldQuota.setMessage("Min. 50 kuota")
+                        }
+                        number>= MAX_QUOTA_CHECK -> {
+                            textFieldQuota.isInputError = true
+                            textFieldQuota.setMessage("Maks. 10.000 kuota")
+                        }
+                        else -> {
+                            textFieldQuota.isInputError = false
+                            textFieldQuota.setMessage("")
+                            maxTransactionListener?.onQuotaCashbackChange()
+                        }
+                    }
                 }
             })
         }

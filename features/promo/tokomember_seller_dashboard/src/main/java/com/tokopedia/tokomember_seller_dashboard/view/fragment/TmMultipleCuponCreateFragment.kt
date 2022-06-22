@@ -42,6 +42,7 @@ import com.tokopedia.tokomember_seller_dashboard.util.TmDateUtil.getTimeInMillis
 import com.tokopedia.tokomember_seller_dashboard.util.TmDateUtil.getTimeInMillisEnd
 import com.tokopedia.tokomember_seller_dashboard.util.TmDateUtil.setDate
 import com.tokopedia.tokomember_seller_dashboard.tracker.TmTracker
+import com.tokopedia.tokomember_seller_dashboard.util.TmDateUtil.getDayOfWeekID
 import com.tokopedia.tokomember_seller_dashboard.util.TmDateUtil.setTimeEnd
 import com.tokopedia.tokomember_seller_dashboard.view.activity.TokomemberDashIntroActivity
 import com.tokopedia.tokomember_seller_dashboard.view.adapter.model.TmCouponListItemPreview
@@ -809,7 +810,7 @@ class TmMultipleCuponCreateFragment : BaseDaggerFragment() {
         var day = 0
         context?.let {
             val calMax = Calendar.getInstance()
-            calMax.add(Calendar.YEAR, TmProgramFragment.MAX_YEAR)
+            calMax.add(Calendar.YEAR, 1)
             val yearMax = calMax.get(Calendar.YEAR)
             val monthMax = calMax.get(Calendar.MONTH)
             val dayMax = calMax.get(Calendar.DAY_OF_MONTH)
@@ -860,16 +861,7 @@ class TmMultipleCuponCreateFragment : BaseDaggerFragment() {
                 datepickerObject.show(fragmentManager, "")
             }
             datepickerObject.setOnDismissListener {
-                val dayInId =  when(day){
-                    1 -> "Min"
-                    2 -> "Sen"
-                    3 -> "Sel"
-                    4 -> "Rab"
-                    5 -> "Kam"
-                    6 -> "Jum"
-                    7 -> "Sab"
-                    else -> ""
-                }
+                val dayInId =  getDayOfWeekID(day)
                 selectedTime = selectedCalendar?.time.toString()
                 textField.textInputLayout.editText?.setText(("$dayInId,$date $month $year"))
             }

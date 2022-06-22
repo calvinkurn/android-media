@@ -1,6 +1,6 @@
 <resources>
     <string name="tm_dash_daftar_gratis">Daftar Gratis</string>
-    <string name="tm_dash_selengkapnya">Selengkapnya</string>
+    <string name="tm_dash_selengkapnya">Pelajari Lebih Lanjut</string>
     <string name="tm_string_edit_skema">Skema level hanya bisa diubah ketika kamu akan membuat program baru.</string>
     <string name="tm_quota_static">Kuota:</string>
     <string name="tm_tambah_kuota">Tambah Kuota</string>

@@ -82,6 +82,7 @@ import com.tokopedia.tokomember_seller_dashboard.util.TIME_TITLE
 import com.tokopedia.tokomember_seller_dashboard.util.TM_ERROR_GEN
 import com.tokopedia.tokomember_seller_dashboard.util.TM_ERROR_PROGRAM
 import com.tokopedia.tokomember_seller_dashboard.util.TmDateUtil
+import com.tokopedia.tokomember_seller_dashboard.util.TmDateUtil.getDayOfWeekID
 import com.tokopedia.tokomember_seller_dashboard.util.TmFileUtil
 import com.tokopedia.tokomember_seller_dashboard.util.TmPrefManager
 import com.tokopedia.tokomember_seller_dashboard.util.TokoLiveDataResult
@@ -921,7 +922,7 @@ class TmSingleCouponCreateFragment : BaseDaggerFragment() {
         var day = 0
         context?.let{
             val calMax = Calendar.getInstance()
-            calMax.add(Calendar.YEAR, TmProgramFragment.MAX_YEAR)
+            calMax.add(Calendar.YEAR, 1)
             val yearMax = calMax.get(Calendar.YEAR)
             val monthMax = calMax.get(Calendar.MONTH)
             val dayMax = calMax.get(Calendar.DAY_OF_MONTH)
@@ -949,16 +950,7 @@ class TmSingleCouponCreateFragment : BaseDaggerFragment() {
                         year = selectedCalendar?.get(Calendar.YEAR).toString()
                         day = selectedCalendar?.get(Calendar.DAY_OF_WEEK)?:0
 
-                        val dayInId =  when(day){
-                            1 -> "Min"
-                            2 -> "Sen"
-                            3 -> "Sel"
-                            4 -> "Rab"
-                            5 -> "Kam"
-                            6 -> "Jum"
-                            7 -> "Sab"
-                            else -> ""
-                        }
+                        val dayInId = getDayOfWeekID(day)
                         textField.textInputLayout.editText?.setText(( "$dayInId,$date $month $year"))
                         when (type) {
                             0 -> { tmCouponStartDateUnix = selectedCalendar }

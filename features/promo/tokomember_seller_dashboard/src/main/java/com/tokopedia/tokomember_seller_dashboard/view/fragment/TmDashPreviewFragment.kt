@@ -308,15 +308,15 @@ class TmDashPreviewFragment : BaseDaggerFragment() {
     @SuppressLint("SetTextI18n")
     private fun renderCouponList(tmCouponPreviewData: TmCouponPreviewData) {
         initRecyclerView()
-        tvCouponMulaiValue.text = tmCouponPreviewData.startDate +","+ tmCouponPreviewData.startTime + "WIB"
-        tvCouponBerakhirValue.text = tmCouponPreviewData.endDate +","+ tmCouponPreviewData.endTime + "WIB"
+        tvCouponMulaiValue.text = tmCouponPreviewData.startDate +", "+ tmCouponPreviewData.startTime + "WIB"
+        tvCouponBerakhirValue.text = tmCouponPreviewData.endDate +", "+ tmCouponPreviewData.endTime + "WIB"
         tvMaxTransactionValue.text = "Rp${CurrencyFormatHelper.convertToRupiah(tmCouponPreviewData.maxValue)}"
     }
 
     @SuppressLint("SetTextI18n")
     private fun renderProgramPreview(membershipGetProgramForm: MembershipGetProgramForm?) {
-        tvProgramMulaiValue.text = setDate(membershipGetProgramForm?.programForm?.timeWindow?.startTime?:"") + "," + setTime(membershipGetProgramForm?.programForm?.timeWindow?.startTime?:"")
-        tvProgramBerakhirValue.text = setDate(membershipGetProgramForm?.programForm?.timeWindow?.endTime?:"") + "," +  setTime(membershipGetProgramForm?.programForm?.timeWindow?.endTime?:"")
+        tvProgramMulaiValue.text = setDate(membershipGetProgramForm?.programForm?.timeWindow?.startTime?:"") + ", " + setTime(membershipGetProgramForm?.programForm?.timeWindow?.startTime?:"")
+        tvProgramBerakhirValue.text = setDate(membershipGetProgramForm?.programForm?.timeWindow?.endTime?:"") + ", " +  setTime(membershipGetProgramForm?.programForm?.timeWindow?.endTime?:"")
         tvProgramMinTransaksiPremiumValue.text =
             "Rp${CurrencyFormatHelper.convertToRupiah(membershipGetProgramForm?.programForm?.tierLevels?.getOrNull(0)?.threshold.toString())}"
         tvProgramMinTransaksiVipValue.text =
