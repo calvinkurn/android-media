@@ -4,12 +4,10 @@ import android.content.Context
 import android.content.res.Resources
 import android.graphics.Color
 import android.graphics.Outline
-import android.graphics.drawable.*
-import android.os.Build
+import android.graphics.drawable.GradientDrawable
 import android.util.TypedValue
 import android.view.View
 import android.view.ViewOutlineProvider
-import androidx.annotation.RequiresApi
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.home_component.model.ChannelConfig
 import com.tokopedia.home_component.model.ChannelModel
@@ -18,6 +16,7 @@ import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.toPx
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.unifycomponents.DividerUnify
+import com.tokopedia.unifycomponents.ImageUnify
 
 /**
  * Created by Lukas on 2019-08-20
@@ -105,9 +104,8 @@ object ImageUnifyUtils {
     private const val DEFAULT_RADIUS = 0
     private const val CURVE_RADIUS = 18f
 
-    fun cornerRadiusTopImageUnify(): ViewOutlineProvider {
+    private fun cornerRadiusTopImageOutlineProvider(): ViewOutlineProvider {
         return object : ViewOutlineProvider() {
-            @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
             override fun getOutline(view: View, outline: Outline?) {
                 outline?.setRoundRect(
                     DEFAULT_RADIUS,
@@ -118,5 +116,9 @@ object ImageUnifyUtils {
                 )
             }
         }
+    }
+    fun ImageUnify.cornerRadiusTop() {
+        this.outlineProvider = cornerRadiusTopImageOutlineProvider()
+        this.clipToOutline = true
     }
 }

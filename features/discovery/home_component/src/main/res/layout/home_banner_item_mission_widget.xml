@@ -18,6 +18,7 @@
             android:contentDescription="@string/content_desc_mission_widget"
             android:layout_marginHorizontal="1dp"
             android:layout_marginTop="1dp"
+            app:unify_image_corner_radius="0"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"/>
@@ -41,7 +42,7 @@
             android:id="@+id/subtitle_mission_widget"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="2dp"
+            android:layout_marginTop="1dp"
             tools:text="Lihat lagi, yuk! Apa tuh yg bisa diliatttttttt"
             android:maxLines="2"
             android:ellipsize="end"
