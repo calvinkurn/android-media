@@ -17,8 +17,8 @@ import com.tokopedia.autocompletecomponent.util.safeSetSpan
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
-import com.tokopedia.media.loader.loadImage
 import com.tokopedia.media.loader.loadImageCircle
+import com.tokopedia.media.loader.loadImageRounded
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.view.binding.viewBinding
 import java.util.*
@@ -31,7 +31,6 @@ class SuggestionSingleLineViewHolder(
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.layout_autocomplete_single_line_item
-        private const val IMAGE_CORNER_RADIUS = 4
     }
     private var binding: LayoutAutocompleteSingleLineItemBinding? by viewBinding()
 
@@ -47,9 +46,9 @@ class SuggestionSingleLineViewHolder(
             if (item.isCircleImage()) {
                 it.loadImageCircle(item.imageUrl)
             } else {
-                it.cornerRadius = IMAGE_CORNER_RADIUS
-                it.loadImage(
+                it.loadImageRounded(
                     item.imageUrl,
+                    itemView.context.resources.getDimension(R.dimen.autocomplete_product_suggestion_image_radius),
                     properties = { setErrorDrawable(R.drawable.autocomplete_ic_time) }
                 )
             }

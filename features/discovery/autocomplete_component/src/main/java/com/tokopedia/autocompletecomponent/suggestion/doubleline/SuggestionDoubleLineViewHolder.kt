@@ -20,7 +20,7 @@ import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.setTextAndCheckShow
 import com.tokopedia.media.loader.loadImageCircle
 import com.tokopedia.kotlin.extensions.view.showWithCondition
-import com.tokopedia.media.loader.loadImage
+import com.tokopedia.media.loader.loadImageRounded
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.view.binding.viewBinding
 import java.util.*
@@ -33,8 +33,6 @@ class SuggestionDoubleLineViewHolder(
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.layout_autocomplete_double_line_item
-
-        private const val IMAGE_CORNER_RADIUS = 4
     }
 
     private var binding: LayoutAutocompleteDoubleLineItemBinding? by viewBinding()
@@ -58,8 +56,7 @@ class SuggestionDoubleLineViewHolder(
         if (item.data.isCircleImage()) {
             iconImage.loadImageCircle(item.data.imageUrl)
         } else {
-            iconImage.cornerRadius = IMAGE_CORNER_RADIUS
-            iconImage.loadImage(item.data.imageUrl)
+            iconImage.loadImageRounded(item.data.imageUrl, itemView.context.resources.getDimension(R.dimen.autocomplete_product_suggestion_image_radius))
         }
     }
 

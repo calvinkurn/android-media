@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="@dimen/dp_44">
 
-    <com.tokopedia.unifycomponents.ImageUnify
+    <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/iconImage"
         android:layout_width="24dp"
         android:layout_height="24dp"
