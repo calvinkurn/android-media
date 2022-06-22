@@ -151,26 +151,26 @@ class ShippingDurationBottomsheet : ShippingDurationContract.View, ShippingDurat
     }
 
     private fun initBottomSheet(activity: Activity, shippingRecommendationData: ShippingRecommendationData) {
-        bottomSheet = BottomSheetUnify()
-        bottomSheet?.showCloseIcon = true
-        bottomSheet?.setTitle(activity.getString(R.string.title_bottomsheet_shipment_duration))
-        bottomSheet?.clearContentPadding = true
-        bottomSheet?.customPeekHeight = Resources.getSystem().displayMetrics.heightPixels / 2
-        bottomSheet?.isDragable = true
-        bottomSheet?.isHideable = true
-        bottomSheet?.setShowListener {
-            chooseCourierTracePerformance = PerformanceMonitoring.start(CHOOSE_COURIER_TRACE)
-            presenter?.attachView(this)
-            hideLoading()
-            setupRecyclerView(mCartPosition)
-            showData(shippingRecommendationData.shippingDurationUiModels, shippingRecommendationData.listLogisticPromo, shippingRecommendationData.preOrderModel)
-        }
-        bottomSheet?.setOnDismissListener {
-            presenter?.detachView()
-        }
-        bottomSheet?.setCloseClickListener {
-            shippingDurationBottomsheetListener?.onShippingDurationButtonCloseClicked()
-            bottomSheet?.dismiss()
+        bottomSheet = BottomSheetUnify().apply {
+            showCloseIcon = true
+            setTitle(activity.getString(R.string.title_bottomsheet_shipment_duration))
+            clearContentPadding = true
+            customPeekHeight = Resources.getSystem().displayMetrics.heightPixels / 2
+            isDragable = true
+            isHideable = true
+            setShowListener {
+                presenter?.attachView(this@ShippingDurationBottomsheet)
+                hideLoading()
+                setupRecyclerView(mCartPosition)
+                showData(shippingRecommendationData.shippingDurationUiModels, shippingRecommendationData.listLogisticPromo, shippingRecommendationData.preOrderModel)
+            }
+            setOnDismissListener {
+                presenter?.detachView()
+            }
+            setCloseClickListener {
+                shippingDurationBottomsheetListener?.onShippingDurationButtonCloseClicked()
+                dismiss()
+            }
         }
     }
 
