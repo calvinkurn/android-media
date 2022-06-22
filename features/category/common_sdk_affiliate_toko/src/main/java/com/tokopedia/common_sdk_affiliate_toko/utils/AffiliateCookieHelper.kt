@@ -19,16 +19,16 @@ class AffiliateCookieHelper @Inject constructor(
     private var affiliateUUID: String = ""
 
     suspend fun initCookie(
-        affiliatePageDetail: AffiliatePageDetail,
-        affiliateChannel: String,
         affiliateUUID: String,
+        affiliateChannel: String,
+        affiliatePageDetail: AffiliatePageDetail,
         uuid: String = "",
         additionalParam: List<AdditionalParam> = emptyList(),
     ) {
         val params = AffiliateCookieParams(
-            affiliatePageDetail,
-            affiliateChannel,
             affiliateUUID,
+            affiliateChannel,
+            affiliatePageDetail,
             uuid,
             additionalParam
         )
@@ -62,7 +62,7 @@ class AffiliateCookieHelper @Inject constructor(
         }
     }
 
-    fun onProductClick(productUrl: String): String {
+    fun createAffiliateLink(productUrl: String): String {
         if (affiliateUUID.isNotEmpty()) {
             return Uri.parse(productUrl)
                 .buildUpon()

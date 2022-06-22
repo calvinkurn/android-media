@@ -58,9 +58,10 @@ class CreateCookieUseCase @Inject constructor(
                 androidVersion
             ),
             CreateAffiliateCookieRequest.ProductDetail(
-                param.affiliatePageDetail.source.productInfo.CategoryID,
-                param.affiliatePageDetail.source.productInfo.IsVariant,
-                param.affiliatePageDetail.source.productInfo.StockQty,
+                param.affiliatePageDetail.source.productInfo.categoryID,
+                param.affiliatePageDetail.source.productInfo.isVariant,
+                param.affiliatePageDetail.source.productInfo.stockQty,
+                param.affiliatePageDetail.source.productInfo.productId
             ),
             CreateAffiliateCookieRequest.ShopDetail(param.affiliatePageDetail.source.shopId)
         )

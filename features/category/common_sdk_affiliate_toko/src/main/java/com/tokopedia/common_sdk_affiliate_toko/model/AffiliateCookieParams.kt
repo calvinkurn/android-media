@@ -2,9 +2,9 @@ package com.tokopedia.common_sdk_affiliate_toko.model
 
 
 internal class AffiliateCookieParams(
-    val affiliatePageDetail: AffiliatePageDetail,
-    val affiliateChannel: String,
     val affiliateUUID: String,
+    val affiliateChannel: String,
+    val affiliatePageDetail: AffiliatePageDetail,
     val uuid: String = "",
     val additionalParam: List<AdditionalParam> = emptyList(),
 )
@@ -15,8 +15,8 @@ internal class AffiliateCookieParams(
 )
 
  class AffiliatePageDetail(
-    val source: AffiliateSdkPageSource,
     val pageId: String,
+    val source: AffiliateSdkPageSource,
     val siteId: String = "1",
     val verticalId: String = "1",
 )

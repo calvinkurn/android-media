@@ -36,7 +36,7 @@ data class CreateAffiliateCookieRequest(
     )
 
     data class CookieLevel(
-        @SerializedName("level")
+        @SerializedName("Level")
         var level: String?
     )
 
@@ -84,7 +84,9 @@ data class CreateAffiliateCookieRequest(
         @SerializedName("IsVariant")
         var isVariant: Boolean?,
         @SerializedName("StockQty")
-        var stockQty: Int?
+        var stockQty: Int?,
+        @SerializedName("ProductID")
+        var productId: String?
     )
 
     data class ShopDetail(
