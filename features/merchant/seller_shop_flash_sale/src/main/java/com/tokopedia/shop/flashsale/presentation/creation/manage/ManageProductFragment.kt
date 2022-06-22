@@ -1,9 +1,9 @@
 package com.tokopedia.shop.flashsale.presentation.creation.manage
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -17,21 +17,15 @@ import com.tokopedia.loaderdialog.LoaderDialog
 import com.tokopedia.seller_shop_flash_sale.R
 import com.tokopedia.seller_shop_flash_sale.databinding.SsfsFragmentManageProductBinding
 import com.tokopedia.shop.flashsale.common.customcomponent.BaseSimpleListFragment
-import com.tokopedia.shop.flashsale.common.extension.doOnDelayFinished
-import com.tokopedia.shop.flashsale.common.extension.setFragmentToUnifyBgColor
-import com.tokopedia.shop.flashsale.common.extension.isZero
-import com.tokopedia.shop.flashsale.common.extension.showError
+import com.tokopedia.shop.flashsale.common.extension.*
 import com.tokopedia.shop.flashsale.di.component.DaggerShopFlashSaleComponent
 import com.tokopedia.shop.flashsale.domain.entity.SellerCampaignProductList
-import com.tokopedia.shop.flashsale.domain.entity.enums.HIDE_BANNER
-import com.tokopedia.shop.flashsale.domain.entity.enums.ManageProductBannerType
 import com.tokopedia.shop.flashsale.domain.entity.enums.ManageProductBannerType.*
 import com.tokopedia.shop.flashsale.presentation.creation.manage.adapter.ManageProductListAdapter
 import com.tokopedia.shop.flashsale.presentation.creation.manage.dialog.ProductDeleteDialog
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.lifecycle.autoClearedNullable
-import kotlinx.coroutines.DelicateCoroutinesApi
 import java.util.*
 import javax.inject.Inject
 import kotlin.concurrent.schedule
@@ -153,8 +147,7 @@ class ManageProductFragment :
 
     private fun observeBannerType() {
         viewModel.bannerType.observe(viewLifecycleOwner) { type ->
-            Log.d("Masuk", type.toString())
-            when(type) {
+            when (type) {
                 EMPTY.type -> {
                     showEmptyProductBanner()
                 }
@@ -182,6 +175,7 @@ class ManageProductFragment :
         }
     }
 
+    @SuppressLint("ResourcePackage")
     private fun showEmptyState() {
         binding?.apply {
             emptyState.visible()
@@ -193,7 +187,14 @@ class ManageProductFragment :
 
             emptyState.setImageUrl(EMPTY_STATE_IMAGE_URL)
             emptyState.setPrimaryCTAClickListener {
-                showChooseProductPage()
+                if (manageProductListAdapter.itemCount < 50) {
+                    showChooseProductPage()
+                } else {
+                    view.showErrorWithCta(
+                        getString(R.string.manage_product_maximum_product_error),
+                        getString(R.string.action_oke)
+                    )
+                }
             }
         }
     }
@@ -209,15 +210,23 @@ class ManageProductFragment :
     }
 
     private fun showEmptyProductBanner() {
-        binding?.cardIncompleteProductInfo?.visible()
+        binding?.apply {
+            cardIncompleteProductInfo.visible()
+            btnContinue.enable()
+        }
     }
 
     private fun showErrorProductBanner() {
-
+        binding?.apply {
+            btnContinue.disable()
+        }
     }
 
     private fun hideBanner() {
-        binding?.cardIncompleteProductInfo?.gone()
+        binding?.apply {
+            cardIncompleteProductInfo.gone()
+            btnContinue.enable()
+        }
     }
 
     private fun showLoader() {

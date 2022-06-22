@@ -26,6 +26,17 @@ infix fun View?.showError(errorMessage: String) {
     Toaster.build(this ?: return, errorMessage, Snackbar.LENGTH_SHORT, Toaster.TYPE_ERROR).show()
 }
 
+fun View?.showErrorWithCta(errorMessage: String, ctaText: String, cta: (() -> Unit)? = null) {
+    Toaster.build(
+        this ?: return,
+        errorMessage,
+        Snackbar.LENGTH_SHORT,
+        Toaster.TYPE_ERROR,
+        ctaText
+    ) { cta?.invoke() }
+        .show()
+}
+
 infix fun View?.showToaster(message: String) {
     Toaster.build(
         this ?: return,
