@@ -28,9 +28,8 @@ class PlayInteractiveAnalyticImpl @Inject constructor(
         channelType: PlayChannelType,
         ) {
         val (eventAction, eventLabel) = when(interactiveType){
-            is InteractiveUiModel.Quiz -> Pair("click - follow quiz popup","$shopId - $channelId - $userId - $interactiveId")
             is InteractiveUiModel.Giveaway -> Pair("click follow from engagement tools widget","$channelId - $channelType - $interactiveId")
-            else -> Pair("","")
+            else -> Pair("click - follow quiz popup","$shopId - $channelId - $userId - $interactiveId")
         }
         sendCompleteGeneralEvent(
             event = if(interactiveType is InteractiveUiModel.Quiz) KEY_TRACK_CLICK_CONTENT else KEY_TRACK_CLICK_GROUP_CHAT,
