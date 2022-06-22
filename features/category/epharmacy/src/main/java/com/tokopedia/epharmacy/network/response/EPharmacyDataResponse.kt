@@ -18,7 +18,7 @@ data class EPharmacyDataResponse(
     val prescriptionStatus: String?,
     @SerializedName("payment_date")
     val paymentDate: String?,
-    @SerializedName("prescription_images")
+    @SerializedName(value = "prescription_images", alternate = ["prescriptions"])
     val prescriptionImages: ArrayList<PrescriptionImage?>?,
     @SerializedName("products")
     val ePharmacyProducts: List<EPharmacyProduct?>?,
@@ -72,8 +72,17 @@ data class PrescriptionImage(
     @SerializedName("view_type")
     var viewType: Int = GALLERY_IMAGE_VIEW_TYPE,
     @SerializedName("local_path")
-    var localPath: String? = ""
-)
+    var localPath: String? = "",
+    @SerializedName("prescription_data")
+    var prescriptionData: PrescriptionData?
+){
+    data class PrescriptionData(
+        @SerializedName("format")
+        var format:String?,
+        @SerializedName("value")
+        var value: String?
+    )
+}
 
 data class EPharmacyProduct(
     @SerializedName("is_ethical_drug")

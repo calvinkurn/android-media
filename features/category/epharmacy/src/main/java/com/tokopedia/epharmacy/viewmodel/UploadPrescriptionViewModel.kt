@@ -1,8 +1,5 @@
 package com.tokopedia.epharmacy.viewmodel
 
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
-import android.util.Base64
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.basemvvm.viewmodel.BaseViewModel
@@ -14,6 +11,7 @@ import com.tokopedia.epharmacy.component.model.EPharmacyProductDataModel
 import com.tokopedia.epharmacy.di.qualifier.CoroutineBackgroundDispatcher
 import com.tokopedia.epharmacy.di.qualifier.CoroutineMainDispatcher
 import com.tokopedia.epharmacy.network.response.*
+import com.tokopedia.epharmacy.usecase.GetEPharmacyCheckoutDetailUseCase
 import com.tokopedia.epharmacy.usecase.GetEPharmacyOrderDetailUseCase
 import com.tokopedia.epharmacy.usecase.PostPrescriptionIdUseCase
 import com.tokopedia.epharmacy.usecase.UploadPrescriptionUseCase
@@ -25,12 +23,12 @@ import com.tokopedia.usecase.launch_cache_error.launchCatchError
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
-import java.io.ByteArrayOutputStream
 import java.lang.reflect.Type
 import javax.inject.Inject
 
 class UploadPrescriptionViewModel @Inject constructor(
     private val getEPharmacyOrderDetailUseCase: GetEPharmacyOrderDetailUseCase,
+    private val getEPharmacyCheckoutDetailUseCase: GetEPharmacyCheckoutDetailUseCase,
     private val uploadPrescriptionUseCase: UploadPrescriptionUseCase,
     private val postPrescriptionIdUseCase: PostPrescriptionIdUseCase,
     @CoroutineBackgroundDispatcher private val dispatcherBackground: CoroutineDispatcher,
@@ -52,16 +50,16 @@ class UploadPrescriptionViewModel @Inject constructor(
     private val _prescriptionImages = MutableLiveData<ArrayList<PrescriptionImage?>>()
     val prescriptionImages: LiveData<ArrayList<PrescriptionImage?>> = _prescriptionImages
 
-    fun getEPharmacyDetail(orderId: String) {
+    fun getEPharmacyOrderDetail(orderId: String) {
         getEPharmacyOrderDetailUseCase.cancelJobs()
-        getEPharmacyOrderDetailUseCase.getEPharmacyDetail(
-            ::onAvailableEPharmacyDetail,
+        getEPharmacyOrderDetailUseCase.getEPharmacyOrderDetail(
+            ::onAvailableEPharmacyOrderDetail,
             ::onFailEPharmacyDetail,
             orderId
         )
     }
 
-    private fun onAvailableEPharmacyDetail(ePharmacyDetailResponse: EPharmacyDataResponse) {
+    private fun onAvailableEPharmacyOrderDetail(ePharmacyDetailResponse: EPharmacyDataResponse) {
         ePharmacyDetailResponse.let { data ->
             if(data.ePharmacyProducts?.isEmpty() == true)
                 onFailEPharmacyDetail(IllegalStateException("Data invalid"))
@@ -100,6 +98,28 @@ class UploadPrescriptionViewModel @Inject constructor(
         _productDetailLiveData.postValue(Fail(throwable))
     }
 
+    fun getEPharmacyCheckoutDetail(checkoutId: String) {
+        getEPharmacyCheckoutDetailUseCase.cancelJobs()
+        getEPharmacyCheckoutDetailUseCase.getEPharmacyCheckoutDetail(
+            ::onAvailableEPharmacyCheckoutDetail,
+            ::onFailEPharmacyDetail,
+            checkoutId
+        )
+    }
+
+    private fun onAvailableEPharmacyCheckoutDetail(ePharmacyDetailResponse: EPharmacyDataResponse) {
+        ePharmacyDetailResponse.let { data ->
+            if(data.ePharmacyProducts?.isEmpty() == true)
+                onFailEPharmacyDetail(IllegalStateException("Data invalid"))
+            else {
+                _productDetailLiveData.postValue(Success(mapResponseInDataModel(data)))
+                if(!data.epharmacyButton.isNullOrEmpty()){
+                    _buttonLiveData.postValue(data.epharmacyButton)
+                }
+            }
+        }
+    }
+
     fun onSuccessGetPrescriptionImages(arrayList: ArrayList<PrescriptionImage?>) {
         _prescriptionImages.postValue(arrayList)
     }
@@ -129,7 +149,8 @@ class UploadPrescriptionViewModel @Inject constructor(
             isUploading = true,
             isUploadSuccess = false,
             isDeletable = true,
-            isUploadFailed = false, GALLERY_IMAGE_VIEW_TYPE, localPath
+            isUploadFailed = false, GALLERY_IMAGE_VIEW_TYPE, localPath,
+            null
         ))
     }
 

@@ -92,7 +92,11 @@ class UploadPrescriptionFragment : BaseDaggerFragment() , EPharmacyListener {
         setUpObservers()
         initViews(view)
         initData()
-        uploadPrescriptionViewModel.getEPharmacyDetail(orderId)
+        if(checkoutId.isNotBlank()) {
+            uploadPrescriptionViewModel.getEPharmacyCheckoutDetail(checkoutId)
+        }else if(orderId.isNotBlank()){
+            uploadPrescriptionViewModel.getEPharmacyOrderDetail(orderId)
+        }
     }
 
     private fun initArguments() {
