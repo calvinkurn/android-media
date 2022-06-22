@@ -88,17 +88,13 @@ open class GalleryFragment : BaseDaggerFragment(), DrawerSelectionWidget.Listene
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == RC_ALBUM_SELECTOR && resultCode == Activity.RESULT_OK) {
-            val bucketId = data?.getLongExtra(AlbumActivity.INTENT_BUCKET_ID, 0)?: -1
-            val bucketName = data?.getStringExtra(AlbumActivity.INTENT_BUCKET_NAME)
+            val (id, name) = AlbumActivity.getAlbumBucketDetails(data)
 
-            // set the title of album selector
-            binding?.albumSelector?.txtName?.text = bucketName
-
-            // fetch album by bucket id
-            viewModel.fetch(bucketId)
+            binding?.albumSelector?.txtName?.text = name
+            viewModel.fetch(id)
 
             // force and scroll to up if the bucketId is "recent medias / all media"
-            if (bucketId == -1L) {
+            if (id == ALL_MEDIA_BUCKET_ID) {
                 binding?.lstMedia?.smoothScrollToPosition(0)
             }
         }
@@ -188,11 +184,7 @@ open class GalleryFragment : BaseDaggerFragment(), DrawerSelectionWidget.Listene
 
         binding?.albumSelector?.container?.setOnClickListener {
             galleryAnalytics.clickDropDown()
-
-            startActivityForResult(Intent(
-                requireContext(),
-                AlbumActivity::class.java
-            ), RC_ALBUM_SELECTOR)
+            AlbumActivity.start(this, RC_ALBUM_SELECTOR)
         }
     }
 
@@ -205,7 +197,7 @@ open class GalleryFragment : BaseDaggerFragment(), DrawerSelectionWidget.Listene
         binding?.lstMedia?.addItemDecoration(
             GridItemDecoration(
                 LIST_SPAN_COUNT,
-                resources.getDimensionPixelSize(
+                requireContext().resources.getDimensionPixelSize(
                     R.dimen.picker_item_padding
                 )
             )
@@ -285,5 +277,7 @@ open class GalleryFragment : BaseDaggerFragment(), DrawerSelectionWidget.Listene
     companion object {
         private const val RC_ALBUM_SELECTOR = 123
         private const val LIST_SPAN_COUNT = 3
+
+        private const val ALL_MEDIA_BUCKET_ID = -1L
     }
 }
