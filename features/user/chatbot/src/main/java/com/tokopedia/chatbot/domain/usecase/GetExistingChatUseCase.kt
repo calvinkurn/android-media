@@ -1,20 +1,11 @@
 package com.tokopedia.chatbot.domain.usecase
 
-import android.content.res.Resources
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.chat_common.domain.pojo.GetExistingChatPojo
-import com.tokopedia.chatbot.R
 import com.tokopedia.graphql.coroutines.data.extensions.request
-import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
-import com.tokopedia.graphql.data.model.GraphqlRequest
-import com.tokopedia.graphql.data.model.GraphqlResponse
-import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import kotlinx.coroutines.withContext
-import rx.Subscriber
-import java.lang.NumberFormatException
 import javax.inject.Inject
 
 /**

@@ -1,6 +1,7 @@
 package com.tokopedia.chatbot.view.adapter.viewholder.chatbubble
 
 import android.text.TextUtils
+import android.util.Log
 import android.view.View
 import androidx.cardview.widget.CardView
 import com.tokopedia.chat_common.data.BaseChatUiModel
@@ -19,11 +20,13 @@ import com.tokopedia.chatbot.view.customview.reply.ReplyBubbleAreaMessage
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
+import com.tokopedia.user.session.UserSessionInterface
 
 abstract class ChatbotMessageUnifyViewHolder(
     itemView: View?,
     protected val listener: ChatLinkHandlerListener,
-    private val replyBubbleListener : ReplyBubbleAreaMessage.Listener
+    private val replyBubbleListener : ReplyBubbleAreaMessage.Listener,
+    private val userSession: UserSessionInterface
 ) : BaseChatViewHolder<MessageUiModel>(itemView) {
 
     protected open val customChatLayout: MessageBubbleLayout? = itemView?.findViewById(R.id.message_layout_with_reply)
@@ -51,13 +54,9 @@ abstract class ChatbotMessageUnifyViewHolder(
 
     //Requirement from BE
     protected open fun mapSenderName(parentReply: ParentReply): String {
-        var senderName = replyBubbleListener?.getUserName()
-        if (parentReply.name == ChatbotConstant.TANYA) {
-            return ChatbotConstant.TOKOPEDIA_CARE
-        } else if (parentReply.name == REPLY_AGENT_NAME) {
-            return senderName
-        }
-        return parentReply?.name
+        if (userSession.userId == parentReply.senderId)
+            return userSession.name
+        return ChatbotConstant.TOKOPEDIA_CARE
     }
 
     protected fun verifyReplyTime(chat: MessageUiModel) {

@@ -10,12 +10,14 @@ import com.tokopedia.chatbot.view.adapter.viewholder.binder.ChatbotMessageViewHo
 import com.tokopedia.chatbot.view.customview.reply.ReplyBubbleAreaMessage
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.user.session.UserSessionInterface
 
 class RightChatMessageUnifyViewHolder(
         itemView: View?,
         listener: ChatLinkHandlerListener,
-        replyBubbleListener: ReplyBubbleAreaMessage.Listener
-) : ChatbotMessageUnifyViewHolder(itemView, listener, replyBubbleListener) {
+        replyBubbleListener: ReplyBubbleAreaMessage.Listener,
+        private val userSession: UserSessionInterface
+) : ChatbotMessageUnifyViewHolder(itemView, listener, replyBubbleListener, userSession) {
 
      private val backgroundChatWithoutReplyBubble = ViewUtil.generateBackgroundWithShadow(
             customChatLayout?.fxChat,

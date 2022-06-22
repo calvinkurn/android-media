@@ -80,7 +80,7 @@ open class ChatbotTypeFactoryImpl(imageAnnouncementListener: ImageAnnouncementLi
 
     private fun createViewHolder(parent: View, type: Int, chatbotAdapterListener: ChatbotAdapterListener): AbstractViewHolder<*> {
         return when (type) {
-            LeftChatMessageUnifyViewHolder.LAYOUT -> LeftChatMessageUnifyViewHolder(parent, chatLinkHandlerListener, chatbotAdapterListener,replyBubbleListener)
+            LeftChatMessageUnifyViewHolder.LAYOUT -> LeftChatMessageUnifyViewHolder(parent, chatLinkHandlerListener, chatbotAdapterListener,replyBubbleListener,userSession)
             CsatOptionListViewHolder.LAYOUT -> CsatOptionListViewHolder(parent, csatOptionListListener, chatLinkHandlerListener, chatbotAdapterListener)
             ChatHelpfullQuestionViewHolder.LAYOUT -> ChatHelpfullQuestionViewHolder(parent, chatOptionListListener, chatLinkHandlerListener, chatbotAdapterListener)
             QuickReplyViewHolder.LAYOUT -> QuickReplyViewHolder(parent, chatLinkHandlerListener, chatbotAdapterListener)
@@ -146,7 +146,7 @@ open class ChatbotTypeFactoryImpl(imageAnnouncementListener: ImageAnnouncementLi
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<*> {
         return when (type) {
             ChatBotTypingChatViewHolder.LAYOUT -> ChatBotTypingChatViewHolder(parent)
-            RightChatMessageUnifyViewHolder.LAYOUT -> RightChatMessageUnifyViewHolder(parent, chatLinkHandlerListener, replyBubbleListener)
+            RightChatMessageUnifyViewHolder.LAYOUT -> RightChatMessageUnifyViewHolder(parent, chatLinkHandlerListener, replyBubbleListener, userSession)
             ConnectionDividerViewHolder.LAYOUT -> ConnectionDividerViewHolder(parent)
             ChatbotLiveChatSeparatorViewHolder.LAYOUT -> ChatbotLiveChatSeparatorViewHolder(parent)
             AttachedInvoiceSentViewHolder.LAYOUT -> AttachedInvoiceSentViewHolder(parent)

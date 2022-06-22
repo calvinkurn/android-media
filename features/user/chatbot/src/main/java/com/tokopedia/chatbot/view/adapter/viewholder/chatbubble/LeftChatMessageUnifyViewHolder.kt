@@ -17,13 +17,15 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.user.session.UserSessionInterface
 
 class LeftChatMessageUnifyViewHolder(
     itemView: View?,
     listener: ChatLinkHandlerListener,
     private val chatbotAdapterListener: ChatbotAdapterListener,
-    replyBubbleListener: ReplyBubbleAreaMessage.Listener
-) : ChatbotMessageUnifyViewHolder(itemView, listener, replyBubbleListener) {
+    replyBubbleListener: ReplyBubbleAreaMessage.Listener,
+    private val userSession: UserSessionInterface
+) : ChatbotMessageUnifyViewHolder(itemView, listener, replyBubbleListener,userSession) {
 
     private val senderAvatar = itemView?.findViewById<ImageUnify>(R.id.senderAvatar)
     private val senderName = itemView?.findViewById<Typography>(R.id.senderName)
@@ -46,6 +48,7 @@ class LeftChatMessageUnifyViewHolder(
         hideSenderInfo()
         val senderInfoData = convertToSenderInfo(message.source)
 
+        bindBackground()
         if (chatbotAdapterListener.isPreviousItemSender(adapterPosition)) {
             senderInfoData?.let { bindSenderInfo(it) }
         }
@@ -71,12 +74,6 @@ class LeftChatMessageUnifyViewHolder(
             updateCloseButtonState(false)
             show()
         }
-    }
-
-    override fun mapSenderName(parentReply: ParentReply): String {
-        if (parentReply.name == ChatbotConstant.TANYA)
-            return ChatbotConstant.TOKOPEDIA_CARE
-        return parentReply.name
     }
 
     private fun hideSenderInfo() {
