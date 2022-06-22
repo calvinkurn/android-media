@@ -203,25 +203,22 @@ class ShippingDurationPresenterTest {
         assertEquals(productsShipping.filter { product -> product.any { item -> item.promoCode.isEmpty() } }.size, productsShipping.size)
     }
 
-//    @Test
-//    fun `When get courier item data trigger courier converter Then courier converter is called`() {
-//        // Given
-//        val courierModelWithOneRecc: List<ShippingCourierUiModel> = listOf(
-//                ShippingCourierUiModel().apply {
-//                    productData = ProductData().apply {
-//                        isRecommend = true
-//                    }
-//                }
-//        )
-//
-//        // When
-//        presenter.getCourierItemData(courierModelWithOneRecc)
-//
-//        // Then
-//        verify {
-//            courierConverter.convertToCourierItemData(any())
-//        }
-//    }
+    @Test
+    fun `When get courier item data and product is recommended Then return courier Ui model`() {
+        // Given
+        val expected = ShippingCourierUiModel().apply {
+            productData = ProductData().apply {
+                isRecommend = true
+            }
+        }
+        val courierModelWithOneRecc: List<ShippingCourierUiModel> = listOf(expected)
+
+        // When
+        val actual = presenter.getCourierItemData(courierModelWithOneRecc)
+
+        // Then
+        assertEquals(actual, expected)
+    }
 
     @Test
     fun `When get courier item data return null Then null is returned`() {
@@ -239,26 +236,23 @@ class ShippingDurationPresenterTest {
         assertNull(actual)
     }
 
-//    @Test
-//    fun `When get courier item data with id trigger courier converter Then courier converter is called`() {
-//        // Given
-//        val spId = 24
-//        val courierModelWithId: List<ShippingCourierUiModel> = listOf(
-//                ShippingCourierUiModel().apply {
-//                    productData = ProductData().apply {
-//                        shipperProductId = spId
-//                    }
-//                }
-//        )
-//
-//        // When
-//        presenter.getCourierItemDataById(spId, courierModelWithId)
-//
-//        // Then
-//        verify {
-//            courierConverter.convertToCourierItemData(any())
-//        }
-//    }
+    @Test
+    fun `When get courier item data with id Then return the courier Ui model with the same shipper product id`() {
+        // Given
+        val spId = 24
+        val expectedCourier = ShippingCourierUiModel().apply {
+            productData = ProductData().apply {
+                shipperProductId = spId
+            }
+        }
+        val courierModelWithId: List<ShippingCourierUiModel> = listOf(expectedCourier)
+
+        // When
+        val actual = presenter.getCourierItemDataById(spId, courierModelWithId)
+
+        // Then
+        assertEquals(actual, expectedCourier)
+    }
 
     @Test
     fun `When get courier item data with id return null Then null is returned`() {
