@@ -56,16 +56,17 @@ class SuggestionSingleLineViewHolder(
     }
 
     private fun bindTextTitle(item: BaseSuggestionDataView){
+        val binding = binding ?: return
         val highlightedTitle = SpannableString(item.title)
         if(item.isBoldAllText()){
-            binding?.singleLineTitle?.setWeight(Typography.BOLD)
+            binding.singleLineTitle.setWeight(Typography.BOLD)
         } else {
             val startIndex = indexOfSearchQuery(item.title, item.searchTerm)
             if (startIndex == -1) {
-                binding?.singleLineTitle?.setWeight(Typography.BOLD)
+                binding.singleLineTitle.setWeight(Typography.BOLD)
             }
             else {
-                binding?.singleLineTitle?.setWeight(Typography.REGULAR)
+                binding.singleLineTitle.setWeight(Typography.REGULAR)
                 highlightedTitle.safeSetSpan(
                     StyleSpan(Typeface.BOLD),
                     0,
@@ -80,7 +81,7 @@ class SuggestionSingleLineViewHolder(
                 )
             }
         }
-        binding?.singleLineTitle?.text = highlightedTitle
+        binding.singleLineTitle.text = highlightedTitle
     }
 
     private fun indexOfSearchQuery(displayName: String, searchTerm: String): Int {
