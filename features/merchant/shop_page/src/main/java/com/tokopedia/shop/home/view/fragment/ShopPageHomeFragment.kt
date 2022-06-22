@@ -2081,7 +2081,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         AtcVariantHelper.goToAtcVariant(
             context = requireContext(),
             productId = shopHomeProductViewModel.id.orEmpty(),
-            pageSource = VariantPageSource.SHOP_COUPON_PAGESOURCE,
+            pageSource = VariantPageSource.SHOP_PAGE_PAGESOURCE,
             shopId = shopId,
             startActivitResult = this::startActivityForResult
         )
