@@ -1,5 +1,6 @@
 package com.tokopedia.topads.sdk.utils
 
+import android.util.Log
 import com.google.gson.reflect.TypeToken
 import com.tokopedia.common.network.coroutines.RestRequestInteractor
 import com.tokopedia.common.network.coroutines.repository.RestRepository
@@ -67,6 +68,8 @@ class ImpresionTask {
                     val token = object : TypeToken<DataResponse<String>>() {}.type
                     val restRequest = RestRequest.Builder(url, token).build()
                     val result = restRepository.getResponse(restRequest).getData<String>()
+                    val result1 = restRepository.getResponse(restRequest).headers;
+                    Log.d("myHeaders", "execute: $result1")
                     if (impressionListener != null) {
                         if (result != null) {
                             impressionListener!!.onSuccess()
