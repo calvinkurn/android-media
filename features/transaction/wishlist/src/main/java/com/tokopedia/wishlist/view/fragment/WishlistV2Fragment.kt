@@ -1225,10 +1225,6 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
     override fun onProductItemClicked(wishlistItem: WishlistV2Response.Data.WishlistV2.Item, position: Int) {
         WishlistV2Analytics.clickProductCard(wishlistItem, userSession.userId, position)
         activity?.let {
-            RouteManager.route(it, wishlistItem.url)
-        }
-
-        activity?.let {
             if (wishlistItem.url.isNotEmpty()) {
                 RouteManager.route(it, wishlistItem.url)
             } else {
