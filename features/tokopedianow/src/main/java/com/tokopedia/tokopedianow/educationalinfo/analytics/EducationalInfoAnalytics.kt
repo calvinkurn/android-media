@@ -15,7 +15,7 @@ class EducationalInfoAnalytics {
 
     /**
      * NOW! USP BottomSheet Tracker
-     * https://mynakama.tokopedia.com/datatracker/requestdetail/view/3126 (Play - row: 19-21)
+     * https://mynakama.tokopedia.com/datatracker/requestdetail/view/3126 (Play - row: 14, 15, 16, 19)
      */
 
     object ACTION {
