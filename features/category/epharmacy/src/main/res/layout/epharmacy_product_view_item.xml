@@ -15,7 +15,6 @@
         app:layout_constraintStart_toStartOf="parent"
         android:layout_marginTop="@dimen/spacing_lvl2"
         android:layout_marginStart="@dimen/spacing_lvl4"
-        app:icon_name="BADGE_OS_FILLED"
         />
 
     <com.tokopedia.unifyprinciples.Typography

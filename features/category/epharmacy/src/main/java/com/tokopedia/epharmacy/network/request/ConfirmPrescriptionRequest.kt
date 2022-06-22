@@ -9,13 +9,13 @@ data class ConfirmPrescriptionRequest(
 ) {
     data class Input(
         @SerializedName("checkout_id")
-        val checkoutId: String?,
+        val id: String?,
         @SerializedName("prescriptions")
         val prescriptions: List<Prescription?>?
     ) {
         data class Prescription(
             @SerializedName("prescription_id")
-            val prescriptionId: String?
+            val prescriptionId: Long?
         )
     }
 }

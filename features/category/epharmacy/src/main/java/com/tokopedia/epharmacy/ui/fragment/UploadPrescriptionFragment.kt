@@ -48,6 +48,7 @@ class UploadPrescriptionFragment : BaseDaggerFragment() , EPharmacyListener {
     private var ePharmacyToolTipText : Typography? = null
     private var ePharmacyRecyclerView : RecyclerView? = null
     private var fotoResepButton : UnifyButton? = null
+    private var doneButton : UnifyButton? = null
 
     @Inject
     lateinit var viewModelFactory: dagger.Lazy<ViewModelProvider.Factory>
@@ -111,13 +112,14 @@ class UploadPrescriptionFragment : BaseDaggerFragment() , EPharmacyListener {
             ePharmacyToolTipText = findViewById(R.id.tooltip)
             ePharmacyRecyclerView = findViewById(R.id.epharmacy_rv)
             fotoResepButton = findViewById(R.id.foto_resep_button)
+            doneButton = findViewById(R.id.done_button)
         }
     }
 
     private fun initData(){
         setupRecyclerView()
         renderToolTip()
-        renderFotoResepButton()
+        renderButtons()
     }
 
     private fun setupRecyclerView() {
@@ -146,10 +148,13 @@ class UploadPrescriptionFragment : BaseDaggerFragment() , EPharmacyListener {
         ePharmacyToolTipText?.isClickable = true
     }
 
-    private fun renderFotoResepButton() {
+    private fun renderButtons() {
         setCameraDrawableOnButton()
         fotoResepButton?.setOnClickListener {
             onClickFotoResepButton()
+        }
+        doneButton?.setOnClickListener {
+            onDoneButtonClick()
         }
     }
 
@@ -211,7 +216,8 @@ class UploadPrescriptionFragment : BaseDaggerFragment() , EPharmacyListener {
 
     private fun setNewPrescriptionData() {
         ePharmacyUiUpdater.updateModel(EPharmacyPrescriptionDataModel(PRESCRIPTION_COMPONENT,
-            PRESCRIPTION_COMPONENT,(uploadPrescriptionViewModel.prescriptionImages.value)))
+            PRESCRIPTION_COMPONENT,(uploadPrescriptionViewModel.prescriptionImages.value),
+            ePharmacyUiUpdater.prescriptionInfoMap?.showCamera ?: true))
         reloadPrescriptionUI()
     }
 
@@ -269,11 +275,13 @@ class UploadPrescriptionFragment : BaseDaggerFragment() , EPharmacyListener {
 
     private fun sendResultToCheckout() {
         Intent().apply {
-            val prescriptionIds = arrayListOf<String>()
+            val prescriptionIds = arrayListOf<Long>()
             uploadPrescriptionViewModel.prescriptionImages.value?.let {  presImages ->
                 presImages.forEach { presImage ->
-                    if(presImage?.prescriptionId?.isNotBlank() == true){
-                        prescriptionIds.add(presImage.prescriptionId ?: "")
+                    presImage?.prescriptionId?.let { presId ->
+                        if(presId != DEFAULT_ZERO_VALUE){
+                            prescriptionIds.add(presId)
+                        }
                     }
                 }
             }
@@ -283,14 +291,16 @@ class UploadPrescriptionFragment : BaseDaggerFragment() , EPharmacyListener {
     }
 
     private fun openOrderPage() {
-
+        activity?.finish()
     }
 
     private fun onSuccessEPharmacyData(it: Success<EPharmacyDataModel>) {
         it.data.listOfComponents.forEach { component ->
             if(component.name() == PRESCRIPTION_COMPONENT){
-                (component as? EPharmacyPrescriptionDataModel)?.prescriptions?.let {
-                    uploadPrescriptionViewModel.onSuccessGetPrescriptionImages(it)
+                (component as? EPharmacyPrescriptionDataModel)?.let { presComponent ->
+                    presComponent.prescriptions?.let {
+                        uploadPrescriptionViewModel.onSuccessGetPrescriptionImages(it)
+                    }
                 }
             }else {
                 ePharmacyUiUpdater.updateModel(component)
@@ -306,33 +316,44 @@ class UploadPrescriptionFragment : BaseDaggerFragment() , EPharmacyListener {
 
     private fun updateButtonUI(buttonData: List<EpharmacyButton?>) {
         buttonData.firstOrNull()?.let {
+            if(it.key == EPHARMACY_CHECK_BUTTON_KEY){
+                ePharmacyUiUpdater.prescriptionInfoMap?.showCamera = false
+                reloadPrescriptionUI()
+                it.type = EPharmacyButtonType.NONE.type
+            }
             when (it.type) {
                 EPharmacyButtonType.PRIMARY.type -> {
                     ePharmacyToolTipText?.show()
-                    fotoResepButton?.buttonVariant = UnifyButton.Variant.GHOST
-                    fotoResepButton?.isEnabled = true
-                    setCameraDrawableOnButton()
+                    fotoResepButton?.show()
+                    doneButton?.hide()
                 }
                 EPharmacyButtonType.TERTIARY.type -> {
-                    fotoResepButton?.buttonVariant = UnifyButton.Variant.FILLED
-                    fotoResepButton?.isEnabled = false
+                    ePharmacyToolTipText?.hide()
+                    fotoResepButton?.hide()
+                    doneButton?.show()
+                    doneButton?.isEnabled = false
+                }
+                EPharmacyButtonType.SECONDARY.type -> {
+                    ePharmacyToolTipText?.hide()
+                    fotoResepButton?.hide()
+                    doneButton?.show()
+                    doneButton?.isEnabled = true
+                }
+                EPharmacyButtonType.NONE.type -> {
+                    ePharmacyToolTipText?.hide()
+                    fotoResepButton?.hide()
+                    doneButton?.hide()
                 }
                 else -> {
-                    fotoResepButton?.buttonVariant = UnifyButton.Variant.FILLED
-                    fotoResepButton?.isEnabled = true
+                    ePharmacyToolTipText?.hide()
+                    fotoResepButton?.hide()
+                    doneButton?.hide()
                 }
             }
-            fotoResepButton?.text = it.text
-            fotoResepButton?.buttonSize = UnifyButton.Size.LARGE
-            fotoResepButton?.show()
         } ?: kotlin.run {
+            ePharmacyToolTipText?.hide()
             fotoResepButton?.hide()
-        }
-    }
-
-    private fun removeDrawable() {
-        if(fotoResepButton?.drawableState?.size ?:0 > 0 ){
-            fotoResepButton?.setDrawable(null, UnifyButton.DrawablePosition.LEFT)
+            doneButton?.hide()
         }
     }
 

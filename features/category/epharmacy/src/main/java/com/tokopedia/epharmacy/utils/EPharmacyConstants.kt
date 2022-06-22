@@ -3,6 +3,7 @@ package com.tokopedia.epharmacy.utils
 
 const val EXTRA_ORDER_ID = "extra_order_id"
 const val EXTRA_CHECKOUT_ID = "extra_checkout_id"
+const val DEFAULT_ZERO_VALUE = 0L
 
 const val MAX_MEDIA_ITEM = 5
 
@@ -21,9 +22,6 @@ const val PRODUCT_VIEW_TYPE = 1
 const val GALLERY_IMAGE_VIEW_TYPE = 2
 const val OPEN_GALLERY_VIEW_TYPE = 3
 
-const val DONE_TEXT = "Selesai"
-const val UPLOAD_TEXT = "Foto Resep"
-
 const val EPHARMACY_SCREEN_NAME = "epharmacy page"
 
 const val UPLOAD_ORDER_ID_KEY = "order_id"
@@ -31,10 +29,13 @@ const val UPLOAD_CHECKOUT_ID_KEY = "checkout_id"
 
 const val EPHARMACY_TNC_LINK = "https://www.tokopedia.com/help/article/syarat-dan-ketentuan-tokopedia-kesehatan"
 
+const val EPHARMACY_CHECK_BUTTON_KEY ="epharmacy_check_prescription"
+
 enum class EPharmacyButtonType(val type : String) {
     PRIMARY("primary"),
     SECONDARY("secondary"),
-    TERTIARY("tertiary")
+    TERTIARY("tertiary"),
+    NONE("none")
 }
 
 enum class EPharmacyPrescriptionStatus(val status : String){

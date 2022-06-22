@@ -10,12 +10,10 @@ data class UploadPrescriptionRequest(
     data class PrescriptionRequest(
         @SerializedName("data")
         val `data`: String?,
-        @SerializedName("expiration_time")
-        val expirationTime: String?,
         @SerializedName("format")
         val format: String?,
         @SerializedName("id")
-        val id: String?,
+        val id: Long?,
         @SerializedName("source")
         val source: String?
     )

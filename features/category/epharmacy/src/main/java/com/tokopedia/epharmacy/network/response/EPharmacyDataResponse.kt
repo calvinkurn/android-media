@@ -2,6 +2,7 @@ package com.tokopedia.epharmacy.network.response
 
 
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.epharmacy.utils.DEFAULT_ZERO_VALUE
 import com.tokopedia.epharmacy.utils.GALLERY_IMAGE_VIEW_TYPE
 
 data class EPharmacyDataResponse(
@@ -13,6 +14,8 @@ data class EPharmacyDataResponse(
     val invoiceRefNum: String?,
     @SerializedName("order_pdf")
     val orderPdf: String?,
+    @SerializedName("prescription_status")
+    val prescriptionStatus: String?,
     @SerializedName("payment_date")
     val paymentDate: String?,
     @SerializedName("prescription_images")
@@ -20,7 +23,7 @@ data class EPharmacyDataResponse(
     @SerializedName("products")
     val ePharmacyProducts: List<EPharmacyProduct?>?,
     @SerializedName("shop_id")
-    val shopId: String?,
+    val shopId: Long?,
     @SerializedName("shop_type")
     val shopType: String?,
     @SerializedName("shop_name")
@@ -53,7 +56,7 @@ data class PrescriptionImage(
     @SerializedName("expired_at")
     val expiredAt: String?,
     @SerializedName("prescription_id")
-    var prescriptionId: String?,
+    var prescriptionId: Long?,
     @SerializedName("reject_reason")
     val rejectReason: String?,
     @SerializedName("status")
@@ -86,7 +89,7 @@ data class EPharmacyProduct(
     @SerializedName("item_weight")
     val itemWeight: Int?,
     @SerializedName("shop_id")
-    var shopId: String?,
+    var shopId: Long?,
     @SerializedName("store_name")
     var shopName: String?,
     @SerializedName("store_location")

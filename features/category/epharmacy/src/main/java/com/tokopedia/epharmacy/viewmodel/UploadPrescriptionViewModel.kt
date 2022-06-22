@@ -84,7 +84,7 @@ class UploadPrescriptionViewModel @Inject constructor(
             PRESCRIPTION_COMPONENT, data.prescriptionImages)
         listOfComponents.add(prescriptionDataModel)
         data.ePharmacyProducts?.forEachIndexed { index, eProduct ->
-            if(index == 0 && eProduct?.shopId.isNullOrBlank()){
+            if(index == 0){
                 eProduct?.shopId = data.shopId
                 eProduct?.shopName = data.shopName
                 eProduct?.shopLocation = data.shopLocation
@@ -111,7 +111,6 @@ class UploadPrescriptionViewModel @Inject constructor(
                 changeToLoadingState(it,localPath)
                 uploadImageWithPath((_prescriptionImages.value?.size ?: 0) - 1,localPath)
             }
-
             _prescriptionImages.postValue(it)
         }
     }
@@ -125,7 +124,7 @@ class UploadPrescriptionViewModel @Inject constructor(
     }
 
     private fun changeToLoadingState(arrayList: ArrayList<PrescriptionImage?>?, localPath :String) {
-        arrayList?.add(PrescriptionImage("","","","",
+        arrayList?.add(PrescriptionImage("","",DEFAULT_ZERO_VALUE,"",
             EPharmacyPrescriptionStatus.SELECTED.status,
             isUploading = true,
             isUploadSuccess = false,
@@ -152,35 +151,21 @@ class UploadPrescriptionViewModel @Inject constructor(
 
     }
 
-    private fun getBase64OfPrescriptionImage(localFilePath: String): String {
-        return try {
-            val prescriptionImageBitmap: Bitmap = BitmapFactory.decodeFile(localFilePath)
-            val prescriptionByteArrayOutputStream = ByteArrayOutputStream()
-            prescriptionImageBitmap.compress(
-                Bitmap.CompressFormat.JPEG,
-                100,
-                prescriptionByteArrayOutputStream
-            )
-            val byteArrayImage = prescriptionByteArrayOutputStream.toByteArray()
-            prescriptionImageBitmap.recycle()
-            Base64.encodeToString(byteArrayImage, Base64.DEFAULT)
-        }catch (e : Exception){
-            ""
-        }
-    }
-
     private suspend fun uploadImageToServer(uniquePositionId: Int, localFilePath : String) {
-        val base64Image = getBase64OfPrescriptionImage(localFilePath)
-        if (base64Image.isNotBlank()){
-            uploadPrescriptionUseCase.setBase64Image(uniquePositionId.toString(),base64Image, userSession.accessToken)
+        if (localFilePath.isNotBlank()){
+            uploadPrescriptionUseCase.setBase64Image(uniquePositionId.toLong(),localFilePath, userSession.accessToken)
             val result = withContext(dispatcherBackground) {
-                convertToYoutubeResponse(uploadPrescriptionUseCase.executeOnBackground())
+                convertToUploadImageResponse(uploadPrescriptionUseCase.executeOnBackground())
             }
             _prescriptionImages.value?.get(uniquePositionId)?.apply {
-                result.data?.firstOrNull()?.let {
-                    isUploadSuccess = true
-                    isUploading = false
-                    prescriptionId = it.prescriptionId
+                result.data?.firstOrNull()?.let { uploadResult ->
+                    if(uploadResult.prescriptionId != null && uploadResult.prescriptionId != DEFAULT_ZERO_VALUE){
+                        isUploadSuccess = true
+                        isUploading = false
+                        prescriptionId = uploadResult.prescriptionId
+                    }else {
+                        uploadFailed(uniquePositionId, Throwable("No Prescription Id"))
+                    }
                 }?: kotlin.run {
                     isUploadSuccess = false
                     isUploading = false
@@ -189,7 +174,7 @@ class UploadPrescriptionViewModel @Inject constructor(
             }
             _prescriptionImages.postValue(_prescriptionImages.value)
         }else {
-
+            uploadFailed(uniquePositionId, Throwable("Empty Image"))
         }
         withContext(dispatcherMain){
             checkPrescriptionImages()
@@ -201,26 +186,27 @@ class UploadPrescriptionViewModel @Inject constructor(
         var failedImageCount = 0
         var approvedImages = 0
         _prescriptionImages.value?.forEach { presImage ->
-            if(presImage?.status == EPharmacyPrescriptionStatus.APPROVED.status) {
-                approvedImages += 1
-            }else if(presImage?.isUploadSuccess == true) {
-                successImagesCount += 1
-            }else if(presImage?.isUploadFailed == true){
-                failedImageCount += 1
+            when {
+                presImage?.status == EPharmacyPrescriptionStatus.APPROVED.status -> {
+                    approvedImages += 1
+                }
+                presImage?.isUploadSuccess == true -> {
+                    successImagesCount += 1
+                }
+                presImage?.isUploadFailed == true -> {
+                    failedImageCount += 1
+                }
             }
         }
         _buttonLiveData.value.let {
             it?.firstOrNull()?.apply {
-                if(failedImageCount > 0){
-                    text = DONE_TEXT
-                    type = EPharmacyButtonType.TERTIARY.type
+                type = if(failedImageCount > 0){
+                    EPharmacyButtonType.TERTIARY.type
                 }else {
                     if(approvedImages > 0 && successImagesCount == 0){
-                        text = UPLOAD_TEXT
-                        type = EPharmacyButtonType.PRIMARY.type
+                        EPharmacyButtonType.PRIMARY.type
                     }else {
-                        text = DONE_TEXT
-                        type = EPharmacyButtonType.SECONDARY.type
+                        EPharmacyButtonType.SECONDARY.type
                     }
                 }
             }
@@ -239,10 +225,13 @@ class UploadPrescriptionViewModel @Inject constructor(
     }
 
     fun uploadPrescriptionIds(uploadKey: String, id: String) {
-        val prescriptionIds = arrayListOf<String>()
+        val prescriptionIds = arrayListOf<Long?>()
         _prescriptionImages.value?.forEach { prescriptionImage ->
-            if(!prescriptionImage?.prescriptionId.isNullOrBlank()){
-                prescriptionIds.add(prescriptionImage?.prescriptionId ?: "")
+            if(prescriptionImage?.prescriptionId != DEFAULT_ZERO_VALUE){
+                prescriptionIds.add(prescriptionImage?.prescriptionId)
+            }else {
+                checkPrescriptionImages()
+                return
             }
         }
         postPrescriptionIdUseCase.cancelJobs()
@@ -265,7 +254,7 @@ class UploadPrescriptionViewModel @Inject constructor(
         _uploadPrescriptionIdsData.postValue(Fail(error))
     }
 
-    private fun convertToYoutubeResponse(typeRestResponseMap: Map<Type, RestResponse>):  EPharmacyPrescriptionUploadResponse{
+    private fun convertToUploadImageResponse(typeRestResponseMap: Map<Type, RestResponse>):  EPharmacyPrescriptionUploadResponse{
         return typeRestResponseMap[EPharmacyPrescriptionUploadResponse::class.java]?.getData() as EPharmacyPrescriptionUploadResponse
     }
 

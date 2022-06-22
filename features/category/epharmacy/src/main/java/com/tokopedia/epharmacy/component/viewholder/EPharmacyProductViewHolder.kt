@@ -42,6 +42,12 @@ class EPharmacyProductViewHolder(private val view: View,
                 shopIcon.hide()
             }else{
                 shopIcon.show()
+                when(shopType){
+                    "Regular Merchant" -> shopIcon.setImage(IconUnify.BADGE_OS)
+                    "Power Merchant" -> shopIcon.setImage(IconUnify.BADGE_PM_FILLED)
+                    "Official Store" -> shopIcon.setImage(IconUnify.BADGE_OS_FILLED)
+                    "Power Merchant Pro" -> shopIcon.setImage(IconUnify.BADGE_OS_FILLED)
+                }
             }
         }
     }

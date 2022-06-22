@@ -3,6 +3,7 @@ package com.tokopedia.epharmacy.usecase
 import com.tokopedia.epharmacy.network.gql.GQL_POST_PRESCRIPTION_IDS_QUERY
 import com.tokopedia.epharmacy.network.request.ConfirmPrescriptionRequest
 import com.tokopedia.epharmacy.network.response.EPharmacyUploadPrescriptionIdsResponse
+import com.tokopedia.epharmacy.utils.DEFAULT_ZERO_VALUE
 import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
@@ -16,7 +17,7 @@ class PostPrescriptionIdUseCase @Inject constructor(graphqlRepository: GraphqlRe
     fun postPrescriptionIds(onSuccess: (EPharmacyUploadPrescriptionIdsResponse) -> Unit,
                             onError: (Throwable) -> Unit,
                             originType :String,
-                            id: String, prescriptionIds: ArrayList<String>) {
+                            id: String, prescriptionIds: ArrayList<Long?>) {
         try {
             this.setTypeClass(EPharmacyUploadPrescriptionIdsResponse::class.java)
             this.setRequestParams(getRequestParams(originType,id,prescriptionIds))
@@ -33,10 +34,14 @@ class PostPrescriptionIdUseCase @Inject constructor(graphqlRepository: GraphqlRe
         }
     }
 
-    private fun getRequestParams(originType : String ,id: String, prescriptionIds: ArrayList<String>): Map<String, Any> {
+    private fun getRequestParams(originType : String ,id: String, prescriptionIds: ArrayList<Long?>): Map<String, Any> {
         val prescriptions = arrayListOf<ConfirmPrescriptionRequest.Input.Prescription>()
-        prescriptionIds.forEach {
-            prescriptions.add(ConfirmPrescriptionRequest.Input.Prescription(it))
+        prescriptionIds.forEach { presId ->
+            presId?.let {
+                if(it != DEFAULT_ZERO_VALUE) {
+                    prescriptions.add(ConfirmPrescriptionRequest.Input.Prescription(it))
+                }
+            }
         }
         return  mapOf<String,Any>(PARAM_INPUT to mutableMapOf<String,Any>().apply {
             put(originType,id)

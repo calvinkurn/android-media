@@ -6,7 +6,8 @@ import com.tokopedia.epharmacy.component.BaseEPharmacyDataModel
 import com.tokopedia.epharmacy.network.response.PrescriptionImage
 
 data class EPharmacyPrescriptionDataModel(val name : String = "", val type : String = "",
-                                       var prescriptions : ArrayList<PrescriptionImage?>?)
+                                          var prescriptions : ArrayList<PrescriptionImage?>?,
+                                          var showCamera: Boolean = true)
     : BaseEPharmacyDataModel {
 
     override fun name(): String = name

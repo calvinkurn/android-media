@@ -14,9 +14,17 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         android:paddingBottom="@dimen/spacing_lvl3"
-        app:layout_constraintBottom_toTopOf="@id/tooltip"
+        app:layout_constraintBottom_toTopOf="@id/bottom_barrier"
         tools:listitem="@layout/epharmacy_product_view_item"
         tools:itemCount="3"
+        />
+
+    <androidx.constraintlayout.widget.Barrier
+        android:id="@+id/bottom_barrier"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:barrierDirection="top"
+        app:constraint_referenced_ids="tooltip,done_button"
         />
 
     <com.tokopedia.unifyprinciples.Typography
@@ -48,6 +56,22 @@ Syarat dan Ketentuan."
         android:layout_marginStart="@dimen/spacing_lvl4"
         android:layout_marginEnd="@dimen/spacing_lvl4"
         android:text="@string/epharmacy_foto_resep"
+        app:unifyButtonVariant="ghost"
+        android:visibility="gone"
+        tools:visibility="visible"
+        />
+
+    <com.tokopedia.unifycomponents.UnifyButton
+        android:id="@+id/done_button"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginBottom="@dimen/spacing_lvl4"
+        android:layout_marginStart="@dimen/spacing_lvl4"
+        android:layout_marginEnd="@dimen/spacing_lvl4"
+        android:text="@string/epharmacy_selesai"
         android:visibility="gone"
         tools:visibility="visible"
         />

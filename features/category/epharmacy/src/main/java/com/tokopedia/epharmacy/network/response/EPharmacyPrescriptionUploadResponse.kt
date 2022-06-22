@@ -15,9 +15,9 @@ data class EPharmacyPrescriptionUploadResponse(
         @SerializedName("error_msg")
         val errorMsg: String?,
         @SerializedName("id")
-        val id: String?,
+        val id: Long?,
         @SerializedName("prescription_id")
-        val prescriptionId: String?
+        val prescriptionId: Long?
     )
 
     data class Header(
