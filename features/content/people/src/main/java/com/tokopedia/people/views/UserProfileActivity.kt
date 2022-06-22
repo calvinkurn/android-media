@@ -17,8 +17,12 @@ class UserProfileActivity : BaseSimpleActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         forDeeplink()
         super.onCreate(savedInstanceState)
-        toolbar.hide()
         setResult(Activity.RESULT_OK, intent)
+        hideToolbar()
+    }
+
+    private fun hideToolbar(){
+        toolbar?.hide()
     }
 
     private fun forDeeplink() {
@@ -40,6 +44,10 @@ class UserProfileActivity : BaseSimpleActivity() {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
             super.onActivityResult(requestCode, resultCode, data)
+    }
+
+    override fun getToolbarResourceID(): Int {
+        return super.getToolbarResourceID()
     }
 
     companion object {
