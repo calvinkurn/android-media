@@ -30,6 +30,7 @@ import com.tokopedia.product.manage.databinding.FragmentStockReminderBinding
 import com.tokopedia.product.manage.feature.list.constant.ProductManageListConstant.EXTRA_RESULT_STATUS
 import com.tokopedia.product.manage.feature.stockreminder.constant.StockReminderConst.MINIMUM_STOCK_REMINDER
 import com.tokopedia.product.manage.feature.stockreminder.constant.StockReminderConst.REMINDER_ACTIVE
+import com.tokopedia.product.manage.feature.stockreminder.constant.StockReminderConst.REMINDER_INACTIVE
 import com.tokopedia.product.manage.feature.stockreminder.data.source.cloud.query.param.ProductWarehouseParam
 import com.tokopedia.product.manage.feature.stockreminder.data.source.cloud.response.createupdateresponse.CreateStockReminderResponse
 import com.tokopedia.product.manage.feature.stockreminder.data.source.cloud.response.getresponse.GetStockReminderResponse
@@ -86,6 +87,8 @@ class StockReminderFragment : BaseDaggerFragment(),
 
     private var dataFirstProducts: ArrayList<ProductStockReminderUiModel>? = null
 
+    var haveChanges = hashMapOf<String, Boolean>()
+
     @Inject
     lateinit var userSession: UserSessionInterface
 
@@ -139,21 +142,35 @@ class StockReminderFragment : BaseDaggerFragment(),
         stock: Int,
         status: Int
     ) {
+
         updateProductWareHouseList(productId) {
             it.copy(threshold = stock.toString(), thresholdStatus = status.toString())
         }
-        val isValid =
-            getProductWareHouseList().firstOrNull() {
-                it.threshold < MINIMUM_STOCK_REMINDER.toString()
-                        && it.thresholdStatus == REMINDER_ACTIVE.toString()
-            } == null
+        val oldData = dataFirstProducts?.firstOrNull{
+            it.id == productId
+        }
+        if (status == REMINDER_ACTIVE) {
+            if (oldData?.stockAlertStatus.orZero() != REMINDER_ACTIVE) {
+                haveChanges[productId] = true
+            } else {
+                if (oldData?.stockAlertCount != stock && stock >= MINIMUM_STOCK_REMINDER) {
+                    haveChanges[productId] = true
+                } else {
+                    haveChanges.remove(productId)
+                }
+            }
+        } else {
+            if (oldData?.stockAlertStatus.orZero() != REMINDER_INACTIVE) {
+                haveChanges[productId] = true
+            } else {
+                haveChanges.remove(productId)
+            }
+        }
 
-        val haveChanges =
-            dataFirstProducts?.firstOrNull { it.id == productId && it.stockAlertStatus != status } != null
+        val haveValidChanges =   haveChanges.size.orZero() > 0
 
-        val enableBtnSave = (isValid && haveChanges)
+        binding?.btnSaveReminder?.isEnabled = haveValidChanges
 
-        binding?.btnSaveReminder?.isEnabled = enableBtnSave
     }
 
     private fun checkLogin() {
@@ -339,10 +356,10 @@ class StockReminderFragment : BaseDaggerFragment(),
         dataProducts = ArrayList(products)
         dataFirstProducts = ArrayList(products)
         adapter?.setItems(products)
-        if (isVariant){
+        if (isVariant) {
             binding?.tvProductName?.text = productName
             binding?.clGroupProductVariant?.show()
-        }else{
+        } else {
             binding?.clGroupProductVariant?.gone()
         }
     }
