@@ -3,6 +3,7 @@ package com.tokopedia.filter.common.helper
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.discovery.common.utils.UrlParamUtils
 import com.tokopedia.filter.newdynamicfilter.helper.OptionHelper
+import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import timber.log.Timber
 
 fun String.toMapParam(): Map<String, String> {
@@ -44,6 +45,8 @@ private val nonFilterParameterKeyList = setOf(
     SearchApiConst.PAGE,
 )
 private val postProcessingFilter = mapOf(
+    SearchApiConst.IS_FULFILLMENT to "true",
+    SearchApiConst.GIFTING to "true",
     SearchApiConst.NAVSOURCE to SearchApiConst.DEFAULT_VALUE_OF_NAVSOURCE_TOKOCABANG,
 )
 
