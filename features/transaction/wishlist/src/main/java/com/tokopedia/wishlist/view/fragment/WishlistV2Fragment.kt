@@ -40,6 +40,8 @@ import com.tokopedia.linker.model.LinkerError
 import com.tokopedia.linker.model.LinkerShareResult
 import com.tokopedia.linker.share.DataMapper
 import com.tokopedia.loaderdialog.LoaderDialog
+import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
+import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.logger.ServerLogger
 import com.tokopedia.logger.utils.Priority
 import com.tokopedia.network.exception.MessageErrorException
@@ -57,6 +59,7 @@ import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.trackingoptimizer.TrackingQueue
+import com.tokopedia.unifycomponents.CardUnify2
 import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.universal_sharing.view.bottomsheet.SharingUtil
@@ -70,7 +73,7 @@ import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import com.tokopedia.utils.text.currency.StringUtils
 import com.tokopedia.wishlist.data.model.WishlistV2BulkRemoveAdditionalParams
-import com.tokopedia.wishlist.data.model.WishlistV2Params
+import com.tokopedia.wishlistcommon.data.WishlistV2Params
 import com.tokopedia.wishlist.data.model.response.DeleteWishlistProgressV2Response
 import com.tokopedia.wishlist.data.model.response.WishlistV2Response
 import com.tokopedia.wishlist.databinding.FragmentWishlistV2Binding
@@ -128,6 +131,7 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
     private var countRemovableAutomaticDelete = 0
     private var hitCountDeletion = false
     private val handler = Handler(Looper.getMainLooper())
+    private var userAddressData: LocalCacheModel? = null
     private val progressDeletionRunnable = Runnable {
         getCountDeletionProgress()
     }
@@ -404,6 +408,12 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
         return (activity?.application as BaseMainApplication).baseAppComponent
     }
 
+    private fun fetchUserLatestAddressData() {
+        context?.let {
+            userAddressData = ChooseAddressUtils.getLocalizingAddressData(it)
+        }
+    }
+
     private fun prepareLayout() {
         context?.let {
             activity?.window?.decorView?.setBackgroundColor(ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N0))
@@ -588,6 +598,16 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
     }
 
     private fun loadWishlistV2() {
+        fetchUserLatestAddressData()
+        userAddressData?.let { address ->
+            paramWishlistV2.wishlistChosenAddress = WishlistV2Params.WishlistChosenAddress(
+                districtId = address.district_id,
+                cityId = address.city_id,
+                latitude = address.lat,
+                longitude = address.long,
+                postalCode = address.postal_code,
+                addressId = address.address_id)
+        }
         paramWishlistV2.page = currPage
         wishlistViewModel.loadWishlistV2(paramWishlistV2, wishlistPref?.getTypeLayout(),
             paramWishlistV2.source == SOURCE_AUTOMATIC_DELETION
@@ -716,7 +736,7 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
                         if (result.data.status == OK) {
                             val data = result.data.data
                             if (data.success) {
-                                if (data.totalItems == data.successfullyRemovedItems || data.successfullyRemovedItems >= data.totalItems) {
+                                if (data.successfullyRemovedItems >= data.totalItems) {
                                     finishDeletionWidget(data)
                                 } else {
                                     updateDeletionWidget(data)
@@ -747,8 +767,9 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
     }
 
     private fun finishDeletionWidget(data: DeleteWishlistProgressV2Response.Data.DeleteWishlistProgress.DataDeleteWishlistProgress) {
+        stopProgressDeletionHandler()
         wishlistViewModel.countDeletionWishlistV2.removeObservers(this)
-        if (data.totalItems > 0) {
+        if (data.totalItems > 0 && data.toasterMessage.isNotEmpty()) {
             val finishData = DeleteWishlistProgressV2Response.Data.DeleteWishlistProgress.DataDeleteWishlistProgress(
                 totalItems = data.totalItems,
                 successfullyRemovedItems = data.totalItems,
@@ -760,7 +781,6 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
             updateDeletionWidget(finishData)
             showToaster(data.toasterMessage, "", Toaster.TYPE_NORMAL)
         }
-        stopProgressDeletionHandler()
         hideStickyDeletionProgress()
         doRefresh()
     }
@@ -773,6 +793,7 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
         val indicatorProgressBar = percentage*100
 
         binding?.run {
+            wishlistV2StickyCountManageLabel.cardWishlistV2StickyDeletion.cardType = CardUnify2.TYPE_SHADOW
             wishlistV2StickyCountManageLabel.rlWishlistV2StickyProgressDeletionWidget.visible()
             wishlistV2StickyCountManageLabel.wishlistV2CountDeletionMessage.text = message
             wishlistV2StickyCountManageLabel.wishlistV2CountDeletionProgressbar.setValue(indicatorProgressBar.roundToInt(), true)
@@ -958,7 +979,8 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
             override fun onRadioButtonSelected(name: String, optionId: String, label: String) {
                 filterBottomSheet.dismiss()
                 paramWishlistV2.sortFilters.removeAll { it.name == name }
-                paramWishlistV2.sortFilters.add(WishlistV2Params.WishlistSortFilterParam(
+                paramWishlistV2.sortFilters.add(
+                    WishlistV2Params.WishlistSortFilterParam(
                         name = filterItem.name, selected = arrayListOf(optionId)))
                 doRefresh()
                 hitAnalyticsFilterOptionSelected(name, label)
@@ -1002,7 +1024,8 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
             override fun onSaveCheckboxSelection() {
                 if (listOptionIdSelected.isNotEmpty()) {
                     paramWishlistV2.sortFilters.removeAll { it.name == nameSelected }
-                    paramWishlistV2.sortFilters.add(WishlistV2Params.WishlistSortFilterParam(
+                    paramWishlistV2.sortFilters.add(
+                        WishlistV2Params.WishlistSortFilterParam(
                             name = nameSelected, selected = listOptionIdSelected as ArrayList<String>))
                 }
 
@@ -1207,9 +1230,19 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
         }
     }
 
-    override fun onProductRecommItemClicked(productId: String) {
+    override fun onProductRecommItemClicked(recommendationItem: RecommendationItem) {
+        if(recommendationItem.isTopAds) {
+            TopAdsUrlHitter(context).hitClickUrl(
+                this::class.java.simpleName,
+                recommendationItem.clickUrl,
+                recommendationItem.productId.toString(),
+                recommendationItem.name,
+                recommendationItem.imageUrl
+            )
+        }
         activity?.let {
-            val intent = RouteManager.getIntent(it, ApplinkConstInternalMarketplace.PRODUCT_DETAIL, productId)
+            val intent = RouteManager.getIntent(it, ApplinkConstInternalMarketplace.PRODUCT_DETAIL,
+                recommendationItem.productId.toString())
             startActivity(intent)
         }
     }
@@ -1307,7 +1340,8 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
         val listOptionIdSelected = mutableListOf<String>()
         listOptionIdSelected.add(OPTION_ID_SORT_OLDEST)
             paramWishlistV2.sortFilters.clear()
-            paramWishlistV2.sortFilters.add(WishlistV2Params.WishlistSortFilterParam(
+            paramWishlistV2.sortFilters.add(
+                WishlistV2Params.WishlistSortFilterParam(
                 name = FILTER_SORT, selected = listOptionIdSelected as ArrayList<String>))
 
         doRefresh()

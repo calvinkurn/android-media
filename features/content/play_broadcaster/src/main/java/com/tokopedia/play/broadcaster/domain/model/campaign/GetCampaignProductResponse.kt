@@ -14,7 +14,7 @@ data class GetCampaignProductResponse(
 
     data class GetCampaignProduct(
         @SerializedName("Products")
-        val products: List<Product> = listOf(),
+        val products: List<Product> = emptyList(),
 
         @SerializedName("TotalProduct")
         val totalProduct: Int = 0,
@@ -45,6 +45,7 @@ data class GetCampaignProductResponse(
         @SerializedName("imageURL700")
         val imageURL700: String = "",
 
+        @SuppressLint("Invalid Data Type")
         @SerializedName("price")
         val price: String = "",
 
@@ -60,6 +61,7 @@ data class GetCampaignProductResponse(
         @SerializedName("condition")
         val condition: Int = 0,
 
+        @SuppressLint("Invalid Data Type")
         @SerializedName("departmentID")
         val departmentID: List<Int> = listOf(),
 

@@ -332,7 +332,7 @@ class SmartBillsAnalytics {
         items.forEachIndexed { index, it ->
             val itemBundle = Bundle().apply {
                 putString(EnhanceEccomerce.ITEM_NAME, it.productName)
-                putInt(EnhanceEccomerce.ITEM_ID, it.productID)
+                putString(EnhanceEccomerce.ITEM_ID, it.productID)
                 putString(EnhanceEccomerce.PRICE, it.amount.toString())
                 putString(EnhanceEccomerce.ITEM_BRAND, NONE)
                 putString(EnhanceEccomerce.ITEM_CATEGORY, it.categoryName)
@@ -471,7 +471,7 @@ class SmartBillsAnalytics {
             putString(EnhanceEccomerce.INDEX, index.toString())
             putString(EnhanceEccomerce.ITEM_BRAND, item.operatorName)
             putString(EnhanceEccomerce.ITEM_CATEGORY, item.categoryName)
-            putString(EnhanceEccomerce.ITEM_ID, item.productID.toString())
+            putString(EnhanceEccomerce.ITEM_ID, item.productID)
             putString(EnhanceEccomerce.ITEM_NAME, item.productName)
             putString(
                 EnhanceEccomerce.ITEM_VARIANT,

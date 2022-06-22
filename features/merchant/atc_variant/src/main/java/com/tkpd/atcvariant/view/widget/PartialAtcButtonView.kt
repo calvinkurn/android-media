@@ -5,9 +5,16 @@ import android.view.Gravity
 import android.view.View
 import com.tkpd.atcvariant.R
 import com.tokopedia.config.GlobalConfig
-import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.kotlin.extensions.view.generateBackgroundWithShadow
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
+import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.showWithCondition
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant
 import com.tokopedia.product.detail.common.data.model.carttype.CartTypeData
+import com.tokopedia.product.detail.common.generateTheme
 import com.tokopedia.product.detail.common.generateTopchatButtonPdp
 import com.tokopedia.unifycomponents.UnifyButton
 
@@ -116,41 +123,6 @@ class PartialAtcButtonView private constructor(val view: View,
                 buttonListener.buttonCartTypeClick(availableButton.getOrNull(1)?.cartType
                         ?: "", text.toString(), availableButton.getOrNull(1)?.showRecommendation
                         ?: false)
-            }
-        }
-    }
-
-    private fun UnifyButton.generateTheme(colorDescription: String) {
-        when (colorDescription) {
-            ProductDetailCommonConstant.KEY_BUTTON_PRIMARY -> {
-                this.buttonVariant = UnifyButton.Variant.FILLED
-                this.buttonType = UnifyButton.Type.TRANSACTION
-                this.isEnabled = true
-            }
-            ProductDetailCommonConstant.KEY_BUTTON_DISABLE -> {
-                this.buttonVariant = UnifyButton.Variant.FILLED
-                this.buttonType = UnifyButton.Type.MAIN
-                this.isEnabled = false
-            }
-            ProductDetailCommonConstant.KEY_BUTTON_PRIMARY_GREEN -> {
-                this.buttonVariant = UnifyButton.Variant.FILLED
-                this.buttonType = UnifyButton.Type.MAIN
-                this.isEnabled = true
-            }
-            ProductDetailCommonConstant.KEY_BUTTON_SECONDARY_GREEN -> {
-                this.buttonVariant = UnifyButton.Variant.GHOST
-                this.buttonType = UnifyButton.Type.MAIN
-                this.isEnabled = true
-            }
-            ProductDetailCommonConstant.KEY_BUTTON_SECONDARY_GRAY -> {
-                this.buttonVariant = UnifyButton.Variant.GHOST
-                this.buttonType = UnifyButton.Type.ALTERNATE
-                this.isEnabled = true
-            }
-            else -> {
-                this.buttonVariant = UnifyButton.Variant.GHOST
-                this.buttonType = UnifyButton.Type.TRANSACTION
-                this.isEnabled = true
             }
         }
     }

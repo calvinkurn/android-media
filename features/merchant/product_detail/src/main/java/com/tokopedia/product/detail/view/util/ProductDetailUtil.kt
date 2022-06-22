@@ -354,6 +354,9 @@ internal fun RecommendationItem.createProductCardOptionsModel(position: Int): Pr
     productCardOptionsModel.productId = productId.toString()
     productCardOptionsModel.isTopAds = isTopAds
     productCardOptionsModel.topAdsWishlistUrl = wishlistUrl
+    productCardOptionsModel.topAdsClickUrl = clickUrl
+    productCardOptionsModel.productName = name
+    productCardOptionsModel.productImageUrl = imageUrl
     productCardOptionsModel.productPosition = position
     productCardOptionsModel.screenName = header
     return productCardOptionsModel

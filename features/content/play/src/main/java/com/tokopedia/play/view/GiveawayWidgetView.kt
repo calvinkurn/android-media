@@ -8,6 +8,8 @@ import android.util.AttributeSet
 import android.view.HapticFeedbackConstants
 import android.view.LayoutInflater
 import android.view.View
+import com.tokopedia.kotlin.extensions.view.showWithCondition
+import com.tokopedia.play_common.R
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.airbnb.lottie.LottieDrawable
 import com.tokopedia.play.R
@@ -54,12 +56,26 @@ class GiveawayWidgetView : ConstraintLayout {
         mListener = null
     }
 
+    override fun setClickable(clickable: Boolean) {
+        super.setClickable(clickable)
+
+        binding.flTap.isClickable = clickable
+    }
+
+    fun getHeader(): GameHeaderView {
+        return binding.headerView
+    }
+
     fun setListener(listener: Listener?) {
         mListener = listener
     }
 
     fun setTitle(title: String) {
-        binding.headerView.setupGiveaway(title)
+        getHeader().setupGiveaway(title)
+    }
+
+    fun showTimer(shouldShow: Boolean) {
+        binding.timerRemaining.showWithCondition(shouldShow)
     }
 
     fun setTargetTime(targetTime: Calendar, onFinished: () -> Unit) {
@@ -73,12 +89,13 @@ class GiveawayWidgetView : ConstraintLayout {
         }
     }
 
-    fun getHeader(): GameHeaderView {
-        return binding.headerView
-    }
-
     private fun setupView() {
         setTitle("")
+        getHeader().setHint(
+            context.getString(R.string.play_giveaway_header_hint)
+        )
+
+        binding.flTap.isHapticFeedbackEnabled = true
         binding.flTap.setOnClickListener {
             it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
 
