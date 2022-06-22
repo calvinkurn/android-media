@@ -86,8 +86,7 @@ class ImpresionTask {
         }
     }
 
-    fun getHeader(url: String?) : String?{
-        var header = ""
+    fun getHeader(url: String?){
          url?.let {
             GlobalScope.launch(Dispatchers.IO) {
                 try {
@@ -98,7 +97,13 @@ class ImpresionTask {
                     val token = object : TypeToken<DataResponse<String>>() {}.type
                     val restRequest = RestRequest.Builder(url, token).build()
                     val headers = restRepository.getResponse(restRequest).headers;
-                    header = headers["x-tkp-srv-id"]?:""
+                    if (impressionListener != null) {
+                        if (headers != null) {
+                            impressionListener!!.onSuccess(headers["x-tkp-srv-id"]?:"")
+                        } else {
+                            impressionListener!!.onFailed()
+                        }
+                    }
                     val d = Log.d("myHeaders", "execute: $headers")
                 } catch (e: IOException) {
                     e.printStackTrace()
@@ -107,7 +112,6 @@ class ImpresionTask {
                 }
             }
         }
-        return header
     }
 
     companion object {

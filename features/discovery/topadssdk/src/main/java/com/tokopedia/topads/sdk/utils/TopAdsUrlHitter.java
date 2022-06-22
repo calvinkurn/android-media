@@ -2,8 +2,10 @@ package com.tokopedia.topads.sdk.utils;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.util.Log;
 
 import com.tokopedia.analyticsdebugger.debugger.TopAdsLogger;
+import com.tokopedia.topads.sdk.listener.ImpressionListener;
 
 import javax.inject.Inject;
 
@@ -78,9 +80,24 @@ public class TopAdsUrlHitter {
                 context.getSharedPreferences("x-tkp-srv-id", Context.MODE_PRIVATE);
 
          SharedPreferences.Editor editor = sharedPref.edit();
-        String h = new ImpresionTask(className).getHeader(url);
-        editor.putString("myheader", h);
-        editor.apply();
+         new ImpresionTask(className, new ImpressionListener() {
+            @Override
+            public void onSuccess() {
+
+            }
+
+             @Override
+             public void onSuccess(String header) {
+                 editor.putString("myheader",header);
+                 editor.apply();
+             }
+
+             @Override
+            public void onFailed() {
+
+            }
+        }).getHeader(url);
+        Log.d("myHeaders", "hitClickUrlAndStoreHeader: "+ sharedPref.getString("myheader", ""));
         TopAdsLogger.getInstance(context).save(url, TYPE_CLICK, className, productId, productName, imageUrl, "");
     }
 }
