@@ -13,7 +13,6 @@ import com.tokopedia.loaderdialog.LoaderDialog
 import com.tokopedia.media.R
 import com.tokopedia.media.common.utils.ParamCacheManager
 import com.tokopedia.media.databinding.ActivityPreviewBinding
-import com.tokopedia.media.picker.ui.activity.picker.PickerActivity
 import com.tokopedia.media.picker.ui.widget.drawerselector.DrawerActionType
 import com.tokopedia.media.picker.ui.widget.drawerselector.DrawerSelectionWidget
 import com.tokopedia.media.preview.analytics.PREVIEW_PAGE_LANJUT
