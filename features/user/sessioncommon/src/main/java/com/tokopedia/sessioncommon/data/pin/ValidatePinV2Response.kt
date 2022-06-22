@@ -13,9 +13,9 @@ data class ValidatePinV2Data(
     @SerializedName("valid")
     val valid: Boolean = false,
     @SerializedName("error_message")
-    val errorMessage: Boolean = false,
+    val errorMessage: String = "",
     @SerializedName("pin_attempted")
-    val pinAttempted: Boolean = false,
+    val pinAttempted: Int = 0,
     @SerializedName("max_pin_attempt")
-    val maxPinAttempted: Boolean = false
+    val maxPinAttempted: Int = 0
 )

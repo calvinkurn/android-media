@@ -193,6 +193,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
     private var isSendButtonActivated : Boolean = true
     private var isFloatingSendButton: Boolean = false
     private var isFloatingInvoiceCancelled : Boolean = false
+    private var isArticleDataSent : Boolean = false
 
     override fun initInjector() {
         if (activity != null && (activity as Activity).application != null) {
@@ -323,7 +324,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
     }
 
     override fun sendInvoiceForArticle() {
-        if (isArticleEntry) {
+        if (isArticleEntry && !isArticleDataSent) {
             if (!isAttached) {
 
                 if (hashMap.get(CODE)?.isNotEmpty() == true) {
@@ -416,8 +417,13 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
                 float_chat_item.show()
 
             }
+            isArticleDataSent(true)
         }
 
+    }
+
+    private fun isArticleDataSent(dataSentState: Boolean) {
+        isArticleDataSent = dataSentState
     }
 
     private fun onSendFloatingInvoiceClicked() {

@@ -5,9 +5,11 @@ import com.tokopedia.chatbot.data.inboxTicketList.InboxTicketListResponse
 import com.tokopedia.chatbot.domain.usecase.TicketListContactUsUsecase
 import com.tokopedia.chatbot.view.viewmodel.ChatbotViewModel
 import com.tokopedia.chatbot.view.viewmodel.TicketListState
+import com.tokopedia.chatbot.view.viewmodel.TicketListState
 import com.tokopedia.unit.test.rule.CoroutineTestRule
 import io.mockk.*
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.resetMain
 import org.junit.*
