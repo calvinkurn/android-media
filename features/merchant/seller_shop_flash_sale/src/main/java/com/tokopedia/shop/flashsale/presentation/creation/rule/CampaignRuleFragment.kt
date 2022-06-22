@@ -43,6 +43,8 @@ import com.tokopedia.shop.flashsale.presentation.creation.rule.bottomsheet.Buyer
 import com.tokopedia.shop.flashsale.presentation.creation.rule.bottomsheet.ChoosePaymentMethodBottomSheet
 import com.tokopedia.shop.flashsale.presentation.creation.rule.bottomsheet.MerchantCampaignTNCBottomSheet
 import com.tokopedia.shop.flashsale.presentation.creation.rule.bottomsheet.PaymentMethodBottomSheet
+import com.tokopedia.shop.flashsale.presentation.creation.rule.bottomsheet.relatedcampaign.ChooseRelatedCampaignBottomSheet
+import com.tokopedia.shop.flashsale.presentation.creation.rule.bottomsheet.relatedcampaign.ChooseRelatedCampaignBottomSheetListener
 import com.tokopedia.shop.flashsale.presentation.list.container.CampaignListActivity
 import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.unifycomponents.Toaster
@@ -55,7 +57,8 @@ import javax.inject.Inject
 
 class CampaignRuleFragment : BaseDaggerFragment(),
     OnRemoveRelatedCampaignListener,
-    MerchantCampaignTNCBottomSheet.ConfirmationClickListener {
+    MerchantCampaignTNCBottomSheet.ConfirmationClickListener,
+    ChooseRelatedCampaignBottomSheetListener {
 
     companion object {
         private const val BUNDLE_KEY_CAMPAIGN_ID = "campaign_id"
@@ -127,7 +130,7 @@ class CampaignRuleFragment : BaseDaggerFragment(),
 
     private fun setUpView() {
         setUpToolbar()
-        setUpClickListener()
+        setUpClickListeners()
         setUpUniqueAccountTips()
         setUpTNCText()
         setUpRelatedCampaignRecyclerView()
@@ -152,7 +155,7 @@ class CampaignRuleFragment : BaseDaggerFragment(),
         header.setNavigationOnClickListener { activity?.finish() }
     }
 
-    private fun setUpClickListener() {
+    private fun setUpClickListeners() {
         val binding = binding ?: return
         binding.iconPaymentMethodInfo.setOnClickListener {
             showPaymentMethodBottomSheet()
@@ -185,11 +188,15 @@ class CampaignRuleFragment : BaseDaggerFragment(),
             viewModel.onDisallowCampaignRelation()
         }
 
-        binding.checboxCampaignRuleTnc.setOnCheckedChangeListener(tncCheckboxChangeListener)
+        binding.checkboxCampaignRuleTnc.setOnCheckedChangeListener(tncCheckboxChangeListener)
 
         binding.btnSaveDraft.setOnClickListener {
             showSaveDraftButtonLoading()
             viewModel.saveCampaignCreationDraft()
+        }
+
+        binding.btnChoosePreviousCampaign.setOnClickListener {
+            showChooseRelatedCampaignBottomSheet()
         }
 
         childFragmentManager.registerFragmentLifecycleCallbacks(object :
@@ -198,6 +205,8 @@ class CampaignRuleFragment : BaseDaggerFragment(),
                 super.onFragmentResumed(fm, f)
                 if (f is MerchantCampaignTNCBottomSheet) {
                     f.setConfirmationClickListener(this@CampaignRuleFragment)
+                } else if (f is ChooseRelatedCampaignBottomSheet) {
+                    f.setChooseRelatedCampaignListener(this@CampaignRuleFragment)
                 }
             }
         }, false)
@@ -225,7 +234,7 @@ class CampaignRuleFragment : BaseDaggerFragment(),
 
     private fun setUpTNCText() {
         val binding = binding ?: return
-        binding.checboxCampaignRuleTnc.text = getTNCText()
+        binding.checkboxCampaignRuleTnc.text = getTNCText()
     }
 
     private fun observeSelectedPaymentMethod() {
@@ -281,7 +290,7 @@ class CampaignRuleFragment : BaseDaggerFragment(),
         viewModel.isUniqueBuyer.observe(viewLifecycleOwner) {
             when (it) {
                 false -> onUniqueAccountRequired()
-                else -> onUniqueAccountNotRequired()
+                true -> onUniqueAccountNotRequired()
             }
         }
     }
@@ -300,14 +309,19 @@ class CampaignRuleFragment : BaseDaggerFragment(),
         binding.chipsUniqueAccountNo.chipType = ChipsUnify.TYPE_NORMAL
         binding.tipsUniqueAccount.hide()
         binding.groupAllowCampaignRelation.hide()
-        binding.groupChoosePreviousCampaign.hide()
     }
 
     private fun observeCampaignRelationSelected() {
         viewModel.isCampaignRelation.observe(viewLifecycleOwner) {
             when (it) {
                 true -> renderNotCampaignRelation()
-                else -> renderCampaignRelation()
+                false -> renderCampaignRelation()
+            }
+        }
+        viewModel.isRelatedCampaignsVisible.observe(viewLifecycleOwner) {
+            when(it) {
+                true -> showRelatedCampaignsGroup()
+                false -> hideRelatedCampaignsGroup()
             }
         }
         viewModel.isRelatedCampaignButtonActive.observe(viewLifecycleOwner) {
@@ -318,11 +332,11 @@ class CampaignRuleFragment : BaseDaggerFragment(),
         }
     }
 
-    private fun renderAddRelatedCampaignButton(active: Boolean) {
+    private fun renderAddRelatedCampaignButton(active: Boolean?) {
         val choosePreviousCampaignButton = binding?.btnChoosePreviousCampaign ?: return
         when (active) {
             true -> choosePreviousCampaignButton.enable()
-            else -> choosePreviousCampaignButton.disable()
+            false -> choosePreviousCampaignButton.disable()
         }
     }
 
@@ -330,6 +344,15 @@ class CampaignRuleFragment : BaseDaggerFragment(),
         val binding = binding ?: return
         binding.chipsCampaignRelationYes.chipType = ChipsUnify.TYPE_SELECTED
         binding.chipsCampaignRelationNo.chipType = ChipsUnify.TYPE_NORMAL
+    }
+
+    private fun showRelatedCampaignsGroup() {
+        val binding = binding ?: return
+        binding.groupChoosePreviousCampaign.visible()
+    }
+
+    private fun hideRelatedCampaignsGroup() {
+        val binding = binding ?: return
         binding.groupChoosePreviousCampaign.hide()
     }
 
@@ -337,7 +360,6 @@ class CampaignRuleFragment : BaseDaggerFragment(),
         val binding = binding ?: return
         binding.chipsCampaignRelationYes.chipType = ChipsUnify.TYPE_NORMAL
         binding.chipsCampaignRelationNo.chipType = ChipsUnify.TYPE_SELECTED
-        binding.groupChoosePreviousCampaign.visible()
     }
 
     private fun setUpRelatedCampaignRecyclerView() {
@@ -405,9 +427,7 @@ class CampaignRuleFragment : BaseDaggerFragment(),
     }
 
     private fun showTNCBottomSheet(request: MerchantCampaignTNC.TncRequest) {
-        val context = context ?: return
         MerchantCampaignTNCBottomSheet.createInstance(
-            context,
             showTickerAndButton = true,
             tncRequest = request
         )
@@ -430,14 +450,14 @@ class CampaignRuleFragment : BaseDaggerFragment(),
 
     private fun checkTNCCheckbox() {
         val binding = binding ?: return
-        binding.checboxCampaignRuleTnc.setOnCheckedChangeListener(null)
-        binding.checboxCampaignRuleTnc.isChecked = true
-        binding.checboxCampaignRuleTnc.setOnCheckedChangeListener(tncCheckboxChangeListener)
+        binding.checkboxCampaignRuleTnc.setOnCheckedChangeListener(null)
+        binding.checkboxCampaignRuleTnc.isChecked = true
+        binding.checkboxCampaignRuleTnc.setOnCheckedChangeListener(tncCheckboxChangeListener)
     }
 
     private fun unCheckTNCCheckbox() {
         val binding = binding ?: return
-        binding.checboxCampaignRuleTnc.isChecked = false
+        binding.checkboxCampaignRuleTnc.isChecked = false
     }
 
     private fun observeCampaignCreationAllowed() {
@@ -524,5 +544,15 @@ class CampaignRuleFragment : BaseDaggerFragment(),
     private fun goToCampaignListPage() {
         val context = context ?: return
         CampaignListActivity.start(context, isClearTop = true)
+    }
+
+    private fun showChooseRelatedCampaignBottomSheet() {
+        val selectedRelatedCampaign = viewModel.relatedCampaigns.value ?: emptyList()
+        ChooseRelatedCampaignBottomSheet.createInstance(selectedRelatedCampaign)
+            .show(childFragmentManager)
+    }
+
+    override fun onRelatedCampaignsAddButtonClicked(relatedCampaigns: List<RelatedCampaign>) {
+        viewModel.onRelatedCampaignsChanged(relatedCampaigns)
     }
 }

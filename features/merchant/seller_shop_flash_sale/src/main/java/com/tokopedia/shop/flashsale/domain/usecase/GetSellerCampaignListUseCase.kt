@@ -24,6 +24,8 @@ class GetSellerCampaignListUseCase @Inject constructor(
 ) : GraphqlUseCase<CampaignMeta>(repository) {
 
     companion object {
+        private const val ORDER_BY_UPDATED_TIME = 5
+        private const val ORDER_DESC = 1
         private const val CAMPAIGN_TYPE_SHOP_FLASH_SALE = 0
         private const val REQUEST_PARAM_KEY = "params"
         private const val QUERY_NAME = "GetSellerCampaignList"
@@ -102,8 +104,7 @@ class GetSellerCampaignListUseCase @Inject constructor(
         offset: Int,
         statusId: List<Int> = emptyList(),
         campaignId: Long = ZERO.toLong(),
-        campaignName: String = EMPTY_STRING,
-        thematicParticipation: Boolean = false
+        campaignName: String = EMPTY_STRING
     ): CampaignMeta {
         val request = buildRequest(
             sellerCampaignType,
@@ -112,8 +113,7 @@ class GetSellerCampaignListUseCase @Inject constructor(
             offset,
             statusId,
             campaignId,
-            campaignName,
-            thematicParticipation
+            campaignName
         )
         val response = repository.response(listOf(request))
         val data = response.getSuccessData<GetSellerCampaignListResponse>()
@@ -127,15 +127,15 @@ class GetSellerCampaignListUseCase @Inject constructor(
         offset: Int,
         statusId: List<Int> = emptyList(),
         campaignId: Long = ZERO.toLong(),
-        campaignName: String = EMPTY_STRING,
-        thematicParticipation: Boolean = false
+        campaignName: String = EMPTY_STRING
     ): GraphqlRequest {
         val payload = GetSellerCampaignListRequest(
             userSessionInterface.shopId.toLong(),
             sellerCampaignType,
             listType,
             GetSellerCampaignListRequest.Pagination(rows, offset),
-            GetSellerCampaignListRequest.Filter(statusId, campaignId, campaignName, thematicParticipation)
+            GetSellerCampaignListRequest.Filter(statusId, campaignId, campaignName),
+            GetSellerCampaignListRequest.Sort(ORDER_BY_UPDATED_TIME, ORDER_DESC)
         )
         val params = mapOf(REQUEST_PARAM_KEY to payload)
         return GraphqlRequest(

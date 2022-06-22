@@ -328,7 +328,7 @@
                 app:layout_constraintTop_toBottomOf="@+id/rv_selected_previous_campaign" />
 
             <com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
-                android:id="@+id/checbox_campaign_rule_tnc"
+                android:id="@+id/checkbox_campaign_rule_tnc"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/unify_space_16"
@@ -346,7 +346,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:visibility="gone"
-                app:constraint_referenced_ids="divider_campaign_rule_tnc, checbox_campaign_rule_tnc"
+                app:constraint_referenced_ids="divider_campaign_rule_tnc, checkbox_campaign_rule_tnc"
                 tools:visibility="visible" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>

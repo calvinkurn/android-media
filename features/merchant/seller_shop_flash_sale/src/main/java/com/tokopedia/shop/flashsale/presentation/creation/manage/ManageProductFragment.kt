@@ -18,6 +18,7 @@ import com.tokopedia.seller_shop_flash_sale.databinding.SsfsFragmentManageProduc
 import com.tokopedia.shop.flashsale.common.customcomponent.BaseSimpleListFragment
 import com.tokopedia.shop.flashsale.common.extension.doOnDelayFinished
 import com.tokopedia.shop.flashsale.common.extension.setFragmentToUnifyBgColor
+import com.tokopedia.shop.flashsale.common.extension.isZero
 import com.tokopedia.shop.flashsale.common.extension.showError
 import com.tokopedia.shop.flashsale.di.component.DaggerShopFlashSaleComponent
 import com.tokopedia.shop.flashsale.domain.entity.SellerCampaignProductList
