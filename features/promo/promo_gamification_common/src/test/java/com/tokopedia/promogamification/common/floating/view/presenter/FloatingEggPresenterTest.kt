@@ -140,4 +140,16 @@ class FloatingEggPresenterTest {
         presenter.isUserLogin
         verify { userSession.isLoggedIn() }
     }
+
+    @Test
+    fun testClickCloseButton(){
+        val floatingID = 12
+        presenter.clickCloseButton(floatingID)
+        verifyOrder {
+            getTokenTokopointsUseCase.clearRequest()
+            GraphqlHelper.loadRawString(any(), any())
+            getTokenTokopointsUseCase.addRequest(any())
+            getTokenTokopointsUseCase.execute(any())
+        }
+    }
 }
