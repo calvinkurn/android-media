@@ -819,7 +819,7 @@ class MerchantPageFragment : BaseMultiFragment(),
         cardPositions: Pair<Int, Int>
     ) {
         val productUiModel = productListItem.productUiModel
-        if (activityViewModel?.shopId == merchantId) {
+        if (activityViewModel?.shopId == merchantId || activityViewModel?.shopId.isNullOrBlank()) {
             viewModel.productMap[productUiModel.id] = cardPositions
             if (productUiModel.isCustomizable && productUiModel.isAtc) {
                 customOrderDetailBottomSheet?.setProductPosition(cardPositions.first)
@@ -852,7 +852,7 @@ class MerchantPageFragment : BaseMultiFragment(),
             )
             val bundle = Bundle().apply {
                 putString(
-                    CategoryFilterBottomSheet.KEY_CACHE_MANAGER_ID,
+                    ChangeMerchantBottomSheet.KEY_CACHE_MANAGER_ID,
                     cacheManager?.id.orEmpty()
                 )
             }

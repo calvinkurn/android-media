@@ -63,7 +63,7 @@ data class PromoListTokoFoodErrorPage(
     val description: String = "",
     @SerializedName("button")
     @Expose
-    val button: PromoListTokoFoodButton = PromoListTokoFoodButton()
+    val button: List<PromoListTokoFoodButton> = listOf()
 )
 
 data class PromoListTokoFoodButton(

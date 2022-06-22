@@ -87,7 +87,7 @@ class ProductAddOnViewHolder(
                 addOnItems.forEachIndexed { index, listItemUnify ->
                     val isSelected = addOnUiModel.options[index].isSelected
                     val isOutOfStock = addOnUiModel.options[index].isOutOfStock
-                    listItemUnify.applyLayout(isSelected, isOutOfStock)
+                    listItemUnify.applyLayout(isSelected, isOutOfStock, listItemUnify.listDescriptionText)
 
                     this.getChildAt(index)?.renderAlpha(isOutOfStock)
 
@@ -112,15 +112,20 @@ class ProductAddOnViewHolder(
         }
     }
 
-    private fun ListItemUnify.applyLayout(isSelected: Boolean, isOutOfStock: Boolean) {
+    private fun ListItemUnify.applyLayout(isSelected: Boolean, isOutOfStock: Boolean, description: String) {
         listRightRadiobtn?.isChecked = isSelected
         listRightCheckbox?.isChecked = isSelected
-        setOutOfStockLayout(isOutOfStock)
+        setOutOfStockLayout(isOutOfStock, description)
     }
 
     // Set red description color if outOfStock
-    private fun ListItemUnify.setOutOfStockLayout(isOutOfStock: Boolean) {
+    private fun ListItemUnify.setOutOfStockLayout(isOutOfStock: Boolean, description: String) {
         this@ProductAddOnViewHolder.context?.let { viewHolderContext ->
+            if (isOutOfStock) {
+                listDescription?.text = context?.getString(com.tokopedia.tokofood.R.string.text_out_of_stock)
+            } else {
+                listDescription?.text = description
+            }
             val descriptionTextColorId =
                 if (isOutOfStock) {
                     com.tokopedia.unifyprinciples.R.color.Unify_RN500
