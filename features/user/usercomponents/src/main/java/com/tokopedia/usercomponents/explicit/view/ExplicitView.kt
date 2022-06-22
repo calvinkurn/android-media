@@ -178,11 +178,6 @@ class ExplicitView : CardUnify2, ExplicitAction {
     }
 
     private fun initListener() {
-        bindingQuestion?.root?.setOnClickListener {
-            if (bindingQuestion?.imgShimmer?.isVisible == false) {
-                explicitAnalytics.trackClickCard(pageName, templateName, pagePath, pageType)
-            }
-        }
 
         bindingQuestion?.imgDismiss?.setOnClickListener {
             explicitAnalytics.trackClickDismissButton(pageName, templateName, pagePath, pageType)
@@ -252,6 +247,7 @@ class ExplicitView : CardUnify2, ExplicitAction {
             }
         }
         replaceView(bindingQuestion?.root)
+        explicitAnalytics.trackClickCard(pageName, templateName, pagePath, pageType)
     }
 
     override fun onButtonPositiveClicked() {
