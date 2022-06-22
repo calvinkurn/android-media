@@ -13,7 +13,7 @@ import com.tokopedia.shop.home.view.model.ShopHomeProductUiModel
 
 class ShopHomeFlashSaleProductCardGridViewHolder(
     itemView: View,
-    listener: ShopHomeFlashSaleWidgetListener
+    private val listener: ShopHomeFlashSaleWidgetListener
 ) : RecyclerView.ViewHolder(itemView) {
 
     private var uiModel: ShopHomeProductUiModel? = null
@@ -21,7 +21,6 @@ class ShopHomeFlashSaleProductCardGridViewHolder(
 
     init {
         setupClickListener(listener)
-        setupAddToCartListener(listener)
     }
 
     fun bindData(uiModel: ShopHomeProductUiModel, fsUiModel: ShopHomeFlashSaleUiModel?) {
@@ -36,6 +35,7 @@ class ShopHomeFlashSaleProductCardGridViewHolder(
                 widgetName = fsUiModel?.name.orEmpty()
             )
         )
+        setupAddToCartListener(listener)
     }
 
     private fun setupAddToCartListener(listener: ShopHomeFlashSaleWidgetListener) {

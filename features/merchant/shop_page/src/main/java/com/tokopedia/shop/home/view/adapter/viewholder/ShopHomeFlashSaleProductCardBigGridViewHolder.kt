@@ -14,7 +14,7 @@ import com.tokopedia.shop.home.view.model.ShopHomeProductUiModel
 
 class ShopHomeFlashSaleProductCardBigGridViewHolder(
     itemView: View,
-    listener: ShopHomeFlashSaleWidgetListener
+    private val listener: ShopHomeFlashSaleWidgetListener
 ) : RecyclerView.ViewHolder(itemView) {
 
     companion object {
@@ -28,7 +28,6 @@ class ShopHomeFlashSaleProductCardBigGridViewHolder(
 
     init {
         adjustProductCardWidth(false)
-        setupClickListener(listener)
         setupAddToCartListener(listener)
     }
 
@@ -68,6 +67,7 @@ class ShopHomeFlashSaleProductCardBigGridViewHolder(
                 widgetName = fsUiModel?.name.orEmpty()
             )
         )
+        setupClickListener(listener)
     }
 
     private fun setupClickListener(listener: ShopHomeFlashSaleWidgetListener) {
