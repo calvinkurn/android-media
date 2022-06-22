@@ -55,8 +55,6 @@ class RechargeHomepageSwipeBannerViewHolder(
                 if (::slidesList.isInitialized)
                     listener.onRechargeSectionItemClicked(slidesList[position])
             }
-            setOnPromoAllClickListener { }
-            setOnPromoScrolledListener { }
             setOnPromoLoadedListener {
                 bannerIndicator.gone()
                 bannerSeeAll.gone()
