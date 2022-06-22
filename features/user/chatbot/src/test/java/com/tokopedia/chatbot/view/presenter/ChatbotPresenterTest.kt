@@ -62,6 +62,9 @@ class ChatbotPresenterTest {
     private lateinit var presenter: ChatbotPresenter
     private lateinit var view: ChatbotContract.View
 
+    private val fetchFailedErrorMessage = "Fetch Failed"
+    private val mockThrowable = Throwable(message = fetchFailedErrorMessage)
+
     @Before
     @Throws(Exception::class)
     fun setUp() {
@@ -169,7 +172,7 @@ class ChatbotPresenterTest {
         coEvery {
             checkUploadSecureUseCase.checkUploadSecure(any())
         } answers {
-            throw Exception()
+            throw mockThrowable
         }
 
         presenter.checkUploadSecure("", Intent())
