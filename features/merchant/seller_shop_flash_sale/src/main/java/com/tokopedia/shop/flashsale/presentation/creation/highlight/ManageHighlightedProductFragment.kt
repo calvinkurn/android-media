@@ -33,7 +33,7 @@ import javax.inject.Inject
 class ManageHighlightedProductFragment : BaseDaggerFragment() {
 
     companion object {
-        private const val PAGE_SIZE = 50
+        private const val PAGE_SIZE = 10
         private const val ONE_PAGE = 1
         private const val ONE_PRODUCT = 1
         private const val FIRST_PAGE = 1
@@ -322,57 +322,30 @@ class ManageHighlightedProductFragment : BaseDaggerFragment() {
     }
 
     private fun enableLoadMore() {
-        if (endlessRecyclerViewScrollListener == null) {
-            endlessRecyclerViewScrollListener = createEndlessRecyclerViewListener()
-            endlessRecyclerViewScrollListener?.setEndlessLayoutManagerListener(
-                endlessLayoutManagerListener
-            )
-
-        }
-        endlessRecyclerViewScrollListener?.apply {
-            binding?.recyclerView?.addOnScrollListener(this)
-        }
-    }
-
-    private fun createEndlessRecyclerViewListener(): EndlessRecyclerViewScrollListener {
-        return object : EndlessRecyclerViewScrollListener(binding?.recyclerView?.layoutManager) {
-            override fun onLoadMore(page: Int, totalItemsCount: Int) {
-                showLoading()
-                getProducts(page)
+        endlessRecyclerViewScrollListener = object : EndlessRecyclerViewScrollListener(binding?.recyclerView?.layoutManager) {
+                override fun onLoadMore(page: Int, totalItemsCount: Int) {
+                    productAdapter.showLoading()
+                    getProducts(page)
+                }
             }
-        }
+
+        endlessRecyclerViewScrollListener?.setEndlessLayoutManagerListener(endlessLayoutManagerListener)
+        binding?.recyclerView?.addOnScrollListener(endlessRecyclerViewScrollListener ?: return)
     }
+
 
 
     private fun renderList(list: List<HighlightableProduct>, hasNextPage: Boolean) {
         storeSelectedProducts(list)
-        hideLoading()
-        addElementToAdapter(list)
+        productAdapter.hideLoading()
+        productAdapter.addData(list)
 
-        updateScrollListenerState(hasNextPage)
-
-        if (productAdapter.itemCount.orZero() < PAGE_SIZE && hasNextPage && endlessRecyclerViewScrollListener != null) {
-            endlessRecyclerViewScrollListener?.loadMoreNextPage()
-        }
-    }
-
-    private fun updateScrollListenerState(hasNextPage: Boolean) {
         endlessRecyclerViewScrollListener?.updateStateAfterGetData()
         endlessRecyclerViewScrollListener?.setHasNextPage(hasNextPage)
-    }
 
-
-    private fun showLoading() {
-        productAdapter.showLoading()
-    }
-
-    private fun hideLoading() {
-        productAdapter.hideLoading()
-    }
-
-
-    private fun addElementToAdapter(list: List<HighlightableProduct>) {
-        productAdapter.addData(list)
+        if (productAdapter.itemCount.orZero() < PAGE_SIZE && hasNextPage) {
+            endlessRecyclerViewScrollListener?.loadMoreNextPage()
+        }
     }
 
     private fun getProducts(page: Int) {
