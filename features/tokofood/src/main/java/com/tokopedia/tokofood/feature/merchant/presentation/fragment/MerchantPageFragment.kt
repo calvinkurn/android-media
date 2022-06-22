@@ -28,6 +28,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.tokofood.DeeplinkMapperTokoFood
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
+import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.orZero
@@ -226,7 +227,7 @@ class MerchantPageFragment : BaseMultiFragment(),
     override fun onResume() {
         super.onResume()
         initializeMiniCartWidget()
-        merchantPageAnalytics.openMerchantPage(merchantId)
+        merchantPageAnalytics.openMerchantPage(merchantId, viewModel.merchantData?.opsHourFmt?.isWarning.orFalse())
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -437,7 +438,7 @@ class MerchantPageFragment : BaseMultiFragment(),
                             viewModel.mapOpsHourDetailsToMerchantOpsHours(merchantProfile.opsHourDetail)
                         setupMerchantInfoBottomSheet(name, address, merchantOpsHours)
                         // render product list
-                        val isShopClosed = false
+                        val isShopClosed = merchantProfile.opsHourFmt.isWarning
                         val foodCategories = merchantData.categories
                         val productListItems = viewModel.mapFoodCategoriesToProductListItems(
                             isShopClosed,
@@ -450,7 +451,6 @@ class MerchantPageFragment : BaseMultiFragment(),
                             productListItems,
                             viewModel.selectedProducts
                         )
-                        renderProductList(finalProductListItems)
                         renderProductList(finalProductListItems)
                         setCategoryPlaceholder(filterNameSelected)
                     } else {
@@ -661,8 +661,7 @@ class MerchantPageFragment : BaseMultiFragment(),
                     val productListItem =
                         productListAdapter?.getProductListItems()?.filterIndexed { position, _ ->
                             position == firstVisibleItemPos
-                        }
-                            ?.firstOrNull { productItem -> productItem.productCategory.title.isNotBlank() }
+                        }?.firstOrNull { productItem -> productItem.productCategory.title.isNotBlank() }
                     productListItem?.let { productsItem ->
                         filterNameSelected = productsItem.productCategory.title
                         setCategoryPlaceholder(filterNameSelected)
@@ -708,8 +707,7 @@ class MerchantPageFragment : BaseMultiFragment(),
         address: String,
         merchantOpsHours: List<MerchantOpsHour>
     ) {
-        merchantInfoBottomSheet =
-            MerchantInfoBottomSheet.createInstance(name, address, merchantOpsHours)
+        merchantInfoBottomSheet = MerchantInfoBottomSheet.createInstance(name, address, merchantOpsHours)
     }
 
     private fun renderProductList(productListItems: List<ProductListItem>) {
