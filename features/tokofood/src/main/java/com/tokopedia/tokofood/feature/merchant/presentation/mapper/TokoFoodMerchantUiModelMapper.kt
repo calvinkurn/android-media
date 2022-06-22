@@ -10,7 +10,6 @@ import com.tokopedia.tokofood.common.presentation.uimodel.UpdateParam
 import com.tokopedia.tokofood.common.presentation.uimodel.UpdateProductParam
 import com.tokopedia.tokofood.common.presentation.uimodel.UpdateProductVariantParam
 import com.tokopedia.tokofood.feature.merchant.domain.model.response.TokoFoodCategoryFilter
-import com.tokopedia.tokofood.feature.merchant.presentation.enums.SelectionControlType
 import com.tokopedia.tokofood.feature.merchant.presentation.model.AddOnUiModel
 import com.tokopedia.tokofood.feature.merchant.presentation.model.CategoryFilterListUiModel
 import com.tokopedia.tokofood.feature.merchant.presentation.model.CategoryFilterWrapperUiModel
@@ -115,25 +114,21 @@ object TokoFoodMerchantUiModelMapper {
     }
 
     private fun mapCartTokoFoodVariantsToSelectedCustomListItems(
-            orderNote: String,
-            masterData: List<CustomListItem>,
-            selectedVariants: List<CartMetadataVariantTokoFood>
+        orderNote: String,
+        masterData: List<CustomListItem>,
+        selectedVariants: List<CartMetadataVariantTokoFood>
     ): List<CustomListItem> {
         val selectedCustomListItems = masterData.toMutableList()
         val optionMap = selectedVariants.groupBy { it.variantId }
-        optionMap.keys.forEachIndexed { index, variantId ->
+        optionMap.keys.forEach { variantId ->
             val selectedOptionIds = optionMap[variantId]?.map { it.optionId } ?: listOf()
-            val selectedCustomListItem = selectedCustomListItems.firstOrNull { it.addOnUiModel?.id == variantId }
-            selectedCustomListItem?.addOnUiModel?.isSelected = true
-            selectedCustomListItem?.addOnUiModel?.options?.forEach {
-                if (it.selectionControlType == SelectionControlType.SINGLE_SELECTION) {
-                    if (selectedOptionIds.contains(it.id)) it.isSelected = true
-                } else if (it.selectionControlType == SelectionControlType.MULTIPLE_SELECTION) {
-                    it.isSelected = selectedOptionIds.contains(it.id)
-                }
+            val selectedCustomListItem = selectedCustomListItems.first { it.addOnUiModel?.id == variantId }
+            selectedCustomListItem.addOnUiModel?.isSelected = true
+            selectedCustomListItem.addOnUiModel?.options?.forEach {
+                if (selectedOptionIds.contains(it.id)) it.isSelected = true
             }
-            val options = selectedCustomListItem?.addOnUiModel?.options?: listOf()
-            selectedCustomListItem?.addOnUiModel?.selectedAddOns = options.filter { it.isSelected }.map { it.name }
+            val options = selectedCustomListItem.addOnUiModel?.options?: listOf()
+            selectedCustomListItem.addOnUiModel?.selectedAddOns = options.filter { it.isSelected }.map { it.name }
         }
         // set order note
         val customOrderWidgetUiModel = selectedCustomListItems.firstOrNull() { it.addOnUiModel == null }
