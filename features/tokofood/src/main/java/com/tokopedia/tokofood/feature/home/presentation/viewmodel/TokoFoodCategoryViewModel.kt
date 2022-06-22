@@ -47,6 +47,7 @@ class TokoFoodCategoryViewModel @Inject constructor(
     }
 
     fun getLoadingState() {
+        setPageKey(INITIAL_PAGE_KEY_MERCHANT)
         categoryLayoutItemList.clear()
         categoryLayoutItemList.addLoadingCategoryIntoList()
         val data = TokoFoodListUiModel(
