@@ -295,7 +295,7 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
     private void doTopAdsOperation(Uri uriData) {
         Uri newUri = replaceUriParameter(uriData, userSession.getUserId());
         String redirectionUrl = uriData.getQueryParameter("r");
-        new TopAdsUrlHitter(context).hitClickUrl(this.getClass().getCanonicalName(), newUri.toString(),"","","");
+        new TopAdsUrlHitter(context).hitClickUrlAndStoreHeader(this.getClass().getCanonicalName(), newUri.toString(),"","","");
     }
 
     private static Uri replaceUriParameter(Uri uri, String newValue) {

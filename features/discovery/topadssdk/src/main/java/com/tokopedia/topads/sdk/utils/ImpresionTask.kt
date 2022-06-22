@@ -86,6 +86,30 @@ class ImpresionTask {
         }
     }
 
+    fun getHeader(url: String?) : String?{
+        var header = ""
+         url?.let {
+            GlobalScope.launch(Dispatchers.IO) {
+                try {
+                    if (taskAlert != null) {
+                        taskAlert!!.track(url, fileName, methodName, lineNumber)
+                    }
+                    //Request 1
+                    val token = object : TypeToken<DataResponse<String>>() {}.type
+                    val restRequest = RestRequest.Builder(url, token).build()
+                    val headers = restRepository.getResponse(restRequest).headers;
+                    header = headers["x-tkp-srv-id"]?:""
+                    val d = Log.d("myHeaders", "execute: $headers")
+                } catch (e: IOException) {
+                    e.printStackTrace()
+                } catch (e: RuntimeException) {
+                    e.printStackTrace()
+                }
+            }
+        }
+        return header
+    }
+
     companion object {
         private const val KEY_SESSION_ID = "Tkpd-SessionID"
     }
