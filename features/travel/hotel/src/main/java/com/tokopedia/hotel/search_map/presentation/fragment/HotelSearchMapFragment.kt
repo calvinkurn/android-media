@@ -1,6 +1,7 @@
 package com.tokopedia.hotel.search_map.presentation.fragment
 
 import android.animation.ObjectAnimator
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
@@ -992,15 +993,14 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
         }
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     fun enabledMapsClick() {
-        binding?.mapHotelSearchMap?.setOnTouchListener(object : View.OnTouchListener {
-            override fun onTouch(v: View, motionEvent: MotionEvent): Boolean {
-                when (motionEvent.action) {
-                    MotionEvent.ACTION_DOWN -> v.performClick()
-                }
-                return true
+        binding?.mapHotelSearchMap?.setOnTouchListener { v, motionEvent ->
+            when (motionEvent.action) {
+                MotionEvent.ACTION_DOWN -> v.performClick()
             }
-        })
+            true
+        }
         binding?.mapHotelSearchMap?.setOnClickListener {
             collapseBottomSheet()
         }
