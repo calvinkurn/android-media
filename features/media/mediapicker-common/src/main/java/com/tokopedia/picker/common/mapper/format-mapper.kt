@@ -19,7 +19,7 @@ fun Int?.humanize(): String {
     if (this == null) return DEFAULT_DURATION_LABEL
 
     /**
-     * Following exoplayer filde duration converter, added buffer 500ms
+     * Following exoplayer duration converter, they added buffer time 500ms
      * https://github.com/google/ExoPlayer/blob/release-v2/library/common/src/main/java/com/google/android/exoplayer2/util/Util.java#L1992
      */
     val duration = this + 500
