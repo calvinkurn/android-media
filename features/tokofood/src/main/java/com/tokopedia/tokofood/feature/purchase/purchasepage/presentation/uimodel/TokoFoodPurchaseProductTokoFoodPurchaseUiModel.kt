@@ -1,6 +1,7 @@
 package com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.uimodel
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.product.detail.common.getCurrencyFormatted
 import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFoodProductVariant
 import com.tokopedia.tokofood.common.presentation.uimodel.UpdateProductVariantParam
 import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.adapter.TokoFoodPurchaseAdapterTypeFactory
@@ -26,8 +27,27 @@ data class TokoFoodPurchaseProductTokoFoodPurchaseUiModel(
         val variants: List<CheckoutTokoFoodProductVariant> = listOf()
 ) : Visitable<TokoFoodPurchaseAdapterTypeFactory>, BaseTokoFoodPurchaseUiModel() {
 
+        fun getSubtotalPrice(): Double {
+                return price + getVariantsTotal()
+        }
+
+        fun getSubtotalPriceFmt(): String {
+                return getSubtotalPrice().getCurrencyFormatted()
+        }
+
+        private fun getVariantsTotal(): Double {
+                var total = 0.0
+                variants.forEach { variant ->
+                        variant.options.forEach { option ->
+                                if (option.isSelected) {
+                                        total += option.price
+                                }
+                        }
+                }
+                return total
+        }
+
     override fun type(typeFactory: TokoFoodPurchaseAdapterTypeFactory): Int {
         return typeFactory.type(this)
     }
-
 }

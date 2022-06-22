@@ -157,7 +157,7 @@ class OrderCustomizationFragment : BaseMultiFragment(),
             viewModel.baseProductPrice = productUiModel.price
 
             // no selections
-            if (!isAtc) {
+            if (isAtc) {
                 binding?.subtotalProductPriceLabel?.text = priceFmt
             } else binding?.subtotalProductPriceLabel?.text = subTotalFmt
 

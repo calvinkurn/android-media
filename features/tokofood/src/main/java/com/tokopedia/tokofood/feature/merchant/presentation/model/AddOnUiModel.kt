@@ -24,6 +24,9 @@ data class AddOnUiModel(
     val isMultipleMandatory = minQty > Int.ONE
 
     @IgnoredOnParcel
+    val filteredOptions = options.filter { it.isVisible }
+
+    @IgnoredOnParcel
     val addOnItems = options
             .filter { it.isVisible }
             .map { optionUiModel ->

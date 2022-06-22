@@ -21,4 +21,6 @@ data class OptionUiModel(
     val isVisible = status != STATUS_INACTIVE
     @IgnoredOnParcel
     val isOutOfStock = status == STATUS_OUT_OF_STOCK
+    @IgnoredOnParcel
+    var dataSetPosition = 0
 }
