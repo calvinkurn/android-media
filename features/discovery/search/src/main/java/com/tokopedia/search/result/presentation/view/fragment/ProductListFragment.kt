@@ -2007,7 +2007,6 @@ class ProductListFragment: BaseDaggerFragment(),
                 productCountText
             )
         }
-
     //endregion
 
     //region TopAdsImageView / TDN
