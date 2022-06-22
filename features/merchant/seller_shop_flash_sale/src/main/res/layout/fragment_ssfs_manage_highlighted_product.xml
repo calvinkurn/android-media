@@ -32,6 +32,16 @@
         app:search_bar_placeholder="@string/sfs_search_product"
         app:search_bar_show_icon="false" />
 
+    <com.tokopedia.unifycomponents.LoaderUnify
+        android:id="@+id/loader"
+        android:layout_width="@dimen/unify_space_48"
+        android:layout_height="@dimen/unify_space_48"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/searchBar" />
+
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerView"
         android:layout_width="match_parent"
@@ -47,6 +57,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         app:cardElevation="@dimen/unify_space_8"
+        android:visibility="gone"
         tools:visibility="visible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -71,7 +82,7 @@
                 app:unifyButtonVariant="ghost" />
 
             <com.tokopedia.unifycomponents.UnifyButton
-                android:id="@+id/btnCreateCampaign"
+                android:id="@+id/btnProceed"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/unify_space_16"
@@ -89,13 +100,6 @@
         </androidx.constraintlayout.widget.ConstraintLayout>
 
     </androidx.cardview.widget.CardView>
-
-    <androidx.constraintlayout.widget.Group
-        android:id="@+id/groupContent"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:visibility="gone"
-        app:constraint_referenced_ids="searchBar,recyclerView" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tpgNoSearchResultTitle"

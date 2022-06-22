@@ -4,7 +4,6 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.media.loader.loadImage
@@ -59,7 +58,7 @@ class HighlightedProductAdapter(
     }
 
     fun addData(items: List<HighlightableProduct>) {
-        val previousProductsSize = items.size
+        val previousProductsSize = this.products.size
         this.products.addAll(items)
         notifyItemRangeChanged(previousProductsSize, this.products.size)
     }
@@ -71,12 +70,6 @@ class HighlightedProductAdapter(
         this.products.clear()
         this.products.addAll(products)
         diffResult.dispatchUpdatesTo(this)
-    }
-
-    
-    fun clearData() {
-        this.products = mutableListOf()
-        notifyItemRangeChanged(Int.ZERO, this.products.size)
     }
 
     fun showLoading() {

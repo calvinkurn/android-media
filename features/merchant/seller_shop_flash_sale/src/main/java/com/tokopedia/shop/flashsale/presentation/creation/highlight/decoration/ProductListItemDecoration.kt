@@ -1,4 +1,4 @@
-package com.tokopedia.shop.flashsale.presentation.creation.highlight
+package com.tokopedia.shop.flashsale.presentation.creation.highlight.decoration
 
 import android.content.Context
 import android.graphics.Canvas

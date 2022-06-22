@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
@@ -14,29 +15,32 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.seller_shop_flash_sale.databinding.FragmentSsfsManageHighlightedProductBinding
-import com.tokopedia.shop.flashsale.common.constant.Constant
 import com.tokopedia.shop.flashsale.common.customcomponent.BaseSimpleListFragment
-import com.tokopedia.shop.flashsale.common.extension.setFragmentToUnifyBgColor
-import com.tokopedia.shop.flashsale.common.extension.showError
-import com.tokopedia.shop.flashsale.common.extension.showLoading
+import com.tokopedia.shop.flashsale.common.extension.*
 import com.tokopedia.shop.flashsale.common.preference.SharedPreferenceDataStore
 import com.tokopedia.shop.flashsale.di.component.DaggerShopFlashSaleComponent
 import com.tokopedia.shop.flashsale.domain.entity.HighlightableProduct
 import com.tokopedia.shop.flashsale.presentation.creation.highlight.adapter.HighlightedProductAdapter
+import com.tokopedia.shop.flashsale.presentation.list.list.listener.RecyclerViewScrollListener
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
+import com.tokopedia.seller_shop_flash_sale.R
+import com.tokopedia.shop.flashsale.domain.entity.HighlightedProduct
+import com.tokopedia.shop.flashsale.presentation.creation.highlight.decoration.ProductListItemDecoration
 
 class ManageHighlightedProductFragment :
     BaseSimpleListFragment<HighlightedProductAdapter, HighlightableProduct>() {
 
     companion object {
-        private const val PAGE_SIZE = 10
+        private const val PAGE_SIZE = 5
         private const val ONE_PAGE = 1
         private const val ONE_PRODUCT = 1
+        private const val FIRST_PAGE = 1
         private const val MAX_PRODUCT_SELECTION = 5
         private const val BUNDLE_KEY_CAMPAIGN_ID = "campaign_id"
+        private const val SCROLL_DISTANCE_DELAY_IN_MILLIS: Long = 100
 
         @JvmStatic
         fun newInstance(campaignId: Long): ManageHighlightedProductFragment {
@@ -92,21 +96,24 @@ class ManageHighlightedProductFragment :
         setupView()
         setFragmentToUnifyBgColor()
         observeProducts()
+        observeHighlightedProducts()
+        viewModel.getHighlightedProducts(campaignId)
     }
 
     private fun setupView() {
         setupButton()
         setupToolbar()
         setupSearchBar()
+        setupScrollListener()
     }
 
     private fun setupSearchBar() {
         binding?.run {
             searchBar.searchBarTextField.setOnEditorActionListener { _, actionId, _ ->
                 if (actionId == EditorInfo.IME_ACTION_SEARCH) {
-                    clearAllData()
+                    productAdapter.submit(emptyList())
                     binding?.groupNoSearchResult?.gone()
-                    getProducts(Constant.FIRST_PAGE)
+                    getProducts(FIRST_PAGE)
                     return@setOnEditorActionListener false
                 }
                 return@setOnEditorActionListener false
@@ -123,25 +130,59 @@ class ManageHighlightedProductFragment :
 
     private fun setupButton() {
         binding?.run {
-            btnCreateCampaign.setOnClickListener {
-                binding?.btnCreateCampaign?.showLoading()
-            }
+            btnProceed.setOnClickListener { binding?.btnProceed?.showLoading() }
+            btnDraft.setOnClickListener { binding?.btnDraft.showLoading() }
+        }
+    }
+
+    private fun setupScrollListener() {
+        binding?.run {
+            recyclerView.addOnScrollListener(
+                RecyclerViewScrollListener(
+                    onScrollDown = {
+                        doOnDelayFinished(SCROLL_DISTANCE_DELAY_IN_MILLIS) {
+                            handleScrollDownEvent()
+                        }
+                    },
+                    onScrollUp = {
+                        doOnDelayFinished(SCROLL_DISTANCE_DELAY_IN_MILLIS) {
+                            handleScrollUpEvent()
+                        }
+                    }
+                )
+            )
         }
     }
 
 
-    private fun observeProducts() {
-        viewModel.products.observe(viewLifecycleOwner) {
-            when (it) {
+    private fun observeHighlightedProducts() {
+        viewModel.highlightedProducts.observe(viewLifecycleOwner) { result ->
+            binding?.loader?.gone()
+
+            when (result) {
                 is Success -> {
-                    isFirstLoad = false
-                    binding?.groupContent?.visible()
-                    handleProducts(it.data)
+                    binding?.cardView?.visible()
+                    binding?.searchBar?.visible()
+                    storeSelectedProducts(result.data)
                 }
                 is Fail -> {
                     binding?.cardView?.gone()
-                    binding?.groupContent?.gone()
-                    binding?.root showError it.throwable
+                    binding?.searchBar?.gone()
+                    binding?.root showError result.throwable
+                }
+            }
+        }
+    }
+
+    private fun observeProducts() {
+        viewModel.products.observe(viewLifecycleOwner) { result ->
+            when (result) {
+                is Success -> {
+                    isFirstLoad = false
+                    handleProducts(result.data)
+                }
+                is Fail -> {
+                    binding?.root showError result.throwable
                 }
             }
         }
@@ -180,18 +221,11 @@ class ManageHighlightedProductFragment :
         selectedProduct: HighlightableProduct
     ) {
         val nextCounter = currentSelectedProductCount + ONE_PRODUCT
+
         if (nextCounter > MAX_PRODUCT_SELECTION) {
             unselectProduct(selectedProduct)
         } else {
-            val remainingSelection = MAX_PRODUCT_SELECTION - viewModel.getSelectedProductIds().size
-
-            if (remainingSelection > 0) {
-                selectProduct(selectedProduct)
-                viewModel.addProductToSelection(selectedProduct)
-            } else {
-                unselectProduct(selectedProduct)
-            }
-
+            handleRemainingSelection(selectedProduct)
             enableAllUnselectedProduct()
         }
 
@@ -202,9 +236,20 @@ class ManageHighlightedProductFragment :
         refreshButton()
     }
 
+    private fun handleRemainingSelection(selectedProduct: HighlightableProduct) {
+        val remainingSelection = MAX_PRODUCT_SELECTION - viewModel.getSelectedProductIds().size
+
+        if (remainingSelection > 0) {
+            binding?.recyclerView showToaster getString(R.string.sfs_successfully_highlighted)
+            selectProduct(selectedProduct)
+            viewModel.addProductToSelection(selectedProduct.id)
+        } else {
+            unselectProduct(selectedProduct)
+        }
+    }
 
     private fun handleRemoveProductFromSelection(selectedProduct: HighlightableProduct) {
-        viewModel.removeProductFromSelection(selectedProduct)
+        viewModel.removeProductFromSelection(selectedProduct.id)
         unselectProduct(selectedProduct)
         enableAllUnselectedProduct()
         refreshButton()
@@ -235,13 +280,16 @@ class ManageHighlightedProductFragment :
     }
 
     override fun createAdapter() = productAdapter
-    override fun getRecyclerView(view: View) = binding?.recyclerView
+    override fun getRecyclerView(view: View): RecyclerView? {
+        return binding?.recyclerView?.apply {
+            addItemDecoration(ProductListItemDecoration(requireActivity()))
+        }
+    }
     override fun getSwipeRefreshLayout(view: View): SwipeRefreshLayout? = null
     override fun getPerPage() = PAGE_SIZE
 
     override fun addElementToAdapter(list: List<HighlightableProduct>) {
         adapter?.addData(list)
-        storeSelectedProducts(list)
     }
 
     override fun loadData(page: Int) {
@@ -249,19 +297,20 @@ class ManageHighlightedProductFragment :
     }
 
     private fun getProducts(page: Int) {
-        val offset = if (isFirstLoad) {
+        val offset = if (page == FIRST_PAGE) {
             0
         } else {
             (page - ONE_PAGE) * PAGE_SIZE
         }
 
         val searchKeyword = binding?.searchBar?.searchBarTextField?.text.toString().trim()
+        val disableProductOnNextPage = viewModel.getSelectedProductIds().size >= MAX_PRODUCT_SELECTION
 
-        viewModel.getProducts(campaignId, searchKeyword, offset)
+        viewModel.getProducts(campaignId, searchKeyword, disableProductOnNextPage, offset)
     }
 
     override fun clearAdapterData() {
-        adapter?.clearData()
+        adapter?.submit(emptyList())
     }
 
     override fun onShowLoading() {
@@ -285,21 +334,35 @@ class ManageHighlightedProductFragment :
     }
 
     private fun clearSearchBar() {
-        clearAllData()
-        getProducts(Constant.FIRST_PAGE)
+        doFreshSearch()
     }
 
     private fun refreshButton() {
         val selectedProductCount = viewModel.getSelectedProductIds().size
-        binding?.btnCreateCampaign?.isEnabled = selectedProductCount > Int.ZERO
+        binding?.btnProceed?.isEnabled = selectedProductCount > Int.ZERO
+        binding?.btnDraft?.isEnabled = selectedProductCount > Int.ZERO
     }
 
-    private fun storeSelectedProducts(products : List<HighlightableProduct>) {
+    private fun storeSelectedProducts(products: List<HighlightedProduct>) {
         products.forEach { product ->
-            if (product.isSelected) {
-                viewModel.addProductToSelection(product)
-            }
+            viewModel.addProductToSelection(product.id.toString())
         }
+    }
+
+    private fun handleScrollDownEvent() {
+        binding?.searchBar?.slideDown()
+        binding?.cardView.slideDown()
+    }
+
+    private fun handleScrollUpEvent() {
+        binding?.searchBar?.slideUp()
+        binding?.cardView.slideUp()
+    }
+
+    private fun doFreshSearch() {
+        productAdapter.submit(emptyList())
+        binding?.groupNoSearchResult?.gone()
+        viewModel.getProducts(campaignId, "", disableProductsOnNextPage = false, FIRST_PAGE)
     }
 
 }
