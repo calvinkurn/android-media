@@ -22,7 +22,6 @@ class ShippingDurationPresenterTest {
     private val ratesUseCase: GetRatesUseCase = mockk(relaxed = true)
     private val ratesApiUseCase: GetRatesApiUseCase = mockk(relaxed = true)
     private val responseConverter: RatesResponseStateConverter = mockk()
-    private val courierConverter: ShippingCourierConverter = mockk(relaxed = true)
     val view: ShippingDurationContract.View = mockk(relaxed = true)
     lateinit var presenter: ShippingDurationPresenter
 
@@ -34,7 +33,7 @@ class ShippingDurationPresenterTest {
     @Before
     fun setup() {
         presenter = ShippingDurationPresenter(ratesUseCase, ratesApiUseCase,
-                responseConverter, courierConverter)
+                responseConverter)
     }
 
     @Test
@@ -205,23 +204,20 @@ class ShippingDurationPresenterTest {
     }
 
     @Test
-    fun `When get courier item data trigger courier converter Then courier converter is called`() {
+    fun `When get courier item data and product is recommended Then return courier Ui model`() {
         // Given
-        val courierModelWithOneRecc: List<ShippingCourierUiModel> = listOf(
-                ShippingCourierUiModel().apply {
-                    productData = ProductData().apply {
-                        isRecommend = true
-                    }
-                }
-        )
+        val expected = ShippingCourierUiModel().apply {
+            productData = ProductData().apply {
+                isRecommend = true
+            }
+        }
+        val courierModelWithOneRecc: List<ShippingCourierUiModel> = listOf(expected)
 
         // When
-        presenter.getCourierItemData(courierModelWithOneRecc)
+        val actual = presenter.getCourierItemData(courierModelWithOneRecc)
 
         // Then
-        verify {
-            courierConverter.convertToCourierItemData(any())
-        }
+        assertEquals(actual, expected)
     }
 
     @Test
@@ -241,24 +237,21 @@ class ShippingDurationPresenterTest {
     }
 
     @Test
-    fun `When get courier item data with id trigger courier converter Then courier converter is called`() {
+    fun `When get courier item data with id Then return the courier Ui model with the same shipper product id`() {
         // Given
         val spId = 24
-        val courierModelWithId: List<ShippingCourierUiModel> = listOf(
-                ShippingCourierUiModel().apply {
-                    productData = ProductData().apply {
-                        shipperProductId = spId
-                    }
-                }
-        )
+        val expectedCourier = ShippingCourierUiModel().apply {
+            productData = ProductData().apply {
+                shipperProductId = spId
+            }
+        }
+        val courierModelWithId: List<ShippingCourierUiModel> = listOf(expectedCourier)
 
         // When
-        presenter.getCourierItemDataById(spId, courierModelWithId)
+        val actual = presenter.getCourierItemDataById(spId, courierModelWithId)
 
         // Then
-        verify {
-            courierConverter.convertToCourierItemData(any())
-        }
+        assertEquals(actual, expectedCourier)
     }
 
     @Test

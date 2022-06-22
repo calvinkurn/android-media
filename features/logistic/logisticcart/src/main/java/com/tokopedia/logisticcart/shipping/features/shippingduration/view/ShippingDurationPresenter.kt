@@ -4,7 +4,6 @@ import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
 import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.ErrorProductData
 import com.tokopedia.logisticcart.R
-import com.tokopedia.logisticcart.shipping.features.shippingcourier.view.ShippingCourierConverter
 import com.tokopedia.logisticcart.shipping.model.*
 import com.tokopedia.logisticcart.shipping.usecase.GetRatesApiUseCase
 import com.tokopedia.logisticcart.shipping.usecase.GetRatesUseCase
@@ -18,8 +17,7 @@ import javax.inject.Inject
  */
 class ShippingDurationPresenter @Inject constructor(private val ratesUseCase: GetRatesUseCase,
                                                     private val ratesApiUseCase: GetRatesApiUseCase,
-                                                    private val stateConverter: RatesResponseStateConverter,
-                                                    private val shippingCourierConverter: ShippingCourierConverter) : BaseDaggerPresenter<ShippingDurationContract.View>(), ShippingDurationContract.Presenter {
+                                                    private val stateConverter: RatesResponseStateConverter) : BaseDaggerPresenter<ShippingDurationContract.View>(), ShippingDurationContract.Presenter {
 
     private var view: ShippingDurationContract.View? = null
 
@@ -166,19 +164,19 @@ class ShippingDurationPresenter @Inject constructor(private val ratesUseCase: Ge
         return shippingParam
     }
 
-    override fun getCourierItemData(shippingCourierUiModels: List<ShippingCourierUiModel>): CourierItemData? {
+    override fun getCourierItemData(shippingCourierUiModels: List<ShippingCourierUiModel>): ShippingCourierUiModel? {
         for (shippingCourierUiModel in shippingCourierUiModels) {
             if (shippingCourierUiModel.productData.isRecommend) {
-                return shippingCourierConverter.convertToCourierItemData(shippingCourierUiModel)
+                return shippingCourierUiModel
             }
         }
         return null
     }
 
-    override fun getCourierItemDataById(spId: Int, shippingCourierUiModels: List<ShippingCourierUiModel>): CourierItemData? {
+    override fun getCourierItemDataById(spId: Int, shippingCourierUiModels: List<ShippingCourierUiModel>): ShippingCourierUiModel? {
         for (shippingCourierUiModel in shippingCourierUiModels) {
             if (shippingCourierUiModel.productData.shipperProductId == spId) {
-                return shippingCourierConverter.convertToCourierItemData(shippingCourierUiModel)
+                return shippingCourierUiModel
             }
         }
         return null

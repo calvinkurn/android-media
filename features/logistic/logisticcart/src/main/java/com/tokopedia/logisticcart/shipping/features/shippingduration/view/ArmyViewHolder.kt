@@ -32,7 +32,7 @@ class ArmyViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         const val ESTIMASI_TIDAK_TERSEDIA = "Estimasi tidak tersedia"
     }
 
-    fun bindData(data: LogisticPromoUiModel, listener: ShippingDurationAdapterListener?, isOcc: Boolean = false) {
+    fun bindData(data: LogisticPromoUiModel, listener: ShippingDurationAdapterListener?) {
         val formattedTitle = HtmlLinkHelper(itemView.context, data.freeShippingItemTitle).spannedString
         
         tvTitle.text = formattedTitle

@@ -28,7 +28,7 @@ interface ShippingDurationContract {
                                       products: List<Product>, cartString: String, isTradeInDropOff: Boolean,
                                       recipientAddressModel: RecipientAddressModel, isFulfillment: Boolean, preOrderTime: Int, mvc: String)
 
-        fun getCourierItemData(shippingCourierUiModels: List<ShippingCourierUiModel>): CourierItemData?
-        fun getCourierItemDataById(spId: Int, shippingCourierUiModels: List<ShippingCourierUiModel>): CourierItemData?
+        fun getCourierItemData(shippingCourierUiModels: List<ShippingCourierUiModel>): ShippingCourierUiModel?
+        fun getCourierItemDataById(spId: Int, shippingCourierUiModels: List<ShippingCourierUiModel>): ShippingCourierUiModel?
     }
 }

@@ -24,7 +24,7 @@ class ShippingDurationAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() 
         allServices = mutableListOf()
     }
 
-    fun setShippingDurationViewModels(shippingDurationUiModels: List<ShippingDurationUiModel>, promoUiModel: List<LogisticPromoUiModel>, isDisableOrderPrioritas: Boolean, preOrderModel: PreOrderModel?) {
+    fun setShippingDurationViewModels(shippingDurationUiModels: List<ShippingDurationUiModel>, promoUiModel: List<LogisticPromoUiModel>, isDisableOrderPrioritas: Boolean, preOrderModel: PreOrderModel?, isOcc: Boolean) {
         this.isDisableOrderPrioritas = isDisableOrderPrioritas
         this.allServices = shippingDurationUiModels
         this.mData = shippingDurationUiModels.filter { !it.serviceData.isUiRatesHidden }.toMutableList()
@@ -38,8 +38,10 @@ class ShippingDurationAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() 
                 this.mData.addAll(0, promoUiModel + listOf<RatesViewModelType>(DividerModel()))
             }
         }
-        if (shippingDurationUiModels[0].etaErrorCode == 1) {
-            this.mData.add(0, NotifierModel())
+        if (!isOcc) {
+            if (shippingDurationUiModels[0].etaErrorCode == 1) {
+                this.mData.add(0, NotifierModel())
+            }
         }
         notifyDataSetChanged()
     }

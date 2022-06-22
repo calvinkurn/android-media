@@ -48,6 +48,7 @@ class ShippingDurationBottomsheet : ShippingDurationContract.View, ShippingDurat
 
     private var isDisableCourierPromo = false
     private var isDisableOrderPrioritas = false
+    private var isOcc = false
     private var mCartPosition = -1
 
     private var mRecipientAddress: RecipientAddressModel? = null
@@ -66,6 +67,7 @@ class ShippingDurationBottomsheet : ShippingDurationContract.View, ShippingDurat
 
     private var mIsCorner = false
 
+    /* Checkout */
     fun show(activity: Activity,
              fragmentManager: FragmentManager,
              shippingDurationBottomsheetListener: ShippingDurationBottomsheetListener?,
@@ -86,6 +88,7 @@ class ShippingDurationBottomsheet : ShippingDurationContract.View, ShippingDurat
                 isDisableOrderPrioritas, isTradeInDropOff, isFulFillment, preOrderTime, mvc)
         initBottomSheet(activity)
         initView(activity)
+        isOcc = false
         bottomSheet?.show(fragmentManager, this.javaClass.simpleName)
     }
 
@@ -128,6 +131,53 @@ class ShippingDurationBottomsheet : ShippingDurationContract.View, ShippingDurat
         bundle?.putBoolean(ARGUMENT_IS_FULFILLMENT, isFulFillment)
         bundle?.putInt(ARGUMENT_PO_TIME, preOrderTime)
         bundle?.putString(ARGUMENT_MVC, mvc)
+    }
+
+    /* OCC */
+    fun show(
+        activity: Activity,
+        fragmentManager: FragmentManager,
+        shippingDurationBottomsheetListener: ShippingDurationBottomsheetListener?,
+        shippingRecommendationData: ShippingRecommendationData,
+        cartPosition: Int,
+        isDisableOrderPrioritas: Boolean
+    ) {
+        this.activity = activity
+        this.shippingDurationBottomsheetListener = shippingDurationBottomsheetListener
+        initBottomSheet(activity, shippingRecommendationData)
+        initView(activity)
+        initData(cartPosition, isDisableOrderPrioritas)
+        bottomSheet?.show(fragmentManager, this.javaClass.simpleName)
+    }
+
+    private fun initBottomSheet(activity: Activity, shippingRecommendationData: ShippingRecommendationData) {
+        bottomSheet = BottomSheetUnify().apply {
+            showCloseIcon = true
+            setTitle(activity.getString(R.string.title_bottomsheet_shipment_duration))
+            clearContentPadding = true
+            customPeekHeight = Resources.getSystem().displayMetrics.heightPixels / 2
+            isDragable = true
+            isHideable = true
+            setShowListener {
+                presenter?.attachView(this@ShippingDurationBottomsheet)
+                hideLoading()
+                setupRecyclerView(mCartPosition)
+                showData(shippingRecommendationData.shippingDurationUiModels, shippingRecommendationData.listLogisticPromo, shippingRecommendationData.preOrderModel)
+            }
+            setOnDismissListener {
+                presenter?.detachView()
+            }
+            setCloseClickListener {
+                shippingDurationBottomsheetListener?.onShippingDurationButtonCloseClicked()
+                dismiss()
+            }
+        }
+    }
+
+    private fun initData(cartPosition: Int, isDisableOrderPrioritas: Boolean) {
+        mCartPosition = cartPosition
+        this.isDisableOrderPrioritas = isDisableOrderPrioritas
+        this.isOcc = true
     }
 
     private fun initializeInjector() {
@@ -207,8 +257,10 @@ class ShippingDurationBottomsheet : ShippingDurationContract.View, ShippingDurat
     }
 
     override fun showData(serviceDataList: List<ShippingDurationUiModel>, promoViewModelList: List<LogisticPromoUiModel>, preOrderModel: PreOrderModel?) {
-        shippingDurationAdapter?.setShippingDurationViewModels(serviceDataList, promoViewModelList, isDisableOrderPrioritas, preOrderModel)
-       if (promoViewModelList.any { it.etaData.textEta.isEmpty() && it.etaData.errorCode == 1 }) shippingDurationAdapter!!.initiateShowcase()
+        shippingDurationAdapter?.setShippingDurationViewModels(serviceDataList, promoViewModelList, isDisableOrderPrioritas, preOrderModel, isOcc)
+        if (!isOcc) {
+            if (promoViewModelList.any { it.etaData.textEta.isEmpty() && it.etaData.errorCode == 1 }) shippingDurationAdapter!!.initiateShowcase()
+        }
 
         val hasCourierPromo = checkHasCourierPromo(serviceDataList)
         if (hasCourierPromo) {
@@ -302,11 +354,15 @@ class ShippingDurationBottomsheet : ShippingDurationContract.View, ShippingDurat
     }
 
     override fun isToogleYearEndPromotionOn(): Boolean {
-        if (activity != null) {
-            val remoteConfig: RemoteConfig = FirebaseRemoteConfigImpl(activity)
-            return remoteConfig.getBoolean("mainapp_enable_year_end_promotion")
+        if (isOcc) {
+            return false
+        } else {
+            if (activity != null) {
+                val remoteConfig: RemoteConfig = FirebaseRemoteConfigImpl(activity)
+                return remoteConfig.getBoolean("mainapp_enable_year_end_promotion")
+            }
+            return false
         }
-        return false
     }
 
     override fun onLogisticPromoClicked(data: LogisticPromoUiModel) {
@@ -322,22 +378,11 @@ class ShippingDurationBottomsheet : ShippingDurationContract.View, ShippingDurat
             showErrorPage(activity!!.getString(R.string.logistic_promo_serviceid_mismatch_message))
             return
         }
-        courierData.logPromoCode = data.promoCode
-        courierData.logPromoMsg = data.disableText
-        courierData.discountedRate = data.discountedRate
-        courierData.shippingRate = data.shippingRate
-        courierData.benefitAmount = data.benefitAmount
-        courierData.promoTitle = data.title
-        courierData.isHideShipperName = data.hideShipperName
-        courierData.shipperName = data.shipperName
-        courierData.etaText = data.etaData.textEta
-        courierData.etaErrorCode = data.etaData.errorCode
-        courierData.freeShippingChosenCourierTitle = data.freeShippingChosenCourierTitle
         try {
             shippingDurationBottomsheetListener?.onLogisticPromoChosen(
-                    serviceData.shippingCourierViewModelList, courierData,
-                    mRecipientAddress, mCartPosition,
-                    serviceData.serviceData, false, data.promoCode, data.serviceId)
+                serviceData.shippingCourierViewModelList, courierData,
+                mRecipientAddress, mCartPosition,
+                serviceData.serviceData, false, data.promoCode, data.serviceId, data)
         } catch (e: Exception) {
             e.printStackTrace()
         }
