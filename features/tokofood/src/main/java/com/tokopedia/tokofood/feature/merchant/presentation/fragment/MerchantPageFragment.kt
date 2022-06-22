@@ -886,28 +886,7 @@ class MerchantPageFragment : BaseMultiFragment(),
                 activityViewModel?.addToCart(updateParam, SOURCE)
             }
         } else {
-            val updateParam = viewModel.mapProductUiModelToAtcRequestParam(
-                shopId = merchantId,
-                productUiModel = productUiModel
-            )
-
-            val cacheManager = context?.let { SaveInstanceCacheManager(it, true) }
-
-            cacheManager?.put(
-                ChangeMerchantBottomSheet.KEY_UPDATE_PARAM,
-                updateParam
-            )
-            val bundle = Bundle().apply {
-                putString(
-                    ChangeMerchantBottomSheet.KEY_CACHE_MANAGER_ID,
-                    cacheManager?.id.orEmpty()
-                )
-            }
-
-            val bottomSheet = ChangeMerchantBottomSheet.newInstance(bundle)
-
-            bottomSheet.setChangeMerchantListener(this)
-            bottomSheet.show(childFragmentManager)
+            showChangeMerchantBottomSheet(productUiModel)
         }
 
         viewModel.merchantData?.let {
@@ -986,14 +965,18 @@ class MerchantPageFragment : BaseMultiFragment(),
         productUiModel: ProductUiModel,
         productPosition: Int
     ) {
-        val productListItem =
-            getProductItemList().find { it.productUiModel.id == productUiModel.id }
-        if (productListItem != null) {
-            navigateToOrderCustomizationPage(
-                cartId = cartId,
-                productListItem = productListItem,
-                productPosition = productPosition
-            )
+        if (activityViewModel?.shopId.isNullOrBlank() || activityViewModel?.shopId == merchantId) {
+            val productListItem =
+                getProductItemList().find { it.productUiModel.id == productUiModel.id }
+            if (productListItem != null) {
+                navigateToOrderCustomizationPage(
+                    cartId = cartId,
+                    productListItem = productListItem,
+                    productPosition = productPosition
+                )
+            }
+        } else {
+            showChangeMerchantBottomSheet(productUiModel)
         }
     }
 
@@ -1102,6 +1085,31 @@ class MerchantPageFragment : BaseMultiFragment(),
         context?.run {
             TokofoodRouteManager.routePrioritizeInternal(this, applicationLink)
         }
+    }
+
+    private fun showChangeMerchantBottomSheet(productUiModel: ProductUiModel) {
+        val updateParam = viewModel.mapProductUiModelToAtcRequestParam(
+            shopId = merchantId,
+            productUiModel = productUiModel
+        )
+
+        val cacheManager = context?.let { SaveInstanceCacheManager(it, true) }
+
+        cacheManager?.put(
+            ChangeMerchantBottomSheet.KEY_UPDATE_PARAM,
+            updateParam
+        )
+        val bundle = Bundle().apply {
+            putString(
+                ChangeMerchantBottomSheet.KEY_CACHE_MANAGER_ID,
+                cacheManager?.id.orEmpty()
+            )
+        }
+
+        val bottomSheet = ChangeMerchantBottomSheet.newInstance(bundle)
+
+        bottomSheet.setChangeMerchantListener(this)
+        bottomSheet.show(childFragmentManager)
     }
 
     private fun navigateToOrderCustomizationPage(
