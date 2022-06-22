@@ -18,6 +18,7 @@ public interface FloatingEggContract {
         void onSuccessClickClose(GamiFloatingClickData gamiFloatingClickData);
 
         void onErrorGetToken(Throwable throwable);
+        void onErrorClickClose(Throwable throwable);
 
         Resources getResources();
 

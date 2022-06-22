@@ -622,6 +622,11 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment implements Flo
         }
     }
 
+    @Override
+    public void onErrorClickClose(Throwable throwable) {
+
+    }
+
     private void setMinimizeBehaviourHyperParameters(boolean isCurrentlyMinimized, boolean wasOnRightEarlier, float startXPos, float startAngle) {
         isMinimized = isCurrentlyMinimized;
         isRight = wasOnRightEarlier;

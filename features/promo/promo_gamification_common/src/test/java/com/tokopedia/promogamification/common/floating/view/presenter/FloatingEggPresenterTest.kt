@@ -68,11 +68,16 @@ class FloatingEggPresenterTest {
         override fun onSuccessClickClose(gamiFloatingClickData: GamiFloatingClickData?) {
             // Do nothing
         }
+
         override fun getResources(): Resources {
             return resources
         }
 
         override fun onErrorGetToken(throwable: Throwable?) {
+            //Do nothing
+        }
+
+        override fun onErrorClickClose(throwable: Throwable?) {
             //Do nothing
         }
     }
@@ -101,7 +106,7 @@ class FloatingEggPresenterTest {
     fun testSubscriberOnError() {
         val subscriber = presenter.floatingEggSubscriber
         val exception = Exception()
-        if(idlingResource?.countingIdlingResource?.isIdleNow == true){
+        if (idlingResource?.countingIdlingResource?.isIdleNow == true) {
             idlingResource?.increment()
         }
         subscriber.onError(exception)
@@ -118,7 +123,7 @@ class FloatingEggPresenterTest {
         coEvery { graphqlResponse.getData(FloatingButtonResponseEntity::class.java) as FloatingButtonResponseEntity } returns floatingButtonResponseEntity
         every { floatingButtonResponseEntity.getGamiFloatingButtonEntity() } returns gamiFloatingButtonEntity
 
-        if(idlingResource?.countingIdlingResource?.isIdleNow == true){
+        if (idlingResource?.countingIdlingResource?.isIdleNow == true) {
             idlingResource?.increment()
         }
 
@@ -142,7 +147,7 @@ class FloatingEggPresenterTest {
     }
 
     @Test
-    fun testClickCloseButton(){
+    fun testClickCloseButton() {
         val floatingID = 12
         presenter.clickCloseButton(floatingID)
         verifyOrder {
@@ -151,5 +156,25 @@ class FloatingEggPresenterTest {
             getTokenTokopointsUseCase.addRequest(any())
             getTokenTokopointsUseCase.execute(any())
         }
+    }
+
+    @Test
+    fun testClickCloseSubscriberOnError() {
+        val subscriber = presenter.clickCloseSubscriber
+        val exception = Exception()
+        subscriber.onError(exception)
+        verify { view.onErrorClickClose(exception) }
+    }
+
+    @Test
+    fun testClickCloseSubscriberOnNext() {
+
+    }
+
+    @Test
+    fun testClickCloseSubscriberOnComplete() {
+        val subscriber = presenter.clickCloseSubscriber
+        subscriber.onCompleted()
+        Assert.assertEquals(subscriber != null, true)
     }
 }

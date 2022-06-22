@@ -91,7 +91,7 @@ public class FloatingEggPresenter extends BaseDaggerPresenter<FloatingEggContrac
             public void onError(Throwable e) {
                 if (isViewNotAttached())
                     return;
-                getView().onErrorGetToken(e);
+                getView().onErrorClickClose(e);
             }
 
             @Override
