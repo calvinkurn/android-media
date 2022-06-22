@@ -12,7 +12,6 @@ import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.play_common.R
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.airbnb.lottie.LottieDrawable
-import com.tokopedia.play.R
 import com.tokopedia.play.databinding.ViewGiveawayWidgetBinding
 import com.tokopedia.play_common.view.game.GameHeaderView
 import com.tokopedia.play_common.view.game.setupGiveaway
