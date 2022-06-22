@@ -1,5 +1,6 @@
 package com.tokopedia.play.broadcaster.util.logger
 
+import android.util.Log
 import com.tokopedia.logger.ServerLogger
 import com.tokopedia.logger.utils.Priority
 import com.tokopedia.play.broadcaster.data.type.PlaySocketType
@@ -74,6 +75,7 @@ class PlayLoggerImpl @Inject constructor(
             "channelID" to metric.channelId,
             "authorID" to metric.authorId,
         )
+        Log.d("sukses", metric.toString())
         ServerLogger.log(Priority.P2, TAG_PLAY_BROADCASTER_MONITORING, metrics)
     }
 }

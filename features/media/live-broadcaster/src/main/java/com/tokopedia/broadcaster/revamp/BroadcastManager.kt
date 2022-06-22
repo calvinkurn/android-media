@@ -54,7 +54,7 @@ class BroadcastManager: Broadcaster, Streamer.Listener, BroadcasterAdaptiveBitra
     private var mAdaptiveBitrate: BroadcasterAdaptiveBitrate? = null
 
     private var mIsStatisticEnabled: Boolean = false
-    private var mStatisticTimerInterval: Long = 3000
+    private var mStatisticTimerInterval: Long = 10
     private var mStatistic: BroadcasterStatistic? = null
     private var mStatisticTimer: Timer? = null
     private var mMetric: BroadcasterMetric = BroadcasterMetric.Empty
