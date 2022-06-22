@@ -824,7 +824,7 @@ class MerchantPageFragment : BaseMultiFragment(),
         cardPositions: Pair<Int, Int>
     ) {
         val productUiModel = productListItem.productUiModel
-        if (activityViewModel?.shopId == merchantId || activityViewModel?.shopId.isNullOrBlank()) {
+        if (activityViewModel?.shopId.isNullOrBlank() || activityViewModel?.shopId == merchantId) {
             viewModel.productMap[productUiModel.id] = cardPositions
             if (productUiModel.isCustomizable && productUiModel.isAtc) {
                 customOrderDetailBottomSheet?.setProductPosition(cardPositions.first)
