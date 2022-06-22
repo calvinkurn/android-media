@@ -236,6 +236,11 @@
     <string name="manage_product_continue_label">Lanjut</string>
     <string name="manage_product_save_draft_label">Simpan Draft</string>
 
+    <!--Delete Product-->
+    <string name="deleteproduct_dialog_title">Yakin ingin hapus produk dari campaign?</string>
+    <string name="deleteproduct_dialog_desc">Produk yang dihapus tidak dapat didaftarkan ke campaign, ya.</string>
+
     <string name="sfs_search_product">Cari produk</string>
     <string name="sfs_manage_highlight">Atur Highlight</string>
+
 </resources>
