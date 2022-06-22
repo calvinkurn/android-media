@@ -253,21 +253,7 @@ class TmProgramFragment : BaseDaggerFragment(), ChipGroupCallback ,
             if(programActionType == ProgramActionType.CREATE_BUAT) {
                 tmTracker?.clickProgramCreationBackFromProgramList(arguments?.getInt(BUNDLE_SHOP_ID).toString())
             }
-
-            val dialog = context?.let { DialogUnify(it, DialogUnify.VERTICAL_ACTION, DialogUnify.NO_IMAGE) }
-            dialog?.setTitle(TM_DIALOG_CANCEL_TITLE_PROGRAM)
-            dialog?.setDescription(TM_DIALOG_CANCEL_DESC_PROGRAM)
-            dialog?.setPrimaryCTAText(TM_DIALOG_CANCEL_CTA_PRIMARY_PROGRAM )
-            dialog?.setSecondaryCTAText(TM_DIALOG_CANCEL_CTA_SECONDARY_PROGRAM)
-            dialog?.setPrimaryCTAClickListener {
-                tmTracker?.clickProgramCreationCancelPopupPrimary(arguments?.getInt(BUNDLE_SHOP_ID).toString())
-                dialog.dismiss()
-            }
-            dialog?.setSecondaryCTAClickListener {
-                tmTracker?.clickProgramCreationCancelPopupSecondary(arguments?.getInt(BUNDLE_SHOP_ID).toString())
-                activity?.onBackPressed()
-            }
-            dialog?.show()
+            activity?.onBackPressed()
         }
 
         when(programActionType){
@@ -508,7 +494,7 @@ class TmProgramFragment : BaseDaggerFragment(), ChipGroupCallback ,
          var day = 1
         context?.let{
             val calMax = Calendar.getInstance()
-            calMax.add(Calendar.YEAR, MAX_YEAR)
+            calMax.add(Calendar.MONTH, 2)
             val yearMax = calMax.get(Calendar.YEAR)
             val monthMax = calMax.get(Calendar.MONTH)
             val dayMax = calMax.get(Calendar.DAY_OF_MONTH)

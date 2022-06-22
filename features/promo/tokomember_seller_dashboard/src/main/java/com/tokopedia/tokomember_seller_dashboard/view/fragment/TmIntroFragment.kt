@@ -88,7 +88,6 @@ class TmIntroFragment : BaseDaggerFragment(),
         hideStatusBar()
         observeViewModel()
         renderHeader()
-        renderButton()
         arguments?.getInt(BUNDLE_SHOP_ID, 0)?.let {
             tmTracker?.viewIntroPage(it.toString())
             tmIntroViewModel.getIntroInfo(it)
@@ -146,7 +145,7 @@ class TmIntroFragment : BaseDaggerFragment(),
                     arguments?.getInt(BUNDLE_SHOP_ID, 0)?.let {
                         tmTracker?.clickButtonBsNonOs(it.toString())
                     }
-                    RouteManager.route(context,String.format("%s?url=%s", ApplinkConst.WEBVIEW,TM_SELLER_INTRO_EDU))
+                    RouteManager.route(context,String.format("%s?url=%s", ApplinkConst.WEBVIEW,TM_SELLER_INTRO_OS))
                     bottomSheet.dismiss()
                 }
             })
@@ -175,12 +174,6 @@ class TmIntroFragment : BaseDaggerFragment(),
         videoUrl = membershipData.membershipGetSellerOnboarding?.sellerHomeContent?.sellerHomeInfo?.infoURL?:""
          setVideoView(
             videoUrl?:"")
-    }
-
-    private fun renderButton(){
-        btnContinue.setOnClickListener {
-            RouteManager.route(context,String.format("%s?url=%s", ApplinkConst.WEBVIEW,TM_SELLER_INTRO_EDU))
-        }
     }
 
     private fun animateViews(){

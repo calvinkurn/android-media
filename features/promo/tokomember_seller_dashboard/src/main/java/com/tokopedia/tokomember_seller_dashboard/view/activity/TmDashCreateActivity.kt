@@ -91,16 +91,25 @@ class TmDashCreateActivity : AppCompatActivity(), TmOpenFragmentCallback {
                 dialogCancel.apply {
                     when (screenType) {
                         PROGRAM -> {
-                            setTitle(TM_DIALOG_CANCEL_TITLE_PROGRAM)
-                            setDescription(TM_DIALOG_CANCEL_DESC_PROGRAM)
-                            setPrimaryCTAText(TM_DIALOG_CANCEL_CTA_PRIMARY_PROGRAM)
-                            setSecondaryCTAText(TM_DIALOG_CANCEL_CTA_SECONDARY_PROGRAM)
-                            setPrimaryCTAClickListener {
-                                dismiss()
-                            }
-                            setSecondaryCTAClickListener {
-                                dismiss()
-                                finish()
+                            if (supportFragmentManager.fragments.firstOrNull() is TmProgramFragment) {
+                                val shopId =
+                                    supportFragmentManager.fragments.firstOrNull()?.arguments?.getInt(
+                                        BUNDLE_SHOP_ID
+                                    ).toString()
+
+                                setTitle(TM_DIALOG_CANCEL_TITLE_PROGRAM)
+                                setDescription(TM_DIALOG_CANCEL_DESC_PROGRAM)
+                                setPrimaryCTAText(TM_DIALOG_CANCEL_CTA_PRIMARY_PROGRAM)
+                                setSecondaryCTAText(TM_DIALOG_CANCEL_CTA_SECONDARY_PROGRAM)
+                                setPrimaryCTAClickListener {
+                                    tmTracker?.clickProgramCreationCancelPopupPrimary(shopId)
+                                    dismiss()
+                                }
+                                setSecondaryCTAClickListener {
+                                    tmTracker?.clickProgramCreationCancelPopupSecondary(shopId)
+                                    dismiss()
+                                    finish()
+                                }
                             }
                         }
                         COUPON_SINGLE -> {
@@ -143,8 +152,8 @@ class TmDashCreateActivity : AppCompatActivity(), TmOpenFragmentCallback {
                             }
                         }
                         CARD -> {
-                            if( supportFragmentManager.fragments[0] is TmCreateCardFragment){
-                                val shopId  = supportFragmentManager.fragments[0].arguments?.getInt(BUNDLE_SHOP_ID).toString()
+                            if( supportFragmentManager.fragments.firstOrNull() is TmCreateCardFragment){
+                                val shopId  = supportFragmentManager.fragments.firstOrNull()?.arguments?.getInt(BUNDLE_SHOP_ID).toString()
                                 setTitle(TM_CARD_DIALOG_TITLE)
                                 setDescription(TM_CARD_DIALOG_DESC)
                                 setPrimaryCTAText(TM_CARD_DIALOG_CTA_PRIMARY)

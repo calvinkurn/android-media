@@ -527,6 +527,7 @@ class TmMultipleCuponCreateFragment : BaseDaggerFragment() {
         bundle.putParcelable(BUNDLE_COUPON_CREATE_DATA, tmMerchantCouponCreateData)
         tmOpenFragmentCallback.openFragment(CreateScreenType.PREVIEW, bundle)
         closeLoadingDialog()
+        setButtonState()
     }
 
     private fun initTotalTransactionAmount() {
