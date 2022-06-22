@@ -16,8 +16,8 @@ abstract class CloudAndCacheGraphqlUseCase<R : Any, U : Any> constructor(
     protected val graphqlRepository: GraphqlRepository,
     protected val mapper: BaseResponseMapper<R, U>,
     private val dispatchers: CoroutineDispatchers,
-    private val graphqlQuery: String,
-    private val doQueryHash: Boolean
+    protected val graphqlQuery: String,
+    private val doQueryHash: Boolean = false
 ) : BaseGqlUseCase<U>() {
 
     private var results: MutableSharedFlow<U> = MutableSharedFlow(replay = 1)
