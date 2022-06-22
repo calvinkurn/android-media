@@ -102,6 +102,24 @@ data class PromoListTokoFoodSection(
     @SerializedName("title")
     @Expose
     val title: String = "",
+    @SerializedName("sub_title")
+    @Expose
+    val subtitle: String = "",
+    @SerializedName("icon_url")
+    @Expose
+    val iconUrl: String = "",
+    @SerializedName("is_enabled")
+    @Expose
+    val isEnabled: Boolean = false,
+    @SerializedName("sub_section")
+    @Expose
+    val subSection: PromoListTokoFoodSubSection = PromoListTokoFoodSubSection()
+)
+
+data class PromoListTokoFoodSubSection(
+    @SerializedName("title")
+    @Expose
+    val title: String = "",
     @SerializedName("icon_url")
     @Expose
     val iconUrl: String = "",
