@@ -1243,7 +1243,8 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
             if (recommendationItem.appUrl.isNotEmpty()) {
                 RouteManager.route(it, recommendationItem.appUrl)
             } else {
-                val intent = RouteManager.getIntent(it, ApplinkConstInternalMarketplace.PRODUCT_DETAIL, recommItem.productId.toString())
+                val intent = RouteManager.getIntent(it, ApplinkConstInternalMarketplace.PRODUCT_DETAIL,
+                    recommendationItem.productId.toString())
                 startActivity(intent)
             }
         }
