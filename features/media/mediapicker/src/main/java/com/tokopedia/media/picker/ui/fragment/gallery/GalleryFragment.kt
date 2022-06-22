@@ -197,7 +197,7 @@ open class GalleryFragment : BaseDaggerFragment(), DrawerSelectionWidget.Listene
         binding?.lstMedia?.addItemDecoration(
             GridItemDecoration(
                 LIST_SPAN_COUNT,
-                resources.getDimensionPixelSize(
+                requireContext().resources.getDimensionPixelSize(
                     R.dimen.picker_item_padding
                 )
             )
