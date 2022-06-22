@@ -1,6 +1,7 @@
 package com.tokopedia.loginregister.login.behaviour.di.modules
 
 import android.content.res.Resources
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
@@ -36,7 +37,7 @@ class LoginUseCaseModuleStub {
 
     @LoginScope
     @Provides
-    fun provideGeneratePublicUseCaseStub(graphqlRepository: GraphqlRepository): GeneratePublicKeyUseCaseStub {
+    fun provideGeneratePublicUseCaseStub(@ApplicationContext graphqlRepository: GraphqlRepository): GeneratePublicKeyUseCaseStub {
         val useCase = GraphqlUseCaseStub<GenerateKeyPojo>(graphqlRepository)
         return GeneratePublicKeyUseCaseStub(useCase)
     }
@@ -47,7 +48,7 @@ class LoginUseCaseModuleStub {
 
     @LoginScope
     @Provides
-    fun provideLoginTokenUseCaseV2Stub(graphqlRepository: GraphqlRepository, @Named(SessionModule.SESSION_MODULE) userSessionInterface: UserSessionInterface): LoginTokenV2UseCaseStub {
+    fun provideLoginTokenUseCaseV2Stub(@ApplicationContext graphqlRepository: GraphqlRepository, userSessionInterface: UserSessionInterface): LoginTokenV2UseCaseStub {
         val useCase = GraphqlUseCaseStub<LoginTokenPojoV2>(graphqlRepository)
         return LoginTokenV2UseCaseStub(useCase, userSessionInterface)
     }
@@ -60,13 +61,9 @@ class LoginUseCaseModuleStub {
 
     @LoginScope
     @Provides
-    fun provideRegisterCheckGraphQlUseCase(graphqlRepository: GraphqlRepository): RegisterCheckUseCaseStub {
+    fun provideRegisterCheckGraphQlUseCase(@ApplicationContext graphqlRepository: GraphqlRepository): RegisterCheckUseCaseStub {
         return RegisterCheckUseCaseStub(graphqlRepository)
     }
-
-    @Provides
-    @LoginScope
-    fun provideUserSessionInterface(): UserSessionInterface = UserSessionStub()
 
     @Provides
     @LoginScope
@@ -127,7 +124,7 @@ class LoginUseCaseModuleStub {
 
     @LoginScope
     @Provides
-    fun provideActivateUserUseCaseStub(graphqlRepository: GraphqlRepository): ActivateUserUseCaseStub {
+    fun provideActivateUserUseCaseStub(@ApplicationContext graphqlRepository: GraphqlRepository): ActivateUserUseCaseStub {
         val useCase = GraphqlUseCaseStub<ActivateUserPojo>(graphqlRepository)
         return ActivateUserUseCaseStub(useCase)
     }
@@ -154,14 +151,11 @@ class LoginUseCaseModuleStub {
     @LoginScope
     @Provides
     fun provideDiscoverUseCasStub(
-        graphqlRepository: GraphqlRepository,
+        @ApplicationContext graphqlRepository: GraphqlRepository,
         coroutineDispatcher: CoroutineDispatcher
     ): DiscoverUseCaseStub {
         return DiscoverUseCaseStub(graphqlRepository, coroutineDispatcher)
     }
-
-    @Provides
-    fun provideGraphQlRepository(): GraphqlRepository = GraphqlInteractor.getInstance().graphqlRepository
 
     @Provides
     fun provideMultiRequestGraphql(): MultiRequestGraphqlUseCase = GraphqlInteractor.getInstance().multiRequestGraphqlUseCase

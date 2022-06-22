@@ -101,6 +101,7 @@ import com.tokopedia.network.refreshtoken.EncoderDecoder
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.notifications.CMPushNotificationManager
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
+import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.sessioncommon.ErrorHandlerSession
 import com.tokopedia.sessioncommon.constants.SessionConstants
@@ -162,6 +163,9 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
 
     @Inject
     lateinit var userSession: UserSessionInterface
+
+    @Inject
+    lateinit var firebaseRemoteConfig: RemoteConfig
 
     private var source: String = ""
     protected var isAutoLogin: Boolean = false
@@ -556,15 +560,12 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
     }
 
     private fun fetchRemoteConfig() {
-        context?.let {
-            val firebaseRemoteConfig = FirebaseRemoteConfigImpl(it)
-            isShowTicker = firebaseRemoteConfig.getBoolean(LoginConstants.RemoteConfigKey.KEY_TICKER_FROM_ATC, false)
-            isShowBanner = firebaseRemoteConfig.getBoolean(LoginConstants.RemoteConfigKey.KEY_BANNER, false)
-            isEnableFingerprint = firebaseRemoteConfig.getBoolean(LoginConstants.RemoteConfigKey.KEY_LOGIN_FP, true)
-            isHitRegisterPushNotif = firebaseRemoteConfig.getBoolean(LoginConstants.RemoteConfigKey.KEY_REGISTER_PUSH_NOTIF, false)
-            isEnableEncryptConfig = firebaseRemoteConfig.getBoolean(SessionConstants.FirebaseConfig.CONFIG_LOGIN_ENCRYPTION)
-            isEnableSilentVerif = firebaseRemoteConfig.getBoolean(SessionConstants.FirebaseConfig.CONFIG_SILENT_VERIFICATION)
-        }
+        isShowTicker = firebaseRemoteConfig.getBoolean(LoginConstants.RemoteConfigKey.KEY_TICKER_FROM_ATC, false)
+        isShowBanner = firebaseRemoteConfig.getBoolean(LoginConstants.RemoteConfigKey.KEY_BANNER, false)
+        isEnableFingerprint = firebaseRemoteConfig.getBoolean(LoginConstants.RemoteConfigKey.KEY_LOGIN_FP, true)
+        isHitRegisterPushNotif = firebaseRemoteConfig.getBoolean(LoginConstants.RemoteConfigKey.KEY_REGISTER_PUSH_NOTIF, false)
+        isEnableEncryptConfig = firebaseRemoteConfig.getBoolean(SessionConstants.FirebaseConfig.CONFIG_LOGIN_ENCRYPTION)
+        isEnableSilentVerif = firebaseRemoteConfig.getBoolean(SessionConstants.FirebaseConfig.CONFIG_SILENT_VERIFICATION)
     }
 
     private fun clearData() {

@@ -96,10 +96,10 @@ class LoginActivityTest: LoginBase() {
         //Then
         val query = listOf(
             getAnalyticValidator(
-                "clickLogin",
-                "login page",
-                "click on lupa kata sandi",
-                ""
+                "clickAccount",
+                "widget login page",
+                "click on button lupa kata sandi",
+                "widget butuh bantuan"
             )
         )
         validate(cassavaTestRule, query)

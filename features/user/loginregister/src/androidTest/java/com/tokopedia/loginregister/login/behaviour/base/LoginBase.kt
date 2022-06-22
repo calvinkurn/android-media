@@ -6,6 +6,7 @@ import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.IdlingRegistry
 import androidx.test.espresso.action.ViewActions
+import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.espresso.matcher.ViewMatchers
@@ -18,13 +19,15 @@ import com.tokopedia.loginregister.discover.pojo.DiscoverPojo
 import com.tokopedia.loginregister.discover.pojo.ProviderData
 import com.tokopedia.loginregister.login.behaviour.activity.LoginActivityStub
 import com.tokopedia.loginregister.login.behaviour.data.*
-import com.tokopedia.loginregister.login.behaviour.di.DaggerBaseAppComponentStub
-import com.tokopedia.loginregister.login.behaviour.di.TestAppComponent
+import com.tokopedia.loginregister.login.behaviour.di.DaggerLoginComponentStub
+import com.tokopedia.loginregister.login.behaviour.di.DaggerTestAppComponent
+import com.tokopedia.loginregister.login.behaviour.di.FakeActivityComponentFactory
 import com.tokopedia.loginregister.login.behaviour.di.modules.AppModuleStub
-import com.tokopedia.loginregister.login.behaviour.di.modules.DaggerMockLoginRegisterComponent
+import com.tokopedia.loginregister.login.di.ActivityComponentFactory
 import com.tokopedia.loginregister.login.domain.pojo.RegisterCheckData
 import com.tokopedia.loginregister.login.domain.pojo.RegisterCheckPojo
 import com.tokopedia.loginregister.login.idling.FragmentTransactionIdle
+import com.tokopedia.loginregister.login.view.activity.LoginActivity
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -42,7 +45,7 @@ open class LoginBase: LoginRegisterBase() {
 
     @get:Rule
     var activityTestRule = IntentsTestRule(
-            LoginActivityStub::class.java, false, false
+            LoginActivity::class.java, false, false
     )
 
     protected val context: Context = InstrumentationRegistry.getInstrumentation().targetContext
@@ -50,49 +53,49 @@ open class LoginBase: LoginRegisterBase() {
         get() = InstrumentationRegistry
                 .getInstrumentation().context.applicationContext
 
-    protected open lateinit var activity: LoginActivityStub
+//    protected open lateinit var activity: LoginActivityStub
 
 
-    protected open lateinit var fragmentTransactionIdling: FragmentTransactionIdle
+//    protected open lateinit var fragmentTransactionIdling: FragmentTransactionIdle
 
-//    @Inject
-//    lateinit var registerCheckUseCaseStub: RegisterCheckUseCaseStub
-//
-//    @Inject
-//    lateinit var discoverUseCaseStub: DiscoverUseCaseStub
-//
-//    @Inject
-//    lateinit var loginTokenV2UseCaseStub: LoginTokenV2UseCaseStub
-//
-//    @Inject
-//    lateinit var generatePublicKeyUseCaseStub: GeneratePublicKeyUseCaseStub
-//
-//    @Inject
-//    lateinit var getProfileUseCaseStub: GetProfileUseCaseStub
-//
-//    @Inject
-//    lateinit var activateUserUseCaseStub: ActivateUserUseCaseStub
-//
-//    @Inject
-//    lateinit var dynamicBannerUseCaseStub: DynamicBannerUseCaseStub
-//
-//    @Inject
-//    lateinit var getAdminTypeUseCaseStub: GetAdminTypeUseCaseStub
-//
-//    @Inject
-//    lateinit var loginTokenUseCaseStub: LoginTokenUseCaseStub
-//
-//    @Inject
-//    lateinit var tickerInfoUseCaseStub: TickerInfoUseCaseStub
-//
-//
-//    @Inject
-//    lateinit var userSessionStub: UserSessionInterface
+    @Inject
+    lateinit var registerCheckUseCaseStub: RegisterCheckUseCaseStub
+
+    @Inject
+    lateinit var discoverUseCaseStub: DiscoverUseCaseStub
+
+    @Inject
+    lateinit var loginTokenV2UseCaseStub: LoginTokenV2UseCaseStub
+
+    @Inject
+    lateinit var generatePublicKeyUseCaseStub: GeneratePublicKeyUseCaseStub
+
+    @Inject
+    lateinit var getProfileUseCaseStub: GetProfileUseCaseStub
+
+    @Inject
+    lateinit var activateUserUseCaseStub: ActivateUserUseCaseStub
+
+    @Inject
+    lateinit var dynamicBannerUseCaseStub: DynamicBannerUseCaseStub
+
+    @Inject
+    lateinit var getAdminTypeUseCaseStub: GetAdminTypeUseCaseStub
+
+    @Inject
+    lateinit var loginTokenUseCaseStub: LoginTokenUseCaseStub
+
+    @Inject
+    lateinit var tickerInfoUseCaseStub: TickerInfoUseCaseStub
+
+
+    @Inject
+    lateinit var userSessionStub: UserSessionInterface
 
     @ExperimentalCoroutinesApi
     @Before
     open fun before() {
-//        Dispatchers.setMain(TestCoroutineDispatcher())
+        Dispatchers.setMain(TestCoroutineDispatcher())
 //        val baseAppComponent = DaggerBaseAppComponentStub.builder()
 //                .appModuleStub(AppModuleStub(applicationContext))
 //                .build()
@@ -103,6 +106,10 @@ open class LoginBase: LoginRegisterBase() {
 //                .mockLoginRegisterComponent(loginRegisterComponent)
 //                .build()
 //        loginComponent.inject(this)
+//        ApplicationProvider.getApplicationContext<BaseMainApplication>().setComponent(baseComponent)
+        val fakeComponentFactory = FakeActivityComponentFactory()
+        ActivityComponentFactory.instance = fakeComponentFactory
+        fakeComponentFactory.component.inject(this)
     }
 
     @After
@@ -112,7 +119,7 @@ open class LoginBase: LoginRegisterBase() {
 
     protected fun setRegisterCheckDefaultResponse() {
         val data = RegisterCheckData(isExist = true, useHash = true , userID = "123456", registerType = "email", view = "yoris.prayogo@tokopedia.com")
-//        registerCheckUseCaseStub.response = RegisterCheckPojo(data = data)
+        registerCheckUseCaseStub.response = RegisterCheckPojo(data = data)
     }
 
     protected fun setDefaultDiscover() {
@@ -120,7 +127,7 @@ open class LoginBase: LoginRegisterBase() {
             ProviderData("gplus", "Google", "https://accounts.tokopedia.com/gplus-login", "", "#FFFFFF"),
         )
         val response = DiscoverPojo(DiscoverData(mockProviders, ""))
-//        discoverUseCaseStub.response = response
+        discoverUseCaseStub.response = response
     }
 
     protected fun inflateTestFragment() {
@@ -135,11 +142,11 @@ open class LoginBase: LoginRegisterBase() {
 
         intentModifier(intent)
         activityTestRule.launchActivity(intent)
-        activity = activityTestRule.activity
-        fragmentTransactionIdling = FragmentTransactionIdle(
-            activity.supportFragmentManager,
-            LoginActivityStub.TAG
-        )
+//        activity = activityTestRule.activity
+//        fragmentTransactionIdling = FragmentTransactionIdle(
+//            activity.supportFragmentManager,
+//            LoginActivityStub.TAG
+//        )
     }
 
     fun runTest(test: () -> Unit) {
@@ -155,10 +162,10 @@ open class LoginBase: LoginRegisterBase() {
     }
 
     protected fun waitForFragmentResumed() {
-        IdlingRegistry.getInstance().register(fragmentTransactionIdling)
-        onView(withId(R.id.login_input_view))
-                .check(matches(isDisplayed()))
-        IdlingRegistry.getInstance().unregister(fragmentTransactionIdling)
+//        IdlingRegistry.getInstance().register(fragmentTransactionIdling)
+//        onView(withId(R.id.login_input_view))
+//                .check(matches(isDisplayed()))
+//        IdlingRegistry.getInstance().unregister(fragmentTransactionIdling)
     }
 
     protected fun launchDefaultFragment() {
@@ -170,21 +177,23 @@ open class LoginBase: LoginRegisterBase() {
 
     fun clickTopRegister() {
         val viewInteraction = onView(withId(R.id.actionTextID)).check(matches(isDisplayed()))
-        viewInteraction.perform(ViewActions.click())
+        viewInteraction.perform(click())
     }
 
     fun clickBottomRegister() {
         val viewInteraction = onView(withId(R.id.register_button)).check(matches(isDisplayed()))
-        viewInteraction.perform(ViewActions.click())
+        viewInteraction.perform(click())
     }
 
     fun clickForgotPass() {
         val viewInteraction = onView(withId(R.id.forgot_pass)).check(matches(isDisplayed()))
-        viewInteraction.perform(ViewActions.click())
+        viewInteraction.perform(click())
+
+        onView(withId(R.id.ub_forgot_password)).perform(click())
     }
 
     fun clickUbahButton() {
-        onView(withId(R.id.change_button)).check(matches(ViewMatchers.isDisplayed())).perform(ViewActions.click())
+        onView(withId(R.id.change_button)).check(matches(ViewMatchers.isDisplayed())).perform(click())
     }
 
     fun inputPassword(value: String) {

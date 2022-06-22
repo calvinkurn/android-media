@@ -51,7 +51,7 @@ class LoginNegativeCase: LoginBase() {
         val errorMsg = "Phone too long"
         isDefaultRegisterCheck = false
         val data = RegisterCheckData(errors = arrayListOf(errorMsg))
-//        registerCheckUseCaseStub.response = RegisterCheckPojo(data = data)
+        registerCheckUseCaseStub.response = RegisterCheckPojo(data = data)
 
         runTest {
             inputEmailOrPhone("12345678901234567")
@@ -66,7 +66,7 @@ class LoginNegativeCase: LoginBase() {
         val errorMsg = "got errors from be"
         isDefaultRegisterCheck = false
         val data = RegisterCheckData(errors = arrayListOf(errorMsg))
-//        registerCheckUseCaseStub.response = RegisterCheckPojo(data = data)
+        registerCheckUseCaseStub.response = RegisterCheckPojo(data = data)
 
         runTest {
             inputEmailOrPhone("12345678901234567")
@@ -111,11 +111,11 @@ class LoginNegativeCase: LoginBase() {
         val errorMsg = "Salah pak"
         val data = LoginToken(errors = arrayListOf(Error("", errorMsg)))
         val loginToken = LoginTokenPojoV2(data)
-//        loginTokenV2UseCaseStub.response = loginToken
+        loginTokenV2UseCaseStub.response = loginToken
 
         val keyData = KeyData(key = "abc1234", hash = "1234")
         val keyResponse = GenerateKeyPojo(keyData = keyData)
-//        generatePublicKeyUseCaseStub.response = keyResponse
+        generatePublicKeyUseCaseStub.response = keyResponse
 
         runTest {
             inputEmailOrPhone("yoris.prayogo@tokopedia.com")
@@ -134,11 +134,11 @@ class LoginNegativeCase: LoginBase() {
         val popupError = PopupError(title, "body", "action")
         val data = LoginToken(popupError = popupError)
         val loginToken = LoginTokenPojoV2(data)
-//        loginTokenV2UseCaseStub.response = loginToken
+        loginTokenV2UseCaseStub.response = loginToken
 
         val keyData = KeyData(key = "abc1234", hash = "1234")
         val keyResponse = GenerateKeyPojo(keyData = keyData)
-//        generatePublicKeyUseCaseStub.response = keyResponse
+        generatePublicKeyUseCaseStub.response = keyResponse
 
         runTest {
             inputEmailOrPhone("yoris.prayogo@tokopedia.com")
