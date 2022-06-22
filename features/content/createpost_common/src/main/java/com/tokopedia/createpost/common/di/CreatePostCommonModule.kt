@@ -10,7 +10,6 @@ import com.tokopedia.createpost.common.data.pojo.uploadimage.UploadImageResponse
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
-import com.tokopedia.graphql.data.GraphqlClient
 import com.tokopedia.imageuploader.di.ImageUploaderModule
 import com.tokopedia.imageuploader.di.qualifier.ImageUploaderQualifier
 import com.tokopedia.imageuploader.domain.GenerateHostRepository
