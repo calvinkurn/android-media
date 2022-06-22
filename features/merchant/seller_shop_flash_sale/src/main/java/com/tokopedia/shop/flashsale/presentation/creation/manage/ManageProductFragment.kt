@@ -21,8 +21,10 @@ import com.tokopedia.shop.flashsale.common.extension.*
 import com.tokopedia.shop.flashsale.di.component.DaggerShopFlashSaleComponent
 import com.tokopedia.shop.flashsale.domain.entity.SellerCampaignProductList
 import com.tokopedia.shop.flashsale.domain.entity.enums.ManageProductBannerType.*
+import com.tokopedia.shop.flashsale.presentation.creation.information.CampaignInformationFragment
 import com.tokopedia.shop.flashsale.presentation.creation.manage.adapter.ManageProductListAdapter
 import com.tokopedia.shop.flashsale.presentation.creation.manage.dialog.ProductDeleteDialog
+import com.tokopedia.shop.flashsale.presentation.list.container.CampaignListActivity
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.lifecycle.autoClearedNullable
@@ -42,6 +44,7 @@ class ManageProductFragment :
         private const val REQUEST_CODE = 123
         private const val EMPTY_STATE_IMAGE_URL =
             "https://images.tokopedia.net/img/android/campaign/flash-sale-toko/ic_no_active_campaign.png"
+        private const val REDIRECT_TO_CAMPAIGN_LIST_PAGE_DELAY: Long = 1_500
 
         @JvmStatic
         fun newInstance(campaignId: Long): ManageProductFragment {
@@ -106,7 +109,20 @@ class ManageProductFragment :
                 activity?.finish()
             }
             tpgAddProduct.setOnClickListener {
-                showChooseProductPage()
+                if (manageProductListAdapter.itemCount < 50) {
+                    showChooseProductPage()
+                } else {
+                    view.showErrorWithCta(
+                        getString(R.string.manage_product_maximum_product_error),
+                        getString(R.string.action_oke)
+                    )
+                }
+            }
+            btnSaveDraft.setOnClickListener {
+                binding?.root showToaster getString(R.string.sfs_saved_as_draft)
+                doOnDelayFinished(REDIRECT_TO_CAMPAIGN_LIST_PAGE_DELAY) {
+                    routeToCampaignListPage()
+                }
             }
         }
     }
@@ -265,12 +281,17 @@ class ManageProductFragment :
         }
     }
 
+    private fun routeToCampaignListPage() {
+        val context = context ?: return
+        CampaignListActivity.start(context, isClearTop = true)
+    }
+
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         when (resultCode) {
             Activity.RESULT_OK -> {
                 showLoader()
-                Timer("Retrieving", false).schedule(DELAY) {
+                doOnDelayFinished(DELAY) {
                     viewModel.getProducts(campaignId, LIST_TYPE)
                 }
             }
