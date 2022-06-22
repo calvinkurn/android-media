@@ -307,7 +307,9 @@ class CampaignRuleViewModel @Inject constructor(
     }
 
     private fun isAlreadyInSaveAction(): Boolean {
-        return !isInSaveAction.compareAndSet(false, true)
+        return synchronized(this) {
+            !isInSaveAction.compareAndSet(false, true)
+        }
     }
 
     private fun resetIsInSaveAction() {
@@ -334,9 +336,7 @@ class CampaignRuleViewModel @Inject constructor(
     }
 
     fun saveCampaignCreationDraft() {
-        synchronized(this) {
-            if (isAlreadyInSaveAction()) return
-        }
+        if (isAlreadyInSaveAction()) return
         val campaignValue = campaign.value
         val campaignData = if (campaignValue is Success) campaignValue.data else {
             _saveDraftActionState.postValue(CampaignRuleActionResult.DetailNotLoaded)
@@ -376,9 +376,7 @@ class CampaignRuleViewModel @Inject constructor(
     private fun validateCampaignCreation(
         validAction: suspend (CampaignUiModel) -> Unit
     ) {
-        synchronized(this) {
-            if (isAlreadyInSaveAction()) return
-        }
+        if (isAlreadyInSaveAction()) return
         val campaignValue = campaign.value
         val campaignData = if (campaignValue is Success) campaignValue.data else {
             _createCampaignActionState.postValue(CampaignRuleActionResult.DetailNotLoaded)
