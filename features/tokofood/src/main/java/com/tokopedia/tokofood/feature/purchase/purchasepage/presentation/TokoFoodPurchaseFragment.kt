@@ -499,9 +499,6 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
                             viewModel.refreshPartialCartInformation()
                         }
                     }
-                    UiEvent.EVENT_SUCCESS_LOAD_CART -> {
-
-                    }
                     UiEvent.EVENT_FAILED_DELETE_PRODUCT -> {
                         it.throwable?.let { throwable ->
                             TokofoodErrorLogger.logExceptionToServerLogger(
