@@ -3,6 +3,7 @@ package com.tokopedia.shop.flashsale.presentation.creation.manage
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -64,6 +65,7 @@ class ManageProductFragment :
     private val viewModelProvider by lazy { ViewModelProvider(this, viewModelFactory) }
     private val viewModel by lazy { viewModelProvider.get(ManageProductViewModel::class.java) }
     private var binding by autoClearedNullable<SsfsFragmentManageProductBinding>()
+    private val loaderDialog by lazy { context?.let { LoaderDialog(it) } }
     private val campaignId by lazy { arguments?.getLong(BUNDLE_KEY_CAMPAIGN_ID).orZero() }
     private val manageProductListAdapter by lazy {
         ManageProductListAdapter(
@@ -151,6 +153,7 @@ class ManageProductFragment :
 
     private fun observeBannerType() {
         viewModel.bannerType.observe(viewLifecycleOwner) { type ->
+            Log.d("Masuk", type.toString())
             when(type) {
                 EMPTY.type -> {
                     showEmptyProductBanner()

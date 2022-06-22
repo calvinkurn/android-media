@@ -113,9 +113,11 @@
 
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/icon_dilayani_tokopedia"
-        android:layout_width="16dp"
-        android:layout_height="16dp"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
         android:layout_marginTop="16dp"
+        android:paddingEnd="4dp"
+        android:visibility="gone"
         android:src="@drawable/ic_sfs_dilayani_tokopedia_gs"
         app:layout_constraintStart_toStartOf="@+id/tpg_complete_product_info_desc"
         app:layout_constraintTop_toBottomOf="@+id/tpg_complete_product_info_desc" />
@@ -124,11 +126,10 @@
         android:id="@+id/tpg_stock_product"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="4dp"
+        android:layout_marginTop="16dp"
         android:textColor="@color/grey_600"
-        app:layout_constraintBottom_toBottomOf="@+id/icon_dilayani_tokopedia"
         app:layout_constraintStart_toEndOf="@+id/icon_dilayani_tokopedia"
-        app:layout_constraintTop_toTopOf="@+id/icon_dilayani_tokopedia"
+        app:layout_constraintTop_toBottomOf="@+id/tpg_complete_product_info_desc"
         app:typographyType="paragraph_2"
         app:typographyWeight="reguler"
         tools:text="@string/manage_product_item_stock_at_seller_location_label" />

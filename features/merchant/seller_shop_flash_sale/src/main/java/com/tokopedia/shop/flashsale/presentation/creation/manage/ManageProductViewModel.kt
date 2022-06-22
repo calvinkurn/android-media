@@ -4,13 +4,11 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.isZero
-import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.shop.flashsale.common.extension.convertRupiah
 import com.tokopedia.shop.flashsale.data.request.GetSellerCampaignProductListRequest
 import com.tokopedia.shop.flashsale.domain.entity.SellerCampaignProductList
-import com.tokopedia.shop.flashsale.domain.entity.enums.ManageProductBannerType
 import com.tokopedia.shop.flashsale.domain.entity.enums.ManageProductBannerType.*
 import com.tokopedia.shop.flashsale.domain.entity.enums.ManageProductErrorMessage
 import com.tokopedia.shop.flashsale.domain.usecase.DoSellerCampaignProductSubmissionUseCase
@@ -33,8 +31,8 @@ class ManageProductViewModel @Inject constructor(
         private const val ROWS = 50
         private const val OFFSET = 0
         private const val MIN_CAMPAIGN_STOCK = 1
-        private const val MIN_CAMPAIGN_DISCOUNTED_PRICE = 100
         private const val MAX_CAMPAIGN_DISCOUNT_PERCENTAGE = 0.99
+        private const val MIN_CAMPAIGN_DISCOUNT_PERCENTAGE = 0.01
     }
 
     private val _products = MutableLiveData<Result<SellerCampaignProductList>>()
@@ -116,18 +114,21 @@ class ManageProductViewModel @Inject constructor(
 
     private fun getProductErrorMessage(productMapData: SellerCampaignProductList.ProductMapData): String {
         var errorMsg = ""
-        val maxDiscountedPrice =
-            (productMapData.originalPrice * MAX_CAMPAIGN_DISCOUNT_PERCENTAGE).toInt()
-                .convertRupiah()
+        val maxDiscountedPriceInCurrency =
+            getProductMaxDiscountedPrice(productMapData.originalPrice).convertRupiah()
+        val minDiscountedPriceInCurrency =
+            getProductMinDiscountedPrice(productMapData.originalPrice).convertRupiah()
+        val minDiscountedPrice = getProductMinDiscountedPrice(productMapData.originalPrice)
+
         when {
             productMapData.discountedPrice > productMapData.originalPrice -> {
                 errorMsg =
-                    ManageProductErrorMessage.MAX_CAMPAIGN_DISCOUNTED_PRICE.errorMsg + maxDiscountedPrice
+                    ManageProductErrorMessage.MAX_CAMPAIGN_DISCOUNTED_PRICE.errorMsg + maxDiscountedPriceInCurrency
                 when {
                     productMapData.customStock > productMapData.originalStock -> {
                         errorMsg += ManageProductErrorMessage.OTHER.errorMsg
                     }
-                    productMapData.discountedPrice < MIN_CAMPAIGN_DISCOUNTED_PRICE -> {
+                    productMapData.discountedPrice < minDiscountedPrice -> {
                         errorMsg += ManageProductErrorMessage.OTHER.errorMsg
                     }
                     productMapData.customStock < MIN_CAMPAIGN_STOCK -> {
@@ -143,7 +144,7 @@ class ManageProductViewModel @Inject constructor(
                 errorMsg =
                     ManageProductErrorMessage.MAX_CAMPAIGN_STOCK.errorMsg + "${productMapData.originalStock}"
                 when {
-                    productMapData.discountedPrice < MIN_CAMPAIGN_DISCOUNTED_PRICE -> {
+                    productMapData.discountedPrice < minDiscountedPrice -> {
                         errorMsg += ManageProductErrorMessage.OTHER.errorMsg
                     }
                     productMapData.customStock < MIN_CAMPAIGN_STOCK -> {
@@ -155,23 +156,32 @@ class ManageProductViewModel @Inject constructor(
                 }
             }
 
-            productMapData.discountedPrice < MIN_CAMPAIGN_DISCOUNTED_PRICE -> {
-                errorMsg = ManageProductErrorMessage.MIN_CAMPAIGN_DISCOUNTED_PRICE.errorMsg
+            productMapData.discountedPrice < minDiscountedPrice -> {
                 when {
-                    productMapData.customStock < MIN_CAMPAIGN_STOCK -> {
-                        errorMsg += ManageProductErrorMessage.OTHER.errorMsg
-                    }
-                    productMapData.maxOrder > productMapData.customStock -> {
-                        errorMsg += ManageProductErrorMessage.OTHER.errorMsg
+                    productMapData.discountedPrice.isMoreThanZero() -> {
+                        errorMsg =
+                            ManageProductErrorMessage.MIN_CAMPAIGN_DISCOUNTED_PRICE.errorMsg + minDiscountedPriceInCurrency
+                        when {
+                            productMapData.customStock < MIN_CAMPAIGN_STOCK -> {
+                                errorMsg += ManageProductErrorMessage.OTHER.errorMsg
+                            }
+                            productMapData.maxOrder > productMapData.customStock -> {
+                                errorMsg += ManageProductErrorMessage.OTHER.errorMsg
+                            }
+                        }
                     }
                 }
             }
 
             productMapData.customStock < MIN_CAMPAIGN_STOCK -> {
-                errorMsg = ManageProductErrorMessage.MIN_CAMPAIGN_STOCK.errorMsg
                 when {
-                    productMapData.maxOrder > productMapData.customStock -> {
-                        errorMsg += ManageProductErrorMessage.OTHER.errorMsg
+                    productMapData.customStock.isMoreThanZero() -> {
+                        errorMsg = ManageProductErrorMessage.MIN_CAMPAIGN_STOCK.errorMsg
+                        when {
+                            productMapData.maxOrder > productMapData.customStock -> {
+                                errorMsg += ManageProductErrorMessage.OTHER.errorMsg
+                            }
+                        }
                     }
                 }
             }
@@ -204,4 +214,11 @@ class ManageProductViewModel @Inject constructor(
         )
     }
 
+    private fun getProductMaxDiscountedPrice(originalPrice: Long): Int {
+        return (originalPrice * MAX_CAMPAIGN_DISCOUNT_PERCENTAGE).toInt()
+    }
+
+    private fun getProductMinDiscountedPrice(originalPrice: Long): Int {
+        return (originalPrice * MIN_CAMPAIGN_DISCOUNT_PERCENTAGE).toInt()
+    }
 }
