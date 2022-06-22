@@ -4,11 +4,11 @@ import android.content.Context
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.seller_shop_flash_sale.R
 
-class ProductDeleteDialog(private val context: Context) {
+class ProductDeleteDialog() {
 
     private var onPrimaryActionClick: () -> Unit = {}
 
-    fun show() {
+    fun show(context: Context) {
         val dialog = DialogUnify(context, DialogUnify.VERTICAL_ACTION, DialogUnify.NO_IMAGE)
         dialog.setTitle(context.getString(R.string.deleteproduct_dialog_title))
         dialog.setDescription(context.getString(R.string.deleteproduct_dialog_desc))

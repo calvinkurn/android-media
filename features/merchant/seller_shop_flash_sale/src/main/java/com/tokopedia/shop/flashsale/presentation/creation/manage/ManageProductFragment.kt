@@ -16,6 +16,7 @@ import com.tokopedia.loaderdialog.LoaderDialog
 import com.tokopedia.seller_shop_flash_sale.R
 import com.tokopedia.seller_shop_flash_sale.databinding.SsfsFragmentManageProductBinding
 import com.tokopedia.shop.flashsale.common.customcomponent.BaseSimpleListFragment
+import com.tokopedia.shop.flashsale.common.extension.doOnDelayFinished
 import com.tokopedia.shop.flashsale.common.extension.setFragmentToUnifyBgColor
 import com.tokopedia.shop.flashsale.common.extension.showError
 import com.tokopedia.shop.flashsale.di.component.DaggerShopFlashSaleComponent
@@ -145,7 +146,9 @@ class ManageProductFragment :
     private fun observeRemoveProductsStatus() {
         viewModel.removeProductsStatus.observe(viewLifecycleOwner) {
             if (it is Success) {
-                view?.postDelayed({ loadInitialData() }, DELAY)
+                doOnDelayFinished(DELAY) {
+                    loadInitialData()
+                }
             } else if (it is Fail) {
                 view?.showError(it.throwable)
             }
@@ -225,12 +228,12 @@ class ManageProductFragment :
     }
 
     private fun deleteProduct(product: SellerCampaignProductList.Product) {
-        ProductDeleteDialog(context ?: return).apply {
+        ProductDeleteDialog().apply {
             setOnPrimaryActionClick {
                 loaderDialog?.show()
                 viewModel.removeProducts(campaignId, listOf(product))
             }
-            show()
+            show(context ?: return)
         }
     }
 
