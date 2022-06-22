@@ -28,8 +28,8 @@ abstract class TokoFoodCategoryViewModelTestFixture {
 
     protected lateinit var viewModel: TokoFoodCategoryViewModel
 
-    private val privateCategoryLayoutItemList by lazy {
-        viewModel.getPrivateField<MutableList<Visitable<*>>>("categoryLayoutItemList")
+    private val privatePageKey by lazy {
+        viewModel.getPrivateField<String>("pageKey")
     }
 
     @Before
@@ -98,6 +98,10 @@ abstract class TokoFoodCategoryViewModelTestFixture {
         val homeLayoutList = viewModel.layoutList.value
         val actualResponse = (homeLayoutList as Success).data.items.find { it is TokoFoodErrorStateUiModel }
         Assert.assertNotNull(actualResponse)
+    }
+
+    protected fun verifyPageKey(expectedPageKey: String){
+        Assert.assertEquals(privatePageKey, expectedPageKey)
     }
 
     inline fun <reified T>Any.getPrivateField(name: String): T {

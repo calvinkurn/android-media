@@ -114,9 +114,9 @@ object TokoFoodMerchantUiModelMapper {
     }
 
     private fun mapCartTokoFoodVariantsToSelectedCustomListItems(
-            orderNote: String,
-            masterData: List<CustomListItem>,
-            selectedVariants: List<CartMetadataVariantTokoFood>
+        orderNote: String,
+        masterData: List<CustomListItem>,
+        selectedVariants: List<CartMetadataVariantTokoFood>
     ): List<CustomListItem> {
         val selectedCustomListItems = masterData.toMutableList()
         val optionMap = selectedVariants.groupBy { it.variantId }
