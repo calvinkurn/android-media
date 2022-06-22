@@ -21,11 +21,11 @@ public class TopAdsUrlHitter {
     }
 
 
-    private SharedPreferences sharedPref =
-        context.getSharedPreferences("x-tkp-srv-id", Context.MODE_PRIVATE);
-
-
-    private SharedPreferences.Editor editor = sharedPref.edit();
+//    private SharedPreferences sharedPref =
+//        context.getSharedPreferences("x-tkp-srv-id", Context.MODE_PRIVATE);
+//
+//
+//    private SharedPreferences.Editor editor = sharedPref.edit();
 
     @Deprecated
     public TopAdsUrlHitter(String className) {
@@ -74,8 +74,13 @@ public class TopAdsUrlHitter {
     }
 
     public void hitClickUrlAndStoreHeader(String className, String url, String productId, String productName, String imageUrl) {
+         SharedPreferences sharedPref =
+                context.getSharedPreferences("x-tkp-srv-id", Context.MODE_PRIVATE);
+
+         SharedPreferences.Editor editor = sharedPref.edit();
         String h = new ImpresionTask(className).getHeader(url);
         editor.putString("myheader", h);
+        editor.apply();
         TopAdsLogger.getInstance(context).save(url, TYPE_CLICK, className, productId, productName, imageUrl, "");
     }
 }
