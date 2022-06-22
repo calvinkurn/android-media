@@ -608,9 +608,9 @@ class BroadcastManager: Broadcaster, Streamer.Listener, BroadcasterAdaptiveBitra
 
         mStatistic = BroadcasterStatistic(this)
 
-        mStatisticTimer = Timer()
-        mStatisticTimer?.schedule(object : TimerTask() {
-            override fun run() {
+//        mStatisticTimer = Timer()
+//        mStatisticTimer?.schedule(object : TimerTask() {
+//            override fun run() {
                 val connectionState = mConnectionState ?: return
                 if (connectionState != Streamer.CONNECTION_STATE.RECORD) return
 
@@ -623,8 +623,8 @@ class BroadcastManager: Broadcaster, Streamer.Listener, BroadcasterAdaptiveBitra
                     packetLossIncreased = statistic.isPacketLossIncreased()
                 )
                 broadcastStatisticUpdate()
-            }
-        }, STATISTIC_TIMER_DELAY, mStatisticTimerInterval)
+//            }
+//        }, STATISTIC_TIMER_DELAY, mStatisticTimerInterval)
     }
 
     private fun stopTracking() {
