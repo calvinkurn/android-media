@@ -28,8 +28,12 @@ class HomeRecycleAdapter(asyncDifferConfig: AsyncDifferConfig<Visitable<*>>, pri
    private var mLayoutManager: LinearLayoutManager? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AbstractViewHolder<*> {
-        val view = LayoutInflater.from(parent.context).inflate(viewType, parent, false)
-        return adapterTypeFactory.createViewHolder(view, viewType)
+        return try {
+            val view = LayoutInflater.from(parent.context).inflate(viewType, parent, false)
+            adapterTypeFactory.createViewHolder(view, viewType)
+        } catch (e: Exception) {
+            EmptyBlankViewHolder(parent)
+        }
     }
 
     override fun getItemViewType(position: Int): Int {

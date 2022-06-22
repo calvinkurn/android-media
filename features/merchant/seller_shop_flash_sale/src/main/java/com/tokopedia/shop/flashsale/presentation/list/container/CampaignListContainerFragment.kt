@@ -37,11 +37,10 @@ import javax.inject.Inject
 class CampaignListContainerFragment : BaseDaggerFragment() {
 
     companion object {
-        private const val DELAY_IN_MILLIS: Long = 400
         private const val FIRST_TAB = 0
         private const val SECOND_TAB = 1
         private const val BUNDLE_KEY_AUTO_FOCUS_TAB_POSITION = "auto_focus_tab_position"
-        private const val REFRESH_CAMPAIGN_DELAY_DURATION_IN_MILLIS : Long = 1_000
+        private const val REDIRECTION_DELAY : Long = 500
 
         @JvmStatic
         fun newInstance(autoFocusTabPosition: Int = FIRST_TAB): CampaignListContainerFragment {
@@ -58,6 +57,7 @@ class CampaignListContainerFragment : BaseDaggerFragment() {
     private val autoFocusTabPosition by lazy {
         arguments?.getInt(BUNDLE_KEY_AUTO_FOCUS_TAB_POSITION).orZero()
     }
+    private var listener : CancelCampaignListener? = null
 
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
@@ -177,12 +177,7 @@ class CampaignListContainerFragment : BaseDaggerFragment() {
 
             TabsUnifyMediator(tabsUnify, viewPager) { tab, currentPosition ->
                 tab.setCustomText(fragments[currentPosition].first)
-
-                val targetTabPosition = viewModel.getAutoFocusTabPosition()
-                if (currentPosition == targetTabPosition) {
-                    focusTo(targetTabPosition)
-                }
-
+                handleAutoRedirectionToSpecificTab(currentPosition)
             }
         }
     }
@@ -199,7 +194,7 @@ class CampaignListContainerFragment : BaseDaggerFragment() {
             )
             fragment.setOnScrollDownListener { onRecyclerViewScrollDown() }
             fragment.setOnScrollUpListener { onRecyclerViewScrollUp() }
-            fragment.setOnNavigateToActiveCampaignListener { focusTo(FIRST_TAB) }
+            fragment.setOnNavigateToActiveCampaignListener { focusTo(tabPosition = FIRST_TAB) }
             fragment.setOnCancelCampaignSuccess { handleCancelCampaignSuccess() }
 
             val tabName = "${tab.name} (${tab.totalCampaign})"
@@ -238,21 +233,21 @@ class CampaignListContainerFragment : BaseDaggerFragment() {
 
 
     private fun handleCancelCampaignSuccess() {
-        //Add some spare time caused by Backend write operation delay
-        doOnDelayFinished(REFRESH_CAMPAIGN_DELAY_DURATION_IN_MILLIS) {
-            viewModel.setAutoFocusTabPosition(SECOND_TAB)
-            viewModel.getTabsMeta()
-        }
+        viewModel.setAutoFocusTabPosition(SECOND_TAB)
+        viewModel.getTabsMeta()
     }
 
-    private fun focusTo(tabPosition : Int) {
+    private fun focusTo(delay: Long = 0, tabPosition : Int) {
         //Add some spare time to make sure tabs are successfully drawn before select and focusing to a tab
-        doOnDelayFinished(DELAY_IN_MILLIS) {
+        doOnDelayFinished(delay) {
             val tabLayout = binding?.tabsUnify?.getUnifyTabLayout()
             val tab = tabLayout?.getTabAt(tabPosition)
             tab?.select()
-        }
 
+            if (tabPosition == SECOND_TAB) {
+                listener?.onCampaignCancelled()
+            }
+        }
     }
 
     private fun handleSelectedTabAppearance(position: Int) {
@@ -266,6 +261,21 @@ class CampaignListContainerFragment : BaseDaggerFragment() {
         } catch (e: Exception) {
             e.printStackTrace()
         }
+    }
+
+    private fun handleAutoRedirectionToSpecificTab(currentPosition: Int) {
+        val targetTabPosition = viewModel.getAutoFocusTabPosition()
+        if (currentPosition == targetTabPosition) {
+            focusTo(REDIRECTION_DELAY, targetTabPosition)
+        }
+    }
+
+    fun setCancelCampaignListener(listener: CancelCampaignListener) {
+        this.listener = listener
+    }
+
+    interface CancelCampaignListener {
+        fun onCampaignCancelled()
     }
 
 }

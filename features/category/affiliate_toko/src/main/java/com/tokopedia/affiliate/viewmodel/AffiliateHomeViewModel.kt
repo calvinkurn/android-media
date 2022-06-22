@@ -3,12 +3,15 @@ package com.tokopedia.affiliate.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.affiliate.NO_UI_METRICS
 import com.tokopedia.affiliate.PAGE_ZERO
+import com.tokopedia.affiliate.TOTAL_ITEMS_METRIC_TYPE
 import com.tokopedia.affiliate.adapter.AffiliateAdapterTypeFactory
 import com.tokopedia.affiliate.model.pojo.AffiliateDateFilterData
 import com.tokopedia.affiliate.model.pojo.AffiliateDatePickerData
 import com.tokopedia.affiliate.model.pojo.AffiliateUserPerformaData
 import com.tokopedia.affiliate.model.response.AffiliateAnnouncementData
+import com.tokopedia.affiliate.model.response.AffiliateAnnouncementDataV2
 import com.tokopedia.affiliate.model.response.AffiliatePerformanceListData
 import com.tokopedia.affiliate.model.response.AffiliateUserPerformaListItemData
 import com.tokopedia.affiliate.model.response.AffiliateValidateUserData
@@ -39,12 +42,11 @@ class AffiliateHomeViewModel @Inject constructor(
     private var shimmerVisibility = MutableLiveData<Boolean>()
     private var dataPlatformShimmerVisibility = MutableLiveData<Boolean>()
     private var progressBar = MutableLiveData<Boolean>()
-    private var validateUserdata = MutableLiveData<AffiliateValidateUserData>()
-    private var affiliateAnnouncement = MutableLiveData<AffiliateAnnouncementData>()
+    private var affiliateAnnouncement = MutableLiveData<AffiliateAnnouncementDataV2>()
     private var affiliateDataList = MutableLiveData<ArrayList<Visitable<AffiliateAdapterTypeFactory>>>()
     private var totalItemsCount = MutableLiveData<Int>()
+    private var validateUserdata = MutableLiveData<AffiliateValidateUserData>()
     private var errorMessage = MutableLiveData<Throwable>()
-    private var affiliateErrorMessage = MutableLiveData<Throwable>()
     private var rangeChanged = MutableLiveData<Boolean>()
     private var showProductCount = true
     private var lastID = "0"
@@ -56,9 +58,9 @@ class AffiliateHomeViewModel @Inject constructor(
 
     fun getAffiliateValidateUser() {
         launchCatchError(block = {
-            progressBar.value = true
             validateUserdata.value =
                 affiliateValidateUseCaseUseCase.validateUserStatus(userSessionInterface.email)
+            progressBar.value = false
         }, onError = {
             progressBar.value = false
             it.printStackTrace()
@@ -68,13 +70,10 @@ class AffiliateHomeViewModel @Inject constructor(
 
     fun getAnnouncementInformation() {
         launchCatchError(block = {
-            progressBar.value = true
             affiliateAnnouncement.value =
                 affiliateAffiliateAnnouncementUseCase.getAffiliateAnnouncement()
         }, onError = {
-            progressBar.value = false
             it.printStackTrace()
-            affiliateErrorMessage.value = it
         })
     }
 
@@ -172,9 +171,9 @@ class AffiliateHomeViewModel @Inject constructor(
         affiliatePerfomanceResponse?.getAffiliatePerformance?.data?.userData?.let { userData ->
             userData.metrics = userData.metrics.sortedBy { metrics -> metrics?.order }
             userData.metrics.forEach { metrics ->
-                if (metrics?.order == 0) {
+                if (metrics?.metricType == TOTAL_ITEMS_METRIC_TYPE) {
                     totalItemsCount.value = metrics.metricValue?.toInt()
-                } else {
+                } else if(metrics?.order != NO_UI_METRICS) {
                     performaTempList.add(AffiliateUserPerformanceListModel(metrics))
                 }
             }
@@ -199,9 +198,8 @@ class AffiliateHomeViewModel @Inject constructor(
     fun getDataShimmerVisibility(): LiveData<Boolean> = dataPlatformShimmerVisibility
     fun getRangeChanged(): LiveData<Boolean> = rangeChanged
     fun getErrorMessage(): LiveData<Throwable> = errorMessage
-    fun getAffiliateErrorMessage(): LiveData<Throwable> = affiliateErrorMessage
     fun getValidateUserdata(): LiveData<AffiliateValidateUserData> = validateUserdata
-    fun getAffiliateAnnouncement(): LiveData<AffiliateAnnouncementData> = affiliateAnnouncement
+    fun getAffiliateAnnouncement(): LiveData<AffiliateAnnouncementDataV2> = affiliateAnnouncement
     fun getAffiliateItemCount(): LiveData<Int> = totalItemsCount
     fun getAffiliateDataItems(): LiveData<ArrayList<Visitable<AffiliateAdapterTypeFactory>>> =
         affiliateDataList

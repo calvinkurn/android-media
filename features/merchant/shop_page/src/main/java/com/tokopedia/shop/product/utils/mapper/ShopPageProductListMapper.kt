@@ -1,6 +1,9 @@
 package com.tokopedia.shop.product.utils.mapper
 
-import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.kotlin.extensions.view.getCurrencyFormatted
+import com.tokopedia.kotlin.extensions.view.thousandFormatted
+import com.tokopedia.kotlin.extensions.view.toDoubleOrZero
+import com.tokopedia.kotlin.extensions.view.toFloatOrZero
 import com.tokopedia.merchantvoucher.common.gql.data.MerchantVoucherModel
 import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel
 import com.tokopedia.productcard.ProductCardModel
@@ -14,9 +17,11 @@ import com.tokopedia.shop.common.data.viewmodel.ItemRegisteredViewModel
 import com.tokopedia.shop.common.data.viewmodel.ItemUnregisteredViewModel
 import com.tokopedia.shop.common.graphql.data.shopetalase.ShopEtalaseModel
 import com.tokopedia.shop.common.graphql.data.stampprogress.MembershipStampProgress
-import com.tokopedia.shop.product.view.datamodel.*
 import com.tokopedia.shop.product.data.model.ShopFeaturedProduct
 import com.tokopedia.shop.product.data.model.ShopProduct
+import com.tokopedia.shop.product.view.datamodel.LabelGroupUiModel
+import com.tokopedia.shop.product.view.datamodel.ShopEtalaseItemDataModel
+import com.tokopedia.shop.product.view.datamodel.ShopProductUiModel
 import com.tokopedia.shop.product.view.datamodel.ShopProductUiModel.Companion.THRESHOLD_VIEW_COUNT
 import java.text.NumberFormat
 
@@ -243,5 +248,16 @@ object ShopPageProductListMapper {
                 type = labelGroupUiModel.type,
                 imageUrl = labelGroupUiModel.url
         )
+    }
+
+    fun convertCommaValue(productIdList: List<String?>): String {
+        val stringBuilder = StringBuilder()
+        for (i in productIdList.indices) {
+            stringBuilder.append(productIdList[i])
+            if (i != productIdList.size - 1) {
+                stringBuilder.append(",")
+            }
+        }
+        return stringBuilder.toString()
     }
 }

@@ -3,6 +3,7 @@ package com.tokopedia.shop.flashsale.presentation.creation.manage.mapper
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.shop.flashsale.data.request.DoSellerCampaignProductSubmissionRequest
 import com.tokopedia.shop.flashsale.data.response.GetSellerCampaignValidatedProductListResponse
+import com.tokopedia.shop.flashsale.presentation.creation.manage.enums.ShopStatus
 import com.tokopedia.shop.flashsale.presentation.creation.manage.model.ReserveProductModel
 import com.tokopedia.shop.flashsale.presentation.creation.manage.model.SelectedProductModel
 
@@ -29,7 +30,6 @@ object ReserveProductMapper {
         finalPrice = ADD_PRODUCT_DEFAULT_VALUE
     )
 
-
     fun mapFromProductList(
         productList: List<GetSellerCampaignValidatedProductListResponse.Product>
     ) = productList.map { mapFromProduct(it) }
@@ -38,4 +38,12 @@ object ReserveProductMapper {
         ?.filter { it.parentProductId == null } // filter only parent product
         ?.map { mapToProductData(it) }
         .orEmpty()
+
+    fun mapToShopStatusEnum(shopStatus: Int): ShopStatus {
+        return when(shopStatus) {
+            ShopStatus.OPEN.type -> ShopStatus.OPEN
+            ShopStatus.CLOSED.type -> ShopStatus.CLOSED
+            else -> ShopStatus.OTHER
+        }
+    }
 }

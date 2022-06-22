@@ -54,7 +54,8 @@ class ProductViewModelMapper {
 
         productDataView.adsModel = searchProductModel.topAdsModel
         productDataView.globalNavDataView = GlobalNavDataView.create(
-            searchProductModel.globalSearchNavigation
+            searchProductModel.globalSearchNavigation,
+            dimension90,
         )
         productDataView.cpmModel = searchProductModel.cpmModel
         productDataView.relatedDataView = convertToRelatedViewModel(

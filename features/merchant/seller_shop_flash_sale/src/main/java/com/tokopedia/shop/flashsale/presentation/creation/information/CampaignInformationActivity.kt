@@ -10,7 +10,7 @@ import com.tokopedia.seller_shop_flash_sale.R
 import com.tokopedia.shop.flashsale.di.component.DaggerShopFlashSaleComponent
 import com.tokopedia.shop.flashsale.domain.entity.enums.PageMode
 
-class CampaignInformationActivity: BaseSimpleActivity() {
+class CampaignInformationActivity : BaseSimpleActivity() {
 
     companion object {
         private const val BUNDLE_KEY_PAGE_MODE = "page_mode"
@@ -28,8 +28,11 @@ class CampaignInformationActivity: BaseSimpleActivity() {
         }
 
         @JvmStatic
-        fun startUpdateMode(context: Context, campaignId: Long) {
+        fun startUpdateMode(context: Context, campaignId: Long, isClearTop: Boolean = false) {
             val starter = Intent(context, CampaignInformationActivity::class.java)
+            if (isClearTop) {
+                starter.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+            }
 
             val bundle = Bundle()
             bundle.putParcelable(BUNDLE_KEY_PAGE_MODE, PageMode.UPDATE)

@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.shop.flashsale.common.constant.QuantityPickerConstant.CAMPAIGN_TEASER_MAXIMUM_UPCOMING_HOUR
 import com.tokopedia.shop.flashsale.common.constant.QuantityPickerConstant.CAMPAIGN_TEASER_MINIMUM_UPCOMING_HOUR
 import com.tokopedia.shop.flashsale.common.extension.hourOnly
@@ -14,6 +15,7 @@ import com.tokopedia.shop.flashsale.domain.entity.Gradient
 import com.tokopedia.shop.flashsale.domain.entity.enums.PageMode
 import com.tokopedia.shop.flashsale.domain.entity.enums.PaymentType
 import com.tokopedia.shop.flashsale.domain.usecase.DoSellerCampaignCreationUseCase
+import com.tokopedia.shop.flashsale.domain.usecase.GetSellerCampaignAttributeUseCase
 import com.tokopedia.shop.flashsale.domain.usecase.GetSellerCampaignDetailUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -27,7 +29,8 @@ import javax.inject.Inject
 class CampaignInformationViewModel @Inject constructor(
     private val dispatchers: CoroutineDispatchers,
     private val doSellerCampaignCreationUseCase: DoSellerCampaignCreationUseCase,
-    private val getSellerCampaignDetailUseCase: GetSellerCampaignDetailUseCase
+    private val getSellerCampaignDetailUseCase: GetSellerCampaignDetailUseCase,
+    private val getSellerCampaignAttributeUseCase: GetSellerCampaignAttributeUseCase
 ) : BaseViewModel(dispatchers.main) {
 
     companion object {
@@ -56,11 +59,16 @@ class CampaignInformationViewModel @Inject constructor(
     val saveDraft: LiveData<Result<CampaignCreationResult>>
         get() = _saveDraft
 
+    private val _campaignQuota = MutableLiveData<Result<Int>>()
+    val campaignQuota: LiveData<Result<Int>>
+        get() = _campaignQuota
+
     private var selectedColor = defaultGradientColor
     private var selectedStartDate = Date()
     private var selectedEndDate = Date()
     private var showTeaser = true
     private var paymentType = PaymentType.INSTANT
+    private var remainingQuota = Int.ZERO
 
     private val forbiddenWords = listOf(
         "kejar diskon",
@@ -84,6 +92,7 @@ class CampaignInformationViewModel @Inject constructor(
     sealed class ValidationResult {
         object LapsedStartDate : ValidationResult()
         object LapsedTeaserStartDate : ValidationResult()
+        object NoRemainingQuota : ValidationResult()
         object InvalidHexColor : ValidationResult()
         object Valid : ValidationResult()
     }
@@ -97,7 +106,8 @@ class CampaignInformationViewModel @Inject constructor(
         val teaserDate: Date,
         val firstColor: String,
         val secondColor: String,
-        val paymentType: PaymentType
+        val paymentType: PaymentType,
+        val remainingQuota: Int
     )
 
     fun validateCampaignName(campaignName: String) : CampaignNameValidationResult {
@@ -118,7 +128,13 @@ class CampaignInformationViewModel @Inject constructor(
         return CampaignNameValidationResult.Valid
     }
 
-    fun validateInput(selection: Selection, now: Date) {
+    fun validateInput(mode: PageMode, selection: Selection, now: Date) {
+        if (mode == PageMode.CREATE && selection.remainingQuota == Int.ZERO) {
+            _areInputValid.value = ValidationResult.NoRemainingQuota
+            return
+        }
+
+
         if (selection.showTeaser && selection.teaserDate.before(now)) {
             _areInputValid.value = ValidationResult.LapsedTeaserStartDate
             return
@@ -129,7 +145,7 @@ class CampaignInformationViewModel @Inject constructor(
             return
         }
 
-        if(selection.firstColor.length < MIN_HEX_COLOR_LENGTH || selection.secondColor.length < MIN_HEX_COLOR_LENGTH) {
+        if (selection.firstColor.length < MIN_HEX_COLOR_LENGTH || selection.secondColor.length < MIN_HEX_COLOR_LENGTH) {
             _areInputValid.value = ValidationResult.InvalidHexColor
             return
         }
@@ -234,6 +250,24 @@ class CampaignInformationViewModel @Inject constructor(
 
     }
 
+    fun getCampaignQuota(month : Int, year: Int) {
+        launchCatchError(
+            dispatchers.io,
+            block = {
+                val campaignAttribute = getSellerCampaignAttributeUseCase.execute(
+                    month = month,
+                    year = year
+                )
+
+                _campaignQuota.postValue(Success(campaignAttribute.remainingCampaignQuota))
+            },
+            onError = { error ->
+                _campaignQuota.postValue(Fail(error))
+            }
+        )
+
+    }
+
     fun setPaymentType(paymentType : PaymentType) {
         this.paymentType = paymentType
     }
@@ -264,6 +298,14 @@ class CampaignInformationViewModel @Inject constructor(
 
     fun getSelectedEndDate(): Date {
         return selectedEndDate
+    }
+
+    fun setRemainingQuota(remainingQuota : Int) {
+        this.remainingQuota = remainingQuota
+    }
+
+    fun getRemainingQuota(): Int {
+        return remainingQuota
     }
 
     fun setShowTeaser(showTeaser: Boolean) {
@@ -307,5 +349,11 @@ class CampaignInformationViewModel @Inject constructor(
 
     fun isUsingHexColor(firstColor : String, secondColor : String) : Boolean {
         return firstColor == secondColor
+    }
+
+    fun findUpcomingTimeDifferenceInHour(startDate : Date, upcomingDate : Date) : Int {
+        val differenceInMillis = startDate.time - upcomingDate.time
+        val differenceInHour = TimeUnit.MILLISECONDS.toHours(differenceInMillis)
+        return differenceInHour.toInt()
     }
 }

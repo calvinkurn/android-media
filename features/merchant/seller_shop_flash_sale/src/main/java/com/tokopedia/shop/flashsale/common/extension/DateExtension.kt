@@ -3,7 +3,10 @@ package com.tokopedia.shop.flashsale.common.extension
 import com.tokopedia.shop.flashsale.common.constant.LocaleConstant
 import java.text.SimpleDateFormat
 import java.util.*
+import java.util.concurrent.TimeUnit
 
+private const val WIB_TIME_OFFSET = 7
+private const val ONE_MONTH_OFFSET = 1
 
 fun Date.formatTo(desiredOutputFormat: String, locale: Locale = LocaleConstant.INDONESIA): String {
     return try {
@@ -83,6 +86,18 @@ fun Date.extractMinute(): Int {
     return calendar.get(Calendar.MINUTE)
 }
 
+fun Date.extractMonth(): Int {
+    val calendar = Calendar.getInstance()
+    calendar.time = this
+    return calendar.get(Calendar.MONTH) + ONE_MONTH_OFFSET
+}
+
+fun Date.extractYear(): Int {
+    val calendar = Calendar.getInstance()
+    calendar.time = this
+    return calendar.get(Calendar.YEAR)
+}
+
 fun Date.localFormatTo(desiredOutputFormat: String, locale: Locale = LocaleConstant.INDONESIA): String {
     return try {
         val outputFormat = SimpleDateFormat(desiredOutputFormat, locale)
@@ -93,3 +108,20 @@ fun Date.localFormatTo(desiredOutputFormat: String, locale: Locale = LocaleConst
     }
 }
 
+fun Date.removeTimeZone(): Date {
+    val calendar = Calendar.getInstance()
+    calendar.time = this
+    calendar.add(Calendar.HOUR_OF_DAY, -WIB_TIME_OFFSET)
+    return calendar.time
+}
+
+fun Date.minuteDifference(): Long {
+    val calendar = Calendar.getInstance()
+    calendar.time = this
+
+    val now = Calendar.getInstance()
+
+    val differenceInMillis = calendar.timeInMillis - now.timeInMillis
+
+    return TimeUnit.MILLISECONDS.toMinutes(differenceInMillis)
+}

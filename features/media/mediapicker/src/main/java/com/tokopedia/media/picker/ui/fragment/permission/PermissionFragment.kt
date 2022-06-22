@@ -27,7 +27,7 @@ open class PermissionFragment : BaseDaggerFragment() {
 
     @Inject lateinit var factory: ViewModelProvider.Factory
 
-    private val binding by viewBinding<FragmentPermissionBinding>()
+    private val binding: FragmentPermissionBinding? by viewBinding()
     private var listener: Listener? = null
 
     private val viewModel by lazy {
@@ -42,6 +42,8 @@ open class PermissionFragment : BaseDaggerFragment() {
 
     private var isPermissionDialogShown = false
     private var isPermissionRationale = false
+    private var isPermissionGranted = false
+
     private var mTitle = ""
     private var mMessage = ""
 
@@ -101,6 +103,8 @@ open class PermissionFragment : BaseDaggerFragment() {
     }
 
     private fun onPrepareShowPermissionDialog(permissionCodeNameList: List<String>) {
+        if (isPermissionGranted) return
+
         var permissionGrantedAmount = 0
 
         for (permission in permissionCodeNameList) {
@@ -112,6 +116,7 @@ open class PermissionFragment : BaseDaggerFragment() {
 
         if (permissionCodeNameList.size == permissionGrantedAmount) {
             listener?.onPermissionGranted()
+            isPermissionGranted = true
         } else {
             onShowDialog(permissionCodeNameList, mTitle, mMessage)
             isPermissionDialogShown = true
@@ -142,23 +147,38 @@ open class PermissionFragment : BaseDaggerFragment() {
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
         val deniedPermissions = mutableListOf<String>()
+        val deniedNeedToShowRationalePermissions = mutableListOf<String>()
+
         if (requestCode == PERMISSION_REQUEST_CODE) {
             for (i in permissions.indices) {
                 val permission = permissions[i]
 
                 if (grantResults.isNotEmpty() && grantResults[i] == PERMISSION_DENIED) {
-                    deniedPermissions.add(permission)
+                    if (shouldShowRequestPermissionRationale(permission)) {
+                        deniedNeedToShowRationalePermissions.add(permission)
+                    } else {
+                        deniedPermissions.add(permission)
+                    }
+
+                    // denied (either denied directly or rationale)
                     mAdapter.updateState(permission, false)
                 } else {
+                    // granted
                     mAdapter.updateState(permission, true)
                 }
             }
 
-            if (permissions.isNotEmpty() && deniedPermissions.isEmpty()) {
+            if (permissions.isNotEmpty()
+                && deniedPermissions.isEmpty()
+                && deniedNeedToShowRationalePermissions.isEmpty()
+            ) {
                 listener?.onPermissionGranted()
-            } else {
+                isPermissionGranted = true
+            } else if (deniedPermissions.size > 1 && deniedPermissions.size > deniedNeedToShowRationalePermissions.size) {
                 binding?.permissionPage?.show()
                 isPermissionRationale = true
+            } else {
+                binding?.permissionPage?.show()
             }
         }
     }

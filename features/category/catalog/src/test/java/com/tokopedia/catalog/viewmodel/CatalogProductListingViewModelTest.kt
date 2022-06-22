@@ -225,7 +225,7 @@ class CatalogProductListingViewModelTest {
     }
 
     companion object {
-        private fun createMockGraphqlResponse(response : JsonObject, objectType : Class<Any>): GraphqlResponse {
+        fun createMockGraphqlResponse(response : JsonObject, objectType : Class<Any>): GraphqlResponse {
             val result = HashMap<Type, Any>()
             val errors = HashMap<Type, List<GraphqlError>>()
             val jsonObject: JsonObject = response

@@ -23,7 +23,9 @@ data class GetSellerCampaignProductListRequest(
     data class Filter(
         @SuppressLint("Invalid Data Type")
         @SerializedName("campaign_id")
-        val campaignId: Long = 0
+        val campaignId: Long = 0,
+        @SerializedName("product_name")
+        val productName: String = ""
     )
 
     data class Sort(

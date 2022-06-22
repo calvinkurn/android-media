@@ -31,17 +31,15 @@ import com.tokopedia.shop.flashsale.domain.entity.CampaignUiModel
 import com.tokopedia.shop.flashsale.domain.entity.aggregate.CampaignCreationEligibility
 import com.tokopedia.shop.flashsale.domain.entity.aggregate.ShareComponentMetadata
 import com.tokopedia.shop.flashsale.domain.entity.enums.CampaignStatus
-import com.tokopedia.shop.flashsale.domain.entity.enums.PageMode
+import com.tokopedia.shop.flashsale.domain.entity.enums.isOngoing
 import com.tokopedia.shop.flashsale.presentation.cancelation.CancelCampaignBottomSheet
 import com.tokopedia.shop.flashsale.presentation.creation.information.CampaignInformationActivity
 import com.tokopedia.shop.flashsale.presentation.draft.bottomsheet.DraftListBottomSheet
+import com.tokopedia.shop.flashsale.presentation.draft.uimodel.DraftItemModel
 import com.tokopedia.shop.flashsale.presentation.list.container.CampaignListContainerFragment
-import com.tokopedia.shop.flashsale.presentation.list.dialog.showNoCampaignQuotaDialog
 import com.tokopedia.shop.flashsale.presentation.list.list.adapter.CampaignAdapter
 import com.tokopedia.shop.flashsale.presentation.list.list.bottomsheet.MoreMenuBottomSheet
 import com.tokopedia.shop.flashsale.presentation.list.list.listener.RecyclerViewScrollListener
-import com.tokopedia.unifycomponents.Toaster
-import com.tokopedia.shop.flashsale.presentation.draft.uimodel.DraftItemModel
 import com.tokopedia.universal_sharing.view.bottomsheet.SharingUtil
 import com.tokopedia.universal_sharing.view.bottomsheet.UniversalShareBottomSheet
 import com.tokopedia.universal_sharing.view.model.ShareModel
@@ -50,7 +48,8 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
 
-class CampaignListFragment : BaseSimpleListFragment<CampaignAdapter, CampaignUiModel>() {
+class CampaignListFragment : BaseSimpleListFragment<CampaignAdapter, CampaignUiModel>(),
+    CampaignListContainerFragment.CancelCampaignListener {
 
     companion object {
         private const val BUNDLE_KEY_TAB_POSITION = "tab_position"
@@ -59,7 +58,8 @@ class CampaignListFragment : BaseSimpleListFragment<CampaignAdapter, CampaignUiM
         private const val PAGE_SIZE = 10
         private const val MAX_DRAFT_COUNT = 3
         private const val TAB_POSITION_FIRST = 0
-        private const val SCROLL_DISTANCE_DELAY_IN_MILLIS: Long = 300
+        private const val SCROLL_DISTANCE_DELAY_IN_MILLIS: Long = 100
+        private const val REFRESH_CAMPAIGN_DELAY_DURATION_IN_MILLIS : Long = 3_000
         private const val EMPTY_STATE_IMAGE_URL =
             "https://images.tokopedia.net/img/android/campaign/flash-sale-toko/ic_no_active_campaign.png"
         private const val DRAFT_SERVER_SAVING_DURATION = 1000L
@@ -127,6 +127,12 @@ class CampaignListFragment : BaseSimpleListFragment<CampaignAdapter, CampaignUiM
             .inject(this)
     }
 
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        (parentFragment as? CampaignListContainerFragment)?.setCancelCampaignListener(this)
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -143,6 +149,7 @@ class CampaignListFragment : BaseSimpleListFragment<CampaignAdapter, CampaignUiM
         observeCampaigns()
         observeCampaignPrerequisiteData()
         observeShareComponentMetadata()
+        observeShareComponentThumbnailImage()
         observeCampaignCreationEligibility()
     }
 
@@ -253,13 +260,29 @@ class CampaignListFragment : BaseSimpleListFragment<CampaignAdapter, CampaignUiM
         }
     }
 
+
+    private fun observeShareComponentThumbnailImage() {
+        viewModel.shareComponentThumbnailImageUrl.observe(viewLifecycleOwner) { result ->
+            when (result) {
+                is Success -> {
+                    viewModel.setThumbnailImageUrl(result.data)
+                    viewModel.getShareComponentMetadata(viewModel.getSelectedCampaignId())
+                }
+                is Fail -> {
+                    dismissLoaderDialog()
+                    binding?.root showError result.throwable
+                }
+            }
+        }
+    }
+
     private fun observeShareComponentMetadata() {
         viewModel.shareComponentMetadata.observe(viewLifecycleOwner) { result ->
             when (result) {
                 is Success -> {
                     dismissLoaderDialog()
                     val metadata = result.data
-                    displayShareBottomSheet(metadata)
+                    displayShareBottomSheet(viewModel.getThumbnailImageUrl(), metadata)
                 }
                 is Fail -> {
                     dismissLoaderDialog()
@@ -297,10 +320,12 @@ class CampaignListFragment : BaseSimpleListFragment<CampaignAdapter, CampaignUiM
     }
 
     private val onCampaignClicked: (CampaignUiModel, Int) -> Unit = { campaign, position ->
+        viewModel.setSelectedCampaignId(campaign.campaignId)
         //TODO: Navigate to campaign detail
     }
 
     private val onOverflowMenuClicked: (CampaignUiModel) -> Unit = { campaign ->
+        viewModel.setSelectedCampaignId(campaign.campaignId)
         displayMoreMenuBottomSheet(campaign)
     }
 
@@ -364,7 +389,7 @@ class CampaignListFragment : BaseSimpleListFragment<CampaignAdapter, CampaignUiM
     }
 
     override fun onGetListError(message: String) {
-
+        adapter?.hideLoading()
     }
 
     override fun onScrolled(xScrollAmount: Int, yScrollAmount: Int) {
@@ -452,6 +477,8 @@ class CampaignListFragment : BaseSimpleListFragment<CampaignAdapter, CampaignUiM
         binding?.emptyState?.setImageUrl(EMPTY_STATE_IMAGE_URL)
         binding?.emptyState?.setTitle(getString(R.string.sfs_no_active_campaign_title))
         binding?.emptyState?.setDescription( getString(R.string.sfs_no_active_campaign_description))
+
+        binding?.groupNoSearchResult?.gone()
     }
 
     private fun handleSecondTabEmptyState(hasCampaign: Boolean) {
@@ -471,6 +498,8 @@ class CampaignListFragment : BaseSimpleListFragment<CampaignAdapter, CampaignUiM
         binding?.emptyState?.setImageUrl(EMPTY_STATE_IMAGE_URL)
         binding?.emptyState?.setTitle(getString(R.string.sfs_no_campaign_history_title))
         binding?.emptyState?.setDescription( getString(R.string.sfs_no_campaign_history_description))
+
+        binding?.groupNoSearchResult?.gone()
     }
 
     private fun handleEligibilityResult(data: CampaignCreationEligibility) {
@@ -478,11 +507,6 @@ class CampaignListFragment : BaseSimpleListFragment<CampaignAdapter, CampaignUiM
 
         if (!data.isEligible) {
             showIneligibleAccess(requireActivity())
-            return
-        }
-
-        if (data.remainingQuota == ZERO) {
-            showCampaignQuotaEmptyDialog(requireActivity())
             return
         }
 
@@ -495,22 +519,18 @@ class CampaignListFragment : BaseSimpleListFragment<CampaignAdapter, CampaignUiM
     }
 
     private fun displayMoreMenuBottomSheet(campaign: CampaignUiModel) {
-        val bottomSheet = MoreMenuBottomSheet.newInstance(
-            campaign.campaignId,
-            campaign.campaignName,
-            campaign.status
-        )
+        val bottomSheet = MoreMenuBottomSheet.newInstance(campaign.campaignName, campaign.status)
         bottomSheet.setOnViewCampaignMenuSelected {}
         bottomSheet.setOnCancelCampaignMenuSelected { handleCancelCampaign(campaign) }
         bottomSheet.setOnShareCampaignMenuSelected {
             showLoaderDialog()
-            viewModel.getShareComponentMetadata(campaign.campaignId)
+            viewModel.getShareComponentThumbnailImageUrl(campaign.campaignId)
         }
-        bottomSheet.setOnEditCampaignMenuSelected {}
+        bottomSheet.setOnEditCampaignMenuSelected { handleEditCampaign(campaign) }
         bottomSheet.show(childFragmentManager, bottomSheet.tag)
     }
 
-    private fun displayShareBottomSheet(metadata: ShareComponentMetadata) {
+    private fun displayShareBottomSheet(thumbnailImageUrl : String, metadata: ShareComponentMetadata, ) {
         val param = ShareComponentInstanceBuilder.Param(
             metadata.banner.shop.name,
             metadata.banner.shop.logo,
@@ -527,6 +547,7 @@ class CampaignListFragment : BaseSimpleListFragment<CampaignAdapter, CampaignUiM
         )
 
         shareComponentBottomSheet = shareComponentInstanceBuilder.build(
+            thumbnailImageUrl,
             param,
             onShareOptionClick = ::handleShareOptionClick,
             onCloseOptionClicked = {}
@@ -574,11 +595,22 @@ class CampaignListFragment : BaseSimpleListFragment<CampaignAdapter, CampaignUiM
 
     private fun handleCancelCampaign(campaign: CampaignUiModel) {
         if (campaign.thematicParticipation) {
-            binding?.cardView showError getString(R.string.sfs_cannot_cancel_campaign)
+            val errorWording = findCancelCampaignErrorWording(campaign.status)
+            binding?.cardView showError errorWording
             return
         }
 
         showCancelCampaignBottomSheet(campaign)
+    }
+
+    private fun handleEditCampaign(campaign: CampaignUiModel) {
+        if (campaign.thematicParticipation) {
+            binding?.cardView showError getString(R.string.sfs_cannot_edit_campaign)
+            return
+        }
+
+        //ManageHighlightedProductActivity.start(requireActivity(), campaign.campaignId)
+        CampaignInformationActivity.startUpdateMode(requireActivity(), campaign.campaignId)
     }
 
     private fun showCancelCampaignBottomSheet(campaign: CampaignUiModel) {
@@ -590,22 +622,6 @@ class CampaignListFragment : BaseSimpleListFragment<CampaignAdapter, CampaignUiM
             showCancelCampaignSuccess(campaign)
         }
         bottomSheet.show(childFragmentManager)
-    }
-
-    private fun showCampaignQuotaEmptyDialog(context: Context){
-        val dialog = DialogUnify(context, DialogUnify.VERTICAL_ACTION, DialogUnify.NO_IMAGE)
-        dialog.setTitle(context.getString(R.string.no_campaign_quota_title))
-        dialog.setDescription(context.getString(R.string.no_campaign_quota_description))
-        dialog.setPrimaryCTAText(context.getString(R.string.no_campaign_quota_primary_cta_text))
-        dialog.setSecondaryCTAText(context.getString(R.string.no_campaign_quota_secondary_cta_text))
-
-        dialog.setPrimaryCTAClickListener {
-            routeToPmSubscribePage()
-        }
-        dialog.setSecondaryCTAClickListener {
-            dialog.dismiss()
-        }
-        dialog.show()
     }
 
     private fun showIneligibleAccess(context: Context){
@@ -634,13 +650,31 @@ class CampaignListFragment : BaseSimpleListFragment<CampaignAdapter, CampaignUiM
     }
 
     private fun showCancelCampaignSuccess(campaign: CampaignUiModel) {
-        val toasterMessage = String.format(getString(R.string.cancelcampaign_message_success), campaign.campaignName)
+        val toasterMessage = String.format(findCancelCampaignSuccessWording(campaign.status), campaign.campaignName)
         binding?.root showToaster toasterMessage
 
-        binding?.loader?.visible()
-        getCampaigns(FIRST_PAGE)
+        //Add some spare time caused by Backend write operation delay
+        doOnDelayFinished(REFRESH_CAMPAIGN_DELAY_DURATION_IN_MILLIS) {
+            binding?.loader?.visible()
+            getCampaigns(FIRST_PAGE)
+            onCancelCampaignSuccess()
+        }
+    }
 
-        onCancelCampaignSuccess()
+    private fun findCancelCampaignErrorWording(campaignStatus: CampaignStatus): String {
+        return if (campaignStatus.isOngoing()) {
+            getString(R.string.sfs_cannot_stop_campaign)
+        } else {
+            getString(R.string.sfs_cannot_cancel_campaign)
+        }
+    }
+
+    private fun findCancelCampaignSuccessWording(campaignStatus: CampaignStatus): String {
+        return if (campaignStatus.isOngoing()) {
+            getString(R.string.sfs_campaign_stopped)
+        } else {
+            getString(R.string.sfs_campaign_cancelled)
+        }
     }
 
     private fun routeToPmSubscribePage() {
@@ -650,5 +684,9 @@ class CampaignListFragment : BaseSimpleListFragment<CampaignAdapter, CampaignUiM
 
     fun setOnCancelCampaignSuccess(onCancelCampaignSuccess : () -> Unit) {
         this.onCancelCampaignSuccess = onCancelCampaignSuccess
+    }
+
+    override fun onCampaignCancelled() {
+        getCampaigns(FIRST_PAGE)
     }
 }

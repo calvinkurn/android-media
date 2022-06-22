@@ -12,6 +12,11 @@ fun Long.toDate(): Date {
     return Date(this)
 }
 
+
+fun Long.isZero(): Boolean {
+    return this == 0L
+}
+
 fun Long.epochToDate(): Date {
     val calendar = Calendar.getInstance()
     calendar.time = Date(this * EPOCH_TO_MILLIS_MULTIPLIER)

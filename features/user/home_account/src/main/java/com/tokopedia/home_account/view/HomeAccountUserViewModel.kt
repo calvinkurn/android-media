@@ -10,14 +10,12 @@ import com.tokopedia.home_account.ResultBalanceAndPoint
 import com.tokopedia.home_account.account_settings.domain.UserProfileSafeModeUseCase
 import com.tokopedia.home_account.data.model.*
 import com.tokopedia.home_account.domain.usecase.*
-import com.tokopedia.home_account.linkaccount.data.LinkStatusResponse
 import com.tokopedia.home_account.linkaccount.domain.GetLinkStatusUseCase
 import com.tokopedia.home_account.linkaccount.domain.GetUserProfile
 import com.tokopedia.home_account.pref.AccountPreference
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.loginfingerprint.data.model.CheckFingerprintResult
 import com.tokopedia.loginfingerprint.domain.usecase.CheckFingerprintToggleStatusUseCase
-import com.tokopedia.navigation_common.model.WalletPref
 import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.domain.request.GetRecommendationRequestParam
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
@@ -29,6 +27,9 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
+import kotlinx.coroutines.async
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 import javax.inject.Named
 
@@ -50,8 +51,8 @@ class HomeAccountUserViewModel @Inject constructor(
     private val getPhoneUseCase: GetUserProfile,
     private val userProfileSafeModeUseCase: UserProfileSafeModeUseCase,
     private val checkFingerprintToggleStatusUseCase: CheckFingerprintToggleStatusUseCase,
-    private val walletPref: WalletPref,
-    private val dispatcher: CoroutineDispatchers
+    private val saveAttributeOnLocal: SaveAttributeOnLocalUseCase,
+    dispatcher: CoroutineDispatchers
 ) : BaseViewModel(dispatcher.main) {
 
     private val _buyerAccountData = MutableLiveData<Result<UserAccountDataModel>>()
@@ -99,8 +100,6 @@ class HomeAccountUserViewModel @Inject constructor(
     private val mutableCheckFingerprintStatus = MutableLiveData<Result<CheckFingerprintResult>>()
     val checkFingerprintStatus: LiveData<Result<CheckFingerprintResult>>
         get() = mutableCheckFingerprintStatus
-
-    var internalBuyerData: UserAccountDataModel? = null
 
     fun refreshPhoneNo() {
         launchCatchError(block = {
@@ -155,21 +154,24 @@ class HomeAccountUserViewModel @Inject constructor(
         })
     }
 
-    private suspend fun getLinkStatus(): LinkStatusResponse {
-        return getLinkStatusUseCase(GetLinkStatusUseCase.ACCOUNT_LINKING_TYPE)
-    }
-
     fun getBuyerData() {
-        launchCatchError(block = {
-            val accountModel = getHomeAccountUserUseCase(Unit)
-            val linkStatus = getLinkStatus()
-            accountModel.linkStatus = linkStatus.response
-            internalBuyerData = accountModel
-            saveLocallyAttributes(accountModel)
-            _buyerAccountData.value = Success(accountModel)
-        }, onError = {
-            _buyerAccountData.value = Fail(it)
-        })
+        launch {
+            try {
+                coroutineScope {
+                    val homeAccountUser =  async { getHomeAccountUserUseCase(Unit) }
+                    val linkStatus = async { getLinkStatusUseCase(GetLinkStatusUseCase.ACCOUNT_LINKING_TYPE) }
+
+                    val accountModel = homeAccountUser.await().apply {
+                        this.linkStatus = linkStatus.await().response
+                    }
+                    _buyerAccountData.value = Success(accountModel)
+                    // This is executed after setting live data to save load time
+                    saveAttributeOnLocal(accountModel)
+                }
+            } catch (e: Exception) {
+                _buyerAccountData.value = Fail(e)
+            }
+        }
     }
 
     fun getFirstRecommendation() {
@@ -291,28 +293,6 @@ class HomeAccountUserViewModel @Inject constructor(
     }
 
     private fun checkFirstPage(page: Int): Boolean = page == 1
-
-    fun saveLocallyAttributes(accountDataModel: UserAccountDataModel) {
-        savePhoneVerified(accountDataModel)
-        saveIsAffiliateStatus(accountDataModel)
-        saveDebitInstantData(accountDataModel)
-    }
-
-    private fun saveDebitInstantData(accountDataModel: UserAccountDataModel) {
-        accountDataModel.debitInstant.data?.let {
-            walletPref.saveDebitInstantUrl(it.redirectUrl)
-        }
-    }
-
-    private fun savePhoneVerified(accountDataModel: UserAccountDataModel) {
-        accountDataModel.profile.let {
-            userSession.setIsMSISDNVerified(it.isPhoneVerified)
-        }
-    }
-
-    private fun saveIsAffiliateStatus(accountDataModel: UserAccountDataModel) {
-        userSession.setIsAffiliateStatus(accountDataModel.isAffiliate)
-    }
 
     companion object {
         private const val AKUN_PAGE = "account"

@@ -17,22 +17,40 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
-infix fun View?.showError(throwable : Throwable) {
+infix fun View?.showError(throwable: Throwable) {
     val errorMessage = ErrorHandler.getErrorMessage(this?.context, throwable)
     Toaster.build(this ?: return, errorMessage, Snackbar.LENGTH_SHORT, Toaster.TYPE_ERROR).show()
 }
 
-infix fun View?.showError(errorMessage : String) {
+infix fun View?.showError(errorMessage: String) {
     Toaster.build(this ?: return, errorMessage, Snackbar.LENGTH_SHORT, Toaster.TYPE_ERROR).show()
 }
 
-infix fun View?.showToaster(message : String) {
+infix fun View?.showToaster(message: String) {
     Toaster.build(
         this ?: return,
         message,
         Toaster.LENGTH_LONG,
         Toaster.TYPE_NORMAL
     ).show()
+}
+
+fun View?.showError(throwable: Throwable, anchorView: View?) {
+    val errorMessage = ErrorHandler.getErrorMessage(this?.context, throwable)
+    showError(errorMessage, anchorView)
+}
+
+fun View?.showError(errorMessage: String, anchorView: View?) {
+    val toaster = Toaster.build(
+        this ?: return,
+        errorMessage,
+        Snackbar.LENGTH_SHORT,
+        Toaster.TYPE_ERROR
+    )
+    if (anchorView != null) {
+        toaster.anchorView = anchorView
+    }
+    toaster.show()
 }
 
 fun View.enable() {
@@ -66,7 +84,7 @@ fun View?.slideUp(duration: Int = 350) {
     }
 }
 
-fun View?.slideDown(duration : Int = 350) {
+fun View?.slideDown(duration: Int = 350) {
     this?.let {
         val animate =
             TranslateAnimation(Float.ZERO, Float.ZERO, Float.ZERO, this.height.toFloat())
@@ -104,16 +122,18 @@ fun <T> debounce(
     }
 }
 
-fun Guideline?.animateSlide(fromHeight: Int, targetHeight: Int, isGuidelineBegin: Boolean) = this?.run {
-    val valueAnimator = ValueAnimator.ofInt(fromHeight, targetHeight)
-    valueAnimator.duration = resources.getInteger(com.tokopedia.unifyprinciples.R.integer.Unify_T2).toLong()
-    valueAnimator.interpolator = AccelerateDecelerateInterpolator()
-    valueAnimator.addUpdateListener { animation ->
-        if (isGuidelineBegin) {
-            setGuidelineBegin(animation.animatedValue as Int)
-        } else {
-            setGuidelineEnd(animation.animatedValue as Int)
+fun Guideline?.animateSlide(fromHeight: Int, targetHeight: Int, isGuidelineBegin: Boolean) =
+    this?.run {
+        val valueAnimator = ValueAnimator.ofInt(fromHeight, targetHeight)
+        valueAnimator.duration =
+            resources.getInteger(com.tokopedia.unifyprinciples.R.integer.Unify_T2).toLong()
+        valueAnimator.interpolator = AccelerateDecelerateInterpolator()
+        valueAnimator.addUpdateListener { animation ->
+            if (isGuidelineBegin) {
+                setGuidelineBegin(animation.animatedValue as Int)
+            } else {
+                setGuidelineEnd(animation.animatedValue as Int)
+            }
         }
+        valueAnimator.start()
     }
-    valueAnimator.start()
-}

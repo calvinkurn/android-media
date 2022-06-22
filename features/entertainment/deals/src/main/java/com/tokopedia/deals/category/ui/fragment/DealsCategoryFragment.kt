@@ -156,9 +156,11 @@ class DealsCategoryFragment : DealsBaseFragment(),
                     if (dealsBaseItemDataView.isSuccess) {
                         binding.oneRowShimmering.root.hide()
                         binding.shimmering.root.hide()
+                        binding.dealsCategoryRecyclerView.show()
                     }  else {
                         binding.oneRowShimmering.root.show()
                         binding.shimmering.root.show()
+                        binding.dealsCategoryRecyclerView.hide()
                     }
                 }
 
@@ -176,8 +178,8 @@ class DealsCategoryFragment : DealsBaseFragment(),
 
         val filterItems = arrayListOf<SortFilterItem>()
         try {
-            val showingChips = if (chips.size > 5) {
-                chips.subList(0, 4)
+            val showingChips = if (chips.size > MAX_SIZE_CHIPS) {
+                chips.subList(CHIPS_INITIAL_SUBLIST_INDEX, CHIPS_LAST_SUBLIST_INDEX)
             } else {
                 chips
             }
@@ -215,7 +217,7 @@ class DealsCategoryFragment : DealsBaseFragment(),
 
             addItem(filterItems)
 
-            if (chips.size <= 5) {
+            if (chips.size <= MAX_SIZE_CHIPS) {
                 sortFilterPrefix.hide()
             } else {
                 sortFilterPrefix.setOnClickListener {
@@ -472,6 +474,9 @@ class DealsCategoryFragment : DealsBaseFragment(),
         const val DEFAULT_MIN_ITEMS_PRODUCT = 20
         const val DEFAULT_MIN_ITEMS = 21
         const val INITIAL_SIZE_BASE_ITEM_VIEW = 2
+        const val MAX_SIZE_CHIPS = 5
+        const val CHIPS_INITIAL_SUBLIST_INDEX = 0
+        const val CHIPS_LAST_SUBLIST_INDEX = 4
 
         private const val EXTRA_TAB_NAME = ""
 

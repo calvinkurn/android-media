@@ -8,9 +8,9 @@ interface MiniCartListActionListener {
 
     fun onBulkDeleteUnavailableItems()
 
-    fun onQuantityChanged(productId: String, newQty: Int)
+    fun onQuantityChanged(element: MiniCartProductUiModel, newQty: Int)
 
-    fun onNotesChanged(productId: String, newNotes: String)
+    fun onNotesChanged(productId: String, isBundlingItem: Boolean, bundleId: String, bundleGroupId: String, newNotes: String)
 
     fun onShowSimilarProductClicked(appLink: String, element: MiniCartProductUiModel)
 
@@ -29,4 +29,6 @@ interface MiniCartListActionListener {
     fun onWriteNotesClicked()
 
     fun onChangeNotesClicked()
+
+    fun onChangeBundleClicked(element: MiniCartProductUiModel)
 }

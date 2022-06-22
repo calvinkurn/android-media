@@ -12,9 +12,13 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.loaderdialog.LoaderDialog
 import com.tokopedia.seller_shop_flash_sale.R
 import com.tokopedia.seller_shop_flash_sale.databinding.SsfsFragmentManageProductBinding
 import com.tokopedia.shop.flashsale.common.customcomponent.BaseSimpleListFragment
+import com.tokopedia.shop.flashsale.common.extension.doOnDelayFinished
+import com.tokopedia.shop.flashsale.common.extension.setFragmentToUnifyBgColor
+import com.tokopedia.shop.flashsale.common.extension.isZero
 import com.tokopedia.shop.flashsale.common.extension.showError
 import com.tokopedia.shop.flashsale.di.component.DaggerShopFlashSaleComponent
 import com.tokopedia.shop.flashsale.domain.entity.SellerCampaignProductList
@@ -22,6 +26,7 @@ import com.tokopedia.shop.flashsale.domain.entity.enums.HIDE_BANNER
 import com.tokopedia.shop.flashsale.domain.entity.enums.ManageProductBannerType
 import com.tokopedia.shop.flashsale.domain.entity.enums.ManageProductBannerType.*
 import com.tokopedia.shop.flashsale.presentation.creation.manage.adapter.ManageProductListAdapter
+import com.tokopedia.shop.flashsale.presentation.creation.manage.dialog.ProductDeleteDialog
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.lifecycle.autoClearedNullable
@@ -65,9 +70,7 @@ class ManageProductFragment :
             onEditClicked = {
                 null
             },
-            onDeleteClicked = {
-                null
-            }
+            onDeleteClicked = ::deleteProduct
         )
     }
 
@@ -90,8 +93,10 @@ class ManageProductFragment :
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        setFragmentToUnifyBgColor()
         setupView()
         observeProductList()
+        observeRemoveProductsStatus()
         observeBannerType()
     }
 
@@ -128,6 +133,18 @@ class ManageProductFragment :
                     showEmptyState()
                     result.throwable.localizedMessage?.let { view.showError(it) }
                 }
+            }
+        }
+    }
+
+    private fun observeRemoveProductsStatus() {
+        viewModel.removeProductsStatus.observe(viewLifecycleOwner) {
+            if (it is Success) {
+                doOnDelayFinished(DELAY) {
+                    loadInitialData()
+                }
+            } else if (it is Fail) {
+                view?.showError(it.throwable)
             }
         }
     }
@@ -218,13 +235,22 @@ class ManageProductFragment :
         }
     }
 
-    @OptIn(DelicateCoroutinesApi::class)
     private fun showChooseProductPage() {
         val context = context ?: return
         val intent = Intent(context, ChooseProductActivity::class.java).apply {
             putExtra(ChooseProductActivity.BUNDLE_KEY_CAMPAIGN_ID, campaignId.toString())
         }
         startActivityForResult(intent, REQUEST_CODE)
+    }
+
+    private fun deleteProduct(product: SellerCampaignProductList.Product) {
+        ProductDeleteDialog().apply {
+            setOnPrimaryActionClick {
+                loaderDialog?.show()
+                viewModel.removeProducts(campaignId, listOf(product))
+            }
+            show(context ?: return)
+        }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -239,7 +265,7 @@ class ManageProductFragment :
         }
     }
 
-    override fun createAdapter(): ManageProductListAdapter? {
+    override fun createAdapter(): ManageProductListAdapter {
         return manageProductListAdapter
     }
 
@@ -269,7 +295,9 @@ class ManageProductFragment :
 
     override fun onShowLoading() {}
 
-    override fun onHideLoading() {}
+    override fun onHideLoading() {
+        loaderDialog?.dialog?.hide()
+    }
 
     override fun onDataEmpty() {
         showEmptyState()

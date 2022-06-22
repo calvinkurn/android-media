@@ -27,6 +27,7 @@ data class CampaignUiModel(
     val isCampaignRelation: Boolean,
     val relatedCampaigns: List<RelatedCampaign> = emptyList(),
     val isCampaignRuleSubmit: Boolean,
+    val relativeTimeDifferenceInMinute: Long
 ) {
     data class ProductSummary(
         val totalItem: Int,

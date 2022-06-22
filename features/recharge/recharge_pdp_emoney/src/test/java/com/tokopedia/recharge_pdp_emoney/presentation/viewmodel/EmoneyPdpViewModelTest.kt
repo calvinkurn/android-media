@@ -201,16 +201,16 @@ class EmoneyPdpViewModelTest {
         val catalogId = "12344"
         val productId = "1222"
         val clientNumber = "1234566789"
-        val topUpBillsRecommendation = TopupBillsRecommendation(categoryId = catalogId.toIntOrZero(),
-                productId = productId.toIntOrZero(), clientNumber = clientNumber)
+        val topUpBillsRecommendation = TopupBillsRecommendation(categoryId = catalogId,
+                productId = productId, clientNumber = clientNumber)
 
         //when
         emoneyPdpViewModel.setSelectedRecentNumber(topUpBillsRecommendation)
 
         //then
         assert(emoneyPdpViewModel.selectedRecentNumber.value != null)
-        assert(emoneyPdpViewModel.selectedRecentNumber.value?.categoryId == catalogId.toIntOrNull())
-        assert(emoneyPdpViewModel.selectedRecentNumber.value?.productId == productId.toIntOrNull())
+        assert(emoneyPdpViewModel.selectedRecentNumber.value?.categoryId == catalogId)
+        assert(emoneyPdpViewModel.selectedRecentNumber.value?.productId == productId)
         assert(emoneyPdpViewModel.selectedRecentNumber.value?.clientNumber?.equals(clientNumber)
                 ?: false)
     }

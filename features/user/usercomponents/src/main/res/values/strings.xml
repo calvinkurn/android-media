@@ -1,0 +1,18 @@
+<resources>
+    <!--  STICKY LOGIN  -->
+    <string name="app_name">Sticky Login</string>
+    <string name="close_button_icon">close button icon</string>
+    <string name="sticky_icon">sticky icon</string>
+
+    <!--  USER CONSENT  -->
+    <string name="user_consent_failed_load_collection">Konten gagal ditampilkan</string>
+    <string name="user_consent_default_action_text">Action</string>
+    <string name="user_consent_term_condition">Syarat &amp; Ketentuan</string>
+    <string name="user_consent_policy">Kebijakan Privasi</string>
+    <string name="user_consent_agreement_single_purpose_term_condition_mandatory">Dengan klik tombol di bawah, kamu menyetujui %s %s.</string>
+    <string name="user_consent_agreement_single_purpose_term_condition_policy_mandatory">Dengan klik tombol di bawah, kamu menyetujui %s serta %s %s.</string>
+    <string name="user_consent_agreement_single_purpose_term_condition">Saya menyetujui %s %s.</string>
+    <string name="user_consent_agreement_single_purpose_term_condition_policy">Saya menyetujui %s serta %s %s.</string>
+    <string name="user_consent_agreement_multiple_purpose_term_condition_optional">Saya menyetujui %s:</string>
+    <string name="user_consent_agreement_multiple_purpose_term_condition_policy_optional">Saya menyetujui %s serta %s:</string>
+</resources>

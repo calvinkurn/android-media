@@ -1,18 +1,21 @@
 package com.tokopedia.shop.flashsale.di.component
 
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
+import com.tokopedia.shop.common.di.ShopCommonModule
 import com.tokopedia.shop.flashsale.di.module.ShopFlashSaleModule
 import com.tokopedia.shop.flashsale.di.module.ShopFlashSaleViewModelModule
 import com.tokopedia.shop.flashsale.di.scope.ShopFlashSaleScope
+import com.tokopedia.shop.flashsale.presentation.creation.highlight.ManageHighlightedProductFragment
 import com.tokopedia.shop.flashsale.presentation.creation.information.CampaignInformationActivity
 import com.tokopedia.shop.flashsale.presentation.creation.information.CampaignInformationFragment
 import com.tokopedia.shop.flashsale.presentation.creation.information.bottomsheet.CampaignDatePickerBottomSheet
+import com.tokopedia.shop.flashsale.presentation.creation.manage.ChooseProductFragment
 import com.tokopedia.shop.flashsale.presentation.creation.manage.ManageProductActivity
 import com.tokopedia.shop.flashsale.presentation.creation.manage.ManageProductFragment
-import com.tokopedia.shop.flashsale.presentation.creation.manage.ChooseProductFragment
 import com.tokopedia.shop.flashsale.presentation.creation.rule.CampaignRuleActivity
 import com.tokopedia.shop.flashsale.presentation.creation.rule.CampaignRuleFragment
 import com.tokopedia.shop.flashsale.presentation.creation.rule.bottomsheet.MerchantCampaignTNCBottomSheet
+import com.tokopedia.shop.flashsale.presentation.creation.rule.bottomsheet.relatedcampaign.ChooseRelatedCampaignBottomSheet
 import com.tokopedia.shop.flashsale.presentation.draft.bottomsheet.DraftDeleteBottomSheet
 import com.tokopedia.shop.flashsale.presentation.list.container.CampaignListActivity
 import com.tokopedia.shop.flashsale.presentation.list.container.CampaignListContainerFragment
@@ -21,7 +24,7 @@ import dagger.Component
 
 @ShopFlashSaleScope
 @Component(
-    modules = [ShopFlashSaleModule::class, ShopFlashSaleViewModelModule::class],
+    modules = [ShopFlashSaleModule::class, ShopFlashSaleViewModelModule::class, ShopCommonModule::class],
     dependencies = [BaseAppComponent::class]
 )
 interface ShopFlashSaleComponent {
@@ -38,9 +41,12 @@ interface ShopFlashSaleComponent {
 
     fun inject(activity: CampaignRuleActivity)
     fun inject(fragment: CampaignRuleFragment)
+    fun inject(bottomSheet: ChooseRelatedCampaignBottomSheet)
 
     fun inject(fragment: ChooseProductFragment)
 
     fun inject(activity: ManageProductActivity)
     fun inject(fragment: ManageProductFragment)
+
+    fun inject(fragment: ManageHighlightedProductFragment)
 }

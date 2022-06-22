@@ -2,8 +2,10 @@ ext {
 
     // Sort and categorize alphabetically by folder name
     features = [
+			shopDiscount		: ":features:merchant:shop_discount",
             campaignShakeLanding            : ":features:user:campaign_shake_landing",
 
+            appCommon                       : ":features:common:app_common",
             resourcesCommon                 : ":features:common:resources_common",
             qrscanner                       : ":features:common:qr_scanner",
             developerOptions                : ":features:common:developer_options",
@@ -137,6 +139,7 @@ ext {
             powerMerchantSubscribe          : ":features:merchant:power_merchant_subscribe",
             productDraftDatabase            : ":features:merchant:product_draft_database",
             productDetailCommon             : ":features:merchant:product_detail_common",
+            productDetailIntegration        : ":features:merchant:product_detail_integration",
             variantCommon                   : ":features:merchant:variant_common",
             productDetail                   : ":features:merchant:product_detail",
             atcVariant                      : ":features:merchant:atc_variant",
@@ -156,6 +159,7 @@ ext {
             tokopediaNow                    : ":features:tokopedianow",
             reputationCommon                : ":features:merchant:reputation_common",
             review                          : ":features:merchant:review",
+            reviewCommon                    : ":features:merchant:review_common",
             reviewInbox                     : ":features:merchant:review_inbox",
             sellerActiveCommon              : ":features:merchant:seller_active_common",
             sellerAppWidget                 : ":features:merchant:seller_app_widget",
@@ -241,6 +245,7 @@ ext {
             oneclickcheckout                : ":features:transaction:oneclickcheckout",
             unifyorderhistory               : ":features:transaction:unifyorderhistory",
             wishlist                        : ":features:transaction:wishlist",
+            wishlistCommonV2                : ":features:transaction:wishlist_common",
             snapshot                        : ":features:ordermanagement:snapshot",
             ordermanagementhistory          : ":features:ordermanagement:orderhistory",
             buyerorderdetail                : ":features:ordermanagement:buyer_order_detail",
@@ -278,7 +283,7 @@ ext {
             sessioncommon                   : ":features:user:sessioncommon",
             settingbank                     : ":features:user:settingbank",
             settingnotif                    : ":features:user:settingnotif",
-            stickyLogin                     : ":features:user:stickylogin",
+            usercomponents                  : ":features:user:usercomponents",
             topchat                         : ":features:user:topchat",
             updateinactivephone             : ":features:user:updateinactivephone",
             userIdentification              : ":features:user:user_identification",

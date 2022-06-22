@@ -13,19 +13,20 @@ import com.tokopedia.shop.flashsale.domain.entity.SellerCampaignProductList
 import com.tokopedia.shop.flashsale.domain.entity.enums.ManageProductBannerType
 import com.tokopedia.shop.flashsale.domain.entity.enums.ManageProductBannerType.*
 import com.tokopedia.shop.flashsale.domain.entity.enums.ManageProductErrorMessage
+import com.tokopedia.shop.flashsale.domain.usecase.DoSellerCampaignProductSubmissionUseCase
+import com.tokopedia.shop.flashsale.domain.usecase.DoSellerCampaignProductSubmissionUseCase.Companion.ACTION_DELETE
 import com.tokopedia.shop.flashsale.domain.usecase.GetSellerCampaignProductListUseCase
-import com.tokopedia.shop.flashsale.presentation.creation.manage.adapter.ManageProductListAdapter
+import com.tokopedia.shop.flashsale.presentation.creation.manage.mapper.ManageProductMapper
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
-import java.text.NumberFormat
-import java.util.*
 import javax.inject.Inject
 
 class ManageProductViewModel @Inject constructor(
     private val dispatchers: CoroutineDispatchers,
-    private val getSellerCampaignProductListUseCase: GetSellerCampaignProductListUseCase
+    private val getSellerCampaignProductListUseCase: GetSellerCampaignProductListUseCase,
+    private val doSellerCampaignProductSubmissionUseCase: DoSellerCampaignProductSubmissionUseCase
 ) : BaseViewModel(dispatchers.main) {
 
     companion object {
@@ -44,6 +45,10 @@ class ManageProductViewModel @Inject constructor(
     val bannerType: LiveData<Int>
         get() = _bannerType
 
+    private val _removeProductsStatus = MutableLiveData<Result<Boolean>>()
+    val removeProductsStatus: LiveData<Result<Boolean>>
+        get() = _removeProductsStatus
+
     fun getProducts(
         campaignId: Long,
         listType: Int
@@ -54,7 +59,7 @@ class ManageProductViewModel @Inject constructor(
                 val campaigns = getSellerCampaignProductListUseCase.execute(
                     campaignId = campaignId,
                     listType = listType,
-                    GetSellerCampaignProductListRequest.Pagination(
+                    pagination = GetSellerCampaignProductListRequest.Pagination(
                         ROWS,
                         OFFSET
                     )
@@ -177,6 +182,26 @@ class ManageProductViewModel @Inject constructor(
         }
 
         return errorMsg
+    }
+
+    fun removeProducts(
+        campaignId: Long,
+        productList: List<SellerCampaignProductList.Product>
+    ) {
+        launchCatchError(
+            dispatchers.io,
+            block = {
+                val campaigns = doSellerCampaignProductSubmissionUseCase.execute(
+                    campaignId = campaignId.toString(),
+                    productData = ManageProductMapper.mapToProductDataList(productList),
+                    action = ACTION_DELETE
+                )
+                _removeProductsStatus.postValue(Success(campaigns))
+            },
+            onError = { error ->
+                _removeProductsStatus.postValue(Fail(error))
+            }
+        )
     }
 
 }

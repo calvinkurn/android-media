@@ -336,6 +336,7 @@ private const val HEADLINE_ADS_QUERY = """
                 headline {
                     template_id
                     name
+                    widget_image_url 
                     image {
                         full_url
                         full_ecs

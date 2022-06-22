@@ -12,6 +12,9 @@
     <string name="sfs_yes">Ya</string>
     <string name="sfs_no">Tidak</string>
     <string name="sfs_save_as_draft">Simpan Sebagai Draft</string>
+    <string name="sfs_ok">Oke</string>
+    <string name="sfs_saved_as_draft">Campaign disimpan sebagai draft.</string>
+    <string name="sfs_placeholder_percent">%d\%%</string>
 
     <!--Campaign List Page-->
     <string name="sfs_your_shop_flash_sale">Flash Sale Toko-mu</string>
@@ -37,9 +40,13 @@
     <string name="sfs_stop">Hentikan</string>
     <string name="sfs_draft_deleted">Draft campaign berhasil dihapus.</string>
     <string name="sfs_cannot_cancel_campaign">Campaign yang masuk ke partisipasi event tidak dapat dibatalkan.</string>
+    <string name="sfs_cannot_stop_campaign">Campaign yang masuk ke partisipasi event tidak dapat dihentikan.</string>
+    <string name="sfs_cannot_edit_campaign">Campaign yang masuk ke partisipasi event hanya bisa diedit di versi desktop.</string>
     <string name="sfs_ineligible_access_title">Kamu tidak memiliki kuota untuk membuat Flash Sale Toko</string>
     <string name="sfs_ineligible_access_description">Upgrade tokomu ke Power Merchant PRO untuk dapat kuota Flash Sale  Toko, ya.</string>
     <string name="sfs_subscribe_pm_pro">Daftar PM Pro</string>
+    <string name="sfs_campaign_cancelled">%s berhasil dibatalkan.</string>
+    <string name="sfs_campaign_stopped">%s berhasil dihentikan.</string>
 
     <string name="sfs_search_result_not_found_title">Campaign yang kamu cari tidak ditemukan.</string>
     <string name="sfs_search_result_not_found_description">Coba kata kunci lain, ya.</string>
@@ -56,8 +63,8 @@
     <string name="sfs_placeholder_draft">Draft (%s)</string>
 
     <!--Share Component-->
-    <string name="sfs_share_title_upcoming">Segera hadir, Flash Sale dari %s di \@Tokopedia. Mulai %s pukul %s</string>
-    <string name="sfs_share_title_ongoing">Kejar penawaran eksklusif di Flash Sale dari %s hanya di \@Tokopedia. Hanya sampai %s pukul %s!</string>
+    <string name="sfs_share_thumbnail_title_upcoming">Segera hadir, Flash Sale dari %s di \@Tokopedia. Mulai %s pukul %s</string>
+    <string name="sfs_share_thumbnail_title_ongoing">Kejar penawaran eksklusif di Flash Sale dari %s hanya di \@Tokopedia. Hanya sampai %s pukul %s!</string>
 
     <string name="sfs_share_outgoing_title">Flash Sale dari %s</string>
     <string name="sfs_share_outgoing_description_upcoming">Dapatkan harga spesial dari %s selama stok tersedia. Yuk, pasang pengingatnya!</string>
@@ -78,7 +85,7 @@
     <string name="sfs_coachmark_first">Isi informasi campaign-mu dan klik lanjut untuk ke tahap berikutnya, ya.</string>
     <string name="sfs_coachmark_second">Jika ingin melengkapi informasi campaign di lain waktu, klik Simpan Draft di sini.</string>
     <string name="sfs_error_message_min_char">Min. 5 huruf</string>
-    <string name="sfs_error_message_forbidden_words">Mengandung kata terlarang.</string>
+    <string name="sfs_error_message_forbidden_words">Mengandung kata terlarang. Pelajari</string>
     <string name="sfs_error_message_field_not_filled">Wajib diisi</string>
     <string name="sfs_error_message_incomplete_input">Info campaign belum lengkap. Lengkapi semua info sebelum lanjut, ya.</string>
     <string name="sfs_error_message_connection_error">Ada gangguan. Coba refresh lagi, ya.</string>
@@ -91,9 +98,12 @@
     <string name="sfs_select_campaign_time">Pilih jam campaign</string>
     <string name="sfs_placeholder_selected_date">Tanggal terpilih: %s</string>
     <string name="sfs_placeholder_empty_quota">Kuota campaign di Bulan %s habis. Pilih jadwal di bulan lain, ya.</string>
+    <string name="sfs_placeholder_empty_current_month_quota">Kuotamu di Bulan %s sudah habis</string>
     <string name="sfs_placeholder_campaign_count">%s Campaign</string>
+    <string name="sfs_placeholder_length_counter">%s/%s</string>
     <string name="sfs_hashtag">#</string>
     <string name="sfs_invalid_hex_color">Format kode hexa yang dipilih tidak valid</string>
+    <string name="sfs_create_campaign_on_another_period">Buat campaign di bulan lain, ya.</string>
 
     <string name="sfs_green_dot">Indikator campaign aktif</string>
 
@@ -109,8 +119,6 @@
     <string name="campaign_teaser_info_title">Informasi Teaser Campaign</string>
 
     <!--no campaign quota dialog box-->
-    <string name="no_campaign_quota_title">Yaah, kuota campaign-mu habis</string>
-    <string name="no_campaign_quota_description">Dapatkan tambahan kuota campaign dengan upgrade keanggotaan tokomu dulu, ya!</string>
     <string name="no_campaign_quota_primary_cta_text">Cek Keanggotaan Toko</string>
     <string name="no_campaign_quota_secondary_cta_text">Kembali</string>
 
@@ -197,6 +205,29 @@
     <string name="campaign_rule_previous_campaign_item_removed_cta">@string/action_oke</string>
     <string name="campaign_rule_tnc_checkbox_label">Saya menyetujui <b>Syarat &amp; Ketentuan Pembeli</b></string>
 
+    <string name="choose_related_campaign_title">Pilih campaign sebelumnya</string>
+    <string name="choose_related_campaign_add_campaign_button_label">Tambah Campaign</string>
+    <string name="choose_related_campaign_search_not_found_message">Oops, campaign yang kamu cari tidak ditemukan.</string>
+    <string name="choose_related_campaign_item_campaign_code">#%s</string>
+
+    <string name="campaign_rule_both_section_invalid_message">Pilih metode pembayaran terlebih dan lengkapi bagian pengaturan pembeli terlebih dulu</string>
+    <string name="campaign_rule_invalid_payment_type_message">Pilih metode pembayaran terlebih dulu</string>
+    <string name="campaign_rule_invalid_buyer_options_message">Lengkapi bagian pengaturan pembeli terlebih dulu.</string>
+    <string name="campaign_rule_tnc_not_accepted_message">Anda belum menyetujui syarat &amp; ketentuan pembeli</string>
+
+    <string name="campaign_rule_invalid_campaign_time_dialog_title">Jadwal campaign sudah lewat</string>
+    <string name="campaign_rule_invalid_campaign_time_dialog_description">Coba ubah jadwal campaign dulu, ya.</string>
+    <string name="campaign_rule_invalid_campaign_time_dialog_cta">Ganti Jadwal</string>
+
+    <string name="campaign_rule_not_eligible_dialog_title">Kamu tidak punya kuota untuk buat Flash Sale Toko</string>
+    <string name="campaign_rule_not_eligible_dialog_message">Upgrade toko ke Power Merchant PRO atau Official Store untuk dapat kuota, ya.</string>
+    <string name="campaign_rule_not_eligible_dialog_cta">Daftar PM PRO</string>
+
+    <string name="campaign_rule_create_campaign_confirmation_dialog_title">Buat campaign?</string>
+    <string name="campaign_rule_create_campaign_confirmation_dialog_message">Kamu masih dapat mengubah info campaign paling lambat 1 jam sebelum periode mendatang.</string>
+    <string name="campaign_rule_create_campaign_confirmation_dialog_primary_cta">Ya, Buat campaign</string>
+    <string name="campaign_rule_create_campaign_confirmation_dialog_secondary_cta">Cek Ulang</string>
+
     <!--Product List Page-->
     <string name="chooseproduct_page_title">Pilih Produk</string>
     <string name="chooseproduct_search_placeholdertext">Cari produk atau SKU</string>
@@ -222,4 +253,12 @@
     <string name="manage_product_item_max_buy_label">Maks. Pembelian: <b>%s</b></string>
     <string name="manage_product_continue_label">Lanjut</string>
     <string name="manage_product_save_draft_label">Simpan Draft</string>
+
+    <!--Delete Product-->
+    <string name="deleteproduct_dialog_title">Yakin ingin hapus produk dari campaign?</string>
+    <string name="deleteproduct_dialog_desc">Produk yang dihapus tidak dapat didaftarkan ke campaign, ya.</string>
+
+    <string name="sfs_search_product">Cari produk</string>
+    <string name="sfs_manage_highlight">Atur Highlight</string>
+
 </resources>
