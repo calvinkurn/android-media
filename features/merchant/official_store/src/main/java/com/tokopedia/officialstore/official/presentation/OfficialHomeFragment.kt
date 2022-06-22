@@ -328,6 +328,8 @@ class OfficialHomeFragment :
     }
 
     private fun updateWishlist(isWishlist: Boolean, position: Int) {
+        recommendationWishlistItem?.isWishlist = !(recommendationWishlistItem?.isWishlist
+            ?: false)
         if (position > -1 && adapter != null) {
             officialHomeMapper.updateWishlist(isWishlist, position, adapter)
         }
