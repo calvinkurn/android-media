@@ -24,7 +24,7 @@ class PlayLoggerImpl @Inject constructor(
     }
 
     private fun sendLog(messages: Map<String, String>) {
-        ServerLogger.log(Priority.P2, TAG_PLAY_BROADCASTER_MONITORING, messages)
+        ServerLogger.log(Priority.P2, TAG_SCALYR, messages)
     }
 
     override fun logChannelStatus(channelStatus: ChannelStatus) {
