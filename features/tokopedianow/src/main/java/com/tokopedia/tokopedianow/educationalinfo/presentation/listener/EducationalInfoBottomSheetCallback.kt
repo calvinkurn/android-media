@@ -16,6 +16,8 @@ class EducationalInfoBottomSheetCallback(
     override fun clickVisitInformationPage(keyRes: String) {
         if (keyRes == TokoNowServiceTypeUtil.EDU_BOTTOMSHEET_SK_RESOURCE_ID) {
             analytics.clickTermsAndConditions(channelId, state)
+        } else {
+            analytics.clickOperationalHour(channelId, state)
         }
     }
 

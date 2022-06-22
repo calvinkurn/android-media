@@ -5,6 +5,7 @@ import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstant
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.VALUE.BUSINESS_UNIT_PLAY
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.VALUE.CURRENT_SITE_TOKOPEDIA_MARKET_PLACE
 import com.tokopedia.tokopedianow.educationalinfo.analytics.EducationalInfoAnalytics.ACTION.EVENT_ACTION_CLICK_NOW_TERMS_AND_CONDITION_BOTTOMSHEET
+import com.tokopedia.tokopedianow.educationalinfo.analytics.EducationalInfoAnalytics.ACTION.EVENT_ACTION_CLICK_OPERATIONAL_HOUR
 import com.tokopedia.tokopedianow.educationalinfo.analytics.EducationalInfoAnalytics.ACTION.EVENT_ACTION_CLICK_VISIT_NOW_USP_BOTTOMSHEET
 import com.tokopedia.tokopedianow.educationalinfo.analytics.EducationalInfoAnalytics.ACTION.EVENT_ACTION_VIEW_NOW_USP_BOTTOMSHEET
 import com.tokopedia.tokopedianow.educationalinfo.analytics.EducationalInfoAnalytics.CATEGORY.EVENT_CATEGORY_GROUPCHAT_ROOM
@@ -20,6 +21,7 @@ class EducationalInfoAnalytics {
     object ACTION {
         const val EVENT_ACTION_VIEW_NOW_USP_BOTTOMSHEET = "view - now usp bottomsheet"
         const val EVENT_ACTION_CLICK_NOW_TERMS_AND_CONDITION_BOTTOMSHEET = "click - now syarat dan ketentuan bottomsheet"
+        const val EVENT_ACTION_CLICK_OPERATIONAL_HOUR = "click - jam operasional"
         const val EVENT_ACTION_CLICK_VISIT_NOW_USP_BOTTOMSHEET = "click - kunjungi now usp bottomsheet"
     }
 
@@ -58,6 +60,18 @@ class EducationalInfoAnalytics {
             .setCurrentSite(CURRENT_SITE_TOKOPEDIA_MARKET_PLACE)
             .setEvent(EVENT_CLICK_CONTENT)
             .setEventAction(EVENT_ACTION_CLICK_VISIT_NOW_USP_BOTTOMSHEET)
+            .setEventLabel("$channelId - $state")
+            .build()
+            .send()
+    }
+
+    fun clickOperationalHour(channelId: String?, state: String?) {
+        Tracker.Builder()
+            .setBusinessUnit(BUSINESS_UNIT_PLAY)
+            .setEventCategory(EVENT_CATEGORY_GROUPCHAT_ROOM)
+            .setCurrentSite(CURRENT_SITE_TOKOPEDIA_MARKET_PLACE)
+            .setEvent(EVENT_CLICK_CONTENT)
+            .setEventAction(EVENT_ACTION_CLICK_OPERATIONAL_HOUR)
             .setEventLabel("$channelId - $state")
             .build()
             .send()
