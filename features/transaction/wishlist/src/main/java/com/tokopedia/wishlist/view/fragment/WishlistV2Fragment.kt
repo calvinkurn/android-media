@@ -1229,10 +1229,19 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
         }
     }
 
-    override fun onProductRecommItemClicked(recommItem: RecommendationItem) {
+    override fun onProductRecommItemClicked(recommendationItem: RecommendationItem) {
+        if(recommendationItem.isTopAds) {
+            TopAdsUrlHitter(context).hitClickUrl(
+                this::class.java.simpleName,
+                recommendationItem.clickUrl,
+                recommendationItem.productId.toString(),
+                recommendationItem.name,
+                recommendationItem.imageUrl
+            )
+        }
         activity?.let {
-            if (recommItem.appUrl.isNotEmpty()) {
-                RouteManager.route(it, recommItem.appUrl)
+            if (recommendationItem.appUrl.isNotEmpty()) {
+                RouteManager.route(it, recommendationItem.appUrl)
             } else {
                 val intent = RouteManager.getIntent(it, ApplinkConstInternalMarketplace.PRODUCT_DETAIL, recommItem.productId.toString())
                 startActivity(intent)

@@ -123,8 +123,8 @@ private const val ASGC_RESTOCK_PRODUCTS = "asgc_restock_products"
  *Lihat Produk Value is static so we have fixed it width to Keep our animation intact
  *Do not manipulate this value unless Lihat Produk text change
  **/
-private const val LIHAT_PRODUK_EXPANDED_WIDTH_MIN_INDP = 90
-private const val LIHAT_PRODUK_CONTRACTED_WIDTH_INDP = 24
+private const val LIHAT_PRODUK_EXPANDED_WIDTH_MIN_INDP = 124
+private const val LIHAT_PRODUK_CONTRACTED_WIDTH_INDP = 32
 const val PORTRAIT = 1
 const val LANDSCAPE = 2
 
@@ -1438,9 +1438,9 @@ class PostDynamicViewNew @JvmOverloads constructor(
         GridPostAdapter.isMute = !GridPostAdapter.isMute
         toggleVolume(GridPostAdapter.isMute)
         if (GridPostAdapter.isMute) {
-            volumeIcon?.setImageResource(R.drawable.ic_feed_volume_mute)
+            volumeIcon?.setImageResource(R.drawable.ic_feed_volume_mute_large)
         } else {
-            volumeIcon?.setImageResource(R.drawable.ic_feed_volume_up)
+            volumeIcon?.setImageResource(R.drawable.ic_feed_volume_up_large)
         }
     }
 
