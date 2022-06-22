@@ -11,6 +11,13 @@ import com.tokopedia.user.session.UserSessionInterface
 import timber.log.Timber
 import javax.inject.Inject
 
+/**
+ *  Helper class to record affiliate attribution and create affiliate link
+ *
+ * @see initCookie
+ *
+ * @see createAffiliateLink
+ */
 class AffiliateCookieHelper @Inject constructor(
     private val createCookieUseCase: CreateCookieUseCase,
     private val checkCookieUseCase: CheckCookieUseCase,
@@ -18,6 +25,16 @@ class AffiliateCookieHelper @Inject constructor(
 ) {
     private var affiliateUUID: String = ""
 
+    /**
+     * Creates cookie if internally saved affiliateUUID is not empty otherwise Checks cookie and updates affiliateUUID
+     *
+     * @param[affiliateUUID] required and pass it from url query params
+     * @param[affiliateChannel] required and pass it from url query params
+     * @param[affiliatePageDetail] [AffiliatePageDetail]
+     * @param[uuid] random UUID generated every time user land on PDP page. (Required for Product)
+     * @param[additionalParam] some additional params of type [AdditionalParam]
+     *
+     */
     suspend fun initCookie(
         affiliateUUID: String,
         affiliateChannel: String,
@@ -62,6 +79,13 @@ class AffiliateCookieHelper @Inject constructor(
         }
     }
 
+    /**
+     * Helper function to create affiliate link of an url.
+     *
+     * @param[productUrl] url of product of which affiliate link is needed
+     *
+     * @return appends an affiliate UUID query to param to your AppLink or URL. if the cookie not recorded, will return the same [productUrl]
+     */
     fun createAffiliateLink(productUrl: String): String {
         if (affiliateUUID.isNotEmpty()) {
             return Uri.parse(productUrl)
