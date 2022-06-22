@@ -705,14 +705,9 @@ class ChatbotPresenter @Inject constructor(
         val input = genrateInput(selectedValue, model)
         chipSubmitHelpfulQuestionsUseCase.cancelJobs()
         chipSubmitHelpfulQuestionsUseCase.chipSubmitHelpfulQuestions(
-            ::onSuccessOptionList,
             ::onErrorOptionList,
             input
         )
-    }
-
-    private fun onSuccessOptionList(submitOptionListResponse: SubmitOptionListResponse) {
-        //Notifying the backend
     }
 
     private fun onErrorOptionList(throwable: Throwable) {

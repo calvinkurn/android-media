@@ -4,14 +4,16 @@ import android.content.Intent
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.chat_common.domain.SendWebsocketParam
 import com.tokopedia.chat_common.domain.pojo.invoiceattachment.InvoiceLinkPojo
+import com.tokopedia.chatbot.data.TickerData.TickerDataResponse
 import com.tokopedia.chatbot.data.chatactionbubble.ChatActionBubbleViewModel
 import com.tokopedia.chatbot.data.imageupload.ChatbotUploadImagePojo
-import com.tokopedia.chatbot.data.newsession.TopBotNewSessionResponse
 import com.tokopedia.chatbot.data.quickreply.QuickReplyViewModel
 import com.tokopedia.chatbot.data.uploadsecure.CheckUploadSecureResponse
 import com.tokopedia.chatbot.domain.mapper.ChatBotWebSocketMessageMapper
+import com.tokopedia.chatbot.domain.pojo.csatRating.csatInput.InputItem
+import com.tokopedia.chatbot.domain.pojo.csatRating.csatResponse.SubmitCsatGqlResponse
 import com.tokopedia.chatbot.domain.pojo.submitchatcsat.ChipSubmitChatCsatInput
-import com.tokopedia.chatbot.domain.subscriber.GetExistingChatSubscriber
+import com.tokopedia.chatbot.domain.pojo.submitchatcsat.ChipSubmitChatCsatResponse
 import com.tokopedia.chatbot.domain.subscriber.SendRatingReasonSubscriber
 import com.tokopedia.chatbot.domain.subscriber.SendRatingSubscriber
 import com.tokopedia.chatbot.domain.usecase.*
@@ -123,6 +125,136 @@ class ChatbotPresenterTest {
 
 
     @Test
+    fun `submitChatCsat success`() {
+        val response = mockk<ChipSubmitChatCsatResponse>(relaxed = true)
+
+        coEvery {
+            chipSubmitChatCsatUseCase.chipSubmitChatCsat(captureLambda(),any(),any())
+        } coAnswers {
+            firstArg<(ChipSubmitChatCsatResponse)-> Unit>().invoke(response)
+        }
+
+        presenter.submitChatCsat(ChipSubmitChatCsatInput())
+
+        verify {
+            view.onSuccessSubmitChatCsat(any())
+        }
+    }
+
+    @Test
+    fun `submitChatCsat failure`() {
+        coEvery {
+            chipSubmitChatCsatUseCase.chipSubmitChatCsat(any(),captureLambda(),any())
+        } coAnswers {
+            secondArg<(Throwable) -> Unit>().invoke(mockThrowable)
+        }
+
+        presenter.submitChatCsat(ChipSubmitChatCsatInput())
+
+        verify {
+            view.onError(any())
+        }
+    }
+
+    //WHAT WILL I TEST HERE
+    @Test
+    fun `hitGqlforOptionList success`() {
+
+    }
+
+    @Test
+    fun `hitGqlforOptionList failure`() {
+
+    }
+
+    @Test
+    fun `checkLinkForRedirection success resoList not empty`() {
+
+    }
+
+    @Test
+    fun `checkLinkForRedirection success resoList empty`() {
+
+    }
+
+    @Test
+    fun `checkLinkForRedirection failure`() {
+
+    }
+
+    @Test
+    fun `showTickerData success`() {
+        val response = mockk<TickerDataResponse>(relaxed = true)
+
+        coEvery {
+            getTickerDataUseCase.getTickerData(captureLambda(),any())
+        } coAnswers {
+            firstArg<(TickerDataResponse) -> Unit>().invoke(response)
+        }
+
+        presenter.showTickerData()
+
+        verify {
+            view.onSuccessGetTickerData(any())
+        }
+
+    }
+
+    @Test
+    fun `showTickerData failure`() {
+        coEvery {
+            getTickerDataUseCase.getTickerData(any(),captureLambda())
+        } coAnswers {
+            secondArg<(Throwable) -> Unit>().invoke(mockThrowable)
+        }
+
+        presenter.showTickerData()
+
+        verify {
+            view.onError(any())
+        }
+    }
+
+    @Test
+    fun `submitCsatRating success`() {
+        val response = mockk<SubmitCsatGqlResponse>(relaxed = true)
+
+        coEvery {
+            submitCsatRatingUseCase.submitCsatRating(captureLambda(),any(),any())
+        } coAnswers {
+            firstArg<(SubmitCsatGqlResponse) -> Unit>().invoke(response)
+        }
+
+        presenter.submitCsatRating(InputItem(0,"","","","","",""))
+
+        verify {
+            view.onSuccessSubmitCsatRating(any())
+        }
+
+    }
+
+    @Test
+    fun `submitCsatRating failure`() {
+
+        coEvery {
+            submitCsatRatingUseCase.submitCsatRating(any(),captureLambda(),any())
+        } coAnswers {
+            secondArg<(Throwable) -> Unit>().invoke(mockThrowable)
+        }
+
+        presenter.submitCsatRating(InputItem(0,"","","","","",""))
+
+        verify {
+            view.onError(any())
+        }
+
+    }
+
+
+    //LEaveQueueUseCase
+
+
+    @Test
     fun `checkUploadSecure is true run uploadUsingSecureUpload`() {
 
         val response = mockk<CheckUploadSecureResponse>(relaxed = true)
@@ -184,48 +316,6 @@ class ChatbotPresenterTest {
     }
 
     @Test
-    fun `checkForSession when new session`() {
-
-        val response = mockk<TopBotNewSessionResponse>(relaxed = true)
-
-        coEvery {
-            getTopBotNewSessionUseCase.getTobBotUserSession(any())
-        } returns response
-
-        coEvery {
-            response.topBotGetNewSession.isNewSession
-        } returns true
-
-        presenter.checkForSession("")
-
-        verify {
-            view.startNewSession()
-        }
-
-    }
-
-    @Test
-    fun `checkForSession when existing session`() {
-
-        val response = mockk<TopBotNewSessionResponse>(relaxed = true)
-
-        coEvery {
-            getTopBotNewSessionUseCase.getTobBotUserSession(any())
-        } returns response
-
-        coEvery {
-            response.topBotGetNewSession.isNewSession
-        } returns false
-
-        presenter.checkForSession("")
-
-        verify {
-            view.loadChatHistory()
-        }
-
-    }
-
-    @Test
     fun `sendRating success`() {
         val params = mapOf<String, Any>()
         mockkConstructor(SendRatingSubscriber::class)
@@ -247,23 +337,6 @@ class ChatbotPresenterTest {
             sendChatRatingUseCase.execute(any(), any())
         }
 
-    }
-
-    @Test
-    fun `submitChatCsat success`() {
-
-        mockkConstructor(SendRatingReasonSubscriber::class)
-        mockkObject(SendRatingReasonUseCase)
-
-        every {
-            chipSubmitChatCsatUseCase.execute(any(), any())
-        } just runs
-
-        presenter.submitChatCsat(ChipSubmitChatCsatInput(), {}, {})
-
-        verify {
-            chipSubmitChatCsatUseCase.execute(any(), any())
-        }
     }
 
     @Test

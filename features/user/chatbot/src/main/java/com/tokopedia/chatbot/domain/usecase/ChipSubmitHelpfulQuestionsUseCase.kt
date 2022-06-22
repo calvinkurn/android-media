@@ -16,7 +16,6 @@ class ChipSubmitHelpfulQuestionsUseCase @Inject constructor(
 ) : GraphqlUseCase<SubmitOptionListResponse>(graphqlRepository) {
 
     fun chipSubmitHelpfulQuestions(
-        onSuccess: (SubmitOptionListResponse) -> Unit,
         onError: (Throwable) -> Unit,
         submitOptionInput: SubmitOptionInput
     ) {
@@ -26,8 +25,7 @@ class ChipSubmitHelpfulQuestionsUseCase @Inject constructor(
             this.setGraphqlQuery(ChipSubmitHelpfulQuestionsQuery())
 
             this.execute(
-                { result ->
-                    onSuccess(result)
+                {
                 }, { error ->
                     onError(error)
                 }
