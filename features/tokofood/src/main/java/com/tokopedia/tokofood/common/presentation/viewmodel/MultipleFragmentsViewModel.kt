@@ -93,15 +93,18 @@ class MultipleFragmentsViewModel @Inject constructor(
         cartDataState.value = response.data
     }
 
-    fun deleteProduct(productId: String,
-                      cartId: String,
-                      source: String,
-                      shopId: String? = null,
-                      shouldRefreshCart: Boolean = true) {
+    fun deleteProduct(
+        productId: String,
+        cartId: String,
+        source: String,
+        shopId: String? = null,
+        shouldRefreshCart: Boolean = true
+    ) {
         launchCatchError(block = {
             cartDataValidationState.emit(UiEvent(state = UiEvent.EVENT_LOADING_DIALOG))
             val paramShopId = shopId ?: this@MultipleFragmentsViewModel.shopId
-            val removeCartParam = RemoveCartTokoFoodParam.getProductParamById(productId, cartId, paramShopId)
+            val removeCartParam =
+                RemoveCartTokoFoodParam.getProductParamById(productId, cartId, paramShopId)
             removeCartTokoFoodUseCase.get()(removeCartParam).collect {
                 if (shouldRefreshCart) {
                     loadCartList(source)
@@ -165,9 +168,11 @@ class MultipleFragmentsViewModel @Inject constructor(
         })
     }
 
-    fun updateNotes(updateParam: UpdateParam,
-                    source: String,
-                    shouldRefreshCart: Boolean = true) {
+    fun updateNotes(
+        updateParam: UpdateParam,
+        source: String,
+        shouldRefreshCart: Boolean = true
+    ) {
         launchCatchError(block = {
             cartDataValidationState.emit(UiEvent(state = UiEvent.EVENT_LOADING_DIALOG))
             updateCartTokoFoodUseCase.get()(updateParam).collect {
@@ -191,9 +196,11 @@ class MultipleFragmentsViewModel @Inject constructor(
         })
     }
 
-    fun updateQuantity(updateParam: UpdateParam,
-                       source: String,
-                       shouldRefreshCart: Boolean = true) {
+    fun updateQuantity(
+        updateParam: UpdateParam,
+        source: String,
+        shouldRefreshCart: Boolean = true
+    ) {
         launchCatchError(block = {
             updateCartTokoFoodUseCase.get()(updateParam).collect {
                 if (shouldRefreshCart) {
@@ -255,6 +262,7 @@ class MultipleFragmentsViewModel @Inject constructor(
                             data = updateParam to it.data
                         )
                     )
+
                 }
             }
         }, onError = {
@@ -311,7 +319,8 @@ class MultipleFragmentsViewModel @Inject constructor(
     }
 
     private fun getUnavailableProductsParam(shopId: String): RemoveCartTokoFoodParam {
-        return cartDataState.value?.getRemoveUnavailableCartParam(shopId) ?: RemoveCartTokoFoodParam()
+        return cartDataState.value?.getRemoveUnavailableCartParam(shopId)
+            ?: RemoveCartTokoFoodParam()
     }
 
 }
