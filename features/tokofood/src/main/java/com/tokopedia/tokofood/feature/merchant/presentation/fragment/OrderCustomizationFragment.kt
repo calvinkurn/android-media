@@ -97,18 +97,15 @@ class OrderCustomizationFragment : BaseMultiFragment(),
     private val activityViewModel: MultipleFragmentsViewModel?
         get() = parentActivity?.viewModel()
 
+    private var orderCustomizationListener: OrderCustomizationListener? = null
+
     private var binding: FragmentOrderCustomizationLayoutBinding? = null
 
     private var customListAdapter: CustomListAdapter? = null
 
     private var variantWrapperUiModel: VariantWrapperUiModel? = null
 
-
-    private var orderCustomizationListener: OrderCustomizationListener? = null
-
-    private val productUiModel by lazy {
-        arguments?.getParcelable<ProductUiModel>(BUNDLE_KEY_PRODUCT_UI_MODEL) ?: ProductUiModel()
-    }
+    private var productUiModel: ProductUiModel? = null
 
     override fun getFragmentToolbar(): Toolbar? {
         return binding?.toolbar
@@ -155,7 +152,7 @@ class OrderCustomizationFragment : BaseMultiFragment(),
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setVariantWrapperFromCacheManager()
+        setDataFromCacheManagerOrArguments()
         observeUpdateCart()
         (activity as AppCompatActivity).setSupportActionBar(binding?.toolbar)
 
@@ -167,7 +164,7 @@ class OrderCustomizationFragment : BaseMultiFragment(),
                 getString(com.tokopedia.tokofood.R.string.action_update)
         }
 
-        productUiModel.apply {
+        productUiModel?.apply {
 
             binding?.tpgProductName?.text = name
             binding?.qeuProductQtyEditor?.setValue(orderQty)
@@ -278,7 +275,7 @@ class OrderCustomizationFragment : BaseMultiFragment(),
         customListAdapter?.setCustomListItems(customListItems = customListItems)
     }
 
-    private fun setVariantWrapperFromCacheManager() {
+    private fun setDataFromCacheManagerOrArguments() {
         val cacheManager = context?.let {
             SaveInstanceCacheManager(
                 it,
@@ -291,6 +288,8 @@ class OrderCustomizationFragment : BaseMultiFragment(),
         ) ?: VariantWrapperUiModel()
 
         this.variantWrapperUiModel = variantWrapperUiModel
+
+        productUiModel = arguments?.getParcelable<ProductUiModel>(BUNDLE_KEY_PRODUCT_UI_MODEL) ?: ProductUiModel()
     }
 
     private fun showErrorMessage() {

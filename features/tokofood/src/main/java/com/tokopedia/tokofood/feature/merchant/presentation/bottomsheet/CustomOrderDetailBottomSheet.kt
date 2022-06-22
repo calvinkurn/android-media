@@ -14,7 +14,7 @@ import com.tokopedia.tokofood.feature.merchant.presentation.model.ProductUiModel
 import com.tokopedia.tokofood.feature.merchant.presentation.viewholder.OrderDetailViewHolder
 import com.tokopedia.unifycomponents.BottomSheetUnify
 
-class CustomOrderDetailBottomSheet(private val clickListener: OnCustomOrderDetailClickListener?) :
+class CustomOrderDetailBottomSheet :
     BottomSheetUnify(), OrderDetailViewHolder.OnOrderDetailItemClickListener {
 
     interface OnCustomOrderDetailClickListener {
@@ -43,10 +43,13 @@ class CustomOrderDetailBottomSheet(private val clickListener: OnCustomOrderDetai
             clickListener: OnCustomOrderDetailClickListener?
         ): CustomOrderDetailBottomSheet {
             return if (bundle == null) {
-                CustomOrderDetailBottomSheet(clickListener)
+                CustomOrderDetailBottomSheet().apply {
+                    this.clickListener = clickListener
+                }
             } else {
-                CustomOrderDetailBottomSheet(clickListener).apply {
+                CustomOrderDetailBottomSheet().apply {
                     arguments = bundle
+                    this.clickListener = clickListener
                 }
             }
         }
@@ -60,6 +63,8 @@ class CustomOrderDetailBottomSheet(private val clickListener: OnCustomOrderDetai
     private var productPosition: Int? = null
 
     private var productUiModel: ProductUiModel? = null
+
+    private var clickListener: OnCustomOrderDetailClickListener? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -87,6 +92,7 @@ class CustomOrderDetailBottomSheet(private val clickListener: OnCustomOrderDetai
 
     override fun onDestroyView() {
         binding = null
+        productUiModel = null
         super.onDestroyView()
     }
 
@@ -101,8 +107,7 @@ class CustomOrderDetailBottomSheet(private val clickListener: OnCustomOrderDetai
         }
         binding?.rvOrderInfo?.let {
             it.adapter = adapter
-            it.layoutManager =
-                LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
+            it.layoutManager = LinearLayoutManager(it.context)
         }
     }
 
@@ -113,7 +118,6 @@ class CustomOrderDetailBottomSheet(private val clickListener: OnCustomOrderDetai
     private fun setData() {
         val productPosition = arguments?.getInt(BUNDLE_KEY_PRODUCT_POSITION).orZero()
         this.productPosition = productPosition
-
         this.productUiModel = arguments?.getParcelable(BUNDLE_KEY_PRODUCT_UI_MODEL) ?: ProductUiModel()
     }
 

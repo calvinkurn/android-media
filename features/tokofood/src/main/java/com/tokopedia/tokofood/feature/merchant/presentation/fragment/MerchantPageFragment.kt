@@ -28,6 +28,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.tokofood.DeeplinkMapperTokoFood
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
+import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
@@ -504,7 +505,7 @@ class MerchantPageFragment : BaseMultiFragment(),
                                                 val cardPositions =
                                                     viewModel.productMap[requestParam.productId]
                                                 cardPositions?.run {
-                                                    productListAdapter?.updateCartProductUiModel(
+                                                    productListAdapter?.updateProductUiModel(
                                                         cartTokoFood = cartTokoFood,
                                                         dataSetPosition = viewModel.getDataSetPosition(
                                                             this
@@ -762,6 +763,13 @@ class MerchantPageFragment : BaseMultiFragment(),
                                     productUiModel
                                 )
                             )
+                            if (productUiModel.customOrderDetails.size > Int.ONE) {
+                                showCustomOrderDetailBottomSheet(
+                                    productListAdapter?.getProductUiModel(
+                                        dataSetPosition
+                                    ) ?: ProductUiModel(), dataSetPosition
+                                )
+                            }
                         }
                     }
             }
@@ -808,7 +816,7 @@ class MerchantPageFragment : BaseMultiFragment(),
         productUiModel: ProductUiModel,
         productPosition: Int
     ) {
-        customOrderDetailBottomSheet?.dismiss()
+        customOrderDetailBottomSheet?.dismissAllowingStateLoss()
         val bundle = Bundle().apply {
             putInt(
                 CustomOrderDetailBottomSheet.BUNDLE_KEY_PRODUCT_POSITION,

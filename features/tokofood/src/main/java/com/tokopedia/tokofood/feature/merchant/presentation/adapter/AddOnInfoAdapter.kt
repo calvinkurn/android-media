@@ -10,7 +10,7 @@ import com.tokopedia.tokofood.feature.merchant.presentation.viewholder.AddOnInfo
 
 class AddOnInfoAdapter : RecyclerView.Adapter<AddOnInfoViewHolder>() {
 
-    private var customListItems: MutableList<CustomListItem> = mutableListOf()
+    private val customListItems: MutableList<CustomListItem> = mutableListOf()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AddOnInfoViewHolder {
         val binding = TokofoodItemAddOnInfoLayoutBinding.inflate(LayoutInflater.from(parent.context), parent, false)
