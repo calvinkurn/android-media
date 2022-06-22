@@ -1015,7 +1015,12 @@ class ShopHomeViewModel @Inject constructor(
                     }
                 }
                 is ShopHomeFlashSaleUiModel -> {
-
+                    updateShopHomeFlashSaleWidgetProductQuantity(
+                        widgetModel,
+                        miniCartSimplifiedData
+                    )?.let{
+                        shopHomeWidgetData.setElement(index, it)
+                    }
                 }
                 is ShopHomeProductUiModel -> {
                     updateShopHomeProductUiModelProductQuantity(widgetModel, miniCartSimplifiedData).let {
@@ -1024,6 +1029,27 @@ class ShopHomeViewModel @Inject constructor(
                 }
             }
         }
+    }
+
+    private fun updateShopHomeFlashSaleWidgetProductQuantity(
+        widgetModel: ShopHomeFlashSaleUiModel,
+        miniCartSimplifiedData: MiniCartSimplifiedData?
+    ): ShopHomeFlashSaleUiModel? {
+        widgetModel.data?.onEach { flashSaleItem ->
+            flashSaleItem.productList.onEach { shopHomeProductUiModel ->
+                updateShopHomeProductUiModelProductQuantity(
+                    shopHomeProductUiModel,
+                    miniCartSimplifiedData
+                )
+            }.let { listUpdatedShopHomeProductUiModel ->
+                widgetModel.isNewData =
+                    listUpdatedShopHomeProductUiModel.isNotEmpty() && listUpdatedShopHomeProductUiModel.any { it.isNewData }
+            }
+        }
+        return if (widgetModel.isNewData)
+            widgetModel.copy()
+        else
+            null
     }
 
     fun getShopWidgetDataWithUpdatedQuantity(

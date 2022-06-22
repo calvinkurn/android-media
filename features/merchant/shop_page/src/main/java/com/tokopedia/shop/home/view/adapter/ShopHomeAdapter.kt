@@ -644,33 +644,4 @@ class ShopHomeAdapter(
             nplItemCampaignId == campaignId && dynamicRuleDescription.isNotEmpty()
         }
     }
-
-    fun asd() {
-        val newList = getNewVisitableItems()
-//        newList.filterIsInstance<ShopHomeProductUiModel>().onEach {
-//            it
-//                it.productInCart = 10
-//        }
-        newList.filterIsInstance<ShopHomeCarousellProductUiModel>()
-            .onEachIndexed { index, shopHomeCarousellProductUiModel ->
-//                (recyclerView?.findViewHolderForAdapterPosition(index) as? ShopHomeCarousellProductViewHolder)?.bind(
-//                    shopHomeCarousellProductUiModel
-////                    shopHomeCarousellProductUiModel.copy().apply {
-////                        productList.onEach {
-////                            it.productInCart = 30
-////                        }
-////                    }
-//                )
-                shopHomeCarousellProductUiModel.productList.onEach {
-                    it.productInCart = 20
-                }.also {
-                    shopHomeCarousellProductUiModel.isNewData = true
-                }
-            }
-        submitList(newList)
-    }
-
-    fun getAllShopHomeWidgetData(){
-
-    }
 }
