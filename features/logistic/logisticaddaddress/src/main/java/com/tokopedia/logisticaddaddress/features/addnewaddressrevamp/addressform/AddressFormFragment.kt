@@ -454,7 +454,7 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
     }
 
     private fun setupLabelChips(currentLabel: String) {
-        labelAlamatList = resources.getStringArray(R.array.labelAlamatList).map { Pair(it, it.equals(currentLabel, ignoreCase = true)) }.toTypedArray()
+        labelAlamatList =  context?.resources?.getStringArray(R.array.labelAlamatList)?.map { Pair(it, it.equals(currentLabel, ignoreCase = true)) }?.toTypedArray() ?: emptyArray()
         labelAlamatChipsAdapter = LabelAlamatChipsAdapter(this)
         labelAlamatChipsLayoutManager = ChipsLayoutManager.newBuilder(view?.context)
             .setOrientation(ChipsLayoutManager.HORIZONTAL)
