@@ -319,7 +319,7 @@ class ShippingDurationBottomsheet : ShippingDurationContract.View, ShippingDurat
                                            cartPosition: Int, serviceData: ServiceData) {
         var flagNeedToSetPinpoint = false
         var selectedServiceId = 0
-        if (isToogleYearEndPromotionOn() && !isOcc) {
+        if (isToogleYearEndPromotionOn()) {
             if (serviceData.error != null && serviceData.error.errorId == ErrorProductData.ERROR_PINPOINT_NEEDED &&
                     !TextUtils.isEmpty(serviceData.error.errorMessage)) {
                 flagNeedToSetPinpoint = true
