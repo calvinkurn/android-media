@@ -4,9 +4,14 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.isZero
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.shop.flashsale.common.extension.convertRupiah
 import com.tokopedia.shop.flashsale.data.request.GetSellerCampaignProductListRequest
 import com.tokopedia.shop.flashsale.domain.entity.SellerCampaignProductList
+import com.tokopedia.shop.flashsale.domain.entity.enums.ManageProductBannerType
+import com.tokopedia.shop.flashsale.domain.entity.enums.ManageProductBannerType.*
 import com.tokopedia.shop.flashsale.domain.entity.enums.ManageProductErrorMessage
 import com.tokopedia.shop.flashsale.domain.usecase.GetSellerCampaignProductListUseCase
 import com.tokopedia.shop.flashsale.presentation.creation.manage.adapter.ManageProductListAdapter
@@ -35,6 +40,10 @@ class ManageProductViewModel @Inject constructor(
     val products: LiveData<Result<SellerCampaignProductList>>
         get() = _products
 
+    private val _bannerType = MutableLiveData(HIDE.type)
+    val bannerType: LiveData<Int>
+        get() = _bannerType
+
     fun getProducts(
         campaignId: Long,
         listType: Int
@@ -58,7 +67,49 @@ class ManageProductViewModel @Inject constructor(
         )
     }
 
-    fun getProductErrorMessage(productMapData: SellerCampaignProductList.ProductMapData): String {
+    fun setProductErrorMessage(productList: SellerCampaignProductList) {
+        productList.productList.forEach { product ->
+            product.errorMessage = getProductErrorMessage(product.productMapData)
+        }
+    }
+
+    fun setProductInfoCompletion(productList: SellerCampaignProductList) {
+        productList.productList.forEach { product ->
+            product.isInfoComplete = isProductInfoComplete(product.productMapData)
+        }
+    }
+
+    fun getBannerType(productList: SellerCampaignProductList) {
+        productList.productList.forEach { product ->
+            when {
+                getProductErrorMessage(product.productMapData).isNotEmpty() -> {
+                    _bannerType.postValue(ERROR.type)
+                }
+                else -> {
+                    when {
+                        !isProductInfoComplete(product.productMapData) -> {
+                            if (bannerType.value != ERROR.type) {
+                                _bannerType.postValue(EMPTY.type)
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    private fun isProductInfoComplete(productMapData: SellerCampaignProductList.ProductMapData): Boolean {
+        return when {
+            productMapData.discountedPrice.isZero() -> false
+            productMapData.discountPercentage.isZero() -> false
+            productMapData.originalCustomStock.isZero() -> false
+            productMapData.customStock.isZero() -> false
+            productMapData.maxOrder.isZero() -> false
+            else -> true
+        }
+    }
+
+    private fun getProductErrorMessage(productMapData: SellerCampaignProductList.ProductMapData): String {
         var errorMsg = ""
         val maxDiscountedPrice =
             (productMapData.originalPrice * MAX_CAMPAIGN_DISCOUNT_PERCENTAGE).toInt()

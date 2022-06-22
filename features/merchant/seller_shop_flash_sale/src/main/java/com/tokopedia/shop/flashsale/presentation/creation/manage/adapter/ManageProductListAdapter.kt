@@ -9,7 +9,6 @@ import com.tokopedia.seller_shop_flash_sale.R
 import com.tokopedia.seller_shop_flash_sale.databinding.SsfsItemManageProductBinding
 import com.tokopedia.shop.flashsale.common.extension.convertRupiah
 import com.tokopedia.shop.flashsale.domain.entity.SellerCampaignProductList.Product
-import com.tokopedia.shop.flashsale.presentation.creation.manage.ManageProductFragment.Companion.isProductInfoComplete
 import com.tokopedia.unifyprinciples.Typography
 
 class ManageProductListAdapter(
@@ -84,7 +83,7 @@ class ManageProductListAdapter(
                 }
 
                 when {
-                    isProductInfoComplete(product.productMapData) -> {
+                    product.isInfoComplete -> {
                         when {
                             product.errorMessage.isNotEmpty() -> {
                                 labelBelumLengkap.invisible()

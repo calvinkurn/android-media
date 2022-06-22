@@ -18,6 +18,9 @@ import com.tokopedia.shop.flashsale.common.customcomponent.BaseSimpleListFragmen
 import com.tokopedia.shop.flashsale.common.extension.showError
 import com.tokopedia.shop.flashsale.di.component.DaggerShopFlashSaleComponent
 import com.tokopedia.shop.flashsale.domain.entity.SellerCampaignProductList
+import com.tokopedia.shop.flashsale.domain.entity.enums.HIDE_BANNER
+import com.tokopedia.shop.flashsale.domain.entity.enums.ManageProductBannerType
+import com.tokopedia.shop.flashsale.domain.entity.enums.ManageProductBannerType.*
 import com.tokopedia.shop.flashsale.presentation.creation.manage.adapter.ManageProductListAdapter
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -39,17 +42,6 @@ class ManageProductFragment :
         private const val REQUEST_CODE = 123
         private const val EMPTY_STATE_IMAGE_URL =
             "https://images.tokopedia.net/img/android/campaign/flash-sale-toko/ic_no_active_campaign.png"
-
-        fun isProductInfoComplete(productMapData: SellerCampaignProductList.ProductMapData): Boolean {
-            return when {
-                productMapData.discountedPrice.isZero() -> false
-                productMapData.discountPercentage.isZero() -> false
-                productMapData.originalCustomStock.isZero() -> false
-                productMapData.customStock.isZero() -> false
-                productMapData.maxOrder.isZero() -> false
-                else -> true
-            }
-        }
 
         @JvmStatic
         fun newInstance(campaignId: Long): ManageProductFragment {
@@ -100,6 +92,7 @@ class ManageProductFragment :
         super.onViewCreated(view, savedInstanceState)
         setupView()
         observeProductList()
+        observeBannerType()
     }
 
     private fun setupView() {
@@ -139,16 +132,26 @@ class ManageProductFragment :
         }
     }
 
-    private fun displayProducts(productList: SellerCampaignProductList) {
-        binding?.cardIncompleteProductInfo?.gone()
-        productList.productList.forEach { product ->
-            when {
-                !isProductInfoComplete(product.productMapData) -> {
-                    binding?.cardIncompleteProductInfo?.visible()
+    private fun observeBannerType() {
+        viewModel.bannerType.observe(viewLifecycleOwner) { type ->
+            when(type) {
+                EMPTY.type -> {
+                    showEmptyProductBanner()
+                }
+                ERROR.type -> {
+                    showErrorProductBanner()
+                }
+                HIDE.type -> {
+                    hideBanner()
                 }
             }
-            product.errorMessage = viewModel.getProductErrorMessage(product.productMapData)
         }
+    }
+
+    private fun displayProducts(productList: SellerCampaignProductList) {
+        viewModel.setProductErrorMessage(productList)
+        viewModel.setProductInfoCompletion(productList)
+        viewModel.getBannerType(productList)
         manageProductListAdapter.clearAll()
         renderList(productList.productList, false)
         binding?.apply {
@@ -183,6 +186,18 @@ class ManageProductFragment :
             recyclerViewProduct.visible()
             cardBottomButtonGroup.visible()
         }
+    }
+
+    private fun showEmptyProductBanner() {
+        binding?.cardIncompleteProductInfo?.visible()
+    }
+
+    private fun showErrorProductBanner() {
+
+    }
+
+    private fun hideBanner() {
+        binding?.cardIncompleteProductInfo?.gone()
     }
 
     private fun showLoader() {
