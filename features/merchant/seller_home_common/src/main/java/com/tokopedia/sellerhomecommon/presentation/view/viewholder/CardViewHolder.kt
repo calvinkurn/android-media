@@ -14,6 +14,7 @@ import com.tokopedia.kotlin.extensions.view.parseAsHtml
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.sellerhomecommon.R
+import com.tokopedia.sellerhomecommon.common.const.SellerHomeUrl
 import com.tokopedia.sellerhomecommon.databinding.ShcCardWidgetBinding
 import com.tokopedia.sellerhomecommon.presentation.model.CardDataUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.CardWidgetUiModel
@@ -155,6 +156,31 @@ class CardViewHolder(
             }
 
             showCardState(element.data)
+            showBadge(element.data?.badgeImageUrl.orEmpty())
+            showOrnamentTokoPlus(element.data?.state)
+        }
+    }
+
+    private fun showOrnamentTokoPlus(state: CardDataUiModel.State?) {
+        when (state) {
+            CardDataUiModel.State.NORMAL -> {
+                binding.imgShcCardStatePlus.visible()
+                binding.imgShcCardStatePlus.loadImage(SellerHomeUrl.IMG_CARD_ORNAMENT_GREEN)
+            }
+            CardDataUiModel.State.WARNING -> {
+                binding.imgShcCardStatePlus.visible()
+                binding.imgShcCardStatePlus.loadImage(SellerHomeUrl.IMG_CARD_ORNAMENT_YELLOW)
+            }
+            else -> binding.imgShcCardStatePlus.gone()
+        }
+    }
+
+    private fun showBadge(badgeUrl: String) {
+        if (badgeUrl.isNotBlank()) {
+            binding.imgSahCardBadge.visible()
+            binding.imgSahCardBadge.loadImage(badgeUrl)
+        } else {
+            binding.imgSahCardBadge.gone()
         }
     }
 
@@ -185,7 +211,7 @@ class CardViewHolder(
                     visible()
                     loadImage(R.drawable.bg_shc_card_stata_warning)
                 }
-                CardDataUiModel.State.NORMAL -> gone()
+                else -> gone()
             }
         }
     }

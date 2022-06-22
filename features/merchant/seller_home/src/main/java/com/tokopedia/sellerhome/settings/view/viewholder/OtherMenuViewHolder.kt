@@ -510,6 +510,7 @@ class OtherMenuViewHolder(
         fun onShareButtonClicked()
         fun onShopStatusImpression(shopType: ShopType)
         fun onFreeShippingImpression()
+        fun onTokoPlusClicked()
+        fun onTokoPlusImpressed()
     }
-
 }

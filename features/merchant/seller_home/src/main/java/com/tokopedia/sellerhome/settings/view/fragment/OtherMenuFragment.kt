@@ -475,6 +475,14 @@ class OtherMenuFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTypeF
         freeShippingTracker.trackFreeShippingImpression()
     }
 
+    override fun onTokoPlusClicked() {
+
+    }
+
+    override fun onTokoPlusImpressed() {
+
+    }
+
     private fun observeLiveData() {
         observeShopBadge()
         observeShopTotalFollowers()

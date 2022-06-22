@@ -246,7 +246,7 @@ class ShopSecondaryInfoAdapter(
             ReputationBadgeWidgetUiModel(SettingResponseState.SettingLoading),
             ShopFollowersWidgetUiModel(SettingResponseState.SettingLoading),
             FreeShippingWidgetUiModel(SettingResponseState.SettingLoading),
+            TokoPlusWidgetUiModel(SettingResponseState.SettingLoading)
         )
     }
-
 }

@@ -26,6 +26,8 @@ class ShopSecondaryInfoAdapterTypeFactory(private val listener: OtherMenuViewHol
 
     override fun type(uiModel: FreeShippingWidgetUiModel): Int = FreeShippingViewHolder.LAYOUT_RES
 
+    override fun type(uiModel: TokoPlusWidgetUiModel): Int = TokoPlusViewHolder.LAYOUT_RES
+
     override fun createViewHolder(parent: View?, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when (type) {
             ShopOperationalViewHolder.LAYOUT_RES -> ShopOperationalViewHolder(
@@ -59,6 +61,11 @@ class ShopSecondaryInfoAdapterTypeFactory(private val listener: OtherMenuViewHol
                 listener::onFreeShippingClicked,
                 listener::onFreeShippingRefresh,
                 listener::onFreeShippingImpression
+            )
+            TokoPlusViewHolder.LAYOUT_RES -> TokoPlusViewHolder(
+                parent,
+                listener::onTokoPlusClicked,
+                listener::onTokoPlusImpressed,
             )
             else -> super.createViewHolder(parent, type)
         }

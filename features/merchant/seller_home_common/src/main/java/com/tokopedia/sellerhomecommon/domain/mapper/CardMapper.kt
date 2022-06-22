@@ -20,6 +20,7 @@ class CardMapper @Inject constructor(
         private const val ZERO = "0"
         private const val STATE_DANGER = "DANGER"
         private const val STATE_WARNING = "WARNING"
+        private const val STATE_GOOD = "GOOD"
     }
 
     override fun mapRemoteDataToUiData(
@@ -33,6 +34,7 @@ class CardMapper @Inject constructor(
                 secondaryDescription = it.secondaryDescription.orEmpty(),
                 error = it.errorMsg.orEmpty(),
                 state = when (it.state) {
+                    STATE_GOOD -> CardDataUiModel.State.GOOD
                     STATE_WARNING -> CardDataUiModel.State.WARNING
                     STATE_DANGER -> CardDataUiModel.State.DANGER
                     else -> CardDataUiModel.State.NORMAL
@@ -40,7 +42,8 @@ class CardMapper @Inject constructor(
                 value = if (it.value.isNullOrBlank()) ZERO else it.value,
                 isFromCache = isFromCache,
                 showWidget = it.showWidget.orFalse(),
-                lastUpdated = getLastUpdatedMillis(it.dataKey.orEmpty(), isFromCache)
+                lastUpdated = getLastUpdatedMillis(it.dataKey.orEmpty(), isFromCache),
+                badgeImageUrl = it.badgeImageUrl.orEmpty()
             )
         }
     }
