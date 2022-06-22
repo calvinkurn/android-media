@@ -306,6 +306,10 @@ class CampaignRuleViewModel @Inject constructor(
         _isTNCConfirmed.value = true
     }
 
+    private fun isAlreadyInSaveAction(): Boolean {
+        return !isInSaveAction.compareAndSet(false, true)
+    }
+
     private fun resetIsInSaveAction() {
         synchronized(this) {
             isInSaveAction.set(false)
@@ -331,7 +335,7 @@ class CampaignRuleViewModel @Inject constructor(
 
     fun saveCampaignCreationDraft() {
         synchronized(this) {
-            if (!isInSaveAction.compareAndSet(false, true)) return
+            if (isAlreadyInSaveAction()) return
         }
         val campaignValue = campaign.value
         val campaignData = if (campaignValue is Success) campaignValue.data else {
@@ -373,7 +377,7 @@ class CampaignRuleViewModel @Inject constructor(
         validAction: suspend (CampaignUiModel) -> Unit
     ) {
         synchronized(this) {
-            if (!isInSaveAction.compareAndSet(false, true)) return
+            if (isAlreadyInSaveAction()) return
         }
         val campaignValue = campaign.value
         val campaignData = if (campaignValue is Success) campaignValue.data else {
