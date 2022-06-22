@@ -16,9 +16,13 @@ const val DEFAULT_DURATION_LABEL = "00:00"
  * -> 12:14:50
  */
 fun Int?.humanize(): String {
-    val duration = this?: 0
+    if (this == null) return DEFAULT_DURATION_LABEL
 
-    if (duration == 0) return DEFAULT_DURATION_LABEL
+    /**
+     * Following exoplayer filde duration converter, added buffer 500ms
+     * https://github.com/google/ExoPlayer/blob/release-v2/library/common/src/main/java/com/google/android/exoplayer2/util/Util.java#L1992
+     */
+    val duration = this + 500
 
     val second = duration / 1000 % 60
     val minute = duration / (1000 * 60) % 60
