@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import com.tokopedia.abstraction.base.service.JobIntentServiceX
 import com.tokopedia.loginregister.login.di.ActivityComponentFactory
+import com.tokopedia.loginregister.login.di.LoginComponent
 import com.tokopedia.loginregister.login.domain.GetDefaultChosenAddressUseCase
 import javax.inject.Inject
 
@@ -19,7 +20,7 @@ class GetDefaultChosenAddressService : JobIntentServiceX() {
 
     private fun initInjector() {
         application?.let {
-            ActivityComponentFactory.instance.createActivityComponent(it).inject(this)
+            ActivityComponentFactory.instance.createLoginComponent(it).inject(this)
         }
     }
 

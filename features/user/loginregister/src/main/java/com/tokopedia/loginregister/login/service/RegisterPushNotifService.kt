@@ -10,6 +10,7 @@ import androidx.annotation.RequiresApi
 import com.tokopedia.abstraction.base.service.JobIntentServiceX
 import com.tokopedia.loginregister.login.data.SignResult
 import com.tokopedia.loginregister.login.di.ActivityComponentFactory
+import com.tokopedia.loginregister.login.di.LoginComponent
 import com.tokopedia.loginregister.login.domain.RegisterPushNotificationParamsModel
 import com.tokopedia.loginregister.login.domain.RegisterPushNotificationUseCase
 import com.tokopedia.sessioncommon.di.SessionModule
@@ -70,7 +71,7 @@ class RegisterPushNotifService : JobIntentServiceX(), CoroutineScope {
 
     private fun initInjector() {
         application?.let {
-            ActivityComponentFactory.instance.createActivityComponent(it).inject(this)
+            ActivityComponentFactory.instance.createLoginComponent(it).inject(this)
         }
     }
 

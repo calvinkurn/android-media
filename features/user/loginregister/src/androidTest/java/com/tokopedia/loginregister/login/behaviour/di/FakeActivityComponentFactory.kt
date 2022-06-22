@@ -6,24 +6,34 @@ import com.tokopedia.loginregister.login.behaviour.di.modules.AppModuleStub
 import com.tokopedia.loginregister.login.behaviour.di.modules.FakeLoginModule
 import com.tokopedia.loginregister.login.di.ActivityComponentFactory
 import com.tokopedia.loginregister.login.di.LoginComponent
-import com.tokopedia.loginregister.login.di.LoginModule
+import com.tokopedia.loginregister.registerinitial.di.DaggerRegisterInitialComponent
+import com.tokopedia.loginregister.registerinitial.di.RegisterInitialComponent
 
 class FakeActivityComponentFactory: ActivityComponentFactory() {
 
-    val component: LoginComponentStub
+    val loginComponent: LoginComponentStub
+    val registerComponent: RegisterInitialComponentStub
 
     init {
         val baseComponent = DaggerTestAppComponent.builder()
             .appModuleStub(AppModuleStub(ApplicationProvider.getApplicationContext()))
             .build()
-        component = DaggerLoginComponentStub.builder()
+        loginComponent = DaggerLoginComponentStub.builder()
             .loginModule(FakeLoginModule)
+            .baseAppComponent(baseComponent)
+            .build()
+
+        registerComponent = DaggerRegisterInitialComponentStub.builder()
             .baseAppComponent(baseComponent)
             .build()
     }
 
-    override fun createActivityComponent(application: Application): LoginComponent {
-        return component
+    override fun createLoginComponent(application: Application): LoginComponent {
+        return loginComponent
+    }
+
+    override fun createRegisterComponent(application: Application): RegisterInitialComponent {
+        return super.createRegisterComponent(application)
     }
 
 }

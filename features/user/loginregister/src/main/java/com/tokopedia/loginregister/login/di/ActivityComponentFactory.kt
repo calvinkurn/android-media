@@ -1,14 +1,21 @@
 package com.tokopedia.loginregister.login.di
 
-import android.app.Activity
 import android.app.Application
 import androidx.annotation.VisibleForTesting
 import com.tokopedia.abstraction.base.app.BaseMainApplication
+import com.tokopedia.loginregister.registerinitial.di.DaggerRegisterInitialComponent
+import com.tokopedia.loginregister.registerinitial.di.RegisterInitialComponent
 
 open class ActivityComponentFactory {
 
-    open fun createActivityComponent(application: Application): LoginComponent {
+    open fun createLoginComponent(application: Application): LoginComponent {
         return DaggerLoginComponent.builder()
+            .baseAppComponent((application as BaseMainApplication).baseAppComponent)
+            .build()
+    }
+
+    open fun createRegisterComponent(application: Application): RegisterInitialComponent {
+        return DaggerRegisterInitialComponent.builder()
             .baseAppComponent((application as BaseMainApplication).baseAppComponent)
             .build()
     }

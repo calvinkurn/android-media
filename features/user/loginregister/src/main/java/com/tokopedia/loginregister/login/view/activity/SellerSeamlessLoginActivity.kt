@@ -51,6 +51,6 @@ class SellerSeamlessLoginActivity : BaseSimpleActivity(), HasComponent<LoginComp
     }
 
     override fun getComponent(): LoginComponent {
-        return ActivityComponentFactory.instance.createActivityComponent(application)
+        return ActivityComponentFactory.instance.createLoginComponent(application)
     }
 }

@@ -3,10 +3,17 @@ package com.tokopedia.loginregister.registerinitial.di
 import android.content.Context
 import android.content.res.Resources
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
+import com.tokopedia.abstraction.common.di.scope.ActivityScope
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor.Companion.getInstance
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import com.tokopedia.iris.util.IrisSession
+import com.tokopedia.loginregister.common.analytics.SeamlessLoginAnalytics
+import com.tokopedia.loginregister.external_register.ovo.analytics.OvoCreationAnalytics
 import com.tokopedia.loginregister.registerinitial.view.util.RegisterInitialRouterHelper
+import com.tokopedia.user.session.UserSession
+import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.utils.permission.PermissionCheckerHelper
 import dagger.Module
 import dagger.Provides
 import kotlinx.coroutines.CoroutineDispatcher
@@ -19,6 +26,12 @@ import kotlinx.coroutines.Dispatchers.Main
 class RegisterInitialModule {
 
     @Provides
+    @ActivityScope
+    fun provideUserSession(@ApplicationContext context: Context): UserSessionInterface {
+        return UserSession(context)
+    }
+
+    @Provides
     fun providesContext(@ApplicationContext context: Context): Context = context
 
     @Provides
@@ -29,21 +42,45 @@ class RegisterInitialModule {
         return getInstance().graphqlRepository
     }
 
-    @RegisterInitialScope
+    @ActivityScope
     @Provides
     fun provideMultiRequestGraphql(): MultiRequestGraphqlUseCase {
         return getInstance().multiRequestGraphqlUseCase
     }
 
-    @RegisterInitialScope
+    @ActivityScope
     @Provides
     fun provideMainDispatcher(): CoroutineDispatcher {
         return Main
     }
 
     @Provides
-    @RegisterInitialScope
+    @ActivityScope
     fun provideRegisterInitialRouter(): RegisterInitialRouterHelper {
         return RegisterInitialRouterHelper()
+    }
+
+    @ActivityScope
+    @Provides
+    fun provideSeamlessAnalytics(): SeamlessLoginAnalytics {
+        return SeamlessLoginAnalytics()
+    }
+
+    @ActivityScope
+    @Provides
+    fun provideOvoCreationAnalytics(
+        userSessionInterface: UserSessionInterface
+    ): OvoCreationAnalytics {
+        return OvoCreationAnalytics(userSessionInterface)
+    }
+
+    @Provides
+    fun providePermissionCheckerHelper(): PermissionCheckerHelper {
+        return PermissionCheckerHelper()
+    }
+
+    @Provides
+    fun provideIrisSession(@ApplicationContext context: Context): IrisSession {
+        return IrisSession(context)
     }
 }

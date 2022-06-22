@@ -1,6 +1,7 @@
 package com.tokopedia.loginregister.login.behaviour.di.modules.registerinitial
 
 import android.content.res.Resources
+import com.tokopedia.abstraction.common.di.scope.ActivityScope
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
@@ -42,12 +43,12 @@ class MockRegisterInitialuseCaseModule {
     }
 
     @Provides
-    @RegisterInitialScope
+    @ActivityScope
     fun provideTickerInfoUseCase(
         stub: TickerInfoUseCaseStub
     ): TickerInfoUseCase = stub
 
-    @RegisterInitialScope
+    @ActivityScope
     @Provides
     fun provideTickerInfoUseCaseStub(resources: Resources,
                                      graphqlUseCase: com.tokopedia.graphql.domain.GraphqlUseCase): TickerInfoUseCaseStub {
@@ -60,13 +61,13 @@ class MockRegisterInitialuseCaseModule {
         return CheckHasOvoAccUseCase(useCase)
     }
 
-    @RegisterInitialScope
+    @ActivityScope
     @Provides
     fun provideDiscoverUseCase(
         stub: DiscoverUseCaseStub
     ): DiscoverUseCase = stub
 
-    @RegisterInitialScope
+    @ActivityScope
     @Provides
     fun provideDiscoverUseCasStub(
         graphqlRepository: GraphqlRepository,
@@ -75,11 +76,11 @@ class MockRegisterInitialuseCaseModule {
         return DiscoverUseCaseStub(graphqlRepository, coroutineDispatcher)
     }
 
-    @RegisterInitialScope
+    @ActivityScope
     @Provides
     fun provideGeneratePublicUseCase(stub: GeneratePublicKeyUseCaseStub): GeneratePublicKeyUseCase = stub
 
-    @RegisterInitialScope
+    @ActivityScope
     @Provides
     fun provideGeneratePublicUseCaseStub(graphqlRepository: GraphqlRepository): GeneratePublicKeyUseCaseStub {
         val useCase = GraphqlUseCaseStub<GenerateKeyPojo>(graphqlRepository)
@@ -87,13 +88,13 @@ class MockRegisterInitialuseCaseModule {
     }
 
     @Provides
-    @RegisterInitialScope
+    @ActivityScope
     fun provideRegisterCheckUseCase(
         stub: GraphqlUseCaseStub<RegisterCheckPojo>
     ): GraphqlUseCase<RegisterCheckPojo> = stub
 
     @Provides
-    @RegisterInitialScope
+    @ActivityScope
     fun provideMockRegisterCheckUseCase(graphqlRepository: GraphqlRepository): GraphqlUseCaseStub<RegisterCheckPojo> {
         return GraphqlUseCaseStub(graphqlRepository)
     }

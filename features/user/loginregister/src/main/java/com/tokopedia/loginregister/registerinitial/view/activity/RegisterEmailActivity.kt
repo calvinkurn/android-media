@@ -10,6 +10,7 @@ import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.loginregister.R
 import com.tokopedia.loginregister.common.di.DaggerLoginRegisterComponent
+import com.tokopedia.loginregister.login.di.ActivityComponentFactory
 import com.tokopedia.loginregister.registerinitial.di.DaggerRegisterInitialComponent
 import com.tokopedia.loginregister.registerinitial.di.RegisterInitialComponent
 import com.tokopedia.loginregister.registerinitial.view.fragment.RegisterEmailFragment
@@ -35,13 +36,9 @@ open class RegisterEmailActivity : BaseSimpleActivity(), HasComponent<RegisterIn
     }
 
     protected open fun initializeRegisterInitialComponent(): RegisterInitialComponent {
-        val loginRegisterComponent =  DaggerLoginRegisterComponent.builder()
-            .baseAppComponent((application as BaseMainApplication).baseAppComponent)
-            .build()
-        return DaggerRegisterInitialComponent
-            .builder()
-            .loginRegisterComponent(loginRegisterComponent)
-            .build().also {
+        return ActivityComponentFactory.instance
+            .createRegisterComponent(application)
+            .also {
                 registerInitialComponent = it
             }
     }

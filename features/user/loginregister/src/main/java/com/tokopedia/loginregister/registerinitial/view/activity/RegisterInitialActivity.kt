@@ -9,6 +9,7 @@ import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.loginregister.R
 import com.tokopedia.loginregister.common.di.DaggerLoginRegisterComponent
+import com.tokopedia.loginregister.login.di.ActivityComponentFactory
 import com.tokopedia.loginregister.registerinitial.di.DaggerRegisterInitialComponent
 import com.tokopedia.loginregister.registerinitial.di.RegisterInitialComponent
 import com.tokopedia.loginregister.registerinitial.view.fragment.RegisterInitialFragment
@@ -19,7 +20,7 @@ import com.tokopedia.telemetry.ITelemetryActivity
  * @author by nisie on 10/2/18.
  */
 open class RegisterInitialActivity : BaseSimpleActivity(), HasComponent<RegisterInitialComponent>,
-    ITelemetryActivity{
+    ITelemetryActivity {
 
     private var registerInitialComponent: RegisterInitialComponent? = null
 
@@ -40,13 +41,9 @@ open class RegisterInitialActivity : BaseSimpleActivity(), HasComponent<Register
     }
 
     protected open fun initializeRegisterInitialComponent(): RegisterInitialComponent {
-        val loginRegisterComponent =  DaggerLoginRegisterComponent.builder()
-            .baseAppComponent((application as BaseMainApplication).baseAppComponent)
-            .build()
-        return DaggerRegisterInitialComponent
-            .builder()
-            .loginRegisterComponent(loginRegisterComponent)
-            .build().also {
+        return ActivityComponentFactory.instance
+            .createRegisterComponent(application)
+            .also {
                 registerInitialComponent = it
             }
     }

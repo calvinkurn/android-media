@@ -2,9 +2,7 @@ package com.tokopedia.loginregister.login.behaviour.base
 
 import android.content.Context
 import android.content.Intent
-import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
-import androidx.test.espresso.IdlingRegistry
 import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
@@ -12,21 +10,16 @@ import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.platform.app.InstrumentationRegistry
-import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.loginregister.R
 import com.tokopedia.loginregister.discover.pojo.DiscoverData
 import com.tokopedia.loginregister.discover.pojo.DiscoverPojo
 import com.tokopedia.loginregister.discover.pojo.ProviderData
 import com.tokopedia.loginregister.login.behaviour.activity.LoginActivityStub
 import com.tokopedia.loginregister.login.behaviour.data.*
-import com.tokopedia.loginregister.login.behaviour.di.DaggerLoginComponentStub
-import com.tokopedia.loginregister.login.behaviour.di.DaggerTestAppComponent
 import com.tokopedia.loginregister.login.behaviour.di.FakeActivityComponentFactory
-import com.tokopedia.loginregister.login.behaviour.di.modules.AppModuleStub
 import com.tokopedia.loginregister.login.di.ActivityComponentFactory
 import com.tokopedia.loginregister.login.domain.pojo.RegisterCheckData
 import com.tokopedia.loginregister.login.domain.pojo.RegisterCheckPojo
-import com.tokopedia.loginregister.login.idling.FragmentTransactionIdle
 import com.tokopedia.loginregister.login.view.activity.LoginActivity
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.Dispatchers
@@ -109,7 +102,7 @@ open class LoginBase: LoginRegisterBase() {
 //        ApplicationProvider.getApplicationContext<BaseMainApplication>().setComponent(baseComponent)
         val fakeComponentFactory = FakeActivityComponentFactory()
         ActivityComponentFactory.instance = fakeComponentFactory
-        fakeComponentFactory.component.inject(this)
+        fakeComponentFactory.loginComponent.inject(this)
     }
 
     @After

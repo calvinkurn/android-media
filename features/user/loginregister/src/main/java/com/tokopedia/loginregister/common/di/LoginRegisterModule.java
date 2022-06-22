@@ -57,12 +57,6 @@ public class LoginRegisterModule {
 
     @LoginRegisterScope
     @Provides
-    RegisterAnalytics provideRegisterAnalytics() {
-        return new RegisterAnalytics();
-    }
-
-    @LoginRegisterScope
-    @Provides
     SeamlessLoginAnalytics provideSeamlessAnalytics() {
         return new SeamlessLoginAnalytics();
     }

@@ -21,6 +21,7 @@ import com.tokopedia.loginregister.R
 import com.tokopedia.loginregister.common.analytics.NeedHelpAnalytics
 import com.tokopedia.loginregister.databinding.LayoutNeedHelpBottomsheetBinding
 import com.tokopedia.loginregister.login.di.ActivityComponentFactory
+import com.tokopedia.loginregister.login.di.LoginComponent
 import com.tokopedia.loginregister.login.view.fragment.LoginEmailPhoneFragment
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifyprinciples.Typography
@@ -37,7 +38,7 @@ class NeedHelpBottomSheet: BottomSheetUnify() {
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
-        activity?.application?.let { ActivityComponentFactory.instance.createActivityComponent(it).inject(this) }
+        activity?.application?.let { ActivityComponentFactory.instance.createLoginComponent(it).inject(this) }
     }
 
     override fun onCreateView(

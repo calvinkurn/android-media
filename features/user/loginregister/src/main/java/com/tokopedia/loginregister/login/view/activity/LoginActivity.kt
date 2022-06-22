@@ -38,7 +38,7 @@ open class LoginActivity : BaseSimpleActivity(), HasComponent<LoginComponent>,
     }
 
     override fun getComponent(): LoginComponent {
-        return ActivityComponentFactory.instance.createActivityComponent(application)
+        return ActivityComponentFactory.instance.createLoginComponent(application)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
