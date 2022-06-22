@@ -1227,6 +1227,15 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
         activity?.let {
             RouteManager.route(it, wishlistItem.url)
         }
+
+        activity?.let {
+            if (wishlistItem.url.isNotEmpty()) {
+                RouteManager.route(it, wishlistItem.url)
+            } else {
+                val intent = RouteManager.getIntent(it, ApplinkConstInternalMarketplace.PRODUCT_DETAIL, wishlistItem.id)
+                startActivity(intent)
+            }
+        }
     }
 
     override fun onProductRecommItemClicked(recommendationItem: RecommendationItem) {
@@ -1330,12 +1339,13 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
             )
         }
         activity?.let {
-            val intent = if (recommendationItem.appUrl.isNotEmpty()) {
-                RouteManager.getIntent(it, recommendationItem.appUrl)
+            if (recommendationItem.appUrl.isNotEmpty()) {
+                RouteManager.route(it, recommendationItem.appUrl)
             } else {
-                RouteManager.getIntent(it, ApplinkConstInternalMarketplace.PRODUCT_DETAIL, recommendationItem.productId.toString())
+                val intent = RouteManager.getIntent(it, ApplinkConstInternalMarketplace.PRODUCT_DETAIL,
+                    recommendationItem.productId.toString())
+                startActivity(intent)
             }
-            startActivity(intent)
         }
     }
 
