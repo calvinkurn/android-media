@@ -44,17 +44,15 @@ class ManageAddressViewModelTest {
 
     private val getPeopleAddressUseCase: GetAddressCornerUseCase = mockk(relaxed = true)
     private val deletePeopleAddressUseCase: DeletePeopleAddressUseCase = mockk(relaxed = true)
-    private val setDetaultPeopleAddressUseCase: SetDefaultPeopleAddressUseCase = mockk(relaxed = true)
+    private val setDefaultPeopleAddressUseCase = mockk<SetDefaultPeopleAddressUseCase>(relaxed = true)
     private val eligibleForAddressUseCase: EligibleForAddressUseCase = mockk(relaxed = true)
     private val chooseAddressRepo: ChooseAddressRepository = mockk(relaxed = true)
     private val chooseAddressMapper: ChooseAddressMapper = mockk(relaxed = true)
     private val chosenAddressObserver: Observer<Result<ChosenAddressModel>> = mockk(relaxed = true)
     private val eligibleForAddressFeatureObserver: Observer<Result<EligibleForAddressFeatureModel>> = mockk(relaxed = true)
 
-    private val setDefaultPeopleAddressUseCase = mockk<SetDefaultPeopleAddressUseCase>(relaxed = true)
 
     private var observerManageAddressState = mockk<Observer<ManageAddressState<String>>>(relaxed = true)
-    private var observerManageAddressStateDefault = mockk<Observer<ManageAddressState<String>>>(relaxed = true)
     private var observerManageAddressStateAddressList = mockk<Observer<ManageAddressState<AddressListModel>>>(relaxed = true)
     private var observerResultRemovedAddress = mockk<Observer<ManageAddressState<String>>>(relaxed = true)
     private val mockThrowable = mockk<Throwable>(relaxed = true)
@@ -68,7 +66,7 @@ class ManageAddressViewModelTest {
         manageAddressViewModel = ManageAddressViewModel(
             getPeopleAddressUseCase,
             deletePeopleAddressUseCase,
-            setDetaultPeopleAddressUseCase,
+            setDefaultPeopleAddressUseCase,
             chooseAddressRepo,
             chooseAddressMapper,
             eligibleForAddressUseCase
@@ -76,7 +74,7 @@ class ManageAddressViewModelTest {
         manageAddressViewModel.getChosenAddress.observeForever(chosenAddressObserver)
         manageAddressViewModel.setChosenAddress.observeForever(chosenAddressObserver)
         manageAddressViewModel.eligibleForAddressFeature.observeForever(eligibleForAddressFeatureObserver)
-        manageAddressViewModel.setDefault.observeForever(observerManageAddressStateDefault)
+        manageAddressViewModel.setDefault.observeForever(observerManageAddressState)
         manageAddressViewModel.addressList.observeForever(observerManageAddressStateAddressList)
         manageAddressViewModel.resultRemovedAddress.observeForever(observerResultRemovedAddress)
     }
@@ -140,13 +138,13 @@ class ManageAddressViewModelTest {
 
         coEvery { setDefaultPeopleAddressUseCase.invoke(any()) } returns mockDefaultPeopleAddressGqlResponse
         manageAddressViewModel.setDefaultPeopleAddress("1", true, -1, -1, true)
-        verify { observerManageAddressStateDefault.onChanged(match { it is ManageAddressState.Success }) }
+        verify { observerManageAddressState.onChanged(match { it is ManageAddressState.Success }) }
 
     }
 
     @Test
     fun `Set Default Address Fail`() {
-        coEvery { setDetaultPeopleAddressUseCase.invoke(any()) } throws mockThrowable
+        coEvery { setDefaultPeopleAddressUseCase.invoke(any()) } throws mockThrowable
         manageAddressViewModel.setDefaultPeopleAddress("1", true, -1, -1, true)
         verify { observerManageAddressState.onChanged(match { it is ManageAddressState.Fail }) }
     }
