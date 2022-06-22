@@ -2,6 +2,7 @@ package com.tokopedia.loginregister.login.view.viewmodel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import com.gojek.icp.identity.loginsso.data.models.Profile
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.encryption.security.RsaUtils
@@ -15,6 +16,9 @@ import com.tokopedia.loginregister.common.view.ticker.domain.pojo.TickerInfoPojo
 import com.tokopedia.loginregister.common.view.ticker.domain.usecase.TickerInfoUseCase
 import com.tokopedia.loginregister.discover.pojo.DiscoverData
 import com.tokopedia.loginregister.discover.usecase.DiscoverUseCase
+import com.tokopedia.loginregister.goto_seamless.model.GetTemporaryKeyParam
+import com.tokopedia.loginregister.goto_seamless.usecase.GetTemporaryKeyUseCase
+import com.tokopedia.loginregister.goto_seamless.usecase.GetTemporaryKeyUseCase.Companion.MODULE_GOTO_SEAMLESS
 import com.tokopedia.loginregister.login.domain.RegisterCheckFingerprintUseCase
 import com.tokopedia.loginregister.login.domain.RegisterCheckUseCase
 import com.tokopedia.loginregister.login.domain.pojo.RegisterCheckData
@@ -50,6 +54,7 @@ class LoginEmailPhoneViewModel @Inject constructor(
         private val dynamicBannerUseCase: DynamicBannerUseCase,
         private val registerCheckFingerprintUseCase: RegisterCheckFingerprintUseCase,
         private val loginFingerprintUseCase: LoginFingerprintUseCase,
+        private val getTemporaryKeyUseCase: GetTemporaryKeyUseCase,
         @Named(SessionModule.SESSION_MODULE)
         private val userSession: UserSessionInterface,
         private val dispatchers: CoroutineDispatchers
@@ -126,6 +131,10 @@ class LoginEmailPhoneViewModel @Inject constructor(
     private val mutableLoginBiometricResponse = MutableLiveData<Result<LoginToken>>()
     val loginBiometricResponse: LiveData<Result<LoginToken>>
         get() = mutableLoginBiometricResponse
+
+    private val mutableGetTemporaryKeyResponse = MutableLiveData<Result<Profile>>()
+    val getTemporaryKeyResponse: LiveData<Result<Profile>>
+        get() = mutableGetTemporaryKeyResponse
 
     fun registerCheck(id: String) {
         launchCatchError(coroutineContext, {
@@ -247,6 +256,25 @@ class LoginEmailPhoneViewModel @Inject constructor(
             }
         }, {
             mutableLoginTokenV2Response.value = Fail(it)
+        })
+    }
+
+    fun getTemporaryKeyForSDK(tkpdProfile: ProfilePojo) {
+        launchCatchError(block = {
+            val params = GetTemporaryKeyParam(module = MODULE_GOTO_SEAMLESS)
+            val result = getTemporaryKeyUseCase(params)
+            val profile = Profile(
+                accessToken = result.data.key,
+                name = tkpdProfile.profileInfo.fullName,
+                customerId = "",
+                countryCode = "+62",
+                phone = tkpdProfile.profileInfo.phone,
+                email = tkpdProfile.profileInfo.email,
+                profileImageUrl = tkpdProfile.profileInfo.profilePicture
+            )
+            mutableGetTemporaryKeyResponse.value = Success(profile)
+        }, onError = {
+            mutableGetTemporaryKeyResponse.value = Fail(it)
         })
     }
 

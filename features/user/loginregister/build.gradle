@@ -73,6 +73,7 @@ dependencies {
 
     kapt rootProject.ext.miscDependencies.lifeCycleRuntime
     implementation rootProject.ext.miscDependencies.lifeCycleExtentions
+    implementation rootProject.ext.miscDependencies.gojekSSO
     implementation rootProject.ext.miscDependencies.multiDex
     implementation rootProject.ext.miscDependencies.workManager
     implementation (rootProject.ext.firebase.crashlytics) {
@@ -118,6 +119,7 @@ dependencies {
 
     androidTestImplementation rootProject.ext.testDependencies.retrofitMock
     androidTestImplementation rootProject.ext.testDependencies.retrofitMockWebser
+    implementation rootProject.ext.miscDependencies.lifecycleRuntimeKtx
 
 }
 

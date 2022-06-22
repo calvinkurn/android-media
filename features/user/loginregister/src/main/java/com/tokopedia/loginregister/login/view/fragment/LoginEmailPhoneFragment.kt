@@ -25,6 +25,12 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
+import androidx.lifecycle.lifecycleScope
+import com.gojek.icp.identity.loginsso.ClientSSOBridge
+import com.gojek.icp.identity.loginsso.Environment
+import com.gojek.icp.identity.loginsso.SSOHostBridge
+import com.gojek.icp.identity.loginsso.data.SSOHostData
+import com.gojek.icp.identity.loginsso.data.models.Profile
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
@@ -64,8 +70,8 @@ import com.tokopedia.linker.LinkerManager
 import com.tokopedia.linker.LinkerUtils
 import com.tokopedia.linker.model.UserData
 import com.tokopedia.loginregister.R
-import com.tokopedia.loginregister.common.analytics.NeedHelpAnalytics
 import com.tokopedia.loginregister.common.analytics.LoginRegisterAnalytics
+import com.tokopedia.loginregister.common.analytics.NeedHelpAnalytics
 import com.tokopedia.loginregister.common.analytics.RegisterAnalytics
 import com.tokopedia.loginregister.common.analytics.SeamlessLoginAnalytics
 import com.tokopedia.loginregister.common.domain.pojo.ActivateUserData
@@ -76,7 +82,6 @@ import com.tokopedia.loginregister.common.view.LoginTextView
 import com.tokopedia.loginregister.common.view.PartialRegisterInputView
 import com.tokopedia.loginregister.common.view.banner.DynamicBannerConstant
 import com.tokopedia.loginregister.common.view.banner.data.DynamicBannerDataModel
-import com.tokopedia.loginregister.login.view.bottomsheet.NeedHelpBottomSheet
 import com.tokopedia.loginregister.common.view.bottomsheet.SocmedBottomSheet
 import com.tokopedia.loginregister.common.view.dialog.PopupErrorDialog
 import com.tokopedia.loginregister.common.view.dialog.RegisteredDialog
@@ -92,6 +97,7 @@ import com.tokopedia.loginregister.login.service.GetDefaultChosenAddressService
 import com.tokopedia.loginregister.login.view.activity.LoginActivity.Companion.PARAM_EMAIL
 import com.tokopedia.loginregister.login.view.activity.LoginActivity.Companion.PARAM_LOGIN_METHOD
 import com.tokopedia.loginregister.login.view.activity.LoginActivity.Companion.PARAM_PHONE
+import com.tokopedia.loginregister.login.view.bottomsheet.NeedHelpBottomSheet
 import com.tokopedia.loginregister.login.view.listener.LoginEmailPhoneContract
 import com.tokopedia.loginregister.login.view.viewmodel.LoginEmailPhoneViewModel
 import com.tokopedia.loginregister.registerpushnotif.services.RegisterPushNotificationWorker
@@ -115,7 +121,10 @@ import com.tokopedia.sessioncommon.util.TwoFactorMluHelper
 import com.tokopedia.sessioncommon.view.admin.dialog.LocationAdminDialog
 import com.tokopedia.sessioncommon.view.forbidden.activity.ForbiddenActivity
 import com.tokopedia.track.TrackApp
-import com.tokopedia.unifycomponents.*
+import com.tokopedia.unifycomponents.ImageUnify
+import com.tokopedia.unifycomponents.LoaderUnify
+import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.unifycomponents.ticker.TickerData
@@ -128,6 +137,8 @@ import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.image.ImageUtils
 import kotlinx.android.synthetic.main.fragment_login_with_phone.*
 import kotlinx.android.synthetic.main.layout_partial_register_input.*
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import java.util.*
 import javax.inject.Inject
 import javax.inject.Named
@@ -163,6 +174,8 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
     @field:Named(SessionModule.SESSION_MODULE)
     @Inject
     lateinit var userSession: UserSessionInterface
+
+    private var ssoHostBridge: SSOHostBridge? = null
 
     private var source: String = ""
     protected var isAutoLogin: Boolean = false
@@ -285,8 +298,34 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
         return super.onOptionsItemSelected(item)
     }
 
+    private fun initSSOHostBridge() {
+        lifecycleScope.launch {
+            val ssoHostData = SSOHostData(
+                "tokopedia:consumer:app",
+                "qmcpRpZPBC7DTRNQiI7dIkuGoxrqsu",
+                Environment.Integration
+            )
+            ssoHostBridge = SSOHostBridge.getSsoHostBridge()
+            ssoHostBridge?.initBridge(requireContext(), ssoHostData)
+        }
+    }
+
+    private suspend fun checkForSeamlessEligibility() {
+        val ssoData = ClientSSOBridge(appID = GlobalConfig.PACKAGE_CONSUMER_APP, appVersion = "3.178").retrieveSSOData(
+            context = requireContext(),
+            environment = Environment.Integration
+        )
+        println("ssoData: $ssoData")
+        Toaster.build(view!!, ssoData.toString(), Toaster.LENGTH_LONG).show()
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        runBlocking {
+            checkForSeamlessEligibility()
+        }
+
         setupBackgroundColor()
         activity?.let {
             val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
@@ -515,6 +554,20 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
         viewModel.goToSecurityQuestionAfterRelogin.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
             onGoToSecurityQuestionAfterRelogin().invoke()
         })
+
+        viewModel.getTemporaryKeyResponse.observe(viewLifecycleOwner) {
+            if(it is Success) {
+                saveProfileToSDK(it.data)
+            }
+            onSuccessLogin()
+        }
+    }
+
+    private fun saveProfileToSDK(profile: Profile) {
+        lifecycleScope.launch {
+            initSSOHostBridge()
+            ssoHostBridge?.saveUserProfileData(requireContext(), profile)
+        }
     }
 
     private fun onSuccessRegisterCheckFingerprint(data: RegisterCheckFingerprintResult) {
@@ -1314,7 +1367,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
         if (profilePojo.profileInfo.fullName.contains(CHARACTER_NOT_ALLOWED)) {
             onGoToChangeName()
         } else {
-            onSuccessLogin()
+            viewModel.getTemporaryKeyForSDK(profilePojo)
         }
         getDefaultChosenAddress()
     }
