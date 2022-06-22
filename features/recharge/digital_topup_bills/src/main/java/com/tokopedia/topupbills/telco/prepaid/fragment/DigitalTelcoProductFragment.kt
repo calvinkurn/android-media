@@ -53,7 +53,7 @@ class DigitalTelcoProductFragment : BaseDaggerFragment(), DigitalTelcoProductWid
     private lateinit var sharedModelPrepaid: SharedTelcoPrepaidViewModel
     private lateinit var selectedOperatorName: String
     private lateinit var shimmeringGridLayout: LinearLayout
-    private lateinit var shimmeringListLayout: LinearLayout
+    private lateinit var shimmeringListLayout: ConstraintLayout
     private lateinit var sortFilter: SortFilter
     private lateinit var titleFilterResult: TextView
 
@@ -260,7 +260,7 @@ class DigitalTelcoProductFragment : BaseDaggerFragment(), DigitalTelcoProductWid
                 selectedOperatorName, userSession.userId)
     }
 
-    private fun renderSortFilter(componentId: Int, filters: List<TelcoFilterTagComponent>) {
+    private fun renderSortFilter(componentId: String, filters: List<TelcoFilterTagComponent>) {
         if (filters.isEmpty()) {
             sortFilter.hide()
             telcoTelcoProductView.removePaddingTop(false)
@@ -294,7 +294,7 @@ class DigitalTelcoProductFragment : BaseDaggerFragment(), DigitalTelcoProductWid
         }
     }
 
-    private fun showBottomSheetFilter(filterTag: TelcoFilterTagComponent, componentId: Int,
+    private fun showBottomSheetFilter(filterTag: TelcoFilterTagComponent, componentId: String,
                                       sortFilterItem: SortFilterItem) {
         topupAnalytics.eventClickQuickFilter(categoryId, filterTag.text, userSession.userId)
         val filterBottomSheet = DigitalTelcoFilterBottomSheet.newInstance(filterTag.text,

@@ -75,7 +75,7 @@ class CategoryQuickFilterTest: CategoryTestFixtures() {
                 selectedFilterOption.key to selectedFilterOption.value,
         )
 
-        `Given category view model`(defaultCategoryL1, defaultCategoryL2, queryParamWithFilter)
+        `Given category view model`(defaultCategoryL1, defaultCategoryL2, defaultExternalServiceType, queryParamWithFilter)
         `Given get category first page use case will be successful`(categoryModel)
 
         `When view created`()
@@ -159,6 +159,7 @@ class CategoryQuickFilterTest: CategoryTestFixtures() {
 
     @Test
     fun `click quick filter to un-apply filter`() {
+
         val requestParamsSlot = slot<RequestParams>()
         val selectedQuickFilterIndex = 2
         val previouslySelectedFilterOption = categoryModel.quickFilter.filter[selectedQuickFilterIndex].options[0]
@@ -166,7 +167,7 @@ class CategoryQuickFilterTest: CategoryTestFixtures() {
                 previouslySelectedFilterOption.key to previouslySelectedFilterOption.value,
         )
 
-        `Given category view model`(defaultCategoryL1, defaultCategoryL2, queryParamWithFilter)
+        `Given category view model`(defaultCategoryL1, defaultCategoryL2, defaultExternalServiceType, queryParamWithFilter)
         `Given get category first page use case will be successful`(categoryModel, requestParamsSlot)
         `Given view already created`()
 

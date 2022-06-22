@@ -13,22 +13,25 @@ import javax.inject.Inject
  */
 
 class PowerMerchantActivateUseCase @Inject constructor(
-        private val gqlRepository: GraphqlRepository
+    private val gqlRepository: GraphqlRepository
 ) : BaseGqlUseCase<PMActivationStatusUiModel>() {
 
     override suspend fun executeOnBackground(): PMActivationStatusUiModel {
-        val gqlRequest = GraphqlRequest(QUERY, GoldActivationSubscription::class.java, params.parameters)
+        val gqlRequest =
+            GraphqlRequest(QUERY, GoldActivationSubscription::class.java, params.parameters)
         val gqlResponse = gqlRepository.response(listOf(gqlRequest), cacheStrategy)
 
         val gqlErrors = gqlResponse.getError(GoldActivationSubscription::class.java)
         if (gqlErrors.isNullOrEmpty()) {
-            val data: GoldActivationSubscription = gqlResponse.getData<GoldActivationSubscription>(GoldActivationSubscription::class.java)
+            val data: GoldActivationSubscription =
+                gqlResponse.getData<GoldActivationSubscription>(GoldActivationSubscription::class.java)
                     ?: throw RuntimeException("returns null from backend")
             val message = data.goldActivationData.header.message.firstOrNull().orEmpty()
             return PMActivationStatusUiModel(
-                    isSuccess = data.isSuccess(),
-                    message = message,
-                    currentShopTier = data.goldActivationData.data.shopTier
+                isSuccess = data.isSuccess(),
+                message = message,
+                currentShopTier = data.goldActivationData.data.shopTier,
+                errorCode = data.goldActivationData.header.errorCode
             )
         } else {
             throw MessageErrorException(gqlErrors.firstOrNull()?.message.orEmpty())
@@ -37,8 +40,8 @@ class PowerMerchantActivateUseCase @Inject constructor(
 
     companion object {
         private val QUERY = """
-         mutation activatePowerMerchant(${'$'}source: String!, ${'$'}current_shop_tier: Int, ${'$'}next_shop_tier: Int) {
-           goldActivationSubscription(source: ${'$'}source, current_shop_tier: ${'$'}current_shop_tier, next_shop_tier: ${'$'}next_shop_tier) {
+         mutation activatePowerMerchant(${'$'}source: String!) {
+           goldActivationSubscription(source: ${'$'}source) {
              header {
                messages
                error_code
@@ -58,13 +61,11 @@ class PowerMerchantActivateUseCase @Inject constructor(
          }
         """.trimIndent()
 
-        private const val CURRENT_SHOP_TIER = "current_shop_tier"
         private const val SOURCE = "source"
 
-        fun createActivationParam(currentShopTier: Int, source: String): RequestParams {
+        fun createActivationParam(source: String): RequestParams {
             return RequestParams.create().apply {
                 putString(SOURCE, source)
-                putInt(CURRENT_SHOP_TIER, currentShopTier)
             }
         }
     }

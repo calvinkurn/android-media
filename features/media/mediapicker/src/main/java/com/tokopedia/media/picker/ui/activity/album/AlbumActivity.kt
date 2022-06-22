@@ -12,7 +12,7 @@ import com.tokopedia.media.common.utils.ParamCacheManager
 import com.tokopedia.media.databinding.ActivityAlbumBinding
 import com.tokopedia.media.picker.analytics.PickerAnalytics
 import com.tokopedia.media.picker.di.DaggerPickerComponent
-import com.tokopedia.media.picker.ui.activity.album.adapter.AlbumAdapter
+import com.tokopedia.media.picker.ui.adapter.AlbumAdapter
 import com.tokopedia.media.picker.ui.fragment.OnAlbumClickListener
 import com.tokopedia.picker.common.basecomponent.uiComponent
 import com.tokopedia.picker.common.component.NavToolbarComponent

@@ -14,9 +14,9 @@ import com.tokopedia.product.detail.data.model.financing.PDPInstallmentRecommend
 import com.tokopedia.product.detail.data.model.merchantvouchersummary.MerchantVoucherSummary
 import com.tokopedia.product.detail.data.model.navbar.NavBar
 import com.tokopedia.product.detail.data.model.purchaseprotection.ProductPurchaseProtectionInfo
-import com.tokopedia.product.detail.data.model.review.ImageReview
 import com.tokopedia.product.detail.data.model.review.ProductRatingCount
 import com.tokopedia.product.detail.data.model.review.Review
+import com.tokopedia.product.detail.data.model.review.ReviewImage
 import com.tokopedia.product.detail.data.model.ticker.ProductTicker
 import com.tokopedia.product.detail.data.model.ticker.TickerDataResponse
 import com.tokopedia.product.detail.data.model.tradein.ValidateTradeIn
@@ -50,9 +50,9 @@ data class ProductInfoP2UiData(
         var bebasOngkir: BebasOngkir = BebasOngkir(),
         var uspImageUrl: String = "",
         var merchantVoucherSummary: MerchantVoucherSummary = MerchantVoucherSummary(),
-        var imageReviews: ImageReview? = null,
+        var imageReview: ReviewImage = ReviewImage(),
         var helpfulReviews: List<Review>? = null,
-        var miniCart: MutableMap<String, MiniCartItem>? = null,
+        var miniCart: MutableMap<String, MiniCartItem.MiniCartItemProduct>? = null,
         var alternateCopy: List<AlternateCopy> = listOf(),
         var bundleInfoMap: Map<String, BundleInfo> = emptyMap(),
         var rating: ProductRatingCount = ProductRatingCount(),
