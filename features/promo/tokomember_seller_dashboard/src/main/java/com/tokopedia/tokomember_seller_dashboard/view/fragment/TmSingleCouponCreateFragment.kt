@@ -918,6 +918,7 @@ class TmSingleCouponCreateFragment : BaseDaggerFragment() {
         var date = ""
         var month = ""
         var year = ""
+        var day = 0
         context?.let{
             val calMax = Calendar.getInstance()
             calMax.add(Calendar.YEAR, TmProgramFragment.MAX_YEAR)
@@ -946,7 +947,19 @@ class TmSingleCouponCreateFragment : BaseDaggerFragment() {
                         date = selectedCalendar?.get(Calendar.DATE).toString()
                         month = selectedCalendar?.getDisplayName(Calendar.MONTH, Calendar.LONG, LocaleUtils.getIDLocale()).toString()
                         year = selectedCalendar?.get(Calendar.YEAR).toString()
-                        textField.textInputLayout.editText?.setText(( "$date $month $year"))
+                        day = selectedCalendar?.get(Calendar.DAY_OF_WEEK)?:0
+
+                        val dayInId =  when(day){
+                            1 -> "Min"
+                            2 -> "Sen"
+                            3 -> "Sel"
+                            4 -> "Rab"
+                            5 -> "Kam"
+                            6 -> "Jum"
+                            7 -> "Sab"
+                            else -> ""
+                        }
+                        textField.textInputLayout.editText?.setText(( "$dayInId,$date $month $year"))
                         when (type) {
                             0 -> { tmCouponStartDateUnix = selectedCalendar }
                             1 -> { tmCouponEndDateUnix = selectedCalendar }

@@ -28,8 +28,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:closeButtonVisibility="gone"
-                app:descriptionText="Toko tidak aktif > 30 hari.
-Biar mudah  cepat, pakai rekomendasi kupon dan minimum pembelian untuk member kamu!"
+                app:descriptionText="Biar mudah &amp; cepat, pakai rekomendasi kupon dan minimum pembelian untuk member kamu!"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:tickerShapeType="full"
@@ -230,11 +229,10 @@ Biar mudah  cepat, pakai rekomendasi kupon dan minimum pembelian untuk member ka
                 app:layout_constraintStart_toStartOf="@id/tvTitleKuponMembership"
                 app:layout_constraintTop_toBottomOf="@id/viewDividerThree"
                 app:unify_text_field_append_drawable_icon_1="@drawable/iconunify_calendar"
-                app:unify_text_field_clearable="true"
+                app:unify_text_field_clearable="false"
                 app:unify_text_field_input_type="text|number"
                 app:unify_text_field_label="Mulai"
-                app:unify_text_field_label_static="false"
-                app:unify_text_field_prepend_text="Kam" />
+                app:unify_text_field_label_static="false" />
 
             <com.tokopedia.unifycomponents.TextFieldUnify2
                 android:id="@+id/textFieldProgramStartTime"
@@ -246,7 +244,7 @@ Biar mudah  cepat, pakai rekomendasi kupon dan minimum pembelian untuk member ka
                 app:layout_constraintStart_toStartOf="@id/tvTitleKuponMembership"
                 app:layout_constraintTop_toBottomOf="@id/textFieldProgramStartDate"
                 app:unify_text_field_append_drawable_icon_1="@drawable/iconunify_clock"
-                app:unify_text_field_clearable="true"
+                app:unify_text_field_clearable="false"
                 app:unify_text_field_input_type="text|number"
                 app:unify_text_field_label="Jam mulai"
                 app:unify_text_field_label_static="false"
@@ -271,11 +269,10 @@ Biar mudah  cepat, pakai rekomendasi kupon dan minimum pembelian untuk member ka
                 app:layout_constraintStart_toStartOf="@id/tvTitleKuponMembership"
                 app:layout_constraintTop_toBottomOf="@id/viewDividerFour"
                 app:unify_text_field_append_drawable_icon_1="@drawable/iconunify_calendar"
-                app:unify_text_field_clearable="true"
+                app:unify_text_field_clearable="false"
                 app:unify_text_field_input_type="text|number"
                 app:unify_text_field_label="Berakhir"
-                app:unify_text_field_label_static="false"
-                app:unify_text_field_prepend_text="Kam" />
+                app:unify_text_field_label_static="false" />
 
             <com.tokopedia.unifycomponents.TextFieldUnify2
                 android:id="@+id/textFieldProgramEndTime"
@@ -287,7 +284,7 @@ Biar mudah  cepat, pakai rekomendasi kupon dan minimum pembelian untuk member ka
                 app:layout_constraintStart_toStartOf="@id/tvTitleKuponMembership"
                 app:layout_constraintTop_toBottomOf="@id/textFieldProgramEndDate"
                 app:unify_text_field_append_drawable_icon_1="@drawable/iconunify_clock"
-                app:unify_text_field_clearable="true"
+                app:unify_text_field_clearable="false"
                 app:unify_text_field_input_type="text|number"
                 app:unify_text_field_label="Jam berakhir"
                 app:unify_text_field_label_static="false"

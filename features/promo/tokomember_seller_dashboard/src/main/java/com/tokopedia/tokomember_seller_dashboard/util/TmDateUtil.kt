@@ -171,4 +171,17 @@ object TmDateUtil {
         }
         return (calendar.timeInMillis / 1000).toString()
     }
+
+    fun getDayOfWeekID(day:Int) :String{
+        return when(day){
+            1 -> SUNDAY
+            2 -> MONDAY
+            3 -> TUESDAY
+            4 -> WEDNESDAY
+            5 -> THURSDAY
+            6 -> FRIDAY
+            7 -> SATURDAY
+            else -> ""
+        }
+    }
 }

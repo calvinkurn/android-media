@@ -4,4 +4,7 @@
     <string name="tm_cmn_datestart_value">DD MM YY</string>
     <string name="tm_cmn_dateend_label">Berlaku Hingga</string>
     <string name="tm_cmn_dateend_value">DD MM YY</string>
+    <string name="tm_cmn_ubah_program">Ubah Program</string>
+    <string name="tm_cmn_jumlah_transaksi">Jumlah transaksi</string>
+    <string name="tm_cmn_tambahan_member">Tambahan member</string>
 </resources>

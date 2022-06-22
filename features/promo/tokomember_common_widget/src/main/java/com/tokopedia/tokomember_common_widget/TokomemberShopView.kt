@@ -70,19 +70,20 @@ class TokomemberShopView @JvmOverloads constructor(
         mBackgroundImageUrl = tokomemberShopViewModel.backgroundImgUrl
         mCardShopName = tokomemberShopViewModel.shopName
         tvShopName.text = mCardShopName
-        tvShopMemberName.text = tokomemberShopViewModel.shopMemberName
         shopType = tokomemberShopViewModel.shopType
         ivShopIcon.loadImage(tokomemberShopViewModel.shopIconUrl)
         ivShopContainer.loadImage(mBackgroundImageUrl)
 
         when(shopType){
             MemberType.PREMIUM ->{
+                tvDescMembership.text = "Preview kartu member Premium (Level 1)."
                 containerBadge.background = context?.getDrawable(R.drawable.tm_dash_badge_premium)
                 tvShopType.text = PREMIUM
                 tvShopType.setTextColor(ContextCompat.getColor(context,com.tokopedia.unifyprinciples.R.color.Unify_Static_White))
             }
 
             MemberType.VIP ->{
+                tvDescMembership.text = "Preview kartu member VIP (Level 2)"
                 containerBadge.background = context?.getDrawable(R.drawable.tm_dash_badge_vip)
                 tvShopType.text = VIP
                 tvShopType.setTextColor(ContextCompat.getColor(context,com.tokopedia.unifyprinciples.R.color.Unify_Y400))

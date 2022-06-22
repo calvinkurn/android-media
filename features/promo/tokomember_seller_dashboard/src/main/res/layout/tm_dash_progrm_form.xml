@@ -106,12 +106,11 @@
                 app:layout_constraintStart_toStartOf="@id/tvDetail"
                 app:layout_constraintTop_toBottomOf="@id/chipGroup"
                 app:unify_text_field_append_drawable_icon_1="@drawable/iconunify_calendar"
-                app:unify_text_field_clearable="true"
+                app:unify_text_field_clearable="false"
                 app:unify_text_field_input_type="text|number"
                 app:unify_text_field_label="Mulai"
                 app:unify_text_field_label_static="false"
-                app:unify_text_field_message="Program mulai pukul 00:00 WIB"
-                app:unify_text_field_prepend_text="Kam" />
+                app:unify_text_field_message="Program mulai pukul 00:00 WIB" />
 
             <View
                 android:id="@+id/viewDivider"
@@ -153,7 +152,7 @@
                 app:layout_constraintStart_toStartOf="@id/tvDetail"
                 app:layout_constraintTop_toBottomOf="@id/cardEditInfo"
                 app:unify_text_field_append_drawable_icon_1="@drawable/iconunify_calendar"
-                app:unify_text_field_clearable="true"
+                app:unify_text_field_clearable="false"
                 app:unify_text_field_input_type="number"
                 app:unify_text_field_label="Min. transaksi Premium (Level 1)"
                 app:unify_text_field_label_static="false"
@@ -184,7 +183,7 @@
                 app:layout_constraintStart_toStartOf="@id/tvDetail"
                 app:layout_constraintTop_toBottomOf="@id/tickerInfo"
                 app:unify_text_field_append_drawable_icon_1="@drawable/iconunify_calendar"
-                app:unify_text_field_clearable="true"
+                app:unify_text_field_clearable="false"
                 app:unify_text_field_input_type="number"
                 app:unify_text_field_label="Min. transaksi VIP (Level 2)"
                 app:unify_text_field_label_static="false"

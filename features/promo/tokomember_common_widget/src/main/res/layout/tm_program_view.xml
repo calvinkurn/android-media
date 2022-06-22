@@ -19,9 +19,9 @@
 
         <View
             android:id="@+id/view_status"
-            android:layout_width="4dp"
-            android:layout_height="20dp"
-            android:layout_marginTop="8dp"
+            android:layout_width="@dimen/unify_space_4"
+            android:layout_height="@dimen/tm_cmn_dp_20"
+            android:layout_marginTop="@dimen/unify_space_8"
             android:background="@drawable/tm_bg_coupon_status"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -43,10 +43,10 @@
             android:id="@+id/ivTime"
             android:layout_width="@dimen/unify_space_40"
             android:layout_height="@dimen/unify_space_40"
-            android:padding="@dimen/dp_10"
+            android:padding="@dimen/tm_cmn_dp_10"
             android:background="@drawable/bg_coupon_icon"
             android:backgroundTint="@color/Unify_GN100"
-            android:layout_marginTop="@dimen/dp_28"
+            android:layout_marginTop="@dimen/tm_cmn_dp_28"
             app:icon_name="PROJECT"
             app:icon_color_light_enable="@color/Unify_G500"
             app:layout_constraintStart_toStartOf="@+id/programStatus"
@@ -137,10 +137,10 @@
             android:id="@+id/ivMemberStatistics"
             android:layout_width="@dimen/unify_space_40"
             android:layout_height="@dimen/unify_space_40"
-            android:padding="@dimen/dp_10"
+            android:padding="@dimen/tm_cmn_dp_10"
             android:background="@drawable/bg_coupon_icon"
             android:backgroundTint="@color/Unify_GN100"
-            android:layout_marginTop="@dimen/dp_28"
+            android:layout_marginTop="@dimen/tm_cmn_dp_28"
             app:icon_name="CLOCK"
             app:icon_color_light_enable="@color/Unify_G500"
             app:layout_constraintCircleRadius="@dimen/dp_10"
@@ -167,7 +167,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:typographyType="small"
-                android:text="Tambahan member" />
+                android:text="@string/tm_cmn_tambahan_member" />
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/programMemberValue"
@@ -201,7 +201,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:typographyType="small"
-                android:text="Jumlah transaksi" />
+                android:text="@string/tm_cmn_jumlah_transaksi" />
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/programMemberTransaksivalue"
@@ -230,9 +230,9 @@
             android:layout_height="wrap_content"
             android:id="@+id/btn_edit"
             android:visibility="gone"
-            android:layout_marginTop="@dimen/dp_12"
+            android:layout_marginTop="@dimen/unify_space_12"
             app:unifyButtonVariant="ghost"
-            android:text="Ubah Program"
+            android:text="@string/tm_cmn_ubah_program"
             app:unifyButtonSize="small"
             app:layout_constraintTop_toBottomOf="@id/ivMemberStatistics"
             app:layout_constraintStart_toStartOf="@id/ivMemberStatistics"

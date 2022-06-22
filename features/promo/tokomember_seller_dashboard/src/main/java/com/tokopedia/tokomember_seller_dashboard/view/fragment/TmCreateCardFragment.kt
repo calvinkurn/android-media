@@ -71,6 +71,9 @@ class TmCreateCardFragment : BaseDaggerFragment(), TokomemberCardColorAdapterLis
     @Inject
     lateinit var viewModelFactory: dagger.Lazy<ViewModelProvider.Factory>
     private var isColorPalleteClicked = false
+    private var isColorPalleteClickedFirstTime = true
+    private var backgroundPosition = 0
+    private var backgroundImageUrl = ""
     private var mCardBgTemplateList = arrayListOf<CardTemplateImageListItem>()
     var shopViewPremium: TokomemberShopView? = null
     var shopViewVip: TokomemberShopView? = null
@@ -118,9 +121,6 @@ class TmCreateCardFragment : BaseDaggerFragment(), TokomemberCardColorAdapterLis
         shopID = arguments?.getInt(BUNDLE_SHOP_ID)?:0
         tmDashCreateViewModel.getCardInfo(arguments?.getInt(BUNDLE_CARD_ID)?:0)
         renderHeader()
-        tipTokomember.setOnClickListener {
-            Toast.makeText(context, "Click tips", Toast.LENGTH_SHORT).show()
-        }
     }
 
     override fun getScreenName() = ""
@@ -372,15 +372,16 @@ class TmCreateCardFragment : BaseDaggerFragment(), TokomemberCardColorAdapterLis
     }
 
     override fun onItemClickCardCBg(tokoCardItem: Visitable<*>?, position: Int) {
-        if (isColorPalleteClicked && position != -1) {
+        if (position != -1) {
+            backgroundPosition = position
             adapterBg.notifyItemChanged(position)
             if (tokoCardItem is TokomemberCardBg) {
-
+                backgroundImageUrl = tokoCardItem.imageUrl ?: ""
                 tmShopCardModel = TokomemberShopCardModel(
                     shopName = tmShopCardModel.shopName,
                     numberOfLevel = tmShopCardModel.numberOfLevel,
                     backgroundColor = tmShopCardModel.backgroundColor,
-                    backgroundImgUrl = tokoCardItem.imageUrl ?: "",
+                    backgroundImgUrl = backgroundImageUrl,
                     shopType = 0
                 )
                 shopViewPremium?.setShopCardData(tmShopCardModel)
@@ -392,20 +393,23 @@ class TmCreateCardFragment : BaseDaggerFragment(), TokomemberCardColorAdapterLis
     }
 
     override fun onItemClickCardColorSelect(tokoCardItem: Visitable<*>?, position: Int) {
-        if (position != -1) {
+        if (position != -1 ) {
             adapterColor.notifyItemChanged(position)
-            isColorPalleteClicked = true
             if (tokoCardItem is TokomemberCardColor) {
                 getBackgroundPallete(tokoCardItem.id ?: "", tokoCardItem.tokoCardPatternList)
             }
-            rvCardBg?.viewTreeObserver?.addOnGlobalLayoutListener(object: ViewTreeObserver.OnGlobalLayoutListener {
-                override fun onGlobalLayout() {
-                    rvCardBg?.viewTreeObserver?.removeOnGlobalLayoutListener(this)
-                    Handler(Looper.getMainLooper()).postDelayed({
-                        rvCardBg?.findViewHolderForAdapterPosition(0)?.itemView?.performClick()
-                    }, 500L)
-                }
-            })
+            if (isColorPalleteClickedFirstTime) {
+                isColorPalleteClickedFirstTime = false
+                rvCardBg?.viewTreeObserver?.addOnGlobalLayoutListener(object :
+                    ViewTreeObserver.OnGlobalLayoutListener {
+                    override fun onGlobalLayout() {
+                        rvCardBg?.viewTreeObserver?.removeOnGlobalLayoutListener(this)
+                        Handler(Looper.getMainLooper()).postDelayed({
+                            rvCardBg?.findViewHolderForAdapterPosition(0)?.itemView?.performClick()
+                        }, 500L)
+                    }
+                })
+            }
         }
     }
 
@@ -414,6 +418,18 @@ class TmCreateCardFragment : BaseDaggerFragment(), TokomemberCardColorAdapterLis
         val bgItem = TokomemberCardMapper.getBackground(mCardBgTemplateList, colorCode, arrayList)
         adapterBg.addItems(bgItem.tokoVisitableCardBg)
         adapterBg.notifyDataSetChanged()
+
+        tmShopCardModel = TokomemberShopCardModel(
+            shopName = tmShopCardModel.shopName,
+            numberOfLevel = tmShopCardModel.numberOfLevel,
+            backgroundColor = tmShopCardModel.backgroundColor,
+            backgroundImgUrl = (bgItem.tokoVisitableCardBg[backgroundPosition] as TokomemberCardBg).imageUrl?:"",
+            shopType = 0
+        )
+        shopViewPremium?.setShopCardData(tmShopCardModel)
+        shopViewVip?.setShopCardData(tmShopCardModel.apply {
+            shopType = 1
+        })
     }
 
     override fun onItemClickCardColorUnselect(tokoCardItem: Visitable<*>?, position: Int) {

@@ -806,6 +806,7 @@ class TmMultipleCuponCreateFragment : BaseDaggerFragment() {
         var date = ""
         var month = ""
         var year = ""
+        var day = 0
         context?.let {
             val calMax = Calendar.getInstance()
             calMax.add(Calendar.YEAR, TmProgramFragment.MAX_YEAR)
@@ -832,6 +833,7 @@ class TmMultipleCuponCreateFragment : BaseDaggerFragment() {
                         selectedCalendar = getDate()
                         selectedTime = selectedCalendar?.time.toString()
                         date = selectedCalendar?.get(Calendar.DATE).toString()
+                        day = selectedCalendar?.get(Calendar.DAY_OF_WEEK)?:0
                         month = selectedCalendar?.getDisplayName(
                             Calendar.MONTH,
                             Calendar.LONG,
@@ -858,8 +860,18 @@ class TmMultipleCuponCreateFragment : BaseDaggerFragment() {
                 datepickerObject.show(fragmentManager, "")
             }
             datepickerObject.setOnDismissListener {
+                val dayInId =  when(day){
+                    1 -> "Min"
+                    2 -> "Sen"
+                    3 -> "Sel"
+                    4 -> "Rab"
+                    5 -> "Kam"
+                    6 -> "Jum"
+                    7 -> "Sab"
+                    else -> ""
+                }
                 selectedTime = selectedCalendar?.time.toString()
-                textField.textInputLayout.editText?.setText(("$date $month $year"))
+                textField.textInputLayout.editText?.setText(("$dayInId,$date $month $year"))
             }
         }
     }

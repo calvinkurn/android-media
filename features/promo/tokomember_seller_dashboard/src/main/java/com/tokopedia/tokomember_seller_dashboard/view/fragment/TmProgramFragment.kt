@@ -1,5 +1,6 @@
 package com.tokopedia.tokomember_seller_dashboard.view.fragment
 
+import android.annotation.SuppressLint
 import android.app.Activity.RESULT_OK
 import android.content.Context
 import android.content.Intent
@@ -16,10 +17,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.datepicker.LocaleUtils
 import com.tokopedia.datepicker.datetimepicker.DateTimePickerUnify
 import com.tokopedia.dialog.DialogUnify
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
-import com.tokopedia.kotlin.extensions.view.toIntSafely
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.loaderdialog.LoaderDialog
 import com.tokopedia.tokomember_common_widget.callbacks.ChipGroupCallback
 import com.tokopedia.tokomember_common_widget.util.CreateScreenType
@@ -32,38 +30,10 @@ import com.tokopedia.tokomember_seller_dashboard.model.MembershipGetProgramForm
 import com.tokopedia.tokomember_seller_dashboard.model.ProgramThreshold
 import com.tokopedia.tokomember_seller_dashboard.model.TmIntroBottomsheetModel
 import com.tokopedia.tokomember_seller_dashboard.tracker.TmTracker
-import com.tokopedia.tokomember_seller_dashboard.util.ACTION_CREATE
-import com.tokopedia.tokomember_seller_dashboard.util.ACTION_DETAIL
-import com.tokopedia.tokomember_seller_dashboard.util.ACTION_EDIT
-import com.tokopedia.tokomember_seller_dashboard.util.ACTION_EXTEND
-import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_CARD_ID
-import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_CARD_ID_IN_TOOLS
-import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_EDIT_PROGRAM
-import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_PROGRAM_ID
-import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_PROGRAM_ID_IN_TOOLS
-import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_PROGRAM_TYPE
-import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_SHOP_AVATAR
-import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_SHOP_ID
-import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_SHOP_NAME
-import com.tokopedia.tokomember_seller_dashboard.util.DATE_DESC
-import com.tokopedia.tokomember_seller_dashboard.util.DATE_TITLE
-import com.tokopedia.tokomember_seller_dashboard.util.ERROR_CREATING_CTA
-import com.tokopedia.tokomember_seller_dashboard.util.ERROR_CREATING_CTA_RETRY
-import com.tokopedia.tokomember_seller_dashboard.util.ERROR_CREATING_DESC
-import com.tokopedia.tokomember_seller_dashboard.util.ERROR_CREATING_TITLE
-import com.tokopedia.tokomember_seller_dashboard.util.ERROR_CREATING_TITLE_RETRY
-import com.tokopedia.tokomember_seller_dashboard.util.PROGRAM_CTA
-import com.tokopedia.tokomember_seller_dashboard.util.PROGRAM_CTA_EDIT
-import com.tokopedia.tokomember_seller_dashboard.util.REFRESH
-import com.tokopedia.tokomember_seller_dashboard.util.TM_DIALOG_CANCEL_CTA_PRIMARY_PROGRAM
-import com.tokopedia.tokomember_seller_dashboard.util.TM_DIALOG_CANCEL_CTA_SECONDARY_PROGRAM
-import com.tokopedia.tokomember_seller_dashboard.util.TM_DIALOG_CANCEL_DESC_PROGRAM
-import com.tokopedia.tokomember_seller_dashboard.util.TM_DIALOG_CANCEL_TITLE_PROGRAM
-import com.tokopedia.tokomember_seller_dashboard.util.TM_PROGRAM_EDIT_DIALOG_TITLE
-import com.tokopedia.tokomember_seller_dashboard.util.TM_PROGRAM_MIN_PURCHASE_ERROR
+import com.tokopedia.tokomember_seller_dashboard.util.*
 import com.tokopedia.tokomember_seller_dashboard.util.TmDateUtil.convertDateTime
+import com.tokopedia.tokomember_seller_dashboard.util.TmDateUtil.getDayOfWeekID
 import com.tokopedia.tokomember_seller_dashboard.util.TmDateUtil.setDate
-import com.tokopedia.tokomember_seller_dashboard.util.TokoLiveDataResult
 import com.tokopedia.tokomember_seller_dashboard.view.activity.TokomemberDashIntroActivity
 import com.tokopedia.tokomember_seller_dashboard.view.adapter.mapper.ProgramUpdateMapper
 import com.tokopedia.tokomember_seller_dashboard.view.customview.BottomSheetClickListener
@@ -72,19 +42,17 @@ import com.tokopedia.tokomember_seller_dashboard.view.viewmodel.TmDashCreateView
 import com.tokopedia.unifycomponents.ProgressBarUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.utils.text.currency.CurrencyFormatHelper
 import com.tokopedia.utils.text.currency.NumberTextWatcher
 import kotlinx.android.synthetic.main.tm_dash_program_form_container.*
 import kotlinx.android.synthetic.main.tm_dash_progrm_form.*
+import java.text.SimpleDateFormat
 import java.util.*
 import javax.inject.Inject
 
 private const val COUNTRY_ID = "ID"
 private const val LANGUAGE_ID = "id"
-private const val GMT = "GMT"
-private const val Z = "Z"
-private const val GMT07 = "+0700"
 private val locale = Locale(LANGUAGE_ID, COUNTRY_ID)
-
 
 class TmProgramFragment : BaseDaggerFragment(), ChipGroupCallback ,
     BottomSheetClickListener {
@@ -121,7 +89,7 @@ class TmProgramFragment : BaseDaggerFragment(), ChipGroupCallback ,
         }
 
         if (context is TmOpenFragmentCallback) {
-            tmOpenFragmentCallback =  context as TmOpenFragmentCallback
+            tmOpenFragmentCallback = context
         } else {
             throw Exception(context.toString() )
         }
@@ -172,18 +140,23 @@ class TmProgramFragment : BaseDaggerFragment(), ChipGroupCallback ,
         tmDashCreateViewModel.tokomemberProgramUpdateResultLiveData.observe(viewLifecycleOwner,{
             when(it.status){
                 TokoLiveDataResult.STATUS.SUCCESS -> {
-                    if(it.data?.membershipCreateEditProgram?.resultStatus?.code=="200"){
-                        programCreationId = it?.data.membershipCreateEditProgram.programSeller?.id?:0
-                        onProgramUpdateSuccess()
-                    } else if (it.data?.membershipCreateEditProgram?.resultStatus?.code=="50001"){
-                        view?.let { v-> Toaster.build(v," Coba Lagi" , Toaster.LENGTH_LONG , Toaster.TYPE_ERROR ).show() }
-                    } else{
-                        handleErrorOnUpdate()
+                    when (it.data?.membershipCreateEditProgram?.resultStatus?.code) {
+                        CODE_SUCCESS -> {
+                            programCreationId = it?.data.membershipCreateEditProgram.programSeller?.id?:0
+                            onProgramUpdateSuccess()
+                        }
+                        CODE_ERROR -> {
+                            view?.let { v-> Toaster.build(v, RETRY , Toaster.LENGTH_LONG , Toaster.TYPE_ERROR ).show() }
+                        }
+                        else -> {
+                            handleErrorOnUpdate()
+                        }
                     }
                 }
                 TokoLiveDataResult.STATUS.ERROR ->{
                     handleErrorOnUpdate()
                 }
+                else ->{}
             }
         })
     }
@@ -206,12 +179,12 @@ class TmProgramFragment : BaseDaggerFragment(), ChipGroupCallback ,
             else -> ERROR_CREATING_CTA_RETRY
         }
         val bundle = Bundle()
-        val tmIntroBottomsheetModel = TmIntroBottomsheetModel(title, ERROR_CREATING_DESC , "", cta , errorCount = errorCount)
-        bundle.putString(TokomemberBottomsheet.ARG_BOTTOMSHEET, Gson().toJson(tmIntroBottomsheetModel))
-        val bottomsheet = TokomemberBottomsheet.createInstance(bundle)
-        bottomsheet.setUpBottomSheetListener(this)
-        bottomsheet.show(childFragmentManager,"")
-        errorCount+=1
+        val tmIntroBottomSheetModel = TmIntroBottomsheetModel(title, ERROR_CREATING_DESC , "", cta , errorCount = errorCount)
+        bundle.putString(TokomemberBottomsheet.ARG_BOTTOMSHEET, Gson().toJson(tmIntroBottomSheetModel))
+        val bottomSheet = TokomemberBottomsheet.createInstance(bundle)
+        bottomSheet.setUpBottomSheetListener(this)
+        bottomSheet.show(childFragmentManager,"")
+        errorCount += 1
     }
 
     private fun callGQL(programType: Int, shopId: Int , programId:Int = 0){
@@ -363,6 +336,7 @@ class TmProgramFragment : BaseDaggerFragment(), ChipGroupCallback ,
         }
     }
 
+    @SuppressLint("SetTextI18n")
     private fun renderProgramUI(membershipGetProgramForm: MembershipGetProgramForm?) {
         textFieldDuration.editText.inputType = InputType.TYPE_NULL
         containerViewFlipper.displayedChild = DATA
@@ -376,16 +350,31 @@ class TmProgramFragment : BaseDaggerFragment(), ChipGroupCallback ,
         else{
             textFieldTranskVip.isEnabled = true
             textFieldTranskPremium.isEnabled = true
-            textFieldTranskPremium.editText.setText(membershipGetProgramForm?.programThreshold?.minThresholdLevel1.toString() ?: "")
-            textFieldTranskVip.editText.setText(membershipGetProgramForm?.programThreshold?.minThresholdLevel2.toString() ?: "")
+            textFieldTranskPremium.editText.setText(membershipGetProgramForm?.programThreshold?.minThresholdLevel1.toString())
+            textFieldTranskVip.editText.setText(membershipGetProgramForm?.programThreshold?.minThresholdLevel2.toString())
             cardEditInfo.hide()
         }
         membershipGetProgramForm?.timePeriodList?.getOrNull(0)?.months?.let {
             periodInMonth = it
         }
-        membershipGetProgramForm?.programForm?.timeWindow?.startTime?.let {
-            selectedTime = it
-            textFieldDuration.editText.setText(setDate(selectedTime))
+        if (programActionType == ProgramActionType.CREATE) {
+            val currentDate = GregorianCalendar(Locale("id", "ID"))
+            currentDate.add(Calendar.DAY_OF_MONTH,1)
+            val dayInId =  getDayOfWeekID(currentDate.get(Calendar.DAY_OF_WEEK))
+
+           val month =  currentDate.getDisplayName(
+                Calendar.MONTH,
+                Calendar.LONG,
+                LocaleUtils.getIDLocale()
+            )
+            textFieldDuration.editText.setText(
+                "$dayInId, ${currentDate.get(Calendar.DATE)} $month ${currentDate.get(Calendar.YEAR)} "
+            )
+        }else {
+            membershipGetProgramForm?.programForm?.timeWindow?.startTime?.let {
+                selectedTime = it
+                textFieldDuration.editText.setText(setDate(selectedTime))
+            }
         }
         membershipGetProgramForm?.timePeriodList?.forEach {
             if(it?.isSelected == true){
@@ -403,7 +392,7 @@ class TmProgramFragment : BaseDaggerFragment(), ChipGroupCallback ,
             textFieldDuration?.setFirstIcon(R.drawable.tm_dash_calender)
         }
         textFieldDuration.iconContainer.setOnClickListener {
-            clickDatePicker(DATE_TITLE,DATE_DESC)
+            clickDatePicker()
         }
         btnCreateProgram?.setOnClickListener {
             if(programActionType == ProgramActionType.CREATE) {
@@ -430,31 +419,26 @@ class TmProgramFragment : BaseDaggerFragment(), ChipGroupCallback ,
 
     private fun addPremiumTransactionTextListener(programThreshold: ProgramThreshold?) {
         textFieldTranskPremium.let {
-            it.editText.addTextChangedListener(object : NumberTextWatcher(it.editText){
+            it.editText.addTextChangedListener(object : NumberTextWatcher(it.editText) {
                 override fun onNumberChanged(number: Double) {
                     super.onNumberChanged(number)
-                    if (number >= programThreshold?.maxThresholdLevel1 ?: 0
-                    ) {
-                        tickerInfo.show()
+                    if (number > programThreshold?.maxThresholdLevel1 ?: 0) {
                         textFieldTranskPremium.isInputError = true
-                        textFieldTranskPremium.setMessage("Maks ${programThreshold?.maxThresholdLevel1}")
-                    } else if (number <= programThreshold?.maxThresholdLevel1 ?: 0
-                    ) {
-                        tickerInfo.hide()
-                        textFieldTranskPremium.isInputError = false
-                        textFieldTranskPremium.setMessage("")
-                    }
-                    else if (textFieldTranskVip.editText.text.toString().isNotEmpty() && number>= textFieldTranskVip.editText.text.toString().toIntOrZero()
-                    ) {
+                        textFieldTranskPremium.setMessage("Maks ${CurrencyFormatHelper.convertToRupiah(programThreshold?.maxThresholdLevel1.toString())}")
+                    } else if (number <= programThreshold?.maxThresholdLevel1 ?: 0 && number > 0) {
                         tickerInfo.show()
-                        textFieldTranskPremium.isInputError = true
-                        textFieldTranskPremium.setMessage(TM_PROGRAM_MIN_PURCHASE_ERROR)
+                        if (textFieldTranskVip.editText.text.toString()
+                                .isNotEmpty() && number >= CurrencyFormatHelper.convertRupiahToInt(textFieldTranskVip.editText.text.toString())
+                        ) {
+                            textFieldTranskPremium.isInputError = true
+                            textFieldTranskPremium.setMessage(TM_PROGRAM_MIN_PURCHASE_ERROR)
+                        } else {
+                            textFieldTranskPremium.isInputError = false
+                            textFieldTranskPremium.setMessage("")
+                        }
                     }
-                    else if (textFieldTranskVip.editText.text.toString().isNotEmpty() && number<= textFieldTranskVip.editText.text.toString().toIntOrZero()
-                    ) {
+                    else{
                         tickerInfo.hide()
-                        textFieldTranskPremium.isInputError = false
-                        textFieldTranskPremium.setMessage("")
                     }
                 }
             })
@@ -467,13 +451,13 @@ class TmProgramFragment : BaseDaggerFragment(), ChipGroupCallback ,
                 override fun onNumberChanged(number: Double) {
                     super.onNumberChanged(number)
                     when {
-                        number>= programThreshold?.maxThresholdLevel2 ?: 0 -> {
+                        number> programThreshold?.maxThresholdLevel2 ?: 0 -> {
                             textFieldTranskVip.isInputError = true
-                            textFieldTranskVip.setMessage("Maks ${programThreshold?.maxThresholdLevel2}")
+                            textFieldTranskVip.setMessage("Maks ${CurrencyFormatHelper.convertToRupiah(programThreshold?.maxThresholdLevel2.toString())}")
                         }
                         number < programThreshold?.minThresholdLevel2 ?: 0 -> {
                             textFieldTranskVip.isInputError = true
-                            textFieldTranskVip.setMessage("Min ${programThreshold?.minThresholdLevel2}")
+                            textFieldTranskVip.setMessage("Min ${CurrencyFormatHelper.convertToRupiah(programThreshold?.minThresholdLevel2.toString())}")
                         }
                         else -> {
                             textFieldTranskVip.isInputError = false
@@ -516,30 +500,31 @@ class TmProgramFragment : BaseDaggerFragment(), ChipGroupCallback ,
         tmDashCreateViewModel.updateProgram(programUpdateResponse)
     }
 
-    private fun clickDatePicker(title: String, helpText: String) {
+    private fun clickDatePicker() {
          var date = ""
          var month = ""
          var year = ""
+         var day = 1
         context?.let{
             val calMax = Calendar.getInstance()
-            calMax.add(Calendar.YEAR, MAX_YEAR);
+            calMax.add(Calendar.YEAR, MAX_YEAR)
             val yearMax = calMax.get(Calendar.YEAR)
             val monthMax = calMax.get(Calendar.MONTH)
             val dayMax = calMax.get(Calendar.DAY_OF_MONTH)
 
             val maxDate = GregorianCalendar(yearMax, monthMax, dayMax)
-            val currentDate = GregorianCalendar(Locale("id", "ID"))
-
-            val calMin = Calendar.getInstance()
-            calMin.add(Calendar.YEAR, MIN_YEAR);
-            val yearMin = calMin.get(Calendar.YEAR)
-            val monthMin = calMin.get(Calendar.MONTH)
-            val dayMin = calMin.get(Calendar.DAY_OF_MONTH)
-
-            val minDate = GregorianCalendar(yearMin, monthMin, dayMin)
-            val datepickerObject = DateTimePickerUnify(it, minDate, currentDate, maxDate).apply {
-                setTitle(title)
-                setInfo(helpText)
+           val currentDate = GregorianCalendar(locale)
+            if (programActionType == ProgramActionType.EDIT) {
+                val sdf = SimpleDateFormat(SIMPLE_DATE_FORMAT, locale)
+                try {
+                    currentDate.time = sdf.parse(selectedTime + "00")?: Date()
+                } catch (e: Exception) {
+                }
+            }
+            currentDate.add(Calendar.DAY_OF_MONTH,1)
+            val datepickerObject = DateTimePickerUnify(it, currentDate, currentDate, maxDate ).apply {
+                setTitle(DATE_TITLE)
+                setInfo(DATE_DESC)
                 setInfoVisible(true)
                 datePickerButton.let { button ->
                     button.setOnClickListener {
@@ -548,6 +533,7 @@ class TmProgramFragment : BaseDaggerFragment(), ChipGroupCallback ,
                          date = selectedCalendar?.get(Calendar.DATE).toString()
                          month = selectedCalendar?.getDisplayName(Calendar.MONTH, Calendar.LONG, LocaleUtils.getIDLocale()).toString()
                          year = selectedCalendar?.get(Calendar.YEAR).toString()
+                         day = selectedCalendar?.get(Calendar.DAY_OF_WEEK)?:0
                         dismiss()
                     }
                 }
@@ -557,13 +543,10 @@ class TmProgramFragment : BaseDaggerFragment(), ChipGroupCallback ,
             }
             datepickerObject.setOnDismissListener {
                 selectedTime = selectedCalendar?.time.toString()
-                textFieldDuration?.textInputLayout?.editText?.setText(( "$date $month $year"))
+               val dayInId =  getDayOfWeekID(day)
+                textFieldDuration?.textInputLayout?.editText?.setText(( "$dayInId,$date $month $year"))
             }
         }
-    }
-
-     fun getDate(): Calendar? {
-        return selectedCalendar
     }
 
     companion object {
@@ -574,6 +557,8 @@ class TmProgramFragment : BaseDaggerFragment(), ChipGroupCallback ,
         const val HEADER_TITLE_DESC = "Langkah 2 dari 4"
         const val HEADER_TITLE_EXTEND = "Perpanjang TokoMember"
         const val HEADER_TITLE_EDIT =  "Ubah Program"
+        const val CODE_SUCCESS = "200"
+        const val CODE_ERROR = "50001"
 
         const val SHIMMER = 0
         const val DATA = 1

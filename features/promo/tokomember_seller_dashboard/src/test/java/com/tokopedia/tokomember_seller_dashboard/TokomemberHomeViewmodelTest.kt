@@ -3,6 +3,7 @@ package com.tokopedia.tokomember_seller_dashboard
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.tokomember_seller_dashboard.domain.TokomemberDashHomeUsecase
 import com.tokopedia.tokomember_seller_dashboard.model.ProgramList
+import com.tokopedia.tokomember_seller_dashboard.util.TokoLiveDataResult
 import com.tokopedia.tokomember_seller_dashboard.view.viewmodel.TokomemberDashHomeViewmodel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -45,7 +46,7 @@ class TokomemberHomeViewmodelTest {
         viewModel.getHomePageData(0,0,-1,1,10)
 
         Assert.assertEquals(
-            (viewModel.tokomemberHomeResultLiveData.value as Success).data,
+            (viewModel.tokomemberHomeResultLiveData.value as TokoLiveDataResult).data,
             data
         )
     }
