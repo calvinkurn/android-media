@@ -716,7 +716,9 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
                     BottomSheetBehavior.STATE_EXPANDED -> {
                         showSearchWithMap()
                         setupContentMargin(true)
-                        googleMap.uiSettings.setAllGesturesEnabled(false)
+                        if (::googleMap.isInitialized){
+                            googleMap.uiSettings.setAllGesturesEnabled(false)
+                        }
 
                         if (isViewFullMap) {
                             trackingHotelUtil.searchCloseMap(
@@ -729,28 +731,32 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
                         }
                     }
                     BottomSheetBehavior.STATE_HALF_EXPANDED -> {
-                        if (searchPropertiesMap.isNullOrEmpty()) {
-                            googleMap.animateCamera(CameraUpdateFactory.zoomTo(MAPS_ZOOM_OUT))
-                        } else {
-                            googleMap.moveCamera(CameraUpdateFactory.newLatLng(searchPropertiesMap[0]))
-                            val newLatLng = getMapCenter(searchPropertiesMap[0])
-                            googleMap.animateCamera(
-                                CameraUpdateFactory.newLatLngZoom(
-                                    newLatLng,
-                                    MAPS_ZOOM_OUT
+                        if (::googleMap.isInitialized){
+                            if (searchPropertiesMap.isNullOrEmpty()) {
+                                googleMap.animateCamera(CameraUpdateFactory.zoomTo(MAPS_ZOOM_OUT))
+                            } else {
+                                googleMap.moveCamera(CameraUpdateFactory.newLatLng(searchPropertiesMap[0]))
+                                val newLatLng = getMapCenter(searchPropertiesMap[0])
+                                googleMap.animateCamera(
+                                    CameraUpdateFactory.newLatLngZoom(
+                                        newLatLng,
+                                        MAPS_ZOOM_OUT
+                                    )
                                 )
-                            )
-                        }
-                        setupContentMargin(false)
-                        if (binding?.containerEmptyResultState?.isVisible == true) {
-                            googleMap.uiSettings.setAllGesturesEnabled(false)
-                            enabledMapsClick()
-                        } else {
-                            enabledMapsGesture()
+                            }
+                            setupContentMargin(false)
+                            if (binding?.containerEmptyResultState?.isVisible == true) {
+                                googleMap.uiSettings.setAllGesturesEnabled(false)
+                                enabledMapsClick()
+                            } else {
+                                enabledMapsGesture()
+                            }
                         }
                     }
                     BottomSheetBehavior.STATE_COLLAPSED -> {
-                        googleMap.animateCamera(CameraUpdateFactory.zoomTo(MAPS_ZOOM_IN))
+                        if (::googleMap.isInitialized){
+                            googleMap.animateCamera(CameraUpdateFactory.zoomTo(MAPS_ZOOM_IN))
+                        }
                         setupContentMargin(false)
 
                         enabledMapsGesture()
@@ -1111,17 +1117,19 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
                         )
                     )
                     putPriceMarkerOnTop(position)
-                    if (cardListPosition == SELECTED_POSITION_INIT) {
-                        googleMap.moveCamera(CameraUpdateFactory.newLatLng(searchPropertiesMap[position]))
-                        val newLatLng = getMapCenter(searchPropertiesMap[position])
-                        googleMap.animateCamera(CameraUpdateFactory.newLatLng(newLatLng))
-                    } else {
-                        googleMap.animateCamera(
-                            CameraUpdateFactory.newLatLngZoom(
-                                searchPropertiesMap[position],
-                                MAPS_STREET_LEVEL_ZOOM
+                    if (::googleMap.isInitialized){
+                        if (cardListPosition == SELECTED_POSITION_INIT) {
+                            googleMap.moveCamera(CameraUpdateFactory.newLatLng(searchPropertiesMap[position]))
+                            val newLatLng = getMapCenter(searchPropertiesMap[position])
+                            googleMap.animateCamera(CameraUpdateFactory.newLatLng(newLatLng))
+                        } else {
+                            googleMap.animateCamera(
+                                CameraUpdateFactory.newLatLngZoom(
+                                    searchPropertiesMap[position],
+                                    MAPS_STREET_LEVEL_ZOOM
+                                )
                             )
-                        )
+                        }
                     }
                 }
             }
