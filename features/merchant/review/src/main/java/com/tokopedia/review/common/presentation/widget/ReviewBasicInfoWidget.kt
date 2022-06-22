@@ -4,11 +4,15 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.View
 import androidx.core.content.ContextCompat
+import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.review.R
 import com.tokopedia.review.common.presentation.listener.ReviewBasicInfoListener
+import com.tokopedia.review.common.presentation.listener.ReviewBasicInfoThreeDotsListener
 import com.tokopedia.review.common.util.getReviewStar
 import com.tokopedia.reviewcommon.feature.media.gallery.detailed.domain.model.UserReviewStats
 import com.tokopedia.unifycomponents.BaseCustomView
@@ -36,9 +40,12 @@ class ReviewBasicInfoWidget : BaseCustomView {
     private var ratingStars: ImageUnify? = null
     private var timeStamp: Typography? = null
     private var reviewerName: Typography? = null
+    private var dividerReviewerLabel: View? = null
+    private var tvReviewerLabel: Typography? = null
     private var variant: Typography? = null
     private var reviewerStats: Typography? = null
     private var profilePicture: ImageUnify? = null
+    private var icThreeDots: IconUnify? = null
 
     private var isProductReview = false
     private var isAnonymous = false
@@ -52,12 +59,15 @@ class ReviewBasicInfoWidget : BaseCustomView {
     }
 
     private fun bindViews() {
-        ratingStars = findViewById(R.id.review_item_rating)
-        timeStamp = findViewById(R.id.review_item_timestamp)
-        reviewerName = findViewById(R.id.review_item_reviewer_name)
-        variant = findViewById(R.id.review_item_variant)
-        reviewerStats = findViewById(R.id.review_item_reviewer_stats)
-        profilePicture = findViewById(R.id.review_item_reviewer_image)
+        ratingStars = findViewById(R.id.iv_review_item_rating)
+        timeStamp = findViewById(R.id.tv_review_item_timestamp)
+        reviewerName = findViewById(R.id.tv_review_item_reviewer_name)
+        dividerReviewerLabel = findViewById(R.id.divider_review_item_reviewer_name_label)
+        tvReviewerLabel = findViewById(R.id.tv_review_item_reviewer_label)
+        variant = findViewById(R.id.tv_review_item_variant)
+        reviewerStats = findViewById(R.id.tv_review_item_reviewer_statistic)
+        profilePicture = findViewById(R.id.iv_review_item_reviewer_profile_picture)
+        icThreeDots = findViewById(R.id.ic_review_item_three_dots)
     }
 
     fun setRating(rating: Int) {
@@ -102,6 +112,18 @@ class ReviewBasicInfoWidget : BaseCustomView {
         }
     }
 
+    fun setReviewerLabel(reviewerLabel: String) {
+        tvReviewerLabel?.apply {
+            text = reviewerLabel
+            setOnClickListener {
+                goToCredibility()
+                trackOnUserInfoClicked()
+            }
+            showWithCondition(reviewerLabel.isNotBlank())
+        }
+        dividerReviewerLabel?.showWithCondition(reviewerLabel.isNotBlank())
+    }
+
     fun invertColors() {
         val color = ContextCompat.getColor(
             context,
@@ -114,10 +136,9 @@ class ReviewBasicInfoWidget : BaseCustomView {
     }
 
     fun setVariantName(variantName: String) {
-        if (variantName.isEmpty()) return
-        this.variant?.apply {
+        variant?.apply {
             text = context.getString(R.string.review_gallery_variant, variantName)
-            show()
+            showWithCondition(variantName.isNotBlank())
         }
     }
 
@@ -132,24 +153,21 @@ class ReviewBasicInfoWidget : BaseCustomView {
         userStats.forEach {
             if (it.formatted.isNotBlank()) {
                 if (textToShow.isNotBlank()) {
-                    textToShow += " "
+                    textToShow += " • "
                 }
-                textToShow += context.getString(
-                    R.string.review_reading_reviewer_stats,
-                    it.formatted
-                )
+                textToShow += it.formatted
             }
         }
         if (textToShow.isNotBlank()) {
             reviewerStats?.apply {
                 text = textToShow
-                show()
                 setOnClickListener {
                     goToCredibility()
                     trackOnUserInfoClicked()
                 }
             }
         }
+        reviewerStats?.showWithCondition(textToShow.isNotBlank())
     }
 
     fun setReviewerImage(imageUrl: String) {
@@ -175,7 +193,7 @@ class ReviewBasicInfoWidget : BaseCustomView {
         profilePicture?.hide()
     }
 
-    fun setListener(reviewBasicInfoListener: ReviewBasicInfoListener) {
+    fun setListeners(reviewBasicInfoListener: ReviewBasicInfoListener, threeDotsListener: ReviewBasicInfoThreeDotsListener?) {
         this.listener = reviewBasicInfoListener
         if (shouldShowCredibility()) {
             setOnClickListener {
@@ -184,7 +202,7 @@ class ReviewBasicInfoWidget : BaseCustomView {
         } else {
             setOnClickListener {  }
         }
-
+        icThreeDots?.setOnClickListener { threeDotsListener?.onThreeDotsClicked() }
     }
 
     fun setCredibilityData(
@@ -209,5 +227,13 @@ class ReviewBasicInfoWidget : BaseCustomView {
 
     fun shouldShowCredibility(): Boolean {
         return isProductReview && !isAnonymous
+    }
+
+    fun showThreeDots() {
+        icThreeDots?.show()
+    }
+
+    fun hideThreeDots() {
+        icThreeDots?.gone()
     }
 }

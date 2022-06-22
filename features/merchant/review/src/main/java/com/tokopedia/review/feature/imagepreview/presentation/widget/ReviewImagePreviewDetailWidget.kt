@@ -125,7 +125,7 @@ class ReviewImagePreviewDetailWidget : BaseCustomView {
     }
 
     fun setBasicInfoListener(listener: ReviewBasicInfoListener) {
-        basicInfo?.setListener(listener)
+        basicInfo?.setListeners(listener, null)
     }
 
     fun setCredibilityData(isProductReview: Boolean, isAnonymous: Boolean, userId: String, feedbackId: String) {
