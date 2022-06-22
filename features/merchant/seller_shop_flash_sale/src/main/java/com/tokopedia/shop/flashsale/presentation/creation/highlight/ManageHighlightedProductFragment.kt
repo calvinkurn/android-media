@@ -6,35 +6,34 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import androidx.lifecycle.ViewModelProvider
-import androidx.recyclerview.widget.RecyclerView
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.app.BaseMainApplication
+import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.abstraction.base.view.listener.EndlessLayoutManagerListener
+import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.seller_shop_flash_sale.R
 import com.tokopedia.seller_shop_flash_sale.databinding.FragmentSsfsManageHighlightedProductBinding
-import com.tokopedia.shop.flashsale.common.customcomponent.BaseSimpleListFragment
 import com.tokopedia.shop.flashsale.common.extension.*
 import com.tokopedia.shop.flashsale.common.preference.SharedPreferenceDataStore
 import com.tokopedia.shop.flashsale.di.component.DaggerShopFlashSaleComponent
 import com.tokopedia.shop.flashsale.domain.entity.HighlightableProduct
 import com.tokopedia.shop.flashsale.presentation.creation.highlight.adapter.HighlightedProductAdapter
+import com.tokopedia.shop.flashsale.presentation.creation.highlight.decoration.ProductListItemDecoration
 import com.tokopedia.shop.flashsale.presentation.list.list.listener.RecyclerViewScrollListener
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
-import com.tokopedia.seller_shop_flash_sale.R
-import com.tokopedia.shop.flashsale.domain.entity.HighlightedProduct
-import com.tokopedia.shop.flashsale.presentation.creation.highlight.decoration.ProductListItemDecoration
 
-class ManageHighlightedProductFragment :
-    BaseSimpleListFragment<HighlightedProductAdapter, HighlightableProduct>() {
+class ManageHighlightedProductFragment : BaseDaggerFragment() {
 
     companion object {
-        private const val PAGE_SIZE = 5
+        private const val PAGE_SIZE = 50
         private const val ONE_PAGE = 1
         private const val ONE_PRODUCT = 1
         private const val FIRST_PAGE = 1
@@ -67,7 +66,8 @@ class ManageHighlightedProductFragment :
     private var isFirstLoad = true
     private val viewModelProvider by lazy { ViewModelProvider(this, viewModelFactory) }
     private val viewModel by lazy { viewModelProvider.get(ManageHighlightedProductViewModel::class.java) }
-
+    private var endlessRecyclerViewScrollListener: EndlessRecyclerViewScrollListener? = null
+    private var endlessLayoutManagerListener: EndlessLayoutManagerListener? = null
 
     private val productAdapter by lazy {
         HighlightedProductAdapter(onProductSelectionChange)
@@ -101,10 +101,18 @@ class ManageHighlightedProductFragment :
     }
 
     private fun setupView() {
+        setupRecyclerView()
         setupButton()
         setupToolbar()
         setupSearchBar()
         setupScrollListener()
+    }
+
+    private fun setupRecyclerView() {
+        binding?.recyclerView?.layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
+        binding?.recyclerView?.adapter = productAdapter
+        binding?.recyclerView?.addItemDecoration(ProductListItemDecoration(requireActivity()))
+        enableLoadMore()
     }
 
     private fun setupSearchBar() {
@@ -163,7 +171,9 @@ class ManageHighlightedProductFragment :
                 is Success -> {
                     binding?.cardView?.visible()
                     binding?.searchBar?.visible()
-                    storeSelectedProducts(result.data)
+
+
+                    getProducts(FIRST_PAGE)
                 }
                 is Fail -> {
                     binding?.cardView?.gone()
@@ -279,60 +289,6 @@ class ManageHighlightedProductFragment :
         productAdapter.submit(updatedProducts)
     }
 
-    override fun createAdapter() = productAdapter
-    override fun getRecyclerView(view: View): RecyclerView? {
-        return binding?.recyclerView?.apply {
-            addItemDecoration(ProductListItemDecoration(requireActivity()))
-        }
-    }
-    override fun getSwipeRefreshLayout(view: View): SwipeRefreshLayout? = null
-    override fun getPerPage() = PAGE_SIZE
-
-    override fun addElementToAdapter(list: List<HighlightableProduct>) {
-        adapter?.addData(list)
-    }
-
-    override fun loadData(page: Int) {
-        getProducts(page)
-    }
-
-    private fun getProducts(page: Int) {
-        val offset = if (page == FIRST_PAGE) {
-            0
-        } else {
-            (page - ONE_PAGE) * PAGE_SIZE
-        }
-
-        val searchKeyword = binding?.searchBar?.searchBarTextField?.text.toString().trim()
-        val disableProductOnNextPage = viewModel.getSelectedProductIds().size >= MAX_PRODUCT_SELECTION
-
-        viewModel.getProducts(campaignId, searchKeyword, disableProductOnNextPage, offset)
-    }
-
-    override fun clearAdapterData() {
-        adapter?.submit(emptyList())
-    }
-
-    override fun onShowLoading() {
-        adapter?.showLoading()
-    }
-
-    override fun onHideLoading() {
-        adapter?.hideLoading()
-    }
-
-    override fun onDataEmpty() {
-        adapter?.hideLoading()
-    }
-
-    override fun onGetListError(message: String) {
-        adapter?.hideLoading()
-    }
-
-    override fun onScrolled(xScrollAmount: Int, yScrollAmount: Int) {
-
-    }
-
     private fun clearSearchBar() {
         doFreshSearch()
     }
@@ -343,9 +299,9 @@ class ManageHighlightedProductFragment :
         binding?.btnDraft?.isEnabled = selectedProductCount > Int.ZERO
     }
 
-    private fun storeSelectedProducts(products: List<HighlightedProduct>) {
+    private fun storeSelectedProducts(products: List<HighlightableProduct>) {
         products.forEach { product ->
-            viewModel.addProductToSelection(product.id.toString())
+            if (product.isSelected) viewModel.addProductToSelection(product.id)
         }
     }
 
@@ -362,7 +318,71 @@ class ManageHighlightedProductFragment :
     private fun doFreshSearch() {
         productAdapter.submit(emptyList())
         binding?.groupNoSearchResult?.gone()
-        viewModel.getProducts(campaignId, "", disableProductsOnNextPage = false, FIRST_PAGE)
+        viewModel.getProducts(campaignId, "", PAGE_SIZE, FIRST_PAGE)
     }
 
+    private fun enableLoadMore() {
+        if (endlessRecyclerViewScrollListener == null) {
+            endlessRecyclerViewScrollListener = createEndlessRecyclerViewListener()
+            endlessRecyclerViewScrollListener?.setEndlessLayoutManagerListener(
+                endlessLayoutManagerListener
+            )
+
+        }
+        endlessRecyclerViewScrollListener?.apply {
+            binding?.recyclerView?.addOnScrollListener(this)
+        }
+    }
+
+    private fun createEndlessRecyclerViewListener(): EndlessRecyclerViewScrollListener {
+        return object : EndlessRecyclerViewScrollListener(binding?.recyclerView?.layoutManager) {
+            override fun onLoadMore(page: Int, totalItemsCount: Int) {
+                showLoading()
+                getProducts(page)
+            }
+        }
+    }
+
+
+    private fun renderList(list: List<HighlightableProduct>, hasNextPage: Boolean) {
+        storeSelectedProducts(list)
+        hideLoading()
+        addElementToAdapter(list)
+
+        updateScrollListenerState(hasNextPage)
+
+        if (productAdapter.itemCount.orZero() < PAGE_SIZE && hasNextPage && endlessRecyclerViewScrollListener != null) {
+            endlessRecyclerViewScrollListener?.loadMoreNextPage()
+        }
+    }
+
+    private fun updateScrollListenerState(hasNextPage: Boolean) {
+        endlessRecyclerViewScrollListener?.updateStateAfterGetData()
+        endlessRecyclerViewScrollListener?.setHasNextPage(hasNextPage)
+    }
+
+
+    private fun showLoading() {
+        productAdapter.showLoading()
+    }
+
+    private fun hideLoading() {
+        productAdapter.hideLoading()
+    }
+
+
+    private fun addElementToAdapter(list: List<HighlightableProduct>) {
+        productAdapter.addData(list)
+    }
+
+    private fun getProducts(page: Int) {
+        val offset = if (page == FIRST_PAGE) {
+            0
+        } else {
+            (page - ONE_PAGE) * PAGE_SIZE
+        }
+
+        val searchKeyword = binding?.searchBar?.searchBarTextField?.text.toString().trim()
+        viewModel.getProducts(campaignId, searchKeyword, PAGE_SIZE, offset)
+    }
 }

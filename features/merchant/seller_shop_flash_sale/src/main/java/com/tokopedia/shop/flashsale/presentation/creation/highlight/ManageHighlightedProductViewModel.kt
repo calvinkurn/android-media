@@ -23,7 +23,6 @@ class ManageHighlightedProductViewModel @Inject constructor(
 ) : BaseViewModel(dispatchers.main) {
 
     companion object {
-        private const val PAGE_SIZE = 10
         private const val PRODUCT_LIST_TYPE_ID = 0
         private const val MAX_PRODUCT_SELECTION = 5
     }
@@ -41,7 +40,7 @@ class ManageHighlightedProductViewModel @Inject constructor(
     fun getProducts(
         campaignId: Long,
         productName: String,
-        disableProductsOnNextPage: Boolean,
+        pageSize : Int,
         offset: Int
     ) {
         launchCatchError(
@@ -51,9 +50,9 @@ class ManageHighlightedProductViewModel @Inject constructor(
                     campaignId = campaignId,
                     productName = productName,
                     listType = PRODUCT_LIST_TYPE_ID,
-                    pagination = GetSellerCampaignProductListRequest.Pagination(PAGE_SIZE, offset)
+                    pagination = GetSellerCampaignProductListRequest.Pagination(pageSize, offset)
                 )
-                val updatedProducts = handleProductEnabledState(disableProductsOnNextPage, products.productList)
+                val updatedProducts = handleProductEnabledState(products.productList)
                 _products.postValue(Success(updatedProducts))
             },
             onError = { error ->
@@ -76,13 +75,12 @@ class ManageHighlightedProductViewModel @Inject constructor(
     }
 
     private fun handleProductEnabledState(
-        disableProductsOnNextPage: Boolean,
         products: List<SellerCampaignProductList.Product>
     ): List<HighlightableProduct> {
+        val totalSelected = products.filter { it.highlightProductWording.isNotEmpty() }.size
         return products.map {
-            val isSelected =
-                it.highlightProductWording.isNotEmpty() || it.productId in selectedProductIds
-
+            val isSelected = it.highlightProductWording.isNotEmpty() || it.productId in selectedProductIds
+            val disabled = totalSelected == MAX_PRODUCT_SELECTION && !isSelected
             HighlightableProduct(
                 it.productId,
                 it.productName,
@@ -90,7 +88,7 @@ class ManageHighlightedProductViewModel @Inject constructor(
                 it.productMapData.originalPrice,
                 it.productMapData.discountedPrice,
                 it.productMapData.discountPercentage,
-                disabled = disableProductsOnNextPage,
+                disabled = disabled,
                 isSelected = isSelected
             )
         }
