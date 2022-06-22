@@ -32,6 +32,7 @@ import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.tokofood.R
 import com.tokopedia.tokofood.common.constants.ShareComponentConstants
@@ -484,7 +485,10 @@ class MerchantPageFragment : BaseMultiFragment(),
             activityViewModel?.cartDataValidationFlow?.collect {
                 when (it.state) {
                     UiEvent.EVENT_SUCCESS_LOAD_CART -> {
-
+                        toggleMiniCartVisibility(true)
+                    }
+                    UiEvent.EVENT_FAILED_LOAD_CART -> {
+                        toggleMiniCartVisibility(false)
                     }
                     UiEvent.EVENT_FAILED_ADD_TO_CART -> {
                         view?.showErrorToaster(it.throwable?.message.orEmpty())
@@ -1186,6 +1190,10 @@ class MerchantPageFragment : BaseMultiFragment(),
         } else {
             activity?.finish()
         }
+    }
+
+    private fun toggleMiniCartVisibility(shouldShow: Boolean) {
+        binding?.miniCartWidget?.showWithCondition(shouldShow)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

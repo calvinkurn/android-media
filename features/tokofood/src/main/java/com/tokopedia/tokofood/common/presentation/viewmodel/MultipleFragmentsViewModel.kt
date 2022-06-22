@@ -311,7 +311,15 @@ class MultipleFragmentsViewModel @Inject constructor(
         if (miniCartLoadingQueue.value.isLessThanZero()) {
             miniCartUiModelState.emit(Result.Success(data.getMiniCartUiModel()))
         }
-        cartDataValidationState.emit(UiEvent(state = UiEvent.EVENT_SUCCESS_LOAD_CART))
+        val shouldShowMiniCart =
+            data.shop.shopId.isNotBlank() && data.getProductListFromCart().isNotEmpty()
+        val state =
+            if (shouldShowMiniCart) {
+                UiEvent.EVENT_SUCCESS_LOAD_CART
+            } else {
+                UiEvent.EVENT_FAILED_LOAD_CART
+            }
+        cartDataValidationState.emit(UiEvent(state = state))
     }
 
     private fun getRemoveAllProductParamByIdList(): RemoveCartTokoFoodParam {

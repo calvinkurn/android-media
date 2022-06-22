@@ -13,6 +13,7 @@ import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFoodShop
 import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFoodShoppingCostBreakdownItem
 import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFoodShoppingSummary
 import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFoodUserAddress
+import com.tokopedia.utils.currency.CurrencyFormatUtil
 import java.net.URLEncoder
 
 data class TokoFoodCheckoutMetadata(
@@ -307,17 +308,16 @@ data class TokoFoodCheckoutShoppingSummary(
                 ),
                 costBreakdown = TokoFoodCheckoutShoppingCostBreakdown(
                     totalCartPrice = TokoFoodCheckoutShoppingCostBreakdownItem.convertToMetadata(shopping.costBreakdown.totalCartPrice),
-                    takeAwayFee = TokoFoodCheckoutShoppingCostBreakdownItem.convertToMetadata(shopping.costBreakdown.takeAwayFee),
-                    convenienceFee = TokoFoodCheckoutShoppingCostBreakdownItem.convertToMetadata(shopping.costBreakdown.convenienceFee),
+                    takeAwayFee = TokoFoodCheckoutShoppingCostBreakdownItem.convertToMetadata(shopping.costBreakdown.outletFee),
+                    convenienceFee = TokoFoodCheckoutShoppingCostBreakdownItem.convertToMetadata(shopping.costBreakdown.platformFee),
                     deliveryFee = TokoFoodCheckoutShoppingCostBreakdownItem.convertToMetadata(shopping.costBreakdown.deliveryFee),
-                    parkingFee = TokoFoodCheckoutShoppingCostBreakdownItem.convertToMetadata(shopping.costBreakdown.parkingFee),
+                    parkingFee = TokoFoodCheckoutShoppingCostBreakdownItem.convertToMetadata(shopping.costBreakdown.reimbursementFee),
                 ),
                 discountBreakdown = shopping.discountBreakdown.map { discount ->
                     TokoFoodCheckoutShoppingDiscountBreakdown(
                         discountId = discount.discountId,
                         title = discount.title,
                         amount = discount.amount.toLong(),
-                        amountFmt = discount.amountFmt.removeFmtCurrencyDot(),
                         scope = discount.scope,
                         type = discount.type
                     )
@@ -400,15 +400,12 @@ data class TokoFoodCheckoutShoppingDiscountBreakdown(
     @SerializedName("amount")
     @Expose
     val amount: Long = 0L,
-    @SerializedName("amount_fmt")
-    @Expose
-    val amountFmt: String = "",
     @SerializedName("scope")
     @Expose
-    val scope: Int = 0,
+    val scope: String = "",
     @SerializedName("type")
     @Expose
-    val type: Int = 0
+    val type: String = ""
 )
 
 private fun String.removeFmtCurrencyDot(): String {

@@ -358,6 +358,7 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
                     }
                 }
                 PurchaseUiEvent.EVENT_EMPTY_PRODUCTS -> {
+                    parentFragmentManager.popBackStack()
                     val emptyProductShopId = (it.data as? String).orEmpty()
                     if (emptyProductShopId.isBlank()) {
                         navigateToHomePage()
@@ -497,9 +498,6 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
                         viewBinding?.recyclerViewPurchase?.post {
                             viewModel.refreshPartialCartInformation()
                         }
-                    }
-                    UiEvent.EVENT_SUCCESS_LOAD_CART -> {
-
                     }
                     UiEvent.EVENT_FAILED_DELETE_PRODUCT -> {
                         it.throwable?.let { throwable ->
@@ -674,9 +672,7 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
     }
 
     private fun navigateToHomePage() {
-        TokofoodRouteManager.mapUriToFragment(ApplinkConstInternalTokoFood.HOME.toUri())?.let { homeFragment ->
-            navigateToNewFragment(homeFragment)
-        }
+        TokofoodRouteManager.routePrioritizeInternal(context, ApplinkConstInternalTokoFood.HOME)
     }
 
     private fun navigateToMerchantPage(merchantId: String) {
