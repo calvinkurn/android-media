@@ -38,7 +38,7 @@ class CampaignRuleViewModel @Inject constructor(
         private const val INVALID_CAMPAIGN_ID = -1L
     }
 
-    private val isInSaveAction: AtomicBoolean = AtomicBoolean(false)
+    private val isInSaveOrCreateAction: AtomicBoolean = AtomicBoolean(false)
 
     private val _campaign = MutableLiveData<Result<CampaignUiModel>>()
     val campaign: LiveData<Result<CampaignUiModel>>
@@ -306,15 +306,21 @@ class CampaignRuleViewModel @Inject constructor(
         _isTNCConfirmed.value = true
     }
 
-    private fun isAlreadyInSaveAction(): Boolean {
+    /**
+     * This method should check whether user is already in either save draft or create campaign action,
+     * if user is not in those actions, then the [AtomicBoolean.compareAndSet] will update the value to true and then return true,
+     * if user is already in those actions, then the [AtomicBoolean.compareAndSet] will not update the value and then return false
+     * @return true if user already in save draft or create campaign action, false otherwise
+     */
+    private fun isAlreadyInSaveOrActionAction(): Boolean {
         return synchronized(this) {
-            !isInSaveAction.compareAndSet(false, true)
+            !isInSaveOrCreateAction.compareAndSet(false, true)
         }
     }
 
-    private fun resetIsInSaveAction() {
+    private fun resetIsInSaveOrCreateAction() {
         synchronized(this) {
-            isInSaveAction.set(false)
+            isInSaveOrCreateAction.set(false)
         }
     }
 
@@ -336,17 +342,17 @@ class CampaignRuleViewModel @Inject constructor(
     }
 
     fun saveCampaignCreationDraft() {
-        if (isAlreadyInSaveAction()) return
+        if (isAlreadyInSaveOrActionAction()) return
         val campaignValue = campaign.value
         val campaignData = if (campaignValue is Success) campaignValue.data else {
             _saveDraftActionState.postValue(CampaignRuleActionResult.DetailNotLoaded)
-            resetIsInSaveAction()
+            resetIsInSaveOrCreateAction()
             return
         }
         val validationResult = validateCampaignRuleInput(campaignData)
         if (validationResult.isInvalid) {
             _saveDraftActionState.postValue(CampaignRuleActionResult.ValidationFail(validationResult))
-            resetIsInSaveAction()
+            resetIsInSaveOrCreateAction()
             return
         }
         _saveDraftActionState.postValue(CampaignRuleActionResult.Loading)
@@ -360,15 +366,15 @@ class CampaignRuleViewModel @Inject constructor(
                 val result = doSellerCampaignCreationUseCase.execute(param)
                 if (result.isSuccess) {
                     _saveDraftActionState.postValue(CampaignRuleActionResult.Success)
-                    resetIsInSaveAction()
+                    resetIsInSaveOrCreateAction()
                 } else {
                     _saveDraftActionState.postValue(CampaignRuleActionResult.Fail(Throwable(result.errorDescription)))
-                    resetIsInSaveAction()
+                    resetIsInSaveOrCreateAction()
                 }
             },
             onError = { error ->
                 _saveDraftActionState.postValue(CampaignRuleActionResult.Fail(error))
-                resetIsInSaveAction()
+                resetIsInSaveOrCreateAction()
             }
         )
     }
@@ -376,11 +382,11 @@ class CampaignRuleViewModel @Inject constructor(
     private fun validateCampaignCreation(
         validAction: suspend (CampaignUiModel) -> Unit
     ) {
-        if (isAlreadyInSaveAction()) return
+        if (isAlreadyInSaveOrActionAction()) return
         val campaignValue = campaign.value
         val campaignData = if (campaignValue is Success) campaignValue.data else {
             _createCampaignActionState.postValue(CampaignRuleActionResult.DetailNotLoaded)
-            resetIsInSaveAction()
+            resetIsInSaveOrCreateAction()
             return
         }
         val validationResult = validateCampaignRuleInput(campaignData)
@@ -390,7 +396,7 @@ class CampaignRuleViewModel @Inject constructor(
                     validationResult
                 )
             )
-            resetIsInSaveAction()
+            resetIsInSaveOrCreateAction()
             return
         }
 
@@ -403,7 +409,7 @@ class CampaignRuleViewModel @Inject constructor(
                     _createCampaignActionState.postValue(
                         CampaignRuleActionResult.ValidationFail(CampaignRuleValidationResult.NotEligible)
                     )
-                    resetIsInSaveAction()
+                    resetIsInSaveOrCreateAction()
                     return@launchCatchError
                 }
 
@@ -411,7 +417,7 @@ class CampaignRuleViewModel @Inject constructor(
             },
             onError = { error ->
                 _createCampaignActionState.postValue(CampaignRuleActionResult.Fail(error))
-                resetIsInSaveAction()
+                resetIsInSaveOrCreateAction()
             }
         )
     }
@@ -419,7 +425,7 @@ class CampaignRuleViewModel @Inject constructor(
     fun onCreateCampaignButtonClicked() {
         validateCampaignCreation {
             _createCampaignActionState.postValue(CampaignRuleActionResult.ShowConfirmation)
-            resetIsInSaveAction()
+            resetIsInSaveOrCreateAction()
         }
     }
 
@@ -432,10 +438,10 @@ class CampaignRuleViewModel @Inject constructor(
             val result = doSellerCampaignCreationUseCase.execute(param)
             if (result.isSuccess) {
                 _createCampaignActionState.postValue(CampaignRuleActionResult.Success)
-                resetIsInSaveAction()
+                resetIsInSaveOrCreateAction()
             } else {
                 _createCampaignActionState.postValue(CampaignRuleActionResult.Fail(Throwable(result.errorDescription)))
-                resetIsInSaveAction()
+                resetIsInSaveOrCreateAction()
             }
         }
     }
