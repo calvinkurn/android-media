@@ -28,7 +28,7 @@
         android:layout_height="wrap_content"
         android:gravity="center_vertical"
         app:typographyType="body_3"
-        app:typographyWeight="bold"
+        app:typographyWeight="reguler"
         tools:text="TopDonasi100 donasi" />
 
     <com.tokopedia.iconunify.IconUnify
