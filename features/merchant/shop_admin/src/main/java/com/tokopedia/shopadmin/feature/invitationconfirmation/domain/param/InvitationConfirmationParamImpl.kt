@@ -6,6 +6,7 @@ class InvitationConfirmationParamImpl @Inject constructor(): InvitationConfirmat
 
     private var shopManageID: String? = null
     private var shopName: String? = null
+    private var adminType: String? = null
 
     override fun setShopManageId(manageID: String) {
         this.shopManageID = manageID
@@ -15,11 +16,19 @@ class InvitationConfirmationParamImpl @Inject constructor(): InvitationConfirmat
         this.shopName = shopName
     }
 
+    override fun setAdminType(adminType: String) {
+        this.adminType = adminType
+    }
+
     override fun getShopManageId(): String {
-        return shopManageID?.ifEmpty { "" }.orEmpty()
+        return shopManageID.orEmpty()
     }
 
     override fun getShopName(): String {
-        return shopName?.ifEmpty { "" }.orEmpty()
+        return shopName.orEmpty()
+    }
+
+    override fun getAdminType(): String {
+        return adminType.orEmpty()
     }
 }

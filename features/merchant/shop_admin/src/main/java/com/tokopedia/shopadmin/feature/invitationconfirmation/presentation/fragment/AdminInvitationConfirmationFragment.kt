@@ -196,7 +196,7 @@ class AdminInvitationConfirmationFragment : BaseDaggerFragment() {
                 is Success -> {
                     invitationConfirmationParam.setShopName(it.data.shopName)
                     invitationConfirmationParam.setShopManageId(it.data.shopManageId)
-                    inflateInvitationShopAdminInfo(it.data)
+                    setInflateWaitingConfirmationOrReject(it.data)
                 }
                 is Fail -> {
                     val message = ErrorHandler.getErrorMessage(context, it.throwable)
@@ -244,6 +244,23 @@ class AdminInvitationConfirmationFragment : BaseDaggerFragment() {
         }
     }
 
+    private fun setInflateWaitingConfirmationOrReject(shopAdminInfoUiModel: ShopAdminInfoUiModel) {
+        when (invitationConfirmationParam.getAdminType()) {
+            AdminStatus.WAITING_CONFIRMATION -> {
+                inflateInvitationShopAdminInfo(shopAdminInfoUiModel)
+            }
+            AdminStatus.REJECT -> {
+                val titleRejected =
+                    getString(com.tokopedia.shopadmin.R.string.title_invitation_has_been_rejected)
+                val descRejected = getString(
+                    com.tokopedia.shopadmin.R.string.desc_invitation_rejected,
+                    invitationConfirmationParam.getShopName()
+                )
+                inflateInvitationRejected(titleRejected, descRejected)
+            }
+        }
+    }
+
     private fun setShopId(shopId: String) {
         if (shopId.isNotBlank()) {
             userSession.shopId = shopId
@@ -262,9 +279,9 @@ class AdminInvitationConfirmationFragment : BaseDaggerFragment() {
             val titleRejected =
                 getString(com.tokopedia.shopadmin.R.string.title_invitation_rejected)
             val descRejected = getString(
-                    com.tokopedia.shopadmin.R.string.desc_invitation_rejected,
-                    invitationConfirmationParam.getShopName()
-                )
+                com.tokopedia.shopadmin.R.string.desc_invitation_rejected,
+                invitationConfirmationParam.getShopName()
+            )
             inflateInvitationRejected(titleRejected, descRejected)
         }
     }
@@ -272,18 +289,10 @@ class AdminInvitationConfirmationFragment : BaseDaggerFragment() {
     private fun showAdminType(adminStatus: String, shopId: String) {
         when (adminStatus) {
             AdminStatus.ACTIVE -> navigator.goToShopAccount()
-            AdminStatus.WAITING_CONFIRMATION -> {
+            AdminStatus.WAITING_CONFIRMATION, AdminStatus.REJECT -> {
                 setShopId(shopId)
+                invitationConfirmationParam.setAdminType(adminStatus)
                 viewModel.fetchShopAdminInfo()
-            }
-            AdminStatus.REJECT -> {
-                val titleRejected =
-                    getString(com.tokopedia.shopadmin.R.string.title_invitation_has_been_rejected)
-                val descRejected = getString(
-                        com.tokopedia.shopadmin.R.string.desc_invitation_rejected,
-                        invitationConfirmationParam.getShopName()
-                    )
-                inflateInvitationRejected(titleRejected, descRejected)
             }
             AdminStatus.EXPIRED -> inflateInvitationExpired()
             else -> activity?.finish()
