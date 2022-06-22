@@ -156,8 +156,12 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
 
     private val deviceDisplayHeight: Float
         get() = try {
-            val dm = requireActivity().resources.displayMetrics
-            dm.heightPixels / dm.density
+            val dm = activity?.resources?.displayMetrics
+            if (dm != null) {
+                dm.heightPixels / dm.density
+            } else {
+                DEFAULT_HEIGHT_DP
+            }
         } catch (ex: Exception) {
             DEFAULT_HEIGHT_DP
         }
