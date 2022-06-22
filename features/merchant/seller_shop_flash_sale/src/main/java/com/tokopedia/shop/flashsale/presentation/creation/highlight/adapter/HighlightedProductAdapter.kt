@@ -2,6 +2,7 @@ package com.tokopedia.shop.flashsale.presentation.creation.highlight.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
@@ -12,12 +13,12 @@ import com.tokopedia.seller_shop_flash_sale.databinding.SsfsItemProductHighlight
 import com.tokopedia.shop.flashsale.common.extension.convertRupiah
 import com.tokopedia.shop.flashsale.common.extension.disable
 import com.tokopedia.shop.flashsale.common.extension.enable
+import com.tokopedia.shop.flashsale.common.extension.strikethrough
 import com.tokopedia.shop.flashsale.domain.entity.HighlightableProduct
 import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifyprinciples.Typography
 
 class HighlightedProductAdapter(
-    private val onProductClicked: (HighlightableProduct, Int) -> Unit,
     private val onProductSelectionChange: (HighlightableProduct, Boolean) -> Unit
 ) : RecyclerView.Adapter<HighlightedProductAdapter.HighlightedProductViewHolder>() {
 
@@ -52,7 +53,6 @@ class HighlightedProductAdapter(
         holder.bind(
             position,
             products[position],
-            onProductClicked,
             onProductSelectionChange,
             isLoading
         )
@@ -64,22 +64,16 @@ class HighlightedProductAdapter(
         notifyItemRangeChanged(previousProductsSize, this.products.size)
     }
 
-    fun update(product: HighlightableProduct, updatedProduct: HighlightableProduct) {
-        try {
-            val position = products.indexOf(product)
-            this.products[position] = updatedProduct
-            notifyItemChanged(position)
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
-    }
-
     fun submit(products: List<HighlightableProduct>) {
-        this.products = products.toMutableList()
-        notifyItemRangeChanged(Int.ZERO, products.size)
+        val diffCallback = DiffCallback(this.products, products)
+        val diffResult = DiffUtil.calculateDiff(diffCallback)
+
+        this.products.clear()
+        this.products.addAll(products)
+        diffResult.dispatchUpdatesTo(this)
     }
 
-
+    
     fun clearData() {
         this.products = mutableListOf()
         notifyItemRangeChanged(Int.ZERO, this.products.size)
@@ -108,7 +102,6 @@ class HighlightedProductAdapter(
         fun bind(
             position: Int,
             product: HighlightableProduct,
-            onProductClicked: (HighlightableProduct, Int) -> Unit,
             onProductSelectionChange: (HighlightableProduct, Boolean) -> Unit,
             isLoading: Boolean
         ) {
@@ -116,13 +109,13 @@ class HighlightedProductAdapter(
             binding.tpgProductName.text = product.name
             binding.labelDiscountPercentage.setPercentage(product.discountPercentage)
             binding.tpgDiscountedPrice.setPrice(product.discountedPrice)
-            binding.root.setOnClickListener { onProductClicked(product, position) }
             binding.loader.isVisible = isLoading
             binding.tpgOriginalPrice.setPrice(product.originalPrice)
+            binding.tpgOriginalPrice.strikethrough()
             binding.tpgProductOrder.isVisible = product.isSelected
             binding.tpgProductOrder.setPosition(position)
             handleSwitchAppearance(product, onProductSelectionChange)
-            handleCardSelectable(product.disableClick, product.disabled)
+            handleCardSelectable(product.disabled)
         }
 
         private fun handleSwitchAppearance(
@@ -131,12 +124,9 @@ class HighlightedProductAdapter(
         ) {
             binding.switchUnify.setOnCheckedChangeListener(null)
             binding.switchUnify.isChecked = product.isSelected
-            binding.switchUnify.isClickable = !product.disableClick && !product.disabled
+            binding.switchUnify.isClickable = !product.disabled
             binding.switchUnify.setOnCheckedChangeListener { _, isSelected ->
-                onProductSelectionChange(
-                    product,
-                    isSelected
-                )
+                onProductSelectionChange(product, isSelected)
             }
         }
 
@@ -155,18 +145,46 @@ class HighlightedProductAdapter(
             this.text = formattedPosition
         }
 
-        private fun handleCardSelectable(disableClick: Boolean, disabled: Boolean) {
-            if (disableClick || disabled) {
+        private fun handleCardSelectable(disabled: Boolean) {
+            if (disabled) {
                 binding.imgProduct.alpha = ALPHA_DISABLED
                 binding.tpgProductName.disable()
                 binding.tpgOriginalPrice.disable()
+                binding.tpgDiscountedPrice.disable()
                 binding.switchUnify.disable()
+                binding.labelDiscountPercentage.opacityLevel = ALPHA_DISABLED
             } else {
                 binding.imgProduct.alpha = ALPHA_ENABLED
                 binding.tpgProductName.enable()
                 binding.tpgOriginalPrice.enable()
+                binding.tpgDiscountedPrice.enable()
                 binding.switchUnify.enable()
+                binding.labelDiscountPercentage.opacityLevel = ALPHA_ENABLED
             }
+        }
+
+    }
+
+    inner class DiffCallback(
+        private val oldProductList: List<HighlightableProduct>,
+        private val newProductList: List<HighlightableProduct>
+    ) :
+        DiffUtil.Callback() {
+
+        override fun getOldListSize(): Int {
+            return oldProductList.size
+        }
+
+        override fun getNewListSize(): Int {
+            return newProductList.size
+        }
+
+        override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
+            return oldProductList[oldItemPosition].id == newProductList[newItemPosition].id
+        }
+
+        override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
+            return  oldProductList[oldItemPosition] == newProductList[newItemPosition]
         }
 
     }

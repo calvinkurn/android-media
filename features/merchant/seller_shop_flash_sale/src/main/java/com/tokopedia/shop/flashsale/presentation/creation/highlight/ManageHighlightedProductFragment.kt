@@ -67,10 +67,7 @@ class ManageHighlightedProductFragment :
 
 
     private val productAdapter by lazy {
-        HighlightedProductAdapter(
-            onProductClicked,
-            onProductSelectionChange
-        )
+        HighlightedProductAdapter(onProductSelectionChange)
     }
 
     override fun getScreenName(): String = ManageHighlightedProductFragment::class.java.canonicalName.orEmpty()
@@ -167,74 +164,75 @@ class ManageHighlightedProductFragment :
         }
     }
 
-    private val onProductClicked: (HighlightableProduct, Int) -> Unit = { product, _ ->
-        val isDisabled = product.disableClick || product.disabled
-        handleProductClick(isDisabled, "")
-    }
 
-    private val onProductSelectionChange: (
-        HighlightableProduct,
-        Boolean
-    ) -> Unit = { selectedProduct, isSelected ->
 
-        if (isSelected) {
-            val currentSelectedProductCount = viewModel.getSelectedProductIds().size
-            handleAddProductToSelection(currentSelectedProductCount, selectedProduct)
-        } else {
-            handleRemoveProductFromSelection(selectedProduct)
+    private val onProductSelectionChange: (HighlightableProduct, Boolean) -> Unit =
+        { selectedProduct, isSelected ->
+            if (isSelected) {
+                val currentSelectedProductCount = viewModel.getSelectedProductIds().size
+                handleAddProductToSelection(currentSelectedProductCount, selectedProduct)
+            } else {
+                handleRemoveProductFromSelection(selectedProduct)
+            }
         }
-
-    }
 
     private fun handleAddProductToSelection(
         currentSelectedProductCount: Int,
         selectedProduct: HighlightableProduct
     ) {
-         val nextCounter = currentSelectedProductCount + ONE_PRODUCT
-         if (nextCounter > MAX_PRODUCT_SELECTION) {
-             untickProduct(selectedProduct)
+        val nextCounter = currentSelectedProductCount + ONE_PRODUCT
+        if (nextCounter > MAX_PRODUCT_SELECTION) {
+            unselectProduct(selectedProduct)
+        } else {
+            val remainingSelection = MAX_PRODUCT_SELECTION - viewModel.getSelectedProductIds().size
 
-         } else {
-             val remainingSelection = MAX_PRODUCT_SELECTION - viewModel.getSelectedProductIds().size
+            if (remainingSelection > 0) {
+                selectProduct(selectedProduct)
+                viewModel.addProductToSelection(selectedProduct)
+            } else {
+                unselectProduct(selectedProduct)
+            }
 
-             if (remainingSelection > Int.ZERO) {
-                 binding?.root showToaster getString(R.string.sfs_successfully_highlighted)
-                 tickProduct(selectedProduct)
-                 viewModel.addProductToSelection(selectedProduct)
-             } else {
-                 untickProduct(selectedProduct)
+            enableAllUnselectedProduct()
+        }
 
-             }
-         }
-
-         refreshButton()
-    }
-
-    private fun handleRemoveProductFromSelection(selectedProduct: HighlightableProduct) {
-        viewModel.removeProductFromSelection(selectedProduct)
-        untickProduct(selectedProduct)
+        if (nextCounter == MAX_PRODUCT_SELECTION) {
+            disableAllUnselectedProduct()
+        }
 
         refreshButton()
     }
 
-    private fun handleProductClick(
-        isDisabled: Boolean,
-        disableReason: String
-    ) {
-        val selectedProductCount = viewModel.getSelectedProductIds().size
 
+    private fun handleRemoveProductFromSelection(selectedProduct: HighlightableProduct) {
+        viewModel.removeProductFromSelection(selectedProduct)
+        unselectProduct(selectedProduct)
+        enableAllUnselectedProduct()
+        refreshButton()
     }
 
-    private fun tickProduct(selectedProduct: HighlightableProduct) {
-        val products = adapter?.getItems() ?: return
-        val updatedProduct = viewModel.markAsSelected(selectedProduct, products)
-        productAdapter.submit(updatedProduct)
+    private fun selectProduct(selectedProduct: HighlightableProduct) {
+        val products = productAdapter.getItems()
+        val updatedProducts = viewModel.markAsSelected(selectedProduct, products)
+        productAdapter.submit(updatedProducts)
     }
 
-    private fun untickProduct(selectedProduct: HighlightableProduct) {
-        val products = adapter?.getItems() ?: return
-        val updatedProduct = viewModel.markAsUnselected(selectedProduct, products)
-        productAdapter.submit(updatedProduct)
+    private fun unselectProduct(selectedProduct: HighlightableProduct) {
+        val products = productAdapter.getItems()
+        val updatedProducts = viewModel.markAsUnselected(selectedProduct, products)
+        productAdapter.submit(updatedProducts)
+    }
+
+    private fun disableAllUnselectedProduct() {
+        val products = productAdapter.getItems()
+        val updatedProducts = viewModel.disableAllUnselectedProducts(products)
+        productAdapter.submit(updatedProducts)
+    }
+
+    private fun enableAllUnselectedProduct() {
+        val products = productAdapter.getItems()
+        val updatedProducts = viewModel.enableAllUnselectedProducts(products)
+        productAdapter.submit(updatedProducts)
     }
 
     override fun createAdapter() = productAdapter
@@ -247,6 +245,7 @@ class ManageHighlightedProductFragment :
 
     override fun addElementToAdapter(list: List<HighlightableProduct>) {
         adapter?.addData(list)
+        storeSelectedProducts(list)
     }
 
     override fun loadData(page: Int) {
@@ -298,4 +297,13 @@ class ManageHighlightedProductFragment :
         val selectedProductCount = viewModel.getSelectedProductIds().size
         binding?.btnCreateCampaign?.isEnabled = selectedProductCount > Int.ZERO
     }
+
+    private fun storeSelectedProducts(products : List<HighlightableProduct>) {
+        products.forEach { product ->
+            if (product.isSelected) {
+                viewModel.addProductToSelection(product)
+            }
+        }
+    }
+
 }

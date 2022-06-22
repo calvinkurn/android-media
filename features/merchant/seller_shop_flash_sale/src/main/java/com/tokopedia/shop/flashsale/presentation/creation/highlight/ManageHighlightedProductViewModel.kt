@@ -45,6 +45,7 @@ class ManageHighlightedProductViewModel @Inject constructor(
                     listType = PRODUCT_LIST_TYPE_ID,
                     pagination = GetSellerCampaignProductListRequest.Pagination(PAGE_SIZE, offset)
                 )
+                val disabled = selectedProductIds.size >= 5
                 val products = campaigns.productList.map {
                     HighlightableProduct(
                         it.productId,
@@ -53,12 +54,12 @@ class ManageHighlightedProductViewModel @Inject constructor(
                         it.productMapData.originalPrice,
                         it.productMapData.discountedPrice,
                         it.productMapData.discountPercentage,
-                        disabled = false,
+                        disabled = disabled,
                         isSelected = it.highlightProductWording.isNotEmpty(),
                         selectedAtMillis = Date().time
                     )
                 }
-                val sortedProducts = sort(products)
+                val sortedProducts = sortProductsBySelectionTime(products)
                 _products.postValue(Success(sortedProducts))
             },
             onError = { error ->
@@ -67,7 +68,7 @@ class ManageHighlightedProductViewModel @Inject constructor(
         )
     }
 
-    private fun sort(products: List<HighlightableProduct>): List<HighlightableProduct> {
+    private fun sortProductsBySelectionTime(products: List<HighlightableProduct>): List<HighlightableProduct> {
         return products.sortedBy { it.selectedAtMillis }
     }
 
@@ -98,7 +99,7 @@ class ManageHighlightedProductViewModel @Inject constructor(
         return products
             .map { product ->
                 if (selectedProduct.id == product.id) {
-                    product.copy(isSelected = true, selectedAtMillis = Date().time)
+                    product.copy(isSelected = true, selectedAtMillis = Date().time, disabled = false)
                 } else {
                     product
                 }
@@ -121,4 +122,27 @@ class ManageHighlightedProductViewModel @Inject constructor(
             .sortedByDescending { it.isSelected }
     }
 
+    fun disableAllUnselectedProducts(products: List<HighlightableProduct>): List<HighlightableProduct> {
+        return products
+            .map { product ->
+                if (product.isSelected) {
+                    product
+                } else {
+                    product.copy(disabled = true)
+                }
+            }
+            .sortedByDescending { it.isSelected }
+    }
+
+    fun enableAllUnselectedProducts(products: List<HighlightableProduct>): List<HighlightableProduct> {
+        return products
+            .map { product ->
+                if (product.isSelected) {
+                    product
+                } else {
+                    product.copy(disabled = false)
+                }
+            }
+            .sortedByDescending { it.isSelected }
+    }
 }

@@ -8,7 +8,6 @@ data class HighlightableProduct(
     val discountedPrice: Long,
     val discountPercentage: Int,
     val disabled: Boolean,
-    val isSelected: Boolean = false,
-    val disableClick: Boolean = false,
+    val isSelected: Boolean,
     val selectedAtMillis: Long
 )
