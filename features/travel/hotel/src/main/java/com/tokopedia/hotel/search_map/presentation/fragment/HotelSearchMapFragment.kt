@@ -1819,7 +1819,7 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
     }
 
     private fun getDimensionPixelSize(@DimenRes id: Int): Int{
-        return requireContext().resources.getDimensionPixelSize(id)
+        return context?.resources?.getDimensionPixelSize(id) ?: 0
     }
 
     companion object {
