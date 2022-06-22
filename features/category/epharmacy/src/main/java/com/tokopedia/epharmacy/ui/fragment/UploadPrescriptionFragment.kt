@@ -92,11 +92,7 @@ class UploadPrescriptionFragment : BaseDaggerFragment() , EPharmacyListener {
         setUpObservers()
         initViews(view)
         initData()
-        if(checkoutId.isNotBlank()) {
-            uploadPrescriptionViewModel.getEPharmacyCheckoutDetail(checkoutId)
-        }else if(orderId.isNotBlank()){
-            uploadPrescriptionViewModel.getEPharmacyOrderDetail(orderId)
-        }
+        getData()
     }
 
     private fun initArguments() {
@@ -124,6 +120,14 @@ class UploadPrescriptionFragment : BaseDaggerFragment() , EPharmacyListener {
         setupRecyclerView()
         renderToolTip()
         renderButtons()
+    }
+
+    private fun getData() {
+        if(checkoutId.isNotBlank()) {
+            uploadPrescriptionViewModel.getEPharmacyCheckoutDetail(checkoutId)
+        }else if(orderId.isNotBlank()){
+            uploadPrescriptionViewModel.getEPharmacyOrderDetail(orderId)
+        }
     }
 
     private fun setupRecyclerView() {
