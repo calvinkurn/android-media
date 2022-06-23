@@ -597,7 +597,7 @@ class TokoFoodPurchaseViewModel @Inject constructor(
             getUiModel<TokoFoodPurchaseTotalAmountTokoFoodPurchaseUiModel>()?.let { pair ->
                 val (totalAmountIndex, uiModel) = pair
                 removeAt(totalAmountIndex)
-                add(totalAmountIndex, uiModel.copy(isButtonLoading = isLoading))
+                add(totalAmountIndex, uiModel.copy(isButtonLoading = isLoading && uiModel.isEnabled))
             }
         }
         _visitables.value = dataList
