@@ -45,6 +45,7 @@ object DeeplinkMapperDigital {
     const val PARAM_CLIENT_NUMBER = "client_number"
 
     const val SCALYR_OLD_APPLINK_TAGS = "DG_OLD_APPLINK"
+    const val PREPAID_OLD_APPLINK = "PREPAID_OLD_APPLINK"
 
     fun getRegisteredNavigationFromHttpDigital(context: Context, deeplink: String): String {
         val path = Uri.parse(deeplink).pathSegments.joinToString("/")
@@ -123,16 +124,19 @@ object DeeplinkMapperDigital {
                     ApplinkConsInternalDigital.CREDIT_CARD_TEMPLATE
                 }
                 it == TEMPLATE_PREPAID_TELCO && categoryId == OLD_CATEGORY_ID_PULSA -> {
+                    loggingPrePaidOldApplink(uri.toString())
                     ApplinkConsInternalDigital.DIGITAL_PDP_PULSA+"?$TEMPLATE_CATEGORY_ID=$categoryId" +
                             "&$MENU_ID_PARAM=$NEW_MENU_ID_PULSA&$TEMPLATE_PARAM=$TEMPLATE_PULSA_DIGITAL_PDP" +
                             "&$PARAM_PRODUCT_ID=$productId&$PARAM_CLIENT_NUMBER=$clientNumber"
                 }
                 it == TEMPLATE_PREPAID_TELCO && categoryId == OLD_CATEGORY_ID_PAKET_DATA -> {
+                    loggingPrePaidOldApplink(uri.toString())
                     ApplinkConsInternalDigital.DIGITAL_PDP_PAKET_DATA+"?$TEMPLATE_CATEGORY_ID=$categoryId" +
                             "&$MENU_ID_PARAM=$NEW_MENU_ID_PAKET_DATA&$TEMPLATE_PARAM=$TEMPLATE_PAKET_DATA_DIGITAL_PDP" +
                             "&$PARAM_PRODUCT_ID=$productId&$PARAM_CLIENT_NUMBER=$clientNumber"
                 }
                 it == TEMPLATE_PREPAID_TELCO && categoryId == OLD_CATEGORY_ID_ROAMING -> {
+                    loggingPrePaidOldApplink(uri.toString())
                     ApplinkConsInternalDigital.DIGITAL_PDP_PAKET_DATA+"?$TEMPLATE_CATEGORY_ID=$categoryId" +
                             "&$MENU_ID_PARAM=$NEW_MENU_ID_ROAMING&$TEMPLATE_PARAM=$TEMPLATE_ROAMING_DIGITAL_PDP" +
                             "&$PARAM_PRODUCT_ID=$productId&$PARAM_CLIENT_NUMBER=$clientNumber"
@@ -205,5 +209,16 @@ object DeeplinkMapperDigital {
 
     private fun isEmoneyApplink(uri: Uri): Boolean {
         return (!uri.getQueryParameter(TEMPLATE_CATEGORY_ID).isNullOrEmpty() && uri.getQueryParameter(TEMPLATE_CATEGORY_ID).equals(CATEGORY_ID_ELECTRONIC_MONEY))
+    }
+
+    private fun loggingPrePaidOldApplink(oldApplink: String) {
+        ServerLogger.log(
+            Priority.P2,
+            PREPAID_OLD_APPLINK,
+            mapOf(
+                "type" to "old prepaid applink",
+                "data" to oldApplink
+            )
+        )
     }
 }
