@@ -127,6 +127,7 @@
         android:id="@+id/layout_product_button"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_lvl2"
         android:layout_marginStart="@dimen/spacing_lvl3"
         android:orientation="horizontal"
         android:paddingBottom="@dimen/spacing_lvl3"
