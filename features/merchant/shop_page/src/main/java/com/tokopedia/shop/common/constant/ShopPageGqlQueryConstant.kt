@@ -67,6 +67,7 @@ object ShopPageGqlQueryConstant {
                     title
                     url
                   }
+                  hasVariant
                 }
                 suggestion {
                   text

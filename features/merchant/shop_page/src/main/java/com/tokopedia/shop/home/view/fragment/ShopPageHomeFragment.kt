@@ -2116,7 +2116,6 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
             shopId = shopId,
             startActivitResult = this::startActivityForResult
         )
-//            tracking.sendVbsImpressionTracker(shopId, userId, isSellerView)
     }
 
     override fun onProductAtcNonVariantQuantityEditorChanged(

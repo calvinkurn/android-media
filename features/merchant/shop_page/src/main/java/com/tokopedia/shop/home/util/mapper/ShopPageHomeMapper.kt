@@ -68,7 +68,6 @@ object ShopPageHomeMapper {
     ): ShopHomeProductUiModel =
         with(shopProduct) {
             ShopHomeProductUiModel().also {
-                val isVariant = false
                 val minOrder = 1
                 val stock = 10
                 it.id = productId
@@ -97,7 +96,7 @@ object ShopPageHomeMapper {
                 it.minimumOrder = minOrder
                 it.stock = stock
                 it.isEnableDirectPurchase = isEnableDirectPurchase
-                it.isVariant = isVariant
+                it.isVariant = hasVariant
             }
         }
 

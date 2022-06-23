@@ -944,7 +944,6 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
             shopId = shopId.orEmpty(),
             startActivitResult = this::startActivityForResult
         )
-//            tracking.sendVbsImpressionTracker(shopId, userId, isSellerView)
     }
 
     override fun onProductAtcDefaultClick(shopProductUiModel: ShopProductUiModel) {

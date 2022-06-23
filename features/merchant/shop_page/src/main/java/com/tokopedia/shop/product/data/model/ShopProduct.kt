@@ -57,7 +57,11 @@ data class ShopProduct(
 
         @SerializedName("label_groups")
         @Expose
-        val labelGroupList: List<LabelGroup> = listOf()
+        val labelGroupList: List<LabelGroup> = listOf(),
+
+        @SerializedName("hasVariant")
+        @Expose
+        val hasVariant: Boolean = false,
 ){
         data class Response(
                 @SerializedName("GetShopProduct")
