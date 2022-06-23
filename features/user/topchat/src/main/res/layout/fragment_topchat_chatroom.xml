@@ -135,11 +135,6 @@
 
         </RelativeLayout>
 
-        <com.tokopedia.topchat.chatroom.view.custom.ChatTextAreaLayout
-            android:id="@+id/layout_chat_text_area"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
-
         <LinearLayout
             android:id="@+id/add_comment_area"
             android:layout_width="match_parent"
@@ -186,15 +181,6 @@
                     android:paddingEnd="@dimen/dp_topchat_14"
                     app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
 
-                <com.tokopedia.topchat.chatroom.view.custom.SrwFrameLayout
-                    android:id="@+id/rv_srw"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="@dimen/unify_space_12"
-                    android:visibility="gone"
-                    tools:layout_height="50dp"
-                    tools:visibility="visible" />
-
             </LinearLayout>
 
             <com.tokopedia.topchat.chatroom.view.custom.ComposeMessageAreaConstraintLayout
@@ -205,6 +191,12 @@
                 android:paddingStart="@dimen/spacing_lvl4"
                 android:paddingTop="@dimen/unify_space_8"
                 android:paddingEnd="@dimen/unify_space_12" />
+
+            <com.tokopedia.topchat.chatroom.view.custom.ChatTextAreaLayout
+                android:id="@+id/layout_chat_text_area"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="gone"/>
 
             <com.tokopedia.topchat.chatroom.view.custom.ChatMenuView
                 android:id="@+id/fl_chat_menu"
@@ -221,6 +213,16 @@
                 android:visibility="gone"/>
 
         </LinearLayout>
+        
+        <com.tokopedia.unifycomponents.LoaderUnify
+            android:id="@+id/chat_area_shimmer"
+            android:layout_width="match_parent"
+            android:layout_height="168dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:layout_marginBottom="16dp"
+            app:loader_corner_radius="8dp"
+            app:loader_type="rect" />
 
     </LinearLayout>
 

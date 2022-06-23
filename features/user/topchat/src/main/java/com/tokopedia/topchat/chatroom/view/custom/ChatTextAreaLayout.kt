@@ -4,14 +4,18 @@ import android.content.Context
 import android.os.Build
 import android.util.AttributeSet
 import android.view.View
+import android.widget.EditText
+import android.widget.ImageView
 import androidx.annotation.RequiresApi
 import androidx.constraintlayout.widget.ConstraintLayout
+import com.tokopedia.chat_common.domain.pojo.attachmentmenu.AttachmentMenu
+import com.tokopedia.chat_common.view.listener.TypingListener
+import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.topchat.R
-import com.tokopedia.topchat.chatroom.domain.pojo.srw.ChatSmartReplyQuestionResponse
-import com.tokopedia.topchat.chatroom.domain.pojo.srw.QuestionUiModel
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.srw.SrwQuestionViewHolder
+import com.tokopedia.topchat.chatroom.view.listener.ReplyBoxTextListener
 import com.tokopedia.unifyprinciples.Typography
 
 class ChatTextAreaLayout: ConstraintLayout {
@@ -21,7 +25,7 @@ class ChatTextAreaLayout: ConstraintLayout {
      */
     private var tabSRW: View? = null
     private var textTabSRW: Typography? = null
-    private var srwLayout : SrwFrameLayout? = null
+    var srwLayout : SrwFrameLayout? = null
 
     /**
      * Tab Tulis Pesan
@@ -29,6 +33,11 @@ class ChatTextAreaLayout: ConstraintLayout {
     private var tabReplyBox: View? = null
     private var textTabReplyBox: Typography? = null
     private var replyBoxLayout : ComposeMessageAreaConstraintLayout? = null
+    private var chatMenu: ChatMenuView? = null
+    private var chatMenuButton: ImageView? = null
+    private var chatStickerMenuButton: IconUnify? = null
+    private var replyEditText: EditText? = null
+    private var sendButton: IconUnify? = null
 
     /**
      * List of tab-layout
@@ -46,7 +55,6 @@ class ChatTextAreaLayout: ConstraintLayout {
         initViewLayout()
         initViewBind()
         initListener()
-        initSrw()
     }
 
     private fun initViewLayout() {
@@ -61,6 +69,11 @@ class ChatTextAreaLayout: ConstraintLayout {
         tabReplyBox = findViewById(R.id.textarea_tab_bg)
         textTabReplyBox = findViewById(R.id.tv_textarea_tab)
         replyBoxLayout = findViewById(R.id.reply_box)
+        chatMenu = findViewById(R.id.fl_chat_menu)
+        chatMenuButton = findViewById(R.id.iv_chat_menu)
+        chatStickerMenuButton = findViewById(R.id.iv_chat_sticker)
+        replyEditText = findViewById(R.id.new_comment)
+        sendButton = findViewById(R.id.send_but)
 
         tabList.apply {
             this[textTabSRW] = (Pair(tabSRW, srwLayout))
@@ -77,52 +90,38 @@ class ChatTextAreaLayout: ConstraintLayout {
         }
     }
 
-    private fun initSrw() {
-        srwLayout?.initialize(getSrwQuestionListener(), getSrwFrameLayoutListener())
-        /**
-         * Remove this testing
-         */
-        val srwQuestions = ChatSmartReplyQuestionResponse().also {
-            it.chatSmartReplyQuestion.hasQuestion = true
-            it.chatSmartReplyQuestion.title = "SRW Question Testing"
-            it.chatSmartReplyQuestion.questions = listOf(
-                QuestionUiModel(content = "SRW Question 1?"),
-                QuestionUiModel(content = "SRW Question 2?"),
-                QuestionUiModel(content = "SRW Question 3?"),
-                QuestionUiModel(content = "SRW Question 4?")
-            )
-        }
-        srwLayout?.updateSrwList(srwQuestions)
+    fun initSrw(
+        srwQuestionListener: SrwQuestionViewHolder.Listener,
+        srwFrameLayoutListener: SrwFrameLayout.Listener
+    ) {
+        srwLayout?.initialize(srwQuestionListener, srwFrameLayoutListener)
         srwLayout?.setSrwTitleVisibility(false)
         srwLayout?.setContentMargin()
+        srwLayout?.isSrwBubble = false
     }
 
-    private fun getSrwQuestionListener(): SrwQuestionViewHolder.Listener {
-        return object : SrwQuestionViewHolder.Listener {
-            override fun onClickSrwQuestion(question: QuestionUiModel) {
-                TODO("Not yet implemented")
-            }
+    fun initReplyBox(
+        typingListener: TypingListener,
+        replyBoxTextListener: ReplyBoxTextListener,
+        attachmentMenuListener: AttachmentMenu.AttachmentMenuListener,
+        stickerMenuListener: ChatMenuStickerView.StickerMenuListener
+    ) {
+        replyBoxLayout?.initLayout(typingListener, replyBoxTextListener)
+        initAttachmentMenu(attachmentMenuListener)
+        initStickerMenu(stickerMenuListener)
+    }
 
-            override fun trackClickSrwQuestion(question: QuestionUiModel) {
-                TODO("Not yet implemented")
-            }
-
+    private fun initAttachmentMenu(attachmentMenuListener: AttachmentMenu.AttachmentMenuListener) {
+        chatMenu?.setupAttachmentMenu(attachmentMenuListener)
+        chatMenuButton?.setOnClickListener {
+            chatMenu?.toggleAttachmentMenu()
         }
     }
 
-    private fun getSrwFrameLayoutListener(): SrwFrameLayout.Listener {
-        return object : SrwFrameLayout.Listener {
-            override fun trackViewSrw() {
-                TODO("Not yet implemented")
-            }
-
-            override fun onExpandStateChanged(isExpanded: Boolean) {
-                TODO("Not yet implemented")
-            }
-
-            override fun shouldShowOnBoarding(): Boolean {
-                TODO("Not yet implemented")
-            }
+    private fun initStickerMenu(stickerMenuListener: ChatMenuStickerView.StickerMenuListener) {
+        chatMenu?.setStickerMenuListener(stickerMenuListener)
+        chatStickerMenuButton?.setOnClickListener {
+            chatMenu?.toggleStickerMenu()
         }
     }
 
@@ -161,6 +160,25 @@ class ChatTextAreaLayout: ConstraintLayout {
                 }
             }
         }
+    }
+
+    fun onStickerOpened() {
+        chatStickerMenuButton?.setImage(IconUnify.KEYBOARD)
+        chatStickerMenuButton?.setOnClickListener {
+            replyEditText?.requestFocus()
+            chatMenu?.showKeyboard(replyEditText)
+        }
+    }
+
+    fun onStickerClosed() {
+        chatStickerMenuButton?.setImage(IconUnify.STICKER)
+        chatStickerMenuButton?.setOnClickListener {
+            chatMenu?.toggleStickerMenu()
+        }
+    }
+
+    fun getSendButton() : IconUnify? {
+        return sendButton
     }
 
     companion object {

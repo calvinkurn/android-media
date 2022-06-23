@@ -229,7 +229,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     private var fbNewUnreadMessage: FloatingButtonUnify? = null
     private var tvTotalUnreadMessage: Typography? = null
     private var rv: TopchatMessageRecyclerView? = null
-    private var rvSrw: SrwFrameLayout? = null
+//    private var rvSrw: SrwFrameLayout? = null
     private var replyCompose: ReplyBubbleAreaMessage? = null
     private var rvContainer: CoordinatorLayout? = null
     private var chatBackground: ImageView? = null
@@ -237,7 +237,6 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     protected var topchatViewState: TopChatViewStateImpl? = null
     private var uploadImageBroadcastReceiver: BroadcastReceiver? = null
     private var smoothScroller: CenterSmoothScroller? = null
-    private var replyBox: ComposeMessageAreaConstraintLayout? = null
 
     var chatRoomFlexModeListener: TopChatRoomFlexModeListener? = null
     var chatBoxPadding: View? = null
@@ -301,7 +300,11 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     }
 
     private fun initSrw() {
-        rvSrw?.initialize(this, object : SrwFrameLayout.Listener {
+//        rvSrw?.initialize(this, getSrwFrameLayoutListener())
+    }
+
+    private fun getSrwFrameLayoutListener() : SrwFrameLayout.Listener {
+        return object : SrwFrameLayout.Listener {
             override fun trackViewSrw() {
                 analytics.eventViewSrw(shopId, session.userId)
             }
@@ -317,7 +320,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
             override fun shouldShowOnBoarding(): Boolean {
                 return replyBubbleOnBoarding.hasBeenShown()
             }
-        })
+        }
     }
 
     private fun initUserLocation() {
@@ -339,10 +342,12 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
 
     override fun updateSrwPreviewState() {
         if (shouldShowSrw()) {
-            rvSrw?.renderSrwState()
+//            rvSrw?.renderSrwState()
+            topchatViewState?.shouldShowSrw = true
             topchatViewState?.hideTemplateChat()
-        } else {
-            rvSrw?.hideSrw()
+        } else if (topchatViewState?.chatTextAreaLayout?.srwLayout?.isLoadingState() != true) {
+//            rvSrw?.hideSrw()
+            topchatViewState?.shouldShowSrw = false
             showTemplateChatIfReady()
         }
     }
@@ -363,11 +368,13 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     }
 
     override fun hasNoSrw(): Boolean {
-        return rvSrw?.isAllowToShow() == false && rvSrw?.isSuccessState() == true
+//        return rvSrw?.isAllowToShow() == false && rvSrw?.isSuccessState() == true
+        return topchatViewState?.chatTextAreaLayout?.srwLayout?.isAllowToShow() == false
+                && topchatViewState?.chatTextAreaLayout?.srwLayout?.isSuccessState() == true
     }
 
     override fun collapseSrw() {
-        rvSrw?.isExpanded = false
+//        rvSrw?.isExpanded = false
     }
 
     override fun expandSrw() {
@@ -376,7 +383,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     }
 
     private fun expandSrwPreview() {
-        rvSrw?.isExpanded = true
+//        rvSrw?.isExpanded = true
     }
 
     override fun expandSrwBubble() {
@@ -421,9 +428,12 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     }
 
     override fun shouldShowSrw(): Boolean {
+//        return !isSeller() && hasProductPreviewShown() &&
+//                rvSrw?.isAllowToShow() == true && viewModel.isAttachmentPreviewReady() ||
+//                (rvSrw?.isLoadingState() == true && hasProductPreviewShown())
         return !isSeller() && hasProductPreviewShown() &&
-                rvSrw?.isAllowToShow() == true && viewModel.isAttachmentPreviewReady() ||
-                (rvSrw?.isLoadingState() == true && hasProductPreviewShown())
+                topchatViewState?.chatTextAreaLayout?.srwLayout?.isAllowToShow() == true &&
+                viewModel.isAttachmentPreviewReady()
     }
 
     private fun initFbNewUnreadMessage() {
@@ -440,13 +450,12 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         chatMenu = view?.findViewById(R.id.fl_chat_menu)
         rv = view?.findViewById(recyclerViewResourceId)
         replyCompose = view?.findViewById(R.id.trb_container)
-        rvSrw = view?.findViewById(R.id.rv_srw)
+//        rvSrw = view?.findViewById(R.id.rv_srw)
         rvContainer = view?.findViewById(R.id.rv_container)
         fbNewUnreadMessage = view?.findViewById(R.id.fb_new_unread_message)
         chatBackground = view?.findViewById(R.id.iv_bg_chat)
         sendButton = view?.findViewById(R.id.send_but)
         chatBoxPadding = view?.findViewById(R.id.view_chat_box_padding)
-        replyBox = view?.findViewById(R.id.reply_box)
     }
 
     private fun initStickerView() {
@@ -480,6 +489,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         removeAttachmentIfNecessary(savedInstanceState)
         setupObservers()
         setupLifecycleObserver()
+        initChatTextAreaLayout()
     }
 
     private fun setupLifecycleObserver() {
@@ -772,7 +782,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         val hasShowOnBoarding = replyBubbleOnBoarding.hasBeenShown()
         if (!hasShowOnBoarding && !viewModel.isInTheMiddleOfThePage()) {
             replyBubbleOnBoarding.showReplyBubbleOnBoarding(
-                rv, adapter, replyBox, context
+                rv, adapter, composeMsgArea, context
             )
         }
     }
@@ -1137,7 +1147,8 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         intention: String? = null
     ) {
         val referredMsg = replyCompose?.referredMsg
-        if (rvSrw?.isShowing() == true) {
+//        if (rvSrw?.isShowing() == true) {
+        if (topchatViewState?.chatTextAreaLayout?.srwLayout?.isShowing() == true) {
             addSrwBubbleToChat()
         }
         replyBubbleOnBoarding.dismiss()
@@ -1183,7 +1194,8 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         if (sticker == null) return
         onSendAndReceiveMessage()
         val referredMsg = replyCompose?.referredMsg
-        if (rvSrw?.isShowing() == true) {
+//        if (rvSrw?.isShowing() == true) {
+        if (topchatViewState?.chatTextAreaLayout?.srwLayout?.isShowing() == true) {
             addSrwBubbleToChat()
         }
         onSendingMessage().invoke()
@@ -1468,7 +1480,8 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     }
 
     private fun removeSrwPreview() {
-        rvSrw?.hideSrw()
+//        rvSrw?.hideSrw()
+        topchatViewState?.chatTextAreaLayout?.srwLayout?.hideSrw()
     }
 
     private fun processImagePathToUpload(data: Intent): ImageUploadUiModel? {
@@ -1842,6 +1855,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
             topchatViewState?.clearAttachmentPreview()
             viewModel.clearAttachmentPreview()
         }
+        topchatViewState?.shouldShowSrw = false
     }
 
     override fun sendAnalyticAttachmentSent(attachment: SendablePreview) {
@@ -2407,7 +2421,8 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
 
     private fun addSrwBubble() {
         expandSrwPreview()
-        val srwState = rvSrw?.getStateInfo()
+//        val srwState = rvSrw?.getStateInfo()
+        val srwState = topchatViewState?.chatTextAreaLayout?.srwLayout?.getStateInfo()
         val previews2 = viewModel.getAttachmentsPreview().toList()
         adapter.addSrwBubbleUiModel(srwState, previews2)
     }
@@ -2434,9 +2449,10 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     }
 
     override fun disableSendButton(isExceedLimit: Boolean) {
-        sendButton?.background =
+        val chatSendButton = getChatSendButton()
+        chatSendButton?.background =
             MethodChecker.getDrawable(context, R.drawable.bg_topchat_send_btn_disabled)
-        sendButton?.setOnClickListener {
+        chatSendButton?.setOnClickListener {
             if (!isExceedLimit) {
                 showSnackbarError(getString(R.string.topchat_desc_empty_text_box))
             }
@@ -2444,9 +2460,18 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     }
 
     override fun enableSendButton() {
-        sendButton?.background = MethodChecker.getDrawable(context, R.drawable.bg_topchat_send_btn)
-        sendButton?.setOnClickListener {
+        val chatSendButton = getChatSendButton()
+        chatSendButton?.background = MethodChecker.getDrawable(context, R.drawable.bg_topchat_send_btn)
+        chatSendButton?.setOnClickListener {
             onSendButtonClicked()
+        }
+    }
+
+    private fun getChatSendButton(): IconUnify? {
+        return if (topchatViewState?.isChatTabVisible() == true) {
+            topchatViewState?.chatTextAreaLayout?.getSendButton()
+        } else {
+            sendButton
         }
     }
 
@@ -2647,7 +2672,8 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         })
 
         viewModel.srw.observe(viewLifecycleOwner, {
-            rvSrw?.updateStatus(it)
+//            rvSrw?.updateStatus(it)
+            topchatViewState?.chatTextAreaLayout?.srwLayout?.updateStatus(it)
             updateSrwPreviewState()
         })
 
@@ -2672,6 +2698,8 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
                     } else {
                         onErrorResetChatToFirstPage(result.throwable)
                     }
+                    topchatViewState?.shouldShowSrw = false
+                    topchatViewState?.isAbleToReply = false
                 }
             }
         })
@@ -2736,7 +2764,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         viewModel.showableAttachmentPreviews.observe(viewLifecycleOwner, { attachPreview ->
             if (attachPreview.isNotEmpty()) {
                 showAttachmentPreview(attachPreview)
-                updateSrwPreviewState()
+//                updateSrwPreviewState()
                 if (hasProductPreviewShown()) {
                     focusOnReply()
                 }
@@ -3008,6 +3036,13 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
                 element.productBundling.bundleId?: ""
             )
         }
+    }
+
+
+    private fun initChatTextAreaLayout() {
+        topchatViewState?.chatTextAreaLayout?.initReplyBox(
+            this, this, this, this)
+        topchatViewState?.chatTextAreaLayout?.initSrw(this, getSrwFrameLayoutListener())
     }
 
     companion object {

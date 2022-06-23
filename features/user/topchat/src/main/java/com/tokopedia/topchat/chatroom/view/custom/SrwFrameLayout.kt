@@ -48,6 +48,15 @@ class SrwFrameLayout : FrameLayout {
     private var onBoarding = SrwOnBoarding()
 
     /**
+     * To differentiate the SRW Tab and Bubble
+     */
+    var isSrwBubble: Boolean = true
+        set(value) {
+            field = value
+            initBackground()
+        }
+
+    /**
      * Default state would be expanded
      */
     var isExpanded = true
@@ -128,10 +137,8 @@ class SrwFrameLayout : FrameLayout {
         bgExpanded = ViewUtil.generateBackgroundWithShadow(
             this,
             backgroundColor = com.tokopedia.unifyprinciples.R.color.Unify_Background,
-            topLeftRadius = R.dimen.dp_topchat_0,
-//            topLeftRadius = R.dimen.dp_topchat_20,
-            topRightRadius = R.dimen.dp_topchat_20,
-//            topRightRadius = R.dimen.dp_topchat_0,
+            topLeftRadius = getTopLeftRadius(),
+            topRightRadius = getTopRightRadius(),
             bottomLeftRadius = R.dimen.dp_topchat_20,
             bottomRightRadius = R.dimen.dp_topchat_20,
             shadowColor = com.tokopedia.unifyprinciples.R.color.Unify_N700_20,
@@ -141,6 +148,22 @@ class SrwFrameLayout : FrameLayout {
             shadowGravity = Gravity.CENTER
         )
         srwContentContainer?.background = bgExpanded
+    }
+
+    private fun getTopLeftRadius(): Int {
+        return if (isSrwBubble) {
+            R.dimen.dp_topchat_20
+        } else {
+            R.dimen.dp_topchat_0
+        }
+    }
+
+    private fun getTopRightRadius(): Int {
+        return if (isSrwBubble) {
+            R.dimen.dp_topchat_0
+        } else {
+            R.dimen.dp_topchat_20
+        }
     }
 
     private fun initViewBind() {
