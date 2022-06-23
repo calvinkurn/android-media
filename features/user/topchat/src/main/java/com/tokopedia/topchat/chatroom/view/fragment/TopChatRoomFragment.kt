@@ -144,6 +144,7 @@ import com.tokopedia.chat_common.view.viewmodel.ChatRoomHeaderUiModel.Companion.
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.product.detail.common.VariantPageSource
 import com.tokopedia.remoteconfig.abtest.AbTestPlatform
+import com.tokopedia.topchat.chatroom.view.activity.TopChatRoomActivity.Companion.IS_FROM_ANOTHER_CALL
 import com.tokopedia.topchat.chatroom.view.bottomsheet.TopchatBottomSheetBuilder.MENU_ID_DELETE_BUBBLE
 import com.tokopedia.topchat.chatroom.view.uimodel.product_bundling.ProductBundlingUiModel
 import com.tokopedia.topchat.common.analytics.TopChatAnalyticsKt
@@ -691,8 +692,11 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     }
 
     private fun setupAttachmentsPreview(savedInstanceState: Bundle?) {
-        initProductPreview(savedInstanceState)
-        initInvoicePreview(savedInstanceState)
+        val isFromAnotherChat = isFromAnotherChat(savedInstanceState)
+        if (!isFromAnotherChat) {
+            initProductPreview(savedInstanceState)
+            initInvoicePreview(savedInstanceState)
+        }
         viewModel.initAttachmentPreview()
     }
 
@@ -1124,7 +1128,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         return if (message != null && message.isNotEmpty()) {
             message
         } else {
-            composeMsgArea?.getComposedText() ?: ""
+            getComposeMessageArea()?.getComposedText() ?: ""
         }
     }
 
@@ -1136,7 +1140,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     }
 
     private fun sendComposedMsg() {
-        composeMsgArea?.onSendMessage()
+        getComposeMessageArea()?.onSendMessage()
         val composedMsg = getComposedMessage()
         sendMessage(composedMsg)
         onSendingMessage().invoke()
@@ -2475,6 +2479,14 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         }
     }
 
+    private fun getComposeMessageArea(): ComposeMessageAreaConstraintLayout? {
+        return if (topchatViewState?.isChatTabVisible() == true) {
+            topchatViewState?.chatTextAreaLayout?.getComposeMessageArea()
+        } else {
+            composeMsgArea
+        }
+    }
+
     private fun initKeyboardListener(view: View) {
         TopChatKeyboardHandler(view, object :
             TopChatKeyboardHandler.OnKeyBoardVisibilityChangeListener {
@@ -2664,6 +2676,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
                     val listGroupSticker = it.data.first.chatListGroupSticker.list
                     val listUpdate = it.data.second
                     getChatMenuView()?.stickerMenu?.updateStickers(listGroupSticker, listUpdate)
+                    topchatViewState?.chatTextAreaLayout?.updateStickers(listGroupSticker, listUpdate)
                 }
                 is Fail -> {
                     //Do nothing
@@ -3038,11 +3051,14 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         }
     }
 
-
     private fun initChatTextAreaLayout() {
         topchatViewState?.chatTextAreaLayout?.initReplyBox(
             this, this, this, this)
         topchatViewState?.chatTextAreaLayout?.initSrw(this, getSrwFrameLayoutListener())
+    }
+
+    private fun isFromAnotherChat(savedInstanceState: Bundle?): Boolean {
+        return getBooleanArgument(IS_FROM_ANOTHER_CALL, savedInstanceState)
     }
 
     companion object {

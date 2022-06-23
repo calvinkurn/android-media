@@ -14,6 +14,7 @@ import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.topchat.R
+import com.tokopedia.topchat.chatroom.domain.pojo.stickergroup.StickerGroup
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.srw.SrwQuestionViewHolder
 import com.tokopedia.topchat.chatroom.view.listener.ReplyBoxTextListener
 import com.tokopedia.unifyprinciples.Typography
@@ -33,11 +34,15 @@ class ChatTextAreaLayout: ConstraintLayout {
     private var tabReplyBox: View? = null
     private var textTabReplyBox: Typography? = null
     private var replyBoxLayout : ComposeMessageAreaConstraintLayout? = null
-    private var chatMenu: ChatMenuView? = null
-    private var chatMenuButton: ImageView? = null
-    private var chatStickerMenuButton: IconUnify? = null
     private var replyEditText: EditText? = null
     private var sendButton: IconUnify? = null
+
+    /**
+     * Chat Menu
+     */
+    var chatMenu: ChatMenuView? = null
+    private var chatMenuButton: ImageView? = null
+    private var chatStickerMenuButton: IconUnify? = null
 
     /**
      * List of tab-layout
@@ -64,12 +69,12 @@ class ChatTextAreaLayout: ConstraintLayout {
     private fun initViewBind() {
         tabSRW = findViewById(R.id.srw_tab_bg)
         textTabSRW = findViewById(R.id.tv_srw_tab)
-        srwLayout = findViewById(R.id.rv_srw)
+        srwLayout = findViewById(R.id.rv_srw_tab)
 
         tabReplyBox = findViewById(R.id.textarea_tab_bg)
         textTabReplyBox = findViewById(R.id.tv_textarea_tab)
-        replyBoxLayout = findViewById(R.id.reply_box)
-        chatMenu = findViewById(R.id.fl_chat_menu)
+        replyBoxLayout = findViewById(R.id.reply_box_tab)
+        chatMenu = findViewById(R.id.chat_menu_view_tab)
         chatMenuButton = findViewById(R.id.iv_chat_menu)
         chatStickerMenuButton = findViewById(R.id.iv_chat_sticker)
         replyEditText = findViewById(R.id.new_comment)
@@ -126,6 +131,7 @@ class ChatTextAreaLayout: ConstraintLayout {
     }
 
     private fun updateTab(pickedView: View) {
+        chatMenu?.hideMenu()
         changeTabState(pickedView, TAB_ACTIVE)
         showTabContent(pickedView)
         changeToInactive(pickedView)
@@ -179,6 +185,17 @@ class ChatTextAreaLayout: ConstraintLayout {
 
     fun getSendButton() : IconUnify? {
         return sendButton
+    }
+
+    fun getComposeMessageArea(): ComposeMessageAreaConstraintLayout? {
+        return replyBoxLayout
+    }
+
+    fun updateStickers(
+        stickers: List<StickerGroup>,
+        needToUpdate: List<StickerGroup> = emptyList()
+    ) {
+        chatMenu?.stickerMenu?.updateStickers(stickers, needToUpdate)
     }
 
     companion object {

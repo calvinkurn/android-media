@@ -8,20 +8,26 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/layout_tab"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
+        app:layout_constraintWidth_max="240dp"
         android:layout_height="wrap_content"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="@id/reply_box_tab"
+        app:layout_constraintHorizontal_bias="0"
+        android:layout_marginEnd="51dp"
         android:layout_marginTop="8dp"
         android:layout_marginStart="18dp">
 
         <View
             android:id="@+id/textarea_tab_bg"
-            android:layout_width="120dp"
+            android:layout_width="0dp"
             android:layout_height="63dp"
-            app:layout_constraintLeft_toLeftOf="@id/guideline"
+            app:layout_constraintLeft_toRightOf="@id/srw_tab_bg"
+            app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintHorizontal_bias="0"
             android:background="@drawable/bg_text_area_tab_inactive" />
 
         <com.tokopedia.unifyprinciples.Typography
@@ -37,12 +43,13 @@
 
         <View
             android:id="@+id/srw_tab_bg"
-            android:layout_width="120dp"
+            android:layout_width="0dp"
             android:layout_height="63dp"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintRight_toLeftOf="@id/textarea_tab_bg"
             android:background="@drawable/bg_text_area_tab_active"
-            android:gravity="center_horizontal"
+            app:layout_constraintHorizontal_bias="0"
             android:text="Smart Reply"/>
 
         <com.tokopedia.unifyprinciples.Typography
@@ -55,13 +62,6 @@
             android:layout_marginTop="8dp"
             android:gravity="center"
             android:text="Smart Reply"/>
-
-        <androidx.constraintlayout.widget.Guideline
-            android:id="@+id/guideline"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            app:layout_constraintGuide_percent="0.485" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -76,7 +76,7 @@
         app:layout_constraintTop_toTopOf="parent"/>
 
     <com.tokopedia.topchat.chatroom.view.custom.SrwFrameLayout
-        android:id="@+id/rv_srw"
+        android:id="@+id/rv_srw_tab"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintLeft_toLeftOf="parent"
@@ -90,7 +90,7 @@
         tools:visibility="gone"/>
 
     <com.tokopedia.topchat.chatroom.view.custom.ComposeMessageAreaConstraintLayout
-        android:id="@+id/reply_box"
+        android:id="@+id/reply_box_tab"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintTop_toBottomOf="@id/divider_tab"
@@ -100,15 +100,16 @@
         android:layout_marginEnd="16dp"
         android:paddingBottom="16dp"
         android:visibility="gone"
-        tools:visibility="visible"/>
+        tools:visibility="visible"
+        tools:height="50dp"/>
 
     <com.tokopedia.topchat.chatroom.view.custom.ChatMenuView
-        android:id="@+id/fl_chat_menu"
+        android:id="@+id/chat_menu_view_tab"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/reply_box"
-        app:layout_constraintLeft_toLeftOf="@id/reply_box"
-        app:layout_constraintRight_toRightOf="@id/reply_box"
+        app:layout_constraintTop_toBottomOf="@id/reply_box_tab"
+        app:layout_constraintLeft_toLeftOf="@id/reply_box_tab"
+        app:layout_constraintRight_toRightOf="@id/reply_box_tab"
         android:visibility="gone"
         tools:visibility="visible" />
 

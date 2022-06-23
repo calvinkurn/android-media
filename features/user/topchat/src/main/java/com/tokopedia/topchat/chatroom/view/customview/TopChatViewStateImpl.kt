@@ -165,7 +165,7 @@ open class TopChatViewStateImpl constructor(
         initHeaderLayout()
         setupChatStickerMenu()
 
-//        chatTextAreaLayout = view.findViewById(R.id.layout_chat_text_area)
+        chatTextAreaLayout = view.findViewById(R.id.layout_chat_text_area)
         chatTextAreaShimmer = view.findViewById(R.id.chat_area_shimmer)
     }
 
