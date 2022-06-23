@@ -37,17 +37,20 @@ class CampaignDatePickerBottomSheet : BottomSheetUnify() {
     companion object {
         private const val BUNDLE_KEY_SELECTED_DATE = "selected_date"
         private const val BUNDLE_KEY_MINIMUM_DATE = "minimum_date"
+        private const val BUNDLE_KEY_MAXIMUM_DATE = "maximum_date"
         private const val DISMISS_BOTTOM_SHEET_DELAY_IN_MILLIS: Long = 500
 
         @JvmStatic
         fun newInstance(
             selectedDate: Date,
-            minimumDate: Date
+            minimumDate: Date,
+            maximumDate: Date
         ): CampaignDatePickerBottomSheet {
             return CampaignDatePickerBottomSheet().apply {
                 arguments = Bundle().apply {
                     putSerializable(BUNDLE_KEY_SELECTED_DATE, selectedDate)
                     putSerializable(BUNDLE_KEY_MINIMUM_DATE, minimumDate)
+                    putSerializable(BUNDLE_KEY_MAXIMUM_DATE, maximumDate)
                 }
             }
         }
@@ -61,6 +64,10 @@ class CampaignDatePickerBottomSheet : BottomSheetUnify() {
 
     private val minimumDate by lazy {
         arguments?.getSerializable(BUNDLE_KEY_MINIMUM_DATE) as? Date ?: Date()
+    }
+
+    private val maximumDate by lazy {
+        arguments?.getSerializable(BUNDLE_KEY_MAXIMUM_DATE) as? Date ?: Date()
     }
 
     @Inject
@@ -158,10 +165,10 @@ class CampaignDatePickerBottomSheet : BottomSheetUnify() {
             Legend(campaign.date, campaignCountWording)
         }
 
-        val endDate = dateManager.getMaximumCampaignEndDate()
+
         val calendar = binding?.unifyCalendar?.calendarPickerView
         calendar?.run {
-            init(minimumDate, endDate, legends)
+            init(minimumDate, maximumDate, legends)
                 .inMode(CalendarPickerView.SelectionMode.SINGLE)
                 .withSelectedDate(selectedDate)
         }

@@ -67,6 +67,8 @@ class CampaignInformationFragment : BaseDaggerFragment() {
         private const val HEX_COLOR_TEXT_FIELD_MAX_LENGTH = 6
         private const val ONE_HOUR = 1
         private const val THRESHOLD = 12
+        private const val SEVEN_DAY = 7
+        private const val THREE_MONTH = 3
         private const val THIRTY_MINUTE = 30
         private const val CAMPAIGN_NAME_MAX_LENGTH = 15
         private const val LEARN_MORE_CTA_TEXT_LENGTH = 8
@@ -499,8 +501,9 @@ class CampaignInformationFragment : BaseDaggerFragment() {
     private fun displayStartDatePicker() {
         val selectedDate = viewModel.getSelectedStartDate()
         val minimumDate = dateManager.getDefaultMinimumCampaignStartDate()
+        val maximumEndDate = dateManager.getCurrentDate().advanceMonthBy(THREE_MONTH)
 
-        val bottomSheet = CampaignDatePickerBottomSheet.newInstance(selectedDate, minimumDate)
+        val bottomSheet = CampaignDatePickerBottomSheet.newInstance(selectedDate, minimumDate, maximumEndDate)
         bottomSheet.setOnDateTimePicked { newStartDate ->
             viewModel.setSelectedStartDate(newStartDate)
             binding?.tauStartDate?.editText?.setText(newStartDate.localFormatTo(DateConstant.DATE_TIME_MINUTE_LEVEL))
@@ -515,8 +518,9 @@ class CampaignInformationFragment : BaseDaggerFragment() {
         val startDate = viewModel.getSelectedStartDate().advanceMinuteBy(THIRTY_MINUTE)
         val endDate = viewModel.normalizeEndDate(viewModel.getSelectedEndDate(), startDate)
         val minimumDate = viewModel.getSelectedStartDate().advanceMinuteBy(THIRTY_MINUTE)
+        val maximumEndDate = viewModel.getSelectedStartDate().advanceDayBy(SEVEN_DAY)
 
-        val bottomSheet = CampaignDatePickerBottomSheet.newInstance(endDate, minimumDate)
+        val bottomSheet = CampaignDatePickerBottomSheet.newInstance(endDate, minimumDate, maximumEndDate)
         bottomSheet.setOnDateTimePicked { newEndDate ->
             viewModel.setSelectedEndDate(newEndDate)
             binding?.tauEndDate?.editText?.setText(newEndDate.localFormatTo(DateConstant.DATE_TIME_MINUTE_LEVEL))
