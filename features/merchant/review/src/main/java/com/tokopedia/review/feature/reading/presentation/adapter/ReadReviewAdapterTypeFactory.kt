@@ -7,7 +7,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.review.common.presentation.listener.ReviewBasicInfoListener
+import com.tokopedia.reviewcommon.feature.reviewer.presentation.listener.ReviewBasicInfoListener
 import com.tokopedia.review.feature.reading.presentation.adapter.uimodel.ReadReviewUiModel
 import com.tokopedia.review.feature.reading.presentation.adapter.viewholder.ReadReviewLoadingViewHolder
 import com.tokopedia.review.feature.reading.presentation.adapter.viewholder.ReadReviewViewHolder

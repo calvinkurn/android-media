@@ -1,8 +1,7 @@
 package com.tokopedia.review.feature.credibility.analytics
 
+import com.tokopedia.applink.review.ReviewApplinkConst
 import com.tokopedia.review.common.analytics.ReviewTrackingConstant
-import com.tokopedia.review.feature.imagepreview.presentation.fragment.ReviewImagePreviewFragment
-import com.tokopedia.review.feature.reading.presentation.fragment.ReadReviewFragment
 import com.tokopedia.track.TrackApp
 
 object ReviewCredibilityTracking {
@@ -46,10 +45,19 @@ object ReviewCredibilityTracking {
 
     private fun getEventCategoryBasedOnSource(source: String): String {
         return when (source) {
-            ReadReviewFragment.READING_SOURCE -> ReviewCredibilityTrackingConstant.EVENT_CATEGORY_READING
-            ReviewImagePreviewFragment.READING_IMAGE_PREVIEW_CREDIBILITY_SOURCE ->ReviewCredibilityTrackingConstant.EVENT_CATEGORY_READING_IMAGE_PREVIEW
-            ReviewImagePreviewFragment.GALLERY_SOURCE_CREDIBILITY_SOURCE ->ReviewCredibilityTrackingConstant.EVENT_CATEGORY_GALLERY
-            else -> ReviewCredibilityTrackingConstant.EVENT_CATEGORY_INBOX
+            ReviewApplinkConst.REVIEW_CREDIBILITY_SOURCE_REVIEW_READING,
+            ReviewApplinkConst.REVIEW_CREDIBILITY_SOURCE_REVIEW_MOST_HELPFUL -> {
+                ReviewCredibilityTrackingConstant.EVENT_CATEGORY_READING
+            }
+            ReviewApplinkConst.REVIEW_CREDIBILITY_SOURCE_REVIEW_READING_IMAGE_PREVIEW -> {
+                ReviewCredibilityTrackingConstant.EVENT_CATEGORY_READING_IMAGE_PREVIEW
+            }
+            ReviewApplinkConst.REVIEW_CREDIBILITY_SOURCE_REVIEW_GALLERY -> {
+                ReviewCredibilityTrackingConstant.EVENT_CATEGORY_GALLERY
+            }
+            else -> {
+                ReviewCredibilityTrackingConstant.EVENT_CATEGORY_INBOX
+            }
         }
     }
 }

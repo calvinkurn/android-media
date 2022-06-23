@@ -36,6 +36,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalMechant
 import com.tokopedia.applink.internal.ApplinkConstInternalTokopediaNow
+import com.tokopedia.applink.review.ReviewApplinkConst
 import com.tokopedia.applink.sellermigration.SellerMigrationApplinkConst
 import com.tokopedia.applink.sellermigration.SellerMigrationFeatureName
 import com.tokopedia.atc_common.AtcFromExternalSource
@@ -88,7 +89,10 @@ import com.tokopedia.play.widget.ui.model.PlayWidgetReminderType
 import com.tokopedia.play.widget.ui.model.reminded
 import com.tokopedia.product.detail.BuildConfig
 import com.tokopedia.product.detail.R
-import com.tokopedia.product.detail.common.*
+import com.tokopedia.product.detail.common.AtcVariantHelper
+import com.tokopedia.product.detail.common.AtcVariantMapper
+import com.tokopedia.product.detail.common.ProductCartHelper
+import com.tokopedia.product.detail.common.ProductDetailCommonConstant
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant.PARAM_APPLINK_AVAILABLE_VARIANT
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant.PARAM_APPLINK_IS_VARIANT_SELECTED
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant.PARAM_APPLINK_SHOP_ID
@@ -115,6 +119,8 @@ import com.tokopedia.product.detail.common.data.model.re.RestrictionInfoResponse
 import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
 import com.tokopedia.product.detail.common.data.model.variant.uimodel.VariantCategory
 import com.tokopedia.product.detail.common.data.model.variant.uimodel.VariantOptionWithAttribute
+import com.tokopedia.product.detail.common.showToasterError
+import com.tokopedia.product.detail.common.showToasterSuccess
 import com.tokopedia.product.detail.common.view.AtcVariantListener
 import com.tokopedia.product.detail.common.view.ProductDetailCoachMarkHelper
 import com.tokopedia.product.detail.common.view.ProductDetailCommonBottomSheetBuilder
@@ -220,21 +226,19 @@ import com.tokopedia.shop.common.constant.ShopStatusDef
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.shop.common.widget.PartialButtonShopFollowersListener
 import com.tokopedia.shop.common.widget.PartialButtonShopFollowersView
-import com.tokopedia.usercomponents.stickylogin.common.StickyLoginConstant
-import com.tokopedia.usercomponents.stickylogin.view.StickyLoginAction
-import com.tokopedia.usercomponents.stickylogin.view.StickyLoginView
 import com.tokopedia.topads.detail_sheet.TopAdsDetailSheet
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.Toaster
-import com.tokopedia.unifycomponents.Toaster.TYPE_ERROR
-import com.tokopedia.unifycomponents.Toaster.TYPE_NORMAL
 import com.tokopedia.universal_sharing.view.bottomsheet.ScreenshotDetector
 import com.tokopedia.universal_sharing.view.bottomsheet.UniversalShareBottomSheet
 import com.tokopedia.universal_sharing.view.bottomsheet.listener.ScreenShotListener
 import com.tokopedia.universal_sharing.view.model.AffiliatePDPInput
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.usercomponents.stickylogin.common.StickyLoginConstant
+import com.tokopedia.usercomponents.stickylogin.view.StickyLoginAction
+import com.tokopedia.usercomponents.stickylogin.view.StickyLoginView
 import com.tokopedia.variant_common.util.VariantCommonMapper
 import com.tokopedia.wishlistcommon.data.response.AddToWishlistV2Response
 import com.tokopedia.wishlistcommon.data.response.DeleteWishlistV2Response
@@ -1495,6 +1499,24 @@ open class DynamicProductDetailFragment :
             )
             DynamicProductDetailTracking.Moengage.sendMoEngageClickReview(this)
             goToReviewDetail(basic.productID, getProductName)
+        }
+    }
+
+    override fun onSeeReviewCredibility(userId: String) {
+        viewModel.getDynamicProductInfoP1?.run {
+            RouteManager.route(
+                context,
+                Uri.parse(
+                    UriUtil.buildUri(
+                        ApplinkConstInternalMarketplace.REVIEW_CREDIBILITY,
+                        userId,
+                        ReviewApplinkConst.REVIEW_CREDIBILITY_SOURCE_REVIEW_MOST_HELPFUL
+                    )
+                ).buildUpon()
+                    .appendQueryParameter(ReviewApplinkConst.PARAM_PRODUCT_ID, basic.productID)
+                    .build()
+                    .toString()
+            )
         }
     }
 

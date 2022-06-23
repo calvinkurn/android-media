@@ -9,14 +9,14 @@ import android.view.ViewGroup
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.applink.review.ReviewApplinkConst
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.review.R
-import com.tokopedia.review.common.presentation.listener.ReviewBasicInfoListener
 import com.tokopedia.review.common.presentation.widget.ReviewBadRatingReasonWidget
-import com.tokopedia.review.common.presentation.widget.ReviewBasicInfoWidget
-import com.tokopedia.review.feature.credibility.presentation.activity.ReviewCredibilityActivity
 import com.tokopedia.review.feature.imagepreview.analytics.ReviewImagePreviewTracking
 import com.tokopedia.review.feature.imagepreview.presentation.uimodel.ReviewImagePreviewBottomSheetUiModel
+import com.tokopedia.reviewcommon.feature.reviewer.presentation.listener.ReviewBasicInfoListener
+import com.tokopedia.reviewcommon.feature.reviewer.presentation.widget.ReviewBasicInfoWidget
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifyprinciples.Typography
@@ -126,7 +126,7 @@ class ReviewImagePreviewExpandedReviewBottomSheet : BottomSheetUnify(), ReviewBa
                     source
                 )
             ).buildUpon()
-                .appendQueryParameter(ReviewCredibilityActivity.PARAM_PRODUCT_ID, uiModel.productId)
+                .appendQueryParameter(ReviewApplinkConst.PARAM_PRODUCT_ID, uiModel.productId)
                 .build()
                 .toString()
         )

@@ -1,4 +1,4 @@
-package com.tokopedia.review.common.presentation.widget
+package com.tokopedia.reviewcommon.feature.reviewer.presentation.widget
 
 import android.content.Context
 import android.util.AttributeSet
@@ -10,11 +10,11 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.media.loader.loadImage
-import com.tokopedia.review.R
-import com.tokopedia.review.common.presentation.listener.ReviewBasicInfoListener
-import com.tokopedia.review.common.presentation.listener.ReviewBasicInfoThreeDotsListener
-import com.tokopedia.review.common.util.getReviewStar
+import com.tokopedia.reviewcommon.R
 import com.tokopedia.reviewcommon.feature.media.gallery.detailed.domain.model.UserReviewStats
+import com.tokopedia.reviewcommon.feature.reviewer.presentation.listener.ReviewBasicInfoListener
+import com.tokopedia.reviewcommon.feature.reviewer.presentation.listener.ReviewBasicInfoThreeDotsListener
+import com.tokopedia.reviewcommon.util.getReviewStar
 import com.tokopedia.unifycomponents.BaseCustomView
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifyprinciples.Typography
@@ -173,7 +173,7 @@ class ReviewBasicInfoWidget : BaseCustomView {
     fun setReviewerImage(imageUrl: String) {
         profilePicture?.apply {
             if (isProductReview) {
-                loadImage(imageUrl)
+                urlSrc = imageUrl
                 show()
                 if (!isAnonymous) {
                     setOnClickListener {

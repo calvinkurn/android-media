@@ -22,6 +22,7 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.applink.review.ReviewApplinkConst
 import com.tokopedia.chat_common.util.EndlessRecyclerViewScrollUpListener
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.orTrue
@@ -33,7 +34,6 @@ import com.tokopedia.review.R
 import com.tokopedia.review.ReviewInstance
 import com.tokopedia.review.common.analytics.ReviewPerformanceMonitoringContract
 import com.tokopedia.review.common.analytics.ReviewPerformanceMonitoringListener
-import com.tokopedia.review.common.presentation.listener.ReviewBasicInfoListener
 import com.tokopedia.review.common.presentation.listener.ReviewReportBottomSheetListener
 import com.tokopedia.review.common.presentation.widget.ReviewReportBottomSheet
 import com.tokopedia.review.common.util.ReviewConstants
@@ -70,10 +70,12 @@ import com.tokopedia.review.feature.reading.presentation.widget.ReadReviewFilter
 import com.tokopedia.review.feature.reading.presentation.widget.ReadReviewHeader
 import com.tokopedia.review.feature.reading.presentation.widget.ReadReviewRatingOnlyEmptyState
 import com.tokopedia.review.feature.reading.presentation.widget.ReadReviewStatisticsBottomSheet
+import com.tokopedia.reviewcommon.constant.ReviewCommonConstants
 import com.tokopedia.reviewcommon.feature.media.gallery.detailed.util.ReviewMediaGalleryRouter
 import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.adapter.typefactory.ReviewMediaThumbnailTypeFactory
 import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.uimodel.ReviewMediaThumbnailUiModel
 import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.uimodel.ReviewMediaThumbnailVisitable
+import com.tokopedia.reviewcommon.feature.reviewer.presentation.listener.ReviewBasicInfoListener
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.Toaster
@@ -104,7 +106,6 @@ class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAdapter
         const val GALLERY_ACTIVITY_CODE = 420
         const val REPORT_REVIEW_ACTIVITY_CODE = 421
         const val PRODUCT_SATISFACTION_RATE = "% pembeli puas belanja barang ini"
-        const val READING_SOURCE = "reading"
         fun createNewInstance(
             productId: String = "",
             shopId: String = "",
@@ -1129,11 +1130,11 @@ class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAdapter
                 UriUtil.buildUri(
                     ApplinkConstInternalMarketplace.REVIEW_CREDIBILITY,
                     userId,
-                    READING_SOURCE
+                    ReviewApplinkConst.REVIEW_CREDIBILITY_SOURCE_REVIEW_READING
                 )
             ).buildUpon()
                 .appendQueryParameter(
-                    ReviewCredibilityActivity.PARAM_PRODUCT_ID,
+                    ReviewApplinkConst.PARAM_PRODUCT_ID,
                     viewModel.getProductId()
                 ).build()
                 .toString()

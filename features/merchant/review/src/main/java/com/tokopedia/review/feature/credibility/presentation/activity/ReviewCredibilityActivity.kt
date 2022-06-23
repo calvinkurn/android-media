@@ -11,6 +11,7 @@ import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceCallback
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
+import com.tokopedia.applink.review.ReviewApplinkConst
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.review.common.analytics.ReviewPerformanceMonitoringListener
 import com.tokopedia.review.common.util.ReviewConstants
@@ -23,7 +24,6 @@ class ReviewCredibilityActivity : BaseSimpleActivity(), HasComponent<BaseAppComp
 
     companion object {
         const val REVIEW_CREDIBILITY_BOTTOM_SHEET_TAG = "ReviewCredibilityBottomSheetTag"
-        const val PARAM_PRODUCT_ID = "productId"
     }
 
     private var userId = ""
@@ -115,7 +115,7 @@ class ReviewCredibilityActivity : BaseSimpleActivity(), HasComponent<BaseAppComp
             val uriSegment = uri.pathSegments
             userId = uriSegment.getOrNull(uriSegment.size - 2) ?: ""
             source = uriSegment.getOrNull(uriSegment.size - 1) ?: ""
-            productId = uri.getQueryParameter(PARAM_PRODUCT_ID) ?: ""
+            productId = uri.getQueryParameter(ReviewApplinkConst.PARAM_PRODUCT_ID) ?: ""
         }
     }
 

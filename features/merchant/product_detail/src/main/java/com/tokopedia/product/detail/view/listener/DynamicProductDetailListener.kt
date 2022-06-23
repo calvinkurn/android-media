@@ -89,6 +89,7 @@ interface DynamicProductDetailListener {
     fun onMediaReviewClick(reviewID: String, position: Int, componentTrackDataModel: ComponentTrackDataModel?, detailedMediaResult: ProductrevGetReviewMedia)
     fun onReviewClick()
     fun onSeeAllTextView(componentTrackDataModel: ComponentTrackDataModel?)
+    fun onSeeReviewCredibility(userId: String)
 
     /**
      * ProductMerchantVoucherViewHolder

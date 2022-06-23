@@ -10,10 +10,7 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.review.R
-import com.tokopedia.review.common.presentation.listener.ReviewBasicInfoListener
-import com.tokopedia.review.common.presentation.listener.ReviewBasicInfoThreeDotsListener
 import com.tokopedia.review.common.presentation.widget.ReviewBadRatingReasonWidget
-import com.tokopedia.review.common.presentation.widget.ReviewBasicInfoWidget
 import com.tokopedia.review.common.util.ReviewUtil
 import com.tokopedia.review.feature.reading.analytics.ReadReviewTracking
 import com.tokopedia.review.feature.reading.data.LikeDislike
@@ -26,6 +23,9 @@ import com.tokopedia.reviewcommon.feature.media.gallery.detailed.domain.model.Us
 import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.adapter.typefactory.ReviewMediaThumbnailTypeFactory
 import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.uimodel.ReviewMediaThumbnailUiModel
 import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.widget.ReviewMediaThumbnail
+import com.tokopedia.reviewcommon.feature.reviewer.presentation.listener.ReviewBasicInfoListener
+import com.tokopedia.reviewcommon.feature.reviewer.presentation.listener.ReviewBasicInfoThreeDotsListener
+import com.tokopedia.reviewcommon.feature.reviewer.presentation.widget.ReviewBasicInfoWidget
 import com.tokopedia.unifyprinciples.Typography
 
 class ReadReviewViewHolder(

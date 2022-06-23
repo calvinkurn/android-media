@@ -25,7 +25,7 @@ class ReadReviewSortFilterFactory {
         ratings.mapTo(arrayList) {
             ListItemUnify(it, "").apply {
                 setVariant(rightComponent = ListItemUnify.CHECKBOX)
-                listDrawableReference = com.tokopedia.review.inbox.R.drawable.ic_rating_star_item
+                listDrawableReference = com.tokopedia.reviewcommon.R.drawable.ic_rating_star_item
                 listIconWidth = ICON_SIZE.toPx()
                 listIconHeight = ICON_SIZE.toPx()
             }

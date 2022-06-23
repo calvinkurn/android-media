@@ -1,4 +1,4 @@
-package com.tokopedia.review.common.presentation.listener
+package com.tokopedia.reviewcommon.feature.reviewer.presentation.listener
 
 interface ReviewBasicInfoListener {
 

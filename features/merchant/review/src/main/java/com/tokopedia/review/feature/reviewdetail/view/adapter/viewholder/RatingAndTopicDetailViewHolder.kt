@@ -46,11 +46,11 @@ class RatingAndTopicDetailViewHolder(view: View, val listener: SellerRatingAndTo
     @RequiresApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
     private fun setupRatingCheckbox(element: RatingBarUiModel) = with(binding) {
         if (element.ratingCount == 0) {
-            ratingStarIcon.setImageResource(com.tokopedia.review.inbox.R.drawable.ic_rating_star_inactive)
+            ratingStarIcon.setImageResource(com.tokopedia.reviewcommon.R.drawable.ic_rating_star_inactive)
             ratingStarLabel.setTextColor(ContextCompat.getColor(root.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_44))
             ratingCheckbox.isEnabled = false
         } else {
-            ratingStarIcon.setImageResource(com.tokopedia.review.inbox.R.drawable.ic_rating_star_item)
+            ratingStarIcon.setImageResource(com.tokopedia.reviewcommon.R.drawable.ic_rating_star_item)
             ratingStarLabel.setTextColor(ContextCompat.getColor(root.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_96))
             ratingCheckbox.isEnabled = true
             ratingCheckbox.isChecked = element.ratingIsChecked
