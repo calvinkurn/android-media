@@ -119,7 +119,11 @@ data class RechargeGetCart(
 
         @SerializedName("admin_fee_included")
         @Expose
-        val isAdminFeeIncluded : Boolean= false
+        val isAdminFeeIncluded : Boolean= false,
+
+        @SerializedName("channel_id")
+        @Expose
+        val channelId: String = "",
 ) {
     data class Response(
             @SerializedName("rechargeGetCart")

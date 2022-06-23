@@ -8,8 +8,11 @@ import com.tokopedia.play.broadcaster.setup.product.view.bottomsheet.EtalaseList
 import com.tokopedia.play.broadcaster.setup.product.view.bottomsheet.ProductChooserBottomSheet
 import com.tokopedia.play.broadcaster.setup.product.view.bottomsheet.ProductSortBottomSheet
 import com.tokopedia.play.broadcaster.setup.product.view.bottomsheet.ProductSummaryBottomSheet
+import com.tokopedia.play.broadcaster.view.bottomsheet.PlayBroSelectGameBottomSheet
 import com.tokopedia.play.broadcaster.view.bottomsheet.PlayInteractiveLeaderBoardBottomSheet
+import com.tokopedia.play.broadcaster.view.bottomsheet.PlayBroInteractiveBottomSheet
 import com.tokopedia.play.broadcaster.view.fragment.*
+import com.tokopedia.play.broadcaster.view.fragment.dialog.InteractiveSetupDialogFragment
 import com.tokopedia.play.broadcaster.view.fragment.factory.PlayBroadcastFragmentFactory
 import com.tokopedia.play.broadcaster.view.fragment.summary.PlayBroadcastSummaryFragment
 import com.tokopedia.play.broadcaster.view.fragment.summary.PlayBroadcastPostVideoFragment
@@ -89,4 +92,22 @@ abstract class PlayBroadcastFragmentModule {
     @IntoMap
     @FragmentKey(PlayBroadcastPostVideoFragment::class)
     abstract fun getPlayBroadcastPostVideoFragment(fragment: PlayBroadcastPostVideoFragment): Fragment
+
+    /**
+     * Interactive
+     */
+    @Binds
+    @IntoMap
+    @FragmentKey(PlayBroSelectGameBottomSheet::class)
+    abstract fun getPlayBroSelectInteractiveBottomSheet(fragment: PlayBroSelectGameBottomSheet): Fragment
+
+    @Binds
+    @IntoMap
+    @FragmentKey(PlayBroInteractiveBottomSheet::class)
+    abstract fun getPlayBroInteractiveBottomSheet(fragment: PlayBroInteractiveBottomSheet) : Fragment
+
+    @Binds
+    @IntoMap
+    @FragmentKey(InteractiveSetupDialogFragment::class)
+    abstract fun getInteractiveSetupDialogFragment(fragment: InteractiveSetupDialogFragment) : Fragment
 }

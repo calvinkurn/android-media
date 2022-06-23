@@ -238,6 +238,19 @@ class HomeRevampDynamicChannelComponentAnalyticsTest {
     }
 
     @Test
+    fun testVpsWidget() {
+        HomeDCCassavaTest {
+            initTest()
+            doActivityTestByModelClass(dataModelClass = VpsDataModel::class) { viewHolder: RecyclerView.ViewHolder, i: Int ->
+                actionOnVpsWidget(viewHolder, i)
+            }
+        } validateAnalytics {
+            addDebugEnd()
+            hasPassedAnalytics(cassavaTestRule, ANALYTIC_VALIDATOR_QUERY_FILE_NAME_VPS_WIDGET)
+        }
+    }
+
+    @Test
     fun testOpenScreenHomepage() {
         HomeDCCassavaTest {
             initTest()

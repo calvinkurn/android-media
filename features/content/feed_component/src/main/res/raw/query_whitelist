@@ -16,6 +16,14 @@ query WhitelistQuery($type: String, $ID: String) {
       link
       badge
       type
+      post {
+        enable
+        has_username
+      }
+      livestream {
+        enable
+        has_username
+      }
     }
     error
   }

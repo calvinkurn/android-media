@@ -59,4 +59,10 @@
     <string name="shop_page_showcase_featured_text">Etalase Unggulan</string>
     <string name="shop_page_showcase_all_text">Semua Etalase</string>
     <string name="shop_page_showcase_featured_product_count_text">%1$s Produk</string>
+
+    <!-- Image Content Description -->
+    <string name="shop_page_showcase_empty_state_showcase_list">Empty state image shop showcase list</string>
+    <string name="shop_page_showcase_empty_state_showcase_picker">Empty state image shop showcase picker</string>
+    <string name="shop_page_showcase_bottomsheet_item_menu_edit">Edit image bottomsheet</string>
+    <string name="shop_page_showcase_bottomsheet_item_menu_delete">Delete image bottomsheet</string>
 </resources>

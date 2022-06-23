@@ -106,5 +106,4 @@ class ReactivatedAfterMondayPmActivityUiTest: ShopScoreUiTest() {
         activityRule.activity.scrollTo<ItemStatusPMUiModel>()
         showPowerMerchantSection()
     }
-
 }
