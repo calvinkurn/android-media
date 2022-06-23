@@ -233,7 +233,7 @@ object ShopPageProductListMapper {
                 isWideContent = isWideContent
         )
         return if (shopProductUiModel.isEnableDirectPurchase && isProductCardIsNotSoldOut(shopProductUiModel.isSoldOut)) {
-            if (shopProductUiModel.isVariant) {
+            val productCardModel = if (shopProductUiModel.isVariant) {
                 createProductCardWithVariantAtcModel(
                     shopProductUiModel,
                     baseProductCardModel
@@ -248,7 +248,7 @@ object ShopPageProductListMapper {
                     )
                 }
             }
-            baseProductCardModel.copy(
+            productCardModel.copy(
                 hasThreeDots = false
             )
         } else {

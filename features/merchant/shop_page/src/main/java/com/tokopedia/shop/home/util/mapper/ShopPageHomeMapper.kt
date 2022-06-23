@@ -229,7 +229,7 @@ object ShopPageHomeMapper {
                 shopHomeProductViewModel.isSoldOut
             )
         ) {
-            if (shopHomeProductViewModel.isVariant) {
+            val productCardModel = if (shopHomeProductViewModel.isVariant) {
                 createProductCardWithVariantAtcModel(shopHomeProductViewModel, baseProductCardModel)
             } else {
                 if (shopHomeProductViewModel.productInCart.isZero()) {
@@ -241,7 +241,7 @@ object ShopPageHomeMapper {
                     )
                 }
             }
-            baseProductCardModel.copy(
+            productCardModel.copy(
                 hasThreeDots = false
             )
         } else {
