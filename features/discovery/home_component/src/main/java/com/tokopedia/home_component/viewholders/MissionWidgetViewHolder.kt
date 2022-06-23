@@ -9,10 +9,8 @@ import com.tokopedia.home_component.customview.HeaderListener
 import com.tokopedia.home_component.databinding.GlobalComponentMissionWidgetBinding
 import com.tokopedia.home_component.decoration.MissionWidgetItemDecoration
 import com.tokopedia.home_component.listener.MissionWidgetComponentListener
-import com.tokopedia.home_component.model.ChannelGrid
 import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.home_component.productcardgridcarousel.dataModel.CarouselMissionWidgetDataModel
-import com.tokopedia.home_component.productcardgridcarousel.listener.CommonProductCardCarouselListener
 import com.tokopedia.home_component.productcardgridcarousel.typeFactory.CommonCarouselProductCardTypeFactoryImpl
 import com.tokopedia.home_component.util.ChannelWidgetUtil
 import com.tokopedia.home_component.util.MissionWidgetUtil
@@ -29,8 +27,7 @@ class MissionWidgetViewHolder(
     itemView: View,
     private val missionWidgetComponentListener: MissionWidgetComponentListener,
     private val cardInteraction: Boolean = false
-) : AbstractViewHolder<MissionWidgetListDataModel>(itemView),
-    CommonProductCardCarouselListener {
+) : AbstractViewHolder<MissionWidgetListDataModel>(itemView) {
 
     companion object {
         val LAYOUT = R.layout.global_component_mission_widget
@@ -146,30 +143,5 @@ class MissionWidgetViewHolder(
 
     override fun bind(element: MissionWidgetListDataModel, payloads: MutableList<Any>) {
         bind(element)
-    }
-
-    override fun onProductCardImpressed(
-        channel: ChannelModel,
-        channelGrid: ChannelGrid,
-        position: Int
-    ) {
-        //no-op
-    }
-
-    override fun onProductCardClicked(
-        channel: ChannelModel,
-        channelGrid: ChannelGrid,
-        position: Int,
-        applink: String
-    ) {
-        //no-op
-    }
-
-    override fun onSeeMoreCardClicked(channel: ChannelModel, applink: String) {
-        //no-op
-    }
-
-    override fun onEmptyCardClicked(channel: ChannelModel, applink: String, parentPos: Int) {
-        //no-op
     }
 }
