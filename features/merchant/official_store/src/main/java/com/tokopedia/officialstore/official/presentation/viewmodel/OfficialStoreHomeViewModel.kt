@@ -212,7 +212,7 @@ class OfficialStoreHomeViewModel @Inject constructor(
     private suspend fun getOfficialStoreBanners(
         categoryId: String,
         isCache: Boolean,
-        onCompleteInvokeData: () -> Unit = {}
+        onCompleteInvokeData: () -> Unit
     ): Result<OfficialStoreBanners> {
         return withContext(dispatchers.io) {
             try {
