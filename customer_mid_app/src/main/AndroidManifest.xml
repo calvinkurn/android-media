@@ -62,7 +62,7 @@
 
                 <data
                     android:host="ta.tokopedia.com"
-                    android:pathPattern=".*"
+                    android:pathPattern="/promo/v1/clicks/.*"
                     android:scheme="https" />
             </intent-filter>
         </activity>

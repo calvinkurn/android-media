@@ -7,6 +7,7 @@ import com.tokopedia.common.network.coroutines.repository.RestRepository
 import com.tokopedia.common.network.data.model.RestRequest
 import com.tokopedia.network.data.model.response.DataResponse
 import com.tokopedia.topads.sdk.listener.ImpressionListener
+import com.tokopedia.topads.sdk.listener.TopAdsHeaderResponseListener
 import com.tokopedia.topads.sdk.utils.ImpressionTaskAlert.Companion.getInstance
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.Dispatchers
@@ -19,6 +20,7 @@ import java.io.IOException
  */
 class ImpresionTask {
     private var impressionListener: ImpressionListener? = null
+    private var topAdsHeaderResponseListener: TopAdsHeaderResponseListener? = null
     private var taskAlert: ImpressionTaskAlert?
     private var userSession: UserSessionInterface? = null
     private var fileName: String = ""
@@ -52,6 +54,11 @@ class ImpresionTask {
         taskAlert = getInstance(className!!)
     }
 
+    constructor(className: String?, topAdsHeaderResponseListener: TopAdsHeaderResponseListener) {
+        this.topAdsHeaderResponseListener = topAdsHeaderResponseListener
+        taskAlert = getInstance(className!!)
+    }
+
     constructor(className: String?, userSession: UserSessionInterface?) {
         this.userSession = userSession
         taskAlert = getInstance(className!!)
@@ -68,8 +75,6 @@ class ImpresionTask {
                     val token = object : TypeToken<DataResponse<String>>() {}.type
                     val restRequest = RestRequest.Builder(url, token).build()
                     val result = restRepository.getResponse(restRequest).getData<String>()
-                    val result1 = restRepository.getResponse(restRequest).headers;
-                    Log.d("myHeaders", "execute: $result1")
                     if (impressionListener != null) {
                         if (result != null) {
                             impressionListener!!.onSuccess()
@@ -86,8 +91,8 @@ class ImpresionTask {
         }
     }
 
-    fun getHeader(url: String?){
-         url?.let {
+    fun getHeader(url: String?) {
+        url?.let {
             GlobalScope.launch(Dispatchers.IO) {
                 try {
                     if (taskAlert != null) {
@@ -97,14 +102,14 @@ class ImpresionTask {
                     val token = object : TypeToken<DataResponse<String>>() {}.type
                     val restRequest = RestRequest.Builder(url, token).build()
                     val headers = restRepository.getResponse(restRequest).headers;
-                    if (impressionListener != null) {
+                    if (topAdsHeaderResponseListener != null) {
                         if (headers != null) {
-                            impressionListener!!.onSuccess(headers["x-tkp-srv-id"]?:"")
+                            topAdsHeaderResponseListener?.onSuccess(headers["x-tkp-srv-id"] ?: "")
                         } else {
-                            impressionListener!!.onFailed()
+                            topAdsHeaderResponseListener?.onFailed()
                         }
                     }
-                    val d = Log.d("myHeaders", "execute: $headers")
+                    Log.d("myHeaders", "execute: $headers")
                 } catch (e: IOException) {
                     e.printStackTrace()
                 } catch (e: RuntimeException) {

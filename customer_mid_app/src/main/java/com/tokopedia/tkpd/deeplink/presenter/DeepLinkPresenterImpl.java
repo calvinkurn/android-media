@@ -275,7 +275,6 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                     break;
                 case DeepLinkChecker.TOP_ADS_CLICK_LINK:
                      doTopAdsOperation(uriData);
-//                     DeepLinkChecker.handleTopAdsLink(uriData.toString(), context, defaultBundle);
                      screenName = "";
                      break;
                 case DeepLinkChecker.DEALS:
@@ -295,6 +294,7 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
     private void doTopAdsOperation(Uri uriData) {
         Uri newUri = replaceUriParameter(uriData, userSession.getUserId());
         String redirectionUrl = uriData.getQueryParameter("r");
+        RouteManager.route(context, redirectionUrl);
         new TopAdsUrlHitter(context).hitClickUrlAndStoreHeader(this.getClass().getCanonicalName(), newUri.toString(),"","","");
     }
 

@@ -293,13 +293,4 @@ object DeepLinkChecker {
         return Uri.parse(url).pathSegments
     }
 
-//    @JvmStatic
-//    fun handleTopAdsLink(url: String, context: Activity, defaultBundle: Bundle) {
-//        val intent = getPromoListIntent(context, url)
-//        if (defaultBundle != null) {
-//            intent.putExtras(defaultBundle)
-//        }
-//        return openIfExist(context, intent)
-//    }
-
 }

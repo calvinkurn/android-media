@@ -4,8 +4,11 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.util.Log;
 
+import androidx.annotation.NonNull;
+
 import com.tokopedia.analyticsdebugger.debugger.TopAdsLogger;
 import com.tokopedia.topads.sdk.listener.ImpressionListener;
+import com.tokopedia.topads.sdk.listener.TopAdsHeaderResponseListener;
 
 import javax.inject.Inject;
 
@@ -17,17 +20,11 @@ public class TopAdsUrlHitter {
     private ImpresionTask impresionTask;
     private String sourceClassName;
     private Context context;
+    private SharedPreferences sharedPref;
 
     public TopAdsUrlHitter(Context context){
         this.context = context;
     }
-
-
-//    private SharedPreferences sharedPref =
-//        context.getSharedPreferences("x-tkp-srv-id", Context.MODE_PRIVATE);
-//
-//
-//    private SharedPreferences.Editor editor = sharedPref.edit();
 
     @Deprecated
     public TopAdsUrlHitter(String className) {
@@ -76,28 +73,25 @@ public class TopAdsUrlHitter {
     }
 
     public void hitClickUrlAndStoreHeader(String className, String url, String productId, String productName, String imageUrl) {
-         SharedPreferences sharedPref =
-                context.getSharedPreferences("x-tkp-srv-id", Context.MODE_PRIVATE);
+        if (sharedPref == null) {
+            sharedPref = context.getSharedPreferences("x-tkp-srv-id", Context.MODE_PRIVATE);
+        }
 
-         SharedPreferences.Editor editor = sharedPref.edit();
-         new ImpresionTask(className, new ImpressionListener() {
+        new ImpresionTask(className, new TopAdsHeaderResponseListener() {
             @Override
-            public void onSuccess() {
-
+            public void onSuccess(@NonNull String header) {
+                if (sharedPref!=null){
+                    SharedPreferences.Editor editor = sharedPref.edit();
+                    editor.putString("myheader", header);
+                    editor.apply();
+                }
             }
 
-             @Override
-             public void onSuccess(String header) {
-                 editor.putString("myheader",header);
-                 editor.apply();
-             }
-
-             @Override
+            @Override
             public void onFailed() {
 
             }
         }).getHeader(url);
-        Log.d("myHeaders", "hitClickUrlAndStoreHeader: "+ sharedPref.getString("myheader", ""));
         TopAdsLogger.getInstance(context).save(url, TYPE_CLICK, className, productId, productName, imageUrl, "");
     }
 }
