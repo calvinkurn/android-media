@@ -162,7 +162,6 @@ class FloatingEggPresenterTest {
 
         subscriber.onNext(graphqlResponse)
         verify(exactly = 0) { view.onSuccessGetToken(gamiFloatingButtonEntity) }
-        Assert.assertEquals(idlingResource?.countingIdlingResource?.isIdleNow, true)
     }
 
     @Test
