@@ -698,7 +698,7 @@ class CampaignListFragment : BaseSimpleListFragment<CampaignAdapter, CampaignUiM
         super.onActivityResult(requestCode, resultCode, data)
 
         if (requestCode == REQUEST_CODE_CREATE_CAMPAIGN_INFO && resultCode == Activity.RESULT_OK) {
-            binding?.root showToaster getString(R.string.sfs_saved_as_draft)
+            binding?.cardView showToaster getString(R.string.sfs_saved_as_draft)
         }
     }
 
