@@ -9,6 +9,7 @@ import com.tokopedia.promogamification.common.R
 import com.tokopedia.promogamification.common.floating.data.entity.FloatingButtonResponseEntity
 import com.tokopedia.promogamification.common.floating.data.entity.GamiFloatingButtonEntity
 import com.tokopedia.promogamification.common.floating.data.entity.GamiFloatingClickData
+import com.tokopedia.promogamification.common.floating.data.entity.GamiFloatingCloseClickResponse
 import com.tokopedia.promogamification.common.floating.view.contract.FloatingEggContract
 import com.tokopedia.promotion.common.idling.TkpdIdlingResource
 import com.tokopedia.promotion.common.idling.TkpdIdlingResourceProvider.provideIdlingResource
@@ -168,7 +169,15 @@ class FloatingEggPresenterTest {
 
     @Test
     fun testClickCloseSubscriberOnNext() {
+        val subscriber = presenter.clickCloseSubscriber
+        val graphqlResponse: GraphqlResponse = mockk()
+        val floatingButtonResponseEntity: GamiFloatingCloseClickResponse = mockk()
+        val gamiFloatingClickData: GamiFloatingClickData = mockk()
+        coEvery { graphqlResponse.getData(GamiFloatingCloseClickResponse::class.java) as GamiFloatingCloseClickResponse } returns floatingButtonResponseEntity
+        every { floatingButtonResponseEntity.gamiFloatingClick } returns gamiFloatingClickData
 
+        subscriber.onNext(graphqlResponse)
+        verify { view.onSuccessClickClose(gamiFloatingClickData) }
     }
 
     @Test
