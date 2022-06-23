@@ -1,6 +1,7 @@
 package com.tokopedia.tokofood.common.presentation.viewmodel
 
 import androidx.lifecycle.SavedStateHandle
+import androidx.lifecycle.viewModelScope
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
@@ -25,6 +26,9 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.flatMapConcat
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -56,8 +60,35 @@ class MultipleFragmentsViewModel @Inject constructor(
     val shopId: String
         get() = cartDataState.value?.shop?.shopId.orEmpty()
 
-    companion object {
-        const val MINI_CART_STATE_KEY = "mini_cart_state_key"
+    init {
+        viewModelScope.launch {
+            miniCartUiModelState.flatMapConcat { result ->
+                flow {
+                    val loadingQueueCount =
+                        when (result) {
+                            is Result.Loading -> miniCartLoadingQueue.value.plus(Int.ONE)
+                            is Result.Failure -> miniCartLoadingQueue.value.minus(Int.ONE)
+                            else -> miniCartLoadingQueue.value
+                        }
+                    emit(loadingQueueCount)
+                }
+            }.collect {
+                miniCartLoadingQueue.value = it
+            }
+        }
+
+        viewModelScope.launch {
+            cartDataState.flatMapConcat { data ->
+                flow {
+                    if (data != null) {
+                        emit(data)
+                    }
+                }
+            }.collect {
+                miniCartLoadingQueue.value = miniCartLoadingQueue.value.minus(Int.ONE)
+                setMiniCartValue(it)
+            }
+        }
     }
 
     fun onSavedInstanceState() {
@@ -79,7 +110,7 @@ class MultipleFragmentsViewModel @Inject constructor(
                 loadCartList(source)
             } else {
                 launch {
-                    setMiniCartValue(cartData)
+                    cartDataState.emit(cartData)
                 }
             }
         }
@@ -290,16 +321,13 @@ class MultipleFragmentsViewModel @Inject constructor(
 
     private fun loadCartList(source: String) {
         launchCatchError(block = {
-            miniCartLoadingQueue.value = miniCartLoadingQueue.value.plus(Int.ONE)
             miniCartUiModelState.emit(Result.Loading())
             withContext(dispatchers.io) {
                 loadCartTokoFoodUseCase.get().execute(source)
             }.let {
                 cartDataState.emit(it.data)
-                setMiniCartValue(it.data)
             }
         }, onError = {
-            miniCartLoadingQueue.value.minus(Int.ONE)
             miniCartUiModelState.emit(Result.Failure(it))
             cartDataValidationState.emit(
                 UiEvent(
@@ -311,7 +339,6 @@ class MultipleFragmentsViewModel @Inject constructor(
     }
 
     private suspend fun setMiniCartValue(data: CheckoutTokoFoodData) {
-        miniCartLoadingQueue.value = miniCartLoadingQueue.value.minus(Int.ONE)
         if (miniCartLoadingQueue.value.isLessThanZero()) {
             miniCartUiModelState.emit(Result.Success(data.getMiniCartUiModel()))
         }
@@ -332,6 +359,10 @@ class MultipleFragmentsViewModel @Inject constructor(
 
     private fun getUnavailableProductsParam(shopId: String): RemoveCartTokoFoodParam {
         return cartDataState.value?.getRemoveUnavailableCartParam(shopId) ?: RemoveCartTokoFoodParam()
+    }
+
+    companion object {
+        const val MINI_CART_STATE_KEY = "mini_cart_state_key"
     }
 
 }
