@@ -75,8 +75,6 @@ class TokoFoodPromoFragment : BaseListFragment<Visitable<*>, TokoFoodPromoAdapte
         const val HAS_ELEVATION = 6
         const val NO_ELEVATION = 0
 
-        const val REQUEST_CODE_KYC = 1111
-
         private const val PAGE_NAME = "promo_page"
 
         fun createInstance(): TokoFoodPromoFragment {
@@ -376,15 +374,6 @@ class TokoFoodPromoFragment : BaseListFragment<Visitable<*>, TokoFoodPromoAdapte
                 TokofoodErrorLogger.PAGE_KEY to PAGE_NAME
             )
         )
-    }
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        when (requestCode) {
-            REQUEST_CODE_KYC -> {
-
-            }
-        }
     }
 
     override fun onClickUnavailablePromoItem() {
