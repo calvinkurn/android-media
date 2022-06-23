@@ -17,6 +17,7 @@ class WishlistV2RecommendationItemViewHolder(private val binding: WishlistV2Reco
                 setProductModel(item.dataObject)
 
                 setOnClickListener {
+                    actionListener?.onRecommendationItemClick(item.recommItem, adapterPosition)
                     actionListener?.onProductRecommItemClicked(item.recommItem)
                 }
 
@@ -24,7 +25,7 @@ class WishlistV2RecommendationItemViewHolder(private val binding: WishlistV2Reco
                         item.recommItem,
                         object : ViewHintListener {
                             override fun onViewHint() {
-                                actionListener?.onRecommendationCarouselItemImpression(item.recommItem, adapterPosition)
+                                actionListener?.onRecommendationItemImpression(item.recommItem, adapterPosition)
                             }
                         }
                 )

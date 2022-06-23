@@ -690,7 +690,14 @@ open class HomeRecommendationFragment : Fragment(), HomeRecommendationListener {
 
         var msgError = ErrorHandler.getErrorMessage(activity, Throwable())
         if (wishlistResult.messageV2.isNotEmpty()) msgError = wishlistResult.messageV2
-        view?.let { AddRemoveWishlistV2Handler.showWishlistV2ErrorToaster(msgError, it) }
+
+        if (wishlistResult.ctaTextV2.isNotEmpty() && wishlistResult.ctaActionV2.isNotEmpty()) {
+            activity?.let { activity ->
+                view?.let { AddRemoveWishlistV2Handler.showWishlistV2ErrorToasterWithCta(msgError, wishlistResult.ctaTextV2, wishlistResult.ctaActionV2, it, activity) }
+            }
+        } else {
+            view?.let { AddRemoveWishlistV2Handler.showWishlistV2ErrorToaster(msgError, it) }
+        }
     }
 
     fun smoothScrollRecyclerViewByVelocity(distance: Int) {
