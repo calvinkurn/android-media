@@ -146,12 +146,16 @@ class StockReminderFragment : BaseDaggerFragment(),
         updateProductWareHouseList(productId) {
             it.copy(threshold = stock.toString(), thresholdStatus = status.toString())
         }
-        val oldData = dataFirstProducts?.firstOrNull{
+        val oldData = dataFirstProducts?.firstOrNull {
             it.id == productId
         }
         if (status == REMINDER_ACTIVE) {
             if (oldData?.stockAlertStatus.orZero() != REMINDER_ACTIVE) {
-                haveChanges[productId] = true
+                if (stock >= MINIMUM_STOCK_REMINDER) {
+                    haveChanges[productId] = true
+                } else {
+                    haveChanges.remove(productId)
+                }
             } else {
                 if (oldData?.stockAlertCount != stock && stock >= MINIMUM_STOCK_REMINDER) {
                     haveChanges[productId] = true
@@ -160,17 +164,30 @@ class StockReminderFragment : BaseDaggerFragment(),
                 }
             }
         } else {
-            if (oldData?.stockAlertStatus.orZero() != REMINDER_INACTIVE) {
+            if (oldData?.stockAlertStatus.orZero() != REMINDER_INACTIVE
+                && oldData?.stockAlertStatus.orZero() != Int.ZERO) {
                 haveChanges[productId] = true
             } else {
                 haveChanges.remove(productId)
             }
         }
 
-        val haveValidChanges =   haveChanges.size.orZero() > 0
 
-        binding?.btnSaveReminder?.isEnabled = haveValidChanges
+        val haveValidChanges = haveChanges.size.orZero() > 0
 
+        if (isVariant) {
+            var countDataIsNotValid = 0
+            getProductWareHouseList().forEach {
+                if (it.thresholdStatus == REMINDER_ACTIVE.toString() && it.threshold.toInt() < MINIMUM_STOCK_REMINDER)
+                {
+                    countDataIsNotValid+=1
+                }
+            }
+
+            binding?.btnSaveReminder?.isEnabled = haveValidChanges && countDataIsNotValid == 0
+        } else {
+            binding?.btnSaveReminder?.isEnabled = haveValidChanges
+        }
     }
 
     private fun checkLogin() {
