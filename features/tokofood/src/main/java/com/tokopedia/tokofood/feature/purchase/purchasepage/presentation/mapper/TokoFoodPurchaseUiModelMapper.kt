@@ -182,7 +182,7 @@ object TokoFoodPurchaseUiModelMapper {
             subTotalFmt = uiModel.getSubtotalPriceFmt(),
             isOutOfStock = false,
             isShopClosed = false,
-            customListItems = uiModel.variants.mapVariantIntoCustomListItem(),
+            customListItems = uiModel.variants.mapVariantIntoCustomListItem(uiModel.notes),
             cartId = uiModel.cartId,
             orderQty = uiModel.quantity,
             orderNote = uiModel.notes,
@@ -330,7 +330,7 @@ object TokoFoodPurchaseUiModelMapper {
         }
     }
 
-    private fun List<CheckoutTokoFoodProductVariant>.mapVariantIntoCustomListItem(): List<CustomListItem> {
+    private fun List<CheckoutTokoFoodProductVariant>.mapVariantIntoCustomListItem(notes: String): List<CustomListItem> {
         val customListItems = mutableListOf<CustomListItem>()
         // add on selections widget
         this.forEach { variant ->
@@ -346,7 +346,8 @@ object TokoFoodPurchaseUiModelMapper {
             customListItems.add(
                 CustomListItem(
                     listItemType = CustomListItemType.ORDER_NOTE_INPUT,
-                    addOnUiModel = null
+                    addOnUiModel = null,
+                    orderNote = notes
                 )
             )
         }

@@ -146,7 +146,9 @@ class TokoFoodPurchaseViewModel @Inject constructor(
 
     fun loadData() {
         launchCatchError(block = {
-            checkoutTokoFoodUseCase.get()(SOURCE).collect {
+            withContext(dispatcher.io) {
+                checkoutTokoFoodUseCase.get().execute(SOURCE)
+            }.let {
                 if (it.isEmptyProduct()) {
                     _uiEvent.value = PurchaseUiEvent(
                         state = PurchaseUiEvent.EVENT_EMPTY_PRODUCTS,
@@ -154,7 +156,7 @@ class TokoFoodPurchaseViewModel @Inject constructor(
                             responseShopId.isNotBlank()
                         } ?: shopId.value
                     )
-                    return@collect
+                    return@launchCatchError
                 }
                 _fragmentUiModel.value = TokoFoodPurchaseUiModelMapper.mapShopInfoToUiModel(it.data.shop)
                 val isPreviousPopupPromo = checkoutTokoFoodResponse.value?.data?.isPromoPopupType() == true
@@ -215,7 +217,9 @@ class TokoFoodPurchaseViewModel @Inject constructor(
 
     fun loadDataPartial() {
         launchCatchError(block = {
-            checkoutTokoFoodUseCase.get()(SOURCE).collect {
+            withContext(dispatcher.io) {
+                checkoutTokoFoodUseCase.get().execute(SOURCE)
+            }.let {
                 if (it.isEmptyProduct()) {
                     _uiEvent.value = PurchaseUiEvent(
                         state = PurchaseUiEvent.EVENT_EMPTY_PRODUCTS,
@@ -223,7 +227,7 @@ class TokoFoodPurchaseViewModel @Inject constructor(
                             responseShopId.isNotBlank()
                         } ?: shopId.value
                     )
-                    return@collect
+                    return@launchCatchError
                 }
                 val isPreviousPopupPromo = checkoutTokoFoodResponse.value?.data?.isPromoPopupType() == true
                 _uiEvent.value = PurchaseUiEvent(
@@ -565,7 +569,9 @@ class TokoFoodPurchaseViewModel @Inject constructor(
     fun checkoutGeneral() {
         launchCatchError(block = {
             checkoutTokoFoodResponse.value?.let { checkoutResponse ->
-                checkoutGeneralTokoFoodUseCase.get()(checkoutResponse).collect { response ->
+                withContext(dispatcher.io) {
+                    checkoutGeneralTokoFoodUseCase.get().execute(checkoutResponse)
+                }.let { response ->
                     if (response.checkoutGeneralTokoFood.data.isSuccess()) {
                         _uiEvent.value = PurchaseUiEvent(
                             state = PurchaseUiEvent.EVENT_SUCCESS_CHECKOUT_GENERAL,

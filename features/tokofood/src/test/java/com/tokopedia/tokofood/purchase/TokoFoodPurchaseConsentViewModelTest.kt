@@ -27,10 +27,8 @@ class TokoFoodPurchaseConsentViewModelTest: TokoFoodPurchaseConsentViewModelTest
                 )
             )
             coEvery {
-                agreeConsentUseCase(Unit)
-            } returns flow {
-                emit(response)
-            }
+                agreeConsentUseCase.get().execute()
+            } returns response
 
             collectFromSharedFlow(
                 whenAction = {
@@ -45,9 +43,8 @@ class TokoFoodPurchaseConsentViewModelTest: TokoFoodPurchaseConsentViewModelTest
     @Test
     fun `when agreeConsent failed should set failed data`() {
         runBlocking {
-            val response = AgreeConsentResponse()
             coEvery {
-                agreeConsentUseCase(Unit)
+                agreeConsentUseCase.get().execute()
             } throws MessageErrorException("")
 
             collectFromSharedFlow(

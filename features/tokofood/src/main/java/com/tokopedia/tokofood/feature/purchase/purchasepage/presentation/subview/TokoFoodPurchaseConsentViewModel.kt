@@ -6,14 +6,15 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.tokofood.common.util.Result
 import com.tokopedia.tokofood.feature.purchase.purchasepage.domain.usecase.AgreeConsentUseCase
+import dagger.Lazy
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
-import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class TokoFoodPurchaseConsentViewModel @Inject constructor(
-    private val agreeConsentUseCase: AgreeConsentUseCase,
-    dispatchers: CoroutineDispatchers
+    private val agreeConsentUseCase: Lazy<AgreeConsentUseCase>,
+    val dispatchers: CoroutineDispatchers
 ) : BaseViewModel(dispatchers.main) {
 
     private val _agreeConsentData = MutableSharedFlow<Result<Boolean>>()
@@ -22,7 +23,9 @@ class TokoFoodPurchaseConsentViewModel @Inject constructor(
     fun agreeConsent() {
         launchCatchError(block = {
             _agreeConsentData.emit(Result.Loading())
-            agreeConsentUseCase(Unit).collect {
+            withContext(dispatchers.io) {
+                agreeConsentUseCase.get().execute()
+            }.let {
                 val isSuccess = it.data.tokofoodSubmitUserConsent.isSuccess
                 if (isSuccess) {
                     _agreeConsentData.emit(Result.Success(true))

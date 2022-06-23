@@ -1,41 +1,19 @@
 package com.tokopedia.tokofood.common.domain.usecase
 
-import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.graphql.coroutines.data.extensions.request
+import com.tokopedia.gql_query_annotation.GqlQuery
+import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
-import com.tokopedia.graphql.domain.flow.FlowUseCase
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.tokofood.common.address.TokoFoodChosenAddressRequestHelper
 import com.tokopedia.tokofood.common.domain.additionalattributes.CartAdditionalAttributesTokoFood
 import com.tokopedia.tokofood.common.domain.param.CheckoutTokoFoodParam
 import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFood
 import com.tokopedia.tokofood.common.domain.response.MiniCartTokoFoodResponse
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
 
-class LoadCartTokoFoodUseCase @Inject constructor(
-    private val repository: GraphqlRepository,
-    private val chosenAddressRequestHelper: TokoFoodChosenAddressRequestHelper,
-    dispatchers: CoroutineDispatchers
-): FlowUseCase<String, CheckoutTokoFood>(dispatchers.io) {
-
-    companion object {
-        private const val PARAMS_KEY = "params"
-
-        private fun generateParams(additionalAttributes: String,
-                                   source: String): Map<String, Any> {
-            val params = CheckoutTokoFoodParam(
-                additionalAttributes = additionalAttributes,
-                source = source
-            )
-            return mapOf(PARAMS_KEY to params)
-        }
-    }
-
-    override fun graphqlQuery(): String = """
-        query MiniCartTokofood($$PARAMS_KEY: cartTokofoodParams!) {
-          mini_cart_tokofood(params: $$PARAMS_KEY) {
+private const val QUERY = """
+        query MiniCartTokofood(${'$'}params: cartTokofoodParams!) {
+          mini_cart_tokofood(params: ${'$'}params) {
             message
             status
             data {
@@ -105,17 +83,41 @@ class LoadCartTokoFoodUseCase @Inject constructor(
             }
           }
         }
-    """.trimIndent()
+    """
 
-    override suspend fun execute(params: String): Flow<CheckoutTokoFood> = flow {
+@GqlQuery("MiniCartTokofood", QUERY)
+class LoadCartTokoFoodUseCase @Inject constructor(
+    repository: GraphqlRepository,
+    private val chosenAddressRequestHelper: TokoFoodChosenAddressRequestHelper
+): GraphqlUseCase<MiniCartTokoFoodResponse>(repository) {
+
+    init {
+        setTypeClass(MiniCartTokoFoodResponse::class.java)
+        setGraphqlQuery(MiniCartTokofood())
+    }
+
+    suspend fun execute(source: String): CheckoutTokoFood {
         val additionalAttributes = CartAdditionalAttributesTokoFood(chosenAddressRequestHelper.getChosenAddress())
-        val param = generateParams(additionalAttributes.generateString(), params)
-        val response =
-            repository.request<Map<String, Any>, MiniCartTokoFoodResponse>(graphqlQuery(), param)
+        val param = generateParams(additionalAttributes.generateString(), source)
+        setRequestParams(param)
+        val response = executeOnBackground()
         if (response.miniCartTokofood.isSuccess()) {
-            emit(response.miniCartTokofood)
+            return response.miniCartTokofood
         } else {
             throw MessageErrorException(response.miniCartTokofood.getMessageIfError())
+        }
+    }
+
+    companion object {
+        private const val PARAMS_KEY = "params"
+
+        private fun generateParams(additionalAttributes: String,
+                                   source: String): Map<String, Any> {
+            val params = CheckoutTokoFoodParam(
+                additionalAttributes = additionalAttributes,
+                source = source
+            )
+            return mapOf(PARAMS_KEY to params)
         }
     }
 
