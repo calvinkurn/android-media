@@ -78,7 +78,6 @@ dependencies {
     implementation rootProject.ext.unifyDependencies.empty_state
     implementation rootProject.ext.unifyDependencies.datepicker
     implementation rootProject.ext.unifyDependencies.list
-    implementation rootProject.ext.unifyDependencies.dateFilter
     implementation rootProject.ext.unifyDependencies.header
     implementation rootProject.ext.unifyDependencies.explore_promo
     implementation rootProject.ext.unifyDependencies.total_amount
