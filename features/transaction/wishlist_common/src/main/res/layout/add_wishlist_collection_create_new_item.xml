@@ -13,9 +13,9 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/create_collection_label"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="test"
         android:layout_marginStart="12dp"
         app:layout_constraintStart_toEndOf="@id/create_collection_image"
         app:layout_constraintTop_toTopOf="@id/create_collection_image"

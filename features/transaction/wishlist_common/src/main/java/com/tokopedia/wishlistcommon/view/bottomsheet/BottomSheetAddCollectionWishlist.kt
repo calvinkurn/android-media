@@ -21,7 +21,8 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
-import com.tokopedia.wishlist_common.databinding.BottomsheetAddToWishlistCollectionBinding
+import com.tokopedia.wishlist_common.R
+import com.tokopedia.wishlist_common.databinding.BottomsheetAddWishlistCollectionBinding
 import com.tokopedia.wishlistcommon.data.AddToWishlistCollectionTypeLayoutData
 import com.tokopedia.wishlistcommon.data.response.GetWishlistCollectionsBottomSheetResponse
 import com.tokopedia.wishlistcommon.di.AddToWishlistCollectionComponent
@@ -38,7 +39,7 @@ import javax.inject.Inject
 
 class BottomSheetAddCollectionWishlist: BottomSheetUnify(), HasComponent<AddToWishlistCollectionComponent>,
     BottomSheetCollectionWishlistAdapter.ActionListener {
-    private var binding by autoClearedNullable<BottomsheetAddToWishlistCollectionBinding>()
+    private var binding by autoClearedNullable<BottomsheetAddWishlistCollectionBinding>()
     private val userSession: UserSessionInterface by lazy { UserSession(activity) }
     private lateinit var addToWishlistCollectionAdapter: BottomSheetCollectionWishlistAdapter
 
@@ -89,7 +90,7 @@ class BottomSheetAddCollectionWishlist: BottomSheetUnify(), HasComponent<AddToWi
     }
 
     private fun prepareLayout() {
-        binding = BottomsheetAddToWishlistCollectionBinding.inflate(LayoutInflater.from(context), null, false)
+        binding = BottomsheetAddWishlistCollectionBinding.inflate(LayoutInflater.from(context), null, false)
         binding?.run {
             rvAddWishlistCollection.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
         }
@@ -120,7 +121,7 @@ class BottomSheetAddCollectionWishlist: BottomSheetUnify(), HasComponent<AddToWi
                         addToWishlistCollectionAdapter.addList(mapDataCollectionsBottomSheet(dataGetBottomSheetCollections))
                     } else {
                         val errorMessage = result.data.errorMessage.first().ifEmpty { context?.getString(
-                            com.tokopedia.wishlistcommon.R.string.wishlist_common_error_msg) }
+                            R.string.wishlist_common_error_msg) }
                         errorMessage?.let { showToaster(it, "", Toaster.TYPE_ERROR) }
                     }
                 }

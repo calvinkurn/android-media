@@ -4,14 +4,19 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.wishlist_common.databinding.AddWishlistCollectionItemBinding
 import com.tokopedia.wishlistcommon.data.AddToWishlistCollectionTypeLayoutData
 import com.tokopedia.wishlistcommon.data.response.GetWishlistCollectionsBottomSheetResponse
+import com.tokopedia.wishlistcommon.view.adapter.BottomSheetCollectionWishlistAdapter
 
-class BottomSheetCollectionWishlistItemViewHolder(private val binding: AddWishlistCollectionItemBinding) :
+class BottomSheetCollectionWishlistItemViewHolder(
+    private val binding: AddWishlistCollectionItemBinding,
+    private val actionListener: BottomSheetCollectionWishlistAdapter.ActionListener?
+) :
     RecyclerView.ViewHolder(binding.root) {
     fun bind(item: AddToWishlistCollectionTypeLayoutData) {
         if (item.dataObject is GetWishlistCollectionsBottomSheetResponse.Data.GetWishlistCollectionsBottomsheet.Data.MainSection.CollectionsItem) {
             binding.collectionItemImage.setImageUrl(item.dataObject.imageUrl)
             binding.mainCollectionItemName.text = item.dataObject.name
             binding.mainCollectionTotalItem.text = "${item.dataObject.totalItem} ${item.dataObject.itemText}"
+            binding.root.setOnClickListener { actionListener?.onCollectionItemClicked() }
         }
     }
 }
