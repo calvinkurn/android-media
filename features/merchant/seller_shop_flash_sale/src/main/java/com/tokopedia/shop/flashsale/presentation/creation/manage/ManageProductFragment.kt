@@ -114,7 +114,7 @@ class ManageProductFragment :
                 activity?.finish()
             }
             tpgAddProduct.setOnClickListener {
-                if (manageProductListAdapter.itemCount < 50) {
+                if (manageProductListAdapter.itemCount < PAGE_SIZE) {
                     showChooseProductPage()
                 } else {
                     view.showErrorWithCta(
