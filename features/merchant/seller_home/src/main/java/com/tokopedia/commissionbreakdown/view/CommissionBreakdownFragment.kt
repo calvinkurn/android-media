@@ -268,6 +268,8 @@ class CommissionBreakdownFragment : BaseDaggerFragment(),
             val fileName = String.format(FORMAT_FILE_NAME, getDatePlaceholderText())
             val authorization = String.format(FORMAT_AUTHORIZATION, userSession.accessToken)
             request.run {
+                setAllowedNetworkTypes(DownloadManager.Request.NETWORK_WIFI or DownloadManager.Request.NETWORK_MOBILE)
+                setAllowedOverRoaming(true)
                 addRequestHeader(HEADER_ORIGIN, ORIGIN_TOKOPEDIA)
                 addRequestHeader(HEADER_AUTHORIZATION, authorization)
                 setTitle(fileName)

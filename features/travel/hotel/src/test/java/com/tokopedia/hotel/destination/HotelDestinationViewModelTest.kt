@@ -179,7 +179,7 @@ class HotelDestinationViewModelTest {
         //given
         val searchDestinations = mutableListOf<SearchDestination>()
         for (i in 0..3) {
-            searchDestinations.add(SearchDestination(i.toLong()))
+            searchDestinations.add(SearchDestination(i.toString()))
         }
         val graphqlSuccessResponse = GraphqlResponse(
                 mapOf<Type, Any>(HotelSuggestion.Response::class.java to HotelSuggestion.Response(HotelSuggestion(searchDestinationList = searchDestinations))),

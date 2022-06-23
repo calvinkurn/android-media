@@ -54,7 +54,7 @@ class VoucherCashbackEligibleUseCase @Inject constructor(
 
         private const val SHOP_ID_KEY = "shopId"
 
-        private fun createRequestParams(shopId: Long): RequestParams {
+        fun createRequestParams(shopId: Long): RequestParams {
             return RequestParams.create().apply {
                 putLong(SHOP_ID_KEY, shopId)
             }

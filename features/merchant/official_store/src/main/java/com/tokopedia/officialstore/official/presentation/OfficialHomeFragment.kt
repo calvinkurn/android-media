@@ -327,7 +327,12 @@ class OfficialHomeFragment :
         }
     }
 
+    private fun updateWishListRecomWidget(isWishlist: Boolean) {
+        recommendationWishlistItem?.isWishlist = isWishlist
+    }
+
     private fun updateWishlist(isWishlist: Boolean, position: Int) {
+        updateWishListRecomWidget(isWishlist)
         if (position > -1 && adapter != null) {
             officialHomeMapper.updateWishlist(isWishlist, position, adapter)
         }

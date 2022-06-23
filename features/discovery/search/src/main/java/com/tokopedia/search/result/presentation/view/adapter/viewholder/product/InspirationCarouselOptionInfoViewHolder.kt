@@ -35,8 +35,6 @@ class InspirationCarouselOptionInfoViewHolder(
 
         bindProductName(productOption.name)
         bindProductDesc(productOption.description)
-
-        bindCardInteraction()
     }
 
     private fun bindProductImage(imgUrl: String) {
@@ -85,9 +83,5 @@ class InspirationCarouselOptionInfoViewHolder(
             val product = item.product.getOrNull(0) ?: return@setOnClickListener
             inspirationCarouselListener.onInspirationCarouselInfoProductClicked(product)
         }
-    }
-
-    private fun bindCardInteraction() {
-        binding?.optionInfoCardView?.animateOnPress = CardUnify2.ANIMATE_OVERLAY_BOUNCE
     }
 }

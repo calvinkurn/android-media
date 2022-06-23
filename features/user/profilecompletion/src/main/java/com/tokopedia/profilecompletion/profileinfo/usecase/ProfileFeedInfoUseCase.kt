@@ -8,8 +8,10 @@ import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.Dispatchers
 import javax.inject.Inject
 
-class ProfileFeedInfoUseCase @Inject constructor(private val repository: GraphqlRepository, private val userSession: UserSessionInterface)
-    : CoroutineUseCase<Unit, ProfileFeedResponse>(Dispatchers.IO) {
+class ProfileFeedInfoUseCase @Inject constructor(
+    private val repository: GraphqlRepository,
+    private val userSession: UserSessionInterface
+) : CoroutineUseCase<Unit, ProfileFeedResponse>(Dispatchers.IO) {
 
     /* can use both username/userId as param */
     private val usernameParam = "username"
@@ -42,6 +44,5 @@ class ProfileFeedInfoUseCase @Inject constructor(private val repository: Graphql
 
     override suspend fun execute(params: Unit): ProfileFeedResponse {
         return repository.request(graphqlQuery(), mapOf(usernameParam to userSession.userId))
-
     }
 }

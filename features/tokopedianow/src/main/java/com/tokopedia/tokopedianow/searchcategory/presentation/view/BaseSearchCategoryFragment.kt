@@ -39,6 +39,7 @@ import com.tokopedia.filter.common.data.Option
 import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
@@ -69,17 +70,20 @@ import com.tokopedia.searchbar.navigation_component.icons.IconList.ID_SHARE
 import com.tokopedia.searchbar.navigation_component.listener.NavRecyclerViewScrollListener
 import com.tokopedia.searchbar.navigation_component.util.NavToolbarExt
 import com.tokopedia.tokopedianow.R
-import com.tokopedia.tokopedianow.common.constant.ServiceType.NOW_15M
+import com.tokopedia.tokopedianow.common.bottomsheet.TokoNowOnBoard20mBottomSheet
 import com.tokopedia.tokopedianow.common.constant.ServiceType.NOW_2H
 import com.tokopedia.tokopedianow.common.domain.model.SetUserPreference
 import com.tokopedia.tokopedianow.common.model.TokoNowProductCardUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowRecommendationCarouselUiModel
+import com.tokopedia.tokopedianow.common.util.TokoNowServiceTypeUtil
 import com.tokopedia.tokopedianow.common.util.TokoNowSwitcherUtil.switchService
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowEmptyStateNoResultViewHolder
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowEmptyStateOocViewHolder
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowProductCardViewHolder.TokoNowProductCardListener
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowRecommendationCarouselViewHolder
 import com.tokopedia.tokopedianow.databinding.FragmentTokopedianowSearchCategoryBinding
+import com.tokopedia.tokopedianow.common.util.TokoNowSharedPreference
+import com.tokopedia.tokopedianow.home.presentation.view.listener.OnBoard20mBottomSheetCallback
 import com.tokopedia.tokopedianow.searchcategory.presentation.adapter.SearchCategoryAdapter
 import com.tokopedia.tokopedianow.searchcategory.presentation.customview.CategoryChooserBottomSheet
 import com.tokopedia.tokopedianow.searchcategory.presentation.customview.StickySingleHeaderView
@@ -127,13 +131,17 @@ abstract class BaseSearchCategoryFragment:
     companion object {
         protected const val DEFAULT_SPAN_COUNT = 2
         protected const val REQUEST_CODE_LOGIN = 69
-        private const val DEFAULT_POSITION = 0
+        private const val QUERY_PARAM_SERVICE_TYPE_NOW2H = "?service_type=2h"
+        const val DEFAULT_POSITION = 0
     }
 
     private var binding by autoClearedNullable<FragmentTokopedianowSearchCategoryBinding>()
 
     @Inject
     lateinit var userSession: UserSessionInterface
+
+    @Inject
+    lateinit var sharedPref: TokoNowSharedPreference
 
     protected var searchCategoryAdapter: SearchCategoryAdapter? = null
     protected var endlessScrollListener: EndlessRecyclerViewScrollListener? = null
@@ -370,7 +378,6 @@ abstract class BaseSearchCategoryFragment:
             override fun onGetEventCategory(): String = eventCategory
 
             override fun onSwitchService() {
-                getViewModel().refreshMiniCart()
                 getViewModel().switchService()
             }
         }
@@ -809,6 +816,9 @@ abstract class BaseSearchCategoryFragment:
 
     protected open fun updateContentVisibility(isLoadingVisible: Boolean) {
         swipeRefreshLayout?.isRefreshing = isLoadingVisible
+
+        if (isLoadingVisible) return
+        showOnBoardingBottomSheet()
     }
 
     protected abstract fun sendIncreaseQtyTrackingEvent(productId: String)
@@ -1052,8 +1062,7 @@ abstract class BaseSearchCategoryFragment:
     }
 
     override fun onClickSwitcherTo15M() {
-        hideContent()
-        getViewModel().setUserPreference(NOW_15M)
+        RouteManager.route(context, ApplinkConstInternalTokopediaNow.HOME)
     }
 
     override fun onClickSwitcherTo2H() {
@@ -1065,28 +1074,87 @@ abstract class BaseSearchCategoryFragment:
         showContent()
         when(result) {
             is Success -> {
-                swipeRefreshLayout
                 context?.apply {
                     //Set user preference data to local cache
-                    ChooseAddressUtils.updateTokoNowData(
-                        context = this,
-                        warehouseId = result.data.warehouseId,
-                        shopId = result.data.shopId,
-                        serviceType = result.data.serviceType,
-                        warehouses = result.data.warehouses.map {
-                            LocalWarehouseModel(
-                                it.warehouseId.toLongOrZero(),
-                                it.serviceType
-                            )
-                        }
+                    updateLocalCacheModel(
+                        data = result.data,
+                        context = this
                     )
 
                     //Refresh the page
                     staggeredGridLayoutManager?.scrollToPosition(DEFAULT_POSITION)
                     refreshLayout()
+
+                    //Show toaster
+                    showOnBoardingToaster(
+                        data = result.data
+                    )
+
+                    //Refresh mini cart
+                    getViewModel().refreshMiniCart()
                 }
             }
-            is Fail -> { /* no op */ }
+            is Fail -> { /* do nothing */ }
+        }
+    }
+
+    private fun updateLocalCacheModel(data: SetUserPreference.SetUserPreferenceData, context: Context) {
+        ChooseAddressUtils.updateTokoNowData(
+            context = context,
+            warehouseId = data.warehouseId,
+            shopId = data.shopId,
+            serviceType = data.serviceType,
+            warehouses = data.warehouses.map {
+                LocalWarehouseModel(
+                    it.warehouseId.toLongOrZero(),
+                    it.serviceType
+                )
+            }
+        )
+    }
+
+    private fun showOnBoardingToaster(data: SetUserPreference.SetUserPreferenceData) {
+        /*
+           Note :
+           - Toaster will be shown when switching service type to 2 hours
+           - When switching to 20 minutes, toaster will be shown if only OnBoard20mBottomSheet has been shown before
+         */
+
+        val needToShowOnBoardBottomSheet = getViewModel().needToShowOnBoardBottomSheet(sharedPref.get20mBottomSheetOnBoardShown())
+        if (!data.warehouseId.toLongOrZero().isZero() && !needToShowOnBoardBottomSheet) {
+            showSwitcherToaster(data.serviceType)
+        }
+    }
+
+    private fun showOnBoardingBottomSheet() {
+        val needToShowOnBoardBottomSheet = getViewModel().needToShowOnBoardBottomSheet(sharedPref.get20mBottomSheetOnBoardShown())
+        if (needToShowOnBoardBottomSheet) {
+            show20mOnBoardBottomSheet()
+        }
+    }
+
+    private fun show20mOnBoardBottomSheet() {
+        TokoNowOnBoard20mBottomSheet
+            .newInstance()
+            .show(childFragmentManager, OnBoard20mBottomSheetCallback(
+                onBackTo2hClicked = {
+                    RouteManager.route(context, ApplinkConstInternalTokopediaNow.HOME + QUERY_PARAM_SERVICE_TYPE_NOW2H)
+                },
+                onDismiss = {
+                    sharedPref.set20mBottomSheetOnBoardShown(true)
+                }
+            ))
+    }
+
+    private fun showSwitcherToaster(serviceType: String) {
+        TokoNowServiceTypeUtil.getServiceTypeRes(
+            key = TokoNowServiceTypeUtil.SWITCH_SERVICE_TYPE_TOASTER_RESOURCE_ID,
+            serviceType = serviceType
+        )?.let {
+            showToaster(
+                message = getString(it),
+                toasterType = Toaster.TYPE_NORMAL
+            )
         }
     }
 

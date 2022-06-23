@@ -14,7 +14,6 @@ import com.tokopedia.profilecompletion.profileinfo.usecase.ProfileRoleUseCase
 import com.tokopedia.profilecompletion.profileinfo.usecase.SaveProfilePictureUseCase
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.SingleLiveEvent
-import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
@@ -46,11 +45,11 @@ class ProfileViewModel @Inject constructor(
     }
 
     fun getProfileInfo() {
-        launch (coroutineErrorHandler) {
+        launch(coroutineErrorHandler) {
             try {
                 val profileInfo = async { profileInfoUseCase(Unit) }
                 val profileRole = async { profileRoleUseCase(Unit) }
-                val profileFeed = async { profileFeedInfoUseCase(Unit)}
+                val profileFeed = async { profileFeedInfoUseCase(Unit) }
 
                 mutableProfileInfoUiData.value = ProfileInfoUiModel(
                     profileInfo.await().profileInfoData,
@@ -70,7 +69,8 @@ class ProfileViewModel @Inject constructor(
                 val param = uploader.createParams(filePath = image, sourceId = SOURCE_ID)
                 when (val result = uploader(param)) {
                     is UploadResult.Success -> saveProfilePicture(result.uploadId)
-                    else -> mutableErrorMessage.value = ProfileInfoError.ErrorSavePhoto((result as UploadResult.Error).message)
+                    else -> mutableErrorMessage.value =
+                        ProfileInfoError.ErrorSavePhoto((result as UploadResult.Error).message)
                 }
             } catch (e: Exception) {
                 mutableErrorMessage.value = ProfileInfoError.ErrorSavePhoto(e.message)
@@ -93,7 +93,8 @@ class ProfileViewModel @Inject constructor(
                     userSession.profilePicture = imgUrl
                     _saveImageProfileResponse.value = imgUrl
                 } else {
-                    mutableErrorMessage.value = ProfileInfoError.ErrorSavePhoto(res.data.errorMessage.first())
+                    mutableErrorMessage.value =
+                        ProfileInfoError.ErrorSavePhoto(res.data.errorMessage.first())
                 }
             } catch (e: Exception) {
                 mutableErrorMessage.value = ProfileInfoError.ErrorSavePhoto(e.message)
@@ -102,6 +103,6 @@ class ProfileViewModel @Inject constructor(
     }
 
     companion object {
-        private val SOURCE_ID = "tPxBYm"
+        private const val SOURCE_ID = "tPxBYm"
     }
 }
