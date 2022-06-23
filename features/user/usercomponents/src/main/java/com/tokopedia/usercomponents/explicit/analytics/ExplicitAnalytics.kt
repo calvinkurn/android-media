@@ -6,10 +6,15 @@ import javax.inject.Inject
 
 class ExplicitAnalytics @Inject constructor() {
 
-    fun trackClickCard(source: String, template: String, pagePath: String, pageType: String) {
+    fun trackClickCard(
+        source: String,
+        template: String,
+        pagePath: String,
+        pageType: String
+    ) {
         val data = TrackAppUtils.gtmData(
             EVENT_VIEW_ACCOUNT_IRIS,
-            EXPLICIT_WIDGET,
+            concatVariable(source, EXPLICIT_WIDGET),
             concatVariable(ACTION_IMPRESSION, EXPLICIT_WIDGET),
             concatVariable(source, template)
         )
@@ -26,7 +31,7 @@ class ExplicitAnalytics @Inject constructor() {
     ) {
         val data = TrackAppUtils.gtmData(
             EVENT_VIEW_ACCOUNT,
-            EXPLICIT_WIDGET,
+            concatVariable(source, EXPLICIT_WIDGET),
             concatVariable(ACTION_CLICK_ON_YES_BUTTON, EXPLICIT_WIDGET),
             concatVariable(source, template)
         )
@@ -43,7 +48,7 @@ class ExplicitAnalytics @Inject constructor() {
     ) {
         val data = TrackAppUtils.gtmData(
             EVENT_VIEW_ACCOUNT,
-            EXPLICIT_WIDGET,
+            concatVariable(source, EXPLICIT_WIDGET),
             concatVariable(ACTION_CLICK_ON_NO_BUTTON, EXPLICIT_WIDGET),
             concatVariable(source, template)
         )
@@ -60,7 +65,7 @@ class ExplicitAnalytics @Inject constructor() {
     ) {
         val data = TrackAppUtils.gtmData(
             EVENT_VIEW_ACCOUNT,
-            EXPLICIT_WIDGET,
+            concatVariable(source, EXPLICIT_WIDGET),
             concatVariable(ACTION_CLICK_ON_CLOSE_BUTTON, EXPLICIT_WIDGET),
             concatVariable(source, template)
         )
