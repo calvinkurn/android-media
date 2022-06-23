@@ -11,7 +11,7 @@
         android:layout_height="24dp"
         app:icon_name="CHEVRON_UP"
         android:layout_gravity="center_vertical"
-        app:icon_color_light_enable="@color/Unify_N0"
+        app:icon_color_light_enable="@color/food_home_dms_jump_to_top_icon_color"
         />
 
 </LinearLayout>
