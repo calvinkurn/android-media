@@ -1,19 +1,32 @@
 package com.tokopedia.loginregister.login.behaviour.case.register
 
+import android.app.Activity
+import android.app.Instrumentation
+import android.content.Intent
 import androidx.test.espresso.Espresso
 import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.assertion.ViewAssertions
 import androidx.test.espresso.intent.Intents
+import androidx.test.espresso.intent.Intents.intended
+import androidx.test.espresso.intent.Intents.intending
 import androidx.test.espresso.intent.matcher.IntentMatchers
+import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
+import androidx.test.espresso.intent.matcher.IntentMatchers.hasData
 import androidx.test.espresso.matcher.RootMatchers
 import androidx.test.espresso.matcher.ViewMatchers
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.loginregister.R
 import com.tokopedia.loginregister.login.behaviour.activity.LoginActivityStub
 import com.tokopedia.loginregister.login.behaviour.activity.VerificationActivityStub
 import com.tokopedia.loginregister.login.behaviour.base.RegisterInitialBase
+import com.tokopedia.loginregister.login.helper.respondWithOk
+import com.tokopedia.loginregister.login.view.activity.LoginActivity
 import com.tokopedia.loginregister.registerinitial.domain.pojo.RegisterCheckData
 import com.tokopedia.loginregister.registerinitial.domain.pojo.RegisterCheckPojo
 import com.tokopedia.test.application.annotations.UiTest
+import org.hamcrest.CoreMatchers.containsString
 import org.junit.Test
 
 @UiTest
@@ -24,7 +37,7 @@ class RegisterNormalCase: RegisterInitialBase() {
     fun gotoLoginIfEmailExist() {
         isDefaultRegisterCheck = false
         val data = RegisterCheckData(isExist = true , userID = "123456", registerType = "email", view = "yoris.prayogooooo@tokopedia.com")
-//        registerCheckUseCase.response = RegisterCheckPojo(data)
+        registerCheckUseCase.response = RegisterCheckPojo(data)
 
         runTest {
             inputEmailOrPhone("yoris.prayogo@tokopedia.com")
@@ -38,9 +51,10 @@ class RegisterNormalCase: RegisterInitialBase() {
     fun gotoLoginIfDialogClicked() {
         isDefaultRegisterCheck = false
         val data = RegisterCheckData(isExist = true , userID = "123456", registerType = "email", view = "yoris.prayogooooo@tokopedia.com")
-//        registerCheckUseCase.response = RegisterCheckPojo(data)
+        registerCheckUseCase.response = RegisterCheckPojo(data)
 
         runTest {
+            intending(hasComponent(LoginActivity::class.java.name)).respondWithOk()
             inputEmailOrPhone("yoris.prayogo@tokopedia.com")
             clickSubmit()
             isDialogDisplayed("Email Sudah Terdaftar")
@@ -50,7 +64,7 @@ class RegisterNormalCase: RegisterInitialBase() {
                 .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
                 .perform(ViewActions.click())
 
-            Intents.intended(IntentMatchers.hasComponent(LoginActivityStub::class.java.name))
+            intended(hasComponent(LoginActivity::class.java.name))
         }
     }
 
@@ -59,12 +73,13 @@ class RegisterNormalCase: RegisterInitialBase() {
     fun gotoVerificationpage_IfNotRegistered() {
         isDefaultRegisterCheck = false
         val data = RegisterCheckData(isExist = false , userID = "123456", registerType = "email", view = "yoris.prayogo+3@tokopedia.com")
-//        registerCheckUseCase.response = RegisterCheckPojo(data)
+        registerCheckUseCase.response = RegisterCheckPojo(data)
 
         runTest {
+            intending(hasData(ApplinkConstInternalGlobal.COTP)).respondWithOk()
             inputEmailOrPhone("yoris.prayogo+3@tokopedia.com")
             clickSubmit()
-            Intents.intended(IntentMatchers.hasComponent(VerificationActivityStub::class.java.name))
+            intended(hasData(ApplinkConstInternalGlobal.COTP))
         }
     }
 
@@ -72,8 +87,9 @@ class RegisterNormalCase: RegisterInitialBase() {
     /* Check if LoginActivity is launching when Top Masuk button clicked */
     fun goToLogin_Top() {
         runTest {
+            intending(hasData(ApplinkConstInternalUserPlatform.LOGIN)).respondWithOk()
             clickTopLogin()
-            Intents.intended(IntentMatchers.hasComponent(LoginActivityStub::class.java.name))
+            intended(hasData(ApplinkConstInternalUserPlatform.LOGIN))
         }
     }
 
@@ -91,7 +107,7 @@ class RegisterNormalCase: RegisterInitialBase() {
     fun showNotRegisteredDialog_IfPhoneRegistered() {
         isDefaultRegisterCheck = false
         val data = RegisterCheckData(isExist = true , userID = "123456", registerType = "phone", view = "082242454511")
-//        registerCheckUseCase.response = RegisterCheckPojo(data)
+        registerCheckUseCase.response = RegisterCheckPojo(data)
 
         runTest {
             inputEmailOrPhone("082242454511")
@@ -105,7 +121,7 @@ class RegisterNormalCase: RegisterInitialBase() {
     fun showProceedPhoneDialog_IfPhoneNotRegistered() {
         isDefaultRegisterCheck = false
         val data = RegisterCheckData(isExist = false , userID = "0", registerType = "phone", view = "08224245450411")
-//        registerCheckUseCase.response = RegisterCheckPojo(data)
+        registerCheckUseCase.response = RegisterCheckPojo(data)
 
         runTest {
             inputEmailOrPhone("08224245450411")
@@ -119,9 +135,10 @@ class RegisterNormalCase: RegisterInitialBase() {
     fun gotoLoginIfPhoneDialogClicked() {
         isDefaultRegisterCheck = false
         val data = RegisterCheckData(isExist = true , userID = "123456", registerType = "phone", view = "082242454511")
-//        registerCheckUseCase.response = RegisterCheckPojo(data)
+        registerCheckUseCase.response = RegisterCheckPojo(data)
 
         runTest {
+            intending(hasData(ApplinkConstInternalGlobal.COTP)).respondWithOk()
             inputEmailOrPhone("082242454511")
             clickSubmit()
             isDialogDisplayed("Nomor Ponsel Sudah Terdaftar")
@@ -131,7 +148,7 @@ class RegisterNormalCase: RegisterInitialBase() {
                 .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
                 .perform(ViewActions.click())
 
-            Intents.intended(IntentMatchers.hasComponent(LoginActivityStub::class.java.name))
+            intended(hasData(ApplinkConstInternalGlobal.COTP))
         }
     }
 

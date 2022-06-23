@@ -40,7 +40,7 @@ class RegisterInitialPhoneTest: RegisterInitialBase() {
             registerType = "phone",
             view = "0851-5636-46951"
         )
-//        registerCheckUseCase.response = RegisterCheckPojo(data)
+        registerCheckUseCase.response = RegisterCheckPojo(data)
 
         //When
         runTest {
@@ -62,7 +62,7 @@ class RegisterInitialPhoneTest: RegisterInitialBase() {
             registerType = "phone",
             view = "0851-5636-46951"
         )
-//        registerCheckUseCase.response = RegisterCheckPojo(data)
+        registerCheckUseCase.response = RegisterCheckPojo(data)
 
         //When
         runTest {
@@ -93,12 +93,12 @@ class RegisterInitialPhoneTest: RegisterInitialBase() {
                 "click on button daftar - phone number",
                 "click"
             ),
-            CassavaTestRuleMatcher.getAnalyticValidator(
-                "clickRegister",
-                "register page",
-                "click on button daftar - phone number",
-                "failed - ${Event.ANY}"
-            )
+//            CassavaTestRuleMatcher.getAnalyticValidator(
+//                "clickRegister",
+//                "register page",
+//                "click on button daftar - phone number",
+//                "failed - ${Event.ANY}"
+//            )
         )
     }
 

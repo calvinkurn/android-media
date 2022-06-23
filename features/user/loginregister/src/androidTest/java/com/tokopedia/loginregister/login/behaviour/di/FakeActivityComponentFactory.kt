@@ -33,7 +33,7 @@ class FakeActivityComponentFactory: ActivityComponentFactory() {
     }
 
     override fun createRegisterComponent(application: Application): RegisterInitialComponent {
-        return super.createRegisterComponent(application)
+        return registerComponent
     }
 
 }

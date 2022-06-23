@@ -18,13 +18,16 @@ import com.tokopedia.loginregister.login.behaviour.data.GetProfileUseCaseStub
 import com.tokopedia.loginregister.login.behaviour.data.GraphqlUseCaseStub
 import com.tokopedia.loginregister.login.behaviour.di.DaggerBaseAppComponentStub
 import com.tokopedia.loginregister.login.behaviour.di.DaggerRegisterInitialComponentStub
+import com.tokopedia.loginregister.login.behaviour.di.FakeActivityComponentFactory
 import com.tokopedia.loginregister.login.behaviour.di.RegisterInitialComponentStub
 import com.tokopedia.loginregister.login.behaviour.di.modules.AppModuleStub
 import com.tokopedia.loginregister.login.behaviour.di.modules.DaggerMockLoginRegisterComponent
+import com.tokopedia.loginregister.login.di.ActivityComponentFactory
 import com.tokopedia.loginregister.login.idling.FragmentTransactionIdle
 import com.tokopedia.loginregister.login.stub.RegisterInitialRouterHelperStub
 import com.tokopedia.loginregister.registerinitial.domain.pojo.RegisterCheckData
 import com.tokopedia.loginregister.registerinitial.domain.pojo.RegisterCheckPojo
+import com.tokopedia.loginregister.registerinitial.view.activity.RegisterInitialActivity
 import com.tokopedia.sessioncommon.domain.usecase.GeneratePublicKeyUseCase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -42,7 +45,7 @@ open class RegisterInitialBase: LoginRegisterBase() {
 
     @get:Rule
     var activityTestRule = IntentsTestRule(
-        RegisterInitialActivityStub::class.java, false, false
+        RegisterInitialActivity::class.java, false, false
     )
 
     protected val context: Context = InstrumentationRegistry.getInstrumentation().targetContext
@@ -50,31 +53,36 @@ open class RegisterInitialBase: LoginRegisterBase() {
         get() = InstrumentationRegistry
             .getInstrumentation().context.applicationContext
 
-    protected open lateinit var activity: RegisterInitialActivityStub
+//    protected open lateinit var activity: RegisterInitialActivityStub
 
 //    protected lateinit var registerInitialComponentStub: RegisterInitialComponentStub
 
-    protected open lateinit var fragmentTransactionIdling: FragmentTransactionIdle
+//    protected open lateinit var fragmentTransactionIdling: FragmentTransactionIdle
+
+    @Inject
+    lateinit var generatePublicKeyUseCase: GeneratePublicKeyUseCase
+
+    @Inject
+    lateinit var registerCheckUseCase: GraphqlUseCaseStub<RegisterCheckPojo>
+
+    @Inject
+    lateinit var discoverUseCaseStub: DiscoverUseCaseStub
 
 //    @Inject
-//    lateinit var generatePublicKeyUseCase: GeneratePublicKeyUseCase
-//
-//    @Inject
-//    lateinit var registerCheckUseCase: GraphqlUseCaseStub<RegisterCheckPojo>
-//
-//    @Inject
-//    lateinit var discoverUseCaseStub: DiscoverUseCaseStub
-//
-//    @Inject
 //    lateinit var routerHelperStub: RegisterInitialRouterHelperStub
-//
-//    @Inject
-//    lateinit var getProfileUseCaseStub: GetProfileUseCaseStub
+
+    @Inject
+    lateinit var getProfileUseCaseStub: GetProfileUseCaseStub
 
     @ExperimentalCoroutinesApi
     @Before
     open fun before() {
 //        Dispatchers.setMain(TestCoroutineDispatcher())
+        var registerComponent: RegisterInitialComponentStub
+        ActivityComponentFactory.instance = FakeActivityComponentFactory().also {
+            registerComponent = it.registerComponent
+        }
+        registerComponent.inject(this)
 //        val baseAppComponent = DaggerBaseAppComponentStub.builder()
 //            .appModuleStub(AppModuleStub(applicationContext))
 //            .build()
@@ -104,30 +112,27 @@ open class RegisterInitialBase: LoginRegisterBase() {
 
         intentModifier(intent)
         activityTestRule.launchActivity(intent)
-        activity = activityTestRule.activity
-        fragmentTransactionIdling = FragmentTransactionIdle(
-            activity.supportFragmentManager,
-            RegisterInitialActivityStub.TAG
-        )
+//        fragmentTransactionIdling = FragmentTransactionIdle(
+//            activity.supportFragmentManager,
+//            RegisterInitialActivityStub.TAG
+//        )
     }
 
     protected fun waitForFragmentResumed() {
-        IdlingRegistry.getInstance().register(fragmentTransactionIdling)
-        Espresso.onView(ViewMatchers.withId(R.id.register_input_view))
-            .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
-        IdlingRegistry.getInstance().unregister(fragmentTransactionIdling)
+//        IdlingRegistry.getInstance().register(fragmentTransactionIdling)
+//        Espresso.onView(ViewMatchers.withId(R.id.register_input_view))
+//            .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
+//        IdlingRegistry.getInstance().unregister(fragmentTransactionIdling)
     }
 
     protected fun launchDefaultFragment() {
-        setupActivity {
-            it.putExtras(Intent(context, RegisterInitialActivityStub::class.java))
-        }
+        setupActivity()
         inflateTestFragment()
     }
 
     protected fun setRegisterCheckDefaultResponse() {
         val data = RegisterCheckData(isExist = true , userID = "123456", registerType = "email", view = "yoris.prayogooooo@tokopedia.com")
-//        registerCheckUseCase.response = RegisterCheckPojo(data)
+        registerCheckUseCase.response = RegisterCheckPojo(data)
     }
 
     protected fun setDefaultDiscover() {
@@ -135,7 +140,7 @@ open class RegisterInitialBase: LoginRegisterBase() {
             ProviderData("gplus", "Google", "https://accounts.tokopedia.com/gplus-login", "", "#FFFFFF"),
         )
         val response = DiscoverPojo(DiscoverData(mockProviders, ""))
-//        discoverUseCaseStub.response = response
+        discoverUseCaseStub.response = response
     }
 
     fun runTest(test: () -> Unit) {
