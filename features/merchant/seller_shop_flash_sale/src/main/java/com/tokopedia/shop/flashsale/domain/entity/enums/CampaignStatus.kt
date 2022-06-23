@@ -62,3 +62,11 @@ fun CampaignStatus.isFinished(): Boolean {
 fun CampaignStatus.isCancelled(): Boolean {
     return this == CampaignStatus.PUBLISHED_CANCELLED || this == CampaignStatus.SUBMISSION_CANCELLED || this == CampaignStatus.REVIEW_CANCELLED || this == CampaignStatus.READY_CANCELLED || this == CampaignStatus.ONGOING_CANCELLATION || this == CampaignStatus.CANCELLED
 }
+
+val activeCampaignStatusIds = listOf(
+    CampaignStatus.IN_SUBMISSION.id,
+    CampaignStatus.IN_REVIEW.id,
+    CampaignStatus.READY.id,
+    CampaignStatus.ONGOING.id,
+    CampaignStatus.READY_LOCKED.id
+)
