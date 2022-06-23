@@ -166,7 +166,13 @@ class RecommendationLifeCycleAware constructor(
             if (wishlistResult.messageV2.isNotEmpty()) errorMessage = wishlistResult.messageV2
 
             if (wishlistResult.ctaTextV2.isNotEmpty() && wishlistResult.ctaActionV2.isNotEmpty()) {
-                AddRemoveWishlistV2Handler.showWishlistV2ErrorToasterWithCta(errorMessage, wishlistResult.ctaTextV2, wishlistResult.ctaActionV2, v, v.context)
+                AddRemoveWishlistV2Handler.showWishlistV2ErrorToasterWithCta(
+                    errorMessage,
+                    wishlistResult.ctaTextV2,
+                    wishlistResult.ctaActionV2,
+                    v,
+                    v.context
+                )
             } else {
                 AddRemoveWishlistV2Handler.showWishlistV2ErrorToaster(errorMessage, v)
             }
