@@ -236,6 +236,36 @@ class OfficialStoreHomeViewModelTest {
     }
 
     @Test
+    fun given_impressed_shop_not_empty__when_get_topads_headline_ads__then__add_to_seen_ads_param() {
+        runBlocking {
+            val page = 1
+            val channelId = "1"
+            val shopId1 = "1"
+            val shopId2 = "2"
+            val shopId3 = "3"
+
+            viewModel.impressedShop[channelId] = mutableSetOf(shopId1, shopId2, shopId3)
+
+            viewModel.getTopAdsHeadlineData(page)
+
+            verify {
+                getTopAdsHeadlineUseCase.createParams(
+                    any(),
+                    any(),
+                    any(),
+                    any(),
+                    any(),
+                    any(),
+                    any(),
+                    any(),
+                    seenAds = "3"
+                )
+            }
+        }
+
+    }
+
+    @Test
     fun given_get_data_success__topads_headline_ads() {
         runBlocking {
             val page = 1
