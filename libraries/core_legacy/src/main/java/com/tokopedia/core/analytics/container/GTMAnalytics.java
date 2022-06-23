@@ -1,6 +1,5 @@
 package com.tokopedia.core.analytics.container;
 
-import static com.google.firebase.analytics.FirebaseAnalytics.Param.CHECKOUT_STEP;
 import static com.google.firebase.analytics.FirebaseAnalytics.Param.CREATIVE_NAME;
 import static com.google.firebase.analytics.FirebaseAnalytics.Param.CREATIVE_SLOT;
 import static com.google.firebase.analytics.FirebaseAnalytics.Param.ITEMS;
@@ -85,6 +84,7 @@ public class GTMAnalytics extends ContextAnalytics {
     private static final String KEY_CATEGORY = "eventCategory";
     private static final String KEY_ACTION = "eventAction";
     private static final String KEY_LABEL = "eventLabel";
+    private static final String KEY_PROMOTIONS = "promotions";
     private static final String USER_ID = "userId";
     private static final String SHOP_ID = "shopId";
     private static final String SHOP_TYPE = "shopType";
@@ -563,7 +563,7 @@ public class GTMAnalytics extends ContextAnalytics {
         Object promotionObj;
         Map<String, Object> promoClick = (Map<String, Object>) ecommerce.remove("promoClick");
 
-        promotionObj = promoClick.remove("promotions");
+        promotionObj = promoClick.remove(KEY_PROMOTIONS);
         if (promotionObj != null) {
             ArrayList<Bundle> promotionBundles = new ArrayList<>();
             if (promotionObj instanceof Object[]) {
@@ -581,13 +581,13 @@ public class GTMAnalytics extends ContextAnalytics {
                     promotionBundles.add(promotionMap(promotion));
                 }
             }
-            bundle.putParcelableArrayList("promotions", promotionBundles);
+            bundle.putParcelableArrayList(KEY_PROMOTIONS, promotionBundles);
         }
     }
 
     private void promoView(Bundle bundle, Map<String, Object> ecommerce) {
         Map<String, Object> promoView = (Map<String, Object>) ecommerce.remove("promoView");
-        Object promotionObj = promoView.remove("promotions");
+        Object promotionObj = promoView.remove(KEY_PROMOTIONS);
         if (promotionObj != null) {
             ArrayList<Bundle> promotionBundles = new ArrayList<>();
             if (promotionObj instanceof Object[]) {
@@ -605,7 +605,7 @@ public class GTMAnalytics extends ContextAnalytics {
                     promotionBundles.add(promotionMap(promotion));
                 }
             }
-            bundle.putParcelableArrayList("promotions", promotionBundles);
+            bundle.putParcelableArrayList(KEY_PROMOTIONS, promotionBundles);
         }
     }
 
@@ -1211,10 +1211,7 @@ public class GTMAnalytics extends ContextAnalytics {
                 case FirebaseAnalytics.Event.CHECKOUT_PROGRESS:
                     // https://tokopedia.atlassian.net/browse/AN-36179
                     // https://tokopedia.atlassian.net/browse/AN-36180
-                    if ("2".equals(bundle.getString(CHECKOUT_STEP)) ||
-                            "3".equals(bundle.getString(CHECKOUT_STEP))) {
-                        fa.logEvent(FirebaseAnalytics.Event.BEGIN_CHECKOUT, bundle);
-                    }
+                    fa.logEvent(FirebaseAnalytics.Event.BEGIN_CHECKOUT, bundle);
                     break;
                 case FirebaseAnalytics.Event.VIEW_SEARCH_RESULTS:
                     // https://tokopedia.atlassian.net/browse/AN-36125
@@ -1237,7 +1234,7 @@ public class GTMAnalytics extends ContextAnalytics {
         String eventCategory = oriBundle.getString(KEY_CATEGORY);
         boolean isPromotion = true;
         if ((eventCategory != null && eventCategory.contains("search result")) ||
-                oriBundle.get("promotions") == null) {
+                oriBundle.get(KEY_PROMOTIONS) == null) {
             isPromotion = false;
         }
         if (isPromotion) {
@@ -1253,8 +1250,19 @@ public class GTMAnalytics extends ContextAnalytics {
         }
     }
 
+    private void copyBundleString(Bundle oriBundle, Bundle targetBundle) {
+        // copy all key in original bundle to gav4 bundle, except for promotions
+        for (String key : oriBundle.keySet()) {
+            try {
+                if (oriBundle.get(key) instanceof String) {
+                    targetBundle.putString(key, oriBundle.get(key).toString());
+                }
+            } catch (Exception ignored) { }
+        }
+    }
+
     private Bundle createBundleGA4BundleViewPromotion(Bundle oriBundle) {
-        Object promotions = oriBundle.get("promotions");
+        Object promotions = oriBundle.get(KEY_PROMOTIONS);
         if (promotions != null) {
             List promotionList = (List) promotions;
             ArrayList<Bundle> promotionsGA4 = new ArrayList<>();
@@ -1271,6 +1279,7 @@ public class GTMAnalytics extends ContextAnalytics {
                 promotionsGA4.add(bundlePromotion);
             }
             Bundle ecommerceBundleGA4 = new Bundle();
+            copyBundleString(oriBundle, ecommerceBundleGA4);
             ecommerceBundleGA4.putParcelableArrayList(ITEMS, promotionsGA4);
             return ecommerceBundleGA4;
         } else {
@@ -1279,7 +1288,7 @@ public class GTMAnalytics extends ContextAnalytics {
     }
 
     private Bundle createBundleGA4BundleClickPromotion(Bundle oriBundle) {
-        Object promotions = oriBundle.get("promotions");
+        Object promotions = oriBundle.get(KEY_PROMOTIONS);
         List promotionList = (List) promotions;
         Bundle ecommerceBundleGA4 = new Bundle();
 
@@ -1301,12 +1310,15 @@ public class GTMAnalytics extends ContextAnalytics {
             if (creativeSlot != null) {
                 ecommerceBundleGA4.putString(CREATIVE_SLOT, creativeSlot);
             }
+            copyBundleString(oriBundle, ecommerceBundleGA4);
         }
         return ecommerceBundleGA4;
     }
 
     private Bundle createBundleGA4BundleProductClick(Bundle oriBundle) {
-        Object promotions = oriBundle.get("promotions");
+        Object promotions = oriBundle.get(KEY_PROMOTIONS);
+        Bundle ecommerceBundleGA4 = new Bundle();
+        copyBundleString(oriBundle, ecommerceBundleGA4);
         if (promotions != null) {
             List promotionList = (List) promotions;
             ArrayList<Bundle> promotionsGA4 = new ArrayList<>();
@@ -1322,13 +1334,11 @@ public class GTMAnalytics extends ContextAnalytics {
                 }
                 promotionsGA4.add(bundlePromotion);
             }
-            Bundle ecommerceBundleGA4 = new Bundle();
             ecommerceBundleGA4.putParcelableArrayList(ITEMS, promotionsGA4);
             ecommerceBundleGA4.putString(FirebaseAnalytics.Param.ITEM_LIST_ID, oriBundle.getString(ITEM_LIST));
             ecommerceBundleGA4.putString(FirebaseAnalytics.Param.ITEM_LIST_NAME, oriBundle.getString(KEY_CATEGORY));
             return ecommerceBundleGA4;
         } else {
-            Bundle ecommerceBundleGA4 = new Bundle();
             ecommerceBundleGA4.putString(FirebaseAnalytics.Param.ITEM_LIST_ID, oriBundle.getString(ITEM_LIST));
             ecommerceBundleGA4.putString(FirebaseAnalytics.Param.ITEM_LIST_NAME, oriBundle.getString(KEY_CATEGORY));
             ArrayList item = (ArrayList) oriBundle.get(ITEMS);
