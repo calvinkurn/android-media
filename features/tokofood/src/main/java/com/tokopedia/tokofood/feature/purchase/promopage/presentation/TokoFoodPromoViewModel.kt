@@ -46,7 +46,7 @@ class TokoFoodPromoViewModel @Inject constructor(
                                 data = it.data.errorPage
                             )
                         }
-                        it.data.availableSection.coupons.isNotEmpty() || it.data.unavailableSection.coupons.isNotEmpty() -> {
+                        it.data.availableSection.subSection.coupons.isNotEmpty() || it.data.unavailableSection.subSection.coupons.isNotEmpty() -> {
                             _uiEvent.value = UiEvent(state = UiEvent.EVENT_SUCCESS_LOAD_PROMO_PAGE)
                             _fragmentUiModel.value =
                                 TokoFoodPromoUiModelMapper.mapResponseDataToFragmentUiModel(it.data)

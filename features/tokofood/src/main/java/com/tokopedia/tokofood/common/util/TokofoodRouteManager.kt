@@ -60,10 +60,11 @@ object TokofoodRouteManager {
             RouteManager.route(context, uriString)
         } else {
             val initialUri = Uri.parse(uriString)
-            val uri = Uri.parse(DeeplinkMapperTokoFood.mapperInternalApplinkTokoFood(initialUri))
+            val mappedUriString = DeeplinkMapperTokoFood.mapperInternalApplinkTokoFood(initialUri)
+            val uri = Uri.parse(mappedUriString)
             val f = mapUriToFragment(uri)
             if (f == null) {
-                RouteManager.route(activity, uriString)
+                RouteManager.route(activity, mappedUriString)
             } else {
                 // If the fragment could take new params, we should replace the existed same class fragment with the new one
                 if (f is MerchantPageFragment || f is OrderCustomizationFragment || f is TokoFoodCategoryFragment) {

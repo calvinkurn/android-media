@@ -14,7 +14,7 @@ object TokoFoodPromoUiModelMapper {
                 data.availableSection.title.takeIf { it.isNotEmpty() }?.let { title ->
                     add(TokoFoodPromoEligibilityHeaderUiModel(title = title))
                 }
-                data.availableSection.let { availableSubSection ->
+                data.availableSection.subSection. let { availableSubSection ->
                     add(
                         TokoFoodPromoHeaderUiModel(
                             title = availableSubSection.title,
@@ -38,7 +38,7 @@ object TokoFoodPromoUiModelMapper {
                 data.unavailableSection.title.takeIf { it.isNotEmpty() }?.let { title ->
                     add(TokoFoodPromoEligibilityHeaderUiModel(title = title))
                 }
-                data.unavailableSection.let { unavailableSubSection ->
+                data.unavailableSection.subSection.let { unavailableSubSection ->
                     add(
                         TokoFoodPromoHeaderUiModel(
                             title = unavailableSubSection.title,
@@ -64,7 +64,7 @@ object TokoFoodPromoUiModelMapper {
             pageTitle = data.title,
             promoTitle = data.promoSummary.title,
             promoAmountStr = data.promoSummary.totalFmt,
-            promoCount = data.availableSection.coupons.count { it.isSelected }
+            promoCount = data.availableSection.subSection.coupons.count { it.isSelected }
         )
     }
 
