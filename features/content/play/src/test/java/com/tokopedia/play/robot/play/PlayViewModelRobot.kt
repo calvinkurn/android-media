@@ -12,6 +12,7 @@ import com.tokopedia.play.robot.RobotWithValue
 import com.tokopedia.play.util.CastPlayerHelper
 import com.tokopedia.play.util.channel.state.PlayViewerChannelStateProcessor
 import com.tokopedia.play.util.chat.ChatStreams
+import com.tokopedia.play.util.logger.PlayLog
 import com.tokopedia.play.util.share.PlayShareExperience
 import com.tokopedia.play.util.timer.TimerFactory
 import com.tokopedia.play.util.video.buffer.PlayViewerVideoBufferGovernor
@@ -72,6 +73,7 @@ class PlayViewModelRobot(
     castPlayerHelper: CastPlayerHelper,
     playShareExperience: PlayShareExperience,
     chatStreamsFactory: ChatStreams.Factory,
+    playLog: PlayLog,
 ) : Robot {
 
     private val productTagBuilder = PlayProductTagsModelBuilder()
@@ -96,7 +98,8 @@ class PlayViewModelRobot(
         timerFactory,
         castPlayerHelper,
         playShareExperience,
-        chatStreamsFactory,
+        playLog,
+        chatStreamsFactory
     )
 
     fun createPage(channelData: PlayChannelData) {
@@ -268,6 +271,7 @@ fun givenPlayViewModelRobot(
     castPlayerHelper: CastPlayerHelper = mockk(relaxed = true),
     playShareExperience: PlayShareExperience = mockk(relaxed = true),
     chatStreamsFactory: ChatStreams.Factory = mockk(relaxed = true),
+    playLog: PlayLog = mockk(relaxed = true),
     fn: PlayViewModelRobot.() -> Unit = {}
 ): PlayViewModelRobot {
     return PlayViewModelRobot(
@@ -293,6 +297,7 @@ fun givenPlayViewModelRobot(
         castPlayerHelper = castPlayerHelper,
         playShareExperience = playShareExperience,
         chatStreamsFactory = chatStreamsFactory,
+        playLog = playLog,
     ).apply(fn)
 }
 
