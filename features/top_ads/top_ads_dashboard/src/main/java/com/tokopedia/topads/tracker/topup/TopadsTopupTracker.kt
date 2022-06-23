@@ -1,10 +1,12 @@
 package com.tokopedia.topads.tracker.topup
 
+import com.tokopedia.topads.common.analytics.*
+import com.tokopedia.track.TrackApp
 import javax.inject.Inject
 
-class TopadsTopupTracker @Inject constructor(
+const val KEY_TRACKER_ID = "trackerId"
 
-) {
+class TopadsTopupTracker @Inject constructor() {
 
     fun clickCobaSekarang() {
         sendClickEventFromCreditHistoryPage(
@@ -113,8 +115,92 @@ class TopadsTopupTracker @Inject constructor(
         )
     }
 
-    //15 end
+    fun clickSimpan(topUpAmount: String) {
+        sendClickEventFromCreditHistoryPage(
+            eventAction = ToupTrackerEventAction.CLICK_SIMPAN,
+            trackerId = "31856",
+            eventLabel = topUpAmount
+        )
+    }
 
+    fun clickTetapGunakan() {
+        sendClickEventFromCreditHistoryPage(
+            eventAction = ToupTrackerEventAction.CLICK_CANCEL_DEACTIVATION_AUTO_TOPUP,
+            trackerId = "31857",
+        )
+    }
+
+    fun ClickYaNonaktifkan() {
+        sendClickEventFromCreditHistoryPage(
+            eventAction = ToupTrackerEventAction.CLICK_DEACTIVATION_AUTO_TOPUP,
+            trackerId = "31858",
+        )
+    }
+
+    fun clickIncreaseQuantity() {
+        sendClickEventFromTaCart(
+            eventAction = ToupTrackerEventAction.CLICK_ADD_CHOICE,
+            trackerId = "31864"
+        )
+    }
+
+    fun clickDecreaseQuantity() {
+        sendClickEventFromTaCart(
+            eventAction = ToupTrackerEventAction.CLICK_REMOVE_CHOICE,
+            trackerId = "31865"
+        )
+    }
+
+    fun clickCekPromo() {
+        sendClickEventFromTaCart(
+            eventAction = ToupTrackerEventAction.CLICK_CEK_PROMO,
+            trackerId = "31866"
+        )
+    }
+
+    fun clickPilihMetodePembayaran() {
+        sendClickEventFromTaCart(
+            eventAction = ToupTrackerEventAction.CLICK_METODE_PEMBAYARAN,
+            trackerId = "31867"
+        )
+    }
+
+    fun clickBayar() {
+        sendAnalytics(
+            eventAction = ToupTrackerEventAction.CLICK_BAYAR,
+            trackerId = "31868",
+            eventCategory = ToupTrackerEventCategory.PAYMENT_PAGE,
+            eventLabel = "TODO"
+        )
+    }
+
+    fun clickAturAutoTopUp() {
+        sendAnalytics(
+            eventAction = ToupTrackerEventAction.CLICK_ATUR_AUTO_TOP_UP,
+            trackerId = "31869",
+            eventCategory = ToupTrackerEventCategory.SELLER_DASHBOARD,
+        )
+    }
+
+    fun clickKemarin() {
+        sendClickEventFromCreditHistoryPage(
+            eventAction = ToupTrackerEventAction.CLICK_KEMARIN,
+            trackerId = "31989",
+        )
+    }
+
+    fun sendClickEventFromTaCart(
+        trackerId: String,
+        eventAction: String,
+        eventLabel: String = "",
+    ) {
+        sendAnalytics(
+            eventCategory = ToupTrackerEventCategory.TA_CART,
+            eventLabel = eventLabel,
+            eventAction = eventAction,
+            trackerId = trackerId,
+        )
+    }
 
     fun sendClickEventFromCreditHistoryPage(
         trackerId: String,
@@ -122,7 +208,6 @@ class TopadsTopupTracker @Inject constructor(
         eventLabel: String = "",
     ) {
         sendAnalytics(
-            event = TopupTrackerEvent.CLICK_TOP_ADS,
             eventCategory = ToupTrackerEventCategory.TOP_ADS_CREDIT_HISTORY_PAGE,
             eventLabel = eventLabel,
             eventAction = eventAction,
@@ -131,15 +216,26 @@ class TopadsTopupTracker @Inject constructor(
     }
 
     fun sendAnalytics(
-        event: String,
+        event: String = TopupTrackerEvent.CLICK_TOP_ADS,
         eventAction: String,
         eventCategory: String,
-        eventLabel: String,
+        eventLabel: String = "",
         trackerId: String,
-        businessUnit: String = "TODO",
-        currentSite: String = "TODO",
+        businessUnit: String = TopadsToupTrackerConstants.DEFAULT_BUSINESS_UNIT,
+        currentSite: String = TopadsToupTrackerConstants.DEFAULT_CURRENT_SITE,
     ) {
-
+        val analyticsBundle = mapOf(
+            KEY_EVENT to event,
+            KEY_EVENT_ACTION to eventAction,
+            KEY_EVENT_CATEGORY to eventCategory,
+            KEY_EVENT_LABEL to eventLabel,
+            KEY_TRACKER_ID to trackerId,
+            KEY_BUSINESS_UNIT_EVENT to businessUnit,
+            KEY_CURRENT_SITE_EVENT to currentSite,
+        )
+        TrackApp.getInstance().gtm.apply {
+            sendGeneralEvent(analyticsBundle)
+        }
     }
 
 }
