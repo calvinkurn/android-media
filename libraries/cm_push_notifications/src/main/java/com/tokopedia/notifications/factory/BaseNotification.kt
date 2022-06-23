@@ -75,7 +75,9 @@ abstract class BaseNotification internal constructor(
             builder.setSmallIcon(drawableIcon)
             baseNotificationModel.groupId?.let { id ->
                 baseNotificationModel.groupName?.let { grpName ->
-                    setGroup(builder, id, grpName)
+                    if(id.toString().isNotBlank()) {
+                        setGroup(builder, id, grpName)
+                    }
                 }
             }
             setSoundProperties(builder)
@@ -102,25 +104,43 @@ abstract class BaseNotification internal constructor(
             builder.setSmallIcon(drawableIcon)
             baseNotificationModel.groupId?.let { id ->
                 baseNotificationModel.groupName?.let { grpName ->
-                    setGroup(builder, id, grpName)
+                    if(id.toString().isNotBlank()) {
+                        setGroup(builder, id, grpName)
+                    }
                 }
             }
             setSoundProperties(builder)
             return builder
         }
 
+     internal val summaryNotificationBuilder: Notification?
+        get() {
+            val channelID = notificationChannelController.getChannelID(
+                baseNotificationModel.channelName,
+                baseNotificationModel.soundFileName
+            )
+            val builder: NotificationCompat.Builder = NotificationCompat.Builder(
+                context, channelID
+            )
+            builder.setSmallIcon(drawableIcon)
+            builder.setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
+            baseNotificationModel.groupId?.let { id ->
+                baseNotificationModel.groupName?.let { grpName ->
+                    if(id.toString().isNotBlank()) {
+                        setGroup(builder, id, grpName)
+                    }
+                }
+            }
+            builder.setStyle(NotificationCompat.InboxStyle()
+                .setSummaryText(baseNotificationModel.subText))
+            builder.setGroupSummary(true)
+            setSoundProperties(builder)
+            return builder.build()
+        }
+
     private fun setGroup(builder: NotificationCompat.Builder, groupId: Int, groupName: String) {
-        val isNougatAndAbove = Build.VERSION.SDK_INT >= Build.VERSION_CODES.N
         val groupKey = groupId.toString() + groupName
         builder.setGroup(groupKey)
-        if (!isNougatAndAbove) {
-            builder.setStyle(NotificationCompat.InboxStyle()
-                    .addLine("Alex Faarborg Check this out")
-                    .addLine("Jeff Chang Launch Party")
-                    .setBigContentTitle("2 new messages")
-                    .setSummaryText("janedoe@example.com"))
-                    .setGroupSummary(true)
-        }
     }
 
     /*

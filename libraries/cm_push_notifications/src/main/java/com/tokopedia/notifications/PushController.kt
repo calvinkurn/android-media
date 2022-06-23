@@ -14,6 +14,7 @@ import com.tokopedia.logger.ServerLogger
 import com.tokopedia.logger.utils.Priority
 import com.tokopedia.notifications.common.*
 import com.tokopedia.notifications.database.pushRuleEngine.PushRepository
+import com.tokopedia.notifications.factory.BaseNotification
 import com.tokopedia.notifications.factory.CMNotificationFactory
 import com.tokopedia.notifications.image.ImageDownloadManager
 import com.tokopedia.notifications.model.SerializedNotificationData
@@ -210,12 +211,34 @@ class PushController(val context: Context) : CoroutineScope {
                 val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
                 val notification = baseNotification.createNotification()
                 notificationManager.notify(baseNotification.baseNotificationModel.notificationId, notification)
+                val isNougatAndAbove = Build.VERSION.SDK_INT >= Build.VERSION_CODES.N
+                if (isNougatAndAbove) {
+                    postSummaryNotification(
+                        baseNotificationModel,
+                        baseNotification,
+                        notificationManager
+                    )
+                }
             }
         } catch (e: Exception) {
             ServerLogger.log(Priority.P2, "CM_VALIDATION",
                     mapOf("type" to "exception",
                             "err" to Log.getStackTraceString(e).take(CMConstant.TimberTags.MAX_LIMIT),
                             "data" to baseNotificationModel.toString().take(CMConstant.TimberTags.MAX_LIMIT)))
+        }
+    }
+
+    private fun postSummaryNotification(
+        baseNotificationModel: BaseNotificationModel,
+        baseNotification: BaseNotification,
+        notificationManager: NotificationManager
+    ) {
+        baseNotificationModel.groupId?.let { id ->
+            val groupId = id.toString()
+            if (groupId.isNotBlank()) {
+                val summaryNotification = baseNotification.summaryNotificationBuilder
+                notificationManager.notify(id, summaryNotification)
+            }
         }
     }
 
