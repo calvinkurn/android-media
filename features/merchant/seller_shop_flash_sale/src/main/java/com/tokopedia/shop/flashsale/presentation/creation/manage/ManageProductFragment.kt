@@ -174,13 +174,13 @@ class ManageProductFragment :
     private fun observeBannerType() {
         viewModel.bannerType.observe(viewLifecycleOwner) { type ->
             when (type) {
-                EMPTY.type -> {
+                EMPTY_BANNER-> {
                     showEmptyProductBanner()
                 }
-                ERROR.type -> {
+                ERROR_BANNER -> {
                     showErrorProductBanner()
                 }
-                HIDE.type -> {
+                HIDE_BANNER -> {
                     hideBanner()
                 }
             }
@@ -322,10 +322,10 @@ class ManageProductFragment :
     private fun handleScrollDownEvent() {
         binding?.apply {
             when (viewModel.bannerType.value) {
-                EMPTY.type -> {
+                EMPTY_BANNER -> {
                     cardIncompleteProductInfo.slideDown()
                 }
-                ERROR.type -> {
+                ERROR_BANNER -> {
                     tickerErrorProductInfo.slideDown()
                 }
             }
@@ -336,10 +336,10 @@ class ManageProductFragment :
     private fun handleScrollUpEvent() {
         binding?.apply {
             when (viewModel.bannerType.value) {
-                EMPTY.type -> {
+                EMPTY_BANNER -> {
                     cardIncompleteProductInfo.slideUp()
                 }
-                ERROR.type -> {
+                ERROR_BANNER -> {
                     tickerErrorProductInfo.slideUp()
                 }
             }

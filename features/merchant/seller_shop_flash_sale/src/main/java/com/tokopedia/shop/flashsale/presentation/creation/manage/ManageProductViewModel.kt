@@ -9,6 +9,7 @@ import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.shop.flashsale.common.extension.convertRupiah
 import com.tokopedia.shop.flashsale.data.request.GetSellerCampaignProductListRequest
 import com.tokopedia.shop.flashsale.domain.entity.SellerCampaignProductList
+import com.tokopedia.shop.flashsale.domain.entity.enums.ManageProductBannerType
 import com.tokopedia.shop.flashsale.domain.entity.enums.ManageProductBannerType.*
 import com.tokopedia.shop.flashsale.domain.entity.enums.ManageProductErrorMessage
 import com.tokopedia.shop.flashsale.domain.entity.enums.ProductionSubmissionAction
@@ -39,8 +40,8 @@ class ManageProductViewModel @Inject constructor(
     val products: LiveData<Result<SellerCampaignProductList>>
         get() = _products
 
-    private val _bannerType = MutableLiveData(HIDE.type)
-    val bannerType: LiveData<Int>
+    private val _bannerType = MutableLiveData(HIDE_BANNER)
+    val bannerType: LiveData<ManageProductBannerType>
         get() = _bannerType
 
     private val _removeProductsStatus = MutableLiveData<Result<Boolean>>()
@@ -84,17 +85,12 @@ class ManageProductViewModel @Inject constructor(
 
     fun getBannerType(productList: SellerCampaignProductList) {
         productList.productList.forEach { product ->
-            when {
-                getProductErrorMessage(product.productMapData).isNotEmpty() -> {
-                    _bannerType.postValue(ERROR.type)
-                }
-                else -> {
-                    when {
-                        !isProductInfoComplete(product.productMapData) -> {
-                            if (bannerType.value != ERROR.type) {
-                                _bannerType.postValue(EMPTY.type)
-                            }
-                        }
+            if (getProductErrorMessage(product.productMapData).isNotEmpty()) {
+                _bannerType.postValue(ERROR_BANNER)
+            } else {
+                if (!isProductInfoComplete(product.productMapData)) {
+                    if (bannerType.value != ERROR_BANNER) {
+                        _bannerType.postValue(EMPTY_BANNER)
                     }
                 }
             }
