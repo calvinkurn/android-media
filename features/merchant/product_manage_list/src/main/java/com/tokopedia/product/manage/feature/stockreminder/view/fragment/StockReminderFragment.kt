@@ -172,22 +172,14 @@ class StockReminderFragment : BaseDaggerFragment(),
             }
         }
 
+        val dataIsValid = getProductWareHouseList().firstOrNull{
+            it.thresholdStatus == REMINDER_ACTIVE.toString() && it.threshold.toInt() < MINIMUM_STOCK_REMINDER
+        } == null
 
         val haveValidChanges = haveChanges.size.orZero() > 0
 
-        if (isVariant) {
-            var countDataIsNotValid = 0
-            getProductWareHouseList().forEach {
-                if (it.thresholdStatus == REMINDER_ACTIVE.toString() && it.threshold.toInt() < MINIMUM_STOCK_REMINDER)
-                {
-                    countDataIsNotValid+=1
-                }
-            }
+        binding?.btnSaveReminder?.isEnabled = haveValidChanges && dataIsValid
 
-            binding?.btnSaveReminder?.isEnabled = haveValidChanges && countDataIsNotValid == 0
-        } else {
-            binding?.btnSaveReminder?.isEnabled = haveValidChanges
-        }
     }
 
     private fun checkLogin() {
