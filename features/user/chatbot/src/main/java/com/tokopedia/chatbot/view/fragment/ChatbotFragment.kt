@@ -1396,8 +1396,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
             parentReply.replyTime
         )
         if (bubblePosition != RecyclerView.NO_POSITION) {
-            smoothScroll?.targetPosition = bubblePosition
-            (recyclerView?.layoutManager as LinearLayoutManager).startSmoothScroll(smoothScroll)
+            smoothScrollToPosition(bubblePosition)
         } else {
             resetData()
             setupBeforeReplyTime(parentReply.replyTimeMillisOffset)
@@ -1491,21 +1490,33 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
             }
             if (list.isNotEmpty()){
                 val filteredList= getViewState()?.clearDuplicate(list)
+                updateHasNextState(chatReplies)
+
+                if (fromOnClick && replyTime.isNotEmpty()) {
+                    updateHasNextAfterState(chatReplies)
+                    filteredList?.let { renderList ->
+                        if((renderList.getOrNull(0) as MessageUiModel).replyTime!! < replyTime){
+                            loadDataOnClickBottomScroll(replyTime)
+                        }
+                    }
+                }
+
                 rvScrollListener?.finishTopLoadingState()
                 filteredList?.let { renderList ->
                     renderTopList(renderList)
                 }
-                if (fromOnClick && replyTime.isNotEmpty()) {
-                    updateHasNextAfterState(chatReplies)
-                }
-                updateHasNextState(chatReplies)
+
             }else{
                 presenter.getExistingChat(messageId, onError(), onSuccessGetExistingChatFirstTime(), onGetChatRatingListMessageError)
             }
         }
     }
 
-    private fun onSuccessGetBottomChatData(): (ChatroomViewModel,ChatReplies) -> Unit {
+    private fun loadDataOnClickBottomScroll(replyTime: String) {
+        presenter.getBottomChat(messageId, onSuccessGetBottomChatData(replyTime = replyTime, fromOnClick = true), onErrorGetBottomChat(), onGetChatRatingListMessageError)
+    }
+
+    private fun onSuccessGetBottomChatData(replyTime: String = "", fromOnClick: Boolean = false): (ChatroomViewModel,ChatReplies) -> Unit {
         return { chatroom , chatReplies ->
             val list = chatroom.listChat.filter {
                 !((it is FallbackAttachmentUiModel && it.message.isEmpty()) ||
@@ -1516,6 +1527,16 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
                 rvScrollListener?.finishBottomLoadingState()
                 if (filteredList?.isNotEmpty()==true) {
                     renderBottomList(filteredList)
+
+                    if (fromOnClick) {
+                        val bubblePosition = chatbotAdapter.getBubblePosition(
+                            replyTime
+                        )
+                        if (bubblePosition != RecyclerView.NO_POSITION) {
+                            smoothScrollToPosition(bubblePosition)
+                        }
+
+                    }
                 } else{
                     presenter.getBottomChat(messageId, onSuccessGetBottomChatData(), onErrorGetBottomChat(), onGetChatRatingListMessageError)
                 }
@@ -1525,6 +1546,13 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
                 presenter.getBottomChat(messageId, onSuccessGetBottomChatData(), onErrorGetBottomChat(), onGetChatRatingListMessageError)
             }
         }
+    }
+
+    private fun smoothScrollToPosition(bubblePosition: Int) {
+        smoothScroll?.targetPosition = bubblePosition
+        (recyclerView?.layoutManager as LinearLayoutManager).startSmoothScroll(
+            smoothScroll
+        )
     }
 
     private fun showTopLoading() {
