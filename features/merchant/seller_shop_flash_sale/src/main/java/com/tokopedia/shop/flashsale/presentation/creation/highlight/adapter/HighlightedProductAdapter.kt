@@ -49,12 +49,7 @@ class HighlightedProductAdapter(
 
     override fun onBindViewHolder(holder: HighlightedProductViewHolder, position: Int) {
         val isLoading = isLoading && (position == products.lastIndex)
-        holder.bind(
-            position,
-            products[position],
-            onProductSelectionChange,
-            isLoading
-        )
+        holder.bind(products[position], onProductSelectionChange, isLoading)
     }
 
     fun addData(items: List<HighlightableProduct>) {
@@ -96,7 +91,6 @@ class HighlightedProductAdapter(
     ) : RecyclerView.ViewHolder(binding.root) {
 
         fun bind(
-            position: Int,
             product: HighlightableProduct,
             onProductSelectionChange: (HighlightableProduct, Boolean) -> Unit,
             isLoading: Boolean
@@ -109,7 +103,7 @@ class HighlightedProductAdapter(
             binding.tpgOriginalPrice.setPrice(product.originalPrice)
             binding.tpgOriginalPrice.strikethrough()
             binding.tpgProductOrder.isVisible = product.isSelected
-            binding.tpgProductOrder.setPosition(position)
+            binding.tpgProductOrder.setPosition(product.position)
             handleSwitchAppearance(product, onProductSelectionChange)
             handleCardSelectable(product.disabled)
         }
@@ -121,8 +115,9 @@ class HighlightedProductAdapter(
             binding.switchUnify.setOnCheckedChangeListener(null)
             binding.switchUnify.isChecked = product.isSelected
             binding.switchUnify.isClickable = !product.disabled
-            binding.switchUnify.setOnCheckedChangeListener { _, isSelected ->
-                onProductSelectionChange(product, isSelected)
+            binding.switchUnify.setOnCheckedChangeListener { _, isChecked ->
+                onProductSelectionChange(product, isChecked)
+                binding.switchUnify.isChecked = !isChecked
             }
         }
 
@@ -136,8 +131,7 @@ class HighlightedProductAdapter(
         }
 
         private fun Typography.setPosition(position: Int) {
-            val incrementedPosition = position + ONE
-            val formattedPosition = String.format(this.context.getString(R.string.sfs_placeholder_product_order), incrementedPosition)
+            val formattedPosition = String.format(this.context.getString(R.string.sfs_placeholder_product_order), position)
             this.text = formattedPosition
         }
 

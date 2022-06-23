@@ -208,53 +208,37 @@ class ManageHighlightedProductFragment : BaseDaggerFragment() {
     }
 
 
-
     private val onProductSelectionChange: (HighlightableProduct, Boolean) -> Unit =
         { selectedProduct, isSelected ->
-            if (isSelected) {
-                val currentSelectedProductCount = viewModel.getSelectedProductIds().size
-                handleAddProductToSelection(currentSelectedProductCount, selectedProduct)
-            } else {
-                handleRemoveProductFromSelection(selectedProduct)
-            }
+            val currentSelectedProductCount = viewModel.getSelectedProductIds().size
+            handleAddProductToSelection(currentSelectedProductCount, selectedProduct, isSelected)
         }
 
     private fun handleAddProductToSelection(
         currentSelectedProductCount: Int,
-        selectedProduct: HighlightableProduct
+        selectedProduct: HighlightableProduct,
+        isSelected: Boolean
     ) {
-        val nextCounter = currentSelectedProductCount + ONE_PRODUCT
-
-        if (nextCounter > MAX_PRODUCT_SELECTION) {
-            unselectProduct(selectedProduct)
-        } else {
-            handleRemainingSelection(selectedProduct)
-            enableAllUnselectedProduct()
+        when {
+            isSelected && currentSelectedProductCount == (MAX_PRODUCT_SELECTION - ONE_PRODUCT) -> {
+                binding?.recyclerView showToaster getString(R.string.sfs_successfully_highlighted)
+                selectProduct(selectedProduct)
+                viewModel.addProductToSelection(selectedProduct.id)
+                disableAllUnselectedProduct()
+            }
+            isSelected && currentSelectedProductCount < MAX_PRODUCT_SELECTION -> {
+                binding?.recyclerView showToaster getString(R.string.sfs_successfully_highlighted)
+                selectProduct(selectedProduct)
+                viewModel.addProductToSelection(selectedProduct.id)
+                enableAllUnselectedProduct()
+            }
+            !isSelected -> {
+                viewModel.removeProductFromSelection(selectedProduct.id)
+                unselectProduct(selectedProduct)
+                enableAllUnselectedProduct()
+            }
         }
 
-        if (nextCounter == MAX_PRODUCT_SELECTION) {
-            disableAllUnselectedProduct()
-        }
-
-        refreshButton()
-    }
-
-    private fun handleRemainingSelection(selectedProduct: HighlightableProduct) {
-        val remainingSelection = MAX_PRODUCT_SELECTION - viewModel.getSelectedProductIds().size
-
-        if (remainingSelection > 0) {
-            binding?.recyclerView showToaster getString(R.string.sfs_successfully_highlighted)
-            selectProduct(selectedProduct)
-            viewModel.addProductToSelection(selectedProduct.id)
-        } else {
-            unselectProduct(selectedProduct)
-        }
-    }
-
-    private fun handleRemoveProductFromSelection(selectedProduct: HighlightableProduct) {
-        viewModel.removeProductFromSelection(selectedProduct.id)
-        unselectProduct(selectedProduct)
-        enableAllUnselectedProduct()
         refreshButton()
     }
 

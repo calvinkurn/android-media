@@ -21,6 +21,7 @@ class ManageHighlightedProductViewModel @Inject constructor(
 
     companion object {
         private const val PRODUCT_LIST_TYPE_ID = 0
+        private const val OFFSET_BY_ONE = 1
         private const val MAX_PRODUCT_SELECTION = 5
     }
 
@@ -58,18 +59,19 @@ class ManageHighlightedProductViewModel @Inject constructor(
         products: List<SellerCampaignProductList.Product>
     ): List<HighlightableProduct> {
         val totalSelected = products.filter { it.highlightProductWording.isNotEmpty() }.size
-        return products.map {
-            val isSelected = it.highlightProductWording.isNotEmpty() || it.productId in selectedProductIds
+        return products.mapIndexed { index, product ->
+            val isSelected = product.highlightProductWording.isNotEmpty() || product.productId in selectedProductIds
             val disabled = totalSelected == MAX_PRODUCT_SELECTION && !isSelected
             HighlightableProduct(
-                it.productId,
-                it.productName,
-                it.imageUrl.img200,
-                it.productMapData.originalPrice,
-                it.productMapData.discountedPrice,
-                it.productMapData.discountPercentage,
-                disabled = disabled,
-                isSelected = isSelected
+                product.productId,
+                product.productName,
+                product.imageUrl.img200,
+                product.productMapData.originalPrice,
+                product.productMapData.discountedPrice,
+                product.productMapData.discountPercentage,
+                disabled,
+                isSelected,
+                index + OFFSET_BY_ONE
             )
         }
     }
@@ -91,11 +93,11 @@ class ManageHighlightedProductViewModel @Inject constructor(
         products: List<HighlightableProduct>
     ): List<HighlightableProduct> {
         return products
-            .map { product ->
+            .mapIndexed { index, product  ->
                 if (selectedProduct.id == product.id) {
-                    product.copy(isSelected = true)
+                    product.copy(isSelected = true, position = index + OFFSET_BY_ONE)
                 } else {
-                    product
+                    product.copy(position = index + OFFSET_BY_ONE)
                 }
             }
             .sortedByDescending { it.isSelected }
@@ -106,11 +108,11 @@ class ManageHighlightedProductViewModel @Inject constructor(
         products: List<HighlightableProduct>
     ): List<HighlightableProduct> {
         return products
-            .map { product ->
+            .mapIndexed { index, product  ->
                 if (selectedProduct.id == product.id) {
-                    product.copy(isSelected = false)
+                    product.copy(isSelected = false, position = index + OFFSET_BY_ONE)
                 } else {
-                    product
+                    product.copy(position = index + OFFSET_BY_ONE)
                 }
             }
             .sortedByDescending { it.isSelected }
@@ -118,11 +120,11 @@ class ManageHighlightedProductViewModel @Inject constructor(
 
     fun disableAllUnselectedProducts(products: List<HighlightableProduct>): List<HighlightableProduct> {
         return products
-            .map { product ->
+            .mapIndexed { index, product  ->
                 if (product.isSelected) {
-                    product
+                    product.copy(position = index + OFFSET_BY_ONE)
                 } else {
-                    product.copy(disabled = true)
+                    product.copy(disabled = true, position = index + OFFSET_BY_ONE)
                 }
             }
             .sortedByDescending { it.isSelected }
@@ -130,11 +132,11 @@ class ManageHighlightedProductViewModel @Inject constructor(
 
     fun enableAllUnselectedProducts(products: List<HighlightableProduct>): List<HighlightableProduct> {
         return products
-            .map { product ->
+            .mapIndexed { index, product  ->
                 if (product.isSelected) {
-                    product
+                    product.copy(position = index + OFFSET_BY_ONE)
                 } else {
-                    product.copy(disabled = false)
+                    product.copy(disabled = false, position = index + OFFSET_BY_ONE)
                 }
             }
             .sortedByDescending { it.isSelected }
