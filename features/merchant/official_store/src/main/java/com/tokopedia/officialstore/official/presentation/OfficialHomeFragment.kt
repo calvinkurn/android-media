@@ -461,6 +461,7 @@ class OfficialHomeFragment :
     }
 
     override fun onThreeDotsClick(item: RecommendationItem, vararg position: Int) {
+        recommendationWishlistItem = item
         showProductCardOptions(
                 this,
                 ProductCardOptionsModel(
