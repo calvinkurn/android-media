@@ -21,6 +21,7 @@ import com.tokopedia.shop.flashsale.common.extension.*
 import com.tokopedia.shop.flashsale.common.preference.SharedPreferenceDataStore
 import com.tokopedia.shop.flashsale.di.component.DaggerShopFlashSaleComponent
 import com.tokopedia.shop.flashsale.domain.entity.HighlightableProduct
+import com.tokopedia.shop.flashsale.domain.entity.ProductSubmissionResult
 import com.tokopedia.shop.flashsale.presentation.creation.highlight.adapter.HighlightedProductAdapter
 import com.tokopedia.shop.flashsale.presentation.creation.highlight.bottomsheet.ManageHighlightedProductInfoBottomSheet
 import com.tokopedia.shop.flashsale.presentation.creation.highlight.decoration.ProductListItemDecoration
@@ -96,6 +97,7 @@ class ManageHighlightedProductFragment : BaseDaggerFragment() {
         setupView()
         setFragmentToUnifyBgColor()
         observeProducts()
+        observeSubmitHighlightedProducts()
         getProducts(FIRST_PAGE)
     }
 
@@ -148,13 +150,20 @@ class ManageHighlightedProductFragment : BaseDaggerFragment() {
 
     private fun setupButton() {
         binding?.run {
-            btnProceed.setOnClickListener { binding?.btnProceed?.showLoading() }
-            btnDraft.setOnClickListener { binding?.btnDraft.showLoading() }
+            btnProceed.setOnClickListener {
+                binding?.btnProceed?.showLoading()
+                viewModel.submitHighlightedProducts(campaignId, viewModel.getSelectedProducts())
+            }
+            btnDraft.setOnClickListener {
+                binding?.btnDraft.showLoading()
+                viewModel.submitHighlightedProducts(campaignId, viewModel.getSelectedProducts())
+            }
         }
     }
 
     private fun setupScrollListener() {
         binding?.run {
+            imgScrollUp.setOnClickListener { recyclerView.smoothSnapToPosition(0)  }
             recyclerView.addOnScrollListener(
                 RecyclerViewScrollListener(
                     onScrollDown = {
@@ -185,6 +194,22 @@ class ManageHighlightedProductFragment : BaseDaggerFragment() {
                 }
                 is Fail -> {
                     hideContent()
+                    binding?.root showError result.throwable
+                }
+            }
+        }
+    }
+
+    private fun observeSubmitHighlightedProducts() {
+        viewModel.submit.observe(viewLifecycleOwner) { result ->
+            binding?.btnDraft.stopLoading()
+            binding?.btnProceed.stopLoading()
+
+            when (result) {
+                is Success -> {
+                    handleProductSubmissionResult(result.data)
+                }
+                is Fail -> {
                     binding?.root showError result.throwable
                 }
             }
@@ -223,17 +248,20 @@ class ManageHighlightedProductFragment : BaseDaggerFragment() {
             isSelected && currentSelectedProductCount == (MAX_PRODUCT_SELECTION - ONE_PRODUCT) -> {
                 binding?.recyclerView showToaster getString(R.string.sfs_successfully_highlighted)
                 selectProduct(selectedProduct)
-                viewModel.addProductToSelection(selectedProduct.id)
+                viewModel.addProductIdToSelection(selectedProduct.id)
+                viewModel.addProductToSelection(selectedProduct)
                 disableAllUnselectedProduct()
             }
             isSelected && currentSelectedProductCount < MAX_PRODUCT_SELECTION -> {
                 binding?.recyclerView showToaster getString(R.string.sfs_successfully_highlighted)
                 selectProduct(selectedProduct)
-                viewModel.addProductToSelection(selectedProduct.id)
+                viewModel.addProductIdToSelection(selectedProduct.id)
+                viewModel.addProductToSelection(selectedProduct)
                 enableAllUnselectedProduct()
             }
             !isSelected -> {
-                viewModel.removeProductFromSelection(selectedProduct.id)
+                viewModel.removeProductIdFromSelection(selectedProduct.id)
+                viewModel.removeProductFromSelection(selectedProduct)
                 unselectProduct(selectedProduct)
                 enableAllUnselectedProduct()
             }
@@ -277,24 +305,26 @@ class ManageHighlightedProductFragment : BaseDaggerFragment() {
 
     private fun storeSelectedProducts(products: List<HighlightableProduct>) {
         products.forEach { product ->
-            if (product.isSelected) viewModel.addProductToSelection(product.id)
+            if (product.isSelected) viewModel.addProductIdToSelection(product.id)
         }
     }
 
     private fun handleScrollDownEvent() {
         binding?.searchBar?.slideDown()
         binding?.cardView.slideDown()
+        binding?.imgScrollUp.slideUp()
     }
 
     private fun handleScrollUpEvent() {
         binding?.searchBar?.slideUp()
         binding?.cardView.slideUp()
+        binding?.imgScrollUp.slideDown()
     }
 
     private fun doFreshSearch() {
         productAdapter.submit(emptyList())
         binding?.groupNoSearchResult?.gone()
-        viewModel.getProducts(campaignId, "", PAGE_SIZE, 0)
+        viewModel.getProducts(campaignId, "", PAGE_SIZE, offset = 0)
     }
 
     private fun renderList(list: List<HighlightableProduct>, hasNextPage: Boolean) {
@@ -331,5 +361,14 @@ class ManageHighlightedProductFragment : BaseDaggerFragment() {
         binding?.recyclerView?.gone()
         binding?.cardView?.gone()
         binding?.searchBar?.gone()
+    }
+
+    private fun handleProductSubmissionResult(result: ProductSubmissionResult) {
+        val isSuccess = result.isSuccess
+        if (isSuccess) {
+            //TODO: Navigate to ACP page
+        } else {
+            binding?.root showError result.errorMessage
+        }
     }
 }

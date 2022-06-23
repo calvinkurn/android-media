@@ -19,6 +19,18 @@ data class DoSellerCampaignProductSubmissionRequest(
         @SerializedName("final_price")
         val finalPrice: Long,
         @SerializedName("custom_stock")
-        val customStock: Long
-    )
+        val customStock: Long,
+        @SerializedName("warehouses")
+        val warehouses: List<Warehouse> = emptyList(),
+        @SerializedName("max_order")
+        val maxOrder: Int
+    ) {
+        data class Warehouse(
+            @SuppressLint("Invalid Data Type")
+            @SerializedName("warehouse_id")
+            val warehouseId: Long,
+            @SerializedName("custom_stock")
+            val customStock: Int
+        )
+    }
 }

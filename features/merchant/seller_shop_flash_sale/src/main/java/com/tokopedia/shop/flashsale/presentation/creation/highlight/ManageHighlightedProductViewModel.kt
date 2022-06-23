@@ -4,9 +4,14 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
+import com.tokopedia.shop.flashsale.data.mapper.HighlightableProductRequestMapper
 import com.tokopedia.shop.flashsale.data.request.GetSellerCampaignProductListRequest
 import com.tokopedia.shop.flashsale.domain.entity.HighlightableProduct
+import com.tokopedia.shop.flashsale.domain.entity.ProductSubmissionResult
 import com.tokopedia.shop.flashsale.domain.entity.SellerCampaignProductList
+import com.tokopedia.shop.flashsale.domain.entity.enums.ProductionSubmissionAction
+import com.tokopedia.shop.flashsale.domain.usecase.DoSellerCampaignProductSubmissionUseCase
 import com.tokopedia.shop.flashsale.domain.usecase.GetSellerCampaignProductListUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -16,7 +21,9 @@ import javax.inject.Inject
 
 class ManageHighlightedProductViewModel @Inject constructor(
     private val dispatchers: CoroutineDispatchers,
-    private val getSellerCampaignProductListUseCase: GetSellerCampaignProductListUseCase
+    private val getSellerCampaignProductListUseCase: GetSellerCampaignProductListUseCase,
+    private val doSellerCampaignProductSubmissionUseCase: DoSellerCampaignProductSubmissionUseCase,
+    private val mapper: HighlightableProductRequestMapper
 ) : BaseViewModel(dispatchers.main) {
 
     companion object {
@@ -29,7 +36,12 @@ class ManageHighlightedProductViewModel @Inject constructor(
     val products: LiveData<Result<List<HighlightableProduct>>>
         get() = _products
 
-    private var selectedProductIds: MutableSet<String> = mutableSetOf()
+    private val _submit = MutableLiveData<Result<ProductSubmissionResult>>()
+    val submit: LiveData<Result<ProductSubmissionResult>>
+        get() = _submit
+
+    private var selectedProductIds: MutableSet<Long> = mutableSetOf()
+    private var selectedProducts = mutableListOf<HighlightableProduct>()
 
     fun getProducts(
         campaignId: Long,
@@ -55,19 +67,39 @@ class ManageHighlightedProductViewModel @Inject constructor(
         )
     }
 
+    fun submitHighlightedProducts(campaignId: Long, products: List<HighlightableProduct>) {
+        launchCatchError(
+            dispatchers.io,
+            block = {
+                val mappedProducts = mapper.map(products)
+                val result = doSellerCampaignProductSubmissionUseCase.execute(
+                    campaignId.toString(),
+                    ProductionSubmissionAction.SUBMIT,
+                    mappedProducts
+                )
+                _submit.postValue(Success(result))
+            },
+            onError = { error ->
+                _submit.postValue(Fail(error))
+            }
+        )
+    }
+
     private fun handleProductEnabledState(
         products: List<SellerCampaignProductList.Product>
     ): List<HighlightableProduct> {
         return products.mapIndexed { index, product ->
-            val isSelected = product.highlightProductWording.isNotEmpty() || product.productId in selectedProductIds
+            val isSelected = product.highlightProductWording.isNotEmpty() || product.productId.toLongOrZero() in selectedProductIds
             val disabled = selectedProductIds.size == MAX_PRODUCT_SELECTION && !isSelected
             HighlightableProduct(
-                product.productId,
+                product.productId.toLongOrZero(),
                 product.productName,
                 product.imageUrl.img200,
                 product.productMapData.originalPrice,
                 product.productMapData.discountedPrice,
                 product.productMapData.discountPercentage,
+                product.productMapData.customStock,
+                product.productMapData.maxOrder,
                 disabled,
                 isSelected,
                 index + OFFSET_BY_ONE
@@ -75,17 +107,33 @@ class ManageHighlightedProductViewModel @Inject constructor(
         }
     }
 
-    fun getSelectedProductIds(): Set<String> {
-        return selectedProductIds
-    }
-
-    fun addProductToSelection(productId: String) {
+    fun addProductIdToSelection(productId: Long) {
         this.selectedProductIds.add(productId)
     }
 
-    fun removeProductFromSelection(productId : String) {
+
+    fun getSelectedProductIds(): Set<Long> {
+        return this.selectedProductIds
+    }
+
+    fun removeProductIdFromSelection(productId : Long) {
         this.selectedProductIds.remove(productId)
     }
+
+
+    fun addProductToSelection(product: HighlightableProduct) {
+        this.selectedProducts.add(product)
+    }
+
+
+    fun getSelectedProducts(): List<HighlightableProduct> {
+        return selectedProducts
+    }
+
+    fun removeProductFromSelection(product: HighlightableProduct) {
+        this.selectedProducts.remove(product)
+    }
+
 
     fun markAsSelected(
         selectedProduct: HighlightableProduct,

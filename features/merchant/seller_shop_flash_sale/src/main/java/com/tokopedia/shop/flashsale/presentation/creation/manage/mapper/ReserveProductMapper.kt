@@ -26,7 +26,9 @@ object ReserveProductMapper {
     fun mapToProductData(product: SelectedProductModel) = DoSellerCampaignProductSubmissionRequest.ProductData(
         productId = product.productId.toLongOrNull().orZero(),
         customStock = ADD_PRODUCT_DEFAULT_VALUE,
-        finalPrice = ADD_PRODUCT_DEFAULT_VALUE
+        finalPrice = ADD_PRODUCT_DEFAULT_VALUE,
+        warehouses = emptyList(),
+        maxOrder = ADD_PRODUCT_DEFAULT_VALUE.toInt()
     )
 
 

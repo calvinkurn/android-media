@@ -7,6 +7,7 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.shop.flashsale.common.constant.ChooseProductConstant.PRODUCT_SELECTION_MAX
+import com.tokopedia.shop.flashsale.domain.entity.enums.ProductionSubmissionAction
 import com.tokopedia.shop.flashsale.domain.usecase.DoSellerCampaignProductSubmissionUseCase
 import com.tokopedia.shop.flashsale.domain.usecase.GetSellerCampaignValidatedProductListUseCase
 import com.tokopedia.shop.flashsale.presentation.creation.manage.mapper.ReserveProductMapper
@@ -71,9 +72,10 @@ class ChooseProductViewModel @Inject constructor(
             block = {
                 val result = doSellerCampaignProductSubmissionUseCase.execute(
                     campaignId,
+                    ProductionSubmissionAction.RESERVE,
                     ReserveProductMapper.mapToProductDataList(selectedItems.value)
                 )
-                _isAddProductSuccess.postValue(result)
+                _isAddProductSuccess.postValue(result.isSuccess)
             },
             onError = { error ->
                 _errors.postValue(error)
