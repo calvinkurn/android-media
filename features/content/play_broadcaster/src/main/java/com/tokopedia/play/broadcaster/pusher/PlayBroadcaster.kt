@@ -43,7 +43,7 @@ class PlayBroadcaster(
     private var isStartedBefore = false
 
     private val monitoringInterval: Long
-        get() = remoteConfig.getLong(FIREBASE_REMOTE_CONFIG_KEY_BRO_MONITORING, 0)
+        get() = remoteConfig.getLong(FIREBASE_REMOTE_CONFIG_KEY_BRO_MONITORING, 0) * 1000
 
     private val broadcastListener = object : Broadcaster.Listener {
         override fun onBroadcastInitStateChanged(state: BroadcastInitState) {
