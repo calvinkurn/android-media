@@ -27,20 +27,30 @@
 
     <string name="title_header_pm_section">Status tokomu saat ini</string>
     <string name="title_content_pm_section">Nikmati berbagai keuntungan eksklusif dengan gabung PM PRO, yuk!</string>
-    <string name="desc_content_pm_not_eligible_pm_pro">Penuhi semua syarat untuk bergabung PM PRO dan dapatkan berbagai keuntungan eksklusifnya! &lt;a href="#"&gt;Pelajari Selengkapnya&lt;/a&gt;</string>
+    <string name="sub_title_content_pm_section">Tingkatkan skor agar naik langsung jadi PM PRO dan nikmati keuntungannya!</string>
+    <string name="sub_title_content_pm_idle_section">Lakukan hal ini untuk meningkatkan skor Performa Toko</string>
+    <string name="description_content_pm_section">Batas skor PM PRO adalah 70. Perhatikan tips untuk capai Performa Toko maksimal dan jadi PM PRO, ya.</string>
     <string name="title_header_rm_section">Selamat! Karena Performamu, kamu bisa daftar Power Merchant</string>
 
     <!--> PM Pro -->
-    <string name="title_content_pm_pro_section">Kamu dapat menikmati berbagai keuntungan eksklusif Power Merchant PRO!</string>
-    <string name="desc_content_pm_pro_section">Pertahankan Performa min. 70 dengan memperhatikan tips untuk capai Performa maksimal, ya.</string>
-    <string name="desc_content_pm_to_pm_pro_section">Pertahankan Performa min. 70 dengan memperhatikan tips untuk capai Performa maksimal dan daftar PM PRO, ya.</string>
+    <string name="title_content_pm_pro_section">Kamu dapat menikmati berbagai keuntungan eksklusif PM PRO!</string>
+    <string name="desc_content_pm_pro_section">Pertahankan skor min. 70 dengan memperhatikan tips untuk capai Performa Toko maksimal, ya.</string>
+    <string name="desc_content_pm_to_pm_pro_section">Pertahankan skor min. 70 dengan memperhatikan tips untuk capai Performa Toko maksimal, ya.</string>
 
-    <string name="title_potential_pm_pro">Selamat, berdasarkan Performamu, kamu terpilih menjadi Power Merchant PRO!</string>
+    <string name="title_potential_pm_pro">Selamat! Kamu memenuhi syarat program Power Merchant.</string>
 
-    <string name="title_benefit_pm_pro">Toko dengan Power Merchant PRO punya keuntungan eksklusif:</string>
-    <string name="title_item_benefit_1_pm_pro">Bebas ongkir dengan biaya layanan lebih ringan</string>
-    <string name="title_item_benefit_2_pm_pro">Dapat badge Power Merchant PRO untuk tingkatkan kepercayaan pembeli</string>
-    <string name="title_item_benefit_3_pm_pro">Nikmati layanan prioritas Tokopedia Care</string>
+    <string name="title_benefit_pm_pro">Toko dengan Power Merchant berpotensi:</string>
+    <string name="title_item_benefit_1_pm_pro"><![CDATA[Dikunjungi pembeli hingga <br><b>2,5 kali lipat</b>]]></string>
+    <string name="title_item_benefit_2_pm_pro"><![CDATA[Menerima pesanan hingga <br><b>2,3 kali lipat</b>]]></string>
+    <string name="title_item_benefit_3_pm_pro"><![CDATA[Meningkatkan penghasilan hingga <br><b>2,2 kali lipat</b>]]></string>
+    <string name="ss_pm_pro_potentially_downgraded_section_description">Agar Power Merchant PRO tetap aktif, pastikan skor Performa Toko kamu minimum 70. Lihat skema pengecekan status di halaman Power Merchant PRO.</string>
+    <string name="ss_pm_idle_section_section_description">Power Merchant tidak aktif karena skor Performa Toko kamu di bawah 60. Skor akan diperbarui setiap hari Senin.</string>
+    <string name="ss_item_pm_recommendation_title_1">Perbaiki parameter yang berwarna merah</string>
+    <string name="ss_item_pm_recommendation_desc_1">Jika ada parameter performa berwarna merah, perbaiki hingga berwarna hitam atau hijau.</string>
+    <string name="ss_item_pm_recommendation_title_2">Ikuti tips dari setiap parameter</string>
+    <string name="ss_item_pm_recommendation_desc_2">Tips peningkatan performa ada di bagian kanan tiap parameter. Klik panah kanan untuk membacanya.</string>
+    <string name="ss_item_pm_recommendation_title_3">Pastikan kamu tidak terkena penalti</string>
+    <string name="ss_item_pm_recommendation_desc_3">Penalti memengaruhi skor Performa Toko. Agar tidak terkena penalti, hindari melakukan pelanggaran, ya.</string>
 
     <!-- Example Text for display preview -->
     <string name="example_score_performance">80</string>
@@ -52,9 +62,10 @@
     <string name="example_content_penalty">Penalti adalah pengurangan nilai Performa karena pelanggaran dalam waktu tertentu. Pelajari Selengkapnya</string>
     <string name="example_desc_pm_potential">Power Merchant berpotensi meningkatkan pesanan hingga 5 kali lipat</string>
     <string name="see_all_benefit">Lihat Semua Keuntungannya</string>
-    <string name="title_non_eligible_status_power_merchant">Gabung Power Merchant untuk dapatkan berbagai keuntungan menarik!</string>
+    <string name="see_all_the_steps">Lihat Semua Langkahnya</string>
+    <string name="title_non_eligible_status_power_merchant">Tingkatkan skor agar bisa gabung Power Merchant dan nikmati keuntungannya!</string>
     <string name="description_information_level_text">Level toko mewakili skala bisnismu. Kami menggunakan level untuk memberikan penilaian yang lebih adil untuk setiap skala bisnis yang berbeda.</string>
-    
+
     <string name="title_shop_score_service">Pelayanan tokomu sudah sangat memuaskan pembeli!</string>
     <string name="desc_shop_score_service">Tingkatkan terus kualitas tokomu supaya kamu punya kesempatan untuk naik ke level tertinggi, ya.</string>
     <string name="title_shop_performance_promo_creation">Yuk, gunakan fitur-fitur ini supaya tokomu makin berkembang!</string>
@@ -67,6 +78,7 @@
     <string name="select_date">Pilih Tanggal</string>
     <string name="end_date">Sampai dengan</string>
     <string name="btn_show_penalty">Tampilkan Pelanggaran</string>
+    <string name="ss_not_active">Tidak Aktif</string>
 
     <string name="btn_call_help_center">Hubungi Pusat Bantuan</string>
     <string name="point_deduction_date_result_detail_penalty">%1s: <![CDATA[<b>%2s</b>]]></string>
@@ -235,7 +247,7 @@
     <string name="desc_calculate_shop_performance_if_parameter_value_missing">Seller akan mendapatkan nilai sementara yang dihitung berdasarkan korelasi dari parameternya yang lain. Oleh karena itu, nilai sementara yang akan didapatkan akan berbeda-beda nominalnya antara satu Seller dengan yang lainnya.</string>
 
     <string name="title_calculate_shop_performance_for_new_seller">Bagaimana perhitungan skor Performa Toko untuk Seller baru (toko di bawah 90 hari)?</string>
-    
+
     <string name="title_shop_score_affect_os">Apakah Performa Toko mempengaruhi status keanggotaan Official Store?</string>
     <string name="desc_shop_score_affect_os">Saat ini, Performa Toko tidak mempengaruhi status keanggotaan Official Store.</string>
 
@@ -249,10 +261,10 @@
     <string name="item_detail_performance_value">%1s %2s</string>
     <string name="item_detail_performance_target">Target %s</string>
     <string name="desc_potential_eligible_power_merchant">Batas skor PM adalah 60. Daftar Power Merchant dan nikmati berbagai keuntungannya, yuk!</string>
-    <string name="desc_potential_rm_eligible_power_merchant_pro">Batas skor PM PRO adalah 70. Daftar PM PRO dan nikmati berbagai keuntungan eksklusifnya, ya!</string>
+    <string name="desc_potential_rm_eligible_power_merchant_pro">Gabung ke Power Merchant dan nikmati berbagai keuntungannya, yuk!</string>
 
     <string name="shop_performance_level_header">Level %s</string>
-    
+
     <string name="menu_title_info_shop_performance">Info</string>
     <string name="menu_title_warning_shop_performance">Penalty</string>
     <string name="title_detail_penalty_label">Detail Pelanggaran</string>
@@ -272,13 +284,16 @@
     <string name="title_header_rm_section_new_seller">Gabung ke Power Merchant untuk tarik banyak calon pembeli, yuk!</string>
     <string name="desc_potential_rm_section_new_seller"><![CDATA[Tingkatkan penjualan & kepercayaan pembeli dengan berbagai fitur untuk memaksimalkan bisnis.]]></string>
     <string name="text_see_all_benefit_pm_pro">Lihat Semua Keuntungannya</string>
+    <string name="ss_join_power_merchant">Gabung Power Merchant</string>
 
     <!-- RM not eligible for PM/PM PRO -->
-    <string name="desc_rm_not_eligible_all">Batas skor untuk bergabung Power Merchant adalah 60 dan Power Merchant PRO 70, ya.</string>
-    <string name="title_item_rm_section_not_eligible_all">Toko dengan Power Merchant punya keuntungan:</string>
+    <string name="desc_rm_not_eligible_all">Batas skor untuk bergabung Power Merchant adalah 60, ya.</string>
+    <string name="title_item_rm_section_not_eligible_all">Keuntungan Power Merchant:</string>
     <string name="title_item_rm_section_pm_benefit_1">Badge toko eksklusif Power Merchant atau Power Merchant PRO</string>
     <string name="title_item_rm_section_pm_benefit_2">Bebas Ongkir dengan biaya layanan lebih ringan</string>
     <string name="title_item_rm_section_pm_benefit_3">Akses fitur promosi eksklusif untuk tarik pembeli</string>
+    <string name="title_item_rm_section_pm_benefit_4">Badge PM PRO untuk tingkatkan kepercayaan</string>
+    <string name="title_item_rm_section_pm_benefit_5">Nikmati layanan prioritas Tokopedia Care</string>
     <string name="title_parameter_relief_new_seller">Keringanan parameter untuk Seller baru</string>
     <string name="desc_new_seller_parameter_relief">Kamu akan mendapatkan keringanan untuk parameter ini selama 59 hari bergabung.</string>
     <string name="title_new_seller_end_tenure_pop_up">Selamat, kamu sudah melewati 90 hari berjualan di Tokopedia!</string>

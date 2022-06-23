@@ -123,6 +123,8 @@ import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.shop
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.shopbannerinfinite.ShopBannerInfiniteItemViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.shopbannerinfinite.ShopBannerInfiniteViewHolder
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.shopbannerinfinite.ShopBannerInfiniteViewModel
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.shopcardinfinite.ShopCardInfiniteViewHolder
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.shopcardinfinite.ShopCardInfiniteViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.tdnbanner.DiscoveryTDNBannerViewHolder
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.tdnbanner.DiscoveryTDNBannerViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.topquest.TopQuestViewHolder
@@ -250,6 +252,7 @@ class DiscoveryHomeFactory {
             initializeComponent(ComponentsList.MyCouponItem, ::MyCouponItemViewHolder, ::MyCouponItemViewModel)
             initializeComponent(ComponentsList.BannerInfinite, ::ShopBannerInfiniteViewHolder, ::ShopBannerInfiniteViewModel)
             initializeComponent(ComponentsList.BannerInfiniteItem, ::ShopBannerInfiniteItemViewHolder, ::ShopBannerInfiniteItemViewModel)
+            initializeComponent(ComponentsList.ShopCardInfinite, ::ShopCardInfiniteViewHolder, ::ShopCardInfiniteViewModel)
 
         }
 

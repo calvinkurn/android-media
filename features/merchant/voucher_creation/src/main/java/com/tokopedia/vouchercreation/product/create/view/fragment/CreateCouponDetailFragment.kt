@@ -33,6 +33,7 @@ import com.tokopedia.vouchercreation.common.utils.DateTimeUtils.getCouponMaxStar
 import com.tokopedia.vouchercreation.common.utils.DateTimeUtils.getMinStartDate
 import com.tokopedia.vouchercreation.common.utils.DateTimeUtils.getToday
 import com.tokopedia.vouchercreation.common.utils.DateTimeUtils.isBeforeRollout
+import com.tokopedia.vouchercreation.common.utils.DateTimeUtils.roundDate
 import com.tokopedia.vouchercreation.databinding.FragmentMvcCreateCouponDetailBinding
 import com.tokopedia.vouchercreation.product.create.domain.entity.CouponInformation
 import com.tokopedia.vouchercreation.product.create.view.adapter.CreateCouponTargetAdapter
@@ -358,6 +359,8 @@ class CreateCouponDetailFragment(
         val defaultDate = viewModel.startDateCalendarLiveData.value ?: GregorianCalendar()
         val minDate = requireContext().getMinStartDate()
         val maxDate = requireContext().getCouponMaxStartDate()
+        minDate.roundDate()
+        maxDate.roundDate()
         getStartDateTimePicker(title, info, minDate, defaultDate, maxDate) {
             viewModel.setStartDateCalendar(it)
         }
