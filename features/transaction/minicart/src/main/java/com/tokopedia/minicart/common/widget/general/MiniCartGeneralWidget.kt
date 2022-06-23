@@ -67,6 +67,8 @@ class MiniCartGeneralWidget @JvmOverloads constructor(
 
         val application = (context as? Activity)?.application
         initializeInjector(application)
+
+        sendEventMiniCartImpression()
     }
 
     private fun initializeInjector(baseAppComponent: Application?) {
@@ -316,6 +318,16 @@ class MiniCartGeneralWidget @JvmOverloads constructor(
         )
     }
 
+    private fun sendEventMiniCartImpression() {
+        val shopIds = viewModel?.currentShopIds?.value?.joinToString(",") ?: ""
+        analytics.eventMiniCartGeneralWidgetImpression(shopIds)
+    }
+
+    private fun sendEventSimplifiedSummaryImpression() {
+        val shopIds = viewModel?.currentShopIds?.value?.joinToString(",") ?: ""
+        analytics.eventSimplifiedSummaryImpression(shopIds)
+    }
+
     /**
      * Function to initialize the widget
      */
@@ -369,6 +381,7 @@ class MiniCartGeneralWidget @JvmOverloads constructor(
     fun showSimplifiedSummaryBottomSheet(fragment: Fragment) {
         viewModel?.miniCartSimplifiedData?.value?.shoppingSummaryBottomSheetData?.let {
             shoppingSummaryBottomSheet.show(it, fragment.parentFragmentManager, context)
+            sendEventSimplifiedSummaryImpression()
         }
     }
 }

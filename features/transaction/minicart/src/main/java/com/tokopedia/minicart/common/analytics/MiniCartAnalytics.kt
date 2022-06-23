@@ -49,6 +49,8 @@ class MiniCartAnalytics @Inject constructor(val userSession: UserSessionInterfac
         const val VALUE_PAGE_SOURCE_SHOP_PAGE = "shoppage"
         const val VALUE_TRACKER_ID_CLICK_SEE_CART_ON_MINICART = "32052"
         const val VALUE_TRACKER_ID_CLICK_SIMPLIFIED_SUMMARY_ON_MINICART = "32054"
+        const val VALUE_TRACKER_ID_MINI_CART_GENERAL_WIDGET_IMPRESSION = "32353"
+        const val VALUE_TRACKER_ID_MINI_CART_SUMMARY_IMPRESSION = "32357"
 
         // EVENT NAME
         const val EVENT_NAME_CLICK_MINICART = "clickMinicart"
@@ -64,6 +66,7 @@ class MiniCartAnalytics @Inject constructor(val userSession: UserSessionInterfac
         const val EVENT_CATEGORY_MINICART = "minicart"
         const val EVENT_CATEGORY_CLICK_BUY = "tokonow %s"
         const val EVENT_CATEGORY_SHOP_PAGE_BUYER = "shop page - buyer"
+        const val EVENT_CATEGORY_SHOP_PAGE_BUYER_DIRECT_PURCHASE = "shop page - buyer - direct purchase"
 
         // EVENT ACTION
         const val EVENT_ACTION_CLICK_PRODUCT_NAME = "click product name"
@@ -94,6 +97,8 @@ class MiniCartAnalytics @Inject constructor(val userSession: UserSessionInterfac
         const val EVENT_ACTION_MVC_PROGRESS_BAR_IMPRESSION = "mvc progress bar impression"
         const val EVENT_ACTION_CLICK_CHANGE_PRODUCT_BUNDLE = "click ubah in product bundling"
         const val EVENT_ACTION_CLICK_ARROW_SIMPLIFIED_SUMMARY = "click arrow to ringkasan belanja"
+        const val EVENT_ACTION_MINI_CART_IMPRESSION = "impression - minicart"
+        const val EVENT_ACTION_MINI_CART_SUMMARY_IMPRESSION = "impression - minicart - summary"
 
         // EVENT LABEL
         const val EVENT_LABEL_SUCCESS = "success"
@@ -638,6 +643,40 @@ class MiniCartAnalytics @Inject constructor(val userSession: UserSessionInterfac
         trackingData[KEY_BUSINESS_UNIT] = VALUE_BUSINESS_UNIT_PURCHASE_PLATFORM
         trackingData[KEY_CURRENT_SITE] = VALUE_CURRENT_SITE_TOKOPEDIA_MARKETPLACE
         trackingData[KEY_TRACKER_ID] = VALUE_TRACKER_ID_CLICK_SIMPLIFIED_SUMMARY_ON_MINICART
+        sendGeneralEvent(trackingData)
+    }
+
+    /* https://mynakama.tokopedia.com/datatracker/requestdetail/view/3133 */
+    // 32353
+    fun eventMiniCartGeneralWidgetImpression(shopId: String) {
+        val trackingData = TrackAppUtils.gtmData(
+            EVENT_NAME_VIEW_PG_IRIS,
+            EVENT_CATEGORY_SHOP_PAGE_BUYER_DIRECT_PURCHASE,
+            EVENT_ACTION_MINI_CART_IMPRESSION,
+            ""
+        )
+        trackingData[KEY_SHOP_ID] = shopId
+        trackingData[KEY_USER_ID] = userSession.userId
+        trackingData[KEY_BUSINESS_UNIT] = VALUE_BUSINESS_UNIT_PURCHASE_PLATFORM
+        trackingData[KEY_CURRENT_SITE] = VALUE_CURRENT_SITE_TOKOPEDIA_MARKETPLACE
+        trackingData[KEY_TRACKER_ID] = VALUE_TRACKER_ID_MINI_CART_GENERAL_WIDGET_IMPRESSION
+        sendGeneralEvent(trackingData)
+    }
+
+    /* https://mynakama.tokopedia.com/datatracker/requestdetail/view/3133 */
+    // 32357
+    fun eventSimplifiedSummaryImpression(shopId: String) {
+        val trackingData = TrackAppUtils.gtmData(
+            EVENT_NAME_VIEW_PG_IRIS,
+            EVENT_CATEGORY_SHOP_PAGE_BUYER_DIRECT_PURCHASE,
+            EVENT_ACTION_MINI_CART_SUMMARY_IMPRESSION,
+            ""
+        )
+        trackingData[KEY_SHOP_ID] = shopId
+        trackingData[KEY_USER_ID] = userSession.userId
+        trackingData[KEY_BUSINESS_UNIT] = VALUE_BUSINESS_UNIT_PURCHASE_PLATFORM
+        trackingData[KEY_CURRENT_SITE] = VALUE_CURRENT_SITE_TOKOPEDIA_MARKETPLACE
+        trackingData[KEY_TRACKER_ID] = VALUE_TRACKER_ID_MINI_CART_SUMMARY_IMPRESSION
         sendGeneralEvent(trackingData)
     }
 }
