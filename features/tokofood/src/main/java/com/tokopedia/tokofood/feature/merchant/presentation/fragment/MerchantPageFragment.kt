@@ -227,7 +227,7 @@ class MerchantPageFragment : BaseMultiFragment(),
 
     override fun onResume() {
         super.onResume()
-        merchantPageAnalytics.openMerchantPage(merchantId, viewModel.merchantData?.opsHourFmt?.isWarning.orFalse())
+        merchantPageAnalytics.openMerchantPage(merchantId, viewModel.merchantData?.merchantProfile?.opsHourFmt?.isWarning.orFalse())
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

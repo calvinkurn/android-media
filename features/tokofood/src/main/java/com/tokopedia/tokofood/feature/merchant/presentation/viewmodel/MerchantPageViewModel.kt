@@ -10,14 +10,7 @@ import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFoodProduct
 import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFoodProductVariant
 import com.tokopedia.tokofood.common.presentation.uimodel.UpdateParam
 import com.tokopedia.tokofood.common.util.ResourceProvider
-import com.tokopedia.tokofood.feature.merchant.domain.model.response.GetMerchantDataResponse
-import com.tokopedia.tokofood.feature.merchant.domain.model.response.TokoFoodCatalogVariantDetail
-import com.tokopedia.tokofood.feature.merchant.domain.model.response.TokoFoodCatalogVariantOptionDetail
-import com.tokopedia.tokofood.feature.merchant.domain.model.response.TokoFoodCategoryCatalog
-import com.tokopedia.tokofood.feature.merchant.domain.model.response.TokoFoodCategoryFilter
-import com.tokopedia.tokofood.feature.merchant.domain.model.response.TokoFoodMerchantOpsHour
-import com.tokopedia.tokofood.feature.merchant.domain.model.response.TokoFoodMerchantProfile
-import com.tokopedia.tokofood.feature.merchant.domain.model.response.TokoFoodTickerDetail
+import com.tokopedia.tokofood.feature.merchant.domain.model.response.*
 import com.tokopedia.tokofood.feature.merchant.domain.usecase.GetMerchantDataUseCase
 import com.tokopedia.tokofood.feature.merchant.presentation.enums.CarouselDataType
 import com.tokopedia.tokofood.feature.merchant.presentation.enums.CustomListItemType
