@@ -241,6 +241,10 @@ object ApplinkConstInternalGlobal {
     // tokopedia-android-internal://global/link-account
     const val LINK_ACCOUNT = "$INTERNAL_GLOBAL/link-account"
 
+    // PrivacyAccountActivity
+    // tokopedia-android-internal://global/privacy-account
+    const val PRIVACY_ACCOUNT = "$INTERNAL_GLOBAL/privacy-account"
+
     // HasPasswordActivity
     // tokopedia-android-internal://global/has-password
     const val HAS_PASSWORD = "$INTERNAL_GLOBAL/has-password"

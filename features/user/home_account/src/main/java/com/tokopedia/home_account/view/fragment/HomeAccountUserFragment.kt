@@ -991,12 +991,25 @@ open class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListen
         val isRollenceEnabledDarkMode = getAbTestPlatform().getString(
             RollenceKey.USER_DARK_MODE_TOGGLE, "").isNotEmpty()
 
-        userSettingsMenu.items.forEach {
-            if(it.id == AccountConstants.SettingCode.SETTING_LINK_ACCOUNT && !isEnableLinkAccount()) {
-                userSettingsMenu.items.remove(it)
-            } else if (it.id == AccountConstants.SettingCode.SETTING_EXPLICIT_PROFILE && !isEnableExplicitProfileMenu()) {
-                userSettingsMenu.items.remove(it)
-            }
+        val settingsMenuIterator = userSettingsMenu.items.listIterator()
+
+        while (settingsMenuIterator.hasNext()) {
+            val value = settingsMenuIterator.next()
+
+            settingsMenuIterator.shouldRemove(
+                when(value.id) {
+                    AccountConstants.SettingCode.SETTING_LINK_ACCOUNT -> {
+                        isEnableLinkAccount()
+                    }
+                    AccountConstants.SettingCode.SETTING_PRIVACY_ACCOUNT -> {
+                        !isEnableLinkAccount()
+                    }
+                    AccountConstants.SettingCode.SETTING_EXPLICIT_PROFILE -> {
+                        !isEnableExplicitProfileMenu()
+                    }
+                    else -> false
+                }
+            )
         }
         addItem(userSettingsMenu, addSeparator = true)
         addItem(menuGenerator.generateApplicationSettingMenu(
@@ -1011,6 +1024,10 @@ open class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListen
                 CommonDataView(id = AccountConstants.SettingCode.SETTING_OUT_ID, title = getString(R.string.menu_account_title_sign_out), body = "", type = CommonViewHolder.TYPE_WITHOUT_BODY, icon = IconUnify.SIGN_OUT, endText = "Versi ${GlobalConfig.VERSION_NAME}")
         ), isExpanded = true), addSeparator = true)
         adapter?.notifyDataSetChanged()
+    }
+
+    private fun MutableListIterator<CommonDataView>.shouldRemove(shouldRemove: Boolean){
+        if (shouldRemove) this.remove()
     }
 
     private fun addItem(item: Any, addSeparator: Boolean, position: Int = -1) {
