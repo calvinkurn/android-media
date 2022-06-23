@@ -242,8 +242,8 @@ class PlayBottomSheetFragment @Inject constructor(
     }
 
     override fun onRefreshButtonClicked(view: PlayInteractiveLeaderboardViewComponent) {
-        playViewModel.submitAction(RefreshLeaderboard)
         newAnalytic.clickRefreshLeaderBoard(interactiveId = playViewModel.interactiveData.id, shopId = playViewModel.partnerId.toString(), channelId = playViewModel.channelId)
+        playViewModel.submitAction(RefreshLeaderboard)
     }
 
     override fun onRefreshButtonImpressed(view: PlayInteractiveLeaderboardViewComponent) {
