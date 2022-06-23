@@ -10,6 +10,9 @@ import com.tokopedia.unifyprinciples.Typography
  * Created by dhaba
  */
 object MissionWidgetUtil {
+    private const val MAX_LINES_SUBTITLE_HEIGHT = 2
+    private const val DEFAULT_LAYOUT_SPEC = 0
+
     private fun measureSummaryTextHeight(
         text: CharSequence?,
         textWidth: Int,
@@ -24,12 +27,12 @@ object MissionWidgetUtil {
         typography.setWeight(Typography.BOLD)
         typography.layoutParams = paramsTextView
         typography.text = text
-        typography.maxLines = 2
-        typography.measure(0, 0)
+        typography.maxLines = MAX_LINES_SUBTITLE_HEIGHT
+        typography.measure(DEFAULT_LAYOUT_SPEC, DEFAULT_LAYOUT_SPEC)
         val linearLayout = LinearLayout(context)
         linearLayout.layoutParams = params
         linearLayout.addView(typography)
-        linearLayout.measure(0, 0)
+        linearLayout.measure(DEFAULT_LAYOUT_SPEC, DEFAULT_LAYOUT_SPEC)
         typography.post {}.run {
             return typography.measuredHeight
         }
