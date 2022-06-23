@@ -28,6 +28,7 @@ import com.tokopedia.loaderdialog.LoaderDialog
 import com.tokopedia.mediauploader.common.state.UploadResult
 import com.tokopedia.tokomember_common_widget.callbacks.ChipGroupCallback
 import com.tokopedia.tokomember_common_widget.util.CreateScreenType
+import com.tokopedia.tokomember_common_widget.util.ProgramActionType
 import com.tokopedia.tokomember_common_widget.util.ProgramDateType
 import com.tokopedia.tokomember_seller_dashboard.R
 import com.tokopedia.tokomember_seller_dashboard.callbacks.TmOpenFragmentCallback
@@ -43,7 +44,9 @@ import com.tokopedia.tokomember_seller_dashboard.util.TmDateUtil.getTimeInMillis
 import com.tokopedia.tokomember_seller_dashboard.util.TmDateUtil.setDate
 import com.tokopedia.tokomember_seller_dashboard.tracker.TmTracker
 import com.tokopedia.tokomember_seller_dashboard.util.TmDateUtil.getDayOfWeekID
+import com.tokopedia.tokomember_seller_dashboard.util.TmDateUtil.setTime
 import com.tokopedia.tokomember_seller_dashboard.util.TmDateUtil.setTimeEnd
+import com.tokopedia.tokomember_seller_dashboard.util.TmDateUtil.setTimeStart
 import com.tokopedia.tokomember_seller_dashboard.view.activity.TokomemberDashIntroActivity
 import com.tokopedia.tokomember_seller_dashboard.view.adapter.model.TmCouponListItemPreview
 import com.tokopedia.tokomember_seller_dashboard.view.animation.TmExpandView.collapse
@@ -63,6 +66,7 @@ import kotlinx.android.synthetic.main.tm_dash_kupon_create_multiple.*
 import kotlinx.android.synthetic.main.tm_dash_kupon_create_multiple.containerViewFlipper
 import kotlinx.android.synthetic.main.tm_dash_kupon_create_multiple.globalError
 import kotlinx.android.synthetic.main.tm_dash_tnc_coupon_creation.view.*
+import java.text.SimpleDateFormat
 import java.util.*
 import javax.inject.Inject
 
@@ -73,7 +77,6 @@ class TmMultipleCuponCreateFragment : BaseDaggerFragment() {
     private var selectedCalendar: Calendar? = null
     private var selectedTime = ""
     private var startTime: Calendar? = null
-    private var programData: ProgramUpdateDataInput? = null
     private var couponPremiumData: TmSingleCouponData? = null
     private var couponVip: TmSingleCouponData? = null
     private var tmCouponPreviewData = TmCouponPreviewData()
@@ -98,6 +101,7 @@ class TmMultipleCuponCreateFragment : BaseDaggerFragment() {
     private var couponStartTime = ""
     private var couponEndDate = ""
     private var couponEndTime = ""
+    private var programActionType = ProgramActionType.CREATE
 
     @Inject
     lateinit var viewModelFactory: dagger.Lazy<ViewModelProvider.Factory>
@@ -134,7 +138,7 @@ class TmMultipleCuponCreateFragment : BaseDaggerFragment() {
         observeViewModel()
         shopName = arguments?.getString(BUNDLE_SHOP_NAME) ?: ""
         shopAvatar = arguments?.getString(BUNDLE_SHOP_AVATAR) ?: ""
-        programData = arguments?.getParcelable(BUNDLE_PROGRAM_DATA)
+        programActionType = arguments?.getInt(BUNDLE_PROGRAM_TYPE, 0)?:0
         tmDashCreateViewModel.getInitialCouponData(CREATE, "")
     }
 
@@ -204,6 +208,7 @@ class TmMultipleCuponCreateFragment : BaseDaggerFragment() {
                             it.data?.voucherValidationPartial?.data?.validationError,
                             "premium"
                         )
+                        closeLoadingDialog()
                         setButtonState()
                     }
                 }
@@ -227,10 +232,11 @@ class TmMultipleCuponCreateFragment : BaseDaggerFragment() {
                                     BUNDLE_SHOP_ID
                                 ).toString(),
                                 getTimeInMillis(manualStartTimeProgram),
-                                getTimeInMillisEnd(manualEndTimeProgram),
+                                getTimeInMillis(manualEndTimeProgram),
                                 SOURCE_MULTIPLE_COUPON_CREATE
                             )
                         } else {
+                            closeLoadingDialog()
                             setButtonState()
                             handleProgramValidateError(
                                 it.data?.voucherValidationPartial?.data?.validationError,
@@ -469,7 +475,7 @@ class TmMultipleCuponCreateFragment : BaseDaggerFragment() {
                         BUNDLE_SHOP_ID
                     ).toString(),
                         getTimeInMillis(manualStartTimeProgram),
-                        getTimeInMillisEnd(manualEndTimeProgram),
+                        getTimeInMillis(manualEndTimeProgram),
                         SOURCE_MULTIPLE_COUPON_CREATE)
                     else -> {
                         (TokomemberDashIntroActivity.openActivity(
@@ -625,6 +631,8 @@ class TmMultipleCuponCreateFragment : BaseDaggerFragment() {
             }
             it.isEnabled = false
             it.isClickable = false
+            couponPremiumData = tmPremiumCoupon?.getSingleCouponData()
+            couponVip = tmVipCoupon?.getSingleCouponData()
             preValidateCouponPremium(couponPremiumData)
         }
     }
@@ -635,10 +643,11 @@ class TmMultipleCuponCreateFragment : BaseDaggerFragment() {
                 targetBuyer = 3,
                 benefitType = IDR,
                 couponType = coupon?.typeCoupon,
-                benefitMax = coupon?.maxCashback.toIntSafely(),
+                benefitMax = CurrencyFormatHelper.convertRupiahToInt(coupon?.maxCashback?:""),
                 benefitPercent = coupon?.cashBackPercentage,
-                minPurchase = coupon?.minTransaki.toIntSafely(),
-                source = ANDROID
+                minPurchase = CurrencyFormatHelper.convertRupiahToInt(coupon?.minTransaki?:""),
+                source = ANDROID,
+                quota = coupon?.quota?.toIntSafely()
             )
         )
     }
@@ -656,7 +665,8 @@ class TmMultipleCuponCreateFragment : BaseDaggerFragment() {
                 minPurchase = CurrencyFormatHelper.convertRupiahToInt(
                     couponPremiumData?.minTransaki ?: ""
                 ),
-                source = ANDROID
+                source = ANDROID,
+                quota = couponPremiumData?.quota?.toIntSafely()
             )
         )
     }
@@ -764,13 +774,13 @@ class TmMultipleCuponCreateFragment : BaseDaggerFragment() {
                     setDate(manualStartTimeProgram)
                 )
                 textFieldProgramStartTime.editText.setText(
-                    setTimeEnd(manualStartTimeProgram)
+                    setTimeStart(manualStartTimeProgram)
                 )
                 textFieldProgramEndDate.editText.setText(
                     setDate(manualEndTimeProgram)
                 )
                 textFieldProgramEndTime.editText.setText(
-                    setTimeEnd(manualEndTimeProgram)
+                    setTimeStart(manualEndTimeProgram)
                 )
 
                 textFieldProgramStartDate.isEnabled = false
@@ -783,9 +793,9 @@ class TmMultipleCuponCreateFragment : BaseDaggerFragment() {
                 textFieldProgramEndTime.iconContainer.isEnabled = false
 
                 couponStartDate = manualStartTimeProgram.substringBefore(" ")
-                couponStartTime = setTimeEnd(manualStartTimeProgram)
+                couponStartTime = setTimeStart(manualStartTimeProgram)
                 couponEndDate = manualEndTimeProgram.substringBefore(" ")
-                couponEndTime = setTimeEnd(manualEndTimeProgram)
+                couponEndTime = setTimeStart(manualEndTimeProgram)
             }
             ProgramDateType.MANUAL -> {
                 textFieldProgramStartDate.isEnabled = true
@@ -818,15 +828,14 @@ class TmMultipleCuponCreateFragment : BaseDaggerFragment() {
 
             val maxDate = GregorianCalendar(yearMax, monthMax, dayMax)
             val currentDate = GregorianCalendar(LocaleUtils.getCurrentLocale(it))
+            val sdf = SimpleDateFormat(SIMPLE_DATE_FORMAT, locale)
+            try {
+                currentDate.time = sdf.parse(manualStartTimeProgram + "00")?: Date()
+            } catch (e: Exception) {
+            }
+            currentDate.add(Calendar.DAY_OF_MONTH,1)
 
-            val calMin = Calendar.getInstance()
-            calMin.add(Calendar.YEAR, TmProgramFragment.MIN_YEAR)
-            val yearMin = calMin.get(Calendar.YEAR)
-            val monthMin = calMin.get(Calendar.MONTH)
-            val dayMin = calMin.get(Calendar.DAY_OF_MONTH)
-
-            val minDate = GregorianCalendar(yearMin, monthMin, dayMin)
-            val datepickerObject = DateTimePickerUnify(it, minDate, currentDate, maxDate).apply {
+            val datepickerObject = DateTimePickerUnify(it, currentDate, currentDate, maxDate).apply {
                 setTitle(DATE_TITLE)
                 setInfo(DATE_DESC)
                 setInfoVisible(true)

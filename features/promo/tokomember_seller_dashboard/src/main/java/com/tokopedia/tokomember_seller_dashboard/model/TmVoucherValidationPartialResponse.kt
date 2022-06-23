@@ -12,16 +12,16 @@ data class TmVoucherValidationPartialResponse(
 data class HeaderPartial(
 	@Expose
 	@SerializedName("reason")
-	val reason: String? = null,
+	val reason: String? = "",
 	@Expose
 	@SerializedName("messages")
-	val messages: List<Any?>? = null,
+	val messages: List<Any?>? = arrayListOf(),
 	@Expose
 	@SerializedName("error_code")
-	val errorCode: String? = null,
+	val errorCode: String? = "",
 	@Expose
 	@SerializedName("process_time")
-	val processTime: Double? = null
+	val processTime: Double? = 0.0
 )
 
 data class VoucherValidationPartial(
@@ -36,52 +36,52 @@ data class VoucherValidationPartial(
 data class ValidationError(
 	@Expose
 	@SerializedName("benefit_max")
-	val benefitMax: String? = null,
+	val benefitMax: String? = "",
 	@Expose
 	@SerializedName("image")
-	val image: String? = null,
+	val image: String? = "",
 	@Expose
 	@SerializedName("code")
-	val code: String? = null,
+	val code: String? = "",
 	@Expose
 	@SerializedName("min_purchase")
-	val minPurchase: String? = null,
+	val minPurchase: String? = "",
 	@Expose
 	@SerializedName("benefit_percent")
-	val benefitPercent: String? = null,
+	val benefitPercent: String? = "",
 	@Expose
 	@SerializedName("hour_end")
-	val hourEnd: String? = null,
+	val hourEnd: String? = "",
 	@Expose
 	@SerializedName("date_end")
-	val dateEnd: String? = null,
+	val dateEnd: String? = "",
 	@Expose
 	@SerializedName("image_square")
-	val imageSquare: String? = null,
+	val imageSquare: String? = "",
 	@Expose
 	@SerializedName("coupon_name")
-	val couponName: String? = null,
+	val couponName: String? = "",
 	@Expose
 	@SerializedName("benefit_type")
-	val benefitType: String? = null,
+	val benefitType: String? = "",
 	@Expose
 	@SerializedName("date_start")
-	val dateStart: String? = null,
+	val dateStart: String? = "",
 	@Expose
 	@SerializedName("benefit_idr")
-	val benefitIdr: String? = null,
+	val benefitIdr: String? = "",
 	@Expose
 	@SerializedName("quota")
-	val quota: String? = null,
+	val quota: String? = "",
 	@Expose
 	@SerializedName("is_public")
-	val isPublic: String? = null,
+	val isPublic: String? = "",
 	@Expose
 	@SerializedName("coupon_type")
-	val couponType: String? = null,
+	val couponType: String? = "",
 	@Expose
 	@SerializedName("hour_start")
-	val hourStart: String? = null
+	val hourStart: String? = ""
 )
 
 data class DataPartialValidate(

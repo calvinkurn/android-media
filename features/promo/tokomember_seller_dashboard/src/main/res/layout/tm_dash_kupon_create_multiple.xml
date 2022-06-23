@@ -8,8 +8,7 @@
     android:clickable="true"
     android:background="@color/Unify_Background"
     android:measureAllChildren="false"
-    tools:ignore="MissingDefaultResource"
-    android:focusable="true">
+    tools:ignore="MissingDefaultResource">
 
    <include layout="@layout/tm_coupon_creation_shimmer"/>
 

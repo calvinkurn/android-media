@@ -22,7 +22,7 @@ const val QUOTA_DEFAULT = "100"
 const val PERCENTAGE_DEFAULT = "5"
 const val MAX_CASHBACK = "20.000"
 const val MAX_CASHBACK_COUPON = "20000.0"
-const val MIN_TRANSACTION = "100000"
+const val MIN_TRANSACTION = "100.000"
 const val CHIP_LABEL_RUPIAH = "Rupiah(Rp)"
 const val CHIP_LABEL_PERCENTAGE = "Persentase (%)"
 const val CHIP_LABEL_FREE_SHIPPING = "Gratis Ongkir"
@@ -150,7 +150,7 @@ class TmSingleCouponView @JvmOverloads constructor(
                         }
                         number>= MAX_CASHBACK_CHECK -> {
                             textFieldMaxCashback.isInputError = true
-                            textFieldMaxCashback.setMessage("Maks. Rp10.000")
+                            textFieldMaxCashback.setMessage("Maks. Rp99.999.99")
                         }
                         else -> {
                             if (number > CurrencyFormatHelper.convertRupiahToInt(textFieldMinTransk.editText.text.toString())) {
@@ -182,7 +182,7 @@ class TmSingleCouponView @JvmOverloads constructor(
                         }
                         number>= MAX_CASHBACK_CHECK -> {
                             textFieldMinTransk.isInputError = true
-                            textFieldMinTransk.setMessage("Maks. Rp10.000")
+                            textFieldMinTransk.setMessage("Maks. Rp99.999.99")
                         }
                         else -> {
                             textFieldMinTransk.isInputError = false
@@ -209,6 +209,8 @@ class TmSingleCouponView @JvmOverloads constructor(
                             textFieldPercentCashback.setMessage("Maks. 100%")
                         }
                         else -> {
+                            textFieldPercentCashback.isInputError = false
+                            textFieldPercentCashback.setMessage("")
                             ivPreviewCoupon.setCouponBenefit(number.toString())
                         }
                     }

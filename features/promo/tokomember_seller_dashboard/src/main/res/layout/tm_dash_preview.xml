@@ -6,15 +6,15 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:clickable="true"
+    android:background="@color/Unify_Background"
     tools:ignore="MissingDefaultResource"
     android:focusable="true">
 
-<!--
     <include layout="@layout/tm_dash_preview_shimmer"/>
--->
 
     <androidx.core.widget.NestedScrollView
         android:id="@+id/scrollContainer"
+        android:background="@color/Unify_Background"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
@@ -390,6 +390,7 @@
     <com.tokopedia.globalerror.GlobalError
         android:id="@+id/globalErrorPreview"
         android:layout_gravity="center"
+        android:background="@color/Unify_Background"
         app:globalerrors_type="SERVER_ERROR"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"/>
