@@ -73,7 +73,7 @@ class ProductStockReminderAdapter(
         private fun setupStatusSwitch(product: ProductStockReminderUiModel) {
             binding.swStockReminder.setOnCheckedChangeListener { _, _ ->
                 val stockLimit = binding.qeStock.getValue().orZero()
-                validateMinMaxStock(product.id, stockLimit)
+                validateMinMaxStock(stockLimit)
                 notifyChange(product.id, stockLimit)
             }
             binding.swStockReminder.isChecked =
@@ -108,7 +108,7 @@ class ProductStockReminderAdapter(
                     } else {
                         StockReminderConst.EMPTY_INPUT_STOCK
                     }
-                    validateMinMaxStock(product.id, stock)
+                    validateMinMaxStock(stock)
                     notifyChange(product.id, stock)
                     toggleQuantityEditorBtn(stock)
                 }
@@ -126,7 +126,7 @@ class ProductStockReminderAdapter(
             }
         }
 
-        fun validateMinMaxStock(productId: String, stock: Int) {
+        fun validateMinMaxStock(stock: Int) {
             when {
                 stock < MINIMUM_STOCK_REMINDER -> {
                     binding.qeStock.errorMessageText = itemView.resources.getString(
