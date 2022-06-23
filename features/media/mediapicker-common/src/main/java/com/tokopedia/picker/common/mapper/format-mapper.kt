@@ -5,6 +5,9 @@ import com.tokopedia.picker.common.R as commonPickerR
 
 const val DEFAULT_DURATION_LABEL = "00:00"
 const val ADDITIONAL_DURATION_BUFFER = 500
+const val SECOND_TIME_DIVIDER = 1000
+const val MINUTE_TIME_DIVIDER = SECOND_TIME_DIVIDER * 60
+const val HOUR_TIME_DIVIDER = MINUTE_TIME_DIVIDER * 60
 
 /**
  * Mapper of duration,
@@ -25,9 +28,9 @@ fun Int?.humanize(): String {
      */
     val duration = this + ADDITIONAL_DURATION_BUFFER
 
-    val second = duration / 1000 % 60
-    val minute = duration / (1000 * 60) % 60
-    val hour = duration / (1000 * 60 * 60) % 24
+    val second = duration / SECOND_TIME_DIVIDER % 60
+    val minute = duration / MINUTE_TIME_DIVIDER % 60
+    val hour = duration / HOUR_TIME_DIVIDER % 24
 
     return if (hour > 0) {
         String.format("%02d:%02d:%02d", hour, minute, second)
