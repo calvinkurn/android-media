@@ -21,6 +21,7 @@ import com.tokopedia.shop.flashsale.common.extension.*
 import com.tokopedia.shop.flashsale.di.component.DaggerShopFlashSaleComponent
 import com.tokopedia.shop.flashsale.domain.entity.SellerCampaignProductList
 import com.tokopedia.shop.flashsale.domain.entity.enums.ManageProductBannerType.*
+import com.tokopedia.shop.flashsale.presentation.creation.highlight.ManageHighlightedProductActivity
 import com.tokopedia.shop.flashsale.presentation.creation.information.CampaignInformationFragment
 import com.tokopedia.shop.flashsale.presentation.creation.manage.adapter.ManageProductListAdapter
 import com.tokopedia.shop.flashsale.presentation.creation.manage.dialog.ProductDeleteDialog
@@ -123,12 +124,16 @@ class ManageProductFragment :
                 }
             }
             btnSaveDraft.setOnClickListener {
-                binding?.root showToaster getString(R.string.sfs_saved_as_draft)
+                root showToaster getString(R.string.sfs_saved_as_draft)
                 doOnDelayFinished(REDIRECT_TO_CAMPAIGN_LIST_PAGE_DELAY) {
                     routeToCampaignListPage()
                 }
             }
+            btnContinue.setOnClickListener {
+                context?.let { it1 -> ManageHighlightedProductActivity.start(it1, campaignId) }
+            }
         }
+        setupScrollListener()
     }
 
     private fun observeProductList() {
@@ -253,7 +258,7 @@ class ManageProductFragment :
         binding?.apply {
             tickerErrorProductInfo.gone()
             cardIncompleteProductInfo.visible()
-            btnContinue.disable()
+            btnContinue.enable()
         }
     }
 
