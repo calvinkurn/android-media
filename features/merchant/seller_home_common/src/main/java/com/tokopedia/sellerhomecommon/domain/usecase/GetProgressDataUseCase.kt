@@ -62,6 +62,7 @@ class GetProgressDataUseCase constructor(
                   error
                   errorMsg
                   showWidget
+                  updateInfo
                 }
               }
             }
