@@ -9,6 +9,8 @@ import com.tokopedia.media.loader.loadImage
 import com.tokopedia.recharge_component.databinding.ViewRechargeRecommendationCardBigBinding
 import com.tokopedia.recharge_component.listener.RechargeRecommendationCardListener
 import com.tokopedia.recharge_component.model.recommendation_card.RecommendationCardWidgetModel
+import com.tokopedia.unifyprinciples.Typography.Companion.BODY_2
+import com.tokopedia.unifyprinciples.Typography.Companion.DISPLAY_3
 
 class RecommendationCardBigViewHolder(
     private val recommendationTitle: String,
@@ -32,6 +34,13 @@ class RecommendationCardBigViewHolder(
                     } else hide()
                 }
 
+                tgSpecialRecommendationCardBig.run {
+                    if (recommendation.specialLabel.isNotEmpty()) {
+                        show()
+                        text = recommendation.specialLabel
+                    } else hide()
+                }
+
                 labelDiscountRechargeRecommendationCardBig.run {
                     if (recommendation.discount.isNotEmpty()) {
                         show()
@@ -42,8 +51,10 @@ class RecommendationCardBigViewHolder(
                 viewSeparatorTypeRechargeRecommendationCardBig.run {
                     if (recommendation.productExpired.isNotEmpty() &&
                         recommendation.productType.isNotEmpty()) {
+                        tgExpiredRechargeRecommendationCardBig.setType(BODY_2)
                         show()
                     } else {
+                        tgExpiredRechargeRecommendationCardBig.setType(DISPLAY_3)
                         hide()
                     }
                 }

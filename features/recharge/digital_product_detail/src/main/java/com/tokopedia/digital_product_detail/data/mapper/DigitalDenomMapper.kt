@@ -186,7 +186,8 @@ class DigitalDenomMapper @Inject constructor() {
                 productId = it.trackingData.productId,
                 operatorId = it.trackingData.operatorId,
                 productType = if (isBigRecommendation) it.label1 else "",
-                productExpired = if (isBigRecommendation) it.label2 else ""
+                productExpired = if (isBigRecommendation) it.label2 else "",
+                specialLabel = if (isBigRecommendation) it.label3 else "",
             )
         }
     }

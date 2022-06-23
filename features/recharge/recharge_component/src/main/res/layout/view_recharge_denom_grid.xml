@@ -33,7 +33,8 @@
             android:layout_width="@dimen/unify_space_0"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/spacing_lvl2"
-            app:typographyType="small"
+            android:textColor="@color/Unify_NN600"
+            app:typographyType="display_3"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tg_denom_grid_title"
@@ -75,7 +76,7 @@
             android:id="@+id/tg_denom_grid_price"
             android:layout_width="@dimen/unify_space_0"
             android:layout_height="wrap_content"
-            android:paddingTop="@dimen/spacing_lvl2"
+            android:paddingTop="@dimen/unify_space_12"
             android:ellipsize="end"
             android:lines="1"
             android:visibility="gone"
@@ -87,6 +88,7 @@
             app:layout_constraintVertical_bias="1"
             app:typographyType="body_2"
             app:typographyWeight="bold"
+            app:layout_goneMarginTop="@dimen/unify_space_12"
             tools:text="Rp14.400"
             tools:visibility="visible" />
 

@@ -68,6 +68,7 @@ class GetRechargeRecommendationUseCase @Inject constructor(
               webLink
               label1
               label2
+              label3
               price
               slashedPrice
               discount
