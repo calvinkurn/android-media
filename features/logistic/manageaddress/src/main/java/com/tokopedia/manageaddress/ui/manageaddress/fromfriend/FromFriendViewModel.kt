@@ -7,9 +7,9 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.logisticCommon.domain.model.AddressListModel
 import com.tokopedia.logisticCommon.domain.request.AddressRequest
-import com.tokopedia.manageaddress.domain.DeleteFromFriendAddressUseCase
-import com.tokopedia.manageaddress.domain.GetAddressSharedListUseCase
-import com.tokopedia.manageaddress.domain.SaveFromFriendAddressUseCase
+import com.tokopedia.manageaddress.domain.usecase.DeleteFromFriendAddressUseCase
+import com.tokopedia.manageaddress.domain.usecase.GetAddressSharedListUseCase
+import com.tokopedia.manageaddress.domain.usecase.SaveFromFriendAddressUseCase
 import com.tokopedia.manageaddress.domain.model.shareaddress.FromFriendAddressActionState
 import com.tokopedia.manageaddress.domain.model.shareaddress.FromFriendAddressListState
 import kotlinx.coroutines.delay

@@ -3,7 +3,7 @@ package com.tokopedia.manageaddress.ui.shareaddress.bottomsheets
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
 import com.tokopedia.logisticCommon.domain.response.ShareAddressResponse
-import com.tokopedia.manageaddress.domain.ShareAddressUseCase
+import com.tokopedia.manageaddress.domain.usecase.ShareAddressUseCase
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result

@@ -4,9 +4,9 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
 import com.tokopedia.logisticCommon.domain.model.AddressListModel
 import com.tokopedia.logisticCommon.domain.response.ShareAddressResponse
-import com.tokopedia.manageaddress.domain.DeleteFromFriendAddressUseCase
-import com.tokopedia.manageaddress.domain.GetAddressSharedListUseCase
-import com.tokopedia.manageaddress.domain.SaveFromFriendAddressUseCase
+import com.tokopedia.manageaddress.domain.usecase.DeleteFromFriendAddressUseCase
+import com.tokopedia.manageaddress.domain.usecase.GetAddressSharedListUseCase
+import com.tokopedia.manageaddress.domain.usecase.SaveFromFriendAddressUseCase
 import com.tokopedia.manageaddress.domain.model.shareaddress.FromFriendAddressActionState
 import com.tokopedia.manageaddress.domain.model.shareaddress.FromFriendAddressListState
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
