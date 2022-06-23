@@ -1,6 +1,5 @@
 package com.tokopedia.play.broadcaster.util.logger
 
-import com.tokopedia.broadcaster.revamp.util.statistic.BroadcasterMetric
 import com.tokopedia.logger.ServerLogger
 import com.tokopedia.logger.utils.Priority
 import com.tokopedia.play.broadcaster.data.type.PlaySocketType
@@ -23,6 +22,9 @@ class PlayLoggerImpl @Inject constructor(
         private const val TAG_PLAY_BROADCASTER_MONITORING = "PLAY_BROADCASTER_MONITORING"
     }
 
+    /***
+     * Send logs to PLAY_BROADCASTER
+     */
     private fun sendLog(messages: Map<String, String>) {
         ServerLogger.log(Priority.P2, TAG_SCALYR, messages)
     }
@@ -57,6 +59,9 @@ class PlayLoggerImpl @Inject constructor(
         }
     }
 
+    /***
+     * Send logs to PLAY_BROADCASTER_MONITORING
+     */
     override fun sendBroadcasterLog(metric: PlayBroadcasterMetric) {
         val metrics = mapOf(
             "videoBitrate" to "${metric.videoBitrate}",

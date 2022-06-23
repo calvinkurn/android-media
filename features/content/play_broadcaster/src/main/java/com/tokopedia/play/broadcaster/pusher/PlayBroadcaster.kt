@@ -9,6 +9,7 @@ import com.tokopedia.broadcaster.revamp.state.BroadcastState
 import com.tokopedia.broadcaster.revamp.util.statistic.BroadcasterMetric
 import com.tokopedia.play.broadcaster.di.ActivityRetainedScope
 import com.tokopedia.play.broadcaster.pusher.state.PlayBroadcasterState
+import com.tokopedia.remoteconfig.RemoteConfig
 import javax.inject.Inject
 
 /**
@@ -19,6 +20,7 @@ class PlayBroadcaster(
     private val handler: Handler?,
     private val broadcaster: Broadcaster,
     private val callback: Callback,
+    private val remoteConfig: RemoteConfig,
 ) : Broadcaster by broadcaster {
 
     @ActivityRetainedScope
@@ -28,14 +30,18 @@ class PlayBroadcaster(
         fun create(
             activityContext: Context,
             handler: Handler?,
-            callback: Callback
+            callback: Callback,
+            remoteConfig: RemoteConfig,
         ): PlayBroadcaster {
-            return PlayBroadcaster(activityContext, handler, broadcaster, callback)
+            return PlayBroadcaster(activityContext, handler, broadcaster, callback, remoteConfig)
         }
     }
 
     private var mLastIngestUrl = ""
     private var isStartedBefore = false
+
+    private val monitoringInterval: Long
+        get() = remoteConfig.getLong(FIREBASE_REMOTE_CONFIG_KEY_BRO_MONITORING, 0) * 1000
 
     private val broadcastListener = object : Broadcaster.Listener {
         override fun onBroadcastInitStateChanged(state: BroadcastInitState) {
@@ -66,7 +72,7 @@ class PlayBroadcaster(
     init {
         broadcaster.init(activityContext, handler)
         broadcaster.addListener(broadcastListener)
-        broadcaster.enableStatistic(3000) // todo: get from firebase
+        if(monitoringInterval > 0) broadcaster.enableStatistic(monitoringInterval)
     }
 
     /**
@@ -135,5 +141,6 @@ class PlayBroadcaster(
 
     companion object {
         private const val RETRY_TIMEOUT = 3000L
+        private const val FIREBASE_REMOTE_CONFIG_KEY_BRO_MONITORING = "android_mainapp_play_broadcaster_monitoring"
     }
 }

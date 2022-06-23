@@ -51,6 +51,7 @@ import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastViewModel
 import com.tokopedia.play.broadcaster.view.viewmodel.factory.PlayBroadcastViewModelFactory
 import com.tokopedia.play_common.model.result.NetworkResult
 import com.tokopedia.play_common.util.extension.awaitResume
+import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
 import kotlinx.coroutines.flow.collectLatest
@@ -86,6 +87,9 @@ class PlayBroadcastActivity : BaseActivity(),
 
     @Inject
     lateinit var broadcasterFactory: PlayBroadcaster.Factory
+
+    @Inject
+    lateinit var remoteConfig: RemoteConfig
 
     private lateinit var viewModel: PlayBroadcastViewModel
 
@@ -147,7 +151,8 @@ class PlayBroadcastActivity : BaseActivity(),
         broadcaster = broadcasterFactory.create(
             activityContext = this,
             handler = handler,
-            callback = this
+            callback = this,
+            remoteConfig = remoteConfig,
         )
     }
 
