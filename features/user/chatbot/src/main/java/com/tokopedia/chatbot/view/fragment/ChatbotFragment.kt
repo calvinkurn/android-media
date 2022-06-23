@@ -686,12 +686,10 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
         return view?.findViewById(R.id.swipe_refresh_layout)
     }
 
-    //TODO fix this
     override fun onSwipeRefresh() {
         if (!isChatRefreshed && isFirstPage){
             hideSnackBarRetry()
-            //TODO test this
-            presenter.getTopChat(messageId, onSuccessGetTopChatData(), onErrorGetTopChat(), onGetChatRatingListMessageError)
+            presenter.getExistingChat(messageId, onError(), onSuccessGetExistingChatFirstTime(), onGetChatRatingListMessageError)
             swipeToRefresh.isRefreshing = true
             isChatRefreshed = true
         } else{
