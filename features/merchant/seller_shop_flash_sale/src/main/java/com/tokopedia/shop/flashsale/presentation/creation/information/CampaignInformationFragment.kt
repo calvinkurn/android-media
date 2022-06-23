@@ -147,6 +147,7 @@ class CampaignInformationFragment : BaseDaggerFragment() {
         super.onViewCreated(view, savedInstanceState)
         setupView()
         setFragmentToUnifyBgColor()
+        observeCurrentMonthRemainingQuota()
         observeValidationResult()
         observeCampaignCreation()
         observeCampaignUpdate()
@@ -155,11 +156,29 @@ class CampaignInformationFragment : BaseDaggerFragment() {
         observeSaveDraft()
         handlePageMode()
         handleCoachMark()
+        viewModel.getCurrentMonthRemainingQuota()
     }
 
     private fun observeValidationResult() {
         viewModel.areInputValid.observe(viewLifecycleOwner) { validationResult ->
             handleValidationResult(validationResult)
+        }
+    }
+
+    private fun observeCurrentMonthRemainingQuota() {
+        viewModel.currentMonthRemainingQuota.observe(viewLifecycleOwner) { result ->
+            binding?.loader?.gone()
+            when (result) {
+                is Success -> {
+                    binding?.groupContent?.visible()
+                    val remainingQuota = result.data
+                    viewModel.setRemainingQuota(remainingQuota)
+                }
+                is Fail -> {
+                    binding?.groupContent?.gone()
+                    binding?.root showError result.throwable
+                }
+            }
         }
     }
 
@@ -227,16 +246,13 @@ class CampaignInformationFragment : BaseDaggerFragment() {
 
     private fun observeCampaignQuota() {
         viewModel.campaignQuota.observe(viewLifecycleOwner) { result ->
-            binding?.loader?.gone()
             when (result) {
                 is Success -> {
-                    binding?.groupContent?.visible()
                     val remainingQuota = result.data
                     viewModel.setRemainingQuota(remainingQuota)
                     handleRemainingQuota(remainingQuota)
                 }
                 is Fail -> {
-                    binding?.groupContent?.gone()
                     binding?.root showError result.throwable
                 }
             }
