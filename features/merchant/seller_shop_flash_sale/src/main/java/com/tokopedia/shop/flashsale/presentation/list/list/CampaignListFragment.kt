@@ -1,6 +1,8 @@
 package com.tokopedia.shop.flashsale.presentation.list.list
 
+import android.app.Activity
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -31,9 +33,11 @@ import com.tokopedia.shop.flashsale.domain.entity.CampaignUiModel
 import com.tokopedia.shop.flashsale.domain.entity.aggregate.CampaignCreationEligibility
 import com.tokopedia.shop.flashsale.domain.entity.aggregate.ShareComponentMetadata
 import com.tokopedia.shop.flashsale.domain.entity.enums.CampaignStatus
+import com.tokopedia.shop.flashsale.domain.entity.enums.PageMode
 import com.tokopedia.shop.flashsale.domain.entity.enums.isOngoing
 import com.tokopedia.shop.flashsale.presentation.cancelation.CancelCampaignBottomSheet
 import com.tokopedia.shop.flashsale.presentation.creation.information.CampaignInformationActivity
+import com.tokopedia.shop.flashsale.presentation.creation.information.CampaignInformationActivity.Companion.REQUEST_CODE_CREATE_CAMPAIGN_INFO
 import com.tokopedia.shop.flashsale.presentation.draft.bottomsheet.DraftListBottomSheet
 import com.tokopedia.shop.flashsale.presentation.draft.uimodel.DraftItemModel
 import com.tokopedia.shop.flashsale.presentation.list.container.CampaignListContainerFragment
@@ -516,7 +520,7 @@ class CampaignListFragment : BaseSimpleListFragment<CampaignAdapter, CampaignUiM
             return
         }
 
-        CampaignInformationActivity.start(requireActivity())
+        launchCampaignInformationPage()
     }
 
     private fun displayMoreMenuBottomSheet(campaign: CampaignUiModel) {
@@ -582,7 +586,7 @@ class CampaignListFragment : BaseSimpleListFragment<CampaignAdapter, CampaignUiM
     }
 
     private fun onDraftClicked(draft: DraftItemModel) {
-        CampaignInformationActivity.startUpdateMode(requireActivity(), draft.id)
+        launchCampaignInformationPageWithEditMode(draft.id)
     }
 
     private fun showLoaderDialog() {
@@ -610,7 +614,7 @@ class CampaignListFragment : BaseSimpleListFragment<CampaignAdapter, CampaignUiM
             return
         }
 
-        CampaignInformationActivity.startUpdateMode(requireActivity(), campaign.campaignId)
+        launchCampaignInformationPageWithEditMode(campaign.campaignId)
     }
 
     private fun showCancelCampaignBottomSheet(campaign: CampaignUiModel) {
@@ -688,5 +692,35 @@ class CampaignListFragment : BaseSimpleListFragment<CampaignAdapter, CampaignUiM
 
     override fun onCampaignCancelled() {
         getCampaigns(FIRST_PAGE)
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+
+        if (requestCode == REQUEST_CODE_CREATE_CAMPAIGN_INFO && resultCode == Activity.RESULT_OK) {
+            binding?.root showToaster getString(R.string.sfs_saved_as_draft)
+        }
+    }
+
+
+    private fun launchCampaignInformationPage() {
+        val starter = Intent(activity, CampaignInformationActivity::class.java)
+
+        val bundle = Bundle()
+        bundle.putParcelable(CampaignInformationActivity.BUNDLE_KEY_PAGE_MODE, PageMode.CREATE)
+        starter.putExtras(bundle)
+
+        startActivityForResult(starter, REQUEST_CODE_CREATE_CAMPAIGN_INFO)
+    }
+
+    private fun launchCampaignInformationPageWithEditMode(campaignId: Long) {
+        val starter = Intent(activity, CampaignInformationActivity::class.java)
+
+        val bundle = Bundle()
+        bundle.putParcelable(CampaignInformationActivity.BUNDLE_KEY_PAGE_MODE, PageMode.UPDATE)
+        bundle.putLong(CampaignInformationActivity.BUNDLE_KEY_CAMPAIGN_ID, campaignId)
+        starter.putExtras(bundle)
+
+        startActivityForResult(starter, REQUEST_CODE_CREATE_CAMPAIGN_INFO)
     }
 }

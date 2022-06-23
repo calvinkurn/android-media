@@ -13,8 +13,9 @@ import com.tokopedia.shop.flashsale.domain.entity.enums.PageMode
 class CampaignInformationActivity : BaseSimpleActivity() {
 
     companion object {
-        private const val BUNDLE_KEY_PAGE_MODE = "page_mode"
-        private const val BUNDLE_KEY_CAMPAIGN_ID = "campaign_id"
+        const val BUNDLE_KEY_PAGE_MODE = "page_mode"
+        const val BUNDLE_KEY_CAMPAIGN_ID = "campaign_id"
+        const val REQUEST_CODE_CREATE_CAMPAIGN_INFO = 100
 
         @JvmStatic
         fun start(context: Context) {

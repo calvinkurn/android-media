@@ -1,4 +1,4 @@
-package com.tokopedia.shop.flashsale.presentation.creation.information
+package com.tokopedia.shop.flashsale.presentation.creation.information.bottomsheet
 
 import android.content.Context
 import androidx.fragment.app.FragmentManager

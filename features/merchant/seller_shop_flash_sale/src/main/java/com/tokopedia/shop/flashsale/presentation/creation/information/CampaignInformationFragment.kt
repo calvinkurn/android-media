@@ -1,5 +1,6 @@
 package com.tokopedia.shop.flashsale.presentation.creation.information
 
+import android.app.Activity
 import android.content.Context
 import android.graphics.Typeface
 import android.os.Bundle
@@ -196,7 +197,6 @@ class CampaignInformationFragment : BaseDaggerFragment() {
         viewModel.saveDraft.observe(viewLifecycleOwner) { result ->
             when(result) {
                 is Success -> {
-                    binding?.btnDraft?.stopLoading()
                     handleSaveCampaignDraftSuccess(result.data)
                 }
                 is Fail -> {
@@ -756,14 +756,15 @@ class CampaignInformationFragment : BaseDaggerFragment() {
     }
 
     private fun handleSaveCampaignDraftSuccess(result: CampaignCreationResult) {
-        if (result.isSuccess) {
-            binding?.root showToaster getString(R.string.sfs_saved_as_draft)
-        }
-
         //Add some spare time caused by Backend write operation delay
         doOnDelayFinished(REDIRECT_TO_PREVIOUS_PAGE_DELAY) {
+            binding?.btnDraft?.stopLoading()
+
             if (result.isSuccess) {
-                requireActivity().finish()
+                activity?.apply {
+                    setResult(Activity.RESULT_OK)
+                    finish()
+                }
             } else {
                 displaySaveDraftError(result)
             }

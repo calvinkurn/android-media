@@ -16,6 +16,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import com.tokopedia.seller_shop_flash_sale.R
 
 infix fun View?.showError(throwable: Throwable) {
     val errorMessage = ErrorHandler.getErrorMessage(this?.context, throwable)
@@ -31,7 +32,8 @@ infix fun View?.showToaster(message: String) {
         this ?: return,
         message,
         Toaster.LENGTH_LONG,
-        Toaster.TYPE_NORMAL
+        Toaster.TYPE_NORMAL,
+        this.context.getString(R.string.action_oke)
     ).show()
 }
 
