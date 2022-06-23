@@ -117,6 +117,18 @@ class FloatingEggPresenterTest {
     }
 
     @Test
+    fun testSubscriberOnErrorViewError() {
+        val subscriber = presenter.floatingEggSubscriber
+        val exception = Exception()
+        presenter.detachView()
+        if (idlingResource?.countingIdlingResource?.isIdleNow == true) {
+            idlingResource?.increment()
+        }
+        subscriber.onError(exception)
+        verify(exactly = 0) { view.onErrorGetToken(exception) }
+    }
+
+    @Test
     fun testSubscriberOnNext() {
         val subscriber = presenter.floatingEggSubscriber
         val graphqlResponse: GraphqlResponse = mockk()
@@ -131,6 +143,25 @@ class FloatingEggPresenterTest {
 
         subscriber.onNext(graphqlResponse)
         verify { view.onSuccessGetToken(gamiFloatingButtonEntity) }
+        Assert.assertEquals(idlingResource?.countingIdlingResource?.isIdleNow, true)
+    }
+
+    @Test
+    fun testSubscriberOnNextViewError() {
+        val subscriber = presenter.floatingEggSubscriber
+        presenter.detachView()
+        val graphqlResponse: GraphqlResponse = mockk()
+        val floatingButtonResponseEntity: FloatingButtonResponseEntity = mockk()
+        val gamiFloatingButtonEntity: GamiFloatingButtonEntity = mockk()
+        coEvery { graphqlResponse.getData(FloatingButtonResponseEntity::class.java) as FloatingButtonResponseEntity } returns floatingButtonResponseEntity
+        every { floatingButtonResponseEntity.getGamiFloatingButtonEntity() } returns gamiFloatingButtonEntity
+
+        if (idlingResource?.countingIdlingResource?.isIdleNow == true) {
+            idlingResource?.increment()
+        }
+
+        subscriber.onNext(graphqlResponse)
+        verify(exactly = 0) { view.onSuccessGetToken(gamiFloatingButtonEntity) }
         Assert.assertEquals(idlingResource?.countingIdlingResource?.isIdleNow, true)
     }
 
@@ -169,6 +200,15 @@ class FloatingEggPresenterTest {
     }
 
     @Test
+    fun testClickCloseSubscriberOnErrorViewError() {
+        val subscriber = presenter.clickCloseSubscriber
+        val exception = Exception()
+        presenter.detachView()
+        subscriber.onError(exception)
+        verify(exactly = 0){ view.onErrorClickClose(exception) }
+    }
+
+    @Test
     fun testClickCloseSubscriberOnNext() {
         val subscriber = presenter.clickCloseSubscriber
         val graphqlResponse: GraphqlResponse = mockk()
@@ -181,7 +221,7 @@ class FloatingEggPresenterTest {
     }
 
     @Test
-    fun testClickCloseSubscriberOnNextError() {
+    fun testClickCloseSubscriberOnNextViewError() {
         val subscriber = presenter.clickCloseSubscriber
         presenter.detachView()
         val graphqlResponse: GraphqlResponse = mockk()
