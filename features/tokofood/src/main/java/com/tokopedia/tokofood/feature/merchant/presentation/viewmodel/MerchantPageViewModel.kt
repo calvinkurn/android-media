@@ -56,7 +56,11 @@ class MerchantPageViewModel @Inject constructor(
 
     var filterList = listOf<TokoFoodCategoryFilter>()
 
-    var merchantData: TokoFoodMerchantProfile? = null
+    var filterNameSelected = ""
+
+    var isStickyBarVisible = false
+
+    var merchantData: TokoFoodGetMerchantData? = null
 
     fun getMerchantData(merchantId: String, latlong: String, timezone: String) {
         launchCatchError(block = {
@@ -70,7 +74,7 @@ class MerchantPageViewModel @Inject constructor(
                 getMerchantDataUseCase.executeOnBackground()
             }
             filterList = result.tokofoodGetMerchantData.filters
-            merchantData = result.tokofoodGetMerchantData.merchantProfile
+            merchantData = result.tokofoodGetMerchantData
             getMerchantDataResultLiveData.value = Success(result)
         }, onError = {
             getMerchantDataResultLiveData.value = Fail(it)
