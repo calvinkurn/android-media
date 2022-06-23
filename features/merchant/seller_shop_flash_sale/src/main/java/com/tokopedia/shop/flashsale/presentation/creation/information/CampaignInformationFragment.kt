@@ -69,6 +69,7 @@ class CampaignInformationFragment : BaseDaggerFragment() {
         private const val THRESHOLD = 12
         private const val SEVEN_DAY = 7
         private const val THREE_MONTH = 3
+        private const val TWO_HOURS = 2
         private const val THIRTY_MINUTE = 30
         private const val CAMPAIGN_NAME_MAX_LENGTH = 15
         private const val LEARN_MORE_CTA_TEXT_LENGTH = 8
@@ -500,7 +501,7 @@ class CampaignInformationFragment : BaseDaggerFragment() {
 
     private fun displayStartDatePicker() {
         val selectedDate = viewModel.getSelectedStartDate()
-        val minimumDate = dateManager.getDefaultMinimumCampaignStartDate()
+        val minimumDate = dateManager.getCurrentDate().advanceHourBy(TWO_HOURS)
         val maximumEndDate = dateManager.getCurrentDate().advanceMonthBy(THREE_MONTH)
 
         val bottomSheet = CampaignDatePickerBottomSheet.newInstance(selectedDate, minimumDate, maximumEndDate)
