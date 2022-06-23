@@ -40,6 +40,10 @@ class ManageAddressViewModel @Inject constructor(
     private val eligibleForAddressUseCase: EligibleForAddressUseCase
 ) : ViewModel() {
 
+    companion object {
+        const val STATUS_SUCCESS = 1
+    }
+    
     var token: Token? = null
     var savedQuery: String = ""
     var page: Int = 1
@@ -125,23 +129,19 @@ class ManageAddressViewModel @Inject constructor(
     fun deletePeopleAddress(id: String) {
         viewModelScope.launchCatchError(block = {
             val resultDelete = deletePeopleAddressUseCase(id.toInt())
-            if (resultDelete.response.status.equals(ManageAddressConstant.STATUS_OK, true)) {
-                if (resultDelete.response.data.success == 1) {
-                    _resultRemovedAddress.value = ManageAddressState.Success("Success")
-                    isClearData = true
-                    getStateChosenAddress("address")
-                } else {
-                    _addressList.value = ManageAddressState.Fail(MessageErrorException(DEFAULT_ERROR_MESSAGE), "")
-                }
+            if (resultDelete.response.status.equals(ManageAddressConstant.STATUS_OK, true) &&
+                resultDelete.response.data.success == STATUS_SUCCESS
+            ) {
+                _resultRemovedAddress.value = ManageAddressState.Success("Success")
+                isClearData = true
+                getStateChosenAddress("address")
             } else {
                 _addressList.value = ManageAddressState.Fail(MessageErrorException(DEFAULT_ERROR_MESSAGE), "")
             }
-
         }, onError = {
             _addressList.value = ManageAddressState.Fail(it, it.message.orEmpty())
         })
     }
-
 
     fun setDefaultPeopleAddress(
         id: String,
@@ -155,18 +155,18 @@ class ManageAddressViewModel @Inject constructor(
 
             val defaultAddressParam = DefaultAddressParam(id.toLong(), setAsStateChosenAddress)
             val resultDefaultAddress = setDefaultPeopleAddressUseCase(defaultAddressParam)
-            if (resultDefaultAddress.response.status.equals(ManageAddressConstant.STATUS_OK, true)) {
-                if (resultDefaultAddress.response.data.success == 1) {
-                    _setDefault.value = ManageAddressState.Success("Success")
-                    isClearData = true
-                    searchAddress("", prevState, localChosenAddrId, isWhiteListChosenAddress)
-                } else {
-                    _setDefault.value = ManageAddressState.Fail(MessageErrorException(DEFAULT_ERROR_MESSAGE), "")
-                }
+            if (
+                resultDefaultAddress.response.status.equals(ManageAddressConstant.STATUS_OK, true) &&
+                resultDefaultAddress.response.data.success == STATUS_SUCCESS
+            ) {
+                _setDefault.value = ManageAddressState.Success("Success")
+                isClearData = true
+                searchAddress("", prevState, localChosenAddrId, isWhiteListChosenAddress)
             } else {
                 _setDefault.value = ManageAddressState.Fail(MessageErrorException(DEFAULT_ERROR_MESSAGE), "")
             }
-        }, onError = {
+        }, onError =
+        {
             _setDefault.value = ManageAddressState.Fail(it, it.message.orEmpty())
         })
     }
