@@ -232,7 +232,7 @@ class ManageProductFragment :
 
             emptyState.setImageUrl(EMPTY_STATE_IMAGE_URL)
             emptyState.setPrimaryCTAClickListener {
-                if (manageProductListAdapter.itemCount < 50) {
+                if (manageProductListAdapter.itemCount < PAGE_SIZE) {
                     showChooseProductPage()
                 } else {
                     view.showErrorWithCta(
