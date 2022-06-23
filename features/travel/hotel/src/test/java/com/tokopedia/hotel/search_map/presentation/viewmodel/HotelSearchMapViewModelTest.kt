@@ -445,6 +445,40 @@ class HotelSearchMapViewModelTest {
     }
 
     @Test
+    fun getMidPointWithZeroLatitude_shouldReturnSuccess() {
+        //given
+        val latitude = 0.0
+        val longitude = 12.03
+        val latLong = LatLng(latitude, longitude)
+
+        //when
+        hotelSearchMapViewModel.getMidPoint(latLong)
+
+        //then
+        val actual = hotelSearchMapViewModel.screenMidPoint.value
+        assert(actual is Success)
+        assert((actual as Success).data.longitude == latLong.longitude)
+        assert(actual.data.latitude == latLong.latitude)
+    }
+
+    @Test
+    fun getMidPointWithZeroLongitude_shouldReturnSuccess() {
+        //given
+        val latitude = 12.02
+        val longitude = 0.0
+        val latLong = LatLng(latitude, longitude)
+
+        //when
+        hotelSearchMapViewModel.getMidPoint(latLong)
+
+        //then
+        val actual = hotelSearchMapViewModel.screenMidPoint.value
+        assert(actual is Success)
+        assert((actual as Success).data.longitude == latLong.longitude)
+        assert(actual.data.latitude == latLong.latitude)
+    }
+
+    @Test
     fun getMidPoint_shouldReturnFail() {
         //given
         val latitude = 0.0
@@ -547,6 +581,36 @@ class HotelSearchMapViewModelTest {
     fun onGetLocation_successToGetLocation_LatLongShouldBeSuccessAndContainsLatLong() {
         // given
         val deviceLocation = DeviceLocation(1.12345, 2.54321, 0)
+
+        // when
+        val onGetLocationFun = hotelSearchMapViewModel.onGetLocation()
+        onGetLocationFun(deviceLocation)
+
+        // then
+        assert(hotelSearchMapViewModel.latLong.value is Success)
+        assert((hotelSearchMapViewModel.latLong.value as Success).data.first == deviceLocation.longitude)
+        assert((hotelSearchMapViewModel.latLong.value as Success).data.second == deviceLocation.latitude)
+    }
+
+    @Test
+    fun onGetLocation_successToGetLocation_LatLongShouldBeSuccessWithZeroLatitude() {
+        // given
+        val deviceLocation = DeviceLocation(0.0, 2.54321, 0)
+
+        // when
+        val onGetLocationFun = hotelSearchMapViewModel.onGetLocation()
+        onGetLocationFun(deviceLocation)
+
+        // then
+        assert(hotelSearchMapViewModel.latLong.value is Success)
+        assert((hotelSearchMapViewModel.latLong.value as Success).data.first == deviceLocation.longitude)
+        assert((hotelSearchMapViewModel.latLong.value as Success).data.second == deviceLocation.latitude)
+    }
+
+    @Test
+    fun onGetLocation_successToGetLocation_LatLongShouldBeSuccessWithZeroLongitude() {
+        // given
+        val deviceLocation = DeviceLocation(1.12345, 0.0, 0)
 
         // when
         val onGetLocationFun = hotelSearchMapViewModel.onGetLocation()
