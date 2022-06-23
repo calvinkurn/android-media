@@ -9,7 +9,6 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-import com.tokopedia.abstraction.base.view.listener.EndlessLayoutManagerListener
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.kotlin.extensions.view.ZERO
@@ -23,6 +22,7 @@ import com.tokopedia.shop.flashsale.common.preference.SharedPreferenceDataStore
 import com.tokopedia.shop.flashsale.di.component.DaggerShopFlashSaleComponent
 import com.tokopedia.shop.flashsale.domain.entity.HighlightableProduct
 import com.tokopedia.shop.flashsale.presentation.creation.highlight.adapter.HighlightedProductAdapter
+import com.tokopedia.shop.flashsale.presentation.creation.highlight.bottomsheet.ManageHighlightedProductInfoBottomSheet
 import com.tokopedia.shop.flashsale.presentation.creation.highlight.decoration.ProductListItemDecoration
 import com.tokopedia.shop.flashsale.presentation.list.list.listener.RecyclerViewScrollListener
 import com.tokopedia.usecase.coroutines.Fail
@@ -33,10 +33,11 @@ import javax.inject.Inject
 class ManageHighlightedProductFragment : BaseDaggerFragment() {
 
     companion object {
-        private const val PAGE_SIZE = 10
+        private const val PAGE_SIZE = 50
         private const val ONE_PAGE = 1
         private const val ONE_PRODUCT = 1
         private const val FIRST_PAGE = 1
+        private const val THIRD_STEP = 3
         private const val MAX_PRODUCT_SELECTION = 5
         private const val BUNDLE_KEY_CAMPAIGN_ID = "campaign_id"
         private const val SCROLL_DISTANCE_DELAY_IN_MILLIS: Long = 100
@@ -67,7 +68,6 @@ class ManageHighlightedProductFragment : BaseDaggerFragment() {
     private val viewModelProvider by lazy { ViewModelProvider(this, viewModelFactory) }
     private val viewModel by lazy { viewModelProvider.get(ManageHighlightedProductViewModel::class.java) }
     private var endlessRecyclerViewScrollListener: EndlessRecyclerViewScrollListener? = null
-    private var endlessLayoutManagerListener: EndlessLayoutManagerListener? = null
 
     private val productAdapter by lazy {
         HighlightedProductAdapter(onProductSelectionChange)
@@ -96,8 +96,7 @@ class ManageHighlightedProductFragment : BaseDaggerFragment() {
         setupView()
         setFragmentToUnifyBgColor()
         observeProducts()
-        observeHighlightedProducts()
-        viewModel.getHighlightedProducts(campaignId)
+        getProducts(FIRST_PAGE)
     }
 
     private fun setupView() {
@@ -112,7 +111,15 @@ class ManageHighlightedProductFragment : BaseDaggerFragment() {
         binding?.recyclerView?.layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
         binding?.recyclerView?.adapter = productAdapter
         binding?.recyclerView?.addItemDecoration(ProductListItemDecoration(requireActivity()))
-        enableLoadMore()
+
+        endlessRecyclerViewScrollListener = object : EndlessRecyclerViewScrollListener(binding?.recyclerView?.layoutManager) {
+            override fun onLoadMore(page: Int, totalItemsCount: Int) {
+                productAdapter.showLoading()
+                getProducts(page)
+            }
+        }
+
+        binding?.recyclerView?.addOnScrollListener(endlessRecyclerViewScrollListener ?: return)
     }
 
     private fun setupSearchBar() {
@@ -133,6 +140,9 @@ class ManageHighlightedProductFragment : BaseDaggerFragment() {
     private fun setupToolbar() {
         binding?.run {
             header.setOnClickListener { activity?.onBackPressed() }
+            header.addRightIcon(R.drawable.ic_sfs_info)
+            header.rightIcons?.firstOrNull()?.setOnClickListener { ManageHighlightedProductInfoBottomSheet().show(childFragmentManager) }
+            header.headerSubTitle = String.format(getString(R.string.sfs_placeholder_step_counter), THIRD_STEP)
         }
     }
 
@@ -163,41 +173,23 @@ class ManageHighlightedProductFragment : BaseDaggerFragment() {
     }
 
 
-    private fun observeHighlightedProducts() {
-        viewModel.highlightedProducts.observe(viewLifecycleOwner) { result ->
+    private fun observeProducts() {
+        viewModel.products.observe(viewLifecycleOwner) { result ->
             binding?.loader?.gone()
 
             when (result) {
                 is Success -> {
-                    binding?.cardView?.visible()
-                    binding?.searchBar?.visible()
-
-
-                    getProducts(FIRST_PAGE)
-                }
-                is Fail -> {
-                    binding?.cardView?.gone()
-                    binding?.searchBar?.gone()
-                    binding?.root showError result.throwable
-                }
-            }
-        }
-    }
-
-    private fun observeProducts() {
-        viewModel.products.observe(viewLifecycleOwner) { result ->
-            when (result) {
-                is Success -> {
                     isFirstLoad = false
+                    showContent()
                     handleProducts(result.data)
                 }
                 is Fail -> {
+                    hideContent()
                     binding?.root showError result.throwable
                 }
             }
         }
     }
-
 
     private fun handleProducts(data: List<HighlightableProduct>) {
         val currentItemCount = productAdapter.getItems().size.orZero()
@@ -211,6 +203,7 @@ class ManageHighlightedProductFragment : BaseDaggerFragment() {
             renderList(data, data.size >= PAGE_SIZE)
             binding?.recyclerView?.visible()
             binding?.groupNoSearchResult?.gone()
+            refreshButton()
         }
     }
 
@@ -296,7 +289,6 @@ class ManageHighlightedProductFragment : BaseDaggerFragment() {
     private fun refreshButton() {
         val selectedProductCount = viewModel.getSelectedProductIds().size
         binding?.btnProceed?.isEnabled = selectedProductCount > Int.ZERO
-        binding?.btnDraft?.isEnabled = selectedProductCount > Int.ZERO
     }
 
     private fun storeSelectedProducts(products: List<HighlightableProduct>) {
@@ -321,20 +313,6 @@ class ManageHighlightedProductFragment : BaseDaggerFragment() {
         viewModel.getProducts(campaignId, "", PAGE_SIZE, FIRST_PAGE)
     }
 
-    private fun enableLoadMore() {
-        endlessRecyclerViewScrollListener = object : EndlessRecyclerViewScrollListener(binding?.recyclerView?.layoutManager) {
-                override fun onLoadMore(page: Int, totalItemsCount: Int) {
-                    productAdapter.showLoading()
-                    getProducts(page)
-                }
-            }
-
-        endlessRecyclerViewScrollListener?.setEndlessLayoutManagerListener(endlessLayoutManagerListener)
-        binding?.recyclerView?.addOnScrollListener(endlessRecyclerViewScrollListener ?: return)
-    }
-
-
-
     private fun renderList(list: List<HighlightableProduct>, hasNextPage: Boolean) {
         storeSelectedProducts(list)
         productAdapter.hideLoading()
@@ -357,5 +335,17 @@ class ManageHighlightedProductFragment : BaseDaggerFragment() {
 
         val searchKeyword = binding?.searchBar?.searchBarTextField?.text.toString().trim()
         viewModel.getProducts(campaignId, searchKeyword, PAGE_SIZE, offset)
+    }
+
+    private fun showContent() {
+        binding?.recyclerView?.visible()
+        binding?.cardView?.visible()
+        binding?.searchBar?.visible()
+    }
+
+    private fun hideContent() {
+        binding?.recyclerView?.gone()
+        binding?.cardView?.gone()
+        binding?.searchBar?.gone()
     }
 }

@@ -6,9 +6,7 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.shop.flashsale.data.request.GetSellerCampaignProductListRequest
 import com.tokopedia.shop.flashsale.domain.entity.HighlightableProduct
-import com.tokopedia.shop.flashsale.domain.entity.HighlightedProduct
 import com.tokopedia.shop.flashsale.domain.entity.SellerCampaignProductList
-import com.tokopedia.shop.flashsale.domain.usecase.GetSellerCampaignHighlightProductsUseCase
 import com.tokopedia.shop.flashsale.domain.usecase.GetSellerCampaignProductListUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -18,8 +16,7 @@ import javax.inject.Inject
 
 class ManageHighlightedProductViewModel @Inject constructor(
     private val dispatchers: CoroutineDispatchers,
-    private val getSellerCampaignProductListUseCase: GetSellerCampaignProductListUseCase,
-    private val getSellerCampaignHighlightProductsUseCase: GetSellerCampaignHighlightProductsUseCase
+    private val getSellerCampaignProductListUseCase: GetSellerCampaignProductListUseCase
 ) : BaseViewModel(dispatchers.main) {
 
     companion object {
@@ -30,10 +27,6 @@ class ManageHighlightedProductViewModel @Inject constructor(
     private val _products = MutableLiveData<Result<List<HighlightableProduct>>>()
     val products: LiveData<Result<List<HighlightableProduct>>>
         get() = _products
-
-    private val _highlightedProducts = MutableLiveData<Result<List<HighlightedProduct>>>()
-    val highlightedProducts: LiveData<Result<List<HighlightedProduct>>>
-        get() = _highlightedProducts
 
     private var selectedProductIds: MutableList<String> = mutableListOf()
 
@@ -57,19 +50,6 @@ class ManageHighlightedProductViewModel @Inject constructor(
             },
             onError = { error ->
                 _products.postValue(Fail(error))
-            }
-        )
-    }
-
-    fun getHighlightedProducts(campaignId: Long) {
-        launchCatchError(
-            dispatchers.io,
-            block = {
-                val products = getSellerCampaignHighlightProductsUseCase.execute(campaignId)
-                _highlightedProducts.postValue(Success(products))
-            },
-            onError = { error ->
-                _highlightedProducts.postValue(Fail(error))
             }
         )
     }
