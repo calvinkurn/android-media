@@ -72,7 +72,8 @@ class PlayBroadcaster(
     init {
         broadcaster.init(activityContext, handler)
         broadcaster.addListener(broadcastListener)
-        if(monitoringInterval > 0) broadcaster.enableStatistic(monitoringInterval)
+//        if(monitoringInterval > 0) broadcaster.enableStatistic(monitoringInterval)
+        broadcaster.enableStatistic(3000L)
     }
 
     /**
