@@ -710,7 +710,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
 
     override fun loadInitialData() {
         getViewState()?.clearChatOnLoadChatHistory()
-        showLoading()
+        showTopLoading()
         presenter.getExistingChat(messageId, onError(), onSuccessGetExistingChatFirstTime(), onGetChatRatingListMessageError)
     }
 
@@ -753,10 +753,6 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
             }
 
         }
-    }
-
-    fun checkShowLoading(canLoadMore: Boolean) {
-        if (canLoadMore) super.showLoading()
     }
 
     private val onGetChatRatingListMessageError: (String) -> Unit = {
@@ -1405,7 +1401,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
     }
 
     private fun loadDataOnClick(replyTime : String){
-        showLoading()
+        showTopLoading()
         presenter.getTopChat(messageId, onSuccessGetTopChatData(replyTime = replyTime, fromOnClick = true), onErrorGetTopChat(), onGetChatRatingListMessageError)
     }
 
@@ -1543,7 +1539,12 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
                 updateHasNextAfterState(chatReplies)
             }
             else{
-                presenter.getBottomChat(messageId, onSuccessGetBottomChatData(), onErrorGetBottomChat(), onGetChatRatingListMessageError)
+                if(rvScrollListener?.hasNextAfterPage==true)
+                    presenter.getBottomChat(messageId, onSuccessGetBottomChatData(), onErrorGetBottomChat(), onGetChatRatingListMessageError)
+                else {
+                    chatbotAdapter.hideBottomLoading()
+                    rvScrollListener?.finishBottomLoadingState()
+                }
             }
         }
     }
