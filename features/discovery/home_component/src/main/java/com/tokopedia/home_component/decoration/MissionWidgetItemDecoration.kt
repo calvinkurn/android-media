@@ -26,10 +26,12 @@ class MissionWidgetItemDecoration : RecyclerView.ItemDecoration() {
                 outRect.left = OUTSIDE_MARGIN
                 outRect.right = INNER_MARGIN
             }
+            //last position of card
             state.itemCount - 1 -> {
                 outRect.right = OUTSIDE_MARGIN
                 outRect.left = INNER_MARGIN
             }
+            //card between first and last
             else -> {
                 outRect.right = INNER_MARGIN
                 outRect.left = INNER_MARGIN
