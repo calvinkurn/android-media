@@ -3,7 +3,6 @@ package com.tokopedia.loginregister.login.behaviour.base
 import android.content.Context
 import android.content.Intent
 import androidx.test.espresso.Espresso
-import androidx.test.espresso.IdlingRegistry
 import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.assertion.ViewAssertions
 import androidx.test.espresso.intent.rule.IntentsTestRule
@@ -17,14 +16,9 @@ import com.tokopedia.loginregister.discover.pojo.ProviderData
 import com.tokopedia.loginregister.login.behaviour.activity.RegisterEmailActivityStub
 import com.tokopedia.loginregister.login.behaviour.data.DiscoverUseCaseStub
 import com.tokopedia.loginregister.login.behaviour.data.GraphqlUseCaseStub
-import com.tokopedia.loginregister.login.behaviour.di.DaggerBaseAppComponentStub
-import com.tokopedia.loginregister.login.behaviour.di.DaggerRegisterInitialComponentStub
 import com.tokopedia.loginregister.login.behaviour.di.FakeActivityComponentFactory
 import com.tokopedia.loginregister.login.behaviour.di.RegisterInitialComponentStub
-import com.tokopedia.loginregister.login.behaviour.di.modules.AppModuleStub
-import com.tokopedia.loginregister.login.behaviour.di.modules.DaggerMockLoginRegisterComponent
 import com.tokopedia.loginregister.login.di.ActivityComponentFactory
-import com.tokopedia.loginregister.login.idling.FragmentTransactionIdle
 import com.tokopedia.loginregister.registerinitial.domain.pojo.RegisterCheckData
 import com.tokopedia.loginregister.registerinitial.domain.pojo.RegisterCheckPojo
 import com.tokopedia.loginregister.registerinitial.view.activity.RegisterEmailActivity

@@ -42,11 +42,6 @@ open class LoginBase: LoginRegisterBase() {
     )
 
     protected val context: Context = InstrumentationRegistry.getInstrumentation().targetContext
-    protected val applicationContext: Context
-        get() = InstrumentationRegistry
-                .getInstrumentation().context.applicationContext
-
-//    protected open lateinit var activity: LoginActivityStub
 
 
 //    protected open lateinit var fragmentTransactionIdling: FragmentTransactionIdle
