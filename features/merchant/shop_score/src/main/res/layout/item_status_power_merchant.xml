@@ -16,10 +16,10 @@
             android:id="@+id/bg_container_pm_status"
             android:layout_width="@dimen/layout_lvl0"
             android:layout_height="wrap_content"
-            app:srcCompat="@drawable/ic_pm_section_green"
+            app:layout_constraintBottom_toTopOf="@id/containerDescPmSection"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toTopOf="@id/containerDescPmSection"/>
+            app:srcCompat="@drawable/ic_pm_section_green" />
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/potentialPowerMerchantWidget"
@@ -94,45 +94,70 @@
                 android:id="@+id/tv_title_content_pm_section"
                 android:layout_width="@dimen/layout_lvl0"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="12dp"
-                android:layout_marginEnd="12dp"
-                android:layout_marginTop="@dimen/spacing_lvl4"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="16dp"
+                android:text="@string/sub_title_content_pm_section"
+                android:textColor="@color/Unify_N700_96"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:typographyType="heading_5"
-                android:text="@string/title_content_pm_section"
-                android:textColor="@color/Unify_N700_96" />
-
-            <androidx.constraintlayout.widget.Barrier
-                android:id="@+id/barrierTitleContentPMSection"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="12dp"
-                android:layout_marginEnd="12dp"
-                android:layout_marginTop="@dimen/spacing_lvl4"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:constraint_referenced_ids="tv_title_content_pm_section"
-                app:barrierDirection="bottom" />
+                app:typographyType="heading_5" />
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tv_desc_content_pm_section"
                 android:layout_width="@dimen/layout_lvl0"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="12dp"
-                android:layout_marginEnd="12dp"
-                android:layout_marginStart="12dp"
-                android:paddingBottom="@dimen/spacing_lvl4"
+                android:layout_marginTop="8dp"
                 android:textColor="@color/Unify_N700_96"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/barrierTitleContentPMSection"
+                app:layout_constraintEnd_toEndOf="@+id/tv_title_content_pm_section"
+                app:layout_constraintStart_toStartOf="@+id/tv_title_content_pm_section"
+                app:layout_constraintTop_toBottomOf="@id/tv_title_content_pm_section"
                 app:typographyType="body_2"
-                tools:text="@string/desc_content_pm_not_eligible_pm_pro" />
+                tools:text="@string/description_content_pm_section" />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/tvSsPmSectionItemTitle"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="@string/title_item_rm_section_not_eligible_all"
+                app:layout_constraintEnd_toEndOf="@+id/tv_title_content_pm_section"
+                app:layout_constraintStart_toStartOf="@+id/tv_title_content_pm_section"
+                app:layout_constraintTop_toBottomOf="@+id/tv_desc_content_pm_section" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rvSsPmSectionBenefits"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                app:layout_constraintEnd_toEndOf="@+id/tv_title_content_pm_section"
+                app:layout_constraintStart_toStartOf="@+id/tv_title_content_pm_section"
+                app:layout_constraintTop_toBottomOf="@+id/tvSsPmSectionItemTitle"
+                tools:listitem="item_" />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/tvSsPmSectionSeeAllBenefits"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:layout_marginBottom="16dp"
+                android:text="@string/see_all_benefit"
+                android:textColor="@color/Unify_GN500"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="@+id/tv_title_content_pm_section"
+                app:layout_constraintTop_toBottomOf="@+id/rvSsPmSectionBenefits" />
+
+            <com.tokopedia.iconunify.IconUnify
+                android:id="@+id/iconSsPmSectionSeeAllBenefits"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_marginStart="4dp"
+                app:icon_name="CHEVRON_RIGHT"
+                app:layout_constraintBottom_toBottomOf="@+id/tvSsPmSectionSeeAllBenefits"
+                app:layout_constraintStart_toEndOf="@+id/tvSsPmSectionSeeAllBenefits"
+                app:layout_constraintTop_toTopOf="@+id/tvSsPmSectionSeeAllBenefits" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
-
     </androidx.constraintlayout.widget.ConstraintLayout>
 </com.tokopedia.unifycomponents.CardUnify>

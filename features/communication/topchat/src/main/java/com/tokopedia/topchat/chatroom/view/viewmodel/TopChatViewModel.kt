@@ -20,6 +20,8 @@ import com.tokopedia.device.info.DeviceInfo
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
+import com.tokopedia.logger.ServerLogger
+import com.tokopedia.logger.utils.Priority
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.seamless_login_common.domain.usecase.SeamlessLoginUsecase
@@ -299,6 +301,7 @@ open class TopChatViewModel @Inject constructor(
 
             override fun onFailure(webSocket: WebSocket, t: Throwable, response: Response?) {
                 Timber.d("$TAG - onFailure - ${t.message}")
+                logWebSocketFailure(t, response)
                 handleOnFailureWebSocket()
             }
         })
@@ -401,6 +404,15 @@ open class TopChatViewModel @Inject constructor(
 
     private fun handleOnFailureWebSocket() {
         retryConnectWebSocket()
+    }
+
+    private fun logWebSocketFailure(throwable: Throwable, response: Response?) {
+        ServerLogger.log(Priority.P2, TAG,
+            mapOf(
+                "type" to ERROR_TYPE_LOG,
+                "error" to throwable.message.orEmpty(),
+                "response" to response.toString()
+            ))
     }
 
     private fun retryConnectWebSocket() {
@@ -1189,7 +1201,8 @@ open class TopChatViewModel @Inject constructor(
     }
 
     companion object {
-        const val TAG = "TopchatWebSocketViewModel"
+        private const val TAG = "DEBUG_TOPCHAT_WEBSOCKET"
+        private const val ERROR_TYPE_LOG = "ErrorConnectWebSocket"
         const val ENABLE_UPLOAD_IMAGE_SERVICE = "android_enable_topchat_upload_image_service"
         private val PROBLEMATIC_DEVICE = listOf("iris88", "iris88_lite", "lenovo k9")
     }

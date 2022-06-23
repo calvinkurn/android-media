@@ -24,7 +24,7 @@ class CategoryShareTest : CategoryTestFixtures() {
         val categoryIdLvl2 = ""
         val categoryIdLvl3 = ""
 
-        `Given category view model`(defaultCategoryL1, selectedFilterOption.value, mapOf())
+        `Given category view model`(defaultCategoryL1, selectedFilterOption.value, defaultExternalServiceType, mapOf())
         `Given get category first page use case will be successful`(categoryModel)
 
         privateQueryParamMutable["${OptionHelper.EXCLUDE_PREFIX}${SearchApiConst.SC}"] = categoryIdLvl2
@@ -66,7 +66,7 @@ class CategoryShareTest : CategoryTestFixtures() {
         val categoryIdLvl2 = "12344"
         val categoryIdLvl3 = ""
 
-        `Given category view model`(defaultCategoryL1, selectedFilterOption.value, mapOf())
+        `Given category view model`(defaultCategoryL1, selectedFilterOption.value, defaultExternalServiceType, mapOf())
         `Given get category first page use case will be successful`(categoryModel)
 
         privateQueryParamMutable["${OptionHelper.EXCLUDE_PREFIX}${SearchApiConst.SC}"] = categoryIdLvl2
@@ -107,8 +107,9 @@ class CategoryShareTest : CategoryTestFixtures() {
         val selectedFilterOption = OptionHelper.copyOptionAsExclude(categoryModel.categoryFilter.filter[0].options[1])
         val categoryIdLvl2 = "12344"
         val categoryIdLvl3 = "14423"
+        val externalServiceType = ""
 
-        `Given category view model`(defaultCategoryL1, selectedFilterOption.value, mapOf())
+        `Given category view model`(defaultCategoryL1, selectedFilterOption.value, externalServiceType, mapOf())
         `Given get category first page use case will be successful`(categoryModel)
 
         privateQueryParamMutable["${OptionHelper.EXCLUDE_PREFIX}${SearchApiConst.SC}"] = categoryIdLvl2

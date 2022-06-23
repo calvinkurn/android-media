@@ -35,7 +35,9 @@ data class CartDigitalInfoData(
 
         var isSubscribed: Boolean = false,
 
-        var isSpecialProduct: Boolean = false
+        var isSpecialProduct: Boolean = false,
+
+        var channelId: String = "",
 ) : Parcelable {
 
     @Parcelize

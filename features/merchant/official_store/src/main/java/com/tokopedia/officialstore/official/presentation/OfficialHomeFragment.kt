@@ -327,7 +327,12 @@ class OfficialHomeFragment :
         }
     }
 
+    private fun updateWishListRecomWidget(isWishlist: Boolean) {
+        recommendationWishlistItem?.isWishlist = isWishlist
+    }
+
     private fun updateWishlist(isWishlist: Boolean, position: Int) {
+        updateWishListRecomWidget(isWishlist)
         if (position > -1 && adapter != null) {
             officialHomeMapper.updateWishlist(isWishlist, position, adapter)
         }
@@ -699,7 +704,7 @@ class OfficialHomeFragment :
 
     override fun onMixLeftBannerImpressed(channel: ChannelModel, position: Int) {
         tracking?.trackingQueueObj?.putEETracking(
-                OSMixLeftTracking.eventImpressionMixLeftImageBanner(channel, category?.title.orEmpty(), position) as HashMap<String, Any>)
+                OSMixLeftTracking.eventImpressionMixLeftImageBanner(channel, category?.title.orEmpty(), position, getUserId()) as HashMap<String, Any>)
     }
 
     override fun onFlashSaleCardImpressedComponent(position: Int, grid: ChannelGrid, channel: ChannelModel) {

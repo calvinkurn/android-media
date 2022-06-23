@@ -319,13 +319,14 @@ open class BaseChatUiModel constructor(
             const val DEFAULT_ATTACHMENT_ID = ""
             const val DEFAULT_ATTACHMENT_TYPE = ""
             const val DEFAULT_DELETED_MSG = "Pesan ini telah dihapus."
+            private const val TIME_MULTIPLIER = 1_000_000
 
             /**
              * replyTime needs to be on nano second format
              */
             fun generateCurrentReplyTime(): String {
                 val currentTime = Calendar.getInstance()
-                return (currentTime.timeInMillis * 1_000_000).toString()
+                return (currentTime.timeInMillis * TIME_MULTIPLIER).toString()
             }
         }
     }

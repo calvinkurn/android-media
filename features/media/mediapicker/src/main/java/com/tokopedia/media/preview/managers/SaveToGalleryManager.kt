@@ -2,7 +2,8 @@ package com.tokopedia.media.preview.managers
 
 import android.content.Context
 import android.os.Environment
-import com.tokopedia.picker.common.utils.isVideoFormat
+import com.tokopedia.picker.common.utils.wrapper.PickerFile
+import com.tokopedia.picker.common.utils.wrapper.PickerFile.Companion.asPickerFile
 import com.tokopedia.utils.file.PublicFolderUtil
 import java.io.File
 
@@ -15,22 +16,22 @@ class SaveToGalleryManagerImpl constructor(
 ) : SaveToGalleryManager {
 
     override fun dispatch(filePath: String): File? {
-        val file = File(filePath)
+        val file = filePath.asPickerFile()
 
         return PublicFolderUtil.putFileToPublicFolder(
             context = context,
             localFile = file,
-            mimeType = mimeType(filePath),
+            mimeType = mimeType(file),
             outputFileName = fileName(file.name),
             directory = Environment.DIRECTORY_DOWNLOADS
         ).first
     }
 
-    private fun mimeType(filePath: String): String {
-        return if (isVideoFormat(filePath)) {
-            MIME_VIDEO_TYPE
-        } else {
-            MIME_IMAGE_TYPE
+    private fun mimeType(file: PickerFile): String {
+        return when {
+            file.isVideo() -> MIME_VIDEO_TYPE
+            file.isImage() -> MIME_IMAGE_TYPE
+            else -> ""
         }
     }
 

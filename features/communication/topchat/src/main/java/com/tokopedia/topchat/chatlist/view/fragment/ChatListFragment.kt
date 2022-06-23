@@ -347,15 +347,19 @@ open class ChatListFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFact
             val index = adapter.list.indexOfFirst { chat ->
                 return@indexOfFirst chat is ItemChatListPojo && chat.msgId == newChat.messageId
             }
-
-            updateItemOnIndex(index, newChat)
+            val shouldUpdateReadStatus = !newChat.isFromMySelf(getRole(), userSession.userId)
+            updateItemOnIndex(
+                index,
+                newChat,
+                shouldUpdateExistingChatReadStatus = shouldUpdateReadStatus)
         }
     }
 
     private fun updateItemOnIndex(
         index: Int,
         newChat: IncomingChatWebSocketModel,
-        readStatus: Int = ChatItemListViewHolder.STATE_CHAT_UNREAD
+        readStatus: Int = ChatItemListViewHolder.STATE_CHAT_UNREAD,
+        shouldUpdateExistingChatReadStatus: Boolean = false
     ) {
         adapter?.let { adapter ->
             when {
@@ -364,8 +368,10 @@ open class ChatListFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFact
                 }
                 //not found on list
                 index == RecyclerView.NO_POSITION -> {
-                    adapter.onNewItemChatMessage(newChat, chatItemListViewModel.pinnedMsgId)
-                    increaseNotificationCounter()
+                    if (!newChat.isFromMySelf(getRole(), userSession.userId)) {
+                        adapter.onNewItemChatMessage(newChat, chatItemListViewModel.pinnedMsgId)
+                        increaseNotificationCounter()
+                    }
                 }
                 //found on list, not the first
                 index >= 0 -> {
@@ -374,7 +380,7 @@ open class ChatListFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFact
                         newChat = newChat,
                         readStatus = readStatus,
                         pinnedMsgId = chatItemListViewModel.pinnedMsgId,
-                        shouldUpdateReadStatus = true
+                        shouldUpdateReadStatus = shouldUpdateExistingChatReadStatus
                     )
                 }
             }
