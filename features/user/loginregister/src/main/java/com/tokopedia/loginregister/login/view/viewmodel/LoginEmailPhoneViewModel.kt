@@ -45,23 +45,23 @@ import javax.inject.Inject
 import javax.inject.Named
 
 class LoginEmailPhoneViewModel @Inject constructor(
-        private val registerCheckUseCase: RegisterCheckUseCase,
-        private val discoverUseCase: DiscoverUseCase,
-        private val activateUserUseCase: ActivateUserUseCase,
-        private val loginTokenUseCase: LoginTokenUseCase,
-        private val getProfileUseCase: GetProfileUseCase,
-        private val tickerInfoUseCase: TickerInfoUseCase,
-        private val getAdminTypeUseCase: GetAdminTypeUseCase,
-        private val loginTokenV2UseCase: LoginTokenV2UseCase,
-        private val generatePublicKeyUseCase: GeneratePublicKeyUseCase,
-        private val dynamicBannerUseCase: DynamicBannerUseCase,
-        private val registerCheckFingerprintUseCase: RegisterCheckFingerprintUseCase,
-        private val loginFingerprintUseCase: LoginFingerprintUseCase,
-        private val getTemporaryKeyUseCase: GetTemporaryKeyUseCase,
-        private val gotoSeamlessHelper: GotoSeamlessHelper,
-        @Named(SessionModule.SESSION_MODULE)
-        private val userSession: UserSessionInterface,
-        private val dispatchers: CoroutineDispatchers
+    private val registerCheckUseCase: RegisterCheckUseCase,
+    private val discoverUseCase: DiscoverUseCase,
+    private val activateUserUseCase: ActivateUserUseCase,
+    private val loginTokenUseCase: LoginTokenUseCase,
+    private val getProfileUseCase: GetProfileUseCase,
+    private val tickerInfoUseCase: TickerInfoUseCase,
+    private val getAdminTypeUseCase: GetAdminTypeUseCase,
+    private val loginTokenV2UseCase: LoginTokenV2UseCase,
+    private val generatePublicKeyUseCase: GeneratePublicKeyUseCase,
+    private val dynamicBannerUseCase: DynamicBannerUseCase,
+    private val registerCheckFingerprintUseCase: RegisterCheckFingerprintUseCase,
+    private val loginFingerprintUseCase: LoginFingerprintUseCase,
+    private val getTemporaryKeyUseCase: GetTemporaryKeyUseCase,
+    private val gotoSeamlessHelper: GotoSeamlessHelper,
+    @Named(SessionModule.SESSION_MODULE)
+    private val userSession: UserSessionInterface,
+    private val dispatchers: CoroutineDispatchers
 ) : BaseViewModel(dispatchers.main) {
 
     private val mutableNavigateToGojekSeamless = SingleLiveEvent<Boolean>()
@@ -132,7 +132,8 @@ class LoginEmailPhoneViewModel @Inject constructor(
     val dynamicBannerResponse: LiveData<Result<DynamicBannerDataModel>>
         get() = mutableDynamicBannerResponse
 
-    private val mutableRegisterCheckFingerprint = MutableLiveData<Result<RegisterCheckFingerprint>>()
+    private val mutableRegisterCheckFingerprint =
+        MutableLiveData<Result<RegisterCheckFingerprint>>()
     val registerCheckFingerprint: LiveData<Result<RegisterCheckFingerprint>>
         get() = mutableRegisterCheckFingerprint
 
@@ -151,7 +152,8 @@ class LoginEmailPhoneViewModel @Inject constructor(
             if (response.data.errors.isEmpty())
                 mutableRegisterCheckResponse.value = Success(response.data)
             else if (response.data.errors.isNotEmpty() && response.data.errors[0].isNotEmpty()) {
-                mutableRegisterCheckResponse.value = Fail(MessageErrorException(response.data.errors[0]))
+                mutableRegisterCheckResponse.value =
+                    Fail(MessageErrorException(response.data.errors[0]))
             } else mutableRegisterCheckResponse.value = Fail(RuntimeException())
         }, {
             mutableRegisterCheckResponse.value = Fail(it)
@@ -160,7 +162,7 @@ class LoginEmailPhoneViewModel @Inject constructor(
 
     fun registerCheckFingerprint() {
         registerCheckFingerprintUseCase.checkRegisteredFingerprint(onSuccess = {
-            if(it.data.errorMessage.isEmpty()) {
+            if (it.data.errorMessage.isEmpty()) {
                 mutableRegisterCheckFingerprint.postValue(Success(it))
             } else {
                 mutableRegisterCheckFingerprint.postValue(Fail(MessageErrorException(it.data.errorMessage)))
@@ -194,72 +196,73 @@ class LoginEmailPhoneViewModel @Inject constructor(
 
     fun getUserInfo() {
         getProfileUseCase.execute(GetProfileSubscriber(userSession,
-                { mutableProfileResponse.value = Success(it) },
-                { mutableProfileResponse.value = Fail(it) },
-                getAdminTypeUseCase = getAdminTypeUseCase,
-                showLocationAdminPopUp = {
-                    mutableShowLocationAdminPopUp.value = Success(true)
-                },
-                showErrorGetAdminType = {
-                    mutableShowLocationAdminPopUp.value = Fail(it)
-                }
+            { mutableProfileResponse.value = Success(it) },
+            { mutableProfileResponse.value = Fail(it) },
+            getAdminTypeUseCase = getAdminTypeUseCase,
+            showLocationAdminPopUp = {
+                mutableShowLocationAdminPopUp.value = Success(true)
+            },
+            showErrorGetAdminType = {
+                mutableShowLocationAdminPopUp.value = Fail(it)
+            }
         ))
     }
 
     fun loginGoogle(accessToken: String, email: String) {
         userSession.loginMethod = UserSessionInterface.LOGIN_METHOD_GOOGLE
         loginTokenUseCase.executeLoginSocialMedia(LoginTokenUseCase.generateParamSocialMedia(
-                accessToken, LoginTokenUseCase.SOCIAL_TYPE_GOOGLE),
-                LoginTokenSubscriber(userSession,
-                        {
-                            mutableLoginTokenGoogleResponse.value = Success(it)
-                        }, {
-                            mutableLoginTokenGoogleResponse.value = Fail(it)
-                        },
-                        { showPopup(it.loginToken.popupError) },
-                        { onGoToActivationPage(email) },
-                        { onGoToSecurityQuestion(email) }
-                ))
-    }
-
-    fun loginEmail(email: String, password: String) {
-        loginTokenUseCase.executeLoginEmailWithPassword(LoginTokenUseCase.generateParamLoginEmail(
-                email, password), LoginTokenSubscriber(userSession,
+            accessToken, LoginTokenUseCase.SOCIAL_TYPE_GOOGLE
+        ),
+            LoginTokenSubscriber(userSession,
                 {
-                    mutableLoginTokenResponse.value = Success(it)
-                },
-                {
-                    mutableLoginTokenResponse.value = Fail(it)
+                    mutableLoginTokenGoogleResponse.value = Success(it)
+                }, {
+                    mutableLoginTokenGoogleResponse.value = Fail(it)
                 },
                 { showPopup(it.loginToken.popupError) },
                 { onGoToActivationPage(email) },
                 { onGoToSecurityQuestion(email) }
+            ))
+    }
+
+    fun loginEmail(email: String, password: String) {
+        loginTokenUseCase.executeLoginEmailWithPassword(LoginTokenUseCase.generateParamLoginEmail(
+            email, password
+        ), LoginTokenSubscriber(userSession,
+            {
+                mutableLoginTokenResponse.value = Success(it)
+            },
+            {
+                mutableLoginTokenResponse.value = Fail(it)
+            },
+            { showPopup(it.loginToken.popupError) },
+            { onGoToActivationPage(email) },
+            { onGoToSecurityQuestion(email) }
         ))
     }
 
     fun loginEmailV2(email: String, password: String, useHash: Boolean) {
         launchCatchError(coroutineContext, {
             val keyData = generatePublicKeyUseCase.executeOnBackground().keyData
-            if(keyData.key.isNotEmpty()) {
+            if (keyData.key.isNotEmpty()) {
                 var finalPassword = password
-                if(useHash) {
+                if (useHash) {
                     finalPassword = RsaUtils.encrypt(password, keyData.key.decodeBase64(), useHash)
                 }
                 loginTokenV2UseCase.setParams(email, finalPassword, keyData.hash)
                 val tokenResult = loginTokenV2UseCase.executeOnBackground()
                 LoginV2Mapper(userSession).map(tokenResult.loginToken,
-                        onSuccessLoginToken = {
-                            mutableLoginTokenV2Response.value = Success(it)
-                        },
-                        onErrorLoginToken = {
-                            mutableLoginTokenV2Response.value = Fail(it)
-                        },
-                        onShowPopupError = { showPopup(it.popupError) },
-                        onGoToActivationPage = { onGoToActivationPage(email) },
-                        onGoToSecurityQuestion = { onGoToSecurityQuestion(email) }
+                    onSuccessLoginToken = {
+                        mutableLoginTokenV2Response.value = Success(it)
+                    },
+                    onErrorLoginToken = {
+                        mutableLoginTokenV2Response.value = Fail(it)
+                    },
+                    onShowPopupError = { showPopup(it.popupError) },
+                    onGoToActivationPage = { onGoToActivationPage(email) },
+                    onGoToSecurityQuestion = { onGoToSecurityQuestion(email) }
                 )
-            }
-            else {
+            } else {
                 mutableLoginTokenV2Response.value = Fail(MessageErrorException("Failed"))
             }
         }, {
@@ -300,11 +303,14 @@ class LoginEmailPhoneViewModel @Inject constructor(
         return {
             if (it.accessToken.isNotEmpty() &&
                 it.refreshToken.isNotEmpty() &&
-                it.tokenType.isNotEmpty()) {
+                it.tokenType.isNotEmpty()
+            ) {
                 mutableLoginBiometricResponse.value = Success(it)
             } else if (it.errors.isNotEmpty() &&
-                it.errors[0].message.isNotEmpty()) {
-                mutableLoginBiometricResponse.value = Fail(MessageErrorException(it.errors[0].message))
+                it.errors[0].message.isNotEmpty()
+            ) {
+                mutableLoginBiometricResponse.value =
+                    Fail(MessageErrorException(it.errors[0].message))
             } else {
                 mutableLoginBiometricResponse.value = Fail(RuntimeException())
             }
@@ -319,8 +325,10 @@ class LoginEmailPhoneViewModel @Inject constructor(
     }
 
     fun reloginAfterSQ(validateToken: String) {
-        loginTokenUseCase.executeLoginAfterSQ(LoginTokenUseCase.generateParamLoginAfterSQ(
-                userSession, validateToken), LoginTokenSubscriber(userSession,
+        loginTokenUseCase.executeLoginAfterSQ(
+            LoginTokenUseCase.generateParamLoginAfterSQ(
+                userSession, validateToken
+            ), LoginTokenSubscriber(userSession,
                 { mutableLoginTokenAfterSQResponse.value = Success(it) },
                 { mutableLoginTokenAfterSQResponse.value = Fail(it) },
                 { showPopup(it.loginToken.popupError) },
@@ -380,15 +388,17 @@ class LoginEmailPhoneViewModel @Inject constructor(
     }
 
     fun checkSeamlessEligiblity() {
-        try {
-            launch {
+        launch {
+            try {
                 val result = gotoSeamlessHelper.getGojekProfile()
                 mutableNavigateToGojekSeamless.value = result.authCode.isNotEmpty()
+            } catch (e: Exception) {
+                e.printStackTrace()
+                mutableNavigateToGojekSeamless.value = false
             }
-        } catch (e: Exception) {
-            mutableNavigateToGojekSeamless.value = false
         }
-}
+    }
+
     override fun onCleared() {
         super.onCleared()
         clearBackgroundTask()

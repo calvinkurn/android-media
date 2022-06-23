@@ -24,7 +24,7 @@ class GotoSeamlessLoginViewModel @Inject constructor(
     private val gotoSeamlessHelper: GotoSeamlessHelper,
     private val userSessionInterface: UserSessionInterface,
     private val dispatchers: CoroutineDispatchers
-): BaseViewModel(dispatchers.main) {
+) : BaseViewModel(dispatchers.main) {
 
     private val mutableLoginResponse = MutableLiveData<Result<LoginToken>>()
     val loginResponse: LiveData<Result<LoginToken>>
@@ -35,19 +35,20 @@ class GotoSeamlessLoginViewModel @Inject constructor(
         get() = mutableGojekProfileData
 
     fun getGojekData() {
-        try {
-            launch {
+        launch {
+            try {
                 val result = gotoSeamlessHelper.getGojekProfile()
                 mutableGojekProfileData.value = Success(result)
+            } catch (e: Exception) {
+                e.printStackTrace()
+                mutableGojekProfileData.value = Fail(e)
             }
-        } catch (e: Exception) {
-            mutableGojekProfileData.value = Fail(e)
         }
     }
 
     fun doSeamlessLogin(authCode: String) {
-        try {
-            launch {
+        launch {
+            try {
                 userSessionInterface.setToken(TokenGenerator().createBasicTokenGQL(), "")
                 val params = LoginSeamlessParams(
                     grantType = LoginSeamlessUseCase.GRANT_TYPE_AUTH_CODE,
@@ -55,14 +56,15 @@ class GotoSeamlessLoginViewModel @Inject constructor(
                 )
                 val result = loginSeamlessUseCase(params).loginToken
                 onSuccessSeamlessLogin(result)
+            } catch (e: Exception) {
+                e.printStackTrace()
+                mutableLoginResponse.value = Fail(e)
             }
-        } catch (e: Exception) {
-            mutableLoginResponse.value = Fail(e)
         }
     }
 
     fun onSuccessSeamlessLogin(data: LoginToken) {
-        if(data.accessToken.isNotEmpty()) {
+        if (data.accessToken.isNotEmpty()) {
             saveAccessToken(data)
             mutableLoginResponse.value = Success(data)
         } else {
@@ -74,6 +76,7 @@ class GotoSeamlessLoginViewModel @Inject constructor(
         userSessionInterface.setToken(
             loginToken.accessToken,
             loginToken.tokenType,
-            EncoderDecoder.Encrypt(loginToken.refreshToken, userSessionInterface.refreshTokenIV))
+            EncoderDecoder.Encrypt(loginToken.refreshToken, userSessionInterface.refreshTokenIV)
+        )
     }
 }
