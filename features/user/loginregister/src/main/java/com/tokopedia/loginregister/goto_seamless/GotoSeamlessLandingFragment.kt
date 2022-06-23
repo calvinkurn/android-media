@@ -10,6 +10,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.loginregister.R
 import com.tokopedia.loginregister.databinding.FragmentGotoSeamlessBinding
 import com.tokopedia.loginregister.goto_seamless.di.GotoSeamlessComponent
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
@@ -48,6 +49,7 @@ class GotoSeamlessLandingFragment: BaseDaggerFragment() {
         super.onViewCreated(view, savedInstanceState)
         setupViews()
         viewModel.gojekProfileData.observe(viewLifecycleOwner) {
+            binding?.gotoSeamlessPrimaryBtn?.isLoading = false
             when(it) {
                 is Success -> {
                     if(it.data.authCode.isNotEmpty()) {
@@ -65,25 +67,30 @@ class GotoSeamlessLandingFragment: BaseDaggerFragment() {
                 is Success -> successSeamlessLogin()
                 is Fail -> cancelSeamlessLoginFlow()
             }
+            binding?.gotoSeamlessPrimaryBtn?.isLoading = false
         }
 
+        binding?.gotoSeamlessPrimaryBtn?.isLoading = true
         viewModel.getGojekData()
     }
 
-    fun successSeamlessLogin() {
+    private fun successSeamlessLogin() {
         activity?.setResult(Activity.RESULT_OK)
         activity?.finish()
     }
 
-    fun cancelSeamlessLoginFlow() {
+    private fun cancelSeamlessLoginFlow() {
         activity?.setResult(Activity.RESULT_CANCELED)
         activity?.finish()
     }
 
     private fun setupViews() {
+        binding?.gotoSeamlessMainImg?.loadImage(ILLUSTRATION_IMG_URL)
+
         binding?.gotoSeamlessPrimaryBtn?.setOnClickListener {
             val gojekProfileData = viewModel.gojekProfileData.value
             if(gojekProfileData is Success) {
+                binding?.gotoSeamlessPrimaryBtn?.isLoading = true
                 viewModel.doSeamlessLogin(gojekProfileData.data.authCode)
             }
         }
@@ -95,6 +102,7 @@ class GotoSeamlessLandingFragment: BaseDaggerFragment() {
 
     companion object {
         private const val GOTO_SEAMLESS_SCREEN_NAME = "gotoSeamlessLandingScreen"
+        const val ILLUSTRATION_IMG_URL = "https://images.tokopedia.net/img/android/user/loginregister/img_goto_illustration_2x.png"
 
         fun createInstance(): GotoSeamlessLandingFragment {
             return GotoSeamlessLandingFragment()
