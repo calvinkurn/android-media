@@ -2,6 +2,7 @@ package com.tokopedia.shop.flashsale.presentation.creation.information
 
 import android.app.Activity
 import android.content.Context
+import android.content.res.ColorStateList
 import android.graphics.Typeface
 import android.os.Bundle
 import android.text.*
@@ -48,6 +49,7 @@ import com.tokopedia.shop.flashsale.presentation.creation.information.bottomshee
 import com.tokopedia.shop.flashsale.presentation.creation.information.dialog.CancelCreateCampaignConfirmationDialog
 import com.tokopedia.shop.flashsale.presentation.creation.information.dialog.CancelEditCampaignConfirmationDialog
 import com.tokopedia.shop.flashsale.presentation.creation.manage.ManageProductActivity
+import com.tokopedia.unifycomponents.TextFieldUnify2
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.lifecycle.autoClearedNullable
@@ -805,8 +807,18 @@ class CampaignInformationFragment : BaseDaggerFragment() {
                 monthName
             )
             showErrorTicker(title, getString(R.string.sfs_create_campaign_on_another_period))
+            binding?.tauStartDate?.isInputError = true
+            binding?.tauEndDate?.isInputError = true
+            binding?.tauEndDate?.applySecondaryColor()
         } else {
             hideErrorTicker()
+            binding?.tauStartDate?.isInputError = false
+            binding?.tauEndDate?.isInputError = false
         }
+    }
+
+    private fun TextFieldUnify2?.applySecondaryColor() {
+        val secondaryColorStateList = ColorStateList(binding?.tauEndDate?.disabledStateList, binding?.tauEndDate?.secondaryColorList)
+        this?.textInputLayout?.setHelperTextColor(secondaryColorStateList)
     }
 }
