@@ -253,6 +253,8 @@ class MiniCartGeneralWidget @JvmOverloads constructor(
             val labelText = miniCartSimplifiedData.miniCartWidgetData.headlineWording.ifBlank {
                 context.getString(R.string.mini_cart_widget_label_purchase_summary)
             }
+            labelTitleView.setWeight(Typography.REGULAR)
+            labelTitleView.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN950))
             setLabelTitle(labelText)
             val totalAmountText =
                 miniCartSimplifiedData.miniCartWidgetData.totalProductPriceWording.ifBlank {
@@ -260,6 +262,7 @@ class MiniCartGeneralWidget @JvmOverloads constructor(
                         .removeDecimalSuffix()
                 }
             setAmount(totalAmountText)
+            amountView.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN950))
             val ctaText = context.getString(R.string.mini_cart_widget_label_see_cart)
             setCtaText(ctaText)
             enableAmountChevron(true)
