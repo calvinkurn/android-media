@@ -192,7 +192,12 @@ class TokoNowHomeFragment: Fragment(),
         private const val DEFAULT_INTERVAL_HINT: Long = 10000L
         private const val FIRST_INSTALL_CACHE_VALUE: Long = 1800000L
         private const val REQUEST_CODE_LOGIN_STICKY_LOGIN = 130
+        private const val REQUEST_CODE_PLAY_WIDGET = 100
         private const val ITEM_VIEW_CACHE_SIZE = 20
+
+        private const val EXTRA_PLAY_CHANNEL_ID = "EXTRA_CHANNEL_ID"
+        private const val EXTRA_PLAY_TOTAL_VIEW = "EXTRA_TOTAL_VIEW"
+
         const val CATEGORY_LEVEL_DEPTH = 1
         const val SOURCE = "tokonow"
         const val SOURCE_TRACKING = "tokonow page"
@@ -370,6 +375,9 @@ class TokoNowHomeFragment: Fragment(),
             }
             REQUEST_CODE_LOGIN -> {
                 onRefreshLayout()
+            }
+            REQUEST_CODE_PLAY_WIDGET -> {
+                onUpdatePlayWidget(data)
             }
         }
     }
@@ -868,6 +876,12 @@ class TokoNowHomeFragment: Fragment(),
     private fun refreshMiniCart() {
         checkIfChooseAddressWidgetDataUpdated()
         getMiniCart()
+    }
+
+    private fun onUpdatePlayWidget(data: Intent?) {
+        val channelId = data?.getStringExtra(EXTRA_PLAY_CHANNEL_ID).orEmpty()
+        val totalView = data?.getStringExtra(EXTRA_PLAY_TOTAL_VIEW).orEmpty()
+        viewModelTokoNow.updatePlayWidget(channelId, totalView)
     }
 
     private fun setupUi() {

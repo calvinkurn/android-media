@@ -18,6 +18,7 @@ import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.play.widget.domain.PlayWidgetUseCase.WidgetType.TokoNowMediumWidget
 import com.tokopedia.play.widget.domain.PlayWidgetUseCase.WidgetType.TokoNowSmallWidget
 import com.tokopedia.play.widget.ui.PlayWidgetState
+import com.tokopedia.play.widget.ui.model.PlayWidgetBannerUiModel
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.productcard.ProductCardModel.NonVariant
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
@@ -56,6 +57,8 @@ import com.tokopedia.tokopedianow.data.createLeftCarouselDataModel
 import com.tokopedia.tokopedianow.data.createLoadingState
 import com.tokopedia.tokopedianow.data.createLocalCacheModel
 import com.tokopedia.tokopedianow.data.createMiniCartSimplifier
+import com.tokopedia.tokopedianow.data.createPlayWidgetChannel
+import com.tokopedia.tokopedianow.data.createPlayWidgetUiModel
 import com.tokopedia.tokopedianow.data.createQuestWidgetList
 import com.tokopedia.tokopedianow.data.createQuestWidgetListEmpty
 import com.tokopedia.tokopedianow.data.createSliderBannerDataModel
@@ -3536,7 +3539,7 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
         val widget = HomePlayWidgetUiModel(
             id = "1200",
             title = title,
-            widgetType = TokoNowSmallWidget(channelTag),
+            widgetType = TokoNowMediumWidget(channelTag),
             playWidgetState = playWidgetState,
             isAutoRefresh = false
         )
@@ -3580,6 +3583,88 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
 
         viewModel.homeLayoutList
             .verifySuccessEquals(expectedResult)
+    }
+
+    @Test
+    fun `when update play widget should map total view to play widget`() {
+        val id = "1200"
+        val channelId = "1"
+        val totalView = "30rb"
+        val title = "Update Play Widget"
+        val channelTag = "channel_tag"
+        val playWidgetState = PlayWidgetState(
+            model = createPlayWidgetUiModel(
+                title = title,
+                items = listOf(
+                    PlayWidgetBannerUiModel(appLink = "", imageUrl = ""),
+                    createPlayWidgetChannel(channelId = channelId, totalView = "10rb"),
+                    createPlayWidgetChannel(channelId = "2", totalView = "20rb")
+                )
+            )
+        )
+
+        val widget = HomePlayWidgetUiModel(
+            id = "1200",
+            title = title,
+            widgetType = TokoNowMediumWidget(channelTag),
+            playWidgetState = playWidgetState,
+            isAutoRefresh = false
+        )
+
+        val homeLayoutResponse = listOf(
+            HomeLayoutResponse(
+                id = id,
+                layout = "play_carousel",
+                header = Header(
+                    name = title,
+                    serverTimeUnix = 0
+                ),
+                widgetParam = channelTag
+            )
+        )
+
+        onGetHomeLayoutData_thenReturn(homeLayoutResponse)
+        onGetPlayWidget_thenReturn(playWidgetState)
+
+        viewModel.getHomeLayout(LocalCacheModel(), emptyList())
+        viewModel.getLayoutComponentData(LocalCacheModel())
+        viewModel.updatePlayWidget(channelId, totalView)
+
+        val widgetModel = playWidgetState.model.copy(
+            items = listOf(
+                PlayWidgetBannerUiModel(appLink = "", imageUrl = ""),
+                createPlayWidgetChannel(channelId = channelId, totalView = totalView),
+                createPlayWidgetChannel(channelId = "2", totalView = "20rb")
+            )
+        )
+        val widgetState = playWidgetState.copy(model = widgetModel)
+
+        val playWidgetUiModel = widget.copy(
+            playWidgetState = widgetState,
+            isAutoRefresh = false
+        )
+
+        val homeLayoutItems = listOf(
+            TokoNowChooseAddressWidgetUiModel(id = "0"),
+            playWidgetUiModel
+        )
+
+        val expectedResult = Success(HomeLayoutListUiModel(
+            items = homeLayoutItems,
+            state = TokoNowLayoutState.UPDATE
+        ))
+
+        viewModel.homeLayoutList
+            .verifySuccessEquals(expectedResult)
+    }
+
+    @Test
+    fun `when update play widget error should do nothing`() {
+        onGetHomeLayoutItemList_returnNull()
+
+        viewModel.updatePlayWidget("1", "20rb")
+
+        viewModel.homeLayoutList.verifyValueEquals(null)
     }
 
     @Test

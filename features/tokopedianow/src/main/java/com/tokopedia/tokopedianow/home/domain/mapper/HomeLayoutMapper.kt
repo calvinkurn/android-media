@@ -9,6 +9,7 @@ import com.tokopedia.minicart.common.domain.data.MiniCartItem
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.domain.data.getMiniCartItemParentProduct
 import com.tokopedia.minicart.common.domain.data.getMiniCartItemProduct
+import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.tokopedianow.categorylist.domain.model.CategoryResponse
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState
@@ -527,6 +528,24 @@ object HomeLayoutMapper {
                     }
                     copy(layout = layoutUiModel.copy(productList = productList))
                 }
+            }
+        }
+    }
+
+    fun MutableList<HomeLayoutItemUiModel>.updatePlayWidget(channelId: String, totalView: String) {
+        map { it.layout }.filterIsInstance<HomePlayWidgetUiModel>().forEach {
+            val model = it.playWidgetState.model.copy(
+                items = it.playWidgetState.model.items.map { item ->
+                    if (item is PlayWidgetChannelUiModel && item.channelId == channelId) {
+                        item.copy(totalView = item.totalView.copy(totalViewFmt = totalView))
+                    } else item
+                }
+            )
+            val playWidgetState = it.playWidgetState.copy(model = model)
+            val playWidgetUiModel = it.copy(playWidgetState = playWidgetState)
+
+            updateItemById(it.id) {
+                HomeLayoutItemUiModel(playWidgetUiModel, HomeLayoutItemState.LOADED)
             }
         }
     }
