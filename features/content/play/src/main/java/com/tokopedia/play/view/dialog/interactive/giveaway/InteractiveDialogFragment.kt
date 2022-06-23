@@ -28,7 +28,7 @@ import com.tokopedia.play.view.uimodel.recom.PlayPartnerInfo
 import com.tokopedia.play.view.viewmodel.PlayViewModel
 import com.tokopedia.play_common.model.dto.interactive.InteractiveUiModel
 import com.tokopedia.play_common.model.ui.QuizChoicesUiModel
-import com.tokopedia.play.view.GiveawayWidgetView
+import com.tokopedia.play_common.view.game.GiveawayWidgetView
 import com.tokopedia.play_common.view.game.quiz.PlayQuizOptionState
 import com.tokopedia.play_common.view.game.quiz.QuizWidgetView
 import com.tokopedia.play_common.view.game.setupGiveaway

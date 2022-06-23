@@ -1,4 +1,4 @@
-package com.tokopedia.play.view
+package com.tokopedia.play_common.view.game
 
 import android.animation.Animator
 import android.animation.AnimatorSet
@@ -8,14 +8,11 @@ import android.util.AttributeSet
 import android.view.HapticFeedbackConstants
 import android.view.LayoutInflater
 import android.view.View
-import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.play_common.R
-import com.tokopedia.play.R as playR
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.airbnb.lottie.LottieDrawable
-import com.tokopedia.play.databinding.ViewGiveawayWidgetBinding
-import com.tokopedia.play_common.view.game.GameHeaderView
-import com.tokopedia.play_common.view.game.setupGiveaway
+import com.tokopedia.kotlin.extensions.view.showWithCondition
+import com.tokopedia.play_common.databinding.ViewGiveawayWidgetBinding
 import java.util.*
 
 
@@ -105,13 +102,13 @@ class GiveawayWidgetView : ConstraintLayout {
         }
 
         fun setupLottieBg() {
-            binding.tapLottieBg.setAnimationFromUrl(context.getString(playR.string.lottie_bg_tap))
+            binding.tapLottieBg.setAnimationFromUrl(context.getString(R.string.lottie_bg_tap))
             binding.tapLottieBg.repeatCount = LottieDrawable.INFINITE
             binding.tapLottieBg.playAnimation()
         }
 
         fun setupLottieButton() {
-            binding.ivTap.setAnimationFromUrl(context.getString(playR.string.lottie_button_tap))
+            binding.ivTap.setAnimationFromUrl(context.getString(R.string.lottie_button_tap))
             binding.ivTap.repeatCount = LottieDrawable.INFINITE
             binding.ivTap.playAnimation()
         }

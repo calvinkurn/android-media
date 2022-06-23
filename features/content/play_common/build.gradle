@@ -69,6 +69,7 @@ dependencies {
     implementation rootProject.ext.miscDependencies.exoPlayerCore
     implementation rootProject.ext.miscDependencies.exoPlayer
     implementation rootProject.ext.miscDependencies.exoPlayerRtmp
+    implementation rootProject.ext.miscDependencies.lottie
 }
 
 project.ext {
