@@ -106,7 +106,8 @@ public class GraphqlClient {
                 new FingerprintInterceptor((NetworkRouter) context.getApplicationContext(), userSession),
                 authenticator,
                 new StringResponseConverter(),
-                new GsonBuilder()
+                new GsonBuilder(),
+                context
         );
         sFingerprintManager = new FingerprintManager(userSession);
         sGraphqlDatabase = GraphqlDatabase.getInstance(context);
@@ -150,7 +151,8 @@ public class GraphqlClient {
                 new FingerprintInterceptor((NetworkRouter) context.getApplicationContext(), userSession),
                 new TkpdAuthenticator(context, (NetworkRouter) context.getApplicationContext(), userSession),
                 new StringResponseConverter(),
-                new GsonBuilder());
+                new GsonBuilder(),
+                context);
     }
 
     @NotNull
