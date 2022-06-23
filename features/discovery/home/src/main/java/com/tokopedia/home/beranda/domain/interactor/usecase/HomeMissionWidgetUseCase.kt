@@ -4,7 +4,7 @@ import android.os.Bundle
 import com.tokopedia.home.beranda.domain.interactor.repository.HomeChooseAddressRepository
 import com.tokopedia.home.beranda.domain.interactor.repository.HomeMissionWidgetRepository
 import com.tokopedia.home.beranda.helper.MissionWidgetHelper
-import com.tokopedia.home.constant.ConstantKey
+import com.tokopedia.home_component.usecase.missionwidget.GetMissionWidget
 import com.tokopedia.home_component.visitable.MissionWidgetListDataModel
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils.convertToLocationParams
 import javax.inject.Inject
@@ -21,7 +21,7 @@ class HomeMissionWidgetUseCase @Inject constructor(
         return try {
             val results = missionWidgetRepository.getRemoteData(Bundle().apply {
                 putString(
-                    HomeMissionWidgetRepository.BANNER_LOCATION_PARAM,
+                    GetMissionWidget.BANNER_LOCATION_PARAM,
                     homeChooseAddressRepository.getRemoteData()?.convertToLocationParams()
                 )
             })

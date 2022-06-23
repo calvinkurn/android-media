@@ -1,6 +1,6 @@
 package com.tokopedia.home.beranda.helper
 
-import com.tokopedia.home.beranda.data.model.HomeMissionWidgetData
+import com.tokopedia.home_component.usecase.missionwidget.HomeMissionWidgetData
 import com.tokopedia.home_component.visitable.MissionWidgetDataModel
 
 /**

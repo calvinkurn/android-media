@@ -30,6 +30,8 @@ import com.tokopedia.home.util.HomeServerLogger
 import com.tokopedia.home_component.model.ReminderEnum
 import com.tokopedia.home_component.usecase.featuredshop.DisplayHeadlineAdsEntity
 import com.tokopedia.home_component.usecase.featuredshop.mappingTopAdsHeaderToChannelGrid
+import com.tokopedia.home_component.usecase.missionwidget.GetMissionWidget
+import com.tokopedia.home_component.usecase.missionwidget.HomeMissionWidgetData
 import com.tokopedia.home_component.visitable.FeaturedShopDataModel
 import com.tokopedia.home_component.visitable.MissionWidgetListDataModel
 import com.tokopedia.home_component.visitable.ReminderWidgetModel
@@ -220,7 +222,7 @@ class HomeDynamicChannelUseCase @Inject constructor(
                         bundleParam = {
                             Bundle().apply {
                                 putString(
-                                    HomeMissionWidgetRepository.BANNER_LOCATION_PARAM,
+                                    GetMissionWidget.BANNER_LOCATION_PARAM,
                                     homeChooseAddressRepository.getRemoteData()?.convertToLocationParams()
                                 )
                             }

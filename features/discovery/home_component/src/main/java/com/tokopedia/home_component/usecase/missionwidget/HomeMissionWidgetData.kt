@@ -1,4 +1,4 @@
-package com.tokopedia.home.beranda.data.model
+package com.tokopedia.home_component.usecase.missionwidget
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName

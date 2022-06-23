@@ -11,7 +11,6 @@ import com.tokopedia.home.beranda.data.mapper.HomeDataMapper
 import com.tokopedia.home.beranda.data.mapper.HomeDynamicChannelDataMapper
 import com.tokopedia.home.beranda.data.mapper.HomeRecommendationMapper
 import com.tokopedia.home.beranda.data.model.HomeAtfData
-import com.tokopedia.home.beranda.data.model.HomeMissionWidgetData
 import com.tokopedia.home.beranda.data.model.HomeWidget
 import com.tokopedia.home.beranda.data.model.TokopointsDrawerListHomeData
 import com.tokopedia.home.beranda.domain.interactor.usecase.HomeDynamicChannelUseCase
@@ -32,7 +31,6 @@ import com.tokopedia.home.beranda.di.module.query.HomeIconQuery
 import com.tokopedia.home.beranda.di.module.query.HomeSlidesQuery
 import com.tokopedia.home.beranda.di.module.query.AtfQuery
 import com.tokopedia.home.beranda.di.module.query.CloseChannelQuery
-import com.tokopedia.home.beranda.di.module.query.MissionWidgetQuery
 import com.tokopedia.home.beranda.domain.gql.CloseChannelMutation
 import com.tokopedia.home.beranda.domain.gql.ProductrevDismissSuggestion
 import com.tokopedia.home.beranda.domain.gql.feed.HomeFeedContentGqlResponse
@@ -40,7 +38,6 @@ import com.tokopedia.home.beranda.domain.gql.feed.HomeFeedTabGqlResponse
 import com.tokopedia.home.beranda.domain.interactor.*
 import com.tokopedia.home.beranda.domain.interactor.repository.*
 import com.tokopedia.home.beranda.domain.interactor.usecase.HomeBalanceWidgetUseCase
-import com.tokopedia.home.beranda.domain.interactor.usecase.HomeMissionWidgetUseCase
 import com.tokopedia.home.beranda.domain.model.*
 import com.tokopedia.home.beranda.domain.model.banner.HomeBannerData
 import com.tokopedia.home.beranda.domain.model.review.SuggestedProductReview
@@ -336,13 +333,5 @@ class HomeUseCaseModule {
     @HomeScope
     fun provideHomeBeautyFestUseCase(): HomeBeautyFestRepository {
         return HomeBeautyFestRepository()
-    }
-
-    @Provides
-    @HomeScope
-    fun provideMissionWidgetUseCase(graphqlRepository: GraphqlRepository): HomeMissionWidgetRepository {
-        val useCase = com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase<HomeMissionWidgetData.HomeMissionWidget>(graphqlRepository)
-        useCase.setGraphqlQuery(MissionWidgetQuery())
-        return HomeMissionWidgetRepository(useCase)
     }
 }

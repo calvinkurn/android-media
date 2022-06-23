@@ -1,8 +1,8 @@
-package com.tokopedia.home.beranda.di.module.query
+package com.tokopedia.home_component.query
 
 import com.tokopedia.gql_query_annotation.GqlQuery
-import com.tokopedia.home.beranda.di.module.query.QueryMissionWidget.MISSION_WIDGET_QUERY
-import com.tokopedia.home.beranda.di.module.query.QueryMissionWidget.MISSION_WIDGET_QUERY_NAME
+import com.tokopedia.home_component.query.QueryMissionWidget.MISSION_WIDGET_QUERY
+import com.tokopedia.home_component.query.QueryMissionWidget.MISSION_WIDGET_QUERY_NAME
 
 /**
  * Created by dhaba
