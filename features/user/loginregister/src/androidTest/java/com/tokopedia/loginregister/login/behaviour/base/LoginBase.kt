@@ -14,7 +14,6 @@ import com.tokopedia.loginregister.R
 import com.tokopedia.loginregister.discover.pojo.DiscoverData
 import com.tokopedia.loginregister.discover.pojo.DiscoverPojo
 import com.tokopedia.loginregister.discover.pojo.ProviderData
-import com.tokopedia.loginregister.login.behaviour.activity.LoginActivityStub
 import com.tokopedia.loginregister.login.behaviour.data.*
 import com.tokopedia.loginregister.login.behaviour.di.FakeActivityComponentFactory
 import com.tokopedia.loginregister.login.di.ActivityComponentFactory
@@ -22,10 +21,7 @@ import com.tokopedia.loginregister.login.domain.pojo.RegisterCheckData
 import com.tokopedia.loginregister.login.domain.pojo.RegisterCheckPojo
 import com.tokopedia.loginregister.login.view.activity.LoginActivity
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.test.TestCoroutineDispatcher
-import kotlinx.coroutines.test.setMain
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -62,20 +58,7 @@ open class LoginBase: LoginRegisterBase() {
     lateinit var getProfileUseCaseStub: GetProfileUseCaseStub
 
     @Inject
-    lateinit var activateUserUseCaseStub: ActivateUserUseCaseStub
-
-    @Inject
-    lateinit var dynamicBannerUseCaseStub: DynamicBannerUseCaseStub
-
-    @Inject
-    lateinit var getAdminTypeUseCaseStub: GetAdminTypeUseCaseStub
-
-    @Inject
     lateinit var loginTokenUseCaseStub: LoginTokenUseCaseStub
-
-    @Inject
-    lateinit var tickerInfoUseCaseStub: TickerInfoUseCaseStub
-
 
     @Inject
     lateinit var userSessionStub: UserSessionInterface
@@ -83,18 +66,6 @@ open class LoginBase: LoginRegisterBase() {
     @ExperimentalCoroutinesApi
     @Before
     open fun before() {
-        Dispatchers.setMain(TestCoroutineDispatcher())
-//        val baseAppComponent = DaggerBaseAppComponentStub.builder()
-//                .appModuleStub(AppModuleStub(applicationContext))
-//                .build()
-//        val loginRegisterComponent =  DaggerMockLoginRegisterComponent.builder()
-//                .baseAppComponentStub(baseAppComponent)
-//                .build()
-//        loginComponent = DaggerLoginComponentStub.builder()
-//                .mockLoginRegisterComponent(loginRegisterComponent)
-//                .build()
-//        loginComponent.inject(this)
-//        ApplicationProvider.getApplicationContext<BaseMainApplication>().setComponent(baseComponent)
         val fakeComponentFactory = FakeActivityComponentFactory()
         ActivityComponentFactory.instance = fakeComponentFactory
         fakeComponentFactory.loginComponent.inject(this)
@@ -119,7 +90,6 @@ open class LoginBase: LoginRegisterBase() {
     }
 
     protected fun inflateTestFragment() {
-//        activity.setupTestFragment(loginComponent)
         waitForFragmentResumed()
     }
 
@@ -130,7 +100,6 @@ open class LoginBase: LoginRegisterBase() {
 
         intentModifier(intent)
         activityTestRule.launchActivity(intent)
-//        activity = activityTestRule.activity
 //        fragmentTransactionIdling = FragmentTransactionIdle(
 //            activity.supportFragmentManager,
 //            LoginActivityStub.TAG
@@ -157,9 +126,7 @@ open class LoginBase: LoginRegisterBase() {
     }
 
     protected fun launchDefaultFragment() {
-        setupLoginActivity {
-            it.putExtras(Intent(context, LoginActivityStub::class.java))
-        }
+        setupLoginActivity()
         inflateTestFragment()
     }
 
