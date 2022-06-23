@@ -9,9 +9,7 @@ import com.tokopedia.broadcaster.revamp.state.BroadcastState
 import com.tokopedia.broadcaster.revamp.util.statistic.BroadcasterMetric
 import com.tokopedia.play.broadcaster.di.ActivityRetainedScope
 import com.tokopedia.play.broadcaster.pusher.state.PlayBroadcasterState
-import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
-import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
 /**
