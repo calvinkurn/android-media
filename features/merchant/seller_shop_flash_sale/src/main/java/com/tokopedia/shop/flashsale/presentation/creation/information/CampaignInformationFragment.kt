@@ -416,7 +416,7 @@ class CampaignInformationFragment : BaseDaggerFragment() {
             CampaignInformationViewModel.ValidationResult.InvalidHexColor -> {
                 hideLapsedTeaserTicker()
                 hideErrorTicker()
-                binding?.root showError getString(R.string.sfs_invalid_hex_color)
+                binding?.cardView showError getString(R.string.sfs_invalid_hex_color)
             }
             CampaignInformationViewModel.ValidationResult.Valid -> {
                 hideLapsedTeaserTicker()
@@ -463,15 +463,9 @@ class CampaignInformationFragment : BaseDaggerFragment() {
     }
 
     private fun handleContentSwitcher(hexColorOptionSelected: Boolean) {
-        val isHexColorTextFieldFilled = binding?.tauHexColor?.editText?.text.toString().trim().isValidHexColor()
         binding?.recyclerView?.isVisible = !hexColorOptionSelected
         binding?.groupHexColorPicker?.isVisible = hexColorOptionSelected
-
-        if (hexColorOptionSelected && isHexColorTextFieldFilled) {
-            binding?.btnApply?.visible()
-        } else {
-            binding?.btnApply?.invisible()
-        }
+        binding?.btnApply?.isVisible = hexColorOptionSelected
     }
 
     private fun handleSelectedColor(selectedGradient: Gradient) {
@@ -480,22 +474,38 @@ class CampaignInformationFragment : BaseDaggerFragment() {
         adapter.submit(updatedColorSelection)
 
         binding?.tauHexColor?.editText?.setText("")
-        binding?.btnApply?.invisible()
+        binding?.btnApply?.gone()
+        binding?.tpgHexColorErrorMessage?.invisible()
         binding?.imgHexColorPreview?.setBackgroundResource(R.drawable.sfs_shape_rounded_color)
 
         binding?.cardView?.visible()
         viewModel.setSelectedColor(selectedGradient)
     }
 
-    private fun handleHexColor(text: String) {
-        if (text.isNotEmpty()) {
-            val hexColor = text.toHexColor()
+    private fun handleHexColor(unvalidatedHexColor: String) {
+        if (unvalidatedHexColor.length < HEX_COLOR_TEXT_FIELD_MAX_LENGTH) {
+            binding?.btnApply?.disable()
+            binding?.tauHexColor?.isInputError = true
+            binding?.tpgHexColorErrorMessage?.visible()
+            binding?.tpgHexColorErrorMessage?.text = getString(R.string.sfs_min_hex_color_length)
+        } else {
+            validateHexColor(unvalidatedHexColor)
+        }
+    }
 
-            if (hexColor.isValidHexColor()) {
-                binding?.btnApply?.visible()
-            } else {
-                binding?.btnApply?.invisible()
-            }
+    private fun validateHexColor(unvalidatedHexColor: String) {
+        val hexColor = unvalidatedHexColor.toHexColor()
+
+        if (hexColor.isValidHexColor()) {
+            binding?.btnApply?.enable()
+            binding?.tauHexColor?.isInputError = false
+            binding?.tpgHexColorErrorMessage?.text = ""
+            binding?.tpgHexColorErrorMessage?.invisible()
+        } else {
+            binding?.tauHexColor?.isInputError = true
+            binding?.tpgHexColorErrorMessage?.visible()
+            binding?.tpgHexColorErrorMessage?.text = getString(R.string.sfs_invalid_hex_color)
+            binding?.btnApply?.disable()
         }
     }
 
@@ -696,7 +706,7 @@ class CampaignInformationFragment : BaseDaggerFragment() {
 
 
         if (isUsingHexColor) {
-            binding?.btnApply?.visible()
+            binding?.btnApply?.enable()
             binding?.contentSwitcher?.isChecked = true
             binding?.tauHexColor?.editText?.setText(campaign.gradientColor.first.removeHexColorPrefix())
             binding?.imgHexColorPreview?.setBackgroundFromGradient(campaign.gradientColor)
@@ -704,7 +714,7 @@ class CampaignInformationFragment : BaseDaggerFragment() {
             val colors = viewModel.deselectAllColor(adapter.snapshot())
             adapter.submit(colors)
         } else {
-            binding?.btnApply?.invisible()
+            binding?.btnApply?.disable()
             val colors = viewModel.markColorAsSelected(campaign.gradientColor, adapter.snapshot())
             adapter.submit(colors)
         }
