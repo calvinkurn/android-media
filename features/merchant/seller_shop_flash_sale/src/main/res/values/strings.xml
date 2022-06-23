@@ -254,6 +254,8 @@
     <string name="manage_product_continue_label">Lanjut</string>
     <string name="manage_product_save_draft_label">Simpan Draft</string>
     <string name="manage_product_maximum_product_error">Sudah mencapai maks. 50 produk.</string>
+    <string name="manage_product_error_banner_title">Beberapa produk memiliki kesalahan</string>
+    <string name="manage_product_error_banner_description">Cek semua produkmu lalu ubah dan perbaiki informasi produknya, ya.</string>
 
     <!--Delete Product-->
     <string name="deleteproduct_dialog_title">Yakin ingin hapus produk dari campaign?</string>

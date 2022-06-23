@@ -25,9 +25,12 @@ import com.tokopedia.shop.flashsale.presentation.creation.information.CampaignIn
 import com.tokopedia.shop.flashsale.presentation.creation.manage.adapter.ManageProductListAdapter
 import com.tokopedia.shop.flashsale.presentation.creation.manage.dialog.ProductDeleteDialog
 import com.tokopedia.shop.flashsale.presentation.list.container.CampaignListActivity
+import com.tokopedia.shop.flashsale.presentation.list.list.CampaignListFragment
+import com.tokopedia.shop.flashsale.presentation.list.list.listener.RecyclerViewScrollListener
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.lifecycle.autoClearedNullable
+import kotlinx.coroutines.GlobalScope
 import java.util.*
 import javax.inject.Inject
 import kotlin.concurrent.schedule
@@ -45,6 +48,7 @@ class ManageProductFragment :
         private const val EMPTY_STATE_IMAGE_URL =
             "https://images.tokopedia.net/img/android/campaign/flash-sale-toko/ic_no_active_campaign.png"
         private const val REDIRECT_TO_CAMPAIGN_LIST_PAGE_DELAY: Long = 1_500
+        private const val SCROLL_ANIMATION_DELAY = 500L
 
         @JvmStatic
         fun newInstance(campaignId: Long): ManageProductFragment {
@@ -138,6 +142,7 @@ class ManageProductFragment :
                         hideEmptyState()
                     } else {
                         showEmptyState()
+                        showChooseProductPage()
                     }
                 }
                 is Fail -> {
@@ -191,6 +196,25 @@ class ManageProductFragment :
         }
     }
 
+    private fun setupScrollListener() {
+        binding?.apply {
+            recyclerViewProduct.addOnScrollListener(
+                RecyclerViewScrollListener(
+                    onScrollDown = {
+                        doOnDelayFinished(SCROLL_ANIMATION_DELAY) {
+                            handleScrollDownEvent()
+                        }
+                    },
+                    onScrollUp = {
+                        doOnDelayFinished(SCROLL_ANIMATION_DELAY) {
+                            handleScrollUpEvent()
+                        }
+                    }
+                )
+            )
+        }
+    }
+
     @SuppressLint("ResourcePackage")
     private fun showEmptyState() {
         binding?.apply {
@@ -227,19 +251,23 @@ class ManageProductFragment :
 
     private fun showEmptyProductBanner() {
         binding?.apply {
+            tickerErrorProductInfo.gone()
             cardIncompleteProductInfo.visible()
-            btnContinue.enable()
+            btnContinue.disable()
         }
     }
 
     private fun showErrorProductBanner() {
         binding?.apply {
+            tickerErrorProductInfo.visible()
+            cardIncompleteProductInfo.gone()
             btnContinue.disable()
         }
     }
 
     private fun hideBanner() {
         binding?.apply {
+            tickerErrorProductInfo.gone()
             cardIncompleteProductInfo.gone()
             btnContinue.enable()
         }
@@ -286,12 +314,40 @@ class ManageProductFragment :
         CampaignListActivity.start(context, isClearTop = true)
     }
 
+    private fun handleScrollDownEvent() {
+        binding?.apply {
+            when (viewModel.bannerType.value) {
+                EMPTY.type -> {
+                    cardIncompleteProductInfo.slideDown()
+                }
+                ERROR.type -> {
+                    tickerErrorProductInfo.slideDown()
+                }
+            }
+            cardBottomButtonGroup.slideDown()
+        }
+    }
+
+    private fun handleScrollUpEvent() {
+        binding?.apply {
+            when (viewModel.bannerType.value) {
+                EMPTY.type -> {
+                    cardIncompleteProductInfo.slideUp()
+                }
+                ERROR.type -> {
+                    tickerErrorProductInfo.slideUp()
+                }
+            }
+            cardBottomButtonGroup.slideUp()
+        }
+    }
+
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         when (resultCode) {
             Activity.RESULT_OK -> {
                 showLoader()
-                doOnDelayFinished(DELAY) {
+                Timer("Retrieving", false).schedule(DELAY) {
                     viewModel.getProducts(campaignId, LIST_TYPE)
                 }
             }
