@@ -328,8 +328,7 @@ class OfficialHomeFragment :
     }
 
     private fun updateWishListRecomWidget() {
-        recommendationWishlistItem?.isWishlist = !(recommendationWishlistItem?.isWishlist
-            ?: false)
+        recommendationWishlistItem?.isWishlist = !(recommendationWishlistItem?.isWishlist ?: false)
     }
 
     private fun updateWishlist(isWishlist: Boolean, position: Int) {
