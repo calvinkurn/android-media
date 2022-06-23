@@ -190,7 +190,7 @@ class MainNavAnalyticsTest {
         InstrumentationAuthHelper.loginToAnUser(activityRule.activity.application)
     }
 
-    private fun scrollHomeRecyclerViewToPosition(homeRecyclerView: RecyclerView, position: Int) {
+    private fun scrollMainNavRecyclerViewToPosition(homeRecyclerView: RecyclerView, position: Int) {
         val layoutManager = homeRecyclerView.layoutManager as LinearLayoutManager
         activityRule.runOnUiThread { layoutManager.scrollToPositionWithOffset(position, 400) }
     }
@@ -212,20 +212,20 @@ class MainNavAnalyticsTest {
         predicate: (T?) -> Boolean = { true },
         isTypeClass: (viewHolder: RecyclerView.ViewHolder, itemClickLimit: Int) -> Unit
     ) {
-        val homeRecyclerView = activityRule.activity.findViewById<RecyclerView>(R.id.recycler_view)
-        val homeRecycleAdapter = homeRecyclerView.adapter as? MainNavListAdapter
+        val mainNavRecyclerView = activityRule.activity.findViewById<RecyclerView>(R.id.recycler_view)
+        val mainNavRecycleAdapter = mainNavRecyclerView.adapter as? MainNavListAdapter
 
-        val visitableList = homeRecycleAdapter?.currentList ?: listOf()
+        val visitableList = mainNavRecycleAdapter?.currentList ?: listOf()
         val targetModel = visitableList.find {
             it.javaClass.simpleName == dataModelClass.simpleName && predicate.invoke(it as? T)
         }
         val targetModelIndex = visitableList.indexOf(targetModel)
 
         targetModelIndex.let { targetModelIndex ->
-            scrollHomeRecyclerViewToPosition(homeRecyclerView, targetModelIndex)
+            scrollMainNavRecyclerViewToPosition(mainNavRecyclerView, targetModelIndex)
             if (delayBeforeRender > 0) Thread.sleep(delayBeforeRender)
             val targetModelViewHolder =
-                homeRecyclerView.findViewHolderForAdapterPosition(targetModelIndex)
+                mainNavRecyclerView.findViewHolderForAdapterPosition(targetModelIndex)
             targetModelViewHolder?.let { targetModelViewHolder ->
                 isTypeClass.invoke(
                     targetModelViewHolder,
