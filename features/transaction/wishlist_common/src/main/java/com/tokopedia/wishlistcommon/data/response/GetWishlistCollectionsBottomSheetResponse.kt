@@ -17,7 +17,7 @@ data class GetWishlistCollectionsBottomSheetResponse(
 			val errorMessage: List<String> = emptyList(),
 
 			@SerializedName("data")
-			val data: Data,
+			val data: Data = Data(),
 
 			@SerializedName("status")
 			val status: String = ""
@@ -40,13 +40,13 @@ data class GetWishlistCollectionsBottomSheetResponse(
 				val additionalSection: AdditionalSection = AdditionalSection(),
 
 				@SerializedName("placeholder")
-				val placeholder: Placeholder,
+				val placeholder: Placeholder = Placeholder(),
 
 				@SerializedName("total_collection")
-				val totalCollection: Int,
+				val totalCollection: Int = 0,
 
 				@SerializedName("max_limit_collection")
-				val maxLimitCollection: Int,
+				val maxLimitCollection: Int = 0,
 
 				@SerializedName("wording_max_limit_collection")
 				val wordingMaxLimitCollection: String = ""

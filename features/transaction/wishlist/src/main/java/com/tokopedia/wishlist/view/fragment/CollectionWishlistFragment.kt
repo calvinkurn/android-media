@@ -30,7 +30,7 @@ import com.tokopedia.wishlist.util.WishlistV2Consts.TYPE_COLLECTION_ITEM
 import com.tokopedia.wishlist.util.WishlistV2Consts.TYPE_COLLECTION_TICKER
 import com.tokopedia.wishlist.view.adapter.CollectionWishlistAdapter
 import com.tokopedia.wishlist.view.viewmodel.CollectionWishlistViewModel
-import com.tokopedia.wishlistcommon.view.bottomsheet.AddToCollectionWishlistBottomSheet
+import com.tokopedia.wishlistcommon.view.bottomsheet.BottomSheetAddCollectionWishlist
 import javax.inject.Inject
 
 
@@ -89,7 +89,7 @@ class CollectionWishlistFragment : BaseDaggerFragment(), CollectionWishlistAdapt
     }
 
     private fun showExampleBottomSheet() {
-        val bottomSheetAddToCollectionSample = AddToCollectionWishlistBottomSheet.newInstance()
+        val bottomSheetAddToCollectionSample = BottomSheetAddCollectionWishlist.newInstance()
         if (bottomSheetAddToCollectionSample.isAdded || childFragmentManager.isStateSaved) return
         bottomSheetAddToCollectionSample.show(childFragmentManager)
     }

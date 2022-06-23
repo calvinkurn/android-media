@@ -13,7 +13,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
-class AddToWishlistCollectionBottomSheetViewModel @Inject constructor(
+class BottomSheetAddCollectionViewModel @Inject constructor(
     private val dispatcher: CoroutineDispatchers,
     private val getWishlistCollectionsBottomSheetUseCase: GetWishlistCollectionsBottomSheetUseCase
 ) : BaseViewModel(dispatcher.main) {

@@ -4,7 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
-import com.tokopedia.wishlistcommon.view.viewmodel.AddToWishlistCollectionBottomSheetViewModel
+import com.tokopedia.wishlistcommon.view.viewmodel.BottomSheetAddCollectionViewModel
 import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap
@@ -18,6 +18,6 @@ abstract class AddToWishlistCollectionViewModelModule {
     @AddToWishlistCollectionScope
     @Binds
     @IntoMap
-    @ViewModelKey(AddToWishlistCollectionBottomSheetViewModel::class)
-    internal abstract fun addToWishlistCollectionViewModel(viewModel: AddToWishlistCollectionBottomSheetViewModel): ViewModel
+    @ViewModelKey(BottomSheetAddCollectionViewModel::class)
+    internal abstract fun addToWishlistCollectionViewModel(viewModel: BottomSheetAddCollectionViewModel): ViewModel
 }
