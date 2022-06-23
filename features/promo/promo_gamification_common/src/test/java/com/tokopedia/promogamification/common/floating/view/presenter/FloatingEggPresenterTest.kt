@@ -43,6 +43,7 @@ class FloatingEggPresenterTest {
         preparePresenter()
 
         every { getTokenTokopointsUseCase.clearRequest() } just runs
+        every { getTokenTokopointsUseCase.unsubscribe() } just runs
         mockkStatic(GraphqlHelper::class)
         every { GraphqlHelper.loadRawString(any(), any()) } returns ""
         every { getTokenTokopointsUseCase.addRequest(any()) } just runs
@@ -175,9 +176,21 @@ class FloatingEggPresenterTest {
         val gamiFloatingClickData: GamiFloatingClickData = mockk()
         coEvery { graphqlResponse.getData(GamiFloatingCloseClickResponse::class.java) as GamiFloatingCloseClickResponse } returns floatingButtonResponseEntity
         every { floatingButtonResponseEntity.gamiFloatingClick } returns gamiFloatingClickData
-
         subscriber.onNext(graphqlResponse)
         verify { view.onSuccessClickClose(gamiFloatingClickData) }
+    }
+
+    @Test
+    fun testClickCloseSubscriberOnNextError() {
+        val subscriber = presenter.clickCloseSubscriber
+        presenter.detachView()
+        val graphqlResponse: GraphqlResponse = mockk()
+        val floatingButtonResponseEntity: GamiFloatingCloseClickResponse = mockk()
+        val gamiFloatingClickData: GamiFloatingClickData = mockk()
+        coEvery { graphqlResponse.getData(GamiFloatingCloseClickResponse::class.java) as GamiFloatingCloseClickResponse } returns floatingButtonResponseEntity
+        every { floatingButtonResponseEntity.gamiFloatingClick } returns gamiFloatingClickData
+        subscriber.onNext(graphqlResponse)
+        verify(exactly = 0) { view.onSuccessClickClose(gamiFloatingClickData) }
     }
 
     @Test
