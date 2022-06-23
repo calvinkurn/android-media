@@ -8,6 +8,9 @@ const val ADDITIONAL_DURATION_BUFFER = 500
 const val SECOND_TIME_DIVIDER = 1000
 const val MINUTE_TIME_DIVIDER = SECOND_TIME_DIVIDER * 60
 const val HOUR_TIME_DIVIDER = MINUTE_TIME_DIVIDER * 60
+const val HOURS_ON_DAY = 24
+const val MINUTES_ON_HOUR = 60
+const val SECONDS_ON_MINUTE = 60
 
 /**
  * Mapper of duration,
@@ -28,9 +31,9 @@ fun Int?.humanize(): String {
      */
     val duration = this + ADDITIONAL_DURATION_BUFFER
 
-    val second = duration / SECOND_TIME_DIVIDER % 60
-    val minute = duration / MINUTE_TIME_DIVIDER % 60
-    val hour = duration / HOUR_TIME_DIVIDER % 24
+    val second = duration / SECOND_TIME_DIVIDER % SECONDS_ON_MINUTE
+    val minute = duration / MINUTE_TIME_DIVIDER % MINUTES_ON_HOUR
+    val hour = duration / HOUR_TIME_DIVIDER % HOURS_ON_DAY
 
     return if (hour > 0) {
         String.format("%02d:%02d:%02d", hour, minute, second)
