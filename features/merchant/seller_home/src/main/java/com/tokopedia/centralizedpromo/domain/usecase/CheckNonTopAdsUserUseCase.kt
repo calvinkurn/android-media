@@ -27,7 +27,7 @@ class CheckNonTopAdsUserUseCase @Inject constructor(
 
     companion object {
         const val QUERY: String = """
-            query topadsGetShopInfoV2_1(${'$'}shop_id : String!, ${'$'}source : String!){
+            query topadsGetShopInfo(${'$'}shop_id : String!, ${'$'}source : String!){
               topadsGetShopInfoV2_1(shopID: ${'$'}shop_id, source: ${'$'}source) {
                 data {
                   ads {
