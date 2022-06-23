@@ -30,7 +30,7 @@ class ChatContactLoadMoreViewModelTest {
 
     private lateinit var viewModel : ChatContactLoadMoreViewModel
 
-    private val testMessageId: Long = 123
+    private val testMessageId: String = "123"
     private val testPage = 1
     private val testQuery = "testQuery"
     private val testFirstResponse: GetChatSearchResponse = GetChatSearchResponse()

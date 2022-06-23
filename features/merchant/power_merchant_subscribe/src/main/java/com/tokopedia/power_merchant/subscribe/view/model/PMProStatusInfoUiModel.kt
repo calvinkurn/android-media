@@ -9,7 +9,7 @@ import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class PMProStatusInfoUiModel(
-        val autoExtendDateFmt: String,
+        val nextMonthlyRefreshDate: String,
         val pmActiveShopScoreThreshold: Int,
         val pmProActiveShopScoreThreshold: Int,
         val itemSoldThreshold: Long,

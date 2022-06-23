@@ -22,11 +22,19 @@ import com.tokopedia.recommendation_widget_common.presentation.model.Recommendat
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsWishlishedUseCase
 import com.tokopedia.topads.sdk.domain.model.WishlistModel
 import com.tokopedia.usecase.RequestParams
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.wishlist.common.listener.WishListActionListener
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
+import com.tokopedia.wishlistcommon.data.response.AddToWishlistV2Response
+import com.tokopedia.wishlistcommon.domain.AddToWishlistV2UseCase
+import com.tokopedia.wishlistcommon.domain.DeleteWishlistV2UseCase
+import com.tokopedia.wishlistcommon.listener.WishlistV2ActionListener
 import kotlinx.coroutines.async
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import rx.Subscriber
 import java.io.IOException
 import java.util.concurrent.TimeoutException
@@ -40,6 +48,8 @@ open class SimilarProductRecommendationViewModel @Inject constructor(
         private val userSessionInterface: UserSessionInterface,
         private val addWishListUseCase: AddWishListUseCase,
         private val removeWishListUseCase: RemoveWishListUseCase,
+        private val addToWishlistV2UseCase: AddToWishlistV2UseCase,
+        private val deleteWishlistV2UseCase: DeleteWishlistV2UseCase,
         private val topAdsWishlishedUseCase: TopAdsWishlishedUseCase,
         private val singleRecommendationUseCase: GetSingleRecommendationUseCase,
         private val getRecommendationFilterChips: GetRecommendationFilterChips,
@@ -359,12 +369,24 @@ open class SimilarProductRecommendationViewModel @Inject constructor(
         }
     }
 
+    fun addWishlistV2(productId: String, actionListener: WishlistV2ActionListener){
+        launch(dispatcher.getMainDispatcher()) {
+            addToWishlistV2UseCase.setParams(productId, userSessionInterface.userId)
+            val result = withContext(dispatcher.getIODispatcher()) { addToWishlistV2UseCase.executeOnBackground() }
+            if (result is Success) {
+                actionListener.onSuccessAddWishlist(result.data, productId)
+            } else if (result is Fail) {
+                actionListener.onErrorAddWishList(result.throwable, productId)
+            }
+        }
+    }
+
     /**
      * [addWishlist] is the void for handling removing wishlist item
      * @param model the recommendation item product is clicked
      * @param wishlistCallback the callback for handling [added or removed, throwable] to UI
      */
-    fun removeWishlist(model: RecommendationItem, wishlistCallback: (((Boolean, Throwable?) -> Unit))){
+    fun removeWishlist(model: RecommendationItem, wishlistCallback: ((Boolean, Throwable?) -> Unit)){
         removeWishListUseCase.createObservable(model.productId.toString(), userSessionInterface.userId, object: WishListActionListener {
             override fun onErrorAddWishList(errorMessage: String?, productId: String?) {
                 // do nothing
@@ -382,6 +404,18 @@ open class SimilarProductRecommendationViewModel @Inject constructor(
                 wishlistCallback.invoke(true, null)
             }
         })
+    }
+
+    fun removeWishlistV2(model: RecommendationItem, actionListener: WishlistV2ActionListener){
+        launch(dispatcher.getMainDispatcher()) {
+            deleteWishlistV2UseCase.setParams(model.productId.toString(), userSessionInterface.userId)
+            val result = withContext(dispatcher.getIODispatcher()) { deleteWishlistV2UseCase.executeOnBackground() }
+            if (result is Success) {
+                actionListener.onSuccessRemoveWishlist(result.data, model.productId.toString())
+            } else if (result is Fail) {
+                actionListener.onErrorRemoveWishlist(result.throwable, model.productId.toString())
+            }
+        }
     }
 
     companion object{

@@ -6,10 +6,6 @@ package com.tokopedia.sellerhomecommon.data
 
 interface WidgetLastUpdatedSharedPrefInterface {
 
-    companion object {
-        const val DEFAULT_LAST_UPDATED = 0L
-    }
-
     fun saveLastUpdateInfo(dataKey: String, timeInMillis: Long)
 
     fun getLastUpdateInfoInMillis(dataKey: String, default: Long): Long

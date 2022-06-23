@@ -65,6 +65,13 @@ class PlayBroadcastSummaryAnalyticImpl @Inject constructor(
         )
     }
 
+    override fun clickInteractiveParticipantDetail(channelID: String, channelTitle: String) {
+        sendClickEvent(
+            "click - lihat detail gamification",
+            "$shopId - $channelID - $channelTitle",
+        )
+    }
+
     private fun sendClickEvent(
         eventAction: String,
         eventLabel: String

@@ -1,17 +1,19 @@
 package com.tokopedia.play.broadcaster.view.viewmodel
 
-import androidx.lifecycle.*
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.play.broadcaster.domain.model.GetLiveStatisticsResponse
 import com.tokopedia.play.broadcaster.domain.usecase.*
+import com.tokopedia.play.broadcaster.domain.usecase.interactive.GetInteractiveSummaryLivestreamUseCase
+import com.tokopedia.play.broadcaster.domain.usecase.interactive.GetSellerLeaderboardUseCase
 import com.tokopedia.play.broadcaster.ui.action.PlayBroadcastSummaryAction
 import com.tokopedia.play.broadcaster.ui.event.PlayBroadcastSummaryEvent
 import com.tokopedia.play.broadcaster.ui.mapper.PlayBroadcastMapper
 import com.tokopedia.play.broadcaster.ui.model.*
 import com.tokopedia.play.broadcaster.ui.model.campaign.ProductTagSectionUiModel
 import com.tokopedia.play.broadcaster.ui.model.product.ProductUiModel
-import com.tokopedia.play.broadcaster.ui.model.result.NetworkState
 import com.tokopedia.play.broadcaster.ui.model.tag.PlayTagUiModel
 import com.tokopedia.play.broadcaster.ui.state.ChannelSummaryUiState
 import com.tokopedia.play.broadcaster.ui.state.LiveReportUiState
@@ -21,7 +23,6 @@ import com.tokopedia.play.broadcaster.util.error.DefaultErrorThrowable
 import com.tokopedia.play.broadcaster.view.state.CoverSetupState
 import com.tokopedia.play_common.domain.UpdateChannelUseCase
 import com.tokopedia.play_common.model.result.NetworkResult
-import com.tokopedia.play_common.model.result.map
 import com.tokopedia.play_common.types.PlayChannelStatusType
 import com.tokopedia.play_common.util.datetime.PlayDateTimeFormatter
 import com.tokopedia.play_common.util.extension.setValue
@@ -29,20 +30,22 @@ import com.tokopedia.user.session.UserSessionInterface
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
-import kotlinx.coroutines.*
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 /**
  * @author by jessica on 27/05/20
  */
-
 class PlayBroadcastSummaryViewModel @AssistedInject constructor(
     @Assisted("channelId") val channelId: String,
     @Assisted("channelTitle") val channelTitle: String,
     @Assisted val productSectionList: List<ProductTagSectionUiModel>,
-    @Assisted private val summaryLeaderboardInfo: SummaryLeaderboardInfo,
     private val dispatcher: CoroutineDispatchers,
     private val getLiveStatisticsUseCase: GetLiveStatisticsUseCase,
+    private val getInteractiveSummaryLivestreamUseCase: GetInteractiveSummaryLivestreamUseCase,
+    private val getSellerLeaderboardUseCase: GetSellerLeaderboardUseCase,
     private val updateChannelUseCase: PlayBroadcastUpdateChannelUseCase,
     private val userSession: UserSessionInterface,
     private val playBroadcastMapper: PlayBroadcastMapper,
@@ -56,8 +59,7 @@ class PlayBroadcastSummaryViewModel @AssistedInject constructor(
         fun create(
             @Assisted("channelId") channelId: String,
             @Assisted("channelTitle") channelTitle: String,
-            productSectionList: List<ProductTagSectionUiModel>,
-            summaryLeaderboardInfo: SummaryLeaderboardInfo,
+            productSectionList: List<ProductTagSectionUiModel>
         ): PlayBroadcastSummaryViewModel
     }
 
@@ -250,6 +252,9 @@ class PlayBroadcastSummaryViewModel @AssistedInject constructor(
             }
             while(reportChannelSummary.duration.isEmpty() && fetchTryCount < FETCH_REPORT_MAX_RETRY)
 
+            getInteractiveSummaryLivestreamUseCase.setRequestParams(GetInteractiveSummaryLivestreamUseCase.createParams(channelId))
+            val participantResponse = getInteractiveSummaryLivestreamUseCase.executeOnBackground()
+
             _channelSummary.value = playBroadcastMapper.mapChannelSummary(
                                         channel.basic.title,
                                         channel.basic.coverUrl,
@@ -257,12 +262,13 @@ class PlayBroadcastSummaryViewModel @AssistedInject constructor(
                                         reportChannelSummary.duration,
                                         isEligiblePostVideo(reportChannelSummary.duration),
                                     )
-
+            getSellerLeaderboardUseCase.setRequestParams(GetSellerLeaderboardUseCase.createParams(channelId))
+            val leaderboard = getSellerLeaderboardUseCase.executeOnBackground()
             val metrics = mutableListOf<TrafficMetricUiModel>().apply {
-                if(summaryLeaderboardInfo.isLeaderboardExists) {
+                if (leaderboard.data.slots.isNotEmpty()) {
                     add(TrafficMetricUiModel(
                             type = TrafficMetricType.GameParticipants,
-                            count = summaryLeaderboardInfo.totalInteractiveParticipant,
+                            count = participantResponse.playInteractiveGetSummaryLivestream.participantCount.toString(),
                         )
                     )
                 }
@@ -319,6 +325,7 @@ class PlayBroadcastSummaryViewModel @AssistedInject constructor(
     private fun convertDate(raw: String): String =
         PlayDateTimeFormatter.formatDate(raw, outputPattern = PlayDateTimeFormatter.dMMMMyyyy)
 
+    @Suppress("MagicNumber")
     private fun isEligiblePostVideo(duration: String): Boolean {
         return try {
             val split = duration.split(":")

@@ -11,6 +11,7 @@ import com.tokopedia.search.R
 import com.tokopedia.search.databinding.SearchInspirationCarouselOptionInfoBinding
 import com.tokopedia.search.result.presentation.model.InspirationCarouselDataView
 import com.tokopedia.search.result.presentation.view.listener.InspirationCarouselListener
+import com.tokopedia.unifycomponents.CardUnify2
 import com.tokopedia.utils.view.binding.viewBinding
 
 class InspirationCarouselOptionInfoViewHolder(
