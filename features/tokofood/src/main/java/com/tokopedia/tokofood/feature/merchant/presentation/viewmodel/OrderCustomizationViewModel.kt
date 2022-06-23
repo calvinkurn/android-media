@@ -1,6 +1,7 @@
 package com.tokopedia.tokofood.feature.merchant.presentation.viewmodel
 
 import androidx.lifecycle.ViewModel
+import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.getCurrencyFormatted
 import com.tokopedia.tokofood.common.presentation.uimodel.UpdateParam
 import com.tokopedia.tokofood.feature.merchant.presentation.mapper.TokoFoodMerchantUiModelMapper
@@ -31,8 +32,19 @@ class OrderCustomizationViewModel @Inject constructor(
     }
 
     fun getCustomListItems(cartId: String, productUiModel: ProductUiModel): List<CustomListItem> {
-        return if (cartId.isBlank() || productUiModel.customOrderDetails.isEmpty()) productUiModel.customListItems
-        else productUiModel.customOrderDetails.firstOrNull() { it.cartId == cartId }?.customListItems ?: listOf()
+        return if (cartId.isBlank() || productUiModel.customOrderDetails.isEmpty()) { resetMasterData(productUiModel.customListItems) }
+        else productUiModel.customOrderDetails.firstOrNull { it.cartId == cartId }?.customListItems ?: listOf()
+    }
+
+    private fun resetMasterData(customListItems: List<CustomListItem>): List<CustomListItem> {
+        customListItems.forEach {
+            it.orderNote = String.EMPTY
+            it.addOnUiModel?.isSelected = false
+            it.addOnUiModel?.options?.forEach { optionUiModel ->
+                optionUiModel.isSelected = false
+            }
+        }
+        return customListItems
     }
 
     fun isEditingCustomOrder(cartId: String): Boolean = cartId.isNotBlank()

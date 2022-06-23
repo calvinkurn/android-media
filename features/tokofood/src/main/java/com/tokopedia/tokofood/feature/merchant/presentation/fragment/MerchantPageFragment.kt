@@ -31,6 +31,7 @@ import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
@@ -136,9 +137,9 @@ class MerchantPageFragment : BaseMultiFragment(),
         context?.let { MerchantShareComponentUtil(it) }
     }
 
+    // TODO: move states to view model
     private var merchantId: String = ""
     private var productId: String = ""
-    private var filterNameSelected: String = ""
 
     private var universalShareBottomSheet: UniversalShareBottomSheet? = null
     private var merchantInfoBottomSheet: MerchantInfoBottomSheet? = null
@@ -166,9 +167,8 @@ class MerchantPageFragment : BaseMultiFragment(),
         setHasOptionsMenu(true)
         initInjector()
         // handle negative case #1 non-login
-        if (!userSession.isLoggedIn) {
-            goToLoginPage()
-        } else {
+        if (!userSession.isLoggedIn) { goToLoginPage() }
+        else {
             // handle negative case: no-address,no-pinpoint
             validateAddressData()
         }
@@ -192,7 +192,7 @@ class MerchantPageFragment : BaseMultiFragment(),
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             R.id.action_share -> {
-                shareMerchantPage(viewModel.merchantData)
+                shareMerchantPage(viewModel.merchantData?.merchantProfile)
                 true
             }
             R.id.action_open_global_menu -> {
@@ -227,8 +227,7 @@ class MerchantPageFragment : BaseMultiFragment(),
 
     override fun onResume() {
         super.onResume()
-        initializeMiniCartWidget()
-        merchantPageAnalytics.openMerchantPage(merchantId, viewModel.merchantData?.opsHourFmt?.isWarning.orFalse())
+        merchantPageAnalytics.openMerchantPage(merchantId, viewModel.merchantData?.merchantProfile?.opsHourFmt?.isWarning.orFalse())
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -241,9 +240,35 @@ class MerchantPageFragment : BaseMultiFragment(),
         setupOrderNoteBottomSheet()
         setupCardSticky()
         observeLiveData()
-        fetchMerchantData()
         collectFlow()
         collectCartDataFlow()
+
+        // TODO : move this block of code into a function
+        if (viewModel.productListItems.isNotEmpty()) {
+            viewModel.merchantData?.run {
+                // render ticker data if not empty
+                val tickerData = this.ticker
+                if (!viewModel.isTickerDetailEmpty(tickerData)) {
+                    renderTicker(tickerData)
+                }
+                // render merchant logo, name, categories, carousel
+                val merchantProfile = this.merchantProfile
+                renderMerchantProfile(merchantProfile)
+                // setup merchant info bottom sheet
+                val name = merchantProfile.name
+                val address = merchantProfile.address
+                val merchantOpsHours = viewModel.mapOpsHourDetailsToMerchantOpsHours(merchantProfile.opsHourDetail)
+                setupMerchantInfoBottomSheet(name, address, merchantOpsHours)
+            }
+            renderProductList(viewModel.productListItems)
+            setCategoryPlaceholder(viewModel.filterNameSelected)
+            binding?.toolbarParent?.setExpanded(!viewModel.isStickyBarVisible)
+            binding?.cardUnifySticky?.isVisible = viewModel.isStickyBarVisible
+        } else {
+            fetchMerchantData()
+        }
+
+
         initializeMiniCartWidget()
     }
 
@@ -276,23 +301,22 @@ class MerchantPageFragment : BaseMultiFragment(),
     }
 
     private fun setupAppBarLayoutListener() {
-        binding?.toolbarParent?.addOnOffsetChangedListener(object :
-            AppBarLayout.OnOffsetChangedListener {
+        binding?.toolbarParent?.addOnOffsetChangedListener(object : AppBarLayout.OnOffsetChangedListener {
             override fun onOffsetChanged(appBarLayout: AppBarLayout?, verticalOffset: Int) {
                 if (appBarLayout == null) return
-
                 val offset = abs(verticalOffset)
-
                 if (offset >= (appBarLayout.totalScrollRange - binding?.toolbar?.height.orZero()) &&
                     productListAdapter?.getProductListItems()?.isNotEmpty() == true
                 ) {
-                    //collapsed
+                    // show sticky filter
                     binding?.cardUnifySticky?.show()
                     setToolbarWhiteColor()
+                    viewModel.isStickyBarVisible = binding?.cardUnifySticky?.isVisible ?: false
                 } else {
-                    //expanded
+                    // hide stick filter
                     binding?.cardUnifySticky?.hide()
                     setToolbarTransparentColor()
+                    viewModel.isStickyBarVisible = binding?.cardUnifySticky?.isVisible ?: false
                 }
             }
         })
@@ -303,7 +327,7 @@ class MerchantPageFragment : BaseMultiFragment(),
             val cacheManager = context?.let { SaveInstanceCacheManager(it, true) }
             val categoryFilter =
                 TokoFoodMerchantUiModelMapper.mapProductListItemToCategoryFilterUiModel(
-                    viewModel.filterList, filterNameSelected
+                    viewModel.filterList, viewModel.filterNameSelected
                 )
             cacheManager?.put(
                 CategoryFilterBottomSheet.KEY_CATEGORY_FILTER_LIST,
@@ -435,28 +459,19 @@ class MerchantPageFragment : BaseMultiFragment(),
                         // setup merchant info bottom sheet
                         val name = merchantProfile.name
                         val address = merchantProfile.address
-                        val merchantOpsHours =
-                            viewModel.mapOpsHourDetailsToMerchantOpsHours(merchantProfile.opsHourDetail)
+                        val merchantOpsHours = viewModel.mapOpsHourDetailsToMerchantOpsHours(merchantProfile.opsHourDetail)
                         setupMerchantInfoBottomSheet(name, address, merchantOpsHours)
                         // render product list
                         val isShopClosed = merchantProfile.opsHourFmt.isWarning
                         val foodCategories = merchantData.categories
-                        val productListItems = viewModel.mapFoodCategoriesToProductListItems(
-                            isShopClosed,
-                            foodCategories
-                        )
+                        val productListItems = viewModel.mapFoodCategoriesToProductListItems(isShopClosed, foodCategories)
                         // set default category filter selection
-                        filterNameSelected =
-                            productListItems.firstOrNull()?.productCategory?.title.orEmpty()
-                        val finalProductListItems = viewModel.applyProductSelection(
-                            productListItems,
-                            viewModel.selectedProducts
-                        )
+                        viewModel.filterNameSelected = productListItems.firstOrNull()?.productCategory?.title.orEmpty()
+                        val finalProductListItems = viewModel.applyProductSelection(productListItems, viewModel.selectedProducts)
                         renderProductList(finalProductListItems)
-                        setCategoryPlaceholder(filterNameSelected)
+                        setCategoryPlaceholder(viewModel.filterNameSelected)
                     } else {
-                        navigateToNewFragment(
-                            ManageLocationFragment.createInstance(
+                        navigateToNewFragment(ManageLocationFragment.createInstance(
                                 negativeCaseId = EMPTY_STATE_OUT_OF_COVERAGE,
                                 merchantId = merchantId
                             )
@@ -667,14 +682,13 @@ class MerchantPageFragment : BaseMultiFragment(),
                             position == firstVisibleItemPos
                         }?.firstOrNull { productItem -> productItem.productCategory.title.isNotBlank() }
                     productListItem?.let { productsItem ->
-                        filterNameSelected = productsItem.productCategory.title
-                        setCategoryPlaceholder(filterNameSelected)
+                        viewModel.filterNameSelected = productsItem.productCategory.title
+                        setCategoryPlaceholder(viewModel.filterNameSelected)
                     }
                 }
             })
         }
-        (binding?.rvProductList?.itemAnimator as SimpleItemAnimator).supportsChangeAnimations =
-            false
+        (binding?.rvProductList?.itemAnimator as SimpleItemAnimator).supportsChangeAnimations = false
     }
 
     private fun setupOrderNoteBottomSheet() {
@@ -855,7 +869,7 @@ class MerchantPageFragment : BaseMultiFragment(),
                 merchantPageAnalytics.clickOnOrderProductBottomSheet(
                     productListItem,
                     merchantId,
-                    it.name,
+                    it.merchantProfile.name,
                     cardPositions.first
                 )
             }
@@ -894,7 +908,7 @@ class MerchantPageFragment : BaseMultiFragment(),
         viewModel.merchantData?.let {
             merchantPageAnalytics.clickOnAtcButton(
                 productListItem, merchantId,
-                it.name,
+                it.merchantProfile.name,
                 cardPositions.first
             )
         }
@@ -932,11 +946,11 @@ class MerchantPageFragment : BaseMultiFragment(),
     override fun onFinishCategoryFilter(categoryFilterList: List<CategoryFilterListUiModel>) {
         val categoryFilter = categoryFilterList.find { it.isSelected }
         categoryFilter?.let {
-            filterNameSelected = it.categoryUiModel.title
-            binding?.tvCategoryPlaceholder?.text = filterNameSelected
+            viewModel.filterNameSelected = it.categoryUiModel.title
+            binding?.tvCategoryPlaceholder?.text = viewModel.filterNameSelected
             val productItem = productListAdapter
                 ?.getProductListItems()
-                ?.find { productList -> productList.productCategory.title == filterNameSelected }
+                ?.find { productList -> productList.productCategory.title == viewModel.filterNameSelected }
             val position = productListAdapter?.getProductListItems()?.indexOf(productItem)
             if (position != null && position != RecyclerView.NO_POSITION) {
                 scrollToCategorySection(position)
@@ -1027,7 +1041,7 @@ class MerchantPageFragment : BaseMultiFragment(),
     }
 
     override fun onFoodItemShareClicked(productUiModel: ProductUiModel) {
-        shareFoodItem(viewModel.merchantData, productUiModel)
+        shareFoodItem(viewModel.merchantData?.merchantProfile, productUiModel)
     }
 
     override fun onShareOptionClicked(shareModel: ShareModel) {
@@ -1126,7 +1140,7 @@ class MerchantPageFragment : BaseMultiFragment(),
         val variantTracker = VariantWrapperUiModel(
             productListItem,
             merchantId,
-            viewModel.merchantData?.name.orEmpty(),
+            viewModel.merchantData?.merchantProfile?.name.orEmpty(),
             productPosition
         )
 
