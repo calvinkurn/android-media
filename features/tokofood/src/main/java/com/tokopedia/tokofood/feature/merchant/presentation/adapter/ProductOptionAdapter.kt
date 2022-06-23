@@ -9,7 +9,7 @@ import com.tokopedia.tokofood.feature.merchant.presentation.viewholder.ProductOp
 
 class ProductOptionAdapter(private val listener: ProductOptionViewHolder.Listener): RecyclerView.Adapter<ProductOptionViewHolder>() {
 
-    private var optionItems: MutableList<OptionUiModel> = mutableListOf()
+    private val optionItems: MutableList<OptionUiModel> = mutableListOf()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ProductOptionViewHolder {
         val binding = TokofoodItemAddOnItemLayoutBinding.inflate(LayoutInflater.from(parent.context), parent, false)

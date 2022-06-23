@@ -184,7 +184,7 @@ object TokoFoodPurchaseUiModelMapper {
             cartId = uiModel.cartId,
             orderQty = uiModel.quantity,
             orderNote = uiModel.notes,
-            isAtc = false
+            isAtc = true
         )
     }
 
