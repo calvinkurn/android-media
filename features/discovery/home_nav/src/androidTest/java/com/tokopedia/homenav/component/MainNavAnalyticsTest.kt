@@ -45,8 +45,8 @@ class MainNavAnalyticsTest {
     ) {
         override fun beforeActivityLaunched() {
             super.beforeActivityLaunched()
-            setupGraphqlMockResponse(MainNavMockResponseConfig())
             setupAbTestRemoteConfig()
+            setupGraphqlMockResponse(MainNavMockResponseConfig())
         }
     }
 
@@ -82,7 +82,7 @@ class MainNavAnalyticsTest {
             login()
             waitForData()
             doActivityTestByModelClass(
-                delayBeforeRender = 2000,
+                delayBeforeRender = 5000,
                 dataModelClass = TransactionListItemDataModel::class
             ) { viewHolder: RecyclerView.ViewHolder, i: Int ->
                 clickOnOrderHistory(viewHolder)
@@ -102,7 +102,7 @@ class MainNavAnalyticsTest {
             login()
             waitForData()
             doActivityTestByModelClass(
-                delayBeforeRender = 2000,
+                delayBeforeRender = 5000,
                 dataModelClass = WishlistDataModel::class
             ) { viewHolder: RecyclerView.ViewHolder, i: Int ->
                 clickOnWishlist(viewHolder)
@@ -122,7 +122,7 @@ class MainNavAnalyticsTest {
             login()
             waitForData()
             doActivityTestByModelClass(
-                delayBeforeRender = 2000,
+                delayBeforeRender = 5000,
                 dataModelClass = FavoriteShopListDataModel::class
             ) { viewHolder: RecyclerView.ViewHolder, i: Int ->
                 clickOnEachShop(viewHolder)
@@ -142,7 +142,7 @@ class MainNavAnalyticsTest {
             login()
             waitForData()
             doActivityTestByModelClass(
-                delayBeforeRender = 2000,
+                delayBeforeRender = 5000,
                 dataModelClass = AccountHeaderDataModel::class
             ) { viewHolder: RecyclerView.ViewHolder, i: Int ->
                 clickOnShopAndAffiliate(viewHolder)
