@@ -12,8 +12,8 @@ import com.tokopedia.cartcommon.domain.usecase.UpdateCartUseCase
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.minicart.common.domain.data.MiniCartItem
+import com.tokopedia.minicart.common.domain.data.MiniCartItemKey
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
-import com.tokopedia.minicart.common.domain.data.MiniCartWidgetData
 import com.tokopedia.shop_widget.mvc_locked_to_product.analytic.model.MvcLockedToProductAddToCartTracker
 import com.tokopedia.shop_widget.mvc_locked_to_product.domain.model.MvcLockedToProductResponse
 import com.tokopedia.shop_widget.mvc_locked_to_product.domain.usecase.MvcLockedToProductUseCase
@@ -381,10 +381,10 @@ class MvcLockedToProductViewModelTest {
 
     private fun getMockMiniCartSimplifiedData(): MiniCartSimplifiedData {
         return MiniCartSimplifiedData(
-            miniCartItems = listOf(
-                MiniCartItem(productId = "1", quantity = 3),
-                MiniCartItem(productId = "2"),
-                MiniCartItem(productId = "3")
+            miniCartItems = hashMapOf(
+                MiniCartItemKey("1") to MiniCartItem.MiniCartItemProduct(productId = "1", quantity = 3),
+                MiniCartItemKey("2") to MiniCartItem.MiniCartItemProduct(productId = "2"),
+                MiniCartItemKey("3") to MiniCartItem.MiniCartItemProduct(productId = "3")
             )
         )
     }

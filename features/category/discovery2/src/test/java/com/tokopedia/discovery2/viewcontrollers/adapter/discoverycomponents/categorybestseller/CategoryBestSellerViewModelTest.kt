@@ -2,9 +2,9 @@ package com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.cat
 
 import android.app.Application
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.tokopedia.discovery2.Utils
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.data.DataItem
+import com.tokopedia.discovery2.datamapper.getComponent
 import io.mockk.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
@@ -12,7 +12,6 @@ import kotlinx.coroutines.test.TestCoroutineDispatcher
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.setMain
 import org.junit.*
-import java.util.*
 import kotlin.collections.ArrayList
 
 class CategoryBestSellerViewModelTest{
@@ -31,7 +30,9 @@ class CategoryBestSellerViewModelTest{
     fun setUp() {
         MockKAnnotations.init(this)
         Dispatchers.setMain(TestCoroutineDispatcher())
-        every { componentsItem.data } returns null
+
+        mockkStatic(::getComponent)
+        coEvery { getComponent(any(), any()) } returns componentsItem
     }
 
     @Test
@@ -45,32 +46,6 @@ class CategoryBestSellerViewModelTest{
     }
 
     /**************************** onAttachToViewHolder() *******************************************/
-    @Test
-    fun onAttachToViewHolder() {
-        runBlocking {
-            val componentItem = arrayListOf<ComponentsItem>()
-            componentItem.add(mockk(relaxed = true))
-            every { componentsItem.id } returns "s"
-            every { componentsItem.pageEndPoint } returns "s"
-            every { application.applicationContext } returns mockk()
-            every { application.applicationContext.resources.getDimensionPixelSize(any()) } returns mockk(relaxed = true)
-            every { componentsItem.getComponentsItem() } returns componentItem
-            coEvery {
-                viewModel.productCardsUseCase.loadFirstPageComponents(
-                    any(),
-                    any(),
-                    any()
-                )
-            } returns mockk()
-
-            viewModel.onAttachToViewHolder()
-
-            coVerify (exactly = 1) { viewModel.productCardsUseCase.loadFirstPageComponents(any(),any(), any()) }
-            Assert.assertEquals(viewModel.syncData.value, true)
-            Assert.assertEquals(viewModel.getProductLoadState().value, false)
-            Assert.assertEquals(viewModel.getProductCarouselItemsListData().value, componentItem)
-        }
-    }
 
     @Test
     fun onAttachToViewHolderError() {
@@ -117,7 +92,10 @@ class CategoryBestSellerViewModelTest{
 
 
     @After
-    fun shutDown() {
+    @Throws(Exception::class)
+    fun tearDown() {
         Dispatchers.resetMain()
+
+        unmockkStatic(::getComponent)
     }
 }

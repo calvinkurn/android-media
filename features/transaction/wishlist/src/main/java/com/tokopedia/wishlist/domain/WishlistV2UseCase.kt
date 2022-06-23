@@ -3,7 +3,7 @@ package com.tokopedia.wishlist.domain
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
-import com.tokopedia.wishlist.data.model.WishlistV2Params
+import com.tokopedia.wishlistcommon.data.WishlistV2Params
 import com.tokopedia.wishlist.data.model.response.WishlistV2Response
 import com.tokopedia.wishlist.util.WishlistV2Consts.PARAMS
 import javax.inject.Inject
@@ -43,6 +43,28 @@ class WishlistV2UseCase @Inject constructor(@ApplicationContext private val gqlR
                         url
                       }
                     }
+                    ticker {
+                        message
+                        type
+                        button {
+                            text
+                            action
+                        }
+                    }
+                    storage_cleaner_bottomsheet {
+                        title
+                        description
+                        options {
+                            name
+                            description
+                            action
+                        }
+                        button {
+                            text
+                        }
+                    }
+                    count_removable_items
+                    show_delete_progress
                     sort_filters {
                       id
                       name

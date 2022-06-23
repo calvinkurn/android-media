@@ -29,6 +29,14 @@ buildPatch(){
   elif [ "$APP_NAME" = "sellerapp" ]; then
     echo "Creating Robust patch for sellerapp..."
     ./gradlew clean buildLiveProdReleasePreBundle -p sellerapp -Pcom.robust.mode=patch -Pandroid.enableR8=true --no-daemon --stacktrace
+  elif [ "$APP_NAME" = "testapp" ]; then
+    if grep -q "include(\"testapp\")" settings.gradle; then
+        echo "testapp already include"
+    else
+        echo  "include(\"testapp\")" >> settings.gradle
+    fi
+    sed -i '' "s/apply plugin: 'io.hansel.preprocessor'/apply plugin: 'robust'/g" testapp/build.gradle
+    ./gradlew :testapp:clean :testapp:buildReleasePreBundle -Pcom.robust.mode=patch -Pandroid.enableR8=true --no-daemon --stacktrace
   else
     echo "No applicable selected app"
     exit 1
@@ -41,7 +49,7 @@ if [ "$1" != "" ]
 then
     APP_NAME=$1
 else
-    echo "\nEnter app name [customerapp or sellerapp] > "
+    echo "\nEnter app name [customerapp | sellerapp | testapp] > "
     read APP_NAME
 fi
 

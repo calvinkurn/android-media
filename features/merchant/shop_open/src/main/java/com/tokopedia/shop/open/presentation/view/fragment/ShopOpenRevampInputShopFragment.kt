@@ -23,9 +23,12 @@ import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.di.component.HasComponent
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.header.HeaderUnify
+import com.tokopedia.kotlin.extensions.view.isZero
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.shop.common.graphql.data.shopopen.ValidateShopDomainSuggestionResult
 import com.tokopedia.shop.open.R
@@ -290,7 +293,11 @@ class ShopOpenRevampInputShopFragment : BaseDaggerFragment(),
             when (it) {
                 is Success -> {
                     if (!it.data.validateDomainShopName.isValid) {
-                        val errorMessage = it.data.validateDomainShopName.error.message
+                        val errorMessage = if(isShopDomainSuggestionShown()) {
+                            it.data.validateDomainShopName.error.message
+                        } else {
+                            getString(R.string.open_shop_revamp_error_domain_already_taken)
+                        }
                         validateDomainName(
                                 isError = true,
                                 hintMessage = errorMessage
@@ -323,6 +330,10 @@ class ShopOpenRevampInputShopFragment : BaseDaggerFragment(),
                 }
             }
         })
+    }
+
+    private fun isShopDomainSuggestionShown(): Boolean {
+        return !adapter?.itemCount.isZero()
     }
 
     private fun observeCreateShopData() {
@@ -471,15 +482,15 @@ class ShopOpenRevampInputShopFragment : BaseDaggerFragment(),
 
         textTnc.setSpan(tncClickableSpan, ZERO_SPAN_SIZE, TWENTY_SPAN_SIZE, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
         textTnc.setSpan(StyleSpan(Typeface.BOLD), ZERO_SPAN_SIZE, TWENTY_SPAN_SIZE, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
-        textTnc.setSpan(ForegroundColorSpan(resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_G400)), ZERO_SPAN_SIZE, TWENTY_SPAN_SIZE, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+        textTnc.setSpan(ForegroundColorSpan(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G400)), ZERO_SPAN_SIZE, TWENTY_SPAN_SIZE, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
 
         textTnc.setSpan(tncUnclickableAreaSpan, TWENTY_ONE_SPAN_SIZE, TWENTY_FOUR_SPAN_SIZE, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
         textTnc.setSpan(StyleSpan(Typeface.NORMAL), TWENTY_ONE_SPAN_SIZE, TWENTY_FOUR_SPAN_SIZE, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
-        textTnc.setSpan(ForegroundColorSpan(resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_N400)), TWENTY_ONE_SPAN_SIZE, TWENTY_FOUR_SPAN_SIZE, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+        textTnc.setSpan(ForegroundColorSpan(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N400)), TWENTY_ONE_SPAN_SIZE, TWENTY_FOUR_SPAN_SIZE, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
 
         textTnc.setSpan(privacyPolicyClickableSpan, TWENTY_FIVE_SPAN_SIZE, textTnc.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
         textTnc.setSpan(StyleSpan(Typeface.BOLD), TWENTY_FIVE_SPAN_SIZE, textTnc.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
-        textTnc.setSpan(ForegroundColorSpan(resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_G400)), TWENTY_FIVE_SPAN_SIZE, textTnc.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+        textTnc.setSpan(ForegroundColorSpan(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G400)), TWENTY_FIVE_SPAN_SIZE, textTnc.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
 
         txtTermsAndConditions.setText(textTnc)
         txtTermsAndConditions.setMovementMethod(LinkMovementMethod.getInstance())

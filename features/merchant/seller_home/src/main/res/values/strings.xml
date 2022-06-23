@@ -92,6 +92,8 @@
     <string name="centralized_promo_promo_creation_voucher_product_description">Atur diskon khusus ke produk-produk tertentu agar semakin cepat laku.</string>
     <string name="centralized_promo_promo_creation_tokopedia_play_title">Tokopedia Play</string>
     <string name="centralized_promo_promo_creation_tokopedia_play_description">Tingkatkan penjualanmu sambil berinteraksi langsung dengan banyak penonton</string>
+    <string name="centralized_promo_promo_creation_slash_price_title">Diskon Toko</string>
+    <string name="centralized_promo_promo_creation_slash_price_description">Tarik banyak pembeli dengan pasang diskon menarik. </string>
 
     <!-- First merchant voucher -->
     <string name="centralized_promo_first_voucher_label">First Voucher</string>
@@ -174,6 +176,7 @@
     <string name="sah_admin_restriction_label">Admin Restriction</string>
     <string name="sah_admin_restriction_title">Oops, kamu nggak punya izin untuk mengakses fitur ini</string>
     <string name="sah_admin_restriction_desc">Hubungi pemilik toko terlebih dulu untuk melanjutkan aktivitas, ya.</string>
+    <string name="sah_admin_restriction_article_desc">Hubungi pemilik toko terlebih dulu untuk melanjutkan aktivitas, ya. &lt;a href="#"&gt;Baca artikelnya&lt;/a&gt;.</string>
     <string name="sah_admin_restriction_button">Oke, Saya Mengerti</string>
     <string name="sah_admin_restriction_message">Oops, kamu tidak punya izin untuk mengakses halaman ini</string>
     
@@ -193,5 +196,22 @@
 
     <!-- Seller Edu Webview -->
     <string name="sah_seller_edu_error_message">Error wrong supported url format: %s</string>
-
+    <string name="download_trx_fee_report_ticker_activity_title">Biaya layanan transaksi</string>
+    <string name="download_trx_fee_report">Download laporan biaya transaksi</string>
+    <string name="trx_fee_heading">Cek laporan biaya layanan di tiap transaksi tokomu</string>
+    <string name="trx_fee_title">Pilih periode</string>
+    <string name="trx_fee_desc">Maksimum 90 hari, tidak bisa memilih periode sebelum  Juni 2020</string>
+    <string name="trx_fee_date">Pilih tanggal</string>
+    <string name="trx_fee_download">Download laporan</string>
+    <string name="trx_server_error_message">Oops, ada gangguan yang perlu kami bereskan. Refresh atau balik lagi nanti.</string>
+    <string name="trx_no_network_error_message">Wah, internet putus. Cek paket data atau WiFi-mu, ya.</string>
+    <string name="sp_title_max_day">Kamu hanya dapat memilih rentang waktu maks. %d hari.</string>
+    <string name="saldo_calendar_range_error_title">Pilih rentang waktu yang lebih pendek</string>
+    <string name="saldo_btn_oke">Oke</string>
+    <string name="saldo_save_date">Simpan</string>
+    <string name="sah_commission_download_complete_message">Laporan biaya transaksi berhasil di download</string>
+    <string name="info_download_excel_report">Pastikan kamu punya aplikasi Google Sheet untuk membuka file-nya.</string>
+    <string name="info_commission_breakdown">Untuk mempelajari detail biaya layanan per kategori bisa kamu pelajari &lt;a href="#"&gt;di sini&lt;/a&gt;.</string>
+    <string name="sah_select_date_range">Pilih rentang waktu</string>
+    <string name="trx_refresh">Refresh</string>
 </resources>

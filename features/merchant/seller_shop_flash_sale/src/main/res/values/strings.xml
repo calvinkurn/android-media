@@ -207,6 +207,29 @@
     <string name="campaign_rule_previous_campaign_item_removed_cta">@string/action_oke</string>
     <string name="campaign_rule_tnc_checkbox_label">Saya menyetujui <b>Syarat &amp; Ketentuan Pembeli</b></string>
 
+    <string name="choose_related_campaign_title">Pilih campaign sebelumnya</string>
+    <string name="choose_related_campaign_add_campaign_button_label">Tambah Campaign</string>
+    <string name="choose_related_campaign_search_not_found_message">Oops, campaign yang kamu cari tidak ditemukan.</string>
+    <string name="choose_related_campaign_item_campaign_code">#%s</string>
+
+    <string name="campaign_rule_both_section_invalid_message">Pilih metode pembayaran terlebih dan lengkapi bagian pengaturan pembeli terlebih dulu</string>
+    <string name="campaign_rule_invalid_payment_type_message">Pilih metode pembayaran terlebih dulu</string>
+    <string name="campaign_rule_invalid_buyer_options_message">Lengkapi bagian pengaturan pembeli terlebih dulu.</string>
+    <string name="campaign_rule_tnc_not_accepted_message">Anda belum menyetujui syarat &amp; ketentuan pembeli</string>
+
+    <string name="campaign_rule_invalid_campaign_time_dialog_title">Jadwal campaign sudah lewat</string>
+    <string name="campaign_rule_invalid_campaign_time_dialog_description">Coba ubah jadwal campaign dulu, ya.</string>
+    <string name="campaign_rule_invalid_campaign_time_dialog_cta">Ganti Jadwal</string>
+
+    <string name="campaign_rule_not_eligible_dialog_title">Kamu tidak punya kuota untuk buat Flash Sale Toko</string>
+    <string name="campaign_rule_not_eligible_dialog_message">Upgrade toko ke Power Merchant PRO atau Official Store untuk dapat kuota, ya.</string>
+    <string name="campaign_rule_not_eligible_dialog_cta">Daftar PM PRO</string>
+
+    <string name="campaign_rule_create_campaign_confirmation_dialog_title">Buat campaign?</string>
+    <string name="campaign_rule_create_campaign_confirmation_dialog_message">Kamu masih dapat mengubah info campaign paling lambat 1 jam sebelum periode mendatang.</string>
+    <string name="campaign_rule_create_campaign_confirmation_dialog_primary_cta">Ya, Buat campaign</string>
+    <string name="campaign_rule_create_campaign_confirmation_dialog_secondary_cta">Cek Ulang</string>
+
     <!--Product List Page-->
     <string name="chooseproduct_page_title">Pilih Produk</string>
     <string name="chooseproduct_search_placeholdertext">Cari produk atau SKU</string>
@@ -240,4 +263,8 @@
     <string name="sfs_successfully_highlighted">Produkmu berhasil di-highlight.</string>
     <string name="sfs_highlight_product_first_coachmark">Klik di sini untuk memilih produk yang di highlight.</string>
     <string name="sfs_placeholder_product_order">#%d</string>
+
+    <!--Delete Product-->
+    <string name="deleteproduct_dialog_title">Yakin ingin hapus produk dari campaign?</string>
+    <string name="deleteproduct_dialog_desc">Produk yang dihapus tidak dapat didaftarkan ke campaign, ya.</string>
 </resources>
