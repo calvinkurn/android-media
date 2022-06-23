@@ -5,7 +5,7 @@ import com.tokopedia.graphql.data.GqlParam
 
 data class LoginSeamlessParams(
     @SerializedName("grant_type")
-    val grantType: String = "",
+    val grantType: String,
     @SerializedName("code")
-    val authCode: String = ""
+    val authCode: String
 ): GqlParam

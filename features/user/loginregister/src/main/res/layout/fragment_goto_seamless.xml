@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:padding="@dimen/unify_space_32"
     android:layout_gravity="center"
     android:layout_width="match_parent"
@@ -24,14 +25,15 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/goto_seamless_main_img"
         app:typographyType="heading_1"
-        android:text="Masuk untuk Lanjut" />
+        android:textAlignment="center"
+        android:text="@string/goto_seamless_primary_title" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:layout_marginTop="@dimen/unify_space_8"
         android:id="@+id/goto_seamless_description_txt"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Karena akunmu udah terhubung sama Gojek, jadi masuknya bisa instan!"
+        android:text="@string/goto_seamless_description_text"
         android:textAlignment="center"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -43,7 +45,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/unify_space_24"
-        android:text="Masuk dengan Akun ini"
+        tools:text="Masuk ke 081231231231"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/goto_seamless_description_txt" />
@@ -87,7 +89,7 @@
         android:id="@+id/goto_seamless_secondary_btn"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="Masuk ke Akun Lain"
+        android:text="@string/goto_seamless_secondary_btn_text"
         app:layout_constraintEnd_toEndOf="@+id/goto_seamless_primary_btn"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@+id/goto_seamless_primary_btn"

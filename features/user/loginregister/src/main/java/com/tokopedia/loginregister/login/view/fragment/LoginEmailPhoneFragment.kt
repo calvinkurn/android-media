@@ -26,10 +26,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.lifecycle.lifecycleScope
-import com.gojek.icp.identity.loginsso.ClientSSOBridge
-import com.gojek.icp.identity.loginsso.Environment
 import com.gojek.icp.identity.loginsso.SSOHostBridge
-import com.gojek.icp.identity.loginsso.data.SSOHostData
 import com.gojek.icp.identity.loginsso.data.models.Profile
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
@@ -88,7 +85,9 @@ import com.tokopedia.loginregister.common.view.dialog.RegisteredDialog
 import com.tokopedia.loginregister.common.view.ticker.domain.pojo.TickerInfoPojo
 import com.tokopedia.loginregister.discover.pojo.DiscoverData
 import com.tokopedia.loginregister.discover.pojo.ProviderData
+import com.tokopedia.loginregister.goto_seamless.GotoSeamlessHelper
 import com.tokopedia.loginregister.login.const.LoginConstants
+import com.tokopedia.loginregister.login.const.LoginConstants.Request.REQUEST_GOTO_SEAMLESS
 import com.tokopedia.loginregister.login.di.LoginComponent
 import com.tokopedia.loginregister.login.domain.pojo.RegisterCheckData
 import com.tokopedia.loginregister.login.domain.pojo.RegisterCheckFingerprintResult
@@ -138,7 +137,6 @@ import com.tokopedia.utils.image.ImageUtils
 import kotlinx.android.synthetic.main.fragment_login_with_phone.*
 import kotlinx.android.synthetic.main.layout_partial_register_input.*
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 import java.util.*
 import javax.inject.Inject
 import javax.inject.Named
@@ -170,6 +168,9 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
 
     @Inject
     lateinit var needHelpAnalytics: NeedHelpAnalytics
+
+    @Inject
+    lateinit var gotoSeamlessHelper: GotoSeamlessHelper
 
     @field:Named(SessionModule.SESSION_MODULE)
     @Inject
@@ -298,35 +299,13 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
         return super.onOptionsItemSelected(item)
     }
 
-    private fun initSSOHostBridge() {
-        lifecycleScope.launch {
-            val ssoHostData = SSOHostData(
-                "tokopedia:consumer:app",
-                "qmcpRpZPBC7DTRNQiI7dIkuGoxrqsu",
-                Environment.Integration
-            )
-            ssoHostBridge = SSOHostBridge.getSsoHostBridge()
-            ssoHostBridge?.initBridge(requireContext(), ssoHostData)
-        }
-    }
-
-    private suspend fun checkForSeamlessEligibility() {
-        val ssoData = ClientSSOBridge(appID = GlobalConfig.PACKAGE_CONSUMER_APP, appVersion = "3.178").retrieveSSOData(
-            context = requireContext(),
-            environment = Environment.Integration
-        )
-        println("ssoData: $ssoData")
-        view?.run {
-            Toaster.build(this, ssoData.toString(), Toaster.LENGTH_LONG).show()
-        }
+    private fun routeToGojekSeamlessPage() {
+        val intent = RouteManager.getIntent(requireContext(), ApplinkConstInternalUserPlatform.GOTO_SEAMLESS_LOGIN)
+        startActivityForResult(intent, REQUEST_GOTO_SEAMLESS)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        runBlocking {
-            checkForSeamlessEligibility()
-        }
 
         setupBackgroundColor()
         activity?.let {
@@ -383,6 +362,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
         fetchRemoteConfig()
         if(savedInstanceState == null) {
             clearData()
@@ -407,6 +387,8 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
         autoFillWithDataFromLatestLoggedIn()
 
         setupToolbar()
+
+        viewModel.checkSeamlessEligiblity()
     }
 
     private fun prepareArgData() {
@@ -443,6 +425,12 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
     }
 
     private fun initObserver() {
+        viewModel.navigateToGojekSeamless.observe(viewLifecycleOwner) {
+            if(it) {
+                routeToGojekSeamlessPage()
+            }
+        }
+
         viewModel.registerCheckResponse.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
             when (it) {
                 is Success -> onSuccessRegisterCheck().invoke(it.data)
@@ -567,8 +555,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
 
     private fun saveProfileToSDK(profile: Profile) {
         lifecycleScope.launch {
-            initSSOHostBridge()
-            ssoHostBridge?.saveUserProfileData(requireContext(), profile)
+            gotoSeamlessHelper.saveUserProfileToSDK(profile)
         }
     }
 
@@ -1585,7 +1572,12 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
                 } else {
                     onErrorVerifyFingerprint()
                 }
-            } else {
+            } else if(requestCode == REQUEST_GOTO_SEAMLESS) {
+                if(resultCode == Activity.RESULT_OK) {
+                    viewModel.getUserInfo()
+                }
+            }
+            else {
                 dismissLoadingLogin()
                 super.onActivityResult(requestCode, resultCode, data)
             }

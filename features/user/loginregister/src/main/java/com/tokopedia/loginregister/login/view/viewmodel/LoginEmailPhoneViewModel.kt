@@ -16,6 +16,7 @@ import com.tokopedia.loginregister.common.view.ticker.domain.pojo.TickerInfoPojo
 import com.tokopedia.loginregister.common.view.ticker.domain.usecase.TickerInfoUseCase
 import com.tokopedia.loginregister.discover.pojo.DiscoverData
 import com.tokopedia.loginregister.discover.usecase.DiscoverUseCase
+import com.tokopedia.loginregister.goto_seamless.GotoSeamlessHelper
 import com.tokopedia.loginregister.goto_seamless.model.GetTemporaryKeyParam
 import com.tokopedia.loginregister.goto_seamless.usecase.GetTemporaryKeyUseCase
 import com.tokopedia.loginregister.goto_seamless.usecase.GetTemporaryKeyUseCase.Companion.MODULE_GOTO_SEAMLESS
@@ -37,6 +38,8 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.utils.lifecycle.SingleLiveEvent
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 import javax.inject.Named
@@ -55,10 +58,15 @@ class LoginEmailPhoneViewModel @Inject constructor(
         private val registerCheckFingerprintUseCase: RegisterCheckFingerprintUseCase,
         private val loginFingerprintUseCase: LoginFingerprintUseCase,
         private val getTemporaryKeyUseCase: GetTemporaryKeyUseCase,
+        private val gotoSeamlessHelper: GotoSeamlessHelper,
         @Named(SessionModule.SESSION_MODULE)
         private val userSession: UserSessionInterface,
         private val dispatchers: CoroutineDispatchers
 ) : BaseViewModel(dispatchers.main) {
+
+    private val mutableNavigateToGojekSeamless = SingleLiveEvent<Boolean>()
+    val navigateToGojekSeamless: LiveData<Boolean>
+        get() = mutableNavigateToGojekSeamless
 
     private val mutableRegisterCheckResponse = MutableLiveData<Result<RegisterCheckData>>()
     val registerCheckResponse: LiveData<Result<RegisterCheckData>>
@@ -371,6 +379,16 @@ class LoginEmailPhoneViewModel @Inject constructor(
         getProfileUseCase.unsubscribe()
     }
 
+    fun checkSeamlessEligiblity() {
+        try {
+            launch {
+                val result = gotoSeamlessHelper.getGojekProfile()
+                mutableNavigateToGojekSeamless.value = result.authCode.isNotEmpty()
+            }
+        } catch (e: Exception) {
+            mutableNavigateToGojekSeamless.value = false
+        }
+}
     override fun onCleared() {
         super.onCleared()
         clearBackgroundTask()

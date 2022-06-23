@@ -18,6 +18,7 @@ object LoginConstants {
         const val REQUEST_ADD_PIN_AFTER_REGISTER_PHONE = 122
         const val REQUEST_CHOOSE_ACCOUNT_FINGERPRINT = 123
         const val REQUEST_VERIFY_BIOMETRIC = 124
+        const val REQUEST_GOTO_SEAMLESS = 125
     }
 
     object RemoteConfigKey {

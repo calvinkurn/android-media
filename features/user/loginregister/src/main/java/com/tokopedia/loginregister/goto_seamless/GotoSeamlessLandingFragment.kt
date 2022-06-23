@@ -1,22 +1,19 @@
 package com.tokopedia.loginregister.goto_seamless
 
-import android.content.Context
+import android.app.Activity
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.lifecycleScope
-import com.gojek.icp.identity.loginsso.Environment
-import com.gojek.icp.identity.loginsso.SSOHostBridge
-import com.gojek.icp.identity.loginsso.data.SSOHostData
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.loginregister.R
 import com.tokopedia.loginregister.databinding.FragmentGotoSeamlessBinding
 import com.tokopedia.loginregister.goto_seamless.di.GotoSeamlessComponent
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.view.binding.noreflection.viewBinding
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class GotoSeamlessLandingFragment: BaseDaggerFragment() {
@@ -39,13 +36,6 @@ class GotoSeamlessLandingFragment: BaseDaggerFragment() {
         getComponent(GotoSeamlessComponent::class.java).inject(this)
     }
 
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-        lifecycleScope.launch {
-            initSDK()
-        }
-    }
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -56,29 +46,51 @@ class GotoSeamlessLandingFragment: BaseDaggerFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        binding?.gotoSeamlessPrimaryBtn?.text = "Masuk pakai ${formatPhoneNumber(userSession.phoneNumber)}"
-    }
-
-    private suspend fun initSDK() {
-        val ssoHostData = SSOHostData(
-            "tokopedia:consumer:app",
-            "qmcpRpZPBC7DTRNQiI7dIkuGoxrqsu",
-            Environment.Integration
-        )
-
-        val ssoDataBridge = SSOHostBridge.getSsoHostBridge()
-        ssoDataBridge.initBridge(requireContext(), ssoHostData)
-    }
-
-    private fun formatPhoneNumber(phoneNum: String): String? {
-        if (phoneNum.isNotEmpty()) {
-            return when {
-                phoneNum.startsWith("62") -> phoneNum.replaceFirst("62", "0")
-                phoneNum.startsWith("+62") -> phoneNum.replaceFirst("+62", "0")
-                else -> phoneNum
+        setupViews()
+        viewModel.gojekProfileData.observe(viewLifecycleOwner) {
+            when(it) {
+                is Success -> {
+                    if(it.data.authCode.isNotEmpty()) {
+                        binding?.gotoSeamlessPrimaryBtn?.text = "Masuk ke ${it.data.countryCode}${it.data.phone}"
+                    } else {
+                        cancelSeamlessLoginFlow()
+                    }
+                }
+                is Fail -> cancelSeamlessLoginFlow()
             }
         }
-        return phoneNum
+
+        viewModel.loginResponse.observe(viewLifecycleOwner) {
+            when(it) {
+                is Success -> successSeamlessLogin()
+                is Fail -> cancelSeamlessLoginFlow()
+            }
+        }
+
+        viewModel.getGojekData()
+    }
+
+    fun successSeamlessLogin() {
+        activity?.setResult(Activity.RESULT_OK)
+        activity?.finish()
+    }
+
+    fun cancelSeamlessLoginFlow() {
+        activity?.setResult(Activity.RESULT_CANCELED)
+        activity?.finish()
+    }
+
+    private fun setupViews() {
+        binding?.gotoSeamlessPrimaryBtn?.setOnClickListener {
+            val gojekProfileData = viewModel.gojekProfileData.value
+            if(gojekProfileData is Success) {
+                viewModel.doSeamlessLogin(gojekProfileData.data.authCode)
+            }
+        }
+
+        binding?.gotoSeamlessSecondaryBtn?.setOnClickListener {
+            cancelSeamlessLoginFlow()
+        }
     }
 
     companion object {
