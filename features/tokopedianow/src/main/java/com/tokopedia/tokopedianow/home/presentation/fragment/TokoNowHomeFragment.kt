@@ -55,6 +55,7 @@ import com.tokopedia.play.widget.analytic.impression.ImpressionHelper
 import com.tokopedia.play.widget.ui.PlayWidgetView
 import com.tokopedia.play.widget.ui.coordinator.PlayWidgetCoordinator
 import com.tokopedia.play.widget.ui.listener.PlayWidgetListener
+import com.tokopedia.play.widget.ui.listener.PlayWidgetRouterListener
 import com.tokopedia.product.detail.common.AtcVariantHelper
 import com.tokopedia.product.detail.common.VariantPageSource
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
@@ -184,7 +185,8 @@ class TokoNowHomeFragment: Fragment(),
         HomeEducationalInformationListener,
         ServerErrorListener,
         PermissionListener,
-        PlayWidgetListener
+        PlayWidgetListener,
+        PlayWidgetRouterListener
 {
 
     companion object {
@@ -653,6 +655,11 @@ class TokoNowHomeFragment: Fragment(),
         adapter.data.filterIsInstance<HomePlayWidgetUiModel>().forEach {
             viewModelTokoNow.autoRefreshPlayWidget(it)
         }
+    }
+
+    override fun onWidgetOpenAppLink(view: View, appLink: String) {
+        val intent = RouteManager.getIntent(requireContext(), appLink)
+        startActivityForResult(intent, REQUEST_CODE_PLAY_WIDGET)
     }
 
     private fun initInjector() {
