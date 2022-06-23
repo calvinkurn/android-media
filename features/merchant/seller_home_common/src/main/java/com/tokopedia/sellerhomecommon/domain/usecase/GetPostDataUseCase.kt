@@ -26,7 +26,7 @@ class GetPostDataUseCase(
     private val postMapper: PostMapper,
     dispatchers: CoroutineDispatchers
 ) : CloudAndCacheGraphqlUseCase<GetPostDataResponse, List<PostListDataUiModel>>(
-    gqlRepository, postMapper, dispatchers, GetPostDataGqlQuery.GQL_QUERY
+    gqlRepository, postMapper, dispatchers, GetPostDataGqlQuery()
 ) {
 
     override val classType: Class<GetPostDataResponse>
@@ -56,7 +56,7 @@ class GetPostDataUseCase(
     }
 
     companion object {
-        const val QUERY = """
+        internal const val QUERY = """
             query getPostWidgetData(${'$'}dataKeys: [dataKey!]!) {
               fetchPostWidgetData(dataKeys: ${'$'}dataKeys) {
                 data {

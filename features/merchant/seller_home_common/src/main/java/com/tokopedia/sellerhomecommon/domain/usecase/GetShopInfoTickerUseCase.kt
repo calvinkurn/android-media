@@ -23,7 +23,7 @@ class GetShopInfoTickerUseCase @Inject constructor(
     mapper: ShopInfoTickerMapper,
     dispatchers: CoroutineDispatchers
 ) : CloudAndCacheGraphqlUseCase<GetShopInfoTickerResponse, List<TickerItemUiModel>>(
-    gqlRepository, mapper, dispatchers, GetShopInfoTickerGqlQuery.GQL_QUERY
+    gqlRepository, mapper, dispatchers, GetShopInfoTickerGqlQuery()
 ) {
 
     override val classType: Class<GetShopInfoTickerResponse>
@@ -44,7 +44,7 @@ class GetShopInfoTickerUseCase @Inject constructor(
     }
 
     companion object {
-        const val QUERY = """
+        internal const val QUERY = """
             query shopInfoByID(${'$'}shopId: Int!) {
               shopInfoByID(input: {shopIDs: [${'$'}shopId], fields: ["status"], domain: "", source: "sellerapp"}) {
                 result {

@@ -19,7 +19,7 @@ class GetOnGoingPromotionUseCase @Inject constructor(
 
     override suspend fun executeOnBackground(): OnGoingPromoListUiModel {
         val gqlRequest = GraphqlRequest(
-            GetOnGoingPromotionGqlQuery.GQL_QUERY,
+            GetOnGoingPromotionGqlQuery(),
             GetPromotionListResponseWrapper::class.java,
             params.parameters
         )

@@ -24,7 +24,7 @@ class GetLayoutUseCase(
     mapper: LayoutMapper,
     dispatchers: CoroutineDispatchers
 ) : CloudAndCacheGraphqlUseCase<GetLayoutResponse, List<BaseWidgetUiModel<*>>>(
-    gqlRepository, mapper, dispatchers, GetLayoutGqlQuery.GQL_QUERY
+    gqlRepository, mapper, dispatchers, GetLayoutGqlQuery()
 ) {
 
     override val classType: Class<GetLayoutResponse>
@@ -51,7 +51,7 @@ class GetLayoutUseCase(
     }
 
     companion object {
-        const val QUERY = """
+        internal const val QUERY = """
             query GetSellerDashboardLayout(${'$'}shopID: Int!, ${'$'}page: String!) {
               GetSellerDashboardPageLayout(shopID: ${'$'}shopID, page: ${'$'}page) {
                 widget {

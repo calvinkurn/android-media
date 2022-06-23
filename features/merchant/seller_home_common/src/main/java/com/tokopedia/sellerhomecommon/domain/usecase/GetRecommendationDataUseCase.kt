@@ -21,7 +21,7 @@ class GetRecommendationDataUseCase(
     recommendationMapper: RecommendationMapper,
     dispatchers: CoroutineDispatchers
 ) : CloudAndCacheGraphqlUseCase<GetRecommendationDataResponse, List<RecommendationDataUiModel>>(
-    gqlRepository, recommendationMapper, dispatchers, GetRecommendationDataGqlQuery.GQL_QUERY
+    gqlRepository, recommendationMapper, dispatchers, GetRecommendationDataGqlQuery()
 ) {
 
     override val classType: Class<GetRecommendationDataResponse>
@@ -50,7 +50,7 @@ class GetRecommendationDataUseCase(
     }
 
     companion object {
-        const val QUERY = """
+        internal const val QUERY = """
             query fetchRecommendationWidgetData(${'$'}dataKeys: [dataKey!]!) {
               fetchRecommendationWidgetData(dataKeys: ${'$'}dataKeys) {
                 data {

@@ -23,7 +23,7 @@ class GetPieChartDataUseCase(
     mapper: PieChartMapper,
     dispatchers: CoroutineDispatchers
 ) : CloudAndCacheGraphqlUseCase<GetPieChartDataResponse, List<PieChartDataUiModel>>(
-    gqlRepository, mapper, dispatchers, GetPieChartDataGqlQuery.GQL_QUERY
+    gqlRepository, mapper, dispatchers, GetPieChartDataGqlQuery()
 ) {
 
     override val classType: Class<GetPieChartDataResponse>
@@ -47,7 +47,7 @@ class GetPieChartDataUseCase(
     }
 
     companion object {
-        const val QUERY = """
+        internal const val QUERY = """
             query getPieChartData(${'$'}dataKeys: [dataKey!]!) {
               fetchPieChartWidgetData(dataKeys: ${'$'}dataKeys) {
                 data {

@@ -17,7 +17,7 @@ class GetMilestoneDataUseCase(
     milestoneMapper: MilestoneMapper,
     dispatchers: CoroutineDispatchers
 ) : CloudAndCacheGraphqlUseCase<GetMilestoneDataResponse, List<MilestoneDataUiModel>>(
-    gqlRepository, milestoneMapper, dispatchers, GetMilestoneDataGqlQuery.GQL_QUERY
+    gqlRepository, milestoneMapper, dispatchers, GetMilestoneDataGqlQuery()
 ) {
 
     override val classType: Class<GetMilestoneDataResponse>
@@ -45,7 +45,7 @@ class GetMilestoneDataUseCase(
     }
 
     companion object {
-        const val QUERY = """
+        internal const val QUERY = """
             query fetchMilestoneWidgetData(${'$'}dataKeys: [dataKey!]!) {
               fetchMilestoneWidgetData(dataKeys: ${'$'}dataKeys) {
                 data {

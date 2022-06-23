@@ -13,7 +13,7 @@ class CheckNonTopAdsUserUseCase @Inject constructor(
 ) : GraphqlUseCase<NonTopAdsUserResponse>(repository) {
 
     init {
-        setGraphqlQuery(CheckNonTopAdsUserGqlQuery.GQL_QUERY)
+        setGraphqlQuery(CheckNonTopAdsUserGqlQuery())
         setTypeClass(NonTopAdsUserResponse::class.java)
     }
 

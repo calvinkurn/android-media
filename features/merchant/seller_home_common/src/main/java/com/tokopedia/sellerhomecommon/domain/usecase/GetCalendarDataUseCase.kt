@@ -28,7 +28,7 @@ class GetCalendarDataUseCase(
     gqlRepository,
     calendarMapper,
     dispatchers,
-    GetCalendarDataGqlQuery.GQL_QUERY
+    GetCalendarDataGqlQuery()
 ) {
 
     override val classType: Class<GetCalendarDataResponse>
@@ -54,7 +54,7 @@ class GetCalendarDataUseCase(
     }
 
     companion object {
-        const val QUERY = """
+        internal const val QUERY = """
             query fetchCalendarWidgetData(${'$'}dataKeys: [dataKey!]!) {
               fetchCalendarWidgetData(dataKeys: ${'$'}dataKeys) {
                 data{

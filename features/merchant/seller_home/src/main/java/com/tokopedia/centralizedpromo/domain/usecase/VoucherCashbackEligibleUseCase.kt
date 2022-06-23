@@ -17,7 +17,7 @@ class VoucherCashbackEligibleUseCase @Inject constructor(
 ) : GraphqlUseCase<MerchantPromotionGetPromoListResponse>(repository) {
 
     init {
-        setGraphqlQuery(VoucherCashbackEligibleGqlQuery.GQL_QUERY)
+        setGraphqlQuery(VoucherCashbackEligibleGqlQuery())
         setTypeClass(MerchantPromotionGetPromoListResponse::class.java)
     }
 

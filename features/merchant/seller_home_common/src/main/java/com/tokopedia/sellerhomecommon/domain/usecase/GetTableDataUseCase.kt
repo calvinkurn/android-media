@@ -27,7 +27,7 @@ class GetTableDataUseCase(
     graphqlRepository,
     tableMapper,
     dispatchers,
-    GetTableDataGqlQuery.GQL_QUERY
+    GetTableDataGqlQuery()
 ) {
 
     override val classType: Class<GetTableDataResponse>
@@ -54,7 +54,7 @@ class GetTableDataUseCase(
     }
 
     companion object {
-        const val QUERY = """
+        internal const val QUERY = """
             query getTableData(${'$'}dataKeys: [dataKey!]!) {
               fetchSearchTableWidgetData(dataKeys: ${'$'}dataKeys) {
                 data {

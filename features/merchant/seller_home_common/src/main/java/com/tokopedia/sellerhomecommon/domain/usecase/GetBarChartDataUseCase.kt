@@ -23,7 +23,7 @@ class GetBarChartDataUseCase(
     mapper: BarChartMapper,
     dispatchers: CoroutineDispatchers
 ) : CloudAndCacheGraphqlUseCase<GetBarChartDataResponse, List<BarChartDataUiModel>>(
-    gqlRepository, mapper, dispatchers, GetBarChartDataGqlQuery.GQL_QUERY
+    gqlRepository, mapper, dispatchers, GetBarChartDataGqlQuery()
 ) {
 
     override val classType: Class<GetBarChartDataResponse>
@@ -48,7 +48,7 @@ class GetBarChartDataUseCase(
     }
 
     companion object {
-        const val QUERY = """
+        internal const val QUERY = """
             query getBarChartData(${'$'}dataKeys: [dataKey!]!) {
               fetchBarChartWidgetData(dataKeys: ${'$'}dataKeys) {
                 data {

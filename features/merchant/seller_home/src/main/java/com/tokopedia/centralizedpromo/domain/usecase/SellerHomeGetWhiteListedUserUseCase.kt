@@ -18,7 +18,7 @@ class SellerHomeGetWhiteListedUserUseCase @Inject constructor(
 
     init {
         setTypeClass(SellerHomeWhiteListUserResponse::class.java)
-        setGraphqlQuery(SellerHomeGetWhiteListedUserGqlQuery.GQL_QUERY)
+        setGraphqlQuery(SellerHomeGetWhiteListedUserGqlQuery())
     }
 
     suspend fun executeQuery(): Boolean {

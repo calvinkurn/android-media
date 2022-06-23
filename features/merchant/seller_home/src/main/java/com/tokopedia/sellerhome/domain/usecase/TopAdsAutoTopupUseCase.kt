@@ -17,7 +17,9 @@ class TopAdsAutoTopupUseCase @Inject constructor(
     var params = HashMap<String, Any>()
 
     override suspend fun executeOnBackground(): Boolean {
-        val gqlRequest = GraphqlRequest(TopAdsAutoTopupGqlQuery.GQL_QUERY, TopAdsAutoTopupDataModel::class.java, params)
+        val gqlRequest = GraphqlRequest(
+            TopAdsAutoTopupGqlQuery(), TopAdsAutoTopupDataModel::class.java, params
+        )
         val gqlResponse = graphqlRepository.response(listOf(gqlRequest))
 
         val gqlError = gqlResponse.getError(TopAdsAutoTopupDataModel::class.java)

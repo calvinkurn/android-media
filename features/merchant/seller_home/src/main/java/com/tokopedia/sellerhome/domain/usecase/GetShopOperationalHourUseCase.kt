@@ -20,7 +20,7 @@ class GetShopOperationalHourUseCase @Inject constructor(
         val cacheStrategy = GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build()
         setCacheStrategy(cacheStrategy)
 
-        setGraphqlQuery(GetShopOperationalHourGqlQuery.GQL_QUERY)
+        setGraphqlQuery(GetShopOperationalHourGqlQuery())
         setTypeClass(GetShopOperationalHourResponse::class.java)
     }
 

@@ -24,7 +24,7 @@ class GetCarouselDataUseCase(
     mapper: CarouselMapper,
     dispatchers: CoroutineDispatchers
 ) : CloudAndCacheGraphqlUseCase<GetCarouselDataResponse, List<CarouselDataUiModel>>(
-    gqlRepository, mapper, dispatchers, GetCarouselDataGqlQuery.GQL_QUERY
+    gqlRepository, mapper, dispatchers, GetCarouselDataGqlQuery()
 ) {
 
     override val classType: Class<GetCarouselDataResponse>
@@ -49,7 +49,7 @@ class GetCarouselDataUseCase(
     }
 
     companion object {
-        const val QUERY = """
+        internal const val QUERY = """
             query getCarouselWidgetData(${'$'}dataKeys: [dataKey!]!) {
               fetchCarouselWidgetData(dataKeys: ${'$'}dataKeys) {
                 data {

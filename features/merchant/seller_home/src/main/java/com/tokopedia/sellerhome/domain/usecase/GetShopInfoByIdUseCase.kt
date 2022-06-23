@@ -20,7 +20,7 @@ class GetShopInfoByIdUseCase @Inject constructor(
         val cacheStrategy = GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build()
         setCacheStrategy(cacheStrategy)
 
-        setGraphqlQuery(GetShopInfoByIdGqlQuery.GQL_QUERY)
+        setGraphqlQuery(GetShopInfoByIdGqlQuery())
         setTypeClass(GetShopClosedInfoResponse::class.java)
     }
 

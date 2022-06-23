@@ -22,7 +22,7 @@ class GetAnnouncementDataUseCase(
     mapper: AnnouncementMapper,
     dispatchers: CoroutineDispatchers
 ) : CloudAndCacheGraphqlUseCase<GetAnnouncementDataResponse, List<AnnouncementDataUiModel>>(
-    gqlRepository, mapper, dispatchers, GetAnnouncementDataGqlQuery.GQL_QUERY
+    gqlRepository, mapper, dispatchers, GetAnnouncementDataGqlQuery()
 ) {
 
     override val classType: Class<GetAnnouncementDataResponse>
@@ -47,7 +47,7 @@ class GetAnnouncementDataUseCase(
     }
 
     companion object {
-        const val QUERY = """
+        internal const val QUERY = """
             query fetchAnnouncementWidgetData(${'$'}dataKeys: [dataKey!]!) {
               fetchAnnouncementWidgetData(dataKeys:${'$'}dataKeys) {
                 data {

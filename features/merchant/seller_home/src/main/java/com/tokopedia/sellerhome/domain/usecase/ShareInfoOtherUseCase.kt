@@ -22,7 +22,7 @@ class ShareInfoOtherUseCase @Inject constructor(
         val cacheStrategy = GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build()
         setCacheStrategy(cacheStrategy)
 
-        setGraphqlQuery(ShareInfoOtherGqlQuery.GQL_QUERY)
+        setGraphqlQuery(ShareInfoOtherGqlQuery())
         setTypeClass(ShopShareOtherResponse::class.java)
     }
 

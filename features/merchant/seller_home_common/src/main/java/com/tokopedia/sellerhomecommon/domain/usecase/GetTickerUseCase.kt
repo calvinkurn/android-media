@@ -21,7 +21,7 @@ class GetTickerUseCase(
     mapper: TickerMapper,
     dispatchers: CoroutineDispatchers
 ) : CloudAndCacheGraphqlUseCase<GetTickerResponse, List<TickerItemUiModel>>(
-    gqlRepository, mapper, dispatchers, GetTickerGqlQuery.GQL_QUERY
+    gqlRepository, mapper, dispatchers, GetTickerGqlQuery()
 ) {
 
     override val classType: Class<GetTickerResponse>
@@ -46,7 +46,7 @@ class GetTickerUseCase(
     }
 
     companion object {
-        const val QUERY = """
+        internal const val QUERY = """
             query getTicker(${'$'}page: String!) {
               ticker {
                 tickers(page: ${'$'}page) {

@@ -17,7 +17,7 @@ class TopAdsDashboardDepositUseCase @Inject constructor(
 
     override suspend fun executeOnBackground(): Float {
         val gqlRequest = GraphqlRequest(
-            TopAdsDashboardDepositGqlQuery.GQL_QUERY, TopAdsDepositDataModel::class.java, params
+            TopAdsDashboardDepositGqlQuery(), TopAdsDepositDataModel::class.java, params
         )
         val gqlResponse = graphqlRepository.response(listOf(gqlRequest))
 

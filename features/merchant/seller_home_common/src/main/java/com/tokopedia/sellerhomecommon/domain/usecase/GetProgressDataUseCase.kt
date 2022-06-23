@@ -23,7 +23,7 @@ class GetProgressDataUseCase constructor(
     progressMapper: ProgressMapper,
     dispatchers: CoroutineDispatchers
 ) : CloudAndCacheGraphqlUseCase<GetProgressDataResponse, List<ProgressDataUiModel>>(
-    graphqlRepository, progressMapper, dispatchers, GetProgressDataGqlQuery.GQL_QUERY
+    graphqlRepository, progressMapper, dispatchers, GetProgressDataGqlQuery()
 ) {
 
     override val classType: Class<GetProgressDataResponse>
@@ -48,7 +48,7 @@ class GetProgressDataUseCase constructor(
     }
 
     companion object {
-        const val QUERY = """
+        internal const val QUERY = """
             query getProgressData(${'$'}dataKeys: [dataKey!]!) {
               fetchProgressBarWidgetData(dataKeys: ${'$'}dataKeys) {
                 data {

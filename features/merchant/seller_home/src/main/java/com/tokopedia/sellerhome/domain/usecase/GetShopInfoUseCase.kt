@@ -22,7 +22,7 @@ class GetShopInfoUseCase(
 
     override suspend fun executeOnBackground(): ShopInfoUiModel {
         val gqlRequest = GraphqlRequest(
-            GetShopInfoGqlQuery.GQL_QUERY, GetShopInfoResponse::class.java, params.parameters
+            GetShopInfoGqlQuery(), GetShopInfoResponse::class.java, params.parameters
         )
         val gqlResponse = gqlRepository.response(listOf(gqlRequest))
 

@@ -24,7 +24,7 @@ class GetCardDataUseCase(
     cardMapper: CardMapper,
     dispatchers: CoroutineDispatchers
 ) : CloudAndCacheGraphqlUseCase<GetCardDataResponse, List<CardDataUiModel>>(
-    gqlRepository, cardMapper, dispatchers, GetCardDataGqlQuery.GQL_QUERY
+    gqlRepository, cardMapper, dispatchers, GetCardDataGqlQuery()
 ) {
 
     override val classType: Class<GetCardDataResponse>
@@ -49,7 +49,7 @@ class GetCardDataUseCase(
     }
 
     companion object {
-        const val QUERY = """
+        internal const val QUERY = """
             query fetchCardWidgetData(${'$'}dataKeys : [dataKey!]!) {
               fetchCardWidgetData(dataKeys: ${'$'}dataKeys) {
                 data {

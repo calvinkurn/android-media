@@ -24,7 +24,7 @@ class GetLineGraphDataUseCase(
     lineGraphMapper: LineGraphMapper,
     dispatchers: CoroutineDispatchers
 ) : CloudAndCacheGraphqlUseCase<GetLineGraphDataResponse, List<LineGraphDataUiModel>>(
-    gqlRepository, lineGraphMapper, dispatchers, GetLineGraphDataGqlQuery.GQL_QUERY
+    gqlRepository, lineGraphMapper, dispatchers, GetLineGraphDataGqlQuery()
 ) {
 
     override val classType: Class<GetLineGraphDataResponse>
@@ -49,7 +49,7 @@ class GetLineGraphDataUseCase(
     }
 
     companion object {
-        const val QUERY = """
+        internal const val QUERY = """
             query getLineGraphData(${'$'}dataKeys: [dataKey!]!) {
               fetchLineGraphWidgetData(dataKeys: ${'$'}dataKeys) {
                 data {

@@ -26,7 +26,7 @@ class GetMultiLineGraphUseCase(
     gqlRepository,
     mapper,
     dispatchers,
-    GetMultiLineGraphGqlQuery.GQL_QUERY
+    GetMultiLineGraphGqlQuery()
 ) {
 
     override val classType: Class<GetMultiLineGraphResponse>
@@ -55,7 +55,7 @@ class GetMultiLineGraphUseCase(
     }
 
     companion object {
-        const val QUERY = """
+        internal const val QUERY = """
             query fetchMultiTrendlineWidgetData(${'$'}dataKeys : [dataKey!]!) {
               fetchMultiTrendlineWidgetData(dataKeys: ${'$'}dataKeys) {
                 data {
