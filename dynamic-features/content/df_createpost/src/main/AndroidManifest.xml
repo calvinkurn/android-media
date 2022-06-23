@@ -1,8 +1,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:dist="http://schemas.android.com/apk/distribution"
-    package="com.tokopedia.df.feed.people">
+    package="com.tokopedia.df.content.createpost">
 
-    <dist:module dist:title="@string/title_feed_people">
+    <dist:module dist:title="@string/title_feed_create_post">
         <dist:delivery>
             <dist:on-demand />
             <dist:install-time>
