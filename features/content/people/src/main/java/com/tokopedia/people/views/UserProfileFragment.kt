@@ -134,7 +134,7 @@ class UserProfileFragment : BaseDaggerFragment(),
         super.onViewCreated(view, savedInstanceState)
         userSession = UserSession(context)
         userId = userSession?.userId?:""
-        container = view.findViewById(R.id.container)
+        container = view.findViewById(R.id.container_header)
         userPostContainer = view.findViewById(R.id.vp_rv_post)
         globalError = view.findViewById(R.id.global_error)
         globalErrorPost = view.findViewById(R.id.global_error_post)
