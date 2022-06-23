@@ -33,7 +33,6 @@ import com.tokopedia.shop.flashsale.domain.entity.aggregate.ShareComponentMetada
 import com.tokopedia.shop.flashsale.domain.entity.enums.CampaignStatus
 import com.tokopedia.shop.flashsale.domain.entity.enums.isOngoing
 import com.tokopedia.shop.flashsale.presentation.cancelation.CancelCampaignBottomSheet
-import com.tokopedia.shop.flashsale.presentation.creation.highlight.ManageHighlightedProductActivity
 import com.tokopedia.shop.flashsale.presentation.creation.information.CampaignInformationActivity
 import com.tokopedia.shop.flashsale.presentation.draft.bottomsheet.DraftListBottomSheet
 import com.tokopedia.shop.flashsale.presentation.draft.uimodel.DraftItemModel
@@ -611,8 +610,7 @@ class CampaignListFragment : BaseSimpleListFragment<CampaignAdapter, CampaignUiM
             return
         }
 
-        ManageHighlightedProductActivity.start(requireActivity(), campaign.campaignId)
-        //CampaignInformationActivity.startUpdateMode(requireActivity(), campaign.campaignId)
+        CampaignInformationActivity.startUpdateMode(requireActivity(), campaign.campaignId)
     }
 
     private fun showCancelCampaignBottomSheet(campaign: CampaignUiModel) {
