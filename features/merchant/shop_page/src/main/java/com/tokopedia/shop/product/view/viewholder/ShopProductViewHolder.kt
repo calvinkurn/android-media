@@ -11,6 +11,7 @@ import com.tokopedia.productcard.ATCNonVariantListener
 import com.tokopedia.productcard.ProductCardGridView
 import com.tokopedia.shop.R
 import com.tokopedia.shop.analytic.model.ShopTrackProductTypeDef
+import com.tokopedia.shop.common.util.ShopUtilExt.isButtonAtcShown
 import com.tokopedia.shop.databinding.ItemShopNewproductSmallGridBinding
 import com.tokopedia.shop.product.utils.mapper.ShopPageProductListMapper
 import com.tokopedia.shop.product.view.datamodel.ShopProductUiModel
@@ -51,18 +52,23 @@ class ShopProductViewHolder(
     }
 
     override fun bind(shopProductUiModel: ShopProductUiModel) {
-        productCard?.setProductModel(
-                ShopPageProductListMapper.mapToProductCardModel(
-                        shopProductUiModel = shopProductUiModel,
-                        isWideContent = false,
-                        isShowThreeDots = isShowTripleDot
-                )
+        val productCardModel = ShopPageProductListMapper.mapToProductCardModel(
+            shopProductUiModel = shopProductUiModel,
+            isWideContent = false,
+            isShowThreeDots = isShowTripleDot
         )
+        productCard?.setProductModel(productCardModel)
 
         if (shopProductImpressionListener?.getSelectedEtalaseName().orEmpty().isNotEmpty()) {
             productCard?.setImageProductViewHintListener(shopProductUiModel, object : ViewHintListener {
                 override fun onViewHint() {
                     shopProductImpressionListener?.onProductImpression(shopProductUiModel, shopTrackType, adapterPosition)
+                    if (productCardModel.isButtonAtcShown()) {
+                        shopProductImpressionListener?.onImpressionProductAtc(
+                            shopProductUiModel,
+                            adapterPosition
+                        )
+                    }
                 }
             })
         }

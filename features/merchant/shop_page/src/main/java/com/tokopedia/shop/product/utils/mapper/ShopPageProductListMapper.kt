@@ -248,8 +248,13 @@ object ShopPageProductListMapper {
                     )
                 }
             }
+            baseProductCardModel.copy(
+                hasThreeDots = false
+            )
         } else {
-            baseProductCardModel
+            baseProductCardModel.copy(
+                hasThreeDots = isShowThreeDots
+            )
         }
     }
 

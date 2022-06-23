@@ -1,7 +1,27 @@
 package com.tokopedia.shop.analytic
 
+import android.os.Bundle
 import android.text.TextUtils
 import com.tokopedia.analyticconstant.DataLayer
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.BUSINESS_UNIT
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.CREATIVE_NAME
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.CREATIVE_SLOT
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.CURRENT_SITE
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.EVENT
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.EVENT_ACTION
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.EVENT_CATEGORY
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.EVENT_LABEL
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.EventAction.IMPRESSION_PRODUCT_ATC
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.EventCategory.SHOP_PAGE_BUYER_DIRECT_PURCHASE
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.ITEM_ID
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.ITEM_NAME
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.PHYSICAL_GOODS
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.PRODUCT_ID
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.PROMOTIONS
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.SHOP_ID
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TOKOPEDIA_MARKETPLACE
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.USER_ID
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.VIEW_ITEM
 import com.tokopedia.shop.analytic.model.CustomDimensionShopPage
 import com.tokopedia.shop.analytic.model.CustomDimensionShopPageAttribution
 import com.tokopedia.shop.analytic.model.CustomDimensionShopPageProduct
@@ -1186,5 +1206,49 @@ class ShopPageTrackingBuyer(
                 ShopPageTrackingConstant.USER_ID to userId
         )
         TrackApp.getInstance().gtm.sendGeneralEvent(eventMap)
+    }
+
+    fun onImpressionProductAtcButton(
+        shopProductUiModel: ShopProductUiModel,
+        widgetName: String,
+        position: Int,
+        shopId: String,
+        userId: String
+    ) {
+        val eventBundle = Bundle().apply {
+            putString(EVENT, VIEW_ITEM)
+            putString(EVENT_ACTION, IMPRESSION_PRODUCT_ATC)
+            putString(EVENT_CATEGORY, SHOP_PAGE_BUYER_DIRECT_PURCHASE)
+            putString(EVENT_LABEL, "")
+            putString(BUSINESS_UNIT, PHYSICAL_GOODS)
+            putString(CURRENT_SITE, TOKOPEDIA_MARKETPLACE)
+            putString(PRODUCT_ID, shopProductUiModel.id.orEmpty())
+            putString(SHOP_ID, shopId)
+            putString(USER_ID, userId)
+            putParcelableArrayList(
+                PROMOTIONS,
+                arrayListOf(
+                    createProductAtcButtonPromotions(
+                        widgetName,
+                        position,
+                        shopProductUiModel
+                    )
+                )
+            )
+        }
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(VIEW_ITEM, eventBundle)
+    }
+
+    private fun createProductAtcButtonPromotions(
+        widgetName: String,
+        position: Int,
+        shopProductUiModel: ShopProductUiModel
+    ): Bundle {
+        return Bundle().apply {
+            putString(CREATIVE_NAME, widgetName)
+            putInt(CREATIVE_SLOT, position)
+            putString(ITEM_ID, shopProductUiModel.id.orEmpty())
+            putString(ITEM_NAME, shopProductUiModel.name.orEmpty())
+        }
     }
 }

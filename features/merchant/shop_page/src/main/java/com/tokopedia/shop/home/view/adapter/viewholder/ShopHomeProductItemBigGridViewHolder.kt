@@ -8,7 +8,10 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.productcard.ATCNonVariantListener
 import com.tokopedia.productcard.ProductCardGridView
+import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.shop.R
+import com.tokopedia.shop.common.constant.ShopPageConstant
+import com.tokopedia.shop.common.util.ShopUtilExt.isButtonAtcShown
 import com.tokopedia.shop.databinding.ItemShopHomeProductCardBigGridBinding
 import com.tokopedia.shop.home.util.mapper.ShopPageHomeMapper
 import com.tokopedia.shop.home.view.listener.ShopHomeEndlessProductListener
@@ -43,16 +46,17 @@ open class ShopHomeProductItemBigGridViewHolder(
 
     override fun bind(shopHomeProductViewModel: ShopHomeProductUiModel) {
         this.shopHomeProductViewModel = shopHomeProductViewModel
-        productCard?.setProductModel(ShopPageHomeMapper.mapToProductCardModel(
-                isHasAddToCartButton = false,
-                hasThreeDots = isShowTripleDot,
-                shopHomeProductViewModel = shopHomeProductViewModel,
-                isWideContent = true
-        ))
-        setListener()
+        val productCardModel = ShopPageHomeMapper.mapToProductCardModel(
+            isHasAddToCartButton = false,
+            hasThreeDots = isShowTripleDot,
+            shopHomeProductViewModel = shopHomeProductViewModel,
+            isWideContent = true
+        )
+        productCard?.setProductModel(productCardModel)
+        setListener(productCardModel)
     }
 
-    protected open fun setListener() {
+    protected open fun setListener(productCardModel: ProductCardModel) {
         productCard?.setOnClickListener {
             shopHomeEndlessProductListener?.onAllProductItemClicked(
                     adapterPosition,
@@ -66,6 +70,13 @@ open class ShopHomeProductItemBigGridViewHolder(
                             adapterPosition,
                             shopHomeProductViewModel
                     )
+                    if (productCardModel.isButtonAtcShown()) {
+                        shopHomeEndlessProductListener?.onImpressionProductAtc(
+                            shopHomeProductViewModel,
+                            adapterPosition,
+                            ShopPageConstant.ShopProductCardAtc.CARD_HOME
+                        )
+                    }
                 }
             })
 

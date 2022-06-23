@@ -10,6 +10,7 @@ import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.shop.R
+import com.tokopedia.shop.common.util.ShopUtilExt.isButtonAtcShown
 import com.tokopedia.shop.databinding.ItemShopHomeProductRecommendationCarouselBinding
 import com.tokopedia.shop.home.WidgetName.ADD_ONS
 import com.tokopedia.shop.home.WidgetName.BUY_AGAIN
@@ -168,7 +169,15 @@ class ShopHomeCarouselProductPersonalizationViewHolder (
                             productItem
                     )
                 }
-
+                if (element.name == RECENT_ACTIVITY) {
+                    if (productCardModel.isButtonAtcShown()) {
+                        shopHomeCarouselProductListener.onImpressionProductAtc(
+                            productItem,
+                            adapterPosition,
+                            element.name
+                        )
+                    }
+                }
             }
 
             override fun getImpressHolder(carouselProductCardPosition: Int): ImpressHolder? {

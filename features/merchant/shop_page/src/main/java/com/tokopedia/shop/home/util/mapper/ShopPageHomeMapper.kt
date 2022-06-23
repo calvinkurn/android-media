@@ -241,8 +241,13 @@ object ShopPageHomeMapper {
                     )
                 }
             }
+            baseProductCardModel.copy(
+                hasThreeDots = false
+            )
         } else {
-            baseProductCardModel
+            baseProductCardModel.copy(
+                hasThreeDots = hasThreeDots
+            )
         }
     }
 

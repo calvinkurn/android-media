@@ -338,6 +338,7 @@ object ShopPageTrackingConstant {
     const val DIMENSION_61 = "dimension61"
     const val IS_LOGGED_IN_STATUS = "isLoggedInStatus"
     const val ITEM_LIST = "item_list"
+    const val TRACKER_ID = "trackerId"
 
     //SCREEN/PAGES
     const val SCREEN_SHOP_PAGE = "Shop Page"
@@ -407,5 +408,13 @@ object ShopPageTrackingConstant {
 
     const val SHOP_PAGE_SHARE_BOTTOM_SHEET_PAGE_NAME = "Shop"
     const val SHOP_PAGE_SHARE_BOTTOM_SHEET_FEATURE_NAME = "share"
+
+    object EventAction{
+        const val IMPRESSION_PRODUCT_ATC = "impression - product - add to cart"
+    }
+
+    object EventCategory{
+        const val SHOP_PAGE_BUYER_DIRECT_PURCHASE = "shop page - buyer - direct purchase"
+    }
 
 }

@@ -1438,7 +1438,7 @@ class NewShopPageFragment :
             shopName = MethodChecker.fromHtml(shopPageP1Data.shopName).toString()
             shopDomain = shopPageP1Data.shopDomain
             avatar = shopPageP1Data.shopAvatar
-            isEnableDirectPurchase = getIsEnableDirectPurchase(shopPageP1Data)
+            isEnableDirectPurchase = false
         }
         newNavigationToolbar?.run {
             val searchBarHintText = MethodChecker.fromHtml(getString(

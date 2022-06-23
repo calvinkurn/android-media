@@ -199,9 +199,7 @@ class ShopHomeAdapter(
     }
 
     fun getAllProductWidgetPosition(): Int {
-        return visitables.filter {
-            (it !is LoadingModel) && (it !is LoadingMoreModel) && (it !is ShopHomeProductEtalaseTitleUiModel)
-        }.indexOfFirst { it is ShopHomeProductUiModel }
+        return visitables.indexOfFirst { it is ShopHomeProductUiModel }
     }
 
     fun updateProductWidgetData(shopHomeCarousellProductUiModel: ShopHomeCarousellProductUiModel) {

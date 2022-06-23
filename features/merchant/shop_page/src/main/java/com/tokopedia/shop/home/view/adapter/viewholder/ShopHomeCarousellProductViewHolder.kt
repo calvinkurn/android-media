@@ -17,6 +17,7 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.shop.R
+import com.tokopedia.shop.common.util.ShopUtilExt.isButtonAtcShown
 import com.tokopedia.shop.databinding.ItemShopHomeProductCarouselBinding
 import com.tokopedia.shop.home.util.mapper.ShopPageHomeMapper
 import com.tokopedia.shop.home.view.listener.ShopHomeCarouselProductListener
@@ -175,6 +176,14 @@ class ShopHomeCarousellProductViewHolder(
                                     carouselProductCardPosition,
                                     shopHomeCarousellProductUiModel,
                                     shopProductViewModel
+                            )
+                        }
+
+                        if (productCardModel.isButtonAtcShown()) {
+                            shopHomeCarouselProductListener.onImpressionProductAtc(
+                                shopProductViewModel,
+                                adapterPosition,
+                                shopHomeCarousellProductUiModel?.name.orEmpty()
                             )
                         }
                     }

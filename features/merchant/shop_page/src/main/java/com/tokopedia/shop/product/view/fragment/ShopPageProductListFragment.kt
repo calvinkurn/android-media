@@ -613,6 +613,29 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
         }
     }
 
+    override fun onImpressionProductAtc(
+        shopProductUiModel: ShopProductUiModel,
+        position: Int
+    ) {
+        trackImpressionProductAtc(
+            shopProductUiModel,
+            ShopUtil.getActualPositionFromIndex(position) - shopProductAdapter.shopProductFirstViewModelPosition
+        )
+    }
+
+    private fun trackImpressionProductAtc(
+        shopProductUiModel: ShopProductUiModel,
+        position: Int
+    ) {
+        shopPageTracking?.onImpressionProductAtcButton(
+            shopProductUiModel,
+            ShopPageConstant.ShopProductCardAtc.CARD_PRODUCT,
+            position,
+            shopId,
+            userId
+        )
+    }
+
     private fun redirectToLoginPage(requestCode: Int = REQUEST_CODE_USER_LOGIN) {
         context?.let {
             val intent = RouteManager.getIntent(it, ApplinkConst.LOGIN)

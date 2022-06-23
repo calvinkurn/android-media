@@ -2077,6 +2077,37 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         }
     }
 
+    override fun onImpressionProductAtc(
+        shopHomeProductUiModel: ShopHomeProductUiModel,
+        position: Int,
+        name: String
+    ) {
+        val productPosition = if (name == ShopPageConstant.ShopProductCardAtc.CARD_HOME) {
+            position - shopHomeAdapter.getAllProductWidgetPosition()
+        } else {
+            position
+        }
+        trackImpressionProductAtc(
+            shopHomeProductUiModel,
+            ShopUtil.getActualPositionFromIndex(productPosition),
+            name
+        )
+    }
+
+    private fun trackImpressionProductAtc(
+        shopHomeProductUiModel: ShopHomeProductUiModel,
+        position: Int,
+        widgetName: String
+    ) {
+        shopPageHomeTracking.onImpressionProductAtcButton(
+            shopHomeProductUiModel,
+            widgetName,
+            position,
+            shopId,
+            userId
+        )
+    }
+
     override fun onProductAtcVariantClick(shopHomeProductViewModel: ShopHomeProductUiModel) {
         AtcVariantHelper.goToAtcVariant(
             context = requireContext(),

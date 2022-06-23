@@ -15,7 +15,7 @@ interface ShopHomeFlashSaleWidgetListener {
 
     fun onFlashSaleProductClicked(model: ShopHomeProductUiModel)
 
-    fun onFlashSaleWidgetImpressed(model : ShopHomeFlashSaleUiModel, position: Int)
+    fun onFlashSaleWidgetImpressed(model: ShopHomeFlashSaleUiModel, position: Int)
 
     fun onPlaceHolderClickSeeAll(model: ShopHomeFlashSaleUiModel)
 
@@ -27,4 +27,10 @@ interface ShopHomeFlashSaleWidgetListener {
     fun onProductAtcVariantClick(shopHomeProductViewModel: ShopHomeProductUiModel)
 
     fun onProductAtcDefaultClick(shopHomeProductViewModel: ShopHomeProductUiModel, quantity: Int)
+
+    fun onImpressionProductAtc(
+        shopHomeProductUiModel: ShopHomeProductUiModel,
+        position: Int,
+        name: String
+    )
 }

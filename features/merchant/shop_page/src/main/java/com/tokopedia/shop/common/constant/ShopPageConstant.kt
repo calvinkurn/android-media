@@ -42,4 +42,10 @@ object ShopPageConstant {
     object ShopLayoutFeatures{
         const val DIRECT_PURCHASE = "direct_purchase"
     }
+
+    object ShopProductCardAtc {
+        const val CARD_HOME = "Card Home"
+        const val CARD_PRODUCT = "Card Product"
+        const val CARD_ETALASE = "Card Etalase"
+    }
 }

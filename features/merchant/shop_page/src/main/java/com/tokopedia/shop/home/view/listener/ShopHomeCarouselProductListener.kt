@@ -109,4 +109,10 @@ interface ShopHomeCarouselProductListener {
 
     fun onProductAtcDefaultClick(shopHomeProductViewModel: ShopHomeProductUiModel, quantity: Int)
 
+    fun onImpressionProductAtc(
+        shopHomeProductUiModel: ShopHomeProductUiModel,
+        position: Int,
+        name: String
+    )
+
 }

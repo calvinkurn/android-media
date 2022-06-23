@@ -118,6 +118,8 @@ import com.tokopedia.shop.analytic.ShopPageTrackingConstant.SHOP_PAGE_BUYER
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.SHOP_PAGE_LABEL
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.DIMENSION_90
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.ETALASE_NAVIGATION_BANNER
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.EventAction.IMPRESSION_PRODUCT_ATC
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.EventCategory.SHOP_PAGE_BUYER_DIRECT_PURCHASE
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.FLASH_SALE
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.INDEX
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.ITEMS
@@ -146,6 +148,7 @@ import com.tokopedia.shop.analytic.ShopPageTrackingConstant.THEMATIC_WIDGET_PROD
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.THEMATIC_WIDGET_PRODUCT_CARD_SEE_ALL_CLICK
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.THEMATIC_WIDGET_SEE_ALL_CLICK
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TOKOPEDIA_MARKETPLACE
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TRACKER_ID
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.UNFOLLOW
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.USER_ID
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.VALUE_FINISHED_BANNER
@@ -188,11 +191,13 @@ import com.tokopedia.shop.home.WidgetName.ADD_ONS
 import com.tokopedia.shop.home.WidgetName.BUY_AGAIN
 import com.tokopedia.shop.home.WidgetName.RECENT_ACTIVITY
 import com.tokopedia.shop.home.view.model.NotifyMeAction
+import com.tokopedia.shop.home.view.model.ShopHomeProductUiModel
 import com.tokopedia.shop.home.view.model.ShopHomeShowcaseListItemUiModel
 import com.tokopedia.shop.home.view.model.StatusCampaign
 import com.tokopedia.shop_widget.thematicwidget.uimodel.ProductCardUiModel
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
+import com.tokopedia.track.builder.Tracker
 import com.tokopedia.trackingoptimizer.TrackingQueue
 
 /*
@@ -2466,6 +2471,50 @@ class ShopPageHomeTracking(
             putString(ITEM_NAME, productName)
             putString(ITEM_VARIANT, productVariant)
             putLong(PRICE, productPrice)
+        }
+    }
+
+    fun onImpressionProductAtcButton(
+        shopHomeProductUiModel: ShopHomeProductUiModel,
+        widgetName: String,
+        position: Int,
+        shopId: String,
+        userId: String,
+    ) {
+        val eventBundle = Bundle().apply {
+            putString(EVENT, VIEW_ITEM)
+            putString(EVENT_ACTION, IMPRESSION_PRODUCT_ATC)
+            putString(EVENT_CATEGORY, SHOP_PAGE_BUYER_DIRECT_PURCHASE)
+            putString(EVENT_LABEL, "")
+            putString(BUSINESS_UNIT, PHYSICAL_GOODS)
+            putString(CURRENT_SITE, TOKOPEDIA_MARKETPLACE)
+            putString(PRODUCT_ID, shopHomeProductUiModel.id.orEmpty())
+            putString(SHOP_ID, shopId)
+            putString(USER_ID, userId)
+            putParcelableArrayList(
+                PROMOTIONS,
+                arrayListOf(
+                    createProductAtcButtonPromotions(
+                        widgetName,
+                        position,
+                        shopHomeProductUiModel
+                    )
+                )
+            )
+        }
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(VIEW_ITEM, eventBundle)
+    }
+
+    private fun createProductAtcButtonPromotions(
+        widgetName: String,
+        position: Int,
+        shopHomeProductUiModel: ShopHomeProductUiModel
+    ): Bundle {
+        return Bundle().apply {
+            putString(CREATIVE_NAME, widgetName)
+            putInt(CREATIVE_SLOT, position)
+            putString(ITEM_ID, shopHomeProductUiModel.id.orEmpty())
+            putString(ITEM_NAME, shopHomeProductUiModel.name.orEmpty())
         }
     }
 }
