@@ -1,5 +1,6 @@
 package com.tokopedia.shop.flashsale.presentation.creation.information
 
+import android.app.Activity
 import android.content.Context
 import android.graphics.Typeface
 import android.os.Bundle
@@ -146,6 +147,7 @@ class CampaignInformationFragment : BaseDaggerFragment() {
         super.onViewCreated(view, savedInstanceState)
         setupView()
         setFragmentToUnifyBgColor()
+        observeCurrentMonthRemainingQuota()
         observeValidationResult()
         observeCampaignCreation()
         observeCampaignUpdate()
@@ -154,11 +156,29 @@ class CampaignInformationFragment : BaseDaggerFragment() {
         observeSaveDraft()
         handlePageMode()
         handleCoachMark()
+        viewModel.getCurrentMonthRemainingQuota()
     }
 
     private fun observeValidationResult() {
         viewModel.areInputValid.observe(viewLifecycleOwner) { validationResult ->
             handleValidationResult(validationResult)
+        }
+    }
+
+    private fun observeCurrentMonthRemainingQuota() {
+        viewModel.currentMonthRemainingQuota.observe(viewLifecycleOwner) { result ->
+            binding?.loader?.gone()
+            when (result) {
+                is Success -> {
+                    binding?.groupContent?.visible()
+                    val remainingQuota = result.data
+                    viewModel.setRemainingQuota(remainingQuota)
+                }
+                is Fail -> {
+                    binding?.groupContent?.gone()
+                    binding?.root showError result.throwable
+                }
+            }
         }
     }
 
@@ -196,7 +216,6 @@ class CampaignInformationFragment : BaseDaggerFragment() {
         viewModel.saveDraft.observe(viewLifecycleOwner) { result ->
             when(result) {
                 is Success -> {
-                    binding?.btnDraft?.stopLoading()
                     handleSaveCampaignDraftSuccess(result.data)
                 }
                 is Fail -> {
@@ -227,16 +246,13 @@ class CampaignInformationFragment : BaseDaggerFragment() {
 
     private fun observeCampaignQuota() {
         viewModel.campaignQuota.observe(viewLifecycleOwner) { result ->
-            binding?.loader?.gone()
             when (result) {
                 is Success -> {
-                    binding?.groupContent?.visible()
                     val remainingQuota = result.data
                     viewModel.setRemainingQuota(remainingQuota)
                     handleRemainingQuota(remainingQuota)
                 }
                 is Fail -> {
-                    binding?.groupContent?.gone()
                     binding?.root showError result.throwable
                 }
             }
@@ -756,14 +772,15 @@ class CampaignInformationFragment : BaseDaggerFragment() {
     }
 
     private fun handleSaveCampaignDraftSuccess(result: CampaignCreationResult) {
-        if (result.isSuccess) {
-            binding?.root showToaster getString(R.string.sfs_saved_as_draft)
-        }
-
         //Add some spare time caused by Backend write operation delay
         doOnDelayFinished(REDIRECT_TO_PREVIOUS_PAGE_DELAY) {
+            binding?.btnDraft?.stopLoading()
+
             if (result.isSuccess) {
-                requireActivity().finish()
+                activity?.apply {
+                    setResult(Activity.RESULT_OK)
+                    finish()
+                }
             } else {
                 displaySaveDraftError(result)
             }
