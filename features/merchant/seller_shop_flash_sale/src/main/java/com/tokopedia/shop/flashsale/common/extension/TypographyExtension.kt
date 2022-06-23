@@ -30,6 +30,10 @@ fun Typography.setNumberedText(text: List<String>) {
     this.text = content
 }
 
+fun Typography.strikethrough() {
+    this.paintFlags = this.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
+}
+
 class NumberIndentSpan(
     private val number: Int
 ) : LeadingMarginSpan {

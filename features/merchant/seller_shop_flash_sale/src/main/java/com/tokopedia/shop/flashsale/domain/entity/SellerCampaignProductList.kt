@@ -44,7 +44,7 @@ data class SellerCampaignProductList(
         val originalPrice: Long = 0,
         val discountedPrice: Long = 0,
         val discountPercentage: Int = 0,
-        val customStock: Int = 0,
+        val customStock: Long = 0,
         val originalCustomStock: Int = 0,
         val originalStock: Int = 0,
         val campaignSoldCount: Int = 0,

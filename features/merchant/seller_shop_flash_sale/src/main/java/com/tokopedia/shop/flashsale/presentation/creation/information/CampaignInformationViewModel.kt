@@ -8,6 +8,7 @@ import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.shop.flashsale.common.constant.QuantityPickerConstant.CAMPAIGN_TEASER_MAXIMUM_UPCOMING_HOUR
 import com.tokopedia.shop.flashsale.common.constant.QuantityPickerConstant.CAMPAIGN_TEASER_MINIMUM_UPCOMING_HOUR
 import com.tokopedia.shop.flashsale.common.extension.hourOnly
+import com.tokopedia.shop.flashsale.common.util.DateManager
 import com.tokopedia.shop.flashsale.domain.entity.CampaignAction
 import com.tokopedia.shop.flashsale.domain.entity.CampaignCreationResult
 import com.tokopedia.shop.flashsale.domain.entity.CampaignUiModel
@@ -30,7 +31,8 @@ class CampaignInformationViewModel @Inject constructor(
     private val dispatchers: CoroutineDispatchers,
     private val doSellerCampaignCreationUseCase: DoSellerCampaignCreationUseCase,
     private val getSellerCampaignDetailUseCase: GetSellerCampaignDetailUseCase,
-    private val getSellerCampaignAttributeUseCase: GetSellerCampaignAttributeUseCase
+    private val getSellerCampaignAttributeUseCase: GetSellerCampaignAttributeUseCase,
+    private val dateManager: DateManager
 ) : BaseViewModel(dispatchers.main) {
 
     companion object {
@@ -38,6 +40,10 @@ class CampaignInformationViewModel @Inject constructor(
         private const val MIN_CAMPAIGN_NAME_LENGTH = 5
         private const val ONE_HOUR = 1
     }
+
+    private val _currentMonthRemainingQuota = MutableLiveData<Result<Int>>()
+    val currentMonthRemainingQuota: LiveData<Result<Int>>
+        get() = _currentMonthRemainingQuota
 
     private val _areInputValid = SingleLiveEvent<ValidationResult>()
     val areInputValid: LiveData<ValidationResult>
@@ -69,6 +75,7 @@ class CampaignInformationViewModel @Inject constructor(
     private var showTeaser = true
     private var paymentType = PaymentType.INSTANT
     private var remainingQuota = Int.ZERO
+    private var selection : Selection? = null
 
     private val forbiddenWords = listOf(
         "kejar diskon",
@@ -151,6 +158,25 @@ class CampaignInformationViewModel @Inject constructor(
         }
 
         _areInputValid.value = ValidationResult.Valid
+    }
+
+
+    fun getCurrentMonthRemainingQuota() {
+        launchCatchError(
+            dispatchers.io,
+            block = {
+                val campaignAttribute = getSellerCampaignAttributeUseCase.execute(
+                    month = dateManager.getCurrentMonth(),
+                    year = dateManager.getCurrentYear()
+                )
+
+                _currentMonthRemainingQuota.postValue(Success(campaignAttribute.remainingCampaignQuota))
+            },
+            onError = { error ->
+                _currentMonthRemainingQuota.postValue(Fail(error))
+            }
+        )
+
     }
 
     fun createCampaign(selection: Selection) {
@@ -312,6 +338,14 @@ class CampaignInformationViewModel @Inject constructor(
         this.showTeaser = showTeaser
     }
 
+    fun storeAsDefaultSelection(selection : Selection) {
+        this.selection = selection
+    }
+
+    fun getDefaultSelection(): Selection? {
+        return this.selection
+    }
+
     fun markColorAsSelected(selectedGradient: Gradient, gradients: List<Gradient>): List<Gradient> {
         return gradients.map { gradient ->
             if (gradient.first == selectedGradient.first && gradient.second == selectedGradient.second) {
@@ -355,5 +389,9 @@ class CampaignInformationViewModel @Inject constructor(
         val differenceInMillis = startDate.time - upcomingDate.time
         val differenceInHour = TimeUnit.MILLISECONDS.toHours(differenceInMillis)
         return differenceInHour.toInt()
+    }
+
+    fun isDataChanged(previousData : Selection, currentData : Selection): Boolean {
+        return previousData != currentData
     }
 }
