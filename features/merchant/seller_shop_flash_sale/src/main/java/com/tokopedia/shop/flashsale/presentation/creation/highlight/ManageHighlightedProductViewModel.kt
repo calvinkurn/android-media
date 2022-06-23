@@ -29,7 +29,7 @@ class ManageHighlightedProductViewModel @Inject constructor(
     val products: LiveData<Result<List<HighlightableProduct>>>
         get() = _products
 
-    private var selectedProductIds: MutableList<String> = mutableListOf()
+    private var selectedProductIds: MutableSet<String> = mutableSetOf()
 
     fun getProducts(
         campaignId: Long,
@@ -58,10 +58,9 @@ class ManageHighlightedProductViewModel @Inject constructor(
     private fun handleProductEnabledState(
         products: List<SellerCampaignProductList.Product>
     ): List<HighlightableProduct> {
-        val totalSelected = products.filter { it.highlightProductWording.isNotEmpty() }.size
         return products.mapIndexed { index, product ->
             val isSelected = product.highlightProductWording.isNotEmpty() || product.productId in selectedProductIds
-            val disabled = totalSelected == MAX_PRODUCT_SELECTION && !isSelected
+            val disabled = selectedProductIds.size == MAX_PRODUCT_SELECTION && !isSelected
             HighlightableProduct(
                 product.productId,
                 product.productName,
@@ -76,7 +75,7 @@ class ManageHighlightedProductViewModel @Inject constructor(
         }
     }
 
-    fun getSelectedProductIds(): List<String> {
+    fun getSelectedProductIds(): Set<String> {
         return selectedProductIds
     }
 

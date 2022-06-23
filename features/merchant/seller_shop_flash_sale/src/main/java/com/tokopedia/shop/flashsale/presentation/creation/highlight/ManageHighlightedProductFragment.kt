@@ -294,7 +294,7 @@ class ManageHighlightedProductFragment : BaseDaggerFragment() {
     private fun doFreshSearch() {
         productAdapter.submit(emptyList())
         binding?.groupNoSearchResult?.gone()
-        viewModel.getProducts(campaignId, "", PAGE_SIZE, FIRST_PAGE)
+        viewModel.getProducts(campaignId, "", PAGE_SIZE, 0)
     }
 
     private fun renderList(list: List<HighlightableProduct>, hasNextPage: Boolean) {
