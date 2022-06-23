@@ -174,11 +174,11 @@ class MultipleFragmentsViewModelTest: MultipleFragmentsViewModelTestFixture() {
                 JsonResourcesUtil.createSuccessResponse<MiniCartTokoFoodResponse>(
                     PURCHASE_SUCCESS_MINI_CART_JSON
                 )
-            onLoadCartList_shouldReturn(successResponse.cartListTokofood)
+            onLoadCartList_shouldReturn(successResponse.miniCartTokofood)
 
             val removeCartParam = RemoveCartTokoFoodParam(
-                carts = successResponse.cartListTokofood.data.getProductListFromCart().map {
-                    it.mapToRemoveItemParam(successResponse.cartListTokofood.data.shop.shopId)
+                carts = successResponse.miniCartTokofood.data.getProductListFromCart().map {
+                    it.mapToRemoveItemParam(successResponse.miniCartTokofood.data.shop.shopId)
                 }
             )
             val response = CartTokoFoodResponse()
@@ -213,11 +213,11 @@ class MultipleFragmentsViewModelTest: MultipleFragmentsViewModelTestFixture() {
                 JsonResourcesUtil.createSuccessResponse<MiniCartTokoFoodResponse>(
                     PURCHASE_SUCCESS_MINI_CART_JSON
                 )
-            onLoadCartList_shouldReturn(successResponse.cartListTokofood)
+            onLoadCartList_shouldReturn(successResponse.miniCartTokofood)
 
             val removeCartParam = RemoveCartTokoFoodParam(
-                carts = successResponse.cartListTokofood.data.getProductListFromCart().map {
-                    it.mapToRemoveItemParam(successResponse.cartListTokofood.data.shop.shopId)
+                carts = successResponse.miniCartTokofood.data.getProductListFromCart().map {
+                    it.mapToRemoveItemParam(successResponse.miniCartTokofood.data.shop.shopId)
                 }
             )
             val updateParam = UpdateParam()
@@ -247,11 +247,11 @@ class MultipleFragmentsViewModelTest: MultipleFragmentsViewModelTestFixture() {
                 JsonResourcesUtil.createSuccessResponse<MiniCartTokoFoodResponse>(
                     PURCHASE_SUCCESS_MINI_CART_JSON
                 )
-            onLoadCartList_shouldReturn(successResponse.cartListTokofood)
+            onLoadCartList_shouldReturn(successResponse.miniCartTokofood)
 
             val removeCartParam = RemoveCartTokoFoodParam(
-                carts = successResponse.cartListTokofood.data.unavailableSection.products.map {
-                    it.mapToRemoveItemParam(successResponse.cartListTokofood.data.shop.shopId)
+                carts = successResponse.miniCartTokofood.data.unavailableSection.products.map {
+                    it.mapToRemoveItemParam(successResponse.miniCartTokofood.data.shop.shopId)
                 }
             )
             onRemoveCart_shouldReturn(removeCartParam, getSuccessUpdateCartResponse())
@@ -288,11 +288,11 @@ class MultipleFragmentsViewModelTest: MultipleFragmentsViewModelTestFixture() {
                 JsonResourcesUtil.createSuccessResponse<MiniCartTokoFoodResponse>(
                     PURCHASE_SUCCESS_MINI_CART_JSON
                 )
-            onLoadCartList_shouldReturn(successResponse.cartListTokofood)
+            onLoadCartList_shouldReturn(successResponse.miniCartTokofood)
 
             val removeCartParam = RemoveCartTokoFoodParam(
-                carts = successResponse.cartListTokofood.data.unavailableSection.products.map {
-                    it.mapToRemoveItemParam(successResponse.cartListTokofood.data.shop.shopId)
+                carts = successResponse.miniCartTokofood.data.unavailableSection.products.map {
+                    it.mapToRemoveItemParam(successResponse.miniCartTokofood.data.shop.shopId)
                 }
             )
             onRemoveCart_shouldThrow(removeCartParam, MessageErrorException(""))
@@ -318,7 +318,7 @@ class MultipleFragmentsViewModelTest: MultipleFragmentsViewModelTestFixture() {
                 JsonResourcesUtil.createSuccessResponse<MiniCartTokoFoodResponse>(
                     PURCHASE_SUCCESS_MINI_CART_JSON
                 )
-            onLoadCartList_shouldReturn(successResponse.cartListTokofood)
+            onLoadCartList_shouldReturn(successResponse.miniCartTokofood)
 
             val updateParam = UpdateParam()
             onUpdateCart_shouldReturn(updateParam, getSuccessUpdateCartResponse())
@@ -344,7 +344,7 @@ class MultipleFragmentsViewModelTest: MultipleFragmentsViewModelTestFixture() {
                 JsonResourcesUtil.createSuccessResponse<MiniCartTokoFoodResponse>(
                     PURCHASE_SUCCESS_MINI_CART_JSON
                 )
-            onLoadCartList_shouldReturn(successResponse.cartListTokofood)
+            onLoadCartList_shouldReturn(successResponse.miniCartTokofood)
 
             val updateParam = UpdateParam()
             onUpdateCart_shouldReturn(updateParam, getSuccessUpdateCartResponse())
@@ -373,7 +373,7 @@ class MultipleFragmentsViewModelTest: MultipleFragmentsViewModelTestFixture() {
                 JsonResourcesUtil.createSuccessResponse<MiniCartTokoFoodResponse>(
                     PURCHASE_SUCCESS_MINI_CART_JSON
                 )
-            onLoadCartList_shouldReturn(successResponse.cartListTokofood)
+            onLoadCartList_shouldReturn(successResponse.miniCartTokofood)
 
             val updateParam = UpdateParam()
             onUpdateCart_shouldThrow(updateParam, MessageErrorException(""))
@@ -399,7 +399,7 @@ class MultipleFragmentsViewModelTest: MultipleFragmentsViewModelTestFixture() {
                 JsonResourcesUtil.createSuccessResponse<MiniCartTokoFoodResponse>(
                     PURCHASE_SUCCESS_MINI_CART_JSON
                 )
-            onLoadCartList_shouldReturn(successResponse.cartListTokofood)
+            onLoadCartList_shouldReturn(successResponse.miniCartTokofood)
 
             val updateParam = UpdateParam()
             onUpdateCart_shouldReturn(updateParam, getSuccessUpdateCartResponse())
@@ -425,7 +425,7 @@ class MultipleFragmentsViewModelTest: MultipleFragmentsViewModelTestFixture() {
                 JsonResourcesUtil.createSuccessResponse<MiniCartTokoFoodResponse>(
                     PURCHASE_SUCCESS_MINI_CART_JSON
                 )
-            onLoadCartList_shouldReturn(successResponse.cartListTokofood)
+            onLoadCartList_shouldReturn(successResponse.miniCartTokofood)
 
             val updateParam = UpdateParam()
             onUpdateCart_shouldReturn(updateParam, getSuccessUpdateCartResponse())
@@ -454,7 +454,7 @@ class MultipleFragmentsViewModelTest: MultipleFragmentsViewModelTestFixture() {
                 JsonResourcesUtil.createSuccessResponse<MiniCartTokoFoodResponse>(
                     PURCHASE_SUCCESS_MINI_CART_JSON
                 )
-            onLoadCartList_shouldReturn(successResponse.cartListTokofood)
+            onLoadCartList_shouldReturn(successResponse.miniCartTokofood)
 
             val updateParam = UpdateParam()
             onUpdateCart_shouldThrow(updateParam, MessageErrorException(""))
@@ -480,7 +480,7 @@ class MultipleFragmentsViewModelTest: MultipleFragmentsViewModelTestFixture() {
                 JsonResourcesUtil.createSuccessResponse<MiniCartTokoFoodResponse>(
                     PURCHASE_SUCCESS_MINI_CART_JSON
                 )
-            onLoadCartList_shouldReturn(successResponse.cartListTokofood)
+            onLoadCartList_shouldReturn(successResponse.miniCartTokofood)
 
             val updateParam = UpdateParam()
             onUpdateCart_shouldReturn(updateParam, getSuccessUpdateCartResponse())
@@ -506,7 +506,7 @@ class MultipleFragmentsViewModelTest: MultipleFragmentsViewModelTestFixture() {
                 JsonResourcesUtil.createSuccessResponse<MiniCartTokoFoodResponse>(
                     PURCHASE_SUCCESS_MINI_CART_JSON
                 )
-            onLoadCartList_shouldReturn(successResponse.cartListTokofood)
+            onLoadCartList_shouldReturn(successResponse.miniCartTokofood)
 
             val updateParam = UpdateParam()
             onUpdateCart_shouldThrow(updateParam, MessageErrorException(""))
@@ -532,7 +532,7 @@ class MultipleFragmentsViewModelTest: MultipleFragmentsViewModelTestFixture() {
                 JsonResourcesUtil.createSuccessResponse<MiniCartTokoFoodResponse>(
                     PURCHASE_SUCCESS_MINI_CART_JSON
                 )
-            onLoadCartList_shouldReturn(successResponse.cartListTokofood)
+            onLoadCartList_shouldReturn(successResponse.miniCartTokofood)
 
             val updateParam = UpdateParam()
             onAddToCart_shouldReturn(updateParam, getSuccessUpdateCartResponse())
@@ -559,7 +559,7 @@ class MultipleFragmentsViewModelTest: MultipleFragmentsViewModelTestFixture() {
                 JsonResourcesUtil.createSuccessResponse<MiniCartTokoFoodResponse>(
                     PURCHASE_SUCCESS_MINI_CART_JSON
                 )
-            onLoadCartList_shouldReturn(successResponse.cartListTokofood)
+            onLoadCartList_shouldReturn(successResponse.miniCartTokofood)
 
             val updateParam = UpdateParam()
             onAddToCart_shouldThrow(updateParam, MessageErrorException(""))

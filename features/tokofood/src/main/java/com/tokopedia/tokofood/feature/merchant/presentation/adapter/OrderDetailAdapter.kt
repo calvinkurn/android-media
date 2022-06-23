@@ -11,7 +11,7 @@ import com.tokopedia.tokofood.feature.merchant.presentation.viewholder.OrderDeta
 class OrderDetailAdapter(private val clickListener: OrderDetailViewHolder.OnOrderDetailItemClickListener)
     : RecyclerView.Adapter<OrderDetailViewHolder>() {
 
-    private var customOrderDetails: MutableList<CustomOrderDetail> = mutableListOf()
+    private val customOrderDetails: MutableList<CustomOrderDetail> = mutableListOf()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): OrderDetailViewHolder {
         val binding = TokofoodItemOrderInfoLayoutBinding.inflate(LayoutInflater.from(parent.context), parent, false)
@@ -28,7 +28,9 @@ class OrderDetailAdapter(private val clickListener: OrderDetailViewHolder.OnOrde
 
     @SuppressLint("NotifyDataSetChanged")
     fun setCustomOrderDetails(customOrderDetails: List<CustomOrderDetail>) {
-        this.customOrderDetails = customOrderDetails.toMutableList()
+        if (customOrderDetails.isEmpty()) return
+        this.customOrderDetails.clear()
+        this.customOrderDetails.addAll(customOrderDetails)
         this.notifyDataSetChanged()
     }
 

@@ -8,12 +8,7 @@ import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.tokofood.common.address.TokoFoodChosenAddressRequestHelper
 import com.tokopedia.tokofood.common.domain.additionalattributes.CartAdditionalAttributesTokoFood
 import com.tokopedia.tokofood.common.domain.param.CheckoutTokoFoodParam
-import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFoodAvailabilitySection
-import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFoodData
-import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFoodProduct
 import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFood
-import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFoodShop
-import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFoodSummaryDetail
 import com.tokopedia.tokofood.common.domain.response.MiniCartTokoFoodResponse
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
@@ -39,7 +34,7 @@ class LoadCartTokoFoodUseCase @Inject constructor(
     }
 
     override fun graphqlQuery(): String = """
-        query LoadCartTokofood($$PARAMS_KEY: cartTokofoodParams!) {
+        query MiniCartTokofood($$PARAMS_KEY: cartTokofoodParams!) {
           mini_cart_tokofood(params: $$PARAMS_KEY) {
             message
             status
@@ -117,10 +112,10 @@ class LoadCartTokoFoodUseCase @Inject constructor(
         val param = generateParams(additionalAttributes.generateString(), params)
         val response =
             repository.request<Map<String, Any>, MiniCartTokoFoodResponse>(graphqlQuery(), param)
-        if (response.cartListTokofood.isSuccess()) {
-            emit(response.cartListTokofood)
+        if (response.miniCartTokofood.isSuccess()) {
+            emit(response.miniCartTokofood)
         } else {
-            throw MessageErrorException(response.cartListTokofood.getMessageIfError())
+            throw MessageErrorException(response.miniCartTokofood.getMessageIfError())
         }
     }
 

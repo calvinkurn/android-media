@@ -1,33 +1,38 @@
 package com.tokopedia.tokofood.feature.merchant.presentation.viewholder
 
 import android.content.Context
-import android.view.View
-import android.widget.CheckBox
 import androidx.core.content.ContextCompat
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.isVisible
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.tokofood.R
 import com.tokopedia.tokofood.databinding.TokofoodItemAddOnLayoutBinding
-import com.tokopedia.tokofood.feature.merchant.presentation.enums.SelectionControlType
-import com.tokopedia.tokofood.feature.merchant.presentation.enums.SelectionControlType.MULTIPLE_SELECTION
-import com.tokopedia.tokofood.feature.merchant.presentation.enums.SelectionControlType.SINGLE_SELECTION
+import com.tokopedia.tokofood.feature.merchant.presentation.adapter.ProductOptionAdapter
+import com.tokopedia.tokofood.feature.merchant.presentation.decoration.ProductOptionDividerDecoration
 import com.tokopedia.tokofood.feature.merchant.presentation.model.AddOnUiModel
 import com.tokopedia.tokofood.feature.merchant.presentation.model.OptionUiModel
-import com.tokopedia.unifycomponents.list.ListItemUnify
-import com.tokopedia.unifycomponents.list.ListUnify
-import com.tokopedia.unifycomponents.selectioncontrol.RadioButtonUnify
 
 class ProductAddOnViewHolder(
         private val binding: TokofoodItemAddOnLayoutBinding,
         private val selectListener: OnAddOnSelectListener
-) : RecyclerView.ViewHolder(binding.root) {
+) : RecyclerView.ViewHolder(binding.root), ProductOptionViewHolder.Listener {
 
     interface OnAddOnSelectListener {
         fun onAddOnSelected(isSelected: Boolean, addOnPrice: Double, addOnPositions: Pair<Int, Int>)
     }
 
     private var context: Context? = null
-    private var addOnItems = ArrayList<ListItemUnify>()
+    private var optionItems: List<OptionUiModel> = listOf()
+    private var optionAdapter: ProductOptionAdapter? = null
+
+    private val linearLayoutManager by lazy {
+        LinearLayoutManager(itemView.context, LinearLayoutManager.VERTICAL, false)
+    }
+
+    private val itemDecorator by lazy {
+        ProductOptionDividerDecoration(itemView.context)
+    }
 
     init {
         context = binding.root.context
@@ -79,162 +84,53 @@ class ProductAddOnViewHolder(
         }
 
         // setup add on items
-        this.addOnItems = ArrayList(addOnUiModel.addOnItems)
-        binding.luAddOnList.setData(addOnItems)
-        binding.luAddOnList.run {
-            setData(addOnItems)
-            onLoadFinish {
-                addOnItems.forEachIndexed { index, listItemUnify ->
-                    val isSelected = addOnUiModel.options[index].isSelected
-                    val isOutOfStock = addOnUiModel.options[index].isOutOfStock
-                    listItemUnify.applyLayout(isSelected, isOutOfStock)
-
-                    this.getChildAt(index)?.renderAlpha(isOutOfStock)
-
-                    listItemUnify.listRightRadiobtn?.applyFunctionality(
-                        isOutOfStock,
-                        addOnUiModel,
-                        index,
-                        dataSetPosition,
-                        this
-                    )
-                    listItemUnify.listRightCheckbox?.applyFunctionality(
-                        isOutOfStock,
-                        addOnUiModel,
-                        index,
-                        dataSetPosition,
-                        this
-                    )
-                }
-                // list item click listener
-                setOnItemClickListener(addOnUiModel)
+        optionItems = addOnUiModel.filteredOptions
+        optionAdapter = ProductOptionAdapter(this@ProductAddOnViewHolder).apply {
+            setData(optionItems.onEach {
+                it.dataSetPosition = dataSetPosition
+                it.maxSelected = addOnUiModel.maxQty
+            })
+        }
+        binding.rvAddOnList.run {
+            layoutManager = linearLayoutManager
+            optionAdapter?.let { optionAdapter ->
+                adapter = optionAdapter
             }
+            addItemDecoration(itemDecorator)
         }
     }
 
-    private fun ListItemUnify.applyLayout(isSelected: Boolean, isOutOfStock: Boolean) {
-        listRightRadiobtn?.isChecked = isSelected
-        listRightCheckbox?.isChecked = isSelected
-        setOutOfStockLayout(isOutOfStock)
-    }
-
-    // Set red description color if outOfStock
-    private fun ListItemUnify.setOutOfStockLayout(isOutOfStock: Boolean) {
-        this@ProductAddOnViewHolder.context?.let { viewHolderContext ->
-            val descriptionTextColorId =
-                if (isOutOfStock) {
-                    com.tokopedia.unifyprinciples.R.color.Unify_RN500
-                } else {
-                    com.tokopedia.unifyprinciples.R.color.Unify_NN600
-                }
-            val descriptionColor = ContextCompat.getColor(viewHolderContext, descriptionTextColorId)
-            listDescription?.setTextColor(descriptionColor)
-        }
-    }
-
-    private fun View?.renderAlpha(isOutOfStock: Boolean) {
-        this?.alpha =
-            if (isOutOfStock) {
-                DISABLED_ALPHA
-            } else {
-                ENABLED_ALPHA
-            }
-    }
-
-    private fun ListUnify.setSelected(items: List<ListItemUnify>,
-                                      optionModels: List<OptionUiModel>,
-                                      position: Int,
-                                      type: SelectionControlType,
-                                      maxQty: Int,
-                                      onChecked: (selectedItem: ListItemUnify) -> Any) = run {
-        val selectedItem = this.getItemAtPosition(position) as ListItemUnify
-        when (type) {
-            SINGLE_SELECTION -> {
-                // deselect previously selected item
-                items.filter { it.listRightRadiobtn?.isChecked ?: false }
-                        .filterNot { it == selectedItem }
-                        .onEach { it.listRightRadiobtn?.isChecked = false }
-                selectedItem.listRightRadiobtn?.isChecked = true
-            }
-            MULTIPLE_SELECTION -> {
-                val selectedItemCount = items.filter { it.listRightCheckbox?.isChecked == true }.size
-                if (selectedItemCount == maxQty) {
-                    items.filter { it.listRightCheckbox?.isChecked == false }
-                            .filterNot { it == selectedItem || it.listRightCheckbox?.isChecked == true }
-                            .forEach { it.listRightCheckbox?.isEnabled = false }
-                } else {
-                    items.forEachIndexed { index, listItemUnify ->
-                        val isOutOfStock = optionModels.getOrNull(index)?.isOutOfStock == true
-                        listItemUnify.listRightCheckbox?.isEnabled = !isOutOfStock
-                    }
-                }
+    override fun onCheckboxClicked(
+        isSelected: Boolean,
+        price: Double,
+        index: Int,
+        dataSetPosition: Int
+    ) {
+        selectListener.onAddOnSelected(isSelected, price, Pair(dataSetPosition, index))
+        optionItems.onEachIndexed { optionIndex, optionUiModel ->
+            if (optionIndex == index) {
+                optionUiModel.isSelected = isSelected
             }
         }
-        onChecked(selectedItem)
+        optionAdapter?.setData(optionItems)
     }
 
-    private fun ListUnify.setOnItemClickListener(addOnUiModel: AddOnUiModel) {
-        setOnItemClickListener { _, _, position, _ ->
-            val isOutOfStock = addOnUiModel.options[position].isOutOfStock
-            if (!isOutOfStock) {
-                val selectedItem = this.getItemAtPosition(position) as ListItemUnify
-                when (addOnUiModel.options[position].selectionControlType) {
-                    SINGLE_SELECTION -> {
-                        selectedItem.listRightRadiobtn?.callOnClick()
-                    }
-                    MULTIPLE_SELECTION -> {
-                        val isChecked = selectedItem.listRightCheckbox?.isChecked ?: false
-                        selectedItem.listRightCheckbox?.isChecked = !isChecked
-                        selectedItem.listRightCheckbox?.callOnClick()
-                    }
-                }
-            }
+    override fun onRadioButtonClicked(
+        isSelected: Boolean,
+        price: Double,
+        index: Int,
+        dataSetPosition: Int
+    ) {
+        val previousSelectedIndex = optionItems.indexOfFirst { it.isSelected }
+        selectListener.onAddOnSelected(isSelected, price, Pair(dataSetPosition, index))
+        optionItems.onEachIndexed { optionIndex, optionUiModel ->
+            optionUiModel.isSelected = optionIndex == index
         }
+        optionAdapter?.updateData(previousSelectedIndex, optionItems)
     }
 
-    private fun RadioButtonUnify.applyFunctionality(isOutOfStock: Boolean,
-                                                    addOnUiModel: AddOnUiModel,
-                                                    index: Int,
-                                                    dataSetPosition: Int,
-                                                    listUnify: ListUnify) {
-
-        isEnabled = !isOutOfStock
-        isClickable = !isOutOfStock
-        // radio button click listener
-        setOnClickListener {
-            if (!isOutOfStock) {
-                val type = addOnUiModel.options[index].selectionControlType
-                listUnify.setSelected(addOnItems, addOnUiModel.options, index, type, addOnUiModel.maxQty) {
-                    val isChecked = it.listRightRadiobtn?.isChecked ?: false
-                    val addOnPrice = addOnUiModel.options[index].price
-                    selectListener.onAddOnSelected(isChecked, addOnPrice, Pair(dataSetPosition, index))
-                }
-            }
-        }
+    override fun canBeSelected(): Boolean {
+        return optionItems.count { it.isSelected } < optionItems.firstOrNull()?.maxSelected.orZero()
     }
 
-    private fun CheckBox.applyFunctionality(isOutOfStock: Boolean,
-                                            addOnUiModel: AddOnUiModel,
-                                            index: Int,
-                                            dataSetPosition: Int,
-                                            listUnify: ListUnify) {
-        isEnabled = !isOutOfStock
-        isClickable = !isOutOfStock
-        // check box button click listener
-        setOnClickListener {
-            if (!isOutOfStock) {
-                val type = addOnUiModel.options[index].selectionControlType
-                listUnify.setSelected(addOnItems, addOnUiModel.options, index, type, addOnUiModel.maxQty) {
-                    val isChecked = it.listRightCheckbox?.isChecked ?: false
-                    val addOnPrice = addOnUiModel.options[index].price
-                    selectListener.onAddOnSelected(isChecked, addOnPrice, Pair(dataSetPosition, index))
-                }
-            }
-        }
-    }
-
-    companion object {
-        private const val ENABLED_ALPHA = 1.0f
-        private const val DISABLED_ALPHA = 0.5f
-    }
 }

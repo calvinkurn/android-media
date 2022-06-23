@@ -34,7 +34,7 @@ class CheckoutTokoFoodUseCase @Inject constructor(
     }
 
     override fun graphqlQuery(): String = """
-        query LoadCartTokofood($$PARAMS_KEY: cartTokofoodParams!) {
+        query CartListTokofood($$PARAMS_KEY: cartTokofoodParams!) {
           cart_list_tokofood(params: $$PARAMS_KEY) {
             message
             status
@@ -215,10 +215,6 @@ class CheckoutTokoFoodUseCase @Inject constructor(
                   type
                 }  
               }
-              checkout_additional_data {
-                data_type
-                checkout_business_id
-              }
               summary_detail {
                 hide_summary
                 total_items
@@ -234,6 +230,10 @@ class CheckoutTokoFoodUseCase @Inject constructor(
                     }
                   }
                 }
+              }
+              checkout_additional_data {
+                data_type
+                checkout_business_id
               }
             }
           }

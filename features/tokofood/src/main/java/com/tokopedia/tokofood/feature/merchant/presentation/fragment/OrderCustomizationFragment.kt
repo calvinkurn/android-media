@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseMultiFragment
@@ -15,8 +16,12 @@ import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.tokofood.common.domain.response.CartTokoFoodData
+import com.tokopedia.tokofood.common.presentation.UiEvent
 import com.tokopedia.tokofood.common.presentation.listener.HasViewModel
+import com.tokopedia.tokofood.common.presentation.uimodel.UpdateParam
 import com.tokopedia.tokofood.common.presentation.viewmodel.MultipleFragmentsViewModel
+import com.tokopedia.tokofood.common.util.TokofoodExt.getSuccessUpdateResultPair
 import com.tokopedia.tokofood.databinding.FragmentOrderCustomizationLayoutBinding
 import com.tokopedia.tokofood.feature.merchant.analytics.MerchantPageAnalytics
 import com.tokopedia.tokofood.feature.merchant.di.DaggerMerchantPageComponent
@@ -32,13 +37,14 @@ import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.flow.collect
 import javax.inject.Inject
 
 @FlowPreview
 @ExperimentalCoroutinesApi
 class OrderCustomizationFragment : BaseMultiFragment(),
-        ProductAddOnViewHolder.OnAddOnSelectListener,
-        OrderNoteInputViewHolder.OnNoteTextChangeListener {
+    ProductAddOnViewHolder.OnAddOnSelectListener,
+    OrderNoteInputViewHolder.OnNoteTextChangeListener {
 
     companion object {
 
@@ -50,11 +56,14 @@ class OrderCustomizationFragment : BaseMultiFragment(),
         private const val SOURCE = "merchant_page"
 
         @JvmStatic
-        fun createInstance(productUiModel: ProductUiModel,
-                           cartId: String = "",
-                           merchantId: String = "",
-                           cacheManagerId: String? = null
+        fun createInstance(
+            productUiModel: ProductUiModel,
+            cartId: String = "",
+            merchantId: String = "",
+            cacheManagerId: String? = null,
+            orderCustomizationListener: OrderCustomizationListener? = null
         ) = OrderCustomizationFragment().apply {
+            this.orderCustomizationListener = orderCustomizationListener
             this.arguments = Bundle().apply {
                 putParcelable(BUNDLE_KEY_PRODUCT_UI_MODEL, productUiModel)
                 putString(BUNDLE_KEY_CART_ID, cartId)
@@ -88,11 +97,15 @@ class OrderCustomizationFragment : BaseMultiFragment(),
     private val activityViewModel: MultipleFragmentsViewModel?
         get() = parentActivity?.viewModel()
 
+    private var orderCustomizationListener: OrderCustomizationListener? = null
+
     private var binding: FragmentOrderCustomizationLayoutBinding? = null
 
     private var customListAdapter: CustomListAdapter? = null
 
     private var variantWrapperUiModel: VariantWrapperUiModel? = null
+
+    private var productUiModel: ProductUiModel? = null
 
     override fun getFragmentToolbar(): Toolbar? {
         return binding?.toolbar
@@ -115,14 +128,18 @@ class OrderCustomizationFragment : BaseMultiFragment(),
     private fun initInjector() {
         activity?.let {
             DaggerMerchantPageComponent
-                    .builder()
-                    .baseAppComponent((it.applicationContext as BaseMainApplication).baseAppComponent)
-                    .build()
-                    .inject(this)
+                .builder()
+                .baseAppComponent((it.applicationContext as BaseMainApplication).baseAppComponent)
+                .build()
+                .inject(this)
         }
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
         val viewBinding = FragmentOrderCustomizationLayoutBinding.inflate(inflater)
         binding = viewBinding
         return viewBinding.root
@@ -135,26 +152,27 @@ class OrderCustomizationFragment : BaseMultiFragment(),
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setVariantWrapperFromCacheManager()
+        setDataFromCacheManagerOrArguments()
+        observeUpdateCart()
         (activity as AppCompatActivity).setSupportActionBar(binding?.toolbar)
 
-        val productUiModel = arguments?.getParcelable<ProductUiModel>(BUNDLE_KEY_PRODUCT_UI_MODEL)
         val cartId = arguments?.getString(BUNDLE_KEY_CART_ID) ?: ""
         val merchantId = arguments?.getString(BUNDLE_KEY_MERCHANT_ID) ?: ""
 
         context?.run {
-            if (cartId.isNotBlank()) binding?.atcButton?.text = getString(com.tokopedia.tokofood.R.string.action_update)
+            if (cartId.isNotBlank()) binding?.atcButton?.text =
+                getString(com.tokopedia.tokofood.R.string.action_update)
         }
 
-        productUiModel?.run {
+        productUiModel?.apply {
 
-            binding?.tpgProductName?.text = productUiModel.name
+            binding?.tpgProductName?.text = name
             binding?.qeuProductQtyEditor?.setValue(orderQty)
 
-            val customListItems = viewModel.getCustomListItems(cartId, productUiModel)
+            val customListItems = viewModel.getCustomListItems(cartId, this)
             customListItems.run { setupCustomList(this) }
 
-            viewModel.baseProductPrice = productUiModel.price
+            viewModel.baseProductPrice = price
 
             // no selections
             if (!isAtc) {
@@ -166,21 +184,23 @@ class OrderCustomizationFragment : BaseMultiFragment(),
                 val addOnUiModels = customListAdapter?.getCustomListItems()?.map { it.addOnUiModel }
                 val quantity = binding?.qeuProductQtyEditor?.getValue() ?: Int.ONE
                 val subTotalPrice = viewModel.calculateSubtotalPrice(
-                        baseProductPrice = viewModel.baseProductPrice,
-                        quantity = quantity,
-                        addOnUiModels = addOnUiModels?: listOf()
+                    baseProductPrice = viewModel.baseProductPrice,
+                    quantity = quantity,
+                    addOnUiModels = addOnUiModels ?: listOf()
                 )
-                binding?.subtotalProductPriceLabel?.text = viewModel.formatSubtotalPrice(subTotalPrice)
+                binding?.subtotalProductPriceLabel?.text =
+                    viewModel.formatSubtotalPrice(subTotalPrice)
             }
             binding?.qeuProductQtyEditor?.setSubstractListener {
                 val addOnUiModels = customListAdapter?.getCustomListItems()?.map { it.addOnUiModel }
                 val quantity = binding?.qeuProductQtyEditor?.getValue() ?: Int.ONE
                 val subTotalPrice = viewModel.calculateSubtotalPrice(
-                        baseProductPrice = viewModel.baseProductPrice,
-                        quantity = quantity,
-                        addOnUiModels = addOnUiModels?: listOf()
+                    baseProductPrice = viewModel.baseProductPrice,
+                    quantity = quantity,
+                    addOnUiModels = addOnUiModels ?: listOf()
                 )
-                binding?.subtotalProductPriceLabel?.text = viewModel.formatSubtotalPrice(subTotalPrice)
+                binding?.subtotalProductPriceLabel?.text =
+                    viewModel.formatSubtotalPrice(subTotalPrice)
             }
 
             // setup atc button click listener
@@ -199,15 +219,17 @@ class OrderCustomizationFragment : BaseMultiFragment(),
                         it.addOnUiModel ?: AddOnUiModel()
                     }
                     val updateParam = viewModel.generateRequestParam(
-                            shopId = merchantId,
-                            productUiModel = productUiModel,
-                            cartId = cartId,
-                            orderNote = this.last().orderNote,
-                            orderQty = binding?.qeuProductQtyEditor?.getValue() ?: Int.ONE,
-                            addOnUiModels = addOnUiModels
+                        shopId = merchantId,
+                        productUiModel = this@apply,
+                        cartId = cartId,
+                        orderNote = this.lastOrNull()?.orderNote.orEmpty(),
+                        orderQty = binding?.qeuProductQtyEditor?.getValue() ?: Int.ONE,
+                        addOnUiModels = addOnUiModels
                     )
-                    if (viewModel.isEditingCustomOrder(cartId)) activityViewModel?.updateCart(updateParam = updateParam, source = SOURCE)
-                    else {
+                    binding?.atcButton?.isLoading = true
+                    if (viewModel.isEditingCustomOrder(cartId)) {
+                        activityViewModel?.updateCart(updateParam = updateParam, source = SOURCE)
+                    } else {
                         activityViewModel?.addToCart(updateParam = updateParam, source = SOURCE)
                         //hit trackers
                         merchantPageAnalytics.clickOnOrderVariantPage(
@@ -217,7 +239,24 @@ class OrderCustomizationFragment : BaseMultiFragment(),
                             variantWrapperUiModel?.position.orZero()
                         )
                     }
-                    parentFragmentManager.popBackStack()
+                }
+            }
+        }
+    }
+
+    private fun observeUpdateCart() {
+        viewLifecycleOwner.lifecycleScope.launchWhenStarted {
+            activityViewModel?.cartDataValidationFlow?.collect {
+                binding?.atcButton?.isLoading = false
+                when (it.state) {
+                    UiEvent.EVENT_SUCCESS_ADD_TO_CART -> {
+                        orderCustomizationListener?.onSuccessAddCart(it.data?.getSuccessUpdateResultPair())
+                        parentFragmentManager.popBackStack()
+                    }
+                    UiEvent.EVENT_SUCCESS_UPDATE_CART -> {
+                        orderCustomizationListener?.onSuccessUpdateCart(it.data?.getSuccessUpdateResultPair())
+                        parentFragmentManager.popBackStack()
+                    }
                 }
             }
         }
@@ -228,15 +267,15 @@ class OrderCustomizationFragment : BaseMultiFragment(),
         binding?.rvCustomList?.let {
             it.adapter = customListAdapter
             it.layoutManager = LinearLayoutManager(
-                    requireContext(),
-                    LinearLayoutManager.VERTICAL,
-                    false
+                requireContext(),
+                LinearLayoutManager.VERTICAL,
+                false
             )
         }
         customListAdapter?.setCustomListItems(customListItems = customListItems)
     }
 
-    private fun setVariantWrapperFromCacheManager() {
+    private fun setDataFromCacheManagerOrArguments() {
         val cacheManager = context?.let {
             SaveInstanceCacheManager(
                 it,
@@ -245,34 +284,47 @@ class OrderCustomizationFragment : BaseMultiFragment(),
         }
         val variantWrapperUiModel = cacheManager?.get(
             BUNDLE_KEY_VARIANT_TRACKER,
-            VariantWrapperUiModel::class.java) ?: VariantWrapperUiModel()
+            VariantWrapperUiModel::class.java
+        ) ?: VariantWrapperUiModel()
 
         this.variantWrapperUiModel = variantWrapperUiModel
+
+        productUiModel = arguments?.getParcelable<ProductUiModel>(BUNDLE_KEY_PRODUCT_UI_MODEL) ?: ProductUiModel()
     }
 
     private fun showErrorMessage() {
         view?.let { view ->
             Toaster.build(
-                    view = view,
-                    text = getString(com.tokopedia.tokofood.R.string.text_error_product_custom_selection),
-                    duration = Toaster.LENGTH_SHORT,
-                    type = Toaster.TYPE_NORMAL).show()
+                view = view,
+                text = getString(com.tokopedia.tokofood.R.string.text_error_product_custom_selection),
+                duration = Toaster.LENGTH_SHORT,
+                type = Toaster.TYPE_NORMAL
+            ).show()
         }
     }
 
-    override fun onAddOnSelected(isSelected: Boolean, addOnPrice: Double, addOnPositions: Pair<Int, Int>) {
+    override fun onAddOnSelected(
+        isSelected: Boolean,
+        addOnPrice: Double,
+        addOnPositions: Pair<Int, Int>
+    ) {
         customListAdapter?.updateAddOnSelection(isSelected, addOnPositions)
         val addOnUiModels = customListAdapter?.getCustomListItems()?.map { it.addOnUiModel }
         val quantity = binding?.qeuProductQtyEditor?.getValue() ?: Int.ONE
         val subTotalPrice = viewModel.calculateSubtotalPrice(
-                baseProductPrice = viewModel.baseProductPrice,
-                quantity = quantity,
-                addOnUiModels = addOnUiModels?: listOf()
+            baseProductPrice = viewModel.baseProductPrice,
+            quantity = quantity,
+            addOnUiModels = addOnUiModels ?: listOf()
         )
         binding?.subtotalProductPriceLabel?.text = viewModel.formatSubtotalPrice(subTotalPrice)
     }
 
     override fun onNoteTextChanged(orderNote: String, dataSetPosition: Int) {
         customListAdapter?.updateOrderNote(orderNote, dataSetPosition)
+    }
+
+    interface OrderCustomizationListener {
+        fun onSuccessAddCart(addCartData: Pair<UpdateParam, CartTokoFoodData>?)
+        fun onSuccessUpdateCart(updateCartData: Pair<UpdateParam, CartTokoFoodData>?)
     }
 }

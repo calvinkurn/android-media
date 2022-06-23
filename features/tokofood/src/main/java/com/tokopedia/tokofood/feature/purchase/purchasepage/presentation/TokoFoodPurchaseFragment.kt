@@ -358,6 +358,7 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
                     }
                 }
                 PurchaseUiEvent.EVENT_EMPTY_PRODUCTS -> {
+                    parentFragmentManager.popBackStack()
                     val emptyProductShopId = (it.data as? String).orEmpty()
                     if (emptyProductShopId.isBlank()) {
                         navigateToHomePage()
@@ -497,9 +498,6 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
                         viewBinding?.recyclerViewPurchase?.post {
                             viewModel.refreshPartialCartInformation()
                         }
-                    }
-                    UiEvent.EVENT_SUCCESS_LOAD_CART -> {
-
                     }
                     UiEvent.EVENT_FAILED_DELETE_PRODUCT -> {
                         it.throwable?.let { throwable ->
@@ -674,9 +672,7 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
     }
 
     private fun navigateToHomePage() {
-        TokofoodRouteManager.mapUriToFragment(ApplinkConstInternalTokoFood.HOME.toUri())?.let { homeFragment ->
-            navigateToNewFragment(homeFragment)
-        }
+        TokofoodRouteManager.routePrioritizeInternal(context, ApplinkConstInternalTokoFood.HOME)
     }
 
     private fun navigateToMerchantPage(merchantId: String) {
@@ -684,9 +680,7 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
             .buildUpon()
             .appendQueryParameter(DeeplinkMapperTokoFood.PARAM_MERCHANT_ID, merchantId)
             .build()
-        TokofoodRouteManager.mapUriToFragment(merchantPageUri)?.let { merchantPageFragment ->
-            navigateToNewFragment(merchantPageFragment)
-        }
+        TokofoodRouteManager.routePrioritizeInternal(context, merchantPageUri.toString())
     }
 
     private fun scrollToIndex(index: Int) {
@@ -890,7 +884,7 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
                 }
                 CheckoutErrorMetadataDetail.REDIRECT_ACTION -> {
                     context?.let {
-                        RouteManager.route(it, errorDetail.link)
+                        TokofoodRouteManager.routePrioritizeInternal(it, errorDetail.link)
                     }
                 }
                 else -> {

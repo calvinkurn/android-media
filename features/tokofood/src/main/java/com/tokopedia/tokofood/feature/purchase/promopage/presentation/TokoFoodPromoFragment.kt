@@ -31,6 +31,7 @@ import com.tokopedia.network.exception.ResponseErrorException
 import com.tokopedia.tokofood.R
 import com.tokopedia.tokofood.common.presentation.view.BaseTokofoodActivity
 import com.tokopedia.tokofood.common.util.TokofoodErrorLogger
+import com.tokopedia.tokofood.common.util.TokofoodRouteManager
 import com.tokopedia.tokofood.databinding.LayoutFragmentPurchasePromoBinding
 import com.tokopedia.tokofood.feature.purchase.analytics.TokoFoodPurchaseAnalytics
 import com.tokopedia.tokofood.feature.purchase.promopage.di.DaggerTokoFoodPromoComponent
@@ -303,17 +304,21 @@ class TokoFoodPromoFragment : BaseListFragment<Visitable<*>, TokoFoodPromoAdapte
     private fun renderGlobalError(errorPage: PromoListTokoFoodErrorPage) {
         viewBinding?.layoutGlobalErrorPurchasePromo?.run {
             setType(GlobalError.SERVER_ERROR)
-            errorTitle.text = errorPage.title
-            errorDescription.text = errorPage.description
+            errorPage.title.takeIf { it.isNotBlank() }?.let { titleError ->
+                errorTitle.text = titleError
+            }
+            errorPage.description.takeIf { it.isNotBlank() }?.let { descriptionError ->
+                errorDescription.text = descriptionError
+            }
             errorIllustration.loadImage(errorPage.image)
-            errorAction.text = errorPage.button.text
+            errorAction.text = errorPage.button.firstOrNull()?.text.orEmpty()
             setActionClickListener {
-                when(errorPage.button.action) {
+                when(errorPage.button.firstOrNull()?.action) {
                     PromoListTokoFoodButton.REFRESH_ACTION -> {
                         loadData()
                     }
                     PromoListTokoFoodButton.REDIRECT_ACTION -> {
-                        RouteManager.route(context, errorPage.button.link)
+                        TokofoodRouteManager.routePrioritizeInternal(context, errorPage.button.firstOrNull()?.link.orEmpty())
                     }
                     else -> {
 
@@ -328,8 +333,12 @@ class TokoFoodPromoFragment : BaseListFragment<Visitable<*>, TokoFoodPromoAdapte
     private fun renderEmptyState(emptyState: PromoListTokoFoodEmptyState) {
         viewBinding?.layoutGlobalErrorPurchasePromo?.run {
             setType(GlobalError.SERVER_ERROR)
-            errorTitle.text = emptyState.title
-            errorDescription.text = emptyState.description
+            emptyState.title.takeIf { it.isNotBlank() }?.let { titleError ->
+                errorTitle.text = titleError
+            }
+            emptyState.description.takeIf { it.isNotBlank() }?.let { descriptionError ->
+                errorDescription.text = descriptionError
+            }
             errorIllustration.loadImage(emptyState.imageUrl)
             errorAction.gone()
             show()

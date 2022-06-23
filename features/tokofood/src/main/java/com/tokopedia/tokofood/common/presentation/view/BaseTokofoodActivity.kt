@@ -53,7 +53,7 @@ class BaseTokofoodActivity : BaseMultiFragActivity(), HasViewModel<MultipleFragm
         val existingFragment = supportFragmentManager.findFragmentByTag(fragmentName)
         if (existingFragment == null) {
             // Add new fragment if the same fragment is not found in the back stack
-            addNewFragment(fragment, fragmentName)
+            addNewFragment(fragment)
         } else {
             // Move into existing same fragment in the back stack
             moveToExistedFragment(fragmentName)
@@ -61,22 +61,51 @@ class BaseTokofoodActivity : BaseMultiFragActivity(), HasViewModel<MultipleFragm
     }
 
     /**
+     * Navigate to a fragment in Tokofood which can mimic the launch mode behaviour of activities.
+     * It is either launching new fragment with single task or single top behaviour.
+     * If it is single task, it will replace the fragment with same name in the backstack with a new one
+     *
+     * @param   fragment        fragment that we want to navigate into
+     * @param   isSingleTask    flag to determine either the fragment should be launched with single task or single top
+     */
+    fun navigateToNewFragment(fragment: Fragment, isSingleTask: Boolean = false) {
+        val fragmentName = fragment.javaClass.name
+        val existingFragment = supportFragmentManager.findFragmentByTag(fragmentName)
+        if (isSingleTask && existingFragment != null) {
+            popExistedFragment(fragmentName)
+            addNewFragment(fragment, true)
+        } else {
+            navigateToNewFragment(fragment)
+        }
+    }
+
+    /**
      * Replace current fragment and add to back stack
      *
      * @param   destinationFragment     fragment that we want to navigate into
-     * @param   destinationFragmentName the name of the destination fragment, also to determine back stack name
+     * @param   leftToRightAnim         flag to determine whether we should add slide animation from LTR or RTL
      */
     private fun addNewFragment(destinationFragment: Fragment,
-                               destinationFragmentName: String) {
+                               leftToRightAnim: Boolean = false) {
+        val destinationFragmentName = destinationFragment.javaClass.name
         val fragmentCount = getFragmentCount()
         val ft = supportFragmentManager.beginTransaction()
         if (fragmentCount > Int.ZERO) {
-            ft.setCustomAnimations(
-                R.anim.slide_in_right,
-                R.anim.slide_out_left,
-                R.anim.slide_in_left,
-                R.anim.slide_out_right
-            )
+            if (leftToRightAnim) {
+                ft.setCustomAnimations(
+                    R.anim.slide_in_left,
+                    R.anim.slide_out_right,
+                    R.anim.slide_in_right,
+                    R.anim.slide_out_left
+                )
+            } else {
+                ft.setCustomAnimations(
+                    R.anim.slide_in_right,
+                    R.anim.slide_out_left,
+                    R.anim.slide_in_left,
+                    R.anim.slide_out_right
+                )
+            }
         }
         ft.replace(
             R.id.frame_content,
@@ -104,6 +133,28 @@ class BaseTokofoodActivity : BaseMultiFragActivity(), HasViewModel<MultipleFragm
                 // Means that the fragment is existed but not yet added into the back stack.
                 supportFragmentManager.popBackStack()
             } else {
+                val destinationFragmentIndex = getDestinationFragmentIndex(backStackCount, destinationFragmentName)
+                popBackStackUntilDestination(backStackCount, destinationFragmentIndex, destinationFragmentName)
+            }
+        } catch (ex: Exception) {
+            popDestinationBackStack(destinationFragmentName)
+        }
+    }
+
+    /**
+     * Pop existed fragment in the backstack.
+     * This is used to change the existed fragment to new instance of fragment with the same class name
+     *
+     * @param   destinationFragmentName the name of the destination fragment
+     */
+    private fun popExistedFragment(destinationFragmentName: String) {
+        try {
+            var backStackCount = supportFragmentManager.backStackEntryCount
+            if (backStackCount <= Int.ONE) {
+                // Means that the fragment is existed but not yet added into the back stack.
+                supportFragmentManager.popBackStack()
+            } else {
+                backStackCount++
                 val destinationFragmentIndex = getDestinationFragmentIndex(backStackCount, destinationFragmentName)
                 popBackStackUntilDestination(backStackCount, destinationFragmentIndex, destinationFragmentName)
             }

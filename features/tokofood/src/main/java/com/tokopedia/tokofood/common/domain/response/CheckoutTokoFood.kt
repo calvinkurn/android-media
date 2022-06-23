@@ -13,13 +13,13 @@ import com.tokopedia.tokofood.common.minicartwidget.view.MiniCartUiModel
 data class CheckoutTokoFoodResponse(
     @SerializedName("cart_list_tokofood")
     @Expose
-    val cartListTokofood: CheckoutTokoFood
+    val cartListTokofood: CheckoutTokoFood = CheckoutTokoFood()
 )
 
 data class MiniCartTokoFoodResponse(
     @SerializedName("mini_cart_tokofood")
     @Expose
-    val cartListTokofood: CheckoutTokoFood
+    val miniCartTokofood: CheckoutTokoFood = CheckoutTokoFood()
 )
 
 data class CheckoutTokoFood(
@@ -412,21 +412,22 @@ data class CheckoutTokoFoodShoppingTotal(
 )
 
 data class CheckoutTokoFoodShoppingCostBreakdown(
+    @SuppressLint("Invalid Data Type")
     @SerializedName("total_cart_price")
     @Expose
     val totalCartPrice: CheckoutTokoFoodShoppingCostBreakdownItem = CheckoutTokoFoodShoppingCostBreakdownItem(),
     @SerializedName("outlet_fee")
     @Expose
-    val takeAwayFee: CheckoutTokoFoodShoppingCostBreakdownItem = CheckoutTokoFoodShoppingCostBreakdownItem(),
+    val outletFee: CheckoutTokoFoodShoppingCostBreakdownItem = CheckoutTokoFoodShoppingCostBreakdownItem(),
     @SerializedName("platform_fee")
     @Expose
-    val convenienceFee: CheckoutTokoFoodShoppingCostBreakdownItem = CheckoutTokoFoodShoppingCostBreakdownItem(),
+    val platformFee: CheckoutTokoFoodShoppingCostBreakdownItem = CheckoutTokoFoodShoppingCostBreakdownItem(),
     @SerializedName("delivery_fee")
     @Expose
     val deliveryFee: CheckoutTokoFoodShoppingCostBreakdownItem = CheckoutTokoFoodShoppingCostBreakdownItem(),
     @SerializedName("reimbursement_fee")
     @Expose
-    val parkingFee: CheckoutTokoFoodShoppingCostBreakdownItem = CheckoutTokoFoodShoppingCostBreakdownItem()
+    val reimbursementFee: CheckoutTokoFoodShoppingCostBreakdownItem = CheckoutTokoFoodShoppingCostBreakdownItem()
 )
 
 data class CheckoutTokoFoodShoppingCostBreakdownItem(
@@ -460,15 +461,12 @@ data class CheckoutTokoFoodShoppingDiscountBreakdown(
     @SerializedName("amount")
     @Expose
     val amount: Double = 0.0,
-    @SerializedName("amount_fmt")
-    @Expose
-    val amountFmt: String = "",
     @SerializedName("scope")
     @Expose
-    val scope: Int = 0,
+    val scope: String = "",
     @SerializedName("type")
     @Expose
-    val type: Int = 0
+    val type: String = ""
 )
 
 data class CheckoutTokoFoodAdditionalData(

@@ -6,7 +6,9 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.tokofood.databinding.TokofoodItemAddOnLayoutBinding
 import com.tokopedia.tokofood.databinding.TokofoodItemOrderNoteLayoutBinding
-import com.tokopedia.tokofood.feature.merchant.presentation.enums.CustomListItemType.*
+import com.tokopedia.tokofood.feature.merchant.presentation.enums.CustomListItemType.ORDER_NOTE_INPUT
+import com.tokopedia.tokofood.feature.merchant.presentation.enums.CustomListItemType.PRODUCT_ADD_ON
+import com.tokopedia.tokofood.feature.merchant.presentation.enums.CustomListItemType.values
 import com.tokopedia.tokofood.feature.merchant.presentation.enums.SelectionControlType
 import com.tokopedia.tokofood.feature.merchant.presentation.model.CustomListItem
 import com.tokopedia.tokofood.feature.merchant.presentation.viewholder.OrderNoteInputViewHolder
@@ -65,7 +67,9 @@ class CustomListAdapter(
 
     @SuppressLint("NotifyDataSetChanged")
     fun setCustomListItems(customListItems: List<CustomListItem>) {
-        this.customListItems = customListItems.toMutableList()
+        if (customListItems.isEmpty()) return
+        this.customListItems.clear()
+        this.customListItems.addAll(customListItems)
         notifyDataSetChanged()
     }
 

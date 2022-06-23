@@ -60,28 +60,40 @@ class PromoListTokoFoodUseCase @Inject constructor(
               }
               available_section{
                 title
+                sub_title
                 icon_url
                 is_enabled
-                ticker_message
-                coupons{
+                sub_section {
                   title
-                  expiry_info
-                  is_selected
-                  top_banner_title
-                  additional_information
+                  icon_url
+                  is_enabled
+                  ticker_message
+                  coupons{
+                    title
+                    expiry_info
+                    is_selected
+                    top_banner_title
+                    additional_information
+                  }
                 }
               }
               unavailable_section{
                 title
+                sub_title
                 icon_url
                 is_enabled
-                ticker_message
-                coupons{
+                sub_section {
                   title
-                  expiry_info
-                  is_selected
-                  top_banner_title
-                  additional_information
+                  icon_url
+                  is_enabled
+                  ticker_message
+                  coupons{
+                    title
+                    expiry_info
+                    is_selected
+                    top_banner_title
+                    additional_information
+                  }
                 }
               }
               promo_summary{

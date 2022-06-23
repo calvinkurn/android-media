@@ -176,13 +176,15 @@ object TokoFoodPurchaseUiModelMapper {
             imageURL = uiModel.imageUrl,
             price = uiModel.price,
             priceFmt = uiModel.priceFmt,
+            subTotal = uiModel.getSubtotalPrice(),
+            subTotalFmt = uiModel.getSubtotalPriceFmt(),
             isOutOfStock = false,
             isShopClosed = false,
             customListItems = uiModel.variants.mapVariantIntoCustomListItem(),
             cartId = uiModel.cartId,
             orderQty = uiModel.quantity,
             orderNote = uiModel.notes,
-            isAtc = false
+            isAtc = true
         )
     }
 

@@ -44,6 +44,7 @@ import com.tokopedia.tokofood.common.presentation.listener.HasViewModel
 import com.tokopedia.tokofood.common.presentation.viewmodel.MultipleFragmentsViewModel
 import com.tokopedia.tokofood.common.util.Constant
 import com.tokopedia.tokofood.common.util.TokofoodErrorLogger
+import com.tokopedia.tokofood.common.util.TokofoodRouteManager
 import com.tokopedia.tokofood.databinding.FragmentTokofoodCategoryBinding
 import com.tokopedia.tokofood.feature.home.analytics.TokoFoodCategoryAnalytics
 import com.tokopedia.tokofood.feature.home.analytics.TokoFoodHomeCategoryCommonAnalytics
@@ -218,7 +219,7 @@ class TokoFoodCategoryFragment: BaseDaggerFragment(),
     override fun onClickMerchant(merchant: Merchant, horizontalPosition: Int) {
         analytics.clickMerchant(userSession.userId, localCacheModel?.district_id, merchant, horizontalPosition)
         val merchantApplink = UriUtil.buildUri(ApplinkConst.TokoFood.MERCHANT, merchant.id, "")
-        RouteManager.route(context, merchantApplink)
+        TokofoodRouteManager.routePrioritizeInternal(context, merchantApplink)
     }
 
     override fun onImpressMerchant(merchant: Merchant, horizontalPosition: Int) {
@@ -253,7 +254,7 @@ class TokoFoodCategoryFragment: BaseDaggerFragment(),
     }
 
     private fun observeLiveData() {
-        observe(viewModel.layoutList) {
+        viewLifecycleOwner.observe(viewModel.layoutList) {
             removeScrollListeners()
             when (it) {
                 is Success -> onSuccessGetCategoryLayout(it.data)
@@ -271,7 +272,7 @@ class TokoFoodCategoryFragment: BaseDaggerFragment(),
             resetSwipeLayout()
         }
 
-        observe(viewModel.loadMore) {
+        viewLifecycleOwner.observe(viewModel.loadMore) {
             removeScrollListeners()
             when (it) {
                 is Success -> showCategoryLayout(it.data)

@@ -3,6 +3,7 @@ package com.tokopedia.tokofood.feature.home.presentation.fragment
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -25,6 +26,8 @@ import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConsInternalNavigation
 import com.tokopedia.applink.internal.ApplinkConstInternalLogistic
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.applink.internal.ApplinkConstInternalTokoFood
+import com.tokopedia.applink.tokofood.DeeplinkMapperTokoFood
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.addOneTimeGlobalLayoutListener
 import com.tokopedia.kotlin.extensions.view.hide
@@ -56,6 +59,7 @@ import com.tokopedia.tokofood.common.presentation.listener.HasViewModel
 import com.tokopedia.tokofood.common.presentation.view.BaseTokofoodActivity
 import com.tokopedia.tokofood.common.presentation.viewmodel.MultipleFragmentsViewModel
 import com.tokopedia.tokofood.common.util.TokofoodErrorLogger
+import com.tokopedia.tokofood.common.util.TokofoodRouteManager
 import com.tokopedia.tokofood.databinding.FragmentTokofoodHomeBinding
 import com.tokopedia.tokofood.feature.home.analytics.TokoFoodHomeAnalytics
 import com.tokopedia.tokofood.feature.home.analytics.TokoFoodHomeCategoryCommonAnalytics
@@ -309,7 +313,7 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
 
     override fun onClickHomeIcon(applink: String, data: List<DynamicIcon>, horizontalPosition: Int, verticalPosition: Int) {
         analytics.clickIconWidget(userSession.userId, localCacheModel?.district_id, data, horizontalPosition, verticalPosition)
-        RouteManager.route(context, applink)
+        TokofoodRouteManager.routePrioritizeInternal(context, applink)
     }
 
     override fun onImpressHomeIcon(data: List<DynamicIcon>, verticalPosition: Int) {
@@ -318,8 +322,13 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
 
     override fun onClickMerchant(merchant: Merchant, horizontalPosition: Int) {
         analytics.clickMerchant(userSession.userId, localCacheModel?.district_id, merchant, horizontalPosition)
-        val merchantApplink = UriUtil.buildUri(ApplinkConst.TokoFood.MERCHANT, merchant.id, "")
-        RouteManager.route(context, merchantApplink)
+        val merchantPageUri = Uri.parse(ApplinkConstInternalTokoFood.MERCHANT)
+            .buildUpon()
+            .appendQueryParameter(DeeplinkMapperTokoFood.PARAM_MERCHANT_ID, merchant.id)
+            .build()
+        TokofoodRouteManager.mapUriToFragment(merchantPageUri)?.let { merchantPageFragment ->
+            navigateToNewFragment(merchantPageFragment)
+        }
     }
 
     override fun onImpressMerchant(merchant: Merchant, horizontalPosition: Int) {
@@ -467,10 +476,12 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
     }
 
     private fun observeLiveData() {
-        observe(viewModel.layoutList) {
+        viewLifecycleOwner.observe(viewModel.layoutList) {
             removeAllScrollListener()
             when (it) {
-                is Success -> onSuccessGetHomeLayout(it.data)
+                is Success -> {
+                    onSuccessGetHomeLayout(it.data)
+                }
                 is Fail -> {
                     logExceptionTokoFoodHome(
                         it.throwable,
@@ -487,17 +498,17 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
             }
         }
 
-        observe(viewModel.updatePinPointState) { isSuccess ->
+        viewLifecycleOwner.observe(viewModel.updatePinPointState) { isSuccess ->
             if (isSuccess) {
                 getChooseAddress()
             }
         }
 
-        observe(viewModel.errorMessage) { message ->
+        viewLifecycleOwner.observe(viewModel.errorMessage) { message ->
             showToaster(message)
         }
 
-        observe(viewModel.chooseAddress) {
+        viewLifecycleOwner.observe(viewModel.chooseAddress) {
             when(it) {
                 is Success -> {
                     setupChooseAddress(it.data)
@@ -509,7 +520,7 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
             }
         }
 
-        observe(viewModel.eligibleForAnaRevamp) {
+        viewLifecycleOwner.observe(viewModel.eligibleForAnaRevamp) {
             when(it) {
                 is Success -> {
                     if (it.data.eligible) {

@@ -16,11 +16,13 @@ class TokoFoodCategoryViewModelTest: TokoFoodCategoryViewModelTestFixture() {
 
     @Test
     fun `when getting loading state should run and give the success result`() {
+        val expectedPageKey = "0"
         viewModel.getLoadingState()
 
         val expectedResponse = createLoadingCategoryState()
 
         verifyGetCategoryLayoutResponseSuccess(expectedResponse)
+        verifyPageKey(expectedPageKey)
     }
 
     @Test
