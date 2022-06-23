@@ -34,7 +34,10 @@ infix fun View?.showToaster(message: String) {
         Toaster.LENGTH_LONG,
         Toaster.TYPE_NORMAL,
         this.context.getString(R.string.action_oke)
-    ).show()
+    ).apply {
+        anchorView = this@showToaster
+        show()
+    }
 }
 
 fun View?.showError(throwable: Throwable, anchorView: View?) {
