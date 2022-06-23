@@ -1,7 +1,9 @@
 package com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.subview
 
+import android.content.Context
 import android.content.res.Resources
 import android.os.Bundle
+import android.text.TextPaint
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,12 +11,17 @@ import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.lifecycleScope
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.common.di.component.HasComponent
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.kotlin.extensions.view.setClickableUrlHtml
 import com.tokopedia.tokofood.common.util.Result
 import com.tokopedia.tokofood.databinding.LayoutBottomSheetPurchaseConsentBinding
 import com.tokopedia.tokofood.feature.purchase.purchasepage.di.DaggerTokoFoodPurchaseComponent
 import com.tokopedia.tokofood.feature.purchase.purchasepage.di.TokoFoodPurchaseComponent
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import kotlinx.coroutines.flow.collect
+import timber.log.Timber
 import javax.inject.Inject
 
 class TokoFoodPurchaseConsentBottomSheet : BottomSheetUnify(),
@@ -43,6 +50,8 @@ class TokoFoodPurchaseConsentBottomSheet : BottomSheetUnify(),
         private const val PARAM_TNC = "tnc"
         private const val PARAM_IMAGE_URL = "image_url"
 
+        private const val NUNITO_TYPOGRAPHY_FONT = "NunitoSansExtraBold.ttf"
+
         private const val TAG = "TokoFoodPurchaseConsentBottomSheet"
     }
 
@@ -60,6 +69,12 @@ class TokoFoodPurchaseConsentBottomSheet : BottomSheetUnify(),
     }
     private val tnc by lazy {
         arguments?.getString(PARAM_TNC).orEmpty()
+    }
+    private val linkTextColor by lazy {
+        MethodChecker.getColor(
+            context,
+            com.tokopedia.unifyprinciples.R.color.Unify_GN500
+        )
     }
 
     private var viewBinding: LayoutBottomSheetPurchaseConsentBinding? = null
@@ -143,12 +158,18 @@ class TokoFoodPurchaseConsentBottomSheet : BottomSheetUnify(),
             checkboxConsentAgreement.setOnCheckedChangeListener { _, isChecked ->
                 buttonContinue.isEnabled = isChecked
             }
-            textConsentAgreement.run {
-                text = tnc
-                setOnClickListener {
-                    checkboxConsentAgreement.isChecked = !checkboxConsentAgreement.isChecked
-                }
-            }
+            textConsentAgreement.setClickableUrlHtml(
+                htmlText = tnc,
+                applyCustomStyling = {
+                    isUnderlineText = false
+                    color = linkTextColor
+                    context?.let {
+                        applyTypographyFont(it)
+                    }
+                },
+                onUrlClicked = ::onLinkClicked
+            )
+
             checkboxConsentAgreement.isChecked = false
             buttonContinue.run {
                 isEnabled = false
@@ -158,4 +179,19 @@ class TokoFoodPurchaseConsentBottomSheet : BottomSheetUnify(),
             }
         }
     }
+
+    private fun onLinkClicked(url: String) {
+        context?.let {
+            RouteManager.route(it, ApplinkConstInternalGlobal.WEBVIEW, url)
+        }
+    }
+
+    private fun TextPaint.applyTypographyFont(context: Context) {
+        try {
+            typeface = com.tokopedia.unifyprinciples.getTypeface(context, NUNITO_TYPOGRAPHY_FONT)
+        } catch (ex: Exception) {
+            Timber.e(ex)
+        }
+    }
+
 }
