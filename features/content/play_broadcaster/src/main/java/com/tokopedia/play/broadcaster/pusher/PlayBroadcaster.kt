@@ -28,8 +28,6 @@ class PlayBroadcaster(
     @ActivityRetainedScope
     class Factory @Inject constructor(
         private val broadcaster: Broadcaster,
-        private val remoteConfig: RemoteConfig,
-        private val userSession: UserSessionInterface,
     ) {
         fun create(
             activityContext: Context,
