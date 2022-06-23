@@ -9,6 +9,7 @@ import com.tokopedia.media.loader.loadImage
 import com.tokopedia.recharge_component.databinding.ViewRechargeRecommendationCardBigBinding
 import com.tokopedia.recharge_component.listener.RechargeRecommendationCardListener
 import com.tokopedia.recharge_component.model.recommendation_card.RecommendationCardWidgetModel
+import com.tokopedia.unifyprinciples.Typography.Companion.BODY_1
 import com.tokopedia.unifyprinciples.Typography.Companion.BODY_2
 import com.tokopedia.unifyprinciples.Typography.Companion.DISPLAY_3
 
@@ -52,9 +53,11 @@ class RecommendationCardBigViewHolder(
                     if (recommendation.productExpired.isNotEmpty() &&
                         recommendation.productType.isNotEmpty()) {
                         tgExpiredRechargeRecommendationCardBig.setType(BODY_2)
+                        tgProductTypeRechargeRecommendationCardBig.setType(BODY_1)
                         show()
                     } else {
                         tgExpiredRechargeRecommendationCardBig.setType(DISPLAY_3)
+                        tgProductTypeRechargeRecommendationCardBig.setType(DISPLAY_3)
                         hide()
                     }
                 }
