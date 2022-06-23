@@ -1745,7 +1745,8 @@ object DynamicProductDetailTracking {
                 componentTrackDataModel: ComponentTrackDataModel,
                 productInfo: DynamicProductInfoP1?,
                 userId: String,
-            lcaWarehouseId: String
+                lcaWarehouseId: String,
+                label: String
     ) {
         val productId = productInfo?.basic?.productID ?: ""
 
@@ -1761,7 +1762,7 @@ object DynamicProductDetailTracking {
                     "promoView", DataLayer.mapOf(
                     "promotions", DataLayer.listOf(
                     DataLayer.mapOf(
-                            "id", "",
+                            "id", "text:$label",
                             "name", "product detail page - $productId",
                             "creative", "layout:${productInfo?.layoutName};comp:${componentTrackDataModel.componentName};temp:${componentTrackDataModel.componentType};",
                             "position", componentTrackDataModel.adapterPosition
