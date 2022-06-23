@@ -617,7 +617,7 @@ class TokoFoodPurchaseViewModel @Inject constructor(
     }
 
     private fun CheckoutTokoFood.isEmptyProduct(): Boolean {
-        return data.availableSection.products.isEmpty() && data.unavailableSection.products.isEmpty()
+        return data.availableSection.products.isEmpty() && data.unavailableSections.firstOrNull()?.products?.isEmpty() == true
     }
 
     companion object {

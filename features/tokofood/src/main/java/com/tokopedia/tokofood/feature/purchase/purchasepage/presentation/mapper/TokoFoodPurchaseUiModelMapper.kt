@@ -77,14 +77,16 @@ object TokoFoodPurchaseUiModelMapper {
                     mapProductUiModel(it, isEnabled, true)
                 })
             }
-            response.data.unavailableSection.products.takeIf { it.isNotEmpty() }?.let { unavailableProducts ->
-                add(TokoFoodPurchaseDividerTokoFoodPurchaseUiModel())
-                add(mapProductListHeaderUiModel(isEnabled, response.data.unavailableSectionHeader))
-                add(mapProductUnavailableReasonUiModel(isEnabled, response.data.unavailableSection.title))
-                addAll(unavailableProducts.map { mapProductUiModel(it, isEnabled, false) })
-                add(TokoFoodPurchaseDividerTokoFoodPurchaseUiModel())
-                if (unavailableProducts.size > Int.ONE) {
-                    add(mapAccordionUiModel(isEnabled))
+            response.data.unavailableSections.firstOrNull()?.let { unavailableSection ->
+                unavailableSection.products.takeIf { it.isNotEmpty() }?.let { unavailableProducts ->
+                    add(TokoFoodPurchaseDividerTokoFoodPurchaseUiModel())
+                    add(mapProductListHeaderUiModel(isEnabled, response.data.unavailableSectionHeader))
+                    add(mapProductUnavailableReasonUiModel(isEnabled, unavailableSection.title))
+                    addAll(unavailableProducts.map { mapProductUiModel(it, isEnabled, false) })
+                    add(TokoFoodPurchaseDividerTokoFoodPurchaseUiModel())
+                    if (unavailableProducts.size > Int.ONE) {
+                        add(mapAccordionUiModel(isEnabled))
+                    }
                 }
             }
             if (isEnabled) {

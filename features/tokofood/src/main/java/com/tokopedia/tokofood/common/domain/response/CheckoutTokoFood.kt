@@ -81,9 +81,9 @@ data class CheckoutTokoFoodData(
     @SerializedName("unavailable_section_header")
     @Expose
     val unavailableSectionHeader: String = "",
-    @SerializedName("unavailable_section")
+    @SerializedName("unavailable_sections")
     @Expose
-    val unavailableSection: CheckoutTokoFoodAvailabilitySection = CheckoutTokoFoodAvailabilitySection(),
+    val unavailableSections: List<CheckoutTokoFoodAvailabilitySection> = listOf(),
     @SerializedName("shipping")
     @Expose
     val shipping: CheckoutTokoFoodShipping = CheckoutTokoFoodShipping(),
@@ -120,9 +120,9 @@ data class CheckoutTokoFoodData(
     }
 
     fun getRemoveUnavailableCartParam(shopId: String): RemoveCartTokoFoodParam {
-        val cartList = unavailableSection.products.map {
+        val cartList = unavailableSections.firstOrNull()?.products?.map {
             it.mapToRemoveItemParam(shopId)
-        }
+        }.orEmpty()
         return RemoveCartTokoFoodParam(cartList)
     }
 
@@ -134,7 +134,7 @@ data class CheckoutTokoFoodData(
     }
 
     fun getProductListFromCart(): List<CheckoutTokoFoodProduct> {
-        return availableSection.products.plus(unavailableSection.products)
+        return availableSection.products.plus(unavailableSections.firstOrNull()?.products.orEmpty())
     }
 }
 

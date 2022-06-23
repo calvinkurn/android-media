@@ -71,7 +71,7 @@ class LoadCartTokoFoodUseCase @Inject constructor(
                   }
                 }
               }
-              unavailable_section {
+              unavailable_sections {
                 products {
                   cart_id
                   product_id

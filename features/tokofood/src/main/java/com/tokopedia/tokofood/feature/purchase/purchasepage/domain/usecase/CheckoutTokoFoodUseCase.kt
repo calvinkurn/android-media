@@ -118,7 +118,7 @@ class CheckoutTokoFoodUseCase @Inject constructor(
                 }
               }
               unavailable_section_header
-              unavailable_section {
+              unavailable_sections {
                 title
                 products {
                   cart_id

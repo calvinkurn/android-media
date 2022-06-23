@@ -250,9 +250,9 @@ class MultipleFragmentsViewModelTest: MultipleFragmentsViewModelTestFixture() {
             onLoadCartList_shouldReturn(successResponse.miniCartTokofood)
 
             val removeCartParam = RemoveCartTokoFoodParam(
-                carts = successResponse.miniCartTokofood.data.unavailableSection.products.map {
+                carts = successResponse.miniCartTokofood.data.unavailableSections.firstOrNull()?.products?.map {
                     it.mapToRemoveItemParam(successResponse.miniCartTokofood.data.shop.shopId)
-                }
+                }.orEmpty()
             )
             onRemoveCart_shouldReturn(removeCartParam, getSuccessUpdateCartResponse())
 
@@ -291,9 +291,9 @@ class MultipleFragmentsViewModelTest: MultipleFragmentsViewModelTestFixture() {
             onLoadCartList_shouldReturn(successResponse.miniCartTokofood)
 
             val removeCartParam = RemoveCartTokoFoodParam(
-                carts = successResponse.miniCartTokofood.data.unavailableSection.products.map {
+                carts = successResponse.miniCartTokofood.data.unavailableSections.firstOrNull()?.products?.map {
                     it.mapToRemoveItemParam(successResponse.miniCartTokofood.data.shop.shopId)
-                }
+                }.orEmpty()
             )
             onRemoveCart_shouldThrow(removeCartParam, MessageErrorException(""))
 

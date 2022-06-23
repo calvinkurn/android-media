@@ -79,7 +79,7 @@
         ]
       },
       "unavailable_section_header": "",
-      "unavailable_section": {
+      "unavailable_sections": [{
         "title": "",
         "products": [
           {
@@ -97,7 +97,7 @@
             "quantity": 1,
             "variants": []
           }]
-      },
+      }],
       "shipping": {
         "name": "Gojek Instan",
         "logo_url": "https://images.tokopedia.net/img/tokofood/cart/gojek.png",
