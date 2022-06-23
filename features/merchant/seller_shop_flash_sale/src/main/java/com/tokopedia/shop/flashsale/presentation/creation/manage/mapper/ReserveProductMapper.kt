@@ -28,6 +28,7 @@ object ReserveProductMapper {
         productId = product.productId.toLongOrNull().orZero(),
         customStock = ADD_PRODUCT_DEFAULT_VALUE,
         finalPrice = ADD_PRODUCT_DEFAULT_VALUE,
+        teaser = DoSellerCampaignProductSubmissionRequest.ProductData.Teaser(active = false, position = 0),
         warehouses = emptyList(),
         maxOrder = ADD_PRODUCT_DEFAULT_VALUE.toInt()
     )

@@ -99,6 +99,7 @@ class ManageHighlightedProductViewModel @Inject constructor(
                 product.productMapData.discountedPrice,
                 product.productMapData.discountPercentage,
                 product.productMapData.customStock,
+                product.warehouseList.map { HighlightableProduct.Warehouse(it.warehouseId.toLongOrZero(), it.customStock.toLong()) },
                 product.productMapData.maxOrder,
                 disabled,
                 isSelected,

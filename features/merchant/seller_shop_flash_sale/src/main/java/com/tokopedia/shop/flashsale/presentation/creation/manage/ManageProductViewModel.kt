@@ -8,8 +8,8 @@ import com.tokopedia.shop.flashsale.common.extension.convertRupiah
 import com.tokopedia.shop.flashsale.data.request.GetSellerCampaignProductListRequest
 import com.tokopedia.shop.flashsale.domain.entity.SellerCampaignProductList
 import com.tokopedia.shop.flashsale.domain.entity.enums.ManageProductErrorMessage
+import com.tokopedia.shop.flashsale.domain.entity.enums.ProductionSubmissionAction
 import com.tokopedia.shop.flashsale.domain.usecase.DoSellerCampaignProductSubmissionUseCase
-import com.tokopedia.shop.flashsale.domain.usecase.DoSellerCampaignProductSubmissionUseCase.Companion.ACTION_DELETE
 import com.tokopedia.shop.flashsale.domain.usecase.GetSellerCampaignProductListUseCase
 import com.tokopedia.shop.flashsale.presentation.creation.manage.mapper.ManageProductMapper
 import com.tokopedia.usecase.coroutines.Fail
@@ -143,9 +143,9 @@ class ManageProductViewModel @Inject constructor(
                 val campaigns = doSellerCampaignProductSubmissionUseCase.execute(
                     campaignId = campaignId.toString(),
                     productData = ManageProductMapper.mapToProductDataList(productList),
-                    action = ACTION_DELETE
+                    action = ProductionSubmissionAction.DELETE
                 )
-                _removeProductsStatus.postValue(Success(campaigns))
+                _removeProductsStatus.postValue(Success(campaigns.isSuccess))
             },
             onError = { error ->
                 _removeProductsStatus.postValue(Fail(error))

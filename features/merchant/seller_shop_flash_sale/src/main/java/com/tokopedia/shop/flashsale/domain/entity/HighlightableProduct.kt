@@ -8,8 +8,14 @@ data class HighlightableProduct(
     val discountedPrice: Long,
     val discountPercentage: Int,
     val customStock: Long,
+    val warehouses: List<Warehouse>,
     val maxOrder: Int,
     val disabled: Boolean,
     val isSelected: Boolean,
     val position: Int,
-)
+) {
+    data class Warehouse(
+        val warehouseId: Long,
+        val customStock: Long
+    )
+}

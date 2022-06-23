@@ -25,6 +25,7 @@ import com.tokopedia.shop.flashsale.domain.entity.ProductSubmissionResult
 import com.tokopedia.shop.flashsale.presentation.creation.highlight.adapter.HighlightedProductAdapter
 import com.tokopedia.shop.flashsale.presentation.creation.highlight.bottomsheet.ManageHighlightedProductInfoBottomSheet
 import com.tokopedia.shop.flashsale.presentation.creation.highlight.decoration.ProductListItemDecoration
+import com.tokopedia.shop.flashsale.presentation.creation.rule.CampaignRuleActivity
 import com.tokopedia.shop.flashsale.presentation.list.list.listener.RecyclerViewScrollListener
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -152,11 +153,11 @@ class ManageHighlightedProductFragment : BaseDaggerFragment() {
         binding?.run {
             btnProceed.setOnClickListener {
                 binding?.btnProceed?.showLoading()
-                viewModel.submitHighlightedProducts(campaignId, viewModel.getSelectedProducts())
+                viewModel.submitHighlightedProducts(campaignId, productAdapter.getItems())
             }
             btnDraft.setOnClickListener {
                 binding?.btnDraft.showLoading()
-                viewModel.submitHighlightedProducts(campaignId, viewModel.getSelectedProducts())
+                viewModel.submitHighlightedProducts(campaignId, productAdapter.getItems())
             }
         }
     }
@@ -366,7 +367,7 @@ class ManageHighlightedProductFragment : BaseDaggerFragment() {
     private fun handleProductSubmissionResult(result: ProductSubmissionResult) {
         val isSuccess = result.isSuccess
         if (isSuccess) {
-            //TODO: Navigate to ACP page
+            CampaignRuleActivity.start(requireActivity(), campaignId)
         } else {
             binding?.root showError result.errorMessage
         }
