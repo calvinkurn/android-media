@@ -7,6 +7,9 @@ import com.tokopedia.logisticCommon.data.constant.CourierConstant
 import com.tokopedia.logisticcart.shipping.features.shippingduration.view.NotifierViewHolder
 import com.tokopedia.logisticcart.shipping.features.shippingduration.view.PreOrderViewHolder
 import com.tokopedia.logisticcart.shipping.model.NotifierModel
+import com.tokopedia.logisticcart.shipping.model.NotifierModel.Companion.TYPE_INSTAN
+import com.tokopedia.logisticcart.shipping.model.NotifierModel.Companion.TYPE_DEFAULT
+import com.tokopedia.logisticcart.shipping.model.NotifierModel.Companion.TYPE_SAMEDAY
 import com.tokopedia.logisticcart.shipping.model.PreOrderModel
 import com.tokopedia.logisticcart.shipping.model.RatesViewModelType
 import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel
@@ -34,12 +37,12 @@ class ShippingCourierAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private fun setNotifierModel(shippingCourierUiModel: ShippingCourierUiModel, index: Int, isOcc: Boolean) {
         if (isOcc && shippingCourierUiModel.productData.shipperId in CourierConstant.INSTANT_SAMEDAY_COURIER) {
-            this.data.add(index, NotifierModel(OCC_NOTIFIER))
+            this.data.add(index, NotifierModel(TYPE_DEFAULT))
         } else {
             if (shippingCourierUiModel.serviceData.serviceName == INSTAN_VIEW_TYPE) {
-                this.data.add(index, NotifierModel(INSTAN_NOTIFIER))
+                this.data.add(index, NotifierModel(TYPE_INSTAN))
             } else if (shippingCourierUiModel.serviceData.serviceName == SAME_DAY_VIEW_TYPE) {
-                this.data.add(index, NotifierModel(SAMEDAY_NOTIFIER))
+                this.data.add(index, NotifierModel(TYPE_SAMEDAY))
             }
         }
     }
@@ -82,9 +85,6 @@ class ShippingCourierAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     companion object {
         private const val INSTAN_VIEW_TYPE = "Instan"
         private const val SAME_DAY_VIEW_TYPE = "Same Day"
-        private const val INSTAN_NOTIFIER = "Barang tiba maks. 3 jam sejak penjual menyerahkan ke kurir"
-        private const val SAMEDAY_NOTIFIER = "Barang tiba maks. 8 jam sejak penjual menyerahkan ke kurir"
-        private const val OCC_NOTIFIER = "Pembelian di atas 14:00 WIB berpotensi dikirim besok"
     }
 
 }
