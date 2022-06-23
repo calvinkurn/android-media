@@ -316,7 +316,9 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
             environment = Environment.Integration
         )
         println("ssoData: $ssoData")
-        Toaster.build(view!!, ssoData.toString(), Toaster.LENGTH_LONG).show()
+        view?.run {
+            Toaster.build(this, ssoData.toString(), Toaster.LENGTH_LONG).show()
+        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
