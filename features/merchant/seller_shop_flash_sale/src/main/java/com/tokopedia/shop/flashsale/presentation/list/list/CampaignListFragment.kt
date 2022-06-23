@@ -62,6 +62,7 @@ class CampaignListFragment : BaseSimpleListFragment<CampaignAdapter, CampaignUiM
         private const val REFRESH_CAMPAIGN_DELAY_DURATION_IN_MILLIS : Long = 3_000
         private const val EMPTY_STATE_IMAGE_URL =
             "https://images.tokopedia.net/img/android/campaign/flash-sale-toko/ic_no_active_campaign.png"
+        private const val SHOP_DECORATION_ARTICLE_URL = "https://seller.tokopedia.com/dekorasi-toko"
         private const val DRAFT_SERVER_SAVING_DURATION = 1000L
 
         @JvmStatic
@@ -609,7 +610,6 @@ class CampaignListFragment : BaseSimpleListFragment<CampaignAdapter, CampaignUiM
             return
         }
 
-        //ManageHighlightedProductActivity.start(requireActivity(), campaign.campaignId)
         CampaignInformationActivity.startUpdateMode(requireActivity(), campaign.campaignId)
     }
 

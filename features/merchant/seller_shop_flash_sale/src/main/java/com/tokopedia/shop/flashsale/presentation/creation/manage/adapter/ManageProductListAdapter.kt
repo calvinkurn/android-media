@@ -124,8 +124,8 @@ class ManageProductListAdapter(
             )
         }
 
-        private fun Typography.setCampaignStock(campaignStock: Int) {
-            if (campaignStock.isMoreThanZero()) {
+        private fun Typography.setCampaignStock(campaignStock: Long) {
+            if (campaignStock > 0) {
                 this.visible()
                 binding.tpgSeparator.visible()
                 this.text = String.format(

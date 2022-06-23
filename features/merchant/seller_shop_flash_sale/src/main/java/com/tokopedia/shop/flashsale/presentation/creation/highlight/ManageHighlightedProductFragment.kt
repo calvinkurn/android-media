@@ -6,8 +6,10 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import androidx.lifecycle.ViewModelProvider
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.app.BaseMainApplication
+import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.gone
@@ -15,32 +17,32 @@ import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.seller_shop_flash_sale.R
 import com.tokopedia.seller_shop_flash_sale.databinding.FragmentSsfsManageHighlightedProductBinding
-import com.tokopedia.shop.flashsale.common.constant.Constant
-import com.tokopedia.shop.flashsale.common.customcomponent.BaseSimpleListFragment
-import com.tokopedia.shop.flashsale.common.extension.setFragmentToUnifyBgColor
-import com.tokopedia.shop.flashsale.common.extension.showError
-import com.tokopedia.shop.flashsale.common.extension.showLoading
+import com.tokopedia.shop.flashsale.common.extension.*
 import com.tokopedia.shop.flashsale.common.preference.SharedPreferenceDataStore
 import com.tokopedia.shop.flashsale.di.component.DaggerShopFlashSaleComponent
 import com.tokopedia.shop.flashsale.domain.entity.HighlightableProduct
+import com.tokopedia.shop.flashsale.domain.entity.ProductSubmissionResult
 import com.tokopedia.shop.flashsale.presentation.creation.highlight.adapter.HighlightedProductAdapter
+import com.tokopedia.shop.flashsale.presentation.creation.highlight.bottomsheet.ManageHighlightedProductInfoBottomSheet
+import com.tokopedia.shop.flashsale.presentation.creation.highlight.decoration.ProductListItemDecoration
+import com.tokopedia.shop.flashsale.presentation.creation.rule.CampaignRuleActivity
+import com.tokopedia.shop.flashsale.presentation.list.list.listener.RecyclerViewScrollListener
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.lifecycle.autoClearedNullable
-import java.util.*
 import javax.inject.Inject
 
-
-class ManageHighlightedProductFragment :
-    BaseSimpleListFragment<HighlightedProductAdapter, HighlightableProduct>() {
+class ManageHighlightedProductFragment : BaseDaggerFragment() {
 
     companion object {
-        private const val PAGE_SIZE = 10
+        private const val PAGE_SIZE = 50
+        private const val ONE_PAGE = 1
         private const val ONE_PRODUCT = 1
+        private const val FIRST_PAGE = 1
+        private const val THIRD_STEP = 3
         private const val MAX_PRODUCT_SELECTION = 5
-        private const val EMPTY_STATE_IMAGE_URL =
-            "https://images.tokopedia.net/img/android/campaign/flash-sale-toko/ic_no_active_campaign.png"
         private const val BUNDLE_KEY_CAMPAIGN_ID = "campaign_id"
+        private const val SCROLL_DISTANCE_DELAY_IN_MILLIS: Long = 100
 
         @JvmStatic
         fun newInstance(campaignId: Long): ManageHighlightedProductFragment {
@@ -67,17 +69,13 @@ class ManageHighlightedProductFragment :
     private var isFirstLoad = true
     private val viewModelProvider by lazy { ViewModelProvider(this, viewModelFactory) }
     private val viewModel by lazy { viewModelProvider.get(ManageHighlightedProductViewModel::class.java) }
-
+    private var endlessRecyclerViewScrollListener: EndlessRecyclerViewScrollListener? = null
 
     private val productAdapter by lazy {
-        HighlightedProductAdapter(
-            onProductClicked,
-            onProductSelectionChange
-        )
+        HighlightedProductAdapter(onProductSelectionChange)
     }
 
-    override fun getScreenName(): String =
-        ManageHighlightedProductFragment::class.java.canonicalName.orEmpty()
+    override fun getScreenName(): String = ManageHighlightedProductFragment::class.java.canonicalName.orEmpty()
 
     override fun initInjector() {
         DaggerShopFlashSaleComponent.builder()
@@ -100,21 +98,40 @@ class ManageHighlightedProductFragment :
         setupView()
         setFragmentToUnifyBgColor()
         observeProducts()
+        observeSubmitHighlightedProducts()
+        getProducts(FIRST_PAGE)
     }
 
     private fun setupView() {
+        setupRecyclerView()
         setupButton()
         setupToolbar()
         setupSearchBar()
+        setupScrollListener()
+    }
+
+    private fun setupRecyclerView() {
+        binding?.recyclerView?.layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
+        binding?.recyclerView?.adapter = productAdapter
+        binding?.recyclerView?.addItemDecoration(ProductListItemDecoration(requireActivity()))
+
+        endlessRecyclerViewScrollListener = object : EndlessRecyclerViewScrollListener(binding?.recyclerView?.layoutManager) {
+            override fun onLoadMore(page: Int, totalItemsCount: Int) {
+                productAdapter.showLoading()
+                getProducts(page)
+            }
+        }
+
+        binding?.recyclerView?.addOnScrollListener(endlessRecyclerViewScrollListener ?: return)
     }
 
     private fun setupSearchBar() {
         binding?.run {
             searchBar.searchBarTextField.setOnEditorActionListener { _, actionId, _ ->
                 if (actionId == EditorInfo.IME_ACTION_SEARCH) {
-                    clearAllData()
-                    binding?.emptyState?.gone()
-                    getProducts(Constant.FIRST_PAGE)
+                    productAdapter.submit(emptyList())
+                    binding?.groupNoSearchResult?.gone()
+                    getProducts(FIRST_PAGE)
                     return@setOnEditorActionListener false
                 }
                 return@setOnEditorActionListener false
@@ -126,213 +143,230 @@ class ManageHighlightedProductFragment :
     private fun setupToolbar() {
         binding?.run {
             header.setOnClickListener { activity?.onBackPressed() }
+            header.addRightIcon(R.drawable.ic_sfs_info)
+            header.rightIcons?.firstOrNull()?.setOnClickListener { ManageHighlightedProductInfoBottomSheet().show(childFragmentManager) }
+            header.headerSubTitle = String.format(getString(R.string.sfs_placeholder_step_counter), THIRD_STEP)
         }
     }
 
     private fun setupButton() {
         binding?.run {
-            btnCreateCampaign.setOnClickListener {
-                binding?.btnCreateCampaign?.showLoading()
+            btnProceed.setOnClickListener {
+                binding?.btnProceed?.showLoading()
+                viewModel.submitHighlightedProducts(campaignId, productAdapter.getItems())
             }
+            btnDraft.setOnClickListener {
+                binding?.btnDraft.showLoading()
+                viewModel.submitHighlightedProducts(campaignId, productAdapter.getItems())
+            }
+        }
+    }
+
+    private fun setupScrollListener() {
+        binding?.run {
+            imgScrollUp.setOnClickListener { recyclerView.smoothSnapToPosition(0)  }
+            recyclerView.addOnScrollListener(
+                RecyclerViewScrollListener(
+                    onScrollDown = {
+                        doOnDelayFinished(SCROLL_DISTANCE_DELAY_IN_MILLIS) {
+                            handleScrollDownEvent()
+                        }
+                    },
+                    onScrollUp = {
+                        doOnDelayFinished(SCROLL_DISTANCE_DELAY_IN_MILLIS) {
+                            handleScrollUpEvent()
+                        }
+                    }
+                )
+            )
         }
     }
 
 
     private fun observeProducts() {
-        viewModel.products.observe(viewLifecycleOwner) {
-            when (it) {
+        viewModel.products.observe(viewLifecycleOwner) { result ->
+            binding?.loader?.gone()
+
+            when (result) {
                 is Success -> {
                     isFirstLoad = false
-                    binding?.groupContent?.visible()
-                    handleProducts(it.data)
+                    showContent()
+                    handleProducts(result.data)
                 }
                 is Fail -> {
-                    binding?.cardView?.gone()
-                    binding?.groupContent?.gone()
-                    binding?.root showError it.throwable
+                    hideContent()
+                    binding?.root showError result.throwable
                 }
             }
         }
     }
 
+    private fun observeSubmitHighlightedProducts() {
+        viewModel.submit.observe(viewLifecycleOwner) { result ->
+            binding?.btnDraft.stopLoading()
+            binding?.btnProceed.stopLoading()
+
+            when (result) {
+                is Success -> {
+                    handleProductSubmissionResult(result.data)
+                }
+                is Fail -> {
+                    binding?.root showError result.throwable
+                }
+            }
+        }
+    }
 
     private fun handleProducts(data: List<HighlightableProduct>) {
         val currentItemCount = productAdapter.getItems().size.orZero()
-        val isScrolling = currentItemCount > Int.ZERO
+        val hasData = currentItemCount > Int.ZERO
 
-        if (data.isEmpty() && !isScrolling) {
-            binding?.emptyState?.setImageUrl(EMPTY_STATE_IMAGE_URL)
-            binding?.emptyState?.setTitle(getString(R.string.chooseproduct_search_empty))
-            binding?.emptyState?.setDescription(getString(R.string.chooseproduct_search_empty_desc))
-
+        if (data.isEmpty() && !hasData) {
+            binding?.groupNoSearchResult?.visible()
             binding?.recyclerView?.gone()
-            binding?.emptyState?.visible()
 
         } else {
             renderList(data, data.size >= PAGE_SIZE)
             binding?.recyclerView?.visible()
-            binding?.emptyState?.gone()
+            binding?.groupNoSearchResult?.gone()
+            refreshButton()
         }
     }
 
-    private val onProductClicked: (HighlightableProduct, Int) -> Unit = { product, _ ->
-        val isDisabled = product.disableClick || product.disabled
-        handleProductClick(isDisabled, "")
-    }
 
-    private val onProductSelectionChange: (
-        HighlightableProduct,
-        Boolean
-    ) -> Unit = { selectedProduct, isSelected ->
-
-        if (isSelected) {
+    private val onProductSelectionChange: (HighlightableProduct, Boolean) -> Unit =
+        { selectedProduct, isSelected ->
             val currentSelectedProductCount = viewModel.getSelectedProductIds().size
-            handleAddProductToSelection(currentSelectedProductCount, selectedProduct)
-        } else {
-            handleRemoveProductFromSelection(selectedProduct)
+            handleAddProductToSelection(currentSelectedProductCount, selectedProduct, isSelected)
         }
-
-    }
 
     private fun handleAddProductToSelection(
         currentSelectedProductCount: Int,
-        selectedProduct: HighlightableProduct
+        selectedProduct: HighlightableProduct,
+        isSelected: Boolean
     ) {
-         val nextCounter = currentSelectedProductCount + ONE_PRODUCT
-         if (nextCounter > MAX_PRODUCT_SELECTION) {
-             untickProduct(selectedProduct)
-             showDisableReason(getString(R.string.sfs_placeholder_empty_quota))
-         } else {
-             val remainingSelection = MAX_PRODUCT_SELECTION - viewModel.getSelectedProductIds().size
-
-             if (remainingSelection > Int.ZERO) {
-                 tickProduct(selectedProduct)
-                 viewModel.addProductToSelection(selectedProduct)
-             } else {
-                 untickProduct(selectedProduct)
-                 showNoMoreRemainingQuota()
-             }
-         }
-
-         refreshButton()
-    }
-
-    private fun handleRemoveProductFromSelection(selectedProduct: HighlightableProduct) {
-        viewModel.removeProductFromSelection(selectedProduct)
-        untickProduct(selectedProduct)
+        when {
+            isSelected && currentSelectedProductCount == (MAX_PRODUCT_SELECTION - ONE_PRODUCT) -> {
+                binding?.recyclerView showToaster getString(R.string.sfs_successfully_highlighted)
+                selectProduct(selectedProduct)
+                viewModel.addProductIdToSelection(selectedProduct.id)
+                disableAllUnselectedProduct()
+            }
+            isSelected && currentSelectedProductCount < MAX_PRODUCT_SELECTION -> {
+                binding?.recyclerView showToaster getString(R.string.sfs_successfully_highlighted)
+                selectProduct(selectedProduct)
+                viewModel.addProductIdToSelection(selectedProduct.id)
+                enableAllUnselectedProduct()
+            }
+            !isSelected -> {
+                viewModel.removeProductIdFromSelection(selectedProduct.id)
+                unselectProduct(selectedProduct)
+                enableAllUnselectedProduct()
+            }
+        }
 
         refreshButton()
     }
 
-    private fun handleProductClick(
-        isDisabled: Boolean,
-        disableReason: String
-    ) {
-        val selectedProductCount = viewModel.getSelectedProductIds().size
-        val reachedMaxAllowedSelection = selectedProductCount >= MAX_PRODUCT_SELECTION
-        when {
-            reachedMaxAllowedSelection -> showDisableReason(getString(R.string.sfs_placeholder_empty_quota))
-            isDisabled -> showDisableReason(disableReason)
-            else -> {}
-        }
+    private fun selectProduct(selectedProduct: HighlightableProduct) {
+        val products = productAdapter.getItems()
+        val updatedProducts = viewModel.markAsSelected(selectedProduct, products)
+        productAdapter.submit(updatedProducts)
     }
 
-    private fun showDisableReason(disableReason: String) {
-        /* val wording : String = when{
-             disableReason == DISABLED_REASON_PRODUCT_ALREADY_HAS_DISCOUNT -> getString(R.string.sd_product_already_on_discount)
-             disableReason.isNotEmpty() -> disableReason
-             else -> getString(R.string.sd_product_already_on_discount)
-         }
-
-         Toaster.build(
-             binding?.recyclerView ?: return,
-             wording,
-             Snackbar.LENGTH_SHORT,
-             Toaster.TYPE_NORMAL,
-             getString(R.string.sd_ok)
-         ).show()*/
+    private fun unselectProduct(selectedProduct: HighlightableProduct) {
+        val products = productAdapter.getItems()
+        val updatedProducts = viewModel.markAsUnselected(selectedProduct, products)
+        productAdapter.submit(updatedProducts)
     }
 
-    private fun showNoMoreRemainingQuota() {
-        /*  Toaster.build(
-              binding?.cardView ?: return,
-              getString(R.string.sd_no_remaining_quota),
-              Snackbar.LENGTH_SHORT,
-              Toaster.TYPE_ERROR,
-              getString(R.string.sd_ok)
-          ).show()*/
+    private fun disableAllUnselectedProduct() {
+        val products = productAdapter.getItems()
+        val updatedProducts = viewModel.disableAllUnselectedProducts(products)
+        productAdapter.submit(updatedProducts)
     }
 
-
-    private fun tickProduct(selectedProduct: HighlightableProduct) {
-        val updatedProduct = selectedProduct.copy(isSelected = true, selectedAtMillis = Date().time)
-        productAdapter.update(selectedProduct, updatedProduct)
-    }
-
-    private fun untickProduct(selectedProduct: HighlightableProduct) {
-        val updatedProduct = selectedProduct.copy(isSelected = false, selectedAtMillis = 0)
-        productAdapter.update(selectedProduct, updatedProduct)
-    }
-
-    override fun createAdapter() = productAdapter
-    override fun getRecyclerView(view: View) = binding?.recyclerView
-    override fun getSwipeRefreshLayout(view: View): SwipeRefreshLayout? {
-        return null
-    }
-
-    override fun getPerPage() = PAGE_SIZE
-
-    override fun addElementToAdapter(list: List<HighlightableProduct>) {
-        adapter?.addData(list)
-    }
-
-    override fun loadData(page: Int) {
-        getProducts(page)
-    }
-
-    private fun getProducts(page: Int) {
-        val offset = if (isFirstLoad) {
-            Constant.FIRST_PAGE
-        } else {
-            page * PAGE_SIZE
-        }
-
-        val searchKeyword = binding?.searchBar?.searchBarTextField?.text.toString().trim()
-
-        viewModel.getProducts(campaignId, searchKeyword, offset)
-    }
-
-    override fun clearAdapterData() {
-        adapter?.clearData()
-    }
-
-    override fun onShowLoading() {
-        adapter?.showLoading()
-    }
-
-    override fun onHideLoading() {
-        adapter?.hideLoading()
-    }
-
-    override fun onDataEmpty() {
-        adapter?.hideLoading()
-    }
-
-    override fun onGetListError(message: String) {
-        adapter?.hideLoading()
-    }
-
-    override fun onScrolled(xScrollAmount: Int, yScrollAmount: Int) {
-
+    private fun enableAllUnselectedProduct() {
+        val products = productAdapter.getItems()
+        val updatedProducts = viewModel.enableAllUnselectedProducts(products)
+        productAdapter.submit(updatedProducts)
     }
 
     private fun clearSearchBar() {
-        clearAllData()
-        getProducts(Constant.FIRST_PAGE)
+        doFreshSearch()
     }
 
     private fun refreshButton() {
         val selectedProductCount = viewModel.getSelectedProductIds().size
-        binding?.btnCreateCampaign?.isEnabled = selectedProductCount > Int.ZERO
+        binding?.btnProceed?.isEnabled = selectedProductCount > Int.ZERO
+    }
+
+    private fun storeSelectedProducts(products: List<HighlightableProduct>) {
+        products.forEach { product ->
+            if (product.isSelected) viewModel.addProductIdToSelection(product.id)
+        }
+    }
+
+    private fun handleScrollDownEvent() {
+        binding?.searchBar?.slideDown()
+        binding?.cardView.slideDown()
+        binding?.imgScrollUp.slideUp()
+    }
+
+    private fun handleScrollUpEvent() {
+        binding?.searchBar?.slideUp()
+        binding?.cardView.slideUp()
+        binding?.imgScrollUp.slideDown()
+    }
+
+    private fun doFreshSearch() {
+        productAdapter.submit(emptyList())
+        binding?.groupNoSearchResult?.gone()
+        viewModel.getProducts(campaignId, "", PAGE_SIZE, offset = 0)
+    }
+
+    private fun renderList(list: List<HighlightableProduct>, hasNextPage: Boolean) {
+        storeSelectedProducts(list)
+        productAdapter.hideLoading()
+        productAdapter.addData(list)
+
+        endlessRecyclerViewScrollListener?.updateStateAfterGetData()
+        endlessRecyclerViewScrollListener?.setHasNextPage(hasNextPage)
+
+        if (productAdapter.itemCount.orZero() < PAGE_SIZE && hasNextPage) {
+            endlessRecyclerViewScrollListener?.loadMoreNextPage()
+        }
+    }
+
+    private fun getProducts(page: Int) {
+        val offset = if (page == FIRST_PAGE) {
+            0
+        } else {
+            (page - ONE_PAGE) * PAGE_SIZE
+        }
+
+        val searchKeyword = binding?.searchBar?.searchBarTextField?.text.toString().trim()
+        viewModel.getProducts(campaignId, searchKeyword, PAGE_SIZE, offset)
+    }
+
+    private fun showContent() {
+        binding?.recyclerView?.visible()
+        binding?.cardView?.visible()
+        binding?.searchBar?.visible()
+    }
+
+    private fun hideContent() {
+        binding?.recyclerView?.gone()
+        binding?.cardView?.gone()
+        binding?.searchBar?.gone()
+    }
+
+    private fun handleProductSubmissionResult(result: ProductSubmissionResult) {
+        val isSuccess = result.isSuccess
+        if (isSuccess) {
+            CampaignRuleActivity.start(requireActivity(), campaignId)
+        } else {
+            binding?.root showError result.errorMessage
+        }
     }
 }

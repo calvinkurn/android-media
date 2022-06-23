@@ -91,7 +91,7 @@ data class GetSellerCampaignProductListResponse(
         @SerializedName("discount_percentage")
         val discountPercentage: Int = 0,
         @SerializedName("custom_stock")
-        val customStock: Int = 0,
+        val customStock: Long = 0,
         @SerializedName("original_custom_stock")
         val originalCustomStock: Int = 0,
         @SerializedName("original_stock")

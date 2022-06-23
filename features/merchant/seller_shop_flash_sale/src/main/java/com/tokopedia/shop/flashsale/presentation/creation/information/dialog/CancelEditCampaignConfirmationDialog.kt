@@ -6,7 +6,7 @@ import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.seller_shop_flash_sale.R
 import com.tokopedia.unifycomponents.UnifyButton
 
-class BackConfirmationDialog(private val context: Context) {
+class CancelEditCampaignConfirmationDialog(private val context: Context) {
 
     private var onPrimaryActionClick: () -> Unit = {}
     private var onSecondaryActionClick: () -> Unit = {}
@@ -14,7 +14,7 @@ class BackConfirmationDialog(private val context: Context) {
 
     fun show() {
         val dialog = DialogUnify(context, DialogUnify.VERTICAL_ACTION, DialogUnify.NO_IMAGE)
-        val view = View.inflate(context, R.layout.ssfs_dialog_back_confirmation, null)
+        val view = View.inflate(context, R.layout.ssfs_dialog_cancel_edit_campaign_confirmation, null)
         dialog.setUnlockVersion()
         dialog.setChild(view)
         setupView(view, dialog)
@@ -24,7 +24,7 @@ class BackConfirmationDialog(private val context: Context) {
     private fun setupView(view: View, dialog: DialogUnify) {
         val btnPrimaryAction = view.findViewById<UnifyButton>(R.id.btnYes)
         val btnSecondaryAction = view.findViewById<UnifyButton>(R.id.btnNo)
-        val btnThirdAction = view.findViewById<UnifyButton>(R.id.btnSaveAsDraft)
+        val btnThirdAction = view.findViewById<UnifyButton>(R.id.btnBack)
 
         btnPrimaryAction?.setOnClickListener {
             onPrimaryActionClick()

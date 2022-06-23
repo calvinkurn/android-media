@@ -32,11 +32,35 @@
         app:search_bar_placeholder="@string/sfs_search_product"
         app:search_bar_show_icon="false" />
 
+    <com.tokopedia.unifycomponents.LoaderUnify
+        android:id="@+id/loader"
+        android:layout_width="@dimen/unify_space_48"
+        android:layout_height="@dimen/unify_space_48"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/searchBar" />
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/imgScrollUp"
+        android:layout_width="wrap_content"
+        android:visibility="gone"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/unify_space_16"
+        android:elevation="@dimen/unify_space_4"
+        tools:visibility="visible"
+        android:layout_marginBottom="@dimen/unify_space_12"
+        app:layout_constraintBottom_toBottomOf="@+id/recyclerView"
+        app:layout_constraintEnd_toEndOf="@+id/recyclerView"
+        app:srcCompat="@drawable/ic_sfs_scroll_up" />
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerView"
         android:layout_width="match_parent"
         android:layout_marginTop="@dimen/unify_space_16"
         android:layout_height="0dp"
+        tools:listitem="@layout/ssfs_item_product_highlight"
+        tools:itemCount="5"
         app:layout_constraintBottom_toTopOf="@+id/cardView"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -47,6 +71,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         app:cardElevation="@dimen/unify_space_8"
+        android:visibility="gone"
         tools:visibility="visible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -71,7 +96,7 @@
                 app:unifyButtonVariant="ghost" />
 
             <com.tokopedia.unifycomponents.UnifyButton
-                android:id="@+id/btnCreateCampaign"
+                android:id="@+id/btnProceed"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/unify_space_16"
@@ -90,23 +115,36 @@
 
     </androidx.cardview.widget.CardView>
 
-    <androidx.constraintlayout.widget.Group
-        android:id="@+id/groupContent"
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tpgNoSearchResultTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:visibility="gone"
-        app:constraint_referenced_ids="searchBar,recyclerView" />
-
-    <com.tokopedia.empty_state.EmptyStateUnify
-        android:id="@+id/emptyState"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:visibility="gone"
-        app:layout_constraintBottom_toTopOf="@+id/cardView"
+        android:layout_marginTop="@dimen/unify_space_32"
+        android:text="@string/sfs_product_not_found"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/searchBar"
-        app:unifyEmptyStateOrientation="vertical"
-        app:unifyEmptyStateType="section" />
+        app:layout_constraintTop_toBottomOf="@id/searchBar"
+        app:typographyType="heading_4" />
+
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tpgNoSearchResultDescription"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/unify_space_4"
+        android:visibility="gone"
+        android:text="@string/sfs_search_result_not_found_description"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tpgNoSearchResultTitle"
+        app:typographyType="body_2" />
+
+    <androidx.constraintlayout.widget.Group
+        android:id="@+id/groupNoSearchResult"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:constraint_referenced_ids="tpgNoSearchResultTitle,tpgNoSearchResultDescription" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
