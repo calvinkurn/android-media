@@ -41,7 +41,6 @@ class ManageHighlightedProductViewModel @Inject constructor(
         get() = _submit
 
     private var selectedProductIds: MutableSet<Long> = mutableSetOf()
-    private var selectedProducts = mutableListOf<HighlightableProduct>()
 
     fun getProducts(
         campaignId: Long,
@@ -120,21 +119,6 @@ class ManageHighlightedProductViewModel @Inject constructor(
     fun removeProductIdFromSelection(productId : Long) {
         this.selectedProductIds.remove(productId)
     }
-
-
-    fun addProductToSelection(product: HighlightableProduct) {
-        this.selectedProducts.add(product)
-    }
-
-
-    fun getSelectedProducts(): List<HighlightableProduct> {
-        return selectedProducts
-    }
-
-    fun removeProductFromSelection(product: HighlightableProduct) {
-        this.selectedProducts.remove(product)
-    }
-
 
     fun markAsSelected(
         selectedProduct: HighlightableProduct,

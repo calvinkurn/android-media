@@ -250,19 +250,16 @@ class ManageHighlightedProductFragment : BaseDaggerFragment() {
                 binding?.recyclerView showToaster getString(R.string.sfs_successfully_highlighted)
                 selectProduct(selectedProduct)
                 viewModel.addProductIdToSelection(selectedProduct.id)
-                viewModel.addProductToSelection(selectedProduct)
                 disableAllUnselectedProduct()
             }
             isSelected && currentSelectedProductCount < MAX_PRODUCT_SELECTION -> {
                 binding?.recyclerView showToaster getString(R.string.sfs_successfully_highlighted)
                 selectProduct(selectedProduct)
                 viewModel.addProductIdToSelection(selectedProduct.id)
-                viewModel.addProductToSelection(selectedProduct)
                 enableAllUnselectedProduct()
             }
             !isSelected -> {
                 viewModel.removeProductIdFromSelection(selectedProduct.id)
-                viewModel.removeProductFromSelection(selectedProduct)
                 unselectProduct(selectedProduct)
                 enableAllUnselectedProduct()
             }
