@@ -7,10 +7,12 @@ import com.tokopedia.play.broadcaster.robot.PlayBroadcastViewModelRobot
 import com.tokopedia.play.broadcaster.ui.action.PlayBroadcastAction
 import com.tokopedia.play.broadcaster.ui.event.PlayBroadcastEvent
 import com.tokopedia.play.broadcaster.ui.model.game.quiz.QuizChoiceDetailStateUiModel
+import com.tokopedia.play.broadcaster.ui.model.game.quiz.QuizDetailDataUiModel
 import com.tokopedia.play.broadcaster.ui.model.game.quiz.QuizDetailStateUiModel
 import com.tokopedia.play.broadcaster.util.assertEqualTo
 import com.tokopedia.play.broadcaster.util.preference.HydraSharedPreferences
 import com.tokopedia.play_common.model.dto.interactive.InteractiveUiModel
+import com.tokopedia.play_common.model.ui.PlayLeaderboardUiModel
 import com.tokopedia.play_common.model.ui.QuizChoicesUiModel
 import com.tokopedia.play_common.view.game.quiz.PlayQuizOptionState
 import com.tokopedia.unit.test.rule.CoroutineTestRule
@@ -176,6 +178,55 @@ class PlayBroQuizViewModelTest {
                 getViewModel().submitAction(PlayBroadcastAction.ClickGameResultWidget)
             }
             events.last().assertEqualTo(PlayBroadcastEvent.ShowLeaderboardBottomSheet)
+        }
+    }
+
+    @Test
+    fun `when user click refresh on quiz detail bottom sheet it should return quiz detail succeed state model`() {
+        val mockQuizDetail = QuizDetailDataUiModel("pertanyaan", "hadiah")
+        coEvery { mockRepo.getChannelConfiguration() } returns mockConfig
+        coEvery { mockRepo.getInteractiveQuizDetail(any()) } throws mockException andThen mockQuizDetail
+        val robot = PlayBroadcastViewModelRobot(
+            dispatchers = testDispatcher,
+            channelRepo = mockRepo
+        )
+        robot.use {
+            val states = it.recordState {
+                getConfig()
+                getViewModel().getQuizDetailData()
+                getViewModel().submitAction(PlayBroadcastAction.ClickRefreshQuizDetailBottomSheet)
+            }
+            Assertions.assertThat(states.quizDetail)
+                .isInstanceOf(QuizDetailStateUiModel.Success::class.java)
+        }
+    }
+
+    @Test
+    fun `when user click refresh on leaderboard detail bottom sheet it should return quiz detail succeed state model`() {
+        val mockLeaderboard = listOf(
+            PlayLeaderboardUiModel(
+                title = "slot 1",
+                winners = emptyList(),
+                id = "1",
+                emptyLeaderBoardCopyText = "",
+                otherParticipantText = "",
+                otherParticipant = 0L
+            )
+        )
+        coEvery { mockRepo.getChannelConfiguration() } returns mockConfig
+        coEvery { mockRepo.getSellerLeaderboardWithSlot(any(), any()) } throws mockException andThen mockLeaderboard
+        val robot = PlayBroadcastViewModelRobot(
+            dispatchers = testDispatcher,
+            channelRepo = mockRepo
+        )
+        robot.use {
+            val states = it.recordState {
+                getConfig()
+                getViewModel().getLeaderboardWithSlots()
+                getViewModel().submitAction(PlayBroadcastAction.ClickRefreshQuizDetailBottomSheet)
+            }
+            Assertions.assertThat(states.quizDetail)
+                .isInstanceOf(QuizDetailStateUiModel.Success::class.java)
         }
     }
 }
