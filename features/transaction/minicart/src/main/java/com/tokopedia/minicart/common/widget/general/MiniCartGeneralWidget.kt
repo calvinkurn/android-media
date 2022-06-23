@@ -67,8 +67,6 @@ class MiniCartGeneralWidget @JvmOverloads constructor(
 
         val application = (context as? Activity)?.application
         initializeInjector(application)
-
-        sendEventMiniCartImpression()
     }
 
     private fun initializeInjector(baseAppComponent: Application?) {
@@ -345,6 +343,7 @@ class MiniCartGeneralWidget @JvmOverloads constructor(
             viewModel?.initializeShopIds(shopIds)
         }
         updateData()
+        sendEventMiniCartImpression()
     }
 
     /**
