@@ -8,12 +8,12 @@
     <string name="tm_premium">Premium</string>
     <string name="tm_kuota">Kuota</string>
     <string name="tm_quota_value">100</string>
-    <string name="tm_kupon_add">+ Kupon</string>
+    <string name="tm_kupon_add">Buat Kupon</string>
     <string name="tm_card_color_title">Warna Kartu</string>
     <string name="tm_card_bg_title">Motif Kartu</string>
     <string name="tm_card_btn_text">Buat Kartu</string>
     <string name="tm_shop_name">Shop Name</string>
-    <string name="tm_tokomember">Tokomember</string>
+    <string name="tm_tokomember">TokoMember</string>
     <string name="tm_bs_initial_title">Tokomu belum memenuhi syarat</string>
     <string name="tm_bs_initial_desc">Pastikan toko berstatus Official Store. Yuk, baca cara untuk jadi Official Store!</string>
     <string name="tm_bs_initial_btn_text">Pelajari Official Store</string>

@@ -364,12 +364,12 @@ class TokomemberDashCouponFragment : BaseDaggerFragment(), TmCouponActions, Sort
                 dialog?.setPrimaryCTAText("Lanjutkan")
                 dialog?.setSecondaryCTAText("Batalkan Kupon")
                 dialog?.setPrimaryCTAClickListener {
-                        voucherIdToUpdate = voucherId.toInt()
-                        voucherStatusToUpdate = DELETE
-                        tmCouponViewModel.getInitialCouponData("update", couponType.lowercase())
                         dialog.dismiss()
                 }
                 dialog?.setSecondaryCTAClickListener {
+                    voucherIdToUpdate = voucherId.toInt()
+                    voucherStatusToUpdate = DELETE
+                    tmCouponViewModel.getInitialCouponData("update", couponType.lowercase())
                     dialog.dismiss()
                 }
                 dialog?.show()
@@ -384,12 +384,12 @@ class TokomemberDashCouponFragment : BaseDaggerFragment(), TmCouponActions, Sort
                 dialog?.setPrimaryCTAText("Lanjutkan")
                 dialog?.setSecondaryCTAText("Batalkan Kupon")
                 dialog?.setPrimaryCTAClickListener {
-                    voucherIdToUpdate = voucherId.toInt()
-                    voucherStatusToUpdate = STOP
-                    tmCouponViewModel.getInitialCouponData("update", couponType.lowercase())
                     dialog.dismiss()
                 }
                 dialog?.setSecondaryCTAClickListener {
+                    voucherIdToUpdate = voucherId.toInt()
+                    voucherStatusToUpdate = STOP
+                    tmCouponViewModel.getInitialCouponData("update", couponType.lowercase())
                     dialog.dismiss()
                 }
                 dialog?.show()

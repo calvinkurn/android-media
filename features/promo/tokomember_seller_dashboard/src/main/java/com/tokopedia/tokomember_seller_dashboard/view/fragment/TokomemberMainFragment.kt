@@ -4,10 +4,10 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.tokomember_seller_dashboard.R
@@ -53,7 +53,7 @@ class TokomemberMainFragment : BaseDaggerFragment() {
         tmTracker = TmTracker()
         iv_error.loadImage(TM_SELLER_NO_OS)
         btn_error.setOnClickListener {
-            Toast.makeText(context, "Not allowed", Toast.LENGTH_SHORT).show()
+            activity?.finish()
             tmTracker?.clickBackHomeBSNoAccess(shopId.toString())
         }
     }
@@ -85,6 +85,12 @@ class TokomemberMainFragment : BaseDaggerFragment() {
                       }
                   } else{
                       viewFlipperIntro?.displayedChild = 2
+                      headerNoAccess.show()
+
+                      headerNoAccess.title = context?.getString(R.string.tm_tokomember).toString()
+                      headerNoAccess.setNavigationOnClickListener {
+                          activity?.finish()
+                      }
                       tmTracker?.viewBSNoAccess(shopId.toString())
                   }
               }

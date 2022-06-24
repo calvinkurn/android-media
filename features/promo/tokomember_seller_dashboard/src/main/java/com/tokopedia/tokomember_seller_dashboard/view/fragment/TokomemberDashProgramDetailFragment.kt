@@ -106,7 +106,7 @@ class TokomemberDashProgramDetailFragment : BaseDaggerFragment() {
     private fun setHeader() {
         header_program_detail.title = "Detail Program"
         header_program_detail.setNavigationOnClickListener {
-
+            activity?.onBackPressed()
         }
     }
 
