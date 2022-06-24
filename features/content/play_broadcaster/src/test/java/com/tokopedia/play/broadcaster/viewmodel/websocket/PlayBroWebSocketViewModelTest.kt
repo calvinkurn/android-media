@@ -35,6 +35,7 @@ import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.runBlockingTest
 import kotlinx.coroutines.yield
 import okhttp3.internal.wait
+import org.assertj.core.api.Assertions
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -334,6 +335,32 @@ class PlayBroWebSocketViewModelTest {
             fakePlayWebSocket.invokeFailure(mockException)
 
             fakePlayWebSocket.isOpen().assertTrue()
+        }
+    }
+
+    @Test
+    fun `when user received unknown type quiz web socket event it should return unknown type interactive ui model`() {
+        val mockUnknownQuizString = webSocketUiModelBuilder.buildUnknownTypeChannelQuizString()
+        val mockSocketCredentialUseCase = mockk<GetSocketCredentialUseCase>(relaxed = true)
+        val mockSocketCredential = GetSocketCredentialResponse.SocketCredential()
+
+        coEvery { mockSocketCredentialUseCase.executeOnBackground() } returns mockSocketCredential
+        coEvery { mockRepo.getSellerLeaderboardWithSlot(any(), any()) } returns emptyList()
+        val robot = PlayBroadcastViewModelRobot(
+            dispatchers = testDispatcher,
+            channelRepo = mockRepo,
+            playBroadcastWebSocket = fakePlayWebSocket,
+            getSocketCredentialUseCase = mockSocketCredentialUseCase,
+        )
+
+        robot.use {
+            val state = robot.recordState {
+                getConfig()
+                this.executeViewModelPrivateFunction("startWebSocket")
+                fakePlayWebSocket.fakeEmitMessage(mockUnknownQuizString)
+            }
+            Assertions.assertThat(state.interactive)
+                .isInstanceOf(InteractiveUiModel.Unknown::class.java)
         }
     }
 }
