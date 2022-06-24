@@ -8,157 +8,157 @@ import kotlinx.parcelize.Parcelize
 
 data class GetMerchantDataResponse(
         @SerializedName("tokofoodGetMerchantData")
-        @Expose val tokofoodGetMerchantData: TokoFoodGetMerchantData,
+        val tokofoodGetMerchantData: TokoFoodGetMerchantData
 )
 
 data class TokoFoodGetMerchantData(
         @SerializedName("ticker")
-        @Expose val ticker: TokoFoodTickerDetail,
+        val ticker: TokoFoodTickerDetail,
         @SerializedName("merchantProfile")
-        @Expose val merchantProfile: TokoFoodMerchantProfile,
+        val merchantProfile: TokoFoodMerchantProfile,
         @SerializedName("filters")
-        @Expose val filters: List<TokoFoodCategoryFilter>,
+        val filters: List<TokoFoodCategoryFilter>,
         @SerializedName("categories")
-        @Expose val categories: List<TokoFoodCategoryCatalog>
+        val categories: List<TokoFoodCategoryCatalog>
 )
 
 data class TokoFoodTickerDetail(
         @SerializedName("title")
-        @Expose val title: String = "",
+        val title: String = "",
         @SerializedName("subtitle")
-        @Expose val subtitle: String = "",
+        val subtitle: String = "",
         @SerializedName("link")
-        @Expose val link: String = "",
+        val link: String = "",
         @SerializedName("type")
-        @Expose val type: String = ""
+        val type: String = ""
 )
 
 data class TokoFoodMerchantProfile(
         @SerializedName("name")
-        @Expose val name: String = "",
+        val name: String = "",
         @SerializedName("address")
-        @Expose val address: String = "",
+        val address: String = "",
         @SerializedName("latitude")
-        @Expose val latitude: String = "",
+        val latitude: String = "",
         @SerializedName("longitude")
-        @Expose val longitude: String = "",
+        val longitude: String = "",
         @SerializedName("imageURL")
-        @Expose val imageURL: String? = "",
+        val imageURL: String? = "",
         @SerializedName("closeWarning")
-        @Expose val closeWarning: String? = "",
+        val closeWarning: String? = "",
         @SerializedName("merchantCategories")
-        @Expose val merchantCategories: List<String> = listOf(),
+        val merchantCategories: List<String> = listOf(),
         @SerializedName("rating")
-        @Expose val rating: String = "",
+        val rating: String = "",
         @SerializedName("ratingFmt")
-        @Expose val ratingFmt: String = "",
+        val ratingFmt: String = "",
         @SerializedName("totalRating")
-        @Expose val totalRating: Double = 0.0,
+        val totalRating: Double = 0.0,
         @SerializedName("totalRatingFmt")
-        @Expose val totalRatingFmt: String = "",
+        val totalRatingFmt: String = "",
         @SerializedName("distance")
-        @Expose val distance: Double = 0.0,
+        val distance: Double = 0.0,
         @SerializedName("distanceFmt")
-        @Expose val distanceFmt: TokoFoodFmtWarningContent = TokoFoodFmtWarningContent(),
+        val distanceFmt: TokoFoodFmtWarningContent = TokoFoodFmtWarningContent(),
         @SerializedName("deliverable")
-        @Expose val deliverable: Boolean = false,
+        val deliverable: Boolean = false,
         @SerializedName("eta")
-        @Expose val eta: Int = 0,
+        val eta: Int = 0,
         @SerializedName("etaFmt")
-        @Expose val etaFmt: TokoFoodFmtWarningContent = TokoFoodFmtWarningContent(),
+        val etaFmt: TokoFoodFmtWarningContent = TokoFoodFmtWarningContent(),
         @SerializedName("opsHourFmt")
-        @Expose val opsHourFmt: TokoFoodFmtWarningContent = TokoFoodFmtWarningContent(),
+        val opsHourFmt: TokoFoodFmtWarningContent = TokoFoodFmtWarningContent(),
         @SerializedName("opsHourDetail")
-        @Expose val opsHourDetail: List<TokoFoodMerchantOpsHour>
+        val opsHourDetail: List<TokoFoodMerchantOpsHour>
 )
 
 data class TokoFoodFmtWarningContent(
         @SerializedName("content")
-        @Expose val content: String = "",
+        val content: String = "",
         @SerializedName("isWarning")
-        @Expose val isWarning: Boolean = false
+        val isWarning: Boolean = false
 )
 
 data class TokoFoodMerchantOpsHour(
         @SerializedName("day")
-        @Expose val day: String = "",
+        val day: String = "",
         @SerializedName("time")
-        @Expose val time: String = "",
+        val time: String = "",
         @SerializedName("isWarning")
-        @Expose val isWarning: Boolean = false
+        val isWarning: Boolean = false
 )
 
 data class TokoFoodCategoryFilter(
         @SerializedName("key")
-        @Expose val key: String = "",
+        val key: String = "",
         @SerializedName("title")
-        @Expose val title: String = "",
+        val title: String = "",
         @SerializedName("subtitle")
-        @Expose val subtitle: String = ""
+        val subtitle: String = ""
 )
 
 @SuppressLint("Invalid Data Type")
 data class TokoFoodCatalogDetail(
         @SerializedName("id")
-        @Expose val id: String = "",
+        val id: String = "",
         @SerializedName("name")
-        @Expose val name: String = "",
+        val name: String = "",
         @SerializedName("description")
-        @Expose val description: String = "",
+        val description: String = "",
         @SerializedName("imageURL")
-        @Expose val imageURL: String = "",
+        val imageURL: String = "",
         @SerializedName("price")
-        @Expose val price: Double = 0.0,
+        val price: Double = 0.0,
         @SerializedName("priceFmt")
-        @Expose val priceFmt: String = "",
+        val priceFmt: String = "",
         @SerializedName("slashPrice")
-        @Expose val slashPrice: Double = 0.0,
+        val slashPrice: Double = 0.0,
         @SerializedName("slashPriceFmt")
-        @Expose val slashPriceFmt: String = "",
+        val slashPriceFmt: String = "",
         @SerializedName("isOutOfStock")
-        @Expose val isOutOfStock: Boolean = false,
+        val isOutOfStock: Boolean = false,
         @SerializedName("variants")
-        @Expose val variants: List<TokoFoodCatalogVariantDetail>
+        val variants: List<TokoFoodCatalogVariantDetail>
 )
 
 @Parcelize
 data class TokoFoodCatalogVariantDetail(
         @SerializedName("id")
-        @Expose val id: String = "",
+        val id: String = "",
         @SerializedName("name")
-        @Expose val name: String = "",
+        val name: String = "",
         @SerializedName("options")
-        @Expose val options: List<TokoFoodCatalogVariantOptionDetail>,
+        val options: List<TokoFoodCatalogVariantOptionDetail>,
         @SerializedName("isRequired")
-        @Expose val isRequired: Boolean = false,
+        val isRequired: Boolean = false,
         @SerializedName("maxQty")
-        @Expose val maxQty: Int = 0,
+        val maxQty: Int = 0,
         @SerializedName("minQty")
-        @Expose val minQty: Int = 0
+        val minQty: Int = 0
 ) : Parcelable
 
 @SuppressLint("Invalid Data Type")
 @Parcelize
 data class TokoFoodCatalogVariantOptionDetail(
         @SerializedName("id")
-        @Expose val id: String = "",
+        val id: String = "",
         @SerializedName("name")
-        @Expose val name: String = "",
+        val name: String = "",
         @SerializedName("price")
-        @Expose val price: Double = 0.0,
+        val price: Double = 0.0,
         @SerializedName("priceFmt")
-        @Expose val priceFmt: String = "",
+        val priceFmt: String = "",
         @SerializedName("status")
-        @Expose val status: Int
+        val status: Int
 ) : Parcelable
 
 data class TokoFoodCategoryCatalog(
         @SerializedName("id")
-        @Expose val id: String = "",
+        val id: String = "",
         @SerializedName("key")
-        @Expose val key: String = "",
+        val key: String = "",
         @SerializedName("categoryName")
-        @Expose val categoryName: String = "",
+        val categoryName: String = "",
         @SerializedName("catalogs")
-        @Expose val catalogs: List<TokoFoodCatalogDetail>
+        val catalogs: List<TokoFoodCatalogDetail>
 )
