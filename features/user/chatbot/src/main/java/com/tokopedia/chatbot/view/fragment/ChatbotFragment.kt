@@ -579,7 +579,10 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
                 this,
                 (activity as BaseChatToolbarActivity).getToolbar(),
                 adapter,
-                onChatMenuButtonClicked
+                onChatMenuButtonClicked,
+                sendAnalytics = { impressionType ->
+                    chatbotAnalytics.get().eventShowView(impressionType)
+            }
         )
     }
 
