@@ -1,6 +1,9 @@
 package com.tokopedia.feedcomponent.view.adapter.post
 
+import android.annotation.SuppressLint
+import android.view.GestureDetector
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
@@ -8,6 +11,7 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.adapterdelegate.BaseDiffUtilAdapter
+import com.tokopedia.adapterdelegate.BaseViewHolder
 import com.tokopedia.adapterdelegate.TypedAdapterDelegate
 import com.tokopedia.feedcomponent.R
 import com.tokopedia.feedcomponent.data.feedrevamp.FeedXCard
@@ -60,11 +64,12 @@ internal class FeedPostCarouselAdapter(
         }
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     internal class ViewHolder(
         itemView: View,
         private val dataSource: DataSource,
         private val listener: Listener,
-    ) : RecyclerView.ViewHolder(itemView) {
+    ) : BaseViewHolder(itemView) {
 
         private val postImage = itemView.findViewById<ImageUnify>(R.id.post_image)
         private val postImageLayout = itemView.findViewById<ConstraintLayout>(R.id.post_image_layout)
@@ -75,13 +80,40 @@ internal class FeedPostCarouselAdapter(
         private val topAdsProductName = itemView.findViewById<Typography>(R.id.top_ads_product_name)
         private val topAdsChevron = topAdsCard.findViewById<IconUnify>(R.id.chevron)
 
+        private val postGestureDetector = GestureDetector(
+            itemView.context,
+            object : GestureDetector.SimpleOnGestureListener() {
+                override fun onSingleTapConfirmed(e: MotionEvent?): Boolean {
+                    changeTopAdsColorToGreen()
+                    listener.onImageClicked(this@ViewHolder)
+
+                    (0 until postImageLayout.childCount).forEach {
+                        val view = postImageLayout.getChildAt(it)
+                        if (view is PostTagView) view.showExpandedView()
+                    }
+
+                    return true
+                }
+            }
+        )
+
         init {
+            itemView.setOnTouchListener { _, event ->
+                postGestureDetector.onTouchEvent(event)
+                true
+            }
+
             likeAnim.setImageDrawable(
                 MethodChecker.getDrawable(
                     itemView.context,
                     R.drawable.ic_thumb_filled
                 )
             )
+        }
+
+        override fun onViewRecycled() {
+            super.onViewRecycled()
+            removeExistingPostTags()
         }
 
         fun bind(item: FeedXMedia) {
@@ -103,7 +135,7 @@ internal class FeedPostCarouselAdapter(
                     val tagView = PostTagView(itemView.context, tagging)
                     tagView.bindData(
                         dynamicPostListener = dataSource.getDynamicPostListener(),
-                        products = item.tagProducts,
+                        products = card.products,
                         width = it.width,
                         height = it.height,
                         positionInFeed = dataSource.getPositionInFeed(),
@@ -156,6 +188,12 @@ internal class FeedPostCarouselAdapter(
             topAdsCard.setBackgroundColor(primaryColor)
         }
 
+        private fun removeExistingPostTags() {
+            (0 until postImageLayout.childCount).mapNotNull {
+                postImageLayout.getChildAt(it) as? PostTagView
+            }.forEach { postImageLayout.removeView(it) }
+        }
+
         companion object {
             private const val TYPE_USE_ASGC_NEW_DESIGN: String = "use_new_design"
 
@@ -177,6 +215,7 @@ internal class FeedPostCarouselAdapter(
 
         interface Listener {
             fun onTopAdsCardClicked(viewHolder: ViewHolder)
+            fun onImageClicked(viewHolder: BaseViewHolder)
         }
 
         interface DataSource {

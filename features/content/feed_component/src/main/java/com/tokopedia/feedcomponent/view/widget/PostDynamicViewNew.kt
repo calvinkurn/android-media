@@ -29,6 +29,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.exoplayer2.ui.PlayerView
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.adapterdelegate.BaseViewHolder
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalContent
 import com.tokopedia.carousel.CarouselUnify
@@ -193,6 +194,10 @@ class PostDynamicViewNew @JvmOverloads constructor(
         },
         listener = object : FeedPostCarouselAdapter.ViewHolder.Listener {
             override fun onTopAdsCardClicked(viewHolder: FeedPostCarouselAdapter.ViewHolder) {
+
+            }
+
+            override fun onImageClicked(viewHolder: BaseViewHolder) {
 
             }
         },
