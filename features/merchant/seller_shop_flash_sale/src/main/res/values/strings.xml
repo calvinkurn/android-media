@@ -250,11 +250,20 @@
     <string name="manage_product_incomplete_product_info_label">Beberapa produk memiliki info yang belum lengkap. Lengkapi dulu, ya!</string>
     <string name="manage_product_placeholder_product_count">(%s Produk)</string>
     <string name="manage_product_add_product_label">Tambah Produk</string>
-    <string name="manage_product_item_stock_at_seller_location_label">Stok: <b>%s</b> di lokasi seller</string>
-    <string name="manage_product_item_campaign_stock_label">Stok campaign: <b>%s</b></string>
-    <string name="manage_product_item_max_buy_label">Maks. Pembelian: <b>%s</b></string>
+    <string name="manage_product_item_stock_at_seller_location_label">Stok: &lt;b>%d&lt;/b></string>
+    <string name="manage_product_item_campaign_stock_label">Stok campaign: &lt;b>%d&lt;/b></string>
+    <string name="manage_product_item_max_buy_label">Maks. Pembelian: &lt;b>%d&lt;/b></string>
     <string name="manage_product_continue_label">Lanjut</string>
     <string name="manage_product_save_draft_label">Simpan Draft</string>
+    <string name="manage_product_maximum_product_error">Sudah mencapai maks. 50 produk.</string>
+    <string name="manage_product_error_banner_title">Beberapa produk memiliki kesalahan</string>
+    <string name="manage_product_error_banner_description">Cek semua produkmu lalu ubah dan perbaiki informasi produknya, ya.</string>
+    <string name="error_msg_max_discounted_price">Harga campaign Maks. %s</string>
+    <string name="error_msg_max_campaign_stock">Stok campaign Maks. %d</string>
+    <string name="error_msg_min_discounted_price">Harga campaign Min. %s</string>
+    <string name="error_msg_min_campaign_stock">Stok campaign Min. 1</string>
+    <string name="error_msg_max_campaign_order">Maksimum pembelian tidak boleh melebihi stok utama</string>
+    <string name="error_msg_other">&#160;dan terjadi kesalahan lainnya</string>
 
     <!--Manage Product Highlight -->
     <string name="sfs_manage_highlight">Atur Highlight</string>
