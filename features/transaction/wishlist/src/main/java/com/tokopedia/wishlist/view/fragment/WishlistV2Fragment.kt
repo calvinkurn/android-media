@@ -466,6 +466,7 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
                 changeTypeLayout()
                 setTypeLayoutIcon()
             }
+            wishlistV2StickyCountManageLabel.testDeletion.setOnClickListener { mockAutomaticDeletion() }
         }
 
         wishlistV2Adapter = WishlistV2Adapter().apply {
@@ -1140,6 +1141,19 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
 
         })
         bottomSheetCleaner.show(childFragmentManager)
+    }
+
+    private fun mockAutomaticDeletion() {
+        isAutoDeletion = true
+        bulkDeleteMode = 2
+        paramWishlistV2.source = SOURCE_AUTOMATIC_DELETION
+        onTickerCTASortFromLatest()
+        turnOnBulkDeleteMode()
+        binding?.run {
+            wishlistV2StickyCountManageLabel.wishlistManageLabel.text = getString(Rv2.string.wishlist_cancel_manage_label)
+        }
+        view?.let { Toaster.build(it, getString(Rv2.string.wishlist_v2_terlama_disimpan),
+            Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL).show() }
     }
 
     private fun showShareBottomSheet(wishlistItem: WishlistV2Response.Data.WishlistV2.Item) {
