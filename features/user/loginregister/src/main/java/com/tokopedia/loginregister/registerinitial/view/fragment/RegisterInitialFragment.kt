@@ -167,11 +167,8 @@ open class RegisterInitialFragment : BaseDaggerFragment(),
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
-    private val viewModelProvider by lazy {
-        ViewModelProviders.of(this, viewModelFactory)
-    }
-    val registerInitialViewModel by lazy {
-        viewModelProvider.get(RegisterInitialViewModel::class.java)
+    private val registerInitialViewModel by lazy {
+        ViewModelProvider(this, viewModelFactory).get(RegisterInitialViewModel::class.java)
     }
 
     @Inject

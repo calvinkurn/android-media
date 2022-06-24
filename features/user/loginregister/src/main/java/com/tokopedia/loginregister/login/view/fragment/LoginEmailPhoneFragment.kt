@@ -146,8 +146,9 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
-    private val viewModelProvider by lazy { ViewModelProviders.of(this, viewModelFactory) }
-    val viewModel by lazy { viewModelProvider.get(LoginEmailPhoneViewModel::class.java) }
+    protected val viewModel by lazy {
+        ViewModelProvider(this, viewModelFactory).get(LoginEmailPhoneViewModel::class.java)
+    }
 
     @Inject
     lateinit var analytics: LoginRegisterAnalytics
