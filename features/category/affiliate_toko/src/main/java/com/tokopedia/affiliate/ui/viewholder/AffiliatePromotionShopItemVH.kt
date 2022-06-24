@@ -92,7 +92,7 @@ class AffiliatePromotionShopItemVH(
                     text = footer.footerText
                 }
             }
-            getMessageDataFromType(it, OVERLAY_IMAGE_TYPE)?.let { message ->
+            getMessageData(it)?.let { message ->
                 itemView.findViewById<Label>(R.id.labelProductStatus).apply {
                     if (message.isNotEmpty()) {
                         visible()
@@ -172,10 +172,9 @@ class AffiliatePromotionShopItemVH(
         return (item.footer?.find { it?.footerType == type })
     }
 
-    private fun getMessageDataFromType(
+    private fun getMessageData(
         item: AffiliateSearchData.SearchAffiliate.Data.Card.Item,
-        type: Int
     ): String? {
-        return (item.status?.messages?.find { it?.messageType == type })?.title
+        return item.status?.messages?.firstOrNull()?.title
     }
 }
