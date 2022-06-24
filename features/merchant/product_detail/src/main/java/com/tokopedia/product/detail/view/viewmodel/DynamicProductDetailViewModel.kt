@@ -691,8 +691,6 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
             if (result is Success) {
                 listener.onSuccessRemoveWishlist(result.data, productId)
             } else if (result is Fail) {
-                val extras = mapOf(WISHLIST_STATUS_KEY to REMOVE_WISHLIST).toString()
-                ProductDetailLogger.logThrowable(result.throwable, WISHLIST_ERROR_TYPE, productId, deviceId, extras)
                 listener.onErrorRemoveWishlist(result.throwable, productId)
             }
         }
@@ -732,8 +730,6 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
             if (result is Success) {
                 listener.onSuccessAddWishlist(result.data, productId)
             } else if (result is Fail) {
-                val extras = mapOf(WISHLIST_STATUS_KEY to ADD_WISHLIST).toString()
-                ProductDetailLogger.logThrowable(result.throwable, WISHLIST_ERROR_TYPE, productId, deviceId, extras)
                 listener.onErrorAddWishList(result.throwable, productId)
             }
         }
