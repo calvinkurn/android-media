@@ -48,22 +48,10 @@ class RegisterInitialModule {
         return getInstance().multiRequestGraphqlUseCase
     }
 
-    @ActivityScope
-    @Provides
-    fun provideMainDispatcher(): CoroutineDispatcher {
-        return Main
-    }
-
     @Provides
     @ActivityScope
     fun provideRegisterInitialRouter(): RegisterInitialRouterHelper {
         return RegisterInitialRouterHelper()
-    }
-
-    @ActivityScope
-    @Provides
-    fun provideSeamlessAnalytics(): SeamlessLoginAnalytics {
-        return SeamlessLoginAnalytics()
     }
 
     @ActivityScope

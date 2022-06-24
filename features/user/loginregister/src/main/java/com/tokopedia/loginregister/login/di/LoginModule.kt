@@ -51,38 +51,8 @@ open class LoginModule {
 
     @ActivityScope
     @Provides
-    @Named(LOGIN_CACHE)
-    fun provideLocalCacheHandler(@ApplicationContext context: Context): LocalCacheHandler {
-        return LocalCacheHandler(context, LOGIN_CACHE)
-    }
-
-    @ActivityScope
-    @Provides
     open fun provideFirebaseRemoteConfig(@ApplicationContext context: Context): RemoteConfig {
         return FirebaseRemoteConfigImpl(context)
     }
 
-    @ActivityScope
-    @Provides
-    fun provideMainDispatcher(): CoroutineDispatcher {
-        return Dispatchers.Main
-    }
-
-    @ActivityScope
-    @Provides
-    @Named(NAMED_DISPATCHERS_IO)
-    fun provideIoDispatcher(): CoroutineDispatcher {
-        return Dispatchers.IO
-    }
-
-    @ActivityScope
-    @Provides
-    fun provideSocmedBottomSheet(@ApplicationContext context: Context): SocmedBottomSheet {
-        return SocmedBottomSheet(context)
-    }
-    
-    companion object {
-        const val NAMED_DISPATCHERS_IO = "DispatcherIO"
-        const val LOGIN_CACHE = "LOGIN_CACHE"
-    }
 }
