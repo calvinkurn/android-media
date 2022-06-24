@@ -161,7 +161,7 @@ class StepperStatusListView : LinearLayout {
         )
         val nn300Color = ContextCompat.getColor(
             context,
-            com.tokopedia.unifyprinciples.R.color.Unify_NN300
+            com.tokopedia.unifyprinciples.R.color.Unify_NN500
         )
         return Pair(gn400Color, nn300Color)
     }

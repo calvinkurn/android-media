@@ -13,7 +13,9 @@
         app:layout_constraintTop_toTopOf="parent"
         android:layout_marginTop="16dp"
         android:layout_marginStart="16dp"
-        app:icon_name="SHOP"/>
+        app:icon_name="SHOP"
+        app:icon_color_light_enable="@color/Unify_NN600"
+        app:icon_color_night_enable="@color/Unify_NN600" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvOrderTrackerMerchantName"
@@ -44,7 +46,7 @@
         android:textColor="@color/Unify_NN600"
         app:typographyType="body_3"
         app:typographyWeight="reguler"
-        tools:text="@string/order_tracking_distance_restaurant"
+        tools:text="2.5 km dari tujuan"
         app:layout_constraintStart_toStartOf="@id/tvOrderTrackerMerchantName"
         app:layout_constraintTop_toTopOf="@id/ivOrderTrackingDistance"/>
 
@@ -53,6 +55,8 @@
         android:layout_width="20dp"
         android:layout_height="20dp"
         app:icon_name="LOCATION"
+        app:icon_color_light_enable="@color/Unify_NN600"
+        app:icon_color_night_enable="@color/Unify_NN600"
         app:layout_constraintStart_toStartOf="@id/icOrderTrackingMerchant"
         app:layout_constraintEnd_toEndOf="@id/icOrderTrackingMerchant"
         app:layout_constraintTop_toBottomOf="@id/ivOrderTrackingDistance"/>

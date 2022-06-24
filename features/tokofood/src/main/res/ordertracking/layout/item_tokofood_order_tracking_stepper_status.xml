@@ -8,10 +8,11 @@
 
     <com.tokopedia.iconunify.IconUnify
         android:id="@+id/icOrderTrackingStatus"
-        android:layout_width="20dp"
-        android:layout_height="20dp"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
         android:layout_marginStart="8dp"
-        app:icon_color_light_enable="@color/Unify_NN200"
+        app:icon_color_light_enable="@color/Unify_NN500"
+        app:icon_color_night_enable="@color/Unify_NN500"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:icon_name="PRODUCT_MOVE" />
