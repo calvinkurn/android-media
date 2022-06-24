@@ -1100,7 +1100,7 @@ class ShopHomeViewModel @Inject constructor(
             }
             WidgetType.PERSONALIZATION -> {
                 when(widgetModel.name){
-                    WidgetName.RECENT_ACTIVITY -> {
+                    WidgetName.RECENT_ACTIVITY, WidgetName.REMINDER -> {
                         true
                     }
                     else -> {

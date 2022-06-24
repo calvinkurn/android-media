@@ -171,7 +171,7 @@ class ShopHomeCarouselProductPersonalizationViewHolder (
                             productItem
                     )
                 }
-                if (element.name == RECENT_ACTIVITY) {
+                if (element.name == RECENT_ACTIVITY || element.name == REMINDER) {
                     if (productCardModel.isButtonAtcShown()) {
                         shopHomeCarouselProductListener.onImpressionProductAtc(
                             productItem,
@@ -209,12 +209,23 @@ class ShopHomeCarouselProductPersonalizationViewHolder (
                 )
             }
 
-            BUY_AGAIN, REMINDER -> {
+            BUY_AGAIN -> {
                 recyclerView?.bindCarouselProductCardViewList(
                         productCardModelList = carouselProductList,
                         carouselProductCardOnItemAddToCartListener = productAddToCartListener,
                         carouselProductCardOnItemClickListener = productClickListener,
                         carouselProductCardOnItemImpressedListener = productImpressionListener
+                )
+            }
+
+            REMINDER -> {
+                recyclerView?.bindCarouselProductCardViewList(
+                    productCardModelList = carouselProductList,
+                    carouselProductCardOnItemAddToCartListener = productAddToCartDefaultListener,
+                    carouselProductCardOnItemClickListener = productClickListener,
+                    carouselProductCardOnItemImpressedListener = productImpressionListener,
+                    carouselProductCardOnItemATCNonVariantClickListener = productAddToCartNonVariantListener,
+                    carouselProductCardOnItemAddVariantClickListener = productAddToCartVariantListener
                 )
             }
 

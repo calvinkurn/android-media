@@ -48,6 +48,7 @@ import com.tokopedia.shop.home.view.model.ShopPageHomeWidgetLayoutUiModel
 import com.tokopedia.shop.home.view.model.StatusCampaign
 import com.tokopedia.shop.common.data.model.ShopPageGetHomeType
 import com.tokopedia.shop.home.WidgetName.RECENT_ACTIVITY
+import com.tokopedia.shop.home.WidgetName.REMINDER
 import com.tokopedia.shop.product.data.model.ShopProduct
 import com.tokopedia.shop.product.view.datamodel.LabelGroupUiModel
 import com.tokopedia.shop_widget.common.uimodel.DynamicHeaderUiModel
@@ -186,7 +187,7 @@ object ShopPageHomeMapper {
         enableDirectPurchase: Boolean,
         widgetName: String
     ): Boolean {
-        return enableDirectPurchase && (widgetName == RECENT_ACTIVITY)
+        return enableDirectPurchase && (widgetName == RECENT_ACTIVITY || widgetName == REMINDER)
     }
 
     fun mapToProductCardModel(
