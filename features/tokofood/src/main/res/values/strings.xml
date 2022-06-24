@@ -114,7 +114,6 @@
     <string name="order_tracking_estimation_time"><![CDATA[%1s <b>%2$s</b>]]></string>
     <string name="order_tracking_detail_order_header_label">Detail Pesanan</string>
     <string name="order_tracking_shipping_restaurant_label">Dari Restoran</string>
-    <string name="order_tracking_distance_restaurant">%s km dari tujuan</string>
     <string name="order_detail_shipping_header_label">Detail Pengiriman</string>
     <string name="order_detail_shipping_destination_label">Dikirim ke</string>
     <string name="order_detail_payment_header_label">Rincian Pembayaran</string>
