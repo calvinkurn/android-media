@@ -73,7 +73,7 @@ abstract class ChatbotMessageUnifyViewHolder(
         customChatLayout?.setReplyListener(replyBubbleListener)
     }
 
-    override fun setHeaderDate(element: BaseChatUiModel?) {
+    override fun setHeaderDate(element: BaseChatUiModel) {
         if (date == null) return
         val time = element?.replyTime?.let {
             ChatBotTimeConverter.getDateIndicatorTime(
@@ -81,8 +81,8 @@ abstract class ChatbotMessageUnifyViewHolder(
                     itemView.context.getString(com.tokopedia.chat_common.R.string.chat_today_date),
                     itemView.context.getString(com.tokopedia.chat_common.R.string.chat_yesterday_date))
         }
-        date.text = time
-        if (date != null && element?.isShowDate ==true
+        date?.text = time
+        if (date != null && element.isShowDate ==true
                 && !TextUtils.isEmpty(time)) {
             dateContainer?.show()
         } else if (date != null) {
@@ -90,6 +90,7 @@ abstract class ChatbotMessageUnifyViewHolder(
         }
     }
 
-    override fun getDateId(): Int = R.id.date
+    override val dateId: Int
+        get() = R.id.date
 
 }

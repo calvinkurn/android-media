@@ -78,9 +78,8 @@ class RightChatMessageUnifyViewHolder(
         customChatLayout?.background = backgroundChatWithoutReplyBubble
     }
 
-    override fun getChatStatusId(): Int {
-        return R.id.ivCheckMark
-    }
+    override val chatStatusId: Int
+        get() = R.id.ivCheckMark
 
     override fun alwaysShowTime(): Boolean {
         return true
