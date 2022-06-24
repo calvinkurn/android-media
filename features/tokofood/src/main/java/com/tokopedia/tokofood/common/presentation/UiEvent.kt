@@ -15,12 +15,14 @@ data class UiEvent(
         const val EVENT_SUCCESS_UPDATE_CART = 8
         const val EVENT_SUCCESS_LOAD_CART = 9
         const val EVENT_SUCCESS_ADD_TO_CART = 10
-        const val EVENT_PHONE_VERIFICATION = 11
-        const val EVENT_FAILED_LOAD_CART = 12
-        const val EVENT_FAILED_DELETE_PRODUCT = 13
-        const val EVENT_FAILED_UPDATE_NOTES = 14
-        const val EVENT_FAILED_UPDATE_QUANTITY = 15
-        const val EVENT_FAILED_UPDATE_CART = 16
-        const val EVENT_FAILED_ADD_TO_CART = 17
+        const val EVENT_HIDE_LOADING_ADD_TO_CART = 11
+        const val EVENT_HIDE_LOADING_UPDATE_TO_CART = 12
+        const val EVENT_PHONE_VERIFICATION = 13
+        const val EVENT_FAILED_LOAD_CART = 14
+        const val EVENT_FAILED_DELETE_PRODUCT = 15
+        const val EVENT_FAILED_UPDATE_NOTES = 16
+        const val EVENT_FAILED_UPDATE_QUANTITY = 17
+        const val EVENT_FAILED_UPDATE_CART = 18
+        const val EVENT_FAILED_ADD_TO_CART = 19
     }
 }

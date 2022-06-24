@@ -1,5 +1,7 @@
 package com.tokopedia.tokofood.common.util
 
+import android.os.Parcel
+import android.os.Parcelable
 import android.view.View
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.network.constant.ResponseStatus
@@ -35,6 +37,21 @@ object TokofoodExt {
                     updateParams to cartTokoFoodData
                 }
             }
+        }
+    }
+
+    fun <T: Parcelable> T.copyParcelable(): T? {
+        var parcel: Parcel? = null
+
+        return try {
+            parcel = Parcel.obtain()
+            parcel.writeParcelable(this, 0)
+            parcel.setDataPosition(0)
+            parcel.readParcelable(this::class.java.classLoader)
+        } catch(throwable: Throwable) {
+            null
+        } finally {
+            parcel?.recycle()
         }
     }
 
