@@ -7,16 +7,21 @@ import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.GradientDrawable
 import android.graphics.drawable.ShapeDrawable
+import android.view.Gravity
 import android.view.TouchDelegate
 import android.view.View
 import android.view.ViewStub
 import android.widget.ImageView
+import android.widget.LinearLayout
+import android.widget.Space
 import android.widget.TextView
 import androidx.annotation.ColorRes
 import androidx.annotation.DimenRes
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.content.ContextCompat
+import androidx.core.graphics.BlendModeColorFilterCompat
+import androidx.core.graphics.BlendModeCompat
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
@@ -29,8 +34,10 @@ import com.tokopedia.productcard.R
 import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifycomponents.ProgressBarUnify
 import com.tokopedia.unifycomponents.UnifyButton
+import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.resources.isDarkMode
+import com.tokopedia.video_widget.VideoPlayerView
 import com.tokopedia.unifyprinciples.R.color as unifyRColor
 
 internal val View.isVisible: Boolean
@@ -239,23 +246,23 @@ private fun String?.toUnifyTextColor(context: Context): Int {
         when (this) {
             TEXT_DARK_ORANGE -> ContextCompat.getColor(
                 context,
-                unifyRColor.Unify_Y400
+                unifyRColor.Unify_YN500
             )
             TEXT_DARK_RED -> ContextCompat.getColor(
                 context,
-                unifyRColor.Unify_R500
+                unifyRColor.Unify_RN500
             )
             TEXT_DARK_GREY -> ContextCompat.getColor(
                 context,
-                unifyRColor.Unify_N700_68
+                unifyRColor.Unify_NN600
             )
             TEXT_LIGHT_GREY -> ContextCompat.getColor(
                 context,
-                unifyRColor.Unify_N700_44
+                unifyRColor.Unify_NN100
             )
             TEXT_GREEN -> ContextCompat.getColor(
                 context,
-                unifyRColor.Unify_G500
+                unifyRColor.Unify_GN500
             )
             else -> Color.parseColor(this)
         }
@@ -464,4 +471,91 @@ fun <T: View?> View.showWithCondition(viewStubId: ViewStubId, viewId: ViewId, is
     } else {
         findViewById<T>(viewId.id)?.gone()
     }
+}
+
+internal fun setupImageRatio(
+    constraintLayoutProductCard: ConstraintLayout?,
+    imageProduct: ImageView?,
+    mediaAnchorProduct: Space?,
+    videoProduct: VideoPlayerView?,
+    ratio: String,
+) {
+    constraintLayoutProductCard.applyConstraintSet {
+        imageProduct?.id?.let { id ->
+            it.setDimensionRatio(id, ratio)
+        }
+        mediaAnchorProduct?.id?.let { id ->
+            it.setDimensionRatio(id, ratio)
+        }
+        videoProduct?.id?.let { id ->
+            it.setDimensionRatio(id, ratio)
+        }
+    }
+}
+
+internal fun renderOverlayImageRoundedLabel(
+    isShow: Boolean,
+    labelBackground: ImageView?,
+    textViewLabel: Typography?,
+    productCardModel: ProductCardModel,
+) {
+    if (isShow) {
+        showOverlayImageRoundedLabel(
+            labelBackground,
+            textViewLabel,
+            productCardModel.getOverlayImageLabel(),
+        )
+    } else {
+        textViewLabel?.hide()
+    }
+}
+
+private fun showOverlayImageRoundedLabel(
+    labelBackground: ImageView?,
+    textViewLabel: Typography?,
+    labelGroup: ProductCardModel.LabelGroup?,
+) {
+    if (labelGroup != null) {
+        textViewLabel.shouldShowWithAction(labelGroup.title.isNotEmpty()) { textViewLabel ->
+            textViewLabel.text = labelGroup.title
+            textViewLabel.setTextColor(
+                if (labelGroup.isGimmick()) labelGroup.type.toUnifyTextColor(textViewLabel.context)
+                else Color.WHITE
+            )
+
+            try {
+                labelBackground?.context?.let { context ->
+                    val backgroundColor =
+                        if (labelGroup.isGimmick()) Color.WHITE
+                        else labelGroup.type.toUnifyTextColor(context)
+
+                    labelBackground.background?.colorFilter =
+                        BlendModeColorFilterCompat.createBlendModeColorFilterCompat(
+                            backgroundColor,
+                            BlendModeCompat.SRC_ATOP
+                        )
+                }
+            } catch (throwable: Throwable) {
+                throwable.printStackTrace()
+            }
+        }
+    } else {
+        textViewLabel?.hide()
+    }
+}
+
+internal fun creteVariantContainer(context: Context): LinearLayout {
+    val containerHeight = context.resources.getDimensionPixelSize(R.dimen.product_card_label_variant_height)
+    val sidePadding = 4.toPx()
+    val layout = LinearLayout(context)
+    val layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, containerHeight)
+    layout.layoutParams = layoutParams
+    layout.orientation = LinearLayout.HORIZONTAL
+    layout.gravity = Gravity.CENTER_VERTICAL
+    layout.setPadding(sidePadding, 0, sidePadding, 0)
+
+    layout.background =
+        ContextCompat.getDrawable(context, R.drawable.product_card_label_group_variant_border)
+
+    return layout
 }

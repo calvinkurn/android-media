@@ -47,6 +47,7 @@ internal const val TYPE_VARIANT_CUSTOM = "custom"
 internal const val MIN_LABEL_VARIANT_COUNT = 2
 internal const val MAX_LABEL_VARIANT_COUNT = 5
 internal const val LABEL_VARIANT_CHAR_LIMIT = 18
+internal const val LABEL_VARIANT_WITH_LABEL_CHAR_LIMIT = 5
 internal const val EXTRA_CHAR_SPACE = 2
 
 internal const val LABEL_VARIANT_TAG = "label_variant_tag"
@@ -63,3 +64,6 @@ internal const val QUANTITY_EDITOR_DEBOUNCE_IN_MS: Long = 1000
 
 internal const val MAX_VARIANT_QUANTITY = 99
 internal const val MIN_QUANTITY_NON_VARIANT = 1
+
+internal const val SQUARE_IMAGE_RATIO = "1:1"
+internal const val LONG_IMAGE_RATIO = "4:5"

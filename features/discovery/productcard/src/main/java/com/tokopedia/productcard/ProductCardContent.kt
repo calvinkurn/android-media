@@ -32,6 +32,7 @@ import com.tokopedia.productcard.utils.OPEN_BOLD_TAG
 import com.tokopedia.productcard.utils.ROBOTO_BOLD
 import com.tokopedia.productcard.utils.ROBOTO_REGULAR
 import com.tokopedia.productcard.utils.applyConstraintSet
+import com.tokopedia.productcard.utils.creteVariantContainer
 import com.tokopedia.productcard.utils.initLabelGroup
 import com.tokopedia.productcard.utils.shouldShowWithAction
 import com.tokopedia.productcard.utils.toUnifyLabelType
@@ -69,11 +70,7 @@ internal fun View.renderProductCardContent(
 }
 
 private fun View.renderTextGimmick(productCardModel: ProductCardModel) {
-    val textViewGimmick = findViewById<Typography?>(R.id.textViewGimmick)
-    if (productCardModel.isShowLabelGimmick())
-        textViewGimmick?.initLabelGroup(productCardModel.getLabelGimmick())
-    else
-        textViewGimmick?.initLabelGroup(null)
+    productCardModel.fashionStrategy.renderTextGimmick(this, productCardModel)
 }
 
 private fun View.renderPdpCountView(productCardModel: ProductCardModel) {
@@ -96,8 +93,8 @@ private fun View.renderTextProductName(productCardModel: ProductCardModel) {
 
 private fun View.renderLabelGroupVariant(productCardModel: ProductCardModel) {
     val textViewProductName = findViewById<Typography?>(R.id.textViewProductName)
-    val labelVariantContainer = findViewById<LinearLayout?>(R.id.labelVariantContainer)
     val willShowVariant = productCardModel.willShowVariant()
+    val colorSampleSize = 14.toPx()
 
     if (willShowVariant) {
         textViewProductName?.isSingleLine = true
@@ -108,31 +105,15 @@ private fun View.renderLabelGroupVariant(productCardModel: ProductCardModel) {
         textViewProductName?.ellipsize = TextUtils.TruncateAt.END
     }
 
-    labelVariantContainer?.shouldShowWithAction(willShowVariant) { labelVariantContainer ->
-        labelVariantContainer.removeAllViews()
-
-        val marginStart = 4.toPx()
-        val colorSampleSize = 14.toPx()
-
-        productCardModel.getRenderedLabelGroupVariantList().forEachIndexed { index, labelVariant ->
-            val hasMarginStart = index > 0
-
-            when {
-                labelVariant.isColor() -> {
-                    labelVariantContainer.addLabelVariantColor(labelVariant, hasMarginStart, colorSampleSize, marginStart)
-                }
-                labelVariant.isSize() -> {
-                    labelVariantContainer.addLabelVariantSize(labelVariant, hasMarginStart, marginStart)
-                }
-                labelVariant.isCustom() -> {
-                    labelVariantContainer.addLabelVariantCustom(labelVariant, marginStart)
-                }
-            }
-        }
-    }
+    productCardModel.fashionStrategy.renderVariant(
+        willShowVariant,
+        this,
+        productCardModel,
+        colorSampleSize,
+    )
 }
 
-private fun LinearLayout.addLabelVariantColor(
+fun LinearLayout.addLabelVariantColor(
         labelVariant: ProductCardModel.LabelGroupVariant,
         hasMarginStart: Boolean,
         colorSampleSize: Int,
@@ -172,7 +153,7 @@ internal fun safeParseColor(color: String): Int {
     }
 }
 
-private fun LinearLayout.addLabelVariantSize(
+fun LinearLayout.addLabelVariantSize(
         labelVariant: ProductCardModel.LabelGroupVariant,
         hasMarginStart: Boolean,
         marginStart: Int
@@ -189,7 +170,7 @@ private fun LinearLayout.addLabelVariantSize(
     addView(unifyLabel)
 }
 
-private fun LinearLayout.addLabelVariantCustom(labelVariant: ProductCardModel.LabelGroupVariant, marginStart: Int) {
+fun LinearLayout.addLabelVariantCustom(labelVariant: ProductCardModel.LabelGroupVariant, marginStart: Int) {
     val layoutParams = LinearLayout.LayoutParams(WRAP_CONTENT, WRAP_CONTENT)
     layoutParams.topMargin = 1.toPx() // Small hack to make custom label center
     layoutParams.marginStart = marginStart
@@ -244,6 +225,10 @@ private fun View.moveTextPriceConstraint(productCardModel: ProductCardModel) {
 private fun View.renderDiscount(productCardModel: ProductCardModel) {
     val labelDiscount = findViewById<Label?>(R.id.labelDiscount)
     val textViewSlashedPrice = findViewById<Typography?>(R.id.textViewSlashedPrice)
+
+    productCardModel.fashionStrategy.moveDiscountConstraint(this, productCardModel)
+    productCardModel.fashionStrategy.setDiscountMarginLeft(labelDiscount)
+
     labelDiscount?.shouldShowWithAction(productCardModel.discountPercentage.isNotEmpty()) {
         TextAndContentDescriptionUtil.setTextAndContentDescription(it, productCardModel.discountPercentage, context.getString(R.string.content_desc_labelDiscount))
     }
@@ -255,16 +240,10 @@ private fun View.renderDiscount(productCardModel: ProductCardModel) {
 }
 
 private fun View.renderLabelPrice(productCardModel: ProductCardModel) {
-    val labelPrice = findViewById<Label?>(R.id.labelPrice)
-    moveLabelPriceConstraint(productCardModel)
-
-    if (productCardModel.isShowDiscountOrSlashPrice())
-        labelPrice?.initLabelGroup(null)
-    else
-        labelPrice?.initLabelGroup(productCardModel.getLabelPrice())
+    productCardModel.fashionStrategy.renderLabelPrice(this, productCardModel)
 }
 
-private fun View.moveLabelPriceConstraint(productCardModel: ProductCardModel) {
+fun View.moveLabelPriceConstraint(productCardModel: ProductCardModel) {
     val targetConstraint = if (productCardModel.discountPercentage.isNotEmpty()) R.id.labelDiscount else R.id.textViewSlashedPrice
     val view = findViewById<ConstraintLayout?>(R.id.productCardContentLayout)
 
@@ -481,8 +460,7 @@ private fun View.renderTextShipping(productCardModel: ProductCardModel) {
 }
 
 private fun View.renderTextETA(productCardModel: ProductCardModel) {
-    val textViewETA = findViewById<Typography?>(R.id.textViewETA)
-    textViewETA?.initLabelGroup(productCardModel.getLabelETA())
+    productCardModel.fashionStrategy.renderTextETA(this, productCardModel)
 }
 
 private fun View.configureWideContent(productCardModel: ProductCardModel) {
@@ -532,4 +510,61 @@ private fun mergeShippingSection(it: ConstraintSet, productCardModel: ProductCar
     val labelETAMarginStart = if (isShowFreeOngkirBadge) 4.toPx() else 0.toPx()
     it.connect(R.id.textViewETA, ConstraintSet.TOP, R.id.imageShopRating, ConstraintSet.BOTTOM, 7.toPx())
     it.connect(R.id.textViewETA, ConstraintSet.START, R.id.textViewShipping, ConstraintSet.END, labelETAMarginStart)
+}
+
+fun LinearLayout.renderVariantColor(
+    listLabelVariant: List<ProductCardModel.LabelGroupVariant>,
+    hiddenColorCount: Int,
+    colorSampleSize: Int,
+) {
+    if (listLabelVariant.isEmpty()) return
+
+    val layout = creteVariantContainer(context)
+
+    listLabelVariant.forEachIndexed { index, labelGroupVariant ->
+        val gradientDrawable = createColorSampleDrawable(context, labelGroupVariant.hexColor)
+        val colorInsetRatio = -5
+
+        val layoutParams = LinearLayout.LayoutParams(colorSampleSize, colorSampleSize)
+        layoutParams.marginStart = if (index > 0) colorSampleSize / colorInsetRatio else 0
+
+        val colorSampleImageView = ImageView(context)
+        colorSampleImageView.setImageDrawable(gradientDrawable)
+        colorSampleImageView.layoutParams = layoutParams
+        colorSampleImageView.tag = LABEL_VARIANT_TAG
+
+        layout.addView(colorSampleImageView)
+    }
+
+    if (hiddenColorCount > 0) {
+        val additionalTextView = Typography(context)
+        additionalTextView.setType(Typography.SMALL)
+        additionalTextView.text = " +$hiddenColorCount"
+
+        layout.addView(additionalTextView)
+    }
+
+    addView(layout)
+}
+
+fun LinearLayout.renderLabelVariantSize(
+    listLabelVariant: List<ProductCardModel.LabelGroupVariant>,
+    hiddenSizeCount: Int,
+) {
+    if (listLabelVariant.isEmpty()) return
+
+    val layout = creteVariantContainer(context)
+
+    val textContainer = Typography(context)
+    textContainer.setType(Typography.SMALL)
+
+    var sizeText = listLabelVariant.joinToString(", ") { it.title }
+
+    if (hiddenSizeCount > 0)
+        sizeText += " +$hiddenSizeCount"
+
+    textContainer.text = sizeText
+
+    layout.addView(textContainer)
+    addView(layout)
 }

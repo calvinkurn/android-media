@@ -1,6 +1,11 @@
 package com.tokopedia.productcard
 
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.productcard.fashion.FashionStrategy
+import com.tokopedia.productcard.fashion.FashionStrategyControl
+import com.tokopedia.productcard.fashion.FashionStrategyLongImage
+import com.tokopedia.productcard.fashion.FashionStrategyNoCampaign
+import com.tokopedia.productcard.fashion.FashionStrategyReposition
 import com.tokopedia.productcard.utils.EXTRA_CHAR_SPACE
 import com.tokopedia.productcard.utils.LABEL_BEST_SELLER
 import com.tokopedia.productcard.utils.LABEL_CAMPAIGN
@@ -80,6 +85,7 @@ data class ProductCardModel (
         val hasSimilarProductWishlist: Boolean = false,
         val customVideoURL : String = "",
         val cardInteraction: Boolean = false,
+        val productListType: ProductListType = ProductListType.LONG_IMAGE,
 ) {
     @Deprecated("replace with labelGroupList")
     var isProductSoldOut: Boolean = false
@@ -87,6 +93,13 @@ data class ProductCardModel (
     var isProductPreOrder: Boolean = false
     @Deprecated("replace with labelGroupList")
     var isProductWholesale: Boolean = false
+
+    internal val fashionStrategy: FashionStrategy = when (productListType) {
+        ProductListType.CONTROL -> FashionStrategyControl()
+        ProductListType.REPOSITION -> FashionStrategyReposition()
+        ProductListType.LONG_IMAGE -> FashionStrategyLongImage()
+        ProductListType.NO_CAMPAIGN -> FashionStrategyNoCampaign()
+    }
 
     val hasVideo : Boolean = customVideoURL.isNotBlank()
 
@@ -112,7 +125,9 @@ data class ProductCardModel (
             val title: String = "",
             val type: String = "",
             val imageUrl: String = ""
-    )
+    ) {
+        fun isGimmick() = position == LABEL_GIMMICK
+    }
 
     data class LabelGroupVariant(
             val typeVariant: String = "",
@@ -278,14 +293,18 @@ data class ProductCardModel (
 
     fun willShowPrimaryButtonWishlist() = hasAddToCartWishlist || hasSimilarProductWishlist
 
-    fun getRenderedLabelGroupVariantList(): List<LabelGroupVariant> {
-        val (colorVariant, sizeVariant, customVariant) = getSplittedLabelGroupVariant()
+    fun getRenderedLabelGroupVariantList(
+        sizeCharLimit: Int,
+        showBoth: Boolean = false,
+    ): List<LabelGroupVariant> {
+        val (colorVariant, sizeVariant, customVariant) = getSplittedLabelGroupVariant(sizeCharLimit)
 
         if (isLabelVariantCountBelowMinimum(colorVariant, sizeVariant))
             return listOf()
 
         val colorVariantTaken = getLabelVariantColorCount(colorVariant)
-        val sizeVariantTaken = getLabelVariantSizeCount(colorVariantTaken)
+        val sizeVariantTaken = if (showBoth) MAX_LABEL_VARIANT_COUNT
+        else getLabelVariantSizeCount(colorVariantTaken)
 
         return colorVariant.take(colorVariantTaken) +
                 sizeVariant.take(sizeVariantTaken) +
@@ -309,7 +328,8 @@ data class ProductCardModel (
         return if (hasLabelVariantColor) 0 else MAX_LABEL_VARIANT_COUNT
     }
 
-    private fun getSplittedLabelGroupVariant(): Triple<List<LabelGroupVariant>, List<LabelGroupVariant>, List<LabelGroupVariant>> {
+    private fun getSplittedLabelGroupVariant(sizeCharLimit: Int):
+        Triple<List<LabelGroupVariant>, List<LabelGroupVariant>, List<LabelGroupVariant>> {
         var sizeVariantCount = 0
         var hiddenSizeVariant = 0
 
@@ -325,7 +345,7 @@ data class ProductCardModel (
                 element.isSize() -> {
                     val additionalSize = element.title.length + EXTRA_CHAR_SPACE
                     val isWithinCharLimit =
-                            (sizeVariantCount + additionalSize) <= LABEL_VARIANT_CHAR_LIMIT
+                            (sizeVariantCount + additionalSize) <= sizeCharLimit
 
                     if (isWithinCharLimit) {
                         sizeVariant.add(element)
@@ -358,5 +378,17 @@ data class ProductCardModel (
 
         customVariant.clear()
         customVariant.add(labelGroupCustomVariant)
+    }
+
+    fun getOverlayImageLabel(): LabelGroup? {
+        return when {
+            getLabelProductStatus() != null -> null
+            getLabelBestSeller() != null -> getLabelBestSeller()
+            else -> getLabelGimmick()
+        }
+    }
+
+    enum class ProductListType {
+        CONTROL, REPOSITION, LONG_IMAGE, NO_CAMPAIGN
     }
 }

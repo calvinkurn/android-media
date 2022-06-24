@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import android.widget.FrameLayout
 import android.widget.ImageView
+import android.widget.Space
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
@@ -36,6 +37,7 @@ import com.tokopedia.unifycomponents.CardUnify2
 import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.video_widget.VideoPlayerController
 import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.video_widget.VideoPlayerView
 import kotlin.LazyThreadSafetyMode.NONE
 
 class ProductCardGridView : BaseCustomView, IProductCardView {
@@ -92,6 +94,12 @@ class ProductCardGridView : BaseCustomView, IProductCardView {
     private val imageProduct: ImageView? by lazy(NONE) {
         findViewById(R.id.imageProduct)
     }
+    private val mediaAnchorProduct: Space? by lazy(NONE) {
+        findViewById(R.id.mediaAnchorProduct)
+    }
+    private val videoProduct: VideoPlayerView? by lazy(NONE) {
+        findViewById(R.id.videoProduct)
+    }
     private val buttonAddVariant: UnifyButton? by lazy(NONE) {
         findViewById(ViewStubId(R.id.buttonAddVariantStub), ViewId(R.id.buttonAddVariant))
     }
@@ -122,6 +130,12 @@ class ProductCardGridView : BaseCustomView, IProductCardView {
     }
     private val productCardFooterLayoutContainer: FrameLayout by lazy(NONE) {
         findViewById(R.id.productCardFooterLayoutContainer)
+    }
+    private val overlayImageRoundedLabelBackground: ImageView by lazy(NONE) {
+        findViewById(R.id.overlayImageRoundedLabelBackground)
+    }
+    private val overlayImageRoundedLabelTextView: Typography by lazy(NONE) {
+        findViewById(R.id.overlayImageRoundedLabelTextView)
     }
     private var isUsingViewStub = false
 
@@ -171,33 +185,22 @@ class ProductCardGridView : BaseCustomView, IProductCardView {
     override fun setProductModel(productCardModel: ProductCardModel) {
         imageProduct?.loadImage(productCardModel.productImageUrl)
 
-        val isShowCampaign = productCardModel.isShowLabelCampaign()
-        renderLabelCampaign(
-            isShowCampaign,
+        productCardModel.fashionStrategy.renderLabelCampaign(
             labelCampaignBackground,
             textViewLabelCampaign,
-            productCardModel
+            productCardModel,
         )
 
-        val isShowBestSeller = productCardModel.isShowLabelBestSeller()
-        renderLabelBestSeller(
-            isShowBestSeller,
-            labelBestSeller,
-            productCardModel
-        )
+        productCardModel.fashionStrategy.renderLabelBestSeller(labelBestSeller, productCardModel)
 
-        val isShowCategorySide = productCardModel.isShowLabelCategorySide()
-        renderLabelBestSellerCategorySide(
-            isShowCategorySide,
+        productCardModel.fashionStrategy.renderLabelBestSellerCategorySide(
             textCategorySide,
-            productCardModel
+            productCardModel,
         )
 
-        val isShowCategoryBottom = productCardModel.isShowLabelCategoryBottom()
-        renderLabelBestSellerCategoryBottom(
-            isShowCategoryBottom,
+        productCardModel.fashionStrategy.renderLabelBestSellerCategoryBottom(
             textCategoryBottom,
-            productCardModel
+            productCardModel,
         )
 
         outOfStockOverlay?.showWithCondition(productCardModel.isOutOfStock)
@@ -232,6 +235,19 @@ class ProductCardGridView : BaseCustomView, IProductCardView {
             && productCardModel.cardInteraction){
             CardUnify2.ANIMATE_OVERLAY_BOUNCE
         } else CardUnify2.ANIMATE_NONE
+
+        productCardModel.fashionStrategy.setupImageRatio(
+            constraintLayoutProductCard,
+            imageProduct,
+            mediaAnchorProduct,
+            videoProduct,
+        )
+
+        productCardModel.fashionStrategy.renderOverlayImageRoundedLabel(
+            overlayImageRoundedLabelBackground,
+            overlayImageRoundedLabelTextView,
+            productCardModel,
+        )
     }
 
     fun setImageProductViewHintListener(impressHolder: ImpressHolder, viewHintListener: ViewHintListener) {
