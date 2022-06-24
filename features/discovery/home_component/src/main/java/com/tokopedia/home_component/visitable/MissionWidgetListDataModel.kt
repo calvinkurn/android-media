@@ -16,6 +16,7 @@ data class MissionWidgetListDataModel(
 
     companion object {
         private const val MAX_MISSION_WIDGET_SIZE = 6
+        private const val MIN_MISSION_WIDGET_SIZE = 4
         const val STATUS_LOADING = 0
         const val STATUS_ERROR = 1
         const val STATUS_SUCCESS = 2
@@ -23,7 +24,7 @@ data class MissionWidgetListDataModel(
 
     fun isShowMissionWidget() : Boolean {
         return if (status == STATUS_SUCCESS)
-            missionWidgetList.isNotEmpty() && missionWidgetList.size <= MAX_MISSION_WIDGET_SIZE
+            missionWidgetList.isNotEmpty() && missionWidgetList.size >= MIN_MISSION_WIDGET_SIZE && missionWidgetList.size <= MAX_MISSION_WIDGET_SIZE
         else
             true
     }
