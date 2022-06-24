@@ -163,7 +163,7 @@ class MainNavAnalyticsTest {
     }
 
     @Test
-    fun testComponentShopFavorite() {
+    fun testComponentFavoriteShop() {
         mainNavCassavaTest {
             login()
             waitForData()
