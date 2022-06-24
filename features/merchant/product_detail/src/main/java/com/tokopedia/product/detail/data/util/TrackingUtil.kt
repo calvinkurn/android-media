@@ -70,7 +70,6 @@ object TrackingUtil {
                         "name", customItemName, //item_name
                         "creative", customCreativeName, //creative_name
                         "creative_url", "",
-                        "creative_slot", "",
                         "position", componentTrackDataModel.adapterPosition, //creative_slot
                         "category", categoryString,
                         "promo_id", "",
