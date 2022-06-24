@@ -270,6 +270,9 @@ class SearchProductFirstPageGqlUseCase(
                         see_all_applink
                         see_all_url
                         show_topads
+                        tracking_option
+                        component_id
+                        info
                         list {
                             category_name
                             name
@@ -281,6 +284,7 @@ class SearchProductFirstPageGqlUseCase(
                             strikethrough
                             background_url
                             logo_url
+                            component_id
                         }
                     }
                 }

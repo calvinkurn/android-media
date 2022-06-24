@@ -99,24 +99,22 @@ open class BaseChatBotViewHolder<T : Visitable<*>>(itemView: View,
         }
     }
 
-    override fun setHeaderDate(element: BaseChatUiModel?) {
+    override fun setHeaderDate(element: BaseChatUiModel) {
         if (date == null) return
-        val time = element?.replyTime?.let {
+        val time = element.replyTime?.let {
             ChatBotTimeConverter.getDateIndicatorTime(
                     it,
                     itemView.context.getString(com.tokopedia.chat_common.R.string.chat_today_date),
                     itemView.context.getString(com.tokopedia.chat_common.R.string.chat_yesterday_date))
         }
-        date.text = time
-        if (date != null && element?.isShowDate == true
-                && !TextUtils.isEmpty(time)) {
+        date?.text = time
+        if (date != null && element.isShowDate && !TextUtils.isEmpty(time)) {
             dateContainer?.show()
         } else if (date != null) {
             dateContainer?.hide()
         }
     }
 
-    override fun getDateId(): Int {
-        return R.id.date
-    }
+    override val dateId: Int
+        get() = R.id.date
 }
