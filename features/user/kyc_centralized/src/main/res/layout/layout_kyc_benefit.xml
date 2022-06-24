@@ -58,38 +58,51 @@
                 app:layout_constraintTop_toBottomOf="@id/benefit_title_tv"
                 app:typographyType="body_2" />
 
-            <com.tokopedia.kyc_centralized.view.customview.KycBenefitItemView
-                android:id="@+id/benefit_complete_shopping_feature"
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/layout_benefit_kyc"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/unify_space_16"
-                app:title="@string/kyc_benefit_complete_shopping_feature_title"
-                app:description="@string/kyc_benefit_complete_shopping_feature_desc"
+                android:background="@drawable/card_border"
+                android:paddingBottom="@dimen/unify_space_16"
+                android:layout_margin="@dimen/unify_space_12"
                 app:layout_constraintTop_toBottomOf="@id/benefit_subtitle_tv"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"/>
+                app:layout_constraintEnd_toEndOf="parent">
 
-            <com.tokopedia.kyc_centralized.view.customview.KycBenefitItemView
-                android:id="@+id/benefit_exclusive_sales_feature"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/unify_space_16"
-                app:title="@string/kyc_benefit_exclusive_sales_features_title"
-                app:description="@string/kyc_benefit_exclusive_sales_features_desc"
-                app:layout_constraintTop_toBottomOf="@id/benefit_complete_shopping_feature"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"/>
+                <com.tokopedia.kyc_centralized.view.customview.KycBenefitItemView
+                    android:id="@+id/benefit_complete_shopping_feature"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/unify_space_16"
+                    app:title="@string/kyc_benefit_complete_shopping_feature_title"
+                    app:description="@string/kyc_benefit_complete_shopping_feature_desc"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"/>
 
-            <com.tokopedia.kyc_centralized.view.customview.KycBenefitItemView
-                android:id="@+id/benefit_account_more_safer"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/unify_space_16"
-                app:title="@string/kyc_benefit_account_more_safer_title"
-                app:description="@string/kyc_benefit_account_more_safer_dsc"
-                app:layout_constraintTop_toBottomOf="@id/benefit_exclusive_sales_feature"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"/>
+                <com.tokopedia.kyc_centralized.view.customview.KycBenefitItemView
+                    android:id="@+id/benefit_exclusive_sales_feature"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/unify_space_16"
+                    app:title="@string/kyc_benefit_exclusive_sales_features_title"
+                    app:description="@string/kyc_benefit_exclusive_sales_features_desc"
+                    app:layout_constraintTop_toBottomOf="@id/benefit_complete_shopping_feature"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"/>
+
+                <com.tokopedia.kyc_centralized.view.customview.KycBenefitItemView
+                    android:id="@+id/benefit_account_more_safer"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/unify_space_16"
+                    app:title="@string/kyc_benefit_account_more_safer_title"
+                    app:description="@string/kyc_benefit_account_more_safer_dsc"
+                    app:layout_constraintTop_toBottomOf="@id/benefit_exclusive_sales_feature"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"/>
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/see_more_benefit_button"
@@ -101,7 +114,7 @@
                 android:textColor="@color/Unify_G500"
                 app:typographyType="display_2"
                 app:typographyWeight="bold"
-                app:layout_constraintTop_toBottomOf="@+id/benefit_account_more_safer"
+                app:layout_constraintTop_toBottomOf="@+id/layout_benefit_kyc"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"/>
 
