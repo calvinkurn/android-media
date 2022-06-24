@@ -657,6 +657,7 @@ object ShopPageHomeMapper {
                 discountPercentage = it.discountPercentage
                 imageUrl = it.imageUrl
                 imageUrl300 = ""
+                isSoldOut = it.stock.isZero()
                 productUrl = it.urlApps
                 hideGimmick = it.hideGimmick
                 when (statusCampaign.lowercase(Locale.getDefault())) {
