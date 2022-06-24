@@ -7,6 +7,7 @@ import com.tokopedia.loginregister.R
 import com.tokopedia.loginregister.login.behaviour.base.LoginBase
 import com.tokopedia.loginregister.login.domain.pojo.RegisterCheckData
 import com.tokopedia.loginregister.login.domain.pojo.RegisterCheckPojo
+import com.tokopedia.loginregister.login.stub.Config
 import com.tokopedia.sessioncommon.data.*
 import com.tokopedia.test.application.annotations.UiTest
 import org.hamcrest.Matchers.allOf
@@ -78,7 +79,7 @@ class LoginNegativeCase: LoginBase() {
     @Test
     /* Show snackbar if discover providers is empty */
     fun forbiddenPage_discoverEmpty() {
-        isDefaultDiscover = false
+        fakeRepo.discoverConfig = Config.Error
         runTest {
             isDisplayingSubGivenText(com.google.android.material.R.id.snackbar_text, "Terjadi kesalahan. Ulangi beberapa saat lagi (1005)")
         }

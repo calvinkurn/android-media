@@ -9,15 +9,11 @@ import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.*
 import com.tokopedia.loginregister.R
-import com.tokopedia.loginregister.discover.pojo.DiscoverData
-import com.tokopedia.loginregister.discover.pojo.DiscoverPojo
-import com.tokopedia.loginregister.discover.pojo.ProviderData
 import com.tokopedia.loginregister.login.behaviour.data.*
 import com.tokopedia.loginregister.login.behaviour.di.FakeActivityComponentFactory
 import com.tokopedia.loginregister.login.di.ActivityComponentFactory
 import com.tokopedia.loginregister.login.domain.pojo.RegisterCheckData
 import com.tokopedia.loginregister.login.domain.pojo.RegisterCheckPojo
-import com.tokopedia.loginregister.login.stub.Config
 import com.tokopedia.loginregister.login.stub.FakeGraphqlRepository
 import com.tokopedia.loginregister.login.view.activity.LoginActivity
 import org.junit.After
@@ -28,7 +24,6 @@ import javax.inject.Inject
 open class LoginBase: LoginRegisterBase() {
 
     var isDefaultRegisterCheck = true
-    var isDefaultDiscover = true
 
     @get:Rule
     var activityTestRule = IntentsTestRule(
@@ -70,14 +65,6 @@ open class LoginBase: LoginRegisterBase() {
         registerCheckUseCaseStub.response = RegisterCheckPojo(data = data)
     }
 
-    protected fun setDefaultDiscover() {
-        val mockProviders = arrayListOf(
-            ProviderData("gplus", "Google", "https://accounts.tokopedia.com/gplus-login", "", "#FFFFFF"),
-        )
-        val response = DiscoverPojo(DiscoverData(mockProviders, ""))
-        fakeRepo.discoverConfig = Config.WithResponse(response)
-    }
-
     protected fun setupLoginActivity(
             intentModifier: (Intent) -> Unit = {}
     ) {
@@ -88,9 +75,6 @@ open class LoginBase: LoginRegisterBase() {
     }
 
     fun runTest(test: () -> Unit) {
-        if(isDefaultDiscover) {
-            setDefaultDiscover()
-        }
         if(isDefaultRegisterCheck) {
             setRegisterCheckDefaultResponse()
         }

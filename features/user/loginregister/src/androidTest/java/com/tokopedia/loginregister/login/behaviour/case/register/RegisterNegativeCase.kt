@@ -5,6 +5,7 @@ import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import com.tokopedia.loginregister.R
 import com.tokopedia.loginregister.login.behaviour.base.RegisterInitialBase
+import com.tokopedia.loginregister.login.stub.Config
 import com.tokopedia.loginregister.registerinitial.domain.pojo.RegisterCheckData
 import com.tokopedia.loginregister.registerinitial.domain.pojo.RegisterCheckPojo
 import com.tokopedia.test.application.annotations.UiTest
@@ -61,7 +62,7 @@ class RegisterNegativeCase: RegisterInitialBase() {
     @Test
     /* Show snackbar if discover providers is empty */
     fun forbiddenPage_discoverEmpty() {
-        isDefaultDiscover = false
+        fakeGraphqlRepository.discoverConfig = Config.Error
         runTest {
             Espresso.onView(
                 allOf(

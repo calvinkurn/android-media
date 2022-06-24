@@ -4,7 +4,9 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.data.model.GraphqlResponse
+import com.tokopedia.loginregister.discover.pojo.DiscoverData
 import com.tokopedia.loginregister.discover.pojo.DiscoverPojo
+import com.tokopedia.loginregister.discover.pojo.ProviderData
 import com.tokopedia.loginregister.login.domain.pojo.RegisterCheckData
 import com.tokopedia.loginregister.login.domain.pojo.RegisterCheckPojo
 import com.tokopedia.test.application.graphql.GqlMockUtil
@@ -37,8 +39,20 @@ class FakeGraphqlRepository : GraphqlRepository {
                 GqlMockUtil.createSuccessResponse(obj)
             }
             "discover" -> {
-                val obj: DiscoverPojo = when(discoverConfig) {
-                    is Config.WithResponse -> (discoverConfig as Config.WithResponse).response as DiscoverPojo
+                val obj: DiscoverPojo = when (discoverConfig) {
+                    is Config.Default -> DiscoverPojo(
+                        DiscoverData(
+                            arrayListOf(
+                                ProviderData(
+                                    "gplus",
+                                    "Google",
+                                    "https://accounts.tokopedia.com/gplus-login",
+                                    "",
+                                    "#FFFFFF"
+                                ),
+                            ), ""
+                        )
+                    )
                     else -> DiscoverPojo()
                 }
                 GqlMockUtil.createSuccessResponse(obj)
