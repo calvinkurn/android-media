@@ -258,11 +258,13 @@ class PlayFragment @Inject constructor(
     }
 
     fun setResultBeforeFinish() {
-        activity?.setResult(Activity.RESULT_OK, Intent().apply {
-            val totalView = playViewModel.totalView
-            if (totalView.isNotEmpty()) putExtra(EXTRA_TOTAL_VIEW, totalView)
-            if (channelId.isNotEmpty()) putExtra(EXTRA_CHANNEL_ID, channelId)
-        })
+        if(playViewModel.isTotalViewLoaded) {
+            activity?.setResult(Activity.RESULT_OK, Intent().apply {
+                val totalView = playViewModel.totalView
+                if (totalView.isNotEmpty()) putExtra(EXTRA_TOTAL_VIEW, totalView)
+                if (channelId.isNotEmpty()) putExtra(EXTRA_CHANNEL_ID, channelId)
+            })
+        }
     }
 
     fun setCurrentVideoTopBounds(videoOrientation: VideoOrientation, topBounds: Int) {
