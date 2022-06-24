@@ -13,8 +13,8 @@
         android:visibility="gone"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <com.tokopedia.reviewcommon.feature.reviewer.presentation.widget.ReviewBasicInfoWidget
-        android:id="@+id/read_review_basic_info"
+    <com.tokopedia.reviewcommon.feature.reviewer.presentation.widget.ProductReviewBasicInfoWidget
+        android:id="@+id/read_product_review_basic_info"
         android:layout_width="@dimen/layout_lvl0"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/layout_lvl1"
@@ -23,6 +23,24 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/read_review_product_info"
         app:layout_goneMarginTop="@dimen/layout_lvl2" />
+
+    <com.tokopedia.reviewcommon.feature.reviewer.presentation.widget.ShopReviewBasicInfoWidget
+        android:id="@+id/read_shop_review_basic_info"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/layout_lvl1"
+        android:layout_marginEnd="8dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/read_review_product_info"
+        app:layout_goneMarginTop="@dimen/layout_lvl2" />
+
+    <androidx.constraintlayout.widget.Barrier
+        android:id="@+id/barrierReviewBasicInfo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:barrierDirection="bottom"
+        app:constraint_referenced_ids="read_product_review_basic_info,read_shop_review_basic_info"/>
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/read_review_item_review"
@@ -34,7 +52,7 @@
         android:ellipsize="end"
         android:maxLines="3"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/read_review_basic_info"
+        app:layout_constraintTop_toBottomOf="@id/barrierReviewBasicInfo"
         app:typographyType="body_2"
         app:typographyWeight="reguler"
         tools:text="Saya sangat puas sekali!! Awalnya saya gak percaya. Dengan memakai handphone ini, saya bisa mendengarkan suaara jernih... Selengkapnya" />

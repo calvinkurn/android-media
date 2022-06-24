@@ -16,7 +16,7 @@ import com.tokopedia.review.common.presentation.widget.ReviewBadRatingReasonWidg
 import com.tokopedia.review.feature.imagepreview.analytics.ReviewImagePreviewTracking
 import com.tokopedia.review.feature.imagepreview.presentation.uimodel.ReviewImagePreviewBottomSheetUiModel
 import com.tokopedia.reviewcommon.feature.reviewer.presentation.listener.ReviewBasicInfoListener
-import com.tokopedia.reviewcommon.feature.reviewer.presentation.widget.ReviewBasicInfoWidget
+import com.tokopedia.reviewcommon.feature.reviewer.presentation.widget.ProductReviewBasicInfoWidget
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifyprinciples.Typography
@@ -39,7 +39,7 @@ class ReviewImagePreviewExpandedReviewBottomSheet : BottomSheetUnify(), ReviewBa
     private var uiModel: ReviewImagePreviewBottomSheetUiModel =
         ReviewImagePreviewBottomSheetUiModel()
 
-    private var basicInfoWidget: ReviewBasicInfoWidget? = null
+    private var basicInfoWidget: ProductReviewBasicInfoWidget? = null
     private var review: Typography? = null
     private var badRatingWidget: ReviewBadRatingReasonWidget? = null
 

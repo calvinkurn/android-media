@@ -10,7 +10,7 @@ import com.tokopedia.review.common.presentation.widget.ReviewBadRatingReasonWidg
 import com.tokopedia.review.common.util.ReviewUtil
 import com.tokopedia.reviewcommon.feature.media.gallery.detailed.domain.model.UserReviewStats
 import com.tokopedia.reviewcommon.feature.reviewer.presentation.listener.ReviewBasicInfoListener
-import com.tokopedia.reviewcommon.feature.reviewer.presentation.widget.ReviewBasicInfoWidget
+import com.tokopedia.reviewcommon.feature.reviewer.presentation.widget.ProductReviewBasicInfoWidget
 import com.tokopedia.unifycomponents.BaseCustomView
 import com.tokopedia.unifyprinciples.Typography
 
@@ -39,7 +39,7 @@ class ReviewImagePreviewDetailWidget : BaseCustomView {
     }
 
     private var photoCount: Typography? = null
-    private var basicInfo: ReviewBasicInfoWidget? = null
+    private var basicInfo: ProductReviewBasicInfoWidget? = null
     private var reviewText: Typography? = null
     private var likeCount: Typography? = null
     private var likeButton: IconUnify? = null

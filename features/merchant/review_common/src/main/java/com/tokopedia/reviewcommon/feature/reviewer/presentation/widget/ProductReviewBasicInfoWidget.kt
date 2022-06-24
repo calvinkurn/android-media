@@ -19,17 +19,17 @@ import com.tokopedia.unifycomponents.BaseCustomView
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifyprinciples.Typography
 
-class ReviewBasicInfoWidget : BaseCustomView {
+open class ProductReviewBasicInfoWidget : BaseCustomView {
 
     constructor(context: Context) : super(context) {
         init()
     }
 
-    constructor(context: Context, attrs: AttributeSet) : super(context, attrs) {
+    constructor(context: Context, attrs: AttributeSet?) : super(context, attrs) {
         init()
     }
 
-    constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int) : super(
+    constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(
         context,
         attrs,
         defStyleAttr
@@ -54,7 +54,7 @@ class ReviewBasicInfoWidget : BaseCustomView {
     private var listener: ReviewBasicInfoListener? = null
 
     private fun init() {
-        View.inflate(context, R.layout.widget_review_basic_info, this)
+        inflateView()
         bindViews()
     }
 
@@ -68,6 +68,10 @@ class ReviewBasicInfoWidget : BaseCustomView {
         reviewerStats = findViewById(R.id.tv_review_item_reviewer_statistic)
         profilePicture = findViewById(R.id.iv_review_item_reviewer_profile_picture)
         icThreeDots = findViewById(R.id.ic_review_item_three_dots)
+    }
+
+    protected open fun inflateView() {
+        View.inflate(context, R.layout.widget_product_review_basic_info, this)
     }
 
     fun setRating(rating: Int) {

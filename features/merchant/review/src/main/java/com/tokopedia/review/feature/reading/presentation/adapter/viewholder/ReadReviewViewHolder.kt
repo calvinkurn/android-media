@@ -25,7 +25,7 @@ import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.uimodel.R
 import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.widget.ReviewMediaThumbnail
 import com.tokopedia.reviewcommon.feature.reviewer.presentation.listener.ReviewBasicInfoListener
 import com.tokopedia.reviewcommon.feature.reviewer.presentation.listener.ReviewBasicInfoThreeDotsListener
-import com.tokopedia.reviewcommon.feature.reviewer.presentation.widget.ReviewBasicInfoWidget
+import com.tokopedia.reviewcommon.feature.reviewer.presentation.widget.ProductReviewBasicInfoWidget
 import com.tokopedia.unifyprinciples.Typography
 
 class ReadReviewViewHolder(
@@ -45,7 +45,12 @@ class ReadReviewViewHolder(
     }
 
     private var productInfo: ReadReviewProductInfo? = null
-    private var basicInfo: ReviewBasicInfoWidget? = null
+    private val basicInfo: ProductReviewBasicInfoWidget?
+        get() = if (isProductReview) {
+            itemView.findViewById(R.id.read_product_review_basic_info)
+        } else {
+            itemView.findViewById(R.id.read_shop_review_basic_info)
+        }
     private var likeImage: IconUnify? = null
     private var likeCount: Typography? = null
     private var reviewMessage: Typography? = null
@@ -108,6 +113,8 @@ class ReadReviewViewHolder(
             setReply(element.shopName, reviewResponse, feedbackID, element.productId)
             showBadRatingReason(badRatingReasonFmt)
         }
+        itemView.findViewById<View>(R.id.read_product_review_basic_info)?.showWithCondition(isProductReview)
+        itemView.findViewById<View>(R.id.read_shop_review_basic_info)?.showWithCondition(!isProductReview)
     }
 
     override fun onThreeDotsClicked() {
@@ -117,7 +124,6 @@ class ReadReviewViewHolder(
     private fun bindViews() {
         with(itemView) {
             productInfo = findViewById(R.id.read_review_product_info)
-            basicInfo = findViewById(R.id.read_review_basic_info)
             reviewMessage = findViewById(R.id.read_review_item_review)
             attachedMedia = findViewById(R.id.read_review_attached_media)
             likeImage = findViewById(R.id.read_review_like_button)

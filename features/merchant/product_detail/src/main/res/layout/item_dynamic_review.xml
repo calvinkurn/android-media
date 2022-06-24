@@ -105,7 +105,7 @@
         android:layout_marginTop="10dp"
         app:layout_constraintTop_toBottomOf="@id/review_media_thumbnails" />
 
-    <com.tokopedia.reviewcommon.feature.reviewer.presentation.widget.ReviewBasicInfoWidget
+    <com.tokopedia.reviewcommon.feature.reviewer.presentation.widget.ProductReviewBasicInfoWidget
         android:id="@+id/basic_info_most_helpful_review"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
