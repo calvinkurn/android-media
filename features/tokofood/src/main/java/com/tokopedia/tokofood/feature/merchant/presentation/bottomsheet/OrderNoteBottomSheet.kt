@@ -63,11 +63,10 @@ class OrderNoteBottomSheet(private val clickListener: OnSaveNoteButtonClickListe
                 override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
                 override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {}
                 override fun afterTextChanged(s: Editable) {
-                    binding.saveNotesButton.isEnabled = s.isNotBlank()
+                    binding.saveNotesButton.isEnabled = s.isNotBlank() || orderNote.isNotBlank()
                 }
             })
-            val enableSaveButton = orderNote.isNotBlank() && binding.notesInput.editText.text.isNotBlank()
-            this.saveNotesButton.isEnabled = enableSaveButton
+            this.saveNotesButton.isEnabled = binding.notesInput.editText.text.isNotBlank()
             this.saveNotesButton.setOnClickListener {
                 val orderNote = binding.notesInput.editText.text.toString()
                 clickListener.onSaveNoteButtonClicked(selectedProductId, orderNote)
