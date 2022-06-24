@@ -721,7 +721,10 @@ class CampaignInformationFragment : BaseDaggerFragment() {
     }
 
     private fun handleBackConfirmation() {
-        val isDataChanged = viewModel.isDataChanged(viewModel.getDefaultSelection() ?: return, getCurrentSelection())
+        val remainingQuota = viewModel.getRemainingQuota()
+        val updatedDefaultSelection = viewModel.getDefaultSelection()?.copy(remainingQuota = remainingQuota) ?: return
+
+        val isDataChanged = viewModel.isDataChanged(updatedDefaultSelection, getCurrentSelection())
         if (!isDataChanged) {
             requireActivity().finish()
             return
