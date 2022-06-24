@@ -84,10 +84,8 @@ private const val LAST_FEED_POSITION_SMALL = 2
 private val scope = CoroutineScope(Dispatchers.Main)
 private var productVideoJob: Job? = null
 private const val TIME_THREE_SEC = 3000L
-private const val TIME_THIRTY_SEC = 30000L
 private const val TIME_FOUR_SEC = 4000L
 private const val TIME_TWO_SEC = 2000L
-private const val TIME_FIVE_SEC = 5000L
 private const val MAX_PRODUCT_TO_SHOW_IN_ASGC_CAROUSEL = 5
 private const val ROUND_OFF_TO_ONE_DECIMAL_VALUE = 10
 
@@ -95,7 +93,6 @@ private const val ROUND_OFF_TO_ONE_DECIMAL_VALUE = 10
 private const val TIME_SECOND = 1000L
 private const val FOLLOW_SIZE = 7
 private const val MINUTE_IN_HOUR = 60
-private const val HOUR_IN_HOUR = 3600
 private const val SPACE = 3
 private const val DOT_SPACE = 2
 private const val SHOW_MORE = "Lihat Lainnya"
@@ -163,7 +160,6 @@ class PostDynamicViewNew @JvmOverloads constructor(
     private lateinit var imagePostListener: ImagePostViewHolder.ImagePostListener
     private var topAdsListener:TopAdsHeadlineListener? = null
     private var positionInFeed: Int = 0
-    var isVODViewFrozen = true
     private var videoPlayer: FeedExoPlayer? = null
     private var handlerAnim: Handler? = null
     private var handlerHide: Handler? = null
@@ -222,9 +218,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
         bindFollow(feedXCard)
         bindItems(feedXCard)
         bindCaption(feedXCard)
-        val isTypeNewASGC = feedXCard.typename == TYPE_FEED_X_CARD_PRODUCT_HIGHLIGHT && feedXCard.mods.contains(TYPE_USE_ASGC_NEW_DESIGN)
-        val isTopadsOrAsgc = feedXCard.isTopAds || isTypeNewASGC
-        bindPublishedAt(feedXCard.publishedAt, feedXCard.subTitle, isTopadsOrAsgc)
+        bindPublishedAt(feedXCard.publishedAt, feedXCard.subTitle)
         bindLike(feedXCard)
         bindComment(
             feedXCard.comments,
@@ -853,7 +847,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
                     pageControl.hide()
                 }
                 val orientation = getOrientation(feedXCard.mediaRatio)
-                var ratio = if (orientation == PORTRAIT)
+                val ratio = if (orientation == PORTRAIT)
                     getRatioIfPortrait(feedXCard.mediaRatio)
                 else
                     getRatioIfLandscape(feedXCard.mediaRatio)
@@ -988,7 +982,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
 
                                                //show hide animations for tagging views
                                                 for (i in 0 until layout.childCount) {
-                                                    var view = layout.getChildAt(i)
+                                                    val view = layout.getChildAt(i)
                                                     if (view is PostTagView) {
                                                         val item = (view as PostTagView)
                                                         productTagBubbleShowing = item.showExpandedView()
@@ -1015,7 +1009,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
                                                 var productTagBubbleShowing = false
 
                                                 for (i in 0 until layout.childCount) {
-                                                    var view = layout.getChildAt(i)
+                                                    val view = layout.getChildAt(i)
                                                     if (view is PostTagView) {
                                                         val item = (view as PostTagView)
                                                         productTagBubbleShowing = item.hideExpandedViewIfShown()
@@ -1162,17 +1156,11 @@ class PostDynamicViewNew @JvmOverloads constructor(
                                         tagProducts))
                             tagProducts.add(globalCardProductList[it.tagIndex])
                     }
-                    var finalId = if (feedXCard.typename == TYPE_FEED_X_CARD_PLAY) feedXCard.playChannelID else feedXCard.id
-
                     feedMedia.isImageImpressedFirst = true
                         setVODView(
                                 feedXCard,
                                 feedMedia,
                                 tagProducts,
-                                feedXCard.author.id,
-                                feedXCard.typename,
-                                feedXCard.followers.isFollowed,
-                                feedXCard.author.name,
                                 ratio
                         )?.let {
                             addItem(
@@ -1244,7 +1232,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
 
             volumeIcon.setOnClickListener {
                 changeMuteStateVideo(volumeIcon)
-                setMuteUnmuteVOD(volumeIcon, feedXCard.playChannelID, isFollowed, id,false, true, feedMedia.type)
+                setMuteUnmuteSgcVideo(volumeIcon, feedXCard.playChannelID, isFollowed, id,false, true, feedMedia.type)
             }
         }
         return videoItem
@@ -1253,9 +1241,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
     private fun setVideoControl(
         feedMedia: FeedXMedia,
         postId: String,
-        index: Int,
         authorId: String,
-        type: Int,
         feedXCard: FeedXCard,
     ) {
         val videoItem = feedMedia.videoView
@@ -1295,7 +1281,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
                 layout_video?.player = videoPlayer?.getExoPlayer()
                 layout_video?.videoSurfaceView?.setOnClickListener {
                     changeMuteStateVideo(volumeIcon)
-                    setMuteUnmuteVOD(volumeIcon, postId, feedXCard.followers.isFollowed, authorId, true, false, feedMedia.type)
+                    setMuteUnmuteSgcVideo(volumeIcon, postId, feedXCard.followers.isFollowed, authorId, true, false, feedMedia.type)
 
                 }
 
@@ -1344,74 +1330,34 @@ class PostDynamicViewNew @JvmOverloads constructor(
             feedXCard: FeedXCard,
             feedMedia: FeedXMedia,
             products: List<FeedXProduct>,
-            id: String,
-            type: String,
-            isFollowed: Boolean,
-            shopName: String,
             ratio: String
     ): View? {
-        val postId = feedXCard.id
-        val vodItem = getVODItem()
         feedMedia.canPlay = false
-        feedMedia.videoView = vodItem
-
-        vodItem?.run {
-            var finalId = if (feedXCard.typename == TYPE_FEED_X_CARD_PLAY) feedXCard.playChannelID.toIntOrZero() else feedXCard.id.toIntOrZero()
-
-            val layoutVideo = findViewById<ConstraintLayout>(R.id.vod_layout_main)
-            val videoPreviewImage = findViewById<ImageUnify>(R.id.vod_videoPreviewImage)
-            val videoView = findViewById<View>(R.id.vod_view)
-            val constraintSetForVideoCoveMedia = ConstraintSet()
-            constraintSetForVideoCoveMedia.clone(layoutVideo)
-            constraintSetForVideoCoveMedia.setDimensionRatio(videoPreviewImage.id, ratio)
-            constraintSetForVideoCoveMedia.setDimensionRatio(videoView.id, ratio)
-            constraintSetForVideoCoveMedia.applyTo(layoutVideo)
-
-            val layoutFrameView = findViewById<ConstraintLayout>(R.id.vod_frame_video)
-            val layoutPlayerView = findViewById<PlayerView>(R.id.vod_layout_video)
-            val constraintSetForVideoLayout = ConstraintSet()
-            constraintSetForVideoLayout.clone(layoutFrameView)
-            constraintSetForVideoLayout.setDimensionRatio(layoutPlayerView.id, ratio)
-            constraintSetForVideoLayout.applyTo(layoutFrameView)
-
-            vod_videoPreviewImage?.setImageUrl(feedMedia.coverUrl)
-            vod_lihat_product?.setOnClickListener {
-                listener?.let { listener ->
-                    listener.onTagClicked(
-                            finalId,
-                            products,
-                            listener,
-                            id,
-                            type,
-                            isFollowed,
-                            feedMedia.type,
-                            positionInFeed,
-                            playChannelId = feedXCard.playChannelID,
-                            shopName = shopName
-                    )
-                }
-            }
-            ic_vod_play?.setOnClickListener {
-                playVOD(feedXCard =  feedXCard, carouselView.activeIndex)
-            }
-            vod_full_screen_icon?.setOnClickListener {
-                isPaused = true
-                vod_lanjut_menonton_btn?.gone()
-                vod_frozen_view?.gone()
-                listener?.onFullScreenCLick(feedXCard, positionInFeed, feedXCard.appLink, 0L, shouldTrack = true, true)
-            }
-
-            vod_volumeIcon?.setOnClickListener {
-                changeMuteStateVideoVOD(vod_volumeIcon)
-                setMuteUnmuteVOD(vod_volumeIcon, finalId.toString(), isFollowed, id, isVideoTap = false, isVOD = true, feedMedia.type)
-
-            }
+        val vodItem =  FeedVODViewHolder(
+        context,
+        feedXCard,
+        feedMedia,
+        ratio,
+        products,
+        positionInFeed = positionInFeed
+        )
+        feedMedia.vodView = vodItem
+        if (videoPlayer == null)
+            videoPlayer = FeedExoPlayer(context)
+        vodItem.bindData(GridPostAdapter.isMute)
+        listener?.let { vodItem.setListener(it) }
+        vodItem.updateLikedText {
+            likedText.text = it
         }
+        vodItem.setChangeVolumeStateCallback {
+            GridPostAdapter.isMute = !GridPostAdapter.isMute
+        }
+
         return vodItem
     }
 
-    private fun setMuteUnmuteVOD(volumeIcon: ImageView?, postId: String, isFollowed: Boolean, activityId: String, isVideoTap: Boolean, isVOD: Boolean, mediaType: String) {
-        var countDownTimer = object : CountDownTimer(TIME_THREE_SEC, TIME_SECOND) {
+    private fun setMuteUnmuteSgcVideo(volumeIcon: ImageView?, postId: String, isFollowed: Boolean, activityId: String, isVideoTap: Boolean, isVOD: Boolean, mediaType: String) {
+        val countDownTimer = object : CountDownTimer(TIME_THREE_SEC, TIME_SECOND) {
             override fun onTick(millisUntilFinished: Long) {
 
             }
@@ -1444,201 +1390,6 @@ class PostDynamicViewNew @JvmOverloads constructor(
         }
     }
 
-    private fun changeMuteStateVideoVOD(volumeIcon: ImageView) {
-        GridPostAdapter.isMute = !GridPostAdapter.isMute
-        toggleVolume(GridPostAdapter.isMute)
-        if (GridPostAdapter.isMute) {
-            volumeIcon?.setImageResource(R.drawable.ic_feed_volume_mute_large)
-        } else {
-            volumeIcon?.setImageResource(R.drawable.ic_feed_volume_up_large)
-        }
-    }
-
-    private fun setVODControl(
-            feedMedia: FeedXMedia,
-            postId: String,
-            index: Int,
-            authorId: String,
-            type: Int,
-            feedXCard: FeedXCard,
-    ) {
-        val vodItem = feedMedia.videoView
-        val tags = feedMedia.tagging
-        val postProductList = feedXCard.tags
-        secondCountDownTimer = null
-        val tagProducts = mutableListOf<FeedXProduct>()
-        isVODViewFrozen = false
-        var count1 = 0
-        var shouldTrack = true
-        isPaused = false
-        vod_lanjut_menonton_btn?.gone()
-        vod_frozen_view?.gone()
-
-        tags.map {
-            if (!ifProductAlreadyPresent(postProductList[it.tagIndex], tagProducts))
-                tagProducts.add(postProductList[it.tagIndex])
-        }
-        vodItem?.run {
-            val layoutLihatProdukParent = findViewById<Typography>(R.id.vod_lihat_product)
-            if (tagProducts.isEmpty()) {
-                layoutLihatProdukParent.gone()
-            } else {
-                layoutLihatProdukParent.visible()
-                hideViewWithAnimationVod(layoutLihatProdukParent, context)
-            }
-            vod_frozen_view?.gone()
-            vod_full_screen_icon?.visible()
-
-
-
-            if (handlerAnim == null) {
-                handlerAnim = Handler(Looper.getMainLooper())
-            }
-            handlerAnim?.postDelayed({
-                if (tagProducts.isNotEmpty()) {
-                    showViewWithAnimationVOD(layoutLihatProdukParent, context)
-                }
-            }, TIME_SECOND)
-            productVideoJob?.cancel()
-            productVideoJob = scope.launch {
-                if (videoPlayer == null)
-                    videoPlayer = FeedExoPlayer(context)
-
-                vod_layout_video?.player = videoPlayer?.getExoPlayer()
-                vod_layout_video?.videoSurfaceView?.setOnClickListener {
-                    if (feedMedia.mediaUrl.isNotEmpty() && !isVODViewFrozen) {
-                        changeMuteStateVideoVOD(vod_volumeIcon)
-                        var finalId = if (feedXCard.typename == TYPE_FEED_X_CARD_PLAY) feedXCard.playChannelID.toIntOrZero() else feedXCard.id.toIntOrZero()
-                        setMuteUnmuteVOD(vod_volumeIcon, finalId.toString(), feedXCard.followers.isFollowed, authorId, isVideoTap = true, isVOD = true, feedMedia.type)
-                    }
-                }
-                vod_full_screen_icon?.setOnClickListener {
-                    isPaused = true
-                    vod_lanjut_menonton_btn?.gone()
-                    vod_frozen_view?.gone()
-                    videoPlayer?.getExoPlayer()?.currentPosition?.let {
-                        it1 -> listener?.onFullScreenCLick(feedXCard, positionInFeed, feedXCard.appLink, it1,shouldTrack, true) }
-                }
-                vod_lanjut_menonton_btn?.setOnClickListener {
-                    vod_lanjut_menonton_btn?.gone()
-                    vod_frozen_view?.gone()
-                    videoPlayer?.getExoPlayer()?.currentPosition?.let { it2 -> listener?.onFullScreenCLick(feedXCard, positionInFeed, feedXCard.appLink,it2,false, false)}
-                }
-                videoPlayer?.start(feedMedia.mediaUrl, GridPostAdapter.isMute)
-                vod_volumeIcon?.visible()
-                if (GridPostAdapter.isMute) {
-                    vod_volumeIcon?.setImageResource(R.drawable.ic_feed_volume_mute_large)
-                } else {
-                    vod_volumeIcon?.setImageResource(R.drawable.ic_feed_volume_up_large)
-                }
-                videoPlayer?.setVideoStateListener(object : VideoStateListener {
-                    override fun onInitialStateLoading() {
-                        showVODLoading()
-                        isPaused = false
-                        isVODViewFrozen = false
-                        layoutLihatProdukParent.visible()
-
-                    }
-
-                    override fun onVideoReadyToPlay() {
-                        hideVODLoading()
-                        vod_timer_view.visible()
-                        vod_volumeIcon?.visible()
-                        vod_full_screen_icon?.visible()
-                        vod_lanjut_menonton_btn?.gone()
-                        vod_frozen_view?.gone()
-
-                        if(!isPaused) {
-                            if (secondCountDownTimer != null) {
-                                secondCountDownTimer?.cancel()
-                                secondCountDownTimer?.start()
-                            } else {
-                                secondCountDownTimer = object : CountDownTimer(TIME_THIRTY_SEC, TIME_SECOND) {
-                                    override fun onTick(millisUntilFinished: Long) {
-
-                                    }
-
-                                    override fun onFinish() {
-                                        videoPlayer?.pause()
-                                        isPaused = true
-
-                                        vod_lanjut_menonton_btn?.visible()
-                                        vod_frozen_view?.visible()
-                                        vod_full_screen_icon?.gone()
-                                        vod_lihat_product?.gone()
-                                        vod_timer_view?.gone()
-                                        isVODViewFrozen = true
-
-                                    }
-                                }.start()
-                            }
-                        }
-
-
-                        feedAddViewJob?.cancel()
-                        feedAddViewJob = scope.launch {
-                                    delay(TIME_FIVE_SEC)
-                                    if (!isPaused) {
-                                        val view = feedXCard.views
-                                        val count = view.count +1
-                                        if (view.count != 0) {
-                                            likedText.text =
-                                                    MethodChecker.fromHtml(
-                                                            context.getString(
-                                                                    R.string.feed_component_viewed_count_text,
-                                                                    count.productThousandFormatted(1)
-                                                            )
-                                                    )
-                                        }
-                                        listener?.addVODView(feedXCard, feedXCard.playChannelID, positionInFeed, TIME_FIVE_SEC,true)
-                                        shouldTrack = false
-                                        isPaused = true
-                                    }
-                                }
-
-
-                       if(!isPaused) {
-                           vod_timer_view.visible()
-                           var time = (videoPlayer?.getExoPlayer()?.duration
-                                   ?: 0L) / TIME_SECOND + 1
-                           object : CountDownTimer(TIME_THREE_SEC, TIME_SECOND) {
-                               override fun onTick(millisUntilFinished: Long) {
-                                   if (time < HOUR_IN_HOUR) {
-                                       vod_timer_view.text =
-                                               String.format(
-                                                       "%02d:%02d",
-                                                       (time / MINUTE_IN_HOUR) % MINUTE_IN_HOUR,
-                                                       time % MINUTE_IN_HOUR)
-                                   } else {
-                                       vod_timer_view.text =
-                                               String.format(
-                                                       "%02d:%02d:%02d",
-                                                       (time / HOUR_IN_HOUR) % HOUR_IN_HOUR,
-                                                       (time / MINUTE_IN_HOUR) % MINUTE_IN_HOUR,
-                                                       time % MINUTE_IN_HOUR)
-                                   }
-                                   time -= 1
-                               }
-
-                               override fun onFinish() {
-                                   vod_timer_view.gone()
-                                   vod_volumeIcon.gone()
-                               }
-                           }.start()
-                       }
-                    }
-
-                    override fun onVideoStateChange(stopDuration: Long, videoDuration: Long) {
-                        feedMedia.canPlay = false
-                        listener?.addVODView(feedXCard, feedXCard.playChannelID, positionInFeed, (videoPlayer?.getExoPlayer()?.currentPosition ?: 0L) / TIME_SECOND,false)
-
-                    }
-                })
-            }
-        }
-
-    }
-
 
     private fun hideVideoLoading() {
         loader?.gone()
@@ -1652,24 +1403,12 @@ class PostDynamicViewNew @JvmOverloads constructor(
         loader?.visible()
         ic_play?.visible()
     }
-    private fun hideVODLoading() {
-        vod_loader?.gone()
-        ic_vod_play?.gone()
-        vod_timer_view?.visible()
-        vod_videoPreviewImage?.gone()
-    }
-
-    private fun showVODLoading() {
-        vod_loader?.animate()
-        vod_loader?.visible()
-        ic_vod_play?.visible()
-    }
 
     private fun toggleVolume(isMute: Boolean) {
         videoPlayer?.toggleVideoVolume(isMute)
     }
     @SuppressLint("ClickableViewAccessibility")
-    private fun setNewASGCLayout(feedXCard: FeedXCard){
+    private fun setNewASGCLayout(feedXCard: FeedXCard) {
         val postId = feedXCard.id.toIntOrZero()
         val products = feedXCard.products
         val totalProducts = feedXCard.products.size
@@ -1841,7 +1580,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
                                         )
 
                                         for (i in 0 until layout.childCount) {
-                                            var view = layout.getChildAt(i)
+                                            val view = layout.getChildAt(i)
                                             if (view is PostTagView) {
                                                 val item = (view as PostTagView)
                                                 productTagBubbleShowing = item.showExpandedView()
@@ -1866,7 +1605,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
                                     override fun onDoubleTap(e: MotionEvent): Boolean {
                                         var productTagBubbleShowing = false
                                         for (i in 0 until layout.childCount) {
-                                            var view = layout.getChildAt(i)
+                                            val view = layout.getChildAt(i)
                                             if (view is PostTagView) {
                                                 val item = (view as PostTagView)
                                                 productTagBubbleShowing = item.hideExpandedViewIfShown()
@@ -2086,7 +1825,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
     }
 
 
-    private fun bindPublishedAt(publishedAt: String, subTitle: String, isTopadsOrAsgc: Boolean) {
+    private fun bindPublishedAt(publishedAt: String, subTitle: String) {
         val avatarDate = TimeConverter.generateTimeNew(context, publishedAt)
         val spannableString: SpannableString =
             if (subTitle.isNotEmpty()) {
@@ -2145,6 +1884,12 @@ class PostDynamicViewNew @JvmOverloads constructor(
                 model?.feedXCard?.media?.firstOrNull()?.canPlay = false
                 model?.feedXCard?.media?.firstOrNull()?.isImageImpressedFirst = true
                 model?.feedXCard?.let { hideTaggingOnDetach(it) }
+                if (model.feedXCard.typename == TYPE_FEED_X_CARD_PLAY ||(model.feedXCard.typename == TYPE_FEED_X_CARD_POST && model.feedXCard.media.first().type == TYPE_LONG_VIDEO)){
+                    //TODO recheck this scenario
+                    val feedXCard = model.feedXCard
+                    val media = feedXCard.media.get(feedXCard.lastCarouselIndex)
+                    media.vodView?.onViewDetached()
+                }
             } else if (model is TopadsHeadLineV2Model) {
                 carouselView.onActiveIndexChangedListener = null
                 model?.feedXCard?.media?.firstOrNull()?.canPlay = false
@@ -2272,31 +2017,20 @@ class PostDynamicViewNew @JvmOverloads constructor(
             setVideoControl(
                 feedXCard.media[position],
                 feedXCard.id,
-                position,
                 feedXCard.author.id,
-                feedXCard.author.type,
                 feedXCard
             )
         }
     }
     fun playVOD(feedXCard: FeedXCard, position: Int = feedXCard.lastCarouselIndex) {
-        if (videoPlayer == null)
+        if (videoPlayer == null) {
             feedXCard.media[position].canPlay = true
-        if (feedXCard.media[position].canPlay) {
-            setVODControl(
-                    feedXCard.media[position],
-                    feedXCard.id,
-                    position,
-                    feedXCard.author.id,
-                    feedXCard.author.type,
-                    feedXCard
-            )
         }
-    }
-
-
-    private fun isVideo(media: FeedXMedia?): Boolean {
-        return media?.type != TYPE_IMAGE
+        if (feedXCard.media[position].canPlay) {
+            val feedMedia = feedXCard.media[position]
+            val vodItem = feedMedia.vodView
+            vodItem?.setVODControl(GridPostAdapter.isMute)
+        }
     }
 
     fun setVideo(isFragmentVisible: Boolean) {
@@ -2462,20 +2196,12 @@ class PostDynamicViewNew @JvmOverloads constructor(
         videoItem?.layoutParams = param
         return videoItem
     }
-    private fun getVODItem(): View? {
-        val videoItem = View.inflate(context, R.layout.item_post_long_video_vod, null)
-        val param = LinearLayout.LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT,
-                ViewGroup.LayoutParams.MATCH_PARENT
-        )
-        videoItem?.layoutParams = param
-        return videoItem
-    }
+
 
     private fun shouldContinueToShowLihatProduct(layout: ConstraintLayout) : Boolean{
         var isInflatedBubbleShowing = false
         for (i in 0 until layout.childCount) {
-            var view = layout.getChildAt(i)
+            val view = layout.getChildAt(i)
             if (view is PostTagView) {
                 val item = (view as PostTagView)
                 isInflatedBubbleShowing = item.getExpandedViewVisibility()
