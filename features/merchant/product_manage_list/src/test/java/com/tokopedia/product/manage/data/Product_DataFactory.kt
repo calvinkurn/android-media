@@ -50,7 +50,7 @@ fun createProductUiModel(
     suspendLevel:Int = 0,
     hasStockAlert:Boolean = false,
     stockAlertActive: Boolean = false,
-    stockAlertCount:Int = 1
+    stockAlertCount:Int = 0
 ): ProductUiModel {
     return ProductUiModel(
         id,

@@ -77,7 +77,7 @@ class ProductStockReminderAdapter(
                 notifyChange(product.id, stockLimit)
             }
             binding.swStockReminder.isChecked =
-                product.stockAlertStatus == StockReminderConst.REMINDER_ACTIVE
+                product.stockAlertStatus == REMINDER_ACTIVE
         }
 
         private fun setupStockEditorText(product: ProductStockReminderUiModel) {
