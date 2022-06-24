@@ -10,7 +10,6 @@ import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.media.R
 import com.tokopedia.media.databinding.ViewItemSelectionThumbnailBinding
 import com.tokopedia.picker.common.uimodel.MediaUiModel
-import com.tokopedia.picker.common.utils.safeFileDelete
 import com.tokopedia.utils.view.binding.viewBinding
 
 class ThumbnailViewHolder(view: View) : RecyclerView.ViewHolder(view) {
@@ -33,14 +32,14 @@ class ThumbnailViewHolder(view: View) : RecyclerView.ViewHolder(view) {
 
         binding?.ivDelete?.setOnClickListener {
             if (media.isFromPickerCamera) {
-                onShowDeletionDialog(media.path) { onRemoved() }
+                onShowDeletionDialog(media) { onRemoved() }
             } else {
                 onRemoved()
             }
         }
     }
 
-    private fun onShowDeletionDialog(path: String, onRemoved: () -> Unit = {}) {
+    private fun onShowDeletionDialog(media: MediaUiModel, onRemoved: () -> Unit = {}) {
         DialogUnify(context, DialogUnify.VERTICAL_ACTION, DialogUnify.NO_IMAGE).apply {
             setTitle(context.getString(R.string.picker_title_deletion))
             setDescription(context.getString(R.string.picker_deletion_message))
@@ -48,7 +47,8 @@ class ThumbnailViewHolder(view: View) : RecyclerView.ViewHolder(view) {
             setSecondaryCTAText(context.getString(R.string.picker_button_cancel))
 
             setPrimaryCTAClickListener {
-                safeFileDelete(path)
+                media.file?.safeDelete()
+
                 onRemoved()
                 dismiss()
             }
