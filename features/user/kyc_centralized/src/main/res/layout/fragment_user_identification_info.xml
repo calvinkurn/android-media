@@ -20,7 +20,7 @@
             android:padding="@dimen/spacing_lvl4"
             android:visibility="visible">
 
-            <ImageView
+            <com.tokopedia.unifycomponents.ImageUnify
                 android:id="@+id/main_image"
                 android:layout_width="@dimen/kyc_status_image_width"
                 android:layout_height="@dimen/kyc_status_image_height"
@@ -87,7 +87,7 @@
                     app:typographyType="heading_5"
                     tools:text="Bukan foto KTP" />
 
-                <ImageView
+                <com.tokopedia.unifycomponents.ImageUnify
                     android:id="@+id/ic_x_1"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -108,7 +108,7 @@
                     app:typographyType="heading_5"
                     tools:text="Wajah di selfie berbeda dengan wajah di foto KTP" />
 
-                <ImageView
+                <com.tokopedia.unifycomponents.ImageUnify
                     android:id="@+id/ic_x_2"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
