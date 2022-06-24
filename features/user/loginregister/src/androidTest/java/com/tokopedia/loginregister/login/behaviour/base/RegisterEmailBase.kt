@@ -13,7 +13,6 @@ import com.tokopedia.loginregister.R
 import com.tokopedia.loginregister.discover.pojo.DiscoverData
 import com.tokopedia.loginregister.discover.pojo.DiscoverPojo
 import com.tokopedia.loginregister.discover.pojo.ProviderData
-import com.tokopedia.loginregister.login.behaviour.activity.RegisterEmailActivityStub
 import com.tokopedia.loginregister.login.behaviour.data.DiscoverUseCaseStub
 import com.tokopedia.loginregister.login.behaviour.data.GraphqlUseCaseStub
 import com.tokopedia.loginregister.login.behaviour.di.FakeActivityComponentFactory
@@ -40,8 +39,6 @@ open class RegisterEmailBase: LoginRegisterBase() {
     )
 
     protected val context: Context = InstrumentationRegistry.getInstrumentation().targetContext
-
-    protected open lateinit var activity: RegisterEmailActivityStub
 
     @Inject
     lateinit var generatePublicKeyUseCase: GeneratePublicKeyUseCase

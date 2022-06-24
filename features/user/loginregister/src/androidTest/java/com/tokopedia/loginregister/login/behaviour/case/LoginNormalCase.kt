@@ -25,9 +25,6 @@ import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.loginregister.R
 import com.tokopedia.loginregister.common.view.emailextension.adapter.EmailExtensionAdapter
-import com.tokopedia.loginregister.login.behaviour.activity.ChangeNameActivityStub
-import com.tokopedia.loginregister.login.behaviour.activity.ChooseAccountActivityStub
-import com.tokopedia.loginregister.login.behaviour.activity.VerificationActivityStub
 import com.tokopedia.loginregister.login.behaviour.base.LoginBase
 import com.tokopedia.loginregister.login.domain.pojo.RegisterCheckData
 import com.tokopedia.loginregister.login.domain.pojo.RegisterCheckPojo
@@ -40,7 +37,6 @@ import com.tokopedia.sessioncommon.data.profile.ProfileInfo
 import com.tokopedia.sessioncommon.data.profile.ProfilePojo
 import com.tokopedia.test.application.annotations.UiTest
 import org.hamcrest.CoreMatchers.not
-import org.junit.Assert.assertTrue
 import org.junit.Test
 
 @UiTest
@@ -142,31 +138,6 @@ class LoginNormalCase : LoginBase() {
         }
     }
 
-    fun mockVerificationSuccess() {
-        val mockVerificationResult = Intent().apply {
-            putExtras(Bundle().apply {
-                putString(ApplinkConstInternalGlobal.PARAM_UUID, "abc1234")
-                putString(ApplinkConstInternalGlobal.PARAM_TOKEN, "abv1234")
-                putString(ApplinkConstInternalGlobal.PARAM_EMAIL, "yoris.prayogo@gmail.com")
-            })
-        }
-        intending(hasComponent(VerificationActivityStub::class.java.name)).respondWith(
-            Instrumentation.ActivityResult(
-                Activity.RESULT_OK,
-                mockVerificationResult
-            )
-        )
-    }
-
-    private fun mockChooseAccountSuccess() {
-        intending(hasComponent(ChooseAccountActivityStub::class.java.name)).respondWith(
-            Instrumentation.ActivityResult(
-                Activity.RESULT_OK,
-                null
-            )
-        )
-    }
-
     /* Check if RegisterInitialActivity is launching when Daftar button in dialog clicked */
     @Test
     fun goToRegisterInitial_IfNotRegistered() {
@@ -183,10 +154,15 @@ class LoginNormalCase : LoginBase() {
             intending(hasData(ApplinkConstInternalGlobal.COTP)).respondWith(
                 Instrumentation.ActivityResult(
                     Activity.RESULT_OK,
-                    Intent()
+                    Intent().apply {
+                        putExtras(Bundle().apply {
+                            putString(ApplinkConstInternalGlobal.PARAM_UUID, "abc1234")
+                            putString(ApplinkConstInternalGlobal.PARAM_TOKEN, "abv1234")
+                            putString(ApplinkConstInternalGlobal.PARAM_EMAIL, "yoris.prayogo@gmail.com")
+                        })
+                    }
                 )
             )
-            mockVerificationSuccess()
             inputEmailOrPhone("yoris.prayogo@tokopedia.com")
             clickSubmit()
 
@@ -218,9 +194,6 @@ class LoginNormalCase : LoginBase() {
         loginTokenUseCaseStub.response = loginPojo
 
         runTest {
-            mockVerificationSuccess()
-            mockChooseAccountSuccess()
-
             inputEmailOrPhone("yoris.prayogo@tokopedia.com")
             clickSubmit()
             inputPassword("test123")
@@ -255,10 +228,14 @@ class LoginNormalCase : LoginBase() {
 
         runTest {
             intending(hasData(ApplinkConst.ADD_NAME_PROFILE)).respondWith(
-                Instrumentation.ActivityResult(Activity.RESULT_OK, Intent())
+                Instrumentation.ActivityResult(Activity.RESULT_OK, Intent().apply {
+                    putExtras(Bundle().apply {
+                        putString(ApplinkConstInternalGlobal.PARAM_UUID, "abc1234")
+                        putString(ApplinkConstInternalGlobal.PARAM_TOKEN, "abv1234")
+                        putString(ApplinkConstInternalGlobal.PARAM_EMAIL, "yoris.prayogo@gmail.com")
+                    })
+                })
             )
-            mockVerificationSuccess()
-            mockChooseAccountSuccess()
 
             inputEmailOrPhone("yoris.prayogo@tokopedia.com")
             clickSubmit()

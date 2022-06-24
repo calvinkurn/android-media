@@ -1,32 +1,23 @@
 package com.tokopedia.loginregister.login.behaviour.case.register
 
-import android.app.Activity
-import android.app.Instrumentation
-import android.content.Intent
 import androidx.test.espresso.Espresso
 import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.assertion.ViewAssertions
-import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.Intents.intended
 import androidx.test.espresso.intent.Intents.intending
-import androidx.test.espresso.intent.matcher.IntentMatchers
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasData
 import androidx.test.espresso.matcher.RootMatchers
 import androidx.test.espresso.matcher.ViewMatchers
-import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.loginregister.R
-import com.tokopedia.loginregister.login.behaviour.activity.LoginActivityStub
-import com.tokopedia.loginregister.login.behaviour.activity.VerificationActivityStub
 import com.tokopedia.loginregister.login.behaviour.base.RegisterInitialBase
 import com.tokopedia.loginregister.login.helper.respondWithOk
 import com.tokopedia.loginregister.login.view.activity.LoginActivity
 import com.tokopedia.loginregister.registerinitial.domain.pojo.RegisterCheckData
 import com.tokopedia.loginregister.registerinitial.domain.pojo.RegisterCheckPojo
 import com.tokopedia.test.application.annotations.UiTest
-import org.hamcrest.CoreMatchers.containsString
 import org.junit.Test
 
 @UiTest
