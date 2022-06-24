@@ -142,13 +142,13 @@ class CampaignInformationViewModel @Inject constructor(
         }
 
 
-        if (selection.showTeaser && selection.teaserDate.before(now)) {
-            _areInputValid.value = ValidationResult.LapsedTeaserStartDate
+        if (now.after(selection.startDate)) {
+            _areInputValid.value = ValidationResult.LapsedStartDate
             return
         }
 
-        if (selection.startDate.before(now)) {
-            _areInputValid.value = ValidationResult.LapsedStartDate
+        if (selection.showTeaser && now.after(selection.teaserDate)) {
+            _areInputValid.value = ValidationResult.LapsedTeaserStartDate
             return
         }
 

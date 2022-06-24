@@ -286,13 +286,14 @@
                 android:layout_width="@dimen/unify_space_48"
                 android:layout_height="@dimen/unify_space_48"
                 android:layout_marginStart="@dimen/unify_space_16"
+                android:layout_marginTop="@dimen/unify_space_16"
                 android:layout_marginEnd="@dimen/unify_space_16"
                 android:background="@drawable/sfs_shape_rounded_color"
                 app:layout_constraintBottom_toBottomOf="@+id/tauHexColor"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/tauHexColor" />
+                app:layout_constraintTop_toBottomOf="@+id/contentSwitcher" />
 
             <com.tokopedia.unifycomponents.TextAreaUnify2
                 android:id="@+id/tauHexColor"
@@ -301,28 +302,46 @@
                 android:layout_marginStart="@dimen/unify_space_16"
                 android:layout_marginTop="@dimen/unify_space_16"
                 android:layout_marginEnd="@dimen/unify_space_8"
-                android:layout_marginBottom="@dimen/unify_space_16"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/btnApply"
+                app:layout_constraintEnd_toStartOf="@+id/guideline2"
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toEndOf="@id/imgHexColorPreview"
                 app:layout_constraintTop_toBottomOf="@+id/contentSwitcher"
-                app:layout_constraintVertical_bias="0.0"
                 app:unify_text_field_label="@string/sfs_hex_code"
+                app:unify_text_field_label_static="true"
                 app:unify_text_field_prepend_text="@string/sfs_hashtag" />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/tpgHexColorErrorMessage"
+                android:layout_width="0dp"
+                android:layout_marginBottom="@dimen/unify_space_32"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/unify_space_8"
+                android:layout_marginTop="@dimen/unify_space_2"
+                android:textColor="@color/Unify_RN500"
+                android:visibility="invisible"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="@+id/tauHexColor"
+                app:layout_constraintStart_toStartOf="@+id/tauHexColor"
+                app:layout_constraintTop_toBottomOf="@+id/tauHexColor"
+                app:typographyType="body_3"
+                tools:text="Min. 6 karakter"
+                tools:visibility="visible" />
 
             <com.tokopedia.unifycomponents.UnifyButton
                 android:id="@+id/btnApply"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/unify_space_16"
                 android:layout_marginEnd="@dimen/unify_space_16"
+                android:enabled="false"
                 android:minWidth="@dimen/unify_space_96"
                 android:text="@string/sfs_apply"
-                android:visibility="invisible"
+                android:visibility="gone"
                 app:layout_constraintBottom_toBottomOf="@+id/tauHexColor"
                 app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toEndOf="@+id/tauHexColor"
                 app:layout_constraintTop_toTopOf="@+id/tauHexColor"
-                app:unifyButtonType="main"
                 app:unifyButtonVariant="ghost"
                 tools:visibility="visible" />
 
