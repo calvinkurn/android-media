@@ -40,15 +40,8 @@ open class RegisterEmailBase: LoginRegisterBase() {
     )
 
     protected val context: Context = InstrumentationRegistry.getInstrumentation().targetContext
-    protected val applicationContext: Context
-        get() = InstrumentationRegistry
-            .getInstrumentation().context.applicationContext
 
     protected open lateinit var activity: RegisterEmailActivityStub
-
-//    protected lateinit var registerInitialComponentStub: RegisterInitialComponentStub
-
-//    protected open lateinit var fragmentTransactionIdling: FragmentTransactionIdle
 
     @Inject
     lateinit var generatePublicKeyUseCase: GeneratePublicKeyUseCase
@@ -61,16 +54,6 @@ open class RegisterEmailBase: LoginRegisterBase() {
 
     @Before
     open fun before() {
-//        val baseAppComponent = DaggerBaseAppComponentStub.builder()
-//            .appModuleStub(AppModuleStub(applicationContext))
-//            .build()
-//        val loginRegisterComponent =  DaggerMockLoginRegisterComponent.builder()
-//            .baseAppComponentStub(baseAppComponent)
-//            .build()
-//        registerInitialComponentStub = DaggerRegisterInitialComponentStub.builder()
-//            .mockLoginRegisterComponent(loginRegisterComponent)
-//            .build()
-//        registerInitialComponentStub.inject(this)
         var registerComponent: RegisterInitialComponentStub
         ActivityComponentFactory.instance = FakeActivityComponentFactory().also {
             registerComponent = it.registerComponent
@@ -83,11 +66,6 @@ open class RegisterEmailBase: LoginRegisterBase() {
         activityTestRule.finishActivity()
     }
 
-    protected fun inflateTestFragment() {
-//        activity.setupTestFragment(registerInitialComponentStub)
-        waitForFragmentResumed()
-    }
-
     protected fun setupActivity(
         intentModifier: (Intent) -> Unit = {}
     ) {
@@ -95,25 +73,6 @@ open class RegisterEmailBase: LoginRegisterBase() {
 
         intentModifier(intent)
         activityTestRule.launchActivity(intent)
-//        activity = activityTestRule.activity
-//        fragmentTransactionIdling = FragmentTransactionIdle(
-//            activity.supportFragmentManager,
-//            RegisterEmailActivityStub.TAG
-//        )
-    }
-
-    protected fun waitForFragmentResumed() {
-//        IdlingRegistry.getInstance().register(fragmentTransactionIdling)
-//        Espresso.onView(ViewMatchers.withId(R.id.wrapper_email))
-//            .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
-//        IdlingRegistry.getInstance().unregister(fragmentTransactionIdling)
-    }
-
-    protected fun launchDefaultFragment() {
-        setupActivity {
-            it.putExtras(Intent(context, RegisterEmailActivityStub::class.java))
-        }
-        inflateTestFragment()
     }
 
     protected fun setRegisterCheckDefaultResponse() {
@@ -136,7 +95,7 @@ open class RegisterEmailBase: LoginRegisterBase() {
         if(isDefaultRegisterCheck) {
             setRegisterCheckDefaultResponse()
         }
-        launchDefaultFragment()
+        setupActivity()
         test.invoke()
     }
 

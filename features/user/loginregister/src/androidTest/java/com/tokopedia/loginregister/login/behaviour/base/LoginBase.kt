@@ -37,11 +37,6 @@ open class LoginBase: LoginRegisterBase() {
             LoginActivity::class.java, false, false
     )
 
-    protected val context: Context = InstrumentationRegistry.getInstrumentation().targetContext
-
-
-//    protected open lateinit var fragmentTransactionIdling: FragmentTransactionIdle
-
     @Inject
     lateinit var registerCheckUseCaseStub: RegisterCheckUseCaseStub
 
@@ -89,10 +84,6 @@ open class LoginBase: LoginRegisterBase() {
         discoverUseCaseStub.response = response
     }
 
-    protected fun inflateTestFragment() {
-        waitForFragmentResumed()
-    }
-
     protected fun setupLoginActivity(
             intentModifier: (Intent) -> Unit = {}
     ) {
@@ -100,10 +91,6 @@ open class LoginBase: LoginRegisterBase() {
 
         intentModifier(intent)
         activityTestRule.launchActivity(intent)
-//        fragmentTransactionIdling = FragmentTransactionIdle(
-//            activity.supportFragmentManager,
-//            LoginActivityStub.TAG
-//        )
     }
 
     fun runTest(test: () -> Unit) {
@@ -113,21 +100,9 @@ open class LoginBase: LoginRegisterBase() {
         if(isDefaultRegisterCheck) {
             setRegisterCheckDefaultResponse()
         }
-        launchDefaultFragment()
+        setupLoginActivity()
         clearEmailInput()
         test.invoke()
-    }
-
-    protected fun waitForFragmentResumed() {
-//        IdlingRegistry.getInstance().register(fragmentTransactionIdling)
-//        onView(withId(R.id.login_input_view))
-//                .check(matches(isDisplayed()))
-//        IdlingRegistry.getInstance().unregister(fragmentTransactionIdling)
-    }
-
-    protected fun launchDefaultFragment() {
-        setupLoginActivity()
-        inflateTestFragment()
     }
 
     fun clickTopRegister() {

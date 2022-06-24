@@ -33,17 +33,6 @@ open class RegisterInitialBase: LoginRegisterBase() {
         RegisterInitialActivity::class.java, false, false
     )
 
-    protected val context: Context = InstrumentationRegistry.getInstrumentation().targetContext
-    protected val applicationContext: Context
-        get() = InstrumentationRegistry
-            .getInstrumentation().context.applicationContext
-
-//    protected open lateinit var activity: RegisterInitialActivityStub
-
-//    protected lateinit var registerInitialComponentStub: RegisterInitialComponentStub
-
-//    protected open lateinit var fragmentTransactionIdling: FragmentTransactionIdle
-
     @Inject
     lateinit var generatePublicKeyUseCase: GeneratePublicKeyUseCase
 
@@ -53,41 +42,22 @@ open class RegisterInitialBase: LoginRegisterBase() {
     @Inject
     lateinit var discoverUseCaseStub: DiscoverUseCaseStub
 
-//    @Inject
-//    lateinit var routerHelperStub: RegisterInitialRouterHelperStub
-
     @Inject
     lateinit var getProfileUseCaseStub: GetProfileUseCaseStub
 
     @ExperimentalCoroutinesApi
     @Before
     open fun before() {
-//        Dispatchers.setMain(TestCoroutineDispatcher())
         var registerComponent: RegisterInitialComponentStub
         ActivityComponentFactory.instance = FakeActivityComponentFactory().also {
             registerComponent = it.registerComponent
         }
         registerComponent.inject(this)
-//        val baseAppComponent = DaggerBaseAppComponentStub.builder()
-//            .appModuleStub(AppModuleStub(applicationContext))
-//            .build()
-//        val loginRegisterComponent =  DaggerMockLoginRegisterComponent.builder()
-//            .baseAppComponentStub(baseAppComponent)
-//            .build()
-//        registerInitialComponentStub = DaggerRegisterInitialComponentStub.builder()
-//            .mockLoginRegisterComponent(loginRegisterComponent)
-//            .build()
-//        registerInitialComponentStub.inject(this)
     }
 
     @After
     fun tear() {
         activityTestRule.finishActivity()
-    }
-
-    protected fun inflateTestFragment() {
-//        activity.setupTestFragment(registerInitialComponentStub)
-        waitForFragmentResumed()
     }
 
     protected fun setupActivity(
@@ -97,22 +67,7 @@ open class RegisterInitialBase: LoginRegisterBase() {
 
         intentModifier(intent)
         activityTestRule.launchActivity(intent)
-//        fragmentTransactionIdling = FragmentTransactionIdle(
-//            activity.supportFragmentManager,
-//            RegisterInitialActivityStub.TAG
 //        )
-    }
-
-    protected fun waitForFragmentResumed() {
-//        IdlingRegistry.getInstance().register(fragmentTransactionIdling)
-//        Espresso.onView(ViewMatchers.withId(R.id.register_input_view))
-//            .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
-//        IdlingRegistry.getInstance().unregister(fragmentTransactionIdling)
-    }
-
-    protected fun launchDefaultFragment() {
-        setupActivity()
-        inflateTestFragment()
     }
 
     protected fun setRegisterCheckDefaultResponse() {
@@ -135,7 +90,7 @@ open class RegisterInitialBase: LoginRegisterBase() {
         if(isDefaultRegisterCheck) {
             setRegisterCheckDefaultResponse()
         }
-        launchDefaultFragment()
+        setupActivity()
         clearEmailInput()
         test.invoke()
     }
