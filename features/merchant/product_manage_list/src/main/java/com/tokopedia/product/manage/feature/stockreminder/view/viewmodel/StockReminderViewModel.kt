@@ -84,11 +84,11 @@ class StockReminderViewModel @Inject constructor(
         }
     }
 
-    private fun showLoading() {
+    fun showLoading() {
         _showLoading.value = true
     }
 
-    private fun hideLoading() {
+    fun hideLoading() {
         _showLoading.value = false
     }
 }

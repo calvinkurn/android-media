@@ -47,7 +47,15 @@ class StockReminderViewModelTest : StockReminderViewModelTestFixture() {
 
             onGetStockReminder_thenReturn(getStockReminderResponse)
 
+            val showLoading = true
+            val hideLoading = false
+
+            viewModel.showLoading()
+            verifyLoadingState(showLoading)
             viewModel.getStockReminder(productId)
+
+            viewModel.hideLoading()
+            verifyLoadingState(hideLoading)
 
             val expectedResult = Success(GetStockReminderResponse(GetDataWrapper(data)))
 
@@ -184,6 +192,12 @@ class StockReminderViewModelTest : StockReminderViewModelTestFixture() {
         } returns getProductVariantResponse
     }
 
+    private fun verifyLoadingState(expectedResult: Boolean) {
+        val actualResult =
+            viewModel.showLoading.value
+        assertEquals(expectedResult, actualResult)
+    }
+
     private fun verifyGetStockReminderUseCaseCalled() {
         coVerify { stockReminderDataUseCase.executeGetStockReminder() }
     }
@@ -197,6 +211,7 @@ class StockReminderViewModelTest : StockReminderViewModelTestFixture() {
             viewModel.getStockReminderLiveData.value as Success<GetStockReminderResponse>
         assertEquals(expectedResult, actualResult)
     }
+
 
     private fun verifyCreateStockReminderResult(expectedResult: Success<CreateStockReminderResponse>) {
         val actualResult =
