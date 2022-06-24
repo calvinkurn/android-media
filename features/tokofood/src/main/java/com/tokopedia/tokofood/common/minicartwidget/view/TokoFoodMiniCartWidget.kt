@@ -3,9 +3,11 @@ package com.tokopedia.tokofood.common.minicartwidget.view
 import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleCoroutineScope
+import androidx.lifecycle.LifecycleObserver
+import androidx.lifecycle.OnLifecycleEvent
 import com.tokopedia.kotlin.extensions.view.visible
-import com.tokopedia.tokofood.R
 import com.tokopedia.tokofood.common.presentation.viewmodel.MultipleFragmentsViewModel
 import com.tokopedia.tokofood.common.util.Result
 import com.tokopedia.tokofood.databinding.LayoutWidgetPurchaseMiniCartBinding
@@ -18,7 +20,7 @@ import kotlinx.coroutines.flow.collect
 @FlowPreview
 class TokoFoodMiniCartWidget @JvmOverloads constructor(
         context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
-) : BaseCustomView(context, attrs, defStyleAttr) {
+) : BaseCustomView(context, attrs, defStyleAttr), LifecycleObserver {
 
     private var viewBinding: LayoutWidgetPurchaseMiniCartBinding? = null
     private var viewModel: MultipleFragmentsViewModel? = null
@@ -33,6 +35,11 @@ class TokoFoodMiniCartWidget @JvmOverloads constructor(
                 value
             ).orEmpty()
         )
+    }
+
+    @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
+    fun onDestroy() {
+        viewModel = null
     }
 
     // Function to initialize the widget

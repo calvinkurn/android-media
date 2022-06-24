@@ -9,12 +9,12 @@ object TokoFoodPromoUiModelMapper {
 
     fun mapResponseDataToVisitables(data: PromoListTokoFoodData): MutableList<Visitable<*>> {
         return mutableListOf<Visitable<*>>().apply {
-            val isAvailableSectionEnabled = data.availableSection.isEnabled
+            val isAvailableSectionEnabled = data.availableSection.subSection.coupons.isNotEmpty()
             if (isAvailableSectionEnabled) {
                 data.availableSection.title.takeIf { it.isNotEmpty() }?.let { title ->
                     add(TokoFoodPromoEligibilityHeaderUiModel(title = title))
                 }
-                data.availableSection.subSection. let { availableSubSection ->
+                data.availableSection.subSection.let { availableSubSection ->
                     add(
                         TokoFoodPromoHeaderUiModel(
                             title = availableSubSection.title,
@@ -27,13 +27,13 @@ object TokoFoodPromoUiModelMapper {
                         }
                     addAll(
                         availableSubSection.coupons.map {
-                            mapPromoItemUiModel(it, true)
+                            mapPromoItemUiModel(it, availableSubSection.isEnabled)
                         }
                     )
                 }
             }
 
-            val isUnavailableSectionEnabled = data.unavailableSection.isEnabled
+            val isUnavailableSectionEnabled = data.unavailableSection.subSection.coupons.isNotEmpty()
             if (isUnavailableSectionEnabled) {
                 data.unavailableSection.title.takeIf { it.isNotEmpty() }?.let { title ->
                     add(TokoFoodPromoEligibilityHeaderUiModel(title = title))
@@ -51,7 +51,7 @@ object TokoFoodPromoUiModelMapper {
                         }
                     addAll(
                         unavailableSubSection.coupons.map {
-                            mapPromoItemUiModel(it, false)
+                            mapPromoItemUiModel(it, unavailableSubSection.isEnabled)
                         }
                     )
                 }

@@ -4,11 +4,8 @@ import com.tokopedia.gql_query_annotation.GqlQueryInterface
 import com.tokopedia.tokofood.common.domain.param.KeroAddressParamData
 
 object KeroEditAddressQuery : GqlQueryInterface {
-
-    private const val OPERATION_NAME = "KeroEditAddress"
-
     private val QUERY = """
-            mutation $OPERATION_NAME(${'$'}input: KeroAddressInput!) {
+            mutation KeroEditAddress(${'$'}input: KeroAddressInput!) {
               kero_edit_address(input: ${'$'}input) {
                 data {
                   addr_id
@@ -27,10 +24,10 @@ object KeroEditAddressQuery : GqlQueryInterface {
         }
 
     override fun getOperationNameList(): List<String> =
-        listOf(OPERATION_NAME)
+        listOf("kero_edit_address")
 
     override fun getQuery(): String = QUERY
 
-    override fun getTopOperationName(): String = OPERATION_NAME
+    override fun getTopOperationName(): String = "KeroEditAddress"
 
 }

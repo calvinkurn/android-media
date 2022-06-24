@@ -6,6 +6,7 @@ import com.tokopedia.tokofood.feature.purchase.promopage.domain.model.PromoListT
 import com.tokopedia.tokofood.feature.purchase.promopage.domain.model.PromoListTokoFoodCoupon
 import com.tokopedia.tokofood.feature.purchase.promopage.domain.model.PromoListTokoFoodData
 import com.tokopedia.tokofood.feature.purchase.promopage.domain.model.PromoListTokoFoodSection
+import com.tokopedia.tokofood.feature.purchase.promopage.domain.model.PromoListTokoFoodSubSection
 import com.tokopedia.tokofood.feature.purchase.promopage.presentation.UiEvent
 import com.tokopedia.tokofood.feature.purchase.promopage.presentation.mapper.TokoFoodPromoUiModelMapper
 import io.mockk.coEvery
@@ -27,18 +28,18 @@ class TokoFoodPromoViewModelTest: TokoFoodPromoViewModelTestFixture() {
                 status = TokoFoodCartUtil.SUCCESS_STATUS,
                 data = PromoListTokoFoodData(
                     availableSection = PromoListTokoFoodSection(
-                        coupons = listOf(
-                            PromoListTokoFoodCoupon()
+                        subSection = PromoListTokoFoodSubSection(
+                            coupons = listOf(
+                                PromoListTokoFoodCoupon()
+                            )
                         )
                     )
                 )
             )
 
             coEvery {
-                promoListTokoFoodUseCase.get()(SOURCE)
-            } returns flow {
-                emit(response)
-            }
+                promoListTokoFoodUseCase.get().execute(SOURCE)
+            } returns response
 
             viewModel.loadData()
 
@@ -54,7 +55,7 @@ class TokoFoodPromoViewModelTest: TokoFoodPromoViewModelTestFixture() {
     fun `when loadData failed, should set ui event state to failed load`() {
         runBlocking {
             coEvery {
-                promoListTokoFoodUseCase.get()(SOURCE)
+                promoListTokoFoodUseCase.get().execute(SOURCE)
             } throws MessageErrorException("")
 
             viewModel.loadData()

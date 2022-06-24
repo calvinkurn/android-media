@@ -48,10 +48,7 @@
         "products": []
       },
       "unavailable_section_header": "",
-      "unavailable_section": {
-        "title": "",
-        "products": []
-      },
+      "unavailable_sections": [],
       "shipping": {
         "name": "Gojek Instan",
         "logo_url": "https://images.tokopedia.net/img/tokofood/cart/gojek.png",
