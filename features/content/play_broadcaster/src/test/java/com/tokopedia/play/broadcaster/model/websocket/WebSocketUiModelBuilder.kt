@@ -459,20 +459,4 @@ class WebSocketUiModelBuilder {
         }
     """.trimIndent()
 
-    fun buildChannelQuizModel(
-        interactiveID: String = "0",
-        status: Int = 0,
-        question: String = "",
-        prize: String = "",
-        countdownEnd: Int = 1,
-        waitingDuration: Long = 0L,
-    ) = QuizResponse(
-        interactiveID = interactiveID,
-        status = status,
-        question = question,
-        prize = prize,
-        countdownEnd = countdownEnd,
-        waitingDuration = waitingDuration,
-    )
-
 }
