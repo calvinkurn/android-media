@@ -311,14 +311,8 @@ class SortFilterBottomSheet: BottomSheetUnify() {
     private fun setButtonApplyFilterText() {
         val mapParameter = sortFilterBottomSheetViewModel?.mapParameter ?: mapOf()
 
-        if (isPostProcessingFilter(mapParameter)) {
-            setResultCountText(
-                getString(com.tokopedia.filter.R.string.bottom_sheet_filter_finish_button_no_count)
-            )
-        } else {
-            setResultCountText("")
-            sortFilterCallback?.getResultCount(mapParameter)
-        }
+        setResultCountText("")
+        sortFilterCallback?.getResultCount(mapParameter)
     }
 
     private fun getButtonApplyContainerBackground() =

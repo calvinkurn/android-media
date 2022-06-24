@@ -15,7 +15,7 @@ data class ChatReplyUiModel(
         @SerializedName("createTimeStr")
         val timeStamp: String = "",
         @SerializedName("msgId")
-        val msgId: Long = 0L,
+        val msgId: String = "0",
         @SerializedName("productId")
         val productId: String = ""
 ) : Visitable<ChatSearchTypeFactory> {
@@ -25,7 +25,7 @@ data class ChatReplyUiModel(
     val timeStampMillis get() = timeStamp.toLongOrZero()
 
     val modifiedTimeStamp: String get() {
-        val addOffsetTimeStamp = timeStamp.toLongOrZero() + 5000
+        val addOffsetTimeStamp = timeStamp.toLongOrZero() + OFFSET_TIMESTAMP
         return addOffsetTimeStamp.toString()
     }
 
@@ -33,4 +33,7 @@ data class ChatReplyUiModel(
         return typeFactory.type(this)
     }
 
+    companion object {
+        private const val OFFSET_TIMESTAMP = 5000
+    }
 }

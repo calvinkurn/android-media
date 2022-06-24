@@ -154,6 +154,11 @@ object DeepLinkUrlConstant {
         const val PBB_SUBANG = "https://www.tokopedia.com/pajak/pbb/kab-subang/"
     }
 
+    object RECOMMENDATION {
+        const val RECOMMENDATION_WITH_ID = "https://www.tokopedia.com/rekomendasi/3190804069"
+        const val RECOMMENDATION_WITH_ID_AND_QUERY = "https://www.tokopedia.com/rekomendasi/2137719991?msrc=product-feed&utm_source=facebook&utm_medium=ocpm&utm_campaign=alon-smda-DPO-WIB-SER-18-55-MF-AUTO-180-SMDA-NWB-PG-11110000-0020-alon-smda&ref=fbdpa"
+    }
+
     object CONTENT {
         const val PLAY_CHANNEL_ID = "13114"
         const val PLAY_FROM_HOME = "https://www.tokopedia.com/play/channel/13114?source_type=HOME"

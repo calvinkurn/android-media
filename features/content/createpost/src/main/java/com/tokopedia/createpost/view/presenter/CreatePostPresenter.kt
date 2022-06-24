@@ -4,22 +4,25 @@ import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
 import com.tokopedia.abstraction.common.network.exception.MessageErrorException
 import com.tokopedia.createpost.common.domain.entity.FeedDetail
 import com.tokopedia.createpost.domain.usecase.GetContentFormUseCase
-import com.tokopedia.createpost.domain.usecase.GetFeedForEditUseCase
 import com.tokopedia.createpost.domain.usecase.GetProductSuggestionUseCase
 import com.tokopedia.createpost.domain.usecase.GetShopProductSuggestionUseCase
 import com.tokopedia.createpost.common.view.contract.CreatePostContract
 import com.tokopedia.createpost.view.subscriber.GetContentFormSubscriber
 import com.tokopedia.createpost.common.view.type.ShareType
 import com.tokopedia.createpost.common.view.viewmodel.ProductSuggestionItem
+import com.tokopedia.createpost.domain.entity.GetContentFormDomain
+import com.tokopedia.createpost.domain.usecase.GetFeedForEditUseCase
 import com.tokopedia.feedcomponent.data.pojo.profileheader.ProfileHeaderData
 import com.tokopedia.feedcomponent.domain.usecase.GetDynamicFeedUseCase
 import com.tokopedia.feedcomponent.domain.usecase.GetProfileHeaderUseCase
 import com.tokopedia.graphql.data.model.GraphqlResponse
+import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.decodeToUtf8
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.shop.common.domain.interactor.GQLGetShopFavoriteStatusUseCase
 import com.tokopedia.twitter_share.TwitterManager
+import com.tokopedia.usecase.UseCase
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -27,19 +30,21 @@ import kotlinx.coroutines.Job
 import rx.Subscriber
 import timber.log.Timber
 import javax.inject.Inject
+import javax.inject.Named
 import kotlin.coroutines.CoroutineContext
+import com.tokopedia.createpost.common.DI_GET_PROFILE_HEADER_USER_CASE
 
 /**
  * @author by milhamj on 9/26/18.
  */
 class CreatePostPresenter @Inject constructor(
-        private val userSession: UserSessionInterface,
-        private val getContentFormUseCase: GetContentFormUseCase,
-        private val getFeedUseCase: GetFeedForEditUseCase,
-        private val getProfileHeaderUseCase: GetProfileHeaderUseCase,
-        private val twitterManager: TwitterManager,
-        private val getProductSuggestionUseCase: GetProductSuggestionUseCase,
-        private val getShopFavoriteStatusUseCase: GQLGetShopFavoriteStatusUseCase
+    private val userSession: UserSessionInterface,
+    private val getContentFormUseCase: UseCase<GetContentFormDomain>,
+    private val getFeedUseCase: UseCase<FeedDetail?>,
+    @Named(DI_GET_PROFILE_HEADER_USER_CASE) private val getProfileHeaderUseCase: GraphqlUseCase,
+    private val twitterManager: TwitterManager,
+    private val getProductSuggestionUseCase: GetProductSuggestionUseCase,
+    private val getShopFavoriteStatusUseCase: GQLGetShopFavoriteStatusUseCase
 ) : BaseDaggerPresenter<CreatePostContract.View>(), CreatePostContract.Presenter, TwitterManager.TwitterManagerListener, CoroutineScope {
 
     private var followersCount: Int? = null

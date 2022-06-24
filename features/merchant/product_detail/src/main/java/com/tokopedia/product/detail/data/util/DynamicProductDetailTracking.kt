@@ -1768,7 +1768,8 @@ object DynamicProductDetailTracking {
                 componentTrackDataModel: ComponentTrackDataModel,
                 productInfo: DynamicProductInfoP1?,
                 userId: String,
-                lcaWarehouseId: String
+                lcaWarehouseId: String,
+                label: String
         ) {
             val productId = productInfo?.basic?.productID ?: ""
             val mapEvent = TrackingUtil.createCommonImpressionTracker(
@@ -1781,7 +1782,7 @@ object DynamicProductDetailTracking {
                     customItemName = "product detail page - $productId",
                     customLabel = "",
                     customPromoCode = "",
-                    customItemId = ""
+                    customItemId = "text:$label"
             )
 
             trackingQueue?.putEETracking(mapEvent as HashMap<String, Any>)

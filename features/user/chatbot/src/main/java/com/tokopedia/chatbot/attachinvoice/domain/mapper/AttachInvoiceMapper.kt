@@ -37,7 +37,7 @@ internal constructor() {
             invoiceLinkAttributePojo.createTime = selectedInvoice.createdTime
             invoiceLinkAttributePojo.description = selectedInvoice.description
             invoiceLinkAttributePojo.hrefUrl = selectedInvoice.url
-            invoiceLinkAttributePojo.id = selectedInvoice.id
+            invoiceLinkAttributePojo.id = selectedInvoice.id.toString()
             invoiceLinkAttributePojo.imageUrl = selectedInvoice.imageUrl
             invoiceLinkAttributePojo.status = selectedInvoice.status
             invoiceLinkAttributePojo.statusId = selectedInvoice.statusId
@@ -46,7 +46,7 @@ internal constructor() {
 
             val invoiceLinkPojo = InvoiceLinkPojo()
             invoiceLinkPojo.type = selectedInvoice.typeString
-            invoiceLinkPojo.typeId = selectedInvoice.type
+            invoiceLinkPojo.typeId = selectedInvoice.type.toString()
             invoiceLinkPojo.attributes = invoiceLinkAttributePojo
             return invoiceLinkPojo
         }
@@ -57,7 +57,7 @@ internal constructor() {
             invoiceLinkAttributePojo.createTime = selectedInvoice.date.toString()
             invoiceLinkAttributePojo.description = selectedInvoice.description.toString()
             invoiceLinkAttributePojo.hrefUrl = selectedInvoice.invoiceUrl.toString()
-            invoiceLinkAttributePojo.id = selectedInvoice.invoiceId!!
+            invoiceLinkAttributePojo.id = selectedInvoice.invoiceId.toString()
             invoiceLinkAttributePojo.imageUrl = selectedInvoice.topProductImage.toString()
             invoiceLinkAttributePojo.status = selectedInvoice.status.toString()
             invoiceLinkAttributePojo.statusId = selectedInvoice.statusId
@@ -66,7 +66,7 @@ internal constructor() {
 
             val invoiceLinkPojo = InvoiceLinkPojo()
             invoiceLinkPojo.type = selectedInvoice.invoiceTypeStr
-            invoiceLinkPojo.typeId = selectedInvoice.invoiceType!!
+            invoiceLinkPojo.typeId = selectedInvoice.invoiceType.toString()
             invoiceLinkPojo.attributes = invoiceLinkAttributePojo
             return invoiceLinkPojo
         }

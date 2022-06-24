@@ -46,7 +46,7 @@ public class GetProfileKolDataMapper
             imageList.add(getImageUrl(content));
 
             KolPostViewModel kolPostViewModel = new KolPostViewModel(
-                    postKolData.id != null ? postKolData.id : 0,
+                    postKolData.id != null ? postKolData.id : "",
                     "",
                     "",
                     postKolData.userName != null ? postKolData.userName : "",
@@ -59,7 +59,7 @@ public class GetProfileKolDataMapper
                     postKolData.likeCount != null ? postKolData.likeCount : 0,
                     postKolData.commentCount != null ? postKolData.commentCount : 0,
                     0,
-                    postKolData.id != null ? postKolData.id : 0,
+                    postKolData.id != null ? postKolData.id : "0",
                     postKolData.createTime != null ? postKolData.createTime : "",
                     postKolData.showComment != null ? postKolData.showComment : true,
                     postKolData.showLike != null ? postKolData.showLike : true,
@@ -128,11 +128,11 @@ public class GetProfileKolDataMapper
         }
     }
 
-    private int getTagId(TagsFeedKol tag) {
+    private String getTagId(TagsFeedKol tag) {
         if (tag != null && tag.id != null) {
             return tag.id;
         } else {
-            return 0;
+            return "0";
         }
     }
 
