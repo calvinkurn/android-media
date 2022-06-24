@@ -13,11 +13,12 @@ import com.tokopedia.loginregister.R
 import com.tokopedia.loginregister.discover.pojo.DiscoverData
 import com.tokopedia.loginregister.discover.pojo.DiscoverPojo
 import com.tokopedia.loginregister.discover.pojo.ProviderData
-import com.tokopedia.loginregister.login.behaviour.data.DiscoverUseCaseStub
 import com.tokopedia.loginregister.login.behaviour.data.GraphqlUseCaseStub
 import com.tokopedia.loginregister.login.behaviour.di.FakeActivityComponentFactory
 import com.tokopedia.loginregister.login.behaviour.di.RegisterInitialComponentStub
 import com.tokopedia.loginregister.login.di.ActivityComponentFactory
+import com.tokopedia.loginregister.login.stub.Config
+import com.tokopedia.loginregister.login.stub.FakeGraphqlRepository
 import com.tokopedia.loginregister.registerinitial.domain.pojo.RegisterCheckData
 import com.tokopedia.loginregister.registerinitial.domain.pojo.RegisterCheckPojo
 import com.tokopedia.loginregister.registerinitial.view.activity.RegisterEmailActivity
@@ -47,7 +48,7 @@ open class RegisterEmailBase: LoginRegisterBase() {
     lateinit var registerCheckUseCase: GraphqlUseCaseStub<RegisterCheckPojo>
 
     @Inject
-    lateinit var discoverUseCaseStub: DiscoverUseCaseStub
+    lateinit var fakeGraphqlRepository: FakeGraphqlRepository
 
     @Before
     open fun before() {
@@ -82,7 +83,7 @@ open class RegisterEmailBase: LoginRegisterBase() {
             ProviderData("gplus", "Google", "https://accounts.tokopedia.com/gplus-login", "", "#FFFFFF"),
         )
         val response = DiscoverPojo(DiscoverData(mockProviders, ""))
-        discoverUseCaseStub.response = response
+        fakeGraphqlRepository.discoverConfig = Config.WithResponse(response)
     }
 
     fun runTest(test: () -> Unit) {

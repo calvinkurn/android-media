@@ -15,6 +15,7 @@ import com.tokopedia.loginregister.common.view.ticker.domain.usecase.TickerInfoU
 import com.tokopedia.loginregister.discover.usecase.DiscoverUseCase
 import com.tokopedia.loginregister.login.behaviour.data.*
 import com.tokopedia.loginregister.login.domain.RegisterCheckUseCase
+import com.tokopedia.loginregister.login.stub.FakeGraphqlRepository
 import com.tokopedia.sessioncommon.data.GenerateKeyPojo
 import com.tokopedia.sessioncommon.data.LoginTokenPojoV2
 import com.tokopedia.sessioncommon.domain.usecase.*
@@ -147,21 +148,11 @@ class LoginUseCaseModuleStub {
     }
 
     @Provides
-    @ActivityScope
-    fun provideDiscoverUseCase(
-        stub: DiscoverUseCaseStub
-    ): DiscoverUseCase = stub
-
-    @ActivityScope
-    @Provides
-    fun provideDiscoverUseCasStub(
-        @ApplicationContext graphqlRepository: GraphqlRepository,
-        coroutineDispatcher: CoroutineDispatchers
-    ): DiscoverUseCaseStub {
-        return DiscoverUseCaseStub(graphqlRepository, coroutineDispatcher)
-    }
-
-    @Provides
     fun provideMultiRequestGraphql(): MultiRequestGraphqlUseCase =
         GraphqlInteractor.getInstance().multiRequestGraphqlUseCase
+
+    @ActivityScope
+    @Provides
+    fun provideFakeRepository(@ApplicationContext repo: GraphqlRepository): FakeGraphqlRepository =
+        repo as FakeGraphqlRepository
 }

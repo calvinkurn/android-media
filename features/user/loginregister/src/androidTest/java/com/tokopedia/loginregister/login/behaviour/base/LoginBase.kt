@@ -17,6 +17,8 @@ import com.tokopedia.loginregister.login.behaviour.di.FakeActivityComponentFacto
 import com.tokopedia.loginregister.login.di.ActivityComponentFactory
 import com.tokopedia.loginregister.login.domain.pojo.RegisterCheckData
 import com.tokopedia.loginregister.login.domain.pojo.RegisterCheckPojo
+import com.tokopedia.loginregister.login.stub.Config
+import com.tokopedia.loginregister.login.stub.FakeGraphqlRepository
 import com.tokopedia.loginregister.login.view.activity.LoginActivity
 import org.junit.After
 import org.junit.Before
@@ -34,10 +36,10 @@ open class LoginBase: LoginRegisterBase() {
     )
 
     @Inject
-    lateinit var registerCheckUseCaseStub: RegisterCheckUseCaseStub
+    lateinit var fakeRepo: FakeGraphqlRepository
 
     @Inject
-    lateinit var discoverUseCaseStub: DiscoverUseCaseStub
+    lateinit var registerCheckUseCaseStub: RegisterCheckUseCaseStub
 
     @Inject
     lateinit var loginTokenV2UseCaseStub: LoginTokenV2UseCaseStub
@@ -73,7 +75,7 @@ open class LoginBase: LoginRegisterBase() {
             ProviderData("gplus", "Google", "https://accounts.tokopedia.com/gplus-login", "", "#FFFFFF"),
         )
         val response = DiscoverPojo(DiscoverData(mockProviders, ""))
-        discoverUseCaseStub.response = response
+        fakeRepo.discoverConfig = Config.WithResponse(response)
     }
 
     protected fun setupLoginActivity(

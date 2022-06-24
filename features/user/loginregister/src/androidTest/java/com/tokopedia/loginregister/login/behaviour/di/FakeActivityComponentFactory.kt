@@ -6,7 +6,6 @@ import com.tokopedia.loginregister.login.behaviour.di.modules.AppModuleStub
 import com.tokopedia.loginregister.login.behaviour.di.modules.FakeLoginModule
 import com.tokopedia.loginregister.login.di.ActivityComponentFactory
 import com.tokopedia.loginregister.login.di.LoginComponent
-import com.tokopedia.loginregister.registerinitial.di.DaggerRegisterInitialComponent
 import com.tokopedia.loginregister.registerinitial.di.RegisterInitialComponent
 
 class FakeActivityComponentFactory: ActivityComponentFactory() {

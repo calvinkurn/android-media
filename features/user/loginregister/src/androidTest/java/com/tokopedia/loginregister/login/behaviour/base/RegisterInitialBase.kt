@@ -5,16 +5,16 @@ import androidx.test.espresso.intent.rule.IntentsTestRule
 import com.tokopedia.loginregister.discover.pojo.DiscoverData
 import com.tokopedia.loginregister.discover.pojo.DiscoverPojo
 import com.tokopedia.loginregister.discover.pojo.ProviderData
-import com.tokopedia.loginregister.login.behaviour.data.DiscoverUseCaseStub
 import com.tokopedia.loginregister.login.behaviour.data.GetProfileUseCaseStub
 import com.tokopedia.loginregister.login.behaviour.data.GraphqlUseCaseStub
 import com.tokopedia.loginregister.login.behaviour.di.FakeActivityComponentFactory
 import com.tokopedia.loginregister.login.behaviour.di.RegisterInitialComponentStub
 import com.tokopedia.loginregister.login.di.ActivityComponentFactory
+import com.tokopedia.loginregister.login.stub.Config
+import com.tokopedia.loginregister.login.stub.FakeGraphqlRepository
 import com.tokopedia.loginregister.registerinitial.domain.pojo.RegisterCheckData
 import com.tokopedia.loginregister.registerinitial.domain.pojo.RegisterCheckPojo
 import com.tokopedia.loginregister.registerinitial.view.activity.RegisterInitialActivity
-import com.tokopedia.sessioncommon.domain.usecase.GeneratePublicKeyUseCase
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -31,16 +31,13 @@ open class RegisterInitialBase: LoginRegisterBase() {
     )
 
     @Inject
-    lateinit var generatePublicKeyUseCase: GeneratePublicKeyUseCase
-
-    @Inject
     lateinit var registerCheckUseCase: GraphqlUseCaseStub<RegisterCheckPojo>
 
     @Inject
-    lateinit var discoverUseCaseStub: DiscoverUseCaseStub
+    lateinit var getProfileUseCaseStub: GetProfileUseCaseStub
 
     @Inject
-    lateinit var getProfileUseCaseStub: GetProfileUseCaseStub
+    lateinit var fakeGraphqlRepository: FakeGraphqlRepository
 
     @Before
     open fun before() {
@@ -63,7 +60,6 @@ open class RegisterInitialBase: LoginRegisterBase() {
 
         intentModifier(intent)
         activityTestRule.launchActivity(intent)
-//        )
     }
 
     protected fun setRegisterCheckDefaultResponse() {
@@ -76,7 +72,7 @@ open class RegisterInitialBase: LoginRegisterBase() {
             ProviderData("gplus", "Google", "https://accounts.tokopedia.com/gplus-login", "", "#FFFFFF"),
         )
         val response = DiscoverPojo(DiscoverData(mockProviders, ""))
-        discoverUseCaseStub.response = response
+        fakeGraphqlRepository.discoverConfig = Config.WithResponse(response)
     }
 
     fun runTest(test: () -> Unit) {

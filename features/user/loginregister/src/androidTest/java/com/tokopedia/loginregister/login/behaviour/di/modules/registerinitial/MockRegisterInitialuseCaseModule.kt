@@ -1,6 +1,7 @@
 package com.tokopedia.loginregister.login.behaviour.di.modules.registerinitial
 
 import android.content.res.Resources
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.di.scope.ActivityScope
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
@@ -12,6 +13,7 @@ import com.tokopedia.loginregister.discover.usecase.DiscoverUseCase
 import com.tokopedia.loginregister.external_register.ovo.data.CheckOvoResponse
 import com.tokopedia.loginregister.external_register.ovo.domain.usecase.CheckHasOvoAccUseCase
 import com.tokopedia.loginregister.login.behaviour.data.*
+import com.tokopedia.loginregister.login.stub.FakeGraphqlRepository
 import com.tokopedia.loginregister.registerinitial.domain.pojo.RegisterCheckPojo
 import com.tokopedia.loginregister.registerinitial.domain.pojo.RegisterRequestPojo
 import com.tokopedia.loginregister.registerinitial.domain.pojo.RegisterRequestV2
@@ -62,21 +64,6 @@ class MockRegisterInitialuseCaseModule {
 
     @ActivityScope
     @Provides
-    fun provideDiscoverUseCase(
-        stub: DiscoverUseCaseStub
-    ): DiscoverUseCase = stub
-
-    @ActivityScope
-    @Provides
-    fun provideDiscoverUseCasStub(
-        graphqlRepository: GraphqlRepository,
-        coroutineDispatcher: CoroutineDispatchers
-    ): DiscoverUseCaseStub {
-        return DiscoverUseCaseStub(graphqlRepository, coroutineDispatcher)
-    }
-
-    @ActivityScope
-    @Provides
     fun provideGeneratePublicUseCase(stub: GeneratePublicKeyUseCaseStub): GeneratePublicKeyUseCase = stub
 
     @ActivityScope
@@ -103,4 +90,10 @@ class MockRegisterInitialuseCaseModule {
                                      graphqlUseCase: com.tokopedia.graphql.domain.GraphqlUseCase): GetProfileUseCaseStub {
         return GetProfileUseCaseStub(resources, graphqlUseCase)
     }
+
+    @ActivityScope
+    @Provides
+    fun provideFakeGraphql(@ApplicationContext repository: GraphqlRepository): FakeGraphqlRepository =
+        repository as FakeGraphqlRepository
+
 }

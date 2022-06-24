@@ -4,6 +4,7 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.data.model.GraphqlResponse
+import com.tokopedia.loginregister.discover.pojo.DiscoverPojo
 import com.tokopedia.loginregister.login.domain.pojo.RegisterCheckData
 import com.tokopedia.loginregister.login.domain.pojo.RegisterCheckPojo
 import com.tokopedia.test.application.graphql.GqlMockUtil
@@ -12,6 +13,7 @@ import com.tokopedia.test.application.graphql.GqlQueryParser
 class FakeGraphqlRepository : GraphqlRepository {
 
     var registerCheckConfig: Config = Config.Default
+    var discoverConfig: Config = Config.Default
 
     override suspend fun response(
         requests: List<GraphqlRequest>,
@@ -19,8 +21,9 @@ class FakeGraphqlRepository : GraphqlRepository {
     ): GraphqlResponse {
         return when (GqlQueryParser.parse(requests).first()) {
             "registerCheck" -> {
-                val obj = when (registerCheckConfig) {
-                    Config.WithResponse -> RegisterCheckPojo(
+                val obj: RegisterCheckPojo = when (registerCheckConfig) {
+                    is Config.WithResponse -> (registerCheckConfig as Config.WithResponse).response as RegisterCheckPojo
+                    is Config.Default -> RegisterCheckPojo(
                         RegisterCheckData(
                             isExist = true,
                             useHash = true,
@@ -33,6 +36,13 @@ class FakeGraphqlRepository : GraphqlRepository {
                 }
                 GqlMockUtil.createSuccessResponse(obj)
             }
+            "discover" -> {
+                val obj: DiscoverPojo = when(discoverConfig) {
+                    is Config.WithResponse -> (discoverConfig as Config.WithResponse).response as DiscoverPojo
+                    else -> DiscoverPojo()
+                }
+                GqlMockUtil.createSuccessResponse(obj)
+            }
             else -> throw IllegalArgumentException()
         }
     }
@@ -41,7 +51,7 @@ class FakeGraphqlRepository : GraphqlRepository {
 
 sealed class Config {
     object Default : Config()
-    object WithResponse : Config()
+    data class WithResponse(val response: Any) : Config()
     object Error : Config()
     object Delay : Config()
 }

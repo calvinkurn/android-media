@@ -1,7 +1,9 @@
 package com.tokopedia.loginregister.login.behaviour.di
 
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.di.scope.ActivityScope
+import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.loginregister.login.behaviour.base.LoginBase
 import com.tokopedia.loginregister.login.behaviour.di.modules.LoginUseCaseModuleStub
 import com.tokopedia.loginregister.login.di.LoginComponent
