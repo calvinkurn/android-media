@@ -25,6 +25,10 @@ data class FeedXMedia(
     var videoView: View? = null,
     @Transient
     var imageView: View? = null,
+
+    @Transient
+    var tagProducts: List<FeedXProduct> = emptyList(),
+
     var canPlay: Boolean = false,
     var isImageImpressedFirst: Boolean = true,
     var productName : String= "",

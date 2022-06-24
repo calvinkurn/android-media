@@ -60,12 +60,12 @@
         android:id="@+id/top_ads_detail_card"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@color/Unify_NN50"
         android:paddingTop="@dimen/unify_space_8"
         android:paddingBottom="@dimen/unify_space_8"
-        app:layout_constraintTop_toBottomOf="@id/post_image"
         android:visibility="gone"
+        app:layout_constraintTop_toBottomOf="@id/post_image"
         tools:visibility="visible"
-        android:background="@color/Unify_NN50"
         >
 
         <com.tokopedia.unifyprinciples.Typography
@@ -76,76 +76,14 @@
             android:ellipsize="end"
             android:maxLines="1"
             android:text="@string/feeds_cek_sekarang"
-            android:visibility="gone"
-            app:layout_constraintBottom_toTopOf="parent"
+            app:layout_constrainedWidth="true"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/chevron"
-            app:layout_constraintRight_toLeftOf="@+id/chevron"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:typographyType="body_3"
-            tools:visibility="visible"
-            />
-
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/top_ads_price"
-            android:layout_width="wrap_content"
-            android:layout_height="@dimen/product_card_text_view_price_height"
-            android:layout_marginTop="@dimen/product_card_label_price_margin_top"
-            android:ellipsize="end"
-            android:maxLines="1"
-            android:textColor="@color/Unify_N700_96"
-            android:visibility="gone"
-            android:gravity="center_vertical"
-            app:layout_constraintStart_toStartOf="@id/top_ads_product_name"
-            app:layout_constraintTop_toBottomOf="@id/top_ads_product_name"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:typographyType="body_2"
             app:typographyWeight="bold"
-            tools:text="Rp7.999.000"
-            tools:visibility="visible" />
-
-        <com.tokopedia.unifycomponents.Label
-            android:id="@+id/top_ads_label_discount"
-            android:layout_width="wrap_content"
-            android:layout_height="@dimen/product_card_label_discount_height"
-            android:layout_marginStart="@dimen/spacing_lvl3"
-            android:gravity="center_vertical"
-            android:visibility="gone"
-            app:labelType="general_light_red"
-            app:layout_constraintStart_toEndOf="@id/top_ads_price"
-            app:layout_constraintTop_toTopOf="@id/top_ads_price"
-            tools:text="20%"
-            tools:visibility="visible" />
-
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/top_ads_slashed_price"
-            android:layout_width="0dp"
-            android:layout_height="@dimen/product_card_label_discount_height"
-            android:layout_marginStart="@dimen/spacing_lvl3"
-            app:layout_goneMarginStart="8dp"
-            android:ellipsize="end"
-            android:gravity="center_vertical"
-            android:maxLines="1"
-            android:textColor="@color/Unify_N700_44"
-            android:visibility="gone"
-            app:layout_constraintTop_toTopOf="@+id/top_ads_label_discount"
-            app:layout_constraintStart_toEndOf="@id/top_ads_label_discount"
-            app:layout_goneMarginLeft="0dp"
-            app:typographyType="small"
-            tools:text="Rp8.499.000"
-            tools:visibility="visible" />
-
-        <com.tokopedia.unifycomponents.Label
-            android:id="@+id/top_ads_label_cashback"
-            android:layout_width="wrap_content"
-            android:layout_height="@dimen/product_card_label_price_height"
-            android:visibility="gone"
-            app:labelType="general_light_green"
-            app:layout_constraintTop_toTopOf="@id/top_ads_price"
-            app:layout_constraintStart_toEndOf="@id/top_ads_slashed_price"
-            android:layout_marginStart="@dimen/spacing_lvl3"
-            tools:visibility="visible"
-            tools:text="Cashback" />
+            />
 
         <com.tokopedia.iconunify.IconUnify
             android:id="@+id/chevron"
