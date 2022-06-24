@@ -116,26 +116,6 @@ class MainNavAnalyticsTest {
         }
     }
 
-//    @Test
-//    fun testComponentFavoriteShop() {
-//        mainNavCassavaTest {
-//            login()
-//            waitForData()
-//            doActivityTestByModelClass(
-//                delayBeforeRender = 5000,
-//                dataModelClass = FavoriteShopListDataModel::class
-//            ) { viewHolder: RecyclerView.ViewHolder, i: Int ->
-//                clickOnEachShop(viewHolder)
-//            }
-//        } validateAnalytics {
-//            addDebugEnd()
-//            hasPassedAnalytics(
-//                cassavaTestRule,
-//                ANALYTIC_VALIDATOR_QUERY_FILE_NAME_FAVORITE_SHOP
-//            )
-//        }
-//    }
-
     @Test
     fun testComponentShopAndAffiliate() {
         mainNavCassavaTest {
@@ -184,6 +164,27 @@ class MainNavAnalyticsTest {
         )
         endActivityTest()
     }
+
+    @Test
+    fun testComponentShop() {
+        mainNavCassavaTest {
+            login()
+            waitForData()
+            doActivityTestByModelClass(
+                delayBeforeRender = 5000,
+                dataModelClass = FavoriteShopListDataModel::class
+            ) { viewHolder: RecyclerView.ViewHolder, _: Int ->
+                clickOnEachShop(viewHolder)
+            }
+        } validateAnalytics {
+            addDebugEnd()
+            hasPassedAnalytics(
+                cassavaTestRule,
+                ANALYTIC_VALIDATOR_QUERY_FILE_NAME_FAVORITE_SHOP
+            )
+        }
+    }
+
 
     private fun login() {
         InstrumentationAuthHelper.loginInstrumentationTestTopAdsUser()
