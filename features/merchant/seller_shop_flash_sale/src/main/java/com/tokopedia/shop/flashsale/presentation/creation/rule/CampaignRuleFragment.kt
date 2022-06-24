@@ -544,7 +544,7 @@ class CampaignRuleFragment : BaseDaggerFragment(),
                 }
                 is CampaignRuleActionResult.Success -> routeToCampaignListPage()
                 is CampaignRuleActionResult.Fail -> {
-                    binding?.root.showError(it.error, binding?.cardButtonWrapper)
+                    binding?.cardButtonWrapper showError it.error
                     hideSaveDraftButtonLoading()
                 }
             }
@@ -563,7 +563,7 @@ class CampaignRuleFragment : BaseDaggerFragment(),
                 }
                 is CampaignRuleActionResult.Success -> routeToCampaignListPage()
                 is CampaignRuleActionResult.Fail -> {
-                    binding?.root.showError(it.error, binding?.cardButtonWrapper)
+                    binding?.cardButtonWrapper showError it.error
                     hideCreateCampaignButtonLoading()
                 }
                 is CampaignRuleActionResult.ShowConfirmation -> {
@@ -595,7 +595,7 @@ class CampaignRuleFragment : BaseDaggerFragment(),
 
     private fun showErrorMessageToaster(errorMessage: String) {
         val binding = binding ?: return
-        binding.root.showError(errorMessage, binding.cardButtonWrapper)
+        binding.cardButtonWrapper showError errorMessage
     }
 
     private fun showInvalidCampaignTimeDialog(
