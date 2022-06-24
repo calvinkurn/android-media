@@ -5,7 +5,7 @@ import com.tokopedia.inbox.fake.common.FakeUserSession
 import com.tokopedia.inbox.fake.domain.chat.websocket.FakeTopchatWebSocket
 import com.tokopedia.inbox.fake.domain.usecase.chat.FakeGetChatListMessageUseCase
 import com.tokopedia.inbox.test.R
-import com.tokopedia.topchat.chatlist.pojo.ChatListPojo
+import com.tokopedia.topchat.chatlist.domain.pojo.ChatListPojo
 import javax.inject.Inject
 
 /**
