@@ -102,6 +102,9 @@ class MissionWidgetViewHolder(
         if (element.isShowMissionWidget()) {
             binding?.homeComponentHeaderView?.show()
             binding?.root?.show()
+            itemView.show()
+            binding?.homeComponentDividerHeader?.show()
+            binding?.containerMissionWidgetItem?.show()
             binding?.refreshMissionWidget?.refreshBtn?.setOnClickListener {
                 missionWidgetComponentListener.refreshMissionWidget(element)
             }
@@ -132,8 +135,15 @@ class MissionWidgetViewHolder(
                 }
             }
         } else {
+            binding?.refreshMissionWidget?.gone()
+            binding?.homeComponentMissionWidgetRcv?.gone()
+            binding?.shimmeringMissionWidget?.gone()
             binding?.homeComponentHeaderView?.gone()
+            binding?.homeComponentHeaderView?.gone()
+            binding?.homeComponentDividerHeader?.gone()
+            binding?.containerMissionWidgetItem?.gone()
             binding?.root?.gone()
+            itemView.gone()
         }
     }
 

@@ -42,7 +42,7 @@
             android:id="@+id/subtitle_mission_widget"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="1dp"
+            android:layout_marginTop="2dp"
             tools:text="Lihat lagi, yuk! Apa tuh yg bisa diliatttttttt"
             android:maxLines="2"
             android:ellipsize="end"
