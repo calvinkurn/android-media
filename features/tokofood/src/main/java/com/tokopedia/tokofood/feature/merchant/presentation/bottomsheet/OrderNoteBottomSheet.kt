@@ -38,6 +38,7 @@ class OrderNoteBottomSheet(private val clickListener: OnSaveNoteButtonClickListe
         setChild(viewBinding.root)
         val title = context?.getString(R.string.text_order_bottomsheet_title) ?: ""
         setTitle(title)
+        isKeyboardOverlap = false
         clearContentPadding = true
         return super.onCreateView(inflater, container, savedInstanceState)
     }
@@ -65,7 +66,8 @@ class OrderNoteBottomSheet(private val clickListener: OnSaveNoteButtonClickListe
                     binding.saveNotesButton.isEnabled = s.isNotBlank()
                 }
             })
-            this.saveNotesButton.isEnabled = binding.notesInput.editText.text.isNotBlank()
+            val enableSaveButton = orderNote.isNotBlank() && binding.notesInput.editText.text.isNotBlank()
+            this.saveNotesButton.isEnabled = enableSaveButton
             this.saveNotesButton.setOnClickListener {
                 val orderNote = binding.notesInput.editText.text.toString()
                 clickListener.onSaveNoteButtonClicked(selectedProductId, orderNote)

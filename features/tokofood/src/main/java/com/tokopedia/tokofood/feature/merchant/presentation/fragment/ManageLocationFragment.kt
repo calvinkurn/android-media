@@ -42,6 +42,7 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
+import java.util.*
 import javax.inject.Inject
 
 @FlowPreview
@@ -186,6 +187,18 @@ class ManageLocationFragment : BaseMultiFragment(), ChooseAddressBottomSheet.Cho
                 }
             }
         }
+        observe(viewModel.checkDeliveryCoverageResult) {
+            when (it) {
+                is Success -> {
+                    val isDeliverable = it.data.tokofoodGetMerchantData.merchantProfile.deliverable
+                    if (isDeliverable) navigateToMerchantPage(viewModel.merchantId)
+                    else context?.run { bindOutOfCoverage(this) }
+                }
+                is Fail -> {
+                    showToaster(it.throwable.message)
+                }
+            }
+        }
     }
 
     private fun showToaster(message: String?) {
@@ -320,7 +333,16 @@ class ManageLocationFragment : BaseMultiFragment(), ChooseAddressBottomSheet.Cho
                     TokonowWarehouseMapper.mapWarehousesAddAddressModelToLocal(addressDataModel.warehouses), addressDataModel.serviceType)
         }
         checkIfChooseAddressWidgetDataUpdated()
-        navigateToMerchantPage(viewModel.merchantId)
+        context?.run {
+            ChooseAddressUtils.getLocalizingAddressData(this)
+                    .let { addressData ->
+                        viewModel.checkDeliveryCoverage(
+                                merchantId = viewModel.merchantId,
+                                latlong = addressData.latLong,
+                                timezone = TimeZone.getDefault().id
+                        )
+                    }
+        }
     }
 
     private fun checkIfChooseAddressWidgetDataUpdated() {

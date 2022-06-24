@@ -28,6 +28,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.tokofood.DeeplinkMapperTokoFood
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
+import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.hide
@@ -350,20 +351,16 @@ class MerchantPageFragment : BaseMultiFragment(),
     }
 
     private fun fetchMerchantData() {
-        if (viewModel.productListItems.isNotEmpty()) {
-            renderProductList(viewModel.productListItems)
-        } else {
-            showLoader()
-            context?.run {
-                ChooseAddressUtils.getLocalizingAddressData(this)
+        showLoader()
+        context?.run {
+            ChooseAddressUtils.getLocalizingAddressData(this)
                     .let { addressData ->
                         viewModel.getMerchantData(
-                            merchantId = merchantId,
-                            latlong = addressData.latLong,
-                            timezone = TimeZone.getDefault().id
+                                merchantId = merchantId,
+                                latlong = addressData.latLong,
+                                timezone = TimeZone.getDefault().id
                         )
                     }
-            }
         }
     }
 
@@ -375,6 +372,12 @@ class MerchantPageFragment : BaseMultiFragment(),
     private fun hideLoader() {
         binding?.shimmeringMerchantPage?.root?.hide()
         binding?.merchantInfoViewGroup?.show()
+    }
+
+    private fun showGlobalError(errorType: Int) {
+        binding?.geMerchantPageErrorView?.setType(errorType)
+        binding?.geMerchantPageErrorView?.setActionClickListener { fetchMerchantData() }
+        binding?.geMerchantPageErrorView?.show()
     }
 
     private fun shareMerchantPage(
@@ -448,6 +451,8 @@ class MerchantPageFragment : BaseMultiFragment(),
                     val isDeliverable = merchantData.merchantProfile.deliverable
                     if (isDeliverable) {
                         hideLoader()
+                        // hide global error
+                        binding?.geMerchantPageErrorView?.hide()
                         // render ticker data if not empty
                         val tickerData = merchantData.ticker
                         if (!viewModel.isTickerDetailEmpty(tickerData)) {
@@ -479,7 +484,9 @@ class MerchantPageFragment : BaseMultiFragment(),
                     }
                 }
                 is Fail -> {
-
+                    binding?.toolbarParent?.hide()
+                    binding?.productListLayout?.hide()
+                    showGlobalError(errorType = GlobalError.SERVER_ERROR)
                 }
             }
         })
