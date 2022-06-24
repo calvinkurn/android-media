@@ -101,7 +101,7 @@ fun <T : Throwable> T.isErrorType(error: Class<out T>) {
 }
 
 inline fun <reified T> Any.assertType(
-        whenType: (T) -> Unit
+        whenType: (T) -> Unit = {}
 ) {
     Assertions
             .assertThat(this)

@@ -233,7 +233,7 @@ class ProductCardListView: BaseCustomView, IProductCardView {
         cardViewProductCard?.animateOnPress = if(remoteConfig.getBoolean(RemoteConfigKey.PRODUCT_CARD_ENABLE_INTERACTION, true)
             && productCardModel.cardInteraction){
                 CardUnify2.ANIMATE_OVERLAY_BOUNCE
-        } else CardUnify2.ANIMATE_OVERLAY
+        } else CardUnify2.ANIMATE_NONE
 
         constraintLayoutProductCard?.post {
             imageThreeDots?.expandTouchArea(

@@ -7,6 +7,7 @@ object ProductDetailConstant {
 
     const val WISHLIST_STATUS_UPDATED_POSITION = "wishlistUpdatedPosition"
     const val WIHSLIST_STATUS_IS_WISHLIST = "isWishlist"
+    const val CLICK_TYPE_WISHLIST = "&click_type=wishlist"
 
     const val DEFAULT_PAGE_NUMBER = 1
     const val DEFAULT_X_SOURCE = "pdp"
