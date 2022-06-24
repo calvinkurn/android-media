@@ -1,41 +1,19 @@
 package com.tokopedia.tokofood.feature.purchase.purchasepage.domain.usecase
 
-import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.graphql.coroutines.data.extensions.request
+import com.tokopedia.gql_query_annotation.GqlQuery
+import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
-import com.tokopedia.graphql.domain.flow.FlowUseCase
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.tokofood.common.address.TokoFoodChosenAddressRequestHelper
 import com.tokopedia.tokofood.common.domain.additionalattributes.CartAdditionalAttributesTokoFood
 import com.tokopedia.tokofood.common.domain.param.CheckoutTokoFoodParam
 import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFood
 import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFoodResponse
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
 
-class CheckoutTokoFoodUseCase @Inject constructor(
-    private val repository: GraphqlRepository,
-    private val chosenAddressRequestHelper: TokoFoodChosenAddressRequestHelper,
-    dispatchers: CoroutineDispatchers
-): FlowUseCase<String, CheckoutTokoFood>(dispatchers.io) {
-
-    companion object {
-        private const val PARAMS_KEY = "params"
-
-        private fun generateParams(additionalAttributes: String,
-                                   source: String): Map<String, Any> {
-            val params = CheckoutTokoFoodParam(
-                additionalAttributes = additionalAttributes,
-                source = source
-            )
-            return mapOf(PARAMS_KEY to params)
-        }
-    }
-
-    override fun graphqlQuery(): String = """
-        query CartListTokofood($$PARAMS_KEY: cartTokofoodParams!) {
-          cart_list_tokofood(params: $$PARAMS_KEY) {
+private const val QUERY = """
+        query CartListTokofood(${'$'}params: cartTokofoodParams!) {
+          cart_list_tokofood(params: ${'$'}params) {
             message
             status
             data {
@@ -118,7 +96,7 @@ class CheckoutTokoFoodUseCase @Inject constructor(
                 }
               }
               unavailable_section_header
-              unavailable_section {
+              unavailable_sections {
                 title
                 products {
                   cart_id
@@ -238,19 +216,43 @@ class CheckoutTokoFoodUseCase @Inject constructor(
             }
           }
         }
-    """.trimIndent()
+    """
 
-    override suspend fun execute(params: String): Flow<CheckoutTokoFood> = flow {
+@GqlQuery("CartListTokofood", QUERY)
+class CheckoutTokoFoodUseCase @Inject constructor(
+    repository: GraphqlRepository,
+    private val chosenAddressRequestHelper: TokoFoodChosenAddressRequestHelper
+): GraphqlUseCase<CheckoutTokoFoodResponse>(repository) {
+
+    init {
+        setTypeClass(CheckoutTokoFoodResponse::class.java)
+        setGraphqlQuery(CartListTokofood())
+    }
+
+    suspend fun execute(params: String): CheckoutTokoFood {
         val additionalAttributes = CartAdditionalAttributesTokoFood(
             chosenAddressRequestHelper.getChosenAddress()
         )
         val param = generateParams(additionalAttributes.generateString(), params)
-        val response =
-            repository.request<Map<String, Any>, CheckoutTokoFoodResponse>(graphqlQuery(), param)
+        setRequestParams(param)
+        val response = executeOnBackground()
         if (response.cartListTokofood.isSuccess()) {
-            emit(response.cartListTokofood)
+            return response.cartListTokofood
         } else {
             throw MessageErrorException(response.cartListTokofood.getMessageIfError())
+        }
+    }
+
+    companion object {
+        private const val PARAMS_KEY = "params"
+
+        private fun generateParams(additionalAttributes: String,
+                                   source: String): Map<String, Any> {
+            val params = CheckoutTokoFoodParam(
+                additionalAttributes = additionalAttributes,
+                source = source
+            )
+            return mapOf(PARAMS_KEY to params)
         }
     }
 
