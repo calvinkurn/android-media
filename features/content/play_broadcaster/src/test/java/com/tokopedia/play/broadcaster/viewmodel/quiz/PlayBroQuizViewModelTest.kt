@@ -7,6 +7,7 @@ import com.tokopedia.play.broadcaster.robot.PlayBroadcastViewModelRobot
 import com.tokopedia.play.broadcaster.ui.action.PlayBroadcastAction
 import com.tokopedia.play.broadcaster.ui.event.PlayBroadcastEvent
 import com.tokopedia.play.broadcaster.ui.model.game.quiz.QuizChoiceDetailStateUiModel
+import com.tokopedia.play.broadcaster.ui.model.game.quiz.QuizChoiceDetailUiModel
 import com.tokopedia.play.broadcaster.ui.model.game.quiz.QuizDetailDataUiModel
 import com.tokopedia.play.broadcaster.ui.model.game.quiz.QuizDetailStateUiModel
 import com.tokopedia.play.broadcaster.util.assertEqualTo
@@ -34,7 +35,6 @@ class PlayBroQuizViewModelTest {
     private val testDispatcher = rule.dispatchers
 
     private val mockRepo: PlayBroadcastRepository = mockk(relaxed = true)
-    private val mockSharedPref: HydraSharedPreferences = mockk(relaxed = true)
 
     private val uiModelBuilder = UiModelBuilder()
 
@@ -191,12 +191,12 @@ class PlayBroQuizViewModelTest {
             channelRepo = mockRepo
         )
         robot.use {
-            val states = it.recordState {
+            val state = it.recordState {
                 getConfig()
                 getViewModel().getQuizDetailData()
                 getViewModel().submitAction(PlayBroadcastAction.ClickRefreshQuizDetailBottomSheet)
             }
-            Assertions.assertThat(states.quizDetail)
+            Assertions.assertThat(state.quizDetail)
                 .isInstanceOf(QuizDetailStateUiModel.Success::class.java)
         }
     }
@@ -220,13 +220,94 @@ class PlayBroQuizViewModelTest {
             channelRepo = mockRepo
         )
         robot.use {
-            val states = it.recordState {
+            val state = it.recordState {
                 getConfig()
                 getViewModel().getLeaderboardWithSlots()
                 getViewModel().submitAction(PlayBroadcastAction.ClickRefreshQuizDetailBottomSheet)
             }
-            Assertions.assertThat(states.quizDetail)
+            Assertions.assertThat(state.quizDetail)
                 .isInstanceOf(QuizDetailStateUiModel.Success::class.java)
+        }
+    }
+
+    @Test
+    fun `when user click on option detail in bottom sheet it should return quiz choice option detail with participant`() {
+        val mockQuizChoicesUiModel = QuizChoicesUiModel(
+            id = "1",
+            index = 0,
+            type = PlayQuizOptionState.Participant('A', false, "100", false),
+            text = "jawaban a"
+        )
+        val mockQuizChoiceDetailUiModel = QuizChoiceDetailUiModel(
+            choice = mockQuizChoicesUiModel,
+            cursor = "-1"
+        )
+        coEvery { mockRepo.getChannelConfiguration() } returns mockConfig
+        coEvery {
+            mockRepo.getInteractiveQuizChoiceDetail(
+                any(),
+                any(),
+                any(),
+                any(),
+                any()
+            )
+        } returns mockQuizChoiceDetailUiModel
+        val robot = PlayBroadcastViewModelRobot(
+            dispatchers = testDispatcher,
+            channelRepo = mockRepo
+        )
+
+        robot.use {
+            val state = it.recordState {
+                getConfig()
+                getViewModel().submitAction(
+                    PlayBroadcastAction.ClickQuizChoiceOption(
+                        mockQuizChoicesUiModel
+                    )
+                )
+            }
+            Assertions.assertThat(state.quizBottomSheetUiState.quizChoiceDetailState)
+                .isInstanceOf(QuizChoiceDetailStateUiModel.Success::class.java)
+        }
+    }
+
+    @Test
+    fun `when user click refresh quiz choice option detail it should return quiz choice detail state success ui model`() {
+        val mockQuizChoicesUiModel = QuizChoicesUiModel(
+            id = "1",
+            index = 0,
+            type = PlayQuizOptionState.Participant('A', false, "100", false),
+            text = "jawaban a"
+        )
+        val mockQuizChoiceDetailUiModel = QuizChoiceDetailUiModel(
+            choice = mockQuizChoicesUiModel,
+            cursor = "-1"
+        )
+        coEvery { mockRepo.getChannelConfiguration() } returns mockConfig
+        coEvery {
+            mockRepo.getInteractiveQuizChoiceDetail(
+                any(),
+                any(),
+                any(),
+                any(),
+                any()
+            )
+        } throws mockException andThen mockQuizChoiceDetailUiModel
+        val robot = PlayBroadcastViewModelRobot(
+            dispatchers = testDispatcher,
+            channelRepo = mockRepo
+        )
+
+        robot.use {
+            val state = it.recordState {
+                getConfig()
+                getViewModel().submitAction(
+                    PlayBroadcastAction.ClickQuizChoiceOption(mockQuizChoicesUiModel)
+                )
+                getViewModel().submitAction(PlayBroadcastAction.ClickRefreshQuizOption)
+            }
+            Assertions.assertThat(state.quizBottomSheetUiState.quizChoiceDetailState)
+                .isInstanceOf(QuizChoiceDetailStateUiModel.Success::class.java)
         }
     }
 }
