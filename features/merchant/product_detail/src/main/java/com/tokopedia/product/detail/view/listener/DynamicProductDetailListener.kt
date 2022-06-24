@@ -72,6 +72,11 @@ interface DynamicProductDetailListener {
     fun onClickBestSeller(componentTrackDataModel: ComponentTrackDataModel, appLink: String)
 
     /**
+     * OneLinerViewHolder
+     */
+    fun onImpressStockAssurance(componentTrackDataModel: ComponentTrackDataModel, label: String)
+
+    /**
      * ProductDiscussionViewHolder
      */
     fun onDiscussionClicked(componentTrackDataModel: ComponentTrackDataModel?)
@@ -156,9 +161,6 @@ interface DynamicProductDetailListener {
      * ImpressionComponent
      */
     fun onImpressComponent(componentTrackDataModel: ComponentTrackDataModel)
-
-    fun onOneLinersImpressed(componentTrackDataModel: ComponentTrackDataModel)
-
     /**
      * ProductNotifyMeViewHolder
      */

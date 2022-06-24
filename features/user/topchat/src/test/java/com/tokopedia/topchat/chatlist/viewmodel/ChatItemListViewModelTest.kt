@@ -15,15 +15,20 @@ import com.tokopedia.topchat.chatlist.data.ChatListQueriesConstant
 import com.tokopedia.topchat.chatlist.data.ChatListQueriesConstant.PARAM_FILTER_ALL
 import com.tokopedia.topchat.chatlist.data.ChatListQueriesConstant.PARAM_TAB_SELLER
 import com.tokopedia.topchat.chatlist.data.ChatListQueriesConstant.PARAM_TAB_USER
-import com.tokopedia.topchat.chatlist.pojo.ChatChangeStateResponse
-import com.tokopedia.topchat.chatlist.pojo.ChatDelete
-import com.tokopedia.topchat.chatlist.pojo.ChatDeleteStatus
-import com.tokopedia.topchat.chatlist.pojo.ChatListPojo
-import com.tokopedia.topchat.chatlist.pojo.chatblastseller.BlastSellerMetaDataResponse
-import com.tokopedia.topchat.chatlist.pojo.chatblastseller.ChatBlastSellerMetadata
-import com.tokopedia.topchat.chatlist.pojo.whitelist.ChatWhitelistFeature
-import com.tokopedia.topchat.chatlist.pojo.whitelist.ChatWhitelistFeatureResponse
-import com.tokopedia.topchat.chatlist.usecase.*
+import com.tokopedia.topchat.chatlist.domain.pojo.ChatChangeStateResponse
+import com.tokopedia.topchat.chatlist.domain.pojo.ChatDelete
+import com.tokopedia.topchat.chatlist.domain.pojo.ChatDeleteStatus
+import com.tokopedia.topchat.chatlist.domain.pojo.ChatListPojo
+import com.tokopedia.topchat.chatlist.domain.pojo.chatblastseller.BlastSellerMetaDataResponse
+import com.tokopedia.topchat.chatlist.domain.pojo.chatblastseller.ChatBlastSellerMetadata
+import com.tokopedia.topchat.chatlist.domain.pojo.whitelist.ChatWhitelistFeature
+import com.tokopedia.topchat.chatlist.domain.pojo.whitelist.ChatWhitelistFeatureResponse
+import com.tokopedia.topchat.chatlist.domain.usecase.ChatBanedSellerUseCase
+import com.tokopedia.topchat.chatlist.domain.usecase.GetChatListMessageUseCase
+import com.tokopedia.topchat.chatlist.domain.usecase.GetChatWhitelistFeature
+import com.tokopedia.topchat.chatlist.domain.usecase.MutationPinChatUseCase
+import com.tokopedia.topchat.chatlist.domain.usecase.MutationUnpinChatUseCase
+import com.tokopedia.topchat.chatlist.view.viewmodel.ChatItemListViewModel
 import com.tokopedia.topchat.chatroom.view.viewmodel.ReplyParcelableModel
 import com.tokopedia.topchat.common.domain.MutationMoveChatToTrashUseCase
 import com.tokopedia.usecase.coroutines.Fail
@@ -295,7 +300,7 @@ class ChatItemListViewModelTest {
     fun `on success delete chat`() {
         // Given
         val successDelete = ChatDelete(
-            isSuccess = 1, detailResponse = "", messageId = exMessageId.toLong())
+            isSuccess = 1, detailResponse = "", messageId = exMessageId)
         val result = ChatDeleteStatus().apply {
             this.chatMoveToTrash.list = listOf(successDelete)
         }
@@ -316,7 +321,7 @@ class ChatItemListViewModelTest {
     fun `on failed to delete chat`() {
         // Given
         val failedDelete = ChatDelete(
-            isSuccess = 0, detailResponse = "Error", messageId = exMessageId.toLong())
+            isSuccess = 0, detailResponse = "Error", messageId = exMessageId)
         val result = ChatDeleteStatus().apply {
             this.chatMoveToTrash.list = listOf(failedDelete)
         }
@@ -805,7 +810,8 @@ class ChatItemListViewModelTest {
     fun should_invoke_onSuccess_when_success_load_top_bot_whitelist() {
         //Given
         val expectedResponse = ChatWhitelistFeatureResponse(
-            ChatWhitelistFeature(isWhitelist = true))
+            ChatWhitelistFeature(isWhitelist = true)
+        )
         every {
             chatWhitelistFeature.getWhiteList(any(), captureLambda(), any())
         } answers {
@@ -824,7 +830,8 @@ class ChatItemListViewModelTest {
     fun should_invoke_onSuccess_when_success_load_top_bot_whitelist_but_false() {
         //Given
         val expectedResponse = ChatWhitelistFeatureResponse(
-            ChatWhitelistFeature(isWhitelist = false))
+            ChatWhitelistFeature(isWhitelist = false)
+        )
         every {
             chatWhitelistFeature.getWhiteList(any(), captureLambda(), any())
         } answers {

@@ -1,5 +1,6 @@
 package com.tokopedia.hotel.roomlist.data.model
 
+import android.annotation.SuppressLint
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
@@ -10,7 +11,7 @@ import com.google.gson.annotations.SerializedName
 data class HotelRoomData(
         @SerializedName("propertyID")
         @Expose
-        val propertyId: Int = 0,
+        val propertyId: String = "0",
 
         @SerializedName("rooms")
         @Expose
@@ -51,6 +52,7 @@ data class HotelRoomData(
             @Expose
             val price: String = "",
 
+            @SuppressLint("Invalid Data Type")
             @SerializedName("priceAmount")
             @Expose
             val priceAmount: Int = 0

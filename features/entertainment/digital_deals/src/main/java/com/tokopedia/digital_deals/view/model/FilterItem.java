@@ -10,7 +10,7 @@ import java.util.List;
 
 public class FilterItem implements Parcelable{
     @SerializedName("category_id")
-    private int categoryId;
+    private String categoryId;
 
     @SerializedName("applied_range")
     private Object appliedRange;
@@ -31,7 +31,7 @@ public class FilterItem implements Parcelable{
     private String attributeName;
 
     @SerializedName("id")
-    private int id;
+    private String id;
 
     @SerializedName("label")
     private String label;
@@ -43,13 +43,13 @@ public class FilterItem implements Parcelable{
     private int status;
 
     protected FilterItem(Parcel in) {
-        categoryId = in.readInt();
+        categoryId = in.readString();
         applied = in.createTypedArrayList(AppliedItem.CREATOR);
         kind = in.readString();
         values = in.createTypedArrayList(ValuesItem.CREATOR);
         name = in.readString();
         attributeName = in.readString();
-        id = in.readInt();
+        id = in.readString();
         label = in.readString();
         priority = in.readInt();
         status = in.readInt();
@@ -75,11 +75,11 @@ public class FilterItem implements Parcelable{
         this.values = values;
     }
 
-    public void setCategoryId(int categoryId) {
+    public void setCategoryId(String categoryId) {
         this.categoryId = categoryId;
     }
 
-    public int getCategoryId() {
+    public String getCategoryId() {
         return categoryId;
     }
 
@@ -124,11 +124,11 @@ public class FilterItem implements Parcelable{
         return attributeName;
     }
 
-    public void setId(int id) {
+    public void setId(String id) {
         this.id = id;
     }
 
-    public int getId() {
+    public String getId() {
         return id;
     }
 
@@ -181,13 +181,13 @@ public class FilterItem implements Parcelable{
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeInt(categoryId);
+        dest.writeString(categoryId);
         dest.writeTypedList(applied);
         dest.writeString(kind);
         dest.writeTypedList(values);
         dest.writeString(name);
         dest.writeString(attributeName);
-        dest.writeInt(id);
+        dest.writeString(id);
         dest.writeString(label);
         dest.writeInt(priority);
         dest.writeInt(status);

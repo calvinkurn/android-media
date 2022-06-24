@@ -29,7 +29,7 @@ import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.seamless_login_common.domain.usecase.SeamlessLoginUsecase
 import com.tokopedia.seamless_login_common.subscriber.SeamlessLoginSubscriber
 import com.tokopedia.shop.common.domain.interactor.ToggleFavouriteShopUseCase
-import com.tokopedia.topchat.chatlist.pojo.ChatDeleteStatus
+import com.tokopedia.topchat.chatlist.domain.pojo.ChatDeleteStatus
 import com.tokopedia.topchat.chatroom.data.ImageUploadServiceModel
 import com.tokopedia.topchat.chatroom.data.UploadImageDummy
 import com.tokopedia.topchat.chatroom.data.activityresult.UpdateProductStockResult
@@ -458,7 +458,7 @@ open class TopChatViewModel @Inject constructor(
         })
     }
 
-    fun getShopFollowingStatus(shopId: Long) {
+    fun getShopFollowingStatus(shopId: String) {
         launchCatchError(block = {
             val result = getShopFollowingUseCase(shopId)
             _shopFollowing.value = Success(result)

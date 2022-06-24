@@ -23,7 +23,8 @@ data class UserShopInfoWrapper(val shopType: ShopType?,
         data class StatusInfoUiModel(
             val statusTitle: String = "",
             val statusMessage: String = "",
-            val tickerType: String = ""
+            val tickerType: String = "",
+            val shopStatus: Int = 0
         )
         fun getPowerMerchantEligibleIcon(): Int? {
             return if (isEligiblePm) {

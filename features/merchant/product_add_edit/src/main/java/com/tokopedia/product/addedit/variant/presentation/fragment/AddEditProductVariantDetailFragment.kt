@@ -57,6 +57,7 @@ import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSessionInterface
 import java.math.BigInteger
+import java.util.*
 import javax.inject.Inject
 
 class AddEditProductVariantDetailFragment : BaseDaggerFragment(),
@@ -69,6 +70,8 @@ class AddEditProductVariantDetailFragment : BaseDaggerFragment(),
 
     companion object {
         const val SCROLLING_DELAY = 500L
+        const val TRACKER_DELIMITER = " - "
+        const val TRACKER_THROTTLE_TIME = 100
         fun createInstance(cacheManagerId: String): Fragment {
             return AddEditProductVariantDetailFragment().apply {
                 arguments = Bundle().apply {
@@ -100,6 +103,8 @@ class AddEditProductVariantDetailFragment : BaseDaggerFragment(),
     private var imageViewMultipleEdit: ImageView? = null
     private var variantListButton: Typography? = null
     private var buttonSave: UnifyButton? = null
+    private var lastSendTrackerDate: Date = Date()
+    private var isSendingTrackerMultipleVariant = false
 
     override fun getScreenName(): String {
         return ""
@@ -229,6 +234,7 @@ class AddEditProductVariantDetailFragment : BaseDaggerFragment(),
     override fun onWeightInputTextChanged(weightInput: String, adapterPosition: Int): VariantDetailInputLayoutModel {
         val validatedInputModel = viewModel.validateProductVariantWeightInput(weightInput.toIntOrNull(), adapterPosition)
         viewModel.updateVariantDetailInputMap(adapterPosition, validatedInputModel)
+        sendTrackerWpvFillWeight(validatedInputModel)
         return validatedInputModel
     }
 
@@ -252,7 +258,6 @@ class AddEditProductVariantDetailFragment : BaseDaggerFragment(),
                 }
                 // assign new value if input stock is not empty
                 if (multipleVariantEditInputModel.stock.isNotEmpty()) {
-                    it.stock = multipleVariantEditInputModel.stock.toIntOrZero()
                     onStockInputTextChanged(multipleVariantEditInputModel.stock, index)
                 }
                 // assign new value if input sku is not empty
@@ -261,6 +266,7 @@ class AddEditProductVariantDetailFragment : BaseDaggerFragment(),
                 }
                 // assign new value if input weight is not empty
                 if (multipleVariantEditInputModel.weight.isNotEmpty()) {
+                    sendTrackerWpvFillMultipleWeight(multipleVariantEditInputModel.weight, it)
                     onWeightInputTextChanged(multipleVariantEditInputModel.weight, index)
                 }
 
@@ -550,6 +556,54 @@ class AddEditProductVariantDetailFragment : BaseDaggerFragment(),
                     userSession.userId
             )
         }
+    }
+
+    private fun sendTrackerWpvFillWeight(validatedInputModel: VariantDetailInputLayoutModel) {
+        // throttle call to avoid doubled call
+        val dateNow = Date()
+        if (dateNow.time < lastSendTrackerDate.time + TRACKER_THROTTLE_TIME) return
+        lastSendTrackerDate = dateNow
+
+        // avoid sending tracker when sending other tracker
+        if (isSendingTrackerMultipleVariant) return
+
+        val header = variantDetailFieldsAdapter?.getHeaderAtPosition(
+            validatedInputModel.headerPosition
+        )
+        val variantName = if (header == null) {
+            validatedInputModel.unitValueLabel
+        } else {
+            header.headerTitle + TRACKER_DELIMITER + validatedInputModel.unitValueLabel
+        }
+
+        ProductAddVariantDetailTracking.clickFillBoxVariantWeight(
+            variantName,
+            validatedInputModel.weight.orZero(),
+            userSession.shopId
+        )
+    }
+
+    private fun sendTrackerWpvFillMultipleWeight(
+        weight: String,
+        validatedInputModel: VariantDetailInputLayoutModel
+    ) {
+        val header = variantDetailFieldsAdapter?.getHeaderAtPosition(
+            validatedInputModel.headerPosition
+        )
+        val variantName = if (header == null) {
+            validatedInputModel.unitValueLabel
+        } else {
+            header.headerTitle + TRACKER_DELIMITER + validatedInputModel.unitValueLabel
+        }
+
+        isSendingTrackerMultipleVariant = true
+        ProductAddVariantDetailTracking.clickAddWeightMultipleVariant(
+            variantName,
+            weight.toIntOrZero(),
+            userSession.shopId
+        )
+
+        view?.post { isSendingTrackerMultipleVariant = false }
     }
 
     private fun setupToolbarActions() {
