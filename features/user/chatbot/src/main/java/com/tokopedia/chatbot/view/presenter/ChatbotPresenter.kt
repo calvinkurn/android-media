@@ -756,8 +756,6 @@ class ChatbotPresenter @Inject constructor(
 
     override fun detachView() {
         destroyWebSocket()
-        //TODO remove this
-   //     getExistingChatUseCase.unsubscribe()
         sendChatRatingUseCase.unsubscribe()
         sendRatingReasonUseCase.unsubscribe()
         submitCsatRatingUseCase.unsubscribe()

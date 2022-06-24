@@ -34,6 +34,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.resetMain
 import org.junit.*
+import org.junit.Assert.assertEquals
 
 @ExperimentalCoroutinesApi
 class ChatbotPresenterTest {
@@ -461,6 +462,40 @@ class ChatbotPresenterTest {
         }
     }
 
+    @Test
+    fun `clearGetChatUseCase success`() {
+
+        val expectedMinReplyTime = ""
+
+        every {
+            getExistingChatUseCase.reset()
+        } just runs
+
+        presenter.clearGetChatUseCase()
+
+        assertEquals(
+            expectedMinReplyTime,
+            ""
+        )
+
+    }
+
+    @Test
+    fun `setBeforeReplyTime success`() {
+
+        val expectedBeforeReplyTime = "123"
+
+        every {
+            getExistingChatUseCase.updateMinReplyTime(any())
+        } just runs
+
+        presenter.setBeforeReplyTime("123")
+
+        assertEquals(
+            expectedBeforeReplyTime,
+            "123"
+        )
+    }
 
     @Test
     fun `checkUploadSecure is true run uploadUsingSecureUpload`() {
