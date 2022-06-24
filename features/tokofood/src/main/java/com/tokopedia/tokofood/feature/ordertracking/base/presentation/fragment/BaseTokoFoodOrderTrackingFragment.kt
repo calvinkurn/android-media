@@ -162,10 +162,7 @@ class BaseTokoFoodOrderTrackingFragment :
                 with(orderDetailResultUiModel) {
                     orderTrackingAdapter.removeOrderTrackingData()
                     orderTrackingAdapter.updateOrderTracking(orderDetailList)
-                    updateViewsOrderCompleted(
-                        actionButtonsUiModel, toolbarLiveTrackingUiModel, orderStatusKey,
-                        orderDetailResultUiModel.merchantData
-                    )
+                    setToolbarLiveTracking(toolbarLiveTrackingUiModel, orderDetailResultUiModel.orderStatusKey)
                 }
             }
     }
