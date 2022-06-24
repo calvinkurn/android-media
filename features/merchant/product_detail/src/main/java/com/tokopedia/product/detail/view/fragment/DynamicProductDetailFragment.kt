@@ -4928,7 +4928,7 @@ open class DynamicProductDetailFragment :
         return remoteConfig
     }
 
-    override fun onImpressOneliner(
+    override fun onImpressStockAssurance(
         componentTrackDataModel: ComponentTrackDataModel,
         label: String
     ) {

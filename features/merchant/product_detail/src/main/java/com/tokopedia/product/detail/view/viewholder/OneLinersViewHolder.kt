@@ -51,7 +51,7 @@ class OneLinersViewHolder(
         view.apply {
             addOnImpressionListener(element.impressHolder) {
                 if (element.name == STOCK_ASSURANCE)
-                    listener.onImpressOneliner(
+                    listener.onImpressStockAssurance(
                         getComponentTrackData(element),
                         content.linkText + content.content
                     )

@@ -76,7 +76,7 @@ interface DynamicProductDetailListener {
     /**
      * OneLinerViewHolder
      */
-    fun onImpressOneliner(componentTrackDataModel: ComponentTrackDataModel, label: String)
+    fun onImpressStockAssurance(componentTrackDataModel: ComponentTrackDataModel, label: String)
 
     /**
      * ProductDiscussionViewHolder
