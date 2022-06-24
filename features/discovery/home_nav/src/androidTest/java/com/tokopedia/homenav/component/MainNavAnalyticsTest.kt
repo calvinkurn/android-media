@@ -45,8 +45,8 @@ class MainNavAnalyticsTest {
     ) {
         override fun beforeActivityLaunched() {
             super.beforeActivityLaunched()
-            setupAbTestRemoteConfig()
             setupGraphqlMockResponse(MainNavMockResponseConfig())
+            setupAbTestRemoteConfig()
         }
     }
 
@@ -82,6 +82,7 @@ class MainNavAnalyticsTest {
             login()
             waitForData()
             doActivityTestByModelClass(
+                delayBeforeRender = 2000,
                 dataModelClass = TransactionListItemDataModel::class
             ) { viewHolder: RecyclerView.ViewHolder, i: Int ->
                 clickOnOrderHistory(viewHolder)
@@ -101,6 +102,7 @@ class MainNavAnalyticsTest {
             login()
             waitForData()
             doActivityTestByModelClass(
+                delayBeforeRender = 2000,
                 dataModelClass = WishlistDataModel::class
             ) { viewHolder: RecyclerView.ViewHolder, i: Int ->
                 clickOnWishlist(viewHolder)
@@ -115,11 +117,32 @@ class MainNavAnalyticsTest {
     }
 
     @Test
+    fun testComponentShopFavorite() {
+        mainNavCassavaTest {
+            login()
+            waitForData()
+            doActivityTestByModelClass(
+                delayBeforeRender = 2000,
+                dataModelClass = FavoriteShopListDataModel::class
+            ) { viewHolder: RecyclerView.ViewHolder, i: Int ->
+                clickOnEachShop(viewHolder)
+            }
+        } validateAnalytics {
+            addDebugEnd()
+            hasPassedAnalytics(
+                cassavaTestRule,
+                ANALYTIC_VALIDATOR_QUERY_FILE_NAME_FAVORITE_SHOP
+            )
+        }
+    }
+
+    @Test
     fun testComponentShopAndAffiliate() {
         mainNavCassavaTest {
             login()
             waitForData()
             doActivityTestByModelClass(
+                delayBeforeRender = 2000,
                 dataModelClass = AccountHeaderDataModel::class
             ) { viewHolder: RecyclerView.ViewHolder, i: Int ->
                 clickOnShopAndAffiliate(viewHolder)
@@ -162,26 +185,6 @@ class MainNavAnalyticsTest {
         endActivityTest()
     }
 
-    @Test
-    fun testComponentFavoriteShop() {
-        mainNavCassavaTest {
-            login()
-            waitForData()
-            doActivityTestByModelClass(
-                dataModelClass = FavoriteShopListDataModel::class
-            ) { viewHolder: RecyclerView.ViewHolder, _: Int ->
-                clickOnEachShop(viewHolder)
-            }
-        } validateAnalytics {
-            addDebugEnd()
-            hasPassedAnalytics(
-                cassavaTestRule,
-                ANALYTIC_VALIDATOR_QUERY_FILE_NAME_FAVORITE_SHOP
-            )
-        }
-    }
-
-
     private fun login() {
         InstrumentationAuthHelper.loginInstrumentationTestTopAdsUser()
         InstrumentationAuthHelper.loginToAnUser(activityRule.activity.application)
@@ -204,7 +207,7 @@ class MainNavAnalyticsTest {
     }
 
     private fun <T : Any> doActivityTestByModelClass(
-        delayBeforeRender: Long = 5000L,
+        delayBeforeRender: Long = 2000L,
         dataModelClass: KClass<T>,
         predicate: (T?) -> Boolean = { true },
         isTypeClass: (viewHolder: RecyclerView.ViewHolder, itemClickLimit: Int) -> Unit
