@@ -1,9 +1,7 @@
 package com.tokopedia.loginregister.login.behaviour.base
 
-import android.content.Context
 import android.content.Intent
 import androidx.test.espresso.intent.rule.IntentsTestRule
-import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.loginregister.discover.pojo.DiscoverData
 import com.tokopedia.loginregister.discover.pojo.DiscoverPojo
 import com.tokopedia.loginregister.discover.pojo.ProviderData
@@ -17,7 +15,6 @@ import com.tokopedia.loginregister.registerinitial.domain.pojo.RegisterCheckData
 import com.tokopedia.loginregister.registerinitial.domain.pojo.RegisterCheckPojo
 import com.tokopedia.loginregister.registerinitial.view.activity.RegisterInitialActivity
 import com.tokopedia.sessioncommon.domain.usecase.GeneratePublicKeyUseCase
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -45,7 +42,6 @@ open class RegisterInitialBase: LoginRegisterBase() {
     @Inject
     lateinit var getProfileUseCaseStub: GetProfileUseCaseStub
 
-    @ExperimentalCoroutinesApi
     @Before
     open fun before() {
         var registerComponent: RegisterInitialComponentStub

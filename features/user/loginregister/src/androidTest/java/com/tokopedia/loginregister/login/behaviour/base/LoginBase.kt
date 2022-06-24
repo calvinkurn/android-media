@@ -1,6 +1,5 @@
 package com.tokopedia.loginregister.login.behaviour.base
 
-import android.content.Context
 import android.content.Intent
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions
@@ -9,7 +8,6 @@ import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.*
-import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.loginregister.R
 import com.tokopedia.loginregister.discover.pojo.DiscoverData
 import com.tokopedia.loginregister.discover.pojo.DiscoverPojo
@@ -21,7 +19,6 @@ import com.tokopedia.loginregister.login.domain.pojo.RegisterCheckData
 import com.tokopedia.loginregister.login.domain.pojo.RegisterCheckPojo
 import com.tokopedia.loginregister.login.view.activity.LoginActivity
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -58,7 +55,6 @@ open class LoginBase: LoginRegisterBase() {
     @Inject
     lateinit var userSessionStub: UserSessionInterface
 
-    @ExperimentalCoroutinesApi
     @Before
     open fun before() {
         val fakeComponentFactory = FakeActivityComponentFactory()
