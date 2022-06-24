@@ -172,18 +172,6 @@ open class ProductAttachmentUiModel protected constructor(
         return freeShipping.imageUrl
     }
 
-    fun getAtcEventLabel(): String {
-        val atcEventLabel = when {
-            blastId == 0L -> "chat"
-            blastId == -1L -> "drop price alert"
-            blastId == -2L -> "limited stock"
-            blastId > 0 -> "broadcast"
-            else -> "chat"
-        }
-
-        return "$atcEventLabel - $blastId"
-    }
-
     fun getAtcEventAction(): String {
         return "click atc on bottom sheet"
     }
@@ -250,10 +238,6 @@ open class ProductAttachmentUiModel protected constructor(
 
     fun fromBroadcast(): Boolean {
         return blastId != 0L
-    }
-
-    fun isFlashSaleProduct(): Boolean {
-        return campaignId == -10000L
     }
 
     fun isProductCampaign(): Boolean {

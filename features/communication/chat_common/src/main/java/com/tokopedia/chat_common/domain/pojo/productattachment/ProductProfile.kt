@@ -1,5 +1,6 @@
 package com.tokopedia.chat_common.domain.pojo.productattachment
 
+import android.annotation.SuppressLint
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.chat_common.data.AttachmentVariant
@@ -20,6 +21,7 @@ class ProductProfile {
     @SerializedName("url")
     @Expose
     val url: String = ""
+    @SuppressLint("Invalid Data Type")
     @SerializedName("price_int")
     @Expose
     val priceInt: Long = 0
