@@ -338,9 +338,9 @@ class ShopSettingsSetOperationalHoursFragment : BaseDaggerFragment(), HasCompone
                             currentSelectedEndTime = opsHour.endTime
                         }
 
-                        opsHourAccordion?.addGroup(accordionOpsHourItem)?.accordionSubtitle?.setTextColor(
-                                resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_NN600)
-                        )
+                        context?.apply {
+                            opsHourAccordion?.addGroup(accordionOpsHourItem)?.accordionSubtitle?.setTextColor(getResColor(com.tokopedia.unifyprinciples.R.color.Unify_NN600))
+                        }
                     }
                 }
                 setAllAccordionsItemViewCustomHeight()
