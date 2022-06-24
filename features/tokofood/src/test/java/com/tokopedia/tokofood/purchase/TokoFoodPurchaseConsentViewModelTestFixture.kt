@@ -6,6 +6,7 @@ import com.tokopedia.tokofood.feature.purchase.purchasepage.domain.usecase.Agree
 import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.subview.TokoFoodPurchaseConsentViewModel
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.unit.test.rule.CoroutineTestRule
+import dagger.Lazy
 import io.mockk.MockKAnnotations
 import io.mockk.impl.annotations.RelaxedMockK
 import io.mockk.unmockkAll
@@ -29,7 +30,7 @@ abstract class TokoFoodPurchaseConsentViewModelTestFixture {
     val coroutineTestRule = CoroutineTestRule()
 
     @RelaxedMockK
-    protected lateinit var agreeConsentUseCase: AgreeConsentUseCase
+    protected lateinit var agreeConsentUseCase: Lazy<AgreeConsentUseCase>
 
     protected lateinit var viewModel: TokoFoodPurchaseConsentViewModel
 

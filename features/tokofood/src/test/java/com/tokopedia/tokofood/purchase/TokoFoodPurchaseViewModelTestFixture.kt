@@ -66,31 +66,27 @@ abstract class TokoFoodPurchaseViewModelTestFixture {
 
     protected fun onGetCheckoutTokoFood_thenReturn(response: CheckoutTokoFood) {
         coEvery {
-            checkoutTokoFoodUseCase.get()(CHECKOUT_PAGE_SOURCE)
-        } returns flow {
-            emit(response)
-        }
+            checkoutTokoFoodUseCase.get().execute(CHECKOUT_PAGE_SOURCE)
+        } returns response
     }
 
     protected fun onGetCheckoutTokoFood_thenThrow(throwable: Throwable) {
         coEvery {
-            checkoutTokoFoodUseCase.get()(CHECKOUT_PAGE_SOURCE)
+            checkoutTokoFoodUseCase.get().execute(CHECKOUT_PAGE_SOURCE)
         } throws throwable
     }
 
     protected fun onCheckoutGeneral_thenReturn(checkoutTokoFood: CheckoutTokoFood,
                                                response: CheckoutGeneralTokoFoodResponse) {
         coEvery {
-            checkoutGeneralTokoFoodUseCase.get()(checkoutTokoFood)
-        } returns flow {
-            emit(response)
-        }
+            checkoutGeneralTokoFoodUseCase.get().execute(checkoutTokoFood)
+        } returns response
     }
 
     protected fun onCheckoutGeneral_thenThrow(checkoutTokoFood: CheckoutTokoFood,
                                               throwable: Throwable) {
         coEvery {
-            checkoutGeneralTokoFoodUseCase.get()(checkoutTokoFood)
+            checkoutGeneralTokoFoodUseCase.get().execute(checkoutTokoFood)
         } throws throwable
     }
 

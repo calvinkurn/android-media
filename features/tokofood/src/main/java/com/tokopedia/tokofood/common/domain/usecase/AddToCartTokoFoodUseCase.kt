@@ -1,9 +1,8 @@
 package com.tokopedia.tokofood.common.domain.usecase
 
-import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.graphql.coroutines.data.extensions.request
+import com.tokopedia.gql_query_annotation.GqlQuery
+import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
-import com.tokopedia.graphql.domain.flow.FlowUseCase
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.tokofood.common.address.TokoFoodChosenAddressRequestHelper
 import com.tokopedia.tokofood.common.domain.additionalattributes.CartAdditionalAttributesTokoFood
@@ -11,19 +10,73 @@ import com.tokopedia.tokofood.common.domain.response.AddToCartTokoFoodResponse
 import com.tokopedia.tokofood.common.domain.response.CartTokoFoodResponse
 import com.tokopedia.tokofood.common.presentation.mapper.UpdateProductMapper
 import com.tokopedia.tokofood.common.presentation.uimodel.UpdateParam
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
 
+private const val QUERY = """
+          mutation AddToCartTokofood(${'$'}params: ATCGeneralParams!) {
+            add_to_cart_general(params: ${'$'}params) {
+              message
+              status
+              data {
+                success
+                message
+                carts {
+                  success
+                  message
+                  business_id
+                  cart_id
+                  shop_id
+                  product_id
+                  quantity
+                  metadata
+                }
+                bottomsheet {
+                  is_show_bottomsheet
+                  title
+                  description
+                  image_url
+                  buttons{
+                      text
+                      color
+                      action
+                      link
+                  }
+                }
+              }
+            }
+          }
+        """
+
+@GqlQuery("AddToCartTokofood", QUERY)
 class AddToCartTokoFoodUseCase @Inject constructor(
-    private val repository: GraphqlRepository,
-    private val chosenAddressRequestHelper: TokoFoodChosenAddressRequestHelper,
-    dispatcher: CoroutineDispatchers
-): FlowUseCase<UpdateParam, CartTokoFoodResponse>(dispatcher.io) {
+    repository: GraphqlRepository,
+    private val chosenAddressRequestHelper: TokoFoodChosenAddressRequestHelper
+): GraphqlUseCase<AddToCartTokoFoodResponse>(repository) {
+
+    init {
+        setTypeClass(AddToCartTokoFoodResponse::class.java)
+        setGraphqlQuery(AddToCartTokofood())
+    }
+
+    suspend fun execute(params: UpdateParam): CartTokoFoodResponse {
+        val param = generateParams(
+            params,
+            CartAdditionalAttributesTokoFood(chosenAddressRequestHelper.getChosenAddress()).generateString()
+        )
+        setRequestParams(param)
+
+        val response = executeOnBackground()
+        if (response.cartResponse.isSuccess()) {
+            return response.cartResponse
+        } else {
+            throw MessageErrorException(response.cartResponse.getMessageIfError())
+        }
+
+    }
 
     companion object {
-        private const val PARAMS_KEY = "params"
 
+        private const val PARAMS_KEY = "params"
 
         private fun generateParams(param: UpdateParam,
                                    additionalAttr: String): Map<String, Any> {
@@ -34,55 +87,7 @@ class AddToCartTokoFoodUseCase @Inject constructor(
             )
             return mapOf(PARAMS_KEY to cartParam)
         }
-    }
 
-    override fun graphqlQuery(): String = """
-        mutation AddToCartTokofood($$PARAMS_KEY: ATCGeneralParams!) {
-          add_to_cart_general(params: $$PARAMS_KEY) {
-            message
-            status
-            data {
-              success
-              message
-              carts {
-                success
-                message
-                business_id
-                cart_id
-                shop_id
-                product_id
-                quantity
-                metadata
-              }
-              bottomsheet {
-                is_show_bottomsheet
-                title
-                description
-                image_url
-                buttons{
-                    text
-                    color
-                    action
-                    link
-                }
-              }
-            }
-          }
-        }
-    """.trimIndent()
-
-    override suspend fun execute(params: UpdateParam): Flow<CartTokoFoodResponse> = flow {
-        val param = generateParams(
-            params,
-            CartAdditionalAttributesTokoFood(chosenAddressRequestHelper.getChosenAddress()).generateString()
-        )
-        val response =
-            repository.request<Map<String, Any>, AddToCartTokoFoodResponse>(graphqlQuery(), param)
-        if (response.cartResponse.isSuccess()) {
-            emit(response.cartResponse)
-        } else {
-            throw MessageErrorException(response.cartResponse.getMessageIfError())
-        }
     }
 
 }

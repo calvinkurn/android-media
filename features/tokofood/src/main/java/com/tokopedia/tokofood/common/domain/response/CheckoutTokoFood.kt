@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.kotlin.extensions.view.EMPTY
+import com.tokopedia.kotlin.extensions.view.getCurrencyFormatted
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.tokofood.common.domain.TokoFoodCartUtil
 import com.tokopedia.tokofood.common.domain.param.RemoveCartTokoFoodParam
@@ -81,9 +82,9 @@ data class CheckoutTokoFoodData(
     @SerializedName("unavailable_section_header")
     @Expose
     val unavailableSectionHeader: String = "",
-    @SerializedName("unavailable_section")
+    @SerializedName("unavailable_sections")
     @Expose
-    val unavailableSection: CheckoutTokoFoodAvailabilitySection = CheckoutTokoFoodAvailabilitySection(),
+    val unavailableSections: List<CheckoutTokoFoodAvailabilitySection> = listOf(),
     @SerializedName("shipping")
     @Expose
     val shipping: CheckoutTokoFoodShipping = CheckoutTokoFoodShipping(),
@@ -111,18 +112,25 @@ data class CheckoutTokoFoodData(
 
 
     fun getMiniCartUiModel(): MiniCartUiModel {
+        val totalPrice =
+            if (summaryDetail.details.isEmpty()) {
+                // From mini cart gql
+                summaryDetail.totalPrice
+            } else {
+                // From cart list gql
+                shoppingSummary.costBreakdown.totalCartPrice.originalAmount.getCurrencyFormatted()
+            }
         return MiniCartUiModel(
             shopName = shop.name,
-            totalPrice = shoppingSummary.total.cost,
-            totalPriceFmt = summaryDetail.totalPrice,
+            totalPriceFmt = totalPrice,
             totalProductQuantity = summaryDetail.totalItems
         )
     }
 
     fun getRemoveUnavailableCartParam(shopId: String): RemoveCartTokoFoodParam {
-        val cartList = unavailableSection.products.map {
+        val cartList = unavailableSections.firstOrNull()?.products?.map {
             it.mapToRemoveItemParam(shopId)
-        }
+        }.orEmpty()
         return RemoveCartTokoFoodParam(cartList)
     }
 
@@ -134,7 +142,7 @@ data class CheckoutTokoFoodData(
     }
 
     fun getProductListFromCart(): List<CheckoutTokoFoodProduct> {
-        return availableSection.products.plus(unavailableSection.products)
+        return availableSection.products.plus(unavailableSections.firstOrNull()?.products.orEmpty())
     }
 }
 

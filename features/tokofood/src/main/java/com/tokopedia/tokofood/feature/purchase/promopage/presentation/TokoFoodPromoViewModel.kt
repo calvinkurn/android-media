@@ -12,12 +12,12 @@ import com.tokopedia.tokofood.feature.purchase.promopage.presentation.mapper.Tok
 import com.tokopedia.tokofood.feature.purchase.promopage.presentation.uimodel.TokoFoodPromoFragmentUiModel
 import com.tokopedia.utils.lifecycle.SingleLiveEvent
 import dagger.Lazy
-import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class TokoFoodPromoViewModel @Inject constructor(
     private val promoListTokoFoodUseCase: Lazy<PromoListTokoFoodUseCase>,
-    dispatcher: CoroutineDispatchers
+    private val dispatcher: CoroutineDispatchers
 ) : BaseViewModel(dispatcher.main) {
 
     private val _uiEvent = SingleLiveEvent<UiEvent>()
@@ -37,7 +37,9 @@ class TokoFoodPromoViewModel @Inject constructor(
 
     fun loadData() {
         launchCatchError(block = {
-            promoListTokoFoodUseCase.get()(SOURCE).collect {
+            withContext(dispatcher.io) {
+                promoListTokoFoodUseCase.get().execute(SOURCE)
+            }.let {
                 if (it.isSuccess()) {
                     when {
                         it.data.errorPage.isShowErrorPage -> {
