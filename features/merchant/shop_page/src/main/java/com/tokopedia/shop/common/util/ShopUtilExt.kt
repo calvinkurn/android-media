@@ -5,6 +5,6 @@ import com.tokopedia.productcard.ProductCardModel
 object ShopUtilExt {
 
     fun ProductCardModel.isButtonAtcShown():  Boolean{
-        return this.hasAddToCartButton || this.nonVariant!=null  || this.variant!=null
+        return this.hasAddToCartButton
     }
 }

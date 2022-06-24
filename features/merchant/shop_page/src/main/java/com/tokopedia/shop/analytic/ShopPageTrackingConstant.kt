@@ -271,6 +271,8 @@ object ShopPageTrackingConstant {
     const val EVENT_PROMO_ID = "promoId"
     const val EVENT_PRODUCT_ID = "productId"
     const val SHOP_ID = "shopId"
+    const val ITEMS_SHOP_ID = "shop_id"
+    const val ITEMS_SHOP_TYPE = "shop_type"
     const val USER_ID = "userId"
     const val SHOP_NAME = "shop_name"
     const val PAGE_TYPE = "pageType"
@@ -408,13 +410,27 @@ object ShopPageTrackingConstant {
 
     const val SHOP_PAGE_SHARE_BOTTOM_SHEET_PAGE_NAME = "Shop"
     const val SHOP_PAGE_SHARE_BOTTOM_SHEET_FEATURE_NAME = "share"
-
-    object EventAction{
-        const val IMPRESSION_PRODUCT_ATC = "impression - product - add to cart"
+    const val SHOP_PRODUCT_ATC_QUANTITY_INCREASE = "increase"
+    const val SHOP_PRODUCT_ATC_QUANTITY_DECREASE = "decrease"
+    object Event {
+        const val DIRECT_PURCHASE_ADD_TO_CART = "add_to_cart"
     }
 
-    object EventCategory{
+    object EventAction {
+        const val IMPRESSION_PRODUCT_ATC = "impression - product - add to cart"
+        const val CLICK_PRODUCT_ATC = "click - product - add to cart"
+        const val CLICK_PRODUCT_ATC_QUANTITY = "click - product - quantity"
+        const val CLICK_PRODUCT_ATC_RESET = "click - product - quantity reset"
+    }
+
+    object EventCategory {
         const val SHOP_PAGE_BUYER_DIRECT_PURCHASE = "shop page - buyer - direct purchase"
     }
 
+    object TrackerId {
+        const val TRACKER_ID_ATC_IMPRESSION = "32348"
+        const val TRACKER_ID_ATC_CLICK = "32349"
+        const val TRACKER_ID_ATC_CLICK_QUANTITY = "32350"
+        const val TRACKER_ID_ATC_CLICK_DELETE = "32352"
+    }
 }

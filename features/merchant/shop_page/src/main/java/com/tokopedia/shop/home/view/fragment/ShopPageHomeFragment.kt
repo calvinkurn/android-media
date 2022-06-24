@@ -83,6 +83,7 @@ import com.tokopedia.shop.common.constant.ShopPageConstant.VALUE_INT_ONE
 import com.tokopedia.shop.common.constant.ShopPageLoggerConstant.Tag.SHOP_PAGE_BUYER_FLOW_TAG
 import com.tokopedia.shop.common.constant.ShopPageLoggerConstant.Tag.SHOP_PAGE_HOME_TAB_BUYER_FLOW_TAG
 import com.tokopedia.shop.common.constant.ShopShowcaseParamConstant.EXTRA_BUNDLE
+import com.tokopedia.shop.common.data.model.ShopPageAtcTracker
 import com.tokopedia.shop.common.graphql.data.checkwishlist.CheckWishlistResult
 import com.tokopedia.shop.common.util.*
 import com.tokopedia.shop.common.util.ShopPageExceptionHandler.ERROR_WHEN_GET_YOUTUBE_DATA
@@ -834,6 +835,49 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         observeUpdateCartLiveData()
         observeDeleteCartLiveData()
         observeUpdatedShopHomeWidgetQuantityData()
+        observeShopAtcTrackerLiveData()
+    }
+
+    private fun observeShopAtcTrackerLiveData() {
+        viewModel?.shopPageAtcTracker?.observe(viewLifecycleOwner, {
+            when (it.atcType) {
+                ShopPageAtcTracker.AtcType.ADD -> {
+                    sendClickAddToCartTracker(it)
+                }
+                ShopPageAtcTracker.AtcType.UPDATE_ADD, ShopPageAtcTracker.AtcType.UPDATE_REMOVE -> {
+                    sendUpdateCartProductQuantityTracker(it)
+                }
+                else -> {
+                    sendRemoveCartProductTracker(it)
+                }
+            }
+        })
+    }
+
+    private fun sendClickAddToCartTracker(atcTrackerModel: ShopPageAtcTracker) {
+        shopPageHomeTracking.onClickProductAtcButton(
+            atcTrackerModel,
+            shopId,
+            customDimensionShopPage.shopType.orEmpty(),
+            shopName,
+            userId
+        )
+    }
+
+    private fun sendUpdateCartProductQuantityTracker(atcTrackerModel: ShopPageAtcTracker) {
+        shopPageHomeTracking.onClickProductAtcQuantityButton(
+            atcTrackerModel,
+            shopId,
+            userId
+        )
+    }
+
+    private fun sendRemoveCartProductTracker(atcTrackerModel: ShopPageAtcTracker) {
+        shopPageHomeTracking.onClickProductAtcTrashButton(
+            atcTrackerModel,
+            shopId,
+            userId
+        )
     }
 
     private fun observeUpdatedShopHomeWidgetQuantityData() {
@@ -2064,13 +2108,17 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         )
     }
 
-    override fun onProductAtcDefaultClick(shopHomeProductViewModel: ShopHomeProductUiModel, quantity: Int) {
+    override fun onProductAtcDefaultClick(
+        shopHomeProductUiModel: ShopHomeProductUiModel,
+        quantity: Int,
+        componentName: String
+    ) {
         if (isLogin) {
             if (isOwner) {
                 val sellerViewAtcErrorMessage = getString(R.string.shop_page_seller_atc_error_message)
                 showErrorToast(sellerViewAtcErrorMessage)
             } else {
-                handleAtcFlow(shopHomeProductViewModel.id.orEmpty(), quantity, shopId)
+                handleAtcFlow(quantity, shopId, componentName, shopHomeProductUiModel)
             }
         } else {
             redirectToLoginPage()
@@ -2119,21 +2167,28 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
     }
 
     override fun onProductAtcNonVariantQuantityEditorChanged(
-        shopHomeProductViewModel: ShopHomeProductUiModel,
-        quantity: Int
+        shopHomeProductUiModel: ShopHomeProductUiModel,
+        quantity: Int,
+        componentName: String
     ) {
         if (isLogin) {
-            handleAtcFlow(shopHomeProductViewModel.id.orEmpty(), quantity, shopId)
+            handleAtcFlow(quantity, shopId, componentName, shopHomeProductUiModel)
         } else {
             redirectToLoginPage()
         }
     }
 
-    private fun handleAtcFlow(productId: String, quantity: Int, shopId: String) {
+    private fun handleAtcFlow(
+        quantity: Int,
+        shopId: String,
+        componentName: String,
+        shopHomeProductUiModel: ShopHomeProductUiModel
+    ) {
         viewModel?.handleAtcFlow(
-            productId,
             quantity,
-            shopId
+            shopId,
+            componentName,
+            shopHomeProductUiModel
         )
     }
 

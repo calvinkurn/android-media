@@ -592,6 +592,50 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
         observeUpdateCartLiveData()
         observeDeleteCartLiveData()
         observeUpdatedShopProductListQuantityData()
+        observeShopAtcTrackerLiveData()
+    }
+
+
+    private fun observeShopAtcTrackerLiveData() {
+        viewModel.shopPageAtcTracker.observe(viewLifecycleOwner, {
+            when (it.atcType) {
+                ShopPageAtcTracker.AtcType.ADD -> {
+                    sendClickAddToCartTracker(it)
+                }
+                ShopPageAtcTracker.AtcType.UPDATE_ADD, ShopPageAtcTracker.AtcType.UPDATE_REMOVE -> {
+                    sendUpdateCartProductQuantityTracker(it)
+                }
+                else -> {
+                    sendRemoveCartProductTracker(it)
+                }
+            }
+        })
+    }
+
+    private fun sendClickAddToCartTracker(atcTrackerModel: ShopPageAtcTracker) {
+        shopPageTracking?.onClickProductAtcButton(
+            atcTrackerModel,
+            shopId.orEmpty(),
+            customDimensionShopPage.shopType.orEmpty(),
+            shopName.orEmpty(),
+            userId
+        )
+    }
+
+    private fun sendUpdateCartProductQuantityTracker(atcTrackerModel: ShopPageAtcTracker) {
+        shopPageTracking?.onClickProductAtcQuantityButton(
+            atcTrackerModel,
+            shopId.orEmpty(),
+            userId
+        )
+    }
+
+    private fun sendRemoveCartProductTracker(atcTrackerModel: ShopPageAtcTracker) {
+        shopPageTracking?.onClickProductAtcTrashButton(
+            atcTrackerModel,
+            shopId.orEmpty(),
+            userId
+        )
     }
 
     private fun observeMiniCartLiveData() {
@@ -930,7 +974,12 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
         quantity: Int
     ) {
         if (isLogin) {
-            handleAtcFlow(shopProductUiModel.id.orEmpty(), quantity, shopId.orEmpty())
+            handleAtcFlow(
+                shopProductUiModel.id.orEmpty(),
+                quantity,
+                shopId.orEmpty(),
+                shopProductUiModel
+            )
         } else {
             redirectToLoginPage()
         }
@@ -952,7 +1001,12 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
                 val sellerViewAtcErrorMessage = getString(R.string.shop_page_seller_atc_error_message)
                 showToasterError(sellerViewAtcErrorMessage)
             } else {
-                handleAtcFlow(shopProductUiModel.id.orEmpty(), Int.ONE, shopId.orEmpty())
+                handleAtcFlow(
+                    shopProductUiModel.id.orEmpty(),
+                    Int.ONE,
+                    shopId.orEmpty(),
+                    shopProductUiModel
+                )
             }
         } else {
             redirectToLoginPage()
@@ -989,11 +1043,18 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
         }
     }
 
-    private fun handleAtcFlow(productId: String, quantity: Int, shopId: String) {
+    private fun handleAtcFlow(
+        productId: String,
+        quantity: Int,
+        shopId: String,
+        shopProductUiModel: ShopProductUiModel
+    ) {
         viewModel.handleAtcFlow(
             productId,
             quantity,
-            shopId
+            shopId,
+            ShopPageConstant.ShopProductCardAtc.CARD_ETALASE,
+            shopProductUiModel
         )
     }
 

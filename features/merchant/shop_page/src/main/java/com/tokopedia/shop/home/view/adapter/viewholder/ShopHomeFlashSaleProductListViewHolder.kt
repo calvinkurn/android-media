@@ -67,7 +67,8 @@ class ShopHomeFlashSaleProductListViewHolder(
                 override fun onQuantityChanged(quantity: Int) {
                     listener.onProductAtcNonVariantQuantityEditorChanged(
                         shopHomeProductUiModel,
-                        quantity
+                        quantity,
+                        flashSaleWidgetUiModel?.name.orEmpty()
                     )
                 }
             })
@@ -79,7 +80,8 @@ class ShopHomeFlashSaleProductListViewHolder(
             productCardList?.setAddToCartOnClickListener {
                 listener.onProductAtcDefaultClick(
                     shopHomeProductUiModel,
-                    shopHomeProductUiModel.minimumOrder
+                    shopHomeProductUiModel.minimumOrder,
+                    flashSaleWidgetUiModel?.name.orEmpty()
                 )
             }
         }

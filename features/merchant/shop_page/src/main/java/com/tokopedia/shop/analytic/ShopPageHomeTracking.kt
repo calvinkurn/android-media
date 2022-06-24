@@ -1,6 +1,7 @@
 package com.tokopedia.shop.analytic
 
 import android.os.Bundle
+import android.os.Parcelable
 import com.tokopedia.kotlin.extensions.view.getDigits
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel
@@ -118,6 +119,10 @@ import com.tokopedia.shop.analytic.ShopPageTrackingConstant.SHOP_PAGE_BUYER
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.SHOP_PAGE_LABEL
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.DIMENSION_90
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.ETALASE_NAVIGATION_BANNER
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.Event.DIRECT_PURCHASE_ADD_TO_CART
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.EventAction.CLICK_PRODUCT_ATC
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.EventAction.CLICK_PRODUCT_ATC_QUANTITY
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.EventAction.CLICK_PRODUCT_ATC_RESET
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.EventAction.IMPRESSION_PRODUCT_ATC
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.EventCategory.SHOP_PAGE_BUYER_DIRECT_PURCHASE
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.FLASH_SALE
@@ -129,6 +134,8 @@ import com.tokopedia.shop.analytic.ShopPageTrackingConstant.ITEM_ID
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.ITEM_NAME
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.ITEM_VARIANT
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.IMPRESSION_DONATION_BY_SELLER
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.ITEMS_SHOP_ID
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.ITEMS_SHOP_TYPE
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.ITEM_LIST
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.LABEL_SHOP_DECOR_CLICK
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.LABEL_SHOP_DECOR_IMPRESSION
@@ -139,6 +146,8 @@ import com.tokopedia.shop.analytic.ShopPageTrackingConstant.PRODUCT
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.PRODUCT_BUNDLING
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.PRODUCT_ID
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.SELECT_CONTENT
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.SHOP_PRODUCT_ATC_QUANTITY_DECREASE
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.SHOP_PRODUCT_ATC_QUANTITY_INCREASE
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.SHOP_TYPE
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.SINGLE_BUNDLE_WIDGET
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.SINGLE_TYPE
@@ -149,6 +158,10 @@ import com.tokopedia.shop.analytic.ShopPageTrackingConstant.THEMATIC_WIDGET_PROD
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.THEMATIC_WIDGET_SEE_ALL_CLICK
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TOKOPEDIA_MARKETPLACE
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TRACKER_ID
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TrackerId.TRACKER_ID_ATC_CLICK
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TrackerId.TRACKER_ID_ATC_CLICK_DELETE
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TrackerId.TRACKER_ID_ATC_CLICK_QUANTITY
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TrackerId.TRACKER_ID_ATC_IMPRESSION
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.UNFOLLOW
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.USER_ID
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.VALUE_FINISHED_BANNER
@@ -183,6 +196,7 @@ import com.tokopedia.shop.analytic.model.CustomDimensionShopPageProduct
 import com.tokopedia.shop.common.constant.PMAX_PARAM_KEY
 import com.tokopedia.shop.common.constant.PMIN_PARAM_KEY
 import com.tokopedia.shop.common.constant.RATING_PARAM_KEY
+import com.tokopedia.shop.common.data.model.ShopPageAtcTracker
 import com.tokopedia.shop.common.util.ShopProductViewGridType
 import com.tokopedia.shop.common.util.ShopUtil
 import com.tokopedia.shop.common.widget.bundle.model.ShopHomeBundleProductUiModel
@@ -2486,6 +2500,7 @@ class ShopPageHomeTracking(
             putString(EVENT_ACTION, IMPRESSION_PRODUCT_ATC)
             putString(EVENT_CATEGORY, SHOP_PAGE_BUYER_DIRECT_PURCHASE)
             putString(EVENT_LABEL, "")
+            putString(TRACKER_ID, TRACKER_ID_ATC_IMPRESSION)
             putString(BUSINESS_UNIT, PHYSICAL_GOODS)
             putString(CURRENT_SITE, TOKOPEDIA_MARKETPLACE)
             putString(PRODUCT_ID, shopHomeProductUiModel.id.orEmpty())
@@ -2516,5 +2531,109 @@ class ShopPageHomeTracking(
             putString(ITEM_ID, shopHomeProductUiModel.id.orEmpty())
             putString(ITEM_NAME, shopHomeProductUiModel.name.orEmpty())
         }
+    }
+
+    fun onClickProductAtcButton(
+        atcTrackerModel: ShopPageAtcTracker,
+        shopId: String,
+        shopType: String,
+        shopName: String,
+        userId: String,
+    ) {
+        val eventBundle = Bundle().apply {
+            putString(EVENT, DIRECT_PURCHASE_ADD_TO_CART)
+            putString(EVENT_ACTION, CLICK_PRODUCT_ATC)
+            putString(EVENT_CATEGORY, SHOP_PAGE_BUYER_DIRECT_PURCHASE)
+            putString(EVENT_LABEL, atcTrackerModel.componentName)
+            putString(TRACKER_ID, TRACKER_ID_ATC_CLICK)
+            putString(BUSINESS_UNIT, PHYSICAL_GOODS)
+            putString(CURRENT_SITE, TOKOPEDIA_MARKETPLACE)
+            putParcelableArrayList(
+                ITEMS,
+                arrayListOf(
+                    createClickProductAtcButtonItems(
+                        atcTrackerModel,
+                        shopId,
+                        shopName,
+                        shopType
+                    )
+                )
+            )
+            putString(PRODUCT_ID, atcTrackerModel.productId)
+            putString(SHOP_ID, shopId)
+            putString(USER_ID, userId)
+        }
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(CLICK_PRODUCT_ATC, eventBundle)
+    }
+
+    private fun createClickProductAtcButtonItems(
+        atcTrackerModel: ShopPageAtcTracker,
+        shopId: String,
+        shopName: String,
+        shopType: String
+    ): Bundle {
+        return Bundle().apply {
+            putString(CATEGORY_ID, "")
+            putString(DIMENSION_45, atcTrackerModel.cartId)
+            putString(ITEM_BRAND, "")
+            putString(ITEM_CATEGORY, "")
+            putString(ITEM_ID, atcTrackerModel.productId)
+            putString(ITEM_NAME, atcTrackerModel.productName)
+            putString(ITEM_VARIANT, atcTrackerModel.isVariant.toString())
+            putString(PRICE, atcTrackerModel.productPrice)
+            putInt(QUANTITY, atcTrackerModel.quantity)
+            putString(ITEMS_SHOP_ID, shopId)
+            putString(SHOP_NAME, shopName)
+            putString(ITEMS_SHOP_TYPE, shopType)
+        }
+    }
+
+    fun onClickProductAtcQuantityButton(
+        atcTrackerModel: ShopPageAtcTracker,
+        shopId: String,
+        userId: String
+    ) {
+        val quantityType = when (atcTrackerModel.atcType) {
+            ShopPageAtcTracker.AtcType.UPDATE_ADD -> {
+                SHOP_PRODUCT_ATC_QUANTITY_INCREASE
+            }
+            else -> {
+                SHOP_PRODUCT_ATC_QUANTITY_DECREASE
+            }
+        }
+        val eventLabel = "${atcTrackerModel.componentName} - $quantityType"
+        val eventMap = mapOf(
+            EVENT to CLICK_PG,
+            EVENT_ACTION to CLICK_PRODUCT_ATC_QUANTITY,
+            EVENT_CATEGORY to SHOP_PAGE_BUYER_DIRECT_PURCHASE,
+            EVENT_LABEL to eventLabel,
+            TRACKER_ID to TRACKER_ID_ATC_CLICK_QUANTITY,
+            BUSINESS_UNIT to PHYSICAL_GOODS,
+            CURRENT_SITE to TOKOPEDIA_MARKETPLACE,
+            PRODUCT_ID to atcTrackerModel.productId,
+            SHOP_ID to shopId,
+            USER_ID to userId
+        )
+        TrackApp.getInstance().gtm.sendGeneralEvent(eventMap)
+    }
+
+    fun onClickProductAtcTrashButton(
+        atcTrackerModel: ShopPageAtcTracker,
+        shopId: String,
+        userId: String
+    ) {
+        val eventMap = mapOf(
+            EVENT to CLICK_PG,
+            EVENT_ACTION to CLICK_PRODUCT_ATC_RESET,
+            EVENT_CATEGORY to SHOP_PAGE_BUYER_DIRECT_PURCHASE,
+            EVENT_LABEL to atcTrackerModel.componentName,
+            TRACKER_ID to TRACKER_ID_ATC_CLICK_DELETE,
+            BUSINESS_UNIT to PHYSICAL_GOODS,
+            CURRENT_SITE to TOKOPEDIA_MARKETPLACE,
+            PRODUCT_ID to atcTrackerModel.productId,
+            SHOP_ID to shopId,
+            USER_ID to userId
+        )
+        TrackApp.getInstance().gtm.sendGeneralEvent(eventMap)
     }
 }

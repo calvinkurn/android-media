@@ -84,7 +84,8 @@ open class ShopHomeProductItemBigGridViewHolder(
                 override fun onQuantityChanged(quantity: Int) {
                     shopHomeEndlessProductListener?.onProductAtcNonVariantQuantityEditorChanged(
                         shopHomeProductViewModel,
-                        quantity
+                        quantity,
+                        ShopPageConstant.ShopProductCardAtc.CARD_HOME
                     )
                 }
             })
@@ -98,7 +99,8 @@ open class ShopHomeProductItemBigGridViewHolder(
             productCard?.setAddToCartOnClickListener {
                 shopHomeEndlessProductListener?.onProductAtcDefaultClick(
                     shopHomeProductViewModel,
-                    shopHomeProductViewModel.minimumOrder
+                    shopHomeProductViewModel.minimumOrder,
+                    ShopPageConstant.ShopProductCardAtc.CARD_HOME
                 )
             }
 

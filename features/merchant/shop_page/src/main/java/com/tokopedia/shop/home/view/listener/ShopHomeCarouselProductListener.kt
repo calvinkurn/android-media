@@ -101,13 +101,18 @@ interface ShopHomeCarouselProductListener {
     fun onCarouselProductWidgetImpression(adapterPosition: Int, model: ShopHomeCarousellProductUiModel)
 
     fun onProductAtcNonVariantQuantityEditorChanged(
-        shopHomeProductViewModel: ShopHomeProductUiModel,
-        quantity: Int
+        shopHomeProductUiModel: ShopHomeProductUiModel,
+        quantity: Int,
+        componentName: String
     )
 
-    fun onProductAtcVariantClick(shopHomeProductViewModel: ShopHomeProductUiModel)
+    fun onProductAtcVariantClick(shopHomeProductUiModel: ShopHomeProductUiModel)
 
-    fun onProductAtcDefaultClick(shopHomeProductViewModel: ShopHomeProductUiModel, quantity: Int)
+    fun onProductAtcDefaultClick(
+        shopHomeProductUiModel: ShopHomeProductUiModel,
+        quantity: Int,
+        componentName: String
+    )
 
     fun onImpressionProductAtc(
         shopHomeProductUiModel: ShopHomeProductUiModel,

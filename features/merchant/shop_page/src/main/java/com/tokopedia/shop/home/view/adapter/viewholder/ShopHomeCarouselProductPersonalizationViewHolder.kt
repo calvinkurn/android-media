@@ -93,7 +93,8 @@ class ShopHomeCarouselProductPersonalizationViewHolder (
                         ?: return
                     shopHomeCarouselProductListener.onProductAtcDefaultClick(
                         productItem,
-                        productItem.minimumOrder
+                        productItem.minimumOrder,
+                        element.name
                     )
                 }
             }
@@ -109,7 +110,8 @@ class ShopHomeCarouselProductPersonalizationViewHolder (
                         ?: return
                     shopHomeCarouselProductListener.onProductAtcNonVariantQuantityEditorChanged(
                         productItem,
-                        quantity
+                        quantity,
+                        element.name
                     )
                 }
 

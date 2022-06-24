@@ -112,7 +112,8 @@ class ShopHomeCarousellProductViewHolder(
                                 ?: return
                         shopHomeCarouselProductListener.onProductAtcDefaultClick(
                             shopProductViewModel,
-                            shopProductViewModel.minimumOrder
+                            shopProductViewModel.minimumOrder,
+                            shopHomeCarousellProductUiModel?.name.orEmpty()
                         )
                     }
 
@@ -146,7 +147,11 @@ class ShopHomeCarousellProductViewHolder(
                     ) {
                         val shopProductViewModel = shopHomeProductViewModelList.getOrNull(carouselProductCardPosition)
                             ?: return
-                        shopHomeCarouselProductListener.onProductAtcNonVariantQuantityEditorChanged(shopProductViewModel, quantity)
+                        shopHomeCarouselProductListener.onProductAtcNonVariantQuantityEditorChanged(
+                            shopProductViewModel,
+                            quantity,
+                            shopHomeCarousellProductUiModel?.name.orEmpty()
+                        )
                     }
                 },
                 carouselProductCardOnItemAddVariantClickListener = object: CarouselProductCardListener.OnAddVariantClickListener{

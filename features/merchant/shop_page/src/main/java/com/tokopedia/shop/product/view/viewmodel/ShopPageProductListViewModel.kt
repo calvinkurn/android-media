@@ -39,6 +39,7 @@ import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.domain.data.getMiniCartItemProduct
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
+import com.tokopedia.shop.common.data.model.ShopPageAtcTracker
 import com.tokopedia.shop.common.util.ShopUtil.setElement
 import com.tokopedia.shop.product.data.model.ShopFeaturedProductParams
 import com.tokopedia.shop.product.view.datamodel.*
@@ -119,6 +120,10 @@ class ShopPageProductListViewModel @Inject constructor(
     val updatedShopProductListQuantityData: LiveData<MutableList<Visitable<*>>>
         get() = _updatedShopProductListQuantityData
     private val _updatedShopProductListQuantityData = MutableLiveData<MutableList<Visitable<*>>>()
+
+    val shopPageAtcTracker: LiveData<ShopPageAtcTracker>
+        get() = _shopPageAtcTracker
+    private val _shopPageAtcTracker = MutableLiveData<ShopPageAtcTracker>()
 
     fun getBuyerViewContentData(
             shopId: String,
@@ -542,19 +547,27 @@ class ShopPageProductListViewModel @Inject constructor(
         }?.name.orEmpty()
     }
 
-    fun handleAtcFlow(productId: String, quantity: Int, shopId: String) {
+    fun handleAtcFlow(
+        productId: String,
+        quantity: Int,
+        shopId: String,
+        componentName: String,
+        shopProductUiModel: ShopProductUiModel
+    ) {
         val miniCartItem = getMiniCartItem(miniCartData, productId)
         when {
-            miniCartItem == null -> addItemToCart(productId, shopId, quantity)
-            quantity.isZero() -> removeItemCart(miniCartItem)
-            else -> updateItemCart(miniCartItem, quantity)
+            miniCartItem == null -> addItemToCart(productId, shopId, quantity, componentName, shopProductUiModel)
+            quantity.isZero() -> removeItemCart(miniCartItem, componentName, shopProductUiModel)
+            else -> updateItemCart(miniCartItem, quantity, componentName, shopProductUiModel)
         }
     }
 
     private fun addItemToCart(
         productId: String,
         shopId: String,
-        quantity: Int
+        quantity: Int,
+        componentName: String,
+        shopProductUiModel: ShopProductUiModel
     ) {
         val addToCartRequestParams =
             AddToCartUseCase.getMinimumParams(
@@ -564,12 +577,16 @@ class ShopPageProductListViewModel @Inject constructor(
             )
         addToCartUseCase.setParams(addToCartRequestParams)
         addToCartUseCase.execute({
-//            trackAddToCart(
-//                it.data.cartId,
-//                it.data.productId.toString(),
-//                it.data.quantity,
-//                MvcLockedToProductAddToCartTracker.AtcType.ADD
-//            )
+            trackAddToCart(
+                it.data.cartId,
+                it.data.productId.toString(),
+                shopProductUiModel.name.orEmpty(),
+                shopProductUiModel.displayedPrice.orEmpty(),
+                shopProductUiModel.isVariant,
+                it.data.quantity,
+                ShopPageAtcTracker.AtcType.ADD,
+                componentName
+            )
             _miniCartAdd.postValue(Success(it))
         }, {
             _miniCartAdd.postValue(Fail(it))
@@ -578,7 +595,9 @@ class ShopPageProductListViewModel @Inject constructor(
 
     private fun updateItemCart(
         miniCartItem: MiniCartItem.MiniCartItemProduct,
-        quantity: Int
+        quantity: Int,
+        componentName: String,
+        shopProductUiModel: ShopProductUiModel
     ) {
         val existingQuantity = miniCartItem.quantity
         miniCartItem.quantity = quantity
@@ -593,36 +612,48 @@ class ShopPageProductListViewModel @Inject constructor(
             source = UpdateCartUseCase.VALUE_SOURCE_UPDATE_QTY_NOTES,
         )
         updateCartUseCase.execute({
-//            val atcType = if(quantity < existingQuantity){
-//                MvcLockedToProductAddToCartTracker.AtcType.UPDATE_REMOVE
-//            } else {
-//                MvcLockedToProductAddToCartTracker.AtcType.UPDATE_ADD
-//            }
-//            trackAddToCart(
-//                miniCartItem.cartId,
-//                miniCartItem.productId,
-//                miniCartItem.quantity,
-//                atcType
-//            )
+            val atcType = if(quantity < existingQuantity){
+                ShopPageAtcTracker.AtcType.UPDATE_REMOVE
+            } else {
+                ShopPageAtcTracker.AtcType.UPDATE_ADD
+            }
+            trackAddToCart(
+                miniCartItem.cartId,
+                miniCartItem.productId,
+                shopProductUiModel.name.orEmpty(),
+                shopProductUiModel.displayedPrice.orEmpty(),
+                shopProductUiModel.isVariant,
+                miniCartItem.quantity,
+                atcType,
+                componentName
+            )
             _miniCartUpdate.value = Success(it)
         }, {
             _miniCartUpdate.postValue(Fail(it))
         })
     }
 
-    private fun removeItemCart(miniCartItem: MiniCartItem.MiniCartItemProduct) {
+    private fun removeItemCart(
+        miniCartItem: MiniCartItem.MiniCartItemProduct,
+        componentName: String,
+        shopProductUiModel: ShopProductUiModel
+    ) {
         deleteCartUseCase.setParams(
             cartIdList = listOf(miniCartItem.cartId)
         )
         deleteCartUseCase.execute({
             val productId = miniCartItem.productId
             val data = Pair(productId, it.data.message.joinToString(separator = ", "))
-//            trackAddToCart(
-//                miniCartItem.cartId,
-//                miniCartItem.productId,
-//                miniCartItem.quantity,
-//                MvcLockedToProductAddToCartTracker.AtcType.REMOVE
-//            )
+            trackAddToCart(
+                miniCartItem.cartId,
+                miniCartItem.productId,
+                shopProductUiModel.name.orEmpty(),
+                shopProductUiModel.displayedPrice.orEmpty(),
+                shopProductUiModel.isVariant,
+                miniCartItem.quantity,
+                ShopPageAtcTracker.AtcType.REMOVE,
+                componentName
+            )
             _miniCartRemove.postValue(Success(data))
         }, {
             _miniCartRemove.postValue(Fail(it))
@@ -691,7 +722,7 @@ class ShopPageProductListViewModel @Inject constructor(
         return productModel
     }
 
-        private fun getMatchedMiniCartItem(
+    private fun getMatchedMiniCartItem(
         productId: String,
         miniCartData: MiniCartSimplifiedData?
     ): MiniCartItem.MiniCartItemProduct? {
@@ -702,5 +733,28 @@ class ShopPageProductListViewModel @Inject constructor(
 //            } as? MiniCartItem.MiniCartItemProduct
 //        }
         return miniCartData?.miniCartItems?.getMiniCartItemProduct(productId)
+    }
+
+        private fun trackAddToCart(
+        cartId: String,
+        productId: String,
+        productName: String,
+        productPrice: String,
+        isVariant: Boolean,
+        quantity: Int,
+        atcType: ShopPageAtcTracker.AtcType,
+        componentName: String
+    ) {
+        val mvcLockedToProductAddToCartTracker = ShopPageAtcTracker(
+            cartId,
+            productId,
+            productName,
+            productPrice,
+            isVariant,
+            quantity,
+            atcType,
+            componentName
+        )
+        _shopPageAtcTracker.postValue(mvcLockedToProductAddToCartTracker)
     }
 }
