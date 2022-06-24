@@ -12,6 +12,8 @@ import androidx.core.widget.NestedScrollView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.play.core.splitcompat.SplitCompat
+import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
+import com.tokopedia.chat_common.util.EndlessRecyclerViewScrollUpListener
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.ZERO
@@ -87,7 +89,6 @@ class ShopReviewFragment : ReadReviewFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         showShopPageReviewHeader()
-        setupRecyclerView()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -177,35 +178,34 @@ class ShopReviewFragment : ReadReviewFragment() {
 
     override fun hasInitialSwipeRefresh(): Boolean = false
 
-    private fun setupRecyclerView() {
-        view?.let {
-            val recyclerView = getRecyclerView(it) ?: return
+    override fun createEndlessRecyclerViewListener(): EndlessRecyclerViewScrollListener {
+        return object : EndlessRecyclerViewScrollUpListener(getRecyclerView(view)?.layoutManager) {
+            override fun onLoadMore(page: Int, totalItemsCount: Int) {
+                showLoading()
+                loadData(page)
+            }
 
-            // setup listeners
-            recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
+                val firstCompletelyVisibleItemPosition = (
+                        recyclerView.layoutManager as? LinearLayoutManager
+                        )?.findFirstCompletelyVisibleItemPosition().orZero()
+                val rvIsReachTop = currentScrollPosition == 0 || firstCompletelyVisibleItemPosition == 0
+                val rvIsScrollingUp = dy < Int.ZERO
+                currentScrollPosition += dy
+                goToTopFab?.circleMainMenu?.showWithCondition(!rvIsReachTop && rvIsScrollingUp)
+            }
 
-                override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                    super.onScrolled(recyclerView, dx, dy)
-                    val firstCompletelyVisibleItemPosition = (
-                            recyclerView.layoutManager as? LinearLayoutManager
-                    )?.findFirstCompletelyVisibleItemPosition().orZero()
-                    val rvIsReachTop = currentScrollPosition == 0 || firstCompletelyVisibleItemPosition == 0
-                    val rvIsScrollingUp = dy < Int.ZERO
-                    currentScrollPosition += dy
-                    goToTopFab?.circleMainMenu?.showWithCondition(!rvIsReachTop && rvIsScrollingUp)
+            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                super.onScrollStateChanged(recyclerView, newState)
+
+                val canScrollVertically = recyclerView.canScrollVertically(RecyclerView.NO_POSITION)
+                if (canScrollVertically && newState == RecyclerView.SCROLL_STATE_SETTLING) {
+                    reviewHeader?.reviewRatingContainer?.gone()
+                } else if (!canScrollVertically){
+                    reviewHeader?.reviewRatingContainer?.visible()
                 }
-
-                override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
-                    super.onScrollStateChanged(recyclerView, newState)
-
-                    val canScrollVertically = recyclerView.canScrollVertically(RecyclerView.NO_POSITION)
-                    if (canScrollVertically && newState == RecyclerView.SCROLL_STATE_SETTLING) {
-                        reviewHeader?.hideRatingContainer()
-                    } else if (!canScrollVertically){
-                        reviewHeader?.showRatingContainer()
-                    }
-                }
-            })
+            }
         }
     }
 

@@ -54,6 +54,10 @@ class ReadReviewHeader : BaseCustomView {
         init()
     }
 
+    var readReviewFilterDivider: DividerUnify? = null
+    val reviewRatingContainer: ConstraintLayout by lazy {
+        findViewById(R.id.containerReviewRating)
+    }
     private var rating: ReadReviewRating? = null
     private var satisfactionRate: Typography? = null
     private var ratingAndReviewCount: Typography? = null
@@ -62,9 +66,6 @@ class ReadReviewHeader : BaseCustomView {
     private var seeAll: Typography? = null
     private var topicLeft: ReadReviewHighlightedTopic? = null
     private var topicRight: ReadReviewHighlightedTopic? = null
-    private val reviewRatingContainer by lazy {
-        findViewById<ConstraintLayout>(R.id.containerReviewRating)
-    }
     private val readReviewShopChevron by lazy {
         findViewById<IconUnify>(R.id.readReviewShopChevron)
     }
@@ -86,7 +87,7 @@ class ReadReviewHeader : BaseCustomView {
         chevron?.gone()
         topicLeft?.gone()
         topicRight?.gone()
-        findViewById<DividerUnify>(R.id.read_review_filter_divider).gone()
+        readReviewFilterDivider?.gone()
 
         val dimen8dp =
             context.resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.layout_lvl1)
@@ -109,10 +110,12 @@ class ReadReviewHeader : BaseCustomView {
 
     fun hideRatingContainer() {
         reviewRatingContainer.gone()
+        readReviewFilterDivider?.gone()
     }
 
     fun showRatingContainer() {
         reviewRatingContainer.visible()
+        readReviewFilterDivider?.visible()
     }
 
     private fun showRatingContainerBorderLine() {
@@ -140,6 +143,7 @@ class ReadReviewHeader : BaseCustomView {
         seeAll = findViewById(R.id.read_review_see_all)
         topicLeft = findViewById(R.id.read_review_highlighted_topic_left)
         topicRight = findViewById(R.id.read_review_highlighted_topic_right)
+        readReviewFilterDivider = findViewById(R.id.read_review_filter_divider)
     }
 
     private fun configPaddingForVisibleSortFilterPrefix() {

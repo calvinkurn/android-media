@@ -24,6 +24,7 @@ import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.chat_common.util.EndlessRecyclerViewScrollUpListener
 import com.tokopedia.globalerror.GlobalError
+import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.orTrue
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.orZero
@@ -262,6 +263,17 @@ open class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAd
                     goToTopFab?.hide()
                 } else {
                     goToTopFab?.show()
+                }
+            }
+
+            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                super.onScrollStateChanged(recyclerView, newState)
+
+                val canScrollVertically = getRecyclerView(view)?.canScrollVertically(RecyclerView.NO_POSITION).orFalse()
+                if (canScrollVertically && newState == RecyclerView.SCROLL_STATE_SETTLING) {
+                    reviewHeader?.hideRatingContainer()
+                } else if (!canScrollVertically){
+                    reviewHeader?.showRatingContainer()
                 }
             }
         }
