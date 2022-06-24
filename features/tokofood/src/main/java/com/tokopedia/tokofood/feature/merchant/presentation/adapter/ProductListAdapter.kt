@@ -103,10 +103,8 @@ class ProductListAdapter(private val clickListener: OnProductCardItemClickListen
         customOrderDetail: CustomOrderDetail? = null
     ) {
         productListItems.getOrNull(dataSetPosition)?.productUiModel?.apply {
-
             if (customOrderDetail != null) {
-                val position =
-                    customOrderDetails.indexOfFirst { it.cartId == customOrderDetail.cartId }
+                val position = customOrderDetails.indexOfFirst { it.cartId == customOrderDetail.cartId }
                 if (position > RecyclerView.NO_POSITION) {
 
                     cartId = cartTokoFood.cartId
