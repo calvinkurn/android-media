@@ -1,6 +1,7 @@
 package com.tokopedia.loginregister.login.di
 
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
+import com.tokopedia.abstraction.common.di.scope.ActivityScope
 import com.tokopedia.loginregister.common.di.LoginRegisterModule
 import com.tokopedia.loginregister.common.di.LoginRegisterScope
 import com.tokopedia.loginregister.login.service.GetDefaultChosenAddressService
@@ -18,15 +19,12 @@ import dagger.Component
  * Copyright (c) 2021 PT. Tokopedia All rights reserved.
  */
 
-@LoginRegisterScope
-@SessionCommonScope
-@LoginScope
+@ActivityScope
 @Component(modules = [
     LoginModule::class,
     LoginQueryModule::class,
     LoginUseCaseModule::class,
     LoginViewModelModule::class,
-    LoginRegisterModule::class,
 ], dependencies = [BaseAppComponent::class])
 interface LoginComponent {
     fun inject(fragment: LoginEmailPhoneFragment)

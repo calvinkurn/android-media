@@ -57,12 +57,6 @@ public class LoginRegisterModule {
 
     @LoginRegisterScope
     @Provides
-    SeamlessLoginAnalytics provideSeamlessAnalytics() {
-        return new SeamlessLoginAnalytics();
-    }
-
-    @LoginRegisterScope
-    @Provides
     OvoCreationAnalytics provideOvoCreationAnalytics(
             @Named(SessionModule.SESSION_MODULE) UserSessionInterface userSessionInterface) {
         return new OvoCreationAnalytics(userSessionInterface);

@@ -2,6 +2,7 @@ package com.tokopedia.loginregister.login.behaviour.di.modules
 
 import android.content.res.Resources
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
+import com.tokopedia.abstraction.common.di.scope.ActivityScope
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
@@ -12,7 +13,6 @@ import com.tokopedia.loginregister.common.view.banner.domain.usecase.DynamicBann
 import com.tokopedia.loginregister.common.view.ticker.domain.usecase.TickerInfoUseCase
 import com.tokopedia.loginregister.discover.usecase.DiscoverUseCase
 import com.tokopedia.loginregister.login.behaviour.data.*
-import com.tokopedia.loginregister.login.di.LoginScope
 import com.tokopedia.loginregister.login.domain.RegisterCheckUseCase
 import com.tokopedia.sessioncommon.data.GenerateKeyPojo
 import com.tokopedia.sessioncommon.data.LoginTokenPojoV2
@@ -30,23 +30,23 @@ import kotlinx.coroutines.CoroutineDispatcher
 @Module
 class LoginUseCaseModuleStub {
 
-    @LoginScope
+    @ActivityScope
     @Provides
     fun provideGeneratePublicUseCase(stub: GeneratePublicKeyUseCaseStub): GeneratePublicKeyUseCase =
         stub
 
-    @LoginScope
+    @ActivityScope
     @Provides
     fun provideGeneratePublicUseCaseStub(@ApplicationContext graphqlRepository: GraphqlRepository): GeneratePublicKeyUseCaseStub {
         val useCase = GraphqlUseCaseStub<GenerateKeyPojo>(graphqlRepository)
         return GeneratePublicKeyUseCaseStub(useCase)
     }
 
-    @LoginScope
+    @ActivityScope
     @Provides
     fun provideLoginTokenUseCaseV2(stub: LoginTokenV2UseCaseStub): LoginTokenV2UseCase = stub
 
-    @LoginScope
+    @ActivityScope
     @Provides
     fun provideLoginTokenUseCaseV2Stub(
         @ApplicationContext graphqlRepository: GraphqlRepository,
@@ -57,36 +57,36 @@ class LoginUseCaseModuleStub {
     }
 
     @Provides
-    @LoginScope
+    @ActivityScope
     fun provideRegisterCheckUseCase(
         stub: RegisterCheckUseCaseStub
     ): RegisterCheckUseCase = stub
 
-    @LoginScope
+    @ActivityScope
     @Provides
     fun provideRegisterCheckGraphQlUseCase(@ApplicationContext graphqlRepository: GraphqlRepository): RegisterCheckUseCaseStub {
         return RegisterCheckUseCaseStub(graphqlRepository)
     }
 
     @Provides
-    @LoginScope
+    @ActivityScope
     fun provideGetAdminTypeUseCase(
         stub: GetAdminTypeUseCaseStub
     ): GetAdminTypeUseCase = stub
 
-    @LoginScope
+    @ActivityScope
     @Provides
     fun provideGetAdminTypeUseCaseStub(graphqlUseCase: com.tokopedia.graphql.domain.GraphqlUseCase): GetAdminTypeUseCaseStub {
         return GetAdminTypeUseCaseStub(graphqlUseCase)
     }
 
     @Provides
-    @LoginScope
+    @ActivityScope
     fun provideLoginTokenUseCase(
         stub: LoginTokenUseCaseStub
     ): LoginTokenUseCase = stub
 
-    @LoginScope
+    @ActivityScope
     @Provides
     fun provideLoginTokenUseCaseStub(
         resources: Resources,
@@ -97,12 +97,12 @@ class LoginUseCaseModuleStub {
     }
 
     @Provides
-    @LoginScope
+    @ActivityScope
     fun provideTickerInfoUseCase(
         stub: TickerInfoUseCaseStub
     ): TickerInfoUseCase = stub
 
-    @LoginScope
+    @ActivityScope
     @Provides
     fun provideTickerInfoUseCaseStub(
         resources: Resources,
@@ -112,31 +112,31 @@ class LoginUseCaseModuleStub {
     }
 
     @Provides
-    @LoginScope
+    @ActivityScope
     fun provideDynamicBannerUseCase(
         stub: DynamicBannerUseCaseStub
     ): DynamicBannerUseCase = stub
 
-    @LoginScope
+    @ActivityScope
     @Provides
     fun provideDynamicBannerUseCaseStub(graphqlRepository: MultiRequestGraphqlUseCase): DynamicBannerUseCaseStub {
         return DynamicBannerUseCaseStub(graphqlRepository)
     }
 
     @Provides
-    @LoginScope
+    @ActivityScope
     fun provideActivateUserUseCase(@ApplicationContext graphqlRepository: GraphqlRepository): ActivateUserUseCase {
         val useCase = GraphqlUseCase<ActivateUserPojo>(graphqlRepository)
         return ActivateUserUseCase(useCase)
     }
 
     @Provides
-    @LoginScope
+    @ActivityScope
     fun provideGetProfileUseCase(
         stub: GetProfileUseCaseStub
     ): GetProfileUseCase = stub
 
-    @LoginScope
+    @ActivityScope
     @Provides
     fun provideGetProfileUseCaseStub(
         resources: Resources,
@@ -146,12 +146,12 @@ class LoginUseCaseModuleStub {
     }
 
     @Provides
-    @LoginScope
+    @ActivityScope
     fun provideDiscoverUseCase(
         stub: DiscoverUseCaseStub
     ): DiscoverUseCase = stub
 
-    @LoginScope
+    @ActivityScope
     @Provides
     fun provideDiscoverUseCasStub(
         @ApplicationContext graphqlRepository: GraphqlRepository,
