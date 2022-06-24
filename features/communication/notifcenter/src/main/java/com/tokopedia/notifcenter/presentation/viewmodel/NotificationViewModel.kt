@@ -449,7 +449,7 @@ class NotificationViewModel @Inject constructor(
     fun addProductToCart(
         requestParams: AddToCartRequestParams,
         onSuccessAddToCart: (data: DataModel) -> Unit,
-        onError: (msg: String) -> Unit
+        onError: (msg: String?) -> Unit
     ) {
         launchCatchError(
             dispatcher.io,
@@ -458,9 +458,7 @@ class NotificationViewModel @Inject constructor(
                 val atcResponse = addToCartUseCase.executeOnBackground()
                 withContext(dispatcher.main) {
                     if (atcResponse.isDataError()) {
-                        atcResponse.getAtcErrorMessage()?.let {
-                            onError(it)
-                        }
+                        onError(atcResponse.getAtcErrorMessage())
                     } else {
                         onSuccessAddToCart(atcResponse.data)
                     }

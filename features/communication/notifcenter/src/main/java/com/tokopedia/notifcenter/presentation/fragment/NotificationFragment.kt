@@ -627,7 +627,9 @@ open class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTyp
         viewModel.addProductToCart(buyParam, {
             onSuccess(it)
         }, { msg ->
-            showErrorMessage(msg)
+            msg?.let {
+                showErrorMessage(it)
+            }
         })
     }
 
