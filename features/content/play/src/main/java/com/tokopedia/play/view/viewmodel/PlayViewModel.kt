@@ -185,6 +185,7 @@ class PlayViewModel @AssistedInject constructor(
         NetworkResult.Loading
     )
     private val _loadingBuy = MutableStateFlow(false)
+    private val _isFirstGame = MutableStateFlow(false)
 
     private val _winnerBadgeUiState = combine(
         _leaderboard, _bottomInsets, _status, _channelDetail, _leaderboardUserBadgeState
@@ -876,6 +877,7 @@ class PlayViewModel @AssistedInject constructor(
             is AtcProductAction -> handleBuyProduct(action.sectionInfo, action.product, ProductAction.AddToCart)
             is AtcProductVariantAction -> handleBuyProductVariant(action.id, ProductAction.AddToCart)
             is SelectVariantOptionAction -> handleSelectVariantOption(action.option)
+            PlayViewerNewAction.AutoOpenInteractive -> handleAutoOpen()
         }
     }
 
@@ -1393,10 +1395,21 @@ class PlayViewModel @AssistedInject constructor(
         cancelAllDelayFromSocketWinner()
         repo.save(interactive)
         repo.setActive(interactive.id)
+
+        //new game set as first game
+        _isFirstGame.setValue { true }
+
         when (interactive) {
             is InteractiveUiModel.Giveaway -> setupGiveaway(interactive)
             is InteractiveUiModel.Quiz -> handleQuizFromNetwork(interactive)
             else -> {}
+        }
+    }
+
+    private fun handleAutoOpen(){
+        if(_isFirstGame.value && !repo.hasJoined(_interactive.value.interactive.id) && !bottomInsets.isAnyShown && !_interactive.value.isPlaying){
+            _isFirstGame.setValue { false }
+            handlePlayingInteractive(shouldPlay = true)
         }
     }
 

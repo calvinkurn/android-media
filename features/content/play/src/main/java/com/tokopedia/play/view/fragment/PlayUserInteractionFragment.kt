@@ -1429,7 +1429,6 @@ class PlayUserInteractionFragment @Inject constructor(
         }
 
         val prevIsAnyInsetsShown = prevBottomInsets?.isAnyShown
-        val shouldAutoOpen = !isAnyInsetsShown && !state.isPlaying
 
         /**
          * Render:
@@ -1442,7 +1441,7 @@ class PlayUserInteractionFragment @Inject constructor(
             (prevIsAnyInsetsShown != isAnyInsetsShown) && !isAnyInsetsShown) {
 
             when (state.interactive) {
-                is InteractiveUiModel.Giveaway -> renderGiveawayView(state.interactive, shouldAutoOpen)
+                is InteractiveUiModel.Giveaway -> renderGiveawayView(state.interactive)
                 is InteractiveUiModel.Quiz -> renderQuizView(state.interactive)
                 InteractiveUiModel.Unknown -> {
                     interactiveActiveView?.hide()
@@ -1454,7 +1453,6 @@ class PlayUserInteractionFragment @Inject constructor(
 
     private fun renderGiveawayView(
         state: InteractiveUiModel.Giveaway,
-        shouldAutoOpen: Boolean,
     ) {
         when (val status = state.status) {
             is InteractiveUiModel.Giveaway.Status.Upcoming -> {
@@ -1479,7 +1477,7 @@ class PlayUserInteractionFragment @Inject constructor(
                 interactiveActiveView?.show()
                 interactiveFinishView?.hide()
 
-                if(shouldAutoOpen) playViewModel.submitAction(PlayViewerNewAction.StartPlayingInteractive)
+                playViewModel.submitAction(PlayViewerNewAction.AutoOpenInteractive)
             }
             InteractiveUiModel.Giveaway.Status.Finished -> {
                 interactiveActiveView?.hide()
