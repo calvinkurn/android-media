@@ -242,7 +242,6 @@ class ProductShare(private val activity: Activity, private val mode: Int = MODE_
         linkerData.type = LinkerData.PRODUCT_TYPE
         linkerData.uri = productData.renderShareUri
         linkerData.isThrowOnError = true
-        linkerData.additionalQueryParam = "whid=123"
         var linkerShareData = LinkerShareData()
         linkerShareData.linkerData = linkerData
         return linkerShareData
