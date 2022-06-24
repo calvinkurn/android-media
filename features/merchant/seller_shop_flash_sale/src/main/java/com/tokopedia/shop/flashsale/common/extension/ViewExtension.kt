@@ -6,7 +6,6 @@ import android.view.animation.AccelerateDecelerateInterpolator
 import android.view.animation.Animation
 import android.view.animation.TranslateAnimation
 import androidx.constraintlayout.widget.Guideline
-import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
@@ -57,24 +56,6 @@ infix fun View?.showToaster(message: String) {
         anchorView = this@showToaster
         show()
     }
-}
-
-fun View?.showError(throwable: Throwable, anchorView: View?) {
-    val errorMessage = ErrorHandler.getErrorMessage(this?.context, throwable)
-    showError(errorMessage, anchorView)
-}
-
-fun View?.showError(errorMessage: String, anchorView: View?) {
-    val toaster = Toaster.build(
-        this ?: return,
-        errorMessage,
-        Snackbar.LENGTH_SHORT,
-        Toaster.TYPE_ERROR
-    )
-    if (anchorView != null) {
-        toaster.anchorView = anchorView
-    }
-    toaster.show()
 }
 
 fun View.enable() {
