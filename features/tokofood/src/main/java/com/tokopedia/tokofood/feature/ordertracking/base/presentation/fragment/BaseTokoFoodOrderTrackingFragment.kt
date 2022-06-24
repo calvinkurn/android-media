@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -11,7 +12,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
-import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.tokofood.DeeplinkMapperTokoFood
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.hide
@@ -171,6 +171,7 @@ class BaseTokoFoodOrderTrackingFragment :
 
     override fun onClickDriverCall() {
         tracking.clickCallDriverIcon(orderId, viewModel.getMerchantData()?.merchantId.orEmpty())
+        showLoaderDriverCall()
         viewModel.fetchDriverPhoneNumber(orderId)
     }
 
@@ -184,6 +185,25 @@ class BaseTokoFoodOrderTrackingFragment :
 
     override val parentPool: RecyclerView.RecycledViewPool
         get() = binding?.rvOrderTracking?.recycledViewPool ?: RecyclerView.RecycledViewPool()
+
+
+    private fun showLoaderDriverCall() {
+        activity?.let {
+            it.window?.decorView?.setBackgroundColor(
+                ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N700_68)
+            )
+        }
+        binding?.loaderDriverCall?.show()
+    }
+
+    private fun hideLoaderDriverCall() {
+        activity?.let {
+            it.window?.decorView?.setBackgroundColor(
+                ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_Background)
+            )
+        }
+        binding?.loaderDriverCall?.hide()
+    }
 
     private fun setupToolbar() {
         toolbarHandler = OrderTrackingToolbarHandler(WeakReference(activity), binding)
@@ -233,6 +253,7 @@ class BaseTokoFoodOrderTrackingFragment :
 
     private fun observeDriverPhoneNumber() {
         observe(viewModel.driverPhoneNumber) {
+            hideLoaderDriverCall()
             when (it) {
                 is Success -> {
                     updateDriverCall(it.data)
@@ -243,7 +264,11 @@ class BaseTokoFoodOrderTrackingFragment :
                         TokofoodErrorLogger.ErrorType.ERROR_DRIVER_PHONE_NUMBER,
                         TokofoodErrorLogger.ErrorDescription.ERROR_DRIVER_PHONE_NUMBER
                     )
-                    view?.showErrorToaster("")
+                    view?.showErrorToaster(
+                        context?.getString(
+                            com.tokopedia.tokofood.R.string.error_message_hit_driver_phone_number
+                        ).orEmpty()
+                    )
                 }
             }
         }

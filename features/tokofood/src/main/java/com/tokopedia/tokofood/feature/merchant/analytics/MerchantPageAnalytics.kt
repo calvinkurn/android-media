@@ -20,9 +20,17 @@ class MerchantPageAnalytics @Inject constructor(private val userSession: UserSes
 
     private val tracker by lazy { TrackApp.getInstance().gtm }
 
-    fun openMerchantPage(merchantId: String) {
+    fun openMerchantPage(merchantId: String, isShopClosed: Boolean) {
+        val shopStatus = if (isShopClosed) {
+            TokoFoodAnalyticsConstants.CLOSED
+        } else {
+            TokoFoodAnalyticsConstants.OPEN
+        }
         val mapData = mapOf(
             TrackAppUtils.EVENT to TokoFoodAnalyticsConstants.OPEN_SCREEN,
+            TrackAppUtils.EVENT_CATEGORY to TokoFoodAnalyticsConstants.TOKOFOOD_MERCHANT_PAGE,
+            TrackAppUtils.EVENT_ACTION to TokoFoodAnalyticsConstants.VIEW_MERCHANT_PAGE,
+            TrackAppUtils.EVENT_LABEL to shopStatus,
             TokoFoodAnalyticsConstants.BUSSINESS_UNIT to TokoFoodAnalyticsConstants.PHYSICAL_GOODS,
             TokoFoodAnalyticsConstants.CURRENT_SITE to TokoFoodAnalyticsConstants.TOKOPEDIA_MARKETPLACE,
             TokoFoodAnalyticsConstants.IS_LOGGED_IN_STATUS to userSession.isLoggedIn.toString(),
@@ -30,7 +38,7 @@ class MerchantPageAnalytics @Inject constructor(private val userSession: UserSes
             TokoFoodAnalyticsConstants.SHOP_ID to merchantId,
             TokoFoodAnalyticsConstants.USER_ID to userSession.userId.orEmpty()
         )
-        tracker.sendGeneralEvent(mapData)
+        tracker.sendScreenAuthenticated(TokoFoodAnalyticsConstants.TOKOFOOD_MERCHANT_PAGE, mapData)
     }
 
     fun impressionOnProductCard(

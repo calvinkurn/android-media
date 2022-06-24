@@ -22,7 +22,7 @@ class OrderNoteInputViewHolder(
     }
 
     fun bindData(orderNote: String, dataSetPosition: Int) {
-        binding.catatanInput.setLabel(orderNote)
+        binding.catatanInput.editText.setText(orderNote)
         binding.catatanInput.editText.doAfterTextChanged {
             it?.run {
                 textChangeListener.onNoteTextChanged(

@@ -254,7 +254,7 @@ class TokoFoodCategoryFragment: BaseDaggerFragment(),
     }
 
     private fun observeLiveData() {
-        observe(viewModel.layoutList) {
+        viewLifecycleOwner.observe(viewModel.layoutList) {
             removeScrollListeners()
             when (it) {
                 is Success -> onSuccessGetCategoryLayout(it.data)
@@ -272,7 +272,7 @@ class TokoFoodCategoryFragment: BaseDaggerFragment(),
             resetSwipeLayout()
         }
 
-        observe(viewModel.loadMore) {
+        viewLifecycleOwner.observe(viewModel.loadMore) {
             removeScrollListeners()
             when (it) {
                 is Success -> showCategoryLayout(it.data)

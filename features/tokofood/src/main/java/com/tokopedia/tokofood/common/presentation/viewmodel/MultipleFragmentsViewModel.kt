@@ -296,6 +296,7 @@ class MultipleFragmentsViewModel @Inject constructor(
                             data = updateParam to it.data
                         )
                     )
+
                 }
             }
         }, onError = {

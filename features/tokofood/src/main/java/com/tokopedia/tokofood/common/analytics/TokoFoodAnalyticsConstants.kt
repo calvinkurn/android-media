@@ -43,6 +43,8 @@ object TokoFoodAnalyticsConstants {
     const val CLICK_ON_PESAN_PRODUCT_CARD = "click on pesan - product card"
     const val CLICK_ON_PESAN_PRODUCT_BOTTOM_SHEET = "click on pesan - product bottom sheet"
     const val CLICK_ON_PESAN_VARIANT_PAGE = "click on pesan - variant page"
+    const val CLOSED = "closed"
+    const val OPEN = "open"
 
     const val OOS = "OOS"
     const val NOT = "Not"
@@ -55,4 +57,5 @@ object TokoFoodAnalyticsConstants {
     const val CLICK_SHARE_BOTTOM_SHEET = "click - share button"
     const val VIEW_ON_SHARING_CHANNEL = "view on sharing channel"
     const val USER_ID_FORMAT = "UserID %s"
+    const val VIEW_MERCHANT_PAGE = "view_merchant_page"
 }

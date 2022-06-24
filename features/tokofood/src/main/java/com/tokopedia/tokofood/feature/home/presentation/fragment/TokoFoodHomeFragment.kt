@@ -476,10 +476,12 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
     }
 
     private fun observeLiveData() {
-        observe(viewModel.layoutList) {
+        viewLifecycleOwner.observe(viewModel.layoutList) {
             removeAllScrollListener()
             when (it) {
-                is Success -> onSuccessGetHomeLayout(it.data)
+                is Success -> {
+                    onSuccessGetHomeLayout(it.data)
+                }
                 is Fail -> {
                     logExceptionTokoFoodHome(
                         it.throwable,
@@ -496,17 +498,17 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
             }
         }
 
-        observe(viewModel.updatePinPointState) { isSuccess ->
+        viewLifecycleOwner.observe(viewModel.updatePinPointState) { isSuccess ->
             if (isSuccess) {
                 getChooseAddress()
             }
         }
 
-        observe(viewModel.errorMessage) { message ->
+        viewLifecycleOwner.observe(viewModel.errorMessage) { message ->
             showToaster(message)
         }
 
-        observe(viewModel.chooseAddress) {
+        viewLifecycleOwner.observe(viewModel.chooseAddress) {
             when(it) {
                 is Success -> {
                     setupChooseAddress(it.data)
@@ -518,7 +520,7 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
             }
         }
 
-        observe(viewModel.eligibleForAnaRevamp) {
+        viewLifecycleOwner.observe(viewModel.eligibleForAnaRevamp) {
             when(it) {
                 is Success -> {
                     if (it.data.eligible) {

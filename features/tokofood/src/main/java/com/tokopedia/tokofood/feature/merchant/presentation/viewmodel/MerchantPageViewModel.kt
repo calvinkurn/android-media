@@ -18,7 +18,15 @@ import com.tokopedia.tokofood.feature.merchant.presentation.enums.ProductListIte
 import com.tokopedia.tokofood.feature.merchant.presentation.enums.SelectionControlType.MULTIPLE_SELECTION
 import com.tokopedia.tokofood.feature.merchant.presentation.enums.SelectionControlType.SINGLE_SELECTION
 import com.tokopedia.tokofood.feature.merchant.presentation.mapper.TokoFoodMerchantUiModelMapper
-import com.tokopedia.tokofood.feature.merchant.presentation.model.*
+import com.tokopedia.tokofood.feature.merchant.presentation.model.AddOnUiModel
+import com.tokopedia.tokofood.feature.merchant.presentation.model.CarouselData
+import com.tokopedia.tokofood.feature.merchant.presentation.model.CategoryUiModel
+import com.tokopedia.tokofood.feature.merchant.presentation.model.CustomListItem
+import com.tokopedia.tokofood.feature.merchant.presentation.model.CustomOrderDetail
+import com.tokopedia.tokofood.feature.merchant.presentation.model.MerchantOpsHour
+import com.tokopedia.tokofood.feature.merchant.presentation.model.OptionUiModel
+import com.tokopedia.tokofood.feature.merchant.presentation.model.ProductListItem
+import com.tokopedia.tokofood.feature.merchant.presentation.model.ProductUiModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -56,7 +64,11 @@ class MerchantPageViewModel @Inject constructor(
 
     var filterList = listOf<TokoFoodCategoryFilter>()
 
-    var merchantData: TokoFoodMerchantProfile? = null
+    var filterNameSelected = ""
+
+    var isStickyBarVisible = false
+
+    var merchantData: TokoFoodGetMerchantData? = null
 
     fun getMerchantData(merchantId: String, latlong: String, timezone: String) {
         launchCatchError(block = {
@@ -70,15 +82,11 @@ class MerchantPageViewModel @Inject constructor(
                 getMerchantDataUseCase.executeOnBackground()
             }
             filterList = result.tokofoodGetMerchantData.filters
-            merchantData = result.tokofoodGetMerchantData.merchantProfile
+            merchantData = result.tokofoodGetMerchantData
             getMerchantDataResultLiveData.value = Success(result)
         }, onError = {
             getMerchantDataResultLiveData.value = Fail(it)
         })
-    }
-
-    fun updateFilterList(filterList: List<TokoFoodCategoryFilter>) {
-        this.filterList = filterList
     }
 
     fun mapMerchantProfileToCarouselData(merchantProfile: TokoFoodMerchantProfile): List<CarouselData> {
