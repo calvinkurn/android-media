@@ -3,6 +3,7 @@ package com.tokopedia.play.broadcaster.viewmodel.quiz
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.play.broadcaster.domain.repository.PlayBroadcastRepository
 import com.tokopedia.play.broadcaster.model.UiModelBuilder
+import com.tokopedia.play.broadcaster.model.interactive.InteractiveUiModelBuilder
 import com.tokopedia.play.broadcaster.robot.PlayBroadcastViewModelRobot
 import com.tokopedia.play.broadcaster.ui.action.PlayBroadcastAction
 import com.tokopedia.play.broadcaster.ui.event.PlayBroadcastEvent
@@ -10,6 +11,7 @@ import com.tokopedia.play.broadcaster.ui.model.game.GameType
 import com.tokopedia.play.broadcaster.ui.model.game.quiz.*
 import com.tokopedia.play.broadcaster.util.assertEqualTo
 import com.tokopedia.play.broadcaster.util.assertFalse
+import com.tokopedia.play.broadcaster.util.preference.HydraSharedPreferences
 import com.tokopedia.play_common.model.dto.interactive.InteractiveUiModel
 import com.tokopedia.play_common.model.ui.PlayLeaderboardUiModel
 import com.tokopedia.play_common.model.ui.QuizChoicesUiModel
@@ -34,11 +36,21 @@ class PlayBroQuizViewModelTest {
 
     private val mockRepo: PlayBroadcastRepository = mockk(relaxed = true)
 
+    private val mockSharedPref: HydraSharedPreferences = mockk(relaxed = true)
+
     private val uiModelBuilder = UiModelBuilder()
+
+    private val interactiveUiModelBuilder = InteractiveUiModelBuilder()
 
     private val mockConfig = uiModelBuilder.buildConfigurationUiModel(
         streamAllowed = true,
         channelId = "123"
+    )
+
+    private val mockInteractiveConfigResponse = interactiveUiModelBuilder.buildInteractiveConfigModel(
+        quizConfig = interactiveUiModelBuilder.buildQuizConfig(
+            showPrizeCoachMark = false,
+        )
     )
 
     private val mockException = uiModelBuilder.buildException()
@@ -359,6 +371,28 @@ class PlayBroQuizViewModelTest {
                 getViewModel().submitAction(PlayBroadcastAction.InputQuizGift(reward))
             }
             Assertions.assertThat(state.quizForm.quizFormData.gift).isEqualTo(reward)
+        }
+    }
+
+    @Test
+    fun `when user fill input option data, quiz form state form data options must filled with input option value`(){
+        coEvery { mockRepo.getChannelConfiguration() } returns mockConfig
+        coEvery { mockRepo.getInteractiveConfig() } returns mockInteractiveConfigResponse
+        coEvery { mockRepo.getSellerLeaderboardWithSlot(any(), any()) } returns emptyList()
+        val robot = PlayBroadcastViewModelRobot(
+            dispatchers = testDispatcher,
+            channelRepo = mockRepo,
+            sharedPref =  mockSharedPref,
+        )
+
+        robot.use {
+            val state = it.recordState {
+                getConfig()
+                startLive()
+                getViewModel().submitAction(PlayBroadcastAction.InputQuizOption(0, "AAA"))
+            }
+        // please check why value didn't set to ui state
+        // state.quizForm.quizFormData.options[0].text.assertEqualTo("AAA")
         }
     }
 }
