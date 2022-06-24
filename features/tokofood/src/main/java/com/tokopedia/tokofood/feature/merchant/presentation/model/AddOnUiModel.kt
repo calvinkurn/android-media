@@ -25,25 +25,4 @@ data class AddOnUiModel(
 
     @IgnoredOnParcel
     val filteredOptions = options.filter { it.isVisible }
-
-    @IgnoredOnParcel
-    val addOnItems = options
-            .filter { it.isVisible }
-            .map { optionUiModel ->
-                var description = optionUiModel.priceFmt
-                if (optionUiModel.isOutOfStock) description = outOfStockWording
-                ListItemUnify(
-                        title = optionUiModel.name,
-                        description = description
-                ).apply {
-                    when (optionUiModel.selectionControlType) {
-                        SelectionControlType.SINGLE_SELECTION -> {
-                            setVariant(null, ListItemUnify.RADIO_BUTTON, null)
-                        }
-                        SelectionControlType.MULTIPLE_SELECTION -> {
-                            setVariant(null, ListItemUnify.CHECKBOX, null)
-                        }
-                    }
-                }
-            }
 }
