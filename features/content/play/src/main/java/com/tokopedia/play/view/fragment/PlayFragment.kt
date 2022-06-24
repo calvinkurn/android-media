@@ -102,7 +102,7 @@ class PlayFragment @Inject constructor(
     private val keyboardWatcher = KeyboardWatcher()
 
     private val orientation: ScreenOrientation
-        get() = ScreenOrientation.getByInt(resources.configuration.orientation)
+        get() = ScreenOrientation.getByInt(requireContext().resources.configuration.orientation)
 
     private val playNavigation: PlayNavigation
         get() = requireActivity() as PlayNavigation
