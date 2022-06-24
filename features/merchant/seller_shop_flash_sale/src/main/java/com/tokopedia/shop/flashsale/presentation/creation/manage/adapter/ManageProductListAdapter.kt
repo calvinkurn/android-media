@@ -1,8 +1,10 @@
 package com.tokopedia.shop.flashsale.presentation.creation.manage.adapter
 
 import android.graphics.Paint
+import android.text.Html
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.core.text.HtmlCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.seller_shop_flash_sale.R
@@ -122,9 +124,12 @@ class ManageProductListAdapter(
         }
 
         private fun Typography.setOriginalStock(originalStock: Int) {
-            this.text = String.format(
-                context.getString(R.string.manage_product_item_stock_at_seller_location_label),
-                originalStock
+            this.text = HtmlCompat.fromHtml(
+                context.getString(
+                    R.string.manage_product_item_stock_at_seller_location_label,
+                    originalStock
+                ),
+                HtmlCompat.FROM_HTML_MODE_COMPACT
             )
         }
 
@@ -132,9 +137,12 @@ class ManageProductListAdapter(
             if (campaignStock > 0) {
                 this.visible()
                 binding.tpgSeparator.visible()
-                this.text = String.format(
-                    context.getString(R.string.manage_product_item_campaign_stock_label),
-                    campaignStock
+                this.text = HtmlCompat.fromHtml(
+                    context.getString(
+                        R.string.manage_product_item_campaign_stock_label,
+                        campaignStock
+                    ),
+                    HtmlCompat.FROM_HTML_MODE_COMPACT
                 )
             } else {
                 binding.tpgSeparator.gone()
@@ -145,9 +153,9 @@ class ManageProductListAdapter(
         private fun Typography.setMaxOrder(maxOrder: Int) {
             if (maxOrder.isMoreThanZero()) {
                 this.visible()
-                this.text = String.format(
-                    context.getString(R.string.manage_product_item_max_buy_label),
-                    maxOrder
+                this.text = HtmlCompat.fromHtml(
+                    context.getString(R.string.manage_product_item_max_buy_label, maxOrder),
+                    HtmlCompat.FROM_HTML_MODE_COMPACT
                 )
             } else {
                 this.gone()

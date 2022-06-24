@@ -16,6 +16,7 @@ import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.loaderdialog.LoaderDialog
 import com.tokopedia.seller_shop_flash_sale.R
 import com.tokopedia.seller_shop_flash_sale.databinding.SsfsFragmentManageProductBinding
+import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductList
 import com.tokopedia.shop.flashsale.common.customcomponent.BaseSimpleListFragment
 import com.tokopedia.shop.flashsale.common.extension.*
 import com.tokopedia.shop.flashsale.di.component.DaggerShopFlashSaleComponent
@@ -174,7 +175,7 @@ class ManageProductFragment :
     private fun observeBannerType() {
         viewModel.bannerType.observe(viewLifecycleOwner) { type ->
             when (type) {
-                EMPTY_BANNER-> {
+                EMPTY_BANNER -> {
                     showEmptyProductBanner()
                 }
                 ERROR_BANNER -> {

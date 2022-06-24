@@ -4,14 +4,13 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.isZero
-import com.tokopedia.shop.flashsale.common.extension.convertRupiah
+import com.tokopedia.shop.flashsale.common.util.ProductErrorStatusHandler
 import com.tokopedia.shop.flashsale.data.request.GetSellerCampaignProductListRequest
 import com.tokopedia.shop.flashsale.domain.entity.SellerCampaignProductList
 import com.tokopedia.shop.flashsale.domain.entity.enums.ManageProductBannerType
 import com.tokopedia.shop.flashsale.domain.entity.enums.ManageProductBannerType.*
-import com.tokopedia.shop.flashsale.domain.entity.enums.ManageProductErrorMessage
+import com.tokopedia.shop.flashsale.domain.entity.enums.ManageProductErrorType.*
 import com.tokopedia.shop.flashsale.domain.entity.enums.ProductionSubmissionAction
 import com.tokopedia.shop.flashsale.domain.usecase.DoSellerCampaignProductSubmissionUseCase
 import com.tokopedia.shop.flashsale.domain.usecase.GetSellerCampaignProductListUseCase
@@ -25,15 +24,13 @@ import javax.inject.Inject
 class ManageProductViewModel @Inject constructor(
     private val dispatchers: CoroutineDispatchers,
     private val getSellerCampaignProductListUseCase: GetSellerCampaignProductListUseCase,
-    private val doSellerCampaignProductSubmissionUseCase: DoSellerCampaignProductSubmissionUseCase
+    private val doSellerCampaignProductSubmissionUseCase: DoSellerCampaignProductSubmissionUseCase,
+    private val productErrorStatusHandler: ProductErrorStatusHandler
 ) : BaseViewModel(dispatchers.main) {
 
     companion object {
         private const val ROWS = 50
         private const val OFFSET = 0
-        private const val MIN_CAMPAIGN_STOCK = 1
-        private const val MAX_CAMPAIGN_DISCOUNT_PERCENTAGE = 0.99
-        private const val MIN_CAMPAIGN_DISCOUNT_PERCENTAGE = 0.01
     }
 
     private val _products = MutableLiveData<Result<SellerCampaignProductList>>()
@@ -73,7 +70,11 @@ class ManageProductViewModel @Inject constructor(
 
     fun setProductErrorMessage(productList: SellerCampaignProductList) {
         productList.productList.forEach { product ->
-            product.errorMessage = getProductErrorMessage(product.productMapData)
+            val productErrorType = productErrorStatusHandler.getErrorType(product.productMapData)
+            product.errorMessage = productErrorStatusHandler.getProductListErrorMessage(
+                productErrorType,
+                product.productMapData
+            )
         }
     }
 
@@ -85,7 +86,7 @@ class ManageProductViewModel @Inject constructor(
 
     fun getBannerType(productList: SellerCampaignProductList) {
         productList.productList.forEach { product ->
-            if (getProductErrorMessage(product.productMapData).isNotEmpty()) {
+            if (productErrorStatusHandler.getErrorType(product.productMapData) != NOT_ERROR) {
                 _bannerType.postValue(ERROR_BANNER)
             } else {
                 if (!isProductInfoComplete(product.productMapData)) {
@@ -108,88 +109,6 @@ class ManageProductViewModel @Inject constructor(
         }
     }
 
-    private fun getProductErrorMessage(productMapData: SellerCampaignProductList.ProductMapData): String {
-        var errorMsg = ""
-        val maxDiscountedPriceInCurrency =
-            getProductMaxDiscountedPrice(productMapData.originalPrice).convertRupiah()
-        val minDiscountedPriceInCurrency =
-            getProductMinDiscountedPrice(productMapData.originalPrice).convertRupiah()
-        val minDiscountedPrice = getProductMinDiscountedPrice(productMapData.originalPrice)
-
-        when {
-            productMapData.discountedPrice > productMapData.originalPrice -> {
-                errorMsg =
-                    ManageProductErrorMessage.MAX_CAMPAIGN_DISCOUNTED_PRICE.errorMsg + maxDiscountedPriceInCurrency
-                when {
-                    productMapData.customStock > productMapData.originalStock -> {
-                        errorMsg += ManageProductErrorMessage.OTHER.errorMsg
-                    }
-                    productMapData.discountedPrice < minDiscountedPrice -> {
-                        errorMsg += ManageProductErrorMessage.OTHER.errorMsg
-                    }
-                    productMapData.customStock < MIN_CAMPAIGN_STOCK -> {
-                        errorMsg += ManageProductErrorMessage.OTHER.errorMsg
-                    }
-                    productMapData.maxOrder > productMapData.customStock -> {
-                        errorMsg += ManageProductErrorMessage.OTHER.errorMsg
-                    }
-                }
-            }
-
-            productMapData.customStock > productMapData.originalStock -> {
-                errorMsg =
-                    ManageProductErrorMessage.MAX_CAMPAIGN_STOCK.errorMsg + "${productMapData.originalStock}"
-                when {
-                    productMapData.discountedPrice < minDiscountedPrice -> {
-                        errorMsg += ManageProductErrorMessage.OTHER.errorMsg
-                    }
-                    productMapData.customStock < MIN_CAMPAIGN_STOCK -> {
-                        errorMsg += ManageProductErrorMessage.OTHER.errorMsg
-                    }
-                    productMapData.maxOrder > productMapData.customStock -> {
-                        errorMsg += ManageProductErrorMessage.OTHER.errorMsg
-                    }
-                }
-            }
-
-            productMapData.discountedPrice < minDiscountedPrice -> {
-                when {
-                    productMapData.discountedPrice.isMoreThanZero() -> {
-                        errorMsg =
-                            ManageProductErrorMessage.MIN_CAMPAIGN_DISCOUNTED_PRICE.errorMsg + minDiscountedPriceInCurrency
-                        when {
-                            productMapData.customStock < MIN_CAMPAIGN_STOCK -> {
-                                errorMsg += ManageProductErrorMessage.OTHER.errorMsg
-                            }
-                            productMapData.maxOrder > productMapData.customStock -> {
-                                errorMsg += ManageProductErrorMessage.OTHER.errorMsg
-                            }
-                        }
-                    }
-                }
-            }
-
-            productMapData.customStock < MIN_CAMPAIGN_STOCK -> {
-                when {
-                    productMapData.customStock.isMoreThanZero() -> {
-                        errorMsg = ManageProductErrorMessage.MIN_CAMPAIGN_STOCK.errorMsg
-                        when {
-                            productMapData.maxOrder > productMapData.customStock -> {
-                                errorMsg += ManageProductErrorMessage.OTHER.errorMsg
-                            }
-                        }
-                    }
-                }
-            }
-
-            productMapData.maxOrder > productMapData.customStock -> {
-                errorMsg += ManageProductErrorMessage.MAX_CAMPAIGN_ORDER.errorMsg
-            }
-        }
-
-        return errorMsg
-    }
-
     fun removeProducts(
         campaignId: Long,
         productList: List<SellerCampaignProductList.Product>
@@ -208,13 +127,5 @@ class ManageProductViewModel @Inject constructor(
                 _removeProductsStatus.postValue(Fail(error))
             }
         )
-    }
-
-    private fun getProductMaxDiscountedPrice(originalPrice: Long): Int {
-        return (originalPrice * MAX_CAMPAIGN_DISCOUNT_PERCENTAGE).toInt()
-    }
-
-    private fun getProductMinDiscountedPrice(originalPrice: Long): Int {
-        return (originalPrice * MIN_CAMPAIGN_DISCOUNT_PERCENTAGE).toInt()
     }
 }

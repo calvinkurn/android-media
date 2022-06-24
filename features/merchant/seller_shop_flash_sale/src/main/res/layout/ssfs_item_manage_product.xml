@@ -101,12 +101,12 @@
         android:id="@+id/tpg_complete_product_info_desc"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginStart="18dp"
         android:layout_marginTop="8dp"
-        android:layout_marginEnd="16dp"
         android:text="@string/manage_product_complete_product_info_warning_label"
         android:textColor="@color/grey_600"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="@+id/label_belum_lengkap"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tpg_error_copy"
         app:typographyType="paragraph_2"
         app:typographyWeight="reguler" />
@@ -126,12 +126,12 @@
         android:id="@+id/tpg_stock_product"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="18dp"
         android:layout_marginTop="16dp"
         android:textColor="@color/grey_600"
-        app:layout_constraintStart_toEndOf="@+id/icon_dilayani_tokopedia"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tpg_complete_product_info_desc"
         app:typographyType="paragraph_2"
-        app:typographyWeight="reguler"
         tools:text="@string/manage_product_item_stock_at_seller_location_label" />
 
     <com.tokopedia.unifyprinciples.Typography
@@ -157,19 +157,18 @@
         app:layout_constraintStart_toEndOf="@+id/tpg_separator"
         app:layout_constraintTop_toTopOf="@+id/tpg_separator"
         app:typographyType="paragraph_2"
-        app:typographyWeight="reguler"
         tools:text="@string/manage_product_item_campaign_stock_label" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tpg_max_order"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="18dp"
         android:layout_marginTop="4dp"
         android:textColor="@color/grey_600"
-        app:layout_constraintStart_toStartOf="@+id/icon_dilayani_tokopedia"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tpg_stock_product"
         app:typographyType="paragraph_2"
-        app:typographyWeight="reguler"
         tools:text="@string/manage_product_item_max_buy_label" />
 
     <com.tokopedia.unifycomponents.DividerUnify
@@ -212,5 +211,12 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/btn_update_product" />
+
+    <androidx.constraintlayout.widget.Barrier
+        android:id="@+id/barrier_1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:barrierDirection="bottom"
+        app:constraint_referenced_ids="tpg_error_copy, label_belum_lengkap"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
