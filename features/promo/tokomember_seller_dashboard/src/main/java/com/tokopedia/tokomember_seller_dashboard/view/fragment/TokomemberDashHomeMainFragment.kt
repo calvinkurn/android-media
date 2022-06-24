@@ -67,7 +67,7 @@ class TokomemberDashHomeMainFragment : BaseDaggerFragment() {
             isShowBackButton = true
 
             setNavigationOnClickListener {
-
+                activity?.finish()
             }
 
             val feedbackIcon = addRightIcon(0)

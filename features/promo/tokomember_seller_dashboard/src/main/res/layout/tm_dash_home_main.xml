@@ -13,7 +13,7 @@
             android:id="@+id/home_header"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:title="TokoMember"
+            app:title="@string/tm_tokomember"
             app:titleTextColor="@color/Unify_NN950"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"

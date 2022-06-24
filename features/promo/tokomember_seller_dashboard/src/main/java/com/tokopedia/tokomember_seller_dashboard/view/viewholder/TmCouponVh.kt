@@ -78,7 +78,7 @@ class TmCouponVh(itemView: View, private val fragmentManager: FragmentManager) :
         }
         tvQuota.text = "${item.voucherQuota}/${item.remainingQuota}"
         itemView.setOnClickListener {
-
+            item.voucherStatus
         }
 
         if(item.remainingQuota == item.voucherQuota){
@@ -113,6 +113,7 @@ class TmCouponVh(itemView: View, private val fragmentManager: FragmentManager) :
                 viewStatus.backgroundTintList = ColorStateList.valueOf(ContextCompat.getColor(itemView.context, R.color.Unify_NN400))
             }
             COUPON_NOT_STARTED ->{
+                optionMenu.show()
                 optionMenu.setOnClickListener {
                     item.voucherId?.let { it1 ->
                         val actions = Actions()
@@ -156,6 +157,7 @@ class TmCouponVh(itemView: View, private val fragmentManager: FragmentManager) :
                         }
                     }
                 }
+                optionMenu.show()
                 ivCoupon.loadImage(R.drawable.tm_ic_member_golden)
                 tvCouponState.text = "Kupon Aktif"
                 tvCouponState.setTextColor(ColorStateList.valueOf(ContextCompat.getColor(itemView.context, R.color.Unify_GN500)))

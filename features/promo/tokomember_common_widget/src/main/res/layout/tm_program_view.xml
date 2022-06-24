@@ -4,8 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginStart="@dimen/spacing_lvl4"
-    android:layout_marginEnd="@dimen/spacing_lvl4"
     android:layout_gravity="center_horizontal"
     android:background="@color/Unify_Background"
     android:paddingBottom="@dimen/unify_space_12">
@@ -167,7 +165,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:typographyType="small"
-                android:text="@string/tm_cmn_tambahan_member" />
+                android:text="@string/tm_cmn_pertambahan_member" />
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/programMemberValue"
