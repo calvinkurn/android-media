@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.tabs.TabLayout
@@ -244,7 +245,7 @@ class AffiliatePromoFragment : AffiliateBaseFragment<AffiliatePromoViewModel>(),
     }
 
     private fun onGetAffiliateSearchData(affiliateSearchData: AffiliateSearchData) {
-        adapter.clearAllElements()
+        resetAdapter()
         if (affiliateSearchData.searchAffiliate?.data?.status == 0) {
             showData(true)
             if (affiliateSearchData.searchAffiliate?.data?.error?.errorStatus == 0) {
@@ -295,6 +296,13 @@ class AffiliatePromoFragment : AffiliateBaseFragment<AffiliatePromoViewModel>(),
                 }
 
             }
+        }
+    }
+    private fun resetAdapter(){
+        adapter.clearAllElements()
+        view?.findViewById<RecyclerView>(R.id.promotion_recycler_view)?.apply {
+            adapter = null
+            adapter = this@AffiliatePromoFragment.adapter
         }
     }
 
