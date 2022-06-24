@@ -181,7 +181,7 @@ class CampaignInformationFragment : BaseDaggerFragment() {
                 }
                 is Fail -> {
                     binding?.groupContent?.gone()
-                    binding?.root showError result.throwable
+                    binding?.cardView showError result.throwable
                 }
             }
         }
@@ -242,7 +242,7 @@ class CampaignInformationFragment : BaseDaggerFragment() {
                 }
                 is Fail -> {
                     binding?.groupContent?.gone()
-                    binding?.root showError result.throwable
+                    binding?.cardView showError result.throwable
                 }
             }
         }
@@ -258,7 +258,7 @@ class CampaignInformationFragment : BaseDaggerFragment() {
                     handleRemainingQuota(remainingQuota)
                 }
                 is Fail -> {
-                    binding?.root showError result.throwable
+                    binding?.cardView showError result.throwable
                 }
             }
         }

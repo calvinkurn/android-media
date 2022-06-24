@@ -11,20 +11,39 @@ import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.network.utils.ErrorHandler
+import com.tokopedia.seller_shop_flash_sale.R
 import com.tokopedia.unifycomponents.Toaster
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import com.tokopedia.seller_shop_flash_sale.R
+import java.net.SocketTimeoutException
+import java.net.UnknownHostException
+
 
 infix fun View?.showError(throwable: Throwable) {
-    val errorMessage = ErrorHandler.getErrorMessage(this?.context, throwable)
-    Toaster.build(this ?: return, errorMessage, Snackbar.LENGTH_SHORT, Toaster.TYPE_ERROR).show()
+    this?.run {
+        val errorMessage = context.getString(R.string.sfs_error_message_connection_error)
+        val modifiedErrorMessage = when (throwable) {
+            is UnknownHostException -> errorMessage
+            is SocketTimeoutException -> errorMessage
+            else -> ErrorHandler.getErrorMessage(context, throwable)
+        }
+        showError(modifiedErrorMessage)
+    }
 }
 
 infix fun View?.showError(errorMessage: String) {
-    Toaster.build(this ?: return, errorMessage, Snackbar.LENGTH_SHORT, Toaster.TYPE_ERROR).show()
+    Toaster.build(
+        this ?: return,
+        errorMessage,
+        Toaster.LENGTH_SHORT,
+        Toaster.TYPE_ERROR,
+        this.context.getString(R.string.action_oke)
+    ).apply {
+        anchorView = this@showError
+        show()
+    }
 }
 
 infix fun View?.showToaster(message: String) {
