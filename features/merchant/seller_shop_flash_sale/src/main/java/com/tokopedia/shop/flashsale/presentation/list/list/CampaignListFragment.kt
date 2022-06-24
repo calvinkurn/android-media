@@ -43,6 +43,7 @@ import com.tokopedia.shop.flashsale.presentation.draft.uimodel.DraftItemModel
 import com.tokopedia.shop.flashsale.presentation.list.container.CampaignListContainerFragment
 import com.tokopedia.shop.flashsale.presentation.list.list.adapter.CampaignAdapter
 import com.tokopedia.shop.flashsale.presentation.list.list.bottomsheet.MoreMenuBottomSheet
+import com.tokopedia.shop.flashsale.presentation.list.list.dialog.FeatureIntroductionDialog
 import com.tokopedia.shop.flashsale.presentation.list.list.listener.RecyclerViewScrollListener
 import com.tokopedia.universal_sharing.view.bottomsheet.SharingUtil
 import com.tokopedia.universal_sharing.view.bottomsheet.UniversalShareBottomSheet
@@ -66,7 +67,6 @@ class CampaignListFragment : BaseSimpleListFragment<CampaignAdapter, CampaignUiM
         private const val REFRESH_CAMPAIGN_DELAY_DURATION_IN_MILLIS : Long = 3_000
         private const val EMPTY_STATE_IMAGE_URL =
             "https://images.tokopedia.net/img/android/campaign/flash-sale-toko/ic_no_active_campaign.png"
-        private const val SHOP_DECORATION_ARTICLE_URL = "https://seller.tokopedia.com/dekorasi-toko"
         private const val DRAFT_SERVER_SAVING_DURATION = 1000L
 
         @JvmStatic
@@ -156,6 +156,7 @@ class CampaignListFragment : BaseSimpleListFragment<CampaignAdapter, CampaignUiM
         observeShareComponentMetadata()
         observeShareComponentThumbnailImage()
         observeCampaignCreationEligibility()
+        observeShopDecorStatus()
     }
 
     override fun onResume() {
@@ -166,16 +167,16 @@ class CampaignListFragment : BaseSimpleListFragment<CampaignAdapter, CampaignUiM
 
     private fun setupView() {
         binding?.btnCreateCampaign?.setOnClickListener {
+            viewModel.getShopDecorStatus()
             binding?.btnCreateCampaign.showLoading()
-            viewModel.validateCampaignCreationEligibility()
         }
 
         binding?.btnDraft?.setOnClickListener {
             showDraftListBottomSheet(viewModel.getCampaignDrafts())
         }
         binding?.btnCreateCampaignEmptyState?.setOnClickListener {
+            viewModel.getShopDecorStatus()
             binding?.btnCreateCampaignEmptyState.showLoading()
-            viewModel.validateCampaignCreationEligibility()
         }
         binding?.btnNavigateToFirstActiveCampaign?.setOnClickListener {
             onNavigateToActiveCampaignTab()
@@ -242,7 +243,7 @@ class CampaignListFragment : BaseSimpleListFragment<CampaignAdapter, CampaignUiM
                 }
                 is Fail -> {
                     binding?.loader?.gone()
-                    binding?.root showError result.throwable
+                    binding?.cardView showError result.throwable
                 }
             }
         }
@@ -257,7 +258,7 @@ class CampaignListFragment : BaseSimpleListFragment<CampaignAdapter, CampaignUiM
                     binding?.loader?.gone()
                 }
                 is Fail -> {
-                    binding?.root showError result.throwable
+                    binding?.cardView showError result.throwable
                     binding?.searchBar?.gone()
                     binding?.loader?.gone()
                 }
@@ -275,7 +276,7 @@ class CampaignListFragment : BaseSimpleListFragment<CampaignAdapter, CampaignUiM
                 }
                 is Fail -> {
                     dismissLoaderDialog()
-                    binding?.root showError result.throwable
+                    binding?.cardView showError result.throwable
                 }
             }
         }
@@ -291,7 +292,7 @@ class CampaignListFragment : BaseSimpleListFragment<CampaignAdapter, CampaignUiM
                 }
                 is Fail -> {
                     dismissLoaderDialog()
-                    binding?.root showError result.throwable
+                    binding?.cardView showError result.throwable
                 }
             }
         }
@@ -306,11 +307,43 @@ class CampaignListFragment : BaseSimpleListFragment<CampaignAdapter, CampaignUiM
                     handleEligibilityResult(result.data)
                 }
                 is Fail -> {
-                    binding?.root showError result.throwable
+                    binding?.cardView showError result.throwable
                 }
             }
         }
     }
+
+    private fun observeShopDecorStatus() {
+        viewModel.shopDecorStatus.observe(viewLifecycleOwner) { result ->
+            binding?.btnCreateCampaignEmptyState.stopLoading()
+            binding?.btnCreateCampaign.stopLoading()
+
+            when (result) {
+                is Success -> {
+                    val decorStatus = result.data
+                    handleShopDecorStatusResult(decorStatus)
+                }
+                is Fail -> {
+                    binding?.cardView showError result.throwable
+                }
+            }
+        }
+    }
+
+    private fun handleShopDecorStatusResult(decorStatus: String) {
+        val hasDraft = viewModel.getCampaignDrafts().isNotEmpty()
+        val hasCampaign = adapter?.itemCount.isMoreThanZero()
+        val hasCampaignOrDraft = hasDraft || hasCampaign
+
+        if (decorStatus == "native" && hasCampaignOrDraft) {
+            binding?.btnCreateCampaignEmptyState.showLoading()
+            binding?.btnCreateCampaign.showLoading()
+            viewModel.validateCampaignCreationEligibility()
+        } else {
+            showFeatureIntroductionDialog()
+        }
+    }
+
 
     fun setOnScrollDownListener(onScrollDown: () -> Unit = {}) {
         this.onScrollDown = onScrollDown
@@ -702,6 +735,14 @@ class CampaignListFragment : BaseSimpleListFragment<CampaignAdapter, CampaignUiM
         }
     }
 
+
+    private fun showFeatureIntroductionDialog() {
+        val dialog = FeatureIntroductionDialog()
+        dialog.setOnPrimaryActionClick {  }
+        dialog.setOnSecondaryActionClick {  }
+        dialog.setOnThirdActionClick {  }
+        dialog.show(requireActivity())
+    }
 
     private fun launchCampaignInformationPage() {
         val starter = Intent(activity, CampaignInformationActivity::class.java)

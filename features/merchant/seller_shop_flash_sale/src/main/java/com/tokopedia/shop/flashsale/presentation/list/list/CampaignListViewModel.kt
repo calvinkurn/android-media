@@ -12,6 +12,7 @@ import com.tokopedia.shop.flashsale.domain.entity.aggregate.CampaignCreationElig
 import com.tokopedia.shop.flashsale.domain.entity.aggregate.CampaignPrerequisiteData
 import com.tokopedia.shop.flashsale.domain.entity.aggregate.ShareComponentMetadata
 import com.tokopedia.shop.flashsale.domain.usecase.GetSellerCampaignListUseCase
+import com.tokopedia.shop.flashsale.domain.usecase.GetShopDecorStatusUseCase
 import com.tokopedia.shop.flashsale.domain.usecase.aggregate.GenerateCampaignBannerUseCase
 import com.tokopedia.shop.flashsale.domain.usecase.aggregate.GetCampaignPrerequisiteDataUseCase
 import com.tokopedia.shop.flashsale.domain.usecase.aggregate.GetShareComponentMetadataUseCase
@@ -28,7 +29,8 @@ class CampaignListViewModel @Inject constructor(
     private val getCampaignPrerequisiteDataUseCase: GetCampaignPrerequisiteDataUseCase,
     private val getShareComponentMetadataUseCase: GetShareComponentMetadataUseCase,
     private val validateCampaignCreationEligibility: ValidateCampaignCreationEligibilityUseCase,
-    private val generateCampaignBannerUseCase: GenerateCampaignBannerUseCase
+    private val generateCampaignBannerUseCase: GenerateCampaignBannerUseCase,
+    private val getShopDecorStatusUseCase: GetShopDecorStatusUseCase,
 ) : BaseViewModel(dispatchers.main) {
 
     private val _campaigns = MutableLiveData<Result<CampaignMeta>>()
@@ -50,6 +52,10 @@ class CampaignListViewModel @Inject constructor(
     private val _sellerEligibility = MutableLiveData<Result<CampaignCreationEligibility>>()
     val creationEligibility: LiveData<Result<CampaignCreationEligibility>>
         get() = _sellerEligibility
+
+    private val _shopDecorStatus = MutableLiveData<Result<String>>()
+    val shopDecorStatus: LiveData<Result<String>>
+        get() = _shopDecorStatus
 
     private var drafts: List<CampaignUiModel> = emptyList()
     private var campaignId: Long = 0
@@ -129,6 +135,21 @@ class CampaignListViewModel @Inject constructor(
             },
             onError = { error ->
                 _sellerEligibility.postValue(Fail(error))
+            }
+        )
+
+    }
+
+
+    fun getShopDecorStatus() {
+        launchCatchError(
+            dispatchers.io,
+            block = {
+                val metadata = getShopDecorStatusUseCase.execute()
+                _shopDecorStatus.postValue(Success(metadata))
+            },
+            onError = { error ->
+                _shopDecorStatus.postValue(Fail(error))
             }
         )
 

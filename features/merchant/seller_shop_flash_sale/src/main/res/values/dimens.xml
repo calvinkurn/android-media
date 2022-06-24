@@ -7,4 +7,6 @@
     <dimen name="sfs_checkmark_height">20dp</dimen>
     <dimen name="sfs_product_image_height">56dp</dimen>
     <dimen name="sfs_product_image_width">56dp</dimen>
+    <dimen name="sfs_fst_intro_image_height">200dp</dimen>
+    <dimen name="sfs_fst_intro_image_width">120dp</dimen>
 </resources>
