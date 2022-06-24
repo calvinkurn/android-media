@@ -67,10 +67,16 @@ class TmSingleCouponView @JvmOverloads constructor(
                 selectedChipPositionKupon = position
                 when(selectedChipPositionKupon){
                     CouponType.CASHBACK -> {
+                        textFieldMaxCashback.labelText.text = MAX_CASHBACK_LABEL
+                        tvCashbackType.show()
+                        chipGroupCashbackType.show()
                         ivPreviewCoupon.showHideCashBackValueView(true)
                         ivPreviewCoupon.setCouponType(COUPON_CASHBACK_PREVIEW)
                     }
                     CouponType.SHIPPING -> {
+                        tvCashbackType.hide()
+                        chipGroupCashbackType.hide()
+                        textFieldMaxCashback.labelText.text = MAX_GRATIS_LABEL
                         ivPreviewCoupon.showHideCashBackValueView(false)
                         ivPreviewCoupon.setCouponType(COUPON_SHIPPING_PREVIEW)
                     }
@@ -146,16 +152,16 @@ class TmSingleCouponView @JvmOverloads constructor(
                     when {
                         number < MIN_CASHBACK_CHECK -> {
                             textFieldMaxCashback.isInputError = true
-                            textFieldMaxCashback.setMessage("Min. Rp10.000")
+                            textFieldMaxCashback.setMessage(MIN_DISCOUNT_LABEL)
                         }
                         number>= MAX_CASHBACK_CHECK -> {
                             textFieldMaxCashback.isInputError = true
-                            textFieldMaxCashback.setMessage("Maks. Rp99.999.99")
+                            textFieldMaxCashback.setMessage(MAX_DISCOUNT_LABEL)
                         }
                         else -> {
                             if (number > CurrencyFormatHelper.convertRupiahToInt(textFieldMinTransk.editText.text.toString())) {
                                 textFieldMaxCashback.isInputError = true
-                                textFieldMaxCashback.setMessage("Harus kurang dari min. transaksi.")
+                                textFieldMaxCashback.setMessage(MAX_DISCOUNT_OVERFLOW)
                             }else {
                                 textFieldMaxCashback.isInputError = false
                                 textFieldMaxCashback.setMessage("")
@@ -178,16 +184,16 @@ class TmSingleCouponView @JvmOverloads constructor(
                     when {
                         number < MIN_CASHBACK_CHECK -> {
                             textFieldMinTransk.isInputError = true
-                            textFieldMinTransk.setMessage("Min. Rp10.000")
+                            textFieldMinTransk.setMessage(MIN_TRANSACTION_LABEL)
                         }
                         number>= MAX_CASHBACK_CHECK -> {
                             textFieldMinTransk.isInputError = true
-                            textFieldMinTransk.setMessage("Maks. Rp99.999.99")
+                            textFieldMinTransk.setMessage(MAX_TRANSACTION_LABEL)
                         }
                         else -> {
                             if (number < CurrencyFormatHelper.convertRupiahToInt(textFieldMaxCashback.editText.text.toString())) {
                                 textFieldMaxCashback.isInputError = true
-                                textFieldMaxCashback.setMessage("Harus kurang dari min. transaksi.")
+                                textFieldMaxCashback.setMessage(MIN_TRANSACTION_OVERFLOW)
                             } else {
                                 textFieldMinTransk.isInputError = false
                                 textFieldMinTransk.setMessage("")
@@ -207,11 +213,11 @@ class TmSingleCouponView @JvmOverloads constructor(
                     when {
                         number < MIN_PERCENTAGE_CHECK -> {
                             textFieldPercentCashback.isInputError = true
-                            textFieldPercentCashback.setMessage("Min. 5%")
+                            textFieldPercentCashback.setMessage(MIN_PERCENTAGE_LABEL)
                         }
                         number >= MAX_PERCENTAGE_CHECK -> {
                             textFieldPercentCashback.isInputError = true
-                            textFieldPercentCashback.setMessage("Maks. 100%")
+                            textFieldPercentCashback.setMessage(MAX_PERCENTAGE_LABEL)
                         }
                         else -> {
                             textFieldPercentCashback.isInputError = false
@@ -232,11 +238,11 @@ class TmSingleCouponView @JvmOverloads constructor(
                     when {
                         number < MIN_QUOTA_CHECK -> {
                             textFieldQuota.isInputError = true
-                            textFieldQuota.setMessage("Min. 50 kuota")
+                            textFieldQuota.setMessage(MIN_QUOTA_LABEL)
                         }
-                        number>= MAX_QUOTA_CHECK -> {
+                        number> MAX_QUOTA_CHECK -> {
                             textFieldQuota.isInputError = true
-                            textFieldQuota.setMessage("Maks. 10.000 kuota")
+                            textFieldQuota.setMessage(MAX_QUOTA_LABEL)
                         }
                         else -> {
                             textFieldQuota.isInputError = false

@@ -46,10 +46,11 @@
 
                     <com.tokopedia.unifycomponents.ImageUnify
                         android:id="@+id/ivShopIcon"
-                        android:layout_width="@dimen/dp_50"
+                        android:layout_width="@dimen/unify_space_40"
                         android:layout_height="@dimen/unify_space_40"
                         android:layout_marginStart="@dimen/unify_space_12"
                         android:layout_marginTop="@dimen/unify_space_8"
+                        app:unify_image_type ="circle"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
 
