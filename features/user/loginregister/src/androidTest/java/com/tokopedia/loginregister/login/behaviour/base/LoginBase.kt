@@ -18,7 +18,6 @@ import com.tokopedia.loginregister.login.di.ActivityComponentFactory
 import com.tokopedia.loginregister.login.domain.pojo.RegisterCheckData
 import com.tokopedia.loginregister.login.domain.pojo.RegisterCheckPojo
 import com.tokopedia.loginregister.login.view.activity.LoginActivity
-import com.tokopedia.user.session.UserSessionInterface
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -51,9 +50,6 @@ open class LoginBase: LoginRegisterBase() {
 
     @Inject
     lateinit var loginTokenUseCaseStub: LoginTokenUseCaseStub
-
-    @Inject
-    lateinit var userSessionStub: UserSessionInterface
 
     @Before
     open fun before() {
