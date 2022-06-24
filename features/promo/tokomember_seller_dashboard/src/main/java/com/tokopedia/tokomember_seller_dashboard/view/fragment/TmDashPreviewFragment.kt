@@ -37,6 +37,7 @@ import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_SHOP_ID
 import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_SHOP_NAME
 import com.tokopedia.tokomember_seller_dashboard.util.LOADING_TEXT
 import com.tokopedia.tokomember_seller_dashboard.util.TmDateUtil.setDate
+import com.tokopedia.tokomember_seller_dashboard.util.TmDateUtil.setDatePreview
 import com.tokopedia.tokomember_seller_dashboard.util.TmDateUtil.setTime
 import com.tokopedia.tokomember_seller_dashboard.util.TokoLiveDataResult
 import com.tokopedia.tokomember_seller_dashboard.view.activity.TokomemberDashHomeActivity
@@ -256,6 +257,7 @@ class TmDashPreviewFragment : BaseDaggerFragment() {
     @SuppressLint("NotifyDataSetChanged")
     private fun initRecyclerView(){
         rvPreview.layoutManager = LinearLayoutManager(context,LinearLayoutManager.HORIZONTAL,false)
+        tmCouponPreviewAdapter.list.clear()
         tmCouponPreviewAdapter.list = tmCouponPreviewData.voucherList
         rvPreview.adapter = tmCouponPreviewAdapter
         tmCouponPreviewAdapter.notifyDataSetChanged()
@@ -308,15 +310,15 @@ class TmDashPreviewFragment : BaseDaggerFragment() {
     @SuppressLint("SetTextI18n")
     private fun renderCouponList(tmCouponPreviewData: TmCouponPreviewData) {
         initRecyclerView()
-        tvCouponMulaiValue.text = tmCouponPreviewData.startDate +", "+ tmCouponPreviewData.startTime + "WIB"
-        tvCouponBerakhirValue.text = tmCouponPreviewData.endDate +", "+ tmCouponPreviewData.endTime + "WIB"
+        tvCouponMulaiValue.text = tmCouponPreviewData.startDate.substringAfter(",") +", "+ tmCouponPreviewData.startTime + " WIB"
+        tvCouponBerakhirValue.text = tmCouponPreviewData.endDate.substringAfter(",") +", "+ tmCouponPreviewData.endTime + " WIB"
         tvMaxTransactionValue.text = "Rp${CurrencyFormatHelper.convertToRupiah(tmCouponPreviewData.maxValue)}"
     }
 
     @SuppressLint("SetTextI18n")
     private fun renderProgramPreview(membershipGetProgramForm: MembershipGetProgramForm?) {
-        tvProgramMulaiValue.text = setDate(membershipGetProgramForm?.programForm?.timeWindow?.startTime?:"") + ", " + setTime(membershipGetProgramForm?.programForm?.timeWindow?.startTime?:"")
-        tvProgramBerakhirValue.text = setDate(membershipGetProgramForm?.programForm?.timeWindow?.endTime?:"") + ", " +  setTime(membershipGetProgramForm?.programForm?.timeWindow?.endTime?:"")
+        tvProgramMulaiValue.text = setDatePreview(membershipGetProgramForm?.programForm?.timeWindow?.startTime?:"") + ", " + setTime(membershipGetProgramForm?.programForm?.timeWindow?.startTime?:"")
+        tvProgramBerakhirValue.text = setDatePreview(membershipGetProgramForm?.programForm?.timeWindow?.endTime?:"") + ", " +  setTime(membershipGetProgramForm?.programForm?.timeWindow?.endTime?:"")
         tvProgramMinTransaksiPremiumValue.text =
             "Rp${CurrencyFormatHelper.convertToRupiah(membershipGetProgramForm?.programForm?.tierLevels?.getOrNull(0)?.threshold.toString())}"
         tvProgramMinTransaksiVipValue.text =

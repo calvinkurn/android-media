@@ -33,19 +33,17 @@ import com.tokopedia.tokomember_common_widget.util.ProgramDateType
 import com.tokopedia.tokomember_seller_dashboard.R
 import com.tokopedia.tokomember_seller_dashboard.callbacks.TmOpenFragmentCallback
 import com.tokopedia.tokomember_seller_dashboard.di.component.DaggerTokomemberDashComponent
-import com.tokopedia.tokomember_seller_dashboard.domain.requestparam.ProgramUpdateDataInput
 import com.tokopedia.tokomember_seller_dashboard.domain.requestparam.TmCouponValidateRequest
 import com.tokopedia.tokomember_seller_dashboard.model.*
 import com.tokopedia.tokomember_seller_dashboard.model.mapper.TmCouponCreateMapper
 import com.tokopedia.tokomember_seller_dashboard.util.*
 import com.tokopedia.tokomember_seller_dashboard.util.TmDateUtil.convertDateTime
 import com.tokopedia.tokomember_seller_dashboard.util.TmDateUtil.getTimeInMillis
-import com.tokopedia.tokomember_seller_dashboard.util.TmDateUtil.getTimeInMillisEnd
 import com.tokopedia.tokomember_seller_dashboard.util.TmDateUtil.setDate
 import com.tokopedia.tokomember_seller_dashboard.tracker.TmTracker
+import com.tokopedia.tokomember_seller_dashboard.util.TmDateUtil.convertDateTimeRemoveTimeDiff
 import com.tokopedia.tokomember_seller_dashboard.util.TmDateUtil.getDayOfWeekID
-import com.tokopedia.tokomember_seller_dashboard.util.TmDateUtil.setTime
-import com.tokopedia.tokomember_seller_dashboard.util.TmDateUtil.setTimeEnd
+import com.tokopedia.tokomember_seller_dashboard.util.TmDateUtil.setDatePreview
 import com.tokopedia.tokomember_seller_dashboard.util.TmDateUtil.setTimeStart
 import com.tokopedia.tokomember_seller_dashboard.view.activity.TokomemberDashIntroActivity
 import com.tokopedia.tokomember_seller_dashboard.view.adapter.model.TmCouponListItemPreview
@@ -179,8 +177,7 @@ class TmMultipleCuponCreateFragment : BaseDaggerFragment() {
                 TokoLiveDataResult.STATUS.SUCCESS -> {
                     containerViewFlipper.displayedChild = DATA
                     if (it.data?.membershipGetProgramForm?.resultStatus?.code == "200") {
-                        manualStartTimeProgram = it.data.membershipGetProgramForm.programForm?.timeWindow?.startTime?:""
-                        manualEndTimeProgram= it.data.membershipGetProgramForm.programForm?.timeWindow?.endTime?:""
+                        setProgramStartEndDate(it.data.membershipGetProgramForm.programForm?.timeWindow)
                         renderProgram()
                         renderMultipleCoupon()
                     }
@@ -201,15 +198,23 @@ class TmMultipleCuponCreateFragment : BaseDaggerFragment() {
                 }
                 TokoLiveDataResult.STATUS.SUCCESS -> {
                     errorState.isPreValidateVipError = false
-                    if (it.data?.voucherValidationPartial?.header?.messages?.size == 1) {
+                    if (it.data?.voucherValidationPartial?.header?.messages?.size == 0) {
                         preValidateCouponVip(couponVip)
                     } else {
+                        closeLoadingDialog()
+                        view?.let { v ->
+                            Toaster.build(
+                                v,
+                                "Silakan Masukkan masukan yang benar",
+                                Toaster.LENGTH_LONG,
+                                Toaster.TYPE_ERROR
+                                ).show()
+                        }
+                        setButtonState()
                         handleProgramValidateError(
                             it.data?.voucherValidationPartial?.data?.validationError,
                             "premium"
                         )
-                        closeLoadingDialog()
-                        setButtonState()
                     }
                 }
                 TokoLiveDataResult.STATUS.ERROR -> {
@@ -226,7 +231,7 @@ class TmMultipleCuponCreateFragment : BaseDaggerFragment() {
                 when (it.status) {
                     TokoLiveDataResult.STATUS.SUCCESS -> {
                         errorState.isPreValidatePremiumError = false
-                        if (it.data?.voucherValidationPartial?.header?.messages?.size == 1) {
+                        if (it.data?.voucherValidationPartial?.header?.messages?.size == 0) {
                             tmDashCreateViewModel.validateProgram(
                                 arguments?.getInt(
                                     BUNDLE_SHOP_ID
@@ -237,6 +242,14 @@ class TmMultipleCuponCreateFragment : BaseDaggerFragment() {
                             )
                         } else {
                             closeLoadingDialog()
+                            view?.let { v ->
+                                Toaster.build(
+                                    v,
+                                    "Silakan Masukkan masukan yang benar",
+                                    Toaster.LENGTH_LONG,
+                                    Toaster.TYPE_ERROR
+                                    ).show()
+                            }
                             setButtonState()
                             handleProgramValidateError(
                                 it.data?.voucherValidationPartial?.data?.validationError,
@@ -311,9 +324,9 @@ class TmMultipleCuponCreateFragment : BaseDaggerFragment() {
                         Toaster.build(
                             v,
                             RETRY,
+                            Toaster.LENGTH_LONG,
                             Toaster.TYPE_ERROR,
-                            Toaster.LENGTH_LONG
-                        ).show()
+                            ).show()
                     }
                 }
                 else -> {
@@ -337,9 +350,9 @@ class TmMultipleCuponCreateFragment : BaseDaggerFragment() {
                                 Toaster.build(
                                     v,
                                     it.data.message,
-                                    Toaster.TYPE_ERROR,
-                                    Toaster.LENGTH_LONG
-                                ).show()
+                                    Toaster.LENGTH_LONG,
+                                    Toaster.TYPE_ERROR
+                                    ).show()
                             }
                         }
                     }
@@ -395,7 +408,13 @@ class TmMultipleCuponCreateFragment : BaseDaggerFragment() {
         when (couponType) {
 
             PREMIUM -> {
-                tmPremiumCoupon?.setErrorMaxBenefit(validationError?.benefitMax ?: "")
+                if (!validationError?.benefitIdr.isNullOrEmpty()) {
+                    tmPremiumCoupon?.setErrorMaxBenefit(validationError?.benefitIdr ?: "")
+                }
+                if (!validationError?.benefitMax.isNullOrEmpty()) {
+                    tmPremiumCoupon?.setErrorMaxBenefit(validationError?.benefitMax ?: "")
+                }
+                tmPremiumCoupon?.setErrorMaxBenefit(validationError?.benefitIdr ?: "")
                 tmPremiumCoupon?.setErrorCashbackPercentage(validationError?.benefitPercent ?: "")
                 tmPremiumCoupon?.setErrorMinTransaction(validationError?.minPurchase ?: "")
                 tmPremiumCoupon?.setErrorQuota(validationError?.quota ?: "")
@@ -405,7 +424,12 @@ class TmMultipleCuponCreateFragment : BaseDaggerFragment() {
             }
 
             VIP -> {
-                tmVipCoupon?.setErrorMaxBenefit(validationError?.benefitMax ?: "")
+                if (!validationError?.benefitIdr.isNullOrEmpty()) {
+                    tmVipCoupon?.setErrorMaxBenefit(validationError?.benefitIdr ?: "")
+                }
+                if (!validationError?.benefitMax.isNullOrEmpty()) {
+                    tmVipCoupon?.setErrorMaxBenefit(validationError?.benefitMax ?: "")
+                }
                 tmVipCoupon?.setErrorCashbackPercentage(validationError?.benefitPercent ?: "")
                 tmVipCoupon?.setErrorMinTransaction(validationError?.minPurchase ?: "")
                 tmVipCoupon?.setErrorQuota(validationError?.quota ?: "")
@@ -499,6 +523,7 @@ class TmMultipleCuponCreateFragment : BaseDaggerFragment() {
         CurrencyFormatHelper.convertRupiahToInt(couponVip?.maxCashback?:"") * CurrencyFormatHelper.convertRupiahToInt(couponVip?.quota?:"")
 
         //GET Coupon Time
+        tmCouponPreviewData.voucherList.clear()
         tmCouponPreviewData.apply {
             startDate = textFieldProgramStartDate.editText.text.toString()
             endDate = textFieldProgramEndDate.editText.text.toString()
@@ -534,6 +559,35 @@ class TmMultipleCuponCreateFragment : BaseDaggerFragment() {
         tmOpenFragmentCallback.openFragment(CreateScreenType.PREVIEW, bundle)
         closeLoadingDialog()
         setButtonState()
+    }
+
+    private fun setProgramStartEndDate(timeWindow: TimeWindow?) {
+        when(programActionType) {
+            ProgramActionType.CREATE -> {
+                manualStartTimeProgram = timeWindow?.startTime?:""
+                manualEndTimeProgram= timeWindow?.endTime?:""
+            }
+            ProgramActionType.EXTEND -> {
+                val startDate = GregorianCalendar(locale)
+                startDate.add(Calendar.HOUR,4)
+                manualStartTimeProgram = convertDateTimeRemoveTimeDiff(startDate.time)
+
+                manualEndTimeProgram = timeWindow?.endTime?:""
+
+                val maxProgramEndDate = GregorianCalendar(locale)
+                maxProgramEndDate.add(Calendar.YEAR,1)
+
+                val endDate = GregorianCalendar(locale)
+                val sdf = SimpleDateFormat(SIMPLE_DATE_FORMAT, locale)
+                endDate.time = sdf.parse(manualEndTimeProgram + "00") ?: Date()
+
+                manualEndTimeProgram = if (endDate > maxProgramEndDate) {
+                    convertDateTimeRemoveTimeDiff(maxProgramEndDate.time)
+                } else {
+                    convertDateTimeRemoveTimeDiff(endDate.time)
+                }
+            }
+        }
     }
 
     private fun initTotalTransactionAmount() {
@@ -638,37 +692,58 @@ class TmMultipleCuponCreateFragment : BaseDaggerFragment() {
     }
 
     private fun preValidateCouponVip(coupon: TmSingleCouponData?) {
-        tmDashCreateViewModel.preValidateMultipleCoupon(
-            TmCouponValidateRequest(
-                targetBuyer = 3,
-                benefitType = IDR,
-                couponType = coupon?.typeCoupon,
-                benefitMax = CurrencyFormatHelper.convertRupiahToInt(coupon?.maxCashback?:""),
-                benefitPercent = coupon?.cashBackPercentage,
-                minPurchase = CurrencyFormatHelper.convertRupiahToInt(coupon?.minTransaki?:""),
-                source = ANDROID,
-                quota = coupon?.quota?.toIntSafely()
-            )
+        val validationRequest = TmCouponValidateRequest(
+            targetBuyer = 3,
+            benefitType = coupon?.typeCashback,
+            couponType = coupon?.typeCoupon,
+            benefitPercent = coupon?.cashBackPercentage,
+            minPurchase = CurrencyFormatHelper.convertRupiahToInt(coupon?.minTransaki ?: ""),
+            source = ANDROID,
+            quota = coupon?.quota?.toIntSafely()
         )
+
+        val cashBackValue = CurrencyFormatHelper.convertRupiahToInt(coupon?.maxCashback?:"")
+        when (coupon?.typeCashback) {
+            CASHBACK_IDR -> {
+                validationRequest.apply {
+                    benefitIdr = cashBackValue
+                }
+            }
+            CASHBACK_PERCENTAGE -> {
+                validationRequest.apply {
+                    benefitMax = cashBackValue
+                }
+            }
+        }
+        tmDashCreateViewModel.preValidateMultipleCoupon(validationRequest)
     }
 
     private fun preValidateCouponPremium(couponPremiumData: TmSingleCouponData?) {
-        tmDashCreateViewModel.preValidateCoupon(
-            TmCouponValidateRequest(
-                targetBuyer = 3,
-                benefitType = IDR,
-                couponType = couponPremiumData?.typeCoupon,
-                benefitMax = CurrencyFormatHelper.convertRupiahToInt(
-                    couponPremiumData?.maxCashback ?: ""
-                ),
-                benefitPercent = couponPremiumData?.cashBackPercentage,
-                minPurchase = CurrencyFormatHelper.convertRupiahToInt(
-                    couponPremiumData?.minTransaki ?: ""
-                ),
-                source = ANDROID,
-                quota = couponPremiumData?.quota?.toIntSafely()
-            )
+        val validationRequest = TmCouponValidateRequest(
+            targetBuyer = 3,
+            benefitType = couponPremiumData?.typeCashback,
+            couponType = couponPremiumData?.typeCoupon,
+            benefitPercent = couponPremiumData?.cashBackPercentage,
+            minPurchase = CurrencyFormatHelper.convertRupiahToInt(
+                couponPremiumData?.minTransaki ?: ""
+            ),
+            source = ANDROID,
+            quota = couponPremiumData?.quota?.toIntSafely()
         )
+        val cashBackValue = CurrencyFormatHelper.convertRupiahToInt(couponPremiumData?.maxCashback?:"")
+        when (couponPremiumData?.typeCashback) {
+            CASHBACK_IDR -> {
+                validationRequest.apply {
+                    benefitIdr = cashBackValue
+                }
+            }
+            CASHBACK_PERCENTAGE -> {
+                validationRequest.apply {
+                    benefitMax = cashBackValue
+                }
+            }
+        }
+        tmDashCreateViewModel.preValidateCoupon(validationRequest)
     }
 
     private fun uploadImagePremium() {
@@ -769,20 +844,7 @@ class TmMultipleCuponCreateFragment : BaseDaggerFragment() {
     private fun setProgramDateAuto() {
         when (selectedChipPositionDate) {
             ProgramDateType.AUTO -> {
-
-                textFieldProgramStartDate.editText.setText(
-                    setDate(manualStartTimeProgram)
-                )
-                textFieldProgramStartTime.editText.setText(
-                    setTimeStart(manualStartTimeProgram)
-                )
-                textFieldProgramEndDate.editText.setText(
-                    setDate(manualEndTimeProgram)
-                )
-                textFieldProgramEndTime.editText.setText(
-                    setTimeStart(manualEndTimeProgram)
-                )
-
+                setProgramCouponDate()
                 textFieldProgramStartDate.isEnabled = false
                 textFieldProgramStartDate.iconContainer.isEnabled = false
                 textFieldProgramStartTime.isEnabled = false
@@ -791,11 +853,6 @@ class TmMultipleCuponCreateFragment : BaseDaggerFragment() {
                 textFieldProgramEndDate.iconContainer.isEnabled = false
                 textFieldProgramEndTime.isEnabled = false
                 textFieldProgramEndTime.iconContainer.isEnabled = false
-
-                couponStartDate = manualStartTimeProgram.substringBefore(" ")
-                couponStartTime = setTimeStart(manualStartTimeProgram)
-                couponEndDate = manualEndTimeProgram.substringBefore(" ")
-                couponEndTime = setTimeStart(manualEndTimeProgram)
             }
             ProgramDateType.MANUAL -> {
                 textFieldProgramStartDate.isEnabled = true
@@ -814,6 +871,32 @@ class TmMultipleCuponCreateFragment : BaseDaggerFragment() {
         }
     }
 
+    @SuppressLint("SetTextI18n")
+    private fun setProgramCouponDate(){
+
+        val startDate = GregorianCalendar(locale)
+        val sds = SimpleDateFormat(SIMPLE_DATE_FORMAT, locale)
+        startDate.time = sds.parse(manualStartTimeProgram + "00") ?: Date()
+        val dayStart = startDate.get(Calendar.DAY_OF_WEEK)
+        val dayOfWeekStart = getDayOfWeekID(dayStart)
+
+        textFieldProgramStartDate.editText.setText("$dayOfWeekStart, ${setDatePreview(manualStartTimeProgram)}")
+        textFieldProgramStartTime.editText.setText(setTimeStart(manualStartTimeProgram))
+
+        val endDate = GregorianCalendar(locale)
+        val sde = SimpleDateFormat(SIMPLE_DATE_FORMAT, locale)
+        endDate.time = sde.parse(manualStartTimeProgram + "00") ?: Date()
+        val dayEnd = startDate.get(Calendar.DAY_OF_WEEK)
+        val dayOfWeekEnd = getDayOfWeekID(dayEnd)
+
+        textFieldProgramEndDate.editText.setText("$dayOfWeekEnd, ${setDatePreview(manualEndTimeProgram)}")
+        textFieldProgramEndTime.editText.setText(setTimeStart(manualEndTimeProgram))
+        couponStartDate = manualStartTimeProgram.substringBefore(" ")
+        couponStartTime = setTimeStart(manualStartTimeProgram)
+        couponEndDate = manualEndTimeProgram.substringBefore(" ")
+        couponEndTime = setTimeStart(manualEndTimeProgram)
+    }
+
     private fun clickDatePicker(textField: TextFieldUnify2, type: Int) {
         var date = ""
         var month = ""
@@ -828,10 +911,14 @@ class TmMultipleCuponCreateFragment : BaseDaggerFragment() {
 
             val maxDate = GregorianCalendar(yearMax, monthMax, dayMax)
             val currentDate = GregorianCalendar(LocaleUtils.getCurrentLocale(it))
-            val sdf = SimpleDateFormat(SIMPLE_DATE_FORMAT, locale)
-            try {
-                currentDate.time = sdf.parse(manualStartTimeProgram + "00")?: Date()
-            } catch (e: Exception) {
+            when(programActionType) {
+                ProgramActionType.CREATE -> {
+                    val sdf = SimpleDateFormat(SIMPLE_DATE_FORMAT, locale)
+                    currentDate.time = sdf.parse(manualStartTimeProgram + "00") ?: Date()
+                }
+                ProgramActionType.EXTEND -> {
+                    currentDate.add(Calendar.HOUR,4)
+                }
             }
             currentDate.add(Calendar.DAY_OF_MONTH,1)
 
@@ -873,7 +960,7 @@ class TmMultipleCuponCreateFragment : BaseDaggerFragment() {
             datepickerObject.setOnDismissListener {
                 val dayInId =  getDayOfWeekID(day)
                 selectedTime = selectedCalendar?.time.toString()
-                textField.textInputLayout.editText?.setText(("$dayInId,$date $month $year"))
+                textField.textInputLayout.editText?.setText(("$dayInId, $date $month $year"))
             }
         }
     }

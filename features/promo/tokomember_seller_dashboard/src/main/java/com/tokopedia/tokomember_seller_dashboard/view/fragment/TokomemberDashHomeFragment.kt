@@ -85,7 +85,7 @@ class TokomemberDashHomeFragment : BaseDaggerFragment() {
         tmTracker = TmTracker()
         tmTracker?.viewHomeTabsSection(shopId.toString())
 
-        isShowBs = arguments?.getBoolean(BUNDLE_IS_SHOW_BS, false) == true
+        isShowBs = arguments?.getBoolean(BUNDLE_IS_SHOW_BS, false)?:false
 
         if(isShowBs){
             val bundle = Bundle()
@@ -101,6 +101,7 @@ class TokomemberDashHomeFragment : BaseDaggerFragment() {
                 }
             })
             bottomsheet.show(childFragmentManager,"")
+            isShowBs = false
         }
     }
 

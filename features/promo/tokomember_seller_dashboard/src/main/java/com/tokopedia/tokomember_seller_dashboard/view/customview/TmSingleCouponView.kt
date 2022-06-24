@@ -132,7 +132,7 @@ class TmSingleCouponView @JvmOverloads constructor(
         tmSingleCouponData.quota = textFieldQuota.editText.text.toString().trimIndent()
         if (isShowCashPercentage && textFieldPercentCashback.editText.text.isNotEmpty()) {
             tmSingleCouponData.cashBackPercentage =
-                textFieldMinTransk.editText.text.toString().toIntSafely()
+                textFieldPercentCashback.editText.text.toString().toIntSafely()
         }
         return tmSingleCouponData
     }
@@ -159,11 +159,11 @@ class TmSingleCouponView @JvmOverloads constructor(
                             }else {
                                 textFieldMaxCashback.isInputError = false
                                 textFieldMaxCashback.setMessage("")
-                                maxTransactionListener?.onQuotaCashbackChange()
-                                ivPreviewCoupon.setCouponValue(number.toString())
                             }
                         }
                     }
+                    maxTransactionListener?.onQuotaCashbackChange()
+                    ivPreviewCoupon.setCouponValue(number.toString())
                 }
             })
         }
@@ -185,8 +185,13 @@ class TmSingleCouponView @JvmOverloads constructor(
                             textFieldMinTransk.setMessage("Maks. Rp99.999.99")
                         }
                         else -> {
-                            textFieldMinTransk.isInputError = false
-                            textFieldMinTransk.setMessage("")
+                            if (number < CurrencyFormatHelper.convertRupiahToInt(textFieldMaxCashback.editText.text.toString())) {
+                                textFieldMaxCashback.isInputError = true
+                                textFieldMaxCashback.setMessage("Harus kurang dari min. transaksi.")
+                            } else {
+                                textFieldMinTransk.isInputError = false
+                                textFieldMinTransk.setMessage("")
+                            }
                         }
                     }
                 }
@@ -211,9 +216,9 @@ class TmSingleCouponView @JvmOverloads constructor(
                         else -> {
                             textFieldPercentCashback.isInputError = false
                             textFieldPercentCashback.setMessage("")
-                            ivPreviewCoupon.setCouponBenefit(number.toString())
                         }
                     }
+                    ivPreviewCoupon.setCouponBenefit(number.toString())
                 }
             })
         }
@@ -236,9 +241,9 @@ class TmSingleCouponView @JvmOverloads constructor(
                         else -> {
                             textFieldQuota.isInputError = false
                             textFieldQuota.setMessage("")
-                            maxTransactionListener?.onQuotaCashbackChange()
                         }
                     }
+                    maxTransactionListener?.onQuotaCashbackChange()
                 }
             })
         }

@@ -10,6 +10,7 @@ const val DATE_FORMAT = "yyyy-MM-dd"
 const val HOUR_MIN_FORMAT = "HH:mm"
 const val DD_FORMAT = "dd"
 const val MMMM_FORMAT = "MMMM"
+const val MMM_FORMAT = "MMM"
 const val SIMPLE_DATE_FORMAT_Z = "yyyy-MM-dd HH:mm:ss Z"
 const val SIMPLE_DATE_FORMAT = "yyyy-MM-dd HH:mm:ss"
 const val UTC = "UTC"
@@ -33,6 +34,16 @@ object TmDateUtil {
         val date = selectedTime.toDate(DATE_FORMAT)
         val day = SimpleDateFormat(DD_FORMAT).format(date)
         val month = SimpleDateFormat(MMMM_FORMAT).format(date)
+        val year = selectedTime.substringBefore("-")
+        return "$day $month $year"
+    }
+
+    @SuppressLint("SimpleDateFormat")
+    fun setDatePreview(time: String): String {
+        val selectedTime = time.substringBefore(" ")
+        val date = selectedTime.toDate(DATE_FORMAT)
+        val day = SimpleDateFormat(DD_FORMAT).format(date)
+        val month = SimpleDateFormat(MMM_FORMAT).format(date)
         val year = selectedTime.substringBefore("-")
         return "$day $month $year"
     }
@@ -75,6 +86,13 @@ object TmDateUtil {
     @SuppressLint("SimpleDateFormat")
     fun convertDateTime(t: Date): String {
         return SimpleDateFormat(SIMPLE_DATE_FORMAT_Z, locale).format(t)
+    }
+
+    @SuppressLint("SimpleDateFormat")
+    fun convertDateTimeRemoveTimeDiff(t: Date): String {
+        return SimpleDateFormat(SIMPLE_DATE_FORMAT_Z, locale).format(t).run {
+            this.substring(0, this.length - 2)
+        }
     }
 
     @SuppressLint("SimpleDateFormat")

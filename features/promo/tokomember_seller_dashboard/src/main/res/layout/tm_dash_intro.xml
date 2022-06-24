@@ -169,7 +169,7 @@
             android:text="@string/tm_dash_daftar_gratis"
             app:unifyButtonSize="large"
             app:unifyButtonType="main"
-            app:unifyButtonVariant="ghost" />
+            app:unifyButtonVariant="filled" />
 
     </LinearLayout>
 

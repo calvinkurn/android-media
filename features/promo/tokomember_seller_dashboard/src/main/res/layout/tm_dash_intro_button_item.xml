@@ -12,6 +12,6 @@
         app:unifyButtonSize="large"
         app:unifyButtonType="main"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:unifyButtonVariant="filled" />
+        app:unifyButtonVariant="ghost" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

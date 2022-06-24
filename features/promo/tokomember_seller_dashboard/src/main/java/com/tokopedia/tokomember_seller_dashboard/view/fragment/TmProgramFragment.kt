@@ -51,7 +51,7 @@ import java.util.*
 import javax.inject.Inject
 
 private const val COUNTRY_ID = "ID"
-private const val LANGUAGE_ID = "id"
+private const val LANGUAGE_ID = "in"
 private val locale = Locale(LANGUAGE_ID, COUNTRY_ID)
 
 class TmProgramFragment : BaseDaggerFragment(), ChipGroupCallback ,
@@ -343,8 +343,8 @@ class TmProgramFragment : BaseDaggerFragment(), ChipGroupCallback ,
         membershipGetProgramForm?.timePeriodList?.getOrNull(0)?.months?.let {
             periodInMonth = it
         }
-        if (programActionType == ProgramActionType.CREATE) {
-            val currentDate = GregorianCalendar(Locale("id", "ID"))
+        if (programActionType == ProgramActionType.CREATE || programActionType == ProgramActionType.CREATE_BUAT) {
+            val currentDate = GregorianCalendar(locale)
             currentDate.add(Calendar.DAY_OF_MONTH,1)
             val dayInId =  getDayOfWeekID(currentDate.get(Calendar.DAY_OF_WEEK))
 
@@ -531,7 +531,7 @@ class TmProgramFragment : BaseDaggerFragment(), ChipGroupCallback ,
             datepickerObject.setOnDismissListener {
                 selectedTime = selectedCalendar?.time.toString()
                val dayInId =  getDayOfWeekID(day)
-                textFieldDuration?.textInputLayout?.editText?.setText(( "$dayInId,$date $month $year"))
+                textFieldDuration?.textInputLayout?.editText?.setText(( "$dayInId, $date $month $year"))
             }
         }
     }
