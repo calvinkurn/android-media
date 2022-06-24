@@ -3,6 +3,7 @@ package com.tokopedia.loginregister.login.behaviour.di.modules
 import android.content.res.Resources
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
+import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.loginregister.common.domain.pojo.ActivateUserPojo
@@ -15,13 +16,11 @@ import com.tokopedia.loginregister.login.di.LoginScope
 import com.tokopedia.loginregister.login.domain.RegisterCheckUseCase
 import com.tokopedia.sessioncommon.data.GenerateKeyPojo
 import com.tokopedia.sessioncommon.data.LoginTokenPojoV2
-import com.tokopedia.sessioncommon.di.SessionModule
 import com.tokopedia.sessioncommon.domain.usecase.*
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
 import dagger.Provides
 import kotlinx.coroutines.CoroutineDispatcher
-import javax.inject.Named
 
 /**
  * Created by Ade Fulki on 2019-10-09.
@@ -33,7 +32,8 @@ class LoginUseCaseModuleStub {
 
     @LoginScope
     @Provides
-    fun provideGeneratePublicUseCase(stub: GeneratePublicKeyUseCaseStub): GeneratePublicKeyUseCase = stub
+    fun provideGeneratePublicUseCase(stub: GeneratePublicKeyUseCaseStub): GeneratePublicKeyUseCase =
+        stub
 
     @LoginScope
     @Provides
@@ -48,7 +48,10 @@ class LoginUseCaseModuleStub {
 
     @LoginScope
     @Provides
-    fun provideLoginTokenUseCaseV2Stub(@ApplicationContext graphqlRepository: GraphqlRepository, userSessionInterface: UserSessionInterface): LoginTokenV2UseCaseStub {
+    fun provideLoginTokenUseCaseV2Stub(
+        @ApplicationContext graphqlRepository: GraphqlRepository,
+        userSessionInterface: UserSessionInterface
+    ): LoginTokenV2UseCaseStub {
         val useCase = GraphqlUseCaseStub<LoginTokenPojoV2>(graphqlRepository)
         return LoginTokenV2UseCaseStub(useCase, userSessionInterface)
     }
@@ -56,7 +59,7 @@ class LoginUseCaseModuleStub {
     @Provides
     @LoginScope
     fun provideRegisterCheckUseCase(
-            stub: RegisterCheckUseCaseStub
+        stub: RegisterCheckUseCaseStub
     ): RegisterCheckUseCase = stub
 
     @LoginScope
@@ -68,7 +71,7 @@ class LoginUseCaseModuleStub {
     @Provides
     @LoginScope
     fun provideGetAdminTypeUseCase(
-            stub: GetAdminTypeUseCaseStub
+        stub: GetAdminTypeUseCaseStub
     ): GetAdminTypeUseCase = stub
 
     @LoginScope
@@ -80,34 +83,38 @@ class LoginUseCaseModuleStub {
     @Provides
     @LoginScope
     fun provideLoginTokenUseCase(
-            stub: LoginTokenUseCaseStub
+        stub: LoginTokenUseCaseStub
     ): LoginTokenUseCase = stub
 
     @LoginScope
     @Provides
-    fun provideLoginTokenUseCaseStub(resources: Resources,
-                                     graphqlUseCase: com.tokopedia.graphql.domain.GraphqlUseCase,
-                                     userSessionInterface: UserSessionInterface): LoginTokenUseCaseStub {
+    fun provideLoginTokenUseCaseStub(
+        resources: Resources,
+        graphqlUseCase: com.tokopedia.graphql.domain.GraphqlUseCase,
+        userSessionInterface: UserSessionInterface
+    ): LoginTokenUseCaseStub {
         return LoginTokenUseCaseStub(resources, graphqlUseCase, userSessionInterface)
     }
 
     @Provides
     @LoginScope
     fun provideTickerInfoUseCase(
-            stub: TickerInfoUseCaseStub
+        stub: TickerInfoUseCaseStub
     ): TickerInfoUseCase = stub
 
     @LoginScope
     @Provides
-    fun provideTickerInfoUseCaseStub(resources: Resources,
-                                     graphqlUseCase: com.tokopedia.graphql.domain.GraphqlUseCase): TickerInfoUseCaseStub {
+    fun provideTickerInfoUseCaseStub(
+        resources: Resources,
+        graphqlUseCase: com.tokopedia.graphql.domain.GraphqlUseCase
+    ): TickerInfoUseCaseStub {
         return TickerInfoUseCaseStub(resources, graphqlUseCase)
     }
 
     @Provides
     @LoginScope
     fun provideDynamicBannerUseCase(
-            stub: DynamicBannerUseCaseStub
+        stub: DynamicBannerUseCaseStub
     ): DynamicBannerUseCase = stub
 
     @LoginScope
@@ -118,34 +125,30 @@ class LoginUseCaseModuleStub {
 
     @Provides
     @LoginScope
-    fun provideActivateUserUseCase(
-            stub: ActivateUserUseCaseStub
-    ): ActivateUserUseCase = stub
-
-    @LoginScope
-    @Provides
-    fun provideActivateUserUseCaseStub(@ApplicationContext graphqlRepository: GraphqlRepository): ActivateUserUseCaseStub {
-        val useCase = GraphqlUseCaseStub<ActivateUserPojo>(graphqlRepository)
-        return ActivateUserUseCaseStub(useCase)
+    fun provideActivateUserUseCase(@ApplicationContext graphqlRepository: GraphqlRepository): ActivateUserUseCase {
+        val useCase = GraphqlUseCase<ActivateUserPojo>(graphqlRepository)
+        return ActivateUserUseCase(useCase)
     }
 
     @Provides
     @LoginScope
     fun provideGetProfileUseCase(
-            stub: GetProfileUseCaseStub
+        stub: GetProfileUseCaseStub
     ): GetProfileUseCase = stub
 
     @LoginScope
     @Provides
-    fun provideGetProfileUseCaseStub(resources: Resources,
-                                     graphqlUseCase: com.tokopedia.graphql.domain.GraphqlUseCase): GetProfileUseCaseStub {
+    fun provideGetProfileUseCaseStub(
+        resources: Resources,
+        graphqlUseCase: com.tokopedia.graphql.domain.GraphqlUseCase
+    ): GetProfileUseCaseStub {
         return GetProfileUseCaseStub(resources, graphqlUseCase)
     }
 
     @Provides
     @LoginScope
     fun provideDiscoverUseCase(
-            stub: DiscoverUseCaseStub
+        stub: DiscoverUseCaseStub
     ): DiscoverUseCase = stub
 
     @LoginScope
@@ -158,5 +161,6 @@ class LoginUseCaseModuleStub {
     }
 
     @Provides
-    fun provideMultiRequestGraphql(): MultiRequestGraphqlUseCase = GraphqlInteractor.getInstance().multiRequestGraphqlUseCase
+    fun provideMultiRequestGraphql(): MultiRequestGraphqlUseCase =
+        GraphqlInteractor.getInstance().multiRequestGraphqlUseCase
 }
