@@ -870,9 +870,9 @@ open class ProductManageFragment :
                 is Success -> setVariantGoToBroadcastChat(it.data)
                 is Fail -> {
                     val message =
-                        resources.getString(R.string.broadcast_chat_error_state_message_empty_variant)
+                        activity?.resources?.getString(R.string.broadcast_chat_error_state_message_empty_variant).orEmpty()
                     val action =
-                        resources.getString(R.string.broadcast_chat_error_state_action_retry)
+                        activity?.resources?.getString(R.string.broadcast_chat_error_state_action_retry).orEmpty()
                     errorStateBroadcastChat(message, action, isRetry = true)
                 }
             }
@@ -966,8 +966,8 @@ open class ProductManageFragment :
     }
 
     private fun showErrorStateEmptyProductBroadcastChat() {
-        val message = resources.getString(R.string.broadcast_chat_error_state_message_empty_stock)
-        val action = resources.getString(R.string.broadcast_chat_error_state_action_oke)
+        val message = activity?.resources?.getString(R.string.broadcast_chat_error_state_message_empty_stock).orEmpty()
+        val action = activity?.resources?.getString(R.string.broadcast_chat_error_state_action_oke).orEmpty()
         errorStateBroadcastChat(message, action)
     }
 
