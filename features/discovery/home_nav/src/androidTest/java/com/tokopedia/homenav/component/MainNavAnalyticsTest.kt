@@ -82,7 +82,6 @@ class MainNavAnalyticsTest {
             login()
             waitForData()
             doActivityTestByModelClass(
-                delayBeforeRender = 5000,
                 dataModelClass = TransactionListItemDataModel::class
             ) { viewHolder: RecyclerView.ViewHolder, i: Int ->
                 clickOnOrderHistory(viewHolder)
@@ -102,7 +101,6 @@ class MainNavAnalyticsTest {
             login()
             waitForData()
             doActivityTestByModelClass(
-                delayBeforeRender = 5000,
                 dataModelClass = WishlistDataModel::class
             ) { viewHolder: RecyclerView.ViewHolder, i: Int ->
                 clickOnWishlist(viewHolder)
@@ -122,7 +120,6 @@ class MainNavAnalyticsTest {
             login()
             waitForData()
             doActivityTestByModelClass(
-                delayBeforeRender = 5000,
                 dataModelClass = AccountHeaderDataModel::class
             ) { viewHolder: RecyclerView.ViewHolder, i: Int ->
                 clickOnShopAndAffiliate(viewHolder)
@@ -166,12 +163,11 @@ class MainNavAnalyticsTest {
     }
 
     @Test
-    fun testComponentShop() {
+    fun testComponentShopFavorite() {
         mainNavCassavaTest {
             login()
             waitForData()
             doActivityTestByModelClass(
-                delayBeforeRender = 5000,
                 dataModelClass = FavoriteShopListDataModel::class
             ) { viewHolder: RecyclerView.ViewHolder, _: Int ->
                 clickOnEachShop(viewHolder)
@@ -208,7 +204,7 @@ class MainNavAnalyticsTest {
     }
 
     private fun <T : Any> doActivityTestByModelClass(
-        delayBeforeRender: Long = 2000L,
+        delayBeforeRender: Long = 5000L,
         dataModelClass: KClass<T>,
         predicate: (T?) -> Boolean = { true },
         isTypeClass: (viewHolder: RecyclerView.ViewHolder, itemClickLimit: Int) -> Unit
