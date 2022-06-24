@@ -16,7 +16,7 @@ class TokoFoodOrderLiveTrackingMapperSection @Inject constructor() : BaseOrderDe
             addOrderTrackingStatusInfo(tokoFoodOrderDetail.orderStatus)
             addEstimationUiModel(tokoFoodOrderDetail.eta)
             if (tokoFoodOrderDetail.driverDetails != null) {
-                addThinDividerUiModel(if (tokoFoodOrderDetail.eta != null) MARGIN_TOP_EIGHT else null)
+                addThinDividerUiModel(MARGIN_TOP_EIGHT)
             }
             addDriverSectionUiModel(tokoFoodOrderDetail.driverDetails)
             addThinDividerUiModel(MARGIN_TOP_TWENTY)
