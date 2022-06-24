@@ -87,6 +87,7 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
         private const val GLOBAL_CUSTOM_SHARING_FEATURE_FLAG = "android_enable_custom_sharing"
         private const val GLOBAL_SCREENSHOT_SHARING_FEATURE_FLAG = "android_enable_screenshot_sharing"
         private const val GLOBAL_AFFILIATE_FEATURE_FLAG = "android_enable_affiliate_universal_sharing"
+        private const val GLOBAL_ENABLE_OG_IMAGE_TRANSFORM = "android_enable_og_image_transformation"
         private var featureFlagRemoteConfigKey: String = ""
         //Optons Flag
         private var isImageOnlySharing: Boolean = false
@@ -101,6 +102,12 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
         const val PREVIEW_IMG_SCREENSHOT_WIDTH = 1080
         const val THUMBNAIL_IMG_SCREENSHOT_HEIGHT = 200
         const val THUMBNAIL_IMG_SCREENSHOT_WIDTH = 360
+
+        //for affiliate and general user distinction
+        private const val KEY_GENERAL_USER = "general"
+        private const val KEY_AFFILIATE_USER = "affiliate"
+        private var isAffiliateUser: String = KEY_GENERAL_USER
+
 
         fun createInstance(): UniversalShareBottomSheet = UniversalShareBottomSheet()
 
@@ -195,6 +202,10 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
                     }
                 }
             }
+        }
+
+        fun getUserType(): String{
+            return isAffiliateUser
         }
     }
 
@@ -381,6 +392,7 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
                     affiliateCommissionTextView?.text = Html.fromHtml(commissionMessage)
                 }
                 affiliateCommissionTextView?.visibility = View.VISIBLE
+                isAffiliateUser = KEY_AFFILIATE_USER
                 return
             }
         }
@@ -841,13 +853,28 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
     private fun executeSharingFlow(shareModel:ShareModel){
         loaderUnify?.visibility = View.GONE
         preserveImage = true
-        shareModel.ogImgUrl = ogImageUrl
+        shareModel.ogImgUrl = transformOgImageURL(ogImageUrl)
         shareModel.savedImageFilePath = savedImagePath
         if(affiliateQueryData != null &&
             affiliateCommissionTextView?.visibility == View.VISIBLE){
             shareModel.isAffiliate = true
         }
         bottomSheetListener?.onShareOptionClicked(shareModel)
+    }
+
+    private fun transformOgImageURL(imageURL: String) : String{
+        if(context != null) {
+            val remoteConfig = FirebaseRemoteConfigImpl(context)
+            val ogImageTransformationEnabled = remoteConfig.getBoolean(GLOBAL_ENABLE_OG_IMAGE_TRANSFORM)
+            if (ogImageTransformationEnabled && !TextUtils.isEmpty(imageURL) && imageURL.endsWith(".webp")) {
+                if (imageURL.endsWith(".png.webp") || imageURL.endsWith(".jpg.webp")
+                    || imageURL.endsWith(".jpeg.webp")
+                ) {
+                    return imageURL.replace(".webp", "")
+                }
+            }
+        }
+        return imageURL
     }
 
     fun setFeatureFlagRemoteConfigKey(key: String){

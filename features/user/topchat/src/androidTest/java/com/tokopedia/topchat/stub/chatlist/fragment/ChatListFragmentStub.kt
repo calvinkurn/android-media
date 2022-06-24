@@ -2,7 +2,7 @@ package com.tokopedia.topchat.stub.chatlist.fragment
 
 import android.os.Bundle
 import com.tokopedia.topchat.chatlist.di.ChatListContextModule
-import com.tokopedia.topchat.chatlist.fragment.ChatListFragment
+import com.tokopedia.topchat.chatlist.view.fragment.ChatListFragment
 import com.tokopedia.topchat.stub.chatlist.di.DaggerChatListComponentStub
 import com.tokopedia.topchat.stub.chatlist.di.module.ChatListNetworkModuleStub
 import com.tokopedia.topchat.stub.chatlist.di.module.ChatListQueryModuleStub

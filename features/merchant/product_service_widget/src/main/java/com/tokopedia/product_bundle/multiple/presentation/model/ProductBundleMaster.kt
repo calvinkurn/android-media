@@ -1,7 +1,7 @@
 package com.tokopedia.product_bundle.multiple.presentation.model
 
 data class ProductBundleMaster(
-        val shopId: Int = 0,
+        val shopId: String = "0",
         val bundleId: Long = 0L,
         val bundleName: String = "",
         val quota: Int = 0,

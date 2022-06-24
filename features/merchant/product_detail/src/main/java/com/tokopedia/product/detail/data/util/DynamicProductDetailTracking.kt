@@ -646,13 +646,13 @@ object DynamicProductDetailTracking {
             TrackingUtil.addComponentTracker(mapEvent, productInfo, componentTrackDataModel, ProductTrackingConstant.Action.CLICK_READ_MORE)
         }
 
-        fun eventClickPdpShare(productId: String, userId: String) {
+        fun eventClickPdpShare(productId: String, userId: String, campaignId: String, bundleId: String) {
 
             val mapEvent = TrackAppUtils.gtmData(
-                    ProductTrackingConstant.PDP.EVENT_CLICK_PDP,
+                    ProductTrackingConstant.PDP.EVENT_CLICK_COMMUNICATION,
                     ProductTrackingConstant.Category.TOP_NAV_SHARE_PDP,
                     ProductTrackingConstant.Action.CLICK_SHARE_PDP,
-                    ""
+                "$productId - $campaignId - $bundleId"
             )
             mapEvent[ProductTrackingConstant.Tracking.KEY_BUSINESS_UNIT] = ProductTrackingConstant.Tracking.VALUE_BUSINESS_UNIT_SHARING
             mapEvent[ProductTrackingConstant.Tracking.KEY_CURRENT_SITE] = ProductTrackingConstant.Tracking.CURRENT_SITE
@@ -1745,7 +1745,8 @@ object DynamicProductDetailTracking {
                 componentTrackDataModel: ComponentTrackDataModel,
                 productInfo: DynamicProductInfoP1?,
                 userId: String,
-            lcaWarehouseId: String
+                lcaWarehouseId: String,
+                label: String
     ) {
         val productId = productInfo?.basic?.productID ?: ""
 
@@ -1761,7 +1762,7 @@ object DynamicProductDetailTracking {
                     "promoView", DataLayer.mapOf(
                     "promotions", DataLayer.listOf(
                     DataLayer.mapOf(
-                            "id", "",
+                            "id", "text:$label",
                             "name", "product detail page - $productId",
                             "creative", "layout:${productInfo?.layoutName};comp:${componentTrackDataModel.componentName};temp:${componentTrackDataModel.componentType};",
                             "position", componentTrackDataModel.adapterPosition

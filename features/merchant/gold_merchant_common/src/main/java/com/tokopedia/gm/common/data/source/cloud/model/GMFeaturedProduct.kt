@@ -22,7 +22,7 @@ data class GMFeaturedProduct (
 
     @SerializedName("price")
     @Expose
-    var price: Double? = null,
+    var price: Double? = 0.0,
 
     @SerializedName("image_uri")
     @Expose
