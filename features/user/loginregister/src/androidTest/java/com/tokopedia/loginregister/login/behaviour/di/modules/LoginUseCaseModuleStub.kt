@@ -10,18 +10,18 @@ import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUse
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.loginregister.common.domain.pojo.ActivateUserPojo
 import com.tokopedia.loginregister.common.domain.usecase.ActivateUserUseCase
+import com.tokopedia.loginregister.common.view.banner.domain.usecase.DynamicBannerUseCase
+import com.tokopedia.loginregister.common.view.ticker.domain.usecase.TickerInfoUseCase
 import com.tokopedia.loginregister.discover.usecase.DiscoverUseCase
 import com.tokopedia.loginregister.login.behaviour.data.*
 import com.tokopedia.loginregister.login.domain.RegisterCheckUseCase
 import com.tokopedia.sessioncommon.data.GenerateKeyPojo
 import com.tokopedia.sessioncommon.data.LoginTokenPojoV2
-import com.tokopedia.sessioncommon.domain.usecase.GeneratePublicKeyUseCase
-import com.tokopedia.sessioncommon.domain.usecase.GetProfileUseCase
-import com.tokopedia.sessioncommon.domain.usecase.LoginTokenUseCase
-import com.tokopedia.sessioncommon.domain.usecase.LoginTokenV2UseCase
+import com.tokopedia.sessioncommon.domain.usecase.*
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
 import dagger.Provides
+import kotlinx.coroutines.CoroutineDispatcher
 
 /**
  * Created by Ade Fulki on 2019-10-09.
@@ -71,6 +71,18 @@ class LoginUseCaseModuleStub {
 
     @Provides
     @ActivityScope
+    fun provideGetAdminTypeUseCase(
+        stub: GetAdminTypeUseCaseStub
+    ): GetAdminTypeUseCase = stub
+
+    @ActivityScope
+    @Provides
+    fun provideGetAdminTypeUseCaseStub(graphqlUseCase: com.tokopedia.graphql.domain.GraphqlUseCase): GetAdminTypeUseCaseStub {
+        return GetAdminTypeUseCaseStub(graphqlUseCase)
+    }
+
+    @Provides
+    @ActivityScope
     fun provideLoginTokenUseCase(
         stub: LoginTokenUseCaseStub
     ): LoginTokenUseCase = stub
@@ -83,6 +95,33 @@ class LoginUseCaseModuleStub {
         userSessionInterface: UserSessionInterface
     ): LoginTokenUseCaseStub {
         return LoginTokenUseCaseStub(resources, graphqlUseCase, userSessionInterface)
+    }
+
+    @Provides
+    @ActivityScope
+    fun provideTickerInfoUseCase(
+        stub: TickerInfoUseCaseStub
+    ): TickerInfoUseCase = stub
+
+    @ActivityScope
+    @Provides
+    fun provideTickerInfoUseCaseStub(
+        resources: Resources,
+        graphqlUseCase: com.tokopedia.graphql.domain.GraphqlUseCase
+    ): TickerInfoUseCaseStub {
+        return TickerInfoUseCaseStub(resources, graphqlUseCase)
+    }
+
+    @Provides
+    @ActivityScope
+    fun provideDynamicBannerUseCase(
+        stub: DynamicBannerUseCaseStub
+    ): DynamicBannerUseCase = stub
+
+    @ActivityScope
+    @Provides
+    fun provideDynamicBannerUseCaseStub(graphqlRepository: MultiRequestGraphqlUseCase): DynamicBannerUseCaseStub {
+        return DynamicBannerUseCaseStub(graphqlRepository)
     }
 
     @Provides
