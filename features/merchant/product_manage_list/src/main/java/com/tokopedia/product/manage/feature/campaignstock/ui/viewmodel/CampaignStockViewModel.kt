@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.product.manage.common.feature.list.data.model.ProductManageAccess
 import com.tokopedia.product.manage.common.feature.list.domain.usecase.GetProductManageAccessUseCase
 import com.tokopedia.product.manage.common.feature.list.view.mapper.ProductManageAccessMapper
@@ -21,6 +22,7 @@ import com.tokopedia.product.manage.feature.campaignstock.domain.model.response.
 import com.tokopedia.product.manage.feature.campaignstock.domain.usecase.CampaignStockAllocationUseCase
 import com.tokopedia.product.manage.feature.campaignstock.domain.usecase.OtherCampaignStockDataUseCase
 import com.tokopedia.product.manage.feature.campaignstock.ui.dataview.result.*
+import com.tokopedia.product.manage.feature.campaignstock.ui.util.CampaignStockMapper
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStatus
 import com.tokopedia.shop.common.data.model.ProductStock
 import com.tokopedia.shop.common.domain.interactor.GetAdminInfoShopLocationUseCase
@@ -410,10 +412,26 @@ class CampaignStockViewModel @Inject constructor(
 
         mProductManageAccess.postValue(productManageAccess.await())
 
+        val nonVariantReservedEventInfoUiModels = stockAllocationData.detail.reserve.map {
+            CampaignStockMapper.mapToParcellableReserved(it)
+        } as ArrayList
+
+        val access = productManageAccess.await()
+
+        val sellableProducts = CampaignStockMapper.getSellableProduct(
+            id = productId,
+            isActive = otherCampaignStockData.getIsActive(),
+            access = access,
+            isCampaign = otherCampaignStockData.campaign?.isActive == true,
+            sellableList = stockAllocationData.detail.sellable
+        ) as ArrayList
+
         return NonVariantStockAllocationResult(
-            stockAllocationData,
+            nonVariantReservedEventInfoUiModels,
+            stockAllocationData.summary,
+            sellableProducts,
             otherCampaignStockData,
-            productManageAccess.await()
+            access
         )
     }
 
@@ -423,6 +441,9 @@ class CampaignStockViewModel @Inject constructor(
         isProductBundling: Boolean
     ): VariantStockAllocationResult {
         campaignReservedStock = stockAllocationData.summary.reserveStock.toIntOrZero()
+
+        val variantReservedEventInfoUiModels =
+            CampaignStockMapper.mapToVariantReserved(stockAllocationData.detail.reserve) as ArrayList
 
         val warehouseId = getWarehouseId(userSession.shopId)
         val getProductVariantUseCaseRequestParams =
@@ -467,12 +488,19 @@ class CampaignStockViewModel @Inject constructor(
             editVariantResult = variantsEditResult
             variantList = variants
         }
+        val sellableStockProductUiModels =
+            CampaignStockMapper.mapToParcellableSellableProduct(
+                stockAllocationData.detail.sellable,
+                getVariantResult.variants
+            )
 
         mProductManageAccess.postValue(productManageAccess.await())
 
         return VariantStockAllocationResult(
             getVariantResult,
-            stockAllocationData,
+            variantReservedEventInfoUiModels,
+            stockAllocationData.summary,
+            sellableStockProductUiModels,
             otherCampaignStockData.await(),
             productManageAccess.await()
         )

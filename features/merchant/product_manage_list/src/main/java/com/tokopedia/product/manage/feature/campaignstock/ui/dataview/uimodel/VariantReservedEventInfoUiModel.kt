@@ -6,14 +6,15 @@ import com.tokopedia.product.manage.feature.campaignstock.ui.adapter.typefactory
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
-data class ReservedEventInfoUiModel(
-        val eventType: String,
-        val campaignName: String,
-        val campaignIconUrl: String,
-        val startTime: String,
-        val endTime: String,
-        val stock: String): Parcelable, Visitable<CampaignStockTypeFactory> {
+data class VariantReservedEventInfoUiModel(
+    val variantId: String,
+    val variantName: String,
+    val totalCampaign: Int,
+    val totalStock: Int,
+    val reservedEventInfos: MutableList<ReservedEventInfoUiModel>
+): Parcelable, Visitable<CampaignStockTypeFactory> {
 
     override fun type(typeFactory: CampaignStockTypeFactory): Int =
-            typeFactory.type(this)
+        typeFactory.type(this)
+
 }

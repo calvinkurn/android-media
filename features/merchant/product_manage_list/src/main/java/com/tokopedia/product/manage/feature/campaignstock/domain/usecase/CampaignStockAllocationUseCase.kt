@@ -48,8 +48,13 @@ class CampaignStockAllocationUseCase @Inject constructor(
                 "            event_name\n" +
                 "            description\n" +
                 "            stock\n" +
-                "            action_wording\n" +
-                "            action_url\n" +
+                "            start_time\n" +
+                "            end_time\n" +
+                "            campaign_type {\n" +
+                "              id\n" +
+                "              name\n" +
+                "              icon_url\n" +
+                "            }\n" +
                 "            product {\n" +
                 "              product_id\n" +
                 "              warehouse_id\n" +
