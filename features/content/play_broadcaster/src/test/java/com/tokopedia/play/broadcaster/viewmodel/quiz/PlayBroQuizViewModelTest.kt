@@ -6,11 +6,10 @@ import com.tokopedia.play.broadcaster.model.UiModelBuilder
 import com.tokopedia.play.broadcaster.robot.PlayBroadcastViewModelRobot
 import com.tokopedia.play.broadcaster.ui.action.PlayBroadcastAction
 import com.tokopedia.play.broadcaster.ui.event.PlayBroadcastEvent
-import com.tokopedia.play.broadcaster.ui.model.game.quiz.QuizChoiceDetailStateUiModel
-import com.tokopedia.play.broadcaster.ui.model.game.quiz.QuizChoiceDetailUiModel
-import com.tokopedia.play.broadcaster.ui.model.game.quiz.QuizDetailDataUiModel
-import com.tokopedia.play.broadcaster.ui.model.game.quiz.QuizDetailStateUiModel
+import com.tokopedia.play.broadcaster.ui.model.game.GameType
+import com.tokopedia.play.broadcaster.ui.model.game.quiz.*
 import com.tokopedia.play.broadcaster.util.assertEqualTo
+import com.tokopedia.play.broadcaster.util.assertFalse
 import com.tokopedia.play_common.model.dto.interactive.InteractiveUiModel
 import com.tokopedia.play_common.model.ui.PlayLeaderboardUiModel
 import com.tokopedia.play_common.model.ui.QuizChoicesUiModel
@@ -307,6 +306,59 @@ class PlayBroQuizViewModelTest {
             }
             Assertions.assertThat(state.quizBottomSheetUiState.quizChoiceDetailState)
                 .isInstanceOf(QuizChoiceDetailStateUiModel.Success::class.java)
+        }
+    }
+
+    @Test
+    fun `when user click quiz game option should change quiz form state to preparation`(){
+        coEvery { mockRepo.getChannelConfiguration() } returns mockConfig
+        val robot = PlayBroadcastViewModelRobot(
+            dispatchers = testDispatcher,
+            channelRepo = mockRepo,
+        )
+
+        robot.use {
+            val state = it.recordState {
+                getConfig()
+                getViewModel().submitAction(PlayBroadcastAction.ClickGameOption(GameType.Quiz))
+            }
+            Assertions.assertThat(state.quizForm.quizFormState).isInstanceOf(QuizFormStateUiModel.Preparation::class.java)
+        }
+    }
+
+    @Test
+    fun `when user click giveaway game option should change interactive setup type to giveaway type`(){
+        coEvery { mockRepo.getChannelConfiguration() } returns mockConfig
+        val robot = PlayBroadcastViewModelRobot(
+            dispatchers = testDispatcher,
+            channelRepo = mockRepo,
+        )
+
+        robot.use {
+            val state = it.recordState {
+                getConfig()
+                getViewModel().submitAction(PlayBroadcastAction.ClickGameOption(GameType.Giveaway))
+            }
+            Assertions.assertThat(state.interactiveSetup.type).isEqualTo(GameType.Giveaway)
+        }
+    }
+
+    @Test
+    fun `when user fill input gift state form must changed`(){
+        val reward = "hadiah"
+
+        coEvery { mockRepo.getChannelConfiguration() } returns mockConfig
+        val robot = PlayBroadcastViewModelRobot(
+            dispatchers = testDispatcher,
+            channelRepo = mockRepo,
+        )
+
+        robot.use {
+            val state = it.recordState {
+                getConfig()
+                getViewModel().submitAction(PlayBroadcastAction.InputQuizGift(reward))
+            }
+            Assertions.assertThat(state.quizForm.quizFormData.gift).isEqualTo(reward)
         }
     }
 }
