@@ -62,12 +62,14 @@
     <string name="sfs_placeholder_active_campaign">Aktif (%s)</string>
     <string name="sfs_placeholder_finished_campaign">Riwayat Campaign (%s)</string>
     <string name="sfs_placeholder_draft">Draft (%s)</string>
+    <string name="sfs_placeholder_fst_introduction_secondary_description">Kamu juga bisa atur tampilan halaman Home tokomu nanti di %s</string>
+    <string name="sfs_shop_decor">Dekorasi Toko</string>
 
     <string name="sfs_fst_introduction_title">Fitur Flash Sale ini akan tampil di halaman Home</string>
     <string name="sfs_fst_introduction_description">Flash Sale yang berhasil dibuat akan tampil di halaman Home tokomu sesuai dengan waktu yang sudah diatur.</string>
     <string name="sfs_start_create_flash_sale">Mulai Buat Flash Sale</string>
     <string name="sfs_later">Nanti saja</string>
-    <string name="sfs_fst_introduction_secondary_description">Kamu juga bisa atur tampilan halaman Home tokomu nanti di Dekorasi Toko</string>
+
 
     <!--Share Component-->
     <string name="sfs_share_description_upcoming">Segera hadir, Flash Sale dari %s di \@Tokopedia. Mulai %s pukul %s</string>
