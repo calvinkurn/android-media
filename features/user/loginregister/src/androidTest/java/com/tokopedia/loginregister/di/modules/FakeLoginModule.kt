@@ -2,10 +2,23 @@ package com.tokopedia.loginregister.di.modules
 
 import android.content.Context
 import com.tokopedia.loginregister.login.di.LoginModule
+import com.tokopedia.loginregister.login.view.fragment.LoginEmailPhoneFragment
 import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.remoteconfig.abtest.AbTestPlatform
 import com.tokopedia.sessioncommon.constants.SessionConstants.FirebaseConfig.CONFIG_LOGIN_ENCRYPTION
+import io.mockk.Runs
+import io.mockk.every
+import io.mockk.just
+import io.mockk.mockk
 
 object FakeLoginModule: LoginModule() {
+
+    override fun provideAbTestPlatform(): AbTestPlatform {
+        return mockk {
+            every { fetchByType(any()) } just Runs
+            every { getString(LoginEmailPhoneFragment.ROLLENCE_KEY_INACTIVE_PHONE_NUMBER, any()) } returns "true"
+        }
+    }
 
     override fun provideFirebaseRemoteConfig(context: Context): RemoteConfig {
         return object : RemoteConfig {

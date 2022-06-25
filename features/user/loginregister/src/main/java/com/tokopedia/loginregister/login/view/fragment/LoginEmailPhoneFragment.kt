@@ -100,7 +100,7 @@ import com.tokopedia.network.refreshtoken.EncoderDecoder
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.notifications.CMPushNotificationManager
 import com.tokopedia.remoteconfig.RemoteConfig
-import com.tokopedia.remoteconfig.RemoteConfigInstance
+import com.tokopedia.remoteconfig.abtest.AbTestPlatform
 import com.tokopedia.sessioncommon.ErrorHandlerSession
 import com.tokopedia.sessioncommon.constants.SessionConstants
 import com.tokopedia.sessioncommon.data.LoginTokenPojo
@@ -166,6 +166,9 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
 
     @Inject
     lateinit var firebaseRemoteConfig: RemoteConfig
+
+    @Inject
+    lateinit var abTestPlatform: AbTestPlatform
 
     private var source: String = ""
     protected var isAutoLogin: Boolean = false
@@ -309,7 +312,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
     }
 
     open fun refreshRolloutVariant() {
-        RemoteConfigInstance.getInstance().abTestPlatform.fetchByType(null)
+        abTestPlatform.fetchByType(null)
     }
 
     private fun setupBackgroundColor() {
@@ -841,10 +844,10 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
     }
 
     private fun isUsingRollenceNeedHelp(): Boolean {
-        val newInactivePhoneNumberAbTestKey = RemoteConfigInstance.getInstance().abTestPlatform?.getString(
+        val newInactivePhoneNumberAbTestKey = abTestPlatform.getString(
             ROLLENCE_KEY_INACTIVE_PHONE_NUMBER,
             ""
-        ).orEmpty()
+        )
         return newInactivePhoneNumberAbTestKey.isNotEmpty()
     }
 
@@ -1880,7 +1883,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
 
     companion object {
 
-        private const val ROLLENCE_KEY_INACTIVE_PHONE_NUMBER = "inactivephone_login"
+        const val ROLLENCE_KEY_INACTIVE_PHONE_NUMBER = "inactivephone_login"
 
         private const val TAG_NEED_HELP_BOTTOM_SHEET = "NEED HELP BOTTOM SHEET"
 
