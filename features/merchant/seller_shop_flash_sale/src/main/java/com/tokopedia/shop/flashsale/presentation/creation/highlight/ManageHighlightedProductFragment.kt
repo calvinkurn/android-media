@@ -25,8 +25,8 @@ import com.tokopedia.shop.flashsale.domain.entity.ProductSubmissionResult
 import com.tokopedia.shop.flashsale.presentation.creation.highlight.adapter.HighlightedProductAdapter
 import com.tokopedia.shop.flashsale.presentation.creation.highlight.bottomsheet.ManageHighlightedProductInfoBottomSheet
 import com.tokopedia.shop.flashsale.presentation.creation.highlight.decoration.ProductListItemDecoration
-import com.tokopedia.shop.flashsale.presentation.creation.information.CampaignInformationActivity
 import com.tokopedia.shop.flashsale.presentation.creation.rule.CampaignRuleActivity
+import com.tokopedia.shop.flashsale.presentation.list.container.CampaignListActivity
 import com.tokopedia.shop.flashsale.presentation.list.list.listener.RecyclerViewScrollListener
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -391,15 +391,15 @@ class ManageHighlightedProductFragment : BaseDaggerFragment() {
     private fun handleSaveDraftResult(result: ProductSubmissionResult) {
         val isSuccess = result.isSuccess
         if (isSuccess) {
-            routeToCampaignInformationPage(campaignId)
+            routeToCampaignListPage()
         } else {
             binding?.root showError result.errorMessage
         }
     }
 
-    private fun routeToCampaignInformationPage(campaignId: Long) {
+    private fun routeToCampaignListPage() {
         val context = context ?: return
-        CampaignInformationActivity.startUpdateMode(context, campaignId, true)
+        CampaignListActivity.start(context, isClearTop = true)
     }
 
 }

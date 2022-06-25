@@ -1,9 +1,7 @@
 package com.tokopedia.shop.flashsale.presentation.list.list.dialog
 
 import android.content.Context
-import android.graphics.Color
 import android.graphics.Typeface
-import android.graphics.drawable.ColorDrawable
 import android.text.SpannableString
 import android.text.Spanned
 import android.text.TextPaint
