@@ -24,7 +24,6 @@ class HighlightedProductAdapter(
     companion object {
         private const val ALPHA_DISABLED = 0.5f
         private const val ALPHA_ENABLED = 1.0f
-        private const val ONE = 1
     }
 
     private var products: MutableList<HighlightableProduct> = mutableListOf()
@@ -103,7 +102,7 @@ class HighlightedProductAdapter(
             binding.tpgOriginalPrice.setPrice(product.originalPrice)
             binding.tpgOriginalPrice.strikethrough()
             binding.tpgProductOrder.isVisible = product.isSelected
-            binding.tpgProductOrder.setPosition(adapterPosition)
+            binding.tpgProductOrder.setPosition(product.position)
             handleSwitchAppearance(product, onProductSelectionChange)
             handleCardSelectable(product.disabled)
         }
@@ -131,8 +130,7 @@ class HighlightedProductAdapter(
         }
 
         private fun Typography.setPosition(position: Int) {
-            val incrementedPosition = position + ONE
-            val formattedPosition = String.format(this.context.getString(R.string.sfs_placeholder_product_order), incrementedPosition)
+            val formattedPosition = String.format(this.context.getString(R.string.sfs_placeholder_product_order), position)
             this.text = formattedPosition
         }
 

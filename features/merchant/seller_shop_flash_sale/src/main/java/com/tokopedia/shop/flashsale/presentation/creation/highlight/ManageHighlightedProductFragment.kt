@@ -25,6 +25,7 @@ import com.tokopedia.shop.flashsale.domain.entity.ProductSubmissionResult
 import com.tokopedia.shop.flashsale.presentation.creation.highlight.adapter.HighlightedProductAdapter
 import com.tokopedia.shop.flashsale.presentation.creation.highlight.bottomsheet.ManageHighlightedProductInfoBottomSheet
 import com.tokopedia.shop.flashsale.presentation.creation.highlight.decoration.ProductListItemDecoration
+import com.tokopedia.shop.flashsale.presentation.creation.information.CampaignInformationActivity
 import com.tokopedia.shop.flashsale.presentation.creation.rule.CampaignRuleActivity
 import com.tokopedia.shop.flashsale.presentation.list.list.listener.RecyclerViewScrollListener
 import com.tokopedia.usecase.coroutines.Fail
@@ -99,6 +100,7 @@ class ManageHighlightedProductFragment : BaseDaggerFragment() {
         setFragmentToUnifyBgColor()
         observeProducts()
         observeSubmitHighlightedProducts()
+        observeSaveDraft()
         getProducts(FIRST_PAGE)
     }
 
@@ -158,7 +160,7 @@ class ManageHighlightedProductFragment : BaseDaggerFragment() {
             }
             btnDraft.setOnClickListener {
                 binding?.btnDraft.showLoading()
-                viewModel.submitHighlightedProducts(campaignId, productAdapter.getItems())
+                viewModel.saveDraft(campaignId, productAdapter.getItems())
             }
         }
     }
@@ -196,7 +198,7 @@ class ManageHighlightedProductFragment : BaseDaggerFragment() {
                 }
                 is Fail -> {
                     hideContent()
-                    binding?.root showError result.throwable
+                    binding?.cardView showError result.throwable
                 }
             }
         }
@@ -204,7 +206,6 @@ class ManageHighlightedProductFragment : BaseDaggerFragment() {
 
     private fun observeSubmitHighlightedProducts() {
         viewModel.submit.observe(viewLifecycleOwner) { result ->
-            binding?.btnDraft.stopLoading()
             binding?.btnProceed.stopLoading()
 
             when (result) {
@@ -212,7 +213,22 @@ class ManageHighlightedProductFragment : BaseDaggerFragment() {
                     handleProductSubmissionResult(result.data)
                 }
                 is Fail -> {
-                    binding?.root showError result.throwable
+                    binding?.cardView showError result.throwable
+                }
+            }
+        }
+    }
+
+    private fun observeSaveDraft() {
+        viewModel.saveDraft.observe(viewLifecycleOwner) { result ->
+            binding?.btnDraft.stopLoading()
+
+            when (result) {
+                is Success -> {
+                    handleSaveDraftResult(result.data)
+                }
+                is Fail -> {
+                    binding?.cardView showError result.throwable
                 }
             }
         }
@@ -371,4 +387,19 @@ class ManageHighlightedProductFragment : BaseDaggerFragment() {
             binding?.root showError result.errorMessage
         }
     }
+
+    private fun handleSaveDraftResult(result: ProductSubmissionResult) {
+        val isSuccess = result.isSuccess
+        if (isSuccess) {
+            routeToCampaignInformationPage(campaignId)
+        } else {
+            binding?.root showError result.errorMessage
+        }
+    }
+
+    private fun routeToCampaignInformationPage(campaignId: Long) {
+        val context = context ?: return
+        CampaignInformationActivity.startUpdateMode(context, campaignId, true)
+    }
+
 }
