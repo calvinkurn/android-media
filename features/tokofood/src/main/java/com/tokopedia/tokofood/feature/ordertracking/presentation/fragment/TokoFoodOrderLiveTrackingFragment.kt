@@ -58,6 +58,7 @@ class TokoFoodOrderLiveTrackingFragment(
             orderTrackingAdapter.updateLiveTrackingItem(tickerInfoData)
             orderTrackingAdapter.updateLiveTrackingItem(orderTrackingStatusInfoUiModel)
             orderTrackingAdapter.updateEtaLiveTracking(estimationUiModel)
+            orderTrackingAdapter.updateLiveTrackingItem(estimationUiModel)
             orderTrackingAdapter.updateLiveTrackingItem(invoiceOrderNumberUiModel)
         }
     }
