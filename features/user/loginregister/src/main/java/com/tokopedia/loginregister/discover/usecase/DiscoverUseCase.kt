@@ -9,7 +9,7 @@ import com.tokopedia.loginregister.discover.pojo.DiscoverPojo
 import com.tokopedia.loginregister.discover.query.DiscoverQuery
 import javax.inject.Inject
 
-open class DiscoverUseCase @Inject constructor(
+class DiscoverUseCase @Inject constructor(
     @ApplicationContext private val repository: GraphqlRepository,
     dispatcher: CoroutineDispatchers
 ) : CoroutineUseCase<String, DiscoverPojo>(dispatcher.io) {

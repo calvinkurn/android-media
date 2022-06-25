@@ -13,7 +13,7 @@ import javax.inject.Inject
  * ade.hadian@tokopedia.com
  */
 
-open class RegisterCheckUseCase @Inject constructor(
+class RegisterCheckUseCase @Inject constructor(
     @ApplicationContext graphqlRepository: GraphqlRepository
 ): GraphqlUseCase<RegisterCheckPojo>(graphqlRepository){
 

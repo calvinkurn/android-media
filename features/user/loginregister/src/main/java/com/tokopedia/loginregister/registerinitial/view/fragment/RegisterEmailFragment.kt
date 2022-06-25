@@ -60,7 +60,7 @@ import javax.inject.Named
 /**
  * @author by nisie on 10/25/18.
  */
-open class RegisterEmailFragment : BaseDaggerFragment() {
+class RegisterEmailFragment : BaseDaggerFragment() {
     var NAME = "NAME"
     var PASSWORD = "PASSWORD"
     var EMAIL = "EMAIL"

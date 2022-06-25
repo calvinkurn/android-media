@@ -19,11 +19,11 @@ import com.tokopedia.loginregister.registerinitial.view.fragment.RegisterEmailFr
 /**
  * @author by nisie on 10/25/18.
  */
-open class RegisterEmailActivity : BaseSimpleActivity(), HasComponent<RegisterInitialComponent> {
+class RegisterEmailActivity : BaseSimpleActivity(), HasComponent<RegisterInitialComponent> {
 
     private var registerInitialComponent: RegisterInitialComponent? = null
 
-    override fun getNewFragment(): Fragment? {
+    override fun getNewFragment(): Fragment {
         val bundle = Bundle()
         if (intent.extras != null) {
             bundle.putAll(intent.extras)
@@ -35,7 +35,7 @@ open class RegisterEmailActivity : BaseSimpleActivity(), HasComponent<RegisterIn
         return registerInitialComponent ?: initializeRegisterInitialComponent()
     }
 
-    protected open fun initializeRegisterInitialComponent(): RegisterInitialComponent {
+    private fun initializeRegisterInitialComponent(): RegisterInitialComponent {
         return ActivityComponentFactory.instance
             .createRegisterComponent(application)
             .also {

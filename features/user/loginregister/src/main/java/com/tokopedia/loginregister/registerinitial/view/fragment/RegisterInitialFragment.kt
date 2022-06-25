@@ -115,7 +115,7 @@ import javax.inject.Named
 /**
  * @author by nisie on 10/24/18.
  */
-open class RegisterInitialFragment : BaseDaggerFragment(),
+class RegisterInitialFragment : BaseDaggerFragment(),
     PartialRegisterInputView.PartialRegisterInputViewListener,
     RegisterInitialRouter{
 
