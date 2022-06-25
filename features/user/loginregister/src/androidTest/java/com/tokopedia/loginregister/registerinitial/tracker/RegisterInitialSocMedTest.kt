@@ -29,7 +29,6 @@ class RegisterInitialSocMedTest: RegisterInitialBase() {
     @get:Rule
     var cassavaTestRule = CassavaTestRule()
 
-
     @Test
     fun check_failed_register_tracker_google() {
         isDefaultRegisterCheck = false
