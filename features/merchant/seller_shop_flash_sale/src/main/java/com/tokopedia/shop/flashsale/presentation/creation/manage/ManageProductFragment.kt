@@ -23,6 +23,7 @@ import com.tokopedia.shop.flashsale.common.extension.showError
 import com.tokopedia.shop.flashsale.di.component.DaggerShopFlashSaleComponent
 import com.tokopedia.shop.flashsale.domain.entity.SellerCampaignProductList
 import com.tokopedia.shop.flashsale.presentation.creation.manage.adapter.ManageProductListAdapter
+import com.tokopedia.shop.flashsale.presentation.creation.manage.bottomsheet.EditProductInfoBottomSheet
 import com.tokopedia.shop.flashsale.presentation.creation.manage.dialog.ProductDeleteDialog
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -129,6 +130,7 @@ class ManageProductFragment :
                 is Success -> {
                     hideLoader()
                     if (result.data.productList.size.isMoreThanZero()) {
+                        EditProductInfoBottomSheet(result.data.productList).show(childFragmentManager)
                         displayProducts(result.data)
                         hideEmptyState()
                     } else {
