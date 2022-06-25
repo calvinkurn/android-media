@@ -129,6 +129,7 @@ class ManageHighlightedProductFragment : BaseDaggerFragment() {
         binding?.run {
             searchBar.searchBarTextField.setOnEditorActionListener { _, actionId, _ ->
                 if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+                    viewModel.setIsFirstLoad(false)
                     productAdapter.submit(emptyList())
                     binding?.groupNoSearchResult?.gone()
                     getProducts(FIRST_PAGE)
@@ -247,13 +248,13 @@ class ManageHighlightedProductFragment : BaseDaggerFragment() {
     ) {
         when {
             isSelected && currentSelectedProductCount == (MAX_PRODUCT_SELECTION - ONE_PRODUCT) -> {
-                binding?.recyclerView showToaster getString(R.string.sfs_successfully_highlighted)
+                binding?.cardView showToaster getString(R.string.sfs_successfully_highlighted)
                 selectProduct(selectedProduct)
                 viewModel.addProductIdToSelection(selectedProduct.id)
                 disableAllUnselectedProduct()
             }
             isSelected && currentSelectedProductCount < MAX_PRODUCT_SELECTION -> {
-                binding?.recyclerView showToaster getString(R.string.sfs_successfully_highlighted)
+                binding?.cardView showToaster getString(R.string.sfs_successfully_highlighted)
                 selectProduct(selectedProduct)
                 viewModel.addProductIdToSelection(selectedProduct.id)
                 enableAllUnselectedProduct()
@@ -294,6 +295,7 @@ class ManageHighlightedProductFragment : BaseDaggerFragment() {
 
     private fun clearSearchBar() {
         doFreshSearch()
+        viewModel.setIsFirstLoad(false)
     }
 
     private fun refreshButton() {

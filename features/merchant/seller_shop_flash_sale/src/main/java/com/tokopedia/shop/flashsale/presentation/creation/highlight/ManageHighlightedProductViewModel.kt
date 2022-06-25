@@ -42,6 +42,12 @@ class ManageHighlightedProductViewModel @Inject constructor(
 
     private var selectedProductIds: MutableSet<Long> = mutableSetOf()
 
+    private var isFirstLoad = true
+
+    fun setIsFirstLoad(isFirstLoad : Boolean) {
+        this.isFirstLoad = isFirstLoad
+    }
+
     fun getProducts(
         campaignId: Long,
         productName: String,
@@ -57,8 +63,10 @@ class ManageHighlightedProductViewModel @Inject constructor(
                     listType = PRODUCT_LIST_TYPE_ID,
                     pagination = GetSellerCampaignProductListRequest.Pagination(pageSize, offset)
                 )
-                val updatedProducts = handleProductEnabledState(products.productList)
-                _products.postValue(Success(updatedProducts))
+                //val isFirstLoad = offset == 0 && xinSearchMode
+                val updatedProducts = handleProductEnabledState(products.productList, isFirstLoad)
+                val sortedProducts = sortByHighlightedProducts(updatedProducts)
+                _products.postValue(Success(sortedProducts))
             },
             onError = { error ->
                 _products.postValue(Fail(error))
@@ -85,10 +93,22 @@ class ManageHighlightedProductViewModel @Inject constructor(
     }
 
     private fun handleProductEnabledState(
-        products: List<SellerCampaignProductList.Product>
+        products: List<SellerCampaignProductList.Product>,
+        isFirstLoad: Boolean
     ): List<HighlightableProduct> {
         return products.mapIndexed { index, product ->
-            val isSelected = product.highlightProductWording.isNotEmpty() || product.productId.toLongOrZero() in selectedProductIds
+
+            //first time, is first page = true,  isSelected = product.highlightProductWording.isNotEmpty()
+            //search (load from network), is first page = false, isSelected = product.productId.toLongOrZero() in selectedProductIds
+            //clear, is first page = false, isSelected = product.productId.toLongOrZero() in selectedProductIds
+
+
+            val isSelected = if (isFirstLoad) {
+                product.highlightProductWording.isNotEmpty()
+            } else {
+                product.productId.toLongOrZero() in selectedProductIds
+            }
+
             val disabled = selectedProductIds.size == MAX_PRODUCT_SELECTION && !isSelected
             HighlightableProduct(
                 product.productId.toLongOrZero(),
@@ -105,6 +125,10 @@ class ManageHighlightedProductViewModel @Inject constructor(
                 index + OFFSET_BY_ONE
             )
         }
+    }
+
+    private fun sortByHighlightedProducts(products: List<HighlightableProduct>): List<HighlightableProduct> {
+        return products.sortedByDescending { it.isSelected }
     }
 
     fun addProductIdToSelection(productId: Long) {

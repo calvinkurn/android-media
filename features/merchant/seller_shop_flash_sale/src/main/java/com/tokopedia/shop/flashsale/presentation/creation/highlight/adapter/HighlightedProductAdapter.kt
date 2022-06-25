@@ -103,7 +103,7 @@ class HighlightedProductAdapter(
             binding.tpgOriginalPrice.setPrice(product.originalPrice)
             binding.tpgOriginalPrice.strikethrough()
             binding.tpgProductOrder.isVisible = product.isSelected
-            binding.tpgProductOrder.setPosition(product.position)
+            binding.tpgProductOrder.setPosition(adapterPosition)
             handleSwitchAppearance(product, onProductSelectionChange)
             handleCardSelectable(product.disabled)
         }
@@ -131,7 +131,8 @@ class HighlightedProductAdapter(
         }
 
         private fun Typography.setPosition(position: Int) {
-            val formattedPosition = String.format(this.context.getString(R.string.sfs_placeholder_product_order), position)
+            val incrementedPosition = position + ONE
+            val formattedPosition = String.format(this.context.getString(R.string.sfs_placeholder_product_order), incrementedPosition)
             this.text = formattedPosition
         }
 
