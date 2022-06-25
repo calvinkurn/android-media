@@ -9,11 +9,12 @@ import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.*
 import com.tokopedia.loginregister.R
-import com.tokopedia.loginregister.login.behaviour.data.*
+import com.tokopedia.loginregister.login.behaviour.data.GeneratePublicKeyUseCaseStub
+import com.tokopedia.loginregister.login.behaviour.data.GetProfileUseCaseStub
+import com.tokopedia.loginregister.login.behaviour.data.LoginTokenUseCaseStub
+import com.tokopedia.loginregister.login.behaviour.data.LoginTokenV2UseCaseStub
 import com.tokopedia.loginregister.login.behaviour.di.FakeActivityComponentFactory
 import com.tokopedia.loginregister.login.di.ActivityComponentFactory
-import com.tokopedia.loginregister.login.domain.pojo.RegisterCheckData
-import com.tokopedia.loginregister.login.domain.pojo.RegisterCheckPojo
 import com.tokopedia.loginregister.login.stub.FakeGraphqlRepository
 import com.tokopedia.loginregister.login.view.activity.LoginActivity
 import org.junit.After
@@ -23,8 +24,6 @@ import javax.inject.Inject
 
 open class LoginBase: LoginRegisterBase() {
 
-    var isDefaultRegisterCheck = true
-
     @get:Rule
     var activityTestRule = IntentsTestRule(
             LoginActivity::class.java, false, false
@@ -32,9 +31,6 @@ open class LoginBase: LoginRegisterBase() {
 
     @Inject
     lateinit var fakeRepo: FakeGraphqlRepository
-
-    @Inject
-    lateinit var registerCheckUseCaseStub: RegisterCheckUseCaseStub
 
     @Inject
     lateinit var loginTokenV2UseCaseStub: LoginTokenV2UseCaseStub
@@ -60,11 +56,6 @@ open class LoginBase: LoginRegisterBase() {
         activityTestRule.finishActivity()
     }
 
-    protected fun setRegisterCheckDefaultResponse() {
-        val data = RegisterCheckData(isExist = true, useHash = true , userID = "123456", registerType = "email", view = "yoris.prayogo@tokopedia.com")
-        registerCheckUseCaseStub.response = RegisterCheckPojo(data = data)
-    }
-
     protected fun setupLoginActivity(
             intentModifier: (Intent) -> Unit = {}
     ) {
@@ -75,9 +66,6 @@ open class LoginBase: LoginRegisterBase() {
     }
 
     fun runTest(test: () -> Unit) {
-        if(isDefaultRegisterCheck) {
-            setRegisterCheckDefaultResponse()
-        }
         setupLoginActivity()
         clearEmailInput()
         test.invoke()

@@ -28,6 +28,7 @@ import com.tokopedia.loginregister.common.view.emailextension.adapter.EmailExten
 import com.tokopedia.loginregister.login.behaviour.base.LoginBase
 import com.tokopedia.loginregister.login.domain.pojo.RegisterCheckData
 import com.tokopedia.loginregister.login.domain.pojo.RegisterCheckPojo
+import com.tokopedia.loginregister.login.stub.Config
 import com.tokopedia.loginregister.registerinitial.view.activity.RegisterInitialActivity
 import com.tokopedia.sessioncommon.data.GenerateKeyPojo
 import com.tokopedia.sessioncommon.data.KeyData
@@ -45,14 +46,13 @@ class LoginNormalCase : LoginBase() {
     /* Go to verification page if phone exist */
     @Test
     fun gotoVerificationFragment_IfPhoneExist() {
-        isDefaultRegisterCheck = false
-        val data = RegisterCheckData(
+        val data = RegisterCheckPojo(RegisterCheckData(
             isExist = true,
             userID = "123456",
             registerType = "phone",
             view = "082242454504"
-        )
-        registerCheckUseCaseStub.response = RegisterCheckPojo(data = data)
+        ))
+        fakeRepo.registerCheckConfig = Config.WithResponse(data)
 
         runTest {
             intending(hasData(ApplinkConstInternalGlobal.COTP)).respondWith(
@@ -104,14 +104,13 @@ class LoginNormalCase : LoginBase() {
     /* Show not registered dialog if email not registered */
     @Test
     fun showNotRegisteredDialog_IfEmailNotRegistered() {
-        isDefaultRegisterCheck = false
-        val data = RegisterCheckData(
+        val data = RegisterCheckPojo(RegisterCheckData(
             isExist = false,
             userID = "0",
             registerType = "email",
             view = "yoris.prayogo@tokopedia.com"
-        )
-        registerCheckUseCaseStub.response = RegisterCheckPojo(data = data)
+        ))
+        fakeRepo.registerCheckConfig = Config.WithResponse(data)
 
         runTest {
             inputEmailOrPhone("yoris.prayogo@tokopedia.com")
@@ -141,14 +140,13 @@ class LoginNormalCase : LoginBase() {
     /* Check if RegisterInitialActivity is launching when Daftar button in dialog clicked */
     @Test
     fun goToRegisterInitial_IfNotRegistered() {
-        isDefaultRegisterCheck = false
-        val data = RegisterCheckData(
+        val data = RegisterCheckPojo(RegisterCheckData(
             isExist = false,
             userID = "0",
             registerType = "email",
             view = "yoris.prayogo@tokopedia.com"
-        )
-        registerCheckUseCaseStub.response = RegisterCheckPojo(data = data)
+        ))
+        fakeRepo.registerCheckConfig = Config.WithResponse(data)
 
         runTest {
             intending(hasData(ApplinkConstInternalGlobal.COTP)).respondWith(
@@ -179,15 +177,14 @@ class LoginNormalCase : LoginBase() {
     /* Check if activity is finished when login success */
     @Test
     fun finishActivityIfLoginSuccess() {
-        isDefaultRegisterCheck = false
-        val regCheck = RegisterCheckData(
+        val data = RegisterCheckPojo(RegisterCheckData(
             isExist = true,
             userID = "123456",
             registerType = "email",
             view = "yoris.prayogo@tokopedia.com",
             isPending = false
-        )
-        registerCheckUseCaseStub.response = RegisterCheckPojo(data = regCheck)
+        ))
+        fakeRepo.registerCheckConfig = Config.WithResponse(data)
 
         val loginToken = LoginToken(accessToken = "abc123")
         val loginPojo = LoginTokenPojo(loginToken)
@@ -204,15 +201,14 @@ class LoginNormalCase : LoginBase() {
 
     @Test
     fun gotoChangeNameIfLoginSuccess() {
-        isDefaultRegisterCheck = false
-        val regCheck = RegisterCheckData(
+        val data = RegisterCheckPojo(RegisterCheckData(
             isExist = true,
             userID = "123456",
             registerType = "email",
             view = "yoris.prayogo@tokopedia.com",
             isPending = false
-        )
-        registerCheckUseCaseStub.response = RegisterCheckPojo(data = regCheck)
+        ))
+        fakeRepo.registerCheckConfig = Config.WithResponse(data)
 
         val loginToken = LoginToken(accessToken = "abc123")
         val loginPojo = LoginTokenPojo(loginToken)

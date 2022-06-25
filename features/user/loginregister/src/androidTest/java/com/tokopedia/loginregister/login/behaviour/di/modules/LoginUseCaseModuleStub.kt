@@ -60,18 +60,6 @@ class LoginUseCaseModuleStub {
 
     @Provides
     @ActivityScope
-    fun provideRegisterCheckUseCase(
-        stub: RegisterCheckUseCaseStub
-    ): RegisterCheckUseCase = stub
-
-    @ActivityScope
-    @Provides
-    fun provideRegisterCheckGraphQlUseCase(@ApplicationContext graphqlRepository: GraphqlRepository): RegisterCheckUseCaseStub {
-        return RegisterCheckUseCaseStub(graphqlRepository)
-    }
-
-    @Provides
-    @ActivityScope
     fun provideGetAdminTypeUseCase(
         stub: GetAdminTypeUseCaseStub
     ): GetAdminTypeUseCase = stub

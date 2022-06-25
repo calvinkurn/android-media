@@ -50,9 +50,8 @@ class LoginNegativeCase: LoginBase() {
     /* Disable button "Selanjutnya" when input text length is too long for phone number */
     fun phoneNumberTooLong() {
         val errorMsg = "Phone too long"
-        isDefaultRegisterCheck = false
-        val data = RegisterCheckData(errors = arrayListOf(errorMsg))
-        registerCheckUseCaseStub.response = RegisterCheckPojo(data = data)
+        val data = RegisterCheckPojo(RegisterCheckData(errors = arrayListOf(errorMsg)))
+        fakeRepo.registerCheckConfig = Config.WithResponse(data)
 
         runTest {
             inputEmailOrPhone("12345678901234567")
@@ -65,9 +64,8 @@ class LoginNegativeCase: LoginBase() {
     /* Got error from backend during register check */
     fun registerCheckError_BE() {
         val errorMsg = "got errors from be"
-        isDefaultRegisterCheck = false
-        val data = RegisterCheckData(errors = arrayListOf(errorMsg))
-        registerCheckUseCaseStub.response = RegisterCheckPojo(data = data)
+        val data = RegisterCheckPojo(RegisterCheckData(errors = arrayListOf(errorMsg)))
+        fakeRepo.registerCheckConfig = Config.WithResponse(data)
 
         runTest {
             inputEmailOrPhone("12345678901234567")

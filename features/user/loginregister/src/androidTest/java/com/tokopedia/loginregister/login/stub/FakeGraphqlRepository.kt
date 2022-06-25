@@ -11,6 +11,7 @@ import com.tokopedia.loginregister.login.domain.pojo.RegisterCheckData
 import com.tokopedia.loginregister.login.domain.pojo.RegisterCheckPojo
 import com.tokopedia.test.application.graphql.GqlMockUtil
 import com.tokopedia.test.application.graphql.GqlQueryParser
+import timber.log.Timber
 
 class FakeGraphqlRepository : GraphqlRepository {
 
@@ -21,6 +22,7 @@ class FakeGraphqlRepository : GraphqlRepository {
         requests: List<GraphqlRequest>,
         cacheStrategy: GraphqlCacheStrategy
     ): GraphqlResponse {
+        Timber.d("Pass through FakeGraphql $requests")
         return when (GqlQueryParser.parse(requests).first()) {
             "registerCheck" -> {
                 val obj: RegisterCheckPojo = when (registerCheckConfig) {
@@ -34,7 +36,7 @@ class FakeGraphqlRepository : GraphqlRepository {
                             view = "yoris.prayogo@tokopedia.com"
                         )
                     )
-                    else -> RegisterCheckPojo()
+                    else -> throw IllegalStateException()
                 }
                 GqlMockUtil.createSuccessResponse(obj)
             }
