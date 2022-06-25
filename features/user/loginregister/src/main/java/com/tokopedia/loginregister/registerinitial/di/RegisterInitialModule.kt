@@ -8,16 +8,11 @@ import com.tokopedia.graphql.coroutines.data.GraphqlInteractor.Companion.getInst
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.iris.util.IrisSession
-import com.tokopedia.loginregister.common.analytics.SeamlessLoginAnalytics
-import com.tokopedia.loginregister.external_register.ovo.analytics.OvoCreationAnalytics
-import com.tokopedia.loginregister.registerinitial.view.util.RegisterInitialRouterHelper
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.permission.PermissionCheckerHelper
 import dagger.Module
 import dagger.Provides
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.Dispatchers.Main
 
 /**
  * @author by nisie on 10/25/18.
@@ -32,9 +27,6 @@ class RegisterInitialModule {
     }
 
     @Provides
-    fun providesContext(@ApplicationContext context: Context): Context = context
-
-    @Provides
     fun provideResources(@ApplicationContext context: Context): Resources = context.resources
 
     @Provides
@@ -46,20 +38,6 @@ class RegisterInitialModule {
     @Provides
     fun provideMultiRequestGraphql(): MultiRequestGraphqlUseCase {
         return getInstance().multiRequestGraphqlUseCase
-    }
-
-    @Provides
-    @ActivityScope
-    fun provideRegisterInitialRouter(): RegisterInitialRouterHelper {
-        return RegisterInitialRouterHelper()
-    }
-
-    @ActivityScope
-    @Provides
-    fun provideOvoCreationAnalytics(
-        userSessionInterface: UserSessionInterface
-    ): OvoCreationAnalytics {
-        return OvoCreationAnalytics(userSessionInterface)
     }
 
     @Provides
