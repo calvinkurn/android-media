@@ -20,7 +20,7 @@ import com.tokopedia.loginregister.R
 import com.tokopedia.loginregister.common.CassavaTestRuleMatcher.getAnalyticValidator
 import com.tokopedia.loginregister.common.CassavaTestRuleMatcher.validate
 import com.tokopedia.loginregister.login.behaviour.base.LoginBase
-import com.tokopedia.loginregister.login.helper.LoginSocmedTestHelper
+import com.tokopedia.loginregister.utils.LoginSocmedTestHelper
 import com.tokopedia.loginregister.registerinitial.view.activity.RegisterInitialActivity
 import com.tokopedia.test.application.annotations.CassavaTest
 import org.hamcrest.Matchers
