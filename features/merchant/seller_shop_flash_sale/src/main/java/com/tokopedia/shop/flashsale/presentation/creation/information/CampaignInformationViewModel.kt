@@ -391,7 +391,7 @@ class CampaignInformationViewModel @Inject constructor(
         return differenceInHour.toInt()
     }
 
-    fun isDataChanged(previousData : Selection, currentData : Selection): Boolean {
+    fun isDataChanged(previousData: Selection, currentData: Selection): Boolean {
         return previousData != currentData
     }
 }
