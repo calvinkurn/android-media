@@ -19,6 +19,4 @@ import dagger.Component
 ], dependencies = [BaseAppComponent::class])
 interface LoginComponentStub: LoginComponent {
     fun inject(login: LoginBase)
-
-//    fun inject(fragment: LoginEmailPhoneFragmentStub)
 }
