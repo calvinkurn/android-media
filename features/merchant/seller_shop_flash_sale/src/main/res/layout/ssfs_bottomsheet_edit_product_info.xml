@@ -131,7 +131,7 @@
         app:unify_text_field_message="Batas maks. pembelian produk"  />
 
     <com.tokopedia.unifycomponents.UnifyButton
-        android:id="@+id/btnBack"
+        android:id="@+id/btnSave"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginEnd="4dp"
@@ -145,7 +145,7 @@
         app:layout_constraintTop_toBottomOf="@+id/tfStock" />
 
     <com.tokopedia.unifycomponents.UnifyButton
-        android:id="@+id/btnStop"
+        android:id="@+id/btnSaveNext"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="30dp"
@@ -162,7 +162,7 @@
         android:padding="12dp"
         android:gravity="center"
         android:text="Produk dengan info belum lengkap: 12"
-        app:layout_constraintTop_toBottomOf="@+id/btnStop"
+        app:layout_constraintTop_toBottomOf="@+id/btnSaveNext"
         app:typographyType="paragraph_3"
         android:textColor="@color/Unify_G500"/>
 

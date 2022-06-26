@@ -12,14 +12,26 @@ import com.tokopedia.shop.flashsale.presentation.creation.manage.model.Warehouse
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 
-class WarehouseBottomSheet(val warehouses: List<WarehouseUiModel>) : BottomSheetUnify() {
+class WarehouseBottomSheet: BottomSheetUnify() {
 
     companion object {
         private const val TAG = "WarehouseBottomSheet"
+        private const val KEY_WAREHOUSES = "WAREHOUSES"
+
+        fun newInstance(warehouses: ArrayList<WarehouseUiModel>): WarehouseBottomSheet {
+            val fragment = WarehouseBottomSheet()
+            fragment.arguments = Bundle().apply {
+                putParcelableArrayList(KEY_WAREHOUSES,  warehouses)
+            }
+            return fragment
+        }
     }
 
     private var binding by autoClearedNullable<SsfsBottomsheetWarehouseBinding>()
     private var warehouseAdapter = WarehouseAdapter()
+    private val warehouses: ArrayList<WarehouseUiModel>? by lazy {
+        arguments?.getParcelableArrayList(KEY_WAREHOUSES)
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -36,7 +48,7 @@ class WarehouseBottomSheet(val warehouses: List<WarehouseUiModel>) : BottomSheet
         setTitle("Pilih lokasi")
         binding?.rvWarehouses?.layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
         binding?.rvWarehouses?.adapter = warehouseAdapter
-        warehouseAdapter.setItems(warehouses)
+        warehouseAdapter.setItems(warehouses?.toList().orEmpty())
     }
 
     fun show(fragmentManager: FragmentManager) {

@@ -5,13 +5,9 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
-import com.tokopedia.shop.common.graphql.domain.usecase.shopwarehouse.GetWarehouseLocationsUseCase
 import com.tokopedia.shop.flashsale.domain.entity.SellerCampaignProductList
 import com.tokopedia.shop.flashsale.presentation.creation.manage.mapper.WarehouseUiModelMapper
 import com.tokopedia.shop.flashsale.presentation.creation.manage.model.WarehouseUiModel
-import com.tokopedia.usecase.launch_cache_error.launchCatchError
-import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
 class EditProductInfoViewModel @Inject constructor(

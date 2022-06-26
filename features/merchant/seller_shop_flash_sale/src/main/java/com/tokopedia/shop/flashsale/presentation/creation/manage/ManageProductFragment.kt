@@ -30,6 +30,7 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import java.util.*
 import javax.inject.Inject
+import kotlin.collections.ArrayList
 import kotlin.concurrent.schedule
 
 class ManageProductFragment :
@@ -130,7 +131,10 @@ class ManageProductFragment :
                 is Success -> {
                     hideLoader()
                     if (result.data.productList.size.isMoreThanZero()) {
-                        EditProductInfoBottomSheet(result.data.productList).show(childFragmentManager)
+                        val bottomsheet = EditProductInfoBottomSheet.newInstance(
+                            ArrayList( result.data.productList)
+                        )
+                        bottomsheet.show(childFragmentManager)
                         displayProducts(result.data)
                         hideEmptyState()
                     } else {
