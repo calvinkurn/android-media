@@ -120,7 +120,6 @@ class MainActivity : AppCompatActivity() {
         if(appLink.isNotBlank())
             RouteManager.route(this, appLink)
         else Toast.makeText(this, "Please input appLink / webLink", Toast.LENGTH_SHORT).show()
-        startActivity(Intent(this, WishlistV2Activity::class.java))
     }
 
     private fun getDefaultAppLink(): String {

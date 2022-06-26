@@ -36,16 +36,6 @@
             android:text="@string/wishlist_v2_barang_label"/>
 
         <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/test_deletion"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/wishlist_barang_label"
-            android:layout_marginStart="4dp"
-            android:layout_marginTop="12dp"
-            android:layout_marginBottom="12dp"
-            android:text="Mock Hapus Manual"/>
-
-        <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/wishlist_manage_label"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
