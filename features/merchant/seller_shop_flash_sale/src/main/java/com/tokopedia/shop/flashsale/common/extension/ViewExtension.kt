@@ -49,7 +49,7 @@ fun View?.showErrorWithCta(errorMessage: String, ctaText: String, cta: (() -> Un
     Toaster.build(
         this ?: return,
         errorMessage,
-        Snackbar.LENGTH_SHORT,
+        Toaster.LENGTH_SHORT,
         Toaster.TYPE_ERROR,
         ctaText
     ) { cta?.invoke() }

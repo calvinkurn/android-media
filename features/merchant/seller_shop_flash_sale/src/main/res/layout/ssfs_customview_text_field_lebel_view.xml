@@ -36,6 +36,7 @@
 
     <com.tokopedia.unifycomponents.TextFieldUnify2
         android:id="@+id/textField"
+        app:unify_text_field_input_type="number"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
 

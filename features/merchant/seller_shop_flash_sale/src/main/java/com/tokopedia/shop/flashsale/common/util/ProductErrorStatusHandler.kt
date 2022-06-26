@@ -127,6 +127,7 @@ class ProductErrorStatusHandler @Inject constructor(@ApplicationContext private 
             MAX_ORDER -> {
                 errorMsg = context.getString(R.string.error_msg_max_campaign_order)
             }
+            else -> {}
         }
         return errorMsg
     }
