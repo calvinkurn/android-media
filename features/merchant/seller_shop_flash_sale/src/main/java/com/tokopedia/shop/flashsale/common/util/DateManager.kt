@@ -8,9 +8,7 @@ class DateManager @Inject constructor() {
 
     companion object {
         private const val ADVANCE_BY_ONE = 1
-        private const val TWO_HOURS_FROM_NOW = 2
         private const val THREE_HOURS_FROM_NOW = 3
-        private const val THREE_MONTH_FROM_NOW = 3
     }
 
     fun getCurrentDate(): Date {
@@ -34,19 +32,5 @@ class DateManager @Inject constructor() {
         calendar.add(Calendar.HOUR_OF_DAY, THREE_HOURS_FROM_NOW)
         return calendar.time
     }
-
-    fun getMinimumCampaignStartDate(): Date {
-        val calendar = Calendar.getInstance()
-        calendar.add(Calendar.HOUR_OF_DAY, TWO_HOURS_FROM_NOW)
-        return calendar.time
-    }
-
-    fun getMaximumCampaignEndDate(): Date {
-        val calendar = Calendar.getInstance()
-        calendar.add(Calendar.MONTH, THREE_MONTH_FROM_NOW)
-        return calendar.time
-    }
-
-
 }
 

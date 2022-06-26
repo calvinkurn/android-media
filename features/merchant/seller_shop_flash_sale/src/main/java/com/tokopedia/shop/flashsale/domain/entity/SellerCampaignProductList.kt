@@ -29,7 +29,8 @@ data class SellerCampaignProductList(
         val warehouseList: List<WarehouseData> = listOf(),
         val viewCount: Int = 0,
         val highlightProductWording: String = "",
-        var errorMessage: String = ""
+        var errorMessage: String = "",
+        var isInfoComplete: Boolean = false
     ): Parcelable
 
     @Parcelize

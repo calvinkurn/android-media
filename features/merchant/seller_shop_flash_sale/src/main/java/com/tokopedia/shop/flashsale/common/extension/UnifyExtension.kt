@@ -7,11 +7,13 @@ fun UnifyButton?.showLoading() {
     this?.run {
         isLoading = true
         loadingText = this.context.getString(R.string.sfs_please_wait)
+        isClickable = false
     }
 }
 
 fun UnifyButton?.stopLoading() {
     this?.run {
         isLoading = false
+        isClickable = true
     }
 }

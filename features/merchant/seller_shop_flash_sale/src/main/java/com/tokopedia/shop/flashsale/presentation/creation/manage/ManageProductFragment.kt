@@ -1,5 +1,6 @@
 package com.tokopedia.shop.flashsale.presentation.creation.manage
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
@@ -15,19 +16,24 @@ import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.loaderdialog.LoaderDialog
 import com.tokopedia.seller_shop_flash_sale.R
 import com.tokopedia.seller_shop_flash_sale.databinding.SsfsFragmentManageProductBinding
+import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductList
 import com.tokopedia.shop.flashsale.common.customcomponent.BaseSimpleListFragment
-import com.tokopedia.shop.flashsale.common.extension.doOnDelayFinished
-import com.tokopedia.shop.flashsale.common.extension.setFragmentToUnifyBgColor
-import com.tokopedia.shop.flashsale.common.extension.isZero
-import com.tokopedia.shop.flashsale.common.extension.showError
+import com.tokopedia.shop.flashsale.common.extension.*
 import com.tokopedia.shop.flashsale.di.component.DaggerShopFlashSaleComponent
 import com.tokopedia.shop.flashsale.domain.entity.SellerCampaignProductList
+import com.tokopedia.shop.flashsale.domain.entity.enums.ManageProductBannerType.*
+import com.tokopedia.shop.flashsale.presentation.creation.highlight.ManageHighlightedProductActivity
+import com.tokopedia.shop.flashsale.presentation.creation.information.CampaignInformationFragment
 import com.tokopedia.shop.flashsale.presentation.creation.manage.adapter.ManageProductListAdapter
 import com.tokopedia.shop.flashsale.presentation.creation.manage.bottomsheet.EditProductInfoBottomSheet
 import com.tokopedia.shop.flashsale.presentation.creation.manage.dialog.ProductDeleteDialog
+import com.tokopedia.shop.flashsale.presentation.list.container.CampaignListActivity
+import com.tokopedia.shop.flashsale.presentation.list.list.CampaignListFragment
+import com.tokopedia.shop.flashsale.presentation.list.list.listener.RecyclerViewScrollListener
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.lifecycle.autoClearedNullable
+import kotlinx.coroutines.GlobalScope
 import java.util.*
 import javax.inject.Inject
 import kotlin.collections.ArrayList
@@ -45,17 +51,8 @@ class ManageProductFragment :
         private const val REQUEST_CODE = 123
         private const val EMPTY_STATE_IMAGE_URL =
             "https://images.tokopedia.net/img/android/campaign/flash-sale-toko/ic_no_active_campaign.png"
-
-        fun isProductInfoComplete(productMapData: SellerCampaignProductList.ProductMapData): Boolean {
-            return when {
-                productMapData.discountedPrice.isZero() -> false
-                productMapData.discountPercentage.isZero() -> false
-                productMapData.originalCustomStock.isZero() -> false
-                productMapData.customStock.isZero() -> false
-                productMapData.maxOrder.isZero() -> false
-                else -> true
-            }
-        }
+        private const val REDIRECT_TO_CAMPAIGN_LIST_PAGE_DELAY: Long = 1_500
+        private const val SCROLL_ANIMATION_DELAY = 500L
 
         @JvmStatic
         fun newInstance(campaignId: Long): ManageProductFragment {
@@ -73,8 +70,8 @@ class ManageProductFragment :
     private val viewModelProvider by lazy { ViewModelProvider(this, viewModelFactory) }
     private val viewModel by lazy { viewModelProvider.get(ManageProductViewModel::class.java) }
     private var binding by autoClearedNullable<SsfsFragmentManageProductBinding>()
-    private val campaignId by lazy { arguments?.getLong(BUNDLE_KEY_CAMPAIGN_ID).orZero() }
     private val loaderDialog by lazy { context?.let { LoaderDialog(it) } }
+    private val campaignId by lazy { arguments?.getLong(BUNDLE_KEY_CAMPAIGN_ID).orZero() }
     private val manageProductListAdapter by lazy {
         ManageProductListAdapter(
             onEditClicked = {
@@ -107,6 +104,7 @@ class ManageProductFragment :
         setupView()
         observeProductList()
         observeRemoveProductsStatus()
+        observeBannerType()
     }
 
     private fun setupView() {
@@ -119,9 +117,26 @@ class ManageProductFragment :
                 activity?.finish()
             }
             tpgAddProduct.setOnClickListener {
-                showChooseProductPage()
+                if (manageProductListAdapter.itemCount < PAGE_SIZE) {
+                    showChooseProductPage()
+                } else {
+                    view.showErrorWithCta(
+                        getString(R.string.manage_product_maximum_product_error),
+                        getString(R.string.action_oke)
+                    )
+                }
+            }
+            btnSaveDraft.setOnClickListener {
+                root showToaster getString(R.string.sfs_saved_as_draft)
+                doOnDelayFinished(REDIRECT_TO_CAMPAIGN_LIST_PAGE_DELAY) {
+                    routeToCampaignListPage()
+                }
+            }
+            btnContinue.setOnClickListener {
+                context?.let { it1 -> ManageHighlightedProductActivity.start(it1, campaignId) }
             }
         }
+        setupScrollListener()
     }
 
     private fun observeProductList() {
@@ -139,6 +154,7 @@ class ManageProductFragment :
                         hideEmptyState()
                     } else {
                         showEmptyState()
+                        showChooseProductPage()
                     }
                 }
                 is Fail -> {
@@ -162,16 +178,26 @@ class ManageProductFragment :
         }
     }
 
-    private fun displayProducts(productList: SellerCampaignProductList) {
-        binding?.cardIncompleteProductInfo?.gone()
-        productList.productList.forEach { product ->
-            when {
-                !isProductInfoComplete(product.productMapData) -> {
-                    binding?.cardIncompleteProductInfo?.visible()
+    private fun observeBannerType() {
+        viewModel.bannerType.observe(viewLifecycleOwner) { type ->
+            when (type) {
+                EMPTY_BANNER -> {
+                    showEmptyProductBanner()
+                }
+                ERROR_BANNER -> {
+                    showErrorProductBanner()
+                }
+                HIDE_BANNER -> {
+                    hideBanner()
                 }
             }
-            product.errorMessage = viewModel.getProductErrorMessage(product.productMapData)
         }
+    }
+
+    private fun displayProducts(productList: SellerCampaignProductList) {
+        viewModel.setProductErrorMessage(productList)
+        viewModel.setProductInfoCompletion(productList)
+        viewModel.getBannerType(productList)
         manageProductListAdapter.clearAll()
         renderList(productList.productList, false)
         binding?.apply {
@@ -182,6 +208,26 @@ class ManageProductFragment :
         }
     }
 
+    private fun setupScrollListener() {
+        binding?.apply {
+            recyclerViewProduct.addOnScrollListener(
+                RecyclerViewScrollListener(
+                    onScrollDown = {
+                        doOnDelayFinished(SCROLL_ANIMATION_DELAY) {
+                            handleScrollDownEvent()
+                        }
+                    },
+                    onScrollUp = {
+                        doOnDelayFinished(SCROLL_ANIMATION_DELAY) {
+                            handleScrollUpEvent()
+                        }
+                    }
+                )
+            )
+        }
+    }
+
+    @SuppressLint("ResourcePackage")
     private fun showEmptyState() {
         binding?.apply {
             emptyState.visible()
@@ -193,7 +239,14 @@ class ManageProductFragment :
 
             emptyState.setImageUrl(EMPTY_STATE_IMAGE_URL)
             emptyState.setPrimaryCTAClickListener {
-                showChooseProductPage()
+                if (manageProductListAdapter.itemCount < PAGE_SIZE) {
+                    showChooseProductPage()
+                } else {
+                    view.showErrorWithCta(
+                        getString(R.string.manage_product_maximum_product_error),
+                        getString(R.string.action_oke)
+                    )
+                }
             }
         }
     }
@@ -205,6 +258,30 @@ class ManageProductFragment :
             tpgAddProduct.visible()
             recyclerViewProduct.visible()
             cardBottomButtonGroup.visible()
+        }
+    }
+
+    private fun showEmptyProductBanner() {
+        binding?.apply {
+            tickerErrorProductInfo.gone()
+            cardIncompleteProductInfo.visible()
+            btnContinue.enable()
+        }
+    }
+
+    private fun showErrorProductBanner() {
+        binding?.apply {
+            tickerErrorProductInfo.visible()
+            cardIncompleteProductInfo.gone()
+            btnContinue.disable()
+        }
+    }
+
+    private fun hideBanner() {
+        binding?.apply {
+            tickerErrorProductInfo.gone()
+            cardIncompleteProductInfo.gone()
+            btnContinue.enable()
         }
     }
 
@@ -241,6 +318,39 @@ class ManageProductFragment :
                 viewModel.removeProducts(campaignId, listOf(product))
             }
             show(context ?: return)
+        }
+    }
+
+    private fun routeToCampaignListPage() {
+        val context = context ?: return
+        CampaignListActivity.start(context, isClearTop = true)
+    }
+
+    private fun handleScrollDownEvent() {
+        binding?.apply {
+            when (viewModel.bannerType.value) {
+                EMPTY_BANNER -> {
+                    cardIncompleteProductInfo.slideDown()
+                }
+                ERROR_BANNER -> {
+                    tickerErrorProductInfo.slideDown()
+                }
+            }
+            cardBottomButtonGroup.slideDown()
+        }
+    }
+
+    private fun handleScrollUpEvent() {
+        binding?.apply {
+            when (viewModel.bannerType.value) {
+                EMPTY_BANNER -> {
+                    cardIncompleteProductInfo.slideUp()
+                }
+                ERROR_BANNER -> {
+                    tickerErrorProductInfo.slideUp()
+                }
+            }
+            cardBottomButtonGroup.slideUp()
         }
     }
 

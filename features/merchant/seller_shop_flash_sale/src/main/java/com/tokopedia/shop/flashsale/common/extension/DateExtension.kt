@@ -25,6 +25,21 @@ fun Date.toCalendar(): Calendar {
     return calendar
 }
 
+fun Date.advanceDayBy(days: Int): Date {
+    val now = Calendar.getInstance()
+    now.time = this
+    now.add(Calendar.DAY_OF_YEAR, days)
+    return now.time
+}
+
+fun Date.advanceMonthBy(months: Int): Date {
+    val now = Calendar.getInstance()
+    now.time = this
+    now.add(Calendar.MONTH, months)
+    return now.time
+}
+
+
 fun Date.advanceHourBy(hour: Int): Date {
     val now = Calendar.getInstance()
     now.time = this
