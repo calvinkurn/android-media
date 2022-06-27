@@ -4,8 +4,6 @@
     android:layout_height="wrap_content"
     xmlns:tools="http://schemas.android.com/tools"
     android:paddingTop="8dp"
-    android:paddingStart="16dp"
-    android:paddingEnd="16dp"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <com.tokopedia.unifyprinciples.Typography
@@ -17,6 +15,7 @@
         app:layout_constraintEnd_toEndOf="@id/guideline"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="@id/specification_barrier"
         app:typographyType="body_2"
         tools:text="RAM" />
 
@@ -26,9 +25,12 @@
         android:layout_height="wrap_content"
         app:typographyType="body_2"
         android:lineSpacingExtra="8dp"
+        android:maxLines="2"
+        android:ellipsize="end"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/guideline"
         app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="@id/specification_barrier"
         tools:text="6 GB " />
 
     <androidx.constraintlayout.widget.Guideline
