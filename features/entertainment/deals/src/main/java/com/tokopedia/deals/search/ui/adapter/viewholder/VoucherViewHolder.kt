@@ -11,6 +11,7 @@ import com.tokopedia.deals.common.utils.DealsUtils
 import com.tokopedia.deals.search.listener.DealsSearchListener
 import com.tokopedia.deals.search.model.visitor.VoucherModel
 import com.tokopedia.kotlin.extensions.view.loadImage
+import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifyprinciples.Typography
 
 class VoucherViewHolder(itemView: View, private val searchListener: DealsSearchListener) :
@@ -21,7 +22,7 @@ class VoucherViewHolder(itemView: View, private val searchListener: DealsSearchL
     private var brandImage = itemView.findViewById<ImageView>(R.id.iv_brand)
     private var salesPrice = itemView.findViewById<Typography>(R.id.tv_sales_price)
     private var mrpPrice = itemView.findViewById<Typography>(R.id.mrp)
-    private var discount = itemView.findViewById<Typography>(R.id.tv_off)
+    private var discount = itemView.findViewById<Label>(R.id.tv_off)
 
     private var price = 0
     private var mrp = 0
