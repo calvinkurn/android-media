@@ -29,6 +29,10 @@ object WishlistV2RemoteConfigRollenceUtil {
         }
     }
 
+    fun isUsingWishlistCollection(context: Context) :Boolean {
+        return isEnableRemoteConfigWishlistCollection(context) && isEnableRollenceWishlistCollection()
+    }
+
     private fun isEnableRemoteConfigWishlistCollection(context: Context): Boolean {
         val config: RemoteConfig = FirebaseRemoteConfigImpl(context)
         isUseWishlistCollection = config.getBoolean(RemoteConfigKey.ENABLE_WISHLIST_COLLECTION, true)
