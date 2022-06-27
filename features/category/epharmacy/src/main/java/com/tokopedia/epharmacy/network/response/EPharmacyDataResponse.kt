@@ -2,12 +2,10 @@ package com.tokopedia.epharmacy.network.response
 
 
 import com.google.gson.annotations.SerializedName
-import com.tokopedia.epharmacy.utils.DEFAULT_ZERO_VALUE
-import com.tokopedia.epharmacy.utils.GALLERY_IMAGE_VIEW_TYPE
 
 data class EPharmacyDataResponse(
     @SerializedName("epharmacy_button")
-    val epharmacyButton: List<EpharmacyButton?>?,
+    val epharmacyButton: EpharmacyButton?,
     @SerializedName("epharmacy_ticker")
     val epharmacyTicker: EpharmacyTicker?,
     @SerializedName("invoice_ref_num")
@@ -29,16 +27,18 @@ data class EPharmacyDataResponse(
     @SerializedName("shop_name")
     val shopName: String?,
     @SerializedName("shop_location")
-    val shopLocation: String?
+    val shopLocation: String?,
+    @SerializedName("is_reupload_enabled")
+    val isReUploadEnabled: Boolean?
 )
 
 data class EpharmacyButton(
     @SerializedName("key")
-    val key: String?,
+    var key: String?,
     @SerializedName("text")
     var text: String?,
     @SerializedName("type")
-    var type: String = "primary",
+    val type: String?,
     @SerializedName("applink")
     val appLink: String?,
     @SerializedName("desktop_url")
@@ -64,13 +64,11 @@ data class PrescriptionImage(
     @SerializedName("is_uploading")
     var isUploading: Boolean = false,
     @SerializedName("is_upload_success")
-    var isUploadSuccess: Boolean = false,
+    var isUploadSuccess: Boolean = true,
     @SerializedName("is_deletable")
     var isDeletable: Boolean = false,
     @SerializedName("is_upload_failed")
     var isUploadFailed: Boolean = false,
-    @SerializedName("view_type")
-    var viewType: Int = GALLERY_IMAGE_VIEW_TYPE,
     @SerializedName("local_path")
     var localPath: String? = "",
     @SerializedName("prescription_data")

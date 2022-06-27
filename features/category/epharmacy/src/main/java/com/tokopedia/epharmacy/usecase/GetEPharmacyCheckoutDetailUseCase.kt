@@ -18,7 +18,7 @@ class GetEPharmacyCheckoutDetailUseCase @Inject constructor(graphqlRepository: G
         try {
             this.setTypeClass(EPharmacyDataResponse::class.java)
             this.setRequestParams(getRequestParams(checkoutId))
-            this.setGraphqlQuery(GQL_FETCH_ORDER_DETAILS_QUERY)
+            this.setGraphqlQuery(GQL_FETCH_CHECKOUT_DETAILS_QUERY)
             this.execute(
                 { result ->
                     onSuccess(result)

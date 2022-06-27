@@ -44,8 +44,8 @@ class UploadPrescriptionViewModel @Inject constructor(
     private val _uploadPrescriptionIdsData = MutableLiveData<Result<Boolean>>()
     val uploadPrescriptionIdsData: LiveData<Result<Boolean>> = _uploadPrescriptionIdsData
 
-    private val _buttonLiveData = MutableLiveData<List<EpharmacyButton?>>()
-    val buttonLiveData: LiveData<List<EpharmacyButton?>> = _buttonLiveData
+    private val _buttonLiveData = MutableLiveData<String?>()
+    val buttonLiveData: LiveData<String?> = _buttonLiveData
 
     private val _prescriptionImages = MutableLiveData<ArrayList<PrescriptionImage?>>()
     val prescriptionImages: LiveData<ArrayList<PrescriptionImage?>> = _prescriptionImages
@@ -65,9 +65,7 @@ class UploadPrescriptionViewModel @Inject constructor(
                 onFailEPharmacyDetail(IllegalStateException("Data invalid"))
             else {
                 _productDetailLiveData.postValue(Success(mapResponseInDataModel(data)))
-                if(!data.epharmacyButton.isNullOrEmpty()){
-                    _buttonLiveData.postValue(data.epharmacyButton)
-                }
+                _buttonLiveData.postValue(data.epharmacyButton?.key)
             }
         }
     }
@@ -96,28 +94,6 @@ class UploadPrescriptionViewModel @Inject constructor(
 
     private fun onFailEPharmacyDetail(throwable: Throwable) {
         _productDetailLiveData.postValue(Fail(throwable))
-    }
-
-    fun getEPharmacyCheckoutDetail(checkoutId: String) {
-        getEPharmacyCheckoutDetailUseCase.cancelJobs()
-        getEPharmacyCheckoutDetailUseCase.getEPharmacyCheckoutDetail(
-            ::onAvailableEPharmacyCheckoutDetail,
-            ::onFailEPharmacyDetail,
-            checkoutId
-        )
-    }
-
-    private fun onAvailableEPharmacyCheckoutDetail(ePharmacyDetailResponse: EPharmacyDataResponse) {
-        ePharmacyDetailResponse.let { data ->
-            if(data.ePharmacyProducts?.isEmpty() == true)
-                onFailEPharmacyDetail(IllegalStateException("Data invalid"))
-            else {
-                _productDetailLiveData.postValue(Success(mapResponseInDataModel(data)))
-                if(!data.epharmacyButton.isNullOrEmpty()){
-                    _buttonLiveData.postValue(data.epharmacyButton)
-                }
-            }
-        }
     }
 
     fun onSuccessGetPrescriptionImages(arrayList: ArrayList<PrescriptionImage?>) {
@@ -149,7 +125,7 @@ class UploadPrescriptionViewModel @Inject constructor(
             isUploading = true,
             isUploadSuccess = false,
             isDeletable = true,
-            isUploadFailed = false, GALLERY_IMAGE_VIEW_TYPE, localPath,
+            isUploadFailed = false, localPath,
             null
         ))
     }
@@ -205,11 +181,12 @@ class UploadPrescriptionViewModel @Inject constructor(
     private fun checkPrescriptionImages() {
         var successImagesCount = 0
         var failedImageCount = 0
-        var approvedImages = 0
+        var rejectedImages = 0
+        val presImageSize  = _prescriptionImages.value?.size ?: 0
         _prescriptionImages.value?.forEach { presImage ->
             when {
-                presImage?.status == EPharmacyPrescriptionStatus.APPROVED.status -> {
-                    approvedImages += 1
+                presImage?.status == EPharmacyPrescriptionStatus.REJECTED.status -> {
+                    rejectedImages += 1
                 }
                 presImage?.isUploadSuccess == true -> {
                     successImagesCount += 1
@@ -219,20 +196,17 @@ class UploadPrescriptionViewModel @Inject constructor(
                 }
             }
         }
-        _buttonLiveData.value.let {
-            it?.firstOrNull()?.apply {
-                type = if(failedImageCount > 0){
-                    EPharmacyButtonType.TERTIARY.type
-                }else {
-                    if(approvedImages > 0 && successImagesCount == 0){
-                        EPharmacyButtonType.PRIMARY.type
-                    }else {
-                        EPharmacyButtonType.SECONDARY.type
-                    }
-                }
+        val key = if(failedImageCount > 0){
+            EPharmacyButtonKey.DONE_DISABLED.key
+        }else {
+            if(successImagesCount == presImageSize
+                && rejectedImages == 0 && presImageSize != 0){
+                EPharmacyButtonKey.DONE.key
+            }else {
+                EPharmacyButtonKey.RE_UPLOAD.key
             }
-            _buttonLiveData.postValue(it)
         }
+        _buttonLiveData.postValue(key)
     }
 
     private fun uploadFailed(uniquePositionId : Int, exception : Throwable){

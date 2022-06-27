@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.text.SpannableString
 import android.text.Spanned
 import android.text.TextPaint
+import android.text.method.LinkMovementMethod
 import android.text.style.ClickableSpan
 import android.view.LayoutInflater
 import android.view.View
@@ -47,8 +48,8 @@ class UploadPrescriptionFragment : BaseDaggerFragment() , EPharmacyListener {
 
     private var ePharmacyToolTipText : Typography? = null
     private var ePharmacyRecyclerView : RecyclerView? = null
-    private var fotoResepButton : UnifyButton? = null
-    private var doneButton : UnifyButton? = null
+    private var ePharmacyUploadPhotoButton : UnifyButton? = null
+    private var ePharmacyDoneButton : UnifyButton? = null
 
     @Inject
     lateinit var viewModelFactory: dagger.Lazy<ViewModelProvider.Factory>
@@ -111,8 +112,8 @@ class UploadPrescriptionFragment : BaseDaggerFragment() , EPharmacyListener {
         view.apply {
             ePharmacyToolTipText = findViewById(R.id.tooltip)
             ePharmacyRecyclerView = findViewById(R.id.epharmacy_rv)
-            fotoResepButton = findViewById(R.id.foto_resep_button)
-            doneButton = findViewById(R.id.done_button)
+            ePharmacyUploadPhotoButton = findViewById(R.id.foto_resep_button)
+            ePharmacyDoneButton = findViewById(R.id.done_button)
         }
     }
 
@@ -124,7 +125,8 @@ class UploadPrescriptionFragment : BaseDaggerFragment() , EPharmacyListener {
 
     private fun getData() {
         if(checkoutId.isNotBlank()) {
-            uploadPrescriptionViewModel.getEPharmacyCheckoutDetail(checkoutId)
+            //TODO Get Product Array from Checkout
+            //TODO Get Prescription ids from Checkout if API doesn't provide
         }else if(orderId.isNotBlank()){
             uploadPrescriptionViewModel.getEPharmacyOrderDetail(orderId)
         }
@@ -142,7 +144,7 @@ class UploadPrescriptionFragment : BaseDaggerFragment() , EPharmacyListener {
         val spannableString = SpannableString(terms)
         val clickableSpan = object : ClickableSpan() {
             override fun onClick(widget: View) {
-                showTnC()
+                showTnC(EPHARMACY_TNC_LINK)
             }
 
             override fun updateDrawState(ds: TextPaint) {
@@ -153,15 +155,15 @@ class UploadPrescriptionFragment : BaseDaggerFragment() , EPharmacyListener {
         }
         spannableString.setSpan(clickableSpan, 44, 65, Spanned.SPAN_INCLUSIVE_EXCLUSIVE)
         ePharmacyToolTipText?.text = spannableString
-        ePharmacyToolTipText?.isClickable = true
+        ePharmacyToolTipText?.movementMethod = LinkMovementMethod.getInstance()
     }
 
     private fun renderButtons() {
         setCameraDrawableOnButton()
-        fotoResepButton?.setOnClickListener {
-            onClickFotoResepButton()
+        ePharmacyUploadPhotoButton?.setOnClickListener {
+            onClickUploadPhotoButton()
         }
-        doneButton?.setOnClickListener {
+        ePharmacyDoneButton?.setOnClickListener {
             onDoneButtonClick()
         }
     }
@@ -172,22 +174,17 @@ class UploadPrescriptionFragment : BaseDaggerFragment() , EPharmacyListener {
                 DrawableCompat.wrap(it),
                 MethodChecker.getColor(context,com.tokopedia.unifyprinciples.R.color.Green_G500)
             )
-            fotoResepButton?.setDrawable(it, UnifyButton.DrawablePosition.LEFT)
+            ePharmacyUploadPhotoButton?.setDrawable(it, UnifyButton.DrawablePosition.LEFT)
         }
     }
 
-    private fun showTnC() {
-        EPharmacyWebViewBottomSheet.newInstance("", EPHARMACY_TNC_LINK).show(childFragmentManager,EPharmacyWebViewBottomSheet.TAG)
+    private fun showTnC(linkUrl : String) {
+        EPharmacyWebViewBottomSheet.newInstance("", linkUrl).show(childFragmentManager,EPharmacyWebViewBottomSheet.TAG)
     }
 
-    private fun onClickFotoResepButton() {
-        uploadPrescriptionViewModel.buttonLiveData.value?.firstOrNull()?.let { button ->
-            if(button.type == EPharmacyButtonType.SECONDARY.type){
-                onDoneButtonClick()
-            }else {
-                openMediaPicker((MAX_MEDIA_ITEM)
-                        - (uploadPrescriptionViewModel.prescriptionImages.value?.size ?: 0))            }
-        }
+    private fun onClickUploadPhotoButton() {
+        openMediaPicker((MAX_MEDIA_ITEM)
+                - (uploadPrescriptionViewModel.prescriptionImages.value?.size ?: 0))
     }
 
     private fun onDoneButtonClick(){
@@ -322,47 +319,45 @@ class UploadPrescriptionFragment : BaseDaggerFragment() , EPharmacyListener {
         submitList(newData)
     }
 
-    private fun updateButtonUI(buttonData: List<EpharmacyButton?>) {
-        buttonData.firstOrNull()?.let {
-            if(it.key == EPHARMACY_CHECK_BUTTON_KEY){
-                ePharmacyUiUpdater.prescriptionInfoMap?.showCamera = false
-                reloadPrescriptionUI()
-                it.type = EPharmacyButtonType.NONE.type
-            }
-            when (it.type) {
-                EPharmacyButtonType.PRIMARY.type -> {
-                    ePharmacyToolTipText?.show()
-                    fotoResepButton?.show()
-                    doneButton?.hide()
+    private fun updateButtonUI(buttonType: String?) {
+        buttonType?.let {
+            when (it) {
+                EPharmacyButtonKey.RE_UPLOAD.key -> {
+                    showUploadPhotoButtonState()
                 }
-                EPharmacyButtonType.TERTIARY.type -> {
-                    ePharmacyToolTipText?.hide()
-                    fotoResepButton?.hide()
-                    doneButton?.show()
-                    doneButton?.isEnabled = false
+                EPharmacyButtonKey.DONE_DISABLED.key -> {
+                   showDoneButtonState()
+                    ePharmacyDoneButton?.isEnabled = false
                 }
-                EPharmacyButtonType.SECONDARY.type -> {
-                    ePharmacyToolTipText?.hide()
-                    fotoResepButton?.hide()
-                    doneButton?.show()
-                    doneButton?.isEnabled = true
+                EPharmacyButtonKey.DONE.key -> {
+                    showDoneButtonState()
+                    ePharmacyDoneButton?.isEnabled = true
                 }
-                EPharmacyButtonType.NONE.type -> {
-                    ePharmacyToolTipText?.hide()
-                    fotoResepButton?.hide()
-                    doneButton?.hide()
-                }
-                else -> {
-                    ePharmacyToolTipText?.hide()
-                    fotoResepButton?.hide()
-                    doneButton?.hide()
+                EPharmacyButtonKey.CHECK.key -> {
+                    hideAllButtons()
+                    ePharmacyUiUpdater.prescriptionInfoMap?.showCamera = false
+                    reloadPrescriptionUI()
                 }
             }
-        } ?: kotlin.run {
-            ePharmacyToolTipText?.hide()
-            fotoResepButton?.hide()
-            doneButton?.hide()
         }
+    }
+
+    private fun showDoneButtonState(){
+        ePharmacyToolTipText?.hide()
+        ePharmacyUploadPhotoButton?.hide()
+        ePharmacyDoneButton?.show()
+    }
+
+    private fun showUploadPhotoButtonState(){
+        ePharmacyToolTipText?.show()
+        ePharmacyUploadPhotoButton?.show()
+        ePharmacyDoneButton?.hide()
+    }
+
+    private fun hideAllButtons(){
+        ePharmacyToolTipText?.hide()
+        ePharmacyUploadPhotoButton?.hide()
+        ePharmacyDoneButton?.hide()
     }
 
     private fun submitList(visitableList: List<BaseEPharmacyDataModel>) {

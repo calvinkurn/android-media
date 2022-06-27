@@ -19,8 +19,6 @@ const val PRODUCT_COMPONENT = "product component"
 
 const val PRESCRIPTION_VIEW_TYPE = 0
 const val PRODUCT_VIEW_TYPE = 1
-const val GALLERY_IMAGE_VIEW_TYPE = 2
-const val OPEN_GALLERY_VIEW_TYPE = 3
 
 const val EPHARMACY_SCREEN_NAME = "epharmacy page"
 
@@ -31,11 +29,11 @@ const val EPHARMACY_TNC_LINK = "https://www.tokopedia.com/help/article/syarat-da
 
 const val EPHARMACY_CHECK_BUTTON_KEY ="epharmacy_check_prescription"
 
-enum class EPharmacyButtonType(val type : String) {
-    PRIMARY("primary"),
-    SECONDARY("secondary"),
-    TERTIARY("tertiary"),
-    NONE("none")
+enum class EPharmacyButtonKey(val key : String) {
+    CHECK("epharmacy_check_prescription"),
+    RE_UPLOAD("epharmacy_reupload_prescription"),
+    DONE("epharmacy_done_prescription"),
+    DONE_DISABLED("epharmacy_done_disabled")
 }
 
 enum class EPharmacyPrescriptionStatus(val status : String){
@@ -44,3 +42,6 @@ enum class EPharmacyPrescriptionStatus(val status : String){
     ACTIVE("ACTIVE"),
     SELECTED("SELECTED")
 }
+
+const val EPharmacyImageQuality = 100
+const val EPharmacyImageQualityDecreaseFactor = 0.6
