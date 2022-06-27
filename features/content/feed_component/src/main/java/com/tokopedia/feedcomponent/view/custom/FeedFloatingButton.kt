@@ -9,6 +9,7 @@ import android.widget.LinearLayout
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchersProvider
 import com.tokopedia.feedcomponent.R
 import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.unifyprinciples.Typography
 import kotlinx.coroutines.*
 
 /**
@@ -17,13 +18,27 @@ import kotlinx.coroutines.*
 class FeedFloatingButton : LinearLayout, View.OnClickListener {
 
     constructor(context: Context) : super(context)
-    constructor(context: Context, attrs: AttributeSet?) : super(context, attrs)
-    constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr)
-    constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int, defStyleRes: Int) : super(context, attrs, defStyleAttr, defStyleRes)
+    constructor(context: Context, attrs: AttributeSet?) : super(context, attrs) {
+        initAttrs(context, attrs)
+    }
+
+    constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr) {
+        initAttrs(context, attrs)
+    }
 
     /** View */
     private val flTextWrapper: FrameLayout
     private val icFab: IconUnify
+    private val tvFab: Typography
+
+    private fun initAttrs(context: Context, attrs: AttributeSet?) {
+        if (attrs != null) {
+            val attributeArray = context.obtainStyledAttributes(attrs, R.styleable.FeedFloatingButton)
+
+             tvFab.text = attributeArray.getString(R.styleable.FeedFloatingButton_fab_text) ?: context.getString(R.string.feed_fab_create_content)
+            attributeArray.recycle()
+        }
+    }
 
     init {
         val view = View.inflate(context, R.layout.view_feed_floating_button, this)
@@ -31,6 +46,7 @@ class FeedFloatingButton : LinearLayout, View.OnClickListener {
 
         flTextWrapper = view.findViewById(R.id.fl_fab_text_wrapper)
         icFab = view.findViewById(R.id.ic_fab)
+        tvFab = view.findViewById(R.id.tv_fab)
     }
 
     private var mOnClickListener: OnClickListener? = null
