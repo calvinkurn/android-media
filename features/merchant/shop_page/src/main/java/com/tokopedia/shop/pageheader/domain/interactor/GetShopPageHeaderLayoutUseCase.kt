@@ -35,6 +35,8 @@ class GetShopPageHeaderLayoutUseCase @Inject constructor(
 
     companion object {
         private const val PARAM_SHOP_ID = "shopId"
+        private const val PARAM_DISTRICT_ID = "districtID"
+        private const val PARAM_CITY_ID = "cityID"
         const val QUERY = """
             query getShopPageGetHeaderLayout(${'$'}shopId: String!){
                 ShopPageGetHeaderLayout(shopID:${'$'}shopId){
@@ -97,7 +99,13 @@ class GetShopPageHeaderLayoutUseCase @Inject constructor(
         """
         @JvmStatic
         fun createParams(
-                shopId: String
-        ) = mapOf(PARAM_SHOP_ID to shopId)
+                shopId: String,
+                districtId: String,
+                cityId: String
+        ) = mapOf(
+            PARAM_SHOP_ID to shopId,
+            PARAM_DISTRICT_ID to districtId,
+            PARAM_CITY_ID to cityId
+        )
     }
 }

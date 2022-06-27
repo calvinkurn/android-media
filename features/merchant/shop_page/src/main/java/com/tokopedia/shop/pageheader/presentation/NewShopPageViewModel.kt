@@ -173,7 +173,8 @@ class NewShopPageViewModel @Inject constructor(
                     block = {
                         getShopPageHeaderData(
                                 shopId,
-                                isRefresh
+                                isRefresh,
+                                widgetUserAddressLocalData
                         )
                     },
                     onError = {
@@ -225,9 +226,15 @@ class NewShopPageViewModel @Inject constructor(
         }
     }
 
-    private suspend fun getShopPageHeaderData(shopId: String, isRefresh: Boolean): ShopPageHeaderLayoutResponse {
+    private suspend fun getShopPageHeaderData(
+        shopId: String,
+        isRefresh: Boolean,
+        widgetUserAddressLocalData: LocalCacheModel
+    ): ShopPageHeaderLayoutResponse {
         val useCase = getShopPageHeaderLayoutUseCase.get()
-        useCase.params = GetShopPageHeaderLayoutUseCase.createParams(shopId)
+        val districtId = widgetUserAddressLocalData.district_id
+        val cityId = widgetUserAddressLocalData.city_id
+        useCase.params = GetShopPageHeaderLayoutUseCase.createParams(shopId, districtId, cityId)
         useCase.isFromCloud = isRefresh
         return useCase.executeOnBackground()
     }
