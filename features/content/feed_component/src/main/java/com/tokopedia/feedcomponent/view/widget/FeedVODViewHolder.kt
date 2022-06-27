@@ -179,7 +179,7 @@ class FeedVODViewHolder @JvmOverloads constructor(
         vodVolumeIcon.setOnClickListener {
             mIsMute = !mIsMute
             videoPlayer?.toggleVideoVolume(mIsMute)
-            setMuteUnmuteVOD(false, mIsMute)
+            setMuteUnmuteVOD(isVideoTap = false, isMute = mIsMute)
         }
         vodPlayIcon.setOnClickListener {
             startVideoPlayer()
@@ -271,7 +271,7 @@ class FeedVODViewHolder @JvmOverloads constructor(
                     mIsMute = !mIsMute
                     videoPlayer?.toggleVideoVolume(mIsMute)
                     changeMuteStateVideoVOD(mIsMute)
-                    setMuteUnmuteVOD(isVideoTap = true, mIsMute)
+                    setMuteUnmuteVOD(isVideoTap = true, isMute = mIsMute)
                 }
             }
             videoPlayer?.start(mFeedXMedia.mediaUrl, mIsMute)
@@ -372,7 +372,6 @@ class FeedVODViewHolder @JvmOverloads constructor(
         }.start()
     }
     private fun showLanjutMenontonAfterThirtySeconds(){
-        var count = 0
         if (secondCountDownTimer != null) {
             secondCountDownTimer?.cancel()
             secondCountDownTimer?.start()
