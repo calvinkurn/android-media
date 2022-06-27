@@ -124,7 +124,7 @@
         app:srcCompat="@drawable/ic_feed_post_plus"
         />
 
-    <com.tokopedia.feedplus.view.customview.FeedFloatingButton
+    <com.tokopedia.feedcomponent.view.custom.FeedFloatingButton
         android:id="@+id/feed_floating_button"
         android:visibility="gone"
         android:layout_width="wrap_content"

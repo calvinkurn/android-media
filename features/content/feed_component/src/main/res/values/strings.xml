@@ -203,6 +203,7 @@
     <string name="feed_video_tab_success_remove_reminder">Pengingat berhasil terhapus!</string>
     <string name="feed_video_tab_error_reminder">Tunggu sebentar, biar Toped bereskan. Coba lagi atau kembali nanti.</string>
 
-
+    <string name="feed_fab_create_content">Buat Konten</string>
+    <string name="feed_fab_create_post">Buat Post</string>
 
 </resources>

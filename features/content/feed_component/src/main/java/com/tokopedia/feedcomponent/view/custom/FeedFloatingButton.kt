@@ -1,4 +1,4 @@
-package com.tokopedia.feedplus.view.customview
+package com.tokopedia.feedcomponent.view.custom
 
 import android.animation.ValueAnimator
 import android.content.Context
@@ -7,13 +7,12 @@ import android.view.View
 import android.widget.FrameLayout
 import android.widget.LinearLayout
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchersProvider
-import com.tokopedia.feedplus.R
+import com.tokopedia.feedcomponent.R
 import com.tokopedia.iconunify.IconUnify
 import kotlinx.coroutines.*
-import kotlin.concurrent.timer
 
 /**
- * Created By : Jonathan Darwin on May 25, 2022
+ * Created By : Jonathan Darwin on June 27, 2022
  */
 class FeedFloatingButton : LinearLayout, View.OnClickListener {
 

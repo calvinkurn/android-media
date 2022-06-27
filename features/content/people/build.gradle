@@ -36,6 +36,7 @@ dependencies {
     implementation rootProject.ext.unifyDependencies.header
 
     implementation project(rootProject.ext.features.playWidget)
+    implementation project(rootProject.ext.features.feedComponent)
     
     implementation rootProject.ext.tkpdInternalLibDependencies.analyticConstants
 
