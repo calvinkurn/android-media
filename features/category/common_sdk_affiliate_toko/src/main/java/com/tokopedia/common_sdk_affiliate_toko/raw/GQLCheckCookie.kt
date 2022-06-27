@@ -16,8 +16,8 @@ val GQL_Check_Cookie = """
           IosURL
         }
       }
-      AffiliateUUID
     }
+    AffiliateUUID
   }
 }
 """.trimIndent()

@@ -25,7 +25,9 @@ data class CheckAffiliateCookieRequest(
         @SerializedName("SiteID")
         var siteID: String?,
         @SerializedName("VerticalID")
-        var verticalID: String?
+        var verticalID: String?,
+        @SerializedName("AffiliateUUID")
+        var affiliateUUID: String?
     )
 
 }

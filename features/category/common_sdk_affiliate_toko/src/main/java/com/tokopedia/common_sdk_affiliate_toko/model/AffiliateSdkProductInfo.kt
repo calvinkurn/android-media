@@ -9,8 +9,7 @@ package com.tokopedia.common_sdk_affiliate_toko.model
  * @param[productId] productId of Product
  */
 data class AffiliateSdkProductInfo(
-    val categoryID: String = "",
-    val isVariant: Boolean = false,
-    val stockQty: Int = 0,
-    val productId: String = ""
+    val categoryID: String,
+    val isVariant: Boolean,
+    val stockQty: Int,
 )

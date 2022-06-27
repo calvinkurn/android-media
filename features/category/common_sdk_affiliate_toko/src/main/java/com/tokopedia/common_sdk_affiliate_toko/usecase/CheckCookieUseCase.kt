@@ -25,7 +25,8 @@ class CheckCookieUseCase @Inject constructor(
                     param.affiliatePageDetail.pageId,
                     param.affiliatePageDetail.source.getType(),
                     param.affiliatePageDetail.siteId,
-                    param.affiliatePageDetail.verticalId
+                    param.affiliatePageDetail.verticalId,
+                    param.affiliateUUID
                 ),
             )
         )

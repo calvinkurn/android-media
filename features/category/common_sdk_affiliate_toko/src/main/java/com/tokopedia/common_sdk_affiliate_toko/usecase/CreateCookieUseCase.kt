@@ -7,6 +7,7 @@ import com.tokopedia.common_sdk_affiliate_toko.model.CreateAffiliateCookieRespon
 import com.tokopedia.common_sdk_affiliate_toko.model.toCreateCookieAdditionParam
 import com.tokopedia.common_sdk_affiliate_toko.raw.GQL_Create_Cookie
 import com.tokopedia.common_sdk_affiliate_toko.repository.CommonAffiliateRepository
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.track.TrackApp
 import javax.inject.Inject
 
@@ -42,10 +43,7 @@ class CreateCookieUseCase @Inject constructor(
                 deviceId
             ),
             CreateAffiliateCookieRequest.LinkDetail(
-                channel = param.affiliateChannel,
-                affiliateLink = "",
-                linkIdentifier = "",
-                linkType = ""
+                channel = param.affiliateChannel
             ),
             CreateAffiliateCookieRequest.PageDetail(
                 param.affiliatePageDetail.pageId,
@@ -55,13 +53,12 @@ class CreateCookieUseCase @Inject constructor(
             ),
             CreateAffiliateCookieRequest.PlatformDetail(
                 platform = "android",
-                androidVersion
+                GlobalConfig.VERSION_NAME
             ),
             CreateAffiliateCookieRequest.ProductDetail(
                 param.affiliatePageDetail.source.productInfo.categoryID,
                 param.affiliatePageDetail.source.productInfo.isVariant,
-                param.affiliatePageDetail.source.productInfo.stockQty,
-                param.affiliatePageDetail.source.productInfo.productId
+                param.affiliatePageDetail.source.productInfo.stockQty
             ),
             CreateAffiliateCookieRequest.ShopDetail(param.affiliatePageDetail.source.shopId)
         )

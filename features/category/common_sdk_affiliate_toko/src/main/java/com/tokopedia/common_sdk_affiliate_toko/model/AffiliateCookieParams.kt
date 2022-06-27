@@ -15,7 +15,7 @@ internal class AffiliateCookieParams(
  * @param[key] String key
  * @param[value] String value
  */
- class AdditionalParam(
+class AdditionalParam(
     var key: String?,
     var value: String?
 )
@@ -28,7 +28,7 @@ internal class AffiliateCookieParams(
  * @param[siteId] if not provided default value is always 1
  * @param[verticalId] if not provided default value is always 1
  */
- class AffiliatePageDetail(
+class AffiliatePageDetail(
     val pageId: String,
     val source: AffiliateSdkPageSource,
     val siteId: String = "1",
@@ -43,7 +43,7 @@ internal class AffiliateCookieParams(
  */
 sealed class AffiliateSdkPageSource(
     internal val shopId: String,
-    internal val productInfo: AffiliateSdkProductInfo = AffiliateSdkProductInfo()
+    internal val productInfo: AffiliateSdkProductInfo = AffiliateSdkProductInfo("", false, 0)
 ) {
     internal open fun getType() = ""
 
@@ -57,12 +57,13 @@ sealed class AffiliateSdkPageSource(
         AffiliateSdkPageSource(shopId, productInfo) {
         override fun getType() = "pdp"
     }
+
     /**
      * Encapsulates info for Shop page source.
      *
      * @param[shopId] shopId of Shop
      */
-    class Shop(shopId: String) :
+    class Shop(shopId: String = "") :
         AffiliateSdkPageSource(shopId) {
         override fun getType() = "shop"
 

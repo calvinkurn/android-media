@@ -50,14 +50,8 @@ data class CreateAffiliateCookieRequest(
     )
 
     data class LinkDetail(
-        @SerializedName("AffiliateLink")
-        var affiliateLink: String?,
         @SerializedName("Channel")
-        var channel: String?,
-        @SerializedName("LinkIdentifier")
-        var linkIdentifier: String?,
-        @SerializedName("LinkType")
-        var linkType: String?
+        var channel: String?
     )
 
     data class PageDetail(
@@ -84,9 +78,7 @@ data class CreateAffiliateCookieRequest(
         @SerializedName("IsVariant")
         var isVariant: Boolean?,
         @SerializedName("StockQty")
-        var stockQty: Int?,
-        @SerializedName("ProductID")
-        var productId: String?
+        var stockQty: Int?
     )
 
     data class ShopDetail(
