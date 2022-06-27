@@ -121,6 +121,7 @@ ext {
             logisticaddaddress              : ":features:logistic:logisticaddaddress",
             dropOff                         : ":features:logistic:dropoff",
             logisticorder                   : ":features:logistic:logisticorder",
+            logisticseller		          : ":features:logistic:logisticseller",
             logisticcart                    : ":features:logistic:logisticcart",
             manageaddress                   : ":features:logistic:manageaddress",
             editshipping                    : ":features:logistic:editshipping",
