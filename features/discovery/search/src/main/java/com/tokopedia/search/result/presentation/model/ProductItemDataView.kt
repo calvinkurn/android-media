@@ -158,6 +158,7 @@ class ProductItemDataView : ImpressHolder(), Visitable<ProductListTypeFactory> {
             item.productUrl = topAds.product.uri
             item.minOrder = topAds.product.productMinimumOrder
             item.dimension90 = dimension90
+            item.applink = topAds.product.applinks
             item.customVideoURL = topAds.product.customVideoUrl
             return item
         }

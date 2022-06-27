@@ -287,6 +287,7 @@ private const val TOPADS_PRODUCT_QUERY = """
                         title
                         url
                     }
+                    applinks
                     customvideo_url
                 }
                 shop{
