@@ -508,10 +508,14 @@ class MerchantPageFragment : BaseMultiFragment(),
             }
         })
 
-        viewModel?.chooseAddress?.observe(viewLifecycleOwner, {
+        viewModel.chooseAddress.observe(viewLifecycleOwner, {
             when (it) {
                 is Success -> {
                     setupChooseAddress(it.data)
+                }
+
+                is Fail -> {
+                    validateAddressData()
                 }
             }
         })
