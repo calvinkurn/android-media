@@ -1,4 +1,3 @@
-
 package com.tokopedia.product.manage.feature.list.view.ui.bottomsheet
 
 import android.os.Bundle
@@ -12,12 +11,14 @@ import com.tokopedia.product.manage.databinding.BottomSheetProductManageStockInf
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 
-class StockInformationBottomSheet(
-    private val fm: FragmentManager? = null
-): BottomSheetUnify() {
+class StockReminderInformationBottomSheet(
+    private val fm: FragmentManager? = null,
+    private val stockAlertCount: Int,
+    private val stockAlertActive: Boolean
+) : BottomSheetUnify() {
 
     companion object {
-        private val TAG: String = StockInformationBottomSheet::class.java.simpleName
+        private val TAG: String = StockReminderInformationBottomSheet::class.java.simpleName
     }
 
     private var binding by autoClearedNullable<BottomSheetProductManageStockInformationBinding>()
@@ -37,28 +38,44 @@ class StockInformationBottomSheet(
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        setupView()
         super.onViewCreated(view, savedInstanceState)
+        val title = context?.getString(R.string.product_manage_stock_reminder_info).orEmpty()
+        setTitle(title)
+        setupView()
+
     }
 
     override fun onViewStateRestored(savedInstanceState: Bundle?) {
         super.onViewStateRestored(savedInstanceState)
         savedInstanceState?.run {
-            parentFragment?.childFragmentManager?.beginTransaction()?.remove(this@StockInformationBottomSheet)?.commit()
+            parentFragment?.childFragmentManager?.beginTransaction()
+                ?.remove(this@StockReminderInformationBottomSheet)?.commit()
         }
+
     }
 
     fun show() {
-        fm?.let { show(it, TAG) }
+        fm?.let {
+            show(it, TAG)
+        }
     }
 
     private fun setupView() {
-        val title = context?.getString(R.string.product_manage_stock_information).orEmpty()
-        setTitle(title)
 
-        val description = context?.getString(com.tokopedia.product.manage.common.R.string.product_manage_stock_description_information_stock)
-            .orEmpty()
-        val padding = context?.resources?.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl4).orZero()
+        val description = if (stockAlertActive) {
+            context?.getString(
+                com.tokopedia.product.manage.common.R.string.product_manage_stock_description_information_stock_reminder_active,
+                stockAlertCount
+            ).orEmpty()
+        } else {
+            context?.getString(
+                com.tokopedia.product.manage.common.R.string.product_manage_stock_description_information_stock_reminder,
+                stockAlertCount
+            ).orEmpty()
+        }
+        val padding =
+            context?.resources?.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl4)
+                .orZero()
 
         binding?.textDescription?.text = description
         binding?.root?.setPadding(0, 0, 0, padding)
