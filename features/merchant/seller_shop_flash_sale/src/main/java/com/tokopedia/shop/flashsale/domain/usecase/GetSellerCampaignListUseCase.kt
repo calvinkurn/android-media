@@ -79,6 +79,13 @@ class GetSellerCampaignListUseCase @Inject constructor(
                   cover_img
                   thematic_participation
                   is_cancellable
+                  thematic_info {
+                    thematic_id
+                    thematic_sub_id
+                    status
+                    status_str
+                    thematic_name
+                  }
                 }
                 total_campaign
                 total_campaign_active
