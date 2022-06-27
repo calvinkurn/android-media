@@ -147,10 +147,14 @@ import com.tokopedia.product.detail.data.util.DynamicProductDetailTalkGoToReplyD
 import com.tokopedia.product.detail.data.util.DynamicProductDetailTalkGoToWriteDiscussion
 import com.tokopedia.product.detail.data.util.DynamicProductDetailTracking
 import com.tokopedia.product.detail.data.util.ProductDetailConstant
+import com.tokopedia.product.detail.data.util.ProductDetailConstant.ADD_WISHLIST
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.CLICK_TYPE_WISHLIST
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.PARAM_DIRECTED_FROM_MANAGE_OR_PDP
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.REMOTE_CONFIG_DEFAULT_ENABLE_PDP_CUSTOM_SHARING
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.REMOTE_CONFIG_KEY_ENABLE_PDP_CUSTOM_SHARING
+import com.tokopedia.product.detail.data.util.ProductDetailConstant.REMOVE_WISHLIST
+import com.tokopedia.product.detail.data.util.ProductDetailConstant.WISHLIST_ERROR_TYPE
+import com.tokopedia.product.detail.data.util.ProductDetailConstant.WISHLIST_STATUS_KEY
 import com.tokopedia.product.detail.data.util.VariantMapper
 import com.tokopedia.product.detail.data.util.VariantMapper.generateVariantString
 import com.tokopedia.product.detail.data.util.roundToIntOrZero
@@ -176,13 +180,8 @@ import com.tokopedia.product.detail.view.fragment.partialview.PartialButtonActio
 import com.tokopedia.product.detail.view.fragment.partialview.TokoNowButtonData
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
 import com.tokopedia.product.detail.view.listener.PartialButtonActionListener
-import com.tokopedia.product.detail.view.util.PdpUiUpdater
-import com.tokopedia.product.detail.view.util.ProductDetailErrorHandler
-import com.tokopedia.product.detail.view.util.ProductDetailErrorHelper
-import com.tokopedia.product.detail.view.util.ProductDetailVariantLogic
+import com.tokopedia.product.detail.view.util.*
 import com.tokopedia.product.detail.view.util.createProductCardOptionsModel
-import com.tokopedia.product.detail.view.util.doSuccessOrFail
-import com.tokopedia.product.detail.view.util.getIntentImagePreviewWithoutDownloadButton
 import com.tokopedia.product.detail.view.viewholder.ProductSingleVariantViewHolder
 import com.tokopedia.product.detail.view.viewmodel.DynamicProductDetailViewModel
 import com.tokopedia.product.detail.view.viewmodel.ProductDetailSharedViewModel
@@ -243,6 +242,7 @@ import com.tokopedia.wishlistcommon.listener.WishlistV2ActionListener
 import com.tokopedia.wishlistcommon.util.AddRemoveWishlistV2Handler
 import com.tokopedia.wishlistcommon.util.WishlistV2RemoteConfigRollenceUtil
 import rx.subscriptions.CompositeSubscription
+import timber.log.Timber
 import java.util.*
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
@@ -4589,13 +4589,20 @@ open class DynamicProductDetailFragment :
     }
 
     private fun addWishlistV2(componentTrackDataModel: ComponentTrackDataModel) {
-        viewModel.addWishListV2(viewModel.getDynamicProductInfoP1?.basic?.productID
-            ?: "", object : WishlistV2ActionListener {
+        val productId = viewModel.getDynamicProductInfoP1?.basic?.productID ?: ""
+        viewModel.addWishListV2(productId, object : WishlistV2ActionListener {
             override fun onErrorAddWishList(throwable: Throwable, productId: String) {
-                val errorMsg =
-                    com.tokopedia.network.utils.ErrorHandler.getErrorMessage(context, throwable)
-                view?.let { v ->
-                    AddRemoveWishlistV2Handler.showWishlistV2ErrorToaster(errorMsg, v)
+                try {
+                    val errorMsg =
+                        com.tokopedia.network.utils.ErrorHandler.getErrorMessage(context, throwable)
+                    val extras = mapOf(WISHLIST_STATUS_KEY to ADD_WISHLIST).toString()
+                    ProductDetailLogger.logMessage(errorMsg,
+                        WISHLIST_ERROR_TYPE, productId, viewModel.deviceId, extras)
+                    view?.let { v ->
+                        AddRemoveWishlistV2Handler.showWishlistV2ErrorToaster(errorMsg, v)
+                    }
+                } catch (t: Throwable) {
+                    Timber.d(t)
                 }
             }
 
@@ -4667,10 +4674,16 @@ open class DynamicProductDetailFragment :
                 }
 
                 override fun onErrorRemoveWishlist(throwable: Throwable, productId: String) {
-                    val errorMsg =
-                        com.tokopedia.network.utils.ErrorHandler.getErrorMessage(context, throwable)
-                    view?.let { v ->
-                        AddRemoveWishlistV2Handler.showWishlistV2ErrorToaster(errorMsg, v)
+                    try {
+                        val errorMsg =
+                            com.tokopedia.network.utils.ErrorHandler.getErrorMessage(context, throwable)
+                        val extras = mapOf(ProductDetailConstant.WISHLIST_STATUS_KEY to REMOVE_WISHLIST).toString()
+                        ProductDetailLogger.logMessage(errorMsg, WISHLIST_ERROR_TYPE, productId, viewModel.deviceId, extras)
+                        view?.let { v ->
+                            AddRemoveWishlistV2Handler.showWishlistV2ErrorToaster(errorMsg, v)
+                        }
+                    } catch (t: Throwable) {
+                        Timber.d(t)
                     }
                 }
 

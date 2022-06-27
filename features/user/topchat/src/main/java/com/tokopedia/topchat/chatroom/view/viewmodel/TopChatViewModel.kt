@@ -18,6 +18,7 @@ import com.tokopedia.chat_common.domain.pojo.roommetadata.RoomMetaData
 import com.tokopedia.topchat.chatroom.domain.mapper.TopChatRoomWebSocketMessageMapper
 import com.tokopedia.device.info.DeviceInfo
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.kotlin.extensions.view.toIntSafely
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.logger.ServerLogger
@@ -509,7 +510,8 @@ open class TopChatViewModel @Inject constructor(
             productId = addToCartParam.productId.toLongOrZero(),
             shopId = addToCartParam.shopId.toInt(),
             quantity = addToCartParam.minOrder,
-            atcFromExternalSource = AtcFromExternalSource.ATC_FROM_TOPCHAT
+            atcFromExternalSource = AtcFromExternalSource.ATC_FROM_TOPCHAT,
+            warehouseId = attachProductWarehouseId.toIntSafely()
         )
         addToCartUseCase.addToCartRequestParams = addToCartRequestParams
     }
@@ -610,6 +612,7 @@ open class TopChatViewModel @Inject constructor(
                     productId = product.productId,
                     shopId = product.shopId.toString(),
                     quantity = product.minOrder.toString(),
+                    warehouseId = attachProductWarehouseId,
                     //analytics data
                     productName = product.productName,
                     category = product.category,
