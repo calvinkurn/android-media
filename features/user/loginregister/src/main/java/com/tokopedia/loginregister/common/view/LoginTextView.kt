@@ -14,6 +14,7 @@ import androidx.appcompat.content.res.AppCompatResources
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.loginregister.R
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.contentdescription.TextAndContentDescriptionUtil.setTextAndContentDescription
@@ -116,7 +117,7 @@ class LoginTextView : LinearLayout {
     fun setImage(image: String) {
         if (!TextUtils.isEmpty(image)) {
             val imageUnify: ImageUnify = findViewById(R.id.provider_image)
-            ImageHandler.LoadImage(imageUnify, image)
+            imageUnify.loadImage(image)
         }
     }
 

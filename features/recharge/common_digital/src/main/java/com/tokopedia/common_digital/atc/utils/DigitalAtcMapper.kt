@@ -22,7 +22,8 @@ object DigitalAtcMapper {
                 isInstantCheckout = responseCartData.attributes?.isInstantCheckout ?: false,
                 source = digitalCheckoutPassData.source,
                 userId = userId,
-                isSpecialProduct = digitalCheckoutPassData.isSpecialProduct
+                isSpecialProduct = digitalCheckoutPassData.isSpecialProduct,
+                channelId = responseCartData.attributes?.channelId ?: "",
         )
     }
 }

@@ -74,16 +74,6 @@
       "clientId": ".*"
     },
     {
-      "event": "clickHomepage",
-      "eventAction": "click on all transaction",
-      "eventCategory": "global menu",
-      "eventLabel": "",
-      "businessUnit": "home & browse",
-      "currentSite": "tokopediamarketplace",
-      "sessionIris": ".*",
-      "userId": ".*"
-    },
-    {
       "event": "view_item",
       "eventAction": "impression on order status",
       "eventCategory": "global menu",

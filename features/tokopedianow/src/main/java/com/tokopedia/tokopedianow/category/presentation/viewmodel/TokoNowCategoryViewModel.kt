@@ -182,7 +182,11 @@ class TokoNowCategoryViewModel @Inject constructor (
 
     override fun createFooterVisitableList(): List<Visitable<*>> {
         val recomData =
-            TokoNowRecommendationCarouselUiModel(pageName = TOKONOW_CLP, miniCartSource = MiniCartSource.TokonowCategoryPage)
+            TokoNowRecommendationCarouselUiModel(
+                pageName = TOKONOW_CLP,
+                isBindWithPageName = true,
+                miniCartSource = MiniCartSource.TokonowCategoryPage
+            )
         recomData.categoryId = getRecomCategoryId(recomData)
         return listOf(
             createAisleDataView(),
@@ -225,16 +229,12 @@ class TokoNowCategoryViewModel @Inject constructor (
     }
 
     override fun onViewCreated(source: MiniCartSource?) {
-        when(externalServiceType) {
-            ServiceType.NOW_20M -> {
-                setUserPreference(ServiceType.NOW_15M)
-            }
-            ServiceType.NOW_2H -> {
-                setUserPreference(ServiceType.NOW_2H)
-            }
-            else -> {
-                super.onViewCreated(source)
-            }
+        val currentServiceType = chooseAddressData?.getServiceType()
+
+        if (externalServiceType != currentServiceType && externalServiceType.isNotBlank()) {
+            setUserPreference(externalServiceType)
+        } else {
+            super.onViewCreated(source)
         }
     }
 

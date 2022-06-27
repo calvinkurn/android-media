@@ -2,13 +2,11 @@ package com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.ban
 
 import android.content.Context
 import android.view.View
-import android.widget.ImageView
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LifecycleOwner
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.discovery2.R
+import com.tokopedia.discovery2.databinding.BannerTimerLayoutBinding
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
 import com.tokopedia.discovery2.viewcontrollers.fragment.DiscoveryFragment
@@ -18,13 +16,11 @@ import com.tokopedia.unifycomponents.timer.TimerUnifyHighlight
 class BannerTimerViewHolder(private val customItemView: View, val fragment: Fragment) : AbstractViewHolder(customItemView, fragment.viewLifecycleOwner) {
 
     private lateinit var bannerTimerViewModel: BannerTimerViewModel
-    private var constraintLayout: ConstraintLayout = customItemView.findViewById(R.id.banner_timer_container_layout)
-    private var timer:TimerUnifyHighlight = customItemView.findViewById(R.id.banner_timer)
+    private val binding: BannerTimerLayoutBinding = BannerTimerLayoutBinding.bind(itemView)
     private var context: Context
-    private var bannerImageView: ImageView = customItemView.findViewById(R.id.banner_image_view)
 
     init {
-        context = constraintLayout.context
+        context = binding.bannerTimerContainerLayout.context
     }
 
     override fun bindView(discoveryBaseViewModel: DiscoveryBaseViewModel) {
@@ -33,21 +29,23 @@ class BannerTimerViewHolder(private val customItemView: View, val fragment: Frag
     }
 
     private fun initView() {
-        val viewHeight = bannerTimerViewModel.getBannerUrlHeight()
-        val viewWidth = bannerTimerViewModel.getBannerUrlWidth()
-        val constraintSet = ConstraintSet()
-        constraintSet.clone(constraintLayout)
-        constraintSet.setDimensionRatio(bannerImageView.id, "H, $viewWidth : $viewHeight")
-        constraintSet.applyTo(constraintLayout)
-        configureTimerUI()
-        constraintLayout.setOnClickListener {
-            handleUIClick(it)
+        with(binding) {
+            val viewHeight = bannerTimerViewModel.getBannerUrlHeight()
+            val viewWidth = bannerTimerViewModel.getBannerUrlWidth()
+            val constraintSet = ConstraintSet()
+            constraintSet.clone(bannerTimerContainerLayout)
+            constraintSet.setDimensionRatio(bannerImageView.id, "H, $viewWidth : $viewHeight")
+            constraintSet.applyTo(bannerTimerContainerLayout)
+            configureTimerUI()
+            bannerTimerContainerLayout.setOnClickListener {
+                handleUIClick(it)
+            }
         }
     }
 
     private fun handleUIClick(view: View) {
         when (view) {
-            constraintLayout -> {
+            binding.bannerTimerContainerLayout -> {
                 bannerTimerViewModel.getApplink()?.let {
                     RouteManager.route(context, it)
                 }
@@ -57,24 +55,27 @@ class BannerTimerViewHolder(private val customItemView: View, val fragment: Frag
 
 
     private fun configureTimerUI() {
-        bannerTimerViewModel.getComponent().let {
-            if (!it.data.isNullOrEmpty()) {
-                bannerImageView.loadImageFitCenter(it.data?.firstOrNull()?.backgroundUrlMobile ?: "")
+        with(binding) {
+            bannerTimerViewModel.getComponent().let {
+                if (!it.data.isNullOrEmpty()) {
+                    bannerImageView.loadImageFitCenter(it.data?.firstOrNull()?.backgroundUrlMobile
+                            ?: "")
+                }
             }
+            bannerTimer.size = TimerUnifyHighlight.SIZE_MEDIUM
+            bannerTimer.variant = bannerTimerViewModel.getTimerVariant()
         }
-        timer.size = TimerUnifyHighlight.SIZE_MEDIUM
-        timer.variant = bannerTimerViewModel.getTimerVariant()
     }
 
     override fun setUpObservers(lifecycleOwner: LifecycleOwner?) {
         super.setUpObservers(lifecycleOwner)
-        lifecycleOwner?.let {lifecycle ->
+        lifecycleOwner?.let { lifecycle ->
             bannerTimerViewModel.getSyncPageLiveData().observe(lifecycle, { needResync ->
                 if (needResync) (fragment as DiscoveryFragment).reSync()
             })
             bannerTimerViewModel.getRestartTimerAction().observe(lifecycle, { shouldStartTimer ->
                 if (shouldStartTimer)
-                    bannerTimerViewModel.startTimer(timer)
+                    bannerTimerViewModel.startTimer(binding.bannerTimer)
             })
         }
     }
@@ -84,7 +85,7 @@ class BannerTimerViewHolder(private val customItemView: View, val fragment: Frag
         super.removeObservers(lifecycleOwner)
         lifecycleOwner?.let { it ->
             bannerTimerViewModel.stopTimer()
-            timer.pause()
+            binding.bannerTimer.pause()
             bannerTimerViewModel.getSyncPageLiveData().removeObservers(it)
             bannerTimerViewModel.getRestartTimerAction().removeObservers(it)
         }
@@ -92,13 +93,13 @@ class BannerTimerViewHolder(private val customItemView: View, val fragment: Frag
 
     override fun onViewDetachedToWindow() {
         bannerTimerViewModel.stopTimer()
-        timer.pause()
+        binding.bannerTimer.pause()
     }
 
     override fun onViewAttachedToWindow() {
         super.onViewAttachedToWindow()
-        bannerTimerViewModel.startTimer(timer)
-        timer.onFinish = {
+        bannerTimerViewModel.startTimer(binding.bannerTimer)
+        binding.bannerTimer.onFinish = {
             bannerTimerViewModel.checkTimerEnd()
         }
     }

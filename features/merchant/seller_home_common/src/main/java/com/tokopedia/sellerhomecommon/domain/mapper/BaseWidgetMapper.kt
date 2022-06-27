@@ -13,13 +13,18 @@ abstract class BaseWidgetMapper(
     private val isEnabled: Boolean
 ) {
 
+    companion object {
+        private const val PREFERENCE_KEY_FORMAT = "last_updated_%s"
+    }
+
     protected fun getLastUpdatedMillis(dataKey: String, isFromCache: Boolean): LastUpdatedUiModel {
         return if (isEnabled) {
             val nowMillis = Date().time
+            val preferenceKey = String.format(PREFERENCE_KEY_FORMAT, dataKey)
             val lastUpdated = if (isFromCache) {
-                lastUpdatedSharedPref.getLastUpdateInfoInMillis(dataKey, nowMillis)
+                lastUpdatedSharedPref.getLastUpdateInfoInMillis(preferenceKey, nowMillis)
             } else {
-                saveLastUpdated(dataKey, nowMillis)
+                saveLastUpdated(preferenceKey, nowMillis)
                 nowMillis
             }
 

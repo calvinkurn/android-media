@@ -1,4 +1,4 @@
-package com.tokopedia.chat_common
+package com.tokopedia.chat_common.view.adapter
 
 import android.content.Context
 import android.text.format.DateFormat
@@ -10,7 +10,6 @@ import com.tokopedia.chat_common.data.BaseChatUiModel
 import com.tokopedia.chat_common.data.MessageUiModel
 import com.tokopedia.chat_common.data.SendableUiModel
 import com.tokopedia.chat_common.data.TypingChatModel
-import com.tokopedia.chat_common.view.adapter.BaseChatTypeFactoryImpl
 import com.tokopedia.chat_common.view.adapter.viewholder.ImageAnnouncementViewHolder
 import com.tokopedia.chat_common.view.adapter.viewholder.ImageUploadViewHolder
 import java.util.*
@@ -21,7 +20,7 @@ import java.util.*
 open class BaseChatAdapter(adapterTypeFactory: BaseChatTypeFactoryImpl) :
         BaseListAdapter<Visitable<*>, BaseAdapterTypeFactory>(adapterTypeFactory) {
 
-    protected val SECONDS: Long = 1000000
+
 
     var typingModel = TypingChatModel()
 
@@ -40,9 +39,9 @@ open class BaseChatAdapter(adapterTypeFactory: BaseChatTypeFactoryImpl) :
     override fun onViewRecycled(holder: AbstractViewHolder<out Visitable<*>>) {
         super.onViewRecycled(holder)
         if (holder is ImageUploadViewHolder) {
-            (holder as ImageUploadViewHolder).onViewRecycled()
+            holder.onViewRecycled()
         } else if (holder is ImageAnnouncementViewHolder) {
-            (holder as ImageAnnouncementViewHolder).onViewRecycled()
+            holder.onViewRecycled()
         }
     }
 
@@ -56,7 +55,7 @@ open class BaseChatAdapter(adapterTypeFactory: BaseChatTypeFactoryImpl) :
         val positionStart = this.visitables.size
         this.visitables.addAll(newItems)
         notifyItemRangeInserted(positionStart, newItems.size)
-        notifyItemRangeChanged(positionStart - 10, 10)
+        notifyItemRangeChanged(positionStart - ITEM_COUNT, ITEM_COUNT)
     }
 
     override fun getList(): List<Visitable<*>> {
@@ -268,6 +267,11 @@ open class BaseChatAdapter(adapterTypeFactory: BaseChatTypeFactoryImpl) :
                 }
             }
         }
+    }
+
+    companion object {
+        const val SECONDS: Long = 1000000
+        private const val ITEM_COUNT = 10
     }
 
 }
