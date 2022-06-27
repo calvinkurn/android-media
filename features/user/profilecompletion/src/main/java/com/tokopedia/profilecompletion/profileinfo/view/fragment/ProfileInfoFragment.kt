@@ -742,7 +742,7 @@ class ProfileInfoFragment : BaseDaggerFragment(),
         RouteManager.route(
             context,
             "${ApplinkConst.WEBVIEW}?${WEBVIEW_PARAM_HIDE_TITLEBAR}&${WEBVIEW_PARAM_BACK_PRESSED_DISABLED}&url=" +
-                    TokopediaUrl.getInstance().MOBILEWEB.plus("$TOKOPEDIA_CLOSE_ACCOUNT_PATH?ld=$PARAM_WEBVIEW_BACK&ld_success=$PARAM_WEBVIEW_HOME")
+                    TokopediaUrl.getInstance().MOBILEWEB.plus(TOKOPEDIA_CLOSE_ACCOUNT_PATH)
         )
     }
 
@@ -765,8 +765,6 @@ class ProfileInfoFragment : BaseDaggerFragment(),
         private const val EMPTY_STRING = ""
         private const val WEBVIEW_PARAM_HIDE_TITLEBAR = "${com.tokopedia.webview.KEY_TITLEBAR}=false"
         private const val WEBVIEW_PARAM_BACK_PRESSED_DISABLED = "${com.tokopedia.webview.KEY_BACK_PRESSED_ENABLED}=false"
-        private const val PARAM_WEBVIEW_BACK = "TOKOPEDIA://BACK"
-        private const val PARAM_WEBVIEW_HOME = ApplinkConsInternalHome.HOME_NAVIGATION
         private const val TOKOPEDIA_CLOSE_ACCOUNT_PATH = "user/close-account"
         private const val ROLLENCE_KEY_CLOSE_ACCOUNT = "close_account"
 
