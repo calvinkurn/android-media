@@ -22,6 +22,8 @@ import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.feedcomponent.util.manager.FeedFloatingButtonManager
+import com.tokopedia.feedcomponent.view.base.FeedPlusContainerListener
+import com.tokopedia.feedcomponent.view.custom.FeedFloatingButton
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.globalerror.GlobalError.Companion.NO_CONNECTION
 import com.tokopedia.globalerror.GlobalError.Companion.PAGE_FULL
@@ -70,7 +72,8 @@ class UserProfileFragment : BaseDaggerFragment(),
     ShareBottomsheetListener,
     ScreenShotListener,
     PermissionListener,
-    UserPostBaseAdapter.PlayWidgetCallback {
+    UserPostBaseAdapter.PlayWidgetCallback,
+    FeedPlusContainerListener {
 
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
@@ -108,6 +111,8 @@ class UserProfileFragment : BaseDaggerFragment(),
     private var isViewMoreClickedBio: Boolean? = false
     private var userProfileTracker: UserProfileTracker? = null
     private var screenShotDetector: ScreenshotDetector? = null
+    private lateinit var swipeRefresh: SwipeToRefresh
+    private lateinit var feedFab: FeedFloatingButton
 
     private val viewModel: UserProfileViewModel by lazy {
         ViewModelProviders.of(this, viewModelFactory).get(UserProfileViewModel::class.java)
@@ -138,12 +143,16 @@ class UserProfileFragment : BaseDaggerFragment(),
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         userSession = UserSession(context)
+        feedFloatingButtonManager.setInitialData(this)
+
         userId = userSession?.userId?:""
         container = view.findViewById(R.id.container)
         userPostContainer = view.findViewById(R.id.vp_rv_post)
         globalError = view.findViewById(R.id.global_error)
         globalErrorPost = view.findViewById(R.id.global_error_post)
-        appBarLayout = view?.findViewById(R.id.app_bar_layout)
+        appBarLayout = view.findViewById(R.id.app_bar_layout)
+        swipeRefresh = view.findViewById(R.id.swipe_refresh_layout)
+        feedFab = view.findViewById(R.id.up_feed_floating_button)
 
         initObserver()
         initListener()
@@ -156,7 +165,7 @@ class UserProfileFragment : BaseDaggerFragment(),
 
 
 
-        view.findViewById<SwipeToRefresh>(R.id.swipe_refresh_layout)?.setOnRefreshListener {
+        swipeRefresh.setOnRefreshListener {
             isSwipeRefresh = true
             refreshLandingPageData(true)
         }
@@ -190,6 +199,12 @@ class UserProfileFragment : BaseDaggerFragment(),
         }
     }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+        recyclerviewPost?.removeOnScrollListener(feedFloatingButtonManager.scrollListener)
+        feedFloatingButtonManager.cancel()
+    }
+
     private fun refreshLandingPageData(isRefreshPost: Boolean = false) {
         landedUserName?.let {
             viewModel.getUserDetails(it, isRefreshPost)
@@ -206,6 +221,9 @@ class UserProfileFragment : BaseDaggerFragment(),
         view?.findViewById<View>(R.id.view_profile_outer_ring)?.setOnClickListener(this)
         view?.findViewById<View>(R.id.btn_action_follow)?.setOnClickListener(this)
         view?.findViewById<View>(R.id.text_see_more)?.setOnClickListener(this)
+
+        recyclerviewPost?.addOnScrollListener(feedFloatingButtonManager.scrollListener)
+//        recyclerviewPost?.let { feedFloatingButtonManager.setDelayForExpandFab(it) }
     }
 
     private fun initUserPost(userId: String) {
@@ -1110,5 +1128,13 @@ class UserProfileFragment : BaseDaggerFragment(),
     override fun onPlayWidgetLargeClick(appLink: String) {
         val intent = RouteManager.getIntent(context, appLink)
         startActivityForResult(intent, REQUEST_CODE_PLAY_ROOM)
+    }
+
+    override fun expandFab() {
+        feedFab.expand()
+    }
+
+    override fun shrinkFab() {
+        feedFab.shrink()
     }
 }
