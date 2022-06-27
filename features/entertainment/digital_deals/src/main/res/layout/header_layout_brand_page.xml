@@ -103,7 +103,8 @@
         app:layout_constraintBottom_toBottomOf="@+id/iv_map"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="@+id/iv_map"
-        app:srcCompat="@drawable/ic_arrow_right_default" />
+        app:srcCompat="@drawable/ic_arrow_right_default"
+        android:contentDescription="" />
 
     <View
         android:id="@+id/divider2"

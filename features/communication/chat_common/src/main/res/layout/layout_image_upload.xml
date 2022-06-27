@@ -102,7 +102,8 @@
         android:layout_toStartOf="@+id/card_group_chat_message"
         android:indeterminateDrawable="@drawable/progress"
         android:visibility="visible"
-        tools:visibility="gone" />
+        tools:visibility="gone"
+        tools:ignore="UnifyComponentUsage" />
 
     <ImageView
         android:id="@+id/chat_status"
@@ -114,7 +115,8 @@
         android:layout_marginEnd="@dimen/chatcommon_5dp"
         android:layout_toStartOf="@+id/hour"
         android:adjustViewBounds="true"
-        tools:src="@drawable/ic_read_thin" />
+        tools:src="@drawable/ic_read_thin"
+        android:contentDescription="" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/hour"

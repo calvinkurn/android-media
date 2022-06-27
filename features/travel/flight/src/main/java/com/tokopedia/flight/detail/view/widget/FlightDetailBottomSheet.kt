@@ -62,7 +62,7 @@ class FlightDetailBottomSheet : BottomSheetUnify() {
 
         initView()
         bottomSheetHeader.setPadding(
-            resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.layout_lvl2),
+            context?.resources?.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.layout_lvl2) ?: 0,
             bottomSheetHeader.top,
             bottomSheetWrapper.right,
             bottomSheetHeader.bottom

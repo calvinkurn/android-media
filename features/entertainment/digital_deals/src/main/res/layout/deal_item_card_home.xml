@@ -186,7 +186,8 @@
             android:layout_marginRight="4dp"
             android:padding="4dp"
             app:layout_constraintRight_toLeftOf="@+id/tv_wish_list"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            android:contentDescription="" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_wish_list"
@@ -210,7 +211,8 @@
             app:layout_constraintBottom_toBottomOf="@+id/tv_sales_price"
             app:layout_constraintLeft_toRightOf="@id/tv_wish_list"
             app:layout_constraintTop_toTopOf="@+id/tv_mrp"
-            app:srcCompat="@drawable/deals_ic_share_via_card" />
+            app:srcCompat="@drawable/deals_ic_share_via_card"
+            android:contentDescription="" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.cardview.widget.CardView>
 
