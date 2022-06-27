@@ -212,10 +212,8 @@ class AddProductInputMapper @Inject constructor() {
         )
     }
 
-    private fun mapCPLData(cpl: CPLModel): CPLData {
-        return CPLData(
-            cpl.shipmentServicesIds
-        )
+    private fun mapCPLData(cpl: CPLModel): CPLData? {
+        return cpl.shipmentServicesIds?.let { CPLData(it) }
     }
 
     private fun mapSpecificationParam(specifications: List<SpecificationInputModel>?) =
