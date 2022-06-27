@@ -412,8 +412,8 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
         viewModel.getNoAddressState()
     }
 
-    private fun getChooseAddress() {
-        viewModel.getChooseAddress(SOURCE)
+    private fun getChooseAddress(isAddressUpdated: Boolean = false) {
+        viewModel.getChooseAddress(SOURCE, isAddressUpdated)
     }
 
     private fun checkUserEligibilityForAnaRevamp() {
@@ -683,10 +683,12 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
     private fun checkAddressDataAndServiceArea(){
         checkIfChooseAddressWidgetDataUpdated()
 
-        if (hasNoAddress()) {
+        if (hasNoAddress() && isAddressManuallyUpdate()) {
             showNoAddress()
-        } else if (hasNoPinPoin()){
+        } else if (hasNoPinPoin() && isAddressManuallyUpdate()){
             showNoPinPoin()
+        } else if(!isAddressManuallyUpdate()) {
+            getChooseAddress(isAddressUpdated = true)
         } else {
             showLayout()
         }
@@ -714,6 +716,10 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
         context?.let {
             localCacheModel = ChooseAddressUtils.getLocalizingAddressData(it)
         }
+    }
+
+    private fun isAddressManuallyUpdate(): Boolean {
+        return viewModel.isAddressManuallyUpdated
     }
 
     private fun hasNoAddress(): Boolean {

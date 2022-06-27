@@ -88,6 +88,7 @@ class TokoFoodHomeViewModel @Inject constructor(
     private val homeLayoutItemList = mutableListOf<TokoFoodItemUiModel>()
     private var pageKey = INITIAL_PAGE_KEY_MERCHANT
     private var hasTickerBeenRemoved = false
+    var isAddressManuallyUpdated = false
 
     companion object {
         private const val INITIAL_PAGE_KEY_MERCHANT = "0"
@@ -116,8 +117,9 @@ class TokoFoodHomeViewModel @Inject constructor(
         )
     }
 
-    fun getChooseAddress(source: String){
+    fun getChooseAddress(source: String, isAddressUpdated: Boolean){
         getChooseAddressWarehouseLocUseCase.getStateChosenAddress( {
+            this.isAddressManuallyUpdated = isAddressUpdated
             _chooseAddress.postValue(Success(it))
         },{
             _chooseAddress.postValue(Fail(it))
