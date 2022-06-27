@@ -1885,7 +1885,6 @@ class PostDynamicViewNew @JvmOverloads constructor(
                 model?.feedXCard?.media?.firstOrNull()?.isImageImpressedFirst = true
                 model?.feedXCard?.let { hideTaggingOnDetach(it) }
                 if (model.feedXCard.typename == TYPE_FEED_X_CARD_PLAY ||(model.feedXCard.typename == TYPE_FEED_X_CARD_POST && model.feedXCard.media.first().type == TYPE_LONG_VIDEO)){
-                    //TODO recheck this scenario
                     val feedXCard = model.feedXCard
                     val media = feedXCard.media.get(feedXCard.lastCarouselIndex)
                     media.vodView?.onViewDetached()

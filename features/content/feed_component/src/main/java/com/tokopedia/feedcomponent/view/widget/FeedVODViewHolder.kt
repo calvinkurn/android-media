@@ -5,7 +5,6 @@ import android.os.CountDownTimer
 import android.os.Handler
 import android.os.Looper
 import android.util.AttributeSet
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,8 +12,10 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.OnLifecycleEvent
 import com.google.android.exoplayer2.ui.PlayerView
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.feedcomponent.R
@@ -45,24 +46,24 @@ class FeedVODViewHolder @JvmOverloads constructor(
     positionInFeed: Int,
     defStyleAttr: Int = 0,
 ) : ConstraintLayout(context, attrs, defStyleAttr), LifecycleObserver {
-    private var layoutVideo: ConstraintLayout
-    private var vodPreviewImage: ImageUnify
-    private var videoView: View
-    private var mRatio: String
-    private var layoutFrameView: ConstraintLayout
-    private var layoutPlayerView : PlayerView
-    private var vodLihatProdukBtn : Typography
-    private var vodPlayIcon : ImageView
-    private var vodFullScreenIcon : ImageView
-    private var vodVolumeIcon : ImageView
-    private var vodLanjutMemontomBtn : Typography
-    private var vodTimerView : Typography
-    private var vodFrozenView : View
-    private var vodLoader : LoaderUnify
+    private val layoutVideo: ConstraintLayout
+    private val vodPreviewImage: ImageUnify
+    private val videoView: View
+    private val mRatio: String
+    private val layoutFrameView: ConstraintLayout
+    private val layoutPlayerView : PlayerView
+    private val vodLihatProdukBtn : Typography
+    private val vodPlayIcon : ImageView
+    private val vodFullScreenIcon : ImageView
+    private val vodVolumeIcon : ImageView
+    private val vodLanjutMemontomBtn : Typography
+    private val vodTimerView : Typography
+    private val vodFrozenView : View
+    private val vodLoader : LoaderUnify
     private lateinit var mListener : DynamicPostViewHolder.DynamicPostListener
     private var mOnClickVolumeListener: (() -> Unit)? = null
     private var mUpdateViewsText: ((String) -> Unit)? = null
-    private var mFeedXMedia: FeedXMedia
+    private val mFeedXMedia: FeedXMedia
     private var mFeedXCard: FeedXCard
     private var mfinalPostId: Int
     private var mPostionInFeed: Int
@@ -156,7 +157,6 @@ class FeedVODViewHolder @JvmOverloads constructor(
             }
         }
         vodFullScreenIcon.setOnClickListener {
-            Log.v("TAG", " vodFullScreenIcon.setOnClickListener isPaused = true")
             isPaused = true
             vodLanjutMemontomBtn.gone()
             vodFrozenView.gone()
@@ -165,12 +165,12 @@ class FeedVODViewHolder @JvmOverloads constructor(
         vodLanjutMemontomBtn.setOnClickListener {
             vodLanjutMemontomBtn.gone()
             vodFrozenView.gone()
-            videoPlayer?.getExoPlayer()?.currentPosition?.let { it2 ->
+            videoPlayer?.getExoPlayer()?.currentPosition?.let { currentTime ->
                 mListener.onFullScreenCLick(
                     mFeedXCard,
                     mPostionInFeed,
                     mFeedXCard.appLink,
-                    it2,
+                    currentTime,
                     false,
                     false
                 )
@@ -213,12 +213,9 @@ class FeedVODViewHolder @JvmOverloads constructor(
         if (!vodVolumeIcon.isVisible)
             vodVolumeIcon.visible()
         if (isVideoTap){
-            if (countDownTimer != null) {
+            if(countDownTimer != null)
                 countDownTimer.cancel()
-                countDownTimer.start()
-            } else {
-                countDownTimer.start()
-            }
+            countDownTimer.start()
 
         }
     }
@@ -352,14 +349,14 @@ class FeedVODViewHolder @JvmOverloads constructor(
                 if (time < HOUR_IN_HOUR) {
                     vodTimerView.text =
                         String.format(
-                            "%02d:%02d",
+                            TIME_FORMAT_WITHOUT_HOURS,
                             (time / MINUTE_IN_HOUR) % MINUTE_IN_HOUR,
                             time % MINUTE_IN_HOUR
                         )
                 } else {
                     vodTimerView.text =
                         String.format(
-                            "%02d:%02d:%02d",
+                            TIME_FORMAT_WITH_HOURS,
                             (time / HOUR_IN_HOUR) % HOUR_IN_HOUR,
                             (time / MINUTE_IN_HOUR) % MINUTE_IN_HOUR,
                             time % MINUTE_IN_HOUR
@@ -375,6 +372,7 @@ class FeedVODViewHolder @JvmOverloads constructor(
         }.start()
     }
     private fun showLanjutMenontonAfterThirtySeconds(){
+        var count = 0
         if (secondCountDownTimer != null) {
             secondCountDownTimer?.cancel()
             secondCountDownTimer?.start()
@@ -383,7 +381,6 @@ class FeedVODViewHolder @JvmOverloads constructor(
             secondCountDownTimer =
                 object : CountDownTimer(TIME_THIRTY_SEC, TIME_SECOND) {
                     override fun onTick(millisUntilFinished: Long) {
-
                     }
                     override fun onFinish() {
                         videoPlayer?.pause()
@@ -407,6 +404,24 @@ class FeedVODViewHolder @JvmOverloads constructor(
     fun setChangeVolumeStateCallback(callback: () -> Unit) {
         mOnClickVolumeListener = callback
     }
+    @OnLifecycleEvent(Lifecycle.Event.ON_PAUSE)
+    internal fun onPause() {
+        videoPlayer?.pause()
+        secondCountDownTimer?.cancel()
+        if (feedAddViewJob != null) {
+            feedAddViewJob?.cancel()
+            feedAddViewJob = null
+        }
+    }
+    @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
+    internal fun onDestroy() {
+        onViewDetached()
+    }
+    @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
+    internal fun onResume() {
+            videoPlayer?.resume()
+    }
+
 
     private fun showVODLoading() {
         vodLoader.animate()
@@ -424,7 +439,6 @@ class FeedVODViewHolder @JvmOverloads constructor(
         vodFrozenView.gone()
     }
     fun onViewDetached(){
-        Log.v("TAG", "onViewDetached isPaused = true")
         isPaused = true
         if (feedAddViewJob != null) {
             feedAddViewJob?.cancel()
@@ -451,6 +465,8 @@ class FeedVODViewHolder @JvmOverloads constructor(
         private const val MINUTE_IN_HOUR = 60
         private const val HOUR_IN_HOUR = 3600
         private const val TIME_THIRTY_SEC = 30000L
+        private const val TIME_FORMAT_WITH_HOURS = "%02d:%02d:%02d"
+        private const val TIME_FORMAT_WITHOUT_HOURS = "%02d:%02d"
     }
     
 }
