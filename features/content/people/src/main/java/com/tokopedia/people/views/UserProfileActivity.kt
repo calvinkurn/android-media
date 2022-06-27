@@ -38,10 +38,6 @@ class UserProfileActivity : BaseSimpleActivity() {
         return UserProfileFragment.newInstance(bundle ?: Bundle())
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-            super.onActivityResult(requestCode, resultCode, data)
-    }
-
     companion object {
         val EXTRA_USERNAME = "userName"
         fun getCallingIntent(context: Context, extras: Bundle): Intent {
