@@ -1,8 +1,12 @@
 <resources>
     <string name="app_name">Media Editor</string>
 
+<!--    Editor tool name-->
     <string name="editor_tool_brightness">Brightness</string>
     <string name="editor_tool_contrast">Contrast</string>
     <string name="editor_tool_crop">Crop</string>
     <string name="editor_tool_rotate">Putar</string>
+
+<!--    Content description-->
+    <string name="cd_img_preview">image preview</string>
 </resources>
