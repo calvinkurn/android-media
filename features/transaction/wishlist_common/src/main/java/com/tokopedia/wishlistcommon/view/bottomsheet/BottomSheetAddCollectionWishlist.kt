@@ -90,17 +90,18 @@ class BottomSheetAddCollectionWishlist: BottomSheetUnify(), HasComponent<AddToWi
     }
 
     private fun prepareLayout() {
+        addToWishlistCollectionAdapter = BottomSheetCollectionWishlistAdapter().apply {
+            setActionListener(this@BottomSheetAddCollectionWishlist)
+        }
+
         binding = BottomsheetAddWishlistCollectionBinding.inflate(LayoutInflater.from(context), null, false)
         binding?.run {
             rvAddWishlistCollection.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+            rvAddWishlistCollection.adapter = addToWishlistCollectionAdapter
         }
         showCloseIcon = false
         showHeader = true
         setChild(binding?.root)
-
-        addToWishlistCollectionAdapter = BottomSheetCollectionWishlistAdapter().apply {
-            setActionListener(this@BottomSheetAddCollectionWishlist)
-        }
     }
 
     private fun loadData() {

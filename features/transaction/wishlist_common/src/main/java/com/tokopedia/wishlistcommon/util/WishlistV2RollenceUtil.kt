@@ -6,6 +6,7 @@ import com.tokopedia.remoteconfig.*
 object WishlistV2RemoteConfigRollenceUtil {
 
     private var isUseAddRemoveWishlistV2: Boolean? = null
+    private var isUseWishlistCollection: Boolean? = null
 
     fun isUsingAddRemoveWishlistV2(context: Context) :Boolean {
         return isEnableRemoteConfigAddRemoveWishlistV2(context) && isEnableRollenceAddRemoveWishlistV2()
@@ -23,6 +24,23 @@ object WishlistV2RemoteConfigRollenceUtil {
             val abTestAddRemoveWishlistV2 = abTestPlatform.getString(RollenceKey.ADD_REMOVE_WISHLIST_V2, "")
 
             abTestAddRemoveWishlistV2 == RollenceKey.ADD_REMOVE_WISHLIST_V2
+        } catch (throwable: Throwable) {
+            false
+        }
+    }
+
+    private fun isEnableRemoteConfigWishlistCollection(context: Context): Boolean {
+        val config: RemoteConfig = FirebaseRemoteConfigImpl(context)
+        isUseWishlistCollection = config.getBoolean(RemoteConfigKey.ENABLE_WISHLIST_COLLECTION, true)
+        return isUseWishlistCollection ?: true
+    }
+
+    private fun isEnableRollenceWishlistCollection(): Boolean {
+        return try {
+            val abTestPlatform = RemoteConfigInstance.getInstance().abTestPlatform
+            val abTestWishlistCollection = abTestPlatform.getString(RollenceKey.WISHLIST_COLLECTION, "")
+
+            abTestWishlistCollection == RollenceKey.WISHLIST_COLLECTION
         } catch (throwable: Throwable) {
             false
         }
