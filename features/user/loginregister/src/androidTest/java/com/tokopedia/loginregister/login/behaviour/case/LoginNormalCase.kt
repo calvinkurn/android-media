@@ -38,6 +38,7 @@ import com.tokopedia.sessioncommon.data.profile.ProfileInfo
 import com.tokopedia.sessioncommon.data.profile.ProfilePojo
 import com.tokopedia.test.application.annotations.UiTest
 import org.hamcrest.CoreMatchers.not
+import org.junit.Assert.assertTrue
 import org.junit.Test
 
 @UiTest
@@ -195,7 +196,7 @@ class LoginNormalCase : LoginBase() {
             clickSubmit()
             inputPassword("test123")
             clickSubmit()
-//            assertTrue(activity.isFinishing)
+            assertTrue(activityTestRule.activity.isFinishing)
         }
     }
 
