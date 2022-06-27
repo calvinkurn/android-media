@@ -26,7 +26,7 @@ class AnimatedTextLabel : FrameLayout {
 
     companion object {
         private const val MAX_LIMIT_CHAR = 20
-        private const val CHAR_TAKEN_AFTER_ELLIPSIS = 17
+        private const val CHAR_TAKEN_AFTER_ELLIPSIS = 18
     }
 
     constructor(context: Context) : super(context)
@@ -99,7 +99,7 @@ class AnimatedTextLabel : FrameLayout {
 
     private fun ellipsisText(desc: String): String {
         return if (desc.length > MAX_LIMIT_CHAR) {
-            desc.take(CHAR_TAKEN_AFTER_ELLIPSIS) + "..."
+            desc.take(CHAR_TAKEN_AFTER_ELLIPSIS) + ".."
         } else {
             desc
         }
@@ -136,7 +136,7 @@ class TextLabelAnimator(private val txtView: Typography) {
 
         private const val OFFSET_HEIGHT_VALUE = 20
 
-        const val OFFSET_ANIMATION_DOWN = 3000L
+        const val OFFSET_ANIMATION_DOWN = 2000L
     }
 
     var autoSwipeDownAnimator: ViewPropertyAnimator? = null
