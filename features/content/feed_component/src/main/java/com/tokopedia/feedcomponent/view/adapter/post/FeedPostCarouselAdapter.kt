@@ -11,7 +11,6 @@ import android.view.animation.AnimationUtils
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.recyclerview.widget.RecyclerView
 import androidx.transition.AutoTransition
 import androidx.transition.TransitionManager
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
@@ -25,9 +24,9 @@ import com.tokopedia.feedcomponent.util.util.doOnLayout
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.DynamicPostViewHolder
 import com.tokopedia.feedcomponent.view.widget.PostTagView
 import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.isVisible
-import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.extensions.view.toBitmap
 import com.tokopedia.kotlin.extensions.view.visible
@@ -122,6 +121,10 @@ internal class FeedPostCarouselAdapter(
 
                     return true
                 }
+
+                override fun onLongPress(e: MotionEvent?) {
+                    changeTopAdsColorToGreen()
+                }
             }
         )
 
@@ -129,12 +132,6 @@ internal class FeedPostCarouselAdapter(
             postImage.setOnTouchListener { _, event ->
                 postGestureDetector.onTouchEvent(event)
                 true
-            }
-            llLihatProduct.setOnClickListener {
-                onPostTagViews {
-                    it.showExpandedView()
-                }
-                animateLihatProduct(!tvLihatProduct.isVisible)
             }
 
             likeAnim.setImageDrawable(
@@ -166,28 +163,42 @@ internal class FeedPostCarouselAdapter(
         fun bind(item: FeedXMedia) {
             val card = dataSource.getFeedXCard()
 
-            if (card.mods.contains(TYPE_USE_ASGC_NEW_DESIGN)) {
-//                bindASGCNewDesign(item)
-            }
-
             postImage.setImageUrl(item.mediaUrl)
             llLihatProduct.showWithCondition(item.tagProducts.isNotEmpty())
 
             setupTopAds(item)
+            topAdsProductName.text = if (card.totalProducts > 1) {
+                itemView.context.getString(R.string.feeds_check_x_products, card.totalProducts)
+            } else itemView.context.getString(R.string.feeds_cek_sekarang)
 
-            itemView.doOnLayout {
-                item.tagging.forEach { tagging ->
-                    val tagView = PostTagView(itemView.context, tagging)
-                    tagView.bindData(
-                        dynamicPostListener = dataSource.getDynamicPostListener(),
-                        products = card.products,
-                        width = it.width,
-                        height = it.height,
-                        positionInFeed = dataSource.getPositionInFeed(),
-                        bitmap = postImage?.drawable?.toBitmap(),
-                    )
-                    postImageLayout.addView(tagView)
+            if (card.products.isNotEmpty()) {
+                itemView.doOnLayout {
+                    item.tagging.forEach { tagging ->
+                        val tagView = PostTagView(itemView.context, tagging)
+                        tagView.bindData(
+                            dynamicPostListener = dataSource.getDynamicPostListener(),
+                            products = card.products,
+                            width = it.width,
+                            height = it.height,
+                            positionInFeed = dataSource.getPositionInFeed(),
+                            bitmap = postImage?.drawable?.toBitmap(),
+                        )
+                        postImageLayout.addView(tagView)
+                    }
                 }
+            }
+
+            llLihatProduct.setOnClickListener {
+                onPostTagViews {
+                    it.showExpandedView()
+                }
+                animateLihatProduct(!tvLihatProduct.isVisible)
+
+                listener.onLihatProductClicked(this, item)
+            }
+
+            itemView.addOnImpressionListener(item.impressHolder) {
+                listener.onImpressed(this)
             }
         }
 
@@ -262,8 +273,6 @@ internal class FeedPostCarouselAdapter(
         companion object {
             private const val ANIMATION_LIHAT_PRODUCT_DURATION = 250L
 
-            private const val TYPE_USE_ASGC_NEW_DESIGN: String = "use_new_design"
-
             fun create(
                 parent: ViewGroup,
                 dataSource: DataSource,
@@ -282,8 +291,10 @@ internal class FeedPostCarouselAdapter(
 
         interface Listener {
             fun onTopAdsCardClicked(viewHolder: ViewHolder, media: FeedXMedia)
-            fun onImageClicked(viewHolder: BaseViewHolder)
-            fun onLiked(viewHolder: BaseViewHolder)
+            fun onImageClicked(viewHolder: ViewHolder)
+            fun onLiked(viewHolder: ViewHolder)
+            fun onImpressed(viewHolder: ViewHolder)
+            fun onLihatProductClicked(viewHolder: ViewHolder, media: FeedXMedia)
         }
 
         interface DataSource {

@@ -3,6 +3,7 @@ package com.tokopedia.feedcomponent.data.feedrevamp
 import android.view.View
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.createpost.common.data.feedrevamp.FeedXMediaTagging
+import com.tokopedia.kotlin.model.ImpressHolder
 
 data class FeedXMedia(
     @SerializedName("id")
@@ -38,5 +39,8 @@ data class FeedXMedia(
     val isCashback : Boolean = false,
     val cashBackFmt:String = "",
     val variant:Int = 1
-)
+) {
+
+    val impressHolder = ImpressHolder()
+}
 

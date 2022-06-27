@@ -2,7 +2,6 @@ package com.tokopedia.feedcomponent.view.widget
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.graphics.Typeface
 import android.os.CountDownTimer
 import android.os.Handler
 import android.os.Looper
@@ -11,8 +10,6 @@ import android.text.method.LinkMovementMethod
 import android.text.style.ClickableSpan
 import android.util.AttributeSet
 import android.view.*
-import android.view.animation.Animation
-import android.view.animation.AnimationUtils
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
@@ -29,10 +26,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.exoplayer2.ui.PlayerView
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.adapterdelegate.BaseViewHolder
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalContent
-import com.tokopedia.carousel.CarouselUnify
 import com.tokopedia.createpost.common.data.feedrevamp.FeedXMediaTagging
 import com.tokopedia.feedcomponent.R
 import com.tokopedia.feedcomponent.data.feedrevamp.*
@@ -137,30 +132,35 @@ class PostDynamicViewNew @JvmOverloads constructor(
     defStyleAttr: Int = 0
 ) : ConstraintLayout(context, attrs, defStyleAttr), LifecycleObserver {
 
-    private var shopImage: ImageUnify
-    private var shopBadge: ImageUnify
-    private var shopName: Typography
-    private var shopMenuIcon: IconUnify
+    private val view = LayoutInflater.from(context).inflate(
+        R.layout.item_post_dynamic_new_content,
+        this,
+        true
+    )
+    private val shopImage: ImageUnify = findViewById(R.id.shop_image)
+    private val shopBadge: ImageUnify = findViewById(R.id.shop_badge)
+    private val shopName: Typography = findViewById(R.id.shop_name)
+    private val shopMenuIcon: IconUnify = findViewById(R.id.menu_button)
 //    private var carouselView: CarouselUnify
-    private val rvCarousel: RecyclerView
-    private var pageControl: PageControl
-    private var likeButton: IconUnify
-    private var commentButton: IconUnify
-    private var shareButton: IconUnify
-    private var likedText: Typography
-    private var captionText: Typography
-    private var timestampText: Typography
-    private var commentUserImage1: ImageUnify
-    private var commentUserImage2: ImageUnify
-    private var commentText1: Typography
-    private var commentText2: Typography
-    private var likeButton1: IconUnify
-    private var likeButton2: IconUnify
-    private var seeAllCommentText: Typography
-    private var userImage: ImageUnify
-    private var addCommentHint: Typography
-    private var followCount: Typography
-    private var gridList: RecyclerView
+    private val rvCarousel: RecyclerView = findViewById(R.id.rv_carousel)
+    private val pageControl: PageControl = findViewById(R.id.page_indicator)
+    private val likeButton: IconUnify = findViewById(R.id.like_button)
+    private val commentButton: IconUnify = findViewById(R.id.comment_button)
+    private val shareButton: IconUnify = findViewById(R.id.share_button)
+    private val likedText: Typography = findViewById(R.id.liked_text)
+    private val captionText: Typography = findViewById(R.id.caption_text)
+    private val timestampText: Typography = findViewById(R.id.timestamp_text)
+    private val commentUserImage1: ImageUnify = findViewById(R.id.comment_user_image1)
+    private val commentUserImage2: ImageUnify = findViewById(R.id.comment_user_image2)
+    private val commentText1: Typography = findViewById(R.id.comment_text1)
+    private val commentText2: Typography = findViewById(R.id.comment_text2)
+    private val likeButton1: IconUnify = findViewById(R.id.like_button1)
+    private val likeButton2: IconUnify = findViewById(R.id.like_button2)
+    private val seeAllCommentText: Typography = findViewById(R.id.see_all_comment_text)
+    private val userImage: ImageUnify = findViewById(R.id.user_image)
+    private val addCommentHint: Typography = findViewById(R.id.comment_hint)
+    private val followCount: Typography = findViewById(R.id.follow_count)
+    private val gridList: RecyclerView = findViewById(R.id.gridList)
     private var listener: DynamicPostViewHolder.DynamicPostListener? = null
     private var videoListener: VideoViewHolder.VideoViewListener? = null
     private lateinit var gridPostListener: GridPostAdapter.GridItemListener
@@ -214,60 +214,58 @@ class PostDynamicViewNew @JvmOverloads constructor(
                 )
             }
 
-            override fun onImageClicked(viewHolder: BaseViewHolder) {
+            override fun onImageClicked(viewHolder: FeedPostCarouselAdapter.ViewHolder) {
 
             }
 
-            override fun onLiked(viewHolder: BaseViewHolder) {
+            override fun onLiked(viewHolder: FeedPostCarouselAdapter.ViewHolder) {
 
+            }
+
+            override fun onImpressed(viewHolder: FeedPostCarouselAdapter.ViewHolder) {
+                imagePostListener.userImagePostImpression(
+                    positionInFeed,
+                    pageControl.indicatorCurrentPosition,
+                )
+            }
+
+            override fun onLihatProductClicked(
+                viewHolder: FeedPostCarouselAdapter.ViewHolder,
+                media: FeedXMedia,
+            ) {
+                val listener = this@PostDynamicViewNew.listener ?: return
+
+                listener.onTagClicked(
+                    mData.id.toIntOrZero(),
+                    media.tagProducts,
+                    listener,
+                    mData.author.id,
+                    mData.typename,
+                    mData.followers.isFollowed,
+                    media.type,
+                    positionInFeed,
+                    mData.playChannelID,
+                    shopName = mData.author.name
+                )
             }
         },
     )
     private val snapHelper = PagerSnapHelper()
-    private val pageControlListener: RecyclerView.OnScrollListener
+    private val pageControlListener = object : RecyclerView.OnScrollListener() {
+        override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+            if (newState != RecyclerView.SCROLL_STATE_IDLE) return
+            val layoutManager = recyclerView.layoutManager ?: return
+            val snappedView = snapHelper.findSnapView(layoutManager) ?: return
+
+            pageControl.setCurrentIndicator(
+                layoutManager.getPosition(snappedView)
+            )
+        }
+    }
 
     init {
         (context as LifecycleOwner).lifecycle.addObserver(this)
-        val view =
-            LayoutInflater.from(context).inflate(R.layout.item_post_dynamic_new_content, this, true)
-        view.run {
-            shopImage = findViewById(R.id.shop_image)
-            shopBadge = findViewById(R.id.shop_badge)
-            shopName = findViewById(R.id.shop_name)
-            shopMenuIcon = findViewById(R.id.menu_button)
-//            carouselView = findViewById(R.id.feed_carousel)
-            rvCarousel = findViewById(R.id.rv_carousel)
-            pageControl = findViewById(R.id.page_indicator)
-            likeButton = findViewById(R.id.like_button)
-            commentButton = findViewById(R.id.comment_button)
-            shareButton = findViewById(R.id.share_button)
-            likedText = findViewById(R.id.liked_text)
-            captionText = findViewById(R.id.caption_text)
-            timestampText = findViewById(R.id.timestamp_text)
-            seeAllCommentText = findViewById(R.id.see_all_comment_text)
-            commentUserImage1 = findViewById(R.id.comment_user_image1)
-            commentUserImage2 = findViewById(R.id.comment_user_image2)
-            commentText1 = findViewById(R.id.comment_text1)
-            commentText2 = findViewById(R.id.comment_text2)
-            likeButton1 = findViewById(R.id.like_button1)
-            likeButton2 = findViewById(R.id.like_button2)
-            userImage = findViewById(R.id.user_image)
-            addCommentHint = findViewById(R.id.comment_hint)
-            gridList = findViewById(R.id.gridList)
-            followCount = findViewById(R.id.follow_count)
-        }
 
-        pageControlListener = object : RecyclerView.OnScrollListener() {
-            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
-                if (newState != RecyclerView.SCROLL_STATE_IDLE) return
-                val layoutManager = recyclerView.layoutManager ?: return
-                val snappedView = snapHelper.findSnapView(layoutManager) ?: return
-
-                pageControl.setCurrentIndicator(
-                    layoutManager.getPosition(snappedView)
-                )
-            }
-        }
         snapHelper.attachToRecyclerView(rvCarousel)
         rvCarousel.addOnScrollListener(pageControlListener)
         rvCarousel.adapter = adapter
@@ -904,7 +902,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
     ) {
         val media = feedXCard.media
         val postId = feedXCard.id.toIntOrZero()
-        if (!feedXCard.isTypeProductHighlight && feedXCard.isTypeVOD) {
+        if (!feedXCard.isTypeProductHighlight && !feedXCard.isTypeVOD) {
             if (media.isNotEmpty() && media.first().type == TYPE_LONG_VIDEO){
                 setVODLayout(feedXCard)
             } else {
@@ -1195,7 +1193,6 @@ class PostDynamicViewNew @JvmOverloads constructor(
                     setCurrentIndicator(feedXCard.lastCarouselIndex)
                 }.showWithCondition(media.size > 1)
 
-
                 media.forEach { feedMedia ->
                     val tags = feedMedia.tagging
                     feedMedia.tagProducts = tags.map { globalCardProductList[it.tagIndex] }
@@ -1203,6 +1200,15 @@ class PostDynamicViewNew @JvmOverloads constructor(
                     feedMedia.isImageImpressedFirst = true
                 }
                 adapter.setItemsAndAnimateChanges(media)
+
+                if (feedXCard.isTopAds) {
+                    likedText.hide()
+                    captionText.hide()
+                    commentButton.invisible()
+                    likeButton.invisible()
+                    seeAllCommentText.hide()
+                    shopMenuIcon.hide()
+                }
 
                 imagePostListener.userImagePostImpression(
                     positionInFeed,
