@@ -6,11 +6,12 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.tokofood.common.constants.ImageUrl
 import com.tokopedia.tokofood.common.presentation.uimodel.UpdateParam
 import com.tokopedia.tokofood.databinding.BottomsheetChangeMerchantLayoutBinding
-import com.tokopedia.tokofood.feature.merchant.presentation.model.ProductUiModelWrapper
+import com.tokopedia.tokofood.feature.merchant.presentation.model.ProductUiModel
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 
@@ -20,7 +21,14 @@ class ChangeMerchantBottomSheet : BottomSheetUnify() {
 
     private var changeMerchantListener: ChangeMerchantListener? = null
     private var updateParam: UpdateParam? = null
-    private var productUiModelWrapper: ProductUiModelWrapper? = null
+
+    private val productUiModel by lazy(LazyThreadSafetyMode.NONE) {
+        arguments?.getParcelable(KEY_PRODUCT_UI_MODEL) ?: ProductUiModel()
+    }
+
+    private val productPosition by lazy {
+        arguments?.getInt(KEY_PRODUCT_POSITION, Int.ZERO) ?: Int.ZERO
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -50,12 +58,7 @@ class ChangeMerchantBottomSheet : BottomSheetUnify() {
             UpdateParam::class.java
         ) ?: UpdateParam()
 
-        val productUiModelWrapperCm = cacheManager?.get(
-            KEY_PRODUCT_UI_MODEL_WRAPPER, ProductUiModelWrapper::class.java
-        ) ?: ProductUiModelWrapper()
-
         this.updateParam = updateParamCm
-        this.productUiModelWrapper = productUiModelWrapperCm
     }
 
     private fun setupViews() {
@@ -73,11 +76,11 @@ class ChangeMerchantBottomSheet : BottomSheetUnify() {
     private fun setBtnConfirmOrder() {
         binding?.btnConfirmOrder?.setOnClickListener {
             updateParam?.let { updateParam ->
-                productUiModelWrapper?.let { productUiModelWrapper ->
-                    changeMerchantListener?.changeMerchantConfirmAddToCart(updateParam,
-                        productUiModelWrapper
-                    )
-                }
+                changeMerchantListener?.changeMerchantConfirmAddToCart(
+                    updateParam,
+                    productUiModel,
+                    productPosition
+                )
             }
             dismiss()
         }
@@ -96,7 +99,11 @@ class ChangeMerchantBottomSheet : BottomSheetUnify() {
     }
 
     interface ChangeMerchantListener {
-        fun changeMerchantConfirmAddToCart(updateParam: UpdateParam, productUiModelWrapper: ProductUiModelWrapper)
+        fun changeMerchantConfirmAddToCart(
+            updateParam: UpdateParam,
+            productUiModel: ProductUiModel,
+            productPosition: Int
+        )
     }
 
     companion object {
@@ -112,7 +119,8 @@ class ChangeMerchantBottomSheet : BottomSheetUnify() {
 
         const val KEY_UPDATE_PARAM = "key_update_param_change_merchant"
         const val KEY_CACHE_MANAGER_ID = "key_cache_manager_id_change_merchant"
-        const val KEY_PRODUCT_UI_MODEL_WRAPPER = "key_product_ui_model_wrapper"
+        const val KEY_PRODUCT_UI_MODEL = "key_product_ui_model"
+        const val KEY_PRODUCT_POSITION = "key_product_position"
 
         val TAG: String = ChangeMerchantBottomSheet::class.java.simpleName
     }
