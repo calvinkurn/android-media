@@ -65,7 +65,13 @@ class TopAdsShopMapper(
             topAdsShopItem.shopImageCover = dataResponse.headline?.shop?.imageShop?.cover
             topAdsShopItem.shopImageCoverEcs = dataResponse.headline?.shop?.imageShop?.coverEcs
             topAdsShopItem.shopImageUrl = dataResponse.headline?.image?.fullUrl
-            topAdsShopItem.shopImageEcs = dataResponse.headline?.shop?.imageShop?.sEcs
+            topAdsShopItem.shopImageEcs = dataResponse.headline?.shop?.imageShop?.getsEcs()
+            topAdsShopItem.imageUrl = dataResponse.headline?.shop?.product?.firstOrNull()?.imageProduct?.imageUrl
+            topAdsShopItem.fullEcs = dataResponse.headline?.image?.fullEcs
+            topAdsShopItem.shopIsOfficial = dataResponse.headline?.shop?.shopIsOfficial?: false
+            topAdsShopItem.isPMPro = dataResponse.headline?.shop?.isPMPro?: false
+            topAdsShopItem.isPowerMerchant = dataResponse.headline?.shop?.isPowerMerchant?: false
+            topAdsShopItem.imageShop = dataResponse.headline?.shop?.imageShop
             topAdsShopItems.add(topAdsShopItem)
         }
         return topAdsShopItems

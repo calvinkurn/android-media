@@ -10,6 +10,10 @@ import com.tokopedia.favorite.R
 import com.tokopedia.favorite.view.adapter.TopAdsShopAdapter
 import com.tokopedia.favorite.view.viewlistener.FavoriteClickListener
 import com.tokopedia.favorite.view.viewmodel.TopAdsShopUiModel
+import com.tokopedia.topads.sdk.domain.model.CpmModel
+import com.tokopedia.topads.sdk.domain.model.ShopProductModel
+import com.tokopedia.topads.sdk.listener.ShopAdsProductListener
+import com.tokopedia.topads.sdk.widget.ShopAdsWithOneProductView
 
 /**
  * @author kulomady on 1/24/17.
@@ -27,15 +31,51 @@ class TopAdsShopViewHolder(
     }
 
     var recShopRecyclerView: RecyclerView = itemView.findViewById<View>(R.id.rec_shop_recycler_view) as RecyclerView
+    var shopAdsProductView: ShopAdsWithOneProductView = itemView.findViewById<View>(R.id.shopAdsProductView) as ShopAdsWithOneProductView
     private val context: Context = itemView.context
 
     override fun bind(element: TopAdsShopUiModel?) {
-        val topAdsShopAdapter = TopAdsShopAdapter(favoriteClickListener, impressionImageLoadedListener)
-        val linearLayoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
-        recShopRecyclerView.layoutManager = linearLayoutManager
-        recShopRecyclerView.setHasFixedSize(true)
-        recShopRecyclerView.adapter = topAdsShopAdapter
-        element?.adsShopItems?.let { topAdsShopAdapter.setData(it) }
+//        val topAdsShopAdapter = TopAdsShopAdapter(favoriteClickListener, impressionImageLoadedListener)
+//        val linearLayoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+//        recShopRecyclerView.layoutManager = linearLayoutManager
+//        recShopRecyclerView.setHasFixedSize(true)
+//        recShopRecyclerView.adapter = topAdsShopAdapter
+//        element?.adsShopItems?.let { topAdsShopAdapter.setData(it) }
+
+        shopAdsProductView.setShopProductModel(
+            ShopProductModel(
+                title = "",
+                items = getShopProductItem(element)
+            ),
+            object : ShopAdsProductListener{
+                override fun onItemImpressed(position: Int) {
+                }
+
+                override fun onItemClicked(position: Int) {
+                }
+
+            }
+        )
+
+    }
+
+    private fun getShopProductItem(element: TopAdsShopUiModel?): List<ShopProductModel.ShopProductModelItem> {
+        val list = arrayListOf<ShopProductModel.ShopProductModelItem>()
+        element?.adsShopItems?.forEachIndexed { index, it ->
+            val item = ShopProductModel.ShopProductModelItem(
+                imageUrl = it.imageUrl ?: "",
+                shopIcon = it.fullEcs?:"",
+                shopName = it.shopName?:"",
+                isOfficial = it.shopIsOfficial,
+                isPMPro = it.isPMPro ,
+                goldShop = if (it.isPowerMerchant) 1 else 0,
+                impressHolder = it.imageShop,
+                location = it.shopLocation?:"",
+                position = index
+            )
+            list.add(item)
+        }
+        return list
     }
 
 }

@@ -1,5 +1,7 @@
 package com.tokopedia.favorite.domain.model
 
+import com.tokopedia.topads.sdk.domain.model.ImageShop
+
 /**
  * @author kulomady on 1/24/17.
  */
@@ -19,5 +21,11 @@ data class TopAdsShopItem (
         var shopImageUrl: String? = null,
         var shopImageEcs: String? = null,
         var shopDomain: String? = null,
-        var isSelected: Boolean = false
+        var isSelected: Boolean = false,
+        var imageUrl: String? = "",
+        var fullEcs: String? = "",
+        var shopIsOfficial: Boolean = false,
+        var isPMPro: Boolean = false,
+        var isPowerMerchant: Boolean = false,
+        var imageShop: ImageShop?  = null,
 )
