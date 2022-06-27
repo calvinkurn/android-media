@@ -41,6 +41,12 @@ object ProductMapperConstants {
         else -> UNIT_MONTH_STRING
     }
 
+    fun getWeightUnitString(weightUnit: Int) = when (weightUnit) {
+        UNIT_GRAM -> UNIT_GRAM_STRING
+        UNIT_KILOGRAM -> UNIT_KILOGRAM_SRING
+        else -> UNIT_GRAM_STRING
+    }
+
     fun getYoutubeDelimiter(source: String) =
         if (source.contains(YOUTUBE_URL)) YOUTUBE_URL_DELIMITER
         else YOUTUBE_URL_DELIMITER_SHORT

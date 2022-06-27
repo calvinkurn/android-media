@@ -43,6 +43,10 @@ class GetProductMapper @Inject constructor() {
             itemSold = product.txStats.itemSold
     )
 
+    fun convertToGram(weight: Int, unit: String): Int {
+        return if (unit == UNIT_KILOGRAM_SRING) weight * UNIT_GRAM_TO_KILOGRAM_MULTIPLIER else weight
+    }
+
     private fun mapVariantInputModel(variant: Variant): VariantInputModel =
             VariantInputModel(
                     products = mapProductVariants(variant.products),
@@ -222,9 +226,5 @@ class GetProductMapper @Inject constructor() {
             CPLModel(),
             product.variant.products.isEmpty()
         )
-    }
-
-    private fun convertToGram(weight: Int, unit: String): Int {
-        return if (unit == UNIT_KILOGRAM_SRING) weight * UNIT_GRAM_TO_KILOGRAM_MULTIPLIER else weight
     }
 }
