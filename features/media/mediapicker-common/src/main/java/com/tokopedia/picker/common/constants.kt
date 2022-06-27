@@ -1,7 +1,8 @@
 package com.tokopedia.picker.common
 
-// extra pickerParam for intent to PickerActivity
+// extra param for intent
 const val EXTRA_PICKER_PARAM = "extra-picker-param"
+const val EXTRA_EDITOR_PARAM = "extra-editor-param"
 
 // list of filePath (string)
 const val EXTRA_RESULT_PICKER = "extra-result-picker"

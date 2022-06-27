@@ -9,7 +9,7 @@ import dagger.Component
 
 @ActivityScope
 @Component(modules = [
-    EditorFragmentModule::class
+    EditorFragmentModule::class,
 ], dependencies = [
     BaseAppComponent::class
 ])

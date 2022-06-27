@@ -14,7 +14,7 @@ import com.tokopedia.unifyprinciples.Typography
 class EditorToolAdapter constructor(
     private val tools: List<ToolUiModel> = mutableListOf(),
     private val listener: EditorToolViewHolder.Listener
-) : RecyclerView.Adapter<EditorToolAdapter.EditorToolViewHolder>() {
+) : RecyclerView.Adapter<EditorToolViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): EditorToolViewHolder {
         return EditorToolViewHolder.create(parent, listener)
@@ -26,40 +26,40 @@ class EditorToolAdapter constructor(
 
     override fun getItemCount() = tools.size
 
-    class EditorToolViewHolder(
-        view: View,
-        private val listener: Listener
-    ) : RecyclerView.ViewHolder(view) {
+}
 
-        private val icTool: IconUnify = view.findViewById(R.id.ic_tool)
-        private val txtName: Typography = view.findViewById(R.id.txt_name)
+class EditorToolViewHolder(
+    view: View,
+    private val listener: Listener
+) : RecyclerView.ViewHolder(view) {
 
-        private val context = view.context
+    private val icTool: IconUnify = view.findViewById(R.id.ic_tool)
+    private val txtName: Typography = view.findViewById(R.id.txt_name)
 
-        fun bind(tool: ToolUiModel) {
-            txtName.text = context.getString(tool.name)
-            icTool.setImage(tool.icon)
+    private val context = view.context
 
-            itemView.setOnClickListener {
-                listener.onItemClicked(tool.id)
-            }
+    fun bind(tool: ToolUiModel) {
+        txtName.text = context.getString(tool.name)
+        icTool.setImage(tool.icon)
+
+        itemView.setOnClickListener {
+            listener.onItemClicked(tool.id)
         }
+    }
 
-        companion object {
-            @LayoutRes val LAYOUT = R.layout.partial_editor_tool_item
+    companion object {
+        @LayoutRes val LAYOUT = R.layout.partial_editor_tool_item
 
-            fun create(viewGroup: ViewGroup, listener: Listener): EditorToolViewHolder {
-                val layout = LayoutInflater
-                    .from(viewGroup.context)
-                    .inflate(LAYOUT, viewGroup, false)
-                return EditorToolViewHolder(layout, listener)
-            }
+        fun create(viewGroup: ViewGroup, listener: Listener): EditorToolViewHolder {
+            val layout = LayoutInflater
+                .from(viewGroup.context)
+                .inflate(LAYOUT, viewGroup, false)
+            return EditorToolViewHolder(layout, listener)
         }
+    }
 
-        interface Listener {
-            fun onItemClicked(@EditorToolType type: Int)
-        }
-
+    interface Listener {
+        fun onItemClicked(@EditorToolType type: Int)
     }
 
 }

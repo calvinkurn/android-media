@@ -5,6 +5,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.media.editor.R
 import com.tokopedia.media.editor.ui.adapter.EditorToolAdapter
+import com.tokopedia.media.editor.ui.adapter.EditorToolViewHolder
 import com.tokopedia.media.editor.ui.uimodel.ToolUiModel
 import com.tokopedia.picker.common.basecomponent.UiComponent
 import com.tokopedia.picker.common.types.EditorToolType
@@ -13,7 +14,7 @@ class EditorToolUiComponent constructor(
     viewGroup: ViewGroup,
     private val listener: Listener
 ) : UiComponent(viewGroup, R.id.uc_editor_tool_container)
-    , EditorToolAdapter.EditorToolViewHolder.Listener {
+    , EditorToolViewHolder.Listener {
 
     private val lstTool: RecyclerView = findViewById(R.id.lst_tool)
 

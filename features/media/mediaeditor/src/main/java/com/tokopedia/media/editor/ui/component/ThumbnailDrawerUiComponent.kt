@@ -9,8 +9,9 @@ import com.tokopedia.media.editor.ui.adapter.decoration.ThumbnailDrawerDecoratio
 import com.tokopedia.picker.common.basecomponent.UiComponent
 
 class ThumbnailDrawerUiComponent constructor(
-    viewGroup: ViewGroup
-) : UiComponent(viewGroup, R.id.uc_drawer_thumbnail) {
+    viewGroup: ViewGroup,
+    private val listener: Listener
+) : UiComponent(viewGroup, R.id.uc_drawer_thumbnail), ThumbnailDrawerAdapter.Listener {
 
     private val lstThumbnail: RecyclerView = findViewById(R.id.lst_thumbnail)
 
@@ -20,9 +21,13 @@ class ThumbnailDrawerUiComponent constructor(
         setupRecyclerView(images)
     }
 
+    override fun onItemClicked(url: String) {
+        listener.onThumbnailDrawerClicked(url)
+    }
+
     private fun setupRecyclerView(images: List<String>) {
         if (!::drawerAdapter.isInitialized) {
-            drawerAdapter = ThumbnailDrawerAdapter(images)
+            drawerAdapter = ThumbnailDrawerAdapter(images, this)
         }
 
         with(lstThumbnail) {
@@ -34,7 +39,12 @@ class ThumbnailDrawerUiComponent constructor(
 
             addItemDecoration(ThumbnailDrawerDecoration(context))
             adapter = drawerAdapter
+            itemAnimator = null
         }
+    }
+
+    interface Listener {
+        fun onThumbnailDrawerClicked(url: String)
     }
 
 }
