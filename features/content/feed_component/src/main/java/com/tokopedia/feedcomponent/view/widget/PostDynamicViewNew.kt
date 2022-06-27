@@ -262,12 +262,24 @@ class PostDynamicViewNew @JvmOverloads constructor(
             )
         }
     }
+    private val onMediaFocusedListener = object : RecyclerView.OnScrollListener() {
+        override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+            if (newState != RecyclerView.SCROLL_STATE_IDLE) return
+            val layoutManager = recyclerView.layoutManager ?: return
+            val snappedView = snapHelper.findSnapView(layoutManager) ?: return
+
+            adapter.focusItemAt(
+                layoutManager.getPosition(snappedView)
+            )
+        }
+    }
 
     init {
         (context as LifecycleOwner).lifecycle.addObserver(this)
 
         snapHelper.attachToRecyclerView(rvCarousel)
         rvCarousel.addOnScrollListener(pageControlListener)
+        rvCarousel.addOnScrollListener(onMediaFocusedListener)
         rvCarousel.adapter = adapter
     }
 
@@ -2098,8 +2110,8 @@ class PostDynamicViewNew @JvmOverloads constructor(
         }
 
         adapter.setItemsAndAnimateChanges(mediaList)
-
-//        rvCarousel.scrollToPosition(feedXCard.lastCarouselIndex)
+        feedXCard.media = mediaList
+        feedXCard.tags = feedXCard.products
     }
 
     private fun setGridASGCLayout(feedXCard: FeedXCard) {
@@ -2594,6 +2606,8 @@ class PostDynamicViewNew @JvmOverloads constructor(
                 }
                 },TIME_FOUR_SEC)
         }
+
+        adapter.focusItemAt(pageControl.indicatorCurrentPosition)
     }
 
     private fun getImageView(): View? {

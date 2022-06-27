@@ -1,6 +1,7 @@
 package com.tokopedia.feedcomponent.view.adapter.post
 
 import android.annotation.SuppressLint
+import android.os.Bundle
 import android.view.GestureDetector
 import android.view.LayoutInflater
 import android.view.MotionEvent
@@ -26,7 +27,6 @@ import com.tokopedia.feedcomponent.view.widget.PostTagView
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.extensions.view.toBitmap
 import com.tokopedia.kotlin.extensions.view.visible
@@ -57,6 +57,12 @@ internal class FeedPostCarouselAdapter(
         return oldItem == newItem
     }
 
+    fun focusItemAt(position: Int) {
+        notifyItemChanged(position, Bundle().apply {
+            putBoolean(PAYLOAD_FOCUS, true)
+        })
+    }
+
     private class Delegate(
         private val dataSource: ViewHolder.DataSource,
         private val listener: ViewHolder.Listener,
@@ -65,6 +71,15 @@ internal class FeedPostCarouselAdapter(
     ) {
         override fun onBindViewHolder(item: FeedXMedia, holder: ViewHolder) {
             holder.bind(item)
+        }
+
+        override fun onBindViewHolderWithPayloads(
+            item: FeedXMedia,
+            holder: ViewHolder,
+            payloads: Bundle
+        ) {
+            if (payloads.containsKey(PAYLOAD_FOCUS)) holder.focusMedia()
+            else super.onBindViewHolderWithPayloads(item, holder, payloads)
         }
 
         override fun onCreateViewHolder(parent: ViewGroup, basicView: View): ViewHolder {
@@ -101,10 +116,9 @@ internal class FeedPostCarouselAdapter(
                     changeTopAdsColorToGreen()
                     listener.onImageClicked(this@ViewHolder)
 
-                    onPostTagViews {
-                        it.showExpandedView()
-                    }
-                    animateLihatProduct(!tvLihatProduct.isVisible)
+                    animateLihatProduct(
+                        toggleAllPostTagViews()
+                    )
 
                     return true
                 }
@@ -127,6 +141,11 @@ internal class FeedPostCarouselAdapter(
                 }
             }
         )
+
+        private val focusRunnable = Runnable {
+            animateLihatProduct(true)
+            changeTopAdsColorToGreen()
+        }
 
         init {
             postImage.setOnTouchListener { _, event ->
@@ -153,11 +172,26 @@ internal class FeedPostCarouselAdapter(
 
                 override fun onAnimationRepeat(animation: Animation) {}
             })
+
+            itemView.addOnAttachStateChangeListener(object : View.OnAttachStateChangeListener {
+                override fun onViewAttachedToWindow(v: View?) {
+
+                }
+
+                override fun onViewDetachedFromWindow(v: View?) {
+                    itemView.removeCallbacks(focusRunnable)
+                }
+            })
         }
 
         override fun onViewRecycled() {
             super.onViewRecycled()
             removeExistingPostTags()
+        }
+
+        fun focusMedia() {
+            itemView.removeCallbacks(focusRunnable)
+            itemView.postDelayed(focusRunnable, FOCUS_DELAY)
         }
 
         fun bind(item: FeedXMedia) {
@@ -189,10 +223,9 @@ internal class FeedPostCarouselAdapter(
             }
 
             llLihatProduct.setOnClickListener {
-                onPostTagViews {
-                    it.showExpandedView()
-                }
-                animateLihatProduct(!tvLihatProduct.isVisible)
+                animateLihatProduct(
+                    toggleAllPostTagViews()
+                )
 
                 listener.onLihatProductClicked(this, item)
             }
@@ -260,6 +293,14 @@ internal class FeedPostCarouselAdapter(
             }
         }
 
+        private fun toggleAllPostTagViews(): Boolean {
+            var isAnyGoingToVisible = false
+            onPostTagViews {
+                if (!isAnyGoingToVisible) isAnyGoingToVisible = it.toggleExpandedView()
+            }
+            return isAnyGoingToVisible
+        }
+
         private fun animateLihatProduct(shouldShow: Boolean) {
             TransitionManager.beginDelayedTransition(
                 llLihatProduct,
@@ -302,5 +343,10 @@ internal class FeedPostCarouselAdapter(
             fun getDynamicPostListener(): DynamicPostViewHolder.DynamicPostListener?
             fun getPositionInFeed(): Int
         }
+    }
+
+    companion object {
+        private const val PAYLOAD_FOCUS = "payload_focus"
+        private const val FOCUS_DELAY = 1000L
     }
 }
