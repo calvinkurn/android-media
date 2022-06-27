@@ -6,6 +6,8 @@ import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.Animation
+import android.view.animation.AnimationUtils
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -27,6 +29,7 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.extensions.view.toBitmap
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.unifyprinciples.R as unifyR
@@ -86,6 +89,11 @@ internal class FeedPostCarouselAdapter(
         private val topAdsProductName = itemView.findViewById<Typography>(R.id.top_ads_product_name)
         private val topAdsChevron = topAdsCard.findViewById<IconUnify>(R.id.chevron)
 
+        private val animationLike = AnimationUtils.loadAnimation(
+            itemView.context,
+            android.R.anim.fade_in
+        )
+
         private val postGestureDetector = GestureDetector(
             itemView.context,
             object : GestureDetector.SimpleOnGestureListener() {
@@ -93,12 +101,22 @@ internal class FeedPostCarouselAdapter(
                     changeTopAdsColorToGreen()
                     listener.onImageClicked(this@ViewHolder)
 
-                    (0 until postImageLayout.childCount).forEach {
-                        val view = postImageLayout.getChildAt(it)
-                        if (view is PostTagView) {
-                            view.showExpandedView()
-                            animateLihatProduct(!tvLihatProduct.isVisible)
-                        }
+                    onPostTagViews {
+                        it.showExpandedView()
+                    }
+                    animateLihatProduct(!tvLihatProduct.isVisible)
+
+                    return true
+                }
+
+                override fun onDoubleTap(e: MotionEvent?): Boolean {
+                    onPostTagViews {
+                        it.hideExpandedViewIfShown()
+                    }
+                    animateLihatProduct(false)
+
+                    if (!dataSource.getFeedXCard().isTopAds) {
+                        likeAnim.startAnimation(animationLike)
                     }
 
                     return true
@@ -118,6 +136,19 @@ internal class FeedPostCarouselAdapter(
                     R.drawable.ic_thumb_filled
                 )
             )
+
+            animationLike.setAnimationListener(object : Animation.AnimationListener {
+                override fun onAnimationStart(animation: Animation) {
+                    likeAnim.visible()
+                    listener.onLiked(this@ViewHolder)
+                }
+
+                override fun onAnimationEnd(animation: Animation) {
+                    likeAnim.gone()
+                }
+
+                override fun onAnimationRepeat(animation: Animation) {}
+            })
         }
 
         override fun onViewRecycled() {
@@ -205,6 +236,13 @@ internal class FeedPostCarouselAdapter(
             tvLihatProduct.gone()
         }
 
+        private fun onPostTagViews(onTag: (PostTagView) -> Unit) {
+            (0 until postImageLayout.childCount).forEach {
+                val view = postImageLayout.getChildAt(it)
+                if (view is PostTagView) onTag(view)
+            }
+        }
+
         private fun animateLihatProduct(shouldShow: Boolean) {
             TransitionManager.beginDelayedTransition(
                 llLihatProduct,
@@ -239,6 +277,7 @@ internal class FeedPostCarouselAdapter(
         interface Listener {
             fun onTopAdsCardClicked(viewHolder: ViewHolder)
             fun onImageClicked(viewHolder: BaseViewHolder)
+            fun onLiked(viewHolder: BaseViewHolder)
         }
 
         interface DataSource {

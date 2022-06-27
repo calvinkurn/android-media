@@ -200,6 +200,10 @@ class PostDynamicViewNew @JvmOverloads constructor(
             override fun onImageClicked(viewHolder: BaseViewHolder) {
 
             }
+
+            override fun onLiked(viewHolder: BaseViewHolder) {
+
+            }
         },
     )
     private val snapHelper = PagerSnapHelper()
