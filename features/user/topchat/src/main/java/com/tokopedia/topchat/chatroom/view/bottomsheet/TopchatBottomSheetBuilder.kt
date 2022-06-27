@@ -4,7 +4,7 @@ import android.content.Context
 import android.view.View
 import com.tokopedia.chat_common.data.BaseChatUiModel
 import com.tokopedia.topchat.R
-import com.tokopedia.topchat.chatlist.widget.LongClickMenu
+import com.tokopedia.topchat.chatlist.view.widget.LongClickMenu
 import com.tokopedia.topchat.common.data.TopchatItemMenu
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifyprinciples.Typography

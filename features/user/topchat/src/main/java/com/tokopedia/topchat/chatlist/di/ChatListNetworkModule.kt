@@ -20,7 +20,6 @@ import com.tokopedia.topchat.common.Constant.NET_CONNECT_TIMEOUT
 import com.tokopedia.topchat.common.Constant.NET_READ_TIMEOUT
 import com.tokopedia.topchat.common.Constant.NET_RETRY
 import com.tokopedia.topchat.common.Constant.NET_WRITE_TIMEOUT
-import com.tokopedia.topchat.common.chat.api.ChatApi
 import com.tokopedia.topchat.common.di.qualifier.TopchatContext
 import com.tokopedia.topchat.common.websocket.*
 import com.tokopedia.topchat.common.websocket.DefaultTopChatWebSocket.Companion.PAGE_CHATLIST
@@ -97,13 +96,6 @@ class ChatListNetworkModule {
                 NET_WRITE_TIMEOUT,
                 NET_CONNECT_TIMEOUT,
                 NET_RETRY)
-    }
-
-
-    @ChatListScope
-    @Provides
-    fun provideChatApi(@Named("retrofit") retrofit: Retrofit): ChatApi {
-        return retrofit.create(ChatApi::class.java)
     }
 
     @ChatListScope

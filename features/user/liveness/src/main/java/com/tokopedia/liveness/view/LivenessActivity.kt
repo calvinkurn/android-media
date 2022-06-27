@@ -74,12 +74,10 @@ open class LivenessActivity: PermissionActivity(), HasComponent<LivenessDetectio
         super.onResume()
         loadFragment()
     }
-
-    override fun attachBaseContext(context: Context?) {
-        if (context != null) {
-            SplitCompat.install(context)
-        }
-        super.attachBaseContext(context)
+    
+    override fun attachBaseContext(newBase: Context?) {
+        super.attachBaseContext(newBase)
+        SplitCompat.installActivity(this)
     }
 
     private fun loadFragment() {

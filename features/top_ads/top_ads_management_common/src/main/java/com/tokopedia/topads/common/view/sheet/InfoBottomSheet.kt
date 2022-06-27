@@ -12,7 +12,7 @@ import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifyprinciples.Typography
 
 class InfoBottomSheet(
-    private val bottomSheetType: Int, private val isWhiteListUser: Boolean,
+    private val bottomSheetType: Int
 ) : BottomSheetUnify() {
 
     override fun onCreateView(
@@ -23,8 +23,9 @@ class InfoBottomSheet(
     }
 
     private fun initChildLayout() {
-        val contentView = View.inflate(context,
-            if (isWhiteListUser && bottomSheetType == TYPE_DASAR)
+        val contentView = View.inflate(
+            context,
+            if (bottomSheetType == TYPE_DASAR)
                 R.layout.layout_topads_edit_split_bid_info_bs
             else
                 R.layout.topads_common_info_bs,
@@ -49,11 +50,6 @@ class InfoBottomSheet(
     }
 
     private fun initView() {
-        if (isWhiteListUser && bottomSheetType == TYPE_DASAR) {
-            view?.findViewById<ImageUnify>(R.id.image)
-                ?.setImageUrl(TopAdsRemoteImageUrl.CREATE_TIPS2)
-            return
-        }
         context?.let {
             if (bottomSheetType == TYPE_DASAR) {
                 view?.findViewById<Typography>(R.id.infoDesc)?.text =

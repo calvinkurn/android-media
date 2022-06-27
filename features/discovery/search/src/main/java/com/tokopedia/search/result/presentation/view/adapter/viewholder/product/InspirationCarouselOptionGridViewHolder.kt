@@ -46,7 +46,6 @@ class InspirationCarouselOptionGridViewHolder(
             labelGroupList = labelGroupDataList.toProductCardModelLabelGroup(),
             shopLocation = shopLocation,
             shopBadgeList = badgeItemDataViewList.toProductCardModelShopBadges(),
-            cardInteraction = true,
         )
     }
 
