@@ -4,6 +4,7 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.play.broadcaster.domain.repository.PlayBroadcastRepository
 import com.tokopedia.play.broadcaster.model.UiModelBuilder
 import com.tokopedia.play.broadcaster.model.interactive.InteractiveUiModelBuilder
+import com.tokopedia.play.broadcaster.pusher.mediator.PusherMediator
 import com.tokopedia.play.broadcaster.robot.PlayBroadcastViewModelRobot
 import com.tokopedia.play.broadcaster.ui.action.PlayBroadcastAction
 import com.tokopedia.play.broadcaster.ui.event.PlayBroadcastEvent
@@ -19,6 +20,7 @@ import com.tokopedia.play_common.view.game.quiz.PlayQuizOptionState
 import com.tokopedia.unit.test.rule.CoroutineTestRule
 import io.mockk.coEvery
 import io.mockk.coJustRun
+import io.mockk.every
 import io.mockk.mockk
 import org.assertj.core.api.Assertions
 import org.junit.Rule
@@ -379,20 +381,24 @@ class PlayBroQuizViewModelTest {
         coEvery { mockRepo.getChannelConfiguration() } returns mockConfig
         coEvery { mockRepo.getInteractiveConfig() } returns mockInteractiveConfigResponse
         coEvery { mockRepo.getSellerLeaderboardWithSlot(any(), any()) } returns emptyList()
+
+        val livePusher = mockk<PusherMediator>(relaxed = true)
+        every { livePusher.remainingDurationInMillis } returns Long.MAX_VALUE
+
         val robot = PlayBroadcastViewModelRobot(
             dispatchers = testDispatcher,
             channelRepo = mockRepo,
             sharedPref =  mockSharedPref,
+            livePusherMediator = livePusher,
         )
 
         robot.use {
             val state = it.recordState {
                 getConfig()
                 startLive()
-                getViewModel().submitAction(PlayBroadcastAction.InputQuizOption(0, "AAA"))
+                inputQuizOption(0, "AAA")
             }
-        // please check why value didn't set to ui state
-        // state.quizForm.quizFormData.options[0].text.assertEqualTo("AAA")
+         state.quizForm.quizFormData.options[0].text.assertEqualTo("AAA")
         }
     }
 }
