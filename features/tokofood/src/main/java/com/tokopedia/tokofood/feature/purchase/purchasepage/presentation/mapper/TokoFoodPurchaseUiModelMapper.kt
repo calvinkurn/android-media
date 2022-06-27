@@ -16,7 +16,6 @@ import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFoodUserAddress
 import com.tokopedia.tokofood.common.presentation.uimodel.UpdateParam
 import com.tokopedia.tokofood.common.presentation.uimodel.UpdateProductParam
 import com.tokopedia.tokofood.common.presentation.uimodel.UpdateProductVariantParam
-import com.tokopedia.tokofood.feature.merchant.domain.model.response.TokoFoodCatalogVariantOptionDetail
 import com.tokopedia.tokofood.feature.merchant.presentation.enums.CustomListItemType
 import com.tokopedia.tokofood.feature.merchant.presentation.enums.SelectionControlType
 import com.tokopedia.tokofood.feature.merchant.presentation.model.AddOnUiModel
@@ -44,15 +43,15 @@ object TokoFoodPurchaseUiModelMapper {
         val shouldSummaryShown = !response.data.summaryDetail.hideSummary
 
         return mutableListOf<Visitable<*>>().apply {
-            val tickerErrorMessage = response.data.errorTickers.top.message.takeIf { it.isNotEmpty() }
-            if (tickerErrorMessage == null) {
+            val topTickerErrorMessage = response.data.errorTickers.top.message.takeIf { it.isNotEmpty() }
+            if (topTickerErrorMessage == null) {
                 response.data.tickers.top.message.let { topTickerMessage ->
                     if (topTickerMessage.isNotEmpty()) {
                         add(mapGeneralTickerUiModel(topTickerMessage, false))
                     }
                 }
             } else {
-                add(mapGeneralTickerUiModel(tickerErrorMessage, true))
+                add(mapGeneralTickerUiModel(topTickerErrorMessage, true))
             }
             add(TokoFoodPurchaseDividerTokoFoodPurchaseUiModel())
             add(mapAddressUiModel(response.data.userAddress))
@@ -96,20 +95,18 @@ object TokoFoodPurchaseUiModelMapper {
                 }
                 if (shouldSummaryShown) {
                     add(TokoFoodPurchaseDividerTokoFoodPurchaseUiModel())
-                    val isBottomTickerError = response.data.errorTickers.bottom.message.isNotEmpty()
-                    val bottomTickerMessage =
-                        if (isBottomTickerError) {
-                            response.data.errorTickers.bottom.message
-                        } else {
-                            response.data.tickers.bottom.message
-                        }
-                    add(
-                        mapSummaryTransactionUiModel(
-                            response.data.summaryDetail.details,
-                            isBottomTickerError to bottomTickerMessage
-                        )
-                    )
+                    add(mapSummaryTransactionUiModel(response.data.summaryDetail.details))
                 }
+            }
+            val bottomTickerErrorMessage = response.data.errorTickers.bottom.message.takeIf { it.isNotEmpty() }
+            if (bottomTickerErrorMessage == null) {
+                response.data.tickers.bottom.message.let { topTickerMessage ->
+                    if (topTickerMessage.isNotEmpty()) {
+                        add(mapGeneralTickerUiModel(topTickerMessage, false))
+                    }
+                }
+            } else {
+                add(mapGeneralTickerUiModel(bottomTickerErrorMessage, true))
             }
             add(TokoFoodPurchaseDividerTokoFoodPurchaseUiModel())
             add(mapTotalAmountUiModel(isEnabled && shouldSummaryShown, response.data.shoppingSummary.total))
@@ -126,6 +123,15 @@ object TokoFoodPurchaseUiModelMapper {
         val shouldSummaryShown = !response.data.summaryDetail.hideSummary
         val shouldTickerShopLevelShown =
             response.data.errorsUnblocking.isNotEmpty() && response.data.availableSection.products.isNotEmpty()
+
+        val isTopTickerError = response.data.errorTickers.top.message.isNotEmpty()
+        val topTickerMessage =
+            if (isTopTickerError) {
+                response.data.errorTickers.top.message
+            } else {
+                response.data.tickers.top.message
+            }
+
         val isBottomTickerError = response.data.errorTickers.bottom.message.isNotEmpty()
         val bottomTickerMessage =
             if (isBottomTickerError) {
@@ -134,6 +140,9 @@ object TokoFoodPurchaseUiModelMapper {
                 response.data.tickers.bottom.message
             }
         return PartialTokoFoodUiModel(
+            topTickerUiModel = topTickerMessage.takeIf { it.isNotBlank() }?.let { topMessage ->
+                mapGeneralTickerUiModel(topMessage, isTopTickerError)
+            },
             shippingUiModel = mapShippingUiModel(
                 shipping = response.data.shipping,
                 needPinpoint = needPinpoint,
@@ -141,8 +150,7 @@ object TokoFoodPurchaseUiModelMapper {
             ).takeIf { shouldShippingShown },
             promoUiModel = mapPromoUiModel(response.data.promo).takeIf { shouldPromoShown },
             summaryUiModel = mapSummaryTransactionUiModel(
-                response.data.summaryDetail.details,
-                isBottomTickerError to bottomTickerMessage
+                response.data.summaryDetail.details
             ).takeIf { shouldSummaryShown },
             totalAmountUiModel = mapTotalAmountUiModel(
                 isEnabled && shouldSummaryShown,
@@ -151,7 +159,10 @@ object TokoFoodPurchaseUiModelMapper {
             tickerErrorShopLevelUiModel = mapTickerErrorShopLevelUiModel(
                 isEnabled,
                 response.data.errorsUnblocking
-            ).takeIf { shouldTickerShopLevelShown }
+            ).takeIf { shouldTickerShopLevelShown },
+            bottomTickerUiModel = bottomTickerMessage.takeIf { it.isNotBlank() }?.let { bottomMessage ->
+                mapGeneralTickerUiModel(bottomMessage, isBottomTickerError)
+            }
         )
     }
 
@@ -297,15 +308,11 @@ object TokoFoodPurchaseUiModelMapper {
         )
     }
 
-    private fun mapSummaryTransactionUiModel(summaryDetails: List<CheckoutTokoFoodSummaryItemDetail>,
-                                             bottomTicker: Pair<Boolean, String>): TokoFoodPurchaseSummaryTransactionTokoFoodPurchaseUiModel {
+    private fun mapSummaryTransactionUiModel(summaryDetails: List<CheckoutTokoFoodSummaryItemDetail>): TokoFoodPurchaseSummaryTransactionTokoFoodPurchaseUiModel {
         val summaryDetailList = summaryDetails.map {
             it.mapToUiModel()
         }
-        return TokoFoodPurchaseSummaryTransactionTokoFoodPurchaseUiModel(
-            summaryDetailList.toList(),
-            bottomTicker
-        )
+        return TokoFoodPurchaseSummaryTransactionTokoFoodPurchaseUiModel(summaryDetailList.toList())
     }
 
     private fun CheckoutTokoFoodSummaryItemDetail.mapToUiModel(): TokoFoodPurchaseSummaryTransactionTokoFoodPurchaseUiModel.Transaction {

@@ -244,37 +244,129 @@ class TokoFoodPurchaseViewModel @Inject constructor(
                     isEnabled,
                     !_isAddressHasPinpoint.value.second
                 )
-                val dataList = getVisitablesValue().toMutableList().apply {
+                val dataList = getVisitablesValue().toMutableList()
+                dataList.apply {
                     getUiModelIndex<TokoFoodPurchaseShippingTokoFoodPurchaseUiModel>().let { shippingIndex ->
                         if (shippingIndex >= Int.ZERO) {
                             removeAt(shippingIndex)
                             partialData.shippingUiModel?.let { shippingUiModel ->
                                 add(shippingIndex, shippingUiModel)
                             }
+                        } else {
+                            getUiModelIndex<TokoFoodPurchaseAddressTokoFoodPurchaseUiModel>().let { addressIntex ->
+                                partialData.shippingUiModel?.let { shippingUiModel ->
+                                    add(addressIntex + Int.ONE, shippingUiModel)
+                                }
+                            }
                         }
                     }
+                }
+                dataList.apply {
+                    getUiModelIndex<TokoFoodPurchaseShippingTokoFoodPurchaseUiModel>().let { shippingIndex ->
+                        if (shippingIndex >= Int.ZERO) {
+                            removeAt(shippingIndex)
+                            partialData.shippingUiModel?.let { shippingUiModel ->
+                                add(shippingIndex, shippingUiModel)
+                            }
+                        } else {
+                            getUiModelIndex<TokoFoodPurchaseAddressTokoFoodPurchaseUiModel>().let { addressIndex ->
+                                partialData.shippingUiModel?.let { shippingUiModel ->
+                                    add(addressIndex + Int.ONE, shippingUiModel)
+                                }
+                            }
+                        }
+                    }
+                }
+                dataList.apply {
                     getUiModelIndex<TokoFoodPurchasePromoTokoFoodPurchaseUiModel>().let { promoIndex ->
                         if (promoIndex >= Int.ZERO) {
-                            removeAt(promoIndex)
+                            val affectedIndex = promoIndex - Int.ONE
+                            removeAt(affectedIndex)
+                            removeAt(affectedIndex)
                             partialData.promoUiModel?.let { promoUiModel ->
-                                add(promoIndex, promoUiModel)
+                                add(affectedIndex, TokoFoodPurchaseDividerTokoFoodPurchaseUiModel())
+                                add(affectedIndex + Int.ONE, promoUiModel)
+                            }
+                        } else {
+                            partialData.promoUiModel?.let { promoUiModel ->
+                                val hasUnavailableProducts = any { visitable ->
+                                    visitable is TokoFoodPurchaseProductTokoFoodPurchaseUiModel && !visitable.isAvailable
+                                }
+                                val futurePromoIndex =
+                                    if (hasUnavailableProducts) {
+                                        getUiModelIndex<TokoFoodPurchaseAccordionTokoFoodPurchaseUiModel>().let { accordionIndex ->
+                                            if (accordionIndex == RecyclerView.NO_POSITION) {
+                                                indexOfLast { visitable ->
+                                                    visitable is TokoFoodPurchaseProductTokoFoodPurchaseUiModel
+                                                }
+                                            } else {
+                                                accordionIndex + Int.ONE
+                                            }
+                                        }
+                                    } else {
+                                        indexOfLast { visitable ->
+                                            visitable is TokoFoodPurchaseProductTokoFoodPurchaseUiModel
+                                        }
+                                    }.plus(Int.ONE)
+                                add(futurePromoIndex, TokoFoodPurchaseDividerTokoFoodPurchaseUiModel())
+                                add(futurePromoIndex + Int.ONE, promoUiModel)
                             }
                         }
                     }
+                }
+
+                dataList.apply {
                     getUiModelIndex<TokoFoodPurchaseSummaryTransactionTokoFoodPurchaseUiModel>().let { summaryIndex ->
                         if (summaryIndex >= Int.ZERO) {
-                            removeAt(summaryIndex)
+                            val affectedIndex = summaryIndex - Int.ONE
+                            removeAt(affectedIndex)
+                            removeAt(affectedIndex)
                             partialData.summaryUiModel?.let { summaryUiModel ->
-                                add(summaryIndex, summaryUiModel)
+                                add(affectedIndex, TokoFoodPurchaseDividerTokoFoodPurchaseUiModel())
+                                add(affectedIndex + Int.ONE, summaryUiModel)
+                            }
+                        } else {
+                            partialData.summaryUiModel?.let { summaryUiModel ->
+                                val currentPromoIndex = dataList.getUiModelIndex<TokoFoodPurchasePromoTokoFoodPurchaseUiModel>()
+                                if (currentPromoIndex == RecyclerView.NO_POSITION) {
+                                    val hasUnavailableProducts = any { visitable ->
+                                        visitable is TokoFoodPurchaseProductTokoFoodPurchaseUiModel && !visitable.isAvailable
+                                    }
+                                    val futureSummaryIndex =
+                                        if (hasUnavailableProducts) {
+                                            getUiModelIndex<TokoFoodPurchaseAccordionTokoFoodPurchaseUiModel>().let { accordionIndex ->
+                                                if (accordionIndex == RecyclerView.NO_POSITION) {
+                                                    indexOfLast { visitable ->
+                                                        visitable is TokoFoodPurchaseProductTokoFoodPurchaseUiModel
+                                                    }
+                                                } else {
+                                                    accordionIndex
+                                                }
+                                            }
+                                        } else {
+                                            indexOfLast { visitable ->
+                                                visitable is TokoFoodPurchaseProductTokoFoodPurchaseUiModel
+                                            }
+                                        }.plus(Int.ONE)
+                                    add(futureSummaryIndex, TokoFoodPurchaseDividerTokoFoodPurchaseUiModel())
+                                    add(futureSummaryIndex + Int.ONE, summaryUiModel)
+                                } else {
+                                    add(currentPromoIndex + Int.ONE, TokoFoodPurchaseDividerTokoFoodPurchaseUiModel())
+                                    add(currentPromoIndex + INDEX_AFTER_FROM_PROMO, summaryUiModel)
+                                }
                             }
                         }
                     }
+                }
+                dataList.apply {
                     getUiModelIndex<TokoFoodPurchaseTotalAmountTokoFoodPurchaseUiModel>().let { totalAmountIndex ->
                         if (totalAmountIndex >= Int.ZERO) {
                             removeAt(totalAmountIndex)
                             add(totalAmountIndex, partialData.totalAmountUiModel)
                         }
                     }
+                }
+                dataList.apply {
                     getUiModelIndex<TokoFoodPurchaseTickerErrorShopLevelTokoFoodPurchaseUiModel>().let { tickerErrorIndex ->
                         when {
                             partialData.tickerErrorShopLevelUiModel == null && tickerErrorIndex >= Int.ZERO -> {
@@ -287,17 +379,79 @@ class TokoFoodPurchaseViewModel @Inject constructor(
                                     }
                                 }
                             }
+                            tickerErrorIndex >= Int.ZERO -> {
+                                removeAt(tickerErrorIndex)
+                                partialData.tickerErrorShopLevelUiModel?.let { tickerErrorUiModel ->
+                                    add(tickerErrorIndex, tickerErrorUiModel)
+                                }
+                            }
+                            else -> {}
+                        }
+                    }
+                }
+                dataList.apply {
+                    getUiModelIndex<TokoFoodPurchaseGeneralTickerTokoFoodPurchaseUiModel>().let { firstTickerIndex ->
+                        val lastTickerIndex = indexOfLast { ticker ->
+                            ticker is TokoFoodPurchaseGeneralTickerTokoFoodPurchaseUiModel
+                        }
+                        val bottomTickerPosition =
+                            getUiModelIndex<TokoFoodPurchaseTotalAmountTokoFoodPurchaseUiModel>() - Int.ONE
+
+                        val topTickerUiModel = partialData.topTickerUiModel
+                        val bottomTickerUiModel = partialData.bottomTickerUiModel
+
+                        when {
+                            firstTickerIndex < Int.ZERO -> {
+                                // There are no tickers initially
+                                var shiftIndex = 0
+                                topTickerUiModel?.let { uiModel ->
+                                    add(Int.ZERO, uiModel)
+                                    shiftIndex++
+                                }
+                                bottomTickerUiModel?.let { uiModel ->
+                                    add(bottomTickerPosition + shiftIndex, uiModel)
+                                }
+                            }
+                            firstTickerIndex == Int.ZERO && lastTickerIndex > firstTickerIndex -> {
+                                // Both of tickers exist
+                                removeAt(Int.ZERO)
+                                var shiftIndex = -Int.ONE
+                                topTickerUiModel?.let { uiModel ->
+                                    add(Int.ZERO, uiModel)
+                                    shiftIndex++
+                                }
+
+                                removeAt(lastTickerIndex + shiftIndex)
+                                bottomTickerUiModel?.let { uiModel ->
+                                    add(lastTickerIndex + shiftIndex, uiModel)
+                                }
+                            }
+                            firstTickerIndex > Int.ZERO -> {
+                                // Only bottom ticker exist
+                                var shiftIndex = 0
+                                topTickerUiModel?.let { uiModel ->
+                                    add(Int.ZERO, uiModel)
+                                    shiftIndex++
+                                }
+                                removeAt(lastTickerIndex + shiftIndex)
+                                bottomTickerUiModel?.let { uiModel ->
+                                    add(lastTickerIndex + shiftIndex, uiModel)
+                                }
+                            }
                             else -> {
-                                if (tickerErrorIndex >= Int.ZERO) {
-                                    removeAt(tickerErrorIndex)
-                                    partialData.tickerErrorShopLevelUiModel?.let { tickerErrorUiModel ->
-                                        add(tickerErrorIndex, tickerErrorUiModel)
-                                    }
+                                // Only top ticker exist
+                                removeAt(Int.ZERO)
+                                var shiftIndex = -Int.ONE
+                                topTickerUiModel?.let { uiModel ->
+                                    add(Int.ZERO, uiModel)
+                                    shiftIndex++
+                                }
+                                bottomTickerUiModel?.let { uiModel ->
+                                    add(bottomTickerPosition + shiftIndex, uiModel)
                                 }
                             }
                         }
                     }
-
                 }
 
                 _visitables.value = dataList
@@ -639,6 +793,10 @@ class TokoFoodPurchaseViewModel @Inject constructor(
         private const val INDEX_BEFORE_FROM_DIVIDER = 3
         private const val INDEX_BEFORE_FROM_UNAVAILABLE_ACCORDION = 1
         private const val INDEX_AFTER_FROM_UNAVAILABLE_SECTION = 2
+        private const val INDEX_BEFORE_FROM_TOTAL_AMOUNT = 2
+        private const val INDEX_AFTER_FROM_AVAILABLE_PRODUCT = 2
+        private const val INDEX_AFTER_FROM_UNAVAILABLE_PRODUCT = 1
+        private const val INDEX_AFTER_FROM_PROMO = 2
     }
 
 }

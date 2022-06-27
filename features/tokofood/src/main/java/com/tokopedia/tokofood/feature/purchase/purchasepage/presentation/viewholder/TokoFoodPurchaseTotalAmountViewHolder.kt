@@ -44,6 +44,9 @@ class TokoFoodPurchaseTotalAmountViewHolder(private val viewBinding: ItemPurchas
                     }
                 }
                 else -> {
+                    if (totalAmountPurchase.isTotalAmountLoading) {
+                        totalAmountPurchase.isTotalAmountLoading = false
+                    }
                     totalAmountPurchase.amountCtaView.isEnabled = false
                     totalAmountPurchase.setCtaText(getString(com.tokopedia.tokofood.R.string.text_purchase_choose_payment))
                     totalAmountPurchase.setLabelTitle(getString(com.tokopedia.tokofood.R.string.text_purchase_payment_total))
