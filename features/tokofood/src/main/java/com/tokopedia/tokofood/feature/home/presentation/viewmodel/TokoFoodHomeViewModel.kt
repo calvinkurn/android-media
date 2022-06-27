@@ -117,9 +117,9 @@ class TokoFoodHomeViewModel @Inject constructor(
         )
     }
 
-    fun getChooseAddress(source: String, isAddressUpdated: Boolean){
+    fun getChooseAddress(source: String){
+        isAddressManuallyUpdated = true
         getChooseAddressWarehouseLocUseCase.getStateChosenAddress( {
-            this.isAddressManuallyUpdated = isAddressUpdated
             _chooseAddress.postValue(Success(it))
         },{
             _chooseAddress.postValue(Fail(it))

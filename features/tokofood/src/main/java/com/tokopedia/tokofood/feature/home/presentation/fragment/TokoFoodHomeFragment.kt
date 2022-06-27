@@ -412,8 +412,8 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
         viewModel.getNoAddressState()
     }
 
-    private fun getChooseAddress(isAddressUpdated: Boolean = false) {
-        viewModel.getChooseAddress(SOURCE, isAddressUpdated)
+    private fun getChooseAddress() {
+        viewModel.getChooseAddress(SOURCE)
     }
 
     private fun checkUserEligibilityForAnaRevamp() {
@@ -688,7 +688,7 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
         } else if (hasNoPinPoin() && isAddressManuallyUpdate()){
             showNoPinPoin()
         } else if(!isAddressManuallyUpdate()) {
-            getChooseAddress(isAddressUpdated = true)
+            getChooseAddress()
         } else {
             showLayout()
         }
