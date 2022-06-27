@@ -86,7 +86,7 @@ class SomListFragment : com.tokopedia.sellerorder.list.presentation.fragments.So
     override val bulkProcessCoachMarkItemPosition: Int
         get() = COACHMARK_INDEX_ITEM_BULK_ACCEPT
 
-    override fun getAdapterTypeFactory(): SomListAdapterTypeFactory = SomListAdapterTypeFactory(this, this)
+    override fun getAdapterTypeFactory(): SomListAdapterTypeFactory = SomListAdapterTypeFactory(this, this, this)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         isOpeningOrderDetailAppLink = !arguments?.getString(DeeplinkMapperOrder.QUERY_PARAM_ORDER_ID).isNullOrEmpty()
@@ -133,7 +133,7 @@ class SomListFragment : com.tokopedia.sellerorder.list.presentation.fragments.So
         } else {
             openedOrderId = arguments?.getString(DeeplinkMapperOrder.QUERY_PARAM_ORDER_ID).orEmpty()
             viewModel.isMultiSelectEnabled = false
-            resetOrderSelectedStatus()
+            resetMultiSelectState()
             isLoadingInitialData = true
             somListLoadTimeMonitoring?.startNetworkPerformanceMonitoring()
             loadTopAdsCategory()
@@ -225,11 +225,6 @@ class SomListFragment : com.tokopedia.sellerorder.list.presentation.fragments.So
                     add(CoachMark2Item(it, getString(R.string.som_list_coachmark_waiting_payment_title), getString(R.string.som_list_coachmark_waiting_payment_description)))
                 }
             }
-            if (GlobalConfig.isSellerApp()) {
-                somListBinding?.tvSomListBulk?.let {
-                    add(CoachMark2Item(it, getString(R.string.som_list_coachmark_multi_select_title), getString(R.string.som_list_coachmark_multi_select_description)))
-                }
-            }
         }
     }
 
@@ -237,7 +232,6 @@ class SomListFragment : com.tokopedia.sellerorder.list.presentation.fragments.So
         view?.postDelayed({
             reshowStatusFilterCoachMark()
             reshowWaitingPaymentOrderListCoachMark()
-            reshowBulkAcceptOrderCoachMark()
         }, DELAY_COACHMARK)
     }
 
@@ -248,10 +242,6 @@ class SomListFragment : com.tokopedia.sellerorder.list.presentation.fragments.So
     override fun shouldShowWaitingPaymentCoachMark(waitingPaymentOrderListCountResult: Result<WaitingPaymentCounter>?) =
         somListBinding?.scrollViewErrorState?.isVisible == false && coachMarkIndexToShow == waitingPaymentCoachMarkItemPosition &&
                     shouldShowCoachMark && waitingPaymentOrderListCountResult is Success
-
-    override fun shouldShowBulkAcceptOrderCoachMark() = somListBinding?.scrollViewErrorState?.isVisible == false &&
-            shouldShowCoachMark && coachMarkIndexToShow == bulkProcessCoachMarkItemPosition &&
-            somListBinding?.tvSomListBulk?.isVisible == true && viewModel.getTabActive() == SomConsts.STATUS_NEW_ORDER
 
     private fun notifyOpenOrderDetail(order: SomListOrderUiModel) {
         getOpenedOrder().let { openedOrder ->

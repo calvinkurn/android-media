@@ -1,7 +1,6 @@
 package com.tokopedia.sellerorder.list.presentation.fragments
 
 import android.animation.Animator
-import android.animation.LayoutTransition.CHANGING
 import android.animation.ValueAnimator
 import android.annotation.SuppressLint
 import android.app.Activity
@@ -29,7 +28,6 @@ import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.base.view.listener.EndlessLayoutManagerListener
-import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
@@ -105,6 +103,7 @@ import com.tokopedia.sellerorder.list.presentation.adapter.SomListOrderAdapter
 import com.tokopedia.sellerorder.list.presentation.adapter.typefactories.SomListAdapterTypeFactory
 import com.tokopedia.sellerorder.list.presentation.adapter.typefactories.SomListBulkProcessOrderTypeFactory
 import com.tokopedia.sellerorder.list.presentation.adapter.viewholders.SomListOrderEmptyViewHolder
+import com.tokopedia.sellerorder.list.presentation.adapter.viewholders.SomListOrderMultiSelectSectionViewHolder
 import com.tokopedia.sellerorder.list.presentation.adapter.viewholders.SomListOrderViewHolder
 import com.tokopedia.sellerorder.list.presentation.animator.SomFadeRightAnimator
 import com.tokopedia.sellerorder.list.presentation.bottomsheets.SomListBulkProcessOrderBottomSheet
@@ -129,6 +128,7 @@ import com.tokopedia.sellerorder.list.presentation.models.SomListBulkProcessOrde
 import com.tokopedia.sellerorder.list.presentation.models.SomListBulkProcessOrderProductUiModel
 import com.tokopedia.sellerorder.list.presentation.models.SomListEmptyStateUiModel
 import com.tokopedia.sellerorder.list.presentation.models.SomListFilterUiModel
+import com.tokopedia.sellerorder.list.presentation.models.SomListMultiSelectSectionUiModel
 import com.tokopedia.sellerorder.list.presentation.models.SomListOrderUiModel
 import com.tokopedia.sellerorder.list.presentation.models.SomListTickerUiModel
 import com.tokopedia.sellerorder.list.presentation.models.WaitingPaymentCounter
@@ -167,7 +167,8 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
     SomFilterBottomSheet.SomFilterFinishListener,
     SomListOrderEmptyViewHolder.SomListEmptyStateListener,
     SomListBulkPrintDialog.SomListBulkPrintDialogClickListener,
-    SellerHomeFragmentListener, SomListOrderStatusFilterTab.Listener {
+    SellerHomeFragmentListener, SomListOrderStatusFilterTab.Listener,
+    SomListOrderMultiSelectSectionViewHolder.Listener {
 
     companion object {
         private const val DELAY_SEARCH = 500L
@@ -394,7 +395,7 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
 
     override fun createAdapterInstance() = SomListOrderAdapter(adapterTypeFactory)
     override fun onItemClicked(t: Visitable<SomListAdapterTypeFactory>?) {}
-    override fun getAdapterTypeFactory() = SomListAdapterTypeFactory(this, this)
+    override fun getAdapterTypeFactory() = SomListAdapterTypeFactory(this, this, this)
     override fun getRecyclerViewResourceId() = R.id.rvSomList
     override fun getRecyclerView(view: View?) =
         view?.findViewById<RecyclerView>(recyclerViewResourceId)
@@ -557,15 +558,7 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
                     refreshOrdersOnTabClicked(shouldScrollToTop, fromClickTab)
                 }
             }
-            viewModel.isMultiSelectEnabled = false
-            resetOrderSelectedStatus()
-            toggleBulkActionButtonVisibility()
-            toggleBulkActionCheckboxVisibility()
-            somListBinding?.run {
-                checkBoxBulkAction.isChecked = false
-                checkBoxBulkAction.setIndeterminate(false)
-                checkBoxBulkAction.skipAnimation()
-            }
+            onToggleMultiSelectClicked()
         } else {
             refreshOrdersOnTabClicked(shouldScrollToTop, fromClickTab)
         }
@@ -632,26 +625,25 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
         if (viewModel.isMultiSelectEnabled) {
             context.let { context ->
                 if (context == null || !DeviceScreenInfo.isTablet(context)) {
-                    somListLayoutManager?.findFirstVisibleItemPosition()?.let {
-                        somListLayoutManager?.findViewByPosition(it)
-                            ?.findViewById<View>(R.id.btnQuickAction)
-                            ?.addOneTimeGlobalLayoutListener {
-                                refreshOrdersOnTabClicked(shouldScrollToTop, fromClickTab)
-                            }
+                    val firstVisibleItemIndex = somListLayoutManager?.findFirstVisibleItemPosition().orZero()
+                    val lastVisibleItemIndex = somListLayoutManager?.findLastVisibleItemPosition().orZero()
+                    val rangeVisibleItemIndex = firstVisibleItemIndex..lastVisibleItemIndex
+                    for (i in rangeVisibleItemIndex) {
+                        val viewHolderView = somListLayoutManager?.findViewByPosition(i)
+                        if (viewHolderView != null) {
+                            viewHolderView.findViewById<View>(R.id.btnQuickAction)
+                                ?.addOneTimeGlobalLayoutListener {
+                                    refreshOrdersOnTabClicked(shouldScrollToTop, fromClickTab)
+                                }
+                        } else if (i == lastVisibleItemIndex) {
+                            refreshOrdersOnTabClicked(shouldScrollToTop, fromClickTab)
+                        }
                     }
                 } else {
                     refreshOrdersOnTabClicked(shouldScrollToTop, fromClickTab)
                 }
             }
-            viewModel.isMultiSelectEnabled = false
-            resetOrderSelectedStatus()
-            toggleBulkActionButtonVisibility()
-            toggleBulkActionCheckboxVisibility()
-            somListBinding?.run {
-                checkBoxBulkAction.isChecked = false
-                checkBoxBulkAction.setIndeterminate(false)
-                checkBoxBulkAction.skipAnimation()
-            }
+            onToggleMultiSelectClicked()
         } else {
             refreshOrdersOnTabClicked(shouldScrollToTop, fromClickTab)
         }
@@ -706,9 +698,15 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
     }
 
     override fun onCheckChanged() {
-        updateBulkActionCheckboxStatus()
+        (adapter as? SomListOrderAdapter)?.updateSomListMultiSelectSectionUiModel(
+            SomListMultiSelectSectionUiModel(
+                isEnabled = viewModel.isMultiSelectEnabled,
+                totalOrder = somListOrderStatusFilterTab?.getSelectedFilterOrderCount().orZero(),
+                totalSelected = adapter.data.filterIsInstance<SomListOrderUiModel>().count { it.isChecked },
+                totalSelectable = adapter.data.count { it is SomListOrderUiModel && !isOrderWithCancellationRequest(it) }
+            )
+        )
         toggleBulkActionButtonVisibility()
-        updateOrderCounter()
     }
 
     override fun onCheckBoxClickedWhenDisabled() {
@@ -906,6 +904,22 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
         }
     }
 
+    override fun onToggleMultiSelectClicked() {
+        toggleBulkAction()
+        resetMultiSelectState()
+        toggleBulkActionButtonVisibility()
+    }
+
+    override fun onCheckAllOrderClicked() {
+        checkAllOrder()
+        toggleBulkActionButtonVisibility()
+    }
+
+    override fun onUncheckAllOrderClicked() {
+        resetMultiSelectState()
+        toggleBulkActionButtonVisibility()
+    }
+
     private fun setupBuyerRequestCancelBottomSheet(
         somOrderRequestCancelBottomSheet: SomOrderRequestCancelBottomSheet,
         order: SomListOrderUiModel
@@ -986,11 +1000,7 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
             bulkAcceptOrderDialog = SomListBulkAcceptOrderDialog(context).apply {
                 init()
                 setOnDismiss {
-                    resetOrderSelectedStatus()
-                    toggleBulkAction()
-                    toggleBulkActionButtonVisibility()
-                    toggleBulkActionCheckboxVisibility()
-                    toggleTvSomListBulkText()
+                    onToggleMultiSelectClicked()
                     loadFilters(loadOrders = true)
                     if (shouldReloadOrderListImmediately()) {
                         loadOrderList()
@@ -1022,7 +1032,6 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
         )
         showWaitingPaymentOrderListMenuShimmer()
         somListBinding?.rvSomList?.layoutManager = somListLayoutManager
-        somListBinding?.bulkActionCheckBoxContainer?.layoutTransition?.enableTransitionType(CHANGING)
         setupToolbar()
         setupSearchBar()
         setupListeners()
@@ -1782,11 +1791,7 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
         context?.let { context ->
             bulkRequestPickupDialog = SomListBulkRequestPickupDialog(context).apply {
                 setOnDismiss {
-                    resetOrderSelectedStatus()
-                    toggleBulkAction()
-                    toggleBulkActionButtonVisibility()
-                    toggleBulkActionCheckboxVisibility()
-                    toggleTvSomListBulkText()
+                    onToggleMultiSelectClicked()
                     loadFilters(loadOrders = true)
                     if (shouldReloadOrderListImmediately()) {
                         loadOrderList()
@@ -1999,30 +2004,6 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
                 loadInitialData()
             }
 
-            tvSomListBulk.setOnClickListener {
-                toggleBulkAction()
-                resetOrderSelectedStatus()
-                toggleBulkActionCheckboxVisibility()
-                toggleBulkActionButtonVisibility()
-                updateOrderCounter()
-                checkBoxBulkAction.isChecked = false
-                checkBoxBulkAction.setIndeterminate(false)
-                checkBoxBulkAction.skipAnimation()
-                toggleTvSomListBulkText()
-            }
-
-            checkBoxBulkAction.setOnClickListener {
-                if (checkBoxBulkAction.isChecked) {
-                    checkAllOrder()
-                    toggleBulkActionButtonVisibility()
-                } else {
-                    checkBoxBulkAction.setIndeterminate(false)
-                    resetOrderSelectedStatus()
-                    toggleBulkActionButtonVisibility()
-                }
-                updateOrderCounter()
-            }
-
             btnBulkAction.setOnClickListener {
                 when (btnBulkAction.text.toString()) {
                     context?.resources?.getString(R.string.som_list_bulk_accept_order_button).orEmpty() -> showBulkAcceptOrderBottomSheet()
@@ -2036,56 +2017,6 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
                 hideKeyboard()
                 true
             }
-        }
-        setupSearchBarLayoutChangesListener()
-    }
-
-    private fun setupSearchBarLayoutChangesListener() {
-        (somListHeaderBinding?.searchBarSomList?.searchBarTextField?.parent as? View)?.viewTreeObserver?.addOnPreDrawListener {
-            context?.run {
-                val searchBarContainer = somListHeaderBinding?.searchBarSomList?.searchBarTextField?.parent as? View
-                val horizontalPadding = resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl2).toInt()
-                val verticalPadding = resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3).toInt()
-                if (searchBarContainer?.paddingBottom != verticalPadding || searchBarContainer.paddingTop != verticalPadding) {
-                    somListBinding?.bulkActionCheckBoxContainer?.layoutTransition?.disableTransitionType(CHANGING)
-                    searchBarContainer?.setPadding(
-                        horizontalPadding,
-                        verticalPadding,
-                        horizontalPadding,
-                        verticalPadding
-                    )
-                    return@addOnPreDrawListener false
-                }
-            }
-            somListBinding?.bulkActionCheckBoxContainer?.layoutTransition?.disableTransitionType(CHANGING)
-            true
-        }
-    }
-
-    private fun toggleTvSomListBulkText() {
-        context?.run {
-            val textResId = if (viewModel.isMultiSelectEnabled) R.string.som_list_multi_select_cancel else R.string.som_list_multi_select
-            somListBinding?.tvSomListBulk?.text = context?.resources?.getString(textResId).orEmpty()
-        }
-    }
-
-    private fun updateOrderCounter() {
-        somListBinding?.multiEditViews?.showWithCondition(
-            (somListOrderStatusFilterTab?.shouldShowBulkAction()?.and(canMultiAcceptOrder)
-                ?: false) && GlobalConfig.isSellerApp() && adapter.data.filterIsInstance<SomListOrderUiModel>()
-                .isNotEmpty()
-        )
-        context?.run {
-            val text = if (viewModel.isMultiSelectEnabled) {
-                val checkedCount = adapter.data.filterIsInstance<SomListOrderUiModel>().count { it.isChecked }
-                context?.resources?.getString(R.string.som_list_order_counter_multi_select_enabled, checkedCount).orEmpty()
-            } else {
-                context?.resources?.getString(
-                    R.string.som_list_order_counter,
-                    somListOrderStatusFilterTab?.getSelectedFilterOrderCount().orZero()
-                ).orEmpty()
-            }
-            somListBinding?.tvSomListOrderCounter?.text = text
         }
     }
 
@@ -2179,49 +2110,52 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
         viewModel.isMultiSelectEnabled = !viewModel.isMultiSelectEnabled
     }
 
-    protected fun resetOrderSelectedStatus() {
-        adapter.data.filterIsInstance<SomListOrderUiModel>().onEach { it.isChecked = false }.run {
-            adapter.notifyItemRangeChanged(
-                0,
-                size,
-                Bundle().apply { putBoolean(SomListOrderViewHolder.TOGGLE_SELECTION, true) })
+    protected fun resetMultiSelectState() {
+        adapter.data.onEach { if (it is SomListOrderUiModel) it.isChecked = false }.run {
+            somListBinding?.rvSomList?.post {
+                adapter?.notifyItemRangeChanged(
+                    adapter?.data?.indexOfFirst { it is SomListOrderUiModel }.orZero(),
+                    size,
+                    Bundle().apply { putBoolean(SomListOrderViewHolder.TOGGLE_SELECTION, true) }
+                )
+            }
+            somListBinding?.rvSomList?.post {
+                (adapter as? SomListOrderAdapter)?.updateSomListMultiSelectSectionUiModel(
+                    SomListMultiSelectSectionUiModel(
+                        isEnabled = viewModel.isMultiSelectEnabled,
+                        totalOrder = somListOrderStatusFilterTab?.getSelectedFilterOrderCount().orZero(),
+                        totalSelected = adapter.data.filterIsInstance<SomListOrderUiModel>().count { it.isChecked },
+                        totalSelectable = adapter.data.count { it is SomListOrderUiModel && !isOrderWithCancellationRequest(it) }
+                    )
+                )
+            }
         }
     }
 
     private fun checkAllOrder() {
-        adapter.data.onEach {
-            if (it is SomListOrderUiModel && !isOrderWithCancellationRequest(it)) it.isChecked =
-                true
+        val newItems = ArrayList<Visitable<SomListAdapterTypeFactory>>(
+            adapter.data.filterIsInstance<SomListOrderUiModel>().map {
+                it.copy(isChecked = true)
+            }
+        ).apply {
+            add(Int.ZERO, SomListMultiSelectSectionUiModel(
+                isEnabled = viewModel.isMultiSelectEnabled,
+                totalOrder = somListOrderStatusFilterTab?.getSelectedFilterOrderCount().orZero(),
+                totalSelected = count { it is SomListOrderUiModel && it.isChecked },
+                totalSelectable = count { it is SomListOrderUiModel && !isOrderWithCancellationRequest(it) }
+            ))
         }
-        adapter.notifyDataSetChanged()
+        (adapter as? SomListOrderAdapter)?.updateOrders(newItems)
     }
 
     private fun toggleBulkActionButtonVisibility() {
-        val isAnyCheckedOrder =
-            adapter.data.filterIsInstance<SomListOrderUiModel>().find { it.isChecked } != null
+        val isAnyCheckedOrder = adapter.data.filterIsInstance<SomListOrderUiModel>().find {
+            it.isChecked
+        } != null
         if (viewModel.isMultiSelectEnabled && isAnyCheckedOrder) {
             animateBulkAcceptOrderButtonEnter()
         } else {
             animateBulkAcceptOrderButtonLeave()
-        }
-    }
-
-    private fun toggleBulkActionCheckboxVisibility() {
-        somListBinding?.checkBoxBulkAction?.showWithCondition(viewModel.isMultiSelectEnabled)
-    }
-
-    private fun updateBulkActionCheckboxStatus() {
-        val groupedOrders = adapter.data
-            .filter { it is SomListOrderUiModel && !isOrderWithCancellationRequest(it) }
-            .groupBy { (it as SomListOrderUiModel).isChecked }
-        val newIndeterminateStatus =
-            groupedOrders[true]?.size.orZero() > 0 && groupedOrders[false]?.size.orZero() > 0
-        val newCheckedStatus = groupedOrders[true]?.size.orZero() > 0
-        if (newCheckedStatus != somListBinding?.checkBoxBulkAction?.isChecked) {
-            somListBinding?.checkBoxBulkAction?.isChecked = newCheckedStatus
-        }
-        if (newIndeterminateStatus != somListBinding?.checkBoxBulkAction?.getIndeterminate()) {
-            somListBinding?.checkBoxBulkAction?.setIndeterminate(newIndeterminateStatus)
         }
     }
 
@@ -2264,7 +2198,6 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
         somListBinding?.run {
             hideOrderShimmer()
             rvSomList.gone()
-            multiEditViews.gone()
         }
         animateBulkAcceptOrderButtonLeave()
         getSwipeRefreshLayout(view)?.apply {
@@ -2289,7 +2222,6 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
         somListBinding?.run {
             hideOrderShimmer()
             rvSomList.gone()
-            multiEditViews.gone()
         }
         animateBulkAcceptOrderButtonLeave()
         somListHeaderBinding?.searchBarSomList?.gone()
@@ -2339,17 +2271,27 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
         // show only if current order list is based on current search keyword
         if (isLoadingInitialData && data.isEmpty()) {
             showEmptyState()
-            somListBinding?.multiEditViews?.gone()
             toggleBulkActionButtonVisibility()
         } else if (data.firstOrNull()?.searchParam == somListHeaderBinding?.searchBarSomList?.searchBarTextField?.text?.toString().orEmpty()) {
             if (isLoadingInitialData) {
-                (adapter as SomListOrderAdapter).updateOrders(data)
-                somListBinding?.multiEditViews?.showWithCondition(
-                    (somListOrderStatusFilterTab?.shouldShowBulkAction()?.and(canMultiAcceptOrder)
-                        ?: false) && GlobalConfig.isSellerApp()
-                )
-                toggleTvSomListBulkText()
-                toggleBulkActionCheckboxVisibility()
+                val shouldShowMultiSelectSection = somListOrderStatusFilterTab
+                    ?.shouldShowBulkAction()
+                    ?.and(canMultiAcceptOrder)
+                    .orFalse()
+                    .and(data.isNotEmpty())
+                val newItems = if (shouldShowMultiSelectSection) {
+                    ArrayList<Visitable<SomListAdapterTypeFactory>>(data).apply {
+                        add(Int.ZERO, SomListMultiSelectSectionUiModel(
+                            isEnabled = viewModel.isMultiSelectEnabled,
+                            totalOrder = somListOrderStatusFilterTab?.getSelectedFilterOrderCount().orZero(),
+                            totalSelected = adapter.data.filterIsInstance<SomListOrderUiModel>().count { it.isChecked },
+                            totalSelectable = adapter.data.count { it is SomListOrderUiModel && !isOrderWithCancellationRequest(it) }
+                        ))
+                    }
+                } else {
+                    data
+                }
+                (adapter as? SomListOrderAdapter)?.updateOrders(newItems)
                 toggleBulkActionButtonVisibility()
                 if (shouldScrollToTop) {
                     shouldScrollToTop = false
@@ -2357,21 +2299,30 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
                         somListBinding?.rvSomList?.smoothScrollToPosition(0)
                     }
                 }
-                if (coachMark?.currentIndex == newOrderCoachMarkItemPosition || (coachMark?.currentIndex == bulkProcessCoachMarkItemPosition && !somListBinding?.multiEditViews?.isVisible.orFalse())) {
+                if (coachMark?.currentIndex == newOrderCoachMarkItemPosition || (coachMark?.currentIndex == bulkProcessCoachMarkItemPosition)) {
                     dismissCoachMark(true)
                 }
             } else {
-                val lastIndex = adapter.data.size - 1
-                adapter.data.getOrNull(lastIndex)?.let { index ->
-                    if (index is SomListEmptyStateUiModel) {
-                        adapter.data.removeAt(lastIndex)
-                        adapter.notifyItemRemoved(lastIndex)
+                val newItems = ArrayList(adapter.data)
+                val multiSelectSectionIndex = newItems.indexOfFirst { it is SomListMultiSelectSectionUiModel }
+                val emptyStateIndex = newItems.size.dec()
+                newItems.getOrNull(multiSelectSectionIndex)?.let {
+                    if (it is SomListMultiSelectSectionUiModel) {
+                        newItems[multiSelectSectionIndex] = SomListMultiSelectSectionUiModel(
+                            isEnabled = viewModel.isMultiSelectEnabled,
+                            totalOrder = somListOrderStatusFilterTab?.getSelectedFilterOrderCount().orZero(),
+                            totalSelected = adapter.data.filterIsInstance<SomListOrderUiModel>().count { it.isChecked },
+                            totalSelectable = adapter.data.count { it is SomListOrderUiModel && !isOrderWithCancellationRequest(it) }
+                        )
                     }
                 }
-                (adapter as SomListOrderAdapter).updateOrders(adapter.data.plus(data))
-                somListBinding?.rvSomList?.post {
-                    updateBulkActionCheckboxStatus()
+                newItems.getOrNull(emptyStateIndex)?.let {
+                    if (it is SomListEmptyStateUiModel) {
+                        newItems.removeAt(emptyStateIndex)
+                    }
                 }
+                newItems.addAll(data)
+                (adapter as? SomListOrderAdapter)?.updateOrders(newItems)
             }
             tryReshowCoachMark()
         }
@@ -2382,13 +2333,13 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
     protected open fun onRefreshOrderSuccess(result: OptionalOrderData) {
         val order = result.order
         if (order == null) {
-            (adapter as SomListOrderAdapter).removeOrder(result.orderId)
+            (adapter as? SomListOrderAdapter)?.removeOrder(result.orderId)
             checkLoadMore()
         } else {
-            (adapter as SomListOrderAdapter).updateOrder(order)
+            (adapter as? SomListOrderAdapter)?.updateOrder(order)
         }
-        if (adapter.dataSize == 0) {
-            somListBinding?.multiEditViews?.gone()
+        if (!(adapter as? SomListOrderAdapter)?.hasOrder().orFalse()) {
+            (adapter as? SomListOrderAdapter)?.removeMultiSelectSection()
             toggleBulkActionButtonVisibility()
             viewModel.isMultiSelectEnabled = false
             showEmptyState()
@@ -2452,14 +2403,7 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
     }
 
     private fun refreshOrderList() {
-        if (viewModel.isMultiSelectEnabled) {
-            viewModel.isMultiSelectEnabled = false
-            resetOrderSelectedStatus()
-            toggleBulkActionButtonVisibility()
-            toggleBulkActionCheckboxVisibility()
-            somListBinding?.checkBoxBulkAction?.isChecked = false
-            somListBinding?.checkBoxBulkAction?.setIndeterminate(false)
-        }
+        if (viewModel.isMultiSelectEnabled) onToggleMultiSelectClicked()
         somListBinding?.scrollViewErrorState?.gone()
         isLoadingInitialData = true
         loadOrderList()
@@ -2814,17 +2758,6 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
                     )
                 }
             }
-            if (GlobalConfig.isSellerApp()) {
-                somListBinding?.tvSomListBulk?.let {
-                    add(
-                        CoachMark2Item(
-                            it,
-                            context?.resources?.getString(R.string.som_list_coachmark_multi_select_title).orEmpty(),
-                            context?.resources?.getString(R.string.som_list_coachmark_multi_select_description).orEmpty()
-                        )
-                    )
-                }
-            }
         }
     }
 
@@ -2900,23 +2833,6 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
                     coachMark?.isDismissed = false
                     shouldShowCoachMark = false
                     coachMark?.showCoachMark(this, index = coachMarkIndexToShow)
-                } else {
-                    tryReshowCoachMark()
-                }
-            }
-        }
-    }
-
-    protected open fun reshowBulkAcceptOrderCoachMark() {
-        if (shouldShowBulkAcceptOrderCoachMark()) {
-            createCoachMarkItems(somListBinding?.rvSomList).run {
-                if (activity?.isFinishing != false) return
-                if (size == coachMarkItemCount && GlobalConfig.isSellerApp()) {
-                    currentNewOrderWithCoachMark = -1
-                    coachMark?.isDismissed = false
-                    shouldShowCoachMark = false
-                    coachMark?.showCoachMark(this, index = coachMarkIndexToShow)
-                    return
                 } else {
                     tryReshowCoachMark()
                 }
@@ -3031,8 +2947,6 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
             sortFilterShimmer3.translationY = translation
             sortFilterShimmer4.translationY = translation
             sortFilterShimmer5.translationY = translation
-            bulkActionCheckBoxContainer.translationY = translation
-            dividerMultiSelect.translationY = translation
             val params = (somListBinding?.swipeRefreshLayoutSomList?.layoutParams as? ViewGroup.MarginLayoutParams)
             params?.topMargin = translation.toInt()
             swipeRefreshLayoutSomList.layoutParams = params
@@ -3060,7 +2974,6 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
             reshowNewOrderCoachMark()
             reshowStatusFilterCoachMark()
             reshowWaitingPaymentOrderListCoachMark()
-            reshowBulkAcceptOrderCoachMark()
         }, DELAY_COACHMARK)
     }
 
@@ -3072,14 +2985,6 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
     private fun stopLoadTimeMonitoring() {
         somListLoadTimeMonitoring?.stopRenderPerformanceMonitoring()
         (activity as? SomListLoadTimeMonitoringActivity)?.loadTimeMonitoringListener?.onStopPltMonitoring()
-    }
-
-    private fun hideKeyboard() {
-        val context = context
-        val view = view
-        if (view != null && context != null) {
-            KeyboardHandler.DropKeyboard(context, view)
-        }
     }
 
     private fun onFailedValidateOrder() {
@@ -3189,8 +3094,7 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
     }
 
     protected open fun loadAllInitialData() {
-        viewModel.isMultiSelectEnabled = false
-        resetOrderSelectedStatus()
+        if (viewModel.isMultiSelectEnabled) onToggleMultiSelectClicked()
         isLoadingInitialData = true
         somListLoadTimeMonitoring?.startNetworkPerformanceMonitoring()
         loadTopAdsCategory()
@@ -3214,11 +3118,6 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
         somListBinding?.scrollViewErrorState?.isVisible == false && shouldShowCoachMark && somListBinding?.rvSomList != null &&
                 coachMarkIndexToShow == waitingPaymentCoachMarkItemPosition && waitingPaymentOrderListCountResult is Success
 
-    protected open fun shouldShowBulkAcceptOrderCoachMark() =
-        somListBinding?.scrollViewErrorState?.isVisible == false &&
-                shouldShowCoachMark && somListBinding?.rvSomList != null && coachMarkIndexToShow == bulkProcessCoachMarkItemPosition &&
-                somListBinding?.tvSomListBulk?.isVisible == true && viewModel.getTabActive() == STATUS_NEW_ORDER
-
     protected open fun onSuccessGetFilter(
         result: Success<SomListFilterUiModel>,
         realtimeDataChangeCount: Int
@@ -3231,7 +3130,6 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
             selectFilterTab(result, realtimeDataChangeCount)
             somListOrderStatusFilterTab?.show(result.data)
             somListSortFilterTab?.show(result.data)
-            updateOrderCounter()
         }
         return if (!result.data.fromCache) realtimeDataChangeCount + 1 else realtimeDataChangeCount
     }

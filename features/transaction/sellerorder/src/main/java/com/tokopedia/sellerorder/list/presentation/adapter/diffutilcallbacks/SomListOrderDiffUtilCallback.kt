@@ -5,6 +5,7 @@ import androidx.recyclerview.widget.DiffUtil
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.sellerorder.list.presentation.adapter.viewholders.SomListOrderEmptyViewHolder
 import com.tokopedia.sellerorder.list.presentation.models.SomListEmptyStateUiModel
+import com.tokopedia.sellerorder.list.presentation.models.SomListMultiSelectSectionUiModel
 import com.tokopedia.sellerorder.list.presentation.models.SomListOrderUiModel
 
 class SomListOrderDiffUtilCallback(
@@ -14,7 +15,7 @@ class SomListOrderDiffUtilCallback(
     override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
         val oldItem = oldItems.getOrNull(oldItemPosition)
         val newItem = newItems.getOrNull(newItemPosition)
-        return isTheSameOrder(oldItem, newItem) || isTheSameEmptyState(oldItem, newItem)
+        return isTheSameOrder(oldItem, newItem) || isTheSameEmptyState(oldItem, newItem) || isTheSameMultiSelectSection(oldItem, newItem)
     }
 
     override fun getOldListSize(): Int = oldItems.size
@@ -55,6 +56,8 @@ class SomListOrderDiffUtilCallback(
             }
         } else if (oldItem is SomListOrderUiModel && newItem is SomListOrderUiModel) {
             oldItem to newItem
+        } else if (oldItem is SomListMultiSelectSectionUiModel && newItem is SomListMultiSelectSectionUiModel) {
+            oldItem to newItem
         } else super.getChangePayload(oldItemPosition, newItemPosition)
     }
 
@@ -65,5 +68,12 @@ class SomListOrderDiffUtilCallback(
 
     private fun isTheSameEmptyState(oldItem: Visitable<*>?, newItem: Visitable<*>?): Boolean {
         return oldItem is SomListEmptyStateUiModel && newItem is SomListEmptyStateUiModel
+    }
+
+    private fun isTheSameMultiSelectSection(
+        oldItem: Visitable<*>?,
+        newItem: Visitable<*>?
+    ): Boolean {
+        return oldItem is SomListMultiSelectSectionUiModel && newItem is SomListMultiSelectSectionUiModel
     }
 }
