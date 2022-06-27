@@ -75,6 +75,7 @@ import com.tokopedia.tokomember_seller_dashboard.util.PROGRAM_VALIDATION_CTA_TEX
 import com.tokopedia.tokomember_seller_dashboard.util.PROGRAM_VALIDATION_ERROR_DESC
 import com.tokopedia.tokomember_seller_dashboard.util.PROGRAM_VALIDATION_ERROR_TITLE
 import com.tokopedia.tokomember_seller_dashboard.util.RETRY
+import com.tokopedia.tokomember_seller_dashboard.util.SIMPLE_DATE_FORMAT
 import com.tokopedia.tokomember_seller_dashboard.util.TERMS
 import com.tokopedia.tokomember_seller_dashboard.util.TERNS_AND_CONDITION
 import com.tokopedia.tokomember_seller_dashboard.util.TIME_DESC
@@ -110,6 +111,7 @@ import kotlinx.android.synthetic.main.tm_kupon_create_single.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import java.text.SimpleDateFormat
 import java.util.*
 import javax.inject.Inject
 
@@ -215,17 +217,21 @@ class TmSingleCouponCreateFragment : BaseDaggerFragment() {
                                     if (TmDateUtil.getTimeInMillis(item.timeWindow?.startTime, "yyyy-MM-dd HH:mm:ss").toLong() > DateUtil.getCurrentDate().time.div(1000)) {
                                         startTime = item.timeWindow?.startTime
                                         endTime = item.timeWindow?.endTime
+                                        programData = ProgramUpdateDataInput()
+                                        programData?.apply {
+                                            timeWindow = TimeWindow(startTime = startTime, endTime = endTime)
+                                        }
                                         return@time
                                     }
                                 }
                             }
                         }
                         if(startTime.isNullOrEmpty()) {
-                            if (TmDateUtil.getTimeInMillis(
-                                    it.data?.membershipGetProgramList?.programSellerList?.firstOrNull()?.timeWindow?.startTime,
-                                    "yyyy-MM-dd HH:mm:ss"
-                                ).toLong() < DateUtil.getCurrentDate().time.div(1000)
-                            ) {
+//                            if (TmDateUtil.getTimeInMillis(
+//                                    it.data?.membershipGetProgramList?.programSellerList?.firstOrNull()?.timeWindow?.startTime,
+//                                    "yyyy-MM-dd HH:mm:ss"
+//                                ).toLong() < DateUtil.getCurrentDate().time.div(1000)
+//                            ) {
                                 startTime =
                                     it.data?.membershipGetProgramList?.programSellerList?.firstOrNull()?.timeWindow?.startTime
                                 endTime =
@@ -234,10 +240,10 @@ class TmSingleCouponCreateFragment : BaseDaggerFragment() {
                                 programData?.apply {
                                     timeWindow = TimeWindow(startTime = startTime, endTime = endTime)
                                 }
-                            }
-                            else{
-                                view?.let { it1 -> Toaster.build(it1, "Select proper start time", Toaster.TYPE_ERROR, Toaster.LENGTH_LONG).show() }
-                            }
+//                            }
+//                            else{
+//                                view?.let { it1 -> Toaster.build(it1, "Select proper start time", Toaster.TYPE_ERROR, Toaster.LENGTH_LONG).show() }
+//                            }
                         }
                         if(!fromEdit) {
                             renderProgram()
@@ -297,6 +303,7 @@ class TmSingleCouponCreateFragment : BaseDaggerFragment() {
                         tokomemberDashCreateViewModel.validateProgram(prefManager?.shopId.toString(), startTime, endTime,"")
                     }
                     else {
+                        closeLoadingDialog()
                         handleProgramValidateError(it.data?.voucherValidationPartial?.data?.validationError,"premium")
                         setButtonState()
                     }
@@ -929,6 +936,11 @@ class TmSingleCouponCreateFragment : BaseDaggerFragment() {
 
             val maxDate = GregorianCalendar(yearMax, monthMax, dayMax)
             val currentDate = GregorianCalendar(LocaleUtils.getCurrentLocale(it))
+            val sdf = SimpleDateFormat(SIMPLE_DATE_FORMAT, com.tokopedia.tokomember_seller_dashboard.util.locale)
+            programData?.timeWindow?.startTime?.let {
+                currentDate.time = sdf.parse(programData?.timeWindow?.startTime + "00") ?: Date()
+                currentDate.add(Calendar.DAY_OF_MONTH, 1)
+            }
 
             val calMin = Calendar.getInstance()
             calMin.add(Calendar.YEAR, TmProgramFragment.MIN_YEAR)
@@ -937,7 +949,7 @@ class TmSingleCouponCreateFragment : BaseDaggerFragment() {
             val dayMin = calMin.get(Calendar.DAY_OF_MONTH)
 
             val minDate = GregorianCalendar(yearMin, monthMin, dayMin)
-            val datepickerObject = DateTimePickerUnify(it, minDate, currentDate, maxDate).apply {
+            val datepickerObject = DateTimePickerUnify(it, currentDate, currentDate, maxDate).apply {
                 setTitle(DATE_TITLE)
                 setInfo(DATE_DESC)
                 setInfoVisible(true)
