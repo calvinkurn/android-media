@@ -13,6 +13,7 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import com.airbnb.lottie.LottieDrawable
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.play_common.databinding.ViewGiveawayWidgetBinding
+import com.tokopedia.unifyprinciples.UnifyMotion
 import java.util.*
 
 
@@ -119,7 +120,8 @@ class GiveawayWidgetView : ConstraintLayout {
 
     private fun animateTap() {
         tapAnimator.addListener(animationListener)
-        tapAnimator.duration = 200L
+        tapAnimator.duration = UnifyMotion.T3
+        tapAnimator.interpolator = UnifyMotion.EASE_OVERSHOOT
         tapAnimator.start()
     }
 

@@ -25,6 +25,7 @@ import com.tokopedia.play_common.view.game.setupQuiz
 import com.tokopedia.play_common.view.quiz.QuizChoiceViewHolder
 import com.tokopedia.play_common.view.quiz.QuizListAdapter
 import com.tokopedia.play_common.view.quiz.QuizOptionItemDecoration
+import com.tokopedia.unifyprinciples.UnifyMotion
 import java.util.*
 
 /**
@@ -113,16 +114,14 @@ class QuizWidgetView : ConstraintLayout {
 
         answerFalseAnimator.childAnimations.forEach {
             if (it !is ValueAnimator) return@forEach
-            it.duration = 150L
-            it.repeatCount = 1
-            it.repeatMode = ValueAnimator.REVERSE
+            it.duration = UnifyMotion.T3
+            it.interpolator = UnifyMotion.EASE_OVERSHOOT
         }
 
         answerTrueAnimator.childAnimations.forEach {
             if (it !is ValueAnimator) return@forEach
-            it.duration = 150L
-            it.repeatCount = 1
-            it.repeatMode = ValueAnimator.REVERSE
+            it.duration = UnifyMotion.T3
+            it.interpolator = UnifyMotion.EASE_OVERSHOOT
         }
     }
 
