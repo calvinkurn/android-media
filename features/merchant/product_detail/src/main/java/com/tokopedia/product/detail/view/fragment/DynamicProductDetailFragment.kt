@@ -3400,12 +3400,21 @@ open class DynamicProductDetailFragment :
                 if (wishlistResult.isAddWishlist) errorMessage =
                     getString(com.tokopedia.wishlist_common.R.string.on_failed_add_to_wishlist_msg)
 
-                view?.let { v ->
-                    if (wishlistResult.isUsingWishlistV2) AddRemoveWishlistV2Handler.showWishlistV2ErrorToaster(
-                        errorMessage,
-                        v
-                    )
-                    else v.showToasterError(errorMessage)
+                if (wishlistResult.isUsingWishlistV2) {
+                    view?.let { v ->
+                        if (wishlistResult.messageV2.isNotEmpty()) errorMessage = wishlistResult.messageV2
+                        if (wishlistResult.ctaTextV2.isNotEmpty() && wishlistResult.ctaActionV2.isNotEmpty()) {
+                            context?.let { c ->
+                                AddRemoveWishlistV2Handler.showWishlistV2ErrorToasterWithCta(errorMessage, wishlistResult.ctaTextV2, wishlistResult.ctaActionV2, v, c)
+                            }
+                        } else {
+                            AddRemoveWishlistV2Handler.showWishlistV2ErrorToaster(errorMessage, v)
+                        }
+                    }
+                } else {
+                    view?.let { v ->
+                        v.showToasterError(errorMessage)
+                    }
                 }
             }
         } else {

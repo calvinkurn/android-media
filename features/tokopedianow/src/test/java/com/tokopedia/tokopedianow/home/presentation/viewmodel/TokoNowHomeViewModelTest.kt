@@ -3312,7 +3312,7 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
             userId = "",
             whIdOrigin = "111111",
             whIdDestination = "222222",
-            is20mSwitcher = true,
+            isNow15 = false,
             isImpressionTracker = isImpressionTracker
         ))
     }
@@ -3351,7 +3351,7 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
             userId = "",
             whIdOrigin = "222222",
             whIdDestination = "111111",
-            is20mSwitcher = false,
+            isNow15 = true,
             isImpressionTracker = isImpressionTracker
         ))
     }
@@ -3375,7 +3375,7 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
             userId = "",
             whIdOrigin = "222222",
             whIdDestination = "0",
-            is20mSwitcher = false,
+            isNow15 = true,
             isImpressionTracker = isImpressionTracker
         ))
     }
