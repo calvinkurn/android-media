@@ -34,17 +34,64 @@ import com.tokopedia.tokomember_seller_dashboard.R
 import com.tokopedia.tokomember_seller_dashboard.callbacks.TmOpenFragmentCallback
 import com.tokopedia.tokomember_seller_dashboard.di.component.DaggerTokomemberDashComponent
 import com.tokopedia.tokomember_seller_dashboard.domain.requestparam.TmCouponValidateRequest
-import com.tokopedia.tokomember_seller_dashboard.model.*
+import com.tokopedia.tokomember_seller_dashboard.model.TimeWindow
+import com.tokopedia.tokomember_seller_dashboard.model.TmCouponPreviewData
+import com.tokopedia.tokomember_seller_dashboard.model.TmIntroBottomsheetModel
+import com.tokopedia.tokomember_seller_dashboard.model.TmSingleCouponData
+import com.tokopedia.tokomember_seller_dashboard.model.ValidationError
 import com.tokopedia.tokomember_seller_dashboard.model.mapper.TmCouponCreateMapper
-import com.tokopedia.tokomember_seller_dashboard.util.*
-import com.tokopedia.tokomember_seller_dashboard.util.TmDateUtil.convertDateTime
-import com.tokopedia.tokomember_seller_dashboard.util.TmDateUtil.getTimeInMillis
-import com.tokopedia.tokomember_seller_dashboard.util.TmDateUtil.setDate
 import com.tokopedia.tokomember_seller_dashboard.tracker.TmTracker
+import com.tokopedia.tokomember_seller_dashboard.util.ANDROID
+import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_CARD_ID
+import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_CARD_ID_IN_TOOLS
+import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_COUPON_CREATE_DATA
+import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_COUPON_PREVIEW_DATA
+import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_CREATE_SCREEN_TYPE
+import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_PROGRAM_ID_IN_TOOLS
+import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_PROGRAM_TYPE
+import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_SHOP_AVATAR
+import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_SHOP_ID
+import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_SHOP_NAME
+import com.tokopedia.tokomember_seller_dashboard.util.CASHBACK_IDR
+import com.tokopedia.tokomember_seller_dashboard.util.CASHBACK_PERCENTAGE
+import com.tokopedia.tokomember_seller_dashboard.util.COUPON_HEADER_SUBTITLE
+import com.tokopedia.tokomember_seller_dashboard.util.COUPON_HEADER_TITLE
+import com.tokopedia.tokomember_seller_dashboard.util.COUPON_TERMS_CONDITION
+import com.tokopedia.tokomember_seller_dashboard.util.CREATE
+import com.tokopedia.tokomember_seller_dashboard.util.DATE_DESC
+import com.tokopedia.tokomember_seller_dashboard.util.DATE_TITLE
+import com.tokopedia.tokomember_seller_dashboard.util.ERROR_CREATING_CTA
+import com.tokopedia.tokomember_seller_dashboard.util.ERROR_CREATING_CTA_RETRY
+import com.tokopedia.tokomember_seller_dashboard.util.ERROR_CREATING_DESC
+import com.tokopedia.tokomember_seller_dashboard.util.ERROR_CREATING_TITLE
+import com.tokopedia.tokomember_seller_dashboard.util.ERROR_CREATING_TITLE_RETRY
+import com.tokopedia.tokomember_seller_dashboard.util.ErrorState
+import com.tokopedia.tokomember_seller_dashboard.util.LOADING_TEXT
+import com.tokopedia.tokomember_seller_dashboard.util.PREMIUM
+import com.tokopedia.tokomember_seller_dashboard.util.PROGRAM_TYPE_AUTO
+import com.tokopedia.tokomember_seller_dashboard.util.PROGRAM_TYPE_MANUAL
+import com.tokopedia.tokomember_seller_dashboard.util.PROGRAM_VALIDATION_CTA_TEXT
+import com.tokopedia.tokomember_seller_dashboard.util.PROGRAM_VALIDATION_ERROR_DESC
+import com.tokopedia.tokomember_seller_dashboard.util.PROGRAM_VALIDATION_ERROR_TITLE
+import com.tokopedia.tokomember_seller_dashboard.util.RETRY
+import com.tokopedia.tokomember_seller_dashboard.util.SIMPLE_DATE_FORMAT
+import com.tokopedia.tokomember_seller_dashboard.util.SOURCE_MULTIPLE_COUPON_CREATE
+import com.tokopedia.tokomember_seller_dashboard.util.TERMS
+import com.tokopedia.tokomember_seller_dashboard.util.TERNS_AND_CONDITION
+import com.tokopedia.tokomember_seller_dashboard.util.TIME_DESC
+import com.tokopedia.tokomember_seller_dashboard.util.TIME_TITLE
+import com.tokopedia.tokomember_seller_dashboard.util.TM_ERROR_PROGRAM
+import com.tokopedia.tokomember_seller_dashboard.util.TM_TNC
+import com.tokopedia.tokomember_seller_dashboard.util.TmDateUtil.convertDateTime
 import com.tokopedia.tokomember_seller_dashboard.util.TmDateUtil.convertDateTimeRemoveTimeDiff
 import com.tokopedia.tokomember_seller_dashboard.util.TmDateUtil.getDayOfWeekID
+import com.tokopedia.tokomember_seller_dashboard.util.TmDateUtil.getTimeInMillis
 import com.tokopedia.tokomember_seller_dashboard.util.TmDateUtil.setDatePreview
 import com.tokopedia.tokomember_seller_dashboard.util.TmDateUtil.setTimeStart
+import com.tokopedia.tokomember_seller_dashboard.util.TmFileUtil
+import com.tokopedia.tokomember_seller_dashboard.util.TokoLiveDataResult
+import com.tokopedia.tokomember_seller_dashboard.util.VIP
+import com.tokopedia.tokomember_seller_dashboard.util.locale
 import com.tokopedia.tokomember_seller_dashboard.view.activity.TokomemberDashIntroActivity
 import com.tokopedia.tokomember_seller_dashboard.view.adapter.model.TmCouponListItemPreview
 import com.tokopedia.tokomember_seller_dashboard.view.animation.TmExpandView.collapse
@@ -61,8 +108,6 @@ import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.text.currency.CurrencyFormatHelper
 import kotlinx.android.synthetic.main.tm_dash_kupon_create_container.*
 import kotlinx.android.synthetic.main.tm_dash_kupon_create_multiple.*
-import kotlinx.android.synthetic.main.tm_dash_kupon_create_multiple.containerViewFlipper
-import kotlinx.android.synthetic.main.tm_dash_kupon_create_multiple.globalError
 import kotlinx.android.synthetic.main.tm_dash_tnc_coupon_creation.view.*
 import java.text.SimpleDateFormat
 import java.util.*
@@ -564,6 +609,10 @@ class TmMultipleCuponCreateFragment : BaseDaggerFragment() {
     private fun setProgramStartEndDate(timeWindow: TimeWindow?) {
         when(programActionType) {
             ProgramActionType.CREATE -> {
+                manualStartTimeProgram = timeWindow?.startTime?:""
+                manualEndTimeProgram= timeWindow?.endTime?:""
+            }
+            ProgramActionType.CREATE_BUAT -> {
                 manualStartTimeProgram = timeWindow?.startTime?:""
                 manualEndTimeProgram= timeWindow?.endTime?:""
             }
