@@ -22,6 +22,7 @@ import com.tokopedia.tokofood.feature.merchant.presentation.enums.CustomListItem
 import com.tokopedia.tokofood.feature.merchant.presentation.enums.SelectionControlType
 import com.tokopedia.tokofood.feature.merchant.presentation.model.AddOnUiModel
 import com.tokopedia.tokofood.feature.merchant.presentation.model.CustomListItem
+import com.tokopedia.tokofood.feature.merchant.presentation.model.CustomOrderDetail
 import com.tokopedia.tokofood.feature.merchant.presentation.model.OptionUiModel
 import com.tokopedia.tokofood.feature.merchant.presentation.model.ProductUiModel
 import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.TokoFoodPurchaseViewModel
@@ -383,7 +384,8 @@ object TokoFoodPurchaseUiModelMapper {
         )
     }
 
-    fun mapUiModelToCustomizationUiModel(uiModel: TokoFoodPurchaseProductTokoFoodPurchaseUiModel): ProductUiModel {
+    fun mapUiModelToCustomizationUiModel(uiModel: TokoFoodPurchaseProductTokoFoodPurchaseUiModel,
+                                         customOrderDetails: MutableList<CustomOrderDetail>): ProductUiModel {
         return ProductUiModel(
             id = uiModel.id,
             name = uiModel.name,
@@ -398,7 +400,8 @@ object TokoFoodPurchaseUiModelMapper {
             cartId = uiModel.cartId,
             orderQty = uiModel.quantity,
             orderNote = uiModel.notes,
-            isAtc = true
+            isAtc = true,
+            customOrderDetails = customOrderDetails
         )
     }
 
@@ -591,4 +594,5 @@ object TokoFoodPurchaseUiModelMapper {
             )
         }
     }
+
 }

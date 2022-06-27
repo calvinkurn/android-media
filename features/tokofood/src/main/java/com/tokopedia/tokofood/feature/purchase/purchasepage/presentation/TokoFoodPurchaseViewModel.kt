@@ -22,6 +22,7 @@ import com.tokopedia.tokofood.common.util.TokofoodExt.getGlobalErrorType
 import com.tokopedia.tokofood.feature.purchase.purchasepage.domain.usecase.CheckoutTokoFoodUseCase
 import com.tokopedia.tokofood.common.domain.usecase.KeroEditAddressUseCase
 import com.tokopedia.tokofood.common.domain.usecase.KeroGetAddressUseCase
+import com.tokopedia.tokofood.common.presentation.mapper.CustomOrderDetailsMapper
 import com.tokopedia.tokofood.feature.purchase.purchasepage.domain.usecase.CheckoutGeneralTokoFoodUseCase
 import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.VisitableDataHelper.getAccordionUiModel
 import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.VisitableDataHelper.getAllUnavailableProducts
@@ -559,6 +560,20 @@ class TokoFoodPurchaseViewModel @Inject constructor(
             }
         }
         _visitables.value = dataList
+    }
+
+    fun updateProductVariant(element: TokoFoodPurchaseProductTokoFoodPurchaseUiModel) {
+        launch(coroutineContext) {
+            checkoutTokoFoodResponse.value?.data?.availableSection?.products?.let { availableProducts ->
+                val customOrderDetails =
+                    CustomOrderDetailsMapper.mapTokoFoodProductsToCustomOrderDetails(availableProducts)
+                val productUiModel = TokoFoodPurchaseUiModelMapper.mapUiModelToCustomizationUiModel(element, customOrderDetails)
+                _uiEvent.value = PurchaseUiEvent(
+                    state = PurchaseUiEvent.EVENT_GO_TO_ORDER_CUSTOMIZATION,
+                    data = productUiModel
+                )
+            }
+        }
     }
 
     /**

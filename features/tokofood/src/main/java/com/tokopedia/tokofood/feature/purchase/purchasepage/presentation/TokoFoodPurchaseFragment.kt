@@ -60,6 +60,7 @@ import com.tokopedia.tokofood.common.util.TokofoodRouteManager
 import com.tokopedia.tokofood.databinding.LayoutFragmentPurchaseBinding
 import com.tokopedia.tokofood.feature.home.presentation.fragment.TokoFoodHomeFragment
 import com.tokopedia.tokofood.feature.merchant.presentation.fragment.OrderCustomizationFragment
+import com.tokopedia.tokofood.feature.merchant.presentation.model.ProductUiModel
 import com.tokopedia.tokofood.feature.purchase.analytics.TokoFoodPurchaseAnalytics
 import com.tokopedia.tokofood.feature.purchase.promopage.presentation.TokoFoodPromoFragment
 import com.tokopedia.tokofood.feature.purchase.purchasepage.di.DaggerTokoFoodPurchaseComponent
@@ -441,6 +442,17 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
                             userSession.deviceId.orEmpty(),
                             TokofoodErrorLogger.ErrorDescription.PAYMENT_ERROR
                         )
+                    }
+                }
+                PurchaseUiEvent.EVENT_GO_TO_ORDER_CUSTOMIZATION -> {
+                    (it.data as? ProductUiModel)?.let { productUiModel ->
+                        val orderCustomizationFragment = OrderCustomizationFragment.createInstance(
+                            productUiModel = productUiModel,
+                            cartId = productUiModel.cartId,
+                            merchantId = shopId,
+                            cacheManagerId = ""
+                        )
+                        navigateToNewFragment(orderCustomizationFragment)
                     }
                 }
             }
@@ -977,14 +989,7 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
     }
 
     override fun onTextChangeNoteAndVariantClicked(element: TokoFoodPurchaseProductTokoFoodPurchaseUiModel) {
-        val productUiModel = TokoFoodPurchaseUiModelMapper.mapUiModelToCustomizationUiModel(element)
-        val orderCustomizationFragment = OrderCustomizationFragment.createInstance(
-            productUiModel = productUiModel,
-            cartId = element.cartId,
-            merchantId = shopId,
-            cacheManagerId = ""
-        )
-        navigateToNewFragment(orderCustomizationFragment)
+        viewModel.updateProductVariant(element)
     }
 
     override fun onToggleShowHideUnavailableItemsClicked() {
