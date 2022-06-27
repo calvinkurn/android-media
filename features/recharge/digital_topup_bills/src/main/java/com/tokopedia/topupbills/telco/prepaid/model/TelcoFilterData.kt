@@ -21,7 +21,7 @@ class TelcoFilterData {
      *
      */
 
-    fun addFilter(componentId: Int, paramName: String, valuesFilter: List<String>) {
+    fun addFilter(componentId: String, paramName: String, valuesFilter: List<String>) {
         var addNewObj = true
         var addApplyFilter = true
         _filterData.map {
@@ -39,7 +39,7 @@ class TelcoFilterData {
         if (addApplyFilter) {
             val valueItem = HashMap<String, Any>()
             val list = ArrayList<String>()
-            list.add(componentId.toString())
+            list.add(componentId)
             valueItem[FILTER_PARAM_NAME] = FILTER_COMPONENT_ID
             valueItem[FILTER_VALUE] = list
             _filterData.add(valueItem)

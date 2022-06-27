@@ -3,6 +3,7 @@ package com.tokopedia.play.model
 import com.tokopedia.play.helper.TestHtmlTextTransformer
 import com.tokopedia.play.view.uimodel.mapper.*
 import com.tokopedia.play_common.model.mapper.PlayChannelInteractiveMapper
+import com.tokopedia.play_common.model.mapper.PlayInteractiveMapper
 import com.tokopedia.play_common.transformer.HtmlTextTransformer
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.mockk
@@ -18,6 +19,7 @@ class PlayMapperBuilder {
         chatMapper: PlayChatUiMapper = buildChatMapper(),
         channelStatusMapper: PlayChannelStatusMapper = buildChannelStatusMapper(),
         channelInteractiveMapper: PlayChannelInteractiveMapper = buildChannelInteractiveMapper(),
+        interactiveMapper: PlayInteractiveMapper = buildInteractiveMapper(),
         realTimeNotificationMapper: PlayRealTimeNotificationMapper = buildRealTimeNotificationMapper(),
         multipleLikesMapper: PlayMultipleLikesMapper = buildMultipleLikesMapper(),
         userWinnerStatusMapper: PlayUserWinnerStatusMapper = buildUserWinnerStatusMapper()
@@ -26,7 +28,7 @@ class PlayMapperBuilder {
         merchantVoucherMapper = merchantVoucherMapper,
         chatMapper = chatMapper,
         channelStatusMapper = channelStatusMapper,
-        channelInteractiveMapper = channelInteractiveMapper,
+        interactiveMapper = interactiveMapper,
         realTimeNotificationMapper = realTimeNotificationMapper,
         multipleLikesMapper = multipleLikesMapper,
         userWinnerStatusMapper = userWinnerStatusMapper
@@ -45,6 +47,8 @@ class PlayMapperBuilder {
     fun buildChannelStatusMapper() = PlayChannelStatusMapper()
 
     fun buildChannelInteractiveMapper() = PlayChannelInteractiveMapper()
+
+    fun buildInteractiveMapper() = PlayInteractiveMapper(TestHtmlTextTransformer())
 
     fun buildRealTimeNotificationMapper(
             userSession: UserSessionInterface = mockk(relaxed = true),

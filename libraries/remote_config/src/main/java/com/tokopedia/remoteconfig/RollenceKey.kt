@@ -40,7 +40,6 @@ object RollenceKey {
     // end of Recommendation page section
 
     //User
-    const val USER_DARK_MODE_TOGGLE = "dark_mode_nakama_v2"
     const val EXPERIMENT_NAME_REVIEW_CREDIBILITY = "review_credibility"
     const val VARIANT_REVIEW_CREDIBILITY_WITHOUT_BOTTOM_SHEET = "without_bottomsheet"
     const val VARIANT_REVIEW_CREDIBILITY_WITH_BOTTOM_SHEET = "with_bottomsheet"
@@ -58,10 +57,7 @@ object RollenceKey {
     const val WISHLIST_V2_REVAMP = "Wishlist_revamp_apps"
     const val WISHLIST_OLD_VARIANT = "control_variant"
     const val WISHLIST_V2_VARIANT = "experiment_variant"
-
-    // advanced search negative keywords
-    const val SEARCH_ADVANCED_KEYWORD_ADV_NEG = "keyword_adv_neg"
-    const val SEARCH_ADVANCED_NEGATIVE_NO_ADS = "negative_no_ads"
+    const val ADD_REMOVE_WISHLIST_V2 = "addremove_wishlistv2"
 
     // Fulfillment Rebranding
     const val FULFILLMENT_REBRANDING = "fulfill_rebranding"
@@ -72,4 +68,15 @@ object RollenceKey {
     // Video Carousel Widget
     const val SEARCH_VIDEO_WIDGET = "VideoWidget"
     const val SEARCH_VIDEO_WIDGET_VARIANT = "experiment_variant"
+
+    // Typo Correction
+    const val SEARCH_TYPO_CORRECTION_ADS = "typo_correction_ads2"
+    const val SEARCH_TYPO_CORRECTION_ADS_VARIANT = "typo2"
+
+    // Global Menu (Me Page)
+    const val ME_PAGE_REVAMP = "Navigation_Mepage"
+    const val ME_PAGE_REVAMP_VARIANT = "Mepage_Variant"
+
+    // Review
+    const val CREATE_REVIEW_MEDIA_PICKER_EXPERIMENT_NAME = "review_video"
 }

@@ -1,7 +1,7 @@
 package com.tokopedia.topchat.stub.common.usecase
 
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.topchat.chatlist.pojo.ChatDeleteStatus
+import com.tokopedia.topchat.chatlist.domain.pojo.ChatDeleteStatus
 import com.tokopedia.topchat.common.domain.MutationMoveChatToTrashUseCase
 import com.tokopedia.topchat.stub.common.GraphqlRepositoryStub
 import javax.inject.Inject

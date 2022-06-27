@@ -18,34 +18,7 @@ import com.tokopedia.product.detail.common.data.model.variant.uimodel.VariantCat
 import com.tokopedia.product.detail.common.getCurrencyFormatted
 import com.tokopedia.product.detail.data.model.ProductInfoP2Other
 import com.tokopedia.product.detail.data.model.ProductInfoP2UiData
-import com.tokopedia.product.detail.data.model.datamodel.ContentWidgetDataModel
-import com.tokopedia.product.detail.data.model.datamodel.DynamicPdpDataModel
-import com.tokopedia.product.detail.data.model.datamodel.FintechWidgetDataModel
-import com.tokopedia.product.detail.data.model.datamodel.OneLinersDataModel
-import com.tokopedia.product.detail.data.model.datamodel.PdpComparisonWidgetDataModel
-import com.tokopedia.product.detail.data.model.datamodel.ProductBundlingDataModel
-import com.tokopedia.product.detail.data.model.datamodel.ProductContentDataModel
-import com.tokopedia.product.detail.data.model.datamodel.ProductContentMainData
-import com.tokopedia.product.detail.data.model.datamodel.ProductDetailInfoDataModel
-import com.tokopedia.product.detail.data.model.datamodel.ProductDiscussionMostHelpfulDataModel
-import com.tokopedia.product.detail.data.model.datamodel.ProductGeneralInfoDataModel
-import com.tokopedia.product.detail.data.model.datamodel.ProductMediaDataModel
-import com.tokopedia.product.detail.data.model.datamodel.ProductMerchantVoucherSummaryDataModel
-import com.tokopedia.product.detail.data.model.datamodel.ProductMiniShopWidgetDataModel
-import com.tokopedia.product.detail.data.model.datamodel.ProductMiniSocialProofDataModel
-import com.tokopedia.product.detail.data.model.datamodel.ProductMiniSocialProofStockDataModel
-import com.tokopedia.product.detail.data.model.datamodel.ProductMostHelpfulReviewDataModel
-import com.tokopedia.product.detail.data.model.datamodel.ProductNotifyMeDataModel
-import com.tokopedia.product.detail.data.model.datamodel.ProductRecomWidgetDataModel
-import com.tokopedia.product.detail.data.model.datamodel.ProductRecommendationDataModel
-import com.tokopedia.product.detail.data.model.datamodel.ProductShipmentDataModel
-import com.tokopedia.product.detail.data.model.datamodel.ProductShopCredibilityDataModel
-import com.tokopedia.product.detail.data.model.datamodel.ProductSingleVariantDataModel
-import com.tokopedia.product.detail.data.model.datamodel.ProductTickerInfoDataModel
-import com.tokopedia.product.detail.data.model.datamodel.TopAdsImageDataModel
-import com.tokopedia.product.detail.data.model.datamodel.TopadsHeadlineUiModel
-import com.tokopedia.product.detail.data.model.datamodel.UpcomingNplDataModel
-import com.tokopedia.product.detail.data.model.datamodel.VariantDataModel
+import com.tokopedia.product.detail.data.model.datamodel.*
 import com.tokopedia.product.detail.data.model.purchaseprotection.PPItemDetailPage
 import com.tokopedia.product.detail.data.model.talk.DiscussionMostHelpful
 import com.tokopedia.product.detail.data.model.ticker.TickerDataResponse
@@ -195,6 +168,7 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
                 shopCredibility?.run {
                     isOs = it.data.isOS
                     isPm = it.data.isPowerMerchant
+                    shopLocation = it.basic.productMultilocation.cityName
                 }
             }
 
@@ -222,13 +196,6 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
                             ?: return@run
                     subtitle = context?.getString(R.string.label_format_wholesale, minPrice.getCurrencyFormatted())
                             ?: ""
-                }
-            }
-
-            updateData(ProductDetailConstant.REVIEW, loadInitialData) {
-                productReviewMap?.run {
-                    totalRating = it.basic.stats.countReview.toIntOrZero()
-                    ratingScore = it.basic.stats.rating
                 }
             }
 
@@ -395,19 +362,16 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
     fun updateDataP2(context: Context?,
                      p2Data: ProductInfoP2UiData,
                      productId: String,
-                     isProductWarehouse: Boolean,
-                     isProductInCampaign: Boolean,
-                     isOutOfStock: Boolean,
-                     boeImageUrl: String,
-                     isProductParent: Boolean) {
+                     boeImageUrl: String) {
         p2Data.let {
             updateData(ProductDetailConstant.PRODUCT_SHOP_CREDIBILITY) {
                 shopCredibility?.run {
                     shopLastActive = if (context == null) "" else it.shopInfo.shopLastActive.getRelativeDate(context)
                     shopName = it.shopInfo.shopCore.name
                     shopAva = it.shopInfo.shopAssets.avatar
-                    shopLocation = it.shopInfo.location
                     isGoApotik = it.isGoApotik
+                    shopWarehouseCount = it.shopInfo.shopMultilocation.warehouseCount
+                    shopWarehouseApplink = it.shopInfo.shopMultilocation.eduLink.applink
                     shopTierBadgeUrl = it.shopInfo.shopTierBadgeUrl
                     infoShopData = if (context == null) listOf() else
                         getTwoShopInfoHieararchy(context,
@@ -441,7 +405,8 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
                     wishlistCount = it.wishlistCount.toIntOrZero()
                     viewCount = it.productView.toIntOrZero()
                     shouldRenderSocialProof = true
-                    buyerPhotosCount = it.imageReviews?.imageCount.toIntOrZero()
+                    buyerPhotosCount = it.imageReview.buyerMediaCount
+                    buyerPhotoStaticText = it.imageReview.staticSocialProofText
                     setSocialProofData()
                 }
             }
@@ -451,7 +416,8 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
                     wishlistCount = it.wishlistCount.toIntOrZero()
                     viewCount = it.productView.toIntOrZero()
                     shouldRenderSocialProof = true
-                    buyerPhotosCount = it.imageReviews?.imageCount.toIntOrZero()
+                    buyerPhotosCount = it.imageReview.buyerMediaCount
+                    buyerPhotoStaticText = it.imageReview.staticSocialProofText
                     setSocialProofData()
                 }
             }
@@ -493,8 +459,8 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
             updateDataTradein(context, it.validateTradeIn)
             updateData(ProductDetailConstant.REVIEW) {
                 productReviewMap?.run {
-                    listOfReviews = it.helpfulReviews
-                    imageReviews = it.imageReviews?.imageReviewItems
+                    review = it.helpfulReviews?.firstOrNull()
+                    mediaThumbnails = it.imageReview.reviewMediaThumbnails
                     formattedRating = it.rating.ratingScore
                     totalRatingCount = it.rating.totalRating
                     totalReviewCount = it.rating.totalReviewTextAndImage
@@ -785,7 +751,7 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
         }
     }
 
-    fun updateRecomTokonowQuantityData(miniCart: MutableMap<String, MiniCartItem>?) {
+    fun updateRecomTokonowQuantityData(miniCart: MutableMap<String, MiniCartItem.MiniCartItemProduct>?) {
         mapOfData.filterValues { it is ProductRecommendationDataModel }.keys.forEach { key ->
             val productRecom = (mapOfData[key] as ProductRecommendationDataModel).copy()
             productRecom.recomWidgetData?.let { recomData ->
@@ -796,7 +762,7 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
         }
     }
 
-    private fun updateRecomWidgetQtyDataFromMiniCart(recomWidget: RecommendationWidget, miniCart: MutableMap<String, MiniCartItem>?, key: String) {
+    private fun updateRecomWidgetQtyDataFromMiniCart(recomWidget: RecommendationWidget, miniCart: MutableMap<String, MiniCartItem.MiniCartItemProduct>?, key: String) {
         val dataList = recomWidget.copyRecomItemList()
         dataList.forEach { recomItem ->
             //update data based on tokonow cart
@@ -820,7 +786,7 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
         }
     }
 
-    private fun getTotalQuantityVariantBasedOnParentID(recomItem: RecommendationItem, miniCart: MutableMap<String, MiniCartItem>): Int {
+    private fun getTotalQuantityVariantBasedOnParentID(recomItem: RecommendationItem, miniCart: MutableMap<String, MiniCartItem.MiniCartItemProduct>): Int {
         var variantTotalItems = 0
         miniCart.values.forEach { miniCartItem ->
             if (miniCartItem.productParentId == recomItem.parentID.toString()) {

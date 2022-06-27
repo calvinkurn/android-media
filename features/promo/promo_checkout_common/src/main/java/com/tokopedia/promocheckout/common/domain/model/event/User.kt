@@ -64,5 +64,5 @@ data class User(
         val status: Int = 0,
         @SerializedName("user_id")
         @Expose
-        val userId: Int = 0
+        val userId: String = "0"
 )

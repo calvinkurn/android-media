@@ -12,7 +12,6 @@ import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.mast
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.mycoupon.MyCouponItemViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.mycoupon.MyCouponViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.productcardcarousel.ProductCardCarouselViewModel
-import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.productcarditem.ProductCardItemViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.productcardliststate.EmptyStateViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.productcardrevamp.ProductCardRevampViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.productcardsprintsalecarousel.ProductCardSprintSaleCarouselViewModel
@@ -41,7 +40,6 @@ interface DiscoveryComponent {
     fun inject(categoryNavigationViewModel: CategoryNavigationViewModel)
     fun inject(claimCouponViewModel: ClaimCouponViewModel)
     fun inject(claimCouponItemViewModel: ClaimCouponItemViewModel)
-    fun inject(productCardItemViewModel: ProductCardItemViewModel)
     fun inject(masterProductCardItemViewModel: MasterProductCardItemViewModel)
     fun inject(chipsFilterViewModel: ChipsFilterViewModel)
     fun inject(loadMoreViewModel: LoadMoreViewModel)

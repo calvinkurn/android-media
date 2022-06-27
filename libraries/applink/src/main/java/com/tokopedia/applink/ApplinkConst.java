@@ -55,6 +55,7 @@ public interface ApplinkConst {
     String SHOP_SETTINGS_NOTE = "tokopedia://setting/shop/note";
     String SHOP_SETTINGS_INFO = "tokopedia://setting/shop/info";
     String PRODUCT_INFO = "tokopedia://product/{product_id}";
+    String PRODUCT_EDUCATIONAL = "tokopedia://product-edu/{type}";
     String PRODUCT_IMAGE_REVIEW = "tokopedia://product/{product_id}/imagereview";
     String PRODUCT_REVIEW = "tokopedia://product/{id}/review";
     String ADD_PATH = "add";
@@ -119,6 +120,7 @@ public interface ApplinkConst {
     String RECENT_VIEW = "tokopedia://recentlyviewed";
     String HOST_LOGIN = "login";
     String LOGIN = "tokopedia://login";
+    String ADD_PHONE = "tokopedia://add-phone";
     String OTP = "tokopedia://otp";
     String QR_LOGIN = "tokopedia://login/qr";
     String OTP_PUSH_NOTIF_RECEIVER = "tokopedia://otp-verify";
@@ -241,6 +243,7 @@ public interface ApplinkConst {
     String OVO_FINAL_PAGE = "tokopedia://ovo-final";
 
     String ORDER_TRACKING = "tokopedia://shipping/tracking/{order_id}";
+    String ORDER_POD = "tokopedia://shipping/pod/{order_id}";
 
     String LINK_ACCOUNT = "tokopedia://gojek-account-link";
     String EXPLICIT_PROFILE = "tokopedia://explicit-profile";
@@ -332,6 +335,8 @@ public interface ApplinkConst {
     String AFFILIATE_ONBOARDING = "tokopedia://affiliate/onboarding";
     String AFFILIATE_PRODUCT = "tokopedia://affiliate/product/{product_id}";
     String AFFILIATE = "tokopedia://affiliate";
+    String FEED_CREATION_PRODUCT_SEARCH = "tokopedia://feed/creation-product-search";
+    String FEED_CREATION_SHOP_SEARCH = "tokopedia://feed/creation-shop-search";
 
     String PLAY_DETAIL = "tokopedia://play/{channel_id}";
     String PLAY_BROADCASTER = "tokopedia://play-broadcaster";
@@ -375,7 +380,7 @@ public interface ApplinkConst {
     String SMC_REFERRAL = "tokopedia://smc-referral";
 
     String CATEGORY_BELANJA = "tokopedia://category_belanja/{CATEGORY_NAME}";
-    
+
     String POWER_MERCHANT_SUBSCRIBE = "tokopedia://power_merchant/subscribe";
     String PM_BENEFIT_PACKAGE = "tokopedia://power_merchant/benefit_package";
     String POWER_MERCHANT_PRO_INTERRUPT = "tokopedia://power_merchant/interrupt";
@@ -525,6 +530,7 @@ public interface ApplinkConst {
         String TOPADS_CREATE_MANUAL_ADS = "tokopedia://topads/create-manual-ads";
         String REVIEW_REMINDER = "sellerapp://review-reminder";
         String SHOP_SCORE_DETAIL = "sellerapp://shop-score-detail";
+        String SHOP_DISCOUNT = "sellerapp://shop-discount";
     }
 
     interface TokopediaNow {

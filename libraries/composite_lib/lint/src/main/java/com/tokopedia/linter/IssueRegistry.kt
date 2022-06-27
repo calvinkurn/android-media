@@ -11,6 +11,7 @@ import com.tokopedia.linter.detectors.VectorDrawableDetector
 import com.tokopedia.linter.detectors.DeprecatedResourceDetector
 import com.tokopedia.linter.detectors.SerializedNameAnnotationDetector
 import com.tokopedia.linter.detectors.AndroidExportedDetector
+import com.tokopedia.linter.detectors.ResourceFragmentDetector
 import com.tokopedia.linter.detectors.GradientVectorDetector
 import com.tokopedia.linter.detectors.UnifyBackgroundDetector
 import com.tokopedia.linter.detectors.gradle.BannedDependencyDetector.DEPENDENCY_BANNED
@@ -45,6 +46,7 @@ class IssueRegistry : IssueRegistry() {
                 UnifyBackgroundDetector.ISSUE,
                 DeprecatedMethodDetector.ISSUE,
                 GradientVectorDetector.ISSUE,
+                ResourceFragmentDetector.ISSUE,
                 HANSEL_REQUIRED
         )
 
