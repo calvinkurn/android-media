@@ -330,5 +330,15 @@
             <include layout="@layout/up_layout_error_empty_user_post" />
 
         </ViewFlipper>
+
+        <com.tokopedia.feedcomponent.view.custom.FeedFloatingButton
+            android:id="@+id/up_feed_floating_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|end"
+            android:layout_margin="@dimen/unify_space_16"
+            />
+
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
+
 </com.tokopedia.abstraction.base.view.widget.SwipeToRefresh>
