@@ -14,7 +14,6 @@ import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;
@@ -29,7 +28,6 @@ import android.view.ViewTreeObserver;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -62,7 +60,6 @@ import com.tokopedia.track.TrackApp;
 import com.tokopedia.track.TrackAppUtils;
 import com.tokopedia.unifycomponents.ImageUnify;
 import com.tokopedia.user.session.UserSession;
-import com.tokopedia.user.session.UserSessionInterface;
 
 import javax.inject.Inject;
 import dagger.Lazy;
@@ -508,6 +505,10 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment implements Flo
             @Override
             public void onClick(View v) {
 
+                if(!tokenData.getPermanent()) {
+                    floatingEggPresenter.get().clickCloseButton(tokenData.getId());
+                }
+
                 ApplinkUtil.navigateToAssociatedPage(getActivity(), appLink, pageUrl, null);
                 floatingEggTracker.trackingEggClick(tokenData.getId(), tokenData.getName());
             }
@@ -544,7 +545,7 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment implements Flo
             if (counterBackground instanceof GradientDrawable) {
                 GradientDrawable drawable = ((GradientDrawable) counterBackground);
                 if (HexValidator.validate(tokenData.getTimerFontColor())) {
-                    drawable.setStroke(getContext().getResources().getDimensionPixelOffset(com.tokopedia.promogamification.common.R.dimen.dp_2), Color.parseColor(tokenData.getTimerFontColor()));
+                    drawable.setStroke(getContext().getResources().getDimensionPixelOffset(com.tokopedia.promogamification.common.R.dimen.gami_core_floating_egg_dp_2), Color.parseColor(tokenData.getTimerFontColor()));
                 }
                 if (HexValidator.validate(tokenData.getTimerBGColor())) {
                     drawable.setColor(Color.parseColor(tokenData.getTimerBGColor()));
@@ -602,11 +603,14 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment implements Flo
 
         if(!isPermanent){
             ivClose.setVisibility(View.VISIBLE);
-            ivClose.setImageDrawable(IconUnifyHelperKt.getIconUnifyDrawable(getContext(), IconUnify.CLEAR, null));
+            minimizeButtonLeft.setVisibility(View.GONE);
+            ivClose.setImageDrawable(IconUnifyHelperKt.getIconUnifyDrawable(getContext(), IconUnify.CLEAR_SMALL, com.tokopedia.unifyprinciples.R.color.Unify_NN500));
         }
         else{
+            minimizeButtonLeft.setVisibility(View.VISIBLE);
             ivClose.setVisibility(View.GONE);
         }
+
     }
 
     @Override
