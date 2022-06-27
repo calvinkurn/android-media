@@ -13,7 +13,9 @@ fun MacrobenchmarkRule.measureStartup(
     waitUntil: () -> Unit
 ) = measureRepeated(
     packageName = MacroIntent.TKPD_PACKAGE_NAME,
-    metrics = listOf(StartupTimingMetric()),
+    metrics = listOf(
+        StartupTimingMetric()
+    ).plus(MacroMetrics.getPltMetrics()),
     compilationMode = CompilationMode.None(),
     iterations = iterations,
     startupMode = startupMode,
