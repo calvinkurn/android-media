@@ -44,7 +44,7 @@
         app:layout_constraintBottom_toBottomOf="@id/ivFeatureAccessIcon"
         app:layout_constraintStart_toEndOf="@id/ivFeatureAccessIcon"
         app:layout_constraintTop_toTopOf="@id/ivFeatureAccessIcon"
-        app:typographyType="body_2"
+        app:typographyType="display_2"
         tools:text="Balas Pesan pembeli" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

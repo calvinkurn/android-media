@@ -88,7 +88,9 @@ dependencies {
     implementation rootProject.ext.playServicesDependencies.core
 
     compileOnly rootProject.ext.miscDependencies.javaxAnnotation
+    compileOnly rootProject.ext.tkpdInternalLibDependencies.gqlquery_annotation
     kapt rootProject.ext.miscDependencies.daggerCompiler
+    kapt rootProject.ext.tkpdInternalLibDependencies.gqlquery_annotation_processor
 
     androidTestImplementation rootProject.ext.miscDependencies.coroutineTest
 

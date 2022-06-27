@@ -15,7 +15,7 @@ fun Typography.setTextMakeHyperlink(text: String, onClick: () -> Unit) {
     this.movementMethod = LinkMovementMethod.getInstance()
     this.highlightColor = Color.TRANSPARENT
     this.text = htmlString.spannedString
-    htmlString.urlList.getOrNull(0)?.setOnClickListener {
+    htmlString.urlList.firstOrNull()?.setOnClickListener {
         onClick()
     }
 }

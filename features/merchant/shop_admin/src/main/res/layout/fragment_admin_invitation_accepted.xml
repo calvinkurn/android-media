@@ -34,7 +34,8 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/imgHeaderInvitationAccepted"
-            app:typographyType="heading_4"
+            app:typographyType="display_1"
+            app:typographyWeight="bold"
             tools:text="@string/title_admin_success_invitation_accepted" />
 
         <com.tokopedia.unifyprinciples.Typography
@@ -50,7 +51,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tvAdminSuccessInvitation"
-            app:typographyType="body_2" />
+            app:typographyType="display_2" />
 
         <com.tokopedia.unifycomponents.CardUnify
             android:id="@+id/cardFeatureAccess"
@@ -105,7 +106,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="12dp"
-            app:typographyType="body_3"
+            app:typographyType="display_3"
             android:textColor="@color/Unify_N700_96"
             app:layout_constraintBottom_toBottomOf="@id/cbTnc"
             app:layout_constraintStart_toEndOf="@id/cbTnc"

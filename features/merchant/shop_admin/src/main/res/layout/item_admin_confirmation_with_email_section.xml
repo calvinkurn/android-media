@@ -19,7 +19,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        app:typographyType="body_2"
+        app:typographyType="display_2"
         android:textColor="@color/Unify_NN600"
         android:text="@string/label_admin_confirmation_invitation_with_email"
         app:layout_constraintBottom_toBottomOf="parent"
