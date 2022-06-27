@@ -12,4 +12,4 @@
     android:textColor="@color/Unify_NN950"
     app:typographyWeight="bold"
     app:layout_constraintTop_toTopOf="parent"
-    app:typographyType="body_2" />
+    app:typographyType="display_2" />

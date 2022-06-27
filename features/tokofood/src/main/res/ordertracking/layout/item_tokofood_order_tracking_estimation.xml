@@ -31,7 +31,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/icOrderTrackingEstimation"
         app:layout_constraintTop_toTopOf="parent"
-        app:typographyType="body_3"
+        app:typographyType="display_3"
         tools:text="@string/order_tracking_estimation_time" />
 
     <com.tokopedia.unifycomponents.DividerUnify

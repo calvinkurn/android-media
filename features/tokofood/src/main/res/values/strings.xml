@@ -113,7 +113,7 @@
     <string name="order_tracking_order_number_label">Order Number</string>
     <string name="order_tracking_estimation_time"><![CDATA[%1s <b><font color=#212121>%2$s</font></b>]]></string>
     <string name="order_tracking_detail_order_header_label">Detail Pesanan</string>
-    <string name="order_tracking_shipping_restaurant_label">Dari Restoran</string>
+    <string name="order_tracking_shipping_restaurant_label">Dari Resto</string>
     <string name="order_detail_shipping_header_label">Detail Pengiriman</string>
     <string name="order_detail_shipping_destination_label">Dikirim ke</string>
     <string name="order_detail_payment_header_label">Rincian Pembayaran</string>
