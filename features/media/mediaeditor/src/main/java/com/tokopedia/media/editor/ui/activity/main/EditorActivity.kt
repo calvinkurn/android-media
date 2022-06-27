@@ -12,17 +12,13 @@ import javax.inject.Inject
 
 class EditorActivity : BaseEditorActivity() {
 
-    @Inject
-    lateinit var fragmentFactory: FragmentFactory
-
+    @Inject lateinit var fragmentFactory: FragmentFactory
     lateinit var viewModel: EditorViewModel
 
     private var param = EditorParam()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         initInjector()
-        initViewModel()
-        initBundle(savedInstanceState)
         supportFragmentManager.fragmentFactory = fragmentFactory
         super.onCreate(savedInstanceState)
     }
@@ -36,13 +32,13 @@ class EditorActivity : BaseEditorActivity() {
         return fragmentProvider().editorFragment()
     }
 
-    private fun initViewModel() {
+    override fun initViewModel() {
         viewModel = ViewModelProvider(
             this
         ).get(EditorViewModel::class.java)
     }
 
-    private fun initBundle(savedInstanceState: Bundle?) {
+    override fun initBundle(savedInstanceState: Bundle?) {
         val data = savedInstanceState
             ?.getParcelable(CACHE_PARAM_INTENT_DATA)
             ?: intent?.getParcelableExtra<EditorParam>(EXTRA_EDITOR_PARAM)?.also {
@@ -54,7 +50,7 @@ class EditorActivity : BaseEditorActivity() {
         }
     }
 
-    private fun initInjector() {
+    override fun initInjector() {
         EditorInjector
             .get(applicationContext)
             .inject(this)
