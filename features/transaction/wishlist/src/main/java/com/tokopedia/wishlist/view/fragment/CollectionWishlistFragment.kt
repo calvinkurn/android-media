@@ -74,7 +74,6 @@ class CollectionWishlistFragment : BaseDaggerFragment(), CollectionWishlistAdapt
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         checkLogin()
-        showExampleBottomSheet()
     }
 
     private fun checkLogin() {
@@ -86,12 +85,6 @@ class CollectionWishlistFragment : BaseDaggerFragment(), CollectionWishlistAdapt
                 WishlistV2Fragment.REQUEST_CODE_LOGIN
             )
         }
-    }
-
-    private fun showExampleBottomSheet() {
-        val bottomSheetAddToCollectionSample = BottomSheetAddCollectionWishlist.newInstance()
-        if (bottomSheetAddToCollectionSample.isAdded || childFragmentManager.isStateSaved) return
-        bottomSheetAddToCollectionSample.show(childFragmentManager)
     }
 
     override fun onCreateView(

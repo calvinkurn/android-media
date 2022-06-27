@@ -6,6 +6,9 @@ object WishlistV2CommonConsts {
     const val TOASTER_RED = "red"
     const val OPEN_WISHLIST = "OPEN_WISHLIST"
     const val OK = "OK"
+    const val PRODUCT_IDs = "product_ids"
+    const val SOURCE = "source"
+    const val PARAMS = "params"
 
     const val TYPE_COLLECTION_MAIN_SECTION = "main_section"
     const val TYPE_COLLECTION_ADDITIONAL_SECTION = "additional_section"

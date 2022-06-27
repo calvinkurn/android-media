@@ -6,6 +6,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -23,11 +24,13 @@ import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import com.tokopedia.wishlist_common.R
 import com.tokopedia.wishlist_common.databinding.BottomsheetAddWishlistCollectionBinding
-import com.tokopedia.wishlistcommon.data.AddToWishlistCollectionTypeLayoutData
+import com.tokopedia.wishlistcommon.data.BottomSheetWishlistCollectionTypeLayoutData
 import com.tokopedia.wishlistcommon.data.response.GetWishlistCollectionsBottomSheetResponse
-import com.tokopedia.wishlistcommon.di.AddToWishlistCollectionComponent
-import com.tokopedia.wishlistcommon.di.DaggerAddToWishlistCollectionComponent
+import com.tokopedia.wishlistcommon.di.BottomSheetWishlistCollectionComponent
+import com.tokopedia.wishlistcommon.di.DaggerBottomSheetWishlistCollectionComponent
 import com.tokopedia.wishlistcommon.util.WishlistV2CommonConsts.OK
+import com.tokopedia.wishlistcommon.util.WishlistV2CommonConsts.PRODUCT_IDs
+import com.tokopedia.wishlistcommon.util.WishlistV2CommonConsts.SOURCE
 import com.tokopedia.wishlistcommon.util.WishlistV2CommonConsts.TYPE_COLLECTION_ADDITIONAL_SECTION
 import com.tokopedia.wishlistcommon.util.WishlistV2CommonConsts.TYPE_COLLECTION_ITEM
 import com.tokopedia.wishlistcommon.util.WishlistV2CommonConsts.TYPE_COLLECTION_MAIN_SECTION
@@ -37,14 +40,14 @@ import com.tokopedia.wishlistcommon.view.viewmodel.BottomSheetAddCollectionViewM
 import java.util.ArrayList
 import javax.inject.Inject
 
-class BottomSheetAddCollectionWishlist: BottomSheetUnify(), HasComponent<AddToWishlistCollectionComponent>,
-    BottomSheetCollectionWishlistAdapter.ActionListener {
+class BottomSheetAddCollectionWishlist: BottomSheetUnify(), HasComponent<BottomSheetWishlistCollectionComponent> {
     private var binding by autoClearedNullable<BottomsheetAddWishlistCollectionBinding>()
     private val userSession: UserSessionInterface by lazy { UserSession(activity) }
-    private lateinit var addToWishlistCollectionAdapter: BottomSheetCollectionWishlistAdapter
+    private val collectionAdapter = BottomSheetCollectionWishlistAdapter()
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
+
     private val getCollectionsViewModel by lazy {
         ViewModelProvider(this, viewModelFactory)[BottomSheetAddCollectionViewModel::class.java]
     }
@@ -55,13 +58,38 @@ class BottomSheetAddCollectionWishlist: BottomSheetUnify(), HasComponent<AddToWi
         const val OPEN_WISHLIST_COLLECTION = "OPEN_WISHLIST_COLLECTION"
 
         @JvmStatic
-        fun newInstance(): BottomSheetAddCollectionWishlist { return BottomSheetAddCollectionWishlist() }
+        fun newInstance(productId: String, source: String): BottomSheetAddCollectionWishlist {
+            return BottomSheetAddCollectionWishlist().apply {
+                val bundle = Bundle()
+                bundle.putString(PRODUCT_IDs, productId)
+                bundle.putString(SOURCE, source)
+                arguments = bundle
+            }
+        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         initInjector()
         checkLogin()
+    }
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        initLayout()
+        return super.onCreateView(inflater, container, savedInstanceState)
+    }
+
+    private fun initLayout() {
+        binding = BottomsheetAddWishlistCollectionBinding.inflate(LayoutInflater.from(context), null, false)
+        binding?.rvAddWishlistCollection?.adapter = collectionAdapter
+        binding?.rvAddWishlistCollection?.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+        showCloseIcon = false
+        showHeader = true
+        setChild(binding?.root)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -85,41 +113,23 @@ class BottomSheetAddCollectionWishlist: BottomSheetUnify(), HasComponent<AddToWi
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        prepareLayout()
-        observingData()
-    }
-
-    private fun prepareLayout() {
-        addToWishlistCollectionAdapter = BottomSheetCollectionWishlistAdapter().apply {
-            setActionListener(this@BottomSheetAddCollectionWishlist)
-        }
-
-        binding = BottomsheetAddWishlistCollectionBinding.inflate(LayoutInflater.from(context), null, false)
-        binding?.run {
-            rvAddWishlistCollection.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
-            rvAddWishlistCollection.adapter = addToWishlistCollectionAdapter
-        }
-        showCloseIcon = false
-        showHeader = true
-        setChild(binding?.root)
+        initObserver()
     }
 
     private fun loadData() {
-        getCollectionsViewModel.getWishlistCollections()
+        val productId = arguments?.get(PRODUCT_IDs).toString()
+        val source = arguments?.get(SOURCE).toString()
+        getCollectionsViewModel.getWishlistCollections(productId, source)
     }
 
-    private fun observingData() {
-        observingGetCollections()
-    }
-
-    private fun observingGetCollections() {
+    private fun initObserver() {
         getCollectionsViewModel.collectionsBottomSheet.observe(viewLifecycleOwner) { result ->
             when (result) {
                 is Success -> {
                     if (result.data.status == OK) {
                         val dataGetBottomSheetCollections = result.data.data
                         updateBottomSheet(dataGetBottomSheetCollections)
-                        addToWishlistCollectionAdapter.addList(mapDataCollectionsBottomSheet(dataGetBottomSheetCollections))
+                        collectionAdapter.addList(mapDataCollectionsBottomSheet(dataGetBottomSheetCollections))
                     } else {
                         val errorMessage = result.data.errorMessage.first().ifEmpty { context?.getString(
                             R.string.wishlist_common_error_msg) }
@@ -143,26 +153,26 @@ class BottomSheetAddCollectionWishlist: BottomSheetUnify(), HasComponent<AddToWi
         }
     }
 
-    private fun mapDataCollectionsBottomSheet(data: GetWishlistCollectionsBottomSheetResponse.Data.GetWishlistCollectionsBottomsheet.Data): ArrayList<AddToWishlistCollectionTypeLayoutData> {
-        val listData = arrayListOf<AddToWishlistCollectionTypeLayoutData>()
-        listData.add(AddToWishlistCollectionTypeLayoutData(data.mainSection.text, TYPE_COLLECTION_MAIN_SECTION))
+    private fun mapDataCollectionsBottomSheet(data: GetWishlistCollectionsBottomSheetResponse.Data.GetWishlistCollectionsBottomsheet.Data): ArrayList<BottomSheetWishlistCollectionTypeLayoutData> {
+        val listData = arrayListOf<BottomSheetWishlistCollectionTypeLayoutData>()
+        listData.add(BottomSheetWishlistCollectionTypeLayoutData(data.mainSection.text, TYPE_COLLECTION_MAIN_SECTION))
 
         data.mainSection.collections.forEach { mainSectionItem ->
-            listData.add(AddToWishlistCollectionTypeLayoutData(mainSectionItem, TYPE_COLLECTION_ITEM))
+            listData.add(BottomSheetWishlistCollectionTypeLayoutData(mainSectionItem, TYPE_COLLECTION_ITEM))
         }
 
         if (data.additionalSection.text.isNotEmpty()) {
-            listData.add(AddToWishlistCollectionTypeLayoutData(data.additionalSection.text, TYPE_COLLECTION_ADDITIONAL_SECTION))
+            listData.add(BottomSheetWishlistCollectionTypeLayoutData(data.additionalSection.text, TYPE_COLLECTION_ADDITIONAL_SECTION))
         }
 
         if (data.additionalSection.collections.isNotEmpty()) {
             data.additionalSection.collections.forEach { additionalItem ->
-                listData.add(AddToWishlistCollectionTypeLayoutData(additionalItem, TYPE_COLLECTION_ITEM))
+                listData.add(BottomSheetWishlistCollectionTypeLayoutData(additionalItem, TYPE_COLLECTION_ITEM))
             }
         }
 
         if (data.placeholder.text.isNotEmpty()) {
-            listData.add(AddToWishlistCollectionTypeLayoutData(data.placeholder, TYPE_CREATE_NEW_COLLECTION))
+            listData.add(BottomSheetWishlistCollectionTypeLayoutData(data.placeholder, TYPE_CREATE_NEW_COLLECTION))
         }
         return listData
     }
@@ -186,17 +196,17 @@ class BottomSheetAddCollectionWishlist: BottomSheetUnify(), HasComponent<AddToWi
         RouteManager.route(context, ApplinkConst.NEW_WISHLIST)
     }
 
-    override fun getComponent(): AddToWishlistCollectionComponent {
-        return DaggerAddToWishlistCollectionComponent.builder()
+    override fun getComponent(): BottomSheetWishlistCollectionComponent {
+        return DaggerBottomSheetWishlistCollectionComponent.builder()
             .baseAppComponent((activity?.applicationContext as BaseMainApplication).baseAppComponent)
             .build()
     }
 
-    override fun onCollectionItemClicked() {
+    /*override fun onCollectionItemClicked() {
         println("++ collection item is selected")
     }
 
     override fun onCreateNewCollectionClicked() {
         println("++ show bottomsheet create new collection")
-    }
+    }*/
 }

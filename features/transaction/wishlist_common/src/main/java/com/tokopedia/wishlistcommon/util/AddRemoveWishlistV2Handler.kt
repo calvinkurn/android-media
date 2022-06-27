@@ -11,8 +11,6 @@ import com.tokopedia.wishlist_common.R
 import com.tokopedia.wishlistcommon.data.response.AddToWishlistV2Response
 import com.tokopedia.wishlistcommon.data.response.DeleteWishlistV2Response
 import com.tokopedia.wishlistcommon.util.WishlistV2CommonConsts.OPEN_WISHLIST
-import com.tokopedia.wishlistcommon.view.adapter.BottomSheetCollectionWishlistAdapter
-import com.tokopedia.wishlistcommon.view.bottomsheet.BottomSheetAddCollectionWishlist
 
 object AddRemoveWishlistV2Handler {
     fun showAddToWishlistV2SuccessToaster(result: AddToWishlistV2Response.Data.WishlistAddV2,
@@ -102,15 +100,5 @@ object AddRemoveWishlistV2Handler {
 
     private fun goToWishlistPage(context: Context) {
         RouteManager.route(context, ApplinkConst.NEW_WISHLIST)
-    }
-
-    fun isUsingWishlistV2(context: Context): Boolean {
-        return WishlistV2RemoteConfigRollenceUtil.isUsingAddRemoveWishlistV2(context)
-    }
-
-    private fun showBottomSheetCollection(fragmentManager: FragmentManager) {
-        val bottomSheetCollection = BottomSheetAddCollectionWishlist.newInstance()
-        if (bottomSheetCollection.isAdded || fragmentManager.isStateSaved) return
-        bottomSheetCollection.show(fragmentManager)
     }
 }

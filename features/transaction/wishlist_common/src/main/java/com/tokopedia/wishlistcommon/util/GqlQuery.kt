@@ -229,7 +229,7 @@ package com.tokopedia.wishlistcommon.util
             """
 
     const val GQL_GET_WISHLIST_COLLECTIONS_BOTTOMSHEET = """
-             query GetWishlistCollectionsBottomsheet(${'$'}params:GetWishlistCollectionsBottomSheetParams){
+             query GetWishlistCollectionsBottomsheet(${'$'}params:GetWishlistCollectionBottomsheetParams){
               get_wishlist_collections_bottomsheet(params:${'$'}params){
                 status
                 error_message

@@ -22,7 +22,8 @@ class BottomSheetAddCollectionViewModel @Inject constructor(
     val collectionsBottomSheet: LiveData<Result<GetWishlistCollectionsBottomSheetResponse.Data.GetWishlistCollectionsBottomsheet>>
         get() = _collectionsBottomSheet
 
-    fun getWishlistCollections() {
+    fun getWishlistCollections(productId: String, source: String) {
+        getWishlistCollectionsBottomSheetUseCase.setParams(productId, source)
         launch(dispatcher.main) {
             val result =
                 withContext(dispatcher.io) { getWishlistCollectionsBottomSheetUseCase.executeOnBackground() }

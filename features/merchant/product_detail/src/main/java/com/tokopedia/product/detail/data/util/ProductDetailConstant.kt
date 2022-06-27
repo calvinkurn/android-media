@@ -175,4 +175,5 @@ object ProductDetailConstant {
     const val WISHLIST_STATUS_KEY = "wishlist_status"
     const val ADD_WISHLIST = "true"
     const val REMOVE_WISHLIST = "false"
+    const val PDP_SOURCE_WISHLIST = "pdp"
 }

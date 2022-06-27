@@ -150,6 +150,7 @@ import com.tokopedia.product.detail.data.util.ProductDetailConstant
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.ADD_WISHLIST
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.CLICK_TYPE_WISHLIST
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.PARAM_DIRECTED_FROM_MANAGE_OR_PDP
+import com.tokopedia.product.detail.data.util.ProductDetailConstant.PDP_SOURCE_WISHLIST
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.REMOTE_CONFIG_DEFAULT_ENABLE_PDP_CUSTOM_SHARING
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.REMOTE_CONFIG_KEY_ENABLE_PDP_CUSTOM_SHARING
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.REMOVE_WISHLIST
@@ -240,6 +241,7 @@ import com.tokopedia.wishlistcommon.data.response.AddToWishlistV2Response
 import com.tokopedia.wishlistcommon.data.response.DeleteWishlistV2Response
 import com.tokopedia.wishlistcommon.listener.WishlistV2ActionListener
 import com.tokopedia.wishlistcommon.util.AddRemoveWishlistV2Handler
+import com.tokopedia.wishlistcommon.util.WishlistHandler
 import com.tokopedia.wishlistcommon.util.WishlistV2RemoteConfigRollenceUtil
 import rx.subscriptions.CompositeSubscription
 import timber.log.Timber
@@ -4610,13 +4612,21 @@ open class DynamicProductDetailFragment :
                 result: AddToWishlistV2Response.Data.WishlistAddV2,
                 productId: String
             ) {
-                view?.let { v ->
-                    context?.let {
-                        AddRemoveWishlistV2Handler.showAddToWishlistV2SuccessToaster(
-                            result,
-                            it,
-                            v
+                context?.let { context ->
+                    if (WishlistV2RemoteConfigRollenceUtil.isUsingWishlistCollection(context)) {
+                        WishlistHandler.showBottomSheetCollection(
+                            childFragmentManager,
+                            productId,
+                            PDP_SOURCE_WISHLIST
                         )
+                    } else {
+                        view?.let { v ->
+                            AddRemoveWishlistV2Handler.showAddToWishlistV2SuccessToaster(
+                                result,
+                                context,
+                                v
+                            )
+                        }
                     }
                 }
                 if (result.success) {
