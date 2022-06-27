@@ -10,7 +10,8 @@ fun MacrobenchmarkRule.measureStartup(
     startupMode: StartupMode,
     iterations: Int = 3,
     intent: () -> Intent,
-    waitUntil: () -> Unit
+    waitUntil: () -> Unit,
+    setupEnvironment: () -> Unit
 ) = measureRepeated(
     packageName = MacroIntent.TKPD_PACKAGE_NAME,
     metrics = listOf(
@@ -21,6 +22,7 @@ fun MacrobenchmarkRule.measureStartup(
     startupMode = startupMode,
     setupBlock = {
         pressHome()
+        setupEnvironment.invoke()
     },
     measureBlock = {
         Thread.sleep(2000)

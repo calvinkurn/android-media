@@ -25,8 +25,7 @@ class AppStartupBenchmark(startupMode: StartupMode): BaseStartupBenchmark(startu
     /**
      * To disable introduction page
      */
-    @Before
-    fun setupEnvironment() {
+    override fun setupEnvironment() {
         MacroDevOps.setupEnvironment(MacroIntent.App.getAppMacroSetupIntent())
     }
     override fun getIntent() = MacroIntent.App.getAppLauncherIntent()

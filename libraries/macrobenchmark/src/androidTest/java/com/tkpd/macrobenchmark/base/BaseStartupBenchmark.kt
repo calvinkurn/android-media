@@ -36,12 +36,18 @@ abstract class BaseStartupBenchmark(private val startupMode: StartupMode) {
                 startupMode = startupMode,
                 iterations = MacroArgs.getIterations(InstrumentationRegistry.getArguments()),
                 intent = { getIntent() },
-                waitUntil = { waitUntil() })
+                waitUntil = { waitUntil() },
+                setupEnvironment = { setupEnvironment() }
+        )
     }
 
     abstract fun getIntent(): Intent
 
     abstract fun waitUntil()
+
+    open fun setupEnvironment() {
+        // default no-op
+    }
 
     companion object {
         @Parameterized.Parameters(name = "mode={0}")

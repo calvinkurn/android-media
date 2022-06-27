@@ -20,8 +20,7 @@ import org.junit.runner.RunWith
 @SdkSuppress(minSdkVersion = 29)
 @RunWith(AndroidJUnit4::class)
 class HomeFrameTimingBenchmark: BaseFrameTimingBenchmark() {
-    @Before
-    fun setupEnvironment() {
+    override fun setupEnvironment() {
         MacroDevOps.setupEnvironment(MacroIntent.Home.getHomeMacroSetupIntent())
     }
 

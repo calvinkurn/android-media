@@ -22,8 +22,7 @@ import org.junit.runners.Parameterized
 @SdkSuppress(minSdkVersion = 29)
 @RunWith(Parameterized::class)
 class HomeStartupBenchmark(startupMode: StartupMode): BaseStartupBenchmark(startupMode) {
-    @Before
-    fun setupEnvironment() {
+    override fun setupEnvironment() {
         MacroDevOps.setupEnvironment(MacroIntent.Home.getHomeMacroSetupIntent())
     }
     override fun getIntent() = MacroIntent.Home.getHomeIntent()

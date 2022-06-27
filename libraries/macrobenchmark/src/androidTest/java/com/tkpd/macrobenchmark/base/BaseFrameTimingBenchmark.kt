@@ -43,14 +43,20 @@ abstract class BaseFrameTimingBenchmark {
             compilationMode = MacroArgs.getCompilationMode(InstrumentationRegistry.getArguments()),
             iterations = MacroArgs.getIterations(InstrumentationRegistry.getArguments()),
             setupBlock = {
-                val intent = getIntent()
-                startActivityAndWait(intent)
+                pressHome()
+                setupEnvironment()
             }
         ) {
+            val intent = getIntent()
+            startActivityAndWait(intent)
+
             pageInteractionTest(currentIteration)
             currentIteration++
         }
     }
     abstract fun pageInteractionTest(currentIteration: Int)
     abstract fun getIntent(): Intent
+    open fun setupEnvironment() {
+        // default no-op
+    }
 }
