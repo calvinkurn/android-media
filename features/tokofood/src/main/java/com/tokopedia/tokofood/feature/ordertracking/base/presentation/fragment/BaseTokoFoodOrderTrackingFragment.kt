@@ -4,11 +4,11 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
@@ -18,12 +18,13 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.kotlin.extensions.view.removeObservers
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.loaderdialog.LoaderDialog
 import com.tokopedia.tokofood.common.util.TokofoodErrorLogger
 import com.tokopedia.tokofood.common.util.TokofoodExt.showErrorToaster
 import com.tokopedia.tokofood.common.util.TokofoodRouteManager
 import com.tokopedia.tokofood.databinding.FragmentTokofoodOrderTrackingBinding
 import com.tokopedia.tokofood.feature.ordertracking.analytics.TokoFoodPostPurchaseAnalytics
-import com.tokopedia.tokofood.feature.ordertracking.di.component.TokoFoodOrderTrackingComponent
+import com.tokopedia.tokofood.feature.ordertracking.di.component.DaggerTokoFoodOrderTrackingComponent
 import com.tokopedia.tokofood.feature.ordertracking.domain.constants.OrderStatusType
 import com.tokopedia.tokofood.feature.ordertracking.presentation.adapter.OrderTrackingAdapter
 import com.tokopedia.tokofood.feature.ordertracking.presentation.adapter.OrderTrackingAdapterTypeFactoryImpl
@@ -91,10 +92,18 @@ class BaseTokoFoodOrderTrackingFragment :
 
     private var delayAutoRefreshFinishOrderTempJob: Job? = null
 
+    private var loaderDialog: LoaderDialog? = null
+
     override fun getScreenName(): String = ""
 
     override fun initInjector() {
-        getComponent(TokoFoodOrderTrackingComponent::class.java).inject(this)
+        activity?.let {
+            DaggerTokoFoodOrderTrackingComponent
+                .builder()
+                .baseAppComponent((it.applicationContext as BaseMainApplication).baseAppComponent)
+                .build()
+                .inject(this)
+        }
     }
 
     override fun onResume() {
@@ -127,6 +136,7 @@ class BaseTokoFoodOrderTrackingFragment :
         orderLiveTrackingFragment?.let {
             lifecycle.removeObserver(it)
         }
+        hideLoaderDriverCall()
         delayAutoRefreshFinishOrderTempJob?.cancel()
         super.onDestroy()
     }
@@ -184,23 +194,18 @@ class BaseTokoFoodOrderTrackingFragment :
     override val parentPool: RecyclerView.RecycledViewPool
         get() = binding?.rvOrderTracking?.recycledViewPool ?: RecyclerView.RecycledViewPool()
 
-
     private fun showLoaderDriverCall() {
-        activity?.let {
-            it.window?.decorView?.setBackgroundColor(
-                ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N700_68)
-            )
+        context?.let {
+            loaderDialog = LoaderDialog(it).apply {
+                dialog.setCancelable(false)
+                dialog.setCanceledOnTouchOutside(false)
+            }
+            loaderDialog?.show()
         }
-        binding?.loaderDriverCall?.show()
     }
 
     private fun hideLoaderDriverCall() {
-        activity?.let {
-            it.window?.decorView?.setBackgroundColor(
-                ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_Background)
-            )
-        }
-        binding?.loaderDriverCall?.hide()
+        if (loaderDialog?.dialog?.isShowing == true) loaderDialog?.dialog?.dismiss()
     }
 
     private fun setupToolbar() {

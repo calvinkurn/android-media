@@ -1,6 +1,7 @@
 package com.tokopedia.tokofood.postpurchase
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import androidx.lifecycle.SavedStateHandle
 import com.tokopedia.tokofood.feature.ordertracking.domain.mapper.TokoFoodOrderDetailMapper
 import com.tokopedia.tokofood.feature.ordertracking.domain.mapper.TokoFoodOrderStatusMapper
 import com.tokopedia.tokofood.feature.ordertracking.domain.usecase.GetDriverPhoneNumberUseCase
@@ -27,6 +28,8 @@ abstract class TokoFoodOrderTrackingViewModelTestFixture {
     @get:Rule
     val instantTaskExecutorRule = InstantTaskExecutorRule()
 
+    protected val savedStateHandle: SavedStateHandle = SavedStateHandle()
+
     @RelaxedMockK
     protected lateinit var getTokoFoodOrderDetailUseCase: Lazy<GetTokoFoodOrderDetailUseCase>
 
@@ -52,6 +55,7 @@ abstract class TokoFoodOrderTrackingViewModelTestFixture {
         tokoFoodOrderStatusMapper = TokoFoodOrderStatusMapper()
         viewModel = TokoFoodOrderTrackingViewModel(
             userSession,
+            savedStateHandle,
             CoroutineTestDispatchersProvider,
             getTokoFoodOrderDetailUseCase,
             getTokoFoodOrderStatusUseCase,
@@ -67,12 +71,8 @@ abstract class TokoFoodOrderTrackingViewModelTestFixture {
     companion object {
         const val ORDER_ID_DUMMY = "52af8a53-86cc-40b7-bb98-cc3adde8e32a"
 
-        const val ORDER_TRACKING_CREATED = "json/order_tracking_created.json"
-        const val ORDER_TRACKING_MERCHANT_ACCEPTED = "json/order_tracking_merchant_accepted.json"
-        const val ORDER_TRACKING_SEARCHING_DRIVER = "json/order_tracking_searching_driver.json"
-        const val ORDER_TRACKING_PICKUP_REQUESTED = "json/order_tracking_pickup_requested.json"
-        const val ORDER_TRACKING_OTW_DESTINATION = "json/order_tracking_otw_destination.json"
-        const val ORDER_TRACKING_CANCELLED = "json/orderdetailcancelled.json"
-        const val ORDER_TRACKING_SUCCESS = "json/orderdetailsuccess.json"
+        const val ORDER_TRACKING_OTW_DESTINATION = "json/ordertracking/order_tracking_otw_destination.json"
+        const val ORDER_TRACKING_CANCELLED = "json/ordertracking/orderdetailcancelled.json"
+        const val ORDER_TRACKING_SUCCESS = "json/ordertracking/orderdetailsuccess.json"
     }
 }

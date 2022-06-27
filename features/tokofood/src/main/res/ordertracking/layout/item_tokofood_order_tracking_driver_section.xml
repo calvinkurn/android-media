@@ -59,8 +59,15 @@
         app:layout_constraintEnd_toStartOf="@id/icDriverCall"
         app:layout_constraintStart_toStartOf="@id/tvOrderTrackingDriverName"
         app:layout_constraintTop_toBottomOf="@id/tvOrderTrackingDriverPlatNumber"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/thinDividerFull"
         tools:itemCount="3"
         tools:listitem="@layout/item_tokofood_order_tracking_driver_information"/>
+
+    <com.tokopedia.unifycomponents.DividerUnify
+        android:id="@+id/thinDividerFull"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginTop="20dp"
+        app:layout_constraintTop_toBottomOf="@id/rvDriverInformation"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
