@@ -11,7 +11,6 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
-import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.orZero
@@ -32,14 +31,12 @@ import com.tokopedia.shop.flashsale.presentation.list.list.listener.RecyclerView
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.lifecycle.autoClearedNullable
-import kotlinx.coroutines.CoroutineScope
 import javax.inject.Inject
-import kotlin.coroutines.CoroutineContext
 
-class ManageHighlightedProductFragment : BaseDaggerFragment(), CoroutineScope {
+class ManageHighlightedProductFragment : BaseDaggerFragment() {
 
     companion object {
-        private const val PAGE_SIZE = 50
+        private const val PAGE_SIZE = 10
         private const val ONE_PAGE = 1
         private const val ONE_PRODUCT = 1
         private const val FIRST_PAGE = 1
@@ -269,17 +266,17 @@ class ManageHighlightedProductFragment : BaseDaggerFragment(), CoroutineScope {
             isSelected && currentSelectedProductCount == (MAX_PRODUCT_SELECTION - ONE_PRODUCT) -> {
                 binding?.cardView showToaster getString(R.string.sfs_successfully_highlighted)
                 selectProduct(selectedProduct)
-                viewModel.addProductIdToSelection(selectedProduct.id)
+                viewModel.addProductIdToSelection(selectedProduct)
                 disableAllUnselectedProduct()
             }
             isSelected && currentSelectedProductCount < MAX_PRODUCT_SELECTION -> {
                 binding?.cardView showToaster getString(R.string.sfs_successfully_highlighted)
                 selectProduct(selectedProduct)
-                viewModel.addProductIdToSelection(selectedProduct.id)
+                viewModel.addProductIdToSelection(selectedProduct)
                 enableAllUnselectedProduct()
             }
             !isSelected -> {
-                viewModel.removeProductIdFromSelection(selectedProduct.id)
+                viewModel.removeProductIdFromSelection(selectedProduct)
                 unselectProduct(selectedProduct)
                 enableAllUnselectedProduct()
             }
@@ -328,12 +325,6 @@ class ManageHighlightedProductFragment : BaseDaggerFragment(), CoroutineScope {
         binding?.btnProceed?.isEnabled = selectedProductCount > Int.ZERO
     }
 
-    private fun storeSelectedProducts(products: List<HighlightableProduct>) {
-        products.forEach { product ->
-            if (product.isSelected) viewModel.addProductIdToSelection(product.id)
-        }
-    }
-
     private fun handleScrollDownEvent() {
         binding?.searchBar?.slideDown()
         binding?.cardView.slideDown()
@@ -349,11 +340,10 @@ class ManageHighlightedProductFragment : BaseDaggerFragment(), CoroutineScope {
     private fun doFreshSearch() {
         productAdapter.submit(emptyList())
         binding?.groupNoSearchResult?.gone()
-        viewModel.getProducts(campaignId, "", PAGE_SIZE, offset = 0)
+        viewModel.getProducts(productAdapter.getItems(), campaignId, "", PAGE_SIZE, offset = 0)
     }
 
     private fun renderList(list: List<HighlightableProduct>, hasNextPage: Boolean) {
-        storeSelectedProducts(list)
         productAdapter.hideLoading()
         productAdapter.addData(list)
 
@@ -373,7 +363,7 @@ class ManageHighlightedProductFragment : BaseDaggerFragment(), CoroutineScope {
         }
 
         val searchKeyword = binding?.searchBar?.searchBarTextField?.text.toString().trim()
-        viewModel.getProducts(campaignId, searchKeyword, PAGE_SIZE, offset)
+        viewModel.getProducts(productAdapter.getItems(), campaignId, searchKeyword, PAGE_SIZE, offset)
     }
 
     private fun showContent() {
@@ -410,8 +400,4 @@ class ManageHighlightedProductFragment : BaseDaggerFragment(), CoroutineScope {
         val context = context ?: return
         CampaignListActivity.start(context, isClearTop = true)
     }
-
-    override val coroutineContext: CoroutineContext
-        get() = TODO("Not yet implemented")
-
 }

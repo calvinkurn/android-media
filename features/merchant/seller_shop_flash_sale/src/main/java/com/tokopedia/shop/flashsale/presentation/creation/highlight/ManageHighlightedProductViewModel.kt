@@ -45,7 +45,7 @@ class ManageHighlightedProductViewModel @Inject constructor(
     val saveDraft: LiveData<Result<ProductSubmissionResult>>
         get() = _saveDraft
 
-    private var selectedProductIds: MutableSet<Long> = mutableSetOf()
+    private var selectedProducts: MutableSet<HighlightableProduct> = mutableSetOf()
 
     private var isFirstLoad = true
 
@@ -54,6 +54,7 @@ class ManageHighlightedProductViewModel @Inject constructor(
     }
 
     fun getProducts(
+        allProducts: List<HighlightableProduct>,
         campaignId: Long,
         productName: String,
         pageSize: Int,
@@ -68,7 +69,10 @@ class ManageHighlightedProductViewModel @Inject constructor(
                     listType = PRODUCT_LIST_TYPE_ID,
                     pagination = GetSellerCampaignProductListRequest.Pagination(pageSize, offset)
                 )
-                val sortedProducts = sortByHighlightedProducts(products.productList, isFirstLoad)
+                val highlightableProducts = mapToHighlightableProduct(products.productList ,isFirstLoad)
+                val appliedMaxSelectionRule = applyMaxSelectionRule(highlightableProducts)
+                val appliedProductSelectionRule = applyProductSelectionRule(appliedMaxSelectionRule, allProducts)
+                val sortedProducts = applySortRule(appliedProductSelectionRule)
                 _products.postValue(Success(sortedProducts))
             },
             onError = { error ->
@@ -76,6 +80,86 @@ class ManageHighlightedProductViewModel @Inject constructor(
             }
         )
     }
+
+    private fun mapToHighlightableProduct(
+        products: List<SellerCampaignProductList.Product>,
+        isFirstLoad: Boolean
+    ): List<HighlightableProduct> {
+        val selectedProductIds= selectedProducts.map { it.id }
+
+        return products
+            .mapIndexed { index, product ->
+
+                val isSelected = if (isFirstLoad) {
+                    product.highlightProductWording.isNotEmpty()
+                } else {
+                    product.productId.toLongOrZero() in selectedProductIds
+                }
+
+                HighlightableProduct(
+                    product.productId.toLongOrZero(),
+                    product.parentId.toLongOrZero(),
+                    product.productName,
+                    product.imageUrl.img200,
+                    product.productMapData.originalPrice,
+                    product.productMapData.discountedPrice,
+                    product.productMapData.discountPercentage,
+                    product.productMapData.customStock,
+                    product.warehouseList.map {
+                        HighlightableProduct.Warehouse(
+                            it.warehouseId.toLongOrZero(),
+                            it.customStock.toLong()
+                        )
+                    },
+                    product.productMapData.maxOrder,
+                    disabled = false,
+                    isSelected,
+                    index + OFFSET_BY_ONE,
+                    HighlightableProduct.DisabledReason.NOT_DISABLED
+                )
+            }
+            .onEach { product -> if (product.isSelected) addProductIdToSelection(product) }
+    }
+
+    private fun applyMaxSelectionRule(
+        currentPageProducts: List<HighlightableProduct>
+    ): List<HighlightableProduct> {
+        return currentPageProducts.map { product ->
+            if (selectedProducts.size == MAX_PRODUCT_SELECTION && !product.isSelected) {
+                product.copy(disabled = true, disabledReason = HighlightableProduct.DisabledReason.MAX_PRODUCT_REACHED)
+            } else {
+                product
+            }
+        }
+    }
+
+    private fun applyProductSelectionRule(
+        currentPageProducts: List<HighlightableProduct>,
+        allProducts: List<HighlightableProduct>
+    ): List<HighlightableProduct> {
+        val products = if (isFirstLoad) currentPageProducts else allProducts
+        val selectedProductsIds = selectedProducts.map { selectedProduct -> selectedProduct.id }
+        val selectedParentProductIds = selectedProducts.map { selectedProduct -> selectedProduct.parentId }
+
+        return products.map { product ->
+            if (product.parentId in selectedParentProductIds && product.id !in selectedProductsIds) {
+                product.copy(
+                    isSelected = false,
+                    disabled = true,
+                    disabledReason = HighlightableProduct.DisabledReason.OTHER_PRODUCT_WITH_SAME_PARENT_ID_ALREADY_SELECTED
+                )
+            } else {
+                product
+            }
+        }
+    }
+
+    private fun applySortRule(products: List<HighlightableProduct>): List<HighlightableProduct> {
+        return products
+            .sortedByDescending { it.isSelected }
+            .mapIndexed { index, product -> product.copy(position = index + OFFSET_BY_ONE) }
+    }
+
 
     fun submitHighlightedProducts(campaignId: Long, products: List<HighlightableProduct>) {
         launchCatchError(
@@ -113,61 +197,17 @@ class ManageHighlightedProductViewModel @Inject constructor(
         )
     }
 
-    private fun sortByHighlightedProducts(
-        products: List<SellerCampaignProductList.Product>,
-        isFirstLoad: Boolean
-    ): List<HighlightableProduct> {
-        return products
-            .mapIndexed { index, product ->
-
-                val isSelected = if (isFirstLoad) {
-                    product.highlightProductWording.isNotEmpty()
-                } else {
-                    product.productId.toLongOrZero() in selectedProductIds
-                }
-
-                val disabled = selectedProductIds.size == MAX_PRODUCT_SELECTION && !isSelected
-                val disabledReason = if (disabled) HighlightableProduct.DisabledReason.MAX_PRODUCT_REACHED else HighlightableProduct.DisabledReason.NOT_DISABLED
-
-                HighlightableProduct(
-                    product.productId.toLongOrZero(),
-                    product.parentId.toLongOrZero(),
-                    product.productName,
-                    product.imageUrl.img200,
-                    product.productMapData.originalPrice,
-                    product.productMapData.discountedPrice,
-                    product.productMapData.discountPercentage,
-                    product.productMapData.customStock,
-                    product.warehouseList.map {
-                        HighlightableProduct.Warehouse(
-                            it.warehouseId.toLongOrZero(),
-                            it.customStock.toLong()
-                        )
-                    },
-                    product.productMapData.maxOrder,
-                    disabled,
-                    isSelected,
-                    index + OFFSET_BY_ONE,
-                    disabledReason
-                )
-            }
-            .sortedByDescending { it.isSelected }
-            .mapIndexed { index, product -> product.copy(position = index + OFFSET_BY_ONE) }
+    fun addProductIdToSelection(product: HighlightableProduct) {
+        this.selectedProducts.add(product)
     }
 
 
-
-    fun addProductIdToSelection(productId: Long) {
-        this.selectedProductIds.add(productId)
+    fun getSelectedProductIds(): Set<HighlightableProduct> {
+        return this.selectedProducts
     }
 
-
-    fun getSelectedProductIds(): Set<Long> {
-        return this.selectedProductIds
-    }
-
-    fun removeProductIdFromSelection(productId: Long) {
-        this.selectedProductIds.remove(productId)
+    fun removeProductIdFromSelection(product: HighlightableProduct) {
+        this.selectedProducts.remove(product)
     }
 
     fun markAsSelected(
