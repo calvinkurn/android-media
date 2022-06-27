@@ -27,6 +27,6 @@ data class CardDataUiModel(
     }
 
     enum class State {
-        NORMAL, WARNING, DANGER, GOOD
+        NORMAL, WARNING, DANGER, GOOD, GOOD_PLUS, WARNING_PLUS, DANGER_PLUS
     }
 }

@@ -157,21 +157,6 @@ class CardViewHolder(
 
             showCardState(element.data)
             showBadge(element.data?.badgeImageUrl.orEmpty())
-            showOrnamentTokoPlus(element.data?.state)
-        }
-    }
-
-    private fun showOrnamentTokoPlus(state: CardDataUiModel.State?) {
-        when (state) {
-            CardDataUiModel.State.NORMAL -> {
-                binding.imgShcCardStatePlus.visible()
-                binding.imgShcCardStatePlus.loadImage(SellerHomeUrl.IMG_CARD_ORNAMENT_GREEN)
-            }
-            CardDataUiModel.State.WARNING -> {
-                binding.imgShcCardStatePlus.visible()
-                binding.imgShcCardStatePlus.loadImage(SellerHomeUrl.IMG_CARD_ORNAMENT_YELLOW)
-            }
-            else -> binding.imgShcCardStatePlus.gone()
         }
     }
 
@@ -205,13 +190,28 @@ class CardViewHolder(
     }
 
     private fun showCardState(data: CardDataUiModel?) {
-        with(binding.imgShcCardState) {
+        with(binding) {
             when (data?.state) {
                 CardDataUiModel.State.WARNING, CardDataUiModel.State.DANGER -> {
-                    visible()
-                    loadImage(R.drawable.bg_shc_card_stata_warning)
+                    imgShcCardState.visible()
+                    imgShcCardStatePlus.gone()
+                    imgShcCardState.loadImage(R.drawable.bg_shc_card_stata_warning)
                 }
-                else -> gone()
+                CardDataUiModel.State.WARNING_PLUS, CardDataUiModel.State.DANGER_PLUS -> {
+                    imgShcCardState.visible()
+                    imgShcCardState.loadImage(R.drawable.bg_shc_card_stata_warning)
+                    imgShcCardStatePlus.visible()
+                    imgShcCardStatePlus.loadImage(SellerHomeUrl.IMG_CARD_ORNAMENT_YELLOW)
+                }
+                CardDataUiModel.State.GOOD_PLUS -> {
+                    imgShcCardState.gone()
+                    imgShcCardStatePlus.visible()
+                    imgShcCardStatePlus.loadImage(SellerHomeUrl.IMG_CARD_ORNAMENT_GREEN)
+                }
+                else -> {
+                    imgShcCardState.gone()
+                    imgShcCardStatePlus.gone()
+                }
             }
         }
     }
