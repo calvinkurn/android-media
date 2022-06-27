@@ -23,6 +23,7 @@ import com.tokopedia.topads.dashboard.di.DaggerTopAdsDashboardComponent
 import com.tokopedia.topads.debit.autotopup.data.model.AutoTopUpStatus
 import com.tokopedia.topads.debit.autotopup.view.activity.TopAdsEditAutoTopUpActivity
 import com.tokopedia.topads.debit.autotopup.view.viewmodel.TopAdsAutoTopUpViewModel
+import com.tokopedia.topads.tracker.topup.TopadsTopupTracker
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.CardUnify
 import com.tokopedia.unifycomponents.UnifyButton
@@ -108,6 +109,7 @@ class TopAdsChooseNominalBottomSheet : BottomSheetUnify() {
         }
         bottomSheetBehaviorKnob(view, true)
         saveButton?.setOnClickListener {
+            //TopadsTopupTracker.clickTambahKreditTopup(listGroup)
             dismiss()
             if (isTopUp && creditData?.credit?.isNotEmpty() == true)
                 onSaved?.invoke(topUpChoice)
@@ -224,6 +226,7 @@ class TopAdsChooseNominalBottomSheet : BottomSheetUnify() {
     private fun showAutoAdsOption() {
         suggestAutoTopUp?.visibility = View.VISIBLE
         onBoarding?.setOnClickListener {
+            TopadsTopupTracker.clickCobaSekarang()
             startActivity(Intent(context, TopAdsEditAutoTopUpActivity::class.java))
         }
     }

@@ -172,7 +172,7 @@ class TopAdsCreditHistoryFragment :
 
         viewModel.getAutoTopUpStatus()
         addCredit?.setOnClickListener {
-            TopadsTopupTracker.clickTambahKredit()
+            TopadsTopupTracker.clickTambahKreditHistoryPage()
             startActivityForResult(
                 Intent(context, TopAdsAddCreditActivity::class.java),
                 REQUEST_CODE_ADD_CREDIT

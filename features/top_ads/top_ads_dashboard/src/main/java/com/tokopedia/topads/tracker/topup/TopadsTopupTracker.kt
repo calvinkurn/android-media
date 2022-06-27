@@ -2,7 +2,6 @@ package com.tokopedia.topads.tracker.topup
 
 import com.tokopedia.topads.common.analytics.*
 import com.tokopedia.track.TrackApp
-import javax.inject.Inject
 
 const val KEY_TRACKER_ID = "trackerId"
 
@@ -15,7 +14,7 @@ object TopadsTopupTracker {
         )
     }
 
-    fun ClickTambahKredit() {
+    fun clickTambahKreditTopup(topUpAmount: String) {
         sendClickEventFromCreditHistoryPage(
             eventAction = ToupTrackerEventAction.CLICK_TOPUP,
             trackerId = "31840"
@@ -71,7 +70,7 @@ object TopadsTopupTracker {
         )
     }
 
-    fun clickTambahKredit() {
+    fun clickTambahKreditHistoryPage() {
         sendClickEventFromCreditHistoryPage(
             eventAction = ToupTrackerEventAction.CLICK_TAMBAH_KREDIT,
             trackerId = "31848"
@@ -130,7 +129,7 @@ object TopadsTopupTracker {
         )
     }
 
-    fun ClickYaNonaktifkan() {
+    fun clickYaNonaktifkan() {
         sendClickEventFromCreditHistoryPage(
             eventAction = ToupTrackerEventAction.CLICK_DEACTIVATION_AUTO_TOPUP,
             trackerId = "31858",
@@ -189,7 +188,7 @@ object TopadsTopupTracker {
         )
     }
 
-    fun sendClickEventFromTaCart(
+    private fun sendClickEventFromTaCart(
         trackerId: String,
         eventAction: String,
         eventLabel: String = "",
@@ -202,7 +201,7 @@ object TopadsTopupTracker {
         )
     }
 
-    fun sendClickEventFromCreditHistoryPage(
+    private fun sendClickEventFromCreditHistoryPage(
         trackerId: String,
         eventAction: String,
         eventLabel: String = "",
@@ -215,7 +214,7 @@ object TopadsTopupTracker {
         )
     }
 
-    fun sendAnalytics(
+    private fun sendAnalytics(
         event: String = TopupTrackerEvent.CLICK_TOP_ADS,
         eventAction: String,
         eventCategory: String,

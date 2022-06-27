@@ -695,6 +695,7 @@ class OtherMenuFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTypeF
             findViewById<Typography>(R.id.topAdsBottomSheetTitle)?.text = bottomSheetTitle
             findViewById<TextView>(R.id.topAdsBottomSheetDescription)?.text = bottomSheetDescription
             findViewById<UnifyButton>(R.id.topAdsNextButton)?.setOnClickListener {
+
                 onKreditTopadsClicked()
             }
         }

@@ -252,10 +252,12 @@ class TopAdsEditAutoTopUpFragment : BaseDaggerFragment() {
             dialog.setPrimaryCTAText(it.getString(R.string.topads_dash_auto_topup_off_dialog_cancel_btn))
             dialog.setSecondaryCTAText(it.getString(R.string.topads_dash_auto_topup_off_dialog_ok_btn))
             dialog.setPrimaryCTAClickListener {
+                TopadsTopupTracker.clickTetapGunakan()
                 dialog.dismiss()
                 setLayoutOnToggle(true)
             }
             dialog.setSecondaryCTAClickListener {
+                TopadsTopupTracker.clickYaNonaktifkan()
                 autoTopupEnabled = false
                 dialog.dismiss()
                 viewModel.saveSelection(switchAutoTopupStatus?.isChecked == true, selectedItem)
