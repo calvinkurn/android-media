@@ -11,6 +11,7 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
+import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.orZero
@@ -31,9 +32,11 @@ import com.tokopedia.shop.flashsale.presentation.list.list.listener.RecyclerView
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.lifecycle.autoClearedNullable
+import kotlinx.coroutines.CoroutineScope
 import javax.inject.Inject
+import kotlin.coroutines.CoroutineContext
 
-class ManageHighlightedProductFragment : BaseDaggerFragment() {
+class ManageHighlightedProductFragment : BaseDaggerFragment(), CoroutineScope {
 
     companion object {
         private const val PAGE_SIZE = 50
@@ -288,7 +291,13 @@ class ManageHighlightedProductFragment : BaseDaggerFragment() {
     private fun selectProduct(selectedProduct: HighlightableProduct) {
         val products = productAdapter.getItems()
         val updatedProducts = viewModel.markAsSelected(selectedProduct, products)
-        productAdapter.submit(updatedProducts)
+        val hasOtherProductWithSameParentId = viewModel.hasOtherProductWithSameParentId(selectedProduct.parentId, products)
+        val modifiedProducts = if (hasOtherProductWithSameParentId) {
+            viewModel.disableOtherProductWithSameParentId(selectedProduct, products)
+        } else {
+            updatedProducts
+        }
+        productAdapter.submit(modifiedProducts)
     }
 
     private fun unselectProduct(selectedProduct: HighlightableProduct) {
@@ -401,5 +410,8 @@ class ManageHighlightedProductFragment : BaseDaggerFragment() {
         val context = context ?: return
         CampaignListActivity.start(context, isClearTop = true)
     }
+
+    override val coroutineContext: CoroutineContext
+        get() = TODO("Not yet implemented")
 
 }

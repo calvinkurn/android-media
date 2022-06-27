@@ -68,6 +68,23 @@
         android:layout_marginEnd="@dimen/unify_space_4"
         tools:text="Rp100.000.000" />
 
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tpgErrorMessage"
+        android:layout_width="0dp"
+        android:visibility="gone"
+        tools:visibility="visible"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/unify_space_4"
+        android:layout_marginEnd="@dimen/unify_space_4"
+        android:text="Sudah dipilih"
+        android:textColor="@color/Unify_RN600"
+        app:layout_constraintEnd_toStartOf="@+id/tpgProductOrder"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/tpgDiscountedPrice"
+        app:layout_constraintTop_toBottomOf="@+id/tpgDiscountedPrice"
+        app:typographyType="body_2"
+        tools:text="Error" />
+
     <com.tokopedia.unifycomponents.Label
         android:id="@+id/labelDiscountPercentage"
         android:layout_width="wrap_content"
@@ -77,8 +94,9 @@
         android:layout_marginBottom="@dimen/unify_space_16"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="@+id/tpgDiscountedPrice"
-        app:layout_constraintTop_toBottomOf="@+id/tpgDiscountedPrice"
+        app:layout_constraintTop_toBottomOf="@+id/tpgErrorMessage"
         tools:text="20%" />
+
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tpgOriginalPrice"
@@ -91,7 +109,7 @@
         app:layout_constraintEnd_toStartOf="@+id/tpgProductOrder"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toEndOf="@+id/labelDiscountPercentage"
-        app:layout_constraintTop_toBottomOf="@+id/tpgDiscountedPrice"
+        app:layout_constraintTop_toBottomOf="@id/tpgErrorMessage"
         app:typographyType="body_2"
         tools:text="Rp 15.000.000" />
 
