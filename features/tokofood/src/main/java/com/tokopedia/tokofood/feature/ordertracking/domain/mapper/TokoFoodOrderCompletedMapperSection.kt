@@ -23,6 +23,9 @@ class TokoFoodOrderCompletedMapperSection @Inject constructor() : BaseOrderDetai
             )
             addThickDividerUiModel()
             addDriverSectionUiModel(tokoFoodOrderDetail.driverDetails)
+            if (tokoFoodOrderDetail.driverDetails != null) {
+                addThinDividerUiModel(MARGIN_TOP_TWENTY)
+            }
             addShippingHeaderUiModel()
             addShippingDetailUiModel(tokoFoodOrderDetail.merchant, tokoFoodOrderDetail.destination)
             addThickDividerUiModel()
