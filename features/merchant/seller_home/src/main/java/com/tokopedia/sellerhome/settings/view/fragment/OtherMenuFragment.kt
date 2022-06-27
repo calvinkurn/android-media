@@ -476,11 +476,11 @@ class OtherMenuFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTypeF
     }
 
     override fun onTokoPlusClicked() {
-
+        NewOtherMenuTracking.sendEventClickTokoPlus()
     }
 
     override fun onTokoPlusImpressed() {
-
+        NewOtherMenuTracking.sendEventImpressionTokoPlus()
     }
 
     private fun observeLiveData() {

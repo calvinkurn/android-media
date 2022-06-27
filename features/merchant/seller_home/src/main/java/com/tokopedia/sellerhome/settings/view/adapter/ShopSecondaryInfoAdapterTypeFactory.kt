@@ -28,7 +28,7 @@ class ShopSecondaryInfoAdapterTypeFactory(private val listener: OtherMenuViewHol
 
     override fun type(uiModel: TokoPlusWidgetUiModel): Int = TokoPlusViewHolder.LAYOUT_RES
 
-    override fun createViewHolder(parent: View?, type: Int): AbstractViewHolder<out Visitable<*>> {
+    override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when (type) {
             ShopOperationalViewHolder.LAYOUT_RES -> ShopOperationalViewHolder(
                 parent,
