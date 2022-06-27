@@ -193,8 +193,25 @@ class PostDynamicViewNew @JvmOverloads constructor(
             }
         },
         listener = object : FeedPostCarouselAdapter.ViewHolder.Listener {
-            override fun onTopAdsCardClicked(viewHolder: FeedPostCarouselAdapter.ViewHolder) {
+            override fun onTopAdsCardClicked(
+                viewHolder: FeedPostCarouselAdapter.ViewHolder,
+                media: FeedXMedia,
+            ) {
+                if (!mData.isTypeProductHighlight && !mData.isTypeVOD) {
+                    RouteManager.route(
+                        context,
+                        media.appLink,
+                    )
+                }
 
+                listener?.onClickSekSekarang(
+                    mData.id,
+                    mData.shopId,
+                    TYPE_TOPADS_HEADLINE_NEW,
+                    mData.followers.isFollowed,
+                    positionInFeed,
+                    mData,
+                )
             }
 
             override fun onImageClicked(viewHolder: BaseViewHolder) {
@@ -887,7 +904,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
     ) {
         val media = feedXCard.media
         val postId = feedXCard.id.toIntOrZero()
-        if (feedXCard.typename != TYPE_FEED_X_CARD_PRODUCT_HIGHLIGHT && feedXCard.typename != TYPE_FEED_X_CARD_VOD) {
+        if (!feedXCard.isTypeProductHighlight && feedXCard.isTypeVOD) {
             if (media.isNotEmpty() && media.first().type == TYPE_LONG_VIDEO){
                 setVODLayout(feedXCard)
             } else {
@@ -1195,10 +1212,10 @@ class PostDynamicViewNew @JvmOverloads constructor(
                resetCarouselActiveListener(feedXCard)
             }
 
-        } else if (feedXCard.typename == TYPE_FEED_X_CARD_VOD) {
+        } else if (feedXCard.isTypeVOD) {
             setVODLayout(feedXCard)
         } else {
-            if (feedXCard.mods.contains(TYPE_USE_ASGC_NEW_DESIGN))
+            if (feedXCard.useASGCNewDesign)
                 setNewASGCLayout(feedXCard)
             else
                 setGridASGCLayout(feedXCard)

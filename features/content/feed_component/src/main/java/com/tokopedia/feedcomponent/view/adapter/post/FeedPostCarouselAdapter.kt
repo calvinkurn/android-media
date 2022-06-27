@@ -27,6 +27,7 @@ import com.tokopedia.feedcomponent.view.widget.PostTagView
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.isVisible
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.extensions.view.toBitmap
 import com.tokopedia.kotlin.extensions.view.visible
@@ -125,9 +126,15 @@ internal class FeedPostCarouselAdapter(
         )
 
         init {
-            itemView.setOnTouchListener { _, event ->
+            postImage.setOnTouchListener { _, event ->
                 postGestureDetector.onTouchEvent(event)
                 true
+            }
+            llLihatProduct.setOnClickListener {
+                onPostTagViews {
+                    it.showExpandedView()
+                }
+                animateLihatProduct(!tvLihatProduct.isVisible)
             }
 
             likeAnim.setImageDrawable(
@@ -166,9 +173,7 @@ internal class FeedPostCarouselAdapter(
             postImage.setImageUrl(item.mediaUrl)
             llLihatProduct.showWithCondition(item.tagProducts.isNotEmpty())
 
-            topAdsCard.showWithCondition(card.isTopAds)
-
-            if (card.isTopAds) setupTopAds()
+            setupTopAds(item)
 
             itemView.doOnLayout {
                 item.tagging.forEach { tagging ->
@@ -186,9 +191,10 @@ internal class FeedPostCarouselAdapter(
             }
         }
 
-        private fun setupTopAds() {
+        private fun setupTopAds(media: FeedXMedia) {
             topAdsCard.setOnClickListener {
-                listener.onTopAdsCardClicked(this)
+                changeTopAdsColorToGreen()
+                listener.onTopAdsCardClicked(this, media)
             }
             changeTopAdsColorToWhite()
         }
@@ -275,7 +281,7 @@ internal class FeedPostCarouselAdapter(
         }
 
         interface Listener {
-            fun onTopAdsCardClicked(viewHolder: ViewHolder)
+            fun onTopAdsCardClicked(viewHolder: ViewHolder, media: FeedXMedia)
             fun onImageClicked(viewHolder: BaseViewHolder)
             fun onLiked(viewHolder: BaseViewHolder)
         }

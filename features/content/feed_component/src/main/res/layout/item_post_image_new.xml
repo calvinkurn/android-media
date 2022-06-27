@@ -8,26 +8,27 @@
 
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/post_image"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="@dimen/unify_space_0"
         android:adjustViewBounds="true"
         android:scaleType="centerCrop"
-        app:layout_constraintDimensionRatio="1:1"
+        app:layout_constraintDimensionRatio="W, 1:1"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:unify_image_corner_radius="0"
-        app:unify_image_type="rect" />
+        app:unify_image_type="rect"
+        />
 
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/like_anim"
         android:layout_width="@dimen/layout_lvl7"
         android:layout_height="@dimen/layout_lvl7"
         android:visibility="invisible"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toBottomOf="@id/post_image"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toTopOf="@id/post_image"
         />
 
     <LinearLayout
@@ -95,16 +96,26 @@
 <!--        app:layout_constraintBottom_toBottomOf="@id/post_image"-->
 <!--        app:layout_constraintStart_toStartOf="@id/post_image"-->
 <!--        />-->
+
+    <View
+        android:id="@+id/separator"
+        android:layout_width="0dp"
+        android:layout_height="0.1px"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/post_image"
+        tools:ignore="PxUsage"
+        />
   
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/top_ads_detail_card"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:background="@color/Unify_NN50"
         android:paddingTop="@dimen/unify_space_8"
         android:paddingBottom="@dimen/unify_space_8"
-        android:visibility="gone"
-        app:layout_constraintTop_toBottomOf="@id/post_image"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/separator"
         tools:visibility="visible"
         >
 
