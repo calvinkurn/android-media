@@ -3,7 +3,7 @@ package com.tokopedia.tokofood.common.domain.usecase
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.tokofood.common.domain.param.KeroAddressParamData
-import com.tokopedia.tokofood.feature.purchase.purchasepage.domain.model.response.KeroGetAddressResponse
+import com.tokopedia.tokofood.common.domain.response.KeroGetAddressResponse
 import com.tokopedia.tokofood.feature.purchase.purchasepage.domain.query.KeroGetAddressQuery
 import javax.inject.Inject
 

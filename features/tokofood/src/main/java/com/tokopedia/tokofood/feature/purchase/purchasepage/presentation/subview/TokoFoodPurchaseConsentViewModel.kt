@@ -26,11 +26,11 @@ class TokoFoodPurchaseConsentViewModel @Inject constructor(
             withContext(dispatchers.io) {
                 agreeConsentUseCase.get().execute()
             }.let {
-                val isSuccess = it.data.tokofoodSubmitUserConsent.isSuccess
+                val isSuccess = it.tokofoodSubmitUserConsent.isSuccess
                 if (isSuccess) {
                     _agreeConsentData.emit(Result.Success(true))
                 } else {
-                    _agreeConsentData.emit(Result.Failure(MessageErrorException(it.data.tokofoodSubmitUserConsent.message)))
+                    _agreeConsentData.emit(Result.Failure(MessageErrorException(it.tokofoodSubmitUserConsent.message)))
                 }
             }
         }, onError = {

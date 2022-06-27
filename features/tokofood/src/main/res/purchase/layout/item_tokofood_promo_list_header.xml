@@ -27,7 +27,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/icon_promo_list_header_tokofood"
         app:layout_constraintTop_toTopOf="@+id/icon_promo_list_header_tokofood"
-        app:typographyType="heading_5"
+        app:typographyType="display_2"
         app:typographyWeight="bold"
         tools:text="Kupon saya 111" />
 

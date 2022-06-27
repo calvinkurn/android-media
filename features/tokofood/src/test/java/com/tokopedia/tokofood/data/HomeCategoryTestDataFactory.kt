@@ -45,9 +45,9 @@ import com.tokopedia.tokofood.feature.home.presentation.uimodel.TokoFoodHomeUSPU
 import com.tokopedia.tokofood.feature.home.presentation.uimodel.TokoFoodListUiModel
 import com.tokopedia.tokofood.feature.home.presentation.uimodel.TokoFoodMerchantListUiModel
 import com.tokopedia.tokofood.feature.home.presentation.uimodel.TokoFoodProgressBarUiModel
-import com.tokopedia.tokofood.feature.purchase.purchasepage.domain.model.response.KeroEditAddress
-import com.tokopedia.tokofood.feature.purchase.purchasepage.domain.model.response.KeroEditAddressData
-import com.tokopedia.tokofood.feature.purchase.purchasepage.domain.model.response.KeroEditAddressResponse
+import com.tokopedia.tokofood.common.domain.response.KeroEditAddress
+import com.tokopedia.tokofood.common.domain.response.KeroEditAddressData
+import com.tokopedia.tokofood.common.domain.response.KeroEditAddressResponse
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerData
 

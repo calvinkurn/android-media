@@ -2,7 +2,6 @@ package com.tokopedia.tokofood.feature.purchase.purchasepage.domain.model.metada
 
 import android.annotation.SuppressLint
 import com.google.gson.Gson
-import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFood
@@ -13,27 +12,20 @@ import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFoodShop
 import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFoodShoppingCostBreakdownItem
 import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFoodShoppingSummary
 import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFoodUserAddress
-import com.tokopedia.utils.currency.CurrencyFormatUtil
 import java.net.URLEncoder
 
 data class TokoFoodCheckoutMetadata(
     @SerializedName("shop")
-    @Expose
     val shop: CheckoutTokoFoodShop = CheckoutTokoFoodShop(),
     @SerializedName("user_address")
-    @Expose
     val userAddress: TokoFoodCheckoutUserAddress = TokoFoodCheckoutUserAddress(),
     @SerializedName("available_section")
-    @Expose
     val availableSection: TokoFoodCheckoutAvailabilitySection = TokoFoodCheckoutAvailabilitySection(),
     @SerializedName("unavailable_section")
-    @Expose
     val unavailableSection: TokoFoodCheckoutAvailabilitySection = TokoFoodCheckoutAvailabilitySection(),
     @SerializedName("shipping")
-    @Expose
     val shipping: TokoFoodCheckoutShipping = TokoFoodCheckoutShipping(),
     @SerializedName("shopping_summary")
-    @Expose
     val shoppingSummary: TokoFoodCheckoutShoppingSummary = TokoFoodCheckoutShoppingSummary()
 ) {
 
@@ -63,22 +55,16 @@ data class TokoFoodCheckoutMetadata(
 
 data class TokoFoodCheckoutUserAddress(
     @SerializedName("address_id")
-    @Expose
     val addressId: Long = 0L,
     @SerializedName("address_name")
-    @Expose
     val addressName: String = "",
     @SerializedName("address")
-    @Expose
     val address: String = "",
     @SerializedName("phone")
-    @Expose
     val phone: String = "",
     @SerializedName("receiver_name")
-    @Expose
     val receiverName: String = "",
     @SerializedName("status")
-    @Expose
     val status: Int = 0
 ) {
     companion object {
@@ -98,10 +84,8 @@ data class TokoFoodCheckoutUserAddress(
 
 data class TokoFoodCheckoutAvailabilitySection(
     @SerializedName("title")
-    @Expose
     val title: String = "",
     @SerializedName("products")
-    @Expose
     val products: List<TokoFoodCheckoutProduct> = listOf()
 ) {
 
@@ -175,100 +159,74 @@ data class TokoFoodCheckoutAvailabilitySection(
 
 data class TokoFoodCheckoutProduct(
     @SerializedName("cart_id")
-    @Expose
     val cartId: Long = 0L,
     @SerializedName("product_id")
-    @Expose
     val productId: String = "",
     @SerializedName("name")
-    @Expose
     val productName: String = "",
     @SerializedName("description")
-    @Expose
     val description: String = "",
     @SerializedName("image_url")
-    @Expose
     val imageUrl: String = "",
     @SuppressLint("Invalid Data Type")
     @SerializedName("price")
-    @Expose
     val price: Long = 0L,
     @SerializedName("price_fmt")
-    @Expose
     val priceFmt: String = "",
+    @SuppressLint("Invalid Data Type")
     @SerializedName("original_price")
-    @Expose
     val originalPrice: Long = 0L,
     @SerializedName("original_price_fmt")
-    @Expose
     val originalPriceFmt: String = "",
     @SerializedName("discount_percentage")
-    @Expose
     val discountPercentage: String = "",
     @SerializedName("notes")
-    @Expose
     val notes: String = "",
     @SerializedName("quantity")
-    @Expose
     val quantity: Int = 0,
     @SerializedName("variants")
-    @Expose
     val variants: List<TokoFoodCheckoutProductVariant> = listOf()
 )
 
 
 data class TokoFoodCheckoutProductVariant(
     @SerializedName("variant_id")
-    @Expose
     val variantId: String = "",
     @SerializedName("name")
-    @Expose
     val name: String = "",
     @SerializedName("rules")
-    @Expose
     val rules: CheckoutTokoFoodProductVariantRules = CheckoutTokoFoodProductVariantRules(),
     @SerializedName("options")
-    @Expose
     val options: List<TokoFoodCheckoutProductVariantOption> = listOf()
 )
 
 data class TokoFoodCheckoutProductVariantOption(
     @SerializedName("is_selected")
-    @Expose
     val isSelected: Boolean = false,
     @SerializedName("option_id")
-    @Expose
     val optionId: String = "",
     @SerializedName("name")
-    @Expose
     val name: String = "",
     @SuppressLint("Invalid Data Type")
     @SerializedName("price")
-    @Expose
     val price: Long = 0L,
     @SerializedName("price_fmt")
-    @Expose
     val priceFmt: String = "",
     @SerializedName("status")
-    @Expose
     val status: Int = 0
 )
 
 data class TokoFoodCheckoutShipping(
     @SerializedName("name")
-    @Expose
     val name: String = "",
     @SerializedName("logo_url")
-    @Expose
     val logoUrl: String = "",
     @SerializedName("eta")
-    @Expose
     val eta: String = "",
+    @SuppressLint("Invalid Data Type")
     @SerializedName("price")
-    @Expose
     val price: Long = 0L,
     @SerializedName("price_fmt")
-    @Expose
     val priceFmt: String = ""
 ) {
     
@@ -288,13 +246,10 @@ data class TokoFoodCheckoutShipping(
 
 data class TokoFoodCheckoutShoppingSummary(
     @SerializedName("total")
-    @Expose
     val total: TokoFoodCheckoutShoppingTotal = TokoFoodCheckoutShoppingTotal(),
     @SerializedName("cost_breakdown")
-    @Expose
     val costBreakdown: TokoFoodCheckoutShoppingCostBreakdown = TokoFoodCheckoutShoppingCostBreakdown(),
     @SerializedName("discount_breakdown")
-    @Expose
     val discountBreakdown: List<TokoFoodCheckoutShoppingDiscountBreakdown> = listOf()
 ) {
 
@@ -329,40 +284,31 @@ data class TokoFoodCheckoutShoppingSummary(
 
 data class TokoFoodCheckoutShoppingTotal(
     @SerializedName("cost")
-    @Expose
     val cost: Long = 0L,
     @SerializedName("savings")
-    @Expose
     val savings: Long = 0L
 )
 
 data class TokoFoodCheckoutShoppingCostBreakdown(
+    @SuppressLint("Invalid Data Type")
     @SerializedName("total_cart_price")
-    @Expose
     val totalCartPrice: TokoFoodCheckoutShoppingCostBreakdownItem = TokoFoodCheckoutShoppingCostBreakdownItem(),
     @SerializedName("outlet_fee")
-    @Expose
     val takeAwayFee: TokoFoodCheckoutShoppingCostBreakdownItem = TokoFoodCheckoutShoppingCostBreakdownItem(),
     @SerializedName("platform_fee")
-    @Expose
     val convenienceFee: TokoFoodCheckoutShoppingCostBreakdownItem = TokoFoodCheckoutShoppingCostBreakdownItem(),
     @SerializedName("delivery_fee")
-    @Expose
     val deliveryFee: TokoFoodCheckoutShoppingCostBreakdownItem = TokoFoodCheckoutShoppingCostBreakdownItem(),
     @SerializedName("reimbursement_fee")
-    @Expose
     val parkingFee: TokoFoodCheckoutShoppingCostBreakdownItem = TokoFoodCheckoutShoppingCostBreakdownItem()
 )
 
 data class TokoFoodCheckoutShoppingCostBreakdownItem(
     @SerializedName("original_amount")
-    @Expose
     val originalAmount: Long = 0L,
     @SerializedName("amount")
-    @Expose
     val amount: Long = 0L,
     @SerializedName("surge")
-    @Expose
     val surge: TokoFoodCheckoutShoppingSurge = TokoFoodCheckoutShoppingSurge()
 ) {
 
@@ -382,29 +328,23 @@ data class TokoFoodCheckoutShoppingCostBreakdownItem(
 }
 
 data class TokoFoodCheckoutShoppingSurge(
+    @SuppressLint("Invalid Data Type")
     @SerializedName("is_surge_price")
-    @Expose
     val isSurgePrice: Boolean = false,
     @SerializedName("factor")
-    @Expose
     val factor: Int = 0
 )
 
 data class TokoFoodCheckoutShoppingDiscountBreakdown(
     @SerializedName("discount_id")
-    @Expose
     val discountId: String = "",
     @SerializedName("title")
-    @Expose
     val title: String = "",
     @SerializedName("amount")
-    @Expose
     val amount: Long = 0L,
     @SerializedName("scope")
-    @Expose
     val scope: String = "",
     @SerializedName("type")
-    @Expose
     val type: String = ""
 )
 

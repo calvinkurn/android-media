@@ -4,9 +4,9 @@
     android:shape="oval">
 
     <solid
-        android:color="@color/food_home_dms_jump_to_top_color"/>
+        android:color="@color/food_home_dms_jump_to_top_background_color"/>
 
     <size
-        android:width="@dimen/spacing_lvl7"
-        android:height="@dimen/spacing_lvl7"/>
+        android:width="40dp"
+        android:height="40dp"/>
 </shape>

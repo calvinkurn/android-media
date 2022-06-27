@@ -14,6 +14,7 @@ import com.tokopedia.tokofood.feature.home.domain.data.USPResponse
 import com.tokopedia.tokofood.feature.home.presentation.uimodel.TokoFoodHomeUSPUiModel
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.utils.resources.isDarkMode
 import com.tokopedia.utils.view.binding.viewBinding
 
 class TokoFoodHomeUSPViewHolder(
@@ -26,7 +27,8 @@ class TokoFoodHomeUSPViewHolder(
         val LAYOUT = R.layout.item_tokofood_usp
 
         private const val USP_SIZE = 3
-        private const val GO_FOOD_IMAGE = "https://images.tokopedia.net/img/ic_tokofood_gofood.png"
+        private const val GO_FOOD_IMAGE_LIGHT = "https://images.tokopedia.net/img/powered_by_gofood_light.png"
+        private const val GO_FOOD_IMAGE_DARK = "https://images.tokopedia.net/img/powered_by_gofood_dark.png"
     }
 
     private var binding: ItemTokofoodUspBinding? by viewBinding()
@@ -37,7 +39,6 @@ class TokoFoodHomeUSPViewHolder(
     private var tgFirstUsp: Typography? = null
     private var tgSecondUsp: Typography? = null
     private var tgThirdUsp: Typography? = null
-    private var tgPowered: Typography? = null
     private var shimmeringLayout: View? = null
 
     override fun bind(element: TokoFoodHomeUSPUiModel) {
@@ -49,7 +50,6 @@ class TokoFoodHomeUSPViewHolder(
         tgFirstUsp = binding?.tgFirstUsp
         tgSecondUsp = binding?.tgSecondUsp
         tgThirdUsp = binding?.tgThirdUsp
-        tgPowered = binding?.tgPowered
 
         when(element.state){
             TokoFoodLayoutState.SHOW -> onShowLayout(element)
@@ -70,10 +70,15 @@ class TokoFoodHomeUSPViewHolder(
                 imgFirstUsp?.loadImage(it.get(0).iconUrl)
                 imgSecondUsp?.loadImage(it.get(1).iconUrl)
                 imgThirdUsp?.loadImage(it.get(2).iconUrl)
-                imgGoFood?.loadImage(GO_FOOD_IMAGE)
                 tgFirstUsp?.text = it.get(0).title
                 tgSecondUsp?.text = it.get(1).title
                 tgThirdUsp?.text = it.get(2).title
+
+                if (itemView.context.isDarkMode()) {
+                    imgGoFood?.loadImage(GO_FOOD_IMAGE_DARK)
+                } else {
+                    imgGoFood?.loadImage(GO_FOOD_IMAGE_LIGHT)
+                }
             }
         }
 
@@ -92,7 +97,6 @@ class TokoFoodHomeUSPViewHolder(
         tgFirstUsp?.show()
         tgSecondUsp?.show()
         tgThirdUsp?.show()
-        tgPowered?.show()
     }
 
     private fun showShimmering() {
@@ -107,7 +111,6 @@ class TokoFoodHomeUSPViewHolder(
         tgFirstUsp?.hide()
         tgSecondUsp?.hide()
         tgThirdUsp?.hide()
-        tgPowered?.hide()
     }
 
     private fun hideShimmering() {

@@ -7,7 +7,7 @@
     android:layout_height="wrap_content">
 
     <ImageView
-        android:layout_marginTop="@dimen/spacing_lvl3"
+        android:layout_marginTop="8dp"
         android:id="@+id/img_empty_state_location"
         android:layout_width="280dp"
         android:layout_height="210dp"
@@ -23,23 +23,23 @@
         tools:text="@string/home_no_pin_poin_title"
         android:layout_gravity="center"
         android:gravity="center"
-        android:layout_marginTop="@dimen/spacing_lvl5"
-        android:layout_marginLeft="@dimen/spacing_lvl4"
-        android:layout_marginRight="@dimen/spacing_lvl4"
+        android:layout_marginTop="24dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
         />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tg_empty_state_location_desc"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:typographyType="body_2"
+        app:typographyType="paragraph_2"
         android:textColor="@color/Unify_NN600"
         tools:text="@string/home_no_pin_poin_desc"
         android:layout_gravity="center"
         android:gravity="center"
-        android:layout_marginTop="@dimen/spacing_lvl3"
-        android:layout_marginLeft="@dimen/spacing_lvl4"
-        android:layout_marginRight="@dimen/spacing_lvl4"
+        android:layout_marginTop="8dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
         />
 
     <com.tokopedia.unifycomponents.UnifyButton
@@ -47,17 +47,18 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         tools:text="@string/home_no_pin_poin_button"
-        android:layout_marginTop="@dimen/spacing_lvl5"
-        android:layout_marginLeft="@dimen/spacing_lvl4"
-        android:layout_marginRight="@dimen/spacing_lvl4"
-        android:layout_marginBottom="@dimen/spacing_lvl4"
+        android:layout_marginTop="24dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginBottom="16dp"
         />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tg_empty_state_location_to_home"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:typographyType="heading_5"
+        app:typographyType="display_2"
+        app:typographyWeight="bold"
         android:textColor="@color/Neutral_N600"
         android:text="@string/home_back_to_home"
         android:layout_gravity="center"

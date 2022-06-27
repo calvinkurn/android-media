@@ -149,6 +149,5 @@ open class BaseOrderDetailSectionResult: OrderDetailSectionCommon() {
 
     companion object {
         const val MARGIN_TOP_TWENTY = 20
-        const val MARGIN_TOP_EIGHT = 8
     }
 }

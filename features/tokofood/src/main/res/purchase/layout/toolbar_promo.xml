@@ -27,6 +27,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toEndOf="@+id/icon_back_arrow"
         app:layout_constraintTop_toTopOf="parent"
-        app:typographyType="heading_4" />
+        app:typographyType="display_1"
+        app:typographyWeight="bold"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

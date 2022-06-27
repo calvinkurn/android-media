@@ -62,6 +62,7 @@ class TokoFoodMiniCartWidget @JvmOverloads constructor(
                 }
             }
         }
+        viewModel?.collectValues()
         viewModel?.loadInitial(source)
     }
 
