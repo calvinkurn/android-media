@@ -38,6 +38,7 @@ class OrderNoteBottomSheet(private val clickListener: OnSaveNoteButtonClickListe
         setChild(viewBinding.root)
         val title = context?.getString(R.string.text_order_bottomsheet_title) ?: ""
         setTitle(title)
+        isKeyboardOverlap = false
         clearContentPadding = true
         return super.onCreateView(inflater, container, savedInstanceState)
     }
@@ -62,7 +63,7 @@ class OrderNoteBottomSheet(private val clickListener: OnSaveNoteButtonClickListe
                 override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
                 override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {}
                 override fun afterTextChanged(s: Editable) {
-                    binding.saveNotesButton.isEnabled = s.isNotBlank()
+                    binding.saveNotesButton.isEnabled = s.isNotBlank() || orderNote.isNotBlank()
                 }
             })
             this.saveNotesButton.isEnabled = binding.notesInput.editText.text.isNotBlank()

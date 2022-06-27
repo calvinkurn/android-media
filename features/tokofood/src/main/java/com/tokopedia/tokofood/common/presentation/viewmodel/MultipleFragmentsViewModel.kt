@@ -1,8 +1,9 @@
 package com.tokopedia.tokofood.common.presentation.viewmodel
 
 import androidx.lifecycle.SavedStateHandle
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.isLessThanZero
@@ -19,7 +20,6 @@ import com.tokopedia.tokofood.common.presentation.uimodel.UpdateParam
 import com.tokopedia.tokofood.common.util.NonNullLiveData
 import com.tokopedia.tokofood.common.util.Result
 import dagger.Lazy
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -27,9 +27,11 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.flatMapConcat
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
-import kotlin.coroutines.CoroutineContext
 
 @FlowPreview
 @ExperimentalCoroutinesApi
@@ -38,8 +40,9 @@ class MultipleFragmentsViewModel @Inject constructor(
     private val loadCartTokoFoodUseCase: Lazy<LoadCartTokoFoodUseCase>,
     private val addToCartTokoFoodUseCase: Lazy<AddToCartTokoFoodUseCase>,
     private val updateCartTokoFoodUseCase: Lazy<UpdateCartTokoFoodUseCase>,
-    private val removeCartTokoFoodUseCase: Lazy<RemoveCartTokoFoodUseCase>
-) : ViewModel(), CoroutineScope {
+    private val removeCartTokoFoodUseCase: Lazy<RemoveCartTokoFoodUseCase>,
+    private val dispatchers: CoroutineDispatchers,
+) : BaseViewModel(dispatchers.main) {
 
     private val cartDataState = MutableStateFlow<CheckoutTokoFoodData?>(null)
     val cartDataFlow = cartDataState.asStateFlow()
@@ -57,12 +60,36 @@ class MultipleFragmentsViewModel @Inject constructor(
     val shopId: String
         get() = cartDataState.value?.shop?.shopId.orEmpty()
 
-    companion object {
-        const val MINI_CART_STATE_KEY = "mini_cart_state_key"
-    }
+    init {
+        viewModelScope.launch {
+            miniCartUiModelState.flatMapConcat { result ->
+                flow {
+                    val loadingQueueCount =
+                        when (result) {
+                            is Result.Loading -> miniCartLoadingQueue.value.plus(Int.ONE)
+                            is Result.Failure -> miniCartLoadingQueue.value.minus(Int.ONE)
+                            else -> miniCartLoadingQueue.value
+                        }
+                    emit(loadingQueueCount)
+                }
+            }.collect {
+                miniCartLoadingQueue.value = it
+            }
+        }
 
-    override val coroutineContext: CoroutineContext
-        get() = viewModelScope.coroutineContext
+        viewModelScope.launch {
+            cartDataState.flatMapConcat { data ->
+                flow {
+                    if (data != null) {
+                        emit(data)
+                    }
+                }
+            }.collect {
+                miniCartLoadingQueue.value = miniCartLoadingQueue.value.minus(Int.ONE)
+                setMiniCartValue(it)
+            }
+        }
+    }
 
     fun onSavedInstanceState() {
         savedStateHandle[MINI_CART_STATE_KEY] =
@@ -83,7 +110,7 @@ class MultipleFragmentsViewModel @Inject constructor(
                 loadCartList(source)
             } else {
                 launch {
-                    setMiniCartValue(cartData)
+                    cartDataState.emit(cartData)
                 }
             }
         }
@@ -93,19 +120,18 @@ class MultipleFragmentsViewModel @Inject constructor(
         cartDataState.value = response.data
     }
 
-    fun deleteProduct(
-        productId: String,
-        cartId: String,
-        source: String,
-        shopId: String? = null,
-        shouldRefreshCart: Boolean = true
-    ) {
+    fun deleteProduct(productId: String,
+                      cartId: String,
+                      source: String,
+                      shopId: String? = null,
+                      shouldRefreshCart: Boolean = true) {
         launchCatchError(block = {
             cartDataValidationState.emit(UiEvent(state = UiEvent.EVENT_LOADING_DIALOG))
             val paramShopId = shopId ?: this@MultipleFragmentsViewModel.shopId
-            val removeCartParam =
-                RemoveCartTokoFoodParam.getProductParamById(productId, cartId, paramShopId)
-            removeCartTokoFoodUseCase.get()(removeCartParam).collect {
+            val removeCartParam = RemoveCartTokoFoodParam.getProductParamById(productId, cartId, paramShopId)
+            withContext(dispatchers.io) {
+                removeCartTokoFoodUseCase.get().execute(removeCartParam)
+            }.let {
                 if (shouldRefreshCart) {
                     loadCartList(source)
                 }
@@ -130,8 +156,10 @@ class MultipleFragmentsViewModel @Inject constructor(
         launchCatchError(block = {
             val removeCartParam = getRemoveAllProductParamByIdList()
             if (removeCartParam.carts.isNotEmpty()) {
-                cartDataValidationState.emit(UiEvent(state = UiEvent.EVENT_LOADING_DIALOG))
-                removeCartTokoFoodUseCase.get()(removeCartParam).collect {
+                cartDataValidationState.emit(UiEvent(state = UiEvent.EVENT_HIDE_LOADING_ADD_TO_CART))
+                withContext(dispatchers.io) {
+                    removeCartTokoFoodUseCase.get().execute(removeCartParam)
+                }.let {
                     loadCartList(source)
                     addToCart(updateParam, source)
                 }
@@ -152,7 +180,9 @@ class MultipleFragmentsViewModel @Inject constructor(
             val removeCartParam = getUnavailableProductsParam(paramShopId)
             if (removeCartParam.carts.isNotEmpty()) {
                 cartDataValidationState.emit(UiEvent(state = UiEvent.EVENT_LOADING_DIALOG))
-                removeCartTokoFoodUseCase.get()(removeCartParam).collect {
+                withContext(dispatchers.io) {
+                    removeCartTokoFoodUseCase.get().execute(removeCartParam)
+                }.let {
                     cartDataValidationState.emit(
                         UiEvent(state = UiEvent.EVENT_SUCCESS_DELETE_UNAVAILABLE_PRODUCTS)
                     )
@@ -168,14 +198,14 @@ class MultipleFragmentsViewModel @Inject constructor(
         })
     }
 
-    fun updateNotes(
-        updateParam: UpdateParam,
-        source: String,
-        shouldRefreshCart: Boolean = true
-    ) {
+    fun updateNotes(updateParam: UpdateParam,
+                    source: String,
+                    shouldRefreshCart: Boolean = true) {
         launchCatchError(block = {
             cartDataValidationState.emit(UiEvent(state = UiEvent.EVENT_LOADING_DIALOG))
-            updateCartTokoFoodUseCase.get()(updateParam).collect {
+            withContext(dispatchers.io) {
+                updateCartTokoFoodUseCase.get().execute(updateParam)
+            }.let {
                 if (shouldRefreshCart) {
                     loadCartList(source)
                 }
@@ -196,13 +226,13 @@ class MultipleFragmentsViewModel @Inject constructor(
         })
     }
 
-    fun updateQuantity(
-        updateParam: UpdateParam,
-        source: String,
-        shouldRefreshCart: Boolean = true
-    ) {
+    fun updateQuantity(updateParam: UpdateParam,
+                       source: String,
+                       shouldRefreshCart: Boolean = true) {
         launchCatchError(block = {
-            updateCartTokoFoodUseCase.get()(updateParam).collect {
+            withContext(dispatchers.io) {
+                updateCartTokoFoodUseCase.get().execute(updateParam)
+            }.let {
                 if (shouldRefreshCart) {
                     loadCartList(source)
                 }
@@ -225,7 +255,15 @@ class MultipleFragmentsViewModel @Inject constructor(
 
     fun updateCart(updateParam: UpdateParam, source: String) {
         launchCatchError(block = {
-            updateCartTokoFoodUseCase.get()(updateParam).collect {
+            withContext(dispatchers.io) {
+                updateCartTokoFoodUseCase.get().execute(updateParam)
+            }.let {
+                cartDataValidationState.emit(
+                    UiEvent(
+                        state = UiEvent.EVENT_HIDE_LOADING_UPDATE_TO_CART,
+                        data = null
+                    )
+                )
                 loadCartList(source)
                 cartDataValidationState.emit(
                     UiEvent(
@@ -246,7 +284,9 @@ class MultipleFragmentsViewModel @Inject constructor(
 
     fun addToCart(updateParam: UpdateParam, source: String) {
         launchCatchError(block = {
-            addToCartTokoFoodUseCase.get()(updateParam).collect {
+            withContext(dispatchers.io) {
+                addToCartTokoFoodUseCase.get().execute(updateParam)
+            }.let {
                 if (it.data.bottomSheet.isShowBottomSheet) {
                     cartDataValidationState.emit(
                         UiEvent(
@@ -255,6 +295,12 @@ class MultipleFragmentsViewModel @Inject constructor(
                         )
                     )
                 } else {
+                    cartDataValidationState.emit(
+                        UiEvent(
+                            state = UiEvent.EVENT_HIDE_LOADING_ADD_TO_CART,
+                            data = null
+                        )
+                    )
                     loadCartList(source)
                     cartDataValidationState.emit(
                         UiEvent(
@@ -288,14 +334,13 @@ class MultipleFragmentsViewModel @Inject constructor(
 
     private fun loadCartList(source: String) {
         launchCatchError(block = {
-            miniCartLoadingQueue.value = miniCartLoadingQueue.value.plus(Int.ONE)
             miniCartUiModelState.emit(Result.Loading())
-            loadCartTokoFoodUseCase.get()(source).collect {
+            withContext(dispatchers.io) {
+                loadCartTokoFoodUseCase.get().execute(source)
+            }.let {
                 cartDataState.emit(it.data)
-                setMiniCartValue(it.data)
             }
         }, onError = {
-            miniCartLoadingQueue.value.minus(Int.ONE)
             miniCartUiModelState.emit(Result.Failure(it))
             cartDataValidationState.emit(
                 UiEvent(
@@ -307,7 +352,6 @@ class MultipleFragmentsViewModel @Inject constructor(
     }
 
     private suspend fun setMiniCartValue(data: CheckoutTokoFoodData) {
-        miniCartLoadingQueue.value = miniCartLoadingQueue.value.minus(Int.ONE)
         if (miniCartLoadingQueue.value.isLessThanZero()) {
             miniCartUiModelState.emit(Result.Success(data.getMiniCartUiModel()))
         }
@@ -327,8 +371,11 @@ class MultipleFragmentsViewModel @Inject constructor(
     }
 
     private fun getUnavailableProductsParam(shopId: String): RemoveCartTokoFoodParam {
-        return cartDataState.value?.getRemoveUnavailableCartParam(shopId)
-            ?: RemoveCartTokoFoodParam()
+        return cartDataState.value?.getRemoveUnavailableCartParam(shopId) ?: RemoveCartTokoFoodParam()
+    }
+
+    companion object {
+        const val MINI_CART_STATE_KEY = "mini_cart_state_key"
     }
 
 }

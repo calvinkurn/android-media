@@ -16,12 +16,10 @@ import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.orZero
-import com.tokopedia.tokofood.common.domain.response.CartTokoFoodData
 import com.tokopedia.tokofood.common.presentation.UiEvent
 import com.tokopedia.tokofood.common.presentation.listener.HasViewModel
-import com.tokopedia.tokofood.common.presentation.uimodel.UpdateParam
 import com.tokopedia.tokofood.common.presentation.viewmodel.MultipleFragmentsViewModel
-import com.tokopedia.tokofood.common.util.TokofoodExt.getSuccessUpdateResultPair
+import com.tokopedia.tokofood.common.util.TokofoodExt.copyParcelable
 import com.tokopedia.tokofood.databinding.FragmentOrderCustomizationLayoutBinding
 import com.tokopedia.tokofood.feature.merchant.analytics.MerchantPageAnalytics
 import com.tokopedia.tokofood.feature.merchant.di.DaggerMerchantPageComponent
@@ -54,6 +52,7 @@ class OrderCustomizationFragment : BaseMultiFragment(),
         private const val BUNDLE_KEY_MERCHANT_ID = "merchantId"
         private const val BUNDLE_KEY_CACHE_MANAGER_ID = "cache_manager_id"
         private const val SOURCE = "merchant_page"
+        private const val BUNDLE_KEY_IS_CHANGE_MERCHANT = "is_change_merchant"
 
         @JvmStatic
         fun createInstance(
@@ -61,13 +60,13 @@ class OrderCustomizationFragment : BaseMultiFragment(),
             cartId: String = "",
             merchantId: String = "",
             cacheManagerId: String? = null,
-            orderCustomizationListener: OrderCustomizationListener? = null
+            isChangeMerchant: Boolean = false
         ) = OrderCustomizationFragment().apply {
-            this.orderCustomizationListener = orderCustomizationListener
             this.arguments = Bundle().apply {
                 putParcelable(BUNDLE_KEY_PRODUCT_UI_MODEL, productUiModel)
                 putString(BUNDLE_KEY_CART_ID, cartId)
                 putString(BUNDLE_KEY_MERCHANT_ID, merchantId)
+                putBoolean(BUNDLE_KEY_IS_CHANGE_MERCHANT, isChangeMerchant)
                 if (cacheManagerId != null) {
                     putString(BUNDLE_KEY_CACHE_MANAGER_ID, cacheManagerId)
                 }
@@ -96,8 +95,6 @@ class OrderCustomizationFragment : BaseMultiFragment(),
 
     private val activityViewModel: MultipleFragmentsViewModel?
         get() = parentActivity?.viewModel()
-
-    private var orderCustomizationListener: OrderCustomizationListener? = null
 
     private var binding: FragmentOrderCustomizationLayoutBinding? = null
 
@@ -158,6 +155,7 @@ class OrderCustomizationFragment : BaseMultiFragment(),
 
         val cartId = arguments?.getString(BUNDLE_KEY_CART_ID) ?: ""
         val merchantId = arguments?.getString(BUNDLE_KEY_MERCHANT_ID) ?: ""
+        val isChangeMerchant = arguments?.getBoolean(BUNDLE_KEY_IS_CHANGE_MERCHANT, false) ?: false
 
         context?.run {
             if (cartId.isNotBlank()) binding?.atcButton?.text =
@@ -230,7 +228,11 @@ class OrderCustomizationFragment : BaseMultiFragment(),
                     if (viewModel.isEditingCustomOrder(cartId)) {
                         activityViewModel?.updateCart(updateParam = updateParam, source = SOURCE)
                     } else {
-                        activityViewModel?.addToCart(updateParam = updateParam, source = SOURCE)
+                        if (isChangeMerchant) {
+                            activityViewModel?.deleteAllAtcAndAddProduct(updateParam = updateParam, source = SOURCE)
+                        } else {
+                            activityViewModel?.addToCart(updateParam = updateParam, source = SOURCE)
+                        }
                         //hit trackers
                         merchantPageAnalytics.clickOnOrderVariantPage(
                             variantWrapperUiModel?.productListItem,
@@ -247,14 +249,9 @@ class OrderCustomizationFragment : BaseMultiFragment(),
     private fun observeUpdateCart() {
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
             activityViewModel?.cartDataValidationFlow?.collect {
-                binding?.atcButton?.isLoading = false
                 when (it.state) {
-                    UiEvent.EVENT_SUCCESS_ADD_TO_CART -> {
-                        orderCustomizationListener?.onSuccessAddCart(it.data?.getSuccessUpdateResultPair())
-                        parentFragmentManager.popBackStack()
-                    }
-                    UiEvent.EVENT_SUCCESS_UPDATE_CART -> {
-                        orderCustomizationListener?.onSuccessUpdateCart(it.data?.getSuccessUpdateResultPair())
+                    UiEvent.EVENT_HIDE_LOADING_ADD_TO_CART, UiEvent.EVENT_HIDE_LOADING_UPDATE_TO_CART -> {
+                        binding?.atcButton?.isLoading = false
                         parentFragmentManager.popBackStack()
                     }
                 }
@@ -289,7 +286,8 @@ class OrderCustomizationFragment : BaseMultiFragment(),
 
         this.variantWrapperUiModel = variantWrapperUiModel
 
-        productUiModel = arguments?.getParcelable<ProductUiModel>(BUNDLE_KEY_PRODUCT_UI_MODEL) ?: ProductUiModel()
+        val productUiParcelable = arguments?.getParcelable(BUNDLE_KEY_PRODUCT_UI_MODEL) ?: ProductUiModel()
+        this.productUiModel = productUiParcelable.copyParcelable()
     }
 
     private fun showErrorMessage() {
@@ -321,10 +319,5 @@ class OrderCustomizationFragment : BaseMultiFragment(),
 
     override fun onNoteTextChanged(orderNote: String, dataSetPosition: Int) {
         customListAdapter?.updateOrderNote(orderNote, dataSetPosition)
-    }
-
-    interface OrderCustomizationListener {
-        fun onSuccessAddCart(addCartData: Pair<UpdateParam, CartTokoFoodData>?)
-        fun onSuccessUpdateCart(updateCartData: Pair<UpdateParam, CartTokoFoodData>?)
     }
 }

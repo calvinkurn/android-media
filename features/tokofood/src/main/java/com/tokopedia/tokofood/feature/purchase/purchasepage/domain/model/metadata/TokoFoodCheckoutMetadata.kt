@@ -51,7 +51,7 @@ data class TokoFoodCheckoutMetadata(
                     tokoFood.data.availableSection
                 ),
                 unavailableSection = TokoFoodCheckoutAvailabilitySection.convertToMetadata(
-                    tokoFood.data.unavailableSection
+                    tokoFood.data.unavailableSections.firstOrNull() ?: CheckoutTokoFoodAvailabilitySection()
                 ),
                 shipping = TokoFoodCheckoutShipping.convertToMetadata(tokoFood.data.shipping),
                 shoppingSummary = TokoFoodCheckoutShoppingSummary.convertToMetadata(tokoFood.data.shoppingSummary)

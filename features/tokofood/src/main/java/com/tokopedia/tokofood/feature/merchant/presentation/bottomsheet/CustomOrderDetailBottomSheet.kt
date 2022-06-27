@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.tokofood.common.util.TokofoodExt.copyParcelable
 import com.tokopedia.tokofood.databinding.BottomsheetOrderInfoLayoutBinding
 import com.tokopedia.tokofood.feature.merchant.presentation.adapter.OrderDetailAdapter
 import com.tokopedia.tokofood.feature.merchant.presentation.model.CustomOrderDetail
@@ -39,17 +40,13 @@ class CustomOrderDetailBottomSheet :
 
         @JvmStatic
         fun createInstance(
-            bundle: Bundle?,
-            clickListener: OnCustomOrderDetailClickListener?
+            bundle: Bundle?
         ): CustomOrderDetailBottomSheet {
             return if (bundle == null) {
-                CustomOrderDetailBottomSheet().apply {
-                    this.clickListener = clickListener
-                }
+                CustomOrderDetailBottomSheet()
             } else {
                 CustomOrderDetailBottomSheet().apply {
                     arguments = bundle
-                    this.clickListener = clickListener
                 }
             }
         }
@@ -68,7 +65,7 @@ class CustomOrderDetailBottomSheet :
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setData()
+        setDataFromArgs()
     }
 
     override fun onCreateView(
@@ -92,7 +89,6 @@ class CustomOrderDetailBottomSheet :
 
     override fun onDestroyView() {
         binding = null
-        productUiModel = null
         super.onDestroyView()
     }
 
@@ -115,16 +111,21 @@ class CustomOrderDetailBottomSheet :
         adapter.setCustomOrderDetails(customOrderDetails)
     }
 
-    private fun setData() {
+    private fun setDataFromArgs() {
         val productPosition = arguments?.getInt(BUNDLE_KEY_PRODUCT_POSITION).orZero()
         this.productPosition = productPosition
-        this.productUiModel = arguments?.getParcelable(BUNDLE_KEY_PRODUCT_UI_MODEL) ?: ProductUiModel()
+        val productUiParcelable = arguments?.getParcelable(BUNDLE_KEY_PRODUCT_UI_MODEL) ?: ProductUiModel()
+        this.productUiModel = productUiParcelable.copyParcelable()
     }
 
     fun show(fragmentManager: FragmentManager) {
         if (!isVisible) {
             show(fragmentManager, this::class.java.simpleName)
         }
+    }
+
+    fun setClickListener(clickListener: OnCustomOrderDetailClickListener) {
+        this.clickListener = clickListener
     }
 
     override fun onEditButtonClicked(cartId: String) {

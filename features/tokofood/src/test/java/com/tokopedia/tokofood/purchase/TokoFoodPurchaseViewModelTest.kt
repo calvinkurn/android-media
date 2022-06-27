@@ -335,7 +335,7 @@ class TokoFoodPurchaseViewModelTest : TokoFoodPurchaseViewModelTestFixture() {
 
             val expectedTotalProducts =
                 successResponse.cartListTokofood.data.availableSection.products.size +
-                        successResponse.cartListTokofood.data.unavailableSection.products.size
+                        successResponse.cartListTokofood.data.unavailableSections.firstOrNull()?.products?.size.orZero()
             assertEquals(
                 expectedTotalProducts,
                 viewModel.visitables.value?.count { it is TokoFoodPurchaseProductTokoFoodPurchaseUiModel }
@@ -359,7 +359,7 @@ class TokoFoodPurchaseViewModelTest : TokoFoodPurchaseViewModelTestFixture() {
 
             val expectedTotalProducts =
                 successResponse.cartListTokofood.data.availableSection.products.size +
-                        successResponse.cartListTokofood.data.unavailableSection.products.size
+                        successResponse.cartListTokofood.data.unavailableSections.firstOrNull()?.products?.size.orZero()
             assertEquals(
                 expectedTotalProducts,
                 viewModel.visitables.value?.count { it is TokoFoodPurchaseProductTokoFoodPurchaseUiModel }
@@ -381,7 +381,7 @@ class TokoFoodPurchaseViewModelTest : TokoFoodPurchaseViewModelTestFixture() {
         viewModel.validateBulkDelete()
 
         val expectedUiEventState = PurchaseUiEvent.EVENT_SHOW_BULK_DELETE_CONFIRMATION_DIALOG
-        val expectedUnavailableProductCount = successResponse.cartListTokofood.data.unavailableSection.products.size
+        val expectedUnavailableProductCount = successResponse.cartListTokofood.data.unavailableSections.firstOrNull()?.products?.size.orZero()
         assertEquals(expectedUiEventState, viewModel.purchaseUiEvent.value?.state)
         assertEquals(expectedUnavailableProductCount, viewModel.purchaseUiEvent.value?.data as? Int)
     }
@@ -421,7 +421,7 @@ class TokoFoodPurchaseViewModelTest : TokoFoodPurchaseViewModelTestFixture() {
         viewModel.loadData()
         viewModel.bulkDeleteUnavailableProducts()
 
-        val expectedUnavailableProductCount = successResponse.cartListTokofood.data.unavailableSection.products.size
+        val expectedUnavailableProductCount = successResponse.cartListTokofood.data.unavailableSections.firstOrNull()?.products?.size.orZero()
         assertEquals(
             expectedUnavailableProductCount,
             viewModel.visitables.value?.count { it is TokoFoodPurchaseProductTokoFoodPurchaseUiModel && !it.isAvailable })
@@ -481,7 +481,7 @@ class TokoFoodPurchaseViewModelTest : TokoFoodPurchaseViewModelTestFixture() {
 
         viewModel.toggleUnavailableProductsAccordion()
 
-        val expectedUnavailableProductCount = successResponse.cartListTokofood.data.unavailableSection.products.size
+        val expectedUnavailableProductCount = successResponse.cartListTokofood.data.unavailableSections.firstOrNull()?.products?.size.orZero()
         assertEquals(
             expectedUnavailableProductCount,
             viewModel.visitables.value?.count { it is TokoFoodPurchaseProductTokoFoodPurchaseUiModel && !it.isAvailable })

@@ -10,6 +10,7 @@ import com.tokopedia.media.loader.loadImage
 import com.tokopedia.tokofood.common.constants.ImageUrl
 import com.tokopedia.tokofood.common.presentation.uimodel.UpdateParam
 import com.tokopedia.tokofood.databinding.BottomsheetChangeMerchantLayoutBinding
+import com.tokopedia.tokofood.feature.merchant.presentation.model.ProductUiModelWrapper
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 
@@ -19,6 +20,7 @@ class ChangeMerchantBottomSheet : BottomSheetUnify() {
 
     private var changeMerchantListener: ChangeMerchantListener? = null
     private var updateParam: UpdateParam? = null
+    private var productUiModelWrapper: ProductUiModelWrapper? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -48,7 +50,12 @@ class ChangeMerchantBottomSheet : BottomSheetUnify() {
             UpdateParam::class.java
         ) ?: UpdateParam()
 
-        updateParam = updateParamCm
+        val productUiModelWrapperCm = cacheManager?.get(
+            KEY_PRODUCT_UI_MODEL_WRAPPER, ProductUiModelWrapper::class.java
+        ) ?: ProductUiModelWrapper()
+
+        this.updateParam = updateParamCm
+        this.productUiModelWrapper = productUiModelWrapperCm
     }
 
     private fun setupViews() {
@@ -66,7 +73,11 @@ class ChangeMerchantBottomSheet : BottomSheetUnify() {
     private fun setBtnConfirmOrder() {
         binding?.btnConfirmOrder?.setOnClickListener {
             updateParam?.let { updateParam ->
-                changeMerchantListener?.changeMerchantConfirmAddToCart(updateParam)
+                productUiModelWrapper?.let { productUiModelWrapper ->
+                    changeMerchantListener?.changeMerchantConfirmAddToCart(updateParam,
+                        productUiModelWrapper
+                    )
+                }
             }
             dismiss()
         }
@@ -85,7 +96,7 @@ class ChangeMerchantBottomSheet : BottomSheetUnify() {
     }
 
     interface ChangeMerchantListener {
-        fun changeMerchantConfirmAddToCart(updateParam: UpdateParam)
+        fun changeMerchantConfirmAddToCart(updateParam: UpdateParam, productUiModelWrapper: ProductUiModelWrapper)
     }
 
     companion object {
@@ -101,6 +112,8 @@ class ChangeMerchantBottomSheet : BottomSheetUnify() {
 
         const val KEY_UPDATE_PARAM = "key_update_param_change_merchant"
         const val KEY_CACHE_MANAGER_ID = "key_cache_manager_id_change_merchant"
+        const val KEY_PRODUCT_UI_MODEL_WRAPPER = "key_product_ui_model_wrapper"
+
         val TAG: String = ChangeMerchantBottomSheet::class.java.simpleName
     }
 

@@ -13,6 +13,7 @@ import com.tokopedia.tokofood.common.domain.usecase.RemoveCartTokoFoodUseCase
 import com.tokopedia.tokofood.common.domain.usecase.UpdateCartTokoFoodUseCase
 import com.tokopedia.tokofood.common.presentation.uimodel.UpdateParam
 import com.tokopedia.tokofood.common.presentation.viewmodel.MultipleFragmentsViewModel
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.unit.test.rule.CoroutineTestRule
 import dagger.Lazy
 import io.mockk.MockKAnnotations
@@ -64,7 +65,8 @@ abstract class MultipleFragmentsViewModelTestFixture {
             loadCartTokoFoodUseCase,
             addToCartTokoFoodUseCase,
             updateCartTokoFoodUseCase,
-            removeCartTokoFoodUseCase
+            removeCartTokoFoodUseCase,
+            CoroutineTestDispatchersProvider
         )
     }
 
@@ -75,63 +77,55 @@ abstract class MultipleFragmentsViewModelTestFixture {
 
     protected fun onLoadCartList_shouldReturn(response: CheckoutTokoFood) {
         coEvery {
-            loadCartTokoFoodUseCase.get()(SOURCE)
-        } returns flow {
-            emit(response)
-        }
+            loadCartTokoFoodUseCase.get().execute(SOURCE)
+        } returns response
     }
 
     protected fun onLoadCartList_shouldThrow(throwable: Throwable) {
         coEvery {
-            loadCartTokoFoodUseCase.get()(SOURCE)
+            loadCartTokoFoodUseCase.get().execute(SOURCE)
         } throws throwable
     }
 
     protected fun onAddToCart_shouldReturn(updateParam: UpdateParam,
                                            response: CartTokoFoodResponse) {
         coEvery {
-            addToCartTokoFoodUseCase.get()(updateParam)
-        } returns flow {
-            emit(response)
-        }
+            addToCartTokoFoodUseCase.get().execute(updateParam)
+        } returns response
     }
 
     protected fun onAddToCart_shouldThrow(updateParam: UpdateParam,
                                           throwable: Throwable) {
         coEvery {
-            addToCartTokoFoodUseCase.get()(updateParam)
+            addToCartTokoFoodUseCase.get().execute(updateParam)
         } throws throwable
     }
 
     protected fun onUpdateCart_shouldReturn(updateParam: UpdateParam,
                                             response: CartTokoFoodResponse) {
         coEvery {
-            updateCartTokoFoodUseCase.get()(updateParam)
-        } returns flow {
-            emit(response)
-        }
+            updateCartTokoFoodUseCase.get().execute(updateParam)
+        } returns response
     }
 
     protected fun onUpdateCart_shouldThrow(updateParam: UpdateParam,
                                            throwable: Throwable) {
         coEvery {
-            updateCartTokoFoodUseCase.get()(updateParam)
+            updateCartTokoFoodUseCase.get().execute(updateParam)
         } throws throwable
     }
 
     protected fun onRemoveCart_shouldReturn(removeCartParam: RemoveCartTokoFoodParam,
                                             response: CartTokoFoodResponse) {
         coEvery {
-            removeCartTokoFoodUseCase.get()(removeCartParam)
-        } returns flow {
-            emit(response)
-        }
+            removeCartTokoFoodUseCase.get().execute(removeCartParam)
+        } returns response
     }
 
     protected fun onRemoveCart_shouldThrow(removeCartParam: RemoveCartTokoFoodParam,
                                             throwable: Throwable) {
         coEvery {
-            removeCartTokoFoodUseCase.get()(removeCartParam)
+            removeCartTokoFoodUseCase.get().execute(removeCartParam)
         } throws throwable
     }
 
