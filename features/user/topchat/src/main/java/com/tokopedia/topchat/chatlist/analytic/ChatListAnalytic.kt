@@ -1,6 +1,6 @@
 package com.tokopedia.topchat.chatlist.analytic
 
-import com.tokopedia.topchat.chatlist.pojo.ItemChatListPojo
+import com.tokopedia.topchat.chatlist.domain.pojo.ItemChatListPojo
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
 import com.tokopedia.user.session.UserSessionInterface

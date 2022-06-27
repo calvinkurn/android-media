@@ -2,6 +2,7 @@ package com.tokopedia.power_merchant.subscribe.domain.usecase
 
 import com.tokopedia.gm.common.data.source.cloud.model.ParamShopInfoByID
 import com.tokopedia.gm.common.domain.interactor.BaseGqlUseCase
+import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.network.exception.MessageErrorException
@@ -14,18 +15,25 @@ import javax.inject.Inject
  * Created By @ilhamsuaib on 22/05/21
  */
 
+@GqlQuery("GetShopModerationStatusGqlQuery", GetShopModerationStatusUseCase.QUERY)
 class GetShopModerationStatusUseCase @Inject constructor(
-        private val gqlRepository: GraphqlRepository
+    private val gqlRepository: GraphqlRepository
 ) : BaseGqlUseCase<ModerationShopStatusUiModel>() {
 
     override suspend fun executeOnBackground(): ModerationShopStatusUiModel {
-        val gqlRequest = GraphqlRequest(QUERY, GetShopInfoByIdResponse::class.java, params.parameters)
+        val gqlRequest = GraphqlRequest(
+            GetShopModerationStatusGqlQuery(),
+            GetShopInfoByIdResponse::class.java,
+            params.parameters
+        )
         val gqlResponse = gqlRepository.response(listOf(gqlRequest), cacheStrategy)
 
         val gqlErrors = gqlResponse.getError(GetShopInfoByIdResponse::class.java)
         if (gqlErrors.isNullOrEmpty()) {
-            val data = gqlResponse.getData<GetShopInfoByIdResponse>(GetShopInfoByIdResponse::class.java)
-            val shopStatusId: Int? = data?.shopInfoById?.result?.firstOrNull()?.statusInfo?.shopStatus
+            val data =
+                gqlResponse.getData<GetShopInfoByIdResponse>(GetShopInfoByIdResponse::class.java)
+            val shopStatusId: Int? =
+                data?.shopInfoById?.result?.firstOrNull()?.statusInfo?.shopStatus
             if (shopStatusId != null) {
                 return ModerationShopStatusUiModel(shopStatusId)
             } else {
@@ -37,9 +45,7 @@ class GetShopModerationStatusUseCase @Inject constructor(
     }
 
     companion object {
-        private const val PARAM_INPUT = "input"
-
-        private val QUERY = """
+        const val QUERY = """
             query shopInfoByID(${'$'}input: ParamShopInfoByID!) {
               shopInfoByID(input: ${'$'}input) {
                 result {
@@ -49,13 +55,14 @@ class GetShopModerationStatusUseCase @Inject constructor(
                 }
               }
             }
-        """.trimIndent()
+        """
+        private const val PARAM_INPUT = "input"
 
         fun createParam(shopId: Long): RequestParams {
             val filedStatusInfo = "status"
             val inputParams = ParamShopInfoByID(
-                    shopIDs = listOf(shopId),
-                    fields = listOf(filedStatusInfo)
+                shopIDs = listOf(shopId),
+                fields = listOf(filedStatusInfo)
             )
             return RequestParams.create().apply {
                 putObject(PARAM_INPUT, inputParams)

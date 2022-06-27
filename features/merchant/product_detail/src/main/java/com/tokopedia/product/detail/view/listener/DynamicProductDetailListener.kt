@@ -43,8 +43,6 @@ interface DynamicProductDetailListener {
 
     fun onMerchantVoucherSummaryClicked(shopId: String, @MvcSource source: Int, productId: String)
 
-
-
     /**
      * ProductSnapshotViewHolder
      */
@@ -72,6 +70,11 @@ interface DynamicProductDetailListener {
      * BestSellerViewHolder
      */
     fun onClickBestSeller(componentTrackDataModel: ComponentTrackDataModel, appLink: String)
+
+    /**
+     * OneLinerViewHolder
+     */
+    fun onImpressStockAssurance(componentTrackDataModel: ComponentTrackDataModel, label: String)
 
     /**
      * ProductDiscussionViewHolder
@@ -107,9 +110,11 @@ interface DynamicProductDetailListener {
      * ProductShopCredibilityViewHolder
      */
     fun onShopInfoClicked(itemId: Int, componentTrackDataModel: ComponentTrackDataModel)
+    fun onShopMultilocClicked(componentTrackDataModel: ComponentTrackDataModel)
     fun gotoShopDetail(componentTrackDataModel: ComponentTrackDataModel)
     fun onShopTickerClicked(tickerDataResponse: ShopInfo.TickerDataResponse, componentTrackDataModel: ComponentTrackDataModel)
     fun onShopTickerImpressed(tickerDataResponse: ShopInfo.TickerDataResponse, componentTrackDataModel: ComponentTrackDataModel)
+    fun onShopCredibilityImpressed(countLocation: String, componentTrackDataModel: ComponentTrackDataModel)
 
     /**
      * ProductRecommendationAnnotationChipViewHolder
@@ -156,7 +161,6 @@ interface DynamicProductDetailListener {
      * ImpressionComponent
      */
     fun onImpressComponent(componentTrackDataModel: ComponentTrackDataModel)
-
     /**
      * ProductNotifyMeViewHolder
      */
