@@ -232,8 +232,15 @@ class NewShopPageViewModel @Inject constructor(
         widgetUserAddressLocalData: LocalCacheModel
     ): ShopPageHeaderLayoutResponse {
         val useCase = getShopPageHeaderLayoutUseCase.get()
-        val districtId = widgetUserAddressLocalData.district_id
-        val cityId = widgetUserAddressLocalData.city_id
+        val districtId: String
+        val cityId: String
+        if (isMyShop(shopId)) {
+            districtId = widgetUserAddressLocalData.district_id
+            cityId = widgetUserAddressLocalData.city_id
+        } else {
+            districtId = ""
+            cityId = ""
+        }
         useCase.params = GetShopPageHeaderLayoutUseCase.createParams(shopId, districtId, cityId)
         useCase.isFromCloud = isRefresh
         return useCase.executeOnBackground()
