@@ -51,8 +51,8 @@ class ExplicitView : CardUnify2, ExplicitAction {
     private var pageType = ""
     private var preferenceAnswer: Boolean? = null
 
-    private var onWidgetDismissListener: OnWidgetDismissListener? = null
-    private var onWidgetFinishListener: OnWidgetFinishListener? = null
+    private var onWidgetDismissListener: (() -> Unit)? = null
+    private var onWidgetFinishListener: (() -> Unit)? = null
 
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs) {
         checkAttribute(attrs)
@@ -162,8 +162,8 @@ class ExplicitView : CardUnify2, ExplicitAction {
             }
         }
 
-        viewModel?.statusUpdateState?.observe(lifecycleOwner) {
-            onWidgetFinishListener?.onFinish()
+        viewModel?.statusUpdateState?.observeOnce(lifecycleOwner) {
+            onWidgetFinishListener?.invoke()
         }
     }
 
@@ -279,7 +279,7 @@ class ExplicitView : CardUnify2, ExplicitAction {
     override fun onDismiss() {
         this.hide()
         onCleared()
-        onWidgetDismissListener?.onDismiss()
+        onWidgetDismissListener?.invoke()
     }
 
     override fun onFailed() {
@@ -346,28 +346,17 @@ class ExplicitView : CardUnify2, ExplicitAction {
         viewModel?.explicitContent?.removeObservers(lifecycleOwner)
         viewModel?.statusSaveAnswer?.removeObservers(lifecycleOwner)
         viewModel?.isQuestionLoading?.removeObservers(lifecycleOwner)
-        viewModel?.statusUpdateState?.removeObservers(lifecycleOwner)
         removeAllViews()
         bindingFailed = null
         bindingQuestion = null
         bindingSuccess = null
     }
 
-    fun setOnWidgetDismissListener(listener: OnWidgetDismissListener) {
+    fun setOnWidgetDismissListener(listener: () -> Unit) {
         onWidgetDismissListener = listener
     }
 
-    fun setOnWidgetFinishListener(listener: OnWidgetFinishListener) {
+    fun setOnWidgetFinishListener(listener: () -> Unit) {
         onWidgetFinishListener = listener
-    }
-
-    companion object {
-        interface OnWidgetDismissListener{
-            fun onDismiss()
-        }
-
-        interface OnWidgetFinishListener{
-            fun onFinish()
-        }
     }
 }
