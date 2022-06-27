@@ -314,8 +314,6 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     private lateinit var statusBarBackground: View
     private lateinit var sharedPrefs: SharedPreferences
     private lateinit var remoteConfigInstance: RemoteConfigInstance
-    private lateinit var backgroundViewImage: ImageView
-    private lateinit var loaderHeaderImage: FrameLayout
     private var stickyLoginView: StickyLoginView? = null
     private var homeRecyclerView: NestedRecyclerView? = null
     private var navToolbar: NavToolbar? = null
@@ -537,9 +535,6 @@ open class HomeRevampFragment : BaseDaggerFragment(),
 
         statusBarBackground = view.findViewById(R.id.status_bar_bg)
         homeRecyclerView = view.findViewById(R.id.home_fragment_recycler_view)
-
-        backgroundViewImage = view.findViewById<ImageView>(R.id.view_background_image)
-        loaderHeaderImage = view.findViewById<FrameLayout>(R.id.loader_header_home)
         homeRecyclerView?.setHasFixedSize(true)
         HomeComponentRollenceController.fetchHomeComponentRollenceValue()
 
@@ -567,7 +562,6 @@ open class HomeRevampFragment : BaseDaggerFragment(),
                         }
 
                         override fun onYposChanged(yOffset: Int) {
-                            backgroundViewImage.y = -(yOffset.toFloat())
                         }
                     }
             ))
@@ -1051,10 +1045,6 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         startTokopointRotation()
         playWidgetOnVisibilityChanged(isViewResumed = true)
         super.onResume()
-        if(eligibleBeautyFest != isEligibleForBeautyFest()) {
-            beautyFestEvent = BEAUTY_FEST_NOT_SET
-            renderBeautyFestHeader(true)
-        }
         createAndCallSendScreen()
         if (!shouldPausePlay) adapter?.onResumePlayWidget()
         adapter?.onResumeBanner()
@@ -1193,7 +1183,6 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         observePlayWidgetReminder()
         observePlayWidgetReminderEvent()
         observeResetNestedScrolling()
-        observeBeautyFestData()
         observeSearchHint()
     }
 
@@ -1236,22 +1225,8 @@ open class HomeRevampFragment : BaseDaggerFragment(),
                 if (dynamicChannel.list.isNotEmpty()) {
                     configureHomeFlag(dynamicChannel.homeFlag)
                     setData(dynamicChannel.list, dynamicChannel.isCache)
-                    setBeautyFest(dynamicChannel)
                 }
             }
-        })
-    }
-
-    private fun observeBeautyFestData() {
-        getHomeViewModel().beautyFestLiveData.observe(viewLifecycleOwner, Observer { beautyFestData ->
-            if(beautyFestData == BEAUTY_FEST_NOT_SET) {
-                renderBeautyFestHeader()
-            }
-            else {
-                beautyFestEvent = beautyFestData
-                renderBeautyFestHeader()
-            }
-
         })
     }
 
@@ -1352,38 +1327,12 @@ open class HomeRevampFragment : BaseDaggerFragment(),
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        renderBeautyFestHeader()
         observeSearchHint()
-    }
-
-    private fun renderBeautyFestHeader(bypassEligibleBeautyFest: Boolean = false) {
-        if(isEligibleForBeautyFest() || bypassEligibleBeautyFest) {
-            eligibleBeautyFest = false
-            when (beautyFestEvent) {
-                BEAUTY_FEST_NOT_SET -> {
-                    renderTopBackgroundBeautyFest(isLoading = true, isBeautyFest =  false)
-                }
-                BEAUTY_FEST_TRUE -> {
-                    eligibleBeautyFest = true
-                    renderTopBackgroundBeautyFest(isLoading = false, isBeautyFest =  true)
-                }
-                else -> {
-                    renderTopBackgroundBeautyFest(isLoading = false, isBeautyFest =  false)
-                }
-            }
-        }
-        else {
-            eligibleBeautyFest = false
-            renderTopBackground()
-        }
     }
 
     private fun renderTopBackground() {
         context?.let { currentContext ->
             //gone hide visibility loader cantik fest
-            loaderHeaderImage.gone()
-            backgroundViewImage.visible()
-
             val backgroundUrl = if (currentContext.isDarkMode()) {
                 BACKGROUND_DARK_1
             } else {
@@ -1391,70 +1340,11 @@ open class HomeRevampFragment : BaseDaggerFragment(),
             }
 
             adjustHomeBackgroundHeight()
-
-            Glide.with(currentContext)
-                .load(backgroundUrl)
-                .fitCenter()
-                .dontAnimate()
-                .into(backgroundViewImage)
-        }
-    }
-
-    private fun renderTopBackgroundBeautyFest(isLoading: Boolean, isBeautyFest: Boolean) {
-        context?.let { currentContext ->
-            adjustHomeBackgroundHeight()
-
-            if (isLoading) {
-                //displaying shimmer and hide header
-                loaderHeaderImage.visible()
-                backgroundViewImage.gone()
-            } else {
-                //displaying header and hide shimmer
-                if (isBeautyFest) {
-                    if (currentContext.isDarkMode()) {
-                        //change tint color
-                        backgroundViewImage.setColorFilter(
-                            ContextCompat.getColor(
-                                requireContext(),
-                                R.color.home_beauty_fest_dark_dms
-                            )
-                        )
-                    } else {
-                        //change tint color
-                        backgroundViewImage.setColorFilter(
-                            ContextCompat.getColor(
-                                requireContext(),
-                                R.color.home_beauty_fest_light_dms
-                            )
-                        )
-                    }
-                } else {
-                    backgroundViewImage.clearColorFilter()
-                    val backgroundUrl = if (currentContext.isDarkMode()) {
-                        BACKGROUND_DARK_1
-                    } else {
-                        BACKGROUND_LIGHT_1
-                    }
-
-                    Glide.with(currentContext)
-                        .load(backgroundUrl)
-                        .fitCenter()
-                        .dontAnimate()
-                        .into(backgroundViewImage)
-                }
-                loaderHeaderImage.gone()
-                backgroundViewImage.visible()
-            }
         }
     }
 
     private fun adjustHomeBackgroundHeight() {
         context?.run {
-            val layoutParams = backgroundViewImage.layoutParams
-            layoutParams.height =
-                resources.getDimensionPixelSize(R.dimen.home_background_balance_small_with_choose_address)
-            backgroundViewImage.layoutParams = layoutParams
-            loaderHeaderImage.layoutParams = layoutParams
         }
     }
 
@@ -1477,20 +1367,6 @@ open class HomeRevampFragment : BaseDaggerFragment(),
             )
             adapter?.submitList(data)
             showCoachmarkWithDataValidation(data)
-        }
-    }
-
-    private fun setBeautyFest(dynamicChannel: HomeDynamicChannelModel) {
-        val isEligibleForBeautyFest = isEligibleForBeautyFest()
-        if (isEligibleForBeautyFest && !dynamicChannel.isCache && counterBypassFirstNetworkHomeData > 0) {
-            getHomeViewModel().getBeautyFest(dynamicChannel)
-        } else if (isEligibleForBeautyFest) {
-            beautyFestEvent = BEAUTY_FEST_NOT_SET
-            renderBeautyFestHeader()
-            counterBypassFirstNetworkHomeData++
-        } else if (!isEligibleForBeautyFest) {
-            beautyFestEvent = BEAUTY_FEST_FALSE
-            renderBeautyFestHeader(bypassEligibleBeautyFest = true)
         }
     }
 
@@ -2134,17 +2010,9 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         if (isAdded && activity != null && adapter != null) {
             if (adapter?.itemCount ?: RV_EMPTY_TRESHOLD > RV_EMPTY_TRESHOLD) {
                 showToaster(message, TYPE_ERROR)
-                renderBeautyFestErrorNetwork()
             } else {
                 NetworkErrorHelper.showEmptyState(activity, root, message) { onRefresh() }
             }
-        }
-    }
-
-    private fun renderBeautyFestErrorNetwork() {
-        if(isEligibleForBeautyFest() && beautyFestEvent == BEAUTY_FEST_NOT_SET) {
-            beautyFestEvent = BEAUTY_FEST_FALSE
-            renderBeautyFestHeader()
         }
     }
 
