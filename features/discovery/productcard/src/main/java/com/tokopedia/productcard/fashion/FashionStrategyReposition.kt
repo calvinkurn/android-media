@@ -212,8 +212,8 @@ internal open class FashionStrategyReposition: FashionStrategy {
 
             val renderedLabelGroupVariantList =
                 productCardModel.getRenderedLabelGroupVariantList(
-                    18,
-                    true,
+                    LABEL_VARIANT_WITH_LABEL_CHAR_LIMIT,
+                    productCardModel.getLabelPrice() == null,
                 )
             val renderedLabelVariantSizeList = renderedLabelGroupVariantList.filter { it.isSize() }
             val renderedLabelVariantColorList = renderedLabelGroupVariantList.filter { it.isColor() }
