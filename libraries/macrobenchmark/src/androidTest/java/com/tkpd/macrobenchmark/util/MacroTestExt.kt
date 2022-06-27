@@ -26,7 +26,6 @@ fun MacrobenchmarkRule.measureStartup(
         setupEnvironment.invoke()
     },
     measureBlock = {
-        Thread.sleep(2000)
         startActivityAndWait(intent.invoke())
         waitUntil.invoke()
     }
