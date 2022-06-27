@@ -85,7 +85,9 @@
         android:layout_marginEnd="@dimen/unify_space_16"
         app:layout_constraintBottom_toBottomOf="@id/tpg_total_order_label"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@id/tpg_total_order_label" />
+        app:layout_constraintTop_toTopOf="@id/tpg_total_order_label"
+        app:qty_default_value="1"
+        app:qty_min_value="1" />
 
     <com.tokopedia.unifycomponents.DividerUnify
         android:id="@+id/du_total_price"
