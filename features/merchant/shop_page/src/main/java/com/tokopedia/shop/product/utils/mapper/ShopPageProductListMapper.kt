@@ -57,8 +57,6 @@ object ShopPageProductListMapper {
     ): ShopProductUiModel =
             with(shopProduct) {
                 ShopProductUiModel().also {
-                    val minimumOrder = 1
-                    val stock = 10
                     it.id = productId
                     it.name = name
                     it.displayedPrice = price.textIdr

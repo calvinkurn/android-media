@@ -1,7 +1,6 @@
 package com.tokopedia.shop.home.util.mapper
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.kotlin.extensions.view.toDoubleOrZero
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
@@ -69,8 +68,6 @@ object ShopPageHomeMapper {
     ): ShopHomeProductUiModel =
         with(shopProduct) {
             ShopHomeProductUiModel().also {
-                val minOrder = 1
-                val stock = 10
                 it.id = productId
                 it.name = name
                 it.displayedPrice = price.textIdr
@@ -94,7 +91,7 @@ object ShopPageHomeMapper {
                 it.freeOngkirPromoIcon = freeOngkir.imgUrl
                 it.labelGroupList =
                     labelGroupList.map { labelGroup -> mapToLabelGroupViewModel(labelGroup) }
-                it.minimumOrder = minOrder
+                it.minimumOrder = minimumOrder
                 it.stock = stock
                 it.isEnableDirectPurchase = isEnableDirectPurchase
                 it.isVariant = hasVariant
@@ -647,9 +644,6 @@ object ShopPageHomeMapper {
         isEnableDirectPurchase: Boolean
     ): List<ShopHomeProductUiModel> {
         return listProduct.map {
-            val isVariant = false
-            val minOrder = 1
-            val stock = 10
             ShopHomeProductUiModel().apply {
                 id = it.id
                 name = it.name
@@ -673,10 +667,12 @@ object ShopPageHomeMapper {
                 }
                 labelGroupList =
                     it.labelGroups.map { labelGroup -> mapToLabelGroupViewModel(labelGroup) }
-                minimumOrder = minOrder
-                this.stock = stock
+                minimumOrder = it.minimumOrder
+                this.stock = it.stock
                 this.isEnableDirectPurchase = isEnableDirectPurchase
-                this.isVariant = isVariant
+                this.isVariant = it.listChildId.isNotEmpty()
+                this.listChildId = it.listChildId
+                this.parentId = it.parentId
             }
         }
     }
@@ -810,8 +806,6 @@ object ShopPageHomeMapper {
         isEnableDirectPurchase: Boolean
     ): List<ShopHomeProductUiModel> {
         return data.map {
-            val isVariant = false
-            val stock = 10
             ShopHomeProductUiModel().apply {
                 id = it.productID
                 name = it.name
@@ -830,10 +824,12 @@ object ShopPageHomeMapper {
                 recommendationType = it.recommendationType
                 categoryBreadcrumbs = it.categoryBreadcrumbs
                 labelGroupList = it.labelGroups.map { mapToLabelGroupViewModel(it) }
-                minimumOrder = it.minimumOrder ?: 1
-                this.stock = stock
+                minimumOrder = it.minimumOrder
+                this.stock = it.stock
                 this.isEnableDirectPurchase = isEnableDirectPurchase
-                this.isVariant = isVariant
+                this.isVariant = it.listChildId.isNotEmpty()
+                this.listChildId = it.listChildId
+                this.parentId = it.parentId
             }
         }
     }
@@ -880,9 +876,6 @@ object ShopPageHomeMapper {
         isEnableDirectPurchase: Boolean
     ): ShopHomeProductUiModel =
         ShopHomeProductUiModel().apply {
-            val isVariant = false
-            val stock = 10
-            val minOrder = 1
             id = response.productID.toString()
             name = response.name
             displayedPrice = response.displayPrice
@@ -901,10 +894,12 @@ object ShopPageHomeMapper {
             freeOngkirPromoIcon = response.freeOngkirPromoIcon
             labelGroupList =
                 response.labelGroups.map { labelGroup -> mapToLabelGroupViewModel(labelGroup) }
-            minimumOrder = minOrder
-            this.stock = stock
+            this.minimumOrder = response.minimumOrder
+            this.stock = response.stock
             this.isEnableDirectPurchase = isEnableDirectPurchase
-            this.isVariant = isVariant
+            this.isVariant = response.listChildId.isNotEmpty()
+            this.listChildId = response.listChildId
+            this.parentId = response.parentId
         }
 
     fun mapToGetCampaignNotifyMeUiModel(model: GetCampaignNotifyMeModel): GetCampaignNotifyMeUiModel {

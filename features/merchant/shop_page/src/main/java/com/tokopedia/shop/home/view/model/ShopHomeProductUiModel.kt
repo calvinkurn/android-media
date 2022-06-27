@@ -53,6 +53,8 @@ class ShopHomeProductUiModel : Visitable<BaseAdapterTypeFactory>, ImpressHolder 
     var isVariant: Boolean = false
     var isNewData: Boolean = false
     var stock: Int = 0
+    var listChildId: List<String> = listOf()
+    var parentId: String = ""
 
     override fun type(typeFactory: BaseAdapterTypeFactory): Int {
         return when(typeFactory){
