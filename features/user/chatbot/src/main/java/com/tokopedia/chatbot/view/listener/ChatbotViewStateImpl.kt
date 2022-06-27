@@ -176,7 +176,7 @@ class ChatbotViewStateImpl(@NonNull override val view: View,
         showQuickReply(visitable.quickReplies)
     }
 
-    override fun onShowInvoiceToChat(generatedInvoice: AttachInvoiceSentUiModel) {
+    override fun onShowInvoiceToChat(generatedInvoice: com.tokopedia.chatbot.attachinvoice.data.uimodel.AttachInvoiceSentUiModel) {
         removeInvoiceCarousel()
         super.onReceiveMessageEvent(generatedInvoice)
     }
