@@ -16,7 +16,6 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.loadImageRounded
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.setMargin
@@ -358,11 +357,7 @@ open class SomListOrderViewHolder(
 
     protected open fun onBindFinished(element: SomListOrderUiModel) {
         binding?.btnQuickAction?.let { btnQuickAction ->
-            if (element.orderStatusId == SomConsts.STATUS_CODE_ORDER_CREATED &&
-                    element.buttons.firstOrNull()?.key == KEY_ACCEPT_ORDER &&
-                    btnQuickAction.isVisible) {
-                listener.onFinishBindNewOrder(btnQuickAction, adapterPosition.takeIf { it != RecyclerView.NO_POSITION }.orZero())
-            }
+            listener.onFinishBindOrder(btnQuickAction, adapterPosition.takeIf { it != RecyclerView.NO_POSITION }.orZero())
         }
     }
 
@@ -419,7 +414,7 @@ open class SomListOrderViewHolder(
         fun onViewComplaintButtonClicked(order: SomListOrderUiModel)
         fun onEditAwbButtonClicked(orderId: String)
         fun onChangeCourierClicked(orderId: String)
-        fun onFinishBindNewOrder(view: View, itemIndex: Int)
+        fun onFinishBindOrder(view: View, itemIndex: Int)
         fun isMultiSelectEnabled(): Boolean
     }
 }

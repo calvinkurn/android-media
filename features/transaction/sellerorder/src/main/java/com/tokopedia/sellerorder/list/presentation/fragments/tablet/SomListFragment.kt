@@ -3,15 +3,9 @@ package com.tokopedia.sellerorder.list.presentation.fragments.tablet
 import android.animation.ValueAnimator
 import android.os.Bundle
 import android.text.Editable
-import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.applink.order.DeeplinkMapperOrder
 import com.tokopedia.applink.sellerhome.AppLinkMapperSellerHome
-import com.tokopedia.coachmark.CoachMark2Item
-import com.tokopedia.coachmark.CoachMarkPreference
-import com.tokopedia.config.GlobalConfig
-import com.tokopedia.kotlin.extensions.view.isVisible
-import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.analytics.SomAnalytics
 import com.tokopedia.sellerorder.common.util.SomConsts
 import com.tokopedia.sellerorder.list.presentation.adapter.typefactories.tablet.SomListAdapterTypeFactory
@@ -19,9 +13,6 @@ import com.tokopedia.sellerorder.list.presentation.adapter.viewholders.tablet.So
 import com.tokopedia.sellerorder.list.presentation.models.OptionalOrderData
 import com.tokopedia.sellerorder.list.presentation.models.SomListFilterUiModel
 import com.tokopedia.sellerorder.list.presentation.models.SomListOrderUiModel
-import com.tokopedia.sellerorder.list.presentation.models.WaitingPaymentCounter
-import com.tokopedia.usecase.coroutines.Result
-import com.tokopedia.usecase.coroutines.Success
 
 class SomListFragment : com.tokopedia.sellerorder.list.presentation.fragments.SomListFragment() {
 
@@ -42,12 +33,6 @@ class SomListFragment : com.tokopedia.sellerorder.list.presentation.fragments.So
         }
 
         private const val SEARCH_ANIMATION_DURATION = 500L
-        private const val COACHMARK_NO_POSITION = -1
-        private const val COACHMARK_INDEX_ITEM_FILTER = 0
-        private const val COACHMARK_INDEX_ITEM_WAITING_PAYMENT = 1
-        private const val COACHMARK_INDEX_ITEM_BULK_ACCEPT = 2
-        private const val COACHMARK_ITEM_COUNT_SELLERAPP = 3
-        private const val COACHMARK_ITEM_COUNT_MAINAPP = 2
     }
 
     private var openedOrderId: String = ""
@@ -74,17 +59,6 @@ class SomListFragment : com.tokopedia.sellerorder.list.presentation.fragments.So
      */
     private var hideOrderDetail: Boolean = false
     private var somListOrderListener: SomListClickListener? = null
-
-    override val coachMarkItemCount: Int
-        get() = if (GlobalConfig.isSellerApp()) COACHMARK_ITEM_COUNT_SELLERAPP else COACHMARK_ITEM_COUNT_MAINAPP
-    override val newOrderCoachMarkItemPosition: Int
-        get() = COACHMARK_NO_POSITION
-    override val filterChipCoachMarkItemPosition: Int
-        get() = COACHMARK_INDEX_ITEM_FILTER
-    override val waitingPaymentCoachMarkItemPosition: Int
-        get() = COACHMARK_INDEX_ITEM_WAITING_PAYMENT
-    override val bulkProcessCoachMarkItemPosition: Int
-        get() = COACHMARK_INDEX_ITEM_BULK_ACCEPT
 
     override fun getAdapterTypeFactory(): SomListAdapterTypeFactory = SomListAdapterTypeFactory(this, this, this)
 
@@ -200,48 +174,6 @@ class SomListFragment : com.tokopedia.sellerorder.list.presentation.fragments.So
         notifyOpenOrderDetail(order)
         SomAnalytics.eventClickOrderCard(order.orderStatusId, order.status)
     }
-
-    override fun onSuccessGetFilter(result: Success<SomListFilterUiModel>, realtimeDataChangeCount: Int): Int {
-        val result = super.onSuccessGetFilter(result, realtimeDataChangeCount)
-        context?.let { context ->
-            if (!CoachMarkPreference.hasShown(context, SHARED_PREF_NEW_SOM_LIST_COACH_MARK)) {
-                setCoachMarkStepListener()
-                CoachMarkPreference.setShown(context, SHARED_PREF_NEW_SOM_LIST_COACH_MARK, true)
-                shouldShowCoachMark = true
-                reshowStatusFilterCoachMark()
-            }
-            return@let
-        }
-        return result
-    }
-
-    override fun createCoachMarkItems(firstNewOrderView: View?): ArrayList<CoachMark2Item> {
-        return arrayListOf<CoachMark2Item>().apply {
-            somListBinding?.sortFilterSomList?.let {
-                add(CoachMark2Item(it, getString(R.string.som_list_coachmark_sort_filter_title), getString(R.string.som_list_coachmark_sort_filter_description)))
-            }
-            if (somListHeaderBinding?.icSomListMenuWaitingPayment?.isVisible == true) {
-                somListHeaderBinding?.icSomListMenuWaitingPayment?.let {
-                    add(CoachMark2Item(it, getString(R.string.som_list_coachmark_waiting_payment_title), getString(R.string.som_list_coachmark_waiting_payment_description)))
-                }
-            }
-        }
-    }
-
-    override fun tryReshowCoachMark() {
-        view?.postDelayed({
-            reshowStatusFilterCoachMark()
-            reshowWaitingPaymentOrderListCoachMark()
-        }, DELAY_COACHMARK)
-    }
-
-    override fun shouldShowFilterCoachMark() = somListBinding?.scrollViewErrorState?.isVisible == false &&
-            shouldShowCoachMark && coachMarkIndexToShow == filterChipCoachMarkItemPosition &&
-            somListBinding?.sortFilterSomList?.isVisible == true
-
-    override fun shouldShowWaitingPaymentCoachMark(waitingPaymentOrderListCountResult: Result<WaitingPaymentCounter>?) =
-        somListBinding?.scrollViewErrorState?.isVisible == false && coachMarkIndexToShow == waitingPaymentCoachMarkItemPosition &&
-                    shouldShowCoachMark && waitingPaymentOrderListCountResult is Success
 
     private fun notifyOpenOrderDetail(order: SomListOrderUiModel) {
         getOpenedOrder().let { openedOrder ->
