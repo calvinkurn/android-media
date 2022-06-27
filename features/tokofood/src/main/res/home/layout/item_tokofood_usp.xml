@@ -26,7 +26,7 @@
                 android:id="@+id/usp_main_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/Unify_NN0"
+                android:background="@color/cardunify_background"
                 android:paddingStart="8dp"
                 android:paddingTop="16dp"
                 android:paddingEnd="8dp">
@@ -53,7 +53,9 @@
                     app:layout_constraintEnd_toStartOf="@+id/guideline1"
                     app:layout_constraintStart_toEndOf="@+id/img_first_usp"
                     app:layout_constraintTop_toTopOf="parent"
-                    app:typographyType="heading_6" />
+                    app:typographyType="display_3"
+                    app:typographyWeight="bold"
+                    />
 
                 <com.tokopedia.unifycomponents.ImageUnify
                     android:id="@+id/img_second_usp"
@@ -77,7 +79,8 @@
                     app:layout_constraintStart_toEndOf="@+id/img_second_usp"
                     app:layout_constraintTop_toTopOf="@+id/img_second_usp"
                     app:layout_constraintWidth_max="70dp"
-                    app:typographyType="heading_6" />
+                    app:typographyType="display_3"
+                    app:typographyWeight="bold" />
 
                 <com.tokopedia.unifycomponents.ImageUnify
                     android:id="@+id/img_third_usp"
@@ -101,33 +104,20 @@
                     app:layout_constraintStart_toEndOf="@+id/img_third_usp"
                     app:layout_constraintTop_toTopOf="@+id/img_third_usp"
                     app:layout_constraintWidth_max="70dp"
-                    app:typographyType="heading_6" />
-
-                <com.tokopedia.unifyprinciples.Typography
-                    android:id="@+id/tg_powered"
-                    android:layout_width="0dp"
-                    android:visibility="invisible"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="12dp"
-                    android:layout_marginEnd="2dp"
-                    android:layout_marginBottom="8dp"
-                    android:text="@string/home_usp_powered_by"
-                    android:textColor="@color/Unify_NN600"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toStartOf="@id/img_gofood"
-                    app:layout_constraintTop_toBottomOf="@id/img_third_usp"
-                    app:typographyType="small"
-                    app:typographyWeight="reguler" />
+                    app:typographyType="display_3"
+                    app:typographyWeight="bold" />
 
                 <ImageView
                     android:id="@+id/img_gofood"
                     android:layout_width="0dp"
-                    android:layout_height="12dp"
+                    android:layout_height="14dp"
                     android:layout_marginStart="4dp"
                     android:layout_marginEnd="12dp"
-                    app:layout_constraintBottom_toBottomOf="@id/tg_powered"
+                    android:layout_marginTop="12dp"
+                    android:layout_marginBottom="8dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="@id/tg_powered" />
+                    app:layout_constraintTop_toBottomOf="@id/img_third_usp" />
 
                 <androidx.constraintlayout.widget.Guideline
                     android:id="@+id/guideline1"
@@ -175,7 +165,7 @@
     <ImageView
         android:id="@+id/img_chevron_usp"
         android:layout_width="32dp"
-        android:layout_height="@dimen/layout_lvl4"
+        android:layout_height="32dp"
         android:layout_gravity="center"
         android:layout_marginBottom="8dp"
         android:elevation="4dp"
