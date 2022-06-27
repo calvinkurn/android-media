@@ -1,6 +1,8 @@
 package com.tokopedia.shop.flashsale.presentation.creation.information
 
+import android.app.Activity
 import android.content.Context
+import android.content.res.ColorStateList
 import android.graphics.Typeface
 import android.os.Bundle
 import android.text.*
@@ -39,12 +41,15 @@ import com.tokopedia.shop.flashsale.domain.entity.CampaignUiModel
 import com.tokopedia.shop.flashsale.domain.entity.Gradient
 import com.tokopedia.shop.flashsale.domain.entity.enums.CampaignStatus
 import com.tokopedia.shop.flashsale.domain.entity.enums.PageMode
+import com.tokopedia.shop.flashsale.domain.entity.enums.PaymentType
 import com.tokopedia.shop.flashsale.presentation.creation.information.adapter.GradientColorAdapter
 import com.tokopedia.shop.flashsale.presentation.creation.information.bottomsheet.CampaignDatePickerBottomSheet
 import com.tokopedia.shop.flashsale.presentation.creation.information.bottomsheet.CampaignTeaserInformationBottomSheet
 import com.tokopedia.shop.flashsale.presentation.creation.information.bottomsheet.ForbiddenWordsInformationBottomSheet
-import com.tokopedia.shop.flashsale.presentation.creation.information.dialog.BackConfirmationDialog
+import com.tokopedia.shop.flashsale.presentation.creation.information.dialog.CancelCreateCampaignConfirmationDialog
+import com.tokopedia.shop.flashsale.presentation.creation.information.dialog.CancelEditCampaignConfirmationDialog
 import com.tokopedia.shop.flashsale.presentation.creation.manage.ManageProductActivity
+import com.tokopedia.unifycomponents.TextFieldUnify2
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.lifecycle.autoClearedNullable
@@ -62,6 +67,9 @@ class CampaignInformationFragment : BaseDaggerFragment() {
         private const val HEX_COLOR_TEXT_FIELD_MAX_LENGTH = 6
         private const val ONE_HOUR = 1
         private const val THRESHOLD = 12
+        private const val SEVEN_DAY = 7
+        private const val THREE_MONTH = 3
+        private const val TWO_HOURS = 2
         private const val THIRTY_MINUTE = 30
         private const val CAMPAIGN_NAME_MAX_LENGTH = 15
         private const val LEARN_MORE_CTA_TEXT_LENGTH = 8
@@ -97,6 +105,20 @@ class CampaignInformationFragment : BaseDaggerFragment() {
     private val viewModelProvider by lazy { ViewModelProvider(this, viewModelFactory) }
     private val viewModel by lazy { viewModelProvider.get(CampaignInformationViewModel::class.java) }
 
+    private val defaultState by lazy {
+        CampaignInformationViewModel.Selection(
+            "",
+            dateManager.getDefaultMinimumCampaignStartDate(),
+            dateManager.getDefaultMinimumCampaignStartDate().advanceMinuteBy(THIRTY_MINUTE),
+            showTeaser = true,
+            dateManager.getDefaultMinimumCampaignStartDate().decreaseHourBy(ONE_HOUR),
+            defaultGradientColor.first,
+            defaultGradientColor.second,
+            PaymentType.INSTANT,
+            Int.ZERO
+        )
+    }
+
     override fun getScreenName(): String =
         CampaignInformationFragment::class.java.canonicalName.orEmpty()
 
@@ -111,7 +133,7 @@ class CampaignInformationFragment : BaseDaggerFragment() {
         super.onAttach(context)
         val callback: OnBackPressedCallback = object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
-                showBackToPreviousPageConfirmation()
+                handleBackConfirmation()
             }
         }
         requireActivity().onBackPressedDispatcher.addCallback(this, callback)
@@ -130,6 +152,7 @@ class CampaignInformationFragment : BaseDaggerFragment() {
         super.onViewCreated(view, savedInstanceState)
         setupView()
         setFragmentToUnifyBgColor()
+        observeCurrentMonthRemainingQuota()
         observeValidationResult()
         observeCampaignCreation()
         observeCampaignUpdate()
@@ -138,11 +161,29 @@ class CampaignInformationFragment : BaseDaggerFragment() {
         observeSaveDraft()
         handlePageMode()
         handleCoachMark()
+        viewModel.getCurrentMonthRemainingQuota()
     }
 
     private fun observeValidationResult() {
         viewModel.areInputValid.observe(viewLifecycleOwner) { validationResult ->
             handleValidationResult(validationResult)
+        }
+    }
+
+    private fun observeCurrentMonthRemainingQuota() {
+        viewModel.currentMonthRemainingQuota.observe(viewLifecycleOwner) { result ->
+            binding?.loader?.gone()
+            when (result) {
+                is Success -> {
+                    binding?.groupContent?.visible()
+                    val remainingQuota = result.data
+                    viewModel.setRemainingQuota(remainingQuota)
+                }
+                is Fail -> {
+                    binding?.groupContent?.gone()
+                    binding?.cardView showError result.throwable
+                }
+            }
         }
     }
 
@@ -180,7 +221,6 @@ class CampaignInformationFragment : BaseDaggerFragment() {
         viewModel.saveDraft.observe(viewLifecycleOwner) { result ->
             when(result) {
                 is Success -> {
-                    binding?.btnDraft?.stopLoading()
                     handleSaveCampaignDraftSuccess(result.data)
                 }
                 is Fail -> {
@@ -202,7 +242,7 @@ class CampaignInformationFragment : BaseDaggerFragment() {
                 }
                 is Fail -> {
                     binding?.groupContent?.gone()
-                    binding?.root showError result.throwable
+                    binding?.cardView showError result.throwable
                 }
             }
         }
@@ -211,17 +251,14 @@ class CampaignInformationFragment : BaseDaggerFragment() {
 
     private fun observeCampaignQuota() {
         viewModel.campaignQuota.observe(viewLifecycleOwner) { result ->
-            binding?.loader?.gone()
             when (result) {
                 is Success -> {
-                    binding?.groupContent?.visible()
                     val remainingQuota = result.data
                     viewModel.setRemainingQuota(remainingQuota)
                     handleRemainingQuota(remainingQuota)
                 }
                 is Fail -> {
-                    binding?.groupContent?.gone()
-                    binding?.root showError result.throwable
+                    binding?.cardView showError result.throwable
                 }
             }
         }
@@ -245,11 +282,8 @@ class CampaignInformationFragment : BaseDaggerFragment() {
     }
 
     private fun setupToolbar() {
-        binding?.header?.headerSubTitle =
-            String.format(getString(R.string.sfs_placeholder_step_counter), FIRST_STEP)
-        binding?.header?.setNavigationOnClickListener {
-            showBackToPreviousPageConfirmation()
-        }
+        binding?.header?.headerSubTitle = String.format(getString(R.string.sfs_placeholder_step_counter), FIRST_STEP)
+        binding?.header?.setNavigationOnClickListener { handleBackConfirmation() }
     }
 
     private fun setupTextFields() {
@@ -306,18 +340,14 @@ class CampaignInformationFragment : BaseDaggerFragment() {
     }
 
     private fun setupDatePicker() {
-        val now = dateManager.getDefaultMinimumCampaignStartDate()
-        val defaultStartDate = now.localFormatTo(DateConstant.DATE_TIME_MINUTE_LEVEL)
-        viewModel.setSelectedStartDate(now)
-
-        val endDate = now.advanceHourBy(ONE_HOUR)
-        val defaultEndDate = endDate.localFormatTo(DateConstant.DATE_TIME_MINUTE_LEVEL)
-        viewModel.setSelectedEndDate(endDate)
-
-        adjustQuantityPicker(now)
-
+        viewModel.setSelectedStartDate(defaultState.startDate)
+        viewModel.setSelectedEndDate(defaultState.endDate)
+        adjustQuantityPicker(defaultState.startDate)
 
         binding?.run {
+            val defaultStartDate = defaultState.startDate.localFormatTo(DateConstant.DATE_TIME_MINUTE_LEVEL)
+            val defaultEndDate = defaultState.endDate.localFormatTo(DateConstant.DATE_TIME_MINUTE_LEVEL)
+
             tauStartDate.editText.setText(defaultStartDate)
             tauEndDate.editText.setText(defaultEndDate)
 
@@ -330,10 +360,12 @@ class CampaignInformationFragment : BaseDaggerFragment() {
 
     private fun handlePageMode() {
         if (pageMode == PageMode.CREATE) {
-            viewModel.getCampaignQuota(dateManager.getCurrentMonth(), dateManager.getCurrentYear())
+            viewModel.storeAsDefaultSelection(defaultState)
         }
 
         if (pageMode == PageMode.UPDATE) {
+            binding?.loader?.visible()
+            binding?.groupContent?.gone()
             viewModel.getCampaignDetail(campaignId)
         }
     }
@@ -384,7 +416,7 @@ class CampaignInformationFragment : BaseDaggerFragment() {
             CampaignInformationViewModel.ValidationResult.InvalidHexColor -> {
                 hideLapsedTeaserTicker()
                 hideErrorTicker()
-                binding?.root showError getString(R.string.sfs_invalid_hex_color)
+                binding?.cardView showError getString(R.string.sfs_invalid_hex_color)
             }
             CampaignInformationViewModel.ValidationResult.Valid -> {
                 hideLapsedTeaserTicker()
@@ -431,15 +463,9 @@ class CampaignInformationFragment : BaseDaggerFragment() {
     }
 
     private fun handleContentSwitcher(hexColorOptionSelected: Boolean) {
-        val isHexColorTextFieldFilled = binding?.tauHexColor?.editText?.text.toString().trim().isValidHexColor()
         binding?.recyclerView?.isVisible = !hexColorOptionSelected
         binding?.groupHexColorPicker?.isVisible = hexColorOptionSelected
-
-        if (hexColorOptionSelected && isHexColorTextFieldFilled) {
-            binding?.btnApply?.visible()
-        } else {
-            binding?.btnApply?.invisible()
-        }
+        binding?.btnApply?.isVisible = hexColorOptionSelected
     }
 
     private fun handleSelectedColor(selectedGradient: Gradient) {
@@ -448,30 +474,47 @@ class CampaignInformationFragment : BaseDaggerFragment() {
         adapter.submit(updatedColorSelection)
 
         binding?.tauHexColor?.editText?.setText("")
-        binding?.btnApply?.invisible()
+        binding?.btnApply?.gone()
+        binding?.tpgHexColorErrorMessage?.invisible()
         binding?.imgHexColorPreview?.setBackgroundResource(R.drawable.sfs_shape_rounded_color)
 
         binding?.cardView?.visible()
         viewModel.setSelectedColor(selectedGradient)
     }
 
-    private fun handleHexColor(text: String) {
-        if (text.isNotEmpty()) {
-            val hexColor = text.toHexColor()
+    private fun handleHexColor(unvalidatedHexColor: String) {
+        if (unvalidatedHexColor.length < HEX_COLOR_TEXT_FIELD_MAX_LENGTH) {
+            binding?.btnApply?.disable()
+            binding?.tauHexColor?.isInputError = true
+            binding?.tpgHexColorErrorMessage?.visible()
+            binding?.tpgHexColorErrorMessage?.text = getString(R.string.sfs_min_hex_color_length)
+        } else {
+            validateHexColor(unvalidatedHexColor)
+        }
+    }
 
-            if (hexColor.isValidHexColor()) {
-                binding?.btnApply?.visible()
-            } else {
-                binding?.btnApply?.invisible()
-            }
+    private fun validateHexColor(unvalidatedHexColor: String) {
+        val hexColor = unvalidatedHexColor.toHexColor()
+
+        if (hexColor.isValidHexColor()) {
+            binding?.btnApply?.enable()
+            binding?.tauHexColor?.isInputError = false
+            binding?.tpgHexColorErrorMessage?.text = ""
+            binding?.tpgHexColorErrorMessage?.invisible()
+        } else {
+            binding?.tauHexColor?.isInputError = true
+            binding?.tpgHexColorErrorMessage?.visible()
+            binding?.tpgHexColorErrorMessage?.text = getString(R.string.sfs_invalid_hex_color)
+            binding?.btnApply?.disable()
         }
     }
 
     private fun displayStartDatePicker() {
         val selectedDate = viewModel.getSelectedStartDate()
-        val minimumDate = dateManager.getDefaultMinimumCampaignStartDate()
+        val minimumDate = dateManager.getCurrentDate().advanceHourBy(TWO_HOURS)
+        val maximumEndDate = dateManager.getCurrentDate().advanceMonthBy(THREE_MONTH)
 
-        val bottomSheet = CampaignDatePickerBottomSheet.newInstance(selectedDate, minimumDate)
+        val bottomSheet = CampaignDatePickerBottomSheet.newInstance(selectedDate, minimumDate, maximumEndDate)
         bottomSheet.setOnDateTimePicked { newStartDate ->
             viewModel.setSelectedStartDate(newStartDate)
             binding?.tauStartDate?.editText?.setText(newStartDate.localFormatTo(DateConstant.DATE_TIME_MINUTE_LEVEL))
@@ -486,8 +529,9 @@ class CampaignInformationFragment : BaseDaggerFragment() {
         val startDate = viewModel.getSelectedStartDate().advanceMinuteBy(THIRTY_MINUTE)
         val endDate = viewModel.normalizeEndDate(viewModel.getSelectedEndDate(), startDate)
         val minimumDate = viewModel.getSelectedStartDate().advanceMinuteBy(THIRTY_MINUTE)
+        val maximumEndDate = viewModel.getSelectedStartDate().advanceDayBy(SEVEN_DAY)
 
-        val bottomSheet = CampaignDatePickerBottomSheet.newInstance(endDate, minimumDate)
+        val bottomSheet = CampaignDatePickerBottomSheet.newInstance(endDate, minimumDate, maximumEndDate)
         bottomSheet.setOnDateTimePicked { newEndDate ->
             viewModel.setSelectedEndDate(newEndDate)
             binding?.tauEndDate?.editText?.setText(newEndDate.localFormatTo(DateConstant.DATE_TIME_MINUTE_LEVEL))
@@ -635,6 +679,20 @@ class CampaignInformationFragment : BaseDaggerFragment() {
         viewModel.setShowTeaser(campaign.useUpcomingWidget)
         viewModel.setSelectedColor(campaign.gradientColor)
         viewModel.setPaymentType(campaign.paymentType)
+
+        viewModel.storeAsDefaultSelection(
+            CampaignInformationViewModel.Selection(
+                campaign.campaignName,
+                campaign.startDate.removeTimeZone(),
+                campaign.endDate.removeTimeZone(),
+                campaign.useUpcomingWidget,
+                campaign.upcomingDate.removeTimeZone(),
+                campaign.gradientColor.first,
+                campaign.gradientColor.second,
+                campaign.paymentType,
+                Int.ZERO
+            )
+        )
     }
 
     private fun renderSelectedColor(campaign: CampaignUiModel) {
@@ -648,7 +706,7 @@ class CampaignInformationFragment : BaseDaggerFragment() {
 
 
         if (isUsingHexColor) {
-            binding?.btnApply?.visible()
+            binding?.btnApply?.enable()
             binding?.contentSwitcher?.isChecked = true
             binding?.tauHexColor?.editText?.setText(campaign.gradientColor.first.removeHexColorPrefix())
             binding?.imgHexColorPreview?.setBackgroundFromGradient(campaign.gradientColor)
@@ -656,24 +714,46 @@ class CampaignInformationFragment : BaseDaggerFragment() {
             val colors = viewModel.deselectAllColor(adapter.snapshot())
             adapter.submit(colors)
         } else {
-            binding?.btnApply?.invisible()
+            binding?.btnApply?.disable()
             val colors = viewModel.markColorAsSelected(campaign.gradientColor, adapter.snapshot())
             adapter.submit(colors)
         }
     }
 
-    private fun showBackToPreviousPageConfirmation() {
-        val dialog = BackConfirmationDialog(requireActivity())
+    private fun handleBackConfirmation() {
+        val remainingQuota = viewModel.getRemainingQuota()
+        val updatedDefaultSelection = viewModel.getDefaultSelection()?.copy(remainingQuota = remainingQuota) ?: return
+
+        val isDataChanged = viewModel.isDataChanged(updatedDefaultSelection, getCurrentSelection())
+        if (!isDataChanged) {
+            requireActivity().finish()
+            return
+        }
+
+        if (pageMode == PageMode.CREATE) {
+            showCancelCreateCampaignConfirmationDialog()
+        } else {
+            showCancelEditCampaignConfirmationDialog()
+        }
+    }
+
+    private fun showCancelCreateCampaignConfirmationDialog() {
+        val dialog = CancelCreateCampaignConfirmationDialog(requireActivity())
         dialog.setOnPrimaryActionClick { requireActivity().finish() }
-        dialog.setOnSecondaryActionClick {  }
         dialog.setOnThirdActionClick { validateDraft() }
+        dialog.show()
+    }
+
+    private fun showCancelEditCampaignConfirmationDialog() {
+        val dialog = CancelEditCampaignConfirmationDialog(requireActivity())
+        dialog.setOnPrimaryActionClick { requireActivity().finish() }
+        dialog.setOnSecondaryActionClick { validateDraft() }
         dialog.show()
     }
 
 
     private fun showCoachMark() {
         val coachMark = CoachMark2(requireActivity())
-        coachMark.enableClipping = true
         coachMark.showCoachMark(populateCoachMarkItems(), null)
         coachMark.onFinishListener = {
             sharedPreference.markCampaignInfoCoachMarkComplete()
@@ -691,12 +771,14 @@ class CampaignInformationFragment : BaseDaggerFragment() {
             CoachMark2Item(
                 firstAnchorView,
                 getString(R.string.sfs_coachmark_first),
-                ""
+                "",
+                CoachMark2.POSITION_TOP
             ),
             CoachMark2Item(
                 secondAnchorView,
                 getString(R.string.sfs_coachmark_second),
-                ""
+                "",
+                CoachMark2.POSITION_TOP
             ),
         )
     }
@@ -710,14 +792,15 @@ class CampaignInformationFragment : BaseDaggerFragment() {
     }
 
     private fun handleSaveCampaignDraftSuccess(result: CampaignCreationResult) {
-        if (result.isSuccess) {
-            binding?.root showToaster getString(R.string.sfs_saved_as_draft)
-        }
-
         //Add some spare time caused by Backend write operation delay
         doOnDelayFinished(REDIRECT_TO_PREVIOUS_PAGE_DELAY) {
+            binding?.btnDraft?.stopLoading()
+
             if (result.isSuccess) {
-                requireActivity().finish()
+                activity?.apply {
+                    setResult(Activity.RESULT_OK)
+                    finish()
+                }
             } else {
                 displaySaveDraftError(result)
             }
@@ -742,8 +825,18 @@ class CampaignInformationFragment : BaseDaggerFragment() {
                 monthName
             )
             showErrorTicker(title, getString(R.string.sfs_create_campaign_on_another_period))
+            binding?.tauStartDate?.isInputError = true
+            binding?.tauEndDate?.isInputError = true
+            binding?.tauEndDate?.applySecondaryColor()
         } else {
             hideErrorTicker()
+            binding?.tauStartDate?.isInputError = false
+            binding?.tauEndDate?.isInputError = false
         }
+    }
+
+    private fun TextFieldUnify2?.applySecondaryColor() {
+        val secondaryColorStateList = ColorStateList(binding?.tauEndDate?.disabledStateList, binding?.tauEndDate?.secondaryColorList)
+        this?.textInputLayout?.setHelperTextColor(secondaryColorStateList)
     }
 }

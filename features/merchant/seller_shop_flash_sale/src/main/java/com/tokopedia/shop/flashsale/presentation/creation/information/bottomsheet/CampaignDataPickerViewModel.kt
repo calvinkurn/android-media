@@ -6,9 +6,10 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.shop.flashsale.common.constant.Constant
 import com.tokopedia.shop.flashsale.common.extension.dateOnly
+import com.tokopedia.shop.flashsale.common.extension.removeTimeZone
 import com.tokopedia.shop.flashsale.domain.entity.CampaignUiModel
 import com.tokopedia.shop.flashsale.domain.entity.GroupedCampaign
-import com.tokopedia.shop.flashsale.domain.entity.enums.CampaignStatus
+import com.tokopedia.shop.flashsale.domain.entity.enums.activeCampaignStatusIds
 import com.tokopedia.shop.flashsale.domain.usecase.GetSellerCampaignAttributeUseCase
 import com.tokopedia.shop.flashsale.domain.usecase.GetSellerCampaignListUseCase
 import com.tokopedia.usecase.coroutines.Fail
@@ -31,6 +32,7 @@ class CampaignDataPickerViewModel @Inject constructor(
     val campaigns: LiveData<Result<List<GroupedCampaign>>>
         get() = _campaigns
 
+
     private val _campaignQuota = MutableLiveData<Result<Int>>()
     val campaignQuota: LiveData<Result<Int>>
         get() = _campaignQuota
@@ -42,7 +44,7 @@ class CampaignDataPickerViewModel @Inject constructor(
                 val campaigns = getSellerCampaignListUseCase.execute(
                     rows = CAMPAIGN_TO_FETCH,
                     offset = Constant.FIRST_PAGE,
-                    statusId = listOf(CampaignStatus.READY_LOCKED.id, CampaignStatus.IN_SUBMISSION.id)
+                    statusId = activeCampaignStatusIds
                 )
                 val groupedCampaign = groupByDate(campaigns.campaigns)
                 _campaigns.postValue(Success(groupedCampaign))
@@ -72,11 +74,9 @@ class CampaignDataPickerViewModel @Inject constructor(
 
     }
 
-
-
     private fun groupByDate(campaigns: List<CampaignUiModel>): List<GroupedCampaign> {
         return campaigns
-            .groupBy { it.startDate.dateOnly() }
+            .groupBy { it.startDate.removeTimeZone().dateOnly() }
             .map { GroupedCampaign(it.key, it.value.size) }
     }
 }

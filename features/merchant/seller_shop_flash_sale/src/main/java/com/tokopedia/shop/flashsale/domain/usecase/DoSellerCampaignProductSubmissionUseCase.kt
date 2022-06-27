@@ -6,9 +6,11 @@ import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.kotlin.extensions.view.orZero
-import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.shop.flashsale.data.mapper.SellerCampaignProductSubmissionMapper
 import com.tokopedia.shop.flashsale.data.request.DoSellerCampaignProductSubmissionRequest
 import com.tokopedia.shop.flashsale.data.response.DoSellerCampaignProductSubmissionResponse
+import com.tokopedia.shop.flashsale.domain.entity.ProductSubmissionResult
+import com.tokopedia.shop.flashsale.domain.entity.enums.ProductionSubmissionAction
 import javax.inject.Inject
 
 @GqlQuery(
@@ -16,14 +18,12 @@ import javax.inject.Inject
     DoSellerCampaignProductSubmissionUseCase.QUERY
 )
 class DoSellerCampaignProductSubmissionUseCase @Inject constructor(
-    private val repository: GraphqlRepository
+    private val repository: GraphqlRepository,
+    private val mapper: SellerCampaignProductSubmissionMapper,
 ): GraphqlUseCase<DoSellerCampaignProductSubmissionResponse>(repository) {
 
     companion object {
         private const val REQUEST_PARAM_KEY = "params"
-        const val ACTION_RESERVE = 0
-        const val ACTION_SUBMIT = 1
-        const val ACTION_DELETE = 2
         const val QUERY_NAME = "DoSellerCampaignProductSubmissionQuery"
         const val QUERY = """
             mutation doSellerCampaignProductSubmission(${'$'}params: DoSellerCampaignProductSubmissionRequest!) {
@@ -52,25 +52,18 @@ class DoSellerCampaignProductSubmissionUseCase @Inject constructor(
 
     suspend fun execute(
         campaignId: String,
-        productData: List<DoSellerCampaignProductSubmissionRequest.ProductData>,
-        action: Int = ACTION_RESERVE
-    ): Boolean {
+        action: ProductionSubmissionAction,
+        productData: List<DoSellerCampaignProductSubmissionRequest.ProductData>
+    ): ProductSubmissionResult {
         val payload = DoSellerCampaignProductSubmissionRequest(
             campaignId = campaignId.toLongOrNull().orZero(),
-            action = action,
+            action = action.id,
             productData = productData
         )
         val request = buildRequest(payload)
         val response = repository.response(listOf(request))
         val data = response.getSuccessData<DoSellerCampaignProductSubmissionResponse>()
-
-        if (!data.data.isSuccess) {
-            throw MessageErrorException(
-                data.data.message.errorMessage
-            )
-        }
-
-        return data.data.isSuccess
+        return mapper.map(data)
     }
 
     private fun buildRequest(payload: DoSellerCampaignProductSubmissionRequest): GraphqlRequest {

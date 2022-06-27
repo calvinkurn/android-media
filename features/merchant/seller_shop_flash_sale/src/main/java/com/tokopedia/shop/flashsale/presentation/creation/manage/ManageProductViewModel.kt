@@ -4,12 +4,15 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.shop.flashsale.common.extension.convertRupiah
+import com.tokopedia.kotlin.extensions.view.isZero
+import com.tokopedia.shop.flashsale.common.util.ProductErrorStatusHandler
 import com.tokopedia.shop.flashsale.data.request.GetSellerCampaignProductListRequest
 import com.tokopedia.shop.flashsale.domain.entity.SellerCampaignProductList
-import com.tokopedia.shop.flashsale.domain.entity.enums.ManageProductErrorMessage
+import com.tokopedia.shop.flashsale.domain.entity.enums.ManageProductBannerType
+import com.tokopedia.shop.flashsale.domain.entity.enums.ManageProductBannerType.*
+import com.tokopedia.shop.flashsale.domain.entity.enums.ManageProductErrorType.*
+import com.tokopedia.shop.flashsale.domain.entity.enums.ProductionSubmissionAction
 import com.tokopedia.shop.flashsale.domain.usecase.DoSellerCampaignProductSubmissionUseCase
-import com.tokopedia.shop.flashsale.domain.usecase.DoSellerCampaignProductSubmissionUseCase.Companion.ACTION_DELETE
 import com.tokopedia.shop.flashsale.domain.usecase.GetSellerCampaignProductListUseCase
 import com.tokopedia.shop.flashsale.presentation.creation.manage.mapper.ManageProductMapper
 import com.tokopedia.usecase.coroutines.Fail
@@ -21,20 +24,22 @@ import javax.inject.Inject
 class ManageProductViewModel @Inject constructor(
     private val dispatchers: CoroutineDispatchers,
     private val getSellerCampaignProductListUseCase: GetSellerCampaignProductListUseCase,
-    private val doSellerCampaignProductSubmissionUseCase: DoSellerCampaignProductSubmissionUseCase
+    private val doSellerCampaignProductSubmissionUseCase: DoSellerCampaignProductSubmissionUseCase,
+    private val productErrorStatusHandler: ProductErrorStatusHandler
 ) : BaseViewModel(dispatchers.main) {
 
     companion object {
         private const val ROWS = 50
         private const val OFFSET = 0
-        private const val MIN_CAMPAIGN_STOCK = 1
-        private const val MIN_CAMPAIGN_DISCOUNTED_PRICE = 100
-        private const val MAX_CAMPAIGN_DISCOUNT_PERCENTAGE = 0.99
     }
 
     private val _products = MutableLiveData<Result<SellerCampaignProductList>>()
     val products: LiveData<Result<SellerCampaignProductList>>
         get() = _products
+
+    private val _bannerType = MutableLiveData(HIDE_BANNER)
+    val bannerType: LiveData<ManageProductBannerType>
+        get() = _bannerType
 
     private val _removeProductsStatus = MutableLiveData<Result<Boolean>>()
     val removeProductsStatus: LiveData<Result<Boolean>>
@@ -63,74 +68,45 @@ class ManageProductViewModel @Inject constructor(
         )
     }
 
-    fun getProductErrorMessage(productMapData: SellerCampaignProductList.ProductMapData): String {
-        var errorMsg = ""
-        val maxDiscountedPrice =
-            (productMapData.originalPrice * MAX_CAMPAIGN_DISCOUNT_PERCENTAGE).toInt()
-                .convertRupiah()
-        when {
-            productMapData.discountedPrice > productMapData.originalPrice -> {
-                errorMsg =
-                    ManageProductErrorMessage.MAX_CAMPAIGN_DISCOUNTED_PRICE.errorMsg + maxDiscountedPrice
-                when {
-                    productMapData.customStock > productMapData.originalStock -> {
-                        errorMsg += ManageProductErrorMessage.OTHER.errorMsg
-                    }
-                    productMapData.discountedPrice < MIN_CAMPAIGN_DISCOUNTED_PRICE -> {
-                        errorMsg += ManageProductErrorMessage.OTHER.errorMsg
-                    }
-                    productMapData.customStock < MIN_CAMPAIGN_STOCK -> {
-                        errorMsg += ManageProductErrorMessage.OTHER.errorMsg
-                    }
-                    productMapData.maxOrder > productMapData.customStock -> {
-                        errorMsg += ManageProductErrorMessage.OTHER.errorMsg
+    fun setProductErrorMessage(productList: SellerCampaignProductList) {
+        productList.productList.forEach { product ->
+            val productErrorType = productErrorStatusHandler.getErrorType(product.productMapData)
+            product.errorMessage = productErrorStatusHandler.getProductListErrorMessage(
+                productErrorType,
+                product.productMapData
+            )
+        }
+    }
+
+    fun setProductInfoCompletion(productList: SellerCampaignProductList) {
+        productList.productList.forEach { product ->
+            product.isInfoComplete = isProductInfoComplete(product.productMapData)
+        }
+    }
+
+    fun getBannerType(productList: SellerCampaignProductList) {
+        productList.productList.forEach { product ->
+            if (productErrorStatusHandler.getErrorType(product.productMapData) != NOT_ERROR) {
+                _bannerType.postValue(ERROR_BANNER)
+            } else {
+                if (!isProductInfoComplete(product.productMapData)) {
+                    if (bannerType.value != ERROR_BANNER) {
+                        _bannerType.postValue(EMPTY_BANNER)
                     }
                 }
-            }
-
-            productMapData.customStock > productMapData.originalStock -> {
-                errorMsg =
-                    ManageProductErrorMessage.MAX_CAMPAIGN_STOCK.errorMsg + "${productMapData.originalStock}"
-                when {
-                    productMapData.discountedPrice < MIN_CAMPAIGN_DISCOUNTED_PRICE -> {
-                        errorMsg += ManageProductErrorMessage.OTHER.errorMsg
-                    }
-                    productMapData.customStock < MIN_CAMPAIGN_STOCK -> {
-                        errorMsg += ManageProductErrorMessage.OTHER.errorMsg
-                    }
-                    productMapData.maxOrder > productMapData.customStock -> {
-                        errorMsg += ManageProductErrorMessage.OTHER.errorMsg
-                    }
-                }
-            }
-
-            productMapData.discountedPrice < MIN_CAMPAIGN_DISCOUNTED_PRICE -> {
-                errorMsg = ManageProductErrorMessage.MIN_CAMPAIGN_DISCOUNTED_PRICE.errorMsg
-                when {
-                    productMapData.customStock < MIN_CAMPAIGN_STOCK -> {
-                        errorMsg += ManageProductErrorMessage.OTHER.errorMsg
-                    }
-                    productMapData.maxOrder > productMapData.customStock -> {
-                        errorMsg += ManageProductErrorMessage.OTHER.errorMsg
-                    }
-                }
-            }
-
-            productMapData.customStock < MIN_CAMPAIGN_STOCK -> {
-                errorMsg = ManageProductErrorMessage.MIN_CAMPAIGN_STOCK.errorMsg
-                when {
-                    productMapData.maxOrder > productMapData.customStock -> {
-                        errorMsg += ManageProductErrorMessage.OTHER.errorMsg
-                    }
-                }
-            }
-
-            productMapData.maxOrder > productMapData.customStock -> {
-                errorMsg += ManageProductErrorMessage.MAX_CAMPAIGN_ORDER.errorMsg
             }
         }
+    }
 
-        return errorMsg
+    private fun isProductInfoComplete(productMapData: SellerCampaignProductList.ProductMapData): Boolean {
+        return when {
+            productMapData.discountedPrice.isZero() -> false
+            productMapData.discountPercentage.isZero() -> false
+            productMapData.originalCustomStock.isZero() -> false
+            productMapData.customStock.isZero() -> false
+            productMapData.maxOrder.isZero() -> false
+            else -> true
+        }
     }
 
     fun removeProducts(
@@ -143,14 +119,13 @@ class ManageProductViewModel @Inject constructor(
                 val campaigns = doSellerCampaignProductSubmissionUseCase.execute(
                     campaignId = campaignId.toString(),
                     productData = ManageProductMapper.mapToProductDataList(productList),
-                    action = ACTION_DELETE
+                    action = ProductionSubmissionAction.DELETE
                 )
-                _removeProductsStatus.postValue(Success(campaigns))
+                _removeProductsStatus.postValue(Success(campaigns.isSuccess))
             },
             onError = { error ->
                 _removeProductsStatus.postValue(Fail(error))
             }
         )
     }
-
 }
