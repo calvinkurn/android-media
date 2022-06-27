@@ -178,7 +178,7 @@ class TokoFoodMerchantListViewHolder (
         val category = StringBuilder()
         categories.forEachIndexed { index, it ->
             category.append(it)
-            if (index != (categories.size - Int.ZERO)) {
+            if (index != (categories.size - Int.ONE)) {
                 category.append(", ")
             }
         }
