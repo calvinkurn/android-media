@@ -83,7 +83,7 @@ class FeedVODViewHolder @JvmOverloads constructor(
 
 
     init {
-        (context as LifecycleOwner).lifecycle.addObserver(this)
+        (context as? LifecycleOwner)?.lifecycle?.addObserver(this)
         val view =
             LayoutInflater.from(context).inflate(R.layout.item_post_long_video_vod, this, true)
         val param = LinearLayout.LayoutParams(
