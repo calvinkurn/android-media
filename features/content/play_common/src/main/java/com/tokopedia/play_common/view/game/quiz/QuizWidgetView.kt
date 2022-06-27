@@ -120,7 +120,7 @@ class QuizWidgetView : ConstraintLayout {
 
         answerTrueAnimator.childAnimations.forEach {
             if (it !is ValueAnimator) return@forEach
-            it.duration = UnifyMotion.T3
+            it.duration = UnifyMotion.T2
             it.interpolator = UnifyMotion.EASE_OVERSHOOT
         }
     }
