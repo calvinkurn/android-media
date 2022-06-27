@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
+import com.tokopedia.kotlin.extensions.view.removeFirst
 import com.tokopedia.shop.flashsale.data.request.GetSellerCampaignProductListRequest
 import com.tokopedia.shop.flashsale.domain.entity.HighlightableProduct
 import com.tokopedia.shop.flashsale.domain.entity.ProductSubmissionResult
@@ -185,7 +186,7 @@ class ManageHighlightedProductViewModel @Inject constructor(
     }
 
     fun removeProductIdFromSelection(product: HighlightableProduct) {
-        this.selectedProducts.remove(product)
+        this.selectedProducts.removeFirst { it.id == product.id }
     }
 
     fun markAsSelected(products: List<HighlightableProduct>): List<HighlightableProduct> {
