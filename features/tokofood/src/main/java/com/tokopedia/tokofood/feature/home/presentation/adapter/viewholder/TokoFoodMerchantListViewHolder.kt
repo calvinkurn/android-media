@@ -3,8 +3,11 @@ package com.tokopedia.tokofood.feature.home.presentation.adapter.viewholder
 import android.view.View
 import android.widget.ImageView
 import androidx.annotation.LayoutRes
+import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.kotlin.extensions.view.ONE
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
@@ -30,6 +33,7 @@ class TokoFoodMerchantListViewHolder (
         @LayoutRes
         val LAYOUT = R.layout.item_tokofood_merchant_list_card
         const val COUNT_MAX_LEVEL_PRICE = 3
+        const val GET_STRING_COLOR = 2
     }
 
     private var binding: ItemTokofoodMerchantListCardBinding? by viewBinding()
@@ -174,7 +178,7 @@ class TokoFoodMerchantListViewHolder (
         val category = StringBuilder()
         categories.forEachIndexed { index, it ->
             category.append(it)
-            if (index != (categories.size - 1)) {
+            if (index != (categories.size - Int.ZERO)) {
                 category.append(", ")
             }
         }
@@ -183,14 +187,17 @@ class TokoFoodMerchantListViewHolder (
 
     private fun getPriceLevelString(priceLevel: PriceLevel): String {
         val price = StringBuilder()
+        val color = "#" + Integer.toHexString(ContextCompat.getColor(itemView.context,
+            com.tokopedia.unifyprinciples.R.color.Unify_NN950)).substring(GET_STRING_COLOR)
+
         if (priceLevel.fareCount.isMoreThanZero()){
-            price.append("<b>")
+            price.append("<font color=$color>")
         }
 
-        for (i in 0..COUNT_MAX_LEVEL_PRICE){
+        for (i in Int.ZERO..COUNT_MAX_LEVEL_PRICE){
             price.append(priceLevel.icon)
-            if(i == (priceLevel.fareCount - 1) && priceLevel.fareCount.isMoreThanZero()){
-                price.append("</b>")
+            if(i == (priceLevel.fareCount - Int.ONE) && priceLevel.fareCount.isMoreThanZero()){
+                price.append("</font>")
             }
         }
 
