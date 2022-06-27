@@ -12,21 +12,22 @@
         android:id="@+id/text_shipping_address"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="Alamat Pengiriman"
+        android:text="@string/text_purchase_delivery_address"
         app:layout_constraintEnd_toStartOf="@+id/chooseAddressButton"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:typographyType="heading_6" />
+        app:typographyType="display_3" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/chooseAddressButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Pilih Alamat Lain"
+        android:text="@string/text_purchase_choose_other_address"
         android:textColor="@color/Unify_GN500"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:typographyType="heading_6" />
+        app:typographyType="display_3"
+        app:typographyWeight="bold"/>
 
     <com.tokopedia.unifycomponents.DividerUnify
         android:id="@+id/divider_top"
@@ -44,7 +45,8 @@
         android:layout_marginTop="12dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/divider_top"
-        app:typographyType="heading_6"
+        app:typographyType="display_3"
+        app:typographyWeight="bold"
         tools:text="Rumah" />
 
     <com.tokopedia.unifycomponents.Label
@@ -52,7 +54,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="4dp"
-        android:text="Utama"
+        android:text="@string/text_purchase_main_address"
         app:labelType="general_light_red"
         app:layout_constraintBottom_toBottomOf="@+id/text_address_name"
         app:layout_constraintStart_toEndOf="@+id/text_address_name"
@@ -67,7 +69,7 @@
         android:maxLines="1"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/text_address_name"
-        app:typographyType="body_3"
+        app:typographyType="display_3"
         tools:text="Adrian (081234567890)" />
 
     <com.tokopedia.unifyprinciples.Typography
@@ -79,7 +81,7 @@
         android:maxLines="1"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/text_receiver_name_and_phone"
-        app:typographyType="body_3"
+        app:typographyType="display_3"
         tools:text="Tokopedia Tower Ciputra World 2, Jl. Prof. DR. Satrio No.Kav. 11, Setiabudi, Jakarta Selatan" />
 
     <com.tokopedia.unifycomponents.DividerUnify

@@ -61,6 +61,23 @@ class MultipleFragmentsViewModel @Inject constructor(
         get() = cartDataState.value?.shop?.shopId.orEmpty()
 
     init {
+        collectValues()
+    }
+
+    fun onSavedInstanceState() {
+        savedStateHandle[MINI_CART_STATE_KEY] =
+            (miniCartUiModelState.replayCache.firstOrNull() as? Result.Success<MiniCartUiModel>)?.data
+    }
+
+    fun onRestoreSavedInstanceState() {
+        miniCartUiModelState.tryEmit(
+            Result.Success(
+                savedStateHandle.get(MINI_CART_STATE_KEY) as? MiniCartUiModel ?: MiniCartUiModel()
+            )
+        )
+    }
+
+    fun collectValues() {
         viewModelScope.launch {
             miniCartUiModelState.flatMapConcat { result ->
                 flow {
@@ -78,30 +95,15 @@ class MultipleFragmentsViewModel @Inject constructor(
         }
 
         viewModelScope.launch {
-            cartDataState.flatMapConcat { data ->
-                flow {
-                    if (data != null) {
-                        emit(data)
-                    }
+            cartDataState.collect {
+                miniCartLoadingQueue.value.let { loadingQueue ->
+                    miniCartLoadingQueue.value = loadingQueue.minus(Int.ONE)
                 }
-            }.collect {
-                miniCartLoadingQueue.value = miniCartLoadingQueue.value.minus(Int.ONE)
-                setMiniCartValue(it)
+                if (it != null) {
+                    setMiniCartValue(it)
+                }
             }
         }
-    }
-
-    fun onSavedInstanceState() {
-        savedStateHandle[MINI_CART_STATE_KEY] =
-            (miniCartUiModelState.replayCache.firstOrNull() as? Result.Success<MiniCartUiModel>)?.data
-    }
-
-    fun onRestoreSavedInstanceState() {
-        miniCartUiModelState.tryEmit(
-            Result.Success(
-                savedStateHandle.get(MINI_CART_STATE_KEY) as? MiniCartUiModel ?: MiniCartUiModel()
-            )
-        )
     }
 
     fun loadInitial(source: String) {
@@ -109,15 +111,15 @@ class MultipleFragmentsViewModel @Inject constructor(
             if (cartData == null) {
                 loadCartList(source)
             } else {
-                launch {
-                    cartDataState.emit(cartData)
+                launch(coroutineContext) {
+                    cartDataState.emit(cartData.copy())
                 }
             }
         }
     }
 
-    fun loadCartList(response: CheckoutTokoFood) {
-        cartDataState.value = response.data
+    fun loadCartList(response: CheckoutTokoFood?) {
+        cartDataState.value = response?.data
     }
 
     fun deleteProduct(productId: String,

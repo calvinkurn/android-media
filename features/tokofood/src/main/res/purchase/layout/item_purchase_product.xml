@@ -25,7 +25,7 @@
         android:layout_marginStart="8dp"
         app:layout_constraintStart_toEndOf="@+id/image_product"
         app:layout_constraintTop_toTopOf="@+id/image_product"
-        app:typographyType="body_2"
+        app:typographyType="display_2"
         tools:text="Milo Macchiato" />
 
     <LinearLayout
@@ -55,7 +55,7 @@
             android:layout_height="wrap_content"
             android:layout_marginEnd="4dp"
             android:gravity="center_vertical"
-            app:typographyType="body_2"
+            app:typographyType="display_2"
             app:typographyWeight="bold"
             tools:text="Rp40.000" />
 
@@ -72,7 +72,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:gravity="center_vertical"
-            app:typographyType="body_3"
+            app:typographyType="display_3"
             tools:text="Rp40.000" />
 
     </com.google.android.flexbox.FlexboxLayout>
@@ -87,7 +87,7 @@
         android:maxLines="1"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/image_product"
-        app:typographyType="body_3"
+        app:typographyType="display_3"
         tools:text="Pesanannya jangan sampai salah ya! udah haus haus haus haus haus bang..." />
 
     <com.tokopedia.unifyprinciples.Typography
@@ -98,7 +98,8 @@
         android:textColor="@color/Unify_GN500"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/notes"
-        app:typographyType="heading_6"
+        app:typographyType="display_3"
+        app:typographyWeight="bold"
         tools:text="Tambah Pesanan" />
 
     <com.tokopedia.iconunify.IconUnify

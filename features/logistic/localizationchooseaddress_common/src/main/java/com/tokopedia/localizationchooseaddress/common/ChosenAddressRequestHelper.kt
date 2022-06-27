@@ -2,7 +2,6 @@ package com.tokopedia.localizationchooseaddress.common
 
 import android.content.Context
 import android.os.Parcelable
-import com.google.gson.Gson
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
@@ -39,8 +38,6 @@ data class ChosenAddress(
         const val MODE_ADDRESS = 1
         const val MODE_SNIPPET = 2
     }
-
-    fun generateString(): String = Gson().toJson(this)
 }
 
 @Parcelize

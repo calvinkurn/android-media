@@ -23,7 +23,8 @@
         android:textColor="@color/Unify_R600"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/dividerUnify"
-        app:typographyType="heading_6"
+        app:typographyType="display_3"
+        app:typographyWeight="bold"
         tools:text="Produk Dilarang" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

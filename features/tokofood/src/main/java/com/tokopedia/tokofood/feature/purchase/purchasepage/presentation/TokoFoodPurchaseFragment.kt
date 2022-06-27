@@ -358,6 +358,7 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
                     }
                 }
                 PurchaseUiEvent.EVENT_EMPTY_PRODUCTS -> {
+                    activityViewModel?.loadCartList(null)
                     parentFragmentManager.popBackStack()
                     val emptyProductShopId = (it.data as? String).orEmpty()
                     if (emptyProductShopId.isBlank()) {
