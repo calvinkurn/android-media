@@ -1969,7 +1969,7 @@ private fun testLabelBestSeller(): ProductCardModelMatcher {
 }
 
 private fun testLabelBestSellerAndCategorySide(): ProductCardModelMatcher {
-        val labelBestSeller = LabelGroup(position = LABEL_BEST_SELLER, title = "Terlaris #1", type = "#E1AA1D")
+    val labelBestSeller = LabelGroup(position = LABEL_BEST_SELLER, title = "Terlaris #1", type = "#E1AA1D")
     val labelCategorySide = LabelGroup(position = LABEL_CATEGORY_SIDE, title = "di iOS", type = "textLightGrey")
 
     val productCardModel = ProductCardModel(
