@@ -713,7 +713,6 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
                         onResultFromPaymentSuccess()
                     }
                     PaymentConstant.PAYMENT_FAILED -> {
-                        // TODO: Discuss on what to do when payment failed
                         showDefaultCheckoutGeneralError()
                     }
                 }
