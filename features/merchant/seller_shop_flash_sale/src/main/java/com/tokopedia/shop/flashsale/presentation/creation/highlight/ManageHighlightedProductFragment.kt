@@ -265,36 +265,27 @@ class ManageHighlightedProductFragment : BaseDaggerFragment() {
         when {
             isSelected && currentSelectedProductCount == (MAX_PRODUCT_SELECTION - ONE_PRODUCT) -> {
                 binding?.cardView showToaster getString(R.string.sfs_successfully_highlighted)
-                selectProduct(selectedProduct)
                 viewModel.addProductIdToSelection(selectedProduct)
-                disableAllUnselectedProduct()
+                selectProduct()
             }
             isSelected && currentSelectedProductCount < MAX_PRODUCT_SELECTION -> {
                 binding?.cardView showToaster getString(R.string.sfs_successfully_highlighted)
-                selectProduct(selectedProduct)
                 viewModel.addProductIdToSelection(selectedProduct)
-                enableAllUnselectedProduct()
+                selectProduct()
             }
             !isSelected -> {
                 viewModel.removeProductIdFromSelection(selectedProduct)
                 unselectProduct(selectedProduct)
-                enableAllUnselectedProduct()
             }
         }
 
         refreshButton()
     }
 
-    private fun selectProduct(selectedProduct: HighlightableProduct) {
+    private fun selectProduct() {
         val products = productAdapter.getItems()
-        val updatedProducts = viewModel.markAsSelected(selectedProduct, products)
-        val hasOtherProductWithSameParentId = viewModel.hasOtherProductWithSameParentId(selectedProduct.parentId, products)
-        val modifiedProducts = if (hasOtherProductWithSameParentId) {
-            viewModel.disableOtherProductWithSameParentId(selectedProduct, products)
-        } else {
-            updatedProducts
-        }
-        productAdapter.submit(modifiedProducts)
+        val updatedProducts = viewModel.markAsSelected(products)
+        productAdapter.submit(updatedProducts)
     }
 
     private fun unselectProduct(selectedProduct: HighlightableProduct) {
@@ -303,17 +294,6 @@ class ManageHighlightedProductFragment : BaseDaggerFragment() {
         productAdapter.submit(updatedProducts)
     }
 
-    private fun disableAllUnselectedProduct() {
-        val products = productAdapter.getItems()
-        val updatedProducts = viewModel.disableAllUnselectedProducts(products)
-        productAdapter.submit(updatedProducts)
-    }
-
-    private fun enableAllUnselectedProduct() {
-        val products = productAdapter.getItems()
-        val updatedProducts = viewModel.enableAllUnselectedProducts(products)
-        productAdapter.submit(updatedProducts)
-    }
 
     private fun clearSearchBar() {
         doFreshSearch()
@@ -340,7 +320,7 @@ class ManageHighlightedProductFragment : BaseDaggerFragment() {
     private fun doFreshSearch() {
         productAdapter.submit(emptyList())
         binding?.groupNoSearchResult?.gone()
-        viewModel.getProducts(productAdapter.getItems(), campaignId, "", PAGE_SIZE, offset = 0)
+        viewModel.getProducts(campaignId, "", PAGE_SIZE, offset = 0)
     }
 
     private fun renderList(list: List<HighlightableProduct>, hasNextPage: Boolean) {
@@ -363,7 +343,7 @@ class ManageHighlightedProductFragment : BaseDaggerFragment() {
         }
 
         val searchKeyword = binding?.searchBar?.searchBarTextField?.text.toString().trim()
-        viewModel.getProducts(productAdapter.getItems(), campaignId, searchKeyword, PAGE_SIZE, offset)
+        viewModel.getProducts(campaignId, searchKeyword, PAGE_SIZE, offset)
     }
 
     private fun showContent() {

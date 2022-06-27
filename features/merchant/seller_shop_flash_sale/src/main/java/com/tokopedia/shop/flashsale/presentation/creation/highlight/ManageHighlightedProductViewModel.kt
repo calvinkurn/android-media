@@ -5,15 +5,14 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
-import com.tokopedia.kotlin.extensions.view.toLongOrZero
-import com.tokopedia.shop.flashsale.data.mapper.HighlightableProductRequestMapper
 import com.tokopedia.shop.flashsale.data.request.GetSellerCampaignProductListRequest
 import com.tokopedia.shop.flashsale.domain.entity.HighlightableProduct
 import com.tokopedia.shop.flashsale.domain.entity.ProductSubmissionResult
-import com.tokopedia.shop.flashsale.domain.entity.SellerCampaignProductList
 import com.tokopedia.shop.flashsale.domain.entity.enums.ProductionSubmissionAction
 import com.tokopedia.shop.flashsale.domain.usecase.DoSellerCampaignProductSubmissionUseCase
 import com.tokopedia.shop.flashsale.domain.usecase.GetSellerCampaignProductListUseCase
+import com.tokopedia.shop.flashsale.presentation.creation.highlight.mapper.HighlightProductUiMapper
+import com.tokopedia.shop.flashsale.presentation.creation.highlight.mapper.HighlightableProductRequestMapper
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -24,7 +23,8 @@ class ManageHighlightedProductViewModel @Inject constructor(
     private val dispatchers: CoroutineDispatchers,
     private val getSellerCampaignProductListUseCase: GetSellerCampaignProductListUseCase,
     private val doSellerCampaignProductSubmissionUseCase: DoSellerCampaignProductSubmissionUseCase,
-    private val mapper: HighlightableProductRequestMapper
+    private val mapper: HighlightableProductRequestMapper,
+    private val highlightProductUiMapper: HighlightProductUiMapper
 ) : BaseViewModel(dispatchers.main) {
 
     companion object {
@@ -54,7 +54,6 @@ class ManageHighlightedProductViewModel @Inject constructor(
     }
 
     fun getProducts(
-        allProducts: List<HighlightableProduct>,
         campaignId: Long,
         productName: String,
         pageSize: Int,
@@ -69,9 +68,11 @@ class ManageHighlightedProductViewModel @Inject constructor(
                     listType = PRODUCT_LIST_TYPE_ID,
                     pagination = GetSellerCampaignProductListRequest.Pagination(pageSize, offset)
                 )
-                val highlightableProducts = mapToHighlightableProduct(products.productList ,isFirstLoad)
-                val appliedMaxSelectionRule = applyMaxSelectionRule(highlightableProducts)
-                val appliedProductSelectionRule = applyProductSelectionRule(appliedMaxSelectionRule, allProducts)
+
+                val mappedProducts = highlightProductUiMapper.map(products)
+                val appliedSelectedProductRule = applySelectedProductRule(mappedProducts, isFirstLoad)
+                val appliedMaxSelectionRule = applyMaxSelectionRule(appliedSelectedProductRule)
+                val appliedProductSelectionRule = applyProductSelectionRule(appliedMaxSelectionRule)
                 val sortedProducts = applySortRule(appliedProductSelectionRule)
                 _products.postValue(Success(sortedProducts))
             },
@@ -81,44 +82,25 @@ class ManageHighlightedProductViewModel @Inject constructor(
         )
     }
 
-    private fun mapToHighlightableProduct(
-        products: List<SellerCampaignProductList.Product>,
+
+    private fun applySelectedProductRule(
+        products: List<HighlightableProduct>,
         isFirstLoad: Boolean
     ): List<HighlightableProduct> {
-        val selectedProductIds= selectedProducts.map { it.id }
-
         return products
-            .mapIndexed { index, product ->
+            .map { product ->
+                val selectedProductIds = selectedProducts.map { it.id }
 
                 val isSelected = if (isFirstLoad) {
                     product.highlightProductWording.isNotEmpty()
                 } else {
-                    product.productId.toLongOrZero() in selectedProductIds
+                    product.id in selectedProductIds
                 }
 
-                HighlightableProduct(
-                    product.productId.toLongOrZero(),
-                    product.parentId.toLongOrZero(),
-                    product.productName,
-                    product.imageUrl.img200,
-                    product.productMapData.originalPrice,
-                    product.productMapData.discountedPrice,
-                    product.productMapData.discountPercentage,
-                    product.productMapData.customStock,
-                    product.warehouseList.map {
-                        HighlightableProduct.Warehouse(
-                            it.warehouseId.toLongOrZero(),
-                            it.customStock.toLong()
-                        )
-                    },
-                    product.productMapData.maxOrder,
-                    disabled = false,
-                    isSelected,
-                    index + OFFSET_BY_ONE,
-                    HighlightableProduct.DisabledReason.NOT_DISABLED
-                )
+                product.copy(isSelected = isSelected)
+            }.onEach { product ->
+                if (product.isSelected) addProductIdToSelection(product)
             }
-            .onEach { product -> if (product.isSelected) addProductIdToSelection(product) }
     }
 
     private fun applyMaxSelectionRule(
@@ -133,15 +115,11 @@ class ManageHighlightedProductViewModel @Inject constructor(
         }
     }
 
-    private fun applyProductSelectionRule(
-        currentPageProducts: List<HighlightableProduct>,
-        allProducts: List<HighlightableProduct>
-    ): List<HighlightableProduct> {
-        val products = if (isFirstLoad) currentPageProducts else allProducts
+    private fun applyProductSelectionRule(currentPageProducts: List<HighlightableProduct>): List<HighlightableProduct> {
         val selectedProductsIds = selectedProducts.map { selectedProduct -> selectedProduct.id }
         val selectedParentProductIds = selectedProducts.map { selectedProduct -> selectedProduct.parentId }
 
-        return products.map { product ->
+        return currentPageProducts.map { product ->
             if (product.parentId in selectedParentProductIds && product.id !in selectedProductsIds) {
                 product.copy(
                     isSelected = false,
@@ -210,14 +188,25 @@ class ManageHighlightedProductViewModel @Inject constructor(
         this.selectedProducts.remove(product)
     }
 
-    fun markAsSelected(
-        selectedProduct: HighlightableProduct,
-        products: List<HighlightableProduct>
-    ): List<HighlightableProduct> {
+    fun markAsSelected(products: List<HighlightableProduct>): List<HighlightableProduct> {
+        val selectedProductsIds = selectedProducts.map { selectedProduct -> selectedProduct.id }
+        val selectedParentProductIds = selectedProducts.map { selectedProduct -> selectedProduct.parentId }
+
         return products
             .mapIndexed { index, product ->
-                if (selectedProduct.id == product.id) {
-                    product.copy(isSelected = true)
+                //Same parent, but different variant
+                if (product.parentId in selectedParentProductIds && product.id !in selectedProductsIds) {
+                    product.copy(
+                        isSelected = false,
+                        disabled = true,
+                        disabledReason = HighlightableProduct.DisabledReason.OTHER_PRODUCT_WITH_SAME_PARENT_ID_ALREADY_SELECTED
+                    )
+                } else if (product.parentId in selectedParentProductIds && product.id in selectedProductsIds) {
+                    product.copy(
+                        isSelected = true,
+                        disabled = false,
+                        disabledReason = HighlightableProduct.DisabledReason.NOT_DISABLED
+                    )
                 } else {
                     product
                 }
@@ -227,13 +216,21 @@ class ManageHighlightedProductViewModel @Inject constructor(
     }
 
     fun markAsUnselected(
-        selectedProduct: HighlightableProduct,
+        currentlySelectedProduct: HighlightableProduct,
         products: List<HighlightableProduct>
     ): List<HighlightableProduct> {
+        val selectedProductsIds = selectedProducts.map { selectedProduct -> selectedProduct.id }
         return products
             .mapIndexed { index, product ->
-                if (selectedProduct.id == product.id) {
+                if (currentlySelectedProduct.id == product.id) {
                     product.copy(isSelected = false)
+                } else {
+                    product
+                }
+            }
+            .map { product ->
+                if (product.parentId == currentlySelectedProduct.parentId) {
+                    product.copy(disabled = false, disabledReason = HighlightableProduct.DisabledReason.NOT_DISABLED)
                 } else {
                     product
                 }
@@ -261,7 +258,7 @@ class ManageHighlightedProductViewModel @Inject constructor(
                 if (product.isSelected) {
                     product
                 } else {
-                    product.copy(disabled = false)
+                    product.copy(disabled = false, disabledReason = HighlightableProduct.DisabledReason.NOT_DISABLED)
                 }
             }
             .sortedByDescending { it.isSelected }

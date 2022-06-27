@@ -14,7 +14,8 @@ data class HighlightableProduct(
     val disabled: Boolean,
     val isSelected: Boolean,
     val position: Int,
-    val disabledReason : DisabledReason
+    val disabledReason : DisabledReason,
+    val highlightProductWording : String
 ) {
     data class Warehouse(
         val warehouseId: Long,

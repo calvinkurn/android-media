@@ -4,8 +4,10 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.isVisible
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.seller_shop_flash_sale.R
 import com.tokopedia.seller_shop_flash_sale.databinding.SsfsItemProductHighlightBinding
@@ -101,11 +103,19 @@ class HighlightedProductAdapter(
             binding.loader.isVisible = isLoading
             binding.tpgOriginalPrice.setPrice(product.originalPrice)
             binding.tpgOriginalPrice.strikethrough()
-            binding.tpgProductOrder.isVisible = product.isSelected
-            binding.tpgProductOrder.setPosition(product.position)
             binding.tpgErrorMessage.isVisible = product.disabledReason == HighlightableProduct.DisabledReason.OTHER_PRODUCT_WITH_SAME_PARENT_ID_ALREADY_SELECTED
             handleSwitchAppearance(product, onProductSelectionChange)
-            handleCardSelectable(product.disabled || product.disabledReason == HighlightableProduct.DisabledReason.OTHER_PRODUCT_WITH_SAME_PARENT_ID_ALREADY_SELECTED)
+            handleCardSelectable(product.disabled)
+            handleProductOrderNumber(product)
+        }
+
+        private fun handleProductOrderNumber(product: HighlightableProduct) {
+            if (product.isSelected) {
+                binding.tpgProductOrder.setPosition(product.position)
+                binding.tpgProductOrder.visible()
+            } else {
+                binding.tpgProductOrder.invisible()
+            }
         }
 
         private fun handleSwitchAppearance(
@@ -141,14 +151,12 @@ class HighlightedProductAdapter(
                 binding.tpgProductName.disable()
                 binding.tpgOriginalPrice.disable()
                 binding.tpgDiscountedPrice.disable()
-                binding.tpgErrorMessage.disable()
                 binding.switchUnify.disable()
                 binding.labelDiscountPercentage.opacityLevel = ALPHA_DISABLED
             } else {
                 binding.imgProduct.alpha = ALPHA_ENABLED
                 binding.tpgProductName.enable()
                 binding.tpgOriginalPrice.enable()
-                binding.tpgErrorMessage.enable()
                 binding.tpgDiscountedPrice.enable()
                 binding.switchUnify.enable()
                 binding.labelDiscountPercentage.opacityLevel = ALPHA_ENABLED
