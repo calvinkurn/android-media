@@ -33,7 +33,9 @@ dependencies {
     implementation rootProject.ext.miscDependencies.dagger
     implementation rootProject.ext.debugToolsDependencies.chuck
     compileOnly rootProject.ext.miscDependencies.javaxAnnotation
+    compileOnly rootProject.ext.tkpdInternalLibDependencies.gqlquery_annotation
     kapt rootProject.ext.miscDependencies.daggerCompiler
+    kapt rootProject.ext.tkpdInternalLibDependencies.gqlquery_annotation_processor
 }
 
 project.ext {
