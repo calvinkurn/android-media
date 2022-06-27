@@ -45,6 +45,7 @@ class BannerCarouselViewHolder(itemView: View, private val fragment: Fragment) :
         if (mBannerCarouselComponentViewModel.shouldShowShimmer()) {
             addShimmer()
         }
+        mBannerCarouselComponentViewModel.checkForDarkMode(itemView.context)
         addDefaultItemDecorator()
         lihatSemuaTextView.setOnClickListener {
             RouteManager.route(fragment.activity, mBannerCarouselComponentViewModel.getLihatUrl())
