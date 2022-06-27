@@ -1,6 +1,7 @@
 package com.tokopedia.product.addedit.tracking
 
 import com.tokopedia.product.addedit.tracking.ProductVariantTracking.sendAddProductVariantDetailClick
+import com.tokopedia.product.addedit.tracking.ProductVariantTracking.sendAddProductWeightPerVariant
 import com.tokopedia.product.addedit.tracking.ProductVariantTracking.sendOpenProductVariantPage
 
 object ProductAddVariantDetailTracking {
@@ -54,5 +55,25 @@ object ProductAddVariantDetailTracking {
     // 3.9 label = contains variant utama
     fun saveMainVariant(label: String, shopId: String) {
         sendAddProductVariantDetailClick("click simpan variant utama", label, shopId, SCREEN_NAME)
+    }
+
+    // WPV
+    fun clickFillBoxVariantWeight(variantName: String, weight: Int, shopId: String) {
+        sendAddProductWeightPerVariant(
+            action = "click fill box variant weight",
+            label = "$variantName - $weight",
+            shopId = shopId,
+            trackerId = "30329"
+        )
+    }
+
+    // WPV
+    fun clickAddWeightMultipleVariant(variantName: String, weight: Int, shopId: String) {
+        sendAddProductWeightPerVariant(
+            action = "click add weight multiple variant",
+            label = "$variantName - $weight",
+            shopId = shopId,
+            trackerId = "30330"
+        )
     }
 }

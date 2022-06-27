@@ -34,6 +34,7 @@ import com.tokopedia.topchat.chatroom.view.activity.robot.product.ProductCardRes
 import com.tokopedia.topchat.chatroom.view.activity.robot.product.ProductCardResult.hasVariantLabel
 import com.tokopedia.topchat.chatroom.view.activity.robot.product.ProductCardRobot.clickATCButtonAt
 import com.tokopedia.topchat.chatroom.view.activity.robot.product.ProductCardRobot.clickBuyButtonAt
+import com.tokopedia.topchat.chatroom.view.activity.robot.product.ProductCardRobot.clickProductAttachmentAt
 import com.tokopedia.topchat.chatroom.view.activity.robot.product.ProductCardRobot.clickWishlistButtonAt
 import com.tokopedia.topchat.chatroom.view.activity.robot.product.ProductPreviewResult.verifyVariantLabel
 import com.tokopedia.topchat.common.TopChatInternalRouter.Companion.SOURCE_TOPCHAT
@@ -402,6 +403,22 @@ class TopchatRoomBuyerProductAttachmentTest : BaseBuyerTopchatRoomTest() {
 
         // Then
         hasFailedToasterWithMsg(errorMsg)
+    }
+
+    @Test
+    fun user_can_go_to_pdp_page_when_click_on_attached_product() {
+        // Given
+        getChatUseCase.response = firstPageChatAsBuyer
+        chatAttachmentUseCase.response = chatAttachmentResponse
+        launchChatRoomActivity()
+
+        // When
+        intending(anyIntent()).respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
+        doScrollChatToPosition(1)
+        clickProductAttachmentAt(1)
+
+        // Then
+        intended(hasData("tokopedia://product/2148833237?extParam=whid=341734&src=chat"))
     }
 
     // TODO: assert attach product, stock info seller, and tokocabang is not displayed on buyer side
