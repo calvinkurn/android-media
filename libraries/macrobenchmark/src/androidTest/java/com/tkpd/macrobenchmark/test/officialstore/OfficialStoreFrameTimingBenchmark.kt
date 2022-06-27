@@ -6,7 +6,6 @@ import com.tkpd.macrobenchmark.base.BaseFrameTimingBenchmark
 import com.tkpd.macrobenchmark.util.MacroDevOps
 import com.tkpd.macrobenchmark.util.MacroIntent
 import com.tkpd.macrobenchmark.util.MacroInteration
-import org.junit.Before
 import org.junit.runner.RunWith
 
 /**
@@ -19,7 +18,7 @@ import org.junit.runner.RunWith
 @LargeTest
 @SdkSuppress(minSdkVersion = 29)
 @RunWith(AndroidJUnit4::class)
-class OSFrameTimingBenchmark: BaseFrameTimingBenchmark() {
+class OfficialStoreFrameTimingBenchmark: BaseFrameTimingBenchmark() {
     override fun setupEnvironment() {
         MacroDevOps.setupEnvironment(MacroIntent.OfficialStore.getOsMacroSetupIntent())
     }
