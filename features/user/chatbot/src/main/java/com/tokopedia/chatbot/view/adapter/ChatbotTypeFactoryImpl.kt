@@ -139,8 +139,9 @@ open class ChatbotTypeFactoryImpl(imageAnnouncementListener: ImageAnnouncementLi
         return ChatbotFallbackAttachmentViewHolder.LAYOUT
     }
 
+    //This case will never run
     override fun type(attachInvoiceSentUiModel: AttachInvoiceSentUiModel): Int {
-        return -1
+        return ATTACH_INVOICE_CHAT_COMMON
     }
 
     override fun type(typingViewModel: TypingChatModel): Int {
@@ -159,6 +160,10 @@ open class ChatbotTypeFactoryImpl(imageAnnouncementListener: ImageAnnouncementLi
             ChatbotImageUploadViewHolder.LAYOUT -> ChatbotImageUploadViewHolder(parent, imageUploadListener, userSession)
             else -> super.createViewHolder(parent, type)
         }
+    }
+
+    companion object {
+        const val ATTACH_INVOICE_CHAT_COMMON = -1
     }
 
 }
