@@ -4,16 +4,16 @@ import androidx.benchmark.macro.ExperimentalMetricApi
 import androidx.benchmark.macro.TraceSectionMetric
 
 object MacroMetrics {
-    const val PLT_PREPARE_PAGE = "plt_prepare_page"
-    const val PLT_NETWORK_REQUEST = "plt_network_request"
-    const val PLT_RENDER = "plt_render"
+    const val PLT_PREPARE_PAGE = "PageLoadTime.AsyncPreparePage"
+    const val PLT_NETWORK_REQUEST = "PageLoadTime.AsyncNetworkRequest"
+    const val PLT_RENDER = "PageLoadTime.AsyncRenderPage"
 
     @OptIn(ExperimentalMetricApi::class)
-    fun getPltMetrics(): List<TraceSectionMetric> {
+    fun getPltMetrics(tracePageName: String): List<TraceSectionMetric> {
         return listOf(
-            TraceSectionMetric(PLT_PREPARE_PAGE),
-            TraceSectionMetric(PLT_NETWORK_REQUEST),
-            TraceSectionMetric(PLT_RENDER)
+            TraceSectionMetric("$PLT_PREPARE_PAGE${tracePageName}"),
+            TraceSectionMetric("$PLT_NETWORK_REQUEST${tracePageName}"),
+            TraceSectionMetric("$PLT_RENDER${tracePageName}")
         )
     }
 }

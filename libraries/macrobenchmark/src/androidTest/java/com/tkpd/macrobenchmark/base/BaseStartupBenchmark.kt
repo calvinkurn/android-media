@@ -37,13 +37,16 @@ abstract class BaseStartupBenchmark(private val startupMode: StartupMode) {
                 iterations = MacroArgs.getIterations(InstrumentationRegistry.getArguments()),
                 intent = { getIntent() },
                 waitUntil = { waitUntil() },
-                setupEnvironment = { setupEnvironment() }
-        )
+                setupEnvironment = { setupEnvironment() },
+                traceName = traceName()
+            )
     }
 
     abstract fun getIntent(): Intent
 
     abstract fun waitUntil()
+
+    abstract fun traceName(): String
 
     open fun setupEnvironment() {
         // default no-op

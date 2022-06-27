@@ -36,4 +36,6 @@ class AppStartupBenchmark(startupMode: StartupMode): BaseStartupBenchmark(startu
                 MacroIntent.App.RV_RESOURCE_ID
         )
     }
+
+    override fun traceName() = ""
 }

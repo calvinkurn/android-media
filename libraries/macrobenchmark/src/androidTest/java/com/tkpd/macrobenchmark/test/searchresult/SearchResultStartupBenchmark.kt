@@ -28,4 +28,7 @@ class SearchResultStartupBenchmark(startupMode: StartupMode): BaseStartupBenchma
                 MacroIntent.SearchResult.RV_RESOURCE_ID,
         )
     }
+
+    override fun traceName() = "search_result_trace"
+
 }

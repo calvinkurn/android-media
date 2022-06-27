@@ -1,4 +1,4 @@
-package com.tkpd.macrobenchmark.test.officialstore
+package com.tkpd.macrobenchmark.test.official_store
 
 import androidx.benchmark.macro.StartupMode
 import androidx.test.filters.LargeTest
@@ -36,4 +36,7 @@ class OfficialStoreStartupBenchmark(startupMode: StartupMode): BaseStartupBenchm
                 MacroIntent.OfficialStore.RV_RESOURCE_ID,
         )
     }
+
+    override fun traceName() = "mp_official_store"
+
 }

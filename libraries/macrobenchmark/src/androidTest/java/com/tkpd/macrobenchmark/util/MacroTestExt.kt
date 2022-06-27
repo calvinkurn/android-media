@@ -11,12 +11,13 @@ fun MacrobenchmarkRule.measureStartup(
     iterations: Int = 3,
     intent: () -> Intent,
     waitUntil: () -> Unit,
-    setupEnvironment: () -> Unit
+    setupEnvironment: () -> Unit,
+    traceName: String
 ) = measureRepeated(
     packageName = MacroIntent.TKPD_PACKAGE_NAME,
     metrics = listOf(
         StartupTimingMetric()
-    ).plus(MacroMetrics.getPltMetrics()),
+    ).plus(MacroMetrics.getPltMetrics(traceName)),
     compilationMode = CompilationMode.None(),
     iterations = iterations,
     startupMode = startupMode,
