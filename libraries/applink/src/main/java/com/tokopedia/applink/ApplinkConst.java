@@ -163,7 +163,6 @@ public interface ApplinkConst {
     String TOPCHAT_ASKBUYER = "tokopedia://topchat/askbuyer/{toUserId}?customMessage" +
             "={customMessage}&source={source}&opponent_name={opponent_name}&avatar={avatar}";
     String CHATBOT_HOST = "chatbot";
-    String AFFILIATE_HOST = "affiliate";
     String CHATBOT = "tokopedia://chatbot/{message_id}";
     String CHAT_BOT = "tokopedia://chatbot";
     String CHAT_TEMPLATE = "tokopedia://chat/settings/templatechat";
@@ -244,6 +243,8 @@ public interface ApplinkConst {
     String OVO_FINAL_PAGE = "tokopedia://ovo-final";
 
     String ORDER_TRACKING = "tokopedia://shipping/tracking/{order_id}";
+    String LOGISTIC_SELLER_RESCHEDULE = "tokopedia://seller/reschedulepickup";
+    String ORDER_POD = "tokopedia://shipping/pod/{order_id}";
 
     String LINK_ACCOUNT = "tokopedia://gojek-account-link";
     String EXPLICIT_PROFILE = "tokopedia://explicit-profile";
@@ -335,6 +336,8 @@ public interface ApplinkConst {
     String AFFILIATE_ONBOARDING = "tokopedia://affiliate/onboarding";
     String AFFILIATE_PRODUCT = "tokopedia://affiliate/product/{product_id}";
     String AFFILIATE = "tokopedia://affiliate";
+    String FEED_CREATION_PRODUCT_SEARCH = "tokopedia://feed/creation-product-search";
+    String FEED_CREATION_SHOP_SEARCH = "tokopedia://feed/creation-shop-search";
 
     String PLAY_DETAIL = "tokopedia://play/{channel_id}";
     String PLAY_BROADCASTER = "tokopedia://play-broadcaster";
@@ -378,7 +381,7 @@ public interface ApplinkConst {
     String SMC_REFERRAL = "tokopedia://smc-referral";
 
     String CATEGORY_BELANJA = "tokopedia://category_belanja/{CATEGORY_NAME}";
-    
+
     String POWER_MERCHANT_SUBSCRIBE = "tokopedia://power_merchant/subscribe";
     String PM_BENEFIT_PACKAGE = "tokopedia://power_merchant/benefit_package";
     String POWER_MERCHANT_PRO_INTERRUPT = "tokopedia://power_merchant/interrupt";

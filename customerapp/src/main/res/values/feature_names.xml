@@ -213,6 +213,8 @@
 
     <string name="label_manage_address">Daftar Alamat</string>
 
+    <string name="label_pod">Bukti Pengiriman</string>
+
     <string name="title_activity_add_address">Tambah Alamat</string>
     <string name="title_activity_search_address">Kota atau kecamatan</string>
     <string name="title_activity_shop_edit_address">Ubah Detail Lokasi</string>
@@ -275,6 +277,7 @@
     <string name="title_som_booking_code">Detail Kode Booking</string>
     <string name="title_som_waiting_payment">Menunggu Pembayaran</string>
     <string name="title_logistic_info">Informasi Terkait Kurir</string>
+    <string name="title_reschedule_pickup_activity">Ubah Jadwal Pick-up</string>
 
 
     <!-- Dynamic feature for Umrah-->

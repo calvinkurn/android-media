@@ -7,14 +7,14 @@ import com.tokopedia.chat_common.data.ProductAttachmentUiModel
 data class AddToCartParam (
     var productId: String = "",
     var productName: String = "",
-    var shopId: Long = 0,
+    var shopId: String = "0",
     var category: String = "",
     var minOrder: Int = 0,
-    var price: Long = 0,
+    var price: Double = 0.0,
     var productImage: String = "",
     var freeShipping: Boolean = false,
     var productUrl: String = "",
-    var blastId: Long = 0,
+    var blastId: String = "0",
     var source: String = "",
     var dataModel: DataModel? = null
 ) {
@@ -26,7 +26,7 @@ data class AddToCartParam (
     }
 
     private fun getField(): String {
-        return if (blastId > 0) {
+        return if (blastId != "0") {
             FIELD_BC
         } else {
             FIELD_CHAT
@@ -56,7 +56,7 @@ data class AddToCartParam (
                 shopId = uiModel.shopId,
                 category = uiModel.category,
                 minOrder = uiModel.minOrder,
-                price = uiModel.priceInt,
+                price = uiModel.priceNumber,
                 productImage = uiModel.productImage,
                 freeShipping = uiModel.hasFreeShipping(),
                 productUrl = uiModel.productUrl,
