@@ -20,6 +20,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.review.R
 import com.tokopedia.review.ReviewInboxInstance
 import com.tokopedia.review.feature.credibility.analytics.ReviewCredibilityTracking
@@ -29,6 +30,7 @@ import com.tokopedia.review.feature.credibility.data.ReviewerCredibilityStatsWra
 import com.tokopedia.review.feature.credibility.di.DaggerReviewCredibilityComponent
 import com.tokopedia.review.feature.credibility.di.ReviewCredibilityComponent
 import com.tokopedia.review.feature.credibility.presentation.viewmodel.ReviewCredibilityViewModel
+import com.tokopedia.review.feature.credibility.presentation.widget.ReviewCredibilityAchievementBoxWidget
 import com.tokopedia.review.feature.credibility.presentation.widget.ReviewCredibilityStatisticBoxWidget
 import com.tokopedia.review.feature.inbox.pending.presentation.fragment.ReviewPendingFragment
 import com.tokopedia.unifycomponents.BottomSheetUnify
@@ -61,7 +63,7 @@ class ReviewCredibilityBottomSheet : BottomSheetUnify(), HasComponent<ReviewCred
     private var joinDate: Typography? = null
     private var footer: Typography? = null
     private var mainButton: UnifyButton? = null
-    private var learnMore: Typography? = null
+    private var achievementsBox: ReviewCredibilityAchievementBoxWidget? = null
     private var statisticsBox: ReviewCredibilityStatisticBoxWidget? = null
     private var coordinatorLayout: CoordinatorLayout? = null
     private var loadingView: View? = null
@@ -115,7 +117,7 @@ class ReviewCredibilityBottomSheet : BottomSheetUnify(), HasComponent<ReviewCred
             joinDate = findViewById(R.id.review_credibility_join_date)
             footer = findViewById(R.id.review_credibility_footer)
             mainButton = findViewById(R.id.review_credibility_button)
-            learnMore = findViewById(R.id.review_credibility_learn_more)
+            achievementsBox = findViewById(R.id.review_credibility_achievement_box)
             statisticsBox = findViewById(R.id.review_credibility_statistics_box)
             loadingView = findViewById(R.id.review_credibility_loading)
             coordinatorLayout = findViewById(R.id.review_credibility_coordinator_layout)
@@ -145,6 +147,7 @@ class ReviewCredibilityBottomSheet : BottomSheetUnify(), HasComponent<ReviewCred
         showKnob()
         with(reviewCredibility) {
             setupLabels(label)
+            setupAchievementsBox(label)
             setupStatistics(label.subtitle, stats)
         }
     }
@@ -166,11 +169,14 @@ class ReviewCredibilityBottomSheet : BottomSheetUnify(), HasComponent<ReviewCred
     private fun setupLabels(label: ReviewerCredibilityLabel) {
         with(label) {
             setReviewerName(userName)
-            setJoinDate(joinDate)
+            setJoinDate(joinDate, !label.achievements.isNullOrEmpty())
             setFooterText(footer)
             setButton(ctaText, applink)
-            setLearnMoreClickListener(infoText)
         }
+    }
+
+    private fun setupAchievementsBox(label: ReviewerCredibilityLabel) {
+        achievementsBox?.setAchievements(label)
     }
 
     private fun setupStatistics(title: String, statistics: List<ReviewerCredibilityStat>) {
@@ -182,31 +188,16 @@ class ReviewCredibilityBottomSheet : BottomSheetUnify(), HasComponent<ReviewCred
         this.reviewerName?.text = reviewerName
     }
 
-    private fun setJoinDate(joinDate: String) {
-        this.joinDate?.text = joinDate
-    }
-
-    private fun setFooterText(footer: String) {
-        this.footer?.text = context?.let { HtmlLinkHelper(it, footer).spannedString } ?: footer
-    }
-
-    private fun setButton(buttonText: String, applink: String) {
-        mainButton?.apply {
-            text = buttonText
-            setOnClickListener {
-                if (isUsersOwnCredibility()) {
-                    ReviewCredibilityTracking.trackOnClickCTASelfCredibility(buttonText, userId, source, viewModel.userId)
-                } else {
-                    ReviewCredibilityTracking.trackOnClickCTAOtherUserCredibility(buttonText, userId, productId, source, viewModel.userId)
-                }
-                handleRouting(applink)
-            }
+    private fun setJoinDate(joinDate: String, hasAchievements: Boolean) {
+        this.joinDate?.apply {
+            text = joinDate
+            showWithCondition(!hasAchievements)
         }
     }
 
-    private fun setLearnMoreClickListener(learnMoreText: String) {
-        this.learnMore?.apply {
-            text = HtmlLinkHelper(context, learnMoreText).spannedString
+    private fun setFooterText(footer: String) {
+        this.footer?.apply {
+            text = context?.let { HtmlLinkHelper(it, footer).spannedString } ?: footer
             movementMethod = object : LinkMovementMethod() {
                 override fun onTouchEvent(widget: TextView, buffer: Spannable, event: MotionEvent): Boolean {
                     val action = event.action
@@ -232,6 +223,20 @@ class ReviewCredibilityBottomSheet : BottomSheetUnify(), HasComponent<ReviewCred
                     }
                     return super.onTouchEvent(widget, buffer, event);
                 }
+            }
+        }
+    }
+
+    private fun setButton(buttonText: String, applink: String) {
+        mainButton?.apply {
+            text = buttonText
+            setOnClickListener {
+                if (isUsersOwnCredibility()) {
+                    ReviewCredibilityTracking.trackOnClickCTASelfCredibility(buttonText, userId, source, viewModel.userId)
+                } else {
+                    ReviewCredibilityTracking.trackOnClickCTAOtherUserCredibility(buttonText, userId, productId, source, viewModel.userId)
+                }
+                handleRouting(applink)
             }
         }
     }

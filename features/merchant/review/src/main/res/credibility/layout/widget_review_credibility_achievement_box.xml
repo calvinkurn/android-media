@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:clipChildren="false"
+    android:clipToPadding="false">
+
+    <com.tokopedia.unifycomponents.CardUnify2
+        android:id="@+id/container_review_credibility_achievement_box_content"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        app:card_type="border"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="12dp">
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/tv_credibility_achievement_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="24dp"
+                android:layout_marginTop="9dp"
+                android:paddingBottom="2dp"
+                tools:text="Karina memang juara! Rank-nya tinggi di Tantangan Ulasan kategori ini:"
+                android:textAlignment="center"
+                android:textColor="@color/Unify_NN600"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:typographyType="body_3" />
+
+            <com.tokopedia.review.feature.credibility.presentation.widget.ReviewCredibilityAchievementWidget
+                android:id="@+id/widget_review_credibility_achievement_one"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="4dp"
+                app:layout_constraintEnd_toStartOf="@id/widget_review_credibility_achievement_two"
+                app:layout_constraintHorizontal_chainStyle="packed"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tv_credibility_achievement_label"
+                app:layout_constraintWidth_percent="0.31" />
+
+            <com.tokopedia.review.feature.credibility.presentation.widget.ReviewCredibilityAchievementWidget
+                android:id="@+id/widget_review_credibility_achievement_two"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="4dp"
+                android:layout_marginTop="16dp"
+                app:layout_constraintEnd_toStartOf="@id/widget_review_credibility_achievement_three"
+                app:layout_constraintStart_toEndOf="@id/widget_review_credibility_achievement_one"
+                app:layout_constraintTop_toBottomOf="@id/tv_credibility_achievement_label"
+                app:layout_constraintWidth_percent="0.31" />
+
+            <com.tokopedia.review.feature.credibility.presentation.widget.ReviewCredibilityAchievementWidget
+                android:id="@+id/widget_review_credibility_achievement_three"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="4dp"
+                android:layout_marginTop="16dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@id/widget_review_credibility_achievement_two"
+                app:layout_constraintTop_toBottomOf="@id/tv_credibility_achievement_label"
+                app:layout_constraintWidth_percent="0.31" />
+
+            <androidx.constraintlayout.widget.Barrier
+                android:id="@+id/barrier_achievements_bottom"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:barrierDirection="bottom"
+                app:constraint_referenced_ids="widget_review_credibility_achievement_one,widget_review_credibility_achievement_two,widget_review_credibility_achievement_three"
+                tools:layout_constraintTop_toBottomOf="@id/widget_review_credibility_achievement_one" />
+
+            <com.tokopedia.unifycomponents.UnifyButton
+                android:id="@+id/btn_review_credibility_achievement_see_more"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                tools:text="+3 Pencapaian Lainnya"
+                app:layout_constraintTop_toBottomOf="@id/barrier_achievements_bottom"
+                app:unifyButtonVariant="text" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </com.tokopedia.unifycomponents.CardUnify2>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_credibility_achievement_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bg_credibility_achievement_title"
+        android:paddingHorizontal="16dp"
+        android:paddingTop="4dp"
+        android:paddingBottom="6dp"
+        tools:text="Juara Ulasan"
+        android:textColor="@color/Unify_Static_White"
+        app:layout_constraintBottom_toTopOf="@id/container_review_credibility_achievement_box_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/container_review_credibility_achievement_box_content"
+        app:typographyType="body_2"
+        app:typographyWeight="bold" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

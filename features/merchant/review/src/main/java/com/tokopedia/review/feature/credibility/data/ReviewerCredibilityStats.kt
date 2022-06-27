@@ -39,7 +39,22 @@ data class ReviewerCredibilityLabel(
     val applink: String = "",
     @SerializedName("infoText")
     @Expose
-    val infoText: String = ""
+    val infoText: String = "",
+    @SerializedName("name")
+    @Expose
+    val name: String = "",
+    @SerializedName("sublabel")
+    @Expose
+    val subLabel: String = "",
+    @SerializedName("achievements")
+    @Expose
+    val achievements: List<Achievement>? = null,
+    @SerializedName("totalAchievementFmt")
+    @Expose
+    val totalAchievementFmt: String? = null,
+    @SerializedName("achievementListLink")
+    @Expose
+    val achievementListLink: String? = null,
 )
 
 data class ReviewerCredibilityStat(
@@ -61,4 +76,19 @@ data class ReviewerCredibilityStat(
     @SerializedName("show")
     @Expose
     val shouldShow: Boolean = false
+)
+
+data class Achievement(
+    @SerializedName("image")
+    @Expose
+    val image: String? = null,
+    @SerializedName("name")
+    @Expose
+    val name: String? = null,
+    @SerializedName("total")
+    @Expose
+    val total: String? = null,
+    @SerializedName("color")
+    @Expose
+    val color: String? = null,
 )
