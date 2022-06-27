@@ -513,9 +513,6 @@ class MerchantPageFragment : BaseMultiFragment(),
                 is Success -> {
                     setupChooseAddress(it.data)
                 }
-                is Fail -> {
-
-                }
             }
         })
     }
