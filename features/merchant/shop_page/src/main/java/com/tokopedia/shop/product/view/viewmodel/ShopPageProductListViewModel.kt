@@ -27,6 +27,7 @@ import com.tokopedia.cartcommon.data.response.updatecart.UpdateCartV2Data
 import com.tokopedia.cartcommon.domain.usecase.DeleteCartUseCase
 import com.tokopedia.cartcommon.domain.usecase.UpdateCartUseCase
 import com.tokopedia.kotlin.extensions.view.isZero
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.shop.common.util.ShopUtil
 import com.tokopedia.shop.product.data.model.ShopProduct
 import com.tokopedia.mvcwidget.usecases.MVCSummaryUseCase
@@ -700,12 +701,15 @@ class ShopPageProductListViewModel @Inject constructor(
         miniCartSimplifiedData: MiniCartSimplifiedData?
     ): ShopProductUiModel {
         val matchedMiniCartItem = getMatchedMiniCartItem(
-            productModel.id.orEmpty(),
+            productModel,
             miniCartSimplifiedData
         )
-        if (matchedMiniCartItem != null && !matchedMiniCartItem.isError) {
-            if(matchedMiniCartItem.quantity != productModel.productInCart) {
-                productModel.productInCart = matchedMiniCartItem.quantity
+        if (matchedMiniCartItem != null && !matchedMiniCartItem.all { it?.isError == true } && matchedMiniCartItem.isNotEmpty()) {
+            val cartQuantity = matchedMiniCartItem.sumOf {
+                it?.quantity.orZero()
+            }
+            if(cartQuantity != productModel.productInCart) {
+                productModel.productInCart = cartQuantity
                 productModel.isNewData = true
             } else {
                 productModel.isNewData = false
@@ -723,19 +727,37 @@ class ShopPageProductListViewModel @Inject constructor(
     }
 
     private fun getMatchedMiniCartItem(
-        productId: String,
+        shopProductUiModel: ShopProductUiModel,
         miniCartData: MiniCartSimplifiedData?
-    ): MiniCartItem.MiniCartItemProduct? {
-//        val isVariant = productUiModel.isVariant
-//        if (isVariant) {
-//            return miniCartData.miniCartItems.values.firstOrNull {
-//                it is MiniCartItem.MiniCartItemProduct && (it.productId == productUiModel.productID || productUiModel.childIDs.contains(it.productId))
-//            } as? MiniCartItem.MiniCartItemProduct
-//        }
-        return miniCartData?.miniCartItems?.getMiniCartItemProduct(productId)
+    ): List<MiniCartItem.MiniCartItemProduct?>? {
+        val isVariant = shopProductUiModel.isVariant
+        return if (isVariant) {
+            val parentProductId = getParentProductOnMiniCart(
+                shopProductUiModel.id.orEmpty(),
+                miniCartData
+            )
+            return miniCartData?.miniCartItems?.values?.filter {
+                it is MiniCartItem.MiniCartItemProduct && (it.productParentId == parentProductId)
+            }?.map {
+                it as? MiniCartItem.MiniCartItemProduct
+            }
+        } else {
+            val childProductId = shopProductUiModel.id.orEmpty()
+            listOf(miniCartData?.miniCartItems?.getMiniCartItemProduct(childProductId))
+        }
     }
 
-        private fun trackAddToCart(
+    private fun getParentProductOnMiniCart(
+        childProductId: String,
+        miniCartData: MiniCartSimplifiedData?
+    ): String {
+        val miniCartItemValues = miniCartData?.miniCartItems?.values
+        return miniCartItemValues?.filterIsInstance<MiniCartItem.MiniCartItemProduct>()?.firstOrNull {
+            it.productId == childProductId
+        }?.productParentId.orEmpty()
+    }
+
+    private fun trackAddToCart(
         cartId: String,
         productId: String,
         productName: String,

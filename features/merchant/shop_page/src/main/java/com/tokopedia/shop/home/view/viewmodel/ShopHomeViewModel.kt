@@ -25,6 +25,7 @@ import com.tokopedia.filter.common.data.DynamicFilterModel
 import com.tokopedia.kotlin.extensions.coroutines.asyncCatchError
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.isZero
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.minicart.common.domain.data.MiniCartItem
@@ -438,16 +439,34 @@ class ShopHomeViewModel @Inject constructor(
     }
 
     private fun getMatchedMiniCartItem(
-        productId: String,
+        shopHomeProductUiModel: ShopHomeProductUiModel,
         miniCartData: MiniCartSimplifiedData?
-    ): MiniCartItem.MiniCartItemProduct? {
-//        val isVariant = productUiModel.isVariant
-//        if (isVariant) {
-//            return miniCartData.miniCartItems.values.firstOrNull {
-//                it is MiniCartItem.MiniCartItemProduct && (it.productId == productUiModel.productID || productUiModel.childIDs.contains(it.productId))
-//            } as? MiniCartItem.MiniCartItemProduct
-//        }
-        return miniCartData?.miniCartItems?.getMiniCartItemProduct(productId)
+    ): List<MiniCartItem.MiniCartItemProduct?>? {
+        val isVariant = shopHomeProductUiModel.isVariant
+        return if (isVariant) {
+            val parentProductId = getParentProductOnMiniCart(
+                shopHomeProductUiModel.id.orEmpty(),
+                miniCartData
+            )
+            return miniCartData?.miniCartItems?.values?.filter {
+                it is MiniCartItem.MiniCartItemProduct && (it.productParentId == parentProductId)
+            }?.map {
+                it as? MiniCartItem.MiniCartItemProduct
+            }
+        } else {
+            val childProductId = shopHomeProductUiModel.id.orEmpty()
+            listOf(miniCartData?.miniCartItems?.getMiniCartItemProduct(childProductId))
+        }
+    }
+
+    private fun getParentProductOnMiniCart(
+        childProductId: String,
+        miniCartData: MiniCartSimplifiedData?
+    ): String {
+        val miniCartItemValues = miniCartData?.miniCartItems?.values
+        return miniCartItemValues?.filterIsInstance<MiniCartItem.MiniCartItemProduct>()?.firstOrNull {
+            it.productId == childProductId
+        }?.productParentId.orEmpty()
     }
 
     private suspend fun getSortListData(): List<ShopProductSortModel> {
@@ -1133,12 +1152,15 @@ class ShopHomeViewModel @Inject constructor(
         miniCartSimplifiedData: MiniCartSimplifiedData?
     ): ShopHomeProductUiModel {
         val matchedMiniCartItem = getMatchedMiniCartItem(
-            productModel.id.orEmpty(),
+            productModel,
             miniCartSimplifiedData
         )
-        if (matchedMiniCartItem != null && !matchedMiniCartItem.isError) {
-            if(matchedMiniCartItem.quantity != productModel.productInCart) {
-                productModel.productInCart = matchedMiniCartItem.quantity
+        if (matchedMiniCartItem != null && !matchedMiniCartItem.all { it?.isError == true } && matchedMiniCartItem.isNotEmpty()) {
+            val cartQuantity = matchedMiniCartItem.sumOf {
+                it?.quantity.orZero()
+            }
+            if(cartQuantity != productModel.productInCart) {
+                productModel.productInCart = cartQuantity
                 productModel.isNewData = true
             } else {
                 productModel.isNewData = false
