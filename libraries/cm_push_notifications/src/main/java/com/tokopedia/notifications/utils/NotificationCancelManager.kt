@@ -42,6 +42,43 @@ open class NotificationCancelManager: CoroutineScope {
         }
     }
 
+    fun clearNotificationsByGroup(context: Context, groupId: Int) {
+        getNotificationByGroup(context, groupId) { notifications ->
+            kotlin.runCatching {
+                notifications.forEach {
+                    cancelNotificationManager(context, it.notificationId)
+                }
+            }
+        }
+    }
+
+    private fun getNotificationByGroup(
+        context: Context,
+        groupId: Int,
+        invoke: (List<BaseNotificationModel>) -> Unit
+    ) {
+        launch {
+            val notifications = pushRepository(context).getNotificationByGroup(groupId)
+            withContext(Dispatchers.Main) {
+                runCatching {
+                    invoke(notifications
+                        .filter { it.campaignId != 0L }
+                    )
+                }
+            }
+        }
+    }
+
+    fun deleteGroupNotificationFromDb(context: Context, groupId: Int) {
+        launch {
+            withContext(Dispatchers.Main) {
+                runCatching {
+                    pushRepository(context).deleteNotificationByGroup(groupId)
+                }
+            }
+        }
+    }
+
     private fun cancellableItems(
             context: Context,
             remoteConfig: CMRemoteConfigUtils,

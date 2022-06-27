@@ -43,6 +43,7 @@ import java.util.*
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 import com.tokopedia.notifications.factory.ReviewNotification
+import com.tokopedia.notifications.utils.NotificationCancelManager
 
 
 /**
@@ -94,6 +95,7 @@ class CMBroadcastReceiver : BroadcastReceiver(), CoroutineScope {
             if (action != null) {
                 when (action) {
                     CMConstant.ReceiverAction.ACTION_ON_NOTIFICATION_DISMISS -> {
+                        onDismissGroupNotification(baseNotificationModel, context)
                         NotificationManagerCompat.from(context).cancel(notificationId)
                         sendClickPushEvent(context, IrisAnalyticsEvents.PUSH_DISMISSED, baseNotificationModel, CMConstant.NotificationType.GENERAL)
                     }
@@ -198,6 +200,19 @@ class CMBroadcastReceiver : BroadcastReceiver(), CoroutineScope {
             messageMap["data"] = "$intent"
             ServerLogger.log(Priority.P2, "CM_VALIDATION", messageMap)
             e.printStackTrace()
+        }
+    }
+
+    private fun onDismissGroupNotification(
+        baseNotificationModel: BaseNotificationModel?,
+        context: Context
+    ) {
+        baseNotificationModel?.groupId?.let { id ->
+            if (id.toString().isNotBlank()) {
+                val cancelManager = NotificationCancelManager()
+                cancelManager.clearNotificationsByGroup(context, id)
+                cancelManager.deleteGroupNotificationFromDb(context, id)
+            }
         }
     }
 
