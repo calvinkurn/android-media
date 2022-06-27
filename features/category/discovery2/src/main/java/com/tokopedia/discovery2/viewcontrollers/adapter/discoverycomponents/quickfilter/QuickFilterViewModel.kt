@@ -121,7 +121,7 @@ class QuickFilterViewModel(val application: Application, val components: Compone
             if(components.properties?.dynamic == true && !components.dynamicOriginalId.isNullOrEmpty())
                 componentID = components.dynamicOriginalId!!
             val queryParameterMap = mutableMapOf<String, Any>()
-            queryParameterMap.putAll(Utils.addAddressQueryMap(components.userAddressData))
+            queryParameterMap.putAll(Utils.addAddressQueryMapWithWareHouse(components.userAddressData))
             dynamicFilterModel.value = filterRepository.getFilterData(componentID, queryParameterMap, components.pageEndPoint)
             renderDynamicFilter(dynamicFilterModel.value?.data)
         }, onError = {
