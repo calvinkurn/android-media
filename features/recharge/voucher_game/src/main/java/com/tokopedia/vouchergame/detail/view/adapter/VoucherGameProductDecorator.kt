@@ -10,7 +10,7 @@ import com.tokopedia.vouchergame.detail.view.adapter.viewholder.VoucherGameProdu
  */
 class VoucherGameProductDecorator(private val space: Int) : RecyclerView.ItemDecoration() {
 
-    private var needOffset = true
+    private var needOffset = false
 
     override fun getItemOffsets(outRect: Rect, view: View, parent: RecyclerView, state: RecyclerView.State) {
         outRect.apply {
