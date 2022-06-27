@@ -175,7 +175,7 @@ public class Product implements Parcelable {
 
     @SerializedName(KEY_CUSTOM_VIDEO_URL)
     @Expose
-    private String customVideoUrl;
+    private String customVideoUrl = "";
 
     private boolean topAds = false;
 
