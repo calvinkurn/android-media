@@ -111,8 +111,6 @@
         android:layout_height="@dimen/product_card_label_price_height"
         android:visibility="gone"
         android:layout_marginTop="@dimen/product_card_label_variant_margin_top"
-        android:layout_marginLeft="@dimen/product_card_label_price_margin_left_fashion"
-        app:layout_goneMarginLeft="0dp"
         app:labelType="general_light_green"
         app:layout_constraintStart_toEndOf="@id/labelVariantWithLabelContainer"
         app:layout_constraintTop_toBottomOf="@id/textViewProductName"
@@ -230,6 +228,14 @@
         tools:visibility="visible"
         tools:text="Cashback" />
 
+    <androidx.constraintlayout.widget.Barrier
+        android:id="@+id/labelPriceBarrier"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:barrierDirection="bottom"
+        app:constraint_referenced_ids="textViewPrice, labelDiscount, textViewSlashedPrice, labelPrice"
+        />
+
     <ImageView
         android:id="@+id/imageShopBadge"
         android:contentDescription="@string/content_desc_imageShopBadge" 
@@ -238,7 +244,7 @@
         android:layout_marginTop="@dimen/product_card_shop_badge_margin_top"
         android:visibility="gone"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/labelPrice"
+        app:layout_constraintTop_toBottomOf="@id/labelPriceBarrier"
         tools:visibility="visible" />
 
     <com.tokopedia.unifyprinciples.Typography
@@ -254,7 +260,7 @@
         android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/imageShopBadge"
-        app:layout_constraintTop_toBottomOf="@id/labelPrice"
+        app:layout_constraintTop_toBottomOf="@id/labelPriceBarrier"
         app:layout_goneMarginStart="0dp"
         app:layout_goneMarginLeft="0dp"
         app:typographyType="body_3"

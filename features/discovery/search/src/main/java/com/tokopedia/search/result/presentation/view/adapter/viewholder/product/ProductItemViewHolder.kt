@@ -27,6 +27,7 @@ abstract class ProductItemViewHolder(
     protected fun ProductItemDataView.toProductCardModel(
         productImage: String,
         isWideContent: Boolean,
+        productListType: ProductCardModel.ProductListType
     ): ProductCardModel {
         return ProductCardModel(
             productImageUrl = productImage,
@@ -45,6 +46,7 @@ abstract class ProductItemViewHolder(
             labelGroupVariantList = labelGroupVariantList.toProductCardModelLabelGroupVariant(),
             isWideContent = isWideContent,
             customVideoURL = customVideoURL,
+            productListType = productListType,
         )
     }
 

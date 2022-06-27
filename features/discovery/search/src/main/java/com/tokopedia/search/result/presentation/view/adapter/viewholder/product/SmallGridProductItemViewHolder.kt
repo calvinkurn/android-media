@@ -37,7 +37,11 @@ class SmallGridProductItemViewHolder(
 
         val productCardView = binding?.productCardView ?: return
         val productCardModel =
-            productItemData.toProductCardModel(productItemData.imageUrl300, false)
+            productItemData.toProductCardModel(
+                productItemData.imageUrl300,
+                false,
+                productItemData.getProductListType()
+            )
         this.productCardModel = productCardModel
 
         registerLifecycleObserver(productCardModel)

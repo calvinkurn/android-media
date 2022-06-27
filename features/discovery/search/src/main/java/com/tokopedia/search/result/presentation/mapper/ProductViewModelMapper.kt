@@ -69,6 +69,7 @@ class ProductViewModelMapper {
             searchProductData.productList,
             pageTitle,
             dimension90,
+            searchProductHeader.meta.productListType
         )
         productDataView.tickerModel = convertToTickerDataView(
             searchProductData,
@@ -205,10 +206,11 @@ class ProductViewModelMapper {
             productModels: List<Product>,
             pageTitle: String,
             dimension90: String,
+            productListType: String,
     ): List<ProductItemDataView> {
         return productModels.mapIndexed { index, productModel ->
             val position = lastProductItemPosition + index + 1
-            convertToProductItem(productModel, position, pageTitle, dimension90,)
+            convertToProductItem(productModel, position, pageTitle, dimension90, productListType)
         }
     }
 
@@ -217,6 +219,7 @@ class ProductViewModelMapper {
             position: Int,
             pageTitle: String,
             dimension90: String,
+            productListType: String,
     ): ProductItemDataView {
         val productItem = ProductItemDataView()
         productItem.productID = productModel.id
@@ -259,6 +262,7 @@ class ProductViewModelMapper {
         productItem.dimension90 = dimension90
         productItem.applink = productModel.applink
         productItem.customVideoURL = productModel.customVideoURL
+        productItem.productListType = productListType
         return productItem
     }
 

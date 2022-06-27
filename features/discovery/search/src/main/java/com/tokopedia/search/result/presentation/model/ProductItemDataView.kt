@@ -3,8 +3,11 @@ package com.tokopedia.search.result.presentation.model
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.analyticconstant.DataLayer
 import com.tokopedia.discovery.common.constants.SearchApiConst
+import com.tokopedia.discovery.common.constants.SearchConstant
 import com.tokopedia.discovery.common.constants.SearchConstant.ProductCardLabel
+import com.tokopedia.discovery.common.constants.SearchConstant.ProductListType
 import com.tokopedia.kotlin.model.ImpressHolder
+import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.search.analytics.SearchTracking
 import com.tokopedia.search.result.presentation.view.typefactory.ProductListTypeFactory
 import com.tokopedia.search.utils.getFormattedPositionName
@@ -65,6 +68,7 @@ class ProductItemDataView : ImpressHolder(), Visitable<ProductListTypeFactory> {
     var topadsTag: Int = 0
     var applink: String = ""
     var customVideoURL: String = ""
+    var productListType: String = ""
 
     override fun type(typeFactory: ProductListTypeFactory?): Int {
         return typeFactory?.type(this) ?: 0
@@ -118,6 +122,15 @@ class ProductItemDataView : ImpressHolder(), Visitable<ProductListTypeFactory> {
 
     val dimension115: String
         get() = labelGroupList.getFormattedPositionName()
+
+    fun getProductListType(): ProductCardModel.ProductListType {
+        return when(productListType) {
+            ProductListType.VAR_REPOSITION -> ProductCardModel.ProductListType.REPOSITION
+            ProductListType.VAR_LONG_IMG -> ProductCardModel.ProductListType.LONG_IMAGE
+            ProductListType.VAR_NO_CAMPAIGN -> ProductCardModel.ProductListType.NO_CAMPAIGN
+            else -> ProductCardModel.ProductListType.CONTROL
+        }
+    }
 
     companion object {
         fun create(

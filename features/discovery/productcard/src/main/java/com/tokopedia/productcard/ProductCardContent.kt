@@ -21,6 +21,7 @@ import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.extensions.view.visible
@@ -519,7 +520,10 @@ fun LinearLayout.renderVariantColor(
 ) {
     if (listLabelVariant.isEmpty()) return
 
-    val layout = creteVariantContainer(context)
+    val marginRight = 4.toPx()
+    val layout = creteVariantContainer(context).apply {
+        setMargin(0, 0, marginRight, 0)
+    }
 
     listLabelVariant.forEachIndexed { index, labelGroupVariant ->
         val gradientDrawable = createColorSampleDrawable(context, labelGroupVariant.hexColor)
@@ -553,7 +557,10 @@ fun LinearLayout.renderLabelVariantSize(
 ) {
     if (listLabelVariant.isEmpty()) return
 
-    val layout = creteVariantContainer(context)
+    val marginRight = 4.toPx()
+    val layout = creteVariantContainer(context).apply {
+        setMargin(0, 0, marginRight, 0)
+    }
 
     val textContainer = Typography(context)
     textContainer.setType(Typography.SMALL)

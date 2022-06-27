@@ -68,6 +68,9 @@ private const val ACE_SEARCH_PRODUCT_QUERY = """
                 additionalParams
                 keywordProcess
                 componentId
+                meta {
+                    productListType
+                }
             }
             data {
                 isQuerySafe

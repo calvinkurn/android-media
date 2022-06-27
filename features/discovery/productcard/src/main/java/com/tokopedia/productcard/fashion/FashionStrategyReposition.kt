@@ -12,6 +12,7 @@ import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.productcard.R
 import com.tokopedia.productcard.renderLabelVariantSize
 import com.tokopedia.productcard.renderVariantColor
+import com.tokopedia.productcard.utils.LABEL_VARIANT_CHAR_LIMIT
 import com.tokopedia.productcard.utils.LABEL_VARIANT_WITH_LABEL_CHAR_LIMIT
 import com.tokopedia.productcard.utils.SQUARE_IMAGE_RATIO
 import com.tokopedia.productcard.utils.applyConstraintSet
@@ -212,7 +213,7 @@ internal open class FashionStrategyReposition: FashionStrategy {
 
             val renderedLabelGroupVariantList =
                 productCardModel.getRenderedLabelGroupVariantList(
-                    LABEL_VARIANT_WITH_LABEL_CHAR_LIMIT,
+                    LABEL_VARIANT_CHAR_LIMIT,
                     productCardModel.getLabelPrice() == null,
                 )
             val renderedLabelVariantSizeList = renderedLabelGroupVariantList.filter { it.isSize() }
