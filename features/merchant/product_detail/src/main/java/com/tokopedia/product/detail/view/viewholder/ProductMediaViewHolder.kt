@@ -25,9 +25,10 @@ class ProductMediaViewHolder(private val view: View,
 
             viewMediaPager.setup(element.listOfMedia,
                     listener,
-                    getComponentTrackData(element))
+                    getComponentTrackData(element),
+                    element.shouldAnimateLabel)
 
-            element.shouldUpdateImage = false
+            element.shouldAnimateLabel = false
 
             view.addOnImpressionListener(element.impressHolder) {
                 listener.onImpressComponent(getComponentTrackData(element))

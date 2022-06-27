@@ -60,7 +60,7 @@ class AnimatedTextLabel : FrameLayout {
         txtLabel?.text = ""
     }
 
-    fun showView(desc: String) {
+    fun showView(desc: String, initialAnimation: Boolean = false) {
         val processText = ellipsisText(desc)
         if (processText.isNotEmpty()) {
             if (previousText.isNotEmpty() && previousText != processText) {
@@ -69,13 +69,21 @@ class AnimatedTextLabel : FrameLayout {
                         processText,
                         getWidth(processText, txtLabel?.textSize ?: 0F),
                         animatorWidthOpacitySet)
+                previousText = processText
             } else {
                 renderTextAndRestoreWidth(processText)
                 containerLabel?.let {
-                    animationHelper?.animateSwipeUp(it)
+                    animationHelper?.animateSwipeUp(it, onAnimationEnd = {
+                        previousText = processText
+                        if (initialAnimation) {
+                            //after 1.5s auto swipe down
+                            animationHelper?.animateSwipeDown(it, 1500) {
+                                previousText = ""
+                            }
+                        }
+                    })
                 }
             }
-            previousText = processText
         } else {
             if (previousText.isNotEmpty()) {
                 containerLabel?.let {
@@ -125,7 +133,7 @@ class TextLabelAnimator(private val txtView: Typography) {
         private const val TRANSLATION_MULTIPLY_VALUE = 100
         private const val TRANSLATION_X_BOTTOM_VALUE = 0.1F
 
-        private const val OFFSET_HEIGHT_VALUE = 50
+        private const val OFFSET_HEIGHT_VALUE = 20
     }
 
     fun animateChangeText(desc: String,
@@ -151,13 +159,14 @@ class TextLabelAnimator(private val txtView: Typography) {
     }
 
     @SuppressLint("ResourcePackage")
-    fun animateSwipeUp(containerLabel: FrameLayout) {
+    fun animateSwipeUp(containerLabel: FrameLayout, onAnimationEnd: (() -> Unit)? = null) {
         containerLabel.show()
         txtView.show()
         val parentHeight = measureParentHeight(containerLabel).toFloat()
         containerLabel.y = parentHeight
         containerLabel.animate()
                 .y(0F)
+                .setStartDelay(0L)
                 .setDuration(SWIPE_DURATION)
                 .setInterpolator(DecelerateInterpolator())
                 .setListener(object : Animator.AnimatorListener {
@@ -168,6 +177,7 @@ class TextLabelAnimator(private val txtView: Typography) {
                     override fun onAnimationEnd(p0: Animator?) {
                         containerLabel.show()
                         txtView.show()
+                        onAnimationEnd?.invoke()
                     }
 
                     override fun onAnimationCancel(p0: Animator?) {
@@ -181,13 +191,14 @@ class TextLabelAnimator(private val txtView: Typography) {
     }
 
     @SuppressLint("ResourcePackage")
-    fun animateSwipeDown(containerLabel: FrameLayout) {
+    fun animateSwipeDown(containerLabel: FrameLayout, offset: Int = 0, onAnimationEnd: (() -> Unit)? = null) {
         txtView.show()
         containerLabel.show()
         containerLabel.y = 0F
         val parentHeight = measureParentHeight(containerLabel).toFloat() + OFFSET_HEIGHT_VALUE
         containerLabel.animate()
                 .y(parentHeight)
+                .setStartDelay(offset.toLong())
                 .setDuration(SWIPE_DURATION)
                 .setInterpolator(DecelerateInterpolator())
                 .setListener(object : Animator.AnimatorListener {
@@ -198,6 +209,7 @@ class TextLabelAnimator(private val txtView: Typography) {
                     override fun onAnimationEnd(p0: Animator?) {
                         containerLabel.hide()
                         txtView.hide()
+                        onAnimationEnd?.invoke()
                     }
 
                     override fun onAnimationCancel(p0: Animator?) {

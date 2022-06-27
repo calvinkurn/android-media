@@ -66,7 +66,8 @@ class VideoPictureView @JvmOverloads constructor(
 
     fun setup(media: List<MediaDataModel>,
               listener: DynamicProductDetailListener?,
-              componentTrackDataModel: ComponentTrackDataModel?) {
+              componentTrackDataModel: ComponentTrackDataModel?,
+              shouldAnimateLabel: Boolean) {
         this.mListener = listener
         this.componentTrackDataModel = componentTrackDataModel
 
@@ -82,7 +83,7 @@ class VideoPictureView @JvmOverloads constructor(
 
         updateInitialThumbnail(media)
         updateImages(media)
-        updateMediaLabel(lastPosition)
+        updateMediaLabel(lastPosition, shouldAnimateLabel)
         scrollToPosition(RecyclerView.NO_POSITION)
         renderVideoOnceAtPosition(RecyclerView.NO_POSITION)
     }
@@ -225,7 +226,8 @@ class VideoPictureView @JvmOverloads constructor(
             media.toMutableList()
     }
 
-    private fun updateMediaLabel(position: Int) {
+    private fun updateMediaLabel(position: Int,
+                                 shouldAnimateLabel: Boolean = false) {
         val mediaData = videoPictureAdapter?.currentList?.getOrNull(position)
         val variantName = mediaData?.mediaDescription ?: ""
         val totalMediaCount = videoPictureAdapter?.currentList?.size ?: 0
@@ -253,7 +255,7 @@ class VideoPictureView @JvmOverloads constructor(
                 || binding.txtAnimLabel.getCurrentText() == stringLabel
         if (ignoreUpdateLabel) return
 
-        binding.txtAnimLabel.showView(stringLabel)
+        binding.txtAnimLabel.showView(stringLabel, shouldAnimateLabel)
     }
 
     companion object {
