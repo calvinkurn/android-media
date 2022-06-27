@@ -20,30 +20,28 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvShcCurrentProgress"
-        android:layout_width="@dimen/layout_lvl0"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:gravity="end"
-        android:lineSpacingExtra="@dimen/shc_line_spacing_6"
-        android:textColor="@color/Unify_G500"
         app:layout_constraintEnd_toStartOf="@id/tvShcMaxProgress"
         app:layout_constraintTop_toTopOf="parent"
-        app:typographyType="body_1"
+        app:typographyType="display_3"
         app:typographyWeight="bold"
-        tools:text="80" />
+        tools:text="80"
+        tools:textColor="@color/Unify_G500" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvShcMaxProgress"
-        android:layout_width="@dimen/layout_lvl0"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:gravity="end"
-        android:lineSpacingExtra="@dimen/shc_line_spacing_6"
-        android:text="@string/shc_max_progress"
-        android:textColor="@color/Unify_N700_32"
+        android:textColor="@color/Unify_NN600"
         app:layout_constraintBottom_toBottomOf="@id/tvShcCurrentProgress"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@id/tvShcCurrentProgress"
-        app:typographyType="body_3"
-        app:typographyWeight="reguler" />
+        app:typographyType="display_3"
+        app:typographyWeight="reguler"
+        tools:text="100" />
 
     <View
         android:id="@+id/shcProgressBarBase"

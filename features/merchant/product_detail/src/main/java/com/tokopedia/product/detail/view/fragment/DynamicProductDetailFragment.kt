@@ -933,14 +933,6 @@ open class DynamicProductDetailFragment :
                     userId = viewModel.userId,
                     lcaWarehouseId = getLcaWarehouseId()
                 )
-            ProductDetailConstant.STOCK_ASSURANCE ->
-                DynamicProductDetailTracking.Impression.eventOneLinerImpression(
-                    trackingQueue = trackingQueue,
-                    componentTrackDataModel = componentTrackDataModel,
-                    productInfo = viewModel.getDynamicProductInfoP1,
-                    userId = viewModel.userId,
-                    lcaWarehouseId = getLcaWarehouseId()
-                )
             else -> DynamicProductDetailTracking.Impression
                 .eventEcommerceDynamicComponent(
                     trackingQueue = trackingQueue,
@@ -4935,4 +4927,19 @@ open class DynamicProductDetailFragment :
     override fun getRemoteConfigInstance(): RemoteConfig? {
         return remoteConfig
     }
+
+    override fun onImpressStockAssurance(
+        componentTrackDataModel: ComponentTrackDataModel,
+        label: String
+    ) {
+        DynamicProductDetailTracking.Impression.eventOneLinerImpression(
+            trackingQueue = trackingQueue,
+            componentTrackDataModel = componentTrackDataModel,
+            productInfo = viewModel.getDynamicProductInfoP1,
+            userId = viewModel.userId,
+            lcaWarehouseId = getLcaWarehouseId(),
+            label = label
+        )
+    }
+
 }

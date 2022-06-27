@@ -4,83 +4,98 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/sahProgressOnSuccessLayout"
     android:layout_width="match_parent"
-    android:layout_height="@dimen/shc_medium_widget_height"
-    android:padding="@dimen/layout_lvl2"
+    android:layout_height="wrap_content"
+    android:minHeight="180dp"
+    android:paddingStart="12dp"
+    android:paddingTop="16dp"
+    android:paddingEnd="12dp"
+    android:paddingBottom="16dp"
     android:visibility="gone"
     tools:visibility="visible">
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvProgressTitle"
-        android:layout_width="@dimen/layout_lvl0"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:lineSpacingExtra="@dimen/spacing_lvl2"
-        android:maxLines="1"
+        android:layout_marginStart="4dp"
+        android:ellipsize="end"
+        android:maxLines="2"
         android:textColor="@color/Unify_N700_96"
+        app:layout_constraintEnd_toStartOf="@+id/notifTagProgress"
+        app:layout_constraintHorizontal_bias="0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:typographyType="heading_5"
-        app:typographyWeight="bold"
         tools:text="Progress Title" />
 
     <com.tokopedia.unifycomponents.NotificationUnify
         android:id="@+id/notifTagProgress"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/spacing_lvl2"
-        app:layout_constraintTop_toTopOf="@id/tvProgressTitle"
+        android:layout_marginStart="4dp"
         app:layout_constraintBottom_toBottomOf="@id/tvProgressTitle"
-        app:layout_constraintStart_toEndOf="@id/tvProgressTitle"/>
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0"
+        app:layout_constraintStart_toEndOf="@+id/tvProgressTitle"
+        app:layout_constraintTop_toTopOf="@id/tvProgressTitle" />
 
     <com.tokopedia.sellerhomecommon.presentation.view.customview.ShopScorePMWidget
         android:id="@+id/shopScoreProgress"
-        android:layout_width="@dimen/layout_lvl0"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/layout_lvl2"
+        android:layout_marginStart="4dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="4dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tvProgressTitle" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvProgressDescription"
-        android:layout_width="@dimen/layout_lvl0"
-        android:layout_height="@dimen/layout_lvl0"
-        android:layout_marginTop="@dimen/layout_lvl1"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="4dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="4dp"
         android:ellipsize="end"
-        android:lineSpacingExtra="@dimen/shc_line_spacing_6"
-        android:maxLines="2"
+        android:maxLines="3"
         android:textColor="@color/Unify_N700_68"
-        app:layout_constraintBottom_toTopOf="@+id/tvProgressSeeDetails"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/shopScoreProgress"
         app:typographyType="body_3"
-        app:typographyWeight="reguler" />
+        app:typographyWeight="reguler"
+        tools:text="Capai sebelum 31 Agu untuk reward 5% dari total biaya layanan. Reward akan dicairkan ke Kredit TopAds." />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvProgressSeeDetails"
-        android:layout_width="@dimen/layout_lvl0"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
         android:gravity="end"
         android:maxLines="1"
-        android:paddingStart="@dimen/layout_lvl0"
-        android:paddingEnd="@dimen/spacing_lvl2"
         android:textColor="@color/Unify_G500"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/icProgressArrow"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvProgressDescription"
+        app:layout_constraintVertical_bias="1"
         app:typographyType="body_2"
         app:typographyWeight="reguler"
         tools:text="Selengkapnya" />
 
-    <com.tokopedia.unifycomponents.ImageUnify
-        android:id="@+id/icProgressArrow"
-        android:layout_width="@dimen/layout_lvl2"
+    <com.tokopedia.sellerhomecommon.presentation.view.customview.LastUpdatedView
+        android:id="@+id/tvShcProgressLastUpdated"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/spacing_lvl1"
-        android:contentDescription="@string/shc_content_desc_button_lihat_selengkapnya"
-        app:layout_constraintBottom_toBottomOf="@id/tvProgressSeeDetails"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@id/tvProgressSeeDetails"
-        app:srcCompat="@drawable/ic_arrow_right_default" />
+        android:textColor="@color/Unify_NN600"
+        app:layout_constraintBottom_toBottomOf="@+id/tvProgressSeeDetails"
+        app:layout_constraintEnd_toStartOf="@+id/tvProgressSeeDetails"
+        app:layout_constraintHorizontal_bias="0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/tvProgressSeeDetails"
+        app:typographyType="small"
+        tools:text="Update terakhir: 10 Agu 2022" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
