@@ -552,6 +552,7 @@ class PlayBottomSheetFragment @Inject constructor(
                             val partnerTokoNow = playViewModel.latestCompleteChannelData.partnerInfo.type == PartnerType.Tokonow
                             val (wording, route, toaster) = if(event.product.isTokoNow && partnerTokoNow)
                                 Triple(getString(R.string.play_add_to_cart_message_success_tokonow), getString(R.string.play_tokonow_minicart_applink), getString(R.string.play_toaster_tokonow_wording))
+                            else if (event.product.isTokoNow && !partnerTokoNow) Triple(getString(R.string.play_add_to_cart_message_success_mixed), getString(R.string.play_tokonow_minicart_applink), getString(R.string.play_toaster_tokonow_wording))
                             else Triple(getString(R.string.play_add_to_cart_message_success), ApplinkConstInternalMarketplace.CART, getString(R.string.play_toaster_global_wording))
 
                             doShowToaster(
