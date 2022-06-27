@@ -31,7 +31,7 @@ import com.tokopedia.otp.silentverification.helper.NetworkClientHelper
 import com.tokopedia.otp.silentverification.view.NetworkRequestListener
 import com.tokopedia.otp.silentverification.view.viewmodel.SilentVerificationViewModel
 import com.tokopedia.otp.verification.data.OtpData
-import com.tokopedia.otp.verification.domain.data.OtpConstant
+import com.tokopedia.otp.verification.data.OtpConstant
 import com.tokopedia.otp.verification.domain.data.OtpValidateData
 import com.tokopedia.otp.verification.domain.pojo.ModeListData
 import com.tokopedia.sessioncommon.util.AuthenticityUtils

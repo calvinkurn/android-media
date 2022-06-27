@@ -15,7 +15,7 @@ import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.otp.R
-import com.tokopedia.otp.verification.domain.data.OtpConstant
+import com.tokopedia.otp.verification.data.OtpConstant
 import com.tokopedia.otp.verification.view.fragment.VerificationMethodFragment
 
 
