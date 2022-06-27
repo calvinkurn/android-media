@@ -21,16 +21,6 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <com.tokopedia.unifycomponents.PageControl
-            android:id="@+id/imageSliderPageControl"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/spacing_lvl4"
-            app:indicator_type="CIRCLE"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
-
         <com.tokopedia.product.detail.view.widget.AnimatedTextLabel
             android:id="@+id/txt_anim_label"
             android:layout_width="wrap_content"
@@ -40,7 +30,6 @@
             app:layout_constrainedWidth="true"
             app:layout_constraintHorizontal_bias="0"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@id/imageSliderPageControl"
             app:layout_constraintStart_toStartOf="parent"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>

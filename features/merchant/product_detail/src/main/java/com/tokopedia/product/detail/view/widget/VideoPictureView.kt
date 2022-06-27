@@ -4,18 +4,17 @@ import android.annotation.SuppressLint
 import android.content.ContentResolver
 import android.content.Context
 import android.net.Uri
-import android.os.Build
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.FrameLayout
-import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.addOneTimeGlobalLayoutListener
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.data.model.datamodel.MediaDataModel
@@ -59,6 +58,7 @@ class VideoPictureView @JvmOverloads constructor(
     }
 
     private fun showThumbnail() {
+        // ADD ROLLENCE LOGIC
         if (binding.pdpMainThumbnailRv.visibility == View.GONE) {
             animator?.animateShow()
         }
@@ -66,7 +66,6 @@ class VideoPictureView @JvmOverloads constructor(
 
     fun setup(media: List<MediaDataModel>,
               listener: DynamicProductDetailListener?,
-              initialScrollPosition: Int,
               componentTrackDataModel: ComponentTrackDataModel?) {
         this.mListener = listener
         this.componentTrackDataModel = componentTrackDataModel
@@ -74,14 +73,31 @@ class VideoPictureView @JvmOverloads constructor(
         if (videoPictureAdapter == null) {
             setupViewPagerCallback()
             setupViewPager()
-            setupThumbnailRv()
             //If first position is video and selected: process the video
         }
-        setPageControl(media, initialScrollPosition)
+
+        if (thumbnailAdapter == null) {
+            setupThumbnailRv(media)
+        }
+
+        updateInitialThumbnail(media)
         updateImages(media)
         updateMediaLabel(lastPosition)
-        scrollToPosition(initialScrollPosition)
-        renderVideoOnceAtPosition(initialScrollPosition)
+        scrollToPosition(RecyclerView.NO_POSITION)
+        renderVideoOnceAtPosition(RecyclerView.NO_POSITION)
+    }
+
+    private fun updateInitialThumbnail(media: List<MediaDataModel>) {
+        val mediaList = processMedia(media)
+
+        if (hideThumbnail(mediaList)) {
+            return
+        }
+
+        thumbnailAdapter?.submitList(mediaList.mapIndexed { index, data ->
+            val isSelected = lastPosition == index
+            ThumbnailDataModel(data, isSelected)
+        })
     }
 
     override fun onThumbnailClicked(element: ThumbnailDataModel) {
@@ -97,11 +113,6 @@ class VideoPictureView @JvmOverloads constructor(
     private fun updateImages(listOfImage: List<MediaDataModel>?) {
         val mediaList = processMedia(listOfImage)
         videoPictureAdapter?.submitList(mediaList)
-        thumbnailAdapter?.submitList(mediaList.mapIndexed { index, data ->
-            val isSelected = lastPosition == index
-            ThumbnailDataModel(data, isSelected)
-        })
-        animator = ThumbnailAnimator(binding.pdpMainThumbnailRv)
     }
 
     private fun updateThumbnail(selectedPosition: Int) {
@@ -117,19 +128,21 @@ class VideoPictureView @JvmOverloads constructor(
     }
 
     fun scrollToPosition(position: Int, smoothScroll: Boolean = false) {
-        if (position == -1) {
+        if (position == RecyclerView.NO_POSITION) {
             return
         }
         lastPosition = position
         binding.pdpViewPager.setCurrentItem(position, smoothScroll)
-        binding.imageSliderPageControl.setCurrentIndicator(position)
         updateMediaLabel(position)
         updateThumbnail(position)
     }
 
-    private fun setupThumbnailRv() {
+    private fun setupThumbnailRv(media: List<MediaDataModel>) {
         binding.pdpMainThumbnailRv.layoutParams.height = 0
 
+        if (hideThumbnail(media)) {
+            return
+        }
         thumbnailAdapter = ProductMainThumbnailAdapter(
                 this,
                 mListener,
@@ -140,6 +153,19 @@ class VideoPictureView @JvmOverloads constructor(
                 LinearLayoutManager.HORIZONTAL,
                 false)
         binding.pdpMainThumbnailRv.adapter = thumbnailAdapter
+        animator = ThumbnailAnimator(binding.pdpMainThumbnailRv)
+    }
+
+    private fun hideThumbnail(media: List<MediaDataModel>): Boolean {
+        if (media.size < MIN_MEDIA_TO_SHOW_THUMBNAIL) {
+            thumbnailAdapter = null
+            animator = null
+            binding.pdpMainThumbnailRv.layoutParams.height = 0
+            binding.pdpMainThumbnailRv.hide()
+            return true
+        }
+
+        return false
     }
 
     private fun setupViewPager() {
@@ -154,7 +180,7 @@ class VideoPictureView @JvmOverloads constructor(
     }
 
     private fun renderVideoOnceAtPosition(position: Int) {
-        if (position == -1) {
+        if (position == RecyclerView.NO_POSITION) {
             return
         }
 
@@ -172,7 +198,6 @@ class VideoPictureView @JvmOverloads constructor(
                     videoPictureAdapter?.currentList?.getOrNull(position)?.run {
                         mListener?.onSwipePicture(type, if (isVideoType()) videoUrl else urlOriginal, position + 1, componentTrackDataModel)
                     }
-                    binding.imageSliderPageControl.setCurrentIndicator(position)
                     updateMediaLabel(position)
                     updateThumbnail(position)
                     lastPosition = position
@@ -185,22 +210,6 @@ class VideoPictureView @JvmOverloads constructor(
                 }
             }
         })
-    }
-
-    private fun setPageControl(media: List<MediaDataModel>?, initialScrollPosition: Int) {
-        if (binding.imageSliderPageControl.indicatorCount == media?.size) {
-            return
-        }
-
-        binding.imageSliderPageControl.setIndicator(media?.size ?: 0)
-        if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.LOLLIPOP_MR1) {
-            binding.imageSliderPageControl.activeColor = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700)
-        } else {
-            binding.imageSliderPageControl.activeColor = ContextCompat.getColor(context, R.color.product_detail_dms_page_control)
-        }
-        binding.imageSliderPageControl.inactiveColor = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N400_68)
-        binding.imageSliderPageControl.setCurrentIndicator(initialScrollPosition.takeIf { it > -1 }
-                ?: 0)
     }
 
     private fun processMedia(media: List<MediaDataModel>?): List<MediaDataModel> {
@@ -250,5 +259,6 @@ class VideoPictureView @JvmOverloads constructor(
     companion object {
         private const val VIDEO_PICTURE_PAGE_LIMIT = 3
         private const val HIDE_LABEL_IMAGE_COUNT_MIN = 1
+        private const val MIN_MEDIA_TO_SHOW_THUMBNAIL = 4
     }
 }

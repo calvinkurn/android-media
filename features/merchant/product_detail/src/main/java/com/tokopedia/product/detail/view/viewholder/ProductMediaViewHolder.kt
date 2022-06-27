@@ -23,14 +23,8 @@ class ProductMediaViewHolder(private val view: View,
     override fun bind(element: ProductMediaDataModel) {
         with(binding) {
 
-            val optionIdAnchor = element.variantOptionIdScrollAnchor
-            val scrollPosition = if (element.shouldUpdateImage && optionIdAnchor.isNotEmpty()) {
-                element.indexOfSelectedVariantOptionId()
-            } else element.initialScrollPosition
-
             viewMediaPager.setup(element.listOfMedia,
                     listener,
-                    scrollPosition,
                     getComponentTrackData(element))
 
             element.shouldUpdateImage = false
