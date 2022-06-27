@@ -30,7 +30,8 @@
         app:layout_constraintHorizontal_chainStyle="packed"
         app:layout_constraintStart_toEndOf="@id/orderDetailStatusIndicator"
         app:layout_constraintTop_toTopOf="parent"
-        app:typographyType="heading_5"
+        app:typographyType="display_2"
+        app:typographyWeight="bold"
         tools:text="Menunggu Konfirmasi" />
 
 

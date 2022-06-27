@@ -156,17 +156,15 @@ class BaseTokoFoodOrderTrackingFragment :
 
     override fun onAutoRefreshTempFinishOrder(orderDetailResultUiModel: OrderDetailResultUiModel) {
         delayAutoRefreshFinishOrderTempJob?.cancel()
-        delayAutoRefreshFinishOrderTempJob = viewLifecycleOwner.lifecycleScope.launch(Dispatchers.Main) {
-            delay(TWO_SECONDS)
-            with(orderDetailResultUiModel) {
-                orderTrackingAdapter.removeOrderTrackingData()
-                orderTrackingAdapter.updateOrderTracking(orderDetailList)
-                updateViewsOrderCompleted(
-                    actionButtonsUiModel, toolbarLiveTrackingUiModel, orderStatusKey,
-                    orderDetailResultUiModel.merchantData
-                )
+        delayAutoRefreshFinishOrderTempJob =
+            viewLifecycleOwner.lifecycleScope.launch(Dispatchers.Main) {
+                delay(TWO_SECONDS)
+                with(orderDetailResultUiModel) {
+                    orderTrackingAdapter.removeOrderTrackingData()
+                    orderTrackingAdapter.updateOrderTracking(orderDetailList)
+                    setToolbarLiveTracking(toolbarLiveTrackingUiModel, orderDetailResultUiModel.orderStatusKey)
+                }
             }
-        }
     }
 
     override fun onClickDriverCall() {
@@ -235,7 +233,7 @@ class BaseTokoFoodOrderTrackingFragment :
                         it.data.orderStatusKey,
                         it.data.actionButtonsUiModel,
                         it.data.toolbarLiveTrackingUiModel,
-                        it.data.merchantData
+                        it.data.merchantData,
                     )
                     fetchOrderLiveTracking(orderId)
                 }
@@ -355,33 +353,29 @@ class BaseTokoFoodOrderTrackingFragment :
         orderStatus: String,
         actionButtonsUiModel: ActionButtonsUiModel,
         toolbarLiveTrackingUiModel: ToolbarLiveTrackingUiModel,
-        merchantData: MerchantDataUiModel
+        merchantData: MerchantDataUiModel,
     ) {
         binding?.run {
             if (orderStatus in listOf(OrderStatusType.COMPLETED, OrderStatusType.CANCELLED)) {
-                if (orderStatus == OrderStatusType.COMPLETED) {
-                    updateViewsOrderCompleted(
-                        actionButtonsUiModel,
-                        toolbarLiveTrackingUiModel,
-                        orderStatus,
-                        merchantData
-                    )
-                } else {
-                    updateViewsOrderLiveTracking(
-                        actionButtonsUiModel,
-                        toolbarLiveTrackingUiModel,
-                        orderStatus
-                    )
-                }
+                updateViewsOrderCompleted(
+                    actionButtonsUiModel,
+                    toolbarLiveTrackingUiModel,
+                    orderStatus,
+                    merchantData
+                )
             } else {
                 orderLiveTrackingFragment = TokoFoodOrderLiveTrackingFragment(
                     binding,
                     viewModel,
                     orderTrackingAdapter,
-                    navigator,
                     toolbarHandler
                 )
                 orderLiveTrackingFragment?.let { lifecycle.addObserver(it) }
+                updateViewsOrderLiveTracking(
+                    actionButtonsUiModel,
+                    toolbarLiveTrackingUiModel,
+                    orderStatus
+                )
             }
         }
     }
@@ -392,7 +386,11 @@ class BaseTokoFoodOrderTrackingFragment :
         orderStatus: String,
         merchantDataModel: MerchantDataUiModel
     ) {
-        setupStickyButton(actionButtonsUiModel, merchantDataModel)
+        if (orderStatus == OrderStatusType.COMPLETED) {
+            setupStickyActionButton(actionButtonsUiModel, merchantDataModel)
+        } else {
+            setupStickyHelpButton(actionButtonsUiModel.primaryActionButton)
+        }
         setSwipeRefreshEnabled()
         setToolbarLiveTracking(toolbarLiveTrackingUiModel, orderStatus)
     }
@@ -404,25 +402,32 @@ class BaseTokoFoodOrderTrackingFragment :
     ) {
         orderLiveTrackingFragment?.apply {
             setSwipeRefreshDisabled()
-            setupStickyButton(actionButtonsUiModel.primaryActionButton)
+            setupStickyHelpButton(actionButtonsUiModel.primaryActionButton)
             setToolbarLiveTracking(toolbarLiveTrackingUiModel, orderStatus)
         }
     }
 
-    private fun setToolbarLiveTracking(
-        toolbarLiveTrackingUiModel: ToolbarLiveTrackingUiModel,
-        orderStatus: String
-    ) {
-        toolbarHandler?.setToolbarLiveTracking(toolbarLiveTrackingUiModel)
-        toolbarHandler?.setToolbarScrolling(orderStatus)
+    private fun setupStickyHelpButton(primaryActionButton: ActionButtonsUiModel.ActionButton) {
+        binding?.run {
+            containerOrderTrackingActionsButton.hide()
+            containerOrderTrackingHelpButton.apply {
+                setOrderTrackingNavigator(navigator)
+                setupHelpButton(
+                    viewModel.getOrderId(),
+                    primaryActionButton,
+                    viewModel.getMerchantData()
+                )
+                show()
+            }
+        }
     }
 
-    private fun setupStickyButton(
+    private fun setupStickyActionButton(
         actionButtons: ActionButtonsUiModel,
         merchantData: MerchantDataUiModel
     ) {
         binding?.run {
-            containerOrderTrackingHelpButton.show()
+            containerOrderTrackingHelpButton.hide()
             containerOrderTrackingActionsButton.apply {
                 setOrderTrackingNavigator(navigator)
                 setupActionButtons(
@@ -433,6 +438,14 @@ class BaseTokoFoodOrderTrackingFragment :
                 show()
             }
         }
+    }
+
+    private fun setToolbarLiveTracking(
+        toolbarLiveTrackingUiModel: ToolbarLiveTrackingUiModel,
+        orderStatus: String
+    ) {
+        toolbarHandler?.setToolbarLiveTracking(toolbarLiveTrackingUiModel)
+        toolbarHandler?.setToolbarScrolling(orderStatus)
     }
 
     private fun setSwipeRefreshEnabled() {
