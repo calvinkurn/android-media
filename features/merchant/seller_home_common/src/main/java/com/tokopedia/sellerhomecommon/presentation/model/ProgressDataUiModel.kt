@@ -13,13 +13,14 @@ data class ProgressDataUiModel(
     override val showWidget: Boolean = false,
     val valueTxt: String = "",
     val maxValueTxt: String = "",
-    val value: Int = 0,
-    val maxValue: Int = 0,
+    val value: Long = 0,
+    val maxValue: Long = 0,
     val colorState: ShopScorePMWidget.State = ShopScorePMWidget.State.Good,
-    val subtitle: String = ""
+    val subtitle: String = "",
+    val lastUpdated: LastUpdatedUiModel = LastUpdatedUiModel()
 ) : BaseDataUiModel {
 
     override fun isWidgetEmpty(): Boolean {
-        return value == 0
+        return value == 0L
     }
 }

@@ -1203,7 +1203,7 @@ abstract class BaseSearchCategoryViewModel(
     fun needToShowOnBoardBottomSheet(has20mBottomSheetBeenShown: Boolean): Boolean {
         chooseAddressData?.apply {
             val is20mServiceType = service_type == ServiceType.NOW_15M
-            return is20mServiceType && !has20mBottomSheetBeenShown
+            return is20mServiceType && !has20mBottomSheetBeenShown && warehouse_id.isValidId()
         }
         return false
     }

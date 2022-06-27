@@ -26,8 +26,6 @@ data class Product(
         val price: String = "",
         @SerializedName("priceBefore")
         val priceBefore: String = "",
-        @SerializedName("priceBeforeInt")
-        val priceBeforeInt: Int = 0,
         @SerializedName("priceInt")
         val priceInt: Double = 0.0,
         @SerializedName("productId")

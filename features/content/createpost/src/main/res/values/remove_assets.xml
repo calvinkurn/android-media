@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="img_no_last_tag_product">https://images.tokopedia.net/img/android/content/content_creation/cc_no_last_tag_product.png</string>
+    <string name="img_no_last_purchase_product">https://images.tokopedia.net/img/android/content/content_creation/cc_no_last_purchase_product.png</string>
+    <string name="img_no_shop_product">https://images.tokopedia.net/img/android/content/content_creation/cc_no_shop_product.png</string>
+    <string name="img_search_no_product">https://images.tokopedia.net/img/android/content/content_creation/cc_search_no_product.png</string>
+    <string name="img_search_no_shop">https://images.tokopedia.net/img/android/content/content_creation/cc_search_no_shop.png</string>
+</resources>
