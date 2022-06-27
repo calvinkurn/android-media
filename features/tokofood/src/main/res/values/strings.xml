@@ -63,6 +63,12 @@
     <string name="text_purchase_add_order">Tambah Pesanan</string>
     <string name="text_purchase_ticker_unavailable_product"><![CDATA[%s <a href="#">Lihat</a>]]></string>
     <string name="text_purchase_success_edit_address">Berhasil mengubah alamat</string>
+    <string name="text_purchase_main_address">Utama</string>
+    <string name="text_purchase_choose_other_address">Pilih Alamat Lain</string>
+    <string name="text_purchase_delivery_address">Alamat Pengiriman</string>
+    <string name="text_purchase_transaction_summary">Ringkasan Belanja</string>
+    <string name="text_purchase_unavailable_promo">Promo yang belum bisa dipakai</string>
+    <string name="text_purchase_save">Simpan</string>
 
     <!-- Merchant Page -->
     <string name="action_share">Share</string>
