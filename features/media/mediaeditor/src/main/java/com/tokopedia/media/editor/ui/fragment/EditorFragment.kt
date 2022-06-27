@@ -6,9 +6,17 @@ import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.media.editor.R
+import com.tokopedia.media.editor.ui.activity.detail.EditorDetailActivity
+import com.tokopedia.media.editor.ui.component.EditorToolUiComponent
+import com.tokopedia.media.editor.ui.param.EditorParam
+import com.tokopedia.picker.common.basecomponent.uiComponent
 import javax.inject.Inject
 
-class EditorFragment @Inject constructor() : TkpdBaseV4Fragment() {
+class EditorFragment @Inject constructor() : TkpdBaseV4Fragment(), EditorToolUiComponent.Listener {
+
+    private val editorToolComponent by uiComponent {
+        EditorToolUiComponent(it, this)
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -24,6 +32,14 @@ class EditorFragment @Inject constructor() : TkpdBaseV4Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        editorToolComponent.setupView()
+    }
+
+    override fun onEditorToolClicked(type: Int) {
+        EditorDetailActivity.start(
+            requireContext(),
+            EditorParam("", type)
+        )
     }
 
     override fun getScreenName() = SCREEN_NAME

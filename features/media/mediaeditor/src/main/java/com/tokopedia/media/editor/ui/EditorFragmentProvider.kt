@@ -20,8 +20,7 @@ internal class EditorFragmentProviderImpl constructor(
     }
 
     override fun editorDetailFragment(): Fragment {
-        // TODO
-        return get(EditorDetailFragment::class.java.name) as EditorFragment
+        return get(EditorDetailFragment::class.java.name) as EditorDetailFragment
     }
 
     private fun get(name: String): Fragment {
