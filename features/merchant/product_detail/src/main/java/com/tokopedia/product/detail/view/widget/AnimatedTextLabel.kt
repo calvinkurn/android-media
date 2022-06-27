@@ -10,6 +10,7 @@ import android.graphics.Typeface
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.view.ViewPropertyAnimator
 import android.view.animation.AccelerateInterpolator
 import android.view.animation.DecelerateInterpolator
 import android.view.animation.LinearInterpolator
@@ -77,7 +78,7 @@ class AnimatedTextLabel : FrameLayout {
                         previousText = processText
                         if (initialAnimation) {
                             //after 1.5s auto swipe down
-                            animationHelper?.animateSwipeDown(it, 1500) {
+                            animationHelper?.animateSwipeDown(it, TextLabelAnimator.OFFSET_ANIMATION_DOWN) {
                                 previousText = ""
                             }
                         }
@@ -134,11 +135,17 @@ class TextLabelAnimator(private val txtView: Typography) {
         private const val TRANSLATION_X_BOTTOM_VALUE = 0.1F
 
         private const val OFFSET_HEIGHT_VALUE = 20
+
+        const val OFFSET_ANIMATION_DOWN = 3000L
     }
+
+    var autoSwipeDownAnimator: ViewPropertyAnimator? = null
 
     fun animateChangeText(desc: String,
                           widthTarget: Int,
                           animatorWidthOpacitySet: AnimatorSet) {
+        autoSwipeDownAnimator?.setListener(null)
+        autoSwipeDownAnimator?.cancel()
         animatorWidthOpacitySet.cancel()
         animatorWidthOpacitySet.play(createWidthAnimator(txtView.width, widthTarget))
                 .with(createTranslationXAnimator({
@@ -160,6 +167,8 @@ class TextLabelAnimator(private val txtView: Typography) {
 
     @SuppressLint("ResourcePackage")
     fun animateSwipeUp(containerLabel: FrameLayout, onAnimationEnd: (() -> Unit)? = null) {
+        autoSwipeDownAnimator?.setListener(null)
+        autoSwipeDownAnimator?.cancel()
         containerLabel.show()
         txtView.show()
         val parentHeight = measureParentHeight(containerLabel).toFloat()
@@ -191,14 +200,16 @@ class TextLabelAnimator(private val txtView: Typography) {
     }
 
     @SuppressLint("ResourcePackage")
-    fun animateSwipeDown(containerLabel: FrameLayout, offset: Int = 0, onAnimationEnd: (() -> Unit)? = null) {
+    fun animateSwipeDown(containerLabel: FrameLayout,
+                         offset: Long = 0L,
+                         onAnimationEnd: (() -> Unit)? = null) {
         txtView.show()
         containerLabel.show()
         containerLabel.y = 0F
         val parentHeight = measureParentHeight(containerLabel).toFloat() + OFFSET_HEIGHT_VALUE
-        containerLabel.animate()
+        autoSwipeDownAnimator = containerLabel.animate()
                 .y(parentHeight)
-                .setStartDelay(offset.toLong())
+                .setStartDelay(offset)
                 .setDuration(SWIPE_DURATION)
                 .setInterpolator(DecelerateInterpolator())
                 .setListener(object : Animator.AnimatorListener {
@@ -219,7 +230,7 @@ class TextLabelAnimator(private val txtView: Typography) {
                     }
 
                 })
-                .start()
+        autoSwipeDownAnimator?.start()
     }
 
     private fun measureParentHeight(frameLayout: FrameLayout): Int {
@@ -253,7 +264,7 @@ class TextLabelAnimator(private val txtView: Typography) {
         return ValueAnimator.ofFloat(TRANSLATION_X_BOTTOM_VALUE, 0F).apply {
             duration = TRANSLATION_DURATION
             interpolator = LinearInterpolator()
-            addUpdateListener { newValue ->
+            addUpdateListener {
                 val t = this.animatedValue as Float
                 txtView.translationX = x + t * TRANSLATION_MULTIPLY_VALUE
             }
