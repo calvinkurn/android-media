@@ -28,21 +28,21 @@ import com.tokopedia.media.picker.analytics.FLASH_OFF_STRING
 import com.tokopedia.media.picker.analytics.FLASH_ON_STRING
 import com.tokopedia.media.picker.analytics.camera.CameraAnalytics
 import com.tokopedia.media.picker.di.DaggerPickerComponent
-import com.tokopedia.media.picker.ui.activity.main.PickerActivity
-import com.tokopedia.media.picker.ui.activity.main.PickerActivityListener
-import com.tokopedia.media.picker.ui.fragment.camera.component.CameraControllerComponent
-import com.tokopedia.media.picker.ui.fragment.camera.component.CameraViewComponent
+import com.tokopedia.media.picker.ui.activity.picker.PickerActivity
+import com.tokopedia.media.picker.ui.activity.picker.PickerActivityContract
+import com.tokopedia.media.picker.ui.component.CameraControllerComponent
+import com.tokopedia.media.picker.ui.component.CameraViewComponent
 import com.tokopedia.media.picker.ui.observer.observe
 import com.tokopedia.media.picker.ui.observer.stateOnCameraCapturePublished
-import com.tokopedia.media.picker.ui.uimodel.safeRemove
 import com.tokopedia.media.picker.ui.widget.LoaderDialogWidget
 import com.tokopedia.media.picker.utils.exceptionHandler
 import com.tokopedia.media.picker.utils.wrapper.FlingGestureWrapper
 import com.tokopedia.picker.common.basecomponent.uiComponent
 import com.tokopedia.picker.common.uimodel.MediaUiModel
 import com.tokopedia.picker.common.uimodel.MediaUiModel.Companion.cameraToUiModel
+import com.tokopedia.picker.common.uimodel.MediaUiModel.Companion.safeRemove
 import com.tokopedia.picker.common.utils.FileCamera
-import com.tokopedia.picker.common.utils.safeFileDelete
+import com.tokopedia.picker.common.utils.wrapper.PickerFile.Companion.asPickerFile
 import com.tokopedia.utils.view.binding.viewBinding
 import javax.inject.Inject
 
@@ -60,7 +60,7 @@ open class CameraFragment : BaseDaggerFragment()
     lateinit var cameraAnalytics: CameraAnalytics
 
     private val binding: FragmentCameraBinding? by viewBinding()
-    private var listener: PickerActivityListener? = null
+    private var contract: PickerActivityContract? = null
 
     private var loaderDialog: LoaderDialogWidget? = null
 
@@ -75,7 +75,7 @@ open class CameraFragment : BaseDaggerFragment()
     private val controller by uiComponent {
         CameraControllerComponent(
             param = param.get(),
-            activityListener = listener,
+            activityContract = contract,
             controllerListener = this,
             parent = it
         )
@@ -149,20 +149,20 @@ open class CameraFragment : BaseDaggerFragment()
     override fun onCameraThumbnailClicked() {
         if (medias.isEmpty()) return
 
-        listener?.onCameraThumbnailClicked()
+        contract?.onCameraThumbnailClicked()
         cameraAnalytics.clickThumbnail()
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
         exceptionHandler {
-            listener = null
+            contract = null
         }
     }
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
-        listener = (context as PickerActivity)
+        contract = (context as PickerActivity)
     }
 
     override fun isFrontCamera(): Boolean {
@@ -233,16 +233,18 @@ open class CameraFragment : BaseDaggerFragment()
     }
 
     override fun onVideoTaken(result: VideoResult) {
-        val fileToModel = result.file.cameraToUiModel()
+        val fileToModel = result.file
+            .asPickerFile()
+            .cameraToUiModel()
 
-        if (listener?.isMinVideoDuration(fileToModel) == true) {
-            listener?.onShowVideoMinDurationToast()
-            safeFileDelete(fileToModel.path)
+        if (contract?.isMinVideoDuration(fileToModel) == true) {
+            contract?.onShowVideoMinDurationToast()
+            fileToModel.file?.safeDelete()
             return
         }
 
-        if (listener?.isMinStorageThreshold() == true) {
-            listener?.onShowFailToVideoRecordToast()
+        if (contract?.isMinStorageThreshold() == true) {
+            contract?.onShowFailToVideoRecordToast()
             return
         }
 
@@ -254,7 +256,9 @@ open class CameraFragment : BaseDaggerFragment()
         onShowLoaderDialog()
         FileCamera.createPhoto(cameraView.pictureSize(), result.data) {
             if (it == null) return@createPhoto
-            val fileToModel = it.cameraToUiModel()
+            val fileToModel = it
+                .asPickerFile()
+                .cameraToUiModel()
 
             onShowMediaThumbnail(fileToModel)
         }
@@ -294,12 +298,12 @@ open class CameraFragment : BaseDaggerFragment()
 
     private fun onStartRecordVideo() {
         controller.startRecording()
-        listener?.tabVisibility(false)
+        contract?.parentTabIsShownAs(false)
     }
 
     private fun onStopRecordVideo() {
         controller.stopRecording()
-        listener?.tabVisibility(true)
+        contract?.parentTabIsShownAs(true)
     }
 
     private fun onShowMediaThumbnail(element: MediaUiModel?) {

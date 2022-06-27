@@ -182,7 +182,7 @@
     <string name="pdp_shipping_khusus_label">Khusus:</string>
     <string name="pdp_shipping_dilayani_label">Dilayani oleh</string>
     <string name="pdp_shipping_failed_label">Ongkir gagal ditampilkan</string>
-    <string name="pdp_shipping_success_change_address">Simulasi pengiriman disesuaikan dengan alamat yang kamu pilih.</string>
+    <string name="pdp_shipping_success_change_address">Alamat berhasil dipilih. Nikmati pengalaman belanja yang sesuai dengan alamatmu!</string>
     <string name="pdp_tokocabang_label">TokoCabang</string>
     <string name="pdp_bold_html_builder"><![CDATA[<b>%1s</b>]]></string>
 

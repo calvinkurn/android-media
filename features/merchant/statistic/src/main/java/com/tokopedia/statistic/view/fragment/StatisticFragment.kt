@@ -349,11 +349,15 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
         StatisticTracker.sendImpressionPostEvent(element.dataKey)
     }
 
-    override fun sendProgressImpressionEvent(dataKey: String, stateColor: String, valueScore: Int) {
+    override fun sendProgressImpressionEvent(
+        dataKey: String,
+        stateColor: String,
+        valueScore: Long
+    ) {
         StatisticTracker.sendImpressionProgressBarEvent(dataKey, stateColor, valueScore)
     }
 
-    override fun sendProgressCtaClickEvent(dataKey: String, stateColor: String, valueScore: Int) {
+    override fun sendProgressCtaClickEvent(dataKey: String, stateColor: String, valueScore: Long) {
         StatisticTracker.sendClickProgressBarEvent(dataKey, stateColor, valueScore)
     }
 
@@ -374,7 +378,11 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
     ) {
         StatisticTracker.sendTableImpressionEvent(model, position, slidePosition, isSlideEmpty)
         getCategoryPage()?.let { categoryPage ->
-            StatisticTracker.sendTableSlideEvent(categoryPage, slidePosition.plus(Int.ONE), maxSlidePosition)
+            StatisticTracker.sendTableSlideEvent(
+                categoryPage,
+                slidePosition.plus(Int.ONE),
+                maxSlidePosition
+            )
         }
     }
 
@@ -597,7 +605,8 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
         return try {
             val widget = adapter.data[position]
             return if (isTablet) {
-                val orientation = resources.configuration.orientation
+                val orientation = activity?.resources?.configuration?.orientation
+                    ?: Configuration.ORIENTATION_PORTRAIT
                 val isPortrait = orientation == Configuration.ORIENTATION_PORTRAIT
                 if (isPortrait) {
                     when (widget) {

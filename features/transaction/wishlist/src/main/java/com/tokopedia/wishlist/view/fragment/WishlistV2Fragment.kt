@@ -132,6 +132,7 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
     private var hitCountDeletion = false
     private val handler = Handler(Looper.getMainLooper())
     private var userAddressData: LocalCacheModel? = null
+    private var isOnProgressDeleteWishlist = false
     private val progressDeletionRunnable = Runnable {
         getCountDeletionProgress()
     }
@@ -264,6 +265,7 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
                         if (wishlistV2.showDeleteProgress) {
                             if (!hitCountDeletion) {
                                 hitCountDeletion = true
+                                isOnProgressDeleteWishlist = true
                                 getCountDeletionProgress()
                             }
                             hideTotalLabel()
@@ -721,7 +723,13 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
 
     override fun onResume() {
         super.onResume()
-        setRefreshing()
+        checkProgressDeletion()
+    }
+
+    private fun checkProgressDeletion() {
+        if (isOnProgressDeleteWishlist) {
+            getCountDeletionProgress()
+        }
     }
 
     private fun stopProgressDeletionHandler() {
@@ -767,6 +775,7 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
     }
 
     private fun finishDeletionWidget(data: DeleteWishlistProgressV2Response.Data.DeleteWishlistProgress.DataDeleteWishlistProgress) {
+        isOnProgressDeleteWishlist = false
         stopProgressDeletionHandler()
         wishlistViewModel.countDeletionWishlistV2.removeObservers(this)
         if (data.totalItems > 0 && data.toasterMessage.isNotEmpty()) {

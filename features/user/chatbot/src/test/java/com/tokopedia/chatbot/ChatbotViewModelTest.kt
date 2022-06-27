@@ -5,19 +5,23 @@ import com.tokopedia.chat_common.domain.pojo.GetExistingChatPojo
 import com.tokopedia.chatbot.data.inboxTicketList.InboxTicketListResponse
 import com.tokopedia.chatbot.domain.usecase.TicketListContactUsUsecase
 import com.tokopedia.chatbot.view.viewmodel.ChatbotViewModel
+import com.tokopedia.chatbot.view.viewmodel.TicketListState
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.unit.test.rule.CoroutineTestRule
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import io.mockk.*
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.resetMain
 import org.junit.*
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertTrue
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
 
+@ExperimentalCoroutinesApi
 @RunWith(JUnit4::class)
 class ChatbotViewModelTest {
 
@@ -51,21 +55,86 @@ class ChatbotViewModelTest {
     }
 
     @Test
-    fun `getTicketList success` ()  {
+    fun `getTicketList success if isActive is true` ()  {
 
-        val ticketListData = mockk<InboxTicketListResponse>()
+        val actual = mockk<InboxTicketListResponse.Ticket.Data.NoticeItem>(relaxed = true)
+        val response = mockk<InboxTicketListResponse>(relaxed = true)
+
+        every {
+            actual.isActive
+        } returns true
+
+        every {
+            response.ticket?.TicketData?.notice
+        } returns actual
 
         coEvery {
-            ticketListContactUsUsecase.getTicketList(any(),any())
+            ticketListContactUsUsecase.getTicketList(captureLambda(),any())
         } coAnswers {
-            firstArg<(InboxTicketListResponse) -> Unit>().invoke(ticketListData)
+            firstArg<(InboxTicketListResponse) -> Unit>().invoke(response)
         }
 
         viewModel.getTicketList()
 
         assertEquals(
-            (viewModel.ticketList.value as Success).data,
-            ticketListData
+            (viewModel.ticketList.value as TicketListState.BottomSheetData).noticeData,
+            actual
+        )
+
+    }
+
+    @Test
+    fun `getTicketList success if isActive is false` ()  {
+
+        val actual = mockk<InboxTicketListResponse.Ticket.Data.NoticeItem>(relaxed = true)
+        val response = mockk<InboxTicketListResponse>(relaxed = true)
+
+        every {
+            actual.isActive
+        } returns false
+
+        every {
+            response.ticket?.TicketData?.notice
+        } returns actual
+
+        coEvery {
+            ticketListContactUsUsecase.getTicketList(captureLambda(),any())
+        } coAnswers {
+            firstArg<(InboxTicketListResponse) -> Unit>().invoke(response)
+        }
+
+        viewModel.getTicketList()
+
+        assertTrue(
+            (viewModel.ticketList.value is TicketListState.ShowContactUs)
+        )
+
+    }
+
+    @Test
+    fun `getTicketList success if noticeData is null` ()  {
+
+        val actual = mockk<InboxTicketListResponse.Ticket.Data.NoticeItem>(relaxed = true)
+        val response = mockk<InboxTicketListResponse>(relaxed = true)
+
+        every {
+            actual.isActive
+        } returns false
+
+        every {
+            response.ticket?.TicketData?.notice
+        } returns null
+
+        coEvery {
+            ticketListContactUsUsecase.getTicketList(captureLambda(),any())
+        } coAnswers {
+            firstArg<(InboxTicketListResponse) -> Unit>().invoke(response)
+        }
+
+        viewModel.getTicketList()
+
+        assertTrue(
+            (viewModel.ticketList.value is TicketListState.ShowContactUs)
         )
 
     }
@@ -74,16 +143,15 @@ class ChatbotViewModelTest {
     fun `getTicketList failure` () {
 
         coEvery {
-            ticketListContactUsUsecase.getTicketList(any(),any())
+            ticketListContactUsUsecase.getTicketList(any(),captureLambda())
         } coAnswers {
             secondArg<(Throwable) -> Unit>().invoke(mockThrowable)
         }
 
         viewModel.getTicketList()
 
-        assertEquals(
-            (viewModel.ticketList.value as Fail).throwable,
-            mockThrowable
+        assertTrue(
+            (viewModel.ticketList.value is TicketListState.ShowContactUs)
         )
 
     }
