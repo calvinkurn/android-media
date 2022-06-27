@@ -1,8 +1,10 @@
 package com.tokopedia.topchat.chatroom.view.custom
 
 import android.content.Context
+import android.graphics.drawable.Drawable
 import android.os.Build
 import android.util.AttributeSet
+import android.view.Gravity
 import android.view.View
 import android.widget.EditText
 import android.widget.ImageView
@@ -17,6 +19,7 @@ import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatroom.domain.pojo.stickergroup.StickerGroup
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.srw.SrwQuestionViewHolder
 import com.tokopedia.topchat.chatroom.view.listener.ReplyBoxTextListener
+import com.tokopedia.topchat.common.util.ViewUtil
 import com.tokopedia.unifyprinciples.Typography
 
 class ChatTextAreaLayout: ConstraintLayout {
@@ -38,6 +41,12 @@ class ChatTextAreaLayout: ConstraintLayout {
     private var sendButton: IconUnify? = null
 
     /**
+     * Tab background
+     */
+    private var tabBackgroundActive: Drawable? = null
+    private var tabBackgroundInactive: Drawable? = null
+
+    /**
      * Chat Menu
      */
     var chatMenu: ChatMenuView? = null
@@ -48,6 +57,7 @@ class ChatTextAreaLayout: ConstraintLayout {
      * List of tab-layout
      */
     private var tabList = hashMapOf<View?, Pair<View?, View?>>()
+    private var tabState: TabLayoutActiveStatus = TabLayoutActiveStatus.SRW
 
     constructor(context: Context?) : super(context)
     constructor(context: Context?, attrs: AttributeSet?) : super(context, attrs)
@@ -60,6 +70,7 @@ class ChatTextAreaLayout: ConstraintLayout {
         initViewLayout()
         initViewBind()
         initListener()
+        initBackground()
     }
 
     private fun initViewLayout() {
@@ -86,12 +97,69 @@ class ChatTextAreaLayout: ConstraintLayout {
         }
     }
 
+    private fun initBackground() {
+        tabBackgroundActive = ViewUtil.generateBackgroundWithShadow(
+            this,
+            backgroundColor = com.tokopedia.unifyprinciples.R.color.Unify_Background,
+            topLeftRadius = com.tokopedia.topchat.R.dimen.dp_topchat_8,
+            topRightRadius = com.tokopedia.topchat.R.dimen.dp_topchat_8,
+            bottomLeftRadius = com.tokopedia.topchat.R.dimen.dp_topchat_8,
+            bottomRightRadius = com.tokopedia.topchat.R.dimen.dp_topchat_8,
+            shadowColor = com.tokopedia.unifyprinciples.R.color.Unify_N700_20,
+            elevation = R.dimen.dp_topchat_2,
+            shadowRadius = R.dimen.dp_topchat_2,
+            strokeColor = com.tokopedia.unifyprinciples.R.color.Unify_Background,
+            shadowGravity = Gravity.CENTER
+        )
+        tabBackgroundInactive = ViewUtil.generateBackgroundWithShadow(
+            this,
+            backgroundColor = com.tokopedia.unifyprinciples.R.color.Unify_NN100,
+            topLeftRadius = com.tokopedia.topchat.R.dimen.dp_topchat_8,
+            topRightRadius = com.tokopedia.topchat.R.dimen.dp_topchat_8,
+            bottomLeftRadius = com.tokopedia.topchat.R.dimen.dp_topchat_8,
+            bottomRightRadius = com.tokopedia.topchat.R.dimen.dp_topchat_8,
+            shadowColor = com.tokopedia.unifyprinciples.R.color.Unify_N700_20,
+            elevation = R.dimen.dp_topchat_2,
+            shadowRadius = R.dimen.dp_topchat_2,
+            strokeColor = com.tokopedia.unifyprinciples.R.color.Unify_Background,
+            shadowGravity = Gravity.CENTER
+        )
+
+        tabSRW?.background = tabBackgroundActive
+        tabReplyBox?.background = tabBackgroundInactive
+        setupTabTranslationX()
+    }
+
+    private fun setupTabTranslationX() {
+        viewTreeObserver.addOnGlobalLayoutListener {
+            this.post {
+                tabReplyBox?.width?.let {
+                    //Translation X with 10% of the width
+                    tabReplyBox?.translationX = (it * -0.1).toFloat()
+
+                    //If active, then same translation x for the text,
+                    //else half of the background translation x
+                    if (tabState == TabLayoutActiveStatus.ReplyBox) {
+                        textTabReplyBox?.translationX = (it * -0.1).toFloat()
+                    } else {
+                        textTabReplyBox?.translationX = ((it * -0.1) / 2).toFloat()
+                    }
+                }
+            }
+        }
+    }
+
     private fun initListener() {
         tabSRW?.setOnClickListener {
+            tabState = TabLayoutActiveStatus.SRW
             updateTab(it)
+            chatMenu?.hideKeyboard()
         }
         tabReplyBox?.setOnClickListener {
+            tabState = TabLayoutActiveStatus.ReplyBox
             updateTab(it)
+            replyEditText?.requestFocus()
+            chatMenu?.showKeyboard(replyEditText)
         }
     }
 
@@ -132,13 +200,17 @@ class ChatTextAreaLayout: ConstraintLayout {
 
     private fun updateTab(pickedView: View) {
         chatMenu?.hideMenu()
-        changeTabState(pickedView, TAB_ACTIVE)
+        changeTabState(pickedView, isActive = true)
         showTabContent(pickedView)
         changeToInactive(pickedView)
     }
 
-    private fun changeTabState(pickedView: View, resource: Int) {
-        pickedView.setBackgroundResource(resource)
+    private fun changeTabState(pickedView: View, isActive: Boolean) {
+        if (isActive) {
+            pickedView.background = tabBackgroundActive
+        } else {
+            pickedView.background = tabBackgroundInactive
+        }
     }
 
     private fun showTabContent(pickedView: View) {
@@ -161,7 +233,7 @@ class ChatTextAreaLayout: ConstraintLayout {
             val layout = it.value.second
             if (tab != pickedView) {
                 tab?.let { tabView ->
-                    changeTabState(tabView, TAB_INACTIVE)
+                    changeTabState(tabView, isActive = false)
                     layout?.hide()
                 }
             }
@@ -198,9 +270,11 @@ class ChatTextAreaLayout: ConstraintLayout {
         chatMenu?.stickerMenu?.updateStickers(stickers, needToUpdate)
     }
 
+    internal enum class TabLayoutActiveStatus {
+        SRW, ReplyBox
+    }
+
     companion object {
         private val LAYOUT = R.layout.layout_text_area_tab
-        private val TAB_ACTIVE = R.drawable.bg_text_area_tab_active
-        private val TAB_INACTIVE = R.drawable.bg_text_area_tab_inactive
     }
 }
