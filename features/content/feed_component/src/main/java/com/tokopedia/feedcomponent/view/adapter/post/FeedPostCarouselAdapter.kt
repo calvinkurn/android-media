@@ -6,9 +6,12 @@ import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
+import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
+import androidx.transition.AutoTransition
+import androidx.transition.TransitionManager
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.adapterdelegate.BaseDiffUtilAdapter
 import com.tokopedia.adapterdelegate.BaseViewHolder
@@ -20,6 +23,8 @@ import com.tokopedia.feedcomponent.util.util.doOnLayout
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.DynamicPostViewHolder
 import com.tokopedia.feedcomponent.view.widget.PostTagView
 import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.extensions.view.toBitmap
 import com.tokopedia.unifycomponents.ImageUnify
@@ -73,6 +78,7 @@ internal class FeedPostCarouselAdapter(
 
         private val postImage = itemView.findViewById<ImageUnify>(R.id.post_image)
         private val postImageLayout = itemView.findViewById<ConstraintLayout>(R.id.post_image_layout)
+        private val llLihatProduct = itemView.findViewById<LinearLayout>(R.id.ll_lihat_product)
         private val tvLihatProduct = itemView.findViewById<TextView>(R.id.tv_lihat_product)
         private val likeAnim = itemView.findViewById<ImageUnify>(R.id.like_anim)
 
@@ -89,7 +95,10 @@ internal class FeedPostCarouselAdapter(
 
                     (0 until postImageLayout.childCount).forEach {
                         val view = postImageLayout.getChildAt(it)
-                        if (view is PostTagView) view.showExpandedView()
+                        if (view is PostTagView) {
+                            view.showExpandedView()
+                            animateLihatProduct(!tvLihatProduct.isVisible)
+                        }
                     }
 
                     return true
@@ -124,7 +133,7 @@ internal class FeedPostCarouselAdapter(
             }
 
             postImage.setImageUrl(item.mediaUrl)
-            tvLihatProduct.showWithCondition(item.tagProducts.isNotEmpty())
+            llLihatProduct.showWithCondition(item.tagProducts.isNotEmpty())
 
             topAdsCard.showWithCondition(card.isTopAds)
 
@@ -192,9 +201,23 @@ internal class FeedPostCarouselAdapter(
             (0 until postImageLayout.childCount).mapNotNull {
                 postImageLayout.getChildAt(it) as? PostTagView
             }.forEach { postImageLayout.removeView(it) }
+
+            tvLihatProduct.gone()
+        }
+
+        private fun animateLihatProduct(shouldShow: Boolean) {
+            TransitionManager.beginDelayedTransition(
+                llLihatProduct,
+                AutoTransition()
+                    .setDuration(ANIMATION_LIHAT_PRODUCT_DURATION)
+            )
+
+            tvLihatProduct.showWithCondition(shouldShow)
         }
 
         companion object {
+            private const val ANIMATION_LIHAT_PRODUCT_DURATION = 250L
+
             private const val TYPE_USE_ASGC_NEW_DESIGN: String = "use_new_design"
 
             fun create(

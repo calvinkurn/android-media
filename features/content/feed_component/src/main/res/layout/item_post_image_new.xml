@@ -29,32 +29,71 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <com.tokopedia.unifyprinciples.Typography
-        android:paddingTop="@dimen/unify_space_4"
-        android:paddingStart="@dimen/feed_component_dp_6"
-        android:paddingBottom="@dimen/unify_space_4"
-        android:id="@+id/tv_lihat_product"
-        android:ellipsize="end"
-        android:singleLine="true"
-        app:typographyType="body_3"
-        app:typographyWeight="bold"
-        android:drawablePadding="@dimen/unify_space_4"
+    <LinearLayout
+        android:id="@+id/ll_lihat_product"
+        android:layout_width="wrap_content"
         android:layout_height="@dimen/layout_lvl3"
-        android:layout_marginStart="@dimen/spacing_lvl4"
-        android:layout_marginBottom="@dimen/spacing_lvl4"
-        android:gravity="center_vertical|left"
-        android:drawableTint="@color/feed_dms_produk_tag_heading_color"
-        app:drawableLeftCompat="@drawable/feed_ic_product"
+        android:layout_marginStart="@dimen/unify_space_16"
+        android:layout_marginBottom="@dimen/unify_space_16"
         android:background="@drawable/feed_bg_lihat_produk"
-        android:layout_width="@dimen/dp_24"
-        android:alpha="0.9"
-        android:minWidth="@dimen/dp_24"
         android:elevation="@dimen/unify_space_16"
-        android:text="@string/feed_post_tag_text"
-        android:textColor="@color/feed_dms_produk_tag_heading_color"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
         app:layout_constraintBottom_toBottomOf="@id/post_image"
         app:layout_constraintStart_toStartOf="@id/post_image"
-        />
+        >
+
+        <com.tokopedia.iconunify.IconUnify
+            android:layout_width="@dimen/layout_lvl2"
+            android:layout_height="@dimen/layout_lvl2"
+            android:layout_marginStart="@dimen/unify_space_4"
+            android:layout_marginEnd="@dimen/unify_space_4"
+            app:icon_color_light_enable="@color/Unify_Static_White"
+            app:icon_color_night_enable="@color/Unify_Static_White"
+            app:icon_name="PRODUCT"
+            />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_lihat_product"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/feed_component_dp_6"
+            android:text="@string/feed_post_tag_text"
+            android:textColor="@color/Unify_Static_White"
+            android:visibility="gone"
+            app:typographyType="body_3"
+            app:typographyWeight="bold"
+            tools:visibility="visible"
+            />
+
+    </LinearLayout>
+
+<!--    <com.tokopedia.unifyprinciples.Typography-->
+<!--        android:paddingTop="@dimen/unify_space_4"-->
+<!--        android:paddingStart="@dimen/feed_component_dp_6"-->
+<!--        android:paddingBottom="@dimen/unify_space_4"-->
+<!--        android:id="@+id/tv_lihat_product"-->
+<!--        android:ellipsize="end"-->
+<!--        android:singleLine="true"-->
+<!--        app:typographyType="body_3"-->
+<!--        app:typographyWeight="bold"-->
+<!--        android:drawablePadding="@dimen/unify_space_4"-->
+<!--        android:layout_height="@dimen/layout_lvl3"-->
+<!--        android:layout_marginStart="@dimen/spacing_lvl4"-->
+<!--        android:layout_marginBottom="@dimen/spacing_lvl4"-->
+<!--        android:gravity="center_vertical|left"-->
+<!--        android:drawableTint="@color/feed_dms_produk_tag_heading_color"-->
+<!--        app:drawableLeftCompat="@drawable/feed_ic_product"-->
+<!--        android:background="@drawable/feed_bg_lihat_produk"-->
+<!--        android:layout_width="@dimen/dp_24"-->
+<!--        android:alpha="0.9"-->
+<!--        android:minWidth="@dimen/dp_24"-->
+<!--        android:elevation="@dimen/unify_space_16"-->
+<!--        android:text="@string/feed_post_tag_text"-->
+<!--        android:textColor="@color/feed_dms_produk_tag_heading_color"-->
+<!--        app:layout_constraintBottom_toBottomOf="@id/post_image"-->
+<!--        app:layout_constraintStart_toStartOf="@id/post_image"-->
+<!--        />-->
   
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/top_ads_detail_card"
