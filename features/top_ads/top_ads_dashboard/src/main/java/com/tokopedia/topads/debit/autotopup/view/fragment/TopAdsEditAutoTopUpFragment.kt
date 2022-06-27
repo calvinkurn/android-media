@@ -30,6 +30,7 @@ import com.tokopedia.topads.debit.autotopup.data.model.ResponseSaving
 import com.tokopedia.topads.debit.autotopup.view.sheet.TopAdsChooseNominalBottomSheet
 import com.tokopedia.topads.debit.autotopup.view.sheet.TopAdsChooseTopUpAmountSheet
 import com.tokopedia.topads.debit.autotopup.view.viewmodel.TopAdsAutoTopUpViewModel
+import com.tokopedia.topads.tracker.topup.TopadsTopupTracker
 import com.tokopedia.unifycomponents.*
 import com.tokopedia.unifycomponents.selectioncontrol.SwitchUnify
 import com.tokopedia.usecase.coroutines.Success
@@ -137,6 +138,7 @@ class TopAdsEditAutoTopUpFragment : BaseDaggerFragment() {
             } else {
                 showConfirmationDialog()
             }
+            TopadsTopupTracker.clickToggleOnOff(switchAutoTopupStatus?.isChecked == true)
         }
 
         creditDropMenu?.setOnClickListener {
@@ -146,6 +148,7 @@ class TopAdsEditAutoTopUpFragment : BaseDaggerFragment() {
                 if (pos != -1)
                     saveSelection(pos, TYPE_NOMINAL)
             }
+            TopadsTopupTracker.clickSaldoDropdownList()
         }
         tooltip?.setOnClickListener {
             val view1 = View.inflate(context, R.layout.topads_dash_sheet_info, null)

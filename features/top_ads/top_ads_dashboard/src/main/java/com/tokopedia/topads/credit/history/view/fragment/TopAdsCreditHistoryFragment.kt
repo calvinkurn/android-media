@@ -34,6 +34,7 @@ import com.tokopedia.topads.dashboard.view.sheet.DatePickerSheet
 import com.tokopedia.topads.debit.autotopup.data.model.AutoTopUpStatus
 import com.tokopedia.topads.debit.autotopup.view.activity.TopAdsAddCreditActivity
 import com.tokopedia.topads.debit.autotopup.view.activity.TopAdsEditAutoTopUpActivity
+import com.tokopedia.topads.tracker.topup.TopadsTopupTracker
 import com.tokopedia.unifycomponents.CardUnify
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.UnifyButton
@@ -158,7 +159,10 @@ class TopAdsCreditHistoryFragment :
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initialDateSetup()
-        cardAutoTopupStatus?.setOnClickListener { gotoAutoTopUp() }
+        cardAutoTopupStatus?.setOnClickListener {
+            TopadsTopupTracker.clickTambahKreditOtomatis()
+            gotoAutoTopUp()
+        }
         dateImage?.setImageDrawable(context?.getResDrawable(com.tokopedia.topads.common.R.drawable.topads_ic_calendar))
         nextImage?.setImageDrawable(context?.getResDrawable(com.tokopedia.topads.common.R.drawable.topads_ic_arrow))
         hariIni?.setOnClickListener {
@@ -168,6 +172,7 @@ class TopAdsCreditHistoryFragment :
 
         viewModel.getAutoTopUpStatus()
         addCredit?.setOnClickListener {
+            TopadsTopupTracker.clickTambahKredit()
             startActivityForResult(
                 Intent(context, TopAdsAddCreditActivity::class.java),
                 REQUEST_CODE_ADD_CREDIT
@@ -196,6 +201,7 @@ class TopAdsCreditHistoryFragment :
                 startCustomDatePicker()
             }
         }
+        TopadsTopupTracker.clickDateRange()
     }
 
     private fun startCustomDatePicker() {

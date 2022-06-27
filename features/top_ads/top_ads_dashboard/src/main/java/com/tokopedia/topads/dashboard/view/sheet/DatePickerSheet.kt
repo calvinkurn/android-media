@@ -7,6 +7,7 @@ import com.tokopedia.topads.dashboard.R
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.CUSTOM_DATE
 import com.tokopedia.topads.dashboard.data.utils.ListUnifyUtils.setSelectedItem
 import com.tokopedia.topads.dashboard.data.utils.Utils
+import com.tokopedia.topads.tracker.topup.TopadsTopupTracker
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.list.ListItemUnify
 import com.tokopedia.unifycomponents.list.ListUnify
@@ -16,11 +17,11 @@ class DatePickerSheet {
     private var dialog: BottomSheetDialog? = null
     var onItemClick: ((startDate: Long, endDate: Long, position: Int) -> Unit)? = null
     var customDatepicker: (() -> Unit)? = null
+    private val listUnify = ArrayList<ListItemUnify>()
 
     private fun setupView(context: Context, index: Int, range: String) {
 
         dialog?.let { dialog ->
-            val listUnify = ArrayList<ListItemUnify>()
             val dateModel = Utils.getPeriodRangeList(context)
 
             dialog.findViewById<ImageUnify>(R.id.btn_close)
@@ -39,6 +40,7 @@ class DatePickerSheet {
             dialog.findViewById<ListUnify>(R.id.date_list)?.setData(listUnify)
 
             fun onSelect(position: Int) {
+                sendAnalytics(position, context)
                 if (position != CUSTOM_DATE) {
                     onItemClick?.invoke(dateModel[position].startDate,
                         dateModel[position].endDate,
@@ -70,6 +72,30 @@ class DatePickerSheet {
             }
             dialog.findViewById<ImageUnify>(R.id.btn_close)?.setOnClickListener {
                 dismissDialog()
+            }
+        }
+    }
+
+    private fun sendAnalytics(position: Int, context: Context) {
+        val title = listUnify.getOrNull(position)?.listTitle?.text ?: return
+        when (title) {
+            context.getString(com.tokopedia.datepicker.range.R.string.seven_days_ago) -> {
+                TopadsTopupTracker.click7HariTerakhir()
+            }
+            context.getString(com.tokopedia.datepicker.range.R.string.thirty_days_ago) -> {
+                TopadsTopupTracker.click30HariTerakhir()
+            }
+            context.getString(com.tokopedia.datepicker.range.R.string.label_this_month) -> {
+                TopadsTopupTracker.clickBulanIni()
+            }
+            context.getString(R.string.topads_dash_date_custom) -> {
+                TopadsTopupTracker.clickCustom()
+            }
+            context.getString(com.tokopedia.datepicker.range.R.string.yesterday) -> {
+                TopadsTopupTracker.clickKemarin()
+            }
+            context.getString(com.tokopedia.datepicker.range.R.string.label_today) -> {
+                TopadsTopupTracker.clickHariIni()
             }
         }
     }

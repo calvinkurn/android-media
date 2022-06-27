@@ -6,7 +6,7 @@ import javax.inject.Inject
 
 const val KEY_TRACKER_ID = "trackerId"
 
-class TopadsTopupTracker @Inject constructor() {
+object TopadsTopupTracker {
 
     fun clickCobaSekarang() {
         sendClickEventFromCreditHistoryPage(
