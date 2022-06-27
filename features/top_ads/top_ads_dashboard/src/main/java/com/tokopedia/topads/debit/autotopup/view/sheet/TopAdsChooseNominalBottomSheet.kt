@@ -111,7 +111,7 @@ class TopAdsChooseNominalBottomSheet : BottomSheetUnify() {
         }
         bottomSheetBehaviorKnob(view, true)
         saveButton?.setOnClickListener {
-            TopadsTopupTracker.clickTambahKreditTopup(getSelectedTopup())
+            sendAnalyticsOnSaveButtonClicked()
             dismiss()
             if (isTopUp && creditData?.credit?.isNotEmpty() == true)
                 onSaved?.invoke(topUpChoice)
@@ -225,9 +225,14 @@ class TopAdsChooseNominalBottomSheet : BottomSheetUnify() {
         }
     }
 
-    private fun getSelectedTopup() : String {
-        val posi = if(isTopUp) topUpChoice else defPosition
-        return listUnify.getOrNull(posi)?.listTitleText ?: ""
+    private fun sendAnalyticsOnSaveButtonClicked() {
+        if(isTopUp) {
+            val topUpAmount = listUnify.getOrNull(topUpChoice)?.listTitleText ?: ""
+            TopadsTopupTracker.clickTambahKreditTopup(topUpAmount)
+        } else {
+            val topUpAmount = listUnify.getOrNull(defPosition)?.listTitleText ?: ""
+            TopadsTopupTracker.clickSimpan(topUpAmount)
+        }
     }
 
     private fun showAutoAdsOption() {

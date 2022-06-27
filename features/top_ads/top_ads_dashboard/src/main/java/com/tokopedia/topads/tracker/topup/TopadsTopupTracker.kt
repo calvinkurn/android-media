@@ -17,7 +17,8 @@ object TopadsTopupTracker {
     fun clickTambahKreditTopup(topUpAmount: String) {
         sendClickEventFromCreditHistoryPage(
             eventAction = ToupTrackerEventAction.CLICK_TOPUP,
-            trackerId = "31840"
+            trackerId = "31840",
+            eventLabel = topUpAmount
         )
     }
 
@@ -100,7 +101,7 @@ object TopadsTopupTracker {
         )
     }
 
-    fun clickThresholdCredit(topUpAmount: String) {
+    fun clickThresholdCredit() {
         sendClickEventFromCreditHistoryPage(
             eventAction = ToupTrackerEventAction.CLICK_THRESHOLD_AUTO_TOPUP,
             trackerId = "31854",

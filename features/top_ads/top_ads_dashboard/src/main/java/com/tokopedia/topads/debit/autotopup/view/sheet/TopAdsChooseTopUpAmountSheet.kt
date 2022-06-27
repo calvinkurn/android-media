@@ -114,7 +114,7 @@ class TopAdsChooseTopUpAmountSheet : BottomSheetUnify() {
             bottomSheet.setTitle(getString(R.string.toapds_dash_tooltip_title))
             bottomSheet.setChild(view1)
             bottomSheet.show(childFragmentManager, "")
-            TopadsTopupTracker.clickThresholdCredit(dedAmount?.text.toString())
+            TopadsTopupTracker.clickThresholdCredit()
         }
     }
 
