@@ -46,6 +46,8 @@ class TopAdsChooseNominalBottomSheet : BottomSheetUnify() {
     private var bonusTxt: Typography? = null
     private var saveButton: UnifyButton? = null
 
+    private val listUnify = ArrayList<ListItemUnify>()
+
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
     private var creditData: CreditResponse? = null
@@ -109,7 +111,7 @@ class TopAdsChooseNominalBottomSheet : BottomSheetUnify() {
         }
         bottomSheetBehaviorKnob(view, true)
         saveButton?.setOnClickListener {
-            //TopadsTopupTracker.clickTambahKreditTopup(listGroup)
+            TopadsTopupTracker.clickTambahKreditTopup(getSelectedTopup())
             dismiss()
             if (isTopUp && creditData?.credit?.isNotEmpty() == true)
                 onSaved?.invoke(topUpChoice)
@@ -131,7 +133,7 @@ class TopAdsChooseNominalBottomSheet : BottomSheetUnify() {
     }
 
     private fun setAutoTopUpList() {
-        val listUnify = ArrayList<ListItemUnify>()
+        listUnify.clear()
         autoTopUpData?.availableNominals?.forEachIndexed { index, it ->
             if (defPosition == it.id)
                 defPosition = index
@@ -196,7 +198,7 @@ class TopAdsChooseNominalBottomSheet : BottomSheetUnify() {
     }
 
     private fun setList() {
-        val listUnify = ArrayList<ListItemUnify>()
+        listUnify.clear()
         creditData?.credit?.forEach {
             val list = ListItemUnify(it.productPrice, "")
             list.isBold = true
@@ -221,6 +223,11 @@ class TopAdsChooseNominalBottomSheet : BottomSheetUnify() {
                     select(this, listUnify, topUpChoice)
             }
         }
+    }
+
+    private fun getSelectedTopup() : String {
+        val posi = if(isTopUp) topUpChoice else defPosition
+        return listUnify.getOrNull(posi)?.listTitleText ?: ""
     }
 
     private fun showAutoAdsOption() {
