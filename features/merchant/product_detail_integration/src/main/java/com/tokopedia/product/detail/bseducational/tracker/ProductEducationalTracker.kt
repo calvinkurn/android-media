@@ -7,16 +7,11 @@ import com.tokopedia.track.TrackAppUtils
 import com.tokopedia.trackingoptimizer.TrackingQueue
 
 object ProductEducationalTracker {
-    private const val WAREHOUSE_CHANGE_FLAG = "1"
-    private const val SHOP_MULTILOC_FLAG = "3"
-    private const val WEIGHT_FLAG = "5"
-
     const val CLOSE_BUTTON = "close"
     const val OK_BUTTON = "oke"
 
     fun onImpressView(trackingQueue: TrackingQueue,
                       position: Int,
-                      typeFlag: String,
                       eduTitle: String,
                       eduDesc: String,
                       productId: String,
@@ -47,8 +42,7 @@ object ProductEducationalTracker {
         trackingQueue.putEETracking(mapEvent as HashMap<String, Any>)
     }
 
-    fun onCloseOrButtonClicked(typeFlag: String,
-                               button: String,
+    fun onCloseOrButtonClicked(button: String,
                                eduTitle: String,
                                eduDesc: String,
                                shopId: String,

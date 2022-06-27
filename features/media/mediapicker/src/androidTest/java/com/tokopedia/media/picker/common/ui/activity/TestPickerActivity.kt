@@ -4,8 +4,7 @@ import android.os.Bundle
 import com.tokopedia.media.picker.common.ui.TestPickerFragmentFactory
 import com.tokopedia.media.picker.ui.PickerFragmentFactory
 import com.tokopedia.media.picker.ui.PickerTest
-import com.tokopedia.media.picker.ui.PickerUiConfig
-import com.tokopedia.media.picker.ui.activity.main.PickerActivity
+import com.tokopedia.media.picker.ui.activity.picker.PickerActivity
 
 class TestPickerActivity : PickerActivity() {
 

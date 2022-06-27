@@ -120,8 +120,8 @@ private const val ASGC_RESTOCK_PRODUCTS = "asgc_restock_products"
  *Lihat Produk Value is static so we have fixed it width to Keep our animation intact
  *Do not manipulate this value unless Lihat Produk text change
  **/
-private const val LIHAT_PRODUK_EXPANDED_WIDTH_MIN_INDP = 90
-private const val LIHAT_PRODUK_CONTRACTED_WIDTH_INDP = 24
+private const val LIHAT_PRODUK_EXPANDED_WIDTH_MIN_INDP = 124
+private const val LIHAT_PRODUK_CONTRACTED_WIDTH_INDP = 32
 const val PORTRAIT = 1
 const val LANDSCAPE = 2
 
@@ -1294,12 +1294,12 @@ class PostDynamicViewNew @JvmOverloads constructor(
 
                     override fun onVideoReadyToPlay() {
                         hideVideoLoading()
-                        timer_view.visible()
+                        timer_view?.visible()
                         var time = (videoPlayer?.getExoPlayer()?.duration ?: 0L) / TIME_SECOND
                         object : CountDownTimer(TIME_THREE_SEC, TIME_SECOND) {
                             override fun onTick(millisUntilFinished: Long) {
                                 time -= 1
-                                timer_view.text =
+                                timer_view?.text =
                                     String.format(
                                         "%02d:%02d",
                                         (time / MINUTE_IN_HOUR) % MINUTE_IN_HOUR,
@@ -1308,7 +1308,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
                             }
 
                             override fun onFinish() {
-                                timer_view.gone()
+                                timer_view?.gone()
                                 volumeIcon?.gone()
                             }
                         }.start()
@@ -1384,9 +1384,9 @@ class PostDynamicViewNew @JvmOverloads constructor(
         GridPostAdapter.isMute = !GridPostAdapter.isMute
         toggleVolume(GridPostAdapter.isMute)
         if (GridPostAdapter.isMute) {
-            volumeIcon?.setImageResource(R.drawable.ic_feed_volume_mute)
+            volumeIcon?.setImageResource(R.drawable.ic_feed_volume_mute_large)
         } else {
-            volumeIcon?.setImageResource(R.drawable.ic_feed_volume_up)
+            volumeIcon?.setImageResource(R.drawable.ic_feed_volume_up_large)
         }
     }
 
