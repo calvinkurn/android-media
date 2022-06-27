@@ -1,4 +1,4 @@
-package com.tkpd.macrobenchmark.test.os
+package com.tkpd.macrobenchmark.test.officialstore
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.LargeTest
 import androidx.test.filters.SdkSuppress
