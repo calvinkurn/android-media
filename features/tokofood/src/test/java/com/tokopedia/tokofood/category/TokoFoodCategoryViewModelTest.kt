@@ -17,7 +17,7 @@ class TokoFoodCategoryViewModelTest: TokoFoodCategoryViewModelTestFixture() {
     @Test
     fun `when getting loading state should run and give the success result`() {
         val expectedPageKey = "0"
-        viewModel.getLoadingState()
+        viewModel.showLoadingState()
 
         val expectedResponse = createLoadingCategoryState()
 
@@ -29,7 +29,7 @@ class TokoFoodCategoryViewModelTest: TokoFoodCategoryViewModelTestFixture() {
     fun `when getting error state should run and give the error result`() {
         val throwable = Throwable("Error Timeout")
 
-        viewModel.getErrorState(throwable)
+        viewModel.showErrorState(throwable)
 
         verifyGetErrorLayoutShown()
     }
@@ -177,7 +177,7 @@ class TokoFoodCategoryViewModelTest: TokoFoodCategoryViewModelTestFixture() {
         val containLastItemIndex = 5
         val itemCount = 6
 
-        viewModel.getErrorState(throwable)
+        viewModel.showErrorState(throwable)
         viewModel.onScrollProductList(containLastItemIndex, itemCount, localCacheModel = LocalCacheModel())
 
         verifyGetErrorLayoutShown()

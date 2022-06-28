@@ -123,7 +123,7 @@ class TokoFoodCategoryFragment: BaseDaggerFragment(),
     private var rvLayoutManager: CustomLinearLayoutManager? = null
     private var localCacheModel: LocalCacheModel? = null
     private val spaceZero: Int
-        get() = resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.unify_space_0).toInt()
+        get() = context?.resources?.getDimension(com.tokopedia.unifyprinciples.R.dimen.unify_space_0)?.toInt() ?: 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -340,7 +340,7 @@ class TokoFoodCategoryFragment: BaseDaggerFragment(),
     }
 
     private fun onErrorGetCategoryLayout(throwable: Throwable) {
-        viewModel.getErrorState(throwable)
+        viewModel.showErrorState(throwable)
         hideMiniCartCategory()
     }
 
@@ -362,7 +362,7 @@ class TokoFoodCategoryFragment: BaseDaggerFragment(),
     }
 
     private fun loadLayout() {
-        viewModel.getLoadingState()
+        viewModel.showLoadingState()
     }
 
     private fun updateCurrentPageLocalCacheModelData() {

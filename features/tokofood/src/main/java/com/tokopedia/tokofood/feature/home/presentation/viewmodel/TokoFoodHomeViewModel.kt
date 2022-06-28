@@ -126,7 +126,7 @@ class TokoFoodHomeViewModel @Inject constructor(
         }, source)
     }
 
-    fun getLoadingState() {
+    fun showLoadingState() {
         setPageKey(INITIAL_PAGE_KEY_MERCHANT)
         homeLayoutItemList.clear()
         homeLayoutItemList.addLoadingIntoList()
@@ -137,7 +137,7 @@ class TokoFoodHomeViewModel @Inject constructor(
         _homeLayoutList.postValue(Success(data))
     }
 
-    fun getNoPinPoinState() {
+    fun showNoPinPointState() {
         homeLayoutItemList.clear()
         homeLayoutItemList.addNoPinPointState()
         val data = TokoFoodListUiModel(
@@ -147,7 +147,7 @@ class TokoFoodHomeViewModel @Inject constructor(
         _homeLayoutList.postValue(Success(data))
     }
 
-    fun getNoAddressState() {
+    fun showNoAddressState() {
         homeLayoutItemList.clear()
         homeLayoutItemList.addNoAddressState()
         val data = TokoFoodListUiModel(
@@ -157,7 +157,7 @@ class TokoFoodHomeViewModel @Inject constructor(
         _homeLayoutList.postValue(Success(data))
     }
 
-    fun getErrorState(throwable: Throwable) {
+    fun showErrorState(throwable: Throwable) {
         homeLayoutItemList.clear()
         homeLayoutItemList.addErrorState(throwable)
         val data = TokoFoodListUiModel(

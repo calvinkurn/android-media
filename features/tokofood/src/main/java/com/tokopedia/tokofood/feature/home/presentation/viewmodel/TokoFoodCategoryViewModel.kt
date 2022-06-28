@@ -46,7 +46,7 @@ class TokoFoodCategoryViewModel @Inject constructor(
         private const val INITIAL_PAGE_KEY_MERCHANT = "0"
     }
 
-    fun getLoadingState() {
+    fun showLoadingState() {
         setPageKey(INITIAL_PAGE_KEY_MERCHANT)
         categoryLayoutItemList.clear()
         categoryLayoutItemList.addLoadingCategoryIntoList()
@@ -57,7 +57,7 @@ class TokoFoodCategoryViewModel @Inject constructor(
         _categoryLayoutList.postValue(Success(data))
     }
 
-    fun getErrorState(throwable: Throwable) {
+    fun showErrorState(throwable: Throwable) {
         categoryLayoutItemList.clear()
         categoryLayoutItemList.addErrorState(throwable)
         val data = TokoFoodListUiModel(
