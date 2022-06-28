@@ -227,6 +227,7 @@ class MerchantPageFragment : BaseMultiFragment(),
 
     override fun onResume() {
         super.onResume()
+        initializeMiniCartWidget()
         merchantPageAnalytics.openMerchantPage(merchantId, viewModel.merchantData?.merchantProfile?.opsHourFmt?.isWarning.orFalse())
     }
 
@@ -268,8 +269,6 @@ class MerchantPageFragment : BaseMultiFragment(),
             fetchMerchantData()
         }
 
-
-        initializeMiniCartWidget()
     }
 
     private fun setBackgroundDefaultColor() {
