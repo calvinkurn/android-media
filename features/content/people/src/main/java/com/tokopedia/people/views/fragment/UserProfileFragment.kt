@@ -334,11 +334,7 @@ class UserProfileFragment : BaseDaggerFragment(),
         observeUiState()
         observeUiEvent()
 
-//        addUserProfileObserver()
         addListObserver()
-        addDoFollowedObserver()
-        addDoUnFollowedObserver()
-//        addTheyFollowedObserver()
         addProfileHeaderErrorObserver()
         addSocialFollowErrorObserver()
         addSocialUnFollowErrorObserver()
@@ -387,32 +383,6 @@ class UserProfileFragment : BaseDaggerFragment(),
         }
     }
 
-//    private fun addUserProfileObserver() =
-//        viewModel.userDetailsLiveData.observe(viewLifecycleOwner, Observer {
-//            it?.let {
-//                when (it) {
-//                    is Loading -> {
-//                        if (isSwipeRefresh == true) {
-//                            //TODO show shimmer
-//                        }
-//                    }
-//                    is ErrorMessage -> {
-//
-//                    }
-//                    is Success -> {
-//                        if (isSwipeRefresh == true) {
-//                            swipeRefresh.isRefreshing = false
-//                            isSwipeRefresh = !isSwipeRefresh!!
-//                        }
-//
-//                        container?.displayedChild = PAGE_CONTENT
-////                        setMainUi(it.data)
-//                        viewModel.getFollowingStatus(mutableListOf(profileUserId))
-//                    }
-//                }
-//            }
-//        })
-
     private fun addUserPostObserver() =
         viewModel.userPostLiveData.observe(viewLifecycleOwner, Observer {
             it?.let {
@@ -439,65 +409,6 @@ class UserProfileFragment : BaseDaggerFragment(),
                 }
             }
         })
-
-
-    private fun addDoFollowedObserver() =
-        viewModel.profileDoFollowLiveData.observe(viewLifecycleOwner, Observer {
-            it?.let {
-                when (it) {
-                    is Loading -> {
-
-                    }
-                    is Success -> {
-                        if (it.data.profileFollowers.errorCode.isBlank()) {
-                            updateToFollowUi()
-                            refreshLandingPageData()
-                        }
-                    }
-                    is ErrorMessage -> {
-
-                    }
-                }
-            }
-        })
-
-    private fun addDoUnFollowedObserver() =
-        viewModel.profileDoUnFollowLiveData.observe(viewLifecycleOwner, Observer {
-            it?.let {
-                when (it) {
-                    is Loading -> {
-
-                    }
-                    is Success -> {
-                        if (it.data.profileFollowers.errorCode.isBlank()) {
-                            updateToUnFollowUi()
-                            refreshLandingPageData()
-                        }
-                    }
-
-                    is ErrorMessage -> {
-
-                    }
-                }
-            }
-        })
-
-//    private fun addTheyFollowedObserver() =
-//        viewModel.profileTheyFollowLiveData.observe(viewLifecycleOwner, Observer {
-//            it?.let {
-//                when (it) {
-//                    is Loading -> {
-//
-//                    }
-//                    is Success -> {
-//                        setActionButton(it.data)
-//                    }
-//                    is ErrorMessage -> {
-//
-//                    }
-//                }
-//            }
-//        })
 
     private fun addProfileHeaderErrorObserver() =
         viewModel.profileHeaderErrorMessageLiveData.observe(viewLifecycleOwner, Observer {
@@ -672,34 +583,6 @@ class UserProfileFragment : BaseDaggerFragment(),
     private fun addLiveClickListener(appLink: String) = View.OnClickListener {
         RouteManager.route(context, appLink)
     }
-
-    private fun addProfileClickListener(appLink: String, userId: String) = View.OnClickListener {
-        RouteManager.route(activity, appLink)
-    }
-
-//    private fun addDoFollowClickListener(userIdEnc: String, isFollowed: Boolean) =
-//        View.OnClickListener {
-//            if (userSession.isLoggedIn == false) {
-//                startActivityForResult(
-//                    RouteManager.getIntent(activity, ApplinkConst.LOGIN),
-//                    REQUEST_CODE_LOGIN
-//                )
-//                return@OnClickListener
-//            }
-//
-//            if (isFollowed) {
-//                activity?.intent?.putExtra(EXTRA_FOLLOW_UNFOLLOW_STATUS, EXTRA_VALUE_IS_NOT_FOLLOWED)
-//
-//                userProfileTracker?.clickUnfollow(userId, profileUserId == userId)
-//                viewModel.doUnFollow(userIdEnc)
-//                updateToUnFollowUi()
-//            } else {
-//                activity?.intent?.putExtra(EXTRA_FOLLOW_UNFOLLOW_STATUS, EXTRA_VALUE_IS_FOLLOWED)
-//                userProfileTracker?.clickFollow(userId, profileUserId == userId)
-//                viewModel.doFollow(userIdEnc)
-//                updateToFollowUi()
-//            }
-//        }
 
     /** Render UI */
     private fun renderProfileInfo(

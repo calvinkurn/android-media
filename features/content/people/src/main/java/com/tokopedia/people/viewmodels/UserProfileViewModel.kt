@@ -39,13 +39,10 @@ import javax.inject.Inject
 
 @UserProfileScope
 class UserProfileViewModel @Inject constructor(
-    private val userDetailsUseCase: UserDetailsUseCase,
     private var playVodUseCase: PlayPostContentUseCase,
     private val useCaseDoFollow: ProfileFollowUseCase,
     private val useCaseDoUnFollow: ProfileUnfollowedUseCase,
-    private val profileIsFollowing: ProfileTheyFollowedUseCase,
     private val videoPostReminderUseCase: VideoPostReminderUseCase,
-    private val getWhitelistUseCase: GetWhitelistUseCase,
     private val repo: UserProfileRepository,
     private val userSession: UserSessionInterface,
 ) : BaseViewModel(Dispatchers.Main) {
@@ -56,9 +53,6 @@ class UserProfileViewModel @Inject constructor(
 
     val isSelfProfile: Boolean
         get() = _profileType.value == ProfileType.Self
-
-    private val userDetails = MutableLiveData<Resources<ProfileHeaderBase>>()
-    val userDetailsLiveData : LiveData<Resources<ProfileHeaderBase>> get() = userDetails
 
     private val userPost = MutableLiveData<Boolean>()
     val userPostLiveData : LiveData<Boolean> get() = userPost
@@ -71,9 +65,6 @@ class UserProfileViewModel @Inject constructor(
 
     private val profileDoUnFollow = MutableLiveData<Resources<ProfileDoUnFollowModelBase>>()
     val profileDoUnFollowLiveData : LiveData<Resources<ProfileDoUnFollowModelBase>> get() = profileDoUnFollow
-
-    private val profileTheyFollow = MutableLiveData<Resources<UserProfileIsFollow>>()
-    val profileTheyFollowLiveData : LiveData<Resources<UserProfileIsFollow>> get() = profileTheyFollow
 
     private var profileHeaderErrorMessage = MutableLiveData<Throwable>()
     val profileHeaderErrorMessageLiveData : LiveData<Throwable> get() = profileHeaderErrorMessage
@@ -129,6 +120,7 @@ class UserProfileViewModel @Inject constructor(
             val followInfo = _followInfo.value
 
             if(followInfo.status) {
+                /** TODO: refactor - gonna move to repo */
                 val data = useCaseDoUnFollow.doUnfollow(followInfo.encryptedUserID)
                 if (data != null) {
                     _followInfo.setValue { copy(status = !followInfo.status) }
@@ -140,6 +132,8 @@ class UserProfileViewModel @Inject constructor(
                     _followInfo.setValue { copy(status = !followInfo.status) }
                 } else throw NullPointerException("data is null")
             }
+
+            _profileInfo.value = repo.getProfile(followInfo.userID)
         }) {
             unFollowErrorMessage.value = it
         }
@@ -163,29 +157,22 @@ class UserProfileViewModel @Inject constructor(
             _profileInfo.value = profileInfo.await() ?: ProfileUiModel.Empty
             _followInfo.value = followInfo.await() ?: FollowInfoUiModel.Empty
             _profileType.value = if(userSession.isLoggedIn) {
-                    if(userSession.userId == _followInfo.value.userID)
-                        ProfileType.Self
-                    else ProfileType.OtherUser
-                }
-                else ProfileType.NotLoggedIn
+                if(userSession.userId == _followInfo.value.userID)
+                    ProfileType.Self
+                else ProfileType.OtherUser
+            }
+            else ProfileType.NotLoggedIn
+
+            /** TODO: refactor - gonna find a better way to trigger load video */
+            userPost.value = isRefresh
         }) {
             profileHeaderErrorMessage.value = it
         }
     }
 
-//    fun getUserDetails(userName: String, isRefreshPost: Boolean = false) {
-//        launchCatchError(block = {
-//            val data = userDetailsUseCase.getUserProfileDetail(userName)
-//            if (data != null) {
-//                userDetails.value = Success(data.getData(ProfileHeaderBase::class.java))
-//                userPost.value = isRefreshPost
-//            } else throw NullPointerException("data is null")
-//        }, onError = {
-//            profileHeaderErrorMessage.value = it
-//        })
-//    }
 
-    public fun getUPlayVideos(group: String, cursor: String, sourceType: String, sourceId: String) {
+    /** TODO: refactor - gonna move to repo */
+    fun getUPlayVideos(group: String, cursor: String, sourceType: String, sourceId: String) {
         launchCatchError(block = {
             val data = playVodUseCase.getPlayPost(group, cursor, sourceType, sourceId)
             if (data != null) {
@@ -197,38 +184,7 @@ class UserProfileViewModel @Inject constructor(
         })
     }
 
-    fun doFollow(followingUserIdEnc: String) {
-        launchCatchError(block = {
-            val data = useCaseDoFollow.doFollow(followingUserIdEnc)
-            if (data != null) {
-                profileDoFollow.value = Success(data)
-            } else throw NullPointerException("data is null")
-        }, onError = {
-            followErrorMessage.value = it
-        })
-    }
-
-    fun doUnFollow(unFollowingUserIdEnc: String) {
-        launchCatchError(block = {
-            val data = useCaseDoUnFollow.doUnfollow(unFollowingUserIdEnc)
-            if (data != null) {
-                profileDoUnFollow.value = Success(data)
-            } else throw NullPointerException("data is null")
-        }, onError = {
-            unFollowErrorMessage.value = it
-        })
-    }
-
-    fun getFollowingStatus(profileIds: MutableList<String>) {
-        launchCatchError(block = {
-            val data = profileIsFollowing.profileIsFollowing(profileIds)
-            if (data != null) {
-                profileTheyFollow.value = Success(data)
-            } else throw NullPointerException("data is null")
-        }, onError = {
-        })
-    }
-
+    /** TODO: refactor - gonna move to repo */
     fun updatePostReminderStatus(channelId: String, isActive: Boolean) {
         launchCatchError(block = {
             val data = videoPostReminderUseCase.updateReminder(channelId, isActive)
