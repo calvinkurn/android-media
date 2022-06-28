@@ -82,7 +82,8 @@
                 android:visibility="gone"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/image_rating"
-                tools:visibility="visible" />
+                tools:visibility="visible"
+                android:contentDescription="" />
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/shop_location"
