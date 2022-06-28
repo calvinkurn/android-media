@@ -76,7 +76,6 @@ import com.tokopedia.tokofood.feature.merchant.presentation.model.MerchantOpsHou
 import com.tokopedia.tokofood.feature.merchant.presentation.model.MerchantShareComponent
 import com.tokopedia.tokofood.feature.merchant.presentation.model.ProductListItem
 import com.tokopedia.tokofood.feature.merchant.presentation.model.ProductUiModel
-import com.tokopedia.tokofood.feature.merchant.presentation.model.ProductUiModelWrapper
 import com.tokopedia.tokofood.feature.merchant.presentation.model.VariantWrapperUiModel
 import com.tokopedia.tokofood.feature.merchant.presentation.viewholder.MerchantCarouseItemViewHolder
 import com.tokopedia.tokofood.feature.merchant.presentation.viewholder.ProductCardViewHolder
@@ -230,6 +229,9 @@ class MerchantPageFragment : BaseMultiFragment(),
 
     override fun onResume() {
         super.onResume()
+        if (viewModel.isUserSkipTheLoginPage(viewModel.visitedLoginPage, userSession.isLoggedIn)) {
+            activity?.finish()
+        }
         initializeMiniCartWidget()
         merchantPageAnalytics.openMerchantPage(
             merchantId,
@@ -864,10 +866,7 @@ class MerchantPageFragment : BaseMultiFragment(),
         }
     }
 
-    private fun showCustomOrderDetailBottomSheet(
-        productUiModel: ProductUiModel,
-        productPosition: Int
-    ) {
+    private fun showCustomOrderDetailBottomSheet(productUiModel: ProductUiModel, productPosition: Int) {
         customOrderDetailBottomSheet?.dismiss()
         val bundle = Bundle().apply {
             putInt(
@@ -888,11 +887,9 @@ class MerchantPageFragment : BaseMultiFragment(),
         merchantInfoBottomSheet?.show(childFragmentManager)
     }
 
-    override fun onProductCardClicked(
-        productListItem: ProductListItem,
-        cardPositions: Pair<Int, Int>
-    ) {
+    override fun onProductCardClicked(productListItem: ProductListItem, cardPositions: Pair<Int, Int>) {
         val productUiModel = productListItem.productUiModel
+        // track click product card event
         merchantPageAnalytics.clickProductCard(
             getProductItemList(),
             productListItem,
@@ -916,57 +913,59 @@ class MerchantPageFragment : BaseMultiFragment(),
         bottomSheet.show(childFragmentManager)
     }
 
-    override fun onAtcButtonClicked(
-        productListItem: ProductListItem,
-        cardPositions: Pair<Int, Int>
-    ) {
+    override fun onAtcButtonClicked(productListItem: ProductListItem, cardPositions: Pair<Int, Int>) {
         val productUiModel = productListItem.productUiModel
         if (activityViewModel?.shopId.isNullOrBlank() || activityViewModel?.shopId == merchantId) {
+            // update product id - card positions map
             viewModel.productMap[productUiModel.id] = cardPositions
+            // customized product exists navigate to custom order detail bottom sheet
             if (productUiModel.isCustomizable && productUiModel.isAtc) {
                 showCustomOrderDetailBottomSheet(productUiModel, cardPositions.first)
-            } else if (productUiModel.isCustomizable) {
+            }
+            // no customized product yet, navigate to customization page
+            else if (productUiModel.isCustomizable) {
                 navigateToOrderCustomizationPage(
-                    cartId = productUiModel.cartId,
-                    productListItem = productListItem,
-                    cardPositions.first
+                        cartId = productUiModel.cartId,
+                        productListItem = productListItem,
+                        cardPositions.first
                 )
-            } else {
+            }
+            // add non customizable product to cart
+            else {
                 val updateParam = viewModel.mapProductUiModelToAtcRequestParam(
-                    shopId = merchantId,
-                    productUiModel = productUiModel
+                        shopId = merchantId,
+                        productUiModel = productUiModel
                 )
                 activityViewModel?.addToCart(updateParam, SOURCE)
             }
         } else {
+            // product added from different merchant
             showChangeMerchantBottomSheet(productUiModel, cardPositions.first)
         }
-
+        // track click atc button event
         viewModel.merchantData?.let {
             merchantPageAnalytics.clickOnAtcButton(
-                productListItem, merchantId,
-                it.merchantProfile.name,
-                cardPositions.first
+                    productListItem, merchantId,
+                    it.merchantProfile.name,
+                    cardPositions.first
             )
         }
     }
 
     override fun changeMerchantConfirmAddToCart(
         updateParam: UpdateParam,
-        productUiModelWrapper: ProductUiModelWrapper
+        productUiModel: ProductUiModel,
+        productPosition: Int
     ) {
-        if (productUiModelWrapper.productUiModel?.isCustomizable == false) {
+        if (!productUiModel.isCustomizable) {
             activityViewModel?.deleteAllAtcAndAddProduct(updateParam, SOURCE)
         } else {
-            val productUiModel = productUiModelWrapper.productUiModel
-            val productListItem =
-                getProductItemList().find { it.productUiModel.id == productUiModel?.id }
-
+            val productListItem = getProductItemList().find { it.productUiModel.id == productUiModel.id }
             productListItem?.let {
                 navigateToOrderCustomizationPage(
                     it.productUiModel.cartId,
                     it,
-                    productUiModelWrapper.productPosition,
+                    productPosition,
                     true
                 )
             }
@@ -1174,16 +1173,20 @@ class MerchantPageFragment : BaseMultiFragment(),
                 ChangeMerchantBottomSheet.KEY_UPDATE_PARAM,
                 updateParam
             )
-            put(
-                ChangeMerchantBottomSheet.KEY_PRODUCT_UI_MODEL_WRAPPER,
-                ProductUiModelWrapper(productUiModel, productPosition)
-            )
         }
 
         val bundle = Bundle().apply {
             putString(
                 ChangeMerchantBottomSheet.KEY_CACHE_MANAGER_ID,
                 cacheManager?.id.orEmpty()
+            )
+            putInt(
+                ChangeMerchantBottomSheet.KEY_PRODUCT_POSITION,
+                productPosition
+            )
+            putParcelable(
+                ChangeMerchantBottomSheet.KEY_PRODUCT_UI_MODEL,
+                productUiModel
             )
         }
 
@@ -1200,8 +1203,7 @@ class MerchantPageFragment : BaseMultiFragment(),
         productPosition: Int,
         isChangeMerchant: Boolean = false
     ) {
-        viewModel.productListItems =
-            productListAdapter?.getProductListItems() ?: mutableListOf()
+        viewModel.productListItems = productListAdapter?.getProductListItems() ?: mutableListOf()
 
         val cacheManager = context?.let { SaveInstanceCacheManager(it, true) }
         val variantTracker = VariantWrapperUiModel(
@@ -1269,7 +1271,7 @@ class MerchantPageFragment : BaseMultiFragment(),
         }
     }
 
-    private fun onResultFromLogin(resultCode: Int, data: Intent?) {
+    private fun onResultFromLogin(resultCode: Int) {
         if (resultCode == Activity.RESULT_OK) {
             validateAddressData()
         } else {
@@ -1314,13 +1316,13 @@ class MerchantPageFragment : BaseMultiFragment(),
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         when (requestCode) {
-            REQUEST_CODE_LOGIN -> onResultFromLogin(resultCode, data)
+            REQUEST_CODE_LOGIN -> onResultFromLogin(resultCode)
         }
     }
 
     companion object {
-        const val SHARE = "share"
 
+        private const val SHARE = "share"
         const val SOURCE_ADDESS = "tokofood"
 
         private const val REQUEST_CODE_LOGIN = 123

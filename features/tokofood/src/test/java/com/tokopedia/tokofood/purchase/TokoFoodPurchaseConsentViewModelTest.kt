@@ -7,13 +7,12 @@ import com.tokopedia.tokofood.feature.purchase.purchasepage.domain.model.respons
 import io.mockk.coEvery
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
-import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.runBlocking
 import org.junit.Test
 
 @FlowPreview
 @ExperimentalCoroutinesApi
-class TokoFoodPurchaseConsentViewModelTest: TokoFoodPurchaseConsentViewModelTestFixture() {
+class TokoFoodPurchaseConsentViewModelTest : TokoFoodPurchaseConsentViewModelTestFixture() {
 
     @Test
     fun `when agreeConsent success should set success data`() {
@@ -37,6 +36,7 @@ class TokoFoodPurchaseConsentViewModelTest: TokoFoodPurchaseConsentViewModelTest
             )
         }
     }
+
     @Test
     fun `when agreeConsent failed should set failed data`() {
         runBlocking {

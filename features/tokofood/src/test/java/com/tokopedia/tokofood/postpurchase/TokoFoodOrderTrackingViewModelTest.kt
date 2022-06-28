@@ -73,6 +73,16 @@ class TokoFoodOrderTrackingViewModelTest : TokoFoodOrderTrackingViewModelTestFix
     }
 
     @Test
+    fun `when set savedStateHandle should return the orderId has value`() {
+        runBlocking {
+            viewModel.updateOrderId(ORDER_ID_DUMMY)
+            viewModel.onSavedInstanceState()
+            viewModel.onRestoreSavedInstanceState()
+            assertEquals(ORDER_ID_DUMMY, viewModel.getOrderId())
+        }
+    }
+
+    @Test
     fun `when fetchDriverPhoneNumber should return set live data success`() {
         runBlocking {
             val driverPhoneNumberUiModel =

@@ -2,6 +2,7 @@ package com.tokopedia.tokofood.feature.ordertracking.presentation.viewmodel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
@@ -41,6 +42,7 @@ import javax.inject.Inject
 @FlowPreview
 class TokoFoodOrderTrackingViewModel @Inject constructor(
     val userSession: UserSessionInterface,
+    private val savedStateHandle: SavedStateHandle,
     private val coroutineDispatchers: CoroutineDispatchers,
     private val getTokoFoodOrderDetailUseCase: Lazy<GetTokoFoodOrderDetailUseCase>,
     private val getTokoFoodOrderStatusUseCase: Lazy<GetTokoFoodOrderStatusUseCase>,
@@ -108,6 +110,16 @@ class TokoFoodOrderTrackingViewModel @Inject constructor(
         _orderId.tryEmit(this.orderId)
     }
 
+    fun onSavedInstanceState() {
+        savedStateHandle[ORDER_ID] = orderId
+    }
+
+    fun onRestoreSavedInstanceState() {
+        _orderId.tryEmit(
+            savedStateHandle.get<String>(ORDER_ID).orEmpty()
+        )
+    }
+
     fun fetchOrderDetail(orderId: String) {
         launchCatchError(block = {
             val orderDetailResult = withContext(coroutineDispatchers.io) {
@@ -161,5 +173,6 @@ class TokoFoodOrderTrackingViewModel @Inject constructor(
 
     companion object {
         const val DELAY_ORDER_STATE = 5000L
+        const val ORDER_ID = "orderId"
     }
 }
