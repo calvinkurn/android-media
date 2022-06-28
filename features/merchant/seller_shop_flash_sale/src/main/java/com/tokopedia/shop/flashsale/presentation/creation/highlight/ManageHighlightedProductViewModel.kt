@@ -226,6 +226,9 @@ class ManageHighlightedProductViewModel @Inject constructor(
         currentlySelectedProduct: HighlightableProduct,
         products: List<HighlightableProduct>
     ): List<HighlightableProduct> {
+        val selectedProductsIds = selectedProducts.map { selectedProduct -> selectedProduct.id }
+        val selectedParentProductIds = selectedProducts.map { selectedProduct -> selectedProduct.parentId }
+
         return products
             .mapIndexed { index, product ->
                 if (currentlySelectedProduct.id == product.id) {
@@ -235,7 +238,8 @@ class ManageHighlightedProductViewModel @Inject constructor(
                 }
             }
             .map { product ->
-                if (product.parentId == currentlySelectedProduct.parentId) {
+                //enable all, except selected variant
+                if (product.id !in selectedProductsIds && product.parentId !in selectedParentProductIds) {
                     product.copy(disabled = false, disabledReason = HighlightableProduct.DisabledReason.NOT_DISABLED)
                 } else {
                     product
