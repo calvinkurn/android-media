@@ -13,6 +13,6 @@ sealed class CampaignRuleActionResult {
     object DetailNotLoaded : CampaignRuleActionResult()
 
     data class Fail(
-        val error: Throwable
+        val error: CampaignRuleError
     ) : CampaignRuleActionResult()
 }

@@ -6,6 +6,7 @@ import androidx.lifecycle.asFlow
 import androidx.lifecycle.viewModelScope
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.shop.flashsale.common.extension.removeTimeZone
 import com.tokopedia.shop.flashsale.domain.entity.CampaignAction
 import com.tokopedia.shop.flashsale.domain.entity.CampaignUiModel
 import com.tokopedia.shop.flashsale.domain.entity.MerchantCampaignTNC
@@ -369,12 +370,20 @@ class CampaignRuleViewModel @Inject constructor(
                     _saveDraftActionState.postValue(CampaignRuleActionResult.Success)
                     resetIsInSaveOrCreateAction()
                 } else {
-                    _saveDraftActionState.postValue(CampaignRuleActionResult.Fail(Throwable(result.errorDescription)))
+                    _saveDraftActionState.postValue(
+                        CampaignRuleActionResult.Fail(
+                            CampaignRuleError(result.errorTitle, result.errorMessage)
+                        )
+                    )
                     resetIsInSaveOrCreateAction()
                 }
             },
             onError = { error ->
-                _saveDraftActionState.postValue(CampaignRuleActionResult.Fail(error))
+                _saveDraftActionState.postValue(
+                    CampaignRuleActionResult.Fail(
+                        CampaignRuleError(cause = error)
+                    )
+                )
                 resetIsInSaveOrCreateAction()
             }
         )
@@ -417,7 +426,11 @@ class CampaignRuleViewModel @Inject constructor(
                 validAction(campaignData)
             },
             onError = { error ->
-                _createCampaignActionState.postValue(CampaignRuleActionResult.Fail(error))
+                _createCampaignActionState.postValue(
+                    CampaignRuleActionResult.Fail(
+                        CampaignRuleError(cause = error)
+                    )
+                )
                 resetIsInSaveOrCreateAction()
             }
         )
@@ -443,7 +456,11 @@ class CampaignRuleViewModel @Inject constructor(
                 _createCampaignActionState.postValue(CampaignRuleActionResult.Success)
                 resetIsInSaveOrCreateAction()
             } else {
-                _createCampaignActionState.postValue(CampaignRuleActionResult.Fail(Throwable(result.errorDescription)))
+                _createCampaignActionState.postValue(
+                    CampaignRuleActionResult.Fail(
+                        CampaignRuleError(result.errorTitle, result.errorMessage)
+                    )
+                )
                 resetIsInSaveOrCreateAction()
             }
         }
@@ -459,14 +476,15 @@ class CampaignRuleViewModel @Inject constructor(
         return DoSellerCampaignCreationUseCase.Param(
             action = action,
             campaignName = campaignData.campaignName,
-            scheduledStart = campaignData.startDate,
-            scheduledEnd = campaignData.endDate,
-            teaserDate = campaignData.upcomingDate,
+            scheduledStart = campaignData.startDate.removeTimeZone(),
+            scheduledEnd = campaignData.endDate.removeTimeZone(),
+            teaserDate = campaignData.upcomingDate.removeTimeZone(),
             firstColor = campaignData.gradientColor.first,
             secondColor = campaignData.gradientColor.second,
             campaignRelation = campaignRelations,
             paymentType = selectedPaymentType,
             isCampaignRuleSubmit = isCampaignRuleSubmit,
+            showTeaser = campaignData.useUpcomingWidget,
         )
     }
 
