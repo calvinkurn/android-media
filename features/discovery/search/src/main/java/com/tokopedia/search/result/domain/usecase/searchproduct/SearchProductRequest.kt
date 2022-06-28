@@ -72,6 +72,7 @@ private const val ACE_SEARCH_PRODUCT_QUERY = """
             data {
                 isQuerySafe
                 autocompleteApplink
+                backendFilters
                 redirection {
                     redirectApplink
                 }
@@ -335,6 +336,8 @@ private const val HEADLINE_ADS_QUERY = """
                 headline {
                     template_id
                     name
+                    widget_title
+                    widget_image_url 
                     image {
                         full_url
                         full_ecs

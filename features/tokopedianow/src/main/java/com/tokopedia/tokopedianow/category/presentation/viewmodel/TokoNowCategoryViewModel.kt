@@ -11,6 +11,7 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.localizationchooseaddress.domain.usecase.GetChosenAddressWarehouseLocUseCase
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
+import com.tokopedia.minicart.common.domain.usecase.MiniCartSource
 import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.viewutil.RecomPageConstant.TOKONOW_CLP
 import com.tokopedia.recommendation_widget_common.viewutil.RecomPageConstant.TOKONOW_NO_RESULT
@@ -29,6 +30,7 @@ import com.tokopedia.tokopedianow.category.utils.CATEGORY_LOAD_MORE_PAGE_USE_CAS
 import com.tokopedia.tokopedianow.category.utils.TOKONOW_CATEGORY_L1
 import com.tokopedia.tokopedianow.category.utils.TOKONOW_CATEGORY_L2
 import com.tokopedia.tokopedianow.category.utils.TOKONOW_CATEGORY_QUERY_PARAM_MAP
+import com.tokopedia.tokopedianow.category.utils.TOKONOW_CATEGORY_SERVICE_TYPE
 import com.tokopedia.tokopedianow.categorylist.domain.usecase.GetCategoryListUseCase
 import com.tokopedia.tokopedianow.common.constant.ServiceType
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState
@@ -41,9 +43,11 @@ import com.tokopedia.tokopedianow.searchcategory.cartservice.CartService
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.CategoryTitle
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.TitleDataView
 import com.tokopedia.tokopedianow.searchcategory.presentation.viewmodel.BaseSearchCategoryViewModel
-import com.tokopedia.tokopedianow.searchcategory.utils.*
+import com.tokopedia.tokopedianow.searchcategory.utils.ABTestPlatformWrapper
+import com.tokopedia.tokopedianow.searchcategory.utils.CATEGORY_GRID_TITLE
 import com.tokopedia.tokopedianow.searchcategory.utils.CATEGORY_ID
 import com.tokopedia.tokopedianow.searchcategory.utils.CATEGORY_LIST_DEPTH
+import com.tokopedia.tokopedianow.searchcategory.utils.ChooseAddressWrapper
 import com.tokopedia.tokopedianow.searchcategory.utils.TOKONOW_DIRECTORY
 import com.tokopedia.tokopedianow.searchcategory.utils.WAREHOUSE_ID
 import com.tokopedia.usecase.RequestParams
@@ -59,6 +63,8 @@ class TokoNowCategoryViewModel @Inject constructor (
         val categoryL1: String,
     @param:Named(TOKONOW_CATEGORY_L2)
         val categoryL2: String,
+    @param:Named(TOKONOW_CATEGORY_SERVICE_TYPE)
+        val externalServiceType: String,
     @Named(TOKONOW_CATEGORY_QUERY_PARAM_MAP)
         queryParamMap: Map<String, String>,
     @param:Named(CATEGORY_FIRST_PAGE_USE_CASE)
@@ -103,7 +109,6 @@ class TokoNowCategoryViewModel @Inject constructor (
 
     init {
         updateQueryParamWithCategoryIds()
-
         categoryIdTracking = getCategoryIdForTracking()
     }
 
@@ -177,7 +182,11 @@ class TokoNowCategoryViewModel @Inject constructor (
 
     override fun createFooterVisitableList(): List<Visitable<*>> {
         val recomData =
-            TokoNowRecommendationCarouselUiModel(pageName = TOKONOW_CLP)
+            TokoNowRecommendationCarouselUiModel(
+                pageName = TOKONOW_CLP,
+                isBindWithPageName = true,
+                miniCartSource = MiniCartSource.TokonowCategoryPage
+            )
         recomData.categoryId = getRecomCategoryId(recomData)
         return listOf(
             createAisleDataView(),
@@ -217,6 +226,16 @@ class TokoNowCategoryViewModel @Inject constructor (
 
     override fun processEmptyState(isEmptyProductList: Boolean) {
         loadCategoryGrid(isEmptyProductList)
+    }
+
+    override fun onViewCreated(source: MiniCartSource?) {
+        val currentServiceType = chooseAddressData?.getServiceType()
+
+        if (externalServiceType != currentServiceType && externalServiceType.isNotBlank()) {
+            setUserPreference(externalServiceType)
+        } else {
+            super.onViewCreated(source)
+        }
     }
 
     private fun loadCategoryGrid(isEmptyProductList: Boolean) {
@@ -281,6 +300,20 @@ class TokoNowCategoryViewModel @Inject constructor (
 
     fun onCategoryGridRetry() {
         processEmptyState(true)
+    }
+
+    fun getCurrentCategoryId(categoryIdLvl1: String, categoryIdLvl2: String, categoryIdLvl3: String): String {
+        return when {
+            categoryIdLvl3.isNotBlank() && categoryIdLvl3 != DEFAULT_CATEGORY_ID -> {
+                categoryIdLvl3
+            }
+            categoryIdLvl2.isNotBlank() && categoryIdLvl2 != DEFAULT_CATEGORY_ID -> {
+                categoryIdLvl2
+            }
+            else -> {
+                categoryIdLvl1
+            }
+        }
     }
 
     private fun sendOpenScreenTrackingUrl(categoryModel: CategoryModel) {

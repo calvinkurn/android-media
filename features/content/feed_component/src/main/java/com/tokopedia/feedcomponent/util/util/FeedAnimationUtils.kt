@@ -1,9 +1,6 @@
 package com.tokopedia.feedcomponent.util.util
 
-import android.animation.Animator
-import android.animation.ObjectAnimator
-import android.animation.PropertyValuesHolder
-import android.animation.ValueAnimator
+import android.animation.*
 import android.content.Context
 import android.transition.AutoTransition
 import android.transition.Transition
@@ -16,12 +13,14 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.unifycomponents.toDp
-import com.tokopedia.unifycomponents.toPx
 
 private const val POSITION_TOP = 1
-private const val DOT_HALF_DIMEN = 8
-private const val LIHAT_PRODUK_EXPANDED_WIDTH = 100
-private const val LIHAT_PRODUK_SHRINKED_WIDTH = 24
+private const val BUBBLE_MAIN_ANIMATION_DURATION = 300L
+private const val BUBBLE_ANIMATION_POINTER_DURATION = 100L
+private const val LIHAT_PRODUK_SHRINKED_WIDTH = 32
+private const val LIHAT_PRODUK_SHRINKED_WIDTH_FLOAT = 32F
+private const val LIHAT_PRODUK_EXPANDED_WIDTH_FLOAT = 125F
+private const val COLOR_CHANGE_ANIMATION_DURATION_CTA_BTN = 250L
 private const val POINTER_ACTUAL_WIDTH = 79
 
 
@@ -82,10 +81,10 @@ fun showBubbleViewWithAnimation(view: View, position: Int, pointerView: View) {
     val objectAnimator: ObjectAnimator =
         ObjectAnimator.ofPropertyValuesHolder(view, pvhScaleX, pvhScaleY)
     objectAnimator.interpolator = FastOutSlowInInterpolator()
-    objectAnimator.duration = 300
+    objectAnimator.duration = BUBBLE_MAIN_ANIMATION_DURATION
     objectAnimator.addListener(object : Animator.AnimatorListener {
         override fun onAnimationStart(animation: Animator) {
-            showViewWithAnimation(pointerView, 100)
+            showViewWithAnimation(pointerView, BUBBLE_ANIMATION_POINTER_DURATION)
         }
         override fun onAnimationEnd(animation: Animator) {
         }
@@ -108,7 +107,7 @@ fun hideBubbleViewWithAnimation(view: View, position: Int, pointerView: View) {
 
     val pointerLeftMargin = (pointerView.layoutParams as ConstraintLayout.LayoutParams).marginStart
     val bubbleLeftMargin = (view.layoutParams as ConstraintLayout.LayoutParams).marginStart
-    view.pivotX = (pointerLeftMargin - bubbleLeftMargin).toFloat() + POINTER_ACTUAL_WIDTH/2
+    view.pivotX = (pointerLeftMargin - bubbleLeftMargin).toFloat() + POINTER_ACTUAL_WIDTH / 2
 
     val pvhScaleX =
         PropertyValuesHolder.ofFloat(ConstraintLayout.SCALE_X, 1f, 0f)
@@ -117,7 +116,7 @@ fun hideBubbleViewWithAnimation(view: View, position: Int, pointerView: View) {
     val objectAnimator: ObjectAnimator =
         ObjectAnimator.ofPropertyValuesHolder(view, pvhScaleX, pvhScaleY)
     objectAnimator.interpolator = FastOutSlowInInterpolator()
-    objectAnimator.duration = 300
+    objectAnimator.duration = BUBBLE_MAIN_ANIMATION_DURATION
     objectAnimator.addListener(object : Animator.AnimatorListener {
         override fun onAnimationStart(animation: Animator) {
             pointerView.postDelayed({
@@ -126,7 +125,7 @@ fun hideBubbleViewWithAnimation(view: View, position: Int, pointerView: View) {
                         gone()
                     }
                 }
-            }, 100)
+            }, BUBBLE_ANIMATION_POINTER_DURATION)
         }
         override fun onAnimationEnd(animation: Animator) {
             view.gone()
@@ -172,7 +171,7 @@ fun showViewWithSlideAnimation(view: ViewGroup) {
 }
 
 fun showViewWithAnimation(layoutLihatProdukParent: View, context: Context) {
-    val expandedWidthInDp = 100F
+    val expandedWidthInDp = LIHAT_PRODUK_EXPANDED_WIDTH_FLOAT
     val anim = ValueAnimator.ofInt(
         layoutLihatProdukParent.measuredWidth,
         convertDpToPixel(expandedWidthInDp, context)
@@ -184,11 +183,11 @@ fun showViewWithAnimation(layoutLihatProdukParent: View, context: Context) {
         layoutParams.width = animatedFinalValue
         layoutLihatProdukParent.layoutParams = layoutParams
     }
-    anim.duration = 300L
+    anim.duration = BUBBLE_MAIN_ANIMATION_DURATION
     anim.start()
 }
 fun showViewWithAnimationVOD(layoutLihatProdukParent: View, context: Context) {
-    val expandedWidthInDp = 125F
+    val expandedWidthInDp = LIHAT_PRODUK_EXPANDED_WIDTH_FLOAT
     val anim = ValueAnimator.ofInt(
         layoutLihatProdukParent.measuredWidth,
         convertDpToPixel(expandedWidthInDp, context)
@@ -200,13 +199,13 @@ fun showViewWithAnimationVOD(layoutLihatProdukParent: View, context: Context) {
         layoutParams.width = animatedFinalValue
         layoutLihatProdukParent.layoutParams = layoutParams
     }
-    anim.duration = 300L
+    anim.duration = BUBBLE_MAIN_ANIMATION_DURATION
     anim.start()
 }
 fun hideViewWithAnimationVod(layoutLihatProdukParent: View, context: Context) {
-    val expandedWidthDp = 125F
-    val shrinkedWidthDp = 32F
-    if (layoutLihatProdukParent.width.toDp() >= 32F){
+    val expandedWidthDp = LIHAT_PRODUK_EXPANDED_WIDTH_FLOAT
+    val shrinkedWidthDp = LIHAT_PRODUK_SHRINKED_WIDTH_FLOAT
+    if (layoutLihatProdukParent.width.toDp() >= LIHAT_PRODUK_SHRINKED_WIDTH_FLOAT){
         val anim = ValueAnimator.ofInt(convertDpToPixel(expandedWidthDp, context), convertDpToPixel(shrinkedWidthDp, context))
         anim.cancel()
         anim.addUpdateListener { valueAnimator ->
@@ -222,8 +221,8 @@ fun hideViewWithAnimationVod(layoutLihatProdukParent: View, context: Context) {
 }
 
 fun hideViewWithAnimation(layoutLihatProdukParent: View, context: Context) {
-    val expandedWidthDp = 100F
-    val shrinkedWidthDp = 24F
+    val expandedWidthDp = LIHAT_PRODUK_EXPANDED_WIDTH_FLOAT
+    val shrinkedWidthDp = LIHAT_PRODUK_SHRINKED_WIDTH_FLOAT
     if (layoutLihatProdukParent.width.toDp() >= LIHAT_PRODUK_SHRINKED_WIDTH){
         val anim = ValueAnimator.ofInt(convertDpToPixel(expandedWidthDp, context), convertDpToPixel(shrinkedWidthDp, context))
         anim.cancel()
@@ -238,10 +237,18 @@ fun hideViewWithAnimation(layoutLihatProdukParent: View, context: Context) {
         anim.start()
     }
 }
+fun changeBackgroundColorAnimation(startColor: Int, endColor: Int, view: View){
+
+    val colorAnimation = ValueAnimator.ofObject(ArgbEvaluator(), startColor, endColor)
+    colorAnimation.duration = COLOR_CHANGE_ANIMATION_DURATION_CTA_BTN // milliseconds
+
+    colorAnimation.addUpdateListener { animator -> view.setBackgroundColor(animator.animatedValue as Int) }
+    colorAnimation.start()
+}
 
 fun hideViewWithoutAnimation(layoutLihatProdukParent: View, context: Context) {
-    val expandedWidthDp = 100F
-    val shrinkedWidthDp = 24F
+    val expandedWidthDp = LIHAT_PRODUK_EXPANDED_WIDTH_FLOAT
+    val shrinkedWidthDp = LIHAT_PRODUK_SHRINKED_WIDTH_FLOAT
     if (layoutLihatProdukParent.width.toDp() >= LIHAT_PRODUK_SHRINKED_WIDTH){
     val anim = ValueAnimator.ofInt(convertDpToPixel(expandedWidthDp, context), convertDpToPixel(shrinkedWidthDp, context))
         anim.cancel()
@@ -252,7 +259,7 @@ fun hideViewWithoutAnimation(layoutLihatProdukParent: View, context: Context) {
             layoutParams.width = animatedFinalValue
             layoutLihatProdukParent.layoutParams = layoutParams
         }
-        anim.duration = 300
+        anim.duration = BUBBLE_MAIN_ANIMATION_DURATION
         anim.start()
     }
 }

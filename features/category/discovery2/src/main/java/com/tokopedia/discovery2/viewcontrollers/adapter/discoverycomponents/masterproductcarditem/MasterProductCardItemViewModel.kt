@@ -13,6 +13,7 @@ import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.data.DataItem
 import com.tokopedia.discovery2.data.campaignnotifymeresponse.CampaignNotifyMeRequest
 import com.tokopedia.discovery2.datamapper.getComponent
+import com.tokopedia.discovery2.datamapper.setComponent
 import com.tokopedia.discovery2.discoverymapper.DiscoveryDataMapper
 import com.tokopedia.discovery2.usecase.campaignusecase.CampaignNotifyUserCase
 import com.tokopedia.discovery2.usecase.productCardCarouselUseCase.ProductCardItemUseCase
@@ -134,6 +135,31 @@ class MasterProductCardItemViewModel(val application: Application, val component
                     isTopAds = it.isTopads ?: false,
                     topAdsWishlistUrl = it.wishlistUrl ?: "",
                     productPosition = position
+            )
+        } ?: ProductCardOptionsModel()
+    }
+
+    fun getThreeDotsWishlistOptionsModel():ProductCardOptionsModel {
+        return components.data?.firstOrNull()?.let {
+            ProductCardOptionsModel(
+                hasWishlist = true,
+                hasVisitShop = true,
+                hasShareProduct = true,
+                isWishlisted = it.isWishList,
+                productId = it.productId.toString(),
+                isTopAds = it.isTopads ?: false,
+                topAdsWishlistUrl = it.wishlistUrl ?: "",
+                productPosition = position,
+                shop = ProductCardOptionsModel.Shop(
+                    it.shopId ?: "",
+                    it.shopName ?: "",
+                    it.shopURLDesktop ?: ""
+                ),
+                productName = it.name ?: "",
+                productImageUrl = it.imageUrlMobile ?: "",
+                productUrl = it.productURLDesktop ?: "",
+                formattedPrice = it.price ?: "",
+
             )
         } ?: ProductCardOptionsModel()
     }
@@ -274,6 +300,12 @@ class MasterProductCardItemViewModel(val application: Application, val component
             }?:CAROUSEL_NOT_FOUND
         }else
             CAROUSEL_NOT_FOUND
+    }
+
+    fun saveProductCardComponent() {
+        components.data?.firstOrNull()?.productId?.let { prodId ->
+            setComponent(prodId, components.pageEndPoint, components)
+        }
     }
 
 }

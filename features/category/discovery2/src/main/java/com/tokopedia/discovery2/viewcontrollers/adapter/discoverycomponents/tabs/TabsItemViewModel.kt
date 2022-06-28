@@ -5,12 +5,8 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.SupervisorJob
-import kotlin.coroutines.CoroutineContext
 
-class TabsItemViewModel(val application: Application, var components: ComponentsItem, val position: Int) : DiscoveryBaseViewModel(), CoroutineScope {
+class TabsItemViewModel(val application: Application, var components: ComponentsItem, val position: Int) : DiscoveryBaseViewModel() {
 
 
     private val componentData: MutableLiveData<ComponentsItem> = MutableLiveData()
@@ -35,8 +31,5 @@ class TabsItemViewModel(val application: Application, var components: Components
         super.onAttachToViewHolder()
         componentData.value = components
     }
-
-    override val coroutineContext: CoroutineContext
-        get() = Dispatchers.Main + SupervisorJob()
 
 }

@@ -1,18 +1,19 @@
 package com.tokopedia.vouchercreation.product.create.domain.usecase
 
 import android.text.TextUtils
-import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.usecase.coroutines.UseCase
 import com.tokopedia.vouchercreation.product.create.data.request.GenerateImageParams
 import com.tokopedia.vouchercreation.product.create.data.response.GenerateImageResponse
+import javax.inject.Inject
 
-class GenerateImageUseCase constructor(
+class GenerateImageUseCase @Inject constructor(
     private val graphqlRepository: GraphqlRepository
-): GraphqlUseCase<String>(graphqlRepository) {
+): UseCase<String>() {
 
     var params: HashMap<String, Any> = HashMap()
 

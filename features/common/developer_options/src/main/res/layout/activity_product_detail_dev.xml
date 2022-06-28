@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
@@ -152,6 +151,47 @@
                 android:gravity="center"
                 android:padding="@dimen/spacing_lvl3"
                 android:text="@string/pdp_vbs"
+                app:unifyButtonSize="medium"
+                app:unifyButtonType="main" />
+
+        </androidx.appcompat.widget.LinearLayoutCompat>
+
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/pdp_border_vbs"
+            android:orientation="vertical"
+            android:layout_marginTop="20dp"
+            android:padding="10dp">
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="PDP Educational Bottom Sheet Section"
+                app:typographyType="heading_3"
+                app:typographyWeight="bold" />
+
+            <com.tokopedia.unifycomponents.TextFieldUnify
+                android:id="@+id/pdp_educational_type"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginTop="@dimen/spacing_lvl4"
+                app:text_field_input_type="text"
+                app:text_field_label="Type"
+                app:text_field_label_static="true"
+                app:text_field_placeholder="@string/pdp_type_edittext_placeholder" />
+
+
+            <com.tokopedia.unifycomponents.UnifyButton
+                android:id="@+id/pdp_educational_btn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/spacing_lvl2"
+                android:layout_marginBottom="@dimen/spacing_lvl4"
+                android:gravity="center"
+                android:padding="@dimen/spacing_lvl3"
+                android:text="@string/pdp_educational"
                 app:unifyButtonSize="medium"
                 app:unifyButtonType="main" />
 

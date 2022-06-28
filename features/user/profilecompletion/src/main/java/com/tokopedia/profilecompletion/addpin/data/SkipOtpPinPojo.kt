@@ -1,6 +1,5 @@
 package com.tokopedia.profilecompletion.addpin.data
 
-import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
 /**
@@ -9,22 +8,17 @@ import com.google.gson.annotations.SerializedName
  */
 
 data class SkipOtpPinPojo(
-        @SerializedName("OTPSkipValidation")
-        @Expose
-        var data: SkipOtpPinData = SkipOtpPinData()
+    @SerializedName("OTPSkipValidation")
+    var data: SkipOtpPinData = SkipOtpPinData()
 )
 
 data class SkipOtpPinData(
-        @SerializedName("skip_otp")
-        @Expose
-        var skipOtp: Boolean = false,
-        @SerializedName("validate_token")
-        @Expose
-        var validateToken: String = "",
-        @SerializedName("message")
-        @Expose
-        var message: String = "",
-        @SerializedName("error_message")
-        @Expose
-        var errorMessage: String = ""
+    @SerializedName("skip_otp")
+    var skipOtp: Boolean = false,
+    @SerializedName("validate_token")
+    var validateToken: String = "",
+    @SerializedName("message")
+    var message: String = "",
+    @SerializedName("error_message")
+    var errorMessage: String = ""
 )

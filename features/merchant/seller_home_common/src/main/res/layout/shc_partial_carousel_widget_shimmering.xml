@@ -9,44 +9,46 @@
     android:paddingEnd="@dimen/layout_lvl1"
     android:paddingRight="@dimen/layout_lvl1">
 
-    <com.elyeproj.loaderviewlibrary.LoaderTextView
+    <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/shimmering_title"
         android:layout_width="156dp"
         android:layout_height="@dimen/layout_lvl2"
-        app:corners="10"
+        app:loader_corner_radius="5dp"
+        app:loader_type="rect"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <com.elyeproj.loaderviewlibrary.LoaderImageView
+    <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/shimmering_banner"
         android:layout_width="@dimen/layout_lvl0"
         android:layout_height="@dimen/shc_dimen_180dp"
         android:layout_marginTop="@dimen/layout_lvl2"
-        app:corners="10"
-        app:height_weight="0.5"
+        app:loader_corner_radius="5dp"
+        app:loader_type="rect"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/shimmering_title"
-        app:width_weight="0.5" />
+        app:layout_constraintTop_toBottomOf="@+id/shimmering_title" />
 
-    <com.elyeproj.loaderviewlibrary.LoaderTextView
+    <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/shimmering_load_more"
         android:layout_width="@dimen/layout_lvl7"
         android:layout_height="@dimen/layout_lvl2"
         android:layout_marginTop="@dimen/layout_lvl1"
         android:textSize="@dimen/fontSize_lvl3"
-        app:corners="10"
+        app:loader_corner_radius="5dp"
+        app:loader_type="rect"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/shimmering_banner" />
 
-    <com.elyeproj.loaderviewlibrary.LoaderTextView
+    <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/shimmering_dots"
         android:layout_width="@dimen/layout_lvl7"
         android:layout_height="@dimen/layout_lvl2"
         android:layout_marginTop="@dimen/layout_lvl1"
         android:textSize="@dimen/fontSize_lvl3"
-        app:corners="10"
+        app:loader_corner_radius="5dp"
+        app:loader_type="rect"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/shimmering_banner" />

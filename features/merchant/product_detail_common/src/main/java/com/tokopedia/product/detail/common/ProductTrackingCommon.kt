@@ -1,13 +1,29 @@
 package com.tokopedia.product.detail.common
 
 import com.tokopedia.analyticconstant.DataLayer
+import com.tokopedia.product.detail.common.ProductTrackingConstant.Tracking.BUSINESS_UNIT
+import com.tokopedia.product.detail.common.ProductTrackingConstant.Tracking.BUSINESS_UNIT_PDP
+import com.tokopedia.product.detail.common.ProductTrackingConstant.Tracking.CREATIVE
 import com.tokopedia.product.detail.common.ProductTrackingConstant.Tracking.CURRENT_SITE
+import com.tokopedia.product.detail.common.ProductTrackingConstant.Tracking.ID
+import com.tokopedia.product.detail.common.ProductTrackingConstant.Tracking.KEY_ACTION
 import com.tokopedia.product.detail.common.ProductTrackingConstant.Tracking.KEY_BUSINESS_UNIT
+import com.tokopedia.product.detail.common.ProductTrackingConstant.Tracking.KEY_CATEGORY
 import com.tokopedia.product.detail.common.ProductTrackingConstant.Tracking.KEY_CURRENT_SITE
+import com.tokopedia.product.detail.common.ProductTrackingConstant.Tracking.KEY_ECOMMERCE
+import com.tokopedia.product.detail.common.ProductTrackingConstant.Tracking.KEY_EVENT
+import com.tokopedia.product.detail.common.ProductTrackingConstant.Tracking.KEY_LABEL
 import com.tokopedia.product.detail.common.ProductTrackingConstant.Tracking.KEY_PRODUCT_ID
+import com.tokopedia.product.detail.common.ProductTrackingConstant.Tracking.KEY_PROMOTIONS
+import com.tokopedia.product.detail.common.ProductTrackingConstant.Tracking.KEY_USER_ID
+import com.tokopedia.product.detail.common.ProductTrackingConstant.Tracking.NAME
+import com.tokopedia.product.detail.common.ProductTrackingConstant.Tracking.POSITION
+import com.tokopedia.product.detail.common.ProductTrackingConstant.Tracking.PROMO_VIEW
+import com.tokopedia.product.detail.common.data.model.pdplayout.ProductDetailGallery
 import com.tokopedia.product.detail.common.data.model.rates.P2RatesEstimateData
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
+import com.tokopedia.trackingoptimizer.TrackingQueue
 
 /**
  * Created by Yehezkiel on 17/05/21
@@ -248,6 +264,55 @@ object ProductTrackingCommon {
                         ProductTrackingConstant.Tracking.KEY_DIMENSION_83, bebasOngkirType,
                         ProductTrackingConstant.Tracking.KEY_DIMENSION_38, pageSource
                 ))))))
+    }
+
+    fun eventImageGallerySwipe(
+        trackingQueue: TrackingQueue?,
+        productId: String,
+        mediaType: String,
+        mediaUrl: String,
+        position: String,
+        userId: String,
+        page: ProductDetailGallery.Page
+    ) {
+
+        val eventCategory: String
+        val itemNameParam3: String
+
+        when(page){
+            ProductDetailGallery.Page.ProductDetail -> {
+                eventCategory = ProductTrackingConstant.Category.PDP
+                itemNameParam3 = "overlay"
+
+            }
+            ProductDetailGallery.Page.VariantBottomSheet -> {
+                eventCategory = ProductTrackingConstant.Category.PDP_VARIANT_BOTTOMSHEET
+                itemNameParam3 = "overlay vbs"
+            }
+        }
+
+        val mapEvent = hashMapOf<String, Any>(
+            KEY_EVENT to PROMO_VIEW,
+            KEY_ACTION to ProductTrackingConstant.Action.SWIPE_PRODUCT_PICTURE,
+            KEY_CATEGORY to eventCategory,
+            KEY_LABEL to "",
+            BUSINESS_UNIT to BUSINESS_UNIT_PDP,
+            KEY_CURRENT_SITE to CURRENT_SITE,
+            KEY_PRODUCT_ID to productId,
+            KEY_USER_ID to userId,
+            KEY_ECOMMERCE to hashMapOf(
+                PROMO_VIEW to hashMapOf(
+                    KEY_PROMOTIONS to arrayListOf(hashMapOf(
+                        CREATIVE to "media type:$mediaType;",
+                        POSITION to position,
+                        NAME to "product detail page - $productId - $itemNameParam3",
+                        ID to mediaUrl
+                    ))
+                )
+            )
+        )
+
+        trackingQueue?.putEETracking(mapEvent)
     }
 
     private fun generateBusinessUnit(pageSource: String) = if (pageSource == VariantPageSource.PDP_PAGESOURCE.source) {

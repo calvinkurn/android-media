@@ -130,7 +130,7 @@ class CouponListViewModelTest {
     @Test
     fun `When getShopAndTopProducts success Expect shopWithTopProducts value invoked`() {
         coEvery {
-            getShopAndTopProductsUseCase.execute(any(), any())
+            getShopAndTopProductsUseCase.execute(any())
         } returns ShopWithTopProducts(emptyList(), ShopBasicDataResult())
 
         viewModel.setCoupon(generateCouponUiModel())
@@ -144,7 +144,7 @@ class CouponListViewModelTest {
     @Test
     fun `When getShopAndTopProducts error Expect shopWithTopProducts Fail invoked`() {
         coEvery {
-            getShopAndTopProductsUseCase.execute(any(), any())
+            getShopAndTopProductsUseCase.execute(any())
         } throws MessageErrorException()
 
         viewModel.getShopAndTopProducts(generateCouponUiModel())

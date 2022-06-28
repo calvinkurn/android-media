@@ -1,6 +1,5 @@
 package com.tokopedia.topchat.chatroom.view.viewmodel
 
-import androidx.annotation.StringRes
 import androidx.collection.ArrayMap
 import androidx.lifecycle.*
 import com.tokopedia.abstraction.base.view.adapter.Visitable
@@ -12,24 +11,25 @@ import com.tokopedia.atc_common.data.model.request.AddToCartOccMultiRequestParam
 import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartOccMultiUseCase
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase
-import com.tokopedia.attachcommon.data.ResultProduct
-import com.tokopedia.attachcommon.preview.ProductPreview
 import com.tokopedia.chat_common.data.*
 import com.tokopedia.chat_common.data.parentreply.ParentReply
 import com.tokopedia.chat_common.domain.pojo.ChatSocketPojo
 import com.tokopedia.chat_common.domain.pojo.roommetadata.RoomMetaData
-import com.tokopedia.chatbot.domain.mapper.TopChatRoomWebSocketMessageMapper
+import com.tokopedia.topchat.chatroom.domain.mapper.TopChatRoomWebSocketMessageMapper
 import com.tokopedia.device.info.DeviceInfo
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.kotlin.extensions.view.toIntSafely
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
+import com.tokopedia.logger.ServerLogger
+import com.tokopedia.logger.utils.Priority
 import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.seamless_login_common.domain.usecase.SeamlessLoginUsecase
 import com.tokopedia.seamless_login_common.subscriber.SeamlessLoginSubscriber
 import com.tokopedia.shop.common.domain.interactor.ToggleFavouriteShopUseCase
-import com.tokopedia.topchat.R
-import com.tokopedia.topchat.chatlist.pojo.ChatDeleteStatus
+import com.tokopedia.topchat.chatlist.domain.pojo.ChatDeleteStatus
 import com.tokopedia.topchat.chatroom.data.ImageUploadServiceModel
 import com.tokopedia.topchat.chatroom.data.UploadImageDummy
 import com.tokopedia.topchat.chatroom.data.activityresult.UpdateProductStockResult
@@ -61,7 +61,6 @@ import com.tokopedia.topchat.common.data.Resource
 import com.tokopedia.topchat.common.domain.MutationMoveChatToTrashUseCase
 import com.tokopedia.topchat.common.mapper.ImageUploadMapper
 import com.tokopedia.topchat.common.util.AddressUtil
-import com.tokopedia.topchat.common.util.ImageUtil
 import com.tokopedia.topchat.common.websocket.*
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -70,6 +69,9 @@ import com.tokopedia.websocket.WebSocketResponse
 import com.tokopedia.wishlist.common.listener.WishListActionListener
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
+import com.tokopedia.wishlistcommon.domain.AddToWishlistV2UseCase
+import com.tokopedia.wishlistcommon.domain.DeleteWishlistV2UseCase
+import com.tokopedia.wishlistcommon.listener.WishlistV2ActionListener
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.collect
@@ -104,6 +106,8 @@ open class TopChatViewModel @Inject constructor(
     private val tokoNowWHUsecase: GetChatTokoNowWarehouseUseCase,
     private var addWishListUseCase: AddWishListUseCase,
     private var removeWishListUseCase: RemoveWishListUseCase,
+    private var addToWishlistV2UseCase: AddToWishlistV2UseCase,
+    private var deleteWishlistV2UseCase: DeleteWishlistV2UseCase,
     private var getChatUseCase: GetChatUseCase,
     private var unsendReplyUseCase: UnsendReplyUseCase,
     private val dispatcher: CoroutineDispatchers,
@@ -295,6 +299,7 @@ open class TopChatViewModel @Inject constructor(
 
             override fun onFailure(webSocket: WebSocket, t: Throwable, response: Response?) {
                 Timber.d("$TAG - onFailure - ${t.message}")
+                logWebSocketFailure(t, response)
                 handleOnFailureWebSocket()
             }
         })
@@ -399,6 +404,15 @@ open class TopChatViewModel @Inject constructor(
         retryConnectWebSocket()
     }
 
+    private fun logWebSocketFailure(throwable: Throwable, response: Response?) {
+        ServerLogger.log(Priority.P2, TAG,
+            mapOf(
+                "type" to ERROR_TYPE_LOG,
+                "error" to throwable.message.orEmpty(),
+                "response" to response.toString()
+            ))
+    }
+
     private fun retryConnectWebSocket() {
         chatWebSocket.close()
         _isWebsocketError.postValue(true)
@@ -444,7 +458,7 @@ open class TopChatViewModel @Inject constructor(
         })
     }
 
-    fun getShopFollowingStatus(shopId: Long) {
+    fun getShopFollowingStatus(shopId: String) {
         launchCatchError(block = {
             val result = getShopFollowingUseCase(shopId)
             _shopFollowing.value = Success(result)
@@ -496,7 +510,8 @@ open class TopChatViewModel @Inject constructor(
             productId = addToCartParam.productId.toLongOrZero(),
             shopId = addToCartParam.shopId.toInt(),
             quantity = addToCartParam.minOrder,
-            atcFromExternalSource = AtcFromExternalSource.ATC_FROM_TOPCHAT
+            atcFromExternalSource = AtcFromExternalSource.ATC_FROM_TOPCHAT,
+            warehouseId = attachProductWarehouseId.toIntSafely()
         )
         addToCartUseCase.addToCartRequestParams = addToCartRequestParams
     }
@@ -597,6 +612,7 @@ open class TopChatViewModel @Inject constructor(
                     productId = product.productId,
                     shopId = product.shopId.toString(),
                     quantity = product.minOrder.toString(),
+                    warehouseId = attachProductWarehouseId,
                     //analytics data
                     productName = product.productName,
                     category = product.category,
@@ -769,10 +785,42 @@ open class TopChatViewModel @Inject constructor(
         addWishListUseCase.createObservable(productId, userId, wishlistActionListener)
     }
 
+    fun addToWishListV2(
+        productId: String,
+        userId: String,
+        wishlistActionListener: WishlistV2ActionListener
+    ) {
+        launch(dispatcher.main) {
+            addToWishlistV2UseCase.setParams(productId, userId)
+            val result = withContext(dispatcher.io) { addToWishlistV2UseCase.executeOnBackground() }
+            if (result is Success) {
+                wishlistActionListener.onSuccessAddWishlist(result.data, productId)
+            } else {
+                val error = (result as Fail).throwable
+                wishlistActionListener.onErrorAddWishList(error, productId)
+            }
+        }
+    }
+
     fun removeFromWishList(
         productId: String, userId: String, wishListActionListener: WishListActionListener
     ) {
         removeWishListUseCase.createObservable(productId, userId, wishListActionListener)
+    }
+
+    fun removeFromWishListV2(
+        productId: String, userId: String, wishListActionListener: WishlistV2ActionListener
+    ) {
+        launch(dispatcher.main) {
+            deleteWishlistV2UseCase.setParams(productId, userId)
+            val result = withContext(dispatcher.io) { deleteWishlistV2UseCase.executeOnBackground() }
+            if (result is Success) {
+                wishListActionListener.onSuccessRemoveWishlist(result.data, productId)
+            } else {
+                val error = (result as Fail).throwable
+                wishListActionListener.onErrorRemoveWishlist(error, productId)
+            }
+        }
     }
 
     fun getExistingChat(messageId: String, isInit: Boolean = false) {
@@ -1071,6 +1119,10 @@ open class TopChatViewModel @Inject constructor(
         attachmentsPreview.clear()
     }
 
+    fun removeAttachmentPreview(sendablePreview: SendablePreview) {
+        attachmentsPreview.remove(sendablePreview)
+    }
+
     fun initAttachmentPreview() {
         _showableAttachmentPreviews.value = attachmentsPreview
     }
@@ -1149,7 +1201,8 @@ open class TopChatViewModel @Inject constructor(
     }
 
     companion object {
-        const val TAG = "TopchatWebSocketViewModel"
+        private const val TAG = "DEBUG_TOPCHAT_WEBSOCKET"
+        private const val ERROR_TYPE_LOG = "ErrorConnectWebSocket"
         const val ENABLE_UPLOAD_IMAGE_SERVICE = "android_enable_topchat_upload_image_service"
         private val PROBLEMATIC_DEVICE = listOf("iris88", "iris88_lite", "lenovo k9")
     }

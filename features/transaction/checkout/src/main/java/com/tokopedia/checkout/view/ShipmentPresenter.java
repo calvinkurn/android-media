@@ -208,6 +208,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     private CheckoutAnalyticsPurchaseProtection mTrackerPurchaseProtection;
     private CheckoutAnalyticsCourierSelection mTrackerShipment;
     private String statusOK = "OK";
+    private String statusCode200 = "200";
     private RatesResponseStateConverter stateConverter;
     private LastApplyUiModel lastApplyData;
 
@@ -425,6 +426,18 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         return isShowOnboarding;
     }
 
+    private boolean getPromoFlag(String step) {
+        if (step.equals(EnhancedECommerceActionField.STEP_2)) {
+            if (lastApplyData != null) {
+                return lastApplyData.getAdditionalInfo().getPomlAutoApplied();
+            }
+            return false;
+        } else if (validateUsePromoRevampUiModel != null) {
+            return validateUsePromoRevampUiModel.getPromoUiModel().getAdditionalInfoUiModel().getPomlAutoApplied();
+        }
+        return false;
+    }
+
     @Override
     public void triggerSendEnhancedEcommerceCheckoutAnalytics(List<DataCheckoutRequest> dataCheckoutRequests,
                                                               Map<String, String> tradeInCustomDimension,
@@ -445,7 +458,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                 transactionId = checkoutData.getTransactionId();
             }
             analyticsActionListener.sendEnhancedEcommerceAnalyticsCheckout(
-                    eeDataLayer, tradeInCustomDimension, transactionId, eventCategory, eventAction, eventLabel
+                    eeDataLayer, tradeInCustomDimension, transactionId, userSessionInterface.getUserId(), getPromoFlag(step), eventCategory, eventAction, eventLabel
             );
         }
     }
@@ -941,7 +954,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                                                showErrorValidateUseIfAny(validateUsePromoRevampUiModel);
                                                validateBBO(validateUsePromoRevampUiModel);
                                                updateTickerAnnouncementData(validateUsePromoRevampUiModel);
-                                               if (validateUsePromoRevampUiModel.getStatus().equalsIgnoreCase("ERROR") && !validateUsePromoRevampUiModel.getPromoUiModel().getGlobalSuccess()) {
+                                               if (validateUsePromoRevampUiModel.getStatus().equalsIgnoreCase("ERROR")) {
                                                    String message = "";
                                                    if (validateUsePromoRevampUiModel.getMessage().size() > 0) {
                                                        message = validateUsePromoRevampUiModel.getMessage().get(0);
@@ -1218,7 +1231,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     }
 
     @Override
-    public void doValidateUseLogisticPromo(int cartPosition, String cartString, ValidateUsePromoRequest validateUsePromoRequest) {
+    public void doValidateUseLogisticPromo(int cartPosition, String cartString, ValidateUsePromoRequest validateUsePromoRequest, String promoCode) {
         setCouponStateChanged(true);
         RequestParams requestParams = RequestParams.create();
         requestParams.putObject(OldValidateUsePromoRevampUseCase.PARAM_VALIDATE_USE, validateUsePromoRequest);
@@ -1260,8 +1273,8 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                                 if (getView() != null) {
                                     updateTickerAnnouncementData(validateUsePromoRevampUiModel);
                                     showErrorValidateUseIfAny(validateUsePromoRevampUiModel);
-                                    validateBBO(validateUsePromoRevampUiModel);
-                                    boolean isValidatePromoRevampSuccess = validateUsePromoRevampUiModel.getStatus().equalsIgnoreCase(statusOK) && validateUsePromoRevampUiModel.getPromoUiModel().getGlobalSuccess();
+                                    validateBBOWithSpecificOrder(validateUsePromoRevampUiModel, cartString, promoCode);
+                                    boolean isValidatePromoRevampSuccess = validateUsePromoRevampUiModel.getStatus().equalsIgnoreCase(statusOK);
                                     if (isValidatePromoRevampSuccess) {
                                         getView().updateButtonPromoCheckout(validateUsePromoRevampUiModel.getPromoUiModel(), true);
                                     } else {
@@ -1323,6 +1336,37 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         }
     }
 
+    private void validateBBOWithSpecificOrder(ValidateUsePromoRevampUiModel validateUsePromoRevampUiModel, String cartString, String promoCode) {
+        boolean orderFound = false;
+        for (PromoCheckoutVoucherOrdersItemUiModel voucherOrdersItemUiModel : validateUsePromoRevampUiModel.getPromoUiModel().getVoucherOrderUiModels()) {
+            if (voucherOrdersItemUiModel.getUniqueId().equals(cartString) && voucherOrdersItemUiModel.getCode().equalsIgnoreCase(promoCode)) {
+                orderFound = true;
+            }
+            if (voucherOrdersItemUiModel.getType().equalsIgnoreCase("logistic") && voucherOrdersItemUiModel.getMessageUiModel().getState().equalsIgnoreCase("red")) {
+                for (ShipmentCartItemModel shipmentCartItemModel : shipmentCartItemModelList) {
+                    if (shipmentCartItemModel.getCartString().equals(voucherOrdersItemUiModel.getUniqueId())) {
+                        if (getView() != null) {
+                            getView().resetCourier(shipmentCartItemModel);
+                        }
+                    }
+                }
+            }
+        }
+        if (!orderFound && shipmentCartItemModelList != null) {
+            // if not voucher order found for attempted apply BO order,
+            // then should reset courier and not apply the BO
+            // this should be a rare case
+            for (ShipmentCartItemModel shipmentCartItemModel : shipmentCartItemModelList) {
+                if (shipmentCartItemModel.getCartString().equals(cartString)) {
+                    if (getView() != null) {
+                        getView().resetCourier(shipmentCartItemModel);
+                        break;
+                    }
+                }
+            }
+        }
+    }
+
     @Override
     public void processCheckPromoCheckoutCodeFromSelectedCourier(String promoCode, int itemPosition, boolean noToast) {
         setCouponStateChanged(true);
@@ -1364,7 +1408,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                                     updateTickerAnnouncementData(validateUsePromoRevampUiModel);
                                     showErrorValidateUseIfAny(validateUsePromoRevampUiModel);
                                     validateBBO(validateUsePromoRevampUiModel);
-                                    boolean isValidatePromoRevampSuccess = validateUsePromoRevampUiModel.getStatus().equalsIgnoreCase(statusOK) && validateUsePromoRevampUiModel.getPromoUiModel().getGlobalSuccess();
+                                    boolean isValidatePromoRevampSuccess = validateUsePromoRevampUiModel.getStatus().equalsIgnoreCase(statusOK);
                                     if (isValidatePromoRevampSuccess) {
                                         getView().renderPromoCheckoutFromCourierSuccess(validateUsePromoRevampUiModel, itemPosition, noToast);
                                     } else {

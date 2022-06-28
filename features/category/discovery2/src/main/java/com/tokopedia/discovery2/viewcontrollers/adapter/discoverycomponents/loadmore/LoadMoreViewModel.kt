@@ -5,7 +5,9 @@ import com.tokopedia.discovery2.ComponentNames
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.datamapper.getComponent
 import com.tokopedia.discovery2.usecase.MerchantVoucherUseCase
+import com.tokopedia.discovery2.usecase.bannerinfiniteusecase.BannerInfiniteUseCase
 import com.tokopedia.discovery2.usecase.productCardCarouselUseCase.ProductCardsUseCase
+import com.tokopedia.discovery2.usecase.shopcardusecase.ShopCardUseCase
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import kotlinx.coroutines.CoroutineScope
@@ -20,6 +22,10 @@ class LoadMoreViewModel(val application: Application, private val components: Co
     lateinit var productCardUseCase: ProductCardsUseCase
     @Inject
     lateinit var merchantVoucherUseCase: MerchantVoucherUseCase
+    @Inject
+    lateinit var bannerInfiniteUseCase: BannerInfiniteUseCase
+    @Inject
+    lateinit var shopCardInfiniteUseCase: ShopCardUseCase
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.Main + SupervisorJob()
 
@@ -33,6 +39,10 @@ class LoadMoreViewModel(val application: Application, private val components: Co
                 syncData.value = when(components.parentComponentName){
                     ComponentNames.MerchantVoucherList.componentName ->
                         merchantVoucherUseCase.getPaginatedData(components.id,components.pageEndPoint)
+                    ComponentNames.BannerInfinite.componentName ->
+                        bannerInfiniteUseCase.getBannerUseCase(components.id,components.pageEndPoint )
+                    ComponentNames.ShopCardInfinite.componentName ->
+                        shopCardInfiniteUseCase.getShopCardUseCase(components.id,components.pageEndPoint )
                     else -> productCardUseCase.getProductCardsUseCase(components.id, components.pageEndPoint)
                 }
             }

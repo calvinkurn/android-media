@@ -19,7 +19,6 @@ import com.tokopedia.applink.ApplinkConst.AttachProduct.TOKOPEDIA_ATTACH_PRODUCT
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.attachcommon.data.ResultProduct
-import com.tokopedia.attachcommon.preview.ProductPreview
 import com.tokopedia.common.network.util.CommonUtil
 import com.tokopedia.product.detail.common.VariantPageSource
 import com.tokopedia.test.application.annotations.UiTest
@@ -35,6 +34,7 @@ import com.tokopedia.topchat.chatroom.view.activity.robot.product.ProductCardRes
 import com.tokopedia.topchat.chatroom.view.activity.robot.product.ProductCardResult.hasVariantLabel
 import com.tokopedia.topchat.chatroom.view.activity.robot.product.ProductCardRobot.clickATCButtonAt
 import com.tokopedia.topchat.chatroom.view.activity.robot.product.ProductCardRobot.clickBuyButtonAt
+import com.tokopedia.topchat.chatroom.view.activity.robot.product.ProductCardRobot.clickProductAttachmentAt
 import com.tokopedia.topchat.chatroom.view.activity.robot.product.ProductCardRobot.clickWishlistButtonAt
 import com.tokopedia.topchat.chatroom.view.activity.robot.product.ProductPreviewResult.verifyVariantLabel
 import com.tokopedia.topchat.common.TopChatInternalRouter.Companion.SOURCE_TOPCHAT
@@ -405,6 +405,22 @@ class TopchatRoomBuyerProductAttachmentTest : BaseBuyerTopchatRoomTest() {
         hasFailedToasterWithMsg(errorMsg)
     }
 
+    @Test
+    fun user_can_go_to_pdp_page_when_click_on_attached_product() {
+        // Given
+        getChatUseCase.response = firstPageChatAsBuyer
+        chatAttachmentUseCase.response = chatAttachmentResponse
+        launchChatRoomActivity()
+
+        // When
+        intending(anyIntent()).respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
+        doScrollChatToPosition(1)
+        clickProductAttachmentAt(1)
+
+        // Then
+        intended(hasData("tokopedia://product/2148833237?extParam=whid=341734&src=chat"))
+    }
+
     // TODO: assert attach product, stock info seller, and tokocabang is not displayed on buyer side
 
     override fun getAttachProductData(totalProduct: Int): Intent {
@@ -432,27 +448,8 @@ class TopchatRoomBuyerProductAttachmentTest : BaseBuyerTopchatRoomTest() {
         val testVariantColor = "Putih"
         val exProductId = "1111"
         fun putProductAttachmentIntent(intent: Intent) {
-            val productPreviews = listOf(
-                    ProductPreview(
-                            exProductId,
-                            ProductPreviewAttribute.productThumbnail,
-                            ProductPreviewAttribute.productName,
-                            "Rp 23.000.000",
-                            "",
-                            testVariantColor,
-                            "",
-                            "",
-                            testVariantSize,
-                            "tokopedia://product/1111",
-                            false,
-                            "",
-                            "Rp 50.000.000",
-                            500000.0,
-                            "50%",
-                            false
-                    )
-            )
-            val stringProductPreviews = CommonUtil.toJson(productPreviews)
+            val productIds = listOf(exProductId)
+            val stringProductPreviews = CommonUtil.toJson(productIds)
             intent.putExtra(ApplinkConst.Chat.PRODUCT_PREVIEWS, stringProductPreviews)
         }
     }

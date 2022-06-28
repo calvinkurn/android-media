@@ -60,10 +60,10 @@ data class RechargeHomepageSections(
         val mediaUrl: String = "",
         @SerializedName("label_1")
         @Expose
-        val label1: String = "#FFFFFF",
+        val label1: String = "",
         @SerializedName("label_2")
         @Expose
-        val label2: String = "#FFFFFF",
+        val label2: String = "",
         @SerializedName("items")
         @Expose
         val items: List<Item> = listOf()

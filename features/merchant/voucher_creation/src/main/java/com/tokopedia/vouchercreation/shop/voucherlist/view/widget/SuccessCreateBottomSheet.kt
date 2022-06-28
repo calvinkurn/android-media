@@ -9,11 +9,12 @@ import androidx.fragment.app.FragmentManager
 import com.tokopedia.kotlin.extensions.view.loadImageWithoutPlaceholder
 import com.tokopedia.kotlin.extensions.view.toBlankOrString
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.utils.lifecycle.autoClearedNullable
 import com.tokopedia.vouchercreation.R
 import com.tokopedia.vouchercreation.common.utils.DateTimeUtils
+import com.tokopedia.vouchercreation.databinding.BottomsheetMvcSuccessCreateBinding
 import com.tokopedia.vouchercreation.shop.detail.view.component.StartEndVoucher
 import com.tokopedia.vouchercreation.shop.voucherlist.model.ui.VoucherUiModel
-import kotlinx.android.synthetic.main.bottomsheet_mvc_success_create.view.*
 
 class SuccessCreateBottomSheet: BottomSheetUnify() {
 
@@ -37,6 +38,8 @@ class SuccessCreateBottomSheet: BottomSheetUnify() {
         private const val VOUCHER = "voucher"
     }
 
+    private var binding by autoClearedNullable<BottomsheetMvcSuccessCreateBinding>()
+
     private val voucherUiModel by lazy {
         arguments?.getParcelable<VoucherUiModel?>(VOUCHER)
     }
@@ -45,7 +48,7 @@ class SuccessCreateBottomSheet: BottomSheetUnify() {
     private var onDownloadClickAction: (VoucherUiModel) -> Unit = {}
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        initBottomSheet(container)
+        initBottomSheet()
         return super.onCreateView(inflater, container, savedInstanceState)
     }
 
@@ -54,32 +57,31 @@ class SuccessCreateBottomSheet: BottomSheetUnify() {
         setupView(view)
     }
 
-    private fun initBottomSheet(container: ViewGroup?) {
-        val child = LayoutInflater.from(context)
-                .inflate(R.layout.bottomsheet_mvc_success_create, container, false)
-        setChild(child)
+    private fun initBottomSheet() {
+        binding = BottomsheetMvcSuccessCreateBinding.inflate(LayoutInflater.from(context))
+        setChild(binding?.root)
     }
 
     private fun setupView(view: View) {
-        with(view) {
-            voucherUiModel?.let { uiModel ->
-                successTitle?.text = String.format(context?.getString(R.string.mvc_success_create_title).toBlankOrString(), uiModel.typeFormatted)
+        voucherUiModel?.let { uiModel ->
+            binding?.apply {
+                successTitle.text = String.format(context?.getString(R.string.mvc_success_create_title).toBlankOrString(), uiModel.typeFormatted)
 
-                successImage?.loadImageWithoutPlaceholder(uiModel.imageSquare)
+                successImage.loadImageWithoutPlaceholder(uiModel.imageSquare)
 
                 val startDate = DateTimeUtils.reformatUnsafeDateTime(uiModel.startTime, DATE_FORMAT)
                 val endDate = DateTimeUtils.reformatUnsafeDateTime(uiModel.finishTime, DATE_FORMAT)
                 val startHour = String.format(context?.getString(R.string.mvc_hour_wib).toBlankOrString(), DateTimeUtils.reformatUnsafeDateTime(uiModel.startTime, HOUR_FORMAT))
                 val endHour = String.format(context?.getString(R.string.mvc_hour_wib).toBlankOrString(), DateTimeUtils.reformatUnsafeDateTime(uiModel.finishTime, HOUR_FORMAT))
-                successDate?.run {
+                successDate.run {
                     setStartTime(StartEndVoucher.Model(startDate, startHour))
                     setEndTime(StartEndVoucher.Model(endDate, endHour))
                 }
 
-                successShareButton?.setOnClickListener {
+                successShareButton.setOnClickListener {
                     voucherUiModel?.run(onShareClickAction)
                 }
-                successDownloadButton?.setOnClickListener {
+                successDownloadButton.setOnClickListener {
                     voucherUiModel?.run(onDownloadClickAction)
                 }
             }

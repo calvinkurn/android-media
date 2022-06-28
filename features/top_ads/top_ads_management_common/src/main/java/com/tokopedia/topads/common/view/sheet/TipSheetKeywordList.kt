@@ -6,8 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.topads.common.R
 import com.tokopedia.unifycomponents.BottomSheetUnify
-import kotlinx.android.synthetic.main.topads_common_keyword_info_sheet.*
-
+import com.tokopedia.unifycomponents.UnifyButton
 
 class TipSheetKeywordList : BottomSheetUnify() {
 
@@ -23,7 +22,7 @@ class TipSheetKeywordList : BottomSheetUnify() {
         setCloseClickListener {
             dismiss()
         }
-        btn_submit?.setOnClickListener {
+        contentView?.findViewById<UnifyButton>(R.id.btn_submit)?.setOnClickListener {
             dismiss()
         }
     }
@@ -34,7 +33,9 @@ class TipSheetKeywordList : BottomSheetUnify() {
         }
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?,
+    ): View? {
         initChildLayout()
         return super.onCreateView(inflater, container, savedInstanceState)
     }

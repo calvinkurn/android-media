@@ -38,6 +38,7 @@ import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.utils.lifecycle.autoClearedNullable
 import com.tokopedia.utils.permission.PermissionCheckerHelper
 import com.tokopedia.vouchercreation.R
 import com.tokopedia.vouchercreation.common.analytics.VoucherCreationAnalyticConstant
@@ -56,6 +57,7 @@ import com.tokopedia.vouchercreation.common.errorhandler.MvcErrorHandler
 import com.tokopedia.vouchercreation.common.exception.VoucherCancellationException
 import com.tokopedia.vouchercreation.common.plt.MvcPerformanceMonitoringListener
 import com.tokopedia.vouchercreation.common.utils.*
+import com.tokopedia.vouchercreation.databinding.FragmentMvcVoucherListBinding
 import com.tokopedia.vouchercreation.shop.create.view.activity.CreateMerchantVoucherStepsActivity
 import com.tokopedia.vouchercreation.shop.create.view.enums.VoucherCreationStep
 import com.tokopedia.vouchercreation.shop.detail.view.activity.VoucherDetailActivity
@@ -79,8 +81,6 @@ import com.tokopedia.vouchercreation.shop.voucherlist.view.widget.headerchips.Ch
 import com.tokopedia.vouchercreation.shop.voucherlist.view.widget.sharebottomsheet.ShareVoucherBottomSheet
 import com.tokopedia.vouchercreation.shop.voucherlist.view.widget.sortbottomsheet.SortBottomSheet
 import com.tokopedia.vouchercreation.shop.voucherlist.view.widget.sortbottomsheet.SortBy
-import kotlinx.android.synthetic.main.fragment_mvc_voucher_list.*
-import kotlinx.android.synthetic.main.fragment_mvc_voucher_list.view.*
 import java.util.*
 import javax.inject.Inject
 
@@ -122,6 +122,8 @@ class VoucherListFragment :
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
+    private var binding by autoClearedNullable<FragmentMvcVoucherListBinding>()
+
     private val mViewModel: VoucherListViewModel by lazy {
         ViewModelProvider(this, viewModelFactory).get(VoucherListViewModel::class.java)
     }
@@ -161,7 +163,8 @@ class VoucherListFragment :
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.fragment_mvc_voucher_list, container, false)
+        binding = FragmentMvcVoucherListBinding.inflate(LayoutInflater.from(context), container, false)
+        return binding?.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -269,8 +272,8 @@ class VoucherListFragment :
         mViewModel.currentPage = page
         if (!isToolbarAlreadyLoaded) {
             view?.run {
-                searchBarMvc.hide()
-                sf_voucher_list.isVisible = false
+                binding?.searchBarMvc?.hide()
+                binding?.sfVoucherList?.isVisible = false
             }
             renderList(listOf(LoadingStateUiModel(isActiveVoucher)))
         }
@@ -761,11 +764,11 @@ class VoucherListFragment :
             showSortBottomSheet()
         }
         filterData.add(sortFilter)
-        sf_voucher_list.addItem(filterData)
-        sf_voucher_list.sortFilterPrefix.setOnClickListener {
+        binding?.sfVoucherList?.addItem(filterData)
+        binding?.sfVoucherList?.sortFilterPrefix?.setOnClickListener {
             showFilterBottomSheet()
         }
-        toolbarMvcList?.setBackgroundColor(Color.TRANSPARENT)
+        binding?.toolbarMvcList?.setBackgroundColor(Color.TRANSPARENT)
     }
 
     private fun SortFilterItem.toggle() {
@@ -778,7 +781,7 @@ class VoucherListFragment :
 
     private fun setupRecyclerViewVoucherList() {
         val rvDirection = -1
-        view?.rvVoucherList?.run {
+        binding?.rvVoucherList?.run {
             addItemDecoration(getMvcItemDecoration())
             addOnScrollListener(object : RecyclerView.OnScrollListener() {
                 override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
@@ -791,7 +794,7 @@ class VoucherListFragment :
     }
 
     private fun showAppBarElevation(isShown: Boolean) = view?.run {
-        dividerMvcList?.visibility =
+        binding?.dividerMvcList?.visibility =
             if (isShown) {
                 View.VISIBLE
             } else {
@@ -801,7 +804,7 @@ class VoucherListFragment :
 
     private fun setupActionBar() = view?.run {
         (activity as? AppCompatActivity)?.let { activity ->
-            activity.setSupportActionBar(toolbarMvcList)
+            activity.setSupportActionBar(binding?.toolbarMvcList)
             activity.supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
             val title =
@@ -814,7 +817,7 @@ class VoucherListFragment :
     }
 
     private fun setupSearchBar() {
-        searchBarMvc?.run {
+        binding?.searchBarMvc?.run {
             searchBarTextField.setOnFocusChangeListener { _, hasFocus ->
                 if (hasFocus) {
                     VoucherCreationTracking.sendVoucherListClickTracking(
@@ -863,7 +866,7 @@ class VoucherListFragment :
     }
 
     private fun setupBroadCastChatTicker() {
-        mvcTickerBc.setDescriptionClickEvent(object : TickerCallback {
+        binding?.mvcTickerBc?.setDescriptionClickEvent(object : TickerCallback {
             override fun onDescriptionViewClick(linkUrl: CharSequence) {}
             override fun onDismiss() {
                 SharedPreferencesUtil.setIsBcTickerClosed(requireActivity(), isClosed = true)
@@ -1012,8 +1015,8 @@ class VoucherListFragment :
             mViewModel.targetBuyer = VoucherTargetBuyer.ALL_BUYER + "," + VoucherTargetBuyer.NEW_BUYER
         } else mViewModel.targetBuyer = null
         val counter = filterBottomSheet?.getFilterCounter() ?: 0
-        if (counter.isMoreThanZero()) sf_voucher_list.indicatorCounter = counter
-        else sf_voucher_list.resetAllFilters()
+        if (counter.isMoreThanZero()) binding?.sfVoucherList?.indicatorCounter = counter
+        else binding?.sfVoucherList?.resetAllFilters()
         loadInitialData()
     }
 
@@ -1035,9 +1038,9 @@ class VoucherListFragment :
             if (vouchers.isEmpty()) {
                 renderList(listOf(getEmptyStateUiModel()))
             } else {
-                view?.run {
+                binding?.apply {
                     searchBarMvc.show()
-                    sf_voucher_list.show()
+                    sfVoucherList.show()
                     mvcTickerBc.isVisible = isActiveVoucher && mViewModel.getShowBroadCastChatTicker()
                     isToolbarAlreadyLoaded = true
                     setupSearchBar()
@@ -1084,7 +1087,7 @@ class VoucherListFragment :
                         voucherUiModel.showNewBc = true
                     }
                     setOnSuccessGetVoucherList(voucherList)
-                    rvVoucherList?.setOnLayoutListenerReady()
+                    binding?.rvVoucherList?.setOnLayoutListenerReady()
                 }
                 is Fail -> setOnErrorGetVoucherList(it.throwable)
             }

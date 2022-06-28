@@ -5,10 +5,6 @@ import com.google.gson.annotations.SerializedName
 import java.util.*
 
 class ShopInfo {
-    @SerializedName("address")
-    @Expose
-    var address: List<ShopInfoAddress> = ArrayList()
-
     @SerializedName("closed_info")
     @Expose
     var closedInfo = ShopInfoClosedInfo()

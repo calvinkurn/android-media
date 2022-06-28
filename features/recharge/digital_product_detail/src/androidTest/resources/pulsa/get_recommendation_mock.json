@@ -1,0 +1,39 @@
+[
+  {
+    "data": {
+      "digiPersoGetPersonalizedItems": {
+        "title": "Paling sering kamu beli 👇",
+        "mediaURL": "",
+        "appLink": "",
+        "webLink": "",
+        "textLink": "Lihat Semua",
+        "items": [
+          {
+            "id": 1,
+            "title": "XL 10.000",
+            "mediaURL": "https://images.tokopedia.net/img/SnKlQx/2022/2/2/3f060ab5-9a19-43e5-bbe1-d1bd21c274ed.png",
+            "mediaUrlType": "frame",
+            "appLink": "tokopedia://digital/cart?category_id\u003d1\u0026client_number\u003d087855812080\u0026idem_potency_key\u003d1650597375-1-087855812080-1136-5\u0026operator_id\u003d5\u0026product_id\u003d1136",
+            "webLink": "https://pulsa.tokopedia.com?action\u003dinit_data\u0026client_number\u003d087855812080\u0026idem_potency_key\u003d1650597375-1-087855812080-1136-5\u0026operator_id\u003d5\u0026product_id\u003d1136",
+            "label1": "",
+            "label2": "",
+            "price": "Rp11.500",
+            "slashedPrice": "",
+            "discount": "",
+            "backgroundColor": "",
+            "trackingData": {
+              "productID": "1136",
+              "operatorID": "5",
+              "businessUnit": "recharge",
+              "itemLabel": "product",
+              "itemType": "last transactions by client number",
+              "clientNumber": "087855812080",
+              "categoryID": "1",
+              "categoryName": "Pulsa"
+            }
+          }
+        ]
+      }
+    }
+  }
+]

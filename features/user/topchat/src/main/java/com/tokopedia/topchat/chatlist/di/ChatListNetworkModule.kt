@@ -14,11 +14,12 @@ import com.tokopedia.network.NetworkRouter
 import com.tokopedia.network.interceptor.FingerprintInterceptor
 import com.tokopedia.network.interceptor.TkpdAuthInterceptor
 import com.tokopedia.network.utils.OkHttpRetryPolicy
+import com.tokopedia.remoteconfig.RemoteConfigInstance
+import com.tokopedia.remoteconfig.abtest.AbTestPlatform
 import com.tokopedia.topchat.common.Constant.NET_CONNECT_TIMEOUT
 import com.tokopedia.topchat.common.Constant.NET_READ_TIMEOUT
 import com.tokopedia.topchat.common.Constant.NET_RETRY
 import com.tokopedia.topchat.common.Constant.NET_WRITE_TIMEOUT
-import com.tokopedia.topchat.common.chat.api.ChatApi
 import com.tokopedia.topchat.common.di.qualifier.TopchatContext
 import com.tokopedia.topchat.common.websocket.*
 import com.tokopedia.topchat.common.websocket.DefaultTopChatWebSocket.Companion.PAGE_CHATLIST
@@ -97,13 +98,6 @@ class ChatListNetworkModule {
                 NET_RETRY)
     }
 
-
-    @ChatListScope
-    @Provides
-    fun provideChatApi(@Named("retrofit") retrofit: Retrofit): ChatApi {
-        return retrofit.create(ChatApi::class.java)
-    }
-
     @ChatListScope
     @Provides
     fun provideResponseInterceptor(): ErrorResponseInterceptor {
@@ -160,15 +154,22 @@ class ChatListNetworkModule {
     @Provides
     fun provideTopChatWebSocket(
             userSession: UserSessionInterface,
-            client: OkHttpClient
+            client: OkHttpClient,
+            abTestPlatform: AbTestPlatform
     ): TopchatWebSocket {
         val webSocketUrl = ChatUrl.CHAT_WEBSOCKET_DOMAIN + ChatUrl.CONNECT_WEBSOCKET +
                 "?os_type=1" +
                 "&device_id=" + userSession.deviceId +
                 "&user_id=" + userSession.userId
         return DefaultTopChatWebSocket(
-            client, webSocketUrl, userSession.accessToken, PAGE_CHATLIST
+            client, webSocketUrl, userSession.accessToken, PAGE_CHATLIST, abTestPlatform
         )
+    }
+
+    @ChatListScope
+    @Provides
+    fun provideAbTestPlatform() : AbTestPlatform {
+        return RemoteConfigInstance.getInstance().abTestPlatform
     }
 
 }

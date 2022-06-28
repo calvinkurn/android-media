@@ -6,6 +6,7 @@ import com.tokopedia.play.view.uimodel.PlayProductUiModel
 import com.tokopedia.play.view.uimodel.RealTimeNotificationUiModel
 import com.tokopedia.play.view.uimodel.recom.PlayLikeBubbleConfig
 import com.tokopedia.play.view.uimodel.recom.tagitem.ProductSectionUiModel
+import com.tokopedia.play_common.model.dto.interactive.InteractiveUiModel
 import com.tokopedia.universal_sharing.view.model.ShareModel
 
 /**
@@ -13,7 +14,7 @@ import com.tokopedia.universal_sharing.view.model.ShareModel
  */
 sealed class PlayViewerNewUiEvent
 
-data class ShowWinningDialogEvent(val userImageUrl: String, val dialogTitle: String, val dialogSubtitle: String) : PlayViewerNewUiEvent()
+data class ShowWinningDialogEvent(val userImageUrl: String, val dialogTitle: String, val dialogSubtitle: String, val interactiveType: InteractiveUiModel) : PlayViewerNewUiEvent()
 
 data class ShowCoachMarkWinnerEvent(val title: String, val subtitle: String) : PlayViewerNewUiEvent()
 object HideCoachMarkWinnerEvent : PlayViewerNewUiEvent()
@@ -72,13 +73,13 @@ data class BuySuccessEvent(
     val product: PlayProductUiModel.Product,
     val isVariant: Boolean,
     val cartId: String,
-    val sectionInfo: ProductSectionUiModel.Section? = null,
+    val sectionInfo: ProductSectionUiModel.Section,
 ) : PlayViewerNewUiEvent()
 data class AtcSuccessEvent(
     val product: PlayProductUiModel.Product,
     val isVariant: Boolean,
     val cartId: String,
-    val sectionInfo: ProductSectionUiModel.Section? = null,
+    val sectionInfo: ProductSectionUiModel.Section,
 ) : PlayViewerNewUiEvent()
 
 //---------------------
@@ -97,3 +98,11 @@ data class AllowedWhenInactiveEvent(
         require(event !is AllowedWhenInactiveEvent)
     }
 }
+
+/**
+ * Interactive
+ * */
+object QuizAnsweredEvent : PlayViewerNewUiEvent()
+
+object OpenKebabEvent : PlayViewerNewUiEvent()
+object OpenUserReportEvent : PlayViewerNewUiEvent()

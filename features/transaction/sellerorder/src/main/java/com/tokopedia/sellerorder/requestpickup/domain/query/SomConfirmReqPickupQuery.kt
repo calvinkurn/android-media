@@ -44,6 +44,13 @@ object SomConfirmReqPickupQuery: GqlQueryInterface {
                     end
                   }
                 }
+              ticker {
+                  text
+                  url_text
+                  url_detail
+                  action_key
+                  type
+                }
             }
           }
         }

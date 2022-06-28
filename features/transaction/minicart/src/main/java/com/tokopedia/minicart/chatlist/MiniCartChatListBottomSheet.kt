@@ -11,7 +11,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.attachcommon.preview.ProductPreview
 import com.tokopedia.common.network.util.CommonUtil
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.getIconUnifyDrawable
@@ -27,9 +26,7 @@ import com.tokopedia.minicart.chatlist.viewholder.MiniCartChatProductViewHolder
 import com.tokopedia.minicart.common.analytics.MiniCartAnalytics
 import com.tokopedia.minicart.common.widget.MiniCartViewModel
 import com.tokopedia.minicart.databinding.LayoutBottomsheetMiniCartChatListBinding
-import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
 import com.tokopedia.unifycomponents.BottomSheetUnify
-import com.tokopedia.utils.currency.CurrencyFormatUtil
 import javax.inject.Inject
 
 class MiniCartChatListBottomSheet @Inject constructor(
@@ -147,6 +144,7 @@ class MiniCartChatListBottomSheet @Inject constructor(
         viewBinding.rvMiniCartChatList.adapter = adapter
         viewBinding.rvMiniCartChatList.layoutManager = layoutManager
         viewBinding.rvMiniCartChatList.addItemDecoration(miniCartChatProductDecoration)
+        viewBinding.rvMiniCartChatList.itemAnimator = null
     }
 
     private fun initializeCartData(viewModel: MiniCartViewModel) {
@@ -231,21 +229,12 @@ class MiniCartChatListBottomSheet @Inject constructor(
     }
 
     private fun openChatPage(shopId: String) {
-        val productPreviews = mutableListOf<ProductPreview>()
+        val productIds = mutableListOf<String>()
         elements.forEach { element ->
-            val productPreview = ProductPreview(
-                id = element.productId,
-                imageUrl = element.productImageUrl,
-                name = element.productName,
-                price = CurrencyFormatUtil.convertPriceValueToIdrFormat(element.productPrice, false).removeDecimalSuffix(),
-                dropPercentage = element.productSlashPriceLabel.removeSuffix("%"),
-                priceBeforeInt = element.productOriginalPrice.toDouble(),
-                priceBefore = CurrencyFormatUtil.convertPriceValueToIdrFormat(element.productOriginalPrice, false).removeDecimalSuffix(),
-            )
-            productPreviews.add(productPreview)
+            productIds.add(element.productId)
         }
         val intent = RouteManager.getIntent(mContext, ApplinkConst.TOPCHAT_ROOM_ASKSELLER, shopId)
-        val stringProductPreviews = CommonUtil.toJson(productPreviews)
+        val stringProductPreviews = CommonUtil.toJson(productIds)
         intent.putExtra(ApplinkConst.Chat.PRODUCT_PREVIEWS, stringProductPreviews)
         mContext?.startActivity(intent)
     }

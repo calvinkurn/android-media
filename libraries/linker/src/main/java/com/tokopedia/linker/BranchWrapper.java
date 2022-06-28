@@ -267,7 +267,7 @@ public class BranchWrapper implements WrapperInterface {
     public void setDataFromInstallReferrerParams(String installReferrerParams) {
         if (!TextUtils.isEmpty(installReferrerParams) && installReferrerParams.contains(IDENTIFIER_OPPO_INSTALL_REFERRER)) {
             Branch.getInstance().setPreinstallCampaign("oppopreinstallol-dp_int-tp-10001511-0000-alon-alon");
-            Branch.getInstance().setPreinstallPartner("a_custom_884988300975328897");
+            Branch.getInstance().setPreinstallPartner("a_oppopai");
         }
     }
 
@@ -446,6 +446,9 @@ public class BranchWrapper implements WrapperInterface {
 
         if (LinkerData.PRODUCT_TYPE.equalsIgnoreCase(data.getType())) {
             deeplinkPath = getApplinkPath(LinkerConstants.PRODUCT_INFO, data.getId());
+            if(!TextUtils.isEmpty(data.getAdditionalQueryParam())){
+                deeplinkPath = appendQueryParams(deeplinkPath, data.getAdditionalQueryParam());
+            }
         } else if (LinkerData.SHOP_TYPE.equalsIgnoreCase(data.getType())) {
             deeplinkPath = getApplinkPath(LinkerConstants.SHOP, data.getId());//"shop/" + data.getId();
         } else if (LinkerData.HOTLIST_TYPE.equalsIgnoreCase(data.getType())) {
@@ -506,6 +509,8 @@ public class BranchWrapper implements WrapperInterface {
                 linkProperties.addControlParameter(LinkerConstants.IOS_DESKTOP_URL_KEY, desktopUrl);
             }
             deeplinkPath = data.getDeepLink();
+        }else if (LinkerData.USER_PROFILE_SOCIAL.equalsIgnoreCase(data.getType())) {
+            deeplinkPath = getApplinkPath(LinkerConstants.USER_PROFILE_SOCIAL, data.getId());
         } else if (LinkerData.FEED_TYPE.equalsIgnoreCase(data.getType()) && !TextUtils.isEmpty(data.getDeepLink())){
             deeplinkPath = data.getDeepLink();
         }
@@ -747,5 +752,17 @@ public class BranchWrapper implements WrapperInterface {
     private Boolean isFDLActivated(Context context) {
         return ((LinkerRouter) context.getApplicationContext()).
                 getBooleanRemoteConfig(LinkerConstants.FIREBASE_KEY_FDL_ENABLE, false);
+    }
+
+    private String appendQueryParams(String sourceString, String additionalQueryParams){
+        if(!TextUtils.isEmpty(sourceString) && !TextUtils.isEmpty(additionalQueryParams)){
+            if(!sourceString.contains(LinkerConstants.QUERY_INITIATOR)){
+                return sourceString+LinkerConstants.QUERY_INITIATOR+additionalQueryParams;
+            }
+            else {
+                return sourceString+LinkerConstants.QUERY_PARAM_SEGREGATOR+additionalQueryParams;
+            }
+        }
+        return sourceString;
     }
 }

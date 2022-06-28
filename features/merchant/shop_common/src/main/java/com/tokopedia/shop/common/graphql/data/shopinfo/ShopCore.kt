@@ -26,5 +26,9 @@ data class ShopCore(
 
         @SerializedName("url")
         @Expose
-        val url: String = ""
+        val url: String = "",
+
+        @SerializedName("ownerID")
+        @Expose
+        val ownerId: String = ""
 )

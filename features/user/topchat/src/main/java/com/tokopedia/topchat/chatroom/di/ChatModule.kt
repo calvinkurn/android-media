@@ -21,17 +21,12 @@ import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.remoteconfig.abtest.AbTestPlatform
-import com.tokopedia.topchat.chatlist.data.factory.MessageFactory
-import com.tokopedia.topchat.chatlist.data.mapper.DeleteMessageMapper
-import com.tokopedia.topchat.chatlist.data.repository.MessageRepository
-import com.tokopedia.topchat.chatlist.data.repository.MessageRepositoryImpl
 import com.tokopedia.topchat.chatroom.data.api.ChatRoomApi
 import com.tokopedia.topchat.chatroom.domain.pojo.imageserver.ChatImageServerResponse
 import com.tokopedia.topchat.common.Constant.NET_CONNECT_TIMEOUT
 import com.tokopedia.topchat.common.Constant.NET_READ_TIMEOUT
 import com.tokopedia.topchat.common.Constant.NET_RETRY
 import com.tokopedia.topchat.common.Constant.NET_WRITE_TIMEOUT
-import com.tokopedia.topchat.common.chat.api.ChatApi
 import com.tokopedia.topchat.common.di.qualifier.InboxQualifier
 import com.tokopedia.topchat.common.di.qualifier.TopchatContext
 import com.tokopedia.topchat.common.network.TopchatCacheManager
@@ -40,8 +35,11 @@ import com.tokopedia.topchat.common.websocket.*
 import com.tokopedia.topchat.common.websocket.DefaultTopChatWebSocket.Companion.PAGE_CHATROOM
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.websocket.DEFAULT_PING
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
+import com.tokopedia.wishlistcommon.domain.AddToWishlistV2UseCase
+import com.tokopedia.wishlistcommon.domain.DeleteWishlistV2UseCase
 import dagger.Module
 import dagger.Provides
 import okhttp3.OkHttpClient
@@ -134,6 +132,7 @@ class ChatModule {
                 .connectTimeout(retryPolicy.connectTimeout.toLong(), TimeUnit.SECONDS)
                 .readTimeout(retryPolicy.readTimeout.toLong(), TimeUnit.SECONDS)
                 .writeTimeout(retryPolicy.writeTimeout.toLong(), TimeUnit.SECONDS)
+                .pingInterval(DEFAULT_PING, TimeUnit.MILLISECONDS)
 
         if (GlobalConfig.isAllowDebuggingTools()) {
             builder.addInterceptor(chuckInterceptor)
@@ -154,23 +153,14 @@ class ChatModule {
 
     @ChatScope
     @Provides
-    fun provideChatApi(@InboxQualifier retrofit: Retrofit): ChatApi {
-        return retrofit.create(ChatApi::class.java)
-    }
-
-
-    @ChatScope
-    @Provides
-    fun provideMessageFactory(
-            chatApi: ChatApi,
-            deleteMessageMapper: DeleteMessageMapper): MessageFactory {
-        return MessageFactory(chatApi, deleteMessageMapper)
+    internal fun provideAddWishListUseCase(@TopchatContext context: Context): AddWishListUseCase {
+        return AddWishListUseCase(context)
     }
 
     @ChatScope
     @Provides
-    fun provideMessageRepository(messageFactory: MessageFactory): MessageRepository {
-        return MessageRepositoryImpl(messageFactory)
+    internal fun provideRemoveWishListUseCase(@TopchatContext context: Context): RemoveWishListUseCase {
+        return RemoveWishListUseCase(context)
     }
 
     @ChatScope
@@ -181,8 +171,8 @@ class ChatModule {
 
     @ChatScope
     @Provides
-    internal fun provideAddWishListUseCase(@TopchatContext context: Context): AddWishListUseCase {
-        return AddWishListUseCase(context)
+    internal fun provideAddToWishlistV2UseCase(graphqlRepository: GraphqlRepository): AddToWishlistV2UseCase {
+        return AddToWishlistV2UseCase(graphqlRepository)
     }
 
     @ChatScope
@@ -194,8 +184,8 @@ class ChatModule {
 
     @ChatScope
     @Provides
-    internal fun provideRemoveWishListUseCase(@TopchatContext context: Context): RemoveWishListUseCase {
-        return RemoveWishListUseCase(context)
+    internal fun provideDeleteWishlistV2UseCase(graphqlRepository: GraphqlRepository): DeleteWishlistV2UseCase {
+        return DeleteWishlistV2UseCase(graphqlRepository)
     }
 
     @ChatScope
@@ -240,7 +230,8 @@ class ChatModule {
     @Provides
     fun provideTopChatWebSocket(
         userSession: UserSessionInterface,
-        client: OkHttpClient
+        client: OkHttpClient,
+        abTestPlatform: AbTestPlatform
     ): TopchatWebSocket {
         val webSocketUrl = ChatUrl.CHAT_WEBSOCKET_DOMAIN
             .plus(ChatUrl.CONNECT_WEBSOCKET)
@@ -252,7 +243,7 @@ class ChatModule {
                 userSession.userId
             )
         return DefaultTopChatWebSocket(
-            client, webSocketUrl, userSession.accessToken, PAGE_CHATROOM
+            client, webSocketUrl, userSession.accessToken, PAGE_CHATROOM, abTestPlatform
         )
     }
 

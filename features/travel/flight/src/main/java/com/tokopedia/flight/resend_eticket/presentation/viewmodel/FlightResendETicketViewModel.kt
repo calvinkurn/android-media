@@ -1,6 +1,7 @@
 package com.tokopedia.flight.resend_eticket.presentation.viewmodel
 
 import android.util.Patterns
+import androidx.core.util.PatternsCompat
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
@@ -66,7 +67,7 @@ class FlightResendETicketViewModel @Inject constructor(
     }
 
     private fun isValidEmail(userEmail: String): Boolean =
-        Patterns.EMAIL_ADDRESS.matcher(userEmail).matches() &&
+        PatternsCompat.EMAIL_ADDRESS.matcher(userEmail).matches() &&
                 !userEmail.contains(".@") &&
                 !userEmail.contains("@.")
 

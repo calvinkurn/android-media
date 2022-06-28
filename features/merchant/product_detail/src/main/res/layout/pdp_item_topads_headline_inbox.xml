@@ -15,7 +15,7 @@
         android:layout_marginStart="@dimen/spacing_lvl4"
         android:layout_marginEnd="@dimen/spacing_lvl4"
         android:layout_marginTop="@dimen/spacing_lvl3"
-        android:visibility="invisible"
+        android:visibility="gone"
         android:text="@string/pdp_title_topads_headline" />
 
     <com.tokopedia.topads.sdk.widget.TopAdsHeadlineView

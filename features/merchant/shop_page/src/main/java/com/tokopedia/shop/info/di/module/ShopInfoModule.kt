@@ -5,7 +5,7 @@ import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.network.NetworkRouter
 import com.tokopedia.shop.common.di.ShopPageContext
 import com.tokopedia.shop.info.di.scope.ShopInfoScope
-import com.tokopedia.shop.note.view.model.ShopNoteUiModel
+import com.tokopedia.shop_widget.note.view.model.ShopNoteUiModel
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
@@ -29,5 +29,4 @@ class ShopInfoModule {
     fun provideUserSessionInterface(@ShopPageContext context: Context?): UserSessionInterface {
         return UserSession(context)
     }
-
 }

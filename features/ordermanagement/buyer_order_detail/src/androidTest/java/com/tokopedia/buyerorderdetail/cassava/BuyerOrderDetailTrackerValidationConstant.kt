@@ -19,6 +19,7 @@ object BuyerOrderDetailTrackerValidationConstant {
     const val clickPrimaryActionButtonHelpQueryPath = "tracker/ordermanagement/buyer_order_detail/buyer_order_detail_click_primary_action_button_help.json"
     const val clickPrimaryActionButtonFinishOrderQueryPath = "tracker/ordermanagement/buyer_order_detail/buyer_order_detail_click_primary_action_button_finish_order.json"
     const val clickSecondaryActionButtonHelpQueryPath = "tracker/ordermanagement/buyer_order_detail/buyer_order_detail_click_secondary_action_button_help.json"
+    const val clickSecondaryActionButtonSeePoDQueryPath = "tracker/ordermanagement/buyer_order_detail/buyer_order_detail_click_secondary_action_button_see_pod.json"
     const val clickSecondaryActionButtonRequestCancelQueryPath = "tracker/ordermanagement/buyer_order_detail/buyer_order_detail_click_secondary_action_button_request_cancel.json"
     const val clickSecondaryActionButtonRequestComplaintQueryPath = "tracker/ordermanagement/buyer_order_detail/buyer_order_detail_click_secondary_action_button_request_complaint.json"
     const val clickSecondaryActionButtonFinishOrderQueryPath = "tracker/ordermanagement/buyer_order_detail/buyer_order_detail_click_secondary_action_button_finish_order.json"
@@ -39,4 +40,5 @@ object BuyerOrderDetailTrackerValidationConstant {
     const val ACTION_BUTTON_REQUEST_COMPLAINT_TEXT = "Komplain"
     const val ACTION_BUTTON_FINISH_ORDER_TEXT = "Selesai"
     const val ACTION_BUTTON_TRACK_TEXT = "Lacak"
+    const val ACTION_BUTTON_SEE_POD = "Lihat Bukti Pengiriman"
 }

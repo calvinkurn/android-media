@@ -4,6 +4,7 @@ import android.content.Context
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.domain.request.GetRecommendationRequestParam
+import com.tokopedia.thankyou_native.domain.model.ThanksPageData
 import com.tokopedia.thankyou_native.recommendation.data.ProductRecommendationData
 import com.tokopedia.thankyou_native.recommendation.data.mapper.ProductRecommendationDataMapper
 import com.tokopedia.thankyou_native.recommendation.di.qualifier.IODispatcher
@@ -19,10 +20,15 @@ class TYPGetRecommendationUseCase @Inject constructor(
         graphqlRepository: GraphqlRepository)
     : GetRecommendationUseCase(context, graphqlRepository) {
 
-    suspend fun getProductRecommendationData(): ProductRecommendationData? = withContext(ioDispatcher.get()) {
+    suspend fun getProductRecommendationData(thanksPageData: ThanksPageData): ProductRecommendationData? = withContext(ioDispatcher.get()) {
+        // get product Id list for all products in each shop
+        val productIdList = thanksPageData.shopOrder.map {
+            it.purchaseItemList.map { pItem -> pItem.productId }
+        }.flatten()
         val recommendationWidgetList = getData(GetRecommendationRequestParam(
                 pageName = PAGE_NAME,
-                xSource = X_SOURCE))
+                xSource = X_SOURCE,
+                productIds = productIdList))
         if (recommendationWidgetList.isNullOrEmpty())
             return@withContext null
         return@withContext mapper.get()

@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/header_container"
+    android:layout_width="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_height="wrap_content">
+
+    <include
+        android:id="@+id/layout_ticker_multi_loc"
+        layout="@layout/shop_discount_ticker_multi_loc_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="-2dp"
+        android:layout_marginEnd="-2dp"
+        android:layout_marginBottom="8dp" />
+
+    <include
+        android:id="@+id/layout_product_discount_header"
+        layout="@layout/layout_manage_product_discount_header"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        />
+
+    <com.tokopedia.unifycomponents.DividerUnify
+        android:id="@+id/divider"
+        android:layout_width="match_parent"
+        android:layout_marginTop="8dp"
+        android:layout_height="1dp"/>
+
+    <com.tokopedia.shopdiscount.common.widget.ShopDiscountLabelBulkApply
+        android:id="@+id/label_bulk_apply"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_marginTop="8dp"
+        android:visibility="gone"
+        tools:visibility="visible" />
+
+</LinearLayout>

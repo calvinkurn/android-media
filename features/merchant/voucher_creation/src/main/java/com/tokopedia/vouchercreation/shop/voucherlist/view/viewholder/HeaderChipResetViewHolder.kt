@@ -6,7 +6,10 @@ import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.utils.view.binding.viewBinding
 import com.tokopedia.vouchercreation.R
+import com.tokopedia.vouchercreation.databinding.ItemMvcFilterBinding
+import com.tokopedia.vouchercreation.databinding.ItemMvcHeaderChipResetBinding
 import com.tokopedia.vouchercreation.shop.voucherlist.model.ui.BaseHeaderChipUiModel.ResetChip
 
 /**
@@ -23,8 +26,10 @@ class HeaderChipResetViewHolder(
         val RES_LAYOUT = R.layout.item_mvc_header_chip_reset
     }
 
+    private var binding: ItemMvcHeaderChipResetBinding? by viewBinding()
+
     override fun bind(element: ResetChip) {
-        with(itemView) {
+        binding?.root?.apply {
             if (element.isVisible) {
                 visible()
                 layoutParams.width = WRAP_CONTENT
