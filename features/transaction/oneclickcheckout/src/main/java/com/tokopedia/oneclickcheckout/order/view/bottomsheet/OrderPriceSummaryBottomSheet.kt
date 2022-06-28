@@ -99,6 +99,9 @@ class OrderPriceSummaryBottomSheet {
             binding.tvTotalPaymentFeePriceValue.gone()
         }
 
+        binding.tvPlatformFeeSlashPriceValue.text = "Rp2.000"
+        binding.tvPlatformFeePriceValue.text = "Rp1.000"
+
         binding.tvTotalPaymentPriceValue.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(orderCost.totalPrice, false).removeDecimalSuffix()
 
         renderCashbacks(orderCost, binding)
