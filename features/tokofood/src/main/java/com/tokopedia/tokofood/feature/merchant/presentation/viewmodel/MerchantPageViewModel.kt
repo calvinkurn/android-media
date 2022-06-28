@@ -361,4 +361,8 @@ class MerchantPageViewModel @Inject constructor(
     fun isTickerDetailEmpty(tickerData: TokoFoodTickerDetail): Boolean {
         return tickerData.title.isBlank() && tickerData.subtitle.isBlank()
     }
+
+    fun isUserSkipTheLoginPage(visitedLoginPage: Boolean , isLoggedIn: Boolean): Boolean {
+        return visitedLoginPage && !isLoggedIn
+    }
 }

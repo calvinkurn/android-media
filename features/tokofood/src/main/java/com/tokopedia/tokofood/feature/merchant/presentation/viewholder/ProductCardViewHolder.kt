@@ -158,7 +158,6 @@ class ProductCardViewHolder(
                 }
             }
             // set order detail quantity
-            binding.qeuProductQtyEditor.subtractButton.isEnabled = productUiModel.orderQty != Int.ONE
             binding.qeuProductQtyEditor.setValue(productUiModel.orderQty)
         }
         // atc button wording e.g. Pesan or 2 Pesanan
