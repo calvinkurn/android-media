@@ -8,6 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
@@ -125,9 +126,15 @@ class TopAdsCreditHistoryFragment :
         cardAutoTopupStatus?.visibility = View.VISIBLE
         autoTopupStatus?.text = data.statusDesc
         if (data.status == ACTIVE_STATUS) {
-            autoTopupStatus?.setTextColor(resources.getColor(com.tokopedia.topads.common.R.color.topads_common_select_color_checked))
+            context?.let {
+                autoTopupStatus?.setTextColor(ContextCompat.getColor(it,
+                    com.tokopedia.topads.common.R.color.topads_common_select_color_checked))
+            }
         } else {
-            autoTopupStatus?.setTextColor(resources.getColor(com.tokopedia.topads.common.R.color.topads_common_text_disabled))
+            context?.let {
+                autoTopupStatus?.setTextColor(ContextCompat.getColor(it,
+                    com.tokopedia.topads.common.R.color.topads_common_text_disabled))
+            }
         }
     }
 
@@ -287,6 +294,7 @@ class TopAdsCreditHistoryFragment :
 
     override fun loadData(page: Int) {
         adapter.clearAllElements()
+        val resources = context?.resources
         viewModel.getCreditHistory(
             GraphqlHelper.loadRawString(resources, R.raw.gql_query_credit_history),
             startDate, endDate
