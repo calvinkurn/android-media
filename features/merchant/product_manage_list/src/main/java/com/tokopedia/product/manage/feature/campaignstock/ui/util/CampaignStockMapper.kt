@@ -17,6 +17,8 @@ import com.tokopedia.utils.time.DateFormatUtils
 object CampaignStockMapper {
 
     private const val RESERVED_INFO_DATE_FORMAT = "dd MMM yy, HH:ss"
+    private const val DIGITS_TO_SECONDS = 9
+    private const val MULTIPLIERS_FROM_MILLIS_TO_NANOS = 1000000
 
     fun mapToParcellableSellableProduct(sellableList: List<GetStockAllocationDetailSellable>,
                                         productVariantList: List<ProductVariant>): ArrayList<SellableStockProductUIModel> {
@@ -58,9 +60,9 @@ object CampaignStockMapper {
                     eventType = eventType,
                     campaignName = campaignType.name,
                     campaignIconUrl = campaignType.iconUrl,
-                    startTime = getPeriodString(startTimeMillis),
-                    endTime = getPeriodString(endTimeMillis),
-                    periodStatus = getPeriodStatus(startTimeMillis),
+                    startTime = getPeriodString(startTimeNanos),
+                    endTime = getPeriodString(endTimeNanos),
+                    periodStatus = getPeriodStatus(startTimeNanos),
                     stock = stock
                 )
             }
@@ -119,13 +121,14 @@ object CampaignStockMapper {
                 }
     }
 
-    private fun getPeriodString(timeMillis: String): String {
-        return DateFormatUtils.getFormattedDate(timeMillis, RESERVED_INFO_DATE_FORMAT)
+    private fun getPeriodString(timeNanos: String): String {
+        val timeInSecond = convertNanoSecStringToSecString(timeNanos)
+        return DateFormatUtils.getFormattedDate(timeInSecond, RESERVED_INFO_DATE_FORMAT)
     }
 
-    private fun getPeriodStatus(startTimeMillisString: String): ReservedEventInfoUiModel.PeriodStatus {
-        val currentTime = System.currentTimeMillis()
-        val startTimeMillis = startTimeMillisString.toLongOrZero()
+    private fun getPeriodStatus(startTimeNanosString: String): ReservedEventInfoUiModel.PeriodStatus {
+        val currentTime = getCurrentTimeInNanos()
+        val startTimeMillis = startTimeNanosString.toLongOrZero()
 
         // We only check for start time because there are only upcoming and ongoing status in the requirement
         return if (currentTime < startTimeMillis) {
@@ -133,6 +136,18 @@ object CampaignStockMapper {
         } else {
             ReservedEventInfoUiModel.PeriodStatus.ONGOING
         }
+    }
+
+    private fun convertNanoSecStringToSecString(nanoSecString: String): String {
+        return try {
+            nanoSecString.dropLast(DIGITS_TO_SECONDS)
+        } catch (ex: Exception) {
+            nanoSecString
+        }
+    }
+
+    private fun getCurrentTimeInNanos(): Long {
+        return System.currentTimeMillis() * MULTIPLIERS_FROM_MILLIS_TO_NANOS
     }
 
 }
