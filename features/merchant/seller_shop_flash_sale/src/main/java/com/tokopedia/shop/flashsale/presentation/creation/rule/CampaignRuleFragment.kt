@@ -544,7 +544,7 @@ class CampaignRuleFragment : BaseDaggerFragment(),
                 }
                 is CampaignRuleActionResult.Success -> routeToCampaignListPage()
                 is CampaignRuleActionResult.Fail -> {
-                    binding?.cardButtonWrapper showError it.error
+                    showActionErrorMessage(it.error)
                     hideSaveDraftButtonLoading()
                 }
             }
@@ -563,7 +563,7 @@ class CampaignRuleFragment : BaseDaggerFragment(),
                 }
                 is CampaignRuleActionResult.Success -> routeToCampaignListPage()
                 is CampaignRuleActionResult.Fail -> {
-                    binding?.cardButtonWrapper showError it.error
+                    showActionErrorMessage(it.error)
                     hideCreateCampaignButtonLoading()
                 }
                 is CampaignRuleActionResult.ShowConfirmation -> {
@@ -571,6 +571,14 @@ class CampaignRuleFragment : BaseDaggerFragment(),
                     showCreateCampaignConfirmationDialog()
                 }
             }
+        }
+    }
+
+    private fun showActionErrorMessage(error: CampaignRuleError) {
+        if (error.message.isNotEmpty()) {
+            binding?.cardButtonWrapper showError error.message
+        } else if (error.cause != null) {
+            binding?.cardButtonWrapper showError error.cause
         }
     }
 
