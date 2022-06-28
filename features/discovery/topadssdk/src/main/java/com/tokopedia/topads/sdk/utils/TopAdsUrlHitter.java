@@ -72,17 +72,17 @@ public class TopAdsUrlHitter {
         TopAdsLogger.getInstance(context).save(url, TYPE_IMPRESSION, className, productId, productName, imageUrl, componentName);
     }
 
-    public void hitClickUrlAndStoreHeader(String className, String url, String productId, String productName, String imageUrl) {
+    public void hitClickUrlAndStoreHeader(String className, String url, String productId, String productName, String imageUrl, boolean isLoggedIn) {
         if (sharedPref == null) {
-            sharedPref = context.getSharedPreferences("x-tkp-srv-id", Context.MODE_PRIVATE);
+            sharedPref = context.getSharedPreferences("TopAdsSharedPreference", Context.MODE_PRIVATE);
         }
 
         new ImpresionTask(className, new TopAdsHeaderResponseListener() {
             @Override
             public void onSuccess(@NonNull String header) {
-                if (sharedPref!=null){
+                if (sharedPref!=null && !isLoggedIn){
                     SharedPreferences.Editor editor = sharedPref.edit();
-                    editor.putString("myheader", header);
+                    editor.putString("Tkp-Enc-Sessionid", header);
                     editor.apply();
                 }
             }

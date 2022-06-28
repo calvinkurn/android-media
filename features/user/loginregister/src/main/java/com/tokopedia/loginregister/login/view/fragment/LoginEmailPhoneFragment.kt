@@ -1031,6 +1031,14 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
     override fun onSuccessLoginEmail(loginTokenPojo: LoginTokenPojo?) {
         currentEmail = ""
         viewModel.getUserInfo()
+        clearTopAdsHeader()
+    }
+
+    private fun clearTopAdsHeader() {
+        val sp = context?.getSharedPreferences("TopAdsSharedPreference", Context.MODE_PRIVATE)
+        val editor = sp?.edit()
+        editor?.remove("Tkp-Enc-Sessionid")
+        editor?.apply()
     }
 
     override fun onSuccessReloginAfterSQ(loginTokenPojo: LoginTokenPojo) {

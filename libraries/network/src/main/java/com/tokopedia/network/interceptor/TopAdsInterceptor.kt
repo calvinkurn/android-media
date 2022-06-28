@@ -18,8 +18,9 @@ class TopAdsInterceptor constructor(val context: Context) : Interceptor {
     }
 
     private fun addDebugHeader(newRequest: Request.Builder): Request.Builder {
-        val sp = context.getSharedPreferences("x-tkp-srv-id", Context.MODE_PRIVATE)
-        newRequest.addHeader("Tkp-Enc-Sessionid", sp.getString("myheader", "") ?: "")
+        val sp = context.getSharedPreferences("TopAdsSharedPreference", Context.MODE_PRIVATE)
+        val neeHeader = sp.getString("Tkp-Enc-Sessionid", "")
+        if (!neeHeader.isNullOrEmpty()) newRequest.addHeader("Tkpd-Tracking-ID", neeHeader)
         return newRequest
     }
 }
