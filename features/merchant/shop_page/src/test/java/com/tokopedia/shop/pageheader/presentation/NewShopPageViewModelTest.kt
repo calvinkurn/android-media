@@ -9,6 +9,7 @@ import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.media.loader.loadImageWithEmptyTarget
 import com.tokopedia.media.loader.utils.MediaBitmapEmptyTarget
 import com.tokopedia.remoteconfig.RollenceKey
+import com.tokopedia.shop.common.data.model.HomeLayoutData
 import com.tokopedia.shop.common.data.model.ShopQuestGeneralTracker
 import com.tokopedia.shop.common.data.source.cloud.model.ShopModerateRequestData
 import com.tokopedia.shop.common.data.source.cloud.model.ShopModerateRequestStatus
@@ -39,6 +40,7 @@ import org.junit.Test
 import java.io.File
 import com.tokopedia.shop.common.graphql.data.shopoperationalhourstatus.ShopOperationalHourStatus
 import com.tokopedia.shop.common.data.model.ShopPageGetHomeType
+import com.tokopedia.shop.common.data.model.WidgetIdList
 import com.tokopedia.shop.pageheader.util.NewShopPageHeaderMapper
 
 class NewShopPageViewModelTest {
@@ -63,6 +65,9 @@ class NewShopPageViewModelTest {
 
     @RelaxedMockK
     lateinit var getShopPageP1DataUseCase: Lazy<GetShopPageP1DataUseCase>
+
+    @RelaxedMockK
+    lateinit var newGetShopPageP1DataUseCase: Lazy<NewGetShopPageP1DataUseCase>
 
     @RelaxedMockK
     lateinit var getShopProductListUseCase: Lazy<GqlGetShopProductUseCase>
@@ -109,6 +114,7 @@ class NewShopPageViewModelTest {
                 gqlGetShopInfobUseCaseCoreAndAssets,
                 shopQuestGeneralTrackerUseCase,
                 getShopPageP1DataUseCase,
+                newGetShopPageP1DataUseCase,
                 getShopProductListUseCase,
                 shopModerateRequestStatusUseCase,
                 shopRequestUnmoderateUseCase,
@@ -143,8 +149,8 @@ class NewShopPageViewModelTest {
     fun `check whether shopPageP1Data value is Success`() {
         coEvery { getShopPageP1DataUseCase.get().executeOnBackground() } returns ShopPageHeaderP1(
                 shopInfoHomeTypeData = ShopPageGetHomeType(
-                        homeLayoutData = ShopPageGetHomeType.HomeLayoutData(
-                                widgetIdList = listOf(ShopPageGetHomeType.HomeLayoutData.WidgetIdList())
+                        homeLayoutData = HomeLayoutData(
+                                widgetIdList = listOf(WidgetIdList())
                         )
                 )
         )
@@ -174,8 +180,8 @@ class NewShopPageViewModelTest {
     fun `check whether shopPageP1Data value is Fail is mapper throw exception`() {
         coEvery { getShopPageP1DataUseCase.get().executeOnBackground() } returns ShopPageHeaderP1(
                 shopInfoHomeTypeData = ShopPageGetHomeType(
-                        homeLayoutData = ShopPageGetHomeType.HomeLayoutData(
-                                widgetIdList = listOf(ShopPageGetHomeType.HomeLayoutData.WidgetIdList())
+                        homeLayoutData = HomeLayoutData(
+                                widgetIdList = listOf(WidgetIdList())
                         )
                 )
         )

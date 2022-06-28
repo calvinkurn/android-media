@@ -10,7 +10,9 @@ import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.logger.ServerLogger
 import com.tokopedia.logger.utils.Priority
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigInstance
+import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.remoteconfig.RollenceKey.AB_TEST_SHOP_FOLLOW_BUTTON_KEY
 import com.tokopedia.remoteconfig.RollenceKey.AB_TEST_SHOP_FOLLOW_BUTTON_VARIANT_OLD
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant
@@ -143,5 +145,17 @@ object ShopUtil {
 
     fun getActualPositionFromIndex(indexPosition: Int): Int{
         return indexPosition + VALUE_INT_ONE
+    }
+
+    fun isEnableShopDynamicTab(context: Context?): Boolean {
+        return FirebaseRemoteConfigImpl(context).getBoolean(RemoteConfigKey.ENABLE_SHOP_DYNAMIC_TAB)
+    }
+
+    fun String.isUrlPng(): Boolean {
+        return endsWith(".png")
+    }
+
+    fun String.isUrlJson(): Boolean {
+        return endsWith(".json")
     }
 }
