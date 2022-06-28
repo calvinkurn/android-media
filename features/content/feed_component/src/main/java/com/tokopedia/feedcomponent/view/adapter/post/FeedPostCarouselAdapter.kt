@@ -192,6 +192,7 @@ internal class FeedPostCarouselAdapter(
         fun focusMedia() {
             itemView.removeCallbacks(focusRunnable)
             itemView.postDelayed(focusRunnable, FOCUS_DELAY)
+            onPostTagViews { it.resetView() }
         }
 
         fun bind(item: FeedXMedia) {
