@@ -44,7 +44,6 @@ abstract class BaseFrameTimingBenchmark {
             iterations = MacroArgs.getIterations(InstrumentationRegistry.getArguments()),
             setupBlock = {
                 pressHome()
-                setupEnvironment()
             }
         ) {
             val intent = getIntent()
@@ -56,6 +55,8 @@ abstract class BaseFrameTimingBenchmark {
     }
     abstract fun pageInteractionTest(currentIteration: Int)
     abstract fun getIntent(): Intent
+
+    @Before
     open fun setupEnvironment() {
         // default no-op
     }
