@@ -9,4 +9,6 @@
 
 <!--    Content description-->
     <string name="cd_img_preview">image preview</string>
+    <string name="editor_button_title_cancel">Batal</string>
+    <string name="editor_button_title_save">Simpan</string>
 </resources>
