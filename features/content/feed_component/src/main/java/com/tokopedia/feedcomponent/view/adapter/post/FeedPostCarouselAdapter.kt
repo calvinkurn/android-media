@@ -152,6 +152,10 @@ internal class FeedPostCarouselAdapter(
                     return true
                 }
 
+                override fun onDown(e: MotionEvent?): Boolean {
+                    return true
+                }
+
                 override fun onLongPress(e: MotionEvent?) {
                     changeTopAdsColorToGreen()
                 }
@@ -227,23 +231,23 @@ internal class FeedPostCarouselAdapter(
                 itemView.context.getString(R.string.feeds_check_x_products, card.totalProducts)
             } else itemView.context.getString(R.string.feeds_cek_sekarang)
 
-            if (card.products.isNotEmpty()) {
-                itemView.doOnLayout {
-                    removeExistingPostTags()
-                    item.tagging.forEach { tagging ->
-                        val tagView = PostTagView(itemView.context, tagging)
-                        tagView.bindData(
-                            dynamicPostListener = dataSource.getDynamicPostListener(),
-                            products = card.products,
-                            width = it.width,
-                            height = it.height,
-                            positionInFeed = dataSource.getPositionInFeed(),
-                            bitmap = postImage?.drawable?.toBitmap(),
-                        )
-                        postImageLayout.addView(tagView)
-                    }
+            itemView.doOnLayout {
+                removeExistingPostTags()
+                item.tagging.forEach { tagging ->
+                    val tagView = PostTagView(itemView.context, tagging)
+                    tagView.bindData(
+                        dynamicPostListener = dataSource.getDynamicPostListener(),
+                        products = if (card.isTypeProductHighlight && card.useASGCNewDesign) {
+                            card.products
+                        } else card.tags,
+                        width = it.width,
+                        height = it.height,
+                        positionInFeed = dataSource.getPositionInFeed(),
+                        bitmap = postImage?.drawable?.toBitmap(),
+                    )
+                    postImageLayout.addView(tagView)
                 }
-            } else removeExistingPostTags()
+            }
 
             llLihatProduct.setOnClickListener {
                 changeTopAdsColorToGreen()
@@ -316,7 +320,8 @@ internal class FeedPostCarouselAdapter(
         private fun toggleAllPostTagViews(): Boolean {
             var isAnyGoingToVisible = false
             onPostTagViews {
-                if (!isAnyGoingToVisible) isAnyGoingToVisible = it.toggleExpandedView()
+                val isGoingToVisible = it.toggleExpandedView()
+                if (!isAnyGoingToVisible) isAnyGoingToVisible = isGoingToVisible
             }
             return isAnyGoingToVisible
         }
