@@ -1,37 +1,43 @@
-package com.tokopedia.topads.tracker.topup
+package com.tokopedia.sellerhome.settings.analytics
 
-import com.tokopedia.topads.common.analytics.*
+import com.tokopedia.sellerhome.analytic.TrackingConstant
 import com.tokopedia.track.TrackApp
 
 const val KEY_TRACKER_ID = "trackerId"
 
 object SettingToupTracker {
 
+    private const val CLICK_TOP_ADS = "clickTopAds"
+    private const val DEFAULT_BUSINESS_UNIT = "ads solution"
+    private const val DEFAULT_CURRENT_SITE = "tokopediamarketplace"
+    private const val CLICK_ATUR_AUTO_TOP_UP = "click - atur auto top up"
+    private const val SELLER_DASHBOARD = "seller dashboard"
+
     fun clickAturAutoTopUp() {
         sendAnalytics(
-            eventAction = ToupTrackerEventAction.CLICK_ATUR_AUTO_TOP_UP,
+            eventAction = CLICK_ATUR_AUTO_TOP_UP,
             trackerId = "31869",
-            eventCategory = ToupTrackerEventCategory.SELLER_DASHBOARD,
+            eventCategory = SELLER_DASHBOARD,
         )
     }
 
     private fun sendAnalytics(
-        event: String = TopupTrackerEvent.CLICK_TOP_ADS,
+        event: String = CLICK_TOP_ADS,
         eventAction: String,
         eventCategory: String,
         eventLabel: String = "",
         trackerId: String,
-        businessUnit: String = TopadsToupTrackerConstants.DEFAULT_BUSINESS_UNIT,
-        currentSite: String = TopadsToupTrackerConstants.DEFAULT_CURRENT_SITE,
+        businessUnit: String = DEFAULT_BUSINESS_UNIT,
+        currentSite: String = DEFAULT_CURRENT_SITE,
     ) {
         val analyticsBundle = mapOf(
-            KEY_EVENT to event,
-            KEY_EVENT_ACTION to eventAction,
-            KEY_EVENT_CATEGORY to eventCategory,
-            KEY_EVENT_LABEL to eventLabel,
+            TrackingConstant.EVENT to event,
+            TrackingConstant.EVENT_ACTION to eventAction,
+            TrackingConstant.EVENT_CATEGORY to eventCategory,
+            TrackingConstant.EVENT_LABEL to eventLabel,
             KEY_TRACKER_ID to trackerId,
-            KEY_BUSINESS_UNIT_EVENT to businessUnit,
-            KEY_CURRENT_SITE_EVENT to currentSite,
+            TrackingConstant.BUSINESS_UNIT to businessUnit,
+            TrackingConstant.CURRENT_SITE to currentSite,
         )
         TrackApp.getInstance().gtm.apply {
             sendGeneralEvent(analyticsBundle)

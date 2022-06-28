@@ -174,14 +174,6 @@ object TopadsTopupTracker {
         )
     }
 
-    fun clickAturAutoTopUp() {
-        sendAnalytics(
-            eventAction = ToupTrackerEventAction.CLICK_ATUR_AUTO_TOP_UP,
-            trackerId = "31869",
-            eventCategory = ToupTrackerEventCategory.SELLER_DASHBOARD,
-        )
-    }
-
     fun clickKemarin() {
         sendClickEventFromCreditHistoryPage(
             eventAction = ToupTrackerEventAction.CLICK_KEMARIN,
