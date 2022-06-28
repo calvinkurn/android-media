@@ -311,6 +311,7 @@ private fun View.renderRatingStars(productCardModel: ProductCardModel) {
     setImageRating(productCardModel.ratingCount)
 }
 
+@Suppress("MagicNumber")
 private fun View.setImageRating(rating: Int) {
     val imageViewRating1 = findViewById<ImageView?>(R.id.imageViewRating1)
     val imageViewRating2 = findViewById<ImageView?>(R.id.imageViewRating2)
