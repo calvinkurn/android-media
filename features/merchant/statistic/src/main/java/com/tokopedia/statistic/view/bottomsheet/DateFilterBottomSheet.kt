@@ -63,15 +63,9 @@ class DateFilterBottomSheet : BaseBottomSheet<BottomsheetStcSelectDateRangeBindi
     }
 
     private var applyChangesCallback: ((DateFilterItem) -> Unit)? = null
-    private val mAdapter: DateFilterAdapter? by lazy {
-        DateFilterAdapter(this, childFragmentManager)
-    }
-    private val items: List<DateFilterItem> by lazy {
-        arguments?.getParcelableArrayList<DateFilterItem>(KEY_DATE_FILTERS).orEmpty()
-    }
-    private val pageSource by lazy {
-        arguments?.getString(KEY_PAGE_SOURCE, String.EMPTY).orEmpty()
-    }
+    private var mAdapter: DateFilterAdapter? = null
+    private var items: List<DateFilterItem> = emptyList()
+    private var pageSource = String.EMPTY
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -85,6 +79,8 @@ class DateFilterBottomSheet : BaseBottomSheet<BottomsheetStcSelectDateRangeBindi
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        initVars()
+
         super.onViewCreated(view, savedInstanceState)
         dismissBottomSheet(view)
     }
@@ -140,6 +136,12 @@ class DateFilterBottomSheet : BaseBottomSheet<BottomsheetStcSelectDateRangeBindi
         if (!fm.isStateSaved) {
             show(fm, TAG)
         }
+    }
+
+    private fun initVars() {
+        this.mAdapter = DateFilterAdapter(this, childFragmentManager)
+        this.pageSource = arguments?.getString(KEY_PAGE_SOURCE, String.EMPTY).orEmpty()
+        this.items = arguments?.getParcelableArrayList<DateFilterItem>(KEY_DATE_FILTERS).orEmpty()
     }
 
     private fun showFilterItems() {
