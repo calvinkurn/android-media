@@ -1,10 +1,14 @@
 package com.tokopedia.tokofood.feature.merchant.presentation.viewmodel
 
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.getCurrencyFormatted
+import com.tokopedia.localizationchooseaddress.domain.response.GetStateChosenAddressResponse
+import com.tokopedia.localizationchooseaddress.domain.usecase.GetChosenAddressWarehouseLocUseCase
 import com.tokopedia.tokofood.common.domain.response.CartTokoFood
 import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFoodProduct
 import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFoodProductVariant
@@ -37,15 +41,18 @@ import java.util.*
 import javax.inject.Inject
 
 class MerchantPageViewModel @Inject constructor(
-        private val resourceProvider: ResourceProvider,
-        private val dispatchers: CoroutineDispatchers,
-        private val getMerchantDataUseCase: GetMerchantDataUseCase
+    private val resourceProvider: ResourceProvider,
+    private val dispatchers: CoroutineDispatchers,
+    private val getMerchantDataUseCase: GetMerchantDataUseCase,
+    private val getChooseAddressWarehouseLocUseCase: GetChosenAddressWarehouseLocUseCase
 ) : BaseViewModel(dispatchers.main) {
 
     var visitedLoginPage = false
 
     private val getMerchantDataResultLiveData = SingleLiveEvent<Result<GetMerchantDataResponse>>()
     val getMerchantDataResult: SingleLiveEvent<Result<GetMerchantDataResponse>> get() = getMerchantDataResultLiveData
+    private val _chooseAddress = MutableLiveData<Result<GetStateChosenAddressResponse>>()
+    val chooseAddress: LiveData<Result<GetStateChosenAddressResponse>> get() = _chooseAddress
 
     // map of productId to card positions info <dataset,adapter>
     val productMap: HashMap<String, Pair<Int, Int>> = hashMapOf()
@@ -53,6 +60,8 @@ class MerchantPageViewModel @Inject constructor(
     var productListItems: MutableList<ProductListItem> = mutableListOf()
 
     var selectedProducts: List<CheckoutTokoFoodProduct> = listOf()
+
+    var isAddressManuallyUpdated = false
 
     fun getDataSetPosition(cardPositions: Pair<Int, Int>): Int {
         return cardPositions.first
@@ -87,6 +96,15 @@ class MerchantPageViewModel @Inject constructor(
         }, onError = {
             getMerchantDataResultLiveData.value = Fail(it)
         })
+    }
+
+    fun getChooseAddress(source: String){
+        isAddressManuallyUpdated = true
+        getChooseAddressWarehouseLocUseCase.getStateChosenAddress( {
+            _chooseAddress.postValue(Success(it))
+        },{
+            _chooseAddress.postValue(Fail(it))
+        }, source)
     }
 
     fun mapMerchantProfileToCarouselData(merchantProfile: TokoFoodMerchantProfile): List<CarouselData> {
