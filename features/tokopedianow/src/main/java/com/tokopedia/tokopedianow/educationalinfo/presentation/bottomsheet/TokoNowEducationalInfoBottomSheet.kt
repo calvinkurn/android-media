@@ -13,7 +13,7 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalTokopediaNow
-import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.common.util.TokoNowServiceTypeUtil.EDU_BOTTOMSHEET_DURATION_RESOURCE_ID
@@ -93,15 +93,15 @@ class TokoNowEducationalInfoBottomSheet :
     }
 
     private fun setButton() {
-        if (source == SOURCE_PLAY) {
-            binding?.ubtnVisitNow?.apply {
-                show()
-                setOnClickListener {
+        binding?.ubtnVisitNow?.shouldShowWithAction(
+            shouldShow = source == SOURCE_PLAY,
+            action = {
+                binding?.ubtnVisitNow?.setOnClickListener {
                     RouteManager.route(context, ApplinkConstInternalTokopediaNow.HOME)
                     listener?.clickVisitNowBottomSheet()
                 }
             }
-        }
+        )
     }
 
     private fun setTimeText(serviceType: String, boldColor: String) {

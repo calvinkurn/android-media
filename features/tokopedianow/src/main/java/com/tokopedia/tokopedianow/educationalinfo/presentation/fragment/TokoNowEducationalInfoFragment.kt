@@ -54,7 +54,7 @@ class TokoNowEducationalInfoFragment: Fragment() {
 
     private fun initInjector() {
         DaggerEducationalInfoComponent.builder()
-            .baseAppComponent((requireContext().applicationContext as BaseMainApplication).baseAppComponent)
+            .baseAppComponent((context?.applicationContext as? BaseMainApplication)?.baseAppComponent)
             .build()
             .inject(this)
     }
