@@ -21,6 +21,7 @@ import com.tokopedia.linker.model.UserData;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
+import com.tokopedia.tokopatch.TokoPatch;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.weaver.WeaveInterface;
 import com.tokopedia.weaver.Weaver;
@@ -87,6 +88,7 @@ public abstract class MainApplication extends CoreNetworkApplication {
             upgradeSecurityProvider();
         }
         createAndCallBgWork();
+        TokoPatch.init(this);
     }
 
     private void createAndCallBgWork(){
