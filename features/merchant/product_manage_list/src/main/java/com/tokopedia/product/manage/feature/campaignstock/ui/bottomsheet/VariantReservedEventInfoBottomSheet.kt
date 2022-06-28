@@ -76,9 +76,7 @@ class VariantReservedEventInfoBottomSheet : BottomSheetUnify() {
     }
 
     fun show(fm: FragmentManager) {
-        if (!isAdded) {
-            show(fm, TAG)
-        }
+        show(fm, TAG)
     }
 
     private fun setupView() {

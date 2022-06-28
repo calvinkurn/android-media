@@ -148,14 +148,13 @@ class CampaignReservedStockFragment: BaseListFragment<Visitable<CampaignStockTyp
         variantName: String,
         reservedEventInfos: MutableList<ReservedEventInfoUiModel>
     ) {
+        if (!isAdded) return
         context?.let {
             VariantReservedEventInfoBottomSheet.createInstance(
                 it,
                 variantName,
                 ArrayList(reservedEventInfos)
-            ).run {
-                show(childFragmentManager)
-            }
+            ).show(childFragmentManager)
         }
     }
 
