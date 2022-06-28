@@ -12,7 +12,6 @@ data class ReservedEventInfoUiModel(
     val campaignIconUrl: String,
     val startTime: String,
     val endTime: String,
-    val period: String,
     val periodStatus: PeriodStatus,
     val stock: String
 ) : Parcelable, Visitable<CampaignStockTypeFactory> {

@@ -98,10 +98,10 @@ data class GetStockAllocationEventInfo(
         val campaignType: GetStockAllocationReservedCampaignType = GetStockAllocationReservedCampaignType(),
         @SerializedName("start_time")
         @Expose
-        val startTime: String = "",
+        val startTimeMillis: String = "",
         @SerializedName("end_time")
         @Expose
-        val endTime: String = "",
+        val endTimeMillis: String = "",
         @Expose
         @SerializedName("product")
         val product: List<GetStockAllocationReservedProduct> = listOf()

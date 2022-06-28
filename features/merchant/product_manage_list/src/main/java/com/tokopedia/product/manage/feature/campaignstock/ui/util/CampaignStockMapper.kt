@@ -1,7 +1,6 @@
 package com.tokopedia.product.manage.feature.campaignstock.ui.util
 
 import com.tokopedia.kotlin.extensions.view.ONE
-import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.product.manage.common.feature.list.data.model.ProductManageAccess
@@ -15,8 +14,11 @@ import com.tokopedia.product.manage.common.feature.variant.adapter.model.Product
 import com.tokopedia.product.manage.common.feature.variant.data.mapper.ProductManageVariantMapper.mapVariantCampaignTypeToProduct
 import com.tokopedia.product.manage.feature.campaignstock.ui.dataview.uimodel.VariantReservedEventInfoUiModel
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStatus
+import com.tokopedia.utils.time.DateFormatUtils
 
 object CampaignStockMapper {
+
+    private const val RESERVED_INFO_DATE_FORMAT = "dd MMM yy, HH:ss"
 
     fun mapToParcellableSellableProduct(sellableList: List<GetStockAllocationDetailSellable>,
                                         productVariantList: List<ProductVariant>): ArrayList<SellableStockProductUIModel> {
@@ -58,15 +60,13 @@ object CampaignStockMapper {
                     eventType = eventType,
                     campaignName = campaignType.name,
                     campaignIconUrl = campaignType.iconUrl,
-                    startTime = startTime,
-                    endTime = endTime,
+                    startTime = getPeriodString(startTimeMillis),
+                    endTime = getPeriodString(endTimeMillis),
+                    periodStatus = getPeriodStatus(startTimeMillis),
                     stock = stock
                 )
             }
 
-    private fun getPeriodString(startTime: String, endTime: String): String {
-
-    }
 
     fun mapToVariantReserved(dataModels: List<GetStockAllocationDetailReserve>): List<VariantReservedEventInfoUiModel> {
         val variantInfoList = mutableListOf<VariantReservedEventInfoUiModel>()
@@ -121,10 +121,21 @@ object CampaignStockMapper {
                 }
     }
 
-    private fun mapToParcellableReservedProduct(product: GetStockAllocationReservedProduct): ReservedStockProductModel =
-            with(product) {
-                ReservedStockProductModel(productId, warehouseId, productName, description, stock)
-            }
+    private fun getPeriodString(timeMillis: String): String {
+        return DateFormatUtils.getFormattedDate(timeMillis, RESERVED_INFO_DATE_FORMAT)
+    }
+
+    private fun getPeriodStatus(startTimeMillisString: String): ReservedEventInfoUiModel.PeriodStatus {
+        val currentTime = System.currentTimeMillis()
+        val startTimeMillis = startTimeMillisString.toLongOrZero()
+
+        // We only check for start time because there are only upcoming and ongoing status in the requirement
+        return if (currentTime < startTimeMillis) {
+            ReservedEventInfoUiModel.PeriodStatus.UPCOMING
+        } else {
+            ReservedEventInfoUiModel.PeriodStatus.ONGOING
+        }
+    }
 
 }
 

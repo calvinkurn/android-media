@@ -151,6 +151,8 @@
     <string name="product_manage_campaign_stock_variant">Varian: &#160;</string>
     <string name="product_manage_campaign_stock_period">%s - %s</string>
     <string name="product_manage_campaign_stock_promotion_count">%d Campaign</string>
+    <string name="product_manage_campaign_stock_ongoing">Berlangsung</string>
+    <string name="product_manage_campaign_stock_upcoming">Akan Datang</string>
 
     <string name="product_manage_violation_ticker_message">Diduga ada pelanggaran</string>
     <string name="product_manage_suspend_ticker_message">Terindikasi terlalu sering terjadi pembatalan.</string>
