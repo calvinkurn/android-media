@@ -399,11 +399,11 @@ class CampaignStockFragment: BaseDaggerFragment(), CampaignStockListener {
     private fun getVariantFragmentList(isMainStockActive: Boolean,
                                        stock: Int,
                                        sellableProductUIList: ArrayList<SellableStockProductUIModel>,
-                                       nonVariantReservedEventInfoUiList: ArrayList<VariantReservedEventInfoUiModel>,
+                                       variantReservedEventInfoUiList: ArrayList<VariantReservedEventInfoUiModel>,
                                        access: ProductManageAccess): List<Fragment>{
         return listOf(
             getMainStockFragment(true, sellableProductUIList, isMainStockActive, stock, access),
-            getVariantReservedStockFragment(nonVariantReservedEventInfoUiList, access)
+            getVariantReservedStockFragment(variantReservedEventInfoUiList, access)
         )
     }
 }
