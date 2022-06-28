@@ -131,6 +131,7 @@ class ManageHighlightedProductFragment : BaseDaggerFragment() {
         binding?.run {
             searchBar.searchBarTextField.setOnEditorActionListener { _, actionId, _ ->
                 if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+                    endlessRecyclerViewScrollListener?.resetState()
                     viewModel.setIsFirstLoad(false)
                     productAdapter.submit(emptyList())
                     binding?.groupNoSearchResult?.gone()
@@ -296,6 +297,7 @@ class ManageHighlightedProductFragment : BaseDaggerFragment() {
 
 
     private fun clearSearchBar() {
+        endlessRecyclerViewScrollListener?.resetState()
         doFreshSearch()
         viewModel.setIsFirstLoad(false)
     }
