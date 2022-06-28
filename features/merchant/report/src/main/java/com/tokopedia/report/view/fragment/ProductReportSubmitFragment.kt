@@ -92,7 +92,7 @@ class ProductReportSubmitFragment : BaseDaggerFragment() {
                         binding.loadingView.visible()
                         viewModel.submitReport(
                             productId.toLongOrZero(),
-                            reasonItem.categoryId,
+                            reasonItem.categoryId.toInt(),
                             adapter.inputs
                         )
                     })

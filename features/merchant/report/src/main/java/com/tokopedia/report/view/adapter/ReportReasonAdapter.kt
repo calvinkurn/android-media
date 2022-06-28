@@ -48,7 +48,7 @@ class ReportReasonAdapter(private val listener: OnReasonClick,
             title = ""
             filteredReasons.addAll(reasons)
         } else {
-            val reason = reasons.firstOrNull { it.categoryId == id }
+            val reason = reasons.firstOrNull { it.categoryId.toInt() == id}
             title = reason?.value ?: ""
             filteredReasons.addAll(reason?.children ?: listOf())
         }
@@ -146,7 +146,7 @@ class ReportReasonAdapter(private val listener: OnReasonClick,
                     if (filteredId.isEmpty()){
                         baseParent = reason
                     }
-                    filteredId.add(reason.categoryId)
+                    filteredId.add(reason.categoryId.toInt())
                     updateFilteredReasons()
                     notifyDataSetChanged()
                     listener.scrollToTop()
