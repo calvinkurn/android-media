@@ -22,6 +22,14 @@ import com.tokopedia.people.model.VideoPostReimderModel
 import kotlinx.coroutines.Dispatchers
 import com.tokopedia.feedcomponent.domain.usecase.GetWhitelistUseCase
 import com.tokopedia.feedcomponent.domain.usecase.GetWhitelistUseCase.Companion.WHITELIST_ENTRY_POINT
+import com.tokopedia.people.domains.repository.UserProfileRepository
+import com.tokopedia.people.views.uimodel.profile.ProfileStatsUiModel
+import com.tokopedia.people.views.uimodel.profile.ProfileUiModel
+import com.tokopedia.people.views.uimodel.profile.ProfileWhitelistUiModel
+import com.tokopedia.people.views.uimodel.state.UserProfileUiState
+import kotlinx.coroutines.async
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.combine
 import javax.inject.Inject
 
 @UserProfileScope
@@ -33,6 +41,7 @@ class UserProfileViewModel @Inject constructor(
     private val profileIsFollowing: ProfileTheyFollowedUseCase,
     private val videoPostReminderUseCase: VideoPostReminderUseCase,
     private val getWhitelistUseCase: GetWhitelistUseCase,
+    private val repo: UserProfileRepository,
 ) : BaseViewModel(Dispatchers.Main) {
 
     private val userDetails = MutableLiveData<Resources<ProfileHeaderBase>>()
@@ -71,9 +80,36 @@ class UserProfileViewModel @Inject constructor(
     private var postReminderErrorMessage = MutableLiveData<Throwable>()
     val postReminderErrorMessageLiveData : LiveData<Throwable> get() = postReminderErrorMessage
 
+    private val _profileInfo = MutableStateFlow(ProfileUiModel.Empty)
+    private val _profileStats = MutableStateFlow(ProfileStatsUiModel.Empty)
+    private val _profileWhitelist = MutableStateFlow(ProfileWhitelistUiModel.Empty)
+
+    val uiState = combine(
+        _profileInfo,
+        _profileStats,
+        _profileWhitelist,
+    ) { profileInfo, profileStats, profileWhitelist ->
+        UserProfileUiState(
+            profileInfo = profileInfo,
+            profileStats = profileStats,
+            profileWhitelist = profileWhitelist,
+        )
+    }
+
+//    fun getUserDetails(username: String, isRefresh: Boolean) {
+//        launchCatchError(block = {
+//            val profileInfo = async {
+//                val result = userDetailsUseCase.getUserProfileDetail(username)
+//                result.getData(ProfileHeaderBase::class.java)
+//            }
+//        }) {
+//            profileHeaderErrorMessage.value = it
+//        }
+//    }
+
     fun getUserDetails(userName: String, isRefreshPost: Boolean = false) {
         launchCatchError(block = {
-            val data = userDetailsUseCase.getUserProfileDetail(userName, mutableListOf(userName))
+            val data = userDetailsUseCase.getUserProfileDetail(userName)
             if (data != null) {
                 userDetails.value = Success(data.getData(ProfileHeaderBase::class.java))
                 userPost.value = isRefreshPost

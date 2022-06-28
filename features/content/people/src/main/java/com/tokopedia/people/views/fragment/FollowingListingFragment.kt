@@ -219,7 +219,6 @@ class FollowingListingFragment : BaseDaggerFragment(), View.OnClickListener, Ada
             .baseAppComponent(
                 (requireContext().applicationContext as BaseMainApplication).baseAppComponent
             )
-            .userProfileModule(UserProfileModule(requireContext().applicationContext))
             .build()
             .inject(this)
     }

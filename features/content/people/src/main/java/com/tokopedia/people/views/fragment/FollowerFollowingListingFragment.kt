@@ -182,7 +182,6 @@ class FollowerFollowingListingFragment : BaseDaggerFragment() {
             .baseAppComponent(
                 (requireContext().applicationContext as BaseMainApplication).baseAppComponent
             )
-            .userProfileModule(UserProfileModule(requireContext().applicationContext))
             .build()
             .inject(this)
     }
