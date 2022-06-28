@@ -2,6 +2,7 @@ package com.tokopedia.productcard.utils
 
 import android.content.Context
 import android.graphics.Color
+import android.graphics.Outline
 import android.graphics.Rect
 import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
@@ -10,6 +11,7 @@ import android.graphics.drawable.ShapeDrawable
 import android.view.Gravity
 import android.view.TouchDelegate
 import android.view.View
+import android.view.ViewOutlineProvider
 import android.view.ViewStub
 import android.widget.ImageView
 import android.widget.LinearLayout
@@ -33,7 +35,6 @@ import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.productcard.R
 import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifycomponents.ProgressBarUnify
-import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.resources.isDarkMode
@@ -549,7 +550,10 @@ internal fun creteVariantContainer(context: Context): LinearLayout {
     val containerHeight = context.resources.getDimensionPixelSize(R.dimen.product_card_label_variant_height)
     val sidePadding = 4.toPx()
     val layout = LinearLayout(context)
-    val layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, containerHeight)
+    val layoutParams = LinearLayout.LayoutParams(
+        LinearLayout.LayoutParams.WRAP_CONTENT,
+        containerHeight,
+    )
     layout.layoutParams = layoutParams
     layout.orientation = LinearLayout.HORIZONTAL
     layout.gravity = Gravity.CENTER_VERTICAL
@@ -560,4 +564,26 @@ internal fun creteVariantContainer(context: Context): LinearLayout {
         ContextCompat.getDrawable(context, R.drawable.product_card_label_group_variant_border)
 
     return layout
+}
+
+internal fun View.setBottomCorners(bottomCornerRadius: Int) {
+    val outlineProvider = object : ViewOutlineProvider() {
+        override fun getOutline(view: View, outline: Outline) {
+            val left = 0
+            val top = 0
+            val right = view.width
+            val bottom = view.height
+
+            outline.setRoundRect(
+                left,
+                top - bottomCornerRadius,
+                right,
+                bottom,
+                bottomCornerRadius.toFloat(),
+            )
+        }
+    }
+
+    this.outlineProvider = outlineProvider
+    this.clipToOutline = true
 }

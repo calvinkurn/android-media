@@ -179,6 +179,7 @@ class ProductCardGridView : BaseCustomView, IProductCardView {
 
     override fun setProductModel(productCardModel: ProductCardModel) {
         imageProduct?.loadImage(productCardModel.productImageUrl)
+        productCardModel.fashionStrategy.setImageRadius(imageProduct, videoProduct)
 
         productCardModel.fashionStrategy.setupImageRatio(
             constraintLayoutProductCard,

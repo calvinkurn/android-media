@@ -17,12 +17,14 @@ import com.tokopedia.productcard.utils.LABEL_VARIANT_CHAR_LIMIT
 import com.tokopedia.productcard.utils.LABEL_VARIANT_WITH_LABEL_CHAR_LIMIT
 import com.tokopedia.productcard.utils.SQUARE_IMAGE_RATIO
 import com.tokopedia.productcard.utils.applyConstraintSet
+import com.tokopedia.productcard.utils.getDimensionPixelSize
 import com.tokopedia.productcard.utils.initLabelGroup
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.video_widget.VideoPlayerView
 import com.tokopedia.productcard.utils.renderLabelBestSeller
 import com.tokopedia.productcard.utils.renderLabelBestSellerCategorySide
 import com.tokopedia.productcard.utils.renderLabelBestSellerCategoryBottom
+import com.tokopedia.productcard.utils.setBottomCorners
 import com.tokopedia.productcard.utils.shouldShowWithAction
 import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifycomponents.toPx
@@ -41,6 +43,13 @@ internal open class FashionStrategyReposition: FashionStrategy {
             videoProduct,
             SQUARE_IMAGE_RATIO,
         )
+    }
+
+    override fun setImageRadius(imageProduct: ImageView?, videoProduct: VideoPlayerView?) {
+        val cornerRadius: Int =
+            imageProduct?.getDimensionPixelSize(R.dimen.product_card_image_corner_radius_fashion) ?: 0
+        imageProduct?.setBottomCorners(cornerRadius)
+        videoProduct?.setBottomCorners(cornerRadius)
     }
 
     override fun getImageHeight(imageWidth: Int): Int = imageWidth

@@ -18,6 +18,8 @@ internal interface FashionStrategy {
         videoProduct: VideoPlayerView?,
     )
 
+    fun setImageRadius(imageProduct: ImageView?, videoProduct: VideoPlayerView?)
+
     fun getImageHeight(imageWidth: Int): Int
 
     fun renderOverlayImageRoundedLabel(
