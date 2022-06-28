@@ -2311,6 +2311,21 @@ class SomListViewModelTest : SomOrderBaseViewModelTest<SomListViewModel>() {
     }
 
     @Test
+    fun addShippingFilter_shouldUpdateGetOrderListParams() {
+        val shippingFilterId = 10L
+        viewModel.addShippingFilter(shippingFilterId)
+        assertEquals(mutableSetOf(shippingFilterId), viewModel.getDataOrderListParams().shippingList)
+    }
+
+    @Test
+    fun removeShippingFilter_shouldUpdateGetOrderListParams() {
+        val shippingFilterId = 10L
+        viewModel.addShippingFilter(shippingFilterId)
+        viewModel.removeShippingFilter(shippingFilterId)
+        assertEquals(mutableSetOf<Long>(), viewModel.getDataOrderListParams().shippingList)
+    }
+
+    @Test
     fun updateSomFilterUiModelList_shouldUpdateSomFilterUiModelList() {
         val somFilterUiModelList = GetSomFilterMapper.mapToSomFilterVisitable(
             TestHelper.createSuccessResponse(
