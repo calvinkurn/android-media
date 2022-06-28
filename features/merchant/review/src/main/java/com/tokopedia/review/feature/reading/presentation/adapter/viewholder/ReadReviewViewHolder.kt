@@ -75,10 +75,16 @@ class ReadReviewViewHolder(
         shopId = element.shopId
         with(element.reviewData) {
             if (!isProductReview) {
+                val productVariantName = if (variantName.isNotBlank()) {
+                    getString(R.string.review_gallery_variant, variantName)
+                } else {
+                    variantName
+                }
                 setProductInfo(
                     element.productId,
                     element.productImage,
                     element.productName,
+                    productVariantName,
                     isReportable,
                     feedbackID,
                     element.shopId,
@@ -139,13 +145,14 @@ class ReadReviewViewHolder(
         productId: String,
         productImageUrl: String,
         productName: String,
+        productVariantName: String,
         isReportable: Boolean,
         reviewId: String,
         shopId: String,
         shopName: String
     ) {
         productInfo?.apply {
-            setProductInfo(productImageUrl, productName)
+            setProductInfo(productImageUrl, productName, productVariantName)
             setListener(
                 isReportable,
                 reviewId,

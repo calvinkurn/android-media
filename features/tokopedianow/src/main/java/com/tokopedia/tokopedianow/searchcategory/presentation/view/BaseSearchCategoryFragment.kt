@@ -816,6 +816,9 @@ abstract class BaseSearchCategoryFragment:
 
     protected open fun updateContentVisibility(isLoadingVisible: Boolean) {
         swipeRefreshLayout?.isRefreshing = isLoadingVisible
+
+        if (isLoadingVisible) return
+        showOnBoardingBottomSheet()
     }
 
     protected abstract fun sendIncreaseQtyTrackingEvent(productId: String)
@@ -1082,8 +1085,8 @@ abstract class BaseSearchCategoryFragment:
                     staggeredGridLayoutManager?.scrollToPosition(DEFAULT_POSITION)
                     refreshLayout()
 
-                    //Show bottomsheet or toaster
-                    showBottomSheetOrToaster(
+                    //Show toaster
+                    showOnBoardingToaster(
                         data = result.data
                     )
 
@@ -1110,7 +1113,7 @@ abstract class BaseSearchCategoryFragment:
         )
     }
 
-    private fun showBottomSheetOrToaster(data: SetUserPreference.SetUserPreferenceData) {
+    private fun showOnBoardingToaster(data: SetUserPreference.SetUserPreferenceData) {
         /*
            Note :
            - Toaster will be shown when switching service type to 2 hours
@@ -1118,11 +1121,15 @@ abstract class BaseSearchCategoryFragment:
          */
 
         val needToShowOnBoardBottomSheet = getViewModel().needToShowOnBoardBottomSheet(sharedPref.get20mBottomSheetOnBoardShown())
-        val isOoc = data.warehouseId.toLongOrZero().isZero()
-        when {
-            isOoc -> return
-            needToShowOnBoardBottomSheet -> show20mOnBoardBottomSheet()
-            else -> showSwitcherToaster(data.serviceType)
+        if (!data.warehouseId.toLongOrZero().isZero() && !needToShowOnBoardBottomSheet) {
+            showSwitcherToaster(data.serviceType)
+        }
+    }
+
+    private fun showOnBoardingBottomSheet() {
+        val needToShowOnBoardBottomSheet = getViewModel().needToShowOnBoardBottomSheet(sharedPref.get20mBottomSheetOnBoardShown())
+        if (needToShowOnBoardBottomSheet) {
+            show20mOnBoardBottomSheet()
         }
     }
 

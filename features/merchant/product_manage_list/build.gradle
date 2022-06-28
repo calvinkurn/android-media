@@ -60,6 +60,8 @@ dependencies {
     implementation rootProject.ext.unifyDependencies.sortFilter
     implementation rootProject.ext.unifyDependencies.icon
     implementation rootProject.ext.unifyDependencies.dialog
+    implementation rootProject.ext.unifyDependencies.list
+    implementation rootProject.ext.unifyDependencies.coach_mark
     implementation rootProject.ext.playServicesDependencies.core
 
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
