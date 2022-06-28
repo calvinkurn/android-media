@@ -68,6 +68,7 @@
         app:layout_constraintStart_toStartOf="@id/home_iv_logo_balance"
         app:typographyType="small"
         tools:text="180.000 Coins"
+        android:layout_marginTop="2dp"
         tools:visibility="visible" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

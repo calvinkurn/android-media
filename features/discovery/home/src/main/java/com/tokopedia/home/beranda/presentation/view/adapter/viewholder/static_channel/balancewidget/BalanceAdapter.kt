@@ -98,7 +98,7 @@ class BalanceAdapter(
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): Holder {
-        return Holder(LayoutInflater.from(parent.context).inflate(R.layout.item_balance_widget, parent, false))
+        return Holder(LayoutInflater.from(parent.context).inflate(R.layout.item_balance_widget_new, parent, false))
     }
 
     override fun getItemCount(): Int {
