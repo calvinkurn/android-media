@@ -409,14 +409,22 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
     }
 
     override fun onTabClicked(
-        status: SomListFilterUiModel.OrderType,
+        quickFilter: SomListFilterUiModel.QuickFilter,
         shouldScrollToTop: Boolean,
         fromClickTab: Boolean
     ) {
-        if (status.isChecked) {
-            viewModel.addOrderTypeFilter(status.id)
+        if (quickFilter.isChecked) {
+            if (quickFilter.isOrderTypeFilter()) {
+                viewModel.addOrderTypeFilter(quickFilter.id)
+            } else if (quickFilter.isShippingFilter()) {
+                viewModel.addShippingFilter(quickFilter.id)
+            }
         } else {
-            viewModel.removeOrderTypeFilter(status.id)
+            if (quickFilter.isOrderTypeFilter()) {
+                viewModel.removeOrderTypeFilter(quickFilter.id)
+            } else if (quickFilter.isShippingFilter()) {
+                viewModel.removeShippingFilter(quickFilter.id)
+            }
         }
         if (fromClickTab) {
             wasChangingTab = fromClickTab
@@ -453,8 +461,6 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
             somFilterBottomSheet = SomFilterBottomSheet.createInstance(
                 viewModel.getDataOrderListParams().statusList,
                 filterDate,
-                viewModel.getSelectedOrderTypeFilters(),
-                viewModel.getSelectedSort(),
                 cacheManager?.id.orEmpty()
             )
             somFilterBottomSheet?.setSomFilterFinishListener(this)

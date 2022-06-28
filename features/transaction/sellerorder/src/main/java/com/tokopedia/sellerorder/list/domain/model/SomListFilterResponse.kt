@@ -13,12 +13,12 @@ data class SomListFilterResponse(
     data class Data(
         @SerializedName("orderFilterSom")
         @Expose
-        val orderFilterSom: OrderFilterSom = OrderFilterSom(),
-        @SerializedName("orderTypeList")
-        @Expose
-        val orderTypeList: List<OrderType> = listOf()
+        val orderFilterSom: OrderFilterSom = OrderFilterSom()
     ) {
         data class OrderFilterSom(
+            @SerializedName("quick_filter_list")
+            @Expose
+            val quickFilterList: List<QuickFilter> = listOf(),
             @SerializedName("status_list")
             @Expose
             val statusList: List<Status> = listOf(),
@@ -26,6 +26,21 @@ data class SomListFilterResponse(
             @Expose
             val sortByList: List<SortBy> = listOf()
         ) {
+            data class QuickFilter(
+                @SerializedName("id")
+                @Expose
+                val id: String = "0",
+                @SerializedName("key")
+                @Expose
+                val key: String = "",
+                @SerializedName("text")
+                @Expose
+                val text: String = "",
+                @SerializedName("type")
+                @Expose
+                val type: String = ""
+            )
+
             data class Status(
                 @SerializedName("child_status")
                 @Expose
@@ -76,17 +91,5 @@ data class SomListFilterResponse(
                 val value: Long = 0L
             )
         }
-
-        data class OrderType(
-            @SerializedName("id")
-            @Expose
-            val id: Long = 0L,
-            @SerializedName("key")
-            @Expose
-            val key: String = "",
-            @SerializedName("name")
-            @Expose
-            val name: String = ""
-        )
     }
 }

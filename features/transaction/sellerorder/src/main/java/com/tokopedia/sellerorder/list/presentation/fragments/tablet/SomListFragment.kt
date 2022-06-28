@@ -117,12 +117,12 @@ class SomListFragment : com.tokopedia.sellerorder.list.presentation.fragments.So
         }
     }
 
-    override fun onTabClicked(status: SomListFilterUiModel.OrderType, shouldScrollToTop: Boolean, fromClickTab: Boolean) {
+    override fun onTabClicked(quickFilter: SomListFilterUiModel.QuickFilter, shouldScrollToTop: Boolean, fromClickTab: Boolean) {
         if (fromClickTab) {
             updateOrderDetail = true
             hideOrderDetail = true
         }
-        super.onTabClicked(status, shouldScrollToTop, fromClickTab)
+        super.onTabClicked(quickFilter, shouldScrollToTop, fromClickTab)
     }
 
     override fun onClickOrderStatusFilterTab(

@@ -660,6 +660,16 @@ class SomListViewModel @Inject constructor(
         GetSomFilterMapper.deselectOrderTypeFilters(somFilterUiModelList, listOf(orderType))
     }
 
+    fun addShippingFilter(shippingId: Long) {
+        this.getOrderListParams.shippingList.add(shippingId)
+        GetSomFilterMapper.selectShippingFilters(somFilterUiModelList, listOf(shippingId))
+    }
+
+    fun removeShippingFilter(shippingId: Long) {
+        this.getOrderListParams.shippingList.remove(shippingId)
+        GetSomFilterMapper.deselectShippingFilters(somFilterUiModelList, listOf(shippingId))
+    }
+
     fun setSortOrderBy(sortId: Long) {
         this.getOrderListParams.sortBy = sortId
         SomListFilterUtil.selectSomFilterSortBy(somFilterUiModelList, sortId)
@@ -700,15 +710,7 @@ class SomListViewModel @Inject constructor(
         updateSomFilterUiModelList(emptyList())
     }
 
-    fun getSelectedSort(): Long {
-        return getOrderListParams.sortBy
-    }
-
     fun getSomFilterUi() = somFilterUiModelList
-
-    fun getSelectedOrderTypeFilters(): List<Long> {
-        return getOrderListParams.orderTypeList.toList()
-    }
 
     fun setTabActiveFromAppLink(tab: String) {
         tabActiveFromAppLink = tab

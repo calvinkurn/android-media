@@ -89,6 +89,10 @@ class SomFilterViewModel @Inject constructor(dispatcher: CoroutineDispatchers,
         GetSomFilterMapper.selectOrderTypeFilters(somFilterUiModel, somListGetOrderListParam.orderTypeList.toList())
     }
 
+    private fun selectPreselectedShippingFilter() {
+        GetSomFilterMapper.selectShippingFilters(somFilterUiModel, somListGetOrderListParam.shippingList.toList())
+    }
+
     private fun selectPreselectedSortByFilter() {
         GetSomFilterMapper.selectSortByFilter(somFilterUiModel, somListGetOrderListParam.sortBy)
     }
@@ -135,6 +139,7 @@ class SomFilterViewModel @Inject constructor(dispatcher: CoroutineDispatchers,
 
             selectPreselectedOrderStatusFilter()
             selectPreselectedOrderTypeFilters()
+            selectPreselectedShippingFilter()
             selectPreselectedSortByFilter()
             val somFilterVisitable = mutableListOf<BaseSomFilter>()
             somFilterVisitable.addAll(somFilterUiModel)

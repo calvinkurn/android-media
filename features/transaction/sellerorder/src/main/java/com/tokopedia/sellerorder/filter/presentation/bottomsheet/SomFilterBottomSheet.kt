@@ -456,26 +456,18 @@ class SomFilterBottomSheet : BottomSheetUnify(),
         const val KEY_FILTER_DATE = "key_filter_date"
         const val KEY_SOM_LIST_GET_ORDER_PARAM = "key_som_list_get_order_param"
         const val KEY_CACHE_MANAGER_ID = "key_cache_manager_id"
-        const val KEY_PRESELECTED_ORDER_TYPE_FILTERS = "key_preselected_order_type_filters"
-        const val KEY_PRESELECTED_SORT_FILTER = "key_preselected_sort_filter"
         const val REQUEST_CODE_FILTER_SEE_ALL = 901
         const val RESULT_CODE_FILTER_SEE_ALL = 801
 
         fun createInstance(
             orderStatusIdList: List<Int>,
             filterDate: String,
-            preselectedOrderTypeFilters: List<Long>,
-            preselectedSortFilter: Long?,
             cacheManagerId: String
         ): SomFilterBottomSheet {
             val fragment = SomFilterBottomSheet()
             val args = Bundle()
             args.putIntegerArrayList(KEY_ORDER_STATUS_ID_LIST, ArrayList(orderStatusIdList))
             args.putString(KEY_FILTER_DATE, filterDate)
-            args.putLongArray(KEY_PRESELECTED_ORDER_TYPE_FILTERS, preselectedOrderTypeFilters.toLongArray())
-            preselectedSortFilter?.let {
-                args.putLong(KEY_PRESELECTED_SORT_FILTER, it)
-            }
             args.putString(KEY_CACHE_MANAGER_ID, cacheManagerId)
             fragment.arguments = args
             return fragment

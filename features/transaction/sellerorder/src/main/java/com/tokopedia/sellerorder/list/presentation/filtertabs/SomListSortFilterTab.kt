@@ -23,12 +23,12 @@ class SomListSortFilterTab(
         setupParentFilter()
     }
 
-    private fun updateTabs(orderTypeList: List<SomListFilterUiModel.OrderType>) {
-        val isAnyDifference = checkDiff(orderTypeList)
+    private fun updateTabs(quickFilterList: List<SomListFilterUiModel.QuickFilter>) {
+        val isAnyDifference = checkDiff(quickFilterList)
         if (isAnyDifference) {
-            recreateTabs(orderTypeList)
+            recreateTabs(quickFilterList)
         } else {
-            orderTypeList.forEach { orderType ->
+            quickFilterList.forEach { orderType ->
                 filterItems.find {
                     it.title == orderType.name
                 }?.apply {
@@ -44,30 +44,30 @@ class SomListSortFilterTab(
         }
     }
 
-    private fun recreateTabs(statusList: List<SomListFilterUiModel.OrderType>) {
-        filterItems = ArrayList(statusList.map { createNewTabs(it) })
+    private fun recreateTabs(quickFilterList: List<SomListFilterUiModel.QuickFilter>) {
+        filterItems = ArrayList(quickFilterList.map { createNewTabs(it) })
         sortFilter.chipItems?.clear()
         sortFilter.addItem(filterItems)
     }
 
-    private fun checkDiff(orderTypeList: List<SomListFilterUiModel.OrderType>): Boolean {
-        orderTypeList.forEach { orderType ->
+    private fun checkDiff(quickFilterList: List<SomListFilterUiModel.QuickFilter>): Boolean {
+        quickFilterList.forEach { orderType ->
             filterItems.find { it.title == orderType.name } ?: return true
         }
         return false
     }
 
-    private fun createNewTabs(orderType: SomListFilterUiModel.OrderType): SortFilterItem {
-        return SortFilterItem(orderType.name).apply {
-            listener = { onTabClicked(this, orderType) }
-            type = if (orderType.isChecked) ChipsUnify.TYPE_SELECTED else ChipsUnify.TYPE_NORMAL
+    private fun createNewTabs(quickFilter: SomListFilterUiModel.QuickFilter): SortFilterItem {
+        return SortFilterItem(quickFilter.name).apply {
+            listener = { onTabClicked(this, quickFilter) }
+            type = if (quickFilter.isChecked) ChipsUnify.TYPE_SELECTED else ChipsUnify.TYPE_NORMAL
         }
     }
 
-    private fun onTabClicked(sortFilterItem: SortFilterItem, orderType: SomListFilterUiModel.OrderType) {
+    private fun onTabClicked(sortFilterItem: SortFilterItem, quickFilter: SomListFilterUiModel.QuickFilter) {
         sortFilterItem.toggleSelected()
-        orderType.isChecked = sortFilterItem.type == ChipsUnify.TYPE_SELECTED
-        listener.onTabClicked(orderType, true)
+        quickFilter.isChecked = sortFilterItem.type == ChipsUnify.TYPE_SELECTED
+        listener.onTabClicked(quickFilter, true)
     }
 
     fun updateCounterSortFilter(
@@ -87,7 +87,7 @@ class SomListSortFilterTab(
 
     fun show(somListFilterUiModel: SomListFilterUiModel) {
         this.somListFilterUiModel = somListFilterUiModel
-        updateTabs(somListFilterUiModel.orderTypeList)
+        updateTabs(somListFilterUiModel.quickFilterList)
         sortFilter.show()
     }
 
@@ -105,6 +105,6 @@ class SomListSortFilterTab(
 
     interface SomListSortFilterTabClickListener {
         fun onParentSortFilterClicked()
-        fun onTabClicked(status: SomListFilterUiModel.OrderType, shouldScrollToTop: Boolean, fromClickTab: Boolean = true)
+        fun onTabClicked(quickFilter: SomListFilterUiModel.QuickFilter, shouldScrollToTop: Boolean, fromClickTab: Boolean = true)
     }
 }

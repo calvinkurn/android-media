@@ -1,7 +1,6 @@
 package com.tokopedia.sellerorder.filter.domain.mapper
 
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
-import com.tokopedia.sellerorder.common.util.SomConsts
 import com.tokopedia.sellerorder.common.util.SomConsts.ALREADY_PRINT
 import com.tokopedia.sellerorder.common.util.SomConsts.ALREADY_PRINT_LABEL
 import com.tokopedia.sellerorder.common.util.SomConsts.FILTER_COURIER
@@ -64,19 +63,33 @@ object GetSomFilterMapper {
         }
     }
 
+    fun selectShippingFilters(
+        somFilterUiModel: List<SomFilterUiModel>,
+        shippingFilterIds: List<Long>
+    ) {
+        somFilterUiModel.find {
+            it.nameFilter == FILTER_COURIER
+        }?.somFilterData?.forEach {
+            it.isSelected = shippingFilterIds.contains(it.id) || it.isSelected
+        }
+    }
+
+    fun deselectShippingFilters(somFilterUiModel: List<SomFilterUiModel>, shippingFilterIds: List<Long>) {
+        val shippingFilters = somFilterUiModel.find {
+            it.nameFilter == FILTER_COURIER
+        }
+        shippingFilterIds.forEach { shippingFilterId ->
+            shippingFilters?.somFilterData?.find {
+                it.id == shippingFilterId
+            }?.isSelected = false
+        }
+    }
+
     fun selectSortByFilter(somFilterUiModel: MutableList<SomFilterUiModel>, sortBy: Long) {
         somFilterUiModel.find {
             it.nameFilter == FILTER_SORT
         }?.somFilterData?.forEach {
             it.isSelected = it.id == sortBy
-        }
-    }
-
-    fun deselectAllOrderStatusFilters(somFilterUiModelList: MutableList<SomFilterUiModel>) {
-        somFilterUiModelList.find {
-            it.nameFilter == SomConsts.FILTER_STATUS_ORDER
-        }?.somFilterData?.forEach {
-            it.isSelected = false
         }
     }
 

@@ -2329,20 +2329,6 @@ class SomListViewModelTest : SomOrderBaseViewModelTest<SomListViewModel>() {
     }
 
     @Test
-    fun getSelectedSort_shouldReturnCurrentlySelectedSortId() {
-        getFiltersFromCloud_shouldSuccess()
-        viewModel.setSortOrderBy(SomConsts.SORT_BY_PAYMENT_DATE_ASCENDING)
-        assertEquals(SomConsts.SORT_BY_PAYMENT_DATE_ASCENDING, viewModel.getSelectedSort())
-    }
-
-    @Test
-    fun getSelectedOrderTypeFilters_shouldReturnSelectedOrderTypeFilterIds() {
-        getFiltersFromCloud_shouldSuccess()
-        viewModel.addOrderTypeFilter(10L)
-        assertEquals(listOf(10L), viewModel.getSelectedOrderTypeFilters())
-    }
-
-    @Test
     fun getTabActive_shouldReturnCorrespondingOrderStatusFilterKeyWhenFilterResultIsNotNull() {
         getFiltersFromCloud_shouldSuccess()
         viewModel.setStatusOrderFilter(listOf(220))

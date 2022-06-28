@@ -5,10 +5,10 @@ import com.tokopedia.sellerorder.list.domain.model.SomListGetOrderListParam
 
 data class SomListFilterUiModel(
     val statusList: List<Status> = listOf(),
-    val orderTypeList: List<OrderType> = listOf(),
     val sortByList: List<SortBy> = listOf(),
     var refreshOrder: Boolean = true,
-    val fromCache: Boolean
+    val fromCache: Boolean,
+    val quickFilterList: List<QuickFilter> = listOf()
 ) {
 
     fun mergeWithCurrent(getOrderListParam: SomListGetOrderListParam, tabActiveFromAppLink: String) {
@@ -38,16 +38,16 @@ data class SomListFilterUiModel(
                 }
             }
         }
-        orderTypeList.forEach { orderType ->
-            orderType.isChecked = getOrderListParam.orderTypeList.contains(orderType.id)
-        }
         sortByList.forEach { sortBy ->
             sortBy.isChecked = getOrderListParam.sortBy == sortBy.id
         }
-    }
-
-    fun getSelectedOrderStatusIds(): List<Int> {
-        return statusList.find { it.isChecked }?.id.orEmpty()
+        quickFilterList.forEach { quickFilter ->
+            quickFilter.isChecked = if (quickFilter.isOrderTypeFilter()) {
+                getOrderListParam.orderTypeList.contains(quickFilter.id)
+            } else if (quickFilter.isShippingFilter()) {
+                getOrderListParam.shippingList.contains(quickFilter.id)
+            } else quickFilter.isChecked
+        }
     }
 
     data class Status(
@@ -78,4 +78,26 @@ data class SomListFilterUiModel(
         val id: Long = 0L,
         var isChecked: Boolean = false
     )
+
+    data class QuickFilter(
+        val id: Long = 0L,
+        val key: String = "",
+        val name: String = "",
+        val type: String = "",
+        var isChecked: Boolean = false
+    ) {
+
+        companion object {
+            private const val TYPE_ORDER_TYPE = "order_type"
+            private const val TYPE_SHIPPING = "shipping"
+        }
+
+        fun isOrderTypeFilter(): Boolean {
+            return type == TYPE_ORDER_TYPE
+        }
+
+        fun isShippingFilter(): Boolean {
+            return type == TYPE_SHIPPING
+        }
+    }
 }

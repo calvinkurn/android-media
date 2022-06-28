@@ -1,5 +1,6 @@
 package com.tokopedia.sellerorder.list.domain.mapper
 
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.sellerorder.common.util.SomConsts
 import com.tokopedia.sellerorder.list.domain.model.SomListFilterResponse
 import com.tokopedia.sellerorder.list.presentation.models.SomListFilterUiModel
@@ -8,11 +9,22 @@ import javax.inject.Inject
 class FilterResultMapper @Inject constructor() {
     fun mapResponseToUiModel(resultFilterList: SomListFilterResponse.Data, fromCache: Boolean): SomListFilterUiModel {
         return SomListFilterUiModel(
+            quickFilterList = mapQuickFilterList(resultFilterList.orderFilterSom.quickFilterList),
             statusList = mapStatusList(resultFilterList.orderFilterSom.statusList),
-            orderTypeList = mapOrderTypeList(resultFilterList.orderTypeList),
             sortByList = mapSortByList(resultFilterList.orderFilterSom.sortByList),
             fromCache = fromCache
         )
+    }
+
+    private fun mapQuickFilterList(quickFilterList: List<SomListFilterResponse.Data.OrderFilterSom.QuickFilter>): List<SomListFilterUiModel.QuickFilter> {
+        return quickFilterList.map {
+            SomListFilterUiModel.QuickFilter(
+                id = it.id.toLongOrZero(),
+                key = it.key,
+                name = it.text,
+                type = it.type
+            )
+        }
     }
 
     private fun mapStatusList(statusList: List<SomListFilterResponse.Data.OrderFilterSom.Status>): List<SomListFilterUiModel.Status> {
@@ -42,16 +54,6 @@ class FilterResultMapper @Inject constructor() {
                     addAll(this@run)
                 }
             }
-        }
-    }
-
-    private fun mapOrderTypeList(orderTypeList: List<SomListFilterResponse.Data.OrderType>): List<SomListFilterUiModel.OrderType> {
-        return orderTypeList.map {
-            SomListFilterUiModel.OrderType(
-                id = it.id,
-                key = it.key,
-                name = it.name
-            )
         }
     }
 
