@@ -16,6 +16,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.google.android.material.appbar.AppBarLayout
+import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
@@ -877,6 +878,9 @@ class UserProfileFragment : BaseDaggerFragment(),
 
     override fun initInjector() {
         DaggerUserProfileComponent.builder()
+            .baseAppComponent(
+                (requireContext().applicationContext as BaseMainApplication).baseAppComponent
+            )
             .userProfileModule(UserProfileModule(requireContext().applicationContext))
             .build()
             .inject(this)

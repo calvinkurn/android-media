@@ -12,6 +12,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
@@ -215,6 +216,9 @@ class FollowingListingFragment : BaseDaggerFragment(), View.OnClickListener, Ada
 
     override fun initInjector() {
         DaggerUserProfileComponent.builder()
+            .baseAppComponent(
+                (requireContext().applicationContext as BaseMainApplication).baseAppComponent
+            )
             .userProfileModule(UserProfileModule(requireContext().applicationContext))
             .build()
             .inject(this)

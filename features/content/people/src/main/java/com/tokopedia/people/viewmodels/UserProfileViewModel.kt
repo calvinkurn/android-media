@@ -20,6 +20,8 @@ import com.tokopedia.people.model.UserPostModel
 import com.tokopedia.people.model.UserProfileIsFollow
 import com.tokopedia.people.model.VideoPostReimderModel
 import kotlinx.coroutines.Dispatchers
+import com.tokopedia.feedcomponent.domain.usecase.GetWhitelistUseCase
+import com.tokopedia.feedcomponent.domain.usecase.GetWhitelistUseCase.Companion.WHITELIST_ENTRY_POINT
 import javax.inject.Inject
 
 @UserProfileScope
@@ -29,7 +31,8 @@ class UserProfileViewModel @Inject constructor(
     private val useCaseDoFollow: ProfileFollowUseCase,
     private val useCaseDoUnFollow: ProfileUnfollowedUseCase,
     private val profileIsFollowing: ProfileTheyFollowedUseCase,
-    private val videoPostReminderUseCase: VideoPostReminderUseCase
+    private val videoPostReminderUseCase: VideoPostReminderUseCase,
+    private val getWhitelistUseCase: GetWhitelistUseCase,
 ) : BaseViewModel(Dispatchers.Main) {
 
     private val userDetails = MutableLiveData<Resources<ProfileHeaderBase>>()
@@ -68,7 +71,7 @@ class UserProfileViewModel @Inject constructor(
     private var postReminderErrorMessage = MutableLiveData<Throwable>()
     val postReminderErrorMessageLiveData : LiveData<Throwable> get() = postReminderErrorMessage
 
-    public fun getUserDetails(userName: String, isRefreshPost: Boolean = false) {
+    fun getUserDetails(userName: String, isRefreshPost: Boolean = false) {
         launchCatchError(block = {
             val data = userDetailsUseCase.getUserProfileDetail(userName, mutableListOf(userName))
             if (data != null) {

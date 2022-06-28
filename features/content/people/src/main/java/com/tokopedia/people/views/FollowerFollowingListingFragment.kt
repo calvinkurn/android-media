@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.viewpager.widget.ViewPager
+import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
@@ -177,6 +178,9 @@ class FollowerFollowingListingFragment : BaseDaggerFragment() {
 
     override fun initInjector() {
         DaggerUserProfileComponent.builder()
+            .baseAppComponent(
+                (requireContext().applicationContext as BaseMainApplication).baseAppComponent
+            )
             .userProfileModule(UserProfileModule(requireContext().applicationContext))
             .build()
             .inject(this)
