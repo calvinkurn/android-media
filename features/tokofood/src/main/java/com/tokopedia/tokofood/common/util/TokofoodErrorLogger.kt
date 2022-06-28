@@ -33,6 +33,7 @@ object TokofoodErrorLogger {
         internal const val REMOVE_FROM_CART_ERROR = "error remove from cart"
         internal const val UPDATE_CART_ERROR = "error update cart"
         internal const val PAYMENT_ERROR = "error go to payment"
+        internal const val AGREE_CONSENT_ERROR = "error agree consent"
         internal const val POOL_BASED_ERROR = "error of pool based order status"
         internal const val ERROR_DRIVER_PHONE_NUMBER = "error of get driver phone number"
         internal const val ERROR_ELIGIBLE_SET_ADDRESS = "error of user not eligible set address"

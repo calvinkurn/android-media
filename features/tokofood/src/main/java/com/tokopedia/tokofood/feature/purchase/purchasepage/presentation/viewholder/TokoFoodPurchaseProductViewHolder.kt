@@ -210,7 +210,7 @@ class TokoFoodPurchaseProductViewHolder(private val viewBinding: ItemPurchasePro
 
                 override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
                     val quantity = p0.toString().toIntOrZero()
-                    if (quantity != element.quantity) {
+                    if (quantity != element.quantity && quantity >= Int.ONE) {
                         element.quantity = quantity
                         element.isQuantityChanged = true
                         listener.onQuantityChanged()

@@ -22,6 +22,7 @@ import com.tokopedia.tokofood.common.util.TokofoodExt.getGlobalErrorType
 import com.tokopedia.tokofood.feature.purchase.purchasepage.domain.usecase.CheckoutTokoFoodUseCase
 import com.tokopedia.tokofood.common.domain.usecase.KeroEditAddressUseCase
 import com.tokopedia.tokofood.common.domain.usecase.KeroGetAddressUseCase
+import com.tokopedia.tokofood.common.presentation.mapper.CustomOrderDetailsMapper
 import com.tokopedia.tokofood.feature.purchase.purchasepage.domain.usecase.CheckoutGeneralTokoFoodUseCase
 import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.VisitableDataHelper.getAccordionUiModel
 import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.VisitableDataHelper.getAllUnavailableProducts
@@ -35,6 +36,12 @@ import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.Visitab
 import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.VisitableDataHelper.getUpdatedCartId
 import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.VisitableDataHelper.isLastAvailableProduct
 import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.mapper.TokoFoodPurchaseUiModelMapper
+import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.mapper.TokoFoodPurchaseUiModelMapper.updatePromoData
+import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.mapper.TokoFoodPurchaseUiModelMapper.updateShippingData
+import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.mapper.TokoFoodPurchaseUiModelMapper.updateSummaryData
+import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.mapper.TokoFoodPurchaseUiModelMapper.updateTickerErrorShopLevelData
+import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.mapper.TokoFoodPurchaseUiModelMapper.updateTickersData
+import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.mapper.TokoFoodPurchaseUiModelMapper.updateTotalAmountData
 import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.uimodel.*
 import com.tokopedia.utils.lifecycle.SingleLiveEvent
 import dagger.Lazy
@@ -244,61 +251,7 @@ class TokoFoodPurchaseViewModel @Inject constructor(
                     isEnabled,
                     !_isAddressHasPinpoint.value.second
                 )
-                val dataList = getVisitablesValue().toMutableList().apply {
-                    getUiModelIndex<TokoFoodPurchaseShippingTokoFoodPurchaseUiModel>().let { shippingIndex ->
-                        if (shippingIndex >= Int.ZERO) {
-                            removeAt(shippingIndex)
-                            partialData.shippingUiModel?.let { shippingUiModel ->
-                                add(shippingIndex, shippingUiModel)
-                            }
-                        }
-                    }
-                    getUiModelIndex<TokoFoodPurchasePromoTokoFoodPurchaseUiModel>().let { promoIndex ->
-                        if (promoIndex >= Int.ZERO) {
-                            removeAt(promoIndex)
-                            partialData.promoUiModel?.let { promoUiModel ->
-                                add(promoIndex, promoUiModel)
-                            }
-                        }
-                    }
-                    getUiModelIndex<TokoFoodPurchaseSummaryTransactionTokoFoodPurchaseUiModel>().let { summaryIndex ->
-                        if (summaryIndex >= Int.ZERO) {
-                            removeAt(summaryIndex)
-                            partialData.summaryUiModel?.let { summaryUiModel ->
-                                add(summaryIndex, summaryUiModel)
-                            }
-                        }
-                    }
-                    getUiModelIndex<TokoFoodPurchaseTotalAmountTokoFoodPurchaseUiModel>().let { totalAmountIndex ->
-                        if (totalAmountIndex >= Int.ZERO) {
-                            removeAt(totalAmountIndex)
-                            add(totalAmountIndex, partialData.totalAmountUiModel)
-                        }
-                    }
-                    getUiModelIndex<TokoFoodPurchaseTickerErrorShopLevelTokoFoodPurchaseUiModel>().let { tickerErrorIndex ->
-                        when {
-                            partialData.tickerErrorShopLevelUiModel == null && tickerErrorIndex >= Int.ZERO -> {
-                                removeAt(tickerErrorIndex)
-                            }
-                            partialData.tickerErrorShopLevelUiModel != null && tickerErrorIndex < Int.ZERO -> {
-                                getUiModelIndex<TokoFoodPurchaseProductTokoFoodPurchaseUiModel>().let { firstProductIndex ->
-                                    if (firstProductIndex >= Int.ZERO) {
-                                        add(firstProductIndex, partialData.tickerErrorShopLevelUiModel)
-                                    }
-                                }
-                            }
-                            else -> {
-                                if (tickerErrorIndex >= Int.ZERO) {
-                                    removeAt(tickerErrorIndex)
-                                    partialData.tickerErrorShopLevelUiModel?.let { tickerErrorUiModel ->
-                                        add(tickerErrorIndex, tickerErrorUiModel)
-                                    }
-                                }
-                            }
-                        }
-                    }
-
-                }
+                val dataList = getUpdatePartialVisitables(partialData)
 
                 _visitables.value = dataList
                 checkoutTokoFoodResponse.value?.let { checkoutResponse ->
@@ -609,6 +562,20 @@ class TokoFoodPurchaseViewModel @Inject constructor(
         _visitables.value = dataList
     }
 
+    fun updateProductVariant(element: TokoFoodPurchaseProductTokoFoodPurchaseUiModel) {
+        launch(coroutineContext) {
+            checkoutTokoFoodResponse.value?.data?.availableSection?.products?.let { availableProducts ->
+                val customOrderDetails =
+                    CustomOrderDetailsMapper.mapTokoFoodProductsToCustomOrderDetails(availableProducts)
+                val productUiModel = TokoFoodPurchaseUiModelMapper.mapUiModelToCustomizationUiModel(element, customOrderDetails)
+                _uiEvent.value = PurchaseUiEvent(
+                    state = PurchaseUiEvent.EVENT_GO_TO_ORDER_CUSTOMIZATION,
+                    data = productUiModel
+                )
+            }
+        }
+    }
+
     /**
      * This method will show loading for shipping, promo, summary, and cart sections
      */
@@ -626,6 +593,17 @@ class TokoFoodPurchaseViewModel @Inject constructor(
         return data.availableSection.products.isEmpty() && data.unavailableSections.firstOrNull()?.products?.isEmpty() == true
     }
 
+    private fun getUpdatePartialVisitables(partialData: PartialTokoFoodUiModel): MutableList<Visitable<*>> {
+        val dataList = getVisitablesValue().toMutableList()
+        dataList.updateShippingData(partialData.shippingUiModel)
+        dataList.updatePromoData(partialData.promoUiModel)
+        dataList.updateSummaryData(partialData.summaryUiModel)
+        dataList.updateTotalAmountData(partialData.totalAmountUiModel)
+        dataList.updateTickerErrorShopLevelData(partialData.tickerErrorShopLevelUiModel)
+        dataList.updateTickersData(partialData.topTickerUiModel, partialData.bottomTickerUiModel)
+        return dataList
+    }
+
     companion object {
         private const val SOURCE = "checkout_page"
 
@@ -639,6 +617,9 @@ class TokoFoodPurchaseViewModel @Inject constructor(
         private const val INDEX_BEFORE_FROM_DIVIDER = 3
         private const val INDEX_BEFORE_FROM_UNAVAILABLE_ACCORDION = 1
         private const val INDEX_AFTER_FROM_UNAVAILABLE_SECTION = 2
+        private const val INDEX_BEFORE_FROM_TOTAL_AMOUNT = 2
+        private const val INDEX_AFTER_FROM_AVAILABLE_PRODUCT = 2
+        private const val INDEX_AFTER_FROM_UNAVAILABLE_PRODUCT = 1
     }
 
 }

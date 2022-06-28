@@ -232,6 +232,7 @@ class MerchantPageFragment : BaseMultiFragment(),
         if (viewModel.isUserSkipTheLoginPage(viewModel.visitedLoginPage, userSession.isLoggedIn)) {
             activity?.finish()
         }
+        initializeMiniCartWidget()
         merchantPageAnalytics.openMerchantPage(
             merchantId,
             viewModel.merchantData?.merchantProfile?.opsHourFmt?.isWarning.orFalse()
@@ -278,8 +279,6 @@ class MerchantPageFragment : BaseMultiFragment(),
             validateAddressData()
         }
 
-
-        initializeMiniCartWidget()
     }
 
     private fun setBackgroundDefaultColor() {

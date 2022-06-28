@@ -106,7 +106,7 @@ class MultipleFragmentsViewModelTest: MultipleFragmentsViewModelTestFixture() {
 
             collectFromSharedFlow(
                 whenAction = {
-                    viewModel.deleteProduct(productId, cartId, SOURCE)
+                    viewModel.deleteProduct(productId, cartId, SOURCE, shopId, false)
                 },
                 then = {
                     val expectedUiModelState = UiEvent.EVENT_SUCCESS_DELETE_PRODUCT

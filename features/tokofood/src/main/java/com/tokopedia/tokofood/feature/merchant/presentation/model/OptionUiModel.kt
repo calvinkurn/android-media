@@ -25,4 +25,6 @@ data class OptionUiModel(
     var dataSetPosition = 0
     @IgnoredOnParcel
     var maxSelected = 0
+    @IgnoredOnParcel
+    var canBeSelected = true
 }

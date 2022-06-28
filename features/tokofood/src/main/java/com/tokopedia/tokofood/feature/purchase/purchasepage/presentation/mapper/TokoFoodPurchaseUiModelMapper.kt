@@ -1,7 +1,9 @@
 package com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.mapper
 
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.kotlin.extensions.view.ONE
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFoodProduct
 import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFoodProductVariant
 import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFoodPromo
@@ -16,13 +18,15 @@ import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFoodUserAddress
 import com.tokopedia.tokofood.common.presentation.uimodel.UpdateParam
 import com.tokopedia.tokofood.common.presentation.uimodel.UpdateProductParam
 import com.tokopedia.tokofood.common.presentation.uimodel.UpdateProductVariantParam
-import com.tokopedia.tokofood.feature.merchant.domain.model.response.TokoFoodCatalogVariantOptionDetail
 import com.tokopedia.tokofood.feature.merchant.presentation.enums.CustomListItemType
 import com.tokopedia.tokofood.feature.merchant.presentation.enums.SelectionControlType
 import com.tokopedia.tokofood.feature.merchant.presentation.model.AddOnUiModel
 import com.tokopedia.tokofood.feature.merchant.presentation.model.CustomListItem
+import com.tokopedia.tokofood.feature.merchant.presentation.model.CustomOrderDetail
 import com.tokopedia.tokofood.feature.merchant.presentation.model.OptionUiModel
 import com.tokopedia.tokofood.feature.merchant.presentation.model.ProductUiModel
+import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.TokoFoodPurchaseViewModel
+import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.VisitableDataHelper.getUiModelIndex
 import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.uimodel.*
 import com.tokopedia.utils.currency.CurrencyFormatUtil
 
@@ -30,6 +34,8 @@ object TokoFoodPurchaseUiModelMapper {
 
     private const val MIN_QUANTITY_STOCK = 1
     private const val MAX_QUANTITY_STOCK = 99999
+
+    private const val INDEX_AFTER_FROM_PROMO = 2
 
     fun mapShopInfoToUiModel(shop: CheckoutTokoFoodShop): TokoFoodPurchaseFragmentUiModel {
         return TokoFoodPurchaseFragmentUiModel(true, shop.name, shop.distance)
@@ -44,15 +50,15 @@ object TokoFoodPurchaseUiModelMapper {
         val shouldSummaryShown = !response.data.summaryDetail.hideSummary
 
         return mutableListOf<Visitable<*>>().apply {
-            val tickerErrorMessage = response.data.errorTickers.top.message.takeIf { it.isNotEmpty() }
-            if (tickerErrorMessage == null) {
+            val topTickerErrorMessage = response.data.errorTickers.top.message.takeIf { it.isNotEmpty() }
+            if (topTickerErrorMessage == null) {
                 response.data.tickers.top.message.let { topTickerMessage ->
                     if (topTickerMessage.isNotEmpty()) {
                         add(mapGeneralTickerUiModel(topTickerMessage, false))
                     }
                 }
             } else {
-                add(mapGeneralTickerUiModel(tickerErrorMessage, true))
+                add(mapGeneralTickerUiModel(topTickerErrorMessage, true))
             }
             add(TokoFoodPurchaseDividerTokoFoodPurchaseUiModel())
             add(mapAddressUiModel(response.data.userAddress))
@@ -96,20 +102,18 @@ object TokoFoodPurchaseUiModelMapper {
                 }
                 if (shouldSummaryShown) {
                     add(TokoFoodPurchaseDividerTokoFoodPurchaseUiModel())
-                    val isBottomTickerError = response.data.errorTickers.bottom.message.isNotEmpty()
-                    val bottomTickerMessage =
-                        if (isBottomTickerError) {
-                            response.data.errorTickers.bottom.message
-                        } else {
-                            response.data.tickers.bottom.message
-                        }
-                    add(
-                        mapSummaryTransactionUiModel(
-                            response.data.summaryDetail.details,
-                            isBottomTickerError to bottomTickerMessage
-                        )
-                    )
+                    add(mapSummaryTransactionUiModel(response.data.summaryDetail.details))
                 }
+            }
+            val bottomTickerErrorMessage = response.data.errorTickers.bottom.message.takeIf { it.isNotEmpty() }
+            if (bottomTickerErrorMessage == null) {
+                response.data.tickers.bottom.message.let { topTickerMessage ->
+                    if (topTickerMessage.isNotEmpty()) {
+                        add(mapGeneralTickerUiModel(topTickerMessage, false))
+                    }
+                }
+            } else {
+                add(mapGeneralTickerUiModel(bottomTickerErrorMessage, true))
             }
             add(TokoFoodPurchaseDividerTokoFoodPurchaseUiModel())
             add(mapTotalAmountUiModel(isEnabled && shouldSummaryShown, response.data.shoppingSummary.total))
@@ -126,6 +130,15 @@ object TokoFoodPurchaseUiModelMapper {
         val shouldSummaryShown = !response.data.summaryDetail.hideSummary
         val shouldTickerShopLevelShown =
             response.data.errorsUnblocking.isNotEmpty() && response.data.availableSection.products.isNotEmpty()
+
+        val isTopTickerError = response.data.errorTickers.top.message.isNotEmpty()
+        val topTickerMessage =
+            if (isTopTickerError) {
+                response.data.errorTickers.top.message
+            } else {
+                response.data.tickers.top.message
+            }
+
         val isBottomTickerError = response.data.errorTickers.bottom.message.isNotEmpty()
         val bottomTickerMessage =
             if (isBottomTickerError) {
@@ -134,6 +147,9 @@ object TokoFoodPurchaseUiModelMapper {
                 response.data.tickers.bottom.message
             }
         return PartialTokoFoodUiModel(
+            topTickerUiModel = topTickerMessage.takeIf { it.isNotBlank() }?.let { topMessage ->
+                mapGeneralTickerUiModel(topMessage, isTopTickerError)
+            },
             shippingUiModel = mapShippingUiModel(
                 shipping = response.data.shipping,
                 needPinpoint = needPinpoint,
@@ -141,8 +157,7 @@ object TokoFoodPurchaseUiModelMapper {
             ).takeIf { shouldShippingShown },
             promoUiModel = mapPromoUiModel(response.data.promo).takeIf { shouldPromoShown },
             summaryUiModel = mapSummaryTransactionUiModel(
-                response.data.summaryDetail.details,
-                isBottomTickerError to bottomTickerMessage
+                response.data.summaryDetail.details
             ).takeIf { shouldSummaryShown },
             totalAmountUiModel = mapTotalAmountUiModel(
                 isEnabled && shouldSummaryShown,
@@ -151,8 +166,206 @@ object TokoFoodPurchaseUiModelMapper {
             tickerErrorShopLevelUiModel = mapTickerErrorShopLevelUiModel(
                 isEnabled,
                 response.data.errorsUnblocking
-            ).takeIf { shouldTickerShopLevelShown }
+            ).takeIf { shouldTickerShopLevelShown },
+            bottomTickerUiModel = bottomTickerMessage.takeIf { it.isNotBlank() }?.let { bottomMessage ->
+                mapGeneralTickerUiModel(bottomMessage, isBottomTickerError)
+            }
         )
+    }
+
+    fun MutableList<Visitable<*>>.updateShippingData(shippingUiModel: TokoFoodPurchaseShippingTokoFoodPurchaseUiModel?) {
+        getUiModelIndex<TokoFoodPurchaseShippingTokoFoodPurchaseUiModel>().let { shippingIndex ->
+            if (shippingIndex >= Int.ZERO) {
+                removeAt(shippingIndex)
+                shippingUiModel?.let { shippingUiModel ->
+                    add(shippingIndex, shippingUiModel)
+                }
+            } else {
+                getUiModelIndex<TokoFoodPurchaseAddressTokoFoodPurchaseUiModel>().let { addressIntex ->
+                    shippingUiModel?.let { shippingUiModel ->
+                        add(addressIntex + Int.ONE, shippingUiModel)
+                    }
+                }
+            }
+        }
+    }
+
+    fun MutableList<Visitable<*>>.updatePromoData(promoUiModel: TokoFoodPurchasePromoTokoFoodPurchaseUiModel?) {
+        getUiModelIndex<TokoFoodPurchasePromoTokoFoodPurchaseUiModel>().let { promoIndex ->
+            if (promoIndex >= Int.ZERO) {
+                val affectedIndex = promoIndex - Int.ONE
+                removeAt(affectedIndex)
+                removeAt(affectedIndex)
+                promoUiModel?.let { promoUiModel ->
+                    add(affectedIndex, TokoFoodPurchaseDividerTokoFoodPurchaseUiModel())
+                    add(affectedIndex + Int.ONE, promoUiModel)
+                }
+            } else {
+                promoUiModel?.let { promoUiModel ->
+                    val hasUnavailableProducts = any { visitable ->
+                        visitable is TokoFoodPurchaseProductTokoFoodPurchaseUiModel && !visitable.isAvailable
+                    }
+                    val futurePromoIndex =
+                        if (hasUnavailableProducts) {
+                            getUiModelIndex<TokoFoodPurchaseAccordionTokoFoodPurchaseUiModel>().let { accordionIndex ->
+                                if (accordionIndex == RecyclerView.NO_POSITION) {
+                                    indexOfLast { visitable ->
+                                        visitable is TokoFoodPurchaseProductTokoFoodPurchaseUiModel
+                                    }
+                                } else {
+                                    accordionIndex + Int.ONE
+                                }
+                            }
+                        } else {
+                            indexOfLast { visitable ->
+                                visitable is TokoFoodPurchaseProductTokoFoodPurchaseUiModel
+                            }
+                        }.plus(Int.ONE)
+                    add(futurePromoIndex, TokoFoodPurchaseDividerTokoFoodPurchaseUiModel())
+                    add(futurePromoIndex + Int.ONE, promoUiModel)
+                }
+            }
+        }
+    }
+
+    fun MutableList<Visitable<*>>.updateSummaryData(summaryUiModel: TokoFoodPurchaseSummaryTransactionTokoFoodPurchaseUiModel?) {
+        getUiModelIndex<TokoFoodPurchaseSummaryTransactionTokoFoodPurchaseUiModel>().let { summaryIndex ->
+            if (summaryIndex >= Int.ZERO) {
+                val affectedIndex = summaryIndex - Int.ONE
+                removeAt(affectedIndex)
+                removeAt(affectedIndex)
+                summaryUiModel?.let { summaryUiModel ->
+                    add(affectedIndex, TokoFoodPurchaseDividerTokoFoodPurchaseUiModel())
+                    add(affectedIndex + Int.ONE, summaryUiModel)
+                }
+            } else {
+                summaryUiModel?.let { summaryUiModel ->
+                    val currentPromoIndex = getUiModelIndex<TokoFoodPurchasePromoTokoFoodPurchaseUiModel>()
+                    if (currentPromoIndex == RecyclerView.NO_POSITION) {
+                        val hasUnavailableProducts = any { visitable ->
+                            visitable is TokoFoodPurchaseProductTokoFoodPurchaseUiModel && !visitable.isAvailable
+                        }
+                        val futureSummaryIndex =
+                            if (hasUnavailableProducts) {
+                                getUiModelIndex<TokoFoodPurchaseAccordionTokoFoodPurchaseUiModel>().let { accordionIndex ->
+                                    if (accordionIndex == RecyclerView.NO_POSITION) {
+                                        indexOfLast { visitable ->
+                                            visitable is TokoFoodPurchaseProductTokoFoodPurchaseUiModel
+                                        }
+                                    } else {
+                                        accordionIndex
+                                    }
+                                }
+                            } else {
+                                indexOfLast { visitable ->
+                                    visitable is TokoFoodPurchaseProductTokoFoodPurchaseUiModel
+                                }
+                            }.plus(Int.ONE)
+                        add(futureSummaryIndex, TokoFoodPurchaseDividerTokoFoodPurchaseUiModel())
+                        add(futureSummaryIndex + Int.ONE, summaryUiModel)
+                    } else {
+                        add(currentPromoIndex + Int.ONE, TokoFoodPurchaseDividerTokoFoodPurchaseUiModel())
+                        add(currentPromoIndex + INDEX_AFTER_FROM_PROMO, summaryUiModel)
+                    }
+                }
+            }
+        }
+    }
+
+    fun MutableList<Visitable<*>>.updateTotalAmountData(totalAmountUiModel: TokoFoodPurchaseTotalAmountTokoFoodPurchaseUiModel) {
+        getUiModelIndex<TokoFoodPurchaseTotalAmountTokoFoodPurchaseUiModel>().let { totalAmountIndex ->
+            if (totalAmountIndex >= Int.ZERO) {
+                removeAt(totalAmountIndex)
+                add(totalAmountIndex, totalAmountUiModel)
+            }
+        }
+    }
+
+    fun MutableList<Visitable<*>>.updateTickerErrorShopLevelData(tickerErrorShopLevelUiModel: TokoFoodPurchaseTickerErrorShopLevelTokoFoodPurchaseUiModel?) {
+        getUiModelIndex<TokoFoodPurchaseTickerErrorShopLevelTokoFoodPurchaseUiModel>().let { tickerErrorIndex ->
+            when {
+                tickerErrorShopLevelUiModel == null && tickerErrorIndex >= Int.ZERO -> {
+                    removeAt(tickerErrorIndex)
+                }
+                tickerErrorShopLevelUiModel != null && tickerErrorIndex < Int.ZERO -> {
+                    getUiModelIndex<TokoFoodPurchaseProductTokoFoodPurchaseUiModel>().let { firstProductIndex ->
+                        if (firstProductIndex >= Int.ZERO) {
+                            add(firstProductIndex, tickerErrorShopLevelUiModel)
+                        }
+                    }
+                }
+                tickerErrorIndex >= Int.ZERO -> {
+                    removeAt(tickerErrorIndex)
+                    tickerErrorShopLevelUiModel?.let { tickerErrorUiModel ->
+                        add(tickerErrorIndex, tickerErrorUiModel)
+                    }
+                }
+                else -> {}
+            }
+        }
+    }
+
+    fun MutableList<Visitable<*>>.updateTickersData(topTickerUiModel: TokoFoodPurchaseGeneralTickerTokoFoodPurchaseUiModel?,
+                                                    bottomTickerUiModel: TokoFoodPurchaseGeneralTickerTokoFoodPurchaseUiModel?) {
+        getUiModelIndex<TokoFoodPurchaseGeneralTickerTokoFoodPurchaseUiModel>().let { firstTickerIndex ->
+            val lastTickerIndex = indexOfLast { ticker ->
+                ticker is TokoFoodPurchaseGeneralTickerTokoFoodPurchaseUiModel
+            }
+            val bottomTickerPosition =
+                getUiModelIndex<TokoFoodPurchaseTotalAmountTokoFoodPurchaseUiModel>() - Int.ONE
+
+            when {
+                firstTickerIndex < Int.ZERO -> {
+                    // There are no tickers initially
+                    var shiftIndex = 0
+                    topTickerUiModel?.let { uiModel ->
+                        add(Int.ZERO, uiModel)
+                        shiftIndex++
+                    }
+                    bottomTickerUiModel?.let { uiModel ->
+                        add(bottomTickerPosition + shiftIndex, uiModel)
+                    }
+                }
+                firstTickerIndex == Int.ZERO && lastTickerIndex > firstTickerIndex -> {
+                    // Both of tickers exist
+                    removeAt(Int.ZERO)
+                    var shiftIndex = -Int.ONE
+                    topTickerUiModel?.let { uiModel ->
+                        add(Int.ZERO, uiModel)
+                        shiftIndex++
+                    }
+
+                    removeAt(lastTickerIndex + shiftIndex)
+                    bottomTickerUiModel?.let { uiModel ->
+                        add(lastTickerIndex + shiftIndex, uiModel)
+                    }
+                }
+                firstTickerIndex > Int.ZERO -> {
+                    // Only bottom ticker exist
+                    var shiftIndex = 0
+                    topTickerUiModel?.let { uiModel ->
+                        add(Int.ZERO, uiModel)
+                        shiftIndex++
+                    }
+                    removeAt(lastTickerIndex + shiftIndex)
+                    bottomTickerUiModel?.let { uiModel ->
+                        add(lastTickerIndex + shiftIndex, uiModel)
+                    }
+                }
+                else -> {
+                    // Only top ticker exist
+                    removeAt(Int.ZERO)
+                    var shiftIndex = -Int.ONE
+                    topTickerUiModel?.let { uiModel ->
+                        add(Int.ZERO, uiModel)
+                        shiftIndex++
+                    }
+                    bottomTickerUiModel?.let { uiModel ->
+                        add(bottomTickerPosition + shiftIndex, uiModel)
+                    }
+                }
+            }
+        }
     }
 
     fun mapUiModelToUpdateParam(uiModels: List<TokoFoodPurchaseProductTokoFoodPurchaseUiModel>,
@@ -171,7 +384,8 @@ object TokoFoodPurchaseUiModelMapper {
         )
     }
 
-    fun mapUiModelToCustomizationUiModel(uiModel: TokoFoodPurchaseProductTokoFoodPurchaseUiModel): ProductUiModel {
+    fun mapUiModelToCustomizationUiModel(uiModel: TokoFoodPurchaseProductTokoFoodPurchaseUiModel,
+                                         customOrderDetails: MutableList<CustomOrderDetail>): ProductUiModel {
         return ProductUiModel(
             id = uiModel.id,
             name = uiModel.name,
@@ -186,7 +400,8 @@ object TokoFoodPurchaseUiModelMapper {
             cartId = uiModel.cartId,
             orderQty = uiModel.quantity,
             orderNote = uiModel.notes,
-            isAtc = true
+            isAtc = true,
+            customOrderDetails = customOrderDetails
         )
     }
 
@@ -297,15 +512,11 @@ object TokoFoodPurchaseUiModelMapper {
         )
     }
 
-    private fun mapSummaryTransactionUiModel(summaryDetails: List<CheckoutTokoFoodSummaryItemDetail>,
-                                             bottomTicker: Pair<Boolean, String>): TokoFoodPurchaseSummaryTransactionTokoFoodPurchaseUiModel {
+    private fun mapSummaryTransactionUiModel(summaryDetails: List<CheckoutTokoFoodSummaryItemDetail>): TokoFoodPurchaseSummaryTransactionTokoFoodPurchaseUiModel {
         val summaryDetailList = summaryDetails.map {
             it.mapToUiModel()
         }
-        return TokoFoodPurchaseSummaryTransactionTokoFoodPurchaseUiModel(
-            summaryDetailList.toList(),
-            bottomTicker
-        )
+        return TokoFoodPurchaseSummaryTransactionTokoFoodPurchaseUiModel(summaryDetailList.toList())
     }
 
     private fun CheckoutTokoFoodSummaryItemDetail.mapToUiModel(): TokoFoodPurchaseSummaryTransactionTokoFoodPurchaseUiModel.Transaction {
@@ -383,4 +594,5 @@ object TokoFoodPurchaseUiModelMapper {
             )
         }
     }
+
 }

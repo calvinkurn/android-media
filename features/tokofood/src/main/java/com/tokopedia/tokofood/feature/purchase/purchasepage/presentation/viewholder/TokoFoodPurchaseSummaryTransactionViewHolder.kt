@@ -5,7 +5,6 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.tokofood.R
 import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFoodSummaryItemDetailInfo
@@ -14,7 +13,6 @@ import com.tokopedia.tokofood.databinding.SubItemPurchaseSummaryTransactionBindi
 import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.TokoFoodPurchaseActionListener
 import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.uimodel.TokoFoodPurchaseSummaryTransactionTokoFoodPurchaseUiModel
 import com.tokopedia.unifycomponents.ImageUnify
-import com.tokopedia.unifycomponents.ticker.Ticker
 
 class TokoFoodPurchaseSummaryTransactionViewHolder(private val viewBinding: ItemPurchaseSummaryTransactionBinding,
                                                    private val listener: TokoFoodPurchaseActionListener)
@@ -43,17 +41,6 @@ class TokoFoodPurchaseSummaryTransactionViewHolder(private val viewBinding: Item
                     containerTransactionItem.addView(summaryTransactionItem.root)
                 }
                 containerTransactionItem.show()
-            }
-            tickerCancellationInfo.run {
-                val (isTickerError, tickerMessage) = element.bottomTicker
-                tickerType =
-                    if (isTickerError) {
-                        Ticker.TYPE_ERROR
-                    } else {
-                        Ticker.TYPE_ANNOUNCEMENT
-                    }
-                showWithCondition(tickerMessage.isNotEmpty())
-                setHtmlDescription(tickerMessage)
             }
         }
     }

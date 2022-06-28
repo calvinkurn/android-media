@@ -73,7 +73,11 @@ class BaseTokofoodActivity : BaseMultiFragActivity(), HasViewModel<MultipleFragm
         val existingFragment = supportFragmentManager.findFragmentByTag(fragmentName)
         if (isSingleTask && existingFragment != null) {
             popExistedFragment(fragmentName)
-            addNewFragment(fragment, true)
+            // It means that we are trying to add new fragment but currently the same instance of that fragment resides as initial fragment in this activity
+            // Later, this should not add the fragment transaction into backstack, because there will be double fragments in the stack
+            val isNavigatingToInitialWithNewFragment =
+                isSingleTask && getFragmentCount() <= NAVIGATE_TO_INITIAL_FRAGMENT_COUNT
+            addNewFragment(fragment, true, isNavigatingToInitialWithNewFragment)
         } else {
             navigateToNewFragment(fragment)
         }
@@ -82,11 +86,13 @@ class BaseTokofoodActivity : BaseMultiFragActivity(), HasViewModel<MultipleFragm
     /**
      * Replace current fragment and add to back stack
      *
-     * @param   destinationFragment     fragment that we want to navigate into
-     * @param   leftToRightAnim         flag to determine whether we should add slide animation from LTR or RTL
+     * @param   destinationFragment                     fragment that we want to navigate into
+     * @param   leftToRightAnim                         flag to determine whether we should add slide animation from LTR or RTL
+     * @param   isNavigatingToInitialWithNewFragment    flag to determine whether we are navigating to initial fragment with a new instance
      */
     private fun addNewFragment(destinationFragment: Fragment,
-                               leftToRightAnim: Boolean = false) {
+                               leftToRightAnim: Boolean = false,
+                               isNavigatingToInitialWithNewFragment: Boolean = false) {
         val destinationFragmentName = destinationFragment.javaClass.name
         val fragmentCount = getFragmentCount()
         val ft = supportFragmentManager.beginTransaction()
@@ -111,7 +117,9 @@ class BaseTokofoodActivity : BaseMultiFragActivity(), HasViewModel<MultipleFragm
             R.id.frame_content,
             destinationFragment, destinationFragmentName
         )
-        if (fragmentCount > Int.ZERO) {
+        val shouldAddBackStack =
+            fragmentCount > Int.ZERO && !isNavigatingToInitialWithNewFragment
+        if (shouldAddBackStack) {
             ft.addToBackStack(destinationFragmentName)
         }
         ft.commit()
@@ -226,4 +234,9 @@ class BaseTokofoodActivity : BaseMultiFragActivity(), HasViewModel<MultipleFragm
             pageLoadTimeMonitoring?.initPerformanceMonitoring()
         }
     }
+
+    companion object {
+        private const val NAVIGATE_TO_INITIAL_FRAGMENT_COUNT = 2
+    }
+
 }

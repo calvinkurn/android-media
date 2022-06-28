@@ -112,7 +112,12 @@ class ProductAddOnViewHolder(
                 optionUiModel.isSelected = isSelected
             }
         }
-        optionAdapter?.setData(optionItems)
+        val totalSelected = optionItems.count { it.isSelected }
+        optionItems.onEachIndexed { optionIndex, optionUiModel ->
+            optionUiModel.canBeSelected =
+                optionUiModel.isSelected || totalSelected < optionUiModel.maxSelected
+        }
+        optionAdapter?.updateSelectableData(optionItems)
     }
 
     override fun onRadioButtonClicked(
@@ -127,10 +132,6 @@ class ProductAddOnViewHolder(
             optionUiModel.isSelected = optionIndex == index
         }
         optionAdapter?.updateData(previousSelectedIndex, optionItems)
-    }
-
-    override fun canBeSelected(): Boolean {
-        return optionItems.count { it.isSelected } < optionItems.firstOrNull()?.maxSelected.orZero()
     }
 
 }

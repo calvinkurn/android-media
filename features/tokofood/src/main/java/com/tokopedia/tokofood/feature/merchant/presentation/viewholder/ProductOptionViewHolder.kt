@@ -12,13 +12,13 @@ class ProductOptionViewHolder(private val binding: TokofoodItemAddOnItemLayoutBi
                               private val listener: Listener) : RecyclerView.ViewHolder(binding.root) {
 
     fun bindData(uiModel: OptionUiModel, index: Int) {
-        renderAlpha(uiModel.isOutOfStock)
         setTitle(uiModel.name)
         setDescription(uiModel.priceFmt, uiModel.isOutOfStock)
         setSelectionType(uiModel.isSelected, uiModel.selectionControlType)
-        setEnabled(uiModel.isOutOfStock)
+        setEnabled(uiModel.isOutOfStock, uiModel.canBeSelected)
         setOnClickAction(uiModel.selectionControlType, uiModel.isOutOfStock)
         setSelectionClickListener(uiModel.price, index, uiModel.dataSetPosition, uiModel.isOutOfStock)
+        renderAlpha(uiModel.isOutOfStock, uiModel.canBeSelected)
     }
 
     private fun setTitle(title: String) {
@@ -56,15 +56,17 @@ class ProductOptionViewHolder(private val binding: TokofoodItemAddOnItemLayoutBi
         }
     }
 
-    private fun setEnabled(isOutOfStock: Boolean) {
-        binding.root.isEnabled = !isOutOfStock
+    private fun setEnabled(isOutOfStock: Boolean,
+                           canBeSelected: Boolean) {
+        val isItemEnabled = !isOutOfStock && canBeSelected
+        binding.root.isEnabled = isItemEnabled
         binding.checkboxTokofoodAddOnItem.run {
-            isEnabled = !isOutOfStock
-            isClickable = !isOutOfStock
+            isEnabled = isItemEnabled
+            isClickable = isItemEnabled
         }
         binding.radioTokofoodAddOnItem.run {
-            isEnabled = !isOutOfStock
-            isClickable = !isOutOfStock
+            isEnabled = isItemEnabled
+            isClickable = isItemEnabled
         }
     }
 
@@ -83,10 +85,8 @@ class ProductOptionViewHolder(private val binding: TokofoodItemAddOnItemLayoutBi
                 else -> {
                     {
                         val isChecked = binding.checkboxTokofoodAddOnItem.isChecked
-                        if (isChecked || listener.canBeSelected()) {
-                            binding.checkboxTokofoodAddOnItem.isChecked = !isChecked
-                            binding.checkboxTokofoodAddOnItem.callOnClick()
-                        }
+                        binding.checkboxTokofoodAddOnItem.isChecked = !isChecked
+                        binding.checkboxTokofoodAddOnItem.callOnClick()
                     }
                 }
             }
@@ -110,28 +110,28 @@ class ProductOptionViewHolder(private val binding: TokofoodItemAddOnItemLayoutBi
         binding.checkboxTokofoodAddOnItem.setOnClickListener {
             if (!isOutOfStock) {
                 val isChecked = binding.checkboxTokofoodAddOnItem.isChecked
-                if (isChecked && !listener.canBeSelected()) {
-                    binding.checkboxTokofoodAddOnItem.isChecked = false
-                } else {
-                    listener.onCheckboxClicked(isChecked, price, index, dataSetPosition)
-                }
+                listener.onCheckboxClicked(isChecked, price, index, dataSetPosition)
             }
         }
     }
 
-    private fun renderAlpha(isOutOfStock: Boolean) {
-        binding.root.alpha =
-            if (isOutOfStock) {
+    private fun renderAlpha(isOutOfStock: Boolean,
+                            canBeSelected: Boolean) {
+        val alpha =
+            if (isOutOfStock || !canBeSelected) {
                 DISABLED_ALPHA
             } else {
                 ENABLED_ALPHA
             }
+        binding.root.alpha = alpha
+        binding.tvTokofoodAddOnItemTitle.alpha = alpha
+        binding.tvTokofoodAddOnItemDesc.alpha = alpha
+        binding.tvTokofoodAddOnItemOutOfStock.alpha = alpha
     }
 
     interface Listener {
         fun onRadioButtonClicked(isSelected: Boolean, price: Double, index: Int, dataSetPosition: Int)
         fun onCheckboxClicked(isSelected: Boolean, price: Double, index: Int, dataSetPosition: Int)
-        fun canBeSelected(): Boolean
     }
 
     companion object {

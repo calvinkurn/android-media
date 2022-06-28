@@ -36,4 +36,13 @@ class ProductOptionAdapter(private val listener: ProductOptionViewHolder.Listene
         }
     }
 
+    fun updateSelectableData(items: List<OptionUiModel>) {
+        setData(items)
+        items.forEachIndexed { index, optionUiModel ->
+            if (!optionUiModel.isSelected) {
+                notifyItemChanged(index)
+            }
+        }
+    }
+
 }
