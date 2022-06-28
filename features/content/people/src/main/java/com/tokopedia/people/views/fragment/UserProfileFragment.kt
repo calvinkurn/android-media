@@ -12,6 +12,7 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
@@ -72,6 +73,12 @@ import com.tokopedia.people.views.activity.FollowerFollowingListingActivity
 import com.tokopedia.people.views.adapter.UserPostBaseAdapter
 import com.tokopedia.people.analytic.UserProfileTracker
 import com.tokopedia.people.utils.UserProfileUtils
+import com.tokopedia.people.utils.withCache
+import com.tokopedia.people.views.uimodel.profile.LinkUiModel
+import com.tokopedia.people.views.uimodel.profile.LivePlayChannelUiModel
+import com.tokopedia.people.views.uimodel.profile.ProfileUiModel
+import com.tokopedia.unifyprinciples.Typography
+import kotlinx.coroutines.flow.collectLatest
 
 class UserProfileFragment : BaseDaggerFragment(),
     View.OnClickListener,
@@ -121,6 +128,18 @@ class UserProfileFragment : BaseDaggerFragment(),
     private lateinit var swipeRefresh: SwipeToRefresh
     private lateinit var feedFab: FeedFloatingButton
 
+    private lateinit var textBio: Typography
+    private lateinit var textSeeMore: Typography
+    private lateinit var textUserName: Typography
+    private lateinit var textDisplayName: Typography
+    private lateinit var textContentCount: Typography
+    private lateinit var textFollowerCount: Typography
+    private lateinit var textFollowingCount: Typography
+
+    private lateinit var textLive: Typography
+    private lateinit var viewLiveRing: View
+    private lateinit var imgProfile: ImageUnify
+
     private val viewModel: UserProfileViewModel by lazy {
         ViewModelProviders.of(this, viewModelFactory).get(UserProfileViewModel::class.java)
     }
@@ -160,6 +179,19 @@ class UserProfileFragment : BaseDaggerFragment(),
         appBarLayout = view.findViewById(R.id.app_bar_layout)
         swipeRefresh = view.findViewById(R.id.swipe_refresh_layout)
         feedFab = view.findViewById(R.id.up_feed_floating_button)
+
+        textBio = view.findViewById(R.id.text_bio)
+        textSeeMore = view.findViewById(R.id.text_see_more)
+        textUserName = view.findViewById(R.id.text_user_name)
+        textDisplayName = view.findViewById(R.id.text_display_name)
+        textContentCount = view.findViewById(R.id.text_content_count)
+        textFollowerCount = view.findViewById(R.id.text_follower_count)
+        textFollowingCount = view.findViewById(R.id.text_following_count)
+        btnAction = view.findViewById(R.id.btn_action_follow)
+
+        textLive = view.findViewById(R.id.text_live)
+        viewLiveRing = view.findViewById(R.id.view_profile_outer_ring)
+        imgProfile = view.findViewById(R.id.img_profile_image)
 
         initObserver()
         initListener()
@@ -285,11 +317,13 @@ class UserProfileFragment : BaseDaggerFragment(),
     }
 
     private fun initObserver() {
-        addUserProfileObserver()
+        observeUiState()
+
+//        addUserProfileObserver()
         addListObserver()
         addDoFollowedObserver()
         addDoUnFollowedObserver()
-        addTheyFollowedObserver()
+//        addTheyFollowedObserver()
         addProfileHeaderErrorObserver()
         addSocialFollowErrorObserver()
         addSocialUnFollowErrorObserver()
@@ -319,6 +353,14 @@ class UserProfileFragment : BaseDaggerFragment(),
         })
     }
 
+    private fun observeUiState() {
+        viewLifecycleOwner.lifecycleScope.launchWhenStarted {
+            viewModel.uiState.withCache().collectLatest {
+                renderProfileInfo(it.prevValue?.profileInfo, it.value.profileInfo)
+            }
+        }
+    }
+
     private fun addUserProfileObserver() =
         viewModel.userDetailsLiveData.observe(viewLifecycleOwner, Observer {
             it?.let {
@@ -333,15 +375,12 @@ class UserProfileFragment : BaseDaggerFragment(),
                     }
                     is Success -> {
                         if (isSwipeRefresh == true) {
-                            view?.findViewById<SwipeToRefresh>(R.id.swipe_refresh_layout)?.isRefreshing =
-                                false
+                            swipeRefresh.isRefreshing = false
                             isSwipeRefresh = !isSwipeRefresh!!
-                        } else {
-                            //Hide shimmer
                         }
 
                         container?.displayedChild = PAGE_CONTENT
-                        setMainUi(it.data)
+//                        setMainUi(it.data)
                         viewModel.getFollowingStatus(mutableListOf(profileUserId))
                     }
                 }
@@ -636,96 +675,64 @@ class UserProfileFragment : BaseDaggerFragment(),
             }
         }
 
-    private fun updateToFollowUi() {
-        btnAction?.text =  getString(R.string.up_btn_text_following)
-        btnAction?.buttonVariant = UnifyButton.Variant.GHOST
-        btnAction?.buttonType = UnifyButton.Type.ALTERNATE
-    }
+    /** Render UI */
+    private fun renderProfileInfo(
+        prev: ProfileUiModel?,
+        curr: ProfileUiModel,
+    ) {
+        if(prev == curr) return
 
-    private fun updateToUnFollowUi() {
-        btnAction?.text = getString(R.string.up_btn_text_follow)
-        btnAction?.buttonVariant = UnifyButton.Variant.FILLED
-        btnAction?.buttonType = UnifyButton.Type.MAIN
-    }
+        userProfileTracker?.openUserProfile(
+            screenName = "feed user profile",
+            profileUserId,
+            live = curr.liveInfo.isLive
+        )
 
-    private fun setMainUi(data: ProfileHeaderBase) {
-
-        val textBio = view?.findViewById<TextView>(R.id.text_bio)
-        val textSeeMore = view?.findViewById<TextView>(R.id.text_see_more)
-        val textUserName = view?.findViewById<TextView>(R.id.text_user_name)
-        val textDisplayName = view?.findViewById<TextView>(R.id.text_display_name)
-        val textContentCount = view?.findViewById<TextView>(R.id.text_content_count)
-        val textFollowerCount = view?.findViewById<TextView>(R.id.text_follower_count)
-        val textFollowingCount = view?.findViewById<TextView>(R.id.text_following_count)
-
-        btnAction = view?.findViewById<UnifyButton>(R.id.btn_action_follow)
-
-        if (data.profileHeader.profile.username.isNotBlank()) {
-            textUserName?.show()
-            textUserName?.text = "@" + data.profileHeader.profile.username
-        }
-        else{
-            textUserName?.hide()
+        if (isSwipeRefresh == true) {
+            swipeRefresh.isRefreshing = false
+            isSwipeRefresh = !isSwipeRefresh!!
         }
 
-        textDisplayName?.text = data.profileHeader.profile.name
-        textContentCount?.text =
-            UserProfileUtils.getFormattedNumber(data.profileHeader.stats.totalPost)
-        textFollowerCount?.text =
-            UserProfileUtils.getFormattedNumber(data.profileHeader.stats.totalFollower)
-        textFollowingCount?.text =
-            UserProfileUtils.getFormattedNumber(data.profileHeader.stats.totalFollowing)
+        container?.displayedChild = PAGE_CONTENT
 
-        userProfileTracker?.openUserProfile(screenName = "feed user profile", profileUserId, live = data.profileHeader.profile.liveplaychannel.islive)
+        textUserName.shouldShowWithAction(curr.username.isNotBlank()) {
+            textUserName.text = getString(R.string.up_username_template, curr.username)
+        }
 
-        setProfileImg(data.profileHeader.profile)
+        textDisplayName.text = curr.name
+        textContentCount.text = UserProfileUtils.getFormattedNumber(curr.stats.totalPost)
+        textFollowerCount.text = UserProfileUtils.getFormattedNumber(curr.stats.totalFollower)
+        textFollowingCount.text = UserProfileUtils.getFormattedNumber(curr.stats.totalFollowing)
 
-        displayName = data.profileHeader.profile.name
+        setProfileImg(curr)
+
+        displayName = curr.name
         mAdapter.displayName = displayName
-        userName = data.profileHeader.profile.username
-        mAdapter.setUserName(data.profileHeader.profile.username)
-        totalFollowers = data.profileHeader.stats.totalFollowerFmt
-        totalPosts =  data.profileHeader.stats.totalPostFmt
-        totalFollowings = data.profileHeader.stats.totalFollowingFmt
-        profileImage = data.profileHeader.profile.imageCover
-        profileUserId = data.profileHeader.profile.userID
-        userWebLink = data.profileHeader.profile.sharelink.weblink
-        textBio?.maxLines = MAX_LINE
+        userName = curr.username
+        mAdapter.setUserName(curr.username)
 
-        if(data.profileHeader.profile.biography.isNullOrEmpty()){
-            textBio?.hide()
-        }
-        else{
-            textBio?.show()
-        }
+        /** TODO: will be removed soon */
+        totalFollowers = curr.stats.totalFollowerFmt
+        totalPosts =  curr.stats.totalPostFmt
+        totalFollowings = curr.stats.totalFollowingFmt
+        profileImage = curr.imageCover
+        profileUserId = curr.userID
+        userWebLink = curr.shareLink.webLink
 
-        data.profileHeader.profile.biography = data.profileHeader.profile.biography.replace("\n", "<br />")
-        val textBioString = context?.let {
-            HtmlLinkHelper(
-                it,
-                data.profileHeader.profile.biography
-            ).spannedString
-        } ?: ""
+        /** Setup Bio */
+        val displayBioText = HtmlLinkHelper(requireContext(), curr.biography).spannedString
+        textBio.text = displayBioText
 
-        textBio?.let {
-            textBio?.text = context?.let {
-                HtmlLinkHelper(
-                    it,
-                    data.profileHeader.profile.biography
-                ).spannedString
-            }
-
-            if (textBioString.lines().count() > SEE_ALL_LINE) {
-                if (isViewMoreClickedBio == true) {
-                    textBio.maxLines = MAX_LINE
-                    textSeeMore?.hide()
-                } else {
-                    textBio.maxLines = SEE_ALL_LINE
-                    textSeeMore?.show()
-                }
+        if (displayBioText?.lines()?.count().orZero() > SEE_ALL_LINE) {
+            if (isViewMoreClickedBio == true) {
+                textBio.maxLines = MAX_LINE
+                textSeeMore.hide()
             } else {
-                textSeeMore?.hide()
+                textBio.maxLines = SEE_ALL_LINE
+                textSeeMore.show()
             }
+        } else {
+            textSeeMore.hide()
         }
 
 
@@ -738,9 +745,114 @@ class UserProfileFragment : BaseDaggerFragment(),
                 )
             }
         }
-        headerProfile?.title = data.profileHeader.profile.name
-
+        headerProfile?.title = curr.name
     }
+
+    private fun updateToFollowUi() {
+        btnAction?.text =  getString(R.string.up_btn_text_following)
+        btnAction?.buttonVariant = UnifyButton.Variant.GHOST
+        btnAction?.buttonType = UnifyButton.Type.ALTERNATE
+    }
+
+    private fun updateToUnFollowUi() {
+        btnAction?.text = getString(R.string.up_btn_text_follow)
+        btnAction?.buttonVariant = UnifyButton.Variant.FILLED
+        btnAction?.buttonType = UnifyButton.Type.MAIN
+    }
+
+//    private fun setMainUi(data: ProfileHeaderBase) {
+//
+//        val textBio = view?.findViewById<TextView>(R.id.text_bio)
+//        val textSeeMore = view?.findViewById<TextView>(R.id.text_see_more)
+//        val textUserName = view?.findViewById<TextView>(R.id.text_user_name)
+//        val textDisplayName = view?.findViewById<TextView>(R.id.text_display_name)
+//        val textContentCount = view?.findViewById<TextView>(R.id.text_content_count)
+//        val textFollowerCount = view?.findViewById<TextView>(R.id.text_follower_count)
+//        val textFollowingCount = view?.findViewById<TextView>(R.id.text_following_count)
+//
+//        btnAction = view?.findViewById<UnifyButton>(R.id.btn_action_follow)
+//
+//        if (data.profileHeader.profile.username.isNotBlank()) {
+//            textUserName?.show()
+//            textUserName?.text = "@" + data.profileHeader.profile.username
+//        }
+//        else{
+//            textUserName?.hide()
+//        }
+//
+//        textDisplayName?.text = data.profileHeader.profile.name
+//        textContentCount?.text =
+//            UserProfileUtils.getFormattedNumber(data.profileHeader.stats.totalPost)
+//        textFollowerCount?.text =
+//            UserProfileUtils.getFormattedNumber(data.profileHeader.stats.totalFollower)
+//        textFollowingCount?.text =
+//            UserProfileUtils.getFormattedNumber(data.profileHeader.stats.totalFollowing)
+//
+//        userProfileTracker?.openUserProfile(screenName = "feed user profile", profileUserId, live = data.profileHeader.profile.liveplaychannel.islive)
+//
+//        setProfileImg(data.profileHeader.profile)
+//
+//        displayName = data.profileHeader.profile.name
+//        mAdapter.displayName = displayName
+//        userName = data.profileHeader.profile.username
+//        mAdapter.setUserName(data.profileHeader.profile.username)
+//        totalFollowers = data.profileHeader.stats.totalFollowerFmt
+//        totalPosts =  data.profileHeader.stats.totalPostFmt
+//        totalFollowings = data.profileHeader.stats.totalFollowingFmt
+//        profileImage = data.profileHeader.profile.imageCover
+//        profileUserId = data.profileHeader.profile.userID
+//        userWebLink = data.profileHeader.profile.sharelink.weblink
+//        textBio?.maxLines = MAX_LINE
+//
+//        if(data.profileHeader.profile.biography.isNullOrEmpty()){
+//            textBio?.hide()
+//        }
+//        else{
+//            textBio?.show()
+//        }
+//
+//        data.profileHeader.profile.biography = data.profileHeader.profile.biography.replace("\n", "<br />")
+//        val textBioString = context?.let {
+//            HtmlLinkHelper(
+//                it,
+//                data.profileHeader.profile.biography
+//            ).spannedString
+//        } ?: ""
+//
+//        textBio?.let {
+//            textBio?.text = context?.let {
+//                HtmlLinkHelper(
+//                    it,
+//                    data.profileHeader.profile.biography
+//                ).spannedString
+//            }
+//
+//            if (textBioString.lines().count() > SEE_ALL_LINE) {
+//                if (isViewMoreClickedBio == true) {
+//                    textBio.maxLines = MAX_LINE
+//                    textSeeMore?.hide()
+//                } else {
+//                    textBio.maxLines = SEE_ALL_LINE
+//                    textSeeMore?.show()
+//                }
+//            } else {
+//                textSeeMore?.hide()
+//            }
+//        }
+//
+//
+//        if (userSession?.isLoggedIn == false) {
+//            updateToUnFollowUi()
+//            btnAction?.setOnClickListener {
+//                startActivityForResult(
+//                    RouteManager.getIntent(activity, ApplinkConst.LOGIN),
+//                    REQUEST_CODE_LOGIN
+//                )
+//            }
+//        }
+//        headerProfile?.title = data.profileHeader.profile.name
+//
+//    }
 
     private fun isProfileButtonVisible() : Boolean{
         return false
@@ -783,37 +895,25 @@ class UserProfileFragment : BaseDaggerFragment(),
         }
     }
 
-    private fun setProfileImg(profile: Profile) {
-        mAdapter.activityId = profile.liveplaychannel.liveplaychannelid
+    private fun setProfileImg(profile: ProfileUiModel) {
+        mAdapter.activityId = profile.liveInfo.channelId
 
-        if (profile == null
-            || profile.liveplaychannel == null
-            || profile.liveplaychannel.liveplaychannellink == null
-        ) {
-            return
-        }
+        imgProfile.urlSrc = profile.imageCover
 
-        val textLive = view?.findViewById<TextView>(R.id.text_live)
-        val viewLiveRing = view?.findViewById<View>(R.id.view_profile_outer_ring)
-        val imgProfile = view?.findViewById<ImageUnify>(R.id.img_profile_image)
+        if (profile.liveInfo.isLive) {
+            viewLiveRing.show()
+            textLive.show()
 
-        imgProfile?.urlSrc = profile.imageCover
-
-        if (profile.liveplaychannel.islive) {
-            viewLiveRing?.show()
-            textLive?.show()
-
-            textLive?.setOnClickListener(addLiveClickListener(profile.liveplaychannel.liveplaychannellink.applink))
-            textLive?.setOnClickListener(addLiveClickListener(profile.liveplaychannel.liveplaychannellink.applink))
-            imgProfile?.setOnClickListener(addLiveClickListener(profile.liveplaychannel.liveplaychannellink.applink))
+            textLive.setOnClickListener(addLiveClickListener(profile.liveInfo.channelLink.appLink))
+            imgProfile.setOnClickListener(addLiveClickListener(profile.liveInfo.channelLink.appLink))
         } else {
-            viewLiveRing?.visibility = View.INVISIBLE
-            textLive?.hide()
+            viewLiveRing.visibility = View.INVISIBLE
+            textLive.hide()
 
-            textLive?.setOnClickListener(null)
-            textLive?.setOnClickListener(null)
-            imgProfile?.setOnClickListener{
-                userProfileTracker?.clickProfilePicture(userId, profileUserId == userId, profile.liveplaychannel.liveplaychannelid)
+            textLive.setOnClickListener(null)
+            textLive.setOnClickListener(null)
+            imgProfile.setOnClickListener{
+                userProfileTracker?.clickProfilePicture(userId, profileUserId == userId, profile.liveInfo.channelId)
             }
         }
     }
