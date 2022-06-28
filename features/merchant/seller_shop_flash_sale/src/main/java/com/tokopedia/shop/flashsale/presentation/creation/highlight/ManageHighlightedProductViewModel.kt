@@ -4,7 +4,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.removeFirst
 import com.tokopedia.shop.flashsale.data.request.GetSellerCampaignProductListRequest
 import com.tokopedia.shop.flashsale.domain.entity.HighlightableProduct
@@ -212,6 +211,13 @@ class ManageHighlightedProductViewModel @Inject constructor(
                     product
                 }
             }
+            .map { product ->
+                if (!product.isSelected && selectedParentProductIds.size >= MAX_PRODUCT_SELECTION) {
+                    product.copy(isSelected = false, disabled = true)
+                } else {
+                    product
+                }
+            }
             .sortedByDescending { it.isSelected }
             .mapIndexed { index, product -> product.copy(position = index + OFFSET_BY_ONE) }
     }
@@ -220,7 +226,6 @@ class ManageHighlightedProductViewModel @Inject constructor(
         currentlySelectedProduct: HighlightableProduct,
         products: List<HighlightableProduct>
     ): List<HighlightableProduct> {
-        val selectedProductsIds = selectedProducts.map { selectedProduct -> selectedProduct.id }
         return products
             .mapIndexed { index, product ->
                 if (currentlySelectedProduct.id == product.id) {
@@ -238,64 +243,5 @@ class ManageHighlightedProductViewModel @Inject constructor(
             }
             .sortedByDescending { it.isSelected }
             .mapIndexed { index, product -> product.copy(position = index + OFFSET_BY_ONE) }
-    }
-
-    fun disableAllUnselectedProducts(products: List<HighlightableProduct>): List<HighlightableProduct> {
-        return products
-            .mapIndexed { index, product ->
-                if (product.isSelected) {
-                    product
-                } else {
-                    product.copy(disabled = true)
-                }
-            }
-            .sortedByDescending { it.isSelected }
-            .mapIndexed { index, product -> product.copy(position = index + OFFSET_BY_ONE) }
-    }
-
-    fun enableAllUnselectedProducts(products: List<HighlightableProduct>): List<HighlightableProduct> {
-        return products
-            .mapIndexed { index, product ->
-                if (product.isSelected) {
-                    product
-                } else {
-                    product.copy(disabled = false, disabledReason = HighlightableProduct.DisabledReason.NOT_DISABLED)
-                }
-            }
-            .sortedByDescending { it.isSelected }
-            .mapIndexed { index, product -> product.copy(position = index + OFFSET_BY_ONE) }
-    }
-
-    fun hasOtherProductWithSameParentId(
-        selectedProductParentId: Long,
-        products: List<HighlightableProduct>
-    ): Boolean {
-        return products
-            .count { product -> product.parentId == selectedProductParentId }
-            .isMoreThanZero()
-    }
-
-    fun disableOtherProductWithSameParentId(
-        selectedProduct: HighlightableProduct,
-        products: List<HighlightableProduct>
-    ): List<HighlightableProduct> {
-        return products.map { product ->
-            //Same parent, but different variant
-            if (selectedProduct.parentId == product.parentId && selectedProduct.id != product.id) {
-                product.copy(
-                    isSelected = false,
-                    disabled = true,
-                    disabledReason = HighlightableProduct.DisabledReason.OTHER_PRODUCT_WITH_SAME_PARENT_ID_ALREADY_SELECTED
-                )
-            } else if (selectedProduct.parentId == product.parentId && selectedProduct.id == product.id) {
-                product.copy(
-                    isSelected = true,
-                    disabled = false,
-                    disabledReason = HighlightableProduct.DisabledReason.NOT_DISABLED
-                )
-            } else {
-                product
-            }
-        }
     }
 }
