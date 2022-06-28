@@ -54,7 +54,8 @@ object CampaignStockMapper {
     }
 
 
-    fun mapToParcellableReserved(dataModel: GetStockAllocationDetailReserve): ReservedEventInfoUiModel =
+    fun mapToParcellableReserved(dataModel: GetStockAllocationDetailReserve,
+                                 reservedStock: String? = null): ReservedEventInfoUiModel =
             with(dataModel.eventInfo) {
                 ReservedEventInfoUiModel(
                     eventType = eventType,
@@ -63,7 +64,7 @@ object CampaignStockMapper {
                     startTime = getPeriodString(startTimeNanos),
                     endTime = getPeriodString(endTimeNanos),
                     periodStatus = getPeriodStatus(startTimeNanos),
-                    stock = stock
+                    stock = reservedStock ?: stock
                 )
             }
 
@@ -79,7 +80,7 @@ object CampaignStockMapper {
                             variantName = product.productName,
                             totalCampaign = Int.ONE,
                             totalStock = product.stock.toIntOrZero(),
-                            reservedEventInfos = mutableListOf(mapToParcellableReserved(detail))
+                            reservedEventInfos = mutableListOf(mapToParcellableReserved(detail, product.stock))
                         )
                     )
                 } else {
@@ -89,7 +90,7 @@ object CampaignStockMapper {
                             totalCampaign = currentInfo.totalCampaign + Int.ONE,
                             totalStock = currentInfo.totalStock + product.stock.toIntOrZero(),
                             reservedEventInfos = currentInfo.reservedEventInfos.apply {
-                                add(mapToParcellableReserved(detail))
+                                add(mapToParcellableReserved(detail, product.stock))
                             }
                         )
                         variantInfoList.set(updatedIndex, updatedInfo)
