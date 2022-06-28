@@ -316,7 +316,9 @@ class EventCheckoutFragment : BaseDaggerFragment(), OnAdditionalListener {
         if (!forms.isNullOrEmpty()) {
             setPassengerData(forms)
         }
-        ticker_event_checkout.setTextDescription(resources.getString(R.string.ent_event_checkout_pessanger_ticker))
+        context?.let {
+            ticker_event_checkout.setTextDescription(it.resources.getString(R.string.ent_event_checkout_pessanger_ticker))
+        }
         btn_event_checkout_passenger.setOnClickListener {
             goToPageForm()
         }

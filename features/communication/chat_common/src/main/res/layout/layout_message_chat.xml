@@ -79,7 +79,7 @@
 
     </RelativeLayout>
 
-    <ProgressBar
+    <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/progress_bar"
         android:layout_width="@dimen/layout_lvl3"
         android:layout_height="wrap_content"
@@ -100,7 +100,8 @@
         android:layout_marginEnd="@dimen/chatcommon_5dp"
         android:layout_toStartOf="@+id/hour"
         android:adjustViewBounds="true"
-        tools:src="@drawable/ic_read_thin"/>
+        tools:src="@drawable/ic_read_thin"
+        android:contentDescription="" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/hour"

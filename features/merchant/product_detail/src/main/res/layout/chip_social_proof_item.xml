@@ -16,7 +16,8 @@
         android:paddingEnd="8dp"
         android:paddingTop="@dimen/dp_7"
         android:paddingBottom="@dimen/dp_7"
-        android:background="@drawable/bg_border_pdp">
+        android:background="@drawable/bg_border_pdp"
+        tools:ignore="UselessParent">
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/chip_social_proof_title"

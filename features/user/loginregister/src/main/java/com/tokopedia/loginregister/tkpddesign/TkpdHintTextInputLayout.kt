@@ -160,37 +160,37 @@ class TkpdHintTextInputLayout : LinearLayout {
             }
             hintArr.recycle()
         }
-        mErrorEnabled = a.getBoolean(R.styleable.TkpdHintTextInputLayout_errorEnabled, false)
+        mErrorEnabled = a.getBoolean(com.tokopedia.design.R.styleable.TkpdHintTextInputLayout_errorEnabled, false)
         mErrorTextAppearance =
-            a.getResourceId(R.styleable.TkpdHintTextInputLayout_errorTextAppearance, 0)
-        mHelperEnabled = a.getBoolean(R.styleable.TkpdHintTextInputLayout_helperEnabled, false)
+            a.getResourceId(com.tokopedia.design.R.styleable.TkpdHintTextInputLayout_errorTextAppearance, 0)
+        mHelperEnabled = a.getBoolean(com.tokopedia.design.R.styleable.TkpdHintTextInputLayout_helperEnabled, false)
         mHelperTextAppearance = a.getResourceId(
-            R.styleable.TkpdHintTextInputLayout_helperTextAppearance,
-            R.style.helperTextAppearance
+            com.tokopedia.design.R.styleable.TkpdHintTextInputLayout_helperTextAppearance,
+            com.tokopedia.design.R.style.helperTextAppearance
         )
-        mHelperText = a.getText(R.styleable.TkpdHintTextInputLayout_helper)
-        isSuccessShown = a.getBoolean(R.styleable.TkpdHintTextInputLayout_successEnabled, false)
+        mHelperText = a.getText(com.tokopedia.design.R.styleable.TkpdHintTextInputLayout_helper)
+        isSuccessShown = a.getBoolean(com.tokopedia.design.R.styleable.TkpdHintTextInputLayout_successEnabled, false)
         mSuccessTextAppearance = a.getResourceId(
-            R.styleable.TkpdHintTextInputLayout_successTextAppearance,
-            R.style.successTextAppearance
+            com.tokopedia.design.R.styleable.TkpdHintTextInputLayout_successTextAppearance,
+            com.tokopedia.design.R.style.successTextAppearance
         )
-        mCounterEnabled = a.getBoolean(R.styleable.TkpdHintTextInputLayout_counterEnabled, false)
+        mCounterEnabled = a.getBoolean(com.tokopedia.design.R.styleable.TkpdHintTextInputLayout_counterEnabled, false)
         mCounterMaxLength =
-            a.getInt(R.styleable.TkpdHintTextInputLayout_counterMaxLength, INVALID_MAX_LENGTH)
+            a.getInt(com.tokopedia.design.R.styleable.TkpdHintTextInputLayout_counterMaxLength, INVALID_MAX_LENGTH)
         mCounterTextAppearance =
-            a.getResourceId(R.styleable.TkpdHintTextInputLayout_counterTextAppearance, 0)
+            a.getResourceId(com.tokopedia.design.R.styleable.TkpdHintTextInputLayout_counterTextAppearance, 0)
         mCounterOverflowTextAppearance =
-            a.getResourceId(R.styleable.TkpdHintTextInputLayout_counterOverflowTextAppearance, 0)
+            a.getResourceId(com.tokopedia.design.R.styleable.TkpdHintTextInputLayout_counterOverflowTextAppearance, 0)
         mPasswordToggleEnabled =
-            a.getBoolean(R.styleable.TkpdHintTextInputLayout_passwordToggleEnabled, true)
+            a.getBoolean(com.tokopedia.design.R.styleable.TkpdHintTextInputLayout_passwordToggleEnabled, true)
         mPasswordToggleDrawable =
-            a.getDrawable(R.styleable.TkpdHintTextInputLayout_passwordToggleDrawable)
+            a.getDrawable(com.tokopedia.design.R.styleable.TkpdHintTextInputLayout_passwordToggleDrawable)
         mPasswordToggleContentDesc =
-            a.getText(R.styleable.TkpdHintTextInputLayout_passwordToggleContentDescription)
-        if (a.hasValue(R.styleable.TkpdHintTextInputLayout_passwordToggleTint)) {
+            a.getText(com.tokopedia.design.R.styleable.TkpdHintTextInputLayout_passwordToggleContentDescription)
+        if (a.hasValue(com.tokopedia.design.R.styleable.TkpdHintTextInputLayout_passwordToggleTint)) {
             mHasPasswordToggleTintList = true
             mPasswordToggleTintList = a.getColorStateList(
-                R.styleable.TkpdHintTextInputLayout_passwordToggleTint
+                com.tokopedia.design.R.styleable.TkpdHintTextInputLayout_passwordToggleTint
             )
         }
 
@@ -231,7 +231,7 @@ class TkpdHintTextInputLayout : LinearLayout {
     }
 
     private fun init() {
-        val view = inflate(context, R.layout.hint_text_input_layout, this)
+        val view = inflate(context, com.tokopedia.design.R.layout.hint_text_input_layout, this)
         mFrameLayout = view.findViewById<View>(R.id.frame_content) as FrameLayout
         mTvLabel = view.findViewById<View>(R.id.tv_label) as TextView
         mTvHelper = view.findViewById<View>(R.id.tv_helper) as TextView
@@ -550,7 +550,7 @@ class TkpdHintTextInputLayout : LinearLayout {
             if (mPasswordToggleView == null) {
                 mPasswordToggleView = LayoutInflater.from(context)
                     .inflate(
-                        R.layout.design_text_input_password_icon,
+                        com.tokopedia.design.R.layout.design_text_input_password_icon,
                         mFrameLayout, false
                     ) as CheckableImageButton
                 mPasswordToggleView!!.setImageDrawable(mPasswordToggleDrawable)
@@ -873,11 +873,11 @@ class TkpdHintTextInputLayout : LinearLayout {
 
     private fun parseTintMode(value: Int, defaultMode: PorterDuff.Mode): PorterDuff.Mode {
         return when (value) {
-            3 -> PorterDuff.Mode.SRC_OVER
-            5 -> PorterDuff.Mode.SRC_IN
-            9 -> PorterDuff.Mode.SRC_ATOP
-            14 -> PorterDuff.Mode.MULTIPLY
-            15 -> PorterDuff.Mode.SCREEN
+            THREE -> PorterDuff.Mode.SRC_OVER
+            FIVE -> PorterDuff.Mode.SRC_IN
+            NINE -> PorterDuff.Mode.SRC_ATOP
+            FOURTEEN -> PorterDuff.Mode.MULTIPLY
+            FIFTEEN -> PorterDuff.Mode.SCREEN
             else -> defaultMode
         }
     }
@@ -900,6 +900,12 @@ class TkpdHintTextInputLayout : LinearLayout {
     }
 
     companion object {
+        private const val THREE = 3
+        private const val FIVE = 5
+        private const val NINE = 9
+        private const val FOURTEEN = 14
+        private const val FIFTEEN = 15
+
         private const val INVALID_MAX_LENGTH = -1
         private fun arrayContains(array: IntArray, value: Int): Boolean {
             for (v in array) {

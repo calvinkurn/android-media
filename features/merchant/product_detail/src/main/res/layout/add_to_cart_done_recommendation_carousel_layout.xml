@@ -116,7 +116,8 @@
                 app:layout_constraintBottom_toBottomOf="@+id/review_count"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/product_name"
-                app:srcCompat="@drawable/product_card_ic_rating_active" />
+                app:srcCompat="@drawable/product_card_ic_rating_active"
+                android:contentDescription="" />
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/rating_count"
@@ -162,7 +163,8 @@
                 app:layout_constraintTop_toTopOf="@+id/shop_location"
                 tools:background="@color/Unify_B500"
                 tools:layout_width="67dp"
-                tools:visibility="visible" />
+                tools:visibility="visible"
+                android:contentDescription="" />
 
             <com.tokopedia.unifycomponents.ticker.Ticker
                 android:id="@+id/ticker"

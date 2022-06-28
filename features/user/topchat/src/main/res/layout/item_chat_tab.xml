@@ -15,7 +15,8 @@
         android:layout_marginRight="@dimen/spacing_lvl3"
         android:src="@drawable/circle_red"
         android:visibility="visible"
-        tools:src="@drawable/ic_chat_icon_account" />
+        tools:src="@drawable/ic_chat_icon_account"
+        android:contentDescription="" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/title"

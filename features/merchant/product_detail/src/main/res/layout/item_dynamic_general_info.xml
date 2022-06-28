@@ -35,7 +35,8 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="@+id/pdp_info_title"
             tools:src="@drawable/ic_product_fintech_qr_normal_24"
-            tools:visibility="visible" />
+            tools:visibility="visible"
+            android:contentDescription="" />
 
         <ImageView
             android:id="@+id/pdp_arrow_right"
@@ -46,7 +47,8 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@+id/pdp_info_title"
             app:srcCompat="@drawable/ic_arrow_right_info"
-            tools:visibility="visible" />
+            tools:visibility="visible"
+            android:contentDescription="" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/pdp_info_title"

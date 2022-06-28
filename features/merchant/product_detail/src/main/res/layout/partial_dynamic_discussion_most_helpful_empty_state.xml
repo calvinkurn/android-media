@@ -40,7 +40,8 @@
         android:layout_width="@dimen/dp_114"
         android:layout_height="@dimen/dp_110"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"/>
+        app:layout_constraintTop_toTopOf="parent"
+        android:contentDescription="" />
 
     <com.tokopedia.unifycomponents.UnifyButton
         android:id="@+id/productDetailDiscussionEmptyButton"

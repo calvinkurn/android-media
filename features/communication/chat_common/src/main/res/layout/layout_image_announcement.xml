@@ -35,7 +35,8 @@
             android:scaleType="fitCenter"
             android:visibility="visible"
             tools:src="@tools:sample/avatars"
-            tools:visibility="visible" />
+            tools:visibility="visible"
+            android:contentDescription="" />
 
         <Button
             android:id="@+id/btn_check"
@@ -47,7 +48,8 @@
             android:text="@string/title_chatcommon_check"
             android:textAllCaps="false"
             android:textColor="@color/Unify_N0"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+            tools:ignore="UnifyComponentUsage" />
 
     </LinearLayout>
 

@@ -79,7 +79,8 @@
             android:maxHeight="@dimen/chatcommon_270dp"
             android:scaleType="fitCenter"
             android:visibility="gone"
-            tools:visibility="visible" />
+            tools:visibility="visible"
+            android:contentDescription="" />
 
     </androidx.cardview.widget.CardView>
 
@@ -91,7 +92,8 @@
         android:layout_alignBottom="@+id/card_group_chat_message"
         android:layout_toStartOf="@+id/card_group_chat_message"
         android:visibility="visible"
-        app:srcCompat="@drawable/ic_error_to_send" />
+        app:srcCompat="@drawable/ic_error_to_send"
+        android:contentDescription="" />
 
     <ProgressBar
         android:id="@+id/progress_bar"

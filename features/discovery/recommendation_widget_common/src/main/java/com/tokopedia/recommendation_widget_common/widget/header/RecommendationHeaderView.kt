@@ -268,7 +268,7 @@ class RecommendationHeaderView: FrameLayout {
 
             titleContainer.setPadding(
                     titleContainer.paddingLeft,
-                    convertDpToPixel(10f, titleContainer.context),
+                    convertDpToPixel(TITLE_TOP_PADDING, titleContainer.context),
                     titleContainer.paddingRight,
                     titleContainer.paddingBottom)
         }
@@ -285,5 +285,9 @@ class RecommendationHeaderView: FrameLayout {
 
     private fun isViewStubHasBeenInflated(viewStub: ViewStub?): Boolean {
         return viewStub?.parent == null
+    }
+
+    companion object {
+        private const val TITLE_TOP_PADDING = 10f
     }
 }

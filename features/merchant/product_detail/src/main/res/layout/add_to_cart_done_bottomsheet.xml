@@ -25,27 +25,30 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
                 android:background="@null"
-                app:srcCompat="@drawable/ic_close_default" />
+                app:srcCompat="@drawable/ic_close_default"
+                android:contentDescription="" />
 
-            <TextView
+            <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tv_title"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
                 android:layout_marginLeft="16dp"
                 android:layout_weight="1"
                 android:ellipsize="end"
                 android:maxLines="2"
+                app:typographyType="display_1"
                 android:textColor="@color/Unify_N600"
                 android:textSize="@dimen/sp_17" />
 
-            <TextView
+            <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tv_reset"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="end|right"
                 android:textColor="@color/Unify_G400"
                 android:textSize="14sp"
+                app:typographyType="display_2"
                 android:visibility="gone" />
 
         </LinearLayout>

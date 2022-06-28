@@ -33,7 +33,8 @@
             app:layout_constraintBottom_toBottomOf="@+id/text_quota_count"
             app:layout_constraintLeft_toLeftOf="@+id/text_quota_count"
             app:layout_constraintRight_toRightOf="@+id/text_quota_count"
-            app:layout_constraintTop_toTopOf="@+id/text_quota_count" />
+            app:layout_constraintTop_toTopOf="@+id/text_quota_count"
+            tools:ignore="UnifyComponentUsage" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/text_quota_count"
@@ -167,7 +168,8 @@
             app:layout_constraintBottom_toBottomOf="@+id/text_time_value"
             app:layout_constraintLeft_toLeftOf="@+id/text_time_value"
             app:layout_constraintRight_toRightOf="@+id/text_time_value"
-            app:layout_constraintTop_toTopOf="@+id/text_time_value" />
+            app:layout_constraintTop_toTopOf="@+id/text_time_value"
+            tools:ignore="UnifyComponentUsage" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/text_time_value"

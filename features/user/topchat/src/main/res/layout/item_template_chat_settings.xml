@@ -53,7 +53,8 @@
         android:paddingTop="@dimen/spacing_lvl5"
         android:paddingRight="@dimen/spacing_lvl4"
         android:paddingBottom="@dimen/spacing_lvl5"
-        app:srcCompat="@drawable/ic_edit_topchat" />
+        app:srcCompat="@drawable/ic_edit_topchat"
+        android:contentDescription="" />
 
     <View
         android:id="@+id/divider"

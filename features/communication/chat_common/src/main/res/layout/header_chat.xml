@@ -34,13 +34,14 @@
 
     </FrameLayout>
 
-    <ImageButton
+    <com.tokopedia.unifycomponents.UnifyImageButton
         android:id="@+id/header_menu"
         android:layout_width="@dimen/layout_lvl6"
         android:layout_height="@dimen/layout_lvl6"
         android:layout_alignParentEnd="true"
         android:layout_centerVertical="true"
         android:layout_marginLeft="@dimen/spacing_lvl2"
+        app:unifyImageButtonVariant="image"
         android:layout_marginRight="@dimen/spacing_lvl2"
         android:background="@color/Unify_N0"
         android:contentDescription="header_menu"

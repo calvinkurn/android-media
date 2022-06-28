@@ -224,12 +224,14 @@ class EventPDPFragment : BaseListFragment<EventPDPModel, EventPDPFactoryImpl>(),
 
     fun renderView(context: Context, combined: EventPDPContentCombined) {
         loadMedia(productDetailData)
-        loadTab(productDetailData,
-                eventPDPViewModel.getTabsTitleData(combined,
-                        resources.getString(R.string.ent_pdp_about_this),
-                        resources.getString(R.string.ent_pdp_facilities),
-                        resources.getString(R.string.ent_pdp_detail_lokasi))
-        )
+        context?.let {
+            loadTab(productDetailData,
+                    eventPDPViewModel.getTabsTitleData(combined,
+                            it.resources.getString(R.string.ent_pdp_about_this),
+                            it.resources.getString(R.string.ent_pdp_facilities),
+                            it.resources.getString(R.string.ent_pdp_detail_lokasi))
+            )
+        }
         loadCalendar(context, productDetailData)
         loadPrice(productDetailData)
     }
@@ -253,7 +255,7 @@ class EventPDPFragment : BaseListFragment<EventPDPModel, EventPDPFactoryImpl>(),
             text = if(price != ZERO_PRICE) {
                  CurrencyFormatter.getRupiahFormat(productDetailData.salesPrice.toInt())
             } else {
-                 resources.getString(R.string.ent_free_price)
+                 context?.resources?.getString(R.string.ent_free_price) ?: ""
             }
         }
 

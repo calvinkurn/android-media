@@ -62,7 +62,8 @@
             android:weightSum="5"
             app:layout_constraintLeft_toLeftOf="@id/txt_help_title"
             app:layout_constraintRight_toRightOf="@id/txt_help_title"
-            app:layout_constraintTop_toBottomOf="@id/txt_help_title">
+            app:layout_constraintTop_toBottomOf="@id/txt_help_title"
+            tools:ignore="Orientation">
 
         </LinearLayout>
 

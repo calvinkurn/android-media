@@ -153,9 +153,11 @@ open class SelectionRangeCalendarWidget : BottomSheetUnify() {
     }
 
     fun setLayoutMargin() {
-        var padding = resources.getDimension(RUnify.dimen.layout_lvl2).toInt()
-        bottomSheetWrapper.setPadding(0, padding, 0, 0)
-        bottomSheetHeader.setPadding(padding, 0, padding, 0)
+        context?.let {
+            var padding = it.resources.getDimension(RUnify.dimen.layout_lvl2).toInt()
+            bottomSheetWrapper.setPadding(0, padding, 0, 0)
+            bottomSheetHeader.setPadding(padding, 0, padding, 0)
+        }
     }
 
 
@@ -251,7 +253,7 @@ open class SelectionRangeCalendarWidget : BottomSheetUnify() {
                                         ?: date
                                 )
                                 GlobalScope.launch {
-                                    delay(300)
+                                    delay(DISMISS_DELAY)
                                     dismissAllowingStateLoss()
                                 }
                             }
@@ -310,6 +312,8 @@ open class SelectionRangeCalendarWidget : BottomSheetUnify() {
         const val DEFAULT_RANGE_CALENDAR_YEAR = 1
 
         const val CALENDAR_TITLE = "Pilih Tanggal"
+
+        private const val DISMISS_DELAY: Long = 300
 
         fun getInstance(
             minDate: String?, maxDate: String?, rangeYear: Int,

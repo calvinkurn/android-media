@@ -22,13 +22,15 @@
             android:id="@id/exo_play"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:srcCompat="@drawable/ic_pdp_video_play" />
+            app:srcCompat="@drawable/ic_pdp_video_play"
+            android:contentDescription="" />
 
         <ImageView
             android:id="@id/exo_pause"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:srcCompat="@drawable/ic_pdp_video_pause" />
+            app:srcCompat="@drawable/ic_pdp_video_pause"
+            android:contentDescription="" />
 
     </FrameLayout>
 
@@ -60,7 +62,8 @@
         android:layout_marginEnd="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/pdp_maximize_control"
-        app:srcCompat="@drawable/ic_pdp_volume_mute" />
+        app:srcCompat="@drawable/ic_pdp_volume_mute"
+        android:contentDescription="" />
 
     <ImageView
         android:id="@+id/pdp_maximize_control"
@@ -68,6 +71,7 @@
         android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:srcCompat="@drawable/ic_pdp_video_maximize" />
+        app:srcCompat="@drawable/ic_pdp_video_maximize"
+        android:contentDescription="" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

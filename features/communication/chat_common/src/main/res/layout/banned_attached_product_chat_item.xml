@@ -82,6 +82,7 @@
                 android:layout_height="@dimen/chatcommon_50dp"
                 android:alpha="@dimen/opacity_disabled"
                 android:scaleType="centerCrop"
+                android:contentDescription=""
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:srcCompat="@drawable/ic_loading_toped"
