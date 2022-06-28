@@ -9,14 +9,20 @@ import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.media.editor.R
 import com.tokopedia.media.editor.databinding.FragmentDetailEditorBinding
 import com.tokopedia.media.editor.ui.activity.detail.EditorDetailViewModel
+import com.tokopedia.media.editor.ui.component.BrightnessToolUiComponent
 import com.tokopedia.media.loader.loadImage
+import com.tokopedia.picker.common.basecomponent.uiComponent
+import com.tokopedia.picker.common.types.EditorToolType
 import com.tokopedia.utils.view.binding.viewBinding
 import javax.inject.Inject
 
-class EditorDetailFragment @Inject constructor() : TkpdBaseV4Fragment() {
+class EditorDetailFragment @Inject constructor() : TkpdBaseV4Fragment()
+    , BrightnessToolUiComponent.Listener {
 
     private val viewBinding: FragmentDetailEditorBinding? by viewBinding()
     private val viewModel: EditorDetailViewModel by activityViewModels()
+
+    private val brightnessComponent by uiComponent { BrightnessToolUiComponent(it, this) }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -35,13 +41,27 @@ class EditorDetailFragment @Inject constructor() : TkpdBaseV4Fragment() {
         initObservable()
     }
 
-    override fun getScreenName() = SCREEN_NAME
+    override fun onBrightnessValueChanged(value: Int) {
+        viewModel.setBrightness(value)
+    }
 
     private fun initObservable() {
         viewModel.intentUiModel.observe(viewLifecycleOwner) {
-            viewBinding?.imgPreview?.loadImage(it.imageUrl)
+            viewBinding?.imgPreview?.loadImage(it.imageUrl) {
+                centerCrop()
+            }
+
+            if (it.editorToolType == EditorToolType.BRIGHTNESS) {
+                brightnessComponent.setupView()
+            }
+        }
+
+        viewModel.brightnessValue.observe(viewLifecycleOwner) {
+            viewBinding?.imgPreview?.colorFilter = viewModel.getBrightnessMatrix(it.toFloat())
         }
     }
+
+    override fun getScreenName() = SCREEN_NAME
 
     companion object {
         private const val SCREEN_NAME = "Detail Editor"
