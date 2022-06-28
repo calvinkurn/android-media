@@ -11,10 +11,10 @@ import com.tokopedia.media.editor.ui.activity.BaseEditorActivity
 import com.tokopedia.media.editor.ui.uimodel.EditorDetailUiModel
 import javax.inject.Inject
 
-class EditorDetailActivity : BaseEditorActivity() {
+class DetailEditorActivity : BaseEditorActivity() {
 
     @Inject lateinit var fragmentFactory: FragmentFactory
-    lateinit var viewModel: EditorDetailViewModel
+    lateinit var viewModel: DetailEditorViewModel
 
     private var editorIntent = EditorDetailUiModel()
 
@@ -36,7 +36,7 @@ class EditorDetailActivity : BaseEditorActivity() {
     override fun initViewModel() {
         viewModel = ViewModelProvider(
             this
-        ).get(EditorDetailViewModel::class.java)
+        ).get(DetailEditorViewModel::class.java)
     }
 
     override fun initBundle(savedInstanceState: Bundle?) {
@@ -62,7 +62,7 @@ class EditorDetailActivity : BaseEditorActivity() {
         private const val PARAM_EDITOR_DETAIL = "param.editor_detail"
 
         fun start(context: Context, detailUiModel: EditorDetailUiModel) {
-            val intent = Intent(context, EditorDetailActivity::class.java).apply {
+            val intent = Intent(context, DetailEditorActivity::class.java).apply {
                 putExtra(PARAM_EDITOR_DETAIL, detailUiModel)
             }
 

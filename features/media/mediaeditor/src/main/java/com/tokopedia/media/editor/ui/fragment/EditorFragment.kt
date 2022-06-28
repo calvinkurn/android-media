@@ -8,10 +8,10 @@ import androidx.fragment.app.activityViewModels
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.media.editor.R
 import com.tokopedia.media.editor.databinding.FragmentMainEditorBinding
-import com.tokopedia.media.editor.ui.activity.detail.EditorDetailActivity
+import com.tokopedia.media.editor.ui.activity.detail.DetailEditorActivity
 import com.tokopedia.media.editor.ui.activity.main.EditorViewModel
-import com.tokopedia.media.editor.ui.component.EditorToolUiComponent
-import com.tokopedia.media.editor.ui.component.ThumbnailDrawerUiComponent
+import com.tokopedia.media.editor.ui.component.ToolsUiComponent
+import com.tokopedia.media.editor.ui.component.DrawerUiComponent
 import com.tokopedia.media.editor.ui.uimodel.EditorDetailUiModel
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.picker.common.basecomponent.uiComponent
@@ -19,14 +19,14 @@ import com.tokopedia.utils.view.binding.viewBinding
 import javax.inject.Inject
 
 class EditorFragment @Inject constructor() : TkpdBaseV4Fragment()
-    , EditorToolUiComponent.Listener
-    , ThumbnailDrawerUiComponent.Listener {
+    , ToolsUiComponent.Listener
+    , DrawerUiComponent.Listener {
 
     private val viewBinding: FragmentMainEditorBinding? by viewBinding()
     private val viewModel: EditorViewModel by activityViewModels()
 
-    private val editorToolComponent by uiComponent { EditorToolUiComponent(it, this) }
-    private val thumbnailDrawerComponent by uiComponent { ThumbnailDrawerUiComponent(it, this) }
+    private val editorToolComponent by uiComponent { ToolsUiComponent(it, this) }
+    private val thumbnailDrawerComponent by uiComponent { DrawerUiComponent(it, this) }
 
     private var activeImageUrl: String = ""
 
@@ -50,7 +50,7 @@ class EditorFragment @Inject constructor() : TkpdBaseV4Fragment()
     }
 
     override fun onEditorToolClicked(type: Int) {
-        EditorDetailActivity.start(
+        DetailEditorActivity.start(
             requireContext(),
             EditorDetailUiModel(activeImageUrl, type)
         )

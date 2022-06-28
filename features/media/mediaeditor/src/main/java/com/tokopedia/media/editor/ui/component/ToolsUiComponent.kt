@@ -10,7 +10,7 @@ import com.tokopedia.media.editor.ui.uimodel.ToolUiModel
 import com.tokopedia.picker.common.basecomponent.UiComponent
 import com.tokopedia.picker.common.types.EditorToolType
 
-class EditorToolUiComponent constructor(
+class ToolsUiComponent constructor(
     viewGroup: ViewGroup,
     private val listener: Listener
 ) : UiComponent(viewGroup, R.id.uc_editor_tool_container)

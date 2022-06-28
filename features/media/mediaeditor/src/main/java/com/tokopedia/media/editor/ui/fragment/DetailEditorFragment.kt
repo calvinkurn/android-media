@@ -8,15 +8,15 @@ import androidx.fragment.app.activityViewModels
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.media.editor.R
 import com.tokopedia.media.editor.databinding.FragmentDetailEditorBinding
-import com.tokopedia.media.editor.ui.activity.detail.EditorDetailViewModel
+import com.tokopedia.media.editor.ui.activity.detail.DetailEditorViewModel
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.utils.view.binding.viewBinding
 import javax.inject.Inject
 
-class EditorDetailFragment @Inject constructor() : TkpdBaseV4Fragment() {
+class DetailEditorFragment @Inject constructor() : TkpdBaseV4Fragment() {
 
     private val viewBinding: FragmentDetailEditorBinding? by viewBinding()
-    private val viewModel: EditorDetailViewModel by activityViewModels()
+    private val viewModel: DetailEditorViewModel by activityViewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater,

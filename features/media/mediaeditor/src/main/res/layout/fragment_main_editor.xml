@@ -18,7 +18,7 @@
         app:layout_constraintDimensionRatio="H,1:1" />
 
     <include
-        layout="@layout/ui_component_main_editor_tool"
+        layout="@layout/ui_component_tools_editor"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/img_preview"
