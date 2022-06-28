@@ -1,5 +1,6 @@
 package com.tokopedia.statistic.view.fragment
 
+import android.annotation.SuppressLint
 import android.content.res.Configuration
 import android.os.Bundle
 import android.os.Handler
@@ -16,6 +17,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.kotlin.extensions.orFalse
+import com.tokopedia.kotlin.extensions.orTrue
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.sellerhomecommon.common.WidgetListener
@@ -298,8 +300,9 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
     }
 
     override fun sendCardImpressionEvent(model: CardWidgetUiModel) {
-        val position = adapter.data.indexOf(model)
-        StatisticTracker.sendCardImpressionEvent(model, position)
+        StatisticTracker.sendCardImpressionEvent(
+            statisticPage?.pageSource.orEmpty(), model
+        )
     }
 
     override fun sendLineGraphCtaClickEvent(model: LineGraphWidgetUiModel) {
@@ -307,35 +310,15 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
     }
 
     override fun sendLineGraphImpressionEvent(model: LineGraphWidgetUiModel) {
-        val position = adapter.data.indexOf(model)
-        StatisticTracker.sendImpressionLineGraphEvent(model, position)
+        StatisticTracker.sendImpressionLineGraphEvent(
+            statisticPage?.pageSource.orEmpty(),
+            model
+        )
     }
 
     override fun sendLineChartEmptyStateCtaClickEvent(model: LineGraphWidgetUiModel) {
         StatisticTracker.sendEmptyStateCtaClickLineGraphEvent(model)
     }
-
-    override fun sendCarouselImpressionEvent(
-        dataKey: String,
-        carouselItems: List<CarouselItemUiModel>,
-        position: Int
-    ) {
-        StatisticTracker.sendImpressionCarouselItemBannerEvent(dataKey, carouselItems, position)
-    }
-
-    override fun sendCarouselClickTracking(
-        dataKey: String,
-        carouselItems: List<CarouselItemUiModel>,
-        position: Int
-    ) {
-        StatisticTracker.sendClickCarouselItemBannerEvent(dataKey, carouselItems, position)
-    }
-
-    override fun sendCarouselCtaClickEvent(dataKey: String) {
-        StatisticTracker.sendClickCarouselCtaEvent(dataKey)
-    }
-
-    override fun sendCarouselEmptyStateCtaClickEvent(element: CarouselWidgetUiModel) {}
 
     override fun sendPosListItemClickEvent(element: PostListWidgetUiModel, post: PostItemUiModel) {
         StatisticTracker.sendClickPostItemEvent(element.dataKey, post.title)
@@ -372,15 +355,33 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
         maxSlidePosition: Int,
         isSlideEmpty: Boolean
     ) {
-        StatisticTracker.sendTableImpressionEvent(model, position, slidePosition, isSlideEmpty)
-        getCategoryPage()?.let { categoryPage ->
-            StatisticTracker.sendTableSlideEvent(categoryPage, slidePosition.plus(Int.ONE), maxSlidePosition)
-        }
+        StatisticTracker.sendTableImpressionEvent(
+            statisticPage?.pageSource.orEmpty(), model.dataKey, isSlideEmpty
+        )
+
+        StatisticTracker.sendTableOnSwipeEvent(
+            statisticPage?.pageSource.orEmpty(),
+            slidePosition, maxSlidePosition
+        )
+    }
+
+    override fun sendTableOnSwipeEvent(
+        element: TableWidgetUiModel,
+        slidePosition: Int,
+        maxSlidePosition: Int,
+        isSlideEmpty: Boolean
+    ) {
+        StatisticTracker.sendTableOnSwipeEvent(
+            statisticPage?.pageSource.orEmpty(),
+            slidePosition,
+            maxSlidePosition
+        )
     }
 
     override fun sendPieChartImpressionEvent(model: PieChartWidgetUiModel) {
-        val position = adapter.data.indexOf(model)
-        StatisticTracker.sendPieChartImpressionEvent(model, position)
+        StatisticTracker.sendPieChartImpressionEvent(
+            statisticPage?.pageSource.orEmpty(), model
+        )
     }
 
     override fun sendPieChartEmptyStateCtaClickEvent(element: PieChartWidgetUiModel) {
@@ -388,8 +389,10 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
     }
 
     override fun sendBarChartImpressionEvent(model: BarChartWidgetUiModel) {
-        val position = adapter.data.indexOf(model)
-        StatisticTracker.sendBarChartImpressionEvent(model, position)
+        StatisticTracker.sendBarChartImpressionEvent(
+            statisticPage?.pageSource.orEmpty(),
+            model
+        )
     }
 
     override fun sendBarChartEmptyStateCtaClick(model: BarChartWidgetUiModel) {
@@ -397,7 +400,9 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
     }
 
     override fun sendSectionTooltipClickEvent(model: SectionWidgetUiModel) {
-        StatisticTracker.sendSectionTooltipClickEvent(model.title)
+        StatisticTracker.sendSectionTooltipClickEvent(
+            statisticPage?.pageSource.orEmpty(), model.title
+        )
     }
 
     override fun sendMultiLineGraphImpressionEvent(element: MultiLineGraphWidgetUiModel) {
@@ -457,7 +462,7 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
                     fetchTableData(listOf(copiedWidget))
                 }
             }
-            sendSelectedFilterClickEvent(filter)
+            sendSelectedFilterClickEvent(filter, element)
         }.show(childFragmentManager, WidgetFilterBottomSheet.TABLE_FILTER_TAG)
 
         statisticPage?.let {
@@ -469,10 +474,17 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
         this.selectedWidget = widget
     }
 
-    private fun sendSelectedFilterClickEvent(filter: WidgetFilterUiModel) {
-        getCategoryPage()?.let { categoryPage ->
-            StatisticTracker.sendTableFilterClickEvent(categoryPage, filter.name)
-        }
+    private fun sendSelectedFilterClickEvent(
+        filter: WidgetFilterUiModel,
+        model: TableWidgetUiModel
+    ) {
+        val isEmpty = model.data?.dataSet?.all { it.rows.isNullOrEmpty() }.orTrue()
+        StatisticTracker.sendTableFilterClickEvent(
+            statisticPage?.pageSource.orEmpty(),
+            model.dataKey,
+            filter.name,
+            isEmpty
+        )
     }
 
     private fun loadInitialLayoutData(savedInstanceState: Bundle?, action: () -> Unit) {
@@ -597,7 +609,8 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
         return try {
             val widget = adapter.data[position]
             return if (isTablet) {
-                val orientation = resources.configuration.orientation
+                val orientation = activity?.resources?.configuration?.orientation
+                    ?: Configuration.ORIENTATION_PORTRAIT
                 val isPortrait = orientation == Configuration.ORIENTATION_PORTRAIT
                 if (isPortrait) {
                     when (widget) {
@@ -725,7 +738,9 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
         val dateFilters: List<DateFilterItem> = statisticPage?.dateFilters.orEmpty()
         val identifierDescription = statisticPage?.exclusiveIdentifierDateFilterDesc.orEmpty()
         DateFilterBottomSheet.newInstance(
-            dateFilters, identifierDescription
+            dateFilters,
+            identifierDescription,
+            statisticPage?.pageSource.orEmpty()
         )
             .setOnApplyChanges {
                 setHeaderSubTitle(it.getHeaderSubTitle(requireContext()))
@@ -736,6 +751,7 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
         StatisticTracker.sendCalendarClickEvent(userSession.userId, tabName, headerSubTitle)
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     private fun applyDateRange(item: DateFilterItem) {
         val startDate = item.startDate ?: return
         val endDate = item.endDate ?: return
@@ -743,11 +759,14 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
             mViewModel.setDateFilter(it.pageSource, startDate, endDate, item.getDateFilterType())
         }
 
-        StatisticTracker.sendSetDateFilterEvent(item.label)
+        StatisticTracker.sendSetDateFilterEvent(
+            statisticPage?.pageSource.orEmpty(),
+            item.getDateFilterType(),
+            item.startDate,
+            item.endDate
+        )
         adapter.data.forEach {
             when (it) {
-                is TickerWidgetUiModel -> {
-                }
                 is SectionWidgetUiModel -> {
                     it.shouldShow = true
                 }
@@ -1028,7 +1047,9 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
 
             actionMenuBottomSheet.show(childFragmentManager)
 
-            StatisticTracker.sendThreeDotsClickEvent(userSession.userId)
+            StatisticTracker.sendThreeDotsClickEvent(
+                statisticPage?.pageSource.orEmpty()
+            )
         }
     }
 
@@ -1054,14 +1075,20 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
         //send impression for calendar filter action menu
         menu.findItem(R.id.actionStcSelectDate)?.let {
             view?.addOnImpressionListener(dateFilterImpressHolder) {
-                StatisticTracker.sendCalendarImpressionEvent(userSession.userId)
+                val dateFilter = statisticPage?.dateFilters?.firstOrNull { it.isSelected }
+                StatisticTracker.sendCalendarImpressionEvent(
+                    statisticPage?.pageSource.orEmpty(),
+                    dateFilter
+                )
             }
         }
 
         //send impression for 3 dots action menu
         menu.findItem(R.id.actionStcOtherMenu)?.let {
             view?.addOnImpressionListener(otherMenuImpressHolder) {
-                StatisticTracker.sendThreeDotsImpressionEvent(userSession.userId)
+                StatisticTracker.sendThreeDotsImpressionEvent(
+                    statisticPage?.pageSource.orEmpty()
+                )
             }
         }
     }
