@@ -86,9 +86,11 @@ class ProductAddOnViewHolder(
         // setup add on items
         optionItems = addOnUiModel.filteredOptions
         optionAdapter = ProductOptionAdapter(this@ProductAddOnViewHolder).apply {
+            val totalSelected = optionItems.count { it.isSelected }
             setData(optionItems.onEach {
                 it.dataSetPosition = dataSetPosition
                 it.maxSelected = addOnUiModel.maxQty
+                it.canBeSelected = it.isSelected || totalSelected < addOnUiModel.maxQty
             })
         }
         binding.rvAddOnList.run {
