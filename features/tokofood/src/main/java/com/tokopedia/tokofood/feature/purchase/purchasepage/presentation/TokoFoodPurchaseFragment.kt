@@ -1020,6 +1020,16 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
     override fun onFailedAgreeConsent(throwable: Throwable) {
         viewModel.setPaymentButtonLoading(false)
         consentBottomSheet?.dismiss()
+        TokofoodErrorLogger.logExceptionToServerLogger(
+            TokofoodErrorLogger.PAGE.PURCHASE,
+            throwable,
+            TokofoodErrorLogger.ErrorType.ERROR_PAGE,
+            userSession.deviceId.orEmpty(),
+            TokofoodErrorLogger.ErrorDescription.AGREE_CONSENT_ERROR,
+            mapOf(
+                TokofoodErrorLogger.PAGE_KEY to PAGE_NAME
+            )
+        )
         showToasterError(throwable)
     }
 
