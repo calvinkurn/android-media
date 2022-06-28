@@ -1,12 +1,15 @@
 package com.tokopedia.topchat.chatlist.activity
 
 import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.*
 import com.tokopedia.topchat.R
+import com.tokopedia.topchat.assertion.withItemCount
 import com.tokopedia.topchat.chatlist.activity.base.ChatListTest
 import com.tokopedia.topchat.matchers.withIndex
 import com.tokopedia.topchat.matchers.withTotalItem
+import org.hamcrest.Matchers.equalTo
 import org.hamcrest.Matchers.not
 import org.junit.Test
 
@@ -86,5 +89,41 @@ class ChatListActivityTest: ChatListTest() {
         // Then
         onView(withIndex(withId(R.id.recycler_view), 0))
                 .check(matches(withTotalItem(5)))
+    }
+
+    @Test
+    fun should_show_default_3_filters_when_user_on_seller_tab() {
+        // Given
+        userSession.hasShopStub = true
+        userSession.shopNameStub = "Toko Rifqi 123"
+        userSession.nameStub = "Rifqi MF 123"
+        chatListUseCase.response = exSize5ChatListPojo
+        userSession.setIsShopOwner(true)
+
+        // When
+        activity.setupTestFragment(chatListUseCase, chatNotificationUseCase)
+        onView(withText("Toko Rifqi 123")).perform(click())
+        onView(withId(R.id.menu_chat_filter)).perform(click())
+
+        // Then
+        onView(withId(R.id.rvMenu)).check(withItemCount(equalTo(3)))
+    }
+
+    @Test
+    fun should_show_2_filters_when_user_on_buyer_tab() {
+        // Given
+        userSession.hasShopStub = true
+        userSession.shopNameStub = "Toko Rifqi 123"
+        userSession.nameStub = "Rifqi MF 123"
+        chatListUseCase.response = exSize5ChatListPojo
+        userSession.setIsShopOwner(true)
+
+        // When
+        activity.setupTestFragment(chatListUseCase, chatNotificationUseCase)
+        onView(withText("Rifqi MF 123")).perform(click())
+        onView(withId(R.id.menu_chat_filter)).perform(click())
+
+        // Then
+        onView(withId(R.id.rvMenu)).check(withItemCount(equalTo(2)))
     }
 }
