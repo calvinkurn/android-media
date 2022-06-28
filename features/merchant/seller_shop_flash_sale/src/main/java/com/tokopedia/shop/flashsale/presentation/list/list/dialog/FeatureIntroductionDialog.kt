@@ -10,7 +10,6 @@ import android.text.style.ClickableSpan
 import android.text.style.StyleSpan
 import android.view.View
 import android.widget.TextView
-import androidx.constraintlayout.widget.ConstraintLayout
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.media.loader.loadImage
@@ -35,16 +34,6 @@ class FeatureIntroductionDialog {
         dialog.setChild(view)
         setupView(view, dialog)
         dialog.show()
-
-        val layoutParams = dialog.dialogContent.layoutParams as ConstraintLayout.LayoutParams
-        layoutParams.setMargins(0, 0, 0, 0)
-        dialog.dialogContent.layoutParams = layoutParams
-
-        val overlayParams = dialog.dialogChild.layoutParams
-        layoutParams.setMargins(0, 0, 0, 0)
-        dialog.dialogChild.layoutParams = overlayParams
-
-
     }
 
     private fun setupView(view: View, dialog: DialogUnify) {
