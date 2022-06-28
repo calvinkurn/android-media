@@ -1,5 +1,6 @@
 package com.tokopedia.discovery2
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
@@ -304,6 +305,7 @@ class Utils {
             }
         }
 
+        @SuppressLint("ResourceType")
         fun getValidHexCode(context: Context, color: String?): String {
             if (color.isNullOrEmpty()) {
                 return context.resources.getString(com.tokopedia.unifyprinciples.R.color.Unify_Background)
