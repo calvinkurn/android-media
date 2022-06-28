@@ -76,13 +76,14 @@ class CustomListAdapter(
     fun updateAddOnSelection(isSelected: Boolean, addOnPositions: Pair<Int, Int>) {
         val dataSetPosition = addOnPositions.first
         val optionIndex = addOnPositions.second
-        customListItems.getOrNull(dataSetPosition)?.addOnUiModel?.isSelected = isSelected
         customListItems.getOrNull(dataSetPosition)?.addOnUiModel?.options?.get(optionIndex)?.run {
             if (selectionControlType == SelectionControlType.SINGLE_SELECTION) {
                 customListItems[dataSetPosition].addOnUiModel?.options?.forEach { it.isSelected = false }
             }
             this.isSelected = isSelected
         }
+        customListItems.getOrNull(dataSetPosition)?.addOnUiModel?.isSelected =
+            isSelected || customListItems[dataSetPosition].addOnUiModel?.options?.any { it.isSelected } == true
     }
 
     fun updateOrderNote(orderNote:String, dataSetPosition: Int) {
