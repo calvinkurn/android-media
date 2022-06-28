@@ -3,12 +3,14 @@ package com.tokopedia.media.editor.di
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.abstraction.common.di.scope.ActivityScope
 import com.tokopedia.media.editor.di.module.EditorFragmentModule
+import com.tokopedia.media.editor.di.module.EditorModule
 import com.tokopedia.media.editor.ui.activity.detail.DetailEditorActivity
 import com.tokopedia.media.editor.ui.activity.main.EditorActivity
 import dagger.Component
 
 @ActivityScope
 @Component(modules = [
+    EditorModule::class,
     EditorFragmentModule::class,
 ], dependencies = [
     BaseAppComponent::class
