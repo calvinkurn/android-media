@@ -48,5 +48,16 @@ class FeedUserCompleteOnboarding : BottomSheetUnify() {
 
     companion object {
         private const val TAG = "FeedUserCompleteOnboarding"
+
+        fun getFragment(
+            fragmentManager: FragmentManager,
+            classLoader: ClassLoader,
+        ): FeedUserCompleteOnboarding {
+            val oldInstance = fragmentManager.findFragmentByTag(TAG) as? FeedUserCompleteOnboarding
+            return oldInstance ?: fragmentManager.fragmentFactory.instantiate(
+                classLoader,
+                FeedUserCompleteOnboarding::class.java.name
+            ) as FeedUserCompleteOnboarding
+        }
     }
 }

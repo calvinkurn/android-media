@@ -206,6 +206,15 @@ class UserProfileFragment : BaseDaggerFragment(),
         feedFloatingButtonManager.cancel()
     }
 
+    override fun onAttachFragment(childFragment: Fragment) {
+        super.onAttachFragment(childFragment)
+        when(childFragment) {
+            is FeedUserCompleteOnboarding -> {
+                /** TODO: set listener */
+            }
+        }
+    }
+
     private fun refreshLandingPageData(isRefreshPost: Boolean = false) {
         landedUserName?.let {
             viewModel.getUserDetails(it, isRefreshPost)
@@ -223,7 +232,10 @@ class UserProfileFragment : BaseDaggerFragment(),
         view?.findViewById<View>(R.id.btn_action_follow)?.setOnClickListener(this)
         view?.findViewById<View>(R.id.text_see_more)?.setOnClickListener(this)
         feedFab.setOnClickListener {
-            FeedUserCompleteOnboarding().showNow(childFragmentManager)
+            FeedUserCompleteOnboarding.getFragment(
+                childFragmentManager,
+                requireActivity().classLoader
+            ).showNow(childFragmentManager)
         }
 
         recyclerviewPost?.addOnScrollListener(feedFloatingButtonManager.scrollListener)
