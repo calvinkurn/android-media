@@ -34,7 +34,7 @@
         app:typographyType="heading_6"
         app:layout_constraintStart_toStartOf="@id/tv_campaign_reserved_info_variant_name"
         app:layout_constraintTop_toBottomOf="@id/tv_campaign_reserved_info_variant_name"
-        app:layout_constraintBottom_toTopOf="@id/divider_reserved_info_variant"
+        app:layout_constraintBottom_toBottomOf="parent"
         tools:text="3 promosi"/>
 
     <com.tokopedia.unifyprinciples.Typography
@@ -55,14 +55,8 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="18dp"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/divider_reserved_info_variant"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         tools:text="10"/>
-
-    <com.tokopedia.unifycomponents.DividerUnify
-        android:id="@+id/divider_reserved_info_variant"
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        app:layout_constraintBottom_toBottomOf="parent"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
