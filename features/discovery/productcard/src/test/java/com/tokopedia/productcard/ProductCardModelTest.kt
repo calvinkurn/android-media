@@ -34,7 +34,7 @@ internal class ProductCardModelTest {
 
     private fun `Test rendered label group variant`(
             givenLabelGroupVariant: List<LabelGroupVariant>,
-            expectedRenderedLabelGroupVariant: List<LabelGroupVariant>
+            expectedRenderedLabelGroupVariant: List<LabelGroupVariant>,
     ) {
         val productCardModel = ProductCardModel(labelGroupVariantList = givenLabelGroupVariant)
         val actualRenderedLabelGroupVariant =

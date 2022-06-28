@@ -564,6 +564,7 @@ fun LinearLayout.renderLabelVariantSize(
 
     val textContainer = Typography(context)
     textContainer.setType(Typography.SMALL)
+    textContainer.tag = LABEL_VARIANT_TAG
 
     var sizeText = listLabelVariant.joinToString(", ") { it.title }
 

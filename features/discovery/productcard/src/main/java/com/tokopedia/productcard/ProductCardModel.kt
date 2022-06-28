@@ -380,7 +380,7 @@ data class ProductCardModel (
         customVariant.add(labelGroupCustomVariant)
     }
 
-    fun getOverlayImageLabel(): LabelGroup? {
+    fun getImageLabel(): LabelGroup? {
         return when {
             getLabelProductStatus() != null -> null
             getLabelBestSeller() != null -> getLabelBestSeller()

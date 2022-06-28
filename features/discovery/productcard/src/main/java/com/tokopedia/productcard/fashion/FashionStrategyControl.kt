@@ -7,6 +7,7 @@ import android.widget.LinearLayout
 import android.widget.Space
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.productcard.R
@@ -272,5 +273,7 @@ internal open class FashionStrategyControl: FashionStrategy {
                     }
                 }
         }
+
+        view.findViewById<LinearLayout?>(R.id.labelVariantWithLabelContainer).hide()
     }
 }

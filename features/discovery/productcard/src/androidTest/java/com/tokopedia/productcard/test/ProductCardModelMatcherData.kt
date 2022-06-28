@@ -117,8 +117,6 @@ internal fun getProductCardModelMatcherData(useViewStub: Boolean): List<ProductC
         testAddToCartButtonWishlist(useViewStub),
         testSeeSimilarProductButtonWishlist(useViewStub),
         testOutOfStock(),
-        testMixedVariant(),
-        testMixedVariantWithLabelPrice(),
     )
 }
 
@@ -2597,8 +2595,7 @@ private fun testAddToCartButtonWishlist(useViewStub: Boolean): ProductCardModelM
         R.id.imageButtonThreeDotsWishlist to isDisplayed(),
     )
 
-    if (useViewStub) productCardMatcher[R.id.buttonAddToCartStub] = isEnabled()
-    else productCardMatcher[R.id.buttonAddToCart] = isNotDisplayed()
+    if (!useViewStub) productCardMatcher[R.id.buttonAddToCart] = isNotDisplayed()
 
     return ProductCardModelMatcher(productCardModel, productCardMatcher)
 }
@@ -2644,10 +2641,7 @@ private fun testSeeSimilarProductButtonWishlist(useViewStub: Boolean): ProductCa
         R.id.imageButtonThreeDotsWishlist to isDisplayed(),
     )
 
-    if (useViewStub) {
-        productCardMatcher[R.id.buttonAddToCartStub] = isEnabled()
-    }
-    else {
+    if (!useViewStub) {
         productCardMatcher[R.id.buttonAddToCart] = isNotDisplayed()
         productCardMatcher[R.id.buttonAddToCartWishlist] = isNotDisplayed()
     }
@@ -2673,135 +2667,6 @@ private fun testOutOfStock(): ProductCardModelMatcher {
         R.id.labelProductStatus to isDisplayedWithText(labelProductStatus.title),
         R.id.textViewProductName to isDisplayedWithText(productCardModel.productName),
         R.id.textViewPrice to isDisplayedWithText(productCardModel.formattedPrice),
-    )
-
-    return ProductCardModelMatcher(productCardModel, productCardMatcher)
-}
-
-private fun testMixedVariant(): ProductCardModelMatcher {
-    val labelColor1 = LabelGroupVariant(typeVariant = TYPE_VARIANT_COLOR, hexColor = "#05056b")
-    val labelColor2 = LabelGroupVariant(typeVariant = TYPE_VARIANT_COLOR, hexColor = "#800000")
-    val labelColor3 = LabelGroupVariant(typeVariant = TYPE_VARIANT_COLOR, hexColor = "#f400a1")
-    val labelColor4 = LabelGroupVariant(typeVariant = TYPE_VARIANT_COLOR, hexColor = "#faf0be")
-    val labelColor5 = LabelGroupVariant(typeVariant = TYPE_VARIANT_COLOR, hexColor = "#ebcca3")
-    val labelCustom = LabelGroupVariant(typeVariant = TYPE_VARIANT_CUSTOM, title = "2")
-
-    val labelSize1 = LabelGroupVariant(typeVariant = TYPE_VARIANT_SIZE, title = "S")
-    val labelSize2 = LabelGroupVariant(typeVariant = TYPE_VARIANT_SIZE, title = "M")
-    val labelSize3 = LabelGroupVariant(typeVariant = TYPE_VARIANT_SIZE, title = "L")
-    val labelSize4 = LabelGroupVariant(typeVariant = TYPE_VARIANT_SIZE, title = "XL")
-    val labelSize5 = LabelGroupVariant(typeVariant = TYPE_VARIANT_SIZE, title = "XXL")
-
-    val productCardModel = ProductCardModel(
-        productName = "Test Variant Color 1",
-        productImageUrl = productImageUrl,
-        formattedPrice = "Rp7.999.000",
-        shopBadgeList = mutableListOf<ShopBadge>().also { badges ->
-            badges.add(ShopBadge(isShown = true, imageUrl = officialStoreBadgeImageUrl))
-        },
-        shopLocation = "DKI Jakarta",
-        ratingCount = 4,
-        reviewCount = 60,
-        freeOngkir = FreeOngkir(isActive = true, imageUrl = freeOngkirImageUrl),
-        isTopAds = true,
-        hasThreeDots = true,
-        labelGroupVariantList = listOf(
-            labelColor1,
-            labelColor2,
-            labelColor3,
-            labelColor4,
-            labelColor5,
-            labelSize1,
-            labelSize2,
-            labelSize3,
-            labelSize4,
-            labelSize5,
-            labelCustom,
-        ),
-    )
-
-    val productCardMatcher = mapOf(
-        R.id.imageProduct to isDisplayed(),
-        R.id.textTopAds to isDisplayed(),
-        R.id.textViewProductName to isDisplayedWithText(productCardModel.productName),
-        R.id.textViewPrice to isDisplayedWithText(productCardModel.formattedPrice),
-        R.id.imageShopBadge to isDisplayed(),
-        R.id.textViewShopLocation to isDisplayedWithText(productCardModel.shopLocation),
-        R.id.linearLayoutImageRating to isDisplayedWithChildCount(5),
-        R.id.imageViewRating1 to withDrawable(R.drawable.product_card_ic_rating_active),
-        R.id.imageViewRating2 to withDrawable(R.drawable.product_card_ic_rating_active),
-        R.id.imageViewRating3 to withDrawable(R.drawable.product_card_ic_rating_active),
-        R.id.imageViewRating4 to withDrawable(R.drawable.product_card_ic_rating_active),
-        R.id.imageViewRating5 to withDrawable(R.drawable.product_card_ic_rating_default),
-        R.id.textViewReviewCount to isDisplayedWithText("(${productCardModel.reviewCount})"),
-        R.id.imageFreeOngkirPromo to isDisplayed(),
-        R.id.imageThreeDots to isDisplayed(),
-    )
-
-    return ProductCardModelMatcher(productCardModel, productCardMatcher)
-}
-
-private fun testMixedVariantWithLabelPrice(): ProductCardModelMatcher {
-    val labelColor1 = LabelGroupVariant(typeVariant = TYPE_VARIANT_COLOR, hexColor = "#05056b")
-    val labelColor2 = LabelGroupVariant(typeVariant = TYPE_VARIANT_COLOR, hexColor = "#800000")
-    val labelColor3 = LabelGroupVariant(typeVariant = TYPE_VARIANT_COLOR, hexColor = "#f400a1")
-    val labelColor4 = LabelGroupVariant(typeVariant = TYPE_VARIANT_COLOR, hexColor = "#faf0be")
-    val labelColor5 = LabelGroupVariant(typeVariant = TYPE_VARIANT_COLOR, hexColor = "#ebcca3")
-    val labelCustom = LabelGroupVariant(typeVariant = TYPE_VARIANT_CUSTOM, title = "2")
-
-    val labelSize1 = LabelGroupVariant(typeVariant = TYPE_VARIANT_SIZE, title = "S")
-    val labelSize2 = LabelGroupVariant(typeVariant = TYPE_VARIANT_SIZE, title = "M")
-    val labelSize3 = LabelGroupVariant(typeVariant = TYPE_VARIANT_SIZE, title = "L")
-    val labelSize4 = LabelGroupVariant(typeVariant = TYPE_VARIANT_SIZE, title = "XL")
-    val labelSize5 = LabelGroupVariant(typeVariant = TYPE_VARIANT_SIZE, title = "XXL")
-
-    val labelPrice = LabelGroup(position = LABEL_PRICE, title = "Cashback", type = LIGHT_GREEN)
-
-    val productCardModel = ProductCardModel(
-        productName = "Test Variant Color 1",
-        productImageUrl = productImageUrl,
-        formattedPrice = "Rp7.999.000",
-        shopBadgeList = mutableListOf<ShopBadge>().also { badges ->
-            badges.add(ShopBadge(isShown = true, imageUrl = officialStoreBadgeImageUrl))
-        },
-        shopLocation = "DKI Jakarta",
-        ratingCount = 4,
-        reviewCount = 60,
-        freeOngkir = FreeOngkir(isActive = true, imageUrl = freeOngkirImageUrl),
-        isTopAds = true,
-        hasThreeDots = true,
-        labelGroupVariantList = listOf(
-            labelColor1,
-            labelColor2,
-            labelColor3,
-            labelColor4,
-            labelColor5,
-            labelSize1,
-            labelSize2,
-            labelSize3,
-            labelSize4,
-            labelSize5,
-            labelCustom,
-        ),
-        labelGroupList = listOf(labelPrice),
-    )
-
-    val productCardMatcher = mapOf(
-        R.id.imageProduct to isDisplayed(),
-        R.id.textTopAds to isDisplayed(),
-        R.id.textViewProductName to isDisplayedWithText(productCardModel.productName),
-        R.id.textViewPrice to isDisplayedWithText(productCardModel.formattedPrice),
-        R.id.imageShopBadge to isDisplayed(),
-        R.id.textViewShopLocation to isDisplayedWithText(productCardModel.shopLocation),
-        R.id.linearLayoutImageRating to isDisplayedWithChildCount(5),
-        R.id.imageViewRating1 to withDrawable(R.drawable.product_card_ic_rating_active),
-        R.id.imageViewRating2 to withDrawable(R.drawable.product_card_ic_rating_active),
-        R.id.imageViewRating3 to withDrawable(R.drawable.product_card_ic_rating_active),
-        R.id.imageViewRating4 to withDrawable(R.drawable.product_card_ic_rating_active),
-        R.id.imageViewRating5 to withDrawable(R.drawable.product_card_ic_rating_default),
-        R.id.textViewReviewCount to isDisplayedWithText("(${productCardModel.reviewCount})"),
-        R.id.imageFreeOngkirPromo to isDisplayed(),
-        R.id.imageThreeDots to isDisplayed(),
     )
 
     return ProductCardModelMatcher(productCardModel, productCardMatcher)

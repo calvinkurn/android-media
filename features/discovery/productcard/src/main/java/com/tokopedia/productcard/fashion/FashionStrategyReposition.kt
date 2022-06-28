@@ -7,6 +7,7 @@ import android.widget.LinearLayout
 import android.widget.Space
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.productcard.R
@@ -213,7 +214,7 @@ internal open class FashionStrategyReposition: FashionStrategy {
 
             val renderedLabelGroupVariantList =
                 productCardModel.getRenderedLabelGroupVariantList(
-                    LABEL_VARIANT_CHAR_LIMIT,
+                    LABEL_VARIANT_WITH_LABEL_CHAR_LIMIT,
                     productCardModel.getLabelPrice() == null,
                 )
             val renderedLabelVariantSizeList = renderedLabelGroupVariantList.filter { it.isSize() }
@@ -235,5 +236,7 @@ internal open class FashionStrategyReposition: FashionStrategy {
                 colorSampleSize,
             )
         }
+
+        view.findViewById<LinearLayout?>(R.id.labelVariantContainer).hide()
     }
 }

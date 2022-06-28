@@ -503,7 +503,7 @@ internal fun renderOverlayImageRoundedLabel(
         showOverlayImageRoundedLabel(
             labelImageBackground,
             labelImage,
-            productCardModel.getOverlayImageLabel(),
+            productCardModel.getImageLabel(),
         )
     } else {
         labelImage?.hide()
@@ -554,6 +554,7 @@ internal fun creteVariantContainer(context: Context): LinearLayout {
     layout.orientation = LinearLayout.HORIZONTAL
     layout.gravity = Gravity.CENTER_VERTICAL
     layout.setPadding(sidePadding, 0, sidePadding, 0)
+    layout.tag = LABEL_VARIANT_TAG
 
     layout.background =
         ContextCompat.getDrawable(context, R.drawable.product_card_label_group_variant_border)
