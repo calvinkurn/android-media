@@ -2,28 +2,24 @@ package com.tokopedia.tokofood.purchase
 
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.tokofood.common.util.Result
-import com.tokopedia.tokofood.feature.purchase.purchasepage.domain.model.response.AgreeConsent
 import com.tokopedia.tokofood.feature.purchase.purchasepage.domain.model.response.AgreeConsentData
 import com.tokopedia.tokofood.feature.purchase.purchasepage.domain.model.response.AgreeConsentResponse
 import io.mockk.coEvery
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
-import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.runBlocking
 import org.junit.Test
 
 @FlowPreview
 @ExperimentalCoroutinesApi
-class TokoFoodPurchaseConsentViewModelTest: TokoFoodPurchaseConsentViewModelTestFixture() {
+class TokoFoodPurchaseConsentViewModelTest : TokoFoodPurchaseConsentViewModelTestFixture() {
 
     @Test
     fun `when agreeConsent success should set success data`() {
         runBlocking {
             val response = AgreeConsentResponse(
-                data = AgreeConsent(
-                    tokofoodSubmitUserConsent = AgreeConsentData(
-                        isSuccess = true
-                    )
+                tokofoodSubmitUserConsent = AgreeConsentData(
+                    isSuccess = true
                 )
             )
             coEvery {
@@ -40,6 +36,7 @@ class TokoFoodPurchaseConsentViewModelTest: TokoFoodPurchaseConsentViewModelTest
             )
         }
     }
+
     @Test
     fun `when agreeConsent failed should set failed data`() {
         runBlocking {
