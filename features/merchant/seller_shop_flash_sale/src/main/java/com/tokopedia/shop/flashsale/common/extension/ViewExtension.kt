@@ -6,6 +6,7 @@ import android.view.animation.AccelerateDecelerateInterpolator
 import android.view.animation.Animation
 import android.view.animation.TranslateAnimation
 import androidx.constraintlayout.widget.Guideline
+import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
@@ -19,6 +20,7 @@ import kotlinx.coroutines.launch
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 
+private const val DEFAULT_SCROLL_ANIMATION_DURATION = 200
 
 infix fun View?.showError(throwable: Throwable) {
     this?.run {
@@ -78,7 +80,7 @@ fun View.disable() {
 }
 
 
-fun View?.slideUp(duration: Int = 350) {
+fun View?.slideUp(duration: Int = DEFAULT_SCROLL_ANIMATION_DURATION) {
     this?.let {
         val animate = TranslateAnimation(0f, 0f, this.height.toFloat(), 0f)
         animate.duration = duration.toLong()
@@ -100,7 +102,7 @@ fun View?.slideUp(duration: Int = 350) {
     }
 }
 
-fun View?.slideDown(duration: Int = 350) {
+fun View?.slideDown(duration: Int = DEFAULT_SCROLL_ANIMATION_DURATION) {
     this?.let {
         val animate =
             TranslateAnimation(Float.ZERO, Float.ZERO, Float.ZERO, this.height.toFloat())

@@ -2,6 +2,7 @@ package com.tokopedia.shop.flashsale.domain.entity
 
 data class HighlightableProduct(
     val id: Long,
+    val parentId : Long,
     val name: String,
     val imageUrl: String,
     val originalPrice: Long,
@@ -13,9 +14,17 @@ data class HighlightableProduct(
     val disabled: Boolean,
     val isSelected: Boolean,
     val position: Int,
+    val disabledReason : DisabledReason,
+    val highlightProductWording : String
 ) {
     data class Warehouse(
         val warehouseId: Long,
         val customStock: Long
     )
+
+    enum class DisabledReason {
+        NOT_DISABLED,
+        MAX_PRODUCT_REACHED,
+        OTHER_PRODUCT_WITH_SAME_PARENT_ID_ALREADY_SELECTED
+    }
 }

@@ -26,6 +26,7 @@ import com.tokopedia.shop.flashsale.presentation.creation.highlight.adapter.High
 import com.tokopedia.shop.flashsale.presentation.creation.highlight.bottomsheet.ManageHighlightedProductInfoBottomSheet
 import com.tokopedia.shop.flashsale.presentation.creation.highlight.decoration.ProductListItemDecoration
 import com.tokopedia.shop.flashsale.presentation.creation.rule.CampaignRuleActivity
+import com.tokopedia.shop.flashsale.presentation.list.container.CampaignListActivity
 import com.tokopedia.shop.flashsale.presentation.list.list.listener.RecyclerViewScrollListener
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -35,7 +36,7 @@ import javax.inject.Inject
 class ManageHighlightedProductFragment : BaseDaggerFragment() {
 
     companion object {
-        private const val PAGE_SIZE = 50
+        private const val PAGE_SIZE = 10
         private const val ONE_PAGE = 1
         private const val ONE_PRODUCT = 1
         private const val FIRST_PAGE = 1
@@ -99,6 +100,7 @@ class ManageHighlightedProductFragment : BaseDaggerFragment() {
         setFragmentToUnifyBgColor()
         observeProducts()
         observeSubmitHighlightedProducts()
+        observeSaveDraft()
         getProducts(FIRST_PAGE)
     }
 
@@ -129,6 +131,8 @@ class ManageHighlightedProductFragment : BaseDaggerFragment() {
         binding?.run {
             searchBar.searchBarTextField.setOnEditorActionListener { _, actionId, _ ->
                 if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+                    endlessRecyclerViewScrollListener?.resetState()
+                    viewModel.setIsFirstLoad(false)
                     productAdapter.submit(emptyList())
                     binding?.groupNoSearchResult?.gone()
                     getProducts(FIRST_PAGE)
@@ -157,7 +161,7 @@ class ManageHighlightedProductFragment : BaseDaggerFragment() {
             }
             btnDraft.setOnClickListener {
                 binding?.btnDraft.showLoading()
-                viewModel.submitHighlightedProducts(campaignId, productAdapter.getItems())
+                viewModel.saveDraft(campaignId, productAdapter.getItems())
             }
         }
     }
@@ -195,7 +199,7 @@ class ManageHighlightedProductFragment : BaseDaggerFragment() {
                 }
                 is Fail -> {
                     hideContent()
-                    binding?.root showError result.throwable
+                    binding?.cardView showError result.throwable
                 }
             }
         }
@@ -203,7 +207,6 @@ class ManageHighlightedProductFragment : BaseDaggerFragment() {
 
     private fun observeSubmitHighlightedProducts() {
         viewModel.submit.observe(viewLifecycleOwner) { result ->
-            binding?.btnDraft.stopLoading()
             binding?.btnProceed.stopLoading()
 
             when (result) {
@@ -211,7 +214,22 @@ class ManageHighlightedProductFragment : BaseDaggerFragment() {
                     handleProductSubmissionResult(result.data)
                 }
                 is Fail -> {
-                    binding?.root showError result.throwable
+                    binding?.cardView showError result.throwable
+                }
+            }
+        }
+    }
+
+    private fun observeSaveDraft() {
+        viewModel.saveDraft.observe(viewLifecycleOwner) { result ->
+            binding?.btnDraft.stopLoading()
+
+            when (result) {
+                is Success -> {
+                    handleSaveDraftResult(result.data)
+                }
+                is Fail -> {
+                    binding?.cardView showError result.throwable
                 }
             }
         }
@@ -247,30 +265,27 @@ class ManageHighlightedProductFragment : BaseDaggerFragment() {
     ) {
         when {
             isSelected && currentSelectedProductCount == (MAX_PRODUCT_SELECTION - ONE_PRODUCT) -> {
-                binding?.recyclerView showToaster getString(R.string.sfs_successfully_highlighted)
-                selectProduct(selectedProduct)
-                viewModel.addProductIdToSelection(selectedProduct.id)
-                disableAllUnselectedProduct()
+                binding?.cardView showToaster getString(R.string.sfs_successfully_highlighted)
+                viewModel.addProductIdToSelection(selectedProduct)
+                selectProduct()
             }
             isSelected && currentSelectedProductCount < MAX_PRODUCT_SELECTION -> {
-                binding?.recyclerView showToaster getString(R.string.sfs_successfully_highlighted)
-                selectProduct(selectedProduct)
-                viewModel.addProductIdToSelection(selectedProduct.id)
-                enableAllUnselectedProduct()
+                binding?.cardView showToaster getString(R.string.sfs_successfully_highlighted)
+                viewModel.addProductIdToSelection(selectedProduct)
+                selectProduct()
             }
             !isSelected -> {
-                viewModel.removeProductIdFromSelection(selectedProduct.id)
+                viewModel.removeProductIdFromSelection(selectedProduct)
                 unselectProduct(selectedProduct)
-                enableAllUnselectedProduct()
             }
         }
 
         refreshButton()
     }
 
-    private fun selectProduct(selectedProduct: HighlightableProduct) {
+    private fun selectProduct() {
         val products = productAdapter.getItems()
-        val updatedProducts = viewModel.markAsSelected(selectedProduct, products)
+        val updatedProducts = viewModel.markAsSelected(products)
         productAdapter.submit(updatedProducts)
     }
 
@@ -280,31 +295,16 @@ class ManageHighlightedProductFragment : BaseDaggerFragment() {
         productAdapter.submit(updatedProducts)
     }
 
-    private fun disableAllUnselectedProduct() {
-        val products = productAdapter.getItems()
-        val updatedProducts = viewModel.disableAllUnselectedProducts(products)
-        productAdapter.submit(updatedProducts)
-    }
-
-    private fun enableAllUnselectedProduct() {
-        val products = productAdapter.getItems()
-        val updatedProducts = viewModel.enableAllUnselectedProducts(products)
-        productAdapter.submit(updatedProducts)
-    }
 
     private fun clearSearchBar() {
+        endlessRecyclerViewScrollListener?.resetState()
         doFreshSearch()
+        viewModel.setIsFirstLoad(false)
     }
 
     private fun refreshButton() {
         val selectedProductCount = viewModel.getSelectedProductIds().size
         binding?.btnProceed?.isEnabled = selectedProductCount > Int.ZERO
-    }
-
-    private fun storeSelectedProducts(products: List<HighlightableProduct>) {
-        products.forEach { product ->
-            if (product.isSelected) viewModel.addProductIdToSelection(product.id)
-        }
     }
 
     private fun handleScrollDownEvent() {
@@ -326,9 +326,11 @@ class ManageHighlightedProductFragment : BaseDaggerFragment() {
     }
 
     private fun renderList(list: List<HighlightableProduct>, hasNextPage: Boolean) {
-        storeSelectedProducts(list)
         productAdapter.hideLoading()
-        productAdapter.addData(list)
+
+        val allItems = productAdapter.getItems() + list
+        val allItemsSorted = allItems.sortedByDescending { it.isSelected }
+        productAdapter.submit(allItemsSorted)
 
         endlessRecyclerViewScrollListener?.updateStateAfterGetData()
         endlessRecyclerViewScrollListener?.setHasNextPage(hasNextPage)
@@ -368,5 +370,19 @@ class ManageHighlightedProductFragment : BaseDaggerFragment() {
         } else {
             binding?.root showError result.errorMessage
         }
+    }
+
+    private fun handleSaveDraftResult(result: ProductSubmissionResult) {
+        val isSuccess = result.isSuccess
+        if (isSuccess) {
+            routeToCampaignListPage()
+        } else {
+            binding?.root showError result.errorMessage
+        }
+    }
+
+    private fun routeToCampaignListPage() {
+        val context = context ?: return
+        CampaignListActivity.start(context, isClearTop = true)
     }
 }

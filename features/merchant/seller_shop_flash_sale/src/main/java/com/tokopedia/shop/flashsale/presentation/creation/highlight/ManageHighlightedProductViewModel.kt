@@ -4,15 +4,15 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.kotlin.extensions.view.toLongOrZero
-import com.tokopedia.shop.flashsale.data.mapper.HighlightableProductRequestMapper
+import com.tokopedia.kotlin.extensions.view.removeFirst
 import com.tokopedia.shop.flashsale.data.request.GetSellerCampaignProductListRequest
 import com.tokopedia.shop.flashsale.domain.entity.HighlightableProduct
 import com.tokopedia.shop.flashsale.domain.entity.ProductSubmissionResult
-import com.tokopedia.shop.flashsale.domain.entity.SellerCampaignProductList
 import com.tokopedia.shop.flashsale.domain.entity.enums.ProductionSubmissionAction
 import com.tokopedia.shop.flashsale.domain.usecase.DoSellerCampaignProductSubmissionUseCase
 import com.tokopedia.shop.flashsale.domain.usecase.GetSellerCampaignProductListUseCase
+import com.tokopedia.shop.flashsale.presentation.creation.highlight.mapper.HighlightProductUiMapper
+import com.tokopedia.shop.flashsale.presentation.creation.highlight.mapper.HighlightableProductRequestMapper
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -23,7 +23,8 @@ class ManageHighlightedProductViewModel @Inject constructor(
     private val dispatchers: CoroutineDispatchers,
     private val getSellerCampaignProductListUseCase: GetSellerCampaignProductListUseCase,
     private val doSellerCampaignProductSubmissionUseCase: DoSellerCampaignProductSubmissionUseCase,
-    private val mapper: HighlightableProductRequestMapper
+    private val mapper: HighlightableProductRequestMapper,
+    private val highlightProductUiMapper: HighlightProductUiMapper
 ) : BaseViewModel(dispatchers.main) {
 
     companion object {
@@ -40,12 +41,22 @@ class ManageHighlightedProductViewModel @Inject constructor(
     val submit: LiveData<Result<ProductSubmissionResult>>
         get() = _submit
 
-    private var selectedProductIds: MutableSet<Long> = mutableSetOf()
+    private val _saveDraft = MutableLiveData<Result<ProductSubmissionResult>>()
+    val saveDraft: LiveData<Result<ProductSubmissionResult>>
+        get() = _saveDraft
+
+    private var selectedProducts: MutableList<HighlightableProduct> = mutableListOf()
+
+    private var isFirstLoad = true
+
+    fun setIsFirstLoad(isFirstLoad: Boolean) {
+        this.isFirstLoad = isFirstLoad
+    }
 
     fun getProducts(
         campaignId: Long,
         productName: String,
-        pageSize : Int,
+        pageSize: Int,
         offset: Int
     ) {
         launchCatchError(
@@ -57,13 +68,82 @@ class ManageHighlightedProductViewModel @Inject constructor(
                     listType = PRODUCT_LIST_TYPE_ID,
                     pagination = GetSellerCampaignProductListRequest.Pagination(pageSize, offset)
                 )
-                val updatedProducts = handleProductEnabledState(products.productList)
-                _products.postValue(Success(updatedProducts))
+
+                val mappedProducts = highlightProductUiMapper.map(products)
+                val determinedProducts = determineShouldSelectProduct(mappedProducts, isFirstLoad)
+                val appliedMaxSelectionRule = applyMaxSelectionRule(determinedProducts)
+                val appliedProductSelectionRule = applyProductSelectionRule(appliedMaxSelectionRule)
+                val highlightedProducts = applyProductHighlightPosition(appliedProductSelectionRule)
+                _products.postValue(Success(highlightedProducts))
             },
             onError = { error ->
                 _products.postValue(Fail(error))
             }
         )
+    }
+
+
+    private fun determineShouldSelectProduct(
+        products: List<HighlightableProduct>,
+        isFirstLoad: Boolean
+    ): List<HighlightableProduct> {
+        return products
+            .map { product ->
+                val selectedProductIds = selectedProducts.map { it.id }
+
+                val isSelected = if (isFirstLoad) {
+                    product.highlightProductWording.isNotEmpty()
+                } else {
+                    product.id in selectedProductIds
+                }
+
+                product.copy(isSelected = isSelected)
+            }
+            .onEach { product ->
+                if (isFirstLoad && product.isSelected) addProductIdToSelection(product)
+            }
+    }
+
+    private fun applyMaxSelectionRule(
+        currentPageProducts: List<HighlightableProduct>
+    ): List<HighlightableProduct> {
+        return currentPageProducts.map { product ->
+            if (selectedProducts.size == MAX_PRODUCT_SELECTION && !product.isSelected) {
+                product.copy(disabled = true, disabledReason = HighlightableProduct.DisabledReason.MAX_PRODUCT_REACHED)
+            } else {
+                product
+            }
+        }
+    }
+
+    private fun applyProductSelectionRule(currentPageProducts: List<HighlightableProduct>): List<HighlightableProduct> {
+        val selectedProductsIds = selectedProducts.map { selectedProduct -> selectedProduct.id }
+        val selectedParentProductIds = selectedProducts.map { selectedProduct -> selectedProduct.parentId }
+
+        return currentPageProducts.map { product ->
+            if (product.parentId in selectedParentProductIds && product.id !in selectedProductsIds) {
+                product.copy(
+                    isSelected = false,
+                    disabled = true,
+                    disabledReason = HighlightableProduct.DisabledReason.OTHER_PRODUCT_WITH_SAME_PARENT_ID_ALREADY_SELECTED
+                )
+            } else {
+                product
+            }
+        }
+    }
+
+    private fun applyProductHighlightPosition(products: List<HighlightableProduct>): List<HighlightableProduct> {
+        return products
+            .map { product ->
+                val position = findOrderPosition(product.id) + OFFSET_BY_ONE
+                product.copy(position = position)
+            }
+    }
+
+
+    private fun findOrderPosition(productId : Long): Int {
+        return selectedProducts.indexOfFirst { product -> product.id == productId }
     }
 
     fun submitHighlightedProducts(campaignId: Long, products: List<HighlightableProduct>) {
@@ -84,93 +164,118 @@ class ManageHighlightedProductViewModel @Inject constructor(
         )
     }
 
-    private fun handleProductEnabledState(
-        products: List<SellerCampaignProductList.Product>
-    ): List<HighlightableProduct> {
-        return products.mapIndexed { index, product ->
-            val isSelected = product.highlightProductWording.isNotEmpty() || product.productId.toLongOrZero() in selectedProductIds
-            val disabled = selectedProductIds.size == MAX_PRODUCT_SELECTION && !isSelected
-            HighlightableProduct(
-                product.productId.toLongOrZero(),
-                product.productName,
-                product.imageUrl.img200,
-                product.productMapData.originalPrice,
-                product.productMapData.discountedPrice,
-                product.productMapData.discountPercentage,
-                product.productMapData.customStock,
-                product.warehouseList.map { HighlightableProduct.Warehouse(it.warehouseId.toLongOrZero(), it.customStock.toLong()) },
-                product.productMapData.maxOrder,
-                disabled,
-                isSelected,
-                index + OFFSET_BY_ONE
+    fun saveDraft(campaignId: Long, products: List<HighlightableProduct>) {
+        launchCatchError(
+            dispatchers.io,
+            block = {
+                val mappedProducts = mapper.map(products)
+                val result = doSellerCampaignProductSubmissionUseCase.execute(
+                    campaignId.toString(),
+                    ProductionSubmissionAction.SUBMIT,
+                    mappedProducts
+                )
+                _saveDraft.postValue(Success(result))
+            },
+            onError = { error ->
+                _saveDraft.postValue(Fail(error))
+            }
+        )
+    }
+
+    fun addProductIdToSelection(product: HighlightableProduct) {
+        this.selectedProducts.add(product)
+    }
+
+
+    fun getSelectedProductIds(): List<HighlightableProduct> {
+        return this.selectedProducts
+    }
+
+    fun removeProductIdFromSelection(product: HighlightableProduct) {
+        this.selectedProducts.removeFirst { it.id == product.id }
+    }
+
+    fun markAsSelected(products: List<HighlightableProduct>): List<HighlightableProduct> {
+        val selectedProductsIds = selectedProducts.map { selectedProduct -> selectedProduct.id }
+        val selectedParentProductIds = selectedProducts.map { selectedProduct -> selectedProduct.parentId }
+
+        return products
+            .map { product -> disableOtherVariantsWhoHasSameParentId(selectedProductsIds, selectedParentProductIds, product) }
+            .map { product -> disableAllUnselectedProductIfMaxSelectionReached(product, selectedParentProductIds) }
+            .sortedByDescending { it.isSelected }
+            .mapIndexed { index, product -> product.copy(position = index + OFFSET_BY_ONE) }
+    }
+
+    private fun disableOtherVariantsWhoHasSameParentId(
+        selectedProductsIds: List<Long>,
+        selectedParentProductIds: List<Long>,
+        product: HighlightableProduct
+    ): HighlightableProduct {
+        return if (product.parentId in selectedParentProductIds && product.id !in selectedProductsIds) {
+            product.copy(
+                isSelected = false,
+                disabled = true,
+                disabledReason = HighlightableProduct.DisabledReason.OTHER_PRODUCT_WITH_SAME_PARENT_ID_ALREADY_SELECTED
             )
+        } else if (product.parentId in selectedParentProductIds && product.id in selectedProductsIds) {
+            product.copy(
+                isSelected = true,
+                disabled = false,
+                disabledReason = HighlightableProduct.DisabledReason.NOT_DISABLED
+            )
+        } else {
+            product
         }
     }
 
-    fun addProductIdToSelection(productId: Long) {
-        this.selectedProductIds.add(productId)
-    }
-
-
-    fun getSelectedProductIds(): Set<Long> {
-        return this.selectedProductIds
-    }
-
-    fun removeProductIdFromSelection(productId : Long) {
-        this.selectedProductIds.remove(productId)
-    }
-
-    fun markAsSelected(
-        selectedProduct: HighlightableProduct,
-        products: List<HighlightableProduct>
-    ): List<HighlightableProduct> {
-        return products
-            .mapIndexed { index, product  ->
-                if (selectedProduct.id == product.id) {
-                    product.copy(isSelected = true, position = index + OFFSET_BY_ONE)
-                } else {
-                    product.copy(position = index + OFFSET_BY_ONE)
-                }
-            }
-            .sortedByDescending { it.isSelected }
+    private fun disableAllUnselectedProductIfMaxSelectionReached(
+        product: HighlightableProduct,
+        selectedParentProductIds: List<Long>
+    ): HighlightableProduct {
+        return if (!product.isSelected && selectedParentProductIds.size >= MAX_PRODUCT_SELECTION) {
+            product.copy(isSelected = false, disabled = true)
+        } else {
+            product
+        }
     }
 
     fun markAsUnselected(
-        selectedProduct: HighlightableProduct,
+        currentlySelectedProduct: HighlightableProduct,
         products: List<HighlightableProduct>
     ): List<HighlightableProduct> {
+        val selectedProductsIds = selectedProducts.map { selectedProduct -> selectedProduct.id }
+        val selectedParentProductIds = selectedProducts.map { selectedProduct -> selectedProduct.parentId }
+
         return products
-            .mapIndexed { index, product  ->
-                if (selectedProduct.id == product.id) {
-                    product.copy(isSelected = false, position = index + OFFSET_BY_ONE)
-                } else {
-                    product.copy(position = index + OFFSET_BY_ONE)
-                }
-            }
+            .map { product  -> disableSelectedProduct(currentlySelectedProduct, product) }
+            .map { product -> enableAllProductExceptSelectedVariants(selectedProductsIds, selectedParentProductIds, product) }
             .sortedByDescending { it.isSelected }
+            .mapIndexed { index, product -> product.copy(position = index + OFFSET_BY_ONE) }
     }
 
-    fun disableAllUnselectedProducts(products: List<HighlightableProduct>): List<HighlightableProduct> {
-        return products
-            .mapIndexed { index, product  ->
-                if (product.isSelected) {
-                    product.copy(position = index + OFFSET_BY_ONE)
-                } else {
-                    product.copy(disabled = true, position = index + OFFSET_BY_ONE)
-                }
-            }
-            .sortedByDescending { it.isSelected }
+    private fun disableSelectedProduct(
+        currentlySelectedProduct: HighlightableProduct,
+        product: HighlightableProduct
+    ): HighlightableProduct {
+        return if (currentlySelectedProduct.id == product.id) {
+            product.copy(isSelected = false)
+        } else {
+            product
+        }
     }
 
-    fun enableAllUnselectedProducts(products: List<HighlightableProduct>): List<HighlightableProduct> {
-        return products
-            .mapIndexed { index, product  ->
-                if (product.isSelected) {
-                    product.copy(position = index + OFFSET_BY_ONE)
-                } else {
-                    product.copy(disabled = false, position = index + OFFSET_BY_ONE)
-                }
-            }
-            .sortedByDescending { it.isSelected }
+    private fun enableAllProductExceptSelectedVariants(
+        selectedProductsIds: List<Long>,
+        selectedParentProductIds: List<Long>,
+        product: HighlightableProduct
+    ): HighlightableProduct {
+        return if (product.id !in selectedProductsIds && product.parentId !in selectedParentProductIds) {
+            product.copy(
+                disabled = false,
+                disabledReason = HighlightableProduct.DisabledReason.NOT_DISABLED
+            )
+        } else {
+            product
+        }
     }
 }

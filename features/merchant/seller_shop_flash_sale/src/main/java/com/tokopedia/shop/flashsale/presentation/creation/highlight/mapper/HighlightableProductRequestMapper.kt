@@ -1,4 +1,4 @@
-package com.tokopedia.shop.flashsale.data.mapper
+package com.tokopedia.shop.flashsale.presentation.creation.highlight.mapper
 
 import com.tokopedia.shop.flashsale.data.request.DoSellerCampaignProductSubmissionRequest
 import com.tokopedia.shop.flashsale.domain.entity.HighlightableProduct

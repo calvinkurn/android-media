@@ -4,8 +4,10 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.isVisible
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.seller_shop_flash_sale.R
 import com.tokopedia.seller_shop_flash_sale.databinding.SsfsItemProductHighlightBinding
@@ -24,7 +26,6 @@ class HighlightedProductAdapter(
     companion object {
         private const val ALPHA_DISABLED = 0.5f
         private const val ALPHA_ENABLED = 1.0f
-        private const val ONE = 1
     }
 
     private var products: MutableList<HighlightableProduct> = mutableListOf()
@@ -50,12 +51,6 @@ class HighlightedProductAdapter(
     override fun onBindViewHolder(holder: HighlightedProductViewHolder, position: Int) {
         val isLoading = isLoading && (position == products.lastIndex)
         holder.bind(products[position], onProductSelectionChange, isLoading)
-    }
-
-    fun addData(items: List<HighlightableProduct>) {
-        val previousProductsSize = this.products.size
-        this.products.addAll(items)
-        notifyItemRangeChanged(previousProductsSize, this.products.size)
     }
 
     fun submit(products: List<HighlightableProduct>) {
@@ -102,10 +97,23 @@ class HighlightedProductAdapter(
             binding.loader.isVisible = isLoading
             binding.tpgOriginalPrice.setPrice(product.originalPrice)
             binding.tpgOriginalPrice.strikethrough()
-            binding.tpgProductOrder.isVisible = product.isSelected
-            binding.tpgProductOrder.setPosition(product.position)
+            handleDisplayErrorMessage(product)
             handleSwitchAppearance(product, onProductSelectionChange)
             handleCardSelectable(product.disabled)
+            handleProductOrderNumber(product)
+        }
+
+        private fun handleDisplayErrorMessage(product: HighlightableProduct) {
+            binding.tpgErrorMessage.isVisible = product.isOtherProductAlreadySelected()
+        }
+
+        private fun handleProductOrderNumber(product: HighlightableProduct) {
+            if (product.isSelected) {
+                binding.tpgProductOrder.setPosition(product.position)
+                binding.tpgProductOrder.visible()
+            } else {
+                binding.tpgProductOrder.invisible()
+            }
         }
 
         private fun handleSwitchAppearance(
@@ -119,20 +127,6 @@ class HighlightedProductAdapter(
                 onProductSelectionChange(product, isChecked)
                 binding.switchUnify.isChecked = !isChecked
             }
-        }
-
-        private fun Label.setPercentage(percentage: Int) {
-            val formattedPercentage = String.format(this.context.getString(R.string.sfs_placeholder_percent), percentage)
-            this.text = formattedPercentage
-        }
-
-        private fun Typography.setPrice(price: Long) {
-            this.text = price.convertRupiah()
-        }
-
-        private fun Typography.setPosition(position: Int) {
-            val formattedPosition = String.format(this.context.getString(R.string.sfs_placeholder_product_order), position)
-            this.text = formattedPosition
         }
 
         private fun handleCardSelectable(disabled: Boolean) {
@@ -151,6 +145,24 @@ class HighlightedProductAdapter(
                 binding.switchUnify.enable()
                 binding.labelDiscountPercentage.opacityLevel = ALPHA_ENABLED
             }
+        }
+
+        private fun Label.setPercentage(percentage: Int) {
+            val formattedPercentage = String.format(this.context.getString(R.string.sfs_placeholder_percent), percentage)
+            this.text = formattedPercentage
+        }
+
+        private fun Typography.setPrice(price: Long) {
+            this.text = price.convertRupiah()
+        }
+
+        private fun Typography.setPosition(position: Int) {
+            val formattedPosition = String.format(this.context.getString(R.string.sfs_placeholder_product_order), position)
+            this.text = formattedPosition
+        }
+
+        private fun HighlightableProduct.isOtherProductAlreadySelected(): Boolean {
+            return this.disabledReason == HighlightableProduct.DisabledReason.OTHER_PRODUCT_WITH_SAME_PARENT_ID_ALREADY_SELECTED
         }
 
     }

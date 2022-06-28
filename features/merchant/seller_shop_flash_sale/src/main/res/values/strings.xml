@@ -62,6 +62,14 @@
     <string name="sfs_placeholder_active_campaign">Aktif (%s)</string>
     <string name="sfs_placeholder_finished_campaign">Riwayat Campaign (%s)</string>
     <string name="sfs_placeholder_draft">Draft (%s)</string>
+    <string name="sfs_placeholder_fst_introduction_secondary_description">Kamu juga bisa atur tampilan halaman Home tokomu nanti di %s</string>
+    <string name="sfs_shop_decor">Dekorasi Toko</string>
+
+    <string name="sfs_fst_introduction_title">Fitur Flash Sale ini akan tampil di halaman Home</string>
+    <string name="sfs_fst_introduction_description">Flash Sale yang berhasil dibuat akan tampil di halaman Home tokomu sesuai dengan waktu yang sudah diatur.</string>
+    <string name="sfs_start_create_flash_sale">Mulai Buat Flash Sale</string>
+    <string name="sfs_later">Nanti saja</string>
+
 
     <!--Share Component-->
     <string name="sfs_share_description_upcoming">Segera hadir, Flash Sale dari %s di \@Tokopedia. Mulai %s pukul %s</string>
@@ -272,6 +280,7 @@
     <string name="sfs_successfully_highlighted">Produkmu berhasil di-highlight.</string>
     <string name="sfs_highlight_product_first_coachmark">Klik di sini untuk memilih produk yang di highlight.</string>
     <string name="sfs_placeholder_product_order">#%d</string>
+    <string name="sfs_error_message_product_already_selected">Hanya dapat memilih 1 varian untuk masing-masing produk.</string>
 
     <!--Delete Product-->
     <string name="deleteproduct_dialog_title">Yakin ingin hapus produk dari campaign?</string>
