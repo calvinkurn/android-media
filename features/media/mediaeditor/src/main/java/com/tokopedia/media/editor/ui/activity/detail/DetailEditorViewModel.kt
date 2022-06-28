@@ -14,8 +14,8 @@ import java.io.File
 import javax.inject.Inject
 
 class DetailEditorViewModel @Inject constructor(
-    private val colorFilter: ColorFilterManager,
-    private val removeBackground: SetRemoveBackgroundUseCase
+    private val colorFilterManager: ColorFilterManager,
+    private val removeBackgroundUseCase: SetRemoveBackgroundUseCase
 ) : ViewModel() {
 
     private var _intentUiModel = MutableLiveData<EditorDetailUiModel>()
@@ -24,22 +24,22 @@ class DetailEditorViewModel @Inject constructor(
     private var _brightnessValue = MutableLiveData<ColorMatrixColorFilter>()
     val brightnessValue: LiveData<ColorMatrixColorFilter> get() = _brightnessValue
 
-    private var _removeBackgroundResult = MutableLiveData<File?>()
-    val removeBackgroundResult: LiveData<File?> get() = _removeBackgroundResult
+    private var _removeBackground = MutableLiveData<File?>()
+    val removeBackground: LiveData<File?> get() = _removeBackground
 
     fun setIntentOnUiModel(data: EditorDetailUiModel) {
         _intentUiModel.postValue(data)
     }
 
     fun setBrightness(value: Float) {
-        _brightnessValue.value = colorFilter.brightness(value)
+        _brightnessValue.value = colorFilterManager.brightness(value)
     }
 
     fun setRemoveBackground(filePath: String) {
         viewModelScope.launch {
-            removeBackground(filePath)
+            removeBackgroundUseCase(filePath)
                 .collect {
-                    _removeBackgroundResult.value = it
+                    _removeBackground.value = it
                 }
         }
     }

@@ -8,41 +8,43 @@ import kotlinx.coroutines.flow.*
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.asRequestBody
-import okhttp3.ResponseBody
 import java.io.File
 import javax.inject.Inject
 
-interface EditorRepository {
-    suspend fun removeBackground(filePath: String): Flow<File?>
+interface RemoveBgRepository {
+    suspend operator fun invoke(filePath: String): Flow<File?>
 }
 
-class EditorRepositoryImpl @Inject constructor(
-    private val bitmapConverter: BitmapRepository,
+class RemoveBgRepositoryImpl @Inject constructor(
+    private val bitmapConverter: BitmapConverterRepository,
     private val services: EditorNetworkServices
-) : EditorRepository {
+) : RemoveBgRepository {
 
-    override suspend fun removeBackground(filePath: String): Flow<File?> {
-        return set(filePath).map {
+    override suspend operator fun invoke(filePath: String): Flow<File?> {
+        return flow {
+            mapUriToFile(filePath)?.let {
+                val fileBody = it.toMultiPartBody()
+                val result = services.removeBackground(fileBody)
+
+                emit(result)
+            }
+        }.map {
             val compressFormat = filePath.getCompressFormat()
             ImageProcessingUtil.writeImageToTkpdPath(it.byteStream(), compressFormat)
         }
     }
 
-    private suspend fun set(filePath: String): Flow<ResponseBody> {
-        return flow {
-            val compressFormat = filePath.getCompressFormat()
-            val bitmap = bitmapConverter.uriToBitmap(Uri.parse(filePath))
-            val file = ImageProcessingUtil.writeImageToTkpdPath(bitmap, compressFormat)
+    private fun mapUriToFile(filePath: String): File? {
+        val compressFormat = filePath.getCompressFormat()
+        val bitmap = bitmapConverter.uriToBitmap(Uri.parse(filePath))?: return null
 
-            if (file != null) {
-                emitAll(services.removeBackground(file.file()))
-            }
-        }
+        return ImageProcessingUtil.writeImageToTkpdPath(bitmap, compressFormat)
     }
 
-    private fun File.file(): MultipartBody.Part {
+    private fun File.toMultiPartBody(): MultipartBody.Part {
         val contentType = SUPPORTED_CONTENT_TYPE.toMediaType()
         val requestBody = this.asRequestBody(contentType)
+
         return MultipartBody.Part.createFormData(BODY_FILE_UPLOAD, this.name, requestBody)
     }
 

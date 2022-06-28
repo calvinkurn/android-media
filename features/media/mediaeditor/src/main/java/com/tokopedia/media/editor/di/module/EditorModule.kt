@@ -6,10 +6,10 @@ import com.tokopedia.abstraction.common.di.scope.ActivityScope
 import com.tokopedia.abstraction.common.di.scope.ApplicationScope
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.media.editor.data.EditorNetworkServices
-import com.tokopedia.media.editor.data.repository.BitmapRepository
-import com.tokopedia.media.editor.data.repository.BitmapRepositoryImpl
-import com.tokopedia.media.editor.data.repository.EditorRepository
-import com.tokopedia.media.editor.data.repository.EditorRepositoryImpl
+import com.tokopedia.media.editor.data.repository.BitmapConverterRepository
+import com.tokopedia.media.editor.data.repository.BitmapConverterRepositoryImpl
+import com.tokopedia.media.editor.data.repository.RemoveBgRepository
+import com.tokopedia.media.editor.data.repository.RemoveBgRepositoryImpl
 import com.tokopedia.media.editor.data.tool.ColorFilterManager
 import com.tokopedia.media.editor.data.tool.ColorFilterManagerImpl
 import com.tokopedia.media.editor.di.EditorQualifier
@@ -52,24 +52,24 @@ object EditorModule {
     @ActivityScope
     fun provideBitmapRepository(
         @ApplicationContext context: Context
-    ): BitmapRepository {
-        return BitmapRepositoryImpl(context)
+    ): BitmapConverterRepository {
+        return BitmapConverterRepositoryImpl(context)
     }
 
     @Provides
     @ActivityScope
     fun provideEditorRepository(
-        bitmapRepository: BitmapRepository,
+        bitmapConverterRepository: BitmapConverterRepository,
         services: EditorNetworkServices
-    ): EditorRepository {
-        return EditorRepositoryImpl(bitmapRepository, services)
+    ): RemoveBgRepository {
+        return RemoveBgRepositoryImpl(bitmapConverterRepository, services)
     }
 
     @Provides
     @ActivityScope
     fun provideRemoveBackgroundUseCase(
         @ApplicationScope dispatchers: CoroutineDispatchers,
-        editorRepository: EditorRepository
-    ) = SetRemoveBackgroundUseCase(dispatchers, editorRepository)
+        removeBgRepository: RemoveBgRepository
+    ) = SetRemoveBackgroundUseCase(dispatchers, removeBgRepository)
 
 }

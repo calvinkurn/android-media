@@ -1,6 +1,7 @@
 package com.tokopedia.media.editor.di.module
 
 import android.content.Context
+import com.jakewharton.retrofit2.adapter.kotlin.coroutines.CoroutineCallAdapterFactory
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.media.editor.di.EditorQualifier
 import com.tokopedia.network.NetworkRouter
@@ -48,8 +49,7 @@ object EditorNetworkModule {
     fun provideRetrofitBuilder(): Retrofit.Builder {
         return Retrofit.Builder()
             .baseUrl(BASE_URL)
-//            .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
-//            .addConverterFactory(GsonConverterFactory.create(Gson()))
+            .addCallAdapterFactory(CoroutineCallAdapterFactory())
     }
 
 }
