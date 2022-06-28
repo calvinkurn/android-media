@@ -37,6 +37,7 @@ import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.localizationchooseaddress.domain.mapper.TokonowWarehouseMapper
+import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.localizationchooseaddress.domain.response.GetStateChosenAddressResponse
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.tokofood.R
@@ -230,7 +231,7 @@ class MerchantPageFragment : BaseMultiFragment(),
     override fun onResume() {
         super.onResume()
         if (viewModel.isUserSkipTheLoginPage(viewModel.visitedLoginPage, userSession.isLoggedIn)) {
-            activity?.finish()
+           activity?.finish()
         }
         initializeMiniCartWidget()
         merchantPageAnalytics.openMerchantPage(
@@ -1232,10 +1233,9 @@ class MerchantPageFragment : BaseMultiFragment(),
     private fun getProductItemList() = productListAdapter?.getProductListItems().orEmpty()
 
     private fun goToLoginPage() {
-        context?.run {
-            val intent = RouteManager.getIntent(this, ApplinkConst.LOGIN)
+            val intent = RouteManager.getIntent(context, ApplinkConst.LOGIN)
             startActivityForResult(intent, REQUEST_CODE_LOGIN)
-        }
+
         viewModel.visitedLoginPage = true
     }
 
@@ -1243,7 +1243,7 @@ class MerchantPageFragment : BaseMultiFragment(),
         context?.run {
             ChooseAddressUtils.getLocalizingAddressData(this).let { addressData ->
                 when {
-                    addressData.address_id.isBlank() && isAddressManuallyUpdated() -> {
+                    isNoAddress(addressData) && isAddressManuallyUpdated() -> {
                         navigateToNewFragment(
                             ManageLocationFragment.createInstance(
                                 negativeCaseId = EMPTY_STATE_NO_ADDRESS,
@@ -1251,7 +1251,7 @@ class MerchantPageFragment : BaseMultiFragment(),
                             )
                         )
                     }
-                    addressData.latLong.isBlank() && isAddressManuallyUpdated() -> {
+                    isNoPinPoin(addressData) && isAddressManuallyUpdated() -> {
                         navigateToNewFragment(
                             ManageLocationFragment.createInstance(
                                 negativeCaseId = EMPTY_STATE_NO_PIN_POINT,
@@ -1287,6 +1287,16 @@ class MerchantPageFragment : BaseMultiFragment(),
 
     private fun setAddressManually() {
         viewModel.getChooseAddress(SOURCE_ADDESS)
+    }
+
+    private fun isNoAddress(localCacheModel: LocalCacheModel): Boolean {
+        return (localCacheModel.address_id.isNullOrEmpty() || localCacheModel.address_id == "0")
+    }
+
+    private fun isNoPinPoin(localCacheModel: LocalCacheModel): Boolean {
+        return (!localCacheModel.address_id.isNullOrEmpty() || localCacheModel.address_id != "0")
+                && (localCacheModel.lat.isNullOrEmpty() || localCacheModel.long.isNullOrEmpty() ||
+                localCacheModel.lat.equals("0.0") || localCacheModel.long.equals("0.0"))
     }
 
     private fun setupChooseAddress(data: GetStateChosenAddressResponse) {
