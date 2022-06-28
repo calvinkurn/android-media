@@ -36,6 +36,7 @@ class PartialSomDetailAddOnSummaryViewHolder(
     private fun setupLayout() {
         binding?.setupRecyclerviewRecycledViewPool()
         binding?.setupRecyclerViewLayoutManager()
+        binding?.setupRecyclerViewAdapter()
         binding?.setupRecyclerViewItemDecoration()
     }
 
@@ -45,6 +46,10 @@ class PartialSomDetailAddOnSummaryViewHolder(
 
     private fun PartialAddOnSummaryBinding.setupRecyclerViewLayoutManager() {
         (rvAddOn.layoutManager as? LinearLayoutManager)?.recycleChildrenOnDetach = true
+    }
+
+    private fun PartialAddOnSummaryBinding.setupRecyclerViewAdapter() {
+        rvAddOn.adapter = adapter
     }
 
     private fun PartialAddOnSummaryBinding.setupRecyclerViewItemDecoration() {

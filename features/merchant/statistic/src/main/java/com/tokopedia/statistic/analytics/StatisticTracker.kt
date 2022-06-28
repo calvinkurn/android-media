@@ -176,7 +176,7 @@ object StatisticTracker {
         TrackingHelper.sendGeneralEvent(map)
     }
 
-    fun sendImpressionProgressBarEvent(dataKey: String, stateColor: String, valueScore: Int) {
+    fun sendImpressionProgressBarEvent(dataKey: String, stateColor: String, valueScore: Long) {
         val map = TrackingHelper.createMap(
             TrackingConstant.VIEW_SELLER_WIDGET,
             arrayOf(TrackingConstant.SELLER_APP, TrackingConstant.SHOP_INSIGHT).joinToString(
@@ -191,7 +191,7 @@ object StatisticTracker {
         TrackingHelper.sendGeneralEvent(map)
     }
 
-    fun sendClickProgressBarEvent(dataKey: String, stateColor: String, valueScore: Int) {
+    fun sendClickProgressBarEvent(dataKey: String, stateColor: String, valueScore: Long) {
         val map = TrackingHelper.createMap(
             TrackingConstant.CLICK_SHOP_INSIGHT,
             arrayOf(TrackingConstant.SELLER_APP, TrackingConstant.SHOP_INSIGHT).joinToString(

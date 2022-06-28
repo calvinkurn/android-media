@@ -152,17 +152,15 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
         checkAppPackageNameAsync();
 
         Loader.init(this);
-        initializeNewRelic();
+        initializationNewRelic();
         if (getUserSession().isLoggedIn()) {
             Embrace.getInstance().setUserIdentifier(getUserSession().getUserId());
         }
         EmbraceMonitoring.INSTANCE.setCarrierProperties(this);
     }
 
-    private void initializeNewRelic() {
-        boolean isDisableInitNrInAct =
-                !remoteConfig.getBoolean(RemoteConfigKey.ENABLE_INIT_NR_IN_ACTIVITY);
-        if (isDisableInitNrInAct) {
+    private void initializationNewRelic() {
+        if (!remoteConfig.getBoolean(RemoteConfigKey.ENABLE_INIT_NR_IN_ACTIVITY)) {
             NewRelic.withApplicationToken(Keys.NEW_RELIC_TOKEN_MA).start(this);
         }
     }

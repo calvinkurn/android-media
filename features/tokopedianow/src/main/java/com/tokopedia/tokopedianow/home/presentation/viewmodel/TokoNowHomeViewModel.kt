@@ -415,6 +415,24 @@ class TokoNowHomeViewModel @Inject constructor(
         return repurchase?.productList.orEmpty()
     }
 
+    fun needToShowOnBoardToaster(serviceType: String, has20mCoachMarkBeenShown: Boolean, has2hCoachMarkBeenShown: Boolean, isWarehouseIdZero: Boolean): Boolean {
+
+        /*
+         * SWITCHER TOASTER
+         * - toaster will be shown if coach mark has been shown
+         */
+
+        val is2hServiceType = serviceType == ServiceType.NOW_2H
+        val is20mServiceType = serviceType == ServiceType.NOW_15M
+
+        return when {
+            isWarehouseIdZero -> false
+            is2hServiceType && has20mCoachMarkBeenShown -> true
+            is20mServiceType && has2hCoachMarkBeenShown -> true
+            else -> false
+        }
+    }
+
     fun refreshQuestList() {
         getQuestUiModel()?.let { item ->
             launchCatchError(block = {
@@ -432,13 +450,31 @@ class TokoNowHomeViewModel @Inject constructor(
         }
     }
 
+    fun switchServiceOrLoadLayout(externalServiceType: String, localCacheModel: LocalCacheModel) {
+        /*
+           Note :
+            - There are 2 types of external service we'll receive, those are 20m and 2h.
+            - 20m will be changed to 15m temporarily.
+            - 15m still used in LCA and BE as 20m service type.
+         */
+        val currentServiceType = localCacheModel.getServiceType()
+
+        if (externalServiceType != currentServiceType && externalServiceType.isNotBlank()) {
+            switchService(localCacheModel, externalServiceType)
+        } else {
+            getLoadingState()
+        }
+    }
+
     /***
      * Switch between NOW 20 minutes/2 hours
      * @param localCacheModel local data from choose address
      */
     fun switchService(localCacheModel: LocalCacheModel) {
         launchCatchError(block = {
-            trackSwitchService(localCacheModel)
+            trackSwitchService(
+                localCacheModel = localCacheModel
+            )
 
             val currentServiceType = localCacheModel.service_type
 
@@ -451,6 +487,20 @@ class TokoNowHomeViewModel @Inject constructor(
                 ServiceType.NOW_15M
             }
 
+            val userPreference = setUserPreferenceUseCase.execute(localCacheModel, serviceType)
+            _setUserPreference.postValue(Success(userPreference))
+        }) {
+            _setUserPreference.postValue(Fail(it))
+        }
+    }
+
+    /***
+     * Switch between NOW 20 minutes/2 hours
+     * @param localCacheModel local data from choose address
+     * @param serviceType which is the intended type of service
+     */
+    fun switchService(localCacheModel: LocalCacheModel, serviceType: String) {
+        launchCatchError(block = {
             val userPreference = setUserPreferenceUseCase.execute(localCacheModel, serviceType)
             _setUserPreference.postValue(Success(userPreference))
         }) {

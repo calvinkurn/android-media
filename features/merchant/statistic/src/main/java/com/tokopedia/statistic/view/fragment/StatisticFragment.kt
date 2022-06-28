@@ -332,11 +332,15 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
         StatisticTracker.sendImpressionPostEvent(element.dataKey)
     }
 
-    override fun sendProgressImpressionEvent(dataKey: String, stateColor: String, valueScore: Int) {
+    override fun sendProgressImpressionEvent(
+        dataKey: String,
+        stateColor: String,
+        valueScore: Long
+    ) {
         StatisticTracker.sendImpressionProgressBarEvent(dataKey, stateColor, valueScore)
     }
 
-    override fun sendProgressCtaClickEvent(dataKey: String, stateColor: String, valueScore: Int) {
+    override fun sendProgressCtaClickEvent(dataKey: String, stateColor: String, valueScore: Long) {
         StatisticTracker.sendClickProgressBarEvent(dataKey, stateColor, valueScore)
     }
 

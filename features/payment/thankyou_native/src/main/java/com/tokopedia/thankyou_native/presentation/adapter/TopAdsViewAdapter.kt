@@ -4,12 +4,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.thankyou_native.R
 import com.tokopedia.thankyou_native.domain.model.TopAdsUIModel
 import com.tokopedia.topads.sdk.listener.TopAdsImageViewClickListener
 import com.tokopedia.topads.sdk.listener.TopAdsImageViewImpressionListener
+import com.tokopedia.topads.sdk.utils.ImpresionTask
 import com.tokopedia.topads.sdk.widget.TopAdsImageView
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.unifycomponents.toPx
@@ -22,12 +22,13 @@ class TopAdsViewAdapter(
         RecyclerView.Adapter<TopAdsViewViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TopAdsViewViewHolder {
-        val parentWidth = parent.width
         val view = LayoutInflater.from(parent.context)
                 .inflate(R.layout.thanks_item_top_ads_view, parent, false)
-        val layoutParams = view.layoutParams
-        layoutParams.width = parentWidth - 16.toPx()
-        return TopAdsViewViewHolder(view, onclick)
+        val widthFraction = if (topAdsUIModelList.size > Int.ONE) WIDTH_FRACTION_MULTIPLE else WIDTH_FRACTION_SINGLE
+        val params = view.layoutParams
+        params.width = (widthFraction * getScreenWidth()).toInt()
+        view.layoutParams = params
+        return  TopAdsViewViewHolder(view, onclick)
     }
 
     override fun onBindViewHolder(holder: TopAdsViewViewHolder, position: Int) {
@@ -38,6 +39,11 @@ class TopAdsViewAdapter(
 
     fun addItems(topAdsUIModels: List<TopAdsUIModel>) {
         this.topAdsUIModelList.addAll(topAdsUIModels)
+    }
+
+    companion object {
+        const val WIDTH_FRACTION_MULTIPLE = 0.90f
+        const val WIDTH_FRACTION_SINGLE = 1.0f
     }
 
 }
@@ -56,18 +62,33 @@ class TopAdsViewViewHolder(
                 }
             }
         })
-        topAdsImageView.setTopAdsImageViewImpression(object : TopAdsImageViewImpressionListener {
-            override fun onTopAdsImageViewImpression(viewUrl: String) {
-                if (!topAdsUIModel.impressHolder.isInvoke) {
-                    hitTopAdsImpression(viewUrl)
-                    topAdsUIModel.impressHolder.invoke()
-                }
-            }
-        })
+        addImpression(topAdsUIModel)
+
         topAdsImageView.loadImage(topAdsUIModel.topAdsImageViewModel, 8.toPx(), onLoadFailed = {
             topAdsImageView.gone()
         })
+    }
 
+    /*
+    * Problem : Since impression is sent on onResourcesReady from glide which incase of
+    * horizontal RV is called for items that are not visible(2, 3rd item)
+    * Hence we added a scroll change listener (see addOnImpressionListener) to hit impression
+    * if after scroll change view is visible.
+    * But for first item there is no scroll hence its impression needs to be explicitely fired
+    * via itemView.scrollTo(itemView.scrollX + Int.ONE, itemView.scrollY)
+    * */
+    private fun addImpression(topAdsUIModel: TopAdsUIModel) {
+        topAdsImageView.setTopAdsImageViewImpression(object : TopAdsImageViewImpressionListener {
+            override fun onTopAdsImageViewImpression(viewUrl: String) {
+                itemView.addOnImpressionListener(topAdsUIModel.impressHolder) {
+                    hitTopAdsImpression(viewUrl)
+                    topAdsUIModel.impressHolder.invoke()
+                }
+                // for first item impression scroll callback invoke
+                itemView.scrollTo(itemView.scrollX + Int.ONE, itemView.scrollY)
+            }
+
+        })
     }
 
     private fun hitTopAdsImpression(viewUrl: String) {
