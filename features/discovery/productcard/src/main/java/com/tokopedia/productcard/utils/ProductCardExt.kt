@@ -519,18 +519,37 @@ private fun showOverlayImageRoundedLabel(
     if (labelGroup != null) {
         textViewLabel.shouldShowWithAction(labelGroup.title.isNotEmpty()) { textViewLabel ->
             textViewLabel.text = labelGroup.title
-            textViewLabel.setTextColor(
-                if (labelGroup.isGimmick()) labelGroup.type.toUnifyTextColor(textViewLabel.context)
-                else Color.WHITE
-            )
+
+            val context = textViewLabel.context
+            val textColor = try {
+                val staticWhiteColor = ContextCompat.getColor(
+                    context,
+                    unifyRColor.Unify_Static_White
+                )
+                if (labelGroup.isGimmick()) labelGroup.type.toUnifyTextColor(context)
+                else staticWhiteColor
+            } catch (throwable: Throwable) {
+                ContextCompat.getColor(
+                    context,
+                    unifyRColor.Unify_Static_White
+                )
+            }
+            textViewLabel.setTextColor(textColor)
         }
 
         labelBackground?.context?.let { context ->
             val backgroundColor = try {
-                if (labelGroup.isGimmick()) Color.WHITE
+                val whiteColor = ContextCompat.getColor(
+                    context,
+                    unifyRColor.Unify_NN0
+                )
+                if (labelGroup.isGimmick()) whiteColor
                 else labelGroup.type.toUnifyTextColor(context)
             } catch (throwable: Throwable) {
-                Color.WHITE
+                ContextCompat.getColor(
+                    context,
+                    unifyRColor.Unify_NN0
+                )
             }
 
             labelBackground.background?.colorFilter =
