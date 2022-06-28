@@ -306,7 +306,7 @@ class HotelRecommendationFragment : BaseListFragment<PopularSearch, PopularSearc
 
         activity?.let {
             permissionCheckerHelper.checkPermission(it,
-                    PermissionCheckerHelper.Companion.PERMISSION_ACCESS_FINE_LOCATION,
+                    PermissionCheckerHelper.Companion.PERMISSION_ACCESS_COARSE_LOCATION,
                     object : PermissionCheckerHelper.PermissionCheckListener {
                         override fun onPermissionDenied(permissionText: String) {
                             permissionCheckerHelper.onPermissionDenied(it, permissionText)
