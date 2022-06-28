@@ -1,4 +1,4 @@
-package com.tokopedia.people.views
+package com.tokopedia.people.views.fragment
 
 import android.app.Activity
 import android.content.Intent
@@ -18,7 +18,6 @@ import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.globalerror.ReponseStatus
-import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.library.baseadapter.AdapterCallback
 import com.tokopedia.people.ErrorMessage
@@ -29,6 +28,7 @@ import com.tokopedia.people.di.DaggerUserProfileComponent
 import com.tokopedia.people.di.UserProfileModule
 import com.tokopedia.people.listener.FollowerFollowingListener
 import com.tokopedia.people.viewmodels.FollowerFollowingViewModel
+import com.tokopedia.people.views.adapter.ProfileFollowersAdapter
 import com.tokopedia.unifycomponents.LocalLoad
 import com.tokopedia.user.session.UserSession
 import java.net.SocketTimeoutException
@@ -179,7 +179,7 @@ class FollowerListingFragment : BaseDaggerFragment(), AdapterCallback, FollowerF
                                 }
                             }
                             else -> {
-                                followersContainer?.displayedChild =PAGE_ERROR
+                                followersContainer?.displayedChild = PAGE_ERROR
                                 globalError?.refreshBtn?.setOnClickListener {
                                     followersContainer?.displayedChild = PAGE_LOADING
                                     refreshMainUi()

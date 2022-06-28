@@ -1,4 +1,4 @@
-package com.tokopedia.people.views
+package com.tokopedia.people.views.activity
 
 import android.app.Activity
 import android.content.Context
@@ -9,6 +9,7 @@ import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.people.views.fragment.FollowerFollowingListingFragment
 
 class FollowerFollowingListingActivity : BaseSimpleActivity() {
 

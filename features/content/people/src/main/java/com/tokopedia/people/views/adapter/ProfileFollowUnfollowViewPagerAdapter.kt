@@ -1,4 +1,4 @@
-package com.tokopedia.people.views
+package com.tokopedia.people.views.adapter
 
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager

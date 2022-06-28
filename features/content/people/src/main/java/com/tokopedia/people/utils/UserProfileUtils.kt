@@ -1,4 +1,4 @@
-package com.tokopedia.people
+package com.tokopedia.people.utils
 
 import com.tokopedia.kotlin.extensions.view.thousandFormatted
 import java.math.RoundingMode

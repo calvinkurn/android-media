@@ -1,6 +1,5 @@
-package com.tokopedia.people.views
+package com.tokopedia.people.views.fragment
 
-import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -14,12 +13,14 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.header.HeaderUnify
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.people.R
+import com.tokopedia.people.analytic.UserProfileTracker
 import com.tokopedia.people.di.DaggerUserProfileComponent
 import com.tokopedia.people.di.UserProfileModule
-import com.tokopedia.people.views.UserProfileFragment.Companion.EXTRA_DISPLAY_NAME
-import com.tokopedia.people.views.UserProfileFragment.Companion.EXTRA_IS_FOLLOWERS
-import com.tokopedia.people.views.UserProfileFragment.Companion.EXTRA_TOTAL_FOLLOWERS
-import com.tokopedia.people.views.UserProfileFragment.Companion.EXTRA_TOTAL_FOLLOWINGS
+import com.tokopedia.people.views.adapter.ProfileFollowUnfollowViewPagerAdapter
+import com.tokopedia.people.views.fragment.UserProfileFragment.Companion.EXTRA_DISPLAY_NAME
+import com.tokopedia.people.views.fragment.UserProfileFragment.Companion.EXTRA_IS_FOLLOWERS
+import com.tokopedia.people.views.fragment.UserProfileFragment.Companion.EXTRA_TOTAL_FOLLOWERS
+import com.tokopedia.people.views.fragment.UserProfileFragment.Companion.EXTRA_TOTAL_FOLLOWINGS
 import com.tokopedia.unifycomponents.TabsUnify
 import javax.inject.Inject
 

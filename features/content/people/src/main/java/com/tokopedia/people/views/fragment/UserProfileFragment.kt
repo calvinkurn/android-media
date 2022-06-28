@@ -1,4 +1,4 @@
-package com.tokopedia.people.views
+package com.tokopedia.people.views.fragment
 
 import android.app.Activity
 import android.content.Intent
@@ -47,12 +47,12 @@ import com.tokopedia.people.*
 import com.tokopedia.people.R
 import com.tokopedia.people.di.DaggerUserProfileComponent
 import com.tokopedia.people.di.UserProfileModule
-import com.tokopedia.people.itemDecoration.GridSpacingItemDecoration
+import com.tokopedia.people.views.itemdecoration.GridSpacingItemDecoration
 import com.tokopedia.people.model.Profile
 import com.tokopedia.people.model.ProfileHeaderBase
 import com.tokopedia.people.model.UserProfileIsFollow
 import com.tokopedia.people.viewmodels.UserProfileViewModel
-import com.tokopedia.people.views.UserProfileActivity.Companion.EXTRA_USERNAME
+import com.tokopedia.people.views.activity.UserProfileActivity.Companion.EXTRA_USERNAME
 import com.tokopedia.unifycomponents.*
 import com.tokopedia.universal_sharing.view.bottomsheet.ScreenshotDetector
 import com.tokopedia.universal_sharing.view.bottomsheet.SharingUtil
@@ -68,6 +68,10 @@ import java.net.UnknownHostException
 import javax.inject.Inject
 import com.tokopedia.feedcomponent.bottomsheets.onboarding.FeedUserCompleteOnboardingBottomSheet
 import com.tokopedia.feedcomponent.bottomsheets.onboarding.FeedUserTnCOnboardingBottomSheet
+import com.tokopedia.people.views.activity.FollowerFollowingListingActivity
+import com.tokopedia.people.views.adapter.UserPostBaseAdapter
+import com.tokopedia.people.analytic.UserProfileTracker
+import com.tokopedia.people.utils.UserProfileUtils
 
 class UserProfileFragment : BaseDaggerFragment(),
     View.OnClickListener,

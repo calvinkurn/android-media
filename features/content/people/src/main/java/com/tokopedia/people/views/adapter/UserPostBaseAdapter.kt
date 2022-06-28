@@ -1,10 +1,9 @@
-package com.tokopedia.people.views
+package com.tokopedia.people.views.adapter
 
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.applink.RouteManager
 import com.tokopedia.library.baseadapter.AdapterCallback
 import com.tokopedia.library.baseadapter.BaseAdapter
 import com.tokopedia.library.baseadapter.BaseItem
@@ -13,8 +12,9 @@ import com.tokopedia.people.model.PlayPostContentItem
 import com.tokopedia.people.model.UserPostModel
 import com.tokopedia.people.utils.UserProfileVideoMapper
 import com.tokopedia.people.viewmodels.UserProfileViewModel
-import com.tokopedia.people.views.UserProfileFragment.Companion.VAL_FEEDS_PROFILE
-import com.tokopedia.people.views.UserProfileFragment.Companion.VAL_SOURCE_BUYER
+import com.tokopedia.people.analytic.UserProfileTracker
+import com.tokopedia.people.views.fragment.UserProfileFragment.Companion.VAL_FEEDS_PROFILE
+import com.tokopedia.people.views.fragment.UserProfileFragment.Companion.VAL_SOURCE_BUYER
 import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetReminderType
 import com.tokopedia.play.widget.ui.model.reminded

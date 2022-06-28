@@ -1,6 +1,4 @@
-package com.tokopedia.people.views
-
-import com.tokopedia.people.UserProfileAnalytics
+package com.tokopedia.people.analytic
 
 class UserProfileTracker {
 

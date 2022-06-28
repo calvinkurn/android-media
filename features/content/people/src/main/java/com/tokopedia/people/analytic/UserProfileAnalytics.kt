@@ -1,4 +1,4 @@
-package com.tokopedia.people
+package com.tokopedia.people.analytic
 
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.interfaces.ContextAnalytics
