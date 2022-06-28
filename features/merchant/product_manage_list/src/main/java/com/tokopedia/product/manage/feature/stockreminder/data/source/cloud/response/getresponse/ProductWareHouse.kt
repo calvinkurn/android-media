@@ -10,7 +10,7 @@ data class ProductWareHouse(
         @SerializedName("stock")
         val stock: Int,
         @SerializedName("price")
-        val price: Double,
+        val price: String,
         @SerializedName("threshold")
         val threshold: Int,
         @SerializedName("shop_id")
