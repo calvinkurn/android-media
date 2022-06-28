@@ -3,13 +3,13 @@ package com.tokopedia.network.utils
 import android.content.Context
 import android.text.TextUtils
 import android.util.Log
+import com.tokopedia.akamai_bot_lib.exception.AkamaiErrorException
 import com.tokopedia.logger.ServerLogger
 import com.tokopedia.logger.utils.Priority
 import com.tokopedia.network.R
 import com.tokopedia.network.constant.ResponseStatus
 import com.tokopedia.network.data.model.response.ResponseV4ErrorException
 import com.tokopedia.network.exception.MessageErrorException
-import com.tokopedia.network.interceptor.akamai.AkamaiErrorException
 import com.tokopedia.network.utils.ExceptionDictionary.Companion.getErrorCodeSimple
 import com.tokopedia.network.utils.ExceptionDictionary.Companion.getRandomString
 import java.io.IOException
