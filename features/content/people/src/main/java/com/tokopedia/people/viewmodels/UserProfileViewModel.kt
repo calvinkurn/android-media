@@ -22,6 +22,7 @@ import com.tokopedia.people.model.VideoPostReimderModel
 import kotlinx.coroutines.Dispatchers
 import com.tokopedia.feedcomponent.domain.usecase.GetWhitelistUseCase
 import com.tokopedia.feedcomponent.domain.usecase.GetWhitelistUseCase.Companion.WHITELIST_ENTRY_POINT
+import com.tokopedia.kotlin.extensions.coroutines.asyncCatchError
 import com.tokopedia.people.domains.repository.UserProfileRepository
 import com.tokopedia.people.views.uimodel.profile.*
 import com.tokopedia.people.views.uimodel.state.UserProfileUiState
@@ -97,28 +98,39 @@ class UserProfileViewModel @Inject constructor(
         )
     }
 
-//    fun getUserDetails(username: String, isRefresh: Boolean) {
-//        launchCatchError(block = {
-//            val profileInfo = async {
-//                val result = userDetailsUseCase.getUserProfileDetail(username)
-//                result.getData(ProfileHeaderBase::class.java)
-//            }
-//        }) {
-//            profileHeaderErrorMessage.value = it
-//        }
-//    }
-
-    fun getUserDetails(userName: String, isRefreshPost: Boolean = false) {
+    fun getUserDetails(username: String, isRefresh: Boolean) {
         launchCatchError(block = {
-            val data = userDetailsUseCase.getUserProfileDetail(userName)
-            if (data != null) {
-                userDetails.value = Success(data.getData(ProfileHeaderBase::class.java))
-                userPost.value = isRefreshPost
-            } else throw NullPointerException("data is null")
-        }, onError = {
+            val profileInfo = asyncCatchError(block = {
+                repo.getProfile(username)
+            }) {
+                profileHeaderErrorMessage.value = it
+                ProfileUiModel.Empty
+            }
+
+            val followInfo = asyncCatchError(block = {
+                repo.getFollowInfo(listOf(username))
+            }) {
+                FollowInfoUiModel.Empty
+            }
+
+            _profileInfo.value = profileInfo.await() ?: ProfileUiModel.Empty
+            _followInfo.value = followInfo.await() ?: FollowInfoUiModel.Empty
+        }) {
             profileHeaderErrorMessage.value = it
-        })
+        }
     }
+
+//    fun getUserDetails(userName: String, isRefreshPost: Boolean = false) {
+//        launchCatchError(block = {
+//            val data = userDetailsUseCase.getUserProfileDetail(userName)
+//            if (data != null) {
+//                userDetails.value = Success(data.getData(ProfileHeaderBase::class.java))
+//                userPost.value = isRefreshPost
+//            } else throw NullPointerException("data is null")
+//        }, onError = {
+//            profileHeaderErrorMessage.value = it
+//        })
+//    }
 
     public fun getUPlayVideos(group: String, cursor: String, sourceType: String, sourceId: String) {
         launchCatchError(block = {

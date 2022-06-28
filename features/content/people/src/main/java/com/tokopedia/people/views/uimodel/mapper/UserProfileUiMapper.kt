@@ -19,7 +19,7 @@ class UserProfileUiMapper @Inject constructor() {
             imageCover = response.profileHeader.profile.imageCover,
             name = response.profileHeader.profile.name,
             username = response.profileHeader.profile.username,
-            biography = response.profileHeader.profile.biography,
+            biography = response.profileHeader.profile.biography.replace("\n", "<br />"),
             badges = response.profileHeader.profile.badges,
             stats = ProfileStatsUiModel(
                 totalPost = response.profileHeader.stats.totalPost,

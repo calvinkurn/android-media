@@ -97,7 +97,6 @@ dependencies {
     implementation rootProject.ext.miscDependencies.transition
     implementation rootProject.ext.miscDependencies.viewModelKtx
     implementation rootProject.ext.miscDependencies.flexBoxLayout
-    implementation rootProject.ext.miscDependencies.lifecycleRuntimeKtx
     implementation rootProject.ext.miscDependencies.liveDataKtx
 
     implementation rootProject.ext.networkDependencies.glide

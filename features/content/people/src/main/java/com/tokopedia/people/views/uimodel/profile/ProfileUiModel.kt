@@ -9,12 +9,13 @@ data class ProfileUiModel(
     val imageCover: String,
     val name: String,
     val username: String,
-    var biography: String,
+    val biography: String,
     val badges: List<Any?>,
     val stats: ProfileStatsUiModel,
     val shareLink: LinkUiModel,
     val liveInfo: LivePlayChannelUiModel,
 ) {
+
     companion object {
         val Empty: ProfileUiModel
             get() = ProfileUiModel(
