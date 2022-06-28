@@ -9,7 +9,7 @@ import com.tokopedia.product.manage.feature.campaignstock.ui.dataview.uimodel.*
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductCampaignType
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStatus
 
-class CampaignStockAdapterTypeFactory(private val onAccordionStateChange: (Int) -> Unit = {},
+class CampaignStockAdapterTypeFactory(private val onVariantReservedEventInfoClicked: (String, MutableList<ReservedEventInfoUiModel>) -> Unit = { _,_ -> },
                                       private val onTotalStockChanged: (Int) -> Unit = {},
                                       private val onActiveStockChanged: (Boolean) -> Unit = {},
                                       private val onVariantStockChanged: (productId: String, stock: Int) -> Unit = { _,_ -> },
@@ -43,6 +43,7 @@ class CampaignStockAdapterTypeFactory(private val onAccordionStateChange: (Int) 
                     parent, onVariantStockChanged, onVariantStatusChanged, onOngoingPromotionClicked, source, shopId
             )
             ReservedEventInfoViewHolder.LAYOUT_RES -> ReservedEventInfoViewHolder(parent)
+            VariantReservedEventInfoViewHolder.LAYOUT_RES -> VariantReservedEventInfoViewHolder(parent, onVariantReservedEventInfoClicked)
             ReservedStockRedirectionViewHolder.LAYOUT_RES -> ReservedStockRedirectionViewHolder(parent)
             CampaignStockTickerViewHolder.LAYOUT -> CampaignStockTickerViewHolder(parent)
             else -> super.createViewHolder(parent, type)

@@ -64,6 +64,10 @@ object CampaignStockMapper {
                 )
             }
 
+    private fun getPeriodString(startTime: String, endTime: String): String {
+
+    }
+
     fun mapToVariantReserved(dataModels: List<GetStockAllocationDetailReserve>): List<VariantReservedEventInfoUiModel> {
         val variantInfoList = mutableListOf<VariantReservedEventInfoUiModel>()
         dataModels.forEach { detail ->

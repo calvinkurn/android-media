@@ -6,12 +6,14 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.product.manage.R
 import com.tokopedia.product.manage.databinding.ItemCampaignStockReservedInfoVariantBinding
-import com.tokopedia.product.manage.feature.campaignstock.ui.bottomsheet.VariantReservedEventInfoBottomSheet
 import com.tokopedia.product.manage.feature.campaignstock.ui.dataview.uimodel.ReservedEventInfoUiModel
 import com.tokopedia.product.manage.feature.campaignstock.ui.dataview.uimodel.VariantReservedEventInfoUiModel
 import com.tokopedia.utils.view.binding.viewBinding
 
-class VariantReservedEventInfoViewHolder(itemView: View?) :
+class VariantReservedEventInfoViewHolder(
+    itemView: View?,
+    private val onVariantReservedEventInfoClicked: (String, MutableList<ReservedEventInfoUiModel>) -> Unit
+) :
     AbstractViewHolder<VariantReservedEventInfoUiModel>(itemView) {
 
     companion object {
@@ -30,26 +32,10 @@ class VariantReservedEventInfoViewHolder(itemView: View?) :
                     element.totalCampaign.orZero()
                 )
                 setOnClickListener {
-                    showVariantReservedEventInfoBottomSheet(
-                        element.variantName,
-                        element.reservedEventInfos
-                    )
+                    onVariantReservedEventInfoClicked.invoke(element.variantName, element.reservedEventInfos)
                 }
             }
             tvCampaignReservedInfoVariantStockCount.text = element.totalStock.toString()
-        }
-    }
-
-    private fun showVariantReservedEventInfoBottomSheet(
-        variantName: String,
-        reservedEventInfos: MutableList<ReservedEventInfoUiModel>
-    ) {
-        VariantReservedEventInfoBottomSheet.createInstance(
-            itemView.context,
-            variantName,
-            ArrayList(reservedEventInfos)
-        ).run {
-            show(childFragmentManager)
         }
     }
 

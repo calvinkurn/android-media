@@ -17,6 +17,7 @@ import com.tokopedia.product.manage.databinding.FragmentCampaignStockTabBinding
 import com.tokopedia.product.manage.feature.campaignstock.di.DaggerCampaignStockComponent
 import com.tokopedia.product.manage.feature.campaignstock.ui.adapter.typefactory.CampaignStockAdapterTypeFactory
 import com.tokopedia.product.manage.feature.campaignstock.ui.adapter.typefactory.CampaignStockTypeFactory
+import com.tokopedia.product.manage.feature.campaignstock.ui.bottomsheet.VariantReservedEventInfoBottomSheet
 import com.tokopedia.product.manage.feature.campaignstock.ui.dataview.uimodel.CampaignStockTickerUiModel
 import com.tokopedia.product.manage.feature.campaignstock.ui.dataview.uimodel.ReservedEventInfoUiModel
 import com.tokopedia.product.manage.feature.campaignstock.ui.dataview.uimodel.ReservedStockRedirectionUiModel
@@ -86,7 +87,10 @@ class CampaignReservedStockFragment: BaseListFragment<Visitable<CampaignStockTyp
         setupView(view)
     }
 
-    override fun getAdapterTypeFactory(): CampaignStockAdapterTypeFactory = CampaignStockAdapterTypeFactory()
+    override fun getAdapterTypeFactory(): CampaignStockAdapterTypeFactory =
+        CampaignStockAdapterTypeFactory(
+            onVariantReservedEventInfoClicked = ::showVariantReservedEventInfoBottomSheet
+        )
 
     override fun onItemClicked(t: Visitable<CampaignStockTypeFactory>?) {}
 
@@ -138,6 +142,21 @@ class CampaignReservedStockFragment: BaseListFragment<Visitable<CampaignStockTyp
         val tickerList = listOf(CampaignStockTicker)
         val tickerData = mapToTickerData(context, tickerList)
         return CampaignStockTickerUiModel(tickerData)
+    }
+
+    private fun showVariantReservedEventInfoBottomSheet(
+        variantName: String,
+        reservedEventInfos: MutableList<ReservedEventInfoUiModel>
+    ) {
+        context?.let {
+            VariantReservedEventInfoBottomSheet.createInstance(
+                it,
+                variantName,
+                ArrayList(reservedEventInfos)
+            ).run {
+                show(childFragmentManager)
+            }
+        }
     }
 
 }
