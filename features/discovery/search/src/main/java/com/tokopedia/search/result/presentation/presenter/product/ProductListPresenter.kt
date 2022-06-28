@@ -27,7 +27,6 @@ import com.tokopedia.filter.common.data.DynamicFilterModel
 import com.tokopedia.filter.common.data.Filter
 import com.tokopedia.filter.common.data.Option
 import com.tokopedia.filter.common.data.SavedOption
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.recommendation_widget_common.DEFAULT_VALUE_X_SOURCE
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
@@ -253,8 +252,8 @@ class ProductListPresenter @Inject constructor(
     //endregion
 
     //region Load Data / Load More / Recommendations
-    override fun hasNextPage(): Boolean {
-        return productList.size < totalData
+    private fun hasNextPage(): Boolean {
+        return startFrom < totalData
     }
 
     override fun clearData() {
@@ -287,6 +286,8 @@ class ProductListPresenter @Inject constructor(
     }
 
     override fun loadMoreData(searchParameter: Map<String, Any>) {
+        if (!hasNextPage()) return
+
         if (isShowLocalSearchRecommendation()) getLocalSearchRecommendation()
         else searchProductLoadMore(searchParameter)
     }
@@ -362,7 +363,7 @@ class ProductListPresenter @Inject constructor(
 
         if (productDataView.productList.isEmpty()) {
             postProcessingFilter.checkPostProcessingFilter(searchParameter, totalData, ::loadMoreData) {
-                getViewToProcessEmptyResultDuringLoadMore(searchProductModel.searchProduct)
+                getViewToProcessEmptyResultDuringLoadMore()
             }
         }
         else {
@@ -404,11 +405,11 @@ class ProductListPresenter @Inject constructor(
         view.saveLastProductItemPositionToCache(newLastProductPosition)
     }
 
-    private fun getViewToProcessEmptyResultDuringLoadMore(searchProduct: SearchProductModel.SearchProduct) {
+    private fun getViewToProcessEmptyResultDuringLoadMore() {
         val list = mutableListOf<Visitable<*>>()
 
-        processBroadMatch(searchProduct, list)
-        addSearchInTokopedia(searchProduct, list)
+        processBroadMatch(list)
+        addSearchInTokopedia(list)
 
         view.removeLoading()
         view.addProductList(list)
@@ -424,7 +425,7 @@ class ProductListPresenter @Inject constructor(
 
         view.removeLoading()
         view.addProductList(loadMoreVisitableList)
-        view.addLoading()
+        if (hasNextPage()) view.addLoading()
         view.updateScrollListener()
     }
 
@@ -444,8 +445,8 @@ class ProductListPresenter @Inject constructor(
         processInspirationCarouselPosition(searchParameter, list)
         processBannerAndBroadmatchInSamePosition(searchProduct, list)
         processBanner(searchProduct, list)
-        processBroadMatch(searchProduct, list)
-        addSearchInTokopedia(searchProduct, list)
+        processBroadMatch(list)
+        addSearchInTokopedia(list)
 
         return list
     }
@@ -1004,7 +1005,7 @@ class ProductListPresenter @Inject constructor(
         processBanner(searchProduct, list)
 
         runCustomMetric(performanceMonitoring, SEARCH_RESULT_PLT_RENDER_LOGIC_BROADMATCH) {
-            processBroadMatch(searchProduct, list)
+            processBroadMatch(list)
         }
 
         runCustomMetric(performanceMonitoring, SEARCH_RESULT_PLT_RENDER_LOGIC_TDN) {
@@ -1014,14 +1015,13 @@ class ProductListPresenter @Inject constructor(
             processTopAdsImageViewModel(searchParameter, list)
         }
 
-        addSearchInTokopedia(searchProduct, list)
+        addSearchInTokopedia(list)
         firstProductPositionWithBOELabel = getFirstProductPositionWithBOELabel(list)
 
         view.removeLoading()
         view.setProductList(list)
         view.backToTop()
-        if (productDataView.totalData > getSearchRows().toIntOrZero())
-            view.addLoading()
+        if (hasNextPage()) view.addLoading()
     }
 
     private fun addLastFilterDataView(
@@ -1059,8 +1059,8 @@ class ProductListPresenter @Inject constructor(
                 && !view.isAnySortActive
     }
 
-    private fun addSearchInTokopedia(searchProduct: SearchProductModel.SearchProduct, list: MutableList<Visitable<*>>) {
-        if (isLastPage(searchProduct) && isLocalSearch()) {
+    private fun addSearchInTokopedia(list: MutableList<Visitable<*>>) {
+        if (isLastPage() && isLocalSearch()) {
             val globalSearchApplink = constructGlobalSearchApplink()
             val searchInTokopediaDataView = SearchInTokopediaDataView(globalSearchApplink)
             list.add(searchInTokopediaDataView)
@@ -1355,8 +1355,8 @@ class ProductListPresenter @Inject constructor(
 
         if (isShowBanner() && isShowBroadMatch()) {
             if (bannerDataView.position == -1 && relatedDataView.position == 0) {
-                processBroadMatchAtBottom(searchProduct, list)
-                processBannerAtBottom(searchProduct, list)
+                processBroadMatchAtBottom(list)
+                processBannerAtBottom(list)
             } else if (bannerDataView.position == 0 && relatedDataView.position == 1) {
                 processBroadMatchAtTop(list)
                 processBannerAtTop(list)
@@ -1366,8 +1366,8 @@ class ProductListPresenter @Inject constructor(
 
     private fun isShowBanner() = bannerDataView?.imageUrl?.isNotEmpty() == true
 
-    private fun processBannerAtBottom(searchProduct: SearchProductModel.SearchProduct, list: MutableList<Visitable<*>>) {
-        if (!isLastPage(searchProduct)) return
+    private fun processBannerAtBottom(list: MutableList<Visitable<*>>) {
+        if (!isLastPage()) return
 
         bannerDataView?.let {
             list.add(it)
@@ -1387,7 +1387,7 @@ class ProductListPresenter @Inject constructor(
             if (!isShowBanner()) return
             val bannerDataView = bannerDataView ?: return
 
-            if (bannerDataView.position == -1) processBannerAtBottom(searchProduct, list)
+            if (bannerDataView.position == -1) processBannerAtBottom(list)
             else if (bannerDataView.position == 0) processBannerAtTop(list)
             else processBannerAtPosition(list)
         } catch (throwable: Throwable) {
@@ -1407,12 +1407,12 @@ class ProductListPresenter @Inject constructor(
         this.bannerDataView = null
     }
 
-    private fun processBroadMatch(searchProduct: SearchProductModel.SearchProduct, list: MutableList<Visitable<*>>) {
+    private fun processBroadMatch(list: MutableList<Visitable<*>>) {
         try {
             if (!isShowBroadMatch()) return
 
             val broadMatchPosition = relatedDataView?.position ?: -1
-            if (broadMatchPosition == 0) processBroadMatchAtBottom(searchProduct, list)
+            if (broadMatchPosition == 0) processBroadMatchAtBottom(list)
             else if (broadMatchPosition == 1) processBroadMatchAtTop(list)
             else if (broadMatchPosition > 1) processBroadMatchAtPosition(list, broadMatchPosition)
         } catch (exception: Throwable) {
@@ -1420,17 +1420,14 @@ class ProductListPresenter @Inject constructor(
         }
     }
 
-    private fun processBroadMatchAtBottom(searchProduct: SearchProductModel.SearchProduct, list: MutableList<Visitable<*>>) {
-        if (isLastPage(searchProduct)) {
+    private fun processBroadMatchAtBottom(list: MutableList<Visitable<*>>) {
+        if (isLastPage()) {
             list.add(SeparatorDataView())
             addBroadMatchToVisitableList(list)
         }
     }
 
-    private fun isLastPage(searchProduct: SearchProductModel.SearchProduct): Boolean {
-        val hasNextPage = startFrom < searchProduct.header.totalData
-        return !hasNextPage
-    }
+    private fun isLastPage(): Boolean = !hasNextPage()
 
     private fun processBroadMatchAtTop(list: MutableList<Visitable<*>>) {
         val broadMatchVisitableList = mutableListOf<Visitable<*>>()

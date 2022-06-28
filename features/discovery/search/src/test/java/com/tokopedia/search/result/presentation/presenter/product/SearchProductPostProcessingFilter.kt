@@ -294,4 +294,29 @@ internal class SearchProductPostProcessingFilter: ProductListPresenterTestFixtur
             subscriber.complete(getSearchProduct(searchProductParams))
         }
     }
+
+    @Test
+    fun `load more tests fs fsaf `() {
+        `Given search product APIs responses` { parameter ->
+            when (parameter[START].toString()) {
+                "0" -> notEmptyProduct
+                "8" -> emptyProductTotalDataNotZero
+                "16" -> notEmptyProduct
+                "24" -> emptyProductTotalDataNotZero
+                else -> notEmptyProduct
+            }
+        }
+
+        productListPresenter.loadData(searchParameter)
+        productListPresenter.loadMoreData(searchParameter)
+        productListPresenter.loadMoreData(searchParameter)
+
+        verify(exactly = 1) {
+            searchProductFirstPageUseCase.execute(any(), any())
+        }
+
+        verify(exactly = 4) {
+            searchProductLoadMoreUseCase.execute(any(), any())
+        }
+    }
 }
