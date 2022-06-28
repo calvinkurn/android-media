@@ -23,9 +23,7 @@ import kotlinx.coroutines.Dispatchers
 import com.tokopedia.feedcomponent.domain.usecase.GetWhitelistUseCase
 import com.tokopedia.feedcomponent.domain.usecase.GetWhitelistUseCase.Companion.WHITELIST_ENTRY_POINT
 import com.tokopedia.people.domains.repository.UserProfileRepository
-import com.tokopedia.people.views.uimodel.profile.ProfileStatsUiModel
-import com.tokopedia.people.views.uimodel.profile.ProfileUiModel
-import com.tokopedia.people.views.uimodel.profile.ProfileWhitelistUiModel
+import com.tokopedia.people.views.uimodel.profile.*
 import com.tokopedia.people.views.uimodel.state.UserProfileUiState
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -81,17 +79,20 @@ class UserProfileViewModel @Inject constructor(
     val postReminderErrorMessageLiveData : LiveData<Throwable> get() = postReminderErrorMessage
 
     private val _profileInfo = MutableStateFlow(ProfileUiModel.Empty)
-    private val _profileStats = MutableStateFlow(ProfileStatsUiModel.Empty)
+    private val _followInfo = MutableStateFlow(FollowInfoUiModel.Empty)
     private val _profileWhitelist = MutableStateFlow(ProfileWhitelistUiModel.Empty)
+    private val _profileType = MutableStateFlow(ProfileType.Unknown)
 
     val uiState = combine(
         _profileInfo,
-        _profileStats,
+        _followInfo,
+        _profileType,
         _profileWhitelist,
-    ) { profileInfo, profileStats, profileWhitelist ->
+    ) { profileInfo, followInfo, profileType, profileWhitelist ->
         UserProfileUiState(
             profileInfo = profileInfo,
-            profileStats = profileStats,
+            followInfo = followInfo,
+            profileType = profileType,
             profileWhitelist = profileWhitelist,
         )
     }

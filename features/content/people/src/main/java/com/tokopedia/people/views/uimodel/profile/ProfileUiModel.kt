@@ -11,9 +11,8 @@ data class ProfileUiModel(
     val username: String,
     var biography: String,
     val badges: List<Any?>,
-    val isSelfProfile: Boolean,
+    val stats: ProfileStatsUiModel,
     val shareLink: LinkUiModel,
-    val followInfo: FollowInfoUiModel,
     val liveInfo: LivePlayChannelUiModel,
 ) {
     companion object {
@@ -26,9 +25,8 @@ data class ProfileUiModel(
                 username = "",
                 biography = "",
                 badges = emptyList(),
-                isSelfProfile = false,
+                stats = ProfileStatsUiModel.Empty,
                 shareLink = LinkUiModel.Empty,
-                followInfo = FollowInfoUiModel.Empty,
                 liveInfo = LivePlayChannelUiModel.Empty,
             )
     }

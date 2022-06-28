@@ -1,6 +1,7 @@
 package com.tokopedia.people.views.uimodel.state
 
-import com.tokopedia.people.views.uimodel.profile.ProfileStatsUiModel
+import com.tokopedia.people.views.uimodel.profile.FollowInfoUiModel
+import com.tokopedia.people.views.uimodel.profile.ProfileType
 import com.tokopedia.people.views.uimodel.profile.ProfileUiModel
 import com.tokopedia.people.views.uimodel.profile.ProfileWhitelistUiModel
 
@@ -9,6 +10,7 @@ import com.tokopedia.people.views.uimodel.profile.ProfileWhitelistUiModel
  */
 data class UserProfileUiState(
     val profileInfo: ProfileUiModel,
-    val profileStats: ProfileStatsUiModel,
+    val followInfo: FollowInfoUiModel,
+    val profileType: ProfileType,
     val profileWhitelist: ProfileWhitelistUiModel,
 )
