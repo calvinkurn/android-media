@@ -231,7 +231,7 @@ class VideoPictureView @JvmOverloads constructor(
         val mediaData = videoPictureAdapter?.currentList?.getOrNull(position)
         val variantName = mediaData?.mediaDescription ?: ""
         val totalMediaCount = videoPictureAdapter?.currentList?.size ?: 0
-        val index = "${position + Int.ONE} / $totalMediaCount"
+        val index = "${position + Int.ONE}/$totalMediaCount"
         val totalImageCount = videoPictureAdapter?.currentList?.count {
             !it.isVideoType()
         } ?: 0

@@ -43,6 +43,7 @@
         android:orientation="horizontal"
         android:paddingStart="16dp"
         android:paddingEnd="8dp"
+        android:paddingBottom="8dp"
         android:visibility="gone"
         tools:visibility="visible"
         tools:listitem="@layout/item_img_thumbnail_view_holder" />
