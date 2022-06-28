@@ -17,17 +17,18 @@ class RecentSearchAdapter(val listener: RecentSearchListener) : RecyclerView.Ada
     var recentSearchList: MutableList<RecentSearch> = arrayListOf()
 
     fun setData(list: MutableList<RecentSearch>) {
+        recentSearchList.clear()
         recentSearchList = list
         notifyDataSetChanged()
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        var itemView = LayoutInflater.from(parent.context).inflate(R.layout.item_recent_search, parent, false)
+        val itemView = LayoutInflater.from(parent.context).inflate(R.layout.item_recent_search, parent, false)
         return ViewHolder(itemView, listener)
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.bind(recentSearchList.get(position), position)
+        holder.bind(recentSearchList[position], position)
     }
 
     override fun getItemCount(): Int {

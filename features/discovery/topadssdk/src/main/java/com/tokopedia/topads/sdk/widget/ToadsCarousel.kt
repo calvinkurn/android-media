@@ -5,6 +5,7 @@ import android.util.AttributeSet
 import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.topads.sdk.R
 import com.tokopedia.topads.sdk.domain.model.TopAdsCarouselModel
 import com.tokopedia.topads.sdk.listener.TopAdsCarouselListener
@@ -50,5 +51,6 @@ class ToadsCarousel : BaseCustomView {
 
     private fun initTopAdsCarouselTitle(topAdsCarouselModel: TopAdsCarouselModel) {
         topAdsCarouselTitle.text = topAdsCarouselModel.title
+        topAdsCarouselTitle.showWithCondition(topAdsCarouselModel.title.isNotEmpty())
     }
 }

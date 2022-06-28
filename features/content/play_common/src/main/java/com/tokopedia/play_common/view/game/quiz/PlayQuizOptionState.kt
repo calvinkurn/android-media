@@ -17,6 +17,13 @@ sealed class PlayQuizOptionState {
         val isCorrect: Boolean
     ): PlayQuizOptionState()
 
+    data class Participant(
+        val alphabet : Char,
+        val isCorrect : Boolean,
+        val count : String,
+        val showArrow: Boolean,
+    ): PlayQuizOptionState()
+
     object Unknown: PlayQuizOptionState()
 }
 

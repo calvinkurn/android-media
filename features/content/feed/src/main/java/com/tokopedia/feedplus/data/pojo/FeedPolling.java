@@ -10,7 +10,7 @@ import java.util.List;
 public class FeedPolling {
   @SerializedName("poll_id")
   @Expose
-  private Integer pollId;
+  private String pollId = "";
 
   @SerializedName("title")
   @Expose
@@ -70,7 +70,7 @@ public class FeedPolling {
 
   @SerializedName("userId")
   @Expose
-  private Integer userId;
+  private String userId;
 
   @SerializedName("userInfo")
   @Expose
@@ -88,7 +88,7 @@ public class FeedPolling {
   @Expose
   private Relation relation;
 
-  public void setPollId(Integer poll_id) {
+  public void setPollId(String poll_id) {
     this.pollId = poll_id;
   }
 
@@ -148,7 +148,7 @@ public class FeedPolling {
     this.userPhoto = userPhoto;
   }
 
-  public void setUserId(Integer userId) {
+  public void setUserId(String userId) {
     this.userId = userId;
   }
 
@@ -168,7 +168,7 @@ public class FeedPolling {
     this.relation = relation;
   }
 
-  public Integer getPollId() {
+  public String getPollId() {
     return this.pollId;
   }
 
@@ -228,7 +228,7 @@ public class FeedPolling {
     return this.userPhoto;
   }
 
-  public Integer getUserId() {
+  public String getUserId() {
     return this.userId;
   }
 

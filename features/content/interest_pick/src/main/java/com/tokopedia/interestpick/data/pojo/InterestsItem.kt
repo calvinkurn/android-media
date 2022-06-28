@@ -1,5 +1,6 @@
 package com.tokopedia.interestpick.data.pojo
 
+import android.annotation.SuppressLint
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
@@ -16,7 +17,7 @@ data class InterestsItem(
         @Expose
         val name: String = "",
 
-        @SerializedName("id")
+        @SuppressLint("Invalid Data Type") @SerializedName("id")
         @Expose
         val id: Int = 0
 )

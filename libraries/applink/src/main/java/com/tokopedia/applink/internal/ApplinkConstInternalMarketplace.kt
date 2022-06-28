@@ -75,7 +75,7 @@ object ApplinkConstInternalMarketplace {
     // StockReminderActivity
     const val STOCK_REMINDER_BASE = "$INTERNAL_MARKETPLACE/stock-reminder/"
 
-    const val STOCK_REMINDER = "$STOCK_REMINDER_BASE{productId}/{productName}/{stock}/"
+    const val STOCK_REMINDER = "$STOCK_REMINDER_BASE{productId}/{productName}/{isVariant}/"
 
     // SetCashbackActivity
     const val SET_CASHBACK = "$INTERNAL_MARKETPLACE/set-cashback/{productId}/"
