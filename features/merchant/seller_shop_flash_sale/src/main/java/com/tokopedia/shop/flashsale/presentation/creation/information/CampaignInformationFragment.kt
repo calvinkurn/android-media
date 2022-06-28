@@ -301,7 +301,7 @@ class CampaignInformationFragment : BaseDaggerFragment() {
             }
             tauCampaignName.textInputLayout.editText?.maxLines = SINGLE_LINE
             tauCampaignName.textInputLayout.editText?.inputType = InputType.TYPE_CLASS_TEXT
-            tpgCampaignNameErrorMessage.gone()
+            tpgCampaignNameErrorMessage.invisible()
 
             tauHexColor.setMaxLength(HEX_COLOR_TEXT_FIELD_MAX_LENGTH)
             tauHexColor.textInputLayout.editText?.doOnTextChanged { text ->
@@ -356,7 +356,11 @@ class CampaignInformationFragment : BaseDaggerFragment() {
             tauEndDate.editText.setText(defaultEndDate)
 
             tauStartDate.editText.inputType = InputType.TYPE_NULL
+            tauStartDate.editText.isFocusable = false
+
             tauEndDate.editText.inputType = InputType.TYPE_NULL
+            tauEndDate.editText.isFocusable = false
+
             tauStartDate.editText.setOnClickListener { displayStartDatePicker() }
             tauEndDate.editText.setOnClickListener { displayEndDatePicker() }
         }
