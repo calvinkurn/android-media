@@ -141,7 +141,6 @@ class PostDynamicViewNew @JvmOverloads constructor(
     private val shopBadge: ImageUnify = findViewById(R.id.shop_badge)
     private val shopName: Typography = findViewById(R.id.shop_name)
     private val shopMenuIcon: IconUnify = findViewById(R.id.menu_button)
-//    private var carouselView: CarouselUnify
     private val rvCarousel: RecyclerView = findViewById(R.id.rv_carousel)
     private val pageControl: PageControl = findViewById(R.id.page_indicator)
     private val likeButton: IconUnify = findViewById(R.id.like_button)
@@ -241,6 +240,38 @@ class PostDynamicViewNew @JvmOverloads constructor(
                     positionInFeed,
                     pageControl.indicatorCurrentPosition,
                 )
+
+                val data = mData
+                val position = viewHolder.adapterPosition
+
+                if (data.isTypeProductHighlight) {
+
+                    if (data.products.isEmpty() ||
+                        data.products.size <= position) return
+
+                    imagePostListener.userProductImpression(
+                        positionInFeed,
+                        data.id,
+                        data.typename,
+                        data.author.id,
+                        listOf(data.products[position])
+                    )
+                } else {
+                    if (data.media.isEmpty() ||
+                        data.media.size <= position) return
+
+                    imagePostListener.userCarouselImpression(
+                        data.id,
+                        data.media[position],
+                        position,
+                        data.typename,
+                        data.followers.isFollowed,
+                        data.author.id,
+                        positionInFeed,
+                        data.cpmData,
+                        data.listProduct
+                    )
+                }
             }
 
             override fun onLihatProductClicked(
@@ -271,9 +302,9 @@ class PostDynamicViewNew @JvmOverloads constructor(
             val layoutManager = recyclerView.layoutManager ?: return
             val snappedView = snapHelper.findSnapView(layoutManager) ?: return
 
-            pageControl.setCurrentIndicator(
-                layoutManager.getPosition(snappedView)
-            )
+            val position = layoutManager.getPosition(snappedView)
+            pageControl.setCurrentIndicator(position)
+            mData.lastCarouselIndex = position
         }
     }
     private val onMediaFocusedListener = object : RecyclerView.OnScrollListener() {
@@ -955,15 +986,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
                     seeAllCommentText.hide()
                     shopMenuIcon.hide()
                 }
-
-                imagePostListener.userImagePostImpression(
-                    positionInFeed,
-                    pageControl.indicatorCurrentPosition
-                )
-
-                resetCarouselActiveListener(feedXCard)
             }
-
         } else if (feedXCard.isTypeVOD) {
             setVODLayout(feedXCard)
         } else {
@@ -978,9 +1001,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
             val media = feedXCard.media
             val globalCardProductList = feedXCard.tags
             gridList.gone()
-//            carouselView.visible()
             commentButton.visible()
-        //TODO("CAROUSEL")
 //            carouselView.apply {
 //                stage.removeAllViews()
 //                indicatorPosition = CarouselUnify.INDICATOR_HIDDEN
@@ -1238,8 +1259,11 @@ class PostDynamicViewNew @JvmOverloads constructor(
                 }
             }
             ic_vod_play?.setOnClickListener {
-                //TODO("CAROUSEL")
-//                playVOD(feedXCard =  feedXCard, carouselView.activeIndex)
+                val layoutManager = rvCarousel.layoutManager as? LinearLayoutManager ?: return@setOnClickListener
+                playVOD(
+                    feedXCard =  feedXCard,
+                    layoutManager.findFirstCompletelyVisibleItemPosition().coerceAtLeast(0)
+                )
             }
             vod_full_screen_icon?.setOnClickListener {
                 isPaused = true
@@ -1737,13 +1761,9 @@ class PostDynamicViewNew @JvmOverloads constructor(
     }
 
     fun attach(
-             model: Visitable<*>? = null
+        model: Visitable<*>? = null
     ) {
-        if (model is DynamicPostUiModel) {
-            resetCarouselActiveListener(model?.feedXCard)
-        }else if (model is TopadsHeadLineV2Model){
-            resetCarouselActiveListener(model?.feedXCard)
-        }
+
     }
 
     fun detach(
@@ -1919,61 +1939,6 @@ class PostDynamicViewNew @JvmOverloads constructor(
             videoPlayer?.resume()
         else
             videoPlayer?.pause()
-    }
-    private fun resetCarouselActiveListener(feedXCard: FeedXCard?){
-        //TODO("CAROUSEL")
-//        carouselView.apply {
-//            if (onActiveIndexChangedListener == null) {
-//                onActiveIndexChangedListener = object : CarouselUnify.OnActiveIndexChangedListener {
-//                    override fun onActiveIndexChanged(prev: Int, current: Int) {
-//                        pageControl.setCurrentIndicator(current)
-//                        feedXCard?.lastCarouselIndex = current
-//                        if (feedXCard?.typename == TYPE_FEED_X_CARD_PRODUCT_HIGHLIGHT) {
-//                            if (!feedXCard.products.isNullOrEmpty()
-//                                && feedXCard.products.size > current) {
-//                                imagePostListener.userProductImpression(
-//                                    positionInFeed,
-//                                    feedXCard.id,
-//                                    feedXCard.typename,
-//                                    feedXCard.author.id,
-//                                    listOf(feedXCard.products[current])
-//                                )
-//                            }
-//                            changeTopadsCekSekarangBtnColorToGreen(feedXCard)
-//
-//                            if (feedXCard.media.isNotEmpty() && feedXCard.media.size > current) {}
-//                                bindImage(feedXCard.products, feedXCard.media[current], feedXCard)
-//                        } else if (feedXCard != null) {
-//                            if (feedXCard.media.isEmpty()) return
-//                            if (feedXCard.media.size > current) {
-//                                imagePostListener.userCarouselImpression(
-//                                        feedXCard.id,
-//                                        feedXCard.media[current],
-//                                        current,
-//                                        feedXCard.typename,
-//                                        feedXCard.followers.isFollowed,
-//                                        feedXCard.author.id,
-//                                        positionInFeed,
-//                                        feedXCard.cpmData,
-//                                        feedXCard.listProduct
-//                                )
-//
-//                                if (feedXCard.media[current].type == TYPE_IMAGE) {
-//                                    videoPlayer?.pause()
-//                                    shouldResumeVideoPLayerOnBack = false
-//                                    bindImage(feedXCard.tags, feedXCard.media[current], feedXCard)
-//                                } else {
-//                                    detach(true)
-//                                    feedXCard.media[current].canPlay = true
-//                                    playVideo(feedXCard, current)
-//                                    shouldResumeVideoPLayerOnBack = true
-//                                }
-//                            }
-//                        }
-//                    }
-//                }
-//            }
-//        }
     }
 
     fun bindImage(cardProducts: List<FeedXProduct>, media: FeedXMedia, feedXCard: FeedXCard) {
