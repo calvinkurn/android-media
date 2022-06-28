@@ -226,10 +226,7 @@ internal class FeedPostCarouselAdapter(
             postImage.setImageUrl(item.mediaUrl)
             llLihatProduct.showWithCondition(item.tagProducts.isNotEmpty())
 
-            setupTopAds(item)
-            topAdsProductName.text = if (card.totalProducts > 1) {
-                itemView.context.getString(R.string.feeds_check_x_products, card.totalProducts)
-            } else itemView.context.getString(R.string.feeds_cek_sekarang)
+            setupTopAds(card, item)
 
             itemView.doOnLayout {
                 removeExistingPostTags()
@@ -259,7 +256,15 @@ internal class FeedPostCarouselAdapter(
             }
         }
 
-        private fun setupTopAds(media: FeedXMedia) {
+        private fun setupTopAds(card: FeedXCard, media: FeedXMedia) {
+            topAdsProductName.text = if (card.totalProducts > 1) {
+                itemView.context.getString(R.string.feeds_check_x_products, card.totalProducts)
+            } else itemView.context.getString(R.string.feeds_cek_sekarang)
+
+            topAdsCard.showWithCondition(
+                shouldShow = card.isTypeProductHighlight || card.isTypeVOD || card.isTopAds
+            )
+
             topAdsCard.setOnClickListener {
                 changeTopAdsColorToGreen()
                 listener.onTopAdsCardClicked(this, media)
