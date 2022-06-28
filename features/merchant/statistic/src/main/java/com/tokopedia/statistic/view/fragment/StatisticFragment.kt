@@ -1047,9 +1047,7 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
 
             actionMenuBottomSheet.show(childFragmentManager)
 
-            StatisticTracker.sendThreeDotsClickEvent(
-                statisticPage?.pageSource.orEmpty()
-            )
+            StatisticTracker.sendThreeDotsClickEvent(statisticPage?.pageSource.orEmpty())
         }
     }
 
@@ -1086,9 +1084,7 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
         //send impression for 3 dots action menu
         menu.findItem(R.id.actionStcOtherMenu)?.let {
             view?.addOnImpressionListener(otherMenuImpressHolder) {
-                StatisticTracker.sendThreeDotsImpressionEvent(
-                    statisticPage?.pageSource.orEmpty()
-                )
+                StatisticTracker.sendThreeDotsImpressionEvent(statisticPage?.pageSource.orEmpty())
             }
         }
     }

@@ -27,7 +27,7 @@ object StatisticTracker {
 
     fun sendDateFilterEvent(userSession: UserSessionInterface) {
         val mShopStatus = TrackingHelper.getShopStatus(userSession)
-        val map = createEventMap(
+        val map = TrackingHelper.createMap(
             TrackingConstant.CLICK_SHOP_INSIGHT,
             TrackingConstant.SHOP_INSIGHT,
             TrackingConstant.CLICK_DATE_FILTER,
@@ -125,8 +125,6 @@ object StatisticTracker {
             "${TrackingConstant.CLICK_WIDGET_LINE_GRAPH} - $dataKey",
             "$state - $cardValue"
         )
-        map[TrackingConstant.BUSINESS_UNIT] = TrackingConstant.PHYSICAL_GOODS
-        map[TrackingConstant.CURRENT_SITE] = TrackingConstant.TOKOPEDIASELLER
 
         TrackingHelper.sendGeneralEvent(map)
     }

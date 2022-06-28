@@ -65,9 +65,7 @@ class ExclusiveIdentifierView : LinearLayout {
 
     private fun openPowerMerchantPage() {
         RouteManager.route(context, ApplinkConst.POWER_MERCHANT_SUBSCRIBE)
-        StatisticTracker.sendClickEventOnCtaExclusiveIdentifier(
-            pageSource
-        )
+        StatisticTracker.sendClickEventOnCtaExclusiveIdentifier(pageSource)
     }
 
     fun setOnCtaClickListener(function: () -> Unit) {

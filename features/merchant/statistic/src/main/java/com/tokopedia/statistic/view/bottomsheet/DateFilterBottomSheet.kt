@@ -196,9 +196,7 @@ class DateFilterBottomSheet : BaseBottomSheet<BottomsheetStcSelectDateRangeBindi
                 StatisticTracker.sendImpressionExclusiveFeatureDateFilter(userSession.userId)
             }
             if (stcFilterExclusiveIdentifier.isVisible) {
-                StatisticTracker.sendImpressionExclusiveIdentifierDateFilter(
-                    pageSource
-                )
+                StatisticTracker.sendImpressionExclusiveIdentifierDateFilter(pageSource)
             }
         }
     }
