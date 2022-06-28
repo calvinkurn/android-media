@@ -28,10 +28,11 @@ class LocationDetectorHelper constructor(private val permissionCheckerHelper: Pe
     fun getLocation(onGetLocation: ((DeviceLocation) -> Unit),
                     activity: Activity,
                     type: Int = TYPE_DEFAULT_FROM_CLOUD,
+                    requestLocationType: RequestLocationType = RequestLocationType.APPROXIMATE_OR_PRECISE,
                     rationaleText: String = "") {
 
         when (type) {
-            TYPE_DEFAULT_FROM_CLOUD -> getDataFromCloud(onGetLocation, activity, rationaleText)
+            TYPE_DEFAULT_FROM_CLOUD -> getDataFromCloud(onGetLocation, activity, requestLocationType, rationaleText)
             TYPE_DEFAULT_FROM_LOCAL -> getDataFromLocal(onGetLocation)
         }
     }
@@ -47,10 +48,13 @@ class LocationDetectorHelper constructor(private val permissionCheckerHelper: Pe
         }
     }
 
-    private fun getDataFromCloud(onGetLocation: (DeviceLocation) -> Unit, activity: Activity,
-                                 rationaleText: String = "") {
+    private fun getDataFromCloud(
+        onGetLocation: (DeviceLocation) -> Unit,
+        activity: Activity,
+        requestLocationType: RequestLocationType,
+        rationaleText: String = "") {
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
-            permissionCheckerHelper.checkPermissions(activity, getPermissions(),
+            permissionCheckerHelper.checkPermissions(activity, getPermissions(requestLocationType),
                     object : PermissionCheckerHelper.PermissionCheckListener {
                         override fun onPermissionDenied(permissionText: String) {
                             permissionCheckerHelper.onPermissionDenied(activity, permissionText)
@@ -103,9 +107,18 @@ class LocationDetectorHelper constructor(private val permissionCheckerHelper: Pe
         cacheManager.put(PARAM_CACHE_DEVICE_LOCATION, deviceLocation)
     }
 
-    private fun getPermissions(): Array<String> {
-        return arrayOf(
+    /**
+     * @param requestLocationType to determine location type that you need
+     */
+    private fun getPermissions(requestLocationType: RequestLocationType): Array<String> {
+        return when(requestLocationType){
+            RequestLocationType.APPROXIMATE -> arrayOf(
+                PermissionCheckerHelper.Companion.PERMISSION_ACCESS_COARSE_LOCATION)
+            RequestLocationType.PRECISE -> arrayOf(
+                PermissionCheckerHelper.Companion.PERMISSION_ACCESS_FINE_LOCATION)
+            RequestLocationType.APPROXIMATE_OR_PRECISE -> arrayOf(
                 PermissionCheckerHelper.Companion.PERMISSION_ACCESS_FINE_LOCATION,
                 PermissionCheckerHelper.Companion.PERMISSION_ACCESS_COARSE_LOCATION)
+        }
     }
 }
