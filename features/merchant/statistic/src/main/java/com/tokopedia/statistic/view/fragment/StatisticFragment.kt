@@ -5,7 +5,12 @@ import android.content.res.Configuration
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.view.*
+import android.view.LayoutInflater
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
+import android.view.View
+import android.view.ViewGroup
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
@@ -18,7 +23,13 @@ import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.orTrue
-import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.kotlin.extensions.view.ONE
+import com.tokopedia.kotlin.extensions.view.ZERO
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
+import com.tokopedia.kotlin.extensions.view.addOneTimeGlobalLayoutListener
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.sellerhomecommon.common.WidgetListener
 import com.tokopedia.sellerhomecommon.common.WidgetType
@@ -26,7 +37,27 @@ import com.tokopedia.sellerhomecommon.common.const.DateFilterType
 import com.tokopedia.sellerhomecommon.common.const.WidgetGridSize
 import com.tokopedia.sellerhomecommon.domain.model.TableAndPostDataKey
 import com.tokopedia.sellerhomecommon.presentation.adapter.WidgetAdapterFactoryImpl
-import com.tokopedia.sellerhomecommon.presentation.model.*
+import com.tokopedia.sellerhomecommon.presentation.model.AnnouncementWidgetUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.BarChartWidgetUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.BaseDataUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.BaseWidgetUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.CardWidgetUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.CarouselWidgetUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.DateFilterItem
+import com.tokopedia.sellerhomecommon.presentation.model.DescriptionWidgetUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.LineGraphWidgetUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.MultiLineGraphWidgetUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.PieChartWidgetUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.PostItemUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.PostListWidgetUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.ProgressWidgetUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.SectionWidgetUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.TableWidgetUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.TickerDataUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.TickerItemUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.TickerWidgetUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.TooltipUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.WidgetFilterUiModel
 import com.tokopedia.sellerhomecommon.presentation.view.bottomsheet.TooltipBottomSheet
 import com.tokopedia.sellerhomecommon.presentation.view.bottomsheet.WidgetFilterBottomSheet
 import com.tokopedia.sellerhomecommon.utils.DateTimeUtil
@@ -203,7 +234,7 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
     override fun onResume() {
         super.onResume()
         setHeaderSubTitle(headerSubTitle)
-        if (userVisibleHint) {
+        if (!isHidden) {
             StatisticTracker.sendScreen(screenName)
         }
     }
@@ -613,28 +644,33 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
         return try {
             val widget = adapter.data[position]
             return if (isTablet) {
-                val orientation = activity?.resources?.configuration?.orientation
-                    ?: Configuration.ORIENTATION_PORTRAIT
-                val isPortrait = orientation == Configuration.ORIENTATION_PORTRAIT
-                if (isPortrait) {
-                    when (widget) {
-                        is CardWidgetUiModel -> WidgetGridSize.GRID_SIZE_2
-                        is PieChartWidgetUiModel -> widget.gridSize
-                        else -> defaultSpanCount
-                    }
-                } else {
-                    when (widget) {
-                        is CardWidgetUiModel -> WidgetGridSize.GRID_SIZE_1
-                        is SectionWidgetUiModel -> defaultSpanCount
-                        else -> widget.gridSize
-                    }
-                }
+                setupLayoutForTable(widget, defaultSpanCount)
             } else {
                 val isCardWidget = widget.widgetType == WidgetType.CARD
                 if (isCardWidget) WidgetGridSize.GRID_SIZE_1 else defaultSpanCount
             }
         } catch (e: IndexOutOfBoundsException) {
+            Timber.e(e)
             defaultSpanCount
+        }
+    }
+
+    private fun setupLayoutForTable(widget: BaseWidgetUiModel<*>, defaultSpanCount: Int): Int {
+        val orientation = activity?.resources?.configuration?.orientation
+            ?: Configuration.ORIENTATION_PORTRAIT
+        val isPortrait = orientation == Configuration.ORIENTATION_PORTRAIT
+        return if (isPortrait) {
+            when (widget) {
+                is CardWidgetUiModel -> WidgetGridSize.GRID_SIZE_2
+                is PieChartWidgetUiModel -> widget.gridSize
+                else -> defaultSpanCount
+            }
+        } else {
+            when (widget) {
+                is CardWidgetUiModel -> WidgetGridSize.GRID_SIZE_1
+                is SectionWidgetUiModel -> defaultSpanCount
+                else -> widget.gridSize
+            }
         }
     }
 
@@ -1131,28 +1167,32 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
     }
 
     private fun checkForSectionToBeRemoved(removedPosition: Int) {
-        val previousWidget = adapter.data.getOrNull(removedPosition - 1)
+        val previousWidget = adapter.data.getOrNull(removedPosition.minus(Int.ONE))
         if (previousWidget is SectionWidgetUiModel) {
-            if (adapter.data.getOrNull(removedPosition + 1) == null) {
-                removeEmptySection(removedPosition - 1)
+            if (adapter.data.getOrNull(removedPosition.plus(Int.ONE)) == null) {
+                removeEmptySection(removedPosition.minus(Int.ONE))
             } else {
-                var shouldRemoveSection = false
-                adapter.data?.drop(removedPosition + 1)?.forEach { widget ->
-                    when {
-                        widget.isShowEmpty || !widget.isEmpty() -> {
-                            // If we found that the next widget should be shown, then we should not remove the section
-                            return@forEach
-                        }
-                        widget is SectionWidgetUiModel -> {
-                            shouldRemoveSection = true
-                            return@forEach
-                        }
-                    }
+                removeSectionIfEmpty(removedPosition)
+            }
+        }
+    }
+
+    private fun removeSectionIfEmpty(removedPosition: Int) {
+        var shouldRemoveSection = false
+        adapter.data?.drop(removedPosition.plus(Int.ONE))?.forEach { widget ->
+            when {
+                widget.isShowEmpty || !widget.isEmpty() -> {
+                    // If we found that the next widget should be shown, then we should not remove the section
+                    return@forEach
                 }
-                if (shouldRemoveSection) {
-                    removeEmptySection(removedPosition - 1)
+                widget is SectionWidgetUiModel -> {
+                    shouldRemoveSection = true
+                    return@forEach
                 }
             }
+        }
+        if (shouldRemoveSection) {
+            removeEmptySection(removedPosition.minus(Int.ONE))
         }
     }
 
