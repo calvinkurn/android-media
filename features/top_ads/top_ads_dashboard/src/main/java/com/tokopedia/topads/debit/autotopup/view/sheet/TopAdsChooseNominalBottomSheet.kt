@@ -121,7 +121,7 @@ class TopAdsChooseNominalBottomSheet : BottomSheetUnify() {
         if (isTopUp) {
             saveButton?.buttonType = UnifyButton.Type.TRANSACTION
             saveButton?.buttonVariant = UnifyButton.Variant.FILLED
-            saveButton?.text = resources.getString(R.string.label_add_credit)
+            saveButton?.text = context?.resources?.getString(R.string.label_add_credit)
         } else {
             bonusTxt?.visibility = View.VISIBLE
         }
