@@ -21,8 +21,8 @@ internal interface FashionStrategy {
     fun getImageHeight(imageWidth: Int): Int
 
     fun renderOverlayImageRoundedLabel(
-        overlayImageRoundedLabelBackground: ImageView?,
-        overlayImageRoundedLabelTextView: Typography?,
+        labelImageBackground: ImageView?,
+        labelImage: Typography?,
         productCardModel: ProductCardModel,
     )
 

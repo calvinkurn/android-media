@@ -131,11 +131,11 @@ class ProductCardGridView : BaseCustomView, IProductCardView {
     private val productCardFooterLayoutContainer: FrameLayout by lazy(NONE) {
         findViewById(R.id.productCardFooterLayoutContainer)
     }
-    private val overlayImageRoundedLabelBackground: ImageView by lazy(NONE) {
-        findViewById(R.id.overlayImageRoundedLabelBackground)
+    private val labelImageBackground: ImageView by lazy(NONE) {
+        findViewById(R.id.labelImageBackground)
     }
-    private val overlayImageRoundedLabelTextView: Typography by lazy(NONE) {
-        findViewById(R.id.overlayImageRoundedLabelTextView)
+    private val labelImage: Typography by lazy(NONE) {
+        findViewById(R.id.labelImage)
     }
     private var isUsingViewStub = false
 
@@ -184,6 +184,13 @@ class ProductCardGridView : BaseCustomView, IProductCardView {
 
     override fun setProductModel(productCardModel: ProductCardModel) {
         imageProduct?.loadImage(productCardModel.productImageUrl)
+
+        productCardModel.fashionStrategy.setupImageRatio(
+            constraintLayoutProductCard,
+            imageProduct,
+            mediaAnchorProduct,
+            videoProduct,
+        )
 
         productCardModel.fashionStrategy.renderLabelCampaign(
             labelCampaignBackground,
@@ -236,16 +243,9 @@ class ProductCardGridView : BaseCustomView, IProductCardView {
             CardUnify2.ANIMATE_OVERLAY_BOUNCE
         } else CardUnify2.ANIMATE_NONE
 
-        productCardModel.fashionStrategy.setupImageRatio(
-            constraintLayoutProductCard,
-            imageProduct,
-            mediaAnchorProduct,
-            videoProduct,
-        )
-
         productCardModel.fashionStrategy.renderOverlayImageRoundedLabel(
-            overlayImageRoundedLabelBackground,
-            overlayImageRoundedLabelTextView,
+            labelImageBackground,
+            labelImage,
             productCardModel,
         )
     }

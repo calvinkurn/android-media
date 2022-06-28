@@ -74,19 +74,19 @@
             tools:visibility="visible"/>
 
         <ImageView
-            android:id="@+id/overlayImageRoundedLabelBackground"
+            android:id="@+id/labelImageBackground"
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:contentDescription="@null"
             android:background="@drawable/product_card_rounded_label"
-            app:layout_constraintStart_toStartOf="@id/overlayImageRoundedLabelTextView"
-            app:layout_constraintTop_toTopOf="@id/overlayImageRoundedLabelTextView"
-            app:layout_constraintEnd_toEndOf="@id/overlayImageRoundedLabelTextView"
-            app:layout_constraintBottom_toBottomOf="@id/overlayImageRoundedLabelTextView"
+            app:layout_constraintStart_toStartOf="@id/labelImage"
+            app:layout_constraintTop_toTopOf="@id/labelImage"
+            app:layout_constraintEnd_toEndOf="@id/labelImage"
+            app:layout_constraintBottom_toBottomOf="@id/labelImage"
             tools:visibility="visible" />
 
         <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/overlayImageRoundedLabelTextView"
+            android:id="@+id/labelImage"
             android:layout_width="0dp"
             android:layout_height="@dimen/product_card_label_campaign_height"
             android:ellipsize="end"

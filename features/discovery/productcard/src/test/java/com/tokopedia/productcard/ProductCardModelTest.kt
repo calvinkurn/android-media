@@ -2,6 +2,7 @@ package com.tokopedia.productcard
 
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.productcard.ProductCardModel.LabelGroupVariant
+import com.tokopedia.productcard.utils.LABEL_VARIANT_CHAR_LIMIT
 import com.tokopedia.productcard.utils.LIGHT_GREY
 import com.tokopedia.productcard.utils.MIN_QUANTITY_NON_VARIANT
 import com.tokopedia.productcard.utils.TYPE_VARIANT_COLOR
@@ -36,7 +37,8 @@ internal class ProductCardModelTest {
             expectedRenderedLabelGroupVariant: List<LabelGroupVariant>
     ) {
         val productCardModel = ProductCardModel(labelGroupVariantList = givenLabelGroupVariant)
-        val actualRenderedLabelGroupVariant = productCardModel.getRenderedLabelGroupVariantList()
+        val actualRenderedLabelGroupVariant =
+            productCardModel.getRenderedLabelGroupVariantList(LABEL_VARIANT_CHAR_LIMIT)
 
         assertThat(actualRenderedLabelGroupVariant, `is`(expectedRenderedLabelGroupVariant))
     }

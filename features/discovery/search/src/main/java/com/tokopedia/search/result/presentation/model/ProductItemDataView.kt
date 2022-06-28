@@ -137,6 +137,7 @@ class ProductItemDataView : ImpressHolder(), Visitable<ProductListTypeFactory> {
             topAds: TopAdsProductData,
             position: Int,
             dimension90: String,
+            productListType: String,
         ): ProductItemDataView {
             val item = ProductItemDataView()
             item.productID = topAds.product.id
@@ -171,6 +172,7 @@ class ProductItemDataView : ImpressHolder(), Visitable<ProductListTypeFactory> {
             item.productUrl = topAds.product.uri
             item.minOrder = topAds.product.productMinimumOrder
             item.dimension90 = dimension90
+            item.productListType = productListType
             return item
         }
 

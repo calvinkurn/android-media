@@ -495,18 +495,18 @@ internal fun setupImageRatio(
 
 internal fun renderOverlayImageRoundedLabel(
     isShow: Boolean,
-    labelBackground: ImageView?,
-    textViewLabel: Typography?,
+    labelImageBackground: ImageView?,
+    labelImage: Typography?,
     productCardModel: ProductCardModel,
 ) {
     if (isShow) {
         showOverlayImageRoundedLabel(
-            labelBackground,
-            textViewLabel,
+            labelImageBackground,
+            labelImage,
             productCardModel.getOverlayImageLabel(),
         )
     } else {
-        textViewLabel?.hide()
+        labelImage?.hide()
     }
 }
 
@@ -522,23 +522,24 @@ private fun showOverlayImageRoundedLabel(
                 if (labelGroup.isGimmick()) labelGroup.type.toUnifyTextColor(textViewLabel.context)
                 else Color.WHITE
             )
-
-            try {
-                labelBackground?.context?.let { context ->
-                    val backgroundColor =
-                        if (labelGroup.isGimmick()) Color.WHITE
-                        else labelGroup.type.toUnifyTextColor(context)
-
-                    labelBackground.background?.colorFilter =
-                        BlendModeColorFilterCompat.createBlendModeColorFilterCompat(
-                            backgroundColor,
-                            BlendModeCompat.SRC_ATOP
-                        )
-                }
-            } catch (throwable: Throwable) {
-                throwable.printStackTrace()
-            }
         }
+
+        labelBackground?.context?.let { context ->
+            val backgroundColor = try {
+                if (labelGroup.isGimmick()) Color.WHITE
+                else labelGroup.type.toUnifyTextColor(context)
+            } catch (throwable: Throwable) {
+                Color.WHITE
+            }
+
+            labelBackground.background?.colorFilter =
+                BlendModeColorFilterCompat.createBlendModeColorFilterCompat(
+                    backgroundColor,
+                    BlendModeCompat.SRC_ATOP
+                )
+        }
+
+
     } else {
         textViewLabel?.hide()
     }

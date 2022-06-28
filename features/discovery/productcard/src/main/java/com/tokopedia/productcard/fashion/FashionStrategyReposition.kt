@@ -45,14 +45,14 @@ internal open class FashionStrategyReposition: FashionStrategy {
     override fun getImageHeight(imageWidth: Int): Int = imageWidth
 
     override fun renderOverlayImageRoundedLabel(
-        overlayImageRoundedLabelBackground: ImageView?,
-        overlayImageRoundedLabelTextView: Typography?,
+        labelImageBackground: ImageView?,
+        labelImage: Typography?,
         productCardModel: ProductCardModel,
     ) {
         com.tokopedia.productcard.utils.renderOverlayImageRoundedLabel(
             true,
-            overlayImageRoundedLabelBackground,
-            overlayImageRoundedLabelTextView,
+            labelImageBackground,
+            labelImage,
             productCardModel,
         )
     }

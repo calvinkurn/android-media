@@ -49,14 +49,14 @@ internal open class FashionStrategyControl: FashionStrategy {
     override fun getImageHeight(imageWidth: Int): Int = imageWidth
 
     override fun renderOverlayImageRoundedLabel(
-        overlayImageRoundedLabelBackground: ImageView?,
-        overlayImageRoundedLabelTextView: Typography?,
+        labelImageBackground: ImageView?,
+        labelImage: Typography?,
         productCardModel: ProductCardModel,
     ) {
         renderOverlayImageRoundedLabel(
             false,
-            overlayImageRoundedLabelBackground,
-            overlayImageRoundedLabelTextView,
+            labelImageBackground,
+            labelImage,
             productCardModel,
         )
     }

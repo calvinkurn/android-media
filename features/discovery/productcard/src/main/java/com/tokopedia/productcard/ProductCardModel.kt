@@ -295,7 +295,7 @@ data class ProductCardModel (
 
     fun getRenderedLabelGroupVariantList(
         sizeCharLimit: Int,
-        showBoth: Boolean = false,
+        renderBothVariantAndColor: Boolean = false,
     ): List<LabelGroupVariant> {
         val (colorVariant, sizeVariant, customVariant) = getSplittedLabelGroupVariant(sizeCharLimit)
 
@@ -303,7 +303,7 @@ data class ProductCardModel (
             return listOf()
 
         val colorVariantTaken = getLabelVariantColorCount(colorVariant)
-        val sizeVariantTaken = if (showBoth) MAX_LABEL_VARIANT_COUNT
+        val sizeVariantTaken = if (renderBothVariantAndColor) MAX_LABEL_VARIANT_COUNT
         else getLabelVariantSizeCount(colorVariantTaken)
 
         return colorVariant.take(colorVariantTaken) +
