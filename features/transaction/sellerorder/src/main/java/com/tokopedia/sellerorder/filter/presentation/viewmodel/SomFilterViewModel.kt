@@ -16,6 +16,7 @@ import com.tokopedia.sellerorder.common.util.Utils
 import com.tokopedia.sellerorder.common.util.Utils.formatDate
 import com.tokopedia.sellerorder.filter.domain.mapper.GetSomFilterMapper
 import com.tokopedia.sellerorder.filter.domain.usecase.GetSomOrderFilterUseCase
+import com.tokopedia.sellerorder.filter.presentation.bottomsheet.SomFilterDateBottomSheet
 import com.tokopedia.sellerorder.filter.presentation.model.BaseSomFilter
 import com.tokopedia.sellerorder.filter.presentation.model.SomFilterChipsUiModel
 import com.tokopedia.sellerorder.filter.presentation.model.SomFilterDateUiModel
@@ -26,6 +27,8 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.coroutines.launch
+import java.text.SimpleDateFormat
+import java.util.*
 import javax.inject.Inject
 
 class SomFilterViewModel @Inject constructor(dispatcher: CoroutineDispatchers,
@@ -46,6 +49,7 @@ class SomFilterViewModel @Inject constructor(dispatcher: CoroutineDispatchers,
     private var somFilterUiModel = mutableListOf<SomFilterUiModel>()
     private var somListGetOrderListParam: SomListGetOrderListParam = SomListGetOrderListParam()
     private var somFilterDate: SomFilterDateUiModel? = null
+    private val localeID = Locale("in", "ID")
 
     @Throws(NoSuchElementException::class)
     private fun getSomFilterDate(result: List<BaseSomFilter>): SomFilterDateUiModel {
@@ -123,14 +127,18 @@ class SomFilterViewModel @Inject constructor(dispatcher: CoroutineDispatchers,
         this.somListGetOrderListParam = somListGetOrderListParam
     }
 
-    fun getSomFilterData(date: String) {
+    fun getSomFilterData() {
         launchCatchError(block = {
             val result = getSomOrderFilterUseCase.execute()
             val somFilterResult = result.filterIsInstance<SomFilterUiModel>()
             val somFilterDate = getSomFilterDate(result)
+            val startDate = getStartDate()
+            val endDate = getEndDate()
 
-            if (date.isNotBlank()) {
-                somFilterDate.date = date
+            if (startDate != null && endDate != null) {
+                somFilterDate.date = "${Utils.format(startDate.time, SomFilterDateBottomSheet.PATTER_DATE_EDT)} - ${Utils.format(endDate.time, SomFilterDateBottomSheet.PATTER_DATE_EDT)}"
+            } else {
+                somFilterDate.date = "${Utils.getNPastMonthTimeText(3, SomFilterDateBottomSheet.PATTER_DATE_EDT)} - ${Utils.getNowTimeStamp().formatDate(SomFilterDateBottomSheet.PATTER_DATE_EDT)}"
             }
 
             if (somFilterUiModel.isEmpty()) {
@@ -235,5 +243,21 @@ class SomFilterViewModel @Inject constructor(dispatcher: CoroutineDispatchers,
         }, onError = {
             _resetFilterResult.postValue(Fail(it))
         })
+    }
+
+    fun getStartDate(): Date? {
+        return try {
+            SimpleDateFormat(SomConsts.PATTERN_DATE_PARAM, localeID).parse(somListGetOrderListParam.startDate)
+        } catch (t: Throwable) {
+            null
+        }
+    }
+
+    fun getEndDate(): Date? {
+        return try {
+            SimpleDateFormat(SomConsts.PATTERN_DATE_PARAM, localeID).parse(somListGetOrderListParam.endDate)
+        } catch (t: Throwable) {
+            null
+        }
     }
 }

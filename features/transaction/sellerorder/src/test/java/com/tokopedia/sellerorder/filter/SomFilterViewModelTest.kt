@@ -4,6 +4,7 @@ import com.tokopedia.applink.order.DeeplinkMapperOrder
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.sellerorder.common.util.SomConsts
 import com.tokopedia.sellerorder.common.util.Utils
+import com.tokopedia.sellerorder.filter.presentation.bottomsheet.SomFilterDateBottomSheet
 import com.tokopedia.sellerorder.filter.presentation.model.BaseSomFilter
 import com.tokopedia.sellerorder.filter.presentation.model.SomFilterDateUiModel
 import com.tokopedia.sellerorder.filter.presentation.model.SomFilterUiModel
@@ -67,14 +68,50 @@ class SomFilterViewModelTest : SomFilterViewModelTestFixture() {
     }
 
     @Test
-    fun `when given empty date then get som filter data should not replacing current date filter date value`() {
+    fun `when given empty start and end date then get som filter data should use default date value`() {
         val mockSomFilterUiModel = getMockSomFilterList()
-        val expected = mockSomFilterUiModel.filterIsInstance<SomFilterDateUiModel>().first().date
+        val expected = "${Utils.getNPastMonthTimeText(3, SomFilterDateBottomSheet.PATTER_DATE_EDT)} - ${Utils.getNPastMonthTimeText(0, SomFilterDateBottomSheet.PATTER_DATE_EDT)}"
+        somFilterViewModel.getSomListGetOrderListParam().startDate = ""
+        somFilterViewModel.getSomListGetOrderListParam().endDate = ""
         coEvery {
             getSomOrderFilterUseCase.execute()
         } returns mockSomFilterUiModel
         coroutineTestRule.runBlockingTest {
-            somFilterViewModel.getSomFilterData("")
+            somFilterViewModel.getSomFilterData()
+        }
+        val filterResult = somFilterViewModel.filterResult.observeAwaitValue() as Success
+        val actual = filterResult.data.filterIsInstance<SomFilterDateUiModel>().first().date
+        assertEquals(expected, actual)
+    }
+
+    @Test
+    fun `when given empty end date then get som filter data should use default date value`() {
+        val mockSomFilterUiModel = getMockSomFilterList()
+        val expected = "${Utils.getNPastMonthTimeText(3, SomFilterDateBottomSheet.PATTER_DATE_EDT)} - ${Utils.getNPastMonthTimeText(0, SomFilterDateBottomSheet.PATTER_DATE_EDT)}"
+        somFilterViewModel.getSomListGetOrderListParam().startDate = Utils.getNPastMonthTimeText(5)
+        somFilterViewModel.getSomListGetOrderListParam().endDate = ""
+        coEvery {
+            getSomOrderFilterUseCase.execute()
+        } returns mockSomFilterUiModel
+        coroutineTestRule.runBlockingTest {
+            somFilterViewModel.getSomFilterData()
+        }
+        val filterResult = somFilterViewModel.filterResult.observeAwaitValue() as Success
+        val actual = filterResult.data.filterIsInstance<SomFilterDateUiModel>().first().date
+        assertEquals(expected, actual)
+    }
+
+    @Test
+    fun `when given empty start date then get som filter data should use default date value`() {
+        val mockSomFilterUiModel = getMockSomFilterList()
+        val expected = "${Utils.getNPastMonthTimeText(3, SomFilterDateBottomSheet.PATTER_DATE_EDT)} - ${Utils.getNPastMonthTimeText(0, SomFilterDateBottomSheet.PATTER_DATE_EDT)}"
+        somFilterViewModel.getSomListGetOrderListParam().startDate = ""
+        somFilterViewModel.getSomListGetOrderListParam().endDate = Utils.getNPastMonthTimeText(2)
+        coEvery {
+            getSomOrderFilterUseCase.execute()
+        } returns mockSomFilterUiModel
+        coroutineTestRule.runBlockingTest {
+            somFilterViewModel.getSomFilterData()
         }
         val filterResult = somFilterViewModel.filterResult.observeAwaitValue() as Success
         val actual = filterResult.data.filterIsInstance<SomFilterDateUiModel>().first().date
@@ -84,12 +121,14 @@ class SomFilterViewModelTest : SomFilterViewModelTestFixture() {
     @Test
     fun `when given non empty date then get som filter data should replacing current date filter date value`() {
         val mockSomFilterUiModel = getMockSomFilterList()
-        val expected = "14 Okt 2021 - 24 Okt 2021"
+        val expected = "${Utils.getNPastMonthTimeText(5, SomFilterDateBottomSheet.PATTER_DATE_EDT)} - ${Utils.getNPastMonthTimeText(2, SomFilterDateBottomSheet.PATTER_DATE_EDT)}"
+        somFilterViewModel.getSomListGetOrderListParam().startDate = Utils.getNPastMonthTimeText(5)
+        somFilterViewModel.getSomListGetOrderListParam().endDate = Utils.getNPastMonthTimeText(2)
         coEvery {
             getSomOrderFilterUseCase.execute()
         } returns mockSomFilterUiModel
         coroutineTestRule.runBlockingTest {
-            somFilterViewModel.getSomFilterData(expected)
+            somFilterViewModel.getSomFilterData()
         }
         val filterResult = somFilterViewModel.filterResult.observeAwaitValue() as Success
         val actual = filterResult.data.filterIsInstance<SomFilterDateUiModel>().first().date
@@ -105,7 +144,7 @@ class SomFilterViewModelTest : SomFilterViewModelTestFixture() {
             getSomOrderFilterUseCase.execute()
         } returns mockSomFilterUiModel
         coroutineTestRule.runBlockingTest {
-            somFilterViewModel.getSomFilterData(mockDate)
+            somFilterViewModel.getSomFilterData()
         }
         somFilterViewModel.filterResult.observeAwaitValue()
         assertNotEquals(currentFilterData, somFilterViewModel.getSomFilterUiModel())
@@ -121,7 +160,7 @@ class SomFilterViewModelTest : SomFilterViewModelTestFixture() {
             getSomOrderFilterUseCase.execute()
         } returns mockSomFilterUiModel
         coroutineTestRule.runBlockingTest {
-            somFilterViewModel.getSomFilterData(mockDate)
+            somFilterViewModel.getSomFilterData()
         }
         somFilterViewModel.filterResult.observeAwaitValue()
         assertEquals(currentFilterData, somFilterViewModel.getSomFilterUiModel())
@@ -136,7 +175,7 @@ class SomFilterViewModelTest : SomFilterViewModelTestFixture() {
             getSomOrderFilterUseCase.execute()
         } returns mockSomFilterUiModel
         coroutineTestRule.runBlockingTest {
-            somFilterViewModel.getSomFilterData(mockDate)
+            somFilterViewModel.getSomFilterData()
         }
         somFilterViewModel.filterResult.observeAwaitValue()
         val actual = somFilterViewModel.getSomFilterUiModel()
@@ -147,7 +186,7 @@ class SomFilterViewModelTest : SomFilterViewModelTestFixture() {
     fun `when get som filter data should return fail`() = coroutineTestRule.runBlockingTest {
         val exception = NullPointerException()
         coEvery { getSomOrderFilterUseCase.execute() } coAnswers { throw exception }
-        somFilterViewModel.getSomFilterData(mockDate)
+        somFilterViewModel.getSomFilterData()
         val expectedFail = Fail(exception)
         somFilterViewModel.filterResult.verifyErrorEquals(expectedFail)
     }
@@ -163,7 +202,7 @@ class SomFilterViewModelTest : SomFilterViewModelTestFixture() {
             getSomOrderFilterUseCase.execute()
         } returns mockSomFilterUiModels
         coroutineTestRule.runBlockingTest {
-            somFilterViewModel.getSomFilterData(mockDate)
+            somFilterViewModel.getSomFilterData()
         }
         somFilterViewModel.filterResult.observeAwaitValue()
         coroutineTestRule.runBlockingTest {
@@ -187,7 +226,7 @@ class SomFilterViewModelTest : SomFilterViewModelTestFixture() {
             getSomOrderFilterUseCase.execute()
         } returns mockSomFilterUiModels
         coroutineTestRule.runBlockingTest {
-            somFilterViewModel.getSomFilterData(mockDate)
+            somFilterViewModel.getSomFilterData()
         }
         somFilterViewModel.filterResult.observeAwaitValue()
         coroutineTestRule.runBlockingTest {
@@ -211,7 +250,7 @@ class SomFilterViewModelTest : SomFilterViewModelTestFixture() {
             getSomOrderFilterUseCase.execute()
         } returns mockSomFilterUiModels
         coroutineTestRule.runBlockingTest {
-            somFilterViewModel.getSomFilterData(mockDate)
+            somFilterViewModel.getSomFilterData()
         }
         somFilterViewModel.filterResult.observeAwaitValue()
         coroutineTestRule.runBlockingTest {
@@ -236,7 +275,7 @@ class SomFilterViewModelTest : SomFilterViewModelTestFixture() {
             getSomOrderFilterUseCase.execute()
         } returns mockSomFilterUiModels
         coroutineTestRule.runBlockingTest {
-            somFilterViewModel.getSomFilterData(mockDate)
+            somFilterViewModel.getSomFilterData()
         }
         somFilterViewModel.filterResult.observeAwaitValue()
         coroutineTestRule.runBlockingTest {
@@ -261,7 +300,7 @@ class SomFilterViewModelTest : SomFilterViewModelTestFixture() {
             getSomOrderFilterUseCase.execute()
         } returns mockSomFilterUiModels
         coroutineTestRule.runBlockingTest {
-            somFilterViewModel.getSomFilterData(mockDate)
+            somFilterViewModel.getSomFilterData()
         }
         somFilterViewModel.filterResult.observeAwaitValue()
         mockSomSubFilter.forEach {
@@ -287,7 +326,7 @@ class SomFilterViewModelTest : SomFilterViewModelTestFixture() {
             getSomOrderFilterUseCase.execute()
         } returns mockSomFilterUiModels
         coroutineTestRule.runBlockingTest {
-            somFilterViewModel.getSomFilterData(mockDate)
+            somFilterViewModel.getSomFilterData()
         }
         somFilterViewModel.filterResult.observeAwaitValue()
         mockSomSubFilter.forEach {
@@ -314,7 +353,7 @@ class SomFilterViewModelTest : SomFilterViewModelTestFixture() {
             getSomOrderFilterUseCase.execute()
         } returns mockSomFilterUiModels
         coroutineTestRule.runBlockingTest {
-            somFilterViewModel.getSomFilterData(mockDate)
+            somFilterViewModel.getSomFilterData()
         }
         somFilterViewModel.filterResult.observeAwaitValue()
         coroutineTestRule.runBlockingTest {
@@ -347,7 +386,7 @@ class SomFilterViewModelTest : SomFilterViewModelTestFixture() {
             getSomOrderFilterUseCase.execute()
         } returns mockSomFilterUiModels
         coroutineTestRule.runBlockingTest {
-            somFilterViewModel.getSomFilterData(mockDate)
+            somFilterViewModel.getSomFilterData()
         }
         somFilterViewModel.filterResult.observeAwaitValue()
         coroutineTestRule.runBlockingTest {
@@ -380,7 +419,7 @@ class SomFilterViewModelTest : SomFilterViewModelTestFixture() {
             getSomOrderFilterUseCase.execute()
         } returns mockSomFilterUiModels
         coroutineTestRule.runBlockingTest {
-            somFilterViewModel.getSomFilterData(mockDate)
+            somFilterViewModel.getSomFilterData()
         }
         somFilterViewModel.filterResult.observeAwaitValue()
         coroutineTestRule.runBlockingTest {
@@ -413,7 +452,7 @@ class SomFilterViewModelTest : SomFilterViewModelTestFixture() {
             getSomOrderFilterUseCase.execute()
         } returns mockSomFilterUiModels
         coroutineTestRule.runBlockingTest {
-            somFilterViewModel.getSomFilterData(mockDate)
+            somFilterViewModel.getSomFilterData()
         }
         somFilterViewModel.filterResult.observeAwaitValue()
         coroutineTestRule.runBlockingTest {
@@ -446,7 +485,7 @@ class SomFilterViewModelTest : SomFilterViewModelTestFixture() {
             getSomOrderFilterUseCase.execute()
         } returns mockSomFilterUiModels
         coroutineTestRule.runBlockingTest {
-            somFilterViewModel.getSomFilterData(mockDate)
+            somFilterViewModel.getSomFilterData()
         }
         somFilterViewModel.filterResult.observeAwaitValue()
         coroutineTestRule.runBlockingTest {
@@ -475,7 +514,7 @@ class SomFilterViewModelTest : SomFilterViewModelTestFixture() {
             getSomOrderFilterUseCase.execute()
         } returns mockSomFilterUiModels
         coroutineTestRule.runBlockingTest {
-            somFilterViewModel.getSomFilterData(mockDate)
+            somFilterViewModel.getSomFilterData()
         }
         somFilterViewModel.filterResult.observeAwaitValue()
         coroutineTestRule.runBlockingTest {
@@ -505,7 +544,7 @@ class SomFilterViewModelTest : SomFilterViewModelTestFixture() {
             getSomOrderFilterUseCase.execute()
         } returns mockSomFilterUiModels
         coroutineTestRule.runBlockingTest {
-            somFilterViewModel.getSomFilterData(mockDate)
+            somFilterViewModel.getSomFilterData()
         }
         somFilterViewModel.filterResult.observeAwaitValue()
         somFilterViewModel.resetFilterSelected()
@@ -530,7 +569,7 @@ class SomFilterViewModelTest : SomFilterViewModelTestFixture() {
                 getSomOrderFilterUseCase.execute()
             } returns mockSomFilterUiModels
             coroutineTestRule.runBlockingTest {
-                somFilterViewModel.getSomFilterData(mockDate)
+                somFilterViewModel.getSomFilterData()
             }
             somFilterViewModel.filterResult.observeAwaitValue()
             somFilterViewModel.resetFilterSelected()

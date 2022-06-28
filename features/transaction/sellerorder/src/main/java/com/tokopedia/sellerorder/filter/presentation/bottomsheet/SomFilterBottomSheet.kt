@@ -67,7 +67,6 @@ class SomFilterBottomSheet : BottomSheetUnify(),
     private var rvSomFilter: RecyclerView? = null
     private var btnShowOrder: UnifyButton? = null
     private var somFilterAdapter: SomFilterAdapter? = null
-    private var filterDate: String = ""
     private var isApplyFilter: Boolean = false
     private var statusList = listOf<Int>()
 
@@ -107,7 +106,7 @@ class SomFilterBottomSheet : BottomSheetUnify(),
     override fun onDismiss(dialog: DialogInterface) {
         super.onDismiss(dialog)
         if (!isApplyFilter) {
-            val cancelWrapper = SomFilterCancelWrapper(statusList, somFilterUiModelListCopy, filterDate)
+            val cancelWrapper = SomFilterCancelWrapper(statusList, somFilterUiModelListCopy)
             somFilterFinishListener?.onClickOverlayBottomSheet(cancelWrapper)
         }
     }
@@ -116,7 +115,6 @@ class SomFilterBottomSheet : BottomSheetUnify(),
         val cacheManager = context?.let { SaveInstanceCacheManager(it, arguments?.getString(KEY_CACHE_MANAGER_ID)) }
         val somFilterUiModelList = cacheManager?.get(KEY_SOM_FILTER_LIST, SomFilterUiModelWrapper::class.java) ?: SomFilterUiModelWrapper()
         somListOrderParam = cacheManager?.get(KEY_SOM_LIST_GET_ORDER_PARAM, SomListGetOrderListParam::class.java)
-        filterDate = arguments?.getString(KEY_FILTER_DATE).orEmpty()
         somFilterUiModelListCopy = somFilterUiModelList.somFilterUiModelList.copyListParcelable()
         val statusListFilter = arguments?.getIntegerArrayList(KEY_ORDER_STATUS_ID_LIST)?.toList()
         statusList = statusListFilter?.copyInt() ?: listOf()
@@ -165,7 +163,6 @@ class SomFilterBottomSheet : BottomSheetUnify(),
         cacheManager?.put(KEY_SOM_LIST_GET_ORDER_PARAM, somFilterViewModel.getSomListGetOrderListParam())
         cacheManager?.put(SomSubFilterActivity.KEY_SOM_LIST_FILTER_CHIPS, SomSubFilterListWrapper(somFilterChipsList))
         val intentSomSubFilter = SomSubFilterActivity.newInstance(requireContext(),
-                filterDate,
                 idFilter,
                 cacheManager?.id ?: ""
         )
@@ -201,7 +198,6 @@ class SomFilterBottomSheet : BottomSheetUnify(),
         } else {
             "${startDate.second} - ${endDate.second}"
         }
-        filterDate = date
         somFilterAdapter?.updateDateFilterText(date)
         showHideBottomSheetReset()
     }
@@ -282,7 +278,7 @@ class SomFilterBottomSheet : BottomSheetUnify(),
     private fun loadSomFilterData() {
         somFilterAdapter?.showLoading()
         btnShowOrder?.hide()
-        somFilterViewModel.getSomFilterData(filterDate)
+        somFilterViewModel.getSomFilterData()
     }
 
     private fun finishSomFilterData() {
@@ -322,7 +318,11 @@ class SomFilterBottomSheet : BottomSheetUnify(),
             SomAnalytics.eventClickTerapkanOnFilterPage(getFilterTextReset())
             val copySomFilterUiModel = somFilterViewModel.getSomFilterUiModel()
             somListOrderParam?.let {
-                somFilterFinishListener?.onClickShowOrderFilter(it, copySomFilterUiModel, FILTER_STATUS_ORDER, filterDate)
+                somFilterFinishListener?.onClickShowOrderFilter(
+                    it,
+                    copySomFilterUiModel,
+                    FILTER_STATUS_ORDER
+                )
             }
             dismiss()
         }
@@ -345,6 +345,11 @@ class SomFilterBottomSheet : BottomSheetUnify(),
 
     private fun clickDateFilter() {
         val somFilterDateBottomSheet = SomFilterDateBottomSheet.newInstance()
+        val startDate = somFilterViewModel.getStartDate()
+        val endDate = somFilterViewModel.getEndDate()
+        if (startDate != null && endDate != null) {
+            somFilterDateBottomSheet.selectedDates = listOf(startDate, endDate)
+        }
         somFilterDateBottomSheet.setCalendarListener(this)
         somFilterDateBottomSheet.setFragmentManager(childFragmentManager)
         if (!somFilterDateBottomSheet.isAdded) {
@@ -409,7 +414,7 @@ class SomFilterBottomSheet : BottomSheetUnify(),
     }
 
     private fun showHideBottomSheetReset() {
-        if (checkIsSelected() || filterDate.isNotBlank()) {
+        if (checkIsSelected()) {
             bottomSheetAction.show()
         } else {
             bottomSheetAction.hide()
@@ -423,13 +428,8 @@ class SomFilterBottomSheet : BottomSheetUnify(),
         }
         bottomSheetAction.setOnClickListener {
             SomAnalytics.eventClickResetButtonOnFilterPage()
-            actionResetFilter()
             somFilterViewModel.resetFilterSelected()
         }
-    }
-
-    private fun actionResetFilter() {
-        filterDate = ""
     }
 
     private fun checkIsSelected(): Boolean {
@@ -453,7 +453,6 @@ class SomFilterBottomSheet : BottomSheetUnify(),
         const val SOM_FILTER_DATE_BOTTOM_SHEET_TAG = "SomFilterDateBottomSheetTag"
         const val KEY_SOM_FILTER_LIST = "key_som_filter_list"
         const val KEY_ORDER_STATUS_ID_LIST = "key_order_status_id_list"
-        const val KEY_FILTER_DATE = "key_filter_date"
         const val KEY_SOM_LIST_GET_ORDER_PARAM = "key_som_list_get_order_param"
         const val KEY_CACHE_MANAGER_ID = "key_cache_manager_id"
         const val REQUEST_CODE_FILTER_SEE_ALL = 901
@@ -461,13 +460,11 @@ class SomFilterBottomSheet : BottomSheetUnify(),
 
         fun createInstance(
             orderStatusIdList: List<Int>,
-            filterDate: String,
             cacheManagerId: String
         ): SomFilterBottomSheet {
             val fragment = SomFilterBottomSheet()
             val args = Bundle()
             args.putIntegerArrayList(KEY_ORDER_STATUS_ID_LIST, ArrayList(orderStatusIdList))
-            args.putString(KEY_FILTER_DATE, filterDate)
             args.putString(KEY_CACHE_MANAGER_ID, cacheManagerId)
             fragment.arguments = args
             return fragment
@@ -478,8 +475,7 @@ class SomFilterBottomSheet : BottomSheetUnify(),
         fun onClickShowOrderFilter(
             filterData: SomListGetOrderListParam,
             somFilterUiModelList: List<SomFilterUiModel>,
-            idFilter: String,
-            filterDate: String
+            idFilter: String
         )
 
         fun onClickOverlayBottomSheet(filterCancelWrapper: SomFilterCancelWrapper)

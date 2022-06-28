@@ -107,9 +107,9 @@ object Utils {
         return date.timeInMillis
     }
 
-    fun getNPastMonthTimeText(monthBefore: Int): String {
+    fun getNPastMonthTimeText(monthBefore: Int, format: String = PATTERN_DATE_PARAM): String {
         val pastTwoYear = getNPastMonthTimeStamp(monthBefore)
-        return format(pastTwoYear, PATTERN_DATE_PARAM)
+        return format(pastTwoYear, format)
     }
 
     fun List<SomFilterUiModel>.copyListParcelable(): List<SomFilterUiModel> {

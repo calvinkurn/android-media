@@ -242,7 +242,6 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
     private var errorToaster: Snackbar? = null
     private var commonToaster: Snackbar? = null
     private var textChangeJob: Job? = null
-    private var filterDate = ""
     private var somFilterBottomSheet: SomFilterBottomSheet? = null
     private var pendingAction: SomPendingAction? = null
     private var tickerIsReady = false
@@ -460,7 +459,6 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
             cacheManager?.put(SomFilterBottomSheet.KEY_SOM_FILTER_LIST, somFilterUiModelWrapper)
             somFilterBottomSheet = SomFilterBottomSheet.createInstance(
                 viewModel.getDataOrderListParams().statusList,
-                filterDate,
                 cacheManager?.id.orEmpty()
             )
             somFilterBottomSheet?.setSomFilterFinishListener(this)
@@ -2508,13 +2506,12 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
 
     override fun onClickShowOrderFilter(
         filterData: SomListGetOrderListParam, somFilterUiModelList: List<SomFilterUiModel>,
-        idFilter: String, filterDate: String
+        idFilter: String
     ) {
-        this.filterDate = filterDate
         this.shouldScrollToTop = true
         isLoadingInitialData = true
         viewModel.updateSomFilterUiModelList(somFilterUiModelList)
-        somListSortFilterTab?.updateCounterSortFilter(filterDate, somFilterUiModelList)
+        somListSortFilterTab?.updateCounterSortFilter(somFilterUiModelList)
         val selectedStatusFilterKey = somFilterUiModelList.find {
             it.nameFilter == SomConsts.FILTER_STATUS_ORDER
         }?.somFilterData?.find {
@@ -2539,7 +2536,6 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
         val orderListParam = viewModel.getDataOrderListParams()
         orderListParam.statusList = filterCancelWrapper.orderStatusIdList
         viewModel.updateGetOrderListParams(orderListParam)
-        this.filterDate = filterCancelWrapper.filterDate
     }
 
     private fun View?.animateSlide(from: Float, to: Float): ValueAnimator {

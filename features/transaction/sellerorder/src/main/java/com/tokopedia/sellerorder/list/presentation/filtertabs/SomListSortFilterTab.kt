@@ -70,10 +70,7 @@ class SomListSortFilterTab(
         listener.onTabClicked(quickFilter, true)
     }
 
-    fun updateCounterSortFilter(
-        filterDate: String = "",
-        somFilterUiModelList: List<SomFilterUiModel>
-    ) {
+    fun updateCounterSortFilter(somFilterUiModelList: List<SomFilterUiModel>) {
         var count = 0
         somFilterUiModelList.forEach {
             if (it.nameFilter != SomConsts.FILTER_STATUS_ORDER) {
@@ -82,7 +79,6 @@ class SomListSortFilterTab(
                 }
             }
         }
-        if (filterDate.isNotBlank()) count += 1
     }
 
     fun show(somListFilterUiModel: SomListFilterUiModel) {
