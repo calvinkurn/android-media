@@ -26,7 +26,7 @@ class VariantReservedEventInfoViewHolder(itemView: View?) :
             tvCampaignReservedInfoVariantName.text = element.variantName
             tvCampaignReservedInfoVariantCount.run {
                 text = itemView.context.getString(
-                    com.tokopedia.product.manage.common.R.string.product_manage_campaign_count,
+                    com.tokopedia.product.manage.R.string.product_manage_campaign_stock_promotion_count,
                     element.totalCampaign.orZero()
                 )
                 setOnClickListener {

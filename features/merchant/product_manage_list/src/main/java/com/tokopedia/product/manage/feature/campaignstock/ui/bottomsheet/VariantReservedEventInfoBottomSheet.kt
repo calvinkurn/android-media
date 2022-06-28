@@ -25,9 +25,6 @@ class VariantReservedEventInfoBottomSheet : BottomSheetUnify() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setTitle(context?.getString(R.string.product_manage_campaign_stock_on_variant).orEmpty())
-        setChild(binding?.root)
-
         if (savedInstanceState == null) {
             val cacheId = arguments?.getString(VARIANT_RESERVED_EVENT_INFO_CACHE_ID)
             variantReservedEventInfoUiModels = context?.let {
@@ -51,12 +48,16 @@ class VariantReservedEventInfoBottomSheet : BottomSheetUnify() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        clearContentPadding = true
+        setTitle(context?.getString(R.string.product_manage_campaign_stock_on_variant).orEmpty())
+
         binding = BottomSheetProductManageVariantOngoingPromotionBinding.inflate(
             inflater,
             container,
             false
         )
         setChild(binding?.root)
+
         return super.onCreateView(inflater, container, savedInstanceState)
     }
 

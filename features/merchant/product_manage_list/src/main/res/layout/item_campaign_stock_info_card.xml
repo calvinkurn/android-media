@@ -6,8 +6,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:padding="12dp"
     android:layout_marginTop="16dp"
-    android:background="@drawable/bg_campaign_stock_grey_border"
-    tools:layout_margin="16dp">
+    android:layout_marginStart="16dp"
+    android:layout_marginEnd="16dp"
+    android:background="@drawable/bg_campaign_stock_grey_border">
 
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/iv_campaign_info_icon"
