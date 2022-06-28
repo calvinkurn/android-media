@@ -1553,24 +1553,33 @@ class PostDynamicViewNew @JvmOverloads constructor(
             setCurrentIndicator(feedXCard.lastCarouselIndex)
         }.showWithCondition(products.size > 1)
 
-        val mediaList = products.mapIndexed { index, product ->
-            FeedXMedia(
-                id = product.id,
-                type = "image",
-                appLink = feedXCard.appLink,
-                mediaUrl = product.coverURL,
-                tagging = arrayListOf(FeedXMediaTagging(index, TOPADS_TAGGING_CENTER_POS_X, TOPADS_TAGGING_CENTER_POS_Y, mediaIndex = index)),
-                isImageImpressedFirst = true,
-                productName = product.name,
-                price = product.priceFmt,
-                slashedPrice = product.priceOriginalFmt,
-                discountPercentage = product.discount.toString(),
-                isCashback = !TextUtils.isEmpty(product.cashbackFmt),
-                variant = product.variant,
-                cashBackFmt = product.cashbackFmt,
-                tagProducts = listOf(product),
-            )
-        }
+        val mediaList = products
+            .take(MAX_PRODUCT_TO_SHOW_IN_ASGC_CAROUSEL)
+            .mapIndexed { index, product ->
+                FeedXMedia(
+                    id = product.id,
+                    type = "image",
+                    appLink = feedXCard.appLink,
+                    mediaUrl = product.coverURL,
+                    tagging = arrayListOf(
+                        FeedXMediaTagging(
+                            index,
+                            TOPADS_TAGGING_CENTER_POS_X,
+                            TOPADS_TAGGING_CENTER_POS_Y,
+                            mediaIndex = index
+                        )
+                    ),
+                    isImageImpressedFirst = true,
+                    productName = product.name,
+                    price = product.priceFmt,
+                    slashedPrice = product.priceOriginalFmt,
+                    discountPercentage = product.discount.toString(),
+                    isCashback = !TextUtils.isEmpty(product.cashbackFmt),
+                    variant = product.variant,
+                    cashBackFmt = product.cashbackFmt,
+                    tagProducts = listOf(product),
+                )
+            }
 
         if (products.isNotEmpty()) {
             imagePostListener.userGridPostImpression(

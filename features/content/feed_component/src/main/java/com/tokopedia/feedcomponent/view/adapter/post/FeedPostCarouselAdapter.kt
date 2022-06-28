@@ -58,9 +58,23 @@ internal class FeedPostCarouselAdapter(
     }
 
     fun focusItemAt(position: Int, resetPostTag: Boolean = false) {
-        notifyItemChanged(position, Bundle().apply {
-            putBoolean(PAYLOAD_FOCUS, resetPostTag)
-        })
+        val focusPayload = Bundle().apply {
+            putBoolean(PAYLOAD_FOCUS, true)
+        }
+        val removeFocusPayload = Bundle().apply {
+            putBoolean(PAYLOAD_FOCUS, false)
+        }
+        notifyItemChanged(position, focusPayload)
+        notifyItemRangeChanged(
+            position - FOCUS_POSITION_THRESHOLD,
+            FOCUS_POSITION_THRESHOLD,
+            removeFocusPayload
+        )
+        notifyItemRangeChanged(
+            position + 1,
+            FOCUS_POSITION_THRESHOLD,
+            removeFocusPayload
+        )
     }
 
     private class Delegate(
@@ -79,7 +93,8 @@ internal class FeedPostCarouselAdapter(
             payloads: Bundle
         ) {
             if (payloads.containsKey(PAYLOAD_FOCUS)) {
-                holder.focusMedia(payloads.getBoolean(PAYLOAD_FOCUS))
+                if (payloads.getBoolean(PAYLOAD_FOCUS)) holder.focusMedia()
+                else holder.removeFocus()
             } else super.onBindViewHolderWithPayloads(item, holder, payloads)
         }
 
@@ -190,10 +205,15 @@ internal class FeedPostCarouselAdapter(
             removeExistingPostTags()
         }
 
-        fun focusMedia(resetPostTag: Boolean) {
+        fun focusMedia() {
             itemView.removeCallbacks(focusRunnable)
             itemView.postDelayed(focusRunnable, FOCUS_DELAY)
-            if (resetPostTag) onPostTagViews { it.resetView() }
+            onPostTagViews { it.resetView() }
+        }
+
+        fun removeFocus() {
+            itemView.removeCallbacks(focusRunnable)
+            onPostTagViews { it.hideExpandedViewIfShown() }
         }
 
         fun bind(item: FeedXMedia) {
@@ -209,6 +229,7 @@ internal class FeedPostCarouselAdapter(
 
             if (card.products.isNotEmpty()) {
                 itemView.doOnLayout {
+                    removeExistingPostTags()
                     item.tagging.forEach { tagging ->
                         val tagView = PostTagView(itemView.context, tagging)
                         tagView.bindData(
@@ -222,7 +243,7 @@ internal class FeedPostCarouselAdapter(
                         postImageLayout.addView(tagView)
                     }
                 }
-            }
+            } else removeExistingPostTags()
 
             llLihatProduct.setOnClickListener {
                 changeTopAdsColorToGreen()
@@ -345,6 +366,8 @@ internal class FeedPostCarouselAdapter(
     }
 
     companion object {
+        private const val FOCUS_POSITION_THRESHOLD = 2
+
         private const val PAYLOAD_FOCUS = "payload_focus"
         private const val FOCUS_DELAY = 1000L
     }
