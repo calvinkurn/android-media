@@ -167,11 +167,6 @@ class OvoP2PForm : BaseDaggerFragment(), View.OnClickListener, SearchView.OnQuer
                         )
                     }
                 }
-                com.tokopedia.unifycomponents.R.id.snackbar_btn -> {
-                    errorSnackbar.let {
-                        if (it.isShownOrQueued) it.dismiss()
-                    }
-                }
             }
         }
     }
@@ -582,7 +577,11 @@ class OvoP2PForm : BaseDaggerFragment(), View.OnClickListener, SearchView.OnQuer
 
     private fun showErrorSnackBar(errMsg: String) {
         activity?.let {
-            errorSnackbar = OvoP2pUtil.createErrorSnackBar(it, this, errMsg)
+            errorSnackbar = OvoP2pUtil.createErrorSnackBar(it,  errMsg) {
+                errorSnackbar.let { errorSnackBar ->
+                    if (errorSnackBar.isShownOrQueued) errorSnackBar.dismiss()
+                }
+            }
             errorSnackbar.show()
         }
     }

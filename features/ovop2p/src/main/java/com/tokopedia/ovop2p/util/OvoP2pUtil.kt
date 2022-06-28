@@ -75,9 +75,11 @@ object OvoP2pUtil {
         }
     }
 
-    fun createErrorSnackBar(activity: Activity,
-                            onClickListener: View.OnClickListener,
-                            errorMsg: String): Snackbar {
+    fun createErrorSnackBar(
+        activity: Activity,
+        errorMsg: String,
+        onClickListener: View.OnClickListener
+    ): Snackbar {
         return if (!TextUtils.isEmpty(errorMsg))
             Toaster.build( activity.findViewById(android.R.id.content), errorMsg, Snackbar.LENGTH_LONG, type =  Toaster.TYPE_ERROR,  activity.getString(
                             R.string.ovop2p_oke),onClickListener)

@@ -222,7 +222,12 @@ class TxnSucsOvoUser : BaseDaggerFragment(), View.OnClickListener {
 
     private fun showErrorSnackBar(errMsg: String) {
         activity?.let {
-            errorSnackbar = OvoP2pUtil.createErrorSnackBar(it, this, errMsg)
+            errorSnackbar = OvoP2pUtil.createErrorSnackBar(it,  errMsg)
+        {
+            errorSnackbar.let { errorSnackbar->
+                if (errorSnackbar.isShownOrQueued) errorSnackbar.dismiss()
+            }
+            }
             errorSnackbar.show()
         }
     }
