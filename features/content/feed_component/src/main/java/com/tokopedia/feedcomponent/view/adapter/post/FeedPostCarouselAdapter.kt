@@ -23,6 +23,7 @@ import com.tokopedia.feedcomponent.data.feedrevamp.FeedXCard
 import com.tokopedia.feedcomponent.data.feedrevamp.FeedXMedia
 import com.tokopedia.feedcomponent.util.util.doOnLayout
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.DynamicPostViewHolder
+import com.tokopedia.feedcomponent.view.transition.BackgroundColorTransition
 import com.tokopedia.feedcomponent.view.widget.PostTagView
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
@@ -57,7 +58,7 @@ internal class FeedPostCarouselAdapter(
         return oldItem == newItem
     }
 
-    fun focusItemAt(position: Int, resetPostTag: Boolean = false) {
+    fun focusItemAt(position: Int) {
         val focusPayload = Bundle().apply {
             putBoolean(PAYLOAD_FOCUS, true)
         }
@@ -162,8 +163,11 @@ internal class FeedPostCarouselAdapter(
             }
         )
 
-        private val focusRunnable = Runnable {
+        private val focusLihatProduct = Runnable {
             animateLihatProduct(true)
+        }
+
+        private val focusTopAds = Runnable {
             changeTopAdsColorToGreen()
         }
 
@@ -199,7 +203,7 @@ internal class FeedPostCarouselAdapter(
                 }
 
                 override fun onViewDetachedFromWindow(v: View?) {
-                    itemView.removeCallbacks(focusRunnable)
+                    removeAllPendingCallbacks()
                 }
             })
         }
@@ -210,13 +214,16 @@ internal class FeedPostCarouselAdapter(
         }
 
         fun focusMedia() {
-            itemView.removeCallbacks(focusRunnable)
-            itemView.postDelayed(focusRunnable, FOCUS_DELAY)
+            removeAllPendingCallbacks()
+            itemView.postDelayed(focusLihatProduct, FOCUS_DELAY)
+            itemView.postDelayed(focusTopAds, FOCUS_TOP_ADS_DELAY)
+
             onPostTagViews { it.resetView() }
         }
 
         fun removeFocus() {
-            itemView.removeCallbacks(focusRunnable)
+            removeAllPendingCallbacks()
+
             onPostTagViews { it.hideExpandedViewIfShown() }
         }
 
@@ -302,6 +309,11 @@ internal class FeedPostCarouselAdapter(
             primaryColor: Int,
             secondaryColor: Int,
         ) {
+            TransitionManager.beginDelayedTransition(
+                itemView as ViewGroup,
+                BackgroundColorTransition()
+                    .addTarget(topAdsCard)
+            )
             topAdsProductName.setTextColor(secondaryColor)
             topAdsChevron.setColorFilter(secondaryColor)
             topAdsCard.setBackgroundColor(primaryColor)
@@ -339,6 +351,11 @@ internal class FeedPostCarouselAdapter(
             )
 
             tvLihatProduct.showWithCondition(shouldShow)
+        }
+
+        private fun removeAllPendingCallbacks() {
+            itemView.removeCallbacks(focusLihatProduct)
+            itemView.removeCallbacks(focusTopAds)
         }
 
         companion object {
@@ -380,5 +397,6 @@ internal class FeedPostCarouselAdapter(
 
         private const val PAYLOAD_FOCUS = "payload_focus"
         private const val FOCUS_DELAY = 1000L
+        private const val FOCUS_TOP_ADS_DELAY = 2000L
     }
 }

@@ -2032,7 +2032,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
                 },TIME_FOUR_SEC)
         }
 
-        adapter.focusItemAt(pageControl.indicatorCurrentPosition, resetPostTag = true)
+        adapter.focusItemAt(pageControl.indicatorCurrentPosition)
     }
 
     private fun getVideoItem(): View? {
