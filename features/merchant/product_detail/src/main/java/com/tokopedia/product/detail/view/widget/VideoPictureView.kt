@@ -67,6 +67,7 @@ class VideoPictureView @JvmOverloads constructor(
     fun setup(media: List<MediaDataModel>,
               listener: DynamicProductDetailListener?,
               componentTrackDataModel: ComponentTrackDataModel?,
+              initialScrollPosition: Int,
               shouldAnimateLabel: Boolean) {
         this.mListener = listener
         this.componentTrackDataModel = componentTrackDataModel
@@ -84,8 +85,8 @@ class VideoPictureView @JvmOverloads constructor(
         updateInitialThumbnail(media)
         updateImages(media)
         updateMediaLabel(lastPosition, shouldAnimateLabel)
-        scrollToPosition(RecyclerView.NO_POSITION)
-        renderVideoOnceAtPosition(RecyclerView.NO_POSITION)
+        scrollToPosition(initialScrollPosition)
+        renderVideoOnceAtPosition(initialScrollPosition)
     }
 
     private fun updateInitialThumbnail(media: List<MediaDataModel>) {
@@ -129,7 +130,7 @@ class VideoPictureView @JvmOverloads constructor(
     }
 
     fun scrollToPosition(position: Int, smoothScroll: Boolean = false) {
-        if (position == RecyclerView.NO_POSITION) {
+        if (position == RecyclerView.NO_POSITION || lastPosition == position) {
             return
         }
         lastPosition = position

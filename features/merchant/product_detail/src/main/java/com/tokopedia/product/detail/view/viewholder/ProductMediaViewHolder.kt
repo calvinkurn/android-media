@@ -23,12 +23,16 @@ class ProductMediaViewHolder(private val view: View,
     override fun bind(element: ProductMediaDataModel) {
         with(binding) {
 
+            val scrollPosition = element.getScrollPosition()
+
             viewMediaPager.setup(element.listOfMedia,
                     listener,
                     getComponentTrackData(element),
+                    scrollPosition,
                     element.shouldAnimateLabel)
 
             element.shouldAnimateLabel = false
+            element.shouldUpdateImage = false
 
             view.addOnImpressionListener(element.impressHolder) {
                 listener.onImpressComponent(getComponentTrackData(element))
@@ -45,8 +49,8 @@ class ProductMediaViewHolder(private val view: View,
         when (payloads[0] as Int) {
             ProductDetailConstant.PAYLOAD_SCROLL_IMAGE_VARIANT -> {
                 binding.viewMediaPager.scrollToPosition(
-                    element.indexOfSelectedVariantOptionId(),
-                    true
+                        element.indexOfSelectedVariantOptionId(),
+                        true
                 )
             }
         }

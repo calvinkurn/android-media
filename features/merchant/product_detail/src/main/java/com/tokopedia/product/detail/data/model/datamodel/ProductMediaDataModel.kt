@@ -11,6 +11,7 @@ data class ProductMediaDataModel(
         var listOfMedia: List<MediaDataModel> = listOf(),
         var initialScrollPosition: Int = -1,
         var variantOptionIdScrollAnchor: String = "",
+        var shouldUpdateImage: Boolean = false,
         var shouldAnimateLabel: Boolean = true
 ) : DynamicPdpDataModel {
     companion object {
@@ -27,6 +28,15 @@ data class ProductMediaDataModel(
         return listOfMedia.indexOfFirst {
             it.variantOptionId == variantOptionIdScrollAnchor
         }.takeIf { it > -1 } ?: 0
+    }
+
+    fun getScrollPosition(): Int {
+        val optionIdAnchor = variantOptionIdScrollAnchor
+        return if (optionIdAnchor.isNotEmpty() && shouldUpdateImage) {
+            listOfMedia.indexOfFirst {
+                it.variantOptionId == optionIdAnchor
+            }.takeIf { it > -1 } ?: 0
+        } else initialScrollPosition
     }
 
     override val impressHolder: ImpressHolder = ImpressHolder()

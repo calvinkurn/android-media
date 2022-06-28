@@ -275,6 +275,7 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
             mediaMap?.apply {
                 if (this.variantOptionIdScrollAnchor != selectedOptionId) {
                     this.variantOptionIdScrollAnchor = selectedOptionId
+                    this.shouldUpdateImage = true
                 }
             }
         }
