@@ -1,5 +1,6 @@
 package com.tokopedia.play.util.logger
 
+import com.tokopedia.play.view.uimodel.recom.PlayVideoPlayerUiModel
 import com.tokopedia.play_common.util.PlayLiveRoomMetricsCommon
 
 
@@ -24,7 +25,7 @@ interface PlayLog {
         watchingTime: String
     )
 
-    fun sendAll(channelId: String, streamingUrl: String)
+    fun sendAll(channelId: String, videoPlayer: PlayVideoPlayerUiModel)
 
     fun setupRemoteConfig(isEnabled: Boolean)
 }

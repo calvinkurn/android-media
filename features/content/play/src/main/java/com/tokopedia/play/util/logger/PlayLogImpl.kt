@@ -2,6 +2,7 @@ package com.tokopedia.play.util.logger
 
 import com.tokopedia.logger.ServerLogger
 import com.tokopedia.logger.utils.Priority
+import com.tokopedia.play.view.uimodel.recom.PlayVideoPlayerUiModel
 import com.tokopedia.play_common.util.PlayLiveRoomMetricsCommon
 import java.util.concurrent.ConcurrentLinkedQueue
 import javax.inject.Inject
@@ -45,9 +46,14 @@ class PlayLogImpl @Inject constructor(private val logCollector: PlayLogCollector
         )
     }
 
-    override fun sendAll(channelId: String, streamingUrl: String) {
+    override fun sendAll(channelId: String, videoPlayer: PlayVideoPlayerUiModel) {
         if(!isRemoteConfigEnabled) return
-        val mapped = hashMapOf("channel_id" to channelId, "url" to streamingUrl)
+        val url = when (videoPlayer) {
+            is PlayVideoPlayerUiModel.General -> videoPlayer.params.videoUrl
+            is PlayVideoPlayerUiModel.YouTube -> videoPlayer.youtubeId
+            else -> ""
+        }
+        val mapped = hashMapOf("channel_id" to channelId, "url" to url)
         logCollector.getAll().chunked(LIMIT_LOG).forEach { logs ->
             logs.forEach {
                 mapped[it.first] = it.second.toString()
