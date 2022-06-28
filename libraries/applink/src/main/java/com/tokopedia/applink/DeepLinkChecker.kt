@@ -136,7 +136,7 @@ object DeepLinkChecker {
         if (!URLUtil.isNetworkUrl(url)) {
             return APPLINK
         }
-        if (url.contains("ta.tokopedia.com")) {
+        if (url.contains("ta.tokopedia.com")|| url.contains("ta-staging.tokopedia.com")) {
             return TOP_ADS_CLICK_LINK
         }
         return try {

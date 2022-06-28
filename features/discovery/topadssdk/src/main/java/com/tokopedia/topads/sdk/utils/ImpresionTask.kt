@@ -104,7 +104,7 @@ class ImpresionTask {
                     val headers = restRepository.getResponse(restRequest).headers;
                     if (topAdsHeaderResponseListener != null) {
                         if (headers != null) {
-                            topAdsHeaderResponseListener?.onSuccess(headers["x-tkp-srv-id"] ?: "")
+                            topAdsHeaderResponseListener?.onSuccess(headers["Tkp-Enc-Sessionid"] ?: "")
                         } else {
                             topAdsHeaderResponseListener?.onFailed()
                         }
