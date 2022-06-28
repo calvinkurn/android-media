@@ -682,13 +682,11 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
 
     private fun checkAddressDataAndServiceArea(){
         checkIfChooseAddressWidgetDataUpdated()
-
-        if (hasNoAddress()) {
-            showNoAddress()
-        } else if (hasNoPinPoin()){
-            showNoPinPoin()
-        } else {
-            showLayout()
+        when{
+            hasNoAddress() && isAddressManuallyUpdate() -> showNoAddress()
+            hasNoPinPoin() && isAddressManuallyUpdate() -> showNoPinPoin()
+            !isAddressManuallyUpdate() -> getChooseAddress()
+            else -> showLayout()
         }
     }
 
@@ -715,6 +713,8 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
             localCacheModel = ChooseAddressUtils.getLocalizingAddressData(it)
         }
     }
+
+    private fun isAddressManuallyUpdate(): Boolean = viewModel.isAddressManuallyUpdated
 
     private fun hasNoAddress(): Boolean {
         return userSession.isLoggedIn && (localCacheModel?.address_id.isNullOrEmpty() || localCacheModel?.address_id == "0")

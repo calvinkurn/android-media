@@ -32,7 +32,7 @@ class RestaurantUserAddressViewHolder(view: View):
     }
 
     private fun ItemTokofoodOrderTrackingRestoUserAddressBinding.setMerchantDistance(distanceInKm: String) {
-        tvDistanceFromMerchant.text = getString(R.string.order_tracking_distance_restaurant, distanceInKm)
+        tvDistanceFromMerchant.text = distanceInKm
     }
 
     private fun ItemTokofoodOrderTrackingRestoUserAddressBinding.setDestinationName(destinationName: String) {

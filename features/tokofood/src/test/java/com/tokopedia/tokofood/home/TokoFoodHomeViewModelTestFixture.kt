@@ -112,6 +112,14 @@ abstract class TokoFoodHomeViewModelTestFixture {
         Assert.assertEquals(expectedResponse, (actualResponse as Success).data)
     }
 
+    protected fun verifyIsUpdateAddressManualTrue() {
+        Assert.assertTrue(viewModel.isAddressManuallyUpdated)
+    }
+
+    protected fun verifyIsUpdateAddressManualFalse() {
+        Assert.assertFalse(viewModel.isAddressManuallyUpdated)
+    }
+
     protected fun verifyHomeIsShowingEmptyState(actualResponse: Boolean) {
         Assert.assertTrue(actualResponse)
     }

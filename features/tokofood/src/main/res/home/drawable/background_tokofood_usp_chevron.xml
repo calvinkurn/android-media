@@ -4,9 +4,9 @@
     android:shape="oval">
 
     <solid
-        android:color="@color/Unify_NN0"/>
+        android:color="@color/cardunify_background"/>
 
     <size
-        android:width="@dimen/spacing_lvl5"
-        android:height="@dimen/spacing_lvl5"/>
+        android:width="24dp"
+        android:height="24dp"/>
 </shape>

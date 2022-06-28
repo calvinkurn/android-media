@@ -10,4 +10,5 @@
     android:text="@string/order_tracking_detail_payment_label"
     android:textColor="@color/Unify_N700_96"
     app:layout_constraintTop_toTopOf="parent"
-    app:typographyType="heading_5" />
+    app:typographyType="display_2"
+    app:typographyWeight="bold"/>

@@ -6,7 +6,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
-import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.tokofood.databinding.BottomsheetProductDetailLayoutBinding
@@ -14,12 +13,22 @@ import com.tokopedia.tokofood.feature.merchant.presentation.model.ProductListIte
 import com.tokopedia.tokofood.feature.merchant.presentation.model.ProductUiModel
 import com.tokopedia.unifycomponents.BottomSheetUnify
 
-class ProductDetailBottomSheet(private val clickListener: OnProductDetailClickListener) : BottomSheetUnify() {
+class ProductDetailBottomSheet(private val clickListener: OnProductDetailClickListener) :
+    BottomSheetUnify() {
 
     interface OnProductDetailClickListener {
         fun onAtcButtonClicked(productListItem: ProductListItem, cardPositions: Pair<Int, Int>)
-        fun onIncreaseQtyButtonClicked(productId: String, quantity: Int, cardPositions: Pair<Int, Int>)
-        fun onNavigateToOrderCustomizationPage(cartId: String, productUiModel: ProductUiModel, productPosition: Int)
+        fun onIncreaseQtyButtonClicked(
+            productId: String,
+            quantity: Int,
+            cardPositions: Pair<Int, Int>
+        )
+
+        fun onNavigateToOrderCustomizationPage(
+            cartId: String,
+            productUiModel: ProductUiModel,
+            productPosition: Int
+        )
     }
 
     companion object {
@@ -27,8 +36,10 @@ class ProductDetailBottomSheet(private val clickListener: OnProductDetailClickLi
         private const val BUNDLE_KEY_PRODUCT_UI_MODEL = "PRODUCT_UI_MODEL"
 
         @JvmStatic
-        fun createInstance(productUiModel: ProductUiModel,
-                           clickListener: OnProductDetailClickListener): ProductDetailBottomSheet {
+        fun createInstance(
+            productUiModel: ProductUiModel,
+            clickListener: OnProductDetailClickListener
+        ): ProductDetailBottomSheet {
             return ProductDetailBottomSheet(clickListener).apply {
                 arguments = Bundle().apply {
                     putParcelable(BUNDLE_KEY_PRODUCT_UI_MODEL, productUiModel)
@@ -51,7 +62,11 @@ class ProductDetailBottomSheet(private val clickListener: OnProductDetailClickLi
 
     private var productListItem: ProductListItem? = null
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         val viewBinding = BottomsheetProductDetailLayoutBinding.inflate(inflater, container, false)
         binding = viewBinding
         setChild(viewBinding.root)
@@ -70,29 +85,31 @@ class ProductDetailBottomSheet(private val clickListener: OnProductDetailClickLi
         super.onDestroyView()
     }
 
-    private fun setupView(productUiModel: ProductUiModel, binding: BottomsheetProductDetailLayoutBinding?) {
+    private fun setupView(
+        productUiModel: ProductUiModel,
+        binding: BottomsheetProductDetailLayoutBinding?
+    ) {
         binding?.atcButton?.setOnClickListener {
             sentMerchantTracker?.invoke()
             this.cardPositions?.run {
                 if (productUiModel.isCustomizable) {
                     clickListener.onNavigateToOrderCustomizationPage(
-                            cartId = "",
-                            productUiModel = productUiModel,
-                            productPosition = first
+                        cartId = "",
+                        productUiModel = productUiModel,
+                        productPosition = first
                     )
-                }
-                if (!productUiModel.isAtc) {
+                } else if (!productUiModel.isAtc) {
                     productListItem?.let { productListItem ->
                         clickListener.onAtcButtonClicked(
-                                productListItem = productListItem,
-                                cardPositions = this
+                            productListItem = productListItem,
+                            cardPositions = this
                         )
                     }
                 } else {
                     clickListener.onIncreaseQtyButtonClicked(
-                            productId = productUiModel.id,
-                            quantity = productUiModel.orderQty + 1,
-                            cardPositions = this
+                        productId = productUiModel.id,
+                        quantity = productUiModel.orderQty + 1,
+                        cardPositions = this
                     )
                 }
             }
@@ -121,9 +138,11 @@ class ProductDetailBottomSheet(private val clickListener: OnProductDetailClickLi
                 text = productUiModel.slashPriceFmt
             }
         }
-        if (productUiModel.isShopClosed || productUiModel.isOutOfStock) binding?.atcButton?.isEnabled = false
+        if (productUiModel.isShopClosed || productUiModel.isOutOfStock) binding?.atcButton?.isEnabled =
+            false
         if (productUiModel.customOrderDetails.size.isMoreThanZero()) {
-            binding?.atcButton?.text = getString(com.tokopedia.tokofood.R.string.action_add_custom_product)
+            binding?.atcButton?.text =
+                getString(com.tokopedia.tokofood.R.string.action_add_custom_product)
         }
     }
 

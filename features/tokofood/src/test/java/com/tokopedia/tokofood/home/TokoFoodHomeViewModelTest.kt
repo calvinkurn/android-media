@@ -91,6 +91,13 @@ class TokoFoodHomeViewModelTest: TokoFoodHomeViewModelTestFixture() {
 
         val expectedResponse = createChooseAddress().response
         verfifyGetChooseAddressSuccess(expectedResponse)
+        verifyIsUpdateAddressManualTrue()
+    }
+
+    @Test
+    fun `when manuallay set isUpdateAddressManual return its value`() {
+        viewModel.isAddressManuallyUpdated = false
+        verifyIsUpdateAddressManualFalse()
     }
 
     @Test
