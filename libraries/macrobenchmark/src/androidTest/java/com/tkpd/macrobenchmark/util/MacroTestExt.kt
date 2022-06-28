@@ -1,32 +1,26 @@
 package com.tkpd.macrobenchmark.util
 
-import android.content.Intent
 import androidx.benchmark.macro.CompilationMode
+import androidx.benchmark.macro.MacrobenchmarkScope
+import androidx.benchmark.macro.Metric
 import androidx.benchmark.macro.StartupMode
-import androidx.benchmark.macro.StartupTimingMetric
 import androidx.benchmark.macro.junit4.MacrobenchmarkRule
+import androidx.test.platform.app.InstrumentationRegistry
 
-fun MacrobenchmarkRule.measureStartup(
-    startupMode: StartupMode,
-    iterations: Int = 3,
-    intent: () -> Intent,
-    waitUntil: () -> Unit,
-    setupEnvironment: () -> Unit,
-    traceName: String
+fun MacrobenchmarkRule.measureTokopediaApps(
+    startupMode: StartupMode? = null,
+    metrics: List<Metric>,
+    measureBlock: (MacrobenchmarkScope) -> Unit
 ) = measureRepeated(
     packageName = MacroIntent.TKPD_PACKAGE_NAME,
-    metrics = listOf(
-        StartupTimingMetric()
-    ).plus(MacroMetrics.getPltMetrics(traceName)),
+    metrics = metrics,
     compilationMode = CompilationMode.None(),
-    iterations = iterations,
+    iterations = MacroArgs.getIterations(InstrumentationRegistry.getArguments()),
     startupMode = startupMode,
     setupBlock = {
         pressHome()
-        setupEnvironment.invoke()
     },
     measureBlock = {
-        startActivityAndWait(intent.invoke())
-        waitUntil.invoke()
+        measureBlock.invoke(this)
     }
 )
