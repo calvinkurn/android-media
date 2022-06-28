@@ -104,7 +104,7 @@ object GetSomFilterMapper {
         return mutableListOf<SomFilterUiModel>().apply {
             add(SomFilterUiModel(nameFilter = FILTER_SORT, somFilterData = mapToFilterSortUiModel(data), canSelectMany = false, isDividerVisible = true))
             add(SomFilterUiModel(nameFilter = FILTER_STATUS_ORDER, somFilterData = mapToFilterStatusUiModel(data.orderFilterSom.statusList), canSelectMany = true, isDividerVisible = true))
-            add(SomFilterUiModel(nameFilter = FILTER_TYPE_ORDER, somFilterData = mapToFilterTypeUiModel(data.orderTypeList), canSelectMany = true, isDividerVisible = true))
+            add(SomFilterUiModel(nameFilter = FILTER_TYPE_ORDER, somFilterData = mapToFilterTypeUiModel(data.orderFilterSom.orderTypeList), canSelectMany = true, isDividerVisible = true))
             add(SomFilterUiModel(nameFilter = FILTER_COURIER, somFilterData = mapToFilterCourierUiModel(data.orderFilterSom.shippingList), canSelectMany = true, isDividerVisible = true))
             add(SomFilterUiModel(nameFilter = FILTER_LABEL, somFilterData = mapToFilterLabelUiModel(), canSelectMany = false, isDividerVisible = true))
         }
@@ -153,7 +153,7 @@ object GetSomFilterMapper {
         }
     }
 
-    private fun mapToFilterTypeUiModel(typeList: List<SomFilterResponse.OrderType>): List<SomFilterChipsUiModel> {
+    private fun mapToFilterTypeUiModel(typeList: List<SomFilterResponse.OrderFilterSom.OrderType>): List<SomFilterChipsUiModel> {
         return mutableListOf<SomFilterChipsUiModel>().apply {
             typeList.map {
                 add(SomFilterChipsUiModel(id = it.id, key = it.key.orEmpty(), name = it.name.orEmpty(), idFilter = FILTER_TYPE_ORDER))
