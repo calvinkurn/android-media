@@ -74,9 +74,12 @@ import com.tokopedia.people.views.adapter.UserPostBaseAdapter
 import com.tokopedia.people.analytic.UserProfileTracker
 import com.tokopedia.people.utils.UserProfileUtils
 import com.tokopedia.people.utils.withCache
+import com.tokopedia.people.views.uimodel.action.UserProfileAction
 import com.tokopedia.people.views.uimodel.profile.LinkUiModel
 import com.tokopedia.people.views.uimodel.profile.LivePlayChannelUiModel
+import com.tokopedia.people.views.uimodel.profile.ProfileType
 import com.tokopedia.people.views.uimodel.profile.ProfileUiModel
+import com.tokopedia.people.views.uimodel.state.UserProfileUiState
 import com.tokopedia.unifyprinciples.Typography
 import kotlinx.coroutines.flow.collectLatest
 
@@ -270,8 +273,8 @@ class UserProfileFragment : BaseDaggerFragment(),
         view?.findViewById<View>(R.id.img_profile_image)?.setOnClickListener(this)
         view?.findViewById<View>(R.id.text_live)?.setOnClickListener(this)
         view?.findViewById<View>(R.id.view_profile_outer_ring)?.setOnClickListener(this)
-        view?.findViewById<View>(R.id.btn_action_follow)?.setOnClickListener(this)
         view?.findViewById<View>(R.id.text_see_more)?.setOnClickListener(this)
+        btnAction?.setOnClickListener { viewModel.submitAction(UserProfileAction.ClickFollowButton) }
         feedFab.setOnClickListener {
             FeedUserTnCOnboardingBottomSheet.getFragment(
                 childFragmentManager,
@@ -357,6 +360,7 @@ class UserProfileFragment : BaseDaggerFragment(),
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
             viewModel.uiState.withCache().collectLatest {
                 renderProfileInfo(it.prevValue?.profileInfo, it.value.profileInfo)
+                renderFollowInfo(it.prevValue, it.value)
             }
         }
     }
@@ -695,16 +699,16 @@ class UserProfileFragment : BaseDaggerFragment(),
 
         container?.displayedChild = PAGE_CONTENT
 
+        /** Setup Profile Info */
+        setProfileImg(curr)
+
         textUserName.shouldShowWithAction(curr.username.isNotBlank()) {
             textUserName.text = getString(R.string.up_username_template, curr.username)
         }
-
         textDisplayName.text = curr.name
         textContentCount.text = UserProfileUtils.getFormattedNumber(curr.stats.totalPost)
         textFollowerCount.text = UserProfileUtils.getFormattedNumber(curr.stats.totalFollower)
         textFollowingCount.text = UserProfileUtils.getFormattedNumber(curr.stats.totalFollowing)
-
-        setProfileImg(curr)
 
         displayName = curr.name
         mAdapter.displayName = displayName
@@ -738,14 +742,33 @@ class UserProfileFragment : BaseDaggerFragment(),
 
         if (userSession?.isLoggedIn == false) {
             updateToUnFollowUi()
-            btnAction?.setOnClickListener {
-                startActivityForResult(
-                    RouteManager.getIntent(activity, ApplinkConst.LOGIN),
-                    REQUEST_CODE_LOGIN
-                )
-            }
         }
         headerProfile?.title = curr.name
+    }
+
+    private fun renderFollowInfo(
+        prev: UserProfileUiState?,
+        value: UserProfileUiState
+    ) {
+
+        if(prev?.followInfo == value.followInfo &&
+            prev.profileType == value.profileType
+        ) return
+
+        when(value.profileType) {
+            ProfileType.NotLoggedIn -> btnAction?.show()
+            ProfileType.OtherUser -> {
+                with(value) {
+                    btnAction?.show()
+                    if (followInfo.status)
+                        updateToFollowUi()
+                    else
+                        updateToUnFollowUi()
+                }
+            }
+            ProfileType.Unknown,
+            ProfileType.Self -> btnAction?.hide()
+        }
     }
 
     private fun updateToFollowUi() {

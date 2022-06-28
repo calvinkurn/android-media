@@ -11,6 +11,7 @@ import dagger.Component
 @UserProfileScope
 @Component(modules = [
     UserProfileModule::class,
+    UserProfileBindModule::class,
     UserProfileViewModelModule::class,
     FeedFloatingButtonManagerModule::class,
 ], dependencies = [BaseAppComponent::class])

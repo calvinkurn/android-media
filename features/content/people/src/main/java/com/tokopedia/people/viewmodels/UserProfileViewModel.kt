@@ -24,9 +24,13 @@ import com.tokopedia.feedcomponent.domain.usecase.GetWhitelistUseCase
 import com.tokopedia.feedcomponent.domain.usecase.GetWhitelistUseCase.Companion.WHITELIST_ENTRY_POINT
 import com.tokopedia.kotlin.extensions.coroutines.asyncCatchError
 import com.tokopedia.people.domains.repository.UserProfileRepository
+import com.tokopedia.people.utils.setValue
+import com.tokopedia.people.views.uimodel.action.UserProfileAction
 import com.tokopedia.people.views.uimodel.profile.*
 import com.tokopedia.people.views.uimodel.state.UserProfileUiState
+import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.async
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.combine
 import javax.inject.Inject
@@ -41,6 +45,7 @@ class UserProfileViewModel @Inject constructor(
     private val videoPostReminderUseCase: VideoPostReminderUseCase,
     private val getWhitelistUseCase: GetWhitelistUseCase,
     private val repo: UserProfileRepository,
+    private val userSession: UserSessionInterface,
 ) : BaseViewModel(Dispatchers.Main) {
 
     private val userDetails = MutableLiveData<Resources<ProfileHeaderBase>>()
@@ -98,6 +103,34 @@ class UserProfileViewModel @Inject constructor(
         )
     }
 
+    fun submitAction(action: UserProfileAction) {
+        when(action) {
+            UserProfileAction.ClickFollowButton -> handleClickFollowButton()
+        }
+    }
+
+    /** Handle Action */
+    private fun handleClickFollowButton() {
+        launchCatchError(block = {
+            val followInfo = _followInfo.value
+
+            if(followInfo.status) {
+                val data = useCaseDoUnFollow.doUnfollow(followInfo.encryptedUserID)
+                if (data != null) {
+                    _followInfo.setValue { copy(status = !followInfo.status) }
+                } else throw NullPointerException("data is null")
+            }
+            else {
+                val data = useCaseDoFollow.doFollow(followInfo.encryptedUserID)
+                if (data != null) {
+                    _followInfo.setValue { copy(status = !followInfo.status) }
+                } else throw NullPointerException("data is null")
+            }
+        }) {
+            unFollowErrorMessage.value = it
+        }
+    }
+
     fun getUserDetails(username: String, isRefresh: Boolean) {
         launchCatchError(block = {
             val profileInfo = asyncCatchError(block = {
@@ -115,6 +148,12 @@ class UserProfileViewModel @Inject constructor(
 
             _profileInfo.value = profileInfo.await() ?: ProfileUiModel.Empty
             _followInfo.value = followInfo.await() ?: FollowInfoUiModel.Empty
+            _profileType.value = if(userSession.isLoggedIn) {
+                    if(userSession.userId == _followInfo.value.userID)
+                        ProfileType.Self
+                    else ProfileType.OtherUser
+                }
+                else ProfileType.NotLoggedIn
         }) {
             profileHeaderErrorMessage.value = it
         }
@@ -186,5 +225,4 @@ class UserProfileViewModel @Inject constructor(
             postReminderErrorMessage.value = it
         })
     }
-
 }
