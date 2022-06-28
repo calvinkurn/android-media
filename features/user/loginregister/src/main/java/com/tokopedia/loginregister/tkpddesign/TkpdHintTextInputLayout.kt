@@ -116,7 +116,7 @@ class TkpdHintTextInputLayout : LinearLayout {
         init()
     }
 
-    @SuppressLint("RestrictedApi", "ResourceType")
+    @SuppressLint("RestrictedApi", "ResourceType", "ResourcePackage")
     private fun apply(attrs: AttributeSet?, defStyleAttr: Int) {
         val a = TintTypedArray.obtainStyledAttributes(
             context,
@@ -160,37 +160,37 @@ class TkpdHintTextInputLayout : LinearLayout {
             }
             hintArr.recycle()
         }
-        mErrorEnabled = a.getBoolean(com.tokopedia.design.R.styleable.TkpdHintTextInputLayout_errorEnabled, false)
+        mErrorEnabled = a.getBoolean(R.styleable.TkpdHintTextInputLayout_errorEnabled, false)
         mErrorTextAppearance =
-            a.getResourceId(com.tokopedia.design.R.styleable.TkpdHintTextInputLayout_errorTextAppearance, 0)
-        mHelperEnabled = a.getBoolean(com.tokopedia.design.R.styleable.TkpdHintTextInputLayout_helperEnabled, false)
+            a.getResourceId(R.styleable.TkpdHintTextInputLayout_errorTextAppearance, 0)
+        mHelperEnabled = a.getBoolean(R.styleable.TkpdHintTextInputLayout_helperEnabled, false)
         mHelperTextAppearance = a.getResourceId(
-            com.tokopedia.design.R.styleable.TkpdHintTextInputLayout_helperTextAppearance,
-            com.tokopedia.design.R.style.helperTextAppearance
+            R.styleable.TkpdHintTextInputLayout_helperTextAppearance,
+            R.style.helperTextAppearance
         )
-        mHelperText = a.getText(com.tokopedia.design.R.styleable.TkpdHintTextInputLayout_helper)
-        isSuccessShown = a.getBoolean(com.tokopedia.design.R.styleable.TkpdHintTextInputLayout_successEnabled, false)
+        mHelperText = a.getText(R.styleable.TkpdHintTextInputLayout_helper)
+        isSuccessShown = a.getBoolean(R.styleable.TkpdHintTextInputLayout_successEnabled, false)
         mSuccessTextAppearance = a.getResourceId(
-            com.tokopedia.design.R.styleable.TkpdHintTextInputLayout_successTextAppearance,
-            com.tokopedia.design.R.style.successTextAppearance
+            R.styleable.TkpdHintTextInputLayout_successTextAppearance,
+            R.style.successTextAppearance
         )
-        mCounterEnabled = a.getBoolean(com.tokopedia.design.R.styleable.TkpdHintTextInputLayout_counterEnabled, false)
+        mCounterEnabled = a.getBoolean(R.styleable.TkpdHintTextInputLayout_counterEnabled, false)
         mCounterMaxLength =
-            a.getInt(com.tokopedia.design.R.styleable.TkpdHintTextInputLayout_counterMaxLength, INVALID_MAX_LENGTH)
+            a.getInt(R.styleable.TkpdHintTextInputLayout_counterMaxLength, INVALID_MAX_LENGTH)
         mCounterTextAppearance =
-            a.getResourceId(com.tokopedia.design.R.styleable.TkpdHintTextInputLayout_counterTextAppearance, 0)
+            a.getResourceId(R.styleable.TkpdHintTextInputLayout_counterTextAppearance, 0)
         mCounterOverflowTextAppearance =
-            a.getResourceId(com.tokopedia.design.R.styleable.TkpdHintTextInputLayout_counterOverflowTextAppearance, 0)
+            a.getResourceId(R.styleable.TkpdHintTextInputLayout_counterOverflowTextAppearance, 0)
         mPasswordToggleEnabled =
-            a.getBoolean(com.tokopedia.design.R.styleable.TkpdHintTextInputLayout_passwordToggleEnabled, true)
+            a.getBoolean(R.styleable.TkpdHintTextInputLayout_passwordToggleEnabled, true)
         mPasswordToggleDrawable =
-            a.getDrawable(com.tokopedia.design.R.styleable.TkpdHintTextInputLayout_passwordToggleDrawable)
+            a.getDrawable(R.styleable.TkpdHintTextInputLayout_passwordToggleDrawable)
         mPasswordToggleContentDesc =
-            a.getText(com.tokopedia.design.R.styleable.TkpdHintTextInputLayout_passwordToggleContentDescription)
-        if (a.hasValue(com.tokopedia.design.R.styleable.TkpdHintTextInputLayout_passwordToggleTint)) {
+            a.getText(R.styleable.TkpdHintTextInputLayout_passwordToggleContentDescription)
+        if (a.hasValue(R.styleable.TkpdHintTextInputLayout_passwordToggleTint)) {
             mHasPasswordToggleTintList = true
             mPasswordToggleTintList = a.getColorStateList(
-                com.tokopedia.design.R.styleable.TkpdHintTextInputLayout_passwordToggleTint
+                R.styleable.TkpdHintTextInputLayout_passwordToggleTint
             )
         }
 
@@ -230,8 +230,9 @@ class TkpdHintTextInputLayout : LinearLayout {
         a.recycle()
     }
 
+    @SuppressLint("ResourcePackage")
     private fun init() {
-        val view = inflate(context, com.tokopedia.design.R.layout.hint_text_input_layout, this)
+        val view = inflate(context, R.layout.hint_text_input_layout, this)
         mFrameLayout = view.findViewById<View>(R.id.frame_content) as FrameLayout
         mTvLabel = view.findViewById<View>(R.id.tv_label) as TextView
         mTvHelper = view.findViewById<View>(R.id.tv_helper) as TextView
@@ -541,6 +542,7 @@ class TkpdHintTextInputLayout : LinearLayout {
         }
     }
 
+    @SuppressLint("ResourcePackage")
     private fun updatePasswordToggleView() {
         if (editText == null) {
             // If there is no EditText, there is nothing to update
@@ -550,7 +552,7 @@ class TkpdHintTextInputLayout : LinearLayout {
             if (mPasswordToggleView == null) {
                 mPasswordToggleView = LayoutInflater.from(context)
                     .inflate(
-                        com.tokopedia.design.R.layout.design_text_input_password_icon,
+                        R.layout.design_text_input_password_icon,
                         mFrameLayout, false
                     ) as CheckableImageButton
                 mPasswordToggleView!!.setImageDrawable(mPasswordToggleDrawable)
