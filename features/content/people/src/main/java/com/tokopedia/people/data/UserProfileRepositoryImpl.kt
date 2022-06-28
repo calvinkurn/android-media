@@ -3,7 +3,7 @@ package com.tokopedia.people.data
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.people.domains.*
 import com.tokopedia.people.domains.repository.UserProfileRepository
-import com.tokopedia.feedcomponent.domain.usecase.GetWhitelistUseCase
+import com.tokopedia.feedcomponent.domain.usecase.GetWhitelistNewUseCase
 import com.tokopedia.feedcomponent.domain.usecase.GetWhitelistUseCase.Companion.WHITELIST_ENTRY_POINT
 import com.tokopedia.people.model.ProfileHeaderBase
 import com.tokopedia.people.views.uimodel.mapper.UserProfileUiMapper
@@ -25,7 +25,7 @@ class UserProfileRepositoryImpl @Inject constructor(
     private val useCaseDoUnFollow: ProfileUnfollowedUseCase,
     private val profileIsFollowing: ProfileTheyFollowedUseCase,
     private val videoPostReminderUseCase: VideoPostReminderUseCase,
-    private val getWhitelistUseCase: GetWhitelistUseCase,
+    private val getWhitelistNewUseCase: GetWhitelistNewUseCase,
 ) : UserProfileRepository {
 
     override suspend fun getProfile(username: String): ProfileUiModel {
@@ -44,10 +44,11 @@ class UserProfileRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun getWhitelist(): ProfileWhitelistUiModel {
-        TODO("will be done later")
-//        return withContext(dispatcher.io) {
-//            val result =
-//        }
+    override suspend fun getWhitelist(userId: String): ProfileWhitelistUiModel {
+        return withContext(dispatcher.io) {
+            val result = getWhitelistNewUseCase.execute(WHITELIST_ENTRY_POINT, userId)
+
+            mapper.mapUserWhitelist(result)
+        }
     }
 }

@@ -41,6 +41,7 @@ const val GET_WHITE_LIST_QUERY: String = """query WhitelistQuery(${'$'}type: Str
 private const val PARAM_TYPE = "type"
 private const val PARAM_ID = "ID"
 const val WHITELIST_INTEREST = "interest"
+const val WHITELIST_ENTRY_POINT = "entrypoint"
 
 @GqlQuery("GetWhitelistQuery", GET_WHITE_LIST_QUERY)
 class GetWhitelistNewUseCase @Inject constructor(graphqlRepository: GraphqlRepository)

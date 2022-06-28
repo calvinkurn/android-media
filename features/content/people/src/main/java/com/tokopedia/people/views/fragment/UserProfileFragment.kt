@@ -369,6 +369,7 @@ class UserProfileFragment : BaseDaggerFragment(),
             viewModel.uiState.withCache().collectLatest {
                 renderProfileInfo(it.prevValue?.profileInfo, it.value.profileInfo)
                 renderFollowInfo(it.prevValue, it.value)
+                renderCreatePostButton(it.prevValue, it.value)
             }
         }
     }
@@ -675,6 +676,20 @@ class UserProfileFragment : BaseDaggerFragment(),
             ProfileType.Unknown,
             ProfileType.Self -> btnAction?.hide()
         }
+    }
+
+    private fun renderCreatePostButton(
+        prev: UserProfileUiState?,
+        value: UserProfileUiState
+    ) {
+        if(prev?.followInfo == value.followInfo &&
+            prev.profileType == value.profileType &&
+            prev.profileWhitelist == value.profileWhitelist
+        ) return
+
+        feedFab.showWithCondition(
+            value.profileType == ProfileType.Self && value.profileWhitelist.isWhitelist
+        )
     }
 
     private fun updateToFollowUi() {

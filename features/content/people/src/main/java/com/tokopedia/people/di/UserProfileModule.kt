@@ -2,6 +2,8 @@ package com.tokopedia.people.di
 
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
+import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
+import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.people.data.UserProfileRepositoryImpl
 import com.tokopedia.people.domains.repository.UserProfileRepository
 import com.tokopedia.user.session.UserSession
@@ -17,5 +19,11 @@ class UserProfileModule {
     @UserProfileScope
     fun provideUserSession(@ApplicationContext context: Context): UserSessionInterface {
         return UserSession(context)
+    }
+
+    @Provides
+    @UserProfileScope
+    fun provideGraphqlRepositoryCase(): GraphqlRepository {
+        return GraphqlInteractor.getInstance().graphqlRepository
     }
 }

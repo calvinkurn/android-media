@@ -60,12 +60,6 @@ class UserProfileViewModel @Inject constructor(
     private val playPostContent = MutableLiveData<Resources<UserPostModel>>()
     val playPostContentLiveData : LiveData<Resources<UserPostModel>> get() = playPostContent
 
-    private val profileDoFollow = MutableLiveData<Resources<ProfileDoFollowModelBase>>()
-    val profileDoFollowLiveData : LiveData<Resources<ProfileDoFollowModelBase>> get() = profileDoFollow
-
-    private val profileDoUnFollow = MutableLiveData<Resources<ProfileDoUnFollowModelBase>>()
-    val profileDoUnFollowLiveData : LiveData<Resources<ProfileDoUnFollowModelBase>> get() = profileDoUnFollow
-
     private var profileHeaderErrorMessage = MutableLiveData<Throwable>()
     val profileHeaderErrorMessageLiveData : LiveData<Throwable> get() = profileHeaderErrorMessage
 
@@ -141,27 +135,36 @@ class UserProfileViewModel @Inject constructor(
 
     fun getUserDetails(username: String, isRefresh: Boolean) {
         launchCatchError(block = {
-            val profileInfo = asyncCatchError(block = {
+            val deferredProfileInfo = asyncCatchError(block = {
                 repo.getProfile(username)
             }) {
                 profileHeaderErrorMessage.value = it
                 ProfileUiModel.Empty
             }
 
-            val followInfo = asyncCatchError(block = {
+            val deferredFollowInfo = asyncCatchError(block = {
                 repo.getFollowInfo(listOf(username))
             }) {
                 FollowInfoUiModel.Empty
             }
 
-            _profileInfo.value = profileInfo.await() ?: ProfileUiModel.Empty
-            _followInfo.value = followInfo.await() ?: FollowInfoUiModel.Empty
-            _profileType.value = if(userSession.isLoggedIn) {
-                if(userSession.userId == _followInfo.value.userID)
+            val profileInfo = deferredProfileInfo.await() ?: ProfileUiModel.Empty
+            val followInfo = deferredFollowInfo.await() ?: FollowInfoUiModel.Empty
+            val profileType = if(userSession.isLoggedIn) {
+                if(userSession.userId == followInfo.userID)
                     ProfileType.Self
                 else ProfileType.OtherUser
             }
             else ProfileType.NotLoggedIn
+
+
+            _profileInfo.value = profileInfo
+            _followInfo.value = followInfo
+            _profileType.value = profileType
+
+            if(profileType == ProfileType.Self) {
+                _profileWhitelist.value = repo.getWhitelist(followInfo.userID)
+            }
 
             /** TODO: refactor - gonna find a better way to trigger load video */
             userPost.value = isRefresh

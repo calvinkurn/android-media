@@ -13,5 +13,5 @@ interface UserProfileRepository {
 
     suspend fun getFollowInfo(profileIdList: List<String>): FollowInfoUiModel
 
-    suspend fun getWhitelist(): ProfileWhitelistUiModel
+    suspend fun getWhitelist(userId: String): ProfileWhitelistUiModel
 }
