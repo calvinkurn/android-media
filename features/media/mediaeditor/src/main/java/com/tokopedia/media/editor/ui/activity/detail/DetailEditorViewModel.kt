@@ -9,6 +9,8 @@ import com.tokopedia.media.editor.data.tool.ColorFilterManager
 import com.tokopedia.media.editor.domain.SetRemoveBackgroundUseCase
 import com.tokopedia.media.editor.ui.uimodel.EditorDetailUiModel
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.onCompletion
+import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
 import java.io.File
 import javax.inject.Inject
@@ -17,6 +19,9 @@ class DetailEditorViewModel @Inject constructor(
     private val colorFilterManager: ColorFilterManager,
     private val removeBackgroundUseCase: SetRemoveBackgroundUseCase
 ) : ViewModel() {
+
+    private var _isLoading = MutableLiveData<Boolean>()
+    val isLoading: LiveData<Boolean> get() = _isLoading
 
     private var _intentUiModel = MutableLiveData<EditorDetailUiModel>()
     val intentUiModel: LiveData<EditorDetailUiModel> get() = _intentUiModel
@@ -38,6 +43,8 @@ class DetailEditorViewModel @Inject constructor(
     fun setRemoveBackground(filePath: String) {
         viewModelScope.launch {
             removeBackgroundUseCase(filePath)
+                .onStart { _isLoading.value = true }
+                .onCompletion { _isLoading.value = false }
                 .collect {
                     _removeBackground.value = it
                 }

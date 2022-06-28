@@ -8,6 +8,7 @@ import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
+import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.media.editor.R
 import com.tokopedia.media.editor.databinding.FragmentDetailEditorBinding
 import com.tokopedia.media.editor.ui.activity.detail.DetailEditorViewModel
@@ -61,7 +62,7 @@ class DetailEditorFragment @Inject constructor(
 
     private fun initObservable() {
         observeIntentUiModel()
-
+        observeLoader()
         observeBrightness()
         observeRemoveBackground()
     }
@@ -91,6 +92,12 @@ class DetailEditorFragment @Inject constructor(
 
             renderImagePreview(it.imageUrl)
             renderUiComponent(it.editorToolType)
+        }
+    }
+
+    private fun observeLoader() {
+        viewModel.isLoading.observe(viewLifecycleOwner) {
+            viewBinding?.ldrPreview?.showWithCondition(it)
         }
     }
 
