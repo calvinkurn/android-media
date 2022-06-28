@@ -102,9 +102,9 @@ class MerchantPageViewModel @Inject constructor(
     fun getChooseAddress(source: String){
         isAddressManuallyUpdated = true
         getChooseAddressWarehouseLocUseCase.getStateChosenAddress( {
-            _chooseAddress.postValue(Success(it))
+            _chooseAddress.value = Success(it)
         },{
-            _chooseAddress.postValue(Fail(it))
+            _chooseAddress.value = Fail(it)
         }, source)
     }
 
