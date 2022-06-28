@@ -45,7 +45,7 @@ class ManageHighlightedProductViewModel @Inject constructor(
     val saveDraft: LiveData<Result<ProductSubmissionResult>>
         get() = _saveDraft
 
-    private var selectedProducts: MutableSet<HighlightableProduct> = mutableSetOf()
+    private var selectedProducts: MutableList<HighlightableProduct> = mutableListOf()
 
     private var isFirstLoad = true
 
@@ -70,8 +70,8 @@ class ManageHighlightedProductViewModel @Inject constructor(
                 )
 
                 val mappedProducts = highlightProductUiMapper.map(products)
-                val appliedSelectedProductRule = applySelectedProductRule(mappedProducts, isFirstLoad)
-                val appliedMaxSelectionRule = applyMaxSelectionRule(appliedSelectedProductRule)
+                val determinedProducts = determineShouldSelectProduct(mappedProducts, isFirstLoad)
+                val appliedMaxSelectionRule = applyMaxSelectionRule(determinedProducts)
                 val appliedProductSelectionRule = applyProductSelectionRule(appliedMaxSelectionRule)
                 val sortedProducts = applySortRule(appliedProductSelectionRule)
                 _products.postValue(Success(sortedProducts))
@@ -83,7 +83,7 @@ class ManageHighlightedProductViewModel @Inject constructor(
     }
 
 
-    private fun applySelectedProductRule(
+    private fun determineShouldSelectProduct(
         products: List<HighlightableProduct>,
         isFirstLoad: Boolean
     ): List<HighlightableProduct> {
@@ -98,7 +98,8 @@ class ManageHighlightedProductViewModel @Inject constructor(
                 }
 
                 product.copy(isSelected = isSelected)
-            }.onEach { product ->
+            }
+            .onEach { product ->
                 if (product.isSelected) addProductIdToSelection(product)
             }
     }
@@ -106,6 +107,7 @@ class ManageHighlightedProductViewModel @Inject constructor(
     private fun applyMaxSelectionRule(
         currentPageProducts: List<HighlightableProduct>
     ): List<HighlightableProduct> {
+        val size = selectedProducts.size
         return currentPageProducts.map { product ->
             if (selectedProducts.size == MAX_PRODUCT_SELECTION && !product.isSelected) {
                 product.copy(disabled = true, disabledReason = HighlightableProduct.DisabledReason.MAX_PRODUCT_REACHED)
@@ -180,7 +182,7 @@ class ManageHighlightedProductViewModel @Inject constructor(
     }
 
 
-    fun getSelectedProductIds(): Set<HighlightableProduct> {
+    fun getSelectedProductIds(): List<HighlightableProduct> {
         return this.selectedProducts
     }
 
@@ -193,33 +195,43 @@ class ManageHighlightedProductViewModel @Inject constructor(
         val selectedParentProductIds = selectedProducts.map { selectedProduct -> selectedProduct.parentId }
 
         return products
-            .mapIndexed { index, product ->
-                //Same parent, but different variant
-                if (product.parentId in selectedParentProductIds && product.id !in selectedProductsIds) {
-                    product.copy(
-                        isSelected = false,
-                        disabled = true,
-                        disabledReason = HighlightableProduct.DisabledReason.OTHER_PRODUCT_WITH_SAME_PARENT_ID_ALREADY_SELECTED
-                    )
-                } else if (product.parentId in selectedParentProductIds && product.id in selectedProductsIds) {
-                    product.copy(
-                        isSelected = true,
-                        disabled = false,
-                        disabledReason = HighlightableProduct.DisabledReason.NOT_DISABLED
-                    )
-                } else {
-                    product
-                }
-            }
-            .map { product ->
-                if (!product.isSelected && selectedParentProductIds.size >= MAX_PRODUCT_SELECTION) {
-                    product.copy(isSelected = false, disabled = true)
-                } else {
-                    product
-                }
-            }
+            .map { product -> disableOtherVariantsWhoHasSameParentId(selectedProductsIds, selectedParentProductIds, product) }
+            .map { product -> disableAllUnselectedProductIfMaxSelectionReached(product, selectedParentProductIds) }
             .sortedByDescending { it.isSelected }
             .mapIndexed { index, product -> product.copy(position = index + OFFSET_BY_ONE) }
+    }
+
+    private fun disableOtherVariantsWhoHasSameParentId(
+        selectedProductsIds: List<Long>,
+        selectedParentProductIds: List<Long>,
+        product: HighlightableProduct
+    ): HighlightableProduct {
+        return if (product.parentId in selectedParentProductIds && product.id !in selectedProductsIds) {
+            product.copy(
+                isSelected = false,
+                disabled = true,
+                disabledReason = HighlightableProduct.DisabledReason.OTHER_PRODUCT_WITH_SAME_PARENT_ID_ALREADY_SELECTED
+            )
+        } else if (product.parentId in selectedParentProductIds && product.id in selectedProductsIds) {
+            product.copy(
+                isSelected = true,
+                disabled = false,
+                disabledReason = HighlightableProduct.DisabledReason.NOT_DISABLED
+            )
+        } else {
+            product
+        }
+    }
+
+    private fun disableAllUnselectedProductIfMaxSelectionReached(
+        product: HighlightableProduct,
+        selectedParentProductIds: List<Long>
+    ): HighlightableProduct {
+        return if (!product.isSelected && selectedParentProductIds.size >= MAX_PRODUCT_SELECTION) {
+            product.copy(isSelected = false, disabled = true)
+        } else {
+            product
+        }
     }
 
     fun markAsUnselected(
@@ -230,22 +242,35 @@ class ManageHighlightedProductViewModel @Inject constructor(
         val selectedParentProductIds = selectedProducts.map { selectedProduct -> selectedProduct.parentId }
 
         return products
-            .mapIndexed { index, product ->
-                if (currentlySelectedProduct.id == product.id) {
-                    product.copy(isSelected = false)
-                } else {
-                    product
-                }
-            }
-            .map { product ->
-                //enable all, except selected variant
-                if (product.id !in selectedProductsIds && product.parentId !in selectedParentProductIds) {
-                    product.copy(disabled = false, disabledReason = HighlightableProduct.DisabledReason.NOT_DISABLED)
-                } else {
-                    product
-                }
-            }
+            .map { product  -> disableSelectedProduct(currentlySelectedProduct, product) }
+            .map { product -> enableAllProductExceptSelectedVariants(selectedProductsIds, selectedParentProductIds, product) }
             .sortedByDescending { it.isSelected }
             .mapIndexed { index, product -> product.copy(position = index + OFFSET_BY_ONE) }
+    }
+
+    private fun disableSelectedProduct(
+        currentlySelectedProduct: HighlightableProduct,
+        product: HighlightableProduct
+    ): HighlightableProduct {
+        return if (currentlySelectedProduct.id == product.id) {
+            product.copy(isSelected = false)
+        } else {
+            product
+        }
+    }
+
+    private fun enableAllProductExceptSelectedVariants(
+        selectedProductsIds: List<Long>,
+        selectedParentProductIds: List<Long>,
+        product: HighlightableProduct
+    ): HighlightableProduct {
+        return if (product.id !in selectedProductsIds && product.parentId !in selectedParentProductIds) {
+            product.copy(
+                disabled = false,
+                disabledReason = HighlightableProduct.DisabledReason.NOT_DISABLED
+            )
+        } else {
+            product
+        }
     }
 }

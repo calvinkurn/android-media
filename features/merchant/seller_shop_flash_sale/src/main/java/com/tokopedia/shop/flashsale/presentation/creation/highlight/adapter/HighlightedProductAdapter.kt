@@ -103,10 +103,14 @@ class HighlightedProductAdapter(
             binding.loader.isVisible = isLoading
             binding.tpgOriginalPrice.setPrice(product.originalPrice)
             binding.tpgOriginalPrice.strikethrough()
-            binding.tpgErrorMessage.isVisible = product.disabledReason == HighlightableProduct.DisabledReason.OTHER_PRODUCT_WITH_SAME_PARENT_ID_ALREADY_SELECTED
+            handleDisplayErrorMessage(product)
             handleSwitchAppearance(product, onProductSelectionChange)
             handleCardSelectable(product.disabled)
             handleProductOrderNumber(product)
+        }
+
+        private fun handleDisplayErrorMessage(product: HighlightableProduct) {
+            binding.tpgErrorMessage.isVisible = product.isOtherProductAlreadySelected()
         }
 
         private fun handleProductOrderNumber(product: HighlightableProduct) {
@@ -131,20 +135,6 @@ class HighlightedProductAdapter(
             }
         }
 
-        private fun Label.setPercentage(percentage: Int) {
-            val formattedPercentage = String.format(this.context.getString(R.string.sfs_placeholder_percent), percentage)
-            this.text = formattedPercentage
-        }
-
-        private fun Typography.setPrice(price: Long) {
-            this.text = price.convertRupiah()
-        }
-
-        private fun Typography.setPosition(position: Int) {
-            val formattedPosition = String.format(this.context.getString(R.string.sfs_placeholder_product_order), position)
-            this.text = formattedPosition
-        }
-
         private fun handleCardSelectable(disabled: Boolean) {
             if (disabled) {
                 binding.imgProduct.alpha = ALPHA_DISABLED
@@ -161,6 +151,24 @@ class HighlightedProductAdapter(
                 binding.switchUnify.enable()
                 binding.labelDiscountPercentage.opacityLevel = ALPHA_ENABLED
             }
+        }
+
+        private fun Label.setPercentage(percentage: Int) {
+            val formattedPercentage = String.format(this.context.getString(R.string.sfs_placeholder_percent), percentage)
+            this.text = formattedPercentage
+        }
+
+        private fun Typography.setPrice(price: Long) {
+            this.text = price.convertRupiah()
+        }
+
+        private fun Typography.setPosition(position: Int) {
+            val formattedPosition = String.format(this.context.getString(R.string.sfs_placeholder_product_order), position)
+            this.text = formattedPosition
+        }
+
+        private fun HighlightableProduct.isOtherProductAlreadySelected(): Boolean {
+            return this.disabledReason == HighlightableProduct.DisabledReason.OTHER_PRODUCT_WITH_SAME_PARENT_ID_ALREADY_SELECTED
         }
 
     }
