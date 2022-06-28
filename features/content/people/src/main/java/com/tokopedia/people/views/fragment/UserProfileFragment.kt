@@ -97,6 +97,9 @@ class UserProfileFragment : BaseDaggerFragment(),
     lateinit var viewModelFactory: ViewModelFactory
 
     @Inject
+    lateinit var userSession: UserSessionInterface
+
+    @Inject
     lateinit var feedFloatingButtonManager: FeedFloatingButtonManager
 
     private val gridLayoutManager by lazy(LazyThreadSafetyMode.NONE) {
@@ -112,7 +115,6 @@ class UserProfileFragment : BaseDaggerFragment(),
     var totalFollowings: String = ""
     var totalFollowers: String = ""
     var totalPosts: String = ""
-    var userSession: UserSessionInterface? = null
     var btnAction: UnifyButton? = null
     var universalShareBottomSheet: UniversalShareBottomSheet? = null
     private var recyclerviewPost: RecyclerView? = null
@@ -160,22 +162,25 @@ class UserProfileFragment : BaseDaggerFragment(),
         )
     }
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        initInjector()
+        super.onCreate(savedInstanceState)
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        initInjector()
         userProfileTracker = UserProfileTracker()
         return inflater.inflate(R.layout.up_fragment_user_profile, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        userSession = UserSession(context)
         feedFloatingButtonManager.setInitialData(this)
 
-        userId = userSession?.userId?:""
+        userId = userSession.userId
         container = view.findViewById(R.id.container)
         userPostContainer = view.findViewById(R.id.vp_rv_post)
         globalError = view.findViewById(R.id.global_error)
@@ -382,31 +387,31 @@ class UserProfileFragment : BaseDaggerFragment(),
         }
     }
 
-    private fun addUserProfileObserver() =
-        viewModel.userDetailsLiveData.observe(viewLifecycleOwner, Observer {
-            it?.let {
-                when (it) {
-                    is Loading -> {
-                        if (isSwipeRefresh == true) {
-                            //TODO show shimmer
-                        }
-                    }
-                    is ErrorMessage -> {
-
-                    }
-                    is Success -> {
-                        if (isSwipeRefresh == true) {
-                            swipeRefresh.isRefreshing = false
-                            isSwipeRefresh = !isSwipeRefresh!!
-                        }
-
-                        container?.displayedChild = PAGE_CONTENT
-//                        setMainUi(it.data)
-                        viewModel.getFollowingStatus(mutableListOf(profileUserId))
-                    }
-                }
-            }
-        })
+//    private fun addUserProfileObserver() =
+//        viewModel.userDetailsLiveData.observe(viewLifecycleOwner, Observer {
+//            it?.let {
+//                when (it) {
+//                    is Loading -> {
+//                        if (isSwipeRefresh == true) {
+//                            //TODO show shimmer
+//                        }
+//                    }
+//                    is ErrorMessage -> {
+//
+//                    }
+//                    is Success -> {
+//                        if (isSwipeRefresh == true) {
+//                            swipeRefresh.isRefreshing = false
+//                            isSwipeRefresh = !isSwipeRefresh!!
+//                        }
+//
+//                        container?.displayedChild = PAGE_CONTENT
+////                        setMainUi(it.data)
+//                        viewModel.getFollowingStatus(mutableListOf(profileUserId))
+//                    }
+//                }
+//            }
+//        })
 
     private fun addUserPostObserver() =
         viewModel.userPostLiveData.observe(viewLifecycleOwner, Observer {
@@ -477,22 +482,22 @@ class UserProfileFragment : BaseDaggerFragment(),
             }
         })
 
-    private fun addTheyFollowedObserver() =
-        viewModel.profileTheyFollowLiveData.observe(viewLifecycleOwner, Observer {
-            it?.let {
-                when (it) {
-                    is Loading -> {
-
-                    }
-                    is Success -> {
-                        setActionButton(it.data)
-                    }
-                    is ErrorMessage -> {
-
-                    }
-                }
-            }
-        })
+//    private fun addTheyFollowedObserver() =
+//        viewModel.profileTheyFollowLiveData.observe(viewLifecycleOwner, Observer {
+//            it?.let {
+//                when (it) {
+//                    is Loading -> {
+//
+//                    }
+//                    is Success -> {
+//                        setActionButton(it.data)
+//                    }
+//                    is ErrorMessage -> {
+//
+//                    }
+//                }
+//            }
+//        })
 
     private fun addProfileHeaderErrorObserver() =
         viewModel.profileHeaderErrorMessageLiveData.observe(viewLifecycleOwner, Observer {
@@ -672,36 +677,36 @@ class UserProfileFragment : BaseDaggerFragment(),
         RouteManager.route(activity, appLink)
     }
 
-    private fun addDoFollowClickListener(userIdEnc: String, isFollowed: Boolean) =
-        View.OnClickListener {
-            if (userSession?.isLoggedIn == false) {
-                startActivityForResult(
-                    RouteManager.getIntent(activity, ApplinkConst.LOGIN),
-                    REQUEST_CODE_LOGIN
-                )
-                return@OnClickListener
-            }
-
-            if (isFollowed) {
-                activity?.intent?.putExtra(EXTRA_FOLLOW_UNFOLLOW_STATUS, EXTRA_VALUE_IS_NOT_FOLLOWED)
-
-                userProfileTracker?.clickUnfollow(userId, profileUserId == userId)
-                viewModel.doUnFollow(userIdEnc)
-                updateToUnFollowUi()
-            } else {
-                activity?.intent?.putExtra(EXTRA_FOLLOW_UNFOLLOW_STATUS, EXTRA_VALUE_IS_FOLLOWED)
-                userProfileTracker?.clickFollow(userId, profileUserId == userId)
-                viewModel.doFollow(userIdEnc)
-                updateToFollowUi()
-            }
-        }
+//    private fun addDoFollowClickListener(userIdEnc: String, isFollowed: Boolean) =
+//        View.OnClickListener {
+//            if (userSession.isLoggedIn == false) {
+//                startActivityForResult(
+//                    RouteManager.getIntent(activity, ApplinkConst.LOGIN),
+//                    REQUEST_CODE_LOGIN
+//                )
+//                return@OnClickListener
+//            }
+//
+//            if (isFollowed) {
+//                activity?.intent?.putExtra(EXTRA_FOLLOW_UNFOLLOW_STATUS, EXTRA_VALUE_IS_NOT_FOLLOWED)
+//
+//                userProfileTracker?.clickUnfollow(userId, profileUserId == userId)
+//                viewModel.doUnFollow(userIdEnc)
+//                updateToUnFollowUi()
+//            } else {
+//                activity?.intent?.putExtra(EXTRA_FOLLOW_UNFOLLOW_STATUS, EXTRA_VALUE_IS_FOLLOWED)
+//                userProfileTracker?.clickFollow(userId, profileUserId == userId)
+//                viewModel.doFollow(userIdEnc)
+//                updateToFollowUi()
+//            }
+//        }
 
     /** Render UI */
     private fun renderProfileInfo(
         prev: ProfileUiModel?,
         curr: ProfileUiModel,
     ) {
-        if(prev == curr) return
+        if(prev == curr || curr == ProfileUiModel.Empty) return
 
         userProfileTracker?.openUserProfile(
             screenName = "feed user profile",
@@ -715,6 +720,7 @@ class UserProfileFragment : BaseDaggerFragment(),
         }
 
         container?.displayedChild = PAGE_CONTENT
+
 
         /** Setup Profile Info */
         setProfileImg(curr)
@@ -894,46 +900,46 @@ class UserProfileFragment : BaseDaggerFragment(),
 //
 //    }
 
-    private fun isProfileButtonVisible() : Boolean{
-        return false
-    }
+//    private fun isProfileButtonVisible() : Boolean{
+//        return false
+//    }
 
-    private fun setActionButton(followProfile: UserProfileIsFollow) {
-
-        if (!userSession?.userId.isNullOrBlank() && followProfile.profileHeader.items[0].userID == userSession?.userId) {
-            btnAction?.text = getString(com.tokopedia.people.R.string.up_btn_profile)
-            btnAction?.buttonVariant = UnifyButton.Variant.GHOST
-            btnAction?.buttonType = UnifyButton.Type.ALTERNATE
-
-            if(isProfileButtonVisible()){
-                btnAction?.show()
-            } else {
-                btnAction?.hide()
-            }
-
-
-            btnAction?.setOnClickListener(
-                addProfileClickListener(
-                    APPLINK_PROFILE,
-                    followProfile.profileHeader.items[0].userID
-                )
-            )
-        } else {
-            val isFollowed = followProfile.profileHeader.items[0].status
-            if (isFollowed) {
-                updateToFollowUi()
-            } else {
-                updateToUnFollowUi()
-            }
-
-            btnAction?.setOnClickListener(
-                addDoFollowClickListener(
-                    followProfile.profileHeader.items[0].encryptedUserID,
-                    isFollowed
-                )
-            )
-        }
-    }
+//    private fun setActionButton(followProfile: UserProfileIsFollow) {
+//
+//        if (!userSession?.userId.isNullOrBlank() && followProfile.profileHeader.items[0].userID == userSession?.userId) {
+//            btnAction?.text = getString(com.tokopedia.people.R.string.up_btn_profile)
+//            btnAction?.buttonVariant = UnifyButton.Variant.GHOST
+//            btnAction?.buttonType = UnifyButton.Type.ALTERNATE
+//
+//            if(isProfileButtonVisible()){
+//                btnAction?.show()
+//            } else {
+//                btnAction?.hide()
+//            }
+//
+//
+//            btnAction?.setOnClickListener(
+//                addProfileClickListener(
+//                    APPLINK_PROFILE,
+//                    followProfile.profileHeader.items[0].userID
+//                )
+//            )
+//        } else {
+//            val isFollowed = followProfile.profileHeader.items[0].status
+//            if (isFollowed) {
+//                updateToFollowUi()
+//            } else {
+//                updateToUnFollowUi()
+//            }
+//
+//            btnAction?.setOnClickListener(
+//                addDoFollowClickListener(
+//                    followProfile.profileHeader.items[0].encryptedUserID,
+//                    isFollowed
+//                )
+//            )
+//        }
+//    }
 
     private fun setProfileImg(profile: ProfileUiModel) {
         mAdapter.activityId = profile.liveInfo.channelId
@@ -1125,7 +1131,7 @@ class UserProfileFragment : BaseDaggerFragment(),
     private fun showUniversalShareBottomSheet() {
         universalShareBottomSheet = UniversalShareBottomSheet.createInstance().apply {
             init(this@UserProfileFragment)
-            userSession?.userId?.ifEmpty { "0" }?.let {
+            userSession.userId.ifEmpty { "0" }.let {
                 setUtmCampaignData(
                     PAGE_NAME_PROFILE,
                     it,
@@ -1137,7 +1143,7 @@ class UserProfileFragment : BaseDaggerFragment(),
                 tnTitle = displayName,
                 tnImage = profileImage
             )
-            setOgImageUrl(profileImage ?: "")
+            setOgImageUrl(profileImage)
         }
         universalShareBottomSheet?.show(fragmentManager, this, screenShotDetector)
     }
@@ -1274,16 +1280,16 @@ class UserProfileFragment : BaseDaggerFragment(),
         //this will give you the bottomsheet type : if it's screenshot or general
         when(UniversalShareBottomSheet.getShareBottomSheetType()){
             UniversalShareBottomSheet.SCREENSHOT_SHARE_SHEET ->{
-                userSession?.userId?.let { UserProfileTracker().clickCloseScreenshotShareBottomsheet(it, profileUserId == it) }
+                userSession.userId.let { UserProfileTracker().clickCloseScreenshotShareBottomsheet(it, profileUserId == it) }
             }
             UniversalShareBottomSheet.CUSTOM_SHARE_SHEET ->{
-                userSession?.userId?.let { UserProfileTracker().clickCloseShareButton(it, profileUserId == it) }
+                userSession.userId.let { UserProfileTracker().clickCloseShareButton(it, profileUserId == it) }
             }
         }
     }
 
     override fun updatePostReminderStatus(channelId: String, isActive: Boolean, pos: Int) {
-        if(userSession?.isLoggedIn == false){
+        if(userSession.isLoggedIn.not()){
             startActivityForResult(
                 RouteManager.getIntent(activity, ApplinkConst.LOGIN),
                 REQUEST_CODE_LOGIN
