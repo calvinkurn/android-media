@@ -6,7 +6,6 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.LargeTest
 import androidx.test.filters.SdkSuppress
 import com.tkpd.macrobenchmark.util.measureTokopediaApps
-import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -24,11 +23,6 @@ import org.junit.runner.RunWith
 abstract class BaseFrameTimingBenchmark {
     @get:Rule
     val benchmarkRule = MacrobenchmarkRule()
-
-    @Before
-    open fun setupEnvironment() {
-        // default no-op
-    }
 
     @Test
     fun macroBenchmarkFps() {
