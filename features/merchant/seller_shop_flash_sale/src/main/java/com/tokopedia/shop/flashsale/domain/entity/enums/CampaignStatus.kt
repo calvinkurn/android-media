@@ -38,6 +38,9 @@ enum class CampaignStatus(val id: Int) : Parcelable {
     CANCELLED(CAMPAIGN_STATUS_ID_CANCELLED)
 }
 
+fun CampaignStatus.isDraft() : Boolean {
+    return this == CampaignStatus.DRAFT
+}
 
 fun CampaignStatus.isUpcoming(): Boolean {
     return this == CampaignStatus.READY || this == CampaignStatus.READY_LOCKED

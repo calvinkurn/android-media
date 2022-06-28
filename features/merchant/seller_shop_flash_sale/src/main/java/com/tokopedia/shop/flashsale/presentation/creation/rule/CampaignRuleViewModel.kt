@@ -11,6 +11,7 @@ import com.tokopedia.shop.flashsale.domain.entity.CampaignUiModel
 import com.tokopedia.shop.flashsale.domain.entity.MerchantCampaignTNC
 import com.tokopedia.shop.flashsale.domain.entity.RelatedCampaign
 import com.tokopedia.shop.flashsale.domain.entity.enums.PaymentType
+import com.tokopedia.shop.flashsale.domain.entity.enums.isDraft
 import com.tokopedia.shop.flashsale.domain.usecase.DoSellerCampaignCreationUseCase
 import com.tokopedia.shop.flashsale.domain.usecase.GetSellerCampaignDetailUseCase
 import com.tokopedia.shop.flashsale.domain.usecase.aggregate.ValidateCampaignCreationEligibilityUseCase
@@ -431,10 +432,12 @@ class CampaignRuleViewModel @Inject constructor(
 
     fun doCreateCampaign() {
         validateCampaignCreation { campaignData ->
-            val param = getCampaignCreationParam(
-                campaignData,
+            val action = if (campaignData.status.isDraft()) {
                 CampaignAction.Submit(campaignId)
-            )
+            } else {
+                CampaignAction.Update(campaignId)
+            }
+            val param = getCampaignCreationParam(campaignData, action)
             val result = doSellerCampaignCreationUseCase.execute(param)
             if (result.isSuccess) {
                 _createCampaignActionState.postValue(CampaignRuleActionResult.Success)
