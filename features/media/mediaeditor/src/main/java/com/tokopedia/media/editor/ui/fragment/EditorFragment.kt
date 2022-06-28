@@ -45,8 +45,6 @@ class EditorFragment @Inject constructor() : TkpdBaseV4Fragment()
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initObservable()
-
-        editorToolComponent.setupView()
     }
 
     override fun onEditorToolClicked(type: Int) {
@@ -66,6 +64,7 @@ class EditorFragment @Inject constructor() : TkpdBaseV4Fragment()
 
     private fun initObservable() {
         viewModel.editorParam.observe(viewLifecycleOwner) {
+            editorToolComponent.setupView(it.editorTools)
             thumbnailDrawerComponent.setupView(it.imageUrls)
         }
     }

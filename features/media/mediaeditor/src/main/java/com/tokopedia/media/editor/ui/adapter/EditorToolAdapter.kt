@@ -1,5 +1,6 @@
 package com.tokopedia.media.editor.ui.adapter
 
+import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,7 +13,7 @@ import com.tokopedia.picker.common.types.EditorToolType
 import com.tokopedia.unifyprinciples.Typography
 
 class EditorToolAdapter constructor(
-    private val tools: List<ToolUiModel> = mutableListOf(),
+    private val tools: MutableList<ToolUiModel> = mutableListOf(),
     private val listener: EditorToolViewHolder.Listener
 ) : RecyclerView.Adapter<EditorToolViewHolder>() {
 
@@ -25,6 +26,13 @@ class EditorToolAdapter constructor(
     }
 
     override fun getItemCount() = tools.size
+
+    @SuppressLint("NotifyDataSetChanged")
+    fun addItem(items: List<ToolUiModel>) {
+        tools.clear()
+        tools.addAll(items)
+        notifyDataSetChanged()
+    }
 
 }
 

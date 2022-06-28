@@ -6,7 +6,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.media.editor.R
 import com.tokopedia.media.editor.ui.adapter.EditorToolAdapter
 import com.tokopedia.media.editor.ui.adapter.EditorToolViewHolder
-import com.tokopedia.media.editor.ui.uimodel.ToolUiModel
+import com.tokopedia.media.editor.ui.uimodel.ToolUiModel.Companion.create
 import com.tokopedia.picker.common.basecomponent.UiComponent
 import com.tokopedia.picker.common.types.EditorToolType
 
@@ -19,10 +19,10 @@ class ToolsUiComponent constructor(
     private val lstTool: RecyclerView = findViewById(R.id.lst_tool)
 
     private val adapter by lazy {
-        EditorToolAdapter(ToolUiModel.create(), this)
+        EditorToolAdapter(listener = this)
     }
 
-    fun setupView() {
+    fun setupView(tools: List<Int>) {
         lstTool.layoutManager = LinearLayoutManager(
             context,
             LinearLayoutManager.HORIZONTAL,
@@ -30,6 +30,8 @@ class ToolsUiComponent constructor(
         )
 
         lstTool.adapter = adapter
+
+        adapter.addItem(tools.create())
     }
 
     override fun onItemClicked(type: Int) {

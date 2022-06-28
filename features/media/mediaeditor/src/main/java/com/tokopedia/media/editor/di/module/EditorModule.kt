@@ -6,7 +6,10 @@ import com.tokopedia.abstraction.common.di.scope.ActivityScope
 import com.tokopedia.abstraction.common.di.scope.ApplicationScope
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.media.editor.data.EditorNetworkServices
+import com.tokopedia.media.editor.data.repository.BitmapRepository
+import com.tokopedia.media.editor.data.repository.BitmapRepositoryImpl
 import com.tokopedia.media.editor.data.repository.EditorRepository
+import com.tokopedia.media.editor.data.repository.EditorRepositoryImpl
 import com.tokopedia.media.editor.data.tool.ColorFilterManager
 import com.tokopedia.media.editor.data.tool.ColorFilterManagerImpl
 import com.tokopedia.media.editor.di.EditorQualifier
@@ -43,6 +46,23 @@ object EditorModule {
     ): EditorNetworkServices {
         val services = retrofit.client(okHttpClient.build()).build()
         return services.create(EditorNetworkServices::class.java)
+    }
+
+    @Provides
+    @ActivityScope
+    fun provideBitmapRepository(
+        @ApplicationContext context: Context
+    ): BitmapRepository {
+        return BitmapRepositoryImpl(context)
+    }
+
+    @Provides
+    @ActivityScope
+    fun provideEditorRepository(
+        bitmapRepository: BitmapRepository,
+        services: EditorNetworkServices
+    ): EditorRepository {
+        return EditorRepositoryImpl(bitmapRepository, services)
     }
 
     @Provides
