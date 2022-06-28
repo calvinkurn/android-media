@@ -9,6 +9,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
@@ -16,7 +17,10 @@ import com.tokopedia.abstraction.common.utils.DisplayMetricUtils
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.applink.internal.ApplinkConstInternalTokopediaNow
 import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
+import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.play.R
 import com.tokopedia.play.analytic.PlayAnalytic
@@ -25,6 +29,7 @@ import com.tokopedia.play.extensions.isAnyShown
 import com.tokopedia.play.extensions.isCouponSheetsShown
 import com.tokopedia.play.extensions.isKeyboardShown
 import com.tokopedia.play.extensions.isProductSheetsShown
+import com.tokopedia.play.ui.toolbar.model.PartnerType
 import com.tokopedia.play.util.observer.DistinctObserver
 import com.tokopedia.play.util.withCache
 import com.tokopedia.play.view.contract.PlayFragmentContract
@@ -32,17 +37,9 @@ import com.tokopedia.play.view.type.*
 import com.tokopedia.play.view.uimodel.MerchantVoucherUiModel
 import com.tokopedia.play.view.uimodel.OpenApplinkUiModel
 import com.tokopedia.play.view.uimodel.PlayProductUiModel
-import com.tokopedia.play.view.uimodel.action.AtcProductAction
-import com.tokopedia.play.view.uimodel.action.AtcProductVariantAction
-import com.tokopedia.play.view.uimodel.action.BuyProductAction
-import com.tokopedia.play.view.uimodel.action.BuyProductVariantAction
-import com.tokopedia.play.view.uimodel.action.ClickCloseLeaderboardSheetAction
-import com.tokopedia.play.view.uimodel.action.RefreshLeaderboard
+import com.tokopedia.play.view.uimodel.action.*
 import com.tokopedia.play.view.viewcomponent.*
-import com.tokopedia.play.view.uimodel.action.RetryGetTagItemsAction
 import com.tokopedia.play.view.uimodel.recom.PlayEmptyBottomSheetInfoUiModel
-import com.tokopedia.play.view.uimodel.action.SelectVariantOptionAction
-import com.tokopedia.play.view.uimodel.action.SendUpcomingReminder
 import com.tokopedia.play.view.uimodel.event.*
 import com.tokopedia.play.view.uimodel.recom.tagitem.ProductSectionUiModel
 import com.tokopedia.play.view.uimodel.recom.tagitem.TagItemUiModel
@@ -552,13 +549,19 @@ class PlayBottomSheetFragment @Inject constructor(
                                 BottomInsetsType.VariantSheet
                             } else BottomInsetsType.ProductSheet //TEMPORARY
 
+                            val partnerTokoNow = playViewModel.latestCompleteChannelData.partnerInfo.type == PartnerType.Tokonow
+                            val (wording, route, toaster) = if(event.product.isTokoNow && partnerTokoNow)
+                                Triple(getString(R.string.play_add_to_cart_message_success_tokonow), getString(R.string.play_tokonow_minicart_applink), getString(R.string.play_toaster_tokonow_wording))
+                            else if (event.product.isTokoNow && !partnerTokoNow) Triple(getString(R.string.play_add_to_cart_message_success_mixed), getString(R.string.play_tokonow_minicart_applink), getString(R.string.play_toaster_tokonow_wording))
+                            else Triple(getString(R.string.play_add_to_cart_message_success), ApplinkConstInternalMarketplace.CART, getString(R.string.play_toaster_global_wording))
+
                             doShowToaster(
                                 bottomSheetType = bottomInsetsType,
                                 toasterType = Toaster.TYPE_NORMAL,
-                                message = getString(R.string.play_add_to_cart_message_success),
-                                actionText = getString(R.string.play_action_view),
+                                message = wording,
+                                actionText = toaster,
                                 actionClickListener = {
-                                    RouteManager.route(requireContext(), ApplinkConstInternalMarketplace.CART)
+                                    RouteManager.route(requireContext(), route)
                                     analytic.clickSeeToasterAfterAtc()
                                 }
                             )
@@ -571,7 +574,7 @@ class PlayBottomSheetFragment @Inject constructor(
                                 productAction = ProductAction.AddToCart,
                                 bottomInsetsType = bottomInsetsType,
                                 shopInfo = playViewModel.latestCompleteChannelData.partnerInfo,
-                                sectionInfo = event.sectionInfo ?: ProductSectionUiModel.Section.Empty,
+                                sectionInfo = event.sectionInfo,
                             )
                         }
                         else -> {}
@@ -600,6 +603,12 @@ class PlayBottomSheetFragment @Inject constructor(
 
     private fun trackImpressedVoucher(vouchers: List<MerchantVoucherUiModel> = couponSheetView.getVisibleVouchers()) {
         if (playViewModel.bottomInsets.isCouponSheetsShown) productAnalyticHelper.trackImpressedVouchers(vouchers)
+    }
+
+    override fun onInformationClicked(
+        view: ProductSheetViewComponent
+    ) {
+        openPageByApplink(ApplinkConstInternalTokopediaNow.EDUCATIONAL_INFO , pipMode = false)
     }
 
     /**

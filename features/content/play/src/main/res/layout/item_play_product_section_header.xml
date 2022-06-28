@@ -84,4 +84,18 @@
         app:layout_constraintTop_toTopOf="parent"
         tools:srcCompat="@drawable/bg_gradient_blue" />
 
+    <com.tokopedia.iconunify.IconUnify
+        android:id="@+id/btn_information"
+        android:layout_width="@dimen/play_offset_18"
+        android:layout_height="@dimen/play_offset_18"
+        android:layout_marginStart="@dimen/play_offset_6"
+        android:visibility="gone"
+        app:icon_name="INFORMATION"
+        app:layout_constraintBottom_toBottomOf="@+id/tv_header_title"
+        app:layout_constraintEnd_toStartOf="@+id/btn_section_reminder"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toEndOf="@+id/tv_header_title"
+        app:layout_constraintTop_toTopOf="@+id/tv_header_title"
+        tools:visibility="visible" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

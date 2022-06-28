@@ -22,6 +22,8 @@ import com.tokopedia.kotlin.extensions.coroutines.asyncCatchError
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
+import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.play.PLAY_KEY_CHANNEL_ID
 import com.tokopedia.play.R
@@ -126,7 +128,8 @@ class PlayUserInteractionFragment @Inject constructor(
         ProductSeeMoreViewComponent.Listener,
         KebabMenuViewComponent.Listener,
         InteractiveActiveViewComponent.Listener,
-        InteractiveGameResultViewComponent.Listener
+        InteractiveGameResultViewComponent.Listener,
+        ChooseAddressViewComponent.Listener
 {
     private val viewSize by viewComponent { EmptyViewComponent(it, R.id.view_size) }
     private val gradientBackgroundView by viewComponent { EmptyViewComponent(it, R.id.view_gradient_background) }
@@ -159,6 +162,7 @@ class PlayUserInteractionFragment @Inject constructor(
     ) }
     private val productSeeMoreView by viewComponentOrNull(isEagerInit = true) { ProductSeeMoreViewComponent(it, R.id.view_product_see_more, this) }
     private val kebabMenuView by viewComponentOrNull(isEagerInit = true) { KebabMenuViewComponent(it, R.id.view_kebab_menu, this) }
+    private val chooseAddressView by viewComponentOrNull { ChooseAddressViewComponent(it, this, childFragmentManager) }
 
     /**
      * Interactive
@@ -228,6 +232,8 @@ class PlayUserInteractionFragment @Inject constructor(
 
     private lateinit var productAnalyticHelper: ProductAnalyticHelper
 
+    private lateinit var localCache: LocalCacheModel
+
     /**
      * Animation
      */
@@ -263,6 +269,7 @@ class PlayUserInteractionFragment @Inject constructor(
         setupObserve()
 
         invalidateSystemUiVisibility()
+        initAddress()
     }
 
     override fun onStart() {
@@ -811,10 +818,11 @@ class PlayUserInteractionFragment @Inject constructor(
                 renderLikeBubbleView(state.like)
                 renderStatsInfoView(state.totalView)
                 renderRealTimeNotificationView(state.rtn)
-                renderViewAllProductView(state.tagItems, state.bottomInsets)
-                renderFeaturedProductView(prevState?.tagItems, state.tagItems, state.bottomInsets, state.status)
+                renderViewAllProductView(state.tagItems, state.bottomInsets, state.address, state.partner)
+                renderFeaturedProductView(prevState?.tagItems, state.tagItems, state.bottomInsets, state.status, state.address)
                 renderQuickReplyView(prevState?.quickReply, state.quickReply, prevState?.bottomInsets, state.bottomInsets, state.channel)
                 renderKebabMenuView(state.kebabMenu)
+                renderAddressWidget(state.address)
 
                 renderInteractiveDialog(prevState?.interactive, state.interactive)
                 renderWinnerBadge(state = state.winnerBadge)
@@ -1613,9 +1621,11 @@ class PlayUserInteractionFragment @Inject constructor(
 
     private fun renderViewAllProductView(
         tagItem: TagItemUiModel,
-        bottomInsets: Map<BottomInsetsType, BottomInsetsState>
+        bottomInsets: Map<BottomInsetsType, BottomInsetsState>,
+        address: AddressWidgetUiState,
+        partner: PlayPartnerInfo
     ) {
-        if(!bottomInsets.isAnyShown) productSeeMoreView?.show()
+        if(!bottomInsets.isAnyShown && !address.shouldShow) productSeeMoreView?.show()
         else productSeeMoreView?.hide()
 
         val productListSize = tagItem.product.productSectionList.filterIsInstance<ProductSectionUiModel.Section>().sumOf {
@@ -1630,7 +1640,13 @@ class PlayUserInteractionFragment @Inject constructor(
         tagItem: TagItemUiModel,
         bottomInsets: Map<BottomInsetsType, BottomInsetsState>,
         status: PlayStatusUiModel,
+        address: AddressWidgetUiState
     ) {
+        if(address.shouldShow) {
+            productFeaturedView?.hide()
+            return
+        }
+
         if (tagItem.resultState.isLoading && tagItem.product.productSectionList.isEmpty()) {
             productFeaturedView?.setPlaceholder()
         } else if (prevTagItem?.product?.productSectionList != tagItem.product.productSectionList) {
@@ -1674,6 +1690,15 @@ class PlayUserInteractionFragment @Inject constructor(
     private fun renderKebabMenuView(kebabMenuUiState: PlayKebabMenuUiState) {
         if(kebabMenuUiState.shouldShow) kebabMenuView?.show()
         else kebabMenuView?.hide()
+    }
+
+    private fun renderAddressWidget(addressUiState: AddressWidgetUiState){
+        if(addressUiState.shouldShow){
+            chooseAddressView?.show()
+            productFeaturedView?.hide()
+        } else {
+            chooseAddressView?.hide()
+        }
     }
 
     private fun castViewOnStateChanged(
@@ -1766,6 +1791,29 @@ class PlayUserInteractionFragment @Inject constructor(
     override fun onKebabMenuClick(view: KebabMenuViewComponent) {
         analytic.clickKebabMenu()
         playViewModel.submitAction(OpenKebabAction)
+    }
+
+    /***
+     * Choose Address
+     */
+
+    private fun initAddress() {
+        localCache = ChooseAddressUtils.getLocalizingAddressData(context = requireContext())
+
+        val warehouseId = localCache.warehouses.find {
+            it.service_type == localCache.service_type
+        }?.warehouse_id ?: 0
+
+        playViewModel.submitAction(SendWarehouseId(isOOC = localCache.isOutOfCoverage(), id = warehouseId.toString()))
+    }
+
+    override fun onAddressUpdated(view: ChooseAddressViewComponent) {
+        initAddress()
+        playViewModel.submitAction(RetryGetTagItemsAction)
+    }
+
+    override fun onInfoClicked(view: ChooseAddressViewComponent) {
+        playViewModel.submitAction(OpenFooterUserReport(getString(R.string.play_tokonow_info_weblink)))
     }
 
     override fun onGameResultClicked(view: InteractiveGameResultViewComponent) {

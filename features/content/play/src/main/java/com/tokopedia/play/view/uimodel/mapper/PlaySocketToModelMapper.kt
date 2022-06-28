@@ -141,5 +141,6 @@ class PlaySocketToModelMapper @Inject constructor(
         private const val PARAM_SEND_TYPE_MULTIPLE_LIKE = "MULTIPLE_LIKE"
         private const val PARAM_SEND_CHANNEL_ID = "channel_id"
         private const val PARAM_SEND_MESSAGE = "message"
+        private const val PARAM_SEND_WAREHOUSE_ID = "warehouse_id"
     }
 }
