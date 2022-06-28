@@ -1282,9 +1282,7 @@ class MerchantPageFragment : BaseMultiFragment(),
         binding?.miniCartWidget?.showWithCondition(shouldShow)
     }
 
-    private fun isAddressManuallyUpdated(): Boolean {
-        return viewModel.isAddressManuallyUpdated
-    }
+    private fun isAddressManuallyUpdated(): Boolean = viewModel.isAddressManuallyUpdated
 
     private fun setAddressManually() {
         viewModel.getChooseAddress(SOURCE_ADDESS)
