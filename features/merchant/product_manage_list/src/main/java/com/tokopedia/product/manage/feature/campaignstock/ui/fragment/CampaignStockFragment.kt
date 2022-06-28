@@ -21,11 +21,8 @@ import com.tokopedia.product.manage.common.feature.list.analytics.ProductManageT
 import com.tokopedia.product.manage.common.feature.list.constant.ProductManageCommonConstant
 import com.tokopedia.product.manage.common.feature.list.constant.ProductManageCommonConstant.EXTRA_SOURCE
 import com.tokopedia.product.manage.common.feature.list.data.model.ProductManageAccess
-import com.tokopedia.product.manage.common.feature.variant.presentation.data.GetVariantResult
 import com.tokopedia.product.manage.databinding.FragmentCampaignStockBinding
 import com.tokopedia.product.manage.feature.campaignstock.di.DaggerCampaignStockComponent
-import com.tokopedia.product.manage.feature.campaignstock.domain.model.response.GetStockAllocationData
-import com.tokopedia.product.manage.feature.campaignstock.domain.model.response.GetStockAllocationReservedProduct
 import com.tokopedia.product.manage.feature.campaignstock.domain.model.response.GetStockAllocationSummary
 import com.tokopedia.product.manage.feature.campaignstock.domain.model.response.OtherCampaignStockData
 import com.tokopedia.product.manage.feature.campaignstock.ui.activity.CampaignStockActivity
@@ -36,7 +33,6 @@ import com.tokopedia.product.manage.feature.campaignstock.ui.dataview.result.Var
 import com.tokopedia.product.manage.feature.campaignstock.ui.dataview.uimodel.ReservedEventInfoUiModel
 import com.tokopedia.product.manage.feature.campaignstock.ui.dataview.uimodel.SellableStockProductUIModel
 import com.tokopedia.product.manage.feature.campaignstock.ui.dataview.uimodel.VariantReservedEventInfoUiModel
-import com.tokopedia.product.manage.feature.campaignstock.ui.util.CampaignStockMapper
 import com.tokopedia.product.manage.feature.campaignstock.ui.util.convertCheckMaximumStockLimit
 import com.tokopedia.product.manage.feature.campaignstock.ui.viewmodel.CampaignStockViewModel
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStatus

@@ -19,6 +19,8 @@ class ReservedEventInfoViewHolder(itemView: View?): AbstractViewHolder<ReservedE
     private val binding by viewBinding<ItemCampaignStockInfoCardBinding>()
 
     override fun bind(element: ReservedEventInfoUiModel) {
-        binding?.bind(itemView.context, element)
+        itemView.context?.let {
+            binding?.bind(it, element)
+        }
     }
 }
