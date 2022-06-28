@@ -11,7 +11,6 @@ import android.os.Handler
 import android.os.Looper
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
@@ -287,8 +286,8 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
         super.onCreate(savedInstanceState)
         getActivityPltPerformanceMonitoring()
         if (savedInstanceState == null && arguments != null) {
-            viewModel.setTabActiveFromAppLink(arguments?.getString(TAB_ACTIVE).orEmpty())
-            viewModel.addOrderTypeFilter(arguments?.getString(FILTER_ORDER_TYPE, "0").toLongOrZero())
+            viewModel.setTabActiveFromAppLink(arguments?.getString(TAB_ACTIVE) ?: STATUS_ALL_ORDER)
+            arguments?.getString(FILTER_ORDER_TYPE)?.toLongOrNull()?.let { viewModel.addOrderTypeFilter(it) }
         } else if (savedInstanceState != null) {
             skipSearch = true
             selectedOrderId = savedInstanceState.getString(KEY_LAST_SELECTED_ORDER_ID).orEmpty()
