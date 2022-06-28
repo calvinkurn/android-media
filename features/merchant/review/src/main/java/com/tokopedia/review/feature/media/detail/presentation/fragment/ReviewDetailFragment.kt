@@ -182,10 +182,13 @@ class ReviewDetailFragment : BaseDaggerFragment(), CoroutineScope {
                 binding?.layoutReviewMediaGalleryReviewDetail?.gone()
             }
             is ReviewDetailFragmentUiState.Showing -> {
-                binding?.reviewDetailBasicInfo?.updateUi(
-                    uiState.basicInfoUiState,
-                    ReviewDetailBasicInfo.Source.REVIEW_DETAIL_FRAGMENT
-                )
+                binding?.reviewDetailBasicInfo?.apply {
+                    hideReviewerInfo()
+                    updateUi(
+                        uiState.basicInfoUiState,
+                        ReviewDetailBasicInfo.Source.REVIEW_DETAIL_FRAGMENT
+                    )
+                }
                 binding?.reviewDetailSupplementaryInfo?.updateUi(
                     uiState.supplementaryUiState,
                     ReviewDetailSupplementaryInfo.Source.REVIEW_DETAIL_FRAGMENT
@@ -232,10 +235,6 @@ class ReviewDetailFragment : BaseDaggerFragment(), CoroutineScope {
     }
 
     private inner class ReviewDetailBasicInfoListener: ReviewDetailBasicInfo.Listener {
-        override fun onToggleExpandClicked() {
-            reviewDetailViewModel.toggleExpand()
-        }
-
         override fun onToggleLikeClicked() {
             val feedbackID = reviewDetailViewModel.getFeedbackID()
             val invertedLikeStatus = reviewDetailViewModel.getInvertedLikeStatus()

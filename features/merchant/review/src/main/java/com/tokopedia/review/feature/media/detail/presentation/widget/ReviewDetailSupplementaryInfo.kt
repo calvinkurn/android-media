@@ -32,7 +32,7 @@ class ReviewDetailSupplementaryInfo @JvmOverloads constructor(
 ) : BaseReviewDetailCustomView<WidgetReviewDetailSupplementaryInfoBinding>(context, attrs, defStyleAttr) {
 
     companion object {
-        private const val REVIEW_DETAIL_MAX_LINES_COLLAPSED = 3
+        private const val REVIEW_DETAIL_MAX_LINES_COLLAPSED = 2
     }
 
     override val binding = WidgetReviewDetailSupplementaryInfoBinding.inflate(
@@ -73,24 +73,6 @@ class ReviewDetailSupplementaryInfo @JvmOverloads constructor(
         setData(data, source)
         binding.layoutReviewDetailSupplementaryInfo.root.show()
         animateShow()
-    }
-
-    private fun PartialWidgetReviewDetailSupplementaryInfoBinding.setupProductVariant(
-        variant: String,
-        source: Source
-    ) {
-        val colorRes = when(source) {
-            Source.REVIEW_DETAIL_FRAGMENT -> com.tokopedia.unifyprinciples.R.color.Unify_Static_White
-            Source.EXPANDED_REVIEW_DETAIL_BOTTOM_SHEET -> com.tokopedia.unifyprinciples.R.color.Unify_N700_68
-        }
-        tvReviewDetailProductVariant.run {
-            text = buildString {
-                append("Varian: ")
-                append(variant)
-            }
-            setTextColor(ContextCompat.getColor(context, colorRes))
-            showWithCondition(variant.isNotBlank())
-        }
     }
 
     private fun PartialWidgetReviewDetailSupplementaryInfoBinding.setupReviewText(
@@ -134,7 +116,6 @@ class ReviewDetailSupplementaryInfo @JvmOverloads constructor(
 
     private fun setData(data: ReviewDetailSupplementaryInfoUiModel, source: Source) {
         with(binding.layoutReviewDetailSupplementaryInfo) {
-            setupProductVariant(data.variant, source)
             setupReviewText(data.review, source)
             setupComplaint(data.complaint, source)
         }

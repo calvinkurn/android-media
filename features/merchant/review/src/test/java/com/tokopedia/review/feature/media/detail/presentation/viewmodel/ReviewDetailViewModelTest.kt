@@ -64,11 +64,9 @@ class ReviewDetailViewModelTest : ReviewDetailViewModelTestFixture() {
                 reviewerName = reviewDetailData.user.fullName,
                 reviewerStatsSummary = reviewDetailData.userStats.joinToString(separator = " • ") {
                     it.formatted
-                }.let { if (it.isNotBlank()) " • $it" else it },
-                expanded = false
+                }.let { if (it.isNotBlank()) " • $it" else it }
             ),
             supplementaryInfoUiModel = ReviewDetailSupplementaryInfoUiModel(
-                variant = reviewDetailData.variantName,
                 review = reviewDetailData.review,
                 complaint = reviewDetailData.badRatingReasonFmt
             ),
@@ -142,7 +140,6 @@ class ReviewDetailViewModelTest : ReviewDetailViewModelTestFixture() {
         )
         viewModel.updateGetDetailedReviewMediaResult(getDetailedReviewMediaResultWithImageAndVideo)
         viewModel.updateCurrentMediaItem(mediaItemUiModel)
-        viewModel.toggleExpand()
         val reviewDetailFragmentUiState = viewModel.reviewDetailFragmentUiState.first()
         Assert.assertTrue(reviewDetailFragmentUiState is ReviewDetailFragmentUiState.Showing && reviewDetailFragmentUiState.basicInfoUiState is ReviewDetailBasicInfoUiState.Showing)
         Assert.assertTrue(reviewDetailFragmentUiState is ReviewDetailFragmentUiState.Showing && reviewDetailFragmentUiState.supplementaryUiState is ReviewDetailSupplementaryUiState.Showing)
@@ -205,13 +202,11 @@ class ReviewDetailViewModelTest : ReviewDetailViewModelTestFixture() {
         viewModel.updateGetDetailedReviewMediaResult(getDetailedReviewMediaResultWithImageAndVideo)
         viewModel.updateCurrentMediaItem(mediaItemUiModel)
 
-        viewModel.toggleExpand()
         viewModel.showExpandedReviewDetailBottomSheet()
         val latestReviewDetailFragmentUiState = viewModel.reviewDetailFragmentUiState.first()
         val latestExpandedReviewDetailBottomSheetUiState = viewModel.expandedReviewDetailBottomSheetUiState.first()
 
         // reset state
-        viewModel.toggleExpand()
         viewModel.dismissExpandedReviewDetailBottomSheet()
 
         // verify state changed
@@ -249,13 +244,11 @@ class ReviewDetailViewModelTest : ReviewDetailViewModelTestFixture() {
         viewModel.updateGetDetailedReviewMediaResult(getDetailedReviewMediaResultWithImageAndVideo)
         viewModel.updateCurrentMediaItem(mediaItemUiModel)
 
-        viewModel.toggleExpand()
         viewModel.showExpandedReviewDetailBottomSheet()
         val latestReviewDetailFragmentUiState = viewModel.reviewDetailFragmentUiState.first()
         val latestExpandedReviewDetailBottomSheetUiState = viewModel.expandedReviewDetailBottomSheetUiState.first()
 
         // reset state
-        viewModel.toggleExpand()
         viewModel.dismissExpandedReviewDetailBottomSheet()
 
         // verify state changed

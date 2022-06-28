@@ -40,7 +40,7 @@ open class ProductReviewBasicInfoWidget : BaseCustomView {
     private var ratingStars: ImageUnify? = null
     private var timeStamp: Typography? = null
     private var reviewerName: Typography? = null
-    private var dividerReviewerLabel: View? = null
+    private var dividerReviewerLabel: Typography? = null
     private var tvReviewerLabel: Typography? = null
     private var variant: Typography? = null
     private var reviewerStats: Typography? = null
@@ -131,12 +131,20 @@ open class ProductReviewBasicInfoWidget : BaseCustomView {
     fun invertColors() {
         val color = ContextCompat.getColor(
             context,
-            com.tokopedia.unifyprinciples.R.color.Unify_Static_White_96
+            com.tokopedia.unifyprinciples.R.color.Unify_Static_White
         )
         timeStamp?.setTextColor(color)
         reviewerName?.setTextColor(color)
         variant?.setTextColor(color)
         reviewerStats?.setTextColor(color)
+        reviewerStats?.alpha = 0.88f
+        dividerReviewerLabel?.setTextColor(color)
+        tvReviewerLabel?.setTextColor(
+            ContextCompat.getColor(
+                context,
+                com.tokopedia.unifyprinciples.R.color.Unify_TN400
+            )
+        )
     }
 
     fun setVariantName(variantName: String) {
@@ -172,6 +180,25 @@ open class ProductReviewBasicInfoWidget : BaseCustomView {
             }
         }
         reviewerStats?.showWithCondition(textToShow.isNotBlank())
+    }
+
+    fun setStatsString(
+        userStatsString: String
+    ) {
+        if (!shouldShowCredibility()) {
+            reviewerStats?.hide()
+            return
+        }
+        if (userStatsString.isNotBlank()) {
+            reviewerStats?.apply {
+                text = userStatsString
+                setOnClickListener {
+                    goToCredibility()
+                    trackOnUserInfoClicked()
+                }
+            }
+        }
+        reviewerStats?.showWithCondition(userStatsString.isNotBlank())
     }
 
     fun setReviewerImage(imageUrl: String) {
@@ -239,5 +266,17 @@ open class ProductReviewBasicInfoWidget : BaseCustomView {
 
     fun hideThreeDots() {
         icThreeDots?.gone()
+    }
+
+    fun hideRating() {
+        ratingStars?.gone()
+    }
+
+    fun hideCreateTime() {
+        timeStamp?.gone()
+    }
+
+    fun hideVariant() {
+        variant?.gone()
     }
 }
