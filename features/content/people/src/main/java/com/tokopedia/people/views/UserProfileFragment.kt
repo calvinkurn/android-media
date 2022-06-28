@@ -65,7 +65,8 @@ import com.tokopedia.user.session.UserSessionInterface
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import javax.inject.Inject
-import com.tokopedia.feedcomponent.bottomsheets.FeedUserCompleteOnboarding
+import com.tokopedia.feedcomponent.bottomsheets.onboarding.FeedUserCompleteOnboardingBottomSheet
+import com.tokopedia.feedcomponent.bottomsheets.onboarding.FeedUserTnCOnboardingBottomSheet
 
 class UserProfileFragment : BaseDaggerFragment(),
     View.OnClickListener,
@@ -209,7 +210,10 @@ class UserProfileFragment : BaseDaggerFragment(),
     override fun onAttachFragment(childFragment: Fragment) {
         super.onAttachFragment(childFragment)
         when(childFragment) {
-            is FeedUserCompleteOnboarding -> {
+            is FeedUserCompleteOnboardingBottomSheet -> {
+                /** TODO: set listener */
+            }
+            is FeedUserTnCOnboardingBottomSheet -> {
                 /** TODO: set listener */
             }
         }
@@ -232,10 +236,14 @@ class UserProfileFragment : BaseDaggerFragment(),
         view?.findViewById<View>(R.id.btn_action_follow)?.setOnClickListener(this)
         view?.findViewById<View>(R.id.text_see_more)?.setOnClickListener(this)
         feedFab.setOnClickListener {
-            FeedUserCompleteOnboarding.getFragment(
+            FeedUserTnCOnboardingBottomSheet.getFragment(
                 childFragmentManager,
                 requireActivity().classLoader
             ).showNow(childFragmentManager)
+//            FeedUserCompleteOnboardingBottomSheet.getFragment(
+//                childFragmentManager,
+//                requireActivity().classLoader
+//            ).showNow(childFragmentManager)
         }
 
         recyclerviewPost?.addOnScrollListener(feedFloatingButtonManager.scrollListener)

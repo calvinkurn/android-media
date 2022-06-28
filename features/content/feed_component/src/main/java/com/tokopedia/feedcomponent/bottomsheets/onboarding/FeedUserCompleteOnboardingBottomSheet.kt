@@ -1,7 +1,6 @@
-package com.tokopedia.feedcomponent.bottomsheets
+package com.tokopedia.feedcomponent.bottomsheets.onboarding
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,7 +11,7 @@ import com.tokopedia.unifycomponents.BottomSheetUnify
 /**
  * Created By : Jonathan Darwin on June 28, 2022
  */
-class FeedUserCompleteOnboarding : BottomSheetUnify() {
+class FeedUserCompleteOnboardingBottomSheet : BottomSheetUnify() {
 
     private var _binding: BottomsheetFeedUserCompleteOnboardingBinding? = null
     private val binding: BottomsheetFeedUserCompleteOnboardingBinding
@@ -52,12 +51,12 @@ class FeedUserCompleteOnboarding : BottomSheetUnify() {
         fun getFragment(
             fragmentManager: FragmentManager,
             classLoader: ClassLoader,
-        ): FeedUserCompleteOnboarding {
-            val oldInstance = fragmentManager.findFragmentByTag(TAG) as? FeedUserCompleteOnboarding
+        ): FeedUserCompleteOnboardingBottomSheet {
+            val oldInstance = fragmentManager.findFragmentByTag(TAG) as? FeedUserCompleteOnboardingBottomSheet
             return oldInstance ?: fragmentManager.fragmentFactory.instantiate(
                 classLoader,
-                FeedUserCompleteOnboarding::class.java.name
-            ) as FeedUserCompleteOnboarding
+                FeedUserCompleteOnboardingBottomSheet::class.java.name
+            ) as FeedUserCompleteOnboardingBottomSheet
         }
     }
 }

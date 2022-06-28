@@ -208,6 +208,7 @@
 
     <!-- Feed UGC Onboarding -->
     <string name="feed_ugc_complete_onboarding_title">Bikin username dulu</string>
+    <string name="feed_ugc_tnc_onboarding_title">Yang perlu kamu tahu</string>
     <string name="feed_ugc_complete_onboarding_desc">Sebelum buat postingan, bikin username yang unik supaya kamu lebih mudah dikenal.</string>
     <string name="feed_ugc_complete_onboarding_username">Username</string>
     <string name="feed_ugc_complete_onboarding_username_prepend">\@</string>
