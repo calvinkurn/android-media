@@ -46,6 +46,7 @@ abstract class ProductItemViewHolder(
             labelGroupVariantList = labelGroupVariantList.toProductCardModelLabelGroupVariant(),
             isWideContent = isWideContent,
             customVideoURL = customVideoURL,
+            cardInteraction = true,
             productListType = productListType,
         )
     }

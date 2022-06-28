@@ -20,10 +20,6 @@ import com.tokopedia.productcard.utils.getDimensionPixelSize
 import com.tokopedia.productcard.utils.glideClear
 import com.tokopedia.productcard.utils.initLabelGroup
 import com.tokopedia.productcard.utils.loadImage
-import com.tokopedia.productcard.utils.renderLabelBestSeller
-import com.tokopedia.productcard.utils.renderLabelBestSellerCategoryBottom
-import com.tokopedia.productcard.utils.renderLabelBestSellerCategorySide
-import com.tokopedia.productcard.utils.renderLabelCampaign
 import com.tokopedia.productcard.utils.renderStockBar
 import com.tokopedia.productcard.utils.shouldShowWithAction
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
@@ -34,7 +30,6 @@ import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifycomponents.ProgressBarUnify
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.CardUnify2
-import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.video_widget.VideoPlayerController
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.video_widget.VideoPlayerView
@@ -47,7 +42,7 @@ class ProductCardGridView : BaseCustomView, IProductCardView {
         VideoPlayerController(this, R.id.videoProduct, R.id.imageProduct)
     }
     private val cardViewProductCard: CardUnify2? by lazy(NONE) {
-        findViewById<CardUnify2?>(R.id.cardViewProductCard)
+        findViewById(R.id.cardViewProductCard)
     }
     private val constraintLayoutProductCard: ConstraintLayout? by lazy(NONE) {
         findViewById(R.id.constraintLayoutProductCard)
@@ -241,7 +236,7 @@ class ProductCardGridView : BaseCustomView, IProductCardView {
         cardViewProductCard?.animateOnPress = if(remoteConfig.getBoolean(RemoteConfigKey.PRODUCT_CARD_ENABLE_INTERACTION, true)
             && productCardModel.cardInteraction){
             CardUnify2.ANIMATE_OVERLAY_BOUNCE
-        } else CardUnify2.ANIMATE_NONE
+        } else CardUnify2.ANIMATE_OVERLAY
 
         productCardModel.fashionStrategy.renderOverlayImageRoundedLabel(
             labelImageBackground,

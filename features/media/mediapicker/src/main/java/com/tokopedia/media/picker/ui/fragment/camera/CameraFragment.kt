@@ -34,6 +34,7 @@ import com.tokopedia.media.picker.ui.component.CameraControllerComponent
 import com.tokopedia.media.picker.ui.component.CameraViewComponent
 import com.tokopedia.media.picker.ui.observer.observe
 import com.tokopedia.media.picker.ui.observer.stateOnCameraCapturePublished
+import com.tokopedia.media.picker.ui.widget.LoaderDialogWidget
 import com.tokopedia.media.picker.utils.exceptionHandler
 import com.tokopedia.media.picker.utils.wrapper.FlingGestureWrapper
 import com.tokopedia.picker.common.basecomponent.uiComponent
@@ -61,6 +62,8 @@ open class CameraFragment : BaseDaggerFragment()
     private val binding: FragmentCameraBinding? by viewBinding()
     private var contract: PickerActivityContract? = null
 
+    private var loaderDialog: LoaderDialogWidget? = null
+
     private val cameraView by uiComponent {
         CameraViewComponent(
             param = param.get(),
@@ -80,7 +83,10 @@ open class CameraFragment : BaseDaggerFragment()
 
     private val medias = mutableListOf<MediaUiModel>()
 
-    private var isTakingPictureMode = true
+    // this is needed to determine the shutter button action
+    private var isCameraPhotoMode = true
+
+    // flag for camera flash initialization
     private var isInitFlashState = false
 
     private val viewModel by lazy {
@@ -130,8 +136,14 @@ open class CameraFragment : BaseDaggerFragment()
         cameraView.close()
     }
 
-    override fun onCameraModeChanged(mode: Int) {
-        isTakingPictureMode = mode == CameraControllerComponent.PHOTO_MODE
+    override fun onCameraModeChanged(mode: CameraMode) {
+        if (mode == CameraMode.Photo) {
+            cameraView.onPictureMode()
+            isCameraPhotoMode = true
+        } else if (mode == CameraMode.Video) {
+            cameraView.onVideoMode()
+            isCameraPhotoMode = false
+        }
     }
 
     override fun onCameraThumbnailClicked() {
@@ -189,7 +201,7 @@ open class CameraFragment : BaseDaggerFragment()
         }
 
         showShutterEffect {
-            if (isTakingPictureMode) {
+            if (isCameraPhotoMode) {
                 cameraView.onStartTakePicture()
                 cameraAnalytics.clickShutter()
             } else {
@@ -236,10 +248,12 @@ open class CameraFragment : BaseDaggerFragment()
             return
         }
 
+        onShowLoaderDialog()
         onShowMediaThumbnail(fileToModel)
     }
 
     override fun onPictureTaken(result: PictureResult) {
+        onShowLoaderDialog()
         FileCamera.createPhoto(cameraView.pictureSize(), result.data) {
             if (it == null) return@createPhoto
             val fileToModel = it
@@ -295,6 +309,12 @@ open class CameraFragment : BaseDaggerFragment()
     private fun onShowMediaThumbnail(element: MediaUiModel?) {
         if (element == null) return
         stateOnCameraCapturePublished(element)
+        loaderDialog?.dismiss()
+    }
+
+    private fun onShowLoaderDialog() {
+        loaderDialog = LoaderDialogWidget(requireContext())
+        loaderDialog?.show()
     }
 
     private fun setCameraFlashState() {
