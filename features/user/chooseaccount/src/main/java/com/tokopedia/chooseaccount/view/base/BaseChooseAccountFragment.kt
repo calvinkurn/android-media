@@ -69,7 +69,7 @@ abstract class BaseChooseAccountFragment: BaseDaggerFragment(), ChooseAccountLis
             it.supportActionBar?.apply {
                 setDisplayShowTitleEnabled(false)
                 setDisplayHomeAsUpEnabled(true)
-                setBackgroundDrawable(ColorDrawable(ContextCompat.getColor(it, R.color.transparent)))
+                setBackgroundDrawable(ColorDrawable(ContextCompat.getColor(it, android.R.color.transparent)))
             }
         }
     }
