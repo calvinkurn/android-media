@@ -2,7 +2,6 @@ package com.tokopedia.tokofood.purchase
 
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.tokofood.common.util.Result
-import com.tokopedia.tokofood.feature.purchase.purchasepage.domain.model.response.AgreeConsent
 import com.tokopedia.tokofood.feature.purchase.purchasepage.domain.model.response.AgreeConsentData
 import com.tokopedia.tokofood.feature.purchase.purchasepage.domain.model.response.AgreeConsentResponse
 import io.mockk.coEvery
@@ -20,10 +19,8 @@ class TokoFoodPurchaseConsentViewModelTest: TokoFoodPurchaseConsentViewModelTest
     fun `when agreeConsent success should set success data`() {
         runBlocking {
             val response = AgreeConsentResponse(
-                data = AgreeConsent(
-                    tokofoodSubmitUserConsent = AgreeConsentData(
-                        isSuccess = true
-                    )
+                tokofoodSubmitUserConsent = AgreeConsentData(
+                    isSuccess = true
                 )
             )
             coEvery {
