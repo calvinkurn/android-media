@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.media.editor.R
 import com.tokopedia.media.editor.databinding.FragmentDetailEditorBinding
@@ -16,11 +17,13 @@ import com.tokopedia.picker.common.types.EditorToolType
 import com.tokopedia.utils.view.binding.viewBinding
 import javax.inject.Inject
 
-class DetailEditorFragment @Inject constructor() : TkpdBaseV4Fragment()
+class DetailEditorFragment @Inject constructor(
+    viewModelFactory: ViewModelProvider.Factory
+) : TkpdBaseV4Fragment()
     , BrightnessToolUiComponent.Listener {
 
     private val viewBinding: FragmentDetailEditorBinding? by viewBinding()
-    private val viewModel: DetailEditorViewModel by activityViewModels()
+    private val viewModel: DetailEditorViewModel by activityViewModels { viewModelFactory }
 
     private val brightnessComponent by uiComponent { BrightnessToolUiComponent(it, this) }
 
@@ -41,7 +44,7 @@ class DetailEditorFragment @Inject constructor() : TkpdBaseV4Fragment()
         initObservable()
     }
 
-    override fun onBrightnessValueChanged(value: Int) {
+    override fun onBrightnessValueChanged(value: Float) {
         viewModel.setBrightness(value)
     }
 
@@ -57,7 +60,7 @@ class DetailEditorFragment @Inject constructor() : TkpdBaseV4Fragment()
         }
 
         viewModel.brightnessValue.observe(viewLifecycleOwner) {
-            viewBinding?.imgPreview?.colorFilter = viewModel.getBrightnessMatrix(it.toFloat())
+            viewBinding?.imgPreview?.colorFilter = it
         }
     }
 

@@ -13,7 +13,9 @@ import javax.inject.Inject
 
 class DetailEditorActivity : BaseEditorActivity() {
 
+    @Inject lateinit var viewModelFactory: ViewModelProvider.Factory
     @Inject lateinit var fragmentFactory: FragmentFactory
+
     lateinit var viewModel: DetailEditorViewModel
 
     private var editorIntent = EditorDetailUiModel()
@@ -35,7 +37,8 @@ class DetailEditorActivity : BaseEditorActivity() {
 
     override fun initViewModel() {
         viewModel = ViewModelProvider(
-            this
+            this,
+            viewModelFactory
         ).get(DetailEditorViewModel::class.java)
     }
 

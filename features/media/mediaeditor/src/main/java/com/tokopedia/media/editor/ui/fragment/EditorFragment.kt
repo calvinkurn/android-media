@@ -58,6 +58,7 @@ class EditorFragment @Inject constructor() : TkpdBaseV4Fragment()
 
     override fun onThumbnailDrawerClicked(url: String) {
         activeImageUrl = url
+
         viewBinding?.imgMainPreview?.loadImage(url) {
             centerCrop()
         }
