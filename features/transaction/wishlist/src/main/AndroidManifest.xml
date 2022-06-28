@@ -22,7 +22,7 @@
         </activity>
 
         <activity
-            android:name=".view.activity.WishlistV2CollectionActivity"
+            android:name="com.tokopedia.wishlistcollection.view.activity.WishlistCollectionActivity"
             android:exported="false"
             android:label="@string/page_name_wishlist"
             android:launchMode="singleTask"
@@ -36,6 +36,24 @@
                     android:scheme="@string/internal_scheme"
                     android:host="@string/host_transaction"
                     android:path="/wishlist_collection"/>
+            </intent-filter>
+        </activity>
+
+        <activity
+            android:name="com.tokopedia.wishlistcollection.view.activity.WishlistCollectionBottomSheetActivity"
+            android:label="@string/page_name_wishlist_collection"
+            android:theme="@style/Theme.TransparentNoAnimation"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.tokopedia.internal.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:scheme="@string/internal_scheme"
+                    android:host="@string/host_transaction"
+                    android:path="/wishlist_collection_bottomsheet" />
             </intent-filter>
         </activity>
     </application>

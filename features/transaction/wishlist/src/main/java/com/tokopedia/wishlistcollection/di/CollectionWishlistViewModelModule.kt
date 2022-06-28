@@ -1,10 +1,10 @@
-package com.tokopedia.wishlist.di
+package com.tokopedia.wishlistcollection.di
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
-import com.tokopedia.wishlist.view.viewmodel.CollectionWishlistViewModel
+import com.tokopedia.wishlistcollection.view.viewmodel.CollectionWishlistViewModel
 import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap

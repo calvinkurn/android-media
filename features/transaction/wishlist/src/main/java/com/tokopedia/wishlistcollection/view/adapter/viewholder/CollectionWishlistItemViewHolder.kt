@@ -1,4 +1,4 @@
-package com.tokopedia.wishlist.view.adapter.viewholder
+package com.tokopedia.wishlistcollection.view.adapter.viewholder
 
 import android.widget.GridLayout
 import android.widget.ImageView
@@ -6,13 +6,13 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.unifycomponents.CardUnify2
-import com.tokopedia.wishlist.data.model.CollectionWishlistTypeLayoutData
-import com.tokopedia.wishlist.data.model.response.CollectionWishlistResponse
+import com.tokopedia.wishlistcollection.data.model.CollectionWishlistTypeLayoutData
+import com.tokopedia.wishlistcollection.data.model.response.CollectionWishlistResponse
 import com.tokopedia.wishlist.databinding.CollectionWishlistItemBinding
 import com.tokopedia.wishlist.util.WishlistV2Consts.SPEC_0
 import com.tokopedia.wishlist.util.WishlistV2Consts.SPEC_2
 import com.tokopedia.wishlist.util.WishlistV2Utils
-import com.tokopedia.wishlist.view.adapter.CollectionWishlistAdapter
+import com.tokopedia.wishlistcollection.view.adapter.CollectionWishlistAdapter
 
 class CollectionWishlistItemViewHolder(
     private val binding: CollectionWishlistItemBinding,

@@ -1,4 +1,4 @@
-package com.tokopedia.wishlist.di
+package com.tokopedia.wishlistcollection.di
 
 import android.app.Activity
 import android.content.Context

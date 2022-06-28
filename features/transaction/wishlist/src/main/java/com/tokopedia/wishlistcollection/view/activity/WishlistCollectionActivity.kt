@@ -1,11 +1,11 @@
-package com.tokopedia.wishlist.view.activity
+package com.tokopedia.wishlistcollection.view.activity
 
 import android.content.Intent
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.wishlist.R
-import com.tokopedia.wishlist.view.fragment.CollectionWishlistFragment
+import com.tokopedia.wishlistcollection.view.fragment.CollectionWishlistFragment
 
-class WishlistV2CollectionActivity: BaseSimpleActivity() {
+class WishlistCollectionActivity: BaseSimpleActivity() {
     override fun getLayoutRes() = R.layout.activity_collection_wishlist
 
     override fun getParentViewResourceID() = R.id.parent_view

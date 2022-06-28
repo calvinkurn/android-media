@@ -1,4 +1,4 @@
-package com.tokopedia.wishlist.data.model.response
+package com.tokopedia.wishlistcollection.data.model.response
 
 import com.google.gson.annotations.SerializedName
 
@@ -21,37 +21,37 @@ data class CollectionWishlistResponse(
 			val data: WishlistCollectionResponseData = WishlistCollectionResponseData()
 		) {
 			data class WishlistCollectionResponseData (
-				@SerializedName("ticker")
+                @SerializedName("ticker")
 				val ticker: Ticker = Ticker(),
 
-				@SerializedName("is_empty_state")
+                @SerializedName("is_empty_state")
 				val isEmptyState: Boolean = false,
 
-				@SerializedName("empty_wishlist_image_url")
+                @SerializedName("empty_wishlist_image_url")
 				val emptyWishlistImageUrl: String = "",
 
-				@SerializedName("empty_state")
+                @SerializedName("empty_state")
 				val emptyState: EmptyState = EmptyState(),
 
-				@SerializedName("collections")
+                @SerializedName("collections")
 				val collections: List<CollectionsItem> = emptyList(),
 
-				@SerializedName("placeholder")
+                @SerializedName("placeholder")
 				val placeholder: Placeholder = Placeholder(),
 
-				@SerializedName("onboarding_bottomsheet")
+                @SerializedName("onboarding_bottomsheet")
 				val onboardingBottomsheet: OnboardingBottomsheet = OnboardingBottomsheet(),
 
-				@SerializedName("onboarding_coachmark")
+                @SerializedName("onboarding_coachmark")
 				val onboardingCoachmark: OnboardingCoachmark = OnboardingCoachmark(),
 
-				@SerializedName("total_collection")
+                @SerializedName("total_collection")
 				val totalCollection: Int = 0,
 
-				@SerializedName("max_limit_collection")
+                @SerializedName("max_limit_collection")
 				val maxLimitCollection: Int = 0,
 
-				@SerializedName("wording_max_limit_collection")
+                @SerializedName("wording_max_limit_collection")
 				val wordingMaxLimitCollection: String = "") {
 
 					data class Ticker(
@@ -63,10 +63,10 @@ data class CollectionWishlistResponse(
 					)
 
 					data class EmptyState(
-						@SerializedName("buttons")
+                        @SerializedName("buttons")
 						val buttons: List<CollectionWishlistButtonsItem> = emptyList(),
 
-						@SerializedName("messages")
+                        @SerializedName("messages")
 						val messages: List<MessagesItem> = emptyList()
 					) {
 						data class MessagesItem(
@@ -110,38 +110,38 @@ data class CollectionWishlistResponse(
 					)
 
 					data class OnboardingBottomsheet(
-						@SerializedName("buttons")
+                        @SerializedName("buttons")
 						val buttons: List<CollectionWishlistButtonsItem> = emptyList(),
 
-						@SerializedName("image_url")
+                        @SerializedName("image_url")
 						val imageUrl: String = "",
 
-						@SerializedName("description")
+                        @SerializedName("description")
 						val description: String = "",
 
-						@SerializedName("title")
+                        @SerializedName("title")
 						val title: String = ""
 					)
 
 					data class OnboardingCoachmark(
-						@SerializedName("details")
+                        @SerializedName("details")
 						val details: List<DetailsItem> = emptyList(),
 
-						@SerializedName("skip_button_text")
+                        @SerializedName("skip_button_text")
 						val skipButtonText: String = ""
 					) {
 						data class DetailsItem(
 
-							@SerializedName("buttons")
+                            @SerializedName("buttons")
 							val buttons: List<CollectionWishlistButtonsItem> = emptyList(),
 
-							@SerializedName("step")
+                            @SerializedName("step")
 							val step: Int = 0,
 
-							@SerializedName("title")
+                            @SerializedName("title")
 							val title: String = "",
 
-							@SerializedName("message")
+                            @SerializedName("message")
 							val message: String = ""
 						)
 					}

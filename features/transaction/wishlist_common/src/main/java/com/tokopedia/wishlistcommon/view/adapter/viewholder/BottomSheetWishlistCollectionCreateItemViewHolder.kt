@@ -1,6 +1,8 @@
 package com.tokopedia.wishlistcommon.view.adapter.viewholder
 
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.wishlist_common.databinding.AddWishlistCollectionCreateNewItemBinding
 import com.tokopedia.wishlistcommon.data.BottomSheetWishlistCollectionTypeLayoutData
 import com.tokopedia.wishlistcommon.data.response.GetWishlistCollectionsBottomSheetResponse
@@ -12,8 +14,7 @@ class BottomSheetWishlistCollectionCreateItemViewHolder(
     fun bind(item: BottomSheetWishlistCollectionTypeLayoutData) {
         if (item.dataObject is GetWishlistCollectionsBottomSheetResponse.Data.GetWishlistCollectionsBottomsheet.Data.Placeholder) {
             binding.createCollectionImage.setImageUrl(IMAGE_URL_SMALL_CREATE_NEW)
-            binding.createCollectionLabel.text = item.dataObject.text
-            // binding.root.setOnClickListener { actionListener?.onCollectionItemClicked() }
+            binding.createCollectionLabel.text = HtmlLinkHelper(itemView.context, item.dataObject.text).spannedString
         }
     }
 }

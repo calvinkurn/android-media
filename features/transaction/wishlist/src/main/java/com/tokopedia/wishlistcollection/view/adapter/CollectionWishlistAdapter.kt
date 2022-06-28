@@ -1,20 +1,20 @@
-package com.tokopedia.wishlist.view.adapter
+package com.tokopedia.wishlistcollection.view.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.wishlist.data.model.CollectionWishlistTypeLayoutData
+import com.tokopedia.wishlistcollection.data.model.CollectionWishlistTypeLayoutData
 import com.tokopedia.wishlist.databinding.CollectionWishlistCreateItemBinding
 import com.tokopedia.wishlist.databinding.CollectionWishlistItemBinding
 import com.tokopedia.wishlist.databinding.CollectionWishlistTickerItemBinding
 import com.tokopedia.wishlist.util.WishlistV2Consts.TYPE_COLLECTION_CREATE
 import com.tokopedia.wishlist.util.WishlistV2Consts.TYPE_COLLECTION_ITEM
 import com.tokopedia.wishlist.util.WishlistV2Consts.TYPE_COLLECTION_TICKER
-import com.tokopedia.wishlist.view.adapter.viewholder.CollectionWishlistCreateViewHolder
-import com.tokopedia.wishlist.view.adapter.viewholder.CollectionWishlistItemViewHolder
-import com.tokopedia.wishlist.view.adapter.viewholder.CollectionWishlistTickerItemViewHolder
-import com.tokopedia.wishlist.view.fragment.CollectionWishlistFragment
+import com.tokopedia.wishlistcollection.view.adapter.viewholder.CollectionWishlistCreateViewHolder
+import com.tokopedia.wishlistcollection.view.adapter.viewholder.CollectionWishlistItemViewHolder
+import com.tokopedia.wishlistcollection.view.adapter.viewholder.CollectionWishlistTickerItemViewHolder
+import com.tokopedia.wishlistcollection.view.fragment.CollectionWishlistFragment
 
 class CollectionWishlistAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private var actionListener: ActionListener? = null

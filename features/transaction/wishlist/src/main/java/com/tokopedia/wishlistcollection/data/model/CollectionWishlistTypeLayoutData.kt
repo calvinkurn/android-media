@@ -1,4 +1,4 @@
-package com.tokopedia.wishlist.data.model
+package com.tokopedia.wishlistcollection.data.model
 
 data class CollectionWishlistTypeLayoutData(
     val dataObject: Any? = Any(),

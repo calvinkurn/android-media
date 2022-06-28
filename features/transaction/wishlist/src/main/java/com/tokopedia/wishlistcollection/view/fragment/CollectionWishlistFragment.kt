@@ -1,4 +1,4 @@
-package com.tokopedia.wishlist.view.fragment
+package com.tokopedia.wishlistcollection.view.fragment
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -20,17 +20,17 @@ import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import com.tokopedia.wishlist.R
-import com.tokopedia.wishlist.data.model.CollectionWishlistTypeLayoutData
-import com.tokopedia.wishlist.data.model.response.CollectionWishlistResponse
+import com.tokopedia.wishlistcollection.data.model.CollectionWishlistTypeLayoutData
+import com.tokopedia.wishlistcollection.data.model.response.CollectionWishlistResponse
 import com.tokopedia.wishlist.databinding.FragmentCollectionWishlistBinding
-import com.tokopedia.wishlist.di.CollectionWishlistModule
-import com.tokopedia.wishlist.di.DaggerCollectionWishlistComponent
+import com.tokopedia.wishlistcollection.di.CollectionWishlistModule
 import com.tokopedia.wishlist.util.WishlistV2Consts.TYPE_COLLECTION_CREATE
 import com.tokopedia.wishlist.util.WishlistV2Consts.TYPE_COLLECTION_ITEM
 import com.tokopedia.wishlist.util.WishlistV2Consts.TYPE_COLLECTION_TICKER
-import com.tokopedia.wishlist.view.adapter.CollectionWishlistAdapter
-import com.tokopedia.wishlist.view.viewmodel.CollectionWishlistViewModel
-import com.tokopedia.wishlistcommon.view.bottomsheet.BottomSheetAddCollectionWishlist
+import com.tokopedia.wishlist.view.fragment.WishlistV2Fragment
+import com.tokopedia.wishlistcollection.di.DaggerCollectionWishlistComponent
+import com.tokopedia.wishlistcollection.view.adapter.CollectionWishlistAdapter
+import com.tokopedia.wishlistcollection.view.viewmodel.CollectionWishlistViewModel
 import javax.inject.Inject
 
 

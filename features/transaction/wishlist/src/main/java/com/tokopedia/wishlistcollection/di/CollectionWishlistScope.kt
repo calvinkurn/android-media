@@ -1,4 +1,4 @@
-package com.tokopedia.wishlist.di
+package com.tokopedia.wishlistcollection.di
 
 import javax.inject.Scope
 
