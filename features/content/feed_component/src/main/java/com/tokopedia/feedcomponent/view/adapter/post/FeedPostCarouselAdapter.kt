@@ -57,9 +57,9 @@ internal class FeedPostCarouselAdapter(
         return oldItem == newItem
     }
 
-    fun focusItemAt(position: Int) {
+    fun focusItemAt(position: Int, resetPostTag: Boolean = false) {
         notifyItemChanged(position, Bundle().apply {
-            putBoolean(PAYLOAD_FOCUS, true)
+            putBoolean(PAYLOAD_FOCUS, resetPostTag)
         })
     }
 
@@ -78,8 +78,9 @@ internal class FeedPostCarouselAdapter(
             holder: ViewHolder,
             payloads: Bundle
         ) {
-            if (payloads.containsKey(PAYLOAD_FOCUS)) holder.focusMedia()
-            else super.onBindViewHolderWithPayloads(item, holder, payloads)
+            if (payloads.containsKey(PAYLOAD_FOCUS)) {
+                holder.focusMedia(payloads.getBoolean(PAYLOAD_FOCUS))
+            } else super.onBindViewHolderWithPayloads(item, holder, payloads)
         }
 
         override fun onCreateViewHolder(parent: ViewGroup, basicView: View): ViewHolder {
@@ -189,10 +190,10 @@ internal class FeedPostCarouselAdapter(
             removeExistingPostTags()
         }
 
-        fun focusMedia() {
+        fun focusMedia(resetPostTag: Boolean) {
             itemView.removeCallbacks(focusRunnable)
             itemView.postDelayed(focusRunnable, FOCUS_DELAY)
-            onPostTagViews { it.resetView() }
+            if (resetPostTag) onPostTagViews { it.resetView() }
         }
 
         fun bind(item: FeedXMedia) {

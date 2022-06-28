@@ -2058,17 +2058,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
                 },TIME_FOUR_SEC)
         }
 
-        adapter.focusItemAt(pageControl.indicatorCurrentPosition)
-    }
-
-    private fun getImageView(): View? {
-        val imageItem = View.inflate(context, R.layout.item_post_image_new, null)
-        val param = LinearLayout.LayoutParams(
-            ViewGroup.LayoutParams.MATCH_PARENT,
-            ViewGroup.LayoutParams.WRAP_CONTENT
-        )
-        imageItem.layoutParams = param
-        return imageItem
+        adapter.focusItemAt(pageControl.indicatorCurrentPosition, resetPostTag = true)
     }
 
     private fun getVideoItem(): View? {
