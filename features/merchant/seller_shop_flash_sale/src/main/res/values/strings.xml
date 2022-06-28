@@ -258,11 +258,20 @@
     <string name="manage_product_incomplete_product_info_label">Beberapa produk memiliki info yang belum lengkap. Lengkapi dulu, ya!</string>
     <string name="manage_product_placeholder_product_count">(%s Produk)</string>
     <string name="manage_product_add_product_label">Tambah Produk</string>
-    <string name="manage_product_item_stock_at_seller_location_label">Stok: <b>%s</b> di lokasi seller</string>
-    <string name="manage_product_item_campaign_stock_label">Stok campaign: <b>%s</b></string>
-    <string name="manage_product_item_max_buy_label">Maks. Pembelian: <b>%s</b></string>
+    <string name="manage_product_item_stock_at_seller_location_label">Stok: &lt;b>%d&lt;/b></string>
+    <string name="manage_product_item_campaign_stock_label">Stok campaign: &lt;b>%d&lt;/b></string>
+    <string name="manage_product_item_max_buy_label">Maks. Pembelian: &lt;b>%d&lt;/b></string>
     <string name="manage_product_continue_label">Lanjut</string>
     <string name="manage_product_save_draft_label">Simpan Draft</string>
+    <string name="manage_product_maximum_product_error">Sudah mencapai maks. 50 produk.</string>
+    <string name="manage_product_error_banner_title">Beberapa produk memiliki kesalahan</string>
+    <string name="manage_product_error_banner_description">Cek semua produkmu lalu ubah dan perbaiki informasi produknya, ya.</string>
+    <string name="error_msg_max_discounted_price">Harga campaign Maks. %s</string>
+    <string name="error_msg_max_campaign_stock">Stok campaign Maks. %d</string>
+    <string name="error_msg_min_discounted_price">Harga campaign Min. %s</string>
+    <string name="error_msg_min_campaign_stock">Stok campaign Min. 1</string>
+    <string name="error_msg_max_campaign_order">Maksimum pembelian tidak boleh melebihi stok utama</string>
+    <string name="error_msg_other">&#160;dan terjadi kesalahan lainnya</string>
 
     <!--Manage Product Highlight -->
     <string name="sfs_manage_highlight">Atur Highlight</string>
@@ -276,4 +285,30 @@
     <!--Delete Product-->
     <string name="deleteproduct_dialog_title">Yakin ingin hapus produk dari campaign?</string>
     <string name="deleteproduct_dialog_desc">Produk yang dihapus tidak dapat didaftarkan ke campaign, ya.</string>
+
+    <!-- Campaign Detail -->
+    <string name="campaign_detail">Detail Campaign</string>
+
+    <string name="campaign_detail_campaign_ended_title">Selamat, campaign kamu telah berakhir!</string>
+    <string name="campaign_detail_campaign_ended_message">Sampai jumpa di campaign lainnya, ya!</string>
+
+    <string name="campaign_detail_campaign_total_performance">Total Performa Campaign</string>
+
+    <string name="campaign_detail_campaign_id">CampaignID: %s</string>
+    <string name="campaign_detail_event_name_label">Event terdaftar</string>
+    <string name="campaign_detail_start_date_label">Tanggal dimulai</string>
+    <string name="campaign_detail_end_date_label">Tanggal berakhir</string>
+    <string name="campaign_detail_edit_campaign_label">Ubah Campaign</string>
+    <string name="campaign_detail_edit_registered_event_campaign_message">Campaign yang masuk ke partisipasi event hanya bisa diedit di versi desktop.</string>
+    <string name="campaign_detail_see_terms_and_condition_label">Lihat S&amp;K Pembelian</string>
+    <string name="campaign_detail_product_list_title">Daftar Produk Campaign</string>
+
+    <string name="campaign_detail_campaign_performance_title">Performa Campaign 👇</string>
+
+    <string name="campaign_detail_ticker_event_participation_title">Flash Sale Toko ini terdaftar dalam partisipasi event Tokopedia</string>
+    <string name="campaign_detail_ticker_event_participation_message">Kamu akan dapat notifikasi jika partisipasimu diterima/ditolak pada %s, ya.</string>
+
+    <string name="campaign_detail_sharing_message">Bagikan campaign untuk tingkatkan jumlah pesanan, yuk!</string>
+    <string name="campaign_detail_sharing_button">Bagikan</string>
+
 </resources>
