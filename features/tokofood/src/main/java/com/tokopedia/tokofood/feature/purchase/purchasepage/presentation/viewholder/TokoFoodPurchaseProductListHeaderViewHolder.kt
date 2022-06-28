@@ -30,10 +30,12 @@ class TokoFoodPurchaseProductListHeaderViewHolder(private val viewBinding: ItemP
                     itemView.context?.getString(com.tokopedia.tokofood.R.string.text_purchase_delete)
                 }
             addAnotherProductButton.setOnClickListener {
-                if (element.isAvailableHeader) {
-                    listener.onTextAddItemClicked()
-                } else {
-                    listener.onTextBulkDeleteUnavailableProductsClicked()
+                if (element.isEnabled) {
+                    if (element.isAvailableHeader) {
+                        listener.onTextAddItemClicked()
+                    } else {
+                        listener.onTextBulkDeleteUnavailableProductsClicked()
+                    }
                 }
             }
 
