@@ -191,7 +191,7 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
     private var dividerHeight = 4
     private var totalScrolled = 0
     private val spaceZero: Int
-        get() = resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.unify_space_0).toInt()
+       get() = context?.resources?.getDimension(com.tokopedia.unifyprinciples.R.dimen.unify_space_0)?.toInt() ?: 0
 
     override fun getScreenName(): String {
         return ""
@@ -401,15 +401,15 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
     }
 
     private fun loadLayout() {
-        viewModel.getLoadingState()
+        viewModel.showLoadingState()
     }
 
     private fun showNoPinPoin() {
-        viewModel.getNoPinPoinState()
+        viewModel.showNoPinPointState()
     }
 
     private fun showNoAddress() {
-        viewModel.getNoAddressState()
+        viewModel.showNoAddressState()
     }
 
     private fun getChooseAddress() {
@@ -581,7 +581,7 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
     }
 
     private fun onErrorGetHomeLayout(throwable: Throwable) {
-        viewModel.getErrorState(throwable)
+        viewModel.showErrorState(throwable)
         hideMiniCartHome()
     }
 
@@ -682,7 +682,7 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
 
     private fun checkAddressDataAndServiceArea(){
         checkIfChooseAddressWidgetDataUpdated()
-        when{
+        when {
             hasNoAddress() && isAddressManuallyUpdate() -> showNoAddress()
             hasNoPinPoin() && isAddressManuallyUpdate() -> showNoPinPoin()
             !isAddressManuallyUpdate() -> getChooseAddress()
