@@ -215,11 +215,25 @@ class PostDynamicViewNew @JvmOverloads constructor(
             }
 
             override fun onImageClicked(viewHolder: FeedPostCarouselAdapter.ViewHolder) {
-
+                listener?.onImageClicked(
+                    mData.id,
+                    mData.typename,
+                    mData.followers.isFollowed,
+                    mData.author.id,
+                )
             }
 
             override fun onLiked(viewHolder: FeedPostCarouselAdapter.ViewHolder) {
-
+                listener?.onLikeClick(
+                    positionInFeed,
+                    mData.id.toIntOrZero(),
+                    mData.like.isLiked,
+                    mData.typename,
+                    mData.followers.isFollowed,
+                    type = true,
+                    mData.author.id,
+                    mData.type,
+                )
             }
 
             override fun onImpressed(viewHolder: FeedPostCarouselAdapter.ViewHolder) {
@@ -319,8 +333,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
             feedXCard.media.firstOrNull()?.type ?: "",
             feedXCard.playChannelID
         )
-        //TODO("Carousel")
-//        bindTracking(feedXCard)
+        bindTracking(feedXCard)
         shareButton.setOnClickListener {
                 changeTopadsCekSekarangBtnColorToGreen(feedXCard)
             val desc = context.getString(R.string.feed_share_default_text)
@@ -2108,6 +2121,9 @@ class PostDynamicViewNew @JvmOverloads constructor(
                 listOf(products.first())
             )
         }
+
+        commentButton.invisible()
+        seeAllCommentText.hide()
 
         adapter.setItemsAndAnimateChanges(mediaList)
         feedXCard.media = mediaList

@@ -223,10 +223,7 @@ internal class FeedPostCarouselAdapter(
             }
 
             llLihatProduct.setOnClickListener {
-                animateLihatProduct(
-                    toggleAllPostTagViews()
-                )
-
+                changeTopAdsColorToGreen()
                 listener.onLihatProductClicked(this, item)
             }
 
