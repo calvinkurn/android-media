@@ -151,7 +151,18 @@ class HomeDynamicChannelVisitableFactoryImpl(
                 DynamicHomeChannel.Channels.LAYOUT_CAMPAIGN_FEATURING -> {
                     createCampaignFeaturingWidget(channel, position, isCache)
                 }
-                DynamicHomeChannel.Channels.LAYOUT_CATEGORY_WIDGET,
+                DynamicHomeChannel.Channels.LAYOUT_CATEGORY_WIDGET -> {
+                    createDynamicChannel(
+                        channel,
+                        trackingData = CategoryWidgetTracking.getCategoryWidgetBannerImpression(
+                            channel.grids.toList(),
+                            userSessionInterface?.userId ?: "",
+                            false,
+                            channel
+                        ),
+                        isCombined = false
+                    )
+                }
                 DynamicHomeChannel.Channels.LAYOUT_CATEGORY_WIDGET_V2 -> {
                     createCategoryWidgetV2(
                         channel, position, isCache
