@@ -1295,6 +1295,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
     override fun transactionNotFoundClick() {
         val selected = presenter.getActionBubbleforNoTrasaction()
         presenter.sendActionBubble(messageId, selected, SendableUiModel.generateStartTime(), opponentId)
+        getViewState()?.handleReplyBox(true)
     }
 }
 
