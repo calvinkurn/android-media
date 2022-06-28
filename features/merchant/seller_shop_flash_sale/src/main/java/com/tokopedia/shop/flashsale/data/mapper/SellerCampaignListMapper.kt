@@ -66,7 +66,10 @@ class SellerCampaignListMapper @Inject constructor() {
                 it.isCampaignRelation,
                 it.campaignRelationData.toRelatedCampaign(),
                 it.isCampaignRuleSubmit,
-                it.startDate.epochToDate().removeTimeZone().minuteDifference()
+                it.startDate.epochToDate().removeTimeZone().minuteDifference(),
+                it.thematicInfo.toThematicInfoUiModel(),
+                it.reviewStartDate.epochToDate(),
+                it.reviewEndDate.epochToDate(),
             )
         }
         return CampaignMeta(
@@ -75,6 +78,10 @@ class SellerCampaignListMapper @Inject constructor() {
             data.getSellerCampaignList.totalCampaignFinished,
             campaigns
         )
+    }
+
+    private fun GetSellerCampaignListResponse.GetSellerCampaignList.Campaign.ThematicInfo.toThematicInfoUiModel() : CampaignUiModel.ThematicInfo {
+        return CampaignUiModel.ThematicInfo(id, subId, name, status, statusString)
     }
 
     private fun List<CampaignRelationData>?.toRelatedCampaign(): List<RelatedCampaign> {
