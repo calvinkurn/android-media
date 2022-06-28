@@ -22,7 +22,7 @@ android {
         exclude 'META-INF/**'
     }
     kotlinOptions {
-        jvmTarget = "1.8"
+        jvmTarget = JavaVersion.VERSION_11
     }
     defaultConfig {
         multiDexEnabled true

@@ -8,6 +8,7 @@ buildCache {
     remote(HttpBuildCache) {
         url = "${ci_url}"
         push = isCiServer
+        allowInsecureProtocol = true
 //        allowUntrustedServer = true
         credentials {
             username = "${ci_username}"
