@@ -20,7 +20,7 @@ import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.common.topupbills.utils.CommonTopupBillsDataMapper
 import com.tokopedia.common.topupbills.utils.CommonTopupBillsUtil
 import com.tokopedia.common.topupbills.view.adapter.TopupBillsAutoCompleteAdapter
-import com.tokopedia.common.topupbills.view.model.TopupBillsAutoCompleteContactDataView
+import com.tokopedia.common.topupbills.view.model.TopupBillsAutoCompleteContactModel
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.kotlin.extensions.view.show
@@ -129,7 +129,7 @@ open class DigitalClientNumberWidget @JvmOverloads constructor(@NotNull context:
 
             setOnItemClickListener { _, _, position, _ ->
                 val item = autoCompleteAdapter.getItem(position)
-                if (item is TopupBillsAutoCompleteContactDataView) {
+                if (item is TopupBillsAutoCompleteContactModel) {
                     setContactName(item.name)
                     listener.onClickAutoComplete(item.name.isNotEmpty())
                 }
