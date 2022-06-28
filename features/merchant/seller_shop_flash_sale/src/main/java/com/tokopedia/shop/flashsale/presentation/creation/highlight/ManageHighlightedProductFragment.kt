@@ -327,7 +327,10 @@ class ManageHighlightedProductFragment : BaseDaggerFragment() {
 
     private fun renderList(list: List<HighlightableProduct>, hasNextPage: Boolean) {
         productAdapter.hideLoading()
-        productAdapter.addData(list)
+
+        val allItems = productAdapter.getItems() + list
+        val allItemsSorted = allItems.sortedByDescending { it.isSelected }
+        productAdapter.submit(allItemsSorted)
 
         endlessRecyclerViewScrollListener?.updateStateAfterGetData()
         endlessRecyclerViewScrollListener?.setHasNextPage(hasNextPage)

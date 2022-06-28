@@ -53,12 +53,6 @@ class HighlightedProductAdapter(
         holder.bind(products[position], onProductSelectionChange, isLoading)
     }
 
-    fun addData(items: List<HighlightableProduct>) {
-        val previousProductsSize = this.products.size
-        this.products.addAll(items)
-        notifyItemRangeChanged(previousProductsSize, this.products.size)
-    }
-
     fun submit(products: List<HighlightableProduct>) {
         val diffCallback = DiffCallback(this.products, products)
         val diffResult = DiffUtil.calculateDiff(diffCallback)

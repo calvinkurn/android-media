@@ -73,8 +73,8 @@ class ManageHighlightedProductViewModel @Inject constructor(
                 val determinedProducts = determineShouldSelectProduct(mappedProducts, isFirstLoad)
                 val appliedMaxSelectionRule = applyMaxSelectionRule(determinedProducts)
                 val appliedProductSelectionRule = applyProductSelectionRule(appliedMaxSelectionRule)
-                val sortedProducts = applySortRule(appliedProductSelectionRule)
-                _products.postValue(Success(sortedProducts))
+                val highlightedProducts = applyProductHighlightPosition(appliedProductSelectionRule)
+                _products.postValue(Success(highlightedProducts))
             },
             onError = { error ->
                 _products.postValue(Fail(error))
@@ -133,7 +133,7 @@ class ManageHighlightedProductViewModel @Inject constructor(
         }
     }
 
-    private fun applySortRule(products: List<HighlightableProduct>): List<HighlightableProduct> {
+    private fun applyProductHighlightPosition(products: List<HighlightableProduct>): List<HighlightableProduct> {
         return products
             .map { product ->
                 val position = findOrderPosition(product.id) + OFFSET_BY_ONE
