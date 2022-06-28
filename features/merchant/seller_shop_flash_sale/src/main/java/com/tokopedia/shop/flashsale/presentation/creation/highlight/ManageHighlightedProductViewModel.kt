@@ -100,14 +100,13 @@ class ManageHighlightedProductViewModel @Inject constructor(
                 product.copy(isSelected = isSelected)
             }
             .onEach { product ->
-                if (product.isSelected) addProductIdToSelection(product)
+                if (isFirstLoad && product.isSelected) addProductIdToSelection(product)
             }
     }
 
     private fun applyMaxSelectionRule(
         currentPageProducts: List<HighlightableProduct>
     ): List<HighlightableProduct> {
-        val size = selectedProducts.size
         return currentPageProducts.map { product ->
             if (selectedProducts.size == MAX_PRODUCT_SELECTION && !product.isSelected) {
                 product.copy(disabled = true, disabledReason = HighlightableProduct.DisabledReason.MAX_PRODUCT_REACHED)
@@ -136,10 +135,16 @@ class ManageHighlightedProductViewModel @Inject constructor(
 
     private fun applySortRule(products: List<HighlightableProduct>): List<HighlightableProduct> {
         return products
-            .sortedByDescending { it.isSelected }
-            .mapIndexed { index, product -> product.copy(position = index + OFFSET_BY_ONE) }
+            .map { product ->
+                val position = findOrderPosition(product.id) + OFFSET_BY_ONE
+                product.copy(position = position)
+            }
     }
 
+
+    private fun findOrderPosition(productId : Long): Int {
+        return selectedProducts.indexOfFirst { product -> product.id == productId }
+    }
 
     fun submitHighlightedProducts(campaignId: Long, products: List<HighlightableProduct>) {
         launchCatchError(
