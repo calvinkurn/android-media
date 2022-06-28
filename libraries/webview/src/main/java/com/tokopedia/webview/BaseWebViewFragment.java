@@ -556,7 +556,12 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
     private void checkLocationPermission(GeolocationPermissions.Callback callback, String origin) {
         if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP_MR1) {
             permissionCheckerHelper = new PermissionCheckerHelper();
-            permissionCheckerHelper.checkPermission(this, PermissionCheckerHelper.Companion.PERMISSION_ACCESS_FINE_LOCATION, new PermissionCheckerHelper.PermissionCheckListener() {
+
+            String[] permission = new String[]{
+                    PermissionCheckerHelper.Companion.PERMISSION_ACCESS_FINE_LOCATION,
+                    PermissionCheckerHelper.Companion.PERMISSION_ACCESS_COARSE_LOCATION
+            };
+            permissionCheckerHelper.checkPermissions(this, permission, new PermissionCheckerHelper.PermissionCheckListener() {
                 @Override
                 public void onPermissionDenied(String permissionText) {
                     callback.invoke(origin, false, false);
