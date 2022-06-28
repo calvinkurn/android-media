@@ -26,10 +26,12 @@ import com.tokopedia.kotlin.extensions.coroutines.asyncCatchError
 import com.tokopedia.people.domains.repository.UserProfileRepository
 import com.tokopedia.people.utils.setValue
 import com.tokopedia.people.views.uimodel.action.UserProfileAction
+import com.tokopedia.people.views.uimodel.event.UserProfileUiEvent
 import com.tokopedia.people.views.uimodel.profile.*
 import com.tokopedia.people.views.uimodel.state.UserProfileUiState
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.async
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.combine
@@ -47,6 +49,13 @@ class UserProfileViewModel @Inject constructor(
     private val repo: UserProfileRepository,
     private val userSession: UserSessionInterface,
 ) : BaseViewModel(Dispatchers.Main) {
+
+    /** Public Getter */
+    val isFollow: Boolean
+        get() = _followInfo.value.status
+
+    val isSelfProfile: Boolean
+        get() = _profileType.value == ProfileType.Self
 
     private val userDetails = MutableLiveData<Resources<ProfileHeaderBase>>()
     val userDetailsLiveData : LiveData<Resources<ProfileHeaderBase>> get() = userDetails
@@ -88,6 +97,11 @@ class UserProfileViewModel @Inject constructor(
     private val _followInfo = MutableStateFlow(FollowInfoUiModel.Empty)
     private val _profileWhitelist = MutableStateFlow(ProfileWhitelistUiModel.Empty)
     private val _profileType = MutableStateFlow(ProfileType.Unknown)
+
+    private val _uiEvent = MutableSharedFlow<UserProfileUiEvent>()
+
+    val uiEvent: Flow<UserProfileUiEvent>
+        get() = _uiEvent
 
     val uiState = combine(
         _profileInfo,

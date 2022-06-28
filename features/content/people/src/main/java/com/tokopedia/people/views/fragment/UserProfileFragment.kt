@@ -81,6 +81,7 @@ import com.tokopedia.people.views.uimodel.profile.ProfileType
 import com.tokopedia.people.views.uimodel.profile.ProfileUiModel
 import com.tokopedia.people.views.uimodel.state.UserProfileUiState
 import com.tokopedia.unifyprinciples.Typography
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
 
 class UserProfileFragment : BaseDaggerFragment(),
@@ -274,7 +275,12 @@ class UserProfileFragment : BaseDaggerFragment(),
         view?.findViewById<View>(R.id.text_live)?.setOnClickListener(this)
         view?.findViewById<View>(R.id.view_profile_outer_ring)?.setOnClickListener(this)
         view?.findViewById<View>(R.id.text_see_more)?.setOnClickListener(this)
-        btnAction?.setOnClickListener { viewModel.submitAction(UserProfileAction.ClickFollowButton) }
+        btnAction?.setOnClickListener {
+            if(viewModel.isFollow) userProfileTracker?.clickUnfollow(userId, viewModel.isSelfProfile)
+            else userProfileTracker?.clickFollow(userId, viewModel.isSelfProfile)
+
+            viewModel.submitAction(UserProfileAction.ClickFollowButton)
+        }
         feedFab.setOnClickListener {
             FeedUserTnCOnboardingBottomSheet.getFragment(
                 childFragmentManager,
@@ -321,6 +327,7 @@ class UserProfileFragment : BaseDaggerFragment(),
 
     private fun initObserver() {
         observeUiState()
+        observeUiEvent()
 
 //        addUserProfileObserver()
         addListObserver()
@@ -361,6 +368,16 @@ class UserProfileFragment : BaseDaggerFragment(),
             viewModel.uiState.withCache().collectLatest {
                 renderProfileInfo(it.prevValue?.profileInfo, it.value.profileInfo)
                 renderFollowInfo(it.prevValue, it.value)
+            }
+        }
+    }
+
+    private fun observeUiEvent() {
+        viewLifecycleOwner.lifecycleScope.launchWhenStarted {
+            viewModel.uiEvent.collect {
+                when(it) {
+
+                }
             }
         }
     }

@@ -5,4 +5,5 @@ package com.tokopedia.people.views.uimodel.event
  */
 sealed interface UserProfileUiEvent {
 
+
 }
