@@ -84,9 +84,7 @@ public abstract class MainApplication extends CoreNetworkApplication {
 
         initBranch();
         NotificationUtils.setNotificationChannel(this);
-        if(Build.VERSION.SDK_INT <= Build.VERSION_CODES.KITKAT) {
-            upgradeSecurityProvider();
-        }
+        upgradeSecurityProvider();
         createAndCallBgWork();
         TokoPatch.init(this);
     }
@@ -107,9 +105,7 @@ public abstract class MainApplication extends CoreNetworkApplication {
     private Boolean executeInBackground(){
         locationUtils = new LocationUtils(MainApplication.this);
         locationUtils.initLocationBackground();
-        if(Build.VERSION.SDK_INT > Build.VERSION_CODES.KITKAT) {
-            upgradeSecurityProvider();
-        }
+        upgradeSecurityProvider();
         return true;
     }
 
