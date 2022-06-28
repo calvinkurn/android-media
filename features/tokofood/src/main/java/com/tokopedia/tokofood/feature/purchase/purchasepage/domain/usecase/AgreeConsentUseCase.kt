@@ -20,6 +20,11 @@ class AgreeConsentUseCase @Inject constructor(
     repository: GraphqlRepository
 ): GraphqlUseCase<AgreeConsentResponse>(repository) {
 
+    init {
+        setTypeClass(AgreeConsentResponse::class.java)
+        setGraphqlQuery(AgreeConsent())
+    }
+
     suspend fun execute(): AgreeConsentResponse {
         return executeOnBackground()
     }
