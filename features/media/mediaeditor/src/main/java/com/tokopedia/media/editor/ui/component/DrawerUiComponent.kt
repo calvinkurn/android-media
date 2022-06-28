@@ -8,7 +8,7 @@ import com.tokopedia.media.editor.ui.adapter.ThumbnailDrawerAdapter
 import com.tokopedia.media.editor.ui.adapter.decoration.ThumbnailDrawerDecoration
 import com.tokopedia.picker.common.basecomponent.UiComponent
 
-class ThumbnailDrawerUiComponent constructor(
+class DrawerUiComponent constructor(
     viewGroup: ViewGroup,
     private val listener: Listener
 ) : UiComponent(viewGroup, R.id.uc_drawer_thumbnail), ThumbnailDrawerAdapter.Listener {

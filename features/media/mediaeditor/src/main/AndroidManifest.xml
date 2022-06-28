@@ -22,7 +22,7 @@
                     android:scheme="@string/internal_scheme" />
             </intent-filter>
         </activity>
-        <activity android:name=".ui.activity.detail.EditorDetailActivity"/>
+        <activity android:name=".ui.activity.detail.DetailEditorActivity"/>
     </application>
 
 </manifest>

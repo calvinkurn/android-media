@@ -7,7 +7,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.tokopedia.media.editor.ui.uimodel.EditorDetailUiModel
 
-class EditorDetailViewModel : ViewModel() {
+class DetailEditorViewModel : ViewModel() {
 
     private var _intentUiModel = MutableLiveData<EditorDetailUiModel>()
     val intentUiModel: LiveData<EditorDetailUiModel> get() = _intentUiModel

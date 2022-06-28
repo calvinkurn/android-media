@@ -2,7 +2,7 @@ package com.tokopedia.media.editor.ui
 
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
-import com.tokopedia.media.editor.ui.fragment.EditorDetailFragment
+import com.tokopedia.media.editor.ui.fragment.DetailEditorFragment
 import com.tokopedia.media.editor.ui.fragment.EditorFragment
 
 interface EditorFragmentProvider {
@@ -20,7 +20,7 @@ internal class EditorFragmentProviderImpl constructor(
     }
 
     override fun editorDetailFragment(): Fragment {
-        return get(EditorDetailFragment::class.java.name) as EditorDetailFragment
+        return get(DetailEditorFragment::class.java.name) as DetailEditorFragment
     }
 
     private fun get(name: String): Fragment {
