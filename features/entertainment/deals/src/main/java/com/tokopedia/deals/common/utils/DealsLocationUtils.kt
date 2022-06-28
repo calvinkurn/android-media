@@ -10,6 +10,7 @@ import com.tokopedia.deals.common.listener.CurrentLocationCallback
 import com.tokopedia.deals.location_picker.model.response.Location
 import com.tokopedia.locationmanager.DeviceLocation
 import com.tokopedia.locationmanager.LocationDetectorHelper
+import com.tokopedia.locationmanager.RequestLocationType
 import com.tokopedia.utils.permission.PermissionCheckerHelper
 
 /**
@@ -61,7 +62,7 @@ class DealsLocationUtils(val context: Context) {
                 LocationServices.getFusedLocationProviderClient(activity.applicationContext),
                 activity.applicationContext)
         locationDetectorHelper.getLocation(onGetLocation(currentLocationCallBack), activity,
-                LocationDetectorHelper.TYPE_DEFAULT_FROM_CLOUD, "")
+                LocationDetectorHelper.TYPE_DEFAULT_FROM_CLOUD, RequestLocationType.APPROXIMATE,"")
     }
 
     private fun onGetLocation(currentLocationCallBack: CurrentLocationCallback):
