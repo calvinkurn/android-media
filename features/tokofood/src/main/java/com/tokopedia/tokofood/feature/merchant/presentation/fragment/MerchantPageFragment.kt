@@ -76,7 +76,6 @@ import com.tokopedia.tokofood.feature.merchant.presentation.model.MerchantOpsHou
 import com.tokopedia.tokofood.feature.merchant.presentation.model.MerchantShareComponent
 import com.tokopedia.tokofood.feature.merchant.presentation.model.ProductListItem
 import com.tokopedia.tokofood.feature.merchant.presentation.model.ProductUiModel
-import com.tokopedia.tokofood.feature.merchant.presentation.model.ProductUiModelWrapper
 import com.tokopedia.tokofood.feature.merchant.presentation.model.VariantWrapperUiModel
 import com.tokopedia.tokofood.feature.merchant.presentation.viewholder.MerchantCarouseItemViewHolder
 import com.tokopedia.tokofood.feature.merchant.presentation.viewholder.ProductCardViewHolder
@@ -956,20 +955,18 @@ class MerchantPageFragment : BaseMultiFragment(),
 
     override fun changeMerchantConfirmAddToCart(
         updateParam: UpdateParam,
-        productUiModelWrapper: ProductUiModelWrapper
+        productUiModel: ProductUiModel,
+        productPosition: Int
     ) {
-        if (productUiModelWrapper.productUiModel?.isCustomizable == false) {
+        if (!productUiModel.isCustomizable) {
             activityViewModel?.deleteAllAtcAndAddProduct(updateParam, SOURCE)
         } else {
-            val productUiModel = productUiModelWrapper.productUiModel
-            val productListItem =
-                getProductItemList().find { it.productUiModel.id == productUiModel?.id }
-
+            val productListItem = getProductItemList().find { it.productUiModel.id == productUiModel.id }
             productListItem?.let {
                 navigateToOrderCustomizationPage(
                     it.productUiModel.cartId,
                     it,
-                    productUiModelWrapper.productPosition,
+                    productPosition,
                     true
                 )
             }
@@ -1177,16 +1174,20 @@ class MerchantPageFragment : BaseMultiFragment(),
                 ChangeMerchantBottomSheet.KEY_UPDATE_PARAM,
                 updateParam
             )
-            put(
-                ChangeMerchantBottomSheet.KEY_PRODUCT_UI_MODEL_WRAPPER,
-                ProductUiModelWrapper(productUiModel, productPosition)
-            )
         }
 
         val bundle = Bundle().apply {
             putString(
                 ChangeMerchantBottomSheet.KEY_CACHE_MANAGER_ID,
                 cacheManager?.id.orEmpty()
+            )
+            putInt(
+                ChangeMerchantBottomSheet.KEY_PRODUCT_POSITION,
+                productPosition
+            )
+            putParcelable(
+                ChangeMerchantBottomSheet.KEY_PRODUCT_UI_MODEL,
+                productUiModel
             )
         }
 

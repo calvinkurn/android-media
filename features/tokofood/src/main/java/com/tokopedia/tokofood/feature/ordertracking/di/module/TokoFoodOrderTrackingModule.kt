@@ -1,6 +1,7 @@
 package com.tokopedia.tokofood.feature.ordertracking.di.module
 
 import android.content.Context
+import androidx.lifecycle.SavedStateHandle
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
@@ -16,6 +17,10 @@ import dagger.Provides
 
 @Module(includes = [TokoFoodOrderTrackingViewModelModule::class])
 class TokoFoodOrderTrackingModule {
+
+    @Provides
+    @TokoFoodOrderTrackingScope
+    fun provideSavedStateHandle(): SavedStateHandle = SavedStateHandle()
 
     @TokoFoodOrderTrackingScope
     @Provides
